@@ -28,53 +28,83 @@ function communityhome_home(&$a, &$o){
 	$aside .= "<h3>". t('Login'). "</h3>";
 	$aside .= login(($a->config['register_policy'] == REGISTER_CLOSED) ? false : true);
 	
-	// last 10 users
+	// last 12 users
 	$aside .= "<h3>". t('Last users'). "</h3>";
 	$sql_extra = "";
 	$publish = (get_config('system','publish_all') ? '' : " AND `publish` = 1 " );
 	$order = " ORDER BY `register_date` DESC ";
 
-	$r = q("SELECT `profile`.*, `profile`.`uid` AS `profile_uid`, `user`.`nickname`, `user`.`timezone` 
+	$r = q("SELECT `profile`.*, `profile`.`uid` AS `profile_uid`, `user`.`nickname`
 			FROM `profile` LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid` 
 			WHERE `is-default` = 1 $publish AND `user`.`blocked` = 0 $sql_extra $order LIMIT %d , %d ",
 		0,
-		10
+		12
 	);
 	$aside .= "<div class='items-wrapper'>";
+	$tpl = file_get_contents( dirname(__file__).'/directory_item.tpl');
 	if(count($r)) {
-
-		$tpl = file_get_contents( dirname(__file__).'/directory_item.tpl');
-
 		$photo = 'thumb';
-
 		foreach($r as $rr) {
 			$profile_link = $a->get_baseurl() . '/profile/' . ((strlen($rr['nickname'])) ? $rr['nickname'] : $rr['profile_uid']);
-		
 			$entry = replace_macros($tpl,array(
 				'$id' => $rr['id'],
 				'$profile-link' => $profile_link,
 				'$photo' => $rr[$photo],
 				'$alt-text' => $rr['name'],
 			));
-
 			$aside .= $entry;
-
 		}
 	}
 	$aside .= "</div>";
 	
-	// last 10 photos
+	// 12 most active users (by posts and contacts)
+	// this query don't work on some mysql versions
+	$r = q("SELECT `uni`.`contacts`,`uni`.`items`, `profile`.*, `profile`.`uid` AS `profile_uid`, `user`.`nickname`  FROM
+			(SELECT COUNT(`id`) as `contacts`, `uid` FROM `contact` WHERE `self`=0 GROUP BY `uid`) AS `con`,
+			(SELECT COUNT(`id`) as `items`, `uid` FROM `item` WHERE `item`.`changed` > DATE(NOW() - INTERVAL 1 MONTH) AND `item`.`wall` = 1 GROUP BY `uid`) AS `ite`,
+			(
+			SELECT `contacts`,`items`,`ite`.`uid` FROM `con` RIGHT OUTER JOIN `ite` ON `con`.`uid`=`ite`.`uid` 
+			UNION ALL 
+			SELECT `contacts`,`items`,`con`.`uid` FROM `con` LEFT OUTER JOIN `ite` ON `con`.`uid`=`ite`.`uid`
+			) AS `uni`, `user`, `profile`
+			WHERE `uni`.`uid`=`user`.`uid`
+			AND `uni`.`uid`=`profile`.`uid` AND `profile`.`publish`=1
+			GROUP BY `uid`
+			ORDER BY `items` DESC,`contacts` DESC
+			LIMIT 0,10");
+	if($r && count($r)) {
+		$aside .= "<h3>". t('Most active users'). "</h3>";
+		$aside .= "<div class='items-wrapper'>";
+		
+		$photo = 'thumb';
+		foreach($r as $rr) {
+			$profile_link = $a->get_baseurl() . '/profile/' . ((strlen($rr['nickname'])) ? $rr['nickname'] : $rr['profile_uid']);
+			$entry = replace_macros($tpl,array(
+				'$id' => $rr['id'],
+				'$profile-link' => $profile_link,
+				'$photo' => $rr[$photo],
+				'$alt-text' => sprintf("%s (%s posts, %s contacts)",$rr['name'], ($rr['items']?$rr['items']:'0'), ($rr['contacts']?$rr['contacts']:'0'))
+			));
+			$aside .= $entry;
+		}
+		$aside .= "</div>";
+	}
+	
+	// last 12 photos
 	$aside .= "<h3>". t('Last photos'). "</h3>";
 	$r = q("SELECT `photo`.`id`, `photo`.`resource-id`, `photo`.`scale`, `photo`.`desc`, `user`.`nickname`, `user`.`username` FROM 
 				(SELECT `resource-id`, MAX(`scale`) as maxscale FROM `photo` 
-					WHERE `profile`=0 AND `height` NOT IN ( 175, 80, 48) 
+					WHERE `profile`=0 AND `contact-id`=0 AND `album` NOT IN ('Contact Photos', '%s', 'Profile Photos', '%s')
 						AND `allow_cid`='' AND `allow_gid`='' AND `deny_cid`='' AND `deny_gid`='' GROUP BY `resource-id`) AS `t1`
 				INNER JOIN `photo` ON `photo`.`resource-id`=`t1`.`resource-id` AND `photo`.`scale` = `t1`.`maxscale`,
 				`user` 
 				WHERE `user`.`uid` = `photo`.`uid`
 				AND `user`.`blockwall`=0
 				ORDER BY `photo`.`edited` DESC
-				LIMIT 0, 10");
+				LIMIT 0, 12",
+				dbesc(t('Contact Photos')),
+				dbesc(t('Profile Photos'))
+				);
 
 	$aside .= "<div class='items-wrapper'>";				
 	if(count($r)) {
