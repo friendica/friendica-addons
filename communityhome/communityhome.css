@@ -1,0 +1,21 @@
+aside #label-login-name,
+aside #login-name, 
+aside #label-login-password, 
+aside #login-password {
+	float: none !important;
+}
+aside #login-name-end,
+aside #login-password-end,
+aside #login-extra-end,
+aside #login-submit-end,
+aside #login-extra-filler {
+	float: none; height: 5px;
+	margin: 0px;
+}
+aside #login-submit-button { margin-left: 100px; }
+aside .items-wrapper,
+aside #login-extra-links { overflow: auto;	width: 100%; }
+aside .directory-item {	width: 55px; height: 55px; }
+aside .directory-photo { margin: 0px; }
+aside .directory-photo-img { max-width: 48px; max-height: 48px; }
+aside #likes { margin: 0px; padding: 0px; list-style: none; }
