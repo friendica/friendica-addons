@@ -1,0 +1,16 @@
+
+#wppost-enable-label, #wppost-username-label, #wppost-password-label, #wppost-blog-label, #wppost-bydefault-label {
+	float: left;
+	width: 200px;
+	margin-top: 10px;
+}
+
+#wppost-checkbox, #wppost-username, #wppost-password, #wppost-blog, #wppost-bydefault {
+	float: left;
+	margin-top: 10px;
+}
+
+#wppost-submit {
+	margin-top: 15px;
+}
+
