@@ -136,7 +136,10 @@ function wppost_send(&$a,&$b) {
 	if($wp_username && $wp_password && $wp_blog && $wp_post && $wp_enable) {
 
 		require_once('include/bbcode.php');
-		$post = xmlify(bbcode($b['body']));
+
+		$post = (($b['title']) ? '<title>' . $b['title'] . '</title>' : '');
+		$post .= bbcode($b['body']);
+			$post = xmlify($post);
 
 		$xml = <<< EOT
 
