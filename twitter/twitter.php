@@ -221,6 +221,7 @@ function twitter_post_hook(&$a,&$b) {
 		$osecret = get_pconfig(local_user(), 'twitter', 'oauthsecret' );
 
 		if($ckey && $csecret && $otoken && $osecret) {
+                        logger('twitter: we have customer key and oauth stuff, going to send.', LOGGER_DEBUG);
 
 			$twitter_post = intval(get_pconfig(local_user(),'twitter','post'));
 			$twitter_enable = (($twitter_post && x($_POST,'twitter_enable')) ? intval($_POST['twitter_enable']) : 0);
@@ -236,7 +237,8 @@ function twitter_post_hook(&$a,&$b) {
 				$tweet = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
 				$max_char = 140; // max. length for a tweet
 				$msg = strip_tags(bbcode($b['body']));
-				if ( strlen($msg) > $max_char) {
+                                if ( strlen($msg) > $max_char) {
+                                        logger('Twitter: have to shorten the message to fit 140 chars', LOGGER_DEBUG)
 					$shortlink = "";
 					require_once('library/slinky.php');
 					// post url = base url + /display/ + owner + post id
@@ -259,7 +261,7 @@ function twitter_post_hook(&$a,&$b) {
                 // and now tweet it :-)
 				if(strlen($msg)) {
 					$result = $tweet->post('statuses/update', array('status' => $msg));
-					logger('twitter_post returns: ' . $result);
+					logger('twitter_post send', LOGGER_DEBUG);
 				}
 
 			}
