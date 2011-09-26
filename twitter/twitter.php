@@ -238,7 +238,7 @@ function twitter_post_hook(&$a,&$b) {
 				$max_char = 140; // max. length for a tweet
 				$msg = strip_tags(bbcode($b['body']));
                                 if ( strlen($msg) > $max_char) {
-                                        logger('Twitter: have to shorten the message to fit 140 chars', LOGGER_DEBUG)
+                                        logger('Twitter: have to shorten the message to fit 140 chars', LOGGER_DEBUG);
 					$shortlink = "";
 					require_once('library/slinky.php');
 					// post url = base url + /display/ + owner + post id
