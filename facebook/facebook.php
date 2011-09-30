@@ -428,6 +428,16 @@ function facebook_cron($a,$b) {
 		foreach($r as $rr) {
 			if(get_pconfig($rr['uid'],'facebook','no_linking'))
 				continue;
+			$ab = intval(get_config('system','account_abandon_days'));
+			if($ab > 0) {
+				$z = q("SELECT `uid` FROM `user` WHERE `uid` = %d AND `login_date` > UTC_TIMESTAMP() - INTERVAL %d DAY LIMIT 1",
+					intval($rr['uid']),
+					intval($ab)
+				);
+				if(! count($z))
+					continue;
+			}
+
 			// check for new friends once a day
 			$last_friend_check = get_pconfig($rr['uid'],'facebook','friend_check');
 			if($last_friend_check) 
