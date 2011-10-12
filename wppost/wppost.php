@@ -7,17 +7,25 @@
  */
 
 function wppost_install() {
-    register_hook('post_local_end',   'addon/wppost/wppost.php', 'wppost_send');
-    register_hook('jot_networks',     'addon/wppost/wppost.php', 'wppost_jot_nets');
-    register_hook('plugin_settings',  'addon/wppost/wppost.php', 'wppost_settings');
-    register_hook('plugin_settings_post',  'addon/wppost/wppost.php', 'wppost_settings_post');
+    register_hook('post_local',           'addon/wppost/wppost.php', 'wppost_post_local');
+    register_hook('notifier_normal',      'addon/wppost/wppost.php', 'wppost_send');
+    register_hook('jot_networks',         'addon/wppost/wppost.php', 'wppost_jot_nets');
+    register_hook('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
+    register_hook('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
 
 }
 function wppost_uninstall() {
-    unregister_hook('post_local_end',   'addon/wppost/wppost.php', 'wppost_send');
+    unregister_hook('post_local',       'addon/wppost/wppost.php', 'wppost_post_local');
+    unregister_hook('notifier_normal',  'addon/wppost/wppost.php', 'wppost_send');
     unregister_hook('jot_networks',     'addon/wppost/wppost.php', 'wppost_jot_nets');
+    unregister_hook('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
+    unregister_hook('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
+
+	// obsolete - remove
+    unregister_hook('post_local_end',   'addon/wppost/wppost.php', 'wppost_send');
     unregister_hook('plugin_settings',  'addon/wppost/wppost.php', 'wppost_settings');
     unregister_hook('plugin_settings_post',  'addon/wppost/wppost.php', 'wppost_settings_post');
+
 }
 
 
@@ -109,23 +117,19 @@ function wppost_settings_post(&$a,&$b) {
 
 }
 
+function wppost_post_local(&$a,&$b) {
 
+	// This can probably be changed to allow editing by pointing to a different API endpoint
 
-
-function wppost_send(&$a,&$b) {
+	if($b['edit'])
+		return;
 
 	if((! local_user()) || (local_user() != $b['uid']))
 		return;
 
-	if($b['prvnets'] && $b['private'])
+	if($b['private'] || $b['parent'])
 		return;
 
-	if($b['parent'])
-		return;
-
-	$wp_username = get_pconfig(local_user(),'wppost','wp_username');
-	$wp_password = get_pconfig(local_user(),'wppost','wp_password');
-	$wp_blog = get_pconfig(local_user(),'wppost','wp_blog');
     $wp_post   = intval(get_pconfig(local_user(),'wppost','post'));
 
 	$wp_enable = (($wp_post && x($_POST,'wppost_enable')) ? intval($_POST['wppost_enable']) : 0);
@@ -133,7 +137,34 @@ function wppost_send(&$a,&$b) {
 	if($_POST['api_source'] && intval(get_pconfig(local_user(),'wppost','post_by_default')))
 		$wp_enable = 1;
 
-	if($wp_username && $wp_password && $wp_blog && $wp_post && $wp_enable) {
+    if(! $wp_enable)
+       return;
+
+    if(strlen($b['postopts']))
+       $b['postopts'] .= ',';
+     $b['postopts'] .= 'wppost';
+}
+
+
+
+
+function wppost_send(&$a,&$b) {
+
+    if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
+        return;
+
+    if(! strstr($b['postopts'],'wppost'))
+        return;
+
+    if($b['parent'] != $b['id'])
+        return;
+
+
+	$wp_username = get_pconfig($b['uid'],'wppost','wp_username');
+	$wp_password = get_pconfig($b['uid'],'wppost','wp_password');
+	$wp_blog = get_pconfig($b['uid'],'wppost','wp_blog');
+
+	if($wp_username && $wp_password && $wp_blog) {
 
 		require_once('include/bbcode.php');
 
