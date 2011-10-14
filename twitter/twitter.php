@@ -261,7 +261,7 @@ function twitter_post_hook(&$a,&$b) {
 		require_once('library/twitteroauth.php');
 		require_once('include/bbcode.php');	
 		$tweet = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
-		$max_char = 140; // max. length for a tweet
+		$max_char = 138; // max. length for a tweet
 		$msg = strip_tags(bbcode($b['body']));
 		if ( strlen($msg) > $max_char) {
 			logger('Twitter: have to shorten the message to fit 140 chars', LOGGER_DEBUG);
