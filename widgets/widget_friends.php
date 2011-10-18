@@ -23,8 +23,13 @@ function friends_widget_content(&$a, $conf){
 
 	$o = "";
 	$o .= "<style>
+		.f9k_widget {font-size: 0.8em;}
+		.f9k_widget #contact-block { overflow: hidden; height: auto; }
+		.f9k_widget .contact-block-h4 { float: left; margin: 0px; }
+		.f9k_widget .allcontact-link { float: right; margin: 0px; }
+		.f9k_widget .contact-block-content { clear:both; }
 		.f9k_widget .contact-block-div { display: block !important; float: left!important; width: 50px!important; height: 50px!important; margin: 2px!important;}
-		.f9k_widget #contact-block-end { clear: left; }
+		
 	</style>";
 	$o .= _abs_url(contact_block());
 	$o .= "<a href='".$a->get_baseurl().'/profile/'.$a->profile['nickname']."'>". t('Connect on Friendika!') ."</a>";
