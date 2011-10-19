@@ -22,11 +22,13 @@ var f9a_widget_$widget_id = {
 	dorequest : function(args, cb) {
 		if (args===null) args = new Array();
 		args['k']=this.key;
-		args['s']=window.location;
+		args['s']=window.location.href;
 		args['a']=this.argstr;
 		var urlencodedargs = new Array();
-		for(k in args){ urlencodedargs.push( encodeURIComponent(k)+"="+encodeURIComponent(args[k]) ); }
-	
+		for(k in args){ 
+			if (typeof args[k] != 'function')
+				urlencodedargs.push( encodeURIComponent(k)+"="+encodeURIComponent(args[k]) );
+		 }
 		var url = this.entrypoint + "?"+ urlencodedargs.join("&");
 
 		this.xmlhttp.open("GET", url  ,true);

@@ -40,8 +40,10 @@ function widgets_settings(&$a,&$o) {
 		 if(substr($f,0,7)=="widget_") {
 			 preg_match("|widget_([^.]+).php|", $f, $m);
 			 $w=$m[1];
-			 require_once($f);
-			 $widgets[] = array($w, call_user_func($w."_widget_name"));
+			 if ($w!=""){
+				require_once($f);
+				$widgets[] = array($w, call_user_func($w."_widget_name"));
+			}
 
 		 }
 	}
@@ -104,13 +106,7 @@ function widgets_content(&$a) {
 
 	//echo "<pre>"; var_dump($a->argv); die();
 	if ($a->argv[2]=="cb"){
-		/*if (!local_user()){
-			if (!isset($_GET['s']))
-				{header('HTTP/1.0 400 Bad Request'); killme();}
-			
-			if (substr($_GET['s'],0,strlen($conf['site'])) !== $conf['site'])
-				{header('HTTP/1.0 400 Bad Request'); killme();}
-		} */
+		header('Access-Control-Allow-Origin: *');
 		$o .= call_user_func($a->argv[1].'_widget_content',$a, $conf);
 		
 	} else {
@@ -136,14 +132,15 @@ function widgets_content(&$a) {
 		$o .= replace_macros($script, array(
 			'$entrypoint' => $a->get_baseurl()."/widgets/".$a->argv[1]."/cb/",
 			'$key' => $conf['key'],
-			'$widget_id' => 'f9k_'.$a->argv[1]."_".time(),
+			'$widget_id' => 'f9a_'.$a->argv[1]."_". ceil(microtime(true)*100),
 			'$loader' => $a->get_baseurl()."/images/rotator.gif",
 			'$args' => (isset($_GET['a'])?$_GET['a']:''),
 		));
 
 	
 		if (isset($_GET['p'])) {
-			$jsargs = implode("</em>,<em>", call_user_func($a->argv[1].'_widget_args'));
+			$wargs = call_user_func($a->argv[1].'_widget_args');
+			$jsargs = implode("</em>,<em>", $wargs);
 			if ($jsargs!='') $jsargs = "&a=<em>".$jsargs."</em>";
 				
 			$o .= "</script>
@@ -155,6 +152,8 @@ function widgets_content(&$a) {
 			.$jsargs
 			.htmlspecialchars('"></script>')
 			."</code>";
+
+			
 			return $o;
 		}	
 		
