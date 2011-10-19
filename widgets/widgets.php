@@ -72,6 +72,10 @@ function _abs_url($s){
 	return preg_replace("|href=(['\"])([^h][^t][^t][^p])|", "href=\$1".$a->get_baseurl()."/\$2", $s);
 }
 
+function _randomAlphaNum($length){
+	return substr(str_shuffle(str_repeat('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',$length)),0,$length);
+} 
+
 
 function widgets_content(&$a) {
 
@@ -106,7 +110,7 @@ function widgets_content(&$a) {
 
 	//echo "<pre>"; var_dump($a->argv); die();
 	if ($a->argv[2]=="cb"){
-		header('Access-Control-Allow-Origin: *');
+		/*header('Access-Control-Allow-Origin: *');*/
 		$o .= call_user_func($a->argv[1].'_widget_content',$a, $conf);
 		
 	} else {
@@ -126,15 +130,19 @@ function widgets_content(&$a) {
 		}
 	
 	
-
+		
+		$widget_size = call_user_func($a->argv[1].'_widget_size');
 	
 		$script = file_get_contents(dirname(__file__)."/widgets.js");
 		$o .= replace_macros($script, array(
 			'$entrypoint' => $a->get_baseurl()."/widgets/".$a->argv[1]."/cb/",
 			'$key' => $conf['key'],
-			'$widget_id' => 'f9a_'.$a->argv[1]."_". ceil(microtime(true)*100),
+			'$widget_id' => 'f9a_'.$a->argv[1]."_"._randomAlphaNum(6),
 			'$loader' => $a->get_baseurl()."/images/rotator.gif",
 			'$args' => (isset($_GET['a'])?$_GET['a']:''),
+			'$width' => $widget_size[0],
+			'$height' => $widget_size[1],
+			'$type' => $a->argv[1],
 		));
 
 	

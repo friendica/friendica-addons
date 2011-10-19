@@ -11,6 +11,11 @@ function like_widget_args(){
 	return Array("KEY");
 }
 
+function like_widget_size(){
+	return Array('60px','20px');
+}
+
+
 function like_widget_content(&$a, $conf){
 	$args = explode(",",$_GET['a']);
 	
