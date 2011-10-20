@@ -106,8 +106,8 @@ class StatusNetOAuth extends TwitterOAuth {
 
 function statusnet_install() {
 	//  we need some hooks, for the configuration and for sending tweets
-	register_hook('plugin_settings', 'addon/statusnet/statusnet.php', 'statusnet_settings'); 
-	register_hook('plugin_settings_post', 'addon/statusnet/statusnet.php', 'statusnet_settings_post');
+	register_hook('connector_settings', 'addon/statusnet/statusnet.php', 'statusnet_settings'); 
+	register_hook('connector_settings_post', 'addon/statusnet/statusnet.php', 'statusnet_settings_post');
 	register_hook('post_local_end', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
 	register_hook('jot_networks',    'addon/statusnet/statusnet.php', 'statusnet_jot_nets');
 	logger("installed statusnet");
@@ -115,6 +115,8 @@ function statusnet_install() {
 
 
 function statusnet_uninstall() {
+	unregister_hook('connector_settings', 'addon/statusnet/statusnet.php', 'statusnet_settings'); 
+	unregister_hook('connector_settings_post', 'addon/statusnet/statusnet.php', 'statusnet_settings_post');
 	unregister_hook('plugin_settings', 'addon/statusnet/statusnet.php', 'statusnet_settings'); 
 	unregister_hook('plugin_settings_post', 'addon/statusnet/statusnet.php', 'statusnet_settings_post');
 	unregister_hook('post_local_end', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
@@ -176,7 +178,7 @@ function statusnet_settings_post ($a,$post) {
                         }
                     }
                 }
-                goaway($a->get_baseurl().'/settings/addon');
+                goaway($a->get_baseurl().'/settings/connectors');
             } else {
             if (isset($_POST['statusnet-consumersecret'])) {
                 //  check if we can reach the API of the StatusNet server
@@ -203,7 +205,7 @@ function statusnet_settings_post ($a,$post) {
                         notice( t('We could not contact the StatusNet API with the Path you entered.').EOL );
                     }
                 }
-                goaway($a->get_baseurl().'/settings/addon');
+                goaway($a->get_baseurl().'/settings/connectors');
             } else {
     	        if (isset($_POST['statusnet-pin'])) {
                 	//  if the user supplied us with a PIN from Twitter, let the magic of OAuth happen
@@ -221,7 +223,7 @@ function statusnet_settings_post ($a,$post) {
 					set_pconfig(local_user(),'statusnet', 'oauthsecret', $token['oauth_token_secret']);
                     set_pconfig(local_user(),'statusnet', 'post', 1);
                     //  reload the Addon Settings page, if we don't do it see Bug #42
-                    goaway($a->get_baseurl().'/settings/addon');
+                    goaway($a->get_baseurl().'/settings/connectors');
 				} else {
 					//  if no PIN is supplied in the POST variables, the user has changed the setting
 					//  to post a tweet for every new __public__ posting to the wall

@@ -50,7 +50,7 @@ define('FACEBOOK_MAXPOSTLEN', 420);
 function facebook_install() {
 	register_hook('post_local_end',   'addon/facebook/facebook.php', 'facebook_post_hook');
 	register_hook('jot_networks',     'addon/facebook/facebook.php', 'facebook_jot_nets');
-	register_hook('plugin_settings',  'addon/facebook/facebook.php', 'facebook_plugin_settings');
+	register_hook('connector_settings',  'addon/facebook/facebook.php', 'facebook_plugin_settings');
 	register_hook('cron',             'addon/facebook/facebook.php', 'facebook_cron');
 	register_hook('queue_predeliver', 'addon/facebook/facebook.php', 'fb_queue_hook');
 }
@@ -59,6 +59,7 @@ function facebook_install() {
 function facebook_uninstall() {
 	unregister_hook('post_local_end',   'addon/facebook/facebook.php', 'facebook_post_hook');
 	unregister_hook('jot_networks',     'addon/facebook/facebook.php', 'facebook_jot_nets');
+	unregister_hook('connector_settings',  'addon/facebook/facebook.php', 'facebook_plugin_settings');
 	unregister_hook('plugin_settings',  'addon/facebook/facebook.php', 'facebook_plugin_settings');
 	unregister_hook('cron',             'addon/facebook/facebook.php', 'facebook_cron');
 	unregister_hook('queue_predeliver', 'addon/facebook/facebook.php', 'fb_queue_hook');

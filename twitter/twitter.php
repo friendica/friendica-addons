@@ -43,8 +43,8 @@
 
 function twitter_install() {
 	//  we need some hooks, for the configuration and for sending tweets
-	register_hook('plugin_settings', 'addon/twitter/twitter.php', 'twitter_settings'); 
-	register_hook('plugin_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
+	register_hook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings'); 
+	register_hook('connector_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
 	register_hook('post_local_end', 'addon/twitter/twitter.php', 'twitter_post_hook');
 	register_hook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
 	logger("installed twitter");
@@ -52,6 +52,8 @@ function twitter_install() {
 
 
 function twitter_uninstall() {
+	unregister_hook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings'); 
+	unregister_hook('connector_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
 	unregister_hook('plugin_settings', 'addon/twitter/twitter.php', 'twitter_settings'); 
 	unregister_hook('plugin_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
 	unregister_hook('post_local_end', 'addon/twitter/twitter.php', 'twitter_post_hook');
@@ -106,7 +108,7 @@ function twitter_settings_post ($a,$post) {
 		set_pconfig(local_user(),'twitter', 'oauthsecret', $token['oauth_token_secret']);
                 set_pconfig(local_user(),'twitter', 'post', 1);
                 //  reload the Addon Settings page, if we don't do it see Bug #42
-                goaway($a->get_baseurl().'/settings/addon');
+                goaway($a->get_baseurl().'/settings/connectors');
 	} else {
 		//  if no PIN is supplied in the POST variables, the user has changed the setting
 		//  to post a tweet for every new __public__ posting to the wall
