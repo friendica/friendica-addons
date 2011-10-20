@@ -145,7 +145,7 @@ function fb_get_self($uid) {
 
 function fb_get_friends($uid) {
 
-	$r = q("SELECT `id` FROM `user` WHERE `uid` = %d AND `account_expired` = 0 LIMIT 1",
+	$r = q("SELECT `uid` FROM `user` WHERE `uid` = %d AND `account_expired` = 0 LIMIT 1",
 		intval($uid)
 	);
 	if(! count($r))
