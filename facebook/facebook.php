@@ -718,15 +718,8 @@ function facebook_post_hook(&$a,&$b) {
 					else {
 						if(! $likes) {
 							$s = serialize(array('url' => $url, 'item' => $b['id'], 'post' => $postvars));
-							q("INSERT INTO `queue` ( `network`, `cid`, `created`, `last`, `content`)
-								VALUES ( '%s', %d, '%s', '%s', '%s') ",
-								dbesc(NETWORK_FACEBOOK),
-								intval($a->contact),
-								dbesc(datetime_convert()),
-								dbesc(datetime_convert()),
-								dbesc($s)
-							);								
-
+							require_once('include/queue_fn.php');
+							add_to_queue($a->contact,NETWORK_FACEBOOK,$s);
 							notice( t('Facebook post failed. Queued for retry.') . EOL);
 						}
 					}
