@@ -87,14 +87,18 @@ function nsfw_prepare_body(&$a,&$b) {
 				continue;
 			}
 
-			if(stristr($b,$word)) {
+			if(stristr($b['html'],$word)) {
 				$found = true;
 				break;
 			}
+			if(stristr($b['item']['tag'], ']' . $word . '[' )) {
+				$found = true;
+				break;
+			} 
 		}
 	}
 	if($found) {
 		$rnd = random_string(8);
-		$b = '<div id="nsfw-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'nsfw-' . $rnd . '\'); >' . t('NSFW - Click to open/close') . '</div><div id="nsfw-' . $rnd . '" style="display: none; " >' . $b . '</div>';  
+		$b['html'] = '<div id="nsfw-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'nsfw-' . $rnd . '\'); >' . t('NSFW - Click to open/close') . '</div><div id="nsfw-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';  
 	}
 }
