@@ -214,13 +214,14 @@ function fb_get_friends($uid) {
 				else {
 
 					// create contact record 
-					$r = q("INSERT INTO `contact` ( `uid`, `created`, `url`, `addr`, `alias`, `notify`, `poll`, 
+					$r = q("INSERT INTO `contact` ( `uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`, 
 						`name`, `nick`, `photo`, `network`, `rel`, `priority`,
 						`writable`, `blocked`, `readonly`, `pending` )
-						VALUES ( %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, 0, 0, 0 ) ",
+						VALUES ( %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, 0, 0, 0 ) ",
 						intval($uid),
 						dbesc(datetime_convert()),
 						dbesc($jp->link),
+						dbesc(normalise_link($jp->link)),
 						dbesc(''),
 						dbesc(''),
 						dbesc($jp->id),
