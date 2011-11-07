@@ -132,9 +132,9 @@ function wppost_post_local(&$a,&$b) {
 
     $wp_post   = intval(get_pconfig(local_user(),'wppost','post'));
 
-	$wp_enable = (($wp_post && x($_POST,'wppost_enable')) ? intval($_POST['wppost_enable']) : 0);
+	$wp_enable = (($wp_post && x($_REQUEST,'wppost_enable')) ? intval($_REQUEST['wppost_enable']) : 0);
 
-	if($_POST['api_source'] && intval(get_pconfig(local_user(),'wppost','post_by_default')))
+	if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'wppost','post_by_default')))
 		$wp_enable = 1;
 
     if(! $wp_enable)

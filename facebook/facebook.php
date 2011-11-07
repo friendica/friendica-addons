@@ -743,10 +743,10 @@ function facebook_post_local(&$a,&$b) {
 	if((local_user()) && (local_user() == $b['uid'])) {
 
 		$fb_post   = intval(get_pconfig(local_user(),'facebook','post'));
-		$fb_enable = (($fb_post && x($_POST,'facebook_enable')) ? intval($_POST['facebook_enable']) : 0);
+		$fb_enable = (($fb_post && x($_REQUEST,'facebook_enable')) ? intval($_REQUEST['facebook_enable']) : 0);
 
 		// if API is used, default to the chosen settings
-		if($_POST['api_source'] && intval(get_pconfig(local_user(),'facebook','post_by_default')))
+		if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'facebook','post_by_default')))
 			$fb_enable = 1;
 
 		if(! $fb_enable)

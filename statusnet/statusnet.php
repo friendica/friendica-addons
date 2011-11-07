@@ -362,10 +362,10 @@ function statusnet_post_local(&$a,&$b) {
 	if((local_user()) && (local_user() == $b['uid']) && (! $b['private'])) {
 
 		$statusnet_post = get_pconfig(local_user(),'statusnet','post');
-		$statusnet_enable = (($statusnet_post && x($_POST,'statusnet_enable')) ? intval($_POST['statusnet_enable']) : 0);
+		$statusnet_enable = (($statusnet_post && x($_REQUEST,'statusnet_enable')) ? intval($_REQUEST['statusnet_enable']) : 0);
 
 		// if API is used, default to the chosen settings
-		if($_POST['api_source'] && intval(get_pconfig(local_user(),'statusnet','post_by_default')))
+		if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'statusnet','post_by_default')))
 			$statusnet_enable = 1;
 
        if(! $statusnet_enable)

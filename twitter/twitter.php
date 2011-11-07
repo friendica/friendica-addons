@@ -214,10 +214,10 @@ function twitter_post_local(&$a,&$b) {
 	if((local_user()) && (local_user() == $b['uid']) && (! $b['private']) && (! $b['parent']) ) {
 
 		$twitter_post = intval(get_pconfig(local_user(),'twitter','post'));
-		$twitter_enable = (($twitter_post && x($_POST,'twitter_enable')) ? intval($_POST['twitter_enable']) : 0);
+		$twitter_enable = (($twitter_post && x($_REQUEST,'twitter_enable')) ? intval($_REQUEST['twitter_enable']) : 0);
 
 		// if API is used, default to the chosen settings
-		if($_POST['api_source'] && intval(get_pconfig(local_user(),'twitter','post_by_default')))
+		if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'twitter','post_by_default')))
 			$twitter_enable = 1;
 
         if(! $twitter_enable)
