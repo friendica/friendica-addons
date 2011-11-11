@@ -99,6 +99,6 @@ function nsfw_prepare_body(&$a,&$b) {
 	}
 	if($found) {
 		$rnd = random_string(8);
-		$b['html'] = '<div id="nsfw-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'nsfw-' . $rnd . '\'); >' . t('NSFW - Click to open/close') . '</div><div id="nsfw-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';  
+		$b['html'] = '<div id="nsfw-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'nsfw-' . $rnd . '\'); >' . sprintf( t('%s - Click to open/close'),$word ) . '</div><div id="nsfw-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';  
 	}
 }
