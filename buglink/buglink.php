@@ -11,7 +11,7 @@ function buglink_install() {
 	register_hook('page_end', 'addon/buglink/buglink.php', 'buglink_active');
 }
 
-function piwik_uninstall() {
+function buglink_uninstall() {
 	unregister_hook('page_end', 'addon/buglink/buglink.php', 'buglink_active');
 }
 
