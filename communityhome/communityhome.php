@@ -24,12 +24,19 @@ function communityhome_home(&$a, &$o){
 	// custom css
 	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->get_baseurl().'/addon/communityhome/communityhome.css" media="all" />';
 	
+	$aside = array(
+		'$tab_1' => t('Login'),
+		'$tab_2' => t('OpenID'),
+		'$noOid' => get_config('system','no_openid'),
+	);
+	
 	// login form
-	$aside .= "<h3>". t('Login'). "</h3>";
-	$aside .= login(($a->config['register_policy'] == REGISTER_CLOSED) ? false : true);
+	$aside['$login_title'] =  t('Login');
+	$aside['$login_form'] = login(($a->config['register_policy'] == REGISTER_CLOSED) ? false : true);
 	
 	// last 12 users
-	$aside .= "<h3>". t('Last users'). "</h3>";
+	$aside['$lastusers_title'] = t('Last users');
+	$aside['$lastusers_items'] = array();
 	$sql_extra = "";
 	$publish = (get_config('system','publish_all') ? '' : " AND `publish` = 1 " );
 	$order = " ORDER BY `register_date` DESC ";
@@ -40,7 +47,6 @@ function communityhome_home(&$a, &$o){
 		0,
 		12
 	);
-	$aside .= "<div class='items-wrapper'>";
 	$tpl = file_get_contents( dirname(__file__).'/directory_item.tpl');
 	if(count($r)) {
 		$photo = 'thumb';
@@ -52,10 +58,9 @@ function communityhome_home(&$a, &$o){
 				'$photo' => $rr[$photo],
 				'$alt-text' => $rr['name'],
 			));
-			$aside .= $entry;
+			$aside['$lastusers_items'][] = $entry;
 		}
 	}
-	$aside .= "</div>";
 	
 	// 12 most active users (by posts and contacts)
 	// this query don't work on some mysql versions
@@ -73,8 +78,8 @@ function communityhome_home(&$a, &$o){
 			ORDER BY `items` DESC,`contacts` DESC
 			LIMIT 0,10");
 	if($r && count($r)) {
-		$aside .= "<h3>". t('Most active users'). "</h3>";
-		$aside .= "<div class='items-wrapper'>";
+		$aside['$activeusers_title']  = t('Most active users');
+		$aside['$activeusers_items']  = array();
 		
 		$photo = 'thumb';
 		foreach($r as $rr) {
@@ -85,13 +90,13 @@ function communityhome_home(&$a, &$o){
 				'$photo' => $rr[$photo],
 				'$alt-text' => sprintf("%s (%s posts, %s contacts)",$rr['name'], ($rr['items']?$rr['items']:'0'), ($rr['contacts']?$rr['contacts']:'0'))
 			));
-			$aside .= $entry;
+			$aside['$activeusers_items'][] = $entry;
 		}
-		$aside .= "</div>";
 	}
 	
 	// last 12 photos
-	$aside .= "<h3>". t('Last photos'). "</h3>";
+	$aside['$photos_title'] = t('Last photos');
+	$aside['$photos_items'] = array();
 	$r = q("SELECT `photo`.`id`, `photo`.`resource-id`, `photo`.`scale`, `photo`.`desc`, `user`.`nickname`, `user`.`username` FROM 
 				(SELECT `resource-id`, MAX(`scale`) as maxscale FROM `photo` 
 					WHERE `profile`=0 AND `contact-id`=0 AND `album` NOT IN ('Contact Photos', '%s', 'Profile Photos', '%s')
@@ -106,7 +111,7 @@ function communityhome_home(&$a, &$o){
 				dbesc(t('Profile Photos'))
 				);
 
-	$aside .= "<div class='items-wrapper'>";				
+		
 	if(count($r)) {
 		$tpl = file_get_contents( dirname(__file__).'/directory_item.tpl');
 		foreach($r as $rr) {
@@ -120,13 +125,13 @@ function communityhome_home(&$a, &$o){
 				'$alt-text' => $rr['username']." : ".$rr['desc'],
 			));
 
-			$aside .= $entry;
+			$aside['$photos_items'][] = $entry;
 		}
 	}
-	$aside .= "</div>";
 	
 	// last 10 liked items
-	$aside .= "<h3>". t('Last likes'). "</h3>";
+	$aside['$like_title'] = t('Last likes');
+	$aside['$like_items'] = array();
 	$r = q("SELECT `T1`.`created`, `T1`.`liker`, `T1`.`liker-link`, `item`.* FROM 
 			(SELECT `parent-uri`, `created`, `author-name` AS `liker`,`author-link` AS `liker-link` 
 				FROM `item` WHERE `verb`='http://activitystrea.ms/schema/1.0/like' GROUP BY `parent-uri` ORDER BY `created` DESC) AS T1
@@ -138,7 +143,6 @@ function communityhome_home(&$a, &$o){
 			$a->get_baseurl(),$a->get_baseurl()
 			);
 
-	$aside .= "<ul id='likes'>";
 	foreach ($r as $rr) {
 		$author	 = '<a href="' . $rr['liker-link'] . '">' . $rr['liker'] . '</a>';
 		$objauthor =  '<a href="' . $rr['author-link'] . '">' . $rr['author-name'] . '</a>';
@@ -165,13 +169,12 @@ function communityhome_home(&$a, &$o){
 		}
 		$plink = '<a href="' . $rr['plink'] . '">' . $post_type . '</a>';
 
-		$aside .= "<li>". sprintf( t('%1$s likes %2$s\'s %3$s'), $author, $objauthor, $plink) ."</li>";
+		$aside['$like_items'][] = sprintf( t('%1$s likes %2$s\'s %3$s'), $author, $objauthor, $plink);
 		
 	}
-	$aside .= "</ul>";
-		
 	
-	$a->page['aside'] = $aside;
+	$tpl = file_get_contents(dirname(__file__).'/communityhome.tpl');
+	$a->page['aside'] = replace_macros($tpl, $aside);
 	
 	$o = '<h1>' . ((x($a->config,'sitename')) ? sprintf( t("Welcome to %s") ,$a->config['sitename']) : "" ) . '</h1>';
 	

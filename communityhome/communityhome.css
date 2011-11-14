@@ -1,3 +1,21 @@
+aside form { position: relative }
+aside #login_standard {
+	width: 200px;
+	position: absolute;
+	float:none;
+	height: 100px;
+	display: block;
+}
+aside #login_openid {
+	width: 200px;
+	position: absolute;
+	float:none;
+	margin-left: 0px;
+	height: 100px;
+	display: none;
+}
+
+
 aside #label-login-name,
 aside #login-name, 
 aside #label-login-password, 
@@ -14,8 +32,11 @@ aside #login-extra-filler {
 }
 aside #login-submit-button { margin-left: 100px; }
 aside .items-wrapper,
-aside #login-extra-links { overflow: auto;	width: 100%; }
+aside #login-extra-links { overflow: auto;	width: 100%;}
 aside .directory-item {	width: 55px; height: 55px; vertical-align: center; text-align: center; }
 aside .directory-photo { margin: 0px; }
 aside .directory-photo-img { max-width: 48px; max-height: 48px; }
 aside #likes { margin: 0px; padding: 0px; list-style: none; }
+
+
+aside #login-extra-links { overflow: auto;	width: 100%; padding-top:120px;}
