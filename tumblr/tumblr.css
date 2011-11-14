@@ -1,0 +1,16 @@
+
+#tumblr-enable-label, #tumblr-username-label, #tumblr-password-label, #tumblr-bydefault-label {
+	float: left;
+	width: 200px;
+	margin-top: 10px;
+}
+
+#tumblr-checkbox, #tumblr-username, #tumblr-password, #tumblr-bydefault {
+	float: left;
+	margin-top: 10px;
+}
+
+#tumblr-submit {
+	margin-top: 15px;
+}
+

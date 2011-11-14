@@ -168,9 +168,9 @@ function wppost_send(&$a,&$b) {
 
 		require_once('include/bbcode.php');
 
-		$post = (($b['title']) ? '<title>' . $b['title'] . '</title>' : '');
-		$post .= bbcode($b['body']);
-			$post = xmlify($post);
+		$title = '<title>' . (($b['title']) ? $b['title'] : t('Post from Friendica')) . '</title>';
+		$post = $title . bbcode($b['body']);
+		$post = xmlify($post);
 
 		$xml = <<< EOT
 
