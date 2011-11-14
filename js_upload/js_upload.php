@@ -96,6 +96,7 @@ function createUploader() {
 				uploader.setParams( {
 					newalbum		:	document.getElementById('photos-upload-newalbum').value,
 					album			:	document.getElementById('photos-upload-album-select').value,
+					not_visible     :   document.getElementById('photos-upload-noshare').checked,
 					group_allow		:	acl.allow_gid.join(','),
 					contact_allow	:	acl.allow_cid.join(','),
 					group_deny		:	acl.deny_gid.join(','),
@@ -105,6 +106,7 @@ function createUploader() {
 				uploader.setParams( {
 					newalbum		:	document.getElementById('photos-upload-newalbum').value,
 					album			:	document.getElementById('photos-upload-album-select').value,
+					not_visible     :   document.getElementById('photos-upload-noshare').checked,
 					group_allow		:	getSelected(document.getElementById('group_allow')).join(','),
 					contact_allow	:	getSelected(document.getElementById('contact_allow')).join(','),
 					group_deny		:	getSelected(document.getElementById('group_deny')).join(','),

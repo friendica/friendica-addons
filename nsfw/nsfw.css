@@ -1,0 +1,16 @@
+
+#nsfw-label {
+	float: left;
+	width: 300px;
+	margin-top: 10px;
+}
+
+#nsfw-words {
+	float: left;
+	margin-top: 10px;
+}
+
+#nsfw-submit {
+	margin-top: 15px;
+}
+

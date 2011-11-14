@@ -1,0 +1,8 @@
+NSFW
+
+"Not safe for work"
+
+Scans the message content for the string 'nsfw' 
+(case insensitive) and if found replaces the content
+with a "click to open/close" link, default is closed.
+

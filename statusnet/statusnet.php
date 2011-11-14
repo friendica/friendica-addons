@@ -108,7 +108,8 @@ function statusnet_install() {
 	//  we need some hooks, for the configuration and for sending tweets
 	register_hook('connector_settings', 'addon/statusnet/statusnet.php', 'statusnet_settings'); 
 	register_hook('connector_settings_post', 'addon/statusnet/statusnet.php', 'statusnet_settings_post');
-	register_hook('post_local_end', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
+	register_hook('notifier_normal', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
+	register_hook('post_local', 'addon/statusnet/statusnet.php', 'statusnet_post_local');
 	register_hook('jot_networks',    'addon/statusnet/statusnet.php', 'statusnet_jot_nets');
 	logger("installed statusnet");
 }
@@ -117,10 +118,15 @@ function statusnet_install() {
 function statusnet_uninstall() {
 	unregister_hook('connector_settings', 'addon/statusnet/statusnet.php', 'statusnet_settings'); 
 	unregister_hook('connector_settings_post', 'addon/statusnet/statusnet.php', 'statusnet_settings_post');
+	unregister_hook('notifier_normal', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
+	unregister_hook('post_local', 'addon/statusnet/statusnet.php', 'statusnet_post_local');
+	unregister_hook('jot_networks',    'addon/statusnet/statusnet.php', 'statusnet_jot_nets');
+
+	// old setting - remove only
+	unregister_hook('post_local_end', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
 	unregister_hook('plugin_settings', 'addon/statusnet/statusnet.php', 'statusnet_settings'); 
 	unregister_hook('plugin_settings_post', 'addon/statusnet/statusnet.php', 'statusnet_settings_post');
-	unregister_hook('post_local_end', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
-	unregister_hook('jot_networks',    'addon/statusnet/statusnet.php', 'statusnet_jot_nets');
+
 }
 
 function statusnet_jot_nets(&$a,&$b) {
@@ -349,72 +355,77 @@ function statusnet_settings(&$a,&$s) {
 }
 
 
+function statusnet_post_local(&$a,&$b) {
+	if($b['edit'])
+		return;
+
+	if((local_user()) && (local_user() == $b['uid']) && (! $b['private'])) {
+
+		$statusnet_post = get_pconfig(local_user(),'statusnet','post');
+		$statusnet_enable = (($statusnet_post && x($_REQUEST,'statusnet_enable')) ? intval($_REQUEST['statusnet_enable']) : 0);
+
+		// if API is used, default to the chosen settings
+		if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'statusnet','post_by_default')))
+			$statusnet_enable = 1;
+
+       if(! $statusnet_enable)
+            return;
+
+       if(strlen($b['postopts']))
+           $b['postopts'] .= ',';
+       $b['postopts'] .= 'statusnet';
+    }
+}
+
 function statusnet_post_hook(&$a,&$b) {
 
 	/**
 	 * Post to statusnet
 	 */
 
-        logger('StatusNet post invoked');
+	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
+		return;
 
-	if((local_user()) && (local_user() == $b['uid']) && (! $b['private'])) {
+	if(! strstr($b['postopts'],'statusnet'))
+		return;
 
-		// mike 2-9-11 there was a restriction to only allow this for top level posts
-		// now relaxed so should allow one's own comments to be forwarded through the connector as well. 
+	logger('StatusNet post invoked');
 
-		// Status.Net is not considered a private network
-		if($b['prvnets'])
-			return;
 
-		load_pconfig(local_user(), 'statusnet');
+	load_pconfig($b['uid'], 'statusnet');
             
-		$api     = get_pconfig(local_user(), 'statusnet', 'baseapi');
-		$ckey    = get_pconfig(local_user(), 'statusnet', 'consumerkey'  );
-		$csecret = get_pconfig(local_user(), 'statusnet', 'consumersecret' );
-		$otoken  = get_pconfig(local_user(), 'statusnet', 'oauthtoken'  );
-		$osecret = get_pconfig(local_user(), 'statusnet', 'oauthsecret' );
+	$api     = get_pconfig($b['uid'], 'statusnet', 'baseapi');
+	$ckey    = get_pconfig($b['uid'], 'statusnet', 'consumerkey'  );
+	$csecret = get_pconfig($b['uid'], 'statusnet', 'consumersecret' );
+	$otoken  = get_pconfig($b['uid'], 'statusnet', 'oauthtoken'  );
+	$osecret = get_pconfig($b['uid'], 'statusnet', 'oauthsecret' );
 
-		if($ckey && $csecret && $otoken && $osecret) {
+	if($ckey && $csecret && $otoken && $osecret) {
 
-			$statusnet_post = get_pconfig(local_user(),'statusnet','post');
-			$statusnet_enable = (($statusnet_post && x($_POST,'statusnet_enable')) ? intval($_POST['statusnet_enable']) : 0);
-			// if API is used, default to the chosen settings
-			if($_POST['api_source'] && intval(get_pconfig(local_user(),'statusnet','post_by_default')))
-				$statusnet_enable = 1;
-
-			if($statusnet_enable && $statusnet_post) {
-				require_once('include/bbcode.php');	
-				$dent = new StatusNetOAuth($api,$ckey,$csecret,$otoken,$osecret);
-				$max_char = $dent->get_maxlength(); // max. length for a dent
-				$msg = strip_tags(bbcode($b['body']));
-				// quotes not working - let's try this
-				$msg = html_entity_decode($msg);
-                                if ( strlen($msg) > $max_char) {
-                                        $shortlink = "";
-                                        require_once('library/slinky.php');
-                                        // post url = base url + /display/ + owner + post id
-                                        // we construct this from the Owner link and replace
-                                        // profile by display - this will cause an error when
-                                        // /profile/ is in the owner url twice but I don't
-                                        // think this will be very common...
-					$posturl = str_replace('/profile/','/display/',$b['owner-link']).'/'.$b['id'];
-					$slinky = new Slinky( $posturl );
-					// setup a cascade of shortening services
-					// try to get a short link from these services
-					// in the order ur1.ca, trim, id.gd, tinyurl
-					$slinky->set_cascade( array( new Slinky_UR1ca(), new Slinky_Trim(), new Slinky_IsGd(), new Slinky_TinyURL() ) );
-                                        $shortlink = $slinky->short();
-                                        // the new message will be shortened such that "... $shortlink"
-                                        // will fit into the character limit
-                                        $msg = substr($msg, 0, $max_char-strlen($shortlink)-4);
-                                        $msg .= '... ' . $shortlink;
-                                }
-                                // and now tweet it :-)
-				if(strlen($msg))
-					$dent->post('statuses/update', array('status' => $msg));
-			}
+		require_once('include/bbcode.php');	
+		$dent = new StatusNetOAuth($api,$ckey,$csecret,$otoken,$osecret);
+		$max_char = $dent->get_maxlength(); // max. length for a dent
+		$msg = strip_tags(bbcode($b['body']));
+		// quotes not working - let's try this
+		$msg = html_entity_decode($msg);
+		if ( strlen($msg) > $max_char) {
+			$shortlink = "";
+			require_once('library/slinky.php');
+			$slinky = new Slinky( $b['plink'] );
+			// setup a cascade of shortening services
+			// try to get a short link from these services
+			// in the order ur1.ca, trim, id.gd, tinyurl
+			$slinky->set_cascade( array( new Slinky_UR1ca(), new Slinky_Trim(), new Slinky_IsGd(), new Slinky_TinyURL() ) );
+			$shortlink = $slinky->short();
+			// the new message will be shortened such that "... $shortlink"
+			// will fit into the character limit
+			$msg = substr($msg, 0, $max_char-strlen($shortlink)-4);
+            $msg .= '... ' . $shortlink;
 		}
-    }
+        // and now tweet it :-)
+		if(strlen($msg))
+			$dent->post('statuses/update', array('status' => $msg));
+	}
 }
 
 function statusnet_plugin_admin_post(&$a){

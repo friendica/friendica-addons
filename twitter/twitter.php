@@ -45,7 +45,8 @@ function twitter_install() {
 	//  we need some hooks, for the configuration and for sending tweets
 	register_hook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings'); 
 	register_hook('connector_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
-	register_hook('post_local_end', 'addon/twitter/twitter.php', 'twitter_post_hook');
+	register_hook('post_local', 'addon/twitter/twitter.php', 'twitter_post_local');
+	register_hook('notifier_normal', 'addon/twitter/twitter.php', 'twitter_post_hook');
 	register_hook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
 	logger("installed twitter");
 }
@@ -54,10 +55,15 @@ function twitter_install() {
 function twitter_uninstall() {
 	unregister_hook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings'); 
 	unregister_hook('connector_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
+	unregister_hook('post_local', 'addon/twitter/twitter.php', 'twitter_post_local');
+	unregister_hook('notifier_normal', 'addon/twitter/twitter.php', 'twitter_post_hook');
+	unregister_hook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
+
+	// old setting - remove only
+	unregister_hook('post_local_end', 'addon/twitter/twitter.php', 'twitter_post_hook');
 	unregister_hook('plugin_settings', 'addon/twitter/twitter.php', 'twitter_settings'); 
 	unregister_hook('plugin_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
-	unregister_hook('post_local_end', 'addon/twitter/twitter.php', 'twitter_post_hook');
-	unregister_hook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
+
 }
 
 function twitter_jot_nets(&$a,&$b) {
@@ -200,71 +206,82 @@ function twitter_settings(&$a,&$s) {
 }
 
 
+function twitter_post_local(&$a,&$b) {
+
+	if($b['edit'])
+		return;
+
+	if((local_user()) && (local_user() == $b['uid']) && (! $b['private']) && (! $b['parent']) ) {
+
+		$twitter_post = intval(get_pconfig(local_user(),'twitter','post'));
+		$twitter_enable = (($twitter_post && x($_REQUEST,'twitter_enable')) ? intval($_REQUEST['twitter_enable']) : 0);
+
+		// if API is used, default to the chosen settings
+		if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'twitter','post_by_default')))
+			$twitter_enable = 1;
+
+        if(! $twitter_enable)
+            return;
+
+        if(strlen($b['postopts']))
+            $b['postopts'] .= ',';
+        $b['postopts'] .= 'twitter';
+	}
+}
+
+
 function twitter_post_hook(&$a,&$b) {
 
 	/**
 	 * Post to Twitter
 	 */
 
-        logger('twitter post invoked');
+	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
+        return;
 
-	if((local_user()) && (local_user() == $b['uid']) && (! $b['private']) && (! $b['parent']) ) {
+	if(! strstr($b['postopts'],'twitter'))
+		return;
 
-		// Twitter is not considered a private network
-		if($b['prvnets'])
-			return;
+	if($b['parent'] != $b['id'])
+		return;
+
+	logger('twitter post invoked');
 
 
-		load_pconfig(local_user(), 'twitter');
+	load_pconfig($b['uid'], 'twitter');
 
-		$ckey    = get_config('twitter', 'consumerkey'  );
-		$csecret = get_config('twitter', 'consumersecret' );
-		$otoken  = get_pconfig(local_user(), 'twitter', 'oauthtoken'  );
-		$osecret = get_pconfig(local_user(), 'twitter', 'oauthsecret' );
+	$ckey    = get_config('twitter', 'consumerkey'  );
+	$csecret = get_config('twitter', 'consumersecret' );
+	$otoken  = get_pconfig($b['uid'], 'twitter', 'oauthtoken'  );
+	$osecret = get_pconfig($b['uid'], 'twitter', 'oauthsecret' );
 
-		if($ckey && $csecret && $otoken && $osecret) {
+	if($ckey && $csecret && $otoken && $osecret) {
+		logger('twitter: we have customer key and oauth stuff, going to send.', LOGGER_DEBUG);
 
-			$twitter_post = intval(get_pconfig(local_user(),'twitter','post'));
-			$twitter_enable = (($twitter_post && x($_POST,'twitter_enable')) ? intval($_POST['twitter_enable']) : 0);
-
-			// if API is used, default to the chosen settings
-			if($_POST['api_source'] && intval(get_pconfig(local_user(),'twitter','post_by_default')))
-				$twitter_enable = 1;
-
-			if($twitter_post && $twitter_enable) {
-				logger('Posting to Twitter', LOGGER_DEBUG);
-				require_once('library/twitteroauth.php');
-				require_once('include/bbcode.php');	
-				$tweet = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
-				$max_char = 140; // max. length for a tweet
-				$msg = strip_tags(bbcode($b['body']));
-				if ( strlen($msg) > $max_char) {
-					$shortlink = "";
-					require_once('library/slinky.php');
-					// post url = base url + /display/ + owner + post id
-					// we construct this from the Owner link and replace
-					// profile by display - this will cause an error when
-					// /profile/ is in the owner url twice but I don't
-					// think this will be very common...
-					$posturl = str_replace('/profile/','/display/',$b['owner-link']).'/'.$b['id'];
-					$slinky = new Slinky( $posturl );
-					// setup a cascade of shortening services
-					// try to get a short link from these services
-					// in the order ur1.ca, trim, id.gd, tinyurl
-					$slinky->set_cascade( array( new Slinky_UR1ca(), new Slinky_Trim(), new Slinky_IsGd(), new Slinky_TinyURL() ) );
-					$shortlink = $slinky->short();
-					// the new message will be shortened such that "... $shortlink"
-					// will fit into the character limit
-					$msg = substr($msg, 0, $max_char-strlen($shortlink)-4);
-					$msg .= '... ' . $shortlink;
-				}
-                // and now tweet it :-)
-				if(strlen($msg)) {
-					$result = $tweet->post('statuses/update', array('status' => $msg));
-					logger('twitter_post returns: ' . $result);
-				}
-
-			}
+		require_once('library/twitteroauth.php');
+		require_once('include/bbcode.php');	
+		$tweet = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
+		$max_char = 138; // max. length for a tweet
+		$msg = strip_tags(bbcode($b['body']));
+		if ( strlen($msg) > $max_char) {
+			logger('Twitter: have to shorten the message to fit 140 chars', LOGGER_DEBUG);
+			$shortlink = "";
+			require_once('library/slinky.php');
+			$slinky = new Slinky( $b['plink'] );
+			// setup a cascade of shortening services
+			// try to get a short link from these services
+			// in the order ur1.ca, trim, id.gd, tinyurl
+			$slinky->set_cascade( array( new Slinky_UR1ca(), new Slinky_Trim(), new Slinky_IsGd(), new Slinky_TinyURL() ) );
+			$shortlink = $slinky->short();
+			// the new message will be shortened such that "... $shortlink"
+			// will fit into the character limit
+			$msg = substr($msg, 0, $max_char-strlen($shortlink)-4);
+			$msg .= '... ' . $shortlink;
+		}
+		// and now tweet it :-)
+		if(strlen($msg)) {
+			$result = $tweet->post('statuses/update', array('status' => $msg));
+			logger('twitter_post send', LOGGER_DEBUG);
 		}
 	}
 }

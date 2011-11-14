@@ -48,7 +48,8 @@ define('FACEBOOK_MAXPOSTLEN', 420);
 
 
 function facebook_install() {
-	register_hook('post_local_end',   'addon/facebook/facebook.php', 'facebook_post_hook');
+	register_hook('post_local',       'addon/facebook/facebook.php', 'facebook_post_local');
+	register_hook('notifier_normal',  'addon/facebook/facebook.php', 'facebook_post_hook');
 	register_hook('jot_networks',     'addon/facebook/facebook.php', 'facebook_jot_nets');
 	register_hook('connector_settings',  'addon/facebook/facebook.php', 'facebook_plugin_settings');
 	register_hook('cron',             'addon/facebook/facebook.php', 'facebook_cron');
@@ -57,12 +58,16 @@ function facebook_install() {
 
 
 function facebook_uninstall() {
-	unregister_hook('post_local_end',   'addon/facebook/facebook.php', 'facebook_post_hook');
+	unregister_hook('post_local',       'addon/facebook/facebook.php', 'facebook_post_local');
+	unregister_hook('notifier_normal',  'addon/facebook/facebook.php', 'facebook_post_hook');
 	unregister_hook('jot_networks',     'addon/facebook/facebook.php', 'facebook_jot_nets');
 	unregister_hook('connector_settings',  'addon/facebook/facebook.php', 'facebook_plugin_settings');
-	unregister_hook('plugin_settings',  'addon/facebook/facebook.php', 'facebook_plugin_settings');
 	unregister_hook('cron',             'addon/facebook/facebook.php', 'facebook_cron');
 	unregister_hook('queue_predeliver', 'addon/facebook/facebook.php', 'fb_queue_hook');
+
+	// hook moved
+	unregister_hook('post_local_end',  'addon/facebook/facebook.php', 'facebook_post_hook');
+	unregister_hook('plugin_settings',  'addon/facebook/facebook.php', 'facebook_plugin_settings');
 }
 
 
@@ -140,7 +145,7 @@ function fb_get_self($uid) {
 
 function fb_get_friends($uid) {
 
-	$r = q("SELECT `id` FROM `user` WHERE `uid` = %d AND `account_expired` = 0 LIMIT 1",
+	$r = q("SELECT `uid` FROM `user` WHERE `uid` = %d AND `account_expired` = 0 LIMIT 1",
 		intval($uid)
 	);
 	if(! count($r))
@@ -209,13 +214,14 @@ function fb_get_friends($uid) {
 				else {
 
 					// create contact record 
-					$r = q("INSERT INTO `contact` ( `uid`, `created`, `url`, `addr`, `alias`, `notify`, `poll`, 
+					$r = q("INSERT INTO `contact` ( `uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`, 
 						`name`, `nick`, `photo`, `network`, `rel`, `priority`,
 						`writable`, `blocked`, `readonly`, `pending` )
-						VALUES ( %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, 0, 0, 0 ) ",
+						VALUES ( %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, 0, 0, 0 ) ",
 						intval($uid),
 						dbesc(datetime_convert()),
 						dbesc($jp->link),
+						dbesc(normalise_link($jp->link)),
 						dbesc(''),
 						dbesc(''),
 						dbesc($jp->id),
@@ -429,6 +435,16 @@ function facebook_cron($a,$b) {
 		foreach($r as $rr) {
 			if(get_pconfig($rr['uid'],'facebook','no_linking'))
 				continue;
+			$ab = intval(get_config('system','account_abandon_days'));
+			if($ab > 0) {
+				$z = q("SELECT `uid` FROM `user` WHERE `uid` = %d AND `login_date` > UTC_TIMESTAMP() - INTERVAL %d DAY LIMIT 1",
+					intval($rr['uid']),
+					intval($ab)
+				);
+				if(! count($z))
+					continue;
+			}
+
 			// check for new friends once a day
 			$last_friend_check = get_pconfig($rr['uid'],'facebook','friend_check');
 			if($last_friend_check) 
@@ -472,6 +488,10 @@ function facebook_jot_nets(&$a,&$b) {
 
 function facebook_post_hook(&$a,&$b) {
 
+
+	if($b['deleted'] || ($b['created'] !== $b['edited']))
+		return;
+
 	/**
 	 * Post to Facebook stream
 	 */
@@ -483,18 +503,16 @@ function facebook_post_hook(&$a,&$b) {
 	$reply = false;
 	$likes = false;
 
-	if((local_user()) && (local_user() == $b['uid'])) {
+	$toplevel = (($b['id'] == $b['parent']) ? true : false);
 
-		// Facebook is not considered a private network
-		if($b['prvnets'] && $b['private'])
-			return;
+	if(strstr($b['postopts'],'facebook')) {
 
-		$linking = ((get_pconfig(local_user(),'facebook','no_linking')) ? 0 : 1);
+		$linking = ((get_pconfig($b['uid'],'facebook','no_linking')) ? 0 : 1);
 
-		if(($b['parent']) && ($linking)) {
+		if((! $toplevel) && ($linking)) {
 			$r = q("SELECT * FROM `item` WHERE `id` = %d AND `uid` = %d LIMIT 1",
 				intval($b['parent']),
-				intval(local_user())
+				intval($b['uid'])
 			);
 			if(count($r) && substr($r[0]['uri'],0,4) === 'fb::')
 				$reply = substr($r[0]['uri'],4);
@@ -562,24 +580,14 @@ function facebook_post_hook(&$a,&$b) {
 
 			logger('facebook: have appid+secret');
 
-			$fb_post   = intval(get_pconfig(local_user(),'facebook','post'));
-			$fb_enable = (($fb_post && x($_POST,'facebook_enable')) ? intval($_POST['facebook_enable']) : 0);
-			$fb_token  = get_pconfig(local_user(),'facebook','access_token');
+			$fb_token  = get_pconfig($b['uid'],'facebook','access_token');
 
-			// if API is used, default to the chosen settings
-			if($_POST['api_source'] && intval(get_pconfig(local_user(),'facebook','post_by_default')))
-				$fb_enable = 1;
-
-
-
-
-			logger('facebook: $fb_post: ' . $fb_post . ' $fb_enable: ' . $fb_enable . ' $fb_token: ' . $fb_token,LOGGER_DEBUG); 
 
 			// post to facebook if it's a public post and we've ticked the 'post to Facebook' box, 
 			// or it's a private message with facebook participants
 			// or it's a reply or likes action to an existing facebook post			
 
-			if($fb_post && $fb_token && ($fb_enable || $b['private'] || $reply)) {
+			if($fb_token && ($toplevel || $b['private'] || $reply)) {
 				logger('facebook: able to post');
 				require_once('library/facebook.php');
 				require_once('include/bbcode.php');	
@@ -711,15 +719,8 @@ function facebook_post_hook(&$a,&$b) {
 					else {
 						if(! $likes) {
 							$s = serialize(array('url' => $url, 'item' => $b['id'], 'post' => $postvars));
-							q("INSERT INTO `queue` ( `network`, `cid`, `created`, `last`, `content`)
-								VALUES ( '%s', %d, '%s', '%s', '%s') ",
-								dbesc(NETWORK_FACEBOOK),
-								intval($a->contact),
-								dbesc(datetime_convert()),
-								dbesc(datetime_convert()),
-								dbesc($s)
-							);								
-
+							require_once('include/queue_fn.php');
+							add_to_queue($a->contact,NETWORK_FACEBOOK,$s);
 							notice( t('Facebook post failed. Queued for retry.') . EOL);
 						}
 					}
@@ -728,6 +729,32 @@ function facebook_post_hook(&$a,&$b) {
 				}
 			}
 		}
+	}
+}
+
+
+function facebook_post_local(&$a,&$b) {
+
+	// Figure out if Facebook posting is enabled for this post and file it in 'postopts'
+	// where we will discover it during background delivery.
+
+	// This can only be triggered by a local user posting to their own wall.
+
+	if((local_user()) && (local_user() == $b['uid'])) {
+
+		$fb_post   = intval(get_pconfig(local_user(),'facebook','post'));
+		$fb_enable = (($fb_post && x($_REQUEST,'facebook_enable')) ? intval($_REQUEST['facebook_enable']) : 0);
+
+		// if API is used, default to the chosen settings
+		if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'facebook','post_by_default')))
+			$fb_enable = 1;
+
+		if(! $fb_enable)
+			return;
+
+		if(strlen($b['postopts']))
+			$b['postopts'] .= ',';
+		$b['postopts'] .= 'facebook';
 	}
 }
 
