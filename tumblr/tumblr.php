@@ -155,6 +155,19 @@ function tumblr_send(&$a,&$b) {
 
 		require_once('include/bbcode.php');
 
+		$tag_arr = array();
+		$tags = '';
+		$x = preg_match_all('/\#\[(.*?)\](.*?)\[/',$b['tag'],$matches,PREG_SET_ORDER);
+
+		if($x) {
+			foreach($matches as $mtch) {
+				$tag_arr[] = $mtch[2];
+			}
+		}
+		if(count($tag_arr))
+			$tags = implode(',',$tag_arr);		
+
+
 		$params = array(
 			'email' => $tmbl_username,
 			'password' => $tmbl_password,
@@ -162,6 +175,7 @@ function tumblr_send(&$a,&$b) {
 			'type' => 'regular',
 			'format' => 'html',
 			'generator' => 'Friendica',
+			'tags' => $tags,
 			'body' => bbcode($b['body'])
 		);
 
