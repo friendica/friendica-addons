@@ -1,0 +1,16 @@
+
+#posterous-enable-label, #posterous-username-label, #posterous-password-label, #posterous-bydefault-label {
+	float: left;
+	width: 200px;
+	margin-top: 10px;
+}
+
+#posterous-checkbox, #posterous-username, #posterous-password, #posterous-bydefault {
+	float: left;
+	margin-top: 10px;
+}
+
+#posterous-submit {
+	margin-top: 15px;
+}
+
