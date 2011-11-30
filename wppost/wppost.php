@@ -193,7 +193,7 @@ EOT;
 
 		if($wp_blog !== 'test')
 			$x = post_url($wp_blog,$xml);
-		logger('posted to wordpress');
+		logger('posted to wordpress: ' . ($x) ? $x : '');
 
 	}
 }
