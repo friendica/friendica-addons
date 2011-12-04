@@ -931,7 +931,7 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			if($entry->picture)
 				$datarray['body'] .= "\n\n" . '[img]' . $entry->picture . '[/img]';
 			if($entry->link)
-				$datarray['body'] .= "\n" . linkify($entry->link);
+				$datarray['body'] .= "\n" . '[url=' . $entry->link . ']' . t('link') . '[/url]';
 			if($entry->name)
 				$datarray['body'] .= "\n" . $entry->name;
 			if($entry->caption)
