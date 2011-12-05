@@ -928,10 +928,16 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			$datarray['plink'] = $datarray['author-link'] . '&v=wall&story_fbid=' . substr($entry->id,strpos($entry->id,'_') + 1);
 
 			$datarray['body'] = $entry->message;
-			if($entry->picture)
-				$datarray['body'] .= "\n\n" . '[img]' . $entry->picture . '[/img]';
-			if($entry->link)
-				$datarray['body'] .= "\n" . '[url=' . $entry->link . ']' . t('link') . '[/url]';
+
+			if($entry->picture && $entry->link) {
+				$datarray['body'] .= "\n\n" . '[url=' . $entry->link . '][img]' . $entry->picture . '[/img][/url]';
+			}
+			else {
+				if($entry->picture)
+					$datarray['body'] .= "\n\n" . '[img]' . $entry->picture . '[/img]';
+				if($entry->link)
+					$datarray['body'] .= "\n" . '[url=' . $entry->link . ']' . t('link') . '[/url]';
+			}
 			if($entry->name)
 				$datarray['body'] .= "\n" . $entry->name;
 			if($entry->caption)
