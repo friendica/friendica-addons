@@ -294,6 +294,8 @@ function facebook_post(&$a) {
 		set_pconfig($uid,'facebook','private_wall',$private_wall);
 	
 
+		set_pconfig($uid,'facebook','blocked_apps',escape_tags(trim($_POST['blocked_apps'])));
+
 		$linkvalue = ((x($_POST,'facebook_linking')) ? intval($_POST['facebook_linking']) : 0);
 		set_pconfig($uid,'facebook','no_linking', (($linkvalue) ? 0 : 1));
 
@@ -400,6 +402,12 @@ function facebook_content(&$a) {
 		$o .= '<input type="checkbox" name="facebook_no_wall" value="1"' . $checked . '/>' . ' ' . t('Do not import your Facebook profile wall conversations') . EOL ;
 
 		$o .= '<p>' . t('If you choose to link conversations and leave both of these boxes unchecked, your Facebook profile wall will be merged with your profile wall on this website and your privacy settings on this website will be used to determine who may see the conversations.') . '</p>';
+
+
+		$blocked_apps = get_pconfig(local_user(),'facebook','blocked_apps');
+
+		$o .= '<div><label id="blocked-apps-label" for="blocked-apps">' . t('Comma separated applications to ignore') . ' </label></div>';
+    	$o .= '<div><textarea id="blocked-apps" name="blocked_apps" >' . htmlspecialchars($blocked_apps) . '</textarea></div>';
 
 		$o .= '<input type="submit" name="submit" value="' . t('Submit') . '" /></form></div>';
 	}
@@ -864,6 +872,8 @@ function fb_consume_stream($uid,$j,$wall = false) {
 		intval($uid)
 	);
 
+	$blocked_apps = get_pconfig($uid,'facebook','blocked_apps');
+	$blocked_apps_arr = explode(',',$blocked_apps);
 
 	$self_id = get_pconfig($uid,'facebook','self_id');
 	if(! count($j->data) || (! strlen($self_id)))
@@ -922,6 +932,27 @@ function fb_consume_stream($uid,$j,$wall = false) {
 				$datarray['app'] = strip_tags($entry->application->name);
 			else
 				$datarray['app'] = 'facebook';
+
+			$found_blocked = false;
+
+			if(count($blocked_apps_arr)) {
+				foreach($blocked_apps_arr as $bad_appl) {
+					if(! strlen(trim($bad_appl))) {
+						continue;
+					}
+
+					if(stristr($datarray['app'],$bad_appl)) {
+						$found_blocked = true;
+						break;
+					}
+				}
+			}
+				
+			if($found_blocked) {
+				logger('facebook: blocking application: ' . $datarray['app']);
+				continue;
+			}
+
 			$datarray['author-name'] = $from->name;
 			$datarray['author-link'] = 'http://facebook.com/profile.php?id=' . $from->id;
 			$datarray['author-avatar'] = 'https://graph.facebook.com/' . $from->id . '/picture';
