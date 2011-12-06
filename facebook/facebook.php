@@ -937,13 +937,8 @@ function fb_consume_stream($uid,$j,$wall = false) {
 
 			if(count($blocked_apps_arr)) {
 				foreach($blocked_apps_arr as $bad_appl) {
-					if(! strlen(trim($bad_appl))) {
-						continue;
-					}
-
-					if(stristr($datarray['app'],$bad_appl)) {
+					if(strlen(trim($bad_appl)) && (stristr($datarray['app'],trim($bad_appl)))) {
 						$found_blocked = true;
-						break;
 					}
 				}
 			}
@@ -958,7 +953,7 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			$datarray['author-avatar'] = 'https://graph.facebook.com/' . $from->id . '/picture';
 			$datarray['plink'] = $datarray['author-link'] . '&v=wall&story_fbid=' . substr($entry->id,strpos($entry->id,'_') + 1);
 
-			$datarray['body'] = $entry->message;
+			$datarray['body'] = escape_tags($entry->message);
 
 			if($entry->picture && $entry->link) {
 				$datarray['body'] .= "\n\n" . '[url=' . $entry->link . '][img]' . $entry->picture . '[/img][/url]';
