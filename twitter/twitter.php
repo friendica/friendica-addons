@@ -6,7 +6,7 @@
  */
 
 
-/*   Twitter Plugin for Friendika
+/*   Twitter Plugin for Friendica
  *
  *   Author: Tobias Diekershoff
  *           tobias.diekershoff@gmx.net
@@ -17,7 +17,7 @@
  *     To use this plugin you need a OAuth Consumer key pair (key & secret)
  *     you can get it from Twitter at https://twitter.com/apps
  *
- *     Register your Friendika site as "Client" application with "Read & Write" access
+ *     Register your Friendica site as "Client" application with "Read & Write" access
  *     we do not need "Twitter as login". When you've registered the app you get the
  *     OAuth Consumer key and secret pair for your application/site.
  *
@@ -168,7 +168,7 @@ function twitter_settings(&$a,&$s) {
 			/***
 			 *  make some nice form
 			 */
-			$s .= '<p>'. t('At this Friendika instance the Twitter plugin was enabled but you have not yet connected your account to your Twitter account. To do so click the button below to get a PIN from Twitter which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to Twitter.') .'</p>';
+			$s .= '<p>'. t('At this Friendica instance the Twitter plugin was enabled but you have not yet connected your account to your Twitter account. To do so click the button below to get a PIN from Twitter which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to Twitter.') .'</p>';
 			$s .= '<a href="'.$connection->getAuthorizeURL($token).'" target="_twitter"><img src="addon/twitter/lighter.png" alt="'.t('Log in with Twitter').'"></a>';
 			$s .= '<div id="twitter-pin-wrapper">';
 			$s .= '<label id="twitter-pin-label" for="twitter-pin">'. t('Copy the PIN from Twitter here') .'</label>';

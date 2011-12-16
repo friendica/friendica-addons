@@ -5,7 +5,7 @@
  * Author: Tobias Diekershoff <https://diekershoff.homeunix.net/friendika/profile/tobias>
  */
  
-/*   StatusNet Plugin for Friendika
+/*   StatusNet Plugin for Friendica
  *
  *   Author: Tobias Diekershoff
  *           tobias.diekershoff@gmx.net
@@ -56,7 +56,7 @@ class StatusNetOAuth extends TwitterOAuth {
    *
    * @return API results
    *
-   * Copied here from the twitteroauth library and complemented by applying the proxy settings of friendika
+   * Copied here from the twitteroauth library and complemented by applying the proxy settings of friendica
    */
   function http($url, $method, $postfields = NULL) {
     $this->http_info = array();
@@ -282,7 +282,7 @@ function statusnet_settings(&$a,&$s) {
                 $s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Submit') . '" /></div>';
             }
             $s .= '<h4>' . t('Provide your own OAuth Credentials') . '</h4>';
-            $s .= '<p>'. t('No consumer key pair for StatusNet found. Register your Friendika Account as an desktop client on your StatusNet account, copy the consumer key pair here and enter the API base root.<br />Before you register your own OAuth key pair ask the administrator if there is already a key pair for this Friendika installation at your favorited StatusNet installation.') .'</p>';
+            $s .= '<p>'. t('No consumer key pair for StatusNet found. Register your Friendica Account as an desktop client on your StatusNet account, copy the consumer key pair here and enter the API base root.<br />Before you register your own OAuth key pair ask the administrator if there is already a key pair for this Friendica installation at your favorited StatusNet installation.') .'</p>';
             $s .= '<div id="statusnet-consumer-wrapper">';
             $s .= '<label id="statusnet-consumerkey-label" for="statusnet-consumerkey">'. t('OAuth Consumer Key') .'</label>';
             $s .= '<input id="statusnet-consumerkey" type="text" name="statusnet-consumerkey" size="35" /><br />';

@@ -6,19 +6,17 @@
  */
 
 /**
- * Installing the Friendika/Facebook connector
+ * Installing the Friendica/Facebook connector
  *
  * 1. register an API key for your site from developer.facebook.com
- *   a. We'd be very happy if you include "Friendika" in the application name
- *      to increase name recognition. The Friendika icons are also present
+ *   a. We'd be very happy if you include "Friendica" in the application name
+ *      to increase name recognition. The Friendica icons are also present
  *      in the images directory and may be uploaded as a Facebook app icon.
- *      Use images/friendika-16.jpg for the Icon and images/friendika-128.jpg for the Logo.
+ *      Use images/friendica-16.jpg for the Icon and images/friendica-128.jpg for the Logo.
  *   b. The url should be your site URL with a trailing slash.
- *      You may use http://portal.friendika.com/privacy as the privacy policy
- *      URL unless your site has different requirements, and 
- *      http://portal.friendika.com as the Terms of Service URL unless
- *      you have different requirements. (Friendika is a software application
- *      and does not require Terms of Service, though your installation of it might).
+ *      Friendica is a software application and does not require a Privacy Policy 
+ *      or Terms of Service, though your installation of it might. Facebook may require
+ *      that you provide a Privacy Policy, which we find ironic.  
  *   c. Set the following values in your .htconfig.php file
  *         $a->config['facebook']['appid'] = 'xxxxxxxxxxx';
  *         $a->config['facebook']['appsecret'] = 'xxxxxxxxxxxxxxx';
@@ -632,7 +630,7 @@ function facebook_post_hook(&$a,&$b) {
 				$msg = preg_replace("/\[img\](.*?)\[\/img\]/is", t('Image: ') . '$1', $msg);
 
 				if((strpos($link,z_root()) !== false) && (! $image))
-					$image = $a->get_baseurl() . '/images/friendika-64.jpg';
+					$image = $a->get_baseurl() . '/images/friendica-64.jpg';
 
 				$msg = trim(strip_tags(bbcode($msg)));
 				$msg = html_entity_decode($msg,ENT_QUOTES,'UTF-8');
@@ -705,7 +703,7 @@ function facebook_post_hook(&$a,&$b) {
 				else { 
 					$url = 'https://graph.facebook.com/me/feed';
 					if($b['plink'])
-						$postvars['actions'] = '{"name": "' . t('View on Friendika') . '", "link": "' .  $b['plink'] . '"}';
+						$postvars['actions'] = '{"name": "' . t('View on Friendica') . '", "link": "' .  $b['plink'] . '"}';
 				}
 
 				logger('facebook: post to ' . $url);
