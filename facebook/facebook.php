@@ -511,23 +511,24 @@ function facebook_post_hook(&$a,&$b) {
 
 	$toplevel = (($b['id'] == $b['parent']) ? true : false);
 
-	if(strstr($b['postopts'],'facebook')) {
 
-		$linking = ((get_pconfig($b['uid'],'facebook','no_linking')) ? 0 : 1);
+	$linking = ((get_pconfig($b['uid'],'facebook','no_linking')) ? 0 : 1);
 
-		if((! $toplevel) && ($linking)) {
-			$r = q("SELECT * FROM `item` WHERE `id` = %d AND `uid` = %d LIMIT 1",
-				intval($b['parent']),
-				intval($b['uid'])
-			);
-			if(count($r) && substr($r[0]['uri'],0,4) === 'fb::')
-				$reply = substr($r[0]['uri'],4);
-			elseif(count($r) && substr($r[0]['extid'],0,4) === 'fb::')
-				$reply = substr($r[0]['extid'],4);
-			else
-				return;
-			logger('facebook reply id=' . $reply);
-		}
+	if((! $toplevel) && ($linking)) {
+		$r = q("SELECT * FROM `item` WHERE `id` = %d AND `uid` = %d LIMIT 1",
+			intval($b['parent']),
+			intval($b['uid'])
+		);
+		if(count($r) && substr($r[0]['uri'],0,4) === 'fb::')
+			$reply = substr($r[0]['uri'],4);
+		elseif(count($r) && substr($r[0]['extid'],0,4) === 'fb::')
+			$reply = substr($r[0]['extid'],4);
+		else
+			return;
+		logger('facebook reply id=' . $reply);
+	}
+
+	if(strstr($b['postopts'],'facebook') || ($reply)) {
 
 		if($b['private'] && $reply === false) {
 			$allow_people = expand_acl($b['allow_cid']);
