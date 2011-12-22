@@ -528,7 +528,7 @@ function facebook_post_hook(&$a,&$b) {
 		logger('facebook reply id=' . $reply);
 	}
 
-	if(strstr($b['postopts'],'facebook') || ($reply)) {
+	if(strstr($b['postopts'],'facebook') || ($b['private']) || ($reply)) {
 
 		if($b['private'] && $reply === false) {
 			$allow_people = expand_acl($b['allow_cid']);
