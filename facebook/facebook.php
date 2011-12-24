@@ -534,7 +534,7 @@ function facebook_post_hook(&$a,&$b) {
 
 		// only accept comments from the item owner. Other contacts are unknown to FB.
  
-		if(! link_compare($item['author-link'], $a->get_baseurl() . '/profile/' . $u[0]['nickname']))
+		if(! link_compare($b['author-link'], $a->get_baseurl() . '/profile/' . $u[0]['nickname']))
 			return;
 		
 
