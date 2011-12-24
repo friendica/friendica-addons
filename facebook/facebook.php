@@ -525,6 +525,19 @@ function facebook_post_hook(&$a,&$b) {
 			$reply = substr($r[0]['extid'],4);
 		else
 			return;
+
+		$u = q("SELECT * FROM user where uid = %d limit 1",
+			intval($b['uid'])
+		);
+		if(! count($u))
+			return;
+
+		// only accept comments from the item owner. Other contacts are unknown to FB.
+ 
+		if(! link_compare($item['author-link'], $a->get_baseurl() . '/profile/' . $u[0]['nickname']))
+			return;
+		
+
 		logger('facebook reply id=' . $reply);
 	}
 
