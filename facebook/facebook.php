@@ -701,7 +701,7 @@ function facebook_post_hook(&$a,&$b) {
 						$postvars['name'] = $linkname;
 				}
 
-				if(($b['private']) && (! $b['parent'])) {
+				if(($b['private']) && ($toplevel)) {
 					$postvars['privacy'] = '{"value": "CUSTOM", "friends": "SOME_FRIENDS"';
 					if(count($allow_arr))
 						$postvars['privacy'] .= ',"allow": "' . implode(',',$allow_arr) . '"';
