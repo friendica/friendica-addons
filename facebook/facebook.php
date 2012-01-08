@@ -863,6 +863,21 @@ function fb_consume_all($uid) {
 
 }
 
+function fb_get_photo($uid,$link) {
+	$access_token = get_pconfig($uid,'facebook','access_token');
+	if(! $access_token || (! stristr($link,'facebook.com/photo.php')))
+		return "\n" . '[url=' . $link . ']' . t('link') . '[/url]';
+	$ret = preg_match('/fbid=([0-9]*)/',$link,$match);
+	if($ret)
+		$photo_id = $match[1];
+	$x = fetch_url('https://graph.facebook.com/' . $photo_id . '?access_token=' . $access_token);
+	$j = json_decode($x);
+	if($j->picture)
+		return "\n\n" . '[url=' . $link . '][img]' . $j->picture . '[/img][/url]';
+	else
+		return "\n" . '[url=' . $link . ']' . t('link') . '[/url]';
+}
+
 function fb_consume_stream($uid,$j,$wall = false) {
 
 	$a = get_app();
@@ -973,8 +988,9 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			else {
 				if($entry->picture)
 					$datarray['body'] .= "\n\n" . '[img]' . $entry->picture . '[/img]';
+				// if just a link, it may be a wall photo - check
 				if($entry->link)
-					$datarray['body'] .= "\n" . '[url=' . $entry->link . ']' . t('link') . '[/url]';
+					$datarray['body'] .= fb_get_photo($uid,$entry->link);
 			}
 			if($entry->name)
 				$datarray['body'] .= "\n" . $entry->name;
