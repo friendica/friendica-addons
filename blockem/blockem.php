@@ -11,6 +11,7 @@
 
 function blockem_install() {
 	register_hook('prepare_body', 'addon/blockem/blockem.php', 'blockem_prepare_body');
+	register_hook('display_item', 'addon/blockem/blockem.php', 'blockem_display_item');
 	register_hook('plugin_settings', 'addon/blockem/blockem.php', 'blockem_addon_settings');
 	register_hook('plugin_settings_post', 'addon/blockem/blockem.php', 'blockem_addon_settings_post');
 
@@ -19,6 +20,7 @@ function blockem_install() {
 
 function blockem_uninstall() {
 	unregister_hook('prepare_body', 'addon/blockem/blockem.php', 'blockem_prepare_body');
+	unregister_hook('display_item', 'addon/blockem/blockem.php', 'blockem_display_item');
 	unregister_hook('plugin_settings', 'addon/blockem/blockem.php', 'blockem_addon_settings');
 	unregister_hook('plugin_settings_post', 'addon/blockem/blockem.php', 'blockem_addon_settings_post');
 
@@ -29,7 +31,6 @@ function blockem_uninstall() {
 
 
 function blockem_addon_settings(&$a,&$s) {
-
 
 	if(! local_user())
 		return;
@@ -47,7 +48,7 @@ function blockem_addon_settings(&$a,&$s) {
     $s .= '<h3>' . t('"Blockem" Settings') . '</h3>';
     $s .= '<div id="blockem-wrapper">';
     $s .= '<label id="blockem-label" for="blockem-words">' . t('Comma separated profile URLS to block') . ' </label>';
-    $s .= '<input id="blockem-words" type="text" name="blockem-words" value="' . $words .'" />';
+    $s .= '<textarea id="blockem-words" type="text" name="blockem-words" >' . htmlspecialchars($words) . '</textarea>';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="blockem-submit" name="blockem-submit" class="settings-submit" value="' . t('Submit') . '" /></div></div>';
@@ -97,10 +98,14 @@ function blockem_prepare_body(&$a,&$b) {
 		}
 	}
 	if($found) {
-		$rnd = random_string(8);
-		$b['item']['author-avatar'] = $a->get_baseurl() . "/images/default-profile-sm.jpg";
-		$b['html'] = 
-'<script>$("#wall-item-photo-' . $b['item']['id'] . '").removeAttr("src")</script>' . 
-'<div id="blockem-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'blockem-' . $rnd . '\'); >' . sprintf( t('Blocked %s - Click to open/close'),$word ) . '</div><div id="blockem-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';  
+		$rnd = random_string(8);	
+		$b['html'] = '<div id="blockem-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'blockem-' . $rnd . '\'); >' . sprintf( t('Blocked %s - Click to open/close'),$word ) . '</div><div id="blockem-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';  
 	}
 }
+
+
+function blockem_display_item(&$a,&$b) {
+	if(strstr($b['output'],'id="blockem-wrap-'))
+		$b['output'] = preg_replace('/\<img(.*?)src=\"(.*?)\" class=\"wall\-item\-photo(.*?)\>/','<img$1src="' . $a->get_baseurl() . "/images/default-profile-sm.jpg" . '" class="wall-item-photo$3>',$b['output']);
+}
+

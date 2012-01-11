@@ -8,6 +8,8 @@
 #blockem-words {
 	float: left;
 	margin-top: 10px;
+	width: 400px;
+	height: 150px;
 }
 
 #blockem-submit {
