@@ -12,10 +12,11 @@
 
 function extcron_install() {}
 
-function nsfw_uninstall() {}
+function extcron_uninstall() {}
 
 function extcron_module() {}
 
 function extcron_init(&$a) {
 	proc_run('php','include/poller.php');
+	killme();
 }
