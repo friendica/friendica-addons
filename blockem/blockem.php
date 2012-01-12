@@ -143,6 +143,9 @@ EOT;
 
 function blockem_item_photo_menu(&$a,&$b) {
 
+	if((! local_user()) || ($b['item']['self']))
+		return;
+
 	$blocked = false;
 	$author = $b['item']['author-link'];
 	if(is_array($a->data['blockem'])) {
