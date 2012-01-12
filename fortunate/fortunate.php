@@ -16,7 +16,7 @@ function fortunate_uninstall() {
 }
 
 
-function fortunate_fetch($a,&$b) {
+function fortunate_fetch(&$a,&$b) {
 
 	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="' 
 		. $a->get_baseurl() . '/addon/fortunate/fortunate.css' . '" media="all" />' . "\r\n";

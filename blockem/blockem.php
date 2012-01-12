@@ -14,7 +14,8 @@ function blockem_install() {
 	register_hook('display_item', 'addon/blockem/blockem.php', 'blockem_display_item');
 	register_hook('plugin_settings', 'addon/blockem/blockem.php', 'blockem_addon_settings');
 	register_hook('plugin_settings_post', 'addon/blockem/blockem.php', 'blockem_addon_settings_post');
-
+	register_hook('conversation_start', 'addon/blockem/blockem.php', 'blockem_conversation_start');
+	register_hook('item_photo_menu', 'addon/blockem/blockem.php', 'blockem_item_photo_menu');
 }
 
 
@@ -23,6 +24,8 @@ function blockem_uninstall() {
 	unregister_hook('display_item', 'addon/blockem/blockem.php', 'blockem_display_item');
 	unregister_hook('plugin_settings', 'addon/blockem/blockem.php', 'blockem_addon_settings');
 	unregister_hook('plugin_settings_post', 'addon/blockem/blockem.php', 'blockem_addon_settings_post');
+	unregister_hook('conversation_start', 'addon/blockem/blockem.php', 'blockem_conversation_start');
+	unregister_hook('item_photo_menu', 'addon/blockem/blockem.php', 'blockem_item_photo_menu');
 
 }
 
@@ -109,3 +112,82 @@ function blockem_display_item(&$a,&$b) {
 		$b['output'] = preg_replace('/\<img(.*?)src=\"(.*?)\" class=\"wall\-item\-photo(.*?)\>/','<img$1src="' . $a->get_baseurl() . "/images/default-profile-sm.jpg" . '" class="wall-item-photo$3>',$b['output']);
 }
 
+
+function blockem_conversation_start(&$a,&$b) {
+
+	if(! local_user())
+		return;
+
+	$words = get_pconfig(local_user(),'blockem','words');
+	if($words) {
+		$a->data['blockem'] = explode(',',$words);
+	}
+	$a->page['htmlhead'] .= <<< EOT
+
+<script>
+function blockemBlock(author) {
+	$.get('blockem?block=' +author, function(data) {
+		location.reload(true);
+	});
+}
+function blockemUnblock(author) {
+	$.get('blockem?unblock=' +author, function(data) {
+		location.reload(true);
+	});
+}
+</script>
+
+EOT;
+
+}
+
+function blockem_item_photo_menu(&$a,&$b) {
+
+	$blocked = false;
+	$author = $b['item']['author-link'];
+	if(is_array($a->data['blockem'])) {
+		foreach($a->data['blockem'] as $bloke) {
+			if(link_compare($bloke,$author)) {
+				$blocked = true;
+				break;
+			}
+		}
+	}
+	if($blocked)
+		$b['menu'][ t('Unblock Author')] = 'javascript:blockemUnblock("' . $author . '");';
+	else
+		$b['menu'][ t('Block Author')] = 'javascript:blockemBlock("' . $author . '");';
+}
+
+function blockem_module() {}
+
+
+function blockem_init(&$a) {
+
+	if(! local_user())
+		return;
+
+	$words = get_pconfig(local_user(),'blockem','words');
+
+	if(array_key_exists('block',$_GET) && $_GET['block']) {
+		if(strlen($words))
+			$words .= ',';
+		$words .= trim($_GET['block']);
+	}
+	if(array_key_exists('unblock',$_GET) && $_GET['unblock']) {
+		$arr = explode(',',$words);
+		$newarr = array();
+
+		if(count($arr)) {
+			foreach($arr as $x) {
+				if(! link_compare(trim($x),trim($_GET['unblock'])))
+					$newarr[] = $x;
+			}
+		}
+		$words = implode(',',$newarr);
+	}
+
+	set_pconfig(local_user(),'blockem','words',$words);
+	info( t('blockem settings updated') . EOL );
+	killme();
+}
