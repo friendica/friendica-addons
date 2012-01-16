@@ -21,7 +21,7 @@
  *     we do not need "Twitter as login". When you've registered the app you get the
  *     OAuth Consumer key and secret pair for your application/site.
  *
- *     Add this key pair to your global .htconfig.php
+ *     Add this key pair to your global .htconfig.php or use the admin panel.
  *
  *     $a->config['twitter']['consumerkey'] = 'your consumer_key here';
  *     $a->config['twitter']['consumersecret'] = 'your consumer_secret here';
@@ -91,10 +91,11 @@ function twitter_settings_post ($a,$post) {
 		/***
 		 * if the twitter-disconnect checkbox is set, clear the OAuth key/secret pair
 		 * from the user configuration
-		 * TODO can we revoke the access tokens at Twitter and do we need to do so?
 		 */
 		del_pconfig( local_user(), 'twitter', 'consumerkey'  );
 		del_pconfig( local_user(), 'twitter', 'consumersecret' );
+                del_pconfig( local_user(), 'twitter', 'oauthtoken'  );  
+                del_pconfig( local_user(), 'twitter', 'oauthsecret'  );  
                 del_pconfig( local_user(), 'twitter', 'post' );
                 del_pconfig( local_user(), 'twitter', 'post_by_default' );
 	} else {
