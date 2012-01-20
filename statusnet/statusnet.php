@@ -63,7 +63,6 @@ class StatusNetOAuth extends TwitterOAuth {
     $ci = curl_init();
     /* Curl settings */
     $prx = get_config('system','proxy');
-    logger('Proxy SN: '.$prx);
     if(strlen($prx)) {
         curl_setopt($ci, CURLOPT_HTTPPROXYTUNNEL, 1);
         curl_setopt($ci, CURLOPT_PROXY, $prx);
@@ -215,7 +214,6 @@ function statusnet_settings_post ($a,$post) {
             } else {
     	        if (isset($_POST['statusnet-pin'])) {
                 	//  if the user supplied us with a PIN from Twitter, let the magic of OAuth happen
-			logger('got a StatusNet security code');
                     $api     = get_pconfig(local_user(), 'statusnet', 'baseapi');
 					$ckey    = get_pconfig(local_user(), 'statusnet', 'consumerkey'  );
 					$csecret = get_pconfig(local_user(), 'statusnet', 'consumersecret' );
@@ -389,9 +387,6 @@ function statusnet_post_hook(&$a,&$b) {
 	if(! strstr($b['postopts'],'statusnet'))
 		return;
 
-	logger('StatusNet post invoked');
-
-
 	load_pconfig($b['uid'], 'statusnet');
             
 	$api     = get_pconfig($b['uid'], 'statusnet', 'baseapi');
@@ -408,7 +403,7 @@ function statusnet_post_hook(&$a,&$b) {
 		$msg = strip_tags(bbcode($b['body']));
 		// quotes not working - let's try this
 		$msg = html_entity_decode($msg);
-		if ( strlen($msg) > $max_char) {
+		if (( strlen($msg) > $max_char) && $max_char > 0) {
 			$shortlink = "";
 			require_once('library/slinky.php');
 			$slinky = new Slinky( $b['plink'] );
