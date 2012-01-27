@@ -3,6 +3,11 @@
 /**
  * Demo plugin for adding various types of Flash games to Friendika.
  * In this case we're using "Hot Shot Sniper" by FlashGames247
+ *
+ * Name: Sniper
+ * Description: Basic demonstration of flash game addons for Friendica
+ * Version: 1.0
+ * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
 
 

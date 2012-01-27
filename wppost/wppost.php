@@ -2,6 +2,7 @@
 
 /**
  * Name: WordPress Post Connector
+ * Description: Post to WordPress (or anything else which uses blogger XMLRPC API)
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */

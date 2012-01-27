@@ -2,6 +2,7 @@
 
 /**
  * Name: Tumblr Post Connector
+ * Description: Post to Tumblr
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
