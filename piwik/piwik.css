@@ -2,6 +2,8 @@
 	padding: 100px 50px;
 	text-align: justify;
 	font-size: 0.85em;
+        margin-top:10px;
+        clear: both;
 }
 #piwik-code-block {
 	display: none;
