@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: Random place
- * Description: Sample Friendika plugin/addon. Set a random place when posting.
+ * Description: Sample Friendica plugin/addon. Set a random place when posting.
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * 

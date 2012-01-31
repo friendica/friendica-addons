@@ -1,13 +1,13 @@
 <?php
 /**
  * Name: Piwik Analytics
- * Description: Piwik Analytics Plugin for Friendika
+ * Description: Piwik Analytics Plugin for Friendica
  * Version: 1.0
  * Author: Tobias Diekershoff <https://diekershoff.homeunix.net/friendika/profile/tobias>
  */
  
 
-/*   Piwik Analytics Plugin for Friendika
+/*   Piwik Analytics Plugin for Friendica
  *
  *   Author: Tobias Diekershoff
  *           tobias.diekershoff@gmx.net
@@ -21,7 +21,7 @@
  *     $a->config['piwik']['siteid'] = '1';
  *     $a->config['piwik']['optout'] = true;  // set to false to disable
  *
- *     Change the siteid to the ID that the Piwik tracker for your Friendika
+ *     Change the siteid to the ID that the Piwik tracker for your Friendica
  *     installation has. Alter the baseurl to fit your needs, don't care
  *     about http/https but beware to put the trailing / at the end of your
  *     setting.
@@ -45,7 +45,7 @@ function piwik_analytics($a,&$b) {
 
 	/*
 	 *   styling of every HTML block added by this plugin is done in the
-	 *   associated CSS file. We just have to tell Friendika to get it
+	 *   associated CSS file. We just have to tell Friendica to get it
 	 *   into the page header.
 	 */
 	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/piwik/piwik.css' . '" media="all" />' . "\r\n";
