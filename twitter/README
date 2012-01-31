@@ -7,7 +7,7 @@ By Tobias Diekershoff
 !!   with it, please contact the Author.                                    !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-With this addon to Friendika you can give your user the possibility to post
+With this addon to Friendica you can give your user the possibility to post
 their *public* messages to Twitter. The messages will be strapped their rich
 context and shortened to 140 characters length if necessary. If shortening of
 the message was performed a link will be added to the Tweet pointing to the
@@ -20,7 +20,7 @@ Online version of this document: http://ur1.ca/35mml
 
 ___ Requirements ___
 
-To use this plugin you have to register your Friendika instance as an
+To use this plugin you have to register your Friendica instance as an
 _client application_ for Twitter with _read and write_ access, we do not intend
 to use Twitter for login. The registration can be done at twitter.com/apps
 and you need to have a Twitter account to do so.
@@ -34,7 +34,7 @@ message was longer than 140 characters requires it, that you have *PHP5+* and
 
 ___ Where to find ___
 
-In the Friendika git repository /addon/twitter/, this directory contains
+In the Friendica git repository /addon/twitter/, this directory contains
 all required PHP files (including the Twitter OAuth library [1] by Abraham
 Williams, MIT licensed and the Slinky library [2] by Beau Lebens, BSD license),
 a CSS file for styling of the user configuration and an image to _Sign in with
@@ -68,7 +68,7 @@ connect to Twitter. To do so one has to follow the _Sign in with Twitter_
 button (the page will be opened in a new browser window/tab) and get a PIN from
 Twitter. This PIN has to be entered on the settings page. After submitting the
 PIN the plugin will get OAuth credentials identifying this user from the
-Friendika account.
+Friendica account.
 
 If this first step was successful the Twitter configuration will be changed
 on the "Plugin Settings" page displaying two check boxes. One to enable/disable
