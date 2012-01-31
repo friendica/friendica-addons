@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Demo plugin for adding various types of Flash games to Friendika.
+ * Demo plugin for adding various types of Flash games to Friendica.
  * In this case we're using "Hot Shot Sniper" by FlashGames247
  *
  * Name: Sniper
