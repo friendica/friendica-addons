@@ -7,7 +7,7 @@ by Tobias Diekershoff
 !! with it, please contact the Author.                                      !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-With this addon to Friendika you can give your user the possibility to post
+With this addon to Friendica you can give your user the possibility to post
 their public messages to any StatusNet instance (like identi.ca for example). 
 The messages will be strapped their rich context and shortened to to the character
 limit of the StatusNet instance in question if necessary. If shortening of the
@@ -30,7 +30,7 @@ was longer than the maximal allowed notice length requires it, that you have
 PHP5+ and curl on your server.
 Where to find
 
-In the Friendika git repository /addon/statusnet/, this directory contains all
+In the Friendica git repository /addon/statusnet/, this directory contains all
 required PHP files (including the Twitter OAuth library [1] by Abraham Williams,
 MIT licensed and the Slinky library [2] by Beau Lebens, BSD license), a CSS file
 for styling of the user configuration and an image to Sign in with StatusNet.
@@ -54,8 +54,8 @@ connect to the StatusNet account of choice.
    https://identi.ca/api/
  * OAuth Consumer key & secret
 
-To get the OAuth Consumer key pair the user has to (a) ask her Friendika admin
-if a pair already exists or (b) has to register the Friendika server as a
+To get the OAuth Consumer key pair the user has to (a) ask her Friendica admin
+if a pair already exists or (b) has to register the Friendica server as a
 client application on the StatusNet server. This can be done from the account
 settings under "Connect -> Connections -> Register an OAuth client application
 -> Register a new application".
@@ -64,12 +64,12 @@ During the registration of the OAuth client remember the following:
  * there is no callback url
  * register a desktop client
  * with read & write access
- * the Source URL should be the URL of your Friendika server
+ * the Source URL should be the URL of your Friendica server
 
 After the required credentials for the application are stored in the
-configuration you have to actually connect your Friendika account with
+configuration you have to actually connect your Friendica account with
 StatusNet. To do so follow the Sign in with StatusNet button, allow the access
-and copy the security code into the plugin configuration. Friendika will then
+and copy the security code into the plugin configuration. Friendica will then
 try to acquire the final OAuth credentials from the API, if successful the
 plugin settings will allow you to select to post your public messages to your
 StatusNet account.

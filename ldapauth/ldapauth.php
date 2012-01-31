@@ -7,7 +7,7 @@
  */
  
 /**
- * Friendika addon
+ * Friendica addon
  * 
  * Module: LDAP Authenticate
  *
@@ -17,8 +17,8 @@
  *
  * Optionally authenticates only if a member of a given group in the directory.
  *
- * The person must have registered with Friendika using the normal registration 
- * procedures in order to have a Friendika user record, contact, and profile.
+ * The person must have registered with Friendica using the normal registration 
+ * procedures in order to have a Friendica user record, contact, and profile.
  *
  * Note when using with Windows Active Directory: you may need to set TLS_CACERT in your site
  * ldap.conf file to the signing cert for your LDAP server. 

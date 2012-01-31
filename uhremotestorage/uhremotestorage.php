@@ -53,7 +53,7 @@ function uhremotestorage_settings($a, &$s){
 	$tpl = file_get_contents(dirname(__file__)."/settings.tpl");
 	$s .= replace_macros($tpl, array(
 		'$title' => 'Unhosted remote storage',
-		'$desc' => sprintf( t('Allow to use your friendika id (%s) to connecto to external unhosted-enabled storage (like ownCloud)'), $uid ),
+		'$desc' => sprintf( t('Allow to use your friendica id (%s) to connecto to external unhosted-enabled storage (like ownCloud)'), $uid ),
 		'$url'	=> array( 'unhoestedurl', t('Unhosted DAV storage url'), $davurl, 'If your are using ownCloud, your unhosted url will be like <tt>http://<i>HOST</i>/apps/remoteStorage/compat.php/<i>USER</i>/remoteStorage/</tt>'),
 		'$submit' => t('Submit'),
 	));
