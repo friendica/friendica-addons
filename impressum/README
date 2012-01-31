@@ -1,12 +1,12 @@
-Impressum Plugin for Friendika
+Impressum Plugin for Friendica
 
 Author: Tobias Diekershoff
         tobias.diekershoff@gmx.net
 
-License: 3-clause BSD license (same as Friendika)
+License: 3-clause BSD license (same as Friendica)
 
 About
-  This plugin adds an Impressum block to the /friendika page with informations
+  This plugin adds an Impressum block to the /friendica page with informations
   about the page operator/owner and how to contact you in case of any questions.
 
   In the notes and postal fields you can use HTML tags for formatting.
@@ -14,7 +14,7 @@ About
 Configuration:
   For configuration you can set the following variables in the .htconfig file
    * $a->config['impressum']['owner']           this is the Name of the Operator
-   * $a->config['impressum']['ownerprofile']    this is an optional Friendika account
+   * $a->config['impressum']['ownerprofile']    this is an optional Friendica account
                                                 where the above owner name will link to
    * $a->config['impressum']['email']           a contact email address (optional)
                                                 will be displayed slightly obfuscated

@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: Impressum
- * Description: Plugin to add contact information to the about page (/friendika)
+ * Description: Plugin to add contact information to the about page (/friendica)
  * Version: 1.0
  * Author: Tobias Diekershoff <https://diekershoff.homeunix.net/friendika/profile/tobias>
  * License: 3-clause BSD license
