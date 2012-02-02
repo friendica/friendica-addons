@@ -86,14 +86,21 @@ function nsfw_prepare_body(&$a,&$b) {
 			if(! strlen(trim($word))) {
 				continue;
 			}
-
-			if(stristr($b['html'],$word)) {
-				$found = true;
-				break;
+			if(strpos($word,'/') === 0) {
+				if(preg_match($word,$b['html'])) {
+					$found = true;
+					break;
+				}
 			}
-			if(stristr($b['item']['tag'], ']' . $word . '[' )) {
-				$found = true;
-				break;
+			else {
+				if(stristr($b['html'],$word)) {
+					$found = true;
+					break;
+				}
+				if(stristr($b['item']['tag'], ']' . $word . '[' )) {
+					$found = true;
+					break;
+				}
 			} 
 		}
 	}
