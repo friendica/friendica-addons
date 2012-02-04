@@ -1,11 +1,11 @@
 
-#nsfw-label {
+#nsfw-label, #nsfw-enable-label {
 	float: left;
 	width: 300px;
 	margin-top: 10px;
 }
 
-#nsfw-words {
+#nsfw-words, #nsfw-enable {
 	float: left;
 	margin-top: 10px;
 }

@@ -38,7 +38,7 @@ function nsfw_addon_settings(&$a,&$s) {
 
     $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/nsfw/nsfw.css' . '" media="all" />' . "\r\n";
 
-
+	$enable_checked = (intval(get_pconfig(local_user(),'nsfw','disable')) ? '' : ' checked="checked" ');
 	$words = get_pconfig(local_user(),'nsfw','words');
 	if(! $words)
 		$words = 'nsfw,';
@@ -46,6 +46,10 @@ function nsfw_addon_settings(&$a,&$s) {
     $s .= '<div class="settings-block">';
     $s .= '<h3>' . t('"Not Safe For Work" Settings') . '</h3>';
     $s .= '<div id="nsfw-wrapper">';
+	
+    $s .= '<label id="nsfw-enable-label" for="nsfw-enable">' . t('Enable NSFW filter') . ' </label>';
+    $s .= '<input id="nsfw-enable" type="checkbox" name="nsfw-enable" value="1"' . $enable_checked . ' />';
+	$s .= '<div class="clear"></div>';
     $s .= '<label id="nsfw-label" for="nsfw-words">' . t('Comma separated words to treat as NSFW') . ' </label>';
     $s .= '<input id="nsfw-words" type="text" name="nsfw-words" value="' . $words .'" />';
     $s .= '</div><div class="clear"></div>';
@@ -64,6 +68,9 @@ function nsfw_addon_settings_post(&$a,&$b) {
 
 	if($_POST['nsfw-submit']) {
 		set_pconfig(local_user(),'nsfw','words',trim($_POST['nsfw-words']));
+		$enable = ((x($_POST,'nsfw-enable')) ? intval($_POST['nsfw-enable']) : 0);
+		$disable = 1-$enable;
+		set_pconfig(local_user(),'nsfw','disable', $disable);
 		info( t('NSFW Settings saved.') . EOL);
 	}
 }
@@ -71,6 +78,9 @@ function nsfw_addon_settings_post(&$a,&$b) {
 function nsfw_prepare_body(&$a,&$b) {
 
 	$words = null;
+	if(get_pconfig(local_user(),'nsfw','disable'))
+		return;
+
 	if(local_user()) {
 		$words = get_pconfig(local_user(),'nsfw','words');
 	}
