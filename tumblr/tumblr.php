@@ -172,7 +172,7 @@ function tumblr_send(&$a,&$b) {
 		$params = array(
 			'email' => $tmbl_username,
 			'password' => $tmbl_password,
-			'title' => (($b['title']) ? $b['title'] : t('Post from Friendica')),
+			'title' => $b['title'],
 			'type' => 'regular',
 			'format' => 'html',
 			'generator' => 'Friendica',
