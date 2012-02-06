@@ -636,6 +636,12 @@ function facebook_post_hook(&$a,&$b) {
 					}
 				}
 
+				// strip tag links to avoid link clutter, this really should be 
+				// configurable because we're losing information
+
+				$msg = preg_replace("/\#\[url=(.*?)\](.*?)\[\/url\]/is",'#$2',$msg);
+
+				// provide the link separately for normal links
 				$msg = preg_replace("/\[url=(.*?)\](.*?)\[\/url\]/is",'$2 $1',$msg);
 
 				if(preg_match("/\[img\](.*?)\[\/img\]/is",$msg,$matches))
