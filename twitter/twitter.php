@@ -269,20 +269,20 @@ function twitter_post_hook(&$a,&$b) {
 			$shortlink = "";
 			require_once('library/slinky.php');
 			$slinky = new Slinky( $b['plink'] );
-            $yourls_url = get_config('yourls','url1');
-            if ($yourls_url) {
+			$yourls_url = get_config('yourls','url1');
+			if ($yourls_url) {
 				$max_char = 135;
-	            $yourls_username = get_config('yourls','username1');
-                $yourls_password = get_config('yourls', 'password1');
-                $yourls_ssl = get_config('yourls', 'ssl1');
-                $yourls = new Slinky_YourLS();
-                $yourls->set( 'username', $yourls_username );
-                $yourls->set( 'password', $yourls_password );
-                $yourls->set( 'ssl', $yourls_ssl );
-                $yourls->set( 'yourls-url', $yourls_url );
-                $slinky->set_cascade( array( $yourls, new Slinky_UR1ca(), new Slinky_Trim(), new Slinky_IsGd(), new Slinky_TinyURL() ) );
-            }
-            else {
+				$yourls_username = get_config('yourls','username1');
+				$yourls_password = get_config('yourls', 'password1');
+				$yourls_ssl = get_config('yourls', 'ssl1');
+				$yourls = new Slinky_YourLS();
+				$yourls->set( 'username', $yourls_username );
+				$yourls->set( 'password', $yourls_password );
+				$yourls->set( 'ssl', $yourls_ssl );
+				$yourls->set( 'yourls-url', $yourls_url );
+				$slinky->set_cascade( array( $yourls, new Slinky_UR1ca(), new Slinky_Trim(), new Slinky_IsGd(), new Slinky_TinyURL() ) );
+			}
+			else {
 				// setup a cascade of shortening services
 				// try to get a short link from these services
 				// in the order ur1.ca, trim, id.gd, tinyurl
