@@ -28,6 +28,9 @@ function openstreetmap_uninstall() {
 
 function openstreetmap_location($a, &$item) {
 
+	if(! (strlen($item['location']) || strlen($item['coord'])))
+		return; 
+
 	$location = '';
 	$coord = '';
 
@@ -36,7 +39,7 @@ function openstreetmap_location($a, &$item) {
 	if($item['coord']) {
 		$coords = explode(' ', $item['coord']);
 		if(count($coords) > 1) {
-			$coord = '<a target="map" title="' . $item['coord'] . '" href="http://www.openstreetmap.org/?lat=' . urlencode($coords[0]) . '&lon=' . urlencode($coords[1]) . '&zoom=10">' . $item['coord'] . '</a>' ;
+			$coord = '<a target="map" title="' . $item['coord'] . '" href="http://www.openstreetmap.org/?lat=' . urlencode($coords[0]) . '&lon=' . urlencode($coords[1]) . '&zoom=18">' . $item['coord'] . '</a>' ;
 		}
 	}
 	if(strlen($coord)) {
