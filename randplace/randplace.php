@@ -136,7 +136,8 @@ function randplace_post_hook($a, &$item) {
 function randplace_settings_post($a,$post) {
 	if(! local_user())
 		return;
-	set_pconfig(local_user(),'randplace','enable',intval($_POST['randplace']));
+	if($_POST['randplace-submit'])
+		set_pconfig(local_user(),'randplace','enable',intval($_POST['randplace']));
 }
 
 
@@ -175,6 +176,6 @@ function randplace_settings(&$a,&$s) {
 
 	/* provide a submit button */
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="submit" class="settings-submit" value="' . t('Submit') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="randplace-submit" class="settings-submit" value="' . t('Submit') . '" /></div></div>';
 
 }
