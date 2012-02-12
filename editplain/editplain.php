@@ -20,7 +20,6 @@ function editplain_install() {
 
 function editplain_uninstall() {
 
-	unregister_hook('post_local',    'addon/editplain/editplain.php', 'editplain_post_hook');
 	unregister_hook('plugin_settings', 'addon/editplain/editplain.php', 'editplain_settings');
 	unregister_hook('plugin_settings_post', 'addon/editplain/editplain.php', 'editplain_settings_post');
 

@@ -3,7 +3,7 @@
 # without providing a Makefile in each one.
 # So we will just manually find any source
 # directories which contain any files that 
-# are newer than are .tgz file and rebuild
+# are newer than our .tgz file and rebuild
 # it if any are found
 
 SUBDIRS=`ls -d [a-z]*/ | tr -d /`
@@ -11,11 +11,13 @@ for a in $SUBDIRS; do
 	TGZ=$a.tgz
 	if [[ ! -f $TGZ ]]; then
 	   	echo "Building: " $TGZ
+#		git log $a > $a/$a.log
 		tar zcvf $TGZ $a
 	else
 		TOUCHED=`find $a -cnewer $TGZ`
 		if [[ -n $TOUCHED ]]; then
 			echo "Building: " $TGZ
+#			git log $a > $a/$a.log
 			tar zcvf $TGZ $a
 		fi
 	fi
