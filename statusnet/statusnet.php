@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: StatusNet Connector
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: Tobias Diekershoff <https://diekershoff.homeunix.net/friendika/profile/tobias>
  */
  
@@ -400,7 +400,9 @@ function statusnet_post_hook(&$a,&$b) {
 		require_once('include/bbcode.php');	
 		$dent = new StatusNetOAuth($api,$ckey,$csecret,$otoken,$osecret);
 		$max_char = $dent->get_maxlength(); // max. length for a dent
-		$msg = strip_tags(bbcode($b['body']));
+                $tmp = preg_match_all( '/\[\\/?img(\\s+.*?\]|\])/i', '', $b['body']);
+                $tmp = preg_match_all( '/\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '$2 $1', $tmp)
+		$msg = strip_tags(bbcode($tmp));
 		// quotes not working - let's try this
 		$msg = html_entity_decode($msg);
 		if (( strlen($msg) > $max_char) && $max_char > 0) {
