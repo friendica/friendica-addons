@@ -400,8 +400,12 @@ function statusnet_post_hook(&$a,&$b) {
 		require_once('include/bbcode.php');	
 		$dent = new StatusNetOAuth($api,$ckey,$csecret,$otoken,$osecret);
 		$max_char = $dent->get_maxlength(); // max. length for a dent
-                // preserve links to images
+                // preserve links to images, videos and audios
                 $tmp = preg_replace( '/\[\\/?img(\\s+.*?\]|\])/i', '', $b['body']);
+                $tmp = preg_replace( '/\[\\/?video(\\s+.*?\]|\])/i', '', $tmp);
+                $tmp = preg_replace( '/\[\\/?youtube(\\s+.*?\]|\])/i', '', $tmp);
+                $tmp = preg_replace( '/\[\\/?vimeo(\\s+.*?\]|\])/i', '', $tmp);
+                $tmp = preg_replace( '/\[\\/?audio(\\s+.*?\]|\])/i', '', $tmp);
                 // preserve links to webpages
                 $tmp = preg_replace( '/\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '$2 $1', $tmp);
                 // TODO if you insert an image with ~f it inserts a link tag to 
