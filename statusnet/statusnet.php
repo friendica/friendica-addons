@@ -400,8 +400,15 @@ function statusnet_post_hook(&$a,&$b) {
 		require_once('include/bbcode.php');	
 		$dent = new StatusNetOAuth($api,$ckey,$csecret,$otoken,$osecret);
 		$max_char = $dent->get_maxlength(); // max. length for a dent
-                $tmp = preg_match_all( '/\[\\/?img(\\s+.*?\]|\])/i', '', $b['body']);
-                $tmp = preg_match_all( '/\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '$2 $1', $tmp)
+                // preserve links to images
+                $tmp = preg_replace( '/\[\\/?img(\\s+.*?\]|\])/i', '', $b['body']);
+                // preserve links to webpages
+                $tmp = preg_replace( '/\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '$2 $1', $tmp);
+                // TODO if you insert an image with ~f it inserts a link tag to 
+                // the image - thus we have two potential identical links 
+                // following each other... need to strip one of them
+                // TODO apply the shortener to the URLs in the releyed dent
+                logger($tmp);
 		$msg = strip_tags(bbcode($tmp));
 		// quotes not working - let's try this
 		$msg = html_entity_decode($msg);
