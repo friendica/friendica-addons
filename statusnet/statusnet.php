@@ -22,13 +22,6 @@
  *     Documentation: http://diekershoff.homeunix.net/redmine/wiki/friendikaplugin/StatusNet_Plugin
  */
 
-/*   __TODO__
- *
- *   - what about multimedia content?
- *     so far we just strip HTML tags from the message
- */
-
-
 /***
  * We have to alter the TwitterOAuth class a little bit to work with any StatusNet
  * installation abroad. Basically it's only make the API path variable and be happy.
@@ -153,7 +146,6 @@ function statusnet_settings_post ($a,$post) {
 	if (isset($_POST['statusnet-disconnect'])) {
             /***
              * if the statusnet-disconnect checkbox is set, clear the statusnet configuration
-             * TODO can we revoke the access tokens at Twitter and do we need to do so?
              */
             del_pconfig( local_user(), 'statusnet', 'consumerkey'  );
             del_pconfig( local_user(), 'statusnet', 'consumersecret' );
@@ -400,17 +392,18 @@ function statusnet_post_hook(&$a,&$b) {
 		require_once('include/bbcode.php');	
 		$dent = new StatusNetOAuth($api,$ckey,$csecret,$otoken,$osecret);
 		$max_char = $dent->get_maxlength(); // max. length for a dent
+                // if [url=bla][img]blub.png[/img][/url] get blub.png
+                $tmp = preg_replace( '/\[url\=(\w+.*?)\]\[img\](\w+.*?)\[\/img\]\[\/url\]/i', '$2', $tmp);
                 // preserve links to images, videos and audios
                 $tmp = preg_replace( '/\[\\/?img(\\s+.*?\]|\])/i', '', $b['body']);
                 $tmp = preg_replace( '/\[\\/?video(\\s+.*?\]|\])/i', '', $tmp);
                 $tmp = preg_replace( '/\[\\/?youtube(\\s+.*?\]|\])/i', '', $tmp);
                 $tmp = preg_replace( '/\[\\/?vimeo(\\s+.*?\]|\])/i', '', $tmp);
                 $tmp = preg_replace( '/\[\\/?audio(\\s+.*?\]|\])/i', '', $tmp);
+                // if a #tag is linked, don't send the [url] over to SN
+                $tmp = preg_replace( '/#\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '#$2', $tmp);
                 // preserve links to webpages
                 $tmp = preg_replace( '/\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '$2 $1', $tmp);
-                // TODO if you insert an image with ~f it inserts a link tag to 
-                // the image - thus we have two potential identical links 
-                // following each other... need to strip one of them
                 // TODO apply the shortener to the URLs in the releyed dent
                 logger($tmp);
 		$msg = strip_tags(bbcode($tmp));
