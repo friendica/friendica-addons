@@ -1,0 +1,19 @@
+
+#qcomment-label {
+	float: left;
+	width: 300px;
+	margin-top: 10px;
+}
+
+#qcomment-words {
+	float: left;
+	margin-top: 10px;
+	width: 100px;
+	height: 150px;
+
+}
+
+#qcomment-submit {
+	margin-top: 15px;
+}
+
