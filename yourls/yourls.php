@@ -70,7 +70,7 @@ $yourls_ssl = get_config('yourls', 'ssl1');
 
 	$s .= '<div id="yourls-ssl-wrapper">';
 	$s .= '<label id="yourls-ssl-label" for="yourls-ssl">' . t('Use SSL ') . '</label>';
-	$s .= '<input id="yourls-ssl" type="checkbox" name="yourls_ssl" value="1" ' . $ssl_checked . '"/>';
+	$s .= '<input id="yourls-ssl" type="checkbox" name="yourls_ssl" value="1" ' . $ssl_checked . ' />';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="yourls-submit" name="yourls-submit" class="settings-submit" value="' . t('Submit') . '" /></div></div>';
