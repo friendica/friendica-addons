@@ -45,6 +45,8 @@ function js_upload_form(&$a,&$b) {
 	$cancel = t('Cancel');
 	$failed = t('Failed');
 
+	$maximagesize = intval(get_config('system','maximagesize'));
+
 	$b['addon_text'] .= <<< EOT
 	
  <div id="file-uploader-demo1">		
@@ -91,6 +93,7 @@ function createUploader() {
             '</li>',        
 
 		debug: true,
+		sizeLimit: $maximagesize,
 		onSubmit: function(id,filename) {
 			if (typeof acl!="undefined"){
 				uploader.setParams( {
