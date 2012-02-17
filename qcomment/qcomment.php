@@ -7,6 +7,17 @@
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * 
+ * Provides a set of text "snippets" which can be inserted into a comment window by clicking on them.
+ * First enable the addon in the system admin panel. 
+ * Then each person can tailor their choice of words in Settings->Plugin Settings in the Qcomment 
+ * pane. Initially no qcomments are provided, but on viewing the settings page, a default set of
+ * of words is suggested. These can be accepted (click Submit) or edited first. Each text line represents 
+ * a different qcomment. 
+ * Many themes will hide the qcomments above or immediately adjacent to the comment input box until
+ * you wish to use them. On some themes they may be visible.
+ * Wave the mouse around near the comment input box and the qcomments will show up. Click on any of 
+ * them to open the comment window fully and insert the qcomment. Then "Submit" will submit it.
+ *
  */
 
 function qcomment_install() {
