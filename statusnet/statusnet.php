@@ -393,23 +393,26 @@ function statusnet_post_hook(&$a,&$b) {
 		require_once('include/bbcode.php');	
 		$dent = new StatusNetOAuth($api,$ckey,$csecret,$otoken,$osecret);
 		$max_char = $dent->get_maxlength(); // max. length for a dent
+                $tmp = $b['body'];
                 // if [url=bla][img]blub.png[/img][/url] get blub.png
-//                $tmp = preg_replace( '/\[url\=(\w+.*?)\]\[img\](\w+.*?)\[\/img\]\[\/url\]/i', '$2', $b['body']);
+                $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\]\[img\](\\w+.*?)\\[\\/img\]\\[\\/url\]/i', '$2', $tmp);
+                logger($tmp);
+//                $tmp = preg_replace( '/\[url\=(\w+.*?)\]\[img\](\w+.*?)\[\/img\]\[\/url\]/i', '$2', $tmp);
                 // preserve links to images, videos and audios
+                $tmp = preg_replace( '/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/ism', '$3', $tmp);
                 $tmp = preg_replace( '/\[\\/?img(\\s+.*?\]|\])/i', '', $tmp);
                 $tmp = preg_replace( '/\[\\/?video(\\s+.*?\]|\])/i', '', $tmp);
                 $tmp = preg_replace( '/\[\\/?youtube(\\s+.*?\]|\])/i', '', $tmp);
                 $tmp = preg_replace( '/\[\\/?vimeo(\\s+.*?\]|\])/i', '', $tmp);
                 $tmp = preg_replace( '/\[\\/?audio(\\s+.*?\]|\])/i', '', $tmp);
                 // if a #tag is linked, don't send the [url] over to SN
-                // this is commented out by default as it means backlinks
-                // to friendica, if you don't like this feel free to
-                // uncomment the following line
+                //   this is commented out by default as it means backlinks
+                //   to friendica, if you don't like this feel free to
+                //   uncomment the following line
 //                $tmp = preg_replace( '/#\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '#$2', $tmp);
                 // preserve links to webpages
-                $tmp = preg_replace( '/\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '$2 $1', $tmp);
+                $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/url\]/i', '$2 $1', $tmp);
                 // TODO apply the shortener to the URLs in the releyed dent
-                logger($tmp);
 		$msg = strip_tags(bbcode($tmp));
 		// quotes not working - let's try this
 		$msg = html_entity_decode($msg);
