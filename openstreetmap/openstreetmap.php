@@ -1,45 +1,45 @@
 <?php
 /**
- * Name: Open Street Map
- * Description: Use openstreetmap.org for displaying locations.
- * Version: 1.0
+ * Name: OpenStreetMap
+ * Description: Use OpenStreetMap for displaying locations.
+ * Version: 1.1
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- * 
+ * Author: Klaus Weidenbach
  *
  */
 
-
 function openstreetmap_install() {
-
 	register_hook('render_location', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_location');
 
 	logger("installed openstreetmap");
 }
 
-
 function openstreetmap_uninstall() {
-
 	unregister_hook('render_location', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_location');
 
 	logger("removed openstreetmap");
 }
 
 
-
 function openstreetmap_location($a, &$item) {
-
 	if(! (strlen($item['location']) || strlen($item['coord'])))
 		return; 
+
+	/*
+	 * Get the configuration variables from the .htconfig file.
+	 */
+	$tmsserver = get_config('openstreetmap','tmsserver');
+	$zoom = get_config('openstreetmap','zoom');
 
 	$location = '';
 	$coord = '';
 
-	$location = (($item['location']) ? '<a target="map" title="' . $item['location'] . '" href="http://www.openstreetmap.org/?q=' . urlencode($item['location']) . '">' . $item['location'] . '</a>' : '');
+	$location = (($item['location']) ? '<a target="map" title="' . $item['location'] . '" href="'.$tmsserver.'?q=' . urlencode($item['location']) . '">' . $item['location'] . '</a>' : '');
 
 	if($item['coord']) {
 		$coords = explode(' ', $item['coord']);
 		if(count($coords) > 1) {
-			$coord = '<a target="map" title="' . $item['coord'] . '" href="http://www.openstreetmap.org/?lat=' . urlencode($coords[0]) . '&lon=' . urlencode($coords[1]) . '&zoom=18">' . $item['coord'] . '</a>' ;
+			$coord = '<a target="map" title="' . $item['coord'] . '" href="'.$tmsserver.'?lat=' . urlencode($coords[0]) . '&lon=' . urlencode($coords[1]) . '&zoom='.$zoom.'">' . $item['coord'] . '</a>' ;
 		}
 	}
 	if(strlen($coord)) {
@@ -52,3 +52,19 @@ function openstreetmap_location($a, &$item) {
 	return;
 }
 
+
+function openstreetmap_plugin_admin (&$a, &$o) {
+	$t = file_get_contents( dirname(__file__)."/admin.tpl");
+	$o = replace_macros( $t, array(
+		'$submit' => t('Submit'),
+		'$tmsserver' => array('tmsserver', t('Tile Server URL'), get_config('openstreetmap','tmsserver' ), t('A list of <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank">public tile servers</a>')),
+		'$zoom' => array('zoom', t('Default zoom'), get_config('openstreetmap','zoom' ), t('The default zoom level. (1:world, 18:highest)')),
+	));
+}
+function openstreetmap_plugin_admin_post (&$a) {
+	$url = ((x($_POST, 'tmsserver')) ? notags(trim($_POST['tmsserver'])) : '');
+	$zoom = ((x($_POST, 'zoom')) ? intval(trim($_POST['zoom'])) : '17');
+	set_config('openstreetmap', 'tmsserver', $url);
+	set_config('openstreetmap', 'zoom', $zoom);
+	info( t('Settings updated.'). EOL);
+}
