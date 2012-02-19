@@ -29,7 +29,11 @@ function openstreetmap_location($a, &$item) {
 	 * Get the configuration variables from the .htconfig file.
 	 */
 	$tmsserver = get_config('openstreetmap','tmsserver');
+	if(! $tmsserver)
+		$tmsserver = 'http://openstreetmap.org';
 	$zoom = get_config('openstreetmap','zoom');
+	if(! $zoom)
+		$zoom = 17;
 
 	$location = '';
 	$coord = '';
@@ -55,10 +59,17 @@ function openstreetmap_location($a, &$item) {
 
 function openstreetmap_plugin_admin (&$a, &$o) {
 	$t = file_get_contents( dirname(__file__)."/admin.tpl");
+	$tmsserver = get_config('openstreetmap','tmsserver');
+	if(! $tmsserver)
+		$tmsserver = 'http://openstreetmap.org';
+	$zoom = get_config('openstreetmap','zoom');
+	if(! $zoom)
+		$zoom = 17;
+
 	$o = replace_macros( $t, array(
 		'$submit' => t('Submit'),
-		'$tmsserver' => array('tmsserver', t('Tile Server URL'), get_config('openstreetmap','tmsserver' ), t('A list of <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank">public tile servers</a>')),
-		'$zoom' => array('zoom', t('Default zoom'), get_config('openstreetmap','zoom' ), t('The default zoom level. (1:world, 18:highest)')),
+		'$tmsserver' => array('tmsserver', t('Tile Server URL'), $tmsserver, t('A list of <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank">public tile servers</a>')),
+		'$zoom' => array('zoom', t('Default zoom'), $zoom, t('The default zoom level. (1:world, 18:highest)')),
 	));
 }
 function openstreetmap_plugin_admin_post (&$a) {
