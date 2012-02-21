@@ -38,7 +38,7 @@ function wppost_jot_nets(&$a,&$b) {
     if(intval($wp_post) == 1) {
         $wp_defpost = get_pconfig(local_user(),'wppost','post_by_default');
         $selected = ((intval($wp_defpost) == 1) ? ' checked="checked" ' : '');
-        $b .= '<div class="profile-jot-net"><input type="checkbox" name="wppost_enable"' . $selected . 'value="1" /> '
+        $b .= '<div class="profile-jot-net"><input type="checkbox" name="wppost_enable" ' . $selected . ' value="1" /> '
             . t('Post to Wordpress') . '</div>';
     }
 }
