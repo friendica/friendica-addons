@@ -416,8 +416,12 @@ function statusnet_post_hook(&$a,&$b) {
 
 		require_once('include/bbcode.php');	
 		$dent = new StatusNetOAuth($api,$ckey,$csecret,$otoken,$osecret);
-		$max_char = $dent->get_maxlength(); // max. length for a dent
-                $tmp = $b['body'];
+                $max_char = $dent->get_maxlength(); // max. length for a dent
+                // we will only work with up to two time the length of the dent 
+                // we can later send to StatusNet. This way we can "gain" some 
+                // information during shortening of potential links but do not 
+                // shorten all the links in a 200000 character long essay.
+                $tmp = substr($b['body'], 0, 2*$max_char);
                 // if [url=bla][img]blub.png[/img][/url] get blub.png
                 $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\]\[img\](\\w+.*?)\\[\\/img\]\\[\\/url\]/i', '$2', $tmp);
 //                $tmp = preg_replace( '/\[url\=(\w+.*?)\]\[img\](\w+.*?)\[\/img\]\[\/url\]/i', '$2', $tmp);
