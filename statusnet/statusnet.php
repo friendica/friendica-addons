@@ -442,12 +442,14 @@ function statusnet_post_hook(&$a,&$b) {
                 $tmp = preg_replace( '/\[bookmark\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/bookmark\]/i', '$2 $1', $tmp);
                 // find all http or https links in the body of the entry and 
                 // apply the shortener if the link is longer then 20 characters 
-                preg_match_all ( '/(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/i', $tmp, $allurls  );
-                foreach ($allurls as $url) {
-                    foreach ($url as $u) {
-                        if (strlen($u)>20) {
-                            $sl = short($u);
-                            $tmp = str_replace( $u, $sl, $tmp );
+                if (( strlen($tmp)>$max_char ) && ( $max_char > 0 )) {
+                    preg_match_all ( '/(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/i', $tmp, $allurls  );
+                    foreach ($allurls as $url) {
+                        foreach ($url as $u) {
+                            if (strlen($u)>20) {
+                                $sl = short($u);
+                                $tmp = str_replace( $u, $sl, $tmp );
+                            }
                         }
                     }
                 }
