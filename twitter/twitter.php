@@ -1,7 +1,8 @@
 <?php
 /**
  * Name: Twitter Connector
- * Version: 1.0.1
+ * Description: Relay public postings to a connected StatusNet account
+ * Version: 1.0.2
  * Author: Tobias Diekershoff <https://diekershoff.homeunix.net/friendika/profile/tobias>
  */
 
@@ -33,12 +34,6 @@
  *     Requirements: PHP5, curl [Slinky library]
  *
  *     Documentation: http://diekershoff.homeunix.net/redmine/wiki/friendikaplugin/Twitter_Plugin
- */
-
-/*   __TODO__
- *
- *   - what about multimedia content?
- *     so far we just strip HTML tags from the message
  */
 
 function twitter_install() {
@@ -230,6 +225,30 @@ function twitter_post_local(&$a,&$b) {
 	}
 }
 
+if (! function_exists('short_link')) {
+function short_link ($url) {
+    require_once('library/slinky.php');
+    $slinky = new Slinky( $url );
+    $yourls_url = get_config('yourls','url1');
+    if ($yourls_url) {
+            $yourls_username = get_config('yourls','username1');
+            $yourls_password = get_config('yourls', 'password1');
+            $yourls_ssl = get_config('yourls', 'ssl1');
+            $yourls = new Slinky_YourLS();
+            $yourls->set( 'username', $yourls_username );
+            $yourls->set( 'password', $yourls_password );
+            $yourls->set( 'ssl', $yourls_ssl );
+            $yourls->set( 'yourls-url', $yourls_url );
+            $slinky->set_cascade( array( $yourls, new Slinky_UR1ca(), new Slinky_Trim(), new Slinky_IsGd(), new Slinky_TinyURL() ) );
+    }
+    else {
+            // setup a cascade of shortening services
+            // try to get a short link from these services
+            // in the order ur1.ca, trim, id.gd, tinyurl
+            $slinky->set_cascade( array( new Slinky_UR1ca(), new Slinky_Trim(), new Slinky_IsGd(), new Slinky_TinyURL() ) );
+    }
+    return $slinky->short();
+} };
 
 function twitter_post_hook(&$a,&$b) {
 
@@ -262,33 +281,51 @@ function twitter_post_hook(&$a,&$b) {
 		require_once('library/twitteroauth.php');
 		require_once('include/bbcode.php');	
 		$tweet = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
-		$max_char = 138; // max. length for a tweet
-		$msg = strip_tags(bbcode($b['body']));
-		if ( strlen($msg) > $max_char) {
-			logger('Twitter: have to shorten the message to fit 140 chars', LOGGER_DEBUG);
-			$shortlink = "";
-			require_once('library/slinky.php');
-			$slinky = new Slinky( $b['plink'] );
-			$yourls_url = get_config('yourls','url1');
-			if ($yourls_url) {
-				$max_char = 135;
-				$yourls_username = get_config('yourls','username1');
-				$yourls_password = get_config('yourls', 'password1');
-				$yourls_ssl = get_config('yourls', 'ssl1');
-				$yourls = new Slinky_YourLS();
-				$yourls->set( 'username', $yourls_username );
-				$yourls->set( 'password', $yourls_password );
-				$yourls->set( 'ssl', $yourls_ssl );
-				$yourls->set( 'yourls-url', $yourls_url );
-				$slinky->set_cascade( array( $yourls, new Slinky_UR1ca(), new Slinky_Trim(), new Slinky_IsGd(), new Slinky_TinyURL() ) );
-			}
-			else {
-				// setup a cascade of shortening services
-				// try to get a short link from these services
-				// in the order ur1.ca, trim, id.gd, tinyurl
-				$slinky->set_cascade( array( new Slinky_UR1ca(), new Slinky_Trim(), new Slinky_IsGd(), new Slinky_TinyURL() ) );
-			}
-			$shortlink = $slinky->short();
+                // in theory max char is 140 but T. uses t.co to make links 
+                // longer so we give them 10 characters extra
+		$max_char = 130; // max. length for a tweet
+                // we will only work with up to two times the length of the dent 
+                // we can later send to StatusNet. This way we can "gain" some 
+                // information during shortening of potential links but do not 
+                // shorten all the links in a 200000 character long essay.
+                $tmp = substr($b['body'], 0, 2*$max_char);
+                // if [url=bla][img]blub.png[/img][/url] get blub.png
+                $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\]\[img\](\\w+.*?)\\[\\/img\]\\[\\/url\]/i', '$2', $tmp);
+                // preserve links to images, videos and audios
+                $tmp = preg_replace( '/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/ism', '$3', $tmp);
+                $tmp = preg_replace( '/\[\\/?img(\\s+.*?\]|\])/i', '', $tmp);
+                $tmp = preg_replace( '/\[\\/?video(\\s+.*?\]|\])/i', '', $tmp);
+                $tmp = preg_replace( '/\[\\/?youtube(\\s+.*?\]|\])/i', '', $tmp);
+                $tmp = preg_replace( '/\[\\/?vimeo(\\s+.*?\]|\])/i', '', $tmp);
+                $tmp = preg_replace( '/\[\\/?audio(\\s+.*?\]|\])/i', '', $tmp);
+                // if a #tag is linked, don't send the [url] over to SN
+                //   this is commented out by default as it means backlinks
+                //   to friendica, if you don't like this feel free to
+                //   uncomment the following line
+//                $tmp = preg_replace( '/#\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '#$2', $tmp);
+                // preserve links to webpages
+                $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/url\]/i', '$2 $1', $tmp);
+                $tmp = preg_replace( '/\[bookmark\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/bookmark\]/i', '$2 $1', $tmp);
+                // find all http or https links in the body of the entry and 
+                // apply the shortener if the link is longer then 20 characters 
+                if (( strlen($tmp)>$max_char ) && ( $max_char > 0 )) {
+                    preg_match_all ( '/(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/i', $tmp, $allurls  );
+                    foreach ($allurls as $url) {
+                        foreach ($url as $u) {
+                            if (strlen($u)>20) {
+                                $sl = short_link($u);
+                                $tmp = str_replace( $u, $sl, $tmp );
+                            }
+                        }
+                    }
+                }
+                // ok, all the links we want to send out are save, now strip 
+                // away the remaining bbcode
+		$msg = strip_tags(bbcode($tmp));
+		// quotes not working - let's try this
+		$msg = html_entity_decode($msg);
+		if (( strlen($msg) > $max_char) && $max_char > 0) {
+			$shortlink = short_link( $b['plink'] );
 			// the new message will be shortened such that "... $shortlink"
 			// will fit into the character limit
 			$msg = substr($msg, 0, $max_char-strlen($shortlink)-4);
