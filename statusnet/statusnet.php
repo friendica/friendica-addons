@@ -368,7 +368,8 @@ function statusnet_post_local(&$a,&$b) {
     }
 }
 
-function short($url) {
+if (! function_exists( 'short_link' )) {
+function short_link($url) {
     require_once('library/slinky.php');
     $slinky = new Slinky( $url );
     $yourls_url = get_config('yourls','url1');
@@ -390,7 +391,7 @@ function short($url) {
             $slinky->set_cascade( array( new Slinky_UR1ca(), new Slinky_Trim(), new Slinky_IsGd(), new Slinky_TinyURL() ) );
     }
     return $slinky->short();
-}
+} };
 
 function statusnet_post_hook(&$a,&$b) {
 
@@ -417,14 +418,13 @@ function statusnet_post_hook(&$a,&$b) {
 		require_once('include/bbcode.php');	
 		$dent = new StatusNetOAuth($api,$ckey,$csecret,$otoken,$osecret);
                 $max_char = $dent->get_maxlength(); // max. length for a dent
-                // we will only work with up to two time the length of the dent 
+                // we will only work with up to two times the length of the dent 
                 // we can later send to StatusNet. This way we can "gain" some 
                 // information during shortening of potential links but do not 
                 // shorten all the links in a 200000 character long essay.
                 $tmp = substr($b['body'], 0, 2*$max_char);
                 // if [url=bla][img]blub.png[/img][/url] get blub.png
                 $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\]\[img\](\\w+.*?)\\[\\/img\]\\[\\/url\]/i', '$2', $tmp);
-//                $tmp = preg_replace( '/\[url\=(\w+.*?)\]\[img\](\w+.*?)\[\/img\]\[\/url\]/i', '$2', $tmp);
                 // preserve links to images, videos and audios
                 $tmp = preg_replace( '/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/ism', '$3', $tmp);
                 $tmp = preg_replace( '/\[\\/?img(\\s+.*?\]|\])/i', '', $tmp);
@@ -447,7 +447,7 @@ function statusnet_post_hook(&$a,&$b) {
                     foreach ($allurls as $url) {
                         foreach ($url as $u) {
                             if (strlen($u)>20) {
-                                $sl = short($u);
+                                $sl = short_link($u);
                                 $tmp = str_replace( $u, $sl, $tmp );
                             }
                         }
@@ -459,7 +459,7 @@ function statusnet_post_hook(&$a,&$b) {
 		// quotes not working - let's try this
 		$msg = html_entity_decode($msg);
 		if (( strlen($msg) > $max_char) && $max_char > 0) {
-			$shortlink = short( $b['plink'] );
+			$shortlink = short_link( $b['plink'] );
 			// the new message will be shortened such that "... $shortlink"
 			// will fit into the character limit
 			$msg = substr($msg, 0, $max_char-strlen($shortlink)-4);
