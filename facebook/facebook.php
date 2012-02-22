@@ -24,7 +24,8 @@
  *   d. Navigate to Set Web->Site URL & Domain -> Website Settings.  Set 
  *      Site URL to yoursubdomain.yourdomain.com. Set Site Domain to your 
  *      yourdomain.com.
- * 2. Enable the facebook plugin by including it in .htconfig.php - e.g. 
+ * 2. (This step is now obsolete. Enable the plugin via the Admin panel.)
+ *     Enable the facebook plugin by including it in .htconfig.php - e.g. 
  *     $a->config['system']['addon'] = 'plugin1,plugin2,facebook';
  * 3. Visit the Facebook Settings section of the "Settings->Plugin Settings" page.
  *    and click 'Install Facebook Connector'.
