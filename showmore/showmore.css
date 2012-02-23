@@ -1,0 +1,19 @@
+
+#showmore-label, #showmore-enable-label {
+	float: left;
+	width: 300px;
+	margin-top: 10px;
+}
+
+#showmore-words, #showmore-enable {
+	float: left;
+	margin-top: 10px;
+}
+
+#showmore-submit {
+	margin-top: 15px;
+}
+
+.showmore-desc {
+	margin-top: 10px;
+}

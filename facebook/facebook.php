@@ -732,7 +732,7 @@ function facebook_post_hook(&$a,&$b) {
 				logger('facebook: postvars: ' . print_r($postvars,true));
 
 				// "test_mode" prevents anything from actually being posted.
-				// Otherwise, let's do it. 
+				// Otherwise, let's do it.
 
 				if(! get_config('facebook','test_mode')) {
 					$x = post_url($url, $postvars);
@@ -953,11 +953,13 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			// don't store post if we don't have a contact
 
 			if(! x($datarray,'contact-id')) {
-				logger('no contact: post ignored');
-				continue; 
+				// Test: Workaround for page entries
+				$datarray['contact-id'] = $self[0]['id'];
+				//logger('no contact: post ignored');
+				//continue;
 			}
 
-			$datarray['verb'] = ACTIVITY_POST;						
+			$datarray['verb'] = ACTIVITY_POST;
 			if($wall) {
 				$datarray['owner-name'] = $self[0]['name'];
 				$datarray['owner-link'] = $self[0]['url'];
