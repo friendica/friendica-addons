@@ -953,10 +953,8 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			// don't store post if we don't have a contact
 
 			if(! x($datarray,'contact-id')) {
-				// Test: Workaround for page entries
-				$datarray['contact-id'] = $self[0]['id'];
-				//logger('no contact: post ignored');
-				//continue;
+				logger('no contact: post ignored');
+				continue;
 			}
 
 			$datarray['verb'] = ACTIVITY_POST;
