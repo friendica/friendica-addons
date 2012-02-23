@@ -1,27 +1,30 @@
-____ Piwik Plugin ____
-by Tobias Diekershoff
+## Piwik Plugin ##
+
+by Tobias Diekershoff 
    tobias.diekershoff(at)gmx.net
 
 This addon allows you to embed the code necessary for the FLOSS webanalytics
 tool Piwik into the Friendica pages.
 
-Online version of this Document: http://ur1.ca/35m2x
+[Online version of this Document](http://ur1.ca/35m2x)
 
-___ Requirements ___
+### Requirements ###
 
-To use this plugin you need a "piwik":http://piwik.org installation.
+To use this plugin you need a [piwik](http://piwik.org/) installation.
 
-___ Where to find ___
+### Where to find ###
 
-In the Friendica git repository @/addon/piwik/piwik.php@ and a CSS file for
+In the Friendica git repository `/addon/piwik/piwik.php` and a CSS file for
 styling the opt-out notice.
 
-___ Configuration ___
+### Configuration ###
 
-Open the .htconfig.php file and add "piwik" to the list of activated addons. 
+Open the .htconfig.php file and add "piwik" to the list of activated addons.
+
     $a->config['system']['addon'] = "piwik, ..."
 
 You have to add 4 more configuration variables for the addon:
+
     $a->config['piwik']['baseurl'] = 'example.com/piwik/';
     $a->config['piwik']['sideid'] = '1';
     $a->config['piwik']['optout'] = true;
