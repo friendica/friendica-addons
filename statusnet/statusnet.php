@@ -327,6 +327,9 @@ function statusnet_settings(&$a,&$s) {
 			$details = $connection->get('account/verify_credentials');
 			$s .= '<div id="statusnet-info" ><img id="statusnet-avatar" src="'.$details->profile_image_url.'" /><p id="statusnet-info-block">'. t('Currently connected to: ') .'<a href="'.$details->statusnet_profile_url.'" target="_statusnet">'.$details->screen_name.'</a><br /><em>'.$details->description.'</em></p></div>';
 			$s .= '<p>'. t('If enabled all your <strong>public</strong> postings can be posted to the associated StatusNet account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.') .'</p>';
+                        if ($a->user['hidewall']) {
+                            $s .= '<p>'. t('<strong>Note</strong>: Due your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to StatusNet will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted.') .'</p>';
+                        }
 			$s .= '<div id="statusnet-enable-wrapper">';
 			$s .= '<label id="statusnet-enable-label" for="statusnet-checkbox">'. t('Allow posting to StatusNet') .'</label>';
 			$s .= '<input id="statusnet-checkbox" type="checkbox" name="statusnet-enable" value="1" ' . $checked . '/>';
