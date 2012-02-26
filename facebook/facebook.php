@@ -84,7 +84,7 @@ function facebook_init(&$a) {
 	if (x($_REQUEST, "realtime_cb") && x($_REQUEST, "realtime_cb")) {
 		logger("facebook_init: Facebook Real-Time callback called", LOGGER_DEBUG);
 		
-		if (x($_REQUEST["hub_verify_token"])) {
+		if (x($_REQUEST, "hub_verify_token")) {
 			// this is the verification callback while registering for real time updates
 			
 			$verify_token = get_config('facebook', 'cb_verify_token');
