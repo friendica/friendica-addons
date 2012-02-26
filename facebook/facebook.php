@@ -76,10 +76,90 @@ function facebook_module() {}
 
 
 
-/* If a->argv[1] is a nickname, this is a callback from Facebook oauth requests. */
+// If a->argv[1] is a nickname, this is a callback from Facebook oauth requests.
+// If $_REQUEST["realtime_cb"] is set, this is a callback from the Real-Time Updates API
 
 function facebook_init(&$a) {
+	
+	if (x($_REQUEST, "realtime_cb") && x($_REQUEST, "realtime_cb")) {
+		logger("facebook_init: Facebook Real-Time callback called", LOGGER_DEBUG);
+		
+		if (x($_REQUEST["hub_verify_token"])) {
+			// this is the verification callback while registering for real time updates
+			
+			$verify_token = get_config('facebook', 'cb_verify_token');
+			if ($verify_token != $_REQUEST["hub_verify_token"]) {
+				logger('facebook_init: Wrong Facebook Callback Verifier - expected ' . $verify_token . ', got ' . $_REQUEST["hub_verify_token"]);
+				return;
+			}
+			
+			if (x($_REQUEST, "hub_challenge")) {
+				logger('facebook_init: Answering Challenge: ' . $_REQUEST["hub_challenge"], LOGGER_DATA);
+				echo $_REQUEST["hub_challenge"];
+				die();
+			}
+		}
+		
+		require_once('include/items.php');
+		
+		// this is a status update
+		$content = file_get_contents("php://input");
+		if (is_numeric($content)) $content = file_get_contents("php://input");
+		$js = json_decode($content);
+		logger(print_r($js, true), LOGGER_DATA);
+		
+		if (!isset($js->object) || $js->object != "user" || !isset($js->entry)) {
+			logger('facebook_init: Could not parse Real-Time Update data', LOGGER_DEBUG);
+			return;
+		}
+		
+		$affected_users = array("feed" => array(), "friends" => array(), "activities" => array());
+		
+		foreach ($js->entry as $entry) {
+			$fbuser = $entry->uid;
+			foreach ($entry->changed_fields as $field) {
+				if (!isset($affected_users[$field])) {
+					logger('facebook_init: Unknown field "' . $field . '"');
+					continue;
+				}
+				if (in_array($fbuser, $affected_users[$field])) continue;
+				switch ($field) {
+					case "feed":
+						logger('facebook_init: FB-User ' . $fbuser . ' / feed', LOGGER_DEBUG);
+						
+						$r = q("SELECT `uid` FROM `pconfig` WHERE `cat` = 'facebook' AND `k` = 'self_id' AND `v` = '%s' LIMIT 1", dbesc($fbuser));
+						if(! count($r))
+							continue;
+						$uid = $r[0]['uid'];
+						
+						$access_token = get_pconfig($uid,'facebook','access_token');
+						if(! $access_token)
+							return;
+	
+						if(! get_pconfig($uid,'facebook','no_wall')) {
+							$private_wall = intval(get_pconfig($uid,'facebook','private_wall'));
+							$s = fetch_url('https://graph.facebook.com/me/feed?access_token=' . $access_token);
+							if($s) {
+								$j = json_decode($s);
+								logger('facebook_init: wall: ' . print_r($j,true), LOGGER_DATA);
+								fb_consume_stream($uid,$j,($private_wall) ? false : true);
+							}
+						}
+						
+					break;
+					case "friend":
+						// @TODO
+					break;
+					case "activities":
+						//@TODO
+					break;
+				}
+				$affected_users[$field][] = $fbuser;
+			}
+		}
+	}
 
+	
 	if($a->argc != 2)
 		return;
 	$nick = $a->argv[1];
@@ -477,6 +557,32 @@ function facebook_plugin_settings(&$a,&$b) {
 	$b .= '<a href="facebook">' . t('Facebook Connector Settings') . '</a><br />';
 	$b .= '</div>';
 
+}
+
+
+function facebook_plugin_admin(&$a, &$o){
+	
+	$activated = false;
+	$access_token = fb_get_app_access_token();
+	if ($access_token) {
+		$ret = facebook_subscriptions_get();
+		if (is_array($ret)) foreach ($ret as $re) if (is_object($re) && $re->object == "user") $activated = true;
+	}
+	if ($activated) {
+		$o = t('Real-Time Updates are activated.') . '<br><br>';
+		$o .= '<input type="submit" name="real_time_deactivate" value="' . t('Deactivate Real-Time Updates') . '">';
+	} else {
+		$o = t('Real-Time Updates not activated.') . '<br><input type="submit" name="real_time_activate" value="' . t('Activate Real-Time Updates') . '">';
+	}
+}
+
+function facebook_plugin_admin_post(&$a, &$o){
+	if (x($_REQUEST,'real_time_activate')) {
+		facebook_subscription_add_users();
+	}
+	if (x($_REQUEST,'real_time_deactivate')) {
+		facebook_subscription_del_users();
+	}
 }
 
 function facebook_jot_nets(&$a,&$b) {
@@ -1153,3 +1259,178 @@ function fb_consume_stream($uid,$j,$wall = false) {
 	}
 }
 
+
+function fb_get_app_access_token() {
+	
+	$acc_token = get_config('facebook','app_access_token');
+	
+	if ($acc_token !== false) return $acc_token;
+	
+	$appid = get_config('facebook','appid');
+	$appsecret = get_config('facebook', 'appsecret');
+	
+	if ($appid === false || $appsecret === false) {
+		logger('fb_get_app_access_token: appid and/or appsecret not set', LOGGER_DEBUG);
+		return false;
+	}
+	
+	$x = fetch_url('https://graph.facebook.com/oauth/access_token?client_id=' . $appid . '&client_secret=' . $appsecret . "&grant_type=client_credentials");
+	
+	if(strpos($x,'access_token=') !== false) {
+		logger('fb_get_app_access_token: returned access token: ' . $x, LOGGER_DATA);
+	
+		$token = str_replace('access_token=', '', $x);
+ 		if(strpos($token,'&') !== false)
+			$token = substr($token,0,strpos($token,'&'));
+		
+		if ($token == "") {
+			logger('fb_get_app_access_token: empty token: ' . $x, LOGGER_DEBUG);
+			return false;
+		}
+		set_config('facebook','app_access_token',$token);
+		return $token;
+	} else {
+		logger('fb_get_app_access_token: response did not contain an access_token: ' . $x, LOGGER_DATA);
+		return false;
+	}
+}
+
+function facebook_subscription_del_users() {
+	$a = get_app();
+	$access_token = fb_get_app_access_token();
+	
+	$url = "https://graph.facebook.com/" . get_config('facebook', 'appid'  ) . "/subscriptions?access_token=" . $access_token;
+	delete_url($url);
+}
+
+function facebook_subscription_add_users() {
+	
+	$a = get_app();
+	$access_token = fb_get_app_access_token();
+	
+	$url = "https://graph.facebook.com/" . get_config('facebook', 'appid'  ) . "/subscriptions?access_token=" . $access_token;
+	
+	list($usec, $sec) = explode(" ", microtime());
+	$verify_token = sha1($usec . $sec . rand(0, 999999999));
+	set_config('facebook', 'cb_verify_token', $verify_token);
+	
+	$cb = $a->get_baseurl() . '/facebook/?realtime_cb=1';
+	
+	$j = post_url($url,array(
+		"object" => "user",
+		"fields" => "feed,friends,activities",
+		"callback_url" => $cb,
+		"verify_token" => $verify_token,
+	));
+	del_config('facebook', 'cb_verify_token');
+	
+	if ($j) {
+		logger("Facebook reponse: " . $j, LOGGER_DATA);
+	};
+}
+
+function facebook_subscriptions_get() {
+	
+	$access_token = fb_get_app_access_token();
+	
+	$url = "https://graph.facebook.com/" . get_config('facebook', 'appid'  ) . "/subscriptions?access_token=" . $access_token;
+	$j = fetch_url($url);
+	$ret = null;
+	if ($j) {
+		$x = json_decode($j);
+		if (isset($x->data)) $ret = $x->data;
+	}
+	return $ret;
+}
+
+
+
+
+
+
+
+// DELETE-request to $url
+
+if(! function_exists('delete_url')) {
+function delete_url($url,$headers = null, &$redirects = 0, $timeout = 0) {
+	$a = get_app();
+	$ch = curl_init($url);
+	if(($redirects > 8) || (! $ch)) 
+		return false;
+
+	curl_setopt($ch, CURLOPT_HEADER, true);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
+	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+	curl_setopt($ch, CURLOPT_USERAGENT, "Friendica");
+
+	if(intval($timeout)) {
+		curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+	}
+	else {
+		$curl_time = intval(get_config('system','curl_timeout'));
+		curl_setopt($ch, CURLOPT_TIMEOUT, (($curl_time !== false) ? $curl_time : 60));
+	}
+
+	if(defined('LIGHTTPD')) {
+		if(!is_array($headers)) {
+			$headers = array('Expect:');
+		} else {
+			if(!in_array('Expect:', $headers)) {
+				array_push($headers, 'Expect:');
+			}
+		}
+	}
+	if($headers)
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+	$check_cert = get_config('system','verifyssl');
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, (($check_cert) ? true : false));
+	$prx = get_config('system','proxy');
+	if(strlen($prx)) {
+		curl_setopt($ch, CURLOPT_HTTPPROXYTUNNEL, 1);
+		curl_setopt($ch, CURLOPT_PROXY, $prx);
+		$prxusr = get_config('system','proxyuser');
+		if(strlen($prxusr))
+			curl_setopt($ch, CURLOPT_PROXYUSERPWD, $prxusr);
+	}
+
+	$a->set_curl_code(0);
+
+	// don't let curl abort the entire application
+	// if it throws any errors.
+
+	$s = @curl_exec($ch);
+
+	$base = $s;
+	$curl_info = curl_getinfo($ch);
+	$http_code = $curl_info['http_code'];
+
+	$header = '';
+
+	// Pull out multiple headers, e.g. proxy and continuation headers
+	// allow for HTTP/2.x without fixing code
+
+	while(preg_match('/^HTTP\/[1-2].+? [1-5][0-9][0-9]/',$base)) {
+		$chunk = substr($base,0,strpos($base,"\r\n\r\n")+4);
+		$header .= $chunk;
+		$base = substr($base,strlen($chunk));
+	}
+
+	if($http_code == 301 || $http_code == 302 || $http_code == 303) {
+        $matches = array();
+        preg_match('/(Location:|URI:)(.*?)\n/', $header, $matches);
+        $url = trim(array_pop($matches));
+        $url_parsed = @parse_url($url);
+        if (isset($url_parsed)) {
+            $redirects++;
+            return delete_url($url,$headers,$redirects,$timeout);
+        }
+    }
+	$a->set_curl_code($http_code);
+	$body = substr($s,strlen($header));
+
+	$a->set_curl_headers($header);
+
+	curl_close($ch);
+	return($body);
+}}
