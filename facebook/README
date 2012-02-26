@@ -17,6 +17,8 @@ Installing the Friendica/Facebook connector
      Replace with the settings Facebook gives you.
   d. Navigate to Set Web->Site URL & Domain -> Website Settings.  Set Site URL 
      to yoursubdomain.yourdomain.com.  Set Site Domain to your yourdomain.com.
+  e. Chose "Website" (the url should be your site URL with a trailing slash) in the
+     "Select how your app integrates with Facebook" section.
 2. Enable the facebook plugin by including it in .htconfig.php - e.g. 
     $a->config['system']['addon'] = 'plugin1,plugin2,facebook';
 3. Visit the Facebook Settings section of the "Settings->Plugin Settings" page.
