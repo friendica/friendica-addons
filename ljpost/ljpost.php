@@ -23,11 +23,6 @@ function ljpost_uninstall() {
     unregister_hook('connector_settings', 'addon/ljpost/ljpost.php', 'ljpost_settings');
     unregister_hook('connector_settings_post', 'addon/ljpost/ljpost.php', 'ljpost_settings_post');
 
-// obsolete - remove
-    unregister_hook('post_local_end', 'addon/ljpost/ljpost.php', 'ljpost_send');
-    unregister_hook('plugin_settings', 'addon/ljpost/ljpost.php', 'ljpost_settings');
-    unregister_hook('plugin_settings_post', 'addon/ljpost/ljpost.php', 'ljpost_settings_post');
-
 }
 
 
