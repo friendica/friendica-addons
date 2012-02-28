@@ -171,11 +171,11 @@ $title = '<title>' . (($b['title']) ? $b['title'] : t('Post from Friendica')) . 
 $post = $title . bbcode($b['body']);
 $post = xmlify($post);
 
-$year = date('Y')
-$month = date('F')
-$day = date('l')
-$hour = date('H')
-$min = date('i')
+$year = date('Y');
+$month = date('F');
+$day = date('l');
+$hour = date('H');
+$min = date('i');
 
 $xml = <<< EOT
 
