@@ -170,7 +170,7 @@ function ljpost_send(&$a,&$b) {
 		require_once('include/bbcode.php');
 		require_once('include/datetime.php');
 
-		$title = (($b['title']) ? $b['title'] : t('[no subject]'));
+		$title = $b['title'];
 		$post = bbcode($b['body']);
 		$post = xmlify($post);
 
