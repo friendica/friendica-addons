@@ -53,6 +53,7 @@ function qcomment_addon_settings(&$a,&$s) {
     $s .= '<div class="settings-block">';
     $s .= '<h3>' . t('Quick Comment Settings') . '</h3>';
     $s .= '<div id="qcomment-wrapper">';
+	$s .= '<div id="qcomment-desc">' . t("Quick comments are found near comment boxes, sometimes hidden. Click them to provide simple replies.") . '</div>';
     $s .= '<label id="qcomment-label" for="qcomment-words">' . t('Enter quick comments, one per line') . ' </label>';
     $s .= '<textarea id="qcomment-words" type="text" name="qcomment-words" >' . htmlspecialchars(unxmlify($words)) . '</textarea>';
     $s .= '</div><div class="clear"></div>';
