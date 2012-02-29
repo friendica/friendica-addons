@@ -1,11 +1,11 @@
 
-#ljpost-enable-label, #ljpost-username-label, #ljpost-password-label, #ljpost-blog-label, #ljpost-bydefault-label {
+#ljpost-enable-label, #ljpost-username-label, #ljpost-password-label, #ljpost-bydefault-label {
 	float: left;
 	width: 200px;
 	margin-top: 10px;
 }
 
-#ljpost-checkbox, #ljpost-username, #ljpost-password, #ljpost-blog, #ljpost-bydefault {
+#ljpost-checkbox, #ljpost-username, #ljpost-password, #ljpost-bydefault {
 	float: left;
 	margin-top: 10px;
 }
