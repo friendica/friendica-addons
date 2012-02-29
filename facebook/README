@@ -23,7 +23,10 @@ Installing the Friendica/Facebook connector
    and click 'Install Facebook Connector'.
 4. This will ask you to login to Facebook and grant permission to the 
    plugin to do its stuff. Allow it to do so. 
-5. You're done. To turn it off visit the Plugin Settings page again and
+5. Optional step: If you want to use Facebook Real Time Updates (so new messages
+   and new contacts are added ~1min after they are postet / added on FB), go to
+   Settings -> plugins -> facebook and press the "Activate Real-Time Updates"-button.
+6. You're done. To turn it off visit the Plugin Settings page again and
    'Remove Facebook posting'.
 
 Vidoes and embeds will not be posted if there is no other content. Links 
