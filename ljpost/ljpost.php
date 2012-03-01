@@ -161,16 +161,22 @@ function ljpost_send(&$a,&$b) {
 	if($x && strlen($x[0]['timezone']))
 		$tz = $x[0]['timezone'];	
 
-	$lj_username = get_pconfig($b['uid'],'ljpost','lj_username');
-	$lj_password = get_pconfig($b['uid'],'ljpost','lj_password');
-	$lj_blog = 'http://www.livejournal.com/interface/xmlrpc';
+	$lj_username = xmlify(get_pconfig($b['uid'],'ljpost','lj_username'));
+	$lj_password = xmlify(get_pconfig($b['uid'],'ljpost','lj_password'));
+	$lj_journal = xmlify(get_pconfig($b['uid'],'ljpost','lj_journal'));
+//	if(! $lj_journal)
+//		$lj_journal = $lj_username;
+
+	$lj_blog = xmlify(get_pconfig($b['uid'],'ljpost','lj_blog'));
+	if(! strlen($lj_blog))
+		$lj_blog = xmlify('http://www.livejournal.com/interface/xmlrpc');
 
 	if($lj_username && $lj_password && $lj_blog) {
 
 		require_once('include/bbcode.php');
 		require_once('include/datetime.php');
 
-		$title = $b['title'];
+		$title = xmlify($b['title']);
 		$post = bbcode($b['body']);
 		$post = xmlify($post);
 
