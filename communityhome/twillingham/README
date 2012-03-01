@@ -1,0 +1,7 @@
+Thomas Willingham
+
+This isn't even close to being worth a pull request, but some people might find it useful.
+
+Enable community home in your admin panel, then replace communityhome.php with this one to get a front page like mine (a normal front page, but with latest users shown in the sidebar, which looks bleak when there's nothing in it).
+
+There are more graceful ways of doing this, I used communityhome as I plan to make use of a limited stream and likes in future.
