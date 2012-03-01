@@ -161,8 +161,8 @@ function wppost_send(&$a,&$b) {
         return;
 
 
-	$wp_username = get_pconfig($b['uid'],'wppost','wp_username');
-	$wp_password = get_pconfig($b['uid'],'wppost','wp_password');
+	$wp_username = xmlify(get_pconfig($b['uid'],'wppost','wp_username'));
+	$wp_password = xmlify(get_pconfig($b['uid'],'wppost','wp_password'));
 	$wp_blog = get_pconfig($b['uid'],'wppost','wp_blog');
 
 	if($wp_username && $wp_password && $wp_blog) {
