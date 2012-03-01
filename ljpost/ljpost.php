@@ -187,26 +187,30 @@ function ljpost_send(&$a,&$b) {
 		$min  = intval(substr($date,14,2));
 
 		$xml = <<< EOT
-<?xml version="1.0" encoding="utf-8"?>
-<methodCall>
-  <methodName>LJ.XMLRPC.postevent</methodName>
-  <params>
-    <param><value>
-        <struct>
-        <member><name>username</name><value><string>$lj_username</string></value></member>
-        <member><name>password</name><value><string>$lj_password</string></value></member>
-	<member><name>usejournal</name><value><string>$lj_username</string></value></member>
-        <member><name>event</name><value><string>$post</string></value></member>
-        <member><name>subject</name><value><string>$title</string></value></member>
-        <member><name>lineendings</name><value><string>unix</string></value></member>
-        <member><name>year</name><value><int>$year</int></value></member>
-        <member><name>mon</name><value><int>$mon</int></value></member>
-        <member><name>day</name><value><int>$day</int></value></member>
-        <member><name>hour</name><value><int>$hour</int></value></member>
-        <member><name>min</name><value><int>$min</int></value></member>
-        </struct>
-    </value></param>
-  </params>
+		
+<?xml version=\"1.0\" encoding=\"utf-8\"?>
+<methodCall><methodName>LJ.XMLRPC.postevent</methodName>
+<params><param>
+<value><struct>
+<member><name>year</name><value><int>$year</int></value></member>
+<member><name>mon</name><value><int>$mon</int></value></member>
+<member><name>day</name><value><int>$day</int></value></member>
+<member><name>hour</name><value><int>$hour</int></value></member>
+<member><name>min</name><value><int>$min</int></value></member>
+<member><name>usejournal</name><value><string>$lj_username</string></value></member>
+<member><name>event</name><value><string>$post</string></value></member>
+<member><name>username</name><value><string>$lj_username</string></value></member>
+<member><name>password</name><value><string>$lj_password</string></value></member>
+<member><name>subject</name><value><string>xpost from friendica</string></value></member>
+<member><name>lineendings</name><value><string>unix</string></value></member>
+<member><name>ver</name><value><int>1</int></value></member>
+<member><name>props</name>
+<value><struct>
+<member><name>useragent</name><value><string>Friendica</string></value></member>
+<member><name>taglist</name><value><string>friendica</string></value></member>
+</struct></value></member>
+</struct></value>
+</param></params>
 </methodCall>
 
 EOT;
