@@ -4,7 +4,7 @@
  * Name: LiveJournal Post Connector
  * Description: Post to LiveJournal
  * Version: 1.0
- * Author: Tony Baldwin <http://theshi.re/profile/tony>
+ * Author: Tony Baldwin <http://tonybaldwin.me/friendica/profile/tony>
  * Author: Michael Johnston
  */
 
