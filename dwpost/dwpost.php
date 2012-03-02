@@ -191,7 +191,6 @@ function dwpost_send(&$a,&$b) {
 <member><name>day</name><value><int>$day</int></value></member>
 <member><name>hour</name><value><int>$hour</int></value></member>
 <member><name>min</name><value><int>$min</int></value></member>
-<member><name>usejournal</name><value><string>$dw_username</string></value></member>
 <member><name>event</name><value><string>$post</string></value></member>
 <member><name>username</name><value><string>$dw_username</string></value></member>
 <member><name>password</name><value><string>$dw_password</string></value></member>
