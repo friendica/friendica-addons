@@ -31,6 +31,8 @@ function mibbit_module() {
 
 function mibbit_content(&$a) {
 
+	$o = '';
+
 // this stuff is supposed to go in the page header
 
 $a->page['htmlhead'] .= 'session_start();  
@@ -48,15 +50,15 @@ $a->page['htmlhead'] .= 'session_start();
  
  // add the chatroom frame and some html
  
-    $s .= '<h2>chat</h2>';
-    $s .= '<center>';
-    $s .= '<iframe  src=\"<?PHP echo $uri; ?>\" frameborder=\"0\">
+    $o .= '<h2>chat</h2>';
+    $o .= '<center>';
+    $o .= '<iframe  src=\"<?PHP echo $uri; ?>\" frameborder=\"0\">
  [Your user agent does not support frames or is currently configured
  not to display frames. However, you may want to open the
  <A href=\"<?PHP echo $uri; ?>\" target=\"_blank\"> chat in a new browser window ...</A>]';
-    $s .= '</iframe>';
-    $s .= '<br>(no spaces, interpunctuation or leading ciphers in your /nick name)';
-    $s .= '<h4>type /help to learn about special commands</h4>';
-    $s .= '</center><hr>'
+    $o .= '</iframe>';
+    $o .= '<br>(no spaces, interpunctuation or leading ciphers in your /nick name)';
+    $o .= '<h4>type /help to learn about special commands</h4>';
+    $o .= '</center><hr>'
     
 }
