@@ -101,15 +101,15 @@ function blockem_prepare_body(&$a,&$b) {
 		}
 	}
 	if($found) {
-		$rnd = random_string(8);	
+		$rnd = random_string(8);
 		$b['html'] = '<div id="blockem-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'blockem-' . $rnd . '\'); >' . sprintf( t('Blocked %s - Click to open/close'),$word ) . '</div><div id="blockem-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';  
 	}
 }
 
 
 function blockem_display_item(&$a,&$b) {
-	if(strstr($b['output'],'id="blockem-wrap-'))
-		$b['output'] = preg_replace('/\<img(.*?)src=\"(.*?)\" class=\"wall\-item\-photo(.*?)\>/','<img$1src="' . $a->get_baseurl() . "/images/default-profile-sm.jpg" . '" class="wall-item-photo$3>',$b['output']);
+	if(strstr($b['output']['body'],'id="blockem-wrap-'))
+		$b['output']['thumb'] = $a->get_baseurl() . "/images/default-profile-sm.jpg";
 }
 
 
