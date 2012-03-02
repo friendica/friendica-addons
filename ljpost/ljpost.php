@@ -61,6 +61,7 @@ function ljpost_settings(&$a,&$s) {
 
 	$lj_username = get_pconfig(local_user(), 'ljpost', 'lj_username');
 	$lj_password = get_pconfig(local_user(), 'ljpost', 'lj_password');
+	$lj_url = get_pconfig(local_user(), 'ljpost', 'lj_url');
 
 
     /* Add some HTML to the existing form */
@@ -107,6 +108,7 @@ function ljpost_settings_post(&$a,&$b) {
 		set_pconfig(local_user(),'ljpost','post_by_default',intval($_POST['lj_bydefault']));
 		set_pconfig(local_user(),'ljpost','lj_username',trim($_POST['lj_username']));
 		set_pconfig(local_user(),'ljpost','lj_password',trim($_POST['lj_password']));
+		set_pconfig(local_user(),'ljpost','lj_url',trim($_POST['lj_url']));
 
 	}
 
@@ -187,8 +189,7 @@ function ljpost_send(&$a,&$b) {
 		$min  = intval(substr($date,14,2));
 
 		$xml = <<< EOT
-		
-<?xml version=\"1.0\" encoding=\"utf-8\"?>
+<?xml version="1.0" encoding="utf-8"?>
 <methodCall><methodName>LJ.XMLRPC.postevent</methodName>
 <params><param>
 <value><struct>
@@ -201,7 +202,7 @@ function ljpost_send(&$a,&$b) {
 <member><name>event</name><value><string>$post</string></value></member>
 <member><name>username</name><value><string>$lj_username</string></value></member>
 <member><name>password</name><value><string>$lj_password</string></value></member>
-<member><name>subject</name><value><string>xpost from friendica</string></value></member>
+<member><name>subject</name><value><string>$title</string></value></member>
 <member><name>lineendings</name><value><string>unix</string></value></member>
 <member><name>ver</name><value><int>1</int></value></member>
 <member><name>props</name>
