@@ -31,6 +31,7 @@ function mibbit_module() {
 
 function mibbit_content(&$a) {
 
+	$baseurl = $a->get_baseurl() . '/addon/mibbit';
 	$o = '';
 
 // this stuff is supposed to go in the page header
