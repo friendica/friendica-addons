@@ -33,8 +33,12 @@ $o = '';
 
 
  // add the chatroom frame and some html
-    $o .= '<h2>IRC chat</h2>';
-    $o .= '<iframe src=\"http://webchat.freenode.net?channels=friendica\" width=\"600\" height=\"800\"></iframe>'
+  $o .= <<< EOT
+<h2>IRC chat</h2>
+<iframe src="http://webchat.freenode.net?channels=friendica" width="600" height="800"></iframe>
+EOT;
+
+return $o;
     
 }
 
