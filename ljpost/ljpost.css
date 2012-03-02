@@ -1,0 +1,16 @@
+
+#ljpost-enable-label, #ljpost-username-label, #ljpost-password-label, #ljpost-bydefault-label {
+	float: left;
+	width: 200px;
+	margin-top: 10px;
+}
+
+#ljpost-checkbox, #ljpost-username, #ljpost-password, #ljpost-bydefault {
+	float: left;
+	margin-top: 10px;
+}
+
+#ljpost-submit {
+	margin-top: 15px;
+}
+

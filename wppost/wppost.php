@@ -161,8 +161,8 @@ function wppost_send(&$a,&$b) {
         return;
 
 
-	$wp_username = get_pconfig($b['uid'],'wppost','wp_username');
-	$wp_password = get_pconfig($b['uid'],'wppost','wp_password');
+	$wp_username = xmlify(get_pconfig($b['uid'],'wppost','wp_username'));
+	$wp_password = xmlify(get_pconfig($b['uid'],'wppost','wp_password'));
 	$wp_blog = get_pconfig($b['uid'],'wppost','wp_blog');
 
 	if($wp_username && $wp_password && $wp_blog) {
@@ -174,8 +174,7 @@ function wppost_send(&$a,&$b) {
 		$post = xmlify($post);
 
 		$xml = <<< EOT
-
-<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>
+<?xml version=\"1.0\" encoding=\"utf-8\"?>
 <methodCall>
   <methodName>blogger.newPost</methodName>
   <params>
@@ -194,7 +193,7 @@ EOT;
 
 		if($wp_blog !== 'test')
 			$x = post_url($wp_blog,$xml);
-		logger('posted to wordpress: ' . ($x) ? $x : '');
+		logger('posted to wordpress: ' . (($x) ? $x : ''), LOGGER_DEBUG);
 
 	}
 }
