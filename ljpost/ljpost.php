@@ -61,7 +61,6 @@ function ljpost_settings(&$a,&$s) {
 
 	$lj_username = get_pconfig(local_user(), 'ljpost', 'lj_username');
 	$lj_password = get_pconfig(local_user(), 'ljpost', 'lj_password');
-	$lj_url = get_pconfig(local_user(), 'ljpost', 'lj_url');
 
 
     /* Add some HTML to the existing form */
@@ -81,11 +80,6 @@ function ljpost_settings(&$a,&$s) {
     $s .= '<div id="ljpost-password-wrapper">';
     $s .= '<label id="ljpost-password-label" for="ljpost-password">' . t('LiveJournal password') . '</label>';
     $s .= '<input id="ljpost-password" type="password" name="lj_password" value="' . $lj_password . '" />';
-    $s .= '</div><div class="clear"></div>';
-
-    $s .= '<div id="ljpost-url-wrapper">';
-    $s .= '<label id="ljpost-url-label" for="ljpost-url">' . t('LiveJournal URL') . '</label>';
-    $s .= '<input id="ljpost-url" type="url" name="lj_url" value="' . $lj_url . '" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="ljpost-bydefault-wrapper">';
@@ -108,7 +102,6 @@ function ljpost_settings_post(&$a,&$b) {
 		set_pconfig(local_user(),'ljpost','post_by_default',intval($_POST['lj_bydefault']));
 		set_pconfig(local_user(),'ljpost','lj_username',trim($_POST['lj_username']));
 		set_pconfig(local_user(),'ljpost','lj_password',trim($_POST['lj_password']));
-		set_pconfig(local_user(),'ljpost','lj_url',trim($_POST['lj_url']));
 
 	}
 
@@ -170,7 +163,7 @@ function ljpost_send(&$a,&$b) {
 
 	$lj_username = get_pconfig($b['uid'],'ljpost','lj_username');
 	$lj_password = get_pconfig($b['uid'],'ljpost','lj_password');
-	$lj_blog = '$lj_url/interface/xmlrpc';
+	$lj_blog = 'http://www.livejournal.com/interface/xmlrpc';
 
 	if($lj_username && $lj_password && $lj_blog) {
 
