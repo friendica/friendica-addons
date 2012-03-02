@@ -3,7 +3,7 @@
  * Name: Mibbit Chat Plugin
  * Description: add a mibbit/irc chatroom
  * Version: 1.0
- * Author: tony baldwin | http://tonybaldwin.me
+ * Author: tony baldwin <http://tonybaldwin.me>
  */
 
 
