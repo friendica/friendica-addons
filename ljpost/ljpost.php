@@ -4,7 +4,7 @@
  * Name: LiveJournal Post Connector
  * Description: Post to LiveJournal
  * Version: 1.0
- * Author: Tony Baldwin <http://theshi.re/profile/tony>
+ * Author: Tony Baldwin <http://tonybaldwin.me/friendica/profile/tony>
  * Author: Michael Johnston
  */
 
@@ -204,6 +204,18 @@ function ljpost_send(&$a,&$b) {
         <member><name>day</name><value><int>$day</int></value></member>
         <member><name>hour</name><value><int>$hour</int></value></member>
         <member><name>min</name><value><int>$min</int></value></member>
+		<member><name>usejournal</name><value><string>$lj_username</string></value></member>
+		<member>
+			<name>props</name>
+			<value>
+				<struct>
+					<member>
+						<name>useragent</name>
+						<value><string>Friendica</string></value>
+					</member>
+				</struct>
+			</value>
+		</member>
         </struct>
     </value></param>
   </params>
