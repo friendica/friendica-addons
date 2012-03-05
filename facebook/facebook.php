@@ -289,7 +289,7 @@ function fb_get_friends_sync_full($uid, $access_token, $person) {
 					intval($r[0]['id'])
 				);			
 			}	
-			continue;
+			return;
 		}
 		else {
 
@@ -322,7 +322,7 @@ function fb_get_friends_sync_full($uid, $access_token, $person) {
 		);
 
 		if(! count($r)) {
-			continue;
+			return;
 		}
 
 		$contact = $r[0];
