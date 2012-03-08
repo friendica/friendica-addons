@@ -6,6 +6,7 @@
  * Version: 1.0
  * Author: Tony Baldwin <http://tonybaldwin.me/friendica/profile/tony>
  * Author: Michael Johnston
+ * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
 
 function ljpost_install() {
@@ -179,6 +180,7 @@ function ljpost_send(&$a,&$b) {
 		$title = xmlify($b['title']);
 		$post = bbcode($b['body']);
 		$post = xmlify($post);
+		$tags = ljpost_get_tags($b['tag']);
 
 		$date = datetime_convert('UTC',$tz,$b['created'],'Y-m-d H:i:s');
 		$year = intval(substr($date,0,4));
@@ -213,6 +215,10 @@ function ljpost_send(&$a,&$b) {
 						<name>useragent</name>
 						<value><string>Friendica</string></value>
 					</member>
+					<member>
+						<name>taglist</name>
+						<value><string>$tags</string></value>
+					</member>
 				</struct>
 			</value>
 		</member>
@@ -232,3 +238,9 @@ EOT;
 	}
 }
 
+function ljpost_get_tags($post)
+{
+	preg_match_all("/\]([^\[#]+)\[/",$post,$matches);
+	$tags = implode(', ',$matches[1]);
+	return $tags;
+}
