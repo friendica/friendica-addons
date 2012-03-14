@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: Twitter Connector
- * Description: Relay public postings to a connected StatusNet account
+ * Description: Relay public postings to a connected Twitter account
  * Version: 1.0.2
  * Author: Tobias Diekershoff <https://diekershoff.homeunix.net/friendika/profile/tobias>
  */
@@ -288,7 +288,7 @@ function twitter_post_hook(&$a,&$b) {
                 // longer so we give them 10 characters extra
 		$max_char = 130; // max. length for a tweet
                 // we will only work with up to two times the length of the dent 
-                // we can later send to StatusNet. This way we can "gain" some 
+                // we can later send to Twitter. This way we can "gain" some 
                 // information during shortening of potential links but do not 
                 // shorten all the links in a 200000 character long essay.
                 $tmp = substr($b['body'], 0, 2*$max_char);
