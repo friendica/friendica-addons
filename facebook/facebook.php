@@ -1176,12 +1176,17 @@ function fb_consume_stream($uid,$j,$wall = false) {
 				$datarray['private'] = 1;
 				$datarray['allow_cid'] = '<' . $uid . '>';
 			}
-			
+
+			if(trim($datarray['body']) == '') {
+				logger('facebook: empty body');
+				continue;
+			}
+
 			$top_item = item_store($datarray);
 			$r = q("SELECT * FROM `item` WHERE `id` = %d AND `uid` = %d LIMIT 1",
 				intval($top_item),
 				intval($uid)
-			);			
+			);
 			if(count($r)) {
 				$orig_post = $r[0];
 				logger('fb: new top level item posted');
