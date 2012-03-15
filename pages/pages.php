@@ -21,6 +21,8 @@ function pages_iscommunity($url, &$pagelist) {
 		// When too old or not found fetch the status from the profile
 		$ch = curl_init();
 
+		$url = str_replace("/profile/","/hcard/", $url);
+
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
