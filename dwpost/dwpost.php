@@ -150,7 +150,7 @@ function dwpost_send(&$a,&$b) {
     if($b['parent'] != $b['id'])
         return;
 
-	// dreamwidth post in the DW user's timezone. 
+	// dreamwidth post in the LJ user's timezone. 
 	// Hopefully the person's Friendica account
 	// will be set to the same thing.
 
@@ -165,10 +165,6 @@ function dwpost_send(&$a,&$b) {
 	$dw_username = get_pconfig($b['uid'],'dwpost','dw_username');
 	$dw_password = get_pconfig($b['uid'],'dwpost','dw_password');
 	$dw_blog = 'http://www.dreamwidth.org/interface/xmlrpc';
-
-	$dw_blog = xmlify(get_pconfig($b['uid'],'dwpost','dw_blog'));
-	if(! strlen($dw_blog))
-		$dw_blog = xmlify('http://www.dreamwidth.org/interface/xmlrpc');
 
 	if($dw_username && $dw_password && $dw_blog) {
 
@@ -189,40 +185,27 @@ function dwpost_send(&$a,&$b) {
 
 		$xml = <<< EOT
 <?xml version="1.0" encoding="utf-8"?>
-<methodCall>
-  <methodName>LJ.XMLRPC.postevent</methodName>
-  <params>
-    <param><value>
-        <struct>
-        <member><name>username</name><value><string>$dw_username</string></value></member>
-        <member><name>password</name><value><string>$dw_password</string></value></member>
-        <member><name>event</name><value><string>$post</string></value></member>
-        <member><name>subject</name><value><string>$title</string></value></member>
-        <member><name>lineendings</name><value><string>unix</string></value></member>
-        <member><name>year</name><value><int>$year</int></value></member>
-        <member><name>mon</name><value><int>$mon</int></value></member>
-        <member><name>day</name><value><int>$day</int></value></member>
-        <member><name>hour</name><value><int>$hour</int></value></member>
-        <member><name>min</name><value><int>$min</int></value></member>
-		<member><name>usejournal</name><value><string>$lj_username</string></value></member>
-		<member>
-			<name>props</name>
-			<value>
-				<struct>
-					<member>
-						<name>useragent</name>
-						<value><string>Friendica</string></value>
-					</member>
-					<member>
-						<name>taglist</name>
-						<value><string>$tags</string></value>
-					</member>
-				</struct>
-			</value>
-		</member>
-        </struct>
-    </value></param>
-  </params>
+<methodCall><methodName>LJ.XMLRPC.postevent</methodName>
+<params><param>
+<value><struct>
+<member><name>year</name><value><int>$year</int></value></member>
+<member><name>mon</name><value><int>$mon</int></value></member>
+<member><name>day</name><value><int>$day</int></value></member>
+<member><name>hour</name><value><int>$hour</int></value></member>
+<member><name>min</name><value><int>$min</int></value></member>
+<member><name>event</name><value><string>$post</string></value></member>
+<member><name>username</name><value><string>$dw_username</string></value></member>
+<member><name>password</name><value><string>$dw_password</string></value></member>
+<member><name>subject</name><value><string>$title</string></value></member>
+<member><name>lineendings</name><value><string>unix</string></value></member>
+<member><name>ver</name><value><int>1</int></value></member>
+<member><name>props</name>
+<value><struct>
+<member><name>useragent</name><value><string>Friendica</string></value></member>
+<member><name>taglist</name><value><string>$tags</string></value></member>
+</struct></value></member>
+</struct></value>
+</param></params>
 </methodCall>
 
 EOT;
