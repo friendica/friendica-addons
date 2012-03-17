@@ -4,7 +4,7 @@
  * Name: Dreamwidth Post Connector
  * Description: Post to dreamwidth
  * Version: 1.0
- * Author: Tony Baldwin <http://tonybaldwin.me/friendica/profile/tony>
+ * Author: Tony Baldwin <https://free-haven.org/profile/tony>
  * Author: Michael Johnston
  */
 
