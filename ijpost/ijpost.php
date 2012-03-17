@@ -5,6 +5,8 @@
  * Description: Post to insanejournal	
  * Version: 1.0
  * Author: Tony Baldwin <https://free-haven.org/profile/tony>
+ * Author: Michael Johnston
+ * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
 
 function ijpost_install() {
@@ -172,6 +174,7 @@ function ijpost_send(&$a,&$b) {
 		$title = $b['title'];
 		$post = bbcode($b['body']);
 		$post = xmlify($post);
+		$tags = ijpost_get_tags($b['tag']);
 
 		$date = datetime_convert('UTC',$tz,$b['created'],'Y-m-d H:i:s');
 		$year = intval(substr($date,0,4));
@@ -199,7 +202,7 @@ function ijpost_send(&$a,&$b) {
 <member><name>props</name>
 <value><struct>
 <member><name>useragent</name><value><string>Friendica</string></value></member>
-<member><name>taglist</name><value><string>friendica</string></value></member>
+<member><name>taglist</name><value><string>$tags</string></value></member>
 </struct></value></member>
 </struct></value>
 </param></params>
@@ -216,3 +219,9 @@ EOT;
 	}
 }
 
+function ijpost_get_tags($post)
+{
+	preg_match_all("/\]([^\[#]+)\[/",$post,$matches);
+	$tags = implode(', ',$matches[1]);
+	return $tags;
+}

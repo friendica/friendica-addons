@@ -150,7 +150,7 @@ function dwpost_send(&$a,&$b) {
     if($b['parent'] != $b['id'])
         return;
 
-	// dreamwidth post in the LJ user's timezone. 
+	// dreamwidth post in the DW user's timezone. 
 	// Hopefully the person's Friendica account
 	// will be set to the same thing.
 
