@@ -1051,7 +1051,7 @@ function fb_consume_stream($uid,$j,$wall = false) {
 	$a = get_app();
 
 
-	$user = q("SELECT `nickname`, `blockwall` FROM `user` WHERE `uid` = %d AND `account_expired` = 0 LIMIT 1",
+	$user = q("SELECT * FROM `user` WHERE `uid` = %d AND `account_expired` = 0 LIMIT 1",
 		intval($uid)
 	);
 	if(! count($user))
@@ -1313,6 +1313,47 @@ function fb_consume_stream($uid,$j,$wall = false) {
 				$cmntdata['author-avatar'] = 'https://graph.facebook.com/' . $cmnt->from->id . '/picture';
 				$cmntdata['body'] = $cmnt->message;
 				$item = item_store($cmntdata);			
+				
+				$myconv = q("SELECT `author-link`, `author-avatar`, `parent` FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `parent` != 0 ",
+					dbesc($orig_post['uri']),
+					intval($uid)
+				);
+
+				if(count($myconv)) {
+					$importer_url = $a->get_baseurl() . '/profile/' . $user[0]['nickname'];
+
+					foreach($myconv as $conv) {
+
+						// now if we find a match, it means we're in this conversation
+	
+						if(! link_compare($conv['author-link'],$importer_url))
+							continue;
+
+						require_once('include/enotify.php');
+								
+						$conv_parent = $conv['parent'];
+
+						notification(array(
+							'type'         => NOTIFY_COMMENT,
+							'notify_flags' => $user[0]['notify-flags'],
+							'language'     => $user[0]['language'],
+							'to_name'      => $user[0]['username'],
+							'to_email'     => $user[0]['email'],
+							'uid'          => $user[0]['uid'],
+							'item'         => $cmntdata,
+							'link'		   => $a->get_baseurl() . '/display/' . $importer['nickname'] . '/' . $item,
+							'source_name'  => $cmntdata['author-name'],
+							'source_link'  => $cmntdata['author-link'],
+							'source_photo' => $cmntdata['author-avatar'],
+							'verb'         => ACTIVITY_POST,
+							'otype'        => 'item',
+							'parent'       => $conv_parent,
+						));
+
+						// only send one notification
+						break;
+					}
+				}
 			}
 		}
 	}
