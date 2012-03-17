@@ -6,6 +6,7 @@
  * Version: 1.0
  * Author: Tony Baldwin <https://free-haven.org/profile/tony>
  * Author: Michael Johnston
+ * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
 
 function ljpost_install() {
@@ -161,18 +162,25 @@ function ljpost_send(&$a,&$b) {
 	if($x && strlen($x[0]['timezone']))
 		$tz = $x[0]['timezone'];	
 
-	$lj_username = get_pconfig($b['uid'],'ljpost','lj_username');
-	$lj_password = get_pconfig($b['uid'],'ljpost','lj_password');
-	$lj_blog = 'http://www.livejournal.com/interface/xmlrpc';
+	$lj_username = xmlify(get_pconfig($b['uid'],'ljpost','lj_username'));
+	$lj_password = xmlify(get_pconfig($b['uid'],'ljpost','lj_password'));
+	$lj_journal = xmlify(get_pconfig($b['uid'],'ljpost','lj_journal'));
+//	if(! $lj_journal)
+//		$lj_journal = $lj_username;
+
+	$lj_blog = xmlify(get_pconfig($b['uid'],'ljpost','lj_blog'));
+	if(! strlen($lj_blog))
+		$lj_blog = xmlify('http://www.livejournal.com/interface/xmlrpc');
 
 	if($lj_username && $lj_password && $lj_blog) {
 
 		require_once('include/bbcode.php');
 		require_once('include/datetime.php');
 
-		$title = $b['title'];
+		$title = xmlify($b['title']);
 		$post = bbcode($b['body']);
 		$post = xmlify($post);
+		$tags = ljpost_get_tags($b['tag']);
 
 		$date = datetime_convert('UTC',$tz,$b['created'],'Y-m-d H:i:s');
 		$year = intval(substr($date,0,4));
@@ -183,28 +191,40 @@ function ljpost_send(&$a,&$b) {
 
 		$xml = <<< EOT
 <?xml version="1.0" encoding="utf-8"?>
-<methodCall><methodName>LJ.XMLRPC.postevent</methodName>
-<params><param>
-<value><struct>
-<member><name>year</name><value><int>$year</int></value></member>
-<member><name>mon</name><value><int>$mon</int></value></member>
-<member><name>day</name><value><int>$day</int></value></member>
-<member><name>hour</name><value><int>$hour</int></value></member>
-<member><name>min</name><value><int>$min</int></value></member>
-<member><name>usejournal</name><value><string>$lj_username</string></value></member>
-<member><name>event</name><value><string>$post</string></value></member>
-<member><name>username</name><value><string>$lj_username</string></value></member>
-<member><name>password</name><value><string>$lj_password</string></value></member>
-<member><name>subject</name><value><string>$title</string></value></member>
-<member><name>lineendings</name><value><string>unix</string></value></member>
-<member><name>ver</name><value><int>1</int></value></member>
-<member><name>props</name>
-<value><struct>
-<member><name>useragent</name><value><string>Friendica</string></value></member>
-<member><name>taglist</name><value><string>friendica</string></value></member>
-</struct></value></member>
-</struct></value>
-</param></params>
+<methodCall>
+  <methodName>LJ.XMLRPC.postevent</methodName>
+  <params>
+    <param><value>
+        <struct>
+        <member><name>username</name><value><string>$lj_username</string></value></member>
+        <member><name>password</name><value><string>$lj_password</string></value></member>
+        <member><name>event</name><value><string>$post</string></value></member>
+        <member><name>subject</name><value><string>$title</string></value></member>
+        <member><name>lineendings</name><value><string>unix</string></value></member>
+        <member><name>year</name><value><int>$year</int></value></member>
+        <member><name>mon</name><value><int>$mon</int></value></member>
+        <member><name>day</name><value><int>$day</int></value></member>
+        <member><name>hour</name><value><int>$hour</int></value></member>
+        <member><name>min</name><value><int>$min</int></value></member>
+		<member><name>usejournal</name><value><string>$lj_username</string></value></member>
+		<member>
+			<name>props</name>
+			<value>
+				<struct>
+					<member>
+						<name>useragent</name>
+						<value><string>Friendica</string></value>
+					</member>
+					<member>
+						<name>taglist</name>
+						<value><string>$tags</string></value>
+					</member>
+				</struct>
+			</value>
+		</member>
+        </struct>
+    </value></param>
+  </params>
 </methodCall>
 
 EOT;
@@ -218,3 +238,9 @@ EOT;
 	}
 }
 
+function ljpost_get_tags($post)
+{
+	preg_match_all("/\]([^\[#]+)\[/",$post,$matches);
+	$tags = implode(', ',$matches[1]);
+	return $tags;
+}
