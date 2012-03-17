@@ -165,8 +165,6 @@ function ljpost_send(&$a,&$b) {
 	$lj_username = xmlify(get_pconfig($b['uid'],'ljpost','lj_username'));
 	$lj_password = xmlify(get_pconfig($b['uid'],'ljpost','lj_password'));
 	$lj_journal = xmlify(get_pconfig($b['uid'],'ljpost','lj_journal'));
-//	if(! $lj_journal)
-//		$lj_journal = $lj_username;
 
 	$lj_blog = xmlify(get_pconfig($b['uid'],'ljpost','lj_blog'));
 	if(! strlen($lj_blog))

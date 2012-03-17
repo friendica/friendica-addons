@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Name: InsaneJournal Post Connector
- * Description: Post to insanejournal	
+ * Name: Insanejournal Post Connector
+ * Description: Post to insanejournal
  * Version: 1.0
  * Author: Tony Baldwin <https://free-haven.org/profile/tony>
  * Author: Michael Johnston
@@ -36,7 +36,7 @@ function ijpost_jot_nets(&$a,&$b) {
         $ij_defpost = get_pconfig(local_user(),'ijpost','post_by_default');
         $selected = ((intval($ij_defpost) == 1) ? ' checked="checked" ' : '');
         $b .= '<div class="profile-jot-net"><input type="checkbox" name="ijpost_enable" ' . $selected . ' value="1" /> '
-            . t('Post to InsaneJournal') . '</div>';
+            . t('Post to insanejournal') . '</div>';
     }
 }
 
@@ -67,9 +67,9 @@ function ijpost_settings(&$a,&$s) {
     /* Add some HTML to the existing form */
 
     $s .= '<div class="settings-block">';
-    $s .= '<h3>' . t('InsaneJournal Post Settings') . '</h3>';
+    $s .= '<h3>' . t('insanejournal Post Settings') . '</h3>';
     $s .= '<div id="ijpost-enable-wrapper">';
-    $s .= '<label id="ijpost-enable-label" for="ijpost-checkbox">' . t('Enable InsaneJournal Post Plugin') . '</label>';
+    $s .= '<label id="ijpost-enable-label" for="ijpost-checkbox">' . t('Enable insanejournal Post Plugin') . '</label>';
     $s .= '<input id="ijpost-checkbox" type="checkbox" name="ijpost" value="1" ' . $checked . '/>';
     $s .= '</div><div class="clear"></div>';
 
@@ -84,7 +84,7 @@ function ijpost_settings(&$a,&$s) {
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="ijpost-bydefault-wrapper">';
-    $s .= '<label id="ijpost-bydefault-label" for="ijpost-bydefault">' . t('Post to InsaneJournal by default') . '</label>';
+    $s .= '<label id="ijpost-bydefault-label" for="ijpost-bydefault">' . t('Post to insanejournal by default') . '</label>';
     $s .= '<input id="ijpost-bydefault" type="checkbox" name="ij_bydefault" value="1" ' . $def_checked . '/>';
     $s .= '</div><div class="clear"></div>';
 
@@ -150,7 +150,7 @@ function ijpost_send(&$a,&$b) {
     if($b['parent'] != $b['id'])
         return;
 
-	// InsaneJournal post in the IJ user's timezone. 
+	// insanejournal post in the LJ user's timezone. 
 	// Hopefully the person's Friendica account
 	// will be set to the same thing.
 
@@ -162,16 +162,20 @@ function ijpost_send(&$a,&$b) {
 	if($x && strlen($x[0]['timezone']))
 		$tz = $x[0]['timezone'];	
 
-	$ij_username = get_pconfig($b['uid'],'ijpost','ij_username');
-	$ij_password = get_pconfig($b['uid'],'ijpost','ij_password');
-	$ij_blog = 'http://www.insanejournal.com/interface/xmlrpc';
+	$ij_username = xmlify(get_pconfig($b['uid'],'ijpost','ij_username'));
+	$ij_password = xmlify(get_pconfig($b['uid'],'ijpost','ij_password'));
+	$ij_journal = xmlify(get_pconfig($b['uid'],'ijpost','ij_journal'));
+
+	$ij_blog = xmlify(get_pconfig($b['uid'],'ijpost','ij_blog'));
+	if(! strlen($ij_blog))
+		$ij_blog = xmlify('http://www.insanejournal.com/interface/xmlrpc');
 
 	if($ij_username && $ij_password && $ij_blog) {
 
 		require_once('include/bbcode.php');
 		require_once('include/datetime.php');
 
-		$title = $b['title'];
+		$title = xmlify($b['title']);
 		$post = bbcode($b['body']);
 		$post = xmlify($post);
 		$tags = ijpost_get_tags($b['tag']);
@@ -185,27 +189,40 @@ function ijpost_send(&$a,&$b) {
 
 		$xml = <<< EOT
 <?xml version="1.0" encoding="utf-8"?>
-<methodCall><methodName>LJ.XMLRPC.postevent</methodName>
-<params><param>
-<value><struct>
-<member><name>year</name><value><int>$year</int></value></member>
-<member><name>mon</name><value><int>$mon</int></value></member>
-<member><name>day</name><value><int>$day</int></value></member>
-<member><name>hour</name><value><int>$hour</int></value></member>
-<member><name>min</name><value><int>$min</int></value></member>
-<member><name>event</name><value><string>$post</string></value></member>
-<member><name>username</name><value><string>$ij_username</string></value></member>
-<member><name>password</name><value><string>$ij_password</string></value></member>
-<member><name>subject</name><value><string>$title</string></value></member>
-<member><name>lineendings</name><value><string>unix</string></value></member>
-<member><name>ver</name><value><int>1</int></value></member>
-<member><name>props</name>
-<value><struct>
-<member><name>useragent</name><value><string>Friendica</string></value></member>
-<member><name>taglist</name><value><string>$tags</string></value></member>
-</struct></value></member>
-</struct></value>
-</param></params>
+<methodCall>
+  <methodName>LJ.XMLRPC.postevent</methodName>
+  <params>
+    <param><value>
+        <struct>
+        <member><name>username</name><value><string>$ij_username</string></value></member>
+        <member><name>password</name><value><string>$ij_password</string></value></member>
+        <member><name>event</name><value><string>$post</string></value></member>
+        <member><name>subject</name><value><string>$title</string></value></member>
+        <member><name>lineendings</name><value><string>unix</string></value></member>
+        <member><name>year</name><value><int>$year</int></value></member>
+        <member><name>mon</name><value><int>$mon</int></value></member>
+        <member><name>day</name><value><int>$day</int></value></member>
+        <member><name>hour</name><value><int>$hour</int></value></member>
+        <member><name>min</name><value><int>$min</int></value></member>
+		<member><name>usejournal</name><value><string>$ij_username</string></value></member>
+		<member>
+			<name>props</name>
+			<value>
+				<struct>
+					<member>
+						<name>useragent</name>
+						<value><string>Friendica</string></value>
+					</member>
+					<member>
+						<name>taglist</name>
+						<value><string>$tags</string></value>
+					</member>
+				</struct>
+			</value>
+		</member>
+        </struct>
+    </value></param>
+  </params>
 </methodCall>
 
 EOT;
