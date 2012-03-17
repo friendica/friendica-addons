@@ -29,10 +29,10 @@ function ijpost_jot_nets(&$a,&$b) {
     if(! local_user())
         return;
 
-    $dw_post = get_pconfig(local_user(),'ijpost','post');
-    if(intval($dw_post) == 1) {
-        $dw_defpost = get_pconfig(local_user(),'ijpost','post_by_default');
-        $selected = ((intval($dw_defpost) == 1) ? ' checked="checked" ' : '');
+    $ij_post = get_pconfig(local_user(),'ijpost','post');
+    if(intval($ij_post) == 1) {
+        $ij_defpost = get_pconfig(local_user(),'ijpost','post_by_default');
+        $selected = ((intval($ij_defpost) == 1) ? ' checked="checked" ' : '');
         $b .= '<div class="profile-jot-net"><input type="checkbox" name="ijpost_enable" ' . $selected . ' value="1" /> '
             . t('Post to InsaneJournal') . '</div>';
     }
@@ -58,8 +58,8 @@ function ijpost_settings(&$a,&$s) {
 
     $def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
-	$dw_username = get_pconfig(local_user(), 'ijpost', 'dw_username');
-	$dw_password = get_pconfig(local_user(), 'ijpost', 'dw_password');
+	$ij_username = get_pconfig(local_user(), 'ijpost', 'ij_username');
+	$ij_password = get_pconfig(local_user(), 'ijpost', 'ij_password');
 
 
     /* Add some HTML to the existing form */
@@ -73,17 +73,17 @@ function ijpost_settings(&$a,&$s) {
 
     $s .= '<div id="ijpost-username-wrapper">';
     $s .= '<label id="ijpost-username-label" for="ijpost-username">' . t('insanejournal username') . '</label>';
-    $s .= '<input id="ijpost-username" type="text" name="dw_username" value="' . $dw_username . '" />';
+    $s .= '<input id="ijpost-username" type="text" name="ij_username" value="' . $ij_username . '" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="ijpost-password-wrapper">';
     $s .= '<label id="ijpost-password-label" for="ijpost-password">' . t('insanejournal password') . '</label>';
-    $s .= '<input id="ijpost-password" type="password" name="dw_password" value="' . $dw_password . '" />';
+    $s .= '<input id="ijpost-password" type="password" name="ij_password" value="' . $ij_password . '" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="ijpost-bydefault-wrapper">';
     $s .= '<label id="ijpost-bydefault-label" for="ijpost-bydefault">' . t('Post to InsaneJournal by default') . '</label>';
-    $s .= '<input id="ijpost-bydefault" type="checkbox" name="dw_bydefault" value="1" ' . $def_checked . '/>';
+    $s .= '<input id="ijpost-bydefault" type="checkbox" name="ij_bydefault" value="1" ' . $def_checked . '/>';
     $s .= '</div><div class="clear"></div>';
 
     /* provide a submit button */
@@ -98,9 +98,9 @@ function ijpost_settings_post(&$a,&$b) {
 	if(x($_POST,'ijpost-submit')) {
 
 		set_pconfig(local_user(),'ijpost','post',intval($_POST['ijpost']));
-		set_pconfig(local_user(),'ijpost','post_by_default',intval($_POST['dw_bydefault']));
-		set_pconfig(local_user(),'ijpost','dw_username',trim($_POST['dw_username']));
-		set_pconfig(local_user(),'ijpost','dw_password',trim($_POST['dw_password']));
+		set_pconfig(local_user(),'ijpost','post_by_default',intval($_POST['ij_bydefault']));
+		set_pconfig(local_user(),'ijpost','ij_username',trim($_POST['ij_username']));
+		set_pconfig(local_user(),'ijpost','ij_password',trim($_POST['ij_password']));
 
 	}
 
@@ -119,14 +119,14 @@ function ijpost_post_local(&$a,&$b) {
 	if($b['private'] || $b['parent'])
 		return;
 
-    $dw_post   = intval(get_pconfig(local_user(),'ijpost','post'));
+    $ij_post   = intval(get_pconfig(local_user(),'ijpost','post'));
 
-	$dw_enable = (($dw_post && x($_REQUEST,'ijpost_enable')) ? intval($_REQUEST['ijpost_enable']) : 0);
+	$ij_enable = (($ij_post && x($_REQUEST,'ijpost_enable')) ? intval($_REQUEST['ijpost_enable']) : 0);
 
 	if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'ijpost','post_by_default')))
-		$dw_enable = 1;
+		$ij_enable = 1;
 
-    if(! $dw_enable)
+    if(! $ij_enable)
        return;
 
     if(strlen($b['postopts']))
@@ -160,11 +160,11 @@ function ijpost_send(&$a,&$b) {
 	if($x && strlen($x[0]['timezone']))
 		$tz = $x[0]['timezone'];	
 
-	$dw_username = get_pconfig($b['uid'],'ijpost','dw_username');
-	$dw_password = get_pconfig($b['uid'],'ijpost','dw_password');
-	$dw_blog = 'http://www.insanejournal.com/interface/xmlrpc';
+	$ij_username = get_pconfig($b['uid'],'ijpost','ij_username');
+	$ij_password = get_pconfig($b['uid'],'ijpost','ij_password');
+	$ij_blog = 'http://www.insanejournal.com/interface/xmlrpc';
 
-	if($dw_username && $dw_password && $dw_blog) {
+	if($ij_username && $ij_password && $ij_blog) {
 
 		require_once('include/bbcode.php');
 		require_once('include/datetime.php');
@@ -191,8 +191,8 @@ function ijpost_send(&$a,&$b) {
 <member><name>hour</name><value><int>$hour</int></value></member>
 <member><name>min</name><value><int>$min</int></value></member>
 <member><name>event</name><value><string>$post</string></value></member>
-<member><name>username</name><value><string>$dw_username</string></value></member>
-<member><name>password</name><value><string>$dw_password</string></value></member>
+<member><name>username</name><value><string>$ij_username</string></value></member>
+<member><name>password</name><value><string>$ij_password</string></value></member>
 <member><name>subject</name><value><string>$title</string></value></member>
 <member><name>lineendings</name><value><string>unix</string></value></member>
 <member><name>ver</name><value><int>1</int></value></member>
@@ -209,8 +209,8 @@ EOT;
 
 		logger('ijpost: data: ' . $xml, LOGGER_DATA);
 
-		if($dw_blog !== 'test')
-			$x = post_url($dw_blog,$xml);
+		if($ij_blog !== 'test')
+			$x = post_url($ij_blog,$xml);
 		logger('posted to insanejournal: ' . ($x) ? $x : '', LOGGER_DEBUG);
 
 	}
