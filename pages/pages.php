@@ -82,7 +82,12 @@ function pages_page_end($a,&$b) {
 				$contact["Name"]."</a></li>";
 	}
 	$pages .= "</ul></div></div>";
-	if (sizeof($contacts) > 0)
-		$a->page['aside'] = $pages.$a->page['aside'];
+	if (sizeof($contacts) > 0) {
+		$pos = strpos($a->page['aside'], '<div id="saved-search-list"');
+		if ($pos > 0) {
+			$a->page['aside'] = substr($a->page['aside'], 0, $pos).$pages.substr($a->page['aside'], $pos);
+		} else
+			$a->page['aside'] = $pages.$a->page['aside'];
+	}
 }
 ?>
