@@ -36,7 +36,7 @@ function ijpost_jot_nets(&$a,&$b) {
         $ij_defpost = get_pconfig(local_user(),'ijpost','post_by_default');
         $selected = ((intval($ij_defpost) == 1) ? ' checked="checked" ' : '');
         $b .= '<div class="profile-jot-net"><input type="checkbox" name="ijpost_enable" ' . $selected . ' value="1" /> '
-            . t('Post to insanejournal') . '</div>';
+            . t('Post to Insanejournal') . '</div>';
     }
 }
 
@@ -67,24 +67,24 @@ function ijpost_settings(&$a,&$s) {
     /* Add some HTML to the existing form */
 
     $s .= '<div class="settings-block">';
-    $s .= '<h3>' . t('Insanejournal Post Settings') . '</h3>';
+    $s .= '<h3>' . t('InsaneJournal Post Settings') . '</h3>';
     $s .= '<div id="ijpost-enable-wrapper">';
-    $s .= '<label id="ijpost-enable-label" for="ijpost-checkbox">' . t('Enable insanejournal Post Plugin') . '</label>';
+    $s .= '<label id="ijpost-enable-label" for="ijpost-checkbox">' . t('Enable InsaneJournal Post Plugin') . '</label>';
     $s .= '<input id="ijpost-checkbox" type="checkbox" name="ijpost" value="1" ' . $checked . '/>';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="ijpost-username-wrapper">';
-    $s .= '<label id="ijpost-username-label" for="ijpost-username">' . t('insanejournal username') . '</label>';
+    $s .= '<label id="ijpost-username-label" for="ijpost-username">' . t('InsaneJournal username') . '</label>';
     $s .= '<input id="ijpost-username" type="text" name="ij_username" value="' . $ij_username . '" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="ijpost-password-wrapper">';
-    $s .= '<label id="ijpost-password-label" for="ijpost-password">' . t('insanejournal password') . '</label>';
+    $s .= '<label id="ijpost-password-label" for="ijpost-password">' . t('InsaneJournal password') . '</label>';
     $s .= '<input id="ijpost-password" type="password" name="ij_password" value="' . $ij_password . '" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="ijpost-bydefault-wrapper">';
-    $s .= '<label id="ijpost-bydefault-label" for="ijpost-bydefault">' . t('Post to insanejournal by default') . '</label>';
+    $s .= '<label id="ijpost-bydefault-label" for="ijpost-bydefault">' . t('Post to InsaneJournal by default') . '</label>';
     $s .= '<input id="ijpost-bydefault" type="checkbox" name="ij_bydefault" value="1" ' . $def_checked . '/>';
     $s .= '</div><div class="clear"></div>';
 
@@ -150,7 +150,7 @@ function ijpost_send(&$a,&$b) {
     if($b['parent'] != $b['id'])
         return;
 
-	// insanejournal post in the IJ user's timezone. 
+	// insanejournal post in the LJ user's timezone. 
 	// Hopefully the person's Friendica account
 	// will be set to the same thing.
 
