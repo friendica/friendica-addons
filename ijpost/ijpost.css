@@ -1,0 +1,15 @@
+
+#ijpost-enable-label, #ijpost-username-label, #ijpost-password-label, #ijpost-bydefault-label {
+float: left;
+width: 200px;
+margin-top: 10px;
+}
+
+#ijpost-checkbox, #ijpost-username, #ijpost-password, #ijpost-bydefault {
+float: left;
+margin-top: 10px;
+}
+
+#ijpost-submit {
+margin-top: 15px;
+}

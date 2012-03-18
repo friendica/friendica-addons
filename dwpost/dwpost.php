@@ -4,7 +4,7 @@
  * Name: Dreamwidth Post Connector
  * Description: Post to dreamwidth
  * Version: 1.0
- * Author: Tony Baldwin <http://tonybaldwin.me/friendica/profile/tony>
+ * Author: Tony Baldwin <https://free-haven.org/profile/tony>
  * Author: Michael Johnston
  * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
@@ -213,7 +213,7 @@ EOT;
 		logger('dwpost: data: ' . $xml, LOGGER_DATA);
 
 		if($dw_blog !== 'test')
-			$x = post_url($dw_blog,$xml);
+			$x = post_url($dw_blog,$xml,array("Content-Type: text/xml"));
 		logger('posted to dreamwidth: ' . ($x) ? $x : '', LOGGER_DEBUG);
 
 	}
