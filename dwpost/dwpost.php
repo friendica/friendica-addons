@@ -213,7 +213,7 @@ EOT;
 		logger('dwpost: data: ' . $xml, LOGGER_DATA);
 
 		if($dw_blog !== 'test')
-			$x = post_url($dw_blog,$xml);
+			$x = post_url($dw_blog,$xml,array("Content-Type: text/xml"));
 		logger('posted to dreamwidth: ' . ($x) ? $x : '', LOGGER_DEBUG);
 
 	}
