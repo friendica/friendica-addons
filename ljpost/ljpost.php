@@ -232,7 +232,7 @@ EOT;
 		logger('ljpost: data: ' . $xml, LOGGER_DATA);
 
 		if($lj_blog !== 'test')
-			$x = post_url($lj_blog,$xml);
+			$x = post_url($lj_blog,$xml,array("Content-Type: text/xml"));
 		logger('posted to livejournal: ' . ($x) ? $x : '', LOGGER_DEBUG);
 
 	}
