@@ -213,7 +213,7 @@ EOT;
 		logger('ijpost: data: ' . $xml, LOGGER_DATA);
 
 		if($ij_blog !== 'test')
-			$x = post_url($ij_blog,$xml);
+			$x = post_url($ij_blog,$xml,array("Content-Type: text/xml"));
 		logger('posted to insanejournal: ' . ($x) ? $x : '', LOGGER_DEBUG);
 
 	}
