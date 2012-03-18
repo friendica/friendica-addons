@@ -1,15 +1,15 @@
 
-#ljpost-enable-label, #ljpost-username-label, #ljpost-password-label, #ljpost-bydefault-label {
+#dwpost-enable-label, #dwpost-username-label, #dwpost-password-label, #dwpost-bydefault-label {
 float: left;
 width: 200px;
 margin-top: 10px;
 }
 
-#ljpost-checkbox, #ljpost-username, #ljpost-password, #ljpost-bydefault {
+#dwpost-checkbox, #dwpost-username, #dwpost-password, #dwpost-bydefault {
 float: left;
 margin-top: 10px;
 }
 
-#ljpost-submit {
+#dwpost-submit {
 margin-top: 15px;
 }
