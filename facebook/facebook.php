@@ -75,6 +75,7 @@ function facebook_uninstall() {
 	unregister_hook('plugin_settings',  'addon/facebook/facebook.php', 'facebook_plugin_settings');
 	
 	if (get_config('facebook', 'realtime_active') == 1) facebook_subscription_del_users();
+	del_config('facebook', 'app_access_token');
 }
 
 
@@ -150,8 +151,12 @@ function facebook_init(&$a) {
 							$s = fetch_url('https://graph.facebook.com/me/feed?access_token=' . $access_token);
 							if($s) {
 								$j = json_decode($s);
-								logger('facebook_init: wall: ' . print_r($j,true), LOGGER_DATA);
-								fb_consume_stream($uid,$j,($private_wall) ? false : true);
+								if (isset($j->data)) {
+									logger('facebook_init: wall: ' . print_r($j,true), LOGGER_DATA);
+									fb_consume_stream($uid,$j,($private_wall) ? false : true);
+								} else {
+									logger('facebook_init: wall: got no data from Facebook: ' . print_r($j,true), LOGGER_NORMAL);
+								}
 							}
 						}
 						
@@ -1018,15 +1023,23 @@ function fb_consume_all($uid) {
 		$s = fetch_url('https://graph.facebook.com/me/feed?access_token=' . $access_token);
 		if($s) {
 			$j = json_decode($s);
-			logger('fb_consume_stream: wall: ' . print_r($j,true), LOGGER_DATA);
-			fb_consume_stream($uid,$j,($private_wall) ? false : true);
+			if (isset($j->data)) {
+				logger('fb_consume_stream: wall: ' . print_r($j,true), LOGGER_DATA);
+				fb_consume_stream($uid,$j,($private_wall) ? false : true);
+			} else {
+				logger('fb_consume_stream: wall: got no data from Facebook: ' . print_r($j,true), LOGGER_NORMAL);
+			}
 		}
 	}
 	$s = fetch_url('https://graph.facebook.com/me/home?access_token=' . $access_token);
 	if($s) {
 		$j = json_decode($s);
-		logger('fb_consume_stream: feed: ' . print_r($j,true), LOGGER_DATA);
-		fb_consume_stream($uid,$j,false);
+		if (isset($j->data)) {
+			logger('fb_consume_stream: feed: ' . print_r($j,true), LOGGER_DATA);
+			fb_consume_stream($uid,$j,false);
+		} else {
+			logger('fb_consume_stream: feed: got no data from Facebook: ' . print_r($j,true), LOGGER_NORMAL);
+		}
 	}
 
 }
