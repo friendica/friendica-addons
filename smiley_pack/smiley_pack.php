@@ -181,6 +181,25 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':skipping';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/skipping.gif' . '" alt="' . ':skipping' . '" />';
 
+	$b['texts'][] = ':archery';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/archery.gif' . '" alt="' . ':archery' . '" />';
+
+	$b['texts'][] = ':football';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/football.gif' . '" alt="' . ':football' . '" />';
+
+	$b['texts'][] = ':surfing';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/surfing.gif' . '" alt="' . ':surfing' . '" />';
+
+	$b['texts'][] = ':snooker';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/snooker.gif' . '" alt="' . ':snooker' . '" />';
+  
+	$b['texts'][] = ':tennis';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/tennis.gif' . '" alt="' . ':tennis' . '" />';
+
+	$b['texts'][] = ':horseriding';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/horseriding.gif' . '" alt="' . ':horseriding' . '" />';
+
+
 	$b['texts'][] = ':iloveyou';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/love/iloveyou.gif' . '" alt="' . ':iloveyou' . '" />';
 
@@ -300,6 +319,9 @@ function smiley_pack_smilies(&$a,&$b) {
 
 	$b['texts'][] = ':banana';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/banana.gif' . '" alt="' . ':banana' . '" />';
+
+	$b['texts'][] = ':cooking';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/cooking.gif' . '" alt="' . ':cooking' . '" />';
 
 
 	$b['texts'][] = ':cloud9';
