@@ -181,4 +181,22 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':skipping';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/skipping.gif' . '" alt="' . ':skipping' . '" />';
 
+	$b['texts'][] = ':iloveyou';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/love/iloveyou.gif' . '" alt="' . ':iloveyou' . '" />';
+
+	$b['texts'][] = ':inlove';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/love/inlove.gif' . '" alt="' . ':inlove' . '" />';
+
+	$b['texts'][] = ':love';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/love/love.gif' . '" alt="' . ':love' . '" />';
+
+	$b['texts'][] = ':lovebear';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/love/lovebear.gif' . '" alt="' . ':lovebear' . '" />';
+
+	$b['texts'][] = ':lovebed';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/love/lovebed.gif' . '" alt="' . ':lovebed' . '" />';
+
+	$b['texts'][] = ':loveheart';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/love/loveheart.gif' . '" alt="' . ':loveheart' . '" />';
+
 }

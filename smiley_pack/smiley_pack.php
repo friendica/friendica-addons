@@ -199,4 +199,12 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':loveheart';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/love/loveheart.gif' . '" alt="' . ':loveheart' . '" />';
 
+	$b['texts'][] = ':countsheep';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/tired/countsheep.gif' . '" alt="' . ':countsheep' . '" />';
+
+	$b['texts'][] = ':hammock';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/tired/hammock.gif' . '" alt="' . ':hammock' . '" />';
+
+	$b['texts'][] = ':pillow';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/tired/pillow.gif' . '" alt="' . ':pillow' . '" />';
 }
