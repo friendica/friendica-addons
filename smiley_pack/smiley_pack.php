@@ -207,4 +207,56 @@ function smiley_pack_smilies(&$a,&$b) {
 
 	$b['texts'][] = ':pillow';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/tired/pillow.gif' . '" alt="' . ':pillow' . '" />';
+
+	$b['texts'][] = ':2guns';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/2guns.gif' . '" alt="' . ':2guns' . '" />';
+
+	$b['texts'][] = ':alienfight';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/alienfight.gif' . '" alt="' . ':alienfight' . '" />';
+
+	$b['texts'][] = ':army';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/army.gif' . '" alt="' . ':army' . '" />';
+
+	$b['texts'][] = ':arrowhead';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/arrowhead.gif' . '" alt="' . ':arrowhead' . '" />';
+
+	$b['texts'][] = ':bfg';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/bfg.gif' . '" alt="' . ':bfg' . '" />';
+
+	$b['texts'][] = ':bowman';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/bowman.gif' . '" alt="' . ':bowman' . '" />';
+
+	$b['texts'][] = ':chainsaw';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/chainsaw.gif' . '" alt="' . ':chainsaw' . '" />';
+
+	$b['texts'][] = ':crossbow';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/crossbow.gif' . '" alt="' . ':crossbow' . '" />';
+
+	$b['texts'][] = ':crusader';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/crusader.gif' . '" alt="' . ':crusader' . '" />';
+
+	$b['texts'][] = ':dead';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/dead.gif' . '" alt="' . ':dead' . '" />';
+
+	$b['texts'][] = ':hammersplat';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/hammersplat.gif' . '" alt="' . ':hammersplat' . '" />';
+
+	$b['texts'][] = ':lasergun';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/lasergun.gif' . '" alt="' . ':lasergun' . '" />';
+
+	$b['texts'][] = ':machinegun';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/machinegun.gif' . '" alt="' . ':machinegun' . '" />';
+
+	$b['texts'][] = ':marine';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/marine.gif' . '" alt="' . ':marine' . '" />';
+
+	$b['texts'][] = ':sabre';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/sabre.gif' . '" alt="' . ':sabre' . '" />';
+
+	$b['texts'][] = ':tank';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/tank.gif' . '" alt="' . ':tank' . '" />';
+
+	$b['texts'][] = ':viking';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/viking.gif' . '" alt="' . ':viking' . '" />';
+
 }
