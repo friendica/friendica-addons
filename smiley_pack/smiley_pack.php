@@ -320,5 +320,16 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':number1';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/respect/number1.gif' . '" alt="' . ':number1' . '" />';
 
+	$b['texts'][] = ':hahaha';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/laugh/hahaha.gif' . '" alt="' . ':hahaha' . '" />';
+
+	$b['texts'][] = ':loltv';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/laugh/loltv.gif' . '" alt="' . ':loltv' . '" />';
+
+	$b['texts'][] = ':rofl';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/laugh/rofl.gif' . '" alt="' . ':rofl' . '" />';
+
+
+
 
 }

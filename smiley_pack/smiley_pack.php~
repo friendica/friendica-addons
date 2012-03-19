@@ -298,6 +298,9 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':tomato';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/tomato.gif' . '" alt="' . ':tomato' . '" />';
 
+	$b['texts'][] = ':banana';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/banana.gif' . '" alt="' . ':banana' . '" />';
+
 
 	$b['texts'][] = ':cloud9';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/happy/cloud9.gif' . '" alt="' . ':cloud9' . '" />';
