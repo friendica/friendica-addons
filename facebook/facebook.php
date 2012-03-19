@@ -1174,7 +1174,7 @@ function fb_consume_stream($uid,$j,$wall = false) {
 
 			if($entry->privacy && $entry->privacy->value !== 'EVERYONE') {
 				$datarray['private'] = 1;
-				$datarray['allow_cid'] = '<' . $uid . '>';
+				$datarray['allow_cid'] = '<' . $self[0]['id'] . '>';
 			}
 
 			if(trim($datarray['body']) == '') {
