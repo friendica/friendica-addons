@@ -259,4 +259,25 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':viking';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/viking.gif' . '" alt="' . ':viking' . '" />';
 
+	$b['texts'][] = ':alienmonster';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fantasy/alienmonster.gif' . '" alt="' . ':alienmonster' . '" />';
+
+	$b['texts'][] = ':barbarian';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fantasy/barbarian.gif' . '" alt="' . ':barbarian' . '" />';
+
+	$b['texts'][] = ':dinosaur';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fantasy/dinosaur.gif' . '" alt="' . ':dinosaur' . '" />';
+
+	$b['texts'][] = ':dragon';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fantasy/dragon.gif' . '" alt="' . ':dragon' . '" />';
+
+	$b['texts'][] = ':dragonwhelp';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fantasy/dragonwhelp.gif' . '" alt="' . ':dragonwhelp' . '" />';
+
+	$b['texts'][] = ':ghost';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fantasy/ghost.gif' . '" alt="' . ':ghost' . '" />';
+
+	$b['texts'][] = ':mummy';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fantasy/mummy.gif' . '" alt="' . ':mummy' . '" />';
+
 }
