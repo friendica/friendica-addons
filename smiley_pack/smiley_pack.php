@@ -156,4 +156,29 @@ function smiley_pack_smilies(&$a,&$b) {
 
 	$b['texts'][] = ':smoking';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/smoking/smoking.gif' . '" alt="' . ':smoking' . '" />';
+
+	$b['texts'][] = ':basketball';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/basketball.gif' . '" alt="' . ':basketball' . '" />';
+
+	$b['texts'][] = ':bowling';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/bowling.gif' . '" alt="' . ':bowling' . '" />';
+
+	$b['texts'][] = ':cycling';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/cyling.gif' . '" alt="' . ':cycling' . '" />';
+
+	$b['texts'][] = ':darts';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/darts.gif' . '" alt="' . ':darts' . '" />';
+
+	$b['texts'][] = ':fencing';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/fencing.gif' . '" alt="' . ':fencing' . '" />';
+
+	$b['texts'][] = ':golf';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/golf.gif' . '" alt="' . ':golf' . '" />';
+
+	$b['texts'][] = ':juggling';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/juggling.gif' . '" alt="' . ':juggling' . '" />';
+
+	$b['texts'][] = ':skipping';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/skipping.gif' . '" alt="' . ':skipping' . '" />';
+
 }
