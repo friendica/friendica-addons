@@ -164,7 +164,7 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/bowling.gif' . '" alt="' . ':bowling' . '" />';
 
 	$b['texts'][] = ':cycling';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/cyling.gif' . '" alt="' . ':cycling' . '" />';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/cycling.gif' . '" alt="' . ':cycling' . '" />';
 
 	$b['texts'][] = ':darts';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/darts.gif' . '" alt="' . ':darts' . '" />';
