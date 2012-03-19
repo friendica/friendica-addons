@@ -280,4 +280,26 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':mummy';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fantasy/mummy.gif' . '" alt="' . ':mummy' . '" />';
 
+	$b['texts'][] = ':apple';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/apple.gif' . '" alt="' . ':apple' . '" />';
+
+	$b['texts'][] = ':broccoli';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/broccoli.gif' . '" alt="' . ':brocolli' . '" />';
+
+	$b['texts'][] = ':cake';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/cake.gif' . '" alt="' . ':cake' . '" />';
+
+	$b['texts'][] = ':carrot';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/carrot.gif' . '" alt="' . ':carrot' . '" />';
+
+	$b['texts'][] = ':popcorn';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/popcorn.gif' . '" alt="' . ':popcorn' . '" />';
+
+	$b['texts'][] = ':tomato';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/tomato.gif' . '" alt="' . ':tomato' . '" />';
+
+
+
+
+
 }
