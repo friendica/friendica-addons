@@ -351,6 +351,24 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':rofl';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/laugh/rofl.gif' . '" alt="' . ':rofl' . '" />';
 
+	$b['texts'][] = ':dj';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/music/dj.gif' . '" alt="' . ':dj' . '" />';
+
+	$b['texts'][] = ':drums';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/music/drums.gif' . '" alt="' . ':drums' . '" />';
+
+	$b['texts'][] = ':elvis';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/music/elvis.gif' . '" alt="' . ':elivs' . '" />';
+
+	$b['texts'][] = ':guitar';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/music/guitar.gif' . '" alt="' . ':guitar' . '" />';
+
+	$b['texts'][] = ':trumpet';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/music/trumpet.gif' . '" alt="' . ':trumpet' . '" />';
+
+	$b['texts'][] = ':violin';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/music/violin.gif' . '" alt="' . ':violin' . '" />';
+
 
 
 
