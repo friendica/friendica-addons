@@ -46,6 +46,12 @@
  * authenticate to your site to establish identity. We will address this 
  * in a future release.
  */
+ 
+ /** TODO
+ * - Implement a method for the administrator to delete all configuration data the plugin has created,
+ *   e.g. the app_access_token
+ * - Implement a configuration option to set the polling interval system-wide
+ */
 
 define('FACEBOOK_MAXPOSTLEN', 420);
 
@@ -57,8 +63,6 @@ function facebook_install() {
 	register_hook('connector_settings',  'addon/facebook/facebook.php', 'facebook_plugin_settings');
 	register_hook('cron',             'addon/facebook/facebook.php', 'facebook_cron');
 	register_hook('queue_predeliver', 'addon/facebook/facebook.php', 'fb_queue_hook');
-	
-	if (get_config('facebook', 'realtime_active') == 1) facebook_subscription_add_users(); // Restore settings, if the plugin was installed before
 }
 
 
@@ -73,8 +77,6 @@ function facebook_uninstall() {
 	// hook moved
 	unregister_hook('post_local_end',  'addon/facebook/facebook.php', 'facebook_post_hook');
 	unregister_hook('plugin_settings',  'addon/facebook/facebook.php', 'facebook_plugin_settings');
-	
-	if (get_config('facebook', 'realtime_active') == 1) facebook_subscription_del_users();
 }
 
 
@@ -150,8 +152,12 @@ function facebook_init(&$a) {
 							$s = fetch_url('https://graph.facebook.com/me/feed?access_token=' . $access_token);
 							if($s) {
 								$j = json_decode($s);
-								logger('facebook_init: wall: ' . print_r($j,true), LOGGER_DATA);
-								fb_consume_stream($uid,$j,($private_wall) ? false : true);
+								if (isset($j->data)) {
+									logger('facebook_init: wall: ' . print_r($j,true), LOGGER_DATA);
+									fb_consume_stream($uid,$j,($private_wall) ? false : true);
+								} else {
+									logger('facebook_init: wall: got no data from Facebook: ' . print_r($j,true), LOGGER_NORMAL);
+								}
 							}
 						}
 						
@@ -1018,15 +1024,23 @@ function fb_consume_all($uid) {
 		$s = fetch_url('https://graph.facebook.com/me/feed?access_token=' . $access_token);
 		if($s) {
 			$j = json_decode($s);
-			logger('fb_consume_stream: wall: ' . print_r($j,true), LOGGER_DATA);
-			fb_consume_stream($uid,$j,($private_wall) ? false : true);
+			if (isset($j->data)) {
+				logger('fb_consume_stream: wall: ' . print_r($j,true), LOGGER_DATA);
+				fb_consume_stream($uid,$j,($private_wall) ? false : true);
+			} else {
+				logger('fb_consume_stream: wall: got no data from Facebook: ' . print_r($j,true), LOGGER_NORMAL);
+			}
 		}
 	}
 	$s = fetch_url('https://graph.facebook.com/me/home?access_token=' . $access_token);
 	if($s) {
 		$j = json_decode($s);
-		logger('fb_consume_stream: feed: ' . print_r($j,true), LOGGER_DATA);
-		fb_consume_stream($uid,$j,false);
+		if (isset($j->data)) {
+			logger('fb_consume_stream: feed: ' . print_r($j,true), LOGGER_DATA);
+			fb_consume_stream($uid,$j,false);
+		} else {
+			logger('fb_consume_stream: feed: got no data from Facebook: ' . print_r($j,true), LOGGER_NORMAL);
+		}
 	}
 
 }

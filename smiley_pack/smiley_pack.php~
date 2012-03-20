@@ -386,7 +386,10 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':headbang';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/headbang.gif' . '" alt="' . ':headbang' . '" />';
 
-		$b['texts'][] = ':beard';
+	$b['texts'][] = ':headdesk';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/headdesk.gif' . '" alt="' . ':headdesk' . '" />';
+
+	$b['texts'][] = ':beard';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/beard.png' . '" alt="' . ':beard' . '" />';
 
 	$b['texts'][] = ':whitebeard';
