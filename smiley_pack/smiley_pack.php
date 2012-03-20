@@ -129,6 +129,14 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':devil';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/devilangel/devil.gif' . '" alt="' . ':devil' . '" />';	
 	
+	$b['texts'][] = ':daseesaw';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/devilangel/daseesaw.gif' . '" alt="' . ':daseesaw' . '" />';	
+
+	$b['texts'][] = ':turnevil';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/devilangel/turnevil.gif' . '" alt="' . ':turnevil' . '" />';	
+	
+	$b['texts'][] = ':saint';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/devilangel/saint.gif' . '" alt="' . ':saint' . '" />';	
 
 	$b['texts'][] = ':graveside';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/devilangel/graveside.gif' . '" alt="' . ':graveside' . '" />';	
@@ -278,6 +286,12 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':viking';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/viking.gif' . '" alt="' . ':viking' . '" />';
 
+	$b['texts'][] = ':gangs';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/gangs.gif' . '" alt="' . ':gangs' . '" />';
+
+	$b['texts'][] = ':acid';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/acid.gif' . '" alt="' . ':acid' . '" />';
+
 	$b['texts'][] = ':alienmonster';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fantasy/alienmonster.gif' . '" alt="' . ':alienmonster' . '" />';
 
@@ -369,7 +383,26 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':violin';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/music/violin.gif' . '" alt="' . ':violin' . '" />';
 
+	$b['texts'][] = ':headbang';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/headbang.gif' . '" alt="' . ':headbang' . '" />';
 
+		$b['texts'][] = ':beard';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/beard.png' . '" alt="' . ':beard' . '" />';
+
+	$b['texts'][] = ':whitebeard';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/whitebeard.png' . '" alt="' . ':whitebeard' . '" />';
+
+	$b['texts'][] = ':shaka';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/shaka.gif' . '" alt="' . ':shaka' . '" />';
+
+	$b['texts'][] = ':\\.../';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/shaka.gif' . '" alt="' . ':\\.../' . '" />';
+
+	$b['texts'][] = ':\\ooo/';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/shaka.gif' . '" alt="' . ':\\ooo/' . '" />';
+
+	$b['texts'][] = ':headdesk';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/headdesk.gif' . '" alt="' . ':headdesk' . '" />';
 
 
 }
