@@ -27,7 +27,7 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':chick';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/chick.gif' . '" alt="' . ':chick' . '" />';
 
-	$b['texts'][] = ':bee';
+	$b['texts'][] = ':bumblebee';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/bee.gif' . '" alt="' . ':bee' . '" />';	
 
 	$b['texts'][] = ':ladybird';
@@ -126,8 +126,8 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':catdevil';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/devilangel/catdevil.gif' . '" alt="' . ':catdevil' . '" />';	
 
-	$b['texts'][] = ':devil';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/devilangel/devil.gif' . '" alt="' . ':devil' . '" />';	
+	$b['texts'][] = ':devillish';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/devilangel/devil.gif' . '" alt="' . ':devillish' . '" />';	
 	
 	$b['texts'][] = ':daseesaw';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/devilangel/daseesaw.gif' . '" alt="' . ':daseesaw' . '" />';	
@@ -214,7 +214,7 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':inlove';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/love/inlove.gif' . '" alt="' . ':inlove' . '" />';
 
-	$b['texts'][] = ':love';
+	$b['texts'][] = '~love';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/love/love.gif' . '" alt="' . ':love' . '" />';
 
 	$b['texts'][] = ':lovebear';
@@ -304,8 +304,8 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':dragon';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fantasy/dragon.gif' . '" alt="' . ':dragon' . '" />';
 
-	$b['texts'][] = ':dragonwhelp';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fantasy/dragonwhelp.gif' . '" alt="' . ':dragonwhelp' . '" />';
+	$b['texts'][] = ':draco';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fantasy/dragonwhelp.gif' . '" alt="' . ':draco' . '" />';
 
 	$b['texts'][] = ':ghost';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fantasy/ghost.gif' . '" alt="' . ':ghost' . '" />';
