@@ -93,6 +93,20 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':dog';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/dog.gif' . '" alt="' . ':dog' . '" />';	
 
+	$b['texts'][] = ':elephant';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/elephant.gif' . '" alt="' . ':elephant' . '" />';	
+
+	$b['texts'][] = ':fish';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/fish.gif' . '" alt="' . ':fish' . '" />';	
+
+	$b['texts'][] = ':giraffe';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/giraffe.gif' . '" alt="' . ':giraffe' . '" />';	
+
+	$b['texts'][] = ':pig';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/pig.gif' . '" alt="' . ':pig' . '" />';	
+
+
+
 #Baby Smileys
 
 	$b['texts'][] = ':baby';
