@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: Page
- * Description: Shows lists of community pages (improved performance over 'pages)
+ * Description: Shows lists of community pages (improved performance over 'pages')
  * Version: 1.0
  * Author: Mike Macgirvin <mike@macgirvin.com>
  * based on pages plugin by
@@ -50,7 +50,7 @@ function page_page_end($a,&$b) {
 	$contacts = page_getpage($a->user['uid']);
 
 	foreach($contacts as $contact) {
-		$page .= '<li style="list-style-type: none;" class="tool"><img height="16" width="16" src="' . $contact['micro'] .'" alt="' . $contact['url'] . '" /> <a href="'.$a->get_baseurl().'/redir/'.$contact["id"].'" class="label" target="external-link">'.
+		$page .= '<li style="list-style-type: none;" class="tool"><img height="20" width="20" src="' . $contact['micro'] .'" alt="' . $contact['url'] . '" /> <a href="'.$a->get_baseurl().'/redir/'.$contact["id"].'" title="' . $contact['url'] . '" class="label" target="external-link">'.
 				$contact["name"]."</a></li>";
 	}
 	$page .= "</ul></div></div>";
