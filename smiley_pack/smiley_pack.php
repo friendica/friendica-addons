@@ -133,6 +133,10 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':stupid';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/confused/stupid.gif' . '" alt="' . ':stupid' . '" />';	
 
+	$b['texts'][] = ':dazed';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/confused/dazed.gif' . '" alt="' . ':dazed' . '" />';	
+
+
 #Cool Smileys
 
 	$b['texts'][] = ':affro';
@@ -180,6 +184,9 @@ function smiley_pack_smilies(&$a,&$b) {
 
 	$b['texts'][] = ':vomit';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/disgust/vomit.gif' . '" alt="' . ':vomit' . '" />';
+
+	$b['texts'][] = ':fartblush';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/disgust/fartblush.gif' . '" alt="' . ':fartblush' . '" />';
 
 #Drinks
 
@@ -385,6 +392,8 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':cooking';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/cooking.gif' . '" alt="' . ':cooking' . '" />';
 
+	$b['texts'][] = ':fryegg';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/fryegg.gif' . '" alt="' . ':fryegg' . '" />';
 
 #Happy smileys
 
