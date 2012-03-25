@@ -21,6 +21,15 @@ function smiley_pack__uninstall() {
 
 function smiley_pack_smilies(&$a,&$b) {
 
+#Smileys are split into various directories by the intended range of emotions.  This is in case we get too big and need to modularise things.  We can then cut and paste the right lines, move the right directory, and just change the name of the addon to happy_smilies or whatever.
+
+#Be careful with invocation strings.  If you have a smiley called foo, and another called foobar, typing :foobar will call foo.  Avoid this with clever naming, using ~ instead of : 
+#when all else fails.
+
+
+
+#Animal smileys.
+
 	$b['texts'][] = ':bunnyflowers';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/bunnyflowers.gif' . '" alt="' . ':bunnyflowers' . '" />';
 
@@ -84,6 +93,21 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':dog';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/dog.gif' . '" alt="' . ':dog' . '" />';	
 
+	$b['texts'][] = ':elephant';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/elephant.gif' . '" alt="' . ':elephant' . '" />';	
+
+	$b['texts'][] = ':fish';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/fish.gif' . '" alt="' . ':fish' . '" />';	
+
+	$b['texts'][] = ':giraffe';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/giraffe.gif' . '" alt="' . ':giraffe' . '" />';	
+
+	$b['texts'][] = ':pig';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/pig.gif' . '" alt="' . ':pig' . '" />';	
+
+
+
+#Baby Smileys
 
 	$b['texts'][] = ':baby';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/babies/baby.gif' . '" alt="' . ':baby' . '" />';	
@@ -98,7 +122,8 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':stork';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/babies/stork.gif' . '" alt="' . ':stork' . '" />';	
 
-	
+
+#Confused Smileys	
 	$b['texts'][] = ':confused';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/confused/confused.gif' . '" alt="' . ':confused' . '" />';	
     
@@ -108,11 +133,19 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':stupid';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/confused/stupid.gif' . '" alt="' . ':stupid' . '" />';	
 
+	$b['texts'][] = ':dazed';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/confused/dazed.gif' . '" alt="' . ':dazed' . '" />';	
+
+
+#Cool Smileys
+
 	$b['texts'][] = ':affro';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/cool/affro.gif' . '" alt="' . ':affro' . '" />';	
 
 	$b['texts'][] = ':cool';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/cool/cool.gif' . '" alt="' . ':cool' . '" />';	
+
+#Devil/Angel Smileys
 
 	$b['texts'][] = ':angel';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/devilangel/angel.gif' . '" alt="' . ':angel' . '" />';	
@@ -141,6 +174,8 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':graveside';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/devilangel/graveside.gif' . '" alt="' . ':graveside' . '" />';	
 
+#Unpleasent smileys.
+
 	$b['texts'][] = ':toilet';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/disgust/toilet.gif' . '" alt="' . ':toilet' . '" />';	
 
@@ -150,11 +185,18 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':vomit';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/disgust/vomit.gif' . '" alt="' . ':vomit' . '" />';
 
+	$b['texts'][] = ':fartblush';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/disgust/fartblush.gif' . '" alt="' . ':fartblush' . '" />';
+
+#Drinks
+
 	$b['texts'][] = ':tea';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/drink/tea.gif' . '" alt="' . ':tea' . '" />';
 
 	$b['texts'][] = ':drool';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/drool/drool.gif' . '" alt="' . ':drool' . '" />';
+
+#Sad smileys
 
 	$b['texts'][] = ':crying';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sad/crying.png' . '" alt="' . ':crying' . '" />';
@@ -162,8 +204,12 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':prisoner';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sad/prisoner.gif' . '" alt="' . ':prisoner' . '" />';
 
+#Smoking - only one smiley in here, maybe it needs moving elsewhere?
+
 	$b['texts'][] = ':smoking';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/smoking/smoking.gif' . '" alt="' . ':smoking' . '" />';
+
+#Sport smileys
 
 	$b['texts'][] = ':basketball';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/basketball.gif' . '" alt="' . ':basketball' . '" />';
@@ -207,6 +253,7 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':horseriding';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/horseriding.gif' . '" alt="' . ':horseriding' . '" />';
 
+#Love smileys
 
 	$b['texts'][] = ':iloveyou';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/love/iloveyou.gif' . '" alt="' . ':iloveyou' . '" />';
@@ -226,6 +273,8 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':loveheart';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/love/loveheart.gif' . '" alt="' . ':loveheart' . '" />';
 
+#Tired/Sleep smileys
+
 	$b['texts'][] = ':countsheep';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/tired/countsheep.gif' . '" alt="' . ':countsheep' . '" />';
 
@@ -234,6 +283,8 @@ function smiley_pack_smilies(&$a,&$b) {
 
 	$b['texts'][] = ':pillow';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/tired/pillow.gif' . '" alt="' . ':pillow' . '" />';
+
+#Fight/Flame/Violent smileys
 
 	$b['texts'][] = ':2guns';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/2guns.gif' . '" alt="' . ':2guns' . '" />';
@@ -292,6 +343,8 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':acid';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/acid.gif' . '" alt="' . ':acid' . '" />';
 
+#Fantasy smileys - monsters and dragons fantasy.  The other type of fantasy belongs in adult smileys
+
 	$b['texts'][] = ':alienmonster';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fantasy/alienmonster.gif' . '" alt="' . ':alienmonster' . '" />';
 
@@ -312,6 +365,8 @@ function smiley_pack_smilies(&$a,&$b) {
 
 	$b['texts'][] = ':mummy';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fantasy/mummy.gif' . '" alt="' . ':mummy' . '" />';
+
+#Food smileys
 
 	$b['texts'][] = ':apple';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/apple.gif' . '" alt="' . ':apple' . '" />';
@@ -337,12 +392,18 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':cooking';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/cooking.gif' . '" alt="' . ':cooking' . '" />';
 
+	$b['texts'][] = ':fryegg';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/fryegg.gif' . '" alt="' . ':fryegg' . '" />';
+
+#Happy smileys
 
 	$b['texts'][] = ':cloud9';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/happy/cloud9.gif' . '" alt="' . ':cloud9' . '" />';
 
 	$b['texts'][] = ':tearsofjoy';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/happy/tearsofjoy.gif' . '" alt="' . ':tearsofjoy' . '" />';
+
+#Repsect smileys
 
 	$b['texts'][] = ':bow';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/respect/bow.gif' . '" alt="' . ':bow' . '" />';
@@ -356,6 +417,8 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':number1';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/respect/number1.gif' . '" alt="' . ':number1' . '" />';
 
+#Laugh smileys
+
 	$b['texts'][] = ':hahaha';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/laugh/hahaha.gif' . '" alt="' . ':hahaha' . '" />';
 
@@ -364,6 +427,8 @@ function smiley_pack_smilies(&$a,&$b) {
 
 	$b['texts'][] = ':rofl';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/laugh/rofl.gif' . '" alt="' . ':rofl' . '" />';
+
+#Music smileys
 
 	$b['texts'][] = ':dj';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/music/dj.gif' . '" alt="' . ':dj' . '" />';
@@ -382,6 +447,8 @@ function smiley_pack_smilies(&$a,&$b) {
 
 	$b['texts'][] = ':violin';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/music/violin.gif' . '" alt="' . ':violin' . '" />';
+
+#Smileys that used to be in core
 
 	$b['texts'][] = ':headbang';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/headbang.gif' . '" alt="' . ':headbang' . '" />';
@@ -403,6 +470,16 @@ function smiley_pack_smilies(&$a,&$b) {
 
 	$b['texts'][] = ':headdesk';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/headdesk.gif' . '" alt="' . ':headdesk' . '" />';
+
+#These two are still in core, so oldcore isn't strictly right, but we don't want too many directories
+
+	$b['texts'][] = ':-d';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/laughing.gif' . '" alt="' . ':-d' . '" />';
+
+	$b['texts'][] = ':-o';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/surprised.gif' . '" alt="' . ':-o' . '" />';
+
+
 
 
 }
