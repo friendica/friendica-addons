@@ -62,6 +62,7 @@ function facebook_install() {
 	register_hook('jot_networks',     'addon/facebook/facebook.php', 'facebook_jot_nets');
 	register_hook('connector_settings',  'addon/facebook/facebook.php', 'facebook_plugin_settings');
 	register_hook('cron',             'addon/facebook/facebook.php', 'facebook_cron');
+	register_hook('enotify',          'addon/facebook/facebook.php', 'facebook_enotify');
 	register_hook('queue_predeliver', 'addon/facebook/facebook.php', 'fb_queue_hook');
 }
 
@@ -72,6 +73,7 @@ function facebook_uninstall() {
 	unregister_hook('jot_networks',     'addon/facebook/facebook.php', 'facebook_jot_nets');
 	unregister_hook('connector_settings',  'addon/facebook/facebook.php', 'facebook_plugin_settings');
 	unregister_hook('cron',             'addon/facebook/facebook.php', 'facebook_cron');
+	unregister_hook('enotify',          'addon/facebook/facebook.php', 'facebook_enotify');
 	unregister_hook('queue_predeliver', 'addon/facebook/facebook.php', 'fb_queue_hook');
 
 	// hook moved
@@ -595,7 +597,7 @@ function facebook_cron($a,$b) {
 				
 				if(strlen($a->config['admin_email']) && !get_config('facebook', 'realtime_err_mailsent')) {
 					$res = mail($a->config['admin_email'], t('Problems with Facebook Real-Time Updates'), 
-						"Hi!\n\nThere's a problem with the Facebook Real-Time Updates that cannob be solved automatically. Maybe an permission issue?\n\nThis e-mail will only be sent once.",
+						"Hi!\n\nThere's a problem with the Facebook Real-Time Updates that cannot be solved automatically. Maybe an permission issue?\n\nThis e-mail will only be sent once.",
 						'From: ' . t('Administrator') . '@' . $_SERVER['SERVER_NAME'] . "\n"
 						. 'Content-type: text/plain; charset=UTF-8' . "\n"
 						. 'Content-transfer-encoding: 8bit'
@@ -909,6 +911,7 @@ function facebook_post_hook(&$a,&$b) {
 							dbesc('fb::' . $retj->id),
 							intval($b['id'])
 						);
+						del_pconfig($b['uid'], 'facebook', 'session_expired_mailsent');
 					}
 					else {
 						if(! $likes) {
@@ -916,6 +919,25 @@ function facebook_post_hook(&$a,&$b) {
 							require_once('include/queue_fn.php');
 							add_to_queue($a->contact,NETWORK_FACEBOOK,$s);
 							notice( t('Facebook post failed. Queued for retry.') . EOL);
+						}
+						
+						if (isset($retj->error) && $retj->error->type == "OAuthException" && $retj->error->code == 190) {
+							logger('Facebook session has expired due to changed password.', LOGGER_DEBUG);
+							if (!get_pconfig($b['uid'], 'facebook', 'session_expired_mailsent')) {
+								require_once('include/enotify.php');
+							
+								$r = q("SELECT * FROM `user` WHERE `uid` = %d LIMIT 1", intval($b['uid']) );
+								notification(array(
+									'uid' => $b['uid'],
+									'type' => NOTIFY_SYSTEM,
+									'system_type' => 'facebook_connection_invalid',
+									'language'     => $r[0]['language'],
+									'to_name'      => $r[0]['username'],
+									'to_email'     => $r[0]['email'],
+								));
+								
+								set_pconfig($b['uid'], 'facebook', 'session_expired_mailsent', '1');
+							}
 						}
 					}
 					
@@ -926,6 +948,13 @@ function facebook_post_hook(&$a,&$b) {
 	}
 }
 
+function facebook_enotify(&$app, &$data) {
+	if (x($data, 'params') && $data['params']['type'] == NOTIFY_SYSTEM && x($data['params'], 'system_type') && $data['params']['system_type'] == 'facebook_connection_invalid') {
+		$data['itemlink'] = '/facebook';
+		$data['epreamble'] = $data['preamble'] = t('Your Facebook connection became invalid. Please Re-authenticate.');
+		$data['subject'] = t('Facebook connection became invalid');
+	}
+}
 
 function facebook_post_local(&$a,&$b) {
 
