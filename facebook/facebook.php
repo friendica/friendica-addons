@@ -54,6 +54,7 @@
  */
 
 define('FACEBOOK_MAXPOSTLEN', 420);
+define('FACEBOOK_SESSION_ERR_NOTIFICATION_INTERVAL', 259200); // 3 days
 
 
 function facebook_install() {
@@ -904,6 +905,7 @@ function facebook_post_hook(&$a,&$b) {
 
 				if(! get_config('facebook','test_mode')) {
 					$x = post_url($url, $postvars);
+					logger('Facebook post returns: ' . $x, LOGGER_DEBUG);
 
 					$retj = json_decode($x);
 					if($retj->id) {
@@ -911,7 +913,6 @@ function facebook_post_hook(&$a,&$b) {
 							dbesc('fb::' . $retj->id),
 							intval($b['id'])
 						);
-						del_pconfig($b['uid'], 'facebook', 'session_expired_mailsent');
 					}
 					else {
 						if(! $likes) {
@@ -923,7 +924,9 @@ function facebook_post_hook(&$a,&$b) {
 						
 						if (isset($retj->error) && $retj->error->type == "OAuthException" && $retj->error->code == 190) {
 							logger('Facebook session has expired due to changed password.', LOGGER_DEBUG);
-							if (!get_pconfig($b['uid'], 'facebook', 'session_expired_mailsent')) {
+							
+							$last_notification = get_pconfig($b['uid'], 'facebook', 'session_expired_mailsent');
+							if (!$last_notification || $last_notification < (time() - FACEBOOK_SESSION_ERR_NOTIFICATION_INTERVAL)) {
 								require_once('include/enotify.php');
 							
 								$r = q("SELECT * FROM `user` WHERE `uid` = %d LIMIT 1", intval($b['uid']) );
@@ -936,12 +939,10 @@ function facebook_post_hook(&$a,&$b) {
 									'to_email'     => $r[0]['email'],
 								));
 								
-								set_pconfig($b['uid'], 'facebook', 'session_expired_mailsent', '1');
-							}
+								set_pconfig($b['uid'], 'facebook', 'session_expired_mailsent', time());
+							} else logger('Facebook: No notification, as the last one was sent on ' . $last_notification, LOGGER_DEBUG);
 						}
 					}
-					
-					logger('Facebook post returns: ' . $x, LOGGER_DEBUG);
 				}
 			}
 		}
@@ -953,6 +954,7 @@ function facebook_enotify(&$app, &$data) {
 		$data['itemlink'] = '/facebook';
 		$data['epreamble'] = $data['preamble'] = t('Your Facebook connection became invalid. Please Re-authenticate.');
 		$data['subject'] = t('Facebook connection became invalid');
+		$data['body'] = sprintf( t("Hi %1\$s,\n\nThe connection between your accounts on %2\$s and Facebook became invalid. This usually happens after you change your Facebook-password. To enable the connection again, you have to %3\$sre-authenticate the Facebook-connector%4\$s."), $data['params']['to_name'], "[url=" . $app->config["system"]["url"] . "]" . $app->config["sitename"] . "[/url]", "[url=" . $app->config["system"]["url"] . "/facebook]", "[/url]");
 	}
 }
 
