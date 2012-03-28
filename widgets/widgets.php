@@ -19,7 +19,8 @@ function widgets_uninstall() {
 
 
 function widgets_settings_post(){
-	
+	if(! local_user())
+		return;
 	if (isset($_POST['widgets-submit'])){
 		del_pconfig(local_user(), 'widgets', 'key');
 		
