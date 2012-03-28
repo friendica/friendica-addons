@@ -46,6 +46,12 @@
  * authenticate to your site to establish identity. We will address this 
  * in a future release.
  */
+ 
+ /** TODO
+ * - Implement a method for the administrator to delete all configuration data the plugin has created,
+ *   e.g. the app_access_token
+ * - Implement a configuration option to set the polling interval system-wide
+ */
 
 define('FACEBOOK_MAXPOSTLEN', 420);
 
@@ -56,9 +62,8 @@ function facebook_install() {
 	register_hook('jot_networks',     'addon/facebook/facebook.php', 'facebook_jot_nets');
 	register_hook('connector_settings',  'addon/facebook/facebook.php', 'facebook_plugin_settings');
 	register_hook('cron',             'addon/facebook/facebook.php', 'facebook_cron');
+	register_hook('enotify',          'addon/facebook/facebook.php', 'facebook_enotify');
 	register_hook('queue_predeliver', 'addon/facebook/facebook.php', 'fb_queue_hook');
-	
-	if (get_config('facebook', 'realtime_active') == 1) facebook_subscription_add_users(); // Restore settings, if the plugin was installed before
 }
 
 
@@ -68,13 +73,12 @@ function facebook_uninstall() {
 	unregister_hook('jot_networks',     'addon/facebook/facebook.php', 'facebook_jot_nets');
 	unregister_hook('connector_settings',  'addon/facebook/facebook.php', 'facebook_plugin_settings');
 	unregister_hook('cron',             'addon/facebook/facebook.php', 'facebook_cron');
+	unregister_hook('enotify',          'addon/facebook/facebook.php', 'facebook_enotify');
 	unregister_hook('queue_predeliver', 'addon/facebook/facebook.php', 'fb_queue_hook');
 
 	// hook moved
 	unregister_hook('post_local_end',  'addon/facebook/facebook.php', 'facebook_post_hook');
 	unregister_hook('plugin_settings',  'addon/facebook/facebook.php', 'facebook_plugin_settings');
-	
-	if (get_config('facebook', 'realtime_active') == 1) facebook_subscription_del_users();
 }
 
 
@@ -150,8 +154,12 @@ function facebook_init(&$a) {
 							$s = fetch_url('https://graph.facebook.com/me/feed?access_token=' . $access_token);
 							if($s) {
 								$j = json_decode($s);
-								logger('facebook_init: wall: ' . print_r($j,true), LOGGER_DATA);
-								fb_consume_stream($uid,$j,($private_wall) ? false : true);
+								if (isset($j->data)) {
+									logger('facebook_init: wall: ' . print_r($j,true), LOGGER_DATA);
+									fb_consume_stream($uid,$j,($private_wall) ? false : true);
+								} else {
+									logger('facebook_init: wall: got no data from Facebook: ' . print_r($j,true), LOGGER_NORMAL);
+								}
 							}
 						}
 						
@@ -589,7 +597,7 @@ function facebook_cron($a,$b) {
 				
 				if(strlen($a->config['admin_email']) && !get_config('facebook', 'realtime_err_mailsent')) {
 					$res = mail($a->config['admin_email'], t('Problems with Facebook Real-Time Updates'), 
-						"Hi!\n\nThere's a problem with the Facebook Real-Time Updates that cannob be solved automatically. Maybe an permission issue?\n\nThis e-mail will only be sent once.",
+						"Hi!\n\nThere's a problem with the Facebook Real-Time Updates that cannot be solved automatically. Maybe an permission issue?\n\nThis e-mail will only be sent once.",
 						'From: ' . t('Administrator') . '@' . $_SERVER['SERVER_NAME'] . "\n"
 						. 'Content-type: text/plain; charset=UTF-8' . "\n"
 						. 'Content-transfer-encoding: 8bit'
@@ -930,6 +938,7 @@ function facebook_post_hook(&$a,&$b) {
 							dbesc('fb::' . $retj->id),
 							intval($b['id'])
 						);
+						del_pconfig($b['uid'], 'facebook', 'session_expired_mailsent');
 					}
 					else {
 						if(! $likes) {
@@ -937,6 +946,25 @@ function facebook_post_hook(&$a,&$b) {
 							require_once('include/queue_fn.php');
 							add_to_queue($a->contact,NETWORK_FACEBOOK,$s);
 							notice( t('Facebook post failed. Queued for retry.') . EOL);
+						}
+						
+						if (isset($retj->error) && $retj->error->type == "OAuthException" && $retj->error->code == 190) {
+							logger('Facebook session has expired due to changed password.', LOGGER_DEBUG);
+							if (!get_pconfig($b['uid'], 'facebook', 'session_expired_mailsent')) {
+								require_once('include/enotify.php');
+							
+								$r = q("SELECT * FROM `user` WHERE `uid` = %d LIMIT 1", intval($b['uid']) );
+								notification(array(
+									'uid' => $b['uid'],
+									'type' => NOTIFY_SYSTEM,
+									'system_type' => 'facebook_connection_invalid',
+									'language'     => $r[0]['language'],
+									'to_name'      => $r[0]['username'],
+									'to_email'     => $r[0]['email'],
+								));
+								
+								set_pconfig($b['uid'], 'facebook', 'session_expired_mailsent', '1');
+							}
 						}
 					}
 					
@@ -947,6 +975,13 @@ function facebook_post_hook(&$a,&$b) {
 	}
 }
 
+function facebook_enotify(&$app, &$data) {
+	if (x($data, 'params') && $data['params']['type'] == NOTIFY_SYSTEM && x($data['params'], 'system_type') && $data['params']['system_type'] == 'facebook_connection_invalid') {
+		$data['itemlink'] = '/facebook';
+		$data['epreamble'] = $data['preamble'] = t('Your Facebook connection became invalid. Please Re-authenticate.');
+		$data['subject'] = t('Facebook connection became invalid');
+	}
+}
 
 function facebook_post_local(&$a,&$b) {
 
@@ -1045,15 +1080,23 @@ function fb_consume_all($uid) {
 		$s = fetch_url('https://graph.facebook.com/me/feed?access_token=' . $access_token);
 		if($s) {
 			$j = json_decode($s);
-			logger('fb_consume_stream: wall: ' . print_r($j,true), LOGGER_DATA);
-			fb_consume_stream($uid,$j,($private_wall) ? false : true);
+			if (isset($j->data)) {
+				logger('fb_consume_stream: wall: ' . print_r($j,true), LOGGER_DATA);
+				fb_consume_stream($uid,$j,($private_wall) ? false : true);
+			} else {
+				logger('fb_consume_stream: wall: got no data from Facebook: ' . print_r($j,true), LOGGER_NORMAL);
+			}
 		}
 	}
 	$s = fetch_url('https://graph.facebook.com/me/home?access_token=' . $access_token);
 	if($s) {
 		$j = json_decode($s);
-		logger('fb_consume_stream: feed: ' . print_r($j,true), LOGGER_DATA);
-		fb_consume_stream($uid,$j,false);
+		if (isset($j->data)) {
+			logger('fb_consume_stream: feed: ' . print_r($j,true), LOGGER_DATA);
+			fb_consume_stream($uid,$j,false);
+		} else {
+			logger('fb_consume_stream: feed: got no data from Facebook: ' . print_r($j,true), LOGGER_NORMAL);
+		}
 	}
 
 }
@@ -1078,7 +1121,7 @@ function fb_consume_stream($uid,$j,$wall = false) {
 	$a = get_app();
 
 
-	$user = q("SELECT `nickname`, `blockwall` FROM `user` WHERE `uid` = %d AND `account_expired` = 0 LIMIT 1",
+	$user = q("SELECT * FROM `user` WHERE `uid` = %d AND `account_expired` = 0 LIMIT 1",
 		intval($uid)
 	);
 	if(! count($user))
@@ -1201,7 +1244,7 @@ function fb_consume_stream($uid,$j,$wall = false) {
 
 			if($entry->privacy && $entry->privacy->value !== 'EVERYONE') {
 				$datarray['private'] = 1;
-				$datarray['allow_cid'] = '<' . $uid . '>';
+				$datarray['allow_cid'] = '<' . $self[0]['id'] . '>';
 			}
 
 			if(trim($datarray['body']) == '') {
@@ -1340,6 +1383,47 @@ function fb_consume_stream($uid,$j,$wall = false) {
 				$cmntdata['author-avatar'] = 'https://graph.facebook.com/' . $cmnt->from->id . '/picture';
 				$cmntdata['body'] = $cmnt->message;
 				$item = item_store($cmntdata);			
+				
+				$myconv = q("SELECT `author-link`, `author-avatar`, `parent` FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `parent` != 0 ",
+					dbesc($orig_post['uri']),
+					intval($uid)
+				);
+
+				if(count($myconv)) {
+					$importer_url = $a->get_baseurl() . '/profile/' . $user[0]['nickname'];
+
+					foreach($myconv as $conv) {
+
+						// now if we find a match, it means we're in this conversation
+	
+						if(! link_compare($conv['author-link'],$importer_url))
+							continue;
+
+						require_once('include/enotify.php');
+								
+						$conv_parent = $conv['parent'];
+
+						notification(array(
+							'type'         => NOTIFY_COMMENT,
+							'notify_flags' => $user[0]['notify-flags'],
+							'language'     => $user[0]['language'],
+							'to_name'      => $user[0]['username'],
+							'to_email'     => $user[0]['email'],
+							'uid'          => $user[0]['uid'],
+							'item'         => $cmntdata,
+							'link'		   => $a->get_baseurl() . '/display/' . $importer['nickname'] . '/' . $item,
+							'source_name'  => $cmntdata['author-name'],
+							'source_link'  => $cmntdata['author-link'],
+							'source_photo' => $cmntdata['author-avatar'],
+							'verb'         => ACTIVITY_POST,
+							'otype'        => 'item',
+							'parent'       => $conv_parent,
+						));
+
+						// only send one notification
+						break;
+					}
+				}
 			}
 		}
 	}

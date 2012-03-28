@@ -109,7 +109,7 @@ function blockem_prepare_body(&$a,&$b) {
 
 function blockem_display_item(&$a,&$b) {
 	if(strstr($b['output']['body'],'id="blockem-wrap-'))
-		$b['output']['thumb'] = $a->get_baseurl() . "/images/default-profile-sm.jpg";
+		$b['output']['thumb'] = $a->get_baseurl() . "/images/person-80.jpg";
 }
 
 
