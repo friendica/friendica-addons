@@ -672,6 +672,7 @@ function facebook_post_hook(&$a,&$b) {
 	 */
 
 	require_once('include/group.php');
+	require_once('include/html2plain.php');
 
 	logger('Facebook post');
 
@@ -792,7 +793,7 @@ function facebook_post_hook(&$a,&$b) {
 				if($b['verb'] == ACTIVITY_DISLIKE)
 					$msg = trim(strip_tags(bbcode($msg)));
 
-				$search_str = $a->get_baseurl() . '/search';
+				/*$search_str = $a->get_baseurl() . '/search';
 
 				if(preg_match("/\[url=(.*?)\](.*?)\[\/url\]/is",$msg,$matches)) {
 
@@ -821,25 +822,51 @@ function facebook_post_hook(&$a,&$b) {
 				if((strpos($link,z_root()) !== false) && (! $image))
 					$image = $a->get_baseurl() . '/images/friendica-64.jpg';
 
-				$msg = trim(strip_tags(bbcode($msg)));
+				$msg = trim(strip_tags(bbcode($msg)));*/
+
+				// Test
+
+				// Looking for images
+				if(preg_match("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/is",$b['body'],$matches))
+					$image = $matches[3];
+
+				if(preg_match("/\[img\](.*?)\[\/img\]/is",$b['body'],$matches))
+					$image = $matches[1];
+
+				$html = bbcode($b['body']);
+				$msg = trim($b['title']." \n".html2plain($html, 0, true));
 				$msg = html_entity_decode($msg,ENT_QUOTES,'UTF-8');
+
+				$toolong = false;
 
 				// add any attachments as text urls
 
-			    $arr = explode(',',$b['attach']);
+				$arr = explode(',',$b['attach']);
 
-			    if(count($arr)) {
+				if(count($arr)) {
 					$msg .= "\n";
-        			foreach($arr as $r) {
-            			$matches = false;
+        				foreach($arr as $r) {
+            					$matches = false;
 						$cnt = preg_match('|\[attach\]href=\"(.*?)\" size=\"(.*?)\" type=\"(.*?)\" title=\"(.*?)\"\[\/attach\]|',$r,$matches);
 						if($cnt) {
-							$msg .= $matches[1];
+							$msg .= "\n".$matches[1];
 						}
 					}
 				}
 
-				if (strlen($msg) > FACEBOOK_MAXPOSTLEN) {
+				// To-Do: look for bookmark-bbcode and handle it with priority
+
+				$links = collecturls($html);
+				if (sizeof($links) > 0) {
+					reset($links);
+					$link = current($links);
+					/*if (strlen($msg."\n".$link) <= FACEBOOK_MAXPOSTLEN)
+						$msg .= "\n".$link;
+					else
+						$toolong = true;*/
+				}
+
+				if ((strlen($msg) > FACEBOOK_MAXPOSTLEN) or $toolong) {
 					$shortlink = "";
 					require_once('library/slinky.php');
 
