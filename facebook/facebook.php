@@ -833,7 +833,10 @@ function facebook_post_hook(&$a,&$b) {
 				if(preg_match("/\[img\](.*?)\[\/img\]/is",$b['body'],$matches))
 					$image = $matches[1];
 
-				$html = bbcode($b['body']);
+				// Replace bookmark with url
+				$body = preg_replace("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/ism",'[url=$1]$2[/url]',$b['body']);
+
+				$html = bbcode($body);
 				$msg = trim($b['title']." \n".html2plain($html, 0, true));
 				$msg = html_entity_decode($msg,ENT_QUOTES,'UTF-8');
 
@@ -854,16 +857,21 @@ function facebook_post_hook(&$a,&$b) {
 					}
 				}
 
-				// To-Do: look for bookmark-bbcode and handle it with priority
+				$link = '';
+				// look for bookmark-bbcode and handle it with priority
+				if(preg_match("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/is",$b['body'],$matches))
+					$link = $matches[1];
 
-				$links = collecturls($html);
-				if (sizeof($links) > 0) {
-					reset($links);
-					$link = current($links);
-					/*if (strlen($msg."\n".$link) <= FACEBOOK_MAXPOSTLEN)
-						$msg .= "\n".$link;
-					else
-						$toolong = true;*/
+				if ($link == '') {
+					$links = collecturls($html);
+					if (sizeof($links) > 0) {
+						reset($links);
+						$link = current($links);
+						/*if (strlen($msg."\n".$link) <= FACEBOOK_MAXPOSTLEN)
+							$msg .= "\n".$link;
+						else
+							$toolong = true;*/
+					}
 				}
 
 				if ((strlen($msg) > FACEBOOK_MAXPOSTLEN) or $toolong) {
