@@ -53,7 +53,10 @@
  * - Implement a configuration option to set the polling interval system-wide
  */
 
-define('FACEBOOK_MAXPOSTLEN', 420);
+// Size of maximum post length increased
+// see http://www.facebook.com/schrep/posts/203969696349811
+// define('FACEBOOK_MAXPOSTLEN', 420);
+define('FACEBOOK_MAXPOSTLEN', 63206);
 
 
 function facebook_install() {
@@ -891,7 +894,8 @@ function facebook_post_hook(&$a,&$b) {
 					$msg = substr($msg, 0, FACEBOOK_MAXPOSTLEN - strlen($shortlink) - 4);
 					$msg .= '... ' . $shortlink;
 				}
-				if(! strlen($msg))
+
+				if(!strlen($msg) and !strlen($link) and !strlen($image))
 					return;
 
 				logger('Facebook post: msg=' . $msg, LOGGER_DATA);
