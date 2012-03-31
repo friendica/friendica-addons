@@ -598,7 +598,7 @@ function facebook_cron($a,$b) {
 				
 				if(strlen($a->config['admin_email']) && !get_config('facebook', 'realtime_err_mailsent')) {
 					$res = mail($a->config['admin_email'], t('Problems with Facebook Real-Time Updates'), 
-						"Hi!\n\nThere's a problem with the Facebook Real-Time Updates that cannot be solved automatically. Maybe an permission issue?\n\nThis e-mail will only be sent once.",
+						"Hi!\n\nThere's a problem with the Facebook Real-Time Updates that cannot be solved automatically. Maybe a permission issue?\n\nPlease try to re-activate it on " . $a->config["system"]["url"] . "/admin/plugins/facebook\n\nThis e-mail will only be sent once.",
 						'From: ' . t('Administrator') . '@' . $_SERVER['SERVER_NAME'] . "\n"
 						. 'Content-type: text/plain; charset=UTF-8' . "\n"
 						. 'Content-transfer-encoding: 8bit'
