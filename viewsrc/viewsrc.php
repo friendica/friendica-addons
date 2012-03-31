@@ -32,7 +32,7 @@ EOS;
 }
 
 function viewsrc_item_photo_menu(&$a,&$b) {
-	if(! local_user())
+	if((! local_user()) || (local_user() != $b['item']['uid']))
 		return;
 	$b['menu'] = array_merge( array( t('View Source') => $a->get_baseurl() . '/viewsrc/'. $b['item']['id']), $b['menu']);
 
