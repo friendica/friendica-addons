@@ -44,7 +44,7 @@ function page_page_end($a,&$b) {
 
 	$page = '<div id="page-sidebar" class="widget">
 			<div class="title tool">
-			<h3>'.t("Community Pages").'</h3></div>
+			<h3>'.t("Forums").'</h3></div>
 			<div id="sidebar-page-list"><ul>';
 
 	$contacts = page_getpage($a->user['uid']);
