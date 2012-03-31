@@ -964,6 +964,9 @@ function facebook_post_hook(&$a,&$b) {
 									'language'     => $r[0]['language'],
 									'to_name'      => $r[0]['username'],
 									'to_email'     => $r[0]['email'],
+									'source_name'  => t('Administrator'),
+									'source_link'  => $a->config["system"]["url"],
+									'source_photo' => $a->config["system"]["url"] . '/images/person-80.jpg',
 								));
 								
 								set_pconfig($b['uid'], 'facebook', 'session_expired_mailsent', time());
