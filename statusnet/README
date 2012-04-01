@@ -42,6 +42,9 @@ ___ Configuration ___
 
 __ Global Configuration __
 
+If you enabled an administrator account, please use the admin panel to cofigure
+the StatusNet relay.
+
 To activate this addon add statusnet to the list of active addons in your
 .htconfig.php file 
     $a->config['system']['addon'] = "statusnet, ...".

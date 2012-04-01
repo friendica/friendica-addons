@@ -36,6 +36,7 @@ function irc_content(&$a) {
 $baseurl = $a->get_baseurl() . '/addon/irc';
 $o = '';
 
+$channels = ((x($_GET,'channels')) ? $_GET['channels'] : 'friendica');
 
 /* add the chatroom frame and some html
  * by altering the "channels=friendica" part of the URL, you can add/remove channels.  
@@ -44,7 +45,7 @@ $o = '';
   $o .= <<< EOT
 <h2>IRC chat</h2>
 <p><a href="http://tldp.org/HOWTO/IRC/beginners.html" target="_blank">a beginner's guide to using IRC.</a></p>
-<iframe src="http://webchat.freenode.net?channels=friendica" width="600" height="600"></iframe>
+<iframe src="http://webchat.freenode.net?channels=$channels" width="600" height="600"></iframe>
 EOT;
 
 return $o;

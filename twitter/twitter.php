@@ -2,7 +2,7 @@
 /**
  * Name: Twitter Connector
  * Description: Relay public postings to a connected Twitter account
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: Tobias Diekershoff <https://diekershoff.homeunix.net/friendika/profile/tobias>
  */
 
@@ -93,6 +93,7 @@ function twitter_settings_post ($a,$post) {
                 del_pconfig( local_user(), 'twitter', 'oauthsecret'  );  
                 del_pconfig( local_user(), 'twitter', 'post' );
                 del_pconfig( local_user(), 'twitter', 'post_by_default' );
+                del_pconfig( local_user(), 'twitter', 'post_taglinks');
 	} else {
 	if (isset($_POST['twitter-pin'])) {
 		//  if the user supplied us with a PIN from Twitter, let the magic of OAuth happen
@@ -109,6 +110,7 @@ function twitter_settings_post ($a,$post) {
  		set_pconfig(local_user(),'twitter', 'oauthtoken',  $token['oauth_token']);
 		set_pconfig(local_user(),'twitter', 'oauthsecret', $token['oauth_token_secret']);
                 set_pconfig(local_user(),'twitter', 'post', 1);
+                set_pconfig(local_user(),'twitter', 'post_taglinks', 1);
                 //  reload the Addon Settings page, if we don't do it see Bug #42
                 goaway($a->get_baseurl().'/settings/connectors');
 	} else {
@@ -116,6 +118,7 @@ function twitter_settings_post ($a,$post) {
 		//  to post a tweet for every new __public__ posting to the wall
 		set_pconfig(local_user(),'twitter','post',intval($_POST['twitter-enable']));
                 set_pconfig(local_user(),'twitter','post_by_default',intval($_POST['twitter-default']));
+                set_pconfig(local_user(),'twitter','post_taglinks',intval($_POST['twitter-sendtaglinks']));
                 info( t('Twitter settings updated.') . EOL);
 	}}
 }
@@ -136,6 +139,8 @@ function twitter_settings(&$a,&$s) {
 	$checked = (($enabled) ? ' checked="checked" ' : '');
         $defenabled = get_pconfig(local_user(),'twitter','post_by_default');
 	$defchecked = (($defenabled) ? ' checked="checked" ' : '');
+        $linksenabled = get_pconfig(local_user(),'twitter','post_taglinks');
+        $linkschecked = (($linksenabled) ? ' checked="checked" ' : '');
 
 	$s .= '<div class="settings-block">';
 	$s .= '<h3>'. t('Twitter Posting Settings') .'</h3>';
@@ -192,6 +197,9 @@ function twitter_settings(&$a,&$s) {
                         $s .= '<div class="clear"></div>';
                         $s .= '<label id="twitter-default-label" for="twitter-default">'. t('Send public postings to Twitter by default') .'</label>';
                         $s .= '<input id="twitter-default" type="checkbox" name="twitter-default" value="1" ' . $defchecked . '/>';
+			$s .= '<div class="clear"></div>';
+                        $s .= '<label id="twitter-sendtaglinks-label" for="twitter-sendtaglinks">'.t('Send #tag links to Twitter').'</label>';
+                        $s .= '<input id="twitter-sendtaglinks" type="checkbox" name="twitter-sendtaglinks" value="1" '. $linkschecked . '/>';
 			$s .= '</div><div class="clear"></div>';
 
 			$s .= '<div id="twitter-disconnect-wrapper">';
@@ -291,7 +299,12 @@ function twitter_post_hook(&$a,&$b) {
                 // we can later send to Twitter. This way we can "gain" some 
                 // information during shortening of potential links but do not 
                 // shorten all the links in a 200000 character long essay.
-                $tmp = substr($b['body'], 0, 2*$max_char);
+                if (! $b['title']=='') {
+                    $tmp = $b['title'] . ' : '. $b['body'];
+                    $tmp = substr($tmp, 0, 2*$max_char);
+                } else {
+                    $tmp = substr($b['body'], 0, 2*$max_char);
+                }
                 // if [url=bla][img]blub.png[/img][/url] get blub.png
                 $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\]\[img\](\\w+.*?)\\[\\/img\]\\[\\/url\]/i', '$2', $tmp);
                 // preserve links to images, videos and audios
@@ -301,12 +314,13 @@ function twitter_post_hook(&$a,&$b) {
                 $tmp = preg_replace( '/\[\\/?youtube(\\s+.*?\]|\])/i', '', $tmp);
                 $tmp = preg_replace( '/\[\\/?vimeo(\\s+.*?\]|\])/i', '', $tmp);
                 $tmp = preg_replace( '/\[\\/?audio(\\s+.*?\]|\])/i', '', $tmp);
+                $linksenabled = get_pconfig($b['uid'],'twitter','post_taglinks');
                 // if a #tag is linked, don't send the [url] over to SN
-                //   this is commented out by default as it means backlinks
-                //   to friendica, if you don't like this feel free to
-                //   uncomment the following line
-//                $tmp = preg_replace( '/#\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '#$2', $tmp);
-                // preserve links to webpages
+                // that is, don't send if the option is not set in the 
+                // connector settings
+                if ($linksenabled=='0') {
+                    $tmp = preg_replace( '/#\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '#$2', $tmp);
+                }
                 $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/url\]/i', '$2 $1', $tmp);
                 $tmp = preg_replace( '/\[bookmark\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/bookmark\]/i', '$2 $1', $tmp);
                 // find all http or https links in the body of the entry and 
