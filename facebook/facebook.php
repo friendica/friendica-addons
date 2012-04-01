@@ -57,7 +57,7 @@
 // see http://www.facebook.com/schrep/posts/203969696349811
 // define('FACEBOOK_MAXPOSTLEN', 420);
 define('FACEBOOK_MAXPOSTLEN', 63206);
-
+define('FACEBOOK_SESSION_ERR_NOTIFICATION_INTERVAL', 259200); // 3 days
 
 function facebook_install() {
 	register_hook('post_local',       'addon/facebook/facebook.php', 'facebook_post_local');
@@ -466,9 +466,21 @@ function facebook_content(&$a) {
 		info( t('Updating contacts') . EOL);
 	}
 
-
-	$fb_installed = get_pconfig(local_user(),'facebook','post');
-
+	$o = '';
+	
+	$fb_installed = false;
+	if (get_pconfig(local_user(),'facebook','post')) {
+		$access_token = get_pconfig(local_user(),'facebook','access_token');
+		if ($access_token) {
+			$private_wall = intval(get_pconfig($uid,'facebook','private_wall'));
+			$s = fetch_url('https://graph.facebook.com/me/feed?access_token=' . $access_token);
+			if($s) {
+				$j = json_decode($s);
+				if (isset($j->data)) $fb_installed = true;
+			}
+		}
+	}
+	
 	$appid = get_config('facebook','appid');
 
 	if(! $appid) {
@@ -600,7 +612,7 @@ function facebook_cron($a,$b) {
 				
 				if(strlen($a->config['admin_email']) && !get_config('facebook', 'realtime_err_mailsent')) {
 					$res = mail($a->config['admin_email'], t('Problems with Facebook Real-Time Updates'), 
-						"Hi!\n\nThere's a problem with the Facebook Real-Time Updates that cannot be solved automatically. Maybe an permission issue?\n\nThis e-mail will only be sent once.",
+						"Hi!\n\nThere's a problem with the Facebook Real-Time Updates that cannot be solved automatically. Maybe a permission issue?\n\nPlease try to re-activate it on " . $a->config["system"]["url"] . "/admin/plugins/facebook\n\nThis e-mail will only be sent once.",
 						'From: ' . t('Administrator') . '@' . $_SERVER['SERVER_NAME'] . "\n"
 						. 'Content-type: text/plain; charset=UTF-8' . "\n"
 						. 'Content-transfer-encoding: 8bit'
@@ -631,17 +643,39 @@ function facebook_plugin_settings(&$a,&$b) {
 
 
 function facebook_plugin_admin(&$a, &$o){
+	$o = '<input type="hidden" name="form_security_token" value="' . get_form_security_token("fbsave") . '">';
 	
-	$activated = facebook_check_realtime_active();
-	if ($activated) {
-		$o = t('Real-Time Updates are activated.') . '<br><br>';
-		$o .= '<input type="submit" name="real_time_deactivate" value="' . t('Deactivate Real-Time Updates') . '">';
-	} else {
-		$o = t('Real-Time Updates not activated.') . '<br><input type="submit" name="real_time_activate" value="' . t('Activate Real-Time Updates') . '">';
+	$o .= '<h4>' . t('Facebook API Key') . '</h4>';
+	
+	$appid  = get_config('facebook', 'appid'  );
+	$appsecret = get_config('facebook', 'appsecret' );
+	
+	$o .= '<label for="fb_appid">' . t('App-ID / API-Key') . '</label><input name="appid" type="text" value="' . escape_tags($appid ? $appid : "") . '"><br style="clear: both;">';
+	$o .= '<label for="fb_appsecret">' . t('Application secret') . '</label><input name="appsecret" type="text" value="' . escape_tags($appsecret ? $appsecret : "") . '"><br style="clear: both;">';
+	$o .= '<input type="submit" name="fb_save_keys" value="' . t('Save') . '">';
+	
+	if ($appid && $appsecret) {
+		$o .= '<h4>' . t('Real-Time Updates') . '</h4>';
+		
+		$activated = facebook_check_realtime_active();
+		if ($activated) {
+			$o .= t('Real-Time Updates are activated.') . '<br><br>';
+			$o .= '<input type="submit" name="real_time_deactivate" value="' . t('Deactivate Real-Time Updates') . '">';
+		} else {
+			$o .= t('Real-Time Updates not activated.') . '<br><input type="submit" name="real_time_activate" value="' . t('Activate Real-Time Updates') . '">';
+		}
 	}
 }
 
 function facebook_plugin_admin_post(&$a, &$o){
+	check_form_security_token_redirectOnErr('/admin/plugins/facebook', 'fbsave');
+	
+	if (x($_REQUEST,'fb_save_keys')) {
+		set_config('facebook', 'appid', $_REQUEST['appid']);
+		set_config('facebook', 'appsecret', $_REQUEST['appsecret']);
+		del_config('facebook', 'app_access_token');
+		info(t('The new values have been saved.'));
+	}
 	if (x($_REQUEST,'real_time_activate')) {
 		facebook_subscription_add_users();
 	}
@@ -980,6 +1014,7 @@ function facebook_post_hook(&$a,&$b) {
 
 				if(! get_config('facebook','test_mode')) {
 					$x = post_url($url, $postvars);
+					logger('Facebook post returns: ' . $x, LOGGER_DEBUG);
 
 					$retj = json_decode($x);
 					if($retj->id) {
@@ -987,7 +1022,6 @@ function facebook_post_hook(&$a,&$b) {
 							dbesc('fb::' . $retj->id),
 							intval($b['id'])
 						);
-						del_pconfig($b['uid'], 'facebook', 'session_expired_mailsent');
 					}
 					else {
 						if(! $likes) {
@@ -999,7 +1033,9 @@ function facebook_post_hook(&$a,&$b) {
 						
 						if (isset($retj->error) && $retj->error->type == "OAuthException" && $retj->error->code == 190) {
 							logger('Facebook session has expired due to changed password.', LOGGER_DEBUG);
-							if (!get_pconfig($b['uid'], 'facebook', 'session_expired_mailsent')) {
+							
+							$last_notification = get_pconfig($b['uid'], 'facebook', 'session_expired_mailsent');
+							if (!$last_notification || $last_notification < (time() - FACEBOOK_SESSION_ERR_NOTIFICATION_INTERVAL)) {
 								require_once('include/enotify.php');
 							
 								$r = q("SELECT * FROM `user` WHERE `uid` = %d LIMIT 1", intval($b['uid']) );
@@ -1010,14 +1046,15 @@ function facebook_post_hook(&$a,&$b) {
 									'language'     => $r[0]['language'],
 									'to_name'      => $r[0]['username'],
 									'to_email'     => $r[0]['email'],
+									'source_name'  => t('Administrator'),
+									'source_link'  => $a->config["system"]["url"],
+									'source_photo' => $a->config["system"]["url"] . '/images/person-80.jpg',
 								));
 								
-								set_pconfig($b['uid'], 'facebook', 'session_expired_mailsent', '1');
-							}
+								set_pconfig($b['uid'], 'facebook', 'session_expired_mailsent', time());
+							} else logger('Facebook: No notification, as the last one was sent on ' . $last_notification, LOGGER_DEBUG);
 						}
 					}
-					
-					logger('Facebook post returns: ' . $x, LOGGER_DEBUG);
 				}
 			}
 		}
@@ -1029,6 +1066,7 @@ function facebook_enotify(&$app, &$data) {
 		$data['itemlink'] = '/facebook';
 		$data['epreamble'] = $data['preamble'] = t('Your Facebook connection became invalid. Please Re-authenticate.');
 		$data['subject'] = t('Facebook connection became invalid');
+		$data['body'] = sprintf( t("Hi %1\$s,\n\nThe connection between your accounts on %2\$s and Facebook became invalid. This usually happens after you change your Facebook-password. To enable the connection again, you have to %3\$sre-authenticate the Facebook-connector%4\$s."), $data['params']['to_name'], "[url=" . $app->config["system"]["url"] . "]" . $app->config["sitename"] . "[/url]", "[url=" . $app->config["system"]["url"] . "/facebook]", "[/url]");
 	}
 }
 
@@ -1492,8 +1530,8 @@ function fb_get_app_access_token() {
 		logger('fb_get_app_access_token: appid and/or appsecret not set', LOGGER_DEBUG);
 		return false;
 	}
-	
-	$x = fetch_url('https://graph.facebook.com/oauth/access_token?client_id=' . $appid . '&client_secret=' . $appsecret . "&grant_type=client_credentials");
+	logger('https://graph.facebook.com/oauth/access_token?client_id=' . $appid . '&client_secret=' . $appsecret . '&grant_type=client_credentials', LOGGER_DATA);
+	$x = fetch_url('https://graph.facebook.com/oauth/access_token?client_id=' . $appid . '&client_secret=' . $appsecret . '&grant_type=client_credentials');
 	
 	if(strpos($x,'access_token=') !== false) {
 		logger('fb_get_app_access_token: returned access token: ' . $x, LOGGER_DATA);
@@ -1524,8 +1562,7 @@ function facebook_subscription_del_users() {
 	del_config('facebook', 'realtime_active');
 }
 
-function facebook_subscription_add_users() {
-	
+function facebook_subscription_add_users($second_try = false) {
 	$a = get_app();
 	$access_token = fb_get_app_access_token();
 	
@@ -1546,9 +1583,18 @@ function facebook_subscription_add_users() {
 	del_config('facebook', 'cb_verify_token');
 	
 	if ($j) {
+		$x = json_decode($j);
 		logger("Facebook reponse: " . $j, LOGGER_DATA);
-		
-		if (facebook_check_realtime_active()) set_config('facebook', 'realtime_active', 1);
+		if (isset($x->error)) {
+			logger('facebook_subscription_add_users: got an error: ' . $j);
+			if ($x->error->type == "OAuthException" && $x->error->code == 190) {
+				del_config('facebook', 'app_access_token');
+				if ($second_try === false) facebook_subscription_add_users(true);
+			}
+		} else {
+			logger('facebook_subscription_add_users: sucessful');
+			if (facebook_check_realtime_active()) set_config('facebook', 'realtime_active', 1);
+		}
 	};
 }
 
