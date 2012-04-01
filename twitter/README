@@ -48,7 +48,7 @@ ___ Configuration ___
 __ Global Configuration __
 
 If you enabled an administrator account, please use the admin panel to cofigure
-the Twitter reley.
+the Twitter relay.
 
 To activate this addon add @twitter@ to the list of active addons in your
 .htconfig.php file 
