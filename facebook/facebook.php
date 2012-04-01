@@ -883,9 +883,12 @@ function facebook_post_hook(&$a,&$b) {
 				}
 
 				$link = '';
+				$linkname = '';
 				// look for bookmark-bbcode and handle it with priority
-				if(preg_match("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/is",$b['body'],$matches))
+				if(preg_match("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/is",$b['body'],$matches)) {
 					$link = $matches[1];
+					$linkname = $matches[2];
+				}
 
 				// If there is no bookmark element then take the first link
 				if ($link == '') {
@@ -893,10 +896,11 @@ function facebook_post_hook(&$a,&$b) {
 					if (sizeof($links) > 0) {
 						reset($links);
 						$link = current($links);
-						/*if (strlen($msg."\n".$link) <= FACEBOOK_MAXPOSTLEN)
-							$msg .= "\n".$link;*/
 					}
 				}
+
+				// Remove trailing and leading spaces
+				$msg = trim($msg);
 
 				// Since facebook increased the maxpostlen massively this never should happen again :)
 				if (strlen($msg) > FACEBOOK_MAXPOSTLEN) {
@@ -917,7 +921,18 @@ function facebook_post_hook(&$a,&$b) {
 					$msg .= '... ' . $shortlink;
 				}
 
-				if(!strlen($msg) and !strlen($link) and !strlen($image))
+				// Fallback - if message is empty
+				if(!strlen($msg))
+					$msg = $linkname;
+
+				if(!strlen($msg))
+					$msg = $link;
+
+				if(!strlen($msg))
+					$msg = $image;
+
+				// If there is nothing to post then exit
+				if(!strlen($msg))
 					return;
 
 				logger('Facebook post: msg=' . $msg, LOGGER_DATA);
