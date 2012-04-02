@@ -649,6 +649,10 @@ function facebook_plugin_admin(&$a, &$o){
 	$poll_interval = get_config('facebook', 'poll_interval' );
 	if (!$poll_interval) $poll_interval = FACEBOOK_DEFAULT_POLL_INTERVAL;
 	
+	$ret1 = q("SELECT `v` FROM `config` WHERE `cat` = 'facebook' AND `k` = 'appid' LIMIT 1");
+	$ret2 = q("SELECT `v` FROM `config` WHERE `cat` = 'facebook' AND `k` = 'appsecret' LIMIT 1");
+	if ((count($ret1) > 0 && $ret1[0]['v'] != $appid) || (count($ret2) > 0 && $ret2[0]['v'] != $appsecret)) $o .= t('Error: it appears that you have specified the App-ID and -Secret in your .htconfig.php file. As long as they are specified there, they cannot be set using this form.<br><br>');
+	
 	$working_connection = false;
 	if ($appid && $appsecret) {
 		$subs = facebook_subscriptions_get();
@@ -656,7 +660,7 @@ function facebook_plugin_admin(&$a, &$o){
 		elseif (is_array($subs)) {
 			$o .= t('The given API Key seems to work correctly.') . '<br>';
 			$working_connection = true;
-		} else $o .= t('The correctness of the API Key could not be detected. Somthing strang\'s going on.') . '<br>';
+		} else $o .= t('The correctness of the API Key could not be detected. Somthing strange\'s going on.') . '<br>';
 	}
 	
 	$o .= '<label for="fb_appid">' . t('App-ID / API-Key') . '</label><input name="appid" type="text" value="' . escape_tags($appid ? $appid : "") . '"><br style="clear: both;">';
