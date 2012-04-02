@@ -36,7 +36,11 @@ function irc_content(&$a) {
 	$baseurl = $a->get_baseurl() . '/addon/irc';
 	$o = '';
 
-	$chats = array('friendica','chat','chatback','hottub','ircbar','dateroom','teentalk');
+	$sitechats = get_config('irc','channels');
+	if($sitechats)
+		$chats = explode(',',$sitechats);
+	else
+		$chats = array('friendica','chat','chatback','hottub','ircbar','dateroom','teentalk');
 
 
 	$a->page['aside'] .= '<div class="widget"><h3>' . t('Popular Channels') . '</h3><ul>';
