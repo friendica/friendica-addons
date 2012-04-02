@@ -25,9 +25,8 @@
  *   d. Navigate to Set Web->Site URL & Domain -> Website Settings.  Set 
  *      Site URL to yoursubdomain.yourdomain.com. Set Site Domain to your 
  *      yourdomain.com.
- * 2. (This step is now obsolete. Enable the plugin via the Admin panel.)
- *     Enable the facebook plugin by including it in .htconfig.php - e.g. 
- *     $a->config['system']['addon'] = 'plugin1,plugin2,facebook';
+ * 2. Visit the Facebook Settings section of the "Settings->Plugin Settings" page.
+ *    and click 'Install Facebook Connector'.
  * 3. Visit the Facebook Settings section of the "Settings->Plugin Settings" page.
  *    and click 'Install Facebook Connector'.
  * 4. This will ask you to login to Facebook and grant permission to the 
@@ -50,12 +49,12 @@
  /** TODO
  * - Implement a method for the administrator to delete all configuration data the plugin has created,
  *   e.g. the app_access_token
- * - Implement a configuration option to set the polling interval system-wide
  */
 
 define('FACEBOOK_MAXPOSTLEN', 420);
 define('FACEBOOK_SESSION_ERR_NOTIFICATION_INTERVAL', 259200); // 3 days
-
+define('FACEBOOK_DEFAULT_POLL_INTERVAL', 60); // given in minutes
+define('FACEBOOK_MIN_POLL_INTERVAL', 5);
 
 function facebook_install() {
 	register_hook('post_local',       'addon/facebook/facebook.php', 'facebook_post_local');
@@ -555,7 +554,7 @@ function facebook_cron($a,$b) {
 	
 	$poll_interval = intval(get_config('facebook','poll_interval'));
 	if(! $poll_interval)
-		$poll_interval = 3600;
+		$poll_interval = FACEBOOK_DEFAULT_POLL_INTERVAL;
 
 	if($last) {
 		$next = $last + $poll_interval;
@@ -647,12 +646,29 @@ function facebook_plugin_admin(&$a, &$o){
 	
 	$appid  = get_config('facebook', 'appid'  );
 	$appsecret = get_config('facebook', 'appsecret' );
+	$poll_interval = get_config('facebook', 'poll_interval' );
+	if (!$poll_interval) $poll_interval = FACEBOOK_DEFAULT_POLL_INTERVAL;
+	
+	$ret1 = q("SELECT `v` FROM `config` WHERE `cat` = 'facebook' AND `k` = 'appid' LIMIT 1");
+	$ret2 = q("SELECT `v` FROM `config` WHERE `cat` = 'facebook' AND `k` = 'appsecret' LIMIT 1");
+	if ((count($ret1) > 0 && $ret1[0]['v'] != $appid) || (count($ret2) > 0 && $ret2[0]['v'] != $appsecret)) $o .= t('Error: it appears that you have specified the App-ID and -Secret in your .htconfig.php file. As long as they are specified there, they cannot be set using this form.<br><br>');
+	
+	$working_connection = false;
+	if ($appid && $appsecret) {
+		$subs = facebook_subscriptions_get();
+		if ($subs === null) $o .= t('Error: the given API Key seems to be incorrect (the application access token could not be retrieved).') . '<br>';
+		elseif (is_array($subs)) {
+			$o .= t('The given API Key seems to work correctly.') . '<br>';
+			$working_connection = true;
+		} else $o .= t('The correctness of the API Key could not be detected. Somthing strange\'s going on.') . '<br>';
+	}
 	
 	$o .= '<label for="fb_appid">' . t('App-ID / API-Key') . '</label><input name="appid" type="text" value="' . escape_tags($appid ? $appid : "") . '"><br style="clear: both;">';
 	$o .= '<label for="fb_appsecret">' . t('Application secret') . '</label><input name="appsecret" type="text" value="' . escape_tags($appsecret ? $appsecret : "") . '"><br style="clear: both;">';
+	$o .= '<label for="fb_poll_interval">' . sprintf(t('Polling Interval (min. %1$s minutes)'), FACEBOOK_MIN_POLL_INTERVAL) . '</label><input name="poll_interval" type="number" min="' . FACEBOOK_MIN_POLL_INTERVAL . '" value="' . $poll_interval . '"><br style="clear: both;">';
 	$o .= '<input type="submit" name="fb_save_keys" value="' . t('Save') . '">';
 	
-	if ($appid && $appsecret) {
+	if ($working_connection) {
 		$o .= '<h4>' . t('Real-Time Updates') . '</h4>';
 		
 		$activated = facebook_check_realtime_active();
@@ -671,6 +687,8 @@ function facebook_plugin_admin_post(&$a, &$o){
 	if (x($_REQUEST,'fb_save_keys')) {
 		set_config('facebook', 'appid', $_REQUEST['appid']);
 		set_config('facebook', 'appsecret', $_REQUEST['appsecret']);
+		$poll_interval = IntVal($_REQUEST['poll_interval']);
+		if ($poll_interval >= FACEBOOK_MIN_POLL_INTERVAL) set_config('facebook', 'poll_interval', $poll_interval);
 		del_config('facebook', 'app_access_token');
 		info(t('The new values have been saved.'));
 	}
@@ -1511,7 +1529,7 @@ function facebook_subscription_del_users() {
 	$url = "https://graph.facebook.com/" . get_config('facebook', 'appid'  ) . "/subscriptions?access_token=" . $access_token;
 	facebook_delete_url($url);
 	
-	del_config('facebook', 'realtime_active');
+	if (!facebook_check_realtime_active()) del_config('facebook', 'realtime_active');
 }
 
 function facebook_subscription_add_users($second_try = false) {
