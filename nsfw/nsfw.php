@@ -44,13 +44,13 @@ function nsfw_addon_settings(&$a,&$s) {
 		$words = 'nsfw,';
 
     $s .= '<div class="settings-block">';
-    $s .= '<h3>' . t('"Not Safe For Work" Settings') . '</h3>';
+    $s .= '<h3>' . t('Content Filter Settings') . '</h3>';
     $s .= '<div id="nsfw-wrapper">';
 	
-    $s .= '<label id="nsfw-enable-label" for="nsfw-enable">' . t('Enable NSFW filter') . ' </label>';
+    $s .= '<label id="nsfw-enable-label" for="nsfw-enable">' . t('Enable Content filter') . ' </label>';
     $s .= '<input id="nsfw-enable" type="checkbox" name="nsfw-enable" value="1"' . $enable_checked . ' />';
 	$s .= '<div class="clear"></div>';
-    $s .= '<label id="nsfw-label" for="nsfw-words">' . t('Comma separated words to treat as NSFW') . ' </label>';
+    $s .= '<label id="nsfw-label" for="nsfw-words">' . t('Comma separated list of keywords to hide') . ' </label>';
     $s .= '<input id="nsfw-words" type="text" name="nsfw-words" value="' . $words .'" />';
     $s .= '</div><div class="clear"></div>';
 
