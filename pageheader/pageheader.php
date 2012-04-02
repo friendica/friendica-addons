@@ -10,7 +10,7 @@
  */
 
 function pageheader_install() {
-    register_hook('page_header', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
+    register_hook('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
 	register_hook('plugin_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
 	register_hook('plugin_settings_post', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings_post');
 
@@ -18,9 +18,12 @@ function pageheader_install() {
 
 
 function pageheader_uninstall() {
-    unregister_hook('page_header', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
+    unregister_hook('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
 	unregister_hook('plugin_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
 	unregister_hook('plugin_settings_post', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings_post');
+
+	// hook moved, uninstall the old one if still there. 
+    unregister_hook('page_header', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
 
 }
 
@@ -41,7 +44,7 @@ function pageheader_addon_settings(&$a,&$s) {
 
 	$words = get_config('pageheader','text');
 	if(! $words)
-		$words = 'pageheader,';
+		$words = '';
 
     $s .= '<div class="settings-block">';
     $s .= '<h3>' . t('"pageheader" Settings') . '</h3>';
