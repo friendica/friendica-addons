@@ -1270,8 +1270,14 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			// don't store post if we don't have a contact
 
 			if(! x($datarray,'contact-id')) {
-				logger('no contact: post ignored');
-				continue;
+				if (get_config('facebook', 'pages')) {
+					// If no user is found then post it under the own id.
+					// Definitely a quickhack
+					$datarray['contact-id'] = $self[0]['id'];
+				} else {
+					logger('no contact: post ignored');
+					continue;
+				}
 			}
 
 			$datarray['verb'] = ACTIVITY_POST;
