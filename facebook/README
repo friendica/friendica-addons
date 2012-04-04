@@ -1,35 +1,31 @@
 Installing the Friendica/Facebook connector
 
-1. register an API key for your site from developer.facebook.com
-  a. We'd be very happy if you include "Friendica" in the application name
-     to increase name recognition. The Friendica icons are also present
-     in the images directory and may be uploaded as a Facebook app icon.
-     Use images/friendica-16.jpg for the Icon and images/friendica-128.jpg for the Logo.
-  b. The url should be your site URL with a trailing slash.
-     You may use http://portal.friendika.com/privacy as the privacy policy
-     URL unless your site has different requirements, and 
-     http://portal.friendika.com as the Terms of Service URL unless
-     you have different requirements. (Friendica is a software application
-     and does not require Terms of Service, though your installation of it might).
-  c. Set the following values in your .htconfig.php file
-        $a->config['facebook']['appid'] = 'xxxxxxxxxxx';
-        $a->config['facebook']['appsecret'] = 'xxxxxxxxxxxxxxx';
-     Replace with the settings Facebook gives you.
-  d. Navigate to Set Web->Site URL & Domain -> Website Settings.  Set Site URL 
-     to yoursubdomain.yourdomain.com.  Set Site Domain to your yourdomain.com.
-  e. Chose "Website" (the url should be your site URL with a trailing slash) in the
-     "Select how your app integrates with Facebook" section.
-2. Enable the facebook plugin by including it in .htconfig.php - e.g. 
-    $a->config['system']['addon'] = 'plugin1,plugin2,facebook';
-3. Visit the Facebook Settings section of the "Settings->Plugin Settings" page.
-   and click 'Install Facebook Connector'.
-4. This will ask you to login to Facebook and grant permission to the 
-   plugin to do its stuff. Allow it to do so. 
-5. Optional step: If you want to use Facebook Real Time Updates (so new messages
-   and new contacts are added ~1min after they are postet / added on FB), go to
-   Settings -> plugins -> facebook and press the "Activate Real-Time Updates"-button.
-6. You're done. To turn it off visit the Plugin Settings page again and
-   'Remove Facebook posting'.
+1. Visit https://developers.facebook.com/apps to register an app.
+    a) Click "Create a new app"
+    b) We'd be very happy if you include "Friendica" in the application name
+       to increase name recognition.  
+    c) Edit your app settings on the setup page.  The Friendica icons are present
+       in the images directory and may be uploaded as a Facebook app icon.  Use 
+       images/friendica-16.jpg for the Icon and images/Friendica-128.jpg for the logo.
+    d) In the App Display name enter the name of your app (this should default to the
+       name you chose in part a).
+    e) Enter YourDomain.com in the App Domain field and hit return.
+    f) In "Select how your app connects with Facebook select "Website" and enter the 
+       full URL to your Friendica install including HTTPS and a trailing slash.
+
+2.    Enable the Facebook plugin by clicking on the icon next to it's name on the plugin
+      page of your admin panel.
+   b) return to the Facebook plugin page in your admin panel, and fill in the App-ID
+      and Application Secret settings you got from Facebook.
+   c) Click save.
+   d) Finally, return to the Facebook settings page, and activate real-time updates.
+
+3.    To use the Facebook plugin, visit the "connector settings" area of your settings
+      page.  Click "Install Facebook Connector".  
+4.    This will ask you to login to Facebook and allow the plugin to do it's stuff.  
+      Allow it to do so.
+5.    You're done. To turn it off visit the Plugin Settings page again and
+      'Remove Facebook posting'.
 
 Vidoes and embeds will not be posted if there is no other content. Links 
 and images will be converted to a format suitable for the Facebook API and 
