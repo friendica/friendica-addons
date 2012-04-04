@@ -51,10 +51,14 @@
  *   e.g. the app_access_token
  */
 
-define('FACEBOOK_MAXPOSTLEN', 420);
+// Size of maximum post length increased
+// see http://www.facebook.com/schrep/posts/203969696349811
+// define('FACEBOOK_MAXPOSTLEN', 420);
+define('FACEBOOK_MAXPOSTLEN', 63206);
 define('FACEBOOK_SESSION_ERR_NOTIFICATION_INTERVAL', 259200); // 3 days
 define('FACEBOOK_DEFAULT_POLL_INTERVAL', 60); // given in minutes
 define('FACEBOOK_MIN_POLL_INTERVAL', 5);
+
 
 function facebook_install() {
 	register_hook('post_local',       'addon/facebook/facebook.php', 'facebook_post_local');
@@ -846,6 +850,7 @@ function facebook_post_hook(&$a,&$b) {
 				if($b['verb'] == ACTIVITY_DISLIKE)
 					$msg = trim(strip_tags(bbcode($msg)));
 
+				// Old code
 				/*$search_str = $a->get_baseurl() . '/search';
 
 				if(preg_match("/\[url=(.*?)\](.*?)\[\/url\]/is",$msg,$matches)) {
@@ -877,23 +882,47 @@ function facebook_post_hook(&$a,&$b) {
 
 				$msg = trim(strip_tags(bbcode($msg)));*/
 
-				// Test
+				// New code
 
-				// Looking for images
+				// Looking for the first image
+				$image = '';
 				if(preg_match("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/is",$b['body'],$matches))
 					$image = $matches[3];
 
-				if(preg_match("/\[img\](.*?)\[\/img\]/is",$b['body'],$matches))
-					$image = $matches[1];
+				if ($image != '')
+					if(preg_match("/\[img\](.*?)\[\/img\]/is",$b['body'],$matches))
+						$image = $matches[1];
 
-				$html = bbcode($b['body']);
-				$msg = trim($b['title']." \n".html2plain($html, 0, true));
+				// Checking for a bookmark element
+				$body = $b['body'];
+				if (strpos($body, "[bookmark") !== false) {
+					// splitting the text in two parts:
+					// before and after the bookmark
+					$pos = strpos($body, "[bookmark");
+					$body1 = substr($body, 0, $pos);
+					$body2 = substr($body, $pos);
+
+					// Removing the bookmark and all quotes after the bookmark
+					// they are mostly only the content after the bookmark.
+					$body2 = preg_replace("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/ism",'',$body2);
+					$body2 = preg_replace("/\[quote\=([^\]]*)\](.*?)\[\/quote\]/ism",'',$body2);
+					$body2 = preg_replace("/\[quote\](.*?)\[\/quote\]/ism",'',$body2);
+
+					$body = $body1.$body2;
+				}
+
+				// At first convert the text to html
+				$html = bbcode($body);
+
+				// Then convert it to plain text
+				$msg = trim($b['title']." \n\n".html2plain($html, 0, true));
 				$msg = html_entity_decode($msg,ENT_QUOTES,'UTF-8');
 
-				$toolong = false;
+				// Removing multiple newlines
+				while (strpos($msg, "\n\n\n") !== false)
+					$msg = str_replace("\n\n\n", "\n\n", $msg);
 
 				// add any attachments as text urls
-
 				$arr = explode(',',$b['attach']);
 
 				if(count($arr)) {
@@ -907,19 +936,28 @@ function facebook_post_hook(&$a,&$b) {
 					}
 				}
 
-				// To-Do: look for bookmark-bbcode and handle it with priority
-
-				$links = collecturls($html);
-				if (sizeof($links) > 0) {
-					reset($links);
-					$link = current($links);
-					/*if (strlen($msg."\n".$link) <= FACEBOOK_MAXPOSTLEN)
-						$msg .= "\n".$link;
-					else
-						$toolong = true;*/
+				$link = '';
+				$linkname = '';
+				// look for bookmark-bbcode and handle it with priority
+				if(preg_match("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/is",$b['body'],$matches)) {
+					$link = $matches[1];
+					$linkname = $matches[2];
 				}
 
-				if ((strlen($msg) > FACEBOOK_MAXPOSTLEN) or $toolong) {
+				// If there is no bookmark element then take the first link
+				if ($link == '') {
+					$links = collecturls($html);
+					if (sizeof($links) > 0) {
+						reset($links);
+						$link = current($links);
+					}
+				}
+
+				// Remove trailing and leading spaces
+				$msg = trim($msg);
+
+				// Since facebook increased the maxpostlen massively this never should happen again :)
+				if (strlen($msg) > FACEBOOK_MAXPOSTLEN) {
 					$shortlink = "";
 					require_once('library/slinky.php');
 
@@ -936,7 +974,19 @@ function facebook_post_hook(&$a,&$b) {
 					$msg = substr($msg, 0, FACEBOOK_MAXPOSTLEN - strlen($shortlink) - 4);
 					$msg .= '... ' . $shortlink;
 				}
-				if(! strlen($msg))
+
+				// Fallback - if message is empty
+				if(!strlen($msg))
+					$msg = $link;
+
+				if(!strlen($msg))
+					$msg = $image;
+
+				if(!strlen($msg))
+					$msg = $linkname;
+
+				// If there is nothing to post then exit
+				if(!strlen($msg))
 					return;
 
 				logger('Facebook post: msg=' . $msg, LOGGER_DATA);
@@ -1240,8 +1290,14 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			// don't store post if we don't have a contact
 
 			if(! x($datarray,'contact-id')) {
-				logger('no contact: post ignored');
-				continue;
+				if (get_config('facebook', 'pages')) {
+					// If no user is found then post it under the own id.
+					// Definitely a quickhack
+					$datarray['contact-id'] = $self[0]['id'];
+				} else {
+					logger('no contact: post ignored');
+					continue;
+				}
 			}
 
 			$datarray['verb'] = ACTIVITY_POST;
