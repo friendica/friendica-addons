@@ -9,17 +9,17 @@
  * 
  */
 
-function adult_smile_install() {
-	register_hook('smilie', 'addon/adult_smile/adult_smile.php', 'adult_smile_smilies');
+function smilies_adult_install() {
+	register_hook('smilie', 'addon/smilies_adult/smilies_adult.php', 'smilies_adult_smilies');
 }
 
-function adult_smile_uninstall() {
-	unregister_hook('smilie', 'addon/adult_smile/adult_smile.php', 'adult_smile_smilies');
+function smilies_adult_uninstall() {
+	unregister_hook('smilie', 'addon/smilies_adult/smilies_adult.php', 'smilies_adult_smilies');
 }
 
  
 
-function adult_smile_smilies(&$a,&$b) {
+function smilies_adult_smilies(&$a,&$b) {
 
 	$b['texts'][] = '(o)(o)';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smilies-adult/icons/tits.gif' . '" alt="' . '(o)(o)' . '" />';
