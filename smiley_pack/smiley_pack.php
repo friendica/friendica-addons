@@ -13,7 +13,7 @@ function smiley_pack_install() {
 	register_hook('smilie', 'addon/smiley_pack/smiley_pack.php', 'smiley_pack_smilies');
 }
 
-function smiley_pack__uninstall() {
+function smiley_pack_uninstall() {
 	unregister_hook('smilie', 'addon/smiley_pack/smiley_pack.php', 'smiley_pack_smilies');
 }
 
