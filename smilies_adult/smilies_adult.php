@@ -22,17 +22,17 @@ function smilies_adult_uninstall() {
 function smilies_adult_smilies(&$a,&$b) {
 
 	$b['texts'][] = '(o)(o)';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smilies-adult/icons/tits.gif' . '" alt="' . '(o)(o)' . '" />';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smilies_adult/icons/tits.gif' . '" alt="' . '(o)(o)' . '" />';
 
 	$b['texts'][] = '(.)(.)';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smilies-adult/icons/tits.gif' . '" alt="' . '(.)(.)' . '" />';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smilies_adult/icons/tits.gif' . '" alt="' . '(.)(.)' . '" />';
 
 	$b['texts'][] = ':bong';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smilies-adult/icons/bong.gif' . '" alt="' . ':bong' . '" />';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smilies_adult/icons/bong.gif' . '" alt="' . ':bong' . '" />';
 
 	$b['texts'][] = ':sperm';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smilies-adult/icons/sperm.gif' . '" alt="' . ':sperm' . '" />';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smilies_adult/icons/sperm.gif' . '" alt="' . ':sperm' . '" />';
 
 	$b['texts'][] = ':drunk';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smilies-adult/icons/drunk.gif' . '" alt="' . ':drunk' . '" />';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smilies_adult/icons/drunk.gif' . '" alt="' . ':drunk' . '" />';
 }
