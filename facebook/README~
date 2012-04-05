@@ -20,18 +20,6 @@ Installing the Friendica/Facebook connector
    c) Click save.
    d) Finally, return to the Facebook settings page, and activate real-time updates.
 
-	i. If you for any reason prefer to use a configuration file instead of the admin panels, 
-	    Activate the plugin by including it in .htconfig.php, e.g.
-	    
-		$a->config['system']['addon'] = 'plugin1,plugin2,facebook';
-	
-	    and set the following values:
-		$a->config['facebook']['appid'] = 'xxxxxxxxxxx';
-		$a->config['facebook']['appsecret'] = 'xxxxxxxxxxxxxxx';
-
-	    Replace with the settings Facebook gives you.
-	
-
 3.    To use the Facebook plugin, visit the "connector settings" area of your settings
       page.  Click "Install Facebook Connector".  
 4.    This will ask you to login to Facebook and allow the plugin to do it's stuff.  
