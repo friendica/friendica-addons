@@ -1365,21 +1365,26 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			if($entry->description)
 				$quote = $entry->description;
 
-			foreach ($entry->properties as $property)
-				$quote .= "\n".$property->name.": [url=".$property->href."]".$property->text."[/url]";
+			if ($entry->properties)
+				foreach ($entry->properties as $property)
+					$quote .= "\n".$property->name.": [url=".$property->href."]".$property->text."[/url]";
 
 			if ($quote)
 				$datarray['body'] .= "\n[quote]".$quote."[/quote]";
 
-			if($entry->picture && $entry->link) {
-				$datarray['body'] .= "\n" . '[url=' . $entry->link . '][img]' . $entry->picture . '[/img][/url]';
-			}
-			else {
-				if($entry->picture)
-					$datarray['body'] .= "\n" . '[img]' . $entry->picture . '[/img]';
-				// if just a link, it may be a wall photo - check
-				if($entry->link)
-					$datarray['body'] .= fb_get_photo($uid,$entry->link);
+			// Only import the picture when the message is no video
+			// oembed display a picture of the video as well 
+			if ($entry->type != "video") {
+				if($entry->picture && $entry->link) {
+					$datarray['body'] .= "\n" . '[url=' . $entry->link . '][img]'.$entry->picture.'[/img][/url]';	
+				}
+				else {
+					if($entry->picture)
+						$datarray['body'] .= "\n" . '[img]' . $entry->picture . '[/img]';
+					// if just a link, it may be a wall photo - check
+					if($entry->link)
+						$datarray['body'] .= fb_get_photo($uid,$entry->link);
+				}
 			}
 
 			if(trim($datarray['body']) == '') {
@@ -1392,9 +1397,10 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			if ($entry->icon)
 				$datarray['body'] .= "[img]".$entry->icon."[/img] &nbsp; ";
 
-			foreach ($entry->actions as $action)
-				if (($action->name != "Comment") and ($action->name != "Like"))
-					$datarray['body'] .= "[url=".$action->link."]".$action->name."[/url] &nbsp; ";
+			if ($entry->actions)
+				foreach ($entry->actions as $action)
+					if (($action->name != "Comment") and ($action->name != "Like"))
+						$datarray['body'] .= "[url=".$action->link."]".$action->name."[/url] &nbsp; ";
 
 			$datarray['body'] = trim($datarray['body']);
 
