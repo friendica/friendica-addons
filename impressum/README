@@ -3,7 +3,7 @@ Impressum Plugin for Friendica
 Author: Tobias Diekershoff
         tobias.diekershoff@gmx.net
 
-License: 3-clause BSD license (same as Friendica)
+License: 3-clause BSD license
 
 About
   This plugin adds an Impressum block to the /friendica page with informations
@@ -29,3 +29,5 @@ following variables in the .htconfig file
                                                you can be reached at (optional)
   * $a->config['impressum']['notes']           additional informations that should
                                                be displayed in the Impressum block
+  * $a->config['impressum']['footer_text']     Text that will be displayed at
+                                               the bottom of the pages.
