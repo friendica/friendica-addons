@@ -268,6 +268,10 @@ function fb_get_friends_sync_full($uid, $access_token, $person) {
 
 		$jp->link = 'http://facebook.com/profile.php?id=' . $person->id;
 
+		// If its a page then set the first name from the username
+		if (!$jp->first_name and $jp->username)
+			$jp->first_name = $jp->username;
+
 		// check if we already have a contact
 
 		$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `url` = '%s' LIMIT 1",
@@ -1211,7 +1215,8 @@ function fb_consume_all($uid) {
 function fb_get_photo($uid,$link) {
 	$access_token = get_pconfig($uid,'facebook','access_token');
 	if(! $access_token || (! stristr($link,'facebook.com/photo.php')))
-		return "\n" . '[url=' . $link . ']' . t('link') . '[/url]';
+		return "";
+		//return "\n" . '[url=' . $link . ']' . t('link') . '[/url]';
 	$ret = preg_match('/fbid=([0-9]*)/',$link,$match);
 	if($ret)
 		$photo_id = $match[1];
@@ -1219,8 +1224,8 @@ function fb_get_photo($uid,$link) {
 	$j = json_decode($x);
 	if($j->picture)
 		return "\n\n" . '[url=' . $link . '][img]' . $j->picture . '[/img][/url]';
-	else
-		return "\n" . '[url=' . $link . ']' . t('link') . '[/url]';
+	//else
+	//	return "\n" . '[url=' . $link . ']' . t('link') . '[/url]';
 }
 
 function fb_consume_stream($uid,$j,$wall = false) {
@@ -1279,6 +1284,10 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			if($from->id == $self_id)
 				$datarray['contact-id'] = $self[0]['id'];
 			else {
+				// Looking if user is known - if not he is added
+				$access_token = get_pconfig($uid, 'facebook', 'access_token');
+				fb_get_friends_sync_new($uid, $access_token, $from);
+
 				$r = q("SELECT * FROM `contact` WHERE `notify` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
 					dbesc($from->id),
 					intval($uid)
@@ -1290,14 +1299,14 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			// don't store post if we don't have a contact
 
 			if(! x($datarray,'contact-id')) {
-				if (get_config('facebook', 'pages')) {
-					// If no user is found then post it under the own id.
-					// Definitely a quickhack
-					$datarray['contact-id'] = $self[0]['id'];
-				} else {
+				//if (get_config('facebook', 'pages')) {
+				//	// If no user is found then post it under the own id.
+				//	// Definitely a quickhack
+				//	$datarray['contact-id'] = $self[0]['id'];
+				//} else {
 					logger('no contact: post ignored');
 					continue;
-				}
+				//}
 			}
 
 			$datarray['verb'] = ACTIVITY_POST;
@@ -1345,11 +1354,22 @@ function fb_consume_stream($uid,$j,$wall = false) {
 					$datarray['body'] .= "[i]" . $entry->caption."[/i]\n";
 			}
 
-			if(!$entry->caption and !$entry->name)
-				$datarray['body'] .= "\n";
+			if(!$entry->caption and !$entry->name) {
+				if ($entry->link)
+					$datarray['body'] .= "\n[url]".$entry->link."[/url]\n";
+				else
+					$datarray['body'] .= "\n";
+			}
 
+			$quote = "";
 			if($entry->description)
-				$datarray['body'] .= "\n[quote]" . $entry->description."[/quote]";
+				$quote = $entry->description;
+
+			foreach ($entry->properties as $property)
+				$quote .= "\n".$property->name.": [url=".$property->href."]".$property->text."[/url]";
+
+			if ($quote)
+				$datarray['body'] .= "\n[quote]".$quote."[/quote]";
 
 			if($entry->picture && $entry->link) {
 				$datarray['body'] .= "\n" . '[url=' . $entry->link . '][img]' . $entry->picture . '[/img][/url]';
@@ -1362,6 +1382,26 @@ function fb_consume_stream($uid,$j,$wall = false) {
 					$datarray['body'] .= fb_get_photo($uid,$entry->link);
 			}
 
+			if(trim($datarray['body']) == '') {
+				logger('facebook: empty body');
+				continue;
+			}
+
+			$datarray['body'] .= "\n";
+
+			if ($entry->icon)
+				$datarray['body'] .= "[img]".$entry->icon."[/img] &nbsp; ";
+
+			foreach ($entry->actions as $action)
+				if (($action->name != "Comment") and ($action->name != "Like"))
+					$datarray['body'] .= "[url=".$action->link."]".$action->name."[/url] &nbsp; ";
+
+			$datarray['body'] = trim($datarray['body']);
+
+			//if(($datarray['body'] != '') and ($uid == 1))
+			//	$datarray['body'] .= "[noparse]".print_r($entry, true)."[/noparse]";
+
+
 			$datarray['created'] = datetime_convert('UTC','UTC',$entry->created_time);
 			$datarray['edited'] = datetime_convert('UTC','UTC',$entry->updated_time);
 
@@ -1371,11 +1411,6 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			if($entry->privacy && $entry->privacy->value !== 'EVERYONE') {
 				$datarray['private'] = 1;
 				$datarray['allow_cid'] = '<' . $self[0]['id'] . '>';
-			}
-
-			if(trim($datarray['body']) == '') {
-				logger('facebook: empty body');
-				continue;
 			}
 
 			$top_item = item_store($datarray);
