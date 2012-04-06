@@ -25,9 +25,8 @@
  *   d. Navigate to Set Web->Site URL & Domain -> Website Settings.  Set 
  *      Site URL to yoursubdomain.yourdomain.com. Set Site Domain to your 
  *      yourdomain.com.
- * 2. (This step is now obsolete. Enable the plugin via the Admin panel.)
- *     Enable the facebook plugin by including it in .htconfig.php - e.g. 
- *     $a->config['system']['addon'] = 'plugin1,plugin2,facebook';
+ * 2. Visit the Facebook Settings section of the "Settings->Plugin Settings" page.
+ *    and click 'Install Facebook Connector'.
  * 3. Visit the Facebook Settings section of the "Settings->Plugin Settings" page.
  *    and click 'Install Facebook Connector'.
  * 4. This will ask you to login to Facebook and grant permission to the 
@@ -50,11 +49,15 @@
  /** TODO
  * - Implement a method for the administrator to delete all configuration data the plugin has created,
  *   e.g. the app_access_token
- * - Implement a configuration option to set the polling interval system-wide
  */
 
-define('FACEBOOK_MAXPOSTLEN', 420);
+// Size of maximum post length increased
+// see http://www.facebook.com/schrep/posts/203969696349811
+// define('FACEBOOK_MAXPOSTLEN', 420);
+define('FACEBOOK_MAXPOSTLEN', 63206);
 define('FACEBOOK_SESSION_ERR_NOTIFICATION_INTERVAL', 259200); // 3 days
+define('FACEBOOK_DEFAULT_POLL_INTERVAL', 60); // given in minutes
+define('FACEBOOK_MIN_POLL_INTERVAL', 5);
 
 
 function facebook_install() {
@@ -555,7 +558,7 @@ function facebook_cron($a,$b) {
 	
 	$poll_interval = intval(get_config('facebook','poll_interval'));
 	if(! $poll_interval)
-		$poll_interval = 3600;
+		$poll_interval = FACEBOOK_DEFAULT_POLL_INTERVAL;
 
 	if($last) {
 		$next = $last + $poll_interval;
@@ -647,12 +650,29 @@ function facebook_plugin_admin(&$a, &$o){
 	
 	$appid  = get_config('facebook', 'appid'  );
 	$appsecret = get_config('facebook', 'appsecret' );
+	$poll_interval = get_config('facebook', 'poll_interval' );
+	if (!$poll_interval) $poll_interval = FACEBOOK_DEFAULT_POLL_INTERVAL;
+	
+	$ret1 = q("SELECT `v` FROM `config` WHERE `cat` = 'facebook' AND `k` = 'appid' LIMIT 1");
+	$ret2 = q("SELECT `v` FROM `config` WHERE `cat` = 'facebook' AND `k` = 'appsecret' LIMIT 1");
+	if ((count($ret1) > 0 && $ret1[0]['v'] != $appid) || (count($ret2) > 0 && $ret2[0]['v'] != $appsecret)) $o .= t('Error: it appears that you have specified the App-ID and -Secret in your .htconfig.php file. As long as they are specified there, they cannot be set using this form.<br><br>');
+	
+	$working_connection = false;
+	if ($appid && $appsecret) {
+		$subs = facebook_subscriptions_get();
+		if ($subs === null) $o .= t('Error: the given API Key seems to be incorrect (the application access token could not be retrieved).') . '<br>';
+		elseif (is_array($subs)) {
+			$o .= t('The given API Key seems to work correctly.') . '<br>';
+			$working_connection = true;
+		} else $o .= t('The correctness of the API Key could not be detected. Somthing strange\'s going on.') . '<br>';
+	}
 	
 	$o .= '<label for="fb_appid">' . t('App-ID / API-Key') . '</label><input name="appid" type="text" value="' . escape_tags($appid ? $appid : "") . '"><br style="clear: both;">';
 	$o .= '<label for="fb_appsecret">' . t('Application secret') . '</label><input name="appsecret" type="text" value="' . escape_tags($appsecret ? $appsecret : "") . '"><br style="clear: both;">';
+	$o .= '<label for="fb_poll_interval">' . sprintf(t('Polling Interval (min. %1$s minutes)'), FACEBOOK_MIN_POLL_INTERVAL) . '</label><input name="poll_interval" type="number" min="' . FACEBOOK_MIN_POLL_INTERVAL . '" value="' . $poll_interval . '"><br style="clear: both;">';
 	$o .= '<input type="submit" name="fb_save_keys" value="' . t('Save') . '">';
 	
-	if ($appid && $appsecret) {
+	if ($working_connection) {
 		$o .= '<h4>' . t('Real-Time Updates') . '</h4>';
 		
 		$activated = facebook_check_realtime_active();
@@ -671,6 +691,8 @@ function facebook_plugin_admin_post(&$a, &$o){
 	if (x($_REQUEST,'fb_save_keys')) {
 		set_config('facebook', 'appid', $_REQUEST['appid']);
 		set_config('facebook', 'appsecret', $_REQUEST['appsecret']);
+		$poll_interval = IntVal($_REQUEST['poll_interval']);
+		if ($poll_interval >= FACEBOOK_MIN_POLL_INTERVAL) set_config('facebook', 'poll_interval', $poll_interval);
 		del_config('facebook', 'app_access_token');
 		info(t('The new values have been saved.'));
 	}
@@ -828,6 +850,7 @@ function facebook_post_hook(&$a,&$b) {
 				if($b['verb'] == ACTIVITY_DISLIKE)
 					$msg = trim(strip_tags(bbcode($msg)));
 
+				// Old code
 				/*$search_str = $a->get_baseurl() . '/search';
 
 				if(preg_match("/\[url=(.*?)\](.*?)\[\/url\]/is",$msg,$matches)) {
@@ -859,23 +882,47 @@ function facebook_post_hook(&$a,&$b) {
 
 				$msg = trim(strip_tags(bbcode($msg)));*/
 
-				// Test
+				// New code
 
-				// Looking for images
+				// Looking for the first image
+				$image = '';
 				if(preg_match("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/is",$b['body'],$matches))
 					$image = $matches[3];
 
-				if(preg_match("/\[img\](.*?)\[\/img\]/is",$b['body'],$matches))
-					$image = $matches[1];
+				if ($image != '')
+					if(preg_match("/\[img\](.*?)\[\/img\]/is",$b['body'],$matches))
+						$image = $matches[1];
 
-				$html = bbcode($b['body']);
-				$msg = trim($b['title']." \n".html2plain($html, 0, true));
+				// Checking for a bookmark element
+				$body = $b['body'];
+				if (strpos($body, "[bookmark") !== false) {
+					// splitting the text in two parts:
+					// before and after the bookmark
+					$pos = strpos($body, "[bookmark");
+					$body1 = substr($body, 0, $pos);
+					$body2 = substr($body, $pos);
+
+					// Removing the bookmark and all quotes after the bookmark
+					// they are mostly only the content after the bookmark.
+					$body2 = preg_replace("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/ism",'',$body2);
+					$body2 = preg_replace("/\[quote\=([^\]]*)\](.*?)\[\/quote\]/ism",'',$body2);
+					$body2 = preg_replace("/\[quote\](.*?)\[\/quote\]/ism",'',$body2);
+
+					$body = $body1.$body2;
+				}
+
+				// At first convert the text to html
+				$html = bbcode($body);
+
+				// Then convert it to plain text
+				$msg = trim($b['title']." \n\n".html2plain($html, 0, true));
 				$msg = html_entity_decode($msg,ENT_QUOTES,'UTF-8');
 
-				$toolong = false;
+				// Removing multiple newlines
+				while (strpos($msg, "\n\n\n") !== false)
+					$msg = str_replace("\n\n\n", "\n\n", $msg);
 
 				// add any attachments as text urls
-
 				$arr = explode(',',$b['attach']);
 
 				if(count($arr)) {
@@ -889,19 +936,28 @@ function facebook_post_hook(&$a,&$b) {
 					}
 				}
 
-				// To-Do: look for bookmark-bbcode and handle it with priority
-
-				$links = collecturls($html);
-				if (sizeof($links) > 0) {
-					reset($links);
-					$link = current($links);
-					/*if (strlen($msg."\n".$link) <= FACEBOOK_MAXPOSTLEN)
-						$msg .= "\n".$link;
-					else
-						$toolong = true;*/
+				$link = '';
+				$linkname = '';
+				// look for bookmark-bbcode and handle it with priority
+				if(preg_match("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/is",$b['body'],$matches)) {
+					$link = $matches[1];
+					$linkname = $matches[2];
 				}
 
-				if ((strlen($msg) > FACEBOOK_MAXPOSTLEN) or $toolong) {
+				// If there is no bookmark element then take the first link
+				if ($link == '') {
+					$links = collecturls($html);
+					if (sizeof($links) > 0) {
+						reset($links);
+						$link = current($links);
+					}
+				}
+
+				// Remove trailing and leading spaces
+				$msg = trim($msg);
+
+				// Since facebook increased the maxpostlen massively this never should happen again :)
+				if (strlen($msg) > FACEBOOK_MAXPOSTLEN) {
 					$shortlink = "";
 					require_once('library/slinky.php');
 
@@ -918,7 +974,19 @@ function facebook_post_hook(&$a,&$b) {
 					$msg = substr($msg, 0, FACEBOOK_MAXPOSTLEN - strlen($shortlink) - 4);
 					$msg .= '... ' . $shortlink;
 				}
-				if(! strlen($msg))
+
+				// Fallback - if message is empty
+				if(!strlen($msg))
+					$msg = $link;
+
+				if(!strlen($msg))
+					$msg = $image;
+
+				if(!strlen($msg))
+					$msg = $linkname;
+
+				// If there is nothing to post then exit
+				if(!strlen($msg))
 					return;
 
 				logger('Facebook post: msg=' . $msg, LOGGER_DATA);
@@ -1222,8 +1290,14 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			// don't store post if we don't have a contact
 
 			if(! x($datarray,'contact-id')) {
-				logger('no contact: post ignored');
-				continue;
+				if (get_config('facebook', 'pages')) {
+					// If no user is found then post it under the own id.
+					// Definitely a quickhack
+					$datarray['contact-id'] = $self[0]['id'];
+				} else {
+					logger('no contact: post ignored');
+					continue;
+				}
 			}
 
 			$datarray['verb'] = ACTIVITY_POST;
@@ -1511,7 +1585,7 @@ function facebook_subscription_del_users() {
 	$url = "https://graph.facebook.com/" . get_config('facebook', 'appid'  ) . "/subscriptions?access_token=" . $access_token;
 	facebook_delete_url($url);
 	
-	del_config('facebook', 'realtime_active');
+	if (!facebook_check_realtime_active()) del_config('facebook', 'realtime_active');
 }
 
 function facebook_subscription_add_users($second_try = false) {

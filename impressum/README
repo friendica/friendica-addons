@@ -12,16 +12,20 @@ About
   In the notes and postal fields you can use HTML tags for formatting.
 
 Configuration:
-  For configuration you can set the following variables in the .htconfig file
-   * $a->config['impressum']['owner']           this is the Name of the Operator
-   * $a->config['impressum']['ownerprofile']    this is an optional Friendica account
-                                                where the above owner name will link to
-   * $a->config['impressum']['email']           a contact email address (optional)
-                                                will be displayed slightly obfuscated
-                                                as name(at)example(dot)com
-   * $a->config['impressum']['postal']          should contain a postal address where
-                                                you can be reached at (optional)
-   * $a->config['impressum']['notes']           additional informations that should
-                                                be displayed in the Impressum block
+  Simply fill in the fields in the impressium settings page in the plugins area
+  of your admin panel.
  
+If you for any reason prefer to use a configuration file instead, you can set the 
+following variables in the .htconfig file
 
+  * $a->config['impressum']['owner']           this is the Name of the Operator
+  * $a->config['impressum']['ownerprofile']    this is an optional Friendica account
+                                               where the above owner name will link to
+  * $a->config['impressum']['email']           a contact email address (optional)
+                                               will be displayed slightly obfuscated
+                                               as name(at)example(dot)com
+
+  * $a->config['impressum']['postal']          should contain a postal address where
+                                               you can be reached at (optional)
+  * $a->config['impressum']['notes']           additional informations that should
+                                               be displayed in the Impressum block
