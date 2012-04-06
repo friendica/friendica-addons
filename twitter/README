@@ -47,8 +47,8 @@ ___ Configuration ___
 
 __ Global Configuration __
 
-If you enabled an administrator account, please use the admin panel to cofigure
-the Twitter relay.  If you for any reason prefer to use a configuration file instead 
+If you enabled an administrator account, please use the admin panel to configure
+the Twitter relay. If you for any reason prefer to use a configuration file instead 
 of the admin panels, please refer to the Alternative Configuration below. 
 
 Activate the plugin from the plugins section of your admin panel.  When you have
@@ -56,12 +56,12 @@ done so, add your consumer key and consumer secret in the settings section of th
 plugin page.
 
 When this is done your user can now configure their Twitter connection at
-"Settings -> Plugin Settings" and enable the forwarding of their *public*
+"Settings -> Connector Settings" and enable the forwarding of their *public*
 messages to Twitter.
 
 __ Alternative Configuration __
 
--To activate this addon add @twitter@ to the list of active addons in your
+To activate this addon add @twitter@ to the list of active addons in your
 .htconfig.php file 
 
 $a->config['system']['addon'] = "twitter, ..."
