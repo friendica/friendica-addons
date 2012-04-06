@@ -1333,22 +1333,35 @@ function fb_consume_stream($uid,$j,$wall = false) {
 
 			$datarray['body'] = escape_tags($entry->message);
 
+			if($entry->name and $entry->link)
+				$datarray['body'] .= "\n\n[bookmark=".$entry->link."]".$entry->name."[/bookmark]";
+			elseif ($entry->name)
+				$datarray['body'] .= "\n\n[b]" . $entry->name."[/b]";
+
+			if($entry->caption) {
+				if(!$entry->name and $entry->link)
+					$datarray['body'] .= "\n\n[bookmark=".$entry->link."]".$entry->caption."[/bookmark]";
+				else
+					$datarray['body'] .= "[i]" . $entry->caption."[/i]\n";
+			}
+
+			if(!$entry->caption and !$entry->name)
+				$datarray['body'] .= "\n";
+
+			if($entry->description)
+				$datarray['body'] .= "\n[quote]" . $entry->description."[/quote]";
+
 			if($entry->picture && $entry->link) {
-				$datarray['body'] .= "\n\n" . '[url=' . $entry->link . '][img]' . $entry->picture . '[/img][/url]';
+				$datarray['body'] .= "\n" . '[url=' . $entry->link . '][img]' . $entry->picture . '[/img][/url]';
 			}
 			else {
 				if($entry->picture)
-					$datarray['body'] .= "\n\n" . '[img]' . $entry->picture . '[/img]';
+					$datarray['body'] .= "\n" . '[img]' . $entry->picture . '[/img]';
 				// if just a link, it may be a wall photo - check
 				if($entry->link)
 					$datarray['body'] .= fb_get_photo($uid,$entry->link);
 			}
-			if($entry->name)
-				$datarray['body'] .= "\n" . $entry->name;
-			if($entry->caption)
-				$datarray['body'] .= "\n" . $entry->caption;
-			if($entry->description)
-				$datarray['body'] .= "\n" . $entry->description;
+
 			$datarray['created'] = datetime_convert('UTC','UTC',$entry->created_time);
 			$datarray['edited'] = datetime_convert('UTC','UTC',$entry->updated_time);
 
