@@ -480,7 +480,13 @@ function statusnet_post_hook(&$a,&$b) {
 			$shortlink = short_link( $b['plink'] );
 			// the new message will be shortened such that "... $shortlink"
 			// will fit into the character limit
-			$msg = substr($msg, 0, $max_char-strlen($shortlink)-4);
+			$msg = nl2br(substr($msg, 0, $max_char-strlen($shortlink)-4));
+                        $msg = str_replace(array('<br>','<br />'),' ',$msg);
+                        $e = explode(' ', $msg);
+                        //  remove the last word from the cut down message to 
+                        //  avoid sending cut words to the MicroBlog
+                        array_pop($e);
+                        $msg = implode(' ', $e);
 			$msg .= '... ' . $shortlink;
 		}
 		// and now tweet it :-)
