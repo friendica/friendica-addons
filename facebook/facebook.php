@@ -1208,9 +1208,9 @@ function fb_get_timeline($access_token, &$since) {
 		else
 			break;
 
-		$url = $s->paging->next;
+		$url = $j->paging->next;
 
-	} while (($oldestdate > $since) and ($since != 0));
+	} while (($oldestdate > $since) and ($since != 0) and ($url != ''));
 
 	if ($newest > $since)
 		$since = $newest;
@@ -1241,13 +1241,11 @@ function fb_consume_all($uid) {
 	}
 	// Get the last date
 	$lastdate = get_pconfig($uid,'facebook','lastdate');
-	// echo "Alt: ".$lastdate."\n";
 	// fetch all items since the last date
 	$j = fb_get_timeline($access_token, &$lastdate);
 	if (isset($j->data)) {
 		logger('fb_consume_stream: feed: ' . print_r($j,true), LOGGER_DATA);
 		fb_consume_stream($uid,$j,false);
-		// echo "Neu: ".$lastdate."\n";
 
 		// Write back the last date
 		set_pconfig($uid,'facebook','lastdate', $lastdate);
@@ -1431,6 +1429,10 @@ function fb_consume_stream($uid,$j,$wall = false) {
 						$datarray['body'] .= fb_get_photo($uid,$entry->link);
 				}
 			}
+
+			// Just as a test - to see if these are the missing entries
+			if(trim($datarray['body']) == '')
+				$datarray['body'] = $entry->story;
 
 			if(trim($datarray['body']) == '') {
 				logger('facebook: empty body '.$entry->id.' '.print_r($entry, true));
