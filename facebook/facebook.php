@@ -1178,6 +1178,46 @@ function fb_queue_hook(&$a,&$b) {
 	}
 }
 
+function fb_get_timeline($access_token, &$since) {
+
+	$entries->data = array();
+	$newest = 0;
+
+	$url = 'https://graph.facebook.com/me/home?access_token='.$access_token;
+
+	if ($since != 0)
+		$url .= "&since=".$since;
+
+	do {
+		$s = fetch_url($url);
+		$j = json_decode($s);
+		$oldestdate = time();
+		if (isset($j->data))
+			foreach ($j->data as $entry) {
+				$created = strtotime($entry->created_time);
+
+				if ($newest < $created)
+					$newest = $created;
+
+				if ($created >= $since)
+					$entries->data[] = $entry;
+
+				if ($created <= $oldestdate)
+					$oldestdate = $created;
+			}
+		else
+			break;
+
+		$url = $s->paging->next;
+
+	} while (($oldestdate > $since) and ($since != 0));
+
+	if ($newest > $since)
+		$since = $newest;
+
+	return($entries);
+}
+
 function fb_consume_all($uid) {
 
 	require_once('include/items.php');
@@ -1199,17 +1239,20 @@ function fb_consume_all($uid) {
 			}
 		}
 	}
-	$s = fetch_url('https://graph.facebook.com/me/home?access_token=' . $access_token);
-	if($s) {
-		$j = json_decode($s);
-		if (isset($j->data)) {
-			logger('fb_consume_stream: feed: ' . print_r($j,true), LOGGER_DATA);
-			fb_consume_stream($uid,$j,false);
-		} else {
-			logger('fb_consume_stream: feed: got no data from Facebook: ' . print_r($j,true), LOGGER_NORMAL);
-		}
-	}
+	// Get the last date
+	$lastdate = get_pconfig($uid,'facebook','lastdate');
+	// echo "Alt: ".$lastdate."\n";
+	// fetch all items since the last date
+	$j = fb_get_timeline($access_token, &$lastdate);
+	if (isset($j->data)) {
+		logger('fb_consume_stream: feed: ' . print_r($j,true), LOGGER_DATA);
+		fb_consume_stream($uid,$j,false);
+		// echo "Neu: ".$lastdate."\n";
 
+		// Write back the last date
+		set_pconfig($uid,'facebook','lastdate', $lastdate);
+	} else
+		logger('fb_consume_stream: feed: got no data from Facebook: ' . print_r($j,true), LOGGER_NORMAL);
 }
 
 function fb_get_photo($uid,$link) {
@@ -1304,7 +1347,7 @@ function fb_consume_stream($uid,$j,$wall = false) {
 				//	// Definitely a quickhack
 				//	$datarray['contact-id'] = $self[0]['id'];
 				//} else {
-					logger('no contact: post ignored');
+					logger('facebook: no contact '.$from->name.' '.$from->id.'. post ignored');
 					continue;
 				//}
 			}
@@ -1339,6 +1382,8 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			$datarray['author-link'] = 'http://facebook.com/profile.php?id=' . $from->id;
 			$datarray['author-avatar'] = 'https://graph.facebook.com/' . $from->id . '/picture';
 			$datarray['plink'] = $datarray['author-link'] . '&v=wall&story_fbid=' . substr($entry->id,strpos($entry->id,'_') + 1);
+
+			logger('facebook: post '.$entry->id.' from '.$from->name);
 
 			$datarray['body'] = escape_tags($entry->message);
 
@@ -1388,7 +1433,7 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			}
 
 			if(trim($datarray['body']) == '') {
-				logger('facebook: empty body');
+				logger('facebook: empty body '.$entry->id.' '.print_r($entry, true));
 				continue;
 			}
 
@@ -1407,6 +1452,18 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			//if(($datarray['body'] != '') and ($uid == 1))
 			//	$datarray['body'] .= "[noparse]".print_r($entry, true)."[/noparse]";
 
+			if ($entry->place->name)
+				$datarray['coord'] = $entry->place->name;
+			else if ($entry->place->location->street or $entry->place->location->city or $entry->place->location->Denmark) {
+				if ($entry->place->location->street)
+					$datarray['coord'] = $entry->place->location->street;
+				if ($entry->place->location->city)
+					$datarray['coord'] .= " ".$entry->place->location->city;
+				if ($entry->place->location->country)
+					$datarray['coord'] .= " ".$entry->place->location->country;
+			} else if ($entry->place->location->latitude and $entry->place->location->longitude)
+				$datarray['coord'] = substr($entry->place->location->latitude, 0, 8)
+							.' '.substr($entry->place->location->longitude, 0, 8);
 
 			$datarray['created'] = datetime_convert('UTC','UTC',$entry->created_time);
 			$datarray['edited'] = datetime_convert('UTC','UTC',$entry->updated_time);
