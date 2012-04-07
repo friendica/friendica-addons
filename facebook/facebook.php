@@ -1338,16 +1338,9 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			}
 
 			// don't store post if we don't have a contact
-
 			if(! x($datarray,'contact-id')) {
-				//if (get_config('facebook', 'pages')) {
-				//	// If no user is found then post it under the own id.
-				//	// Definitely a quickhack
-				//	$datarray['contact-id'] = $self[0]['id'];
-				//} else {
-					logger('facebook: no contact '.$from->name.' '.$from->id.'. post ignored');
-					continue;
-				//}
+				logger('facebook: no contact '.$from->name.' '.$from->id.'. post ignored');
+				continue;
 			}
 
 			$datarray['verb'] = ACTIVITY_POST;
@@ -1431,8 +1424,8 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			}
 
 			// Just as a test - to see if these are the missing entries
-			if(trim($datarray['body']) == '')
-				$datarray['body'] = $entry->story;
+			//if(trim($datarray['body']) == '')
+			//	$datarray['body'] = $entry->story;
 
 			if(trim($datarray['body']) == '') {
 				logger('facebook: empty body '.$entry->id.' '.print_r($entry, true));
