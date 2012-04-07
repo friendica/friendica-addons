@@ -3,7 +3,7 @@
  * Name: Piwik Analytics
  * Description: Piwik Analytics Plugin for Friendica
  * Version: 1.1
- * Author: Tobias Diekershoff <https://diekershoff.homeunix.net/friendika/profile/tobias>
+ * Author: Tobias Diekershoff <http://diekershoff.homeunix.net/friendika/profile/tobias>
  * Author: Klaus Weidenbach
  */
 
@@ -49,7 +49,7 @@ function piwik_analytics($a,&$b) {
 	 *   associated CSS file. We just have to tell Friendica to get it
 	 *   into the page header.
 	 */
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/piwik/piwik.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/piwik/piwik.css' . '" media="all" />';
 
 	/*
 	 *   Get the configuration variables from the .htconfig file.

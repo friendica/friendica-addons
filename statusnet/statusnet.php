@@ -3,7 +3,7 @@
  * Name: StatusNet Connector
  * Description: Relay public postings to a connected StatusNet account
  * Version: 1.0.4
- * Author: Tobias Diekershoff <https://diekershoff.homeunix.net/friendika/profile/tobias>
+ * Author: Tobias Diekershoff <http://diekershoff.homeunix.net/friendika/profile/tobias>
  */
  
 /*   StatusNet Plugin for Friendica
@@ -435,9 +435,9 @@ function statusnet_post_hook(&$a,&$b) {
                 // shorten all the links in a 200000 character long essay.
                 if (! $b['title']=='') {
                     $tmp = $b['title'] . ' : '. $b['body'];
-                    $tmp = substr($tmp, 0, 2*$max_char);
+                    $tmp = substr($tmp, 0, 4*$max_char);
                 } else {
-                    $tmp = substr($b['body'], 0, 2*$max_char);
+                    $tmp = substr($b['body'], 0, 3*$max_char);
                 }
                 // if [url=bla][img]blub.png[/img][/url] get blub.png
                 $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\]\[img\](\\w+.*?)\\[\\/img\]\\[\\/url\]/i', '$2', $tmp);
@@ -480,7 +480,13 @@ function statusnet_post_hook(&$a,&$b) {
 			$shortlink = short_link( $b['plink'] );
 			// the new message will be shortened such that "... $shortlink"
 			// will fit into the character limit
-			$msg = substr($msg, 0, $max_char-strlen($shortlink)-4);
+			$msg = nl2br(substr($msg, 0, $max_char-strlen($shortlink)-4));
+                        $msg = str_replace(array('<br>','<br />'),' ',$msg);
+                        $e = explode(' ', $msg);
+                        //  remove the last word from the cut down message to 
+                        //  avoid sending cut words to the MicroBlog
+                        array_pop($e);
+                        $msg = implode(' ', $e);
 			$msg .= '... ' . $shortlink;
 		}
 		// and now tweet it :-)
