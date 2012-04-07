@@ -1,5 +1,6 @@
 ____ StatusNet Plugin ____
 by Tobias Diekershoff
+   http://diekershoff.homeunix.net/friendika/profile/tobias
    tobias.diekershoff(at)gmx.net
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -42,12 +43,35 @@ ___ Configuration ___
 
 __ Global Configuration __
 
-If you enabled an administrator account, please use the admin panel to cofigure
-the StatusNet relay.
+If you have configured an admin account, you can configure this plugin from
+the admin panel. First activate it from the plugin section of the panel.
+Afterwards you will have a separate configuration page for the plugin, where
+you can provide a set of globally available OAuth credentials for different
+StatusNet pages which will be available for all users of your server.
 
-To activate this addon add statusnet to the list of active addons in your
-.htconfig.php file 
-    $a->config['system']['addon'] = "statusnet, ...".
+If you don't use the admin panel, you can configure the relay using the
+.htconfig.php file of your friendica installation. To activate the relay add
+it's name to the list of activated addons.
+
+ $a->config['system']['addon'] = "statusnet, ..."
+
+If you want to provide preconfigured StatusNet instances for your user add the
+credentials for them by adding
+
+$a->config['statusnet']['sites'] = array (
+   array ('sitename' => 'identi.ca', 'apiurl' => 'https://identi.ca/api/',
+     'consumersecret' => 'OAuth Consumer Secret here', 'consumerkey' => 'OAuth
+     Consumer Key here'),
+   array ('sitename' => 'Some other Server', 'apiurl' =>
+     'http://status.example.com/api/', 'consumersecret'  => 'OAuth
+     Consumer Secret here', 'consumerkey' => 'OAuth Consumer Key here')
+);
+
+to the config file.
+
+Regardless of providing global OAuth credentials for your users or not, they
+can always add their own OAuth-Key and -Secret thus enable the relay for any
+StatusNet instance they may have an account at.
 
 __ User Configuration __
 
