@@ -3,7 +3,7 @@
  * Name: Impressum
  * Description: Plugin to add contact information to the about page (/friendica)
  * Version: 1.1
- * Author: Tobias Diekershoff <https://diekershoff.homeunix.net/friendika/profile/tobias>
+ * Author: Tobias Diekershoff <http://diekershoff.homeunix.net/friendika/profile/tobias>
  * License: 3-clause BSD license
  */
 
@@ -26,7 +26,7 @@ function obfuscate_email ($s) {
 function impressum_footer($a, &$b) {
     $text = get_config('impressum','footer_text');
     if (! $text == '') {
-        $a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->get_baseurl().'/addon/impressum/impressum.css" media="all" />\r\n';
+        $a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->get_baseurl().'/addon/impressum/impressum.css" media="all" />';
         $b .= '<div id="impressum_footer">'.$text.'</div>';
     }
 }

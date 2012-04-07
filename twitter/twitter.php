@@ -3,7 +3,7 @@
  * Name: Twitter Connector
  * Description: Relay public postings to a connected Twitter account
  * Version: 1.0.3
- * Author: Tobias Diekershoff <https://diekershoff.homeunix.net/friendika/profile/tobias>
+ * Author: Tobias Diekershoff <http://diekershoff.homeunix.net/friendika/profile/tobias>
  */
 
 

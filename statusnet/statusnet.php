@@ -3,7 +3,7 @@
  * Name: StatusNet Connector
  * Description: Relay public postings to a connected StatusNet account
  * Version: 1.0.4
- * Author: Tobias Diekershoff <https://diekershoff.homeunix.net/friendika/profile/tobias>
+ * Author: Tobias Diekershoff <http://diekershoff.homeunix.net/friendika/profile/tobias>
  */
  
 /*   StatusNet Plugin for Friendica
