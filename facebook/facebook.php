@@ -268,6 +268,10 @@ function fb_get_friends_sync_full($uid, $access_token, $person) {
 
 		$jp->link = 'http://facebook.com/profile.php?id=' . $person->id;
 
+		// If its a page then set the first name from the username
+		if (!$jp->first_name and $jp->username)
+			$jp->first_name = $jp->username;
+
 		// check if we already have a contact
 
 		$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `url` = '%s' LIMIT 1",
@@ -1174,6 +1178,46 @@ function fb_queue_hook(&$a,&$b) {
 	}
 }
 
+function fb_get_timeline($access_token, &$since) {
+
+	$entries->data = array();
+	$newest = 0;
+
+	$url = 'https://graph.facebook.com/me/home?access_token='.$access_token;
+
+	if ($since != 0)
+		$url .= "&since=".$since;
+
+	do {
+		$s = fetch_url($url);
+		$j = json_decode($s);
+		$oldestdate = time();
+		if (isset($j->data))
+			foreach ($j->data as $entry) {
+				$created = strtotime($entry->created_time);
+
+				if ($newest < $created)
+					$newest = $created;
+
+				if ($created >= $since)
+					$entries->data[] = $entry;
+
+				if ($created <= $oldestdate)
+					$oldestdate = $created;
+			}
+		else
+			break;
+
+		$url = $j->paging->next;
+
+	} while (($oldestdate > $since) and ($since != 0) and ($url != ''));
+
+	if ($newest > $since)
+		$since = $newest;
+
+	return($entries);
+}
+
 function fb_consume_all($uid) {
 
 	require_once('include/items.php');
@@ -1195,23 +1239,25 @@ function fb_consume_all($uid) {
 			}
 		}
 	}
-	$s = fetch_url('https://graph.facebook.com/me/home?access_token=' . $access_token);
-	if($s) {
-		$j = json_decode($s);
-		if (isset($j->data)) {
-			logger('fb_consume_stream: feed: ' . print_r($j,true), LOGGER_DATA);
-			fb_consume_stream($uid,$j,false);
-		} else {
-			logger('fb_consume_stream: feed: got no data from Facebook: ' . print_r($j,true), LOGGER_NORMAL);
-		}
-	}
+	// Get the last date
+	$lastdate = get_pconfig($uid,'facebook','lastdate');
+	// fetch all items since the last date
+	$j = fb_get_timeline($access_token, &$lastdate);
+	if (isset($j->data)) {
+		logger('fb_consume_stream: feed: ' . print_r($j,true), LOGGER_DATA);
+		fb_consume_stream($uid,$j,false);
 
+		// Write back the last date
+		set_pconfig($uid,'facebook','lastdate', $lastdate);
+	} else
+		logger('fb_consume_stream: feed: got no data from Facebook: ' . print_r($j,true), LOGGER_NORMAL);
 }
 
 function fb_get_photo($uid,$link) {
 	$access_token = get_pconfig($uid,'facebook','access_token');
 	if(! $access_token || (! stristr($link,'facebook.com/photo.php')))
-		return "\n" . '[url=' . $link . ']' . t('link') . '[/url]';
+		return "";
+		//return "\n" . '[url=' . $link . ']' . t('link') . '[/url]';
 	$ret = preg_match('/fbid=([0-9]*)/',$link,$match);
 	if($ret)
 		$photo_id = $match[1];
@@ -1219,8 +1265,8 @@ function fb_get_photo($uid,$link) {
 	$j = json_decode($x);
 	if($j->picture)
 		return "\n\n" . '[url=' . $link . '][img]' . $j->picture . '[/img][/url]';
-	else
-		return "\n" . '[url=' . $link . ']' . t('link') . '[/url]';
+	//else
+	//	return "\n" . '[url=' . $link . ']' . t('link') . '[/url]';
 }
 
 function fb_consume_stream($uid,$j,$wall = false) {
@@ -1279,6 +1325,10 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			if($from->id == $self_id)
 				$datarray['contact-id'] = $self[0]['id'];
 			else {
+				// Looking if user is known - if not he is added
+				$access_token = get_pconfig($uid, 'facebook', 'access_token');
+				fb_get_friends_sync_new($uid, $access_token, $from);
+
 				$r = q("SELECT * FROM `contact` WHERE `notify` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
 					dbesc($from->id),
 					intval($uid)
@@ -1288,16 +1338,9 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			}
 
 			// don't store post if we don't have a contact
-
 			if(! x($datarray,'contact-id')) {
-				if (get_config('facebook', 'pages')) {
-					// If no user is found then post it under the own id.
-					// Definitely a quickhack
-					$datarray['contact-id'] = $self[0]['id'];
-				} else {
-					logger('no contact: post ignored');
-					continue;
-				}
+				logger('facebook: no contact '.$from->name.' '.$from->id.'. post ignored');
+				continue;
 			}
 
 			$datarray['verb'] = ACTIVITY_POST;
@@ -1331,24 +1374,92 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			$datarray['author-avatar'] = 'https://graph.facebook.com/' . $from->id . '/picture';
 			$datarray['plink'] = $datarray['author-link'] . '&v=wall&story_fbid=' . substr($entry->id,strpos($entry->id,'_') + 1);
 
+			logger('facebook: post '.$entry->id.' from '.$from->name);
+
 			$datarray['body'] = escape_tags($entry->message);
 
-			if($entry->picture && $entry->link) {
-				$datarray['body'] .= "\n\n" . '[url=' . $entry->link . '][img]' . $entry->picture . '[/img][/url]';
+			if($entry->name and $entry->link)
+				$datarray['body'] .= "\n\n[bookmark=".$entry->link."]".$entry->name."[/bookmark]";
+			elseif ($entry->name)
+				$datarray['body'] .= "\n\n[b]" . $entry->name."[/b]";
+
+			if($entry->caption) {
+				if(!$entry->name and $entry->link)
+					$datarray['body'] .= "\n\n[bookmark=".$entry->link."]".$entry->caption."[/bookmark]";
+				else
+					$datarray['body'] .= "[i]" . $entry->caption."[/i]\n";
 			}
-			else {
-				if($entry->picture)
-					$datarray['body'] .= "\n\n" . '[img]' . $entry->picture . '[/img]';
-				// if just a link, it may be a wall photo - check
-				if($entry->link)
-					$datarray['body'] .= fb_get_photo($uid,$entry->link);
+
+			if(!$entry->caption and !$entry->name) {
+				if ($entry->link)
+					$datarray['body'] .= "\n[url]".$entry->link."[/url]\n";
+				else
+					$datarray['body'] .= "\n";
 			}
-			if($entry->name)
-				$datarray['body'] .= "\n" . $entry->name;
-			if($entry->caption)
-				$datarray['body'] .= "\n" . $entry->caption;
+
+			$quote = "";
 			if($entry->description)
-				$datarray['body'] .= "\n" . $entry->description;
+				$quote = $entry->description;
+
+			if ($entry->properties)
+				foreach ($entry->properties as $property)
+					$quote .= "\n".$property->name.": [url=".$property->href."]".$property->text."[/url]";
+
+			if ($quote)
+				$datarray['body'] .= "\n[quote]".$quote."[/quote]";
+
+			// Only import the picture when the message is no video
+			// oembed display a picture of the video as well 
+			if ($entry->type != "video") {
+				if($entry->picture && $entry->link) {
+					$datarray['body'] .= "\n" . '[url=' . $entry->link . '][img]'.$entry->picture.'[/img][/url]';	
+				}
+				else {
+					if($entry->picture)
+						$datarray['body'] .= "\n" . '[img]' . $entry->picture . '[/img]';
+					// if just a link, it may be a wall photo - check
+					if($entry->link)
+						$datarray['body'] .= fb_get_photo($uid,$entry->link);
+				}
+			}
+
+			// Just as a test - to see if these are the missing entries
+			//if(trim($datarray['body']) == '')
+			//	$datarray['body'] = $entry->story;
+
+			if(trim($datarray['body']) == '') {
+				logger('facebook: empty body '.$entry->id.' '.print_r($entry, true));
+				continue;
+			}
+
+			$datarray['body'] .= "\n";
+
+			if ($entry->icon)
+				$datarray['body'] .= "[img]".$entry->icon."[/img] &nbsp; ";
+
+			if ($entry->actions)
+				foreach ($entry->actions as $action)
+					if (($action->name != "Comment") and ($action->name != "Like"))
+						$datarray['body'] .= "[url=".$action->link."]".$action->name."[/url] &nbsp; ";
+
+			$datarray['body'] = trim($datarray['body']);
+
+			//if(($datarray['body'] != '') and ($uid == 1))
+			//	$datarray['body'] .= "[noparse]".print_r($entry, true)."[/noparse]";
+
+			if ($entry->place->name)
+				$datarray['coord'] = $entry->place->name;
+			else if ($entry->place->location->street or $entry->place->location->city or $entry->place->location->Denmark) {
+				if ($entry->place->location->street)
+					$datarray['coord'] = $entry->place->location->street;
+				if ($entry->place->location->city)
+					$datarray['coord'] .= " ".$entry->place->location->city;
+				if ($entry->place->location->country)
+					$datarray['coord'] .= " ".$entry->place->location->country;
+			} else if ($entry->place->location->latitude and $entry->place->location->longitude)
+				$datarray['coord'] = substr($entry->place->location->latitude, 0, 8)
+							.' '.substr($entry->place->location->longitude, 0, 8);
+
 			$datarray['created'] = datetime_convert('UTC','UTC',$entry->created_time);
 			$datarray['edited'] = datetime_convert('UTC','UTC',$entry->updated_time);
 
@@ -1358,11 +1469,6 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			if($entry->privacy && $entry->privacy->value !== 'EVERYONE') {
 				$datarray['private'] = 1;
 				$datarray['allow_cid'] = '<' . $self[0]['id'] . '>';
-			}
-
-			if(trim($datarray['body']) == '') {
-				logger('facebook: empty body');
-				continue;
 			}
 
 			$top_item = item_store($datarray);
