@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: Facebook Connector
- * Version: 1.1
+ * Version: 1.2
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  *         Tobias Hößl <https://github.com/CatoTH/>
  */
@@ -9,33 +9,8 @@
 /**
  * Installing the Friendica/Facebook connector
  *
- * 1. register an API key for your site from developer.facebook.com
- *   a. We'd be very happy if you include "Friendica" in the application name
- *      to increase name recognition. The Friendica icons are also present
- *      in the images directory and may be uploaded as a Facebook app icon.
- *      Use images/friendica-16.jpg for the Icon and images/friendica-128.jpg for the Logo.
- *   b. The url should be your site URL with a trailing slash.
- *      Friendica is a software application and does not require a Privacy Policy
- *      or Terms of Service, though your installation of it might. Facebook may require
- *      that you provide a Privacy Policy, which we find ironic.
- *   c. Set the following values in your .htconfig.php file
- *         $a->config['facebook']['appid'] = 'xxxxxxxxxxx';
- *         $a->config['facebook']['appsecret'] = 'xxxxxxxxxxxxxxx';
- *      Replace with the settings Facebook gives you.
- *   d. Navigate to Set Web->Site URL & Domain -> Website Settings.  Set
- *      Site URL to yoursubdomain.yourdomain.com. Set Site Domain to your
- *      yourdomain.com.
- * 2. Visit the Facebook Settings section of the "Settings->Plugin Settings" page.
- *    and click 'Install Facebook Connector'.
- * 3. Visit the Facebook Settings section of the "Settings->Plugin Settings" page.
- *    and click 'Install Facebook Connector'.
- * 4. This will ask you to login to Facebook and grant permission to the
- *    plugin to do its stuff. Allow it to do so.
- * 5. Optional step: If you want to use Facebook Real Time Updates (so new messages
- *    and new contacts are added ~1min after they are postet / added on FB), go to
- *    Settings -> plugins -> facebook and press the "Activate Real-Time Updates"-button.
- * 6. You're done. To turn it off visit the Plugin Settings page again and
- *    'Remove Facebook posting'.
+ * Detailed instructions how to use this plugin can be found at
+ * https://github.com/friendica/friendica/wiki/How-to:-Friendica%E2%80%99s-Facebook-connector
  *
  * Vidoes and embeds will not be posted if there is no other content. Links
  * and images will be converted to a format suitable for the Facebook API and
@@ -1391,32 +1366,32 @@ function fb_consume_stream($uid,$j,$wall = false) {
 
             logger('facebook: post '.$entry->id.' from '.$from->name);
 
-            $datarray['body'] = escape_tags($entry->message);
+            $datarray['body'] = (x($entry, 'message') ? escape_tags($entry->message) : '');
 
-            if($entry->name and $entry->link)
+            if(x($entry, 'name') and x($entry, 'link'))
                 $datarray['body'] .= "\n\n[bookmark=".$entry->link."]".$entry->name."[/bookmark]";
-            elseif ($entry->name)
+            elseif (x($entry, 'name'))
                 $datarray['body'] .= "\n\n[b]" . $entry->name."[/b]";
 
-            if($entry->caption) {
-                if(!$entry->name and $entry->link)
+            if(x($entry, 'caption')) {
+                if(!x($entry, 'name') and x($entry, 'link'))
                     $datarray['body'] .= "\n\n[bookmark=".$entry->link."]".$entry->caption."[/bookmark]";
                 else
                     $datarray['body'] .= "[i]" . $entry->caption."[/i]\n";
             }
 
-            if(!$entry->caption and !$entry->name) {
-                if ($entry->link)
+            if(!x($entry, 'caption') and !x($entry, 'name')) {
+                if (x($entry, 'link'))
                     $datarray['body'] .= "\n[url]".$entry->link."[/url]\n";
                 else
                     $datarray['body'] .= "\n";
             }
 
-            $quote = "";
-            if($entry->description)
+            $quote = '';
+            if(x($entry, 'description'))
                 $quote = $entry->description;
 
-            if ($entry->properties)
+            if (x($entry, 'properties'))
                 foreach ($entry->properties as $property)
                     $quote .= "\n".$property->name.": [url=".$property->href."]".$property->text."[/url]";
 
@@ -1426,14 +1401,14 @@ function fb_consume_stream($uid,$j,$wall = false) {
             // Only import the picture when the message is no video
             // oembed display a picture of the video as well
             if ($entry->type != "video") {
-                if($entry->picture && $entry->link) {
+                if(x($entry, 'picture') && x($entry, 'link')) {
                     $datarray['body'] .= "\n" . '[url=' . $entry->link . '][img]'.$entry->picture.'[/img][/url]';
                 }
                 else {
-                    if($entry->picture)
+                    if(x($entry, 'picture'))
                         $datarray['body'] .= "\n" . '[img]' . $entry->picture . '[/img]';
                     // if just a link, it may be a wall photo - check
-                    if($entry->link)
+                    if(x($entry, 'link'))
                         $datarray['body'] .= fb_get_photo($uid,$entry->link);
                 }
             }
