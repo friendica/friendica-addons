@@ -1447,11 +1447,13 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			//if(($datarray['body'] != '') and ($uid == 1))
 			//	$datarray['body'] .= "[noparse]".print_r($entry, true)."[/noparse]";
 
-			if ($entry->place->name)
-				$datarray['coord'] = $entry->place->name;
-			else if ($entry->place->location->street or $entry->place->location->city or $entry->place->location->Denmark) {
+			if ($entry->place->name or $entry->place->location->street or 
+				$entry->place->location->city or $entry->place->location->Denmark) {
+				$datarray['coord'] = '';
+				if ($entry->place->name)
+					$datarray['coord'] .= $entry->place->name;
 				if ($entry->place->location->street)
-					$datarray['coord'] = $entry->place->location->street;
+					$datarray['coord'] .= $entry->place->location->street;
 				if ($entry->place->location->city)
 					$datarray['coord'] .= " ".$entry->place->location->city;
 				if ($entry->place->location->country)
