@@ -45,6 +45,11 @@ function convpath_convert($path) {
 		$search = "https://".$a->get_hostname();
 		$replace = "http://".$a->get_hostname();
 	}
-	$path = str_replace($search, $replace, $path);
+	$searcharr = array("src='".$search, 'src="'.$search);
+	$replacearr = array("src='".$replace, 'src="'.$replace);
+	$path = str_replace($searcharr, $replacearr, $path);
+
+	//$path = str_replace($search, $replace, $path);
+
 	return($path);
 }

@@ -1423,9 +1423,18 @@ function fb_consume_stream($uid,$j,$wall = false) {
 				}
 			}
 
+			if (($datarray['app'] == "Events") and $entry->actions)
+				foreach ($entry->actions as $action)
+					if ($action->name == "View")
+						$datarray['body'] .= " [url=".$action->link."]".$entry->story."[/url]";
+
 			// Just as a test - to see if these are the missing entries
 			//if(trim($datarray['body']) == '')
 			//	$datarray['body'] = $entry->story;
+
+			// Adding the "story" text to see if there are useful data in it (testing)
+			//if (($datarray['app'] != "Events") and $entry->story)
+			//	$datarray['body'] .= "\n".$entry->story;
 
 			if(trim($datarray['body']) == '') {
 				logger('facebook: empty body '.$entry->id.' '.print_r($entry, true));
