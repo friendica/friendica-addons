@@ -1,9 +1,10 @@
 <?php
 /**
- * Name: Random place
- * Description: Sample Friendica plugin/addon. Set a random place when posting.
+ * Name: Random Planet, Empirial Version
+ * Description: Sample Friendica plugin/addon. Set a random planet from the Emprire when posting.
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
+ * Author: Darth Baldwin
  * 
  * 
  * 
