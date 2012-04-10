@@ -36,7 +36,7 @@ function gravatar_lookup($a, &$b) {
 
 	// setting default value if nothing configured
 	if(! $default_avatar)
-		$default_avatar = 'identicon'; // pseudo-random geometric pattern based on email hash
+		$default_avatar = 'identicon'; // default image will be a random pattern
 	if(! $rating)
 		$rating = 'g'; // suitable for display on all websites with any audience type
 
@@ -47,7 +47,8 @@ function gravatar_lookup($a, &$b) {
 	if ($default_avatar != "gravatar")
 		$url .= '&d=' .$default_avatar;
 
-	$b['url'] = $url;
+	$b['url'] = $url;	
+	$b['success'] = true;
 }
 
 /**
@@ -67,12 +68,11 @@ function gravatar_plugin_admin (&$a, &$o) {
 
 	// Available options for the select boxes
 	$default_avatars = array(
-		'gravatar' => 'Gravatar',
-		'mm' => 'MM',
-		'identicon' => 'Identicon',
-		'monsterid' => 'Monsterid',
-		'wavatar' => 'Wavatar',
-		'retro' => 'Retro'
+		'mm' => t('generic profile image'),
+		'identicon' => t('random geometric pattern'),
+		'monsterid' => t('monster face'),
+		'wavatar' => t('computer generated face'),
+		'retro' => t('retro arcade style face'),
 	);
 	$ratings = array(
 		'g' => 'g',
