@@ -4,7 +4,7 @@
  * Description: Sample Friendica plugin/addon. Set a random planet from the Emprire when posting.
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- * Author: Darth Baldwin
+ * Author: Darth Baldwin <darthvader@death.star>
  * 
  * 
  * 
