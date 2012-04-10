@@ -22,7 +22,7 @@ unregister_hook('app_menu', 'addon/irc/irc.php', 'irc_app_menu');
 }
 
 function irc_app_menu($a,&$b) {
-$b['app_menu'][] = '<div class="app-title"><a href="irc">' . t('irc Chatroom') . '</a></div>';
+$b['app_menu'][] = '<div class="app-title"><a href="irc">' . t('IRC Chatroom') . '</a></div>';
 }
 
 
@@ -33,9 +33,27 @@ return;
 
 function irc_content(&$a) {
 
-$baseurl = $a->get_baseurl() . '/addon/irc';
-$o = '';
+	$baseurl = $a->get_baseurl() . '/addon/irc';
+	$o = '';
 
+	$sitechats = get_config('irc','channels');
+	if($sitechats)
+		$chats = explode(',',$sitechats);
+	else
+		$chats = array('friendica','chat','chatback','hottub','ircbar','dateroom','teentalk');
+
+
+	$a->page['aside'] .= '<div class="widget"><h3>' . t('Popular Channels') . '</h3><ul>';
+	foreach($chats as $chat) {
+		$a->page['aside'] .= '<li><a href="' . $a->get_baseurl() . '/irc?channels=' . $chat . '" >' . '#' . $chat . '</a></li>';
+	}
+	$a->page['aside'] .= '</ul></div>';
+
+
+
+
+
+$channels = ((x($_GET,'channels')) ? $_GET['channels'] : 'friendica');
 
 /* add the chatroom frame and some html
  * by altering the "channels=friendica" part of the URL, you can add/remove channels.  
@@ -43,8 +61,8 @@ $o = '';
  */
   $o .= <<< EOT
 <h2>IRC chat</h2>
-<p><a href="http://tldp.org/HOWTO/IRC/beginners.html" target="_blank">a beginner's guide to using IRC.</a></p>
-<iframe src="http://webchat.freenode.net?channels=friendica" width="600" height="600"></iframe>
+<p><a href="http://tldp.org/HOWTO/IRC/beginners.html" target="_blank">A beginner's guide to using IRC. [en]</a></p>
+<iframe src="http://webchat.freenode.net?channels=$channels" width="600" height="600"></iframe>
 EOT;
 
 return $o;

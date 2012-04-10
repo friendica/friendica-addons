@@ -1,5 +1,6 @@
 ____ Twitter Plugin ____
 By Tobias Diekershoff
+   http://diekershoff.homeunix.net/friendika/profile/tobias
    tobias.diekershoff(at)gmx.net
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -47,18 +48,31 @@ ___ Configuration ___
 
 __ Global Configuration __
 
+If you enabled an administrator account, please use the admin panel to configure
+the Twitter relay. If you for any reason prefer to use a configuration file instead 
+of the admin panels, please refer to the Alternative Configuration below. 
+
+Activate the plugin from the plugins section of your admin panel.  When you have
+done so, add your consumer key and consumer secret in the settings section of the 
+plugin page.
+
+When this is done your user can now configure their Twitter connection at
+"Settings -> Connector Settings" and enable the forwarding of their *public*
+messages to Twitter.
+
+__ Alternative Configuration __
+
 To activate this addon add @twitter@ to the list of active addons in your
 .htconfig.php file 
-    $a->config['system']['addon'] = "twitter, ..."
+
+$a->config['system']['addon'] = "twitter, ..."
+
 Afterwards you need to add your OAuth consumer key / secret pair to it by
 adding the following two lines
 
 $a->config['twitter']['consumerkey'] = 'your consumer KEY here';
 $a->config['twitter']['consumersecret'] = 'your consumer SECRET here';
 
-When this is done your user can now configure their Twitter connection at
-"Settings -> Plugin Settings" and enable the forwarding of their *public*
-messages to Twitter.
 
 __ User Configuration __
 
@@ -74,4 +88,5 @@ If this first step was successful the Twitter configuration will be changed
 on the "Plugin Settings" page displaying two check boxes. One to enable/disable
 the forwarding of *all public* postings to Twitter and one to clear the
 personal configuration from the Twitter credentials.
+
 

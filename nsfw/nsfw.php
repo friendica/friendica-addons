@@ -44,13 +44,13 @@ function nsfw_addon_settings(&$a,&$s) {
 		$words = 'nsfw,';
 
     $s .= '<div class="settings-block">';
-    $s .= '<h3>' . t('"Not Safe For Work" Settings') . '</h3>';
+    $s .= '<h3>' . t('Not Safe For Work (General Purpose Content Filter) settings') . '</h3>';
     $s .= '<div id="nsfw-wrapper">';
-	
-    $s .= '<label id="nsfw-enable-label" for="nsfw-enable">' . t('Enable NSFW filter') . ' </label>';
+    $s .= '<p>' . t ('This plugin looks in posts for the words/text you specify below, and collapses any content containing those keywords so it is not displayed at inappropriate times, such as sexual innuendo that may be improper in a work setting. It is polite and recommended to tag any content containing nudity with #NSFW.  This filter can also match any other word/text you specify, and can thereby be used as a general purpose content filter.') . '</p>';
+    $s .= '<label id="nsfw-enable-label" for="nsfw-enable">' . t('Enable Content filter') . ' </label>';
     $s .= '<input id="nsfw-enable" type="checkbox" name="nsfw-enable" value="1"' . $enable_checked . ' />';
 	$s .= '<div class="clear"></div>';
-    $s .= '<label id="nsfw-label" for="nsfw-words">' . t('Comma separated words to treat as NSFW') . ' </label>';
+    $s .= '<label id="nsfw-label" for="nsfw-words">' . t('Comma separated list of keywords to hide') . ' </label>';
     $s .= '<input id="nsfw-words" type="text" name="nsfw-words" value="' . $words .'" />';
     $s .= '</div><div class="clear"></div>';
 
