@@ -4,8 +4,9 @@
  * Name: LiveJournal Post Connector
  * Description: Post to LiveJournal
  * Version: 1.0
- * Author: Tony Baldwin <http://theshi.re/profile/tony>
+ * Author: Tony Baldwin <https://free-haven.org/profile/tony>
  * Author: Michael Johnston
+ * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
 
 function ljpost_install() {
@@ -179,6 +180,7 @@ function ljpost_send(&$a,&$b) {
 		$title = xmlify($b['title']);
 		$post = bbcode($b['body']);
 		$post = xmlify($post);
+		$tags = ljpost_get_tags($b['tag']);
 
 		$date = datetime_convert('UTC',$tz,$b['created'],'Y-m-d H:i:s');
 		$year = intval(substr($date,0,4));
@@ -204,6 +206,22 @@ function ljpost_send(&$a,&$b) {
         <member><name>day</name><value><int>$day</int></value></member>
         <member><name>hour</name><value><int>$hour</int></value></member>
         <member><name>min</name><value><int>$min</int></value></member>
+		<member><name>usejournal</name><value><string>$lj_username</string></value></member>
+		<member>
+			<name>props</name>
+			<value>
+				<struct>
+					<member>
+						<name>useragent</name>
+						<value><string>Friendica</string></value>
+					</member>
+					<member>
+						<name>taglist</name>
+						<value><string>$tags</string></value>
+					</member>
+				</struct>
+			</value>
+		</member>
         </struct>
     </value></param>
   </params>
@@ -214,9 +232,15 @@ EOT;
 		logger('ljpost: data: ' . $xml, LOGGER_DATA);
 
 		if($lj_blog !== 'test')
-			$x = post_url($lj_blog,$xml);
+			$x = post_url($lj_blog,$xml,array("Content-Type: text/xml"));
 		logger('posted to livejournal: ' . ($x) ? $x : '', LOGGER_DEBUG);
 
 	}
 }
 
+function ljpost_get_tags($post)
+{
+	preg_match_all("/\]([^\[#]+)\[/",$post,$matches);
+	$tags = implode(', ',$matches[1]);
+	return $tags;
+}

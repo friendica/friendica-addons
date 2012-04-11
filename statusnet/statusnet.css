@@ -18,9 +18,12 @@
 #statusnet-default-label {
 	float: left;
 	width: 250px;
-	margin-bottom: 25px;
 }
-
+#statusnet-sendtaglinks-label {
+        float: left;
+        width: 250px;
+        margin-bottom: 25px;
+}
 #statusnet-disconnect {
 	float: left;
 }

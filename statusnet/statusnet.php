@@ -2,8 +2,8 @@
 /**
  * Name: StatusNet Connector
  * Description: Relay public postings to a connected StatusNet account
- * Version: 1.0.3
- * Author: Tobias Diekershoff <https://diekershoff.homeunix.net/friendika/profile/tobias>
+ * Version: 1.0.4
+ * Author: Tobias Diekershoff <http://diekershoff.homeunix.net/friendika/profile/tobias>
  */
  
 /*   StatusNet Plugin for Friendica
@@ -155,6 +155,7 @@ function statusnet_settings_post ($a,$post) {
             del_pconfig( local_user(), 'statusnet', 'oauthtoken' );
             del_pconfig( local_user(), 'statusnet', 'oauthsecret' );
             del_pconfig( local_user(), 'statusnet', 'baseapi' );
+            del_pconfig( local_user(), 'statusnet', 'post_taglinks');
 	} else {
             if (isset($_POST['statusnet-preconf-apiurl'])) {
                 /***
@@ -218,14 +219,16 @@ function statusnet_settings_post ($a,$post) {
 					//  ok, now that we have the Access Token, save them in the user config
 					set_pconfig(local_user(),'statusnet', 'oauthtoken',  $token['oauth_token']);
 					set_pconfig(local_user(),'statusnet', 'oauthsecret', $token['oauth_token_secret']);
-                    set_pconfig(local_user(),'statusnet', 'post', 1);
+                                        set_pconfig(local_user(),'statusnet', 'post', 1);
+                                        set_pconfig(local_user(),'statusnet', 'post_taglinks', 1);
                     //  reload the Addon Settings page, if we don't do it see Bug #42
                     goaway($a->get_baseurl().'/settings/connectors');
 				} else {
 					//  if no PIN is supplied in the POST variables, the user has changed the setting
-					//  to post a tweet for every new __public__ posting to the wall
+					//  to post a dent for every new __public__ posting to the wall
 					set_pconfig(local_user(),'statusnet','post',intval($_POST['statusnet-enable']));
-					set_pconfig(local_user(),'statusnet','post_by_default',intval($_POST['statusnet-default']));
+                                        set_pconfig(local_user(),'statusnet','post_by_default',intval($_POST['statusnet-default']));
+                                        set_pconfig(local_user(),'statusnet','post_taglinks',intval($_POST['statusnet-sendtaglinks']));
 					info( t('StatusNet settings updated.') . EOL);
         	}}}}
 }
@@ -247,7 +250,9 @@ function statusnet_settings(&$a,&$s) {
 	$enabled = get_pconfig(local_user(), 'statusnet', 'post');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 	$defenabled = get_pconfig(local_user(),'statusnet','post_by_default');
-	$defchecked = (($defenabled) ? ' checked="checked" ' : '');
+        $defchecked = (($defenabled) ? ' checked="checked" ' : '');
+        $linksenabled = get_pconfig(local_user(),'statusnet','post_taglinks');
+        $linkschecked = (($linksenabled) ? ' checked="checked" ' : '');
 	$s .= '<div class="settings-block">';
 	$s .= '<h3>'. t('StatusNet Posting Settings').'</h3>';
 
@@ -336,6 +341,9 @@ function statusnet_settings(&$a,&$s) {
 			$s .= '<div class="clear"></div>';
 			$s .= '<label id="statusnet-default-label" for="statusnet-default">'. t('Send public postings to StatusNet by default') .'</label>';
 			$s .= '<input id="statusnet-default" type="checkbox" name="statusnet-default" value="1" ' . $defchecked . '/>';
+			$s .= '<div class="clear"></div>';
+                        $s .= '<label id="statusnet-sendtaglinks-label" for="statusnet-sendtaglinks">'.t('Send #tag links to StatusNet').'</label>';
+                        $s .= '<input id="statusnet-sendtaglinks" type="checkbox" name="statusnet-sendtaglinks" value="1" '. $linkschecked . '/>';
 			$s .= '</div><div class="clear"></div>';
 
 			$s .= '<div id="statusnet-disconnect-wrapper">';
@@ -425,7 +433,12 @@ function statusnet_post_hook(&$a,&$b) {
                 // we can later send to StatusNet. This way we can "gain" some 
                 // information during shortening of potential links but do not 
                 // shorten all the links in a 200000 character long essay.
-                $tmp = substr($b['body'], 0, 2*$max_char);
+                if (! $b['title']=='') {
+                    $tmp = $b['title'] . ' : '. $b['body'];
+                    $tmp = substr($tmp, 0, 4*$max_char);
+                } else {
+                    $tmp = substr($b['body'], 0, 3*$max_char);
+                }
                 // if [url=bla][img]blub.png[/img][/url] get blub.png
                 $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\]\[img\](\\w+.*?)\\[\\/img\]\\[\\/url\]/i', '$2', $tmp);
                 // preserve links to images, videos and audios
@@ -435,11 +448,13 @@ function statusnet_post_hook(&$a,&$b) {
                 $tmp = preg_replace( '/\[\\/?youtube(\\s+.*?\]|\])/i', '', $tmp);
                 $tmp = preg_replace( '/\[\\/?vimeo(\\s+.*?\]|\])/i', '', $tmp);
                 $tmp = preg_replace( '/\[\\/?audio(\\s+.*?\]|\])/i', '', $tmp);
+                $linksenabled = get_pconfig($b['uid'],'statusnet','post_taglinks');
                 // if a #tag is linked, don't send the [url] over to SN
-                //   this is commented out by default as it means backlinks
-                //   to friendica, if you don't like this feel free to
-                //   uncomment the following line
-//                $tmp = preg_replace( '/#\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '#$2', $tmp);
+                // that is, don't send if the option is not set in the 
+                // connector settings
+                if ($linksenabled=='0') {
+                    $tmp = preg_replace( '/#\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '#$2', $tmp);
+                }
                 // preserve links to webpages
                 $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/url\]/i', '$2 $1', $tmp);
                 $tmp = preg_replace( '/\[bookmark\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/bookmark\]/i', '$2 $1', $tmp);
@@ -465,7 +480,13 @@ function statusnet_post_hook(&$a,&$b) {
 			$shortlink = short_link( $b['plink'] );
 			// the new message will be shortened such that "... $shortlink"
 			// will fit into the character limit
-			$msg = substr($msg, 0, $max_char-strlen($shortlink)-4);
+			$msg = nl2br(substr($msg, 0, $max_char-strlen($shortlink)-4));
+                        $msg = str_replace(array('<br>','<br />'),' ',$msg);
+                        $e = explode(' ', $msg);
+                        //  remove the last word from the cut down message to 
+                        //  avoid sending cut words to the MicroBlog
+                        array_pop($e);
+                        $msg = implode(' ', $e);
 			$msg .= '... ' . $shortlink;
 		}
 		// and now tweet it :-)

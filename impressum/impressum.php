@@ -2,24 +2,33 @@
 /**
  * Name: Impressum
  * Description: Plugin to add contact information to the about page (/friendica)
- * Version: 1.0
- * Author: Tobias Diekershoff <https://diekershoff.homeunix.net/friendika/profile/tobias>
+ * Version: 1.1
+ * Author: Tobias Diekershoff <http://diekershoff.homeunix.net/friendika/profile/tobias>
  * License: 3-clause BSD license
  */
 
 function impressum_install() {
     register_hook('about_hook', 'addon/impressum/impressum.php', 'impressum_show');
+    register_hook('page_end', 'addon/impressum/impressum.php', 'impressum_footer');
     logger("installed impressum plugin");
 }
 
 function impressum_uninstall() {
     unregister_hook('about_hook', 'addon/impressum/impressum.php', 'impressum_show');
+    unregister_hook('page_end', 'addon/impressum/impressum.php', 'impressum_footer');
     logger("uninstalled impressum plugin");
 }
 function obfuscate_email ($s) {
     $s = str_replace('@','(at)',$s);
     $s = str_replace('.','(dot)',$s);
     return $s;
+}
+function impressum_footer($a, &$b) {
+    $text = get_config('impressum','footer_text');
+    if (! $text == '') {
+        $a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->get_baseurl().'/addon/impressum/impressum.css" media="all" />';
+        $b .= '<div id="impressum_footer">'.$text.'</div>';
+    }
 }
 function impressum_show($a,&$b) {
     $b .= '<h3>'.t('Impressum').'</h3>';
@@ -56,21 +65,24 @@ function impressum_plugin_admin_post (&$a) {
     $postal = ((x($_POST, 'postal')) ? (trim($_POST['postal'])) : '');
     $notes = ((x($_POST, 'notes')) ? (trim($_POST['notes'])) : '');
     $email = ((x($_POST, 'email')) ? notags(trim($_POST['email'])) : '');
+    $footer_text = ((x($_POST, 'footer_text')) ? (trim($_POST['footer_text'])) : '');
     set_config('impressum','owner',$owner);
     set_config('impressum','ownerprofile',$ownerprofile);
     set_config('impressum','postal',$postal);
     set_config('impressum','email',$email);
     set_config('impressum','notes',$notes);
+    set_config('impressum','footer_text',$footer_text);
     info( t('Settings updated.'). EOL );
 }
 function impressum_plugin_admin (&$a, &$o) {
     $t = file_get_contents( dirname(__file__). "/admin.tpl" );
     $o = replace_macros($t, array(
         '$submit' => t('Submit'),
-        '$owner' => array('owner', t('Site Owner'), get_config('impressum','owner'), ''),
-        '$ownerprofile' => array('ownerprofile', t('Site Owners Profile'), get_config('impressum','ownerprofile'), ''),
-        '$postal' => array('postal', t('Postal Address'), get_config('impressum','postal'), ''),
-        '$notes' => array('notes', t('Notes'), get_config('impressum','notes'), ''),
-        '$email' => array('email', t('Email Address'), get_config('impressum','email'), ''),
+        '$owner' => array('owner', t('Site Owner'), get_config('impressum','owner'), t('The page operators name.')),
+        '$ownerprofile' => array('ownerprofile', t('Site Owners Profile'), get_config('impressum','ownerprofile'), t('Profile address of the operator.')),
+        '$postal' => array('postal', t('Postal Address'), get_config('impressum','postal'), t('How to contact the operator via snail mail.')),
+        '$notes' => array('notes', t('Notes'), get_config('impressum','notes'), t('Additional notes that are displayed beneath the contact information.')),
+        '$email' => array('email', t('Email Address'), get_config('impressum','email'), t('How to contact the operator via email. (will be displayed obfuscated)')),
+        '$footer_text' => array('footer_text', t('Footer note'), get_config('impressum','footer_text'), t('Text for the footer.')),
     ));
 }

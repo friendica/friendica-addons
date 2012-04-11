@@ -35,7 +35,7 @@ function communityhome_home(&$a, &$o){
 	$aside['$login_form'] = login(($a->config['register_policy'] == REGISTER_CLOSED) ? false : true);
 	
 	// last 12 users
-	$aside['$lastusers_title'] = t('Last users');
+	$aside['$lastusers_title'] = t('Latest users');
 	$aside['$lastusers_items'] = array();
 	$sql_extra = "";
 	$publish = (get_config('system','publish_all') ? '' : " AND `publish` = 1 " );
@@ -95,7 +95,7 @@ function communityhome_home(&$a, &$o){
 	}
 	
 	// last 12 photos
-	$aside['$photos_title'] = t('Last photos');
+	$aside['$photos_title'] = t('Latest photos');
 	$aside['$photos_items'] = array();
 	$r = q("SELECT `photo`.`id`, `photo`.`resource-id`, `photo`.`scale`, `photo`.`desc`, `user`.`nickname`, `user`.`username` FROM 
 				(SELECT `resource-id`, MAX(`scale`) as maxscale FROM `photo` 
@@ -130,7 +130,7 @@ function communityhome_home(&$a, &$o){
 	}
 	
 	// last 10 liked items
-	$aside['$like_title'] = t('Last likes');
+	$aside['$like_title'] = t('Latest likes');
 	$aside['$like_items'] = array();
 	$r = q("SELECT `T1`.`created`, `T1`.`liker`, `T1`.`liker-link`, `item`.* FROM 
 			(SELECT `parent-uri`, `created`, `author-name` AS `liker`,`author-link` AS `liker-link` 

@@ -1,6 +1,7 @@
 ## Piwik Plugin ##
 
 by Tobias Diekershoff 
+   http://diekershoff.homeunix.net/friendika/profile/tobias
    tobias.diekershoff(at)gmx.net
 
 This addon allows you to embed the code necessary for the FLOSS webanalytics
@@ -18,6 +19,13 @@ In the Friendica git repository `/addon/piwik/piwik.php` and a CSS file for
 styling the opt-out notice.
 
 ### Configuration ###
+
+The easiest way to configure this addon is by activating the admin panels of
+your ~friendica server and then enter the needed details on the config page
+for the addon.
+
+If you don't want to use the admin panel, you can configure the addon through
+the .htconfig file.
 
 Open the .htconfig.php file and add "piwik" to the list of activated addons.
 

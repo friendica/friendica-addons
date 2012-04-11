@@ -1,7 +1,3 @@
-Thomas Willingham
+This is a variant of the community home.  Instead of displaying the community tab in the front page, we still use home.html, but we also add the latest users to the sidebar.
 
-This isn't even close to being worth a pull request, but some people might find it useful.
-
-Enable community home in your admin panel, then replace communityhome.php with this one to get a front page like mine (a normal front page, but with latest users shown in the sidebar, which looks bleak when there's nothing in it).
-
-There are more graceful ways of doing this, I used communityhome as I plan to make use of a limited stream and likes in future.
+Simply replace addon/communityhome/communityhome.php with this version then enable community home in your admin panel as usual.

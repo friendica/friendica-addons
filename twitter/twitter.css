@@ -12,7 +12,7 @@
 }
 #twitter-disconnect-label {
 	float: left;
-	width: 200px;
+	width: 250px;
 	margin-bottom: 25px;
 }
 
@@ -21,8 +21,17 @@
 }
 #twitter-enable-label {
 	float: left;
-	width: 200px;
+	width: 250px;
 	margin-bottom: 5px;
+}
+#twitter-default-label {
+	float: left;
+	width: 250px;
+}
+#twitter-sendtaglinks-label {
+        float: left;
+        width: 250px;
+        margin-bottom: 25px;
 }
 
 #twitter-checkbox {
@@ -30,7 +39,7 @@
 }
 #twitter-pin-label {
 	float: left;
-	width: 200px;
+	width: 250px;
 	margin-bottom: 25px;
 }
 

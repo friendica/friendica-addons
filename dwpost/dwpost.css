@@ -1,0 +1,15 @@
+
+#dwpost-enable-label, #dwpost-username-label, #dwpost-password-label, #dwpost-bydefault-label {
+float: left;
+width: 200px;
+margin-top: 10px;
+}
+
+#dwpost-checkbox, #dwpost-username, #dwpost-password, #dwpost-bydefault {
+float: left;
+margin-top: 10px;
+}
+
+#dwpost-submit {
+margin-top: 15px;
+}
