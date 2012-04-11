@@ -59,6 +59,7 @@ define('FACEBOOK_SESSION_ERR_NOTIFICATION_INTERVAL', 259200); // 3 days
 define('FACEBOOK_DEFAULT_POLL_INTERVAL', 60); // given in minutes
 define('FACEBOOK_MIN_POLL_INTERVAL', 5);
 
+require_once('include/security.php');
 
 function facebook_install() {
 	register_hook('post_local',       'addon/facebook/facebook.php', 'facebook_post_local');
@@ -648,6 +649,8 @@ function facebook_plugin_settings(&$a,&$b) {
 
 
 function facebook_plugin_admin(&$a, &$o){
+
+
 	$o = '<input type="hidden" name="form_security_token" value="' . get_form_security_token("fbsave") . '">';
 	
 	$o .= '<h4>' . t('Facebook API Key') . '</h4>';
