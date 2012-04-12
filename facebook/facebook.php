@@ -558,6 +558,9 @@ function facebook_content(&$a) {
 
 
 function facebook_cron($a,$b) {
+//del_config('facebook', 'realtime_active');
+//del_config('facebook', 'realtime_err_mailsent');
+//del_config('facebook', 'cb_verify_token');
 
 	$last = get_config('facebook','last_poll');
 	
@@ -896,7 +899,7 @@ function facebook_post_hook(&$a,&$b) {
 				if(preg_match("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/is",$b['body'],$matches))
 					$image = $matches[3];
 
-				if ($image != '')
+				if ($image == '')
 					if(preg_match("/\[img\](.*?)\[\/img\]/is",$b['body'],$matches))
 						$image = $matches[1];
 
@@ -1436,8 +1439,8 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			//	$datarray['body'] = $entry->story;
 
 			// Adding the "story" text to see if there are useful data in it (testing)
-			//if (($datarray['app'] != "Events") and $entry->story)
-			//	$datarray['body'] .= "\n".$entry->story;
+			if (($datarray['app'] != "Events") and $entry->story)
+				$datarray['body'] .= "\n".$entry->story;
 
 			if(trim($datarray['body']) == '') {
 				logger('facebook: empty body '.$entry->id.' '.print_r($entry, true));
