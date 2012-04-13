@@ -4,22 +4,7 @@
  * Description: Sample Friendica plugin/addon. Set a random planet from the Emprire when posting.
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- * Author: Darth Baldwin <darthvader@death.star>
- * 
- * 
- * 
- *
- * Addons are registered with the system in the
- * .htconfig.php file.
- *
- * $a->config['system']['addon'] = 'plugin1,plugin2,etc.';
- *
- * When registration is detected, the system calls the plugin
- * name_install() function, located in 'addon/name/name.php',
- * where 'name' is the name of the addon.
- * If the addon is removed from the configuration list, the 
- * system will call the name_uninstall() function.
- *
+ * Author: Tony Baldwin <https://free-haven.org/profile/tony>
  */
 
 
