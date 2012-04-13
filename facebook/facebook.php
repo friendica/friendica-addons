@@ -1009,10 +1009,14 @@ function facebook_post_hook(&$a,&$b) {
 						'access_token' => $fb_token, 
 						'message' => $msg
 					);
-					if(isset($image))
+					if(isset($image)) {
 						$postvars['picture'] = $image;
-					if(isset($link))
+						//$postvars['type'] = "photo";
+					}
+					if(isset($link)) {
 						$postvars['link'] = $link;
+						//$postvars['type'] = "link";
+					}
 					if(isset($linkname))
 						$postvars['name'] = $linkname;
 				}
@@ -1029,11 +1033,18 @@ function facebook_post_hook(&$a,&$b) {
 
 				if($reply) {
 					$url = 'https://graph.facebook.com/' . $reply . '/' . (($likes) ? 'likes' : 'comments');
-				}
-				else { 
+				} else if (($link != "")  or ($image != "") or ($b['title'] == '') or (strlen($msg) < 500)) { 
 					$url = 'https://graph.facebook.com/me/feed';
 					if($b['plink'])
 						$postvars['actions'] = '{"name": "' . t('View on Friendica') . '", "link": "' .  $b['plink'] . '"}';
+				} else {
+					// if its only a message and a subject and the message is larger than 500 characters then post it as note
+					$postvars = array(
+						'access_token' => $fb_token, 
+						'message' => bbcode($b['body']),
+						'subject' => $b['title'],
+					);
+					$url = 'https://graph.facebook.com/me/notes';
 				}
 
 				logger('facebook: post to ' . $url);
