@@ -1,0 +1,15 @@
+/* irc css */
+#irc-chans, {
+	float: left;
+	width: 200px;
+	margin-top: 10px;
+}
+
+#irc-checkbox {
+	float: left;
+	margin-top: 10px;
+}
+
+#irc-submit {
+	margin-top: 15px;
+}
