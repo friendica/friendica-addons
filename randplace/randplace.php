@@ -8,10 +8,8 @@
  * 
  * 
  *
- * Addons are registered with the system in the
- * .htconfig.php file.
- *
- * $a->config['system']['addon'] = 'plugin1,plugin2,etc.';
+ * Addons are registered with the system through the admin
+ * panel.
  *
  * When registration is detected, the system calls the plugin
  * name_install() function, located in 'addon/name/name.php',
