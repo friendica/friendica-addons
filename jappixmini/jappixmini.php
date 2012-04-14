@@ -23,7 +23,8 @@ and not to the server (at least as soon as the user is logged in). It can be sto
 This encryption key could be the friendica password, but then this password would be stored in the browser in cleartext.
 It is better to use a hash of the password.
 The server should not be able to reconstruct the password, so we can't take the same hash the server stores. But we can
- use hash("some_prefix"+password). This will however not work with OpenID logins.
+ use hash("some_prefix"+password). This will however not work with OpenID logins, for this type of login the password must
+be queried manually.
 
 Problem:
 How to discover the jabber addresses of the friendica contacts?
@@ -37,17 +38,23 @@ We do not want to make the jabber address public.
 
 Solution:
 When two friendica users connect using DFRN, the relation gets a DFRN ID and a keypair is generated.
-Using this keypair, we can provide the jabber address only to contacs:
+Using this keypair, we can provide the jabber address only to contacts:
 
-Case 1: Alice has prvkey, Bob has pubkey.
-  Alice encrypts request
-  Bob decrypts the request, send jabber address unencrypted
-  Alice reads address
+Alice:
+  signed_address = openssl_*_encrypt(alice_jabber_address)
+send signed_address to Bob, who does
+  trusted_address = openssl_*_decrypt(signed_address)
+  save trusted_address
+  encrypted_address = openssl_*_encrypt(bob_jabber_address)
+reply with encrypted_address to Alice, who does
+  decrypted_address = openssl_*_decrypt(encrypted_address)
+  save decrypted_address
 
-Case 2: Alice has prvkey, Bob has pubkey
-  Alice send request
-  Bob encrypts jabber address
-  Alice decrypts jabber address
+Interface for this:
+GET /jappixmini/?role=%s&signed_address=%s&dfrn_id=%s
+
+Response:
+json({"status":"ok", "encrypted_address":"%s"})
 
 */
 
@@ -78,6 +85,8 @@ unregister_hook('about_hook', 'addon/jappixmini/jappixmini.php', 'jappixmini_dow
 }
 
 function jappixmini_plugin_admin(&$a, &$o) {
+	// display instructions and warnings on addon settings page for admin
+
 	if (!file_exists("addon/jappixmini/jappix")) {
 		$o .= '<p><strong>You need to install the Jappix application, adapted for Friendica (see README).</strong></p>';
 	}
@@ -91,81 +100,80 @@ function jappixmini_plugin_admin_post(&$a) {
 
 function jappixmini_module() {}
 function jappixmini_init(&$a) {
-	// Here, other friendica sites can fetch the jabber address of local users.
-	// Because we do not want to publish the addresses publicly, they are encrypted so
-	// that only contacts can read it.
-	$encrypt_for = $_REQUEST["encrypt_for"];
-	if ($encrypt_for) {
-		$r = q("SELECT * FROM `contact` WHERE LENGTH(`pubkey`) AND `dfrn-id` = '%s' LIMIT 1",
-			dbesc($encrypt_for)
+	// module page where other Friendica sites can submit Jabber addresses to and also can query Jabber addresses
+        // of local users
+
+	$dfrn_id = $_REQUEST["dfrn_id"];
+	if (!$dfrn_id) killme();
+
+	$role = $_REQUEST["role"];
+	if ($role=="pub") {
+		$r = q("SELECT * FROM `contact` WHERE LENGTH(`pubkey`) AND `dfrn-id`='%s' LIMIT 1",
+			dbesc($dfrn_id)
 		);
 		if (!count($r)) killme();
 
-		// get public key to encrypt address
-		$pubkey = $r[0]['pubkey'];
+		$encrypt_func = openssl_public_encrypt;
+		$decrypt_func = openssl_public_decrypt;
+		$key = $r[0]["pubkey"];
+	} else if ($role=="prv") {
+		$r = q("SELECT * FROM `contact` WHERE LENGTH(`prvkey`) AND `issued-id`='%s' LIMIT 1",
+			dbesc($dfrn_id)
+		);
+		if (!count($r)) killme();
 
-		// get jabber address
-		$uid = $r[0]['uid'];
-		$username = get_pconfig($uid, 'jappixmini', 'username');
-		if (!$username) killme();
-		$server = get_pconfig($uid, 'jappixmini', 'server');
-		if (!$server) killme();
-
-		$address = $username."@".$server;
-
-		// encrypt address
-		$encrypted = "";
-		openssl_public_encrypt($address,$encrypted,$pubkey);
-
-		// calculate hex representation of encrypted address
-		$hex = bin2hex($encrypted);
-
-		// construct answer
-		$answer = Array("status"=>"ok", "encrypted_address"=>$hex);
-
-		// return answer as json
-		echo json_encode($answer);
+		$encrypt_func = openssl_private_encrypt;
+		$decrypt_func = openssl_private_decrypt;
+		$key = $r[0]["prvkey"];
+	} else {
 		killme();
 	}
 
-	// If we have only a private key, other site sends encrypted request, we answer unencrypted.
-	$encrypted_for = $_REQUEST["encrypted_for"];
-	if (!$encrypted_for) killme();
+	$uid = $r[0]["uid"];
 
-	$encrypted_request_hex = $_REQUEST["encrypted_request"];
-	if (!$encrypted_request_hex) killme();
-	$encrypted_request = hex2bin($encrypted_request_hex);
+	// save the Jabber address we received
+	try {
+		$signed_address_hex = $_REQUEST["signed_address"];
+		$signed_address = hex2bin($signed_address_hex);
 
-	$r = q("SELECT * FROM `contact` WHERE LENGTH(`prvkey`) AND `issued-id` = '%s' LIMIT 1",
-		dbesc($encrypted_for)
-	);
-	if (!count($r)) killme();
+		$trusted_address = "";
+		$decrypt_func($signed_address, $trusted_address, $key);
 
-	// decrypt request, validate it
-	$prvkey = $r[0]['prvkey'];
-	$decrypted_request = "";
-	openssl_private_decrypt($encrypted_request, $decrypted_request, $prvkey);
+		$now = intval(time());
+		set_pconfig($uid, "jappixmini", "id:$dfrn_id", "$now:$trusted_address");
+	} catch (Exception $e) {
+	}
 
-	if ($decrypted_request!=$encrypted_for) killme();
+	// return the requested Jabber address
+	try {
+		$username = get_pconfig($uid, 'jappixmini', 'username');
+		$server = get_pconfig($uid, 'jappixmini', 'server');
+		$address = "$username@$server";
 
-	// get jabber address
-	$uid = $r[0]['uid'];
-	$username = get_pconfig($uid, 'jappixmini', 'username');
-	if (!$username) killme();
-	$server = get_pconfig($uid, 'jappixmini', 'server');
-	if (!$server) killme();
+		$encrypted_address = "";
+		$encrypt_func($address, $encrypted_address, $key);
 
-	$address = $username."@".$server;
+		$encrypted_address_hex = bin2hex($encrypted_address);
 
-	// construct answer
-	$answer = Array("status"=>"ok", "address"=>$address);
+		$answer = Array(
+			"status"=>"ok",
+			"encrypted_address"=>$encrypted_address_hex
+		);
 
-	// return answer as json
-	echo json_encode($answer);
-	killme();
+		$answer_json = json_encode($answer);
+		echo $answer_json;
+		killme();
+	} catch (Exception $e) {
+		killme();
+	}
 }
 
 function jappixmini_settings(&$a, &$s) {
+    // addon settings for a user
+
+    $activate = get_pconfig(local_user(),'jappixmini','activate');
+    $activate = intval($activate) ? ' checked="checked"' : '';
+
     $username = get_pconfig(local_user(),'jappixmini','username');
     $username = htmlentities($username);
     $server = get_pconfig(local_user(),'jappixmini','server');
@@ -177,8 +185,6 @@ function jappixmini_settings(&$a, &$s) {
     $autosubscribe = intval($autosubscribe) ? ' checked="checked"' : '';
     $autoapprove = get_pconfig(local_user(),'jappixmini','autoapprove');
     $autoapprove = intval($autoapprove) ? ' checked="checked"' : '';
-    $activate = get_pconfig(local_user(),'jappixmini','activate');
-    $activate = intval($activate) ? ' checked="checked"' : '';
 
     $s .= '<div class="settings-block">';
     $s .= '<h3>Jappix Mini addon settings</h3>';
@@ -206,7 +212,7 @@ function jappixmini_settings(&$a, &$s) {
     $s .= '<label for="jappixmini-autosubscribe">Subscribe to Friendica contacts automatically</label>';
     $s .= ' <input id="jappixmini-autosubscribe" type="checkbox" name="jappixmini-autosubscribe" value="1"'.$autosubscribe.' />';
     $s .= '<br />';
-    $s .= '<label for="jappixmini-purge">Purge list of jabber addresses of contacts</label>';
+    $s .= '<label for="jappixmini-purge">Purge internal list of jabber addresses of contacts</label>';
     $s .= ' <input id="jappixmini-purge" type="checkbox" name="jappixmini-purge" value="1" />';
     $s .= '<br />';
     $s .= '<input type="submit" name="jappixmini-submit" value="' . t('Submit') . '" />';
@@ -220,20 +226,32 @@ function jappixmini_settings(&$a, &$s) {
 }
 
 function jappixmini_settings_post(&$a,&$b) {
+	// save addon settings for a user
+
 	if(! local_user()) return;
+	$uid = local_user();
 
 	if($_POST['jappixmini-submit']) {
-		set_pconfig(local_user(),'jappixmini','username',trim($b['jappixmini-username']));
-		set_pconfig(local_user(),'jappixmini','server',trim($b['jappixmini-server']));
-		set_pconfig(local_user(),'jappixmini','bosh',trim($b['jappixmini-bosh']));
-		set_pconfig(local_user(),'jappixmini','encrypted-password',trim($b['jappixmini-encrypted-password']));
-		set_pconfig(local_user(),'jappixmini','autosubscribe',intval($b['jappixmini-autosubscribe']));
-		set_pconfig(local_user(),'jappixmini','autoapprove',intval($b['jappixmini-autoapprove']));
-		set_pconfig(local_user(),'jappixmini','activate',intval($b['jappixmini-activate']));
+		$purge = intval($b['jappixmini-purge']);
+
+		$username = trim($b['jappixmini-username']);
+		$old_username = get_pconfig($uid,'jappixmini','username');
+		if ($username!=$old_username) $purge = 1;
+
+		$server = trim($b['jappixmini-server']);
+		$old_server = get_pconfig($uid,'jappixmini','server');
+		if ($server!=$old_server) $purge = 1;
+
+		set_pconfig($uid,'jappixmini','username',$username);
+		set_pconfig($uid,'jappixmini','server',$server);
+		set_pconfig($uid,'jappixmini','bosh',trim($b['jappixmini-bosh']));
+		set_pconfig($uid,'jappixmini','encrypted-password',trim($b['jappixmini-encrypted-password']));
+		set_pconfig($uid,'jappixmini','autosubscribe',intval($b['jappixmini-autosubscribe']));
+		set_pconfig($uid,'jappixmini','autoapprove',intval($b['jappixmini-autoapprove']));
+		set_pconfig($uid,'jappixmini','activate',intval($b['jappixmini-activate']));
 		info( 'Jappix Mini settings saved.' );
 
-		if (intval($b['jappixmini-purge'])) {
-			$uid = local_user();
+		if ($purge) {
 			q("DELETE FROM `pconfig` WHERE `uid`=$uid AND `cat`='jappixmini' and `k` LIKE 'id%%'");
 			info( 'List of addresses purged.' );
 		}
@@ -241,6 +259,8 @@ function jappixmini_settings_post(&$a,&$b) {
 }
 
 function jappixmini_script(&$a,&$s) {
+    // adds the script to the page header which starts Jappix Mini
+
     if(! local_user()) return;
 
     $activate = get_pconfig(local_user(),'jappixmini','activate');
@@ -251,6 +271,7 @@ function jappixmini_script(&$a,&$s) {
 
     $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=caps.js"></script>'."\r\n";
     $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=name.js"></script>'."\r\n";
+    $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=roster.js"></script>'."\r\n";
 
     $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/lib.js"></script>'."\r\n";
 
@@ -271,18 +292,35 @@ function jappixmini_script(&$a,&$s) {
     // get a list of jabber accounts of the contacts
     $contacts = Array();
     $uid = local_user();
-    $rows = q("SELECT `v` FROM `pconfig` WHERE `uid`=$uid AND `cat`='jappixmini' and `k` LIKE 'id%%'");
+    $rows = q("SELECT * FROM `pconfig` WHERE `uid`=$uid AND `cat`='jappixmini' and `k` LIKE 'id%%'");
     foreach ($rows as $row) {
+        $key = $row['k'];
+	$pos = strpos($key, ":");
+	$dfrn_id = substr($key, $pos+1);
+        $r = q("SELECT `name` FROM `contact` WHERE `uid`=$uid AND `dfrn-id`='%s' OR `issued-id`='%s'",
+		dbesc($dfrn_id),
+		dbesc($dfrn_id)
+	);
+	$name = $r[0]["name"];
+
         $value = $row['v'];
         $pos = strpos($value, ":");
         $address = substr($value, $pos+1);
-	$contacts[] = $address;
+	if (!$address) continue;
+	if (!$name) $name = $address;
+
+	$contacts[$address] = $name;
     }
     $contacts_json = json_encode($contacts);
 
+    // get nickname
+    $r = q("SELECT `username` FROM `user` WHERE `uid`=$uid");
+    $nickname = json_encode($r[0]["username"]);
+
+    // add javascript to start Jappix Mini
     $a->page['htmlhead'] .= "<script type=\"text/javascript\">
         jQuery(document).ready(function() {
-           jappixmini_addon_start('$server', '$username', '$bosh', '$encrypted_password');
+           jappixmini_addon_start('$server', '$username', '$bosh', '$encrypted_password', $nickname);
            jappixmini_manage_roster($contacts_json, $autoapprove, $autosubscribe);
         });
     </script>";
@@ -291,7 +329,16 @@ function jappixmini_script(&$a,&$s) {
 }
 
 function jappixmini_login(&$a, &$o) {
-    // save hash of password using setDB
+    // for setDB, needed by jappixmini_addon_set_client_secret
+    $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=datastore.js"></script>'."\r\n";
+
+    // for str_sha1, needed by jappixmini_addon_set_client_secret
+    $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=jsjac.js"></script>'."\r\n";
+
+    // for jappixmini_addon_set_client_secret
+    $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/lib.js"></script>'."\r\n";
+
+    // save hash of password
     $o = str_replace("<form ", "<form onsubmit=\"jappixmini_addon_set_client_secret(this.elements['id_password'].value);return true;\" ", $o);
 }
 
@@ -311,10 +358,17 @@ function jappixmini_cron(&$a, $d) {
 			if (!$request) continue;
 
 			$dfrn_id = $contact_row["dfrn-id"];
-			$pubkey = $contact_row["pubkey"];
-			if (!$dfrn_id) {
+			if ($dfrn_id) {
+				$key = $contact_row["pubkey"];
+				$encrypt_func = openssl_public_encrypt;
+				$decrypt_func = openssl_public_decrypt;
+				$role = "prv";
+			} else {
 				$dfrn_id = $contact_row["issued-id"];
-				$prvkey = $contact_row["prvkey"];
+				$key = $contact_row["prvkey"];
+				$encrypt_func = openssl_private_encrypt;
+				$decrypt_func = openssl_private_decrypt;
+				$role = "pub";
 			}
 
 			// check if jabber address already present
@@ -334,48 +388,55 @@ function jappixmini_cron(&$a, $d) {
 			$pos = strpos($request, "/dfrn_request/");
 			if ($pos===false) continue;
 
-			$base = substr($request, 0, $pos)."/jappixmini";
+			$base = substr($request, 0, $pos)."/jappixmini?role=$role";
 
-			// retrieve address
-			if ($prvkey) {
-				$retrieval_address = $base."?encrypt_for=".urlencode($dfrn_id);
+			// construct own address
+			$username = get_pconfig($uid, 'jappixmini', 'username');
+			if (!$username) continue;
+			$server = get_pconfig($uid, 'jappixmini', 'server');
+			if (!$server) continue;
 
-				$answer_json = fetch_url($retrieval_address);
+			$address = $username."@".$server;
+
+			// sign address
+			$signed_address = "";
+			$encrypt_func($address, $signed_address, $key);
+
+			// construct request url
+			$signed_address_hex = bin2hex($signed_address);
+			$url = $base."&signed_address=$signed_address_hex&dfrn_id=".urlencode($dfrn_id);
+
+			try {
+				// send request
+				$answer_json = fetch_url($url);
+
+				// parse answer
 				$answer = json_decode($answer_json);
-				if ($answer->status != "ok") continue;
+				if ($answer->status != "ok") throw new Exception();
 
 				$encrypted_address_hex = $answer->encrypted_address;
-				if (!$encrypted_address_hex) continue;
+				if (!$encrypted_address_hex) throw new Exception();
+
 				$encrypted_address = hex2bin($encrypted_address_hex);
+				if (!$encrypted_address) throw new Exception();
 
+				// decrypt address
 				$decrypted_address = "";
-				openssl_private_decrypt($encrypted_address, $decrypted_address, $prvkey);
-				if (!$decrypted_address) continue;
-
-				$address = $decrypted_address;
-			} else if ($pubkey) {
-				$encrypted_request = "";
-				openssl_public_encrypt($dfrn_id, $encrypted_request, $pubkey);
-				if (!$encrypted_request) continue;
-				$encrypted_request_hex = bin2hex($encrypted_request);
-
-				$retrieval_address = $base."?encrypted_for=".urlencode($dfrn_id)."&encrypted_request=".urlencode($encrypted_request_hex);
-
-				$answer_json = fetch_url($retrieval_address);
-				$answer = json_decode($answer_json);
-				if ($answer->status != "ok") continue;
-
-				$address = $answer->address;
-				if (!$address) continue;
+				$decrypt_func($encrypted_address, $decrypted_address, $key);
+				if (!$decrypted_address) throw new Exception();
+			} catch (Exception $e) {
+				$decrypted_address = "";
 			}
 
 			// save address
-			set_pconfig($uid, "jappixmini", "id:$dfrn_id", "$now:$address");
+			set_pconfig($uid, "jappixmini", "id:$dfrn_id", "$now:$decrypted_address");
 		}
 	}
 }
 
 function jappixmini_download_source(&$a,&$b) {
+	// Jappix Mini source download link on About page
+
 	$b .= '<h1>Jappix Mini</h1>';
 	$b .= '<p>This site uses Jappix Mini by the <a href="'.$a->get_baseurl().'/addon/jappixmini/jappix/AUTHORS">Jappix authors</a>, which is distributed under the terms of the <a href="'.$a->get_baseurl().'/addon/jappixmini/jappix/COPYING">GNU Affero General Public License</a>.</p>';
 	$b .= '<p>You can download the <a href="'.$a->get_baseurl().'/addon/jappixmini/jappix.zip">source code</a>.</p>';

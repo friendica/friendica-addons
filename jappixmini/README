@@ -10,6 +10,9 @@ address of a BOSH proxy that works with your account.
 The addon has an experimental autosubscribe and autosuggest functionality which tries
 to add your Friendica contacts to your roster automatically.
 
+Limitations:
+ - can only handle Jabber passwords that are at most 39 characters long
+
 Installation
 ------------
 
