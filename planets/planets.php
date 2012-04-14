@@ -4,22 +4,7 @@
  * Description: Sample Friendica plugin/addon. Set a random planet from the Emprire when posting.
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- * Author: Darth Baldwin <darthvader@death.star>
- * 
- * 
- * 
- *
- * Addons are registered with the system in the
- * .htconfig.php file.
- *
- * $a->config['system']['addon'] = 'plugin1,plugin2,etc.';
- *
- * When registration is detected, the system calls the plugin
- * name_install() function, located in 'addon/name/name.php',
- * where 'name' is the name of the addon.
- * If the addon is removed from the configuration list, the 
- * system will call the name_uninstall() function.
- *
+ * Author: Tony Baldwin <https://free-haven.org/profile/tony>
  */
 
 
@@ -108,14 +93,7 @@ function planets_post_hook($a, &$item) {
 	 */
 
 	$planets = array('Alderaan','Tatooine','Dagoba','Polis Massa','Coruscant','Hoth','Endor','Kamino','Rattatak','Mustafar','Iego','Geonosis','Felucia','Dantooine','Ansion','Artaru','Bespin','Boz Pity','Cato Neimoidia','Christophsis','Kashyyk','Kessel','Malastare','Mygeeto','Nar Shaddaa','Ord Mantell','Saleucami','Subterrel','Death Star','Teth','Tund','Utapau','Yavin');
-# 	$zones = timezone_identifiers_list();
-# 	foreach($zones as $zone) {
-# 		if((strpos($zone,'/')) && (! stristr($zone,'US/')) && (! stristr($zone,'Etc/')))
-# 			$planets[] = str_replace('_', ' ',substr($zone,strpos($zone,'/') + 1));
-# 	}
-# 
-# 	if(! count($planets))
-# 		return;
+
 	$planet = array_rand($planets,1);
 	$item['location'] = $planets[$planet];
 
