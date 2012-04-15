@@ -1,0 +1,115 @@
+<?php
+/**
+ * Name: Libravatar Support
+ * Description: If there is no avatar image for a new user or contact this plugin will look for one at Libravatar. Please disable Gravatar addon if you use this one. (requires PHP >= 5.3)
+ * Version: 1.0
+ * Author: Klaus Weidenbach <http://friendica.dszdw.net/profile/klaus>
+ */
+
+/**
+ * Installs the plugin hook
+ */
+function libravatar_install() {
+	if (! version_compare(PHP_VERSION, '5.3.0', '>=')) {
+		info(t('Could NOT install Libravatar successfully.<br>It requires PHP >= 5.3') .EOL);
+		// avoid registering the hook
+		return false;
+	}
+	register_hook('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
+
+	logger("registered libravatar in avatar_lookup hook");
+}
+
+/**
+ * Removes the plugin hook
+ */
+function libravatar_uninstall() {
+	unregister_hook('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
+
+	logger("uninstalled libravatar");
+}
+
+/**
+ * Looks up the avatar at Libravatar and returns the URL.
+ *
+ * @param $a array
+ * @param &$b array
+ */
+function libravatar_lookup($a, &$b) {
+	$default_avatar = get_config('libravatar', 'default_img');
+
+	if (! $default_avatar) {
+		// if not set, look up if there was one from the gravatar addon
+		$default_avatar = get_config('gravatar', 'default_img');
+		// setting default avatar if nothing configured
+		if (! $default_avatar)
+			$default_avatar = 'identicon'; // default image will be a random pattern
+	}
+
+	require_once 'Services/Libravatar.php';
+	$libravatar = new Services_Libravatar();
+	$options = array();
+	$options['s'] = $b['size'];
+	$options['d'] = $default_avatar;
+	$avatar_url = $libravatar->url($b['email'], $options);
+
+	$b['url'] = $avatar_url;
+	$b['success'] = true;
+}
+
+/**
+ * Display admin settings for this addon
+ */
+function libravatar_plugin_admin (&$a, &$o) {
+	$t = file_get_contents( dirname(__file__)."/admin.tpl");
+
+	$default_avatar = get_config('libravatar', 'default_img');
+
+	// set default values for first configuration
+	if(! $default_avatar)
+		$default_avatar = 'identicon'; // pseudo-random geometric pattern based on email hash
+
+	// Available options for the select boxes
+	$default_avatars = array(
+		'mm' => t('generic profile image'),
+		'identicon' => t('random geometric pattern'),
+		'monsterid' => t('monster face'),
+		'wavatar' => t('computer generated face'),
+		'retro' => t('retro arcade style face'),
+	);
+
+	// Show warning if PHP version is too old
+	if (! version_compare(PHP_VERSION, '5.3.0', '>=')) {
+		$o = '<h5>' .t('Warning') .'</h5><p>';
+		$o .= sprintf(t('Your PHP version %s is lower than the required PHP 5.3.'), PHP_VERSION);
+		$o .= '<br>' .t('This addon is not functional on you server.') .'<p><br>';
+		return;
+	}
+
+	// Libravatar falls back to gravatar, so show warning about gravatar addon if enabled
+	$r = q("SELECT * FROM `addon` WHERE `name` = '%s' and `installed` = 1",
+		dbesc('gravatar')
+	);
+	if (count($r)) {
+		$o = '<h5>' .t('Information') .'</h5><p>' .t('Gravatar addon is installed. Please disable the gravatar addon.<br>The Libravatar addon will fall back to gravatar if nothing was found at libravatar.') .'</p><br><br>';
+	}
+
+	// output Libravatar settings
+	$o .= '<input type="hidden" name="form_security_token" value="' .get_form_security_token("libravatarsave") .'">';
+	$o .= replace_macros( $t, array(
+		'$submit' => t('Submit'),
+		'$default_avatar' => array('avatar', t('Default avatar image'), $default_avatar, t('Select default avatar image if none was found. See README'), $default_avatars),
+	));
+}
+
+/**
+ * Save admin settings
+ */
+function libravatar_plugin_admin_post (&$a) {
+	check_form_security_token('libravatarrsave');
+
+	$default_avatar = ((x($_POST, 'avatar')) ? notags(trim($_POST['avatar'])) : 'identicon');
+	set_config('libravatar', 'default_img', $default_avatar);
+	info(t('Libravatar settings updated.') .EOL);
+}
+?>
