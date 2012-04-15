@@ -24,59 +24,71 @@ function jappixmini_addon_set_client_secret(password) {
 	client_secret2 = str_sha1(salt2+password);
 	client_secret = client_secret1 + client_secret2;
 
-	setDB('jappix-mini', 'client_secret', client_secret);
+	setDB('jappix-mini', 'client-secret', client_secret);
 	console.log("client secret set");
 }
 
-function jappixmini_addon_get_client_secret() {
-	client_secret = getDB('jappix-mini', 'client_secret');
+function jappixmini_addon_get_client_secret(callback) {
+	client_secret = getDB('jappix-mini', 'client-secret');
 	if (client_secret===null) {
-		div = $('<div style="position:fixed;padding:1em;background-color:#F00;color:#fff;top:50px;left:50px;">Retype your Friendica password for chatting:</div>');
-		div.append($("<br>"));
-		input = $('<input type="password">')
-		div.append(input);
-		button = $('<input type="button" value="OK">');
+		div = document.getElementById("#jappixmini-password-query-div");
+
+		if (!div) {
+			div = $('<div id="jappixmini-password-query-div" style="position:fixed;padding:1em;background-color:#F00;color:#fff;top:50px;left:50px;">Retype your Friendica password for chatting:<br></div>');
+
+			input = $('<input type="password" id="jappixmini-password-query-input">')
+			div.append(input);
+
+			button = $('<input type="button" value="OK" id="jappixmini-password-query-button">');
+			div.append(button);
+
+			$("body").append(div);
+		}
+
 		button.click(function(){
-			password = input.val();
+			password = $("#jappixmini-password-query-input").val();
 			jappixmini_addon_set_client_secret(password);
 			div.remove();
+
+			client_secret = getDB('jappix-mini', 'client-secret');
+			callback(client_secret);
 		});
-		div.append(button);
-		$("body").append(div);
 	}
-
-	return client_secret;
+	else {
+		callback(client_secret);
+	}
 }
 
-function jappixmini_addon_encrypt_password(password) {
-	client_secret = jappixmini_addon_get_client_secret();
+function jappixmini_addon_encrypt_password(password, callback) {
+	jappixmini_addon_get_client_secret(function(client_secret){
+		// add \0 to password until it has the same length as secret
+		if (password.length>client_secret.length-1) throw "password too long";
+		while (password.length<client_secret.length) {
+			password += "\0";
+		}
 
-	// add \0 to password until it has the same length as secret
-	if (password.length>client_secret.length-1) throw "password too long";
-	while (password.length<client_secret.length) {
-		password += "\0";
-	}
+		// xor password with secret
+		encrypted_password = jappixmini_addon_xor(client_secret, password);
 
-	// xor password with secret
-	encrypted_password = jappixmini_addon_xor(client_secret, password);
-
-	encrypted_password = encodeURI(encrypted_password)
-	return encrypted_password;
+		encrypted_password = encodeURI(encrypted_password)
+		callback(encrypted_password);
+	});
 }
 
-function jappixmini_addon_decrypt_password(encrypted_password) {
+function jappixmini_addon_decrypt_password(encrypted_password, callback) {
 	encrypted_password = decodeURI(encrypted_password);
 
-	client_secret = jappixmini_addon_get_client_secret();
+	jappixmini_addon_get_client_secret(function(client_secret){
+		// xor password with secret
+		password = jappixmini_addon_xor(client_secret, encrypted_password);
 
-	// xor password with secret
-	password = jappixmini_addon_xor(client_secret, encrypted_password);
+		// remove \0
+		first_null = password.indexOf("\0")
+		// TODO: check first_null==null
+		password = password.substr(0, first_null);
 
-        // remove \0
-	first_null = password.indexOf("\0")
-	password = password.substr(0, first_null);
-
-	return password;
+		callback(password);
+	});
 }
 
 function jappixmini_manage_roster(contacts, autoapprove, autosubscribe) {
@@ -119,26 +131,30 @@ function jappixmini_addon_subscribe() {
 }
 
 function jappixmini_addon_start(server, username, bosh, encrypted, password, nickname) {
-    // decrypt password
+    handler = function(password){
+        // check if settings have changed, reinitialize jappix mini if this is the case
+        settings_identifier = str_sha1(server);
+        settings_identifier += str_sha1(username);
+        settings_identifier += str_sha1(bosh);
+        settings_identifier += str_sha1(password);
+        settings_identifier += str_sha1(nickname);
+
+        saved_identifier = getDB("jappix-mini", "settings_identifier");
+        if (saved_identifier != settings_identifier) removeDB('jappix-mini', 'dom');
+        setDB("jappix-mini", "settings_identifier", settings_identifier);
+
+        // set bosh host
+        if (bosh)
+            HOST_BOSH = HOST_BOSH+"?host_bosh="+encodeURI(bosh);
+
+        // start jappix mini
+        MINI_NICKNAME = nickname;
+        launchMini(true, false, server, username, password);
+    }
+
+    // decrypt password if necessary
     if (encrypted)
-        password = jappixmini_addon_decrypt_password(password);
-
-    // check if settings have changed, reinitialize jappix mini if this is the case
-    settings_identifier = str_sha1(server);
-    settings_identifier += str_sha1(username);
-    settings_identifier += str_sha1(bosh);
-    settings_identifier += str_sha1(password);
-    settings_identifier += str_sha1(nickname);
-
-    saved_identifier = getDB("jappix-mini", "settings_identifier");
-    if (saved_identifier != settings_identifier) removeDB('jappix-mini', 'dom');
-    setDB("jappix-mini", "settings_identifier", settings_identifier);
-
-    // set bosh host
-    if (bosh)
-        HOST_BOSH = HOST_BOSH+"?host_bosh="+encodeURI(bosh);
-
-    // start jappix mini
-    MINI_NICKNAME = nickname;
-    launchMini(true, false, server, username, password);
+        jappixmini_addon_decrypt_password(password, handler);
+    else
+        handler(password);
 }

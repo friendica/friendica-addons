@@ -270,7 +270,9 @@ function jappixmini_settings(&$a, &$s) {
 
                 if (friendica_password) {
                     jappixmini_addon_set_client_secret(friendica_password.value);
-                    password.value = jappixmini_addon_encrypt_password(clear_password.value);
+                    jappixmini_addon_encrypt_password(clear_password.value, function(encrypted_password){
+                        password.value = encrypted_password;
+                    });
                 }
             }
             else {
@@ -283,7 +285,9 @@ function jappixmini_settings(&$a, &$s) {
             password = document.getElementById('jappixmini-password');
             clear_password = document.getElementById('jappixmini-clear-password');
             if (encrypt) {
-                clear_password.value = jappixmini_addon_decrypt_password(password.value);
+                jappixmini_addon_decrypt_password(password.value, function(decrypted_password){
+                    clear_password.value = decrypted_password;
+                });
             }
             else {
                 clear_password.value = password.value;
