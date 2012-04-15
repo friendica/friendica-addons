@@ -4,17 +4,20 @@ Jappix Mini Plugin
 This quick-and-dirty addon allows you to add a Jabber-based, Facebook-like chat
 to Friendica. It uses Jappix Mini.
 
-It is necessary to use a BOSH proxy - so to use this plugin, you need to know
-the address of a BOSH proxy that works with your account. The BOSH server of
+It is necessary to use a BOSH host - so to use this plugin, each users need to
+know the address of a BOSH host that works with his account. The BOSH server of
 the Jappix project (https://bind.jappix.com/) is not locked to a specific XMPP
 provider, but keep in mind that only personal usage is approved according to
 http://codingteam.net/project/jappix/doc/BoshServer.
+If you have a larger server, it is recommended that you install your own BOSH
+server, add it to the <bosh> tag in jappix/store/conf/hosts.xml, and disable
+the bosh proxy in jappix/store/conf/main.xml.
 
 The addon has an experimental autosubscribe and autosuggest functionality which
 tries to add your Friendica contacts to your roster automatically.
 
 Limitations:
- - The addon can only handle Jabber passwords that are at most 39 characters
+ - Jabber passwords can only be encrypted if they are at most 39 characters
    long.
 
 Installation

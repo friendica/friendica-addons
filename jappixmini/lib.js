@@ -108,12 +108,26 @@ function jappixmini_manage_roster(contacts, autoapprove, autosubscribe) {
 	}
 }
 
-function jappixmini_addon_start(server, username, bosh, encrypted_password, nickname) {
+function jappixmini_addon_subscribe() {
+        if (!window.con) {
+		alert("Not connected.");
+		return;
+        }
+
+	xid = prompt("Jabber address");
+	sendSubscribe(xid, "subscribe");
+}
+
+function jappixmini_addon_start(server, username, bosh, encrypted, password, nickname) {
+    // decrypt password
+    if (encrypted)
+        password = jappixmini_addon_decrypt_password(password);
+
     // check if settings have changed, reinitialize jappix mini if this is the case
     settings_identifier = str_sha1(server);
     settings_identifier += str_sha1(username);
     settings_identifier += str_sha1(bosh);
-    settings_identifier += str_sha1(encrypted_password);
+    settings_identifier += str_sha1(password);
     settings_identifier += str_sha1(nickname);
 
     saved_identifier = getDB("jappix-mini", "settings_identifier");
@@ -121,10 +135,8 @@ function jappixmini_addon_start(server, username, bosh, encrypted_password, nick
     setDB("jappix-mini", "settings_identifier", settings_identifier);
 
     // set bosh host
-    HOST_BOSH = HOST_BOSH+"?host_bosh="+encodeURI(bosh);
-
-    // decrypt password
-    password = jappixmini_addon_decrypt_password(encrypted_password);
+    if (bosh)
+        HOST_BOSH = HOST_BOSH+"?host_bosh="+encodeURI(bosh);
 
     // start jappix mini
     MINI_NICKNAME = nickname;

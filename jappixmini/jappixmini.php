@@ -93,6 +93,9 @@ function jappixmini_plugin_admin(&$a, &$o) {
 	else if (!file_exists("addon/jappixmini/jappix.zip")) {
 		$o .= '<p><strong style="color:#fff;background-color:#f00">The source archive jappix.zip does not exist. This is probably a violation of the Jappix License (see README).</strong></p>';
 	}
+	else {
+		$o .= '<p>Jappix is installed.</p>';
+	}
 }
 
 function jappixmini_plugin_admin_post(&$a) {
@@ -102,6 +105,8 @@ function jappixmini_module() {}
 function jappixmini_init(&$a) {
 	// module page where other Friendica sites can submit Jabber addresses to and also can query Jabber addresses
         // of local users
+
+	if (!file_exists("addon/jappixmini/jappix")) killme();
 
 	$dfrn_id = $_REQUEST["dfrn_id"];
 	if (!$dfrn_id) killme();
@@ -171,6 +176,8 @@ function jappixmini_init(&$a) {
 function jappixmini_settings(&$a, &$s) {
     // addon settings for a user
 
+    if (!file_exists("addon/jappixmini/jappix")) return;
+
     $activate = get_pconfig(local_user(),'jappixmini','activate');
     $activate = intval($activate) ? ' checked="checked"' : '';
 
@@ -180,11 +187,26 @@ function jappixmini_settings(&$a, &$s) {
     $server = htmlentities($server);
     $bosh = get_pconfig(local_user(),'jappixmini','bosh');
     $bosh = htmlentities($bosh);
-    $encrypted_password = get_pconfig(local_user(),'jappixmini','encrypted-password');
+    $password = get_pconfig(local_user(),'jappixmini','password');
     $autosubscribe = get_pconfig(local_user(),'jappixmini','autosubscribe');
     $autosubscribe = intval($autosubscribe) ? ' checked="checked"' : '';
     $autoapprove = get_pconfig(local_user(),'jappixmini','autoapprove');
     $autoapprove = intval($autoapprove) ? ' checked="checked"' : '';
+    $encrypt = intval(get_pconfig(local_user(),'jappixmini','encrypt'));
+    $encrypt_checked = $encrypt ? ' checked="checked"' : '';
+    $encrypt_disabled = $encrypt ? '' : ' disabled="disabled"';
+
+    if (!$activate) {
+	// load scripts if not yet activated so that password can be saved
+        $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;g=mini.xml"></script>'."\r\n";
+        $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=presence.js"></script>'."\r\n";
+
+        $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=caps.js"></script>'."\r\n";
+        $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=name.js"></script>'."\r\n";
+        $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=roster.js"></script>'."\r\n";
+
+        $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/lib.js"></script>'."\r\n";
+    }
 
     $s .= '<div class="settings-block">';
     $s .= '<h3>Jappix Mini addon settings</h3>';
@@ -198,13 +220,25 @@ function jappixmini_settings(&$a, &$s) {
     $s .= '<label for="jappixmini-server">Jabber server</label>';
     $s .= ' <input id="jappixmini-server" type="text" name="jappixmini-server" value="'.$server.'" />';
     $s .= '<br />';
-    $s .= '<label for="jappixmini-bosh">Jabber BOSH host</label>';
-    $s .= ' <input id="jappixmini-bosh" type="text" name="jappixmini-bosh" value="'.$bosh.'" />';
-    $s .= '<br />';
+
+    $conf = file_get_contents("addon/jappixmini/jappix/store/conf/main.xml");
+    preg_match("/<bosh_proxy>(.*)<\/bosh_proxy>/", $conf, $matches);
+    if ($matches[1]=="on") {
+        $s .= '<label for="jappixmini-bosh">Jabber BOSH host</label>';
+        $s .= ' <input id="jappixmini-bosh" type="text" name="jappixmini-bosh" value="'.$bosh.'" />';
+        $s .= '<br />';
+    }
+
     $s .= '<label for="jappixmini-password">Jabber password</label>';
-    $s .= ' <input type="hidden" id="jappixmini-encrypted-password" name="jappixmini-encrypted-password" value="'.$encrypted_password.'" />';
-    $onchange = "document.getElementById('jappixmini-encrypted-password').value = jappixmini_addon_encrypt_password(document.getElementById('jappixmini-password').value);";
-    $s .= ' <input id="jappixmini-password" type="password" value="" onchange="'.$onchange.'" />';
+    $s .= ' <input type="hidden" id="jappixmini-password" name="jappixmini-encrypted-password" value="'.$password.'" />';
+    $s .= ' <input id="jappixmini-clear-password" type="password" value="" onchange="jappixmini_set_password();" />';
+    $s .= '<br />';
+    $onchange = "document.getElementById('jappixmini-friendica-password').disabled = !this.checked;jappixmini_set_password();";
+    $s .= '<label for="jappixmini-encrypt">Encrypt Jabber password with Friendica password (recommended)</label>';
+    $s .= ' <input id="jappixmini-encrypt" type="checkbox" name="jappixmini-encrypt" onchange="'.$onchange.'" value="1"'.$encrypt_checked.' />';
+    $s .= '<br />';
+    $s .= '<label for="jappixmini-friendica-password">Friendica password</label>';
+    $s .= ' <input id="jappixmini-friendica-password" name="jappixmini-friendica-password" type="password" onchange="jappixmini_set_password();" value=""'.$encrypt_disabled.' />';
     $s .= '<br />';
     $s .= '<label for="jappixmini-autoapprove">Approve subscription requests from Friendica contacts automatically</label>';
     $s .= ' <input id="jappixmini-autoapprove" type="checkbox" name="jappixmini-autoapprove" value="1"'.$autoapprove.' />';
@@ -216,11 +250,34 @@ function jappixmini_settings(&$a, &$s) {
     $s .= ' <input id="jappixmini-purge" type="checkbox" name="jappixmini-purge" value="1" />';
     $s .= '<br />';
     $s .= '<input type="submit" name="jappixmini-submit" value="' . t('Submit') . '" />';
+    $s .= ' <input type="button" value="Add contact" onclick="jappixmini_addon_subscribe();" />';
     $s .= '</div>';
 
     $a->page['htmlhead'] .= "<script type=\"text/javascript\">
+        function jappixmini_set_password() {
+            encrypt = document.getElementById('jappixmini-encrypt').checked;
+            password = document.getElementById('jappixmini-password');
+            clear_password = document.getElementById('jappixmini-clear-password');
+            if (encrypt) {
+                friendica_password = document.getElementById('jappixmini-friendica-password');
+                jappixmini_addon_set_client_secret(friendica_password.value);
+                password.value = jappixmini_addon_encrypt_password(clear_password.value);
+            }
+            else {
+                password.value = clear_password.value;
+            }
+        }
+
         jQuery(document).ready(function() {
-            document.getElementById('jappixmini-password').value = jappixmini_addon_decrypt_password('$encrypted_password');
+            encrypt = document.getElementById('jappixmini-encrypt').checked;
+            password = document.getElementById('jappixmini-password');
+            clear_password = document.getElementById('jappixmini-clear-password');
+            if (encrypt) {
+                clear_password.value = jappixmini_addon_decrypt_password(password.value);
+            }
+            else {
+                clear_password.value = password.value;
+            }
         });
     </script>";
 }
@@ -228,10 +285,26 @@ function jappixmini_settings(&$a, &$s) {
 function jappixmini_settings_post(&$a,&$b) {
 	// save addon settings for a user
 
+	if (!file_exists("addon/jappixmini/jappix")) return;
+
 	if(! local_user()) return;
 	$uid = local_user();
 
 	if($_POST['jappixmini-submit']) {
+		$encrypt = intval($b['jappixmini-encrypt']);
+		if ($encrypt) {
+			// check that Jabber password was encrypted with correct Friendica password
+			$friendica_password = trim($b['jappixmini-friendica-password']);
+			$encrypted = hash('whirlpool',$friendica_password);
+			$r = q("SELECT * FROM `user` WHERE `uid`=$uid AND `password`='%s'",
+				dbesc($encrypted)
+			);
+			if (!count($r)) {
+				info("Wrong friendica password!");
+				return;
+			}
+		}
+
 		$purge = intval($b['jappixmini-purge']);
 
 		$username = trim($b['jappixmini-username']);
@@ -245,10 +318,11 @@ function jappixmini_settings_post(&$a,&$b) {
 		set_pconfig($uid,'jappixmini','username',$username);
 		set_pconfig($uid,'jappixmini','server',$server);
 		set_pconfig($uid,'jappixmini','bosh',trim($b['jappixmini-bosh']));
-		set_pconfig($uid,'jappixmini','encrypted-password',trim($b['jappixmini-encrypted-password']));
+		set_pconfig($uid,'jappixmini','password',trim($b['jappixmini-encrypted-password']));
 		set_pconfig($uid,'jappixmini','autosubscribe',intval($b['jappixmini-autosubscribe']));
 		set_pconfig($uid,'jappixmini','autoapprove',intval($b['jappixmini-autoapprove']));
 		set_pconfig($uid,'jappixmini','activate',intval($b['jappixmini-activate']));
+		set_pconfig($uid,'jappixmini','encrypt',$encrypt);
 		info( 'Jappix Mini settings saved.' );
 
 		if ($purge) {
@@ -261,6 +335,7 @@ function jappixmini_settings_post(&$a,&$b) {
 function jappixmini_script(&$a,&$s) {
     // adds the script to the page header which starts Jappix Mini
 
+    if (!file_exists("addon/jappixmini/jappix")) return;
     if(! local_user()) return;
 
     $activate = get_pconfig(local_user(),'jappixmini','activate');
@@ -281,13 +356,22 @@ function jappixmini_script(&$a,&$s) {
     $server = str_replace("'", "\\'", $server);
     $bosh = get_pconfig(local_user(),'jappixmini','bosh');
     $bosh = str_replace("'", "\\'", $bosh);
-    $encrypted_password = get_pconfig(local_user(),'jappixmini','encrypted-password');
-    $encrypted_password = str_replace("'", "\\'", $encrypted_password);
+    $encrypt = get_pconfig(local_user(),'jappixmini','encrypt');
+    $encrypt = intval($encrypt);
+    $password = get_pconfig(local_user(),'jappixmini','password');
+    $password = str_replace("'", "\\'", $password);
 
     $autoapprove = get_pconfig(local_user(),'jappixmini','autoapprove');
     $autoapprove = intval($autoapprove);
     $autosubscribe = get_pconfig(local_user(),'jappixmini','autosubscribe');
     $autosubscribe = intval($autosubscribe);
+
+    // deactivate bosh host if proxy is off
+    $conf = file_get_contents("addon/jappixmini/jappix/store/conf/main.xml");
+    preg_match("/<bosh_proxy>(.*)<\/bosh_proxy>/", $conf, $matches);
+    if ($matches[1]!="on") {
+        $bosh = '';
+    }
 
     // get a list of jabber accounts of the contacts
     $contacts = Array();
@@ -320,7 +404,7 @@ function jappixmini_script(&$a,&$s) {
     // add javascript to start Jappix Mini
     $a->page['htmlhead'] .= "<script type=\"text/javascript\">
         jQuery(document).ready(function() {
-           jappixmini_addon_start('$server', '$username', '$bosh', '$encrypted_password', $nickname);
+           jappixmini_addon_start('$server', '$username', '$bosh', $encrypt, '$password', $nickname);
            jappixmini_manage_roster($contacts_json, $autoapprove, $autosubscribe);
         });
     </script>";
@@ -329,6 +413,10 @@ function jappixmini_script(&$a,&$s) {
 }
 
 function jappixmini_login(&$a, &$o) {
+    // create client secret on login to be able to encrypt jabber passwords
+
+    if (!file_exists("addon/jappixmini/jappix")) return;
+
     // for setDB, needed by jappixmini_addon_set_client_secret
     $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=datastore.js"></script>'."\r\n";
 
@@ -344,6 +432,8 @@ function jappixmini_login(&$a, &$o) {
 
 function jappixmini_cron(&$a, $d) {
 	// For autosubscribe/autoapprove, we need to maintain a list of jabber addresses of our contacts.
+
+	if (!file_exists("addon/jappixmini/jappix")) return;
 
 	// go through list of users with jabber enabled
 	$users = q("SELECT `uid` FROM `pconfig` WHERE `cat`='jappixmini' AND (`k`='autosubscribe' OR `k`='autoapprove') AND `v`='1'");
@@ -436,6 +526,8 @@ function jappixmini_cron(&$a, $d) {
 
 function jappixmini_download_source(&$a,&$b) {
 	// Jappix Mini source download link on About page
+
+	if (!file_exists("addon/jappixmini/jappix")) return;
 
 	$b .= '<h1>Jappix Mini</h1>';
 	$b .= '<p>This site uses Jappix Mini by the <a href="'.$a->get_baseurl().'/addon/jappixmini/jappix/AUTHORS">Jappix authors</a>, which is distributed under the terms of the <a href="'.$a->get_baseurl().'/addon/jappixmini/jappix/COPYING">GNU Affero General Public License</a>.</p>';
