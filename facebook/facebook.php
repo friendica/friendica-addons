@@ -558,6 +558,9 @@ function facebook_content(&$a) {
 
 
 function facebook_cron($a,$b) {
+//del_config('facebook', 'realtime_active');
+//del_config('facebook', 'realtime_err_mailsent');
+//del_config('facebook', 'cb_verify_token');
 
 	$last = get_config('facebook','last_poll');
 	
@@ -896,7 +899,7 @@ function facebook_post_hook(&$a,&$b) {
 				if(preg_match("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/is",$b['body'],$matches))
 					$image = $matches[3];
 
-				if ($image != '')
+				if ($image == '')
 					if(preg_match("/\[img\](.*?)\[\/img\]/is",$b['body'],$matches))
 						$image = $matches[1];
 
@@ -1006,10 +1009,14 @@ function facebook_post_hook(&$a,&$b) {
 						'access_token' => $fb_token, 
 						'message' => $msg
 					);
-					if(isset($image))
+					if(isset($image)) {
 						$postvars['picture'] = $image;
-					if(isset($link))
+						//$postvars['type'] = "photo";
+					}
+					if(isset($link)) {
 						$postvars['link'] = $link;
+						//$postvars['type'] = "link";
+					}
 					if(isset($linkname))
 						$postvars['name'] = $linkname;
 				}
@@ -1026,11 +1033,18 @@ function facebook_post_hook(&$a,&$b) {
 
 				if($reply) {
 					$url = 'https://graph.facebook.com/' . $reply . '/' . (($likes) ? 'likes' : 'comments');
-				}
-				else { 
+				} else if (($link != "")  or ($image != "") or ($b['title'] == '') or (strlen($msg) < 500)) { 
 					$url = 'https://graph.facebook.com/me/feed';
 					if($b['plink'])
 						$postvars['actions'] = '{"name": "' . t('View on Friendica') . '", "link": "' .  $b['plink'] . '"}';
+				} else {
+					// if its only a message and a subject and the message is larger than 500 characters then post it as note
+					$postvars = array(
+						'access_token' => $fb_token, 
+						'message' => bbcode($b['body']),
+						'subject' => $b['title'],
+					);
+					$url = 'https://graph.facebook.com/me/notes';
 				}
 
 				logger('facebook: post to ' . $url);
@@ -1426,9 +1440,18 @@ function fb_consume_stream($uid,$j,$wall = false) {
 				}
 			}
 
+			if (($datarray['app'] == "Events") and $entry->actions)
+				foreach ($entry->actions as $action)
+					if ($action->name == "View")
+						$datarray['body'] .= " [url=".$action->link."]".$entry->story."[/url]";
+
 			// Just as a test - to see if these are the missing entries
 			//if(trim($datarray['body']) == '')
 			//	$datarray['body'] = $entry->story;
+
+			// Adding the "story" text to see if there are useful data in it (testing)
+			//if (($datarray['app'] != "Events") and $entry->story)
+			//	$datarray['body'] .= "\n".$entry->story;
 
 			if(trim($datarray['body']) == '') {
 				logger('facebook: empty body '.$entry->id.' '.print_r($entry, true));
@@ -1450,11 +1473,13 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			//if(($datarray['body'] != '') and ($uid == 1))
 			//	$datarray['body'] .= "[noparse]".print_r($entry, true)."[/noparse]";
 
-			if ($entry->place->name)
-				$datarray['coord'] = $entry->place->name;
-			else if ($entry->place->location->street or $entry->place->location->city or $entry->place->location->Denmark) {
+			if ($entry->place->name or $entry->place->location->street or 
+				$entry->place->location->city or $entry->place->location->Denmark) {
+				$datarray['coord'] = '';
+				if ($entry->place->name)
+					$datarray['coord'] .= $entry->place->name;
 				if ($entry->place->location->street)
-					$datarray['coord'] = $entry->place->location->street;
+					$datarray['coord'] .= $entry->place->location->street;
 				if ($entry->place->location->city)
 					$datarray['coord'] .= " ".$entry->place->location->city;
 				if ($entry->place->location->country)
