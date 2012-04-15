@@ -24,12 +24,12 @@ function jappixmini_addon_set_client_secret(password) {
 	client_secret2 = str_sha1(salt2+password);
 	client_secret = client_secret1 + client_secret2;
 
-	setDB('jappix-mini', 'client-secret', client_secret);
+	setPersistent('jappix-mini', 'client-secret', client_secret);
 	console.log("client secret set");
 }
 
 function jappixmini_addon_get_client_secret(callback) {
-	client_secret = getDB('jappix-mini', 'client-secret');
+	client_secret = getPersistent('jappix-mini', 'client-secret');
 	if (client_secret===null) {
 		div = document.getElementById("#jappixmini-password-query-div");
 
@@ -50,7 +50,7 @@ function jappixmini_addon_get_client_secret(callback) {
 			jappixmini_addon_set_client_secret(password);
 			div.remove();
 
-			client_secret = getDB('jappix-mini', 'client-secret');
+			client_secret = getPersistent('jappix-mini', 'client-secret');
 			callback(client_secret);
 		});
 	}
