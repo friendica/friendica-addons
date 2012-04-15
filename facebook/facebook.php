@@ -1450,8 +1450,8 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			//	$datarray['body'] = $entry->story;
 
 			// Adding the "story" text to see if there are useful data in it (testing)
-			if (($datarray['app'] != "Events") and $entry->story)
-				$datarray['body'] .= "\n".$entry->story;
+			//if (($datarray['app'] != "Events") and $entry->story)
+			//	$datarray['body'] .= "\n".$entry->story;
 
 			if(trim($datarray['body']) == '') {
 				logger('facebook: empty body '.$entry->id.' '.print_r($entry, true));
