@@ -149,6 +149,10 @@ function jappixmini_init(&$a) {
 	} catch (Exception $e) {
 	}
 
+	// do not return an address if user deactivated plugin
+	$activated = get_pconfig($uid, 'jappixmini', 'activate');
+	if (!$activated) killme();
+
 	// return the requested Jabber address
 	try {
 		$username = get_pconfig($uid, 'jappixmini', 'username');
