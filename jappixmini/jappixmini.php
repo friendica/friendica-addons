@@ -418,8 +418,7 @@ function jappixmini_script(&$a,&$s) {
     // add javascript to start Jappix Mini
     $a->page['htmlhead'] .= "<script type=\"text/javascript\">
         jQuery(document).ready(function() {
-           jappixmini_addon_start('$server', '$username', '$bosh', $encrypt, '$password', $nickname);
-           jappixmini_manage_roster($contacts_json, $autoapprove, $autosubscribe);
+           jappixmini_addon_start('$server', '$username', '$bosh', $encrypt, '$password', $nickname, $contacts_json, $autoapprove, $autosubscribe);
         });
     </script>";
 

@@ -130,7 +130,7 @@ function jappixmini_addon_subscribe() {
 	sendSubscribe(xid, "subscribe");
 }
 
-function jappixmini_addon_start(server, username, bosh, encrypted, password, nickname) {
+function jappixmini_addon_start(server, username, bosh, encrypted, password, nickname, contacts, autoapprove, autosubscribe) {
     handler = function(password){
         // check if settings have changed, reinitialize jappix mini if this is the case
         settings_identifier = str_sha1(server);
@@ -149,7 +149,9 @@ function jappixmini_addon_start(server, username, bosh, encrypted, password, nic
 
         // start jappix mini
         MINI_NICKNAME = nickname;
+        console.log("launchMini");
         launchMini(true, false, server, username, password);
+	jappixmini_manage_roster(contacts, autoapprove, autosubscribe)
     }
 
     // decrypt password if necessary
