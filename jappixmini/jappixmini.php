@@ -263,8 +263,11 @@ function jappixmini_settings(&$a, &$s) {
             clear_password = document.getElementById('jappixmini-clear-password');
             if (encrypt) {
                 friendica_password = document.getElementById('jappixmini-friendica-password');
-                jappixmini_addon_set_client_secret(friendica_password.value);
-                password.value = jappixmini_addon_encrypt_password(clear_password.value);
+
+                if (friendica_password) {
+                    jappixmini_addon_set_client_secret(friendica_password.value);
+                    password.value = jappixmini_addon_encrypt_password(clear_password.value);
+                }
             }
             else {
                 password.value = clear_password.value;
