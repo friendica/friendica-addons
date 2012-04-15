@@ -111,13 +111,53 @@ function jappixmini_manage_roster(contacts, autoapprove, autosubscribe) {
 	});
 
 	// autosubscribe
-	if (autosubscribe) {
-		for (i=0; i<contacts.length; i++) {
-			xid = contacts[i];
-			sendSubscribe(xid, "subscribe");
-			console.log("Subscribed to "+xid);
+	if (!autosubscribe) return;
+
+	var get_roster = new JSJaCIQ();
+	get_roster.setType('get');
+	get_roster.setQuery(NS_ROSTER);
+
+	con.send(get_roster, function(iq){
+		var handleXML = iq.getQuery();
+
+		// filter out contacts that are already in the roster
+		$(handleXML).find('item').each(function() {
+			xid = $(this).attr("jid");
+			name = $(this).attr("name");
+			subscription = $(this).attr("subscription");
+			console.log(xid+" "+subscription);
+
+			// ignore accounts not in the list
+			if (contacts[xid]===undefined) return;
+
+			// TODO: add to Friendica group
+
+			// TODO: unblock and authorize if necessary
+
+			// remove from list
+			delete contacts[xid];
+		});
+
+		// go through remaining contacts
+		for (var xid in contacts) {if(!contacts.hasOwnProperty(xid)) continue;
+			// subscribe
+			var presence = new JSJaCPresence();
+			presence.setTo(xid);
+			presence.setType("subscribe");
+			con.send(presence);
+			console.log("subscribed to "+xid);
+
+			// add to roster
+			var iq = new JSJaCIQ();
+			iq.setType('set');
+			var iqQuery = iq.setQuery(NS_ROSTER);
+			var item = iqQuery.appendChild(iq.buildNode('item', {'xmlns': NS_ROSTER, 'jid': xid}));
+			item.setAttribute('name', contacts[xid]);
+			item.appendChild(iq.buildNode('group', {'xmlns': NS_ROSTER}, "Friendica"));
+			con.send(iq);
+			console.log("added to roster "+xid);
 		}
-	}
+	});
 }
 
 function jappixmini_addon_subscribe() {
