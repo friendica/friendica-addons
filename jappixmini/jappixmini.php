@@ -209,6 +209,7 @@ function jappixmini_settings(&$a, &$s) {
     }
 
     $s .= '<div class="settings-block">';
+
     $s .= '<h3>Jappix Mini addon settings</h3>';
     $s .= '<div>';
     $s .= '<label for="jappixmini-activate">Activate addon</label>';
@@ -251,6 +252,8 @@ function jappixmini_settings(&$a, &$s) {
     $s .= '<br />';
     $s .= '<input type="submit" name="jappixmini-submit" value="' . t('Submit') . '" />';
     $s .= ' <input type="button" value="Add contact" onclick="jappixmini_addon_subscribe();" />';
+    $s .= '</div>';
+
     $s .= '</div>';
 
     $a->page['htmlhead'] .= "<script type=\"text/javascript\">
