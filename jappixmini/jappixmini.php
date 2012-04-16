@@ -106,6 +106,10 @@ function jappixmini_plugin_admin(&$a, &$o) {
 		$o .= '<p>Jappix is installed.</p>';
 	}
 
+	// warn if cron job has not yet been executed
+	$cron_run = get_config("jappixmini", "last_cron_execution");
+	if (!$cron_run) $o .= "<p><strong>Warning: The cron job has not yet been executed. If this message is still there after some time (usually 10 minutes), this means that autosubscribe and autoaccept will not work.</strong></p>";
+
 	// info text field
 	$o .= '<label for="jappixmini-infotext">Info text to help users with configuration (important if you want to provide your own BOSH host!):</label><br />';
 	$info_text = get_config("jappixmini", "infotext");
@@ -471,6 +475,8 @@ function jappixmini_login(&$a, &$o) {
 
 function jappixmini_cron(&$a, $d) {
 	// For autosubscribe/autoapprove, we need to maintain a list of jabber addresses of our contacts.
+
+	set_config("jappixmini", "last_cron_execution", $d);
 
 	if (!file_exists("addon/jappixmini/jappix")) return;
 
