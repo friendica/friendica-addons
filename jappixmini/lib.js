@@ -194,6 +194,11 @@ function jappixmini_addon_start(server, username, proxy, bosh, encrypted, passwo
         LOCK_HOST = "off";
         console.log("launchMini");
         launchMini(true, false, server, username, password);
+
+        // increase priority over other Jabber clients
+        priority = 101;
+        sendPresence(null,null,priority);
+
         jappixmini_manage_roster(contacts, autoapprove, autosubscribe)
     }
 
