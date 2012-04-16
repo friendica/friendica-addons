@@ -147,9 +147,24 @@ function jappixmini_manage_roster(contacts, autoapprove, autosubscribe) {
 			// ignore accounts not in the list
 			if (contacts[xid]===undefined) return;
 
-			// TODO: add to Friendica group
+			// add to Friendica group if necessary
+			groups = [];
+			$(this).find('group').each(function() {
+				var group_text = $(this).text();
+				if(group_text) groups.push(group_text);
+			});
 
-			// TODO: unblock and authorize if necessary
+			if ($.inArray("Friendica", groups)==-1) {
+				console.log("Add "+xid+" to Friendica group.");
+				groups.push("Friendica");
+				sendRoster(xid, null, null, groups);
+				console.log("Added "+xid+" to Friendica group.");
+			}
+
+			// authorize if necessary
+			if (subscription=="to") {
+				sendSubscribe(xid, 'subscribed');
+			}
 
 			// remove from list
 			delete contacts[xid];
