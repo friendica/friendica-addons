@@ -175,6 +175,7 @@ function jappixmini_addon_start(server, username, proxy, bosh, encrypted, passwo
         // check if settings have changed, reinitialize jappix mini if this is the case
         settings_identifier = str_sha1(server);
         settings_identifier += str_sha1(username);
+        settings_identifier += str_sha1(proxy);
         settings_identifier += str_sha1(bosh);
         settings_identifier += str_sha1(password);
         settings_identifier += str_sha1(nickname);
