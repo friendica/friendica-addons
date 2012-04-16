@@ -69,6 +69,15 @@ register_hook('cron', 'addon/jappixmini/jappixmini.php', 'jappixmini_cron');
 
 // Jappix source download as required by AGPL
 register_hook('about_hook', 'addon/jappixmini/jappixmini.php', 'jappixmini_download_source');
+
+// set standard info text
+$info_text = get_config("jappixmini", "infotext");
+if (!$info_text) set_config("jappixmini", "infotext",
+	"To get the chat working, you need to know a BOSH host which works with your Jabber account. ".
+	"An example of a BOSH server that works for all accounts is https://bind.jappix.com/, but keep ".
+	"in mind that the BOSH server can read along all chat messages. If you know that your Jabber ".
+	"server also provides an own BOSH server, it is much better to use this one!"
+);
 }
 
 
@@ -96,9 +105,21 @@ function jappixmini_plugin_admin(&$a, &$o) {
 	else {
 		$o .= '<p>Jappix is installed.</p>';
 	}
+
+	// info text field
+	$o .= '<label for="jappixmini-infotext">Info text to help users with configuration (important if you want to provide your own BOSH host!):</label><br />';
+	$info_text = get_config("jappixmini", "infotext");
+	$o .= '<textarea id="jappixmini-infotext" name="jappixmini-infotext" rows="5" cols="50">'.htmlentities($info_text).'</textarea><br />';
+	$o .= '<input type="submit" name="jappixmini-admin-settings" value="OK" />';
 }
 
 function jappixmini_plugin_admin_post(&$a) {
+	// set info text
+	$submit = $_REQUEST['jappixmini-admin-settings'];
+	if ($submit) {
+		$info_text = $_REQUEST['jappixmini-infotext'];
+		set_config("jappixmini", "infotext", $info_text);
+	}
 }
 
 function jappixmini_module() {}
@@ -200,6 +221,10 @@ function jappixmini_settings(&$a, &$s) {
     $encrypt_checked = $encrypt ? ' checked="checked"' : '';
     $encrypt_disabled = $encrypt ? '' : ' disabled="disabled"';
 
+    $info_text = get_config("jappixmini", "infotext");
+    $info_text = htmlentities($info_text);
+    $info_text = str_replace("\n", "<br />", $info_text);
+
     if (!$activate) {
 	// load scripts if not yet activated so that password can be saved
         $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;g=mini.xml"></script>'."\r\n";
@@ -254,6 +279,7 @@ function jappixmini_settings(&$a, &$s) {
     $s .= '<label for="jappixmini-purge">Purge internal list of jabber addresses of contacts</label>';
     $s .= ' <input id="jappixmini-purge" type="checkbox" name="jappixmini-purge" value="1" />';
     $s .= '<br />';
+    if ($info_text) $s .= '<br />Configuration help:<p style="margin-left:2em;">'.$info_text.'</p>';
     $s .= '<input type="submit" name="jappixmini-submit" value="' . t('Submit') . '" />';
     $s .= ' <input type="button" value="Add contact" onclick="jappixmini_addon_subscribe();" />';
     $s .= '</div>';
