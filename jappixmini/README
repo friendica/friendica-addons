@@ -27,8 +27,9 @@ Installation
 Jappix Mini (AGPL license) is not distributed with this addon. You need to
 install it manually:
 
-* Download latest zip file named friendica-addon-* from
-  https://github.com/Leberwurscht/jappix/tags and place the zip file in the
-  addon folder. Make sure to name it 'jappix.zip' - the download link required
-  by the AGPL points there.
-* Unpack the zip file, rename the folder to 'jappix'. Do not delete jappix.zip.
+* Download latest jappix version from https://github.com/jappix/jappix/tags to
+  addon/jappixmini/jappix.zip. Really make sure you name it 'jappix.zip' - the
+  download link required by the AGPL points there.
+* Unpack the zip file to addon/jappixmini/jappix/. Do not delete jappix.zip.
+* Delete the file addon/jappixmini/jappix/index.php. This is important, because
+  otherwise the installer of Jappix would be publicly accessible.

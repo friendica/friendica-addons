@@ -100,7 +100,22 @@ function jappixmini_plugin_admin(&$a, &$o) {
 	// display instructions and warnings on addon settings page for admin
 
 	if (!file_exists("addon/jappixmini/jappix")) {
-		$o .= '<p><strong>You need to install the Jappix application, adapted for Friendica (see README).</strong></p>';
+		$o .= '<p><strong>You need to install the Jappix application (see README).</strong></p>';
+	}
+	else if (file_exists("addon/jappixmini/jappix/index.php")) {
+		// try to delete automatically
+		try {
+			unlink("addon/jappixmini/jappix/index.php");
+		}
+		catch (Exception $e) {}
+
+		// warn admin if this is not possible
+		if (file_exists("addon/jappixmini/jappix/index.php"))
+			$o .= '<p><strong style="color:#fff;background-color:#f00">You must delete addon/jappixmini/jappix/index.php (see README).</strong></p>';
+		else {
+			info("Deleted addon/jappixmini/jappix/index.php automatically.");
+			$o .= '<p>Jappix is installed.</p>';
+		}
 	}
 	else if (!file_exists("addon/jappixmini/jappix.zip")) {
 		$o .= '<p><strong style="color:#fff;background-color:#f00">The source archive jappix.zip does not exist. This is probably a violation of the Jappix License (see README).</strong></p>';
@@ -422,7 +437,7 @@ function jappixmini_script(&$a,&$s) {
     // set proxy if necessary
     $use_proxy = get_config('jappixmini','bosh_proxy');
     if ($use_proxy) {
-        $proxy = $a->get_baseurl().'/addon/jappixmini/jappix/php/bosh.php';
+        $proxy = $a->get_baseurl().'/addon/jappixmini/proxy.php';
     }
     else {
         $proxy = "";
