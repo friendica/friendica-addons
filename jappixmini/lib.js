@@ -99,10 +99,28 @@ function jappixmini_manage_roster(contacts, autoapprove, autosubscribe) {
 
 		var from = fullXID(getStanzaFrom(presence));
 		var xid = bareXID(from);
+		var pstatus = presence.getStatus();
 
-		approve = true;
-		if ((!autoapprove) || contacts[xid]===undefined)
-			approve = confirm("Accept "+xid+" for chat?");
+		if (autoapprove && contacts[xid]!==undefined) {
+			// approve known address
+			approve = true;
+			console.log("Approve known Friendica contact "+xid+".");
+		}
+		else if (autoapprove && pstatus && pstatus.indexOf("Friendica")!=-1) {
+			// Unknown address claims to be a Friendica contact.
+			// This is probably because the other side knows our
+			// address, but we do not know the other side yet.
+			// But it's only a matter of time, so wait - do not
+			// approve yet and do not annoy the user by asking.
+			approve = false;
+			console.log("Do not approve unknown Friendica contact "+xid+" - wait instead.");
+		}
+		else {
+			// In all other cases, ask the user.
+			message = "Accept "+xid+" for chat?";
+			if (pstatus) message += "\n\nStatus:\n"+pstatus;
+			approve = confirm(message);
+		}
 
 		if (approve) {
 			acceptSubscribe(xid, contacts[xid]);
@@ -144,6 +162,11 @@ function jappixmini_manage_roster(contacts, autoapprove, autosubscribe) {
 			var presence = new JSJaCPresence();
 			presence.setTo(xid);
 			presence.setType("subscribe");
+
+			// must contain the word "~Friendica" so the other side knows
+			// how to handle this
+			presence.setStatus("I'm "+MINI_NICKNAME+" from ~Friendica.\n[machine-generated message]");
+
 			con.send(presence);
 			console.log("subscribed to "+xid);
 
