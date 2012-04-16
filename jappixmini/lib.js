@@ -170,7 +170,7 @@ function jappixmini_addon_subscribe() {
 	sendSubscribe(xid, "subscribe");
 }
 
-function jappixmini_addon_start(server, username, bosh, encrypted, password, nickname, contacts, autoapprove, autosubscribe) {
+function jappixmini_addon_start(server, username, proxy, bosh, encrypted, password, nickname, contacts, autoapprove, autosubscribe) {
     handler = function(password){
         // check if settings have changed, reinitialize jappix mini if this is the case
         settings_identifier = str_sha1(server);
@@ -183,15 +183,18 @@ function jappixmini_addon_start(server, username, bosh, encrypted, password, nic
         if (saved_identifier != settings_identifier) removeDB('jappix-mini', 'dom');
         setDB("jappix-mini", "settings_identifier", settings_identifier);
 
-        // set bosh host
-        if (bosh)
-            HOST_BOSH = HOST_BOSH+"?host_bosh="+encodeURI(bosh);
+        // set HOST_BOSH
+	if (proxy)
+		HOST_BOSH = proxy+"?host_bosh="+encodeURI(bosh);
+	else
+		HOST_BOSH = bosh;
 
         // start jappix mini
         MINI_NICKNAME = nickname;
+        LOCK_HOST = "off";
         console.log("launchMini");
         launchMini(true, false, server, username, password);
-	jappixmini_manage_roster(contacts, autoapprove, autosubscribe)
+        jappixmini_manage_roster(contacts, autoapprove, autosubscribe)
     }
 
     // decrypt password if necessary

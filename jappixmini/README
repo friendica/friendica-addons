@@ -10,8 +10,9 @@ the Jappix project (https://bind.jappix.com/) is not locked to a specific XMPP
 provider, but keep in mind that only personal usage is approved according to
 http://codingteam.net/project/jappix/doc/BoshServer.
 If you have a larger server, it is recommended that you install your own BOSH
-server, add it to the <bosh> tag in jappix/store/conf/hosts.xml, and disable
-the bosh proxy in jappix/store/conf/main.xml.
+server and recommend it using the configuration help field. If it is on the
+same server, you can also deactivate the BOSH proxy. This should improve the
+performance.
 
 The addon has an experimental autosubscribe and autosuggest functionality which
 tries to add your Friendica contacts to your roster automatically.

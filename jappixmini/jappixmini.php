@@ -70,7 +70,7 @@ register_hook('cron', 'addon/jappixmini/jappixmini.php', 'jappixmini_cron');
 // Jappix source download as required by AGPL
 register_hook('about_hook', 'addon/jappixmini/jappixmini.php', 'jappixmini_download_source');
 
-// set standard info text
+// set standard configuration
 $info_text = get_config("jappixmini", "infotext");
 if (!$info_text) set_config("jappixmini", "infotext",
 	"To get the chat working, you need to know a BOSH host which works with your Jabber account. ".
@@ -78,6 +78,9 @@ if (!$info_text) set_config("jappixmini", "infotext",
 	"in mind that the BOSH server can read along all chat messages. If you know that your Jabber ".
 	"server also provides an own BOSH server, it is much better to use this one!"
 );
+
+$bosh_proxy = get_config("jappixmini", "bosh_proxy");
+if ($bosh_proxy==="") set_config("jappixmini", "bosh_proxy", 1);
 }
 
 
@@ -110,10 +113,18 @@ function jappixmini_plugin_admin(&$a, &$o) {
 	$cron_run = get_config("jappixmini", "last_cron_execution");
 	if (!$cron_run) $o .= "<p><strong>Warning: The cron job has not yet been executed. If this message is still there after some time (usually 10 minutes), this means that autosubscribe and autoaccept will not work.</strong></p>";
 
+	// bosh proxy
+	$bosh_proxy = intval(get_config("jappixmini", "bosh_proxy"));
+	$bosh_proxy = intval($bosh_proxy) ? ' checked="checked"' : '';
+	$o .= '<label for="jappixmini-proxy">Activate BOSH proxy</label>';
+	$o .= ' <input id="jappixmini-proxy" type="checkbox" name="jappixmini-proxy" value="1"'.$bosh_proxy.' /><br />';
+
 	// info text field
-	$o .= '<label for="jappixmini-infotext">Info text to help users with configuration (important if you want to provide your own BOSH host!):</label><br />';
 	$info_text = get_config("jappixmini", "infotext");
-	$o .= '<textarea id="jappixmini-infotext" name="jappixmini-infotext" rows="5" cols="50">'.htmlentities($info_text).'</textarea><br />';
+	$o .= '<p><label for="jappixmini-infotext">Info text to help users with configuration (important if you want to provide your own BOSH host!):</label><br />';
+	$o .= '<textarea id="jappixmini-infotext" name="jappixmini-infotext" rows="5" cols="50">'.htmlentities($info_text).'</textarea></p>';
+
+	// submit button
 	$o .= '<input type="submit" name="jappixmini-admin-settings" value="OK" />';
 }
 
@@ -122,7 +133,9 @@ function jappixmini_plugin_admin_post(&$a) {
 	$submit = $_REQUEST['jappixmini-admin-settings'];
 	if ($submit) {
 		$info_text = $_REQUEST['jappixmini-infotext'];
+		$bosh_proxy = intval($_REQUEST['jappixmini-proxy']);
 		set_config("jappixmini", "infotext", $info_text);
+		set_config("jappixmini", "bosh_proxy", $bosh_proxy);
 	}
 }
 
@@ -255,13 +268,9 @@ function jappixmini_settings(&$a, &$s) {
     $s .= ' <input id="jappixmini-server" type="text" name="jappixmini-server" value="'.$server.'" />';
     $s .= '<br />';
 
-    $conf = file_get_contents("addon/jappixmini/jappix/store/conf/main.xml");
-    preg_match("/<bosh_proxy>(.*)<\/bosh_proxy>/", $conf, $matches);
-    if ($matches[1]=="on") {
-        $s .= '<label for="jappixmini-bosh">Jabber BOSH host</label>';
-        $s .= ' <input id="jappixmini-bosh" type="text" name="jappixmini-bosh" value="'.$bosh.'" />';
-        $s .= '<br />';
-    }
+    $s .= '<label for="jappixmini-bosh">Jabber BOSH host</label>';
+    $s .= ' <input id="jappixmini-bosh" type="text" name="jappixmini-bosh" value="'.$bosh.'" />';
+    $s .= '<br />';
 
     $s .= '<label for="jappixmini-password">Jabber password</label>';
     $s .= ' <input type="hidden" id="jappixmini-password" name="jappixmini-encrypted-password" value="'.$password.'" />';
@@ -410,11 +419,13 @@ function jappixmini_script(&$a,&$s) {
     $autosubscribe = get_pconfig(local_user(),'jappixmini','autosubscribe');
     $autosubscribe = intval($autosubscribe);
 
-    // deactivate bosh host if proxy is off
-    $conf = file_get_contents("addon/jappixmini/jappix/store/conf/main.xml");
-    preg_match("/<bosh_proxy>(.*)<\/bosh_proxy>/", $conf, $matches);
-    if ($matches[1]!="on") {
-        $bosh = '';
+    // set proxy if necessary
+    $use_proxy = get_config('jappixmini','bosh_proxy');
+    if ($use_proxy) {
+        $proxy = $a->get_baseurl().'/addon/jappixmini/jappix/php/bosh.php';
+    }
+    else {
+        $proxy = "";
     }
 
     // get a list of jabber accounts of the contacts
@@ -448,7 +459,7 @@ function jappixmini_script(&$a,&$s) {
     // add javascript to start Jappix Mini
     $a->page['htmlhead'] .= "<script type=\"text/javascript\">
         jQuery(document).ready(function() {
-           jappixmini_addon_start('$server', '$username', '$bosh', $encrypt, '$password', $nickname, $contacts_json, $autoapprove, $autosubscribe);
+           jappixmini_addon_start('$server', '$username', '$proxy', '$bosh', $encrypt, '$password', $nickname, $contacts_json, $autoapprove, $autosubscribe);
         });
     </script>";
 
