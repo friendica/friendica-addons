@@ -143,7 +143,6 @@ function jappixmini_manage_roster(contacts, autoapprove, autosubscribe) {
 			xid = $(this).attr("jid");
 			name = $(this).attr("name");
 			subscription = $(this).attr("subscription");
-			console.log(xid+" "+subscription);
 
 			// ignore accounts not in the list
 			if (contacts[xid]===undefined) return;
@@ -178,7 +177,7 @@ function jappixmini_manage_roster(contacts, autoapprove, autosubscribe) {
 			item.setAttribute('name', contacts[xid]);
 			item.appendChild(iq.buildNode('group', {'xmlns': NS_ROSTER}, "Friendica"));
 			con.send(iq);
-			console.log("added to roster "+xid);
+			console.log("added to roster: "+xid);
 		}
 	});
 }
@@ -216,7 +215,6 @@ function jappixmini_addon_start(server, username, proxy, bosh, encrypted, passwo
         // start jappix mini
         MINI_NICKNAME = nickname;
         LOCK_HOST = "off";
-        console.log("launchMini");
         launchMini(true, false, server, username, password);
 
         // increase priority over other Jabber clients
