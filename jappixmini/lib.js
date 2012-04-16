@@ -84,7 +84,7 @@ function jappixmini_addon_decrypt_password(encrypted_password, callback) {
 
 		// remove \0
 		first_null = password.indexOf("\0")
-		// TODO: check first_null==null
+		if (first_null==-1) throw "Decrypted password does not contain \\0";
 		password = password.substr(0, first_null);
 
 		callback(password);
