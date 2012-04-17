@@ -126,6 +126,9 @@ function jappixmini_manage_roster(contacts, autoapprove, autosubscribe) {
 		}
 
 		if (approve) {
+			name = contacts[xid];
+			if (!name) name = xid;
+
 			acceptSubscribe(xid, contacts[xid]);
 			console.log("Accepted "+xid+" for chat.");
 		}
