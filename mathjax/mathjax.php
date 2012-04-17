@@ -48,7 +48,9 @@ function mathjax_settings (&$a, &$s) {
 function mathjax_page_header($a, &$b) {
     //  if the visitor of the page is not a local_user, use MathJax
     //  otherwise check the users settings.
-    $url = get_config ('mathjax','baseurl','http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML');
+    $url = get_config ('mathjax','baseurl');
+	if(! $url)
+		$url = 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
     if (! local_user()) {
         $b .= '<script type="text/javascript" src="'.$url.'"></script>';
     } else {
