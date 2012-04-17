@@ -1289,7 +1289,7 @@ function fb_get_timeline($access_token, &$since) {
 		else
 			break;
 
-		$url = $j->paging->next;
+		$url = (isset($j->paging) && isset($j->paging->next) ? $j->paging->next : '');
 
 	} while (($oldestdate > $since) and ($since != 0) and ($url != ''));
 
@@ -1424,7 +1424,7 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			else {
 				// Looking if user is known - if not he is added
 				$access_token = get_pconfig($uid, 'facebook', 'access_token');
-				fb_get_friends_sync_new($uid, $access_token, $from);
+				fb_get_friends_sync_new($uid, $access_token, array($from));
 
 				$r = q("SELECT * FROM `contact` WHERE `notify` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
 					dbesc($from->id),
@@ -1473,32 +1473,32 @@ function fb_consume_stream($uid,$j,$wall = false) {
 
 			logger('facebook: post '.$entry->id.' from '.$from->name);
 
-			$datarray['body'] = (x($entry, 'message') ? escape_tags($entry->message) : '');
+			$datarray['body'] = (isset($entry->message) ? escape_tags($entry->message) : '');
 
-			if(x($entry, 'name') and x($entry, 'link'))
+			if(isset($entry->name) and isset($entry->link))
 				$datarray['body'] .= "\n\n[bookmark=".$entry->link."]".$entry->name."[/bookmark]";
-			elseif (x($entry, 'name'))
+			elseif (isset($entry->name))
 				$datarray['body'] .= "\n\n[b]" . $entry->name."[/b]";
 
-			if(x($entry, 'caption')) {
-				if(!x($entry, 'name') and x($entry, 'link'))
+			if(isset($entry->caption)) {
+				if(!isset($entry->name) and isset($entry->link))
 					$datarray['body'] .= "\n\n[bookmark=".$entry->link."]".$entry->caption."[/bookmark]";
 				else
 					$datarray['body'] .= "[i]" . $entry->caption."[/i]\n";
 			}
 
-			if(!x($entry, 'caption') and !x($entry, 'name')) {
-				if (x($entry, 'link'))
+			if(!isset($entry->caption) and !isset($entry->name)) {
+				if (isset($entry->link))
 					$datarray['body'] .= "\n[url]".$entry->link."[/url]\n";
 				else
 					$datarray['body'] .= "\n";
 			}
 
 			$quote = "";
-			if(x($entry, 'description'))
+			if(isset($entry->description))
 				$quote = $entry->description;
 
-			if (x($entry, 'properties'))
+			if (isset($entry->properties))
 				foreach ($entry->properties as $property)
 					$quote .= "\n".$property->name.": [url=".$property->href."]".$property->text."[/url]";
 
@@ -1508,19 +1508,19 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			// Only import the picture when the message is no video
 			// oembed display a picture of the video as well 
 			if ($entry->type != "video") {
-				if(x($entry, 'picture') && x($entry, 'link')) {
+				if(isset($entry->picture) && isset($entry->link)) {
 					$datarray['body'] .= "\n" . '[url=' . $entry->link . '][img]'.$entry->picture.'[/img][/url]';	
 				}
 				else {
-					if(x($entry, 'picture'))
+					if(isset($entry->picture))
 						$datarray['body'] .= "\n" . '[img]' . $entry->picture . '[/img]';
 					// if just a link, it may be a wall photo - check
-					if(x($entry, 'link'))
+					if(isset($entry->link))
 						$datarray['body'] .= fb_get_photo($uid,$entry->link);
 				}
 			}
 
-			if (($datarray['app'] == "Events") and x($entry, 'actions'))
+			if (($datarray['app'] == "Events") and isset($entry->actions))
 				foreach ($entry->actions as $action)
 					if ($action->name == "View")
 						$datarray['body'] .= " [url=".$action->link."]".$entry->story."[/url]";
@@ -1540,10 +1540,10 @@ function fb_consume_stream($uid,$j,$wall = false) {
 
 			$datarray['body'] .= "\n";
 
-			if (x($entry, 'icon'))
+			if (isset($entry->icon))
 				$datarray['body'] .= "[img]".$entry->icon."[/img] &nbsp; ";
 
-			if (x($entry, 'actions'))
+			if (isset($entry->actions))
 				foreach ($entry->actions as $action)
 					if (($action->name != "Comment") and ($action->name != "Like"))
 						$datarray['body'] .= "[url=".$action->link."]".$action->name."[/url] &nbsp; ";
@@ -1553,7 +1553,7 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			//if(($datarray['body'] != '') and ($uid == 1))
 			//	$datarray['body'] .= "[noparse]".print_r($entry, true)."[/noparse]";
 
-            if (x($entry, 'place')) {
+            if (isset($entry->place)) {
 			    if ($entry->place->name or $entry->place->location->street or
 				    $entry->place->location->city or $entry->place->location->Denmark) {
 				    $datarray['coord'] = '';
@@ -1575,7 +1575,7 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			// If the entry has a privacy policy, we cannot assume who can or cannot see it,
 			// as the identities are from a foreign system. Mark it as private to the owner.
 
-			if(x($entry, 'privacy') && $entry->privacy->value !== 'EVERYONE') {
+			if(isset($entry->privacy) && $entry->privacy->value !== 'EVERYONE') {
 				$datarray['private'] = 1;
 				$datarray['allow_cid'] = '<' . $self[0]['id'] . '>';
 			}
@@ -1591,12 +1591,12 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			}
 		}
 
-		if(x($entry, 'likes') && x($entry->likes, 'data'))
+		if(isset($entry->likes) && isset($entry->likes->data))
 			$likers = $entry->likes->data;
 		else
 			$likers = null;
 
-		if(x($entry, 'comments') && x($entry->comments, 'data'))
+		if(isset($entry->comments) && isset($entry->comments->data))
 			$comments = $entry->comments->data;
 		else
 			$comments = null;
