@@ -1,9 +1,9 @@
 #piwik-optout-link {
-	padding: 100px 50px;
+	padding: 50px 0 0 0;
 	text-align: justify;
 	font-size: 0.85em;
-        margin-top:10px;
-        clear: both;
+    margin-top:10px;
+    clear: both;
 }
 #piwik-code-block {
 	display: none;
