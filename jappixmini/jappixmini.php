@@ -80,7 +80,11 @@ if (!$info_text) set_config("jappixmini", "infotext",
 );
 
 $bosh_proxy = get_config("jappixmini", "bosh_proxy");
-if ($bosh_proxy==="") set_config("jappixmini", "bosh_proxy", 1);
+if ($bosh_proxy==="") set_config("jappixmini", "bosh_proxy", "1");
+
+// set addon version so that safe updates are possible later
+$addon_version = get_config("jappixmini", "version");
+if ($addon_version==="") set_config("jappixmini", "version", "1");
 }
 
 
