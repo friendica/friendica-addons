@@ -164,13 +164,17 @@ function jappixmini_manage_roster(contacts, contacts_hash, autoapprove, autosubs
 
 			// add to Friendica group or change name if necessary
 			var groups = [];
+			var group_missing = false;
 			node.find('group').each(function() {
 				var group_text = $(this).text();
 				if (group_text) groups.push(group_text);
 			});
-
-			if ($.inArray("Friendica", groups)==-1 || name!=contacts[xid]) {
+			if ($.inArray("Friendica", groups)==-1) {
+				group_missing = true;
 				groups.push("Friendica");
+			}
+
+			if (group_missing || name!=contacts[xid]) {
 				sendRoster(xid, null, contacts[xid], groups);
 				console.log("Added "+xid+" to Friendica group and set name to "+contacts[xid]+".");
 			}
