@@ -132,7 +132,7 @@ function jappixmini_manage_roster(contacts, contacts_hash, autoapprove, autosubs
 			if (!name) name = xid;
 
 			acceptSubscribe(xid, name);
-			console.log("Accepted "+xid+" for chat.");
+			console.log("Accepted "+xid+" ("+name+") for chat.");
 		}
 	});
 
@@ -207,7 +207,7 @@ function jappixmini_manage_roster(contacts, contacts_hash, autoapprove, autosubs
 			item.setAttribute('name', contacts[xid]);
 			item.appendChild(iq.buildNode('group', {'xmlns': NS_ROSTER}, "Friendica"));
 			con.send(iq);
-			console.log("Added "+xid+" to roster.");
+			console.log("Added "+xid+" ("+contacts[xid]+") to roster.");
 		}
 
 		setPersistent("jappix-mini", "contacts-hash", contacts_hash);
