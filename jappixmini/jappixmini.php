@@ -257,6 +257,16 @@ function jappixmini_settings(&$a, &$s) {
     $info_text = htmlentities($info_text);
     $info_text = str_replace("\n", "<br />", $info_text);
 
+    // count contacts
+    $r = q("SELECT COUNT(1) as `cnt` FROM `pconfig` WHERE `uid`=%d AND `cat`='jappixmini' AND `k` LIKE 'id:%%'", local_user());
+    if (count($r)) $contact_cnt = $r[0]["cnt"];
+    else $contact_cnt = 0;
+
+    // count jabber addresses
+    $r = q("SELECT COUNT(1) as `cnt` FROM `pconfig` WHERE `uid`=%d AND `cat`='jappixmini' AND `k` LIKE 'id:%%' AND `v` LIKE '%%@%%'", local_user());
+    if (count($r)) $address_cnt = $r[0]["cnt"];
+    else $address_cnt = 0;
+
     if (!$activate) {
 	// load scripts if not yet activated so that password can be saved
         $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;g=mini.xml"></script>'."\r\n";
@@ -304,6 +314,7 @@ function jappixmini_settings(&$a, &$s) {
     $s .= ' <input id="jappixmini-purge" type="checkbox" name="jappixmini-purge" value="1" />';
     $s .= '<br />';
     if ($info_text) $s .= '<br />Configuration help:<p style="margin-left:2em;">'.$info_text.'</p>';
+    $s .= '<br />Status:<p style="margin-left:2em;">Addon knows '.$address_cnt.' Jabber addresses of '.$contact_cnt.' Friendica contacts (takes some time, usually 10 minutes, to update).</p>';
     $s .= '<input type="submit" name="jappixmini-submit" value="' . t('Submit') . '" />';
     $s .= ' <input type="button" value="Add contact" onclick="jappixmini_addon_subscribe();" />';
     $s .= '</div>';
@@ -390,7 +401,7 @@ function jappixmini_settings_post(&$a,&$b) {
 		info( 'Jappix Mini settings saved.' );
 
 		if ($purge) {
-			q("DELETE FROM `pconfig` WHERE `uid`=$uid AND `cat`='jappixmini' and `k` LIKE 'id%%'");
+			q("DELETE FROM `pconfig` WHERE `uid`=$uid AND `cat`='jappixmini' AND `k` LIKE 'id:%%'");
 			info( 'List of addresses purged.' );
 		}
 	}
@@ -438,7 +449,7 @@ function jappixmini_script(&$a,&$s) {
     // get a list of jabber accounts of the contacts
     $contacts = Array();
     $uid = local_user();
-    $rows = q("SELECT * FROM `pconfig` WHERE `uid`=$uid AND `cat`='jappixmini' and `k` LIKE 'id%%'");
+    $rows = q("SELECT * FROM `pconfig` WHERE `uid`=$uid AND `cat`='jappixmini' AND `k` LIKE 'id:%%'");
     foreach ($rows as $row) {
         $key = $row['k'];
 	$pos = strpos($key, ":");
