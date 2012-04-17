@@ -91,7 +91,7 @@ function jappixmini_addon_decrypt_password(encrypted_password, callback) {
 	});
 }
 
-function jappixmini_manage_roster(contacts, autoapprove, autosubscribe) {
+function jappixmini_manage_roster(contacts, contacts_hash, autoapprove, autosubscribe) {
 	// listen for subscriptions
 	con.registerHandler('presence',function(presence){
 		var type = presence.getType();
@@ -136,6 +136,10 @@ function jappixmini_manage_roster(contacts, autoapprove, autosubscribe) {
 
 	// autosubscribe
 	if (!autosubscribe) return;
+
+	stored_hash = getPersistent("jappix-mini", "contacts-hash");
+	contacts_changed = (stored_hash != contacts_hash); // stored_hash gets updated later if everything was successful
+	if (!contacts_changed) return;
 
 	console.log("Start autosubscribe.");
 
@@ -202,6 +206,8 @@ function jappixmini_manage_roster(contacts, autoapprove, autosubscribe) {
 			con.send(iq);
 			console.log("Added "+xid+" to roster.");
 		}
+
+		setPersistent("jappix-mini", "contacts-hash", contacts_hash);
 		console.log("Autosubscribe done.");
 	});
 
@@ -217,7 +223,7 @@ function jappixmini_addon_subscribe() {
 	sendSubscribe(xid, "subscribe");
 }
 
-function jappixmini_addon_start(server, username, proxy, bosh, encrypted, password, nickname, contacts, autoapprove, autosubscribe) {
+function jappixmini_addon_start(server, username, proxy, bosh, encrypted, password, nickname, contacts, contacts_hash, autoapprove, autosubscribe) {
     handler = function(password){
         // check if settings have changed, reinitialize jappix mini if this is the case
         settings_identifier = str_sha1(server);
@@ -227,15 +233,19 @@ function jappixmini_addon_start(server, username, proxy, bosh, encrypted, passwo
         settings_identifier += str_sha1(password);
         settings_identifier += str_sha1(nickname);
 
-        saved_identifier = getDB("jappix-mini", "settings_identifier");
-        if (saved_identifier != settings_identifier) removeDB('jappix-mini', 'dom');
-        setDB("jappix-mini", "settings_identifier", settings_identifier);
+        saved_identifier = getDB("jappix-mini", "settings-identifier");
+        if (saved_identifier != settings_identifier) {
+            disconnectMini();
+            removeDB('jappix-mini', 'dom');
+            removePersistent("jappix-mini", "contacts-hash");
+        }
+        setDB("jappix-mini", "settings-identifier", settings_identifier);
 
-        // set HOST_BOSH
-	if (proxy)
-		HOST_BOSH = proxy+"?host_bosh="+encodeURI(bosh);
-	else
-		HOST_BOSH = bosh;
+       // set HOST_BOSH
+       if (proxy)
+           HOST_BOSH = proxy+"?host_bosh="+encodeURI(bosh);
+       else
+           HOST_BOSH = bosh;
 
         // start jappix mini
         MINI_NICKNAME = nickname;
@@ -246,7 +256,7 @@ function jappixmini_addon_start(server, username, proxy, bosh, encrypted, passwo
         priority = 101;
         presenceMini(null,null,priority);
 
-        jappixmini_manage_roster(contacts, autoapprove, autosubscribe)
+        jappixmini_manage_roster(contacts, contacts_hash, autoapprove, autosubscribe)
     }
 
     // decrypt password if necessary

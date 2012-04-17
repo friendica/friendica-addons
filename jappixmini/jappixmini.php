@@ -458,6 +458,7 @@ function jappixmini_script(&$a,&$s) {
 	$contacts[$address] = $name;
     }
     $contacts_json = json_encode($contacts);
+    $contacts_hash = sha1($contacts_json);
 
     // get nickname
     $r = q("SELECT `username` FROM `user` WHERE `uid`=$uid");
@@ -466,7 +467,7 @@ function jappixmini_script(&$a,&$s) {
     // add javascript to start Jappix Mini
     $a->page['htmlhead'] .= "<script type=\"text/javascript\">
         jQuery(document).ready(function() {
-           jappixmini_addon_start('$server', '$username', '$proxy', '$bosh', $encrypt, '$password', $nickname, $contacts_json, $autoapprove, $autosubscribe);
+           jappixmini_addon_start('$server', '$username', '$proxy', '$bosh', $encrypt, '$password', $nickname, $contacts_json, '$contacts_hash', $autoapprove, $autosubscribe);
         });
     </script>";
 
