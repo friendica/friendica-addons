@@ -72,11 +72,10 @@ function facebook_module() {}
 // If $_REQUEST["realtime_cb"] is set, this is a callback from the Real-Time Updates API
 
 /**
- * @param $a
- * @return mixed
+ * @param App $a
  */
 function facebook_init(&$a) {
-	
+
 	if (x($_REQUEST, "realtime_cb") && x($_REQUEST, "realtime_cb")) {
 		logger("facebook_init: Facebook Real-Time callback called", LOGGER_DEBUG);
 		
@@ -170,7 +169,7 @@ function facebook_init(&$a) {
 		$r = q("SELECT `uid` FROM `user` WHERE `nickname` = '%s' LIMIT 1",
 				dbesc($nick)
 		);
-	if(! count($r))
+	if(!(isset($r) && count($r)))
 		return;
 
 	$uid           = $r[0]['uid'];
@@ -213,8 +212,7 @@ function facebook_init(&$a) {
 
 
 /**
- * @param $uid
- * @return mixed
+ * @param int $uid
  */
 function fb_get_self($uid) {
 	$access_token = get_pconfig($uid,'facebook','access_token');
@@ -228,9 +226,9 @@ function fb_get_self($uid) {
 }
 
 /**
- * @param $uid
- * @param $access_token
- * @param $persons
+ * @param int $uid
+ * @param string $access_token
+ * @param array $persons
  */
 function fb_get_friends_sync_new($uid, $access_token, $persons) {
     $persons_todo = array();
@@ -252,9 +250,8 @@ function fb_get_friends_sync_new($uid, $access_token, $persons) {
 }
 
 /**
- * @param $uid
- * @param $contact
- * @return mixed
+ * @param int $uid
+ * @param object $contact
  */
 function fb_get_friends_sync_parsecontact($uid, $contact) {
     $contact->link = 'http://facebook.com/profile.php?id=' . $contact->id;
@@ -358,10 +355,9 @@ function fb_get_friends_sync_parsecontact($uid, $contact) {
 }
 
 /**
- * @param $uid
- * @param $access_token
- * @param $persons
- * @return mixed
+ * @param int $uid
+ * @param string $access_token
+ * @param array $persons
  */
 function fb_get_friends_sync_full($uid, $access_token, $persons) {
     if (count($persons) == 0) return;
@@ -386,9 +382,8 @@ function fb_get_friends_sync_full($uid, $access_token, $persons) {
 // if $fullsync is true, only new contacts are searched for
 
 /**
- * @param $uid
+ * @param int $uid
  * @param bool $fullsync
- * @return mixed
  */
 function fb_get_friends($uid, $fullsync = true) {
 
@@ -428,8 +423,7 @@ function fb_get_friends($uid, $fullsync = true) {
 // Content is posted to Facebook in the function facebook_post_hook() 
 
 /**
- * @param $a
- * @return mixed
+ * @param App $a
  */
 function facebook_post(&$a) {
 
@@ -482,7 +476,7 @@ function facebook_post(&$a) {
 // Facebook settings form
 
 /**
- * @param $a
+ * @param App $a
  * @return string
  */
 function facebook_content(&$a) {
@@ -587,8 +581,8 @@ function facebook_content(&$a) {
 
 
 /**
- * @param $a
- * @param $b
+ * @param App $a
+ * @param null|object $b
  * @return mixed
  */
 function facebook_cron($a,$b) {
@@ -631,6 +625,8 @@ function facebook_cron($a,$b) {
 			$last_friend_check = get_pconfig($rr['uid'],'facebook','friend_check');
 			if($last_friend_check) 
 				$next_friend_check = $last_friend_check + 86400;
+			else
+			    $next_friend_check = 0;
 			if($next_friend_check <= time()) {
 				fb_get_friends($rr['uid'], true);
 				set_pconfig($rr['uid'],'facebook','friend_check',time());
@@ -672,8 +668,8 @@ function facebook_cron($a,$b) {
 
 
 /**
- * @param $a
- * @param $b
+ * @param App $a
+ * @param null|object $b
  */
 function facebook_plugin_settings(&$a,&$b) {
 
@@ -686,8 +682,8 @@ function facebook_plugin_settings(&$a,&$b) {
 
 
 /**
- * @param $a
- * @param $o
+ * @param App $a
+ * @param null|object $o
  */
 function facebook_plugin_admin(&$a, &$o){
 
@@ -734,8 +730,8 @@ function facebook_plugin_admin(&$a, &$o){
 }
 
 /**
- * @param $a
- * @param $o
+ * @param App $a
+ * @param null|object $o
  */
 function facebook_plugin_admin_post(&$a, &$o){
 	check_form_security_token_redirectOnErr('/admin/plugins/facebook', 'fbsave');
@@ -757,8 +753,8 @@ function facebook_plugin_admin_post(&$a, &$o){
 }
 
 /**
- * @param $a
- * @param $b
+ * @param App $a
+ * @param object $b
  * @return mixed
  */
 function facebook_jot_nets(&$a,&$b) {
@@ -776,8 +772,8 @@ function facebook_jot_nets(&$a,&$b) {
 
 
 /**
- * @param $a
- * @param $b
+ * @param App $a
+ * @param object $b
  * @return mixed
  */
 function facebook_post_hook(&$a,&$b) {
@@ -797,6 +793,9 @@ function facebook_post_hook(&$a,&$b) {
 
 	$reply = false;
 	$likes = false;
+
+	$deny_arr = array();
+	$allow_arr = array();
 
 	$toplevel = (($b['id'] == $b['parent']) ? true : false);
 
@@ -844,8 +843,7 @@ function facebook_post_hook(&$a,&$b) {
 			$allow_str = dbesc(implode(', ',$recipients));
 			if($allow_str) {
 				$r = q("SELECT `notify` FROM `contact` WHERE `id` IN ( $allow_str ) AND `network` = 'face'"); 
-				$allow_arr = array();
-				if(count($r)) 
+				if(count($r))
 					foreach($r as $rr)
 						$allow_arr[] = $rr['notify'];
 			}
@@ -853,8 +851,7 @@ function facebook_post_hook(&$a,&$b) {
 			$deny_str = dbesc(implode(', ',$deny));
 			if($deny_str) {
 				$r = q("SELECT `notify` FROM `contact` WHERE `id` IN ( $deny_str ) AND `network` = 'face'"); 
-				$deny_arr = array();
-				if(count($r)) 
+				if(count($r))
 					foreach($r as $rr)
 						$deny_arr[] = $rr['notify'];
 			}
@@ -1155,8 +1152,8 @@ function facebook_post_hook(&$a,&$b) {
 }
 
 /**
- * @param $app
- * @param $data
+ * @param App $app
+ * @param object $data
  */
 function facebook_enotify(&$app, &$data) {
 	if (x($data, 'params') && $data['params']['type'] == NOTIFY_SYSTEM && x($data['params'], 'system_type') && $data['params']['system_type'] == 'facebook_connection_invalid') {
@@ -1168,9 +1165,8 @@ function facebook_enotify(&$app, &$data) {
 }
 
 /**
- * @param $a
- * @param $b
- * @return mixed
+ * @param App $a
+ * @param object $b
  */
 function facebook_post_local(&$a,&$b) {
 
@@ -1199,9 +1195,8 @@ function facebook_post_local(&$a,&$b) {
 
 
 /**
- * @param $a
- * @param $b
- * @return mixed
+ * @param App $a
+ * @param object $b
  */
 function fb_queue_hook(&$a,&$b) {
 
@@ -1262,9 +1257,9 @@ function fb_queue_hook(&$a,&$b) {
 }
 
 /**
- * @param $access_token
- * @param $since
- * @return stdClass
+ * @param string $access_token
+ * @param int $since
+ * @return object
  */
 function fb_get_timeline($access_token, &$since) {
 
@@ -1308,8 +1303,7 @@ function fb_get_timeline($access_token, &$since) {
 }
 
 /**
- * @param $uid
- * @return mixed
+ * @param int $uid
  */
 function fb_consume_all($uid) {
 
@@ -1347,8 +1341,8 @@ function fb_consume_all($uid) {
 }
 
 /**
- * @param $uid
- * @param $link
+ * @param int $uid
+ * @param string $link
  * @return string
  */
 function fb_get_photo($uid,$link) {
@@ -1370,10 +1364,9 @@ function fb_get_photo($uid,$link) {
 }
 
 /**
- * @param $uid
- * @param $j
+ * @param int $uid
+ * @param object $j
  * @param bool $wall
- * @return mixed
  */
 function fb_consume_stream($uid,$j,$wall = false) {
 
@@ -1767,7 +1760,7 @@ function fb_consume_stream($uid,$j,$wall = false) {
 
 
 /**
- * @return bool|mixed|string
+ * @return bool|string
  */
 function fb_get_app_access_token() {
 	
@@ -1804,9 +1797,6 @@ function fb_get_app_access_token() {
 	}
 }
 
-/**
- *
- */
 function facebook_subscription_del_users() {
 	$a = get_app();
 	$access_token = fb_get_app_access_token();
@@ -1857,7 +1847,7 @@ function facebook_subscription_add_users($second_try = false) {
 }
 
 /**
- * @return null
+ * @return null|array
  */
 function facebook_subscriptions_get() {
 	
@@ -1892,8 +1882,8 @@ function facebook_check_realtime_active() {
 
 if(! function_exists('facebook_delete_url')) {
     /**
-     * @param $url
-     * @param null $headers
+     * @param string $url
+     * @param null|array $headers
      * @param int $redirects
      * @param int $timeout
      * @return bool|string
