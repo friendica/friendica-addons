@@ -1,9 +1,9 @@
 function jappixmini_addon_xor(str1, str2) {
     if (str1.length != str2.length) throw "not same length";
 
-    encoded = "";
+    var encoded = "";
 
-    for (i=0; i<str1.length;i++) {
+    for (var i=0; i<str1.length;i++) {
         var a = str1.charCodeAt(i);
         var b = str2.charCodeAt(i);
         var c = a ^ b;
@@ -17,40 +17,40 @@ function jappixmini_addon_xor(str1, str2) {
 function jappixmini_addon_set_client_secret(password) {
 	if (!password) return;
 
-	salt1 = "h8doCRekWto0njyQohKpdx6BN0UTyC6N";
-	salt2 = "jdX8OwFC1kWAq3s9uOyAcE8g3UNNO5t3";
+	var salt1 = "h8doCRekWto0njyQohKpdx6BN0UTyC6N";
+	var salt2 = "jdX8OwFC1kWAq3s9uOyAcE8g3UNNO5t3";
 
-	client_secret1 = str_sha1(salt1+password);
-	client_secret2 = str_sha1(salt2+password);
-	client_secret = client_secret1 + client_secret2;
+	var client_secret1 = str_sha1(salt1+password);
+	var client_secret2 = str_sha1(salt2+password);
+	var client_secret = client_secret1 + client_secret2;
 
 	setPersistent('jappix-mini', 'client-secret', client_secret);
 	console.log("client secret set");
 }
 
 function jappixmini_addon_get_client_secret(callback) {
-	client_secret = getPersistent('jappix-mini', 'client-secret');
+	var client_secret = getPersistent('jappix-mini', 'client-secret');
 	if (client_secret===null) {
-		div = document.getElementById("#jappixmini-password-query-div");
+		var div = document.getElementById("#jappixmini-password-query-div");
 
 		if (!div) {
 			div = $('<div id="jappixmini-password-query-div" style="position:fixed;padding:1em;background-color:#F00;color:#fff;top:50px;left:50px;">Retype your Friendica password for chatting:<br></div>');
 
-			input = $('<input type="password" id="jappixmini-password-query-input">')
+			var input = $('<input type="password" id="jappixmini-password-query-input">')
 			div.append(input);
 
-			button = $('<input type="button" value="OK" id="jappixmini-password-query-button">');
+			var button = $('<input type="button" value="OK" id="jappixmini-password-query-button">');
 			div.append(button);
 
 			$("body").append(div);
 		}
 
 		button.click(function(){
-			password = $("#jappixmini-password-query-input").val();
+			var password = $("#jappixmini-password-query-input").val();
 			jappixmini_addon_set_client_secret(password);
 			div.remove();
 
-			client_secret = getPersistent('jappix-mini', 'client-secret');
+			var client_secret = getPersistent('jappix-mini', 'client-secret');
 			callback(client_secret);
 		});
 	}
@@ -68,7 +68,7 @@ function jappixmini_addon_encrypt_password(password, callback) {
 		}
 
 		// xor password with secret
-		encrypted_password = jappixmini_addon_xor(client_secret, password);
+		var encrypted_password = jappixmini_addon_xor(client_secret, password);
 
 		encrypted_password = encodeURI(encrypted_password)
 		callback(encrypted_password);
@@ -80,10 +80,10 @@ function jappixmini_addon_decrypt_password(encrypted_password, callback) {
 
 	jappixmini_addon_get_client_secret(function(client_secret){
 		// xor password with secret
-		password = jappixmini_addon_xor(client_secret, encrypted_password);
+		var password = jappixmini_addon_xor(client_secret, encrypted_password);
 
 		// remove \0
-		first_null = password.indexOf("\0")
+		var first_null = password.indexOf("\0")
 		if (first_null==-1) throw "Decrypted password does not contain \\0";
 		password = password.substr(0, first_null);
 
@@ -101,6 +101,8 @@ function jappixmini_manage_roster(contacts, contacts_hash, autoapprove, autosubs
 		var xid = bareXID(from);
 		var pstatus = presence.getStatus();
 
+		var approve;
+
 		if (autoapprove && contacts[xid]!==undefined) {
 			// approve known address
 			approve = true;
@@ -117,7 +119,7 @@ function jappixmini_manage_roster(contacts, contacts_hash, autoapprove, autosubs
 		}
 		else {
 			// In all other cases, ask the user.
-			message = "Accept "+xid+" for chat?";
+			var message = "Accept "+xid+" for chat?";
 			if (pstatus) message += "\n\nStatus:\n"+pstatus;
 			approve = confirm(message);
 
@@ -126,10 +128,10 @@ function jappixmini_manage_roster(contacts, contacts_hash, autoapprove, autosubs
 		}
 
 		if (approve) {
-			name = contacts[xid];
+			var name = contacts[xid];
 			if (!name) name = xid;
 
-			acceptSubscribe(xid, contacts[xid]);
+			acceptSubscribe(xid, name);
 			console.log("Accepted "+xid+" for chat.");
 		}
 	});
@@ -137,8 +139,8 @@ function jappixmini_manage_roster(contacts, contacts_hash, autoapprove, autosubs
 	// autosubscribe
 	if (!autosubscribe) return;
 
-	stored_hash = getPersistent("jappix-mini", "contacts-hash");
-	contacts_changed = (stored_hash != contacts_hash); // stored_hash gets updated later if everything was successful
+	var stored_hash = getPersistent("jappix-mini", "contacts-hash");
+	var contacts_changed = (stored_hash != contacts_hash); // stored_hash gets updated later if everything was successful
 	if (!contacts_changed) return;
 
 	console.log("Start autosubscribe.");
@@ -152,18 +154,19 @@ function jappixmini_manage_roster(contacts, contacts_hash, autoapprove, autosubs
 
 		// filter out contacts that are already in the roster
 		$(handleXML).find('item').each(function() {
-			xid = $(this).attr("jid");
-			name = $(this).attr("name");
-			subscription = $(this).attr("subscription");
+                        var node = $(this);
+			var xid = node.attr("jid");
+			var name = node.attr("name");
+			var subscription = node.attr("subscription");
 
-			// ignore accounts not in the list
+			// ignore accounts that are not in the list
 			if (contacts[xid]===undefined) return;
 
 			// add to Friendica group if necessary
-			groups = [];
-			$(this).find('group').each(function() {
+			var groups = [];
+			node.find('group').each(function() {
 				var group_text = $(this).text();
-				if(group_text) groups.push(group_text);
+				if (group_text) groups.push(group_text);
 			});
 
 			if ($.inArray("Friendica", groups)==-1) {
@@ -219,21 +222,21 @@ function jappixmini_addon_subscribe() {
 		return;
         }
 
-	xid = prompt("Jabber address");
+	var xid = prompt("Jabber address");
 	sendSubscribe(xid, "subscribe");
 }
 
 function jappixmini_addon_start(server, username, proxy, bosh, encrypted, password, nickname, contacts, contacts_hash, autoapprove, autosubscribe) {
-    handler = function(password){
+    var handler = function(password){
         // check if settings have changed, reinitialize jappix mini if this is the case
-        settings_identifier = str_sha1(server);
+        var settings_identifier = str_sha1(server);
         settings_identifier += str_sha1(username);
         settings_identifier += str_sha1(proxy);
         settings_identifier += str_sha1(bosh);
         settings_identifier += str_sha1(password);
         settings_identifier += str_sha1(nickname);
 
-        saved_identifier = getDB("jappix-mini", "settings-identifier");
+        var saved_identifier = getDB("jappix-mini", "settings-identifier");
         if (saved_identifier != settings_identifier) {
             disconnectMini();
             removeDB('jappix-mini', 'dom');
@@ -241,11 +244,11 @@ function jappixmini_addon_start(server, username, proxy, bosh, encrypted, passwo
         }
         setDB("jappix-mini", "settings-identifier", settings_identifier);
 
-       // set HOST_BOSH
-       if (proxy)
-           HOST_BOSH = proxy+"?host_bosh="+encodeURI(bosh);
-       else
-           HOST_BOSH = bosh;
+        // set HOST_BOSH
+        if (proxy)
+            HOST_BOSH = proxy+"?host_bosh="+encodeURI(bosh);
+        else
+            HOST_BOSH = bosh;
 
         // start jappix mini
         MINI_NICKNAME = nickname;
@@ -253,7 +256,7 @@ function jappixmini_addon_start(server, username, proxy, bosh, encrypted, passwo
         launchMini(true, false, server, username, password);
 
         // increase priority over other Jabber clients - does not seem to work?
-        priority = 101;
+        var priority = 101;
         presenceMini(null,null,priority);
 
         jappixmini_manage_roster(contacts, contacts_hash, autoapprove, autosubscribe)
