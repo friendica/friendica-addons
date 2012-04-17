@@ -695,7 +695,7 @@ function facebook_plugin_admin(&$a, &$o){
 	}
 }
 
-function facebook_plugin_admin_post(&$a, &$o){
+function facebook_plugin_admin_post(&$a){
 	check_form_security_token_redirectOnErr('/admin/plugins/facebook', 'fbsave');
 	
 	if (x($_REQUEST,'fb_save_keys')) {
