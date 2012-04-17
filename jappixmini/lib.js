@@ -162,17 +162,17 @@ function jappixmini_manage_roster(contacts, contacts_hash, autoapprove, autosubs
 			// ignore accounts that are not in the list
 			if (contacts[xid]===undefined) return;
 
-			// add to Friendica group if necessary
+			// add to Friendica group or change name if necessary
 			var groups = [];
 			node.find('group').each(function() {
 				var group_text = $(this).text();
 				if (group_text) groups.push(group_text);
 			});
 
-			if ($.inArray("Friendica", groups)==-1) {
+			if ($.inArray("Friendica", groups)==-1 || name!=contacts[xid]) {
 				groups.push("Friendica");
-				sendRoster(xid, null, null, groups);
-				console.log("Added "+xid+" to Friendica group.");
+				sendRoster(xid, null, contacts[xid], groups);
+				console.log("Added "+xid+" to Friendica group and set name to "+contacts[xid]+".");
 			}
 
 			// authorize if necessary
