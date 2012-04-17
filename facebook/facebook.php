@@ -276,7 +276,7 @@ function fb_get_friends_sync_parsecontact($uid, $contact) {
 
             $photos = import_profile_photo('https://graph.facebook.com/' . $contact->id . '/picture', $uid, $r[0]['id']);
 
-            $r = q("UPDATE `contact` SET `photo` = '%s',
+            q("UPDATE `contact` SET `photo` = '%s',
                                         `thumb` = '%s',
                                         `micro` = '%s',
                                         `name-date` = '%s',
@@ -298,7 +298,7 @@ function fb_get_friends_sync_parsecontact($uid, $contact) {
     else {
 
         // create contact record
-        $r = q("INSERT INTO `contact` ( `uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
+        q("INSERT INTO `contact` ( `uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
                                 `name`, `nick`, `photo`, `network`, `rel`, `priority`,
                                 `writable`, `blocked`, `readonly`, `pending` )
                                 VALUES ( %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, 0, 0, 0 ) ",
@@ -329,14 +329,13 @@ function fb_get_friends_sync_parsecontact($uid, $contact) {
         return;
     }
 
-    $contact = $r[0];
     $contact_id  = $r[0]['id'];
 
     require_once("Photo.php");
 
     $photos = import_profile_photo($r[0]['photo'],$uid,$contact_id);
 
-    $r = q("UPDATE `contact` SET `photo` = '%s',
+    q("UPDATE `contact` SET `photo` = '%s',
                         `thumb` = '%s',
                         `micro` = '%s',
                         `name-date` = '%s',
@@ -502,7 +501,6 @@ function facebook_content(&$a) {
 	if (get_pconfig(local_user(),'facebook','post')) {
 		$access_token = get_pconfig(local_user(),'facebook','access_token');
 		if ($access_token) {
-			$private_wall = intval(get_pconfig(local_user(),'facebook','private_wall'));
 			$s = fetch_url('https://graph.facebook.com/me/feed?access_token=' . $access_token);
 			if($s) {
 				$j = json_decode($s);
@@ -647,7 +645,7 @@ function facebook_cron($a,$b) {
 				logger('facebook_cron: Failed', LOGGER_NORMAL);
 				
 				if(strlen($a->config['admin_email']) && !get_config('facebook', 'realtime_err_mailsent')) {
-					$res = mail($a->config['admin_email'], t('Problems with Facebook Real-Time Updates'), 
+					mail($a->config['admin_email'], t('Problems with Facebook Real-Time Updates'),
 						"Hi!\n\nThere's a problem with the Facebook Real-Time Updates that cannot be solved automatically. Maybe a permission issue?\n\nPlease try to re-activate it on " . $a->config["system"]["url"] . "/admin/plugins/facebook\n\nThis e-mail will only be sent once.",
 						'From: ' . t('Administrator') . '@' . $_SERVER['SERVER_NAME'] . "\n"
 						. 'Content-type: text/plain; charset=UTF-8' . "\n"
@@ -906,8 +904,8 @@ function facebook_post_hook(&$a,&$b) {
 
 				// unless it's a dislike - just send the text as a comment
 
-				if($b['verb'] == ACTIVITY_DISLIKE)
-					$msg = trim(strip_tags(bbcode($msg)));
+				// if($b['verb'] == ACTIVITY_DISLIKE)
+				//	$msg = trim(strip_tags(bbcode($msg)));
 
 				// Old code
 				/*$search_str = $a->get_baseurl() . '/search';
@@ -1017,7 +1015,6 @@ function facebook_post_hook(&$a,&$b) {
 
 				// Since facebook increased the maxpostlen massively this never should happen again :)
 				if (strlen($msg) > FACEBOOK_MAXPOSTLEN) {
-					$shortlink = "";
 					require_once('library/slinky.php');
 
 					$display_url = $b['plink'];
@@ -1361,6 +1358,7 @@ function fb_get_photo($uid,$link) {
 		return "\n\n" . '[url=' . $link . '][img]' . $j->picture . '[/img][/url]';
 	//else
 	//	return "\n" . '[url=' . $link . ']' . t('link') . '[/url]';
+	return "";
 }
 
 /**
@@ -1379,7 +1377,7 @@ function fb_consume_stream($uid,$j,$wall = false) {
 	if(! count($user))
 		return;
 
-	$my_local_url = $a->get_baseurl() . '/profile/' . $user[0]['nickname'];
+	// $my_local_url = $a->get_baseurl() . '/profile/' . $user[0]['nickname'];
 
 	$no_linking = get_pconfig($uid,'facebook','no_linking');
 	if($no_linking)
@@ -1396,7 +1394,9 @@ function fb_consume_stream($uid,$j,$wall = false) {
 	if(! count($j->data) || (! strlen($self_id)))
 		return;
 
-	foreach($j->data as $entry) {
+    $top_item = 0;
+
+    foreach($j->data as $entry) {
 		logger('fb_consume: entry: ' . print_r($entry,true), LOGGER_DATA);
 		$datarray = array();
 
@@ -1406,12 +1406,10 @@ function fb_consume_stream($uid,$j,$wall = false) {
 				intval($uid)
 		);
 		if(count($r)) {
-			$post_exists = true;
 			$orig_post = $r[0];
 			$top_item = $r[0]['id'];
 		}
 		else {
-			$post_exists = false;
 			$orig_post = null;
 		}
 
@@ -1475,32 +1473,32 @@ function fb_consume_stream($uid,$j,$wall = false) {
 
 			logger('facebook: post '.$entry->id.' from '.$from->name);
 
-			$datarray['body'] = escape_tags($entry->message);
+			$datarray['body'] = (x($entry, 'message') ? escape_tags($entry->message) : '');
 
-			if($entry->name and $entry->link)
+			if(x($entry, 'name') and x($entry, 'link'))
 				$datarray['body'] .= "\n\n[bookmark=".$entry->link."]".$entry->name."[/bookmark]";
-			elseif ($entry->name)
+			elseif (x($entry, 'name'))
 				$datarray['body'] .= "\n\n[b]" . $entry->name."[/b]";
 
-			if($entry->caption) {
-				if(!$entry->name and $entry->link)
+			if(x($entry, 'caption')) {
+				if(!x($entry, 'name') and x($entry, 'link'))
 					$datarray['body'] .= "\n\n[bookmark=".$entry->link."]".$entry->caption."[/bookmark]";
 				else
 					$datarray['body'] .= "[i]" . $entry->caption."[/i]\n";
 			}
 
-			if(!$entry->caption and !$entry->name) {
-				if ($entry->link)
+			if(!x($entry, 'caption') and !x($entry, 'name')) {
+				if (x($entry, 'link'))
 					$datarray['body'] .= "\n[url]".$entry->link."[/url]\n";
 				else
 					$datarray['body'] .= "\n";
 			}
 
 			$quote = "";
-			if($entry->description)
+			if(x($entry, 'description'))
 				$quote = $entry->description;
 
-			if ($entry->properties)
+			if (x($entry, 'properties'))
 				foreach ($entry->properties as $property)
 					$quote .= "\n".$property->name.": [url=".$property->href."]".$property->text."[/url]";
 
@@ -1510,19 +1508,19 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			// Only import the picture when the message is no video
 			// oembed display a picture of the video as well 
 			if ($entry->type != "video") {
-				if($entry->picture && $entry->link) {
+				if(x($entry, 'picture') && x($entry, 'link')) {
 					$datarray['body'] .= "\n" . '[url=' . $entry->link . '][img]'.$entry->picture.'[/img][/url]';	
 				}
 				else {
-					if($entry->picture)
+					if(x($entry, 'picture'))
 						$datarray['body'] .= "\n" . '[img]' . $entry->picture . '[/img]';
 					// if just a link, it may be a wall photo - check
-					if($entry->link)
+					if(x($entry, 'link'))
 						$datarray['body'] .= fb_get_photo($uid,$entry->link);
 				}
 			}
 
-			if (($datarray['app'] == "Events") and $entry->actions)
+			if (($datarray['app'] == "Events") and x($entry, 'actions'))
 				foreach ($entry->actions as $action)
 					if ($action->name == "View")
 						$datarray['body'] .= " [url=".$action->link."]".$entry->story."[/url]";
@@ -1542,10 +1540,10 @@ function fb_consume_stream($uid,$j,$wall = false) {
 
 			$datarray['body'] .= "\n";
 
-			if ($entry->icon)
+			if (x($entry, 'icon'))
 				$datarray['body'] .= "[img]".$entry->icon."[/img] &nbsp; ";
 
-			if ($entry->actions)
+			if (x($entry, 'actions'))
 				foreach ($entry->actions as $action)
 					if (($action->name != "Comment") and ($action->name != "Like"))
 						$datarray['body'] .= "[url=".$action->link."]".$action->name."[/url] &nbsp; ";
@@ -1555,28 +1553,29 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			//if(($datarray['body'] != '') and ($uid == 1))
 			//	$datarray['body'] .= "[noparse]".print_r($entry, true)."[/noparse]";
 
-			if ($entry->place->name or $entry->place->location->street or 
-				$entry->place->location->city or $entry->place->location->Denmark) {
-				$datarray['coord'] = '';
-				if ($entry->place->name)
-					$datarray['coord'] .= $entry->place->name;
-				if ($entry->place->location->street)
-					$datarray['coord'] .= $entry->place->location->street;
-				if ($entry->place->location->city)
-					$datarray['coord'] .= " ".$entry->place->location->city;
-				if ($entry->place->location->country)
-					$datarray['coord'] .= " ".$entry->place->location->country;
-			} else if ($entry->place->location->latitude and $entry->place->location->longitude)
-				$datarray['coord'] = substr($entry->place->location->latitude, 0, 8)
+            if (x($entry, 'place')) {
+			    if ($entry->place->name or $entry->place->location->street or
+				    $entry->place->location->city or $entry->place->location->Denmark) {
+				    $datarray['coord'] = '';
+				    if ($entry->place->name)
+					    $datarray['coord'] .= $entry->place->name;
+				    if ($entry->place->location->street)
+					    $datarray['coord'] .= $entry->place->location->street;
+				    if ($entry->place->location->city)
+					    $datarray['coord'] .= " ".$entry->place->location->city;
+				    if ($entry->place->location->country)
+					    $datarray['coord'] .= " ".$entry->place->location->country;
+			    } else if ($entry->place->location->latitude and $entry->place->location->longitude)
+				    $datarray['coord'] = substr($entry->place->location->latitude, 0, 8)
 							.' '.substr($entry->place->location->longitude, 0, 8);
-
+            }
 			$datarray['created'] = datetime_convert('UTC','UTC',$entry->created_time);
 			$datarray['edited'] = datetime_convert('UTC','UTC',$entry->updated_time);
 
 			// If the entry has a privacy policy, we cannot assume who can or cannot see it,
 			// as the identities are from a foreign system. Mark it as private to the owner.
 
-			if($entry->privacy && $entry->privacy->value !== 'EVERYONE') {
+			if(x($entry, 'privacy') && $entry->privacy->value !== 'EVERYONE') {
 				$datarray['private'] = 1;
 				$datarray['allow_cid'] = '<' . $self[0]['id'] . '>';
 			}
@@ -1592,12 +1591,12 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			}
 		}
 
-		if(isset($entry->likes) && isset($entry->likes->data))
+		if(x($entry, 'likes') && x($entry->likes, 'data'))
 			$likers = $entry->likes->data;
 		else
 			$likers = null;
 
-		if(isset($entry->comments) && isset($entry->comments->data))
+		if(x($entry, 'comments') && x($entry->comments, 'data'))
 			$comments = $entry->comments->data;
 		else
 			$comments = null;
@@ -1661,7 +1660,7 @@ function fb_consume_stream($uid,$j,$wall = false) {
 				$likedata['object'] = '<object><type>' . ACTIVITY_OBJ_NOTE . '</type><local>1</local>' . 
 					'<id>' . $orig_post['uri'] . '</id><link>' . xmlify('<link rel="alternate" type="text/html" href="' . xmlify($orig_post['plink']) . '" />') . '</link><title>' . $orig_post['title'] . '</title><content>' . $orig_post['body'] . '</content></object>';  
 
-				$item = item_store($likedata);			
+				item_store($likedata);
 			}
 		}
 		if(is_array($comments)) {
