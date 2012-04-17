@@ -1327,7 +1327,7 @@ function fb_consume_all($uid) {
 		}
 	}
 	// Get the last date
-	$lastdate = get_pconfig($uid,'facebook','lastdate') - 10000;
+	$lastdate = get_pconfig($uid,'facebook','lastdate');
 	// fetch all items since the last date
 	$j = fb_get_timeline($access_token, $lastdate);
 	if (isset($j->data)) {
