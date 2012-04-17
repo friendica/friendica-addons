@@ -1,13 +1,18 @@
 <?php
 
-
 /**
 * Name: jappixmini
-* Description: Inserts a jabber chat
+* Description: Provides a Facebook-like chat using Jappix Mini
 * Version: 1.0
-* Author: leberwurscht
+* Author: leberwurscht <leberwurscht@hoegners.de>
 *
 */
+
+//
+// Copyright 2012 "Leberwurscht" <leberwurscht@hoegners.de>
+//
+// This file is dual-licensed under the MIT license (see MIT.txt) and the AGPL license (see jappix/COPYING).
+//
 
 /*
 
@@ -103,29 +108,8 @@ unregister_hook('about_hook', 'addon/jappixmini/jappixmini.php', 'jappixmini_dow
 function jappixmini_plugin_admin(&$a, &$o) {
 	// display instructions and warnings on addon settings page for admin
 
-	if (!file_exists("addon/jappixmini/jappix")) {
-		$o .= '<p><strong>You need to install the Jappix application (see README).</strong></p>';
-	}
-	else if (file_exists("addon/jappixmini/jappix/index.php")) {
-		// try to delete automatically
-		try {
-			unlink("addon/jappixmini/jappix/index.php");
-		}
-		catch (Exception $e) {}
-
-		// warn admin if this is not possible
-		if (file_exists("addon/jappixmini/jappix/index.php"))
-			$o .= '<p><strong style="color:#fff;background-color:#f00">You must delete addon/jappixmini/jappix/index.php (see README).</strong></p>';
-		else {
-			info("Deleted addon/jappixmini/jappix/index.php automatically.");
-			$o .= '<p>Jappix is installed.</p>';
-		}
-	}
-	else if (!file_exists("addon/jappixmini/jappix.zip")) {
-		$o .= '<p><strong style="color:#fff;background-color:#f00">The source archive jappix.zip does not exist. This is probably a violation of the Jappix License (see README).</strong></p>';
-	}
-	else {
-		$o .= '<p>Jappix is installed.</p>';
+	if (!file_exists("addon/jappixmini.tgz")) {
+		$o .= '<p><strong style="color:#fff;background-color:#f00">The source archive jappixmini.tgz does not exist. This is probably a violation of the Jappix License (AGPL).</strong></p>';
 	}
 
 	// warn if cron job has not yet been executed
@@ -162,8 +146,6 @@ function jappixmini_module() {}
 function jappixmini_init(&$a) {
 	// module page where other Friendica sites can submit Jabber addresses to and also can query Jabber addresses
         // of local users
-
-	if (!file_exists("addon/jappixmini/jappix")) killme();
 
 	$dfrn_id = $_REQUEST["dfrn_id"];
 	if (!$dfrn_id) killme();
@@ -236,8 +218,6 @@ function jappixmini_init(&$a) {
 
 function jappixmini_settings(&$a, &$s) {
     // addon settings for a user
-
-    if (!file_exists("addon/jappixmini/jappix")) return;
 
     $activate = get_pconfig(local_user(),'jappixmini','activate');
     $activate = intval($activate) ? ' checked="checked"' : '';
@@ -364,8 +344,6 @@ function jappixmini_settings(&$a, &$s) {
 function jappixmini_settings_post(&$a,&$b) {
 	// save addon settings for a user
 
-	if (!file_exists("addon/jappixmini/jappix")) return;
-
 	if(! local_user()) return;
 	$uid = local_user();
 
@@ -414,7 +392,6 @@ function jappixmini_settings_post(&$a,&$b) {
 function jappixmini_script(&$a,&$s) {
     // adds the script to the page header which starts Jappix Mini
 
-    if (!file_exists("addon/jappixmini/jappix")) return;
     if(! local_user()) return;
 
     $activate = get_pconfig(local_user(),'jappixmini','activate');
@@ -492,8 +469,6 @@ function jappixmini_script(&$a,&$s) {
 function jappixmini_login(&$a, &$o) {
     // create client secret on login to be able to encrypt jabber passwords
 
-    if (!file_exists("addon/jappixmini/jappix")) return;
-
     // for setDB and str_sha1, needed by jappixmini_addon_set_client_secret
     $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=datastore.js~jsjac.js"></script>'."\r\n";
 
@@ -508,8 +483,6 @@ function jappixmini_cron(&$a, $d) {
 	// For autosubscribe/autoapprove, we need to maintain a list of jabber addresses of our contacts.
 
 	set_config("jappixmini", "last_cron_execution", $d);
-
-	if (!file_exists("addon/jappixmini/jappix")) return;
 
 	// go through list of users with jabber enabled
 	$users = q("SELECT `uid` FROM `pconfig` WHERE `cat`='jappixmini' AND (`k`='autosubscribe' OR `k`='autoapprove') AND `v`='1'");
@@ -604,9 +577,7 @@ function jappixmini_cron(&$a, $d) {
 function jappixmini_download_source(&$a,&$b) {
 	// Jappix Mini source download link on About page
 
-	if (!file_exists("addon/jappixmini/jappix")) return;
-
 	$b .= '<h1>Jappix Mini</h1>';
-	$b .= '<p>This site uses Jappix Mini by the <a href="'.$a->get_baseurl().'/addon/jappixmini/jappix/AUTHORS">Jappix authors</a>, which is distributed under the terms of the <a href="'.$a->get_baseurl().'/addon/jappixmini/jappix/COPYING">GNU Affero General Public License</a>.</p>';
-	$b .= '<p>You can download the <a href="'.$a->get_baseurl().'/addon/jappixmini/jappix.zip">source code</a>.</p>';
+	$b .= '<p>This site uses the jappixmini addon, which includes Jappix Mini by the <a href="'.$a->get_baseurl().'/addon/jappixmini/jappix/AUTHORS">Jappix authors</a> and is distributed under the terms of the <a href="'.$a->get_baseurl().'/addon/jappixmini/jappix/COPYING">GNU Affero General Public License</a>.</p>';
+	$b .= '<p>You can download the <a href="'.$a->get_baseurl().'/addon/jappixmini.tgz">source code of the addon</a>. The rest of Friendica is distributed under compatible licenses and can be retrieved from <a href="https://github.com/friendica/friendica">https://github.com/friendica/friendica</a> and <a href="https://github.com/friendica/friendica-addons">https://github.com/friendica/friendica-addons</a></p>';
 }

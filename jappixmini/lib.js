@@ -1,3 +1,9 @@
+//
+// Copyright 2012 "Leberwurscht" <leberwurscht@hoegners.de>
+//
+// This file is dual-licensed under the MIT license (see MIT.txt) and the AGPL license (see jappix/COPYING).
+//
+
 function jappixmini_addon_xor(str1, str2) {
     if (str1.length != str2.length) throw "not same length";
 

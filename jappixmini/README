@@ -21,16 +21,11 @@ Limitations:
  - Jabber passwords can only be encrypted if they are at most 39 characters
    long.
 
-Installation
-------------
+Notes on the license
+--------------------
 
-Jappix Mini (AGPL license) is not distributed with this addon. You need to
-install it manually:
-
-* Download latest jappix version from https://github.com/jappix/jappix/tags to
-  addon/jappixmini/jappix.zip. Really make sure you name it 'jappix.zip' - the
-  download link required by the AGPL points there.
-* Unpack the zip file to addon/jappixmini/jappix/. Do not delete jappix.zip.
-* Delete the file addon/jappixmini/jappix/index.php. This is important, because
-  otherwise the installer of Jappix would be publicly accessible. If you are
-  lucky, the file is deleted automatically by the addon.
+The license of this addon is AGPL, as required by Jappix Mini. If you make
+modifications to the addon, you are responsible for providing a proper facility
+for downloading the changed source code.
+Moreover, it may be necessary that you publish the source code of the Friendica
+application and all other used addons if you do not use standard versions.

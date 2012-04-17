@@ -7,7 +7,7 @@ This is a PHP BOSH proxy
 
 -------------------------------------------------
 
-License: MIT
+This file is dual-licensed under the MIT license (see MIT.txt) and the AGPL license (see jappix/COPYING).
 Authors: Vanaryon, Leberwurscht
 
 */
