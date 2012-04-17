@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: Facebook Connector
- * Version: 1.2
+ * Version: 1.3
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  *         Tobias Hößl <https://github.com/CatoTH/>
  */
@@ -516,7 +516,7 @@ function facebook_content(&$a) {
 		return '';
 	}
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="' 
+	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'
 		. $a->get_baseurl() . '/addon/facebook/facebook.css' . '" media="all" />' . "\r\n";
 
 	$o .= '<h3>' . t('Facebook Connect') . '</h3>';
@@ -693,6 +693,7 @@ function facebook_plugin_admin(&$a, &$o){
 	$appid  = get_config('facebook', 'appid'  );
 	$appsecret = get_config('facebook', 'appsecret' );
 	$poll_interval = get_config('facebook', 'poll_interval' );
+	$sync_comments = get_config('facebook', 'sync_comments' );
 	if (!$poll_interval) $poll_interval = FACEBOOK_DEFAULT_POLL_INTERVAL;
 	
 	$ret1 = q("SELECT `v` FROM `config` WHERE `cat` = 'facebook' AND `k` = 'appid' LIMIT 1");
@@ -712,6 +713,7 @@ function facebook_plugin_admin(&$a, &$o){
 	$o .= '<label for="fb_appid">' . t('App-ID / API-Key') . '</label><input name="appid" type="text" value="' . escape_tags($appid ? $appid : "") . '"><br style="clear: both;">';
 	$o .= '<label for="fb_appsecret">' . t('Application secret') . '</label><input name="appsecret" type="text" value="' . escape_tags($appsecret ? $appsecret : "") . '"><br style="clear: both;">';
 	$o .= '<label for="fb_poll_interval">' . sprintf(t('Polling Interval (min. %1$s minutes)'), FACEBOOK_MIN_POLL_INTERVAL) . '</label><input name="poll_interval" type="number" min="' . FACEBOOK_MIN_POLL_INTERVAL . '" value="' . $poll_interval . '"><br style="clear: both;">';
+	$o .= '<label for="fb_sync_comments">' . t('Synchronize comments (no comments on Facebook are missed, at the cost of increased system load)') . '</label><input name="sync_comments" id="fb_sync_comments" type="checkbox" ' . ($sync_comments ? 'checked' : '') . '><br style="clear: both;">';
 	$o .= '<input type="submit" name="fb_save_keys" value="' . t('Save') . '">';
 	
 	if ($working_connection) {
@@ -739,6 +741,7 @@ function facebook_plugin_admin_post(&$a, &$o){
 		set_config('facebook', 'appsecret', $_REQUEST['appsecret']);
 		$poll_interval = IntVal($_REQUEST['poll_interval']);
 		if ($poll_interval >= FACEBOOK_MIN_POLL_INTERVAL) set_config('facebook', 'poll_interval', $poll_interval);
+		set_config('facebook', 'sync_comments', (x($_REQUEST, 'sync_comments') ? 1 : 0));
 		del_config('facebook', 'app_access_token');
 		info(t('The new values have been saved.'));
 	}
@@ -1324,7 +1327,7 @@ function fb_consume_all($uid) {
 		}
 	}
 	// Get the last date
-	$lastdate = get_pconfig($uid,'facebook','lastdate');
+	$lastdate = get_pconfig($uid,'facebook','lastdate') - 10000;
 	// fetch all items since the last date
 	$j = fb_get_timeline($access_token, $lastdate);
 	if (isset($j->data)) {
@@ -1361,6 +1364,209 @@ function fb_get_photo($uid,$link) {
 	return "";
 }
 
+
+/**
+ * @param App $a
+ * @param array $user
+ * @param array $self
+ * @param string $fb_id
+ * @param bool $wall
+ * @param array $orig_post
+ * @param object $cmnt
+ */
+function fb_consume_comment(&$a, &$user, &$self, $fb_id, $wall, &$orig_post, &$cmnt) {
+
+    if(! $orig_post)
+        return;
+
+    $top_item = $orig_post['id'];
+    $uid = IntVal($user[0]['uid']);
+
+    $r = q("SELECT * FROM `item` WHERE `uid` = %d AND ( `uri` = '%s' OR `extid` = '%s' ) LIMIT 1",
+        intval($uid),
+        dbesc('fb::' . $cmnt->id),
+        dbesc('fb::' . $cmnt->id)
+    );
+    if(count($r))
+        return;
+
+    $cmntdata = array();
+    $cmntdata['parent'] = $top_item;
+    $cmntdata['verb'] = ACTIVITY_POST;
+    $cmntdata['gravity'] = 6;
+    $cmntdata['uid'] = $uid;
+    $cmntdata['wall'] = (($wall) ? 1 : 0);
+    $cmntdata['uri'] = 'fb::' . $cmnt->id;
+    $cmntdata['parent-uri'] = $orig_post['uri'];
+    if($cmnt->from->id == $fb_id) {
+        $cmntdata['contact-id'] = $self[0]['id'];
+    }
+    else {
+        $r = q("SELECT * FROM `contact` WHERE `notify` = '%s' AND `uid` = %d LIMIT 1",
+            dbesc($cmnt->from->id),
+            intval($uid)
+        );
+        if(count($r)) {
+            $cmntdata['contact-id'] = $r[0]['id'];
+            if($r[0]['blocked'] || $r[0]['readonly'])
+                return;
+        }
+    }
+    if(! x($cmntdata,'contact-id'))
+        $cmntdata['contact-id'] = $orig_post['contact-id'];
+
+    $cmntdata['app'] = 'facebook';
+    $cmntdata['created'] = datetime_convert('UTC','UTC',$cmnt->created_time);
+    $cmntdata['edited']  = datetime_convert('UTC','UTC',$cmnt->created_time);
+    $cmntdata['verb'] = ACTIVITY_POST;
+    $cmntdata['author-name'] = $cmnt->from->name;
+    $cmntdata['author-link'] = 'http://facebook.com/profile.php?id=' . $cmnt->from->id;
+    $cmntdata['author-avatar'] = 'https://graph.facebook.com/' . $cmnt->from->id . '/picture';
+    $cmntdata['body'] = $cmnt->message;
+    $item = item_store($cmntdata);
+
+    $myconv = q("SELECT `author-link`, `author-avatar`, `parent` FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `parent` != 0 ",
+        dbesc($orig_post['uri']),
+        intval($uid)
+    );
+
+    if(count($myconv)) {
+        $importer_url = $a->get_baseurl() . '/profile/' . $user[0]['nickname'];
+
+        foreach($myconv as $conv) {
+
+            // now if we find a match, it means we're in this conversation
+
+            if(! link_compare($conv['author-link'],$importer_url))
+                continue;
+
+            require_once('include/enotify.php');
+
+            $conv_parent = $conv['parent'];
+
+            notification(array(
+                'type'         => NOTIFY_COMMENT,
+                'notify_flags' => $user[0]['notify-flags'],
+                'language'     => $user[0]['language'],
+                'to_name'      => $user[0]['username'],
+                'to_email'     => $user[0]['email'],
+                'uid'          => $user[0]['uid'],
+                'item'         => $cmntdata,
+                'link'		   => $a->get_baseurl() . '/display/' . $user[0]['nickname'] . '/' . $item,
+                'source_name'  => $cmntdata['author-name'],
+                'source_link'  => $cmntdata['author-link'],
+                'source_photo' => $cmntdata['author-avatar'],
+                'verb'         => ACTIVITY_POST,
+                'otype'        => 'item',
+                'parent'       => $conv_parent,
+            ));
+
+            // only send one notification
+            break;
+        }
+    }
+}
+
+
+/**
+ * @param App $a
+ * @param array $user
+ * @param array $self
+ * @param string $fb_id
+ * @param bool $wall
+ * @param array $orig_post
+ * @param object $likes
+ */
+function fb_consume_like(&$a, &$user, &$self, $fb_id, $wall, &$orig_post, &$likes) {
+
+    $top_item = $orig_post['id'];
+    $uid = IntVal($user[0]['uid']);
+
+    if(! $orig_post)
+        return;
+
+    // If we posted the like locally, it will be found with our url, not the FB url.
+
+    $second_url = (($likes->id == $fb_id) ? $self[0]['url'] : 'http://facebook.com/profile.php?id=' . $likes->id);
+
+    $r = q("SELECT * FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `verb` = '%s'
+    	AND ( `author-link` = '%s' OR `author-link` = '%s' ) LIMIT 1",
+        dbesc($orig_post['uri']),
+        intval($uid),
+        dbesc(ACTIVITY_LIKE),
+        dbesc('http://facebook.com/profile.php?id=' . $likes->id),
+        dbesc($second_url)
+    );
+
+    if(count($r))
+        return;
+
+    $likedata = array();
+    $likedata['parent'] = $top_item;
+    $likedata['verb'] = ACTIVITY_LIKE;
+    $likedata['gravity'] = 3;
+    $likedata['uid'] = $uid;
+    $likedata['wall'] = (($wall) ? 1 : 0);
+    $likedata['uri'] = item_new_uri($a->get_baseurl(), $uid);
+    $likedata['parent-uri'] = $orig_post['uri'];
+    if($likes->id == $fb_id)
+        $likedata['contact-id'] = $self[0]['id'];
+    else {
+        $r = q("SELECT * FROM `contact` WHERE `notify` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
+            dbesc($likes->id),
+            intval($uid)
+        );
+        if(count($r))
+            $likedata['contact-id'] = $r[0]['id'];
+    }
+    if(! x($likedata,'contact-id'))
+        $likedata['contact-id'] = $orig_post['contact-id'];
+
+    $likedata['app'] = 'facebook';
+    $likedata['verb'] = ACTIVITY_LIKE;
+    $likedata['author-name'] = $likes->name;
+    $likedata['author-link'] = 'http://facebook.com/profile.php?id=' . $likes->id;
+    $likedata['author-avatar'] = 'https://graph.facebook.com/' . $likes->id . '/picture';
+
+    $author  = '[url=' . $likedata['author-link'] . ']' . $likedata['author-name'] . '[/url]';
+    $objauthor =  '[url=' . $orig_post['author-link'] . ']' . $orig_post['author-name'] . '[/url]';
+    $post_type = t('status');
+    $plink = '[url=' . $orig_post['plink'] . ']' . $post_type . '[/url]';
+    $likedata['object-type'] = ACTIVITY_OBJ_NOTE;
+
+    $likedata['body'] = sprintf( t('%1$s likes %2$s\'s %3$s'), $author, $objauthor, $plink);
+    $likedata['object'] = '<object><type>' . ACTIVITY_OBJ_NOTE . '</type><local>1</local>' .
+        '<id>' . $orig_post['uri'] . '</id><link>' . xmlify('<link rel="alternate" type="text/html" href="' . xmlify($orig_post['plink']) . '" />') . '</link><title>' . $orig_post['title'] . '</title><content>' . $orig_post['body'] . '</content></object>';
+
+    item_store($likedata);
+}
+
+/**
+ * @param App $a
+ * @param array $user
+ * @param object $entry
+ * @param array $self
+ * @param string $fb_id
+ * @param bool $wall
+ * @param array $orig_post
+ */
+function fb_consume_status(&$a, &$user, &$entry, &$self, $fb_id, $wall, &$orig_post) {
+    $uid = IntVal($user[0]['uid']);
+    $access_token = get_pconfig($uid, 'facebook', 'access_token');
+
+    $s = fetch_url('https://graph.facebook.com/' . $entry->id . '?access_token=' . $access_token);
+    if($s) {
+        $j = json_decode($s);
+        if (isset($j->comments) && isset($j->comments->data))
+            foreach ($j->comments->data as $cmnt)
+                fb_consume_comment($a, $user, $self, $fb_id, $wall, $orig_post, $cmnt);
+
+        if (isset($j->likes) && isset($j->likes->data))
+            foreach ($j->likes->data as $likers)
+                fb_consume_like($a, $user, $self, $fb_id, $wall, $orig_post, $likers);
+    }
+}
+
 /**
  * @param int $uid
  * @param object $j
@@ -1369,7 +1575,6 @@ function fb_get_photo($uid,$link) {
 function fb_consume_stream($uid,$j,$wall = false) {
 
 	$a = get_app();
-
 
 	$user = q("SELECT * FROM `user` WHERE `uid` = %d AND `account_expired` = 0 LIMIT 1",
 		intval($uid)
@@ -1390,6 +1595,9 @@ function fb_consume_stream($uid,$j,$wall = false) {
 	$blocked_apps = get_pconfig($uid,'facebook','blocked_apps');
 	$blocked_apps_arr = explode(',',$blocked_apps);
 
+	$sync_comments = get_config('facebook', 'sync_comments');
+
+    /** @var string $self_id  */
 	$self_id = get_pconfig($uid,'facebook','self_id');
 	if(! count($j->data) || (! strlen($self_id)))
 		return;
@@ -1591,169 +1799,53 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			}
 		}
 
+		/**  @var array $orig_post */
+
+        $likers_num = (isset($entry->likes) && isset($entry->likes->count) ? IntVal($entry->likes->count) : 0 );
 		if(isset($entry->likes) && isset($entry->likes->data))
 			$likers = $entry->likes->data;
 		else
 			$likers = null;
 
+        $comments_num = (isset($entry->comments) && isset($entry->comments->count) ? IntVal($entry->comments->count) : 0 );
 		if(isset($entry->comments) && isset($entry->comments->data))
 			$comments = $entry->comments->data;
 		else
 			$comments = null;
 
-		if(is_array($likers)) {
-			foreach($likers as $likes) {
+        $needs_sync = false;
 
-				if(! $orig_post)
-					continue;
-
-				// If we posted the like locally, it will be found with our url, not the FB url.
-
-				$second_url = (($likes->id == $self_id) ? $self[0]['url'] : 'http://facebook.com/profile.php?id=' . $likes->id); 
-
-				$r = q("SELECT * FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `verb` = '%s' 
-					AND ( `author-link` = '%s' OR `author-link` = '%s' ) LIMIT 1",
-					dbesc($orig_post['uri']),
-					intval($uid),
-					dbesc(ACTIVITY_LIKE),
-					dbesc('http://facebook.com/profile.php?id=' . $likes->id),
-					dbesc($second_url)
-				);
-
-				if(count($r))
-					continue;
-					
-				$likedata = array();
-				$likedata['parent'] = $top_item;
-				$likedata['verb'] = ACTIVITY_LIKE;
-				$likedata['gravity'] = 3;
-				$likedata['uid'] = $uid;
-				$likedata['wall'] = (($wall) ? 1 : 0);
-				$likedata['uri'] = item_new_uri($a->get_baseurl(), $uid);
-				$likedata['parent-uri'] = $orig_post['uri'];
-				if($likes->id == $self_id)
-					$likedata['contact-id'] = $self[0]['id'];
-				else {
-					$r = q("SELECT * FROM `contact` WHERE `notify` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
-						dbesc($likes->id),
-						intval($uid)
-					);
-					if(count($r))
-						$likedata['contact-id'] = $r[0]['id'];
-				}
-				if(! x($likedata,'contact-id'))
-					$likedata['contact-id'] = $orig_post['contact-id'];
-
-				$likedata['app'] = 'facebook';
-				$likedata['verb'] = ACTIVITY_LIKE;						
-				$likedata['author-name'] = $likes->name;
-				$likedata['author-link'] = 'http://facebook.com/profile.php?id=' . $likes->id;
-				$likedata['author-avatar'] = 'https://graph.facebook.com/' . $likes->id . '/picture';
-				
-				$author  = '[url=' . $likedata['author-link'] . ']' . $likedata['author-name'] . '[/url]';
-				$objauthor =  '[url=' . $orig_post['author-link'] . ']' . $orig_post['author-name'] . '[/url]';
-				$post_type = t('status');
-        		$plink = '[url=' . $orig_post['plink'] . ']' . $post_type . '[/url]';
-				$likedata['object-type'] = ACTIVITY_OBJ_NOTE;
-
-				$likedata['body'] = sprintf( t('%1$s likes %2$s\'s %3$s'), $author, $objauthor, $plink);
-				$likedata['object'] = '<object><type>' . ACTIVITY_OBJ_NOTE . '</type><local>1</local>' . 
-					'<id>' . $orig_post['uri'] . '</id><link>' . xmlify('<link rel="alternate" type="text/html" href="' . xmlify($orig_post['plink']) . '" />') . '</link><title>' . $orig_post['title'] . '</title><content>' . $orig_post['body'] . '</content></object>';  
-
-				item_store($likedata);
-			}
+        if(is_array($likers)) {
+			foreach($likers as $likes) fb_consume_like($a, $user, $self, $self_id, $wall, $orig_post, $likes);
+            if ($sync_comments) {
+                $r = q("SELECT COUNT(*) likes FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `verb` = '%s' AND `parent-uri` != `uri`",
+                    dbesc($orig_post['uri']),
+                    intval($uid),
+                    dbesc(ACTIVITY_LIKE)
+                );
+                if ($r[0]['likes'] < $likers_num) {
+                    logger('fb_consume_stream: missing likes found for ' . $orig_post['uri'] . ' (we have ' . $r[0]['likes'] . ' of ' . $likers_num . '). Synchronizing...', LOGGER_DEBUG);
+                    $needs_sync = true;
+                }
+            }
 		}
+
 		if(is_array($comments)) {
-			foreach($comments as $cmnt) {
-
-				if(! $orig_post)
-					continue;
-
-				$r = q("SELECT * FROM `item` WHERE `uid` = %d AND ( `uri` = '%s' OR `extid` = '%s' ) LIMIT 1",
-					intval($uid),
-					dbesc('fb::' . $cmnt->id),
-					dbesc('fb::' . $cmnt->id)
-				);
-				if(count($r))
-					continue;
-
-				$cmntdata = array();
-				$cmntdata['parent'] = $top_item;
-				$cmntdata['verb'] = ACTIVITY_POST;
-				$cmntdata['gravity'] = 6;
-				$cmntdata['uid'] = $uid;
-				$cmntdata['wall'] = (($wall) ? 1 : 0);
-				$cmntdata['uri'] = 'fb::' . $cmnt->id;
-				$cmntdata['parent-uri'] = $orig_post['uri'];
-				if($cmnt->from->id == $self_id) {
-					$cmntdata['contact-id'] = $self[0]['id'];
-				}
-				else {
-					$r = q("SELECT * FROM `contact` WHERE `notify` = '%s' AND `uid` = %d LIMIT 1",
-						dbesc($cmnt->from->id),
-						intval($uid)
-					);
-					if(count($r)) {
-						$cmntdata['contact-id'] = $r[0]['id'];
-						if($r[0]['blocked'] || $r[0]['readonly'])
-							continue;
-					}
-				}
-				if(! x($cmntdata,'contact-id'))
-					$cmntdata['contact-id'] = $orig_post['contact-id'];
-
-				$cmntdata['app'] = 'facebook';
-				$cmntdata['created'] = datetime_convert('UTC','UTC',$cmnt->created_time);
-				$cmntdata['edited']  = datetime_convert('UTC','UTC',$cmnt->created_time);
-				$cmntdata['verb'] = ACTIVITY_POST;						
-				$cmntdata['author-name'] = $cmnt->from->name;
-				$cmntdata['author-link'] = 'http://facebook.com/profile.php?id=' . $cmnt->from->id;
-				$cmntdata['author-avatar'] = 'https://graph.facebook.com/' . $cmnt->from->id . '/picture';
-				$cmntdata['body'] = $cmnt->message;
-				$item = item_store($cmntdata);			
-				
-				$myconv = q("SELECT `author-link`, `author-avatar`, `parent` FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `parent` != 0 ",
-					dbesc($orig_post['uri']),
-					intval($uid)
-				);
-
-				if(count($myconv)) {
-					$importer_url = $a->get_baseurl() . '/profile/' . $user[0]['nickname'];
-
-					foreach($myconv as $conv) {
-
-						// now if we find a match, it means we're in this conversation
-	
-						if(! link_compare($conv['author-link'],$importer_url))
-							continue;
-
-						require_once('include/enotify.php');
-								
-						$conv_parent = $conv['parent'];
-
-						notification(array(
-							'type'         => NOTIFY_COMMENT,
-							'notify_flags' => $user[0]['notify-flags'],
-							'language'     => $user[0]['language'],
-							'to_name'      => $user[0]['username'],
-							'to_email'     => $user[0]['email'],
-							'uid'          => $user[0]['uid'],
-							'item'         => $cmntdata,
-							'link'		   => $a->get_baseurl() . '/display/' . $user[0]['nickname'] . '/' . $item,
-							'source_name'  => $cmntdata['author-name'],
-							'source_link'  => $cmntdata['author-link'],
-							'source_photo' => $cmntdata['author-avatar'],
-							'verb'         => ACTIVITY_POST,
-							'otype'        => 'item',
-							'parent'       => $conv_parent,
-						));
-
-						// only send one notification
-						break;
-					}
-				}
+			foreach($comments as $cmnt) fb_consume_comment($a, $user, $self, $self_id, $wall, $orig_post, $cmnt);
+			if ($sync_comments) {
+			    $r = q("SELECT COUNT(*) comments FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `verb` = '%s' AND `parent-uri` != `uri`",
+                    dbesc($orig_post['uri']),
+                    intval($uid),
+                    ACTIVITY_POST
+                );
+			    if ($r[0]['comments'] < $comments_num) {
+                    logger('fb_consume_stream: missing comments found for ' . $orig_post['uri'] . ' (we have ' . $r[0]['comments'] . ' of ' . $comments_num . '). Synchronizing...', LOGGER_DEBUG);
+                    $needs_sync = true;
+                }
 			}
 		}
+
+		if ($needs_sync) fb_consume_status($a, $user, $entry, $self, $self_id, $wall, $orig_post);
 	}
 }
 
