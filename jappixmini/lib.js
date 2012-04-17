@@ -120,6 +120,9 @@ function jappixmini_manage_roster(contacts, autoapprove, autosubscribe) {
 			message = "Accept "+xid+" for chat?";
 			if (pstatus) message += "\n\nStatus:\n"+pstatus;
 			approve = confirm(message);
+
+			// do not ask any more
+			if (!approve) sendSubscribe(xid, "unsubscribed");
 		}
 
 		if (approve) {
