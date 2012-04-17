@@ -137,6 +137,8 @@ function jappixmini_manage_roster(contacts, autoapprove, autosubscribe) {
 	// autosubscribe
 	if (!autosubscribe) return;
 
+	console.log("Start autosubscribe.");
+
 	var get_roster = new JSJaCIQ();
 	get_roster.setType('get');
 	get_roster.setQuery(NS_ROSTER);
@@ -161,7 +163,6 @@ function jappixmini_manage_roster(contacts, autoapprove, autosubscribe) {
 			});
 
 			if ($.inArray("Friendica", groups)==-1) {
-				console.log("Add "+xid+" to Friendica group.");
 				groups.push("Friendica");
 				sendRoster(xid, null, null, groups);
 				console.log("Added "+xid+" to Friendica group.");
@@ -170,6 +171,7 @@ function jappixmini_manage_roster(contacts, autoapprove, autosubscribe) {
 			// authorize if necessary
 			if (subscription=="to") {
 				sendSubscribe(xid, 'subscribed');
+				console.log("Authorized "+xid+" automatically.");
 			}
 
 			// remove from list
@@ -188,7 +190,7 @@ function jappixmini_manage_roster(contacts, autoapprove, autosubscribe) {
 			presence.setStatus("I'm "+MINI_NICKNAME+" from ~Friendica.\n[machine-generated message]");
 
 			con.send(presence);
-			console.log("subscribed to "+xid);
+			console.log("Subscribed to "+xid+" automatically.");
 
 			// add to roster
 			var iq = new JSJaCIQ();
@@ -198,9 +200,11 @@ function jappixmini_manage_roster(contacts, autoapprove, autosubscribe) {
 			item.setAttribute('name', contacts[xid]);
 			item.appendChild(iq.buildNode('group', {'xmlns': NS_ROSTER}, "Friendica"));
 			con.send(iq);
-			console.log("added to roster: "+xid);
+			console.log("Added "+xid+" to roster.");
 		}
+		console.log("Autosubscribe done.");
 	});
+
 }
 
 function jappixmini_addon_subscribe() {
