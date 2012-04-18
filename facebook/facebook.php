@@ -1561,9 +1561,19 @@ function fb_consume_status(&$a, &$user, &$entry, &$self, $fb_id, $wall, &$orig_p
             foreach ($j->comments->data as $cmnt)
                 fb_consume_comment($a, $user, $self, $fb_id, $wall, $orig_post, $cmnt);
 
-        if (isset($j->likes) && isset($j->likes->data))
-            foreach ($j->likes->data as $likers)
-                fb_consume_like($a, $user, $self, $fb_id, $wall, $orig_post, $likers);
+        if (isset($j->likes) && isset($j->likes->data) && isset($j->likes->count)) {
+            if (count($j->likes->data) == $j->likes->count) {
+                foreach ($j->likes->data as $likers) fb_consume_like($a, $user, $self, $fb_id, $wall, $orig_post, $likers);
+            } else {
+                $t = fetch_url('https://graph.facebook.com/' . $entry->id . '/likes?access_token=' . $access_token);
+                if ($t) {
+                    $k = json_decode($t);
+                    if (isset($k->data))
+                        foreach ($k->data as $likers)
+                            fb_consume_like($a, $user, $self, $fb_id, $wall, $orig_post, $likers);
+                }
+            }
+        }
     }
 }
 
