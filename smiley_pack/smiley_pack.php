@@ -284,6 +284,9 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':pillow';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/tired/pillow.gif' . '" alt="' . ':pillow' . '" />';
 
+	$b['texts'][] = ':yawn';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/tired/yawn.gif' . '" alt="' . ':yawn' . '" />';
+
 #Fight/Flame/Violent smileys
 
 	$b['texts'][] = ':2guns';
