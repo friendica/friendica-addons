@@ -710,9 +710,9 @@ function facebook_plugin_admin(&$a, &$o){
 		} else $o .= t('The correctness of the API Key could not be detected. Somthing strange\'s going on.') . '<br>';
 	}
 	
-	$o .= '<label for="fb_appid">' . t('App-ID / API-Key') . '</label><input name="appid" type="text" value="' . escape_tags($appid ? $appid : "") . '"><br style="clear: both;">';
-	$o .= '<label for="fb_appsecret">' . t('Application secret') . '</label><input name="appsecret" type="text" value="' . escape_tags($appsecret ? $appsecret : "") . '"><br style="clear: both;">';
-	$o .= '<label for="fb_poll_interval">' . sprintf(t('Polling Interval (min. %1$s minutes)'), FACEBOOK_MIN_POLL_INTERVAL) . '</label><input name="poll_interval" type="number" min="' . FACEBOOK_MIN_POLL_INTERVAL . '" value="' . $poll_interval . '"><br style="clear: both;">';
+	$o .= '<label for="fb_appid">' . t('App-ID / API-Key') . '</label><input id="fb_appid" name="appid" type="text" value="' . escape_tags($appid ? $appid : "") . '"><br style="clear: both;">';
+	$o .= '<label for="fb_appsecret">' . t('Application secret') . '</label><input id="fb_appsecret" name="appsecret" type="text" value="' . escape_tags($appsecret ? $appsecret : "") . '"><br style="clear: both;">';
+	$o .= '<label for="fb_poll_interval">' . sprintf(t('Polling Interval (min. %1$s minutes)'), FACEBOOK_MIN_POLL_INTERVAL) . '</label><input name="poll_interval" id="fb_poll_interval" type="number" min="' . FACEBOOK_MIN_POLL_INTERVAL . '" value="' . $poll_interval . '"><br style="clear: both;">';
 	$o .= '<label for="fb_sync_comments">' . t('Synchronize comments (no comments on Facebook are missed, at the cost of increased system load)') . '</label><input name="sync_comments" id="fb_sync_comments" type="checkbox" ' . ($sync_comments ? 'checked' : '') . '><br style="clear: both;">';
 	$o .= '<input type="submit" name="fb_save_keys" value="' . t('Save') . '">';
 	
