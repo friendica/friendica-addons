@@ -169,11 +169,26 @@ function tumblr_send(&$a,&$b) {
 			$tags = implode(',',$tag_arr);
 
 		$link = "";
-		if ($b['title'] == '') {
-			// Take the description from the bookmark
-			if(preg_match("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/is",$b['body'],$matches))
-				$link = $matches[1];
+		$video = false;
+
+		// Checking for a bookmark
+		if(preg_match("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/is",$b['body'],$matches)) {
+			$link = $matches[1];
+			if ($b['title'] == '')
 				$b['title'] = html_entity_decode($matches[2],ENT_QUOTES,'UTF-8');
+
+			$body = $b['body'];
+			// splitting the text in two parts:
+			// before and after the bookmark
+			$pos = strpos($body, "[bookmark");
+			$body1 = substr($body, 0, $pos);
+			$body2 = substr($body, $pos);
+
+			// Removing the bookmark
+			$body2 = preg_replace("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/ism",'',$body2);
+			$body = $body1.$body2;
+
+			$video = ((stristr($link,'youtube')) || (stristr($link,'youtu.be')) || (stristr($mtch[1],'vimeo')));
 		}
 
 		$params = array(
@@ -183,11 +198,15 @@ function tumblr_send(&$a,&$b) {
 			'generator' => 'Friendica',
 			'tags' => $tags);
 
-		if ($link != '') {
+		if (($link != '') and $video) {
+			$params['type'] = "video";
+			$params['embed'] = $link;
+			$params['caption'] = bbcode($body);
+		} else if (($link != '') and !$video) {
 			$params['type'] = "link";
 			$params['name'] = $b['title'];
 			$params['url'] = $link;
-			$params['description'] = bbcode($b['body']);
+			$params['description'] = bbcode($body);
 		} else {
 			$params['type'] = "regular";
 			$params['title'] = $b['title'];
