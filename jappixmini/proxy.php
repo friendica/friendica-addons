@@ -13,12 +13,12 @@ Authors: Vanaryon, Leberwurscht
 */
 
 // PHP base
-define('JAPPIX_BASE', './jappix');
+define('JAPPIX_BASE', 'addon/jappixmini/jappix');
 
 // Get the configuration
-require_once('./jappix/php/functions.php');
-require_once('./jappix/php/read-main.php');
-require_once('./jappix/php/read-hosts.php');
+require_once('addon/jappixmini/jappix/php/functions.php');
+require_once('addon/jappixmini/jappix/php/read-main.php');
+require_once('addon/jappixmini/jappix/php/read-hosts.php');
 
 // Optimize the page rendering
 hideErrors();
