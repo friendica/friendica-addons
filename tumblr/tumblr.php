@@ -168,22 +168,31 @@ function tumblr_send(&$a,&$b) {
 		if(count($tag_arr))
 			$tags = implode(',',$tag_arr);
 
+		$link = "";
 		if ($b['title'] == '') {
 			// Take the description from the bookmark
 			if(preg_match("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/is",$b['body'],$matches))
-				$b['title'] = $matches[2];
+				$link = $matches[1];
+				$b['title'] = html_entity_decode($matches[2],ENT_QUOTES,'UTF-8');
 		}
 
 		$params = array(
 			'email' => $tmbl_username,
 			'password' => $tmbl_password,
-			'title' => $b['title'],
-			'type' => 'regular',
 			'format' => 'html',
 			'generator' => 'Friendica',
-			'tags' => $tags,
-			'body' => bbcode($b['body'])
-		);
+			'tags' => $tags);
+
+		if ($link != '') {
+			$params['type'] = "link";
+			$params['name'] = $b['title'],
+			$params['url'] = $link;
+			$params['description'] = bbcode($b['body']);
+		} else {
+			$params['type'] = "regular";
+			$params['title'] = $b['title'],
+			$params['body'] = bbcode($b['body']);
+		}
 
 		$x = post_url($tmbl_blog,$params);
 		$ret_code = $a->get_curl_code();
@@ -192,7 +201,7 @@ function tumblr_send(&$a,&$b) {
 		elseif($ret_code == 403)
 			logger('tumblr_send: authentication failure');
 		else
-			logger('tumblr_send: general error: ' . print_r($x,true)); 
+			logger('tumblr_send: general error: ' . print_r($x,true));
 
 	}
 }
