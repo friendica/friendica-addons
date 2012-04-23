@@ -166,8 +166,13 @@ function tumblr_send(&$a,&$b) {
 			}
 		}
 		if(count($tag_arr))
-			$tags = implode(',',$tag_arr);		
+			$tags = implode(',',$tag_arr);
 
+		if ($b['title'] == '') {
+			// Take the description from the bookmark
+			if(preg_match("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/is",$b['body'],$matches))
+				$b['title'] = $matches[2];
+		}
 
 		$params = array(
 			'email' => $tmbl_username,
