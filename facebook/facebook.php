@@ -1425,7 +1425,7 @@ function fb_consume_comment(&$a, &$user, &$self, $fb_id, $wall, &$orig_post, &$c
     $cmntdata['body'] = $cmnt->message;
     $item = item_store($cmntdata);
 
-    $myconv = q("SELECT `author-link`, `author-avatar`, `parent` FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `parent` != 0 ",
+    $myconv = q("SELECT `author-link`, `author-avatar`, `parent` FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `parent` != 0 AND `deleted` = 0",
         dbesc($orig_post['uri']),
         intval($uid)
     );
