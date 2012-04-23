@@ -185,12 +185,12 @@ function tumblr_send(&$a,&$b) {
 
 		if ($link != '') {
 			$params['type'] = "link";
-			$params['name'] = $b['title'],
+			$params['name'] = $b['title'];
 			$params['url'] = $link;
 			$params['description'] = bbcode($b['body']);
 		} else {
 			$params['type'] = "regular";
-			$params['title'] = $b['title'],
+			$params['title'] = $b['title'];
 			$params['body'] = bbcode($b['body']);
 		}
 
