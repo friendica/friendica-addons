@@ -201,7 +201,10 @@ function tumblr_send(&$a,&$b) {
 		if (($link != '') and $video) {
 			$params['type'] = "video";
 			$params['embed'] = $link;
-			$params['caption'] = bbcode($body);
+			if ($b['title'] != '')
+				$params['caption'] = '<p><strong><a href="'.$link.'">'.$b['title']."</a></strong></p>".bbcode($body);
+			else
+				$params['caption'] = bbcode($body);
 		} else if (($link != '') and !$video) {
 			$params['type'] = "link";
 			$params['name'] = $b['title'];
