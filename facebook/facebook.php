@@ -592,7 +592,7 @@ function facebook_cron($a,$b) {
 		$poll_interval = FACEBOOK_DEFAULT_POLL_INTERVAL;
 
 	if($last) {
-		$next = $last + $poll_interval;
+		$next = $last + ($poll_interval * 60);
 		if($next > time()) 
 			return;
 	}
