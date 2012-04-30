@@ -33,6 +33,7 @@ define('FACEBOOK_MAXPOSTLEN', 63206);
 define('FACEBOOK_SESSION_ERR_NOTIFICATION_INTERVAL', 259200); // 3 days
 define('FACEBOOK_DEFAULT_POLL_INTERVAL', 60); // given in minutes
 define('FACEBOOK_MIN_POLL_INTERVAL', 5);
+define('FACEBOOK_RTU_ERR_MAIL_AFTER_MINUTES', 180); // 3 hours
 
 require_once('include/security.php');
 
@@ -643,8 +644,15 @@ function facebook_cron($a,$b) {
 				logger('facebook_cron: Successful', LOGGER_NORMAL);
 			else {
 				logger('facebook_cron: Failed', LOGGER_NORMAL);
-				
-				if(strlen($a->config['admin_email']) && !get_config('facebook', 'realtime_err_mailsent')) {
+
+				$first_err = get_config('facebook', 'realtime_first_err');
+				if (!$first_err) {
+					$first_err = time();
+					set_config('facebook', 'realtime_first_err', $first_err);
+				}
+				$first_err_ago = (time() - $first_err);
+
+				if(strlen($a->config['admin_email']) && !get_config('facebook', 'realtime_err_mailsent') && $first_err_ago > (FACEBOOK_RTU_ERR_MAIL_AFTER_MINUTES * 60)) {
 					mail($a->config['admin_email'], t('Problems with Facebook Real-Time Updates'),
 						"Hi!\n\nThere's a problem with the Facebook Real-Time Updates that cannot be solved automatically. Maybe a permission issue?\n\nPlease try to re-activate it on " . $a->config["system"]["url"] . "/admin/plugins/facebook\n\nThis e-mail will only be sent once.",
 						'From: ' . t('Administrator') . '@' . $_SERVER['SERVER_NAME'] . "\n"
@@ -657,6 +665,7 @@ function facebook_cron($a,$b) {
 			}
 		} else { // !facebook_check_realtime_active()
 			del_config('facebook', 'realtime_err_mailsent');
+			del_config('facebook', 'realtime_first_err');
 		}
 	}
 	
