@@ -303,7 +303,7 @@ function twitter_post_hook(&$a,&$b) {
                     $tmp = $b['title'] . ' : '. $b['body'];
 //                    $tmp = substr($tmp, 0, 4*$max_char);
                 } else {
-                    $tmp = $b['body'] // substr($b['body'], 0, 3*$max_char);
+                    $tmp = $b['body']; // substr($b['body'], 0, 3*$max_char);
                 }
                 // if [url=bla][img]blub.png[/img][/url] get blub.png
                 $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\]\[img\](\\w+.*?)\\[\\/img\]\\[\\/url\]/i', '$2', $tmp);
