@@ -299,14 +299,14 @@ function twitter_post_hook(&$a,&$b) {
                 // we can later send to Twitter. This way we can "gain" some 
                 // information during shortening of potential links but do not 
                 // shorten all the links in a 200000 character long essay.
-//                if (! $b['title']=='') {
-//                    $tmp = $b['title'] . ' : '. $b['body'];
+                if (! $b['title']=='') {
+                    $tmp = $b['title'] . ' : '. $b['body'];
 //                    $tmp = substr($tmp, 0, 4*$max_char);
-//                } else {
-//                    $tmp = substr($b['body'], 0, 3*$max_char);
-//                }
+                } else {
+                    $tmp = $b['body'] // substr($b['body'], 0, 3*$max_char);
+                }
                 // if [url=bla][img]blub.png[/img][/url] get blub.png
-                $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\]\[img\](\\w+.*?)\\[\\/img\]\\[\\/url\]/i', '$2', $b['body']);
+                $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\]\[img\](\\w+.*?)\\[\\/img\]\\[\\/url\]/i', '$2', $tmp);
                 // preserve links to images, videos and audios
                 $tmp = preg_replace( '/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/ism', '$3', $tmp);
                 $tmp = preg_replace( '/\[\\/?img(\\s+.*?\]|\])/i', '', $tmp);
