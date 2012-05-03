@@ -24,7 +24,8 @@ function page_getpage($uid) {
 	$pagelist = array();
 
 	$contacts = q("SELECT `id`, `url`, `name`, `micro`FROM `contact`
-			WHERE `network`= 'dfrn' AND `forum` = 1 AND `uid` = %d",
+			WHERE `network`= 'dfrn' AND `forum` = 1 AND `uid` = %d
+			order by name asc ",
 			intval($uid)
 	);
 
@@ -57,4 +58,6 @@ function page_page_end($a,&$b) {
 	if (sizeof($contacts) > 0)
 		$a->page['aside'] = $page . $a->page['aside'];
 }
-?>
+
+
+
