@@ -48,12 +48,24 @@ function page_page_end($a,&$b) {
 			<h3>'.t("Forums").'</h3></div>
 			<div id="sidebar-page-list"><ul>';
 
+
 	$contacts = page_getpage($a->user['uid']);
+
+	$total_shown = 0;
+	$more = false;
 
 	foreach($contacts as $contact) {
 		$page .= '<li style="list-style-type: none;" class="tool"><img height="20" width="20" src="' . $contact['micro'] .'" alt="' . $contact['url'] . '" /> <a href="'.$a->get_baseurl().'/redir/'.$contact["id"].'" title="' . $contact['url'] . '" class="label" target="external-link">'.
 				$contact["name"]."</a></li>";
+		$total_shown ++;
+		if($total_shown == 6) {
+			$more = true;
+			$page .= '</ul><div id="hide-comments-page-widget" class="fakelink" onclick="showHideComments(\'page-widget\');" >' . t('show more') 
+				. '</div><div id="collapsed-comments-page-widget" style="display: none;" ><ul>';
+		} 
 	}
+	if($more)
+		$page .= '</div>';
 	$page .= "</ul></div></div>";
 	if (sizeof($contacts) > 0)
 		$a->page['aside'] = $page . $a->page['aside'];
