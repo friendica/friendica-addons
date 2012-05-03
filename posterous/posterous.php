@@ -2,7 +2,7 @@
 
 /**
  * Name: Posterous Post Connector
- * Description: Post to Posterous accounts
+ * Description: DISABLE THIS PLUGIN! System stability at risk! Post to Posterous accounts
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
