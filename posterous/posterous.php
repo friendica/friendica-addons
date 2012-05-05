@@ -2,7 +2,7 @@
 
 /**
  * Name: Posterous Post Connector
- * Description: Post to Posterous accounts
+ * Description: DISABLE THIS PLUGIN! System stability at risk! Post to Posterous accounts
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
@@ -138,6 +138,10 @@ function posterous_post_local(&$a,&$b) {
 
 function posterous_send(&$a,&$b) {
 
+	logger('posterous_send: invoked');
+	logger('posterous: plugin disabled. API endpoint no longer responds.');
+	return;
+
     if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
         return;
 
@@ -155,7 +159,7 @@ function posterous_send(&$a,&$b) {
 	if($pstr_username && $pstr_password && $pstr_blog) {
 
 		require_once('include/bbcode.php');
-		require_once('posterous-api.php');		
+		require_once('addon/posterous/posterous-api.php');		
 		$tag_arr = array();
 		$tags = '';
 		$x = preg_match_all('/\#\[(.*?)\](.*?)\[/',$b['tag'],$matches,PREG_SET_ORDER);
@@ -178,6 +182,8 @@ function posterous_send(&$a,&$b) {
 			'tags' => $tags,
 			'body' => bbcode($b['body'])
 		);
+
+		logger('posterous: params: ' . print_r($params,true), LOGGER_DATA);
 
 		$api = new PosterousAPI($pstr_username,$pstr_password);
 
