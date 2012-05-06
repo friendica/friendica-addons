@@ -430,6 +430,10 @@ function facebook_post(&$a) {
 	$uid = local_user();
 	if($uid){
 
+
+		$fb_limited = get_config('facebook','restrict');
+
+
 		$value = ((x($_POST,'post_by_default')) ? intval($_POST['post_by_default']) : 0);
 		set_pconfig($uid,'facebook','post_by_default', $value);
 
@@ -445,7 +449,13 @@ function facebook_post(&$a) {
 		set_pconfig($uid,'facebook','blocked_apps',escape_tags(trim($_POST['blocked_apps'])));
 
 		$linkvalue = ((x($_POST,'facebook_linking')) ? intval($_POST['facebook_linking']) : 0);
-		set_pconfig($uid,'facebook','no_linking', (($linkvalue) ? 0 : 1));
+
+		if($fb_limited) {
+			if($linkvalue == 0)
+				set_pconfig($uid,'facebook','no_linking', 1);
+		}
+		else	
+			set_pconfig($uid,'facebook','no_linking', (($linkvalue) ? 0 : 1));
 
 		// FB linkage was allowed but has just been turned off - remove all FB contacts and posts
 
@@ -495,6 +505,9 @@ function facebook_content(&$a) {
 		fb_get_friends(local_user(), true);
 		info( t('Updating contacts') . EOL);
 	}
+
+
+	$fb_limited = get_config('facebook','restrict');
 
 	$o = '';
 	
@@ -549,6 +562,15 @@ function facebook_content(&$a) {
 
 		$no_linking = get_pconfig(local_user(),'facebook','no_linking');
 		$checked = (($no_linking) ? '' : ' checked="checked" ');
+		if($fb_limited) {
+			if($no_linking) {
+				$o .= EOL . '<strong>' . t('Facebook friend linking has been disabled on this site. The following settings will have no effect.') . '</strong>' . EOL;
+				$checked .= " disabled ";
+			}
+			else {
+				$o .= EOL . '<strong>' . t('Facebook friend linking has been disabled on this site. If you disable it, you will be unable to re-enable it.') . '</strong>' . EOL;
+			}
+		}
 		$o .= '<input type="checkbox" name="facebook_linking" value="1"' . $checked . '/>' . ' ' . t('Link all your Facebook friends and conversations on this website') . EOL ;
 
 		$o .= '<p>' . t('Facebook conversations consist of your <em>profile wall</em> and your friend <em>stream</em>.');
