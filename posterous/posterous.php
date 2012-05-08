@@ -5,6 +5,7 @@
  * Description: Post to Posterous accounts
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
+ * Author: Tony Baldwin <https://free-haven.org/u/tony>
  */
 
 function posterous_install() {
@@ -59,6 +60,8 @@ function posterous_settings(&$a,&$s) {
 
 	$pstr_username = get_pconfig(local_user(), 'posterous', 'posterous_username');
 	$pstr_password = get_pconfig(local_user(), 'posterous', 'posterous_password');
+	$pstr_site_id = get_pconfig(local_user(), 'posterous', 'posterous_site_id');
+	$pstr_api_token = get_pconfig(local_user(), 'posterous', 'posterous_api_token');
 
 
     /* Add some HTML to the existing form */
@@ -78,6 +81,16 @@ function posterous_settings(&$a,&$s) {
     $s .= '<div id="posterous-password-wrapper">';
     $s .= '<label id="posterous-password-label" for="posterous-password">' . t('Posterous password') . '</label>';
     $s .= '<input id="posterous-password" type="password" name="posterous_password" value="' . $pstr_password . '" />';
+    $s .= '</div><div class="clear"></div>';
+
+    $s .= '<div id="posterous-site_id-wrapper">';
+    $s .= '<label id="posterous-site_id-label" for="posterous-site_id">' . t('Posterous site ID') . '</label>';
+    $s .= '<input id="posterous-site_id" type="text" name="posterous_site_id" value="' . $pstr_site_id . '" />';
+    $s .= '</div><div class="clear"></div>';
+
+    $s .= '<div id="posterous-api_token-wrapper">';
+    $s .= '<label id="posterous-api_token-label" for="posterous-api_token">' . t('Posterous API token') . '</label>';
+    $s .= '<input id="posterous-api_token" type="text" name="posterous_api_token" value="' . $pstr_api_token . '" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="posterous-bydefault-wrapper">';
@@ -100,6 +113,8 @@ function posterous_settings_post(&$a,&$b) {
 		set_pconfig(local_user(),'posterous','post_by_default',intval($_POST['posterous_bydefault']));
 		set_pconfig(local_user(),'posterous','posterous_username',trim($_POST['posterous_username']));
 		set_pconfig(local_user(),'posterous','posterous_password',trim($_POST['posterous_password']));
+		set_pconfig(local_user(),'posterous','posterous_site_id',trim($_POST['posterous_site_id']));
+		set_pconfig(local_user(),'posterous','posterous_api_token',trim($_POST['posterous_api_token']));
 
 	}
 
@@ -150,12 +165,13 @@ function posterous_send(&$a,&$b) {
 
 	$pstr_username = get_pconfig($b['uid'],'posterous','posterous_username');
 	$pstr_password = get_pconfig($b['uid'],'posterous','posterous_password');
-	$pstr_blog = 'http://www.posterous.com/api/write';
+	$pstr_site_id = get_pconfig($b['uid'],'posterous','posterous_site_id');
+	$pstr_blog = "http://posterous.com/api/2/sites/$pstr_site_id/posts";
+	$pstr_api_token = get_pconfig($b['uid'],'posterous','posterous_api_token');
 
 	if($pstr_username && $pstr_password && $pstr_blog) {
 
 		require_once('include/bbcode.php');
-		require_once('posterous-api.php');		
 		$tag_arr = array();
 		$tags = '';
 		$x = preg_match_all('/\#\[(.*?)\](.*?)\[/',$b['tag'],$matches,PREG_SET_ORDER);
@@ -170,18 +186,28 @@ function posterous_send(&$a,&$b) {
 
 
 		$params = array(
-			'title' => (($b['title']) ? $b['title'] : t('Post from Friendica')),
-			'type' => 'regular',
-			'autopost' => 1,
-			'source' => 'Friendica',
-			'is_private' => false,
-			'tags' => $tags,
-			'body' => bbcode($b['body'])
+			'post[title]' => (($b['title']) ? $b['title'] : t('Post from Friendica')),
+			'post[source]' => 'Friendica',
+			'post[tags]' => $tags,
+			'post[body]' => bbcode($b['body']),
+			'api_token' => $pstr_api_token,
+			'site_id' => $pstr_site_id
 		);
+	
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $pstr_blog);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+		curl_setopt($ch, CURLOPT_HEADER, false);
+		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		curl_setopt($ch, CURLOPT_USERPWD, $pstr_username . ':' . $pstr_password);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 
-		$api = new PosterousAPI($pstr_username,$pstr_password);
+		$data = curl_exec($ch);
+		$result = curl_multi_getcontent($ch);
+		curl_close($ch);
 
-		$result = $api->newpost($params);
 		logger('posterous_send: ' . $result);
 	}
 }
