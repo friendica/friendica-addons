@@ -12,13 +12,13 @@ for a in $SUBDIRS; do
 	if [[ ! -f $TGZ ]]; then
 	   	echo "Building: " $TGZ
 #		git log $a > $a/$a.log
-		tar zcvf $TGZ $a
+		tar zcvf $TGZ --exclude=.[a-z]* $a
 	else
 		TOUCHED=`find $a -cnewer $TGZ`
 		if [[ -n $TOUCHED ]]; then
 			echo "Building: " $TGZ
 #			git log $a > $a/$a.log
-			tar zcvf $TGZ $a
+			tar zcvf $TGZ --exclude=.[a-z]* $a
 		fi
 	fi
 done
