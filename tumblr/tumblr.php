@@ -202,14 +202,16 @@ function tumblr_send(&$a,&$b) {
 			$params['type'] = "video";
 			$params['embed'] = $link;
 			if ($b['title'] != '')
-				$params['caption'] = '<p><strong><a href="'.$link.'">'.$b['title']."</a></strong></p>".bbcode($body);
+				$params['caption'] = '<h1><a href="'.$link.'">'.$b['title'].
+							"</a></h1><p>".bbcode($body)."</p>";
 			else
 				$params['caption'] = bbcode($body);
 		} else if (($link != '') and !$video) {
 			$params['type'] = "link";
 			$params['name'] = $b['title'];
 			$params['url'] = $link;
-			$params['description'] = bbcode($body);
+			//$params['description'] = bbcode($body);
+			$params['description'] = bbcode($b["body"]);
 		} else {
 			$params['type'] = "regular";
 			$params['title'] = $b['title'];
