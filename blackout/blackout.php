@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: blackout
- * Description: Blackout your ~friendica node during a given period
+ * Description: Blackout your ~friendica node during a given period, requires PHP >= 5.3
  * License: MIT
  * Version: 1.0
  * Author: Tobias Diekershoff <https://diekershoff.homeunix.net/friendika/~tobias>
@@ -62,6 +62,10 @@ function blackout_redirect ($a, $b) {
     if (local_user()) {
         return true;
     }
+
+	if (! (version_compare(PHP_VERSION, '5.3.0') >= 0))
+		return true;
+
     // else...
     $mystart = get_config('blackout','begindate');
     $myend   = get_config('blackout','enddate');
