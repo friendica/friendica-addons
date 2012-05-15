@@ -60,8 +60,10 @@ function wppost_settings(&$a,&$s) {
     $checked = (($enabled) ? ' checked="checked" ' : '');
 
     $def_enabled = get_pconfig(local_user(),'wppost','post_by_default');
+    $back_enabled = get_pconfig(local_user(),'wppost','backlink');
 
     $def_checked = (($def_enabled) ? ' checked="checked" ' : '');
+    $back_checked = (($back_enabled) ? ' checked="checked" ' : '');
 
 	$wp_username = get_pconfig(local_user(), 'wppost', 'wp_username');
 	$wp_password = get_pconfig(local_user(), 'wppost', 'wp_password');
@@ -98,7 +100,7 @@ function wppost_settings(&$a,&$s) {
 
     $s .= '<div id="wppost-backlink-wrapper">';
     $s .= '<label id="wppost-backlink-label" for="wppost-backlink">' . t('Provide a backlink to the Friendica post') . '</label>';
-    $s .= '<input id="wppost-backlink" type="checkbox" name="wp_backlink" value="1" ' . $def_checked . '/>';
+    $s .= '<input id="wppost-backlink" type="checkbox" name="wp_backlink" value="1" ' . $back_checked . '/>';
 
     $s .= '</div><div class="clear"></div>';
 
