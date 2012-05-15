@@ -489,9 +489,14 @@ function statusnet_post_hook(&$a,&$b) {
                         $msg = implode(' ', $e);
 			$msg .= '... ' . $shortlink;
 		}
-		// and now tweet it :-)
-		if(strlen($msg))
-			$dent->post('statuses/update', array('status' => $msg));
+		// and now dent it :-)
+		if(strlen($msg)) {
+                    $result = $dent->post('statuses/update', array('status' => $msg));
+                    logger('statusnet_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
+                    if ($result->error) {
+                        logger('Send to StatusNet failed: "' . $result->error . '"');
+                    }
+                }
 	}
 }
 
