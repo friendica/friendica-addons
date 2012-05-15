@@ -359,7 +359,7 @@ function twitter_post_hook(&$a,&$b) {
 			$result = $tweet->post('statuses/update', array('status' => $msg));
 			logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
 			if ($result->error) {
-				logger('Send to Twitter failed: "' . $result->error . '"', LOGGER_ERROR);
+				logger('Send to Twitter failed: "' . $result->error . '"');
 			}
 		}
 	}
