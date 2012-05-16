@@ -1,0 +1,31 @@
+Addon for Friendika to include MathJax (LaTeX math syntax)
+
+This addon lets your users use LaTeX to type mathematical formulas
+within their posts. MathJax takes care about the best method for the
+browser to display the formula and provides compatibility to 99%
+of the modern browsers.
+
+You can either use the MathJax CDN online, thus loading the required javascript
+libraries from the MathJax cloud, or use a local installation of MathJax.
+Please see the plugin settings in the admin panel for configuration possibles.
+If you don't set up a local MathJax instance, leave the configuration untouched
+it will fall back to the MathJax cloud as default value.
+
+If you don't use the admin panel add mathjax to the list of active addons
+
+$a->config['system']['addon'] = [..., mathjax, ...]
+
+To select the source of the included javascript libraries add a line
+
+$a->config['mathjax']['baseurl'] = 'the URL to your MathJax installation';
+
+to your .htconfig.php file. If this line is not there, the addon assumes that
+you want to use the MathJax cloud (CDN).
+
+Please note that your usage of the CDN is governed by the "MathJax CDN Terms of
+Service" see http://www.mathjax.org/download/mathjax-cdn-terms-of-service/
+
+Author:  Tobias Diekershoff
+         http://diekershoff.homeunix.net/friendika/profile/tobias
+         email: tobias.diekershoff@gmx.net
+

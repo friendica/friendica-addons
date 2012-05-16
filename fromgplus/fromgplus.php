@@ -1,8 +1,8 @@
 <?php
 /**
  * Name: From GPlus
- * Description: Imports posts from a Google+ account and repeats them
- * Version: 1.0
+ * Description: Imports posts from a Google+ account and repeats them - not working by now
+ * Version: 0.1
  * Author: Michael Vogel <ike@piratenpartei.de>
  *
  */
@@ -36,7 +36,8 @@ function fromgplus_addon_settings(&$a,&$s) {
 	$s .= '<input id="fromgplus-account" type="text" name="fromgplus-account" value="'.$account.'" />';
 	$s .= '</div><div class="clear"></div>';
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="fromgplus-submit" name="fromgplus-submit" class="settings-submit" value="' . t('Submit') . '" /></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="fromgplus-submit" name="fromgplus-submit" 
+class="settings-submit" value="' . t('Submit') . '" /></div>';
 	$s .= '</div>';
 
 	return;
@@ -124,7 +125,8 @@ function handleattachments($item) {
 	return($post);
 }
 
-$result = file_get_contents("https://www.googleapis.com/plus/v1/people/".$google["id"]."/activities/public?alt=json&pp=1&key=".$google["key"]."&maxResults=".$google["maxfetch"]);
+$result = 
+file_get_contents("https://www.googleapis.com/plus/v1/people/".$google["id"]."/activities/public?alt=json&pp=1&key=".$google["key"]."&maxResults=".$google["maxfetch"]);
 $activities = json_decode($result);
 
 $state = array("lastid"=>'');
