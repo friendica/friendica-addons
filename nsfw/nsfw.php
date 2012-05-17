@@ -94,7 +94,8 @@ function nsfw_prepare_body(&$a,&$b) {
 	$found = false;
 	if(count($arr)) {
 		foreach($arr as $word) {
-			if(! strlen(trim($word))) {
+			$word = trim($word);
+			if(! strlen($word)) {
 				continue;
 			}
 			if(strpos($word,'/') === 0) {

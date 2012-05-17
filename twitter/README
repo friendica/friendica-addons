@@ -21,10 +21,13 @@ Online version of this document: http://ur1.ca/35mml
 
 ___ Requirements ___
 
-To use this plugin you have to register your Friendica instance as an
-_client application_ for Twitter with _read and write_ access, we do not intend
-to use Twitter for login. The registration can be done at twitter.com/apps
-and you need to have a Twitter account to do so.
+To use this plugin you have to register an application for your friendica
+instance on Twitter with
+  * read and write access
+  * don't set a callback URL
+  * we do not intend to use Twitter for login
+The registration can be done at twitter.com/apps and you need a Twitter
+account for doing so.
 
 After you registered the application you get an OAuth consumer key / secret
 pair that identifies your app, you will need them for configuration.

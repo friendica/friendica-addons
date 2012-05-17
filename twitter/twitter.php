@@ -2,7 +2,7 @@
 /**
  * Name: Twitter Connector
  * Description: Relay public postings to a connected Twitter account
- * Version: 1.0.3
+ * Version: 1.0.4
  * Author: Tobias Diekershoff <http://diekershoff.homeunix.net/friendika/profile/tobias>
  */
 
@@ -198,7 +198,7 @@ function twitter_settings(&$a,&$s) {
                         $s .= '<label id="twitter-default-label" for="twitter-default">'. t('Send public postings to Twitter by default') .'</label>';
                         $s .= '<input id="twitter-default" type="checkbox" name="twitter-default" value="1" ' . $defchecked . '/>';
 			$s .= '<div class="clear"></div>';
-                        $s .= '<label id="twitter-sendtaglinks-label" for="twitter-sendtaglinks">'.t('Send #tag links to Twitter').'</label>';
+                        $s .= '<label id="twitter-sendtaglinks-label" for="twitter-sendtaglinks">'.t('Send linked #-tags and @-names to Twitter').'</label>';
                         $s .= '<input id="twitter-sendtaglinks" type="checkbox" name="twitter-sendtaglinks" value="1" '. $linkschecked . '/>';
 			$s .= '</div><div class="clear"></div>';
 
@@ -301,9 +301,9 @@ function twitter_post_hook(&$a,&$b) {
                 // shorten all the links in a 200000 character long essay.
                 if (! $b['title']=='') {
                     $tmp = $b['title'] . ' : '. $b['body'];
-                    $tmp = substr($tmp, 0, 4*$max_char);
+//                    $tmp = substr($tmp, 0, 4*$max_char);
                 } else {
-                    $tmp = substr($b['body'], 0, 3*$max_char);
+                    $tmp = $b['body']; // substr($b['body'], 0, 3*$max_char);
                 }
                 // if [url=bla][img]blub.png[/img][/url] get blub.png
                 $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\]\[img\](\\w+.*?)\\[\\/img\]\\[\\/url\]/i', '$2', $tmp);
@@ -319,7 +319,10 @@ function twitter_post_hook(&$a,&$b) {
                 // that is, don't send if the option is not set in the 
                 // connector settings
                 if ($linksenabled=='0') {
+                    // #-tags
                     $tmp = preg_replace( '/#\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '#$2', $tmp);
+                    // @-mentions
+                    $tmp = preg_replace( '/@\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '@$2', $tmp);
                 }
                 $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/url\]/i', '$2 $1', $tmp);
                 $tmp = preg_replace( '/\[bookmark\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/bookmark\]/i', '$2 $1', $tmp);
@@ -357,7 +360,10 @@ function twitter_post_hook(&$a,&$b) {
 		// and now tweet it :-)
 		if(strlen($msg)) {
 			$result = $tweet->post('statuses/update', array('status' => $msg));
-			logger('twitter_post send' , LOGGER_DEBUG);
+			logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
+			if ($result->error) {
+				logger('Send to Twitter failed: "' . $result->error . '"');
+			}
 		}
 	}
 }

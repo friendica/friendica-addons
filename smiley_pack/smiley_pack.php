@@ -214,8 +214,8 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':basketball';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/basketball.gif' . '" alt="' . ':basketball' . '" />';
 
-	$b['texts'][] = ':bowling';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/bowling.gif' . '" alt="' . ':bowling' . '" />';
+	$b['texts'][] = '~bowling';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/bowling.gif' . '" alt="' . '~bowling' . '" />';
 
 	$b['texts'][] = ':cycling';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/cycling.gif' . '" alt="' . ':cycling' . '" />';
@@ -283,6 +283,9 @@ function smiley_pack_smilies(&$a,&$b) {
 
 	$b['texts'][] = ':pillow';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/tired/pillow.gif' . '" alt="' . ':pillow' . '" />';
+
+	$b['texts'][] = ':yawn';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/tired/yawn.gif' . '" alt="' . ':yawn' . '" />';
 
 #Fight/Flame/Violent smileys
 
