@@ -106,7 +106,7 @@ function public_server_cron($a,$b) {
         $flagposts = get_config('public_server','flagposts');
         $flagpostsexpire = get_config('public_server','flagpostsexpire');
 	if ($flagposts && $flagpostsexpire) {
-		$r = q("select uid from user where account_expired = 0 and login_date < UTC_TIMESTAMP() - INTERVAL %d DAY and account_expires_on = '0000-00-00 00:00:00' and expire = 0 and 'page-flags' = 0",intval(flagposts));
+		$r = q("select uid from user where account_expired = 0 and login_date < UTC_TIMESTAMP() - INTERVAL %d DAY and account_expires_on = '0000-00-00 00:00:00' and expire = 0 and `page-flags` = 0",intval($flagposts));
 		if(count($r)) {
 			foreach($r as $rr)
 				q("update user set expire = %d where uid = %d limit 1",
