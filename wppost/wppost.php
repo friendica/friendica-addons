@@ -60,8 +60,10 @@ function wppost_settings(&$a,&$s) {
     $checked = (($enabled) ? ' checked="checked" ' : '');
 
     $def_enabled = get_pconfig(local_user(),'wppost','post_by_default');
+    $back_enabled = get_pconfig(local_user(),'wppost','backlink');
 
     $def_checked = (($def_enabled) ? ' checked="checked" ' : '');
+    $back_checked = (($back_enabled) ? ' checked="checked" ' : '');
 
 	$wp_username = get_pconfig(local_user(), 'wppost', 'wp_username');
 	$wp_password = get_pconfig(local_user(), 'wppost', 'wp_password');
@@ -95,6 +97,11 @@ function wppost_settings(&$a,&$s) {
     $s .= '<div id="wppost-bydefault-wrapper">';
     $s .= '<label id="wppost-bydefault-label" for="wppost-bydefault">' . t('Post to WordPress by default') . '</label>';
     $s .= '<input id="wppost-bydefault" type="checkbox" name="wp_bydefault" value="1" ' . $def_checked . '/>';
+
+    $s .= '<div id="wppost-backlink-wrapper">';
+    $s .= '<label id="wppost-backlink-label" for="wppost-backlink">' . t('Provide a backlink to the Friendica post') . '</label>';
+    $s .= '<input id="wppost-backlink" type="checkbox" name="wp_backlink" value="1" ' . $back_checked . '/>';
+
     $s .= '</div><div class="clear"></div>';
 
     /* provide a submit button */
@@ -113,6 +120,7 @@ function wppost_settings_post(&$a,&$b) {
 		set_pconfig(local_user(),'wppost','wp_username',trim($_POST['wp_username']));
 		set_pconfig(local_user(),'wppost','wp_password',trim($_POST['wp_password']));
 		set_pconfig(local_user(),'wppost','wp_blog',trim($_POST['wp_blog']));
+		set_pconfig(local_user(),'wppost','backlink',trim($_POST['wp_backlink']));
 
 	}
 
@@ -189,7 +197,14 @@ function wppost_send(&$a,&$b) {
 
 		$title = '<title>' . (($b['title']) ? $b['title'] : t('Post from Friendica')) . '</title>';
 		$post = $title . bbcode($b['body']);
+
+		$wp_backlink = intval(get_pconfig($b['uid'],'wppost','backlink'));
+		if($wp_backlink && $b['plink'])
+			$post .= EOL . EOL . '<a href="' . $b['plink'] . '">' 
+				. t('Read the original post and comment stream on Friendica') . '</a>' . EOL . EOL;
+
 		$post = xmlify($post);
+
 
 		$xml = <<< EOT
 <?xml version=\"1.0\" encoding=\"utf-8\"?>

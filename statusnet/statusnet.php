@@ -2,7 +2,7 @@
 /**
  * Name: StatusNet Connector
  * Description: Relay public postings to a connected StatusNet account
- * Version: 1.0.4
+ * Version: 1.0.5
  * Author: Tobias Diekershoff <http://diekershoff.homeunix.net/friendika/profile/tobias>
  */
  
@@ -342,7 +342,7 @@ function statusnet_settings(&$a,&$s) {
 			$s .= '<label id="statusnet-default-label" for="statusnet-default">'. t('Send public postings to StatusNet by default') .'</label>';
 			$s .= '<input id="statusnet-default" type="checkbox" name="statusnet-default" value="1" ' . $defchecked . '/>';
 			$s .= '<div class="clear"></div>';
-                        $s .= '<label id="statusnet-sendtaglinks-label" for="statusnet-sendtaglinks">'.t('Send #tag links to StatusNet').'</label>';
+                        $s .= '<label id="statusnet-sendtaglinks-label" for="statusnet-sendtaglinks">'.t('Send linked #-tags and @-names to StatusNet').'</label>';
                         $s .= '<input id="statusnet-sendtaglinks" type="checkbox" name="statusnet-sendtaglinks" value="1" '. $linkschecked . '/>';
 			$s .= '</div><div class="clear"></div>';
 
@@ -435,9 +435,9 @@ function statusnet_post_hook(&$a,&$b) {
                 // shorten all the links in a 200000 character long essay.
                 if (! $b['title']=='') {
                     $tmp = $b['title'] . ' : '. $b['body'];
-                    $tmp = substr($tmp, 0, 4*$max_char);
+//                    $tmp = substr($tmp, 0, 4*$max_char);
                 } else {
-                    $tmp = substr($b['body'], 0, 3*$max_char);
+                    $tmp = $b['body']; // substr($b['body'], 0, 3*$max_char);
                 }
                 // if [url=bla][img]blub.png[/img][/url] get blub.png
                 $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\]\[img\](\\w+.*?)\\[\\/img\]\\[\\/url\]/i', '$2', $tmp);
@@ -453,7 +453,10 @@ function statusnet_post_hook(&$a,&$b) {
                 // that is, don't send if the option is not set in the 
                 // connector settings
                 if ($linksenabled=='0') {
+                    // #-tags
                     $tmp = preg_replace( '/#\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '#$2', $tmp);
+                    // @-mentions
+                    $tmp = preg_replace( '/@\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '@$2', $tmp);
                 }
                 // preserve links to webpages
                 $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/url\]/i', '$2 $1', $tmp);
@@ -489,9 +492,14 @@ function statusnet_post_hook(&$a,&$b) {
                         $msg = implode(' ', $e);
 			$msg .= '... ' . $shortlink;
 		}
-		// and now tweet it :-)
-		if(strlen($msg))
-			$dent->post('statuses/update', array('status' => $msg));
+		// and now dent it :-)
+		if(strlen($msg)) {
+                    $result = $dent->post('statuses/update', array('status' => $msg));
+                    logger('statusnet_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
+                    if ($result->error) {
+                        logger('Send to StatusNet failed: "' . $result->error . '"');
+                    }
+                }
 	}
 }
 
