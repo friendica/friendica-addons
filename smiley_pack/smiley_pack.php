@@ -2,7 +2,7 @@
 /*
  * Name: Smiley Pack
  * Description: Pack of smileys that make master too AOLish.
- * Version: 1.0
+ * Version: 1.01
  * Author: Thomas Willingham (based on Mike Macgirvin's Adult Smile template) 
  * All smileys from sites offering them as Public Domain
  * 
@@ -204,6 +204,9 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':prisoner';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sad/prisoner.gif' . '" alt="' . ':prisoner' . '" />';
 
+	$b['texts'][] = ':sigh';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sad/sigh.gif' . '" alt="' . ':sigh' . '" />';
+
 #Smoking - only one smiley in here, maybe it needs moving elsewhere?
 
 	$b['texts'][] = ':smoking';
@@ -294,6 +297,9 @@ function smiley_pack_smilies(&$a,&$b) {
 
 	$b['texts'][] = ':alienfight';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/alienfight.gif' . '" alt="' . ':alienfight' . '" />';
+
+	$b['texts'][] = ':alpha';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/alpha.png' . '" alt="' . ':alpha' . '" />';
 
 	$b['texts'][] = ':army';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/army.gif' . '" alt="' . ':army' . '" />';
