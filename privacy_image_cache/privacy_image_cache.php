@@ -112,7 +112,7 @@ function privacy_image_cache_ping_xmlize_hook(&$a, &$o) {
  * @param App $a
  * @param null|object $b
  */
-function privacy_image_cache_cron(&$a, &$b) {
+function privacy_image_cache_cron(&$a = null, &$b = null) {
     $cachetime = get_config('privacy_image_cache','cache_time');
     if (!$cachetime) $cachetime = PRIVACY_IMAGE_CACHE_DEFAULT_TIME;
 
@@ -161,7 +161,7 @@ function privacy_image_cache_plugin_admin(&$a, &$o){
  * @param App $a
  * @param null|object $o
  */
-function privacy_image_cache_plugin_admin_post(&$a, &$o){
+function privacy_image_cache_plugin_admin_post(&$a = null, &$o = null){
     check_form_security_token_redirectOnErr('/admin/plugins/privacy_image_cache', 'picsave');
 
     if (isset($_REQUEST['save'])) {
