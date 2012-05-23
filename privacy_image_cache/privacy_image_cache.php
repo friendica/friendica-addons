@@ -62,6 +62,7 @@ function privacy_image_cache_init() {
  */
 function privacy_image_cache_is_local_image($url) {
     if ($url[0] == '/') return true;
+	// links normalised - bug #431
     $baseurl = normalise_link(get_app()->get_baseurl());
 	$url = normalise_link($url);
     return (substr($url, 0, strlen($baseurl)) == $baseurl);
@@ -72,7 +73,8 @@ function privacy_image_cache_is_local_image($url) {
  * @return string
  */
 function privacy_image_cache_img_cb($matches) {
-    if (privacy_image_cache_is_local_image($matches[2])) return $matches[2];
+	// following line changed per bug #431
+    if (privacy_image_cache_is_local_image($matches[2])) return $matches[1] . $matches[2] . $matches[3];
     return $matches[1] . "/privacy_image_cache/?url=" . escape_tags(addslashes($matches[2])) . $matches[3];
 }
 
