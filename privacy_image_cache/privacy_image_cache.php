@@ -62,7 +62,8 @@ function privacy_image_cache_init() {
  */
 function privacy_image_cache_is_local_image($url) {
     if ($url[0] == '/') return true;
-    $baseurl = get_app()->get_baseurl();
+    $baseurl = normalise_link(get_app()->get_baseurl());
+	$url = normalise_link($url);
     return (substr($url, 0, strlen($baseurl)) == $baseurl);
 }
 
