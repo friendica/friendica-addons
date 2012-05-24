@@ -2,7 +2,7 @@
 /*
  * Name: Smiley Pack
  * Description: Pack of smileys that make master too AOLish.
- * Version: 1.01
+ * Version: 1.02
  * Author: Thomas Willingham (based on Mike Macgirvin's Adult Smile template) 
  * All smileys from sites offering them as Public Domain
  * 
@@ -478,7 +478,7 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/shaka.gif' . '" alt="' . ':\\ooo/' . '" />';
 
 	$b['texts'][] = ':headdesk';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/headdesk.gif' . '" alt="' . ':headdesk' . '" />';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/headbang.gif' . '" alt="' . ':headdesk' . '" />';
 
 #These two are still in core, so oldcore isn't strictly right, but we don't want too many directories
 
