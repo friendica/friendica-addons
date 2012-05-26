@@ -1,0 +1,16 @@
+
+
+
+#startpage-page-label {
+	float: left;
+	width: 200px;
+	margin-bottom: 25px;
+}
+
+#startpage-page {
+	float: left;
+}
+
+#startpage-desc {
+	margin-bottom: 10px;
+}
