@@ -48,7 +48,7 @@ function morechoice_sexpref_selector($a,&$b) {
 function morechoice_marital_selector($a,&$b) {
 	if($a->config['system']['language'] == 'en') {
 		$b[] = 'Married to my job';
-
+		$b[] = 'Polygamist';
 
 	}
 }
