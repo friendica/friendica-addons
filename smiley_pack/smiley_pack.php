@@ -5,9 +5,11 @@
  * Version: 1.02
  * Author: Thomas Willingham (based on Mike Macgirvin's Adult Smile template) 
  * All smileys from sites offering them as Public Domain
- * 
- * 
  */
+
+/**
+
+*/
 
 function smiley_pack_install() {
 	register_hook('smilie', 'addon/smiley_pack/smiley_pack.php', 'smiley_pack_smilies');
@@ -50,9 +52,6 @@ function smiley_pack_smilies(&$a,&$b) {
 
 	$b['texts'][] = ':bunny';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/bunny.gif' . '" alt="' . ':bunny' . '" />';	
-
-	$b['texts'][] = ':chick';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/chick.gif' . '" alt="' . ':chick' . '" />';	
 
 	$b['texts'][] = ':cow';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/cow.gif' . '" alt="' . ':cow' . '" />';	
