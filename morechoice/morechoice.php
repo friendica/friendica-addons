@@ -30,9 +30,29 @@ function morechoice_uninstall() {
 
 function morechoice_gender_selector($a,&$b) {
 	if($a->config['system']['language'] == 'en') {
+		$b[] = 'Androgyne';
+		$b[] = 'Bear';	
+		$b[] = 'Bigender';	
+		$b[] = 'Cross dresser';
+		$b[] = 'Drag queen';
+		$b[] = 'Eunuch';
+		$b[] = 'Faux queen';	
+		$b[] = 'Gender fluid';
+		$b[] = 'Kathoey';
+		$b[] = 'Lady';
+		$b[] = 'Lipstick lesbian';
+		$b[] = 'Metrosexual';
+		$b[] = 'Monk';
+		$b[] = 'Nun';
+		$b[] = 'Soft butch';
+		$b[] = 'Stone femme';
+		$b[] = 'Tomboy';
+		$b[] = 'Transman';
+		$b[] = 'Transwoman';
+		$b[] = 'Transvesti';
 		$b[] = 'Trigender';
-
-
+		$b[] = 'Can\'t remember';
+		$b[] = 'Hard to tell these days';
 	}
 }
 
@@ -42,7 +62,51 @@ function morechoice_sexpref_selector($a,&$b) {
 		$b[] = 'Millionaires';
 		$b[] = 'Guys with big schlongs';
 		$b[] = 'Easy women';
-
+		$b[] = 'People with impaired mobility';
+		$b[] = 'Amputees';
+		$b[] = 'Statues, mannequins and immobility';
+		$b[] = 'Pain';
+		$b[] = 'Trans men';
+		$b[] = 'Older women';
+		$b[] = 'Asphyxiation';
+		$b[] = 'In public';
+		$b[] = 'In danger';
+		$b[] = 'Pretending to be male';
+		$b[] = 'Pretending to be female';
+		$b[] = 'Breats';
+		$b[] = 'Scat';
+		$b[] = 'Crying';
+		$b[] = 'Nappies/Diapers';
+		$b[] = 'Trees';
+		$b[] = 'Vomit';
+		$b[] = 'Murder';
+		$b[] = 'Fat people';
+		$b[] = 'Feet';
+		$b[] = 'Covered in insects';
+		$b[] = 'Turning a human being into furniture';
+		$b[] = 'Elderly people';
+		$b[] = 'Transgender people';
+		$b[] = 'Criminals';
+		$b[] = 'Stealing';
+		$b[] = 'Breast milk';
+		$b[] = 'Immersing genitals in liquids';
+		$b[] = 'Giants';
+		$b[] = 'Masochism';
+		$b[] = 'Cars';
+		$b[] = 'Menstruation';
+		$b[] = 'Mucus';
+		$b[] = 'Obscene language';
+		$b[] = 'Noses';
+		$b[] = 'Navels';
+		$b[] = 'Corpses';
+		$b[] = 'Smells';
+		$b[] = 'Buttocks';
+		$b[] = 'Nonliving objects';
+		$b[] = 'Sleeping people';
+		$b[] = 'Urination';
+		$b[] = 'Eating people';
+		$b[] = 'Being eaten';
+		$b[] = 'Animals';
 	}
 }
 
@@ -50,6 +114,7 @@ function morechoice_marital_selector($a,&$b) {
 	if($a->config['system']['language'] == 'en') {
 		$b[] = 'Married to my job';
 		$b[] = 'Polygamist';
+		$b[] = 'Half married';
 
 	}
 }
