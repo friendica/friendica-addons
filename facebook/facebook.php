@@ -332,6 +332,14 @@ function fb_get_friends_sync_parsecontact($uid, $contact) {
 
     $contact_id  = $r[0]['id'];
 
+	$g = q("select def_gid from user where uid = %d limit 1",
+		intval($uid)
+	);
+	if($g && intval($g[0]['def_gid'])) {
+		require_once('include/group.php');
+		group_add_member($uid,'',$contact_id,$g[0]['def_gid']);
+	}
+
     require_once("Photo.php");
 
     $photos = import_profile_photo($r[0]['photo'],$uid,$contact_id);

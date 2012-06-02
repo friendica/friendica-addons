@@ -2,12 +2,14 @@
 /*
  * Name: Smiley Pack
  * Description: Pack of smileys that make master too AOLish.
- * Version: 1.0
+ * Version: 1.02
  * Author: Thomas Willingham (based on Mike Macgirvin's Adult Smile template) 
  * All smileys from sites offering them as Public Domain
- * 
- * 
  */
+
+/**
+
+*/
 
 function smiley_pack_install() {
 	register_hook('smilie', 'addon/smiley_pack/smiley_pack.php', 'smiley_pack_smilies');
@@ -50,9 +52,6 @@ function smiley_pack_smilies(&$a,&$b) {
 
 	$b['texts'][] = ':bunny';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/bunny.gif' . '" alt="' . ':bunny' . '" />';	
-
-	$b['texts'][] = ':chick';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/chick.gif' . '" alt="' . ':chick' . '" />';	
 
 	$b['texts'][] = ':cow';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/cow.gif' . '" alt="' . ':cow' . '" />';	
@@ -204,6 +203,9 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':prisoner';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sad/prisoner.gif' . '" alt="' . ':prisoner' . '" />';
 
+	$b['texts'][] = ':sigh';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sad/sigh.gif' . '" alt="' . ':sigh' . '" />';
+
 #Smoking - only one smiley in here, maybe it needs moving elsewhere?
 
 	$b['texts'][] = ':smoking';
@@ -294,6 +296,9 @@ function smiley_pack_smilies(&$a,&$b) {
 
 	$b['texts'][] = ':alienfight';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/alienfight.gif' . '" alt="' . ':alienfight' . '" />';
+
+	$b['texts'][] = ':alpha';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/alpha.png' . '" alt="' . ':alpha' . '" />';
 
 	$b['texts'][] = ':army';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/army.gif' . '" alt="' . ':army' . '" />';
@@ -472,7 +477,7 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/shaka.gif' . '" alt="' . ':\\ooo/' . '" />';
 
 	$b['texts'][] = ':headdesk';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/headdesk.gif' . '" alt="' . ':headdesk' . '" />';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/headbang.gif' . '" alt="' . ':headdesk' . '" />';
 
 #These two are still in core, so oldcore isn't strictly right, but we don't want too many directories
 

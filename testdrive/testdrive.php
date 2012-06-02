@@ -14,6 +14,9 @@ function testdrive_install() {
 
 	register_hook('register_account', 'addon/testdrive/testdrive.php', 'testdrive_register_account');
 	register_hook('cron', 'addon/testdrive/testdrive.php', 'testdrive_cron');
+	register_hook('enotify','addon/testdrive/testdrive.php', 'testdrive_enotify');
+	register_hook('globaldir_update','addon/testdrive/testdrive.php', 'testdrive_globaldir_update');
+
 }
 
 
@@ -21,7 +24,13 @@ function testdrive_uninstall() {
 
 	unregister_hook('register_account', 'addon/testdrive/testdrive.php', 'testdrive_register_account');
 	unregister_hook('cron', 'addon/testdrive/testdrive.php', 'testdrive_cron');
+	unregister_hook('enotify','addon/testdrive/testdrive.php', 'testdrive_enotify');
+	unregister_hook('globaldir_update','addon/testdrive/testdrive.php', 'testdrive_globaldir_update');
 
+}
+
+function testdrive_globaldir_update($a,&$b) {
+	$b['url'] = '';
 }
 
 function testdrive_register_account($a,$b) {

@@ -62,7 +62,9 @@ function privacy_image_cache_init() {
  */
 function privacy_image_cache_is_local_image($url) {
     if ($url[0] == '/') return true;
-    $baseurl = get_app()->get_baseurl();
+	// links normalised - bug #431
+    $baseurl = normalise_link(get_app()->get_baseurl());
+	$url = normalise_link($url);
     return (substr($url, 0, strlen($baseurl)) == $baseurl);
 }
 
@@ -71,7 +73,8 @@ function privacy_image_cache_is_local_image($url) {
  * @return string
  */
 function privacy_image_cache_img_cb($matches) {
-    if (privacy_image_cache_is_local_image($matches[2])) return $matches[2];
+	// following line changed per bug #431
+    if (privacy_image_cache_is_local_image($matches[2])) return $matches[1] . $matches[2] . $matches[3];
     return $matches[1] . "/privacy_image_cache/?url=" . escape_tags(addslashes($matches[2])) . $matches[3];
 }
 
@@ -112,7 +115,7 @@ function privacy_image_cache_ping_xmlize_hook(&$a, &$o) {
  * @param App $a
  * @param null|object $b
  */
-function privacy_image_cache_cron(&$a, &$b) {
+function privacy_image_cache_cron(&$a = null, &$b = null) {
     $cachetime = get_config('privacy_image_cache','cache_time');
     if (!$cachetime) $cachetime = PRIVACY_IMAGE_CACHE_DEFAULT_TIME;
 
@@ -161,7 +164,7 @@ function privacy_image_cache_plugin_admin(&$a, &$o){
  * @param App $a
  * @param null|object $o
  */
-function privacy_image_cache_plugin_admin_post(&$a, &$o){
+function privacy_image_cache_plugin_admin_post(&$a = null, &$o = null){
     check_form_security_token_redirectOnErr('/admin/plugins/privacy_image_cache', 'picsave');
 
     if (isset($_REQUEST['save'])) {
