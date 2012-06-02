@@ -1,0 +1,16 @@
+
+#libertree-enable-label, #libertree-username-label, #libertree-password-label, #libertree-bydefault-label {
+	float: left;
+	width: 200px;
+	margin-top: 10px;
+}
+
+#libertree-checkbox, #libertree-username, #libertree-password, #libertree-bydefault {
+	float: left;
+	margin-top: 10px;
+}
+
+#libertree-submit {
+	margin-top: 15px;
+}
+
