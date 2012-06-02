@@ -153,9 +153,6 @@ function posterous_post_local(&$a,&$b) {
 
 function posterous_send(&$a,&$b) {
 
-	logger('posterous_send: invoked');
-	return;
-
     if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
         return;
 
