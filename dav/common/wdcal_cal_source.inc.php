@@ -113,9 +113,10 @@ abstract class AnimexxCalSource
 	 * @abstract
 	 * @param string $sd
 	 * @param string $ed
+	 * @param string $base_path
 	 * @return array
 	 */
-	public abstract function listItemsByRange($sd, $ed);
+	public abstract function listItemsByRange($sd, $ed, $base_path);
 
 
 	/**

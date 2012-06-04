@@ -480,7 +480,7 @@ function wdcal_get_list_range_params($day, $weekstartday, $num_days, $type)
 /**
  *
  */
-function wdcal_print_feed()
+function wdcal_print_feed($base_path = "")
 {
 	$user_id = dav_compat_get_curr_user_id();
 	$cals    = array();
@@ -538,7 +538,7 @@ function wdcal_print_feed()
 			$ret['error']  = null;
 
 			foreach ($cals as $c) {
-				$events        = $c->listItemsByRange($date[0], $date[1]);
+				$events        = $c->listItemsByRange($date[0], $date[1], $base_path);
 				$ret["events"] = array_merge($ret["events"], $events);
 			}
 

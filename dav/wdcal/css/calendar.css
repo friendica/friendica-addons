@@ -515,8 +515,10 @@ border-bottom:2px solid #c3c3ff;
 	position: absolute; visibility: hidden; font-size: 9pt; top: 0px; left: 0px
 }
 .bubble-table {
-	width: 100%; TABLE-LAYOUT: fixed
+	width: 100%; TABLE-LAYOUT: fixed;
+	border-spacing: 0;
 }
+.bubble-table > tbody > tr > td { padding: 0; }
 .bubble-cell-side {
 	width: 25px
 }
