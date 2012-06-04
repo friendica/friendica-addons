@@ -85,6 +85,7 @@ class FriendicaCalSourceEvents extends AnimexxCalSource
 		$end = wdcal_mySql2PhpTime($row["data_end"]);
 		if ($row["data_allday"]) $end--;
 		$start = wdcal_mySql2PhpTime($row["data_start"]);
+		$a = get_app();
 		$arr             = array(
 			"uri"               => $row["data_uri"],
 			"subject"           => escape_tags($row["data_subject"]),
@@ -99,7 +100,7 @@ class FriendicaCalSourceEvents extends AnimexxCalSource
 			"location"          => $row["data_location"],
 			"attendees"         => '',
 			"has_notification"  => false,
-			"url_detail"        => "/dav/wdcal/" . $row["data_uri"] . "/",
+			"url_detail"        => $a->get_baseurl() . "/dav/wdcal/" . $row["data_uri"] . "/",
 			"url_edit"          => "",
 			"special_type"      => ($row["data_type"] == "birthday" ? "birthday" : ""),
 		);
@@ -109,9 +110,10 @@ class FriendicaCalSourceEvents extends AnimexxCalSource
 	/**
 	 * @param string $sd
 	 * @param string $ed
+	 * @param string $base_path
 	 * @return array
 	 */
-	public function listItemsByRange($sd, $ed)
+	public function listItemsByRange($sd, $ed, $base_path)
 	{
 		$usr_id = IntVal($this->calendarDb->uid);
 
@@ -149,8 +151,9 @@ class FriendicaCalSourceEvents extends AnimexxCalSource
 	public function getItemDetailRedirect($uri) {
 		$x = explode("@", $uri);
 		$y = explode("-", $x[0]);
+		$a = get_app();
 		if (count($y) != 3) {
-			goaway("/dav/wdcal/");
+			goaway($a->get_baseurl() . "/dav/wdcal/");
 			killme();
 		}
 		$a = get_app();

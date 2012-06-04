@@ -96,7 +96,7 @@ function wdcal_printCalendar($calendars, $calendar_preselected, $data_feed_url, 
 		$x .= '<label style="margin-left: 10px; margin-right: 10px;"><input type="checkbox" name="cals[]" value="' . $cal["ns"] . '-' . $cal["id"] . '"';
 		$found = false;
 		foreach ($calendar_preselected as $pre) if ($pre["ns"] == $cal["ns"] && $pre["id"] == $cal["id"]) $found = true;
-		if ($found) $x .= 'checked';
+		if ($found) $x .= ' checked';
 		$x .= '> ' . escape_tags($cal["displayname"]) . '</label> ';
 	}
 
@@ -109,7 +109,7 @@ function wdcal_printCalendar($calendars, $calendar_preselected, $data_feed_url, 
 
 		$x .= '<div class="ctoolbar">
 		<div class="fbutton faddbtn" style="float: right;">
-			<div><a href="/dav/settings/"><span>' . t("Settings") . ' / ' . t("Help") . '</span></a></div>
+			<div><a href="' . $a->get_baseurl() . '/dav/settings/"><span>' . t("Settings") . ' / ' . t("Help") . '</span></a></div>
 		</div>
 		<div class="btnseparator"></div>
 		<div class="fbutton showtodaybtn">
@@ -191,7 +191,7 @@ function wdcal_getDetailPage($uri, $recurr_uri)
 			$details = $cs->getItemByUri($uri);
 		} catch (Exception $e) {
 			notification(t("Error") . ": " . $e);
-			goaway("/dav/wdcal/");
+			goaway($a->get_baseurl() . "/dav/wdcal/");
 		}
 	}
 
@@ -211,7 +211,7 @@ function wdcal_postEditPage($uri, $recurr_uri)
 	$a            = get_app();
 	$localization = wdcal_local::getInstanceByUser($a->user["uid"]);
 
-	check_form_security_token_redirectOnErr("/dav/wdcal/", "caledit");
+	check_form_security_token_redirectOnErr($a->get_baseurl() . "/dav/wdcal/", "caledit");
 
 	if (isset($_REQUEST["allday"])) {
 		$start    = $localization->date_parseLocal($_REQUEST["start_date"] . " 00:00");
@@ -236,7 +236,7 @@ function wdcal_postEditPage($uri, $recurr_uri)
 		} catch (Exception $e) {
 			notification(t("Error") . ": " . $e);
 		}
-		goaway("/dav/wdcal/");
+		goaway($a->get_baseurl() . "/dav/wdcal/");
 	}
 
 }
@@ -323,8 +323,8 @@ function wdcal_getEditPage($uri, $recurr_uri)
 	}
 
 
-	$out = "<a href='/dav/wdcal/'>" . t("Go back to the calendar") . "</a><br><br>";
-	$out .= "<form method='POST' action='/dav/wdcal/$uri/edit/'><input type='hidden' name='form_security_token' value='" . get_form_security_token('caledit') . "'>\n";
+	$out = "<a href='" . $a->get_baseurl() . "/dav/wdcal/'>" . t("Go back to the calendar") . "</a><br><br>";
+	$out .= "<form method='POST' action='" . $a->get_baseurl() . "/dav/wdcal/$uri/edit/'><input type='hidden' name='form_security_token' value='" . get_form_security_token('caledit') . "'>\n";
 
 	$out .= "<label for='cal_subject'>Subject:</label>
 		<input name='color' id='cal_color' value='" . (strlen($event["Color"]) != 7 ? "#5858ff" : escape_tags($event["Color"])) . "'>
@@ -389,19 +389,19 @@ function wdcal_getSettingsPage(&$a)
 	}
 
 	if (isset($_REQUEST["save"])) {
-		check_form_security_token_redirectOnErr('/dav/settings/', 'calprop');
+		check_form_security_token_redirectOnErr($a->get_baseurl() . '/dav/settings/', 'calprop');
 		set_pconfig($a->user["uid"], "dav", "dateformat", $_REQUEST["wdcal_date_format"]);
 		info(t('The new values have been saved.'));
 	}
 
 	$o = "";
 
-	$o .= "<a href='/dav/wdcal/'>" . t("Go back to the calendar") . "</a><br><br>";
+	$o .= "<a href='" . $a->get_baseurl() . "/dav/wdcal/'>" . t("Go back to the calendar") . "</a><br><br>";
 
 	$o .= '<h3>' . t('Calendar Settings') . '</h3>';
 
 	$current_format = wdcal_local::getInstanceByUser($a->user["uid"]);
-	$o .= '<form method="POST" action="/dav/settings/">';
+	$o .= '<form method="POST" action="' . $a->get_baseurl() . '/dav/settings/">';
 	$o .= "<input type='hidden' name='form_security_token' value='" . get_form_security_token('calprop') . "'>\n";
 
 	$o .= '<label for="wdcal_date_format">' . t('Date format') . ':</label><select name="wdcal_date_format" id="wdcal_date_format" size="1">';
@@ -441,7 +441,7 @@ function wdcal_getSettingsPage(&$a)
 	<li>Add a new account</li>
 	<li>Other...</li>
 	<li>Calendar -> CalDAV-Account</li>
-	<li><b>Server:</b> " . $a->get_hostname() . "/dav/ / <b>Username/Password:</b> <em>the same as your friendica-login</em></li>
+	<li><b>Server:</b> " . $a->get_baseurl() . "/dav/ / <b>Username/Password:</b> <em>the same as your friendica-login</em></li>
 	</ul>";
 
 	$o .= '<h4>' . t('Synchronizing your Friendica-Contacts with the iPhone') . '</h4>';
@@ -452,7 +452,7 @@ function wdcal_getSettingsPage(&$a)
 	<li>Add a new account</li>
 	<li>Other...</li>
 	<li>Contacts -> CardDAV-Account</li>
-	<li><b>Server:</b> " . $a->get_hostname() . "/dav/ / <b>Username/Password:</b> <em>the same as your friendica-login</em></li>
+	<li><b>Server:</b> " . $a->get_baseurl() . "/dav/ / <b>Username/Password:</b> <em>the same as your friendica-login</em></li>
 	</ul>";
 
 	return $o;

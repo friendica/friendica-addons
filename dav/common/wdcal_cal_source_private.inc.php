@@ -249,7 +249,7 @@ class AnimexxCalSourcePrivate extends AnimexxCalSource
 		return $obj_id . ".ics";
 	}
 
-	private function jqcal2wdcal($row, $usr_id) {
+	private function jqcal2wdcal($row, $usr_id, $base_path) {
 		$evo             = new DBClass_friendica_jqcalendar($row);
 		$not             = q("SELECT COUNT(*) num FROM %s%snotifications WHERE `ical_uri` = '%s' AND `ical_recurr_uri` = '%s'",
 			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, dbesc($row["ical_uri"]), $row["ical_recurr_uri"]
@@ -274,8 +274,8 @@ class AnimexxCalSourcePrivate extends AnimexxCalSource
 			"location"          => $evo->Location,
 			"attendees"         => '',
 			"has_notification"  => ($not[0]["num"] > 0 ? 1 : 0),
-			"url_detail"        => "/dav/wdcal/" . $evo->ical_uri . "/",
-			"url_edit"          => "/dav/wdcal/" . $evo->ical_uri . "/edit/",
+			"url_detail"        => $base_path . $evo->ical_uri . "/",
+			"url_edit"          => $base_path . $evo->ical_uri . "/edit/",
 			"special_type"      => "",
 		);
 		return $arr;
@@ -284,9 +284,10 @@ class AnimexxCalSourcePrivate extends AnimexxCalSource
 	/**
 	 * @param string $sd
 	 * @param string $ed
+	 * @param string $base_path
 	 * @return array
 	 */
-	public function listItemsByRange($sd, $ed)
+	public function listItemsByRange($sd, $ed, $base_path)
 	{
 
 		$usr_id = IntVal($this->calendarDb->uid);
@@ -300,7 +301,7 @@ class AnimexxCalSourcePrivate extends AnimexxCalSource
 			$usr_id, $this->getNamespace(), $this->namespace_id, dbesc($von), dbesc($bis));
 
 		$events = array();
-		foreach ($evs as $row) $events[] = $this->jqcal2wdcal($row, $usr_id);
+		foreach ($evs as $row) $events[] = $this->jqcal2wdcal($row, $usr_id, $base_path);
 
 		return $events;
 	}

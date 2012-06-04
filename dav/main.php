@@ -29,9 +29,6 @@ function dav_module()
 function dav_init(&$a)
 {
 
-	error_reporting(E_ALL);
-	ini_set("display_errors", 1);
-
 	/*
 	 * Recommended settings:
 	 * ALTER TABLE `photo` ADD INDEX ( `contact-id` )
@@ -91,7 +88,7 @@ function dav_init(&$a)
 	if ($a->argc >= 2 && $a->argv[1] == "wdcal") {
 
 		if ($a->argc >= 3 && $a->argv[2] == "feed") {
-			wdcal_print_feed();
+			wdcal_print_feed($a->get_baseurl() . "/dav/wdcal/");
 			killme();
 		} elseif ($a->argc >= 3 && strlen($a->argv[2]) > 0) {
 			wdcal_addRequiredHeadersEdit();
@@ -133,7 +130,8 @@ function dav_init(&$a)
 // The object tree needs in turn to be passed to the server class
 	$server = new Sabre_DAV_Server($tree);
 
-	$server->setBaseUri("/" . CALDAV_URL_PREFIX);
+	$url = parse_url($a->get_baseurl());
+	$server->setBaseUri(CALDAV_URL_PREFIX);
 
 	$authPlugin = new Sabre_DAV_Auth_Plugin($authBackend, 'SabreDAV');
 	$server->addPlugin($authPlugin);
@@ -186,7 +184,7 @@ function dav_content()
 			$cals      = dav_getMyCals($a->user["uid"]);
 			$cals_show = array();
 			foreach ($cals as $e) $cals_show[] = array("ns" => $e->namespace, "id" => $e->namespace_id, "displayname" => $e->displayname);
-			$x = wdcal_printCalendar($cals, $cals_show, "/dav/wdcal/feed/", "week", 0, 200);
+			$x = wdcal_printCalendar($cals, $cals_show, $a->get_baseurl() . "/dav/wdcal/feed/", "week", 0, 200);
 		}
 	}
 	return $x;
@@ -223,7 +221,7 @@ function dav_profile_tabs_hook(&$a, &$b)
 {
 	$b["tabs"][] = array(
     	"label" => t('Calendar'),
-		"url" => "/dav/wdcal/",
+		"url" => $a->get_baseurl() . "/dav/wdcal/",
 		"sel" => "",
 		"title" => t('Extended calendar with CalDAV-support'),
 	);

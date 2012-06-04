@@ -1,8 +1,15 @@
 <?php
 
+$a = get_app();
+$uri = parse_url($a->get_baseurl());
+$path = "";
+if (strlen($uri["path"]) > 1) {
+	$path = $uri["path"] . "/";
+}
+
 define("CALDAV_SQL_DB", "");
 define("CALDAV_SQL_PREFIX", "dav_");
-define("CALDAV_URL_PREFIX", "dav/");
+define("CALDAV_URL_PREFIX", $path . "dav/");
 
 define("CALDAV_NAMESPACE_PRIVATE", 1);
 define("CALDAV_NAMESPACE_FRIENDICA_NATIVE", 2);
