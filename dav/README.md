@@ -59,3 +59,13 @@ http://laktek.com/2008/10/27/really-simple-color-picker-in-jquery/
 MIT License
 
 
+
+Author of this plugin (the parts that are not part of the libraries above):
+Tobias Hößl
+http://friendica.hoessl.eu/profile/cato
+http://www.hoessl.eu/
+tobias@hoessl.eu
+@TobiasHoessl
+
+Originally developed for:
+ Animexx e.V. / http://www.animexx.de/

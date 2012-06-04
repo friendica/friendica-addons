@@ -2,7 +2,7 @@
 
 $a = get_app();
 $uri = parse_url($a->get_baseurl());
-$path = "";
+$path = "/";
 if (strlen($uri["path"]) > 1) {
 	$path = $uri["path"] . "/";
 }
