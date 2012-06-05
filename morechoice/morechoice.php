@@ -107,6 +107,7 @@ function morechoice_sexpref_selector($a,&$b) {
 		$b[] = 'Eating people';
 		$b[] = 'Being eaten';
 		$b[] = 'Animals';
+		$b[] = 'I\'d rather just have some chocolate';
 	}
 }
 
@@ -115,6 +116,9 @@ function morechoice_marital_selector($a,&$b) {
 		$b[] = 'Married to my job';
 		$b[] = 'Polygamist';
 		$b[] = 'Half married';
-
+		$b[] = 'Living in the past';
+		$b[] = 'Pretending to be over my ex';
+		$b[] = 'Hurt in the past';
+		$b[] = 'Wallowing in self-pity';
 	}
 }
