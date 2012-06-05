@@ -389,8 +389,8 @@ function smiley_pack_fr_smilies(&$a,&$b) {
 	$b['texts'][] = ':carotte';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/carrot.gif' . '" alt="' . ':carotte' . '" />';
 
-	$b['texts'][] = ':popcorn';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/popcorn.gif' . '" alt="' . ':popcorn' . '" />';
+	$b['texts'][] = '~popcorn';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/popcorn.gif' . '" alt="' . '~popcorn' . '" />';
 
 	$b['texts'][] = ':tomate';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/tomato.gif' . '" alt="' . ':tomate' . '" />';
