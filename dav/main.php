@@ -22,6 +22,50 @@ function dav_module()
 {
 }
 
+function dav_include_files() {
+        require_once (__DIR__ . "/common/dbclasses/dbclass_animexx.class.php");
+        require_once (__DIR__ . "/common/dbclasses/dbclass.friendica.calendars.class.php");
+        require_once (__DIR__ . "/common/dbclasses/dbclass.friendica.jqcalendar.class.php");
+        require_once (__DIR__ . "/common/dbclasses/dbclass.friendica.notifications.class.php");
+        require_once (__DIR__ . "/common/dbclasses/dbclass.friendica.calendarobjects.class.php");
+
+        /*
+        require_once (__DIR__ . "/SabreDAV/lib/Sabre.includes.php");
+        require_once (__DIR__ . "/SabreDAV/lib/Sabre/VObject/includes.php");
+        require_once (__DIR__ . "/SabreDAV/lib/Sabre/DAVACL/includes.php");
+        require_once (__DIR__ . "/SabreDAV/lib/Sabre/CalDAV/includes.php");
+        */
+        require_once (__DIR__ . "/SabreDAV/lib/Sabre/autoload.php");
+
+        $tz_before = date_default_timezone_get();
+        require_once (__DIR__ . "/iCalcreator/iCalcreator.class.php");
+        date_default_timezone_set($tz_before);
+
+        require_once (__DIR__ . "/common/calendar.fnk.php");
+        require_once (__DIR__ . "/common/dav_caldav_backend_common.inc.php");
+        require_once (__DIR__ . "/common/dav_caldav_backend.inc.php");
+        require_once (__DIR__ . "/common/dav_caldav_root.inc.php");
+        require_once (__DIR__ . "/common/dav_user_calendars.inc.php");
+        require_once (__DIR__ . "/common/dav_carddav_root.inc.php");
+        require_once (__DIR__ . "/common/dav_carddav_backend_std.inc.php");
+        require_once (__DIR__ . "/common/dav_user_addressbooks.inc.php");
+        require_once (__DIR__ . "/common/virtual_cal_source_backend.inc.php");
+        require_once (__DIR__ . "/common/wdcal_configuration.php");
+        require_once (__DIR__ . "/common/wdcal_cal_source.inc.php");
+        require_once (__DIR__ . "/common/wdcal_cal_source_private.inc.php");
+
+        require_once (__DIR__ . "/dav_friendica_principal.inc.php");
+        require_once (__DIR__ . "/dav_friendica_auth.inc.php");
+        require_once (__DIR__ . "/dav_carddav_backend_friendica_community.inc.php");
+        require_once (__DIR__ . "/dav_caldav_backend_friendica.inc.php");
+        require_once (__DIR__ . "/virtual_cal_source_friendica.inc.php");
+        require_once (__DIR__ . "/wdcal_cal_source_friendicaevents.inc.php");
+        require_once (__DIR__ . "/FriendicaACLPlugin.inc.php");
+
+        require_once (__DIR__ . "/calendar.friendica.fnk.php");
+        require_once (__DIR__ . "/layout.fnk.php");
+}
+
 
 /**
  * @param App $a
@@ -34,48 +78,8 @@ function dav_init(&$a)
 	 * ALTER TABLE `photo` ADD INDEX ( `contact-id` )
 	 */
 
-	require_once (__DIR__ . "/common/dbclasses/dbclass_animexx.class.php");
-	require_once (__DIR__ . "/common/dbclasses/dbclass.friendica.calendars.class.php");
-	require_once (__DIR__ . "/common/dbclasses/dbclass.friendica.jqcalendar.class.php");
-	require_once (__DIR__ . "/common/dbclasses/dbclass.friendica.notifications.class.php");
-	require_once (__DIR__ . "/common/dbclasses/dbclass.friendica.calendarobjects.class.php");
-
-	/*
-	require_once (__DIR__ . "/SabreDAV/lib/Sabre.includes.php");
-	require_once (__DIR__ . "/SabreDAV/lib/Sabre/VObject/includes.php");
-	require_once (__DIR__ . "/SabreDAV/lib/Sabre/DAVACL/includes.php");
-	require_once (__DIR__ . "/SabreDAV/lib/Sabre/CalDAV/includes.php");
-	*/
-	require_once (__DIR__ . "/SabreDAV/lib/Sabre/autoload.php");
-
-	$tz_before = date_default_timezone_get();
-	require_once (__DIR__ . "/iCalcreator/iCalcreator.class.php");
-	date_default_timezone_set($tz_before);
-
-	require_once (__DIR__ . "/common/calendar.fnk.php");
-	require_once (__DIR__ . "/common/dav_caldav_backend_common.inc.php");
-	require_once (__DIR__ . "/common/dav_caldav_backend.inc.php");
-	require_once (__DIR__ . "/common/dav_caldav_root.inc.php");
-	require_once (__DIR__ . "/common/dav_user_calendars.inc.php");
-	require_once (__DIR__ . "/common/dav_carddav_root.inc.php");
-	require_once (__DIR__ . "/common/dav_carddav_backend_std.inc.php");
-	require_once (__DIR__ . "/common/dav_user_addressbooks.inc.php");
-	require_once (__DIR__ . "/common/virtual_cal_source_backend.inc.php");
-	require_once (__DIR__ . "/common/wdcal_configuration.php");
-	require_once (__DIR__ . "/common/wdcal_cal_source.inc.php");
-	require_once (__DIR__ . "/common/wdcal_cal_source_private.inc.php");
-
-	require_once (__DIR__ . "/dav_friendica_principal.inc.php");
-	require_once (__DIR__ . "/dav_friendica_auth.inc.php");
-	require_once (__DIR__ . "/dav_carddav_backend_friendica_community.inc.php");
-	require_once (__DIR__ . "/dav_caldav_backend_friendica.inc.php");
-	require_once (__DIR__ . "/virtual_cal_source_friendica.inc.php");
-	require_once (__DIR__ . "/wdcal_cal_source_friendicaevents.inc.php");
-	require_once (__DIR__ . "/FriendicaACLPlugin.inc.php");
-
-	require_once (__DIR__ . "/calendar.friendica.fnk.php");
-	require_once (__DIR__ . "/layout.fnk.php");
-
+	dav_include_files();
+	
 	if (false) {
 		dbg(true);
 		error_reporting(E_ALL);
@@ -197,6 +201,7 @@ function dav_content()
  */
 function dav_event_created_hook(&$a, &$b)
 {
+	dav_include_files();
 	// @TODO Updating the cache instead of completely invalidating and rebuilding it
 	FriendicaVirtualCalSourceBackend::invalidateCache($a->user["uid"], CALDAV_FRIENDICA_CONTACTS);
 	FriendicaVirtualCalSourceBackend::invalidateCache($a->user["uid"], CALDAV_FRIENDICA_MINE);
@@ -208,6 +213,7 @@ function dav_event_created_hook(&$a, &$b)
  */
 function dav_event_updated_hook(&$a, &$b)
 {
+	dav_include_files();
 	// @TODO Updating the cache instead of completely invalidating and rebuilding it
 	FriendicaVirtualCalSourceBackend::invalidateCache($a->user["uid"], CALDAV_FRIENDICA_CONTACTS);
 	FriendicaVirtualCalSourceBackend::invalidateCache($a->user["uid"], CALDAV_FRIENDICA_MINE);
