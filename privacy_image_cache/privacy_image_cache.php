@@ -75,7 +75,7 @@ function privacy_image_cache_is_local_image($url) {
 function privacy_image_cache_img_cb($matches) {
 	// following line changed per bug #431
     if (privacy_image_cache_is_local_image($matches[2])) return $matches[1] . $matches[2] . $matches[3];
-    return $matches[1] . "/privacy_image_cache/?url=" . escape_tags(addslashes($matches[2])) . $matches[3];
+    return $matches[1] . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($matches[2]))) . $matches[3];
 }
 
 /**
@@ -94,9 +94,9 @@ function privacy_image_cache_bbcode_hook(&$a, &$o) {
 function privacy_image_cache_display_item_hook(&$a, &$o) {
     if (isset($o["output"])) {
         if (isset($o["output"]["thumb"]) && !privacy_image_cache_is_local_image($o["output"]["thumb"]))
-            $o["output"]["thumb"] = "/privacy_image_cache/?url=" . escape_tags(addslashes($o["output"]["thumb"]));
+            $o["output"]["thumb"] = "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["output"]["thumb"])));
         if (isset($o["output"]["author-avatar"]) && !privacy_image_cache_is_local_image($o["output"]["author-avatar"]))
-            $o["output"]["author-avatar"] = "/privacy_image_cache/?url=" . escape_tags(addslashes($o["output"]["author-avatar"]));
+            $o["output"]["author-avatar"] = "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["output"]["author-avatar"])));
     }
 }
 
@@ -107,7 +107,7 @@ function privacy_image_cache_display_item_hook(&$a, &$o) {
  */
 function privacy_image_cache_ping_xmlize_hook(&$a, &$o) {
     if ($o["photo"] != "" && !privacy_image_cache_is_local_image($o["photo"]))
-        $o["photo"] = "/privacy_image_cache/?url=" . escape_tags(addslashes($o["photo"]));
+        $o["photo"] = "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["photo"])));
 }
 
 
