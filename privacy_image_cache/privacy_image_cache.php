@@ -34,20 +34,48 @@ function privacy_image_cache_init() {
     $r = q("SELECT * FROM `photo` WHERE `resource-id` = '%s' LIMIT 1", $urlhash );
     if (count($r)) {
         $img_str = $r[0]['data'];
+		$mime = $r[0]["desc"];
+		if ($mime == "") $mime = "image/jpeg";
     }
     else {
         require_once("Photo.php");
 
         $img_str = fetch_url($_REQUEST['url'],true);
-        $img = new Photo($img_str);
-        if($img->is_valid()) {
-            $img->store(0, 0, $urlhash, $_REQUEST['url'], '', 100);
-            $img_str = $img->imageString();
-        }
+		if (substr($img_str, 0, 6) == "GIF89a") {
+			$mime = "image/gif";
+			$image = @imagecreatefromstring($img_str);
+
+			if($image === FALSE) die();
+
+			q("INSERT INTO `photo`
+			( `uid`, `contact-id`, `guid`, `resource-id`, `created`, `edited`, `filename`, `album`, `height`, `width`, `desc`, `data`, `scale`, `profile`, `allow_cid`, `allow_gid`, `deny_cid`, `deny_gid` )
+			VALUES ( %d, %d, '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', %d, %d, '%s', '%s', '%s', '%s' )",
+				0, 0, get_guid(), dbesc($urlhash),
+				dbesc(datetime_convert()),
+				dbesc(datetime_convert()),
+				dbesc(basename(dbesc($_REQUEST["url"]))),
+				dbesc(''),
+				intval(imagesy($image)),
+				intval(imagesx($image)),
+				'image/gif',
+				dbesc($img_str),
+				100,
+				intval(0),
+				dbesc(''), dbesc(''), dbesc(''), dbesc('')
+			);
+
+		} else {
+			$img = new Photo($img_str);
+			if($img->is_valid()) {
+				$img->store(0, 0, $urlhash, $_REQUEST['url'], '', 100);
+				$img_str = $img->imageString();
+			}
+			$mime = "image/jpeg";
+		}
     }
 
 
-    header("Content-type: image/jpeg");
+    header("Content-type: $mime");
     header("Expires: " . gmdate("D, d M Y H:i:s", time() + (3600*24)) . " GMT");
     header("Cache-Control: max-age=" . (3600*24));
 
@@ -75,7 +103,7 @@ function privacy_image_cache_is_local_image($url) {
 function privacy_image_cache_img_cb($matches) {
 	// following line changed per bug #431
     if (privacy_image_cache_is_local_image($matches[2])) return $matches[1] . $matches[2] . $matches[3];
-    return $matches[1] . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($matches[2]))) . $matches[3];
+    return $matches[1] . get_app()->get_baseurl() . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($matches[2]))) . $matches[3];
 }
 
 /**
@@ -94,9 +122,9 @@ function privacy_image_cache_bbcode_hook(&$a, &$o) {
 function privacy_image_cache_display_item_hook(&$a, &$o) {
     if (isset($o["output"])) {
         if (isset($o["output"]["thumb"]) && !privacy_image_cache_is_local_image($o["output"]["thumb"]))
-            $o["output"]["thumb"] = "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["output"]["thumb"])));
+            $o["output"]["thumb"] = $a->get_baseurl() . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["output"]["thumb"])));
         if (isset($o["output"]["author-avatar"]) && !privacy_image_cache_is_local_image($o["output"]["author-avatar"]))
-            $o["output"]["author-avatar"] = "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["output"]["author-avatar"])));
+            $o["output"]["author-avatar"] = $a->get_baseurl() . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["output"]["author-avatar"])));
     }
 }
 
@@ -107,7 +135,7 @@ function privacy_image_cache_display_item_hook(&$a, &$o) {
  */
 function privacy_image_cache_ping_xmlize_hook(&$a, &$o) {
     if ($o["photo"] != "" && !privacy_image_cache_is_local_image($o["photo"]))
-        $o["photo"] = "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["photo"])));
+        $o["photo"] = $a->get_baseurl() . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["photo"])));
 }
 
 
