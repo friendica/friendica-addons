@@ -44,12 +44,12 @@ function irc_addon_settings(&$a,&$s) {
 	$s .= '<h3>' . t('IRC Settings') . '</h3>';
 	$s .= '<div id="irc-chans">';
 	$s .= '<label id="irc-auto-label" for="autochans">' . t('Channel(s) to auto connect (comma separated)') . '</label>';
-	$s .= '<input id="autochans" type="text" name="autochans" value="' . $autochans .'" />';
+	$s .= '<input id="irc-autochans" type="text" name="autochans" value="' . $autochans .'" />';
 	$s .= '</div><div class="clear"></div>';
 
-	$s .= '<div id="irc-chans">';
+	$s .= '<div id="irc-popchans">';
 	$s .= '<label id="irc-pop-label" for="sitechats">' . t('Popular Channels (comma separated)') . '</label>';
-	$s .= '<input id="sitechats" type="text" name="sitechats" value="' . $sitechats.'" />';
+	$s .= '<input id="irc-sitechats" type="text" name="sitechats" value="' . $sitechats.'" />';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="irc-submit" name="irc-submit" class="settings-submit" value="' . t('Submit') . '" /></div></div>';
