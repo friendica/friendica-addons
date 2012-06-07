@@ -97,6 +97,7 @@ function wppost_settings(&$a,&$s) {
     $s .= '<div id="wppost-bydefault-wrapper">';
     $s .= '<label id="wppost-bydefault-label" for="wppost-bydefault">' . t('Post to WordPress by default') . '</label>';
     $s .= '<input id="wppost-bydefault" type="checkbox" name="wp_bydefault" value="1" ' . $def_checked . '/>';
+    $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="wppost-backlink-wrapper">';
     $s .= '<label id="wppost-backlink-label" for="wppost-backlink">' . t('Provide a backlink to the Friendica post') . '</label>';

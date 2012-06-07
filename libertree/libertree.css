@@ -1,11 +1,11 @@
 
-#libertree-enable-label, #libertree-username-label, #libertree-password-label, #libertree-bydefault-label {
+#libertree-enable-label, #libertree-api_token-label, #libertree-url-label, #libertree-bydefault-label {
 	float: left;
 	width: 200px;
 	margin-top: 10px;
 }
 
-#libertree-checkbox, #libertree-username, #libertree-password, #libertree-bydefault {
+#libertree-checkbox, #libertree-api_token, #libertree-url, #libertree-bydefault {
 	float: left;
 	margin-top: 10px;
 }
