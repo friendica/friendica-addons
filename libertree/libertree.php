@@ -139,7 +139,6 @@ function libertree_post_local(&$a,&$b) {
 function libertree_send(&$a,&$b) {
 
 	logger('libertree_send: invoked');
-	return;
 
     if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
         return;
@@ -175,21 +174,10 @@ function libertree_send(&$a,&$b) {
 			'text' => bb2diaspora($b['body'])
 		//	'token' => $ltree_api_token
 		);
-	
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $ltree_blog);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-		curl_setopt($ch, CURLOPT_HEADER, false);
-		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-		curl_setopt($ch, CURLOPT_POST, true);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 
-		$data = curl_exec($ch);
-		$result = curl_multi_getcontent($ch);
-		curl_close($ch);
+		$result = post_url($ltree_blog,$params);
+		logger('libertree: ' . $result);	
 
-		logger('libertree_send: ' . $result);
 	}
 }
 
