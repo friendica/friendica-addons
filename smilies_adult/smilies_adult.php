@@ -35,4 +35,8 @@ function smilies_adult_smilies(&$a,&$b) {
 
 	$b['texts'][] = ':drunk';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smilies_adult/icons/drunk.gif' . '" alt="' . ':drunk' . '" />';
+
+	$b['texts'][] = ':finger';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smilies_adult/icons/finger.gif' . '" alt="' . ':finger' . '" />';
+
 }
