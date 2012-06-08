@@ -1,11 +1,11 @@
 /* irc css */
-#irc-chans, {
+#irc-auto-label, #irc-pop-label{
 	float: left;
 	width: 200px;
 	margin-top: 10px;
 }
 
-#irc-checkbox {
+#irc-autochans, #irc-sitechats {
 	float: left;
 	margin-top: 10px;
 }

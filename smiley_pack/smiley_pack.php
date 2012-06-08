@@ -2,12 +2,14 @@
 /*
  * Name: Smiley Pack
  * Description: Pack of smileys that make master too AOLish.
- * Version: 1.02
+ * Version: 1.04
  * Author: Thomas Willingham (based on Mike Macgirvin's Adult Smile template) 
  * All smileys from sites offering them as Public Domain
- * 
- * 
  */
+
+/**
+
+*/
 
 function smiley_pack_install() {
 	register_hook('smilie', 'addon/smiley_pack/smiley_pack.php', 'smiley_pack_smilies');
@@ -50,9 +52,6 @@ function smiley_pack_smilies(&$a,&$b) {
 
 	$b['texts'][] = ':bunny';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/bunny.gif' . '" alt="' . ':bunny' . '" />';	
-
-	$b['texts'][] = ':chick';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/chick.gif' . '" alt="' . ':chick' . '" />';	
 
 	$b['texts'][] = ':cow';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/animals/cow.gif' . '" alt="' . ':cow' . '" />';	
@@ -142,9 +141,6 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':affro';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/cool/affro.gif' . '" alt="' . ':affro' . '" />';	
 
-	$b['texts'][] = ':cool';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/cool/cool.gif' . '" alt="' . ':cool' . '" />';	
-
 #Devil/Angel Smileys
 
 	$b['texts'][] = ':angel';
@@ -181,9 +177,6 @@ function smiley_pack_smilies(&$a,&$b) {
 
 	$b['texts'][] = ':fartinbed';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/disgust/fartinbed.gif' . '" alt="' . ':fartinbed' . '" />';
-
-	$b['texts'][] = ':vomit';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/disgust/vomit.gif' . '" alt="' . ':vomit' . '" />';
 
 	$b['texts'][] = ':fartblush';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/disgust/fartblush.gif' . '" alt="' . ':fartblush' . '" />';
@@ -229,9 +222,6 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':fencing';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/fencing.gif' . '" alt="' . ':fencing' . '" />';
 
-	$b['texts'][] = ':golf';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/golf.gif' . '" alt="' . ':golf' . '" />';
-
 	$b['texts'][] = ':juggling';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/juggling.gif' . '" alt="' . ':juggling' . '" />';
 
@@ -241,18 +231,12 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':archery';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/archery.gif' . '" alt="' . ':archery' . '" />';
 
-	$b['texts'][] = ':football';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/football.gif' . '" alt="' . ':football' . '" />';
-
 	$b['texts'][] = ':surfing';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/surfing.gif' . '" alt="' . ':surfing' . '" />';
 
 	$b['texts'][] = ':snooker';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/snooker.gif' . '" alt="' . ':snooker' . '" />';
   
-	$b['texts'][] = ':tennis';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/tennis.gif' . '" alt="' . ':tennis' . '" />';
-
 	$b['texts'][] = ':horseriding';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/horseriding.gif' . '" alt="' . ':horseriding' . '" />';
 
@@ -298,9 +282,6 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':alienfight';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/alienfight.gif' . '" alt="' . ':alienfight' . '" />';
 
-	$b['texts'][] = ':alpha';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/alpha.png' . '" alt="' . ':alpha' . '" />';
-
 	$b['texts'][] = ':army';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/army.gif' . '" alt="' . ':army' . '" />';
 
@@ -333,21 +314,6 @@ function smiley_pack_smilies(&$a,&$b) {
 
 	$b['texts'][] = ':machinegun';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/machinegun.gif' . '" alt="' . ':machinegun' . '" />';
-
-	$b['texts'][] = ':marine';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/marine.gif' . '" alt="' . ':marine' . '" />';
-
-	$b['texts'][] = ':sabre';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/sabre.gif' . '" alt="' . ':sabre' . '" />';
-
-	$b['texts'][] = ':tank';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/tank.gif' . '" alt="' . ':tank' . '" />';
-
-	$b['texts'][] = ':viking';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/viking.gif' . '" alt="' . ':viking' . '" />';
-
-	$b['texts'][] = ':gangs';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/gangs.gif' . '" alt="' . ':gangs' . '" />';
 
 	$b['texts'][] = ':acid';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/acid.gif' . '" alt="' . ':acid' . '" />';
@@ -439,23 +405,15 @@ function smiley_pack_smilies(&$a,&$b) {
 
 #Music smileys
 
-	$b['texts'][] = ':dj';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/music/dj.gif' . '" alt="' . ':dj' . '" />';
-
 	$b['texts'][] = ':drums';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/music/drums.gif' . '" alt="' . ':drums' . '" />';
 
-	$b['texts'][] = ':elvis';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/music/elvis.gif' . '" alt="' . ':elivs' . '" />';
 
 	$b['texts'][] = ':guitar';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/music/guitar.gif' . '" alt="' . ':guitar' . '" />';
 
 	$b['texts'][] = ':trumpet';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/music/trumpet.gif' . '" alt="' . ':trumpet' . '" />';
-
-	$b['texts'][] = ':violin';
-	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/music/violin.gif' . '" alt="' . ':violin' . '" />';
 
 #Smileys that used to be in core
 
@@ -488,7 +446,50 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':-o';
 	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/oldcore/surprised.gif' . '" alt="' . ':-o' . '" />';
 
+# Regex killers - stick these at the bottom so they appear at the end of the English and 
+# at the start of $OtherLanguage.
+
+	$b['texts'][] = ':cool';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/cool/cool.gif' . '" alt="' . ':cool' . '" />';	
+
+	$b['texts'][] = ':vomit';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/disgust/vomit.gif' . '" alt="' . ':vomit' . '" />';
+
+	$b['texts'][] = ':golf';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/golf.gif' . '" alt="' . ':golf' . '" />';
+	
+	$b['texts'][] = ':football';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/football.gif' . '" alt="' . ':football' . '" />';
+
+	$b['texts'][] = ':tennis';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/sport/tennis.gif' . '" alt="' . ':tennis' . '" />';
+
+	$b['texts'][] = ':alpha';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/alpha.png' . '" alt="' . ':alpha' . '" />';
+
+	$b['texts'][] = ':marine';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/marine.gif' . '" alt="' . ':marine' . '" />';
+
+	$b['texts'][] = ':sabre';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/sabre.gif' . '" alt="' . ':sabre' . '" />';
+
+	$b['texts'][] = ':tank';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/tank.gif' . '" alt="' . ':tank' . '" />';
+
+	$b['texts'][] = ':viking';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/viking.gif' . '" alt="' . ':viking' . '" />';
+
+	$b['texts'][] = ':gangs';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/fight/gangs.gif' . '" alt="' . ':gangs' . '" />';
 
 
+	$b['texts'][] = ':dj';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/music/dj.gif' . '" alt="' . ':dj' . '" />';
 
+
+	$b['texts'][] = ':elvis';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/music/elvis.gif' . '" alt="' . ':elivs' . '" />';
+
+	$b['texts'][] = ':violin';
+	$b['icons'][] = '<img src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/music/violin.gif' . '" alt="' . ':violin' . '" />';
 }
