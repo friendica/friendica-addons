@@ -30,7 +30,12 @@ function privacy_image_cache_module() {}
 
 
 function privacy_image_cache_init() {
-    $urlhash = 'pic:' . sha1($_REQUEST['url']);
+	if(function_exists('header_remove')) {
+		header_remove('Pragma');
+		header_remove('pragma');
+	}
+
+	$urlhash = 'pic:' . sha1($_REQUEST['url']);
     $r = q("SELECT * FROM `photo` WHERE `resource-id` = '%s' LIMIT 1", $urlhash );
     if (count($r)) {
         $img_str = $r[0]['data'];
@@ -90,6 +95,8 @@ function privacy_image_cache_init() {
  */
 function privacy_image_cache_is_local_image($url) {
     if ($url[0] == '/') return true;
+	if (strtolower(substr($url, 0, 5)) == "data:") return true;
+
 	// links normalised - bug #431
     $baseurl = normalise_link(get_app()->get_baseurl());
 	$url = normalise_link($url);
