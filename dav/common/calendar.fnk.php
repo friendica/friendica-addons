@@ -477,6 +477,67 @@ function wdcal_get_list_range_params($day, $weekstartday, $num_days, $type)
 }
 
 
+
+
+
+/**
+ * @param string $uri
+ * @param string $recurr_uri
+ * @param int $uid
+ * @param string $timezone
+ * @param string $goaway_url
+ * @return string
+ */
+function wdcal_postEditPage($uri, $recurr_uri = "", $uid = 0, $timezone = "", $goaway_url = "")
+{
+	$uid = IntVal($uid);
+	$localization = wdcal_local::getInstanceByUser($uid);
+
+	if (isset($_REQUEST["allday"])) {
+		$start    = $localization->date_parseLocal($_REQUEST["start_date"] . " 00:00");
+		$end      = $localization->date_parseLocal($_REQUEST["end_date"] . " 20:00");
+		$isallday = true;
+	} else {
+		$start    = $localization->date_parseLocal($_REQUEST["start_date"] . " " . $_REQUEST["start_time"]);
+		$end      = $localization->date_parseLocal($_REQUEST["end_date"] . " " . $_REQUEST["end_time"]);
+		$isallday = false;
+	}
+
+	if ($uri == "new") {
+		$cals = dav_getMyCals($uid);
+		foreach ($cals as $c) {
+			$cs = wdcal_calendar_factory($uid, $c->namespace, $c->namespace_id);
+			$p = $cs->getPermissionsCalendar($uid);
+
+			if ($p["write"]) try {
+				$cs->addItem($start, $end, dav_compat_getRequestVar("subject"), $isallday, dav_compat_parse_text_serverside("wdcal_desc"),
+					dav_compat_getRequestVar("location"), dav_compat_getRequestVar("color"), $timezone,
+					isset($_REQUEST["notification"]), $_REQUEST["notification_type"], $_REQUEST["notification_value"]);
+			} catch (Exception $e) {
+				notification(t("Error") . ": " . $e);
+			}
+			dav_compat_redirect($goaway_url);
+		}
+
+	} else {
+		$cals = dav_getMyCals($uid);
+		foreach ($cals as $c) {
+			$cs = wdcal_calendar_factory($uid, $c->namespace, $c->namespace_id);
+			$p  = $cs->getPermissionsItem($uid, $uri, $recurr_uri);
+			if ($p["write"]) try {
+				$cs->updateItem($uri, $start, $end,
+					dav_compat_getRequestVar("subject"), $isallday, dav_compat_parse_text_serverside("wdcal_desc"),
+					dav_compat_getRequestVar("location"), dav_compat_getRequestVar("color"), $timezone,
+					isset($_REQUEST["notification"]), $_REQUEST["notification_type"], $_REQUEST["notification_value"]);
+			} catch (Exception $e) {
+				notification(t("Error") . ": " . $e);
+			}
+			dav_compat_redirect($goaway_url);
+		}
+	}
+}
+
+
 /**
  *
  */
