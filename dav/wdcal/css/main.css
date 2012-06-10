@@ -107,10 +107,11 @@ a.imgbtn span.Delete
 	background: url(./images/icons/delete.png) no-repeat 3px 4px;
 }
 
-span.addcal
+a.addcal
 {
     padding-left:20px;
 	background: url(./images/icons/date_add.png)  no-repeat 1px 50%;
+	color: black;
 }
 span.showdayview
 {
