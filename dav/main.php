@@ -22,48 +22,49 @@ function dav_module()
 {
 }
 
-function dav_include_files() {
-        require_once (__DIR__ . "/common/dbclasses/dbclass_animexx.class.php");
-        require_once (__DIR__ . "/common/dbclasses/dbclass.friendica.calendars.class.php");
-        require_once (__DIR__ . "/common/dbclasses/dbclass.friendica.jqcalendar.class.php");
-        require_once (__DIR__ . "/common/dbclasses/dbclass.friendica.notifications.class.php");
-        require_once (__DIR__ . "/common/dbclasses/dbclass.friendica.calendarobjects.class.php");
+function dav_include_files()
+{
+	require_once (__DIR__ . "/common/dbclasses/dbclass_animexx.class.php");
+	require_once (__DIR__ . "/common/dbclasses/dbclass.friendica.calendars.class.php");
+	require_once (__DIR__ . "/common/dbclasses/dbclass.friendica.jqcalendar.class.php");
+	require_once (__DIR__ . "/common/dbclasses/dbclass.friendica.notifications.class.php");
+	require_once (__DIR__ . "/common/dbclasses/dbclass.friendica.calendarobjects.class.php");
 
-        /*
-        require_once (__DIR__ . "/SabreDAV/lib/Sabre.includes.php");
-        require_once (__DIR__ . "/SabreDAV/lib/Sabre/VObject/includes.php");
-        require_once (__DIR__ . "/SabreDAV/lib/Sabre/DAVACL/includes.php");
-        require_once (__DIR__ . "/SabreDAV/lib/Sabre/CalDAV/includes.php");
-        */
-        require_once (__DIR__ . "/SabreDAV/lib/Sabre/autoload.php");
+	/*
+			require_once (__DIR__ . "/SabreDAV/lib/Sabre.includes.php");
+			require_once (__DIR__ . "/SabreDAV/lib/Sabre/VObject/includes.php");
+			require_once (__DIR__ . "/SabreDAV/lib/Sabre/DAVACL/includes.php");
+			require_once (__DIR__ . "/SabreDAV/lib/Sabre/CalDAV/includes.php");
+			*/
+	require_once (__DIR__ . "/SabreDAV/lib/Sabre/autoload.php");
 
-        $tz_before = date_default_timezone_get();
-        require_once (__DIR__ . "/iCalcreator/iCalcreator.class.php");
-        date_default_timezone_set($tz_before);
+	$tz_before = date_default_timezone_get();
+	require_once (__DIR__ . "/iCalcreator/iCalcreator.class.php");
+	date_default_timezone_set($tz_before);
 
-        require_once (__DIR__ . "/common/calendar.fnk.php");
-        require_once (__DIR__ . "/common/dav_caldav_backend_common.inc.php");
-        require_once (__DIR__ . "/common/dav_caldav_backend.inc.php");
-        require_once (__DIR__ . "/common/dav_caldav_root.inc.php");
-        require_once (__DIR__ . "/common/dav_user_calendars.inc.php");
-        require_once (__DIR__ . "/common/dav_carddav_root.inc.php");
-        require_once (__DIR__ . "/common/dav_carddav_backend_std.inc.php");
-        require_once (__DIR__ . "/common/dav_user_addressbooks.inc.php");
-        require_once (__DIR__ . "/common/virtual_cal_source_backend.inc.php");
-        require_once (__DIR__ . "/common/wdcal_configuration.php");
-        require_once (__DIR__ . "/common/wdcal_cal_source.inc.php");
-        require_once (__DIR__ . "/common/wdcal_cal_source_private.inc.php");
+	require_once (__DIR__ . "/common/calendar.fnk.php");
+	require_once (__DIR__ . "/common/dav_caldav_backend_common.inc.php");
+	require_once (__DIR__ . "/common/dav_caldav_backend.inc.php");
+	require_once (__DIR__ . "/common/dav_caldav_root.inc.php");
+	require_once (__DIR__ . "/common/dav_user_calendars.inc.php");
+	require_once (__DIR__ . "/common/dav_carddav_root.inc.php");
+	require_once (__DIR__ . "/common/dav_carddav_backend_std.inc.php");
+	require_once (__DIR__ . "/common/dav_user_addressbooks.inc.php");
+	require_once (__DIR__ . "/common/virtual_cal_source_backend.inc.php");
+	require_once (__DIR__ . "/common/wdcal_configuration.php");
+	require_once (__DIR__ . "/common/wdcal_cal_source.inc.php");
+	require_once (__DIR__ . "/common/wdcal_cal_source_private.inc.php");
 
-        require_once (__DIR__ . "/dav_friendica_principal.inc.php");
-        require_once (__DIR__ . "/dav_friendica_auth.inc.php");
-        require_once (__DIR__ . "/dav_carddav_backend_friendica_community.inc.php");
-        require_once (__DIR__ . "/dav_caldav_backend_friendica.inc.php");
-        require_once (__DIR__ . "/virtual_cal_source_friendica.inc.php");
-        require_once (__DIR__ . "/wdcal_cal_source_friendicaevents.inc.php");
-        require_once (__DIR__ . "/FriendicaACLPlugin.inc.php");
+	require_once (__DIR__ . "/dav_friendica_principal.inc.php");
+	require_once (__DIR__ . "/dav_friendica_auth.inc.php");
+	require_once (__DIR__ . "/dav_carddav_backend_friendica_community.inc.php");
+	require_once (__DIR__ . "/dav_caldav_backend_friendica.inc.php");
+	require_once (__DIR__ . "/virtual_cal_source_friendica.inc.php");
+	require_once (__DIR__ . "/wdcal_cal_source_friendicaevents.inc.php");
+	require_once (__DIR__ . "/FriendicaACLPlugin.inc.php");
 
-        require_once (__DIR__ . "/calendar.friendica.fnk.php");
-        require_once (__DIR__ . "/layout.fnk.php");
+	require_once (__DIR__ . "/calendar.friendica.fnk.php");
+	require_once (__DIR__ . "/layout.fnk.php");
 }
 
 
@@ -79,7 +80,7 @@ function dav_init(&$a)
 	 */
 
 	dav_include_files();
-	
+
 	if (false) {
 		dbg(true);
 		error_reporting(E_ALL);
@@ -174,15 +175,29 @@ function dav_content()
 		return wdcal_getSettingsPage($a);
 	} elseif ($a->argv[1] == "wdcal") {
 		if ($a->argc >= 3 && strlen($a->argv[2]) > 0) {
-			$uri        = $a->argv[2];
-			$recurr_uri = ""; // @TODO
-			if (isset($a->argv[3]) && $a->argv[3] == "edit") {
+			$uri = $a->argv[2];
+
+			if ($uri == "new") {
 				$o = "";
-				if (isset($_REQUEST["save"])) $o .= wdcal_postEditPage($uri, $recurr_uri);
-				$o .= wdcal_getEditPage($uri, $recurr_uri);
+				if (isset($_REQUEST["save"])) {
+					check_form_security_token_redirectOnErr($a->get_baseurl() . "/dav/wdcal/", "caledit");
+					$o .= wdcal_postEditPage("new", "", $a->user["uid"], $a->timezone, $a->get_baseurl() . "/dav/wdcal/");
+				}
+				$o .= wdcal_getEditPage("new");
 				return $o;
 			} else {
-				return wdcal_getDetailPage($uri, $recurr_uri);
+				$recurr_uri = ""; // @TODO
+				if (isset($a->argv[3]) && $a->argv[3] == "edit") {
+					$o = "";
+					if (isset($_REQUEST["save"])) {
+						check_form_security_token_redirectOnErr($a->get_baseurl() . "/dav/wdcal/", "caledit");
+						$o .= wdcal_postEditPage($uri, $recurr_uri, $a->user["uid"], $a->timezone, $a->get_baseurl() . "/dav/wdcal/");
+					}
+					$o .= wdcal_getEditPage($uri, $recurr_uri);
+					return $o;
+				} else {
+					return wdcal_getDetailPage($uri, $recurr_uri);
+				}
 			}
 		} else {
 			$cals      = dav_getMyCals($a->user["uid"]);
@@ -226,9 +241,9 @@ function dav_event_updated_hook(&$a, &$b)
 function dav_profile_tabs_hook(&$a, &$b)
 {
 	$b["tabs"][] = array(
-    	"label" => t('Calendar'),
-		"url" => $a->get_baseurl() . "/dav/wdcal/",
-		"sel" => "",
+		"label" => t('Calendar'),
+		"url"   => $a->get_baseurl() . "/dav/wdcal/",
+		"sel"   => "",
 		"title" => t('Extended calendar with CalDAV-support'),
 	);
 }

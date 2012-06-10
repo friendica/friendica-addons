@@ -22,11 +22,17 @@ define("CARDDAV_NAMESPACE_PHONECONTACTS", 2);
 
 define("CALDAV_DB_VERSION", 1);
 
+/**
+ * @return int
+ */
 function getCurMicrotime () {
         list($usec, $sec) = explode(" ", microtime());
         return sprintf("%14.0f", $sec * 10000 + $usec * 10000);
 } // function getCurMicrotime
 
+/**
+ *
+ */
 function debug_time() {
         $cur = getCurMicrotime();
         if ($GLOBALS["debug_time_last"] > 0) {
@@ -80,13 +86,30 @@ function dav_compat_principal2uid($principalUri = "")
 	return dav_compat_username2id($username);
 }
 
+
+/**
+ * @param string $name
+ * @return null|string
+ */
+function dav_compat_getRequestVar($name = "") {
+	if (x($_REQUEST, $name)) return $_REQUEST[$name];
+	else return null;
+}
+
 /**
  * @param $text
- * @return mixed
+ * @return null|string
  */
-function wdcal_parse_text_serverside($text)
+function dav_compat_parse_text_serverside($text)
 {
-	return $text;
+	return dav_compat_getRequestVar($text);
+}
+
+/**
+ * @param string $uri
+ */
+function dav_compat_redirect($uri = "") {
+	goaway($uri);
 }
 
 /**
