@@ -270,9 +270,13 @@ function fb_get_friends_sync_parsecontact($uid, $contact) {
 
     if(count($r)) {
 
+		// update profile photos once every two weeks as we have no notification of when they change.
+
+		$update_photo = (($r[0]['avatar-date'] < datetime_convert('','','now -14 days')) ? true : false);
+
         // check that we have all the photos, this has been known to fail on occasion
 
-        if((! $r[0]['photo']) || (! $r[0]['thumb']) || (! $r[0]['micro'])) {
+        if((! $r[0]['photo']) || (! $r[0]['thumb']) || (! $r[0]['micro']) || ($update_photo)) {
             require_once("Photo.php");
 
             $photos = import_profile_photo('https://graph.facebook.com/' . $contact->id . '/picture', $uid, $r[0]['id']);
