@@ -195,6 +195,7 @@
 			 * {Number} Calendar height, false for page height by default.
 			 */
 			height:false,
+			baseurl: "",
 			/**
 			 * @description {Config} url
 			 * {String} Url to request calendar data.
@@ -1744,21 +1745,21 @@
 				temparr.push(i18n.xgcalendar.time, ':</th><td class=cb-value><div id="bbit-cal-buddle-timeshow"></div></td></tr><tr><th class="cb-key">');
 				temparr.push(i18n.xgcalendar.content, ':</th><td class="cb-value"><div class="textbox-fill-wrapper"><div class="textbox-fill-mid"><input id="bbit-cal-what" class="textbox-fill-input"/></div></div><div class="cb-example">');
 				temparr.push(i18n.xgcalendar.example, '</div></td></tr></tbody></table><input id="bbit-cal-start" type="hidden"/><input id="bbit-cal-end" type="hidden"/><input id="bbit-cal-allday" type="hidden"/><input id="bbit-cal-quickAddBTN" value="');
-				temparr.push(i18n.xgcalendar.create_event, '" type="submit"/>&nbsp; <SPAN id="bbit-cal-editLink" class="lk">');
+				temparr.push(i18n.xgcalendar.create_event, '" type="submit"/>&nbsp; <a href="" class="lk bbit-cal-editLink">');
 				temparr.push(i18n.xgcalendar.update_detail, ' <StrONG>&gt;&gt;</StrONG></SPAN></div></div></div><tr><td><div id="bl1" class="bubble-corner"><div class="bubble-sprite bubble-bl"></div></div><td><div class="bubble-bottom"></div><td><div id="br1" class="bubble-corner"><div class="bubble-sprite bubble-br"></div></div></tr></tbody></table><div id="bubbleClose1" class="bubble-closebutton"></div><div id="prong2" class="prong"><div class=bubble-sprite></div></div></div>');
 				temparr.push('</form>');
-				var tempquickAddHanler = temparr.join("");
+				var tempquickAddHandler = temparr.join("");
 				temparr = null;
-				$(document.body).append(tempquickAddHanler);
+				$(document.body).append(tempquickAddHandler);
 				buddle = $("#bbit-cal-buddle");
-				$("#bubbleClose1").click(function () {
+				$("#bubbleClose1").on("click", function () {
 					$("#bbit-cal-buddle").css("visibility", "hidden");
 					releasedragevent();
 				});
-				$("#bbit-cal-submitFORM").keyup(function (e) {
+				$("#bbit-cal-submitFORM").on("keyup", function (e) {
 					if (e.which == 27) $("#bubbleClose1").click();
 				});
-				$("#bbit-cal-submitFORM").submit(function (e) {
+				$("#bbit-cal-submitFORM").on("submit", function (e) {
 					e.stopPropagation();
 					e.preventDefault();
 					if (option.isloading) {
@@ -1838,7 +1839,7 @@
 					}
 					return false;
 				});
-				buddle.mousedown(function (e) {
+				buddle.on("mousedown", function (e) {
 					e.stopPropagation();
 					e.preventDefault();
 				});
@@ -1857,6 +1858,10 @@
 			$("#bbit-cal-allday").val(isallday ? "1" : "0");
 			$("#bbit-cal-start").val(start.getTime());
 			$("#bbit-cal-end").val(end.getTime());
+
+			var addurl = option.baseurl + "new/?start=" + Math.floor($("#bbit-cal-start").val() / 1000) + "&end=" + Math.floor($("#bbit-cal-end").val() / 1000) + "&isallday=" + (isallday ? "1" : "0");
+			buddle.find(".bbit-cal-editLink").attr("href", addurl);
+
 			buddle.css({ "visibility":"visible", left:off.left, top:off.top });
 			calwhat.blur().focus(); //add 2010-01-26 blur() fixed chrome 
 			$(document).one("mousedown", function () {

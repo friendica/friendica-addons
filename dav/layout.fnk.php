@@ -18,8 +18,11 @@ function wdcal_addRequiredHeaders()
 	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/dav/wdcal/css/main.css' . '" media="all" />' . "\r\n";
 
 	switch (get_config("system", "language")) {
-		case "de": $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/common/wdcal/js/wdCalendar_lang_DE.js"></script>' . "\r\n"; break;
-		default: $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/common/wdcal/js/wdCalendar_lang_EN.js"></script>' . "\r\n";
+		case "de":
+			$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/common/wdcal/js/wdCalendar_lang_DE.js"></script>' . "\r\n";
+			break;
+		default:
+			$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/common/wdcal/js/wdCalendar_lang_EN.js"></script>' . "\r\n";
 	}
 
 	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/common/wdcal/js/jquery.calendar.js"></script>' . "\r\n";
@@ -80,6 +83,7 @@ function wdcal_printCalendar($calendars, $calendar_preselected, $data_feed_url, 
 		"date_format_dm2"  => $localization->dateformat_js_dm2(),
 		"date_format_dm3"  => $localization->dateformat_js_dm3(),
 		"date_format_full" => $localization->dateformat_datepicker_js(),
+		"baseurl"          => $a->get_baseurl() . "/dav/wdcal/",
 	);
 
 	$x = '
@@ -111,6 +115,9 @@ function wdcal_printCalendar($calendars, $calendar_preselected, $data_feed_url, 
 		<div class="fbutton faddbtn" style="float: right;">
 			<div><a href="' . $a->get_baseurl() . '/dav/settings/"><span>' . t("Settings") . ' / ' . t("Help") . '</span></a></div>
 		</div>
+		<div class="fbutton addcal">
+			<div><a href="' . $a->get_baseurl() . '/dav/wdcal/new/" class="addcal">' . t("New event") . '</a></div>
+		</div>
 		<div class="btnseparator"></div>
 		<div class="fbutton showtodaybtn">
 			<div><span class="showtoday">' . t("Today") . '</span></div>
@@ -122,7 +129,7 @@ function wdcal_printCalendar($calendars, $calendar_preselected, $data_feed_url, 
 
 		if ($view == "day") $x .= 'fcurrent';
 
-		$x .= '">Tag</span></div>
+		$x .= '">' . t("Day") . '</span></div>
 		</div>
 		<div class="fbutton showweekbtn ';
 
@@ -178,10 +185,10 @@ function wdcal_printCalendar($calendars, $calendar_preselected, $data_feed_url, 
  */
 function wdcal_getDetailPage($uri, $recurr_uri)
 {
-	$a            = get_app();
+	$a = get_app();
 
 	$details = null;
-	$cals = dav_getMyCals($a->user["uid"]);
+	$cals    = dav_getMyCals($a->user["uid"]);
 	foreach ($cals as $c) {
 		$cs = wdcal_calendar_factory($a->user["uid"], $c->namespace, $c->namespace_id);
 		$p  = $cs->getPermissionsItem($a->user["uid"], $uri, $recurr_uri);
@@ -199,54 +206,12 @@ function wdcal_getDetailPage($uri, $recurr_uri)
 	return $uri . " / " . $recurr_uri . "<br>" . print_r($details, true);
 }
 
-
 /**
  * @param string $uri
  * @param string $recurr_uri
  * @return string
  */
-function wdcal_postEditPage($uri, $recurr_uri)
-{
-
-	$a            = get_app();
-	$localization = wdcal_local::getInstanceByUser($a->user["uid"]);
-
-	check_form_security_token_redirectOnErr($a->get_baseurl() . "/dav/wdcal/", "caledit");
-
-	if (isset($_REQUEST["allday"])) {
-		$start    = $localization->date_parseLocal($_REQUEST["start_date"] . " 00:00");
-		$end      = $localization->date_parseLocal($_REQUEST["end_date"] . " 20:00");
-		$isallday = true;
-	} else {
-		$start    = $localization->date_parseLocal($_REQUEST["start_date"] . " " . $_REQUEST["start_time"]);
-		$end      = $localization->date_parseLocal($_REQUEST["end_date"] . " " . $_REQUEST["end_time"]);
-		$isallday = false;
-	}
-
-
-	$cals = dav_getMyCals($a->user["uid"]);
-	foreach ($cals as $c) {
-		$cs = wdcal_calendar_factory($a->user["uid"], $c->namespace, $c->namespace_id);
-		$p  = $cs->getPermissionsItem($a->user["uid"], $uri, $recurr_uri);
-		if ($p["write"]) try {
-			$cs->updateItem($uri, $start, $end,
-				stripslashes($_REQUEST["subject"]), $isallday, wdcal_parse_text_serverside($_REQUEST["wdcal_desc"]),
-				stripslashes($_REQUEST["location"]), $_REQUEST["color"], $a->timezone,
-				isset($_REQUEST["notification"]), $_REQUEST["notification_type"], $_REQUEST["notification_value"]);
-		} catch (Exception $e) {
-			notification(t("Error") . ": " . $e);
-		}
-		goaway($a->get_baseurl() . "/dav/wdcal/");
-	}
-
-}
-
-/**
- * @param string $uri
- * @param string $recurr_uri
- * @return string
- */
-function wdcal_getEditPage($uri, $recurr_uri)
+function wdcal_getEditPage($uri, $recurr_uri = "")
 {
 
 	$a            = get_app();
@@ -290,8 +255,8 @@ function wdcal_getEditPage($uri, $recurr_uri)
 			"Subject"       => $_REQUEST["title"],
 			"Location"      => "",
 			"Description"   => "",
-			"StartTime"     => $_REQUEST["start"],
-			"EndTime"       => $_REQUEST["end"],
+			"StartTime"     => wdcal_php2MySqlTime($_REQUEST["start"]),
+			"EndTime"       => wdcal_php2MySqlTime($_REQUEST["end"]),
 			"IsAllDayEvent" => $_REQUEST["isallday"],
 			"Color"         => null,
 			"RecurringRule" => null,
@@ -311,10 +276,10 @@ function wdcal_getEditPage($uri, $recurr_uri)
 			"Subject"       => "",
 			"Location"      => "",
 			"Description"   => "",
-			"StartTime"     => "",
-			"EndTime"       => "",
-			"IsAllDayEvent" => "",
-			"Color"         => null,
+			"StartTime"     => date("Y-m-d H:i:s"),
+			"EndTime"       => date("Y-m-d H:i:s", time() + 3600),
+			"IsAllDayEvent" => "0",
+			"Color"         => "#5858ff",
 			"RecurringRule" => null,
 		);
 		$notification_type  = "hour";
@@ -322,26 +287,27 @@ function wdcal_getEditPage($uri, $recurr_uri)
 		$notification       = true;
 	}
 
+	$postto = $a->get_baseurl() . "/dav/wdcal/" . ($uri == "new" ? "new/" : $uri . "/edit/");
 
 	$out = "<a href='" . $a->get_baseurl() . "/dav/wdcal/'>" . t("Go back to the calendar") . "</a><br><br>";
-	$out .= "<form method='POST' action='" . $a->get_baseurl() . "/dav/wdcal/$uri/edit/'><input type='hidden' name='form_security_token' value='" . get_form_security_token('caledit') . "'>\n";
+	$out .= "<form method='POST' action='$postto'><input type='hidden' name='form_security_token' value='" . get_form_security_token('caledit') . "'>\n";
 
 	$out .= "<label for='cal_subject'>Subject:</label>
 		<input name='color' id='cal_color' value='" . (strlen($event["Color"]) != 7 ? "#5858ff" : escape_tags($event["Color"])) . "'>
 		<input name='subject' id='cal_subject' value='" . escape_tags($event["Subject"]) . "'><br>\n";
 	$out .= "<label for='cal_allday'>Is All-Day event:</label><input type='checkbox' name='allday' id='cal_allday' " . ($event["IsAllDayEvent"] ? "checked" : "") . "><br>\n";
 
-	$out .= "<label for='cal_startdate'>Starts:</label>";
+	$out .= "<label for='cal_startdate'>" . t("Starts") . ":</label>";
 	$out .= "<input name='start_date' value='" . $localization->dateformat_datepicker_php(wdcal_mySql2PhpTime($event["StartTime"])) . "' id='cal_start_date'>";
 	$out .= "<input name='start_time' value='" . substr($event["StartTime"], 11, 5) . "' id='cal_start_time'>";
 	$out .= "<br>\n";
 
-	$out .= "<label for='cal_enddate'>Ends:</label>";
+	$out .= "<label for='cal_enddate'>" . t("Ends") . ":</label>";
 	$out .= "<input name='end_date' value='" . $localization->dateformat_datepicker_php(wdcal_mySql2PhpTime($event["EndTime"])) . "' id='cal_end_date'>";
 	$out .= "<input name='end_time' value='" . substr($event["EndTime"], 11, 5) . "' id='cal_end_time'>";
 	$out .= "<br>\n";
 
-	$out .= "<label for='cal_location'>Location:</label><input name='location' id='cal_location' value='" . escape_tags($event["Location"]) . "'><br>\n";
+	$out .= "<label for='cal_location'>" . t("Location") . ":</label><input name='location' id='cal_location' value='" . escape_tags($event["Location"]) . "'><br>\n";
 
 	$out .= "<label for='event-desc-textarea'>" . t("Description") . ":</label> <textarea id='event-desc-textarea' name='wdcal_desc' style='vertical-align: top; width: 400px; height: 100px;'>" . escape_tags($event["Description"]) . "</textarea>";
 	$out .= "<br style='clear: both;'>";
