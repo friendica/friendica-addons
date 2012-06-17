@@ -290,7 +290,7 @@ function twitter_post_hook(&$a,&$b) {
 		logger('twitter: we have customer key and oauth stuff, going to send.', LOGGER_DEBUG);
 
 		require_once('library/twitteroauth.php');
-		require_once('include/bbcode.php');	
+		require_once('include/bbcode.php');
 		$tweet = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
                 // in theory max char is 140 but T. uses t.co to make links 
                 // longer so we give them 10 characters extra
@@ -341,7 +341,7 @@ function twitter_post_hook(&$a,&$b) {
                 }
                 // ok, all the links we want to send out are save, now strip 
                 // away the remaining bbcode
-		$msg = strip_tags(bbcode($tmp));
+		$msg = strip_tags(bbcode($tmp, false, false));
 		// quotes not working - let's try this
 		$msg = html_entity_decode($msg);
 		if (( strlen($msg) > $max_char) && $max_char > 0) {

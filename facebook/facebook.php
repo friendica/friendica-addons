@@ -941,7 +941,7 @@ function facebook_post_hook(&$a,&$b) {
 			if($fb_token && ($toplevel || $b['private'] || $reply)) {
 				logger('facebook: able to post');
 				require_once('library/facebook.php');
-				require_once('include/bbcode.php');	
+				require_once('include/bbcode.php');
 
 				$msg = $b['body'];
 
@@ -1016,7 +1016,7 @@ function facebook_post_hook(&$a,&$b) {
 				}
 
 				// At first convert the text to html
-				$html = bbcode($body);
+				$html = bbcode($body, false, false);
 
 				// Then convert it to plain text
 				$msg = trim($b['title']." \n\n".html2plain($html, 0, true));
@@ -1133,8 +1133,8 @@ function facebook_post_hook(&$a,&$b) {
 				} else {
 					// if its only a message and a subject and the message is larger than 500 characters then post it as note
 					$postvars = array(
-						'access_token' => $fb_token, 
-						'message' => bbcode($b['body']),
+						'access_token' => $fb_token,
+						'message' => bbcode($b['body'], false, false),
 						'subject' => $b['title'],
 					);
 					$url = 'https://graph.facebook.com/me/notes';

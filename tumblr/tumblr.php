@@ -170,12 +170,13 @@ function tumblr_send(&$a,&$b) {
 
 		$link = "";
 		$video = false;
+		$title = trim($b['title']);
 
 		// Checking for a bookmark
 		if(preg_match("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/is",$b['body'],$matches)) {
 			$link = $matches[1];
-			if ($b['title'] == '')
-				$b['title'] = html_entity_decode($matches[2],ENT_QUOTES,'UTF-8');
+			if ($title == '')
+				$title = html_entity_decode($matches[2],ENT_QUOTES,'UTF-8');
 
 			$body = $b['body'];
 			// splitting the text in two parts:
@@ -201,20 +202,20 @@ function tumblr_send(&$a,&$b) {
 		if (($link != '') and $video) {
 			$params['type'] = "video";
 			$params['embed'] = $link;
-			if ($b['title'] != '')
-				$params['caption'] = '<h1><a href="'.$link.'">'.$b['title'].
+			if ($title != '')
+				$params['caption'] = '<h1><a href="'.$link.'">'.$title.
 							"</a></h1><p>".bbcode($body)."</p>";
 			else
 				$params['caption'] = bbcode($body);
 		} else if (($link != '') and !$video) {
 			$params['type'] = "link";
-			$params['name'] = $b['title'];
+			$params['name'] = $title;
 			$params['url'] = $link;
 			//$params['description'] = bbcode($body);
 			$params['description'] = bbcode($b["body"]);
 		} else {
 			$params['type'] = "regular";
-			$params['title'] = $b['title'];
+			$params['title'] = $title;
 			$params['body'] = bbcode($b['body']);
 		}
 
