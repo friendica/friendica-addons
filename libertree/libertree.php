@@ -172,11 +172,25 @@ function libertree_send(&$a,&$b) {
 		$title = $b['title'];
 		$body = $b['body'];
 
+		// Insert a newline before and after a quote
+		$body = str_ireplace("[quote", "\n\n[quote", $body);
+		$body = str_ireplace("[/quote]", "[/quote]\n\n", $body);
+
+		// remove multiple newlines
+		do {
+			$oldbody = $body;
+                        $body = str_replace("\n\n\n", "\n\n", $body);
+                } while ($oldbody != $body);
+
+		// convert to markdown
+		$body = bb2diaspora($body);
+
+		// Adding the title
 		if(strlen($title))
-			$body = "[b]".html_entity_decode($title)."[/b]\n\n".$body;
+			$body = "## ".html_entity_decode($title)."\n\n".$body;
 
 		$params = array(
-			'text' => bb2diaspora($body)
+			'text' => $body
 		//	'token' => $ltree_api_token
 		);
 
