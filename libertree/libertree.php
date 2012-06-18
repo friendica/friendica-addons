@@ -32,7 +32,7 @@ function libertree_jot_nets(&$a,&$b) {
     if(intval($ltree_post) == 1) {
         $ltree_defpost = get_pconfig(local_user(),'libertree','post_by_default');
         $selected = ((intval($ltree_defpost) == 1) ? ' checked="checked" ' : '');
-        $b .= '<div class="profile-jot-net"><input type="checkbox" name="libertree_enable"' . $selected . 'value="1" /> '
+        $b .= '<div class="profile-jot-net"><input type="checkbox" name="libertree_enable"' . $selected . ' value="1" /> '
             . t('Post to libertree') . '</div>';
     }
 }
