@@ -167,16 +167,21 @@ function libertree_send(&$a,&$b) {
 			}
 		}
 		if(count($tag_arr))
-			$tags = implode(',',$tag_arr);		
+			$tags = implode(',',$tag_arr);
 
+		$title = $b['title'];
+		$body = $b['body'];
+
+		if(strlen($title))
+			$body = "[b]".html_entity_decode($title)."[/b]\n\n".$body;
 
 		$params = array(
-			'text' => bb2diaspora($b['body'])
+			'text' => bb2diaspora($body)
 		//	'token' => $ltree_api_token
 		);
 
 		$result = post_url($ltree_blog,$params);
-		logger('libertree: ' . $result);	
+		logger('libertree: ' . $result);
 
 	}
 }
