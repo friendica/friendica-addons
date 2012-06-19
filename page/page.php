@@ -26,10 +26,12 @@ function page_uninstall() {
 }
 
 
-function page_getpage($uid) {
+function page_getpage($uid,$randomise = false) {
 
 
 	$pagelist = array();
+
+	$random = (($randomise) ? ' order by rand ' : ' order by name asc ');
 
 	$contacts = q("SELECT `id`, `url`, `name`, `micro`FROM `contact`
 			WHERE `network`= 'dfrn' AND `forum` = 1 AND `uid` = %d
@@ -89,7 +91,9 @@ function page_network_mod_init($a,$b) {
 	$show_total = intval(get_pconfig(local_user(),'page','max_pages'));
 	if($show_total === false)
 		$show_total = 6;
-	$contacts = page_getpage($a->user['uid']);
+	$randomise = intval(get_pconfig(local_user(),'page','randomise'));
+
+	$contacts = page_getpage($a->user['uid'],$randomise);
 
 	$total_shown = 0;
 	$more = false;
@@ -116,6 +120,8 @@ function page_plugin_settings_post($a,$post) {
 		return;
 
 	set_pconfig(local_user(),'page','max_pages',intval($_POST['page_max_pages']));
+	set_pconfig(local_user(),'page','randomise',intval($_POST['page_random']));
+
 	info( t('Page settings updated.') . EOL);
 }
 
@@ -134,6 +140,10 @@ function page_plugin_settings(&$a,&$s) {
 	$max_pages = get_pconfig(local_user(),'page','max_pages');
 	if($max_pages === false)
 		$max_pages = 6;
+
+	$randomise = intval(get_pconfig(local_user(),'page','randomise'));
+	$randomise_checked = (($randomise) ? ' checked="checked" ' : '');
+
 	
 	/* Add some HTML to the existing form */
 
@@ -142,7 +152,12 @@ function page_plugin_settings(&$a,&$s) {
 	$s .= '<div id="page-settings-wrapper">';
 	$s .= '<label id="page-settings-label" for="page-max-pages">' . t('How many forums to display on sidebar without paging') . '</label>';
 	$s .= '<input id="page-max-pages" type="text" name="page_max_pages" value="' . intval($max_pages) . '" ' . '/>';
-	$s .= '</div><div class="clear"></div>';
+	$s .= '<div class="clear"></div>';
+	$s .= '<label id="page-random-label" for="page-random">' . t('Randomise Page/Forum list') . '</label>';
+	$s .= '<input id="page-random" type="checkbox" name="page_random" value="1" ' . $randomise_checked . '/>';
+	$s .= '<div class="clear"></div>';
+
+	$s .= '</div>';
 
 	/* provide a submit button */
 
