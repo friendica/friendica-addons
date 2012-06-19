@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: Page
- * Description: Shows lists of community pages (improved performance over 'pages')
+ * Description: Shows list of subscribed community pages/forums on network sidebar
  * Version: 1.0
  * Author: Mike Macgirvin <mike@macgirvin.com>
  * based on pages plugin by
