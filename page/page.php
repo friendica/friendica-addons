@@ -31,7 +31,7 @@ function page_getpage($uid,$randomise = false) {
 
 	$pagelist = array();
 
-	$random = (($randomise) ? ' order by rand ' : ' order by name asc ');
+	$random = (($randomise) ? ' order by rand() ' : ' order by name asc ');
 
 	$contacts = q("SELECT `id`, `url`, `name`, `micro`FROM `contact`
 			WHERE `network`= 'dfrn' AND `forum` = 1 AND `uid` = %d
