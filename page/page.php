@@ -65,7 +65,7 @@ function page_page_end($a,&$b) {
 	$more = false;
 
 	foreach($contacts as $contact) {
-		$page .= '<li style="list-style-type: none;" class="tool"><img height="20" width="20" src="' . $contact['micro'] .'" alt="' . $contact['url'] . '" /> <a href="'.$a->get_baseurl().'/redir/'.$contact["id"].'" title="' . $contact['url'] . '" class="label" target="external-link">'.
+		$page .= '<li style="list-style-type: none;" class="tool sparkle"><img height="20" width="20" src="' . $contact['micro'] .'" alt="' . $contact['url'] . '" /> <a href="'.$a->get_baseurl().'/redir/'.$contact["id"].'" title="' . $contact['url'] . '" class="label sparkle" target="external-link">'.
 				$contact["name"]."</a></li>";
 		$total_shown ++;
 		if($total_shown == 6) {
