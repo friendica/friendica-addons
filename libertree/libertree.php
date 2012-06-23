@@ -118,7 +118,7 @@ function libertree_post_local(&$a,&$b) {
 	if($b['private'] || $b['parent'])
 		return;
 
-    $ltree_post   = intval(get_pconfig(local_user(),'libertree','post'));
+	$ltree_post   = intval(get_pconfig(local_user(),'libertree','post'));
 
 	$ltree_enable = (($ltree_post && x($_REQUEST,'libertree_enable')) ? intval($_REQUEST['libertree_enable']) : 0);
 
@@ -167,16 +167,41 @@ function libertree_send(&$a,&$b) {
 			}
 		}
 		if(count($tag_arr))
-			$tags = implode(',',$tag_arr);		
+			$tags = implode(',',$tag_arr);
 
+		$title = $b['title'];
+		$body = $b['body'];
+
+		// Insert a newline before and after a quote
+		$body = str_ireplace("[quote", "\n\n[quote", $body);
+		$body = str_ireplace("[/quote]", "[/quote]\n\n", $body);
+
+		// Removal of tags and mentions
+		// #-tags
+		$body = preg_replace('/#\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '#$2', $body);
+ 		// @-mentions
+		$body = preg_replace('/@\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '@$2', $body);
+
+		// remove multiple newlines
+		do {
+			$oldbody = $body;
+                        $body = str_replace("\n\n\n", "\n\n", $body);
+                } while ($oldbody != $body);
+
+		// convert to markdown
+		$body = bb2diaspora($body);
+
+		// Adding the title
+		if(strlen($title))
+			$body = "## ".html_entity_decode($title)."\n\n".$body;
 
 		$params = array(
-			'text' => bb2diaspora($b['body'])
+			'text' => $body
 		//	'token' => $ltree_api_token
 		);
 
 		$result = post_url($ltree_blog,$params);
-		logger('libertree: ' . $result);	
+		logger('libertree: ' . $result);
 
 	}
 }
