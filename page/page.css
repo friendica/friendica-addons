@@ -1,0 +1,14 @@
+
+
+
+#page-settings-label, #page-random-label {
+	float: left;
+	width: 200px;
+	margin-bottom: 25px;
+}
+
+#page-max-pages, #page-random {
+	float: left;
+}
+
+
