@@ -316,18 +316,24 @@ function twitter_post_hook(&$a,&$b) {
                 $tmp = preg_replace( '/\[\\/?audio(\\s+.*?\]|\])/i', '', $tmp);
                 $linksenabled = get_pconfig($b['uid'],'twitter','post_taglinks');
                 // if a #tag is linked, don't send the [url] over to SN
-                // that is, don't send if the option is not set in the 
+                // that is, don't send if the option is not set in the
                 // connector settings
                 if ($linksenabled=='0') {
-                    // #-tags
-                    $tmp = preg_replace( '/#\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '#$2', $tmp);
-                    // @-mentions
-                    $tmp = preg_replace( '/@\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '@$2', $tmp);
+			// #-tags
+			$tmp = preg_replace( '/#\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '#$2', $tmp);
+			// @-mentions
+			$tmp = preg_replace( '/@\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '@$2', $tmp);
+			// recycle 1
+			$recycle = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8');
+			$tmp = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', $recycle.'$2', $tmp);
+			// recycle 2
+			//$recycle = html_entity_decode("&#x267B; ", ENT_QUOTES, 'UTF-8');
+			//$tmp = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', 'RT @$2:', $tmp);
                 }
                 $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/url\]/i', '$2 $1', $tmp);
                 $tmp = preg_replace( '/\[bookmark\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/bookmark\]/i', '$2 $1', $tmp);
-                // find all http or https links in the body of the entry and 
-                // apply the shortener if the link is longer then 20 characters 
+                // find all http or https links in the body of the entry and
+                // apply the shortener if the link is longer then 20 characters
                 if (( strlen($tmp)>$max_char ) && ( $max_char > 0 )) {
                     preg_match_all ( '/(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/i', $tmp, $allurls  );
                     foreach ($allurls as $url) {

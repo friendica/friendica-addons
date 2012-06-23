@@ -118,7 +118,7 @@ function libertree_post_local(&$a,&$b) {
 	if($b['private'] || $b['parent'])
 		return;
 
-    $ltree_post   = intval(get_pconfig(local_user(),'libertree','post'));
+	$ltree_post   = intval(get_pconfig(local_user(),'libertree','post'));
 
 	$ltree_enable = (($ltree_post && x($_REQUEST,'libertree_enable')) ? intval($_REQUEST['libertree_enable']) : 0);
 
@@ -175,6 +175,12 @@ function libertree_send(&$a,&$b) {
 		// Insert a newline before and after a quote
 		$body = str_ireplace("[quote", "\n\n[quote", $body);
 		$body = str_ireplace("[/quote]", "[/quote]\n\n", $body);
+
+		// Removal of tags and mentions
+		// #-tags
+		$body = preg_replace('/#\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '#$2', $body);
+ 		// @-mentions
+		$body = preg_replace('/@\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '@$2', $body);
 
 		// remove multiple newlines
 		do {
