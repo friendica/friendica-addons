@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: Poor Man Cron
- * Description: Execute updates on pageviews, without the need of commandline php
+ * Description: Execute updates on pageviews, without the need of commandline php - only for use in total desperation as page loads will take forever
  * Version: 1.2
  * Author: Fabio Comuni <http://kirgroup.com/profile/fabrix>
  */
