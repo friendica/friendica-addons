@@ -509,6 +509,13 @@ function facebook_content(&$a) {
 		return '';
 	}
 
+
+	if(! service_class_allows(local_user(),'facebook_connect')) {
+		notice( t('Permission denied.') . EOL);
+		return upgrade_bool_message();
+	}
+
+
 	if($a->argc > 1 && $a->argv[1] === 'remove') {
 		del_pconfig(local_user(),'facebook','post');
 		info( t('Facebook disabled') . EOL);
