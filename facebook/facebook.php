@@ -316,7 +316,7 @@ function fb_get_friends_sync_parsecontact($uid, $contact) {
             dbesc($contact->id),
             dbesc('facebook ' . $contact->id),
             dbesc($contact->name),
-            dbesc(($contact->nickname) ? $contact->nickname : mb_convert_case($contact->first_name, MB_CASE_LOWER, "UTF-8"),
+            dbesc(($contact->nickname) ? $contact->nickname : mb_convert_case($contact->first_name, MB_CASE_LOWER, "UTF-8")),
             dbesc('https://graph.facebook.com/' . $contact->id . '/picture'),
             dbesc(NETWORK_FACEBOOK),
             intval(CONTACT_IS_FRIEND),
