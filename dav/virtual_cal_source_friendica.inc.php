@@ -52,8 +52,11 @@ class FriendicaVirtualCalSourceBackend extends VirtualCalSourceBackend
 		}
 		*/
 
-		$subject     = substr(preg_replace("/\[[^\]]*\]/", "", $row["desc"]), 0, 100);
-		$description = preg_replace("/\[[^\]]*\]/", "", $row["desc"]);
+		// 2012-06-29 - change to Friendica new event behaviour where summary is present and required,
+		// but use desc for older events where summary wasn't present or required (but desc was)
+
+		$subject     = (($row["summary"]) ? $row["summary"] : substr(preg_replace("/\[[^\]]*\]/", "", $row["desc"]), 0, 100));
+		$description = (($row["desc"]) ? preg_replace("/\[[^\]]*\]/", "", $row["desc"]) : $row["summary"]);
 
 		$vevent = dav_create_vevent(wdcal_mySql2icalTime($row["start"]), wdcal_mySql2icalTime($row["finish"]), false);
 		$vevent->setLocation(icalendar_sanitize_string($row["location"]));
