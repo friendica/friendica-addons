@@ -316,7 +316,7 @@ function fb_get_friends_sync_parsecontact($uid, $contact) {
             dbesc($contact->id),
             dbesc('facebook ' . $contact->id),
             dbesc($contact->name),
-            dbesc(($contact->nickname) ? $contact->nickname : strtolower($contact->first_name)),
+            dbesc(($contact->nickname) ? $contact->nickname : mb_convert_case($contact->first_name, MB_CASE_LOWER, "UTF-8")),
             dbesc('https://graph.facebook.com/' . $contact->id . '/picture'),
             dbesc(NETWORK_FACEBOOK),
             intval(CONTACT_IS_FRIEND),
@@ -508,6 +508,13 @@ function facebook_content(&$a) {
 		notice( t('Permission denied.') . EOL);
 		return '';
 	}
+
+
+	if(! service_class_allows(local_user(),'facebook_connect')) {
+		notice( t('Permission denied.') . EOL);
+		return upgrade_bool_message();
+	}
+
 
 	if($a->argc > 1 && $a->argv[1] === 'remove') {
 		del_pconfig(local_user(),'facebook','post');
