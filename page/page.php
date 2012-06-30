@@ -121,6 +121,10 @@ function page_network_mod_init($a,$b) {
 
 function page_profile_advanced($a,&$b) {
 
+	$profile = intval(get_pconfig($a->profile['profile_uid'],'page','show_on_profile'));
+	if(! $profile)
+		return;
+
 	$page = '<div id="page-profile">
 			<div class="title">'.t("Forums:").'</div>
 			<div id="profile-page-list">';
@@ -154,6 +158,7 @@ function page_plugin_settings_post($a,$post) {
 
 	set_pconfig(local_user(),'page','max_pages',intval($_POST['page_max_pages']));
 	set_pconfig(local_user(),'page','randomise',intval($_POST['page_random']));
+	set_pconfig(local_user(),'page','show_on_profile',intval($_POST['page_profile']));
 
 	info( t('Page settings updated.') . EOL);
 }
@@ -177,6 +182,9 @@ function page_plugin_settings(&$a,&$s) {
 	$randomise = intval(get_pconfig(local_user(),'page','randomise'));
 	$randomise_checked = (($randomise) ? ' checked="checked" ' : '');
 
+	$profile = intval(get_pconfig(local_user(),'page','show_on_profile'));
+	$profile_checked = (($profile) ? ' checked="checked" ' : '');
+	
 	
 	/* Add some HTML to the existing form */
 
@@ -188,6 +196,9 @@ function page_plugin_settings(&$a,&$s) {
 	$s .= '<div class="clear"></div>';
 	$s .= '<label id="page-random-label" for="page-random">' . t('Randomise Page/Forum list') . '</label>';
 	$s .= '<input id="page-random" type="checkbox" name="page_random" value="1" ' . $randomise_checked . '/>';
+	$s .= '<div class="clear"></div>';
+	$s .= '<label id="page-profile-label" for="page-profile">' . t('Show pages/forums on profile page') . '</label>';
+	$s .= '<input id="page-profile" type="checkbox" name="page_profile" value="1" ' . $profile_checked . '/>';
 	$s .= '<div class="clear"></div>';
 
 	$s .= '</div>';
