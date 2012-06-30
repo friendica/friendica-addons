@@ -136,14 +136,9 @@ function page_profile_advanced($a,&$b) {
 	foreach($contacts as $contact) {
 		$page .= micropro($contact,false,'page-profile-advanced');
 		$total_shown ++;
-		if(($show_total) && ($total_shown == $show_total)) {
-			$more = true;
-			$page .= '<div id="hide-comments-page-widget" class="fakelink" onclick="showHideComments(\'page-widget\');" >' . t('show more') 
-				. '</div><div id="collapsed-comments-page-widget" style="display: none;" ><ul>';
-		} 
+		if($total_shown == $show_total)
+			break;
 	}
-	if($more)
-		$page .= '</div>';
 	$page .= '</div></div><div class="clear"></div>';
 
 	if(count($contacts) > 0)
