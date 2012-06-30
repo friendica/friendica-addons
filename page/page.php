@@ -13,6 +13,7 @@ function page_install() {
 	register_hook('network_mod_init', 'addon/page/page.php', 'page_network_mod_init');
 	register_hook('plugin_settings', 'addon/page/page.php', 'page_plugin_settings');
 	register_hook('plugin_settings_post', 'addon/page/page.php', 'page_plugin_settings_post');
+	register_hook('profile_advanced', 'addon/page/page.php', 'page_profile_advanced');
 
 }
 
@@ -20,20 +21,22 @@ function page_uninstall() {
 	unregister_hook('network_mod_init', 'addon/page/page.php', 'page_network_mod_init');
 	unregister_hook('plugin_settings', 'addon/page/page.php', 'page_plugin_settings');
 	unregister_hook('plugin_settings_post', 'addon/page/page.php', 'page_plugin_settings_post');
+	unregister_hook('profile_advanced', 'addon/page/page.php', 'page_profile_advanced');
 
 	// remove only - obsolete
 	unregister_hook('page_end', 'addon/page/page.php', 'page_page_end');
 }
 
 
-function page_getpage($uid,$randomise = false) {
+function page_getpage($uid,$showhidden = true,$randomise = false) {
 
 
 	$pagelist = array();
 
-	$order = (($randomise) ? ' order by rand() ' : ' order by name asc ');
+	$order = (($showhidden) ? '' : " and hidden = 0 ");
+	$order .= (($randomise) ? ' order by rand() ' : ' order by name asc ');
 
-	$contacts = q("SELECT `id`, `url`, `name`, `micro`FROM `contact`
+	$contacts = q("SELECT `id`, `url`, `name`, `micro` FROM `contact`
 			WHERE `network`= 'dfrn' AND `forum` = 1 AND `uid` = %d
 			$order ",
 			intval($uid)
@@ -93,7 +96,7 @@ function page_network_mod_init($a,$b) {
 		$show_total = 6;
 	$randomise = intval(get_pconfig(local_user(),'page','randomise'));
 
-	$contacts = page_getpage($a->user['uid'],$randomise);
+	$contacts = page_getpage($a->user['uid'],true,$randomise);
 
 	$total_shown = 0;
 	$more = false;
@@ -114,6 +117,41 @@ function page_network_mod_init($a,$b) {
 	if (sizeof($contacts) > 0)
 		$a->page['aside'] = $page . $a->page['aside'];
 }
+
+
+function page_profile_advanced($a,&$b) {
+
+	$page = '<div id="page-profile">
+			<div class="title">'.t("Forums:").'</div>
+			<div id="profile-page-list">';
+
+	$show_total = 6;
+	$randomise = true;
+
+	$contacts = page_getpage($a->user['uid'],false,$randomise);
+
+	$total_shown = 0;
+	$more = false;
+
+	foreach($contacts as $contact) {
+		$page .= micropro($contact,false,'page-profile-advanced');
+		$total_shown ++;
+		if(($show_total) && ($total_shown == $show_total)) {
+			$more = true;
+			$page .= '<div id="hide-comments-page-widget" class="fakelink" onclick="showHideComments(\'page-widget\');" >' . t('show more') 
+				. '</div><div id="collapsed-comments-page-widget" style="display: none;" ><ul>';
+		} 
+	}
+	if($more)
+		$page .= '</div>';
+	$page .= '</div></div><div class="clear"></div>';
+
+	if(count($contacts) > 0)
+		$b .= $page;
+
+}
+
+
 
 function page_plugin_settings_post($a,$post) {
 	if(! local_user() || (! x($_POST,'page-settings-submit')))
