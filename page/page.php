@@ -129,7 +129,9 @@ function page_profile_advanced($a,&$b) {
 			<div class="title">'.t("Forums:").'</div>
 			<div id="profile-page-list">';
 
-	$show_total = 6;
+	// place holder in case somebody wants configurability
+	$show_total = 9999;
+
 	$randomise = true;
 
 	$contacts = page_getpage($a->user['uid'],false,$randomise);
