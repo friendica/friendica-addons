@@ -435,7 +435,7 @@ function jappixmini_script(&$a,&$s) {
         $key = $row['k'];
 	$pos = strpos($key, ":");
 	$dfrn_id = substr($key, $pos+1);
-        $r = q("SELECT `name` FROM `contact` WHERE `uid`=$uid AND `dfrn-id`='%s' OR `issued-id`='%s'",
+        $r = q("SELECT `name` FROM `contact` WHERE `uid`=$uid AND (`dfrn-id`='%s' OR `issued-id`='%s')",
 		dbesc($dfrn_id),
 		dbesc($dfrn_id)
 	);
