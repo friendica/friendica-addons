@@ -416,7 +416,7 @@ function fb_get_friends($uid, $fullsync = true) {
 		return;
 	$s = fetch_url('https://graph.facebook.com/me/friends?access_token=' . $access_token);
 	if($s) {
-		logger('facebook: fb_get_friends: ' . $s, LOGGER_DATA);
+		logger('facebook: fb_gwet_friends: ' . $s, LOGGER_DATA);
 		$j = json_decode($s);
 		logger('facebook: fb_get_friends: json: ' . print_r($j,true), LOGGER_DATA);
 		if(! $j->data)
@@ -1101,21 +1101,25 @@ function facebook_post_hook(&$a,&$b) {
 
 				logger('Facebook post: msg=' . $msg, LOGGER_DATA);
 
-				if($likes) { 
+				if($likes) {
 					$postvars = array('access_token' => $fb_token);
 				}
 				else {
+					// message, picture, link, name, caption, description, source, place, tags
 					$postvars = array(
-						'access_token' => $fb_token, 
+						'access_token' => $fb_token,
 						'message' => $msg
 					);
 					if(isset($image)) {
 						$postvars['picture'] = $image;
-						//$postvars['type'] = "photo";
 					}
 					if(isset($link)) {
 						$postvars['link'] = $link;
-						//$postvars['type'] = "link";
+
+						// The following doesn't work - why?
+						if ((stristr($link,'youtube')) || (stristr($link,'youtu.be')) || (stristr($link,'vimeo'))) {
+							$postvars['source'] = $link;
+						}
 					}
 					if(isset($linkname))
 						$postvars['name'] = $linkname;
@@ -1133,7 +1137,7 @@ function facebook_post_hook(&$a,&$b) {
 
 				if($reply) {
 					$url = 'https://graph.facebook.com/' . $reply . '/' . (($likes) ? 'likes' : 'comments');
-				} else if (($link != "")  or ($image != "") or ($b['title'] == '') or (strlen($msg) < 500)) { 
+				} else if (($link != "")  or ($image != "") or ($b['title'] == '') or (strlen($msg) < 500)) {
 					$url = 'https://graph.facebook.com/me/feed';
 					if($b['plink'])
 						$postvars['actions'] = '{"name": "' . t('View on Friendica') . '", "link": "' .  $b['plink'] . '"}';
@@ -1778,7 +1782,7 @@ function fb_consume_stream($uid,$j,$wall = false) {
 			// oembed display a picture of the video as well 
 			if ($entry->type != "video") {
 				if(isset($entry->picture) && isset($entry->link)) {
-					$datarray['body'] .= "\n" . '[url=' . $entry->link . '][img]'.$entry->picture.'[/img][/url]';	
+					$datarray['body'] .= "\n" . '[url=' . $entry->link . '][img]'.$entry->picture.'[/img][/url]';
 				}
 				else {
 					if(isset($entry->picture))

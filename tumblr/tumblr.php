@@ -204,19 +204,18 @@ function tumblr_send(&$a,&$b) {
 			$params['embed'] = $link;
 			if ($title != '')
 				$params['caption'] = '<h1><a href="'.$link.'">'.$title.
-							"</a></h1><p>".bbcode($body)."</p>";
+							"</a></h1><p>".bbcode($body, false, false)."</p>";
 			else
-				$params['caption'] = bbcode($body);
+				$params['caption'] = bbcode($body, false, false);
 		} else if (($link != '') and !$video) {
 			$params['type'] = "link";
 			$params['name'] = $title;
 			$params['url'] = $link;
-			//$params['description'] = bbcode($body);
-			$params['description'] = bbcode($b["body"]);
+			$params['description'] = bbcode($b["body"], false, false);
 		} else {
 			$params['type'] = "regular";
 			$params['title'] = $title;
-			$params['body'] = bbcode($b['body']);
+			$params['body'] = bbcode($b['body'], false, false);
 		}
 
 		$x = post_url($tmbl_blog,$params);
