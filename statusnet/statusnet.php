@@ -482,9 +482,14 @@ function statusnet_post_hook(&$a,&$b) {
                 }
                 // ok, all the links we want to send out are save, now strip 
                 // away the remaining bbcode
-		$msg = strip_tags(bbcode($tmp, false, false));
+		//$msg = strip_tags(bbcode($tmp, false, false));
+		$msg = bbcode($tmp, false, false);
+		$msg = str_replace(array('<br>','<br />'),"\n",$msg);
+		$msg = strip_tags($msg);
+
 		// quotes not working - let's try this
 		$msg = html_entity_decode($msg);
+
 		if (( strlen($msg) > $max_char) && $max_char > 0) {
 			$shortlink = short_link( $b['plink'] );
 			// the new message will be shortened such that "... $shortlink"
