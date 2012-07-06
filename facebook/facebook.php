@@ -3,7 +3,8 @@
  * Name: Facebook Connector
  * Version: 1.3
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- *         Tobias Hößl <https://github.com/CatoTH/>
+ * Author: Tobias Hößl <https://github.com/CatoTH/>
+ *
  */
 
 /**
@@ -162,10 +163,11 @@ function facebook_init(&$a) {
 		}
 	}
 
-
 	if($a->argc != 2)
 		return;
+
 	$nick = $a->argv[1];
+
 	if(strlen($nick))
 		$r = q("SELECT `uid` FROM `user` WHERE `nickname` = '%s' LIMIT 1",
 				dbesc($nick)
@@ -758,7 +760,7 @@ function facebook_plugin_admin(&$a, &$o){
 		elseif (is_array($subs)) {
 			$o .= t('The given API Key seems to work correctly.') . '<br>';
 			$working_connection = true;
-		} else $o .= t('The correctness of the API Key could not be detected. Somthing strange\'s going on.') . '<br>';
+		} else $o .= t('The correctness of the API Key could not be detected. Something strange\'s going on.') . '<br>';
 	}
 	
 	$o .= '<label for="fb_appid">' . t('App-ID / API-Key') . '</label><input id="fb_appid" name="appid" type="text" value="' . escape_tags($appid ? $appid : "") . '"><br style="clear: both;">';
