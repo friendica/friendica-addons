@@ -15,6 +15,23 @@ class Sabre_CardDAV_Backend_Std extends Sabre_CardDAV_Backend_Abstract
 {
 
 	/**
+	 * @var null|Sabre_CardDAV_Backend_Std
+	 */
+	private static $instance = null;
+
+	/**
+	 * @static
+	 * @return Sabre_CardDAV_Backend_Std
+	 */
+	public static function getInstance() {
+		if (self::$instance == null) {
+			self::$instance = new Sabre_CardDAV_Backend_Std();
+		}
+		return self::$instance;
+	}
+
+
+	/**
 	 * Sets up the object
 	 */
 	public function __construct()

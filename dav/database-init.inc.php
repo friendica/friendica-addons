@@ -2,9 +2,79 @@
 
 
 /**
+ * @param int $from_version
+ * @return array|string[]
+ */
+function dav_get_update_statements($from_version)
+{
+	$stms = array();
+
+	if ($from_version <= 0) {
+		$stms[] = "ALTER TABLE `dav_calendars` ADD `uri` VARCHAR( 50 ) NULL DEFAULT NULL AFTER `description` , ADD `has_vevent` TINYINT NOT NULL DEFAULT '1' AFTER `uri` , ADD `has_vtodo` TINYINT NOT NULL DEFAULT '1' AFTER `has_vevent`";
+
+		$stms[] = "UPDATE `dav_calendars` SET `uri` = 'private' WHERE `namespace` = 1";
+		$stms[] = "UPDATE `dav_calendars` SET `uri` = 'friendica-mine' WHERE `namespace` = 2 AND `namespace_id` = 1";
+		$stms[] = "UPDATE `dav_calendars` SET `uri` = 'friendica-contacts' WHERE `namespace` = 2 AND `namespace_id` = 2";
+		$stms[] = "ALTER TABLE `dav_calendars` DROP PRIMARY KEY ";
+		$stms[] = "ALTER TABLE `dav_calendars` ADD `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST ";
+
+		$stms[] = "ALTER TABLE `dav_calendarobjects` ADD `calendar_id` INT NOT NULL AFTER `id` ";
+		$stms[] = "UPDATE `dav_calendarobjects` a JOIN `dav_calendars` b ON a.`namespace` = b.`namespace` AND a.`namespace_id` = b.`namespace_id` SET a.`calendar_id` = b.`id`";
+		$stms[] = "ALTER TABLE `dav_calendarobjects` DROP `namespace` , DROP `namespace_id` ;";
+		$stms[] = "ALTER TABLE `dav_calendarobjects` ADD INDEX ( `calendar_id` ) ";
+		$stms[] = "ALTER TABLE `dav_calendarobjects` ADD `componentType` ENUM( 'VEVENT', 'VTODO' ) NOT NULL DEFAULT 'VEVENT' AFTER `calendardata` ,
+		 	ADD `firstOccurence` TIMESTAMP NOT NULL AFTER `lastmodified` ,
+			ADD `lastOccurence` TIMESTAMP NOT NULL AFTER `firstOccurence`";
+
+		$stms[] = "DROP TABLE `dav_jqcalendar`";
+		$stms[] = "CREATE TABLE IF NOT EXISTS `dav_jqcalendar` (
+  			`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  			`ical_recurr_uri` varchar(100) DEFAULT NULL,
+  			`calendar_id` int(10) unsigned NOT NULL,
+  			`calendarobject_id` int(10) unsigned NOT NULL,
+  			`Subject` varchar(1000) NOT NULL,
+  			`StartTime` timestamp NULL DEFAULT NULL,
+  			`EndTime` timestamp NULL DEFAULT NULL,
+  			`IsEditable` tinyint(3) unsigned NOT NULL,
+  			`IsAllDayEvent` tinyint(4) NOT NULL,
+  			`IsRecurring` tinyint(4) NOT NULL,
+  			`Color` CHAR(6) DEFAULT NULL,
+  			PRIMARY KEY (`id`),
+  			KEY `calendarByStart` (`calendar_id`,`StartTime`),
+  			KEY `calendarobject_id` (`calendarobject_id`,`ical_recurr_uri`)
+			) DEFAULT CHARSET=utf8 ";
+
+
+		$stms[] = "ALTER TABLE `dav_notifications` ADD `calendar_id` INT NOT NULL AFTER `ical_recurr_uri` ";
+		$stms[] = "ALTER TABLE `dav_notifications` DROP INDEX `ical_uri` , ADD INDEX `ical_uri` ( `calendar_id` , `ical_uri` , `ical_recurr_uri` ) ";
+		$stms[] = "TRUNCATE TABLE `dav_notifications`";
+		$stms[] = "ALTER TABLE `dav_notifications` DROP `namespace` , DROP `namespace_id`";
+
+		$stms[] = "TRUNCATE TABLE `dav_cal_virtual_object_cache`";
+		$stme[] = "ALTER TABLE `dav_cal_virtual_object_cache` ADD `calendar_id` INT UNSIGNED NOT NULL AFTER `id` ";
+		$stms[] = "ALTER TABLE `dav_cal_virtual_object_cache` DROP INDEX `ref_type` , ADD INDEX `ref_type` ( `calendar_id` , `data_end` )  ";
+		$stms[] = "ALTER TABLE `dav_cal_virtual_object_cache` DROP `uid`, DROP `namespace` , DROP `namespace_id` ";
+
+		$stms[] = "CREATE TABLE `friendica`.`dav_cal_virtual_object_sync` (
+			`calendar_id` INT UNSIGNED NOT NULL ,
+			`date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+			PRIMARY KEY ( `calendar_id` )
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+
+		$stms[] = "DROP TABLE `dav_cache_synchronized` ";
+
+		$stms[] = "UPDATE `dav_calendars` SET `namespace` = 1, `namespace_id` = `uid`"; // last
+		$stms[] = "ALTER TABLE `dav_calendars` DROP `uid`";
+	}
+
+	return $stms;
+}
+
+/**
  * @return array
  */
-function dav_get_create_statements() {
+function dav_get_create_statements()
+{
 	$arr = array();
 
 	$arr[] = "CREATE TABLE IF NOT EXISTS `dav_addressbooks_community` (
@@ -69,6 +139,9 @@ function dav_get_create_statements() {
   `displayname` varchar(200) NOT NULL,
   `timezone` text NOT NULL,
   `description` varchar(500) NOT NULL,
+  `uri` varchar(50) DEFAULT NULL,
+  `has_vevent` tinyint(4) NOT NULL DEFAULT '1',
+  `has_vtodo` tinyint(4) NOT NULL DEFAULT '1',
   `ctag` int(10) unsigned NOT NULL,
   PRIMARY KEY (`namespace`,`namespace_id`),
   KEY `uid` (`uid`)
@@ -171,10 +244,11 @@ function dav_get_create_statements() {
 /**
  * @return int
  */
-function dav_check_tables() {
+function dav_check_tables()
+{
 	$dbv = get_config("dav", "db_version");
 	if ($dbv == CALDAV_DB_VERSION) return 0; // Correct
-	if (is_numeric($dbv)) return 1; // Older version (update needed)
+	if (is_numeric($dbv) || $dbv == "CALDAV_DB_VERSION") return 1; // Older version (update needed)
 	return -1; // Not installed
 }
 
@@ -184,7 +258,29 @@ function dav_check_tables() {
  */
 function dav_create_tables()
 {
-	$stms = dav_get_create_statements();
+	$stms   = dav_get_create_statements();
+	$errors = array();
+
+	global $db;
+	foreach ($stms as $st) {
+		$db->q($st);
+		if ($db->error) $errors[] = $db->error;
+	}
+
+	if (count($errors) == 0) set_config("dav", "db_version", CALDAV_DB_VERSION);
+
+	return $errors;
+}
+
+/**
+ * @return array
+ */
+function dav_upgrade_tables()
+{
+	$dbv = get_config("dav", "db_version");
+	if ($dbv == "CALDAV_DB_VERSION") $ver = 0;
+	else $ver = IntVal($dbv);
+	$stms   = dav_get_update_statements($ver);
 	$errors = array();
 
 	global $db;

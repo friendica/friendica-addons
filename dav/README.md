@@ -6,10 +6,13 @@ It's still in a very early stage, so expect major bugs. Please feel free to repo
 At the moment, the calendar system supports the following features:
 - A web-based drag&drop interface for managing events
 - All-Day-Events, Multi-Day-Events, and time-based events
+- Recurrences (not the whole set of options given in the iCalendar spec, but the most important ones)
+- Multiple calendars per user
 - Access to the events using CalDAV (using iPhone, Thunderbird Lightning etc., see below)
-- read-only access to the friendica-native events (also using CalDAV)
+- Read-only access to the friendica-native events (also using CalDAV)
 - The friendica-contacts are made available using CardDAV (confirmed to work with iOS)
 - Giving the subject, a description, a location and a color for the event (the color is not available through CalDAV, though)
+
 
 Internationalization:
 - At the moment, settings for the US and the german systems are selectable (regarding the date format and the first day of the week). More will be added on request.
@@ -17,8 +20,10 @@ Internationalization:
 
 CalDAV device compatibility:
 - iOS (iPhone/iPodTouch) works
-- Thunderbird Lightning should work, not tested yet
-- Android: http://dmfs.org/caldav/ seems to work, not much tested yet, though
+- Thunderbird Lightning works
+- Android:
+  - aCal (http://andrew.mcmillan.net.nz/projects/aCal) works, available in F-Droid and Google Play
+  - CalDAV-Sync (http://dmfs.org/caldav/) works, non-free
 
 Installation
 After activating, serveral tables in the database have to be created. The admin-interface of the plugin will try to do this automatically.
@@ -26,10 +31,9 @@ In case of errors, the SQL-statement to create the tables manually are shown in 
 
 
 Functuality missing: (a.k.a. "Roadmap")
-- Recurrence of events (this is only supported using the CalDAV-interface; recurring events saved using CalDAV will appear correctly multiple times in the web-based frontend; hovever those events will be read-only at the web-based frondend)
-- Sharing events; all events are private at the moment, therefore this system is not yet a complete replacement for the friendica-native events
+- Sharing events; all events are private at the moment, therefore this system is not a complete replacement for the friendica-native events
 - Attendees / Collaboration
-
+- ICS Export and Import
 
 
 Used libraries
@@ -45,10 +49,6 @@ GNU Lesser General Public License
 jQueryUI
 http://jqueryui.com/
 Dual-licenced: MIT and GPL licenses
-
-iCalCreator
-http://kigkonsult.se/iCalcreator/
-GNU Lesser General Public License
 
 TimePicker
 http://www.texotela.co.uk/code/jquery/timepicker/

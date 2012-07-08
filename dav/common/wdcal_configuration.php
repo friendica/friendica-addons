@@ -41,6 +41,13 @@ abstract class wdcal_local
 	}
 
 	/**
+	 * @static
+	 * @abstract
+	 * @return string
+	 */
+	abstract static function getLanguageCode();
+
+	/**
 	 * @abstract
 	 * @static
 	 * @return string
@@ -76,6 +83,13 @@ abstract class wdcal_local
 	 * @return string
 	 */
 	abstract function date_timestamp2local($ts);
+
+	/**
+	 * @abstract
+	 * @param int $ts
+	 * @return string
+	 */
+	abstract function date_timestamp2localDate($ts);
 
 	/**
 	 * @abstract
@@ -120,6 +134,14 @@ abstract class wdcal_local
 class wdcal_local_us extends wdcal_local {
 
 	/**
+	 * @static
+	 * @return string
+	 */
+	static function getLanguageCode() {
+		return "en";
+	}
+
+	/**
 	 * @return string
 	 */
 	static function getName() {
@@ -150,6 +172,14 @@ class wdcal_local_us extends wdcal_local {
 	function date_timestamp2local($ts)
 	{
 		return date("m/d/Y H:i", $ts);
+	}
+
+	/**
+	 * @param int $ts
+	 * @return string
+	 */
+	function date_timestamp2localDate($ts) {
+		return date("l, F jS Y", $ts);
 	}
 
 	/**
@@ -199,6 +229,14 @@ class wdcal_local_us extends wdcal_local {
 class wdcal_local_de extends  wdcal_local {
 
 	/**
+	 * @static
+	 * @return string
+	 */
+	static function getLanguageCode() {
+		return "de";
+	}
+
+	/**
 	 * @return string
 	 */
 	static function getName() {
@@ -229,6 +267,14 @@ class wdcal_local_de extends  wdcal_local {
 	function date_timestamp2local($ts)
 	{
 		return date("d.m.Y H:i", $ts);
+	}
+
+	/**
+	 * @param int $ts
+	 * @return string
+	 */
+	function date_timestamp2localDate($ts) {
+		return date("l, j. F Y", $ts);
 	}
 
 	/**

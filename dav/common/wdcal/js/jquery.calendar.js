@@ -5,8 +5,10 @@
 (function ($) {
 	"use strict";
 
-	var __WDAY = new Array(i18n.xgcalendar.dateformat.sun, i18n.xgcalendar.dateformat.mon, i18n.xgcalendar.dateformat.tue, i18n.xgcalendar.dateformat.wed, i18n.xgcalendar.dateformat.thu, i18n.xgcalendar.dateformat.fri, i18n.xgcalendar.dateformat.sat);
-	var __MonthName = new Array(i18n.xgcalendar.dateformat.jan, i18n.xgcalendar.dateformat.feb, i18n.xgcalendar.dateformat.mar, i18n.xgcalendar.dateformat.apr, i18n.xgcalendar.dateformat.may, i18n.xgcalendar.dateformat.jun, i18n.xgcalendar.dateformat.jul, i18n.xgcalendar.dateformat.aug, i18n.xgcalendar.dateformat.sep, i18n.xgcalendar.dateformat.oct, i18n.xgcalendar.dateformat.nov, i18n.xgcalendar.dateformat.dec);
+	var __WDAY = $.datepicker._defaults.dayNamesShort;
+		//new Array(i18n.xgcalendar.dateformat.sun, i18n.xgcalendar.dateformat.mon, i18n.xgcalendar.dateformat.tue, i18n.xgcalendar.dateformat.wed, i18n.xgcalendar.dateformat.thu, i18n.xgcalendar.dateformat.fri, i18n.xgcalendar.dateformat.sat);
+	var __MonthName = $.datepicker._defaults.monthNamesShort;
+		//new Array(i18n.xgcalendar.dateformat.jan, i18n.xgcalendar.dateformat.feb, i18n.xgcalendar.dateformat.mar, i18n.xgcalendar.dateformat.apr, i18n.xgcalendar.dateformat.may, i18n.xgcalendar.dateformat.jun, i18n.xgcalendar.dateformat.jul, i18n.xgcalendar.dateformat.aug, i18n.xgcalendar.dateformat.sep, i18n.xgcalendar.dateformat.oct, i18n.xgcalendar.dateformat.nov, i18n.xgcalendar.dateformat.dec);
 
 
 	function dateFormat(format) {
@@ -769,8 +771,8 @@
 			for (i = 0; i < l; i++) {
 				var $col = $container.find(".tgCol" + i);
 				for (var j = 0; j < events[i].length; j++) {
-					if (events[i][j].event["color"] && events[i][j].event["color"].match(/^#[0-9a-f]{6}$/i)) {
-						c = events[i][j].event["color"];
+					if (events[i][j].event["color"] && events[i][j].event["color"].match(/^[0-9a-f]{6}$/i)) {
+						c = "#" + events[i][j].event["color"];
 					}
 					else {
 						c = option.std_color;
@@ -787,7 +789,7 @@
 		function getTitle(event) {
 			var timeshow, eventshow;
 			var showtime = event["is_allday"] != 1;
-			eventshow = event["subject"];
+			eventshow = event["summary"];
 			var startformat = getymformat(event["start"], null, showtime, true);
 			var endformat = getymformat(event["end"], event["start"], showtime, true);
 			timeshow = dateFormat.call(event["start"], startformat) + " - " + dateFormat.call(event["end"], endformat);
@@ -819,7 +821,7 @@
 			var p = { bdcolor:theme[0], bgcolor2:theme[0], bgcolor1:theme[2], width:"70%", icon:"", title:"", data:"" };
 			p.starttime = pZero(e.st.hour) + ":" + pZero(e.st.minute);
 			p.endtime = pZero(e.et.hour) + ":" + pZero(e.et.minute);
-			p.content = e.event["subject"];
+			p.content = e.event["summary"];
 			p.title = getTitle(e.event);
 			var icons = [];
 			if (e.event["has_notification"] == 1) icons.push("<I class=\"cic cic-tmr\">&nbsp;</I>");
@@ -1146,12 +1148,12 @@
 			var p = { color:theme[2], title:"", extendClass:"", extendHTML:"", data:"" };
 
 			p.title = getTitle(e.event);
-			p.id = "bbit_cal_event_" + e.event["uri"];
+			p.id = "bbit_cal_event_" + e.event["jq_id"];
 			if (option.enableDrag && e.event["is_editable_quick"] == 1) {
 				p.eclass = "drag";
 			}
 			else {
-				p.eclass = "cal_" + e.event["uri"];
+				p.eclass = "cal_" + e.event["jq_id"];
 			}
 			p.eclass += " " + (e.event["is_editable"] ? "editable" : "not_editable");
 			var sp = "<span style=\"cursor: pointer\">{content}</span>";
@@ -1175,10 +1177,10 @@
 			}
 			var cen;
 			if (!e.allday && !sf) {
-				cen = pZero(e.st.hour) + ":" + pZero(e.st.minute) + " " + e.event["subject"];
+				cen = pZero(e.st.hour) + ":" + pZero(e.st.minute) + " " + e.event["summary"];
 			}
 			else {
-				cen = e.event["subject"];
+				cen = e.event["summary"];
 			}
 			var content = [];
 			if (cen.indexOf("Geburtstag:") == 0) {
@@ -1294,7 +1296,7 @@
 					}
 					if (option.eventItems[i]["start"] >= es) {
 						for (var j = 0; j < jl; j++) {
-							if (option.eventItems[i]["uri"] == events[j]["uri"] && option.eventItems[i]["start"] < start) {
+							if (option.eventItems[i]["jq_id"] == events[j]["jq_id"] && option.eventItems[i]["start"] < start) {
 								events.splice(j, 1); //for duplicated event
 								jl--;
 								break;
@@ -1477,7 +1479,7 @@
 			$("#bbit-cs-buddle").css("visibility", "hidden");
 			var calid = $("#bbit-cs-id").val();
 			var param = [
-				{ "name":"calendarId", value:calid },
+				{ "name":"jq_id", value:calid },
 				{ "name":"type", value:type}
 			];
 			var de = rebyKey(calid, true);
@@ -1609,8 +1611,8 @@
 				var location = "";
 				if (data["location"] != "") location = data["location"] + ", ";
 				$("#bbit-cs-buddle-timeshow").html(location + ss.join(""));
-				$bud.find(".bbit-cs-what").html(data["subject"]).attr("href", data["url_detail"]);
-				$("#bbit-cs-id").val(data["uri"]);
+				$bud.find(".bbit-cs-what").html(data["summary"]).attr("href", data["url_detail"]);
+				$("#bbit-cs-id").val(data["jq_id"]);
 				$bud.data("cdata", data);
 				$bud.css({ "visibility":"visible", left:pos.left, top:pos.top });
 
@@ -1684,11 +1686,11 @@
 					return false;
 				}
 				option.isloading = true;
-				var id = data["uri"];
+				var id = data["jq_id"];
 				var os = data["start"];
 				var od = data["end"];
 				var param = [
-					{ "name":"calendarId", value:id },
+					{ "name":"jq_id", value:id },
 					{ "name":"CalendarStartTime", value:Math.floor(start.getTime() / 1000) },
 					{ "name":"CalendarEndTime", value:Math.floor(end.getTime() / 1000) }
 				];
@@ -1744,7 +1746,7 @@
 				temparr.push('<table class="cb-table"><tbody><tr><th class="cb-key">');
 				temparr.push(i18n.xgcalendar.time, ':</th><td class=cb-value><div id="bbit-cal-buddle-timeshow"></div></td></tr><tr><th class="cb-key">');
 				temparr.push(i18n.xgcalendar.content, ':</th><td class="cb-value"><div class="textbox-fill-wrapper"><div class="textbox-fill-mid"><input id="bbit-cal-what" class="textbox-fill-input"/></div></div><div class="cb-example">');
-				temparr.push(i18n.xgcalendar.example, '</div></td></tr></tbody></table><input id="bbit-cal-start" type="hidden"/><input id="bbit-cal-end" type="hidden"/><input id="bbit-cal-allday" type="hidden"/><input id="bbit-cal-quickAddBTN" value="');
+				temparr.push(i18n.xgcalendar.example, '</div></td></tr></tbody></table><input id="bbit-cal-start" type="hidden"/><input id="bbit-cal-end" type="hidden"/><input id="bbit-cal-allday" type="hidden"/><input value="');
 				temparr.push(i18n.xgcalendar.create_event, '" type="submit"/>&nbsp; <a href="" class="lk bbit-cal-editLink">');
 				temparr.push(i18n.xgcalendar.update_detail, ' <StrONG>&gt;&gt;</StrONG></SPAN></div></div></div><tr><td><div id="bl1" class="bubble-corner"><div class="bubble-sprite bubble-bl"></div></div><td><div class="bubble-bottom"></div><td><div id="br1" class="bubble-corner"><div class="bubble-sprite bubble-br"></div></div></tr></tbody></table><div id="bubbleClose1" class="bubble-closebutton"></div><div id="prong2" class="prong"><div class=bubble-sprite></div></div></div>');
 				temparr.push('</form>');
@@ -1789,7 +1791,6 @@
 							param[param.length] = option.extParam[pi];
 						}
 					}
-
 					if (option.quickAddHandler && $.isFunction(option.quickAddHandler)) {
 						option.quickAddHandler.call(this, param);
 						$("#bbit-cal-buddle").css("visibility", "hidden");
@@ -1804,8 +1805,9 @@
 							ed = new Date(dateend),
 							diff = DateDiff("d", sd, ed);
 						var newdata = {
-							"uri":"",
-							"subject":what,
+							"jq_id":"",
+							"ev_id":"",
+							"summary":what,
 							"start":sd,
 							"end":ed,
 							"is_allday":(allday == "1" ? 1 : 0),
@@ -1886,7 +1888,7 @@
 				var sl = option.eventItems.length;
 				var i = -1;
 				for (var j = 0; j < sl; j++) {
-					if (option.eventItems[j]["uri"] == key) {
+					if (option.eventItems[j]["jq_id"] == key) {
 						i = j;
 						break;
 					}
@@ -2352,7 +2354,7 @@
 									d.target.hide();
 									ny = gP(gh.sh, gh.sm);
 									d.top = ny;
-									tempdata = buildtempdayevent(gh.sh, gh.sm, gh.eh, gh.em, gh.h, data["subject"], false, false, data["color"]);
+									tempdata = buildtempdayevent(gh.sh, gh.sm, gh.eh, gh.em, gh.h, data["summary"], false, false, data["color"]);
 									cpwrap = $("<div class='ca-evpi drag-chip-wrapper' style='top:" + ny + "px'/>").html(tempdata);
 									evid = ".tgOver" + d.target.parent().data("col");
 									$gridcontainer.find(evid).append(cpwrap);
@@ -2389,7 +2391,7 @@
 										//log.info("ny=" + ny);
 										gh = gW(ny, ny + d.h);
 										//log.info("sh=" + gh.sh + ",sm=" + gh.sm);
-										tempdata = buildtempdayevent(gh.sh, gh.sm, gh.eh, gh.em, gh.h, data["subject"], false, false, data["color"]);
+										tempdata = buildtempdayevent(gh.sh, gh.sm, gh.eh, gh.em, gh.h, data["summary"], false, false, data["color"]);
 										d.cpwrap.css("top", ny + "px").html(tempdata);
 									}
 									d.ny = ny;
@@ -2415,7 +2417,7 @@
 									d.target.hide();
 									ny = gP(gh.sh, gh.sm);
 									d.top = ny;
-									tempdata = buildtempdayevent(gh.sh, gh.sm, gh.eh, gh.em, gh.h, data["subject"], "100%", true, data["color"]);
+									tempdata = buildtempdayevent(gh.sh, gh.sm, gh.eh, gh.em, gh.h, data["summary"], "100%", true, data["color"]);
 									cpwrap = $("<div class='ca-evpi drag-chip-wrapper' style='top:" + ny + "px'/>").html(tempdata);
 									evid = ".tgOver" + d.target.parent().data("col");
 									$gridcontainer.find(evid).append(cpwrap);
@@ -2427,7 +2429,7 @@
 									nh = pnh > 1 ? nh - pnh + Math.ceil(option.hour_height / 2) : nh - pnh;
 									if (d.nh != nh) {
 										gh = gW(d.top, d.top + nh);
-										tempdata = buildtempdayevent(gh.sh, gh.sm, gh.eh, gh.em, gh.h, data["subject"], "100%", true, data["color"]);
+										tempdata = buildtempdayevent(gh.sh, gh.sm, gh.eh, gh.em, gh.h, data["summary"], "100%", true, data["color"]);
 										d.cpwrap.html(tempdata);
 									}
 									d.nh = nh;
