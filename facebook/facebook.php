@@ -1004,6 +1004,10 @@ function facebook_post_hook(&$a,&$b) {
 					if(preg_match("/\[img\](.*?)\[\/img\]/is",$b['body'],$matches))
 						$image = $matches[1];
 
+				// When saved into the database the content is sent through htmlspecialchars
+				// That means that we have to decode all image-urls
+				$image = htmlspecialchars_decode($image);
+
 				// Checking for a bookmark element
 				$body = $b['body'];
 				if (strpos($body, "[bookmark") !== false) {
@@ -1110,10 +1114,10 @@ function facebook_post_hook(&$a,&$b) {
 						'access_token' => $fb_token,
 						'message' => $msg
 					);
-					if(isset($image)) {
+					if(trim($image) != "") {
 						$postvars['picture'] = $image;
 					}
-					if(isset($link)) {
+					if(trim($link) != "") {
 						$postvars['link'] = $link;
 
 						// The following doesn't work - why?
@@ -1121,7 +1125,7 @@ function facebook_post_hook(&$a,&$b) {
 							$postvars['source'] = $link;
 						}
 					}
-					if(isset($linkname))
+					if(trim($linkname) != "")
 						$postvars['name'] = $linkname;
 				}
 

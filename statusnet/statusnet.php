@@ -503,10 +503,14 @@ function statusnet_post_hook(&$a,&$b) {
                         $msg = implode(' ', $e);
 			$msg .= '... ' . $shortlink;
 		}
+
+		$msg = trim($msg);
+
 		// and now dent it :-)
 		if(strlen($msg)) {
                     $result = $dent->post('statuses/update', array('status' => $msg));
-                    logger('statusnet_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
+                    logger('statusnet_post send, result: ' . print_r($result, true).
+                           "\nmessage: ".$msg, LOGGER_DEBUG."\nOriginal post: ".print_r($b));
                     if ($result->error) {
                         logger('Send to StatusNet failed: "' . $result->error . '"');
                     }

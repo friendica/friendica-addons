@@ -127,7 +127,7 @@ function privacy_image_cache_img_cb($matches) {
 	if (privacy_image_cache_is_local_image($matches[2]))
 		return $matches[1] . $matches[2] . $matches[3];
 
-	return $matches[1] . get_app()->get_baseurl() . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($matches[2]))) . $matches[3];
+	return $matches[1] . get_app()->get_baseurl() . "/privacy_image_cache/?url=" . addslashes(rawurlencode(htmlspecialchars_decode($matches[2]))) . $matches[3];
 }
 
 /**

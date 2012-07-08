@@ -367,6 +367,9 @@ function twitter_post_hook(&$a,&$b) {
                         $msg = implode(' ', $e);
 			$msg .= '... ' . $shortlink;
 		}
+
+		$msg = trim($msg);
+
 		// and now tweet it :-)
 		if(strlen($msg)) {
 			$result = $tweet->post('statuses/update', array('status' => $msg));
