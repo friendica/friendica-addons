@@ -1,6 +1,7 @@
-v0.2.0
+v0.2.0-pre
 ======
 [FEATURE] Multiple private Calendars can be created.
+[FEATURE] Support for recurring events.
 [COMPATIBILITY] When creating or updating an event using CalDAV, the etag is returned.
 
 v0.1.1
