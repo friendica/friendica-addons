@@ -196,7 +196,8 @@ function libertree_send(&$a,&$b) {
 			$body = "## ".html_entity_decode($title)."\n\n".$body;
 
 		$params = array(
-			'text' => $body
+			'text' => $body,
+			'source' => "friendica"
 		//	'token' => $ltree_api_token
 		);
 
