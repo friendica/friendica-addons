@@ -78,17 +78,13 @@ function dav_init(&$a)
 	}
 
 	wdcal_create_std_calendars();
-
+	wdcal_addRequiredHeaders();
 
 	if ($a->argc >= 2 && $a->argv[1] == "wdcal") {
 
 		if ($a->argc >= 3 && $a->argv[2] == "feed") {
 			wdcal_print_feed($a->get_baseurl() . "/dav/wdcal/");
 			killme();
-		} elseif ($a->argc >= 3 && strlen($a->argv[2]) > 0) {
-			wdcal_addRequiredHeadersEdit();
-		} else {
-			wdcal_addRequiredHeaders();
 		}
 		return;
 	}
@@ -140,6 +136,7 @@ function dav_content()
 					$ret = wdcal_postEditPage("new", "", $a->user["uid"], $a->timezone, $a->get_baseurl() . "/dav/wdcal/");
 					if ($ret["ok"]) notice($ret["msg"]);
 					else info($ret["msg"]);
+					goaway($a->get_baseurl() . "/dav/wdcal/");
 				}
 				$o .= wdcal_getNewPage();
 				return $o;
@@ -154,6 +151,7 @@ function dav_content()
 							$ret = wdcal_postEditPage($a->argv[3], $recurr_uri, $a->user["uid"], $a->timezone, $a->get_baseurl() . "/dav/wdcal/");
 							if ($ret["ok"]) notice($ret["msg"]);
 							else info($ret["msg"]);
+							goaway($a->get_baseurl() . "/dav/wdcal/");
 						}
 						$o .= wdcal_getEditPage($calendar_id, $a->argv[3], $recurr_uri);
 						return $o;

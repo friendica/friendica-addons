@@ -20,6 +20,13 @@ abstract class Sabre_CalDAV_Backend_Common extends Sabre_CalDAV_Backend_Abstract
 	 */
 	abstract public function getNamespace();
 
+	/**
+	 * @static
+	 * @abstract
+	 * @return string
+	 */
+	abstract public static function getBackendTypeName();
+
 
 	/**
 	 * @param int $calendarId

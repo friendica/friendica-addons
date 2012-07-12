@@ -61,6 +61,10 @@ function wdcal_edit_init(dateFormat, base_path) {
 	"use strict";
 
 	$("#cal_color").colorPicker();
+	$("#color_override").on("click", function() {
+		if ($("#color_override").prop("checked")) $("#cal_color_holder").show();
+		else $("#cal_color_holder").hide();
+	});
 
 	$("#cal_start_time").timePicker({ step: 15 }).on("change", wdcal_edit_checktime_startChanged);
 	$("#cal_end_time").timePicker().on("change", wdcal_edit_checktime_endChanged);
@@ -189,5 +193,22 @@ function wdcal_edit_init(dateFormat, base_path) {
 				$dial.dialog("destroy").remove();
 			})
 		});
+	});
+}
+
+
+function wdcal_edit_calendars_start(dateFormat, base_path) {
+	"use strict";
+
+	$(".cal_color").colorPicker();
+
+	$(".delete_cal").click(function(ev) {
+		if (!confirm("Do you really want to delete this calendar? All events will be moved to another private calendar.")) ev.preventDefault();
+	});
+
+	$(".calendar_add_caller").click(function(ev) {
+		$(".cal_add_row").show();
+		$(this).parents("div").hide();
+		ev.preventDefault();
 	});
 }

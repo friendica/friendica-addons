@@ -4,6 +4,8 @@
 define("DAV_ACL_READ", "{DAV:}read");
 define("DAV_ACL_WRITE", "{DAV:}write");
 define("DAV_DISPLAYNAME", "{DAV:}displayname");
+define("DAV_CALENDARCOLOR", "{http://apple.com/ns/ical/}calendar-color");
+
 
 
 class vcard_source_data_email

@@ -28,6 +28,13 @@ class Sabre_CalDAV_Backend_Friendica extends Sabre_CalDAV_Backend_Virtual
 		return CALDAV_NAMESPACE_PRIVATE;
 	}
 
+	/**
+	 * @static
+	 * @return string
+	 */
+	public static function getBackendTypeName() {
+		return t("Friendicy-Native events");
+	}
 
 	/**
 	 * @static

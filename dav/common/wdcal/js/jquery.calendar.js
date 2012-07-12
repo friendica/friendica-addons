@@ -1861,14 +1861,18 @@
 			$("#bbit-cal-start").val(start.getTime());
 			$("#bbit-cal-end").val(end.getTime());
 
-			var addurl = option.baseurl + "new/?start=" + Math.floor($("#bbit-cal-start").val() / 1000) + "&end=" + Math.floor($("#bbit-cal-end").val() / 1000) + "&isallday=" + (isallday ? "1" : "0");
+			var addurl = option.baseurl + "new/?start=" + Math.floor($("#bbit-cal-start").val() / 1000) + "&end=" + Math.floor($("#bbit-cal-end").val() / 1000) +
+				"&isallday=" + (isallday ? "1" : "0") + "&title=";
 			buddle.find(".bbit-cal-editLink").attr("href", addurl);
 
 			buddle.css({ "visibility":"visible", left:off.left, top:off.top });
 			calwhat.blur().focus(); //add 2010-01-26 blur() fixed chrome 
-			$(document).one("mousedown", function () {
+			$(document).on("mousedown", function () {
 				$("#bbit-cal-buddle").css("visibility", "hidden");
 				releasedragevent();
+			});
+			$(document).on("keyup", "#bbit-cal-what", function() {
+				buddle.find(".bbit-cal-editLink").attr("href", addurl + encodeURIComponent($("#bbit-cal-what").val()));
 			});
 			return false;
 		}

@@ -11,6 +11,12 @@ function wdcal_addRequiredHeaders()
 	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/dav/jqueryui/jquery-ui-1.8.21.custom.css' . '" media="all" />' . "\r\n";
 	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/jqueryui/jquery-ui-1.8.21.custom.min.js"></script>' . "\r\n";
 
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/dav/colorpicker/colorPicker.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/colorpicker/jquery.colorPicker.min.js"></script>' . "\r\n";
+
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/dav/timepicker/timePicker.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/timepicker/jquery.timePicker.min.js"></script>' . "\r\n";
+
 	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/dav/wdcal.css' . '" media="all" />' . "\r\n";
 	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/common/wdcal.js"></script>' . "\r\n";
 
@@ -30,37 +36,7 @@ function wdcal_addRequiredHeaders()
 	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/common/wdcal/js/main.js"></script>' . "\r\n";
 }
 
-/**
- *
- */
-function wdcal_addRequiredHeadersEdit()
-{
 
-	$a            = get_app();
-	$localization = wdcal_local::getInstanceByUser($a->user["uid"]);
-
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/dav/jqueryui/jquery-ui-1.8.21.custom.css' . '" media="all" />' . "\r\n";
-	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/jqueryui/jquery-ui-1.8.21.custom.min.js"></script>' . "\r\n";
-
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/dav/colorpicker/colorPicker.css' . '" media="all" />' . "\r\n";
-	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/colorpicker/jquery.colorPicker.min.js"></script>' . "\r\n";
-
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/dav/timepicker/timePicker.css' . '" media="all" />' . "\r\n";
-	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/timepicker/jquery.timePicker.min.js"></script>' . "\r\n";
-
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/dav/wdcal.css' . '" media="all" />' . "\r\n";
-	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/common/wdcal.js"></script>' . "\r\n";
-
-	switch ($localization->getLanguageCode()) {
-		case "de":
-			$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/common/wdcal/js/wdCalendar_lang_DE.js"></script>' . "\r\n";
-			$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/jqueryui/jquery.ui.datepicker-de.js"></script>' . "\r\n";
-			break;
-		default:
-			$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/common/wdcal/js/wdCalendar_lang_EN.js"></script>' . "\r\n";
-	}
-
-}
 
 /**
  * @param array|int[] $calendars
@@ -275,6 +251,9 @@ function wdcal_getEditPage($calendar_id, $uri, $recurr_uri = "")
 	return wdcal_getEditPage_str($localization, $a->get_baseurl(), $a->user["uid"], $calendar_id, $uri, $recurr_uri);
 }
 
+/**
+ * @return string
+ */
 function wdcal_getNewPage()
 {
 	$a            = get_app();
@@ -302,6 +281,62 @@ function wdcal_getSettingsPage(&$a)
 		info(t('The new values have been saved.'));
 	}
 
+	if (isset($_REQUEST["save_cals"])) {
+		check_form_security_token_redirectOnErr($a->get_baseurl() . '/dav/settings/', 'calprop');
+
+		$r = q("SELECT * FROM %s%scalendars WHERE `namespace` = " . CALDAV_NAMESPACE_PRIVATE . " AND `namespace_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($a->user["uid"]));
+		foreach ($r as $cal) {
+			$backend = wdcal_calendar_factory($cal["namespace"], $cal["namespace_id"], $cal["uri"], $cal);
+			$change_sql = "";
+			$col = substr($_REQUEST["color"][$cal["id"]], 1);
+			if (strtolower($col) != strtolower($cal["calendarcolor"])) $change_sql .= ", `calendarcolor` = '" . dbesc($col) . "'";
+			if (!is_subclass_of($backend, "Sabre_CalDAV_Backend_Virtual")) {
+				if ($_REQUEST["uri"][$cal["id"]] != $cal["uri"]) $change_sql .= ", `uri` = '" . dbesc($_REQUEST["uri"][$cal["id"]]) . "'";
+				if ($_REQUEST["name"][$cal["id"]] != $cal["displayname"]) $change_sql .= ", `displayname` = '" . dbesc($_REQUEST["name"][$cal["id"]]) . "'";
+			}
+			if ($change_sql != "") {
+				q("UPDATE %s%scalendars SET `ctag` = `ctag` + 1 $change_sql WHERE `id` = %d AND `namespace_id` = %d AND `namespace_id` = %d",
+					CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $cal["id"], CALDAV_NAMESPACE_PRIVATE, IntVal($a->user["uid"]));
+				info(t('The calendar has been updated.'));
+			}
+		}
+
+		if (isset($_REQUEST["uri"]["new"]) && $_REQUEST["uri"]["new"] != "" && $_REQUEST["name"]["new"] && $_REQUEST["name"]["new"] != "") {
+			$order = q("SELECT MAX(`calendarorder`) ord FROM %s%scalendars WHERE `namespace_id` = %d AND `namespace_id` = %d",
+				CALDAV_SQL_DB, CALDAV_SQL_PREFIX, CALDAV_NAMESPACE_PRIVATE, IntVal($a->user["uid"]));
+			$neworder = $order[0]["ord"] + 1;
+			q("INSERT INTO %s%scalendars (`namespace`, `namespace_id`, `calendarorder`, `calendarcolor`, `displayname`, `timezone`, `uri`, `has_vevent`, `ctag`)
+				VALUES (%d, %d, %d, '%s', '%s', '%s', '%s', 1, 1)",
+				CALDAV_SQL_DB, CALDAV_SQL_PREFIX, CALDAV_NAMESPACE_PRIVATE, IntVal($a->user["uid"]), $neworder, dbesc(strtolower(substr($_REQUEST["color"]["new"], 1))),
+				dbesc($_REQUEST["name"]["new"]), dbesc($a->timezone), dbesc($_REQUEST["uri"]["new"])
+			);
+			info(t('The new calendar has been created.'));
+		}
+	}
+
+	if (isset($_REQUEST["remove_cal"])) {
+		check_form_security_token_redirectOnErr($a->get_baseurl() . '/dav/settings/', 'del_cal', 't');
+
+		$c = q("SELECT * FROM %s%scalendars WHERE `id` = %d AND `namespace_id` = %d AND `namespace_id` = %d",
+			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($_REQUEST["remove_cal"]), CALDAV_NAMESPACE_PRIVATE, IntVal($a->user["uid"]));
+		if (count($c) != 1) killme();
+
+		$calobjs = q("SELECT `id` FROM %s%scalendarobjects WHERE `calendar_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($_REQUEST["remove_cal"]));
+
+		$newcal = q("SELECT * FROM %s%scalendars WHERE `id` != %d AND `namespace_id` = %d AND `namespace_id` = %d ORDER BY `calendarcolor` LIMIT 0,1",
+			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($_REQUEST["remove_cal"]), CALDAV_NAMESPACE_PRIVATE, IntVal($a->user["uid"]));
+		if (count($newcal) != 1) killme();
+
+		q("UPDATE %s%scalendarobjects SET `calendar_id` = %d WHERE `calendar_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($newcal[0]["id"]), IntVal($c[0]["id"]));
+
+		foreach ($calobjs as $calobj) renderCalDavEntry_calobj_id($calobj["id"]);
+
+		q("DELETE FROM %s%scalendars WHERE `id` = %s", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($_REQUEST["remove_cal"]));
+		q("UPDATE %s%scalendars SET `ctag` = `ctag` + 1 WHERE `id` = " . CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $newcal[0]["id"]);
+
+		info(t('The calendar has been deleted.'));
+	}
+
 	$o = "";
 
 	$o .= "<a href='" . $a->get_baseurl() . "/dav/wdcal/'>" . t("Go back to the calendar") . "</a><br><br>";
@@ -325,6 +360,54 @@ function wdcal_getSettingsPage(&$a)
 
 	$o .= '<input type="submit" name="save" value="' . t('Save') . '">';
 	$o .= '</form>';
+
+
+	$o .= '<br><br><h3>' . t('Calendars') . '</h3>';
+	$o .= '<form method="POST" action="' . $a->get_baseurl() . '/dav/settings/">';
+	$o .= "<input type='hidden' name='form_security_token' value='" . get_form_security_token('calprop') . "'>\n";
+	$o .= "<table><tr><th>Type</th><th>Color</th><th>Name</th><th>URI (for CalDAV)</th></tr>";
+
+	$r = q("SELECT * FROM %s%scalendars WHERE `namespace` = " . CALDAV_NAMESPACE_PRIVATE . " AND `namespace_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($a->user["uid"]));
+	$private_max = 0;
+	$num_non_virtual = 0;
+	foreach ($r as $x) {
+		$backend = wdcal_calendar_factory($x["namespace"], $x["namespace_id"], $x["uri"], $x);
+		if (!is_subclass_of($backend, "Sabre_CalDAV_Backend_Virtual")) $num_non_virtual++;
+	}
+	foreach ($r as $x) {
+		$p = explode("private-", $x["uri"]);
+		if (count($p) == 2 && $p[1] > $private_max) $private_max = $p[1];
+
+		$backend = wdcal_calendar_factory($x["namespace"], $x["namespace_id"], $x["uri"], $x);
+		$disabled = (is_subclass_of($backend, "Sabre_CalDAV_Backend_Virtual") ? "disabled" : "");
+		$o .= "<tr>";
+		$o .= "<td style='padding: 2px;'>" . escape_tags($backend->getBackendTypeName()) . "</td>";
+		$o .= "<td style='padding: 2px; text-align: center;'><input style='margin-left: 10px; width: 70px;' class='cal_color' name='color[" . $x["id"] . "]' id='cal_color_" . $x["id"] . "' value='#" . (strlen($x["calendarcolor"]) != 6 ? "5858ff" : escape_tags($x["calendarcolor"])) . "'></td>";
+		$o .= "<td style='padding: 2px;'><input style='margin-left: 10px;' name='name[" . $x["id"] . "]' value='" . escape_tags($x["displayname"]) . "' $disabled></td>";
+		$o .= "<td style='padding: 2px;'><input style='margin-left: 10px; width: 150px;' name='uri[" . $x["id"] . "]' value='" . escape_tags($x["uri"]) . "' $disabled></td>";
+		$o .= "<td style='padding: 2px;'>";
+		if (!is_subclass_of($backend, "Sabre_CalDAV_Backend_Virtual") && $num_non_virtual > 1) $o .= "<a href='" . $a->get_baseurl() . "/dav/settings/?remove_cal=" . $x["id"] . "&amp;t=" . get_form_security_token("del_cal") . "' class='delete_cal'>Delete</a>";
+		$o .= "</td>\n";
+		$o .= "</tr>\n";
+	}
+
+	$private_max++;
+	$o .= "<tr class='cal_add_row' style='display: none;'>";
+	$o .= "<td style='padding: 2px;'>" . escape_tags(Sabre_CalDAV_Backend_Private::getBackendTypeName()) . "</td>";
+	$o .= "<td style='padding: 2px; text-align: center;'><input style='margin-left: 10px; width: 70px;' class='cal_color' name='color[new]' id='cal_color_new' value='#5858ff'></td>";
+	$o .= "<td style='padding: 2px;'><input style='margin-left: 10px;' name='name[new]' value='Another calendar'></td>";
+	$o .= "<td style='padding: 2px;'><input style='margin-left: 10px; width: 150px;' name='uri[new]' value='private-${private_max}'></td>";
+	$o .= "</tr>\n";
+
+	$o .= "</table>";
+	$o .= "<div style='text-align: center;'>[<a href='#' class='calendar_add_caller'>" . t("Create a new calendar") . "</a>]</div>";
+	$o .= '<input type="submit" name="save_cals" value="' . t('Save') . '">';
+	$o .= '</form>';
+	$baseurl = $a->get_baseurl();
+	$o .= "<script>\$(function() {
+		wdcal_edit_calendars_start('" . $current_format->dateformat_datepicker_js() . "', '${baseurl}/dav/');
+	});</script>";
+
 
 	$o .= "<br><h3>" . t("Limitations") . "</h3>";
 

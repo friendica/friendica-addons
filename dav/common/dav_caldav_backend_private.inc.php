@@ -30,6 +30,13 @@ class Sabre_CalDAV_Backend_Private extends Sabre_CalDAV_Backend_Common
 		return CALDAV_NAMESPACE_PRIVATE;
 	}
 
+	/**
+	 * @static
+	 * @return string
+	 */
+	public static function getBackendTypeName() {
+		return t("Private Events");
+	}
 
 	/**
 	 * @obsolete
