@@ -104,7 +104,7 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $uid, $calendar_id, $ur
 
 	$out .= "<h2>" . t("Event data") . "</h2>";
 
-	$out .= "<label for='calendar'>" . t("Calendar") . ":</label><select name='calendar' size='1'>";
+	$out .= "<label for='calendar'>" . t("Calendar") . ":</label><select id='calendar' name='calendar' size='1'>";
 	$found   = false;
 	$cal_col = "aaaaaa";
 	foreach ($calendars as $cal) {
@@ -131,12 +131,12 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $uid, $calendar_id, $ur
 		<input name='summary' id='cal_summary' value=\"" . escape_tags($event["Summary"]) . "\"><br>\n";
 	$out .= "<label class='block' for='cal_allday'>Is All-Day event:</label><input type='checkbox' name='allday' id='cal_allday' " . ($event["IsAllDayEvent"] ? "checked" : "") . "><br>\n";
 
-	$out .= "<label class='block' for='cal_startdate'>" . t("Starts") . ":</label>";
+	$out .= "<label class='block' for='cal_start_date'>" . t("Starts") . ":</label>";
 	$out .= "<input name='start_date' value='" . $localization->dateformat_datepicker_php($event["StartTime"]) . "' id='cal_start_date'>";
 	$out .= "<input name='start_time' value='" . date("H:i", $event["StartTime"]) . "' id='cal_start_time'>";
 	$out .= "<br>\n";
 
-	$out .= "<label class='block' for='cal_enddate'>" . t("Ends") . ":</label>";
+	$out .= "<label class='block' for='cal_end_date'>" . t("Ends") . ":</label>";
 	$out .= "<input name='end_date' value='" . $localization->dateformat_datepicker_php($event["EndTime"]) . "' id='cal_end_date'>";
 	$out .= "<input name='end_time' value='" . date("H:i", $event["EndTime"]) . "' id='cal_end_time'>";
 	$out .= "<br>\n";
@@ -176,7 +176,7 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $uid, $calendar_id, $ur
 	$time .= "<span class='rec_weekly'>" . t("weeks") . "</span>";
 	$time .= "<span class='rec_monthly'>" . t("months") . "</span>";
 	$time .= "<span class='rec_yearly'>" . t("years") . "</span>";
-	$out .= "<label class='block' for='rev_interval'>" . t("Interval") . ":</label> " . str_replace(array("%select%", "%time%"), array($select, $time), t("All %select% %time%")) . "<br>";
+	$out .= "<label class='block'>" . t("Interval") . ":</label> " . str_replace(array("%select%", "%time%"), array($select, $time), t("All %select% %time%")) . "<br>";
 
 
 	$out .= "<div class='rec_daily'>";
@@ -269,9 +269,45 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $uid, $calendar_id, $ur
 
 	$out .= "</div>";
 
-	$monthly_rule = "bymonthday"; // @TODO
+	$monthly_rule = "";
+	if ($recurrence->frequency == "monthly" || $recurrence->frequency == "yearly") {
+		if (is_null($recurrence->byDay) && !is_null($recurrence->byMonthDay) && count($recurrence->byMonthDay) == 1) {
+			$day = date("j", $event["StartTime"]);
+			if ($recurrence->byMonthDay[0] == $day) $monthly_rule = "bymonthday";
+			else {
+				$lastday = date("t", $event["StartTime"]);
+				if ($recurrence->byMonthDay[0] == -1 * ($lastday - $day + 1)) $monthly_rule = "bymonthday_neg";
+			}
+		}
+		if (is_null($recurrence->byMonthDay) && !is_null($recurrence->byDay) && count($recurrence->byDay) == 1) {
+			$num = IntVal($recurrence->byDay[0]);
+			/*
+			$dayMap = array(
+				'SU' => 0,
+				'MO' => 1,
+				'TU' => 2,
+				'WE' => 3,
+				'TH' => 4,
+				'FR' => 5,
+				'SA' => 6,
+			);
+			if ($num == 0) {
+				$num = 1;
+				$weekday = $dayMap[$recurrence->byDay[0]];
+			} else {
+				$weekday = $dayMap[substr($recurrence->byDay[0], strlen($num))];
+			}
+
+			echo $num . " - " . $weekday;
+			*/
+			if ($num > 0) $monthly_rule = "byday";
+			if ($num < 0) $monthly_rule = "byday_neg";
+		}
+		if ($monthly_rule == "") notice("The recurrence of this event cannot be parsed");
+	}
+
 	$out .= "<div class='rec_monthly'>";
-	$out .= "<label class='block' name='rec_monthly_day'>" . t("Day of month") . ":</label>";
+	$out .= "<label class='block' for='rec_monthly_day'>" . t("Day of month") . ":</label>";
 	$out .= "<select id='rec_monthly_day' name='rec_monthly_day' size='1'>";
 	$out .= "<option value='bymonthday' ";
 	if ($monthly_rule == "bymonthday") $out .= "selected";
@@ -288,23 +324,26 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $uid, $calendar_id, $ur
 	$out .= "</select>";
 	$out .= "</div>\n";
 
+	if ($recurrence->frequency == "yearly") {
+		if ($recurrence->byMonth != IntVal(date("m", $event["StartTime"]))) notice("The recurrence of this event cannot be parsed");
+	}
 
 	$out .= "<div class='rec_yearly'>";
-	$out .= "<label class='block' name='rec_yearly_day'>" . t("Month") . ":</label> <span class='rec_month_name'>#month#</span><br>\n";
-	$out .= "<label class='block' name='rec_yearly_day'>" . t("Day of month") . ":</label>";
+	$out .= "<label class='block'>" . t("Month") . ":</label> <span class='rec_month_name'>#month#</span><br>\n";
+	$out .= "<label class='block' for='rec_yearly_day'>" . t("Day of month") . ":</label>";
 	$out .= "<select id='rec_yearly_day' name='rec_yearly_day' size='1'>";
 	$out .= "<option value='bymonthday' ";
 	if ($monthly_rule == "bymonthday") $out .= "selected";
-	$out .= ">" . t("#num#th of each month") . "</option>\n";
+	$out .= ">" . t("#num#th of the given month") . "</option>\n";
 	$out .= "<option value='bymonthday_neg' ";
 	if ($monthly_rule == "bymonthday_neg") $out .= "selected";
-	$out .= ">" . t("#num#th-last of each month") . "</option>\n";
+	$out .= ">" . t("#num#th-last of the given month") . "</option>\n";
 	$out .= "<option value='byday' ";
 	if ($monthly_rule == "byday") $out .= "selected";
-	$out .= ">" . t("#num#th #wkday# of each month") . "</option>\n";
+	$out .= ">" . t("#num#th #wkday# of the given month") . "</option>\n";
 	$out .= "<option value='byday_neg' ";
 	if ($monthly_rule == "byday_neg") $out .= "selected";
-	$out .= ">" . t("#num#th-last #wkday# of each month") . "</option>\n";
+	$out .= ">" . t("#num#th-last #wkday# of the given month") . "</option>\n";
 	$out .= "</select>";
 	$out .= "</div>\n";
 
@@ -427,6 +466,55 @@ function wdcal_set_component_date(&$component, &$localization)
 
 /**
  * @param Sabre_VObject_Component_VEvent $component
+ * @param string $str
+ * @return string
+ */
+
+function wdcal_set_component_recurrence_special(&$component, $str) {
+	$ret = "";
+
+	/** @var Sabre_VObject_Property_DateTime $start  */
+	$start  = $component->__get("DTSTART");
+	$dayMap = array(
+		0 => 'SU',
+		1 => 'MO',
+		2 => 'TU',
+		3 => 'WE',
+		4 => 'TH',
+		5 => 'FR',
+		6 => 'SA',
+	);
+
+	switch ($str) {
+		case "bymonthday":
+			$day = $start->getDateTime()->format("j");
+			$ret = ";BYMONTHDAY=" . $day;
+			break;
+		case "bymonthday_neg":
+			$day     = $start->getDateTime()->format("j");
+			$day_max = $start->getDateTime()->format("t");
+			$ret = ";BYMONTHDAY=" . (-1 * ($day_max - $day + 1));
+			break;
+		case "byday":
+			$day     = $start->getDateTime()->format("j");
+			$weekday = $dayMap[$start->getDateTime()->format("w")];
+			$num     = IntVal(ceil($day / 7));
+			$ret = ";BYDAY=${num}${weekday}";
+			break;
+		case "byday_neg":
+			$day     = $start->getDateTime()->format("j");
+			$weekday = $dayMap[$start->getDateTime()->format("w")];
+			$day_max = $start->getDateTime()->format("t");
+			$day_last = ($day_max - $day + 1);
+			$num     = IntVal(ceil($day_last / 7));
+			$ret = ";BYDAY=-${num}${weekday}";
+			break;
+	}
+	return $ret;
+}
+
+/**
+ * @param Sabre_VObject_Component_VEvent $component
  * @param wdcal_local $localization
  */
 function wdcal_set_component_recurrence(&$component, &$localization)
@@ -469,13 +557,25 @@ function wdcal_set_component_recurrence(&$component, &$localization)
 			break;
 		case "monthly":
 			$part_freq = "FREQ=MONTHLY";
+			$part_freq .= wdcal_set_component_recurrence_special($component, $_REQUEST["rec_monthly_day"]);
 			break;
-		case "FREQ=yearly":
+		case "yearly":
+			/** @var Sabre_VObject_Property_DateTime $start  */
+			$start  = $component->__get("DTSTART");
 			$part_freq = "FREQ=YEARLY";
+			$part_freq .= ";BYMONTH=" . $start->getDateTime()->format("n");
+			$part_freq .= wdcal_set_component_recurrence_special($component, $_REQUEST["rec_yearly_day"]);
 			break;
 		default:
 			$part_freq = "";
 	}
+/*
+	 echo "<pre>!";
+	 echo $part_freq . "\n";
+	 var_dump($_REQUEST);
+	 echo "</pre>";
+	 die();
+*/
 
 	if ($part_freq == "") return;
 
