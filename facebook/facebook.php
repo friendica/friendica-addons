@@ -1091,13 +1091,13 @@ function facebook_post_hook(&$a,&$b) {
 
 				// Fallback - if message is empty
 				if(!strlen($msg))
+					$msg = $linkname;
+
+				if(!strlen($msg))
 					$msg = $link;
 
 				if(!strlen($msg))
 					$msg = $image;
-
-				if(!strlen($msg))
-					$msg = $linkname;
 
 				// If there is nothing to post then exit
 				if(!strlen($msg))

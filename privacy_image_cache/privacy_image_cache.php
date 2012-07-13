@@ -51,6 +51,9 @@ function privacy_image_cache_init() {
 	} else {
 		require_once("Photo.php");
 
+		// It shouldn't happen but it does - spaces in URL
+		$_REQUEST['url'] = str_replace(" ", "+", $_REQUEST['url']);
+
 		$img_str = fetch_url($_REQUEST['url'],true);
 
 		$tempfile = tempnam("", "cache");
