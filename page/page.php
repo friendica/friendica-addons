@@ -13,6 +13,7 @@ function page_install() {
 	register_hook('network_mod_init', 'addon/page/page.php', 'page_network_mod_init');
 	register_hook('plugin_settings', 'addon/page/page.php', 'page_plugin_settings');
 	register_hook('plugin_settings_post', 'addon/page/page.php', 'page_plugin_settings_post');
+	register_hook('profile_advanced', 'addon/page/page.php', 'page_profile_advanced');
 
 }
 
@@ -20,20 +21,22 @@ function page_uninstall() {
 	unregister_hook('network_mod_init', 'addon/page/page.php', 'page_network_mod_init');
 	unregister_hook('plugin_settings', 'addon/page/page.php', 'page_plugin_settings');
 	unregister_hook('plugin_settings_post', 'addon/page/page.php', 'page_plugin_settings_post');
+	unregister_hook('profile_advanced', 'addon/page/page.php', 'page_profile_advanced');
 
 	// remove only - obsolete
 	unregister_hook('page_end', 'addon/page/page.php', 'page_page_end');
 }
 
 
-function page_getpage($uid,$randomise = false) {
+function page_getpage($uid,$showhidden = true,$randomise = false) {
 
 
 	$pagelist = array();
 
-	$order = (($randomise) ? ' order by rand() ' : ' order by name asc ');
+	$order = (($showhidden) ? '' : " and hidden = 0 ");
+	$order .= (($randomise) ? ' order by rand() ' : ' order by name asc ');
 
-	$contacts = q("SELECT `id`, `url`, `name`, `micro`FROM `contact`
+	$contacts = q("SELECT `id`, `url`, `name`, `micro` FROM `contact`
 			WHERE `network`= 'dfrn' AND `forum` = 1 AND `uid` = %d
 			$order ",
 			intval($uid)
@@ -93,7 +96,7 @@ function page_network_mod_init($a,$b) {
 		$show_total = 6;
 	$randomise = intval(get_pconfig(local_user(),'page','randomise'));
 
-	$contacts = page_getpage($a->user['uid'],$randomise);
+	$contacts = page_getpage($a->user['uid'],true,$randomise);
 
 	$total_shown = 0;
 	$more = false;
@@ -115,12 +118,49 @@ function page_network_mod_init($a,$b) {
 		$a->page['aside'] = $page . $a->page['aside'];
 }
 
+
+function page_profile_advanced($a,&$b) {
+
+	$profile = intval(get_pconfig($a->profile['profile_uid'],'page','show_on_profile'));
+	if(! $profile)
+		return;
+
+	$page = '<div id="page-profile">
+			<div class="title">'.t("Forums:").'</div>
+			<div id="profile-page-list">';
+
+	// place holder in case somebody wants configurability
+	$show_total = 9999;
+
+	$randomise = true;
+
+	$contacts = page_getpage($a->user['uid'],false,$randomise);
+
+	$total_shown = 0;
+	$more = false;
+
+	foreach($contacts as $contact) {
+		$page .= micropro($contact,false,'page-profile-advanced');
+		$total_shown ++;
+		if($total_shown == $show_total)
+			break;
+	}
+	$page .= '</div></div><div class="clear"></div>';
+
+	if(count($contacts) > 0)
+		$b .= $page;
+
+}
+
+
+
 function page_plugin_settings_post($a,$post) {
 	if(! local_user() || (! x($_POST,'page-settings-submit')))
 		return;
 
 	set_pconfig(local_user(),'page','max_pages',intval($_POST['page_max_pages']));
 	set_pconfig(local_user(),'page','randomise',intval($_POST['page_random']));
+	set_pconfig(local_user(),'page','show_on_profile',intval($_POST['page_profile']));
 
 	info( t('Page settings updated.') . EOL);
 }
@@ -144,6 +184,9 @@ function page_plugin_settings(&$a,&$s) {
 	$randomise = intval(get_pconfig(local_user(),'page','randomise'));
 	$randomise_checked = (($randomise) ? ' checked="checked" ' : '');
 
+	$profile = intval(get_pconfig(local_user(),'page','show_on_profile'));
+	$profile_checked = (($profile) ? ' checked="checked" ' : '');
+	
 	
 	/* Add some HTML to the existing form */
 
@@ -155,6 +198,9 @@ function page_plugin_settings(&$a,&$s) {
 	$s .= '<div class="clear"></div>';
 	$s .= '<label id="page-random-label" for="page-random">' . t('Randomise Page/Forum list') . '</label>';
 	$s .= '<input id="page-random" type="checkbox" name="page_random" value="1" ' . $randomise_checked . '/>';
+	$s .= '<div class="clear"></div>';
+	$s .= '<label id="page-profile-label" for="page-profile">' . t('Show pages/forums on profile page') . '</label>';
+	$s .= '<input id="page-profile" type="checkbox" name="page_profile" value="1" ' . $profile_checked . '/>';
 	$s .= '<div class="clear"></div>';
 
 	$s .= '</div>';
