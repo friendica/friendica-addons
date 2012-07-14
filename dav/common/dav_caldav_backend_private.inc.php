@@ -431,7 +431,6 @@ class Sabre_CalDAV_Backend_Private extends Sabre_CalDAV_Backend_Common
 	 */
 	function createCalendarObject($calendarId, $objectUri, $calendarData)
 	{
-
 		$calendarData = icalendar_sanitize_string($calendarData);
 
 		$extraData = $this->getDenormalizedData($calendarData);

@@ -325,7 +325,7 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $uid, $calendar_id, $ur
 	$out .= "</div>\n";
 
 	if ($recurrence->frequency == "yearly") {
-		if ($recurrence->byMonth != IntVal(date("m", $event["StartTime"]))) notice("The recurrence of this event cannot be parsed");
+		if (count($recurrence->byMonth) != 1 || $recurrence->byMonth[0] != date("n", $event["StartTime"])) notice("The recurrence of this event cannot be parsed!");
 	}
 
 	$out .= "<div class='rec_yearly'>";

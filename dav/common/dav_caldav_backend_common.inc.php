@@ -130,6 +130,7 @@ abstract class Sabre_CalDAV_Backend_Common extends Sabre_CalDAV_Backend_Abstract
 		$component      = null;
 		$firstOccurence = null;
 		$lastOccurence  = null;
+
 		foreach ($vObject->getComponents() as $component) {
 			if ($component->name !== 'VTIMEZONE') {
 				$componentType = $component->name;

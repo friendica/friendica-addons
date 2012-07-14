@@ -186,19 +186,22 @@ function wdcal_create_std_calendars()
 	$a = get_app();
 	if (!local_user()) return;
 
+	$privates = q("SELECT COUNT(*) num FROM %s%scalendars WHERE `namespace` = %d AND `namespace_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, CALDAV_NAMESPACE_PRIVATE, IntVal($a->user["uid"]));
+	if ($privates[0]["num"] > 0) return;
+
 	$uris = array(
 		'private'                 => t("Private Calendar"),
 		CALDAV_FRIENDICA_MINE     => t("Friendica Events: Mine"),
 		CALDAV_FRIENDICA_CONTACTS => t("Friendica Events: Contacts"),
 	);
 	foreach ($uris as $uri => $name) {
-
 		$cals = q("SELECT * FROM %s%scalendars WHERE `namespace` = %d AND `namespace_id` = %d AND `uri` = '%s'",
 			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, CALDAV_NAMESPACE_PRIVATE, $a->user["uid"], dbesc($uri));
 		if (count($cals) == 0) {
-			q("INSERT INTO %s%scalendars (`namespace`, `namespace_id`, `displayname`, `timezone`, `ctag`, `uri`, `has_vevent`, `has_vtodo`) VALUES (%d, %d, %d, '%s', '%s', 1, '%s', 1, 0)",
+			q("INSERT INTO %s%scalendars (`namespace`, `namespace_id`, `displayname`, `timezone`, `ctag`, `uri`, `has_vevent`, `has_vtodo`) VALUES (%d, %d, '%s', '%s', 1, '%s', 1, 0)",
 				CALDAV_SQL_DB, CALDAV_SQL_PREFIX, CALDAV_NAMESPACE_PRIVATE, IntVal($a->user["uid"]), dbesc($name), dbesc($a->timezone), dbesc($uri)
 			);
 		}
 	}
+
 }

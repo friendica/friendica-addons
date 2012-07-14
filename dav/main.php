@@ -127,9 +127,7 @@ function dav_content()
 		return wdcal_getSettingsPage($a);
 	} elseif ($a->argv[1] == "wdcal") {
 		if (isset($a->argv[2]) && strlen($a->argv[2]) > 0) {
-			if ($a->argv[2] == "ics") {
-				wdcal_print_user_ics();
-			} elseif ($a->argv[2] == "new") {
+			if ($a->argv[2] == "new") {
 				$o = "";
 				if (isset($_REQUEST["save"])) {
 					check_form_security_token_redirectOnErr($a->get_baseurl() . "/dav/wdcal/", "caledit");
@@ -142,7 +140,11 @@ function dav_content()
 				return $o;
 			} else {
 				$calendar_id = IntVal($a->argv[2]);
-				if (isset($a->argv[3]) && $a->argv[3] > 0) {
+				if (isset($a->argv[3]) && $a->argv[3] == "ics-export") {
+					wdcal_print_user_ics($calendar_id);
+				} elseif (isset($a->argv[3]) && $a->argv[3] == "ics-import") {
+					return wdcal_import_user_ics($calendar_id);
+				} elseif (isset($a->argv[3]) && $a->argv[3] > 0) {
 					$recurr_uri = ""; // @TODO
 					if (isset($a->argv[4]) && $a->argv[4] == "edit") {
 						$o = "";

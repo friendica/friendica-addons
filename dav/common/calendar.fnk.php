@@ -185,12 +185,7 @@ function wdcal_mySql2icalTime($myqlDate)
  */
 function icalendar_sanitize_string($str = "")
 {
-	$str = str_replace("\r\n", "\n", $str);
-	$str = str_replace("\n\r", "\n", $str);
-	$str = str_replace("\r", "\n", $str);
-	$str = str_replace("\n\n", "\n", $str);
-	$str = str_replace("\n\n", "\n", $str);
-	return $str;
+	return preg_replace("/[\\r\\n]+/siu", "\r\n", $str);
 }
 
 
@@ -361,10 +356,8 @@ function dav_create_empty_vevent($uid = "")
 }
 
 
-
-
 /**
- * @param Sabre_VObject_Component_VEvent $vObject
+ * @param Sabre_VObject_Component_VCalendar $vObject
  * @return Sabre_VObject_Component_VEvent|null
  */
 function dav_get_eventComponent(&$vObject)

@@ -39,26 +39,19 @@ function wdcal_addRequiredHeaders()
 
 
 /**
- * @param array|int[] $calendars
+ * @param int $calendar_id
  */
-function wdcal_print_user_ics($calendars = array())
+function wdcal_print_user_ics($calendar_id)
 {
-	$add = "";
-	if (count($calendars) > 0) {
-		$c = array();
-		foreach ($calendars as $i) $c[] = IntVal($i);
-		$add = " AND `id` IN (" . implode(", ", $c) . ")";
-	}
+	$calendar_id = IntVal($calendar_id);
 
 	$a = get_app();
 	header("Content-type: text/plain");
 
 	$str  = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Friendica//DAV-Plugin//EN\r\n";
-	$cals = q("SELECT * FROM %s%scalendars WHERE `namespace` = %d AND `namespace_id` = %d %s", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, CALDAV_NAMESPACE_PRIVATE, $a->user["uid"], $add);
+	$cals = q("SELECT * FROM %s%scalendars WHERE `id` = %d AND `namespace` = %d AND `namespace_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $calendar_id, CALDAV_NAMESPACE_PRIVATE, $a->user["uid"]);
 	if (count($cals) > 0) {
-		$ids = array();
-		foreach ($cals as $c) $ids[] = IntVal($c["id"]);
-		$objs = q("SELECT * FROM %s%scalendarobjects WHERE `calendar_id` IN (" . implode(", ", $ids) . ") ORDER BY `firstOccurence`", CALDAV_SQL_DB, CALDAV_SQL_PREFIX);
+		$objs = q("SELECT * FROM %s%scalendarobjects WHERE `calendar_id` = %d ORDER BY `firstOccurence`", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $calendar_id);
 
 		foreach ($objs as $obj) {
 			preg_match("/BEGIN:VEVENT(.*)END:VEVENT/siu", $obj["calendardata"], $matches);
@@ -71,6 +64,95 @@ function wdcal_print_user_ics($calendars = array())
 
 	echo $str;
 	killme();
+}
+
+
+/**
+ * @param int $calendar_id
+ * @return string
+ */
+function wdcal_import_user_ics($calendar_id) {
+	$a = get_app();
+	$calendar_id = IntVal($calendar_id);
+	$o = "";
+
+	$server = dav_create_server(true, true, false);
+	$calendar = dav_get_current_user_calendar_by_id($server, $calendar_id, DAV_ACL_WRITE);
+	if (!$calendar) goaway($a->get_baseurl() . "/dav/wdcal/");
+
+	if (isset($_REQUEST["save"])) {
+		check_form_security_token_redirectOnErr('/dav/settings/', 'icsimport');
+
+		if ($_FILES["ics_file"]["tmp_name"] != "" && is_uploaded_file($_FILES["ics_file"]["tmp_name"])) try {
+			$text = file_get_contents($_FILES["ics_file"]["tmp_name"]);
+
+			/** @var Sabre_VObject_Component_VCalendar $vObject  */
+			$vObject        = Sabre_VObject_Reader::read($text);
+			$comp = $vObject->getComponents();
+			$imported = array();
+			foreach ($comp as $c) try {
+				/** @var Sabre_VObject_Component_VEvent $c */
+				$uid = $c->__get("UID")->value;
+				if (!isset($imported[$uid])) $imported[$uid] = "";
+				$imported[$uid] .= $c->serialize();
+			} catch (Exception $e) {
+				notice(t("Something went wrong when trying to import the file. Sorry. Maybe some events were imported anyway."));
+			}
+
+			if (isset($_REQUEST["overwrite"])) {
+				$children = $calendar->getChildren();
+				foreach ($children as $child) {
+					/** @var Sabre_CalDAV_CalendarObject $child */
+					$child->delete();
+				}
+				$i = 1;
+			} else {
+				$i = 0;
+				$children = $calendar->getChildren();
+				foreach ($children as $child) {
+					/** @var Sabre_CalDAV_CalendarObject $child */
+					$name = $child->getName();
+					if (preg_match("/import\-([0-9]+)\.ics/siu", $name, $matches)) {
+						if ($matches[1] > $i) $i = $matches[1];
+					};
+				}
+				$i++;
+			}
+
+			foreach ($imported as $object) try {
+
+				$str = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Friendica//DAV-Plugin//EN\r\n";
+				$str .= trim($object);
+				$str .= "\r\nEND:VCALENDAR\r\n";
+
+				$calendar->createFile("import-" . $i . ".ics", $str);
+				$i++;
+			} catch (Exception $e) {
+				notice(t("Something went wrong when trying to import the file. Sorry."));
+			}
+
+			$o = t("The ICS-File has been imported.");
+		} catch (Exception $e) {
+			notice(t("Something went wrong when trying to import the file. Sorry. Maybe some events were imported anyway."));
+		} else {
+			notice(t("No file was uploaded."));
+		}
+	}
+
+
+	$o .= "<a href='" . $a->get_baseurl() . "/dav/wdcal/'>" . t("Go back to the calendar") . "</a><br><br>";
+
+	$num = q("SELECT COUNT(*) num FROM %s%scalendarobjects WHERE `calendar_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $calendar_id);
+
+	$o .= "<h2>" . t("Import a ICS-file") . "</h2>";
+	$o .= '<form method="POST" action="' . $a->get_baseurl() . '/dav/wdcal/' . $calendar_id . '/ics-import/" enctype="multipart/form-data">';
+	$o .= "<input type='hidden' name='form_security_token' value='" . get_form_security_token('icsimport') . "'>\n";
+	$o .= "<label for='ics_file'>" . t("ICS-File") . "</label><input type='file' name='ics_file' id='ics_file'><br>\n";
+	if ($num[0]["num"] > 0) $o .= "<label for='overwrite'>" . str_replace("#num#", $num[0]["num"], t("Overwrite all #num# existing events")) . "</label> <input name='overwrite' id='overwrite' type='checkbox'><br>\n";
+	$o .= "<input type='submit' name='save' value='" . t("Upload") . "'>";
+	$o .= '</form>';
+
+	return $o;
 }
 
 
@@ -276,13 +358,13 @@ function wdcal_getSettingsPage(&$a)
 	}
 
 	if (isset($_REQUEST["save"])) {
-		check_form_security_token_redirectOnErr($a->get_baseurl() . '/dav/settings/', 'calprop');
+		check_form_security_token_redirectOnErr('/dav/settings/', 'calprop');
 		set_pconfig($a->user["uid"], "dav", "dateformat", $_REQUEST["wdcal_date_format"]);
 		info(t('The new values have been saved.'));
 	}
 
 	if (isset($_REQUEST["save_cals"])) {
-		check_form_security_token_redirectOnErr($a->get_baseurl() . '/dav/settings/', 'calprop');
+		check_form_security_token_redirectOnErr('/dav/settings/', 'calprop');
 
 		$r = q("SELECT * FROM %s%scalendars WHERE `namespace` = " . CALDAV_NAMESPACE_PRIVATE . " AND `namespace_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($a->user["uid"]));
 		foreach ($r as $cal) {
@@ -315,7 +397,7 @@ function wdcal_getSettingsPage(&$a)
 	}
 
 	if (isset($_REQUEST["remove_cal"])) {
-		check_form_security_token_redirectOnErr($a->get_baseurl() . '/dav/settings/', 'del_cal', 't');
+		check_form_security_token_redirectOnErr('/dav/settings/', 'del_cal', 't');
 
 		$c = q("SELECT * FROM %s%scalendars WHERE `id` = %d AND `namespace_id` = %d AND `namespace_id` = %d",
 			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($_REQUEST["remove_cal"]), CALDAV_NAMESPACE_PRIVATE, IntVal($a->user["uid"]));
@@ -365,7 +447,7 @@ function wdcal_getSettingsPage(&$a)
 	$o .= '<br><br><h3>' . t('Calendars') . '</h3>';
 	$o .= '<form method="POST" action="' . $a->get_baseurl() . '/dav/settings/">';
 	$o .= "<input type='hidden' name='form_security_token' value='" . get_form_security_token('calprop') . "'>\n";
-	$o .= "<table><tr><th>Type</th><th>Color</th><th>Name</th><th>URI (for CalDAV)</th></tr>";
+	$o .= "<table><tr><th>Type</th><th>Color</th><th>Name</th><th>URI (for CalDAV)</th><th>ICS</th></tr>";
 
 	$r = q("SELECT * FROM %s%scalendars WHERE `namespace` = " . CALDAV_NAMESPACE_PRIVATE . " AND `namespace_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($a->user["uid"]));
 	$private_max = 0;
@@ -385,7 +467,10 @@ function wdcal_getSettingsPage(&$a)
 		$o .= "<td style='padding: 2px; text-align: center;'><input style='margin-left: 10px; width: 70px;' class='cal_color' name='color[" . $x["id"] . "]' id='cal_color_" . $x["id"] . "' value='#" . (strlen($x["calendarcolor"]) != 6 ? "5858ff" : escape_tags($x["calendarcolor"])) . "'></td>";
 		$o .= "<td style='padding: 2px;'><input style='margin-left: 10px;' name='name[" . $x["id"] . "]' value='" . escape_tags($x["displayname"]) . "' $disabled></td>";
 		$o .= "<td style='padding: 2px;'><input style='margin-left: 10px; width: 150px;' name='uri[" . $x["id"] . "]' value='" . escape_tags($x["uri"]) . "' $disabled></td>";
-		$o .= "<td style='padding: 2px;'>";
+		$o .= "<td style='padding: 2px;'><a href='" . $a->get_baseurl() . "/dav/wdcal/" . $x["id"] . "/ics-export/'>Export</a>";
+		if (!is_subclass_of($backend, "Sabre_CalDAV_Backend_Virtual") && $num_non_virtual > 1) $o .= " / <a href='" . $a->get_baseurl() . "/dav/wdcal/" . $x["id"] . "/ics-import/'>Import</a>";
+		$o .= "</td>";
+		$o .= "<td style='padding: 2px; padding-left: 50px;'>";
 		if (!is_subclass_of($backend, "Sabre_CalDAV_Backend_Virtual") && $num_non_virtual > 1) $o .= "<a href='" . $a->get_baseurl() . "/dav/settings/?remove_cal=" . $x["id"] . "&amp;t=" . get_form_security_token("del_cal") . "' class='delete_cal'>Delete</a>";
 		$o .= "</td>\n";
 		$o .= "</tr>\n";
@@ -397,6 +482,7 @@ function wdcal_getSettingsPage(&$a)
 	$o .= "<td style='padding: 2px; text-align: center;'><input style='margin-left: 10px; width: 70px;' class='cal_color' name='color[new]' id='cal_color_new' value='#5858ff'></td>";
 	$o .= "<td style='padding: 2px;'><input style='margin-left: 10px;' name='name[new]' value='Another calendar'></td>";
 	$o .= "<td style='padding: 2px;'><input style='margin-left: 10px; width: 150px;' name='uri[new]' value='private-${private_max}'></td>";
+	$o .= "<td></td><td></td>";
 	$o .= "</tr>\n";
 
 	$o .= "</table>";
