@@ -2,7 +2,7 @@
 /**
  * Name: Libravatar Support
  * Description: If there is no avatar image for a new user or contact this plugin will look for one at Libravatar. Please disable Gravatar addon if you use this one. (requires PHP >= 5.3)
- * Version: 1.0
+ * Version: 1.1
  * Author: Klaus Weidenbach <http://friendica.dszdw.net/profile/klaus>
  */
 
@@ -26,7 +26,7 @@ function libravatar_install() {
 function libravatar_uninstall() {
 	unregister_hook('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
 
-	logger("uninstalled libravatar");
+	logger("unregistered libravatar in avatar_lookup hook");
 }
 
 /**
@@ -48,10 +48,9 @@ function libravatar_lookup($a, &$b) {
 
 	require_once 'Services/Libravatar.php';
 	$libravatar = new Services_Libravatar();
-	$options = array();
-	$options['s'] = $b['size'];
-	$options['d'] = $default_avatar;
-	$avatar_url = $libravatar->url($b['email'], $options);
+	$libravatar->setSize($b['size']);
+	$libravatar->setDefault($default_avatar);
+	$avatar_url = $libravatar->getUrl($b['email']);
 
 	$b['url'] = $avatar_url;
 	$b['success'] = true;
@@ -81,8 +80,8 @@ function libravatar_plugin_admin (&$a, &$o) {
 	// Show warning if PHP version is too old
 	if (! version_compare(PHP_VERSION, '5.3.0', '>=')) {
 		$o = '<h5>' .t('Warning') .'</h5><p>';
-		$o .= sprintf(t('Your PHP version %s is lower than the required PHP 5.3.'), PHP_VERSION);
-		$o .= '<br>' .t('This addon is not functional on you server.') .'<p><br>';
+		$o .= sprintf(t('Your PHP version %s is lower than the required PHP >= 5.3.'), PHP_VERSION);
+		$o .= '<br>' .t('This addon is not functional on your server.') .'<p><br>';
 		return;
 	}
 
@@ -91,7 +90,7 @@ function libravatar_plugin_admin (&$a, &$o) {
 		dbesc('gravatar')
 	);
 	if (count($r)) {
-		$o = '<h5>' .t('Information') .'</h5><p>' .t('Gravatar addon is installed. Please disable the gravatar addon.<br>The Libravatar addon will fall back to gravatar if nothing was found at libravatar.') .'</p><br><br>';
+		$o = '<h5>' .t('Information') .'</h5><p>' .t('Gravatar addon is installed. Please disable the Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar.') .'</p><br><br>';
 	}
 
 	// output Libravatar settings
