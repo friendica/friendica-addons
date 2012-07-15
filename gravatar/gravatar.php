@@ -2,7 +2,7 @@
 /**
  * Name: Gravatar Support
  * Description: If there is no avatar image for a new user or contact this plugin will look for one at Gravatar.
- * Version: 1.0
+ * Version: 1.1
  * Author: Klaus Weidenbach <http://friendica.dszdw.net/profile/klaus>
  */
 
@@ -12,7 +12,7 @@
 function gravatar_install() {
 	register_hook('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
 
-	logger("installed gravatar");
+	logger("registered gravatar in avatar_lookup hook");
 }
 
 /**
@@ -21,7 +21,7 @@ function gravatar_install() {
 function gravatar_uninstall() {
 	unregister_hook('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
 
-	logger("uninstalled gravatar");
+	logger("unregistered gravatar in avatar_lookup hook");
 }
 
 /**
@@ -81,7 +81,16 @@ function gravatar_plugin_admin (&$a, &$o) {
 		'x' => 'x'
 	);
 
-	$o = '<input type="hidden" name="form_security_token" value="' .get_form_security_token("gravatarsave") .'">';
+	// Check if Libravatar is enabled and show warning
+	$r = q("SELECT * FROM `addon` WHERE `name` = '%s' and `installed` = 1",
+		dbesc('libravatar')
+	);
+	if (count($r)) {
+		$o = '<h5>' .t('Information') .'</h5><p>' .t('Libravatar addon is installed, too. Please disable Libravatar addon or this Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar.') .'</p><br><br>';
+	}
+
+	// output Gravatar settings
+	$o .= '<input type="hidden" name="form_security_token" value="' .get_form_security_token("gravatarsave") .'">';
 	$o .= replace_macros( $t, array(
 		'$submit' => t('Submit'),
 		'$default_avatar' => array('avatar', t('Default avatar image'), $default_avatar, t('Select default avatar image if none was found at Gravatar. See README'), $default_avatars),
