@@ -43,6 +43,24 @@ function privacy_image_cache_init() {
 	// Double encoded url - happens with Diaspora
 	$urlhash2 = 'pic:' . sha1(urldecode($_REQUEST['url']));
 
+	$cache = get_config('system','itemcache');
+	if (($cache != '') and is_dir($cache)) {
+		$cachefile = $cache."/".hash("md5", $urlhash);
+		if (file_exists($cachefile)) {
+			$img_str = file_get_contents($cachefile);
+
+			$mime = image_type_to_mime_type(exif_imagetype($cachefile));
+
+			header("Content-type: $mime");
+			header("Expires: " . gmdate("D, d M Y H:i:s", time() + (3600*24)) . " GMT");
+			header("Cache-Control: max-age=" . (3600*24));
+
+			echo $img_str;
+
+			killme();
+		}
+	}
+
 	$r = q("SELECT * FROM `photo` WHERE `resource-id` in ('%s', '%s') LIMIT 1", $urlhash, $urlhash2);
 	if (count($r)) {
         	$img_str = $r[0]['data'];
@@ -97,6 +115,10 @@ function privacy_image_cache_init() {
 			$mime = "image/jpeg";
 		}
 	}
+
+	// Writing in cachefile
+	if (isset($cachefile) && $cachefile != '')
+		file_put_contents($cachefile, $img_str);
 
 	header("Content-type: $mime");
 	header("Expires: " . gmdate("D, d M Y H:i:s", time() + (3600*24)) . " GMT");
