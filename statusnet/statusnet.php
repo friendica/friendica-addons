@@ -426,15 +426,15 @@ function statusnet_post_hook(&$a,&$b) {
 
 	if($ckey && $csecret && $otoken && $osecret) {
 
-		require_once('include/bbcode.php');	
+		require_once('include/bbcode.php');
 		$dent = new StatusNetOAuth($api,$ckey,$csecret,$otoken,$osecret);
                 $max_char = $dent->get_maxlength(); // max. length for a dent
                 // we will only work with up to two times the length of the dent 
-                // we can later send to StatusNet. This way we can "gain" some 
-                // information during shortening of potential links but do not 
+                // we can later send to StatusNet. This way we can "gain" some
+                // information during shortening of potential links but do not
                 // shorten all the links in a 200000 character long essay.
                 if (! $b['title']=='') {
-                    $tmp = $b['title'] . ' : '. $b['body'];
+			$tmp = $b['title'].": \n".$b['body'];
 //                    $tmp = substr($tmp, 0, 4*$max_char);
                 } else {
                     $tmp = $b['body']; // substr($b['body'], 0, 3*$max_char);
@@ -453,10 +453,16 @@ function statusnet_post_hook(&$a,&$b) {
                 // that is, don't send if the option is not set in the 
                 // connector settings
                 if ($linksenabled=='0') {
-                    // #-tags
-                    $tmp = preg_replace( '/#\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '#$2', $tmp);
-                    // @-mentions
-                    $tmp = preg_replace( '/@\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '@$2', $tmp);
+			// #-tags
+			$tmp = preg_replace( '/#\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '#$2', $tmp);
+			// @-mentions
+			$tmp = preg_replace( '/@\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '@$2', $tmp);
+			// recycle 1
+			$recycle = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8');
+			$tmp = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', $recycle.'$2', $tmp);
+			// recycle 2
+			//$recycle = html_entity_decode("&#x267B; ", ENT_QUOTES, 'UTF-8');
+			//$tmp = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', 'RT @$2:', $tmp);
                 }
                 // preserve links to webpages
                 $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/url\]/i', '$2 $1', $tmp);
@@ -476,7 +482,7 @@ function statusnet_post_hook(&$a,&$b) {
                 }
                 // ok, all the links we want to send out are save, now strip 
                 // away the remaining bbcode
-		$msg = strip_tags(bbcode($tmp));
+		$msg = strip_tags(bbcode($tmp, false, false));
 		// quotes not working - let's try this
 		$msg = html_entity_decode($msg);
 		if (( strlen($msg) > $max_char) && $max_char > 0) {

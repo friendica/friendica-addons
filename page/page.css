@@ -1,0 +1,13 @@
+
+
+
+#page-settings-label, #page-random-label, #page-profile-label {
+	float: left;
+	width: 200px;
+	margin-bottom: 25px;
+}
+
+#page-max-pages, #page-random, #page-profile {
+	float: left;
+}
+

@@ -435,7 +435,7 @@ function jappixmini_script(&$a,&$s) {
         $key = $row['k'];
 	$pos = strpos($key, ":");
 	$dfrn_id = substr($key, $pos+1);
-        $r = q("SELECT `name` FROM `contact` WHERE `uid`=$uid AND `dfrn-id`='%s' OR `issued-id`='%s'",
+        $r = q("SELECT `name` FROM `contact` WHERE `uid`=$uid AND (`dfrn-id`='%s' OR `issued-id`='%s')",
 		dbesc($dfrn_id),
 		dbesc($dfrn_id)
 	);
@@ -487,6 +487,9 @@ function jappixmini_cron(&$a, $d) {
 	// go through list of users with jabber enabled
 	$users = q("SELECT `uid` FROM `pconfig` WHERE `cat`='jappixmini' AND (`k`='autosubscribe' OR `k`='autoapprove') AND `v`='1'");
 	logger("jappixmini: Update list of contacts' jabber accounts for ".count($users)." users.");
+
+	if(! count($users))
+		return;
 
 	foreach ($users as $row) {
 		$uid = $row["uid"];

@@ -179,24 +179,26 @@ function wppost_send(&$a,&$b) {
 		require_once('include/bbcode.php');
 		require_once('include/html2plain.php');
 
+		$wptitle = trim($b['title']);
+
 		// If the title is empty then try to guess
-		if ($b['title'] == '') {
+		if ($wptitle == '') {
 			// Take the description from the bookmark
 			if(preg_match("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/is",$b['body'],$matches))
-				$b['title'] = $matches[2];
+				$wptitle = $matches[2];
 
 			// If no bookmark is found then take the first line
-			if ($b['title'] == '') {
+			if ($wptitle == '') {
 				$title = html2plain(bbcode($b['body']), 0, true);
 				$pos = strpos($title, "\n");
 				if (($pos == 0) or ($pos > 60))
 					$pos = 60;
 
-				$b['title'] = substr($title, 0, $pos);
+				$wptitle = substr($title, 0, $pos);
 			}
 		}
 
-		$title = '<title>' . (($b['title']) ? $b['title'] : t('Post from Friendica')) . '</title>';
+		$title = '<title>' . (($wptitle) ? $wptitle : t('Post from Friendica')) . '</title>';
 		$post = $title . bbcode($b['body']);
 
 		$wp_backlink = intval(get_pconfig($b['uid'],'wppost','backlink'));

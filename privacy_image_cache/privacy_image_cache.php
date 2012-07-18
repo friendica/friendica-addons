@@ -36,16 +36,18 @@ function privacy_image_cache_init() {
 	}
 
 	$urlhash = 'pic:' . sha1($_REQUEST['url']);
-    $r = q("SELECT * FROM `photo` WHERE `resource-id` = '%s' LIMIT 1", $urlhash );
-    if (count($r)) {
-        $img_str = $r[0]['data'];
+	// Double encoded url - happens with Diaspora
+	$urlhash2 = 'pic:' . sha1(urldecode($_REQUEST['url']));
+
+	$r = q("SELECT * FROM `photo` WHERE `resource-id` in ('%s', '%s') LIMIT 1", $urlhash, $urlhash2);
+	if (count($r)) {
+        	$img_str = $r[0]['data'];
 		$mime = $r[0]["desc"];
 		if ($mime == "") $mime = "image/jpeg";
-    }
-    else {
-        require_once("Photo.php");
+	} else {
+		require_once("Photo.php");
 
-        $img_str = fetch_url($_REQUEST['url'],true);
+		$img_str = fetch_url($_REQUEST['url'],true);
 		if (substr($img_str, 0, 6) == "GIF89a") {
 			$mime = "image/gif";
 			$image = @imagecreatefromstring($img_str);
@@ -77,16 +79,16 @@ function privacy_image_cache_init() {
 			}
 			$mime = "image/jpeg";
 		}
-    }
+	}
 
 
-    header("Content-type: $mime");
-    header("Expires: " . gmdate("D, d M Y H:i:s", time() + (3600*24)) . " GMT");
-    header("Cache-Control: max-age=" . (3600*24));
+	header("Content-type: $mime");
+	header("Expires: " . gmdate("D, d M Y H:i:s", time() + (3600*24)) . " GMT");
+	header("Cache-Control: max-age=" . (3600*24));
 
-    echo $img_str;
+	echo $img_str;
 
-    killme();
+	killme();
 }
 
 /**

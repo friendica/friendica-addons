@@ -3,7 +3,8 @@
  * Name: Facebook Connector
  * Version: 1.3
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- *         Tobias Hößl <https://github.com/CatoTH/>
+ * Author: Tobias Hößl <https://github.com/CatoTH/>
+ *
  */
 
 /**
@@ -79,38 +80,38 @@ function facebook_init(&$a) {
 
 	if (x($_REQUEST, "realtime_cb") && x($_REQUEST, "realtime_cb")) {
 		logger("facebook_init: Facebook Real-Time callback called", LOGGER_DEBUG);
-		
+
 		if (x($_REQUEST, "hub_verify_token")) {
 			// this is the verification callback while registering for real time updates
-			
+
 			$verify_token = get_config('facebook', 'cb_verify_token');
 			if ($verify_token != $_REQUEST["hub_verify_token"]) {
 				logger('facebook_init: Wrong Facebook Callback Verifier - expected ' . $verify_token . ', got ' . $_REQUEST["hub_verify_token"]);
 				return;
 			}
-			
+
 			if (x($_REQUEST, "hub_challenge")) {
 				logger('facebook_init: Answering Challenge: ' . $_REQUEST["hub_challenge"], LOGGER_DATA);
 				echo $_REQUEST["hub_challenge"];
 				die();
 			}
 		}
-		
+
 		require_once('include/items.php');
-		
+
 		// this is a status update
 		$content = file_get_contents("php://input");
 		if (is_numeric($content)) $content = file_get_contents("php://input");
 		$js = json_decode($content);
 		logger(print_r($js, true), LOGGER_DATA);
-		
+
 		if (!isset($js->object) || $js->object != "user" || !isset($js->entry)) {
 			logger('facebook_init: Could not parse Real-Time Update data', LOGGER_DEBUG);
 			return;
 		}
-		
+
 		$affected_users = array("feed" => array(), "friends" => array());
-		
+
 		foreach ($js->entry as $entry) {
 			$fbuser = $entry->uid;
 			foreach ($entry->changed_fields as $field) {
@@ -119,20 +120,20 @@ function facebook_init(&$a) {
 					continue;
 				}
 				if (in_array($fbuser, $affected_users[$field])) continue;
-				
+
 				$r = q("SELECT `uid` FROM `pconfig` WHERE `cat` = 'facebook' AND `k` = 'self_id' AND `v` = '%s' LIMIT 1", dbesc($fbuser));
 				if(! count($r))
 					continue;
 				$uid = $r[0]['uid'];
-				
+
 				$access_token = get_pconfig($uid,'facebook','access_token');
 				if(! $access_token)
 					return;
-				
+
 				switch ($field) {
 					case "feed":
 						logger('facebook_init: FB-User ' . $fbuser . ' / feed', LOGGER_DEBUG);
-						
+
 						if(! get_pconfig($uid,'facebook','no_wall')) {
 							$private_wall = intval(get_pconfig($uid,'facebook','private_wall'));
 							$s = fetch_url('https://graph.facebook.com/me/feed?access_token=' . $access_token);
@@ -146,11 +147,11 @@ function facebook_init(&$a) {
 								}
 							}
 						}
-						
+
 					break;
 					case "friends":
 						logger('facebook_init: FB-User ' . $fbuser . ' / friends', LOGGER_DEBUG);
-						
+
 						fb_get_friends($uid, false);
 						set_pconfig($uid,'facebook','friend_check',time());
 					break;
@@ -162,10 +163,11 @@ function facebook_init(&$a) {
 		}
 	}
 
-	
 	if($a->argc != 2)
 		return;
+
 	$nick = $a->argv[1];
+
 	if(strlen($nick))
 		$r = q("SELECT `uid` FROM `user` WHERE `nickname` = '%s' LIMIT 1",
 				dbesc($nick)
@@ -188,7 +190,7 @@ function facebook_init(&$a) {
 
 		$x = fetch_url('https://graph.facebook.com/oauth/access_token?client_id='
 			. $appid . '&client_secret=' . $appsecret . '&redirect_uri='
-			. urlencode($a->get_baseurl() . '/facebook/' . $nick) 
+			. urlencode($a->get_baseurl() . '/facebook/' . $nick)
 			. '&code=' . $auth_code);
 
 		logger('facebook_init: returned access token: ' . $x, LOGGER_DATA);
@@ -316,7 +318,7 @@ function fb_get_friends_sync_parsecontact($uid, $contact) {
             dbesc($contact->id),
             dbesc('facebook ' . $contact->id),
             dbesc($contact->name),
-            dbesc(($contact->nickname) ? $contact->nickname : strtolower($contact->first_name)),
+            dbesc(($contact->nickname) ? $contact->nickname : mb_convert_case($contact->first_name, MB_CASE_LOWER, "UTF-8")),
             dbesc('https://graph.facebook.com/' . $contact->id . '/picture'),
             dbesc(NETWORK_FACEBOOK),
             intval(CONTACT_IS_FRIEND),
@@ -408,6 +410,7 @@ function fb_get_friends($uid, $fullsync = true) {
 	$access_token = get_pconfig($uid,'facebook','access_token');
 
 	$no_linking = get_pconfig($uid,'facebook','no_linking');
+
 	if($no_linking)
 		return;
 
@@ -432,7 +435,7 @@ function fb_get_friends($uid, $fullsync = true) {
 }
 
 // This is the POST method to the facebook settings page
-// Content is posted to Facebook in the function facebook_post_hook() 
+// Content is posted to Facebook in the function facebook_post_hook()
 
 /**
  * @param App $a
@@ -443,7 +446,7 @@ function facebook_post(&$a) {
 	if($uid){
 
 
-		$fb_limited = get_config('facebook','restrict');
+		$fb_limited = get_config('facebook','crestrict');
 
 
 		$value = ((x($_POST,'post_by_default')) ? intval($_POST['post_by_default']) : 0);
@@ -456,7 +459,7 @@ function facebook_post(&$a) {
 
 		$private_wall = ((x($_POST,'facebook_private_wall')) ? intval($_POST['facebook_private_wall']) : 0);
 		set_pconfig($uid,'facebook','private_wall',$private_wall);
-	
+
 
 		set_pconfig($uid,'facebook','blocked_apps',escape_tags(trim($_POST['blocked_apps'])));
 
@@ -466,7 +469,7 @@ function facebook_post(&$a) {
 			if($linkvalue == 0)
 				set_pconfig($uid,'facebook','no_linking', 1);
 		}
-		else	
+		else
 			set_pconfig($uid,'facebook','no_linking', (($linkvalue) ? 0 : 1));
 
 		// FB linkage was allowed but has just been turned off - remove all FB contacts and posts
@@ -507,6 +510,13 @@ function facebook_content(&$a) {
 		notice( t('Permission denied.') . EOL);
 		return '';
 	}
+
+
+	if(! service_class_allows(local_user(),'facebook_connect')) {
+		notice( t('Permission denied.') . EOL);
+		return upgrade_bool_message();
+	}
+
 
 	if($a->argc > 1 && $a->argv[1] === 'remove') {
 		del_pconfig(local_user(),'facebook','post');
@@ -750,7 +760,7 @@ function facebook_plugin_admin(&$a, &$o){
 		elseif (is_array($subs)) {
 			$o .= t('The given API Key seems to work correctly.') . '<br>';
 			$working_connection = true;
-		} else $o .= t('The correctness of the API Key could not be detected. Somthing strange\'s going on.') . '<br>';
+		} else $o .= t('The correctness of the API Key could not be detected. Something strange\'s going on.') . '<br>';
 	}
 	
 	$o .= '<label for="fb_appid">' . t('App-ID / API-Key') . '</label><input id="fb_appid" name="appid" type="text" value="' . escape_tags($appid ? $appid : "") . '"><br style="clear: both;">';
@@ -940,7 +950,7 @@ function facebook_post_hook(&$a,&$b) {
 			if($fb_token && ($toplevel || $b['private'] || $reply)) {
 				logger('facebook: able to post');
 				require_once('library/facebook.php');
-				require_once('include/bbcode.php');	
+				require_once('include/bbcode.php');
 
 				$msg = $b['body'];
 
@@ -1015,7 +1025,7 @@ function facebook_post_hook(&$a,&$b) {
 				}
 
 				// At first convert the text to html
-				$html = bbcode($body);
+				$html = bbcode($body, false, false);
 
 				// Then convert it to plain text
 				$msg = trim($b['title']." \n\n".html2plain($html, 0, true));
@@ -1132,8 +1142,8 @@ function facebook_post_hook(&$a,&$b) {
 				} else {
 					// if its only a message and a subject and the message is larger than 500 characters then post it as note
 					$postvars = array(
-						'access_token' => $fb_token, 
-						'message' => bbcode($b['body']),
+						'access_token' => $fb_token,
+						'message' => bbcode($b['body'], false, false),
 						'subject' => $b['title'],
 					);
 					$url = 'https://graph.facebook.com/me/notes';
