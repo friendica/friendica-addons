@@ -70,7 +70,9 @@ function get_body_length($body) {
 	$string = trim($body);
 
 	// We need to get rid of hidden tags (display: none)
-	$dom = DomDocument::loadHTML($body);
+
+	// Get rid of the warning. It would be better to have some valid html as input
+	$dom = @DomDocument::loadHTML($body);
 	$xpath = new DOMXPath($dom);
 
 	/*
