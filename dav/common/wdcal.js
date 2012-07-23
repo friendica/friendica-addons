@@ -120,6 +120,13 @@ function wdcal_edit_init(dateFormat, base_path) {
 		$(this).data("orig", $(this).text());
 	});
 
+	$("#new_alarm_adder a").click(function(ev) {
+		$("#new_alarm").val("1");
+		$("#noti_new_row").show();
+		$("#new_alarm_adder").hide();
+		ev.preventDefault();
+	});
+
 	wdcal_edit_recur_recalc();
 
 	$(document).on("click", ".exception_remover", function(ev) {

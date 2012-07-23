@@ -301,7 +301,7 @@ function dav_get_current_user_calendars(&$server, $with_privilege = "")
  * @param Sabre_CalDAV_Calendar $calendar
  * @param string $calendarobject_uri
  * @param string $with_privilege
- * @return null|Sabre_VObject_Component_VEvent
+ * @return null|Sabre_VObject_Component_VCalendar
  */
 function dav_get_current_user_calendarobject(&$server, &$calendar, $calendarobject_uri, $with_privilege = "")
 {

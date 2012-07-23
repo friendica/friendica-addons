@@ -24,12 +24,6 @@ function dav_module()
 
 function dav_include_files()
 {
-	/*
-			require_once (__DIR__ . "/SabreDAV/lib/Sabre.includes.php");
-			require_once (__DIR__ . "/SabreDAV/lib/Sabre/VObject/includes.php");
-			require_once (__DIR__ . "/SabreDAV/lib/Sabre/DAVACL/includes.php");
-			require_once (__DIR__ . "/SabreDAV/lib/Sabre/CalDAV/includes.php");
-			*/
 	require_once (__DIR__ . "/SabreDAV/lib/Sabre/autoload.php");
 
 	require_once (__DIR__ . "/common/calendar.fnk.php");
@@ -145,20 +139,19 @@ function dav_content()
 				} elseif (isset($a->argv[3]) && $a->argv[3] == "ics-import") {
 					return wdcal_import_user_ics($calendar_id);
 				} elseif (isset($a->argv[3]) && $a->argv[3] > 0) {
-					$recurr_uri = ""; // @TODO
 					if (isset($a->argv[4]) && $a->argv[4] == "edit") {
 						$o = "";
 						if (isset($_REQUEST["save"])) {
 							check_form_security_token_redirectOnErr($a->get_baseurl() . "/dav/wdcal/", "caledit");
-							$ret = wdcal_postEditPage($a->argv[3], $recurr_uri, $a->user["uid"], $a->timezone, $a->get_baseurl() . "/dav/wdcal/");
+							$ret = wdcal_postEditPage($a->argv[3], $a->user["uid"], $a->timezone, $a->get_baseurl() . "/dav/wdcal/");
 							if ($ret["ok"]) notice($ret["msg"]);
 							else info($ret["msg"]);
 							goaway($a->get_baseurl() . "/dav/wdcal/");
 						}
-						$o .= wdcal_getEditPage($calendar_id, $a->argv[3], $recurr_uri);
+						$o .= wdcal_getEditPage($calendar_id, $a->argv[3]);
 						return $o;
 					} else {
-						return wdcal_getDetailPage($calendar_id, $a->argv[3], $recurr_uri);
+						return wdcal_getDetailPage($calendar_id, $a->argv[3]);
 					}
 				} else {
 					// @TODO Edit Calendar

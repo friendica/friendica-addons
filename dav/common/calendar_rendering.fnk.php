@@ -12,7 +12,7 @@ function renderCalDavEntry_calcalarm(&$alarm, &$parent)
 {
 	$trigger = $alarm->__get("TRIGGER");
 	if (!isset($trigger['VALUE']) || strtoupper($trigger['VALUE']) === 'DURATION') {
-		$triggerDuration = Sabre_VObject_DateTimeParser::parseDuration($trigger);
+		$triggerDuration = Sabre_VObject_DateTimeParser::parseDuration($trigger->value);
 
 		$related = (isset($trigger['RELATED']) && strtoupper($trigger['RELATED']) == 'END') ? 'END' : 'START';
 

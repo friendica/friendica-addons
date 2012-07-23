@@ -3,13 +3,11 @@
 /**
  * @param wdcal_local $localization
  * @param string $baseurl
- * @param int $uid
  * @param int $calendar_id
  * @param int $uri
- * @param string $recurr_uri
  * @return string
  */
-function wdcal_getEditPage_str(&$localization, $baseurl, $uid, $calendar_id, $uri, $recurr_uri = "")
+function wdcal_getEditPage_str(&$localization, $baseurl, $calendar_id, $uri)
 {
 	$server = dav_create_server(true, true, false);
 
@@ -53,12 +51,53 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $uid, $calendar_id, $ur
 			foreach ($z as $y) $recurrentce_exdates[] = $y->getTimeStamp();
 		}
 
+		$notifications = array();
+		$alarms = $component->select("VALARM");
+		foreach ($alarms as $alarm)  {
+			/** @var Sabre_VObject_Component_VAlarm $alarm */
+			$action = $alarm->__get("ACTION")->value;
+			$trigger = $alarm->__get("TRIGGER");
+
+			if(isset($trigger['VALUE']) && strtoupper($trigger['VALUE']) !== 'DURATION') {
+				notice("The notification of this event cannot be parsed");
+				continue;
+			}
+
+			/** @var DateInterval $triggerDuration  */
+			$triggerDuration = Sabre_VObject_DateTimeParser::parseDuration($trigger);
+			$unit = "hour";
+			$value = 1;
+			if ($triggerDuration->s > 0) {
+				$unit = "second";
+				$value = $triggerDuration->s + $triggerDuration->i * 60 + $triggerDuration->h * 3600 + $triggerDuration->d * 3600 * 24; // @TODO support more than days?
+			}   elseif ($triggerDuration->m) {
+				$unit = "minute";
+				$value = $triggerDuration->i + $triggerDuration->h * 60 + $triggerDuration->d * 60 * 24;
+			} elseif ($triggerDuration->h) {
+				$unit = "hour";
+				$value = $triggerDuration->h + $triggerDuration->d * 24;
+			} elseif ($triggerDuration->d > 0) {
+				$unit = "day";
+				$value = $triggerDuration->d;
+			}
+
+			$rel = (isset($trigger['RELATED']) && strtoupper($trigger['RELATED']) == 'END') ? 'end' : 'start';
+
+
+			$notifications[] = array(
+				"action" => strtolower($action),
+				"rel" => $rel,
+				"trigger_unit" => $unit,
+				"trigger_value" => $value,
+			);
+		}
+
 		if ($component->select("RRULE")) $recurrence = new Sabre_VObject_RecurrenceIterator($vObject, (string)$component->__get("UID"));
 		else $recurrence = null;
 
 	} elseif (isset($_REQUEST["start"]) && $_REQUEST["start"] > 0) {
 		$calendars = dav_get_current_user_calendars($server, DAV_ACL_WRITE);
-		$calendar  = dav_get_current_user_calendar_by_id($server, $calendar_id, DAV_ACL_WRITE);
+		//$calendar  = dav_get_current_user_calendar_by_id($server, $calendar_id, DAV_ACL_WRITE);
 
 		$event = array(
 			"id"            => 0,
@@ -71,15 +110,15 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $uid, $calendar_id, $ur
 			"Color"         => null,
 		);
 		if ($_REQUEST["isallday"]) {
-			$notifications = array(array("rel" => "start", "type" => "duration", "period" => "hour", "period_val" => 24));
+			$notifications = array();
 		} else {
-			$notifications = array(array("rel" => "start", "type" => "duration", "period" => "hour", "period_val" => 1));
+			$notifications = array(array("action" => "email", "rel" => "start", "trigger_unit" => "hour", "trigger_value" => 1));
 		}
 		$recurrence          = null;
 		$recurrentce_exdates = array();
 	} else {
 		$calendars = dav_get_current_user_calendars($server, DAV_ACL_WRITE);
-		$calendar  = dav_get_current_user_calendar_by_id($server, $calendar_id, DAV_ACL_WRITE);
+		//$calendar  = dav_get_current_user_calendar_by_id($server, $calendar_id, DAV_ACL_WRITE);
 
 		$event               = array(
 			"id"            => 0,
@@ -91,7 +130,7 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $uid, $calendar_id, $ur
 			"Location"      => "",
 			"Color"         => null,
 		);
-		$notifications       = array(array("rel" => "start", "type" => "duration", "period" => "hour", "period_val" => 1));
+		$notifications = array(array("action" => "email", "rel" => "start", "trigger_unit" => "hour", "trigger_value" => 1));
 		$recurrence          = null;
 		$recurrentce_exdates = array();
 	}
@@ -270,7 +309,7 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $uid, $calendar_id, $ur
 	$out .= "</div>";
 
 	$monthly_rule = "";
-	if ($recurrence->frequency == "monthly" || $recurrence->frequency == "yearly") {
+	if ($recurrence && ($recurrence->frequency == "monthly" || $recurrence->frequency == "yearly")) {
 		if (is_null($recurrence->byDay) && !is_null($recurrence->byMonthDay) && count($recurrence->byMonthDay) == 1) {
 			$day = date("j", $event["StartTime"]);
 			if ($recurrence->byMonthDay[0] == $day) $monthly_rule = "bymonthday";
@@ -324,7 +363,7 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $uid, $calendar_id, $ur
 	$out .= "</select>";
 	$out .= "</div>\n";
 
-	if ($recurrence->frequency == "yearly") {
+	if ($recurrence && $recurrence->frequency == "yearly") {
 		if (count($recurrence->byMonth) != 1 || $recurrence->byMonth[0] != date("n", $event["StartTime"])) notice("The recurrence of this event cannot be parsed!");
 	}
 
@@ -408,31 +447,53 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $uid, $calendar_id, $ur
 
 	$out .= "<h2>" . t("Notification") . "</h2>";
 
-	/*
-	$out .= '<input type="checkbox" name="notification" id="notification" ';
-	if ($notification) $out .= "checked";
-	$out .= '> ';
-	$out .= '<span id="notification_detail" style="display: none;">
-			<input name="notification_value" value="' . $notification_value . '" size="3">
-			<select name="notification_type" size="1">
-				<option value="minute" ';
-	if ($notification_type == "minute") $out .= "selected";
-	$out .= '> ' . t('Minutes') . '</option>
-				<option value="hour" ';
-	if ($notification_type == "hour") $out .= "selected";
-	$out .= '> ' . t('Hours') . '</option>
-				<option value="day" ';
-	if ($notification_type == "day") echo "selected";
-	$out .= '> ' . t('Days') . '</option>
-			</select> ' . t('before') . '
-		</span><br><br>';
-	*/
+	if (!$notifications) $notifications = array();
+	$notifications["new"] = array(
+		"action" => "email",
+		"trigger_value" => 60,
+		"trigger_unit" => "minute",
+		"rel" => "start",
+	);
+
+	foreach ($notifications as $index => $noti) {
+
+		$unparsable = false;
+		if (!in_array($noti["action"], array("email", "display"))) $unparsable = true;
+
+		$out .= "<div class='noti_holder' ";
+		if (!is_numeric($index) && $index == "new") $out .= "style='display: none;' id='noti_new_row'";
+		$out .= "><label class='plain'>" . t("Notify by");
+		$out .= "<select name='noti_type[$index]' size='1'>";
+		$out .= "<option value=''>- " . t("Remove") . " -</option>\n";
+		$out .= "<option value='email' "; if (!$unparsable && $noti["action"] == "email") $out .= "selected"; $out .= ">" . t("E-Mail") . "</option>\n";
+		$out .= "<option value='display' "; if (!$unparsable && $noti["action"] == "display") $out .= "selected"; $out .= ">" . t("On Friendica / Display") . "</option>\n";
+		//$out .= "<option value='other' "; if ($unparsable) $out .= "selected"; $out .= ">- " . t("other (leave it untouched)") . " -</option>\n"; // @TODO
+		$out .= "</select></label>";
+
+		$out .= "<input name='noti_value[$index]' size='5' style='width: 5em;' value='" . $noti["trigger_value"] . "'>";
+
+		$out .= "<select name='noti_unit[$index]' size='1'>";
+		$out .= "<option value='H' "; if ($noti["trigger_unit"] == "hour") $out .= "selected"; $out .= ">" . t("Hours") . "</option>\n";
+		$out .= "<option value='M' "; if ($noti["trigger_unit"] == "minute") $out .= "selected"; $out .= ">" . t("Minutes") . "</option>\n";
+		$out .= "<option value='S' "; if ($noti["trigger_unit"] == "second") $out .= "selected"; $out .= ">" . t("Seconds") . "</option>\n";
+		$out .= "<option value='D' "; if ($noti["trigger_unit"] == "day") $out .= "selected"; $out .= ">" . t("Days") . "</option>\n";
+		$out .= "<option value='W' "; if ($noti["trigger_unit"] == "week") $out .= "selected"; $out .= ">" . t("Weeks") . "</option>\n";
+		$out .= "</select>";
+
+		$out .= " <label class='plain'>" . t("before the") . " <select name='noti_ref[$index]' size='1'>";
+		$out .= "<option value='start' "; if ($noti["rel"] == "start") $out .= "selected"; $out .= ">" . t("start of the event") . "</option>\n";
+		$out .= "<option value='end' "; if ($noti["rel"] == "end") $out .= "selected"; $out .= ">" . t("end of the event") . "</option>\n";
+		$out .= "</select></label>\n";
+
+		$out .= "</div>";
+	}
+	$out .= "<input type='hidden' name='new_alarm' id='new_alarm' value='0'><div id='new_alarm_adder'><a href='#'>" . t("Add a notification") . "</a></div>";
 
 	$out .= "<script>\$(function() {
 		wdcal_edit_init('" . $localization->dateformat_datepicker_js() . "', '${baseurl}/dav/');
 	});</script>";
 
-	$out .= "<input type='submit' name='save' value='Save'></form>";
+	$out .= "<br><input type='submit' name='save' value='Save'></form>";
 
 	return $out;
 }
@@ -441,6 +502,7 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $uid, $calendar_id, $ur
 /**
  * @param Sabre_VObject_Component_VEvent $component
  * @param wdcal_local $localization
+ * @return int
  */
 function wdcal_set_component_date(&$component, &$localization)
 {
@@ -462,6 +524,8 @@ function wdcal_set_component_date(&$component, &$localization)
 	$component->__unset("DTEND");
 	$component->add($datetime_start);
 	$component->add($datetime_end);
+
+	return $ts_start;
 }
 
 /**
@@ -569,13 +633,6 @@ function wdcal_set_component_recurrence(&$component, &$localization)
 		default:
 			$part_freq = "";
 	}
-/*
-	 echo "<pre>!";
-	 echo $part_freq . "\n";
-	 var_dump($_REQUEST);
-	 echo "</pre>";
-	 die();
-*/
 
 	if ($part_freq == "") return;
 
@@ -598,15 +655,69 @@ function wdcal_set_component_recurrence(&$component, &$localization)
 }
 
 
-/**
+	/**
+	 * @param Sabre_VObject_Component_VEvent $component
+	 * @param wdcal_local $localization
+	 * @param string $summary
+	 * @param int $dtstart
+	 */
+function wdcal_set_component_alerts(&$component, &$localization, $summary, $dtstart)
+{
+	$a = get_app();
+
+	$prev_alarms = $component->select("VALARM");
+	$component->__unset("VALARM");
+
+	foreach ($prev_alarms as $al) {
+		/** @var Sabre_VObject_Component_VAlarm $al */
+	}
+
+	foreach (array_keys($_REQUEST["noti_type"]) as $key) if (is_numeric($key) || ($key == "new" && $_REQUEST["new_alarm"] == 1)) {
+		$alarm = new Sabre_VObject_Component_VAlarm("VALARM");
+
+		switch ($_REQUEST["noti_type"][$key]) {
+			case "email":
+				$mailtext = str_replace(array(
+					"#date#", "#name",
+				), array(
+					$localization->date_timestamp2local($dtstart), $summary,
+				), t("The event #name# will start at #date"));
+
+				$alarm->add(new Sabre_VObject_Property("ACTION", "EMAIL"));
+				$alarm->add(new Sabre_VObject_Property("SUMMARY", $summary));
+				$alarm->add(new Sabre_VObject_Property("DESCRIPTION", $mailtext));
+				$alarm->add(new Sabre_VObject_Property("ATTENDEE", "MAILTO:" . $a->user["email"]));
+				break;
+			case "display":
+				$alarm->add(new Sabre_VObject_Property("ACTION", "DISPLAY"));
+				$text = str_replace("#name#", $summary, t("#name# is about to begin."));
+				$alarm->add(new Sabre_VObject_Property("DESCRIPTION", $text));
+				break;
+			default:
+				continue;
+		}
+
+		$trigger_name = "TRIGGER";
+		$trigger_val = ""; // @TODO Bugfix : und ; sind evtl. vertauscht vgl. http://www.kanzaki.com/docs/ical/trigger.html
+		if ($_REQUEST["noti_ref"][$key] == "end") $trigger_name .= ";RELATED=END";
+		$trigger_val .= "-P";
+		if (in_array($_REQUEST["noti_unit"][$key], array("H", "M", "S"))) $trigger_val .= "T";
+		$trigger_val .= IntVal($_REQUEST["noti_value"][$key]) . $_REQUEST["noti_unit"][$key];
+		$alarm->add(new Sabre_VObject_Property($trigger_name, $trigger_val));
+
+		$component->add($alarm);
+	}
+
+}
+
+	/**
  * @param string $uri
- * @param string $recurr_uri
  * @param int $uid
  * @param string $timezone
  * @param string $goaway_url
  * @return array
  */
-function wdcal_postEditPage($uri, $recurr_uri = "", $uid = 0, $timezone = "", $goaway_url = "")
+function wdcal_postEditPage($uri, $uid = 0, $timezone = "", $goaway_url = "")
 {
 	$uid          = IntVal($uid);
 	$localization = wdcal_local::getInstanceByUser($uid);
@@ -629,8 +740,9 @@ function wdcal_postEditPage($uri, $recurr_uri = "", $uid = 0, $timezone = "", $g
 		$obj_uri   = $component->__get("UID");
 	}
 
-	wdcal_set_component_date($component, $localization);
+	$ts_start = wdcal_set_component_date($component, $localization);
 	wdcal_set_component_recurrence($component, $localization);
+	wdcal_set_component_alerts($component, $localization, icalendar_sanitize_string(dav_compat_parse_text_serverside("summary")), $ts_start);
 
 	$component->__unset("LOCATION");
 	$component->__unset("SUMMARY");

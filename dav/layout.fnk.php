@@ -290,10 +290,9 @@ function wdcal_printCalendar($calendars, $calendars_selected, $data_feed_url, $v
 /**
  * @param int $calendar_id
  * @param int $calendarobject_id
- * @param string $recurr_uri
  * @return string
  */
-function wdcal_getDetailPage($calendar_id, $calendarobject_id, $recurr_uri)
+function wdcal_getDetailPage($calendar_id, $calendarobject_id)
 {
 	$a = get_app();
 
@@ -322,15 +321,14 @@ function wdcal_getDetailPage($calendar_id, $calendarobject_id, $recurr_uri)
 /**
  * @param int $calendar_id
  * @param int $uri
- * @param string $recurr_uri
  * @return string
  */
-function wdcal_getEditPage($calendar_id, $uri, $recurr_uri = "")
+function wdcal_getEditPage($calendar_id, $uri)
 {
 	$a            = get_app();
 	$localization = wdcal_local::getInstanceByUser($a->user["uid"]);
 
-	return wdcal_getEditPage_str($localization, $a->get_baseurl(), $a->user["uid"], $calendar_id, $uri, $recurr_uri);
+	return wdcal_getEditPage_str($localization, $a->get_baseurl(), $calendar_id, $uri);
 }
 
 /**
@@ -341,7 +339,7 @@ function wdcal_getNewPage()
 	$a            = get_app();
 	$localization = wdcal_local::getInstanceByUser($a->user["uid"]);
 
-	return wdcal_getEditPage_str($localization, $a->get_baseurl(), $a->user["uid"], 0, 0);
+	return wdcal_getEditPage_str($localization, $a->get_baseurl(), 0, 0);
 }
 
 
