@@ -10,7 +10,7 @@
  */
 
 function nsfw_install() {
-	register_hook('prepare_body', 'addon/nsfw/nsfw.php', 'nsfw_prepare_body');
+	register_hook('prepare_body', 'addon/nsfw/nsfw.php', 'nsfw_prepare_body', 10);
 	register_hook('plugin_settings', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings');
 	register_hook('plugin_settings_post', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings_post');
 
