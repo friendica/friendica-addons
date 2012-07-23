@@ -14,6 +14,7 @@ function morechoice_install() {
 	register_hook('gender_selector', 'addon/morechoice/morechoice.php', 'morechoice_gender_selector');
 	register_hook('sexpref_selector', 'addon/morechoice/morechoice.php', 'morechoice_sexpref_selector');
 	register_hook('marital_selector', 'addon/morechoice/morechoice.php', 'morechoice_marital_selector');
+	register_hook('poke_verbs', 'addon/morechoice/morechoice.php', 'morechoice_poke_verbs');
 
 }
 
@@ -23,6 +24,7 @@ function morechoice_uninstall() {
 	unregister_hook('gender_selector', 'addon/morechoice/morechoice.php', 'morechoice_gender_selector');
 	unregister_hook('sexpref_selector', 'addon/morechoice/morechoice.php', 'morechoice_sexpref_selector');
 	unregister_hook('marital_selector', 'addon/morechoice/morechoice.php', 'morechoice_marital_selector');
+	unregister_hook('poke_verbs', 'addon/morechoice/morechoice.php', 'morechoice_poke_verbs');
 
 }
 
@@ -121,4 +123,11 @@ function morechoice_marital_selector($a,&$b) {
 		$b[] = 'Hurt in the past';
 		$b[] = 'Wallowing in self-pity';
 	}
+}
+
+function morechoice_poke_verbs($a,&$b) {
+	$b['bitchslap'] = array('bitchslapped', t('bitchslap'), t('bitchslapped'));
+	$b['shag'] = array('shag', t('shag'), t('shagged'));
+
+
 }
