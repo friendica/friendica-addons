@@ -85,7 +85,7 @@ function get_body_length($body) {
 		}
 	}
 	// Now we can get the body of our HTML DomDocument, it contains only what is visible
-	$string = $dom->saveHTML($dom->getElementsByTagName('body')->item(0));
+	$string = $dom->saveHTML();
 
 	$string = strip_tags($string);
 	return strlen($string);
