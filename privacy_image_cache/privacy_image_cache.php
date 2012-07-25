@@ -80,13 +80,13 @@ function privacy_image_cache_init() {
 		if ($mime == "") $mime = "image/jpeg";
 
 		// Test
-		if ($mime == "image/jpeg") {
-			$img = new Photo($img_str);
-			if($img->is_valid()) {
-				$img->scaleImage(1000);
-				$img_str = $img->imageString();
-			}
-		}
+		//if ($mime == "image/jpeg") {
+		//	$img = new Photo($img_str);
+		//	if($img->is_valid()) {
+		//		$img->scaleImage(1000);
+		//		$img_str = $img->imageString();
+		//	}
+		//}
 	} else {
 		// It shouldn't happen but it does - spaces in URL
 		$_REQUEST['url'] = str_replace(" ", "+", $_REQUEST['url']);
