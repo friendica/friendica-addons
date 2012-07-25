@@ -326,9 +326,9 @@ function twitter_post_hook(&$a,&$b) {
 			// recycle 1
 			$recycle = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8');
 			$tmp = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', $recycle.'$2', $tmp);
-			// recycle 2
-			//$recycle = html_entity_decode("&#x267B; ", ENT_QUOTES, 'UTF-8');
-			//$tmp = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', 'RT @$2:', $tmp);
+			// recycle 2 (Test)
+			$recycle = html_entity_decode("&#x25CC; ", ENT_QUOTES, 'UTF-8');
+			$tmp = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', $recycle.'$2', $tmp);
                 }
                 $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/url\]/i', '$2 $1', $tmp);
                 $tmp = preg_replace( '/\[bookmark\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/bookmark\]/i', '$2 $1', $tmp);

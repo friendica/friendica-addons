@@ -34,6 +34,9 @@ function privacy_image_cache_module() {}
 function privacy_image_cache_init() {
 	global $a;
 
+	if ($a->config["system"]["db_log"] != "")
+		$stamp1 = microtime(true);
+
 	if(function_exists('header_remove')) {
 		header_remove('Pragma');
 		header_remove('pragma');
@@ -57,18 +60,34 @@ function privacy_image_cache_init() {
 
 			echo $img_str;
 
+			if ($a->config["system"]["db_log"] != "") {
+				$stamp2 = microtime(true);
+				$duration = round($stamp2-$stamp1, 3);
+				if ($duration > $a->config["system"]["db_loglimit"])
+					@file_put_contents($a->config["system"]["db_log"], $duration."\t".strlen($img_str)."\t".$_REQUEST['url']."\n", FILE_APPEND);
+			}
+
 			killme();
 		}
 	}
+
+	require_once("Photo.php");
 
 	$r = q("SELECT * FROM `photo` WHERE `resource-id` in ('%s', '%s') LIMIT 1", $urlhash, $urlhash2);
 	if (count($r)) {
         	$img_str = $r[0]['data'];
 		$mime = $r[0]["desc"];
 		if ($mime == "") $mime = "image/jpeg";
-	} else {
-		require_once("Photo.php");
 
+		// Test
+		if ($mime == "image/jpeg") {
+			$img = new Photo($img_str);
+			if($img->is_valid()) {
+				$img->scaleImage(1000);
+				$img_str = $img->imageString();
+			}
+		}
+	} else {
 		// It shouldn't happen but it does - spaces in URL
 		$_REQUEST['url'] = str_replace(" ", "+", $_REQUEST['url']);
 
@@ -110,6 +129,7 @@ function privacy_image_cache_init() {
 			$img = new Photo($img_str);
 			if($img->is_valid()) {
 				$img->store(0, 0, $urlhash, $_REQUEST['url'], '', 100);
+				$img->scaleImage(1000); // Test
 				$img_str = $img->imageString();
 			}
 			$mime = "image/jpeg";
@@ -125,6 +145,13 @@ function privacy_image_cache_init() {
 	header("Cache-Control: max-age=" . (3600*24));
 
 	echo $img_str;
+
+	if ($a->config["system"]["db_log"] != "") {
+		$stamp2 = microtime(true);
+		$duration = round($stamp2-$stamp1, 3);
+		if ($duration > $a->config["system"]["db_loglimit"])
+			@file_put_contents($a->config["system"]["db_log"], $duration."\t".strlen($img_str)."\t".$_REQUEST['url']."\n", FILE_APPEND);
+	}
 
 	killme();
 }
