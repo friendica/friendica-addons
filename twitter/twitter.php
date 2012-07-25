@@ -209,7 +209,7 @@ function twitter_settings(&$a,&$s) {
 			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . t('Submit') . '" /></div>'; 
 		}
 	}
-        $s .= '</div><div class="clear"></div></div>';
+        $s .= '</div><div class="clear"></div>';
 }
 
 
