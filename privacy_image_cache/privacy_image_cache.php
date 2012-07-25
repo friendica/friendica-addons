@@ -48,7 +48,7 @@ function privacy_image_cache_init() {
 
 	$cache = get_config('system','itemcache');
 	if (($cache != '') and is_dir($cache)) {
-		$cachefile = $cache."/".hash("md5", $urlhash);
+		$cachefile = $cache."/".hash("md5", $_REQUEST['url']);
 		if (file_exists($cachefile)) {
 			$img_str = file_get_contents($cachefile);
 
@@ -129,7 +129,7 @@ function privacy_image_cache_init() {
 			$img = new Photo($img_str);
 			if($img->is_valid()) {
 				$img->store(0, 0, $urlhash, $_REQUEST['url'], '', 100);
-				$img->scaleImage(1000); // Test
+				//$img->scaleImage(1000); // Test
 				$img_str = $img->imageString();
 			}
 			$mime = "image/jpeg";
