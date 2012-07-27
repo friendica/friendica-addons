@@ -70,7 +70,7 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $calendar_id, $uri)
 			if ($triggerDuration->s > 0) {
 				$unit = "second";
 				$value = $triggerDuration->s + $triggerDuration->i * 60 + $triggerDuration->h * 3600 + $triggerDuration->d * 3600 * 24; // @TODO support more than days?
-			}   elseif ($triggerDuration->m) {
+			} elseif ($triggerDuration->i) {
 				$unit = "minute";
 				$value = $triggerDuration->i + $triggerDuration->h * 60 + $triggerDuration->d * 60 * 24;
 			} elseif ($triggerDuration->h) {
@@ -143,7 +143,7 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $calendar_id, $uri)
 
 	$out .= "<h2>" . t("Event data") . "</h2>";
 
-	$out .= "<label for='calendar'>" . t("Calendar") . ":</label><select id='calendar' name='calendar' size='1'>";
+	$out .= "<label for='calendar' class='block'>" . t("Calendar") . ":</label><select id='calendar' name='calendar' size='1'>";
 	$found   = false;
 	$cal_col = "aaaaaa";
 	foreach ($calendars as $cal) {
@@ -462,14 +462,15 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $calendar_id, $uri)
 
 		$out .= "<div class='noti_holder' ";
 		if (!is_numeric($index) && $index == "new") $out .= "style='display: none;' id='noti_new_row'";
-		$out .= "><label class='plain'>" . t("Notify by");
-		$out .= "<select name='noti_type[$index]' size='1'>";
+		$out .= "><label class='block' for='noti_type_" . $index . "'>" . t("Notify by") . ":</label>";
+		$out .= "<select name='noti_type[$index]' size='1' id='noti_type_" . $index . "'>";
 		$out .= "<option value=''>- " . t("Remove") . " -</option>\n";
 		$out .= "<option value='email' "; if (!$unparsable && $noti["action"] == "email") $out .= "selected"; $out .= ">" . t("E-Mail") . "</option>\n";
 		$out .= "<option value='display' "; if (!$unparsable && $noti["action"] == "display") $out .= "selected"; $out .= ">" . t("On Friendica / Display") . "</option>\n";
 		//$out .= "<option value='other' "; if ($unparsable) $out .= "selected"; $out .= ">- " . t("other (leave it untouched)") . " -</option>\n"; // @TODO
-		$out .= "</select></label>";
+		$out .= "</select><br>";
 
+		$out .= "<label class='block'>" . t("Time") . ":</label>";
 		$out .= "<input name='noti_value[$index]' size='5' style='width: 5em;' value='" . $noti["trigger_value"] . "'>";
 
 		$out .= "<select name='noti_unit[$index]' size='1'>";

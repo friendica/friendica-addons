@@ -73,6 +73,8 @@ function renderCalDavEntry_data(&$calendar, &$calendarobject)
 		throw new Sabre_DAV_Exception_BadRequest('Calendar objects must have a VJOURNAL, VEVENT or VTODO component');
 	}
 
+	$timezoneOffset = date("P"); // @TODO Get the actual timezone from the event
+
 
 	if ($componentType !== 'VEVENT') return;
 
@@ -106,15 +108,15 @@ function renderCalDavEntry_data(&$calendar, &$calendarobject)
 		$start    = $it->getDtStart()->getTimestamp();
 
 		q("INSERT INTO %s%sjqcalendar (`calendar_id`, `calendarobject_id`, `Summary`, `StartTime`, `EndTime`, `IsEditable`, `IsAllDayEvent`, `IsRecurring`, `Color`) VALUES
-			(%d, %d, '%s', '%s', '%s', %d, %d, %d, '%s')", CALDAV_SQL_DB, CALDAV_SQL_PREFIX,
-			IntVal($calendar["id"]), IntVal($calendarobject["id"]), dbesc($event["summary"]), date("Y-m-d H:i:s", $start), date("Y-m-d H:i:s", $last_end),
-			1, $allday, $recurring, dbesc(substr($event["color"], 1))
+			(%d, %d, '%s', CONVERT_TZ('%s', '$timezoneOffset', @@session.time_zone), CONVERT_TZ('%s', '$timezoneOffset', @@session.time_zone), %d, %d, %d, '%s')",
+			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($calendar["id"]), IntVal($calendarobject["id"]), dbesc($event["summary"]), date("Y-m-d H:i:s", $start),
+			date("Y-m-d H:i:s", $last_end), 1, $allday, $recurring, dbesc(substr($event["color"], 1))
 		);
 
 		foreach ($alarms as $alarm) {
 			$alarm    = renderCalDavEntry_calcalarm($alarm, $component);
 			$notified = ($alarm->getTimestamp() < time() ? 1 : 0);
-			q("INSERT INTO %s%snotifications (`calendar_id`, `calendarobject_id`, `alert_date`, `notified`) VALUES (%d, %d, '%s', %d)",
+			q("INSERT INTO %s%snotifications (`calendar_id`, `calendarobject_id`, `alert_date`, `notified`) VALUES (%d, %d, CONVERT_TZ('%s', '$timezoneOffset', @@session.time_zone), %d)",
 				CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($calendar["id"]), IntVal($calendarobject["id"]), $alarm->format("Y-m-d H:i:s"), $notified
 			);
 		}

@@ -7,6 +7,7 @@ function dav_install()
 	register_hook('event_created', 'addon/dav/dav.php', 'dav_event_created_hook');
 	register_hook('event_updated', 'addon/dav/dav.php', 'dav_event_updated_hook');
 	register_hook('profile_tabs', 'addon/dav/dav.php', 'dav_profile_tabs_hook');
+	register_hook('cron', 'addon/dav/dav.php', 'dav_cron');
 }
 
 
@@ -15,6 +16,7 @@ function dav_uninstall()
 	unregister_hook('event_created', 'addon/dav/dav.php', 'dav_event_created_hook');
 	unregister_hook('event_updated', 'addon/dav/dav.php', 'dav_event_updated_hook');
 	unregister_hook('profile_tabs', 'addon/dav/dav.php', 'dav_profile_tabs_hook');
+	unregister_hook('cron', 'addon/dav/dav.php', 'dav_cron');
 }
 
 
@@ -97,7 +99,7 @@ function dav_init(&$a)
 	}
 
 
-	$server = dav_create_server();
+	$server  = dav_create_server();
 	$browser = new Sabre_DAV_Browser_Plugin();
 	$server->addPlugin($browser);
 	$server->exec();
@@ -159,8 +161,8 @@ function dav_content()
 			}
 		} else {
 			$server = dav_create_server(true, true, false);
-			$cals = dav_get_current_user_calendars($server, DAV_ACL_READ);
-			$x = wdcal_printCalendar($cals, array(), $a->get_baseurl() . "/dav/wdcal/feed/", "week", 0, 200);
+			$cals   = dav_get_current_user_calendars($server, DAV_ACL_READ);
+			$x      = wdcal_printCalendar($cals, array(), $a->get_baseurl() . "/dav/wdcal/feed/", "week", 0, 200);
 		}
 	}
 	return $x;
@@ -204,6 +206,58 @@ function dav_profile_tabs_hook(&$a, &$b)
 		"title" => t('Extended calendar with CalDAV-support'),
 	);
 }
+
+
+
+/**
+ * @param App $a
+ * @param object $b
+ */
+function dav_cron(&$a, &$b)
+{
+	dav_include_files();
+
+	$r = q("SELECT * FROM %s%snotifications WHERE `notified` = 0 AND `alert_date` <= NOW()", CALDAV_SQL_DB, CALDAV_SQL_PREFIX);
+	foreach ($r as $not) {
+		q("UPDATE %s%snotifications SET `notified` = 1 WHERE `id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $not["id"]);
+		$event = q("SELECT * FROM %s%sjqcalendar WHERE `calendarobject_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $not["calendarobject_id"]);
+		$calendar = q("SELECT * FROM %s%scalendars WHERE `id` = %d", CALDAV_SQL_DB,CALDAV_SQL_PREFIX, $not["calendar_id"]);
+		$users = array();
+		if (count($calendar) != 1 || count($event) == 0) continue;
+		switch ($calendar[0]["namespace"]) {
+			case CALDAV_NAMESPACE_PRIVATE:
+				$user = q("SELECT * FROM user WHERE `uid` = %d AND `blocked` = 0", $calendar[0]["namespace_id"]);
+				if (count($user) != 1) continue;
+				$users[] = $user[0];
+				break;
+		}
+		switch ($not["action"]) {
+			case "email": case "display": // @TODO implement "Display"
+				foreach ($users as $user) {
+					$find = array( "%to%" , "%event%", "%url%");
+					$repl = array($user["username"], $event[0]["Summary"], $a->get_baseurl() . "/dav/wdcal/" . $calendar[0]["id"] . "/" . $not["calendarobject_id"] . "/");
+					$text_text = str_replace($find, $repl, "Hi %to%!\n\nThe event \"%event%\" is about to begin:\n%url%");
+					$text_html = str_replace($find, $repl, "Hi %to%!<br>\n<br>\nThe event \"%event%\" is about to begin:<br>\n<a href='" . "%url%" . "'>%url%</a>");
+					$params = array(
+						'fromName' => FRIENDICA_PLATFORM,
+						'fromEmail' => t('noreply') . '@' . $a->get_hostname(),
+						'replyTo' => t('noreply') . '@' . $a->get_hostname(),
+						'toEmail' => $user["email"],
+						'messageSubject' => t("Notification: " . $event[0]["Summary"]),
+						'htmlVersion' => $text_html,
+						'textVersion' => $text_text,
+						'additionalMailHeader' => "",
+					);
+					require_once('include/enotify.php');
+					enotify::send($params);
+				}
+				break;
+		}
+	}
+}
+
+
+
 
 /**
  * @param App $a

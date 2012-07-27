@@ -113,11 +113,12 @@ class Sabre_CalDAV_Backend_Private extends Sabre_CalDAV_Backend_Common
 		$calendar = Sabre_CalDAV_Backend_Common::loadCalendarById($calendarId);
 		$von      = wdcal_php2MySqlTime($sd);
 		$bis      = wdcal_php2MySqlTime($ed);
+		$timezoneOffset = date("P");
 
 		// @TODO Events, die früher angefangen haben, aber noch andauern
-		$evs = q("SELECT * FROM %s%sjqcalendar WHERE `calendar_id` = %d AND `starttime` between '%s' and '%s'",
-			CALDAV_SQL_DB, CALDAV_SQL_PREFIX,
-			IntVal($calendarId), dbesc($von), dbesc($bis));
+		$evs = q("SELECT *, CONVERT_TZ(`StartTime`, @@session.time_zone, '$timezoneOffset') StartTime, CONVERT_TZ(`EndTime`, @@session.time_zone, '$timezoneOffset') EndTime
+			FROM %s%sjqcalendar WHERE `calendar_id` = %d AND `StartTime` between '%s' and '%s'",
+			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($calendarId), dbesc($von), dbesc($bis));
 
 		$events = array();
 		foreach ($evs as $row) $events[] = $this->jqcal2wdcal($row, $calendar, $base_path . $row["calendar_id"] . "/");
