@@ -3,7 +3,7 @@
 * Name: Infinite Improbability Drive
 * Description: Infinitely Improbably Find A Random User
 * Version: 1.0
-* Author: Thomas Willingham
+* Author: Thomas Willingham <https://kakste.com/profile/beardyunixer>
 */
 
 function infiniteimprobabilitydrive_install() {
