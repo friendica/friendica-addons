@@ -69,6 +69,11 @@ function showmore_addon_settings_post(&$a,&$b) {
 function get_body_length($body) {
 	$string = trim($body);
 
+	// DomDocument doesn't like empty strings
+	if(! strlen($string)) {
+		return 0;
+	}
+
 	// We need to get rid of hidden tags (display: none)
 
 	// Get rid of the warning. It would be better to have some valid html as input
