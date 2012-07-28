@@ -118,52 +118,55 @@ function dav_content()
 	}
 
 	$x = "";
-
-	if ($a->argv[1] == "settings") {
-		return wdcal_getSettingsPage($a);
-	} elseif ($a->argv[1] == "wdcal") {
-		if (isset($a->argv[2]) && strlen($a->argv[2]) > 0) {
-			if ($a->argv[2] == "new") {
-				$o = "";
-				if (isset($_REQUEST["save"])) {
-					check_form_security_token_redirectOnErr($a->get_baseurl() . "/dav/wdcal/", "caledit");
-					$ret = wdcal_postEditPage("new", "", $a->user["uid"], $a->timezone, $a->get_baseurl() . "/dav/wdcal/");
-					if ($ret["ok"]) notice($ret["msg"]);
-					else info($ret["msg"]);
-					goaway($a->get_baseurl() . "/dav/wdcal/");
-				}
-				$o .= wdcal_getNewPage();
-				return $o;
-			} else {
-				$calendar_id = IntVal($a->argv[2]);
-				if (isset($a->argv[3]) && $a->argv[3] == "ics-export") {
-					wdcal_print_user_ics($calendar_id);
-				} elseif (isset($a->argv[3]) && $a->argv[3] == "ics-import") {
-					return wdcal_import_user_ics($calendar_id);
-				} elseif (isset($a->argv[3]) && $a->argv[3] > 0) {
-					if (isset($a->argv[4]) && $a->argv[4] == "edit") {
-						$o = "";
-						if (isset($_REQUEST["save"])) {
-							check_form_security_token_redirectOnErr($a->get_baseurl() . "/dav/wdcal/", "caledit");
-							$ret = wdcal_postEditPage($a->argv[3], $a->user["uid"], $a->timezone, $a->get_baseurl() . "/dav/wdcal/");
-							if ($ret["ok"]) notice($ret["msg"]);
-							else info($ret["msg"]);
-							goaway($a->get_baseurl() . "/dav/wdcal/");
-						}
-						$o .= wdcal_getEditPage($calendar_id, $a->argv[3]);
-						return $o;
-					} else {
-						return wdcal_getDetailPage($calendar_id, $a->argv[3]);
+	try {
+		if ($a->argv[1] == "settings") {
+			return wdcal_getSettingsPage($a);
+		} elseif ($a->argv[1] == "wdcal") {
+			if (isset($a->argv[2]) && strlen($a->argv[2]) > 0) {
+				if ($a->argv[2] == "new") {
+					$o = "";
+					if (isset($_REQUEST["save"])) {
+						check_form_security_token_redirectOnErr($a->get_baseurl() . "/dav/wdcal/", "caledit");
+						$ret = wdcal_postEditPage("new", "", $a->user["uid"], $a->timezone, $a->get_baseurl() . "/dav/wdcal/");
+						if ($ret["ok"]) notice($ret["msg"]);
+						else info($ret["msg"]);
+						goaway($a->get_baseurl() . "/dav/wdcal/");
 					}
+					$o .= wdcal_getNewPage();
+					return $o;
 				} else {
-					// @TODO Edit Calendar
+					$calendar_id = IntVal($a->argv[2]);
+					if (isset($a->argv[3]) && $a->argv[3] == "ics-export") {
+						wdcal_print_user_ics($calendar_id);
+					} elseif (isset($a->argv[3]) && $a->argv[3] == "ics-import") {
+						return wdcal_import_user_ics($calendar_id);
+					} elseif (isset($a->argv[3]) && $a->argv[3] > 0) {
+						if (isset($a->argv[4]) && $a->argv[4] == "edit") {
+							$o = "";
+							if (isset($_REQUEST["save"])) {
+								check_form_security_token_redirectOnErr($a->get_baseurl() . "/dav/wdcal/", "caledit");
+								$ret = wdcal_postEditPage($a->argv[3], $a->user["uid"], $a->timezone, $a->get_baseurl() . "/dav/wdcal/");
+								if ($ret["ok"]) notice($ret["msg"]);
+								else info($ret["msg"]);
+								goaway($a->get_baseurl() . "/dav/wdcal/");
+							}
+							$o .= wdcal_getEditPage($calendar_id, $a->argv[3]);
+							return $o;
+						} else {
+							return wdcal_getDetailPage($calendar_id, $a->argv[3]);
+						}
+					} else {
+						// @TODO Edit Calendar
+					}
 				}
+			} else {
+				$server = dav_create_server(true, true, false);
+				$cals   = dav_get_current_user_calendars($server, DAV_ACL_READ);
+				$x      = wdcal_printCalendar($cals, array(), $a->get_baseurl() . "/dav/wdcal/feed/", "week", 0, 200);
 			}
-		} else {
-			$server = dav_create_server(true, true, false);
-			$cals   = dav_get_current_user_calendars($server, DAV_ACL_READ);
-			$x      = wdcal_printCalendar($cals, array(), $a->get_baseurl() . "/dav/wdcal/feed/", "week", 0, 200);
 		}
+	} catch (DAVVersionMismatchException $e) {
+		$x = t("The current version of this plugin has not been set up correctly. Please contact the system administrator of your installation of friendica to fix this.");
 	}
 	return $x;
 }
@@ -208,7 +211,6 @@ function dav_profile_tabs_hook(&$a, &$b)
 }
 
 
-
 /**
  * @param App $a
  * @param object $b
@@ -220,9 +222,9 @@ function dav_cron(&$a, &$b)
 	$r = q("SELECT * FROM %s%snotifications WHERE `notified` = 0 AND `alert_date` <= NOW()", CALDAV_SQL_DB, CALDAV_SQL_PREFIX);
 	foreach ($r as $not) {
 		q("UPDATE %s%snotifications SET `notified` = 1 WHERE `id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $not["id"]);
-		$event = q("SELECT * FROM %s%sjqcalendar WHERE `calendarobject_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $not["calendarobject_id"]);
-		$calendar = q("SELECT * FROM %s%scalendars WHERE `id` = %d", CALDAV_SQL_DB,CALDAV_SQL_PREFIX, $not["calendar_id"]);
-		$users = array();
+		$event    = q("SELECT * FROM %s%sjqcalendar WHERE `calendarobject_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $not["calendarobject_id"]);
+		$calendar = q("SELECT * FROM %s%scalendars WHERE `id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $not["calendar_id"]);
+		$users    = array();
 		if (count($calendar) != 1 || count($event) == 0) continue;
 		switch ($calendar[0]["namespace"]) {
 			case CALDAV_NAMESPACE_PRIVATE:
@@ -232,20 +234,21 @@ function dav_cron(&$a, &$b)
 				break;
 		}
 		switch ($not["action"]) {
-			case "email": case "display": // @TODO implement "Display"
+			case "email":
+			case "display": // @TODO implement "Display"
 				foreach ($users as $user) {
-					$find = array( "%to%" , "%event%", "%url%");
-					$repl = array($user["username"], $event[0]["Summary"], $a->get_baseurl() . "/dav/wdcal/" . $calendar[0]["id"] . "/" . $not["calendarobject_id"] . "/");
+					$find      = array("%to%", "%event%", "%url%");
+					$repl      = array($user["username"], $event[0]["Summary"], $a->get_baseurl() . "/dav/wdcal/" . $calendar[0]["id"] . "/" . $not["calendarobject_id"] . "/");
 					$text_text = str_replace($find, $repl, "Hi %to%!\n\nThe event \"%event%\" is about to begin:\n%url%");
 					$text_html = str_replace($find, $repl, "Hi %to%!<br>\n<br>\nThe event \"%event%\" is about to begin:<br>\n<a href='" . "%url%" . "'>%url%</a>");
-					$params = array(
-						'fromName' => FRIENDICA_PLATFORM,
-						'fromEmail' => t('noreply') . '@' . $a->get_hostname(),
-						'replyTo' => t('noreply') . '@' . $a->get_hostname(),
-						'toEmail' => $user["email"],
-						'messageSubject' => t("Notification: " . $event[0]["Summary"]),
-						'htmlVersion' => $text_html,
-						'textVersion' => $text_text,
+					$params    = array(
+						'fromName'             => FRIENDICA_PLATFORM,
+						'fromEmail'            => t('noreply') . '@' . $a->get_hostname(),
+						'replyTo'              => t('noreply') . '@' . $a->get_hostname(),
+						'toEmail'              => $user["email"],
+						'messageSubject'       => t("Notification: " . $event[0]["Summary"]),
+						'htmlVersion'          => $text_html,
+						'textVersion'          => $text_text,
 						'additionalMailHeader' => "",
 					);
 					require_once('include/enotify.php');
@@ -255,8 +258,6 @@ function dav_cron(&$a, &$b)
 		}
 	}
 }
-
-
 
 
 /**
@@ -277,7 +278,10 @@ function dav_plugin_admin_post(&$a = null, &$o = null)
 	}
 	if (isset($_REQUEST["upgrade"])) {
 		$errs = dav_upgrade_tables();
-		if (count($errs) == 0) info(t('The database tables have been updated.') . EOL);
+		if (count($errs) == 0) {
+			renderAllCalDavEntries();
+			info(t('The database tables have been updated.') . EOL);
+		}
 		else notice(t("An error occurred during the update.") . EOL);
 	}
 }
@@ -303,10 +307,14 @@ function dav_plugin_admin(&$a, &$o)
 			$o .= t('Installed');
 			break;
 		case 1:
-			$o .= t('Upgrade needed') . "<br><br><input type='submit' name='upgrade' value='" . t('Upgrade') . "'>";
+			$o .= "<strong>" . t('Upgrade needed') . "</strong><br>" . t("Please back up all calendar data (the tables beginning with dav_*) before proceeding. While all calendar events <i>should</i> be converted to the new database structure, it's always safe to have a backup. Below, you can have a look at the database-queries that will be made when pressing the 'update'-button.") . "<br><br><input type='submit' name='upgrade' value='" . t('Upgrade') . "'>";
 			break;
 		case -1:
 			$o .= t('Not installed') . "<br><br><input type='submit' name='install' value='" . t('Install') . "'>";
+			break;
+		case -2:
+		default:
+			$o .= t('Unknown') . "<br><br>" . t("Something really went wrong. I cannot recover from this state automatically, sorry. Please go to the database backend, back up the data, and delete all tables beginning with 'dav_' manually. Afterwards, this installation routine should be able to reinitialize the tables automatically.");
 			break;
 	}
 	$o .= "<br><br>";
@@ -314,7 +322,15 @@ function dav_plugin_admin(&$a, &$o)
 	$o .= "<h3>" . t("Troubleshooting") . "</h3>";
 	$o .= "<h4>" . t("Manual creation of the database tables:") . "</h4>";
 	$o .= "<a href='#' onClick='\$(\"#sqlstatements\").show(); return false;'>" . t("Show SQL-statements") . "</a><blockquote style='display: none;' id='sqlstatements'><pre>";
-	$tables = dav_get_create_statements();
-	foreach ($tables as $t) $o .= escape_tags($t . "\n\n");
+	switch ($dbstatus) {
+		case 1:
+			$tables = dav_get_update_statements(1);
+			foreach ($tables as $t) $o .= escape_tags($t . ";\n\n");
+			break;
+		default:
+			$tables = dav_get_create_statements();
+			foreach ($tables as $t) $o .= escape_tags($t . ";\n\n");
+			break;
+	}
 	$o .= "</pre></blockquote>";
 }

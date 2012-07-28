@@ -7,6 +7,8 @@ define("DAV_DISPLAYNAME", "{DAV:}displayname");
 define("DAV_CALENDARCOLOR", "{http://apple.com/ns/ical/}calendar-color");
 
 
+class DAVVersionMismatchException extends Exception {}
+
 
 class vcard_source_data_email
 {
@@ -357,8 +359,8 @@ function dav_create_empty_vevent($uid = "")
 
 
 /**
- * @param Sabre_VObject_Component_VCalendar $vObject
- * @return Sabre_VObject_Component_VEvent|null
+ * @param Sabre_VObject_Component_VEvent $vObject
+ * @return Sabre_VObject_Component|null
  */
 function dav_get_eventComponent(&$vObject)
 {

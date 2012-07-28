@@ -6,12 +6,14 @@ It's still in a very early stage, so expect major bugs. Please feel free to repo
 At the moment, the calendar system supports the following features:
 - A web-based drag&drop interface for managing events
 - All-Day-Events, Multi-Day-Events, and time-based events
+- Giving the subject, a description, a location and a color for the event (the color is not available through CalDAV, though)
 - Recurrences (not the whole set of options given in the iCalendar spec, but the most important ones)
+- Notification by e-mail. Multiple notifications can be set per event
 - Multiple calendars per user
 - Access to the events using CalDAV (using iPhone, Thunderbird Lightning etc., see below)
 - Read-only access to the friendica-native events (also using CalDAV)
 - The friendica-contacts are made available using CardDAV (confirmed to work with iOS)
-- Giving the subject, a description, a location and a color for the event (the color is not available through CalDAV, though)
+- The events of a calendar can be exported as ICS file. ICS files can be imported into a calendar
 
 
 Internationalization:
@@ -33,7 +35,6 @@ In case of errors, the SQL-statement to create the tables manually are shown in 
 Functuality missing: (a.k.a. "Roadmap")
 - Sharing events; all events are private at the moment, therefore this system is not a complete replacement for the friendica-native events
 - Attendees / Collaboration
-- ICS Export and Import
 
 
 Used libraries

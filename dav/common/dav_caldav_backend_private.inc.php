@@ -152,6 +152,7 @@ class Sabre_CalDAV_Backend_Private extends Sabre_CalDAV_Backend_Common
 	 * common one is '{DAV:}displayname'.
 	 *
 	 * @param string $principalUri
+	 * @throws DAVVersionMismatchException
 	 * @return array
 	 */
 	public function getCalendarsForUser($principalUri)
@@ -162,6 +163,7 @@ class Sabre_CalDAV_Backend_Private extends Sabre_CalDAV_Backend_Common
 		$cals = q("SELECT * FROM %s%scalendars WHERE `namespace` = %d AND `namespace_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $this->getNamespace(), IntVal($n["namespace_id"]));
 		$ret  = array();
 		foreach ($cals as $cal) {
+			if (!isset($cal["uri"])) throw new DAVVersionMismatchException();
 			if (in_array($cal["uri"], $GLOBALS["CALDAV_PRIVATE_SYSTEM_CALENDARS"])) continue;
 
 			$dat = array(

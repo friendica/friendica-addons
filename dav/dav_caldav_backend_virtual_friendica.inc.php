@@ -133,7 +133,7 @@ class Sabre_CalDAV_Backend_Friendica extends Sabre_CalDAV_Backend_Virtual
 			"is_allday"         => ($allday ? 1 : 0),
 			"is_moredays"       => (substr($start, 0, 10) != substr($finish, 0, 10)),
 			"is_recurring"      => ($row["type"] == "birthday"),
-			"color"             => "#f8f8ff",
+			"color"             => "7878ff",
 			"is_editable"       => 0,
 			"is_editable_quick" => 0,
 			"location"          => $row["location"],
