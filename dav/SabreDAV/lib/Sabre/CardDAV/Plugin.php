@@ -154,8 +154,7 @@ class Sabre_CardDAV_Plugin extends Sabre_DAV_ServerPlugin {
                 if (is_resource($val))
                     $val = stream_get_contents($val);
 
-                // Taking out \r to not screw up the xml output
-                $returnedProperties[200][$addressDataProp] = str_replace("\r","", $val);
+                $returnedProperties[200][$addressDataProp] = $val;
 
             }
         }
@@ -270,7 +269,7 @@ class Sabre_CardDAV_Plugin extends Sabre_DAV_ServerPlugin {
 
         $properties = array_keys(Sabre_DAV_XMLUtil::parseProperties($dom->firstChild));
 
-        $hrefElems = $dom->getElementsByTagNameNS('urn:DAV','href');
+        $hrefElems = $dom->getElementsByTagNameNS('DAV:','href');
         $propertyList = array();
 
         foreach($hrefElems as $elem) {
@@ -358,6 +357,10 @@ class Sabre_CardDAV_Plugin extends Sabre_DAV_ServerPlugin {
             throw new Sabre_DAV_Exception_UnsupportedMediaType('This collection can only support vcard objects.');
         }
 
+        if (!isset($vobj->UID)) {
+            throw new Sabre_DAV_Exception_BadRequest('Every vcard must have an UID.');
+        }
+
     }
 
 
@@ -439,6 +442,8 @@ class Sabre_CardDAV_Plugin extends Sabre_DAV_ServerPlugin {
     public function validateFilters($vcardData, array $filters, $test) {
 
         $vcard = Sabre_VObject_Reader::read($vcardData);
+
+        if (!$filters) return true;
 
         foreach($filters as $filter) {
 

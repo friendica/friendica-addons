@@ -1,16 +1,39 @@
 <?php
 
-class Sabre_DAV_Auth_Backend_Friendica extends Sabre_DAV_Auth_Backend_AbstractBasic {
+class Sabre_DAV_Auth_Backend_Std extends Sabre_DAV_Auth_Backend_AbstractBasic {
 
     public function __construct() {
     }
 
 
-    public function getUsers() {
+	/**
+	 * @var Sabre_DAV_Auth_Backend_Std|null
+	 */
+	private static $intstance = null;
+
+	/**
+	 * @static
+	 * @return Sabre_DAV_Auth_Backend_Std
+	 */
+	public static function &getInstance() {
+		if (is_null(self::$intstance)) {
+			self::$intstance = new Sabre_DAV_Auth_Backend_Std();
+		}
+		return self::$intstance;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getUsers() {
         return array($this->currentUser);
     }
-    
-    public function getCurrentUser() {
+
+	/**
+	 * @return null|string
+	 */
+	public function getCurrentUser() {
         return $this->currentUser;
     }
 
@@ -26,6 +49,12 @@ class Sabre_DAV_Auth_Backend_Friendica extends Sabre_DAV_Auth_Backend_AbstractBa
 	 * @return bool
 	 */
 	public function authenticate(Sabre_DAV_Server $server, $realm) {
+
+		$a = get_app();
+		if (isset($a->user["uid"])) {
+			$this->currentUser = strtolower($a->user["nickname"]);
+			return true;
+		}
 
 		$auth = new Sabre_HTTP_BasicAuth();
 		$auth->setHTTPRequest($server->httpRequest);
@@ -47,12 +76,18 @@ class Sabre_DAV_Auth_Backend_Friendica extends Sabre_DAV_Auth_Backend_AbstractBa
 	}
 
 
+	/**
+	 * @param string $username
+	 * @param string $password
+	 * @return bool
+	 */
 	protected function validateUserPass($username, $password) {
-
-		$user = array(
-	            'uri' => "/" . 'principals/users/' . strtolower($username),
+		$encrypted = hash('whirlpool',trim($password));
+		$r = q("SELECT COUNT(*) anz FROM `user` WHERE `nickname` = '%s' AND `password` = '%s' AND `blocked` = 0 AND `account_expired` = 0 AND `verified` = 1 LIMIT 1",
+			dbesc(trim($username)),
+			dbesc($encrypted)
 		);
-		return $user;
+		return ($r[0]["anz"] == 1);
     }
     
 }

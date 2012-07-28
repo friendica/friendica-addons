@@ -4,6 +4,22 @@ class Sabre_CardDAV_Backend_FriendicaCommunity extends Sabre_CardDAV_Backend_Abs
 {
 
 	/**
+	 * @var null|Sabre_CardDAV_Backend_FriendicaCommunity
+	 */
+	private static $instance = null;
+
+	/**
+	 * @static
+	 * @return Sabre_CardDAV_Backend_FriendicaCommunity
+	 */
+	public static function getInstance() {
+		if (self::$instance == null) {
+			self::$instance = new Sabre_CardDAV_Backend_FriendicaCommunity();
+		}
+		return self::$instance;
+	}
+
+	/**
 	 * Sets up the object
 	 */
 	public function __construct()
