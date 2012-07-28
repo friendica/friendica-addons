@@ -238,7 +238,7 @@ class Sabre_CardDAV_Backend_PDO extends Sabre_CardDAV_Backend_Abstract {
      * Creates a new card.
      *
      * The addressbook id will be passed as the first argument. This is the
-     * same id as it is returned from the getCards method.
+     * same id as it is returned from the getAddressbooksForUser method.
      *
      * The cardUri is a base uri, and doesn't include the full path. The
      * cardData argument is the vcard body, and is passed as a string.
