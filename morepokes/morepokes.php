@@ -24,7 +24,7 @@ function morepokes_poke_verbs($a,&$b) {
 	$b['setfireto'] = array('set fire to', t('set fire to'), t('set fire to'));
 	$b['patent'] = array('patented', t('patent'), t('patented'));
 	$b['strokebeard'] = array('stroked their beard at', t('stroke beard'), t('stroked their beard at'));
-	$b['bemoan'] = array('bemoaned the declining standards of modern secondary and tertiary education to', t('bemoaned the declining standards of modern secondary and tertiary education to'), t('bemoans the declining standards of modern secondary and tertiary education to'));
+	$b['bemoan'] = array('bemoaned the declining standards of modern secondary and tertiary education to', t('bemoan the declining standards of modern secondary and tertiary education to'), t('bemoans the declining standards of modern secondary and tertiary education to'));
 	$b['hugs'] = array('hugged', t('hug'), t('hugged'));
 	$b['kiss'] = array('kissed', t('kiss'), t('kissed'));
 	$b['raiseeyebrows'] = array('raised their eyebrows at', t('raise eyebrows at'), t('raised their eyebrows at'));
