@@ -34,7 +34,8 @@ class Sabre_CalDAV_Backend_Private extends Sabre_CalDAV_Backend_Common
 	 * @static
 	 * @return string
 	 */
-	public static function getBackendTypeName() {
+	public static function getBackendTypeName()
+	{
 		return t("Private Events");
 	}
 
@@ -110,9 +111,9 @@ class Sabre_CalDAV_Backend_Private extends Sabre_CalDAV_Backend_Common
 	 */
 	public function listItemsByRange($calendarId, $sd, $ed, $base_path)
 	{
-		$calendar = Sabre_CalDAV_Backend_Common::loadCalendarById($calendarId);
-		$von      = wdcal_php2MySqlTime($sd);
-		$bis      = wdcal_php2MySqlTime($ed);
+		$calendar       = Sabre_CalDAV_Backend_Common::loadCalendarById($calendarId);
+		$von            = wdcal_php2MySqlTime($sd);
+		$bis            = wdcal_php2MySqlTime($ed);
 		$timezoneOffset = date("P");
 
 		// @TODO Events, die früher angefangen haben, aber noch andauern
@@ -166,12 +167,17 @@ class Sabre_CalDAV_Backend_Private extends Sabre_CalDAV_Backend_Common
 			if (!isset($cal["uri"])) throw new DAVVersionMismatchException();
 			if (in_array($cal["uri"], $GLOBALS["CALDAV_PRIVATE_SYSTEM_CALENDARS"])) continue;
 
+			$components = array();
+			if ($cal["has_vevent"]) $components[] = "VEVENT";
+			if ($cal["has_vtodo"]) $components[] = "VTODO";
+
 			$dat = array(
-				"id"                                                      => $cal["id"],
-				"uri"                                                     => $cal["uri"],
-				"principaluri"                                            => $principalUri,
-				'{' . Sabre_CalDAV_Plugin::NS_CALENDARSERVER . '}getctag' => $cal['ctag'] ? $cal['ctag'] : '0',
-				"calendar_class"                                          => "Sabre_CalDAV_Calendar",
+				"id"                                                                       => $cal["id"],
+				"uri"                                                                      => $cal["uri"],
+				"principaluri"                                                             => $principalUri,
+				'{' . Sabre_CalDAV_Plugin::NS_CALENDARSERVER . '}getctag'                  => $cal['ctag'] ? $cal['ctag'] : '0',
+				'{' . Sabre_CalDAV_Plugin::NS_CALDAV . '}supported-calendar-component-set' => new Sabre_CalDAV_Property_SupportedCalendarComponentSet($components),
+				"calendar_class"                                                           => "Sabre_CalDAV_Calendar",
 			);
 			foreach ($this->propertyMap as $key=> $field) $dat[$key] = $cal[$field];
 
@@ -191,7 +197,7 @@ class Sabre_CalDAV_Backend_Private extends Sabre_CalDAV_Backend_Common
 	 * @param string $principalUri
 	 * @param string $calendarUri
 	 * @param array $properties
-	 * @throws Sabre_DAV_Exception
+	 * @throws Sabre_DAV_Exception|Sabre_DAV_Exception_Conflict
 	 * @return string|void
 	 */
 	public function createCalendar($principalUri, $calendarUri, array $properties)
@@ -200,7 +206,7 @@ class Sabre_CalDAV_Backend_Private extends Sabre_CalDAV_Backend_Common
 		$uid = dav_compat_principal2uid($principalUri);
 
 		$r = q("SELECT * FROM %s%scalendars WHERE `namespace` = %d AND `namespace_id` = %d AND `uri` = '%s'", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, CALDAV_NAMESPACE_PRIVATE, $uid, dbesc($calendarUri));
-		if (count($r) > 0) throw new Sabre_DAV_Exception("A calendar with this URI already exists");
+		if (count($r) > 0) throw new Sabre_DAV_Exception_Conflict("A calendar with this URI already exists");
 
 		$keys = array("`namespace`", "`namespace_id`", "`ctag`", "`uri`");
 		$vals = array(CALDAV_NAMESPACE_PRIVATE, IntVal($uid), 1, "'" . dbesc($calendarUri) . "'");

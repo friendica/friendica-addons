@@ -67,7 +67,7 @@ function dav_init(&$a)
 
 	dav_include_files();
 
-	if (true) {
+	if (false) {
 		dbg(true);
 		error_reporting(E_ALL);
 		ini_set("display_errors", 1);

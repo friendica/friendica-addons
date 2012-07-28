@@ -226,6 +226,7 @@ class Sabre_CalDAV_Backend_Friendica extends Sabre_CalDAV_Backend_Virtual
 				"uri"                                                     => $cal["uri"],
 				"principaluri"                                            => $principalUri,
 				'{' . Sabre_CalDAV_Plugin::NS_CALENDARSERVER . '}getctag' => $cal['ctag'] ? $cal['ctag'] : '0',
+				'{' . Sabre_CalDAV_Plugin::NS_CALDAV . '}supported-calendar-component-set' => new Sabre_CalDAV_Property_SupportedCalendarComponentSet(array("VEVENT")),
 				"calendar_class"                                          => "Sabre_CalDAV_Calendar_Virtual",
 			);
 			foreach ($this->propertyMap as $key=> $field) $dat[$key] = $cal[$field];

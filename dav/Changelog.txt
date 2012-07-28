@@ -1,7 +1,9 @@
-v0.2.0-pre
+v0.2.0
 ======
-[FEATURE] Multiple private Calendars can be created.
+[FEATURE] Multiple private Calendars can be created. Each calendar can have its own default color; single events of a calendar can override this setting.
 [FEATURE] Support for recurring events.
+[FEATURE] ICS files can be imported to and exported from a calendar.
+[FEATURE] Notification by e-mail is supported.
 [COMPATIBILITY] When creating or updating an event using CalDAV, the etag is returned.
 
 v0.1.1
