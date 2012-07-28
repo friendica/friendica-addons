@@ -347,7 +347,7 @@ function dav_get_current_user_calendar_by_id(&$server, $id, $with_privilege = ""
 
 /**
  * @param string $uid
- * @return Sabre_VObject_Component_VEvent $vObject
+ * @return Sabre_VObject_Component_VCalendar $vObject
  */
 function dav_create_empty_vevent($uid = "")
 {
@@ -359,8 +359,8 @@ function dav_create_empty_vevent($uid = "")
 
 
 /**
- * @param Sabre_VObject_Component_VEvent $vObject
- * @return Sabre_VObject_Component|null
+ * @param Sabre_VObject_Component_VCalendar $vObject
+ * @return Sabre_VObject_Component_VEvent|null
  */
 function dav_get_eventComponent(&$vObject)
 {

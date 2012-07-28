@@ -261,7 +261,8 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $calendar_id, $uri)
 	if ($recurrence && $recurrence->byDay) {
 		$byday = $recurrence->byDay;
 	} else {
-		$byday = array("MO", "TU", "WE", "TH", "FR", "SA", "SU");
+		$days = array("MO", "TU", "WE", "TH", "FR", "SA", "SU");
+		$byday = array($days[date("N", $event["StartTime"]) - 1]);
 	}
 	if ($localization->getFirstDayOfWeek() == 0) {
 		$out .= "<label class='plain'><input class='rec_weekly_byday' type='checkbox' name='rec_weekly_byday[]' value='SU' ";
@@ -671,6 +672,7 @@ function wdcal_set_component_alerts(&$component, &$localization, $summary, $dtst
 
 	foreach ($prev_alarms as $al) {
 		/** @var Sabre_VObject_Component_VAlarm $al */
+		// @TODO Parse notifications that have been there before; e.g. from Lightning
 	}
 
 	foreach (array_keys($_REQUEST["noti_type"]) as $key) if (is_numeric($key) || ($key == "new" && $_REQUEST["new_alarm"] == 1)) {
