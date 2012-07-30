@@ -100,8 +100,14 @@ function dav_init(&$a)
 
 
 	$server  = dav_create_server();
+
 	$browser = new Sabre_DAV_Browser_Plugin();
 	$server->addPlugin($browser);
+
+	$aclPlugin                      = new Sabre_DAVACL_Plugin_Friendica();
+	$aclPlugin->defaultUsernamePath = "principals/users";
+	$server->addPlugin($aclPlugin);
+
 	$server->exec();
 
 	killme();

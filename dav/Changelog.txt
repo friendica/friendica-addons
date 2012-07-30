@@ -1,3 +1,6 @@
+v0.2.1
+[REFACTOR] Remove some Friendica-specific code out of the "common"-folder
+
 v0.2.0
 ======
 [FEATURE] Multiple private Calendars can be created. Each calendar can have its own default color; single events of a calendar can override this setting.

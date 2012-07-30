@@ -108,7 +108,7 @@ class vcard_source_data
  */
 function vcard_source_compile($vcardsource)
 {
-	$str = "BEGIN:VCARD\r\nVERSION:3.0\r\nPRODID:-//Friendica//DAV-Plugin//EN\r\n";
+	$str = "BEGIN:VCARD\r\nVERSION:3.0\r\nPRODID:-//" . DAV_APPNAME . "//DAV-Plugin//EN\r\n";
 	$str .= "N:" . str_replace(";", ",", $vcardsource->name_last) . ";" . str_replace(";", ",", $vcardsource->name_first) . ";" . str_replace(";", ",", $vcardsource->name_middle) . ";;\r\n";
 	$str .= "FN:" . str_replace(";", ",", $vcardsource->name_first) . " " . str_replace(";", ",", $vcardsource->name_middle) . " " . str_replace(";", ",", $vcardsource->name_last) . "\r\n";
 	$str .= "REV:" . str_replace(" ", "T", $vcardsource->last_update) . "Z\r\n";
@@ -196,13 +196,9 @@ function icalendar_sanitize_string($str = "")
  */
 function dav_createRootCalendarNode()
 {
-	$caldavBackend_std       = Sabre_CalDAV_Backend_Private::getInstance();
-	$caldavBackend_community = Sabre_CalDAV_Backend_Friendica::getInstance();
-
-	return new Sabre_CalDAV_AnimexxCalendarRootNode(Sabre_DAVACL_PrincipalBackend_Std::getInstance(), array(
-		$caldavBackend_std,
-		$caldavBackend_community,
-	));
+	$backends = array(Sabre_CalDAV_Backend_Private::getInstance());
+	foreach ($GLOBALS["CALDAV_PRIVATE_SYSTEM_BACKENDS"] as $backendclass) $backends[] = $backendclass::getInstance();
+	return new Sabre_CalDAV_AnimexxCalendarRootNode(Sabre_DAVACL_PrincipalBackend_Std::getInstance(), $backends);
 }
 
 /**
@@ -210,13 +206,10 @@ function dav_createRootCalendarNode()
  */
 function dav_createRootContactsNode()
 {
-	$carddavBackend_std       = Sabre_CardDAV_Backend_Std::getInstance();
-	$carddavBackend_community = Sabre_CardDAV_Backend_FriendicaCommunity::getInstance();
+	$backends = array(Sabre_CardDAV_Backend_Std::getInstance());
+	foreach ($GLOBALS["CARDDAV_PRIVATE_SYSTEM_BACKENDS"] as $backendclass) $backends[] = $backendclass::getInstance();
 
-	return new Sabre_CardDAV_AddressBookRootFriendica(Sabre_DAVACL_PrincipalBackend_Std::getInstance(), array(
-		$carddavBackend_std,
-		$carddavBackend_community,
-	));
+	return new Sabre_CardDAV_AddressBookRootFriendica(Sabre_DAVACL_PrincipalBackend_Std::getInstance(), $backends);
 }
 
 
@@ -246,10 +239,6 @@ function dav_create_server($force_authentication = false, $needs_caldav = true, 
 
 	$authPlugin = new Sabre_DAV_Auth_Plugin(Sabre_DAV_Auth_Backend_Std::getInstance(), 'SabreDAV');
 	$server->addPlugin($authPlugin);
-
-	$aclPlugin                      = new Sabre_DAVACL_Plugin_Friendica();
-	$aclPlugin->defaultUsernamePath = "principals/users";
-	$server->addPlugin($aclPlugin);
 
 	if ($needs_caldav) {
 		$caldavPlugin = new Sabre_CalDAV_Plugin();
@@ -353,7 +342,7 @@ function dav_create_empty_vevent($uid = "")
 {
 	$a = get_app();
 	if ($uid == "") $uid = uniqid();
-	return Sabre_VObject_Reader::read("BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Friendica//DAV-Plugin//EN\r\nBEGIN:VEVENT\r\nUID:" . $uid . "@" . $a->get_hostname() .
+	return Sabre_VObject_Reader::read("BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//" . DAV_APPNAME . "//DAV-Plugin//EN\r\nBEGIN:VEVENT\r\nUID:" . $uid . "@" . dav_compat_get_hostname() .
 		"\r\nDTSTAMP:" . date("Ymd") . "T" . date("His") . "Z\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n");
 }
 

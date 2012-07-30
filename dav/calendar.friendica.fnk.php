@@ -10,6 +10,7 @@ if (isset($uri["path"]) && strlen($uri["path"]) > 1) {
 define("CALDAV_SQL_DB", "");
 define("CALDAV_SQL_PREFIX", "dav_");
 define("CALDAV_URL_PREFIX", $path . "dav/");
+define("DAV_APPNAME", "Friendica");
 
 define("CALDAV_NAMESPACE_PRIVATE", 1);
 
@@ -17,9 +18,11 @@ define("CALDAV_FRIENDICA_MINE", "friendica-mine");
 define("CALDAV_FRIENDICA_CONTACTS", "friendica-contacts");
 
 $GLOBALS["CALDAV_PRIVATE_SYSTEM_CALENDARS"] = array(CALDAV_FRIENDICA_MINE, CALDAV_FRIENDICA_CONTACTS);
+$GLOBALS["CALDAV_PRIVATE_SYSTEM_BACKENDS"] = array("Sabre_CalDAV_Backend_Friendica");
 
 define("CARDDAV_NAMESPACE_COMMUNITYCONTACTS", 1);
 define("CARDDAV_NAMESPACE_PHONECONTACTS", 2);
+$GLOBALS["CARDDAV_PRIVATE_SYSTEM_BACKENDS"] = array("Sabre_CardDAV_Backend_FriendicaCommunity");
 
 define("CALDAV_MAX_YEAR", date("Y") + 5);
 
@@ -149,6 +152,14 @@ function dav_compat_redirect($uri = "")
 function dav_compat_get_max_private_calendars()
 {
 	return null;
+}
+
+/**
+ * @return string
+ */
+function dav_compat_get_hostname() {
+	$a = get_app();
+	return $a->get_hostname();
 }
 
 /**
