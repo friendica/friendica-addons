@@ -235,7 +235,7 @@ function dav_create_server($force_authentication = false, $needs_caldav = true, 
 // The object tree needs in turn to be passed to the server class
 	$server = new Sabre_DAV_Server($tree);
 
-	$server->setBaseUri(CALDAV_URL_PREFIX);
+	if (CALDAV_URL_PREFIX != "") $server->setBaseUri(CALDAV_URL_PREFIX);
 
 	$authPlugin = new Sabre_DAV_Auth_Plugin(Sabre_DAV_Auth_Backend_Std::getInstance(), 'SabreDAV');
 	$server->addPlugin($authPlugin);
