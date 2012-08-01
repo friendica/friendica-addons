@@ -1,7 +1,7 @@
 <?php
 
 
-class Sabre_DAVACL_PrincipalBackend_Friendica implements Sabre_DAVACL_IPrincipalBackend
+class Sabre_DAVACL_PrincipalBackend_Std implements Sabre_DAVACL_IPrincipalBackend
 {
 
 	/**
@@ -23,6 +23,23 @@ class Sabre_DAVACL_PrincipalBackend_Friendica implements Sabre_DAVACL_IPrincipal
 
 	}
 
+
+	/**
+	 * @var Sabre_DAVACL_IPrincipalBackend|null
+	 */
+	private static $intstance = null;
+
+	/**
+	 * @static
+	 * @return Sabre_DAVACL_IPrincipalBackend
+	 */
+	public static function &getInstance() {
+		if (is_null(self::$intstance)) {
+			$authBackend              = Sabre_DAV_Auth_Backend_Std::getInstance();
+			self::$intstance = new Sabre_DAVACL_PrincipalBackend_Std($authBackend);
+		}
+		return self::$intstance;
+	}
 
 	/**
 	 * Returns a list of principals based on a prefix.

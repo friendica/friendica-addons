@@ -66,6 +66,38 @@ function showmore_addon_settings_post(&$a,&$b) {
 	}
 }
 
+function get_body_length($body) {
+	$string = trim($body);
+
+	// DomDocument doesn't like empty strings
+	if(! strlen($string)) {
+		return 0;
+	}
+
+	// We need to get rid of hidden tags (display: none)
+
+	// Get rid of the warning. It would be better to have some valid html as input
+	$dom = @DomDocument::loadHTML($body);
+	$xpath = new DOMXPath($dom);
+
+	/*
+	 * Checking any possible syntax of the style attribute with xpath is impossible
+	 * So we just get any element with a style attribute, and check them with a regexp
+	 */
+	$xr = $xpath->query('//*[@style]');
+	foreach($xr as $node) {
+		if(preg_match('/.*display: *none *;.*/',$node->getAttribute('style'))) {
+			// Hidden, remove it from its parent
+			$node->parentNode->removeChild($node);
+		}
+	}
+	// Now we can get the body of our HTML DomDocument, it contains only what is visible
+	$string = $dom->saveHTML();
+
+	$string = strip_tags($string);
+	return strlen($string);
+}
+
 function showmore_prepare_body(&$a,&$b) {
 
 	$words = null;
@@ -76,7 +108,7 @@ function showmore_prepare_body(&$a,&$b) {
 	if(!$chars)
 		$chars = 1100;
 
-	if (strlen(strip_tags(trim($b['html']))) > $chars) {
+	if (get_body_length($b['html']) > $chars) {
 		$found = true;
 		$shortened = trim(showmore_cutitem($b['html'], $chars))."...";
 	}
