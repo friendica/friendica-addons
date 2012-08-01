@@ -1,76 +1,179 @@
 <?php
 
-abstract class Sabre_CalDAV_Backend_Common extends Sabre_CalDAV_Backend_Abstract {
+abstract class Sabre_CalDAV_Backend_Common extends Sabre_CalDAV_Backend_Abstract
+{
 	/**
-	 * List of CalDAV properties, and how they map to database fieldnames
-	 *
-	 * Add your own properties by simply adding on to this array
-	 *
 	 * @var array
 	 */
-	public $propertyMap = array(
-		'{DAV:}displayname'                          => 'displayname',
+	protected $propertyMap = array(
+		'{DAV:}displayname'                                   => 'displayname',
 		'{urn:ietf:params:xml:ns:caldav}calendar-description' => 'description',
 		'{urn:ietf:params:xml:ns:caldav}calendar-timezone'    => 'timezone',
-		'{http://apple.com/ns/ical/}calendar-order'  => 'calendarorder',
-		'{http://apple.com/ns/ical/}calendar-color'  => 'calendarcolor',
+		'{http://apple.com/ns/ical/}calendar-order'           => 'calendarorder',
+		'{http://apple.com/ns/ical/}calendar-color'           => 'calendarcolor',
 	);
 
 
+	/**
+	 * @abstract
+	 * @return int
+	 */
 	abstract public function getNamespace();
-	abstract public function getCalUrlPrefix();
 
 	/**
-	 * @param int $namespace
-	 * @param int $namespace_id
+	 * @static
+	 * @abstract
+	 * @return string
 	 */
-	protected function increaseCalendarCtag($namespace, $namespace_id) {
-		$namespace = IntVal($namespace);
-		$namespace_id = IntVal($namespace_id);
+	abstract public static function getBackendTypeName();
 
-		q("UPDATE %s%scalendars SET `ctag` = `ctag` + 1 WHERE `namespace` = %d AND `namespace_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $namespace, $namespace_id);
+
+	/**
+	 * @param int $calendarId
+	 * @param string $sd
+	 * @param string $ed
+	 * @param string $base_path
+	 * @return array
+	 */
+	abstract public function listItemsByRange($calendarId, $sd, $ed, $base_path);
+
+
+	/**
+	 * @var array
+	 */
+	static private $calendarCache = array();
+
+	/**
+	 * @var array
+	 */
+	static private $calendarObjectCache = array();
+
+	/**
+	 * @static
+	 * @param int $calendarId
+	 * @return array
+	 */
+	static public function loadCalendarById($calendarId)
+	{
+		if (!isset(self::$calendarCache[$calendarId])) {
+			$c                                = q("SELECT * FROM %s%scalendars WHERE `id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($calendarId));
+			self::$calendarCache[$calendarId] = $c[0];
+		}
+		return self::$calendarCache[$calendarId];
+	}
+
+	/**
+	 * @static
+	 * @param int $obj_id
+	 * @return array
+	 */
+	static public function loadCalendarobjectById($obj_id)
+	{
+		if (!isset(self::$calendarObjectCache[$obj_id])) {
+			$o                                  = q("SELECT * FROM %s%scalendarobjects WHERE `id` = %d",
+				CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($obj_id)
+			);
+			self::$calendarObjectCache[$obj_id] = $o[0];
+		}
+		return self::$calendarObjectCache[$obj_id];
 	}
 
 
-
 	/**
-	 * Returns a list of calendars for a principal.
-	 *
-	 * Every project is an array with the following keys:
-	 *  * id, a unique id that will be used by other functions to modify the
-	 *    calendar. This can be the same as the uri or a database key.
-	 *  * uri, which the basename of the uri with which the calendar is
-	 *    accessed.
-	 *  * principaluri. The owner of the calendar. Almost always the same as
-	 *    principalUri passed to this method.
-	 *
-	 * Furthermore it can contain webdav properties in clark notation. A very
-	 * common one is '{DAV:}displayname'.
-	 *
-	 * @param string $principalUri
-	 * @return array
+	 * @static
+	 * @param Sabre_VObject_Component_VEvent $component
+	 * @return int
 	 */
-	public function getCalendarsForUser($principalUri)
+	public static function getDtEndTimeStamp(&$component)
 	{
-		list(,$name) = Sabre_DAV_URLUtil::splitPath($principalUri);
-		$user_id = dav_compat_username2id($name);
-
-		$cals = q("SELECT * FROM %s%scalendars WHERE `uid`=%d AND `namespace` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $user_id, $this->getNamespace());
-		$ret = array();
-		foreach ($cals as $cal) {
-			$dat = array(
-				"id" => $cal["namespace"] . "-" . $cal["namespace_id"],
-				"uri" => $this->getCalUrlPrefix() . "-" . $cal["namespace_id"],
-				"principaluri" => $principalUri,
-				'{' . Sabre_CalDAV_Plugin::NS_CALENDARSERVER . '}getctag' => $cal['ctag']?$cal['ctag']:'0',
-				"calendar_class" => "Sabre_CalDAV_Calendar",
-			);
-			foreach ($this->propertyMap as $key=>$field) $dat[$key] = $cal[$field];
-
-			$ret[] = $dat;
+		/** @var Sabre_VObject_Property_DateTime $dtstart */
+		$dtstart = $component->__get("DTSTART");
+		if ($component->__get("DTEND")) {
+			/** @var Sabre_VObject_Property_DateTime $dtend */
+			$dtend = $component->__get("DTEND");
+			return $dtend->getDateTime()->getTimeStamp();
+		} elseif ($component->__get("DURATION")) {
+			$endDate = clone $dtstart->getDateTime();
+			$endDate->add(Sabre_VObject_DateTimeParser::parse($component->__get("DURATION")->value));
+			return $endDate->getTimeStamp();
+		} elseif ($dtstart->getDateType() === Sabre_VObject_Property_DateTime::DATE) {
+			$endDate = clone $dtstart->getDateTime();
+			$endDate->modify('+1 day');
+			return $endDate->getTimeStamp();
+		} else {
+			return $dtstart->getDateTime()->getTimeStamp() + 3600;
 		}
 
-		return $ret;
+	}
+
+
+	/**
+	 * Parses some information from calendar objects, used for optimized
+	 * calendar-queries.
+	 *
+	 * Returns an array with the following keys:
+	 *   * etag
+	 *   * size
+	 *   * componentType
+	 *   * firstOccurence
+	 *   * lastOccurence
+	 *
+	 * @param string $calendarData
+	 * @throws Sabre_DAV_Exception_BadRequest
+	 * @return array
+	 */
+	protected function getDenormalizedData($calendarData)
+	{
+		/** @var Sabre_VObject_Component_VEvent $vObject */
+		$vObject        = Sabre_VObject_Reader::read($calendarData);
+		$componentType  = null;
+		$component      = null;
+		$firstOccurence = null;
+		$lastOccurence  = null;
+
+		foreach ($vObject->getComponents() as $component) {
+			if ($component->name !== 'VTIMEZONE') {
+				$componentType = $component->name;
+				break;
+			}
+		}
+		if (!$componentType) {
+			throw new Sabre_DAV_Exception_BadRequest('Calendar objects must have a VJOURNAL, VEVENT or VTODO component');
+		}
+		if ($componentType === 'VEVENT') {
+			/** @var Sabre_VObject_Component_VEvent $component */
+			/** @var Sabre_VObject_Property_DateTime $dtstart  */
+			$dtstart        = $component->__get("DTSTART");
+			$firstOccurence = $dtstart->getDateTime()->getTimeStamp();
+			// Finding the last occurence is a bit harder
+			if (!$component->__get("RRULE")) {
+				$lastOccurence = self::getDtEndTimeStamp($component);
+			} else {
+				$it      = new Sabre_VObject_RecurrenceIterator($vObject, (string)$component->__get("UID"));
+				$maxDate = new DateTime(CALDAV_MAX_YEAR . "-01-01");
+				if ($it->isInfinite()) {
+					$lastOccurence = $maxDate->getTimeStamp();
+				} else {
+					$end = $it->getDtEnd();
+					while ($it->valid() && $end < $maxDate) {
+						$end = $it->getDtEnd();
+						$it->next();
+
+					}
+					$lastOccurence = $end->getTimeStamp();
+				}
+
+			}
+		}
+
+		return array(
+			'etag'           => md5($calendarData),
+			'size'           => strlen($calendarData),
+			'componentType'  => $componentType,
+			'firstOccurence' => $firstOccurence,
+			'lastOccurence'  => $lastOccurence,
+		);
+
 	}
 
 	/**
@@ -109,10 +212,11 @@ abstract class Sabre_CalDAV_Backend_Common extends Sabre_CalDAV_Backend_Abstract
 	 * @param array $mutations
 	 * @return bool|array
 	 */
-	public function updateCalendar($calendarId, array $mutations) {
+	public function updateCalendar($calendarId, array $mutations)
+	{
 
 		$newValues = array();
-		$result = array(
+		$result    = array(
 			200 => array(), // Ok
 			403 => array(), // Forbidden
 			424 => array(), // Failed Dependency
@@ -120,17 +224,17 @@ abstract class Sabre_CalDAV_Backend_Common extends Sabre_CalDAV_Backend_Abstract
 
 		$hasError = false;
 
-		foreach($mutations as $propertyName=>$propertyValue) {
+		foreach ($mutations as $propertyName=> $propertyValue) {
 
 			// We don't know about this property.
 			if (!isset($this->propertyMap[$propertyName])) {
-				$hasError = true;
+				$hasError                   = true;
 				$result[403][$propertyName] = null;
 				unset($mutations[$propertyName]);
 				continue;
 			}
 
-			$fieldName = $this->propertyMap[$propertyName];
+			$fieldName             = $this->propertyMap[$propertyName];
 			$newValues[$fieldName] = $propertyValue;
 
 		}
@@ -138,33 +242,46 @@ abstract class Sabre_CalDAV_Backend_Common extends Sabre_CalDAV_Backend_Abstract
 		// If there were any errors we need to fail the request
 		if ($hasError) {
 			// Properties has the remaining properties
-			foreach($mutations as $propertyName=>$propertyValue) {
+			foreach ($mutations as $propertyName=> $propertyValue) {
 				$result[424][$propertyName] = null;
 			}
 
 			// Removing unused statuscodes for cleanliness
-			foreach($result as $status=>$properties) {
-				if (is_array($properties) && count($properties)===0) unset($result[$status]);
+			foreach ($result as $status=> $properties) {
+				if (is_array($properties) && count($properties) === 0) unset($result[$status]);
 			}
 
 			return $result;
 
 		}
 
-		$x = explode("-", $calendarId);
-
-		$this->increaseCalendarCtag($x[0], $x[1]);
+		$this->increaseCalendarCtag($calendarId);
 
 		$valuesSql = array();
-		foreach($newValues as $fieldName=>$value) $valuesSql[] = "`" . $fieldName . "` = '" . dbesc($value) . "'";
+		foreach ($newValues as $fieldName=> $value) $valuesSql[] = "`" . $fieldName . "` = '" . dbesc($value) . "'";
 		if (count($valuesSql) > 0) {
-			q("UPDATE %s%scalendars SET " . implode(", ", $valuesSql) . " WHERE `namespace` = %d AND `namespace_id` = %d",
-				CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($x[0]), IntVal($x[1])
-			);
+			q("UPDATE %s%scalendars SET " . implode(", ", $valuesSql) . " WHERE `id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($calendarId));
 		}
 
 		return true;
 
 	}
+
+	/**
+	 * @param int $calendarId
+	 */
+	protected function increaseCalendarCtag($calendarId)
+	{
+		q("UPDATE %s%scalendars SET `ctag` = `ctag` + 1 WHERE `id` = '%d'", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($calendarId));
+		self::$calendarObjectCache = array();
+	}
+
+	/**
+	 * @abstract
+	 * @param int $calendar_id
+	 * @param int $calendarobject_id
+	 * @return string
+	 */
+	abstract function getItemDetailRedirect($calendar_id, $calendarobject_id);
 
 }

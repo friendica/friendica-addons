@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: OpenStreetMap
- * Description: Use OpenStreetMap for displaying locations.
+ * Description: Use OpenStreetMap for displaying locations.  After activation the post location just beneath your avatar in your posts will link to openstreetmap.
  * Version: 1.1
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * Author: Klaus Weidenbach
