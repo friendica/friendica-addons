@@ -249,10 +249,11 @@ function dav_create_server($force_authentication = false, $needs_caldav = true, 
 		$server->addPlugin($carddavPlugin);
 	}
 
-	$aclPlugin                      = new $GLOBALS["CALDAV_ACL_PLUGIN_CLASS"]();
-	$aclPlugin->defaultUsernamePath = "principals/users";
-	$server->addPlugin($aclPlugin);
-
+	if ($GLOBALS["CALDAV_ACL_PLUGIN_CLASS"] != "") {
+		$aclPlugin                      = new $GLOBALS["CALDAV_ACL_PLUGIN_CLASS"]();
+		$aclPlugin->defaultUsernamePath = "principals/users";
+		$server->addPlugin($aclPlugin);
+	}
 
 	if ($force_authentication) $server->broadcastEvent('beforeMethod', array("GET", "/")); // Make it authenticate
 
