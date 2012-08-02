@@ -30,15 +30,21 @@ function dav_include_files()
 
 	require_once (__DIR__ . "/common/calendar.fnk.php");
 	require_once (__DIR__ . "/common/calendar_rendering.fnk.php");
+
 	require_once (__DIR__ . "/common/dav_caldav_backend_common.inc.php");
 	require_once (__DIR__ . "/common/dav_caldav_backend_private.inc.php");
 	require_once (__DIR__ . "/common/dav_caldav_backend_virtual.inc.php");
 	require_once (__DIR__ . "/common/dav_caldav_root.inc.php");
 	require_once (__DIR__ . "/common/dav_user_calendars.inc.php");
-	require_once (__DIR__ . "/common/dav_carddav_root.inc.php");
-	require_once (__DIR__ . "/common/dav_carddav_backend_std.inc.php");
-	require_once (__DIR__ . "/common/dav_user_addressbooks.inc.php");
 	require_once (__DIR__ . "/common/dav_caldav_calendar_virtual.inc.php");
+	require_once (__DIR__ . "/common/dav_caldav_calendar_private.inc.php");
+
+	require_once (__DIR__ . "/common/dav_carddav_root.inc.php");
+	require_once (__DIR__ . "/common/dav_carddav_backend_common.inc.php");
+	require_once (__DIR__ . "/common/dav_carddav_backend_virtual.inc.php");
+	require_once (__DIR__ . "/common/dav_carddav_backend_private.inc.php");
+	require_once (__DIR__ . "/common/dav_user_addressbooks.inc.php");
+
 	require_once (__DIR__ . "/common/wdcal_configuration.php");
 	require_once (__DIR__ . "/common/wdcal_backend.inc.php");
 
@@ -65,6 +71,9 @@ function dav_init(&$a)
 	 * ALTER TABLE `photo` ADD INDEX ( `contact-id` )
 	 */
 
+	ini_set("display_errors", 1);
+	error_reporting(E_ALL);
+
 	dav_include_files();
 
 	if (false) {
@@ -74,6 +83,7 @@ function dav_init(&$a)
 	}
 
 	wdcal_create_std_calendars();
+	wdcal_create_std_addressbooks();
 	wdcal_addRequiredHeaders();
 
 	if ($a->argc >= 2 && $a->argv[1] == "wdcal") {
@@ -103,10 +113,6 @@ function dav_init(&$a)
 
 	$browser = new Sabre_DAV_Browser_Plugin();
 	$server->addPlugin($browser);
-
-	$aclPlugin                      = new Sabre_DAVACL_Plugin_Friendica();
-	$aclPlugin->defaultUsernamePath = "principals/users";
-	$server->addPlugin($aclPlugin);
 
 	$server->exec();
 

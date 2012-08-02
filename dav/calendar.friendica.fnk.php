@@ -13,16 +13,18 @@ define("CALDAV_URL_PREFIX", $path . "dav/");
 define("DAV_APPNAME", "Friendica");
 
 define("CALDAV_NAMESPACE_PRIVATE", 1);
-
 define("CALDAV_FRIENDICA_MINE", "friendica-mine");
 define("CALDAV_FRIENDICA_CONTACTS", "friendica-contacts");
 
 $GLOBALS["CALDAV_PRIVATE_SYSTEM_CALENDARS"] = array(CALDAV_FRIENDICA_MINE, CALDAV_FRIENDICA_CONTACTS);
 $GLOBALS["CALDAV_PRIVATE_SYSTEM_BACKENDS"] = array("Sabre_CalDAV_Backend_Friendica");
 
-define("CARDDAV_NAMESPACE_COMMUNITYCONTACTS", 1);
-define("CARDDAV_NAMESPACE_PHONECONTACTS", 2);
-$GLOBALS["CARDDAV_PRIVATE_SYSTEM_BACKENDS"] = array("Sabre_CardDAV_Backend_FriendicaCommunity");
+define("CARDDAV_NAMESPACE_PRIVATE", 1);
+define("CARDDAV_FRIENDICA_CONTACT", "friendica");
+$GLOBALS["CARDDAV_PRIVATE_SYSTEM_ADDRESSBOOKS"] = array(CARDDAV_FRIENDICA_CONTACT);
+$GLOBALS["CARDDAV_PRIVATE_SYSTEM_BACKENDS"] = array("Sabre_CardDAV_Backend_Friendica");
+
+$GLOBALS["CALDAV_ACL_PLUGIN_CLASS"] = "Sabre_DAVACL_Plugin_Friendica";
 
 define("CALDAV_MAX_YEAR", date("Y") + 5);
 
@@ -227,5 +229,46 @@ function wdcal_create_std_calendars()
 	if ($privates[0]["num"] > 0) return;
 
 	$stms = wdcal_create_std_calendars_get_statements($a->user["uid"]);
+	foreach ($stms as $stmt) q($stmt);
+}
+
+
+
+
+/**
+ * @param int $user_id
+ * @param bool $withcheck
+ * @return array
+ */
+function wdcal_create_std_addressbooks_get_statements($user_id, $withcheck = true)
+{
+	$stms = array();
+	$a = get_app();
+	$uris = array(
+		'private'                 => t("Private Addresses"),
+		CARDDAV_FRIENDICA_CONTACT     => t("Friendica Contacts"),
+	);
+	foreach ($uris as $uri => $name) {
+		$cals = q("SELECT * FROM %s%saddressbooks WHERE `namespace` = %d AND `namespace_id` = %d AND `uri` = '%s'",
+			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, CALDAV_NAMESPACE_PRIVATE, IntVal($user_id), dbesc($uri));
+		if (count($cals) == 0 || !$withcheck) $stms[] =
+			sprintf("INSERT INTO %s%saddressbooks (`namespace`, `namespace_id`, `displayname`, `ctag`, `uri`)
+				VALUES (%d, %d, '%s', 1, '%s')",
+				CALDAV_SQL_DB, CALDAV_SQL_PREFIX, CARDDAV_NAMESPACE_PRIVATE, IntVal($user_id), dbesc($name), dbesc($uri));
+	}
+	return $stms;
+}
+
+/**
+ */
+function wdcal_create_std_addressbooks()
+{
+	$a = get_app();
+	if (!local_user()) return;
+
+	$privates = q("SELECT COUNT(*) num FROM %s%addressbooks WHERE `namespace` = %d AND `namespace_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, CARDDAV_NAMESPACE_PRIVATE, IntVal($a->user["uid"]));
+	if ($privates[0]["num"] > 0) return;
+
+	$stms = wdcal_create_std_addressbooks_get_statements($a->user["uid"]);
 	foreach ($stms as $stmt) q($stmt);
 }

@@ -249,6 +249,11 @@ function dav_create_server($force_authentication = false, $needs_caldav = true, 
 		$server->addPlugin($carddavPlugin);
 	}
 
+	$aclPlugin                      = new $GLOBALS["CALDAV_ACL_PLUGIN_CLASS"]();
+	$aclPlugin->defaultUsernamePath = "principals/users";
+	$server->addPlugin($aclPlugin);
+
+
 	if ($force_authentication) $server->broadcastEvent('beforeMethod', array("GET", "/")); // Make it authenticate
 
 	return $server;
@@ -275,7 +280,7 @@ function dav_get_current_user_calendars(&$server, $with_privilege = "")
 	$calendars = array();
 	/** @var Sabre_DAVACL_Plugin $aclplugin  */
 	$aclplugin = $server->getPlugin("acl");
-	foreach ($children as $child) if (is_a($child, "Sabre_CalDAV_Calendar")) {
+	foreach ($children as $child) if (is_a($child, "Sabre_CalDAV_Calendar") || is_subclass_of($child, "Sabre_CalDAV_Calendar")) {
 		if ($with_privilege != "") {
 			$caluri = $calendar_path . $child->getName();
 			if ($aclplugin->checkPrivileges($caluri, $with_privilege, Sabre_DAVACL_Plugin::R_PARENT, false)) $calendars[] = $child;

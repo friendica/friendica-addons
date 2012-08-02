@@ -1,30 +1,39 @@
 <?php
 
-class Sabre_CardDAV_Backend_FriendicaCommunity extends Sabre_CardDAV_Backend_Abstract
+class Sabre_CardDAV_Backend_Friendica extends Sabre_CardDAV_Backend_Virtual
 {
 
 	/**
-	 * @var null|Sabre_CardDAV_Backend_FriendicaCommunity
+	 * @var null|Sabre_CardDAV_Backend_Friendica
 	 */
 	private static $instance = null;
 
 	/**
 	 * @static
-	 * @return Sabre_CardDAV_Backend_FriendicaCommunity
+	 * @return Sabre_CardDAV_Backend_Friendica
 	 */
 	public static function getInstance() {
 		if (self::$instance == null) {
-			self::$instance = new Sabre_CardDAV_Backend_FriendicaCommunity();
+			self::$instance = new Sabre_CardDAV_Backend_Friendica();
 		}
 		return self::$instance;
 	}
 
-	/**
-	 * Sets up the object
-	 */
-	public function __construct()
-	{
 
+	/**
+	 * @return int
+	 */
+	public function getNamespace()
+	{
+		return CARDDAV_NAMESPACE_PRIVATE;
+	}
+
+	/**
+	 * @static
+	 * @return string
+	 */
+	public static function getBackendTypeName() {
+		return t("Friendica-Contacts");
 	}
 
 	/**
@@ -39,15 +48,12 @@ class Sabre_CardDAV_Backend_FriendicaCommunity extends Sabre_CardDAV_Backend_Abs
 
 		$addressBooks = array();
 
-		$books = q("SELECT ctag FROM %s%saddressbooks_community WHERE uid = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($uid));
-		if (count($books) == 0) {
-			q("INSERT INTO %s%saddressbooks_community (uid, ctag) VALUES (%d, 1)", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($uid));
-			$ctag = 1;
-		} else {
-			$ctag = $books[0]["ctag"];
-		}
+		$books = q("SELECT id, ctag FROM %s%saddressbooks WHERE `namespace` = %d AND `namespace_id` = %d AND `uri` = '%s'",
+			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, CARDDAV_NAMESPACE_PRIVATE, IntVal($uid), dbesc(CARDDAV_FRIENDICA_CONTACT));
+		$ctag = $books[0]["ctag"];
+
 		$addressBooks[] = array(
-			'id'                                                                => CARDDAV_NAMESPACE_COMMUNITYCONTACTS . "-" . $uid,
+			'id'                                                                => $books[0]["id"],
 			'uri'                                                               => "friendica",
 			'principaluri'                                                      => $principalUri,
 			'{DAV:}displayname'                                                 => t("Friendica-Contacts"),
@@ -61,56 +67,12 @@ class Sabre_CardDAV_Backend_FriendicaCommunity extends Sabre_CardDAV_Backend_Abs
 
 	}
 
-
 	/**
-	 * Updates an addressbook's properties
-	 *
-	 * See Sabre_DAV_IProperties for a description of the mutations array, as
-	 * well as the return value.
-	 *
-	 * @param string $addressBookId
-	 * @param array $mutations
-	 * @throws Sabre_DAV_Exception_Forbidden
-	 * @see Sabre_DAV_IProperties::updateProperties
-	 * @return bool|array
-	 */
-	public function updateAddressBook($addressBookId, array $mutations)
-	{
-		throw new Sabre_DAV_Exception_Forbidden();
-	}
-
-	/**
-	 * Creates a new address book
-	 *
-	 * @param string $principalUri
-	 * @param string $url Just the 'basename' of the url.
-	 * @param array $properties
-	 * @throws Sabre_DAV_Exception_Forbidden
-	 * @return void
-	 */
-	public function createAddressBook($principalUri, $url, array $properties)
-	{
-		throw new Sabre_DAV_Exception_Forbidden();
-	}
-
-	/**
-	 * Deletes an entire addressbook and all its contents
-	 *
-	 * @param int $addressBookId
-	 * @throws Sabre_DAV_Exception_Forbidden
-	 * @return void
-	 */
-	public function deleteAddressBook($addressBookId)
-	{
-		throw new Sabre_DAV_Exception_Forbidden();
-	}
-
-
-	/**
+	 * @static
 	 * @param array $contact
 	 * @return array
 	 */
-	private function dav_contactarr2vcardsource($contact)
+	private static function dav_contactarr2vcardsource($contact)
 	{
 		$name        = explode(" ", $contact["name"]);
 		$first_name  = $last_name = "";
@@ -164,118 +126,25 @@ class Sabre_CardDAV_Backend_FriendicaCommunity extends Sabre_CardDAV_Backend_Abs
 	}
 
 	/**
-	 * @param int $uid
-	 * @param array|int[] $exclude_ids
-	 * @return array
+	 * @static
+	 * @param int $addressbookId
+	 * @throws Sabre_DAV_Exception_NotFound
 	 */
-	private function dav_getCommunityContactsVCards($uid = 0, $exclude_ids = array())
-	{
-		$notin    = (count($exclude_ids) > 0 ? " AND id NOT IN (" . implode(", ", $exclude_ids) . ") " : "");
-		$uid      = IntVal($uid);
-		$contacts = q("SELECT * FROM `contact` WHERE `uid` = %d AND `blocked` = 0 AND `pending` = 0 AND `hidden` = 0 AND `archive` = 0 $notin ORDER BY `name` ASC", $uid);
+	static protected function createCache_internal($addressbookId) {
+		//$notin    = (count($exclude_ids) > 0 ? " AND id NOT IN (" . implode(", ", $exclude_ids) . ") " : "");
+		$addressbook = q("SELECT * FROM %s%saddressbooks WHERE `id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($addressbookId));
+		if (count($addressbook) != 1 || $addressbook[0]["namespace"] != CARDDAV_NAMESPACE_PRIVATE) throw new Sabre_DAV_Exception_NotFound();
+		$contacts = q("SELECT * FROM `contact` WHERE `uid` = %d AND `blocked` = 0 AND `pending` = 0 AND `hidden` = 0 AND `archive` = 0 ORDER BY `name` ASC", $addressbook[0]["namespace_id"]);
 
 		$retdata = array();
 		foreach ($contacts as $contact) {
-			$x            = $this->dav_contactarr2vcardsource($contact);
-			$x["contact"] = $contact["id"];
-			$retdata[]    = $x;
-		}
-		return $retdata;
-	}
-
-
-	/**
-	 * Returns all cards for a specific addressbook id.
-	 *
-	 * This method should return the following properties for each card:
-	 *   * carddata - raw vcard data
-	 *   * uri - Some unique url
-	 *   * lastmodified - A unix timestamp
-	 *
-	 * It's recommended to also return the following properties:
-	 *   * etag - A unique etag. This must change every time the card changes.
-	 *   * size - The size of the card in bytes.
-	 *
-	 * If these last two properties are provided, less time will be spent
-	 * calculating them. If they are specified, you can also ommit carddata.
-	 * This may speed up certain requests, especially with large cards.
-	 *
-	 * @param string $addressbookId
-	 * @return array
-	 */
-	public function getCards($addressbookId)
-	{
-		$add = explode("-", $addressbookId);
-
-		$indb           = q('SELECT id, carddata, uri, lastmodified, etag, size, contact, manually_deleted FROM %s%scards WHERE namespace = %d AND namespace_id = %d',
-			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($add[0]), IntVal($add[1])
-		);
-		$found_contacts = array();
-		$contacts       = array();
-		foreach ($indb as $x) {
-			if ($x["manually_deleted"] == 0) $contacts[] = $x;
-			$found_contacts[] = IntVal($x["contact"]);
-		}
-		$new_found = $this->dav_getCommunityContactsVCards($add[1], $found_contacts);
-		foreach ($new_found as $new) {
-			q("INSERT INTO %s%scards (namespace, namespace_id, contact, carddata, uri, lastmodified, manually_edited, manually_deleted, etag, size)
-					VALUES (%d, %d, %d, '%s', '%s', %d, 0, 0, '%s', %d)", CALDAV_SQL_DB, CALDAV_SQL_PREFIX,
-				IntVal($add[0]), IntVal($add[1]), IntVal($new["contact"]), dbesc($new["carddata"]), dbesc($new["uri"]), time(), md5($new["carddata"]), strlen($new["carddata"])
+			$x            = static::dav_contactarr2vcardsource($contact);
+			q("INSERT INTO %s%saddressbookobjects (`addressbook_id`, `contact`, `carddata`, `uri`, `lastmodified`, `etag`, `size`) VALUES (%d, %d, '%s', '%s', NOW(), '%s', %d)",
+				CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $addressbookId, $contact["id"], dbesc($x["carddata"]), dbesc($x["uri"]), dbesc($x["etag"]), $x["size"]
 			);
 		}
-		return array_merge($contacts, $new_found);
 	}
 
-	/**
-	 * Returns a specfic card.
-	 *
-	 * The same set of properties must be returned as with getCards. The only
-	 * exception is that 'carddata' is absolutely required.
-	 *
-	 * @param mixed $addressBookId
-	 * @param string $cardUri
-	 * @throws Sabre_DAV_Exception_NotFound
-	 * @return array
-	 */
-	public function getCard($addressBookId, $cardUri)
-	{
-		$x = explode("-", $addressBookId);
-		$x = q("SELECT id, carddata, uri, lastmodified, etag, size FROM %s%scards WHERE namespace = %d AND namespace_id = %d AND uri = '%s'",
-			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($x[0]), IntVal($x[1]), dbesc($cardUri));
-		if (count($x) == 0) throw new Sabre_DAV_Exception_NotFound();
-		return $x[0];
-	}
-
-	/**
-	 * Creates a new card.
-	 *
-	 * The addressbook id will be passed as the first argument. This is the
-	 * same id as it is returned from the getAddressbooksForUser method.
-	 *
-	 * The cardUri is a base uri, and doesn't include the full path. The
-	 * cardData argument is the vcard body, and is passed as a string.
-	 *
-	 * It is possible to return an ETag from this method. This ETag is for the
-	 * newly created resource, and must be enclosed with double quotes (that
-	 * is, the string itself must contain the double quotes).
-	 *
-	 * You should only return the ETag if you store the carddata as-is. If a
-	 * subsequent GET request on the same card does not have the same body,
-	 * byte-by-byte and you did return an ETag here, clients tend to get
-	 * confused.
-	 *
-	 * If you don't return an ETag, you can just return null.
-	 *
-	 * @param string $addressBookId
-	 * @param string $cardUri
-	 * @param string $cardData
-	 * @throws Sabre_DAV_Exception_Forbidden
-	 * @return string
-	 */
-	public function createCard($addressBookId, $cardUri, $cardData)
-	{
-		throw new Sabre_DAV_Exception_Forbidden();
-	}
 
 	/**
 	 * Updates a card.

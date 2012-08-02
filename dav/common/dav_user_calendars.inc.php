@@ -169,7 +169,6 @@ class Sabre_CalDAV_AnimexxUserCalendars implements Sabre_DAV_IExtendedCollection
             	$objs[] = new $calendar["calendar_class"]($this->principalBackend, $backend, $calendar);
         	}
 		}
-        //$objs[] = new Sabre_CalDAV_AnimexxUserZirkelCalendars($this->principalBackend, $this->caldavBackend, $this->username);
         return $objs;
 
     }

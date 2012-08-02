@@ -43,6 +43,39 @@ function dav_get_update_statements($from_version)
 
 	}
 
+	if (in_array($from_version, array(1, 2))) {
+		$stms[] = "DROP TABLE `dav_addressbooks_phone`";
+		$stms[] = "DROP TABLE `dav_addressbooks_community`";
+		$stms[] = "DROP TABLE `dav_cards`";
+
+		$stms[] = "CREATE TABLE IF NOT EXISTS `dav_addressbooks` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `namespace` mediumint(9) NOT NULL,
+  `namespace_id` int(11) unsigned NOT NULL,
+  `displayname` varchar(200) NOT NULL,
+  `description` varchar(500) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uri` varchar(50) NOT NULL,
+  `ctag` int(11) unsigned NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;";
+
+		$stms[] = "CREATE TABLE IF NOT EXISTS `dav_addressbookobjects` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `addressbook_id` int(11) unsigned NOT NULL,
+  `contact` int(11) DEFAULT NULL,
+  `carddata` mediumtext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+  `uri` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `lastmodified` timestamp NULL DEFAULT NULL,
+  `manually_edited` tinyint(4) NOT NULL DEFAULT '0',
+  `manually_deleted` tinyint(4) NOT NULL DEFAULT '0',
+  `etag` varchar(15) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `size` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `namespace` (`addressbook_id`,`contact`),
+  KEY `contact` (`contact`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;";
+	}
+
 	return $stms;
 }
 
@@ -54,24 +87,6 @@ function dav_get_create_statements($except = array())
 {
 	$arr = array();
 
-	if (!in_array("dav_addressbooks_community", $except)) $arr[] = "CREATE TABLE IF NOT EXISTS `dav_addressbooks_community` (
-  `uid` int(11) NOT NULL,
-  `ctag` int(11) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`uid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8";
-
-	if (!in_array("dav_addressbooks_phone", $except)) $arr[] = "CREATE TABLE IF NOT EXISTS `dav_addressbooks_phone` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `uid` int(11) NOT NULL,
-  `principaluri` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
-  `displayname` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
-  `uri` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
-  `description` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
-  `ctag` int(11) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `principaluri` (`principaluri`,`uri`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8";
-
 	if (!in_array("dav_caldav_log", $except)) $arr[] = "CREATE TABLE IF NOT EXISTS `dav_caldav_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uid` mediumint(9) NOT NULL,
@@ -82,7 +97,7 @@ function dav_get_create_statements($except = array())
   `url` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `mitglied` (`uid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
 	if (!in_array("dav_calendarobjects", $except)) $arr[] = "CREATE TABLE IF NOT EXISTS `dav_calendarobjects` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -98,7 +113,7 @@ function dav_get_create_statements($except = array())
   PRIMARY KEY (`id`),
   UNIQUE KEY `uri` (`uri`),
   KEY `calendar_id` (`calendar_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8";
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8";
 
 	if (!in_array("dav_calendars", $except)) $arr[] = "CREATE TABLE IF NOT EXISTS `dav_calendars` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -116,7 +131,7 @@ function dav_get_create_statements($except = array())
   PRIMARY KEY (`id`),
   UNIQUE KEY (`namespace` , `namespace_id` , `uri`),
   KEY `uri` (`uri`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8";
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8";
 
 	if (!in_array("dav_cal_virtual_object_cache", $except)) $arr[] = "CREATE TABLE IF NOT EXISTS `dav_cal_virtual_object_cache` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -135,30 +150,13 @@ function dav_get_create_statements($except = array())
   PRIMARY KEY (`id`),
   KEY `data_uri` (`data_uri`),
   KEY `ref_type` (`calendar_id`,`data_end`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8";
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8";
 
 	if (!in_array("dav_cal_virtual_object_sync", $except)) $arr[] = "CREATE TABLE IF NOT EXISTS `dav_cal_virtual_object_sync` (
   `calendar_id` int(10) unsigned NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`calendar_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-
-	if (!in_array("dav_cards", $except)) $arr[] = "CREATE TABLE IF NOT EXISTS `dav_cards` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `namespace` tinyint(3) unsigned NOT NULL,
-  `namespace_id` int(11) unsigned NOT NULL,
-  `contact` int(11) DEFAULT NULL,
-  `carddata` mediumtext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
-  `uri` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
-  `lastmodified` int(11) unsigned DEFAULT NULL,
-  `manually_edited` tinyint(4) NOT NULL DEFAULT '0',
-  `manually_deleted` tinyint(4) NOT NULL DEFAULT '0',
-  `etag` varchar(15) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `size` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `namespace` (`namespace`,`namespace_id`,`contact`),
-  KEY `contact` (`contact`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8";
 
 	if (!in_array("dav_jqcalendar", $except)) $arr[] = "CREATE TABLE IF NOT EXISTS `dav_jqcalendar` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -190,6 +188,33 @@ function dav_get_create_statements($except = array())
   KEY `calendar_id` (`calendar_id`,`calendarobject_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8";
 
+	if (!in_array("dav_addressbooks", $except)) $arr[] = "CREATE TABLE IF NOT EXISTS `dav_addressbooks` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `namespace` mediumint(9) NOT NULL,
+  `namespace_id` int(11) unsigned NOT NULL,
+  `displayname` varchar(200) NOT NULL,
+  `description` varchar(500) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uri` varchar(50) NOT NULL,
+  `ctag` int(11) unsigned NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;";
+
+	if (!in_array("dav_addressbookobjects", $except)) $arr[] = "CREATE TABLE IF NOT EXISTS `dav_addressbookobjects` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `addressbook_id` int(11) unsigned NOT NULL,
+  `contact` int(11) DEFAULT NULL,
+  `carddata` mediumtext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+  `uri` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `lastmodified` timestamp NULL DEFAULT NULL,
+  `manually_edited` tinyint(4) NOT NULL DEFAULT '0',
+  `manually_deleted` tinyint(4) NOT NULL DEFAULT '0',
+  `etag` varchar(15) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `size` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `namespace` (`addressbook_id`,`contact`),
+  KEY `contact` (`contact`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;";
+
 	return $arr;
 }
 
@@ -201,6 +226,7 @@ function dav_check_tables()
 	$x = q("DESCRIBE %s%scalendars", CALDAV_SQL_DB, CALDAV_SQL_PREFIX);
 	if (!$x) return -1;
 	if (count($x) == 9) return 1; // Version 0.1
+	// @TODO Detect Version 0.2
 	if (count($x) == 12) return 0; // Correct
 	return -2; // Unknown version
 }
@@ -229,7 +255,7 @@ function dav_create_tables()
 function dav_upgrade_tables()
 {
 	$ver = dav_check_tables();
-	if (!in_array($ver, array(1) )) return array("Unknown error");
+	if (!in_array($ver, array(1))) return array("Unknown error");
 
 	$stms   = dav_get_update_statements($ver);
 	$errors = array();

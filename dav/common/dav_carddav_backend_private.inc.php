@@ -1,17 +1,6 @@
 <?php
 
-/**
- * PDO CardDAV backend
- *
- * This CardDAV backend uses PDO to store addressbooks
- *
- * @package Sabre
- * @subpackage CardDAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
- * @author Evert Pot (http://www.rooftopsolutions.nl/)
- * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
- */
-class Sabre_CardDAV_Backend_Std extends Sabre_CardDAV_Backend_Abstract
+class Sabre_CardDAV_Backend_Std extends Sabre_CardDAV_Backend_Common
 {
 
 	/**
@@ -39,6 +28,24 @@ class Sabre_CardDAV_Backend_Std extends Sabre_CardDAV_Backend_Abstract
 
 	}
 
+
+	/**
+	 * @return int
+	 */
+	public function getNamespace()
+	{
+		return CARDDAV_NAMESPACE_PRIVATE;
+	}
+
+	/**
+	 * @static
+	 * @return string
+	 */
+	public static function getBackendTypeName()
+	{
+		return t("Private Addressbooks");
+	}
+
 	/**
 	 * Returns the list of addressbooks for a specific user.
 	 *
@@ -47,22 +54,19 @@ class Sabre_CardDAV_Backend_Std extends Sabre_CardDAV_Backend_Abstract
 	 */
 	public function getAddressBooksForUser($principalUri)
 	{
-		$uid = dav_compat_principal2uid($principalUri);
+		$n = dav_compat_principal2namespace($principalUri);
+		if ($n["namespace"] != $this->getNamespace()) return array();
 
 		$addressBooks = array();
 
-		$books = q("SELECT id, uri, displayname, principaluri, description, ctag FROM %s%saddressbooks_phone WHERE principaluri = '%s'", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, dbesc($principalUri));
-		if (count($books) == 0) {
-			q("INSERT INTO %s%saddressbooks_phone (uid, principaluri, displayname, uri, description, ctag) VALUES (%d, '%s', '%s', '%s', '%s', 1)",
-				CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $uid, dbesc($principalUri), 'Other', 'phone', 'Manually added contacts'
-			);
-			$books = q("SELECT id, uri, displayname, principaluri, description, ctag FROM %s%saddressbooks_phone WHERE principaluri = '%s'", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, dbesc($principalUri));
-		}
+		$books = q("SELECT * FROM %s%saddressbooks WHERE `namespace` = %d AND `namespace_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($n["namespace"]), IntVal($n["namespace_id"]));
 		foreach ($books as $row) {
+			if (in_array($row["uri"], $GLOBALS["CARDDAV_PRIVATE_SYSTEM_ADDRESSBOOKS"])) continue;
+
 			$addressBooks[] = array(
-				'id'                                                                => CARDDAV_NAMESPACE_PHONECONTACTS . "-" . $row['id'],
+				'id'                                                                => $row['id'],
 				'uri'                                                               => $row['uri'],
-				'principaluri'                                                      => $row['principaluri'],
+				'principaluri'                                                      => $principalUri,
 				'{DAV:}displayname'                                                 => $row['displayname'],
 				'{' . Sabre_CardDAV_Plugin::NS_CARDDAV . '}addressbook-description' => $row['description'],
 				'{http://calendarserver.org/ns/}getctag'                            => $row['ctag'],
@@ -77,57 +81,6 @@ class Sabre_CardDAV_Backend_Std extends Sabre_CardDAV_Backend_Abstract
 
 
 	/**
-	 * Updates an addressbook's properties
-	 *
-	 * See Sabre_DAV_IProperties for a description of the mutations array, as
-	 * well as the return value.
-	 *
-	 * @param mixed $addressBookId
-	 * @param array $mutations
-	 * @throws Sabre_DAV_Exception_Forbidden
-	 * @see Sabre_DAV_IProperties::updateProperties
-	 * @return bool|array
-	 */
-	public function updateAddressBook($addressBookId, array $mutations)
-	{
-		$x = explode("-", $addressBookId);
-
-		$updates = array();
-
-		foreach ($mutations as $property=> $newValue) {
-
-			switch ($property) {
-				case '{DAV:}displayname' :
-					$updates['displayname'] = $newValue;
-					break;
-				case '{' . Sabre_CardDAV_Plugin::NS_CARDDAV . '}addressbook-description' :
-					$updates['description'] = $newValue;
-					break;
-				default :
-					// If any unsupported values were being updated, we must
-					// let the entire request fail.
-					return false;
-			}
-
-		}
-
-		// No values are being updated?
-		if (!$updates) {
-			return false;
-		}
-
-		$query = 'UPDATE ' . CALDAV_SQL_DB . CALDAV_SQL_PREFIX . 'addressbooks_phone SET ctag = ctag + 1 ';
-		foreach ($updates as $key=> $value) {
-			$query .= ', `' . dbesc($key) . '` = ' . dbesc($key) . ' ';
-		}
-		$query .= ' WHERE id = ' . IntVal($x[1]);
-		q($query);
-
-		return true;
-
-	}
-
-	/**
 	 * Creates a new address book
 	 *
 	 * @param string $principalUri
@@ -138,6 +91,8 @@ class Sabre_CardDAV_Backend_Std extends Sabre_CardDAV_Backend_Abstract
 	 */
 	public function createAddressBook($principalUri, $url, array $properties)
 	{
+		$uid = dav_compat_principal2uid($principalUri);
+
 		$values = array(
 			'displayname'  => null,
 			'description'  => null,
@@ -160,8 +115,8 @@ class Sabre_CardDAV_Backend_Std extends Sabre_CardDAV_Backend_Abstract
 
 		}
 
-		q("INSERT INTO %s%saddressbooks_phone (uri, displayname, description, principaluri, ctag) VALUES ('%s', '%s', '%s', '%s', 1)",
-			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, dbesc($values["uri"]), dbesc($values["displayname"]), dbesc($values["description"]), dbesc($values["principaluri"])
+		q("INSERT INTO %s%saddressbooks (`uri`, `displayname`, `description`, `namespace`, `namespace_id`, `ctag`) VALUES ('%s', '%s', '%s', %d, %d, 1)",
+			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, dbesc($values["uri"]), dbesc($values["displayname"]), dbesc($values["description"]), CARDDAV_NAMESPACE_PRIVATE, IntVal($uid)
 		);
 	}
 
@@ -174,9 +129,8 @@ class Sabre_CardDAV_Backend_Std extends Sabre_CardDAV_Backend_Abstract
 	 */
 	public function deleteAddressBook($addressBookId)
 	{
-		$x = explode("-", $addressBookId);
-		q("DELETE FROM %s%scards WHERE namespace = %d AND namespace_id = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($x[0]), IntVal($x[1]));
-		q("DELETE FROM %s%saddressbooks_phone WHERE id = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($x[1]));
+		q("DELETE FROM %s%saddressbookobjects WHERE `id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($addressBookId));
+		q("DELETE FROM %s%saddressbooks WHERE `addressbook_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($addressBookId));
 	}
 
 	/**
@@ -200,10 +154,8 @@ class Sabre_CardDAV_Backend_Std extends Sabre_CardDAV_Backend_Abstract
 	 */
 	public function getCards($addressbookId)
 	{
-		$x = explode("-", $addressbookId);
-
-		$r = q('SELECT id, carddata, uri, lastmodified, etag, size, contact FROM %s%scards WHERE namespace = %d AND namespace_id = %d AND manually_deleted = 0',
-			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($x[0]), IntVal($x[1])
+		$r = q('SELECT `id`, `carddata`, `uri`, `lastmodified`, `etag`, `size`, `contact` FROM %s%saddressbookobjects WHERE `addressbook_id` = %d AND `manually_deleted` = 0',
+			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($addressbookId)
 		);
 		if ($r) return $r;
 		return array();
@@ -222,9 +174,8 @@ class Sabre_CardDAV_Backend_Std extends Sabre_CardDAV_Backend_Abstract
 	 */
 	public function getCard($addressBookId, $cardUri)
 	{
-		$x = explode("-", $addressBookId);
-		$x = q("SELECT id, carddata, uri, lastmodified, etag, size FROM %s%scards WHERE namespace = %d AND namespace_id = %d AND uri = '%s'",
-			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($x[0]), IntVal($x[1]), dbesc($cardUri));
+		$x = q("SELECT `id`, `carddata`, `uri`, `lastmodified`, `etag`, `size` FROM %s%saddressbookobjects WHERE `addressbook_id` = %d AND `uri` = '%s'",
+			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($addressBookId), dbesc($cardUri));
 		if (count($x) == 0) throw new Sabre_DAV_Exception_NotFound();
 		return $x[0];
 	}
@@ -257,14 +208,12 @@ class Sabre_CardDAV_Backend_Std extends Sabre_CardDAV_Backend_Abstract
 	 */
 	public function createCard($addressBookId, $cardUri, $cardData)
 	{
-		$x = explode("-", $addressBookId);
-
 		$etag = md5($cardData);
-		q("INSERT INTO %s%scards (carddata, uri, lastmodified, namespace, namespace_id, etag, size) VALUES ('%s', '%s', %d, %d, '%s', %d)",
-			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, dbesc($cardData), dbesc($cardUri), time(), IntVal($x[0]), IntVal($x[1]), $etag, strlen($cardData)
+		q("INSERT INTO %s%saddressbookobjects (`carddata`, `uri`, `lastmodified`, `addressbook_id`, `etag`, `size`) VALUES ('%s', '%s', NOW(), %d, '%s', %d)",
+			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, dbesc($cardData), dbesc($cardUri), IntVal($addressBookId), dbesc($etag), strlen($cardData)
 		);
 
-		q('UPDATE %s%saddressbooks_phone SET ctag = ctag + 1 WHERE id = %d', CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($x[1]));
+		q('UPDATE %s%saddressbooks SET `ctag` = `ctag` + 1 WHERE `id` = %d', CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($addressBookId));
 
 		return '"' . $etag . '"';
 
@@ -298,14 +247,12 @@ class Sabre_CardDAV_Backend_Std extends Sabre_CardDAV_Backend_Abstract
 	 */
 	public function updateCard($addressBookId, $cardUri, $cardData)
 	{
-		$x = explode("-", $addressBookId);
-
 		$etag = md5($cardData);
-		q("UPDATE %s%scards SET carddata = '%s', lastmodified = %d, etag = '%s', size = %d, manually_edited = 1 WHERE uri = '%s' AND namespace = %d AND namespace_id =%d",
-			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, dbesc($cardData), time(), $etag, strlen($cardData), dbesc($cardUri), IntVal($x[10]), IntVal($x[1])
+		q("UPDATE %s%saddressbookobjects SET `carddata` = '%s', `lastmodified` = NOW(), `etag` = '%s', `size` = %d, `manually_edited` = 1 WHERE `uri` = '%s' AND `addressbook_id` = %d",
+			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, dbesc($cardData), dbesc($etag), strlen($cardData), dbesc($cardUri), IntVal($addressBookId)
 		);
 
-		q('UPDATE %s%saddressbooks_phone SET ctag = ctag + 1 WHERE id = %d', CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($x[1]));
+		q('UPDATE %s%saddressbooks SET `ctag` = `ctag` + 1 WHERE `id` = %d', CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($addressBookId));
 
 		return '"' . $etag . '"';
 	}
@@ -320,10 +267,8 @@ class Sabre_CardDAV_Backend_Std extends Sabre_CardDAV_Backend_Abstract
 	 */
 	public function deleteCard($addressBookId, $cardUri)
 	{
-		$x = explode("-", $addressBookId);
-
-		q("DELETE FROM %s%scards WHERE namespace = %d AND namespace_id = %d AND uri = '%s'", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($x[0]), IntVal($x[1]), dbesc($cardUri));
-		q('UPDATE %s%saddressbooks_phone SET ctag = ctag + 1 WHERE id = %d', CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($x[1]));
+		q("DELETE FROM %s%saddressbookobjects WHERE `addressbook_id` = %d AND `uri` = '%s'", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($addressBookId), dbesc($cardUri));
+		q('UPDATE %s%saddressbooks SET `ctag` = `ctag` + 1 WHERE `id` = %d', CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($addressBookId));
 
 		return true;
 	}
