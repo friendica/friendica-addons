@@ -66,7 +66,7 @@ function dav_get_update_statements($from_version)
   `carddata` mediumtext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
   `uri` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
   `lastmodified` timestamp NULL DEFAULT NULL,
-  `manually_edited` tinyint(4) NOT NULL DEFAULT '0',
+  `needs_rebuild` tinyint(4) NOT NULL DEFAULT '0',
   `manually_deleted` tinyint(4) NOT NULL DEFAULT '0',
   `etag` varchar(15) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `size` int(10) unsigned NOT NULL,
@@ -206,7 +206,7 @@ function dav_get_create_statements($except = array())
   `carddata` mediumtext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
   `uri` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
   `lastmodified` timestamp NULL DEFAULT NULL,
-  `manually_edited` tinyint(4) NOT NULL DEFAULT '0',
+  `needs_rebuild` tinyint(4) NOT NULL DEFAULT '0',
   `manually_deleted` tinyint(4) NOT NULL DEFAULT '0',
   `etag` varchar(15) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `size` int(10) unsigned NOT NULL,
@@ -241,7 +241,7 @@ function dav_create_tables()
 	$errors = array();
 
 	global $db;
-	foreach ($stms as $st) {
+	foreach ($stms as $st) { // @TODO Friendica-dependent
 		$db->q($st);
 		if ($db->error) $errors[] = $db->error;
 	}
@@ -261,7 +261,7 @@ function dav_upgrade_tables()
 	$errors = array();
 
 	global $db;
-	foreach ($stms as $st) {
+	foreach ($stms as $st) { // @TODO Friendica-dependent
 		$db->q($st);
 		if ($db->error) $errors[] = $db->error;
 	}
