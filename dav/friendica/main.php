@@ -26,27 +26,27 @@ function dav_module()
 
 function dav_include_files()
 {
-	require_once (__DIR__ . "/SabreDAV/lib/Sabre/autoload.php");
+	require_once (__DIR__ . "/../SabreDAV/lib/Sabre/autoload.php");
 
-	require_once (__DIR__ . "/common/calendar.fnk.php");
-	require_once (__DIR__ . "/common/calendar_rendering.fnk.php");
+	require_once (__DIR__ . "/../common/calendar.fnk.php");
+	require_once (__DIR__ . "/../common/calendar_rendering.fnk.php");
 
-	require_once (__DIR__ . "/common/dav_caldav_backend_common.inc.php");
-	require_once (__DIR__ . "/common/dav_caldav_backend_private.inc.php");
-	require_once (__DIR__ . "/common/dav_caldav_backend_virtual.inc.php");
-	require_once (__DIR__ . "/common/dav_caldav_root.inc.php");
-	require_once (__DIR__ . "/common/dav_user_calendars.inc.php");
-	require_once (__DIR__ . "/common/dav_caldav_calendar_virtual.inc.php");
-	require_once (__DIR__ . "/common/dav_caldav_calendar_private.inc.php");
+	require_once (__DIR__ . "/../common/dav_caldav_backend_common.inc.php");
+	require_once (__DIR__ . "/../common/dav_caldav_backend_private.inc.php");
+	require_once (__DIR__ . "/../common/dav_caldav_backend_virtual.inc.php");
+	require_once (__DIR__ . "/../common/dav_caldav_root.inc.php");
+	require_once (__DIR__ . "/../common/dav_user_calendars.inc.php");
+	require_once (__DIR__ . "/../common/dav_caldav_calendar_virtual.inc.php");
+	require_once (__DIR__ . "/../common/dav_caldav_calendar_private.inc.php");
 
-	require_once (__DIR__ . "/common/dav_carddav_root.inc.php");
-	require_once (__DIR__ . "/common/dav_carddav_backend_common.inc.php");
-	require_once (__DIR__ . "/common/dav_carddav_backend_virtual.inc.php");
-	require_once (__DIR__ . "/common/dav_carddav_backend_private.inc.php");
-	require_once (__DIR__ . "/common/dav_user_addressbooks.inc.php");
+	require_once (__DIR__ . "/../common/dav_carddav_root.inc.php");
+	require_once (__DIR__ . "/../common/dav_carddav_backend_common.inc.php");
+	require_once (__DIR__ . "/../common/dav_carddav_backend_virtual.inc.php");
+	require_once (__DIR__ . "/../common/dav_carddav_backend_private.inc.php");
+	require_once (__DIR__ . "/../common/dav_user_addressbooks.inc.php");
 
-	require_once (__DIR__ . "/common/wdcal_configuration.php");
-	require_once (__DIR__ . "/common/wdcal_backend.inc.php");
+	require_once (__DIR__ . "/../common/wdcal_configuration.php");
+	require_once (__DIR__ . "/../common/wdcal_backend.inc.php");
 
 	require_once (__DIR__ . "/dav_friendica_principal.inc.php");
 	require_once (__DIR__ . "/dav_friendica_auth.inc.php");
@@ -54,7 +54,7 @@ function dav_include_files()
 	require_once (__DIR__ . "/dav_caldav_backend_virtual_friendica.inc.php");
 	require_once (__DIR__ . "/FriendicaACLPlugin.inc.php");
 
-	require_once (__DIR__ . "/common/wdcal_edit.inc.php");
+	require_once (__DIR__ . "/../common/wdcal_edit.inc.php");
 	require_once (__DIR__ . "/calendar.friendica.fnk.php");
 	require_once (__DIR__ . "/layout.fnk.php");
 }

@@ -8,5 +8,5 @@
 
 $_v = explode(".", phpversion());
 if ($_v[0] > 5 || ($_v[0] == 5 && $_v[1] >= 3)) {
-	require(__DIR__ . "/main.php");
+	require(__DIR__ . "/friendica/main.php");
 }
