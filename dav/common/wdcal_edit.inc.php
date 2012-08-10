@@ -29,7 +29,7 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $calendar_id, $uri)
 
 		if ($component == null) return t('Could not open component for editing');
 
-		/** @var Sabre_VObject_Property_DateTime $dtstart  */
+		/** @var Sabre\VObject\Property\DateTime $dtstart  */
 		$dtstart = $component->__get("DTSTART");
 		$event   = array(
 			"id"            => IntVal($uri),
@@ -44,7 +44,7 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $calendar_id, $uri)
 
 		$exdates             = $component->select("EXDATE");
 		$recurrentce_exdates = array();
-		/** @var Sabre_VObject_Property_MultiDateTime $x */
+		/** @var Sabre\VObject\Property\MultiDateTime $x */
 		foreach ($exdates as $x) {
 			/** @var DateTime $y */
 			$z = $x->getDateTimes();
@@ -511,15 +511,15 @@ function wdcal_set_component_date(&$component, &$localization)
 	if (isset($_REQUEST["allday"])) {
 		$ts_start = $localization->date_local2timestamp($_REQUEST["start_date"] . " 00:00");
 		$ts_end   = $localization->date_local2timestamp($_REQUEST["end_date"] . " 00:00");
-		$type     = Sabre_VObject_Property_DateTime::DATE;
+		$type     = Sabre\VObject\Property\DateTime::DATE;
 	} else {
 		$ts_start = $localization->date_local2timestamp($_REQUEST["start_date"] . " " . $_REQUEST["start_time"]);
 		$ts_end   = $localization->date_local2timestamp($_REQUEST["end_date"] . " " . $_REQUEST["end_time"]);
-		$type     = Sabre_VObject_Property_DateTime::LOCALTZ;
+		$type     = Sabre\VObject\Property\DateTime::LOCALTZ;
 	}
-	$datetime_start = new Sabre_VObject_Property_DateTime("DTSTART");
+	$datetime_start = new Sabre\VObject\Property\DateTime("DTSTART");
 	$datetime_start->setDateTime(new DateTime(date("Y-m-d H:i:s", $ts_start)), $type);
-	$datetime_end = new Sabre_VObject_Property_DateTime("DTEND");
+	$datetime_end = new Sabre\VObject\Property\DateTime("DTEND");
 	$datetime_end->setDateTime(new DateTime(date("Y-m-d H:i:s", $ts_end)), $type);
 
 	$component->__unset("DTSTART");
@@ -539,7 +539,7 @@ function wdcal_set_component_date(&$component, &$localization)
 function wdcal_set_component_recurrence_special(&$component, $str) {
 	$ret = "";
 
-	/** @var Sabre_VObject_Property_DateTime $start  */
+	/** @var Sabre\VObject\Property\DateTime $start  */
 	$start  = $component->__get("DTSTART");
 	$dayMap = array(
 		0 => 'SU',
@@ -595,8 +595,8 @@ function wdcal_set_component_recurrence(&$component, &$localization)
 		case "date":
 			$date           = $localization->date_local2timestamp($_REQUEST["rec_until_date"]);
 			$part_until     = ";UNTIL=" . date("Ymd", $date);
-			$datetime_until = new Sabre_VObject_Property_DateTime("UNTIL");
-			$datetime_until->setDateTime(new DateTime(date("Y-m-d H:i:s", $date)), Sabre_VObject_Property_DateTime::DATE);
+			$datetime_until = new Sabre\VObject\Property\DateTime("UNTIL");
+			$datetime_until->setDateTime(new DateTime(date("Y-m-d H:i:s", $date)), Sabre\VObject\Property\DateTime::DATE);
 			break;
 		case "count":
 			$part_until = ";COUNT=" . IntVal($_REQUEST["rec_until_count"]);
@@ -626,7 +626,7 @@ function wdcal_set_component_recurrence(&$component, &$localization)
 			$part_freq .= wdcal_set_component_recurrence_special($component, $_REQUEST["rec_monthly_day"]);
 			break;
 		case "yearly":
-			/** @var Sabre_VObject_Property_DateTime $start  */
+			/** @var Sabre\VObject\Property\DateTime $start  */
 			$start  = $component->__get("DTSTART");
 			$part_freq = "FREQ=YEARLY";
 			$part_freq .= ";BYMONTH=" . $start->getDateTime()->format("n");
@@ -645,20 +645,20 @@ function wdcal_set_component_recurrence(&$component, &$localization)
 		foreach ($_REQUEST["rec_exceptions"] as $except) {
 			$arr[] = new DateTime(date("Y-m-d H:i:s", $except));
 		}
-		/** @var Sabre_VObject_Property_MultiDateTime $prop */
-		$prop = Sabre_VObject_Property::create("EXDATE");
+		/** @var Sabre\VObject\Property\MultiDateTime $prop */
+		$prop = Sabre\VObject\Property::create("EXDATE");
 		$prop->setDateTimes($arr);
 		$component->add($prop);
 	}
 
 	$rrule = $part_freq . $part_until;
-	$component->add(new Sabre_VObject_Property("RRULE", $rrule));
+	$component->add(new Sabre\VObject\Property("RRULE", $rrule));
 
 }
 
 
 	/**
-	 * @param Sabre_VObject_Component_VEvent $component
+	 * @param Sabre\VObject\Component\VEvent $component
 	 * @param wdcal_local $localization
 	 * @param string $summary
 	 * @param int $dtstart
@@ -671,12 +671,12 @@ function wdcal_set_component_alerts(&$component, &$localization, $summary, $dtst
 	$component->__unset("VALARM");
 
 	foreach ($prev_alarms as $al) {
-		/** @var Sabre_VObject_Component_VAlarm $al */
+		/** @var Sabre\VObject\Component\VAlarm $al */
 		// @TODO Parse notifications that have been there before; e.g. from Lightning
 	}
 
 	foreach (array_keys($_REQUEST["noti_type"]) as $key) if (is_numeric($key) || ($key == "new" && $_REQUEST["new_alarm"] == 1)) {
-		$alarm = new Sabre_VObject_Component_VAlarm("VALARM");
+		$alarm = new Sabre\VObject\Component\VAlarm("VALARM");
 
 		switch ($_REQUEST["noti_type"][$key]) {
 			case "email":
@@ -686,15 +686,15 @@ function wdcal_set_component_alerts(&$component, &$localization, $summary, $dtst
 					$localization->date_timestamp2local($dtstart), $summary,
 				), t("The event #name# will start at #date"));
 
-				$alarm->add(new Sabre_VObject_Property("ACTION", "EMAIL"));
-				$alarm->add(new Sabre_VObject_Property("SUMMARY", $summary));
-				$alarm->add(new Sabre_VObject_Property("DESCRIPTION", $mailtext));
-				$alarm->add(new Sabre_VObject_Property("ATTENDEE", "MAILTO:" . $a->user["email"]));
+				$alarm->add(new Sabre\VObject\Property("ACTION", "EMAIL"));
+				$alarm->add(new Sabre\VObject\Property("SUMMARY", $summary));
+				$alarm->add(new Sabre\VObject\Property("DESCRIPTION", $mailtext));
+				$alarm->add(new Sabre\VObject\Property("ATTENDEE", "MAILTO:" . $a->user["email"]));
 				break;
 			case "display":
-				$alarm->add(new Sabre_VObject_Property("ACTION", "DISPLAY"));
+				$alarm->add(new Sabre\VObject\Property("ACTION", "DISPLAY"));
 				$text = str_replace("#name#", $summary, t("#name# is about to begin."));
-				$alarm->add(new Sabre_VObject_Property("DESCRIPTION", $text));
+				$alarm->add(new Sabre\VObject\Property("DESCRIPTION", $text));
 				break;
 			default:
 				continue;
@@ -706,7 +706,7 @@ function wdcal_set_component_alerts(&$component, &$localization, $summary, $dtst
 		$trigger_val .= "-P";
 		if (in_array($_REQUEST["noti_unit"][$key], array("H", "M", "S"))) $trigger_val .= "T";
 		$trigger_val .= IntVal($_REQUEST["noti_value"][$key]) . $_REQUEST["noti_unit"][$key];
-		$alarm->add(new Sabre_VObject_Property($trigger_name, $trigger_val));
+		$alarm->add(new Sabre\VObject\Property($trigger_name, $trigger_val));
 
 		$component->add($alarm);
 	}
@@ -785,12 +785,12 @@ function wdcal_getEditPage_exception_selector()
 	foreach ($vObject->getComponents() as $component) {
 		if ($component->name !== 'VTIMEZONE') break;
 	}
-	/** @var Sabre_VObject_Component_VEvent $component */
+	/** @var Sabre\VObject\Component\VEvent $component */
 	wdcal_set_component_date($component, $localization);
 	wdcal_set_component_recurrence($component, $localization);
 
 
-	$it         = new Sabre_VObject_RecurrenceIterator($vObject, (string)$component->__get("UID"));
+	$it         = new Sabre\VObject\RecurrenceIterator($vObject, (string)$component->__get("UID"));
 	$max_ts     = mktime(0, 0, 0, 1, 1, CALDAV_MAX_YEAR + 1);
 	$last_start = 0;
 

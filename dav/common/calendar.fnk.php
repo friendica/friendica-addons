@@ -99,51 +99,6 @@ class vcard_source_data
 	public $photo;
 }
 
-;
-
-
-/**
- * @param vcard_source_data $vcardsource
- * @return string
- */
-function vcard_source_compile($vcardsource)
-{
-	$str = "BEGIN:VCARD\r\nVERSION:3.0\r\nPRODID:-//" . DAV_APPNAME . "//DAV-Plugin//EN\r\n";
-	$str .= "N:" . str_replace(";", ",", $vcardsource->name_last) . ";" . str_replace(";", ",", $vcardsource->name_first) . ";" . str_replace(";", ",", $vcardsource->name_middle) . ";;\r\n";
-	$str .= "FN:" . str_replace(";", ",", $vcardsource->name_first) . " " . str_replace(";", ",", $vcardsource->name_middle) . " " . str_replace(";", ",", $vcardsource->name_last) . "\r\n";
-	$str .= "REV:" . str_replace(" ", "T", $vcardsource->last_update) . "Z\r\n";
-
-	$item_count = 0;
-	for ($i = 0; $i < count($vcardsource->homepages); $i++) {
-		if ($i == 0) $str .= "URL;type=" . $vcardsource->homepages[0]->type . ":" . $vcardsource->homepages[0]->homepage . "\r\n";
-		else {
-			$c = ++$item_count;
-			$str .= "item$c.URL;type=" . $vcardsource->homepages[0]->type . ":" . $vcardsource->homepages[0]->homepage . "\r\n";
-			$str .= "item$c.X-ABLabel:_\$!<HomePage>!\$_\r\n";
-		}
-	}
-
-	if (is_object($vcardsource->photo)) {
-		$data = base64_encode($vcardsource->photo->binarydata);
-		$str .= "PHOTO;ENCODING=BASE64;TYPE=" . $vcardsource->photo->type . ":" . $data . "\r\n";
-	}
-
-	if (isset($vcardsource->socialnetworks) && is_array($vcardsource->socialnetworks)) foreach ($vcardsource->socialnetworks as $netw) switch ($netw->type) {
-		case "dfrn":
-			$str .= "X-SOCIALPROFILE;type=dfrn;x-user=" . $netw->nick . ":" . $netw->url . "\r\n";
-			break;
-		case "facebook":
-			$str .= "X-SOCIALPROFILE;type=facebook;x-user=" . $netw->nick . ":" . $netw->url . "\r\n";
-			break;
-		case "twitter":
-			$str .= "X-SOCIALPROFILE;type=twitter;x-user=" . $netw->nick . ":" . $netw->url . "\r\n";
-			break;
-	}
-
-	$str .= "END:VCARD\r\n";
-	return $str;
-}
-
 
 /**
  * @param int $phpDate (UTC)
@@ -237,7 +192,7 @@ function dav_create_server($force_authentication = false, $needs_caldav = true, 
 
 	if (CALDAV_URL_PREFIX != "") $server->setBaseUri(CALDAV_URL_PREFIX);
 
-	$authPlugin = new Sabre_DAV_Auth_Plugin(Sabre_DAV_Auth_Backend_Std::getInstance(), 'SabreDAV');
+	$authPlugin = new Sabre_DAV_Auth_Plugin(Sabre_DAV_Auth_Backend_Std::getInstance(), DAV_APPNAME);
 	$server->addPlugin($authPlugin);
 
 	if ($needs_caldav) {
@@ -251,6 +206,10 @@ function dav_create_server($force_authentication = false, $needs_caldav = true, 
 
 	if ($GLOBALS["CALDAV_ACL_PLUGIN_CLASS"] != "") {
 		$aclPlugin                      = new $GLOBALS["CALDAV_ACL_PLUGIN_CLASS"]();
+		$aclPlugin->defaultUsernamePath = "principals/users";
+		$server->addPlugin($aclPlugin);
+	} else {
+		$aclPlugin = new Sabre_DAVACL_Plugin();
 		$aclPlugin->defaultUsernamePath = "principals/users";
 		$server->addPlugin($aclPlugin);
 	}
@@ -298,7 +257,7 @@ function dav_get_current_user_calendars(&$server, $with_privilege = "")
  * @param Sabre_CalDAV_Calendar $calendar
  * @param string $calendarobject_uri
  * @param string $with_privilege
- * @return null|Sabre_VObject_Component_VCalendar
+ * @return null|Sabre\VObject\Component\VCalendar
  */
 function dav_get_current_user_calendarobject(&$server, &$calendar, $calendarobject_uri, $with_privilege = "")
 {
@@ -314,7 +273,7 @@ function dav_get_current_user_calendarobject(&$server, &$calendar, $calendarobje
 	if (!$aclplugin->checkPrivileges($uri, $with_privilege, Sabre_DAVACL_Plugin::R_PARENT, false)) return null;
 
 	$data    = $obj->get();
-	$vObject = Sabre_VObject_Reader::read($data);
+	$vObject = Sabre\VObject\Reader::read($data);
 
 	return $vObject;
 }
@@ -342,20 +301,19 @@ function dav_get_current_user_calendar_by_id(&$server, $id, $with_privilege = ""
 
 /**
  * @param string $uid
- * @return Sabre_VObject_Component_VCalendar $vObject
+ * @return Sabre\VObject\Component\VCalendar $vObject
  */
 function dav_create_empty_vevent($uid = "")
 {
-	$a = get_app();
 	if ($uid == "") $uid = uniqid();
-	return Sabre_VObject_Reader::read("BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//" . DAV_APPNAME . "//DAV-Plugin//EN\r\nBEGIN:VEVENT\r\nUID:" . $uid . "@" . dav_compat_get_hostname() .
+	return Sabre\VObject\Reader::read("BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//" . DAV_APPNAME . "//DAV-Plugin//EN\r\nBEGIN:VEVENT\r\nUID:" . $uid . "@" . dav_compat_get_hostname() .
 		"\r\nDTSTAMP:" . date("Ymd") . "T" . date("His") . "Z\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n");
 }
 
 
 /**
- * @param Sabre_VObject_Component_VCalendar $vObject
- * @return Sabre_VObject_Component_VEvent|null
+ * @param Sabre\VObject\Component\VCalendar $vObject
+ * @return Sabre\VObject\Component\VEvent|null
  */
 function dav_get_eventComponent(&$vObject)
 {

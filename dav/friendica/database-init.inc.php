@@ -54,6 +54,7 @@ function dav_get_update_statements($from_version)
   `namespace_id` int(11) unsigned NOT NULL,
   `displayname` varchar(200) NOT NULL,
   `description` varchar(500) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `needs_rebuild` TINYINT NOT NULL DEFAULT '1',
   `uri` varchar(50) NOT NULL,
   `ctag` int(11) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
@@ -194,6 +195,7 @@ function dav_get_create_statements($except = array())
   `namespace_id` int(11) unsigned NOT NULL,
   `displayname` varchar(200) NOT NULL,
   `description` varchar(500) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `needs_rebuild` TINYINT NOT NULL DEFAULT '1',
   `uri` varchar(50) NOT NULL,
   `ctag` int(11) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)

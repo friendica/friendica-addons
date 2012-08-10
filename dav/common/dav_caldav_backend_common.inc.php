@@ -81,22 +81,22 @@ abstract class Sabre_CalDAV_Backend_Common extends Sabre_CalDAV_Backend_Abstract
 
 	/**
 	 * @static
-	 * @param Sabre_VObject_Component_VEvent $component
+	 * @param Sabre\VObject\Component\VEvent $component
 	 * @return int
 	 */
 	public static function getDtEndTimeStamp(&$component)
 	{
-		/** @var Sabre_VObject_Property_DateTime $dtstart */
+		/** @var Sabre\VObject\Property\DateTime $dtstart */
 		$dtstart = $component->__get("DTSTART");
 		if ($component->__get("DTEND")) {
-			/** @var Sabre_VObject_Property_DateTime $dtend */
+			/** @var Sabre\VObject\Property\DateTime $dtend */
 			$dtend = $component->__get("DTEND");
 			return $dtend->getDateTime()->getTimeStamp();
 		} elseif ($component->__get("DURATION")) {
 			$endDate = clone $dtstart->getDateTime();
-			$endDate->add(Sabre_VObject_DateTimeParser::parse($component->__get("DURATION")->value));
+			$endDate->add(Sabre\VObject\DateTimeParser::parse($component->__get("DURATION")->value));
 			return $endDate->getTimeStamp();
-		} elseif ($dtstart->getDateType() === Sabre_VObject_Property_DateTime::DATE) {
+		} elseif ($dtstart->getDateType() === Sabre\VObject\Property\DateTime::DATE) {
 			$endDate = clone $dtstart->getDateTime();
 			$endDate->modify('+1 day');
 			return $endDate->getTimeStamp();
@@ -124,8 +124,8 @@ abstract class Sabre_CalDAV_Backend_Common extends Sabre_CalDAV_Backend_Abstract
 	 */
 	protected function getDenormalizedData($calendarData)
 	{
-		/** @var Sabre_VObject_Component_VEvent $vObject */
-		$vObject        = Sabre_VObject_Reader::read($calendarData);
+		/** @var Sabre\VObject\Component\VEvent $vObject */
+		$vObject        = Sabre\VObject\Reader::read($calendarData);
 		$componentType  = null;
 		$component      = null;
 		$firstOccurence = null;
@@ -141,15 +141,15 @@ abstract class Sabre_CalDAV_Backend_Common extends Sabre_CalDAV_Backend_Abstract
 			throw new Sabre_DAV_Exception_BadRequest('Calendar objects must have a VJOURNAL, VEVENT or VTODO component');
 		}
 		if ($componentType === 'VEVENT') {
-			/** @var Sabre_VObject_Component_VEvent $component */
-			/** @var Sabre_VObject_Property_DateTime $dtstart  */
+			/** @var Sabre\VObject\Component\VEvent $component */
+			/** @var Sabre\VObject\Property\DateTime $dtstart  */
 			$dtstart        = $component->__get("DTSTART");
 			$firstOccurence = $dtstart->getDateTime()->getTimeStamp();
 			// Finding the last occurence is a bit harder
 			if (!$component->__get("RRULE")) {
 				$lastOccurence = self::getDtEndTimeStamp($component);
 			} else {
-				$it      = new Sabre_VObject_RecurrenceIterator($vObject, (string)$component->__get("UID"));
+				$it      = new Sabre\VObject\RecurrenceIterator($vObject, (string)$component->__get("UID"));
 				$maxDate = new DateTime(CALDAV_MAX_YEAR . "-01-01");
 				if ($it->isInfinite()) {
 					$lastOccurence = $maxDate->getTimeStamp();

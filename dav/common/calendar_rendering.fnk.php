@@ -3,8 +3,8 @@
 
 
 /**
- * @param Sabre_VObject_Component_VAlarm $alarm
- * @param Sabre_VObject_Component_VEvent|Sabre_VObject_Component_VTodo $parent
+ * @param Sabre\VObject\Component\VAlarm $alarm
+ * @param Sabre\VObject\Component\VEvent|Sabre\VObject\Component\VTodo $parent
  * @return DateTime|null
  * @throws Sabre_DAV_Exception
  */
@@ -12,12 +12,12 @@ function renderCalDavEntry_calcalarm(&$alarm, &$parent)
 {
 	$trigger = $alarm->__get("TRIGGER");
 	if (!isset($trigger['VALUE']) || strtoupper($trigger['VALUE']) === 'DURATION') {
-		$triggerDuration = Sabre_VObject_DateTimeParser::parseDuration($trigger->value);
+		$triggerDuration = Sabre\VObject\DateTimeParser::parseDuration($trigger->value);
 
 		$related = (isset($trigger['RELATED']) && strtoupper($trigger['RELATED']) == 'END') ? 'END' : 'START';
 
 		if ($related === 'START') {
-			/** @var Sabre_VObject_Property_DateTime $dtstart  */
+			/** @var Sabre\VObject\Property\DateTime $dtstart  */
 			$dtstart          = $parent->__get("DTSTART");
 			$effectiveTrigger = $dtstart->getDateTime();
 			$effectiveTrigger->add($triggerDuration);
@@ -28,14 +28,14 @@ function renderCalDavEntry_calcalarm(&$alarm, &$parent)
 				$endProp = 'DTEND';
 			}
 
-			/** @var Sabre_VObject_Property_DateTime $dtstart  */
+			/** @var Sabre\VObject\Property\DateTime $dtstart  */
 			$dtstart = $parent->__get("DTSTART");
 			if (isset($parent->$endProp)) {
 				$effectiveTrigger = clone $parent->$endProp->getDateTime();
 				$effectiveTrigger->add($triggerDuration);
 			} elseif ($parent->__get("DURATION") != "") {
 				$effectiveTrigger = clone $dtstart->getDateTime();
-				$duration         = Sabre_VObject_DateTimeParser::parseDuration($parent->__get("DURATION"));
+				$duration         = Sabre\VObject\DateTimeParser::parseDuration($parent->__get("DURATION"));
 				$effectiveTrigger->add($duration);
 				$effectiveTrigger->add($triggerDuration);
 			} else {
@@ -58,10 +58,10 @@ function renderCalDavEntry_calcalarm(&$alarm, &$parent)
  */
 function renderCalDavEntry_data(&$calendar, &$calendarobject)
 {
-	/** @var Sabre_VObject_Component_VCalendar $vObject  */
-	$vObject       = Sabre_VObject_Reader::read($calendarobject["calendardata"]);
+	/** @var Sabre\VObject\Component\VCalendar $vObject  */
+	$vObject       = Sabre\VObject\Reader::read($calendarobject["calendardata"]);
 	$componentType = null;
-	/** @var Sabre_VObject_Component_VEvent $component  */
+	/** @var Sabre\VObject\Component\VEvent $component  */
 	$component = null;
 	foreach ($vObject->getComponents() as $component) {
 		if ($component->name !== 'VTIMEZONE') {
@@ -86,18 +86,18 @@ function renderCalDavEntry_data(&$calendar, &$calendarobject)
 	);
 
 	$recurring = ($component->__get("RRULE") ? 1 : 0);
-	/** @var Sabre_VObject_Property_DateTime $dtstart  */
+	/** @var Sabre\VObject\Property\DateTime $dtstart  */
 	$dtstart = $component->__get("DTSTART");
-	$allday  = ($dtstart->getDateType() == Sabre_VObject_Property_DateTime::DATE ? 1 : 0);
+	$allday  = ($dtstart->getDateType() == Sabre\VObject\Property\DateTime::DATE ? 1 : 0);
 
-	/** @var array|Sabre_VObject_Component_VAlarm[] $alarms  */
+	/** @var array|Sabre\VObject\Component\VAlarm[] $alarms  */
 	$alarms = array();
 	foreach ($component->getComponents() as $a_component) if ($a_component->name == "VALARM") {
-		/** var Sabre_VObject_Component_VAlarm $component */
+		/** var Sabre\VObject\Component_VAlarm $component */
 		$alarms[] = $a_component;
 	}
 
-	$it       = new Sabre_VObject_RecurrenceIterator($vObject, (string)$component->__get("UID"));
+	$it       = new Sabre\VObject\RecurrenceIterator($vObject, (string)$component->__get("UID"));
 	$last_end = 0;
 	$max_ts   = mktime(0, 0, 0, 1, 1, CALDAV_MAX_YEAR * 1);
 	$first    = true;
