@@ -86,12 +86,12 @@ function wdcal_import_user_ics($calendar_id) {
 		if ($_FILES["ics_file"]["tmp_name"] != "" && is_uploaded_file($_FILES["ics_file"]["tmp_name"])) try {
 			$text = file_get_contents($_FILES["ics_file"]["tmp_name"]);
 
-			/** @var Sabre_VObject_Component_VCalendar $vObject  */
-			$vObject        = Sabre_VObject_Reader::read($text);
+			/** @var Sabre\VObject\Component\VCalendar $vObject  */
+			$vObject        = Sabre\VObject\Reader::read($text);
 			$comp = $vObject->getComponents();
 			$imported = array();
 			foreach ($comp as $c) try {
-				/** @var Sabre_VObject_Component_VEvent $c */
+				/** @var Sabre\VObject\Component\VEvent $c */
 				$uid = $c->__get("UID")->value;
 				if (!isset($imported[$uid])) $imported[$uid] = "";
 				$imported[$uid] .= $c->serialize();

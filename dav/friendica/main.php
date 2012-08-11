@@ -28,6 +28,27 @@ function dav_include_files()
 {
 	require_once (__DIR__ . "/../SabreDAV/lib/Sabre/autoload.php");
 
+	require_once (__DIR__ . "/../sabre-vobject/lib/Sabre/VObject/Node.php");
+	require_once (__DIR__ . "/../sabre-vobject/lib/Sabre/VObject/Element.php");
+	require_once (__DIR__ . "/../sabre-vobject/lib/Sabre/VObject/Component.php");
+	require_once (__DIR__ . "/../sabre-vobject/lib/Sabre/VObject/DateTimeParser.php");
+	require_once (__DIR__ . "/../sabre-vobject/lib/Sabre/VObject/ElementList.php");
+	require_once (__DIR__ . "/../sabre-vobject/lib/Sabre/VObject/FreeBusyGenerator.php");
+	require_once (__DIR__ . "/../sabre-vobject/lib/Sabre/VObject/Parameter.php");
+	require_once (__DIR__ . "/../sabre-vobject/lib/Sabre/VObject/ParseException.php");
+	require_once (__DIR__ . "/../sabre-vobject/lib/Sabre/VObject/Property.php");
+	require_once (__DIR__ . "/../sabre-vobject/lib/Sabre/VObject/Reader.php");
+	require_once (__DIR__ . "/../sabre-vobject/lib/Sabre/VObject/RecurrenceIterator.php");
+	require_once (__DIR__ . "/../sabre-vobject/lib/Sabre/VObject/TimeZoneUtil.php");
+	require_once (__DIR__ . "/../sabre-vobject/lib/Sabre/VObject/Version.php");
+	require_once (__DIR__ . "/../sabre-vobject/lib/Sabre/VObject/Property/DateTime.php");
+	require_once (__DIR__ . "/../sabre-vobject/lib/Sabre/VObject/Property/MultiDateTime.php");
+	require_once (__DIR__ . "/../sabre-vobject/lib/Sabre/VObject/Component/VAlarm.php");
+	require_once (__DIR__ . "/../sabre-vobject/lib/Sabre/VObject/Component/VCalendar.php");
+	require_once (__DIR__ . "/../sabre-vobject/lib/Sabre/VObject/Component/VEvent.php");
+	require_once (__DIR__ . "/../sabre-vobject/lib/Sabre/VObject/Component/VJournal.php");
+	require_once (__DIR__ . "/../sabre-vobject/lib/Sabre/VObject/Component/VTodo.php");
+
 	require_once (__DIR__ . "/../common/calendar.fnk.php");
 	require_once (__DIR__ . "/../common/calendar_rendering.fnk.php");
 
@@ -109,7 +130,7 @@ function dav_init(&$a)
 	}
 
 
-	$server  = dav_create_server();
+	$server = dav_create_server();
 
 	$browser = new Sabre_DAV_Browser_Plugin();
 	$server->addPlugin($browser);
@@ -293,8 +314,7 @@ function dav_plugin_admin_post(&$a = null, &$o = null)
 		if (count($errs) == 0) {
 			renderAllCalDavEntries();
 			info(t('The database tables have been updated.') . EOL);
-		}
-		else notice(t("An error occurred during the update.") . EOL);
+		} else notice(t("An error occurred during the update.") . EOL);
 	}
 }
 

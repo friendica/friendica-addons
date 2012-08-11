@@ -298,7 +298,7 @@ function dav_get_current_user_calendars(&$server, $with_privilege = "")
  * @param Sabre_CalDAV_Calendar $calendar
  * @param string $calendarobject_uri
  * @param string $with_privilege
- * @return null|Sabre_VObject_Component_VCalendar
+ * @return null|Sabre\VObject\Component\VCalendar
  */
 function dav_get_current_user_calendarobject(&$server, &$calendar, $calendarobject_uri, $with_privilege = "")
 {
@@ -314,7 +314,7 @@ function dav_get_current_user_calendarobject(&$server, &$calendar, $calendarobje
 	if (!$aclplugin->checkPrivileges($uri, $with_privilege, Sabre_DAVACL_Plugin::R_PARENT, false)) return null;
 
 	$data    = $obj->get();
-	$vObject = Sabre_VObject_Reader::read($data);
+	$vObject = Sabre\VObject\Reader::read($data);
 
 	return $vObject;
 }
@@ -342,20 +342,20 @@ function dav_get_current_user_calendar_by_id(&$server, $id, $with_privilege = ""
 
 /**
  * @param string $uid
- * @return Sabre_VObject_Component_VCalendar $vObject
+ * @return Sabre\VObject\Component\VCalendar $vObject
  */
 function dav_create_empty_vevent($uid = "")
 {
 	$a = get_app();
 	if ($uid == "") $uid = uniqid();
-	return Sabre_VObject_Reader::read("BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//" . DAV_APPNAME . "//DAV-Plugin//EN\r\nBEGIN:VEVENT\r\nUID:" . $uid . "@" . dav_compat_get_hostname() .
+	return Sabre\VObject\Reader::read("BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//" . DAV_APPNAME . "//DAV-Plugin//EN\r\nBEGIN:VEVENT\r\nUID:" . $uid . "@" . dav_compat_get_hostname() .
 		"\r\nDTSTAMP:" . date("Ymd") . "T" . date("His") . "Z\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n");
 }
 
 
 /**
- * @param Sabre_VObject_Component_VCalendar $vObject
- * @return Sabre_VObject_Component_VEvent|null
+ * @param Sabre\VObject\Component\VCalendar $vObject
+ * @return Sabre\VObject\Component\VEvent|null
  */
 function dav_get_eventComponent(&$vObject)
 {

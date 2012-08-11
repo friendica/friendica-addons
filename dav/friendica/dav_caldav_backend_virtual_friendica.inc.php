@@ -82,11 +82,11 @@ class Sabre_CalDAV_Backend_Friendica extends Sabre_CalDAV_Backend_Virtual
 			$ts_end   = wdcal_mySql2PhpTime($start);
 
 			$allday = (strpos($start, "00:00:00") !== false && strpos($finish, "00:00:00") !== false);
-			$type           = ($allday ? Sabre_VObject_Property_DateTime::DATE : Sabre_VObject_Property_DateTime::LOCALTZ);
+			$type           = ($allday ? Sabre\VObject\Property\DateTime::DATE : Sabre\VObject\Property\DateTime::LOCALTZ);
 
-			$datetime_start = new Sabre_VObject_Property_DateTime("DTSTART");
+			$datetime_start = new Sabre\VObject\Property\DateTime("DTSTART");
 			$datetime_start->setDateTime(new DateTime(date("Y-m-d H:i:s", $ts_start)), $type);
-			$datetime_end = new Sabre_VObject_Property_DateTime("DTEND");
+			$datetime_end = new Sabre\VObject\Property\DateTime("DTEND");
 			$datetime_end->setDateTime(new DateTime(date("Y-m-d H:i:s", $ts_end)), $type);
 
 			$component->add($datetime_start);
