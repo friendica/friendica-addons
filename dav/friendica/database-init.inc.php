@@ -44,10 +44,6 @@ function dav_get_update_statements($from_version)
 	}
 
 	if (in_array($from_version, array(1, 2))) {
-		$stms[] = "DROP TABLE `dav_addressbooks_phone`";
-		$stms[] = "DROP TABLE `dav_addressbooks_community`";
-		$stms[] = "DROP TABLE `dav_cards`";
-
 		$stms[] = "CREATE TABLE IF NOT EXISTS `dav_addressbooks` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `namespace` mediumint(9) NOT NULL,
@@ -228,8 +224,12 @@ function dav_check_tables()
 	$x = q("DESCRIBE %s%scalendars", CALDAV_SQL_DB, CALDAV_SQL_PREFIX);
 	if (!$x) return -1;
 	if (count($x) == 9) return 1; // Version 0.1
-	// @TODO Detect Version 0.2
+
+	$x2 = q("show tables like '%s%saddressbooks'", CALDAV_SQL_DB, CALDAV_SQL_PREFIX);
+	if (!$x2 || count($x2) == 0) return 2; // Version 0.2
+
 	if (count($x) == 12) return 0; // Correct
+
 	return -2; // Unknown version
 }
 
@@ -257,11 +257,10 @@ function dav_create_tables()
 function dav_upgrade_tables()
 {
 	$ver = dav_check_tables();
-	if (!in_array($ver, array(1))) return array("Unknown error");
-
+	if (!in_array($ver, array(1, 2))) return array("Unknown error");
 	$stms   = dav_get_update_statements($ver);
-	$errors = array();
 
+	$errors = array();
 	global $db;
 	foreach ($stms as $st) { // @TODO Friendica-dependent
 		$db->q($st);

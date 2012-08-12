@@ -128,15 +128,15 @@ class Sabre_CardDAV_Backend_Friendica extends Sabre_CardDAV_Backend_Virtual
 	/**
 	 * @static
 	 * @param int $addressbookId
+	 * @param bool $force
 	 * @throws Sabre_DAV_Exception_NotFound
 	 */
-	static protected function createCache_internal($addressbookId) {
+	static protected function createCache_internal($addressbookId, $force = false) {
 		//$notin    = (count($exclude_ids) > 0 ? " AND id NOT IN (" . implode(", ", $exclude_ids) . ") " : "");
 		$addressbook = q("SELECT * FROM %s%saddressbooks WHERE `id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($addressbookId));
 		if (count($addressbook) != 1 || $addressbook[0]["namespace"] != CARDDAV_NAMESPACE_PRIVATE) throw new Sabre_DAV_Exception_NotFound();
 		$contacts = q("SELECT * FROM `contact` WHERE `uid` = %d AND `blocked` = 0 AND `pending` = 0 AND `hidden` = 0 AND `archive` = 0 ORDER BY `name` ASC", $addressbook[0]["namespace_id"]);
 
-		$retdata = array();
 		foreach ($contacts as $contact) {
 			$x            = static::dav_contactarr2vcardsource($contact);
 			q("INSERT INTO %s%saddressbookobjects (`addressbook_id`, `contact`, `carddata`, `uri`, `lastmodified`, `etag`, `size`) VALUES (%d, %d, '%s', '%s', NOW(), '%s', %d)",
@@ -146,6 +146,27 @@ class Sabre_CardDAV_Backend_Friendica extends Sabre_CardDAV_Backend_Virtual
 	}
 
 
+	/**
+	 * @static
+	 * @param int $addressbookId
+	 * @param int $contactId
+	 * @param bool $force
+	 * @throws Sabre_DAV_Exception_NotFound
+	 */
+	static protected function createCardCache($addressbookId, $contactId, $force = false)
+	{
+		$addressbook = q("SELECT * FROM %s%saddressbooks WHERE `id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($addressbookId));
+		if (count($addressbook) != 1 || $addressbook[0]["namespace"] != CARDDAV_NAMESPACE_PRIVATE) throw new Sabre_DAV_Exception_NotFound();
+
+		$contacts = q("SELECT * FROM `contact` WHERE `uid` = %d AND `blocked` = 0 AND `pending` = 0 AND `hidden` = 0 AND `archive` = 0 AND `id` = %d ORDER BY `name` ASC",
+			$addressbook[0]["namespace_id"], IntVal($contactId));
+		$contact = $contacts[0];
+
+		$x            = static::dav_contactarr2vcardsource($contact);
+		q("INSERT INTO %s%saddressbookobjects (`addressbook_id`, `contact`, `carddata`, `uri`, `lastmodified`, `etag`, `size`) VALUES (%d, %d, '%s', '%s', NOW(), '%s', %d)",
+			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $addressbookId, $contact["id"], dbesc($x["carddata"]), dbesc($x["uri"]), dbesc($x["etag"]), $x["size"]
+		);
+	}
 	/**
 	 * Updates a card.
 	 *
@@ -202,4 +223,5 @@ class Sabre_CardDAV_Backend_Friendica extends Sabre_CardDAV_Backend_Virtual
 
 		return true;
 	}
+
 }

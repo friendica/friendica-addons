@@ -7,7 +7,9 @@ define("DAV_DISPLAYNAME", "{DAV:}displayname");
 define("DAV_CALENDARCOLOR", "{http://apple.com/ns/ical/}calendar-color");
 
 
-class DAVVersionMismatchException extends Exception {}
+class DAVVersionMismatchException extends Exception
+{
+}
 
 
 class vcard_source_data_email
@@ -97,6 +99,48 @@ class vcard_source_data
 
 	/** @var vcard_source_data_photo */
 	public $photo;
+}
+
+/**
+ * @param vcard_source_data $vcardsource
+ * @return string
+ */
+function vcard_source_compile($vcardsource)
+{
+	$str = "BEGIN:VCARD\r\nVERSION:3.0\r\nPRODID:-//Friendica//DAV-Plugin//EN\r\n";
+	$str .= "N:" . str_replace(";", ",", $vcardsource->name_last) . ";" . str_replace(";", ",", $vcardsource->name_first) . ";" . str_replace(";", ",", $vcardsource->name_middle) . ";;\r\n";
+	$str .= "FN:" . str_replace(";", ",", $vcardsource->name_first) . " " . str_replace(";", ",", $vcardsource->name_middle) . " " . str_replace(";", ",", $vcardsource->name_last) . "\r\n";
+	$str .= "REV:" . str_replace(" ", "T", $vcardsource->last_update) . "Z\r\n";
+
+	$item_count = 0;
+	for ($i = 0; $i < count($vcardsource->homepages); $i++) {
+		if ($i == 0) $str .= "URL;type=" . $vcardsource->homepages[0]->type . ":" . $vcardsource->homepages[0]->homepage . "\r\n";
+		else {
+			$c = ++$item_count;
+			$str .= "item$c.URL;type=" . $vcardsource->homepages[0]->type . ":" . $vcardsource->homepages[0]->homepage . "\r\n";
+			$str .= "item$c.X-ABLabel:_\$!<HomePage>!\$_\r\n";
+		}
+	}
+
+	if (is_object($vcardsource->photo)) {
+		$data = base64_encode($vcardsource->photo->binarydata);
+		$str .= "PHOTO;ENCODING=BASE64;TYPE=" . $vcardsource->photo->type . ":" . $data . "\r\n";
+	}
+
+	if (isset($vcardsource->socialnetworks) && is_array($vcardsource->socialnetworks)) foreach ($vcardsource->socialnetworks as $netw) switch ($netw->type) {
+		case "dfrn":
+			$str .= "X-SOCIALPROFILE;type=dfrn;x-user=" . $netw->nick . ":" . $netw->url . "\r\n";
+			break;
+		case "facebook":
+			$str .= "X-SOCIALPROFILE;type=facebook;x-user=" . $netw->nick . ":" . $netw->url . "\r\n";
+			break;
+		case "twitter":
+			$str .= "X-SOCIALPROFILE;type=twitter;x-user=" . $netw->nick . ":" . $netw->url . "\r\n";
+			break;
+	}
+
+	$str .= "END:VCARD\r\n";
+	return $str;
 }
 
 
@@ -209,7 +253,7 @@ function dav_create_server($force_authentication = false, $needs_caldav = true, 
 		$aclPlugin->defaultUsernamePath = "principals/users";
 		$server->addPlugin($aclPlugin);
 	} else {
-		$aclPlugin = new Sabre_DAVACL_Plugin();
+		$aclPlugin                      = new Sabre_DAVACL_Plugin();
 		$aclPlugin->defaultUsernamePath = "principals/users";
 		$server->addPlugin($aclPlugin);
 	}

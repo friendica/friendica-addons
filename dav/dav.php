@@ -2,7 +2,7 @@
 /**
  * Name: Calendar with CalDAV Support
  * Description: A web-based calendar system with CalDAV-support. Also brings your Friendica-Contacts to your CardDAV-capable mobile phone. Requires PHP >= 5.3.
- * Version: 0.2.0
+ * Version: 0.3.0
  * Author: Tobias Hößl <https://github.com/CatoTH/>
  */
 

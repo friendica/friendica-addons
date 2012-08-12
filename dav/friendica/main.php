@@ -339,6 +339,7 @@ function dav_plugin_admin(&$a, &$o)
 			$o .= t('Installed');
 			break;
 		case 1:
+		case 2:
 			$o .= "<strong>" . t('Upgrade needed') . "</strong><br>" . t("Please back up all calendar data (the tables beginning with dav_*) before proceeding. While all calendar events <i>should</i> be converted to the new database structure, it's always safe to have a backup. Below, you can have a look at the database-queries that will be made when pressing the 'update'-button.") . "<br><br><input type='submit' name='upgrade' value='" . t('Upgrade') . "'>";
 			break;
 		case -1:
@@ -355,8 +356,8 @@ function dav_plugin_admin(&$a, &$o)
 	$o .= "<h4>" . t("Manual creation of the database tables:") . "</h4>";
 	$o .= "<a href='#' onClick='\$(\"#sqlstatements\").show(); return false;'>" . t("Show SQL-statements") . "</a><blockquote style='display: none;' id='sqlstatements'><pre>";
 	switch ($dbstatus) {
-		case 1:
-			$tables = dav_get_update_statements(1);
+		case 1: case 2:
+			$tables = dav_get_update_statements($dbstatus);
 			foreach ($tables as $t) $o .= escape_tags($t . ";\n\n");
 			break;
 		default:

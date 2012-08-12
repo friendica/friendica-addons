@@ -1,4 +1,6 @@
-v0.2.1
+v0.3
+[REFACTOR] The new version of the VObject Library is used
+[REFACTOR] The addressbook part has beed heavily refactored
 [REFACTOR] Remove some Friendica-specific code out of the "common"-folder
 
 v0.2.0
