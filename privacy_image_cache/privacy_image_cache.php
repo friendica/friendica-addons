@@ -137,7 +137,7 @@ function privacy_image_cache_init() {
 	}
 
 	// Writing in cachefile
-	if (isset($cachefile) && ($cachefile != '') and (exif_imagetype($cachefile) > 0))
+	if (isset($cachefile) && ($cachefile != '') and (file_exists($cachefile)) and (exif_imagetype($cachefile) > 0))
 		file_put_contents($cachefile, $img_str);
 
 	header("Content-type: $mime");
