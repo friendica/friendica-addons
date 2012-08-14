@@ -157,9 +157,9 @@ function blockem_item_photo_menu(&$a,&$b) {
 		}
 	}
 	if($blocked)
-		$b['menu'][ t('Unblock Author')] = 'javascript:blockemUnblock("' . $author . '");';
+		$b['menu'][ t('Unblock Author')] = 'javascript:blockemUnblock(\'' . $author . '\');';
 	else
-		$b['menu'][ t('Block Author')] = 'javascript:blockemBlock("' . $author . '");';
+		$b['menu'][ t('Block Author')] = 'javascript:blockemBlock(\'' . $author . '\');';
 }
 
 function blockem_module() {}
