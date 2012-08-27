@@ -29,6 +29,7 @@ function impressum_footer($a, &$b) {
     $text = bbcode(get_config('impressum','footer_text'), true);
     if (! $text == '') {
         $a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->get_baseurl().'/addon/impressum/impressum.css" media="all" />';
+        $b .= '<div class="clear"></div>';
         $b .= '<div id="impressum_footer">'.$text.'</div>';
     }
 }
