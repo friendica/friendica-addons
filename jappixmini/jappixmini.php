@@ -221,6 +221,8 @@ function jappixmini_settings(&$a, &$s) {
 
     $activate = get_pconfig(local_user(),'jappixmini','activate');
     $activate = intval($activate) ? ' checked="checked"' : '';
+    $insertchat = get_pconfig(local_user(),'jappixmini','insertchat');
+    $insertchat = intval($insertchat) ? ' checked="checked"' : '';
 
     $username = get_pconfig(local_user(),'jappixmini','username');
     $username = htmlentities($username);
@@ -261,46 +263,49 @@ function jappixmini_settings(&$a, &$s) {
 
     $s .= '<div class="settings-block">';
 
-    $s .= '<h3>Jappix Mini addon settings</h3>';
+    $s .= '<h3>'.t('Jappix Mini addon settings').'</h3>';
     $s .= '<div>';
-    $s .= '<label for="jappixmini-activate">Activate addon</label>';
+    $s .= '<label for="jappixmini-activate">'.t('Activate addon').'</label>';
     $s .= ' <input id="jappixmini-activate" type="checkbox" name="jappixmini-activate" value="1"'.$activate.' />';
     $s .= '<br />';
-    $s .= '<label for="jappixmini-username">Jabber username</label>';
+    $s .= '<label for"jappixmini-insertchat">'.t('Insert Jappixmini Chat-Widget into the webinterface').'</label>';
+    $s .= '<input id="jappixmini-insertchat" type="checkbox" name="jappixmini-insertchat" value="1"'.$insertchat.' />';
+    $s .= '<br />';
+    $s .= '<label for="jappixmini-username">'.t('Jabber username').'</label>';
     $s .= ' <input id="jappixmini-username" type="text" name="jappixmini-username" value="'.$username.'" />';
     $s .= '<br />';
-    $s .= '<label for="jappixmini-server">Jabber server</label>';
+    $s .= '<label for="jappixmini-server">'.t('Jabber server').'</label>';
     $s .= ' <input id="jappixmini-server" type="text" name="jappixmini-server" value="'.$server.'" />';
     $s .= '<br />';
 
-    $s .= '<label for="jappixmini-bosh">Jabber BOSH host</label>';
+    $s .= '<label for="jappixmini-bosh">'.t('Jabber BOSH host').'</label>';
     $s .= ' <input id="jappixmini-bosh" type="text" name="jappixmini-bosh" value="'.$bosh.'" />';
     $s .= '<br />';
 
-    $s .= '<label for="jappixmini-password">Jabber password</label>';
+    $s .= '<label for="jappixmini-password">'.t('Jabber password').'</label>';
     $s .= ' <input type="hidden" id="jappixmini-password" name="jappixmini-encrypted-password" value="'.$password.'" />';
     $s .= ' <input id="jappixmini-clear-password" type="password" value="" onchange="jappixmini_set_password();" />';
     $s .= '<br />';
     $onchange = "document.getElementById('jappixmini-friendica-password').disabled = !this.checked;jappixmini_set_password();";
-    $s .= '<label for="jappixmini-encrypt">Encrypt Jabber password with Friendica password (recommended)</label>';
+    $s .= '<label for="jappixmini-encrypt">'.t('Encrypt Jabber password with Friendica password (recommended)').'</label>';
     $s .= ' <input id="jappixmini-encrypt" type="checkbox" name="jappixmini-encrypt" onchange="'.$onchange.'" value="1"'.$encrypt_checked.' />';
     $s .= '<br />';
-    $s .= '<label for="jappixmini-friendica-password">Friendica password</label>';
+    $s .= '<label for="jappixmini-friendica-password">'.t('Friendica password').'</label>';
     $s .= ' <input id="jappixmini-friendica-password" name="jappixmini-friendica-password" type="password" onchange="jappixmini_set_password();" value=""'.$encrypt_disabled.' />';
     $s .= '<br />';
-    $s .= '<label for="jappixmini-autoapprove">Approve subscription requests from Friendica contacts automatically</label>';
+    $s .= '<label for="jappixmini-autoapprove">'.t('Approve subscription requests from Friendica contacts automatically').'</label>';
     $s .= ' <input id="jappixmini-autoapprove" type="checkbox" name="jappixmini-autoapprove" value="1"'.$autoapprove.' />';
     $s .= '<br />';
-    $s .= '<label for="jappixmini-autosubscribe">Subscribe to Friendica contacts automatically</label>';
+    $s .= '<label for="jappixmini-autosubscribe">'.t('Subscribe to Friendica contacts automatically').'</label>';
     $s .= ' <input id="jappixmini-autosubscribe" type="checkbox" name="jappixmini-autosubscribe" value="1"'.$autosubscribe.' />';
     $s .= '<br />';
-    $s .= '<label for="jappixmini-purge">Purge internal list of jabber addresses of contacts</label>';
+    $s .= '<label for="jappixmini-purge">'.t('Purge internal list of jabber addresses of contacts').'</label>';
     $s .= ' <input id="jappixmini-purge" type="checkbox" name="jappixmini-purge" value="1" />';
     $s .= '<br />';
     if ($info_text) $s .= '<br />Configuration help:<p style="margin-left:2em;">'.$info_text.'</p>';
     $s .= '<br />Status:<p style="margin-left:2em;">Addon knows '.$address_cnt.' Jabber addresses of '.$contact_cnt.' Friendica contacts (takes some time, usually 10 minutes, to update).</p>';
     $s .= '<input type="submit" name="jappixmini-submit" value="' . t('Submit') . '" />';
-    $s .= ' <input type="button" value="Add contact" onclick="jappixmini_addon_subscribe();" />';
+    $s .= ' <input type="button" value="'.t('Add contact').'" onclick="jappixmini_addon_subscribe();" />';
     $s .= '</div>';
 
     $s .= '</div>';
@@ -379,6 +384,7 @@ function jappixmini_settings_post(&$a,&$b) {
 		set_pconfig($uid,'jappixmini','autosubscribe',intval($b['jappixmini-autosubscribe']));
 		set_pconfig($uid,'jappixmini','autoapprove',intval($b['jappixmini-autoapprove']));
 		set_pconfig($uid,'jappixmini','activate',intval($b['jappixmini-activate']));
+		set_pconfig($uid,'jappixmini','insertchat',intval($b['jappixmini-insertchat']));
 		set_pconfig($uid,'jappixmini','encrypt',$encrypt);
 		info( 'Jappix Mini settings saved.' );
 
@@ -395,7 +401,8 @@ function jappixmini_script(&$a,&$s) {
     if(! local_user()) return;
 
     $activate = get_pconfig(local_user(),'jappixmini','activate');
-    if (!$activate) return;
+    $insertchat = get_pconfig(local_user(), 'jappixmini','insertchat');
+    if (!$activate or !$insertchat) return;
 
     $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;g=mini.xml"></script>'."\r\n";
     $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=presence.js~caps.js~name.js~roster.js"></script>'."\r\n";
