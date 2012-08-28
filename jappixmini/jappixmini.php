@@ -221,8 +221,8 @@ function jappixmini_settings(&$a, &$s) {
 
     $activate = get_pconfig(local_user(),'jappixmini','activate');
     $activate = intval($activate) ? ' checked="checked"' : '';
-    $insertchat = get_pconfig(local_user(),'jappixmini','insertchat');
-    $insertchat = intval($insertchat) ? ' checked="checked"' : '';
+    $dontinsertchat = get_pconfig(local_user(),'jappixmini','dontinsertchat');
+    $insertchat = !(intval($dontinsertchat) ? ' checked="checked"' : '');
 
     $username = get_pconfig(local_user(),'jappixmini','username');
     $username = htmlentities($username);
@@ -268,8 +268,8 @@ function jappixmini_settings(&$a, &$s) {
     $s .= '<label for="jappixmini-activate">'.t('Activate addon').'</label>';
     $s .= ' <input id="jappixmini-activate" type="checkbox" name="jappixmini-activate" value="1"'.$activate.' />';
     $s .= '<br />';
-    $s .= '<label for"jappixmini-insertchat">'.t('Insert Jappixmini Chat-Widget into the webinterface').'</label>';
-    $s .= '<input id="jappixmini-insertchat" type="checkbox" name="jappixmini-insertchat" value="1"'.$insertchat.' />';
+    $s .= '<label for"jappixmini-dont-insertchat">'.t('Do <em>not</em> insert the Jappixmini Chat-Widget into the webinterface').'</label>';
+    $s .= '<input id="jappixmini-dont-insertchat" type="checkbox" name="jappixmini-dont-insertchat" value="1"'.$insertchat.' />';
     $s .= '<br />';
     $s .= '<label for="jappixmini-username">'.t('Jabber username').'</label>';
     $s .= ' <input id="jappixmini-username" type="text" name="jappixmini-username" value="'.$username.'" />';
@@ -384,7 +384,7 @@ function jappixmini_settings_post(&$a,&$b) {
 		set_pconfig($uid,'jappixmini','autosubscribe',intval($b['jappixmini-autosubscribe']));
 		set_pconfig($uid,'jappixmini','autoapprove',intval($b['jappixmini-autoapprove']));
 		set_pconfig($uid,'jappixmini','activate',intval($b['jappixmini-activate']));
-		set_pconfig($uid,'jappixmini','insertchat',intval($b['jappixmini-insertchat']));
+		set_pconfig($uid,'jappixmini','dontinsertchat',intval($b['jappixmini-dont-insertchat']));
 		set_pconfig($uid,'jappixmini','encrypt',$encrypt);
 		info( 'Jappix Mini settings saved.' );
 
@@ -401,8 +401,8 @@ function jappixmini_script(&$a,&$s) {
     if(! local_user()) return;
 
     $activate = get_pconfig(local_user(),'jappixmini','activate');
-    $insertchat = get_pconfig(local_user(), 'jappixmini','insertchat');
-    if (!$activate or !$insertchat) return;
+    $dontinsertchat = get_pconfig(local_user(), 'jappixmini','dontinsertchat');
+    if (!$activate or $dontinsertchat) return;
 
     $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;g=mini.xml"></script>'."\r\n";
     $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=presence.js~caps.js~name.js~roster.js"></script>'."\r\n";
