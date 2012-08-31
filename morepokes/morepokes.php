@@ -19,9 +19,8 @@ function morepokes_poke_verbs($a,&$b) {
 	$b['bitchslap'] = array('bitchslapped', t('bitchslap'), t('bitchslapped'));
 	$b['shag'] = array('shag', t('shag'), t('shagged'));
 	$b['somethingobscenelybiological'] = array('something obscenely biological', t('do something obscenely biological to'), t('did something obscenely biological to'));
-	$b['newpokefeature'] = array('pointed out the new poke feature to', t('point out the new poke feature to'), t('pointed out the new poke feature to'));
+	$b['newpokefeature'] = array('pointed out the poke feature to', t('point out the poke feature to'), t('pointed out the poke feature to'));
 	$b['declareundyinglove'] = array('declared undying love for', t('declare undying love for'), t('declared undying love for'));
-	$b['setfireto'] = array('set fire to', t('set fire to'), t('set fire to'));
 	$b['patent'] = array('patented', t('patent'), t('patented'));
 	$b['strokebeard'] = array('stroked their beard at', t('stroke beard'), t('stroked their beard at'));
 	$b['bemoan'] = array('bemoaned the declining standards of modern secondary and tertiary education to', t('bemoan the declining standards of modern secondary and tertiary education to'), t('bemoans the declining standards of modern secondary and tertiary education to'));
