@@ -1,5 +1,7 @@
 <?php
 
+use Sabre\VObject;
+
 class Sabre_CalDAV_CalendarQueryValidatorTest extends PHPUnit_Framework_TestCase {
 
     /**
@@ -19,7 +21,7 @@ class Sabre_CalDAV_CalendarQueryValidatorTest extends PHPUnit_Framework_TestCase
             'time-range' => null,
         );
 
-        $vObject = Sabre_VObject_Reader::read($icalObject);
+        $vObject = VObject\Reader::read($icalObject);
 
         switch($outcome) {
             case 0 :
@@ -31,7 +33,7 @@ class Sabre_CalDAV_CalendarQueryValidatorTest extends PHPUnit_Framework_TestCase
             case -1 :
                 try {
                     $validator->validate($vObject, $filters);
-                } catch (Sabre_DAV_Exception $e) {
+                } catch (Exception $e) {
                     // Success
                 }
                 break;
@@ -344,6 +346,14 @@ RRULE:FREQ=YEARLY
 END:VEVENT
 END:VCALENDAR
 yow;
+        $blob33 = <<<yow
+BEGIN:VCALENDAR
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20120628
+RRULE:FREQ=DAILY
+END:VEVENT
+END:VCALENDAR
+yow;
 
         $filter1 = array(
             'name' => 'VEVENT',
@@ -604,8 +614,16 @@ yow;
             'time-range' => null,
         );
 
-        // Time-range with RRULE
-
+        $filter38 = array(
+            'name' => 'VEVENT',
+            'comp-filters' => array(),
+            'prop-filters' => array(),
+            'is-not-defined' => false,
+            'time-range' => array(
+                'start' => new DateTime('2012-07-01 00:00:00', new DateTimeZone('UTC')),
+                'end' => new DateTime('2012-08-01 00:00:00', new DateTimeZone('UTC')),
+            )
+        );
 
         return array(
             // Component check
@@ -740,6 +758,9 @@ yow;
             // Time-range with RRULE
             array($blob31, $filter20, 1),
             array($blob32, $filter20, 0),
+
+            // Bug reported on mailing list, related to all-day events.
+            array($blob33, $filter38, 1),
 
         );
 

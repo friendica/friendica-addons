@@ -1,6 +1,17 @@
 <?php
 
 
+define("DAV_ACL_READ", "{DAV:}read");
+define("DAV_ACL_WRITE", "{DAV:}write");
+define("DAV_DISPLAYNAME", "{DAV:}displayname");
+define("DAV_CALENDARCOLOR", "{http://apple.com/ns/ical/}calendar-color");
+
+
+class DAVVersionMismatchException extends Exception
+{
+}
+
+
 class vcard_source_data_email
 {
 	public $email, $type;
@@ -83,15 +94,12 @@ class vcard_source_data
 	/** @var array|vcard_source_data_email[] $email */
 	public $emails;
 
-	/** @var array|vcard_source_data_addresses[] $addresses */
+	/** @var array|vcard_source_data_address[] $addresses */
 	public $addresses;
 
 	/** @var vcard_source_data_photo */
 	public $photo;
 }
-
-;
-
 
 /**
  * @param vcard_source_data $vcardsource
@@ -137,41 +145,6 @@ function vcard_source_compile($vcardsource)
 
 
 /**
- * @param array $start
- * @param array $end
- * @param bool $allday
- * @return vevent
- */
-function dav_create_vevent($start, $end, $allday)
-{
-	if ($end["year"] < $start["year"] ||
-		($end["year"] == $start["year"] && $end["month"] < $start["month"]) ||
-		($end["year"] == $start["year"] && $end["month"] == $start["month"] && $end["day"] < $start["day"]) ||
-		($end["year"] == $start["year"] && $end["month"] == $start["month"] && $end["day"] == $start["day"] && $end["hour"] < $start["hour"]) ||
-		($end["year"] == $start["year"] && $end["month"] == $start["month"] && $end["day"] == $start["day"] && $end["hour"] == $start["hour"] && $end["minute"] < $start["minute"]) ||
-		($end["year"] == $start["year"] && $end["month"] == $start["month"] && $end["day"] == $start["day"] && $end["hour"] == $start["hour"] && $end["minute"] == $start["minute"] && $end["second"] < $start["second"])
-	) {
-		$end = $start;
-	} // DTEND muss <= DTSTART
-
-	$vevent = new vevent();
-	if ($allday) {
-		$vevent->setDtstart($start["year"], $start["month"], $start["day"], FALSE, FALSE, FALSE, FALSE, array("VALUE"=> "DATE"));
-		$end = IntVal(mktime(0, 0, 0, $end["month"], $end["day"], $end["year"]) + 3600 * 24);
-
-		// If a DST change occurs on the current day
-		$end += IntVal(date("Z", ($end - 3600 * 24)) - date("Z", $end));
-
-		$vevent->setDtend(date("Y", $end), date("m", $end), date("d", $end), FALSE, FALSE, FALSE, FALSE, array("VALUE"=> "DATE"));
-	} else {
-		$vevent->setDtstart($start["year"], $start["month"], $start["day"], $start["hour"], $start["minute"], $start["second"], FALSE, array("VALUE"=> "DATE-TIME"));
-		$vevent->setDtend($end["year"], $end["month"], $end["day"], $end["hour"], $end["minute"], $end["second"], FALSE, array("VALUE"=> "DATE-TIME"));
-	}
-	return $vevent;
-}
-
-
-/**
  * @param int $phpDate (UTC)
  * @return string (Lokalzeit)
  */
@@ -213,460 +186,190 @@ function wdcal_mySql2icalTime($myqlDate)
  */
 function icalendar_sanitize_string($str = "")
 {
-	$str = str_replace("\r\n", "\n", $str);
-	$str = str_replace("\n\r", "\n", $str);
-	$str = str_replace("\r", "\n", $str);
-	return $str;
+	return preg_replace("/[\\r\\n]+/siu", "\r\n", $str);
 }
 
 
 /**
- * @param DBClass_friendica_calendars $calendar
- * @param DBClass_friendica_calendarobjects $calendarobject
+ * @return Sabre_CalDAV_AnimexxCalendarRootNode
  */
-function renderCalDavEntry_data(&$calendar, &$calendarobject)
+function dav_createRootCalendarNode()
 {
-	$a = get_app();
+	$backends = array(Sabre_CalDAV_Backend_Private::getInstance());
+	foreach ($GLOBALS["CALDAV_PRIVATE_SYSTEM_BACKENDS"] as $backendclass) $backends[] = $backendclass::getInstance();
+	return new Sabre_CalDAV_AnimexxCalendarRootNode(Sabre_DAVACL_PrincipalBackend_Std::getInstance(), $backends);
+}
 
-	$v = new vcalendar();
-	$v->setConfig('unique_id', $a->get_hostname());
-	$v->parse($calendarobject->calendardata);
-	$v->sort();
+/**
+ * @return Sabre_CardDAV_AddressBookRootFriendica
+ */
+function dav_createRootContactsNode()
+{
+	$backends = array(Sabre_CardDAV_Backend_Std::getInstance());
+	foreach ($GLOBALS["CARDDAV_PRIVATE_SYSTEM_BACKENDS"] as $backendclass) $backends[] = $backendclass::getInstance();
 
-	$eventArray = $v->selectComponents(2009, 1, 1, date("Y") + 2, 12, 30);
-
-	$start_min = $end_max = "";
-
-	$allday   = $summary = $vevent = $rrule = $color = $start = $end = null;
-	$location = $description = "";
-
-	foreach ($eventArray as $yearArray) {
-		foreach ($yearArray as $monthArray) {
-			foreach ($monthArray as $day => $dailyEventsArray) {
-				foreach ($dailyEventsArray as $vevent) {
-					/** @var $vevent vevent  */
-					$start  = "";
-					$rrule  = "NULL";
-					$allday = 0;
-
-					$dtstart = $vevent->getProperty('X-CURRENT-DTSTART');
-					if (is_array($dtstart)) {
-						$start = "'" . $dtstart[1] . "'";
-						if (strpos($dtstart[1], ":") === false) $allday = 1;
-					} else {
-						$dtstart = $vevent->getProperty('dtstart');
-						if (isset($dtstart["day"]) && $dtstart["day"] == $day) { // Mehrtägige Events nur einmal rein
-							if (isset($dtstart["hour"])) $start = "'" . $dtstart["year"] . "-" . $dtstart["month"] . "-" . $dtstart["day"] . " " . $dtstart["hour"] . ":" . $dtstart["minute"] . ":" . $dtstart["secont"] . "'";
-							else {
-								$start  = "'" . $dtstart["year"] . "-" . $dtstart["month"] . "-" . $dtstart["day"] . " 00:00:00'";
-								$allday = 1;
-							}
-						}
-					}
-
-					$dtend = $vevent->getProperty('X-CURRENT-DTEND');
-					if (is_array($dtend)) {
-						$end = "'" . $dtend[1] . "'";
-						if (strpos($dtend[1], ":") === false) $allday = 1;
-					} else {
-						$dtend = $vevent->getProperty('dtend');
-						if (isset($dtend["hour"])) $end = "'" . $dtend["year"] . "-" . $dtend["month"] . "-" . $dtend["day"] . " " . $dtend["hour"] . ":" . $dtend["minute"] . ":" . $dtend["second"] . "'";
-						else {
-							$end    = "'" . $dtend["year"] . "-" . $dtend["month"] . "-" . $dtend["day"] . " 00:00:00' - INTERVAL 1 SECOND";
-							$allday = 1;
-						}
-					}
-					$summary     = $vevent->getProperty('summary');
-					$description = $vevent->getProperty('description');
-					$location    = $vevent->getProperty('location');
-					$rrule_prob  = $vevent->getProperty('rrule');
-					if ($rrule_prob != null) {
-						$rrule = $vevent->createRrule();
-						$rrule = "'" . dbesc($rrule) . "'";
-					}
-					$color_ = $vevent->getProperty("X-ANIMEXX-COLOR");
-					$color  = (is_array($color_) ? $color_[1] : "NULL");
-
-					if ($start_min == "" || preg_replace("/[^0-9]/", "", $start) < preg_replace("/[^0-9]/", "", $start_min)) $start_min = $start;
-					if ($end_max == "" || preg_replace("/[^0-9]/", "", $end) > preg_replace("/[^0-9]/", "", $start_min)) $end_max = $end;
-				}
-			}
-		}
-	}
-
-	if ($start_min != "") {
-
-		if ($allday && mb_strlen($end_max) == 12) {
-			$x       = explode("-", str_replace("'", "", $end_max));
-			$time    = mktime(0, 0, 0, IntVal($x[1]), IntVal($x[2]), IntVal($x[0]));
-			$end_max = date("'Y-m-d H:i:s'", ($time - 1));
-		}
-
-		q("INSERT INTO %s%sjqcalendar (`uid`, `namespace`, `namespace_id`, `ical_uri`, `Subject`, `Location`, `Description`, `StartTime`, `EndTime`, `IsAllDayEvent`, `RecurringRule`, `Color`)
-			VALUES (%d, %d, %d, '%s', '%s', '%s', '%s', %s, %s, %d, '%s', '%s')",
-			CALDAV_SQL_DB, CALDAV_SQL_PREFIX,
-			IntVal($calendar->uid), IntVal($calendarobject->namespace), IntVal($calendarobject->namespace_id), dbesc($calendarobject->uri), dbesc($summary),
-			dbesc($location), dbesc(str_replace("\\n", "\n", $description)), $start_min, $end_max, IntVal($allday), dbesc($rrule), dbesc($color)
-		);
-
-		foreach ($vevent->components as $comp) {
-			/** @var $comp calendarComponent */
-			$trigger   = $comp->getProperty("TRIGGER");
-			$sql_field = ($trigger["relatedStart"] ? $start : $end);
-			$sql_op    = ($trigger["before"] ? "DATE_SUB" : "DATE_ADD");
-			$num       = "";
-			$rel_type  = "";
-			$rel_value = 0;
-			if (isset($trigger["second"])) {
-				$num       = IntVal($trigger["second"]) . " SECOND";
-				$rel_type  = "second";
-				$rel_value = IntVal($trigger["second"]);
-			}
-			if (isset($trigger["minute"])) {
-				$num       = IntVal($trigger["minute"]) . " MINUTE";
-				$rel_type  = "minute";
-				$rel_value = IntVal($trigger["minute"]);
-			}
-			if (isset($trigger["hour"])) {
-				$num       = IntVal($trigger["hour"]) . " HOUR";
-				$rel_type  = "hour";
-				$rel_value = IntVal($trigger["hour"]);
-			}
-			if (isset($trigger["day"])) {
-				$num       = IntVal($trigger["day"]) . " DAY";
-				$rel_type  = "day";
-				$rel_value = IntVal($trigger["day"]);
-			}
-			if (isset($trigger["week"])) {
-				$num       = IntVal($trigger["week"]) . " WEEK";
-				$rel_type  = "week";
-				$rel_value = IntVal($trigger["week"]);
-			}
-			if (isset($trigger["month"])) {
-				$num       = IntVal($trigger["month"]) . " MONTH";
-				$rel_type  = "month";
-				$rel_value = IntVal($trigger["month"]);
-			}
-			if (isset($trigger["year"])) {
-				$num       = IntVal($trigger["year"]) . " YEAR";
-				$rel_type  = "year";
-				$rel_value = IntVal($trigger["year"]);
-			}
-			if ($trigger["before"]) $rel_value *= -1;
-
-			if ($rel_type != "") {
-				$not_date = "$sql_op($sql_field, INTERVAL $num)";
-				q("INSERT INTO %s%snotifications (`uid`, `ical_uri`, `rel_type`, `rel_value`, `alert_date`, `notified`) VALUES ('%s', '%s', '%s', '%s', %s, IF(%s < NOW(), 1, 0))",
-					CALDAV_SQL_DB, CALDAV_SQL_PREFIX,
-					IntVal($calendar->uid), dbesc($calendarobject->uri), dbesc($rel_type), IntVal($rel_value), $not_date, $not_date);
-			}
-		}
-	}
+	return new Sabre_CardDAV_AddressBookRootFriendica(Sabre_DAVACL_PrincipalBackend_Std::getInstance(), $backends);
 }
 
 
 /**
- *
+ * @param bool $force_authentication
+ * @param bool $needs_caldav
+ * @param bool $needs_carddav
+ * @return Sabre_DAV_Server
  */
-function renderAllCalDavEntries()
+function dav_create_server($force_authentication = false, $needs_caldav = true, $needs_carddav = true)
 {
-	q("DELETE FROM %s%sjqcalendar", CALDAV_SQL_DB, CALDAV_SQL_PREFIX);
-	q("DELETE FROM %s%snotifications", CALDAV_SQL_DB, CALDAV_SQL_PREFIX);
-	$calendars = q("SELECT * FROM %s%scalendars", CALDAV_SQL_DB, CALDAV_SQL_PREFIX);
-	$anz       = count($calendars);
-	$i         = 0;
-	foreach ($calendars as $calendar) {
-		$cal = new DBClass_friendica_calendars($calendar);
-		$i++;
-		if (($i % 100) == 0) echo "$i / $anz\n";
-		$calobjs = q("SELECT * FROM %s%scalendarobjects WHERE `namespace` = %d AND `namespace_id` = %d",
-			CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($calendar["namespace"]), IntVal($calendar["namespace_id"]));
-		foreach ($calobjs as $calobj) {
-			$obj = new DBClass_friendica_calendarobjects($calobj);
-			renderCalDavEntry_data($cal, $obj);
-		}
-	}
-}
-
-
-/**
- * @param string $uri
- * @return bool
- */
-function renderCalDavEntry_uri($uri)
-{
-	q("DELETE FROM %s%sjqcalendar WHERE `ical_uri` = '%s'", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, dbesc($uri));
-	q("DELETE FROM %s%snotifications WHERE `ical_uri` = '%s'", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, dbesc($uri));
-
-	$calobj = q("SELECT * FROM %s%scalendarobjects WHERE `uri` = '%s'", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, dbesc($uri));
-	if (count($calobj) == 0) return false;
-	$cal       = new DBClass_friendica_calendarobjects($calobj[0]);
-	$calendars = q("SELECT * FROM %s%scalendars WHERE `namespace`=%d AND `namespace_id`=%d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($cal->namespace), IntVal($cal->namespace_id));
-	$calendar  = new DBClass_friendica_calendars($calendars[0]);
-	renderCalDavEntry_data($calendar, $cal);
-	return true;
-}
-
-
-/**
- * @param $user_id
- * @return array|DBClass_friendica_calendars[]
- */
-function dav_getMyCals($user_id)
-{
-	$d    = q("SELECT * FROM %s%scalendars WHERE `uid` = %d ORDER BY `calendarorder` ASC",
-		CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($user_id), CALDAV_NAMESPACE_PRIVATE
+	$arr = array(
+		new Sabre_DAV_SimpleCollection('principals', array(
+			new Sabre_CalDAV_Principal_Collection(Sabre_DAVACL_PrincipalBackend_Std::getInstance(), "principals/users"),
+		)),
 	);
-	$cals = array();
-	foreach ($d as $e) $cals[] = new DBClass_friendica_calendars($e);
-	return $cals;
-}
+	if ($needs_caldav) $arr[] = dav_createRootCalendarNode();
+	if ($needs_carddav) $arr[] = dav_createRootContactsNode();
 
 
-/**
- * @param mixed $obj
- * @return string
- */
-function wdcal_jsonp_encode($obj)
-{
-	$str = json_encode($obj);
-	if (isset($_REQUEST["callback"])) {
-		$str = $_REQUEST["callback"] . "(" . $str . ")";
+	$tree = new Sabre_DAV_SimpleCollection('root', $arr);
+
+// The object tree needs in turn to be passed to the server class
+	$server = new Sabre_DAV_Server($tree);
+
+	if (CALDAV_URL_PREFIX != "") $server->setBaseUri(CALDAV_URL_PREFIX);
+
+	$authPlugin = new Sabre_DAV_Auth_Plugin(Sabre_DAV_Auth_Backend_Std::getInstance(), DAV_APPNAME);
+	$server->addPlugin($authPlugin);
+
+	if ($needs_caldav) {
+		$caldavPlugin = new Sabre_CalDAV_Plugin();
+		$server->addPlugin($caldavPlugin);
 	}
-	return $str;
-}
-
-
-/**
- * @param string $day
- * @param int $weekstartday
- * @param int $num_days
- * @param string $type
- * @return array
- */
-function wdcal_get_list_range_params($day, $weekstartday, $num_days, $type)
-{
-	$phpTime = IntVal($day);
-	switch ($type) {
-		case "month":
-			$st = mktime(0, 0, 0, date("m", $phpTime), 1, date("Y", $phpTime));
-			$et = mktime(0, 0, -1, date("m", $phpTime) + 1, 1, date("Y", $phpTime));
-			break;
-		case "week":
-			//suppose first day of a week is monday
-			$monday = date("d", $phpTime) - date('N', $phpTime) + 1;
-			//echo date('N', $phpTime);
-			$st = mktime(0, 0, 0, date("m", $phpTime), $monday, date("Y", $phpTime));
-			$et = mktime(0, 0, -1, date("m", $phpTime), $monday + 7, date("Y", $phpTime));
-			break;
-		case "multi_days":
-			//suppose first day of a week is monday
-			$monday = date("d", $phpTime) - date('N', $phpTime) + $weekstartday;
-			//echo date('N', $phpTime);
-			$st = mktime(0, 0, 0, date("m", $phpTime), $monday, date("Y", $phpTime));
-			$et = mktime(0, 0, -1, date("m", $phpTime), $monday + $num_days, date("Y", $phpTime));
-			break;
-		case "day":
-			$st = mktime(0, 0, 0, date("m", $phpTime), date("d", $phpTime), date("Y", $phpTime));
-			$et = mktime(0, 0, -1, date("m", $phpTime), date("d", $phpTime) + 1, date("Y", $phpTime));
-			break;
-		default:
-			return array(0, 0);
+	if ($needs_carddav) {
+		$carddavPlugin = new Sabre_CardDAV_Plugin();
+		$server->addPlugin($carddavPlugin);
 	}
-	return array($st, $et);
-}
 
-
-
-
-
-/**
- * @param string $uri
- * @param string $recurr_uri
- * @param int $uid
- * @param string $timezone
- * @param string $goaway_url
- * @return string
- */
-function wdcal_postEditPage($uri, $recurr_uri = "", $uid = 0, $timezone = "", $goaway_url = "")
-{
-	$uid = IntVal($uid);
-	$localization = wdcal_local::getInstanceByUser($uid);
-
-	if (isset($_REQUEST["allday"])) {
-		$start    = $localization->date_parseLocal($_REQUEST["start_date"] . " 00:00");
-		$end      = $localization->date_parseLocal($_REQUEST["end_date"] . " 20:00");
-		$isallday = true;
+	if ($GLOBALS["CALDAV_ACL_PLUGIN_CLASS"] != "") {
+		$aclPlugin                      = new $GLOBALS["CALDAV_ACL_PLUGIN_CLASS"]();
+		$aclPlugin->defaultUsernamePath = "principals/users";
+		$server->addPlugin($aclPlugin);
 	} else {
-		$start    = $localization->date_parseLocal($_REQUEST["start_date"] . " " . $_REQUEST["start_time"]);
-		$end      = $localization->date_parseLocal($_REQUEST["end_date"] . " " . $_REQUEST["end_time"]);
-		$isallday = false;
+		$aclPlugin                      = new Sabre_DAVACL_Plugin();
+		$aclPlugin->defaultUsernamePath = "principals/users";
+		$server->addPlugin($aclPlugin);
 	}
 
-	if ($uri == "new") {
-		$cals = dav_getMyCals($uid);
-		foreach ($cals as $c) {
-			$cs = wdcal_calendar_factory($uid, $c->namespace, $c->namespace_id);
-			$p = $cs->getPermissionsCalendar($uid);
+	if ($force_authentication) $server->broadcastEvent('beforeMethod', array("GET", "/")); // Make it authenticate
 
-			if ($p["write"]) try {
-				$cs->addItem($start, $end, dav_compat_getRequestVar("subject"), $isallday, dav_compat_parse_text_serverside("wdcal_desc"),
-					dav_compat_getRequestVar("location"), dav_compat_getRequestVar("color"), $timezone,
-					isset($_REQUEST["notification"]), $_REQUEST["notification_type"], $_REQUEST["notification_value"]);
-			} catch (Exception $e) {
-				notification(t("Error") . ": " . $e);
-			}
-			dav_compat_redirect($goaway_url);
-		}
+	return $server;
+}
 
-	} else {
-		$cals = dav_getMyCals($uid);
-		foreach ($cals as $c) {
-			$cs = wdcal_calendar_factory($uid, $c->namespace, $c->namespace_id);
-			$p  = $cs->getPermissionsItem($uid, $uri, $recurr_uri);
-			if ($p["write"]) try {
-				$cs->updateItem($uri, $start, $end,
-					dav_compat_getRequestVar("subject"), $isallday, dav_compat_parse_text_serverside("wdcal_desc"),
-					dav_compat_getRequestVar("location"), dav_compat_getRequestVar("color"), $timezone,
-					isset($_REQUEST["notification"]), $_REQUEST["notification_type"], $_REQUEST["notification_value"]);
-			} catch (Exception $e) {
-				notification(t("Error") . ": " . $e);
-			}
-			dav_compat_redirect($goaway_url);
+
+/**
+ * @param Sabre_DAV_Server $server
+ * @param string $with_privilege
+ * @return array|Sabre_CalDAV_Calendar[]
+ */
+function dav_get_current_user_calendars(&$server, $with_privilege = "")
+{
+	if ($with_privilege == "") $with_privilege = DAV_ACL_READ;
+
+	$a             = get_app();
+	$calendar_path = "/calendars/" . strtolower($a->user["nickname"]) . "/";
+
+	/** @var Sabre_CalDAV_AnimexxUserCalendars $tree  */
+	$tree = $server->tree->getNodeForPath($calendar_path);
+	/** @var array|Sabre_CalDAV_Calendar[] $calendars  */
+	$children = $tree->getChildren();
+
+	$calendars = array();
+	/** @var Sabre_DAVACL_Plugin $aclplugin  */
+	$aclplugin = $server->getPlugin("acl");
+	foreach ($children as $child) if (is_a($child, "Sabre_CalDAV_Calendar") || is_subclass_of($child, "Sabre_CalDAV_Calendar")) {
+		if ($with_privilege != "") {
+			$caluri = $calendar_path . $child->getName();
+			if ($aclplugin->checkPrivileges($caluri, $with_privilege, Sabre_DAVACL_Plugin::R_PARENT, false)) $calendars[] = $child;
+		} else {
+			$calendars[] = $child;
 		}
 	}
+	return $calendars;
 }
 
 
 /**
- *
+ * @param Sabre_DAV_Server $server
+ * @param Sabre_CalDAV_Calendar $calendar
+ * @param string $calendarobject_uri
+ * @param string $with_privilege
+ * @return null|Sabre\VObject\Component\VCalendar
  */
-function wdcal_print_feed($base_path = "")
+function dav_get_current_user_calendarobject(&$server, &$calendar, $calendarobject_uri, $with_privilege = "")
 {
-	$user_id = dav_compat_get_curr_user_id();
-	$cals    = array();
-	if (isset($_REQUEST["cal"])) foreach ($_REQUEST["cal"] as $c) {
-		$x              = explode("-", $c);
-		$calendarSource = wdcal_calendar_factory($user_id, $x[0], $x[1]);
-		$calp           = $calendarSource->getPermissionsCalendar($user_id);
-		if ($calp["read"]) $cals[] = $calendarSource;
-	}
+	$obj = $calendar->getChild($calendarobject_uri);
 
-	$ret = null;
-	/** @var $cals array|AnimexxCalSource[] */
+	if ($with_privilege == "") $with_privilege = DAV_ACL_READ;
 
-	$method = $_GET["method"];
-	switch ($method) {
-		case "add":
-			$cs = null;
-			foreach ($cals as $c) if ($cs == null) {
-				$x = $c->getPermissionsCalendar($user_id);
-				if ($x["read"]) $cs = $c;
-			}
-			if ($cs == null) {
-				echo wdcal_jsonp_encode(array('IsSuccess' => false,
-											  'Msg'       => t('No access')));
-				killme();
-			}
-			try {
-				$start  = wdcal_mySql2icalTime(wdcal_php2MySqlTime($_REQUEST["CalendarStartTime"]));
-				$end    = wdcal_mySql2icalTime(wdcal_php2MySqlTime($_REQUEST["CalendarEndTime"]));
-				$newuri = $cs->addItem($start, $end, $_REQUEST["CalendarTitle"], $_REQUEST["IsAllDayEvent"]);
-				$ret    = array(
-					'IsSuccess' => true,
-					'Msg'       => 'add success',
-					'Data'      => $newuri,
-				);
+	$a   = get_app();
+	$uri = "/calendars/" . strtolower($a->user["nickname"]) . "/" . $calendar->getName() . "/" . $calendarobject_uri;
 
-			} catch (Exception $e) {
-				$ret = array(
-					'IsSuccess' => false,
-					'Msg'       => $e->__toString(),
-				);
-			}
-			break;
-		case "list":
-			$weekstartday = (isset($_REQUEST["weekstartday"]) ? IntVal($_REQUEST["weekstartday"]) : 1); // 1 = Monday
-			$num_days     = (isset($_REQUEST["num_days"]) ? IntVal($_REQUEST["num_days"]) : 7);
-			$ret          = null;
+	/** @var Sabre_DAVACL_Plugin $aclplugin  */
+	$aclplugin = $server->getPlugin("acl");
+	if (!$aclplugin->checkPrivileges($uri, $with_privilege, Sabre_DAVACL_Plugin::R_PARENT, false)) return null;
 
-			$date          = wdcal_get_list_range_params($_REQUEST["showdate"], $weekstartday, $num_days, $_REQUEST["viewtype"]);
-			$ret           = array();
-			$ret['events'] = array();
-			$ret["issort"] = true;
-			$ret["start"]  = $date[0];
-			$ret["end"]    = $date[1];
-			$ret['error']  = null;
+	$data    = $obj->get();
+	$vObject = Sabre\VObject\Reader::read($data);
 
-			foreach ($cals as $c) {
-				$events        = $c->listItemsByRange($date[0], $date[1], $base_path);
-				$ret["events"] = array_merge($ret["events"], $events);
-			}
-
-			$tmpev = array();
-			foreach ($ret["events"] as $e) {
-				if (!isset($tmpev[$e["start"]])) $tmpev[$e["start"]] = array();
-				$tmpev[$e["start"]][] = $e;
-			}
-			ksort($tmpev);
-			$ret["events"] = array();
-			foreach ($tmpev as $e) foreach ($e as $f) $ret["events"][] = $f;
-
-			break;
-		case "update":
-			$found = false;
-			$start = wdcal_mySql2icalTime(wdcal_php2MySqlTime($_REQUEST["CalendarStartTime"]));
-			$end   = wdcal_mySql2icalTime(wdcal_php2MySqlTime($_REQUEST["CalendarEndTime"]));
-			foreach ($cals as $c) try {
-				$permissions_item = $c->getPermissionsItem($user_id, $_REQUEST["calendarId"], "");
-				if ($permissions_item["write"]) {
-					$c->updateItem($_REQUEST["calendarId"], $start, $end);
-					$found = true;
-				}
-			} catch (Exception $e) {
-			}
-			;
-
-			if ($found) {
-				$ret = array(
-					'IsSuccess' => true,
-					'Msg'       => 'Succefully',
-				);
-			} else {
-				echo wdcal_jsonp_encode(array('IsSuccess' => false,
-											  'Msg'       => t('No access')));
-				killme();
-			}
-
-			try {
-			} catch (Exception $e) {
-				$ret = array(
-					'IsSuccess' => false,
-					'Msg'       => $e->__toString(),
-				);
-			}
-			break;
-		case "remove":
-			$found = false;
-			foreach ($cals as $c) try {
-				$permissions_item = $c->getPermissionsItem($user_id, $_REQUEST["calendarId"], "");
-				if ($permissions_item["write"]) $c->removeItem($_REQUEST["calendarId"]);
-			} catch (Exception $e) {
-			}
-
-			if ($found) {
-				$ret = array(
-					'IsSuccess' => true,
-					'Msg'       => 'Succefully',
-				);
-			} else {
-				echo wdcal_jsonp_encode(array('IsSuccess' => false,
-											  'Msg'       => t('No access')));
-				killme();
-			}
-			break;
-	}
-	echo wdcal_jsonp_encode($ret);
-	killme();
+	return $vObject;
 }
 
+
+/**
+ * @param Sabre_DAV_Server $server
+ * @param int $id
+ * @param string $with_privilege
+ * @return null|Sabre_CalDAV_Calendar
+ */
+function dav_get_current_user_calendar_by_id(&$server, $id, $with_privilege = "")
+{
+	$calendars = dav_get_current_user_calendars($server, $with_privilege);
+
+	$calendar = null;
+	foreach ($calendars as $cal) {
+		$prop = $cal->getProperties(array("id"));
+		if (isset($prop["id"]) && $prop["id"] == $id) $calendar = $cal;
+	}
+
+	return $calendar;
+}
+
+
+/**
+ * @param string $uid
+ * @return Sabre\VObject\Component\VCalendar $vObject
+ */
+function dav_create_empty_vevent($uid = "")
+{
+	if ($uid == "") $uid = uniqid();
+	return Sabre\VObject\Reader::read("BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//" . DAV_APPNAME . "//DAV-Plugin//EN\r\nBEGIN:VEVENT\r\nUID:" . $uid . "@" . dav_compat_get_hostname() .
+		"\r\nDTSTAMP:" . date("Ymd") . "T" . date("His") . "Z\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n");
+}
+
+
+/**
+ * @param Sabre\VObject\Component\VCalendar $vObject
+ * @return Sabre\VObject\Component\VEvent|null
+ */
+function dav_get_eventComponent(&$vObject)
+{
+	$component     = null;
+	$componentType = "";
+	foreach ($vObject->getComponents() as $component) {
+		if ($component->name !== 'VTIMEZONE') {
+			$componentType = $component->name;
+			break;
+		}
+	}
+	if ($componentType != "VEVENT") return null;
+
+	return $component;
+}

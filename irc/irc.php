@@ -110,7 +110,7 @@ function irc_content(&$a) {
   $o .= <<< EOT
 <h2>IRC chat</h2>
 <p><a href="http://tldp.org/HOWTO/IRC/beginners.html" target="_blank">A beginner's guide to using IRC. [en]</a></p>
-<iframe src="http://webchat.freenode.net?channels=$channels" width="600" height="600"></iframe>
+<iframe src="//webchat.freenode.net?channels=$channels" width="600" height="600"></iframe>
 EOT;
 
 return $o;

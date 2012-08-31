@@ -1,5 +1,7 @@
 <?php
 
+use Sabre\VObject;
+
 /**
  * CardDAV plugin
  *
@@ -154,8 +156,7 @@ class Sabre_CardDAV_Plugin extends Sabre_DAV_ServerPlugin {
                 if (is_resource($val))
                     $val = stream_get_contents($val);
 
-                // Taking out \r to not screw up the xml output
-                $returnedProperties[200][$addressDataProp] = str_replace("\r","", $val);
+                $returnedProperties[200][$addressDataProp] = $val;
 
             }
         }
@@ -270,7 +271,7 @@ class Sabre_CardDAV_Plugin extends Sabre_DAV_ServerPlugin {
 
         $properties = array_keys(Sabre_DAV_XMLUtil::parseProperties($dom->firstChild));
 
-        $hrefElems = $dom->getElementsByTagNameNS('urn:DAV','href');
+        $hrefElems = $dom->getElementsByTagNameNS('DAV:','href');
         $propertyList = array();
 
         foreach($hrefElems as $elem) {
@@ -346,9 +347,9 @@ class Sabre_CardDAV_Plugin extends Sabre_DAV_ServerPlugin {
 
         try {
 
-            $vobj = Sabre_VObject_Reader::read($data);
+            $vobj = VObject\Reader::read($data);
 
-        } catch (Sabre_VObject_ParseException $e) {
+        } catch (VObject\ParseException $e) {
 
             throw new Sabre_DAV_Exception_UnsupportedMediaType('This resource only supports valid vcard data. Parse error: ' . $e->getMessage());
 
@@ -356,6 +357,10 @@ class Sabre_CardDAV_Plugin extends Sabre_DAV_ServerPlugin {
 
         if ($vobj->name !== 'VCARD') {
             throw new Sabre_DAV_Exception_UnsupportedMediaType('This collection can only support vcard objects.');
+        }
+
+        if (!isset($vobj->UID)) {
+            throw new Sabre_DAV_Exception_BadRequest('Every vcard must have an UID.');
         }
 
     }
@@ -438,7 +443,9 @@ class Sabre_CardDAV_Plugin extends Sabre_DAV_ServerPlugin {
      */
     public function validateFilters($vcardData, array $filters, $test) {
 
-        $vcard = Sabre_VObject_Reader::read($vcardData);
+        $vcard = VObject\Reader::read($vcardData);
+
+        if (!$filters) return true;
 
         foreach($filters as $filter) {
 

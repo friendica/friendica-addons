@@ -1,14 +1,6 @@
 <?php
 
-/**
- * The UserCalenders class contains all calendars associated to one user 
- * 
- * @package Sabre
- * @subpackage CalDAV
- * @copyright Copyright (C) 2007-2011 Rooftop Solutions. All rights reserved.
- * @author Evert Pot (http://www.rooftopsolutions.nl/) 
- * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
- */
+
 class Sabre_CalDAV_AnimexxUserCalendars implements Sabre_DAV_IExtendedCollection, Sabre_DAVACL_IACL {
 
     /**
@@ -21,7 +13,7 @@ class Sabre_CalDAV_AnimexxUserCalendars implements Sabre_DAV_IExtendedCollection
     /**
      * CalDAV backends
      * 
-     * @var array|Sabre_CalDAV_Backend_Abstract[]
+     * @var array|Sabre_CalDAV_Backend_Common[]
      */
     protected $caldavBackends;
 
@@ -36,7 +28,7 @@ class Sabre_CalDAV_AnimexxUserCalendars implements Sabre_DAV_IExtendedCollection
      * Constructor 
      * 
      * @param Sabre_DAVACL_IPrincipalBackend $principalBackend
-     * @param array|Sabre_CalDAV_Backend_Abstract $caldavBackends
+     * @param array|Sabre_CalDAV_Backend_Common[] $caldavBackends
      * @param mixed $userUri 
      */
     public function __construct(Sabre_DAVACL_IPrincipalBackend $principalBackend, $caldavBackends, $userUri) {
@@ -130,7 +122,7 @@ class Sabre_CalDAV_AnimexxUserCalendars implements Sabre_DAV_IExtendedCollection
 	 * Returns a single calendar, by name
 	 *
 	 * @param string $name
-	 * @throws Sabre_DAV_Exception_FileNotFound
+	 * @throws Sabre_DAV_Exception_NotFound
 	 * @todo needs optimizing
 	 * @return \Sabre_CalDAV_Calendar|\Sabre_DAV_INode
 	 */
@@ -141,7 +133,7 @@ class Sabre_CalDAV_AnimexxUserCalendars implements Sabre_DAV_IExtendedCollection
                 return $child;
 
         }
-        throw new Sabre_DAV_Exception_FileNotFound('Calendar with name \'' . $name . '\' could not be found');
+        throw new Sabre_DAV_Exception_NotFound('Calendar with name \'' . $name . '\' could not be found');
 
     }
 
@@ -177,7 +169,6 @@ class Sabre_CalDAV_AnimexxUserCalendars implements Sabre_DAV_IExtendedCollection
             	$objs[] = new $calendar["calendar_class"]($this->principalBackend, $backend, $calendar);
         	}
 		}
-        //$objs[] = new Sabre_CalDAV_AnimexxUserZirkelCalendars($this->principalBackend, $this->caldavBackend, $this->username);
         return $objs;
 
     }

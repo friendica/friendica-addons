@@ -1,5 +1,7 @@
 <?php
 
+use Sabre\VObject;
+
 /**
  * PDO CalDAV backend
  *
@@ -16,8 +18,13 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
 
     /**
      * We need to specify a max date, because we need to stop *somewhere*
+     *
+     * On 32 bit system the maximum for a signed integer is 2147483647, so
+     * MAX_DATE cannot be higher than date('Y-m-d', 2147483647) which results
+     * in 2038-01-19 to avoid problems when the date is converted
+     * to a unix timestamp.
      */
-    const MAX_DATE = '2040-01-01';
+    const MAX_DATE = '2038-01-01';
 
     /**
      * pdo
@@ -457,7 +464,7 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
      */
     protected function getDenormalizedData($calendarData) {
 
-        $vObject = Sabre_VObject_Reader::read($calendarData);
+        $vObject = VObject\Reader::read($calendarData);
         $componentType = null;
         $component = null;
         $firstOccurence = null;
@@ -479,9 +486,9 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
                     $lastOccurence = $component->DTEND->getDateTime()->getTimeStamp();
                 } elseif (isset($component->DURATION)) {
                     $endDate = clone $component->DTSTART->getDateTime();
-                    $endDate->add(Sabre_VObject_DateTimeParser::parse($component->DURATION->value));
+                    $endDate->add(VObject\DateTimeParser::parse($component->DURATION->value));
                     $lastOccurence = $endDate->getTimeStamp();
-                } elseif ($component->DTSTART->getDateType()===Sabre_VObject_Property_DateTime::DATE) {
+                } elseif ($component->DTSTART->getDateType()===VObject\Property\DateTime::DATE) {
                     $endDate = clone $component->DTSTART->getDateTime();
                     $endDate->modify('+1 day');
                     $lastOccurence = $endDate->getTimeStamp();
@@ -489,7 +496,7 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
                     $lastOccurence = $firstOccurence;
                 }
             } else {
-                $it = new Sabre_VObject_RecurrenceIterator($vObject, (string)$component->UID);
+                $it = new VObject\RecurrenceIterator($vObject, (string)$component->UID);
                 $maxDate = new DateTime(self::MAX_DATE);
                 if ($it->isInfinite()) {
                     $lastOccurence = $maxDate->getTimeStamp();

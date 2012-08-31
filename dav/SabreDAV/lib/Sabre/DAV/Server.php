@@ -207,6 +207,10 @@ class Sabre_DAV_Server {
 
         } catch (Exception $e) {
 
+            try {
+                $this->broadcastEvent('exception', array($e));
+            } catch (Exception $ignore) {
+            }
             $DOM = new DOMDocument('1.0','utf-8');
             $DOM->formatOutput = true;
 
@@ -508,7 +512,7 @@ class Sabre_DAV_Server {
 
         if (!$this->checkPreconditions(true)) return false;
 
-        if (!($node instanceof Sabre_DAV_IFile)) throw new Sabre_DAV_Exception_NotImplemented('GET is only implemented on File objects');
+        if (!$node instanceof Sabre_DAV_IFile) throw new Sabre_DAV_Exception_NotImplemented('GET is only implemented on File objects');
         $body = $node->get();
 
         // Converting string into stream, if needed.
@@ -1995,7 +1999,7 @@ class Sabre_DAV_Server {
         if (!$body) return array();
 
         $dom = Sabre_DAV_XMLUtil::loadDOMDocument($body);
-        $elem = $dom->getElementsByTagNameNS('urn:DAV','propfind')->item(0);
+        $elem = $dom->getElementsByTagNameNS('DAV:','propfind')->item(0);
         return array_keys(Sabre_DAV_XMLUtil::parseProperties($elem));
 
     }
