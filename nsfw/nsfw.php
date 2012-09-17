@@ -24,6 +24,37 @@ function nsfw_uninstall() {
 
 }
 
+// This function isn't perfect and isn't trying to preserve the html structure - it's just a 
+// quick and dirty filter to pull out embedded photo blobs because 'nsfw' seems to come up 
+// inside them quite often. We don't need anything fancy, just pull out the data blob so we can
+// check against the rest of the body. 
+ 
+function nsfw_extract_photos($body) {
+
+	$new_body = '';
+	
+	$img_start = strpos($body,'src="data:');
+	$img_end = (($img_start !== false) ? strpos(substr($body,$img_start),'>') : false);
+
+	$cnt = 0;
+
+	while($img_end !== false) {
+		$img_end += $img_start;
+		$new_body = $new_body . substr($body,0,$img_start);
+	
+		$cnt ++;
+		$body = substr($body,0,$img_end);
+
+		$img_start = strpos($body,'src="data:');
+		$img_end = (($img_start !== false) ? strpos(substr($body,$img_start),'>') : false);
+
+	}
+
+	if(! $cnt)
+		return $body;
+
+	return $new_body;
+}
 
 
 
@@ -77,6 +108,7 @@ function nsfw_addon_settings_post(&$a,&$b) {
 
 function nsfw_prepare_body(&$a,&$b) {
 
+
 	$words = null;
 	if(get_pconfig(local_user(),'nsfw','disable'))
 		return;
@@ -93,19 +125,22 @@ function nsfw_prepare_body(&$a,&$b) {
 
 	$found = false;
 	if(count($arr)) {
+
+		$body = nsfw_extract_photos($b['html']);
+
 		foreach($arr as $word) {
 			$word = trim($word);
 			if(! strlen($word)) {
 				continue;
 			}
 			if(strpos($word,'/') === 0) {
-				if(preg_match($word,$b['html'])) {
+				if(preg_match($word,$body)) {
 					$found = true;
 					break;
 				}
 			}
 			else {
-				if(stristr($b['html'],$word)) {
+				if(stristr($body,$word)) {
 					$found = true;
 					break;
 				}
@@ -115,6 +150,7 @@ function nsfw_prepare_body(&$a,&$b) {
 				}
 			} 
 		}
+		
 	}
 	if($found) {
 		$rnd = random_string(8);
