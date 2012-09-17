@@ -703,8 +703,12 @@ function fbpost_post_local(&$a,&$b) {
 		$fb_enable = (($fb_post && x($_REQUEST,'facebook_enable')) ? intval($_REQUEST['facebook_enable']) : 0);
 
 		// if API is used, default to the chosen settings
-		if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'facebook','post_by_default')))
-			$fb_enable = 1;
+		// but allow a specific override
+
+		if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'facebook','post_by_default'))) {
+			if(! x($_REQUEST,'facebook_enable'))
+				$fb_enable = 1;
+		}
 
 		if(! $fb_enable)
 			return;
