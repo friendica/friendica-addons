@@ -78,7 +78,8 @@ function fromapp_post_hook(&$a,&$item) {
     if(($app === false) || (! strlen($app)))
         return;
 
-	$item['app'] = $app;
+	$apps = explode(',',$app);
+	$item['app'] = trim($apps[mt_rand(0,count($apps)-1)]);
 	return;
 
 }
