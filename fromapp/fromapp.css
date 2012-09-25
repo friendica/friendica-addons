@@ -1,13 +1,13 @@
 
 
 
-#fromapp-label {
+#fromapp-label, #fromapp-force-label {
 	float: left;
 	width: 200px;
 	margin-bottom: 25px;
 }
 
-#fromapp {
+#fromapp-input, #fromapp-force {
 	float: left;
 }
 
