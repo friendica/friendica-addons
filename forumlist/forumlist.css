@@ -1,0 +1,22 @@
+
+#hide-forum-list {
+	opacity: 0.3;
+	filter:alpha(opacity=30);
+}
+
+#hide-forum-list:hover {
+	opacity: 1.0;
+	filter:alpha(opacity=100);
+}
+
+
+#forumlist-settings-label, #forumlist-random-label, #forumlist-profile-label {
+	float: left;
+	width: 200px;
+	margin-bottom: 25px;
+}
+
+#forumlist-max-forumlists, #forumlist-random, #forumlist-profile {
+	float: left;
+}
+
