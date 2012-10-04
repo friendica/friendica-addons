@@ -38,6 +38,7 @@ function page_getpage($uid,$showhidden = true,$randomise = false) {
 
 	$contacts = q("SELECT `id`, `url`, `name`, `micro` FROM `contact`
 			WHERE `network`= 'dfrn' AND `forum` = 1 AND `uid` = %d
+			and blocked = 0 and hidden = 0 and pending = 0 and archive = 0
 			$order ",
 			intval($uid)
 	);

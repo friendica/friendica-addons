@@ -36,6 +36,7 @@ function forumlist_getpage($uid,$showhidden = true,$randomise = false) {
 
 	$contacts = q("SELECT `contact`.`id`, `contact`.`url`, `contact`.`name`, `contact`.`micro` from contact 
 			WHERE `network`= 'dfrn' AND `forum` = 1 AND `uid` = %d
+			and blocked = 0 and hidden = 0 and pending = 0 and archive = 0
 			$order ",
 			intval($uid)
 	);
