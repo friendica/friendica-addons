@@ -10,13 +10,13 @@
 }
 
 
-#forumlist-settings-label, #forumlist-random-label, #forumlist-profile-label {
+#forumlist-settings-label, #forumlist-random-label, #forumlist-profile-label, #forumlist-network-label {
 	float: left;
 	width: 200px;
 	margin-bottom: 25px;
 }
 
-#forumlist-max-forumlists, #forumlist-random, #forumlist-profile {
+#forumlist-max-forumlists, #forumlist-random, #forumlist-profile, #forumlist-network {
 	float: left;
 }
 

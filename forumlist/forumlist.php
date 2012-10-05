@@ -49,6 +49,10 @@ function forumlist_getpage($uid,$showhidden = true,$randomise = false) {
 }
 
 function forumlist_network_mod_init($a,$b) {
+
+	if(! intval(get_pconfig(local_user(),'forumlist','show_on_network')))
+		return;
+
 	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/forumlist/forumlist.css' . '" media="all" />' . "\r\n";
 
 	$forumlist = '<div id="forumlist-sidebar" class="widget">
@@ -122,6 +126,7 @@ function forumlist_plugin_settings_post($a,$post) {
 //	set_pconfig(local_user(),'forumlist','max_forumlists',intval($_POST['forumlist_max_forumlists']));
 	set_pconfig(local_user(),'forumlist','randomise',intval($_POST['forumlist_random']));
 	set_pconfig(local_user(),'forumlist','show_on_profile',intval($_POST['forumlist_profile']));
+	set_pconfig(local_user(),'forumlist','show_on_network',intval($_POST['forumlist_network']));
 
 	info( t('Forumlist settings updated.') . EOL);
 }
@@ -143,6 +148,9 @@ function forumlist_plugin_settings(&$a,&$s) {
 
 	$profile = intval(get_pconfig(local_user(),'forumlist','show_on_profile'));
 	$profile_checked = (($profile) ? ' checked="checked" ' : '');
+
+	$network = intval(get_pconfig(local_user(),'forumlist','show_on_network'));
+	$network_checked = (($network) ? ' checked="checked" ' : '');
 	
 	
 	/* Add some HTML to the existing form */
@@ -155,6 +163,9 @@ function forumlist_plugin_settings(&$a,&$s) {
 	$s .= '<div class="clear"></div>';
 	$s .= '<label id="forumlist-profile-label" for="forumlist-profile">' . t('Show forums on profile page') . '</label>';
 	$s .= '<input id="forumlist-profile" type="checkbox" name="forumlist_profile" value="1" ' . $profile_checked . '/>';
+	$s .= '<div class="clear"></div>';
+	$s .= '<label id="forumlist-network-label" for="forumlist-network">' . t('Show forums on network page') . '</label>';
+	$s .= '<input id="forumlist-network" type="checkbox" name="forumlist_network" value="1" ' . $network_checked . '/>';
 	$s .= '<div class="clear"></div>';
 
 	$s .= '</div>';
