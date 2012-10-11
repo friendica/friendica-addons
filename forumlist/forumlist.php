@@ -99,7 +99,7 @@ function forumlist_profile_advanced($a,&$b) {
 
 	$randomise = true;
 
-	$contacts = forumlist_getforumlist($a->user['uid'],false,$randomise);
+	$contacts = forumlist_getpage($a->user['uid'],false,$randomise);
 
 	$total_shown = 0;
 	$more = false;
