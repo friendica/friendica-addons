@@ -11,7 +11,7 @@ Facebook contacts will not be able to view private photos, as they are not able 
 authenticate to your site to establish identity. We will address this 
 in a future release.
 
-This addon will only post your entries to your Favebook account but wont fetch
+This addon will only post your entries to your Facebook account but won't fetch
 content from there.
 
 Info: please make sure that you understand all aspects due to Friendica's 
