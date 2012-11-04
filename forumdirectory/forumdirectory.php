@@ -3,7 +3,7 @@
 * Name: Forum Directory
 * Description: Add a directory of forums hosted on your server, with verbose descriptions.
 * Version: 1.0
-* Author: Thomas Willingham <https://kakste.com/profile/beardyunixer>
+* Author: Thomas Willingham
 */
 
 function forumdirectory_install() {
@@ -16,6 +16,10 @@ unregister_hook('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdir
 
 function forumdirectory_module() {
 return;
+}
+
+function forumdirectory_app_menu($a,&$b) {
+$b['app_menu'][] = '<div class="app-title"><a href="forumdirectory">' . t('Forum Directory') . '</a></div>';
 }
 
 function forumdirectory_init(&$a) {
