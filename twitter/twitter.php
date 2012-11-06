@@ -282,10 +282,9 @@ function twitter_shortenmsg($b) {
 	// That means that we have to decode all image-urls
 	$image = htmlspecialchars_decode($image);
 
-	if ($b["title"] == "")
-		$body = $b["body"];
-	else
-		$body = $b["title"];
+	$body = $b["body"];
+	if ($b["title"] != "")
+		$body = $b["title"]."\n\n".$body;
 
 	// remove the recycle signs and the names since they aren't helpful on twitter
 	// recycle 1
