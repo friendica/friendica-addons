@@ -451,6 +451,9 @@ function statusnet_shortenmsg($b, $max_char) {
 	while (strpos($msg, "  ") !== false)
 		$msg = str_replace("  ", " ", $msg);
 
+	// Removing URLs
+	$msg = preg_replace('/(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/i', "", $msg);
+
 	$msg = trim($msg);
 
 	$link = '';
