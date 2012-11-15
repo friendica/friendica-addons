@@ -370,6 +370,9 @@ function smiley_pack_smilies(&$a,&$b) {
 	$b['texts'][] = ':fryegg';
 	$b['icons'][] = '<img class="smiley" src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/fryegg.gif' . '" alt="' . ':fryegg' . '" />';
 
+	$b['texts'][] = ':birthdaycake';
+	$b['icons'][] = '<img class="smiley" src="' . $a->get_baseurl() . '/addon/smiley_pack/icons/food/birthdaycake.gif' . '" alt="' . ':birthdaycake' . '" />';
+
 #Happy smileys
 
 	$b['texts'][] = ':cloud9';
