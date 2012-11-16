@@ -32,7 +32,21 @@ function privacy_image_cache_module() {}
 
 
 function privacy_image_cache_init() {
-	global $a;
+	global $a, $_SERVER;
+
+	if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+		header('HTTP/1.1 304 Not Modified');
+		header("Last-Modified: " . gmdate("D, d M Y H:i:s", time()) . " GMT");
+		header('Etag: '.$_SERVER['HTTP_IF_NONE_MATCH']);
+		header("Expires: " . gmdate("D, d M Y H:i:s", time() + (31536000)) . " GMT");
+		header("Cache-Control: max-age=31536000");
+		if(function_exists('header_remove')) {
+			header_remove('Last-Modified');
+			header_remove('Expires');
+			header_remove('Cache-Control');
+		}
+		exit;
+	}
 
 	if ($a->config["system"]["db_log"] != "")
 		$stamp1 = microtime(true);
@@ -46,17 +60,18 @@ function privacy_image_cache_init() {
 	// Double encoded url - happens with Diaspora
 	$urlhash2 = 'pic:' . sha1(urldecode($_REQUEST['url']));
 
-	$cache = get_config('system','itemcache');
-	if (($cache != '') and is_dir($cache)) {
-		$cachefile = $cache."/".hash("md5", $_REQUEST['url']);
+	$cachefile = get_cachefile(hash("md5", $_REQUEST['url']));
+	if ($cachefile != '') {
 		if (file_exists($cachefile)) {
 			$img_str = file_get_contents($cachefile);
 
 			$mime = image_type_to_mime_type(exif_imagetype($cachefile));
 
 			header("Content-type: $mime");
-			header("Expires: " . gmdate("D, d M Y H:i:s", time() + (3600*24)) . " GMT");
-			header("Cache-Control: max-age=" . (3600*24));
+			header("Last-Modified: " . gmdate("D, d M Y H:i:s", time()) . " GMT");
+			header('Etag: "'.md5($img_str).'"');
+			header("Expires: " . gmdate("D, d M Y H:i:s", time() + (31536000)) . " GMT");
+			header("Cache-Control: max-age=31536000");
 
 			echo $img_str;
 
@@ -137,12 +152,16 @@ function privacy_image_cache_init() {
 	}
 
 	// Writing in cachefile
-	if (isset($cachefile) && ($cachefile != '') and (file_exists($cachefile)) and (exif_imagetype($cachefile) > 0))
+	// and (file_exists($cachefile)) and (exif_imagetype($cachefile) > 0))
+	if ($cachefile != '')
 		file_put_contents($cachefile, $img_str);
 
 	header("Content-type: $mime");
-	header("Expires: " . gmdate("D, d M Y H:i:s", time() + (3600*24)) . " GMT");
-	header("Cache-Control: max-age=" . (3600*24));
+	//header("Last-Modified: Sat, 01 Apr 1999 12:23:42 GMT");
+	header("Last-Modified: " . gmdate("D, d M Y H:i:s", time()) . " GMT");
+	header('Etag: "'.md5($img_str).'"');
+	header("Expires: " . gmdate("D, d M Y H:i:s", time() + (31536000)) . " GMT");
+	header("Cache-Control: max-age=31536000");
 
 	echo $img_str;
 
@@ -210,6 +229,8 @@ function privacy_image_cache_display_item_hook(&$a, &$o) {
             $o["output"]["thumb"] = $a->get_baseurl() . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["output"]["thumb"])));
         if (isset($o["output"]["author-avatar"]) && !privacy_image_cache_is_local_image($o["output"]["author-avatar"]))
             $o["output"]["author-avatar"] = $a->get_baseurl() . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["output"]["author-avatar"])));
+        if (isset($o["output"]["owner-avatar"]) && !privacy_image_cache_is_local_image($o["output"]["owner-avatar"]))
+            $o["output"]["owner-avatar"] = $a->get_baseurl() . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["output"]["owner-avatar"])));
     }
 }
 
