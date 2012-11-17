@@ -404,6 +404,110 @@ function short_link($url) {
     return $slinky->short();
 } };
 
+function statusnet_shortenmsg($b, $max_char) {
+	require_once("include/bbcode.php");
+	require_once("include/html2plain.php");
+
+	// Looking for the first image
+	$image = '';
+	if(preg_match("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/is",$b['body'],$matches))
+		$image = $matches[3];
+
+	if ($image == '')
+		if(preg_match("/\[img\](.*?)\[\/img\]/is",$b['body'],$matches))
+			$image = $matches[1];
+
+	$multipleimages = (strpos($b['body'], "[img") != strrpos($b['body'], "[img"));
+
+	// When saved into the database the content is sent through htmlspecialchars
+	// That means that we have to decode all image-urls
+	$image = htmlspecialchars_decode($image);
+
+	$body = $b["body"];
+	if ($b["title"] != "")
+		$body = $b["title"]."\n\n".$body;
+
+	// remove the recycle signs and the names since they aren't helpful on twitter
+	// recycle 1
+	$recycle = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8');
+	$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n", $body);
+	// recycle 2 (Test)
+	$recycle = html_entity_decode("&#x25CC; ", ENT_QUOTES, 'UTF-8');
+	$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n", $body);
+
+	// At first convert the text to html
+	$html = bbcode($body, false, false);
+
+	// Then convert it to plain text
+	//$msg = trim($b['title']." \n\n".html2plain($html, 0, true));
+	$msg = trim(html2plain($html, 0, true));
+	$msg = html_entity_decode($msg,ENT_QUOTES,'UTF-8');
+
+	// Removing multiple newlines
+	while (strpos($msg, "\n\n\n") !== false)
+		$msg = str_replace("\n\n\n", "\n\n", $msg);
+
+	// Removing multiple spaces
+	while (strpos($msg, "  ") !== false)
+		$msg = str_replace("  ", " ", $msg);
+
+	// Removing URLs
+	$msg = preg_replace('/(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/i', "", $msg);
+
+	$msg = trim($msg);
+
+	$link = '';
+	// look for bookmark-bbcode and handle it with priority
+	if(preg_match("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/is",$b['body'],$matches))
+		$link = $matches[1];
+
+	$multiplelinks = (strpos($b['body'], "[bookmark") != strrpos($b['body'], "[bookmark"));
+
+	// If there is no bookmark element then take the first link
+	if ($link == '') {
+		$links = collecturls($html);
+		if (sizeof($links) > 0) {
+			reset($links);
+			$link = current($links);
+		}
+		$multiplelinks = (sizeof($links) > 1);
+	}
+
+	$msglink = "";
+	if ($multiplelinks)
+		$msglink = $b["plink"];
+	else if ($link != "")
+		$msglink = $link;
+	else if ($multipleimages)
+		$msglink = $b["plink"];
+	else if ($image != "")
+		$msglink = $image;
+
+	if (($msglink == "") and strlen($msg) > $max_char)
+		$msglink = $b["plink"];
+
+	if (strlen($msglink) > 20)
+		$msglink = short_link($msglink);
+
+	if (strlen(trim($msg." ".$msglink)) > $max_char) {
+		$msg = substr($msg, 0, $max_char - (strlen($msglink)));
+		$lastchar = substr($msg, -1);
+		$msg = substr($msg, 0, -1);
+		$pos = strrpos($msg, "\n");
+		if ($pos > 0)
+			$msg = substr($msg, 0, $pos-1);
+		else if ($lastchar != "\n")
+			$msg = substr($msg, 0, -3)."...";
+	}
+	$msg = str_replace("\n", " ", $msg);
+
+	// Removing multiple spaces - again
+	while (strpos($msg, "  ") !== false)
+		$msg = str_replace("  ", " ", $msg);
+
+	return(trim($msg." ".$msglink));
+}
+
 function statusnet_post_hook(&$a,&$b) {
 
 	/**
@@ -433,78 +537,83 @@ function statusnet_post_hook(&$a,&$b) {
                 // we can later send to StatusNet. This way we can "gain" some
                 // information during shortening of potential links but do not
                 // shorten all the links in a 200000 character long essay.
-                if (! $b['title']=='') {
-			$tmp = $b['title'].": \n".$b['body'];
-//                    $tmp = substr($tmp, 0, 4*$max_char);
-                } else {
-                    $tmp = $b['body']; // substr($b['body'], 0, 3*$max_char);
-                }
-                // if [url=bla][img]blub.png[/img][/url] get blub.png
-                $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\]\[img\](\\w+.*?)\\[\\/img\]\\[\\/url\]/i', '$2', $tmp);
-                // preserve links to images, videos and audios
-                $tmp = preg_replace( '/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/ism', '$3', $tmp);
-                $tmp = preg_replace( '/\[\\/?img(\\s+.*?\]|\])/i', '', $tmp);
-                $tmp = preg_replace( '/\[\\/?video(\\s+.*?\]|\])/i', '', $tmp);
-                $tmp = preg_replace( '/\[\\/?youtube(\\s+.*?\]|\])/i', '', $tmp);
-                $tmp = preg_replace( '/\[\\/?vimeo(\\s+.*?\]|\])/i', '', $tmp);
-                $tmp = preg_replace( '/\[\\/?audio(\\s+.*?\]|\])/i', '', $tmp);
-                $linksenabled = get_pconfig($b['uid'],'statusnet','post_taglinks');
-                // if a #tag is linked, don't send the [url] over to SN
-                // that is, don't send if the option is not set in the 
-                // connector settings
-                if ($linksenabled=='0') {
-			// #-tags
-			$tmp = preg_replace( '/#\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '#$2', $tmp);
-			// @-mentions
-			$tmp = preg_replace( '/@\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '@$2', $tmp);
-			// recycle 1
-			$recycle = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8');
-			$tmp = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', $recycle.'$2', $tmp);
-			// recycle 2 (test)
-			$recycle = html_entity_decode("&#x25CC; ", ENT_QUOTES, 'UTF-8');
-			$tmp = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', $recycle.'$2', $tmp);
-                }
-                // preserve links to webpages
-                $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/url\]/i', '$2 $1', $tmp);
-                $tmp = preg_replace( '/\[bookmark\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/bookmark\]/i', '$2 $1', $tmp);
-                // find all http or https links in the body of the entry and 
-                // apply the shortener if the link is longer then 20 characters 
-                if (( strlen($tmp)>$max_char ) && ( $max_char > 0 )) {
-                    preg_match_all ( '/(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/i', $tmp, $allurls  );
-                    foreach ($allurls as $url) {
-                        foreach ($url as $u) {
-                            if (strlen($u)>20) {
-                                $sl = short_link($u);
-                                $tmp = str_replace( $u, $sl, $tmp );
-                            }
-                        }
-                    }
-                }
-                // ok, all the links we want to send out are save, now strip 
-                // away the remaining bbcode
-		//$msg = strip_tags(bbcode($tmp, false, false));
-		$msg = bbcode($tmp, false, false);
-		$msg = str_replace(array('<br>','<br />'),"\n",$msg);
-		$msg = strip_tags($msg);
 
-		// quotes not working - let's try this
-		$msg = html_entity_decode($msg);
+		$intelligent_shortening = get_config('statusnet','intelligent_shortening');
+		if (!$intelligent_shortening) {
+	                if (! $b['title']=='') {
+				$tmp = $b['title'].": \n".$b['body'];
+	//                    $tmp = substr($tmp, 0, 4*$max_char);
+        	        } else {
+                	    $tmp = $b['body']; // substr($b['body'], 0, 3*$max_char);
+	                }
+        	        // if [url=bla][img]blub.png[/img][/url] get blub.png
+                	$tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\]\[img\](\\w+.*?)\\[\\/img\]\\[\\/url\]/i', '$2', $tmp);
+	                // preserve links to images, videos and audios
+        	        $tmp = preg_replace( '/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/ism', '$3', $tmp);
+                	$tmp = preg_replace( '/\[\\/?img(\\s+.*?\]|\])/i', '', $tmp);
+	                $tmp = preg_replace( '/\[\\/?video(\\s+.*?\]|\])/i', '', $tmp);
+        	        $tmp = preg_replace( '/\[\\/?youtube(\\s+.*?\]|\])/i', '', $tmp);
+                	$tmp = preg_replace( '/\[\\/?vimeo(\\s+.*?\]|\])/i', '', $tmp);
+	                $tmp = preg_replace( '/\[\\/?audio(\\s+.*?\]|\])/i', '', $tmp);
+        	        $linksenabled = get_pconfig($b['uid'],'statusnet','post_taglinks');
+	                // if a #tag is linked, don't send the [url] over to SN
+	                // that is, don't send if the option is not set in the 
+        	        // connector settings
+                	if ($linksenabled=='0') {
+				// #-tags
+				$tmp = preg_replace( '/#\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '#$2', $tmp);
+				// @-mentions
+				$tmp = preg_replace( '/@\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '@$2', $tmp);
+				// recycle 1
+				$recycle = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8');
+				$tmp = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', $recycle.'$2', $tmp);
+				// recycle 2 (test)
+				$recycle = html_entity_decode("&#x25CC; ", ENT_QUOTES, 'UTF-8');
+				$tmp = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', $recycle.'$2', $tmp);
+        	        }
+                	// preserve links to webpages
+	                $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/url\]/i', '$2 $1', $tmp);
+        	        $tmp = preg_replace( '/\[bookmark\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/bookmark\]/i', '$2 $1', $tmp);
+                	// find all http or https links in the body of the entry and 
+	                // apply the shortener if the link is longer then 20 characters 
+        	        if (( strlen($tmp)>$max_char ) && ( $max_char > 0 )) {
+                	    preg_match_all ( '/(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/i', $tmp, $allurls  );
+	                    foreach ($allurls as $url) {
+        	                foreach ($url as $u) {
+                	            if (strlen($u)>20) {
+                        	        $sl = short_link($u);
+                                	$tmp = str_replace( $u, $sl, $tmp );
+	                            }
+        	                }
+                	    }
+	                }
+	                // ok, all the links we want to send out are save, now strip 
+        	        // away the remaining bbcode
+			//$msg = strip_tags(bbcode($tmp, false, false));
+			$msg = bbcode($tmp, false, false);
+			$msg = str_replace(array('<br>','<br />'),"\n",$msg);
+			$msg = strip_tags($msg);
 
-		if (( strlen($msg) > $max_char) && $max_char > 0) {
-			$shortlink = short_link( $b['plink'] );
-			// the new message will be shortened such that "... $shortlink"
-			// will fit into the character limit
-			$msg = nl2br(substr($msg, 0, $max_char-strlen($shortlink)-4));
-                        $msg = str_replace(array('<br>','<br />'),' ',$msg);
-                        $e = explode(' ', $msg);
-                        //  remove the last word from the cut down message to 
-                        //  avoid sending cut words to the MicroBlog
-                        array_pop($e);
-                        $msg = implode(' ', $e);
-			$msg .= '... ' . $shortlink;
-		}
+			// quotes not working - let's try this
+			$msg = html_entity_decode($msg);
 
-		$msg = trim($msg);
+			if (( strlen($msg) > $max_char) && $max_char > 0) {
+				$shortlink = short_link( $b['plink'] );
+				// the new message will be shortened such that "... $shortlink"
+				// will fit into the character limit
+				$msg = nl2br(substr($msg, 0, $max_char-strlen($shortlink)-4));
+        	                $msg = str_replace(array('<br>','<br />'),' ',$msg);
+                	        $e = explode(' ', $msg);
+                        	//  remove the last word from the cut down message to 
+	                        //  avoid sending cut words to the MicroBlog
+        	                array_pop($e);
+                	        $msg = implode(' ', $e);
+				$msg .= '... ' . $shortlink;
+			}
+
+			$msg = trim($msg);
+		} else
+			$msg = statusnet_shortenmsg($b, $max_char);
 
 		// and now dent it :-)
 		if(strlen($msg)) {
