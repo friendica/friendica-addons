@@ -94,14 +94,6 @@ function privacy_image_cache_init() {
 		$mime = $r[0]["desc"];
 		if ($mime == "") $mime = "image/jpeg";
 
-		// Test
-		//if ($mime == "image/jpeg") {
-		//	$img = new Photo($img_str);
-		//	if($img->is_valid()) {
-		//		$img->scaleImage(1000);
-		//		$img_str = $img->imageString();
-		//	}
-		//}
 	} else {
 		// It shouldn't happen but it does - spaces in URL
 		$_REQUEST['url'] = str_replace(" ", "+", $_REQUEST['url']);
@@ -117,6 +109,12 @@ function privacy_image_cache_init() {
 		if ((substr($a->get_curl_code(), 0, 1) == "4") or (!$img_str)) {
 			$img_str = file_get_contents("images/blank.png");
 			$mime = "image/png";
+			$cachefile = ""; // Clear the cachefile so that the dummy isn't stored
+			$img = new Photo($img_str);
+			if($img->is_valid()) {
+				$img->scaleImage(1);
+				$img_str = $img->imageString();
+			}
 		//} else if (substr($img_str, 0, 6) == "GIF89a") {
 		} else if ($mime != "image/jpeg") {
 			$image = @imagecreatefromstring($img_str);
@@ -157,7 +155,6 @@ function privacy_image_cache_init() {
 		file_put_contents($cachefile, $img_str);
 
 	header("Content-type: $mime");
-	//header("Last-Modified: Sat, 01 Apr 1999 12:23:42 GMT");
 	header("Last-Modified: " . gmdate("D, d M Y H:i:s", time()) . " GMT");
 	header('Etag: "'.md5($img_str).'"');
 	header("Expires: " . gmdate("D, d M Y H:i:s", time() + (31536000)) . " GMT");
