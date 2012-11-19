@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: Page
- * Description: Shows list of subscribed community pages/forums on network sidebar
+ * Description: This addon is now deprecated.  Administrators should switch to forumlist instead.  Developers should also add any functionality to forumlist instead of here.
  * Version: 1.0
  * Author: Mike Macgirvin <mike@macgirvin.com>
  * based on pages plugin by
