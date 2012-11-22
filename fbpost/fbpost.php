@@ -553,6 +553,14 @@ function fbpost_post_hook(&$a,&$b) {
 					$body = $body1.$body2;
 				}
 
+				// Convert recycle signs
+				// recycle 1
+				$recycle = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8');
+				$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n$2:[quote]", $body)."[/quote]";
+				// recycle 2 (Test)
+				$recycle = html_entity_decode("&#x25CC; ", ENT_QUOTES, 'UTF-8');
+				$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n$2:[quote]", $body)."[/quote]";
+
 				// At first convert the text to html
 				$html = bbcode($body, false, false);
 
@@ -658,11 +666,14 @@ function fbpost_post_hook(&$a,&$b) {
 
 				if($reply) {
 					$url = 'https://graph.facebook.com/' . $reply . '/' . (($likes) ? 'likes' : 'comments');
-				} else if (($video != "")) {
-					// If it is a link to a video then post it as a link
+				} else if (($video != "") or (($image == "") and ($link != ""))) {
+					// If it is a link to a video or a link without a preview picture then post it as a link
+					if ($video != "")
+						$link = $video;
+
 					$postvars = array(
 						'access_token' => $fb_token,
-						'link' => $video,
+						'link' => $link,
 					);
 					if ($msg != $video)
 						$postvars['message'] = $msg;
@@ -678,7 +689,7 @@ function fbpost_post_hook(&$a,&$b) {
 						$postvars['message'] = $msg;
 
 					$url = 'https://graph.facebook.com/'.$target.'/photos';
-				} else if (($link != "") or ($image != "") or ($b['title'] == '') or (strlen($msg) < 500) or ($target != "me")) {
+				} else if (($link != "") or ($image != "") or ($b['title'] == '') or (strlen($msg) < 500)) {
 					$url = 'https://graph.facebook.com/'.$target.'/feed';
 					if (!get_pconfig($b['uid'],'facebook','suppress_view_on_friendica') and $b['plink'])
 						$postvars['actions'] = '{"name": "' . t('View on Friendica') . '", "link": "' .  $b['plink'] . '"}';
@@ -689,7 +700,7 @@ function fbpost_post_hook(&$a,&$b) {
 						'message' => bbcode($b['body'], false, false),
 						'subject' => $b['title'],
 					);
-					$url = 'https://graph.facebook.com/me/notes';
+					$url = 'https://graph.facebook.com/'.$target.'/notes';
 				}
 
 				// Post to page?
