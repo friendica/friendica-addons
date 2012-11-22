@@ -209,7 +209,7 @@ function fbpost_content(&$a) {
 		$o .= '<div id="fbpost-enable-wrapper">';
 
 		$o .= '<a href="https://www.facebook.com/dialog/oauth?client_id=' . $appid . '&redirect_uri=' 
-			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=publish_stream,manage_pages,user_groups,friends_groups,offline_access">' . t('Install Facebook Post connector for this account.') . '</a>';
+			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=publish_stream,manage_pages,photo_upload,user_groups,offline_access">' . t('Install Facebook Post connector for this account.') . '</a>';
 		$o .= '</div>';
 	}
 
@@ -221,7 +221,7 @@ function fbpost_content(&$a) {
 		$o .= '<div id="fbpost-enable-wrapper">';
 
 		$o .= '<a href="https://www.facebook.com/dialog/oauth?client_id=' . $appid . '&redirect_uri=' 
-			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=publish_stream,manage_pages,user_groups,friends_groups,offline_access">' . t('Re-authenticate [This is necessary whenever your Facebook password is changed.]') . '</a>';
+			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=publish_stream,manage_pages,photo_upload,user_groups,offline_access">' . t('Re-authenticate [This is necessary whenever your Facebook password is changed.]') . '</a>';
 		$o .= '</div>';
 
 		$o .= '<div id="fbpost-post-default-form">';
@@ -658,6 +658,16 @@ function fbpost_post_hook(&$a,&$b) {
 
 				if($reply) {
 					$url = 'https://graph.facebook.com/' . $reply . '/' . (($likes) ? 'likes' : 'comments');
+				} else if (($link == "") and ($image != "")) {
+					// If it is only an image without a page link then post this image as a photo
+					$postvars = array(
+						'access_token' => $fb_token,
+						'url' => $image,
+					);
+					if ($msg != $image)
+						$postvars['message'] = $msg;
+
+					$url = 'https://graph.facebook.com/'.$target.'/photos';
 				} else if (($link != "") or ($image != "") or ($b['title'] == '') or (strlen($msg) < 500) or ($target != "me")) {
 					$url = 'https://graph.facebook.com/'.$target.'/feed';
 					if (!get_pconfig($b['uid'],'facebook','suppress_view_on_friendica') and $b['plink'])
@@ -700,14 +710,14 @@ function fbpost_post_hook(&$a,&$b) {
 							add_to_queue($a->contact,NETWORK_FACEBOOK,$s);
 							notice( t('Facebook post failed. Queued for retry.') . EOL);
 						}
-						
+
 						if (isset($retj->error) && $retj->error->type == "OAuthException" && $retj->error->code == 190) {
 							logger('Facebook session has expired due to changed password.', LOGGER_DEBUG);
-							
+
 							$last_notification = get_pconfig($b['uid'], 'facebook', 'session_expired_mailsent');
 							if (!$last_notification || $last_notification < (time() - FACEBOOK_SESSION_ERR_NOTIFICATION_INTERVAL)) {
 								require_once('include/enotify.php');
-							
+
 								$r = q("SELECT * FROM `user` WHERE `uid` = %d LIMIT 1", intval($b['uid']) );
 								notification(array(
 									'uid' => $b['uid'],
@@ -720,7 +730,7 @@ function fbpost_post_hook(&$a,&$b) {
 									'source_link'  => $a->config["system"]["url"],
 									'source_photo' => $a->config["system"]["url"] . '/images/person-80.jpg',
 								));
-								
+
 								set_pconfig($b['uid'], 'facebook', 'session_expired_mailsent', time());
 							} else logger('Facebook: No notification, as the last one was sent on ' . $last_notification, LOGGER_DEBUG);
 						}

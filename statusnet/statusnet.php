@@ -538,6 +538,7 @@ function statusnet_post_hook(&$a,&$b) {
                 // information during shortening of potential links but do not
                 // shorten all the links in a 200000 character long essay.
 
+		$tempfile = "";
 		$intelligent_shortening = get_config('statusnet','intelligent_shortening');
 		if (!$intelligent_shortening) {
 	                if (! $b['title']=='') {
@@ -619,7 +620,9 @@ function statusnet_post_hook(&$a,&$b) {
 			$image = $msgarr["image"];
 			if ($image != "") {
 				$imagedata = file_get_contents($image);
-				$postdata = array("status"=>$msg, "media"=>$imagedata);
+				$tempfile = tempnam("", "upload");
+				file_put_contents($tempfile, $imagedata);
+				$postdata = array("status"=>$msg, "media"=>"@".$tempfile);
 			} else
 				$postdata = array("status"=>$msg);
 		}
@@ -634,6 +637,8 @@ function statusnet_post_hook(&$a,&$b) {
                         logger('Send to StatusNet failed: "' . $result->error . '"');
                     }
                 }
+		if ($tempfile != "")
+			unlink($tempfile);
 	}
 }
 
