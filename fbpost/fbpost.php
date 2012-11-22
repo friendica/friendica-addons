@@ -209,7 +209,7 @@ function fbpost_content(&$a) {
 		$o .= '<div id="fbpost-enable-wrapper">';
 
 		$o .= '<a href="https://www.facebook.com/dialog/oauth?client_id=' . $appid . '&redirect_uri=' 
-			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=publish_stream,manage_pages,offline_access">' . t('Install Facebook Post connector for this account.') . '</a>';
+			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=publish_stream,manage_pages,user_groups,friends_groups,offline_access">' . t('Install Facebook Post connector for this account.') . '</a>';
 		$o .= '</div>';
 	}
 
@@ -221,7 +221,7 @@ function fbpost_content(&$a) {
 		$o .= '<div id="fbpost-enable-wrapper">';
 
 		$o .= '<a href="https://www.facebook.com/dialog/oauth?client_id=' . $appid . '&redirect_uri=' 
-			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=publish_stream,manage_pages,offline_access">' . t('Re-authenticate [This is necessary whenever your Facebook password is changed.]') . '</a>';
+			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=publish_stream,manage_pages,user_groups,friends_groups,offline_access">' . t('Re-authenticate [This is necessary whenever your Facebook password is changed.]') . '</a>';
 		$o .= '</div>';
 
 		$o .= '<div id="fbpost-post-default-form">';
@@ -242,7 +242,7 @@ function fbpost_content(&$a) {
 		$x = file_get_contents($url."?access_token=".$fb_token);
 		$accounts = json_decode($x);
 
-		$o .= t("Post to page:")."<select name='post_to_page'>";
+		$o .= t("Post to page/group:")."<select name='post_to_page'>";
 		if (intval($post_to_page) == 0)
 			$o .= "<option value='0-0' selected>".t('None')."</option>";
 		else
@@ -255,6 +255,18 @@ function fbpost_content(&$a) {
 				else
 					$o .= "<option value='".$account->id."-".$account->access_token."'>".$account->name."</option>";
 		}
+
+		$url = 'https://graph.facebook.com/me/groups';
+		$x = file_get_contents($url."?access_token=".$fb_token);
+		$groups = json_decode($x);
+
+		foreach($groups->data as $group) {
+			if ($post_to_page == $group->id)
+				$o .= "<option value='".$group->id."-0' selected>".$group->name."</option>";
+			else
+				$o .= "<option value='".$group->id."-0'>".$group->name."</option>";
+		}
+
 		$o .= "</select>";
 
 		$o .= '<p><input type="submit" name="submit" value="' . t('Submit') . '" /></form></div>';
@@ -661,7 +673,7 @@ function fbpost_post_hook(&$a,&$b) {
 				}
 
 				// Post to page?
-				if (!$reply and $target != "me")
+				if (!$reply and ($target != "me") and $page_access_token)
 					$postvars['access_token'] = $page_access_token;
 
 				logger('facebook: post to ' . $url);
