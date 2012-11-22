@@ -615,10 +615,11 @@ function fbpost_post_hook(&$a,&$b) {
 
 				logger('Facebook post: msg=' . $msg, LOGGER_DATA);
 
+				$video = "";
+
 				if($likes) {
 					$postvars = array('access_token' => $fb_token);
-				}
-				else {
+				} else {
 					// message, picture, link, name, caption, description, source, place, tags
 					$postvars = array(
 						'access_token' => $fb_token,
@@ -630,9 +631,8 @@ function fbpost_post_hook(&$a,&$b) {
 					if(trim($link) != "") {
 						$postvars['link'] = $link;
 
-						// The following doesn't work - why?
 						if ((stristr($link,'youtube')) || (stristr($link,'youtu.be')) || (stristr($link,'vimeo'))) {
-							$postvars['source'] = $link;
+							$video = $link;
 						}
 					}
 					if(trim($linkname) != "")
@@ -658,6 +658,16 @@ function fbpost_post_hook(&$a,&$b) {
 
 				if($reply) {
 					$url = 'https://graph.facebook.com/' . $reply . '/' . (($likes) ? 'likes' : 'comments');
+				} else if (($video != "")) {
+					// If it is a link to a video then post it as a link
+					$postvars = array(
+						'access_token' => $fb_token,
+						'link' => $video,
+					);
+					if ($msg != $video)
+						$postvars['message'] = $msg;
+
+					$url = 'https://graph.facebook.com/'.$target.'/links';
 				} else if (($link == "") and ($image != "")) {
 					// If it is only an image without a page link then post this image as a photo
 					$postvars = array(
