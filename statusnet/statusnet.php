@@ -505,7 +505,7 @@ function statusnet_shortenmsg($b, $max_char) {
 	while (strpos($msg, "  ") !== false)
 		$msg = str_replace("  ", " ", $msg);
 
-	return(trim($msg." ".$msglink));
+	return(array("msg"=>trim($msg." ".$msglink), "image"=>$image));
 }
 
 function statusnet_post_hook(&$a,&$b) {
@@ -612,14 +612,24 @@ function statusnet_post_hook(&$a,&$b) {
 			}
 
 			$msg = trim($msg);
-		} else
-			$msg = statusnet_shortenmsg($b, $max_char);
+			$postdata = array('status' => $msg);
+		} else {
+			$msgarr = statusnet_shortenmsg($b, $max_char);
+			$msg = $msgarr["msg"];
+			$image = $msgarr["image"];
+			if ($image != "") {
+				$imagedata = file_get_contents($image);
+				$postdata = array("status"=>$msg, "media"=>$imagedata);
+			} else
+				$postdata = array("status"=>$msg);
+		}
 
 		// and now dent it :-)
 		if(strlen($msg)) {
-                    $result = $dent->post('statuses/update', array('status' => $msg));
+                    //$result = $dent->post('statuses/update', array('status' => $msg));
+                    $result = $dent->post('statuses/update', $postdata);
                     logger('statusnet_post send, result: ' . print_r($result, true).
-                           "\nmessage: ".$msg, LOGGER_DEBUG."\nOriginal post: ".print_r($b));
+                           "\nmessage: ".$msg, LOGGER_DEBUG."\nOriginal post: ".print_r($b)."\nPost Data: ".print_r($postdata));
                     if ($result->error) {
                         logger('Send to StatusNet failed: "' . $result->error . '"');
                     }

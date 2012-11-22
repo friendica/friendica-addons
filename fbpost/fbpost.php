@@ -140,11 +140,18 @@ function fbpost_post(&$a) {
 		$value = ((x($_POST,'post_by_default')) ? intval($_POST['post_by_default']) : 0);
 		set_pconfig($uid,'facebook','post_by_default', $value);
 
+		$value = ((x($_POST,'suppress_view_on_friendica')) ? intval($_POST['suppress_view_on_friendica']) : 0);
+		set_pconfig($uid,'facebook','suppress_view_on_friendica', $value);
+
+		$value = ((x($_POST,'post_to_page')) ? $_POST['post_to_page'] : "0-0");
+		$values = explode("-", $value);
+		set_pconfig($uid,'facebook','post_to_page', $values[0]);
+		set_pconfig($uid,'facebook','page_access_token', $values[1]);
 
 		info( t('Settings updated.') . EOL);
-	} 
+	}
 
-	return;		
+	return;
 }
 
 // Facebook settings form
@@ -202,7 +209,7 @@ function fbpost_content(&$a) {
 		$o .= '<div id="fbpost-enable-wrapper">';
 
 		$o .= '<a href="https://www.facebook.com/dialog/oauth?client_id=' . $appid . '&redirect_uri=' 
-			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=publish_stream,offline_access">' . t('Install Facebook Post connector for this account.') . '</a>';
+			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=publish_stream,manage_pages,offline_access">' . t('Install Facebook Post connector for this account.') . '</a>';
 		$o .= '</div>';
 	}
 
@@ -214,16 +221,44 @@ function fbpost_content(&$a) {
 		$o .= '<div id="fbpost-enable-wrapper">';
 
 		$o .= '<a href="https://www.facebook.com/dialog/oauth?client_id=' . $appid . '&redirect_uri=' 
-			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=publish_stream,offline_access">' . t('Re-authenticate [This is necessary whenever your Facebook password is changed.]') . '</a>';
+			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=publish_stream,manage_pages,offline_access">' . t('Re-authenticate [This is necessary whenever your Facebook password is changed.]') . '</a>';
 		$o .= '</div>';
-	
+
 		$o .= '<div id="fbpost-post-default-form">';
 		$o .= '<form action="fbpost" method="post" >';
 		$post_by_default = get_pconfig(local_user(),'facebook','post_by_default');
 		$checked = (($post_by_default) ? ' checked="checked" ' : '');
 		$o .= '<input type="checkbox" name="post_by_default" value="1"' . $checked . '/>' . ' ' . t('Post to Facebook by default') . EOL;
 
-		$o .= '<input type="submit" name="submit" value="' . t('Submit') . '" /></form></div>';
+		$suppress_view_on_friendica = get_pconfig(local_user(),'facebook','suppress_view_on_friendica');
+		$checked = (($suppress_view_on_friendica) ? ' checked="checked" ' : '');
+		$o .= '<input type="checkbox" name="suppress_view_on_friendica" value="1"' . $checked . '/>' . ' ' . t('Suppress "View on friendica"') . EOL;
+
+		// List all pages
+		$post_to_page = get_pconfig(local_user(),'facebook','post_to_page');
+		$page_access_token = get_pconfig(local_user(),'facebook','page_access_token');
+		$fb_token  = get_pconfig($a->user['uid'],'facebook','access_token');
+		$url = 'https://graph.facebook.com/me/accounts';
+		$x = file_get_contents($url."?access_token=".$fb_token);
+		$accounts = json_decode($x);
+
+		$o .= t("Post to page:")."<select name='post_to_page'>";
+		if (intval($post_to_page) == 0)
+			$o .= "<option value='0-0' selected>".t('None')."</option>";
+		else
+			$o .= "<option value='0-0'>".t('None')."</option>";
+
+		foreach($accounts->data as $account) {
+			if (is_array($account->perms))
+				if ($post_to_page == $account->id)
+					$o .= "<option value='".$account->id."-".$account->access_token."' selected>".$account->name."</option>";
+				else
+					$o .= "<option value='".$account->id."-".$account->access_token."'>".$account->name."</option>";
+		}
+		$o .= "</select>";
+
+		$o .= '<p><input type="submit" name="submit" value="' . t('Submit') . '" /></form></div>';
+
 	}
 
 	return $o;
@@ -353,10 +388,10 @@ function fbpost_post_hook(&$a,&$b) {
 			return;
 
 		// only accept comments from the item owner. Other contacts are unknown to FB.
- 
+
 		if(! link_compare($b['author-link'], $a->get_baseurl() . '/profile/' . $u[0]['nickname']))
 			return;
-		
+
 
 		logger('facebook reply id=' . $reply);
 	}
@@ -408,7 +443,7 @@ function fbpost_post_hook(&$a,&$b) {
 		}
 
 		if($b['verb'] == ACTIVITY_LIKE)
-			$likes = true;				
+			$likes = true;
 
 
 		$appid  = get_config('facebook', 'appid'  );
@@ -421,9 +456,9 @@ function fbpost_post_hook(&$a,&$b) {
 			$fb_token  = get_pconfig($b['uid'],'facebook','access_token');
 
 
-			// post to facebook if it's a public post and we've ticked the 'post to Facebook' box, 
+			// post to facebook if it's a public post and we've ticked the 'post to Facebook' box,
 			// or it's a private message with facebook participants
-			// or it's a reply or likes action to an existing facebook post			
+			// or it's a reply or likes action to an existing facebook post
 
 			if($fb_token && ($toplevel || $b['private'] || $reply)) {
 				logger('facebook: able to post');
@@ -602,11 +637,18 @@ function fbpost_post_hook(&$a,&$b) {
 
 				}
 
+				$post_to_page = get_pconfig($b['uid'],'facebook','post_to_page');
+				$page_access_token = get_pconfig($b['uid'],'facebook','page_access_token');
+				if ((intval($post_to_page) != 0) and ($page_access_token != ""))
+					$target = $post_to_page;
+				else
+					$target = "me";
+
 				if($reply) {
 					$url = 'https://graph.facebook.com/' . $reply . '/' . (($likes) ? 'likes' : 'comments');
-				} else if (($link != "")  or ($image != "") or ($b['title'] == '') or (strlen($msg) < 500)) {
-					$url = 'https://graph.facebook.com/me/feed';
-					if($b['plink'])
+				} else if (($link != "") or ($image != "") or ($b['title'] == '') or (strlen($msg) < 500) or ($target != "me")) {
+					$url = 'https://graph.facebook.com/'.$target.'/feed';
+					if (!get_pconfig($b['uid'],'facebook','suppress_view_on_friendica') and $b['plink'])
 						$postvars['actions'] = '{"name": "' . t('View on Friendica') . '", "link": "' .  $b['plink'] . '"}';
 				} else {
 					// if its only a message and a subject and the message is larger than 500 characters then post it as note
@@ -617,6 +659,10 @@ function fbpost_post_hook(&$a,&$b) {
 					);
 					$url = 'https://graph.facebook.com/me/notes';
 				}
+
+				// Post to page?
+				if (!$reply and $target != "me")
+					$postvars['access_token'] = $page_access_token;
 
 				logger('facebook: post to ' . $url);
 				logger('facebook: postvars: ' . print_r($postvars,true));
