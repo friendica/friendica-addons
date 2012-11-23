@@ -554,18 +554,33 @@ function fbpost_post_hook(&$a,&$b) {
 				}
 
 				// Convert recycle signs
+				$body = str_replace("\t", " ", $body);
 				// recycle 1
 				$recycle = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8');
-				$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n$2:[quote]", $body)."[/quote]";
+				$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n\t$2:\t", $body);
 				// recycle 2 (Test)
 				$recycle = html_entity_decode("&#x25CC; ", ENT_QUOTES, 'UTF-8');
-				$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n$2:[quote]", $body)."[/quote]";
+				$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n\t$2:\t", $body);
+
+				$bodyparts = explode("\t", $body);
+				// Doesn't help with multiple repeats - the problem has to be solved later
+				if (sizeof($bodyparts) == 3) {
+					if (trim($bodyparts[0]) == "")
+						$body = trim($bodyparts[2]);
+					else if (trim($bodyparts[2]) == "")
+						$body = trim($bodyparts[0]);
+					else
+						$body = trim($bodyparts[0])."\n\n".trim($bodyparts[1])."[quote]".trim($bodyparts[2])."[/quote]";
+						//$body = trim(str_replace(array(":\t", "\t"), array(":[quote]", ""), $body))."[/quote]";
+				} else
+					$body = str_replace("\t", "", $body);
 
 				// At first convert the text to html
 				$html = bbcode($body, false, false);
 
 				// Then convert it to plain text
 				$msg = trim($b['title']." \n\n".html2plain($html, 0, true));
+				$msg = str_replace("\n«", "«", $msg); // Quickfix - the original problem lies in the html2plain conversion
 				$msg = html_entity_decode($msg,ENT_QUOTES,'UTF-8');
 
 				// Removing multiple newlines
@@ -629,13 +644,19 @@ function fbpost_post_hook(&$a,&$b) {
 					$postvars = array('access_token' => $fb_token);
 				} else {
 					// message, picture, link, name, caption, description, source, place, tags
+					if(trim($link) != "")
+						if (@exif_imagetype($link) != 0) {
+							$image = $link;
+							$link = "";
+						}
+
 					$postvars = array(
 						'access_token' => $fb_token,
 						'message' => $msg
 					);
-					if(trim($image) != "") {
+					if(trim($image) != "")
 						$postvars['picture'] = $image;
-					}
+
 					if(trim($link) != "") {
 						$postvars['link'] = $link;
 
