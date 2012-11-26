@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: Editplain
- * Description: This addon is deprecated and has been replaced with the "Advanced Features" setting.  Admins should remove this addon.
+ * Description: This addon is deprecated and has been replaced with the "Advanced Features" setting.  Admins should remove this addon when their core code is updated to include advanced feature settings.
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * 
