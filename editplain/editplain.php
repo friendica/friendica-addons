@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: Editplain
- * Description: Disable richtext (TinyMCE) editor for status posting
+ * Description: This addon is deprecated and has been replaced with the "Advanced Features" setting.  Admins should remove this addon.
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * 
