@@ -196,7 +196,13 @@ class qqUploadedFileXhr {
      */
     function save() {    
         $input = fopen("php://input", "r");
-        $this->pathnm = tempnam(sys_get_temp_dir(),'frn');
+
+		$upload_dir = get_config('system','tempdir');
+		if(! $upload_dir)
+			$upload_dir = sys_get_temp_dir();
+
+        $this->pathnm = tempnam($upload_dir,'frn');
+
 		$temp = fopen($this->pathnm,"w");
         $realSize = stream_copy_to_stream($input, $temp);
 
