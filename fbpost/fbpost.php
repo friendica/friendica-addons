@@ -565,13 +565,15 @@ function fbpost_post_hook(&$a,&$b) {
 				$bodyparts = explode("\t", $body);
 				// Doesn't help with multiple repeats - the problem has to be solved later
 				if (sizeof($bodyparts) == 3) {
+					$html = bbcode($bodyparts[2], false, false);
+					$test = trim(html2plain($html, 0, true));
+
 					if (trim($bodyparts[0]) == "")
 						$body = trim($bodyparts[2]);
-					else if (trim($bodyparts[2]) == "")
+					else if (trim($test) == "")
 						$body = trim($bodyparts[0]);
 					else
 						$body = trim($bodyparts[0])."\n\n".trim($bodyparts[1])."[quote]".trim($bodyparts[2])."[/quote]";
-						//$body = trim(str_replace(array(":\t", "\t"), array(":[quote]", ""), $body))."[/quote]";
 				} else
 					$body = str_replace("\t", "", $body);
 
@@ -580,7 +582,11 @@ function fbpost_post_hook(&$a,&$b) {
 
 				// Then convert it to plain text
 				$msg = trim($b['title']." \n\n".html2plain($html, 0, true));
-				$msg = str_replace("\n«", "«", $msg); // Quickfix - the original problem lies in the html2plain conversion
+
+				// Removing useless spaces
+				if (substr($msg, -2) == "«")
+					$msg = trim(substr($msg, 0, -2))."«";
+
 				$msg = html_entity_decode($msg,ENT_QUOTES,'UTF-8');
 
 				// Removing multiple newlines
