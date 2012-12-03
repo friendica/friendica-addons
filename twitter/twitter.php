@@ -354,7 +354,7 @@ function twitter_shortenmsg($b) {
 		$msg = substr($msg, 0, -1);
 		$pos = strrpos($msg, "\n");
 		if ($pos > 0)
-			$msg = substr($msg, 0, $pos-1);
+			$msg = substr($msg, 0, $pos);
 		else if ($lastchar != "\n")
 			$msg = substr($msg, 0, -3)."...";
 	}
