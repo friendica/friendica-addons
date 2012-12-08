@@ -124,14 +124,8 @@ function forumlist_profile_advanced($a,&$b) {
 
 
 function forumlist_plugin_settings_post($a,$post) {
-
-        logger('forum list save 1');
-
 	if(! local_user() || (! x($_POST,'forumlist-settings-submit')))
 		return;
-
-        logger('forum list save 2');
-
 //	set_pconfig(local_user(),'forumlist','max_forumlists',intval($_POST['forumlist_max_forumlists']));
 	set_pconfig(local_user(),'forumlist','randomise',intval($_POST['forumlist_random']));
 	set_pconfig(local_user(),'forumlist','show_on_profile',intval($_POST['forumlist_profile']));
