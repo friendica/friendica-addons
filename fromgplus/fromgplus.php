@@ -1,13 +1,13 @@
 <?php
 /**
  * Name: From GPlus
- * Description: Imports posts from a Google+ account and repeats them - not working by now
+ * Description: Imports posts from a Google+ account and repeats them
  * Version: 0.1
  * Author: Michael Vogel <ike@piratenpartei.de>
  *
  */
 
-define('FACEBOOK_DEFAULT_POLL_INTERVAL', 60); // given in minutes
+define('FROMGPLUS_DEFAULT_POLL_INTERVAL', 30); // given in minutes
 
 function fromgplus_install() {
 	register_hook('plugin_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');

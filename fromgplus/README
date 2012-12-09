@@ -1,1 +1,10 @@
-This extension is a preparation of the upcoming import of items via Google+
+This extension fetches messages from a Google+ account and reshares it.
+
+You have to place the following config values in your .htconfig.php:
+
+$a->config['fromgplus']['key'] = "your key";
+$a->config['fromgplus']['poll_interval'] = 10;
+
+You need an API key for "Simple API Access". 
+
+You get it via https://code.google.com/apis/console/ and then "API Access".
