@@ -100,7 +100,7 @@ function privacy_image_cache_init() {
 
 		$img_str = fetch_url($_REQUEST['url'],true);
 
-		$tempfile = tempnam("", "cache");
+		$tempfile = tempnam(get_config("system","temppath"), "cache");
 		file_put_contents($tempfile, $img_str);
 		$mime = image_type_to_mime_type(exif_imagetype($tempfile));
 		unlink($tempfile);

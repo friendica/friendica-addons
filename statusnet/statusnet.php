@@ -620,7 +620,7 @@ function statusnet_post_hook(&$a,&$b) {
 			$image = $msgarr["image"];
 			if ($image != "") {
 				$imagedata = file_get_contents($image);
-				$tempfile = tempnam("", "upload");
+				$tempfile = tempnam(get_config("system","temppath"), "upload");
 				file_put_contents($tempfile, $imagedata);
 				$postdata = array("status"=>$msg, "media"=>"@".$tempfile);
 			} else
