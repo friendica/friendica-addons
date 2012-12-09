@@ -61,6 +61,10 @@ function altpager_settings(&$a,&$s) {
 	if(! local_user())
 		return;
 
+	$global = get_config("alt_pager", "global");
+	if($global == 1)
+		return;
+
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
 	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/altpager/altpager.css' . '" media="all" />' . "\r\n";
@@ -86,4 +90,19 @@ function altpager_settings(&$a,&$s) {
 
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="altpager-submit" class="settings-submit" value="' . t('Submit') . '" /></div></div>';
 
+}
+
+function altpager_plugin_admin(&$a, &$o){
+	$t = file_get_contents( $a->get_baseurl() . "/addon/altpager/admin.tpl" );
+	$o = replace_macros($t, array(
+		'$submit' => t('Submit'),
+		'$global' => array('altpagerchoice', t('Global'), 1, t('Force global use of the alternate pager'),  get_config('alt_pager', 'global') == 1),
+		'$individual' => array('altpagerchoice', t('Individual'), 2, t('Each user chooses whether to use the alternate pager'),  get_config('alt_pager', 'global') == 0)
+	));
+}
+
+function altpager_plugin_admin_post(&$a){
+	$choice	=	((x($_POST,'altpagerchoice'))		? notags(trim($_POST['altpagerchoice']))	: '');
+	set_config('alt_pager','global',($choice == 1 ? 1 : 0));
+	info( t('Settings updated.'). EOL );
 }
