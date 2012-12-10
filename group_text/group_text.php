@@ -43,7 +43,7 @@ function group_text_settings_post($a,$post) {
 		return;
 	set_pconfig(local_user(),'system','groupedit_image_limit',intval($_POST['group_text']));
 
-	info( t('Editplain settings updated.') . EOL);
+	info( t('Group Text settings updated.') . EOL);
 }
 
 
