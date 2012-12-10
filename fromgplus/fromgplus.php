@@ -95,7 +95,7 @@ function fromgplus_cron($a,$b) {
 
 function fromgplus_post($a, $uid, $source, $body, $location) {
 
-	$uid = 2;
+	//$uid = 2;
 
 	$body = trim($body);
 
@@ -351,11 +351,7 @@ function fromgplus_fetch($a, $uid) {
 
 /*
 // Test
-$test1 = array();
-$test2 = array();
 require_once("boot.php");
-require_once("include/bbcode.php");
-require_once("include/html2plain.php");
 
 if(@is_null($a)) {
         $a = new App;
@@ -368,5 +364,6 @@ if(@is_null($db)) {
         unset($db_host, $db_user, $db_pass, $db_data);
 };
 
-fromgplus_cron($a, $test2);
+$test = array();
+fromgplus_cron($a, $test);
 */
