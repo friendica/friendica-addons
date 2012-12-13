@@ -26,16 +26,20 @@ function forumlist_uninstall() {
 }
 
 
-function forumlist_getpage($uid,$showhidden = true,$randomise = false) {
+function forumlist_getpage($uid,$showhidden = true,$randomise = false, $showprivate = false) {
 
 
 	$forumlist = array();
 
 	$order = (($showhidden) ? '' : " and hidden = 0 ");
-	$order .= (($randomise) ? ' order by rand() ' : ' order by name asc ');
+        $order .= (($randomise) ? ' order by rand() ' : ' order by name asc ');
+        $select = "`forum` = 1";
+        if ($showprivate) {
+            $select = "( `forum` = 1 OR `prv` = 1 )";
+        }
 
 	$contacts = q("SELECT `contact`.`id`, `contact`.`url`, `contact`.`name`, `contact`.`micro` from contact 
-			WHERE `network`= 'dfrn' AND `forum` = 1 AND `uid` = %d
+			WHERE `network`= 'dfrn' AND $select AND `uid` = %d
 			and blocked = 0 and hidden = 0 and pending = 0 and archive = 0
 			$order ",
 			intval($uid)
@@ -66,7 +70,7 @@ function forumlist_network_mod_init($a,$b) {
 
 	$randomise = intval(get_pconfig(local_user(),'forumlist','randomise'));
 
-	$contacts = forumlist_getpage($a->user['uid'],true,$randomise);
+	$contacts = forumlist_getpage($a->user['uid'],true,$randomise, true);
 
 	if(count($contacts)) {
 		foreach($contacts as $contact) {
@@ -99,7 +103,7 @@ function forumlist_profile_advanced($a,&$b) {
 
 	$randomise = true;
 
-	$contacts = forumlist_getpage($a->user['uid'],false,$randomise);
+	$contacts = forumlist_getpage($a->user['uid'],false,$randomise,false);
 
 	$total_shown = 0;
 	$more = false;
@@ -122,7 +126,6 @@ function forumlist_profile_advanced($a,&$b) {
 function forumlist_plugin_settings_post($a,$post) {
 	if(! local_user() || (! x($_POST,'forumlist-settings-submit')))
 		return;
-
 //	set_pconfig(local_user(),'forumlist','max_forumlists',intval($_POST['forumlist_max_forumlists']));
 	set_pconfig(local_user(),'forumlist','randomise',intval($_POST['forumlist_random']));
 	set_pconfig(local_user(),'forumlist','show_on_profile',intval($_POST['forumlist_profile']));
