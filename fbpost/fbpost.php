@@ -239,7 +239,7 @@ function fbpost_content(&$a) {
 		$page_access_token = get_pconfig(local_user(),'facebook','page_access_token');
 		$fb_token  = get_pconfig($a->user['uid'],'facebook','access_token');
 		$url = 'https://graph.facebook.com/me/accounts';
-		$x = file_get_contents($url."?access_token=".$fb_token);
+		$x = fetch_url($url."?access_token=".$fb_token);
 		$accounts = json_decode($x);
 
 		$o .= t("Post to page/group:")."<select name='post_to_page'>";
@@ -257,7 +257,7 @@ function fbpost_content(&$a) {
 		}
 
 		$url = 'https://graph.facebook.com/me/groups';
-		$x = file_get_contents($url."?access_token=".$fb_token);
+		$x = fetch_url($url."?access_token=".$fb_token);
 		$groups = json_decode($x);
 
 		foreach($groups->data as $group) {

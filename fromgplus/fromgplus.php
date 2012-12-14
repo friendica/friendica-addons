@@ -288,7 +288,7 @@ function fromgplus_fetch($a, $uid) {
 	$account = get_pconfig($uid,'fromgplus','account');
 	$key = get_config('fromgplus','key');
 
-	$result = file_get_contents("https://www.googleapis.com/plus/v1/people/".$account."/activities/public?alt=json&pp=1&key=".$key."&maxResults=".$maxfetch);
+	$result = fetch_url("https://www.googleapis.com/plus/v1/people/".$account."/activities/public?alt=json&pp=1&key=".$key."&maxResults=".$maxfetch);
 	//$result = file_get_contents("google.txt");
 	//file_put_contents("google.txt", $result);
 
