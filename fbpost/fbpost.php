@@ -368,7 +368,8 @@ function fbpost_ShareAttributes($match) {
 
         $headline .= "</div>";
 
-        $text = "<br />".$headline."</strong><blockquote>".$match[2]."</blockquote>";
+	//$text = "<br />".$headline."</strong><blockquote>".$match[2]."</blockquote>";
+	$text = "\n\t".$match[2].":\t";
 
         return($text);
 }
