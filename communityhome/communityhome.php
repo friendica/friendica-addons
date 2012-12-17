@@ -105,6 +105,7 @@ function communityhome_home(&$a, &$o){
 				`user` 
 				WHERE `user`.`uid` = `photo`.`uid`
 				AND `user`.`blockwall`=0
+				AND `user`.`hidewall` = 0
 				ORDER BY `photo`.`edited` DESC
 				LIMIT 0, 12",
 				dbesc(t('Contact Photos')),
