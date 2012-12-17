@@ -331,10 +331,18 @@ function fromgplus_fetch($a, $uid) {
 					//$post .= html2bbcode("&#x267B;");
 					//$post .= fromgplus_html2bbcode("&#x25CC;");
 					$post .= " [url=".$item->object->actor->url."]".$item->object->actor->displayName."[/url] \n";
+
+					/*$post .= "[share author='".$item->object->actor->displayName.
+							"' profile='".$item->object->actor->url.
+							"' avatar='".$item->object->actor->image->url.
+							"' link='".$item->object->url."']\n";*/
+
 					$post .= fromgplus_html2bbcode($item->object->content);
 
 					if (is_array($item->object->attachments))
 						$post .= "\n".trim(fromgplus_handleattachments($item));
+
+					//$post .= "[/share]";
 
 					if (isset($item->address))
 						$location = $item->address;
