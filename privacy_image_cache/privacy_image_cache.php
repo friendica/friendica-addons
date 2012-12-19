@@ -30,7 +30,6 @@ function privacy_image_cache_uninstall() {
 
 function privacy_image_cache_module() {}
 
-
 function privacy_image_cache_init() {
 	global $a, $_SERVER;
 
@@ -48,12 +47,32 @@ function privacy_image_cache_init() {
 		exit;
 	}
 
-	if ($a->config["system"]["db_log"] != "")
-		$stamp1 = microtime(true);
+	//if ($a->config["system"]["db_log"] != "")
+	//	$stamp1 = microtime(true);
 
 	if(function_exists('header_remove')) {
 		header_remove('Pragma');
 		header_remove('pragma');
+	}
+
+	$thumb = false;
+
+	// Look for filename in the arguments
+	if (isset($a->argv[1]) OR isset($a->argv[2])) {
+		if (isset($a->argv[2]))
+			$url = $a->argv[2];
+		else
+			$url = $a->argv[1];
+
+		$pos = strrpos($url, "==.");
+		if ($pos)
+			$url = substr($url, 0, $pos+2);
+
+		$url = base64_decode(strtr($url, '-_', '+/'), true);
+		if ($url)
+			$_REQUEST['url'] = $url;
+
+		$thumb = (isset($a->argv[3]) and ($a->argv[3] == "thumb"));
 	}
 
 	$urlhash = 'pic:' . sha1($_REQUEST['url']);
@@ -75,18 +94,20 @@ function privacy_image_cache_init() {
 
 			echo $img_str;
 
-			if ($a->config["system"]["db_log"] != "") {
-				$stamp2 = microtime(true);
-				$duration = round($stamp2-$stamp1, 3);
-				if ($duration > $a->config["system"]["db_loglimit"])
-					@file_put_contents($a->config["system"]["db_log"], $duration."\t".strlen($img_str)."\t".$_REQUEST['url']."\n", FILE_APPEND);
-			}
+			//if ($a->config["system"]["db_log"] != "") {
+			//	$stamp2 = microtime(true);
+			//	$duration = round($stamp2-$stamp1, 3);
+			//	if ($duration > $a->config["system"]["db_loglimit"])
+			//		@file_put_contents($a->config["system"]["db_log"], $duration."\t".strlen($img_str)."\t".$_REQUEST['url']."\n", FILE_APPEND);
+			//}
 
 			killme();
 		}
 	}
 
 	require_once("Photo.php");
+
+	$valid = true;
 
 	$r = q("SELECT * FROM `photo` WHERE `resource-id` in ('%s', '%s') LIMIT 1", $urlhash, $urlhash2);
 	if (count($r)) {
@@ -110,6 +131,7 @@ function privacy_image_cache_init() {
 			$img_str = file_get_contents("images/blank.png");
 			$mime = "image/png";
 			$cachefile = ""; // Clear the cachefile so that the dummy isn't stored
+			$valid = false;
 			$img = new Photo($img_str);
 			if($img->is_valid()) {
 				$img->scaleImage(1);
@@ -142,34 +164,61 @@ function privacy_image_cache_init() {
 			$img = new Photo($img_str);
 			if($img->is_valid()) {
 				$img->store(0, 0, $urlhash, $_REQUEST['url'], '', 100);
-				//$img->scaleImage(1000); // Test
+				if ($thumb)
+					$img->scaleImage(200); // Test
 				$img_str = $img->imageString();
 			}
 			$mime = "image/jpeg";
 		}
 	}
 
-	// Writing in cachefile
-	// and (file_exists($cachefile)) and (exif_imagetype($cachefile) > 0))
-	if ($cachefile != '')
+
+	// If there is a real existing directory then put the cache file there
+	// advantage: real file access is really fast
+	// Otherwise write in cachefile
+	if ($valid AND is_dir($_SERVER["DOCUMENT_ROOT"]."/privacy_image_cache"))
+		file_put_contents($_SERVER["DOCUMENT_ROOT"]."/privacy_image_cache/".privacy_image_cache_cachename($_REQUEST['url'], true), $img_str);
+	elseif ($cachefile != '')
 		file_put_contents($cachefile, $img_str);
 
 	header("Content-type: $mime");
-	header("Last-Modified: " . gmdate("D, d M Y H:i:s", time()) . " GMT");
-	header('Etag: "'.md5($img_str).'"');
-	header("Expires: " . gmdate("D, d M Y H:i:s", time() + (31536000)) . " GMT");
-	header("Cache-Control: max-age=31536000");
+
+	// Only output the cache headers when the file is valid
+	if ($valid) {
+		header("Last-Modified: " . gmdate("D, d M Y H:i:s", time()) . " GMT");
+		header('Etag: "'.md5($img_str).'"');
+		header("Expires: " . gmdate("D, d M Y H:i:s", time() + (31536000)) . " GMT");
+		header("Cache-Control: max-age=31536000");
+	}
 
 	echo $img_str;
 
-	if ($a->config["system"]["db_log"] != "") {
-		$stamp2 = microtime(true);
-		$duration = round($stamp2-$stamp1, 3);
-		if ($duration > $a->config["system"]["db_loglimit"])
-			@file_put_contents($a->config["system"]["db_log"], $duration."\t".strlen($img_str)."\t".$_REQUEST['url']."\n", FILE_APPEND);
-	}
+	//if ($a->config["system"]["db_log"] != "") {
+	//	$stamp2 = microtime(true);
+	//	$duration = round($stamp2-$stamp1, 3);
+	//	if ($duration > $a->config["system"]["db_loglimit"])
+	//		@file_put_contents($a->config["system"]["db_log"], $duration."\t".strlen($img_str)."\t".$_REQUEST['url']."\n", FILE_APPEND);
+	//}
 
 	killme();
+}
+
+function privacy_image_cache_cachename($url, $writemode = false) {
+	global $_SERVER;
+
+	$basepath = $_SERVER["DOCUMENT_ROOT"]."/privacy_image_cache";
+
+	$path = substr(hash("md5", $url), 0, 2);
+
+	if (is_dir($basepath) and $writemode)
+		if (!is_dir($basepath."/".$path)) {
+			mkdir($basepath."/".$path);
+			chmod($basepath."/".$path, 0777);
+		}
+
+	$path .= "/".strtr(base64_encode($url), '+/', '-_');
+
+	return($path);
 }
 
 /**
@@ -195,7 +244,9 @@ function privacy_image_cache_img_cb($matches) {
 	if (privacy_image_cache_is_local_image($matches[2]))
 		return $matches[1] . $matches[2] . $matches[3];
 
-	return $matches[1] . get_app()->get_baseurl() . "/privacy_image_cache/?url=" . addslashes(rawurlencode(htmlspecialchars_decode($matches[2]))) . $matches[3];
+	//return $matches[1] . get_app()->get_baseurl() . "/privacy_image_cache/?url=" . addslashes(rawurlencode(htmlspecialchars_decode($matches[2]))) . $matches[3];
+
+	return $matches[1].get_app()->get_baseurl()."/privacy_image_cache/". privacy_image_cache_cachename(htmlspecialchars_decode($matches[2])).$matches[3];
 }
 
 /**
@@ -223,11 +274,14 @@ function privacy_image_cache_bbcode_hook(&$a, &$o) {
 function privacy_image_cache_display_item_hook(&$a, &$o) {
     if (isset($o["output"])) {
         if (isset($o["output"]["thumb"]) && !privacy_image_cache_is_local_image($o["output"]["thumb"]))
-            $o["output"]["thumb"] = $a->get_baseurl() . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["output"]["thumb"])));
+            $o["output"]["thumb"] = $a->get_baseurl() . "/privacy_image_cache/".privacy_image_cache_cachename($o["output"]["thumb"]);
+            //$o["output"]["thumb"] = $a->get_baseurl() . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["output"]["thumb"])));
         if (isset($o["output"]["author-avatar"]) && !privacy_image_cache_is_local_image($o["output"]["author-avatar"]))
-            $o["output"]["author-avatar"] = $a->get_baseurl() . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["output"]["author-avatar"])));
+            $o["output"]["author-avatar"] = $a->get_baseurl() . "/privacy_image_cache/".privacy_image_cache_cachename($o["output"]["author-avatar"]);
+            //$o["output"]["author-avatar"] = $a->get_baseurl() . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["output"]["author-avatar"])));
         if (isset($o["output"]["owner-avatar"]) && !privacy_image_cache_is_local_image($o["output"]["owner-avatar"]))
-            $o["output"]["owner-avatar"] = $a->get_baseurl() . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["output"]["owner-avatar"])));
+            $o["output"]["owner-avatar"] = $a->get_baseurl() . "/privacy_image_cache/".privacy_image_cache_cachename($o["output"]["owner-avatar"]);
+            //$o["output"]["owner-avatar"] = $a->get_baseurl() . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["output"]["owner-avatar"])));
     }
 }
 
@@ -238,7 +292,8 @@ function privacy_image_cache_display_item_hook(&$a, &$o) {
  */
 function privacy_image_cache_ping_xmlize_hook(&$a, &$o) {
     if ($o["photo"] != "" && !privacy_image_cache_is_local_image($o["photo"]))
-        $o["photo"] = $a->get_baseurl() . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["photo"])));
+        $o["photo"] = $a->get_baseurl() . "/privacy_image_cache/".privacy_image_cache_cachename($o["photo"]);
+        //$o["photo"] = $a->get_baseurl() . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["photo"])));
 }
 
 
@@ -257,6 +312,8 @@ function privacy_image_cache_cron(&$a = null, &$b = null) {
     logger("Purging old Cache of the Privacy Image Cache", LOGGER_DEBUG);
     q('DELETE FROM `photo` WHERE `uid` = 0 AND `resource-id` LIKE "pic:%%" AND `created` < NOW() - INTERVAL %d SECOND', $cachetime);
     set_config('pi_cache', 'last_delete', $time);
+
+    clear_cache($a->get_basepath(), $a->get_basepath()."/privacy_image_cache");
 }
 
 

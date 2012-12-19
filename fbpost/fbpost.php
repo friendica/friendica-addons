@@ -345,8 +345,33 @@ function fbpost_jot_nets(&$a,&$b) {
 		$fb_defpost = get_pconfig(local_user(),'facebook','post_by_default');
 		$selected = ((intval($fb_defpost) == 1) ? ' checked="checked" ' : '');
 		$b .= '<div class="profile-jot-net"><input type="checkbox" name="facebook_enable"' . $selected . ' value="1" /> ' 
-			. t('Post to Facebook') . '</div>';	
+			. t('Post to Facebook') . '</div>';
 	}
+}
+
+function fbpost_ShareAttributes($match) {
+
+        $attributes = $match[1];
+
+        $author = "";
+        preg_match("/author='(.*?)'/ism", $attributes, $matches);
+        if ($matches[1] != "")
+                $author = $matches[1];
+
+        preg_match('/author="(.*?)"/ism', $attributes, $matches);
+        if ($matches[1] != "")
+                $author = $matches[1];
+
+        $headline = '<div class="shared_header">';
+
+        $headline .= sprintf(t('%s:'), $author);
+
+        $headline .= "</div>";
+
+	//$text = "<br />".$headline."</strong><blockquote>".$match[2]."</blockquote>";
+	$text = "\n\t".$match[2].":\t";
+
+        return($text);
 }
 
 
@@ -561,6 +586,9 @@ function fbpost_post_hook(&$a,&$b) {
 				// recycle 2 (Test)
 				$recycle = html_entity_decode("&#x25CC; ", ENT_QUOTES, 'UTF-8');
 				$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n\t$2:\t", $body);
+
+				// share element
+				$body = preg_replace_callback("/\[share(.*?)\]\s?(.*?)\s?\[\/share\]/ism","fbpost_ShareAttributes", $body);
 
 				$bodyparts = explode("\t", $body);
 				// Doesn't help with multiple repeats - the problem has to be solved later
