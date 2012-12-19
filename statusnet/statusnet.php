@@ -435,6 +435,9 @@ function statusnet_shortenmsg($b, $max_char) {
 	$recycle = html_entity_decode("&#x25CC; ", ENT_QUOTES, 'UTF-8');
 	$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n", $body);
 
+	// remove the share element
+	$body = preg_replace("/\[share(.*?)\](.*?)\[\/share\]/ism","\n\n$2\n\n",$body);
+
 	// At first convert the text to html
 	$html = bbcode($body, false, false);
 
@@ -632,7 +635,7 @@ function statusnet_post_hook(&$a,&$b) {
                     //$result = $dent->post('statuses/update', array('status' => $msg));
                     $result = $dent->post('statuses/update', $postdata);
                     logger('statusnet_post send, result: ' . print_r($result, true).
-                           "\nmessage: ".$msg, LOGGER_DEBUG."\nOriginal post: ".print_r($b)."\nPost Data: ".print_r($postdata));
+                           "\nmessage: ".$msg, LOGGER_DEBUG."\nOriginal post: ".print_r($b, true)."\nPost Data: ".print_r($postdata, true));
                     if ($result->error) {
                         logger('Send to StatusNet failed: "' . $result->error . '"');
                     }
