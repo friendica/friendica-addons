@@ -327,22 +327,27 @@ function fromgplus_fetch($a, $uid) {
 
 				case "activity":
 					$post = fromgplus_html2bbcode($item->annotation)."\n";
-					$post .= fromgplus_html2bbcode("&#x2672;");
-					//$post .= html2bbcode("&#x267B;");
-					//$post .= fromgplus_html2bbcode("&#x25CC;");
-					$post .= " [url=".$item->object->actor->url."]".$item->object->actor->displayName."[/url] \n";
 
-					/*$post .= "[share author='".$item->object->actor->displayName.
-							"' profile='".$item->object->actor->url.
-							"' avatar='".$item->object->actor->image->url.
-							"' link='".$item->object->url."']\n";*/
+					if (intval(get_config('system','new_share'))) {
+						$post .= "[share author='".$item->object->actor->displayName.
+								"' profile='".$item->object->actor->url.
+								"' avatar='".$item->object->actor->image->url.
+								"' link='".$item->object->url."']";
 
-					$post .= fromgplus_html2bbcode($item->object->content);
+						$post .= fromgplus_html2bbcode($item->object->content);
 
-					if (is_array($item->object->attachments))
-						$post .= "\n".trim(fromgplus_handleattachments($item));
+						if (is_array($item->object->attachments))
+							$post .= "\n".trim(fromgplus_handleattachments($item));
 
-					//$post .= "[/share]";
+						$post .= "[/share]";
+					} else {
+						$post .= fromgplus_html2bbcode("&#x2672;");
+						$post .= " [url=".$item->object->actor->url."]".$item->object->actor->displayName."[/url] \n";
+						$post .= fromgplus_html2bbcode($item->object->content);
+
+						if (is_array($item->object->attachments))
+							$post .= "\n".trim(fromgplus_handleattachments($item));
+					}
 
 					if (isset($item->address))
 						$location = $item->address;
