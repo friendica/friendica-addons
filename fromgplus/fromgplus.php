@@ -329,7 +329,7 @@ function fromgplus_fetch($a, $uid) {
 					$post = fromgplus_html2bbcode($item->annotation)."\n";
 
 					if (intval(get_config('system','new_share'))) {
-						$post .= "[share author='".$item->object->actor->displayName.
+						$post .= "[share author='".str_replace("'", "&#039;",$item->object->actor->displayName).
 								"' profile='".$item->object->actor->url.
 								"' avatar='".$item->object->actor->image->url.
 								"' link='".$item->object->url."']";
