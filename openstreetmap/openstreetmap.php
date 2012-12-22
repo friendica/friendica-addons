@@ -58,7 +58,8 @@ function openstreetmap_location($a, &$item) {
 
 
 function openstreetmap_plugin_admin (&$a, &$o) {
-	$t = file_get_contents( dirname(__file__)."/admin.tpl");
+#	$t = file_get_contents( dirname(__file__)."/admin.tpl");
+	$t = get_markup_template( "admin.tpl", "addon/openstreetmap/" );
 	$tmsserver = get_config('openstreetmap','tmsserver');
 	if(! $tmsserver)
 		$tmsserver = 'http://openstreetmap.org';
@@ -66,7 +67,12 @@ function openstreetmap_plugin_admin (&$a, &$o) {
 	if(! $zoom)
 		$zoom = 17;
 
-	$o = replace_macros( $t, array(
+	$includes = array(
+		'$field_input' => 'field_input.tpl',
+	);
+	$includes = set_template_includes($a->theme['template_engine'], $includes);
+
+	$o = replace_macros( $t, $includes + array(
 		'$submit' => t('Submit'),
 		'$tmsserver' => array('tmsserver', t('Tile Server URL'), $tmsserver, t('A list of <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank">public tile servers</a>')),
 		'$zoom' => array('zoom', t('Default zoom'), $zoom, t('The default zoom level. (1:world, 18:highest)')),

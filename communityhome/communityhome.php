@@ -47,7 +47,8 @@ function communityhome_home(&$a, &$o){
 		0,
 		12
 	);
-	$tpl = file_get_contents( dirname(__file__).'/directory_item.tpl');
+#	$tpl = file_get_contents( dirname(__file__).'/directory_item.tpl');
+	$tpl = get_markup_template( 'directory_item.tpl', 'addon/communityhome/' );
 	if(count($r)) {
 		$photo = 'thumb';
 		foreach($r as $rr) {
@@ -114,7 +115,8 @@ function communityhome_home(&$a, &$o){
 
 		
 	if(count($r)) {
-		$tpl = file_get_contents( dirname(__file__).'/directory_item.tpl');
+#		$tpl = file_get_contents( dirname(__file__).'/directory_item.tpl');
+		$tpl = get_markup_template( 'directory_item.tpl', 'addon/communityhome/' );
 		foreach($r as $rr) {
 			$photo_page = $a->get_baseurl() . '/photos/' . $rr['nickname'] . '/image/' . $rr['resource-id'];
 			$photo_url = $a->get_baseurl() . '/photo/' .  $rr['resource-id'] . '-' . $rr['scale'] .'.jpg';
@@ -174,7 +176,8 @@ function communityhome_home(&$a, &$o){
 		
 	}
 	
-	$tpl = file_get_contents(dirname(__file__).'/communityhome.tpl');
+#	$tpl = file_get_contents(dirname(__file__).'/communityhome.tpl');
+	$tpl = get_markup_template('communityhome.tpl', 'addon/communityhome/');
 	$a->page['aside'] = replace_macros($tpl, $aside);
 	
 	$o = '<h1>' . ((x($a->config,'sitename')) ? sprintf( t("Welcome to %s") ,$a->config['sitename']) : "" ) . '</h1>';

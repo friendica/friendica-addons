@@ -78,8 +78,16 @@ function uhremotestorage_settings($a, &$s){
 		'Dropbox' => 'Dropbox',
 	);
 	*/
-	$tpl = file_get_contents(dirname(__file__)."/settings.tpl");
-	$s .= replace_macros($tpl, array(
+//	$tpl = file_get_contents(dirname(__file__)."/settings.tpl");
+	$tpl = get_markup_template("settings.tpl", "addon/uhremotestorage/");
+
+	$includes = array(
+		'$field_input' => 'field_input.tpl',
+		'$field_select' => 'field_select.tpl',
+	);
+	$includes = set_template_includes($a->theme['template_engine'], $includes);
+
+	$s .= replace_macros($tpl, $includes + array(
 		'$title' => 'Unhosted remote storage',
 		'$desc' => sprintf( t('Allow to use your friendica id (%s) to connecto to external unhosted-enabled storage (like ownCloud). See <a href="http://www.w3.org/community/unhosted/wiki/RemoteStorage#WebFinger">RemoteStorage WebFinger</a>'), $uid ),
 		'$url'	=> array( 'unhoestedurl', t('Template URL (with {category})'), $url, 'If your are using ownCloud, your unhosted url will be like <tt>http://<i>HOST</i>/apps/remoteStorage/WebDAV.php/<i>USER</i>/remoteStorage/{category}</tt>'),

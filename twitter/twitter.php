@@ -504,8 +504,14 @@ function twitter_plugin_admin_post(&$a){
 	info( t('Settings updated.'). EOL );
 }
 function twitter_plugin_admin(&$a, &$o){
-	$t = file_get_contents( dirname(__file__). "/admin.tpl" );
-	$o = replace_macros($t, array(
+	$t = get_markup_template( "admin.tpl", "addon/twitter/" );
+
+	$includes = array(
+		'$field_input' => 'field_input.tpl',
+	);
+	$includes = set_template_includes($a->theme['template_engine'], $includes);
+
+	$o = replace_macros($t, $includes + array(
 		'$submit' => t('Submit'),
 								// name, label, value, help, [extra values]
 		'$consumerkey' => array('consumerkey', t('Consumer key'),  get_config('twitter', 'consumerkey' ), ''),

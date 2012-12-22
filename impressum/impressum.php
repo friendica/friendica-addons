@@ -78,8 +78,15 @@ function impressum_plugin_admin_post (&$a) {
     info( t('Settings updated.'). EOL );
 }
 function impressum_plugin_admin (&$a, &$o) {
-    $t = file_get_contents( dirname(__file__). "/admin.tpl" );
-    $o = replace_macros($t, array(
+    $t = get_markup_template( "admin.tpl", "addon/impressum/" );
+
+	$includes = array(
+		'$field_input' => 'field_input.tpl',
+		'$field_textarea' => 'field_textarea.tpl',
+	);
+	$includes = set_template_includes($a->theme['template_engine'], $includes);
+
+    $o = replace_macros($t, $includes + array(
         '$submit' => t('Submit'),
         '$owner' => array('owner', t('Site Owner'), get_config('impressum','owner'), t('The page operators name.')),
         '$ownerprofile' => array('ownerprofile', t('Site Owners Profile'), get_config('impressum','ownerprofile'), t('Profile address of the operator.')),

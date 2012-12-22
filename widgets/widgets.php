@@ -51,7 +51,8 @@ function widgets_settings(&$a,&$o) {
 
 	
 	
-	$t = file_get_contents( dirname(__file__). "/settings.tpl" );
+#	$t = file_get_contents( dirname(__file__). "/settings.tpl" );
+	$t = get_markup_template("settings.tpl", "addon/widgets/");
 	$o .= replace_macros($t, array(
 		'$submit' => t('Generate new key'),
 		'$baseurl' => $a->get_baseurl(),

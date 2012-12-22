@@ -698,8 +698,15 @@ function statusnet_plugin_admin(&$a, &$o){
 	);
 
 	
-	$t = file_get_contents( dirname(__file__). "/admin.tpl" );
-	$o = replace_macros($t, array(
+	$t = get_markup_template( "admin.tpl", "addon/statusnet/" );
+ 
+	$includes = array(
+		'$field_input' => 'field_input.tpl',
+		'$field_checkbox' => 'field_checkbox.tpl',
+	);
+	$includes = set_template_includes($a->theme['template_engine'], $includes);
+
+	$o = replace_macros($t, $includes + array(
 		'$submit' => t('Submit'),
 							
 		'$sites' => $sitesform,
