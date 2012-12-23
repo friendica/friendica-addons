@@ -60,7 +60,7 @@ function libravatar_lookup($a, &$b) {
  * Display admin settings for this addon
  */
 function libravatar_plugin_admin (&$a, &$o) {
-	$t = file_get_contents( dirname(__file__)."/admin.tpl");
+	$t = get_markup_template( "admin.tpl", "addon/libravatar" );
 
 	$default_avatar = get_config('libravatar', 'default_img');
 
@@ -95,7 +95,13 @@ function libravatar_plugin_admin (&$a, &$o) {
 
 	// output Libravatar settings
 	$o .= '<input type="hidden" name="form_security_token" value="' .get_form_security_token("libravatarsave") .'">';
-	$o .= replace_macros( $t, array(
+ 
+	$includes = array(
+		'$field_input' => 'field_input.tpl',
+	);
+	$includes = set_template_includes($a->theme['template_engine'], $includes);
+
+	$o .= replace_macros( $t, $includes + array(
 		'$submit' => t('Submit'),
 		'$default_avatar' => array('avatar', t('Default avatar image'), $default_avatar, t('Select default avatar image if none was found. See README'), $default_avatars),
 	));

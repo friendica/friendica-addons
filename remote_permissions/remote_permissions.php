@@ -39,7 +39,8 @@ function remote_permissions_settings(&$a,&$o) {
 	
 	/* Add some HTML to the existing form */
 
-	$t = file_get_contents("addon/remote_permissions/settings.tpl" );
+//	$t = file_get_contents("addon/remote_permissions/settings.tpl" );
+	$t = get_markup_template("settings.tpl", "addon/remote_permissions/" );
 	$o .= replace_macros($t, array(
 		'$remote_perms_title' => t('Remote Permissions Settings'),
 		'$remote_perms_label' => t('Allow recipients of your private posts to see the other recipients of the posts'),
@@ -190,8 +191,15 @@ function remote_permissions_content($a, $item_copy) {
 }
 
 function remote_permissions_plugin_admin(&$a, &$o){
-	$t = file_get_contents( "addon/remote_permissions/admin.tpl" );
-	$o = replace_macros($t, array(
+//	$t = file_get_contents( "addon/remote_permissions/admin.tpl" );
+	$t = get_markup_template( "admin.tpl", "addon/remote_permissions/" );
+
+	$includes = array(
+		'$field_radio' => 'field_radio.tpl',
+	);
+	$includes = set_template_includes($a->theme['template_engine'], $includes);
+
+	$o = replace_macros($t, $includes + array(
 		'$submit' => t('Submit'),
 		'$global' => array('remotepermschoice', t('Global'), 1, t('The posts of every user on this server show the post recipients'),  get_config('remote_perms', 'global') == 1),
 		'$individual' => array('remotepermschoice', t('Individual'), 2, t('Each user chooses whether his/her posts show the post recipients'),  get_config('remote_perms', 'global') == 0)

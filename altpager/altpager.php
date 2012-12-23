@@ -93,8 +93,14 @@ function altpager_settings(&$a,&$s) {
 }
 
 function altpager_plugin_admin(&$a, &$o){
-	$t = file_get_contents( "addon/altpager/admin.tpl" );
-	$o = replace_macros($t, array(
+	$t = get_markup_template( "admin.tpl", "addon/altpager/" );
+ 
+	$includes = array(
+		'$field_radio' => 'field_radio.tpl',
+	);
+	$includes = set_template_includes($a->theme['template_engine'], $includes);
+
+	$o = replace_macros($t, $includes + array(
 		'$submit' => t('Submit'),
 		'$global' => array('altpagerchoice', t('Global'), 1, t('Force global use of the alternate pager'),  get_config('alt_pager', 'global') == 1),
 		'$individual' => array('altpagerchoice', t('Individual'), 2, t('Each user chooses whether to use the alternate pager'),  get_config('alt_pager', 'global') == 0)
@@ -106,3 +112,4 @@ function altpager_plugin_admin_post(&$a){
 	set_config('alt_pager','global',($choice == 1 ? 1 : 0));
 	info( t('Settings updated.'). EOL );
 }
+

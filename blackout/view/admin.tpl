@@ -1,6 +1,6 @@
-{{ inc field_input.tpl with $field=$startdate }}{{ endinc }}
-{{ inc field_input.tpl with $field=$enddate }}{{ endinc }}
-{{ inc field_input.tpl with $field=$rurl }}{{ endinc }}
+{{ inc $field_input with $field=$startdate }}{{ endinc }}
+{{ inc $field_input with $field=$enddate }}{{ endinc }}
+{{ inc $field_input with $field=$rurl }}{{ endinc }}
 
 <div style="border: 2px solid #f00; padding: 10px; margin:
 10px;font-size: 1.2em;"><strong>Note</strong>: The redirect will be active from the moment you

@@ -163,7 +163,8 @@ function forumdirectory_content(&$a) {
 
 			$about = ((x($profile,'about') == 1) ?  t('About:') : False);
 			
-			$tpl = file_get_contents( dirname(__file__).'/forumdirectory_item.tpl');
+#			$tpl = file_get_contents( dirname(__file__).'/forumdirectory_item.tpl');
+			$tpl = get_markup_template( 'forumdirectory_item.tpl', 'addon/forumdirectory/' );
 
 			$entry = replace_macros($tpl,array(
 				'$id' => $rr['id'],

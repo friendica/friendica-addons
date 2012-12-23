@@ -52,7 +52,8 @@ function like_widget_content(&$a, $conf){
 	
 	$o = "";
 	
-	$t = file_get_contents( dirname(__file__). "/widget_like.tpl" );
+#	$t = file_get_contents( dirname(__file__). "/widget_like.tpl" );
+	$t = get_markup_template("widget_like.tpl", "addon/widgets/");
 	$o .= replace_macros($t, array(
 		'$like'		=> $likes,
 		'$strlike'	=> sprintf( tt("%d person likes this", "%d people like this", $likes), $likes),
