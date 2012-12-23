@@ -55,7 +55,7 @@ function gravatar_lookup($a, &$b) {
  * Display admin settings for this addon
  */
 function gravatar_plugin_admin (&$a, &$o) {
-	$t = file_get_contents( dirname(__file__)."/admin.tpl");
+	$t = get_markup_template( "admin.tpl", "addon/gravatar/" );
 
 	$default_avatar = get_config('gravatar', 'default_img');
 	$rating = get_config('gravatar', 'rating');
@@ -91,7 +91,13 @@ function gravatar_plugin_admin (&$a, &$o) {
 
 	// output Gravatar settings
 	$o .= '<input type="hidden" name="form_security_token" value="' .get_form_security_token("gravatarsave") .'">';
-	$o .= replace_macros( $t, array(
+
+	$includes = array(
+		'$field_select' => 'field_select.tpl',
+	);
+	$includes = set_template_includes($a->theme['template_engine'], $includes);
+
+	$o .= replace_macros( $t, $includes + array(
 		'$submit' => t('Submit'),
 		'$default_avatar' => array('avatar', t('Default avatar image'), $default_avatar, t('Select default avatar image if none was found at Gravatar. See README'), $default_avatars),
 		'$rating' => array('rating', t('Rating of images'), $rating, t('Select the appropriate avatar rating for your site. See README'), $ratings),

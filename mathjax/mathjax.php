@@ -66,11 +66,17 @@ function mathjax_plugin_admin_post (&$a) {
     info( t('Settings updated.'). EOL);
 }
 function mathjax_plugin_admin (&$a, &$o) {
-	$t = file_get_contents( dirname(__file__)."/admin.tpl");
-        if (get_config('mathjax','baseurl','') == '') {
-            set_config('mathjax','baseurl','http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML');
-        }
-        $o = replace_macros( $t, array(
+	$t = get_markup_template( "admin.tpl", "addon/mathjax/" );
+	if (get_config('mathjax','baseurl','') == '') {
+		set_config('mathjax','baseurl','http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML');
+	}
+
+	$includes = array(
+		'$field_input' => 'field_input.tpl',
+	);
+	$includes = set_template_includes($a->theme['template_engine'], $includes);
+
+	$o = replace_macros( $t, $includes + array(
 		'$baseurl' => array('baseurl', t('MathJax Base URL'), get_config('mathjax','baseurl' ), t('The URL for the javascript file that should be included to use MathJax. Can be either the MathJax CDN or another installation of MathJax.')),
-            ));
+	));
 }

@@ -93,8 +93,14 @@ function blackout_plugin_admin(&$a, &$o) {
     if (! is_string($myend)) { $myend = "YYYY-MM-DD:hhmm"; }
     $myurl   = get_config('blackout','url');
     if (! is_string($myurl)) { $myurl = "http://www.example.com"; }
-    $t = file_get_contents( dirname(__file__)."/admin.tpl" );
-    $o = replace_macros($t, array(
+    $t = get_markup_template( "admin.tpl", "addon/blackout/" );
+ 
+	$includes = array(
+		'$field_input' => 'field_input.tpl',
+	);
+	$includes = set_template_includes($a->theme['template_engine'], $includes);
+
+   $o = replace_macros($t, $includes + array(
         '$submit' => t('Submit'),
         '$rurl' => array("rurl", "Redirect URL", $myurl, "all your visitors from the web will be redirected to this URL"),
         '$startdate' => array("startdate", "Begin of the Blackout<br />(YYYY-MM-DD hh:mm)", $mystart, "format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute"),
