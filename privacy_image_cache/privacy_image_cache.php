@@ -226,13 +226,21 @@ function privacy_image_cache_cachename($url, $writemode = false) {
  * @return boolean
  */
 function privacy_image_cache_is_local_image($url) {
-    if ($url[0] == '/') return true;
+	if ($url[0] == '/') return true;
+
 	if (strtolower(substr($url, 0, 5)) == "data:") return true;
 
+	// Check if the cached path would be longer than 255 characters - apache doesn't like it
+	if (is_dir($_SERVER["DOCUMENT_ROOT"]."/privacy_image_cache")) {
+		$cachedurl = get_app()->get_baseurl()."/privacy_image_cache/". privacy_image_cache_cachename($url);
+		if (strlen($url) > 255)
+			return true;
+	}
+
 	// links normalised - bug #431
-    $baseurl = normalise_link(get_app()->get_baseurl());
+	$baseurl = normalise_link(get_app()->get_baseurl());
 	$url = normalise_link($url);
-    return (substr($url, 0, strlen($baseurl)) == $baseurl);
+	return (substr($url, 0, strlen($baseurl)) == $baseurl);
 }
 
 /**
