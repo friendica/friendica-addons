@@ -119,6 +119,15 @@ function privacy_image_cache_init() {
 		// It shouldn't happen but it does - spaces in URL
 		$_REQUEST['url'] = str_replace(" ", "+", $_REQUEST['url']);
 
+		// if the picture seems to be from another picture cache then take the original source
+		$queryvar = privacy_image_cache_parse_query($_REQUEST['url']);
+		if ($queryvar['url'] != "")
+			$_REQUEST['url'] = urldecode($queryvar['url']);
+
+		// if fetching facebook pictures don't fetch the thumbnail but the big one
+		if (strpos($_REQUEST['url'], ".fbcdn.net/") and (substr($_REQUEST['url'], -6) == "_s.jpg"))
+			$_REQUEST['url'] = substr($_REQUEST['url'], 0, -6)."_n.jpg";
+
 		$img_str = fetch_url($_REQUEST['url'],true);
 
 		$tempfile = tempnam(get_config("system","temppath"), "cache");
@@ -371,4 +380,23 @@ function privacy_image_cache_plugin_admin_post(&$a = null, &$o = null){
     if (isset($_REQUEST['delete_all'])) {
         q('DELETE FROM `photo` WHERE `uid` = 0 AND `resource-id` LIKE "pic:%%"');
     }
+}
+
+function privacy_image_cache_parse_query($var) {
+	/**
+	 *  Use this function to parse out the query array element from
+	 *  the output of parse_url().
+	*/
+	$var  = parse_url($var, PHP_URL_QUERY);
+	$var  = html_entity_decode($var);
+	$var  = explode('&', $var);
+	$arr  = array();
+
+	foreach($var as $val) {
+		$x          = explode('=', $val);
+		$arr[$x[0]] = $x[1];
+	}
+
+	unset($val, $x, $var);
+	return $arr;
 }
