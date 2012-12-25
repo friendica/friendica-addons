@@ -84,16 +84,8 @@ function piwik_analytics($a,&$b) {
 	}
 }
 function piwik_plugin_admin (&$a, &$o) {
-#	$t = file_get_contents( dirname(__file__)."/admin.tpl");
 	$t = get_markup_template( "admin.tpl", "addon/piwik/" );
-
-	$includes = array(
-		'$field_input' => 'field_input.tpl',
-		'$field_checkbox' => 'field_select.tpl',
-	);
-	$includes = set_template_includes($a->theme['template_engine'], $includes);
-
-	$o = replace_macros( $t, $includes + array(
+	$o = replace_macros( $t, array(
 		'$submit' => t('Submit'),
 		'$baseurl' => array('baseurl', t('Piwik Base URL'), get_config('piwik','baseurl' ), t('Absolute path to your Piwik installation. (without protocol (http/s), with trailing slash)')),
 		'$siteid' => array('siteid', t('Site ID'), get_config('piwik','siteid' ), ''),
