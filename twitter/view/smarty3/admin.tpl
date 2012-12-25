@@ -1,3 +1,3 @@
-{{include file="file:{{$field_input}}" field=$consumerkey}}
-{{include file="file:{{$field_input}}" field=$consumersecret}}
+{{include file="field_input.tpl" field=$consumerkey}}
+{{include file="field_input.tpl" field=$consumersecret}}
 <div class="submit"><input type="submit" name="page_site" value="{{$submit}}" /></div>

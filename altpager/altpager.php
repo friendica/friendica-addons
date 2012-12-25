@@ -94,13 +94,7 @@ function altpager_settings(&$a,&$s) {
 
 function altpager_plugin_admin(&$a, &$o){
 	$t = get_markup_template( "admin.tpl", "addon/altpager/" );
- 
-	$includes = array(
-		'$field_radio' => 'field_radio.tpl',
-	);
-	$includes = set_template_includes($a->theme['template_engine'], $includes);
-
-	$o = replace_macros($t, $includes + array(
+	$o = replace_macros($t, array(
 		'$submit' => t('Submit'),
 		'$global' => array('altpagerchoice', t('Global'), 1, t('Force global use of the alternate pager'),  get_config('alt_pager', 'global') == 1),
 		'$individual' => array('altpagerchoice', t('Individual'), 2, t('Each user chooses whether to use the alternate pager'),  get_config('alt_pager', 'global') == 0)

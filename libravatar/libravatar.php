@@ -95,13 +95,7 @@ function libravatar_plugin_admin (&$a, &$o) {
 
 	// output Libravatar settings
 	$o .= '<input type="hidden" name="form_security_token" value="' .get_form_security_token("libravatarsave") .'">';
- 
-	$includes = array(
-		'$field_input' => 'field_input.tpl',
-	);
-	$includes = set_template_includes($a->theme['template_engine'], $includes);
-
-	$o .= replace_macros( $t, $includes + array(
+	$o .= replace_macros( $t, array(
 		'$submit' => t('Submit'),
 		'$default_avatar' => array('avatar', t('Default avatar image'), $default_avatar, t('Select default avatar image if none was found. See README'), $default_avatars),
 	));

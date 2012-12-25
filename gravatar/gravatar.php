@@ -91,13 +91,7 @@ function gravatar_plugin_admin (&$a, &$o) {
 
 	// output Gravatar settings
 	$o .= '<input type="hidden" name="form_security_token" value="' .get_form_security_token("gravatarsave") .'">';
-
-	$includes = array(
-		'$field_select' => 'field_select.tpl',
-	);
-	$includes = set_template_includes($a->theme['template_engine'], $includes);
-
-	$o .= replace_macros( $t, $includes + array(
+	$o .= replace_macros( $t, array(
 		'$submit' => t('Submit'),
 		'$default_avatar' => array('avatar', t('Default avatar image'), $default_avatar, t('Select default avatar image if none was found at Gravatar. See README'), $default_avatars),
 		'$rating' => array('rating', t('Rating of images'), $rating, t('Select the appropriate avatar rating for your site. See README'), $ratings),
