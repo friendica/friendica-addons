@@ -1,10 +1,10 @@
 {{foreach $sites as $s}}
-	{{include file="file:{{$field_input}}" field=$s.sitename}}
-	{{include file="file:{{$field_input}}" field=$s.apiurl}}
-	{{include file="file:{{$field_input}}" field=$s.secret}}
-	{{include file="file:{{$field_input}}" field=$s.key}}
+	{{include file="field_input.tpl" field=$s.sitename}}
+	{{include file="field_input.tpl" field=$s.apiurl}}
+	{{include file="field_input.tpl" field=$s.secret}}
+	{{include file="field_input.tpl" field=$s.key}}
 	{{if $s.delete}}
-		{{include file="file:{{$field_checkbox}}" field=$s.delete}}
+		{{include file="field_checkbox.tpl" field=$s.delete}}
 		<hr>
 	{{else}}
 		<p>Fill this form to add a new site</p>

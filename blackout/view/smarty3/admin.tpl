@@ -1,6 +1,6 @@
-{{include file="file:{{$field_input}}" field=$startdate}}
-{{include file="file:{{$field_input}}" field=$enddate}}
-{{include file="file:{{$field_input}}" field=$rurl}}
+{{include file="field_input.tpl" field=$startdate}}
+{{include file="field_input.tpl" field=$enddate}}
+{{include file="field_input.tpl" field=$rurl}}
 
 <div style="border: 2px solid #f00; padding: 10px; margin:
 10px;font-size: 1.2em;"><strong>Note</strong>: The redirect will be active from the moment you
