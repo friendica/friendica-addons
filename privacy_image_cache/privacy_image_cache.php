@@ -328,13 +328,11 @@ function privacy_image_cache_cron(&$a = null, &$b = null) {
 
     logger("Purging old Cache of the Privacy Image Cache", LOGGER_DEBUG);
     q('DELETE FROM `photo` WHERE `uid` = 0 AND `resource-id` LIKE "pic:%%" AND `created` < NOW() - INTERVAL %d SECOND', $cachetime);
-    set_config('pi_cache', 'last_delete', $time);
 
     clear_cache($a->get_basepath(), $a->get_basepath()."/privacy_image_cache");
+
+    set_config('pi_cache', 'last_delete', $time);
 }
-
-
-
 
 /**
  * @param App $a
