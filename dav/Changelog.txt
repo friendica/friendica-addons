@@ -1,3 +1,8 @@
+v0.3
+[REFACTOR] The new version of the VObject Library is used
+[REFACTOR] The addressbook part has beed heavily refactored
+[REFACTOR] Remove some Friendica-specific code out of the "common"-folder
+
 v0.2.0
 ======
 [FEATURE] Multiple private Calendars can be created. Each calendar can have its own default color; single events of a calendar can override this setting.

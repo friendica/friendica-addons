@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: Page
- * Description: Shows list of subscribed community pages/forums on network sidebar
+ * Description: This addon is now deprecated.  Administrators should switch to forumlist instead.  Developers should also add any functionality to forumlist instead of here.
  * Version: 1.0
  * Author: Mike Macgirvin <mike@macgirvin.com>
  * based on pages plugin by
@@ -38,6 +38,7 @@ function page_getpage($uid,$showhidden = true,$randomise = false) {
 
 	$contacts = q("SELECT `id`, `url`, `name`, `micro` FROM `contact`
 			WHERE `network`= 'dfrn' AND `forum` = 1 AND `uid` = %d
+			and blocked = 0 and hidden = 0 and pending = 0 and archive = 0
 			$order ",
 			intval($uid)
 	);

@@ -7,7 +7,9 @@ define("DAV_DISPLAYNAME", "{DAV:}displayname");
 define("DAV_CALENDARCOLOR", "{http://apple.com/ns/ical/}calendar-color");
 
 
-class DAVVersionMismatchException extends Exception {}
+class DAVVersionMismatchException extends Exception
+{
+}
 
 
 class vcard_source_data_email
@@ -98,9 +100,6 @@ class vcard_source_data
 	/** @var vcard_source_data_photo */
 	public $photo;
 }
-
-;
-
 
 /**
  * @param vcard_source_data $vcardsource
@@ -196,13 +195,9 @@ function icalendar_sanitize_string($str = "")
  */
 function dav_createRootCalendarNode()
 {
-	$caldavBackend_std       = Sabre_CalDAV_Backend_Private::getInstance();
-	$caldavBackend_community = Sabre_CalDAV_Backend_Friendica::getInstance();
-
-	return new Sabre_CalDAV_AnimexxCalendarRootNode(Sabre_DAVACL_PrincipalBackend_Std::getInstance(), array(
-		$caldavBackend_std,
-		$caldavBackend_community,
-	));
+	$backends = array(Sabre_CalDAV_Backend_Private::getInstance());
+	foreach ($GLOBALS["CALDAV_PRIVATE_SYSTEM_BACKENDS"] as $backendclass) $backends[] = $backendclass::getInstance();
+	return new Sabre_CalDAV_AnimexxCalendarRootNode(Sabre_DAVACL_PrincipalBackend_Std::getInstance(), $backends);
 }
 
 /**
@@ -210,13 +205,10 @@ function dav_createRootCalendarNode()
  */
 function dav_createRootContactsNode()
 {
-	$carddavBackend_std       = Sabre_CardDAV_Backend_Std::getInstance();
-	$carddavBackend_community = Sabre_CardDAV_Backend_FriendicaCommunity::getInstance();
+	$backends = array(Sabre_CardDAV_Backend_Std::getInstance());
+	foreach ($GLOBALS["CARDDAV_PRIVATE_SYSTEM_BACKENDS"] as $backendclass) $backends[] = $backendclass::getInstance();
 
-	return new Sabre_CardDAV_AddressBookRootFriendica(Sabre_DAVACL_PrincipalBackend_Std::getInstance(), array(
-		$carddavBackend_std,
-		$carddavBackend_community,
-	));
+	return new Sabre_CardDAV_AddressBookRootFriendica(Sabre_DAVACL_PrincipalBackend_Std::getInstance(), $backends);
 }
 
 
@@ -242,14 +234,10 @@ function dav_create_server($force_authentication = false, $needs_caldav = true, 
 // The object tree needs in turn to be passed to the server class
 	$server = new Sabre_DAV_Server($tree);
 
-	$server->setBaseUri(CALDAV_URL_PREFIX);
+	if (CALDAV_URL_PREFIX != "") $server->setBaseUri(CALDAV_URL_PREFIX);
 
-	$authPlugin = new Sabre_DAV_Auth_Plugin(Sabre_DAV_Auth_Backend_Std::getInstance(), 'SabreDAV');
+	$authPlugin = new Sabre_DAV_Auth_Plugin(Sabre_DAV_Auth_Backend_Std::getInstance(), DAV_APPNAME);
 	$server->addPlugin($authPlugin);
-
-	$aclPlugin                      = new Sabre_DAVACL_Plugin_Friendica();
-	$aclPlugin->defaultUsernamePath = "principals/users";
-	$server->addPlugin($aclPlugin);
 
 	if ($needs_caldav) {
 		$caldavPlugin = new Sabre_CalDAV_Plugin();
@@ -258,6 +246,16 @@ function dav_create_server($force_authentication = false, $needs_caldav = true, 
 	if ($needs_carddav) {
 		$carddavPlugin = new Sabre_CardDAV_Plugin();
 		$server->addPlugin($carddavPlugin);
+	}
+
+	if ($GLOBALS["CALDAV_ACL_PLUGIN_CLASS"] != "") {
+		$aclPlugin                      = new $GLOBALS["CALDAV_ACL_PLUGIN_CLASS"]();
+		$aclPlugin->defaultUsernamePath = "principals/users";
+		$server->addPlugin($aclPlugin);
+	} else {
+		$aclPlugin                      = new Sabre_DAVACL_Plugin();
+		$aclPlugin->defaultUsernamePath = "principals/users";
+		$server->addPlugin($aclPlugin);
 	}
 
 	if ($force_authentication) $server->broadcastEvent('beforeMethod', array("GET", "/")); // Make it authenticate
@@ -286,7 +284,7 @@ function dav_get_current_user_calendars(&$server, $with_privilege = "")
 	$calendars = array();
 	/** @var Sabre_DAVACL_Plugin $aclplugin  */
 	$aclplugin = $server->getPlugin("acl");
-	foreach ($children as $child) if (is_a($child, "Sabre_CalDAV_Calendar")) {
+	foreach ($children as $child) if (is_a($child, "Sabre_CalDAV_Calendar") || is_subclass_of($child, "Sabre_CalDAV_Calendar")) {
 		if ($with_privilege != "") {
 			$caluri = $calendar_path . $child->getName();
 			if ($aclplugin->checkPrivileges($caluri, $with_privilege, Sabre_DAVACL_Plugin::R_PARENT, false)) $calendars[] = $child;
@@ -303,7 +301,7 @@ function dav_get_current_user_calendars(&$server, $with_privilege = "")
  * @param Sabre_CalDAV_Calendar $calendar
  * @param string $calendarobject_uri
  * @param string $with_privilege
- * @return null|Sabre_VObject_Component_VCalendar
+ * @return null|Sabre\VObject\Component\VCalendar
  */
 function dav_get_current_user_calendarobject(&$server, &$calendar, $calendarobject_uri, $with_privilege = "")
 {
@@ -319,7 +317,7 @@ function dav_get_current_user_calendarobject(&$server, &$calendar, $calendarobje
 	if (!$aclplugin->checkPrivileges($uri, $with_privilege, Sabre_DAVACL_Plugin::R_PARENT, false)) return null;
 
 	$data    = $obj->get();
-	$vObject = Sabre_VObject_Reader::read($data);
+	$vObject = Sabre\VObject\Reader::read($data);
 
 	return $vObject;
 }
@@ -347,20 +345,19 @@ function dav_get_current_user_calendar_by_id(&$server, $id, $with_privilege = ""
 
 /**
  * @param string $uid
- * @return Sabre_VObject_Component_VCalendar $vObject
+ * @return Sabre\VObject\Component\VCalendar $vObject
  */
 function dav_create_empty_vevent($uid = "")
 {
-	$a = get_app();
 	if ($uid == "") $uid = uniqid();
-	return Sabre_VObject_Reader::read("BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Friendica//DAV-Plugin//EN\r\nBEGIN:VEVENT\r\nUID:" . $uid . "@" . $a->get_hostname() .
+	return Sabre\VObject\Reader::read("BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//" . DAV_APPNAME . "//DAV-Plugin//EN\r\nBEGIN:VEVENT\r\nUID:" . $uid . "@" . dav_compat_get_hostname() .
 		"\r\nDTSTAMP:" . date("Ymd") . "T" . date("His") . "Z\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n");
 }
 
 
 /**
- * @param Sabre_VObject_Component_VCalendar $vObject
- * @return Sabre_VObject_Component_VEvent|null
+ * @param Sabre\VObject\Component\VCalendar $vObject
+ * @return Sabre\VObject\Component\VEvent|null
  */
 function dav_get_eventComponent(&$vObject)
 {

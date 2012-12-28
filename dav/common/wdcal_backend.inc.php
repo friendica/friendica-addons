@@ -97,12 +97,12 @@ function wdcal_print_feed($base_path = "")
 				$component = dav_get_eventComponent($item);
 				$component->add("SUMMARY", icalendar_sanitize_string(dav_compat_parse_text_serverside("CalendarTitle")));
 
-				if (isset($_REQUEST["allday"])) $type = Sabre_VObject_Property_DateTime::DATE;
-				else $type = Sabre_VObject_Property_DateTime::LOCALTZ;
+				if (isset($_REQUEST["allday"])) $type = Sabre\VObject\Property\DateTime::DATE;
+				else $type = Sabre\VObject\Property\DateTime::LOCALTZ;
 
-				$datetime_start = new Sabre_VObject_Property_DateTime("DTSTART");
+				$datetime_start = new Sabre\VObject\Property\DateTime("DTSTART");
 				$datetime_start->setDateTime(new DateTime(date("Y-m-d H:i:s", IntVal($_REQUEST["CalendarStartTime"]))), $type);
-				$datetime_end = new Sabre_VObject_Property_DateTime("DTEND");
+				$datetime_end = new Sabre\VObject\Property\DateTime("DTEND");
 				$datetime_end->setDateTime(new DateTime(date("Y-m-d H:i:s", IntVal($_REQUEST["CalendarEndTime"]))), $type);
 
 				$component->add($datetime_start);
@@ -179,12 +179,12 @@ function wdcal_print_feed($base_path = "")
 					killme();
 				}
 
-				if (isset($_REQUEST["allday"])) $type = Sabre_VObject_Property_DateTime::DATE;
-				else $type = Sabre_VObject_Property_DateTime::LOCALTZ;
+				if (isset($_REQUEST["allday"])) $type = Sabre\VObject\Property\DateTime::DATE;
+				else $type = Sabre\VObject\Property\DateTime::LOCALTZ;
 
-				$datetime_start = new Sabre_VObject_Property_DateTime("DTSTART");
+				$datetime_start = new Sabre\VObject\Property\DateTime("DTSTART");
 				$datetime_start->setDateTime(new DateTime(date("Y-m-d H:i:s", IntVal($_REQUEST["CalendarStartTime"]))), $type);
-				$datetime_end = new Sabre_VObject_Property_DateTime("DTEND");
+				$datetime_end = new Sabre\VObject\Property\DateTime("DTEND");
 				$datetime_end->setDateTime(new DateTime(date("Y-m-d H:i:s", IntVal($_REQUEST["CalendarEndTime"]))), $type);
 
 				$component->__unset("DTSTART");
