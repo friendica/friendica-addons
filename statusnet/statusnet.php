@@ -698,7 +698,7 @@ function statusnet_plugin_admin(&$a, &$o){
 	);
 
 	
-	$t = file_get_contents( dirname(__file__). "/admin.tpl" );
+	$t = get_markup_template( "admin.tpl", "addon/statusnet/" );
 	$o = replace_macros($t, array(
 		'$submit' => t('Submit'),
 							

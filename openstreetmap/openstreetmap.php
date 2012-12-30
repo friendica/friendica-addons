@@ -58,7 +58,7 @@ function openstreetmap_location($a, &$item) {
 
 
 function openstreetmap_plugin_admin (&$a, &$o) {
-	$t = file_get_contents( dirname(__file__)."/admin.tpl");
+	$t = get_markup_template( "admin.tpl", "addon/openstreetmap/" );
 	$tmsserver = get_config('openstreetmap','tmsserver');
 	if(! $tmsserver)
 		$tmsserver = 'http://openstreetmap.org';
