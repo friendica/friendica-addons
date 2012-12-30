@@ -128,7 +128,8 @@ function privacy_image_cache_init() {
 		if (strpos($_REQUEST['url'], ".fbcdn.net/") and (substr($_REQUEST['url'], -6) == "_s.jpg"))
 			$_REQUEST['url'] = substr($_REQUEST['url'], 0, -6)."_n.jpg";
 
-		$img_str = fetch_url($_REQUEST['url'],true);
+		$redirects = 0;
+		$img_str = fetch_url($_REQUEST['url'],true, $redirects, 10);
 
 		$tempfile = tempnam(get_config("system","temppath"), "cache");
 		file_put_contents($tempfile, $img_str);
@@ -141,9 +142,9 @@ function privacy_image_cache_init() {
 			$mime = "image/png";
 			$cachefile = ""; // Clear the cachefile so that the dummy isn't stored
 			$valid = false;
-			$img = new Photo($img_str);
+			$img = new Photo($img_str, "image/png");
 			if($img->is_valid()) {
-				$img->scaleImage(1);
+				$img->scaleImage(10);
 				$img_str = $img->imageString();
 			}
 		//} else if (substr($img_str, 0, 6) == "GIF89a") {
