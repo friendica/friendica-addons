@@ -30,7 +30,7 @@
  * Thank you guys for the Twitter compatible API!
  */
 
-define('STATUSNET_DEFAULT_POLL_INTERVAL', 30); // given in minutes
+define('STATUSNET_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
 require_once('library/twitteroauth.php');
 

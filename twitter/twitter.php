@@ -36,7 +36,7 @@
  *     Documentation: http://diekershoff.homeunix.net/redmine/wiki/friendikaplugin/Twitter_Plugin
  */
 
-define('TWITTER_DEFAULT_POLL_INTERVAL', 30); // given in minutes
+define('TWITTER_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
 function twitter_install() {
 	//  we need some hooks, for the configuration and for sending tweets
@@ -405,8 +405,8 @@ function twitter_post_hook(&$a,&$b) {
 	if($b['parent'] != $b['id'])
 		return;
 
-	// if posts comes from twitter don't send it back
-	if($b['app'] == "twitter.com")
+	// if post comes from twitter don't send it back
+	if($b['app'] == "Twitter")
 		return;
 
 	logger('twitter post invoked');
@@ -603,7 +603,7 @@ function twitter_fetchtimeline($a, $uid) {
 			$_REQUEST["type"] = "wall";
 			$_REQUEST["api_source"] = true;
 			$_REQUEST["profile_uid"] = $uid;
-			$_REQUEST["source"] = "twitter.com";
+			$_REQUEST["source"] = "Twitter";
 
 			//$_REQUEST["date"] = $post->created_at;
 
