@@ -787,6 +787,9 @@ function statusnet_fetchtimeline($a, $uid) {
 		if ($post->id > $lastid)
 			$lastid = $post->id;
 
+		if (is_object($post->retweeted_status))
+			continue;
+
 		if (!strpos($post->source, $a->get_hostname())) {
 			$_SESSION["authenticated"] = true;
 			$_SESSION["uid"] = $uid;
