@@ -74,7 +74,7 @@ function twitter_jot_nets(&$a,&$b) {
 		$tw_defpost = get_pconfig(local_user(),'twitter','post_by_default');
 		$selected = ((intval($tw_defpost) == 1) ? ' checked="checked" ' : '');
 		$b .= '<div class="profile-jot-net"><input type="checkbox" name="twitter_enable"' . $selected . ' value="1" /> ' 
-			. t('Post to Twitter') . '</div>';	
+			. t('Post to Twitter') . '</div>';
 	}
 }
 
