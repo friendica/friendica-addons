@@ -1008,10 +1008,13 @@ function fbpost_cron($a,$b) {
 
 function fbpost_fetchwall($a, $uid) {
 	$access_token = get_pconfig($uid,'facebook','access_token');
+	$post_to_page = get_pconfig($uid,'facebook','post_to_page');
 	$lastcreated = get_pconfig($uid,'facebook','last_created');
-	$lastcreated = "";
 
-	$url = 'https://graph.facebook.com/me/feed?access_token='.$access_token;
+	if ((int)$post_to_page == 0)
+		$post_to_page = "me";
+
+	$url = "https://graph.facebook.com/".$post_to_page."/feed?access_token=".$access_token;
 
 	if ($lastcreated != "")
 		$url .= "&since=".urlencode($lastcreated);
