@@ -1030,9 +1030,8 @@ function fbpost_fetchwall($a, $uid) {
 		if ($item->application->id == get_config('facebook','appid'))
 			continue;
 
-		if(isset($item->privacy) && $item->privacy->value !== 'EVERYONE')
+		if(isset($item->privacy) && ($item->privacy->value !== 'EVERYONE') && ($item->privacy->value !== ''))
 			continue;
-
 
 		$_SESSION["authenticated"] = true;
 		$_SESSION["uid"] = $uid;
@@ -1088,10 +1087,11 @@ function fbpost_fetchwall($a, $uid) {
 			}
 		}
 
-		if (($datarray['app'] == "Events") and isset($item->actions))
+		/*if (($datarray['app'] == "Events") and isset($item->actions))
 			foreach ($item->actions as $action)
 				if ($action->name == "View")
 					$_REQUEST["body"] .= " [url=".$action->link."]".$item->story."[/url]";
+		*/
 
 		if(trim($_REQUEST["body"]) == '') {
 			logger('facebook: empty body '.$item->id.' '.print_r($item, true));
