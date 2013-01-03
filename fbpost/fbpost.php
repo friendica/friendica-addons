@@ -1048,7 +1048,7 @@ function fbpost_fetchwall($a, $uid) {
 		elseif (isset($item->name))
 			$_REQUEST["body"] .= "\n\n[b]" . $item->name."[/b]";
 
-		if(isset($item->caption)) {
+		/*if(isset($item->caption)) {
 			if(!isset($item->name) and isset($item->link))
 				$_REQUEST["body"] .= "\n\n[bookmark=".$item->link."]".$item->caption."[/bookmark]";
 			//else
@@ -1060,22 +1060,26 @@ function fbpost_fetchwall($a, $uid) {
 					$_REQUEST["body"] .= "\n[url]".$item->link."[/url]\n";
 				else
 					$_REQUEST["body"] .= "\n";
-		}
+		}*/
 
 		$quote = "";
-		if(isset($item->description))
+		if(isset($item->description) and ($item->type != "photo"))
 			$quote = $item->description;
 
-		if (isset($item->properties))
-			foreach ($item->properties as $property)
-				$quote .= "\n".$property->name.": [url=".$property->href."]".$property->text."[/url]";
+		if(isset($item->caption) and ($item->type == "photo"))
+			$quote = $item->caption;
+
+		//if (isset($item->properties))
+		//	foreach ($item->properties as $property)
+		//		$quote .= "\n".$property->name.": [url=".$property->href."]".$property->text."[/url]";
 
 		if ($quote)
 			$_REQUEST["body"] .= "\n[quote]".$quote."[/quote]";
 
 		// Only import the picture when the message is no video
 		// oembed display a picture of the video as well
-		if ($item->type != "video") {
+		//if ($item->type != "video") {
+		if (($item->type != "video") and ($item->type != "photo")) {
 			if(isset($item->picture) && isset($item->link))
 				$_REQUEST["body"] .= "\n".'[url='.$item->link.'][img]'.fpost_cleanpicture($item->picture).'[/img][/url]';
 			else {

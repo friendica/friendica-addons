@@ -306,6 +306,10 @@ function twitter_shortenmsg($b) {
 	if ($b["title"] != "")
 		$body = $b["title"]."\n\n".$body;
 
+	// Add some newlines so that the message could be cut better
+	$body = str_replace(array("[quote", "[bookmark", "[/bookmark]", "[/quote]"),
+			array("\n[quote", "\n[bookmark", "[/bookmark]\n", "[/quote]\n"), $body);
+
 	// remove the recycle signs and the names since they aren't helpful on twitter
 	// recycle 1
 	$recycle = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8');
@@ -581,6 +585,11 @@ function twitter_fetchtimeline($a, $uid) {
 	$osecret = get_pconfig($uid, 'twitter', 'oauthsecret');
 	$lastid  = get_pconfig($uid, 'twitter', 'lastid');
 
+	$application_name  = get_config('twitter', 'application_name');
+
+	if ($application_name == "")
+		$application_name = $a->get_hostname();
+
 	require_once('library/twitteroauth.php');
 	$connection = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
 
@@ -596,7 +605,7 @@ function twitter_fetchtimeline($a, $uid) {
 		if ($post->id_str > $lastid)
 			$lastid = $post->id_str;
 
-		if (!strpos($post->source, $a->get_hostname())) {
+		if (!strpos($post->source, $application_name)) {
 			$_SESSION["authenticated"] = true;
 			$_SESSION["uid"] = $uid;
 

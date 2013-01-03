@@ -448,6 +448,10 @@ function statusnet_shortenmsg($b, $max_char) {
 	if ($b["title"] != "")
 		$body = $b["title"]."\n\n".$body;
 
+	// Add some newlines so that the message could be cut better
+	$body = str_replace(array("[quote", "[bookmark", "[/bookmark]", "[/quote]"),
+				array("\n[quote", "\n[bookmark", "[/bookmark]\n", "[/quote]\n"), $body);
+
 	// remove the recycle signs and the names since they aren't helpful on twitter
 	// recycle 1
 	$recycle = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8');
@@ -773,6 +777,11 @@ function statusnet_fetchtimeline($a, $uid) {
 	$osecret = get_pconfig($uid, 'statusnet', 'oauthsecret');
 	$lastid  = get_pconfig($uid, 'statusnet', 'lastid');
 
+	$application_name  = get_config('statusnet', 'application_name');
+
+	if ($application_name == "")
+		$application_name = $a->get_hostname();
+
 	$connection = new StatusNetOAuth($api, $ckey,$csecret,$otoken,$osecret);
 
 	$parameters = array("exclude_replies" => true, "trim_user" => true, "contributor_details" => false, "include_rts" => false);
@@ -793,7 +802,7 @@ function statusnet_fetchtimeline($a, $uid) {
 		if ($post->in_reply_to_status_id != "")
 			continue;
 
-		if (!strpos($post->source, $a->get_hostname())) {
+		if (!strpos($post->source, $application_name)) {
 			$_SESSION["authenticated"] = true;
 			$_SESSION["uid"] = $uid;
 
