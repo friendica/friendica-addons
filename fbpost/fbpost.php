@@ -1078,8 +1078,8 @@ function fbpost_fetchwall($a, $uid) {
 
 		// Only import the picture when the message is no video
 		// oembed display a picture of the video as well
-		//if ($item->type != "video") {
-		if (($item->type != "video") and ($item->type != "photo")) {
+		if ($item->type != "video") {
+		//if (($item->type != "video") and ($item->type != "photo")) {
 			if(isset($item->picture) && isset($item->link))
 				$_REQUEST["body"] .= "\n".'[url='.$item->link.'][img]'.fpost_cleanpicture($item->picture).'[/img][/url]';
 			else {

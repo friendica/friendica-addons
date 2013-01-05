@@ -448,6 +448,20 @@ function statusnet_shortenmsg($b, $max_char) {
 	if ($b["title"] != "")
 		$body = $b["title"]."\n\n".$body;
 
+	if (strpos($body, "[bookmark") !== false) {
+		// splitting the text in two parts:
+		// before and after the bookmark
+		$pos = strpos($body, "[bookmark");
+		$body1 = substr($body, 0, $pos);
+		$body2 = substr($body, $pos);
+
+		// Removing all quotes after the bookmark
+		// they are mostly only the content after the bookmark.
+		$body2 = preg_replace("/\[quote\=([^\]]*)\](.*?)\[\/quote\]/ism",'',$body2);
+		$body2 = preg_replace("/\[quote\](.*?)\[\/quote\]/ism",'',$body2);
+		$body = $body1.$body2;
+	}
+
 	// Add some newlines so that the message could be cut better
 	$body = str_replace(array("[quote", "[bookmark", "[/bookmark]", "[/quote]"),
 				array("\n[quote", "\n[bookmark", "[/bookmark]\n", "[/quote]\n"), $body);
