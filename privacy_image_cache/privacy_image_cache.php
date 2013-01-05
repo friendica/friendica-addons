@@ -119,7 +119,17 @@ function privacy_image_cache_init() {
 		// It shouldn't happen but it does - spaces in URL
 		$_REQUEST['url'] = str_replace(" ", "+", $_REQUEST['url']);
 
-		$img_str = fetch_url($_REQUEST['url'],true);
+		// if the picture seems to be from another picture cache then take the original source
+		$queryvar = privacy_image_cache_parse_query($_REQUEST['url']);
+		if ($queryvar['url'] != "")
+			$_REQUEST['url'] = urldecode($queryvar['url']);
+
+		// if fetching facebook pictures don't fetch the thumbnail but the big one
+		if (strpos($_REQUEST['url'], ".fbcdn.net/") and (substr($_REQUEST['url'], -6) == "_s.jpg"))
+			$_REQUEST['url'] = substr($_REQUEST['url'], 0, -6)."_n.jpg";
+
+		$redirects = 0;
+		$img_str = fetch_url($_REQUEST['url'],true, $redirects, 10);
 
 		$tempfile = tempnam(get_config("system","temppath"), "cache");
 		file_put_contents($tempfile, $img_str);
@@ -132,9 +142,9 @@ function privacy_image_cache_init() {
 			$mime = "image/png";
 			$cachefile = ""; // Clear the cachefile so that the dummy isn't stored
 			$valid = false;
-			$img = new Photo($img_str);
+			$img = new Photo($img_str, "image/png");
 			if($img->is_valid()) {
-				$img->scaleImage(1);
+				$img->scaleImage(10);
 				$img_str = $img->imageString();
 			}
 		//} else if (substr($img_str, 0, 6) == "GIF89a") {
@@ -319,13 +329,11 @@ function privacy_image_cache_cron(&$a = null, &$b = null) {
 
     logger("Purging old Cache of the Privacy Image Cache", LOGGER_DEBUG);
     q('DELETE FROM `photo` WHERE `uid` = 0 AND `resource-id` LIKE "pic:%%" AND `created` < NOW() - INTERVAL %d SECOND', $cachetime);
-    set_config('pi_cache', 'last_delete', $time);
 
     clear_cache($a->get_basepath(), $a->get_basepath()."/privacy_image_cache");
+
+    set_config('pi_cache', 'last_delete', $time);
 }
-
-
-
 
 /**
  * @param App $a
@@ -371,4 +379,23 @@ function privacy_image_cache_plugin_admin_post(&$a = null, &$o = null){
     if (isset($_REQUEST['delete_all'])) {
         q('DELETE FROM `photo` WHERE `uid` = 0 AND `resource-id` LIKE "pic:%%"');
     }
+}
+
+function privacy_image_cache_parse_query($var) {
+	/**
+	 *  Use this function to parse out the query array element from
+	 *  the output of parse_url().
+	*/
+	$var  = parse_url($var, PHP_URL_QUERY);
+	$var  = html_entity_decode($var);
+	$var  = explode('&', $var);
+	$arr  = array();
+
+	foreach($var as $val) {
+		$x          = explode('=', $val);
+		$arr[$x[0]] = $x[1];
+	}
+
+	unset($val, $x, $var);
+	return $arr;
 }

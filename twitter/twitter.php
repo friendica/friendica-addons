@@ -36,6 +36,8 @@
  *     Documentation: http://diekershoff.homeunix.net/redmine/wiki/friendikaplugin/Twitter_Plugin
  */
 
+define('TWITTER_DEFAULT_POLL_INTERVAL', 5); // given in minutes
+
 function twitter_install() {
 	//  we need some hooks, for the configuration and for sending tweets
 	register_hook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings'); 
@@ -43,6 +45,7 @@ function twitter_install() {
 	register_hook('post_local', 'addon/twitter/twitter.php', 'twitter_post_local');
 	register_hook('notifier_normal', 'addon/twitter/twitter.php', 'twitter_post_hook');
 	register_hook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
+	register_hook('cron', 'addon/twitter/twitter.php', 'twitter_cron');
 	logger("installed twitter");
 }
 
@@ -53,6 +56,7 @@ function twitter_uninstall() {
 	unregister_hook('post_local', 'addon/twitter/twitter.php', 'twitter_post_local');
 	unregister_hook('notifier_normal', 'addon/twitter/twitter.php', 'twitter_post_hook');
 	unregister_hook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
+	unregister_hook('cron', 'addon/twitter/twitter.php', 'twitter_cron');
 
 	// old setting - remove only
 	unregister_hook('post_local_end', 'addon/twitter/twitter.php', 'twitter_post_hook');
@@ -70,10 +74,8 @@ function twitter_jot_nets(&$a,&$b) {
 		$tw_defpost = get_pconfig(local_user(),'twitter','post_by_default');
 		$selected = ((intval($tw_defpost) == 1) ? ' checked="checked" ' : '');
 		$b .= '<div class="profile-jot-net"><input type="checkbox" name="twitter_enable"' . $selected . ' value="1" /> ' 
-			. t('Post to Twitter') . '</div>';	
+			. t('Post to Twitter') . '</div>';
 	}
-
-
 }
 
 function twitter_settings_post ($a,$post) {
@@ -87,20 +89,23 @@ function twitter_settings_post ($a,$post) {
 		 * if the twitter-disconnect checkbox is set, clear the OAuth key/secret pair
 		 * from the user configuration
 		 */
-		del_pconfig( local_user(), 'twitter', 'consumerkey'  );
-		del_pconfig( local_user(), 'twitter', 'consumersecret' );
-                del_pconfig( local_user(), 'twitter', 'oauthtoken'  );  
-                del_pconfig( local_user(), 'twitter', 'oauthsecret'  );  
-                del_pconfig( local_user(), 'twitter', 'post' );
-                del_pconfig( local_user(), 'twitter', 'post_by_default' );
-                del_pconfig( local_user(), 'twitter', 'post_taglinks');
+		del_pconfig(local_user(), 'twitter', 'consumerkey');
+		del_pconfig(local_user(), 'twitter', 'consumersecret');
+                del_pconfig(local_user(), 'twitter', 'oauthtoken');
+                del_pconfig(local_user(), 'twitter', 'oauthsecret');
+                del_pconfig(local_user(), 'twitter', 'post');
+                del_pconfig(local_user(), 'twitter', 'post_by_default');
+                del_pconfig(local_user(), 'twitter', 'post_taglinks');
+		del_pconfig(local_user(), 'twitter', 'lastid');
+		del_pconfig(local_user(), 'twitter', 'mirror_posts');
+		del_pconfig(local_user(), 'twitter', 'intelligent_shortening');
 	} else {
 	if (isset($_POST['twitter-pin'])) {
 		//  if the user supplied us with a PIN from Twitter, let the magic of OAuth happen
 		logger('got a Twitter PIN');
 		require_once('library/twitteroauth.php');
-		$ckey    = get_config('twitter', 'consumerkey'  );
-		$csecret = get_config('twitter', 'consumersecret' );
+		$ckey    = get_config('twitter', 'consumerkey');
+		$csecret = get_config('twitter', 'consumersecret');
 		//  the token and secret for which the PIN was generated were hidden in the settings
 		//  form as token and token2, we need a new connection to Twitter using these token
 		//  and secret to request a Access Token with the PIN
@@ -119,6 +124,8 @@ function twitter_settings_post ($a,$post) {
 		set_pconfig(local_user(),'twitter','post',intval($_POST['twitter-enable']));
                 set_pconfig(local_user(),'twitter','post_by_default',intval($_POST['twitter-default']));
                 set_pconfig(local_user(),'twitter','post_taglinks',intval($_POST['twitter-sendtaglinks']));
+		set_pconfig(local_user(), 'twitter', 'mirror_posts', intval($_POST['twitter-mirror']));
+		set_pconfig(local_user(), 'twitter', 'intelligent_shortening', intval($_POST['twitter-shortening']));
                 info( t('Twitter settings updated.') . EOL);
 	}}
 }
@@ -141,6 +148,10 @@ function twitter_settings(&$a,&$s) {
 	$defchecked = (($defenabled) ? ' checked="checked" ' : '');
         $linksenabled = get_pconfig(local_user(),'twitter','post_taglinks');
         $linkschecked = (($linksenabled) ? ' checked="checked" ' : '');
+        $mirrorenabled = get_pconfig(local_user(),'twitter','mirror_posts');
+        $mirrorchecked = (($mirrorenabled) ? ' checked="checked" ' : '');
+        $shorteningenabled = get_pconfig(local_user(),'twitter','intelligent_shortening');
+        $shorteningchecked = (($shorteningenabled) ? ' checked="checked" ' : '');
 
 	$s .= '<div class="settings-block">';
 	$s .= '<h3>'. t('Twitter Posting Settings') .'</h3>';
@@ -198,6 +209,15 @@ function twitter_settings(&$a,&$s) {
                         $s .= '<label id="twitter-default-label" for="twitter-default">'. t('Send public postings to Twitter by default') .'</label>';
                         $s .= '<input id="twitter-default" type="checkbox" name="twitter-default" value="1" ' . $defchecked . '/>';
 			$s .= '<div class="clear"></div>';
+
+                        $s .= '<label id="twitter-mirror-label" for="twitter-mirror">'.t('Mirror all posts from twitter that are no replies or retweets').'</label>';
+                        $s .= '<input id="twitter-mirror" type="checkbox" name="twitter-mirror" value="1" '. $mirrorchecked . '/>';
+			$s .= '<div class="clear"></div>';
+
+                        $s .= '<label id="twitter-shortening-label" for="twitter-shortening">'.t('Shortening method that optimizes the tweet').'</label>';
+                        $s .= '<input id="twitter-shortening" type="checkbox" name="twitter-shortening" value="1" '. $shorteningchecked . '/>';
+			$s .= '<div class="clear"></div>';
+
                         $s .= '<label id="twitter-sendtaglinks-label" for="twitter-sendtaglinks">'.t('Send linked #-tags and @-names to Twitter').'</label>';
                         $s .= '<input id="twitter-sendtaglinks" type="checkbox" name="twitter-sendtaglinks" value="1" '. $linkschecked . '/>';
 			$s .= '</div><div class="clear"></div>';
@@ -285,6 +305,24 @@ function twitter_shortenmsg($b) {
 	$body = $b["body"];
 	if ($b["title"] != "")
 		$body = $b["title"]."\n\n".$body;
+
+	if (strpos($body, "[bookmark") !== false) {
+		// splitting the text in two parts:
+		// before and after the bookmark
+		$pos = strpos($body, "[bookmark");
+		$body1 = substr($body, 0, $pos);
+		$body2 = substr($body, $pos);
+
+		// Removing all quotes after the bookmark
+		// they are mostly only the content after the bookmark.
+		$body2 = preg_replace("/\[quote\=([^\]]*)\](.*?)\[\/quote\]/ism",'',$body2);
+		$body2 = preg_replace("/\[quote\](.*?)\[\/quote\]/ism",'',$body2);
+		$body = $body1.$body2;
+	}
+
+	// Add some newlines so that the message could be cut better
+	$body = str_replace(array("[quote", "[bookmark", "[/bookmark]", "[/quote]"),
+			array("\n[quote", "\n[bookmark", "[/bookmark]\n", "[/quote]\n"), $body);
 
 	// remove the recycle signs and the names since they aren't helpful on twitter
 	// recycle 1
@@ -385,15 +423,24 @@ function twitter_post_hook(&$a,&$b) {
 	if($b['parent'] != $b['id'])
 		return;
 
+	// if post comes from twitter don't send it back
+	if($b['app'] == "Twitter")
+		return;
+
 	logger('twitter post invoked');
 
 
 	load_pconfig($b['uid'], 'twitter');
 
-	$ckey    = get_config('twitter', 'consumerkey'  );
-	$csecret = get_config('twitter', 'consumersecret' );
-	$otoken  = get_pconfig($b['uid'], 'twitter', 'oauthtoken'  );
-	$osecret = get_pconfig($b['uid'], 'twitter', 'oauthsecret' );
+	$ckey    = get_config('twitter', 'consumerkey');
+	$csecret = get_config('twitter', 'consumersecret');
+	$otoken  = get_pconfig($b['uid'], 'twitter', 'oauthtoken');
+	$osecret = get_pconfig($b['uid'], 'twitter', 'oauthsecret');
+	$intelligent_shortening = get_pconfig($b['uid'], 'twitter', 'intelligent_shortening');
+
+	// Global setting overrides this
+	if (get_config('twitter','intelligent_shortening'))
+                $intelligent_shortening = get_config('twitter','intelligent_shortening');
 
 	if($ckey && $csecret && $otoken && $osecret) {
 		logger('twitter: we have customer key and oauth stuff, going to send.', LOGGER_DEBUG);
@@ -403,9 +450,6 @@ function twitter_post_hook(&$a,&$b) {
 		$tweet = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
                 // in theory max char is 140 but T. uses t.co to make links 
                 // longer so we give them 10 characters extra
-
-                $intelligent_shortening = get_config('twitter','intelligent_shortening');
-
 		if (!$intelligent_shortening) {
 			$max_char = 130; // max. length for a tweet
 	                // we will only work with up to two times the length of the dent 
@@ -512,4 +556,95 @@ function twitter_plugin_admin(&$a, &$o){
 		'$consumerkey' => array('consumerkey', t('Consumer key'),  get_config('twitter', 'consumerkey' ), ''),
 		'$consumersecret' => array('consumersecret', t('Consumer secret'),  get_config('twitter', 'consumersecret' ), '')
 	));
+}
+
+function twitter_cron($a,$b) {
+	$last = get_config('twitter','last_poll');
+
+	$poll_interval = intval(get_config('twitter','poll_interval'));
+	if(! $poll_interval)
+		$poll_interval = TWITTER_DEFAULT_POLL_INTERVAL;
+
+	if($last) {
+		$next = $last + ($poll_interval * 60);
+		if($next > time()) {
+			logger('twitter: poll intervall not reached');
+			return;
+		}
+	}
+	logger('twitter: cron_start');
+
+	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'mirror_posts' AND `v` = '1' ORDER BY RAND() ");
+	if(count($r)) {
+		foreach($r as $rr) {
+			logger('twitter: fetching for user '.$rr['uid']);
+			twitter_fetchtimeline($a, $rr['uid']);
+		}
+	}
+
+	logger('twitter: cron_end');
+
+	set_config('twitter','last_poll', time());
+}
+
+function twitter_fetchtimeline($a, $uid) {
+	$ckey    = get_config('twitter', 'consumerkey');
+	$csecret = get_config('twitter', 'consumersecret');
+	$otoken  = get_pconfig($uid, 'twitter', 'oauthtoken');
+	$osecret = get_pconfig($uid, 'twitter', 'oauthsecret');
+	$lastid  = get_pconfig($uid, 'twitter', 'lastid');
+
+	$application_name  = get_config('twitter', 'application_name');
+
+	if ($application_name == "")
+		$application_name = $a->get_hostname();
+
+	require_once('library/twitteroauth.php');
+	$connection = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
+
+	$parameters = array("exclude_replies" => true, "trim_user" => true, "contributor_details" => false, "include_rts" => false);
+
+	if ($lastid <> "")
+		$parameters["since_id"] = $lastid;
+
+	$items = $connection->get('statuses/user_timeline', $parameters);
+	$posts = array_reverse($items);
+
+	foreach ($posts as $post) {
+		if ($post->id_str > $lastid)
+			$lastid = $post->id_str;
+
+		if (!strpos($post->source, $application_name)) {
+			$_SESSION["authenticated"] = true;
+			$_SESSION["uid"] = $uid;
+
+			$_REQUEST["type"] = "wall";
+			$_REQUEST["api_source"] = true;
+			$_REQUEST["profile_uid"] = $uid;
+			$_REQUEST["source"] = "Twitter";
+
+			//$_REQUEST["date"] = $post->created_at;
+
+			$_REQUEST["body"] = $post->text;
+			if (is_string($post->place->name))
+				$_REQUEST["location"] = $post->place->name;
+
+			if (is_string($post->place->full_name))
+				$_REQUEST["location"] = $post->place->full_name;
+
+			if (is_array($post->geo->coordinates))
+				$_REQUEST["coord"] = $post->geo->coordinates[0]." ".$post->geo->coordinates[1];
+
+			if (is_array($post->coordinates->coordinates))
+				$_REQUEST["coord"] = $post->coordinates->coordinates[1]." ".$post->coordinates->coordinates[0];
+
+			//print_r($_REQUEST);
+			logger('twitter: posting for user '.$uid);
+
+			require_once('mod/item.php');
+			item_post($a);
+
+		}
+	}
+	set_pconfig($uid, 'twitter', 'lastid', $lastid);
 }

@@ -74,7 +74,7 @@ function forumlist_network_mod_init($a,$b) {
 
 	if(count($contacts)) {
 		foreach($contacts as $contact) {
-			$forumlist .= '<a href="' . $a->get_baseurl() . '/redir/' . $contact["id"] . '" title="' . $contact['url'] . '" class="label sparkle" target="external-link"><img class="forumlist-img" height="20" width="20" src="' . $contact['micro'] .'" alt="' . $contact['url'] . '" /></a> <a href="' . $a->get_baseurl() . '/network?f=&cid=' . $contact['id'] . '" >' . $contact["name"]."</a><br />";
+			$forumlist .= '<div><a href="' . $a->get_baseurl() . '/redir/' . $contact["id"] . '" title="' . $contact['url'] . '" class="label sparkle" target="external-link"><img class="forumlist-img" height="20" width="20" src="' . $contact['micro'] .'" alt="' . $contact['url'] . '" /></a> <a href="' . $a->get_baseurl() . '/network?f=&cid=' . $contact['id'] . '" >' . $contact["name"]."</a></div>";
 		}
 	}
 	else {
