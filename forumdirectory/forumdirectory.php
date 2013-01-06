@@ -168,12 +168,12 @@ function forumdirectory_content(&$a) {
 
 			$entry = replace_macros($tpl,array(
 				'$id' => $rr['id'],
-				'$profile-link' => $profile_link,
+				'$profile_link' => $profile_link,
 				'$photo' => $a->get_cached_avatar_image($rr[$photo]),
-				'$alt-text' => $rr['name'],
+				'$alt_text' => $rr['name'],
 				'$name' => $rr['name'],
 				'$details' => $pdesc . $details,
-				'$page-type' => $page_type,
+				'$page_type' => $page_type,
 				'$profile' => $profile,
 				'$location' => template_escape($location),
 				'$gender'   => $gender,
