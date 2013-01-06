@@ -39,4 +39,5 @@ aside .directory-photo-img { max-width: 48px; max-height: 48px; }
 aside #likes { margin: 0px; padding: 0px; list-style: none; }
 
 
-aside #login-extra-links { overflow: auto;	width: 100%; padding-top:120px;}
+aside #div_id_remember { overflow: auto;	width: 100%; padding-top:120px;}
+#login_openid input { width: 160px; }
