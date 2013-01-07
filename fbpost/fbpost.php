@@ -394,6 +394,10 @@ function fbpost_post_hook(&$a,&$b) {
 	if($b['deleted'] || ($b['created'] !== $b['edited']))
 		return;
 
+	// Don't transmit answers (have to be cleaned up in the following code)
+	if($b['parent'] != $b['id'])
+		return;
+
 	// if post comes from facebook don't send it back
 	if($b['app'] == "Facebook")
 		return;
