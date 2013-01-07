@@ -1020,6 +1020,8 @@ function fbpost_fetchwall($a, $uid) {
 
 	$url = "https://graph.facebook.com/".$post_to_page."/feed?access_token=".$access_token;
 
+	$first_time = ($lastcreated == "");
+
 	if ($lastcreated != "")
 		$url .= "&since=".urlencode($lastcreated);
 
@@ -1030,6 +1032,9 @@ function fbpost_fetchwall($a, $uid) {
 	foreach ($items as $item) {
 		if ($item->created_time > $lastcreated)
 			$lastcreated = $item->created_time;
+
+		if ($first_time)
+			continue;
 
 		if ($item->application->id == get_config('facebook','appid'))
 			continue;
