@@ -604,6 +604,8 @@ function twitter_fetchtimeline($a, $uid) {
 
 	$parameters = array("exclude_replies" => true, "trim_user" => true, "contributor_details" => false, "include_rts" => false);
 
+	$first_time = ($lastid == "");
+
 	if ($lastid <> "")
 		$parameters["since_id"] = $lastid;
 
@@ -613,6 +615,9 @@ function twitter_fetchtimeline($a, $uid) {
 	foreach ($posts as $post) {
 		if ($post->id_str > $lastid)
 			$lastid = $post->id_str;
+
+		if ($firsttime)
+			continue;
 
 		if (!strpos($post->source, $application_name)) {
 			$_SESSION["authenticated"] = true;
