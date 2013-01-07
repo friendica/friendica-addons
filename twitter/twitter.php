@@ -616,7 +616,7 @@ function twitter_fetchtimeline($a, $uid) {
 		if ($post->id_str > $lastid)
 			$lastid = $post->id_str;
 
-		if ($firsttime)
+		if ($first_time)
 			continue;
 
 		if (!strpos($post->source, $application_name)) {

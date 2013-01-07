@@ -812,7 +812,7 @@ function statusnet_fetchtimeline($a, $uid) {
 		if ($post->id > $lastid)
 			$lastid = $post->id;
 
-		if ($firsttime)
+		if ($first_time)
 			continue;
 
 		if (is_object($post->retweeted_status))
