@@ -40,8 +40,8 @@ function geonames_install() {
 	 *
 	 */
 
-	register_hook('plugin_settings', 'addon/geonames/geonames.php', 'geonames_settings');
-	register_hook('plugin_settings_post', 'addon/geonames/geonames.php', 'geonames_settings_post');
+	register_hook('plugin_settings', 'addon/geonames/geonames.php', 'geonames_plugin_admin');
+	register_hook('plugin_settings_post', 'addon/geonames/geonames.php', 'geonames_plugin_admin_post');
 
 	logger("installed geonames");
 }
@@ -58,8 +58,8 @@ function geonames_uninstall() {
 	 */
 
 	unregister_hook('post_local',    'addon/geonames/geonames.php', 'geonames_post_hook');
-	unregister_hook('plugin_settings', 'addon/geonames/geonames.php', 'geonames_settings');
-	unregister_hook('plugin_settings_post', 'addon/geonames/geonames.php', 'geonames_settings_post');
+	unregister_hook('plugin_settings', 'addon/geonames/geonames.php', 'geonames_plugin_admin');
+	unregister_hook('plugin_settings_post', 'addon/geonames/geonames.php', 'geonames_plugin_admin_post');
 
 
 	logger("removed geonames");
@@ -135,7 +135,7 @@ function geonames_post_hook($a, &$item) {
  *
  */
 
-function geonames_settings_post($a,$post) {
+function geonames_plugin_admin_post($a,$post) {
 	if(! local_user() || (! x($_POST,'geonames-submit')))
 		return;
 	set_pconfig(local_user(),'geonames','enable',intval($_POST['geonames']));
@@ -153,7 +153,7 @@ function geonames_settings_post($a,$post) {
 
 
 
-function geonames_settings(&$a,&$s) {
+function geonames_plugin_admin(&$a,&$s) {
 
 	if(! local_user())
 		return;
