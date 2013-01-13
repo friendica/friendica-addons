@@ -543,7 +543,7 @@ function twitter_post_hook(&$a,&$b) {
 function twitter_plugin_admin_post(&$a){
 	$consumerkey	=	((x($_POST,'consumerkey'))		? notags(trim($_POST['consumerkey']))	: '');
 	$consumersecret	=	((x($_POST,'consumersecret'))	? notags(trim($_POST['consumersecret'])): '');
-        $applicationname = ((x($_POST, 'application-name')) ? notags(trin($_POST['applicationname'])):'');
+        $applicationname = ((x($_POST, 'applicationname')) ? notags(trim($_POST['applicationname'])):'');
 	set_config('twitter','consumerkey',$consumerkey);
 	set_config('twitter','consumersecret',$consumersecret);
 	set_config('twitter','application_name',$applicationname);
@@ -557,7 +557,7 @@ function twitter_plugin_admin(&$a, &$o){
 								// name, label, value, help, [extra values]
 		'$consumerkey' => array('consumerkey', t('Consumer key'),  get_config('twitter', 'consumerkey' ), ''),
                 '$consumersecret' => array('consumersecret', t('Consumer secret'),  get_config('twitter', 'consumersecret' ), ''),
-                '$applicationname' => array('applicationname', t('Name of the Twitter Application'), get_config('twitter','applicationname'),t('set this to avoid mirroring postings from ~friendica back to ~friendica'))
+                '$applicationname' => array('applicationname', t('Name of the Twitter Application'), get_config('twitter','application_name'),t('set this to avoid mirroring postings from ~friendica back to ~friendica'))
 	));
 }
 
