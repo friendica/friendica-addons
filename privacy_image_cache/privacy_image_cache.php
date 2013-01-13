@@ -120,13 +120,13 @@ function privacy_image_cache_init() {
 		$_REQUEST['url'] = str_replace(" ", "+", $_REQUEST['url']);
 
 		// if the picture seems to be from another picture cache then take the original source
-		$queryvar = privacy_image_cache_parse_query($_REQUEST['url']);
-		if ($queryvar['url'] != "")
-			$_REQUEST['url'] = urldecode($queryvar['url']);
+		//$queryvar = privacy_image_cache_parse_query($_REQUEST['url']);
+		//if ($queryvar['url'] != "")
+		//	$_REQUEST['url'] = urldecode($queryvar['url']);
 
 		// if fetching facebook pictures don't fetch the thumbnail but the big one
-		if (strpos($_REQUEST['url'], ".fbcdn.net/") and (substr($_REQUEST['url'], -6) == "_s.jpg"))
-			$_REQUEST['url'] = substr($_REQUEST['url'], 0, -6)."_n.jpg";
+		//if (strpos($_REQUEST['url'], ".fbcdn.net/") and (substr($_REQUEST['url'], -6) == "_s.jpg"))
+		//	$_REQUEST['url'] = substr($_REQUEST['url'], 0, -6)."_n.jpg";
 
 		$redirects = 0;
 		$img_str = fetch_url($_REQUEST['url'],true, $redirects, 10);
@@ -243,7 +243,7 @@ function privacy_image_cache_is_local_image($url) {
 	// Check if the cached path would be longer than 255 characters - apache doesn't like it
 	if (is_dir($_SERVER["DOCUMENT_ROOT"]."/privacy_image_cache")) {
 		$cachedurl = get_app()->get_baseurl()."/privacy_image_cache/". privacy_image_cache_cachename($url);
-		if (strlen($url) > 255)
+		if (strlen($url) > 150)
 			return true;
 	}
 
@@ -258,6 +258,16 @@ function privacy_image_cache_is_local_image($url) {
  * @return string
  */
 function privacy_image_cache_img_cb($matches) {
+
+	// if the picture seems to be from another picture cache then take the original source
+	$queryvar = privacy_image_cache_parse_query($matches[2]);
+	if ($queryvar['url'] != "")
+		$matches[2] = urldecode($queryvar['url']);
+
+	// if fetching facebook pictures don't fetch the thumbnail but the big one
+	if (strpos($matches[2], ".fbcdn.net/") and (substr($matches[2], -6) == "_s.jpg"))
+		$matches[2] = substr($matches[2], 0, -6)."_n.jpg";
+
 	// following line changed per bug #431
 	if (privacy_image_cache_is_local_image($matches[2]))
 		return $matches[1] . $matches[2] . $matches[3];
