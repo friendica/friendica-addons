@@ -15,19 +15,15 @@
 	width: 250px;
 	margin-bottom: 25px;
 }
-#statusnet-default-label {
-	float: left;
-	width: 250px;
-}
-#statusnet-sendtaglinks-label {
-        float: left;
-        width: 250px;
-        margin-bottom: 25px;
-}
 #statusnet-disconnect {
 	float: left;
 }
 
+#statusnet-default-label,
+#statusnet-sendtaglinks-label,
+#statusnet-shortening-label, 
+#statusnet-mirror-label,
+#statusnet-pin-label,
 #statusnet-enable-label {
 	float: left;
 	width: 250px;
@@ -38,11 +34,6 @@
 	float: left;
 }
 
-#statusnet-pin-label {
-	float: left;
-	width: 250px;
-	margin-bottom: 25px;
-}
 #statusnet-pin {
 	float: left;
 }
