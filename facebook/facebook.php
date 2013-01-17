@@ -383,10 +383,12 @@ function fb_get_friends_sync_full($uid, $access_token, $persons) {
         if($s) {
             $results = json_decode($s);
             logger('fb_get_friends: info: ' . print_r($results,true), LOGGER_DATA);
-            foreach ($results as $contact) {
-                if ($contact->code != 200) logger('fb_get_friends: not found: ' . print_r($contact,true), LOGGER_DEBUG);
-                else fb_get_friends_sync_parsecontact($uid, json_decode($contact->body));
-            }
+			if(count($results)) {
+	            foreach ($results as $contact) {
+    	            if ($contact->code != 200) logger('fb_get_friends: not found: ' . print_r($contact,true), LOGGER_DEBUG);
+        	        else fb_get_friends_sync_parsecontact($uid, json_decode($contact->body));
+            	}
+			}
         }
     }
 }

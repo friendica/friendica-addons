@@ -19,28 +19,19 @@
 #twitter-disconnect {
 	float: left;
 }
-#twitter-enable-label {
-	float: left;
-	width: 250px;
-	margin-bottom: 5px;
-}
-#twitter-default-label {
-	float: left;
-	width: 250px;
-}
-#twitter-sendtaglinks-label {
+#twitter-default-label,
+#twitter-sendtaglinks-label,
+#twitter-enable-label,
+#twitter-shortening-label, 
+#twitter-mirror-label,
+#twitter-pin-label {
         float: left;
         width: 250px;
-        margin-bottom: 25px;
+        margin-bottom: 10px;
 }
 
 #twitter-checkbox {
 	float: left;
-}
-#twitter-pin-label {
-	float: left;
-	width: 250px;
-	margin-bottom: 25px;
 }
 
 #twitter-pin {
