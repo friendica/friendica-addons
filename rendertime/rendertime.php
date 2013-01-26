@@ -10,7 +10,6 @@
  */
 
 function rendertime_install() {
-	register_hook('init_1', 'addon/rendertime/rendertime.php', 'rendertime_init_1');
 	register_hook('page_end', 'addon/rendertime/rendertime.php', 'rendertime_page_end');
 }
 
@@ -21,15 +20,15 @@ function rendertime_uninstall() {
 }
 
 function rendertime_init_1(&$a) {
-	global $rendertime_start;
-
-	$rendertime_start = microtime(true);
 }
 
 function rendertime_page_end(&$a, &$o) {
-	global $rendertime_start;
 
-	$duration = round(microtime(true)-$rendertime_start, 3);
+	$duration = round(microtime(true)-$a->performance["start"], 3);
 
-	$o = $o.'<div class="renderinfo">'.sprintf(t("This page took %s seconds to render"), $duration)."</div>";
+	$o = $o.'<div class="renderinfo">'.sprintf(t("Rendertime: Database: %s, Network: %s, Rendering: %s, Total: %s"),
+						round($a->performance["database"], 3),
+						round($a->performance["network"], 3),
+						round($a->performance["rendering"], 3),
+						$duration)."</div>";
 }
