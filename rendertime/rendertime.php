@@ -24,11 +24,15 @@ function rendertime_init_1(&$a) {
 
 function rendertime_page_end(&$a, &$o) {
 
-	$duration = round(microtime(true)-$a->performance["start"], 3);
+	$duration = microtime(true)-$a->performance["start"];
 
-	$o = $o.'<div class="renderinfo">'.sprintf(t("Rendertime: Database: %s, Network: %s, Rendering: %s, Total: %s"),
+	$o = $o.'<div class="renderinfo">'.sprintf(t("Performance: Database: %s, Network: %s, Rendering: %s, Parser: %s, I/O: %s, Other: %s"),
 						round($a->performance["database"], 3),
 						round($a->performance["network"], 3),
 						round($a->performance["rendering"], 3),
-						$duration)."</div>";
+						round($a->performance["parser"], 3),
+						round($a->performance["file"], 3),
+						round($duration - $a->performance["database"] - $a->performance["network"]
+							 - $a->performance["rendering"] - $a->performance["parser"]
+							 - $a->performance["file"], 3))."</div>";
 }
