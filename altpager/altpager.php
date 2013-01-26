@@ -93,7 +93,7 @@ function altpager_settings(&$a,&$s) {
 }
 
 function altpager_plugin_admin(&$a, &$o){
-	$t = file_get_contents( "addon/altpager/admin.tpl" );
+	$t = get_markup_template( "admin.tpl", "addon/altpager/" );
 	$o = replace_macros($t, array(
 		'$submit' => t('Submit'),
 		'$global' => array('altpagerchoice', t('Global'), 1, t('Force global use of the alternate pager'),  get_config('alt_pager', 'global') == 1),
@@ -106,3 +106,4 @@ function altpager_plugin_admin_post(&$a){
 	set_config('alt_pager','global',($choice == 1 ? 1 : 0));
 	info( t('Settings updated.'). EOL );
 }
+

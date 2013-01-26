@@ -2,14 +2,14 @@
 <div class="forumdirectory-item" id="forumdirectory-item-$id" >
 	<div class="forumdirectory-photo-wrapper" id="forumdirectory-photo-wrapper-$id" > 
 		<div class="forumdirectory-photo" id="forumdirectory-photo-$id" >
-			<a href="$profile-link" class="forumdirectory-profile-link" id="forumdirectory-profile-link-$id" >
-				<img class="forumdirectory-photo-img photo" src="$photo" alt="$alt-text" title="$alt-text" />
+			<a href="$profile_link" class="forumdirectory-profile-link" id="forumdirectory-profile-link-$id" >
+				<img class="forumdirectory-photo-img photo" src="$photo" alt="$alt_text" title="$alt_text" />
 			</a>
 		</div>
 	</div>
 	<div class="forumdirectory-profile-wrapper" id="forumdirectory-profile-wrapper-$id" >
 		<div class="contact-name" id="forumdirectory-name-$id">$name</div>
-		<div class="page-type">$page-type</div>
+		<div class="page-type">$page_type</div>
 		{{ if $pdesc }}<div class="forumdirectory-profile-title">$profile.pdesc</div>{{ endif }}
     	<div class="forumdirectory-detailcolumns-wrapper" id="forumdirectory-detailcolumns-wrapper-$id">
         	<div class="forumdirectory-detailscolumn-wrapper" id="forumdirectory-detailscolumn1-wrapper-$id">	

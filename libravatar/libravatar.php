@@ -60,7 +60,7 @@ function libravatar_lookup($a, &$b) {
  * Display admin settings for this addon
  */
 function libravatar_plugin_admin (&$a, &$o) {
-	$t = file_get_contents( dirname(__file__)."/admin.tpl");
+	$t = get_markup_template( "admin.tpl", "addon/libravatar" );
 
 	$default_avatar = get_config('libravatar', 'default_img');
 

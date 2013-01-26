@@ -55,7 +55,7 @@ function gravatar_lookup($a, &$b) {
  * Display admin settings for this addon
  */
 function gravatar_plugin_admin (&$a, &$o) {
-	$t = file_get_contents( dirname(__file__)."/admin.tpl");
+	$t = get_markup_template( "admin.tpl", "addon/gravatar/" );
 
 	$default_avatar = get_config('gravatar', 'default_img');
 	$rating = get_config('gravatar', 'rating');

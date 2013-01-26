@@ -21,7 +21,8 @@
  * authenticate to your site to establish identity. We will address this 
  * in a future release.
  */
- 
+
+define('FACEBOOK_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
 require_once('include/security.php');
 
@@ -32,6 +33,7 @@ function fbpost_install() {
 	register_hook('connector_settings',  'addon/fbpost/fbpost.php', 'fbpost_plugin_settings');
 	register_hook('enotify',          'addon/fbpost/fbpost.php', 'fbpost_enotify');
 	register_hook('queue_predeliver', 'addon/fbpost/fbpost.php', 'fbpost_queue_hook');
+	register_hook('cron', 		  'addon/fbpost/fbpost.php', 'fbpost_cron');
 }
 
 
@@ -42,8 +44,7 @@ function fbpost_uninstall() {
 	unregister_hook('connector_settings',  'addon/fbpost/fbpost.php', 'fbpost_plugin_settings');
 	unregister_hook('enotify',          'addon/fbpost/fbpost.php', 'fbpost_enotify');
 	unregister_hook('queue_predeliver', 'addon/fbpost/fbpost.php', 'fbpost_queue_hook');
-
-
+	unregister_hook('cron', 	    'addon/fbpost/fbpost.php', 'fbpost_cron');
 }
 
 
@@ -140,6 +141,9 @@ function fbpost_post(&$a) {
 		$value = ((x($_POST,'post_by_default')) ? intval($_POST['post_by_default']) : 0);
 		set_pconfig($uid,'facebook','post_by_default', $value);
 
+		$value = ((x($_POST,'mirror_posts')) ? intval($_POST['mirror_posts']) : 0);
+		set_pconfig($uid,'facebook','mirror_posts', $value);
+
 		$value = ((x($_POST,'suppress_view_on_friendica')) ? intval($_POST['suppress_view_on_friendica']) : 0);
 		set_pconfig($uid,'facebook','suppress_view_on_friendica', $value);
 
@@ -209,7 +213,7 @@ function fbpost_content(&$a) {
 		$o .= '<div id="fbpost-enable-wrapper">';
 
 		$o .= '<a href="https://www.facebook.com/dialog/oauth?client_id=' . $appid . '&redirect_uri=' 
-			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=publish_stream,manage_pages,photo_upload,user_groups,offline_access">' . t('Install Facebook Post connector for this account.') . '</a>';
+			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=read_stream,publish_stream,manage_pages,photo_upload,user_groups,offline_access">' . t('Install Facebook Post connector for this account.') . '</a>';
 		$o .= '</div>';
 	}
 
@@ -221,7 +225,7 @@ function fbpost_content(&$a) {
 		$o .= '<div id="fbpost-enable-wrapper">';
 
 		$o .= '<a href="https://www.facebook.com/dialog/oauth?client_id=' . $appid . '&redirect_uri=' 
-			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=publish_stream,manage_pages,photo_upload,user_groups,offline_access">' . t('Re-authenticate [This is necessary whenever your Facebook password is changed.]') . '</a>';
+			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=read_stream,publish_stream,manage_pages,photo_upload,user_groups,offline_access">' . t('Re-authenticate [This is necessary whenever your Facebook password is changed.]') . '</a>';
 		$o .= '</div>';
 
 		$o .= '<div id="fbpost-post-default-form">';
@@ -233,6 +237,10 @@ function fbpost_content(&$a) {
 		$suppress_view_on_friendica = get_pconfig(local_user(),'facebook','suppress_view_on_friendica');
 		$checked = (($suppress_view_on_friendica) ? ' checked="checked" ' : '');
 		$o .= '<input type="checkbox" name="suppress_view_on_friendica" value="1"' . $checked . '/>' . ' ' . t('Suppress "View on friendica"') . EOL;
+
+		$mirror_posts = get_pconfig(local_user(),'facebook','mirror_posts');
+		$checked = (($mirror_posts) ? ' checked="checked" ' : '');
+		$o .= '<input type="checkbox" name="mirror_posts" value="1"' . $checked . '/>' . ' ' . t('Mirror wall posts from facebook to friendica.') . EOL;
 
 		// List all pages
 		$post_to_page = get_pconfig(local_user(),'facebook','post_to_page');
@@ -384,6 +392,14 @@ function fbpost_post_hook(&$a,&$b) {
 
 
 	if($b['deleted'] || ($b['created'] !== $b['edited']))
+		return;
+
+	// Don't transmit answers (have to be cleaned up in the following code)
+	if($b['parent'] != $b['id'])
+		return;
+
+	// if post comes from facebook don't send it back
+	if($b['app'] == "Facebook")
 		return;
 
 	/**
@@ -931,28 +947,28 @@ function fbpost_queue_hook(&$a,&$b) {
  * @return bool|string
  */
 function fbpost_get_app_access_token() {
-	
+
 	$acc_token = get_config('facebook','app_access_token');
-	
+
 	if ($acc_token !== false) return $acc_token;
-	
+
 	$appid = get_config('facebook','appid');
 	$appsecret = get_config('facebook', 'appsecret');
-	
+
 	if ($appid === false || $appsecret === false) {
 		logger('fb_get_app_access_token: appid and/or appsecret not set', LOGGER_DEBUG);
 		return false;
 	}
 	logger('https://graph.facebook.com/oauth/access_token?client_id=' . $appid . '&client_secret=' . $appsecret . '&grant_type=client_credentials', LOGGER_DATA);
 	$x = fetch_url('https://graph.facebook.com/oauth/access_token?client_id=' . $appid . '&client_secret=' . $appsecret . '&grant_type=client_credentials');
-	
+
 	if(strpos($x,'access_token=') !== false) {
 		logger('fb_get_app_access_token: returned access token: ' . $x, LOGGER_DATA);
-	
+
 		$token = str_replace('access_token=', '', $x);
  		if(strpos($token,'&') !== false)
 			$token = substr($token,0,strpos($token,'&'));
-		
+
 		if ($token == "") {
 			logger('fb_get_app_access_token: empty token: ' . $x, LOGGER_DEBUG);
 			return false;
@@ -965,3 +981,214 @@ function fbpost_get_app_access_token() {
 	}
 }
 
+function fbpost_cron($a,$b) {
+	$last = get_config('facebook','last_poll');
+
+	$poll_interval = intval(get_config('facebook','poll_interval'));
+	if(! $poll_interval)
+		$poll_interval = FACEBOOK_DEFAULT_POLL_INTERVAL;
+
+	if($last) {
+		$next = $last + ($poll_interval * 60);
+		if($next > time()) {
+			logger('facebook: poll intervall not reached');
+			return;
+		}
+	}
+	logger('facebook: cron_start');
+
+	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'facebook' AND `k` = 'mirror_posts' AND `v` = '1' ORDER BY RAND() ");
+	if(count($r)) {
+		foreach($r as $rr) {
+			logger('facebook: fetching for user '.$rr['uid']);
+			fbpost_fetchwall($a, $rr['uid']);
+		}
+	}
+
+	logger('facebook: cron_end');
+
+	set_config('facebook','last_poll', time());
+}
+
+function fbpost_fetchwall($a, $uid) {
+	$access_token = get_pconfig($uid,'facebook','access_token');
+	$post_to_page = get_pconfig($uid,'facebook','post_to_page');
+	$lastcreated = get_pconfig($uid,'facebook','last_created');
+
+	if ((int)$post_to_page == 0)
+		$post_to_page = "me";
+
+	$url = "https://graph.facebook.com/".$post_to_page."/feed?access_token=".$access_token;
+
+	$first_time = ($lastcreated == "");
+
+	if ($lastcreated != "")
+		$url .= "&since=".urlencode($lastcreated);
+
+	$feed = fetch_url($url);
+	$data = json_decode($feed);
+	$items = array_reverse($data->data);
+
+	foreach ($items as $item) {
+		if ($item->created_time > $lastcreated)
+			$lastcreated = $item->created_time;
+
+		if ($first_time)
+			continue;
+
+		if ($item->application->id == get_config('facebook','appid'))
+			continue;
+
+		if(isset($item->privacy) && ($item->privacy->value !== 'EVERYONE') && ($item->privacy->value !== ''))
+			continue;
+
+		$_SESSION["authenticated"] = true;
+		$_SESSION["uid"] = $uid;
+
+		$_REQUEST["type"] = "wall";
+		$_REQUEST["api_source"] = true;
+		$_REQUEST["profile_uid"] = $uid;
+		$_REQUEST["source"] = "Facebook";
+
+		$_REQUEST["body"] = (isset($item->message) ? escape_tags($item->message) : '');
+
+		if(isset($item->name) and isset($item->link))
+			$_REQUEST["body"] .= "\n\n[bookmark=".$item->link."]".$item->name."[/bookmark]";
+		elseif (isset($item->name))
+			$_REQUEST["body"] .= "\n\n[b]" . $item->name."[/b]";
+
+		/*if(isset($item->caption)) {
+			if(!isset($item->name) and isset($item->link))
+				$_REQUEST["body"] .= "\n\n[bookmark=".$item->link."]".$item->caption."[/bookmark]";
+			//else
+			//	$_REQUEST["body"] .= "[i]" . $item->caption."[/i]\n";
+			}
+
+			if(!isset($item->caption) and !isset($item->name)) {
+				if (isset($item->link))
+					$_REQUEST["body"] .= "\n[url]".$item->link."[/url]\n";
+				else
+					$_REQUEST["body"] .= "\n";
+		}*/
+
+		$quote = "";
+		if(isset($item->description) and ($item->type != "photo"))
+			$quote = $item->description;
+
+		if(isset($item->caption) and ($item->type == "photo"))
+			$quote = $item->caption;
+
+		//if (isset($item->properties))
+		//	foreach ($item->properties as $property)
+		//		$quote .= "\n".$property->name.": [url=".$property->href."]".$property->text."[/url]";
+
+		if ($quote)
+			$_REQUEST["body"] .= "\n[quote]".$quote."[/quote]";
+
+		// Only import the picture when the message is no video
+		// oembed display a picture of the video as well
+		if ($item->type != "video") {
+		//if (($item->type != "video") and ($item->type != "photo")) {
+			if(isset($item->picture) && isset($item->link))
+				$_REQUEST["body"] .= "\n".'[url='.$item->link.'][img]'.fpost_cleanpicture($item->picture).'[/img][/url]';
+			else {
+				if (isset($item->picture))
+					$_REQUEST["body"] .= "\n".'[img]'.fpost_cleanpicture($item->picture).'[/img]';
+				// if just a link, it may be a wall photo - check
+				if(isset($item->link))
+					$_REQUEST["body"] .= fbpost_get_photo($uid,$item->link);
+			}
+		}
+
+		/*if (($datarray['app'] == "Events") and isset($item->actions))
+			foreach ($item->actions as $action)
+				if ($action->name == "View")
+					$_REQUEST["body"] .= " [url=".$action->link."]".$item->story."[/url]";
+		*/
+
+		if(trim($_REQUEST["body"]) == '') {
+			logger('facebook: empty body '.$item->id.' '.print_r($item, true));
+			continue;
+		}
+
+		$_REQUEST["body"] = trim($_REQUEST["body"]);
+
+		if (isset($item->place)) {
+			if ($item->place->name or $item->place->location->street or
+				$item->place->location->city or $item->place->location->country) {
+				$_REQUEST["location"] = '';
+				if ($item->place->name)
+					$_REQUEST["location"] .= $item->place->name;
+				if ($item->place->location->street)
+					$_REQUEST["location"] .= " ".$item->place->location->street;
+				if ($item->place->location->city)
+					$_REQUEST["location"] .= " ".$item->place->location->city;
+				if ($item->place->location->country)
+					$_REQUEST["location"] .= " ".$item->place->location->country;
+
+				$_REQUEST["location"] = trim($_REQUEST["location"]);
+			}
+			if ($item->place->location->latitude and $item->place->location->longitude)
+				$_REQUEST["coord"] = substr($item->place->location->latitude, 0, 8)
+						.' '.substr($item->place->location->longitude, 0, 8);
+		}
+
+		//print_r($_REQUEST);
+		logger('facebook: posting for user '.$uid);
+
+		require_once('mod/item.php');
+		item_post($a);
+	}
+
+	set_pconfig($uid,'facebook','last_created', $lastcreated);
+}
+
+function fbpost_get_photo($uid,$link) {
+	$access_token = get_pconfig($uid,'facebook','access_token');
+	if(! $access_token || (! stristr($link,'facebook.com/photo.php')))
+		return "";
+
+	$ret = preg_match('/fbid=([0-9]*)/',$link,$match);
+	if($ret)
+		$photo_id = $match[1];
+	else
+		return "";
+
+	$x = fetch_url('https://graph.facebook.com/'.$photo_id.'?access_token='.$access_token);
+	$j = json_decode($x);
+	if($j->picture)
+		return "\n\n".'[url='.$link.'][img]'.fpost_cleanpicture($j->picture).'[/img][/url]';
+
+	return "";
+}
+
+function fpost_cleanpicture($image) {
+
+	if (strpos($image, ".fbcdn.net/") and (substr($image, -6) == "_s.jpg"))
+		$image = substr($image, 0, -6)."_n.jpg";
+
+	$queryvar = fbpost_parse_query($image);
+	if ($queryvar['url'] != "")
+		$image = urldecode($queryvar['url']);
+
+	return $image;
+}
+
+function fbpost_parse_query($var) {
+	/**
+	 *  Use this function to parse out the query array element from
+	 *  the output of parse_url().
+	*/
+	$var  = parse_url($var, PHP_URL_QUERY);
+	$var  = html_entity_decode($var);
+	$var  = explode('&', $var);
+	$arr  = array();
+
+	foreach($var as $val) {
+		$x          = explode('=', $val);
+		$arr[$x[0]] = $x[1];
+	}
+
+	unset($val, $x, $var);
+	return $arr;
+}

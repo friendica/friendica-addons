@@ -30,6 +30,8 @@
  * Thank you guys for the Twitter compatible API!
  */
 
+define('STATUSNET_DEFAULT_POLL_INTERVAL', 5); // given in minutes
+
 require_once('library/twitteroauth.php');
 
 class StatusNetOAuth extends TwitterOAuth {
@@ -104,6 +106,7 @@ function statusnet_install() {
 	register_hook('notifier_normal', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
 	register_hook('post_local', 'addon/statusnet/statusnet.php', 'statusnet_post_local');
 	register_hook('jot_networks',    'addon/statusnet/statusnet.php', 'statusnet_jot_nets');
+	register_hook('cron', 'addon/statusnet/statusnet.php', 'statusnet_cron');
 	logger("installed statusnet");
 }
 
@@ -114,6 +117,7 @@ function statusnet_uninstall() {
 	unregister_hook('notifier_normal', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
 	unregister_hook('post_local', 'addon/statusnet/statusnet.php', 'statusnet_post_local');
 	unregister_hook('jot_networks',    'addon/statusnet/statusnet.php', 'statusnet_jot_nets');
+	unregister_hook('cron', 'addon/statusnet/statusnet.php', 'statusnet_cron');
 
 	// old setting - remove only
 	unregister_hook('post_local_end', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
@@ -131,12 +135,9 @@ function statusnet_jot_nets(&$a,&$b) {
 		$statusnet_defpost = get_pconfig(local_user(),'statusnet','post_by_default');
 		$selected = ((intval($statusnet_defpost) == 1) ? ' checked="checked" ' : '');
 		$b .= '<div class="profile-jot-net"><input type="checkbox" name="statusnet_enable"' . $selected . ' value="1" /> ' 
-			. t('Post to StatusNet') . '</div>';	
+			. t('Post to StatusNet') . '</div>';
 	}
 }
-
-
-
 
 function statusnet_settings_post ($a,$post) {
 	if(! local_user())
@@ -148,14 +149,17 @@ function statusnet_settings_post ($a,$post) {
             /***
              * if the statusnet-disconnect checkbox is set, clear the statusnet configuration
              */
-            del_pconfig( local_user(), 'statusnet', 'consumerkey'  );
-            del_pconfig( local_user(), 'statusnet', 'consumersecret' );
-            del_pconfig( local_user(), 'statusnet', 'post' );
-            del_pconfig( local_user(), 'statusnet', 'post_by_default' );
-            del_pconfig( local_user(), 'statusnet', 'oauthtoken' );
-            del_pconfig( local_user(), 'statusnet', 'oauthsecret' );
-            del_pconfig( local_user(), 'statusnet', 'baseapi' );
-            del_pconfig( local_user(), 'statusnet', 'post_taglinks');
+            del_pconfig(local_user(), 'statusnet', 'consumerkey');
+            del_pconfig(local_user(), 'statusnet', 'consumersecret');
+            del_pconfig(local_user(), 'statusnet', 'post');
+            del_pconfig(local_user(), 'statusnet', 'post_by_default');
+            del_pconfig(local_user(), 'statusnet', 'oauthtoken');
+            del_pconfig(local_user(), 'statusnet', 'oauthsecret');
+            del_pconfig(local_user(), 'statusnet', 'baseapi');
+            del_pconfig(local_user(), 'statusnet', 'post_taglinks');
+            del_pconfig(local_user(), 'statusnet', 'lastid');
+            del_pconfig(local_user(), 'statusnet', 'mirror_posts');
+            del_pconfig(local_user(), 'statusnet', 'intelligent_shortening');
 	} else {
             if (isset($_POST['statusnet-preconf-apiurl'])) {
                 /***
@@ -229,6 +233,8 @@ function statusnet_settings_post ($a,$post) {
 					set_pconfig(local_user(),'statusnet','post',intval($_POST['statusnet-enable']));
                                         set_pconfig(local_user(),'statusnet','post_by_default',intval($_POST['statusnet-default']));
                                         set_pconfig(local_user(),'statusnet','post_taglinks',intval($_POST['statusnet-sendtaglinks']));
+					set_pconfig(local_user(), 'statusnet', 'mirror_posts', intval($_POST['statusnet-mirror']));
+					set_pconfig(local_user(), 'statusnet', 'intelligent_shortening', intval($_POST['statusnet-shortening']));
 					info( t('StatusNet settings updated.') . EOL);
         	}}}}
 }
@@ -253,6 +259,12 @@ function statusnet_settings(&$a,&$s) {
         $defchecked = (($defenabled) ? ' checked="checked" ' : '');
         $linksenabled = get_pconfig(local_user(),'statusnet','post_taglinks');
         $linkschecked = (($linksenabled) ? ' checked="checked" ' : '');
+
+	$mirrorenabled = get_pconfig(local_user(),'statusnet','mirror_posts');
+	$mirrorchecked = (($mirrorenabled) ? ' checked="checked" ' : '');
+	$shorteningenabled = get_pconfig(local_user(),'statusnet','intelligent_shortening');
+	$shorteningchecked = (($shorteningenabled) ? ' checked="checked" ' : '');
+
 	$s .= '<div class="settings-block">';
 	$s .= '<h3>'. t('StatusNet Posting Settings').'</h3>';
 
@@ -342,6 +354,15 @@ function statusnet_settings(&$a,&$s) {
 			$s .= '<label id="statusnet-default-label" for="statusnet-default">'. t('Send public postings to StatusNet by default') .'</label>';
 			$s .= '<input id="statusnet-default" type="checkbox" name="statusnet-default" value="1" ' . $defchecked . '/>';
 			$s .= '<div class="clear"></div>';
+
+			$s .= '<label id="statusnet-mirror-label" for="statusnet-mirror">'.t('Mirror all posts from statusnet that are no replies or repeated messages').'</label>';
+			$s .= '<input id="statusnet-mirror" type="checkbox" name="statusnet-mirror" value="1" '. $mirrorchecked . '/>';
+			$s .= '<div class="clear"></div>';
+
+			$s .= '<label id="statusnet-shortening-label" for="statusnet-shortening">'.t('Shortening method that optimizes the post').'</label>';
+			$s .= '<input id="statusnet-shortening" type="checkbox" name="statusnet-shortening" value="1" '. $shorteningchecked . '/>';
+			$s .= '<div class="clear"></div>';
+
                         $s .= '<label id="statusnet-sendtaglinks-label" for="statusnet-sendtaglinks">'.t('Send linked #-tags and @-names to StatusNet').'</label>';
                         $s .= '<input id="statusnet-sendtaglinks" type="checkbox" name="statusnet-sendtaglinks" value="1" '. $linkschecked . '/>';
 			$s .= '</div><div class="clear"></div>';
@@ -426,6 +447,24 @@ function statusnet_shortenmsg($b, $max_char) {
 	$body = $b["body"];
 	if ($b["title"] != "")
 		$body = $b["title"]."\n\n".$body;
+
+	if (strpos($body, "[bookmark") !== false) {
+		// splitting the text in two parts:
+		// before and after the bookmark
+		$pos = strpos($body, "[bookmark");
+		$body1 = substr($body, 0, $pos);
+		$body2 = substr($body, $pos);
+
+		// Removing all quotes after the bookmark
+		// they are mostly only the content after the bookmark.
+		$body2 = preg_replace("/\[quote\=([^\]]*)\](.*?)\[\/quote\]/ism",'',$body2);
+		$body2 = preg_replace("/\[quote\](.*?)\[\/quote\]/ism",'',$body2);
+		$body = $body1.$body2;
+	}
+
+	// Add some newlines so that the message could be cut better
+	$body = str_replace(array("[quote", "[bookmark", "[/bookmark]", "[/quote]"),
+				array("\n[quote", "\n[bookmark", "[/bookmark]\n", "[/quote]\n"), $body);
 
 	// remove the recycle signs and the names since they aren't helpful on twitter
 	// recycle 1
@@ -523,20 +562,31 @@ function statusnet_post_hook(&$a,&$b) {
 	if(! strstr($b['postopts'],'statusnet'))
 		return;
 
+	// if posts comes from statusnet don't send it back
+	if($b['app'] == "StatusNet")
+		return;
+
+        logger('statusnet post invoked');
+
 	load_pconfig($b['uid'], 'statusnet');
-            
+
 	$api     = get_pconfig($b['uid'], 'statusnet', 'baseapi');
-	$ckey    = get_pconfig($b['uid'], 'statusnet', 'consumerkey'  );
-	$csecret = get_pconfig($b['uid'], 'statusnet', 'consumersecret' );
-	$otoken  = get_pconfig($b['uid'], 'statusnet', 'oauthtoken'  );
-	$osecret = get_pconfig($b['uid'], 'statusnet', 'oauthsecret' );
+	$ckey    = get_pconfig($b['uid'], 'statusnet', 'consumerkey');
+	$csecret = get_pconfig($b['uid'], 'statusnet', 'consumersecret');
+	$otoken  = get_pconfig($b['uid'], 'statusnet', 'oauthtoken');
+	$osecret = get_pconfig($b['uid'], 'statusnet', 'oauthsecret');
+	$intelligent_shortening = get_pconfig($b['uid'], 'statusnet', 'intelligent_shortening');
+
+	// Global setting overrides this
+	if (get_config('statusnet','intelligent_shortening'))
+		$intelligent_shortening = get_config('statusnet','intelligent_shortening');
 
 	if($ckey && $csecret && $otoken && $osecret) {
 
 		require_once('include/bbcode.php');
 		$dent = new StatusNetOAuth($api,$ckey,$csecret,$otoken,$osecret);
                 $max_char = $dent->get_maxlength(); // max. length for a dent
-                // we will only work with up to two times the length of the dent 
+                // we will only work with up to two times the length of the dent
                 // we can later send to StatusNet. This way we can "gain" some
                 // information during shortening of potential links but do not
                 // shorten all the links in a 200000 character long essay.
@@ -697,14 +747,113 @@ function statusnet_plugin_admin(&$a, &$o){
 		'key' => Array("key[$id]", t("Consumer Key"), "", ""),
 	);
 
-	
-	$t = file_get_contents( dirname(__file__). "/admin.tpl" );
+	$t = get_markup_template( "admin.tpl", "addon/statusnet/" );
 	$o = replace_macros($t, array(
 		'$submit' => t('Submit'),
-							
 		'$sites' => $sitesform,
-		
 	));
-	
-	
 }
+
+function statusnet_cron($a,$b) {
+	$last = get_config('statusnet','last_poll');
+
+	$poll_interval = intval(get_config('statusnet','poll_interval'));
+	if(! $poll_interval)
+		$poll_interval = STATUSNET_DEFAULT_POLL_INTERVAL;
+
+	if($last) {
+		$next = $last + ($poll_interval * 60);
+		if($next > time()) {
+			logger('statusnet: poll intervall not reached');
+			return;
+		}
+	}
+	logger('statusnet: cron_start');
+
+	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'statusnet' AND `k` = 'mirror_posts' AND `v` = '1' ORDER BY RAND() ");
+	if(count($r)) {
+		foreach($r as $rr) {
+			logger('statusnet: fetching for user '.$rr['uid']);
+			statusnet_fetchtimeline($a, $rr['uid']);
+		}
+	}
+
+	logger('statusnet: cron_end');
+
+	set_config('statusnet','last_poll', time());
+}
+
+function statusnet_fetchtimeline($a, $uid) {
+	$ckey    = get_pconfig($uid, 'statusnet', 'consumerkey');
+	$csecret = get_pconfig($uid, 'statusnet', 'consumersecret');
+	$api     = get_pconfig($uid, 'statusnet', 'baseapi');
+	$otoken  = get_pconfig($uid, 'statusnet', 'oauthtoken');
+	$osecret = get_pconfig($uid, 'statusnet', 'oauthsecret');
+	$lastid  = get_pconfig($uid, 'statusnet', 'lastid');
+
+	$application_name  = get_config('statusnet', 'application_name');
+
+	if ($application_name == "")
+		$application_name = $a->get_hostname();
+
+	$connection = new StatusNetOAuth($api, $ckey,$csecret,$otoken,$osecret);
+
+	$parameters = array("exclude_replies" => true, "trim_user" => true, "contributor_details" => false, "include_rts" => false);
+
+	$first_time = ($lastid == "");
+
+	if ($lastid <> "")
+		$parameters["since_id"] = $lastid;
+
+	$items = $connection->get('statuses/user_timeline', $parameters);
+	$posts = array_reverse($items);
+
+	foreach ($posts as $post) {
+		if ($post->id > $lastid)
+			$lastid = $post->id;
+
+		if ($first_time)
+			continue;
+
+		if (is_object($post->retweeted_status))
+			continue;
+
+		if ($post->in_reply_to_status_id != "")
+			continue;
+
+		if (!strpos($post->source, $application_name)) {
+			$_SESSION["authenticated"] = true;
+			$_SESSION["uid"] = $uid;
+
+			$_REQUEST["type"] = "wall";
+			$_REQUEST["api_source"] = true;
+			$_REQUEST["profile_uid"] = $uid;
+			$_REQUEST["source"] = "StatusNet";
+
+			//$_REQUEST["date"] = $post->created_at;
+
+			$_REQUEST["body"] = $post->text;
+			if (is_string($post->place->name))
+				$_REQUEST["location"] = $post->place->name;
+
+			if (is_string($post->place->full_name))
+				$_REQUEST["location"] = $post->place->full_name;
+
+			if (is_array($post->geo->coordinates))
+				$_REQUEST["coord"] = $post->geo->coordinates[0]." ".$post->geo->coordinates[1];
+
+			if (is_array($post->coordinates->coordinates))
+				$_REQUEST["coord"] = $post->coordinates->coordinates[1]." ".$post->coordinates->coordinates[0];
+
+			//print_r($_REQUEST);
+			if ($_REQUEST["body"] != "") {
+				logger('statusnet: posting for user '.$uid);
+
+				require_once('mod/item.php');
+				item_post($a);
+			}
+		}
+	}
+	set_pconfig($uid, 'statusnet', 'lastid', $lastid);
+}
+
