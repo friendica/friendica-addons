@@ -26,13 +26,16 @@ function rendertime_page_end(&$a, &$o) {
 
 	$duration = microtime(true)-$a->performance["start"];
 
-	$o = $o.'<div class="renderinfo">'.sprintf(t("Performance: Database: %s, Network: %s, Rendering: %s, Parser: %s, I/O: %s, Other: %s"),
+	$o = $o.'<div class="renderinfo">'.sprintf(t("Performance: Database: %s, Network: %s, Rendering: %s, Parser: %s, I/O: %s, Other: %s, Total: %s"),
 						round($a->performance["database"], 3),
 						round($a->performance["network"], 3),
 						round($a->performance["rendering"], 3),
 						round($a->performance["parser"], 3),
 						round($a->performance["file"], 3),
+						//round($a->performance["markstart"], 3),
 						round($duration - $a->performance["database"] - $a->performance["network"]
 							 - $a->performance["rendering"] - $a->performance["parser"]
-							 - $a->performance["file"], 3))."</div>";
+							 - $a->performance["file"], 3),
+						round($duration, 3))."</div>";
+
 }
