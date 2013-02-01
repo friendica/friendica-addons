@@ -18,7 +18,7 @@ function mahjongg_uninstall() {
 }
 
 function mahjongg_app_menu($a,&$b) {
-    $b['app_menu'][] = '<div class="app-title"><a href="mahjongg">Beer Monster</a></div>';
+    $b['app_menu'][] = '<div class="app-title"><a href="mahjongg">Mahjongg</a></div>';
 }
 
 
