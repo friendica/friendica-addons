@@ -3,7 +3,7 @@
 * Name: Forum Directory
 * Description: Add a directory of forums hosted on your server, with verbose descriptions.
 * Version: 1.0
-* Author: Thomas Willingham <https://kakste.com/profile/beardyunixer>
+* Author: Thomas Willingham <https://beardyunixer.com/profile/beardyunixer>
 */
 
 function forumdirectory_install() {
@@ -186,8 +186,6 @@ function forumdirectory_content(&$a) {
 
 			$arr = array('contact' => $rr, 'entry' => $entry);
 
-			call_hooks('directory_item', $arr);
-			
 			unset($profile);
 			unset($location);
 
