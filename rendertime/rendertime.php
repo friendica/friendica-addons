@@ -32,10 +32,12 @@ function rendertime_page_end(&$a, &$o) {
 						round($a->performance["rendering"], 3),
 						round($a->performance["parser"], 3),
 						round($a->performance["file"], 3),
-						//round($a->performance["markstart"], 3),
 						round($duration - $a->performance["database"] - $a->performance["network"]
 							 - $a->performance["rendering"] - $a->performance["parser"]
 							 - $a->performance["file"], 3),
-						round($duration, 3))."</div>";
+						round($duration, 3)
+						//round($a->performance["markstart"], 3)
+						//round($a->performance["plugin"], 3)
+						)."</div>";
 
 }

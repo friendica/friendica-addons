@@ -9,6 +9,7 @@
 define("PRIVACY_IMAGE_CACHE_DEFAULT_TIME", 86400); // 1 Day
 
 require_once('include/security.php');
+require_once("Photo.php");
 
 function privacy_image_cache_install() {
     register_hook('prepare_body', 'addon/privacy_image_cache/privacy_image_cache.php', 'privacy_image_cache_prepare_body_hook');
@@ -83,7 +84,6 @@ function privacy_image_cache_init() {
 	if ($cachefile != '') {
 		if (file_exists($cachefile)) {
 			$img_str = file_get_contents($cachefile);
-
 			$mime = image_type_to_mime_type(exif_imagetype($cachefile));
 
 			header("Content-type: $mime");
@@ -92,20 +92,18 @@ function privacy_image_cache_init() {
 			header("Expires: " . gmdate("D, d M Y H:i:s", time() + (31536000)) . " GMT");
 			header("Cache-Control: max-age=31536000");
 
+			$img = new Photo($img_str, $mime);
+			if($img->is_valid())
+				$img_str = $img->imageString();
+
 			echo $img_str;
 
-			//if ($a->config["system"]["db_log"] != "") {
-			//	$stamp2 = microtime(true);
-			//	$duration = round($stamp2-$stamp1, 3);
-			//	if ($duration > $a->config["system"]["db_loglimit"])
-			//		@file_put_contents($a->config["system"]["db_log"], $duration."\t".strlen($img_str)."\t".$_REQUEST['url']."\n", FILE_APPEND);
-			//}
+			if (is_dir($_SERVER["DOCUMENT_ROOT"]."/privacy_image_cache"))
+				file_put_contents($_SERVER["DOCUMENT_ROOT"]."/privacy_image_cache/".privacy_image_cache_cachename($_REQUEST['url'], true), $img_str);
 
 			killme();
 		}
 	}
-
-	require_once("Photo.php");
 
 	$valid = true;
 
@@ -118,15 +116,6 @@ function privacy_image_cache_init() {
 	} else {
 		// It shouldn't happen but it does - spaces in URL
 		$_REQUEST['url'] = str_replace(" ", "+", $_REQUEST['url']);
-
-		// if the picture seems to be from another picture cache then take the original source
-		//$queryvar = privacy_image_cache_parse_query($_REQUEST['url']);
-		//if ($queryvar['url'] != "")
-		//	$_REQUEST['url'] = urldecode($queryvar['url']);
-
-		// if fetching facebook pictures don't fetch the thumbnail but the big one
-		//if (strpos($_REQUEST['url'], ".fbcdn.net/") and (substr($_REQUEST['url'], -6) == "_s.jpg"))
-		//	$_REQUEST['url'] = substr($_REQUEST['url'], 0, -6)."_n.jpg";
 
 		$redirects = 0;
 		$img_str = fetch_url($_REQUEST['url'],true, $redirects, 10);
@@ -147,7 +136,6 @@ function privacy_image_cache_init() {
 				$img->scaleImage(10);
 				$img_str = $img->imageString();
 			}
-		//} else if (substr($img_str, 0, 6) == "GIF89a") {
 		} else if ($mime != "image/jpeg") {
 			$image = @imagecreatefromstring($img_str);
 
@@ -171,17 +159,20 @@ function privacy_image_cache_init() {
 			);
 
 		} else {
-			$img = new Photo($img_str);
+			$img = new Photo($img_str, $mime);
 			if($img->is_valid()) {
 				$img->store(0, 0, $urlhash, $_REQUEST['url'], '', 100);
 				if ($thumb)
 					$img->scaleImage(200); // Test
 				$img_str = $img->imageString();
 			}
-			$mime = "image/jpeg";
+			//$mime = "image/jpeg";
 		}
 	}
 
+	$img = new Photo($img_str, $mime);
+	if($img->is_valid())
+		$img_str = $img->imageString();
 
 	// If there is a real existing directory then put the cache file there
 	// advantage: real file access is really fast
@@ -202,13 +193,6 @@ function privacy_image_cache_init() {
 	}
 
 	echo $img_str;
-
-	//if ($a->config["system"]["db_log"] != "") {
-	//	$stamp2 = microtime(true);
-	//	$duration = round($stamp2-$stamp1, 3);
-	//	if ($duration > $a->config["system"]["db_loglimit"])
-	//		@file_put_contents($a->config["system"]["db_log"], $duration."\t".strlen($img_str)."\t".$_REQUEST['url']."\n", FILE_APPEND);
-	//}
 
 	killme();
 }
