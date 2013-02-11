@@ -52,7 +52,6 @@ function curtemp_network_mod_init($a,$b) {
 function curtemp_plugin_settings_post($a,$post) {
 	if(! local_user() || (! x($_POST,'curtemp-settings-submit')))
 		return;
-//	set_pconfig(local_user(),'curtemp','max_curtemps',intval($_POST['curtemp_max_curtemps']));
 	set_pconfig(local_user(),'curtemp','curtemp_loc',trim($_POST['curtemp_loc']));
 	set_pconfig(local_user(),'curtemp','curtemp_enable',intval($_POST['curtemp_enable']));
 
