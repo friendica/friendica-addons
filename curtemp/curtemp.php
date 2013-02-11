@@ -4,8 +4,10 @@
  * Description: Shows current temperature for user's location on their network page
  * Version: 1.0
  * Author: Tony Baldwin <t0ny@friendica.tonybaldwin.info>
+ * Author: Fabio Comuni <fabrixxm@kirkgroup.com>
  *
  */
+require_once('addon/curtemp/getweather.php');
 
 function curtemp_install() {
 	register_hook('network_mod_init', 'addon/curtemp/curtemp.php', 'curtemp_network_mod_init');
@@ -22,30 +24,31 @@ function curtemp_uninstall() {
 }
 
 
-function curtemp_network_mod_init($a,$b) {
+function curtemp_network_mod_init(&$fk_app,&$b) {
 
-	if(! intval(get_pconfig(local_user(),'curtemp','curtemp_enable')))
-		return;
+    if(! intval(get_pconfig(local_user(),'curtemp','curtemp_enable')))
+        return;
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/curtemp/curtemp.css' . '" media="all" />' . "\r\n";
+    $fk_app->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $fk_app->get_baseurl() . '/addon/curtemp/curtemp.css' . '" media="all" />' . "\r\n";
 
-	// the getweather file does all the work here
-	// the $rpt value is needed for location
-	// which getweather uses to fetch the weather data for weather and temp
-	$curtemp_loc = get_pconfig(local_user(), 'curtemp', 'curtemp_loc');
-	$curtemp = '<div id="curtemp-network" class="widget">
-			<div class="title tool">
-			<h4>'.t("Current Temp").'</h4></div>';
-	$curtemp .= '<?php
-			require_once(\'addon/curtemp/getweather.php\');
-			$rpt = "' . $curtemp_loc . '";
-			?>
-			Weather: <php echo $wxdata[\'WEATHER\'];?><br />
-			Temperature: <php echo $wxdata[\'TEMPERATURE_STRING\'];?>';
+    // the getweather file does all the work here
+    // the $rpt value is needed for location
+    // which getweather uses to fetch the weather data for weather and temp
+    $rpt = get_pconfig(local_user(), 'curtemp', 'curtemp_loc');
+    $wxdata = GetWeather::get($rpt);
+    $temp = $wxdata['TEMPERATURE_STRING'];
+    $weather = $wxdata['WEATHER'];
+    $curtemp = '<div id="curtemp-network" class="widget">
+                <div class="title tool">
+                <h4>'.t("Current Temp").'</h4></div>';
 
-	$curtemp .= '</div></div><div class="clear"></div>';
+    $curtemp .= 'Weather: "' . $weather . '"<br />
+                 Temperature: "' . $temp .  '"';
 
-		$a->page['aside'] = $curtemp . $a->page['aside'];
+    $curtemp .= '</div><div class="clear"></div>';
+
+    $fk_app->page['aside'] = $curtemp.$fk_app->page['aside'];
+
 }
 
 
