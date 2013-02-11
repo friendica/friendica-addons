@@ -11,7 +11,6 @@ function curtemp_install() {
 	register_hook('network_mod_init', 'addon/curtemp/curtemp.php', 'curtemp_network_mod_init');
 	register_hook('plugin_settings', 'addon/curtemp/curtemp.php', 'curtemp_plugin_settings');
 	register_hook('plugin_settings_post', 'addon/curtemp/curtemp.php', 'curtemp_plugin_settings_post');
-	register_hook('profile_advanced', 'addon/curtemp/curtemp.php', 'curtemp_profile_advanced');
 
 }
 
@@ -19,7 +18,6 @@ function curtemp_uninstall() {
 	unregister_hook('network_mod_init', 'addon/curtemp/curtemp.php', 'curtemp_network_mod_init');
 	unregister_hook('plugin_settings', 'addon/curtemp/curtemp.php', 'curtemp_plugin_settings');
 	unregister_hook('plugin_settings_post', 'addon/curtemp/curtemp.php', 'curtemp_plugin_settings_post');
-	unregister_hook('profile_advanced', 'addon/curtemp/curtemp.php', 'curtemp_profile_advanced');
 
 }
 
