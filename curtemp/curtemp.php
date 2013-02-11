@@ -1,10 +1,9 @@
 	<?php
 /**
  * Name: Current Temperature
- * Description: Shows current temperature for user's location on their network page
+ * Description: Shows current temperature for user's location on their network page.<br />Find the location code for the station or airport nearest you at http://en.wikipedia.org/wiki/International_Air_Transport_Association_airport_code
  * Version: 1.0
  * Author: Tony Baldwin <t0ny@friendica.tonybaldwin.info>
- * Author: Fabio Comuni <fabrixxm@kirkgroup.com>
  *
  */
 require_once('addon/curtemp/getweather.php');
@@ -83,6 +82,7 @@ function curtemp_plugin_settings(&$a,&$s) {
 	$s .= '<div class="settings-block">';
 	$s .= '<h3>' . t('Current Temp Settings') . '</h3>';
 	$s .= '<div id="curtemp-settings-wrapper">';
+	$s .= '<p>Find the location code for the airport/weather station nearest you <a href="http://en.wikipedia.org/wiki/International_Air_Transport_Association_airport_code">here</a>.</p>';
 	$s .= '<label id="curtemp-location-label" for="curtemp_loc">' . t('Current Temp Location: ') . '</label>';
 	$s .= '<input id="curtemp-location" type="text" name="curtemp_loc" value="' . $curtemp_loc . '"/>';
 	$s .= '<div class="clear"></div>';
