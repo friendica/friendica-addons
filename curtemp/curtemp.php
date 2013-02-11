@@ -41,8 +41,8 @@ function curtemp_network_mod_init(&$fk_app,&$b) {
                 <div class="title tool">
                 <h4>'.t("Current Temp").'</h4></div>';
 
-    $curtemp .= 'Weather: "' . $weather . '"<br />
-                 Temperature: "' . $temp .  '"';
+    $curtemp .= "Weather: $weather <br />
+                 Temperature: $temp ";
 
     $curtemp .= '</div><div class="clear"></div>';
 
