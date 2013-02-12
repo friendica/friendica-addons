@@ -40,6 +40,7 @@ function curweather_network_mod_init(&$fk_app,&$b) {
     $weather = $wxdata['WEATHER'];
     $rhumid = $wxdata['RELATIVE_HUMIDITY'];
     $pressure = $wxdata['PRESSURE_STRING'];
+    $wind = $wxdata['WIND_STRING'];
     $curweather = '<div id="curweather-network" class="widget">
                 <div class="title tool">
                 <h4>'.t("Current Weather").'</h4></div>';
@@ -47,7 +48,8 @@ function curweather_network_mod_init(&$fk_app,&$b) {
     $curweather .= "Weather: $weather<br />
                  Temperature: $temp<br />
 		 Relative Humidity: $rhumid<br />
-		 Pressure: $pressure";
+		 Pressure: $pressure<br />
+		 Wind: $wind";
 
     $curweather .= '</div><div class="clear"></div>';
 
