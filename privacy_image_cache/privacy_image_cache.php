@@ -48,9 +48,6 @@ function privacy_image_cache_init() {
 		exit;
 	}
 
-	//if ($a->config["system"]["db_log"] != "")
-	//	$stamp1 = microtime(true);
-
 	if(function_exists('header_remove')) {
 		header_remove('Pragma');
 		header_remove('pragma');
@@ -169,10 +166,12 @@ function privacy_image_cache_init() {
 			//$mime = "image/jpeg";
 		}
 	}
-
-	$img = new Photo($img_str, $mime);
-	if($img->is_valid())
-		$img_str = $img->imageString();
+	// reduce quality - if it isn't a GIF
+	if ($mime != "image/gif") {
+		$img = new Photo($img_str, $mime);
+		if($img->is_valid())
+			$img_str = $img->imageString();
+	}
 
 	// If there is a real existing directory then put the cache file there
 	// advantage: real file access is really fast
@@ -199,7 +198,9 @@ function privacy_image_cache_init() {
 
 function privacy_image_cache_cachename($url, $writemode = false) {
 	global $_SERVER;
-
+//	echo $url;
+//	$mime = image_type_to_mime_type(exif_imagetype($url));
+//	echo $mime;
 	$basepath = $_SERVER["DOCUMENT_ROOT"]."/privacy_image_cache";
 
 	$path = substr(hash("md5", $url), 0, 2);
