@@ -615,7 +615,8 @@ function twitter_fetchtimeline($a, $uid) {
 	$items = $connection->get('statuses/user_timeline', $parameters);
 	$posts = array_reverse($items);
 
-	foreach ($posts as $post) {
+        if (count($posts)) {
+	    foreach ($posts as $post) {
 		if ($post->id_str > $lastid)
 			$lastid = $post->id_str;
 
@@ -652,7 +653,8 @@ function twitter_fetchtimeline($a, $uid) {
 			require_once('mod/item.php');
 			item_post($a);
 
-		}
+                }
+            }
 	}
 	set_pconfig($uid, 'twitter', 'lastid', $lastid);
 }

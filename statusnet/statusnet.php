@@ -808,7 +808,8 @@ function statusnet_fetchtimeline($a, $uid) {
 	$items = $connection->get('statuses/user_timeline', $parameters);
 	$posts = array_reverse($items);
 
-	foreach ($posts as $post) {
+        if (count($posts)) {
+            foreach ($posts as $post) {
 		if ($post->id > $lastid)
 			$lastid = $post->id;
 
@@ -852,7 +853,8 @@ function statusnet_fetchtimeline($a, $uid) {
 				require_once('mod/item.php');
 				item_post($a);
 			}
-		}
+                }
+            }
 	}
 	set_pconfig($uid, 'statusnet', 'lastid', $lastid);
 }

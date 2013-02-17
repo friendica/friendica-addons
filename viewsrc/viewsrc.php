@@ -25,7 +25,9 @@ function viewsrc_page_end(&$a, &$o){
 	$a->page['htmlhead'] .= <<< EOS
 	<script>
 		$(function(){
-			$('a[href*="/viewsrc/"]').fancybox();
+			$('a[href*="/viewsrc/"]').each(function() {
+				$(this).colorbox($(this).attr('href'));
+			});
 		});
 	</script>
 EOS;

@@ -1,0 +1,10 @@
+
+#curtemp-settings-label, #curtemp-location-label, #curtemp-enable-label {
+	float: left;
+	width: 200px;
+	margin-bottom: 25px;
+}
+#curtemp-network {
+	float: left;
+}
+
