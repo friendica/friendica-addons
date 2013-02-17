@@ -9,7 +9,7 @@
 define("PRIVACY_IMAGE_CACHE_DEFAULT_TIME", 86400); // 1 Day
 
 require_once('include/security.php');
-require_once("Photo.php");
+require_once("include/Photo.php");
 
 function privacy_image_cache_install() {
     register_hook('prepare_body', 'addon/privacy_image_cache/privacy_image_cache.php', 'privacy_image_cache_prepare_body_hook');
@@ -89,9 +89,12 @@ function privacy_image_cache_init() {
 			header("Expires: " . gmdate("D, d M Y H:i:s", time() + (31536000)) . " GMT");
 			header("Cache-Control: max-age=31536000");
 
-			$img = new Photo($img_str, $mime);
-			if($img->is_valid())
-				$img_str = $img->imageString();
+			// reduce quality - if it isn't a GIF
+			if ($mime != "image/gif") {
+				$img = new Photo($img_str, $mime);
+				if($img->is_valid())
+					$img_str = $img->imageString();
+			}
 
 			echo $img_str;
 
