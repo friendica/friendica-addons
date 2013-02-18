@@ -1042,6 +1042,9 @@ function fbpost_fetchwall($a, $uid) {
 		if(isset($item->privacy) && ($item->privacy->value !== 'EVERYONE') && ($item->privacy->value !== ''))
 			continue;
 
+		if (($post_to_page != $item->from->id) AND ((int)$post_to_page != 0))
+			continue;
+
 		$_SESSION["authenticated"] = true;
 		$_SESSION["uid"] = $uid;
 
