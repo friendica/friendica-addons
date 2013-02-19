@@ -704,6 +704,7 @@ function statusnet_plugin_admin_post(&$a){
 		$apiurl=trim($_POST['apiurl'][$id]);
 		$secret=trim($_POST['secret'][$id]);
 		$key=trim($_POST['key'][$id]);
+                $applicationname = ((x($_POST, 'applicationname')) ? notags(trim($_POST['applicationname'][$id])):'');
 		if ($sitename!="" &&
 			$apiurl!="" &&
 			$secret!="" &&
@@ -714,7 +715,8 @@ function statusnet_plugin_admin_post(&$a){
 					'sitename' => $sitename,
 					'apiurl' => $apiurl,
 					'consumersecret' => $secret,
-					'consumerkey' => $key
+					'consumerkey' => $key,
+                                        'applicationname' => $applicationname
 				);
 		}
 	}
@@ -734,6 +736,7 @@ function statusnet_plugin_admin(&$a, &$o){
 				'apiurl' => Array("apiurl[$id]", "Api url", $s['apiurl'], ""),
 				'secret' => Array("secret[$id]", "Secret", $s['consumersecret'], ""),
 				'key' => Array("key[$id]", "Key", $s['consumerkey'], ""),
+				'applicationname' => Array("applicationname[$id]", "Application name", $s['applicationname'], ""),
 				'delete' => Array("delete[$id]", "Delete", False , "Check to delete this preset"),
 			);
 		}
@@ -745,6 +748,7 @@ function statusnet_plugin_admin(&$a, &$o){
 		'apiurl' => Array("apiurl[$id]", t("API URL"), "", ""),
 		'secret' => Array("secret[$id]", t("Consumer Secret"), "", ""),
 		'key' => Array("key[$id]", t("Consumer Key"), "", ""),
+		'applicationname' => Array("applicationname[$id]", t("Application name"), "", ""),
 	);
 
 	$t = get_markup_template( "admin.tpl", "addon/statusnet/" );
