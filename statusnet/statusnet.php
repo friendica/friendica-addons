@@ -791,8 +791,12 @@ function statusnet_fetchtimeline($a, $uid) {
 	$osecret = get_pconfig($uid, 'statusnet', 'oauthsecret');
 	$lastid  = get_pconfig($uid, 'statusnet', 'lastid');
 
-	$application_name  = get_config('statusnet', 'application_name');
-
+        //  get the application name for the SN app
+        //  1st try personal config, then system config and fallback to the 
+        //  hostname of the node if neither one is set. 
+        $application_name  = get_pconfig( $uid, 'statusnet', 'application_name');
+        if ($application_name == "")
+	        $application_name  = get_config('statusnet', 'application_name');
 	if ($application_name == "")
 		$application_name = $a->get_hostname();
 
