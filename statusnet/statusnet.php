@@ -211,7 +211,7 @@ function statusnet_settings_post ($a,$post) {
                 goaway($a->get_baseurl().'/settings/connectors');
             } else {
     	        if (isset($_POST['statusnet-pin'])) {
-                	//  if the user supplied us with a PIN from Twitter, let the magic of OAuth happen
+                	//  if the user supplied us with a PIN from StatusNet, let the magic of OAuth happen
                     $api     = get_pconfig(local_user(), 'statusnet', 'baseapi');
 					$ckey    = get_pconfig(local_user(), 'statusnet', 'consumerkey'  );
 					$csecret = get_pconfig(local_user(), 'statusnet', 'consumersecret' );
