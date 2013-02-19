@@ -176,6 +176,7 @@ function statusnet_settings_post ($a,$post) {
                             set_pconfig(local_user(), 'statusnet', 'consumerkey', $asn['consumerkey'] );
                             set_pconfig(local_user(), 'statusnet', 'consumersecret', $asn['consumersecret'] );
                             set_pconfig(local_user(), 'statusnet', 'baseapi', $asn['apiurl'] );
+                            set_pconfig(local_user(), 'statusnet', 'application_name', $asn['applicationname'] );
                         } else {
                             notice( t('Please contact your site administrator.<br />The provided API URL is not valid.').EOL.$asn['apiurl'].EOL );
                         }
