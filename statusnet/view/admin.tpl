@@ -3,6 +3,7 @@
 	{{ inc field_input.tpl with $field=$s.apiurl }}{{ endinc }}
 	{{ inc field_input.tpl with $field=$s.secret }}{{ endinc }}
 	{{ inc field_input.tpl with $field=$s.key }}{{ endinc }}
+	{{ inc field_input.tpl with $field=$s.applicationname }}{{ endinc }}
 	{{ if $s.delete }}
 		{{ inc field_checkbox.tpl with $field=$s.delete }}{{ endinc }}
 		<hr>
