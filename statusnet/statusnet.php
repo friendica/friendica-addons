@@ -176,6 +176,7 @@ function statusnet_settings_post ($a,$post) {
                             set_pconfig(local_user(), 'statusnet', 'consumerkey', $asn['consumerkey'] );
                             set_pconfig(local_user(), 'statusnet', 'consumersecret', $asn['consumersecret'] );
                             set_pconfig(local_user(), 'statusnet', 'baseapi', $asn['apiurl'] );
+                            set_pconfig(local_user(), 'statusnet', 'application_name', $asn['applicationname'] );
                         } else {
                             notice( t('Please contact your site administrator.<br />The provided API URL is not valid.').EOL.$asn['apiurl'].EOL );
                         }
@@ -194,6 +195,7 @@ function statusnet_settings_post ($a,$post) {
                     set_pconfig(local_user(), 'statusnet', 'consumerkey', $_POST['statusnet-consumerkey']);
                     set_pconfig(local_user(), 'statusnet', 'consumersecret', $_POST['statusnet-consumersecret']);
                     set_pconfig(local_user(), 'statusnet', 'baseapi', $apibase );
+                    set_pconfig(local_user(), 'statusnet', 'application_name', $_POST['statusnet-applicationname'] );
                 } else {
                     //  the API path is not correct, maybe missing trailing / ?
                     $apibase = $apibase . '/';
@@ -211,7 +213,7 @@ function statusnet_settings_post ($a,$post) {
                 goaway($a->get_baseurl().'/settings/connectors');
             } else {
     	        if (isset($_POST['statusnet-pin'])) {
-                	//  if the user supplied us with a PIN from Twitter, let the magic of OAuth happen
+                	//  if the user supplied us with a PIN from StatusNet, let the magic of OAuth happen
                     $api     = get_pconfig(local_user(), 'statusnet', 'baseapi');
 					$ckey    = get_pconfig(local_user(), 'statusnet', 'consumerkey'  );
 					$csecret = get_pconfig(local_user(), 'statusnet', 'consumersecret' );
@@ -300,6 +302,9 @@ function statusnet_settings(&$a,&$s) {
             $s .= '<div class="clear"></div>';
             $s .= '<label id="statusnet-baseapi-label" for="statusnet-baseapi">'. t("Base API Path \x28remember the trailing /\x29") .'</label>';
             $s .= '<input id="statusnet-baseapi" type="text" name="statusnet-baseapi" size="35" /><br />';
+            $s .= '<p></p><div class="clear"></div></div>';
+            $s .= '<label id="statusnet-applicationname-label" for="statusnet-applicationname">'.t('StatusNet application name').'</label>';
+            $s .= '<input id="statusnet-applicationname" type="text" name="statusnet-applicationname" size="35" /><br />';
             $s .= '<p></p><div class="clear"></div></div>';
             $s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Submit') . '" /></div>';
 	} else {
@@ -704,6 +709,7 @@ function statusnet_plugin_admin_post(&$a){
 		$apiurl=trim($_POST['apiurl'][$id]);
 		$secret=trim($_POST['secret'][$id]);
 		$key=trim($_POST['key'][$id]);
+                $applicationname = ((x($_POST, 'applicationname')) ? notags(trim($_POST['applicationname'][$id])):'');
 		if ($sitename!="" &&
 			$apiurl!="" &&
 			$secret!="" &&
@@ -714,7 +720,8 @@ function statusnet_plugin_admin_post(&$a){
 					'sitename' => $sitename,
 					'apiurl' => $apiurl,
 					'consumersecret' => $secret,
-					'consumerkey' => $key
+					'consumerkey' => $key,
+                                        'applicationname' => $applicationname
 				);
 		}
 	}
@@ -734,6 +741,7 @@ function statusnet_plugin_admin(&$a, &$o){
 				'apiurl' => Array("apiurl[$id]", "Api url", $s['apiurl'], ""),
 				'secret' => Array("secret[$id]", "Secret", $s['consumersecret'], ""),
 				'key' => Array("key[$id]", "Key", $s['consumerkey'], ""),
+				'applicationname' => Array("applicationname[$id]", "Application name", $s['applicationname'], ""),
 				'delete' => Array("delete[$id]", "Delete", False , "Check to delete this preset"),
 			);
 		}
@@ -745,6 +753,7 @@ function statusnet_plugin_admin(&$a, &$o){
 		'apiurl' => Array("apiurl[$id]", t("API URL"), "", ""),
 		'secret' => Array("secret[$id]", t("Consumer Secret"), "", ""),
 		'key' => Array("key[$id]", t("Consumer Key"), "", ""),
+		'applicationname' => Array("applicationname[$id]", t("Application name"), "", ""),
 	);
 
 	$t = get_markup_template( "admin.tpl", "addon/statusnet/" );
@@ -791,8 +800,12 @@ function statusnet_fetchtimeline($a, $uid) {
 	$osecret = get_pconfig($uid, 'statusnet', 'oauthsecret');
 	$lastid  = get_pconfig($uid, 'statusnet', 'lastid');
 
-	$application_name  = get_config('statusnet', 'application_name');
-
+        //  get the application name for the SN app
+        //  1st try personal config, then system config and fallback to the 
+        //  hostname of the node if neither one is set. 
+        $application_name  = get_pconfig( $uid, 'statusnet', 'application_name');
+        if ($application_name == "")
+	        $application_name  = get_config('statusnet', 'application_name');
 	if ($application_name == "")
 		$application_name = $a->get_hostname();
 
