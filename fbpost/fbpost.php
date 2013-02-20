@@ -1027,6 +1027,10 @@ function fbpost_fetchwall($a, $uid) {
 
 	$feed = fetch_url($url);
 	$data = json_decode($feed);
+
+	if (!is_array($data->data))
+		return;
+
 	$items = array_reverse($data->data);
 
 	foreach ($items as $item) {
