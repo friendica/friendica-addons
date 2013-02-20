@@ -613,6 +613,10 @@ function twitter_fetchtimeline($a, $uid) {
 		$parameters["since_id"] = $lastid;
 
 	$items = $connection->get('statuses/user_timeline', $parameters);
+
+	if (!is_array($items))
+		return;
+
 	$posts = array_reverse($items);
 
         if (count($posts)) {

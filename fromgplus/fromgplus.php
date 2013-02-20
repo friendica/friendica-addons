@@ -275,6 +275,9 @@ function fromgplus_handleattachments($item) {
 					$post .= "\n[url=".$thumb->url."][img]".$image."[/img][/url]\n";
 				}
 				break;
+			case "audio":
+				$post .= "\n\n[bookmark=".$attachment->url."]".fromgplus_html2bbcode($attachment->displayName)."[/bookmark]\n";
+				break;
 			//default:
 			//	die($attachment->objectType);
 		}
@@ -297,6 +300,9 @@ function fromgplus_fetch($a, $uid) {
 	$initiallastdate = get_pconfig($uid,'fromgplus','lastdate');
 
 	$lastdate = 0;
+
+	if (!is_array($activities->items))
+		return;
 
 	$reversed = array_reverse($activities->items);
 

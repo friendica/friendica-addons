@@ -1027,6 +1027,10 @@ function fbpost_fetchwall($a, $uid) {
 
 	$feed = fetch_url($url);
 	$data = json_decode($feed);
+
+	if (!is_array($data->data))
+		return;
+
 	$items = array_reverse($data->data);
 
 	foreach ($items as $item) {
@@ -1040,6 +1044,9 @@ function fbpost_fetchwall($a, $uid) {
 			continue;
 
 		if(isset($item->privacy) && ($item->privacy->value !== 'EVERYONE') && ($item->privacy->value !== ''))
+			continue;
+
+		if (($post_to_page != $item->from->id) AND ((int)$post_to_page != 0))
 			continue;
 
 		$_SESSION["authenticated"] = true;
