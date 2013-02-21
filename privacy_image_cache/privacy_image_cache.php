@@ -56,20 +56,24 @@ function privacy_image_cache_init() {
 	$thumb = false;
 
 	// Look for filename in the arguments
-	if (isset($a->argv[1]) OR isset($a->argv[2])) {
-		if (isset($a->argv[2]))
+	if (isset($a->argv[1]) OR isset($a->argv[2]) OR isset($a->argv[3])) {
+		if (isset($a->argv[3]))
+			$url = $a->argv[3];
+		elseif (isset($a->argv[2]))
 			$url = $a->argv[2];
 		else
 			$url = $a->argv[1];
 
-		$pos = strrpos($url, "==.");
+		$pos = strrpos($url, "=.");
 		if ($pos)
-			$url = substr($url, 0, $pos+2);
+			$url = substr($url, 0, $pos+1);
+
+		$url = str_replace(array(".jpg", ".jpeg", ".gif", ".png"), array("","","",""), $url);
 
 		$url = base64_decode(strtr($url, '-_', '+/'), true);
+
 		if ($url)
 			$_REQUEST['url'] = $url;
-
 		$thumb = (isset($a->argv[3]) and ($a->argv[3] == "thumb"));
 	}
 
@@ -201,9 +205,15 @@ function privacy_image_cache_init() {
 
 function privacy_image_cache_cachename($url, $writemode = false) {
 	global $_SERVER;
-//	echo $url;
-//	$mime = image_type_to_mime_type(exif_imagetype($url));
-//	echo $mime;
+
+	$pos = strrpos($url, ".");
+	if ($pos) {
+		$extension = strtolower(substr($url, $pos+1));
+		$pos = strpos($extension, "?");
+		if ($pos)
+			$extension = substr($extension, 0, $pos);
+	}
+
 	$basepath = $_SERVER["DOCUMENT_ROOT"]."/privacy_image_cache";
 
 	$path = substr(hash("md5", $url), 0, 2);
@@ -215,6 +225,11 @@ function privacy_image_cache_cachename($url, $writemode = false) {
 		}
 
 	$path .= "/".strtr(base64_encode($url), '+/', '-_');
+
+	$extensions = array("jpg", "jpeg", "gif", "png");
+
+	if (in_array($extension, $extensions))
+		$path .= ".".$extension;
 
 	return($path);
 }
