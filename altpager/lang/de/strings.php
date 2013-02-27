@@ -2,7 +2,7 @@
 
 $a->strings["Altpager settings updated."] = "Altpager Einstellungen sind aktualisiert.";
 $a->strings["Alternate Pagination Setting"] = "Alternative Seitenumbruch Einstellung";
-$a->strings["Use links to __DQ__newer__DQ__ and __DQ__older__DQ__ pages in place of page numbers?"] = "Nutze Links zu \"neuer\" und \"älter\" Seiten, statt Seiten Nummern?";
+$a->strings["Use links to \"newer\" and \"older\" pages in place of page numbers?"] = "Nutze Links zu \"neuer\" und \"älter\" Seiten, statt Seiten Nummern?";
 $a->strings["Submit"] = "Senden";
 $a->strings["Global"] = "Global";
 $a->strings["Force global use of the alternate pager"] = "Erzwinge die Verwendung des \"Alternate Pager\" auf diesem Server";

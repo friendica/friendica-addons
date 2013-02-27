@@ -1,6 +1,6 @@
 <?php
 
-$a->strings["__DQ__Show more__DQ__ Settings"] = "Réglages de \"Show more\"";
+$a->strings["\"Show more\" Settings"] = "Réglages de \"Show more\"";
 $a->strings["Enable Show More"] = "Activer \"Show more\"";
 $a->strings["Cutting posts after how much characters"] = "Coupure après combien de caractères";
 $a->strings["Submit"] = "Envoyer";

@@ -1,6 +1,6 @@
 <?php
 
-$a->strings["__DQ__Blockem__DQ__ Settings"] = "\"Blockem\" stillingar";
+$a->strings["\"Blockem\" Settings"] = "\"Blockem\" stillingar";
 $a->strings["Comma separated profile URLS to block"] = "Banna lista af forsíðum (komma á milli)";
 $a->strings["Submit"] = "Senda inn";
 $a->strings["BLOCKEM Settings saved."] = "BLOCKEM stillingar vistaðar.";

@@ -1,6 +1,6 @@
 <?php
 
-$a->strings["__DQ__Blockem__DQ__ Settings"] = "「Blockem」配置";
+$a->strings["\"Blockem\" Settings"] = "「Blockem」配置";
 $a->strings["Comma separated profile URLS to block"] = "逗号分简介URL为栏";
 $a->strings["Submit"] = "提交";
 $a->strings["BLOCKEM Settings saved."] = "「Blockem」配置保存了。";

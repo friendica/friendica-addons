@@ -1,6 +1,6 @@
 <?php
 
-$a->strings["__DQ__Show more__DQ__ Settings"] = "「看更多」设置";
+$a->strings["\"Show more\" Settings"] = "「看更多」设置";
 $a->strings["Enable Show More"] = "使看更多能用";
 $a->strings["Cutting posts after how much characters"] = "剪掉文章多少字后";
 $a->strings["Submit"] = "提交";

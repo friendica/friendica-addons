@@ -10,5 +10,5 @@ $a->strings["The handicap game disables the center position on the middle level 
 $a->strings["You go first..."] = "Cominci tu...";
 $a->strings["I'm going first this time..."] = "Comincio io questa volta...";
 $a->strings["You won!"] = "Hai vinto!";
-$a->strings["__DQ__Cat__DQ__ game!"] = "Stallo!";
+$a->strings["\"Cat\" game!"] = "Stallo!";
 $a->strings["I won!"] = "Ho vinto!";

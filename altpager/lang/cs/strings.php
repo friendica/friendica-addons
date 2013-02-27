@@ -2,7 +2,7 @@
 
 $a->strings["Altpager settings updated."] = "Nastavení Altpager aktualizováno.";
 $a->strings["Alternate Pagination Setting"] = "Alternate Pagination nastavení";
-$a->strings["Use links to __DQ__newer__DQ__ and __DQ__older__DQ__ pages in place of page numbers?"] = "Použít odkazy na \"novější\" a \"starší\" stránky místo čísel stránek?";
+$a->strings["Use links to \"newer\" and \"older\" pages in place of page numbers?"] = "Použít odkazy na \"novější\" a \"starší\" stránky místo čísel stránek?";
 $a->strings["Submit"] = "Odeslat";
 $a->strings["Global"] = "Globální";
 $a->strings["Force global use of the alternate pager"] = "Vynutit globální použití alternativního stránkování";

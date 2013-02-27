@@ -1,6 +1,6 @@
 <?php
 
-$a->strings["__DQ__Blockem__DQ__ Settings"] = "";
+$a->strings["\"Blockem\" Settings"] = "";
 $a->strings["Comma separated profile URLS to block"] = "";
 $a->strings["Submit"] = "Potwierdź";
 $a->strings["BLOCKEM Settings saved."] = "";

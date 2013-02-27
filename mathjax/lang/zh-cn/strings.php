@@ -1,7 +1,7 @@
 <?php
 
 $a->strings["Settings"] = "配置";
-$a->strings["The MathJax addon renders mathematical formulae written using the LaTeX syntax surrounded by the usual $$ or an eqnarray block in the postings of your wall,network tab and private mail."] = "MathJax插件表示用LaTeX句法的数学公式，围绕$$或者eqnarray快，在您墙，网络分页和私人收件箱的文章。";
+$a->strings["The MathJax addon renders mathematical formulae written using the LaTeX syntax surrounded by the usual $$ or an eqnarray block in the postings of your wall,network tab and private mail."] = "MathJax插件表示用LaTeX句法的数学公式，围绕$";
 $a->strings["Use the MathJax renderer"] = "用MathJax表示器";
 $a->strings["Submit"] = "提交";
 $a->strings["Settings updated."] = "设置跟新了";
