@@ -383,10 +383,12 @@ function fb_get_friends_sync_full($uid, $access_token, $persons) {
         if($s) {
             $results = json_decode($s);
             logger('fb_get_friends: info: ' . print_r($results,true), LOGGER_DATA);
-            foreach ($results as $contact) {
-                if ($contact->code != 200) logger('fb_get_friends: not found: ' . print_r($contact,true), LOGGER_DEBUG);
-                else fb_get_friends_sync_parsecontact($uid, json_decode($contact->body));
-            }
+			if(count($results)) {
+	            foreach ($results as $contact) {
+    	            if ($contact->code != 200) logger('fb_get_friends: not found: ' . print_r($contact,true), LOGGER_DEBUG);
+        	        else fb_get_friends_sync_parsecontact($uid, json_decode($contact->body));
+            	}
+			}
         }
     }
 }
@@ -1242,8 +1244,12 @@ function facebook_post_local(&$a,&$b) {
 		$fb_enable = (($fb_post && x($_REQUEST,'facebook_enable')) ? intval($_REQUEST['facebook_enable']) : 0);
 
 		// if API is used, default to the chosen settings
-		if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'facebook','post_by_default')))
-			$fb_enable = 1;
+		// but allow a specific override
+
+		if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'facebook','post_by_default'))) {
+			if(! x($_REQUEST,'facebook_enable'))
+				$fb_enable = 1;
+		}
 
 		if(! $fb_enable)
 			return;

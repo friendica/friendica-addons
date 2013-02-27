@@ -30,6 +30,8 @@
  * Thank you guys for the Twitter compatible API!
  */
 
+define('STATUSNET_DEFAULT_POLL_INTERVAL', 5); // given in minutes
+
 require_once('library/twitteroauth.php');
 
 class StatusNetOAuth extends TwitterOAuth {
@@ -104,6 +106,7 @@ function statusnet_install() {
 	register_hook('notifier_normal', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
 	register_hook('post_local', 'addon/statusnet/statusnet.php', 'statusnet_post_local');
 	register_hook('jot_networks',    'addon/statusnet/statusnet.php', 'statusnet_jot_nets');
+	register_hook('cron', 'addon/statusnet/statusnet.php', 'statusnet_cron');
 	logger("installed statusnet");
 }
 
@@ -114,6 +117,7 @@ function statusnet_uninstall() {
 	unregister_hook('notifier_normal', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
 	unregister_hook('post_local', 'addon/statusnet/statusnet.php', 'statusnet_post_local');
 	unregister_hook('jot_networks',    'addon/statusnet/statusnet.php', 'statusnet_jot_nets');
+	unregister_hook('cron', 'addon/statusnet/statusnet.php', 'statusnet_cron');
 
 	// old setting - remove only
 	unregister_hook('post_local_end', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
@@ -131,12 +135,9 @@ function statusnet_jot_nets(&$a,&$b) {
 		$statusnet_defpost = get_pconfig(local_user(),'statusnet','post_by_default');
 		$selected = ((intval($statusnet_defpost) == 1) ? ' checked="checked" ' : '');
 		$b .= '<div class="profile-jot-net"><input type="checkbox" name="statusnet_enable"' . $selected . ' value="1" /> ' 
-			. t('Post to StatusNet') . '</div>';	
+			. t('Post to StatusNet') . '</div>';
 	}
 }
-
-
-
 
 function statusnet_settings_post ($a,$post) {
 	if(! local_user())
@@ -148,14 +149,17 @@ function statusnet_settings_post ($a,$post) {
             /***
              * if the statusnet-disconnect checkbox is set, clear the statusnet configuration
              */
-            del_pconfig( local_user(), 'statusnet', 'consumerkey'  );
-            del_pconfig( local_user(), 'statusnet', 'consumersecret' );
-            del_pconfig( local_user(), 'statusnet', 'post' );
-            del_pconfig( local_user(), 'statusnet', 'post_by_default' );
-            del_pconfig( local_user(), 'statusnet', 'oauthtoken' );
-            del_pconfig( local_user(), 'statusnet', 'oauthsecret' );
-            del_pconfig( local_user(), 'statusnet', 'baseapi' );
-            del_pconfig( local_user(), 'statusnet', 'post_taglinks');
+            del_pconfig(local_user(), 'statusnet', 'consumerkey');
+            del_pconfig(local_user(), 'statusnet', 'consumersecret');
+            del_pconfig(local_user(), 'statusnet', 'post');
+            del_pconfig(local_user(), 'statusnet', 'post_by_default');
+            del_pconfig(local_user(), 'statusnet', 'oauthtoken');
+            del_pconfig(local_user(), 'statusnet', 'oauthsecret');
+            del_pconfig(local_user(), 'statusnet', 'baseapi');
+            del_pconfig(local_user(), 'statusnet', 'post_taglinks');
+            del_pconfig(local_user(), 'statusnet', 'lastid');
+            del_pconfig(local_user(), 'statusnet', 'mirror_posts');
+            del_pconfig(local_user(), 'statusnet', 'intelligent_shortening');
 	} else {
             if (isset($_POST['statusnet-preconf-apiurl'])) {
                 /***
@@ -172,6 +176,7 @@ function statusnet_settings_post ($a,$post) {
                             set_pconfig(local_user(), 'statusnet', 'consumerkey', $asn['consumerkey'] );
                             set_pconfig(local_user(), 'statusnet', 'consumersecret', $asn['consumersecret'] );
                             set_pconfig(local_user(), 'statusnet', 'baseapi', $asn['apiurl'] );
+                            set_pconfig(local_user(), 'statusnet', 'application_name', $asn['applicationname'] );
                         } else {
                             notice( t('Please contact your site administrator.<br />The provided API URL is not valid.').EOL.$asn['apiurl'].EOL );
                         }
@@ -190,6 +195,7 @@ function statusnet_settings_post ($a,$post) {
                     set_pconfig(local_user(), 'statusnet', 'consumerkey', $_POST['statusnet-consumerkey']);
                     set_pconfig(local_user(), 'statusnet', 'consumersecret', $_POST['statusnet-consumersecret']);
                     set_pconfig(local_user(), 'statusnet', 'baseapi', $apibase );
+                    set_pconfig(local_user(), 'statusnet', 'application_name', $_POST['statusnet-applicationname'] );
                 } else {
                     //  the API path is not correct, maybe missing trailing / ?
                     $apibase = $apibase . '/';
@@ -207,7 +213,7 @@ function statusnet_settings_post ($a,$post) {
                 goaway($a->get_baseurl().'/settings/connectors');
             } else {
     	        if (isset($_POST['statusnet-pin'])) {
-                	//  if the user supplied us with a PIN from Twitter, let the magic of OAuth happen
+                	//  if the user supplied us with a PIN from StatusNet, let the magic of OAuth happen
                     $api     = get_pconfig(local_user(), 'statusnet', 'baseapi');
 					$ckey    = get_pconfig(local_user(), 'statusnet', 'consumerkey'  );
 					$csecret = get_pconfig(local_user(), 'statusnet', 'consumersecret' );
@@ -229,6 +235,8 @@ function statusnet_settings_post ($a,$post) {
 					set_pconfig(local_user(),'statusnet','post',intval($_POST['statusnet-enable']));
                                         set_pconfig(local_user(),'statusnet','post_by_default',intval($_POST['statusnet-default']));
                                         set_pconfig(local_user(),'statusnet','post_taglinks',intval($_POST['statusnet-sendtaglinks']));
+					set_pconfig(local_user(), 'statusnet', 'mirror_posts', intval($_POST['statusnet-mirror']));
+					set_pconfig(local_user(), 'statusnet', 'intelligent_shortening', intval($_POST['statusnet-shortening']));
 					info( t('StatusNet settings updated.') . EOL);
         	}}}}
 }
@@ -253,6 +261,12 @@ function statusnet_settings(&$a,&$s) {
         $defchecked = (($defenabled) ? ' checked="checked" ' : '');
         $linksenabled = get_pconfig(local_user(),'statusnet','post_taglinks');
         $linkschecked = (($linksenabled) ? ' checked="checked" ' : '');
+
+	$mirrorenabled = get_pconfig(local_user(),'statusnet','mirror_posts');
+	$mirrorchecked = (($mirrorenabled) ? ' checked="checked" ' : '');
+	$shorteningenabled = get_pconfig(local_user(),'statusnet','intelligent_shortening');
+	$shorteningchecked = (($shorteningenabled) ? ' checked="checked" ' : '');
+
 	$s .= '<div class="settings-block">';
 	$s .= '<h3>'. t('StatusNet Posting Settings').'</h3>';
 
@@ -288,6 +302,9 @@ function statusnet_settings(&$a,&$s) {
             $s .= '<div class="clear"></div>';
             $s .= '<label id="statusnet-baseapi-label" for="statusnet-baseapi">'. t("Base API Path \x28remember the trailing /\x29") .'</label>';
             $s .= '<input id="statusnet-baseapi" type="text" name="statusnet-baseapi" size="35" /><br />';
+            $s .= '<p></p><div class="clear"></div></div>';
+            $s .= '<label id="statusnet-applicationname-label" for="statusnet-applicationname">'.t('StatusNet application name').'</label>';
+            $s .= '<input id="statusnet-applicationname" type="text" name="statusnet-applicationname" size="35" /><br />';
             $s .= '<p></p><div class="clear"></div></div>';
             $s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Submit') . '" /></div>';
 	} else {
@@ -342,6 +359,15 @@ function statusnet_settings(&$a,&$s) {
 			$s .= '<label id="statusnet-default-label" for="statusnet-default">'. t('Send public postings to StatusNet by default') .'</label>';
 			$s .= '<input id="statusnet-default" type="checkbox" name="statusnet-default" value="1" ' . $defchecked . '/>';
 			$s .= '<div class="clear"></div>';
+
+			$s .= '<label id="statusnet-mirror-label" for="statusnet-mirror">'.t('Mirror all posts from statusnet that are no replies or repeated messages').'</label>';
+			$s .= '<input id="statusnet-mirror" type="checkbox" name="statusnet-mirror" value="1" '. $mirrorchecked . '/>';
+			$s .= '<div class="clear"></div>';
+
+			$s .= '<label id="statusnet-shortening-label" for="statusnet-shortening">'.t('Shortening method that optimizes the post').'</label>';
+			$s .= '<input id="statusnet-shortening" type="checkbox" name="statusnet-shortening" value="1" '. $shorteningchecked . '/>';
+			$s .= '<div class="clear"></div>';
+
                         $s .= '<label id="statusnet-sendtaglinks-label" for="statusnet-sendtaglinks">'.t('Send linked #-tags and @-names to StatusNet').'</label>';
                         $s .= '<input id="statusnet-sendtaglinks" type="checkbox" name="statusnet-sendtaglinks" value="1" '. $linkschecked . '/>';
 			$s .= '</div><div class="clear"></div>';
@@ -404,6 +430,131 @@ function short_link($url) {
     return $slinky->short();
 } };
 
+function statusnet_shortenmsg($b, $max_char) {
+	require_once("include/bbcode.php");
+	require_once("include/html2plain.php");
+
+	// Looking for the first image
+	$image = '';
+	if(preg_match("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/is",$b['body'],$matches))
+		$image = $matches[3];
+
+	if ($image == '')
+		if(preg_match("/\[img\](.*?)\[\/img\]/is",$b['body'],$matches))
+			$image = $matches[1];
+
+	$multipleimages = (strpos($b['body'], "[img") != strrpos($b['body'], "[img"));
+
+	// When saved into the database the content is sent through htmlspecialchars
+	// That means that we have to decode all image-urls
+	$image = htmlspecialchars_decode($image);
+
+	$body = $b["body"];
+	if ($b["title"] != "")
+		$body = $b["title"]."\n\n".$body;
+
+	if (strpos($body, "[bookmark") !== false) {
+		// splitting the text in two parts:
+		// before and after the bookmark
+		$pos = strpos($body, "[bookmark");
+		$body1 = substr($body, 0, $pos);
+		$body2 = substr($body, $pos);
+
+		// Removing all quotes after the bookmark
+		// they are mostly only the content after the bookmark.
+		$body2 = preg_replace("/\[quote\=([^\]]*)\](.*?)\[\/quote\]/ism",'',$body2);
+		$body2 = preg_replace("/\[quote\](.*?)\[\/quote\]/ism",'',$body2);
+		$body = $body1.$body2;
+	}
+
+	// Add some newlines so that the message could be cut better
+	$body = str_replace(array("[quote", "[bookmark", "[/bookmark]", "[/quote]"),
+				array("\n[quote", "\n[bookmark", "[/bookmark]\n", "[/quote]\n"), $body);
+
+	// remove the recycle signs and the names since they aren't helpful on twitter
+	// recycle 1
+	$recycle = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8');
+	$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n", $body);
+	// recycle 2 (Test)
+	$recycle = html_entity_decode("&#x25CC; ", ENT_QUOTES, 'UTF-8');
+	$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n", $body);
+
+	// remove the share element
+	$body = preg_replace("/\[share(.*?)\](.*?)\[\/share\]/ism","\n\n$2\n\n",$body);
+
+	// At first convert the text to html
+	$html = bbcode($body, false, false);
+
+	// Then convert it to plain text
+	//$msg = trim($b['title']." \n\n".html2plain($html, 0, true));
+	$msg = trim(html2plain($html, 0, true));
+	$msg = html_entity_decode($msg,ENT_QUOTES,'UTF-8');
+
+	// Removing multiple newlines
+	while (strpos($msg, "\n\n\n") !== false)
+		$msg = str_replace("\n\n\n", "\n\n", $msg);
+
+	// Removing multiple spaces
+	while (strpos($msg, "  ") !== false)
+		$msg = str_replace("  ", " ", $msg);
+
+	// Removing URLs
+	$msg = preg_replace('/(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/i', "", $msg);
+
+	$msg = trim($msg);
+
+	$link = '';
+	// look for bookmark-bbcode and handle it with priority
+	if(preg_match("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/is",$b['body'],$matches))
+		$link = $matches[1];
+
+	$multiplelinks = (strpos($b['body'], "[bookmark") != strrpos($b['body'], "[bookmark"));
+
+	// If there is no bookmark element then take the first link
+	if ($link == '') {
+		$links = collecturls($html);
+		if (sizeof($links) > 0) {
+			reset($links);
+			$link = current($links);
+		}
+		$multiplelinks = (sizeof($links) > 1);
+	}
+
+	$msglink = "";
+	if ($multiplelinks)
+		$msglink = $b["plink"];
+	else if ($link != "")
+		$msglink = $link;
+	else if ($multipleimages)
+		$msglink = $b["plink"];
+	else if ($image != "")
+		$msglink = $image;
+
+	if (($msglink == "") and strlen($msg) > $max_char)
+		$msglink = $b["plink"];
+
+	if (strlen($msglink) > 20)
+		$msglink = short_link($msglink);
+
+	if (strlen(trim($msg." ".$msglink)) > $max_char) {
+		$msg = substr($msg, 0, $max_char - (strlen($msglink)));
+		$lastchar = substr($msg, -1);
+		$msg = substr($msg, 0, -1);
+		$pos = strrpos($msg, "\n");
+		if ($pos > 0)
+			$msg = substr($msg, 0, $pos);
+		else if ($lastchar != "\n")
+			$msg = substr($msg, 0, -3)."...";
+	}
+	$msg = str_replace("\n", " ", $msg);
+
+	// Removing multiple spaces - again
+	while (strpos($msg, "  ") !== false)
+		$msg = str_replace("  ", " ", $msg);
+
+	return(array("msg"=>trim($msg." ".$msglink), "image"=>$image));
+}
+
 function statusnet_post_hook(&$a,&$b) {
 
 	/**
@@ -416,105 +567,136 @@ function statusnet_post_hook(&$a,&$b) {
 	if(! strstr($b['postopts'],'statusnet'))
 		return;
 
+	// if posts comes from statusnet don't send it back
+	if($b['app'] == "StatusNet")
+		return;
+
+        logger('statusnet post invoked');
+
 	load_pconfig($b['uid'], 'statusnet');
-            
+
 	$api     = get_pconfig($b['uid'], 'statusnet', 'baseapi');
-	$ckey    = get_pconfig($b['uid'], 'statusnet', 'consumerkey'  );
-	$csecret = get_pconfig($b['uid'], 'statusnet', 'consumersecret' );
-	$otoken  = get_pconfig($b['uid'], 'statusnet', 'oauthtoken'  );
-	$osecret = get_pconfig($b['uid'], 'statusnet', 'oauthsecret' );
+	$ckey    = get_pconfig($b['uid'], 'statusnet', 'consumerkey');
+	$csecret = get_pconfig($b['uid'], 'statusnet', 'consumersecret');
+	$otoken  = get_pconfig($b['uid'], 'statusnet', 'oauthtoken');
+	$osecret = get_pconfig($b['uid'], 'statusnet', 'oauthsecret');
+	$intelligent_shortening = get_pconfig($b['uid'], 'statusnet', 'intelligent_shortening');
+
+	// Global setting overrides this
+	if (get_config('statusnet','intelligent_shortening'))
+		$intelligent_shortening = get_config('statusnet','intelligent_shortening');
 
 	if($ckey && $csecret && $otoken && $osecret) {
 
 		require_once('include/bbcode.php');
 		$dent = new StatusNetOAuth($api,$ckey,$csecret,$otoken,$osecret);
                 $max_char = $dent->get_maxlength(); // max. length for a dent
-                // we will only work with up to two times the length of the dent 
+                // we will only work with up to two times the length of the dent
                 // we can later send to StatusNet. This way we can "gain" some
                 // information during shortening of potential links but do not
                 // shorten all the links in a 200000 character long essay.
-                if (! $b['title']=='') {
-			$tmp = $b['title'].": \n".$b['body'];
-//                    $tmp = substr($tmp, 0, 4*$max_char);
-                } else {
-                    $tmp = $b['body']; // substr($b['body'], 0, 3*$max_char);
-                }
-                // if [url=bla][img]blub.png[/img][/url] get blub.png
-                $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\]\[img\](\\w+.*?)\\[\\/img\]\\[\\/url\]/i', '$2', $tmp);
-                // preserve links to images, videos and audios
-                $tmp = preg_replace( '/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/ism', '$3', $tmp);
-                $tmp = preg_replace( '/\[\\/?img(\\s+.*?\]|\])/i', '', $tmp);
-                $tmp = preg_replace( '/\[\\/?video(\\s+.*?\]|\])/i', '', $tmp);
-                $tmp = preg_replace( '/\[\\/?youtube(\\s+.*?\]|\])/i', '', $tmp);
-                $tmp = preg_replace( '/\[\\/?vimeo(\\s+.*?\]|\])/i', '', $tmp);
-                $tmp = preg_replace( '/\[\\/?audio(\\s+.*?\]|\])/i', '', $tmp);
-                $linksenabled = get_pconfig($b['uid'],'statusnet','post_taglinks');
-                // if a #tag is linked, don't send the [url] over to SN
-                // that is, don't send if the option is not set in the 
-                // connector settings
-                if ($linksenabled=='0') {
-			// #-tags
-			$tmp = preg_replace( '/#\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '#$2', $tmp);
-			// @-mentions
-			$tmp = preg_replace( '/@\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '@$2', $tmp);
-			// recycle 1
-			$recycle = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8');
-			$tmp = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', $recycle.'$2', $tmp);
-			// recycle 2 (test)
-			$recycle = html_entity_decode("&#x25CC; ", ENT_QUOTES, 'UTF-8');
-			$tmp = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', $recycle.'$2', $tmp);
-                }
-                // preserve links to webpages
-                $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/url\]/i', '$2 $1', $tmp);
-                $tmp = preg_replace( '/\[bookmark\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/bookmark\]/i', '$2 $1', $tmp);
-                // find all http or https links in the body of the entry and 
-                // apply the shortener if the link is longer then 20 characters 
-                if (( strlen($tmp)>$max_char ) && ( $max_char > 0 )) {
-                    preg_match_all ( '/(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/i', $tmp, $allurls  );
-                    foreach ($allurls as $url) {
-                        foreach ($url as $u) {
-                            if (strlen($u)>20) {
-                                $sl = short_link($u);
-                                $tmp = str_replace( $u, $sl, $tmp );
-                            }
-                        }
-                    }
-                }
-                // ok, all the links we want to send out are save, now strip 
-                // away the remaining bbcode
-		//$msg = strip_tags(bbcode($tmp, false, false));
-		$msg = bbcode($tmp, false, false);
-		$msg = str_replace(array('<br>','<br />'),"\n",$msg);
-		$msg = strip_tags($msg);
 
-		// quotes not working - let's try this
-		$msg = html_entity_decode($msg);
+		$tempfile = "";
+		$intelligent_shortening = get_config('statusnet','intelligent_shortening');
+		if (!$intelligent_shortening) {
+	                if (! $b['title']=='') {
+				$tmp = $b['title'].": \n".$b['body'];
+	//                    $tmp = substr($tmp, 0, 4*$max_char);
+        	        } else {
+                	    $tmp = $b['body']; // substr($b['body'], 0, 3*$max_char);
+	                }
+        	        // if [url=bla][img]blub.png[/img][/url] get blub.png
+                	$tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\]\[img\](\\w+.*?)\\[\\/img\]\\[\\/url\]/i', '$2', $tmp);
+	                // preserve links to images, videos and audios
+        	        $tmp = preg_replace( '/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/ism', '$3', $tmp);
+                	$tmp = preg_replace( '/\[\\/?img(\\s+.*?\]|\])/i', '', $tmp);
+	                $tmp = preg_replace( '/\[\\/?video(\\s+.*?\]|\])/i', '', $tmp);
+        	        $tmp = preg_replace( '/\[\\/?youtube(\\s+.*?\]|\])/i', '', $tmp);
+                	$tmp = preg_replace( '/\[\\/?vimeo(\\s+.*?\]|\])/i', '', $tmp);
+	                $tmp = preg_replace( '/\[\\/?audio(\\s+.*?\]|\])/i', '', $tmp);
+        	        $linksenabled = get_pconfig($b['uid'],'statusnet','post_taglinks');
+	                // if a #tag is linked, don't send the [url] over to SN
+	                // that is, don't send if the option is not set in the 
+        	        // connector settings
+                	if ($linksenabled=='0') {
+				// #-tags
+				$tmp = preg_replace( '/#\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '#$2', $tmp);
+				// @-mentions
+				$tmp = preg_replace( '/@\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '@$2', $tmp);
+				// recycle 1
+				$recycle = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8');
+				$tmp = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', $recycle.'$2', $tmp);
+				// recycle 2 (test)
+				$recycle = html_entity_decode("&#x25CC; ", ENT_QUOTES, 'UTF-8');
+				$tmp = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', $recycle.'$2', $tmp);
+        	        }
+                	// preserve links to webpages
+	                $tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/url\]/i', '$2 $1', $tmp);
+        	        $tmp = preg_replace( '/\[bookmark\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/bookmark\]/i', '$2 $1', $tmp);
+                	// find all http or https links in the body of the entry and 
+	                // apply the shortener if the link is longer then 20 characters 
+        	        if (( strlen($tmp)>$max_char ) && ( $max_char > 0 )) {
+                	    preg_match_all ( '/(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/i', $tmp, $allurls  );
+	                    foreach ($allurls as $url) {
+        	                foreach ($url as $u) {
+                	            if (strlen($u)>20) {
+                        	        $sl = short_link($u);
+                                	$tmp = str_replace( $u, $sl, $tmp );
+	                            }
+        	                }
+                	    }
+	                }
+	                // ok, all the links we want to send out are save, now strip 
+        	        // away the remaining bbcode
+			//$msg = strip_tags(bbcode($tmp, false, false));
+			$msg = bbcode($tmp, false, false);
+			$msg = str_replace(array('<br>','<br />'),"\n",$msg);
+			$msg = strip_tags($msg);
 
-		if (( strlen($msg) > $max_char) && $max_char > 0) {
-			$shortlink = short_link( $b['plink'] );
-			// the new message will be shortened such that "... $shortlink"
-			// will fit into the character limit
-			$msg = nl2br(substr($msg, 0, $max_char-strlen($shortlink)-4));
-                        $msg = str_replace(array('<br>','<br />'),' ',$msg);
-                        $e = explode(' ', $msg);
-                        //  remove the last word from the cut down message to 
-                        //  avoid sending cut words to the MicroBlog
-                        array_pop($e);
-                        $msg = implode(' ', $e);
-			$msg .= '... ' . $shortlink;
+			// quotes not working - let's try this
+			$msg = html_entity_decode($msg);
+
+			if (( strlen($msg) > $max_char) && $max_char > 0) {
+				$shortlink = short_link( $b['plink'] );
+				// the new message will be shortened such that "... $shortlink"
+				// will fit into the character limit
+				$msg = nl2br(substr($msg, 0, $max_char-strlen($shortlink)-4));
+        	                $msg = str_replace(array('<br>','<br />'),' ',$msg);
+                	        $e = explode(' ', $msg);
+                        	//  remove the last word from the cut down message to 
+	                        //  avoid sending cut words to the MicroBlog
+        	                array_pop($e);
+                	        $msg = implode(' ', $e);
+				$msg .= '... ' . $shortlink;
+			}
+
+			$msg = trim($msg);
+			$postdata = array('status' => $msg);
+		} else {
+			$msgarr = statusnet_shortenmsg($b, $max_char);
+			$msg = $msgarr["msg"];
+			$image = $msgarr["image"];
+			if ($image != "") {
+				$imagedata = file_get_contents($image);
+				$tempfile = tempnam(get_config("system","temppath"), "upload");
+				file_put_contents($tempfile, $imagedata);
+				$postdata = array("status"=>$msg, "media"=>"@".$tempfile);
+			} else
+				$postdata = array("status"=>$msg);
 		}
-
-		$msg = trim($msg);
 
 		// and now dent it :-)
 		if(strlen($msg)) {
-                    $result = $dent->post('statuses/update', array('status' => $msg));
+                    //$result = $dent->post('statuses/update', array('status' => $msg));
+                    $result = $dent->post('statuses/update', $postdata);
                     logger('statusnet_post send, result: ' . print_r($result, true).
-                           "\nmessage: ".$msg, LOGGER_DEBUG."\nOriginal post: ".print_r($b));
+                           "\nmessage: ".$msg, LOGGER_DEBUG."\nOriginal post: ".print_r($b, true)."\nPost Data: ".print_r($postdata, true));
                     if ($result->error) {
                         logger('Send to StatusNet failed: "' . $result->error . '"');
                     }
                 }
+		if ($tempfile != "")
+			unlink($tempfile);
 	}
 }
 
@@ -527,6 +709,7 @@ function statusnet_plugin_admin_post(&$a){
 		$apiurl=trim($_POST['apiurl'][$id]);
 		$secret=trim($_POST['secret'][$id]);
 		$key=trim($_POST['key'][$id]);
+                $applicationname = ((x($_POST, 'applicationname')) ? notags(trim($_POST['applicationname'][$id])):'');
 		if ($sitename!="" &&
 			$apiurl!="" &&
 			$secret!="" &&
@@ -537,7 +720,8 @@ function statusnet_plugin_admin_post(&$a){
 					'sitename' => $sitename,
 					'apiurl' => $apiurl,
 					'consumersecret' => $secret,
-					'consumerkey' => $key
+					'consumerkey' => $key,
+                                        'applicationname' => $applicationname
 				);
 		}
 	}
@@ -557,6 +741,7 @@ function statusnet_plugin_admin(&$a, &$o){
 				'apiurl' => Array("apiurl[$id]", "Api url", $s['apiurl'], ""),
 				'secret' => Array("secret[$id]", "Secret", $s['consumersecret'], ""),
 				'key' => Array("key[$id]", "Key", $s['consumerkey'], ""),
+				'applicationname' => Array("applicationname[$id]", "Application name", $s['applicationname'], ""),
 				'delete' => Array("delete[$id]", "Delete", False , "Check to delete this preset"),
 			);
 		}
@@ -568,16 +753,126 @@ function statusnet_plugin_admin(&$a, &$o){
 		'apiurl' => Array("apiurl[$id]", t("API URL"), "", ""),
 		'secret' => Array("secret[$id]", t("Consumer Secret"), "", ""),
 		'key' => Array("key[$id]", t("Consumer Key"), "", ""),
+		'applicationname' => Array("applicationname[$id]", t("Application name"), "", ""),
 	);
 
-	
-	$t = file_get_contents( dirname(__file__). "/admin.tpl" );
+	$t = get_markup_template( "admin.tpl", "addon/statusnet/" );
 	$o = replace_macros($t, array(
 		'$submit' => t('Submit'),
-							
 		'$sites' => $sitesform,
-		
 	));
-	
-	
 }
+
+function statusnet_cron($a,$b) {
+	$last = get_config('statusnet','last_poll');
+
+	$poll_interval = intval(get_config('statusnet','poll_interval'));
+	if(! $poll_interval)
+		$poll_interval = STATUSNET_DEFAULT_POLL_INTERVAL;
+
+	if($last) {
+		$next = $last + ($poll_interval * 60);
+		if($next > time()) {
+			logger('statusnet: poll intervall not reached');
+			return;
+		}
+	}
+	logger('statusnet: cron_start');
+
+	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'statusnet' AND `k` = 'mirror_posts' AND `v` = '1' ORDER BY RAND() ");
+	if(count($r)) {
+		foreach($r as $rr) {
+			logger('statusnet: fetching for user '.$rr['uid']);
+			statusnet_fetchtimeline($a, $rr['uid']);
+		}
+	}
+
+	logger('statusnet: cron_end');
+
+	set_config('statusnet','last_poll', time());
+}
+
+function statusnet_fetchtimeline($a, $uid) {
+	$ckey    = get_pconfig($uid, 'statusnet', 'consumerkey');
+	$csecret = get_pconfig($uid, 'statusnet', 'consumersecret');
+	$api     = get_pconfig($uid, 'statusnet', 'baseapi');
+	$otoken  = get_pconfig($uid, 'statusnet', 'oauthtoken');
+	$osecret = get_pconfig($uid, 'statusnet', 'oauthsecret');
+	$lastid  = get_pconfig($uid, 'statusnet', 'lastid');
+
+        //  get the application name for the SN app
+        //  1st try personal config, then system config and fallback to the 
+        //  hostname of the node if neither one is set. 
+        $application_name  = get_pconfig( $uid, 'statusnet', 'application_name');
+        if ($application_name == "")
+	        $application_name  = get_config('statusnet', 'application_name');
+	if ($application_name == "")
+		$application_name = $a->get_hostname();
+
+	$connection = new StatusNetOAuth($api, $ckey,$csecret,$otoken,$osecret);
+
+	$parameters = array("exclude_replies" => true, "trim_user" => true, "contributor_details" => false, "include_rts" => false);
+
+	$first_time = ($lastid == "");
+
+	if ($lastid <> "")
+		$parameters["since_id"] = $lastid;
+
+	$items = $connection->get('statuses/user_timeline', $parameters);
+
+	if (!is_array($items))
+		return;
+
+	$posts = array_reverse($items);
+
+        if (count($posts)) {
+            foreach ($posts as $post) {
+		if ($post->id > $lastid)
+			$lastid = $post->id;
+
+		if ($first_time)
+			continue;
+
+		if (is_object($post->retweeted_status))
+			continue;
+
+		if ($post->in_reply_to_status_id != "")
+			continue;
+
+		if (!strpos($post->source, $application_name)) {
+			$_SESSION["authenticated"] = true;
+			$_SESSION["uid"] = $uid;
+
+			$_REQUEST["type"] = "wall";
+			$_REQUEST["api_source"] = true;
+			$_REQUEST["profile_uid"] = $uid;
+			$_REQUEST["source"] = "StatusNet";
+
+			//$_REQUEST["date"] = $post->created_at;
+
+			$_REQUEST["body"] = $post->text;
+			if (is_string($post->place->name))
+				$_REQUEST["location"] = $post->place->name;
+
+			if (is_string($post->place->full_name))
+				$_REQUEST["location"] = $post->place->full_name;
+
+			if (is_array($post->geo->coordinates))
+				$_REQUEST["coord"] = $post->geo->coordinates[0]." ".$post->geo->coordinates[1];
+
+			if (is_array($post->coordinates->coordinates))
+				$_REQUEST["coord"] = $post->coordinates->coordinates[1]." ".$post->coordinates->coordinates[0];
+
+			//print_r($_REQUEST);
+			if ($_REQUEST["body"] != "") {
+				logger('statusnet: posting for user '.$uid);
+
+				require_once('mod/item.php');
+				item_post($a);
+			}
+                }
+            }
+	}
+	set_pconfig($uid, 'statusnet', 'lastid', $lastid);
+}
+

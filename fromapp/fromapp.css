@@ -1,0 +1,14 @@
+
+
+
+#fromapp-label, #fromapp-force-label {
+	float: left;
+	width: 200px;
+	margin-bottom: 25px;
+}
+
+#fromapp-input, #fromapp-force {
+	float: left;
+}
+
+

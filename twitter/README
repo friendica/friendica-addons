@@ -3,16 +3,13 @@ By Tobias Diekershoff
    http://diekershoff.homeunix.net/friendika/profile/tobias
    tobias.diekershoff(at)gmx.net
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!   This addon is currently under development. If you have any problem     !!
-!!   with it, please contact the Author.                                    !!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 With this addon to Friendica you can give your user the possibility to post
 their *public* messages to Twitter. The messages will be strapped their rich
 context and shortened to 140 characters length if necessary. If shortening of
 the message was performed a link will be added to the Tweet pointing to the
 original message on your server.
+
+The addon can also mirror a users Tweets into the ~friendica wall.
 
 There is a similar addon for forwarding public messages to
 "StatusNet":http://status.net [[StatusNet Plugin]].

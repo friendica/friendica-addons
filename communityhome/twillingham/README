@@ -1,3 +1,0 @@
-This is a variant of the community home.  Instead of displaying the community tab in the front page, we still use home.html, but we also add the latest users to the sidebar.
-
-Simply replace addon/communityhome/communityhome.php with this version then enable community home in your admin panel as usual.

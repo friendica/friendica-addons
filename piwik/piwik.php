@@ -84,7 +84,7 @@ function piwik_analytics($a,&$b) {
 	}
 }
 function piwik_plugin_admin (&$a, &$o) {
-	$t = file_get_contents( dirname(__file__)."/admin.tpl");
+	$t = get_markup_template( "admin.tpl", "addon/piwik/" );
 	$o = replace_macros( $t, array(
 		'$submit' => t('Submit'),
 		'$baseurl' => array('baseurl', t('Piwik Base URL'), get_config('piwik','baseurl' ), t('Absolute path to your Piwik installation. (without protocol (http/s), with trailing slash)')),
