@@ -1,0 +1,177 @@
+# ADDON statusnet
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica statusnet addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: statusnet.php:138
+msgid "Post to StatusNet"
+msgstr ""
+
+#: statusnet.php:181
+msgid ""
+"Please contact your site administrator.<br />The provided API URL is not "
+"valid."
+msgstr ""
+
+#: statusnet.php:210
+msgid "We could not contact the StatusNet API with the Path you entered."
+msgstr ""
+
+#: statusnet.php:240
+msgid "StatusNet settings updated."
+msgstr ""
+
+#: statusnet.php:271
+msgid "StatusNet Posting Settings"
+msgstr ""
+
+#: statusnet.php:285
+msgid "Globally Available StatusNet OAuthKeys"
+msgstr ""
+
+#: statusnet.php:286
+msgid ""
+"There are preconfigured OAuth key pairs for some StatusNet servers "
+"available. If you are useing one of them, please use these credentials. If "
+"not feel free to connect to any other StatusNet instance (see below)."
+msgstr ""
+
+#: statusnet.php:292 statusnet.php:309 statusnet.php:335 statusnet.php:342
+#: statusnet.php:379 statusnet.php:761
+msgid "Submit"
+msgstr ""
+
+#: statusnet.php:294
+msgid "Provide your own OAuth Credentials"
+msgstr ""
+
+#: statusnet.php:295
+msgid ""
+"No consumer key pair for StatusNet found. Register your Friendica Account as "
+"an desktop client on your StatusNet account, copy the consumer key pair here "
+"and enter the API base root.<br />Before you register your own OAuth key "
+"pair ask the administrator if there is already a key pair for this Friendica "
+"installation at your favorited StatusNet installation."
+msgstr ""
+
+#: statusnet.php:297
+msgid "OAuth Consumer Key"
+msgstr ""
+
+#: statusnet.php:300
+msgid "OAuth Consumer Secret"
+msgstr ""
+
+#: statusnet.php:303
+msgid "Base API Path (remember the trailing /)"
+msgstr ""
+
+#: statusnet.php:306
+msgid "StatusNet application name"
+msgstr ""
+
+#: statusnet.php:327
+msgid ""
+"To connect to your StatusNet account click the button below to get a "
+"security code from StatusNet which you have to copy into the input box below "
+"and submit the form. Only your <strong>public</strong> posts will be posted "
+"to StatusNet."
+msgstr ""
+
+#: statusnet.php:328
+msgid "Log in with StatusNet"
+msgstr ""
+
+#: statusnet.php:330
+msgid "Copy the security code from StatusNet here"
+msgstr ""
+
+#: statusnet.php:336
+msgid "Cancel Connection Process"
+msgstr ""
+
+#: statusnet.php:338
+msgid "Current StatusNet API is"
+msgstr ""
+
+#: statusnet.php:339
+msgid "Cancel StatusNet Connection"
+msgstr ""
+
+#: statusnet.php:350
+msgid "Currently connected to: "
+msgstr ""
+
+#: statusnet.php:351
+msgid ""
+"If enabled all your <strong>public</strong> postings can be posted to the "
+"associated StatusNet account. You can choose to do so by default (here) or "
+"for every posting separately in the posting options when writing the entry."
+msgstr ""
+
+#: statusnet.php:353
+msgid ""
+"<strong>Note</strong>: Due your privacy settings (<em>Hide your profile "
+"details from unknown viewers?</em>) the link potentially included in public "
+"postings relayed to StatusNet will lead the visitor to a blank page "
+"informing the visitor that the access to your profile has been restricted."
+msgstr ""
+
+#: statusnet.php:356
+msgid "Allow posting to StatusNet"
+msgstr ""
+
+#: statusnet.php:359
+msgid "Send public postings to StatusNet by default"
+msgstr ""
+
+#: statusnet.php:363
+msgid ""
+"Mirror all posts from statusnet that are no replies or repeated messages"
+msgstr ""
+
+#: statusnet.php:367
+msgid "Shortening method that optimizes the post"
+msgstr ""
+
+#: statusnet.php:371
+msgid "Send linked #-tags and @-names to StatusNet"
+msgstr ""
+
+#: statusnet.php:376
+msgid "Clear OAuth configuration"
+msgstr ""
+
+#: statusnet.php:752
+msgid "Site name"
+msgstr ""
+
+#: statusnet.php:753
+msgid "API URL"
+msgstr ""
+
+#: statusnet.php:754
+msgid "Consumer Secret"
+msgstr ""
+
+#: statusnet.php:755
+msgid "Consumer Key"
+msgstr ""
+
+#: statusnet.php:756
+msgid "Application name"
+msgstr ""

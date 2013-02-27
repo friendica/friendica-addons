@@ -1,0 +1,62 @@
+# ADDON piwik
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica piwik addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: piwik.php:79
+msgid ""
+"This website is tracked using the <a href='http://www.piwik.org'>Piwik</a> "
+"analytics tool."
+msgstr ""
+
+#: piwik.php:82
+#, php-format
+msgid ""
+"If you do not want that your visits are logged this way you <a href='%s'>can "
+"set a cookie to prevent Piwik from tracking further visits of the site</a> "
+"(opt-out)."
+msgstr ""
+
+#: piwik.php:89
+msgid "Submit"
+msgstr ""
+
+#: piwik.php:90
+msgid "Piwik Base URL"
+msgstr ""
+
+#: piwik.php:90
+msgid ""
+"Absolute path to your Piwik installation. (without protocol (http/s), with "
+"trailing slash)"
+msgstr ""
+
+#: piwik.php:91
+msgid "Site ID"
+msgstr ""
+
+#: piwik.php:92
+msgid "Show opt-out cookie link?"
+msgstr ""
+
+#: piwik.php:93
+msgid "Asynchronous tracking"
+msgstr ""
+
+#: piwik.php:105
+msgid "Settings updated."
+msgstr ""

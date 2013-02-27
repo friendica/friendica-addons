@@ -1,0 +1,74 @@
+# ADDON jappixmini
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica jappixmini addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: jappixmini.php:266
+msgid "Jappix Mini addon settings"
+msgstr ""
+
+#: jappixmini.php:268
+msgid "Activate addon"
+msgstr ""
+
+#: jappixmini.php:271
+msgid "Do <em>not</em> insert the Jappixmini Chat-Widget into the webinterface"
+msgstr ""
+
+#: jappixmini.php:274
+msgid "Jabber username"
+msgstr ""
+
+#: jappixmini.php:277
+msgid "Jabber server"
+msgstr ""
+
+#: jappixmini.php:281
+msgid "Jabber BOSH host"
+msgstr ""
+
+#: jappixmini.php:285
+msgid "Jabber password"
+msgstr ""
+
+#: jappixmini.php:290
+msgid "Encrypt Jabber password with Friendica password (recommended)"
+msgstr ""
+
+#: jappixmini.php:293
+msgid "Friendica password"
+msgstr ""
+
+#: jappixmini.php:296
+msgid "Approve subscription requests from Friendica contacts automatically"
+msgstr ""
+
+#: jappixmini.php:299
+msgid "Subscribe to Friendica contacts automatically"
+msgstr ""
+
+#: jappixmini.php:302
+msgid "Purge internal list of jabber addresses of contacts"
+msgstr ""
+
+#: jappixmini.php:307
+msgid "Submit"
+msgstr ""
+
+#: jappixmini.php:308
+msgid "Add contact"
+msgstr ""
