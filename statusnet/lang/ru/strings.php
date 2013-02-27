@@ -1,0 +1,32 @@
+<?php
+
+$a->strings["Post to StatusNet"] = "Отправить на StatusNet";
+$a->strings["Please contact your site administrator.<br />The provided API URL is not valid."] = "Пожалуйста, обратитесь к администратору сайта. <br /> Предложенный URL API недействителен.";
+$a->strings["We could not contact the StatusNet API with the Path you entered."] = "Мы не смогли связаться с API StatusNet с маршрутом, который вы ввели.";
+$a->strings["StatusNet settings updated."] = "Настройки StatusNet обновлены.";
+$a->strings["StatusNet Posting Settings"] = "Настройка отправки сообщений на StatusNet";
+$a->strings["Globally Available StatusNet OAuthKeys"] = "Глобально доступные StatusNet OAuthKeys";
+$a->strings["There are preconfigured OAuth key pairs for some StatusNet servers available. If you are useing one of them, please use these credentials. If not feel free to connect to any other StatusNet instance (see below)."] = "Доступны предварительно сконфигурированные OAuth пары ключей для некоторых серверов StatusNet. Если вы используете один из них, пожалуйста, используйте эти учетные данные. Если нет, не стесняйтесь подключиться к любому другому экземпляру StatusNet (см. ниже).";
+$a->strings["Submit"] = "Подтвердить";
+$a->strings["Provide your own OAuth Credentials"] = "Укажите свои собственные полномочия OAuth";
+$a->strings["No consumer key pair for StatusNet found. Register your Friendica Account as an desktop client on your StatusNet account, copy the consumer key pair here and enter the API base root.<br />Before you register your own OAuth key pair ask the administrator if there is already a key pair for this Friendica installation at your favorited StatusNet installation."] = "";
+$a->strings["OAuth Consumer Key"] = "OAuth Consumer Key";
+$a->strings["OAuth Consumer Secret"] = "OAuth Consumer Secret";
+$a->strings["Base API Path (remember the trailing /)"] = "Путь базы API (помните о слеше /)";
+$a->strings["To connect to your StatusNet account click the button below to get a security code from StatusNet which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to StatusNet."] = "Чтобы подключиться к StatusNet аккаунту, нажмите на кнопку ниже, чтобы получить код безопасности от StatusNet, который нужно скопировать в поле ввода ниже, и отправить форму. Только ваши <strong>публичные сообщения</strong> будут отправляться на StatusNet.";
+$a->strings["Log in with StatusNet"] = "Войдите со StatusNet";
+$a->strings["Copy the security code from StatusNet here"] = "Скопируйте код безопасности от StatusNet здесь";
+$a->strings["Cancel Connection Process"] = "Отмена процесса подключения";
+$a->strings["Current StatusNet API is"] = "Текущим StatusNet API является";
+$a->strings["Cancel StatusNet Connection"] = "Отмена StatusNet подключения";
+$a->strings["Currently connected to: "] = "В настоящее время соединены с: ";
+$a->strings["If enabled all your <strong>public</strong> postings can be posted to the associated StatusNet account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry."] = "Если включено, то все ваши <strong>общественные сообщения</strong> могут быть отправлены на соответствующий аккаунт StatusNet. Вы можете сделать это по умолчанию (здесь) или для каждого сообщения отдельно при написании записи.";
+$a->strings["<strong>Note</strong>: Due your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to StatusNet will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted."] = "";
+$a->strings["Allow posting to StatusNet"] = "Разрешить отправку на StatusNet";
+$a->strings["Send public postings to StatusNet by default"] = "Отправлять публичные сообщения на StatusNet по умолчанию";
+$a->strings["Send linked #-tags and @-names to StatusNet"] = "";
+$a->strings["Clear OAuth configuration"] = "Очистить конфигурацию OAuth";
+$a->strings["Site name"] = "Название сайта";
+$a->strings["API URL"] = "API URL";
+$a->strings["Consumer Secret"] = "Consumer Secret";
+$a->strings["Consumer Key"] = "Consumer Key";

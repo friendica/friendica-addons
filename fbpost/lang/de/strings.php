@@ -1,0 +1,32 @@
+<?php
+
+$a->strings["Settings updated."] = "Einstellungen aktualisiert.";
+$a->strings["Permission denied."] = "Zugriff verweigert.";
+$a->strings["Facebook Post disabled"] = "Nach Facebook senden deaktiviert";
+$a->strings["Facebook API key is missing."] = "Facebook-API-Schlüssel nicht gefunden";
+$a->strings["Facebook Post"] = "Facebook Relai";
+$a->strings["Install Facebook Post connector for this account."] = "Facebook-Connector für dieses Konto installieren.";
+$a->strings["Remove Facebook Post connector"] = "Facebook-Connector entfernen";
+$a->strings["Re-authenticate [This is necessary whenever your Facebook password is changed.]"] = "Neu authentifizieren [Das ist immer dann nötig, wenn du dein Facebook-Passwort geändert hast.]";
+$a->strings["Post to Facebook by default"] = "Veröffentliche standardmäßig bei Facebook";
+$a->strings["Suppress __DQ__View on friendica__DQ__"] = "Unterdrücke \"Auf Friendica Ansehen\"";
+$a->strings["Mirror wall posts from facebook to friendica."] = "Spiegle Pinnwandeinträge von Facebook auf friendica";
+$a->strings["Post to page/group:"] = "Auf FB Seite/Gruppe veröffentlichen";
+$a->strings["None"] = "Keine";
+$a->strings["Submit"] = "Senden";
+$a->strings["Facebook"] = "Facebook";
+$a->strings["Facebook Post Settings"] = "Facebook-Beitragseinstellungen";
+$a->strings["Facebook API Key"] = "Facebook API Schlüssel";
+$a->strings["Error: it appears that you have specified the App-ID and -Secret in your .htconfig.php file. As long as they are specified there, they cannot be set using this form.<br><br>"] = "Fehler: du scheinst die App-ID und das App-Geheimnis in deiner .htconfig.php Datei angegeben zu haben. Solange sie dort festgelegt werden kannst du dieses Formular hier nicht verwenden.<br><br>";
+$a->strings["App-ID / API-Key"] = "App-ID / API-Key";
+$a->strings["Application secret"] = "Anwendungs-Geheimnis";
+$a->strings["Save"] = "Speichern";
+$a->strings["The new values have been saved."] = "Die neuen Einstellungen wurden gespeichert.";
+$a->strings["Post to Facebook"] = "Bei Facebook veröffentlichen";
+$a->strings["%s:"] = "%s:";
+$a->strings["Post to Facebook cancelled because of multi-network access permission conflict."] = "Beitrag wurde nicht bei Facebook veröffentlicht, da Konflikte bei den Multi-Netzwerk-Zugriffsrechten vorliegen.";
+$a->strings["View on Friendica"] = "In Friendica betrachten";
+$a->strings["Facebook post failed. Queued for retry."] = "Veröffentlichung bei Facebook gescheitert. Wir versuchen es später erneut.";
+$a->strings["Administrator"] = "Administrator";
+$a->strings["Your Facebook connection became invalid. Please Re-authenticate."] = "Deine Facebook Anmeldedaten sind ungültig geworden. Bitte re-authentifiziere dich.";
+$a->strings["Facebook connection became invalid"] = "Facebook Anmeldedaten sind ungültig geworden";
