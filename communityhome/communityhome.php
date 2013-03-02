@@ -23,17 +23,24 @@ function communityhome_uninstall() {
 function communityhome_home(&$a, &$o){
 	// custom css
 	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->get_baseurl().'/addon/communityhome/communityhome.css" media="all" />';
-	
-	$aside = array(
-		'$tab_1' => t('Login'),
-		'$tab_2' => t('OpenID'),
-		'$noOid' => get_config('system','no_openid'),
-	);
-	
-	// login form
-	$aside['$login_title'] =  t('Login');
-	$aside['$login_form'] = login(($a->config['register_policy'] == REGISTER_CLOSED) ? false : true);
-	
+
+	if (!get_config('communityhome','hidelogin')){
+		$aside = array(
+			'$tab_1' => t('Login'),
+			'$tab_2' => t('OpenID'),
+			'$noOid' => get_config('system','no_openid'),
+		);
+
+		// login form
+		$aside['$login_title'] =  t('Login');
+		$aside['$login_form'] = login(($a->config['register_policy'] == REGISTER_CLOSED) ? false : true);
+	} else
+		$aside = array(
+			//'$tab_1' => t('Login'),
+			//'$tab_2' => t('OpenID'),
+			//'$noOid' => get_config('system','no_openid'),
+		);
+
 	// last 12 users
 	if (get_config('communityhome','showlastusers')===true){
 		$aside['$lastusers_title'] = t('Latest users');
