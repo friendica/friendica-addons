@@ -107,7 +107,7 @@ function gpluspost_post_local(&$a,&$b) {
 
 function gpluspost_send(&$a,&$b) {
 
-	logger('gpluspost_send: invoked for post '.$b['id']);
+	logger('gpluspost_send: invoked for post '.$b['id']." ".$b['app']);
 
 	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
 		return;
@@ -119,8 +119,8 @@ function gpluspost_send(&$a,&$b) {
 		return;
 
 	// if post comes from Google+ don't send it back
-	if($b['app'] == "Google+")
-		return;
+	//if($b['app'] == "Google+")
+	//	return;
 
 	$itemlist = get_pconfig($b["uid"],'gpluspost','itemlist');
 	$items = explode(",", $itemlist);
@@ -149,19 +149,25 @@ function gpluspost_init() {
 		$uid = (int)$a->argv[1];
 		if ($uid == 0) {
 			$contacts = q("SELECT `name`, `id` FROM contact WHERE `nick` = '%s' LIMIT 1", dbesc($a->argv[1]));
-			if ($contacts)
+			if ($contacts) {
 				$uid = $contacts[0]["id"];
-		} else
+				$nick = $a->argv[1];
+			}
+		} else {
 			$contacts = q("SELECT `name` FROM contact WHERE ID=%d LIMIT 1", intval($uid));
+			$nick = $uid;
+		}
 	}
 
 	header("content-type: application/atom+xml");
 	echo '<?xml version="1.0" encoding="UTF-8"?>'."\n";
 	echo '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">'."\n";
 	echo "\t".'<title type="html"><![CDATA['.$a->config['sitename'].']]></title>'."\n";
-	if ($uid != 0)
+	if ($uid != 0) {
 		echo "\t".'<subtitle type="html"><![CDATA['.$contacts[0]["name"]."]]></subtitle>\n";
-	echo "\t".'<link rel="self" href="'.$a->get_baseurl().'/gpluspost"/>'."\n";
+		echo "\t".'<link rel="self" href="'.$a->get_baseurl().'/gpluspost/'.$nick.'"/>'."\n";
+	} else
+		echo "\t".'<link rel="self" href="'.$a->get_baseurl().'/gpluspost"/>'."\n";
 	echo "\t<id>".$a->get_baseurl()."/</id>\n";
 	echo "\t".'<link rel="alternate" type="text/html" href="'.$a->get_baseurl().'"/>'."\n";
 	echo "\t<updated>".date("c")."</updated>\n"; // To-Do
@@ -169,8 +175,7 @@ function gpluspost_init() {
 	echo "\t".'<generator uri="'.$a->get_baseurl().'">'.$a->config['sitename'].'</generator>'."\n";
 
 	if ($uid != 0) {
-		$itemlist = get_pconfig(local_user(),'gpluspost','itemlist');
-		//$itemlist = "262568,262567,269154,271508,270121,273721,314735,312616,311570,308771,308247,306100,295372,291096,290390,290389,283242,283060,280465,273725";
+		$itemlist = get_pconfig($uid,'gpluspost','itemlist');
 		$items = explode(",", $itemlist);
 
 		foreach ($items AS $item)
