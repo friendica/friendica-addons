@@ -216,7 +216,7 @@ function gpluspost_ShareAttributes($match) {
 
         //$text = "<br />".$headline."</strong><blockquote>".$match[2]."</blockquote>";
 	//$text = "\n\t".$match[2].":\t";
-	$text = $author.": ".$match[2];
+	$text = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8').$author.": ".$match[2];
 
         return($text);
 }
