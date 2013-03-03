@@ -327,7 +327,8 @@ function fromgplus_fetch($a, $uid) {
 					else
 						$location = "";
 
-					fromgplus_post($a, $uid, $item->provider->title, $post, $location);
+					fromgplus_post($a, $uid, "Google+", $post, $location);
+					//fromgplus_post($a, $uid, $item->provider->title, $post, $location);
 
 					break;
 
@@ -360,7 +361,8 @@ function fromgplus_fetch($a, $uid) {
 					else
 						$location = "";
 
-					fromgplus_post($a, $uid, $item->provider->title, $post, $location);
+					fromgplus_post($a, $uid, "Google+", $post, $location);
+					//fromgplus_post($a, $uid, $item->provider->title, $post, $location);
 					break;
 			}
 	}
