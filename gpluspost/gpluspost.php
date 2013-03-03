@@ -99,7 +99,7 @@ function gpluspost_post_local(&$a,&$b) {
 
 	$enable = (($post && x($_REQUEST,'gpluspost_enable')) ? intval($_REQUEST['gpluspost_enable']) : 0);
 
-	if(intval(get_pconfig(local_user(),'gpluspost','post_by_default')))
+	if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'gpluspost','post_by_default')))
 		$enable = 1;
 
 	if(!$enable)
