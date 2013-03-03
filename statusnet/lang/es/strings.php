@@ -1,0 +1,32 @@
+<?php
+
+$a->strings["Post to StatusNet"] = "Publicar en StatusNet";
+$a->strings["Please contact your site administrator.<br />The provided API URL is not valid."] = "Por favor, contacta con el administrador de tu web.<br />La dirección API suministrada no es válida.";
+$a->strings["We could not contact the StatusNet API with the Path you entered."] = "No podemos contantar con StatusNet en la ruta que has especificado.";
+$a->strings["StatusNet settings updated."] = "Actualición de la configuración de StatusNet.";
+$a->strings["StatusNet Posting Settings"] = "Configuración de envío a StatusNet";
+$a->strings["Globally Available StatusNet OAuthKeys"] = "StatusNet OAuthKeys disponibles para todos";
+$a->strings["There are preconfigured OAuth key pairs for some StatusNet servers available. If you are useing one of them, please use these credentials. If not feel free to connect to any other StatusNet instance (see below)."] = "Existen pares de valores OAuthKey preconfigurados para algunos servidores. Si usas uno de ellos, por favor usa estas credenciales. De los contrario no dudes en conectar con cualquiera otra instancia de StatusNet (ver a continuación).";
+$a->strings["Submit"] = "Envíar";
+$a->strings["Provide your own OAuth Credentials"] = "Proporciona tus propias credenciales OAuth";
+$a->strings["No consumer key pair for StatusNet found. Register your Friendica Account as an desktop client on your StatusNet account, copy the consumer key pair here and enter the API base root.<br />Before you register your own OAuth key pair ask the administrator if there is already a key pair for this Friendica installation at your favorited StatusNet installation."] = "No se ha encontrado ningún par de claves consumer para StatusNet. Registra tu cuenta de Friendica como un cliente de escritorio en tu cuenta de StatusNet, copia el par de claves consumer aquí e introduce la dirección de la API.<br />Antes de registrar tu propio par de claves OAuth pregunta a tu administrador si ya existe un par de claves para esa instalación de Friendica en tu instalación StatusNet favorita.";
+$a->strings["OAuth Consumer Key"] = "Clave OAuth del usuario";
+$a->strings["OAuth Consumer Secret"] = "Secreto OAuth del usuario";
+$a->strings["Base API Path (remember the trailing /)"] = "Dirección de la API (recordar el / al final)";
+$a->strings["To connect to your StatusNet account click the button below to get a security code from StatusNet which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to StatusNet."] = "Para conectarte a tu cuenta de StatusNet haz clic en el botón abajo para obtener un PIN de StatusNet, que tienes que copiar en el cuadro de entrada y enviar el formulario. Solo tus publicaciones <strong>públicas</strong> se publicarán en StatusNet.";
+$a->strings["Log in with StatusNet"] = "Inicia sesión en StatusNet";
+$a->strings["Copy the security code from StatusNet here"] = "Copia el código de seguridad de StatusNet aquí";
+$a->strings["Cancel Connection Process"] = "Cancelar la conexión en proceso";
+$a->strings["Current StatusNet API is"] = "El estado actual de la API de StatusNet es";
+$a->strings["Cancel StatusNet Connection"] = "Cancelar conexión con StatusNet";
+$a->strings["Currently connected to: "] = "Actualmente conectado a:";
+$a->strings["If enabled all your <strong>public</strong> postings can be posted to the associated StatusNet account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry."] = "Si lo habilitas todas tus publicaciones </strong>públicas</strong> podrán ser publicadas en la cuenta asociada de StatusNet. Pudes elegir hacerlo por defecto (aquí) o para cada publicación individualmente en las opciones de publicacion cuando las escribes.";
+$a->strings["<strong>Note</strong>: Due your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to StatusNet will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted."] = "<strong>Nota</ strong>: Debido a tus opciones de privacidad (<em>¿Ocultar los detalles de tu perfil de espectadores desconocidos?</ em>) el vínculo potencialmente incluido en publicaciones públicas que se transmiten a StatusNet conducirá al visitante a una página en blanco que informa a los visitantes que el acceso a tu perfil es restringido.";
+$a->strings["Allow posting to StatusNet"] = "Permitir publicaciones en StatusNet";
+$a->strings["Send public postings to StatusNet by default"] = "Enviar publicaciones públicas a StatusNet por defecto";
+$a->strings["Send linked #-tags and @-names to StatusNet"] = "Enviar a StatusNet las #-etiquetas y @-nombres";
+$a->strings["Clear OAuth configuration"] = "Borrar la configuración de OAuth";
+$a->strings["Site name"] = "Nombre del sitio";
+$a->strings["API URL"] = "Dirección de la API";
+$a->strings["Consumer Secret"] = "Secreto del consumidor";
+$a->strings["Consumer Key"] = "Clave del consumidor";

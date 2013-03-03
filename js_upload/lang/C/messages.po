@@ -1,0 +1,54 @@
+# ADDON js_upload
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica js_upload addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: js_upload.php:43
+msgid "Upload a file"
+msgstr ""
+
+#: js_upload.php:44
+msgid "Drop files here to upload"
+msgstr ""
+
+#: js_upload.php:45
+msgid "Cancel"
+msgstr ""
+
+#: js_upload.php:46
+msgid "Failed"
+msgstr ""
+
+#: js_upload.php:303
+msgid "No files were uploaded."
+msgstr ""
+
+#: js_upload.php:309
+msgid "Uploaded file is empty"
+msgstr ""
+
+#: js_upload.php:321
+msgid "Image exceeds size limit of "
+msgstr ""
+
+#: js_upload.php:332
+msgid "File has an invalid extension, it should be one of "
+msgstr ""
+
+#: js_upload.php:343
+msgid "Upload was cancelled, or server error encountered"
+msgstr ""

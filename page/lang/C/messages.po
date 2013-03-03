@@ -1,0 +1,54 @@
+# ADDON page
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica page addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: page.php:62 page.php:92
+msgid "Forums"
+msgstr ""
+
+#: page.php:77 page.php:111
+msgid "show more"
+msgstr ""
+
+#: page.php:130
+msgid "Forums:"
+msgstr ""
+
+#: page.php:166
+msgid "Page settings updated."
+msgstr ""
+
+#: page.php:195
+msgid "Page Settings"
+msgstr ""
+
+#: page.php:197
+msgid "How many forums to display on sidebar without paging"
+msgstr ""
+
+#: page.php:200
+msgid "Randomise Page/Forum list"
+msgstr ""
+
+#: page.php:203
+msgid "Show pages/forums on profile page"
+msgstr ""
+
+#: page.php:211
+msgid "Submit"
+msgstr ""
