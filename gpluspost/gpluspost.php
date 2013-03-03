@@ -43,12 +43,13 @@ function gpluspost_settings(&$a,&$s) {
 		return;
 
 	$enabled = get_pconfig(local_user(),'gpluspost','post');
-
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 
 	$def_enabled = get_pconfig(local_user(),'gpluspost','post_by_default');
-
 	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
+
+	$noloop_enabled = get_pconfig(local_user(),'gpluspost','no_loop_prevention');
+	$noloop_checked = (($noloop_enabled) ? ' checked="checked" ' : '');
 
 	$s .= '<div class="settings-block">';
 	$s .= '<h3>' . t('Google+ Post Settings') . '</h3>';
@@ -62,11 +63,15 @@ function gpluspost_settings(&$a,&$s) {
 	$s .= '<input id="gpluspost-bydefault" type="checkbox" name="gpluspost_bydefault" value="1" ' . $def_checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
+	$s .= '<div id="gpluspost-noloopprevention-wrapper">';
+	$s .= '<label id="gpluspost-noloopprevention-label" for="gpluspost-noloopprevention">' . t('Do not prevent posting loops') . '</label>';
+	$s .= '<input id="gpluspost-noloopprevention" type="checkbox" name="gpluspost_noloopprevention" value="1" ' . $noloop_checked . '/>';
+	$s .= '</div><div class="clear"></div>';
+
 	/* provide a submit button */
 
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="gpluspost-submit" name="gpluspost-submit" class="settings-submit" value="' . t('Submit') . '" /></div>';
 	$s .= 'Register an account at <a href="https://hootsuite.com">Hootsuite</a>, add your G+ page and add the feed-url there.<br />';
-	//$s .= 'Feed-url: '.$a->get_baseurl().'/gpluspost/'.$a->user["uid"].'</div>';
 	$s .= 'Feed-url: '.$a->get_baseurl().'/gpluspost/'.urlencode($a->user["nickname"]).'</div>';
 }
 
@@ -75,6 +80,7 @@ function gpluspost_settings_post(&$a,&$b) {
 	if(x($_POST,'gpluspost-submit')) {
 		set_pconfig(local_user(),'gpluspost','post',intval($_POST['gpluspost']));
 		set_pconfig(local_user(),'gpluspost','post_by_default',intval($_POST['gpluspost_bydefault']));
+		set_pconfig(local_user(),'gpluspost','no_loop_prevention',intval($_POST['gpluspost_noloopprevention']));
 	}
 }
 
@@ -119,8 +125,8 @@ function gpluspost_send(&$a,&$b) {
 		return;
 
 	// if post comes from Google+ don't send it back
-	//if($b['app'] == "Google+")
-	//	return;
+	if (!get_pconfig($b["uid"],'gpluspost','no_loop_prevention') and ($b['app'] == "Google+"))
+		return;
 
 	$itemlist = get_pconfig($b["uid"],'gpluspost','itemlist');
 	$items = explode(",", $itemlist);
