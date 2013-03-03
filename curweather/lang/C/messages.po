@@ -1,0 +1,42 @@
+# ADDON curweather
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica curweather addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: curweather.php:46
+msgid "Current Weather"
+msgstr ""
+
+#: curweather.php:67
+msgid "Current Weather settings updated."
+msgstr ""
+
+#: curweather.php:90
+msgid "Current Weather Settings"
+msgstr ""
+
+#: curweather.php:93
+msgid "Weather Location: "
+msgstr ""
+
+#: curweather.php:96
+msgid "Enable Current Weather"
+msgstr ""
+
+#: curweather.php:104
+msgid "Submit"
+msgstr ""

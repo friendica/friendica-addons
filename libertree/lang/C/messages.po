@@ -1,0 +1,46 @@
+# ADDON libertree
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica libertree addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: libertree.php:36
+msgid "Post to libertree"
+msgstr ""
+
+#: libertree.php:67
+msgid "libertree Post Settings"
+msgstr ""
+
+#: libertree.php:69
+msgid "Enable Libertree Post Plugin"
+msgstr ""
+
+#: libertree.php:74
+msgid "Libertree API token"
+msgstr ""
+
+#: libertree.php:79
+msgid "Libertree site URL"
+msgstr ""
+
+#: libertree.php:84
+msgid "Post to Libertree by default"
+msgstr ""
+
+#: libertree.php:90
+msgid "Submit"
+msgstr ""

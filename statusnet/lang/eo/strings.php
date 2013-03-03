@@ -1,0 +1,32 @@
+<?php
+
+$a->strings["Post to StatusNet"] = "Afiŝi ĉe StatusNet";
+$a->strings["Please contact your site administrator.<br />The provided API URL is not valid."] = "Bonvolu kontaki vian retejan administranton.<br />La API URL adreso ne validas.";
+$a->strings["We could not contact the StatusNet API with the Path you entered."] = "Ni ne povis trovi la StatusNet API kun la vojo kiun vi entajpis.";
+$a->strings["StatusNet settings updated."] = "StatusNet agordoj ĝisdatigita.";
+$a->strings["StatusNet Posting Settings"] = "Agordoj por StausNet afiŝoj";
+$a->strings["Globally Available StatusNet OAuthKeys"] = "Ĝeneralaj disponeblaj StatusNet OAuth ŝlosiloj";
+$a->strings["There are preconfigured OAuth key pairs for some StatusNet servers available. If you are useing one of them, please use these credentials. If not feel free to connect to any other StatusNet instance (see below)."] = "Disponeblas antaŭagorditaj ŝlosilparoj por kelkaj StatusNet serviloj. Se via uzas iun de iu, bonvolu uzi unun de tiuj legitimaĵojn. Se ne, bonvolu konekti al iu alia StatusNet servilo (vidu malsupre).";
+$a->strings["Submit"] = "Sendi";
+$a->strings["Provide your own OAuth Credentials"] = "Provizi viajn proprajn OAuth legitimaĵojn";
+$a->strings["No consumer key pair for StatusNet found. Register your Friendica Account as an desktop client on your StatusNet account, copy the consumer key pair here and enter the API base root.<br />Before you register your own OAuth key pair ask the administrator if there is already a key pair for this Friendica installation at your favorited StatusNet installation."] = "Ne trovis klientajn ŝlosilojn por StatusNet. Registru vian Friendica konton kiel klientkomputilo/desktop client en via StausNet konto. Kopiu la klientajn ŝlosilojn ĉi tien kaj entajpu la baza API radiko.<br />Antaŭ vi registros viajn proprajn OAuth ŝlosilojn, demandu al la administranto ĉu jam ekzistas ŝlosiloj por ĉi-tiu Friendia retejo je via StatusNet retejo.";
+$a->strings["OAuth Consumer Key"] = "OAuth Ŝlosilo de Kliento";
+$a->strings["OAuth Consumer Secret"] = "OAuth Sekreto de Kliento";
+$a->strings["Base API Path (remember the trailing /)"] = "Baza vojo al la API (ne forgesu la finan /)";
+$a->strings["To connect to your StatusNet account click the button below to get a security code from StatusNet which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to StatusNet."] = "Por konekti al vian konton ĉe StatusNet, klaku la malsupran butonon por atingi sekurecan kodon de StatusNet, kiun vi devas alglui en la malsupra kampo kaj sendi la formon. Nur viaj <strong>publikaj</strong> afiŝoj estos afiŝota al StatusNet.";
+$a->strings["Log in with StatusNet"] = "Ensaluti kun StatusNet.";
+$a->strings["Copy the security code from StatusNet here"] = "Alglui la kodon de StatusNet ĉi tie:";
+$a->strings["Cancel Connection Process"] = "Nuligi Konektadon";
+$a->strings["Current StatusNet API is"] = "La nuna StatusNet API estas";
+$a->strings["Cancel StatusNet Connection"] = "Nuligi Konekton al StatusNet";
+$a->strings["Currently connected to: "] = "Konektita al:";
+$a->strings["If enabled all your <strong>public</strong> postings can be posted to the associated StatusNet account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry."] = "Kiam ŝaltita, ĉiuj <strong>publikaj</strong> afiŝoj de vi ankaŭ eblas esti afiŝota al la asociigita StatusNet konto. Vi povas elekti ĝin defaŭlte (ĉi tie) au unuope por ĉiuj afiŝoj kiam vi skribos ilin.";
+$a->strings["<strong>Note</strong>: Due your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to StatusNet will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted."] = "<strong>Averto</strong>: Laŭ viaj privatecaj agordoj (<em>Kaŝi viajn profilajn detalojn al nekonataj spektantoj?</em>), la ligilo en publikaj afiŝoj plusendata al StatusNet gvidas vizitontojn al malplena paĝo sciigante ilin ke atingo al via profilo estas lmitigita.";
+$a->strings["Allow posting to StatusNet"] = "Permesi afiŝojn al StatusNet";
+$a->strings["Send public postings to StatusNet by default"] = "Defaŭlte sendi publikajn afiŝojn al StatusNet";
+$a->strings["Send linked #-tags and @-names to StatusNet"] = "Sendi ligitajn #-etikedojn kaj @-nomon al StatusNet";
+$a->strings["Clear OAuth configuration"] = "Forviŝi OAuth agordojn";
+$a->strings["Site name"] = "Nomo de retejo";
+$a->strings["API URL"] = "API URL adreso";
+$a->strings["Consumer Secret"] = "Sekreto de kliento";
+$a->strings["Consumer Key"] = "Ŝlosilo de kliento";

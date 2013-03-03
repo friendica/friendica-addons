@@ -1,0 +1,156 @@
+# ADDON fbpost
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica fbpost addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: fbpost.php:155
+msgid "Settings updated."
+msgstr ""
+
+#: fbpost.php:170 fbpost.php:176
+msgid "Permission denied."
+msgstr ""
+
+#: fbpost.php:183
+msgid "Facebook Post disabled"
+msgstr ""
+
+#: fbpost.php:203
+msgid "Facebook API key is missing."
+msgstr ""
+
+#: fbpost.php:210
+msgid "Facebook Post"
+msgstr ""
+
+#: fbpost.php:216
+msgid "Install Facebook Post connector for this account."
+msgstr ""
+
+#: fbpost.php:223
+msgid "Remove Facebook Post connector"
+msgstr ""
+
+#: fbpost.php:228
+msgid ""
+"Re-authenticate [This is necessary whenever your Facebook password is "
+"changed.]"
+msgstr ""
+
+#: fbpost.php:235
+msgid "Post to Facebook by default"
+msgstr ""
+
+#: fbpost.php:239
+msgid "Suppress \"View on friendica\""
+msgstr ""
+
+#: fbpost.php:243
+msgid "Mirror wall posts from facebook to friendica."
+msgstr ""
+
+#: fbpost.php:253
+msgid "Post to page/group:"
+msgstr ""
+
+#: fbpost.php:255 fbpost.php:257
+msgid "None"
+msgstr ""
+
+#: fbpost.php:280
+msgid "Submit"
+msgstr ""
+
+#: fbpost.php:294
+msgid "Facebook"
+msgstr ""
+
+#: fbpost.php:295
+msgid "Facebook Post Settings"
+msgstr ""
+
+#: fbpost.php:310
+msgid "Facebook API Key"
+msgstr ""
+
+#: fbpost.php:317
+msgid ""
+"Error: it appears that you have specified the App-ID and -Secret in your ."
+"htconfig.php file. As long as they are specified there, they cannot be set "
+"using this form.<br><br>"
+msgstr ""
+
+#: fbpost.php:319
+msgid "App-ID / API-Key"
+msgstr ""
+
+#: fbpost.php:320
+msgid "Application secret"
+msgstr ""
+
+#: fbpost.php:322
+msgid "Save"
+msgstr ""
+
+#: fbpost.php:337
+msgid "The new values have been saved."
+msgstr ""
+
+#: fbpost.php:356
+msgid "Post to Facebook"
+msgstr ""
+
+#: fbpost.php:375
+#, php-format
+msgid "%s:"
+msgstr ""
+
+#: fbpost.php:487
+msgid ""
+"Post to Facebook cancelled because of multi-network access permission "
+"conflict."
+msgstr ""
+
+#: fbpost.php:766
+msgid "View on Friendica"
+msgstr ""
+
+#: fbpost.php:803
+msgid "Facebook post failed. Queued for retry."
+msgstr ""
+
+#: fbpost.php:821
+msgid "Administrator"
+msgstr ""
+
+#: fbpost.php:843
+msgid "Your Facebook connection became invalid. Please Re-authenticate."
+msgstr ""
+
+#: fbpost.php:844
+msgid "Facebook connection became invalid"
+msgstr ""
+
+#: fbpost.php:845
+#, php-format
+msgid ""
+"Hi %1$s,\n"
+"\n"
+"The connection between your accounts on %2$s and Facebook became invalid. "
+"This usually happens after you change your Facebook-password. To enable the "
+"connection again, you have to %3$sre-authenticate the Facebook-connector%4$s."
+msgstr ""

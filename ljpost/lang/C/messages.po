@@ -1,0 +1,46 @@
+# ADDON ljpost
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica ljpost addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ljpost.php:39
+msgid "Post to LiveJournal"
+msgstr ""
+
+#: ljpost.php:70
+msgid "LiveJournal Post Settings"
+msgstr ""
+
+#: ljpost.php:72
+msgid "Enable LiveJournal Post Plugin"
+msgstr ""
+
+#: ljpost.php:77
+msgid "LiveJournal username"
+msgstr ""
+
+#: ljpost.php:82
+msgid "LiveJournal password"
+msgstr ""
+
+#: ljpost.php:87
+msgid "Post to LiveJournal by default"
+msgstr ""
+
+#: ljpost.php:93
+msgid "Submit"
+msgstr ""

@@ -1,0 +1,39 @@
+# ADDON fromapp
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica fromapp addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: fromapp.php:38
+msgid "Fromapp settings updated."
+msgstr ""
+
+#: fromapp.php:64
+msgid "FromApp Settings"
+msgstr ""
+
+#: fromapp.php:66
+msgid ""
+"The application name you would like to show your posts originating from."
+msgstr ""
+
+#: fromapp.php:70
+msgid "Use this application name even if another application was used."
+msgstr ""
+
+#: fromapp.php:77
+msgid "Submit"
+msgstr ""

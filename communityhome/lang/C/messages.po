@@ -1,0 +1,72 @@
+# ADDON communityhome
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica communityhome addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: communityhome.php:28 communityhome.php:34
+msgid "Login"
+msgstr ""
+
+#: communityhome.php:29
+msgid "OpenID"
+msgstr ""
+
+#: communityhome.php:39
+msgid "Latest users"
+msgstr ""
+
+#: communityhome.php:84
+msgid "Most active users"
+msgstr ""
+
+#: communityhome.php:102
+msgid "Latest photos"
+msgstr ""
+
+#: communityhome.php:115
+msgid "Contact Photos"
+msgstr ""
+
+#: communityhome.php:116
+msgid "Profile Photos"
+msgstr ""
+
+#: communityhome.php:141
+msgid "Latest likes"
+msgstr ""
+
+#: communityhome.php:163
+msgid "event"
+msgstr ""
+
+#: communityhome.php:166 communityhome.php:175
+msgid "status"
+msgstr ""
+
+#: communityhome.php:171
+msgid "photo"
+msgstr ""
+
+#: communityhome.php:180
+#, php-format
+msgid "%1$s likes %2$s's %3$s"
+msgstr ""
+
+#: communityhome.php:189
+#, php-format
+msgid "Welcome to %s"
+msgstr ""
