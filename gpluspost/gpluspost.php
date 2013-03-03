@@ -154,13 +154,13 @@ function gpluspost_init() {
 	if (isset($a->argv[1])) {
 		$uid = (int)$a->argv[1];
 		if ($uid == 0) {
-			$contacts = q("SELECT `name`, `id` FROM contact WHERE `nick` = '%s' LIMIT 1", dbesc($a->argv[1]));
+			$contacts = q("SELECT `username`, `uid` FROM `user` WHERE `nickname` = '%s' LIMIT 1", dbesc($a->argv[1]));
 			if ($contacts) {
-				$uid = $contacts[0]["id"];
+				$uid = $contacts[0]["uid"];
 				$nick = $a->argv[1];
 			}
 		} else {
-			$contacts = q("SELECT `name` FROM contact WHERE ID=%d LIMIT 1", intval($uid));
+			$contacts = q("SELECT `username` FROM `user` WHERE `uid`=%d LIMIT 1", intval($uid));
 			$nick = $uid;
 		}
 	}
@@ -170,7 +170,7 @@ function gpluspost_init() {
 	echo '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">'."\n";
 	echo "\t".'<title type="html"><![CDATA['.$a->config['sitename'].']]></title>'."\n";
 	if ($uid != 0) {
-		echo "\t".'<subtitle type="html"><![CDATA['.$contacts[0]["name"]."]]></subtitle>\n";
+		echo "\t".'<subtitle type="html"><![CDATA['.$contacts[0]["username"]."]]></subtitle>\n";
 		echo "\t".'<link rel="self" href="'.$a->get_baseurl().'/gpluspost/'.$nick.'"/>'."\n";
 	} else
 		echo "\t".'<link rel="self" href="'.$a->get_baseurl().'/gpluspost"/>'."\n";
