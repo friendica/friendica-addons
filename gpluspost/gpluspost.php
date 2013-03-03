@@ -283,9 +283,6 @@ function gpluspost_feeditem($pid, $uid) {
 		if ($msglink == "")
 			$msglink = $item["plink"];
 
-		if ($image != $msglink)
-			$html = trim(str_replace($msglink, "", $html));
-
 		// Fetching the title - or the first line
 		if ($item["title"] != "")
 			$title = $item["title"];
@@ -293,6 +290,11 @@ function gpluspost_feeditem($pid, $uid) {
 			$lines = explode("\n", $msg);
 			$title = $lines[0];
 		}
+
+		if ($image != $msglink)
+			$html = trim(str_replace($msglink, "", $html));
+
+		$title = trim(str_replace($msglink, "", $title));
 
 		if ($uid == 0)
 			$title = $item["author-name"].": ".$title;
