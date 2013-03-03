@@ -1,0 +1,62 @@
+# ADDON tumblr
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica tumblr addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: tumblr.php:34
+msgid "Permission denied."
+msgstr ""
+
+#: tumblr.php:144
+msgid "You are now authenticated to tumblr."
+msgstr ""
+
+#: tumblr.php:145
+msgid "return to the connector page"
+msgstr ""
+
+#: tumblr.php:158
+msgid "Post to Tumblr"
+msgstr ""
+
+#: tumblr.php:185
+msgid "Tumblr Post Settings"
+msgstr ""
+
+#: tumblr.php:188
+msgid "(Re-)Authenticate your tumblr page"
+msgstr ""
+
+#: tumblr.php:192
+msgid "Enable Tumblr Post Plugin"
+msgstr ""
+
+#: tumblr.php:197
+msgid "Post to Tumblr by default"
+msgstr ""
+
+#: tumblr.php:217
+msgid "Post to page:"
+msgstr ""
+
+#: tumblr.php:228
+msgid "You are not authenticated to tumblr"
+msgstr ""
+
+#: tumblr.php:233
+msgid "Submit"
+msgstr ""

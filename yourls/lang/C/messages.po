@@ -1,0 +1,46 @@
+# ADDON yourls
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica yourls addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: yourls.php:55
+msgid "YourLS Settings"
+msgstr ""
+
+#: yourls.php:57
+msgid "URL: http://"
+msgstr ""
+
+#: yourls.php:62
+msgid "Username:"
+msgstr ""
+
+#: yourls.php:67
+msgid "Password:"
+msgstr ""
+
+#: yourls.php:72
+msgid "Use SSL "
+msgstr ""
+
+#: yourls.php:76
+msgid "Submit"
+msgstr ""
+
+#: yourls.php:92
+msgid "yourls Settings saved."
+msgstr ""
