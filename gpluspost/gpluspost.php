@@ -195,6 +195,65 @@ function gpluspost_init() {
 	killme();
 }
 
+function gpluspost_original_url($url, $depth=1) {
+
+	if ($depth > 10)
+		return($url);
+
+	$siteinfo = array();
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_HEADER, 1);
+	curl_setopt($ch, CURLOPT_NOBODY, 0);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch,CURLOPT_USERAGENT,'Opera/9.64(Windows NT 5.1; U; de) Presto/2.1.1');
+
+	$header = curl_exec($ch);
+	$curl_info = @curl_getinfo($ch);
+	$http_code = $curl_info['http_code'];
+	curl_close($ch);
+
+	if ((($curl_info['http_code'] == "301") OR ($curl_info['http_code'] == "302"))
+		AND (($curl_info['redirect_url'] != "") OR ($curl_info['location'] != ""))) {
+		if ($curl_info['redirect_url'] != "")
+			return(gpluspost_original_url($curl_info['redirect_url'], ++$depth));
+		else
+			return(gpluspost_original_url($curl_info['location'], ++$depth));
+	}
+
+	$pos = strpos($header, "\r\n\r\n");
+
+	if ($pos)
+		$body = trim(substr($header, $pos));
+	else
+		$body = $header;
+
+	$doc = new DOMDocument();
+	@$doc->loadHTML($body);
+
+	$xpath = new DomXPath($doc);
+
+	$list = $xpath->query("//meta[@content]");
+	foreach ($list as $node) {
+		$attr = array();
+		if ($node->attributes->length)
+			foreach ($node->attributes as $attribute)
+				$attr[$attribute->name] = $attribute->value;
+
+		if (@$attr["http-equiv"] == 'refresh') {
+			$path = $attr["content"];
+			$pathinfo = explode(";", $path);
+			$content = "";
+			foreach ($pathinfo AS $value)
+				if (substr(strtolower($value), 0, 4) == "url=")
+					return(gpluspost_original_url(substr($value, 4), ++$depth));
+		}
+	}
+
+	return($url);
+}
+
 function gpluspost_ShareAttributes($match) {
 
         $attributes = $match[1];
@@ -295,6 +354,8 @@ function gpluspost_feeditem($pid, $uid) {
 			$html = trim(str_replace($msglink, "", $html));
 
 		$title = trim(str_replace($msglink, "", $title));
+
+		$msglink = gpluspost_original_url($msglink);
 
 		if ($uid == 0)
 			$title = $item["author-name"].": ".$title;
