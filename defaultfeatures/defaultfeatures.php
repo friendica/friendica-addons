@@ -27,7 +27,7 @@ function defaultfeatures_register($a, $newuid) {
 }
 
 function defaultfeatures_plugin_admin_post (&$a) {
-    check_form_security_token_redirectOnErr('/admin/plugins/defaultfeatures', 'admin_themes');
+    check_form_security_token_redirectOnErr('/admin/plugins/defaultfeatures', 'defaultfeaturessave');
     foreach($_POST as $k => $v) {
 	    if(strpos($k,'feature_') === 0) {
 	            set_config('defaultfeatures',substr($k,8),((intval($v)) ? 1 : 0));
@@ -38,6 +38,7 @@ function defaultfeatures_plugin_admin_post (&$a) {
 
 function defaultfeatures_plugin_admin (&$a, &$o) {
     $t = get_markup_template( "admin.tpl", "addon/defaultfeatures/" );
+    $token = get_form_security_token("defaultfeaturessave");
     $arr = array();
     $features = get_features();
     foreach($features as $fname => $fdata) {
@@ -52,6 +53,7 @@ function defaultfeatures_plugin_admin (&$a, &$o) {
 
     $o = replace_macros($t, array(
         '$submit' => t('Submit'),
-        '$features' => $arr
+        '$features' => $arr,
+        '$form_security_token' => $token
     ));
 }
