@@ -31,7 +31,10 @@ function mailstream_install() {
         q('ALTER TABLE `mailstream_item` CHANGE `created` `created` timestamp NOT NULL DEFAULT now()');
         q('ALTER TABLE `mailstream_item` CHANGE `completed` `completed` timestamp NULL DEFAULT NULL');
     }
-    set_config('mailstream', 'dbversion', '0.4');
+    if (get_config('mailstream', 'dbversion') == '0.4') {
+        q('ALTER TABLE `mailstream_item` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin');
+    }
+    set_config('mailstream', 'dbversion', '0.5');
 }
 
 function mailstream_uninstall() {
@@ -47,12 +50,14 @@ function mailstream_module() {}
 
 function mailstream_plugin_admin(&$a,&$o) {
     $frommail = get_config('mailstream', 'frommail');
-    $template = file_get_contents(dirname(__file__).'/admin.tpl');
+    $template = get_markup_template('admin.tpl', 'addon/mailstream/');
     $config = array('frommail',
                     t('From Address'),
                     $frommail,
                     t('Email address that stream items will appear to be from.'));
-    $o .= replace_macros($template, array('$frommail' => $config));
+    $o .= replace_macros($template, array(
+                             '$frommail' => $config,
+                             '$submit' => t('Submit')));
 }
 
 function mailstream_plugin_admin_post ($a) {
@@ -76,7 +81,7 @@ function mailstream_post_remote_hook(&$a, &$item) {
               intval($item['contact-id']), dbesc($item['uri']), dbesc(mailstream_generate_id($a, $item['uri'])));
             $r = q('SELECT * FROM `mailstream_item` WHERE `uid` = %d AND `contact-id` = %d AND `uri` = "%s"', intval($item['uid']), intval($item['contact-id']), dbesc($item['uri']));
             if (count($r) != 1) {
-                logger('mailstream_post_remote_hook: Unexpected number of items returned from mailstream_item', LOGGER_ERROR);
+                logger('mailstream_post_remote_hook: Unexpected number of items returned from mailstream_item', LOGGER_NORMAL);
                 return;
             }
             $ms_item = $r[0];
@@ -85,7 +90,7 @@ function mailstream_post_remote_hook(&$a, &$item) {
                    . $item['uid'] . ' ' . $item['contact-id'], LOGGER_DATA);
             $r = q('SELECT * FROM `user` WHERE `uid` = %d', intval($item['uid']));
             if (count($r) != 1) {
-                logger('mailstream_post_remote_hook: Unexpected number of users returned', LOGGER_ERROR);
+                logger('mailstream_post_remote_hook: Unexpected number of users returned', LOGGER_NORMAL);
                 return;
             }
             $user = $r[0];
@@ -197,17 +202,21 @@ function mailstream_send($a, $ms_item, $item, $user) {
         }
         $mail->IsHTML(true);
         $mail->CharSet = 'utf-8';
-        $template = file_get_contents(dirname(__file__).'/mail.tpl');
+        $template = get_markup_template('mail.tpl', 'addon/mailstream/');
         $item['body'] = bbcode($item['body']);
-        $mail->Body = replace_macros($template, array('$item' => $item));
+        $item['url'] = $a->get_baseurl() . '/display/' . $user['nickname'] . '/' . $item['id'];
+        $mail->Body = replace_macros($template, array(
+                                         '$upstream' => t('Upstream'),
+                                         '$local' => t('Local'),
+                                         '$item' => $item));
         if (!$mail->Send()) {
             throw new Exception($mail->ErrorInfo);
         }
         logger('mailstream_send sent message ' . $mail->MessageID . ' ' . $mail->Subject, LOGGER_DEBUG);
     } catch (phpmailerException $e) {
-        logger('mailstream_send PHPMailer exception sending message ' . $ms_item['message-id'] . ': ' . $e->errorMessage(), LOGGER_ERROR);
+        logger('mailstream_send PHPMailer exception sending message ' . $ms_item['message-id'] . ': ' . $e->errorMessage(), LOGGER_NORMAL);
     } catch (Exception $e) {
-        logger('mailstream_send exception sending message ' . $ms_item['message-id'] . ': ' . $e->getMessage(), LOGGER_ERROR);
+        logger('mailstream_send exception sending message ' . $ms_item['message-id'] . ': ' . $e->getMessage(), LOGGER_NORMAL);
     }
     // In case of failure, still set the item to completed.  Otherwise
     // we'll just try to send it over and over again and it'll fail
@@ -228,7 +237,7 @@ function mailstream_cron($a, $b) {
             mailstream_send($a, $ms_item, $item, $user);
         }
         else {
-            logger('mailstream_cron: Unable to find item ' . $ms_item['uri'], LOGGER_ERROR);
+            logger('mailstream_cron: Unable to find item ' . $ms_item['uri'], LOGGER_NORMAL);
             q("UPDATE `mailstream_item` SET `completed` = now() WHERE `id` = %d", intval($ms_item['id']));
         }
     }
@@ -240,11 +249,13 @@ function mailstream_plugin_settings(&$a,&$s) {
     $enabled_mu = ($enabled === 'on') ? ' checked="true"' : '';
     $address = get_pconfig(local_user(), 'mailstream', 'address');
     $address_mu = $address ? (' value="' . $address . '"') : '';
-    $template = file_get_contents(dirname(__file__).'/settings.tpl');
-    $s .= replace_macros($template, array('$address' => $address_mu,
-                                          '$address_caption' => t('Address:'),
-                                          '$enabled' => $enabled_mu,
-                                          '$enabled_caption' => t('Enabled:')));
+    $template = get_markup_template('settings.tpl', 'addon/mailstream/');
+    $s .= replace_macros($template, array(
+                             '$submit' => t('Submit'),
+                             '$address' => $address_mu,
+                             '$address_caption' => t('Address:'),
+                             '$enabled' => $enabled_mu,
+                             '$enabled_caption' => t('Enabled:')));
 }
 
 function mailstream_plugin_settings_post($a,$post) {
