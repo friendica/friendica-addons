@@ -327,6 +327,16 @@ function gpluspost_feeditem($pid, $uid) {
 				$link = current($links);
 			}
 			$multiplelinks = (sizeof($links) > 1);
+
+			if ($multiplelinks) {
+				$html2 = bbcode($msg, false, false);
+				$links2 = collecturls($html2);
+				if (sizeof($links2) > 0) {
+					reset($links2);
+					$link = current($links2);
+					$multiplelinks = (sizeof($links2) > 1);
+				}
+			}
 		}
 
 		$msglink = "";
@@ -350,8 +360,8 @@ function gpluspost_feeditem($pid, $uid) {
 			$title = $lines[0];
 		}
 
-		if ($image != $msglink)
-			$html = trim(str_replace($msglink, "", $html));
+		//if ($image != $msglink)
+		//	$html = trim(str_replace($msglink, "", $html));
 
 		$title = trim(str_replace($msglink, "", $title));
 
@@ -359,6 +369,8 @@ function gpluspost_feeditem($pid, $uid) {
 
 		if ($uid == 0)
 			$title = $item["author-name"].": ".$title;
+
+		$msglink = htmlspecialchars(html_entity_decode($msglink));
 
 		$title = str_replace("&", "&amp;", $title);
 		//$html = str_replace("&", "&amp;", $html);
