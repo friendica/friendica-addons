@@ -351,6 +351,8 @@ function twitter_shortenmsg($b) {
 	while (strpos($msg, "  ") !== false)
 		$msg = str_replace("  ", " ", $msg);
 
+	$origmsg = $msg;
+
 	// Removing URLs
 	$msg = preg_replace('/(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/i', "", $msg);
 
@@ -385,6 +387,10 @@ function twitter_shortenmsg($b) {
 
 	if (($msglink == "") and strlen($msg) > $max_char)
 		$msglink = $b["plink"];
+
+	// If the message is short enough then don't modify it. (if the link exists in the original message)
+	if ((strlen(trim($origmsg)) <= $max_char) AND (strpos($origmsg, $msglink) OR ($msglink == "")))
+		return(trim($origmsg));
 
 	if (strlen($msglink) > 20)
 		$msglink = short_link($msglink);
