@@ -74,7 +74,7 @@ function mailstream_generate_id($a, $uri) {
 }
 
 function mailstream_post_remote_hook(&$a, &$item) {
-    if (get_pconfig($item['uid'], 'mailstream', 'enabled') !== 'on') {
+    if (!get_pconfig($item['uid'], 'mailstream', 'enabled')) {
         return;
     }
     if (!$item['uid']) {
@@ -266,7 +266,6 @@ function mailstream_cron($a, $b) {
 
 function mailstream_plugin_settings(&$a,&$s) {
     $enabled = get_pconfig(local_user(), 'mailstream', 'enabled');
-    $enabled_mu = ($enabled === 'on') ? ' checked="true"' : '';
     $address = get_pconfig(local_user(), 'mailstream', 'address');
     $template = get_markup_template('settings.tpl', 'addon/mailstream/');
     $s .= replace_macros($template, array(
@@ -284,14 +283,14 @@ function mailstream_plugin_settings(&$a,&$s) {
 }
 
 function mailstream_plugin_settings_post($a,$post) {
-    if ($_POST['address'] != "") {
-        set_pconfig(local_user(), 'mailstream', 'address', $_POST['address']);
+    if ($_POST['mailstream_address'] != "") {
+        set_pconfig(local_user(), 'mailstream', 'address', $_POST['mailstream_address']);
     }
     else {
         del_pconfig(local_user(), 'mailstream', 'address');
     }
-    if ($_POST['enabled']) {
-        set_pconfig(local_user(), 'mailstream', 'enabled', $_POST['enabled']);
+    if ($_POST['mailstream_enabled']) {
+        set_pconfig(local_user(), 'mailstream', 'enabled', $_POST['mailstream_enabled']);
     }
     else {
         del_pconfig(local_user(), 'mailstream', 'enabled');
