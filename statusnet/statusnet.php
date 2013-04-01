@@ -4,6 +4,7 @@
  * Description: Relay public postings to a connected StatusNet account
  * Version: 1.0.5
  * Author: Tobias Diekershoff <http://diekershoff.homeunix.net/friendika/profile/tobias>
+ * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
  
 /*   StatusNet Plugin for Friendica
