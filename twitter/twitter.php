@@ -4,6 +4,7 @@
  * Description: Relay public postings to a connected Twitter account
  * Version: 1.0.4
  * Author: Tobias Diekershoff <http://diekershoff.homeunix.net/friendika/profile/tobias>
+ * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
 
 
