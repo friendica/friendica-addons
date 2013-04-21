@@ -286,7 +286,7 @@ function twitter_shortenmsg($b) {
 	require_once("include/bbcode.php");
 	require_once("include/html2plain.php");
 
-	$max_char = 140;
+	$max_char = 130;
 
 	// Looking for the first image
 	$image = '';
