@@ -108,7 +108,7 @@ function superblock_item_photo_menu(&$a,&$b) {
 		}
 	}
 
-	$b['menu'][ t('Block Completely')] = 'javascript:superblockBlock(\'' . $author . '\');';
+	$b['menu'][ t('Block Completely')] = 'javascript:superblockBlock(\'' . $author . '\'); return false;';
 }
 
 function superblock_module() {}
