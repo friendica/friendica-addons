@@ -1,0 +1,51 @@
+# ADDON blockem
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica blockem addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: blockem.php:51
+msgid "\"Blockem\" Settings"
+msgstr ""
+
+#: blockem.php:53
+msgid "Comma separated profile URLS to block"
+msgstr ""
+
+#: blockem.php:57
+msgid "Submit"
+msgstr ""
+
+#: blockem.php:70
+msgid "BLOCKEM Settings saved."
+msgstr ""
+
+#: blockem.php:105
+#, php-format
+msgid "Blocked %s - Click to open/close"
+msgstr ""
+
+#: blockem.php:160
+msgid "Unblock Author"
+msgstr ""
+
+#: blockem.php:162
+msgid "Block Author"
+msgstr ""
+
+#: blockem.php:194
+msgid "blockem settings updated"
+msgstr ""
