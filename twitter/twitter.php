@@ -286,7 +286,7 @@ function twitter_shortenmsg($b) {
 	require_once("include/bbcode.php");
 	require_once("include/html2plain.php");
 
-	$max_char = 140;
+	$max_char = 130;
 
 	// Looking for the first image
 	$image = '';
@@ -512,7 +512,7 @@ function twitter_post_hook(&$a,&$b) {
 	                // ok, all the links we want to send out are save, now strip 
 	                // away the remaining bbcode
 			//$msg = strip_tags(bbcode($tmp, false, false));
-			$msg = bbcode($tmp, false, false);
+			$msg = bbcode($tmp, false, false, true);
 			$msg = str_replace(array('<br>','<br />'),"\n",$msg);
 			$msg = strip_tags($msg);
 
