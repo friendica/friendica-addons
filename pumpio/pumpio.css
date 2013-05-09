@@ -1,0 +1,16 @@
+
+#pumpio-public-label, #pumpio-enable-label, #pumpio-username-label, #pumpio-servername-label, #pumpio-bydefault-label {
+	float: left;
+	width: 200px;
+	margin-top: 10px;
+}
+
+#pumpio-public, #pumpio-checkbox, #pumpio-username, #pumpio-servername, #pumpio-bydefault {
+	float: left;
+	margin-top: 10px;
+}
+
+#pumpio-submit {
+	margin-top: 15px;
+}
+
