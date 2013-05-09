@@ -23,7 +23,7 @@ connectivity.
 </p>
 <p>
 However, setting up retriever can be quite tricky since it depends on
-the internal design of the website.  This was designed to make life
+the internal design of the website.  That was designed to make life
 easy for the website's developers, not for you.  You'll need to have
 some familiarity with HTML, and be willing to adapt when the website
 suddenly changes everything without notice.
@@ -48,7 +48,7 @@ A simple case is when the article is wrapped in a "div" element:
 </p>
 <pre>
     ...
-    &lt;div class="main-content"&gt;
+    &lt;div class="ArticleWrapper"&gt;
       &lt;h2&gt;Man Bites Dog&lt;/h2&gt;
       &lt;img src="mbd.jpg"&gt;
       &lt;p&gt;
@@ -63,7 +63,7 @@ A simple case is when the article is wrapped in a "div" element:
 </pre>
 <p>
 You then specify the tag "div", attribute "class", and value
-"main-content".  Everything else in the page, such as navigation
+"ArticleWrapper".  Everything else in the page, such as navigation
 panels and menus and footers and so on, will be discarded.  If there
 is more than one section of the page you want to include, specify each
 one on a separate row.  If the matching section contains some sections
@@ -81,7 +81,7 @@ articles should be available.
 <p>
 You can leave the attribute and value blank to include all the
 corresponding elements with the specified tag name.  You can also use
-a tag name of "*", which will match any element type with the
+a tag name of just an asterisk ("*"), which will match any element type with the
 specified attribute regardless of the tag.
 </p>
 <p>
@@ -125,7 +125,7 @@ To change the URL used to retrieve the page, use the "URL Pattern" and
 "URL Replace" fields.  The pattern is a regular expression matching
 part of the URL to replace.  In this case, you might use a pattern of
 "/article" and a replace string of "/print/article".  A common pattern
-is simply "$", used to add the replace string to the end of the URL.
+is simply a dollar sign ("$"), used to add the replace string to the end of the URL.
 </p>
 <h3>Background Processing</h3>
 <p>
@@ -142,12 +142,12 @@ Retriever can also optionally download images and store them in the
 local Friendica instance.  Just check the "Download Images" box.  You
 can also download images in every item from your network, whether it's
 an RSS feed or not.  Go to the "Settings" page and
-click <a href="{{$config}}">"Plugin settings"</a>.  Then check the "All
+click <a href="$config">"Plugin settings"</a>.  Then check the "All
 Photos" box in the "Retriever Settings" section and click "Submit".
 </p>
 <h2>Configure Feeds:</h2>
 <div>
-{{foreach $feeds as $feed}}
-{{include file="contact_template.tpl" contact=$feed}}
-{{/foreach}}
+{{ for $feeds as $feed }}
+{{ inc contact_template.tpl with $contact=$feed }}{{ endinc }}
+{{ endfor }}
 </div>
