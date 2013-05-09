@@ -192,6 +192,9 @@ function pumpio_settings(&$a,&$s) {
     $public_enabled = get_pconfig(local_user(),'pumpio','public');
     $public_checked = (($public_enabled) ? ' checked="checked" ' : '');
 
+    $mirror_enabled = get_pconfig(local_user(),'pumpio','mirror');
+    $mirror_checked = (($mirror_enabled) ? ' checked="checked" ' : '');
+
     $servername = get_pconfig(local_user(), "pumpio", "host");
     $username = get_pconfig(local_user(), "pumpio", "user");
 
@@ -230,6 +233,11 @@ function pumpio_settings(&$a,&$s) {
 	$s .= '<input id="pumpio-public" type="checkbox" name="pumpio_public" value="1" ' . $public_checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
+	$s .= '<div id="pumpio-mirror-wrapper">';
+	$s .= '<label id="pumpio-mirror-label" for="pumpio-mirror">' . t('Mirror all public posts') . '</label>';
+	$s .= '<input id="pumpio-mirror" type="checkbox" name="pumpio_mirror" value="1" ' . $mirror_checked . '/>';
+	$s .= '</div><div class="clear"></div>';
+
 	$oauth_token = get_pconfig(local_user(), "pumpio", "oauth_token");
 	$oauth_token_secret = get_pconfig(local_user(), "pumpio", "oauth_token_secret");
 
@@ -255,6 +263,7 @@ function pumpio_settings_post(&$a,&$b) {
 		set_pconfig(local_user(),'pumpio','host',$_POST['pumpio_host']);
 		set_pconfig(local_user(),'pumpio','user',$_POST['pumpio_user']);
 		set_pconfig(local_user(),'pumpio','public',$_POST['pumpio_public']);
+		set_pconfig(local_user(),'pumpio','mirror',$_POST['pumpio_mirror']);
 		set_pconfig(local_user(),'pumpio','post_by_default',intval($_POST['pumpio_bydefault']));
 
 	}
@@ -374,7 +383,7 @@ function pumpio_cron($a,$b) {
         }
         logger('pumpio: cron_start');
 
-        $r = q("SELECT * FROM `pconfig` WHERE `cat` = 'pumpio' AND `k` = 'mirror_posts' AND `v` = '1' ORDER BY RAND() ");
+        $r = q("SELECT * FROM `pconfig` WHERE `cat` = 'pumpio' AND `k` = 'mirror' AND `v` = '1' ORDER BY RAND() ");
         if(count($r)) {
                 foreach($r as $rr) {
                         logger('pumpio: fetching for user '.$rr['uid']);
@@ -392,7 +401,7 @@ function pumpio_fetchtimeline($a, $uid) {
 	$csecret = get_pconfig($uid, 'pumpio', 'consumersecret');
 	$otoken  = get_pconfig($uid, 'pumpio', 'oauthtoken');
 	$osecret = get_pconfig($uid, 'pumpio', 'oauthsecret');
-	$lastid  = get_pconfig($uid, 'pumpio', 'lastid');
+	$lastdate = get_pconfig($uid, 'pumpio', 'lastdate');
 	$hostname = get_pconfig($uid, 'pumpio','host');
 	$username = get_pconfig($uid, "pumpio", "user");
 
@@ -420,15 +429,21 @@ function pumpio_fetchtimeline($a, $uid) {
 				'https://'.$hostname.'/api/user/'.$username.'/feed/major',
 				'GET', array(), array('FailOnAccessError'=>true), $user);
 
-	$posts = array_reverse($items);
+	$posts = array_reverse($user->items);
+
+	$initiallastdate = $lastdate;
+	$lastdate = 0;
 
 	if (count($posts)) {
 		foreach ($posts as $post) {
-			if ($post->id_str > $lastid) // To-Do
-				$lastid = $post->id_str; // To-Do
-
-			if ($first_time)
+			if (strtotime($post->published) <= $initiallastdate)
 				continue;
+
+			if ($lastdate < strtotime($post->published))
+				$lastdate = strtotime($post->published);
+
+			//if ($first_time)
+			//	continue;
 
 			if (!strpos($post->source, $application_name)) {
 				require_once('include/html2bbcode.php');
@@ -451,4 +466,6 @@ function pumpio_fetchtimeline($a, $uid) {
 		}
 	}
 
+	if ($lastdate != 0)
+		set_pconfig($uid,'pumpio','lastdate', $lastdate);
 }
