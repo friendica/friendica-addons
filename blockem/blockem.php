@@ -16,6 +16,7 @@ function blockem_install() {
 	register_hook('plugin_settings_post', 'addon/blockem/blockem.php', 'blockem_addon_settings_post');
 	register_hook('conversation_start', 'addon/blockem/blockem.php', 'blockem_conversation_start');
 	register_hook('item_photo_menu', 'addon/blockem/blockem.php', 'blockem_item_photo_menu');
+	register_hook('enotify_store', 'addon/blockem/blockem.php', 'blockem_enotify_store' );
 }
 
 
@@ -26,6 +27,7 @@ function blockem_uninstall() {
 	unregister_hook('plugin_settings_post', 'addon/blockem/blockem.php', 'blockem_addon_settings_post');
 	unregister_hook('conversation_start', 'addon/blockem/blockem.php', 'blockem_conversation_start');
 	unregister_hook('item_photo_menu', 'addon/blockem/blockem.php', 'blockem_item_photo_menu');
+	unregister_hook('enotify_store', 'addon/blockem/blockem.php', 'blockem_enotify_store' );
 
 }
 
@@ -68,6 +70,35 @@ function blockem_addon_settings_post(&$a,&$b) {
 	if($_POST['blockem-submit']) {
 		set_pconfig(local_user(),'blockem','words',trim($_POST['blockem-words']));
 		info( t('BLOCKEM Settings saved.') . EOL);
+	}
+}
+
+
+function blockem_enotify_store(&$a,&$b) {
+
+	$words = get_pconfig($b['uid'],'blockem','words');
+	if($words) {
+		$arr = explode(',',$words);
+	}
+	else {
+		return;
+	}
+
+	$found = false;
+	if(count($arr)) {
+		foreach($arr as $word) {
+			if(! strlen(trim($word))) {
+				continue;
+			}
+
+			if(link_compare($b['url'],$word)) {
+				$found = true;
+				break;
+			}
+		}
+	}
+	if($found) {
+		$b['abort'] = true;
 	}
 }
 

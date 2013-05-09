@@ -15,6 +15,8 @@ function superblock_install() {
 	register_hook('plugin_settings_post', 'addon/superblock/superblock.php', 'superblock_addon_settings_post');
 	register_hook('conversation_start', 'addon/superblock/superblock.php', 'superblock_conversation_start');
 	register_hook('item_photo_menu', 'addon/superblock/superblock.php', 'superblock_item_photo_menu');
+	register_hook('enotify_store', 'addon/superblock/superblock.php', 'superblock_enotify_store');
+
 }
 
 
@@ -24,6 +26,7 @@ function superblock_uninstall() {
 	unregister_hook('plugin_settings_post', 'addon/superblock/superblock.php', 'superblock_addon_settings_post');
 	unregister_hook('conversation_start', 'addon/superblock/superblock.php', 'superblock_conversation_start');
 	unregister_hook('item_photo_menu', 'addon/superblock/superblock.php', 'superblock_item_photo_menu');
+	unregister_hook('enotify_store', 'addon/superblock/superblock.php', 'superblock_enotify_store');
 
 }
 
@@ -68,6 +71,35 @@ function superblock_addon_settings_post(&$a,&$b) {
 		info( t('SUPERBLOCK Settings saved.') . EOL);
 	}
 }
+
+function superblock_enotify_store(&$a,&$b) {
+
+	$words = get_pconfig($b['uid'],'system','blocked');
+	if($words) {
+		$arr = explode(',',$words);
+	}
+	else {
+		return;
+	}
+
+	$found = false;
+	if(count($arr)) {
+		foreach($arr as $word) {
+			if(! strlen(trim($word))) {
+				continue;
+			}
+
+			if(link_compare($b['url'],$word)) {
+				$found = true;
+				break;
+			}
+		}
+	}
+	if($found) {
+		$b['abort'] = true;
+	}
+}
+
 
 function superblock_conversation_start(&$a,&$b) {
 
