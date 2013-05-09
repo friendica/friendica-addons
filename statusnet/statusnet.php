@@ -573,6 +573,9 @@ function statusnet_post_hook(&$a,&$b) {
 	if(! strstr($b['postopts'],'statusnet'))
 		return;
 
+	if($b['parent'] != $b['id'])
+		return;
+
 	// if posts comes from statusnet don't send it back
 	if($b['app'] == "StatusNet")
 		return;
