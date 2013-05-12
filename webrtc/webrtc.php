@@ -46,7 +46,12 @@ function webrtc_content(&$a) {
         /* embedd the landing page in an iframe */
         $o .= '<h2>'.t('Video Chat').'</h2>';
         $o .= '<p>FIXME some short information for the enduser what to do. Best surrounded in a <code>t()</code> call so the text can be translated.</p>';
-        $o .= '<iframe src="'.$webrtcurl.'" width="600px" height="600px"></iframe>';
+	if ($webrtcurl == '') {
+	    $o .= '<p>'.t('Please contact your friendica admin and send a reminder to configure the WebRTC addon.').'</p>';
+	} else {
+	    $o .= '<iframe src="'.$webrtcurl.'" width="600px" height="600px"></iframe>';
+	}
+
 
         return $o;
 }
