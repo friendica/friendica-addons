@@ -11,7 +11,7 @@ function webrtc_install() {
         register_hook('app_menu', 'addon/webrtc/webrtc.php', 'webrtc_app_menu');
 }
 
-function web_uninstall() {
+function webrtc_uninstall() {
         unregister_hook('app_menu', 'addon/webrtc/webrtc.php', 'webrtc_app_menu');
 
 }
