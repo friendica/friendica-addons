@@ -69,11 +69,11 @@ function pumpio_registerclient($a, $host) {
 
 
         $params["type"] = "client_associate";
-        //$params["contacts"] = "icarus@dabo.de";
+        $params["contacts"] = "icarus@dabo.de"; // To-Do
         $params["application_type"] = "native";
         $params["application_name"] = $application_name;
-        //$params["logo_url"] = $a->get_baseurl()."/images/friendica-256.png";
-        //$params["redirect_uris"] = $a->get_baseurl()."a/addon/pumpio/pumpio.php";
+        $params["logo_url"] = $a->get_baseurl()."/images/friendica-256.png";
+        $params["redirect_uris"] = $a->get_baseurl()."/pumpio/connect";
 
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HEADER, false);
@@ -335,14 +335,16 @@ function pumpio_send(&$a,&$b) {
 		if ($title != '')
 			$title = "<h4>".$title."</h4>";
 
-		$params->verb = "post";
+		$params = array();
 
-		$params->object = array(
+		$params["verb"] = "post";
+
+		$params["object"] = array(
 					'objectType' => "note",
 					'content' => $title.bbcode($b['body'], false, false));
 
 		if ($public)
-			$params->to = array(Array(
+			$params["to"] = array(Array(
 						"objectType" => "collection",
 						"id" => "http://activityschema.org/collection/public"));
 
@@ -374,13 +376,13 @@ function pumpio_cron($a,$b) {
         if(! $poll_interval)
                 $poll_interval = PUMPIO_DEFAULT_POLL_INTERVAL;
 
-        if($last) {
-                $next = $last + ($poll_interval * 60);
-                if($next > time()) {
-                        logger('pumpio: poll intervall not reached');
-                        return;
-                }
-        }
+//        if($last) {
+//                $next = $last + ($poll_interval * 60);
+//                if($next > time()) {
+//                        logger('pumpio: poll intervall not reached');
+//                        return;
+//                }
+//        }
         logger('pumpio: cron_start');
 
         $r = q("SELECT * FROM `pconfig` WHERE `cat` = 'pumpio' AND `k` = 'mirror' AND `v` = '1' ORDER BY RAND() ");
@@ -397,10 +399,10 @@ function pumpio_cron($a,$b) {
 }
 
 function pumpio_fetchtimeline($a, $uid) {
-	$ckey    = get_pconfig($uid, 'pumpio', 'consumerkey');
-	$csecret = get_pconfig($uid, 'pumpio', 'consumersecret');
-	$otoken  = get_pconfig($uid, 'pumpio', 'oauthtoken');
-	$osecret = get_pconfig($uid, 'pumpio', 'oauthsecret');
+	$ckey    = get_pconfig($uid, 'pumpio', 'consumer_key');
+	$csecret = get_pconfig($uid, 'pumpio', 'consumer_secret');
+	$otoken  = get_pconfig($uid, 'pumpio', 'oauth_token');
+	$osecret = get_pconfig($uid, 'pumpio', 'oauth_token_secret');
 	$lastdate = get_pconfig($uid, 'pumpio', 'lastdate');
 	$hostname = get_pconfig($uid, 'pumpio','host');
 	$username = get_pconfig($uid, "pumpio", "user");
@@ -412,22 +414,29 @@ function pumpio_fetchtimeline($a, $uid) {
 
 	$first_time = ($lastid == "");
 
-	require('oauth/http.php');
-	require('oauth/oauth_client.php');
-
+//	require('addon/pumpio/oauth/http.php');
+//	require('addon/pumpio/oauth/oauth_client.php');
 	$client = new oauth_client_class;
 	$client->oauth_version = '1.0a';
 	$client->authorization_header = true;
 	$client->url_parameters = false;
 
 	$client->client_id = $ckey;
-	$client->client_secret = $csekret;
+	$client->client_secret = $csecret;
 	$client->access_token = $otoken;
 	$client->access_token_secret = $osecret;
 
-	$success = $client->CallAPI(
-				'https://'.$hostname.'/api/user/'.$username.'/feed/major',
-				'GET', array(), array('FailOnAccessError'=>true), $user);
+	$url = 'https://'.$hostname.'/api/user/'.$username.'/feed/major';
+
+	//echo 'pumpio: fetching for user '.$uid.' '.$url.' '.$client->access_token;
+	logger('pumpio: fetching for user '.$uid.' '.$url.' C:'.$client->client_id.' CS:'.$client->client_secret.' T:'.$client->access_token.' TS:'.$client->access_token_secret);
+
+	$success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $user);
+
+	if (!$success) {
+		logger('pumpio: error fetching posts for user '.$uid." ".print_r($user, true));
+		return;
+	}
 
 	$posts = array_reverse($user->items);
 
@@ -469,3 +478,24 @@ function pumpio_fetchtimeline($a, $uid) {
 	if ($lastdate != 0)
 		set_pconfig($uid,'pumpio','lastdate', $lastdate);
 }
+/*
+require_once("boot.php");
+
+if(@is_null($a)) {
+        $a = new App;
+}
+
+if(is_null($db)) {
+        @include(".htconfig.php");
+        require_once("dba.php");
+        $db = new dba($db_host, $db_user, $db_pass, $db_data);
+        unset($db_host, $db_user, $db_pass, $db_data);
+};
+
+$a->set_baseurl(get_config('system','url'));
+
+$uid = 1;
+
+pumpio_fetchtimeline($a, $uid);
+*/
+?>
