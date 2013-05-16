@@ -2,7 +2,7 @@
 /**
  * Name: Mail Stream
  * Description: Mail all items coming into your network feed to an email address
- * Version: 0.1
+ * Version: 0.2
  * Author: Matthew Exon <http://mat.exon.name>
  */
 
@@ -74,29 +74,46 @@ function mailstream_generate_id($a, $uri) {
 }
 
 function mailstream_post_remote_hook(&$a, &$item) {
-    if (get_pconfig($item['uid'], 'mailstream', 'enabled') === 'on') {
-        if ($item['uid'] && $item['contact-id'] && $item['uri']) {
-            q("INSERT INTO `mailstream_item` (`uid`, `contact-id`, `uri`, `message-id`) " .
-              "VALUES (%d, '%s', '%s', '%s')", intval($item['uid']),
-              intval($item['contact-id']), dbesc($item['uri']), dbesc(mailstream_generate_id($a, $item['uri'])));
-            $r = q('SELECT * FROM `mailstream_item` WHERE `uid` = %d AND `contact-id` = %d AND `uri` = "%s"', intval($item['uid']), intval($item['contact-id']), dbesc($item['uri']));
-            if (count($r) != 1) {
-                logger('mailstream_post_remote_hook: Unexpected number of items returned from mailstream_item', LOGGER_NORMAL);
-                return;
-            }
-            $ms_item = $r[0];
-            logger('mailstream_post_remote_hook: created mailstream_item '
-                   . $ms_item['id'] . ' for item ' . $item['uri'] . ' '
-                   . $item['uid'] . ' ' . $item['contact-id'], LOGGER_DATA);
-            $r = q('SELECT * FROM `user` WHERE `uid` = %d', intval($item['uid']));
-            if (count($r) != 1) {
-                logger('mailstream_post_remote_hook: Unexpected number of users returned', LOGGER_NORMAL);
-                return;
-            }
-            $user = $r[0];
-            mailstream_send($a, $ms_item, $item, $user);
-        }
+    if (!get_pconfig($item['uid'], 'mailstream', 'enabled')) {
+        return;
     }
+    if (!$item['uid']) {
+        return;
+    }
+    if (!$item['contact-id']) {
+        return;
+    }
+    if (!$item['uri']) {
+        return;
+    }
+
+    q("INSERT INTO `mailstream_item` (`uid`, `contact-id`, `uri`, `message-id`) " .
+      "VALUES (%d, '%s', '%s', '%s')", intval($item['uid']),
+      intval($item['contact-id']), dbesc($item['uri']), dbesc(mailstream_generate_id($a, $item['uri'])));
+    $r = q('SELECT * FROM `mailstream_item` WHERE `uid` = %d AND `contact-id` = %d AND `uri` = "%s"', intval($item['uid']), intval($item['contact-id']), dbesc($item['uri']));
+    if (count($r) != 1) {
+        logger('mailstream_post_remote_hook: Unexpected number of items returned from mailstream_item', LOGGER_NORMAL);
+        return;
+    }
+    $ms_item = $r[0];
+    logger('mailstream_post_remote_hook: created mailstream_item '
+           . $ms_item['id'] . ' for item ' . $item['uri'] . ' '
+           . $item['uid'] . ' ' . $item['contact-id'], LOGGER_DATA);
+    $user = mailstream_get_user($item['uid']);
+    if (!$user) {
+        logger('mailstream_post_remote_hook: no user ' . $item['uid'], LOGGER_NORMAL);
+        return;
+    }
+    mailstream_send($a, $ms_item, $item, $user);
+}
+
+function mailstream_get_user($uid) {
+    $r = q('SELECT * FROM `user` WHERE `uid` = %d', intval($uid));
+    if (count($r) != 1) {
+        logger('mailstream_post_remote_hook: Unexpected number of users returned', LOGGER_NORMAL);
+        return;
+    }
+    return $r[0];
 }
 
 function mailstream_do_images($a, &$item, &$attachments) {
@@ -183,12 +200,15 @@ function mailstream_send($a, $ms_item, $item, $user) {
     if ($frommail == "") {
         $frommail = 'friendica@localhost.local';
     }
-    $email = get_pconfig($item['uid'], 'mailstream', 'address');
+    $address = get_pconfig($item['uid'], 'mailstream', 'address');
+    if (!$address) {
+        $address = $user['email'];
+    }
     $mail = new PHPmailer;
     try {
         $mail->XMailer = 'Friendica Mailstream Plugin';
         $mail->SetFrom($frommail, $item['author-name']);
-        $mail->AddAddress($email, $user['username']);
+        $mail->AddAddress($address, $user['username']);
         $mail->MessageID = $ms_item['message-id'];
         $mail->Subject = mailstream_subject($item);
         if ($item['thr-parent'] != $item['uri']) {
@@ -246,24 +266,31 @@ function mailstream_cron($a, $b) {
 
 function mailstream_plugin_settings(&$a,&$s) {
     $enabled = get_pconfig(local_user(), 'mailstream', 'enabled');
-    $enabled_mu = ($enabled === 'on') ? ' checked="true"' : '';
     $address = get_pconfig(local_user(), 'mailstream', 'address');
-    $address_mu = $address ? (' value="' . $address . '"') : '';
     $template = get_markup_template('settings.tpl', 'addon/mailstream/');
     $s .= replace_macros($template, array(
-                             '$submit' => t('Submit'),
-                             '$address' => $address_mu,
-                             '$address_caption' => t('Address:'),
-                             '$enabled' => $enabled_mu,
-                             '$enabled_caption' => t('Enabled:')));
+                             '$address' => array(
+                                 'mailstream_address',
+                                 t('Email Address'),
+                                 $address,
+                                 t("Leave blank to use your account email address")),
+                             '$enabled' => array(
+                                 'mailstream_enabled',
+                                 t('Enabled'),
+                                 $enabled),
+                             '$title' => t('Mail Stream Settings'),
+                             '$submit' => t('Submit')));
 }
 
 function mailstream_plugin_settings_post($a,$post) {
-    if ($_POST['address'] != "") {
-        set_pconfig(local_user(), 'mailstream', 'address', $_POST['address']);
+    if ($_POST['mailstream_address'] != "") {
+        set_pconfig(local_user(), 'mailstream', 'address', $_POST['mailstream_address']);
     }
-    if ($_POST['enabled']) {
-        set_pconfig(local_user(), 'mailstream', 'enabled', $_POST['enabled']);
+    else {
+        del_pconfig(local_user(), 'mailstream', 'address');
+    }
+    if ($_POST['mailstream_enabled']) {
+        set_pconfig(local_user(), 'mailstream', 'enabled', $_POST['mailstream_enabled']);
     }
     else {
         del_pconfig(local_user(), 'mailstream', 'enabled');
