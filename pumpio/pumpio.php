@@ -204,7 +204,7 @@ function pumpio_settings(&$a,&$s) {
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="pumpio-username-wrapper">';
-    $s .= '<label id="pumpio-username-label" for="pumpio-username">'.t('pump.io username').'</label>';
+    $s .= '<label id="pumpio-username-label" for="pumpio-username">'.t('pump.io username (without the servername)').'</label>';
     $s .= '<input id="pumpio-username" type="text" name="pumpio_user" value="'.$username.'" />';
     $s .= '</div><div class="clear"></div>';
 
@@ -253,10 +253,22 @@ function pumpio_settings(&$a,&$s) {
 function pumpio_settings_post(&$a,&$b) {
 
 	if(x($_POST,'pumpio-submit')) {
+		// filtering the username if it is filled wrong
+		$user = $_POST['pumpio_user'];
+		if (strstr($user, "@")) {
+			$pos = strpos($user, "@");
+			if ($pos > 0)
+				$user = substr($user, 0, $pos);
+		}
+
+		// Filtering the hostname if someone is entering it with "http"
+		$host = $_POST['pumpio_host'];
+		$host = trim($host);
+		$host = str_replace(array("https://", "http://"), array("", ""), $host);
 
 		set_pconfig(local_user(),'pumpio','post',intval($_POST['pumpio']));
-		set_pconfig(local_user(),'pumpio','host',$_POST['pumpio_host']);
-		set_pconfig(local_user(),'pumpio','user',$_POST['pumpio_user']);
+		set_pconfig(local_user(),'pumpio','host',$host);
+		set_pconfig(local_user(),'pumpio','user',$user);
 		set_pconfig(local_user(),'pumpio','public',$_POST['pumpio_public']);
 		set_pconfig(local_user(),'pumpio','mirror',$_POST['pumpio_mirror']);
 		set_pconfig(local_user(),'pumpio','post_by_default',intval($_POST['pumpio_bydefault']));
