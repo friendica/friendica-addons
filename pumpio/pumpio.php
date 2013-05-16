@@ -458,7 +458,20 @@ function pumpio_fetchtimeline($a, $uid) {
 			if ($first_time)
 				continue;
 
-			if (!strstr($post->generator->displayName, $application_name)) {
+			$receiptians = array();
+			if (@is_array($post->cc))
+				$receiptians = array_merge($receiptians, $post->cc);
+
+			if (@is_array($post->to))
+				$receiptians = array_merge($receiptians, $post->to);
+
+			$public = false;
+			foreach ($receiptians AS $receiver)
+				if (is_string($receiver->objectType))
+					if ($receiver->id == "http://activityschema.org/collection/public")
+						$public = true;
+
+			if ($public AND !strstr($post->generator->displayName, $application_name)) {
 				require_once('include/html2bbcode.php');
 
 				$_SESSION["authenticated"] = true;
