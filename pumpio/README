@@ -1,0 +1,5 @@
+To let the connector work properly you should define an application name in the .htconfig:
+
+$a->config['pumpio']['application_name'] = "Name of you site";
+
+This name appears at pump.io and is mportant for not mirroring back posts that came from friendica.
