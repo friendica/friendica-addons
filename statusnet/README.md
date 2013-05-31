@@ -2,7 +2,7 @@ StatusNet Connector
 ===================
 Main authors Tobias Diekershoff and Michael Vogel.
 
-With this addon to Friendica you can give your user the possibility to post
+With this addon to friendica you can give your user the possibility to post
 their public messages to any StatusNet instance.  The messages will be strapped
 their rich context and shortened to to the character limit of the StatusNet
 instance in question if necessary. If shortening of the message was performed a
@@ -22,7 +22,7 @@ was longer than the maximal allowed notice length requires it, that you have
 PHP5+ and curl on your server.
 Where to find
 
-In the Friendica git repository /addon/statusnet/, this directory contains all
+In the friendica addon git repository /statusnet/, this directory contains all
 required PHP files (including the [Twitter OAuth library] [1] by Abraham Williams,
 MIT licensed and the [Slinky library] [2] by Beau Lebens, BSD license), a CSS file
 for styling of the user configuration and an image to Sign in with StatusNet.
@@ -69,10 +69,10 @@ StatusNet instance they may have an account at.
 User Configuration 
 ------------------
 
-When the addon is activated the user has to aquire three things in order to
+When the addon is activated the user has to acquire three things in order to
 connect to the StatusNet account of choice.
 
-* the base URL for the StatusNet API, for identi.ca this is https://identi.ca/api/
+* the base URL for the StatusNet API, for identi.ca this was https://identi.ca/api/
 * OAuth Consumer key & secret
 
 To get the OAuth Consumer key pair the user has to (a) ask her Friendica admin
@@ -83,13 +83,13 @@ settings under "Connect -> Connections -> Register an OAuth client application
 
 During the registration of the OAuth client remember the following:
 
-* there is no callback url
+* there is no callback URL
 * register a desktop client
 * with read & write access
-* the Source URL should be the URL of your Friendica server
+* the Source URL should be the URL of your friendica server
 
 After the required credentials for the application are stored in the
-configuration you have to actually connect your Friendica account with
+configuration you have to actually connect your friendica account with
 StatusNet. To do so follow the Sign in with StatusNet button, allow the access
 and copy the security code into the plugin configuration. Friendica will then
 try to acquire the final OAuth credentials from the API, if successful the
@@ -113,11 +113,14 @@ Connector Options for the User
   optionally posted to your associated StatusNet accout as well, you need to
   check this box.
 * **Send public postings to StatusNet by default** if you want to have _all_
-  your public postings beeing send to your StatusNet account you need to check
+  your public postings being send to your StatusNet account you need to check
   this button as well. Otherwise you have to enable the relay of your postings
   in the ACL dialog (click the lock button) before posting an entry.
 * **Mirror all posts from statusnet that are no replies or repeated messages**
-  _TODO add info about the mirroring_
+  if you want your postings from StatusNet also appear in your friendica
+  postings, check this box. Replies to other people postings, repostings and your own
+  postings that were send from friendica wont be mirrored into your friendica
+  stream.
 * **Shortening method that optimizes the post** by default friendica checks how
   many characters your StatusNet instance allows you to use for a posting and
   if a posting is longer then this amount of characters it will shorten the
@@ -138,7 +141,7 @@ Connector Options for the User
 License
 =======
 
-The _StatusNet Connector_ is licensed unter the [3-clause BSD license][3] see the
+The _StatusNet Connector_ is licensed under the [3-clause BSD license][3] see the
 LICENSE file in the addons directory.
 
 [3]: http://opensource.org/licenses/BSD-3-Clause
