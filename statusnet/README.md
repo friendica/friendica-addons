@@ -110,7 +110,7 @@ Connector Options for the User
 ==============================
 
 * **Allow posting to StatusNet** If you want your _public postings_ being
-  optionally posted to your associated StatusNet accout as well, you need to
+  optionally posted to your associated StatusNet account as well, you need to
   check this box.
 * **Send public postings to StatusNet by default** if you want to have _all_
   your public postings being send to your StatusNet account you need to check
