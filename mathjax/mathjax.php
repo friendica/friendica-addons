@@ -72,6 +72,7 @@ function mathjax_plugin_admin (&$a, &$o) {
 	}
 
 	$o = replace_macros( $t, array(
+		'$submit' => t('Submit'),
 		'$baseurl' => array('baseurl', t('MathJax Base URL'), get_config('mathjax','baseurl' ), t('The URL for the javascript file that should be included to use MathJax. Can be either the MathJax CDN or another installation of MathJax.')),
 	));
 }
