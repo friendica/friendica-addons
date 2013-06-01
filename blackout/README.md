@@ -1,11 +1,12 @@
-Name: blackout
-Description: Blackout your ~friendica node during a given period
-License: MIT
-Version: 1.0
-Author: Tobias Diekershoff <https://diekershoff.homeunix.net/friendika/~tobias>
+blackout addon
+==============
+* Description: Blackout your ~friendica node during a given period
+* License: [MIT](http://opensource.org/licenses/MIT)
+* Version: 1.0
+* Author: Tobias Diekershoff
 
 About
-=====
+-----
 
 This plugin will allow you to enter a date/time period during which
 all your ~friendica visitors from the web will be redirected to a page
@@ -21,12 +22,12 @@ the entered time periode and fix typos without having to hack the
 database directly.
 
 Requirements
-============
+-------------
 
-THIS ADDON REQUIRES PHP VERSION 5.3 OR HIGHER.
+**THIS ADDON REQUIRES PHP VERSION 5.3 OR HIGHER.**
 
 License
-=======
+-------
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
