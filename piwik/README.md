@@ -1,7 +1,7 @@
 Piwik Plugin
 ============
 
-by Tobias Diekershoff 
+by Tobias Diekershoff and Klaus Weidenbach
 
 This addon allows you to embed the code necessary for the FLOSS webanalytics
 tool Piwik into the Friendica pages.
@@ -59,3 +59,10 @@ Currently the optional notice states the following:
 >    that your visits are logged this way you can set a cookie to prevent Piwik
 >    from tracking further visits of the site (opt-out).
 
+License
+=======
+
+The _Piwik addon_ is licensed under the [3-clause BSD license][3] see the
+LICENSE file in the addons directory.
+
+[3]: http://opensource.org/licenses/BSD-3-Clause
