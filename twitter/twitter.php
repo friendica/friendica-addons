@@ -311,7 +311,7 @@ function twitter_shortenmsg($b) {
 	require_once("include/bbcode.php");
 	require_once("include/html2plain.php");
 
-	$max_char = 130;
+	$max_char = 140;
 
 	// Looking for the first image
 	$image = '';
@@ -414,15 +414,20 @@ function twitter_shortenmsg($b) {
 	if (($msglink == "") and strlen($msg) > $max_char)
 		$msglink = $b["plink"];
 
-	// If the message is short enough then don't modify it. (if the link exists in the original message)
-	if ((strlen(trim($origmsg)) <= $max_char) AND (strpos($origmsg, $msglink) OR ($msglink == "")))
+	// If the message is short enough then don't modify it.
+	if ((strlen(trim($origmsg)) <= $max_char) AND ($msglink == ""))
+		return(trim($origmsg));
+
+	// If the message is short enough and the link exists in the original message don't modify it as well
+	// -3 because of the bad shortener of twitter
+	if ((strlen(trim($origmsg)) <= ($max_char - 3)) AND strpos($origmsg, $msglink))
 		return(trim($origmsg));
 
 	if (strlen($msglink) > 20)
 		$msglink = short_link($msglink);
 
-	if (strlen(trim($msg." ".$msglink)) > $max_char) {
-		$msg = substr($msg, 0, $max_char - (strlen($msglink)));
+	if (strlen(trim($msg." ".$msglink)) > ($max_char - 3)) {
+		$msg = substr($msg, 0, ($max_char - 3) - (strlen($msglink)));
 		$lastchar = substr($msg, -1);
 		$msg = substr($msg, 0, -1);
 		$pos = strrpos($msg, "\n");
