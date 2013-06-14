@@ -3,7 +3,7 @@
  * Name: Twitter Connector
  * Description: Relay public postings to a connected Twitter account
  * Version: 1.0.4
- * Author: Tobias Diekershoff <http://diekershoff.homeunix.net/friendika/profile/tobias>
+ * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  *
  * Copyright (c) 2011-2013 Tobias Diekershoff, Michael Vogel
@@ -58,8 +58,6 @@
  *     from "Settings -> Plugin Settings".
  *
  *     Requirements: PHP5, curl [Slinky library]
- *
- *     Documentation: http://diekershoff.homeunix.net/redmine/wiki/friendikaplugin/Twitter_Plugin
  */
 
 define('TWITTER_DEFAULT_POLL_INTERVAL', 5); // given in minutes

@@ -3,7 +3,7 @@
  * Name: Piwik Analytics
  * Description: Piwik Analytics Plugin for Friendica
  * Version: 1.1
- * Author: Tobias Diekershoff <http://diekershoff.homeunix.net/friendika/profile/tobias>
+ * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  * Author: Klaus Weidenbach
  */
 
@@ -26,8 +26,6 @@
  *     installation has. Alter the baseurl to fit your needs, don't care
  *     about http/https but beware to put the trailing / at the end of your
  *     setting.
- *
- *     Documentation see http://diekershoff.homeunix.net/redmine/wiki/friendikaplugin/Piwik_Plugin
  */
 
 function piwik_install() {

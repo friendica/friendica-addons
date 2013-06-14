@@ -4,7 +4,7 @@
  * Name: MathJax
  * Description: Addon for Friendika to include MathJax (LaTeX math syntax)
  * Version: 1.0
- * Author: Tobias Diekershoff <http://diekershoff.homeunix.net/friendika/profile/tobias>
+ * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  * License: 3-clause BSD license
  */
 
