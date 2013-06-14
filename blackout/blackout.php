@@ -4,7 +4,7 @@
  * Description: Blackout your ~friendica node during a given period, requires PHP >= 5.3
  * License: MIT
  * Version: 1.0
- * Author: Tobias Diekershoff <https://diekershoff.homeunix.net/friendika/~tobias>
+ * Author: Tobias Diekershoff <https://f.diekershoff.de/~tobias>
  *
  * About
  * =====
