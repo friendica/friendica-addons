@@ -3,8 +3,8 @@
  * Name: WebRTC Application
  * Description: add a webrtc instance for video/audio
  * Version: 1.0
- * Author: stephen mahood <https://friends.mayfirst.org/profile/marxistvegan>
- * Author: Tobias Diekershoff <http://diekershoff.homeunix.net/friendica/profile/tobias>
+ * Author: Stephen Mahood <https://friends.mayfirst.org/profile/marxistvegan>
+ * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  */
 
 function webrtc_install() {
