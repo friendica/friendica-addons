@@ -758,7 +758,7 @@ function statusnet_plugin_admin(&$a, &$o){
 		foreach($sites as $id=>$s){
 			$sitesform[] = Array(
 				'sitename' => Array("sitename[$id]", "Site name", $s['sitename'], ""),
-				'apiurl' => Array("apiurl[$id]", "Api url", $s['apiurl'], ""),
+				'apiurl' => Array("apiurl[$id]", "Api url", $s['apiurl'], t("Base API Path \x28remember the trailing /\x29") ),
 				'secret' => Array("secret[$id]", "Secret", $s['consumersecret'], ""),
 				'key' => Array("key[$id]", "Key", $s['consumerkey'], ""),
 				'applicationname' => Array("applicationname[$id]", "Application name", $s['applicationname'], ""),
@@ -770,7 +770,7 @@ function statusnet_plugin_admin(&$a, &$o){
 	$id++;
 	$sitesform[] = Array(
 		'sitename' => Array("sitename[$id]", t("Site name"), "", ""),
-		'apiurl' => Array("apiurl[$id]", t("API URL"), "", ""),
+		'apiurl' => Array("apiurl[$id]", "Api url", $s['apiurl'], t("Base API Path \x28remember the trailing /\x29") ),
 		'secret' => Array("secret[$id]", t("Consumer Secret"), "", ""),
 		'key' => Array("key[$id]", t("Consumer Key"), "", ""),
 		'applicationname' => Array("applicationname[$id]", t("Application name"), "", ""),
