@@ -10,9 +10,13 @@
 
 function cal_install()
 {
+    register_hook('plugin_settings', 'addon/cal/cal.php', 'cal_addon_settings');
+    register_hook('plugin_settings_post', 'addon/cal/cal.php', 'cal_addon_settings_post');
 }
 function cal_uninstall()
 {
+    unregister_hook('plugin_settings', 'addon/cal/cal.php', 'cal_addon_settings');
+    unregister_hook('plugin_settings_post', 'addon/cal/cal.php', 'cal_addon_settings_post');
 }
 function cal_module()
 {
@@ -35,6 +39,17 @@ function cal_content()
 	$o = "<p>".t('Wrong number of parameters')."</p>";
     }
     return $o;
+}
+
+function cal_addon_settings_post ( &$a, &$b  )
+{
+    if (! local_user())
+	return;
+}
+function cal_addon_settings ( &$a, &$s  )
+{
+    if (! local_user())
+	return;
 }
 
 ?>
