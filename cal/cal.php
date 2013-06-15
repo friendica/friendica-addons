@@ -22,23 +22,114 @@ function cal_module()
 {
 }
 /*  pathes
- *  /cal/$user/export/$format
+ *  /cal/$user/export/$
+ *  currently supported format is ical (iCalendar
  */
 function cal_content()
 {
     $a = get_app();
     $o = "";
     if ($a->argc == 1) {
-	$o = "<p>".t('Some text to explain what this does.')."</p>";
+    $o .= "<h3>".t('Event Export')."</h3><p>".t('You can download public events from: ').$a->get_baseurl()."/cal/username/export/ical</p>";
     } elseif ($a->argc==4) {
+	//  get the parameters from the request we just received
 	$username = $a->argv[1];
 	$do = $a->argv[2];
 	$format = $a->argv[3];
-	$o = "<p>".$do." calendar for ".$username." as ".$format." file.</p>";
+	//  check that there is a user matching the requested profile
+	$r = q("SELECT uid FROM user WHERE nickname='".$username."' LIMIT 1;");
+	if (count($r)) 
+	{
+	    $uid = $r[0]['uid'];
+	} else {
+	    killme();
+	}
+	//  if we shall do anything other then export, end here
+	if (! $do == 'export' )
+	    killme();
+	//  check if the user allows us to share the profile
+	$enable = get_pconfig( $uid, 'cal', 'enable');
+	if (! $enable == 1) {
+	    info(t('The user does not export the calendar.'));
+	    return;
+	}
+	//  we are allowed to show events
+	//  get the timezone the user is in
+	$r = q("SELECT timezone FROM user WHERE uid=".$uid." LIMIT 1;");
+	if (count($r))
+	    $timezone = $r[0]['timezone'];
+	//  does the user who requests happen to be the owner of the events 
+	//  requested? then show all of your events, otherwise only those that 
+	//  don't have limitations set in allow_cid and allow_gid
+	if (local_user() == $uid) {
+	    $r = q("SELECT `start`, `finish`, `adjust`, `summary`, `desc`, `location` FROM `event` WHERE `uid`=".$uid.";");
+	} else {
+	    $r = q("SELECT `start`, `finish`, `adjust`, `summary`, `desc`, `location` FROM `event` WHERE `allow_cid`='' and `allow_gid`='' and `uid`='".$uid."';");
+	}
+	//  we have the events that are available for the requestor
+	//  now format the output according to the requested format
+	$res = cal_format_output($r, $format, $timezone);
+	if (! $res=='')
+	    info($res);
     } else {
-	$o = "<p>".t('Wrong number of parameters')."</p>";
+	//  wrong number of parameters
+	killme();
     }
     return $o;
+}
+
+function cal_format_output ($r, $f, $tz)
+{
+    $res = t('This calendar format is not supported');;
+    switch ($f)
+    {
+	case "ical":
+	    header("Content-type: text/icon");
+	    $res = '';
+	    $o = 'BEGIN:VCALENDAR'. PHP_EOL
+		. 'PRODID:-//friendica calendar export//0.1//EN' . PHP_EOL
+		. 'VERSION:2.0' . PHP_EOL;
+//  TODO include timezone informations in cases were the time is not in UTC
+//		. 'BEGIN:VTIMEZONE' . PHP_EOL
+//		. 'TZID:' . $tz . PHP_EOL
+//		. 'END:VTIMEZONE' . PHP_EOL;
+	    foreach ($r as $rr) {
+		if ($rr['adjust'] == 1) {
+		    $UTC = 'Z';
+		} else { 
+		   $UTC = '';
+		}
+		$o .= 'BEGIN:VEVENT' . PHP_EOL;
+		if ($rr[start]) {
+		    $tmp = strtotime($rr['start']);
+		    $dtformat = "%Y%m%dT%H%M%S".$UTC;
+		    $o .= 'DTSTART:'.strftime($dtformat, $tmp).PHP_EOL;
+		}
+		if ($rr['finish']) {
+		    $tmp = strtotime($rr['finish']);
+		    $dtformat = "%Y%m%dT%H%M%S".$UTC;
+		    $o .= 'DTEND:'.strftime($dtformat, $tmp).PHP_EOL;
+		}
+		if ($rr['summary'])
+		    $tmp = $rr['summary'];
+		    $tmp = str_replace(PHP_EOL, PHP_EOL.' ',$tmp);
+		    $o .= 'SUMMARY:' . $tmp . PHP_EOL;
+		if ($rr['desc'])
+		    $tmp = $rr['desc'];
+		    $tmp = str_replace(PHP_EOL, PHP_EOL.' ',$tmp);
+		    $o .= 'DESCRIPTION:' . $tmp . PHP_EOL;
+		if ($rr['location']) {
+		    $tmp = $rr['location'];
+		    $tmp = str_replace(PHP_EOL, PHP_EOL.' ',$tmp);
+		    $o .= 'LOCATION:' . $tmp . PHP_EOL;
+		}
+		$o .= 'END:VEVENT' . PHP_EOL;
+	    }
+	    $o .= 'END:VCALENDAR' . PHP_EOL;
+	    echo $o;
+	    killme();
+    }
+    return $res;
 }
 
 function cal_addon_settings_post ( &$a, &$b  )
