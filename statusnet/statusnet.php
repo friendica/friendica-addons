@@ -727,6 +727,8 @@ function statusnet_plugin_admin_post(&$a){
 	foreach($_POST['sitename'] as $id=>$sitename){
 		$sitename=trim($sitename);
 		$apiurl=trim($_POST['apiurl'][$id]);
+		if (! (substr($apiurl, -1)=='/'))
+		    $apiurl=$apiurl.'/';
 		$secret=trim($_POST['secret'][$id]);
 		$key=trim($_POST['key'][$id]);
                 $applicationname = ((x($_POST, 'applicationname')) ? notags(trim($_POST['applicationname'][$id])):'');
@@ -770,7 +772,7 @@ function statusnet_plugin_admin(&$a, &$o){
 	$id++;
 	$sitesform[] = Array(
 		'sitename' => Array("sitename[$id]", t("Site name"), "", ""),
-		'apiurl' => Array("apiurl[$id]", "Api url", $s['apiurl'], t("Base API Path \x28remember the trailing /\x29") ),
+		'apiurl' => Array("apiurl[$id]", "Api url", "", t("Base API Path \x28remember the trailing /\x29") ),
 		'secret' => Array("secret[$id]", t("Consumer Secret"), "", ""),
 		'key' => Array("key[$id]", t("Consumer Key"), "", ""),
 		'applicationname' => Array("applicationname[$id]", t("Application name"), "", ""),
