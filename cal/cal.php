@@ -93,7 +93,7 @@ function cal_format_output ($r, $f, $tz)
 		$tmp1 = strtotime($rr['start']);
 		$tmp2 = strtotime($rr['finish']);
 		$time_format = "%H:%M:%S";
-		$date_format = "%d.%m.%Y";
+		$date_format = "%Y-%m-%d";
 		$o .= '"'.$rr['summary'].'", "'.strftime($date_format, $tmp1) .
 		    '", "'.strftime($time_format, $tmp1).'", "'.$rr['desc'] .
 		    '", "'.strftime($date_format, $tmp2) .
