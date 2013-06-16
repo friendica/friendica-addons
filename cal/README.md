@@ -1,9 +1,8 @@
 Calendar Export
 ===============
 
-This addon makes it possible to export the events posted by your users being
-exported to other formats, so they can be imported into other calendar
-applications.
+This addon makes it possible to export the events posted by your users, 
+so they can be imported into other calendar applications.
 
 Exporting a calendar is an _opt-in_ feature which has to be activated by each
 of the users in the _addon settings_. As the admin you can only provide the
