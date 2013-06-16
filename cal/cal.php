@@ -83,8 +83,26 @@ function cal_format_output ($r, $f, $tz)
     $res = t('This calendar format is not supported');;
     switch ($f)
     {
+	//  format the exported data as a CSV file
+	case "csv":
+	    header("Content-type: text/csv");
+	    $o = '"Subject", "Start Date", "Start Time", "Description", "End Date", "End Time", "Location"' . PHP_EOL;
+	    foreach ($r as $rr) {
+		$tmp1 = strtotime($rr['start']);
+		$tmp2 = strtotime($rr['finish']);
+		$time_format = "%H:%M:%S";
+		$date_format = "%d.%m.%Y";
+		$o .= '"'.$rr['summary'].'", "'.strftime($date_format, $tmp1) .
+		    '", "'.strftime($time_format, $tmp1).'", "'.$rr['desc'] .
+		    '", "'.strftime($date_format, $tmp2) .
+		    '", "'.strftime($time_format, $tmp2) . 
+		    '", "'.$rr['location'].'"' . PHP_EOL;
+	    }
+	    echo $o;
+	    killme();
+
 	case "ical":
-	    header("Content-type: text/icon");
+	    header("Content-type: text/ics");
 	    $res = '';
 	    $o = 'BEGIN:VCALENDAR'. PHP_EOL
 		. 'PRODID:-//friendica calendar export//0.1//EN' . PHP_EOL
