@@ -22,8 +22,8 @@ function cal_module()
 {
 }
 /*  pathes
- *  /cal/$user/export/$
- *  currently supported format is ical (iCalendar
+ *  /cal/$user/export/$format
+ *  currently supported formats are ical (iCalendar) and CSV
  */
 function cal_content()
 {
@@ -80,7 +80,7 @@ function cal_content()
 
 function cal_format_output ($r, $f, $tz)
 {
-    $res = t('This calendar format is not supported');;
+    $res = t('This calendar format is not supported');
     switch ($f)
     {
 	//  format the exported data as a CSV file
@@ -105,11 +105,11 @@ function cal_format_output ($r, $f, $tz)
 
 	case "ical":
 	    header("Content-type: text/ics");
-	    $res = '';
 	    $o = 'BEGIN:VCALENDAR'. PHP_EOL
 		. 'PRODID:-//friendica calendar export//0.1//EN' . PHP_EOL
 		. 'VERSION:2.0' . PHP_EOL;
 //  TODO include timezone informations in cases were the time is not in UTC
+//  see http://tools.ietf.org/html/rfc2445#section-4.8.3
 //		. 'BEGIN:VTIMEZONE' . PHP_EOL
 //		. 'TZID:' . $tz . PHP_EOL
 //		. 'END:VTIMEZONE' . PHP_EOL;
