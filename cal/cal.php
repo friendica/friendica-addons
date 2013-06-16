@@ -88,6 +88,8 @@ function cal_format_output ($r, $f, $tz)
 	    header("Content-type: text/csv");
 	    $o = '"Subject", "Start Date", "Start Time", "Description", "End Date", "End Time", "Location"' . PHP_EOL;
 	    foreach ($r as $rr) {
+//  TODO the time / date entries don't include any information about the 
+//  timezone the event is scheduled in :-/
 		$tmp1 = strtotime($rr['start']);
 		$tmp2 = strtotime($rr['finish']);
 		$time_format = "%H:%M:%S";
