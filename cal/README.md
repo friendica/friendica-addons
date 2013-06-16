@@ -13,7 +13,10 @@ The calendars are exported at
 
 	http://example.com/cal/username/format
 
-currently the only supported format is __ical__.
+currently the following formats are supported
+
+* ical
+* csv.
 
 Author
 ------
