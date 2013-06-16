@@ -11,7 +11,7 @@ service but should not force it upon your users.
 
 The calendars are exported at
 
-	http://example.com/cal/username/format
+	http://example.com/cal/username/export/format
 
 currently the following formats are supported
 
