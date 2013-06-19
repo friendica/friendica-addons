@@ -1,0 +1,54 @@
+# ADDON cal
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica cal addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-06-19 13:20+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: cal.php:33
+msgid "Event Export"
+msgstr ""
+
+#: cal.php:33
+msgid "You can download public events from: "
+msgstr ""
+
+#: cal.php:53
+msgid "The user does not export the calendar."
+msgstr ""
+
+#: cal.php:83
+msgid "This calendar format is not supported"
+msgstr ""
+
+#: cal.php:174
+msgid "Export Events"
+msgstr ""
+
+#: cal.php:175
+msgid "If this is enabled, your public events will be available at"
+msgstr ""
+
+#: cal.php:176
+msgid "Currently supported formats are ical and csv."
+msgstr ""
+
+#: cal.php:178
+msgid "Enable calendar export"
+msgstr ""
+
+#: cal.php:181
+msgid "Submit"
+msgstr ""
