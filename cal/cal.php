@@ -62,9 +62,9 @@ function cal_content()
 	//  requested? then show all of your events, otherwise only those that 
 	//  don't have limitations set in allow_cid and allow_gid
 	if (local_user() == $uid) {
-	    $r = q("SELECT `start`, `finish`, `adjust`, `summary`, `desc`, `location` FROM `event` WHERE `uid`=".$uid.";");
+	    $r = q("SELECT `start`, `finish`, `adjust`, `summary`, `desc`, `location` FROM `event` WHERE `uid`=".$uid." and `cid`=0;");
 	} else {
-	    $r = q("SELECT `start`, `finish`, `adjust`, `summary`, `desc`, `location` FROM `event` WHERE `allow_cid`='' and `allow_gid`='' and `uid`='".$uid."';");
+	    $r = q("SELECT `start`, `finish`, `adjust`, `summary`, `desc`, `location` FROM `event` WHERE `allow_cid`='' and `allow_gid`='' and `uid`='".$uid."' and `cid`='0';");
 	}
 	//  we have the events that are available for the requestor
 	//  now format the output according to the requested format
@@ -106,13 +106,16 @@ function cal_format_output ($r, $f, $tz)
 	case "ical":
 	    header("Content-type: text/ics");
 	    $o = 'BEGIN:VCALENDAR'. PHP_EOL
-		. 'PRODID:-//friendica calendar export//0.1//EN' . PHP_EOL
-		. 'VERSION:2.0' . PHP_EOL;
+		. 'VERSION:2.0' . PHP_EOL
+		. 'PRODID:-//friendica calendar export//0.1//EN' . PHP_EOL;
 //  TODO include timezone informations in cases were the time is not in UTC
 //  see http://tools.ietf.org/html/rfc2445#section-4.8.3
 //		. 'BEGIN:VTIMEZONE' . PHP_EOL
 //		. 'TZID:' . $tz . PHP_EOL
 //		. 'END:VTIMEZONE' . PHP_EOL;
+//  TODO instead of PHP_EOL CRLF should be used for long entries
+//       but test your solution against http://icalvalid.cloudapp.net/
+//       also long lines SHOULD be split at 75 characters length
 	    foreach ($r as $rr) {
 		if ($rr['adjust'] == 1) {
 		    $UTC = 'Z';
@@ -133,14 +136,17 @@ function cal_format_output ($r, $f, $tz)
 		if ($rr['summary'])
 		    $tmp = $rr['summary'];
 		    $tmp = str_replace(PHP_EOL, PHP_EOL.' ',$tmp);
+		    $tmp = addcslashes($tmp, ',;');
 		    $o .= 'SUMMARY:' . $tmp . PHP_EOL;
 		if ($rr['desc'])
 		    $tmp = $rr['desc'];
 		    $tmp = str_replace(PHP_EOL, PHP_EOL.' ',$tmp);
+		    $tmp = addcslashes($tmp, ',;');
 		    $o .= 'DESCRIPTION:' . $tmp . PHP_EOL;
 		if ($rr['location']) {
 		    $tmp = $rr['location'];
 		    $tmp = str_replace(PHP_EOL, PHP_EOL.' ',$tmp);
+		    $tmp = addcslashes($tmp, ',;');
 		    $o .= 'LOCATION:' . $tmp . PHP_EOL;
 		}
 		$o .= 'END:VEVENT' . PHP_EOL;
