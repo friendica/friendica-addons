@@ -40,7 +40,7 @@ function jappixmini_addon_get_client_secret(callback) {
 		var div = document.getElementById("#jappixmini-password-query-div");
 
 		if (!div) {
-			div = $('<div id="jappixmini-password-query-div" style="position:fixed;padding:1em;background-color:#F00;color:#fff;top:50px;left:50px;">Retype your Friendica password for chatting:<br></div>');
+			div = $('<div id="jappixmini-password-query-div" style="position:fixed;padding:1em;background-color:#F00;color:#fff;top:50px;left:650px;">Retype your Friendica password for chatting:<br></div>');
 
 			var input = $('<input type="password" id="jappixmini-password-query-input">')
 			div.append(input);
