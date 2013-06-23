@@ -2,7 +2,7 @@
 
 /**
  * Name: G+ Post
- * Description: Posts to a Google+ page with the help of Seesmic
+ * Description: Posts to a Google+ page with the help of Hootsuite
  * Version: 0.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */

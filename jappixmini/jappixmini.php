@@ -122,6 +122,22 @@ function jappixmini_plugin_admin(&$a, &$o) {
 	$o .= '<label for="jappixmini-proxy">Activate BOSH proxy</label>';
 	$o .= ' <input id="jappixmini-proxy" type="checkbox" name="jappixmini-proxy" value="1"'.$bosh_proxy.' /><br />';
 
+	// bosh address
+	$bosh_address = get_config("jappixmini", "bosh_address");
+	$o .= '<p><label for="jappixmini-address">Adress of the default BOSH proxy. If enabled it overrides the user settings:</label><br />';
+        $o .= '<input id="jappixmini-address" type="text" name="jappixmini-address" value="'.$bosh_address.'" /></p>';
+
+	// default server address
+	$default_server = get_config("jappixmini", "default_server");
+	$o .= '<p><label for="jappixmini-server">Adress of the default jabber server:</label><br />';
+        $o .= '<input id="jappixmini-server" type="text" name="jappixmini-server" value="'.$default_server.'" /></p>';
+
+	// default user name to friendica nickname
+	$default_user = intval(get_config("jappixmini", "default_user"));
+	$default_user = intval($default_user) ? ' checked="checked"' : '';
+	$o .= '<label for="jappixmini-user">Set the default username to the nickname:</label>';
+	$o .= ' <input id="jappixmini-user" type="checkbox" name="jappixmini-defaultuser" value="1"'.$default_user.' /><br />';
+
 	// info text field
 	$info_text = get_config("jappixmini", "infotext");
 	$o .= '<p><label for="jappixmini-infotext">Info text to help users with configuration (important if you want to provide your own BOSH host!):</label><br />';
@@ -137,8 +153,14 @@ function jappixmini_plugin_admin_post(&$a) {
 	if ($submit) {
 		$info_text = $_REQUEST['jappixmini-infotext'];
 		$bosh_proxy = intval($_REQUEST['jappixmini-proxy']);
+		$default_user = intval($_REQUEST['jappixmini-defaultuser']);
+		$bosh_address = $_REQUEST['jappixmini-address'];
+		$default_server = $_REQUEST['jappixmini-server'];
 		set_config("jappixmini", "infotext", $info_text);
 		set_config("jappixmini", "bosh_proxy", $bosh_proxy);
+		set_config("jappixmini", "bosh_address", $bosh_address);
+		set_config("jappixmini", "default_server", $default_server);
+		set_config("jappixmini", "default_user", $default_user);
 	}
 }
 
@@ -224,6 +246,11 @@ function jappixmini_settings(&$a, &$s) {
     $dontinsertchat = get_pconfig(local_user(),'jappixmini','dontinsertchat');
     $insertchat = !(intval($dontinsertchat) ? ' checked="checked"' : '');
 
+    $defaultbosh = get_config("jappixmini", "bosh_address");
+
+    if ($defaultbosh != "")
+	set_pconfig(local_user(),'jappixmini','bosh', $defaultbosh);
+
     $username = get_pconfig(local_user(),'jappixmini','username');
     $username = htmlentities($username);
     $server = get_pconfig(local_user(),'jappixmini','server');
@@ -238,6 +265,12 @@ function jappixmini_settings(&$a, &$s) {
     $encrypt = intval(get_pconfig(local_user(),'jappixmini','encrypt'));
     $encrypt_checked = $encrypt ? ' checked="checked"' : '';
     $encrypt_disabled = $encrypt ? '' : ' disabled="disabled"';
+
+    if ($server == "")
+	$server = get_config("jappixmini", "default_server");
+
+    if (($username == "") and get_config("jappixmini", "default_user"))
+	$username = $a->user["nickname"];
 
     $info_text = get_config("jappixmini", "infotext");
     $info_text = htmlentities($info_text);
@@ -278,9 +311,12 @@ function jappixmini_settings(&$a, &$s) {
     $s .= ' <input id="jappixmini-server" type="text" name="jappixmini-server" value="'.$server.'" />';
     $s .= '<br />';
 
-    $s .= '<label for="jappixmini-bosh">'.t('Jabber BOSH host').'</label>';
-    $s .= ' <input id="jappixmini-bosh" type="text" name="jappixmini-bosh" value="'.$bosh.'" />';
-    $s .= '<br />';
+    if (defaultbosh == "") {
+	$s .= '<label for="jappixmini-bosh">'.t('Jabber BOSH host').'</label>';
+	$s .= ' <input id="jappixmini-bosh" type="text" name="jappixmini-bosh" value="'.$bosh.'" />';
+	$s .= '<br />';
+    }
+
 
     $s .= '<label for="jappixmini-password">'.t('Jabber password').'</label>';
     $s .= ' <input type="hidden" id="jappixmini-password" name="jappixmini-encrypted-password" value="'.$password.'" />';
