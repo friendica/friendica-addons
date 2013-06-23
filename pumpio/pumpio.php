@@ -198,47 +198,59 @@ function pumpio_settings(&$a,&$s) {
     $s .= '<div class="settings-block">';
     $s .= '<h3>' . t('Pump.io Post Settings') . '</h3>';
 
-    $s .= '<div id="pumpio-servername-wrapper">';
-    $s .= '<label id="pumpio-servername-label" for="pumpio-servername">'.t('pump.io servername (without "http://" or "https://" )').'</label>';
-    $s .= '<input id="pumpio-servername" type="text" name="pumpio_host" value="'.$servername.'" />';
-    $s .= '</div><div class="clear"></div>';
-
     $s .= '<div id="pumpio-username-wrapper">';
     $s .= '<label id="pumpio-username-label" for="pumpio-username">'.t('pump.io username (without the servername)').'</label>';
     $s .= '<input id="pumpio-username" type="text" name="pumpio_user" value="'.$username.'" />';
     $s .= '</div><div class="clear"></div>';
 
+    $s .= '<div id="pumpio-servername-wrapper">';
+    $s .= '<label id="pumpio-servername-label" for="pumpio-servername">'.t('pump.io servername (without "http://" or "https://" )').'</label>';
+    $s .= '<input id="pumpio-servername" type="text" name="pumpio_host" value="'.$servername.'" />';
+    $s .= '</div><div class="clear"></div>';
+
     if (($username != '') AND ($servername != '')) {
-	$s .= '<div id="pumpio-authenticate-wrapper">';
-	$s .= '<a href="'.$a->get_baseurl().'/pumpio/connect">'.t("(Re-)Authenticate your pump.io connection").'</a>';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div id="pumpio-enable-wrapper">';
-	$s .= '<label id="pumpio-enable-label" for="pumpio-checkbox">' . t('Enable pump.io Post Plugin') . '</label>';
-	$s .= '<input id="pumpio-checkbox" type="checkbox" name="pumpio" value="1" ' . $checked . '/>';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div id="pumpio-bydefault-wrapper">';
-	$s .= '<label id="pumpio-bydefault-label" for="pumpio-bydefault">' . t('Post to pump.io by default') . '</label>';
-	$s .= '<input id="pumpio-bydefault" type="checkbox" name="pumpio_bydefault" value="1" ' . $def_checked . '/>';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div id="pumpio-public-wrapper">';
-	$s .= '<label id="pumpio-public-label" for="pumpio-public">' . t('Should posts be public?') . '</label>';
-	$s .= '<input id="pumpio-public" type="checkbox" name="pumpio_public" value="1" ' . $public_checked . '/>';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div id="pumpio-mirror-wrapper">';
-	$s .= '<label id="pumpio-mirror-label" for="pumpio-mirror">' . t('Mirror all public posts') . '</label>';
-	$s .= '<input id="pumpio-mirror" type="checkbox" name="pumpio_mirror" value="1" ' . $mirror_checked . '/>';
-	$s .= '</div><div class="clear"></div>';
 
 	$oauth_token = get_pconfig(local_user(), "pumpio", "oauth_token");
 	$oauth_token_secret = get_pconfig(local_user(), "pumpio", "oauth_token_secret");
 
 	$s .= '<div id="pumpio-password-wrapper">';
-	if (($oauth_token == "") OR ($oauth_token_secret == ""))
-		$s .= t("You are not authenticated to pumpio");
+	if (($oauth_token == "") OR ($oauth_token_secret == "")) {
+		$s .= '<div id="pumpio-authenticate-wrapper">';
+		$s .= '<a href="'.$a->get_baseurl().'/pumpio/connect">'.t("Authenticate your pump.io connection").'</a>';
+		$s .= '</div><div class="clear"></div>';
+
+		//$s .= t("You are not authenticated to pumpio");
+	} else {
+		$s .= '<div id="pumpio-enable-wrapper">';
+		$s .= '<label id="pumpio-enable-label" for="pumpio-checkbox">' . t('Enable pump.io Post Plugin') . '</label>';
+		$s .= '<input id="pumpio-checkbox" type="checkbox" name="pumpio" value="1" ' . $checked . '/>';
+		$s .= '</div><div class="clear"></div>';
+
+		$s .= '<div id="pumpio-bydefault-wrapper">';
+		$s .= '<label id="pumpio-bydefault-label" for="pumpio-bydefault">' . t('Post to pump.io by default') . '</label>';
+		$s .= '<input id="pumpio-bydefault" type="checkbox" name="pumpio_bydefault" value="1" ' . $def_checked . '/>';
+		$s .= '</div><div class="clear"></div>';
+
+		$s .= '<div id="pumpio-public-wrapper">';
+		$s .= '<label id="pumpio-public-label" for="pumpio-public">' . t('Should posts be public?') . '</label>';
+		$s .= '<input id="pumpio-public" type="checkbox" name="pumpio_public" value="1" ' . $public_checked . '/>';
+		$s .= '</div><div class="clear"></div>';
+
+		$s .= '<div id="pumpio-mirror-wrapper">';
+		$s .= '<label id="pumpio-mirror-label" for="pumpio-mirror">' . t('Mirror all public posts') . '</label>';
+		$s .= '<input id="pumpio-mirror" type="checkbox" name="pumpio_mirror" value="1" ' . $mirror_checked . '/>';
+		$s .= '</div><div class="clear"></div>';
+
+		$s .= '<div id="pumpio-delete-wrapper">';
+		$s .= '<label id="pumpio-delete-label" for="pumpio-delete">' . t('Check to delete this preset') . '</label>';
+		$s .= '<input id="pumpio-delete" type="checkbox" name="pumpio_delete" value="1" />';
+		$s .= '</div><div class="clear"></div>';
+
+		//$s .= '<div id="pumpio-authenticate-wrapper">';
+		//$s .= '<a href="'.$a->get_baseurl().'/pumpio/connect">'.t("Reauthenticate your pump.io connection").'</a>';
+		//$s .= '</div><div class="clear"></div>';
+
+	}
 
 	$s .= '</div><div class="clear"></div>';
     }
@@ -253,28 +265,37 @@ function pumpio_settings(&$a,&$s) {
 function pumpio_settings_post(&$a,&$b) {
 
 	if(x($_POST,'pumpio-submit')) {
-		// filtering the username if it is filled wrong
-		$user = $_POST['pumpio_user'];
-		if (strstr($user, "@")) {
-			$pos = strpos($user, "@");
-			if ($pos > 0)
-				$user = substr($user, 0, $pos);
+		if(x($_POST,'pumpio_delete')) {
+			set_pconfig(local_user(),'pumpio','consumer_key','');
+			set_pconfig(local_user(),'pumpio','consumer_secret','');
+			set_pconfig(local_user(),'pumpio','host','');
+			set_pconfig(local_user(),'pumpio','oauth_token','');
+			set_pconfig(local_user(),'pumpio','oauth_token_secret','');
+			set_pconfig(local_user(),'pumpio','post',false);
+			set_pconfig(local_user(),'pumpio','post_by_default',false);
+			set_pconfig(local_user(),'pumpio','user','');
+		} else {
+			// filtering the username if it is filled wrong
+			$user = $_POST['pumpio_user'];
+			if (strstr($user, "@")) {
+				$pos = strpos($user, "@");
+				if ($pos > 0)
+					$user = substr($user, 0, $pos);
+			}
+
+			// Filtering the hostname if someone is entering it with "http"
+			$host = $_POST['pumpio_host'];
+			$host = trim($host);
+			$host = str_replace(array("https://", "http://"), array("", ""), $host);
+
+			set_pconfig(local_user(),'pumpio','post',intval($_POST['pumpio']));
+			set_pconfig(local_user(),'pumpio','host',$host);
+			set_pconfig(local_user(),'pumpio','user',$user);
+			set_pconfig(local_user(),'pumpio','public',$_POST['pumpio_public']);
+			set_pconfig(local_user(),'pumpio','mirror',$_POST['pumpio_mirror']);
+			set_pconfig(local_user(),'pumpio','post_by_default',intval($_POST['pumpio_bydefault']));
 		}
-
-		// Filtering the hostname if someone is entering it with "http"
-		$host = $_POST['pumpio_host'];
-		$host = trim($host);
-		$host = str_replace(array("https://", "http://"), array("", ""), $host);
-
-		set_pconfig(local_user(),'pumpio','post',intval($_POST['pumpio']));
-		set_pconfig(local_user(),'pumpio','host',$host);
-		set_pconfig(local_user(),'pumpio','user',$user);
-		set_pconfig(local_user(),'pumpio','public',$_POST['pumpio_public']);
-		set_pconfig(local_user(),'pumpio','mirror',$_POST['pumpio_mirror']);
-		set_pconfig(local_user(),'pumpio','post_by_default',intval($_POST['pumpio_bydefault']));
-
 	}
-
 }
 
 function pumpio_post_local(&$a,&$b) {
