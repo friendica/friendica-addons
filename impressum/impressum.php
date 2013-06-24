@@ -2,7 +2,7 @@
 /**
  * Name: Impressum
  * Description: Plugin to add contact information to the about page (/friendica)
- * Version: 1.2
+ * Version: 1.3
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  * License: 3-clause BSD license
  */
