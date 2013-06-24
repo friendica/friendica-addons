@@ -20,6 +20,14 @@ function impressum_uninstall() {
     unregister_hook('page_end', 'addon/impressum/impressum.php', 'impressum_footer');
     logger("uninstalled impressum plugin");
 }
+
+function impressum_module() {
+}
+function impressum_content() {
+    $a = get_app();
+    goaway($a->get_baseurl().'/friendica/');
+}
+
 function obfuscate_email ($s) {
     $s = str_replace('@','(at)',$s);
     $s = str_replace('.','(dot)',$s);
