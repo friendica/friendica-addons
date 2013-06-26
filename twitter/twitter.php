@@ -3,11 +3,36 @@
  * Name: Twitter Connector
  * Description: Relay public postings to a connected Twitter account
  * Version: 1.0.4
- * Author: Tobias Diekershoff <http://diekershoff.homeunix.net/friendika/profile/tobias>
+ * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
+ *
+ * Copyright (c) 2011-2013 Tobias Diekershoff, Michael Vogel
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright notice,
+ *     this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above
+ *    * copyright notice, this list of conditions and the following disclaimer in
+ *      the documentation and/or other materials provided with the distribution.
+ *    * Neither the name of the <organization> nor the names of its contributors
+ *      may be used to endorse or promote products derived from this software
+ *      without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  */
-
-
+ 
 /*   Twitter Plugin for Friendica
  *
  *   Author: Tobias Diekershoff
@@ -33,8 +58,6 @@
  *     from "Settings -> Plugin Settings".
  *
  *     Requirements: PHP5, curl [Slinky library]
- *
- *     Documentation: http://diekershoff.homeunix.net/redmine/wiki/friendikaplugin/Twitter_Plugin
  */
 
 define('TWITTER_DEFAULT_POLL_INTERVAL', 5); // given in minutes
@@ -286,7 +309,7 @@ function twitter_shortenmsg($b) {
 	require_once("include/bbcode.php");
 	require_once("include/html2plain.php");
 
-	$max_char = 130;
+	$max_char = 140;
 
 	// Looking for the first image
 	$image = '';
@@ -389,15 +412,20 @@ function twitter_shortenmsg($b) {
 	if (($msglink == "") and strlen($msg) > $max_char)
 		$msglink = $b["plink"];
 
-	// If the message is short enough then don't modify it. (if the link exists in the original message)
-	if ((strlen(trim($origmsg)) <= $max_char) AND (strpos($origmsg, $msglink) OR ($msglink == "")))
+	// If the message is short enough then don't modify it.
+	if ((strlen(trim($origmsg)) <= $max_char) AND ($msglink == ""))
+		return(trim($origmsg));
+
+	// If the message is short enough and the link exists in the original message don't modify it as well
+	// -3 because of the bad shortener of twitter
+	if ((strlen(trim($origmsg)) <= ($max_char - 3)) AND strpos($origmsg, $msglink))
 		return(trim($origmsg));
 
 	if (strlen($msglink) > 20)
 		$msglink = short_link($msglink);
 
-	if (strlen(trim($msg." ".$msglink)) > $max_char) {
-		$msg = substr($msg, 0, $max_char - (strlen($msglink)));
+	if (strlen(trim($msg." ".$msglink)) > ($max_char - 3)) {
+		$msg = substr($msg, 0, ($max_char - 3) - (strlen($msglink)));
 		$lastchar = substr($msg, -1);
 		$msg = substr($msg, 0, -1);
 		$pos = strrpos($msg, "\n");

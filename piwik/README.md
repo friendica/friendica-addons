@@ -1,24 +1,24 @@
-## Piwik Plugin ##
+Piwik Plugin
+============
 
-by Tobias Diekershoff 
-   http://diekershoff.homeunix.net/friendika/profile/tobias
-   tobias.diekershoff(at)gmx.net
+by Tobias Diekershoff and Klaus Weidenbach
 
 This addon allows you to embed the code necessary for the FLOSS webanalytics
 tool Piwik into the Friendica pages.
 
-[Online version of this Document](http://ur1.ca/35m2x)
-
-### Requirements ###
+Requirements
+------------
 
 To use this plugin you need a [piwik](http://piwik.org/) installation.
 
-### Where to find ###
+Where to find
+-------------
 
-In the Friendica git repository `/addon/piwik/piwik.php` and a CSS file for
+In the Friendica addon git repository `/piwik/piwik.php` and a CSS file for
 styling the opt-out notice.
 
-### Configuration ###
+Configuration
+-------------
 
 The easiest way to configure this addon is by activating the admin panels of
 your ~friendica server and then enter the needed details on the config page
@@ -38,20 +38,31 @@ You have to add 4 more configuration variables for the addon:
     $a->config['piwik']['optout'] = true;
     $a->config['piwik']['async'] = false;
 
-The *baseurl* points to your Piwik installation. Use the absolute path,
+Configuration fields
+---------------------
+
+* The *baseurl* points to your Piwik installation. Use the absolute path,
 remember trailing slashes but ignore the protocol (http/s) part of the URL.
-Change the *sideid* parameter to whatever ID you want to use for tracking your
-Friendica installation. The *optout* parameter (true|false) defines whether or
+* Change the *sideid* parameter to whatever ID you want to use for tracking your
+Friendica installation.
+* The *optout* parameter (true|false) defines whether or
 not a short notice about the utilization of Piwik will be displayed on every
 page of your Friendica site (at the bottom of the page with some spacing to the
 other content). Part of the note is a link that allows the visitor to set an
 _opt-out_ cookie which will prevent visits from that user be tracked by piwik.
+* The *async* parameter (true|false) defines whether or not to use asynchronous
+tracking so pages load (or appear to load) faster.
 
 Currently the optional notice states the following:
 
-    This website is tracked using the Piwik analytics tool. If you do not want
-    that your visits are logged this way you can set a cookie to prevent Piwik
-    from tracking further visits of the site (opt-out).
+>    This website is tracked using the Piwik analytics tool. If you do not want
+>    that your visits are logged this way you can set a cookie to prevent Piwik
+>    from tracking further visits of the site (opt-out).
 
-The *async* parameter (true|false) defines whether or not to use asynchronous
-tracking so pages load (or appear to load) faster.
+License
+=======
+
+The _Piwik addon_ is licensed under the [3-clause BSD license][3] see the
+LICENSE file in the addons directory.
+
+[3]: http://opensource.org/licenses/BSD-3-Clause

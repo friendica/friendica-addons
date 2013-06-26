@@ -212,7 +212,7 @@ function fromgplus_cleanupgoogleproxy($fullImage, $image) {
 	return($cleaned);
 }
 
-function fromgplus_handleattachments($item) {
+function fromgplus_handleattachments($item, $displaytext) {
 	$post = "";
 	$quote = "";
 
@@ -251,7 +251,7 @@ function fromgplus_handleattachments($item) {
 				elseif ($images["full"] != "")
 					$post .= "\n[img]".$images["full"]."[/img]\n";
 
-				if ($attachment->displayName != "")
+				if (($attachment->displayName != "") AND ($attachment->displayName != $displaytext))
 					$post .= fromgplus_html2bbcode($attachment->displayName)."\n";
 				break;
 
@@ -319,7 +319,7 @@ function fromgplus_fetch($a, $uid) {
 					$post = fromgplus_html2bbcode($item->object->content);
 
 					if (is_array($item->object->attachments))
-						$post .= fromgplus_handleattachments($item);
+						$post .= fromgplus_handleattachments($item, $item->object->content);
 
 					// geocode, placeName
 					if (isset($item->address))
@@ -346,7 +346,7 @@ function fromgplus_fetch($a, $uid) {
 						$post .= fromgplus_html2bbcode($item->object->content);
 
 						if (is_array($item->object->attachments))
-							$post .= "\n".trim(fromgplus_handleattachments($item));
+							$post .= "\n".trim(fromgplus_handleattachments($item, $item->object->content));
 
 						$post .= "[/share]";
 					} else {
@@ -355,7 +355,7 @@ function fromgplus_fetch($a, $uid) {
 						$post .= fromgplus_html2bbcode($item->object->content);
 
 						if (is_array($item->object->attachments))
-							$post .= "\n".trim(fromgplus_handleattachments($item));
+							$post .= "\n".trim(fromgplus_handleattachments($item, $item->object->content));
 					}
 
 					if (isset($item->address))

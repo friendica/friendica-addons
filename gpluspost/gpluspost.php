@@ -2,7 +2,7 @@
 
 /**
  * Name: G+ Post
- * Description: Posts to a Google+ page with the help of Seesmic
+ * Description: Posts to a Google+ page with the help of Hootsuite
  * Version: 0.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
@@ -51,6 +51,9 @@ function gpluspost_settings(&$a,&$s) {
 	$noloop_enabled = get_pconfig(local_user(),'gpluspost','no_loop_prevention');
 	$noloop_checked = (($noloop_enabled) ? ' checked="checked" ' : '');
 
+	$skip_enabled = get_pconfig(local_user(),'gpluspost','skip_without_link');
+	$skip_checked = (($skip_enabled) ? ' checked="checked" ' : '');
+
 	$s .= '<div class="settings-block">';
 	$s .= '<h3>' . t('Google+ Post Settings') . '</h3>';
 	$s .= '<div id="gpluspost-enable-wrapper">';
@@ -68,6 +71,11 @@ function gpluspost_settings(&$a,&$s) {
 	$s .= '<input id="gpluspost-noloopprevention" type="checkbox" name="gpluspost_noloopprevention" value="1" ' . $noloop_checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
+	$s .= '<div id="gpluspost-skipwithoutlink-wrapper">';
+	$s .= '<label id="gpluspost-skipwithoutlink-label" for="gpluspost-skipwithoutlink">' . t('Skip messages without links') . '</label>';
+	$s .= '<input id="gpluspost-skipwithoutlink" type="checkbox" name="gpluspost_skipwithoutlink" value="1" ' . $skip_checked . '/>';
+	$s .= '</div><div class="clear"></div>';
+
 	/* provide a submit button */
 
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="gpluspost-submit" name="gpluspost-submit" class="settings-submit" value="' . t('Submit') . '" /></div>';
@@ -81,6 +89,7 @@ function gpluspost_settings_post(&$a,&$b) {
 		set_pconfig(local_user(),'gpluspost','post',intval($_POST['gpluspost']));
 		set_pconfig(local_user(),'gpluspost','post_by_default',intval($_POST['gpluspost_bydefault']));
 		set_pconfig(local_user(),'gpluspost','no_loop_prevention',intval($_POST['gpluspost_noloopprevention']));
+		set_pconfig(local_user(),'gpluspost','skip_without_link',intval($_POST['gpluspost_skipwithoutlink']));
 	}
 }
 
@@ -286,7 +295,7 @@ function gpluspost_feeditem($pid, $uid) {
 	require_once('include/bbcode.php');
 	require_once("include/html2plain.php");
 
-	$max_char = 140;
+	$skipwithoutlink = get_pconfig($uid,'gpluspost','skip_without_link');
 
 	$items = q("SELECT `uri`, `plink`, `author-link`, `author-name`, `created`, `edited`, `id`, `title`, `body` from `item` WHERE id=%d", intval($pid));
 	foreach ($items AS $item) {
@@ -349,7 +358,9 @@ function gpluspost_feeditem($pid, $uid) {
 		else if ($image != "")
 			$msglink = $image;
 
-		if ($msglink == "")
+		if (($msglink == "") AND $skipwithoutlink)
+			continue;
+		else if ($msglink == "")
 			$msglink = $item["plink"];
 
 		// Fetching the title - or the first line

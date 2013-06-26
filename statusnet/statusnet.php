@@ -3,26 +3,36 @@
  * Name: StatusNet Connector
  * Description: Relay public postings to a connected StatusNet account
  * Version: 1.0.5
- * Author: Tobias Diekershoff <http://diekershoff.homeunix.net/friendika/profile/tobias>
+ * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
+ *
+ * Copyright (c) 2011-2013 Tobias Diekershoff, Michael Vogel
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *    * Redistributions of source code must retain the above copyright notice,
+ *     this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above
+ *    * copyright notice, this list of conditions and the following disclaimer in
+ *      the documentation and/or other materials provided with the distribution.
+ *    * Neither the name of the <organization> nor the names of its contributors
+ *      may be used to endorse or promote products derived from this software
+ *      without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  */
  
-/*   StatusNet Plugin for Friendica
- *
- *   Author: Tobias Diekershoff
- *           tobias.diekershoff@gmx.net
- *
- *   License:3-clause BSD license
- *
- *   Configuration:
- *     To activate the plugin itself add it to the $a->config['system']['addon']
- *     setting. After this, your user can configure their Twitter account settings
- *     from "Settings -> Plugin Settings".
- *
- *     Requirements: PHP5, curl [Slinky library]
- *
- *     Documentation: http://diekershoff.homeunix.net/redmine/wiki/friendikaplugin/StatusNet_Plugin
- */
 
 /***
  * We have to alter the TwitterOAuth class a little bit to work with any StatusNet
@@ -717,6 +727,8 @@ function statusnet_plugin_admin_post(&$a){
 	foreach($_POST['sitename'] as $id=>$sitename){
 		$sitename=trim($sitename);
 		$apiurl=trim($_POST['apiurl'][$id]);
+		if (! (substr($apiurl, -1)=='/'))
+		    $apiurl=$apiurl.'/';
 		$secret=trim($_POST['secret'][$id]);
 		$key=trim($_POST['key'][$id]);
                 $applicationname = ((x($_POST, 'applicationname')) ? notags(trim($_POST['applicationname'][$id])):'');
@@ -748,7 +760,7 @@ function statusnet_plugin_admin(&$a, &$o){
 		foreach($sites as $id=>$s){
 			$sitesform[] = Array(
 				'sitename' => Array("sitename[$id]", "Site name", $s['sitename'], ""),
-				'apiurl' => Array("apiurl[$id]", "Api url", $s['apiurl'], ""),
+				'apiurl' => Array("apiurl[$id]", "Api url", $s['apiurl'], t("Base API Path \x28remember the trailing /\x29") ),
 				'secret' => Array("secret[$id]", "Secret", $s['consumersecret'], ""),
 				'key' => Array("key[$id]", "Key", $s['consumerkey'], ""),
 				'applicationname' => Array("applicationname[$id]", "Application name", $s['applicationname'], ""),
@@ -760,7 +772,7 @@ function statusnet_plugin_admin(&$a, &$o){
 	$id++;
 	$sitesform[] = Array(
 		'sitename' => Array("sitename[$id]", t("Site name"), "", ""),
-		'apiurl' => Array("apiurl[$id]", t("API URL"), "", ""),
+		'apiurl' => Array("apiurl[$id]", "Api url", "", t("Base API Path \x28remember the trailing /\x29") ),
 		'secret' => Array("secret[$id]", t("Consumer Secret"), "", ""),
 		'key' => Array("key[$id]", t("Consumer Key"), "", ""),
 		'applicationname' => Array("applicationname[$id]", t("Application name"), "", ""),
