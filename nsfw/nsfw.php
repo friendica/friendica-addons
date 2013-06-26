@@ -144,7 +144,7 @@ function nsfw_prepare_body(&$a,&$b) {
 					$found = true;
 					break;
 				}
-				if(stristr($b['item']['tag'], ']' . $word . '[' )) {
+				if(stristr($b['item']['tags'], '>' . $word . '<' )) {
 					$found = true;
 					break;
 				}
