@@ -126,7 +126,7 @@ function nsfw_prepare_body(&$a,&$b) {
 	$found = false;
 	if(count($arr)) {
 
-		$body = $b['title'] . ' ' . nsfw_extract_photos($b['html']);
+		$body = $b['item']['title'] . "\n" . nsfw_extract_photos($b['html']);
 
 		foreach($arr as $word) {
 			$word = trim($word);
