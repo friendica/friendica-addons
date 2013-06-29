@@ -421,11 +421,22 @@ function twitter_shortenmsg($b) {
 	if ((strlen(trim($origmsg)) <= ($max_char - 3)) AND strpos($origmsg, $msglink))
 		return(trim($origmsg));
 
-	if (strlen($msglink) > 20)
-		$msglink = short_link($msglink);
+	// Preserve the unshortened link
+	$orig_link = $msglink;
 
-	if (strlen(trim($msg." ".$msglink)) > ($max_char - 3)) {
-		$msg = substr($msg, 0, ($max_char - 3) - (strlen($msglink)));
+	//if (strlen($msglink) > 20)
+	//	$msglink = short_link($msglink);
+	//
+	//if (strlen(trim($msg." ".$msglink)) > ($max_char - 3)) {
+	//	$msg = substr($msg, 0, ($max_char - 3) - (strlen($msglink)));
+
+	// Just replace the message link with a 15 character long string
+	// Twitter shortens it anyway to this length
+	if (trim($msglink) <> '')
+		$msglink = "123456789012345";
+
+	if (strlen(trim($msg." ".$msglink)) > ($max_char)) {
+		$msg = substr($msg, 0, ($max_char) - (strlen($msglink)));
 		$lastchar = substr($msg, -1);
 		$msg = substr($msg, 0, -1);
 		$pos = strrpos($msg, "\n");
@@ -440,7 +451,8 @@ function twitter_shortenmsg($b) {
 	while (strpos($msg, "  ") !== false)
 		$msg = str_replace("  ", " ", $msg);
 
-	return(trim($msg." ".$msglink));
+	//return(trim($msg." ".$msglink));
+	return(trim($msg." ".$orig_link));
 }
 
 function twitter_post_hook(&$a,&$b) {
