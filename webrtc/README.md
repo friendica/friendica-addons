@@ -19,6 +19,6 @@ question).
 
 If the test is successful then proceed with copying the webrtc instance you
 would like to use and place it in the config window and save. Now when you
-opent he app it will load the webrtc instance for you to use.
+open the app it will load the webrtc instance for you to use.
 
 [1]: https://en.wikipedia.org/wiki/WebRTC
