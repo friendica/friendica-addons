@@ -144,13 +144,16 @@ function nsfw_prepare_body(&$a,&$b) {
 					$found = true;
 					break;
 				}
-				if(stristr($b['item']['tags'], '>' . $word . '<' )) {
-					$found = true;
-					break;
+				if(is_array($b['item']['tags']) && count($b['item']['tags'])) {
+					foreach($b['item']['tags'] as $t) {
+						if(stristr($t, '>' . $word . '<' )) {
+							$found = true;
+							break;
+						}
+					}
 				}
 			} 
-		}
-		
+		}		
 	}
 	if($found) {
 		$rnd = random_string(8);
