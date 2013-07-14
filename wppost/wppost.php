@@ -189,12 +189,15 @@ function wppost_send(&$a,&$b) {
 
 			// If no bookmark is found then take the first line
 			if ($wptitle == '') {
-				$title = html2plain(bbcode($b['body']), 0, true);
+				$title = html2plain(bbcode($b['body']), 0, true)."\n";
 				$pos = strpos($title, "\n");
-				if (($pos == 0) or ($pos > 60))
-					$pos = 60;
+				$trailer = "";
+				if (($pos == 0) or ($pos > 100)) {
+					$pos = 100;
+					$trailer = "...";
+				}
 
-				$wptitle = substr($title, 0, $pos);
+				$wptitle = substr($title, 0, $pos).$trailer;
 			}
 		}
 

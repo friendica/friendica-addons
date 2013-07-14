@@ -563,7 +563,7 @@ function statusnet_shortenmsg($b, $max_char) {
 		else if ($lastchar != "\n")
 			$msg = substr($msg, 0, -3)."...";
 	}
-	$msg = str_replace("\n", " ", $msg);
+	//$msg = str_replace("\n", " ", $msg);
 
 	// Removing multiple spaces - again
 	while (strpos($msg, "  ") !== false)
