@@ -569,7 +569,7 @@ function statusnet_shortenmsg($b, $max_char) {
 	while (strpos($msg, "  ") !== false)
 		$msg = str_replace("  ", " ", $msg);
 
-	return(array("msg"=>trim($msg." ".$msglink), "image"=>$image));
+	return(array("msg"=>trim($msg."\n".$msglink), "image"=>$image));
 }
 
 function statusnet_post_hook(&$a,&$b) {

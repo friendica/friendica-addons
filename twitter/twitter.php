@@ -452,7 +452,7 @@ function twitter_shortenmsg($b) {
 		$msg = str_replace("  ", " ", $msg);
 
 	//return(trim($msg." ".$msglink));
-	return(trim($msg." ".$orig_link));
+	return(trim($msg."\n".$orig_link));
 }
 
 function twitter_post_hook(&$a,&$b) {
