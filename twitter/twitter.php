@@ -678,12 +678,15 @@ function twitter_fetchtimeline($a, $uid) {
 			$_SESSION["authenticated"] = true;
 			$_SESSION["uid"] = $uid;
 
+			unset($_REQUEST);
 			$_REQUEST["type"] = "wall";
 			$_REQUEST["api_source"] = true;
 			$_REQUEST["profile_uid"] = $uid;
 			$_REQUEST["source"] = "Twitter";
 
 			//$_REQUEST["date"] = $post->created_at;
+
+			$_REQUEST["title"] = "";
 
 			$_REQUEST["body"] = $post->text;
 			if (is_string($post->place->name))

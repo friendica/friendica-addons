@@ -1052,10 +1052,13 @@ function fbpost_fetchwall($a, $uid) {
 		$_SESSION["authenticated"] = true;
 		$_SESSION["uid"] = $uid;
 
+		unset($_REQUEST);
 		$_REQUEST["type"] = "wall";
 		$_REQUEST["api_source"] = true;
 		$_REQUEST["profile_uid"] = $uid;
 		$_REQUEST["source"] = "Facebook";
+
+		$_REQUEST["title"] = "";
 
 		$_REQUEST["body"] = (isset($item->message) ? escape_tags($item->message) : '');
 

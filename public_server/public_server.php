@@ -43,9 +43,11 @@ function public_server_register_account($a,$b) {
 	);
 
 };
-	
+
 
 function public_server_cron($a,$b) {
+	logger("public_server: cron start");
+
 	require_once('include/enotify.php');
 	$r = q("select * from user where account_expires_on < UTC_TIMESTAMP() + INTERVAL 5 DAY and account_expires_on > '0000-00-00 00:00:00' and
 		expire_notification_sent = '0000-00-00 00:00:00' ");
@@ -116,6 +118,7 @@ function public_server_cron($a,$b) {
 		}
         }
 
+	logger("public_server: cron end");
 
 }
 

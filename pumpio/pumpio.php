@@ -385,14 +385,16 @@ function pumpio_send(&$a,&$b) {
 		$client->client_id = $consumer_key;
 		$client->client_secret = $consumer_secret;
 
+		$username = $user.'@'.$host;
+
 		$success = $client->CallAPI(
 					'https://'.$host.'/api/user/'.$user.'/feed',
 					'POST', $params, array('FailOnAccessError'=>true, 'RequestContentType'=>'application/json'), $user);
 
 		if($success)
-			logger('pumpio_send: success');
+			logger('pumpio_send '.$username.': success');
 		else
-			logger('pumpio_send: general error: ' . print_r($user,true));
+			logger('pumpio_send '.$username.': general error: ' . print_r($user,true));
 
 	}
 }
@@ -456,10 +458,12 @@ function pumpio_fetchtimeline($a, $uid) {
 
 	logger('pumpio: fetching for user '.$uid.' '.$url.' C:'.$client->client_id.' CS:'.$client->client_secret.' T:'.$client->access_token.' TS:'.$client->access_token_secret);
 
+	$username = $user.'@'.$host;
+
 	$success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $user);
 
 	if (!$success) {
-		logger('pumpio: error fetching posts for user '.$uid." ".print_r($user, true));
+		logger('pumpio: error fetching posts for user '.$uid." ".$username." ".print_r($user, true));
 		return;
 	}
 
@@ -498,6 +502,7 @@ function pumpio_fetchtimeline($a, $uid) {
 				$_SESSION["authenticated"] = true;
 				$_SESSION["uid"] = $uid;
 
+				unset($_REQUEST);
 				$_REQUEST["type"] = "wall";
 				$_REQUEST["api_source"] = true;
 				$_REQUEST["profile_uid"] = $uid;
@@ -505,6 +510,8 @@ function pumpio_fetchtimeline($a, $uid) {
 
 				if ($post->object->displayName != "")
 					$_REQUEST["title"] = html2bbcode($post->object->displayName);
+				else
+					$_REQUEST["title"] = "";
 
 				$_REQUEST["body"] = html2bbcode($post->object->content);
 

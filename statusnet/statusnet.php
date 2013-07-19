@@ -855,6 +855,9 @@ function statusnet_fetchtimeline($a, $uid) {
 		if ($first_time)
 			continue;
 
+		if ($post->source == "activity")
+			continue;
+
 		if (is_object($post->retweeted_status))
 			continue;
 
@@ -865,12 +868,15 @@ function statusnet_fetchtimeline($a, $uid) {
 			$_SESSION["authenticated"] = true;
 			$_SESSION["uid"] = $uid;
 
+			unset($_REQUEST);
 			$_REQUEST["type"] = "wall";
 			$_REQUEST["api_source"] = true;
 			$_REQUEST["profile_uid"] = $uid;
 			$_REQUEST["source"] = "StatusNet";
 
 			//$_REQUEST["date"] = $post->created_at;
+
+			$_REQUEST["title"] = "";
 
 			$_REQUEST["body"] = $post->text;
 			if (is_string($post->place->name))
