@@ -529,40 +529,6 @@ function fbpost_post_hook(&$a,&$b) {
 				// if($b['verb'] == ACTIVITY_DISLIKE)
 				//	$msg = trim(strip_tags(bbcode($msg)));
 
-				// Old code
-				/*$search_str = $a->get_baseurl() . '/search';
-
-				if(preg_match("/\[url=(.*?)\](.*?)\[\/url\]/is",$msg,$matches)) {
-
-					// don't use hashtags for message link
-
-					if(strpos($matches[2],$search_str) === false) {
-						$link = $matches[1];
-						if(substr($matches[2],0,5) != '[img]')
-							$linkname = $matches[2];
-					}
-				}
-
-				// strip tag links to avoid link clutter, this really should be 
-				// configurable because we're losing information
-
-				$msg = preg_replace("/\#\[url=(.*?)\](.*?)\[\/url\]/is",'#$2',$msg);
-
-				// provide the link separately for normal links
-				$msg = preg_replace("/\[url=(.*?)\](.*?)\[\/url\]/is",'$2 $1',$msg);
-
-				if(preg_match("/\[img\](.*?)\[\/img\]/is",$msg,$matches))
-					$image = $matches[1];
-
-				$msg = preg_replace("/\[img\](.*?)\[\/img\]/is", t('Image: ') . '$1', $msg);
-
-				if((strpos($link,z_root()) !== false) && (! $image))
-					$image = $a->get_baseurl() . '/images/friendica-64.jpg';
-
-				$msg = trim(strip_tags(bbcode($msg)));*/
-
-				// New code
-
 				// Looking for the first image
 				$image = '';
 				if(preg_match("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/is",$b['body'],$matches))
