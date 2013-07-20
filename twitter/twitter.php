@@ -445,14 +445,14 @@ function twitter_shortenmsg($b) {
 		else if ($lastchar != "\n")
 			$msg = substr($msg, 0, -3)."...";
 	}
-	$msg = str_replace("\n", " ", $msg);
+	//$msg = str_replace("\n", " ", $msg);
 
 	// Removing multiple spaces - again
 	while (strpos($msg, "  ") !== false)
 		$msg = str_replace("  ", " ", $msg);
 
 	//return(trim($msg." ".$msglink));
-	return(trim($msg." ".$orig_link));
+	return(trim($msg."\n".$orig_link));
 }
 
 function twitter_post_hook(&$a,&$b) {
@@ -678,12 +678,15 @@ function twitter_fetchtimeline($a, $uid) {
 			$_SESSION["authenticated"] = true;
 			$_SESSION["uid"] = $uid;
 
+			unset($_REQUEST);
 			$_REQUEST["type"] = "wall";
 			$_REQUEST["api_source"] = true;
 			$_REQUEST["profile_uid"] = $uid;
 			$_REQUEST["source"] = "Twitter";
 
 			//$_REQUEST["date"] = $post->created_at;
+
+			$_REQUEST["title"] = "";
 
 			$_REQUEST["body"] = $post->text;
 			if (is_string($post->place->name))

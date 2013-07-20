@@ -109,6 +109,7 @@ function fromgplus_post($a, $uid, $source, $body, $location) {
 	$_SESSION['authenticated'] = true;
 	$_SESSION['uid'] = $uid;
 
+	unset($_REQUEST);
 	$_REQUEST['type'] = 'wall';
 	$_REQUEST['api_source'] = true;
 
