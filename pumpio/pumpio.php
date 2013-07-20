@@ -363,13 +363,24 @@ function pumpio_send(&$a,&$b) {
 		if ($title != '')
 			$title = "<h4>".$title."</h4>";
 
+		$content = bbcode($b['body'], false, false);
+
+		// Enhance the way, videos are displayed
+		$content = preg_replace('/<a.*?href="(https?:\/\/www.youtube.com\/.*?)".*?>(.*?)<\/a>/ism',"\n[url]$1[/url]\n",$content);
+		$content = preg_replace('/<a.*?href="(https?:\/\/youtu.be\/.*?)".*?>(.*?)<\/a>/ism',"\n$1\n",$content);
+		$content = preg_replace('/<a.*?href="(https?:\/\/vimeo.com\/.*?)".*?>(.*?)<\/a>/ism',"\n$1\n",$content);
+		$content = preg_replace('/<a.*?href="(https?:\/\/player.vimeo.com\/.*?)".*?>(.*?)<\/a>/ism',"\n$1\n",$content);
+
+		$URLSearchString = "^\[\]";
+		$content = preg_replace_callback("/\[url\]([$URLSearchString]*)\[\/url\]/ism",'tryoembed',$content);
+
 		$params = array();
 
 		$params["verb"] = "post";
 
 		$params["object"] = array(
 					'objectType' => "note",
-					'content' => $title.bbcode($b['body'], false, false));
+					'content' => $title.$content);
 
 		if ($public)
 			$params["to"] = array(Array(
