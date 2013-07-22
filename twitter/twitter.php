@@ -451,8 +451,16 @@ function twitter_shortenmsg($b) {
 	while (strpos($msg, "  ") !== false)
 		$msg = str_replace("  ", " ", $msg);
 
-	if ($image == $orig_link)
-		return(array("msg"=>trim($msg), "image"=>$image));
+	// Looking if the link points to an image
+	$img_str = fetch_url($orig_link);
+
+	$tempfile = tempnam(get_config("system","temppath"), "cache");
+	file_put_contents($tempfile, $img_str);
+	$mime = image_type_to_mime_type(exif_imagetype($tempfile));
+	unlink($tempfile);
+
+	if (($image == $orig_link) OR (substr($mime, 0, 6) == "image/"))
+		return(array("msg"=>trim($msg), "image"=>$orig_link));
 	else
 		return(array("msg"=>trim($msg."\n".$orig_link), "image"=>""));
 }
