@@ -414,12 +414,12 @@ function twitter_shortenmsg($b) {
 
 	// If the message is short enough then don't modify it.
 	if ((strlen(trim($origmsg)) <= $max_char) AND ($msglink == ""))
-		return(trim($origmsg));
+		return(array("msg"=>trim($origmsg), "image"=>""));
 
 	// If the message is short enough and the link exists in the original message don't modify it as well
 	// -3 because of the bad shortener of twitter
 	if ((strlen(trim($origmsg)) <= ($max_char - 3)) AND strpos($origmsg, $msglink))
-		return(trim($origmsg));
+		return(array("msg"=>trim($origmsg), "image"=>""));
 
 	// Preserve the unshortened link
 	$orig_link = $msglink;
@@ -451,8 +451,10 @@ function twitter_shortenmsg($b) {
 	while (strpos($msg, "  ") !== false)
 		$msg = str_replace("  ", " ", $msg);
 
-	//return(trim($msg." ".$msglink));
-	return(trim($msg."\n".$orig_link));
+	if ($image == $orig_link)
+		return(array("msg"=>trim($msg), "image"=>$image));
+	else
+		return(array("msg"=>trim($msg."\n".$orig_link), "image"=>""));
 }
 
 function twitter_post_hook(&$a,&$b) {
@@ -574,12 +576,30 @@ function twitter_post_hook(&$a,&$b) {
 
 			$msg = trim($msg);
 		} else
-			$msg = twitter_shortenmsg($b);
+			$msgarr = twitter_shortenmsg($b);
+                        $msg = $msgarr["msg"];
+                        $image = $msgarr["image"];
 
 		// and now tweet it :-)
-		if(strlen($msg)) {
+		if(strlen($msg) and ($image == "")) {
 			$result = $tweet->post('statuses/update', array('status' => $msg));
 			logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
+			if ($result->error) {
+				logger('Send to Twitter failed: "' . $result->error . '"');
+			}
+		} else if(strlen($msg) and ($image != "")) {
+			$img_str = fetch_url($image);
+
+			$tempfile = tempnam(get_config("system","temppath"), "cache");
+			file_put_contents($tempfile, $img_str);
+			$mime = image_type_to_mime_type(exif_imagetype($tempfile));
+			unlink($tempfile);
+
+			$filename = "upload";
+
+			$result = $tweet->post('statuses/update_with_media', array('media[]' => "{$img_str};type=".$mime.";filename={$filename}" , 'status' => $msg));
+
+			logger('twitter_post_with_media send, result: ' . print_r($result, true), LOGGER_DEBUG);
 			if ($result->error) {
 				logger('Send to Twitter failed: "' . $result->error . '"');
 			}
