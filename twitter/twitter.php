@@ -432,7 +432,7 @@ function twitter_shortenmsg($b) {
 		return(array("msg"=>trim($origmsg), "image"=>""));
 
 	// If the message is short enough and contains a picture then post the picture as well
-	if ((strlen(trim($origmsg)) <= ($max_char - 40)) AND strpos($origmsg, $msglink))
+	if ((strlen(trim($origmsg)) <= ($max_char - 20)) AND strpos($origmsg, $msglink))
 		return(array("msg"=>trim($origmsg), "image"=>$image));
 
 	// If the message is short enough and the link exists in the original message don't modify it as well
@@ -467,7 +467,7 @@ function twitter_shortenmsg($b) {
 		// if the post contains a picture and a link then the system tries to cut the post earlier.
 		// So the link and the picture can be posted.
 		if (($image != "") AND ($orig_link != $image)) {
-			$msg2 = substr($msg, 0, ($max_char - 40) - (strlen($msglink)));
+			$msg2 = substr($msg, 0, ($max_char - 20) - (strlen($msglink)));
 			$lastchar = substr($msg2, -1);
 			$msg2 = substr($msg2, 0, -1);
 			$pos = strrpos($msg2, "\n");
@@ -498,7 +498,7 @@ function twitter_shortenmsg($b) {
 
 	if (($image == $orig_link) OR (substr($mime, 0, 6) == "image/"))
 		return(array("msg"=>trim($msg), "image"=>$orig_link));
-	else if (($image != $orig_link) AND ($image != "") AND (strlen($msg."\n".$orig_link) <= 100))
+	else if (($image != $orig_link) AND ($image != "") AND (strlen($msg."\n".$msglink) <= ($max_char - 20)))
 		return(array("msg"=>trim($msg."\n".$orig_link), "image"=>$image));
 	else
 		return(array("msg"=>trim($msg."\n".$orig_link), "image"=>""));
