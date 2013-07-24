@@ -392,6 +392,21 @@ function twitter_shortenmsg($b) {
 	// If there is no bookmark element then take the first link
 	if ($link == '') {
 		$links = collecturls($html);
+
+		foreach($links AS $singlelink) {
+			$img_str = fetch_url($singlelink);
+
+			$tempfile = tempnam(get_config("system","temppath"), "cache");
+			file_put_contents($tempfile, $img_str);
+			$mime = image_type_to_mime_type(exif_imagetype($tempfile));
+			unlink($tempfile);
+
+			if (substr($mime, 0, 6) == "image/") {
+				$image = $singlelink;
+				unset($links[$singlelink]);
+			}
+		}
+
 		if (sizeof($links) > 0) {
 			reset($links);
 			$link = current($links);
@@ -415,6 +430,10 @@ function twitter_shortenmsg($b) {
 	// If the message is short enough then don't modify it.
 	if ((strlen(trim($origmsg)) <= $max_char) AND ($msglink == ""))
 		return(array("msg"=>trim($origmsg), "image"=>""));
+
+	// If the message is short enough and contains a picture then post the picture as well
+	if ((strlen(trim($origmsg)) <= ($max_char - 40)) AND strpos($origmsg, $msglink))
+		return(array("msg"=>trim($origmsg), "image"=>$image));
 
 	// If the message is short enough and the link exists in the original message don't modify it as well
 	// -3 because of the bad shortener of twitter
@@ -444,12 +463,30 @@ function twitter_shortenmsg($b) {
 			$msg = substr($msg, 0, $pos);
 		else if ($lastchar != "\n")
 			$msg = substr($msg, 0, -3)."...";
+
+		// if the post contains a picture and a link then the system tries to cut the post earlier.
+		// So the link and the picture can be posted.
+		if (($image != "") AND ($orig_link != $image)) {
+			$msg2 = substr($msg, 0, ($max_char - 40) - (strlen($msglink)));
+			$lastchar = substr($msg2, -1);
+			$msg2 = substr($msg2, 0, -1);
+			$pos = strrpos($msg2, "\n");
+			if ($pos > 0)
+				$msg = substr($msg2, 0, $pos);
+			else if ($lastchar == "\n")
+				$msg = trim($msg2);
+		}
+
 	}
 	//$msg = str_replace("\n", " ", $msg);
 
 	// Removing multiple spaces - again
 	while (strpos($msg, "  ") !== false)
 		$msg = str_replace("  ", " ", $msg);
+
+	// Removing multiple newlines
+	//while (strpos($msg, "\n\n") !== false)
+	//	$msg = str_replace("\n\n", "\n", $msg);
 
 	// Looking if the link points to an image
 	$img_str = fetch_url($orig_link);
@@ -461,6 +498,8 @@ function twitter_shortenmsg($b) {
 
 	if (($image == $orig_link) OR (substr($mime, 0, 6) == "image/"))
 		return(array("msg"=>trim($msg), "image"=>$orig_link));
+	else if (($image != $orig_link) AND ($image != "") AND (strlen($msg."\n".$orig_link) <= 100))
+		return(array("msg"=>trim($msg."\n".$orig_link), "image"=>$image));
 	else
 		return(array("msg"=>trim($msg."\n".$orig_link), "image"=>""));
 }
