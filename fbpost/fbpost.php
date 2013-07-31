@@ -570,25 +570,25 @@ function fbpost_post_hook(&$a,&$b) {
 				$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n\t$2:\t", $body);
 
 				// share element
-				$body = preg_replace_callback("/\[share(.*?)\]\s?(.*?)\s?\[\/share\]/ism","fbpost_ShareAttributes", $body);
+				//$body = preg_replace_callback("/\[share(.*?)\]\s?(.*?)\s?\[\/share\]/ism","fbpost_ShareAttributes", $body);
 
-				$bodyparts = explode("\t", $body);
+				//$bodyparts = explode("\t", $body);
 				// Doesn't help with multiple repeats - the problem has to be solved later
-				if (sizeof($bodyparts) == 3) {
-					$html = bbcode($bodyparts[2], false, false);
-					$test = trim(html2plain($html, 0, true));
+				//if (sizeof($bodyparts) == 3) {
+				//	$html = bbcode($bodyparts[2], false, false);
+				//	$test = trim(html2plain($html, 0, true));
 
-					if (trim($bodyparts[0]) == "")
-						$body = trim($bodyparts[2]);
-					else if (trim($test) == "")
-						$body = trim($bodyparts[0]);
-					else
-						$body = trim($bodyparts[0])."\n\n".trim($bodyparts[1])."[quote]".trim($bodyparts[2])."[/quote]";
-				} else
+				//	if (trim($bodyparts[0]) == "")
+				//		$body = trim($bodyparts[2]);
+				//	else if (trim($test) == "")
+				//		$body = trim($bodyparts[0]);
+				//	else
+				//		$body = trim($bodyparts[0])."\n\n".trim($bodyparts[1])."[quote]".trim($bodyparts[2])."[/quote]";
+				//} else
 					$body = str_replace("\t", "", $body);
 
 				// At first convert the text to html
-				$html = bbcode($body, false, false);
+				$html = bbcode($body, false, false, 2);
 
 				// Then convert it to plain text
 				$msg = trim($b['title']." \n\n".html2plain($html, 0, true));

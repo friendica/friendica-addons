@@ -357,10 +357,10 @@ function twitter_shortenmsg($b) {
 	$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n", $body);
 
 	// remove the share element
-	$body = preg_replace("/\[share(.*?)\](.*?)\[\/share\]/ism","\n\n$2\n\n",$body);
+	//$body = preg_replace("/\[share(.*?)\](.*?)\[\/share\]/ism","\n\n$2\n\n",$body);
 
 	// At first convert the text to html
-	$html = bbcode($body, false, false);
+	$html = bbcode($body, false, false, 2);
 
 	// Then convert it to plain text
 	//$msg = trim($b['title']." \n\n".html2plain($html, 0, true));
@@ -628,13 +628,7 @@ function twitter_post_hook(&$a,&$b) {
                         $image = $msgarr["image"];
 
 		// and now tweet it :-)
-		if(strlen($msg) and ($image == "")) {
-			$result = $tweet->post('statuses/update', array('status' => $msg));
-			logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
-			if ($result->error) {
-				logger('Send to Twitter failed: "' . $result->error . '"');
-			}
-		} else if(strlen($msg) and ($image != "")) {
+		if(strlen($msg) and ($image != "")) {
 			$img_str = fetch_url($image);
 
 			$tempfile = tempnam(get_config("system","temppath"), "cache");
@@ -649,7 +643,16 @@ function twitter_post_hook(&$a,&$b) {
 			logger('twitter_post_with_media send, result: ' . print_r($result, true), LOGGER_DEBUG);
 			if ($result->error) {
 				logger('Send to Twitter failed: "' . $result->error . '"');
+				// Workaround: Remove the picture link so that the post can be reposted without it
+				$image = "";
 			}
+		}
+
+		if(strlen($msg) and ($image == "")) {
+			$result = $tweet->post('statuses/update', array('status' => $msg));
+			logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
+			if ($result->error)
+				logger('Send to Twitter failed: "' . $result->error . '"');
 		}
 	}
 }
