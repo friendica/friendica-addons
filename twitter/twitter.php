@@ -622,11 +622,12 @@ function twitter_post_hook(&$a,&$b) {
 			}
 
 			$msg = trim($msg);
-		} else
+			$image = "";
+		} else {
 			$msgarr = twitter_shortenmsg($b);
                         $msg = $msgarr["msg"];
                         $image = $msgarr["image"];
-
+		}
 		// and now tweet it :-)
 		if(strlen($msg) and ($image != "")) {
 			$img_str = fetch_url($image);
