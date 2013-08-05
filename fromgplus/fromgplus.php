@@ -239,9 +239,11 @@ function fromgplus_handleattachments($item, $displaytext) {
 				$post .= "\n\n[bookmark=".$attachment->url."]".fromgplus_html2bbcode($attachment->displayName)."[/bookmark]\n";
 
 				$images = fromgplus_cleanupgoogleproxy($attachment->fullImage, $attachment->image);
-				if ($images["preview"] != "")
-					$post .= "\n[url=".$images["full"]."][img]".$images["preview"]."[/img][/url]\n";
-				elseif ($images["full"] != "")
+				//if ($images["preview"] != "")
+				//	$post .= "\n[url=".$images["full"]."][img]".$images["preview"]."[/img][/url]\n";
+				//elseif ($images["full"] != "")
+				//	$post .= "\n[img]".$images["full"]."[/img]\n";
+				if ($images["full"] != "")
 					$post .= "\n[img]".$images["full"]."[/img]\n";
 
 				//$post .= "[quote]".trim(fromgplus_html2bbcode($attachment->content))."[/quote]";
