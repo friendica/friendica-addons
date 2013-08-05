@@ -126,7 +126,7 @@ function nsfw_prepare_body(&$a,&$b) {
 	$found = false;
 	if(count($arr)) {
 
-		$body = nsfw_extract_photos($b['html']);
+		$body = $b['item']['title'] . "\n" . nsfw_extract_photos($b['html']);
 
 		foreach($arr as $word) {
 			$word = trim($word);
@@ -144,13 +144,16 @@ function nsfw_prepare_body(&$a,&$b) {
 					$found = true;
 					break;
 				}
-				if(stristr($b['item']['tag'], ']' . $word . '[' )) {
-					$found = true;
-					break;
+				if(is_array($b['item']['tags']) && count($b['item']['tags'])) {
+					foreach($b['item']['tags'] as $t) {
+						if(stristr($t, '>' . $word . '<' )) {
+							$found = true;
+							break;
+						}
+					}
 				}
 			} 
-		}
-		
+		}		
 	}
 	if($found) {
 		$rnd = random_string(8);
