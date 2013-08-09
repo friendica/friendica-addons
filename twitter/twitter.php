@@ -305,7 +305,7 @@ function short_link ($url) {
     return $slinky->short();
 } };
 
-function twitter_shortenmsg($b) {
+function twitter_shortenmsg($b, $shortlink = false) {
 	require_once("include/bbcode.php");
 	require_once("include/html2plain.php");
 
@@ -449,10 +449,12 @@ function twitter_shortenmsg($b) {
 	//if (strlen(trim($msg." ".$msglink)) > ($max_char - 3)) {
 	//	$msg = substr($msg, 0, ($max_char - 3) - (strlen($msglink)));
 
-	// Just replace the message link with a 15 character long string
+	// Just replace the message link with a 20 character long string
 	// Twitter shortens it anyway to this length
+	// 15 should be enough - but sometimes posts don't get posted - although they would fit.
 	if (trim($msglink) <> '')
 		$msglink = "123456789012345";
+//		$msglink = "12345678901234567890";
 
 	if (strlen(trim($msg." ".$msglink)) > ($max_char)) {
 		$msg = substr($msg, 0, ($max_char) - (strlen($msglink)));
@@ -498,10 +500,17 @@ function twitter_shortenmsg($b) {
 
 	if (($image == $orig_link) OR (substr($mime, 0, 6) == "image/"))
 		return(array("msg"=>trim($msg), "image"=>$orig_link));
-	else if (($image != $orig_link) AND ($image != "") AND (strlen($msg."\n".$msglink) <= ($max_char - 20)))
+	else if (($image != $orig_link) AND ($image != "") AND (strlen($msg."\n".$msglink) <= ($max_char - 20))) {
+		if ($shortlink)
+			$orig_link = short_link($orig_link);
+
 		return(array("msg"=>trim($msg."\n".$orig_link), "image"=>$image));
-	else
+	} else {
+		if ($shortlink)
+			$orig_link = short_link($orig_link);
+
 		return(array("msg"=>trim($msg."\n".$orig_link), "image"=>""));
+	}
 }
 
 function twitter_post_hook(&$a,&$b) {
@@ -652,8 +661,24 @@ function twitter_post_hook(&$a,&$b) {
 		if(strlen($msg) and ($image == "")) {
 			$result = $tweet->post('statuses/update', array('status' => $msg));
 			logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
-			if ($result->errors OR $result->error)
+			if ($result->errors OR $result->error) {
 				logger('Send to Twitter failed: "' . $result->errors . '"');
+
+				// experimental
+				// Sometims Twitter seems to think that posts are too long - although they aren't
+				// Test 1:
+				// Shorten the urls
+				// Test 2:
+				// Reduce the maximum length
+				if ($intelligent_shortening) {
+					$msgarr = twitter_shortenmsg($b, true);
+					$msg = $msgarr["msg"];
+		                        $image = $msgarr["image"];
+					$result = $tweet->post('statuses/update', array('status' => $msg));
+					logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
+				}
+
+			}
 		}
 	}
 }
