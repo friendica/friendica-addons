@@ -259,7 +259,7 @@ function fromgplus_handleattachments($item, $displaytext) {
 				elseif ($images["full"] != "")
 					$post .= "\n[img]".$images["full"]."[/img]\n";
 
-				if (($attachment->displayName != "") AND ($attachment->displayName != $displaytext))
+				if (($attachment->displayName != "") AND (trim($attachment->displayName) != trim(strip_tags($displaytext))))
 					$post .= fromgplus_html2bbcode($attachment->displayName)."\n";
 				break;
 
