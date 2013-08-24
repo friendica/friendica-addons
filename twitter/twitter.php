@@ -643,17 +643,33 @@ function twitter_post_hook(&$a,&$b) {
 
 			$tempfile = tempnam(get_config("system","temppath"), "cache");
 			file_put_contents($tempfile, $img_str);
+
+			// For testing purposes
+			// trying a new library for twitter
+			// To-Do:
+			// Switching completely to this library with all functions
+			include 'codebird.php';
+
+			$cb = \Codebird\Codebird::getInstance();
+			$cb->setConsumerKey($ckey, $csecret);
+			$cb->setToken($otoken, $osecret);
+			$result = $cb->statuses_updateWithMedia(array('status' => $msg, 'media[]' => $tempfile));
+			unlink($tempfile);
+
+			/*
 			$mime = image_type_to_mime_type(exif_imagetype($tempfile));
 			unlink($tempfile);
 
 			$filename = "upload";
 
 			$result = $tweet->post('statuses/update_with_media', array('media[]' => "{$img_str};type=".$mime.";filename={$filename}" , 'status' => $msg));
+			*/
 
 			logger('twitter_post_with_media send, result: ' . print_r($result, true), LOGGER_DEBUG);
 			if ($result->errors OR $result->error) {
 				logger('Send to Twitter failed: "' . $result->errors . '"');
 				// Workaround: Remove the picture link so that the post can be reposted without it
+				$msg .= " ".$image;
 				$image = "";
 			}
 		}
