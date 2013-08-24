@@ -218,6 +218,14 @@ function fromgplus_cleanupgoogleproxy($fullImage, $image) {
 	return($cleaned);
 }
 
+function fromgplus_cleantext($text) {
+	$text = strip_tags($text);
+	$text = html_entity_decode($text);
+	$text = trim($text);
+	$text = str_replace(array("\n", "\r", " "), array("", "", ""), $text);
+	return($text);
+}
+
 function fromgplus_handleattachments($item, $displaytext) {
 	$post = "";
 	$quote = "";
@@ -259,7 +267,7 @@ function fromgplus_handleattachments($item, $displaytext) {
 				elseif ($images["full"] != "")
 					$post .= "\n[img]".$images["full"]."[/img]\n";
 
-				if (($attachment->displayName != "") AND (trim($attachment->displayName) != trim(strip_tags($displaytext))))
+				if (($attachment->displayName != "") AND (fromgplus_cleantext($attachment->displayName) != fromgplus_cleantext($displaytext)))
 					$post .= fromgplus_html2bbcode($attachment->displayName)."\n";
 				break;
 
