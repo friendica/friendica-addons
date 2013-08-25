@@ -550,6 +550,9 @@ function statusnet_shortenmsg($b, $max_char) {
 	if ((strlen(trim($origmsg)) <= $max_char) AND (strpos($origmsg, $msglink) OR ($msglink == "")))
 		return(array("msg"=>trim($origmsg), "image"=>""));
 
+	// Preserve the unshortened link
+	$orig_link = $msglink;
+
 	if (strlen($msglink) > 20)
 		$msglink = short_link($msglink);
 
@@ -569,7 +572,22 @@ function statusnet_shortenmsg($b, $max_char) {
 	while (strpos($msg, "  ") !== false)
 		$msg = str_replace("  ", " ", $msg);
 
-	return(array("msg"=>trim($msg."\n".$msglink), "image"=>$image));
+	//return(array("msg"=>trim($msg."\n".$msglink), "image"=>$image));
+
+	// Looking if the link points to an image
+	$img_str = fetch_url($orig_link);
+
+	$tempfile = tempnam(get_config("system","temppath"), "cache");
+	file_put_contents($tempfile, $img_str);
+	$mime = image_type_to_mime_type(exif_imagetype($tempfile));
+	unlink($tempfile);
+
+	if (($image == $orig_link) OR (substr($mime, 0, 6) == "image/"))
+		return(array("msg"=>trim($msg), "image"=>$orig_link));
+	else if (($image != $orig_link) AND ($image != "") AND (strlen($msg."\n".$msglink) <= ($max_char - 20)))
+		return(array("msg"=>trim($msg."\n".$msglink), "image"=>$image));
+	else
+		return(array("msg"=>trim($msg."\n".$msglink), "image"=>""));
 }
 
 function statusnet_post_hook(&$a,&$b) {
@@ -697,18 +715,25 @@ function statusnet_post_hook(&$a,&$b) {
 			$msg = $msgarr["msg"];
 			$image = $msgarr["image"];
 			if ($image != "") {
-				$imagedata = file_get_contents($image);
-				$tempfile = tempnam(get_config("system","temppath"), "upload");
-				file_put_contents($tempfile, $imagedata);
-				$postdata = array("status"=>$msg, "media"=>"@".$tempfile);
+				$img_str = fetch_url($image);
+				$tempfile = tempnam(get_config("system","temppath"), "cache");
+				file_put_contents($tempfile, $img_str);
+				$postdata = array("status" => $msg, "media[]" => $tempfile);
 			} else
 				$postdata = array("status"=>$msg);
 		}
 
 		// and now dent it :-)
 		if(strlen($msg)) {
-                    //$result = $dent->post('statuses/update', array('status' => $msg));
-                    $result = $dent->post('statuses/update', $postdata);
+
+		    // New code that is able to post pictures
+		    require_once("addon/statusnet/codebird.php");
+		    $cb = \CodebirdSN\CodebirdSN::getInstance();
+		    $cb->setAPIEndpoint($api);
+		    $cb->setConsumerKey($ckey, $csecret);
+		    $cb->setToken($otoken, $osecret);
+		    $result = $cb->statuses_update($postdata);
+                    //$result = $dent->post('statuses/update', $postdata);
                     logger('statusnet_post send, result: ' . print_r($result, true).
                            "\nmessage: ".$msg, LOGGER_DEBUG."\nOriginal post: ".print_r($b, true)."\nPost Data: ".print_r($postdata, true));
                     if ($result->error) {
@@ -721,9 +746,9 @@ function statusnet_post_hook(&$a,&$b) {
 }
 
 function statusnet_plugin_admin_post(&$a){
-	
+
 	$sites = array();
-	
+
 	foreach($_POST['sitename'] as $id=>$sitename){
 		$sitename=trim($sitename);
 		$apiurl=trim($_POST['apiurl'][$id]);

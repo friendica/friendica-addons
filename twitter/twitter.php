@@ -648,7 +648,7 @@ function twitter_post_hook(&$a,&$b) {
 			// trying a new library for twitter
 			// To-Do:
 			// Switching completely to this library with all functions
-			include 'codebird.php';
+		        require_once("addon/twitter/codebird.php");
 
 			$cb = \Codebird\Codebird::getInstance();
 			$cb->setConsumerKey($ckey, $csecret);
