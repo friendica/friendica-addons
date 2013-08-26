@@ -445,8 +445,8 @@ function retriever_apply_dom_filter($retriever, &$item, $resource) {
     $item['body'] .= "\n\n" . t('Retrieved') . ' ' . date("Y-m-d") . ': [url=';
     $item['body'] .=  $item['plink'];
     $item['body'] .= ']' . $item['plink'] . '[/url]';
-    q("UPDATE `item` SET `body` = '%s', `edited` = '%s' WHERE `id` = %d",
-      dbesc($item['body']), dbesc(datetime_convert('UTC', 'UTC')), intval($item['id']));
+    q("UPDATE `item` SET `body` = '%s' WHERE `id` = %d",
+      dbesc($item['body']), intval($item['id']));
 }
 
 function retrieve_images(&$item) {
@@ -482,11 +482,11 @@ function retriever_check_item_completed(&$item)
     $item['visible'] = $waiting ? 0 : 1;
     if (($item['id'] > 0) && ($old_visible != $item['visible'])) {
         logger('retriever_check_item_completed: changing visible flag to ' . $item['visible'] . ' and invoking notifier ("edit_post", ' . $item['id'] . ')', LOGGER_DEBUG);
-        q("UPDATE `item` SET `visible` = %d, `edited` = '%s' WHERE `id` = %d",
+        q("UPDATE `item` SET `visible` = %d WHERE `id` = %d",
           intval($item['visible']),
-          dbesc(datetime_convert('UTC', 'UTC')),
           intval($item['id']));
-        proc_run('php', "include/notifier.php", 'edit_post', $item['id']);
+// disable due to possible security issue
+//        proc_run('php', "include/notifier.php", 'edit_post', $item['id']);
     }
 }
 
@@ -586,8 +586,7 @@ function retriever_transform_images(&$item, $resource) {
     }
 
     $item['body'] = $transformed;
-    q("UPDATE `item` SET `edited` = '%s', `body` = '%s' WHERE `plink` = '%s' AND `uid` = %d AND `contact-id` = %d",
-      dbesc(datetime_convert('UTC', 'UTC')),
+    q("UPDATE `item` SET `body` = '%s' WHERE `plink` = '%s' AND `uid` = %d AND `contact-id` = %d",
       dbesc($item['body']),
       dbesc($item['plink']),
       intval($item['uid']),
