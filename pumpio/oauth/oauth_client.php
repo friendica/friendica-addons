@@ -1013,7 +1013,8 @@ class oauth_client_class
 		{
 			$values = array(
 				'oauth_consumer_key'=>$this->client_id,
-				'oauth_nonce'=>md5(uniqid(rand(), true)),
+				//'oauth_nonce'=>md5(uniqid(rand(), true)),
+				'oauth_nonce'=>sha1(uniqid(mt_rand(), true).uniqid(mt_rand(), true)),
 				'oauth_signature_method'=>$this->signature_method,
 				'oauth_timestamp'=>time(),
 				'oauth_version'=>'1.0',

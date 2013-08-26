@@ -109,6 +109,7 @@ function fromgplus_post($a, $uid, $source, $body, $location) {
 	$_SESSION['authenticated'] = true;
 	$_SESSION['uid'] = $uid;
 
+	unset($_REQUEST);
 	$_REQUEST['type'] = 'wall';
 	$_REQUEST['api_source'] = true;
 
@@ -123,11 +124,16 @@ function fromgplus_post($a, $uid, $source, $body, $location) {
 	$_REQUEST['body'] = $body;
 	$_REQUEST['location'] = $location;
 
-        logger('fromgplus: posting for user '.$uid);
+	if (($_REQUEST['title'] == "") AND ($_REQUEST['body'] == "")) {
+	        logger('fromgplus: empty post for user '.$uid." ".print_r($_REQUEST, true));
+		return;
+	}
 
 	require_once('mod/item.php');
 	//print_r($_REQUEST);
+        logger('fromgplus: posting for user '.$uid." ".print_r($_REQUEST, true));
 	item_post($a);
+        logger('fromgplus: done for user '.$uid);
 }
 
 function fromgplus_html2bbcode($html) {

@@ -189,21 +189,30 @@ function wppost_send(&$a,&$b) {
 
 			// If no bookmark is found then take the first line
 			if ($wptitle == '') {
-				$title = html2plain(bbcode($b['body']), 0, true);
+				$title = html2plain(bbcode($b['body'], false, false), 0, true)."\n";
 				$pos = strpos($title, "\n");
-				if (($pos == 0) or ($pos > 60))
-					$pos = 60;
+				$trailer = "";
+				if (($pos == 0) or ($pos > 100)) {
+					$pos = 100;
+					$trailer = "...";
+				}
 
-				$wptitle = substr($title, 0, $pos);
+				$wptitle = substr($title, 0, $pos).$trailer;
 			}
 		}
 
 		$title = '<title>' . (($wptitle) ? $wptitle : t('Post from Friendica')) . '</title>';
-		$post = $title . bbcode($b['body']);
+		$post = bbcode($b['body'], false, false);
+
+		// If a link goes to youtube then remove the stuff around it. Wordpress detects youtube links and embeds it
+		$post = preg_replace('/<a.*?href="(https?:\/\/www.youtube.com\/.*?)".*?>(.*?)<\/a>/ism',"\n$1\n",$post);
+		$post = preg_replace('/<a.*?href="(https?:\/\/youtu.be\/.*?)".*?>(.*?)<\/a>/ism',"\n$1\n",$post);
+
+		$post = $title.$post;
 
 		$wp_backlink = intval(get_pconfig($b['uid'],'wppost','backlink'));
 		if($wp_backlink && $b['plink'])
-			$post .= EOL . EOL . '<a href="' . $b['plink'] . '">' 
+			$post .= EOL . EOL . '<a href="' . $b['plink'] . '">'
 				. t('Read the original post and comment stream on Friendica') . '</a>' . EOL . EOL;
 
 		$post = xmlify($post);

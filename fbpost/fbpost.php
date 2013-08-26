@@ -529,40 +529,6 @@ function fbpost_post_hook(&$a,&$b) {
 				// if($b['verb'] == ACTIVITY_DISLIKE)
 				//	$msg = trim(strip_tags(bbcode($msg)));
 
-				// Old code
-				/*$search_str = $a->get_baseurl() . '/search';
-
-				if(preg_match("/\[url=(.*?)\](.*?)\[\/url\]/is",$msg,$matches)) {
-
-					// don't use hashtags for message link
-
-					if(strpos($matches[2],$search_str) === false) {
-						$link = $matches[1];
-						if(substr($matches[2],0,5) != '[img]')
-							$linkname = $matches[2];
-					}
-				}
-
-				// strip tag links to avoid link clutter, this really should be 
-				// configurable because we're losing information
-
-				$msg = preg_replace("/\#\[url=(.*?)\](.*?)\[\/url\]/is",'#$2',$msg);
-
-				// provide the link separately for normal links
-				$msg = preg_replace("/\[url=(.*?)\](.*?)\[\/url\]/is",'$2 $1',$msg);
-
-				if(preg_match("/\[img\](.*?)\[\/img\]/is",$msg,$matches))
-					$image = $matches[1];
-
-				$msg = preg_replace("/\[img\](.*?)\[\/img\]/is", t('Image: ') . '$1', $msg);
-
-				if((strpos($link,z_root()) !== false) && (! $image))
-					$image = $a->get_baseurl() . '/images/friendica-64.jpg';
-
-				$msg = trim(strip_tags(bbcode($msg)));*/
-
-				// New code
-
 				// Looking for the first image
 				$image = '';
 				if(preg_match("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/is",$b['body'],$matches))
@@ -604,25 +570,25 @@ function fbpost_post_hook(&$a,&$b) {
 				$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n\t$2:\t", $body);
 
 				// share element
-				$body = preg_replace_callback("/\[share(.*?)\]\s?(.*?)\s?\[\/share\]/ism","fbpost_ShareAttributes", $body);
+				//$body = preg_replace_callback("/\[share(.*?)\]\s?(.*?)\s?\[\/share\]/ism","fbpost_ShareAttributes", $body);
 
-				$bodyparts = explode("\t", $body);
+				//$bodyparts = explode("\t", $body);
 				// Doesn't help with multiple repeats - the problem has to be solved later
-				if (sizeof($bodyparts) == 3) {
-					$html = bbcode($bodyparts[2], false, false);
-					$test = trim(html2plain($html, 0, true));
+				//if (sizeof($bodyparts) == 3) {
+				//	$html = bbcode($bodyparts[2], false, false);
+				//	$test = trim(html2plain($html, 0, true));
 
-					if (trim($bodyparts[0]) == "")
-						$body = trim($bodyparts[2]);
-					else if (trim($test) == "")
-						$body = trim($bodyparts[0]);
-					else
-						$body = trim($bodyparts[0])."\n\n".trim($bodyparts[1])."[quote]".trim($bodyparts[2])."[/quote]";
-				} else
+				//	if (trim($bodyparts[0]) == "")
+				//		$body = trim($bodyparts[2]);
+				//	else if (trim($test) == "")
+				//		$body = trim($bodyparts[0]);
+				//	else
+				//		$body = trim($bodyparts[0])."\n\n".trim($bodyparts[1])."[quote]".trim($bodyparts[2])."[/quote]";
+				//} else
 					$body = str_replace("\t", "", $body);
 
 				// At first convert the text to html
-				$html = bbcode($body, false, false);
+				$html = bbcode($body, false, false, 2);
 
 				// Then convert it to plain text
 				$msg = trim($b['title']." \n\n".html2plain($html, 0, true));
@@ -1052,10 +1018,13 @@ function fbpost_fetchwall($a, $uid) {
 		$_SESSION["authenticated"] = true;
 		$_SESSION["uid"] = $uid;
 
+		unset($_REQUEST);
 		$_REQUEST["type"] = "wall";
 		$_REQUEST["api_source"] = true;
 		$_REQUEST["profile_uid"] = $uid;
 		$_REQUEST["source"] = "Facebook";
+
+		$_REQUEST["title"] = "";
 
 		$_REQUEST["body"] = (isset($item->message) ? escape_tags($item->message) : '');
 

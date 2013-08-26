@@ -357,10 +357,10 @@ function twitter_shortenmsg($b) {
 	$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n", $body);
 
 	// remove the share element
-	$body = preg_replace("/\[share(.*?)\](.*?)\[\/share\]/ism","\n\n$2\n\n",$body);
+	//$body = preg_replace("/\[share(.*?)\](.*?)\[\/share\]/ism","\n\n$2\n\n",$body);
 
 	// At first convert the text to html
-	$html = bbcode($body, false, false);
+	$html = bbcode($body, false, false, 2);
 
 	// Then convert it to plain text
 	//$msg = trim($b['title']." \n\n".html2plain($html, 0, true));
@@ -392,6 +392,21 @@ function twitter_shortenmsg($b) {
 	// If there is no bookmark element then take the first link
 	if ($link == '') {
 		$links = collecturls($html);
+
+		foreach($links AS $singlelink) {
+			$img_str = fetch_url($singlelink);
+
+			$tempfile = tempnam(get_config("system","temppath"), "cache");
+			file_put_contents($tempfile, $img_str);
+			$mime = image_type_to_mime_type(exif_imagetype($tempfile));
+			unlink($tempfile);
+
+			if (substr($mime, 0, 6) == "image/") {
+				$image = $singlelink;
+				unset($links[$singlelink]);
+			}
+		}
+
 		if (sizeof($links) > 0) {
 			reset($links);
 			$link = current($links);
@@ -414,12 +429,16 @@ function twitter_shortenmsg($b) {
 
 	// If the message is short enough then don't modify it.
 	if ((strlen(trim($origmsg)) <= $max_char) AND ($msglink == ""))
-		return(trim($origmsg));
+		return(array("msg"=>trim($origmsg), "image"=>""));
+
+	// If the message is short enough and contains a picture then post the picture as well
+	if ((strlen(trim($origmsg)) <= ($max_char - 20)) AND strpos($origmsg, $msglink))
+		return(array("msg"=>trim($origmsg), "image"=>$image));
 
 	// If the message is short enough and the link exists in the original message don't modify it as well
 	// -3 because of the bad shortener of twitter
 	if ((strlen(trim($origmsg)) <= ($max_char - 3)) AND strpos($origmsg, $msglink))
-		return(trim($origmsg));
+		return(array("msg"=>trim($origmsg), "image"=>""));
 
 	// Preserve the unshortened link
 	$orig_link = $msglink;
@@ -444,15 +463,45 @@ function twitter_shortenmsg($b) {
 			$msg = substr($msg, 0, $pos);
 		else if ($lastchar != "\n")
 			$msg = substr($msg, 0, -3)."...";
+
+		// if the post contains a picture and a link then the system tries to cut the post earlier.
+		// So the link and the picture can be posted.
+		if (($image != "") AND ($orig_link != $image)) {
+			$msg2 = substr($msg, 0, ($max_char - 20) - (strlen($msglink)));
+			$lastchar = substr($msg2, -1);
+			$msg2 = substr($msg2, 0, -1);
+			$pos = strrpos($msg2, "\n");
+			if ($pos > 0)
+				$msg = substr($msg2, 0, $pos);
+			else if ($lastchar == "\n")
+				$msg = trim($msg2);
+		}
+
 	}
-	$msg = str_replace("\n", " ", $msg);
+	//$msg = str_replace("\n", " ", $msg);
 
 	// Removing multiple spaces - again
 	while (strpos($msg, "  ") !== false)
 		$msg = str_replace("  ", " ", $msg);
 
-	//return(trim($msg." ".$msglink));
-	return(trim($msg." ".$orig_link));
+	// Removing multiple newlines
+	//while (strpos($msg, "\n\n") !== false)
+	//	$msg = str_replace("\n\n", "\n", $msg);
+
+	// Looking if the link points to an image
+	$img_str = fetch_url($orig_link);
+
+	$tempfile = tempnam(get_config("system","temppath"), "cache");
+	file_put_contents($tempfile, $img_str);
+	$mime = image_type_to_mime_type(exif_imagetype($tempfile));
+	unlink($tempfile);
+
+	if (($image == $orig_link) OR (substr($mime, 0, 6) == "image/"))
+		return(array("msg"=>trim($msg), "image"=>$orig_link));
+	else if (($image != $orig_link) AND ($image != "") AND (strlen($msg."\n".$msglink) <= ($max_char - 20)))
+		return(array("msg"=>trim($msg."\n".$orig_link), "image"=>$image));
+	else
+		return(array("msg"=>trim($msg."\n".$orig_link), "image"=>""));
 }
 
 function twitter_post_hook(&$a,&$b) {
@@ -573,16 +622,38 @@ function twitter_post_hook(&$a,&$b) {
 			}
 
 			$msg = trim($msg);
-		} else
-			$msg = twitter_shortenmsg($b);
-
+			$image = "";
+		} else {
+			$msgarr = twitter_shortenmsg($b);
+                        $msg = $msgarr["msg"];
+                        $image = $msgarr["image"];
+		}
 		// and now tweet it :-)
-		if(strlen($msg)) {
-			$result = $tweet->post('statuses/update', array('status' => $msg));
-			logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
+		if(strlen($msg) and ($image != "")) {
+			$img_str = fetch_url($image);
+
+			$tempfile = tempnam(get_config("system","temppath"), "cache");
+			file_put_contents($tempfile, $img_str);
+			$mime = image_type_to_mime_type(exif_imagetype($tempfile));
+			unlink($tempfile);
+
+			$filename = "upload";
+
+			$result = $tweet->post('statuses/update_with_media', array('media[]' => "{$img_str};type=".$mime.";filename={$filename}" , 'status' => $msg));
+
+			logger('twitter_post_with_media send, result: ' . print_r($result, true), LOGGER_DEBUG);
 			if ($result->error) {
 				logger('Send to Twitter failed: "' . $result->error . '"');
+				// Workaround: Remove the picture link so that the post can be reposted without it
+				$image = "";
 			}
+		}
+
+		if(strlen($msg) and ($image == "")) {
+			$result = $tweet->post('statuses/update', array('status' => $msg));
+			logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
+			if ($result->error)
+				logger('Send to Twitter failed: "' . $result->error . '"');
 		}
 	}
 }
@@ -678,12 +749,15 @@ function twitter_fetchtimeline($a, $uid) {
 			$_SESSION["authenticated"] = true;
 			$_SESSION["uid"] = $uid;
 
+			unset($_REQUEST);
 			$_REQUEST["type"] = "wall";
 			$_REQUEST["api_source"] = true;
 			$_REQUEST["profile_uid"] = $uid;
 			$_REQUEST["source"] = "Twitter";
 
 			//$_REQUEST["date"] = $post->created_at;
+
+			$_REQUEST["title"] = "";
 
 			$_REQUEST["body"] = $post->text;
 			if (is_string($post->place->name))
