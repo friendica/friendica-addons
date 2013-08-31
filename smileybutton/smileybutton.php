@@ -128,8 +128,7 @@ function show_button($a, &$b) {
 	 */
 
 	$params = array('texts' => $texts, 'icons' => $icons, 'string' => ""); //changed
-	call_hooks('smiley', $params);
-
+	call_hooks('smilie', $params);
 
 	/**
 	 *
@@ -137,15 +136,25 @@ function show_button($a, &$b) {
 	 *
 	 */
 
-	$s = "\t";
+	$s = "\t<table class=\"smiley-preview\"><tr>\n";
 	for($x = 0; $x < count($params['texts']); $x ++) {
 		$icon = $params['icons'][$x];
 		$icon = str_replace('/>', 'onclick="smileybutton_addsmiley(\'' . $params['texts'][$x] . '\')"/>', $icon);
-		$s .= $icon . ' ';
-		if ($x != 0 && $x % 10 == 0) {
-			$s .= "<br />\n\t";
+		$icon = str_replace('class="smiley"', 'class="smiley_preview"', $icon);
+		$s .= "<td>" . $icon . "</td>";
+		if (($x+1) % (sqrt(count($params['texts']))+1) == 0) {
+			$s .= "</tr>\n\t<tr>";
 		}
 	}
+	$s .= "\t</tr></table>\n";
+
+	/**
+	 *
+	 * Add css to page
+	 *
+	 */	
+
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/smileybutton/smileybutton.css' . '" media="all" />' . "\r\n";
 
 	/**
 	 *
@@ -191,9 +200,17 @@ function show_button($a, &$b) {
 	 */
 
 	$b .= "	function smileybutton_addsmiley(text) {\n";
-	$b .= "		v = $(\"#profile-jot-text\").val()\n";
-	$b .= "		v = v + text\n";
-	$b .= "		$(\"#profile-jot-text\").val(v)\n";
+	$b .= "		if(plaintext == 'none') {\n";
+	$b .= "			var v = $(\"#profile-jot-text\").val();\n";
+	$b .= "			v = v + text;\n";
+	$b .= "			$(\"#profile-jot-text\").val(v);\n";
+	$b .= "			$(\"#profile-jot-text\").focus();\n";
+	$b .= "		} else {\n";
+	$b .= "			var v = tinymce.activeEditor.getContent();\n";
+	$b .= "			v = v + text;\n";
+	$b .= "			tinymce.activeEditor.setContent(v);\n";
+	$b .= "			tinymce.activeEditor.focus();\n";
+	$b .= "		}\n";
 	$b .= "	}\n";
 	$b .= "</script>\n";
 }
