@@ -17,8 +17,9 @@ function pumpio_install() {
     register_hook('connector_settings',      'addon/pumpio/pumpio.php', 'pumpio_settings');
     register_hook('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
     register_hook('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
-
+    register_hook('queue_predeliver', 'addon/pumpio/pumpio.php', 'pumpio_queue_hook');
 }
+
 function pumpio_uninstall() {
     unregister_hook('post_local',       'addon/pumpio/pumpio.php', 'pumpio_post_local');
     unregister_hook('notifier_normal',  'addon/pumpio/pumpio.php', 'pumpio_send');
@@ -26,6 +27,7 @@ function pumpio_uninstall() {
     unregister_hook('connector_settings',      'addon/pumpio/pumpio.php', 'pumpio_settings');
     unregister_hook('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
     unregister_hook('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
+    unregister_hook('queue_predeliver', 'addon/pumpio/pumpio.php', 'pumpio_queue_hook');
 }
 
 function pumpio_module() {}
@@ -431,6 +433,7 @@ function pumpio_send(&$a,&$b) {
 		$url = 'https://'.$host.'/api/user/'.$user.'/feed';
 
 		$success = $client->CallAPI($url, 'POST', $params, array('FailOnAccessError'=>true, 'RequestContentType'=>'application/json'), $user);
+		//$success = false;
 
 		if($success) {
 			$post_id = $user->object->id;
@@ -444,6 +447,10 @@ function pumpio_send(&$a,&$b) {
 			}
 		} else {
 			logger('pumpio_send '.$username.': general error: ' . print_r($user,true));
+
+			$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $b['uid']);
+			if (count($r))
+				$a->contact = $r[0]["id"];
 
 			$s = serialize(array('url' => $url, 'item' => $b['id'], 'post' => $params));
 			require_once('include/queue_fn.php');
@@ -1009,7 +1016,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post) {
 					'to_name'      => $user[0]['username'],
 					'to_email'     => $user[0]['email'],
 					'uid'          => $user[0]['uid'],
-					'item'         => $cmntdata,
+					'item'         => $postarray,
 					'link'             => $a->get_baseurl() . '/display/' . $user[0]['nickname'] . '/' . $top_item,
 					'source_name'  => $postarray['author-name'],
 					'source_link'  => $postarray['author-link'],
@@ -1100,18 +1107,94 @@ function pumpio_getallusers($a, $uid) {
 		echo pumpio_get_contact($uid, $user)."\n";
 }
 
+function pumpio_queue_hook(&$a,&$b) {
+
+	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
+		dbesc(NETWORK_PUMPIO)
+	);
+	if(! count($qi))
+		return;
+
+	require_once('include/queue_fn.php');
+
+	foreach($qi as $x) {
+		if($x['network'] !== NETWORK_PUMPIO)
+			continue;
+
+		logger('pumpio_queue: run '.print_r($x, true));
+
+		$r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` on `contact`.`uid` = `user`.`uid` 
+			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
+			intval($x['cid'])
+		);
+		if(! count($r))
+			continue;
+
+		$user = $r[0];
+
+		$oauth_token = get_pconfig($user['uid'], "pumpio", "oauth_token");
+		$oauth_token_secret = get_pconfig($user['uid'], "pumpio", "oauth_token_secret");
+		$consumer_key = get_pconfig($user['uid'], "pumpio","consumer_key");
+		$consumer_secret = get_pconfig($user['uid'], "pumpio","consumer_secret");
+
+		$host = get_pconfig($user['uid'], "pumpio", "host");
+		$user = get_pconfig($user['uid'], "pumpio", "user");
+
+		$success = false;
+
+		if ($oauth_token AND $oauth_token_secret AND
+			$consumer_key AND $consumer_secret) {
+			$username = $user.'@'.$host;
+
+			logger('pumpio_queue: able to post for user '.$username);
+
+			$z = unserialize($x['content']);
+
+			$client = new oauth_client_class;
+			$client->oauth_version = '1.0a';
+			$client->url_parameters = false;
+			$client->authorization_header = true;
+			$client->access_token = $oauth_token;
+			$client->access_token_secret = $oauth_token_secret;
+			$client->client_id = $consumer_key;
+			$client->client_secret = $consumer_secret;
+
+			$success = $client->CallAPI($z['url'], 'POST', $z['post'], array('FailOnAccessError'=>true, 'RequestContentType'=>'application/json'), $user);
+
+			if($success) {
+				$post_id = $user->object->id;
+				logger('pumpio_queue: send '.$username.': success '.$post_id);
+				if($post_id AND $iscomment) {
+					logger('pumpio_send '.$username.': Update extid '.$post_id." for post id ".$z['item']);
+					q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d LIMIT 1",
+						dbesc($post_id),
+						intval($z['item'])
+					);
+				}
+				remove_queue_item($x['id']);
+			} else
+				logger('pumpio_queue: send '.$username.': general error: ' . print_r($user,true));
+		} else
+			logger("pumpio_queue: Error getting tokens for user ".$user['uid']);
+
+		if (!$success) {
+			logger('pumpio_queue: delayed');
+			update_queue_time($x['id']);
+		}
+	}
+}
 
 /*
 To-Do:
- - Queues
- - unlike
+ - doing likes
+ - importing unlike
 
-Aufwand:
- - eigene Inhalte editieren
- - eigene Inhalte löschen
+Work:
+ - edit own posts
+ - delete own posts
 
 Problem:
- - vervollständigen der Threads
- - Aktualisieren nach Antworten
+ - Threads completion
+ - refresh after post
 
 */
