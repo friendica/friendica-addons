@@ -1,11 +1,11 @@
 
-#pumpio-mirror-label,#pumpio-public-label, #pumpio-enable-label, #pumpio-username-label, #pumpio-servername-label, #pumpio-bydefault-label, #pumpio-delete-label {
+#pumpio-import-label,#pumpio-mirror-label,#pumpio-public-label, #pumpio-enable-label, #pumpio-username-label, #pumpio-servername-label, #pumpio-bydefault-label, #pumpio-delete-label {
 	float: left;
 	width: 200px;
 	margin-top: 10px;
 }
 
-#pumpio-mirror,#pumpio-public, #pumpio-checkbox, #pumpio-username, #pumpio-servername, #pumpio-bydefault, #pumpio-delete {
+#pumpio-import,#pumpio-mirror,#pumpio-public, #pumpio-checkbox, #pumpio-username, #pumpio-servername, #pumpio-bydefault, #pumpio-delete {
 	float: left;
 	margin-top: 10px;
 }

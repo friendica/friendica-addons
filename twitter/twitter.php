@@ -500,16 +500,16 @@ function twitter_shortenmsg($b, $shortlink = false) {
 
 	if (($image == $orig_link) OR (substr($mime, 0, 6) == "image/"))
 		return(array("msg"=>trim($msg), "image"=>$orig_link));
-	else if (($image != $orig_link) AND ($image != "") AND (strlen($msg."\n".$msglink) <= ($max_char - 20))) {
+	else if (($image != $orig_link) AND ($image != "") AND (strlen($msg." ".$msglink) <= ($max_char - 20))) {
 		if ($shortlink)
 			$orig_link = short_link($orig_link);
 
-		return(array("msg"=>trim($msg."\n".$orig_link), "image"=>$image));
+		return(array("msg"=>trim($msg." ".$orig_link)."\n", "image"=>$image));
 	} else {
 		if ($shortlink)
 			$orig_link = short_link($orig_link);
 
-		return(array("msg"=>trim($msg."\n".$orig_link), "image"=>""));
+		return(array("msg"=>trim($msg." ".$orig_link), "image"=>""));
 	}
 }
 

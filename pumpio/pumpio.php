@@ -83,10 +83,6 @@ function pumpio_registerclient($a, $host) {
         if ($curl_info["http_code"] == "200") {
                 $values = json_decode($s);
 		return($values);
-                $pumpio = array();
-                $pumpio["client_id"] = $values->client_id;
-                $pumpio["client_secret"] = $values->client_secret;
-                print_r($values);
         }
 	return(false);
 }
@@ -178,6 +174,9 @@ function pumpio_settings(&$a,&$s) {
 
     /* Get the current state of our config variables */
 
+    $import_enabled = get_pconfig(local_user(),'pumpio','import');
+    $import_checked = (($import_enabled) ? ' checked="checked" ' : '');
+
     $enabled = get_pconfig(local_user(),'pumpio','post');
     $checked = (($enabled) ? ' checked="checked" ' : '');
 
@@ -221,6 +220,11 @@ function pumpio_settings(&$a,&$s) {
 
 		//$s .= t("You are not authenticated to pumpio");
 	} else {
+		$s .= '<div id="pumpio-import-wrapper">';
+		$s .= '<label id="pumpio-import-label" for="pumpio-import">' . t('Import the remote timeline') . '</label>';
+		$s .= '<input id="pumpio-import" type="checkbox" name="pumpio_import" value="1" ' . $import_checked . '/>';
+		$s .= '</div><div class="clear"></div>';
+
 		$s .= '<div id="pumpio-enable-wrapper">';
 		$s .= '<label id="pumpio-enable-label" for="pumpio-checkbox">' . t('Enable pump.io Post Plugin') . '</label>';
 		$s .= '<input id="pumpio-checkbox" type="checkbox" name="pumpio" value="1" ' . $checked . '/>';
@@ -289,6 +293,7 @@ function pumpio_settings_post(&$a,&$b) {
 			$host = str_replace(array("https://", "http://"), array("", ""), $host);
 
 			set_pconfig(local_user(),'pumpio','post',intval($_POST['pumpio']));
+			set_pconfig(local_user(),'pumpio','import',$_POST['pumpio_import']);
 			set_pconfig(local_user(),'pumpio','host',$host);
 			set_pconfig(local_user(),'pumpio','user',$user);
 			set_pconfig(local_user(),'pumpio','public',$_POST['pumpio_public']);
@@ -331,15 +336,31 @@ function pumpio_post_local(&$a,&$b) {
 
 
 function pumpio_send(&$a,&$b) {
-
-	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
+	if($b['deleted'] || ($b['created'] !== $b['edited']))
 		return;
 
-	if(! strstr($b['postopts'],'pumpio'))
-		return;
+	if($b['parent'] != $b['id']) {
+		// Looking if its a reply to a pumpio post
+		$r = q("SELECT item.* FROM item, contact WHERE item.id = %d AND item.uid = %d AND contact.id = `contact-id` AND contact.network='%s'LIMIT 1",
+			intval($b["parent"]),
+			intval($b["uid"]),
+			dbesc(NETWORK_PUMPIO));
 
-	if($b['parent'] != $b['id'])
-		return;
+		if(!count($r))
+			return;
+		else {
+			$iscomment = true;
+			$orig_post = $r[0];
+		}
+	} else {
+		$iscomment = false;
+
+		if(! strstr($b['postopts'],'pumpio'))
+			return;
+
+		if($b['private'])
+			return;
+	}
 
 	// if post comes from pump.io don't send it back
 	if($b['app'] == "pump.io")
@@ -378,14 +399,24 @@ function pumpio_send(&$a,&$b) {
 
 		$params["verb"] = "post";
 
-		$params["object"] = array(
-					'objectType' => "note",
-					'content' => $title.$content);
+		if (!$iscomment) {
+			$params["object"] = array(
+						'objectType' => "note",
+						'content' => $title.$content);
 
-		if ($public)
-			$params["to"] = array(Array(
-						"objectType" => "collection",
-						"id" => "http://activityschema.org/collection/public"));
+			if ($public)
+				$params["to"] = array(Array(
+							"objectType" => "collection",
+							"id" => "http://activityschema.org/collection/public"));
+		 } else {
+			$inReplyTo = array("id" => $orig_post["uri"],
+					"objectType" => "note");
+
+			$params["object"] = array(
+						'objectType' => "comment",
+						'content' => $title.$content,
+						'inReplyTo' => $inReplyTo);
+		}
 
 		$client = new oauth_client_class;
 		$client->oauth_version = '1.0a';
@@ -397,15 +428,28 @@ function pumpio_send(&$a,&$b) {
 		$client->client_secret = $consumer_secret;
 
 		$username = $user.'@'.$host;
+		$url = 'https://'.$host.'/api/user/'.$user.'/feed';
 
-		$success = $client->CallAPI(
-					'https://'.$host.'/api/user/'.$user.'/feed',
-					'POST', $params, array('FailOnAccessError'=>true, 'RequestContentType'=>'application/json'), $user);
+		$success = $client->CallAPI($url, 'POST', $params, array('FailOnAccessError'=>true, 'RequestContentType'=>'application/json'), $user);
 
-		if($success)
-			logger('pumpio_send '.$username.': success');
-		else
+		if($success) {
+			$post_id = $user->object->id;
+			logger('pumpio_send '.$username.': success '.$post_id);
+			if($post_id AND $iscomment) {
+				logger('pumpio_send '.$username.': Update extid '.$post_id." for post id ".$b['id']);
+				q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d LIMIT 1",
+					dbesc($post_id),
+					intval($b['id'])
+				);
+			}
+		} else {
 			logger('pumpio_send '.$username.': general error: ' . print_r($user,true));
+
+			$s = serialize(array('url' => $url, 'item' => $b['id'], 'post' => $params));
+			require_once('include/queue_fn.php');
+			add_to_queue($a->contact,NETWORK_PUMPIO,$s);
+			notice(t('Pump.io post failed. Queued for retry.').EOL);
+		}
 
 	}
 }
@@ -429,14 +473,25 @@ function pumpio_cron($a,$b) {
         $r = q("SELECT * FROM `pconfig` WHERE `cat` = 'pumpio' AND `k` = 'mirror' AND `v` = '1' ORDER BY RAND() ");
         if(count($r)) {
                 foreach($r as $rr) {
-                        logger('pumpio: fetching for user '.$rr['uid']);
+                        logger('pumpio: mirroring user '.$rr['uid']);
                         pumpio_fetchtimeline($a, $rr['uid']);
                 }
         }
 
-        logger('pumpio: cron_end');
+	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'pumpio' AND `k` = 'import' AND `v` = '1' ORDER BY RAND() ");
+	if(count($r)) {
+		foreach($r as $rr) {
+			logger('pumpio: importing timeline from user '.$rr['uid']);
+			pumpio_fetchinbox($a, $rr['uid']);
+		}
+	}
 
-        set_config('pumpio','last_poll', time());
+	// To-Do:
+	//pumpio_getallusers($a, $uid);
+
+	logger('pumpio: cron_end');
+
+	set_config('pumpio','last_poll', time());
 }
 
 function pumpio_fetchtimeline($a, $uid) {
@@ -544,3 +599,519 @@ function pumpio_fetchtimeline($a, $uid) {
 	if ($lastdate != 0)
 		set_pconfig($uid,'pumpio','lastdate', $lastdate);
 }
+
+function pumpio_dolike(&$a, $uid, $self, $post) {
+
+/*
+    // If we posted the like locally, it will be found with our url, not the FB url.
+
+    $second_url = (($likes->id == $fb_id) ? $self[0]['url'] : 'http://facebook.com/profile.php?id=' . $likes->id);
+
+    $r = q("SELECT * FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `verb` = '%s'
+        AND ( `author-link` = '%s' OR `author-link` = '%s' ) LIMIT 1",
+        dbesc($orig_post['uri']),
+        intval($uid),
+        dbesc(ACTIVITY_LIKE),
+        dbesc('http://facebook.com/profile.php?id=' . $likes->id),
+        dbesc($second_url)
+    );
+
+    if(count($r))
+        return;
+*/
+
+	// To-Do
+	$own_id = "123455678";
+
+	// Two queries for speed issues
+	$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
+				dbesc($post->object->id),
+				intval($uid)
+		);
+
+	if (count($r))
+		$orig_post = $r[0];
+	else {
+		$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
+					dbesc($post->object->id),
+					intval($uid)
+			);
+
+		if (!count($r))
+			return;
+		else
+			$orig_post = $r[0];
+	}
+
+	$r = q("SELECT parent FROM `item` WHERE `verb` = '%s' AND `uid` = %d AND `author-link` = '%s' AND parent = %d LIMIT 1",
+		dbesc(ACTIVITY_LIKE),
+		intval($uid),
+		dbesc($post->actor->url),
+		intval($orig_post['id'])
+	);
+
+	if(count($r))
+		return;
+
+	$likedata = array();
+	$likedata['parent'] = $orig_post['id'];
+	$likedata['verb'] = ACTIVITY_LIKE;
+	$likedata['gravity'] = 3;
+	$likedata['uid'] = $uid;
+	$likedata['wall'] = 0;
+	$likedata['uri'] = item_new_uri($a->get_baseurl(), $uid);
+	$likedata['parent-uri'] = $orig_post["uri"];
+
+	if($likes->id == $own_id)
+		$likedata['contact-id'] = $self[0]['id'];
+	else {
+		$r = q("SELECT * FROM `contact` WHERE `url` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
+			dbesc($post->actor->url),
+			intval($uid)
+		);
+
+		if(count($r))
+			$likedata['contact-id'] = $r[0]['id'];
+	}
+	if(! x($likedata,'contact-id'))
+		$likedata['contact-id'] = $orig_post['contact-id'];
+
+	$likedata['app'] = $post->generator->displayName;
+	$likedata['verb'] = ACTIVITY_LIKE;
+	$likedata['author-name'] = $post->actor->displayName;
+	$likedata['author-link'] = $post->actor->url;
+	$likedata['author-avatar'] = $post->actor->image->url;
+
+	$author  = '[url=' . $likedata['author-link'] . ']' . $likedata['author-name'] . '[/url]';
+	$objauthor =  '[url=' . $orig_post['author-link'] . ']' . $orig_post['author-name'] . '[/url]';
+	$post_type = t('status');
+	$plink = '[url=' . $orig_post['plink'] . ']' . $post_type . '[/url]';
+	$likedata['object-type'] = ACTIVITY_OBJ_NOTE;
+
+	$likedata['body'] = sprintf( t('%1$s likes %2$s\'s %3$s'), $author, $objauthor, $plink);
+
+	$likedata['object'] = '<object><type>' . ACTIVITY_OBJ_NOTE . '</type><local>1</local>' .
+		'<id>' . $orig_post['uri'] . '</id><link>' . xmlify('<link rel="alternate" type="text/html" href="' . xmlify($orig_post['plink']) . '" />') . '</link><title>' . $orig_post['title'] . '</title><content>' . $orig_post['body'] . '</content></object>';
+
+	item_store($likedata);
+}
+
+function pumpio_get_contact($uid, $contact) {
+
+	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `url` = '%s' LIMIT 1",
+		intval($uid), dbesc($contact->url));
+
+	if(!count($r)) {
+		// create contact record
+		q("INSERT INTO `contact` ( `uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
+					`name`, `nick`, `photo`, `network`, `rel`, `priority`,
+					`writable`, `blocked`, `readonly`, `pending` )
+				VALUES ( %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, 0, 0, 0 ) ",
+			intval($uid),
+			dbesc(datetime_convert()),
+			dbesc($contact->url),
+			dbesc(normalise_link($contact->url)),
+			dbesc(str_replace("acct:", "", $contact->id)),
+			dbesc(''),
+			dbesc($contact->id), // To-Do?
+			dbesc('pump.io ' . $contact->id), // To-Do?
+			dbesc($contact->displayName),
+			dbesc($contact->preferredUsername),
+			dbesc($contact->image->url),
+			dbesc(NETWORK_PUMPIO),
+			intval(CONTACT_IS_FRIEND),
+			intval(1),
+			intval(1)
+		);
+
+		$r = q("SELECT * FROM `contact` WHERE `url` = '%s' AND `uid` = %d LIMIT 1",
+			dbesc($contact->url),
+			intval($uid)
+			);
+
+		if(! count($r))
+			return(false);
+
+		$contact_id  = $r[0]['id'];
+
+		$g = q("select def_gid from user where uid = %d limit 1",
+			intval($uid)
+		);
+
+		if($g && intval($g[0]['def_gid'])) {
+			require_once('include/group.php');
+			group_add_member($uid,'',$contact_id,$g[0]['def_gid']);
+		}
+
+		require_once("Photo.php");
+
+		$photos = import_profile_photo($contact->image->url,$uid,$contact_id);
+
+		q("UPDATE `contact` SET `photo` = '%s',
+					`thumb` = '%s',
+					`micro` = '%s',
+					`name-date` = '%s',
+					`uri-date` = '%s',
+					`avatar-date` = '%s'
+				WHERE `id` = %d LIMIT 1
+	                ",
+		dbesc($photos[0]),
+		dbesc($photos[1]),
+		dbesc($photos[2]),
+		dbesc(datetime_convert()),
+		dbesc(datetime_convert()),
+		dbesc(datetime_convert()),
+		intval($contact_id)
+		);
+	} else {
+		// update profile photos once every two weeks as we have no notification of when they change.
+
+		$update_photo = (($r[0]['avatar-date'] < datetime_convert('','','now -14 days')) ? true : false);
+
+		// check that we have all the photos, this has been known to fail on occasion
+
+		if((! $r[0]['photo']) || (! $r[0]['thumb']) || (! $r[0]['micro']) || ($update_photo)) {
+			require_once("Photo.php");
+
+			$photos = import_profile_photo($contact->image->url, $uid, $r[0]['id']);
+
+			q("UPDATE `contact` SET `photo` = '%s',
+                                        `thumb` = '%s',
+                                        `micro` = '%s',
+                                        `name-date` = '%s',
+                                        `uri-date` = '%s',
+                                        `avatar-date` = '%s'
+                                        WHERE `id` = %d LIMIT 1
+                                ",
+			dbesc($photos[0]),
+			dbesc($photos[1]),
+			dbesc($photos[2]),
+			dbesc(datetime_convert()),
+			dbesc(datetime_convert()),
+			dbesc(datetime_convert()),
+			intval($r[0]['id'])
+			);
+		}
+
+	}
+
+	return($r[0]["id"]);
+}
+
+function pumpio_dodelete(&$a, $client, $uid, $self, $post) {
+
+	// Two queries for speed issues
+	$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
+				dbesc($post->object->id),
+				intval($uid)
+		);
+
+	if (count($r)) {
+		drop_item($r[0]["id"], $false);
+		return;
+	}
+
+	$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
+				dbesc($post->object->id),
+				intval($uid)
+		);
+
+	if (count($r)) {
+		drop_item($r[0]["id"], $false);
+		return;
+	}
+}
+
+function pumpio_dopost(&$a, $client, $uid, $self, $post) {
+	require_once('include/items.php');
+
+	if ($post->verb == "like") {
+		pumpio_dolike(&$a, $uid, $self, $post);
+		return;
+	}
+
+	if ($post->verb == "delete") {
+		pumpio_dodelete(&$a, $uid, $self, $post);
+		return;
+	}
+
+	// Only handle these three types
+	if (!strstr("post|share|update", $post->verb))
+		return;
+
+	if ($post->verb != "update") {
+		// Two queries for speed issues
+		$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
+					dbesc($post->object->id),
+					intval($uid)
+			);
+
+		if (count($r))
+			return;
+
+		$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
+					dbesc($post->object->id),
+					intval($uid)
+			);
+
+		if (count($r))
+			return;
+	}
+
+	$receiptians = array();
+	if (@is_array($post->cc))
+		$receiptians = array_merge($receiptians, $post->cc);
+
+	if (@is_array($post->to))
+		$receiptians = array_merge($receiptians, $post->to);
+
+	foreach ($receiptians AS $receiver)
+		if (is_string($receiver->objectType))
+			if ($receiver->id == "http://activityschema.org/collection/public")
+				$public = true;
+
+	$contact_id = pumpio_get_contact($uid, $post->actor);
+
+	if (!$contact_id)
+		$contact_id = $self[0]['id'];
+
+	$postarray = array();
+	$postarray['gravity'] = 0;
+	$postarray['uid'] = $uid;
+	$postarray['wall'] = 0;
+	$postarray['uri'] = $post->object->id;
+
+	if ($post->object->objectType != "comment") {
+		$postarray['parent-uri'] = $post->object->id;
+	} else {
+		//echo($post->object->inReplyTo->url."\n");
+		//print_r($post->object->inReplyTo);
+		//echo $post->object->inReplyTo->likes->url."\n";
+		//$replies = $post->object->inReplyTo->replies->url;
+		//$replies = $post->object->likes->pump_io->proxyURL;
+		//$replies = $post->object->replies->pump_io->proxyURL;
+
+		/*
+		//$replies = $post->object->replies->pump_io->proxyURL;
+
+		if ($replies != "") {
+			$success = $client->CallAPI($replies, 'GET', array(), array('FailOnAccessError'=>true), $replydata);
+			print_r($replydata);
+		} else
+			print_r($post);
+		*/
+
+		$reply->verb = "note";
+		$reply->cc = $post->cc;
+		$reply->to = $post->to;
+		$reply->object->objectType = $post->object->inReplyTo->objectType;
+		$reply->object->content = $post->object->inReplyTo->content;
+		$reply->object->id = $post->object->inReplyTo->id;
+		$reply->actor = $post->object->inReplyTo->author;
+		$reply->url = $post->object->inReplyTo->url;
+		$reply->generator->displayName = "pumpio";
+		$reply->published = $post->object->inReplyTo->published;
+		$reply->received = $post->object->inReplyTo->updated;
+		$reply->url = $post->object->inReplyTo->url;
+		pumpio_dopost(&$a, $client, $uid, $self, $reply);
+
+		$postarray['parent-uri'] = $post->object->inReplyTo->id;
+	}
+
+	$postarray['contact-id'] = $contact_id;
+	$postarray['verb'] = ACTIVITY_POST;
+	$postarray['owner-name'] = $post->actor->displayName;
+	$postarray['owner-link'] = $post->actor->url;
+	$postarray['owner-avatar'] = $post->actor->image->url;
+	$postarray['author-name'] = $post->actor->displayName;
+	$postarray['author-link'] = $post->actor->url;
+	$postarray['author-avatar'] = $post->actor->image->url;
+	$postarray['plink'] = $post->object->url;
+	$postarray['app'] = $post->generator->displayName;
+	$postarray['body'] = html2bbcode($post->object->content);
+
+	if ($post->object->fullImage->url != "")
+		$postarray["body"] = "[url=".$post->object->fullImage->url."][img]".$post->object->image->url."[/img][/url]\n".$postarray["body"];
+
+	if ($post->object->displayName != "")
+		$postarray['title'] = $post->object->displayName;
+
+	//$postarray['location'] = ""
+	$postarray['created'] = datetime_convert('UTC','UTC',$post->published);
+	$postarray['edited'] = datetime_convert('UTC','UTC',$post->received);
+	if (!$public) {
+		$postarray['private'] = 1;
+		$postarray['allow_cid'] = '<' . $self[0]['id'] . '>';
+	}
+
+	if ($post->verb == "share") {
+		$postarray['body'] = "[share author='".$post->object->author->displayName.
+                                "' profile='".$post->object->author->url.
+                                "' avatar='".$post->object->author->image->url.
+                                "' link='".$post->links->self->href."']".$postarray['body']."[/share]";
+	}
+
+	if (trim($postarray['body']) == "")
+		return;
+
+	$top_item = item_store($postarray);
+
+	if (($top_item == 0) AND ($post->verb == "update")) {
+		$r = q("UPDATE `item` SET `title` = '%s', `body` = '%s' , `changed` = '%s' WHERE `uri` = '%s' AND `uid` = %d",
+			dbesc($postarray["title"]),
+			dbesc($postarray["body"]),
+			dbesc($postarray["edited"]),
+			dbesc($postarray["uri"]),
+			intval($uid)
+			);
+	}
+
+	if ($post->object->objectType == "comment") {
+
+		$hostname = get_pconfig($uid, 'pumpio','host');
+		$username = get_pconfig($uid, "pumpio", "user");
+
+		$foreign_url = "https://".$hostname."/".$username;
+
+		$user = q("SELECT * FROM `user` WHERE `uid` = %d AND `account_expired` = 0 LIMIT 1",
+				intval($uid)
+			);
+
+		if(!count($user))
+			return;
+
+		$importer_url = $a->get_baseurl() . '/profile/' . $user[0]['nickname'];
+
+		if (link_compare($foreign_url, $postarray['author-link']))
+			return;
+
+		$myconv = q("SELECT `author-link`, `author-avatar`, `parent` FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `parent` != 0 AND `deleted` = 0",
+				dbesc($postarray['parent-uri']),
+				intval($uid)
+				);
+
+		if(count($myconv)) {
+
+			foreach($myconv as $conv) {
+				// now if we find a match, it means we're in this conversation
+
+				if(!link_compare($conv['author-link'],$importer_url) AND !link_compare($conv['author-link'],$foreign_url))
+					continue;
+
+				require_once('include/enotify.php');
+
+				$conv_parent = $conv['parent'];
+
+				notification(array(
+					'type'         => NOTIFY_COMMENT,
+					'notify_flags' => $user[0]['notify-flags'],
+					'language'     => $user[0]['language'],
+					'to_name'      => $user[0]['username'],
+					'to_email'     => $user[0]['email'],
+					'uid'          => $user[0]['uid'],
+					'item'         => $cmntdata,
+					'link'             => $a->get_baseurl() . '/display/' . $user[0]['nickname'] . '/' . $top_item,
+					'source_name'  => $postarray['author-name'],
+					'source_link'  => $postarray['author-link'],
+					'source_photo' => $postarray['author-avatar'],
+					'verb'         => ACTIVITY_POST,
+					'otype'        => 'item',
+					'parent'       => $conv_parent,
+					));
+
+				// only send one notification
+				break;
+			}
+		}
+	}
+}
+
+function pumpio_fetchinbox($a, $uid) {
+
+        $ckey    = get_pconfig($uid, 'pumpio', 'consumer_key');
+        $csecret = get_pconfig($uid, 'pumpio', 'consumer_secret');
+        $otoken  = get_pconfig($uid, 'pumpio', 'oauth_token');
+        $osecret = get_pconfig($uid, 'pumpio', 'oauth_token_secret');
+        $lastdate = get_pconfig($uid, 'pumpio', 'lastdate');
+        $hostname = get_pconfig($uid, 'pumpio','host');
+        $username = get_pconfig($uid, "pumpio", "user");
+
+	$self = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
+		intval($uid));
+
+        $client = new oauth_client_class;
+        $client->oauth_version = '1.0a';
+        $client->authorization_header = true;
+        $client->url_parameters = false;
+
+        $client->client_id = $ckey;
+        $client->client_secret = $csecret;
+        $client->access_token = $otoken;
+        $client->access_token_secret = $osecret;
+
+	$last_id = get_pconfig($uid,'pumpio','last_id');
+
+	$url = 'https://'.$hostname.'/api/user/'.$username.'/inbox';
+
+	if ($last_id != "")
+		$url .= '?since='.urlencode($last_id);
+
+        $success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $user);
+        $posts = array_reverse($user->items);
+
+	if (count($posts))
+		foreach ($posts as $post) {
+			$last_id = $post->id;
+			pumpio_dopost(&$a, $client, $uid, $self, $post);
+		}
+
+	set_pconfig($uid,'pumpio','last_id', $last_id);
+}
+
+function pumpio_getallusers($a, $uid) {
+        $ckey    = get_pconfig($uid, 'pumpio', 'consumer_key');
+        $csecret = get_pconfig($uid, 'pumpio', 'consumer_secret');
+        $otoken  = get_pconfig($uid, 'pumpio', 'oauth_token');
+        $osecret = get_pconfig($uid, 'pumpio', 'oauth_token_secret');
+        $hostname = get_pconfig($uid, 'pumpio','host');
+        $username = get_pconfig($uid, "pumpio", "user");
+
+        $client = new oauth_client_class;
+        $client->oauth_version = '1.0a';
+        $client->authorization_header = true;
+        $client->url_parameters = false;
+
+        $client->client_id = $ckey;
+        $client->client_secret = $csecret;
+        $client->access_token = $otoken;
+        $client->access_token_secret = $osecret;
+
+	$url = 'https://'.$hostname.'/api/user/'.$username.'/following';
+
+        $success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $users);
+
+	if ($users->totalItems > count($users->items)) {
+		$url = 'https://'.$hostname.'/api/user/'.$username.'/following?count='.$users->totalItems;
+
+	        $success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $users);
+	}
+
+	foreach ($users->items AS $user)
+		echo pumpio_get_contact($uid, $user)."\n";
+}
+
+
+/*
+To-Do:
+ - Queues
+ - unlike
+
+Aufwand:
+ - eigene Inhalte editieren
+ - eigene Inhalte löschen
+
+Problem:
+ - vervollständigen der Threads
+ - Aktualisieren nach Antworten
+
+*/
