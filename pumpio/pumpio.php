@@ -338,6 +338,19 @@ function pumpio_post_local(&$a,&$b) {
 
 
 function pumpio_send(&$a,&$b) {
+	logger("pumpio_send: parameter ".print_r($b, true));
+
+	if($b['verb'] == ACTIVITY_LIKE) {
+		if ($b['deleted'])
+			pumpio_like($a, $b["uid"], $b["thr-parent"], "unlike");
+		else
+			pumpio_like($a, $b["uid"], $b["thr-parent"], "like");
+		return;
+	}
+
+	if($b['verb'] == ACTIVITY_DISLIKE)
+		return;
+
 	if($b['deleted'] || ($b['created'] !== $b['edited']))
 		return;
 
@@ -367,6 +380,7 @@ function pumpio_send(&$a,&$b) {
 	// if post comes from pump.io don't send it back
 	if($b['app'] == "pump.io")
 		return;
+
 
 	$oauth_token = get_pconfig($b['uid'], "pumpio", "oauth_token");
 	$oauth_token_secret = get_pconfig($b['uid'], "pumpio", "oauth_token_secret");
@@ -446,7 +460,7 @@ function pumpio_send(&$a,&$b) {
 				);
 			}
 		} else {
-			logger('pumpio_send '.$username.': general error: ' . print_r($user,true));
+			logger('pumpio_send '.$username.': '.$url.' general error: ' . print_r($user,true));
 
 			$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $b['uid']);
 			if (count($r))
@@ -460,6 +474,70 @@ function pumpio_send(&$a,&$b) {
 
 	}
 }
+
+function pumpio_like($a, $uid, $uri, $action) {
+	$ckey    = get_pconfig($uid, 'pumpio', 'consumer_key');
+	$csecret = get_pconfig($uid, 'pumpio', 'consumer_secret');
+	$otoken  = get_pconfig($uid, 'pumpio', 'oauth_token');
+	$osecret = get_pconfig($uid, 'pumpio', 'oauth_token_secret');
+	$hostname = get_pconfig($uid, 'pumpio','host');
+	$username = get_pconfig($uid, "pumpio", "user");
+
+	$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
+				dbesc($uri),
+				intval($uid)
+	);
+
+	if (!count($r))
+		return;
+
+	$orig_post = $r[0];
+
+	if ($orig_post["extid"])
+		$uri = $orig_post["extid"];
+	else
+		$uri = $orig_post["uri"];
+
+	if (strstr($uri, "/api/comment/"))
+		$objectType = "comment";
+	elseif (strstr($uri, "/api/note/"))
+		$objectType = "note";
+	elseif (strstr($uri, "/api/image/"))
+		$objectType = "image";
+
+	$params["verb"] = $action;
+	$params["object"] = array('id' => $uri, "objectType" => $objectType);
+
+	$client = new oauth_client_class;
+	$client->oauth_version = '1.0a';
+	$client->authorization_header = true;
+	$client->url_parameters = false;
+
+	$client->client_id = $ckey;
+	$client->client_secret = $csecret;
+	$client->access_token = $otoken;
+	$client->access_token_secret = $osecret;
+
+	$url = 'https://'.$hostname.'/api/user/'.$username.'/feed';
+
+	$success = $client->CallAPI($url, 'POST', $params, array('FailOnAccessError'=>true, 'RequestContentType'=>'application/json'), $user);
+
+	if($success)
+		logger('pumpio_like '.$username.' '.$action.': success '.$uri);
+	else {
+		logger('pumpio_like '.$username.' '.$action.': general error: '.$uri.' '.print_r($user,true));
+
+		$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $b['uid']);
+		if (count($r))
+			$a->contact = $r[0]["id"];
+
+		$s = serialize(array('url' => $url, 'item' => $orig_post["id"], 'post' => $params));
+		require_once('include/queue_fn.php');
+		add_to_queue($a->contact,NETWORK_PUMPIO,$s);
+		notice(t('Pump.io like failed. Queued for retry.').EOL);
+	}
+}
+
 
 function pumpio_cron($a,$b) {
         $last = get_config('pumpio','last_poll');
@@ -605,6 +683,9 @@ function pumpio_fetchtimeline($a, $uid) {
 
 	if ($lastdate != 0)
 		set_pconfig($uid,'pumpio','lastdate', $lastdate);
+}
+
+function pumpio_dounlike(&$a, $uid, $self, $post) {
 }
 
 function pumpio_dolike(&$a, $uid, $self, $post) {
@@ -832,8 +913,13 @@ function pumpio_dodelete(&$a, $client, $uid, $self, $post) {
 function pumpio_dopost(&$a, $client, $uid, $self, $post) {
 	require_once('include/items.php');
 
-	if ($post->verb == "like") {
+	if (($post->verb == "like") OR ($post->verb == "favorite")) {
 		pumpio_dolike(&$a, $uid, $self, $post);
+		return;
+	}
+
+	if (($post->verb == "unlike") OR ($post->verb == "unfavorite")) {
+		pumpio_dounlike(&$a, $uid, $self, $post);
 		return;
 	}
 
@@ -1073,6 +1159,25 @@ function pumpio_fetchinbox($a, $uid) {
 		}
 
 	set_pconfig($uid,'pumpio','last_id', $last_id);
+
+	// Fetching the minor events
+	$last_minor_id = get_pconfig($uid,'pumpio','last_minor_id');
+
+	$url = 'https://'.$hostname.'/api/user/'.$username.'/inbox/minor';
+
+	if ($last_minor_id != "")
+		$url .= '?since='.urlencode($last_minor_id);
+
+        $success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $user);
+        $posts = array_reverse($user->items);
+
+	if (count($posts))
+		foreach ($posts as $post) {
+			$last_minor_id = $post->id;
+			pumpio_dopost(&$a, $client, $uid, $self, $post);
+		}
+
+	set_pconfig($uid,'pumpio','last_minor_id', $last_minor_id);
 }
 
 function pumpio_getallusers($a, $uid) {
@@ -1121,7 +1226,7 @@ function pumpio_queue_hook(&$a,&$b) {
 		if($x['network'] !== NETWORK_PUMPIO)
 			continue;
 
-		logger('pumpio_queue: run '.print_r($x, true));
+		logger('pumpio_queue: run');
 
 		$r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` on `contact`.`uid` = `user`.`uid` 
 			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
@@ -1173,7 +1278,7 @@ function pumpio_queue_hook(&$a,&$b) {
 				}
 				remove_queue_item($x['id']);
 			} else
-				logger('pumpio_queue: send '.$username.': general error: ' . print_r($user,true));
+				logger('pumpio_queue: send '.$username.': '.$url.' general error: ' . print_r($user,true));
 		} else
 			logger("pumpio_queue: Error getting tokens for user ".$user['uid']);
 
@@ -1186,15 +1291,15 @@ function pumpio_queue_hook(&$a,&$b) {
 
 /*
 To-Do:
- - doing likes
+ - double likes?
  - importing unlike
 
-Work:
+Could be hard to do:
+ - Threads completion
  - edit own posts
  - delete own posts
 
 Problem:
- - Threads completion
  - refresh after post
 
 */

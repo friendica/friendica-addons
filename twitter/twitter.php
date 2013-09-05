@@ -70,6 +70,7 @@ function twitter_install() {
 	register_hook('notifier_normal', 'addon/twitter/twitter.php', 'twitter_post_hook');
 	register_hook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
 	register_hook('cron', 'addon/twitter/twitter.php', 'twitter_cron');
+	register_hook('queue_predeliver', 'addon/twitter/twitter.php', 'twitter_queue_hook');
 	logger("installed twitter");
 }
 
@@ -81,6 +82,7 @@ function twitter_uninstall() {
 	unregister_hook('notifier_normal', 'addon/twitter/twitter.php', 'twitter_post_hook');
 	unregister_hook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
 	unregister_hook('cron', 'addon/twitter/twitter.php', 'twitter_cron');
+	unregister_hook('queue_predeliver', 'addon/twitter/twitter.php', 'twitter_queue_hook');
 
 	// old setting - remove only
 	unregister_hook('post_local_end', 'addon/twitter/twitter.php', 'twitter_post_hook');
@@ -667,7 +669,8 @@ function twitter_post_hook(&$a,&$b) {
 
 			logger('twitter_post_with_media send, result: ' . print_r($result, true), LOGGER_DEBUG);
 			if ($result->errors OR $result->error) {
-				logger('Send to Twitter failed: "' . $result->errors . '"');
+				logger('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
+
 				// Workaround: Remove the picture link so that the post can be reposted without it
 				$msg .= " ".$image;
 				$image = "";
@@ -675,10 +678,21 @@ function twitter_post_hook(&$a,&$b) {
 		}
 
 		if(strlen($msg) and ($image == "")) {
-			$result = $tweet->post('statuses/update', array('status' => $msg));
+			$url = 'statuses/update';
+			$post = array('status' => $msg);
+			$result = $tweet->post($url, $post);
 			logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
-			if ($result->errors OR $result->error) {
-				logger('Send to Twitter failed: "' . $result->errors . '"');
+			if ($result->errors) {
+				logger('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
+
+				$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $b['uid']);
+				if (count($r))
+					$a->contact = $r[0]["id"];
+
+				$s = serialize(array('url' => $url, 'item' => $b['id'], 'post' => $post));
+				require_once('include/queue_fn.php');
+				add_to_queue($a->contact,NETWORK_TWITTER,$s);
+				notice(t('Twitter post failed. Queued for retry.').EOL);
 
 				// experimental
 				// Sometims Twitter seems to think that posts are too long - although they aren't
@@ -686,13 +700,13 @@ function twitter_post_hook(&$a,&$b) {
 				// Shorten the urls
 				// Test 2:
 				// Reduce the maximum length
-				if ($intelligent_shortening) {
-					$msgarr = twitter_shortenmsg($b, true);
-					$msg = $msgarr["msg"];
-		                        $image = $msgarr["image"];
-					$result = $tweet->post('statuses/update', array('status' => $msg));
-					logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
-				}
+				//if ($intelligent_shortening) {
+				//	$msgarr = twitter_shortenmsg($b, true);
+				//	$msg = $msgarr["msg"];
+		                //	$image = $msgarr["image"];
+				//	$result = $tweet->post('statuses/update', array('status' => $msg));
+				//	logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
+				//}
 
 			}
 		}
@@ -823,4 +837,69 @@ function twitter_fetchtimeline($a, $uid) {
             }
 	}
 	set_pconfig($uid, 'twitter', 'lastid', $lastid);
+}
+
+function twitter_queue_hook(&$a,&$b) {
+
+	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
+		dbesc(NETWORK_TWITTER)
+		);
+	if(! count($qi))
+		return;
+
+	require_once('include/queue_fn.php');
+
+	foreach($qi as $x) {
+		if($x['network'] !== NETWORK_TWITTER)
+			continue;
+
+		logger('twitter_queue: run');
+
+		$r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` on `contact`.`uid` = `user`.`uid` 
+			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
+			intval($x['cid'])
+		);
+		if(! count($r))
+			continue;
+
+		$user = $r[0];
+
+		$ckey    = get_config('twitter', 'consumerkey');
+		$csecret = get_config('twitter', 'consumersecret');
+		$otoken  = get_pconfig($user['uid'], 'twitter', 'oauthtoken');
+		$osecret = get_pconfig($user['uid'], 'twitter', 'oauthsecret');
+
+		$success = false;
+
+		if ($ckey AND $csecret AND $otoken AND $osecret) {
+
+			logger('twitter_queue: able to post');
+
+			$z = unserialize($x['content']);
+
+			require_once("addon/twitter/codebird.php");
+
+			$cb = \Codebird\Codebird::getInstance();
+			$cb->setConsumerKey($ckey, $csecret);
+			$cb->setToken($otoken, $osecret);
+
+			if ($z['url'] == "statuses/update")
+				$result = $cb->statuses_update($z['post']);
+
+			logger('twitter_queue: post result: ' . print_r($result, true), LOGGER_DEBUG);
+
+			if ($result->errors)
+				logger('twitter_queue: Send to Twitter failed: "' . print_r($result->errors, true) . '"');
+			else {
+				$success = true;
+				remove_queue_item($x['id']);
+			}
+		} else
+			logger("twitter_queue: Error getting tokens for user ".$user['uid']);
+
+		if (!$success) {
+			logger('twitter_queue: delayed');
+			update_queue_time($x['id']);
+		}
+	}
 }
