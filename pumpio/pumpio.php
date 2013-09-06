@@ -548,10 +548,10 @@ function pumpio_cron($a,$b) {
 
         if($last) {
                 $next = $last + ($poll_interval * 60);
-                if($next > time()) {
-                        logger('pumpio: poll intervall not reached');
-                        return;
-                }
+//                if($next > time()) {
+//                        logger('pumpio: poll intervall not reached');
+//                        return;
+//                }
         }
         logger('pumpio: cron_start');
 
@@ -685,32 +685,8 @@ function pumpio_fetchtimeline($a, $uid) {
 		set_pconfig($uid,'pumpio','lastdate', $lastdate);
 }
 
-function pumpio_dounlike(&$a, $uid, $self, $post) {
-}
-
-function pumpio_dolike(&$a, $uid, $self, $post) {
-
-/*
-    // If we posted the like locally, it will be found with our url, not the FB url.
-
-    $second_url = (($likes->id == $fb_id) ? $self[0]['url'] : 'http://facebook.com/profile.php?id=' . $likes->id);
-
-    $r = q("SELECT * FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `verb` = '%s'
-        AND ( `author-link` = '%s' OR `author-link` = '%s' ) LIMIT 1",
-        dbesc($orig_post['uri']),
-        intval($uid),
-        dbesc(ACTIVITY_LIKE),
-        dbesc('http://facebook.com/profile.php?id=' . $likes->id),
-        dbesc($second_url)
-    );
-
-    if(count($r))
-        return;
-*/
-
-	// To-Do
-	$own_id = "123455678";
-
+function pumpio_dounlike(&$a, $uid, $self, $post, $own_id) {
+	// Searching for the unliked post
 	// Two queries for speed issues
 	$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
 				dbesc($post->object->id),
@@ -731,15 +707,91 @@ function pumpio_dolike(&$a, $uid, $self, $post) {
 			$orig_post = $r[0];
 	}
 
-	$r = q("SELECT parent FROM `item` WHERE `verb` = '%s' AND `uid` = %d AND `author-link` = '%s' AND parent = %d LIMIT 1",
+	$contactid = 0;
+
+	if(link_compare($post->actor->url, $own_id)) {
+		$contactid = $self[0]['id'];
+	} else {
+		$r = q("SELECT * FROM `contact` WHERE `url` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
+			dbesc($post->actor->url),
+			intval($uid)
+		);
+
+		if(count($r))
+			$contactid = $r[0]['id'];
+
+		if($contactid == 0)
+			$contactid = $orig_post['contact-id'];
+	}
+
+	$r = q("UPDATE `item` SET `deleted` = 1, `unseen` = 1, `changed` = '%s' WHERE `verb` = '%s' AND `uid` = %d AND `contact-id` = %d AND `thr-parent` = '%s'",
+		dbesc(datetime_convert()),
 		dbesc(ACTIVITY_LIKE),
 		intval($uid),
-		dbesc($post->actor->url),
-		intval($orig_post['id'])
+		intval($contactid),
+		dbesc($orig_post['uri'])
 	);
 
 	if(count($r))
+		logger("pumpio_dounlike: unliked existing like. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
+	else
+		logger("pumpio_dounlike: not found. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
+}
+
+function pumpio_dolike(&$a, $uid, $self, $post, $own_id) {
+
+	// Searching for the liked post
+	// Two queries for speed issues
+	$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
+				dbesc($post->object->id),
+				intval($uid)
+		);
+
+	if (count($r))
+		$orig_post = $r[0];
+	else {
+		$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
+					dbesc($post->object->id),
+					intval($uid)
+			);
+
+		if (!count($r))
+			return;
+		else
+			$orig_post = $r[0];
+	}
+
+	$contactid = 0;
+
+	if(link_compare($post->actor->url, $own_id)) {
+		$contactid = $self[0]['id'];
+		//$post->actor->displayName;
+		//$post->actor->url;
+		//$post->actor->image->url;
+	} else {
+		$r = q("SELECT * FROM `contact` WHERE `url` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
+			dbesc($post->actor->url),
+			intval($uid)
+		);
+
+		if(count($r))
+			$contactid = $r[0]['id'];
+
+		if($contactid == 0)
+			$contactid = $orig_post['contact-id'];
+	}
+
+	$r = q("SELECT parent FROM `item` WHERE `verb` = '%s' AND `uid` = %d AND `contact-id` = %d AND `thr-parent` = '%s' LIMIT 1",
+		dbesc(ACTIVITY_LIKE),
+		intval($uid),
+		intval($contactid),
+		dbesc($orig_post['uri'])
+	);
+
+	if(count($r)) {
+		logger("pumpio_dolike: found existing like. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
 		return;
+	}
 
 	$likedata = array();
 	$likedata['parent'] = $orig_post['id'];
@@ -749,21 +801,7 @@ function pumpio_dolike(&$a, $uid, $self, $post) {
 	$likedata['wall'] = 0;
 	$likedata['uri'] = item_new_uri($a->get_baseurl(), $uid);
 	$likedata['parent-uri'] = $orig_post["uri"];
-
-	if($likes->id == $own_id)
-		$likedata['contact-id'] = $self[0]['id'];
-	else {
-		$r = q("SELECT * FROM `contact` WHERE `url` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
-			dbesc($post->actor->url),
-			intval($uid)
-		);
-
-		if(count($r))
-			$likedata['contact-id'] = $r[0]['id'];
-	}
-	if(! x($likedata,'contact-id'))
-		$likedata['contact-id'] = $orig_post['contact-id'];
-
+	$likedata['contact-id'] = $contactid;
 	$likedata['app'] = $post->generator->displayName;
 	$likedata['verb'] = ACTIVITY_LIKE;
 	$likedata['author-name'] = $post->actor->displayName;
@@ -781,7 +819,9 @@ function pumpio_dolike(&$a, $uid, $self, $post) {
 	$likedata['object'] = '<object><type>' . ACTIVITY_OBJ_NOTE . '</type><local>1</local>' .
 		'<id>' . $orig_post['uri'] . '</id><link>' . xmlify('<link rel="alternate" type="text/html" href="' . xmlify($orig_post['plink']) . '" />') . '</link><title>' . $orig_post['title'] . '</title><content>' . $orig_post['body'] . '</content></object>';
 
-	item_store($likedata);
+	$ret = item_store($likedata);
+
+	logger("pumpio_dolike: ".$ret." User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
 }
 
 function pumpio_get_contact($uid, $contact) {
@@ -886,7 +926,7 @@ function pumpio_get_contact($uid, $contact) {
 	return($r[0]["id"]);
 }
 
-function pumpio_dodelete(&$a, $client, $uid, $self, $post) {
+function pumpio_dodelete(&$a, $uid, $self, $post, $own_id) {
 
 	// Two queries for speed issues
 	$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
@@ -910,27 +950,23 @@ function pumpio_dodelete(&$a, $client, $uid, $self, $post) {
 	}
 }
 
-function pumpio_dopost(&$a, $client, $uid, $self, $post) {
+function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id) {
 	require_once('include/items.php');
 
 	if (($post->verb == "like") OR ($post->verb == "favorite")) {
-		pumpio_dolike(&$a, $uid, $self, $post);
+		pumpio_dolike(&$a, $uid, $self, $post, $own_id);
 		return;
 	}
 
 	if (($post->verb == "unlike") OR ($post->verb == "unfavorite")) {
-		pumpio_dounlike(&$a, $uid, $self, $post);
+		pumpio_dounlike(&$a, $uid, $self, $post, $own_id);
 		return;
 	}
 
 	if ($post->verb == "delete") {
-		pumpio_dodelete(&$a, $uid, $self, $post);
+		pumpio_dodelete(&$a, $uid, $self, $post, $own_id);
 		return;
 	}
-
-	// Only handle these three types
-	if (!strstr("post|share|update", $post->verb))
-		return;
 
 	if ($post->verb != "update") {
 		// Two queries for speed issues
@@ -951,6 +987,10 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post) {
 			return;
 	}
 
+	// Only handle these three types
+	if (!strstr("post|share|update", $post->verb))
+		return;
+
 	$receiptians = array();
 	if (@is_array($post->cc))
 		$receiptians = array_merge($receiptians, $post->cc);
@@ -963,11 +1003,6 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post) {
 			if ($receiver->id == "http://activityschema.org/collection/public")
 				$public = true;
 
-	$contact_id = pumpio_get_contact($uid, $post->actor);
-
-	if (!$contact_id)
-		$contact_id = $self[0]['id'];
-
 	$postarray = array();
 	$postarray['gravity'] = 0;
 	$postarray['uid'] = $uid;
@@ -975,24 +1010,30 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post) {
 	$postarray['uri'] = $post->object->id;
 
 	if ($post->object->objectType != "comment") {
+		$contact_id = pumpio_get_contact($uid, $post->actor);
+
+		if (!$contact_id)
+			$contact_id = $self[0]['id'];
+
 		$postarray['parent-uri'] = $post->object->id;
 	} else {
-		//echo($post->object->inReplyTo->url."\n");
-		//print_r($post->object->inReplyTo);
-		//echo $post->object->inReplyTo->likes->url."\n";
-		//$replies = $post->object->inReplyTo->replies->url;
-		//$replies = $post->object->likes->pump_io->proxyURL;
-		//$replies = $post->object->replies->pump_io->proxyURL;
+		$contact_id = 0;
 
-		/*
-		//$replies = $post->object->replies->pump_io->proxyURL;
+		if(link_compare($post->actor->url, $own_id))
+			$contact_id = $self[0]['id'];
+		else {
+			$r = q("SELECT * FROM `contact` WHERE `url` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
+				dbesc($post->actor->url),
+				intval($uid)
+			);
 
-		if ($replies != "") {
-			$success = $client->CallAPI($replies, 'GET', array(), array('FailOnAccessError'=>true), $replydata);
-			print_r($replydata);
-		} else
-			print_r($post);
-		*/
+			if(count($r))
+				$contact_id = $r[0]['id'];
+
+			if($contact_id == 0)
+				$contact_id = $self[0]['id'];
+				//$contact_id = $orig_post['contact-id'];
+		}
 
 		$reply->verb = "note";
 		$reply->cc = $post->cc;
@@ -1006,7 +1047,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post) {
 		$reply->published = $post->object->inReplyTo->published;
 		$reply->received = $post->object->inReplyTo->updated;
 		$reply->url = $post->object->inReplyTo->url;
-		pumpio_dopost(&$a, $client, $uid, $self, $reply);
+		pumpio_dopost(&$a, $client, $uid, $self, $reply, $own_id);
 
 		$postarray['parent-uri'] = $post->object->inReplyTo->id;
 	}
@@ -1129,6 +1170,8 @@ function pumpio_fetchinbox($a, $uid) {
         $hostname = get_pconfig($uid, 'pumpio','host');
         $username = get_pconfig($uid, "pumpio", "user");
 
+	$own_id = "https://".$hostname."/".$username;
+
 	$self = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 		intval($uid));
 
@@ -1155,7 +1198,7 @@ function pumpio_fetchinbox($a, $uid) {
 	if (count($posts))
 		foreach ($posts as $post) {
 			$last_id = $post->id;
-			pumpio_dopost(&$a, $client, $uid, $self, $post);
+			pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id);
 		}
 
 	set_pconfig($uid,'pumpio','last_id', $last_id);
@@ -1174,7 +1217,7 @@ function pumpio_fetchinbox($a, $uid) {
 	if (count($posts))
 		foreach ($posts as $post) {
 			$last_minor_id = $post->id;
-			pumpio_dopost(&$a, $client, $uid, $self, $post);
+			pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id);
 		}
 
 	set_pconfig($uid,'pumpio','last_minor_id', $last_minor_id);
@@ -1291,13 +1334,13 @@ function pumpio_queue_hook(&$a,&$b) {
 
 /*
 To-Do:
- - double likes?
- - importing unlike
+ - change own imported comments and likes to local user
+ - Editing and deleting of own comments
 
 Could be hard to do:
  - Threads completion
- - edit own posts
- - delete own posts
+ - edit own notes
+ - delete own notes
 
 Problem:
  - refresh after post
