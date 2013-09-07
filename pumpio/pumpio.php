@@ -342,14 +342,20 @@ function pumpio_send(&$a,&$b) {
 
 	if($b['verb'] == ACTIVITY_LIKE) {
 		if ($b['deleted'])
-			pumpio_like($a, $b["uid"], $b["thr-parent"], "unlike");
+			pumpio_action($a, $b["uid"], $b["thr-parent"], "unlike");
 		else
-			pumpio_like($a, $b["uid"], $b["thr-parent"], "like");
+			pumpio_action($a, $b["uid"], $b["thr-parent"], "like");
 		return;
 	}
 
 	if($b['verb'] == ACTIVITY_DISLIKE)
 		return;
+
+	if (($b['verb'] == ACTIVITY_POST) AND ($b['created'] !== $b['edited']) AND !$b['deleted'])
+			pumpio_action($a, $b["uid"], $b["uri"], "update", $b["body"]);
+
+	if (($b['verb'] == ACTIVITY_POST) AND $b['deleted'])
+			pumpio_action($a, $b["uid"], $b["uri"], "delete");
 
 	if($b['deleted'] || ($b['created'] !== $b['edited']))
 		return;
@@ -475,7 +481,7 @@ function pumpio_send(&$a,&$b) {
 	}
 }
 
-function pumpio_like($a, $uid, $uri, $action) {
+function pumpio_action($a, $uid, $uri, $action, $content) {
 	$ckey    = get_pconfig($uid, 'pumpio', 'consumer_key');
 	$csecret = get_pconfig($uid, 'pumpio', 'consumer_secret');
 	$otoken  = get_pconfig($uid, 'pumpio', 'oauth_token');
@@ -506,7 +512,9 @@ function pumpio_like($a, $uid, $uri, $action) {
 		$objectType = "image";
 
 	$params["verb"] = $action;
-	$params["object"] = array('id' => $uri, "objectType" => $objectType);
+	$params["object"] = array('id' => $uri,
+				"objectType" => $objectType,
+				"content" => $content);
 
 	$client = new oauth_client_class;
 	$client->oauth_version = '1.0a';
@@ -523,9 +531,9 @@ function pumpio_like($a, $uid, $uri, $action) {
 	$success = $client->CallAPI($url, 'POST', $params, array('FailOnAccessError'=>true, 'RequestContentType'=>'application/json'), $user);
 
 	if($success)
-		logger('pumpio_like '.$username.' '.$action.': success '.$uri);
+		logger('pumpio_action '.$username.' '.$action.': success '.$uri);
 	else {
-		logger('pumpio_like '.$username.' '.$action.': general error: '.$uri.' '.print_r($user,true));
+		logger('pumpio_action '.$username.' '.$action.': general error: '.$uri.' '.print_r($user,true));
 
 		$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $b['uid']);
 		if (count($r))
@@ -765,9 +773,9 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id) {
 
 	if(link_compare($post->actor->url, $own_id)) {
 		$contactid = $self[0]['id'];
-		//$post->actor->displayName;
-		//$post->actor->url;
-		//$post->actor->image->url;
+		$post->actor->displayName = $self[0]['name'];
+		$post->actor->url = $self[0]['url'];
+		$post->actor->image->url = $self[0]['photo'];
 	} else {
 		$r = q("SELECT * FROM `contact` WHERE `url` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
 			dbesc($post->actor->url),
@@ -1019,9 +1027,13 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id) {
 	} else {
 		$contact_id = 0;
 
-		if(link_compare($post->actor->url, $own_id))
+		if(link_compare($post->actor->url, $own_id)) {
 			$contact_id = $self[0]['id'];
-		else {
+			$post->actor->displayName = $self[0]['name'];
+			$post->actor->url = $self[0]['url'];
+			$post->actor->image->url = $self[0]['photo'];
+		} else {
+			// Take an existing contact, the contact of the note or - as a fallback - the id of the user
 			$r = q("SELECT * FROM `contact` WHERE `url` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
 				dbesc($post->actor->url),
 				intval($uid)
@@ -1029,10 +1041,17 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id) {
 
 			if(count($r))
 				$contact_id = $r[0]['id'];
+			else {
+				$r = q("SELECT * FROM `contact` WHERE `url` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
+					dbesc($post->actor->url),
+					intval($uid)
+				);
 
-			if($contact_id == 0)
-				$contact_id = $self[0]['id'];
-				//$contact_id = $orig_post['contact-id'];
+				if(count($r))
+					$contact_id = $r[0]['id'];
+				else
+					$contact_id = $self[0]['id'];
+			}
 		}
 
 		$reply->verb = "note";
@@ -1334,15 +1353,13 @@ function pumpio_queue_hook(&$a,&$b) {
 
 /*
 To-Do:
- - change own imported comments and likes to local user
- - Editing and deleting of own comments
 
 Could be hard to do:
  - Threads completion
  - edit own notes
  - delete own notes
 
-Problem:
+Known issues:
  - refresh after post
 
 */
