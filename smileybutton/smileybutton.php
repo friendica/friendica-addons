@@ -1,9 +1,9 @@
 <?php
 /**
  * Name: Smileybutton
- * Description: Adds an smileybutton to the Inputbox
+ * Description: Adds a smileybutton to the Inputbox
  * Version: 0.1
- * Author: Johannes Schwab <johannes_schwab@gmx.de>
+ * Author: Johannes Schwab <http://friendica.jschwab.mooo.com/profile/ddorian>
  */
 
 
@@ -48,13 +48,11 @@ function show_button($a, &$b) {
 	 *
 	 */
 
-	if(! local_user())
-		return;
-
-	$active = get_pconfig(local_user(), 'smileybutton', 'enable');
-
-	if(! $active)
-		return;
+	if(! local_user()) {
+		$nobutton = false;
+	} else {
+		$nobutton = get_pconfig(local_user(), 'smileybutton', 'nobutton');
+	}
 
 	/**
 	 *
@@ -64,7 +62,8 @@ function show_button($a, &$b) {
 
 	/**
 	 *
- 	 * I have copied this from /include/text.php and removed dobles
+ 	 * I have copied this from /include/text.php, removed dobles
+	 * and some escapes.
 	 *
 	 */
 
@@ -161,18 +160,24 @@ function show_button($a, &$b) {
 	 * Add the button to the Inputbox
 	 *
 	 */	
+	if (! $nobutton) {
+		$b = "<div id=\"profile-smiley-wrapper\" style=\"display: block;\" >\n";
+		$b .= "\t<img src=\"" . $a->get_baseurl() . "/addon/smileybutton/icon.gif\" id=\"smileybutton\" onclick=\"toggle_smileybutton()\" alt=\"smiley\">\n";
+		$b .= "\t</div>\n";
+	}
 
-	$b = "<div id=\"profile-smiley-wrapper\" style=\"display: block;\" >\n";
-	$b .= "\t<img src=\"" . $a->get_baseurl() . "/addon/smileybutton/icon.gif\" onclick=\"toggle_smileybutton()\" alt=\"smiley\">\n";
-	$b .= "\t</div>\n";
  
 	/**
 	 *
-	 * Write the smileies to an hidden div
+	 * Write the smileies to an (hidden) div
 	 *
 	 */
 
-	$b .= "\t<div id=\"smileybutton\" style=\"display:none;\">\n";
+	if ($nobutton) {
+		$b .= "\t<div id=\"smileybutton\">\n";
+	} else {
+		$b .= "\t<div id=\"smileybutton\" style=\"display:none;\">\n";
+	}
 	$b .= $s . "\n"; 
 	$b .= "</div>\n";
 
@@ -183,15 +188,18 @@ function show_button($a, &$b) {
 	 */
 
 	$b .= "<script>\n"; 
-	$b .= "	smileybutton_show = 0;\n";
-	$b .= "	function toggle_smileybutton() {\n";
-	$b .= "	if (! smileybutton_show) {\n";
-	$b .= "		$(\"#smileybutton\").show();\n";
-	$b .= "		smileybutton_show = 1;\n";
-	$b .= "	} else {\n";
-	$b .= "		$(\"#smileybutton\").hide();\n";
-	$b .= "		smileybutton_show = 0;\n";
-	$b .= "	}}\n";
+
+	if (! $nobutton) {
+		$b .= "	smileybutton_show = 0;\n";
+		$b .= "	function toggle_smileybutton() {\n";
+		$b .= "	if (! smileybutton_show) {\n";
+		$b .= "		$(\"#smileybutton\").show();\n";
+		$b .= "		smileybutton_show = 1;\n";
+		$b .= "	} else {\n";
+		$b .= "		$(\"#smileybutton\").hide();\n";
+		$b .= "		smileybutton_show = 0;\n";
+		$b .= "	}}\n";
+	} 
 
 	/**
 	 *
@@ -229,7 +237,8 @@ function smileybutton_settings_post($a,$post) {
 	if(! local_user())
 		return;
 	if($_POST['smileybutton-submit'])
-		set_pconfig(local_user(),'smileybutton','enable',intval($_POST['smileybutton']));
+		set_pconfig(local_user(),'smileybutton','nobutton',intval($_POST['smileybutton']));
+
 }
 
 
@@ -251,17 +260,20 @@ function smileybutton_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$enabled = get_pconfig(local_user(),'smileybutton','enable');
-
-	$checked = (($enabled) ? ' checked="checked" ' : '');
+	$nobutton = get_pconfig(local_user(),'smileybutton','nobutton');
+	$checked = (($nobutton) ? ' checked="checked" ' : '');
 
 	/* Add some HTML to the existing form */
 
 	$s .= '<div class="settings-block">';
 	$s .= '<h3>Smileybutton settings</h3>';
 	$s .= '<div id="smileybutton-enable-wrapper">';
-	$s .= '<label id="smileybutton-enable-label" for="smileybutton-checkbox">Enable Smileybutton Plugin</label>';
-	$s .= '<input id="smileybutton-checkbox" type="checkbox" name="smileybutton" value="1" ' . $checked . '/>';
+
+	$s .= 'You can hide the button and show the smilies directly.<br /><br />';
+
+	$s .= '<label id="smileybutton-enable-label" for="smileybutton-nobutton-checkbox">Hide the button</label>';
+	$s .= '<input id="smileybutton-nobutton-checkbox" type="checkbox" name="smileybutton" value="1" ' . $checked . '/>';
+
 	$s .= '</div><div class="clear"></div>';
 
 	/* provide a submit button */
