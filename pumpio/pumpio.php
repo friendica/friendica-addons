@@ -219,8 +219,6 @@ function pumpio_settings(&$a,&$s) {
 		$s .= '<div id="pumpio-authenticate-wrapper">';
 		$s .= '<a href="'.$a->get_baseurl().'/pumpio/connect">'.t("Authenticate your pump.io connection").'</a>';
 		$s .= '</div><div class="clear"></div>';
-
-		//$s .= t("You are not authenticated to pumpio");
 	} else {
 		$s .= '<div id="pumpio-import-wrapper">';
 		$s .= '<label id="pumpio-import-label" for="pumpio-import">' . t('Import the remote timeline') . '</label>';
@@ -251,11 +249,6 @@ function pumpio_settings(&$a,&$s) {
 		$s .= '<label id="pumpio-delete-label" for="pumpio-delete">' . t('Check to delete this preset') . '</label>';
 		$s .= '<input id="pumpio-delete" type="checkbox" name="pumpio_delete" value="1" />';
 		$s .= '</div><div class="clear"></div>';
-
-		//$s .= '<div id="pumpio-authenticate-wrapper">';
-		//$s .= '<a href="'.$a->get_baseurl().'/pumpio/connect">'.t("Reauthenticate your pump.io connection").'</a>';
-		//$s .= '</div><div class="clear"></div>';
-
 	}
 
 	$s .= '</div><div class="clear"></div>';
@@ -306,8 +299,6 @@ function pumpio_settings_post(&$a,&$b) {
 }
 
 function pumpio_post_local(&$a,&$b) {
-
-	// This can probably be changed to allow editing by pointing to a different API endpoint
 
 	if($b['edit'])
 		return;
@@ -382,12 +373,6 @@ function pumpio_send(&$a,&$b) {
 
 		if (!count($receiver) AND ($b['private'] OR !strstr($b['postopts'],'pumpio')))
 			return;
-
-		//if(! strstr($b['postopts'],'pumpio'))
-		//	return;
-
-		//if($b['private'])
-		//	return;
 	}
 
 	// if post comes from pump.io don't send it back
@@ -445,10 +430,6 @@ function pumpio_send(&$a,&$b) {
 			if (count($receiver["bcc"]))
 				$params["bcc"] = $receiver["bcc"];
 
-			//if ($public)
-			//	$params["to"] = array(Array(
-			//				"objectType" => "collection",
-			//				"id" => "http://activityschema.org/collection/public"));
 		 } else {
 			$inReplyTo = array("id" => $orig_post["uri"],
 					"objectType" => "note");
@@ -472,7 +453,6 @@ function pumpio_send(&$a,&$b) {
 		$url = 'https://'.$host.'/api/user/'.$user.'/feed';
 
 		$success = $client->CallAPI($url, 'POST', $params, array('FailOnAccessError'=>true, 'RequestContentType'=>'application/json'), $user);
-		//$success = false;
 
 		if($success) {
 			$post_id = $user->object->id;
@@ -575,10 +555,10 @@ function pumpio_cron($a,$b) {
 
         if($last) {
                 $next = $last + ($poll_interval * 60);
-//                if($next > time()) {
-//                        logger('pumpio: poll intervall not reached');
-//                        return;
-//                }
+                if($next > time()) {
+                        logger('pumpio: poll intervall not reached');
+                        return;
+                }
         }
         logger('pumpio: cron_start');
 
@@ -699,14 +679,12 @@ function pumpio_fetchtimeline($a, $uid) {
 				logger('pumpio: posting for user '.$uid);
 
 				require_once('mod/item.php');
-				//print_r($_REQUEST);
+
 				item_post($a);
 				logger('pumpio: posting done - user '.$uid);
 			}
 		}
 	}
-
-	//$lastdate = '2013-05-16T20:22:12Z';
 
 	if ($lastdate != 0)
 		set_pconfig($uid,'pumpio','lastdate', $lastdate);
@@ -1108,7 +1086,6 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id) {
 	if ($post->object->displayName != "")
 		$postarray['title'] = $post->object->displayName;
 
-	//$postarray['location'] = ""
 	$postarray['created'] = datetime_convert('UTC','UTC',$post->published);
 	$postarray['edited'] = datetime_convert('UTC','UTC',$post->received);
 	if (!$public) {
@@ -1240,27 +1217,6 @@ function pumpio_fetchinbox($a, $uid) {
 		}
 
 	set_pconfig($uid,'pumpio','last_id', $last_id);
-
-/*
-	// Fetching the minor events
-	$last_minor_id = get_pconfig($uid,'pumpio','last_minor_id');
-
-	$url = 'https://'.$hostname.'/api/user/'.$username.'/inbox/minor';
-
-	if ($last_minor_id != "")
-		$url .= '?since='.urlencode($last_minor_id);
-
-        $success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $user);
-        $posts = array_reverse($user->items);
-
-	if (count($posts))
-		foreach ($posts as $post) {
-			$last_minor_id = $post->id;
-			pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id);
-		}
-
-	set_pconfig($uid,'pumpio','last_minor_id', $last_minor_id);
-*/
 }
 
 function pumpio_getallusers($a, $uid) {
@@ -1433,6 +1389,7 @@ function pumpio_getreceiver($a, $b) {
 
 /*
 To-Do:
+ - only send likes, edits and comments when they are related to a pumpio posting
  - Notification for own imported posts
  - Thread completion
 
