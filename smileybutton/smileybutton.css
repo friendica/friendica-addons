@@ -1,0 +1,21 @@
+
+img.smiley_preview {
+	max-height: 25px;
+	max-width: 25px;
+}
+
+table.smiley-preview {
+	border: 1px solid #AAAAAA;
+}
+
+#smileybutton-enable-label {
+	float: left;
+	width: 200px;
+	margin-bottom: 25px;
+}
+
+#smileybutton-checkbox {
+	float: left;
+}
+
+
