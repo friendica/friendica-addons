@@ -365,7 +365,6 @@ function twitter_shortenmsg($b, $shortlink = false) {
 	$html = bbcode($body, false, false, 2);
 
 	// Then convert it to plain text
-	//$msg = trim($b['title']." \n\n".html2plain($html, 0, true));
 	$msg = trim(html2plain($html, 0, true));
 	$msg = html_entity_decode($msg,ENT_QUOTES,'UTF-8');
 
@@ -377,7 +376,7 @@ function twitter_shortenmsg($b, $shortlink = false) {
 	while (strpos($msg, "  ") !== false)
 		$msg = str_replace("  ", " ", $msg);
 
-	$origmsg = $msg;
+	$origmsg = trim($msg);
 
 	// Removing URLs
 	$msg = preg_replace('/(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/i', "", $msg);
@@ -430,33 +429,25 @@ function twitter_shortenmsg($b, $shortlink = false) {
 		$msglink = $b["plink"];
 
 	// If the message is short enough then don't modify it.
-	if ((strlen(trim($origmsg)) <= $max_char) AND ($msglink == ""))
-		return(array("msg"=>trim($origmsg), "image"=>""));
+	if ((strlen($origmsg) <= $max_char) AND ($msglink == ""))
+		return(array("msg"=>$origmsg, "image"=>""));
 
 	// If the message is short enough and contains a picture then post the picture as well
-	if ((strlen(trim($origmsg)) <= ($max_char - 20)) AND strpos($origmsg, $msglink))
-		return(array("msg"=>trim($origmsg), "image"=>$image));
+	if ((strlen($origmsg) <= ($max_char - 23)) AND strpos($origmsg, $msglink))
+		return(array("msg"=>$origmsg, "image"=>$image));
 
 	// If the message is short enough and the link exists in the original message don't modify it as well
 	// -3 because of the bad shortener of twitter
-	if ((strlen(trim($origmsg)) <= ($max_char - 3)) AND strpos($origmsg, $msglink))
-		return(array("msg"=>trim($origmsg), "image"=>""));
+	if ((strlen($origmsg) <= ($max_char - 3)) AND strpos($origmsg, $msglink))
+		return(array("msg"=>$origmsg, "image"=>""));
 
 	// Preserve the unshortened link
 	$orig_link = $msglink;
 
-	//if (strlen($msglink) > 20)
-	//	$msglink = short_link($msglink);
-	//
-	//if (strlen(trim($msg." ".$msglink)) > ($max_char - 3)) {
-	//	$msg = substr($msg, 0, ($max_char - 3) - (strlen($msglink)));
-
-	// Just replace the message link with a 20 character long string
-	// Twitter shortens it anyway to this length
-	// 15 should be enough - but sometimes posts don't get posted - although they would fit.
+	// Just replace the message link with a 22 character long string
+	// Twitter calculates with this length
 	if (trim($msglink) <> '')
-		$msglink = "123456789012345";
-//		$msglink = "12345678901234567890";
+		$msglink = "1234567890123456789012";
 
 	if (strlen(trim($msg." ".$msglink)) > ($max_char)) {
 		$msg = substr($msg, 0, ($max_char) - (strlen($msglink)));
@@ -482,11 +473,11 @@ function twitter_shortenmsg($b, $shortlink = false) {
 		}
 
 	}
-	//$msg = str_replace("\n", " ", $msg);
-
 	// Removing multiple spaces - again
 	while (strpos($msg, "  ") !== false)
 		$msg = str_replace("  ", " ", $msg);
+
+	$msg = trim($msg);
 
 	// Removing multiple newlines
 	//while (strpos($msg, "\n\n") !== false)
@@ -501,17 +492,17 @@ function twitter_shortenmsg($b, $shortlink = false) {
 	unlink($tempfile);
 
 	if (($image == $orig_link) OR (substr($mime, 0, 6) == "image/"))
-		return(array("msg"=>trim($msg), "image"=>$orig_link));
-	else if (($image != $orig_link) AND ($image != "") AND (strlen($msg." ".$msglink) <= ($max_char - 20))) {
+		return(array("msg"=>$msg, "image"=>$orig_link));
+	else if (($image != $orig_link) AND ($image != "") AND (strlen($msg." ".$msglink) <= ($max_char - 23))) {
 		if ($shortlink)
 			$orig_link = short_link($orig_link);
 
-		return(array("msg"=>trim($msg." ".$orig_link)."\n", "image"=>$image));
+		return(array("msg"=>$msg." ".$orig_link, "image"=>$image));
 	} else {
 		if ($shortlink)
 			$orig_link = short_link($orig_link);
 
-		return(array("msg"=>trim($msg." ".$orig_link), "image"=>""));
+		return(array("msg"=>$msg." ".$orig_link, "image"=>""));
 	}
 }
 
@@ -646,8 +637,8 @@ function twitter_post_hook(&$a,&$b) {
 			$tempfile = tempnam(get_config("system","temppath"), "cache");
 			file_put_contents($tempfile, $img_str);
 
-			// For testing purposes
-			// trying a new library for twitter
+			// Twitter had changed something so that the old library doesn't work anymore
+			// so we are using a new library for twitter
 			// To-Do:
 			// Switching completely to this library with all functions
 		        require_once("addon/twitter/codebird.php");
@@ -659,6 +650,7 @@ function twitter_post_hook(&$a,&$b) {
 			unlink($tempfile);
 
 			/*
+			// Old Code
 			$mime = image_type_to_mime_type(exif_imagetype($tempfile));
 			unlink($tempfile);
 
@@ -693,21 +685,6 @@ function twitter_post_hook(&$a,&$b) {
 				require_once('include/queue_fn.php');
 				add_to_queue($a->contact,NETWORK_TWITTER,$s);
 				notice(t('Twitter post failed. Queued for retry.').EOL);
-
-				// experimental
-				// Sometims Twitter seems to think that posts are too long - although they aren't
-				// Test 1:
-				// Shorten the urls
-				// Test 2:
-				// Reduce the maximum length
-				//if ($intelligent_shortening) {
-				//	$msgarr = twitter_shortenmsg($b, true);
-				//	$msg = $msgarr["msg"];
-		                //	$image = $msgarr["image"];
-				//	$result = $tweet->post('statuses/update', array('status' => $msg));
-				//	logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
-				//}
-
 			}
 		}
 	}
