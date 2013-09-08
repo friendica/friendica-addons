@@ -162,7 +162,7 @@ function show_button($a, &$b) {
 	 */	
 	if (! $nobutton) {
 		$b = "<div id=\"profile-smiley-wrapper\" style=\"display: block;\" >\n";
-		$b .= "\t<img src=\"" . $a->get_baseurl() . "/addon/smileybutton/icon.gif\" id=\"smileybutton\" onclick=\"toggle_smileybutton()\" alt=\"smiley\">\n";
+		$b .= "\t<img src=\"" . $a->get_baseurl() . "/addon/smileybutton/icon.gif\" onclick=\"toggle_smileybutton()\" alt=\"smiley\">\n";
 		$b .= "\t</div>\n";
 	}
 
