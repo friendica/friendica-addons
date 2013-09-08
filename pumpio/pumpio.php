@@ -376,11 +376,18 @@ function pumpio_send(&$a,&$b) {
 	} else {
 		$iscomment = false;
 
-		if(! strstr($b['postopts'],'pumpio'))
+		$receiver = pumpio_getreceiver($a, $b);
+
+		logger("pumpio_send: receiver ".print_r($receiver, true));
+
+		if (!count($receiver) AND ($b['private'] OR !strstr($b['postopts'],'pumpio')))
 			return;
 
-		if($b['private'])
-			return;
+		//if(! strstr($b['postopts'],'pumpio'))
+		//	return;
+
+		//if($b['private'])
+		//	return;
 	}
 
 	// if post comes from pump.io don't send it back
@@ -426,10 +433,22 @@ function pumpio_send(&$a,&$b) {
 						'objectType' => "note",
 						'content' => $title.$content);
 
-			if ($public)
-				$params["to"] = array(Array(
-							"objectType" => "collection",
-							"id" => "http://activityschema.org/collection/public"));
+			if (count($receiver["to"]))
+				$params["to"] = $receiver["to"];
+
+			if (count($receiver["bto"]))
+				$params["bto"] = $receiver["bto"];
+
+			if (count($receiver["cc"]))
+				$params["cc"] = $receiver["cc"];
+
+			if (count($receiver["bcc"]))
+				$params["bcc"] = $receiver["bcc"];
+
+			//if ($public)
+			//	$params["to"] = array(Array(
+			//				"objectType" => "collection",
+			//				"id" => "http://activityschema.org/collection/public"));
 		 } else {
 			$inReplyTo = array("id" => $orig_post["uri"],
 					"objectType" => "note");
@@ -1222,6 +1241,7 @@ function pumpio_fetchinbox($a, $uid) {
 
 	set_pconfig($uid,'pumpio','last_id', $last_id);
 
+/*
 	// Fetching the minor events
 	$last_minor_id = get_pconfig($uid,'pumpio','last_minor_id');
 
@@ -1240,6 +1260,7 @@ function pumpio_fetchinbox($a, $uid) {
 		}
 
 	set_pconfig($uid,'pumpio','last_minor_id', $last_minor_id);
+*/
 }
 
 function pumpio_getallusers($a, $uid) {
@@ -1351,11 +1372,74 @@ function pumpio_queue_hook(&$a,&$b) {
 	}
 }
 
+function pumpio_getreceiver($a, $b) {
+
+	$receiver = array();
+
+	if (!$b["private"]) {
+
+		if(! strstr($b['postopts'],'pumpio'))
+			return $receiver;
+
+		$public = get_pconfig($b['uid'], "pumpio", "public");
+
+                if ($public)
+			$receiver["to"][] = Array(
+						"objectType" => "collection",
+						"id" => "http://activityschema.org/collection/public");
+	} else {
+		$cids = explode("><", $b["allow_cid"]);
+		$gids = explode("><", $b["allow_gid"]);
+
+		foreach ($cids AS $cid) {
+			$cid = trim($cid, " <>");
+
+			$r = q("SELECT `name`, `nick`, `url` FROM `contact` WHERE `id` = %d AND `uid` = %d AND `network` = '%s' AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
+				intval($cid),
+				intval($b["uid"]),
+				dbesc(NETWORK_PUMPIO)
+				);
+
+		if (count($r)) {
+				$receiver["bcc"][] = Array(
+							"displayName" => $r[0]["name"],
+							"objectType" => "person",
+							"preferredUsername" => $r[0]["nick"],
+							"url" => $r[0]["url"]);
+				}
+		}
+		foreach ($gids AS $gid) {
+			$gid = trim($gid, " <>");
+
+			$r = q("SELECT `contact`.`name`, `contact`.`nick`, `contact`.`url`, `contact`.`network` ".
+				"FROM `group_member`, `contact` WHERE `group_member`.`gid` = %d AND `group_member`.`uid` = %d ".
+				"AND `contact`.`id` = `group_member`.`contact-id` AND `contact`.`network` = '%s'",
+					intval($gid),
+					intval($b["uid"]),
+					dbesc(NETWORK_PUMPIO)
+				);
+
+			foreach ($r AS $row)
+				$receiver["bcc"][] = Array(
+							"displayName" => $row["name"],
+							"objectType" => "person",
+							"preferredUsername" => $row["nick"],
+							"url" => $row["url"]);
+		}
+	}
+
+	return $receiver;
+}
+
 /*
 To-Do:
+ - Notification for own imported posts
+ - Thread completion
+
+Nice to have:
+ - sending private messages
 
 Could be hard to do:
- - Threads completion
  - edit own notes
  - delete own notes
 
