@@ -300,13 +300,7 @@ function pumpio_settings_post(&$a,&$b) {
 
 function pumpio_post_local(&$a,&$b) {
 
-	if($b['edit'])
-		return;
-
 	if((! local_user()) || (local_user() != $b['uid']))
-		return;
-
-	if($b['private'] || $b['parent'])
 		return;
 
 	$pumpio_post   = intval(get_pconfig(local_user(),'pumpio','post'));
@@ -329,7 +323,38 @@ function pumpio_post_local(&$a,&$b) {
 
 
 function pumpio_send(&$a,&$b) {
+
+	if (!get_pconfig($b["uid"],'pumpio','import')) {
+		if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
+			return;
+	}
+
 	logger("pumpio_send: parameter ".print_r($b, true));
+
+	if($b['parent'] != $b['id']) {
+		// Looking if its a reply to a pumpio post
+		$r = q("SELECT item.* FROM item, contact WHERE item.id = %d AND item.uid = %d AND contact.id = `contact-id` AND contact.network='%s'LIMIT 1",
+			intval($b["parent"]),
+			intval($b["uid"]),
+			dbesc(NETWORK_PUMPIO));
+
+		if(!count($r)) {
+			logger("pumpio_send: no pumpio post ".$b["parent"]);
+			return;
+		} else {
+			$iscomment = true;
+			$orig_post = $r[0];
+		}
+	} else {
+		$iscomment = false;
+
+		$receiver = pumpio_getreceiver($a, $b);
+
+		logger("pumpio_send: receiver ".print_r($receiver, true));
+
+		if (!count($receiver) AND ($b['private'] OR !strstr($b['postopts'],'pumpio')))
+			return;
+	}
 
 	if($b['verb'] == ACTIVITY_LIKE) {
 		if ($b['deleted'])
@@ -350,30 +375,6 @@ function pumpio_send(&$a,&$b) {
 
 	if($b['deleted'] || ($b['created'] !== $b['edited']))
 		return;
-
-	if($b['parent'] != $b['id']) {
-		// Looking if its a reply to a pumpio post
-		$r = q("SELECT item.* FROM item, contact WHERE item.id = %d AND item.uid = %d AND contact.id = `contact-id` AND contact.network='%s'LIMIT 1",
-			intval($b["parent"]),
-			intval($b["uid"]),
-			dbesc(NETWORK_PUMPIO));
-
-		if(!count($r))
-			return;
-		else {
-			$iscomment = true;
-			$orig_post = $r[0];
-		}
-	} else {
-		$iscomment = false;
-
-		$receiver = pumpio_getreceiver($a, $b);
-
-		logger("pumpio_send: receiver ".print_r($receiver, true));
-
-		if (!count($receiver) AND ($b['private'] OR !strstr($b['postopts'],'pumpio')))
-			return;
-	}
 
 	// if post comes from pump.io don't send it back
 	if($b['app'] == "pump.io")
@@ -481,6 +482,11 @@ function pumpio_send(&$a,&$b) {
 }
 
 function pumpio_action($a, $uid, $uri, $action, $content) {
+
+	// Don't do likes and other stuff if you don't import the timeline
+	if (!get_pconfig($uid,'pumpio','import'))
+		return;
+
 	$ckey    = get_pconfig($uid, 'pumpio', 'consumer_key');
 	$csecret = get_pconfig($uid, 'pumpio', 'consumer_secret');
 	$otoken  = get_pconfig($uid, 'pumpio', 'oauth_token');
@@ -498,7 +504,7 @@ function pumpio_action($a, $uid, $uri, $action, $content) {
 
 	$orig_post = $r[0];
 
-	if ($orig_post["extid"])
+	if ($orig_post["extid"] AND !strstr($orig_post["extid"], "/proxy/"))
 		$uri = $orig_post["extid"];
 	else
 		$uri = $orig_post["uri"];
@@ -939,39 +945,29 @@ function pumpio_dodelete(&$a, $uid, $self, $post, $own_id) {
 				intval($uid)
 		);
 
-	if (count($r)) {
-		drop_item($r[0]["id"], $false);
-		return;
-	}
+	if (count($r))
+		return drop_item($r[0]["id"], $false);
 
 	$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
 				dbesc($post->object->id),
 				intval($uid)
 		);
 
-	if (count($r)) {
-		drop_item($r[0]["id"], $false);
-		return;
-	}
+	if (count($r))
+		return drop_item($r[0]["id"], $false);
 }
 
 function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id) {
 	require_once('include/items.php');
 
-	if (($post->verb == "like") OR ($post->verb == "favorite")) {
-		pumpio_dolike(&$a, $uid, $self, $post, $own_id);
-		return;
-	}
+	if (($post->verb == "like") OR ($post->verb == "favorite"))
+		return pumpio_dolike(&$a, $uid, $self, $post, $own_id);
 
-	if (($post->verb == "unlike") OR ($post->verb == "unfavorite")) {
-		pumpio_dounlike(&$a, $uid, $self, $post, $own_id);
-		return;
-	}
+	if (($post->verb == "unlike") OR ($post->verb == "unfavorite"))
+		return pumpio_dounlike(&$a, $uid, $self, $post, $own_id);
 
-	if ($post->verb == "delete") {
-		pumpio_dodelete(&$a, $uid, $self, $post, $own_id);
-		return;
-	}
+	if ($post->verb == "delete")
+		return pumpio_dodelete(&$a, $uid, $self, $post, $own_id);
 
 	if ($post->verb != "update") {
 		// Two queries for speed issues
@@ -981,7 +977,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id) {
 			);
 
 		if (count($r))
-			return;
+			return false;
 
 		$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
 					dbesc($post->object->id),
@@ -989,12 +985,12 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id) {
 			);
 
 		if (count($r))
-			return;
+			return false;
 	}
 
 	// Only handle these three types
 	if (!strstr("post|share|update", $post->verb))
-		return;
+		return false;
 
 	$receiptians = array();
 	if (@is_array($post->cc))
@@ -1068,6 +1064,9 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id) {
 		$postarray['parent-uri'] = $post->object->inReplyTo->id;
 	}
 
+	if ($post->object->pump_io->proxyURL)
+		$postarray['extid'] = $post->object->pump_io->proxyURL;
+
 	$postarray['contact-id'] = $contact_id;
 	$postarray['verb'] = ACTIVITY_POST;
 	$postarray['owner-name'] = $post->actor->displayName;
@@ -1101,7 +1100,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id) {
 	}
 
 	if (trim($postarray['body']) == "")
-		return;
+		return false;
 
 	$top_item = item_store($postarray);
 
@@ -1117,22 +1116,19 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id) {
 
 	if ($post->object->objectType == "comment") {
 
-		$hostname = get_pconfig($uid, 'pumpio','host');
-		$username = get_pconfig($uid, "pumpio", "user");
-
-		$foreign_url = "https://".$hostname."/".$username;
+		pumpio_fetchallcomments($a, $uid, $postarray['parent-uri']);
 
 		$user = q("SELECT * FROM `user` WHERE `uid` = %d AND `account_expired` = 0 LIMIT 1",
 				intval($uid)
 			);
 
 		if(!count($user))
-			return;
+			return $top_item;
 
 		$importer_url = $a->get_baseurl() . '/profile/' . $user[0]['nickname'];
 
-		if (link_compare($foreign_url, $postarray['author-link']))
-			return;
+		if (link_compare($own_id, $postarray['author-link']))
+			return $top_item;
 
 		$myconv = q("SELECT `author-link`, `author-avatar`, `parent` FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `parent` != 0 AND `deleted` = 0",
 				dbesc($postarray['parent-uri']),
@@ -1144,7 +1140,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id) {
 			foreach($myconv as $conv) {
 				// now if we find a match, it means we're in this conversation
 
-				if(!link_compare($conv['author-link'],$importer_url) AND !link_compare($conv['author-link'],$foreign_url))
+				if(!link_compare($conv['author-link'],$importer_url) AND !link_compare($conv['author-link'],$own_id))
 					continue;
 
 				require_once('include/enotify.php');
@@ -1173,6 +1169,8 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id) {
 			}
 		}
 	}
+
+	return $top_item;
 }
 
 function pumpio_fetchinbox($a, $uid) {
@@ -1356,13 +1354,13 @@ function pumpio_getreceiver($a, $b) {
 				dbesc(NETWORK_PUMPIO)
 				);
 
-		if (count($r)) {
+			if (count($r)) {
 				$receiver["bcc"][] = Array(
 							"displayName" => $r[0]["name"],
 							"objectType" => "person",
 							"preferredUsername" => $r[0]["nick"],
 							"url" => $r[0]["url"]);
-				}
+			}
 		}
 		foreach ($gids AS $gid) {
 			$gid = trim($gid, " <>");
@@ -1384,17 +1382,133 @@ function pumpio_getreceiver($a, $b) {
 		}
 	}
 
+	if ($b["inform"] != "") {
+
+		$inform = explode(",", $b["inform"]);
+
+		foreach ($inform AS $cid) {
+			if (substr($cid, 0, 4) != "cid:")
+				continue;
+
+			$cid = str_replace("cid:", "", $cid);
+
+			$r = q("SELECT `name`, `nick`, `url` FROM `contact` WHERE `id` = %d AND `uid` = %d AND `network` = '%s' AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
+				intval($cid),
+				intval($b["uid"]),
+				dbesc(NETWORK_PUMPIO)
+				);
+
+			if (count($r)) {
+					$receiver["to"][] = Array(
+								"displayName" => $r[0]["name"],
+								"objectType" => "person",
+								"preferredUsername" => $r[0]["nick"],
+								"url" => $r[0]["url"]);
+			}
+		}
+	}
+
 	return $receiver;
 }
 
-/*
-To-Do:
- - only send likes, edits and comments when they are related to a pumpio posting
- - Notification for own imported posts
- - Thread completion
+function pumpio_fetchallcomments($a, $uid, $id) {
+	$ckey    = get_pconfig($uid, 'pumpio', 'consumer_key');
+	$csecret = get_pconfig($uid, 'pumpio', 'consumer_secret');
+	$otoken  = get_pconfig($uid, 'pumpio', 'oauth_token');
+	$osecret = get_pconfig($uid, 'pumpio', 'oauth_token_secret');
+	$hostname = get_pconfig($uid, 'pumpio','host');
+	$username = get_pconfig($uid, "pumpio", "user");
 
-Nice to have:
- - sending private messages
+	$own_id = "https://".$hostname."/".$username;
+
+	logger("pumpio_fetchallcomments: completing comment for user ".$uid." url ".$url);
+
+	$self = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
+		intval($uid));
+
+	// Fetching the original post - Two queries for speed issues
+	$r = q("SELECT extid FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
+			dbesc($url),
+			intval($uid)
+		);
+
+	if (!count($r)) {
+		$r = q("SELECT extid FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
+				dbesc($url),
+				intval($uid)
+			);
+
+		if (!count($r))
+			return false;
+	}
+
+	if ($r[0]["extid"])
+		$url = $r[0]["extid"];
+	else
+		$url = $id;
+
+	$client = new oauth_client_class;
+	$client->oauth_version = '1.0a';
+	$client->authorization_header = true;
+	$client->url_parameters = false;
+
+	$client->client_id = $ckey;
+	$client->client_secret = $csecret;
+	$client->access_token = $otoken;
+	$client->access_token_secret = $osecret;
+
+	logger("pumpio_fetchallcomments: fetching comment for user ".$uid." url ".$url);
+
+	$success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $item);
+
+	if (!$success)
+		return;
+
+	if ($item->replies->totalItems == 0)
+		return;
+
+	foreach ($item->replies->items AS $item) {
+		if ($item->id == $id)
+			continue;
+
+		// Checking if the comment already exists - Two queries for speed issues
+		$r = q("SELECT extid FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
+				dbesc($url),
+				intval($uid)
+			);
+
+		if (count($r))
+			continue;
+
+		$r = q("SELECT extid FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
+				dbesc($url),
+				intval($uid)
+			);
+
+		if (count($r))
+			continue;
+
+		$post->verb = "post";
+		$post->actor = $item->author;
+		$post->published = $item->published;
+		$post->received = $item->updated;
+		$post->generator->displayName = "pumpio";
+
+		unset($item->author);
+		unset($item->published);
+		unset($item->updated);
+
+		$post->object = $item;
+
+		logger("pumpio_fetchallcomments: posting comment ".$post->object->id);
+		pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id);
+	}
+}
+
+/*
+Bugs:
+
+To-Do:
 
 Could be hard to do:
  - edit own notes
