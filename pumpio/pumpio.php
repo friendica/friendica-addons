@@ -2,7 +2,7 @@
 /**
  * Name: pump.io Post Connector
  * Description: Post to pump.io
- * Version: 0.1
+ * Version: 0.2
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  */
 require('addon/pumpio/oauth/http.php');
@@ -861,8 +861,8 @@ function pumpio_get_contact($uid, $contact) {
 			dbesc(normalise_link($contact->url)),
 			dbesc(str_replace("acct:", "", $contact->id)),
 			dbesc(''),
-			dbesc($contact->id), // To-Do?
-			dbesc('pump.io ' . $contact->id), // To-Do?
+			dbesc($contact->id), // What is it for?
+			dbesc('pump.io ' . $contact->id), // What is it for?
 			dbesc($contact->displayName),
 			dbesc($contact->preferredUsername),
 			dbesc($contact->image->url),
@@ -1516,15 +1516,10 @@ function pumpio_fetchallcomments($a, $uid, $id) {
 
 /*
 Bugs:
+ - refresh after post doesn't always happen
 
 To-Do:
- - contact sync every day
-
-Could be hard to do:
  - edit own notes
  - delete own notes
-
-Known issues:
- - refresh after post
 
 */
