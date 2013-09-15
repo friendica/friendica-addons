@@ -70,6 +70,7 @@ function twitter_install() {
 	register_hook('notifier_normal', 'addon/twitter/twitter.php', 'twitter_post_hook');
 	register_hook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
 	register_hook('cron', 'addon/twitter/twitter.php', 'twitter_cron');
+	register_hook('queue_predeliver', 'addon/twitter/twitter.php', 'twitter_queue_hook');
 	logger("installed twitter");
 }
 
@@ -81,6 +82,7 @@ function twitter_uninstall() {
 	unregister_hook('notifier_normal', 'addon/twitter/twitter.php', 'twitter_post_hook');
 	unregister_hook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
 	unregister_hook('cron', 'addon/twitter/twitter.php', 'twitter_cron');
+	unregister_hook('queue_predeliver', 'addon/twitter/twitter.php', 'twitter_queue_hook');
 
 	// old setting - remove only
 	unregister_hook('post_local_end', 'addon/twitter/twitter.php', 'twitter_post_hook');
@@ -363,7 +365,6 @@ function twitter_shortenmsg($b, $shortlink = false) {
 	$html = bbcode($body, false, false, 2);
 
 	// Then convert it to plain text
-	//$msg = trim($b['title']." \n\n".html2plain($html, 0, true));
 	$msg = trim(html2plain($html, 0, true));
 	$msg = html_entity_decode($msg,ENT_QUOTES,'UTF-8');
 
@@ -375,7 +376,7 @@ function twitter_shortenmsg($b, $shortlink = false) {
 	while (strpos($msg, "  ") !== false)
 		$msg = str_replace("  ", " ", $msg);
 
-	$origmsg = $msg;
+	$origmsg = trim($msg);
 
 	// Removing URLs
 	$msg = preg_replace('/(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/i', "", $msg);
@@ -428,33 +429,25 @@ function twitter_shortenmsg($b, $shortlink = false) {
 		$msglink = $b["plink"];
 
 	// If the message is short enough then don't modify it.
-	if ((strlen(trim($origmsg)) <= $max_char) AND ($msglink == ""))
-		return(array("msg"=>trim($origmsg), "image"=>""));
+	if ((strlen($origmsg) <= $max_char) AND ($msglink == ""))
+		return(array("msg"=>$origmsg, "image"=>""));
 
 	// If the message is short enough and contains a picture then post the picture as well
-	if ((strlen(trim($origmsg)) <= ($max_char - 20)) AND strpos($origmsg, $msglink))
-		return(array("msg"=>trim($origmsg), "image"=>$image));
+	if ((strlen($origmsg) <= ($max_char - 23)) AND strpos($origmsg, $msglink))
+		return(array("msg"=>$origmsg, "image"=>$image));
 
 	// If the message is short enough and the link exists in the original message don't modify it as well
 	// -3 because of the bad shortener of twitter
-	if ((strlen(trim($origmsg)) <= ($max_char - 3)) AND strpos($origmsg, $msglink))
-		return(array("msg"=>trim($origmsg), "image"=>""));
+	if ((strlen($origmsg) <= ($max_char - 3)) AND strpos($origmsg, $msglink))
+		return(array("msg"=>$origmsg, "image"=>""));
 
 	// Preserve the unshortened link
 	$orig_link = $msglink;
 
-	//if (strlen($msglink) > 20)
-	//	$msglink = short_link($msglink);
-	//
-	//if (strlen(trim($msg." ".$msglink)) > ($max_char - 3)) {
-	//	$msg = substr($msg, 0, ($max_char - 3) - (strlen($msglink)));
-
-	// Just replace the message link with a 20 character long string
-	// Twitter shortens it anyway to this length
-	// 15 should be enough - but sometimes posts don't get posted - although they would fit.
+	// Just replace the message link with a 22 character long string
+	// Twitter calculates with this length
 	if (trim($msglink) <> '')
-		$msglink = "123456789012345";
-//		$msglink = "12345678901234567890";
+		$msglink = "1234567890123456789012";
 
 	if (strlen(trim($msg." ".$msglink)) > ($max_char)) {
 		$msg = substr($msg, 0, ($max_char) - (strlen($msglink)));
@@ -480,11 +473,11 @@ function twitter_shortenmsg($b, $shortlink = false) {
 		}
 
 	}
-	//$msg = str_replace("\n", " ", $msg);
-
 	// Removing multiple spaces - again
 	while (strpos($msg, "  ") !== false)
 		$msg = str_replace("  ", " ", $msg);
+
+	$msg = trim($msg);
 
 	// Removing multiple newlines
 	//while (strpos($msg, "\n\n") !== false)
@@ -499,17 +492,17 @@ function twitter_shortenmsg($b, $shortlink = false) {
 	unlink($tempfile);
 
 	if (($image == $orig_link) OR (substr($mime, 0, 6) == "image/"))
-		return(array("msg"=>trim($msg), "image"=>$orig_link));
-	else if (($image != $orig_link) AND ($image != "") AND (strlen($msg."\n".$msglink) <= ($max_char - 20))) {
+		return(array("msg"=>$msg, "image"=>$orig_link));
+	else if (($image != $orig_link) AND ($image != "") AND (strlen($msg." ".$msglink) <= ($max_char - 23))) {
 		if ($shortlink)
 			$orig_link = short_link($orig_link);
 
-		return(array("msg"=>trim($msg."\n".$orig_link), "image"=>$image));
+		return(array("msg"=>$msg." ".$orig_link, "image"=>$image));
 	} else {
 		if ($shortlink)
 			$orig_link = short_link($orig_link);
 
-		return(array("msg"=>trim($msg."\n".$orig_link), "image"=>""));
+		return(array("msg"=>$msg." ".$orig_link, "image"=>""));
 	}
 }
 
@@ -644,8 +637,8 @@ function twitter_post_hook(&$a,&$b) {
 			$tempfile = tempnam(get_config("system","temppath"), "cache");
 			file_put_contents($tempfile, $img_str);
 
-			// For testing purposes
-			// trying a new library for twitter
+			// Twitter had changed something so that the old library doesn't work anymore
+			// so we are using a new library for twitter
 			// To-Do:
 			// Switching completely to this library with all functions
 		        require_once("addon/twitter/codebird.php");
@@ -657,6 +650,7 @@ function twitter_post_hook(&$a,&$b) {
 			unlink($tempfile);
 
 			/*
+			// Old Code
 			$mime = image_type_to_mime_type(exif_imagetype($tempfile));
 			unlink($tempfile);
 
@@ -667,7 +661,8 @@ function twitter_post_hook(&$a,&$b) {
 
 			logger('twitter_post_with_media send, result: ' . print_r($result, true), LOGGER_DEBUG);
 			if ($result->errors OR $result->error) {
-				logger('Send to Twitter failed: "' . $result->errors . '"');
+				logger('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
+
 				// Workaround: Remove the picture link so that the post can be reposted without it
 				$msg .= " ".$image;
 				$image = "";
@@ -675,25 +670,21 @@ function twitter_post_hook(&$a,&$b) {
 		}
 
 		if(strlen($msg) and ($image == "")) {
-			$result = $tweet->post('statuses/update', array('status' => $msg));
+			$url = 'statuses/update';
+			$post = array('status' => $msg);
+			$result = $tweet->post($url, $post);
 			logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
-			if ($result->errors OR $result->error) {
-				logger('Send to Twitter failed: "' . $result->errors . '"');
+			if ($result->errors) {
+				logger('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
 
-				// experimental
-				// Sometims Twitter seems to think that posts are too long - although they aren't
-				// Test 1:
-				// Shorten the urls
-				// Test 2:
-				// Reduce the maximum length
-				if ($intelligent_shortening) {
-					$msgarr = twitter_shortenmsg($b, true);
-					$msg = $msgarr["msg"];
-		                        $image = $msgarr["image"];
-					$result = $tweet->post('statuses/update', array('status' => $msg));
-					logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
-				}
+				$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $b['uid']);
+				if (count($r))
+					$a->contact = $r[0]["id"];
 
+				$s = serialize(array('url' => $url, 'item' => $b['id'], 'post' => $post));
+				require_once('include/queue_fn.php');
+				add_to_queue($a->contact,NETWORK_TWITTER,$s);
+				notice(t('Twitter post failed. Queued for retry.').EOL);
 			}
 		}
 	}
@@ -823,4 +814,69 @@ function twitter_fetchtimeline($a, $uid) {
             }
 	}
 	set_pconfig($uid, 'twitter', 'lastid', $lastid);
+}
+
+function twitter_queue_hook(&$a,&$b) {
+
+	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
+		dbesc(NETWORK_TWITTER)
+		);
+	if(! count($qi))
+		return;
+
+	require_once('include/queue_fn.php');
+
+	foreach($qi as $x) {
+		if($x['network'] !== NETWORK_TWITTER)
+			continue;
+
+		logger('twitter_queue: run');
+
+		$r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` on `contact`.`uid` = `user`.`uid` 
+			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
+			intval($x['cid'])
+		);
+		if(! count($r))
+			continue;
+
+		$user = $r[0];
+
+		$ckey    = get_config('twitter', 'consumerkey');
+		$csecret = get_config('twitter', 'consumersecret');
+		$otoken  = get_pconfig($user['uid'], 'twitter', 'oauthtoken');
+		$osecret = get_pconfig($user['uid'], 'twitter', 'oauthsecret');
+
+		$success = false;
+
+		if ($ckey AND $csecret AND $otoken AND $osecret) {
+
+			logger('twitter_queue: able to post');
+
+			$z = unserialize($x['content']);
+
+			require_once("addon/twitter/codebird.php");
+
+			$cb = \Codebird\Codebird::getInstance();
+			$cb->setConsumerKey($ckey, $csecret);
+			$cb->setToken($otoken, $osecret);
+
+			if ($z['url'] == "statuses/update")
+				$result = $cb->statuses_update($z['post']);
+
+			logger('twitter_queue: post result: ' . print_r($result, true), LOGGER_DEBUG);
+
+			if ($result->errors)
+				logger('twitter_queue: Send to Twitter failed: "' . print_r($result->errors, true) . '"');
+			else {
+				$success = true;
+				remove_queue_item($x['id']);
+			}
+		} else
+			logger("twitter_queue: Error getting tokens for user ".$user['uid']);
+
+		if (!$success) {
+			logger('twitter_queue: delayed');
+			update_queue_time($x['id']);
+		}
+	}
 }
