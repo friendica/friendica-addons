@@ -550,6 +550,14 @@ function statusnet_shortenmsg($b, $max_char) {
 	if ((strlen(trim($origmsg)) <= $max_char) AND (strpos($origmsg, $msglink) OR ($msglink == "")))
 		return(array("msg"=>trim($origmsg), "image"=>""));
 
+	// If the message is short enough and contains a picture then post the picture as well
+	if ((strlen(trim($origmsg)) <= ($max_char - 20)) AND strpos($origmsg, $msglink))
+		return(array("msg"=>trim($origmsg), "image"=>$image));
+
+	// If the message is short enough and the link exists in the original message don't modify it as well
+	if ((strlen(trim($origmsg)) <= $max_char) AND strpos($origmsg, $msglink))
+		return(array("msg"=>trim($origmsg), "image"=>""));
+
 	// Preserve the unshortened link
 	$orig_link = $msglink;
 
@@ -584,10 +592,10 @@ function statusnet_shortenmsg($b, $max_char) {
 
 	if (($image == $orig_link) OR (substr($mime, 0, 6) == "image/"))
 		return(array("msg"=>trim($msg), "image"=>$orig_link));
-	else if (($image != $orig_link) AND ($image != "") AND (strlen($msg."\n".$msglink) <= ($max_char - 20)))
-		return(array("msg"=>trim($msg."\n".$msglink), "image"=>$image));
+	else if (($image != $orig_link) AND ($image != "") AND (strlen($msg." ".$msglink) <= ($max_char - 20)))
+		return(array("msg"=>trim($msg." ".$msglink)."\n", "image"=>$image));
 	else
-		return(array("msg"=>trim($msg."\n".$msglink), "image"=>""));
+		return(array("msg"=>trim($msg." ".$msglink), "image"=>""));
 }
 
 function statusnet_post_hook(&$a,&$b) {
