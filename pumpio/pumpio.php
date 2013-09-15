@@ -581,11 +581,20 @@ function pumpio_cron($a,$b) {
 		foreach($r as $rr) {
 			logger('pumpio: importing timeline from user '.$rr['uid']);
 			pumpio_fetchinbox($a, $rr['uid']);
+
+			// check for new contacts once a day
+			$last_contact_check = get_pconfig($rr['uid'],'pumpio','contact_check');
+			if($last_contact_check)
+				$next_contact_check = $last_contact_check + 86400;
+			else
+				$next_contact_check = 0;
+
+			if($next_contact_check <= time()) {
+				pumpio_getallusers($a, $rr["uid"]);
+				set_pconfig($rr['uid'],'pumpio','contact_check',time());
+			}
 		}
 	}
-
-	// To-Do:
-	//pumpio_getallusers($a, $uid);
 
 	logger('pumpio: cron_end');
 
@@ -1509,6 +1518,7 @@ function pumpio_fetchallcomments($a, $uid, $id) {
 Bugs:
 
 To-Do:
+ - contact sync every day
 
 Could be hard to do:
  - edit own notes
