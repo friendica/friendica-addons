@@ -970,13 +970,13 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id) {
 	require_once('include/items.php');
 
 	if (($post->verb == "like") OR ($post->verb == "favorite"))
-		return pumpio_dolike(&$a, $uid, $self, $post, $own_id);
+		return pumpio_dolike($a, $uid, $self, $post, $own_id);
 
 	if (($post->verb == "unlike") OR ($post->verb == "unfavorite"))
-		return pumpio_dounlike(&$a, $uid, $self, $post, $own_id);
+		return pumpio_dounlike($a, $uid, $self, $post, $own_id);
 
 	if ($post->verb == "delete")
-		return pumpio_dodelete(&$a, $uid, $self, $post, $own_id);
+		return pumpio_dodelete($a, $uid, $self, $post, $own_id);
 
 	if ($post->verb != "update") {
 		// Two queries for speed issues
@@ -1068,7 +1068,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id) {
 		$reply->published = $post->object->inReplyTo->published;
 		$reply->received = $post->object->inReplyTo->updated;
 		$reply->url = $post->object->inReplyTo->url;
-		pumpio_dopost(&$a, $client, $uid, $self, $reply, $own_id);
+		pumpio_dopost($a, $client, $uid, $self, $reply, $own_id);
 
 		$postarray['parent-uri'] = $post->object->inReplyTo->id;
 	}
@@ -1220,7 +1220,7 @@ function pumpio_fetchinbox($a, $uid) {
 	if (count($posts))
 		foreach ($posts as $post) {
 			$last_id = $post->id;
-			pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id);
+			pumpio_dopost($a, $client, $uid, $self, $post, $own_id);
 		}
 
 	set_pconfig($uid,'pumpio','last_id', $last_id);
@@ -1510,7 +1510,7 @@ function pumpio_fetchallcomments($a, $uid, $id) {
 		$post->object = $item;
 
 		logger("pumpio_fetchallcomments: posting comment ".$post->object->id);
-		pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id);
+		pumpio_dopost($a, $client, $uid, $self, $post, $own_id);
 	}
 }
 
