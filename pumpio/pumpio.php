@@ -39,6 +39,11 @@ function pumpio_content(&$a) {
 		return '';
 	}
 
+	if (function_exists("apc_delete")) {
+		$toDelete = new APCIterator('user', APC_ITER_VALUE);
+		apc_delete($toDelete);
+	}
+
 	if (isset($a->argv[1]))
 		switch ($a->argv[1]) {
 			case "connect":
@@ -54,7 +59,7 @@ function pumpio_content(&$a) {
 	return $o;
 }
 
-function pumpio_registerclient($a, $host) {
+function pumpio_registerclient(&$a, $host) {
 
 	$url = "https://".$host."/api/client/register";
 
@@ -89,7 +94,7 @@ function pumpio_registerclient($a, $host) {
 	return(false);
 }
 
-function pumpio_connect($a) {
+function pumpio_connect(&$a) {
 	// Start a session.  This is necessary to hold on to  a few keys the callback script will also need
 	session_start();
 
@@ -99,16 +104,23 @@ function pumpio_connect($a) {
 	$hostname = get_pconfig(local_user(), 'pumpio','host');
 
 	if ((($consumer_key == "") OR ($consumer_secret == "")) AND ($hostname != "")) {
+		logger("pumpio_connect: register client");
 		$clientdata = pumpio_registerclient($a, $hostname);
 		set_pconfig(local_user(), 'pumpio','consumer_key', $clientdata->client_id);
 		set_pconfig(local_user(), 'pumpio','consumer_secret', $clientdata->client_secret);
 
 		$consumer_key = get_pconfig(local_user(), 'pumpio','consumer_key');
 		$consumer_secret = get_pconfig(local_user(), 'pumpio','consumer_secret');
+
+		logger("pumpio_connect: ckey: ".$consumer_key." csecrect: ".$consumer_secret);
 	}
 
-	if (($consumer_key == "") OR ($consumer_secret == ""))
-		return;
+	if (($consumer_key == "") OR ($consumer_secret == "")) {
+		logger("pumpio_connect: ".sprintf("Unable to register the client at the pump.io server '%s'.", $hostname));
+
+		$o .= sprintf(t("Unable to register the client at the pump.io server '%s'."), $hostname);
+		return($o);
+	}
 
 	// The callback URL is the script that gets called after the user authenticates with pumpio
 	$callback_url = $a->get_baseurl()."/pumpio/connect";
@@ -134,6 +146,7 @@ function pumpio_connect($a) {
 	if (($success = $client->Initialize())) {
 		if (($success = $client->Process())) {
 			if (strlen($client->access_token)) {
+				logger("pumpio_connect: otoken: ".$client->access_token." osecrect: ".$client->access_token_secret);
 				set_pconfig(local_user(), "pumpio", "oauth_token", $client->access_token);
 				set_pconfig(local_user(), "pumpio", "oauth_token_secret", $client->access_token_secret);
 			}
@@ -146,7 +159,8 @@ function pumpio_connect($a) {
         if($success) {
 		$o .= t("You are now authenticated to pumpio.");
 		$o .= '<br /><a href="'.$a->get_baseurl().'/settings/connectors">'.t("return to the connector page").'</a>';
-	}
+	} else
+	    $o = 'Could not connect to pumpio. Refresh the page or try again later.';
 
 	return($o);
 }
@@ -481,7 +495,7 @@ function pumpio_send(&$a,&$b) {
 	}
 }
 
-function pumpio_action($a, $uid, $uri, $action, $content) {
+function pumpio_action(&$a, $uid, $uri, $action, $content) {
 
 	// Don't do likes and other stuff if you don't import the timeline
 	if (!get_pconfig($uid,'pumpio','import'))
@@ -552,7 +566,7 @@ function pumpio_action($a, $uid, $uri, $action, $content) {
 }
 
 
-function pumpio_cron($a,$b) {
+function pumpio_cron(&$a,$b) {
         $last = get_config('pumpio','last_poll');
 
         $poll_interval = intval(get_config('pumpio','poll_interval'));
@@ -601,7 +615,7 @@ function pumpio_cron($a,$b) {
 	set_config('pumpio','last_poll', time());
 }
 
-function pumpio_fetchtimeline($a, $uid) {
+function pumpio_fetchtimeline(&$a, $uid) {
 	$ckey    = get_pconfig($uid, 'pumpio', 'consumer_key');
 	$csecret = get_pconfig($uid, 'pumpio', 'consumer_secret');
 	$otoken  = get_pconfig($uid, 'pumpio', 'oauth_token');
@@ -966,7 +980,7 @@ function pumpio_dodelete(&$a, $uid, $self, $post, $own_id) {
 		return drop_item($r[0]["id"], $false);
 }
 
-function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id) {
+function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcompletion = false) {
 	require_once('include/items.php');
 
 	if (($post->verb == "like") OR ($post->verb == "favorite"))
@@ -1125,7 +1139,8 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id) {
 
 	if ($post->object->objectType == "comment") {
 
-		pumpio_fetchallcomments($a, $uid, $postarray['parent-uri']);
+		if ($threadcompletion)
+			pumpio_fetchallcomments($a, $uid, $postarray['parent-uri']);
 
 		$user = q("SELECT * FROM `user` WHERE `uid` = %d AND `account_expired` = 0 LIMIT 1",
 				intval($uid)
@@ -1182,7 +1197,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id) {
 	return $top_item;
 }
 
-function pumpio_fetchinbox($a, $uid) {
+function pumpio_fetchinbox(&$a, $uid) {
 
         $ckey    = get_pconfig($uid, 'pumpio', 'consumer_key');
         $csecret = get_pconfig($uid, 'pumpio', 'consumer_secret');
@@ -1226,7 +1241,7 @@ function pumpio_fetchinbox($a, $uid) {
 	set_pconfig($uid,'pumpio','last_id', $last_id);
 }
 
-function pumpio_getallusers($a, $uid) {
+function pumpio_getallusers(&$a, $uid) {
         $ckey    = get_pconfig($uid, 'pumpio', 'consumer_key');
         $csecret = get_pconfig($uid, 'pumpio', 'consumer_secret');
         $otoken  = get_pconfig($uid, 'pumpio', 'oauth_token');
@@ -1281,15 +1296,17 @@ function pumpio_queue_hook(&$a,&$b) {
 		if(! count($r))
 			continue;
 
-		$user = $r[0];
+		$userdata = $r[0];
 
-		$oauth_token = get_pconfig($user['uid'], "pumpio", "oauth_token");
-		$oauth_token_secret = get_pconfig($user['uid'], "pumpio", "oauth_token_secret");
-		$consumer_key = get_pconfig($user['uid'], "pumpio","consumer_key");
-		$consumer_secret = get_pconfig($user['uid'], "pumpio","consumer_secret");
+		//logger('pumpio_queue: fetching userdata '.print_r($userdata, true));
 
-		$host = get_pconfig($user['uid'], "pumpio", "host");
-		$user = get_pconfig($user['uid'], "pumpio", "user");
+		$oauth_token = get_pconfig($userdata['uid'], "pumpio", "oauth_token");
+		$oauth_token_secret = get_pconfig($userdata['uid'], "pumpio", "oauth_token_secret");
+		$consumer_key = get_pconfig($userdata['uid'], "pumpio","consumer_key");
+		$consumer_secret = get_pconfig($userdata['uid'], "pumpio","consumer_secret");
+
+		$host = get_pconfig($userdata['uid'], "pumpio", "host");
+		$user = get_pconfig($userdata['uid'], "pumpio", "user");
 
 		$success = false;
 
@@ -1326,7 +1343,7 @@ function pumpio_queue_hook(&$a,&$b) {
 			} else
 				logger('pumpio_queue: send '.$username.': '.$url.' general error: ' . print_r($user,true));
 		} else
-			logger("pumpio_queue: Error getting tokens for user ".$user['uid']);
+			logger("pumpio_queue: Error getting tokens for user ".$userdata['uid']);
 
 		if (!$success) {
 			logger('pumpio_queue: delayed');
@@ -1335,7 +1352,7 @@ function pumpio_queue_hook(&$a,&$b) {
 	}
 }
 
-function pumpio_getreceiver($a, $b) {
+function pumpio_getreceiver(&$a, $b) {
 
 	$receiver = array();
 
@@ -1420,7 +1437,7 @@ function pumpio_getreceiver($a, $b) {
 	return $receiver;
 }
 
-function pumpio_fetchallcomments($a, $uid, $id) {
+function pumpio_fetchallcomments(&$a, $uid, $id) {
 	$ckey    = get_pconfig($uid, 'pumpio', 'consumer_key');
 	$csecret = get_pconfig($uid, 'pumpio', 'consumer_secret');
 	$otoken  = get_pconfig($uid, 'pumpio', 'oauth_token');
@@ -1510,7 +1527,7 @@ function pumpio_fetchallcomments($a, $uid, $id) {
 		$post->object = $item;
 
 		logger("pumpio_fetchallcomments: posting comment ".$post->object->id);
-		pumpio_dopost($a, $client, $uid, $self, $post, $own_id);
+		pumpio_dopost($a, $client, $uid, $self, $post, $own_id, false);
 	}
 }
 

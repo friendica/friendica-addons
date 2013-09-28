@@ -498,11 +498,12 @@ function jappixmini_script(&$a,&$s) {
     // get nickname
     $r = q("SELECT `username` FROM `user` WHERE `uid`=$uid");
     $nickname = json_encode($r[0]["username"]);
+    $groupchats = get_config('jappixmini','groupchats');
 
     // add javascript to start Jappix Mini
     $a->page['htmlhead'] .= "<script type=\"text/javascript\">
         jQuery(document).ready(function() {
-           jappixmini_addon_start('$server', '$username', '$proxy', '$bosh', $encrypt, '$password', $nickname, $contacts_json, '$contacts_hash', $autoapprove, $autosubscribe);
+           jappixmini_addon_start('$server', '$username', '$proxy', '$bosh', $encrypt, '$password', $nickname, $contacts_json, '$contacts_hash', $autoapprove, $autosubscribe, $groupchats);
         });
     </script>";
 

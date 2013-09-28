@@ -236,7 +236,7 @@ function jappixmini_addon_subscribe() {
 	sendSubscribe(xid, "subscribe");
 }
 
-function jappixmini_addon_start(server, username, proxy, bosh, encrypted, password, nickname, contacts, contacts_hash, autoapprove, autosubscribe) {
+function jappixmini_addon_start(server, username, proxy, bosh, encrypted, password, nickname, contacts, contacts_hash, autoapprove, autosubscribe, groupchats) {
     var handler = function(password){
         // check if settings have changed, reinitialize jappix mini if this is the case
         var settings_identifier = str_sha1(server);
@@ -261,6 +261,7 @@ function jappixmini_addon_start(server, username, proxy, bosh, encrypted, passwo
             HOST_BOSH = bosh;
 
         // start jappix mini
+	MINI_GROUPCHATS = groupchats;
         MINI_NICKNAME = nickname;
         LOCK_HOST = "off";
         launchMini(true, false, server, username, password);
