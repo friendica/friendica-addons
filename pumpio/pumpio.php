@@ -77,6 +77,8 @@ function pumpio_registerclient(&$a, $host) {
         $params["logo_url"] = $a->get_baseurl()."/images/friendica-256.png";
         $params["redirect_uris"] = $a->get_baseurl()."/pumpio/connect";
 
+	logger("pumpio_registerclient: ".$url." parameters ".$print_r($params, true), LOGGER_DEBUG);
+
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
@@ -89,9 +91,12 @@ function pumpio_registerclient(&$a, $host) {
 
         if ($curl_info["http_code"] == "200") {
                 $values = json_decode($s);
+		logger("pumpio_registerclient: success ".$print_r($values, true), LOGGER_DEBUG);
 		return($values);
         }
+	logger("pumpio_registerclient: failed: ".$print_r($curl_info, true), LOGGER_DEBUG);
 	return(false);
+
 }
 
 function pumpio_connect(&$a) {
@@ -112,7 +117,7 @@ function pumpio_connect(&$a) {
 		$consumer_key = get_pconfig(local_user(), 'pumpio','consumer_key');
 		$consumer_secret = get_pconfig(local_user(), 'pumpio','consumer_secret');
 
-		logger("pumpio_connect: ckey: ".$consumer_key." csecrect: ".$consumer_secret);
+		logger("pumpio_connect: ckey: ".$consumer_key." csecrect: ".$consumer_secret, LOGGER_DEBUG);
 	}
 
 	if (($consumer_key == "") OR ($consumer_secret == "")) {
@@ -146,7 +151,7 @@ function pumpio_connect(&$a) {
 	if (($success = $client->Initialize())) {
 		if (($success = $client->Process())) {
 			if (strlen($client->access_token)) {
-				logger("pumpio_connect: otoken: ".$client->access_token." osecrect: ".$client->access_token_secret);
+				logger("pumpio_connect: otoken: ".$client->access_token." osecrect: ".$client->access_token_secret, LOGGER_DEBUG);
 				set_pconfig(local_user(), "pumpio", "oauth_token", $client->access_token);
 				set_pconfig(local_user(), "pumpio", "oauth_token_secret", $client->access_token_secret);
 			}
@@ -157,10 +162,13 @@ function pumpio_connect(&$a) {
 	    $o = 'Could not connect to pumpio. Refresh the page or try again later.';
 
         if($success) {
+		logger("pumpio_connect: authenticated");
 		$o .= t("You are now authenticated to pumpio.");
 		$o .= '<br /><a href="'.$a->get_baseurl().'/settings/connectors">'.t("return to the connector page").'</a>';
-	} else
-	    $o = 'Could not connect to pumpio. Refresh the page or try again later.';
+	} else {
+		logger("pumpio_connect: could not connect");
+		$o = 'Could not connect to pumpio. Refresh the page or try again later.';
+	}
 
 	return($o);
 }
