@@ -1,11 +1,11 @@
 
-#blogger-enable-label, #blogger-username-label, #blogger-password-label, #blogger-bydefault-label {
+#blogger-enable-label, #blogger-username-label, #blogger-password-label, #blogger-bydefault-label, #blogger-blog-label {
 	float: left;
 	width: 200px;
 	margin-top: 10px;
 }
 
-#blogger-checkbox, #blogger-username, #blogger-password, #blogger-bydefault {
+#blogger-checkbox, #blogger-username, #blogger-password, #blogger-bydefault, #blogger-blog {
 	float: left;
 	margin-top: 10px;
 }

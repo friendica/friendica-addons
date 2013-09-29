@@ -163,6 +163,9 @@ function pumpio_connect(&$a) {
 
         if($success) {
 		logger("pumpio_connect: authenticated");
+
+		header("Location: ".$a->get_baseurl()."/settings/connectors");
+
 		$o .= t("You are now authenticated to pumpio.");
 		$o .= '<br /><a href="'.$a->get_baseurl().'/settings/connectors">'.t("return to the connector page").'</a>';
 	} else {
@@ -316,6 +319,8 @@ function pumpio_settings_post(&$a,&$b) {
 			set_pconfig(local_user(),'pumpio','public',$_POST['pumpio_public']);
 			set_pconfig(local_user(),'pumpio','mirror',$_POST['pumpio_mirror']);
 			set_pconfig(local_user(),'pumpio','post_by_default',intval($_POST['pumpio_bydefault']));
+
+			header("Location: ".$a->get_baseurl()."/pumpio/connect");
 		}
 	}
 }
