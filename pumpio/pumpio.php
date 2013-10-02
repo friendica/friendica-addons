@@ -356,7 +356,7 @@ function pumpio_send(&$a,&$b) {
 			return;
 	}
 
-	logger("pumpio_send: parameter ".print_r($b, true));
+	logger("pumpio_send: parameter ".print_r($b, true), LOGGER_DATA);
 
 	if($b['parent'] != $b['id']) {
 		// Looking if its a reply to a pumpio post
