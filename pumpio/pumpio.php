@@ -1230,13 +1230,16 @@ function pumpio_fetchinbox(&$a, $uid) {
 		$url .= '?since='.urlencode($last_id);
 
         $success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $user);
-        $posts = array_reverse($user->items);
 
-	if (count($posts))
-		foreach ($posts as $post) {
-			$last_id = $post->id;
-			pumpio_dopost($a, $client, $uid, $self, $post, $own_id);
-		}
+	if ($user->items) {
+	    $posts = array_reverse($user->items);
+
+	    if (count($posts))
+		    foreach ($posts as $post) {
+			    $last_id = $post->id;
+			    pumpio_dopost($a, $client, $uid, $self, $post, $own_id);
+		    }
+	}
 
 	set_pconfig($uid,'pumpio','last_id', $last_id);
 }
