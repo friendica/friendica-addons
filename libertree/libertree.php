@@ -153,8 +153,11 @@ function libertree_send(&$a,&$b) {
 	$ltree_api_token = get_pconfig($b['uid'],'libertree','libertree_api_token');
 	$ltree_url = get_pconfig($b['uid'],'libertree','libertree_url');
 	$ltree_blog = "$ltree_url/api/v1/posts/create/?token=$ltree_api_token";
-	$ltree_source = "Friendica";
-	//$ltree_source = "[".$a->config['sitename']."](".$a->get_baseurl().")";
+	if (isset($a->config['sitename']) AND ($a->config['sitename'] != ""))
+		$ltree_source = $a->config['sitename'];
+	else
+		$ltree_source = "Friendica";
+
 	if($ltree_url && $ltree_api_token && $ltree_blog && $ltree_source) {
 
 		require_once('include/bb2diaspora.php');
