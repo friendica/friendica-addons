@@ -1,0 +1,15 @@
+
+#gpluspost-enable-label, #gpluspost-bydefault-label, #gpluspost-noloopprevention-label, #gpluspost-skipwithoutlink-label {
+	float: left;
+	width: 200px;
+	margin-top: 10px;
+}
+
+#gpluspost-checkbox, #gpluspost-bydefault, #gpluspost-noloopprevention, #gpluspost-skipwithoutlink {
+	float: left;
+	margin-top: 10px;
+}
+
+#gpluspost-submit {
+	margin-top: 15px;
+}

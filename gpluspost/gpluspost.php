@@ -42,6 +42,10 @@ function gpluspost_settings(&$a,&$s) {
 	if(! local_user())
 		return;
 
+	/* Add our stylesheet to the page so we can make our settings look nice */
+
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/gpluspost/gpluspost.css' . '" media="all" />' . "\r\n";
+
 	$enabled = get_pconfig(local_user(),'gpluspost','post');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 
@@ -79,8 +83,8 @@ function gpluspost_settings(&$a,&$s) {
 	/* provide a submit button */
 
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="gpluspost-submit" name="gpluspost-submit" class="settings-submit" value="' . t('Submit') . '" /></div>';
-	$s .= 'Register an account at <a href="https://hootsuite.com">Hootsuite</a>, add your G+ page and add the feed-url there.<br />';
-	$s .= 'Feed-url: '.$a->get_baseurl().'/gpluspost/'.urlencode($a->user["nickname"]).'</div>';
+	$s .= '<p>Register an account at <a href="https://hootsuite.com">Hootsuite</a>, add your G+ page and add the feed-url there.<br />';
+	$s .= 'Feed-url: '.$a->get_baseurl().'/gpluspost/'.urlencode($a->user["nickname"]).'</p></div>';
 }
 
 function gpluspost_settings_post(&$a,&$b) {
