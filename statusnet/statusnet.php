@@ -313,11 +313,12 @@ function statusnet_settings(&$a,&$s) {
             $s .= '<div class="clear"></div>';
             $s .= '<label id="statusnet-baseapi-label" for="statusnet-baseapi">'. t("Base API Path \x28remember the trailing /\x29") .'</label>';
             $s .= '<input id="statusnet-baseapi" type="text" name="statusnet-baseapi" size="35" /><br />';
-            $s .= '<p></p><div class="clear"></div></div>';
+            $s .= '<div class="clear"></div>';
             $s .= '<label id="statusnet-applicationname-label" for="statusnet-applicationname">'.t('StatusNet application name').'</label>';
             $s .= '<input id="statusnet-applicationname" type="text" name="statusnet-applicationname" size="35" /><br />';
-            $s .= '<p></p><div class="clear"></div></div>';
+            $s .= '<p></p><div class="clear"></div>';
             $s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Submit') . '" /></div>';
+            $s .= '</div>';
 	} else {
 		/***
 		 * ok we have a consumer key pair now look into the OAuth stuff
