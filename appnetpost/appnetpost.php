@@ -1,103 +1,89 @@
 <?php
 
 /**
- * Name: G+ Post
- * Description: Posts to a Google+ page with the help of Hootsuite
+ * Name: App.net Post
+ * Description: Posts to app.net with the help of ifttt.com
  * Version: 0.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
 
-function gpluspost_install() {
-	register_hook('post_local',           'addon/gpluspost/gpluspost.php', 'gpluspost_post_local');
-	register_hook('notifier_normal',      'addon/gpluspost/gpluspost.php', 'gpluspost_send');
-	register_hook('jot_networks',         'addon/gpluspost/gpluspost.php', 'gpluspost_jot_nets');
-	register_hook('connector_settings',      'addon/gpluspost/gpluspost.php', 'gpluspost_settings');
-	register_hook('connector_settings_post', 'addon/gpluspost/gpluspost.php', 'gpluspost_settings_post');
+function appnetpost_install() {
+	register_hook('post_local',           'addon/appnetpost/appnetpost.php', 'appnetpost_post_local');
+	register_hook('notifier_normal',      'addon/appnetpost/appnetpost.php', 'appnetpost_send');
+	register_hook('jot_networks',         'addon/appnetpost/appnetpost.php', 'appnetpost_jot_nets');
+	register_hook('connector_settings',      'addon/appnetpost/appnetpost.php', 'appnetpost_settings');
+	register_hook('connector_settings_post', 'addon/appnetpost/appnetpost.php', 'appnetpost_settings_post');
 }
 
 
-function gpluspost_uninstall() {
-	unregister_hook('post_local',       'addon/gpluspost/gpluspost.php', 'gpluspost_post_local');
-	unregister_hook('notifier_normal',  'addon/gpluspost/gpluspost.php', 'gpluspost_send');
-	unregister_hook('jot_networks',     'addon/gpluspost/gpluspost.php', 'gpluspost_jot_nets');
-	unregister_hook('connector_settings',      'addon/gpluspost/gpluspost.php', 'gpluspost_settings');
-	unregister_hook('connector_settings_post', 'addon/gpluspost/gpluspost.php', 'gpluspost_settings_post');
+function appnetpost_uninstall() {
+	unregister_hook('post_local',       'addon/appnetpost/appnetpost.php', 'appnetpost_post_local');
+	unregister_hook('notifier_normal',  'addon/appnetpost/appnetpost.php', 'appnetpost_send');
+	unregister_hook('jot_networks',     'addon/appnetpost/appnetpost.php', 'appnetpost_jot_nets');
+	unregister_hook('connector_settings',      'addon/appnetpost/appnetpost.php', 'appnetpost_settings');
+	unregister_hook('connector_settings_post', 'addon/appnetpost/appnetpost.php', 'appnetpost_settings_post');
 }
 
-function gpluspost_jot_nets(&$a,&$b) {
+function appnetpost_jot_nets(&$a,&$b) {
 	if(! local_user())
 		return;
 
-	$post = get_pconfig(local_user(),'gpluspost','post');
+	$post = get_pconfig(local_user(),'appnetpost','post');
 	if(intval($post) == 1) {
-		$defpost = get_pconfig(local_user(),'gpluspost','post_by_default');
+		$defpost = get_pconfig(local_user(),'appnetpost','post_by_default');
 		$selected = ((intval($defpost) == 1) ? ' checked="checked" ' : '');
-		$b .= '<div class="profile-jot-net"><input type="checkbox" name="gpluspost_enable"' . $selected . ' value="1" /> '
-			. t('Post to Google+') . '</div>';
+		$b .= '<div class="profile-jot-net"><input type="checkbox" name="appnetpost_enable"' . $selected . ' value="1" /> '
+			. t('Post to app.net') . '</div>';
     }
 }
 
-function gpluspost_settings(&$a,&$s) {
+function appnetpost_settings(&$a,&$s) {
 
 	if(! local_user())
 		return;
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/gpluspost/gpluspost.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/appnetpost/appnetpost.css' . '" media="all" />' . "\r\n";
 
-	$enabled = get_pconfig(local_user(),'gpluspost','post');
+	$enabled = get_pconfig(local_user(),'appnetpost','post');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 
-	$def_enabled = get_pconfig(local_user(),'gpluspost','post_by_default');
+	$def_enabled = get_pconfig(local_user(),'appnetpost','post_by_default');
 	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
-	$noloop_enabled = get_pconfig(local_user(),'gpluspost','no_loop_prevention');
-	$noloop_checked = (($noloop_enabled) ? ' checked="checked" ' : '');
-
-	$skip_enabled = get_pconfig(local_user(),'gpluspost','skip_without_link');
-	$skip_checked = (($skip_enabled) ? ' checked="checked" ' : '');
-
 	$s .= '<div class="settings-block">';
-	$s .= '<h3>' . t('Google+ Post Settings') . '</h3>';
-	$s .= '<div id="gpluspost-enable-wrapper">';
-	$s .= '<label id="gpluspost-enable-label" for="gpluspost-checkbox">' . t('Enable Google+ Post Plugin') . '</label>';
-	$s .= '<input id="gpluspost-checkbox" type="checkbox" name="gpluspost" value="1" ' . $checked . '/>';
+	$s .= '<h3>' . t('App.net Post Settings') . '</h3>';
+	$s .= '<div id="appnetpost-enable-wrapper">';
+	$s .= '<label id="appnetpost-enable-label" for="appnetpost-checkbox">' . t('Enable App.net Post Plugin') . '</label>';
+	$s .= '<input id="appnetpost-checkbox" type="checkbox" name="appnetpost" value="1" ' . $checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
-	$s .= '<div id="gpluspost-bydefault-wrapper">';
-	$s .= '<label id="gpluspost-bydefault-label" for="gpluspost-bydefault">' . t('Post to Google+ by default') . '</label>';
-	$s .= '<input id="gpluspost-bydefault" type="checkbox" name="gpluspost_bydefault" value="1" ' . $def_checked . '/>';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div id="gpluspost-noloopprevention-wrapper">';
-	$s .= '<label id="gpluspost-noloopprevention-label" for="gpluspost-noloopprevention">' . t('Do not prevent posting loops') . '</label>';
-	$s .= '<input id="gpluspost-noloopprevention" type="checkbox" name="gpluspost_noloopprevention" value="1" ' . $noloop_checked . '/>';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div id="gpluspost-skipwithoutlink-wrapper">';
-	$s .= '<label id="gpluspost-skipwithoutlink-label" for="gpluspost-skipwithoutlink">' . t('Skip messages without links') . '</label>';
-	$s .= '<input id="gpluspost-skipwithoutlink" type="checkbox" name="gpluspost_skipwithoutlink" value="1" ' . $skip_checked . '/>';
+	$s .= '<div id="appnetpost-bydefault-wrapper">';
+	$s .= '<label id="appnetpost-bydefault-label" for="appnetpost-bydefault">' . t('Post to App.net by default') . '</label>';
+	$s .= '<input id="appnetpost-bydefault" type="checkbox" name="appnetpost_bydefault" value="1" ' . $def_checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
 	/* provide a submit button */
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="gpluspost-submit" name="gpluspost-submit" class="settings-submit" value="' . t('Submit') . '" /></div>';
-	$s .= '<p>Register an account at <a href="https://hootsuite.com">Hootsuite</a>, add your G+ page and add the feed-url there.<br />';
-	$s .= 'Feed-url: '.$a->get_baseurl().'/gpluspost/'.urlencode($a->user["nickname"]).'</p></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="appnetpost-submit" name="appnetpost-submit" class="settings-submit" value="' . t('Submit') . '" /></div>';
+	$s .= '<p>Register an account at <a href="https://ifttt.com">IFTTT</a> and create a recipe with the following values:';
+	$s .= '<ul><li>If: New feed item (via RSS)</li>';
+	$s .= '<li>Then: Post an update (via app.net)</li>';
+	$s .= '<li>Feed URL: '.$a->get_baseurl().'/appnetpost/'.urlencode($a->user["nickname"]).'</li>';
+	$s .= '<li>Message: {{EntryContent}}</li>';
+	$s .= '<li>Original URL: {{EntryUrl}}</li></ul></div>';
 }
 
-function gpluspost_settings_post(&$a,&$b) {
+function appnetpost_settings_post(&$a,&$b) {
 
-	if(x($_POST,'gpluspost-submit')) {
-		set_pconfig(local_user(),'gpluspost','post',intval($_POST['gpluspost']));
-		set_pconfig(local_user(),'gpluspost','post_by_default',intval($_POST['gpluspost_bydefault']));
-		set_pconfig(local_user(),'gpluspost','no_loop_prevention',intval($_POST['gpluspost_noloopprevention']));
-		set_pconfig(local_user(),'gpluspost','skip_without_link',intval($_POST['gpluspost_skipwithoutlink']));
+	if(x($_POST,'appnetpost-submit')) {
+		set_pconfig(local_user(),'appnetpost','post',intval($_POST['appnetpost']));
+		set_pconfig(local_user(),'appnetpost','post_by_default',intval($_POST['appnetpost_bydefault']));
 	}
 }
 
-function gpluspost_post_local(&$a,&$b) {
+function appnetpost_post_local(&$a,&$b) {
 
 	if($b['edit'])
 		return;
@@ -108,11 +94,11 @@ function gpluspost_post_local(&$a,&$b) {
 	if($b['private'] || $b['parent'])
 		return;
 
-	$post   = intval(get_pconfig(local_user(),'gpluspost','post'));
+	$post   = intval(get_pconfig(local_user(),'appnetpost','post'));
 
-	$enable = (($post && x($_REQUEST,'gpluspost_enable')) ? intval($_REQUEST['gpluspost_enable']) : 0);
+	$enable = (($post && x($_REQUEST,'appnetpost_enable')) ? intval($_REQUEST['appnetpost_enable']) : 0);
 
-	if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'gpluspost','post_by_default')))
+	if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'appnetpost','post_by_default')))
 		$enable = 1;
 
 	if(!$enable)
@@ -124,9 +110,9 @@ function gpluspost_post_local(&$a,&$b) {
 	$b['postopts'] .= 'gplus';
 }
 
-function gpluspost_send(&$a,&$b) {
+function appnetpost_send(&$a,&$b) {
 
-	logger('gpluspost_send: invoked for post '.$b['id']." ".$b['app']);
+	logger('appnetpost_send: invoked for post '.$b['id']." ".$b['app']);
 
 	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
 		return;
@@ -137,11 +123,7 @@ function gpluspost_send(&$a,&$b) {
 	if($b['parent'] != $b['id'])
 		return;
 
-	// if post comes from Google+ don't send it back
-	if (!get_pconfig($b["uid"],'gpluspost','no_loop_prevention') and ($b['app'] == "Google+"))
-		return;
-
-	$itemlist = get_pconfig($b["uid"],'gpluspost','itemlist');
+	$itemlist = get_pconfig($b["uid"],'appnetpost','itemlist');
 	$items = explode(",", $itemlist);
 
 	$i = 0;
@@ -152,14 +134,14 @@ function gpluspost_send(&$a,&$b) {
 
 	$itemlist = implode(",", $newitems);
 
-	logger('gpluspost_send: new itemlist: '.$itemlist." for uid ".$b["uid"]);
+	logger('appnetpost_send: new itemlist: '.$itemlist." for uid ".$b["uid"]);
 
-	set_pconfig($b["uid"],'gpluspost','itemlist', $itemlist);
+	set_pconfig($b["uid"],'appnetpost','itemlist', $itemlist);
 }
 
-function gpluspost_module() {}
+function appnetpost_module() {}
 
-function gpluspost_init() {
+function appnetpost_init() {
 	global $a, $_SERVER;
 
 	$uid = 0;
@@ -184,9 +166,9 @@ function gpluspost_init() {
 	echo "\t".'<title type="html"><![CDATA['.$a->config['sitename'].']]></title>'."\n";
 	if ($uid != 0) {
 		echo "\t".'<subtitle type="html"><![CDATA['.$contacts[0]["username"]."]]></subtitle>\n";
-		echo "\t".'<link rel="self" href="'.$a->get_baseurl().'/gpluspost/'.$nick.'"/>'."\n";
+		echo "\t".'<link rel="self" href="'.$a->get_baseurl().'/appnetpost/'.$nick.'"/>'."\n";
 	} else
-		echo "\t".'<link rel="self" href="'.$a->get_baseurl().'/gpluspost"/>'."\n";
+		echo "\t".'<link rel="self" href="'.$a->get_baseurl().'/appnetpost"/>'."\n";
 	echo "\t<id>".$a->get_baseurl()."/</id>\n";
 	echo "\t".'<link rel="alternate" type="text/html" href="'.$a->get_baseurl().'"/>'."\n";
 	echo "\t<updated>".date("c")."</updated>\n"; // To-Do
@@ -194,21 +176,21 @@ function gpluspost_init() {
 	echo "\t".'<generator uri="'.$a->get_baseurl().'">'.$a->config['sitename'].'</generator>'."\n";
 
 	if ($uid != 0) {
-		$itemlist = get_pconfig($uid,'gpluspost','itemlist');
+		$itemlist = get_pconfig($uid,'appnetpost','itemlist');
 		$items = explode(",", $itemlist);
 
 		foreach ($items AS $item)
-			gpluspost_feeditem($item, $uid);
+			appnetpost_feeditem($item, $uid);
 	} else {
 		$items = q("SELECT `id` FROM `item` FORCE INDEX (`received`) WHERE `item`.`visible` = 1 AND `item`.`deleted` = 0 and `item`.`moderated` = 0 AND `item`.`allow_cid` = ''  AND `item`.`allow_gid` = '' AND `item`.`deny_cid`  = '' AND `item`.`deny_gid`  = '' AND `item`.`private` = 0 AND `item`.`wall` = 1 AND `item`.`id` = `item`.`parent` ORDER BY `received` DESC LIMIT 10");
 		foreach ($items AS $item)
-			gpluspost_feeditem($item["id"], $uid);
+			appnetpost_feeditem($item["id"], $uid);
 	}
 	echo "</feed>\n";
 	killme();
 }
 
-function gpluspost_original_url($url, $depth=1) {
+function appnetpost_original_url($url, $depth=1) {
 
 	if ($depth > 10)
 		return($url);
@@ -230,9 +212,9 @@ function gpluspost_original_url($url, $depth=1) {
 	if ((($curl_info['http_code'] == "301") OR ($curl_info['http_code'] == "302"))
 		AND (($curl_info['redirect_url'] != "") OR ($curl_info['location'] != ""))) {
 		if ($curl_info['redirect_url'] != "")
-			return(gpluspost_original_url($curl_info['redirect_url'], ++$depth));
+			return(appnetpost_original_url($curl_info['redirect_url'], ++$depth));
 		else
-			return(gpluspost_original_url($curl_info['location'], ++$depth));
+			return(appnetpost_original_url($curl_info['location'], ++$depth));
 	}
 
 	$pos = strpos($header, "\r\n\r\n");
@@ -260,20 +242,42 @@ function gpluspost_original_url($url, $depth=1) {
 			$content = "";
 			foreach ($pathinfo AS $value)
 				if (substr(strtolower($value), 0, 4) == "url=")
-					return(gpluspost_original_url(substr($value, 4), ++$depth));
+					return(appnetpost_original_url(substr($value, 4), ++$depth));
 		}
 	}
 
 	return($url);
 }
 
-function gpluspost_feeditem($pid, $uid) {
+if (! function_exists( 'short_link' )) {
+function short_link($url) {
+	require_once('library/slinky.php');
+	$slinky = new Slinky( $url );
+	$yourls_url = get_config('yourls','url1');
+	if ($yourls_url) {
+		$yourls_username = get_config('yourls','username1');
+		$yourls_password = get_config('yourls', 'password1');
+		$yourls_ssl = get_config('yourls', 'ssl1');
+		$yourls = new Slinky_YourLS();
+		$yourls->set( 'username', $yourls_username );
+		$yourls->set( 'password', $yourls_password );
+		$yourls->set( 'ssl', $yourls_ssl );
+		$yourls->set( 'yourls-url', $yourls_url );
+		$slinky->set_cascade( array( $yourls, new Slinky_UR1ca(), new Slinky_Trim(), new Slinky_IsGd(), new Slinky_TinyURL() ) );
+	} else {
+		// setup a cascade of shortening services
+		// try to get a short link from these services
+		// in the order ur1.ca, trim, id.gd, tinyurl
+		$slinky->set_cascade( array( new Slinky_UR1ca(), new Slinky_Trim(), new Slinky_IsGd(), new Slinky_TinyURL() ) );
+	}
+	return $slinky->short();
+} };
+
+function appnetpost_feeditem($pid, $uid) {
 	global $a;
 
 	require_once('include/bbcode.php');
 	require_once("include/html2plain.php");
-
-	$skipwithoutlink = get_pconfig($uid,'gpluspost','skip_without_link');
 
 	$items = q("SELECT `uri`, `plink`, `author-link`, `author-name`, `created`, `edited`, `id`, `title`, `body` from `item` WHERE id=%d", intval($pid));
 	foreach ($items AS $item) {
@@ -339,37 +343,55 @@ function gpluspost_feeditem($pid, $uid) {
 		else if ($image != "")
 			$msglink = $image;
 
-		if (($msglink == "") AND $skipwithoutlink)
-			continue;
-		else if ($msglink == "")
-			$msglink = $item["plink"];
-
-		// Fetching the title - or the first line
+		// Fetching the title and add all lines
 		if ($item["title"] != "")
 			$title = $item["title"];
-		else {
-			$lines = explode("\n", $msg);
-			$title = $lines[0];
+
+		$lines = explode("\n", $msg);
+		foreach ($lines AS $line)
+			$title .= "\n".$line;
+
+		$max_char = 256;
+
+		$origlink = $msglink;
+
+		if (strlen($msglink) > 20)
+			$msglink = short_link($msglink);
+
+		$title = trim(str_replace($origlink, $msglink, $title));
+
+		if (strlen(trim($title." ".$msglink)) > $max_char) {
+			$title = substr($title, 0, $max_char - (strlen($msglink)));
+			$lastchar = substr($title, -1);
+			$title = substr($title, 0, -1);
+			$pos = strrpos($title, "\n");
+			if ($pos > 0)
+				$title = substr($title, 0, $pos);
+			else if ($lastchar != "\n")
+			$title = substr($title, 0, -3)."...";
 		}
 
-		//if ($image != $msglink)
-		//	$html = trim(str_replace($msglink, "", $html));
+		if (!strstr($title, $msglink))
+			$title = trim($title." ".$msglink);
+		else
+			$title = trim($title);
 
-		$title = trim(str_replace($msglink, "", $title));
+		if ($title == "")
+			continue;
 
-		$msglink = gpluspost_original_url($msglink);
+		//$origlink = appnetpost_original_url($origlink);
 
-		if ($uid == 0)
-			$title = $item["author-name"].": ".$title;
+		$html = nl2br($title);
 
-		$msglink = htmlspecialchars(html_entity_decode($msglink));
+		$origlink = $item["plink"];
+		$origlink = htmlspecialchars(html_entity_decode($origlink));
 
 		$title = str_replace("&", "&amp;", $title);
 		//$html = str_replace("&", "&amp;", $html);
 
 		echo "\t".'<entry xmlns="http://www.w3.org/2005/Atom">'."\n";
 		echo "\t\t".'<title type="html" xml:space="preserve"><![CDATA['.$title."]]></title>\n";
-		echo "\t\t".'<link rel="alternate" type="text/html" href="'.$msglink.'" />'."\n";
+		echo "\t\t".'<link rel="alternate" type="text/html" href="'.$origlink.'" />'."\n";
 		// <link rel="enclosure" type="audio/mpeg" length="1337" href="http://example.org/audio/ph34r_my_podcast.mp3"/>
 		echo "\t\t<id>".$item["uri"]."</id>\n";
 		echo "\t\t<updated>".date("c", strtotime($item["edited"]))."</updated>\n";

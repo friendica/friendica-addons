@@ -357,32 +357,6 @@ function fbpost_jot_nets(&$a,&$b) {
 	}
 }
 
-function fbpost_ShareAttributes($match) {
-
-        $attributes = $match[1];
-
-        $author = "";
-        preg_match("/author='(.*?)'/ism", $attributes, $matches);
-        if ($matches[1] != "")
-                $author = $matches[1];
-
-        preg_match('/author="(.*?)"/ism', $attributes, $matches);
-        if ($matches[1] != "")
-                $author = $matches[1];
-
-        $headline = '<div class="shared_header">';
-
-        $headline .= sprintf(t('%s:'), $author);
-
-        $headline .= "</div>";
-
-	//$text = "<br />".$headline."</strong><blockquote>".$match[2]."</blockquote>";
-	$text = "\n\t".$match[2].":\t";
-
-        return($text);
-}
-
-
 /**
  * @param App $a
  * @param object $b
@@ -563,29 +537,10 @@ function fbpost_post_hook(&$a,&$b) {
 				// Convert recycle signs
 				$body = str_replace("\t", " ", $body);
 				// recycle 1
-				$recycle = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8');
-				$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n\t$2:\t", $body);
-				// recycle 2 (Test)
-				$recycle = html_entity_decode("&#x25CC; ", ENT_QUOTES, 'UTF-8');
-				$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n\t$2:\t", $body);
+				//$recycle = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8');
+				//$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n\t$2:\t", $body);
 
-				// share element
-				//$body = preg_replace_callback("/\[share(.*?)\]\s?(.*?)\s?\[\/share\]/ism","fbpost_ShareAttributes", $body);
-
-				//$bodyparts = explode("\t", $body);
-				// Doesn't help with multiple repeats - the problem has to be solved later
-				//if (sizeof($bodyparts) == 3) {
-				//	$html = bbcode($bodyparts[2], false, false);
-				//	$test = trim(html2plain($html, 0, true));
-
-				//	if (trim($bodyparts[0]) == "")
-				//		$body = trim($bodyparts[2]);
-				//	else if (trim($test) == "")
-				//		$body = trim($bodyparts[0]);
-				//	else
-				//		$body = trim($bodyparts[0])."\n\n".trim($bodyparts[1])."[quote]".trim($bodyparts[2])."[/quote]";
-				//} else
-					$body = str_replace("\t", "", $body);
+				$body = str_replace("\t", "", $body);
 
 				// At first convert the text to html
 				$html = bbcode($body, false, false, 2);

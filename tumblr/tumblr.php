@@ -201,7 +201,7 @@ function tumblr_settings(&$a,&$s) {
     $oauth_token = get_pconfig(local_user(), "tumblr", "oauth_token");
     $oauth_token_secret = get_pconfig(local_user(), "tumblr", "oauth_token_secret");
 
-    $s .= '<div id="tumblr-password-wrapper">';
+    $s .= '<div id="tumblr-page-wrapper">';
     if (($oauth_token != "") and ($oauth_token_secret != "")) {
 
 	$page = get_pconfig(local_user(),'tumblr','page');
@@ -214,7 +214,8 @@ function tumblr_settings(&$a,&$s) {
 
 	$blogs = array();
 
-	$s .= t("Post to page:")."<select name='tumblr_page'>";
+	$s .= '<label id="tumblr-page-label" for="tumblr-page">' . t('Post to page:') . '</label>';
+	$s .= '<select name="tumblr_page" id="tumblr-page">';
 	foreach($userinfo->response->user->blogs as $blog) {
 		$blogurl = substr(str_replace(array("http://", "https://"), array("", ""), $blog->url), 0, -1);
 		if ($page == $blogurl)
