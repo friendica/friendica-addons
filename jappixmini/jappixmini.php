@@ -499,6 +499,10 @@ function jappixmini_script(&$a,&$s) {
     $r = q("SELECT `username` FROM `user` WHERE `uid`=$uid");
     $nickname = json_encode($r[0]["username"]);
     $groupchats = get_config('jappixmini','groupchats');
+    //if $groupchats has no value jappix_addon_start will have an sytax error
+    if(!isset($groupchats)){
+    	$groupchats = "{}";
+    }
 
     // add javascript to start Jappix Mini
     $a->page['htmlhead'] .= "<script type=\"text/javascript\">
