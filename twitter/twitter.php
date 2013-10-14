@@ -600,10 +600,10 @@ function twitter_post_hook(&$a,&$b) {
 	 * Post to Twitter
 	 */
 
-	//if (!get_pconfig($b["uid"],'twitter','import')) {
-	//	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
-	//		return;
-	//}
+	if (!get_pconfig($b["uid"],'twitter','import')) {
+		if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
+			return;
+	}
 
 	if($b['parent'] != $b['id']) {
 		logger("twitter_post_hook: parameter ".print_r($b, true), LOGGER_DEBUG);
@@ -835,11 +835,15 @@ function twitter_post_hook(&$a,&$b) {
 				notice(t('Twitter post failed. Queued for retry.').EOL);
 			} elseif ($iscomment) {
 				logger('twitter_post: Update extid '.$result->id_str." for post id ".$b['id']);
-				q("UPDATE `item` SET `extid` = '%s', `body` = '%s' WHERE `id` = %d LIMIT 1",
+				q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d LIMIT 1",
 					dbesc("twitter::".$result->id_str),
-					dbesc($result->text),
 					intval($b['id'])
 				);
+				//q("UPDATE `item` SET `extid` = '%s', `body` = '%s' WHERE `id` = %d LIMIT 1",
+				//	dbesc("twitter::".$result->id_str),
+				//	dbesc($result->text),
+				//	intval($b['id'])
+				//);
 			}
 		}
 	}
@@ -1594,7 +1598,7 @@ function twitter_original_url($url, $depth=1, $fetchbody = false) {
 
         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch,CURLOPT_USERAGENT,'Opera/9.64(Windows NT 5.1; U; de) Presto/2.1.1');
+        curl_setopt($ch,CURLOPT_USERAGENT,'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0');
 
         $header = curl_exec($ch);
         $curl_info = @curl_getinfo($ch);
