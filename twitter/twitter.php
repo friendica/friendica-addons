@@ -1073,6 +1073,11 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 	if(!count($r) AND !$create_user)
 		return(0);
 
+	if (count($r) AND ($r[0]["readonly"] OR $r[0]["blocked"])) {
+		logger("twitter_fetch_contact: Contact '".$r[0]["nick"]."' is blocked or readonly.", LOGGER_DEBUG);
+		return(-1);
+	}
+
 	if(!count($r)) {
 		// create contact record
 		q("INSERT INTO `contact` ( `uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
@@ -1137,11 +1142,15 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 	} else {
 		// update profile photos once every two weeks as we have no notification of when they change.
 
-		$update_photo = (($r[0]['avatar-date'] < datetime_convert('','','now -2 days')) ? true : false);
+		//$update_photo = (($r[0]['avatar-date'] < datetime_convert('','','now -2 days')) ? true : false);
+		$update_photo = ($r[0]['avatar-date'] < datetime_convert('','','now -12 hours'));
 
 		// check that we have all the photos, this has been known to fail on occasion
 
 		if((! $r[0]['photo']) || (! $r[0]['thumb']) || (! $r[0]['micro']) || ($update_photo)) {
+
+			logger("twitter_fetch_contact: Updating contact ".$contact->screen_name, LOGGER_DEBUG);
+
 			require_once("Photo.php");
 
 			$photos = import_profile_photo($contact->profile_image_url_https, $uid, $r[0]['id']);
@@ -1287,7 +1296,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 
 	if(($contactid == 0) AND !$only_existing_contact)
 		$contactid = $self['id'];
-	elseif ($contactid == 0)
+	elseif ($contactid <= 0)
 		return(array());
 
 	$postarray['contact-id'] = $contactid;
@@ -1380,16 +1389,27 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 
 function twitter_checknotification($a, $uid, $own_id, $top_item, $postarray) {
 
-	$user = q("SELECT * FROM `user` WHERE `uid` = %d AND `account_expired` = 0 LIMIT 1",
+	$user = q("SELECT * FROM `user` WHERE `uid` = %d AND `self` LIMIT 1",
 			intval($uid)
 		);
 
 	if(!count($user))
 		return;
 
-	$importer_url = $a->get_baseurl() . '/profile/' . $user[0]['nickname'];
+	// Is it me?
+	if (link_compare($user[0]["url"], $postarray['author-link']))
+		return;
 
-	if (link_compare($own_id, $postarray['author-link']))
+	$own_user = q("SELECT * FROM `user` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
+			intval($uid),
+			dbesc("twitter::".$own_id)
+		);
+
+	if(!count($own_user))
+		return;
+
+	// Is it me from twitter?
+	if (link_compare($own_user[0]["url"], $postarray['author-link']))
 		return;
 
 	$myconv = q("SELECT `author-link`, `author-avatar`, `parent` FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `parent` != 0 AND `deleted` = 0",
@@ -1402,7 +1422,7 @@ function twitter_checknotification($a, $uid, $own_id, $top_item, $postarray) {
 		foreach($myconv as $conv) {
 			// now if we find a match, it means we're in this conversation
 
-			if(!link_compare($conv['author-link'],$importer_url) AND !link_compare($conv['author-link'],"https://twitter.com/".$own_id))
+			if(!link_compare($conv['author-link'],$user[0]["url"]) AND !link_compare($conv['author-link'],$own_user[0]["url"]))
 				continue;
 
 			require_once('include/enotify.php');
