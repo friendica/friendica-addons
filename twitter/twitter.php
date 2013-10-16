@@ -805,7 +805,7 @@ function twitter_post_hook(&$a,&$b) {
 				$image = "";
 			} elseif ($iscomment) {
 				logger('twitter_post: Update extid '.$result->id_str." for post id ".$b['id']);
-				q("UPDATE `item` SET `extid` = '%s', `body` = '%s' WHERE `id` = %d LIMIT 1",
+				q("UPDATE `item` SET `extid` = '%s', `body` = '%s' WHERE `id` = %d",
 					dbesc("twitter::".$result->id_str),
 					dbesc($result->text),
 					intval($b['id'])
@@ -835,11 +835,11 @@ function twitter_post_hook(&$a,&$b) {
 				notice(t('Twitter post failed. Queued for retry.').EOL);
 			} elseif ($iscomment) {
 				logger('twitter_post: Update extid '.$result->id_str." for post id ".$b['id']);
-				q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d LIMIT 1",
+				q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d",
 					dbesc("twitter::".$result->id_str),
 					intval($b['id'])
 				);
-				//q("UPDATE `item` SET `extid` = '%s', `body` = '%s' WHERE `id` = %d LIMIT 1",
+				//q("UPDATE `item` SET `extid` = '%s', `body` = '%s' WHERE `id` = %d",
 				//	dbesc("twitter::".$result->id_str),
 				//	dbesc($result->text),
 				//	intval($b['id'])
@@ -1111,7 +1111,7 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 
 		$contact_id  = $r[0]['id'];
 
-		$g = q("select def_gid from user where uid = %d limit 1",
+		$g = q("SELECT def_gid FROM user WHERE uid = %d LIMIT 1",
 			intval($uid)
 		);
 
@@ -1130,7 +1130,7 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 					`name-date` = '%s',
 					`uri-date` = '%s',
 					`avatar-date` = '%s'
-				WHERE `id` = %d LIMIT 1",
+				WHERE `id` = %d",
 			dbesc($photos[0]),
 			dbesc($photos[1]),
 			dbesc($photos[2]),
@@ -1165,8 +1165,8 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 						`nurl` = '%s',
 						`addr` = '%s',
 						`name` = '%s',
-						`nick` = '%s',
-					WHERE `id` = %d LIMIT 1",
+						`nick` = '%s'
+					WHERE `id` = %d",
 				dbesc($photos[0]),
 				dbesc($photos[1]),
 				dbesc($photos[2]),
@@ -1485,7 +1485,7 @@ function twitter_fetchhometimeline($a, $uid) {
 	} else
 		return;
 
-	$u = q("select * from user where uid = %d limit 1",
+	$u = q("SELECT * FROM user WHERE uid = %d LIMIT 1",
 		intval($uid));
 	if(!count($u))
 		return;
