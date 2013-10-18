@@ -285,7 +285,7 @@ function twitter_settings(&$a,&$s) {
                         $s .= '<input id="twitter-default" type="checkbox" name="twitter-default" value="1" ' . $defchecked . '/>';
 			$s .= '<div class="clear"></div>';
 
-                        $s .= '<label id="twitter-mirror-label" for="twitter-mirror">'.t('Mirror all posts from twitter that are no replies or retweets').'</label>';
+                        $s .= '<label id="twitter-mirror-label" for="twitter-mirror">'.t('Mirror all posts from twitter that are no replies').'</label>';
                         $s .= '<input id="twitter-mirror" type="checkbox" name="twitter-mirror" value="1" '. $mirrorchecked . '/>';
 			$s .= '<div class="clear"></div>';
 
@@ -578,7 +578,7 @@ function twitter_action($a, $uid, $pid, $action) {
 
 	$post = array('id' => $pid);
 
-	logger("twitter_action '".$action."' ID: ".$pid." data: " . print_r($post, true), LOGGER_DEBUG);
+	logger("twitter_action '".$action."' ID: ".$pid." data: " . print_r($post, true), LOGGER_DATA);
 
 	switch ($action) {
 		case "delete":
@@ -606,7 +606,7 @@ function twitter_post_hook(&$a,&$b) {
 	}
 
 	if($b['parent'] != $b['id']) {
-		logger("twitter_post_hook: parameter ".print_r($b, true), LOGGER_DEBUG);
+		logger("twitter_post_hook: parameter ".print_r($b, true), LOGGER_DATA);
 
                 // Looking if its a reply to a twitter post
 		if ((substr($b["parent-uri"], 0, 9) != "twitter::") AND (substr($b["extid"], 0, 9) != "twitter::") AND (substr($b["thr-parent"], 0, 9) != "twitter::")) {
@@ -629,7 +629,7 @@ function twitter_post_hook(&$a,&$b) {
 		// To-Do: Ab dem letzten / nehmen
 		$b["body"] = "@".substr($orig_post["author-link"], 20)." ".$b["body"];
 
-		logger("twitter_post_hook: parent found ".print_r($orig_post, true), LOGGER_DEBUG);
+		logger("twitter_post_hook: parent found ".print_r($orig_post, true), LOGGER_DATA);
 	} else {
 		$iscomment = false;
 
@@ -886,7 +886,7 @@ function twitter_cron($a,$b) {
 	}
 	logger('twitter: cron_start');
 
-	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'mirror_posts' AND `v` = '1' ORDER BY RAND() ");
+	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'mirror_posts' AND `v` = '1' ORDER BY RAND()");
 	if(count($r)) {
 		foreach($r as $rr) {
 			logger('twitter: fetching for user '.$rr['uid']);
@@ -895,7 +895,7 @@ function twitter_cron($a,$b) {
 	}
 
 
-	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'import' AND `v` = '1' ORDER BY RAND() ");
+	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'import' AND `v` = '1' ORDER BY RAND()");
 	if(count($r)) {
 		foreach($r as $rr) {
 			logger('twitter: importing timeline from user '.$rr['uid']);
@@ -936,10 +936,12 @@ function twitter_fetchtimeline($a, $uid) {
 	if ($application_name == "")
 		$application_name = $a->get_hostname();
 
+	require_once('mod/item.php');
+
 	require_once('library/twitteroauth.php');
 	$connection = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
 
-	$parameters = array("exclude_replies" => true, "trim_user" => true, "contributor_details" => false, "include_rts" => false);
+	$parameters = array("exclude_replies" => true, "trim_user" => false, "contributor_details" => true, "include_rts" => true);
 
 	$first_time = ($lastid == "");
 
@@ -975,7 +977,47 @@ function twitter_fetchtimeline($a, $uid) {
 
 			$_REQUEST["title"] = "";
 
-			$_REQUEST["body"] = $post->text;
+			if (is_object($post->retweeted_status)) {
+
+				$_REQUEST['body'] = $post->retweeted_status->text;
+
+				// media
+				if (is_array($post->retweeted_status->entities->media)) {
+					foreach($post->retweeted_status->entities->media AS $media) {
+						switch($media->type) {
+							case 'photo':
+								$_REQUEST['body'] = str_replace($media->url, "\n[img]".$media->media_url_https."[/img]\n", $_REQUEST['body']);
+								break;
+						}
+					}
+				}
+
+				$converted = twitter_convertmsg($a, $_REQUEST['body'], true);
+				$_REQUEST['body'] = $converted["body"];
+
+				$_REQUEST['body'] = "[share author='".$post->retweeted_status->user->name.
+					"' profile='https://twitter.com/".$post->retweeted_status->user->screen_name.
+					"' avatar='".$post->retweeted_status->user->profile_image_url_https.
+					"' link='https://twitter.com/".$post->retweeted_status->user->screen_name."/status/".$post->retweeted_status->id_str."']".
+					$_REQUEST['body'];
+				$_REQUEST['body'] .= "[/share]";
+			} else {
+				$_REQUEST["body"] = $post->text;
+
+				if (is_array($post->entities->media)) {
+					foreach($post->entities->media AS $media) {
+						switch($media->type) {
+							case 'photo':
+								$_REQUEST['body'] = str_replace($media->url, "\n[img]".$media->media_url_https."[/img]\n", $_REQUEST['body']);
+								break;
+						}
+					}
+				}
+
+				$converted = twitter_convertmsg($a, $_REQUEST["body"], true);
+				$_REQUEST['body'] = $converted["body"];
+			}
+
 			if (is_string($post->place->name))
 				$_REQUEST["location"] = $post->place->name;
 
@@ -991,9 +1033,9 @@ function twitter_fetchtimeline($a, $uid) {
 			//print_r($_REQUEST);
 			logger('twitter: posting for user '.$uid);
 
-			require_once('mod/item.php');
-			item_post($a);
+//			require_once('mod/item.php');
 
+			item_post($a);
                 }
             }
 	}
@@ -1389,7 +1431,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 
 function twitter_checknotification($a, $uid, $own_id, $top_item, $postarray) {
 
-	$user = q("SELECT * FROM `user` WHERE `uid` = %d AND `self` LIMIT 1",
+	$user = q("SELECT * FROM `contact` WHERE `uid` = %d AND `self` LIMIT 1",
 			intval($uid)
 		);
 
@@ -1400,7 +1442,7 @@ function twitter_checknotification($a, $uid, $own_id, $top_item, $postarray) {
 	if (link_compare($user[0]["url"], $postarray['author-link']))
 		return;
 
-	$own_user = q("SELECT * FROM `user` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
+	$own_user = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
 			intval($uid),
 			dbesc("twitter::".$own_id)
 		);
@@ -1691,7 +1733,7 @@ function twitter_siteinfo($url) {
 
 }
 
-function twitter_convertmsg($a, $body) {
+function twitter_convertmsg($a, $body, $no_tags = false) {
 
 	$links = preg_match_all("/([^\]\='".'"'."]|^)(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/ism", $body,$matches,PREG_SET_ORDER);
 
@@ -1701,10 +1743,15 @@ function twitter_convertmsg($a, $body) {
 		foreach ($matches AS $match) {
 			$expanded_url = twitter_original_url($match[2]);
 
+			// To-Do:
+			// Twitlonger
+
 			if (strstr($expanded_url, "//www.youtube.com/"))
 				$body = str_replace($match[2], "\n[youtube]".$expanded_url."[/youtube]\n", $body);
 			elseif (strstr($expanded_url, "//player.vimeo.com/"))
 				$body = str_replace($match[2], "\n[vimeo]".$expanded_url."[/vimeo]\n", $body);
+			elseif (strstr($expanded_url, "//instagram.com"))
+				$body = str_replace($match[2], "\n[url]".$expanded_url."[/url]\n", $body);
 			else {
 				$img_str = fetch_url($expanded_url, true, $redirects, 4);
 
@@ -1725,6 +1772,9 @@ function twitter_convertmsg($a, $body) {
 		}
 		$body .= $footer;
 	}
+
+	if ($no_tags)
+		return(array("body" => $body, $tags => ""));
 
 	$str_tags = '';
 
@@ -1804,5 +1854,4 @@ function twitter_fetch_own_contact($a, $uid) {
 
 	return($contact_id);
 }
-
 ?>
