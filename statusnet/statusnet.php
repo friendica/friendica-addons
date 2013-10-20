@@ -391,7 +391,7 @@ function statusnet_settings(&$a,&$s) {
 			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Submit') . '" /></div>'; 
 		}
 	}
-        $s .= '</div><div class="clear"></div></div>';
+        $s .= '</div><div class="clear"></div>';
 }
 
 
