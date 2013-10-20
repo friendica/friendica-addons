@@ -1130,10 +1130,17 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 	}
 
 	if ($post->verb == "share") {
-		$postarray['body'] = "[share author='".$post->object->author->displayName.
-                                "' profile='".$post->object->author->url.
-                                "' avatar='".$post->object->author->image->url.
-                                "' link='".$post->links->self->href."']".$postarray['body']."[/share]";
+		if (!intval(get_config('system','wall-to-wall_share'))) {
+			$postarray['body'] = "[share author='".$post->object->author->displayName.
+	                                "' profile='".$post->object->author->url.
+        	                        "' avatar='".$post->object->author->image->url.
+                	                "' link='".$post->links->self->href."']".$postarray['body']."[/share]";
+		} else {
+			// Let shares look like wall-to-wall posts
+			$postarray['author-name'] = $post->object->author->displayName;
+			$postarray['author-link'] = $post->object->author->url;
+			$postarray['author-avatar'] = $post->object->author->image->url;
+		}
 	}
 
 	if (trim($postarray['body']) == "")
