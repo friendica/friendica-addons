@@ -1084,14 +1084,17 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 			}
 		}
 
+		$reply = new stdClass;
 		$reply->verb = "note";
 		$reply->cc = $post->cc;
 		$reply->to = $post->to;
+		$reply->object = new stdClass;
 		$reply->object->objectType = $post->object->inReplyTo->objectType;
 		$reply->object->content = $post->object->inReplyTo->content;
 		$reply->object->id = $post->object->inReplyTo->id;
 		$reply->actor = $post->object->inReplyTo->author;
 		$reply->url = $post->object->inReplyTo->url;
+		$reply->generator = new stdClass;
 		$reply->generator->displayName = "pumpio";
 		$reply->published = $post->object->inReplyTo->published;
 		$reply->received = $post->object->inReplyTo->updated;
