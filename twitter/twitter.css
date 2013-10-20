@@ -24,6 +24,8 @@
 #twitter-enable-label,
 #twitter-shortening-label, 
 #twitter-mirror-label,
+#twitter-import-label,
+#twitter-create_user-label,
 #twitter-pin-label {
         float: left;
         width: 250px;

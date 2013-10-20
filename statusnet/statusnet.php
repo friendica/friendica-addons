@@ -548,7 +548,7 @@ function statusnet_shortenmsg($b, $max_char) {
 		$msglink = $b["plink"];
 
 	// If the message is short enough then don't modify it. (if the link exists in the original message)
-	if ((strlen(trim($origmsg)) <= $max_char) AND (strpos($origmsg, $msglink) OR ($msglink == "")))
+	if ((strlen(trim($origmsg)) <= $max_char) AND (($msglink == "") OR strpos($origmsg, $msglink)))
 		return(array("msg"=>trim($origmsg), "image"=>""));
 
 	// If the message is short enough and contains a picture then post the picture as well

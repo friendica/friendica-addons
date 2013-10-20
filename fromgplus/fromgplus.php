@@ -304,6 +304,9 @@ function fromgplus_handleattachments($item, $displaytext) {
 function fromgplus_fetch($a, $uid) {
 	$maxfetch = 20;
 
+	// Special blank to identify postings from the googleplus connector
+	$blank = html_entity_decode("&#x00A0;", ENT_QUOTES, 'UTF-8');
+
 	$account = get_pconfig($uid,'fromgplus','account');
 	$key = get_config('fromgplus','key');
 
@@ -330,6 +333,15 @@ function fromgplus_fetch($a, $uid) {
 			$lastdate = strtotime($item->published);
 
 		if ($item->access->description == "Public")
+
+			// Loop prevention - ignore postings from HootSuite
+			if ($item->provider->title == "HootSuite")
+				continue;
+
+			// Loop prevention through the special blank from the googleplus connector
+			if (strstr($item->object->content, $blank))
+				continue;
+
 			switch($item->object->objectType) {
 				case "note":
 					$post = fromgplus_html2bbcode($item->object->content);
@@ -343,9 +355,7 @@ function fromgplus_fetch($a, $uid) {
 					else
 						$location = "";
 
-					// Loop prevention - should be made better
-					if ($item->provider->title != "HootSuite")
-						fromgplus_post($a, $uid, "Google+", $post, $location);
+					fromgplus_post($a, $uid, "Google+", $post, $location);
 					//fromgplus_post($a, $uid, $item->provider->title, $post, $location);
 
 					break;
@@ -353,7 +363,7 @@ function fromgplus_fetch($a, $uid) {
 				case "activity":
 					$post = fromgplus_html2bbcode($item->annotation)."\n";
 
-					if (intval(get_config('system','new_share'))) {
+					if (!intval(get_config('system','old_share'))) {
 						$post .= "[share author='".str_replace("'", "&#039;",$item->object->actor->displayName).
 								"' profile='".$item->object->actor->url.
 								"' avatar='".$item->object->actor->image->url.
@@ -379,9 +389,7 @@ function fromgplus_fetch($a, $uid) {
 					else
 						$location = "";
 
-					// Loop prevention - should be made better
-					if ($item->provider->title != "HootSuite")
-						fromgplus_post($a, $uid, "Google+", $post, $location);
+					fromgplus_post($a, $uid, "Google+", $post, $location);
 					//fromgplus_post($a, $uid, $item->provider->title, $post, $location);
 					break;
 			}
