@@ -212,8 +212,10 @@ function fbpost_content(&$a) {
 	if(! $fb_installed) { 
 		$o .= '<div id="fbpost-enable-wrapper">';
 
+		//read_stream,publish_stream,manage_pages,photo_upload,user_groups,offline_access
+
 		$o .= '<a href="https://www.facebook.com/dialog/oauth?client_id=' . $appid . '&redirect_uri=' 
-			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=read_stream,publish_stream,manage_pages,photo_upload,user_groups,offline_access">' . t('Install Facebook Post connector for this account.') . '</a>';
+			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=export_stream,read_stream,publish_stream,manage_pages,photo_upload,user_groups,publish_actions,user_friends,create_note,share_item,video_upload,status_update">' . t('Install Facebook Post connector for this account.') . '</a>';
 		$o .= '</div>';
 	}
 
@@ -225,7 +227,7 @@ function fbpost_content(&$a) {
 		$o .= '<div id="fbpost-enable-wrapper">';
 
 		$o .= '<a href="https://www.facebook.com/dialog/oauth?client_id=' . $appid . '&redirect_uri=' 
-			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=read_stream,publish_stream,manage_pages,photo_upload,user_groups,offline_access">' . t('Re-authenticate [This is necessary whenever your Facebook password is changed.]') . '</a>';
+			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=export_stream,read_stream,publish_stream,manage_pages,photo_upload,user_groups,publish_actions,user_friends,create_note,share_item,video_upload,status_update">' . t('Re-authenticate [This is necessary whenever your Facebook password is changed.]') . '</a>';
 		$o .= '</div>';
 
 		$o .= '<div id="fbpost-post-default-form">';
@@ -291,7 +293,7 @@ function fbpost_content(&$a) {
 function fbpost_plugin_settings(&$a,&$b) {
 
 	$b .= '<div class="settings-block">';
-	$b .= '<h3>' . t('Facebook') . '</h3>';
+	$b .= '<h3>' . t('Facebook Post Settings') . '</h3>';
 	$b .= '<a href="fbpost">' . t('Facebook Post Settings') . '</a><br />';
 	$b .= '</div>';
 
@@ -526,9 +528,16 @@ function fbpost_post_hook(&$a,&$b) {
 			intval($b['parent']),
 			intval($b['uid'])
 		);
+		//$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
+		//	dbesc($b['parent-uri']),
+		//	intval($b['uid'])
+		//);
+
+		// is it a reply to a facebook post?
+		// A reply to a toplevel post is only allowed for "real" facebook posts
 		if(count($r) && substr($r[0]['uri'],0,4) === 'fb::')
 			$reply = substr($r[0]['uri'],4);
-		elseif(count($r) && substr($r[0]['extid'],0,4) === 'fb::')
+		elseif(count($r) && (substr($r[0]['extid'],0,4) === 'fb::') AND ($r[0]['id'] != $r[0]['parent']))
 			$reply = substr($r[0]['extid'],4);
 		else
 			return;
@@ -594,8 +603,10 @@ function fbpost_post_hook(&$a,&$b) {
 				return;
 		}
 
-		if($b['verb'] == ACTIVITY_LIKE)
+		if($b['verb'] == ACTIVITY_LIKE) {
 			$likes = true;
+			logger('fbpost_post_hook: liking '.print_r($b, true), LOGGER_DEBUG);
+		}
 
 
 		$appid  = get_config('facebook', 'appid'  );
@@ -745,10 +756,11 @@ function fbpost_post_hook(&$a,&$b) {
 
 					$retj = json_decode($x);
 					if($retj->id) {
-						q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d LIMIT 1",
-							dbesc('fb::' . $retj->id),
-							intval($b['id'])
-						);
+						if (!$toplevel)
+							q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d LIMIT 1",
+								dbesc('fb::' . $retj->id),
+								intval($b['id'])
+							);
 					}
 					else {
 						if(! $likes) {
@@ -881,11 +893,12 @@ function fbpost_queue_hook(&$a,&$b) {
 
 				$retj = json_decode($j);
 				if($retj->id) {
-					q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d LIMIT 1",
+					// Only set the extid when it isn't the toplevel post
+					q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d AND `parent` != $d LIMIT 1",
 						dbesc('fb::' . $retj->id),
 						intval($item)
 					);
-					logger('facebook_queue: success: ' . $j); 
+					logger('facebook_queue: success: ' . $j);
 					remove_queue_item($x['id']);
 				}
 				else {
