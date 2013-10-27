@@ -8,15 +8,14 @@
 
 /* To-Do
 FBSync:
-- A: "Nicht automatisch anlegen" einbauen
-- B: Threading für empfangene Kommentare
-- B: Posts von Seiten, die man nicht selber abonniert hat
-- C: Like für Kommentare empfangen?
+- A: Make shared posts look like shared posts
+- B: Threading for incoming comments
+- C: Receiving likes for comments
 
 FBPost:
-- B: Post auf Seite nicht als Seite
-- B: Like für Kommentare senden
-- C: Threading für gesendete Kommentare
+- A: Posts to pages currently have the page as sender - not the user
+- B: Sending likes for comments
+- C: Threading for sent comments
 */
 
 require_once("addon/fbpost/fbpost.php");
@@ -114,7 +113,7 @@ function fbsync_cron($a,$b) {
 	set_config('fbsync','last_poll', time());
 }
 
-function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post) {
+function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $create_user) {
 
 	// check if it was already imported
 	$r = q("SELECT * FROM `item` WHERE `uid` = %d AND `uri` = '%s' LIMIT 1",
@@ -136,7 +135,7 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post) {
 	$postarray['parent-uri'] = $postarray['uri'];
 	$postarray['plink'] = $post->permalink;
 
-	$contact_id = fbsync_fetch_contact($uid, $contacts[$post->source_id], true);
+	$contact_id = fbsync_fetch_contact($uid, $contacts[$post->source_id], $create_user);
 
 	if ($contact_id < 0)
 		return;
@@ -659,7 +658,7 @@ function fbsync_fetchfeed($a, $uid) {
 
 	require_once('include/items.php');
 
-	//if ($last_updated == "")
+	if ($last_updated == "")
 		$last_updated = 0;
 
 	logger("fbsync_fetchfeed: fetching content for user ".$self_id);
@@ -763,7 +762,7 @@ function fbsync_fetchfeed($a, $uid) {
 
 		// parent_post_id - Erkennen von geteilten Posts?
 
-		fbsync_createpost($a, $uid, $self, $contacts, $application_data, $post);
+		fbsync_createpost($a, $uid, $self, $contacts, $application_data, $post, $create_user);
 	}
 
 	foreach ($comment_data AS $comment) {
