@@ -756,17 +756,19 @@ function fbpost_post_hook(&$a,&$b) {
 
 					$retj = json_decode($x);
 					if($retj->id) {
-						if (!$toplevel)
-							q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d LIMIT 1",
-								dbesc('fb::' . $retj->id),
-								intval($b['id'])
-							);
+						// Only set the extid when it isn't the toplevel post
+						q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d AND `parent` != %d",
+							dbesc('fb::' . $retj->id),
+							intval($b['id']),
+							intval($b['id'])
+						);
 					}
 					else {
 						if(! $likes) {
 							$s = serialize(array('url' => $url, 'item' => $b['id'], 'post' => $postvars));
 							require_once('include/queue_fn.php');
 							add_to_queue($a->contact,NETWORK_FACEBOOK,$s);
+							logger('fbpost_post_hook: Post failed, requeued.', LOGGER_DEBUG);
 							notice( t('Facebook post failed. Queued for retry.') . EOL);
 						}
 
@@ -884,7 +886,7 @@ function fbpost_queue_hook(&$a,&$b) {
 			$fb_token  = get_pconfig($user['uid'],'facebook','access_token');
 
 			if($fb_post && $fb_token) {
-				logger('facebook_queue: able to post');
+				logger('fbpost_queue_hook: able to post');
 				require_once('library/facebook.php');
 
 				$z = unserialize($x['content']);
@@ -894,15 +896,16 @@ function fbpost_queue_hook(&$a,&$b) {
 				$retj = json_decode($j);
 				if($retj->id) {
 					// Only set the extid when it isn't the toplevel post
-					q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d AND `parent` != $d LIMIT 1",
+					q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d AND `parent` != %d",
 						dbesc('fb::' . $retj->id),
+						intval($item),
 						intval($item)
 					);
-					logger('facebook_queue: success: ' . $j);
+					logger('fbpost_queue_hook: success: ' . $j);
 					remove_queue_item($x['id']);
 				}
 				else {
-					logger('facebook_queue: failed: ' . $j);
+					logger('fbpost_queue_hook: failed: ' . $j);
 					update_queue_time($x['id']);
 				}
 			}
