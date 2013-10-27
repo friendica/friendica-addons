@@ -7,13 +7,16 @@
  */
 
 /* To-Do
-- A: Frontend
-- B: Like für Kommentare senden
+FBSync:
+- A: "Nicht automatisch anlegen" einbauen
+- B: Threading für empfangene Kommentare
+- B: Posts von Seiten, die man nicht selber abonniert hat
+- C: Like für Kommentare empfangen?
+
+FBPost:
 - B: Post auf Seite nicht als Seite
-- B: Leere Posts?
-- C: Threading für Kommentare
-- C: Posts von Seiten, die man nicht selber abonniert hat
-- D: Like für Kommentare empfangen?
+- B: Like für Kommentare senden
+- C: Threading für gesendete Kommentare
 */
 
 require_once("addon/fbpost/fbpost.php");
@@ -111,7 +114,15 @@ function fbsync_cron($a,$b) {
 	set_config('fbsync','last_poll', time());
 }
 
-function fbsync_createpostarray($a, $uid, $self, $contacts, $applications, $post) {
+function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post) {
+
+	// check if it was already imported
+	$r = q("SELECT * FROM `item` WHERE `uid` = %d AND `uri` = '%s' LIMIT 1",
+		intval($uid),
+		dbesc('fb::'.$post->post_id)
+	);
+	if(count($r))
+		return;
 
 	$postarray = array();
 	$postarray['gravity'] = 0;
@@ -128,7 +139,7 @@ function fbsync_createpostarray($a, $uid, $self, $contacts, $applications, $post
 	$contact_id = fbsync_fetch_contact($uid, $contacts[$post->source_id], true);
 
 	if ($contact_id < 0)
-		return($postarray);
+		return;
 	elseif ($contact_id == 0)
 		$contact_id = $self[0]["id"];
 
@@ -161,6 +172,9 @@ function fbsync_createpostarray($a, $uid, $self, $contacts, $applications, $post
 	if(isset($post->attachment->caption) and ($post->attachment->fb_object_type == "photo"))
 		$quote = $post->attachment->caption;
 
+	if ($quote.$post->attachment->href.$postarray["body"] == "")
+		return;
+
 	if (isset($post->attachment->media) AND !strstr($post->attachment->href, "://www.youtube.com/")
 		AND !strstr($post->attachment->href, "://youtu.be/")
 		AND !strstr($post->attachment->href, ".vimeo.com/")) {
@@ -172,10 +186,10 @@ function fbsync_createpostarray($a, $uid, $self, $contacts, $applications, $post
 			//	$postarray['author-avatar'] = $contacts[$media->photo->owner]->pic_square;
 			//}
 
-			if(isset($media->src) && isset($media->href))
+			if(isset($media->src) && isset($media->href) AND ($media->src != "") AND ($media->href != ""))
 				$postarray["body"] .= "\n".'[url='.$media->href.'][img]'.fpost_cleanpicture($media->src).'[/img][/url]';
 			else {
-				if (isset($media->src))
+				if (isset($media->src) AND ($media->src != ""))
 					$postarray["body"] .= "\n".'[img]'.fpost_cleanpicture($media->src).'[/img]';
 
 				// if just a link, it may be a wall photo - check
@@ -189,6 +203,9 @@ function fbsync_createpostarray($a, $uid, $self, $contacts, $applications, $post
 		$postarray["body"] .= "\n[quote]".$quote."[/quote]";
 
 	$postarray["body"] = trim($postarray["body"]);
+
+	if (trim($postarray["body"]) == "")
+		return;
 
 	$postarray['created'] = datetime_convert('UTC','UTC',date("c", $post->created_time));
 	$postarray['edited'] = datetime_convert('UTC','UTC',date("c", $post->updated_time));
@@ -208,13 +225,18 @@ function fbsync_createpostarray($a, $uid, $self, $contacts, $applications, $post
 	postarray["coord"] = $post->geo->coordinates[0]." ".$post->geo->coordinates[1];
 	*/
 
-	return($postarray);
+	//$types = array(46, 80, 237, 247, 308);
+	//if (!in_array($post->type, $types))
+	//	$postarray["body"] = "Type: ".$post->type."\n".$postarray["body"];
+	//print_r($postarray);
+	$item = item_store($postarray);
+	logger('fbsync_createpost: User '.$self[0]["nick"].' posted feed item '.$item, LOGGER_DEBUG);
 }
 
-function fbsync_createcommentpostarray($a, $uid, $self_id, $self, $user, $contacts, $applications, $comment) {
+function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $applications, $comment) {
 
 	// check if it was already imported
-	$r = q("SELECT * FROM `item` WHERE `uid` = %d AND `uri` = '%s' LIMIT 1",
+	$r = q("SELECT `uri` FROM `item` WHERE `uid` = %d AND `uri` = '%s' LIMIT 1",
 		intval($uid),
 		dbesc('fb::'.$comment->id)
 	);
@@ -222,11 +244,33 @@ function fbsync_createcommentpostarray($a, $uid, $self_id, $self, $user, $contac
 		return;
 
 	// check if it was an own post (separate posting for performance reasons)
-	$r = q("SELECT * FROM `item` WHERE `uid` = %d AND `extid` = '%s' LIMIT 1",
+	$r = q("SELECT `uri` FROM `item` WHERE `uid` = %d AND `extid` = '%s' LIMIT 1",
 		intval($uid),
 		dbesc('fb::'.$comment->id)
 	);
 	if(count($r))
+		return;
+
+	$parent_uri = "";
+
+	// Fetch the parent uri (Checking if the parent exists)
+	$r = q("SELECT `uri` FROM `item` WHERE `uid` = %d AND `uri` = '%s' LIMIT 1",
+		intval($uid),
+		dbesc('fb::'.$comment->post_id)
+	);
+	if(count($r))
+		$parent_uri = $r[0]["uri"];
+
+	// check if it is a reply to an own post (separate posting for performance reasons)
+	$r = q("SELECT `uri` FROM `item` WHERE `uid` = %d AND `extid` = '%s' LIMIT 1",
+		intval($uid),
+		dbesc('fb::'.$comment->post_id)
+	);
+	if(count($r))
+		$parent_uri = $r[0]["uri"];
+
+	// No parent? Then quit
+	if ($parent_uri == "")
 		return;
 
 	$postarray = array();
@@ -237,8 +281,8 @@ function fbsync_createcommentpostarray($a, $uid, $self_id, $self, $user, $contac
 	$postarray['verb'] = ACTIVITY_POST;
 
 	$postarray['uri'] = "fb::".$comment->id;
-	$postarray['thr-parent'] = "fb::".$comment->post_id;
-	$postarray['parent-uri'] = "fb::".$comment->post_id;
+	$postarray['thr-parent'] = $parent_uri;
+	$postarray['parent-uri'] = $parent_uri;
 	//$postarray['plink'] = $comment->permalink;
 
 	$contact_id = fbsync_fetch_contact($uid, $contacts[$comment->fromid], array(), false);
@@ -275,6 +319,15 @@ function fbsync_createcommentpostarray($a, $uid, $self_id, $self, $user, $contac
 	if ($postarray['app'] == "")
 		$postarray['app'] = "Facebook";
 
+	if (trim($postarray["body"]) == "")
+		return;
+
+	$item = item_store($postarray);
+	logger('fbsync_createcomment: User '.$self[0]["nick"].' posted comment '.$item, LOGGER_DEBUG);
+
+	if ($item == 0)
+		return;
+
 	$myconv = q("SELECT `author-link`, `author-avatar`, `parent` FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `parent` != 0 AND `deleted` = 0",
 		dbesc($postarray['parent-uri']),
 		intval($uid)
@@ -294,16 +347,6 @@ function fbsync_createcommentpostarray($a, $uid, $self_id, $self, $user, $contac
 			// now if we find a match, it means we're in this conversation
 			if(!link_compare($conv['author-link'],$importer_url) AND !link_compare($conv['author-link'],$own_contact[0]["url"]))
 				continue;
-
-			// Fetching the item number
-			$r = q("SELECT `id` FROM `item` WHERE `uid` = %d AND `uri` = '%s' LIMIT 1",
-				intval($uid),
-				dbesc('fb::'.$comment->post_id)
-			);
-			if(!count($r))
-				return;
-			else
-				$item = $r[0]["id"];
 
 			require_once('include/enotify.php');
 
@@ -332,11 +375,9 @@ function fbsync_createcommentpostarray($a, $uid, $self_id, $self, $user, $contac
 			break;
 		}
 	}
-
-	return($postarray);
 }
 
-function fbsync_createlikepostarray($a, $uid, $self_id, $self, $contacts, $like) {
+function fbsync_createlike($a, $uid, $self_id, $self, $contacts, $like) {
 
 	$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
 				dbesc("fb::".$like->post_id),
@@ -346,7 +387,7 @@ function fbsync_createlikepostarray($a, $uid, $self_id, $self, $contacts, $like)
         if (count($r))
                 $orig_post = $r[0];
 	else
-		return(array("uri"=>""));
+		return;
 
 	// If we posted the like locally, it will be found with our url, not the FB url.
 
@@ -362,7 +403,7 @@ function fbsync_createlikepostarray($a, $uid, $self_id, $self, $contacts, $like)
 	);
 
 	if (count($r))
-	 return;
+		return;
 
 	$contact_id = fbsync_fetch_contact($uid, $contacts[$like->user_id], array(), false);
 
@@ -414,9 +455,10 @@ function fbsync_createlikepostarray($a, $uid, $self_id, $self, $contacts, $like)
 		);
 
         if (count($r))
-		return(array("uri"=>""));
+		return;
 
-	return($likedata);
+	$item = item_store($likedata);
+	logger('fbsync_createlike: liked item '.$item.'. User '.$self[0]["nick"], LOGGER_DEBUG);
 }
 
 function fbsync_fetch_contact($uid, $contact, $create_user) {
@@ -617,17 +659,17 @@ function fbsync_fetchfeed($a, $uid) {
 
 	require_once('include/items.php');
 
-	if ($last_updated == "")
+	//if ($last_updated == "")
 		$last_updated = 0;
 
 	logger("fbsync_fetchfeed: fetching content for user ".$self_id);
 
 	$fql = array(
-		"posts" => "SELECT action_links, actor_id, app_data, app_id, attachment, attribution, comment_info, created_time, filter_key, like_info, message, message_tags, parent_post_id, permalink, place, post_id, privacy, share_count, share_info, source_id, subscribed, tagged_ids, type, updated_time, with_tags FROM stream where filter_key in (SELECT filter_key FROM stream_filter WHERE uid=me() AND type='newsfeed') AND updated_time > $last_updated ORDER BY created_time DESC",
-		"comments" => "SELECT app_id, attachment, post_id, id, likes, fromid, time, text, text_tags, user_likes, likes FROM comment WHERE post_id IN (SELECT post_id FROM #posts) order by time desc",
-		"profiles" => "SELECT id, name, username, url, pic_square FROM profile WHERE id IN (SELECT actor_id FROM #posts) OR id IN (SELECT fromid FROM #comments) OR id IN (SELECT source_id FROM #posts)",
-		"applications" => "SELECT app_id, display_name FROM application WHERE app_id IN (SELECT app_id FROM #posts) OR app_id IN (SELECT app_id FROM #comments)",
-		"avatars" => "SELECT id, real_size, size, url FROM square_profile_pic WHERE id IN (SELECT id FROM #profiles) AND size = 256");
+		"posts" => "SELECT action_links, actor_id, app_data, app_id, attachment, attribution, comment_info, created_time, filter_key, like_info, message, message_tags, parent_post_id, permalink, place, post_id, privacy, share_count, share_info, source_id, subscribed, tagged_ids, type, updated_time, with_tags FROM stream where filter_key in (SELECT filter_key FROM stream_filter WHERE uid=me() AND type='newsfeed') AND updated_time > $last_updated ORDER BY updated_time DESC LIMIT 500",
+		"comments" => "SELECT app_id, attachment, post_id, id, likes, fromid, time, text, text_tags, user_likes, likes FROM comment WHERE post_id IN (SELECT post_id FROM #posts) ORDER BY time DESC LIMIT 500",
+		"profiles" => "SELECT id, name, username, url, pic_square FROM profile WHERE id IN (SELECT actor_id FROM #posts) OR id IN (SELECT fromid FROM #comments) OR id IN (SELECT source_id FROM #posts) LIMIT 500",
+		"applications" => "SELECT app_id, display_name FROM application WHERE app_id IN (SELECT app_id FROM #posts) OR app_id IN (SELECT app_id FROM #comments) LIMIT 500",
+		"avatars" => "SELECT id, real_size, size, url FROM square_profile_pic WHERE id IN (SELECT id FROM #profiles) AND size = 256 LIMIT 500");
 
 	if ($do_likes) {
 		$fql["likes"] = "SELECT post_id, user_id FROM like WHERE post_id IN (SELECT post_id FROM #posts)";
@@ -714,36 +756,24 @@ function fbsync_fetchfeed($a, $uid) {
 	unset($comments);
 
 	foreach ($post_data AS $post) {
-		//print_r($post);
 		if ($post->updated_time > $last_updated)
 			$last_updated = $post->updated_time;
 
-		$postarray = fbsync_createpostarray($a, $uid, $self, $contacts, $application_data, $post);
-		//print_r($postarray);
-		if (trim($postarray["body"]) != "") {
-			$item = item_store($postarray);
-			logger('fbsync_fetchfeed: User '.$self[0]["nick"].' posted feed item '.$item, LOGGER_DEBUG);
-		}
+		//print_r($post);
+
+		// parent_post_id - Erkennen von geteilten Posts?
+
+		fbsync_createpost($a, $uid, $self, $contacts, $application_data, $post);
 	}
 
 	foreach ($comment_data AS $comment) {
-		$postarray = fbsync_createcommentpostarray($a, $uid, $self_id, $self, $user, $contacts, $application_data, $comment);
-
-		if (trim($postarray["body"]) != "") {
-			$item = item_store($postarray);
-			logger('fbsync_fetchfeed: User '.$self[0]["nick"].' posted comment '.$item, LOGGER_DEBUG);
-		}
+		fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $application_data, $comment);
 	}
 
 	foreach($likes AS $like) {
 		$like->user_id = number_format($like->user_id, 0, '', '');
 
-		$postarray = fbsync_createlikepostarray($a, $uid, $self_id, $self, $contacts, $like);
-
-		if ($postarray["uri"] != "") {
-			$item = item_store($postarray);
-			logger('fbsync_fetchfeed: User '.$self[0]["nick"].' liked '.$item, LOGGER_DEBUG);
-		}
+		fbsync_createlike($a, $uid, $self_id, $self, $contacts, $like);
 
 	}
 
