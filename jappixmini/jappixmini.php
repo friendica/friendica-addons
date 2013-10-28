@@ -500,7 +500,7 @@ function jappixmini_script(&$a,&$s) {
     $nickname = json_encode($r[0]["username"]);
     $groupchats = get_config('jappixmini','groupchats');
     //if $groupchats has no value jappix_addon_start will produce a syntax error
-    if(!isset($groupchats)){
+    if(empty($groupchats)){
     	$groupchats = "{}";
     }
 
