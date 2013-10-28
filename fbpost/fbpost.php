@@ -184,7 +184,7 @@ function fbpost_content(&$a) {
 	}
 
 	$o = '';
-	
+
 	$fb_installed = false;
 	if (get_pconfig(local_user(),'facebook','post')) {
 		$access_token = get_pconfig(local_user(),'facebook','access_token');
@@ -196,7 +196,7 @@ function fbpost_content(&$a) {
 			}
 		}
 	}
-	
+
 	$appid = get_config('facebook','appid');
 
 	if(! $appid) {
@@ -212,8 +212,10 @@ function fbpost_content(&$a) {
 	if(! $fb_installed) { 
 		$o .= '<div id="fbpost-enable-wrapper">';
 
+		//read_stream,publish_stream,manage_pages,photo_upload,user_groups,offline_access
+
 		$o .= '<a href="https://www.facebook.com/dialog/oauth?client_id=' . $appid . '&redirect_uri=' 
-			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=read_stream,publish_stream,manage_pages,photo_upload,user_groups,offline_access">' . t('Install Facebook Post connector for this account.') . '</a>';
+			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=export_stream,read_stream,publish_stream,manage_pages,photo_upload,user_groups,publish_actions,user_friends,create_note,share_item,video_upload,status_update">' . t('Install Facebook Post connector for this account.') . '</a>';
 		$o .= '</div>';
 	}
 
@@ -225,7 +227,7 @@ function fbpost_content(&$a) {
 		$o .= '<div id="fbpost-enable-wrapper">';
 
 		$o .= '<a href="https://www.facebook.com/dialog/oauth?client_id=' . $appid . '&redirect_uri=' 
-			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=read_stream,publish_stream,manage_pages,photo_upload,user_groups,offline_access">' . t('Re-authenticate [This is necessary whenever your Facebook password is changed.]') . '</a>';
+			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=export_stream,read_stream,publish_stream,manage_pages,photo_upload,user_groups,publish_actions,user_friends,create_note,share_item,video_upload,status_update">' . t('Re-authenticate [This is necessary whenever your Facebook password is changed.]') . '</a>';
 		$o .= '</div>';
 
 		$o .= '<div id="fbpost-post-default-form">';
@@ -291,7 +293,7 @@ function fbpost_content(&$a) {
 function fbpost_plugin_settings(&$a,&$b) {
 
 	$b .= '<div class="settings-block">';
-	$b .= '<h3>' . t('Facebook') . '</h3>';
+	$b .= '<h3>' . t('Facebook Post Settings') . '</h3>';
 	$b .= '<a href="fbpost">' . t('Facebook Post Settings') . '</a><br />';
 	$b .= '</div>';
 
@@ -306,21 +308,21 @@ function fbpost_plugin_admin(&$a, &$o){
 
 
 	$o = '<input type="hidden" name="form_security_token" value="' . get_form_security_token("fbsave") . '">';
-	
+
 	$o .= '<h4>' . t('Facebook API Key') . '</h4>';
-	
+
 	$appid  = get_config('facebook', 'appid'  );
 	$appsecret = get_config('facebook', 'appsecret' );
-	
+
 	$ret1 = q("SELECT `v` FROM `config` WHERE `cat` = 'facebook' AND `k` = 'appid' LIMIT 1");
 	$ret2 = q("SELECT `v` FROM `config` WHERE `cat` = 'facebook' AND `k` = 'appsecret' LIMIT 1");
 	if ((count($ret1) > 0 && $ret1[0]['v'] != $appid) || (count($ret2) > 0 && $ret2[0]['v'] != $appsecret)) $o .= t('Error: it appears that you have specified the App-ID and -Secret in your .htconfig.php file. As long as they are specified there, they cannot be set using this form.<br><br>');
-	
+
 	$o .= '<label for="fb_appid">' . t('App-ID / API-Key') . '</label><input id="fb_appid" name="appid" type="text" value="' . escape_tags($appid ? $appid : "") . '"><br style="clear: both;">';
 	$o .= '<label for="fb_appsecret">' . t('Application secret') . '</label><input id="fb_appsecret" name="appsecret" type="text" value="' . escape_tags($appsecret ? $appsecret : "") . '"><br style="clear: both;">';
 
 	$o .= '<input type="submit" name="fb_save_keys" value="' . t('Save') . '">';
-	
+
 }
 
 /**
@@ -329,7 +331,7 @@ function fbpost_plugin_admin(&$a, &$o){
 
 function fbpost_plugin_admin_post(&$a){
 	check_form_security_token_redirectOnErr('/admin/plugins/fbpost', 'fbsave');
-	
+
 	if (x($_REQUEST,'fb_save_keys')) {
 		set_config('facebook', 'appid', $_REQUEST['appid']);
 		set_config('facebook', 'appsecret', $_REQUEST['appsecret']);
@@ -357,6 +359,131 @@ function fbpost_jot_nets(&$a,&$b) {
 	}
 }
 
+function fbpost_createmsg($b) {
+	require_once("include/bbcode.php");
+	require_once("include/html2plain.php");
+
+	// Looking for the first image
+	$image = '';
+	if(preg_match("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/is",$b['body'],$matches))
+		$image = $matches[3];
+
+	if ($image == '')
+		if(preg_match("/\[img\](.*?)\[\/img\]/is",$b['body'],$matches))
+			$image = $matches[1];
+
+	$multipleimages = (strpos($b['body'], "[img") != strrpos($b['body'], "[img"));
+
+	// When saved into the database the content is sent through htmlspecialchars
+	// That means that we have to decode all image-urls
+	$image = htmlspecialchars_decode($image);
+
+	$body = $b["body"];
+	if ($b["title"] != "")
+		$body = $b["title"]."\n\n".$body;
+
+	if (strpos($body, "[bookmark") !== false) {
+		// splitting the text in two parts:
+		// before and after the bookmark
+		$pos = strpos($body, "[bookmark");
+		$body1 = substr($body, 0, $pos);
+		$body2 = substr($body, $pos);
+
+		// Removing all quotes after the bookmark
+		// they are mostly only the content after the bookmark.
+		$body2 = preg_replace("/\[quote\=([^\]]*)\](.*?)\[\/quote\]/ism",'',$body2);
+		$body2 = preg_replace("/\[quote\](.*?)\[\/quote\]/ism",'',$body2);
+
+		$pos2 = strpos($body2, "[/bookmark]");
+		if ($pos2)
+			$body2 = substr($body2, $pos2 + 11);
+
+		$body = $body1.$body2;
+	}
+
+	// Add some newlines so that the message could be cut better
+	$body = str_replace(array("[quote", "[bookmark", "[/bookmark]", "[/quote]"),
+				array("\n[quote", "\n[bookmark", "[/bookmark]\n", "[/quote]\n"), $body);
+
+	// remove the recycle signs and the names since they aren't helpful on twitter
+	// $recycle = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8');
+	// $body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n", $body);
+
+	// At first convert the text to html
+	$html = bbcode($body, false, false, 2);
+
+	// Then convert it to plain text
+	//$msg = trim($b['title']." \n\n".html2plain($html, 0, true));
+	$msg = trim(html2plain($html, 0, true));
+	$msg = html_entity_decode($msg,ENT_QUOTES,'UTF-8');
+
+	// Removing multiple newlines
+	while (strpos($msg, "\n\n\n") !== false)
+		$msg = str_replace("\n\n\n", "\n\n", $msg);
+
+	// Removing multiple spaces
+	while (strpos($msg, "  ") !== false)
+		$msg = str_replace("  ", " ", $msg);
+
+	// Removing URLs
+	$msg = preg_replace('/(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/i', "", $msg);
+
+	$msg = trim($msg);
+
+	$link = '';
+	$linkname = '';
+	// look for bookmark-bbcode and handle it with priority
+	if(preg_match("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/is",$b['body'],$matches)) {
+		$link = $matches[1];
+		$linkname = $matches[2];
+	}
+
+	$multiplelinks = (strpos($b['body'], "[bookmark") != strrpos($b['body'], "[bookmark"));
+
+	if ($multiplelinks)
+		$linkname = '';
+
+	// If there is no bookmark element then take the first link
+	if ($link == '') {
+		$links = collecturls($html);
+		if (sizeof($links) > 0) {
+			reset($links);
+			$link = current($links);
+		}
+		$multiplelinks = (sizeof($links) > 1);
+	}
+
+	$msglink = "";
+	if ($multiplelinks)
+		$msglink = $b["plink"];
+	else if ($link != "")
+		$msglink = $link;
+	else if ($multipleimages)
+		$msglink = $b["plink"];
+	else if ($image != "")
+		$msglink = $image;
+
+	// Removing multiple spaces - again
+	while (strpos($msg, "  ") !== false)
+		$msg = str_replace("  ", " ", $msg);
+
+	if ($msglink != "") {
+		// Looking if the link points to an image
+		$img_str = fetch_url($msglink);
+
+		$tempfile = tempnam(get_config("system","temppath"), "cache");
+		file_put_contents($tempfile, $img_str);
+		$mime = image_type_to_mime_type(exif_imagetype($tempfile));
+		unlink($tempfile);
+	} else
+		$mime = "";
+
+	if (($image == $msglink) OR (substr($mime, 0, 6) == "image/"))
+		return(array("msg"=>trim($msg), "link"=>"", "linkname"=>$linkname, "image"=>$msglink));
+	else
+		return(array("msg"=>trim($msg), "link"=>$msglink, "linkname"=>$linkname,"image"=>$image));
+}
+
 /**
  * @param App $a
  * @param object $b
@@ -364,17 +491,18 @@ function fbpost_jot_nets(&$a,&$b) {
  */
 function fbpost_post_hook(&$a,&$b) {
 
+	logger('fbpost_post_hook: Facebook post invoked', LOGGER_DEBUG);
 
 	if($b['deleted'] || ($b['created'] !== $b['edited']))
 		return;
 
-	// Don't transmit answers (have to be cleaned up in the following code)
-	if($b['parent'] != $b['id'])
-		return;
+	logger('fbpost_post_hook: Facebook post first check successful', LOGGER_DEBUG);
 
 	// if post comes from facebook don't send it back
-	if($b['app'] == "Facebook")
+	if(($b['app'] == "Facebook") AND ($b['verb'] != ACTIVITY_LIKE))
 		return;
+
+	logger('fbpost_post_hook: Facebook post accepted', LOGGER_DEBUG);
 
 	/**
 	 * Post to Facebook stream
@@ -383,7 +511,6 @@ function fbpost_post_hook(&$a,&$b) {
 	require_once('include/group.php');
 	require_once('include/html2plain.php');
 
-	logger('Facebook post');
 
 	$reply = false;
 	$likes = false;
@@ -396,14 +523,21 @@ function fbpost_post_hook(&$a,&$b) {
 
 	$linking = ((get_pconfig($b['uid'],'facebook','no_linking')) ? 0 : 1);
 
-	if((! $toplevel) && ($linking)) {
+	if((!$toplevel) && ($linking)) {
 		$r = q("SELECT * FROM `item` WHERE `id` = %d AND `uid` = %d LIMIT 1",
 			intval($b['parent']),
 			intval($b['uid'])
 		);
+		//$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
+		//	dbesc($b['parent-uri']),
+		//	intval($b['uid'])
+		//);
+
+		// is it a reply to a facebook post?
+		// A reply to a toplevel post is only allowed for "real" facebook posts
 		if(count($r) && substr($r[0]['uri'],0,4) === 'fb::')
 			$reply = substr($r[0]['uri'],4);
-		elseif(count($r) && substr($r[0]['extid'],0,4) === 'fb::')
+		elseif(count($r) && (substr($r[0]['extid'],0,4) === 'fb::') AND ($r[0]['id'] != $r[0]['parent']))
 			$reply = substr($r[0]['extid'],4);
 		else
 			return;
@@ -420,7 +554,7 @@ function fbpost_post_hook(&$a,&$b) {
 			return;
 
 
-		logger('facebook reply id=' . $reply);
+		logger('fbpost_post_hook: facebook reply id=' . $reply);
 	}
 
 	if(strstr($b['postopts'],'facebook') || ($b['private']) || ($reply)) {
@@ -469,8 +603,10 @@ function fbpost_post_hook(&$a,&$b) {
 				return;
 		}
 
-		if($b['verb'] == ACTIVITY_LIKE)
+		if($b['verb'] == ACTIVITY_LIKE) {
 			$likes = true;
+			logger('fbpost_post_hook: liking '.print_r($b, true), LOGGER_DEBUG);
+		}
 
 
 		$appid  = get_config('facebook', 'appid'  );
@@ -478,7 +614,7 @@ function fbpost_post_hook(&$a,&$b) {
 
 		if($appid && $secret) {
 
-			logger('facebook: have appid+secret');
+			logger('fbpost_post_hook: have appid+secret');
 
 			$fb_token  = get_pconfig($b['uid'],'facebook','access_token');
 
@@ -488,110 +624,19 @@ function fbpost_post_hook(&$a,&$b) {
 			// or it's a reply or likes action to an existing facebook post
 
 			if($fb_token && ($toplevel || $b['private'] || $reply)) {
-				logger('facebook: able to post');
+				logger('fbpost_post_hook: able to post');
 				require_once('library/facebook.php');
 				require_once('include/bbcode.php');
 
 				$msg = $b['body'];
 
-				logger('Facebook post: original msg=' . $msg, LOGGER_DATA);
+				logger('fbpost_post_hook: original msg=' . $msg, LOGGER_DATA);
 
-				// make links readable before we strip the code
-
-				// unless it's a dislike - just send the text as a comment
-
-				// if($b['verb'] == ACTIVITY_DISLIKE)
-				//	$msg = trim(strip_tags(bbcode($msg)));
-
-				// Looking for the first image
-				$image = '';
-				if(preg_match("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/is",$b['body'],$matches))
-					$image = $matches[3];
-
-				if ($image == '')
-					if(preg_match("/\[img\](.*?)\[\/img\]/is",$b['body'],$matches))
-						$image = $matches[1];
-
-				// When saved into the database the content is sent through htmlspecialchars
-				// That means that we have to decode all image-urls
-				$image = htmlspecialchars_decode($image);
-
-				// Checking for a bookmark element
-				$body = $b['body'];
-				if (strpos($body, "[bookmark") !== false) {
-					// splitting the text in two parts:
-					// before and after the bookmark
-					$pos = strpos($body, "[bookmark");
-					$body1 = substr($body, 0, $pos);
-					$body2 = substr($body, $pos);
-
-					// Removing the bookmark and all quotes after the bookmark
-					// they are mostly only the content after the bookmark.
-					$body2 = preg_replace("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/ism",'',$body2);
-					$body2 = preg_replace("/\[quote\=([^\]]*)\](.*?)\[\/quote\]/ism",'',$body2);
-					$body2 = preg_replace("/\[quote\](.*?)\[\/quote\]/ism",'',$body2);
-
-					$body = $body1.$body2;
-				}
-
-				// Convert recycle signs
-				$body = str_replace("\t", " ", $body);
-				// recycle 1
-				//$recycle = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8');
-				//$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n\t$2:\t", $body);
-
-				$body = str_replace("\t", "", $body);
-
-				// At first convert the text to html
-				$html = bbcode($body, false, false, 2);
-
-				// Then convert it to plain text
-				$msg = trim($b['title']." \n\n".html2plain($html, 0, true));
-
-				// Removing useless spaces
-				if (substr($msg, -2) == "«")
-					$msg = trim(substr($msg, 0, -2))."«";
-
-				$msg = html_entity_decode($msg,ENT_QUOTES,'UTF-8');
-
-				// Removing multiple newlines
-				while (strpos($msg, "\n\n\n") !== false)
-					$msg = str_replace("\n\n\n", "\n\n", $msg);
-
-				// add any attachments as text urls
-				$arr = explode(',',$b['attach']);
-
-				if(count($arr)) {
-					$msg .= "\n";
-        				foreach($arr as $r) {
-            					$matches = false;
-						$cnt = preg_match('|\[attach\]href=\"(.*?)\" size=\"(.*?)\" type=\"(.*?)\" title=\"(.*?)\"\[\/attach\]|',$r,$matches);
-						if($cnt) {
-							$msg .= "\n".$matches[1];
-						}
-					}
-				}
-
-				$link = '';
-				$linkname = '';
-				// look for bookmark-bbcode and handle it with priority
-				if(preg_match("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/is",$b['body'],$matches)) {
-					$link = $matches[1];
-					$linkname = $matches[2];
-				}
-
-				// If there is no bookmark element then take the first link
-				if ($link == '') {
-					$links = collecturls($html);
-					if (sizeof($links) > 0) {
-						reset($links);
-						$link = current($links);
-					}
-				}
-
-				// Remove trailing and leading spaces
-				$msg = trim($msg);
-
+				$msgarr = fbpost_createmsg($b);
+				$msg = $msgarr["msg"];
+				$link = $msgarr["link"];
+				$image = $msgarr["image"];
+				$linkname = $msgarr["linkname"];
 
 				// Fallback - if message is empty
 				if(!strlen($msg))
@@ -607,7 +652,7 @@ function fbpost_post_hook(&$a,&$b) {
 				if(!strlen($msg))
 					return;
 
-				logger('Facebook post: msg=' . $msg, LOGGER_DATA);
+				logger('fbpost_post_hook: msg=' . $msg, LOGGER_DATA);
 
 				$video = "";
 
@@ -615,11 +660,11 @@ function fbpost_post_hook(&$a,&$b) {
 					$postvars = array('access_token' => $fb_token);
 				} else {
 					// message, picture, link, name, caption, description, source, place, tags
-					if(trim($link) != "")
-						if (@exif_imagetype($link) != 0) {
-							$image = $link;
-							$link = "";
-						}
+					//if(trim($link) != "")
+					//	if (@exif_imagetype($link) != 0) {
+					//		$image = $link;
+					//		$link = "";
+					//	}
 
 					$postvars = array(
 						'access_token' => $fb_token,
@@ -699,20 +744,22 @@ function fbpost_post_hook(&$a,&$b) {
 				if (!$reply and ($target != "me") and $page_access_token)
 					$postvars['access_token'] = $page_access_token;
 
-				logger('facebook: post to ' . $url);
-				logger('facebook: postvars: ' . print_r($postvars,true));
+				logger('fbpost_post_hook: post to ' . $url);
+				logger('fbpost_post_hook: postvars: ' . print_r($postvars,true));
 
 				// "test_mode" prevents anything from actually being posted.
 				// Otherwise, let's do it.
 
-				if(! get_config('facebook','test_mode')) {
+				if(!get_config('facebook','test_mode')) {
 					$x = post_url($url, $postvars);
-					logger('Facebook post returns: ' . $x, LOGGER_DEBUG);
+					logger('fbpost_post_hook: post returns: ' . $x, LOGGER_DEBUG);
 
 					$retj = json_decode($x);
 					if($retj->id) {
-						q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d LIMIT 1",
+						// Only set the extid when it isn't the toplevel post
+						q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d AND `parent` != %d",
 							dbesc('fb::' . $retj->id),
+							intval($b['id']),
 							intval($b['id'])
 						);
 					}
@@ -721,17 +768,18 @@ function fbpost_post_hook(&$a,&$b) {
 							$s = serialize(array('url' => $url, 'item' => $b['id'], 'post' => $postvars));
 							require_once('include/queue_fn.php');
 							add_to_queue($a->contact,NETWORK_FACEBOOK,$s);
+							logger('fbpost_post_hook: Post failed, requeued.', LOGGER_DEBUG);
 							notice( t('Facebook post failed. Queued for retry.') . EOL);
 						}
 
 						if (isset($retj->error) && $retj->error->type == "OAuthException" && $retj->error->code == 190) {
-							logger('Facebook session has expired due to changed password.', LOGGER_DEBUG);
+							logger('fbpost_post_hook: Facebook session has expired due to changed password.', LOGGER_DEBUG);
 
 							$last_notification = get_pconfig($b['uid'], 'facebook', 'session_expired_mailsent');
 							if (!$last_notification || $last_notification < (time() - FACEBOOK_SESSION_ERR_NOTIFICATION_INTERVAL)) {
 								require_once('include/enotify.php');
 
-								$r = q("SELECT * FROM `user` WHERE `uid` = %d LIMIT 1", intval($b['uid']) );
+								$r = q("SELECT * FROM `user` WHERE `uid` = %d LIMIT 1", intval($b['uid']));
 								notification(array(
 									'uid' => $b['uid'],
 									'type' => NOTIFY_SYSTEM,
@@ -745,7 +793,7 @@ function fbpost_post_hook(&$a,&$b) {
 								));
 
 								set_pconfig($b['uid'], 'facebook', 'session_expired_mailsent', time());
-							} else logger('Facebook: No notification, as the last one was sent on ' . $last_notification, LOGGER_DEBUG);
+							} else logger('fbpost_post_hook: No notification, as the last one was sent on ' . $last_notification, LOGGER_DEBUG);
 						}
 					}
 				}
@@ -838,7 +886,7 @@ function fbpost_queue_hook(&$a,&$b) {
 			$fb_token  = get_pconfig($user['uid'],'facebook','access_token');
 
 			if($fb_post && $fb_token) {
-				logger('facebook_queue: able to post');
+				logger('fbpost_queue_hook: able to post');
 				require_once('library/facebook.php');
 
 				$z = unserialize($x['content']);
@@ -847,15 +895,17 @@ function fbpost_queue_hook(&$a,&$b) {
 
 				$retj = json_decode($j);
 				if($retj->id) {
-					q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d LIMIT 1",
+					// Only set the extid when it isn't the toplevel post
+					q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d AND `parent` != %d",
 						dbesc('fb::' . $retj->id),
+						intval($item),
 						intval($item)
 					);
-					logger('facebook_queue: success: ' . $j); 
+					logger('fbpost_queue_hook: success: ' . $j);
 					remove_queue_item($x['id']);
 				}
 				else {
-					logger('facebook_queue: failed: ' . $j);
+					logger('fbpost_queue_hook: failed: ' . $j);
 					update_queue_time($x['id']);
 				}
 			}
@@ -968,6 +1018,9 @@ function fbpost_fetchwall($a, $uid) {
 			continue;
 
 		if (($post_to_page != $item->from->id) AND ((int)$post_to_page != 0))
+			continue;
+
+		if (!strstr($item->id, $item->from->id."_") AND isset($item->to) AND ((int)$post_to_page == 0))
 			continue;
 
 		$_SESSION["authenticated"] = true;
