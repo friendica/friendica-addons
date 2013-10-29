@@ -681,6 +681,11 @@ function fbsync_fetchfeed($a, $uid) {
 
 	$data = json_decode($feed);
 
+	if (!is_array($data->data)) {
+		logger("fbsync_fetchfeed: Error fetching data for user ".$uid.": ".print_r($data, true));
+		return;
+	}
+
 	$posts = array();
 	$comments = array();
 	$likes = array();

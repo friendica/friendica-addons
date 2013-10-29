@@ -1516,21 +1516,27 @@ function twitter_fetchhometimeline($a, $uid) {
 
 	if(count($r)) {
 		$own_id = $r[0]["nick"];
-	} else
+	} else {
+		logger("twitter_fetchhometimeline: Own twitter contact not found for user ".$uid, LOGGER_DEBUG);
 		return;
+	}
 
 	$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 		intval($uid));
 
 	if(count($r)) {
 		$self = $r[0];
-	} else
+	} else {
+		logger("twitter_fetchhometimeline: Own contact not found for user ".$uid, LOGGER_DEBUG);
 		return;
+	}
 
 	$u = q("SELECT * FROM user WHERE uid = %d LIMIT 1",
 		intval($uid));
-	if(!count($u))
+	if(!count($u)) {
+		logger("twitter_fetchhometimeline: Own user not found for user ".$uid, LOGGER_DEBUG);
 		return;
+	}
 
 	$parameters = array("exclude_replies" => false, "trim_user" => false, "contributor_details" => true, "include_rts" => true);
 	//$parameters["count"] = 200;
@@ -1546,8 +1552,10 @@ function twitter_fetchhometimeline($a, $uid) {
 
 	$items = $connection->get('statuses/home_timeline', $parameters);
 
-	if (!is_array($items))
+	if (!is_array($items)) {
+		logger("twitter_fetchhometimeline: Error fetching home timeline: ".print_r($items, true), LOGGER_DEBUG);
 		return;
+	}
 
         $posts = array_reverse($items);
 
@@ -1587,8 +1595,10 @@ function twitter_fetchhometimeline($a, $uid) {
 
 	$items = $connection->get('statuses/mentions_timeline', $parameters);
 
-	if (!is_array($items))
+	if (!is_array($items)) {
+		logger("twitter_fetchhometimeline: Error fetching mentions: ".print_r($items, true), LOGGER_DEBUG);
 		return;
+	}
 
         $posts = array_reverse($items);
 
