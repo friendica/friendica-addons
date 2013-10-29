@@ -62,12 +62,12 @@ function fbsync_settings(&$a,&$s) {
 	$s .= '<label id="fbsync-enable-label" for="fbsync-checkbox">' . t('Import Facebook newsfeed') . '</label>';
 	$s .= '<input id="fbsync-checkbox" type="checkbox" name="fbsync" value="1" ' . $checked . '/>';
 	$s .= '</div><div class="clear"></div>';
-
+/*
 	$s .= '<div id="fbsync-create_user-wrapper">';
 	$s .= '<label id="fbsync-create_user-label" for="fbsync-create_user">' . t('Automatically create contacts') . '</label>';
 	$s .= '<input id="fbsync-create_user" type="checkbox" name="create_user" value="1" ' . $def_checked . '/>';
 	$s .= '</div><div class="clear"></div>';
-
+*/
 	/* provide a submit button */
 
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="fbsync-submit" name="fbsync-submit" class="settings-submit" value="' . t('Submit') . '" /></div></div>';
@@ -78,7 +78,7 @@ function fbsync_settings_post(&$a,&$b) {
 
 	if(x($_POST,'fbsync-submit')) {
 		set_pconfig(local_user(),'fbsync','sync',intval($_POST['fbsync']));
-		set_pconfig(local_user(),'fbsync','create_user',intval($_POST['create_user']));
+		//set_pconfig(local_user(),'fbsync','create_user',intval($_POST['create_user']));
 	}
 }
 
@@ -643,7 +643,8 @@ function fbsync_fetchfeed($a, $uid) {
 	$last_updated = get_pconfig($uid,'fbsync','last_updated');
 	$self_id = get_pconfig($uid,'fbsync','self_id');
 
-	$create_user = get_pconfig($uid, 'fbsybc', 'create_user');
+	//$create_user = get_pconfig($uid, 'fbsybc', 'create_user');
+	$create_user = true;
 	$do_likes = get_config('fbsync', 'do_likes');
 
 	$self = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
