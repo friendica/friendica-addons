@@ -8,7 +8,6 @@
 
 /* To-Do
 FBSync:
-- A: Make shared posts look like shared posts
 - B: Threading for incoming comments
 - C: Receiving likes for comments
 
@@ -139,6 +138,10 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	$postarray['author-link'] = $contacts[$post->actor_id]->url;
 	$postarray['author-avatar'] = $contacts[$post->actor_id]->pic_square;
 
+	$postarray['owner-name'] = $contacts[$post->source_id]->name;
+	$postarray['owner-link'] = $contacts[$post->source_id]->url;
+	$postarray['owner-avatar'] = $contacts[$post->source_id]->pic_square;
+
 	$contact_id = 0;
 
 	//if (($post->parent_post_id != "") AND ($post->source_id != $post->source_id)) {
@@ -153,9 +156,21 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 			$contact_id = $userdata["contact-id"];
 
 			$postarray['contact-id'] = $contact_id;
+
 			$postarray['owner-name'] = $userdata["name"];
 			$postarray['owner-link'] = $userdata["link"];
 			$postarray['owner-avatar'] = $userdata["avatar"];
+
+			if (!intval(get_config('system','wall-to-wall_share'))) {
+
+				$prebody = "[share author='".$postarray['author-name'].
+					"' profile='".$postarray['author-link'].
+					"' avatar='".$postarray['author-avatar']."']".
+
+				$postarray['author-name'] = $postarray['owner-name'];
+				$postarray['author-link'] = $postarray['owner-link'];
+				$postarray['author-avatar'] = $postarray['owner-avatar'];
+			}
 		}
 	}
 
@@ -168,9 +183,6 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 			$contact_id = $self[0]["id"];
 
 		$postarray['contact-id'] = $contact_id;
-		$postarray['owner-name'] = $contacts[$post->source_id]->name;
-		$postarray['owner-link'] = $contacts[$post->source_id]->url;
-		$postarray['owner-avatar'] = $contacts[$post->source_id]->pic_square;
 	}
 
 	$postarray["body"] = (isset($post->message) ? escape_tags($post->message) : '');
@@ -226,6 +238,9 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 
 	if (trim($postarray["body"]) == "")
 		return;
+
+	if ($prebody != "")
+		$postarray["body"] = $prebody.$postarray["body"]."[/share]";
 
 	$postarray['created'] = datetime_convert('UTC','UTC',date("c", $post->created_time));
 	$postarray['edited'] = datetime_convert('UTC','UTC',date("c", $post->updated_time));
