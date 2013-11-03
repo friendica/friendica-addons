@@ -209,7 +209,6 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 
 	$contact_id = 0;
 
-	//if ($post->parent_post_id != "") {
 	if (($post->parent_post_id != "") AND ($post->actor_id == $post->source_id)) {
 		$pos = strpos($post->parent_post_id, "_");
 
@@ -222,19 +221,21 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 
 			$postarray['contact-id'] = $contact_id;
 
-			$postarray['owner-name'] = $userdata["name"];
-			$postarray['owner-link'] = $userdata["link"];
-			$postarray['owner-avatar'] = $userdata["avatar"];
+			if (array_key_exists("name", $userdata) AND ($userdata["name"] != "") AND !link_compare($userdata["link"], $postarray['author-link'])) {
+				$postarray['owner-name'] = $userdata["name"];
+				$postarray['owner-link'] = $userdata["link"];
+				$postarray['owner-avatar'] = $userdata["avatar"];
 
-			if (!intval(get_config('system','wall-to-wall_share'))) {
+				if (!intval(get_config('system','wall-to-wall_share'))) {
 
-				$prebody = "[share author='".$postarray['author-name'].
-					"' profile='".$postarray['author-link'].
-					"' avatar='".$postarray['author-avatar']."']".
+					$prebody = "[share author='".$postarray['author-name'].
+						"' profile='".$postarray['author-link'].
+						"' avatar='".$postarray['author-avatar']."']";
 
-				$postarray['author-name'] = $postarray['owner-name'];
-				$postarray['author-link'] = $postarray['owner-link'];
-				$postarray['author-avatar'] = $postarray['owner-avatar'];
+					$postarray['author-name'] = $postarray['owner-name'];
+					$postarray['author-link'] = $postarray['owner-link'];
+					$postarray['author-avatar'] = $postarray['owner-avatar'];
+				}
 			}
 		}
 	}
@@ -920,6 +921,5 @@ function fbsync_fetchfeed($a, $uid) {
 	}
 
 	set_pconfig($uid,'fbsync','last_updated', $last_updated);
-
 }
 ?>
