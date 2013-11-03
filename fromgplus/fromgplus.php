@@ -10,15 +10,19 @@
 define('FROMGPLUS_DEFAULT_POLL_INTERVAL', 30); // given in minutes
 
 function fromgplus_install() {
-	register_hook('plugin_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
-	register_hook('plugin_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
+	register_hook('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
+	register_hook('connector_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
 	register_hook('cron', 'addon/fromgplus/fromgplus.php', 'fromgplus_cron');
 }
 
 function fromgplus_uninstall() {
+	unregister_hook('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
+	unregister_hook('connector_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
+	unregister_hook('cron', 'addon/fromgplus/fromgplus.php', 'fromgplus_cron');
+
+	// Old hooks
 	unregister_hook('plugin_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
 	unregister_hook('plugin_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
-	unregister_hook('cron', 'addon/fromgplus/fromgplus.php', 'fromgplus_cron');
 }
 
 function fromgplus_addon_settings(&$a,&$s) {
