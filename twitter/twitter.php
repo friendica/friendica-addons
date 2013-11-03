@@ -1785,7 +1785,7 @@ function twitter_convertmsg($a, $body, $no_tags = false) {
 			}
 		}
 
-		if (($footerlink != "") AND ($footer != "")) {
+		if (($footerlink != "") AND (trim($footer) != "")) {
 			$removedlink = trim(str_replace($footerlink, "", $body));
 
 			if (strstr($body, $removedlink))
