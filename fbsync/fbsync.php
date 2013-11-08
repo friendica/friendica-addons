@@ -243,10 +243,14 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	if ($contact_id == 0) {
 		$contact_id = fbsync_fetch_contact($uid, $contacts[$post->source_id], $create_user);
 
-		if (($contact_id <= 0) AND !$create_user)
+		if (($contact_id <= 0) AND !$create_user) {
+			logger('fbsync_createpost: No matching contact found. Post not imported '.print_r($post, true), LOGGER_DEBUG);
 			return;
-		elseif ($contact_id == 0)
+		} elseif ($contact_id == 0) {
+			// This case should never happen
+			logger('fbsync_createpost: No matching contact found. Using own id. (Should never happen) '.print_r($post, true), LOGGER_DEBUG);
 			$contact_id = $self[0]["id"];
+		}
 
 		$postarray['contact-id'] = $contact_id;
 	}
