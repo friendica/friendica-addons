@@ -8,7 +8,6 @@
 
 /* To-Do
 FBSync:
-- A: Make shared posts look like shared posts
 - B: Threading for incoming comments
 - C: Receiving likes for comments
 
@@ -26,13 +25,78 @@ function fbsync_install() {
 	register_hook('connector_settings',      'addon/fbsync/fbsync.php', 'fbsync_settings');
 	register_hook('connector_settings_post', 'addon/fbsync/fbsync.php', 'fbsync_settings_post');
 	register_hook('cron', 'addon/fbsync/fbsync.php', 'fbsync_cron');
+	register_hook('follow', 'addon/fbsync/fbsync.php', 'fbsync_follow');
 }
 
 function fbsync_uninstall() {
 	unregister_hook('connector_settings',      'addon/fbsync/fbsync.php', 'fbsync_settings');
 	unregister_hook('connector_settings_post', 'addon/fbsync/fbsync.php', 'fbsync_settings_post');
 	unregister_hook('cron', 'addon/fbsync/fbsync.php', 'fbsync_cron');
+	unregister_hook('follow', 'addon/fbsync/fbsync.php', 'fbsync_follow');
 }
+
+function fbsync_follow($a, &$contact) {
+
+	logger("fbsync_follow: Check if contact is facebook contact. ".$contact["url"], LOGGER_DEBUG);
+
+	if (!strstr($contact["url"], "://www.facebook.com") AND !strstr($contact["url"], "://facebook.com") AND !strstr($contact["url"], "@facebook.com"))
+		return;
+
+	// contact seems to be a facebook contact, so continue
+	$nickname = preg_replace("=https?://.*facebook.com/([\w.]*).*=ism", "$1", $contact["url"]);
+	$nickname = str_replace("@facebook.com", "", $nickname);
+
+	$uid = $a->user["uid"];
+
+	$access_token = get_pconfig($uid,'facebook','access_token');
+
+	$fql = array(
+			"profile" => "SELECT id, pic_square, url, username, name FROM profile WHERE username = '$nickname'",
+			"avatar" => "SELECT url FROM square_profile_pic WHERE id IN (SELECT id FROM #profile) AND size = 256");
+
+	$url = "https://graph.facebook.com/fql?q=".urlencode(json_encode($fql))."&access_token=".$access_token;
+
+	$feed = fetch_url($url);
+	$data = json_decode($feed);
+
+	$id = 0;
+
+	logger("fbsync_follow: Query id for nickname ".$nickname, LOGGER_DEBUG);
+
+	if (!is_array($data->data))
+		return;
+
+	$contactdata = new stdClass;
+
+	foreach($data->data AS $query) {
+		switch ($query->name) {
+			case "profile":
+				$contactdata->id =  number_format($query->fql_result_set[0]->id, 0, '', '');
+				$contactdata->pic_square = $query->fql_result_set[0]->pic_square;
+				$contactdata->url = $query->fql_result_set[0]->url;
+				$contactdata->username = $query->fql_result_set[0]->username;
+				$contactdata->name = $query->fql_result_set[0]->name;
+				break;
+
+			case "avatar":
+				$contactdata->pic_square = $query->fql_result_set[0]->url;
+				break;
+		}
+	}
+
+	logger("fbsync_follow: Got contact for nickname ".$nickname." ".print_r($contactdata, true), LOGGER_DEBUG);
+
+	// Create contact
+	fbsync_fetch_contact($uid, $contactdata, true);
+
+	$r = q("SELECT name,nick,url,addr,batch,notify,poll,request,confirm,poco,photo,priority,network,alias,pubkey
+		FROM `contact` WHERE `uid` = %d AND `alias` = '%s'",
+				intval($uid),
+				dbesc("facebook::".$contactdata->id));
+	if (count($r))
+		$contact["contact"] = $r[0];
+}
+
 
 function fbsync_settings(&$a,&$s) {
 
@@ -62,12 +126,12 @@ function fbsync_settings(&$a,&$s) {
 	$s .= '<label id="fbsync-enable-label" for="fbsync-checkbox">' . t('Import Facebook newsfeed') . '</label>';
 	$s .= '<input id="fbsync-checkbox" type="checkbox" name="fbsync" value="1" ' . $checked . '/>';
 	$s .= '</div><div class="clear"></div>';
-/*
+
 	$s .= '<div id="fbsync-create_user-wrapper">';
 	$s .= '<label id="fbsync-create_user-label" for="fbsync-create_user">' . t('Automatically create contacts') . '</label>';
 	$s .= '<input id="fbsync-create_user" type="checkbox" name="create_user" value="1" ' . $def_checked . '/>';
 	$s .= '</div><div class="clear"></div>';
-*/
+
 	/* provide a submit button */
 
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="fbsync-submit" name="fbsync-submit" class="settings-submit" value="' . t('Submit') . '" /></div></div>';
@@ -78,7 +142,7 @@ function fbsync_settings_post(&$a,&$b) {
 
 	if(x($_POST,'fbsync-submit')) {
 		set_pconfig(local_user(),'fbsync','sync',intval($_POST['fbsync']));
-		//set_pconfig(local_user(),'fbsync','create_user',intval($_POST['create_user']));
+		set_pconfig(local_user(),'fbsync','create_user',intval($_POST['create_user']));
 	}
 }
 
@@ -135,22 +199,61 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	$postarray['parent-uri'] = $postarray['uri'];
 	$postarray['plink'] = $post->permalink;
 
-	$contact_id = fbsync_fetch_contact($uid, $contacts[$post->source_id], $create_user);
-
-	if ($contact_id < 0)
-		return;
-	elseif ($contact_id == 0)
-		$contact_id = $self[0]["id"];
-
-	$postarray['contact-id'] = $contact_id;
+	$postarray['author-name'] = $contacts[$post->actor_id]->name;
+	$postarray['author-link'] = $contacts[$post->actor_id]->url;
+	$postarray['author-avatar'] = $contacts[$post->actor_id]->pic_square;
 
 	$postarray['owner-name'] = $contacts[$post->source_id]->name;
 	$postarray['owner-link'] = $contacts[$post->source_id]->url;
 	$postarray['owner-avatar'] = $contacts[$post->source_id]->pic_square;
 
-	$postarray['author-name'] = $contacts[$post->actor_id]->name;
-	$postarray['author-link'] = $contacts[$post->actor_id]->url;
-	$postarray['author-avatar'] = $contacts[$post->actor_id]->pic_square;
+	$contact_id = 0;
+
+	if (($post->parent_post_id != "") AND ($post->actor_id == $post->source_id)) {
+		$pos = strpos($post->parent_post_id, "_");
+
+		if ($pos != 0) {
+			$user_id = substr($post->parent_post_id, 0, $pos);
+
+			$userdata = fbsync_fetchuser($a, $uid, $user_id);
+
+			$contact_id = $userdata["contact-id"];
+
+			$postarray['contact-id'] = $contact_id;
+
+			if (array_key_exists("name", $userdata) AND ($userdata["name"] != "") AND !link_compare($userdata["link"], $postarray['author-link'])) {
+				$postarray['owner-name'] = $userdata["name"];
+				$postarray['owner-link'] = $userdata["link"];
+				$postarray['owner-avatar'] = $userdata["avatar"];
+
+				if (!intval(get_config('system','wall-to-wall_share'))) {
+
+					$prebody = "[share author='".$postarray['author-name'].
+						"' profile='".$postarray['author-link'].
+						"' avatar='".$postarray['author-avatar']."']";
+
+					$postarray['author-name'] = $postarray['owner-name'];
+					$postarray['author-link'] = $postarray['owner-link'];
+					$postarray['author-avatar'] = $postarray['owner-avatar'];
+				}
+			}
+		}
+	}
+
+	if ($contact_id == 0) {
+		$contact_id = fbsync_fetch_contact($uid, $contacts[$post->source_id], $create_user);
+
+		if (($contact_id <= 0) AND !$create_user) {
+			logger('fbsync_createpost: No matching contact found. Post not imported '.print_r($post, true), LOGGER_DEBUG);
+			return;
+		} elseif ($contact_id == 0) {
+			// This case should never happen
+			logger('fbsync_createpost: No matching contact found. Using own id. (Should never happen) '.print_r($post, true), LOGGER_DEBUG);
+			$contact_id = $self[0]["id"];
+		}
+
+		$postarray['contact-id'] = $contact_id;
+	}
 
 	$postarray["body"] = (isset($post->message) ? escape_tags($post->message) : '');
 
@@ -206,6 +309,9 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	if (trim($postarray["body"]) == "")
 		return;
 
+	if ($prebody != "")
+		$postarray["body"] = $prebody.$postarray["body"]."[/share]";
+
 	$postarray['created'] = datetime_convert('UTC','UTC',date("c", $post->created_time));
 	$postarray['edited'] = datetime_convert('UTC','UTC',date("c", $post->updated_time));
 
@@ -227,7 +333,9 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	//$types = array(46, 80, 237, 247, 308);
 	//if (!in_array($post->type, $types))
 	//	$postarray["body"] = "Type: ".$post->type."\n".$postarray["body"];
+	//print_r($post);
 	//print_r($postarray);
+
 	$item = item_store($postarray);
 	logger('fbsync_createpost: User '.$self[0]["nick"].' posted feed item '.$item, LOGGER_DEBUG);
 }
@@ -638,13 +746,52 @@ function fbsync_convertmsg($a, $body) {
 
 }
 
+function fbsync_fetchuser($a, $uid, $id) {
+	$access_token = get_pconfig($uid,'facebook','access_token');
+	$self_id = get_pconfig($uid,'fbsync','self_id');
+
+	$user = array();
+
+	$contact = q("SELECT `id`, `name`, `url`, `photo`  FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
+		intval($uid), dbesc("facebook::".$id));
+
+	if (count($contact)) {
+		$user["contact-id"] = $contact[0]["id"];
+		$user["name"] = $contact[0]["name"];
+		$user["link"] = $contact[0]["url"];
+		$user["avatar"] = $contact[0]["photo"];
+
+		return($user);
+	}
+
+	$own_contact = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
+		intval($uid), dbesc("facebook::".$self_id));
+
+	if (!count($own_contact))
+		return($user);
+
+	$fql = "SELECT name, url, pic_square FROM profile WHERE id = ".$id;
+
+	$url = "https://graph.facebook.com/fql?q=".urlencode($fql)."&access_token=".$access_token;
+
+	$feed = fetch_url($url);
+	$data = json_decode($feed);
+
+	if (is_array($data->data)) {
+		$user["contact-id"] = $own_contact[0]["id"];
+		$user["name"] = $data->data[0]->name;
+		$user["link"] = $data->data[0]->url;
+		$user["avatar"] = $data->data[0]->pic_square;
+	}
+	return($user);
+}
+
 function fbsync_fetchfeed($a, $uid) {
 	$access_token = get_pconfig($uid,'facebook','access_token');
 	$last_updated = get_pconfig($uid,'fbsync','last_updated');
 	$self_id = get_pconfig($uid,'fbsync','self_id');
 
-	//$create_user = get_pconfig($uid, 'fbsybc', 'create_user');
-	$create_user = true;
+	$create_user = get_pconfig($uid, 'fbsync', 'create_user');
 	$do_likes = get_config('fbsync', 'do_likes');
 
 	$self = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
@@ -764,10 +911,6 @@ function fbsync_fetchfeed($a, $uid) {
 		if ($post->updated_time > $last_updated)
 			$last_updated = $post->updated_time;
 
-		//print_r($post);
-
-		// parent_post_id - Erkennen von geteilten Posts?
-
 		fbsync_createpost($a, $uid, $self, $contacts, $application_data, $post, $create_user);
 	}
 
@@ -779,10 +922,8 @@ function fbsync_fetchfeed($a, $uid) {
 		$like->user_id = number_format($like->user_id, 0, '', '');
 
 		fbsync_createlike($a, $uid, $self_id, $self, $contacts, $like);
-
 	}
 
 	set_pconfig($uid,'fbsync','last_updated', $last_updated);
-
 }
 ?>

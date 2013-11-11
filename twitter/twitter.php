@@ -84,6 +84,7 @@ function twitter_uninstall() {
 	unregister_hook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
 	unregister_hook('cron', 'addon/twitter/twitter.php', 'twitter_cron');
 	unregister_hook('queue_predeliver', 'addon/twitter/twitter.php', 'twitter_queue_hook');
+	unregister_hook('follow', 'addon/twitter/twitter.php', 'twitter_follow');
 
 	// old setting - remove only
 	unregister_hook('post_local_end', 'addon/twitter/twitter.php', 'twitter_post_hook');
@@ -1411,7 +1412,8 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 		$postarray['tag'] = $converted["tags"];
 
 
-		if (!intval(get_config('system','wall-to-wall_share'))) {
+		// Deactivated at the moment, since there are problems with answers to retweets
+		if (false AND !intval(get_config('system','wall-to-wall_share'))) {
 			$postarray['body'] = "[share author='".$post->retweeted_status->user->name.
 				"' profile='https://twitter.com/".$post->retweeted_status->user->screen_name.
 				"' avatar='".$post->retweeted_status->user->profile_image_url_https.
@@ -1783,7 +1785,7 @@ function twitter_convertmsg($a, $body, $no_tags = false) {
 			}
 		}
 
-		if (($footerlink != "") AND ($footer != "")) {
+		if (($footerlink != "") AND (trim($footer) != "")) {
 			$removedlink = trim(str_replace($footerlink, "", $body));
 
 			if (strstr($body, $removedlink))
