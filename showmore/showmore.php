@@ -45,7 +45,7 @@ function showmore_addon_settings(&$a,&$s) {
 	$s .= '<input id="showmore-words" type="text" name="showmore-chars" value="'.$chars.'" />';
 	$s .= '</div><div class="clear"></div>';
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="showmore-submit" name="showmore-submit" class="settings-submit" value="' . t('Submit') . '" /></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="showmore-submit" name="showmore-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
 //	$s .= '<div class="showmore-desc">' . t('Use /expression/ to provide regular expressions') . '</div>';
 	$s .= '</div>';
 

@@ -45,7 +45,7 @@ function remote_permissions_settings(&$a,&$o) {
 		'$remote_perms_title' => t('Remote Permissions Settings'),
 		'$remote_perms_label' => t('Allow recipients of your private posts to see the other recipients of the posts'),
 		'$checked' => (($remote_perms == 1) ? 'checked="checked"' : ''),
-		'$submit' => t('Submit')
+		'$submit' => t('Save Settings')
 	));
 
 }
@@ -193,7 +193,7 @@ function remote_permissions_content($a, $item_copy) {
 function remote_permissions_plugin_admin(&$a, &$o){
 	$t = get_markup_template( "admin.tpl", "addon/remote_permissions/" );
 	$o = replace_macros($t, array(
-		'$submit' => t('Submit'),
+		'$submit' => t('Save Settings'),
 		'$global' => array('remotepermschoice', t('Global'), 1, t('The posts of every user on this server show the post recipients'),  get_config('remote_perms', 'global') == 1),
 		'$individual' => array('remotepermschoice', t('Individual'), 2, t('Each user chooses whether his/her posts show the post recipients'),  get_config('remote_perms', 'global') == 0)
 	));

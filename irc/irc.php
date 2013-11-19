@@ -52,7 +52,7 @@ function irc_addon_settings(&$a,&$s) {
 	$s .= '<input id="irc-sitechats" type="text" name="sitechats" value="' . $sitechats.'" />';
 	$s .= '</div><div class="clear"></div>';
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="irc-submit" name="irc-submit" class="settings-submit" value="' . t('Submit') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="irc-submit" name="irc-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
 
 	return;
 

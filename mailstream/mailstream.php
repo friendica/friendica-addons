@@ -57,7 +57,7 @@ function mailstream_plugin_admin(&$a,&$o) {
                     t('Email address that stream items will appear to be from.'));
     $o .= replace_macros($template, array(
                              '$frommail' => $config,
-                             '$submit' => t('Submit')));
+                             '$submit' => t('Save Settings')));
 }
 
 function mailstream_plugin_admin_post ($a) {
@@ -279,7 +279,7 @@ function mailstream_plugin_settings(&$a,&$s) {
                                  t('Enabled'),
                                  $enabled),
                              '$title' => t('Mail Stream Settings'),
-                             '$submit' => t('Submit')));
+                             '$submit' => t('Save Settings')));
 }
 
 function mailstream_plugin_settings_post($a,$post) {

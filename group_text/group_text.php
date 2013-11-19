@@ -81,6 +81,6 @@ function group_text_settings(&$a,&$s) {
 
 	/* provide a submit button */
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="group_text-submit" class="settings-submit" value="' . t('Submit') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="group_text-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
 
 }
