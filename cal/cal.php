@@ -184,7 +184,7 @@ function cal_addon_settings ( &$a, &$s  )
     $s .= '<label id="cal-enable-label" for="cal-checkbox">'. t('Enable calendar export') .'</label>';
     $s .= '<input id="cal-checkbox" type="checkbox" name="cal-enable" value="1" ' . $checked . '/>';
     $s .= '</div><div class="clear"></div>';
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" name="cal-submit" class="settings-submit" value="' . t('Submit') . '" /></div>'; 
+    $s .= '<div class="settings-submit-wrapper" ><input type="submit" name="cal-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>'; 
     $s .= '<div class="clear"></div>';
 
 }

@@ -88,14 +88,14 @@ function altpager_settings(&$a,&$s) {
 
 	/* provide a submit button */
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="altpager-submit" class="settings-submit" value="' . t('Submit') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="altpager-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
 
 }
 
 function altpager_plugin_admin(&$a, &$o){
 	$t = get_markup_template( "admin.tpl", "addon/altpager/" );
 	$o = replace_macros($t, array(
-		'$submit' => t('Submit'),
+		'$submit' => t('Save Settings'),
 		'$global' => array('altpagerchoice', t('Global'), 1, t('Force global use of the alternate pager'),  get_config('alt_pager', 'global') == 1),
 		'$individual' => array('altpagerchoice', t('Individual'), 2, t('Each user chooses whether to use the alternate pager'),  get_config('alt_pager', 'global') == 0)
 	));
