@@ -279,7 +279,7 @@ function fbpost_content(&$a) {
 
 		$o .= "</select>";
 
-		$o .= '<p><input type="submit" name="submit" value="' . t('Submit') . '" /></form></div>';
+		$o .= '<p><input type="submit" name="submit" value="' . t('Save Settings') . '" /></form></div>';
 
 	}
 

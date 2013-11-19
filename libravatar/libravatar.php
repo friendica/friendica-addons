@@ -96,7 +96,7 @@ function libravatar_plugin_admin (&$a, &$o) {
 	// output Libravatar settings
 	$o .= '<input type="hidden" name="form_security_token" value="' .get_form_security_token("libravatarsave") .'">';
 	$o .= replace_macros( $t, array(
-		'$submit' => t('Submit'),
+		'$submit' => t('Save Settings'),
 		'$default_avatar' => array('avatar', t('Default avatar image'), $default_avatar, t('Select default avatar image if none was found. See README'), $default_avatars),
 	));
 }
