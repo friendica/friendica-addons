@@ -58,7 +58,7 @@ function qcomment_addon_settings(&$a,&$s) {
     $s .= '<textarea id="qcomment-words" type="text" name="qcomment-words" >' . htmlspecialchars(unxmlify($words)) . '</textarea>';
     $s .= '</div><div class="clear"></div>';
 
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="qcomment-submit" name="qcomment-submit" class="settings-submit" value="' . t('Submit') . '" /></div>';
+    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="qcomment-submit" name="qcomment-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
 	$s .= '</div>';
 
 	return;

@@ -52,7 +52,7 @@ function pageheader_addon_settings(&$a,&$s) {
     $s .= '<input id="pageheader-words" type="text" size="80" name="pageheader-words" value="' . $words .'" />';
     $s .= '</div><div class="clear"></div>';
 
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="pageheader-submit" name="pageheader-submit" class="settings-submit" value="' . t('Submit') . '" /></div></div>';
+    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="pageheader-submit" name="pageheader-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
 
 	return;
 

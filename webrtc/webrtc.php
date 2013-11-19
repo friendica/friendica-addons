@@ -23,7 +23,7 @@ function webrtc_app_menu($a,&$b) {
 function webrtc_plugin_admin (&$a, &$o) {
         $t = get_markup_template( "admin.tpl", "addon/webrtc/" );
 	$o = replace_macros( $t, array(
-	    '$submit' => t('Submit'),
+	    '$submit' => t('Save Settings'),
 	    '$webrtcurl' => array('webrtcurl', t('WebRTC Base URL'), get_config('webrtc','webrtcurl' ), t('Page your users will create a WebRTC chat room on. For example you could use https://live.mayfirst.org .')),
 	));
 }

@@ -39,7 +39,7 @@ function mathjax_settings (&$a, &$s) {
     $s .= '<input id="mathjax_use" type="checkbox" name="mathjax_use" value="1"'. $usetext .' />';
     $s .= '<div class="clear"></div>';
 
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="mathjax-submit" name="mathjax-submit" class="settings-submit" value="' . t('Submit') . '" /></div>';
+    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="mathjax-submit" name="mathjax-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
     $s .= '</div>';
 }
 /*  we need to add one JavaScript include command to the html output
@@ -72,7 +72,7 @@ function mathjax_plugin_admin (&$a, &$o) {
 	}
 
 	$o = replace_macros( $t, array(
-		'$submit' => t('Submit'),
+		'$submit' => t('Save Settings'),
 		'$baseurl' => array('baseurl', t('MathJax Base URL'), get_config('mathjax','baseurl' ), t('The URL for the javascript file that should be included to use MathJax. Can be either the MathJax CDN or another installation of MathJax.')),
 	));
 }
