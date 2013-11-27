@@ -330,6 +330,8 @@ function fromgplus_fetch($a, $uid) {
 
 	$initiallastdate = get_pconfig($uid,'fromgplus','lastdate');
 
+	$first_time = ($initiallastdate == "");
+
 	$lastdate = 0;
 
 	if (!is_array($activities->items))
@@ -343,6 +345,9 @@ function fromgplus_fetch($a, $uid) {
 
 		if ($lastdate < strtotime($item->published))
 			$lastdate = strtotime($item->published);
+
+		if ($first_time)
+			continue;
 
 		if ($item->access->description == "Public")
 
