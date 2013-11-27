@@ -101,6 +101,10 @@ function fromgplus_post($a, $uid, $source, $body, $location) {
 
 	//$uid = 2;
 
+	// Don't know what it is. Maybe some trash from the mobile client
+	$trash = html_entity_decode("&#xFEFF;", ENT_QUOTES, 'UTF-8');
+	$body = str_replace($trash, "", $body);
+
 	$body = trim($body);
 
         if (substr($body, 0, 3) == "[b]") {
@@ -223,10 +227,14 @@ function fromgplus_cleanupgoogleproxy($fullImage, $image) {
 }
 
 function fromgplus_cleantext($text) {
+
+	// Don't know what it is. But it is added to the text.
+	$trash = html_entity_decode("&#xFEFF;", ENT_QUOTES, 'UTF-8');
+
 	$text = strip_tags($text);
 	$text = html_entity_decode($text);
 	$text = trim($text);
-	$text = str_replace(array("\n", "\r", " "), array("", "", ""), $text);
+	$text = str_replace(array("\n", "\r", " ", $trash), array("", "", "", ""), $text);
 	return($text);
 }
 
