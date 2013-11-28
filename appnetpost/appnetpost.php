@@ -371,7 +371,7 @@ function appnetpost_feeditem($pid, $uid) {
 			$title = substr($title, 0, -3)."...";
 		}
 
-		if (!strstr($title, $msglink))
+		if (($msglink != "") AND !strstr($title, $msglink))
 			$title = trim($title." ".$msglink);
 		else
 			$title = trim($title);
