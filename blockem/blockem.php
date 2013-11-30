@@ -49,8 +49,14 @@ function blockem_addon_settings(&$a,&$s) {
 	if(! $words)
 		$words = '';
 
-    $s .= '<div class="settings-block">';
+    $s .= '<span id="settings_blockem_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_blockem_expanded\'); openClose(\'settings_blockem_inflated\');">';
     $s .= '<h3>' . t('"Blockem" Settings') . '</h3>';
+    $s .= '</span>';
+    $s .= '<div id="settings_blockem_expanded" class="settings-block" style="display: none;">';
+    $s .= '<span class="fakelink" onclick="openClose(\'settings_blockem_expanded\'); openClose(\'settings_blockem_inflated\');">';
+    $s .= '<h3>' . t('"Blockem" Settings') . '</h3>';
+    $s .= '</span>';
+
     $s .= '<div id="blockem-wrapper">';
     $s .= '<label id="blockem-label" for="blockem-words">' . t('Comma separated profile URLS to block') . ' </label>';
     $s .= '<textarea id="blockem-words" type="text" name="blockem-words" >' . htmlspecialchars($words) . '</textarea>';
