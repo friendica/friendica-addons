@@ -154,12 +154,17 @@ function forumlist_plugin_settings(&$a,&$s) {
 
 	$network = intval(get_pconfig(local_user(),'forumlist','show_on_network'));
 	$network_checked = (($network) ? ' checked="checked" ' : '');
-	
-	
-	/* Add some HTML to the existing form */
 
-	$s .= '<div class="settings-block">';
+
+	/* Add some HTML to the existing form */
+	$s .= '<span id="settings_forumlist_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_forumlist_expanded\'); openClose(\'settings_forumlist_inflated\');">';
 	$s .= '<h3>' . t('Forumlist Settings') . '</h3>';
+	$s .= '</span>';
+	$s .= '<div id="settings_forumlist_expanded" class="settings-block" style="display: none;">';
+	$s .= '<span class="fakelink" onclick="openClose(\'settings_forumlist_expanded\'); openClose(\'settings_forumlist_inflated\');">';
+	$s .= '<h3>' . t('Forumlist Settings') . '</h3>';
+	$s .= '</span>';
+
 	$s .= '<div id="forumlist-settings-wrapper">';
 	$s .= '<label id="forumlist-random-label" for="forumlist-random">' . t('Randomise forum list') . '</label>';
 	$s .= '<input id="forumlist-random" type="checkbox" name="forumlist_random" value="1" ' . $randomise_checked . '/>';
