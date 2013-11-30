@@ -58,8 +58,14 @@ function gpluspost_settings(&$a,&$s) {
 	$skip_enabled = get_pconfig(local_user(),'gpluspost','skip_without_link');
 	$skip_checked = (($skip_enabled) ? ' checked="checked" ' : '');
 
-	$s .= '<div class="settings-block">';
+	$s .= '<span id="settings_gpluspost_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_gpluspost_expanded\'); openClose(\'settings_gpluspost_inflated\');">';
 	$s .= '<h3>' . t('Google+ Post Settings') . '</h3>';
+	$s .= '</span>';
+	$s .= '<div id="settings_gpluspost_expanded" class="settings-block" style="display: none;">';
+	$s .= '<span class="fakelink" onclick="openClose(\'settings_gpluspost_expanded\'); openClose(\'settings_gpluspost_inflated\');">';
+	$s .= '<h3>' . t('Google+ Post Settings') . '</h3>';
+	$s .= '</span>';
+
 	$s .= '<div id="gpluspost-enable-wrapper">';
 	$s .= '<label id="gpluspost-enable-label" for="gpluspost-checkbox">' . t('Enable Google+ Post Plugin') . '</label>';
 	$s .= '<input id="gpluspost-checkbox" type="checkbox" name="gpluspost" value="1" ' . $checked . '/>';
