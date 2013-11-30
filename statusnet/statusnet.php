@@ -278,8 +278,13 @@ function statusnet_settings(&$a,&$s) {
 	$shorteningenabled = get_pconfig(local_user(),'statusnet','intelligent_shortening');
 	$shorteningchecked = (($shorteningenabled) ? ' checked="checked" ' : '');
 
-	$s .= '<div class="settings-block">';
+	$s .= '<span id="settings_statusnet_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_statusnet_expanded\'); openClose(\'settings_statusnet_inflated\');">';
 	$s .= '<h3>'. t('StatusNet Posting Settings').'</h3>';
+	$s .= '</span>';
+	$s .= '<div id="settings_statusnet_expanded" class="settings-block" style="display: none;">';
+	$s .= '<span class="fakelink" onclick="openClose(\'settings_statusnet_expanded\'); openClose(\'settings_statusnet_inflated\');">';
+	$s .= '<h3>'. t('StatusNet Posting Settings').'</h3>';
+	$s .= '</span>';
 
 	if ( (!$ckey) && (!$csecret) ) {
 		/***
