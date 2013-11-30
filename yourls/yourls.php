@@ -49,10 +49,16 @@ function yourls_addon_settings(&$a,&$s) {
 
 
 
-$yourls_ssl = get_config('yourls', 'ssl1');
+	$yourls_ssl = get_config('yourls', 'ssl1');
 
-	$s .= '<div class="settings-block">';
+	$s .= '<span id="settings_yourls_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_yourls_expanded\'); openClose(\'settings_yourls_inflated\');">';
 	$s .= '<h3>' . t('YourLS Settings') . '</h3>';
+	$s .= '</span>';
+	$s .= '<div id="settings_yourls_expanded" class="settings-block" style="display: none;">';
+	$s .= '<span class="fakelink" onclick="openClose(\'settings_yourls_expanded\'); openClose(\'settings_yourls_inflated\');">';
+	$s .= '<h3>' . t('YourLS Settings') . '</h3>';
+	$s .= '</span>';
+
 	$s .= '<div id="yourls-url-wrapper">';
 	$s .= '<label id="yourls-url-label" for="yourls-url">' . t('URL: http://') . '</label>';
 	$s .= '<input id="yourls-url" type="text" name="yourls_url" value="' . $yourls_url .'" />';
