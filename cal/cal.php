@@ -177,16 +177,23 @@ function cal_addon_settings ( &$a, &$s  )
     $checked = (($enabled) ? ' checked="checked" ' : '');
     $url = $a->get_baseurl().'/cal/'.$a->user['nickname'].'/export/<em>format</em>';
 
+    $s .= '<span id="settings_cal_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_cal_expanded\'); openClose(\'settings_cal_inflated\');">';
     $s .= '<h3>'.t('Export Events').'</h3>';
+    $s .= '</span>';
+    $s .= '<div id="settings_cal_expanded" class="settings-block" style="display: none;">';
+    $s .= '<span class="fakelink" onclick="openClose(\'settings_cal_expanded\'); openClose(\'settings_cal_inflated\');">';
+    $s .= '<h3>'.t('Export Events').'</h3>';
+    $s .= '</span>';
+
+    $s .= '<div id="cal-wrapper">';
     $s .= '<p>'.t('If this is enabled, your public events will be available at').' <strong>'.$url.'</strong></p>';
     $s .= '<p>'.t('Currently supported formats are ical and csv.').'</p>';
-    $s .= '<div id="cal-enable-wrapper">';
     $s .= '<label id="cal-enable-label" for="cal-checkbox">'. t('Enable calendar export') .'</label>';
     $s .= '<input id="cal-checkbox" type="checkbox" name="cal-enable" value="1" ' . $checked . '/>';
-    $s .= '</div><div class="clear"></div>';
     $s .= '<div class="settings-submit-wrapper" ><input type="submit" name="cal-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>'; 
     $s .= '<div class="clear"></div>';
-
+    $s .= '</div>';
+    $s .= '</div>';
 }
 
 ?>
