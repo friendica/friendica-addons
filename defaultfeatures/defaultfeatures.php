@@ -52,7 +52,7 @@ function defaultfeatures_plugin_admin (&$a, &$o) {
     //logger("Features: " . print_r($arr,true));
 
     $o = replace_macros($t, array(
-        '$submit' => t('Submit'),
+        '$submit' => t('Save Settings'),
         '$features' => $arr,
         '$form_security_token' => $token
     ));

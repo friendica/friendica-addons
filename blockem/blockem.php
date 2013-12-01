@@ -62,7 +62,7 @@ function blockem_addon_settings(&$a,&$s) {
     $s .= '<textarea id="blockem-words" type="text" name="blockem-words" >' . htmlspecialchars($words) . '</textarea>';
     $s .= '</div><div class="clear"></div>';
 
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="blockem-submit" name="blockem-submit" class="settings-submit" value="' . t('Submit') . '" /></div></div>';
+    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="blockem-submit" name="blockem-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
 
 	return;
 

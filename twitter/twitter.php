@@ -269,7 +269,7 @@ function twitter_settings(&$a,&$s) {
 			$s .= '<input id="twitter-token" type="hidden" name="twitter-token" value="'.$token.'" />';
 			$s .= '<input id="twitter-token2" type="hidden" name="twitter-token2" value="'.$request_token['oauth_token_secret'].'" />';
             $s .= '</div><div class="clear"></div>';
-            $s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . t('Submit') . '" /></div>';
+            $s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
 		} else {
 			/***
 			 *  we have an OAuth key / secret pair for the user
@@ -315,7 +315,7 @@ function twitter_settings(&$a,&$s) {
                         $s .= '<label id="twitter-disconnect-label" for="twitter-disconnect">'. t('Clear OAuth configuration') .'</label>';
                         $s .= '<input id="twitter-disconnect" type="checkbox" name="twitter-disconnect" value="1" />';
 			$s .= '</div><div class="clear"></div>';
-			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . t('Submit') . '" /></div>'; 
+			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>'; 
 		}
 	}
         $s .= '</div><div class="clear"></div>';
@@ -868,7 +868,7 @@ function twitter_plugin_admin(&$a, &$o){
 	$t = get_markup_template( "admin.tpl", "addon/twitter/" );
 
 	$o = replace_macros($t, array(
-		'$submit' => t('Submit'),
+		'$submit' => t('Save Settings'),
 								// name, label, value, help, [extra values]
 		'$consumerkey' => array('consumerkey', t('Consumer key'),  get_config('twitter', 'consumerkey' ), ''),
                 '$consumersecret' => array('consumersecret', t('Consumer secret'),  get_config('twitter', 'consumersecret' ), ''),

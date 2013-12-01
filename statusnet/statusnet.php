@@ -305,7 +305,7 @@ function statusnet_settings(&$a,&$s) {
                     $s .= '<input type="radio" name="statusnet-preconf-apiurl" value="'. $asn['apiurl'] .'">'. $asn['sitename'] .'<br />';
                 }
                 $s .= '<p></p><div class="clear"></div></div>';
-                $s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Submit') . '" /></div>';
+                $s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
             }
             $s .= '<h4>' . t('Provide your own OAuth Credentials') . '</h4>';
             $s .= '<p>'. t('No consumer key pair for StatusNet found. Register your Friendica Account as an desktop client on your StatusNet account, copy the consumer key pair here and enter the API base root.<br />Before you register your own OAuth key pair ask the administrator if there is already a key pair for this Friendica installation at your favorited StatusNet installation.') .'</p>';
@@ -322,7 +322,7 @@ function statusnet_settings(&$a,&$s) {
             $s .= '<label id="statusnet-applicationname-label" for="statusnet-applicationname">'.t('StatusNet application name').'</label>';
             $s .= '<input id="statusnet-applicationname" type="text" name="statusnet-applicationname" size="35" /><br />';
             $s .= '<p></p><div class="clear"></div>';
-            $s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Submit') . '" /></div>';
+            $s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
             $s .= '</div>';
 	} else {
 		/***
@@ -349,14 +349,14 @@ function statusnet_settings(&$a,&$s) {
 			$s .= '<input id="statusnet-token" type="hidden" name="statusnet-token" value="'.$token.'" />';
 			$s .= '<input id="statusnet-token2" type="hidden" name="statusnet-token2" value="'.$request_token['oauth_token_secret'].'" />';
 			$s .= '</div><div class="clear"></div>';
-			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Submit') . '" /></div>';
+			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
 			$s .= '<h4>'.t('Cancel Connection Process').'</h4>';
 			$s .= '<div id="statusnet-cancel-wrapper">';
 			$s .= '<p>'.t('Current StatusNet API is').': '.$api.'</p>';
 			$s .= '<label id="statusnet-cancel-label" for="statusnet-cancel">'. t('Cancel StatusNet Connection') . '</label>';
 			$s .= '<input id="statusnet-cancel" type="checkbox" name="statusnet-disconnect" value="1" />';
 			$s .= '</div><div class="clear"></div>';
-			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Submit') . '" /></div>';
+			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
 		} else {
 			/***
 			 *  we have an OAuth key / secret pair for the user
@@ -393,7 +393,7 @@ function statusnet_settings(&$a,&$s) {
                         $s .= '<label id="statusnet-disconnect-label" for="statusnet-disconnect">'. t('Clear OAuth configuration') .'</label>';
                         $s .= '<input id="statusnet-disconnect" type="checkbox" name="statusnet-disconnect" value="1" />';
 			$s .= '</div><div class="clear"></div>';
-			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Submit') . '" /></div>'; 
+			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>'; 
 		}
 	}
         $s .= '</div><div class="clear"></div>';
@@ -819,7 +819,7 @@ function statusnet_plugin_admin(&$a, &$o){
 
 	$t = get_markup_template( "admin.tpl", "addon/statusnet/" );
 	$o = replace_macros($t, array(
-		'$submit' => t('Submit'),
+		'$submit' => t('Save Settings'),
 		'$sites' => $sitesform,
 	));
 }

@@ -674,7 +674,7 @@ function retriever_content($a) {
                                                       t('Reapply the rules to this number of posts')),
                                                   '$title' => t('Retrieve Feed Content'),
                                                   '$help' => $a->get_baseurl() . '/retriever/help',
-                                                  '$submit' => t('Submit'),
+                                                  '$submit' => t('Save Settings'),
                                                   '$id' => ($retriever["id"] ? $retriever["id"] : "create"),
                                                   '$tag_t' => t('Tag'),
                                                   '$attribute_t' => t('Attribute'),
@@ -718,7 +718,7 @@ function retriever_plugin_settings(&$a,&$s) {
     $all_photos_mu = ($all_photos == 'on') ? ' checked="true"' : '';
     $template = get_markup_template('/settings.tpl', 'addon/retriever/');
     $s .= replace_macros($template, array(
-                             '$submit' => t('Submit'),
+                             '$submit' => t('Save Settings'),
                              '$title' => t('Retriever Settings'),
                              '$help' => $a->get_baseurl() . '/retriever/help',
                              '$all_photos' => $all_photos_mu,

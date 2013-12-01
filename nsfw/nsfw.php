@@ -91,7 +91,7 @@ function nsfw_addon_settings(&$a,&$s) {
     $s .= '<input id="nsfw-words" type="text" name="nsfw-words" value="' . $words .'" />';
     $s .= '</div><div class="clear"></div>';
 
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="nsfw-submit" name="nsfw-submit" class="settings-submit" value="' . t('Submit') . '" /></div>';
+    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="nsfw-submit" name="nsfw-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
 	$s .= '<div class="nsfw-desc">' . t('Use /expression/ to provide regular expressions') . '</div></div>';
 
 	return;

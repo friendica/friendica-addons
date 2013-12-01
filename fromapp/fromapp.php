@@ -60,8 +60,13 @@ function fromapp_settings(&$a,&$s) {
 	
 	/* Add some HTML to the existing form */
 
-	$s .= '<div class="settings-block">';
+	$s .= '<span id="settings_fromapp_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_fromapp_expanded\'); openClose(\'settings_fromapp_inflated\');">';
 	$s .= '<h3>' . t('FromApp Settings') . '</h3>';
+	$s .= '</span>';
+	$s .= '<div id="settings_fromapp_expanded" class="settings-block" style="display: none;">';
+	$s .= '<span class="fakelink" onclick="openClose(\'settings_fromapp_expanded\'); openClose(\'settings_fromapp_inflated\');">';
+	$s .= '<h3>' . t('FromApp Settings') . '</h3>';
+	$s .= '</span>';
 	$s .= '<div id="fromapp-wrapper">';
 	$s .= '<label id="fromapp-label" for="fromapp-input">' . t('The application name you would like to show your posts originating from.') . '</label>';
 	$s .= '<input id="fromapp-input" type="text" name="fromapp-input" value="' . $fromapp . '" ' . '/>';
@@ -74,7 +79,7 @@ function fromapp_settings(&$a,&$s) {
 
 	/* provide a submit button */
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="fromapp-submit" class="settings-submit" value="' . t('Submit') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="fromapp-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
 
 }
 

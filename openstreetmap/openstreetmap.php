@@ -91,7 +91,7 @@ function openstreetmap_plugin_admin (&$a, &$o) {
 		$zoom = 17;
 
 	$o = replace_macros( $t, array(
-			'$submit' => t('Submit'),
+			'$submit' => t('Save Settings'),
 			'$tmsserver' => array('tmsserver', t('Tile Server URL'), $tmsserver, t('A list of <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank">public tile servers</a>')),
 			'$zoom' => array('zoom', t('Default zoom'), $zoom, t('The default zoom level. (1:world, 18:highest)')),
 	));

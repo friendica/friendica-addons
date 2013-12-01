@@ -344,9 +344,8 @@ function jappixmini_settings(&$a, &$s) {
     $s .= '<br />';
     if ($info_text) $s .= '<br />Configuration help:<p style="margin-left:2em;">'.$info_text.'</p>';
     $s .= '<br />Status:<p style="margin-left:2em;">Addon knows '.$address_cnt.' Jabber addresses of '.$contact_cnt.' Friendica contacts (takes some time, usually 10 minutes, to update).</p>';
-    $s .= '<input type="submit" name="jappixmini-submit" value="' . t('Submit') . '" />';
+    $s .= '<input type="submit" name="jappixmini-submit" value="' . t('Save Settings') . '" />';
     $s .= ' <input type="button" value="'.t('Add contact').'" onclick="jappixmini_addon_subscribe();" />';
-    $s .= '</div>';
 
     $s .= '</div>';
 

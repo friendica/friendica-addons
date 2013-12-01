@@ -618,7 +618,7 @@ function facebook_content(&$a) {
 		$o .= '<div><label id="blocked-apps-label" for="blocked-apps">' . t('Comma separated applications to ignore') . ' </label></div>';
     	$o .= '<div><textarea id="blocked-apps" name="blocked_apps" >' . htmlspecialchars($blocked_apps) . '</textarea></div>';
 
-		$o .= '<input type="submit" name="submit" value="' . t('Submit') . '" /></form></div>';
+		$o .= '<input type="submit" name="submit" value="' . t('Save Settings') . '" /></form></div>';
 	}
 
 	return $o;

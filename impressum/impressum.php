@@ -88,7 +88,7 @@ function impressum_plugin_admin_post (&$a) {
 function impressum_plugin_admin (&$a, &$o) {
     $t = get_markup_template( "admin.tpl", "addon/impressum/" );
     $o = replace_macros($t, array(
-        '$submit' => t('Submit'),
+        '$submit' => t('Save Settings'),
         '$owner' => array('owner', t('Site Owner'), get_config('impressum','owner'), t('The page operators name.')),
         '$ownerprofile' => array('ownerprofile', t('Site Owners Profile'), get_config('impressum','ownerprofile'), t('Profile address of the operator.')),
         '$postal' => array('postal', t('Postal Address'), get_config('impressum','postal'), t('How to contact the operator via snail mail. You can use BBCode here.')),
