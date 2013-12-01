@@ -32,8 +32,13 @@ function mathjax_settings (&$a, &$s) {
         return;
     $use = get_pconfig(local_user(),'mathjax','use');
     $usetext = (($use) ? ' checked="checked" ' : '');
-    $s .= '<div class="settings-block">';
+    $s .= '<span id="settings_mathjax_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_mathjax_expanded\'); openClose(\'settings_mathjax_inflated\');">';
     $s .= '<h3>MathJax '.t('Settings').'</h3>';
+    $s .= '</span>';
+    $s .= '<div id="settings_mathjax_expanded" class="settings-block" style="display: none;">';
+    $s .= '<span class="fakelink" onclick="openClose(\'settings_mathjax_expanded\'); openClose(\'settings_mathjax_inflated\');">';
+    $s .= '<h3>MathJax '.t('Settings').'</h3>';
+    $s .= '</span>';
     $s .= '<p>'.t('The MathJax addon renders mathematical formulae written using the LaTeX syntax surrounded by the usual $$ or an eqnarray block in the postings of your wall,network tab and private mail.').'</p>';
     $s .= '<label id="mathjax_label" for="mathjax_use">'.t('Use the MathJax renderer').'</label>';
     $s .= '<input id="mathjax_use" type="checkbox" name="mathjax_use" value="1"'. $usetext .' />';
