@@ -72,8 +72,13 @@ function wppost_settings(&$a,&$s) {
 
     /* Add some HTML to the existing form */
 
-    $s .= '<div class="settings-block">';
+    $s .= '<span id="settings_wppost_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_wppost_expanded\'); openClose(\'settings_wppost_inflated\');">';
     $s .= '<h3>' . t('WordPress Post Settings') . '</h3>';
+    $s .= '</span>';
+    $s .= '<div id="settings_wppost_expanded" class="settings-block" style="display: none;">';
+    $s .= '<span class="fakelink" onclick="openClose(\'settings_wppost_expanded\'); openClose(\'settings_wppost_inflated\');">';
+    $s .= '<h3>' . t('WordPress Post Settings') . '</h3>';
+    $s .= '</span>';
     $s .= '<div id="wppost-enable-wrapper">';
     $s .= '<label id="wppost-enable-label" for="wppost-checkbox">' . t('Enable WordPress Post Plugin') . '</label>';
     $s .= '<input id="wppost-checkbox" type="checkbox" name="wppost" value="1" ' . $checked . '/>';

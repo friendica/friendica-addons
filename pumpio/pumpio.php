@@ -218,8 +218,13 @@ function pumpio_settings(&$a,&$s) {
 
     /* Add some HTML to the existing form */
 
-    $s .= '<div class="settings-block">';
+    $s .= '<span id="settings_pumpio_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_pumpio_expanded\'); openClose(\'settings_pumpio_inflated\');">';
     $s .= '<h3>' . t('Pump.io Post Settings') . '</h3>';
+    $s .= '</span>';
+    $s .= '<div id="settings_pumpio_expanded" class="settings-block" style="display: none;">';
+    $s .= '<span class="fakelink" onclick="openClose(\'settings_pumpio_expanded\'); openClose(\'settings_pumpio_inflated\');">';
+    $s .= '<h3>' . t('Pump.io Post Settings') . '</h3>';
+    $s .= '</span>';
 
     $s .= '<div id="pumpio-username-wrapper">';
     $s .= '<label id="pumpio-username-label" for="pumpio-username">'.t('pump.io username (without the servername)').'</label>';
@@ -712,8 +717,13 @@ function pumpio_fetchtimeline(&$a, $uid) {
 
 				$_REQUEST["body"] = html2bbcode($post->object->content);
 
-				if ($post->object->fullImage->url != "")
-					$_REQUEST["body"] = "[url=".$post->object->fullImage->url."][img]".$post->object->image->url."[/img][/url]\n".$_REQUEST["body"];
+				// To-Do: Picture has to be cached and stored locally
+				if ($post->object->fullImage->url != "") {
+					if ($post->object->fullImage->pump_io->proxyURL != "")
+						$_REQUEST["body"] = "[url=".$post->object->fullImage->pump_io->proxyURL."][img]".$post->object->image->pump_io->proxyURL."[/img][/url]\n".$_REQUEST["body"];
+					else
+						$_REQUEST["body"] = "[url=".$post->object->fullImage->url."][img]".$post->object->image->url."[/img][/url]\n".$_REQUEST["body"];
+				}
 
 				logger('pumpio: posting for user '.$uid);
 

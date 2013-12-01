@@ -70,8 +70,14 @@ function blogger_settings(&$a,&$s) {
 
     /* Add some HTML to the existing form */
 
-    $s .= '<div class="settings-block">';
+    $s .= '<span id="settings_blogger_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_blogger_expanded\'); openClose(\'settings_blogger_inflated\');">';
     $s .= '<h3>' . t('Blogger Post Settings') . '</h3>';
+    $s .= '</span>';
+    $s .= '<div id="settings_blogger_expanded" class="settings-block" style="display: none;">';
+    $s .= '<span class="fakelink" onclick="openClose(\'settings_blogger_expanded\'); openClose(\'settings_blogger_inflated\');">';
+    $s .= '<h3>' . t('Blogger Post Settings') . '</h3>';
+    $s .= '</span>';
+
     $s .= '<div id="blogger-enable-wrapper">';
     $s .= '<label id="blogger-enable-label" for="blogger-checkbox">' . t('Enable Blogger Post Plugin') . '</label>';
     $s .= '<input id="blogger-checkbox" type="checkbox" name="blogger" value="1" ' . $checked . '/>';

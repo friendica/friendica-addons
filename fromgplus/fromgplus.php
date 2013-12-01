@@ -33,8 +33,14 @@ function fromgplus_addon_settings(&$a,&$s) {
 	$enable_checked = (intval(get_pconfig(local_user(),'fromgplus','enable')) ? ' checked="checked"' : '');
 	$account = get_pconfig(local_user(),'fromgplus','account');
 
-	$s .= '<div class="settings-block">';
+	$s .= '<span id="settings_fromgplus_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_fromgplus_expanded\'); openClose(\'settings_fromgplus_inflated\');">';
 	$s .= '<h3>' . t('Google+ Import Settings').'</h3>';
+	$s .= '</span>';
+	$s .= '<div id="settings_fromgplus_expanded" class="settings-block" style="display: none;">';
+	$s .= '<span class="fakelink" onclick="openClose(\'settings_fromgplus_expanded\'); openClose(\'settings_fromgplus_inflated\');">';
+	$s .= '<h3>' . t('Google+ Import Settings').'</h3>';
+	$s .= '</span>';
+
 	$s .= '<div id="fromgplus-wrapper">';
 
 	$s .= '<label id="fromgplus-enable-label" for="fromgplus-enable">'.t('Enable Google+ Import').'</label>';

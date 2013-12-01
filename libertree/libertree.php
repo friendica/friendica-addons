@@ -63,8 +63,14 @@ function libertree_settings(&$a,&$s) {
 
     /* Add some HTML to the existing form */
 
-    $s .= '<div class="settings-block">';
+    $s .= '<span id="settings_libertree_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_libertree_expanded\'); openClose(\'settings_libertree_inflated\');">';
     $s .= '<h3>' . t('libertree Post Settings') . '</h3>';
+    $s .= '</span>';
+    $s .= '<div id="settings_libertree_expanded" class="settings-block" style="display: none;">';
+    $s .= '<span class="fakelink" onclick="openClose(\'settings_libertree_expanded\'); openClose(\'settings_libertree_inflated\');">';
+    $s .= '<h3>' . t('libertree Post Settings') . '</h3>';
+    $s .= '</span>';
+
     $s .= '<div id="libertree-enable-wrapper">';
     $s .= '<label id="libertree-enable-label" for="libertree-checkbox">' . t('Enable Libertree Post Plugin') . '</label>';
     $s .= '<input id="libertree-checkbox" type="checkbox" name="libertree" value="1" ' . $checked . '/>';

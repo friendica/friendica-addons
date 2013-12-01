@@ -49,11 +49,17 @@ function snautofollow_settings(&$a,&$s) {
 
 	$snautofollow_checked = (($snautofollow) ? ' checked="checked" ' : '');
 
-	
+
 	/* Add some HTML to the existing form */
 
-	$s .= '<div class="settings-block">';
+	$s .= '<span id="settings_snautofollow_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_snautofollow_expanded\'); openClose(\'settings_snautofollow_inflated\');">';
 	$s .= '<h3>' . t('StatusNet AutoFollow Settings') . '</h3>';
+	$s .= '</span>';
+	$s .= '<div id="settings_snautofollow_expanded" class="settings-block" style="display: none;">';
+	$s .= '<span class="fakelink" onclick="openClose(\'settings_snautofollow_expanded\'); openClose(\'settings_snautofollow_inflated\');">';
+	$s .= '<h3>' . t('StatusNet AutoFollow Settings') . '</h3>';
+	$s .= '</span>';
+
 	$s .= '<div id="snautofollow-wrapper">';
 	$s .= '<label id="snautofollow-label" for="snautofollow-checkbox">' . t('Automatically follow any StatusNet followers/mentioners') . '</label>';
 	$s .= '<input id="snautofollow-checkbox" type="checkbox" name="snautofollow" value="1" ' . $snautofollow_checked . '/>';
