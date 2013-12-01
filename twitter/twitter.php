@@ -229,8 +229,13 @@ function twitter_settings(&$a,&$s) {
         $create_userenabled = get_pconfig(local_user(),'twitter','create_user');
         $create_userchecked = (($create_userenabled) ? ' checked="checked" ' : '');
 
-	$s .= '<div class="settings-block">';
-	$s .= '<h3>'. t('Twitter Posting Settings') .'</h3>';
+	$s .= '<span id="settings_twitter_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_twitter_expanded\'); openClose(\'settings_twitter_inflated\');">';
+	$s .= '<h3>'. t('Twitter Settings') .'</h3>';
+	$s .= '</span>';
+	$s .= '<div id="settings_twitter_expanded" class="settings-block" style="display: none;">';
+	$s .= '<span class="fakelink" onclick="openClose(\'settings_twitter_expanded\'); openClose(\'settings_twitter_inflated\');">';
+	$s .= '<h3>'. t('Twitter Settings') .'</h3>';
+	$s .= '</span>';
 
 	if ( (!$ckey) && (!$csecret) ) {
 		/***
@@ -937,6 +942,8 @@ function twitter_fetchtimeline($a, $uid) {
 	if ($application_name == "")
 		$application_name = $a->get_hostname();
 
+	$has_picture = false;
+
 	require_once('mod/item.php');
 
 	require_once('library/twitteroauth.php');
@@ -988,12 +995,13 @@ function twitter_fetchtimeline($a, $uid) {
 						switch($media->type) {
 							case 'photo':
 								$_REQUEST['body'] = str_replace($media->url, "\n\n[img]".$media->media_url_https."[/img]\n", $_REQUEST['body']);
+								$has_picture = true;
 								break;
 						}
 					}
 				}
 
-				$converted = twitter_convertmsg($a, $_REQUEST['body'], true);
+				$converted = twitter_convertmsg($a, $_REQUEST['body'], true, $has_picture);
 				$_REQUEST['body'] = $converted["body"];
 
 				$_REQUEST['body'] = "[share author='".$post->retweeted_status->user->name.
@@ -1010,12 +1018,13 @@ function twitter_fetchtimeline($a, $uid) {
 						switch($media->type) {
 							case 'photo':
 								$_REQUEST['body'] = str_replace($media->url, "\n\n[img]".$media->media_url_https."[/img]\n", $_REQUEST['body']);
+								$has_picture = true;
 								break;
 						}
 					}
 				}
 
-				$converted = twitter_convertmsg($a, $_REQUEST["body"], true);
+				$converted = twitter_convertmsg($a, $_REQUEST["body"], true, $has_picture);
 				$_REQUEST['body'] = $converted["body"];
 			}
 
@@ -1269,6 +1278,9 @@ function twitter_fetchuser($a, $uid, $screen_name = "", $user_id = "") {
 }
 
 function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing_contact) {
+
+	$has_picture = false;
+
 	$postarray = array();
 	$postarray['gravity'] = 0;
 	$postarray['uid'] = $uid;
@@ -1364,6 +1376,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 			switch($media->type) {
 				case 'photo':
 					$postarray['body'] = str_replace($media->url, "\n\n[img]".$media->media_url_https."[/img]\n", $postarray['body']);
+					$has_picture = true;
 					break;
 				default:
 					$postarray['body'] .= print_r($media, true);
@@ -1371,7 +1384,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 		}
 	}
 
-	$converted = twitter_convertmsg($a, $postarray['body']);
+	$converted = twitter_convertmsg($a, $postarray['body'], false, $has_picture);
 	$postarray['body'] = $converted["body"];
 	$postarray['tag'] = $converted["tags"];
 
@@ -1400,6 +1413,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 				switch($media->type) {
 					case 'photo':
 						$postarray['body'] = str_replace($media->url, "\n\n[img]".$media->media_url_https."[/img]\n", $postarray['body']);
+						$has_picture = true;
 						break;
 					default:
 						$postarray['body'] .= print_r($media, true);
@@ -1407,7 +1421,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 			}
 		}
 
-		$converted = twitter_convertmsg($a, $postarray['body']);
+		$converted = twitter_convertmsg($a, $postarray['body'], false, $has_picture);
 		$postarray['body'] = $converted["body"];
 		$postarray['tag'] = $converted["tags"];
 
@@ -1722,16 +1736,24 @@ function twitter_original_url($url, $depth=1, $fetchbody = false) {
         return($url);
 }
 
-function twitter_siteinfo($url) {
+function twitter_siteinfo($url, $dontincludemedia) {
 	require_once("mod/parse_url.php");
 
-	$data = parseurl_getsiteinfo($url);
+	// Fetch site infos - but only from the meta data
+	$data = parseurl_getsiteinfo($url, true);
+
+	if ($dontincludemedia)
+		unset($data["images"]);
 
 	if (!is_string($data["text"]) AND (sizeof($data["images"]) == 0) AND ($data["title"] == $url))
 		return("");
 
 	if (is_string($data["title"]))
 		$text .= "[bookmark=".$url."]".trim($data["title"])."[/bookmark]\n";
+
+	// Add a spoiler to the extra information
+	//if ((sizeof($data["images"]) > 0) OR is_string($data["text"]))
+	//	$text .= "[spoiler]";
 
 	if (sizeof($data["images"]) > 0) {
 		$imagedata = $data["images"][0];
@@ -1741,15 +1763,19 @@ function twitter_siteinfo($url) {
 	if (is_string($data["text"]))
 		$text .= "[quote]".$data["text"]."[/quote]";
 
+	//if ((sizeof($data["images"]) > 0) OR is_string($data["text"]))
+	//	$text .= "[/spoiler]";
+
 	return($text);
 
 }
 
-function twitter_convertmsg($a, $body, $no_tags = false) {
+function twitter_convertmsg($a, $body, $no_tags = false, $dontincludemedia) {
 
 	$links = preg_match_all("/([^\]\='".'"'."]|^)(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/ism", $body,$matches,PREG_SET_ORDER);
 
 	$footer = "";
+	$footerurl = "";
 
 	if ($links) {
 		foreach ($matches AS $match) {
@@ -1762,7 +1788,9 @@ function twitter_convertmsg($a, $body, $no_tags = false) {
 				$body = str_replace($match[2], "\n[youtube]".$expanded_url."[/youtube]\n", $body);
 			elseif (strstr($expanded_url, "//player.vimeo.com/"))
 				$body = str_replace($match[2], "\n[vimeo]".$expanded_url."[/vimeo]\n", $body);
-			elseif (strstr($expanded_url, "//instagram.com"))
+			elseif (strstr($expanded_url, "//twitpic.com/")) // Test
+				$body = str_replace($match[2], "\n[url]".$expanded_url."[/url]\n", $body);
+			elseif (strstr($expanded_url, "//instagram.com/"))
 				$body = str_replace($match[2], "\n[url]".$expanded_url."[/url]\n", $body);
 			else {
 				$img_str = fetch_url($expanded_url, true, $redirects, 4);
@@ -1772,18 +1800,20 @@ function twitter_convertmsg($a, $body, $no_tags = false) {
 				$mime = image_type_to_mime_type(exif_imagetype($tempfile));
 				unlink($tempfile);
 
-				if (substr($mime, 0, 6) == "image/")
+				if (substr($mime, 0, 6) == "image/") {
 					$body = str_replace($match[2], "[img]".$expanded_url."[/img]", $body);
-				else {
-
-					//if ($footer == "")
-					$footer = "\n\n".twitter_siteinfo($expanded_url);
+					$dontincludemedia = true;
+				} else {
+					$footerurl = $expanded_url;
 					$footerlink = "[url=".$expanded_url."]".$expanded_url."[/url]";
 
 					$body = str_replace($match[2], $footerlink, $body);
 				}
 			}
 		}
+
+		if ($footerurl != "")
+			$footer = "\n\n".twitter_siteinfo($footerurl, $dontincludemedia);
 
 		if (($footerlink != "") AND (trim($footer) != "")) {
 			$removedlink = trim(str_replace($footerlink, "", $body));
