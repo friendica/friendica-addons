@@ -13,12 +13,12 @@
  * Detailed instructions how to use this plugin can be found at
  * https://github.com/friendica/friendica/wiki/How-to:-Friendica%E2%80%99s-Facebook-connector
  *
- * Vidoes and embeds will not be posted if there is no other content. Links 
- * and images will be converted to a format suitable for the Facebook API and 
- * long posts truncated - with a link to view the full post. 
+ * Vidoes and embeds will not be posted if there is no other content. Links
+ * and images will be converted to a format suitable for the Facebook API and
+ * long posts truncated - with a link to view the full post.
  *
  * Facebook contacts will not be able to view private photos, as they are not able to
- * authenticate to your site to establish identity. We will address this 
+ * authenticate to your site to establish identity. We will address this
  * in a future release.
  */
 
@@ -209,7 +209,7 @@ function fbpost_content(&$a) {
 
 	$o .= '<h3>' . t('Facebook Post') . '</h3>';
 
-	if(! $fb_installed) { 
+	if(! $fb_installed) {
 		$o .= '<div id="fbpost-enable-wrapper">';
 
 		//read_stream,publish_stream,manage_pages,photo_upload,user_groups,offline_access
@@ -982,6 +982,8 @@ function fbpost_cron($a,$b) {
 }
 
 function fbpost_fetchwall($a, $uid) {
+	require_once("include/oembed.php");
+
 	$access_token = get_pconfig($uid,'facebook','access_token');
 	$post_to_page = get_pconfig($uid,'facebook','post_to_page');
 	$lastcreated = get_pconfig($uid,'facebook','last_created');
@@ -1036,24 +1038,15 @@ function fbpost_fetchwall($a, $uid) {
 
 		$_REQUEST["body"] = (isset($item->message) ? escape_tags($item->message) : '');
 
-		if(isset($item->name) and isset($item->link))
-			$_REQUEST["body"] .= "\n\n[bookmark=".$item->link."]".$item->name."[/bookmark]";
-		elseif (isset($item->name))
-			$_REQUEST["body"] .= "\n\n[b]" . $item->name."[/b]";
+		$content = "";
+		$type = "";
 
-		/*if(isset($item->caption)) {
-			if(!isset($item->name) and isset($item->link))
-				$_REQUEST["body"] .= "\n\n[bookmark=".$item->link."]".$item->caption."[/bookmark]";
-			//else
-			//	$_REQUEST["body"] .= "[i]" . $item->caption."[/i]\n";
-			}
-
-			if(!isset($item->caption) and !isset($item->name)) {
-				if (isset($item->link))
-					$_REQUEST["body"] .= "\n[url]".$item->link."[/url]\n";
-				else
-					$_REQUEST["body"] .= "\n";
-		}*/
+		if(isset($item->name) and isset($item->link)) {
+			$oembed_data = oembed_fetch_url($item->link);
+			$type = $oembed_data->type;
+			$content = "[bookmark=".$item->link."]".$item->name."[/bookmark]";
+		} elseif (isset($item->name))
+			$content .= "[b]".$item->name."[/b]";
 
 		$quote = "";
 		if(isset($item->description) and ($item->type != "photo"))
@@ -1062,38 +1055,44 @@ function fbpost_fetchwall($a, $uid) {
 		if(isset($item->caption) and ($item->type == "photo"))
 			$quote = $item->caption;
 
-		//if (isset($item->properties))
-		//	foreach ($item->properties as $property)
-		//		$quote .= "\n".$property->name.": [url=".$property->href."]".$property->text."[/url]";
+		// Only import the picture when the message is no video
+		// oembed display a picture of the video as well
+		//if ($item->type != "video") {
+		//if (($item->type != "video") and ($item->type != "photo")) {
+		if (($type == "") OR ($type == "link")) {
+
+			$type = $item->type;
+
+			if(isset($item->picture) && isset($item->link))
+				$content .= "\n".'[url='.$item->link.'][img]'.fpost_cleanpicture($item->picture).'[/img][/url]';
+			else {
+				if (isset($item->picture))
+					$content .= "\n".'[img]'.fpost_cleanpicture($item->picture).'[/img]';
+				// if just a link, it may be a wall photo - check
+				if(isset($item->link))
+					$content .= fbpost_get_photo($uid,$item->link);
+			}
+		}
+
+		if(trim($_REQUEST["body"].$content.$quote) == '') {
+			logger('facebook: empty body '.$item->id.' '.print_r($item, true));
+			continue;
+		}
+
+		if ($content)
+			$_REQUEST["body"] .= "\n\n";
+
+		if ($type)
+			$_REQUEST["body"] .= "[class=type-".$type."]";
+
+		if ($content)
+			$_REQUEST["body"] .= $content;
 
 		if ($quote)
 			$_REQUEST["body"] .= "\n[quote]".$quote."[/quote]";
 
-		// Only import the picture when the message is no video
-		// oembed display a picture of the video as well
-		if ($item->type != "video") {
-		//if (($item->type != "video") and ($item->type != "photo")) {
-			if(isset($item->picture) && isset($item->link))
-				$_REQUEST["body"] .= "\n".'[url='.$item->link.'][img]'.fpost_cleanpicture($item->picture).'[/img][/url]';
-			else {
-				if (isset($item->picture))
-					$_REQUEST["body"] .= "\n".'[img]'.fpost_cleanpicture($item->picture).'[/img]';
-				// if just a link, it may be a wall photo - check
-				if(isset($item->link))
-					$_REQUEST["body"] .= fbpost_get_photo($uid,$item->link);
-			}
-		}
-
-		/*if (($datarray['app'] == "Events") and isset($item->actions))
-			foreach ($item->actions as $action)
-				if ($action->name == "View")
-					$_REQUEST["body"] .= " [url=".$action->link."]".$item->story."[/url]";
-		*/
-
-		if(trim($_REQUEST["body"]) == '') {
-			logger('facebook: empty body '.$item->id.' '.print_r($item, true));
-			continue;
-		}
+		if ($type)
+			$_REQUEST["body"] .= "[/class]";
 
 		$_REQUEST["body"] = trim($_REQUEST["body"]);
 

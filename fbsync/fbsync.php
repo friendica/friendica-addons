@@ -184,6 +184,8 @@ function fbsync_cron($a,$b) {
 
 function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $create_user) {
 
+	require_once("include/oembed.php");
+
 	// check if it was already imported
 	$r = q("SELECT * FROM `item` WHERE `uid` = %d AND `uri` = '%s' LIMIT 1",
 		intval($uid),
@@ -267,10 +269,15 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	$postarray["body"] = $msgdata["body"];
 	$postarray["tag"] = $msgdata["tags"];
 
-	if(isset($post->attachment->name) and isset($post->attachment->href))
-		$postarray["body"] .= "\n\n[bookmark=".$post->attachment->href."]".$post->attachment->name."[/bookmark]";
-	elseif (isset($post->attachment->name) AND ($post->attachment->name != ""))
-		$postarray["body"] .= "\n\n[b]" . $post->attachment->name."[/b]";
+	$content = "";
+	$type = "";
+
+	if (isset($post->attachment->name) and isset($post->attachment->href)) {
+		$oembed_data = oembed_fetch_url($post->attachment->href);
+		$type = $oembed_data->type;
+		$content = "[bookmark=".$post->attachment->href."]".$post->attachment->name."[/bookmark]";
+	} elseif (isset($post->attachment->name) AND ($post->attachment->name != ""))
+		$content = "[b]" . $post->attachment->name."[/b]";
 
 	$quote = "";
 	if(isset($post->attachment->description) and ($post->attachment->fb_object_type != "photo"))
@@ -279,12 +286,13 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	if(isset($post->attachment->caption) and ($post->attachment->fb_object_type == "photo"))
 		$quote = $post->attachment->caption;
 
-	if ($quote.$post->attachment->href.$postarray["body"] == "")
+	if ($quote.$post->attachment->href.$content.$postarray["body"] == "")
 		return;
 
-	if (isset($post->attachment->media) AND !strstr($post->attachment->href, "://www.youtube.com/")
-		AND !strstr($post->attachment->href, "://youtu.be/")
-		AND !strstr($post->attachment->href, ".vimeo.com/")) {
+	if (isset($post->attachment->media) // AND !strstr($post->attachment->href, "://www.youtube.com/")
+		//AND !strstr($post->attachment->href, "://youtu.be/")
+		//AND !strstr($post->attachment->href, ".vimeo.com/"))
+		AND (($type == "") OR ($type == "link"))) {
 		foreach ($post->attachment->media AS $media) {
 			//$media->photo->owner = number_format($media->photo->owner, 0, '', '');
 			//if ($media->photo->owner != '') {
@@ -293,21 +301,36 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 			//	$postarray['author-avatar'] = $contacts[$media->photo->owner]->pic_square;
 			//}
 
+			if (isset($media->type))
+				$type = $media->type;
+
 			if(isset($media->src) && isset($media->href) AND ($media->src != "") AND ($media->href != ""))
-				$postarray["body"] .= "\n".'[url='.$media->href.'][img]'.fpost_cleanpicture($media->src).'[/img][/url]';
+				$content .= "\n".'[url='.$media->href.'][img]'.fpost_cleanpicture($media->src).'[/img][/url]';
 			else {
 				if (isset($media->src) AND ($media->src != ""))
-					$postarray["body"] .= "\n".'[img]'.fpost_cleanpicture($media->src).'[/img]';
+					$content .= "\n".'[img]'.fpost_cleanpicture($media->src).'[/img]';
 
 				// if just a link, it may be a wall photo - check
 				if(isset($post->link))
-					$postarray["body"] .= fbpost_get_photo($media->href);
+					$content .= fbpost_get_photo($media->href);
 			}
 		}
 	}
 
+	if ($content)
+		$postarray["body"] .= "\n\n";
+
+	if ($type)
+		$postarray["body"] .= "[class=type-".$type."]";
+
+	if ($content)
+		$postarray["body"] .= $content;
+
 	if ($quote)
-		$postarray["body"] .= "\n[quote]".$quote."[/quote]";
+		$postarray["body"] .= "\n[quote]".trim($quote)."[/quote]";
+
+	if ($type)
+		$postarray["body"] .= "[/class]";
 
 	$postarray["body"] = trim($postarray["body"]);
 

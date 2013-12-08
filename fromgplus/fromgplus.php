@@ -247,6 +247,7 @@ function fromgplus_cleantext($text) {
 function fromgplus_handleattachments($item, $displaytext) {
 	$post = "";
 	$quote = "";
+	$type = "";
 
 	foreach ($item->object->attachments as $attachment) {
 		switch($attachment->objectType) {
@@ -262,7 +263,7 @@ function fromgplus_handleattachments($item, $displaytext) {
 				break;
 
 			case "article":
-				$post .= "\n\n[bookmark=".$attachment->url."]".fromgplus_html2bbcode($attachment->displayName)."[/bookmark]\n";
+				$post .= "\n\n[class=type-link][bookmark=".$attachment->url."]".fromgplus_html2bbcode($attachment->displayName)."[/bookmark]\n";
 
 				$images = fromgplus_cleanupgoogleproxy($attachment->fullImage, $attachment->image);
 				//if ($images["preview"] != "")
@@ -276,6 +277,8 @@ function fromgplus_handleattachments($item, $displaytext) {
 				$quote = trim(fromgplus_html2bbcode($attachment->content));
 				if ($quote != "")
 					$quote = "\n[quote]".$quote."[/quote]";
+
+				$quote .= "[/class]";
 				break;
 
 			case "photo":

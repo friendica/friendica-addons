@@ -1772,25 +1772,35 @@ function twitter_siteinfo($url, $dontincludemedia) {
 
 function twitter_convertmsg($a, $body, $no_tags = false, $dontincludemedia) {
 
+	require_once("include/oembed.php");
+
 	$links = preg_match_all("/([^\]\='".'"'."]|^)(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/ism", $body,$matches,PREG_SET_ORDER);
 
 	$footer = "";
 	$footerurl = "";
+	$type = "";
 
 	if ($links) {
 		foreach ($matches AS $match) {
 			$expanded_url = twitter_original_url($match[2]);
 
+			$oembed_data = oembed_fetch_url($expanded_url);
+
+			if ($type == "")
+				$type = $oembed_data->type;
+
 			// To-Do:
 			// Twitlonger
 
-			if (strstr($expanded_url, "//www.youtube.com/"))
-				$body = str_replace($match[2], "\n[youtube]".$expanded_url."[/youtube]\n", $body);
-			elseif (strstr($expanded_url, "//player.vimeo.com/"))
-				$body = str_replace($match[2], "\n[vimeo]".$expanded_url."[/vimeo]\n", $body);
-			elseif (strstr($expanded_url, "//twitpic.com/")) // Test
-				$body = str_replace($match[2], "\n[url]".$expanded_url."[/url]\n", $body);
-			elseif (strstr($expanded_url, "//instagram.com/"))
+//			if (strstr($expanded_url, "//www.youtube.com/"))
+//				$body = str_replace($match[2], "\n[youtube]".$expanded_url."[/youtube]\n", $body);
+//			elseif (strstr($expanded_url, "//player.vimeo.com/"))
+//				$body = str_replace($match[2], "\n[vimeo]".$expanded_url."[/vimeo]\n", $body);
+//			elseif (strstr($expanded_url, "//twitpic.com/")) // Test
+//				$body = str_replace($match[2], "\n[url]".$expanded_url."[/url]\n", $body);
+//			elseif (strstr($expanded_url, "//instagram.com/"))
+//				$body = str_replace($match[2], "\n[url]".$expanded_url."[/url]\n", $body);
+			if ($oembed_data->type != "link")
 				$body = str_replace($match[2], "\n[url]".$expanded_url."[/url]\n", $body);
 			else {
 				$img_str = fetch_url($expanded_url, true, $redirects, 4);
@@ -1801,9 +1811,11 @@ function twitter_convertmsg($a, $body, $no_tags = false, $dontincludemedia) {
 				unlink($tempfile);
 
 				if (substr($mime, 0, 6) == "image/") {
+					$type = "photo";
 					$body = str_replace($match[2], "[img]".$expanded_url."[/img]", $body);
 					$dontincludemedia = true;
 				} else {
+					$type = $oembed_data->type;
 					$footerurl = $expanded_url;
 					$footerlink = "[url=".$expanded_url."]".$expanded_url."[/url]";
 
@@ -1813,7 +1825,7 @@ function twitter_convertmsg($a, $body, $no_tags = false, $dontincludemedia) {
 		}
 
 		if ($footerurl != "")
-			$footer = "\n\n".twitter_siteinfo($footerurl, $dontincludemedia);
+			$footer = twitter_siteinfo($footerurl, $dontincludemedia);
 
 		if (($footerlink != "") AND (trim($footer) != "")) {
 			$removedlink = trim(str_replace($footerlink, "", $body));
@@ -1821,7 +1833,7 @@ function twitter_convertmsg($a, $body, $no_tags = false, $dontincludemedia) {
 			if (strstr($body, $removedlink))
 				$body = $removedlink;
 
-			$body .= $footer;
+			$body .= "\n\n[class=type-".$type."]".$footer."[/class]";
 		}
 	}
 
