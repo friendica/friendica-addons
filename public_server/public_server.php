@@ -144,6 +144,19 @@ function public_server_login($a,$b) {
 
 function public_server_plugin_admin_post ( &$a ) {
     check_form_security_token_redirectOnErr('/admin/plugins/publicserver', 'publicserver');
+    $expiredays = (( x($_POST, 'expiredays') ) ? notags(trim($_POST['expiredays'] )) : '');
+    $expireposts = (( x($_POST, 'expireposts') ) ? notags(trim($_POST['expireposts'] )) : '');
+    $nologin = (( x($_POST, 'nologin') ) ? notags(trim($_POST['nologin'] )) : '');
+    $flagusers = (( x($_POST, 'flagusers') ) ? notags(trim($_POST['flagusers'] )) : '');
+    $flagposts = (( x($_POST, 'flagposts') ) ? notags(trim($_POST['flagposts'] )) : '');
+    $flagpostsexpire = (( x($_POST, 'flagpostsexpire') ) ? notags(trim($_POST['flagpostsexpire'] )) : '');
+    set_config( 'public_server','expiredays',$expiredays );
+    set_config( 'public_server','expireposts',$expireposts );
+    set_config( 'public_server','nologin',$nologin );
+    set_config( 'public_server','flagusers',$flagusers);
+    set_config( 'public_server','flagposts',$flagposts );
+    set_config( 'public_server','flagpostsexpire',$flagpostsexpire );
+    info( t('Settings saved').EOL );
 }
 function public_server_plugin_admin ( &$a, &$o) {
     $token = get_form_security_token("publicserver");
