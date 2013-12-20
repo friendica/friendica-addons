@@ -3,7 +3,7 @@
 /**
  * Name: public_server
  * Description: Friendica plugin/addon with functions suitable for a public server.
- * Version: 1.0
+ * Version: 1.1
  * Author: Keith Fernie <http://friendika.me4.it/profile/keith>
  */
 
@@ -141,3 +141,36 @@ function public_server_login($a,$b) {
 	local_user()
 	);
 }
+
+function public_server_plugin_admin_post ( &$a ) {
+    check_form_security_token_redirectOnErr('/admin/plugins/publicserver', 'publicserver');
+    $expiredays = (( x($_POST, 'expiredays') ) ? notags(trim($_POST['expiredays'] )) : '');
+    $expireposts = (( x($_POST, 'expireposts') ) ? notags(trim($_POST['expireposts'] )) : '');
+    $nologin = (( x($_POST, 'nologin') ) ? notags(trim($_POST['nologin'] )) : '');
+    $flagusers = (( x($_POST, 'flagusers') ) ? notags(trim($_POST['flagusers'] )) : '');
+    $flagposts = (( x($_POST, 'flagposts') ) ? notags(trim($_POST['flagposts'] )) : '');
+    $flagpostsexpire = (( x($_POST, 'flagpostsexpire') ) ? notags(trim($_POST['flagpostsexpire'] )) : '');
+    set_config( 'public_server','expiredays',$expiredays );
+    set_config( 'public_server','expireposts',$expireposts );
+    set_config( 'public_server','nologin',$nologin );
+    set_config( 'public_server','flagusers',$flagusers);
+    set_config( 'public_server','flagposts',$flagposts );
+    set_config( 'public_server','flagpostsexpire',$flagpostsexpire );
+    info( t('Settings saved').EOL );
+}
+function public_server_plugin_admin ( &$a, &$o) {
+    $token = get_form_security_token("publicserver");
+    $t = get_markup_template( "admin.tpl", "addon/public_server");
+    $o = replace_macros($t, array(
+	'$submit' => t('Save Settings'),
+	'$form_security_token' => $token,
+	'$infotext' => t('Set any of these options to 0 to deactivate it.'),
+	'$expiredays' => Array( "expiredays","Expire Days", intval(get_config('public_server', 'expiredays')), "When an account is created on the site, it is given a hard "),
+	'$expireposts' => Array( "expireposts", "Expire Posts", intval(get_config('public_server','expireposts')), "Set the default days for posts to expire here"),
+	'$nologin' => Array( "nologin", "No Login", intval(get_config('public_server','nologin')), "Remove users who have never logged in after nologin days "),
+	'$flagusers' => Array( "flagusers", "Flag users", intval(get_config('public_server','flagusers')), "Remove users who last logged in over flagusers days ago"),
+	'$flagposts' => Array( "flagposts", "Flag posts", intval(get_config('public_server','flagposts')), "For users who last logged in over flagposts days ago set post expiry days to flagpostsexpire "),
+	'$flagpostsexpire' => Array( "flagpostsexpire", "Flag posts expire", intval(get_config('public_server','flagpostsexpire'))),
+    ));
+}
+
