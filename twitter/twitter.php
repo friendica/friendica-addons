@@ -169,6 +169,7 @@ function twitter_settings_post ($a,$post) {
 		del_pconfig(local_user(), 'twitter', 'intelligent_shortening');
 		del_pconfig(local_user(), 'twitter', 'import');
 		del_pconfig(local_user(), 'twitter', 'create_user');
+		del_pconfig(local_user(), 'twitter', 'own_id');
 	} else {
 	if (isset($_POST['twitter-pin'])) {
 		//  if the user supplied us with a PIN from Twitter, let the magic of OAuth happen
@@ -632,8 +633,12 @@ function twitter_post_hook(&$a,&$b) {
                         $orig_post = $r[0];
                 }
 
-		// To-Do: Ab dem letzten / nehmen
-		$b["body"] = "@".substr($orig_post["author-link"], 20)." ".$b["body"];
+		$nickname = preg_replace("=https?://twitter.com/(.*)=ism", "$1", $orig_post["author-link"]);
+		$nickname = "@[url=".$orig_post["author-link"]."]".$nickname."[/url]";
+
+		logger("twitter_post_hook: comparing ".$nickname." with ".$b["body"], LOGGER_DEBUG);
+		if (strpos($b["body"], $nickname) === false)
+			$b["body"] = $nickname." ".$b["body"];
 
 		logger("twitter_post_hook: parent found ".print_r($orig_post, true), LOGGER_DATA);
 	} else {
@@ -1119,6 +1124,24 @@ function twitter_queue_hook(&$a,&$b) {
 
 function twitter_fetch_contact($uid, $contact, $create_user) {
 
+	// Check if the unique contact is existing
+	// To-Do: only update once a while
+	 $r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
+			dbesc(normalise_link("https://twitter.com/".$contact->screen_name)));
+
+	if (count($r) == 0)
+		q("INSERT INTO unique_contacts (url, name, nick, avatar) VALUES ('%s', '%s', '%s', '%s')",
+			dbesc(normalise_link("https://twitter.com/".$contact->screen_name)),
+			dbesc($contact->name),
+			dbesc($contact->screen_name),
+			dbesc($contact->profile_image_url_https));
+	else
+		q("UPDATE unique_contacts SET name = '%s', nick = '%s', avatar = '%s' WHERE url = '%s'",
+			dbesc($contact->name),
+			dbesc($contact->screen_name),
+			dbesc($contact->profile_image_url_https),
+			dbesc(normalise_link("https://twitter.com/".$contact->screen_name)));
+
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
 		intval($uid), dbesc("twitter::".$contact->id_str));
 
@@ -1191,6 +1214,7 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 			dbesc(datetime_convert()),
 			intval($contact_id)
 		);
+
 	} else {
 		// update profile photos once every two weeks as we have no notification of when they change.
 
@@ -1282,6 +1306,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 	$has_picture = false;
 
 	$postarray = array();
+	$postarray['network'] = NETWORK_TWITTER;
 	$postarray['gravity'] = 0;
 	$postarray['uid'] = $uid;
 	$postarray['wall'] = 0;
@@ -1425,6 +1450,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 		$postarray['body'] = $converted["body"];
 		$postarray['tag'] = $converted["tags"];
 
+		twitter_fetch_contact($uid, $post->retweeted_status->user, false);
 
 		// Deactivated at the moment, since there are problems with answers to retweets
 		if (false AND !intval(get_config('system','wall-to-wall_share'))) {
@@ -1757,7 +1783,8 @@ function twitter_siteinfo($url, $dontincludemedia) {
 
 	if (sizeof($data["images"]) > 0) {
 		$imagedata = $data["images"][0];
-		$text .= '[img='.$imagedata["width"].'x'.$imagedata["height"].']'.$imagedata["src"].'[/img]' . "\n";
+		//$text .= '[img='.$imagedata["width"].'x'.$imagedata["height"].']'.$imagedata["src"].'[/img]' . "\n";
+		$text .= '[img]'.$imagedata["src"].'[/img]'."\n";
 	}
 
 	if (is_string($data["text"]))
@@ -1914,6 +1941,9 @@ function twitter_fetch_own_contact($a, $uid) {
         	        intval($uid), dbesc("twitter::".$own_id));
 		if(count($r))
 			$contact_id = $r[0]["id"];
+		else
+			del_pconfig($uid, 'twitter', 'own_id');
+
 	}
 
 	return($contact_id);
