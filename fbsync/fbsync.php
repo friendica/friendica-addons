@@ -200,6 +200,7 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	$postarray['wall'] = 0;
 
 	$postarray['verb'] = ACTIVITY_POST;
+	$postarray['network'] =  dbesc(NETWORK_FACEBOOK);
 
 	$postarray['uri'] = "fb::".$post->post_id;
 	$postarray['thr-parent'] = $postarray['uri'];
@@ -414,6 +415,7 @@ function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $appl
 	$postarray['wall'] = 0;
 
 	$postarray['verb'] = ACTIVITY_POST;
+	$postarray['network'] =  dbesc(NETWORK_FACEBOOK);
 
 	$postarray['uri'] = "fb::".$comment->id;
 	$postarray['thr-parent'] = $parent_uri;
@@ -548,13 +550,13 @@ function fbsync_createlike($a, $uid, $self_id, $self, $contacts, $like) {
 	$likedata = array();
         $likedata['parent'] = $orig_post['id'];
         $likedata['verb'] = ACTIVITY_LIKE;
+	$likedate['network'] =  dbesc(NETWORK_FACEBOOK);
         $likedata['gravity'] = 3;
         $likedata['uid'] = $uid;
         $likedata['wall'] = 0;
         $likedata['uri'] = item_new_uri($a->get_baseurl(), $uid);
         $likedata['parent-uri'] = $orig_post["uri"];
         $likedata['app'] = "Facebook";
-        $likedata['verb'] = ACTIVITY_LIKE;
 
 	if ($like->user_id != $self_id) {
 		$likedata['contact-id'] = $contact_id;
@@ -597,6 +599,24 @@ function fbsync_createlike($a, $uid, $self_id, $self, $contacts, $like) {
 }
 
 function fbsync_fetch_contact($uid, $contact, $create_user) {
+
+	// Check if the unique contact is existing
+	// To-Do: only update once a while
+	$r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
+		dbesc(normalise_link($contact->url)));
+
+	if (count($r) == 0)
+		q("INSERT INTO unique_contacts (url, name, nick, avatar) VALUES ('%s', '%s', '%s', '%s')",
+			dbesc(normalise_link($contact->url)),
+                        dbesc($contact->name),
+                        dbesc($contact->username),
+			dbesc($contact->pic_square));
+	else
+		q("UPDATE unique_contacts SET name = '%s', nick = '%s', avatar = '%s' WHERE url = '%s'",
+                        dbesc($contact->name),
+                        dbesc($contact->username),
+			dbesc($contact->pic_square),
+			dbesc(normalise_link($contact->url)));
 
         $r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
                 intval($uid), dbesc("facebook::".$contact->id));
@@ -834,7 +854,7 @@ function fbsync_fetchfeed($a, $uid) {
 
 	require_once('include/items.php');
 
-	if ($last_updated == "")
+	//if ($last_updated == "")
 		$last_updated = 0;
 
 	logger("fbsync_fetchfeed: fetching content for user ".$self_id);

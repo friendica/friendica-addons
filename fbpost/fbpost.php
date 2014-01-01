@@ -293,8 +293,8 @@ function fbpost_content(&$a) {
 function fbpost_plugin_settings(&$a,&$b) {
 
 	$b .= '<div class="settings-block">';
-	$b .= '<h3>' . t('Facebook Post Settings') . '</h3>';
-	$b .= '<a href="fbpost">' . t('Facebook Post Settings') . '</a><br />';
+	//$b .= '<h3>' . t('Facebook Post Settings') . '</h3>';
+	$b .= '<a href="fbpost"><h3>' . t('Facebook Post Settings') . '</a></h3>';
 	$b .= '</div>';
 
 }
@@ -765,6 +765,10 @@ function fbpost_post_hook(&$a,&$b) {
 					}
 					else {
 						if(! $likes) {
+							$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", intval($b['uid']));
+							if (count($r))
+								$a->contact = $r[0]["id"];
+
 							$s = serialize(array('url' => $url, 'item' => $b['id'], 'post' => $postvars));
 							require_once('include/queue_fn.php');
 							add_to_queue($a->contact,NETWORK_FACEBOOK,$s);
@@ -867,14 +871,17 @@ function fbpost_queue_hook(&$a,&$b) {
 		if($x['network'] !== NETWORK_FACEBOOK)
 			continue;
 
-		logger('facebook_queue: run');
+		logger('fbpost_queue_hook: run');
 
 		$r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` on `contact`.`uid` = `user`.`uid` 
 			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
 			intval($x['cid'])
 		);
-		if(! count($r))
+		if(! count($r)) {
+			logger('fbpost_queue_hook: no user found for entry '.print_r($x, true));
+			update_queue_time($x['id']);
 			continue;
+		}
 
 		$user = $r[0];
 
@@ -908,7 +915,13 @@ function fbpost_queue_hook(&$a,&$b) {
 					logger('fbpost_queue_hook: failed: ' . $j);
 					update_queue_time($x['id']);
 				}
+			} else {
+				logger('fbpost_queue_hook: No fb_post or fb_token.');
+				update_queue_time($x['id']);
 			}
+		} else {
+			logger('fbpost_queue_hook: No appid or secret.');
+			update_queue_time($x['id']);
 		}
 	}
 }

@@ -34,6 +34,13 @@ function privacy_image_cache_module() {}
 function privacy_image_cache_init() {
 	global $a, $_SERVER;
 
+	// The code needs to be reworked, it is too complicated
+	//
+	// it is doing the following:
+	// 1. If a folder "privacy_image_cache" exists and is writeable, then use this for caching
+	// 2. If a cache path is defined, use this
+	// 3. If everything else failed, cache into the database
+
 	if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
 		header('HTTP/1.1 304 Not Modified');
 		header("Last-Modified: " . gmdate("D, d M Y H:i:s", time()) . " GMT");
@@ -54,6 +61,14 @@ function privacy_image_cache_init() {
 	}
 
 	$thumb = false;
+
+	// If the cache path isn't there, try to create it
+	if (!is_dir($_SERVER["DOCUMENT_ROOT"]."/privacy_image_cache"))
+		if (is_writable($_SERVER["DOCUMENT_ROOT"]))
+			mkdir($_SERVER["DOCUMENT_ROOT"]."/privacy_image_cache");
+
+	// Checking if caching into a folder in the webroot is activated and working
+	$direct_cache = (is_dir($_SERVER["DOCUMENT_ROOT"]."/privacy_image_cache") AND is_writable($_SERVER["DOCUMENT_ROOT"]."/privacy_image_cache"));
 
 	// Look for filename in the arguments
 	if (isset($a->argv[1]) OR isset($a->argv[2]) OR isset($a->argv[3])) {
@@ -77,50 +92,53 @@ function privacy_image_cache_init() {
 		$thumb = (isset($a->argv[3]) and ($a->argv[3] == "thumb"));
 	}
 
-	$urlhash = 'pic:' . sha1($_REQUEST['url']);
-	// Double encoded url - happens with Diaspora
-	$urlhash2 = 'pic:' . sha1(urldecode($_REQUEST['url']));
+	if (!$direct_cache) {
+		$urlhash = 'pic:' . sha1($_REQUEST['url']);
+		// Double encoded url - happens with Diaspora
+		$urlhash2 = 'pic:' . sha1(urldecode($_REQUEST['url']));
 
-	$cachefile = get_cachefile(hash("md5", $_REQUEST['url']));
-	if ($cachefile != '') {
-		if (file_exists($cachefile)) {
-			$img_str = file_get_contents($cachefile);
-			$mime = image_type_to_mime_type(exif_imagetype($cachefile));
+		$cachefile = get_cachefile(hash("md5", $_REQUEST['url']));
+		if ($cachefile != '') {
+			if (file_exists($cachefile)) {
+				$img_str = file_get_contents($cachefile);
+				$mime = image_type_to_mime_type(exif_imagetype($cachefile));
 
-			header("Content-type: $mime");
-			header("Last-Modified: " . gmdate("D, d M Y H:i:s", time()) . " GMT");
-			header('Etag: "'.md5($img_str).'"');
-			header("Expires: " . gmdate("D, d M Y H:i:s", time() + (31536000)) . " GMT");
-			header("Cache-Control: max-age=31536000");
+				header("Content-type: $mime");
+				header("Last-Modified: " . gmdate("D, d M Y H:i:s", time()) . " GMT");
+				header('Etag: "'.md5($img_str).'"');
+				header("Expires: " . gmdate("D, d M Y H:i:s", time() + (31536000)) . " GMT");
+				header("Cache-Control: max-age=31536000");
 
-			// reduce quality - if it isn't a GIF
-			if ($mime != "image/gif") {
-				$img = new Photo($img_str, $mime);
-				if($img->is_valid())
-					$img_str = $img->imageString();
+				// reduce quality - if it isn't a GIF
+				if ($mime != "image/gif") {
+					$img = new Photo($img_str, $mime);
+					if($img->is_valid()) {
+						$img_str = $img->imageString();
+					}
+				}
+
+				echo $img_str;
+				killme();
 			}
-
-			echo $img_str;
-
-			if (is_dir($_SERVER["DOCUMENT_ROOT"]."/privacy_image_cache"))
-				file_put_contents($_SERVER["DOCUMENT_ROOT"]."/privacy_image_cache/".privacy_image_cache_cachename($_REQUEST['url'], true), $img_str);
-
-			killme();
 		}
-	}
+	} else
+		$cachefile = "";
 
 	$valid = true;
 
-	$r = q("SELECT * FROM `photo` WHERE `resource-id` in ('%s', '%s') LIMIT 1", $urlhash, $urlhash2);
-	if (count($r)) {
-        	$img_str = $r[0]['data'];
-		$mime = $r[0]["desc"];
-		if ($mime == "") $mime = "image/jpeg";
+	if (!$direct_cache AND ($cachefile == "")) {
+		$r = q("SELECT * FROM `photo` WHERE `resource-id` in ('%s', '%s') LIMIT 1", $urlhash, $urlhash2);
+		if (count($r)) {
+        		$img_str = $r[0]['data'];
+			$mime = $r[0]["desc"];
+			if ($mime == "") $mime = "image/jpeg";
+		}
+	} else
+		$r = array();
 
-	} else {
+	if (!count($r)) {
 		// It shouldn't happen but it does - spaces in URL
 		$_REQUEST['url'] = str_replace(" ", "+", $_REQUEST['url']);
-
 		$redirects = 0;
 		$img_str = fetch_url($_REQUEST['url'],true, $redirects, 10);
 
@@ -140,7 +158,7 @@ function privacy_image_cache_init() {
 				$img->scaleImage(10);
 				$img_str = $img->imageString();
 			}
-		} else if ($mime != "image/jpeg") {
+		} else if (($mime != "image/jpeg") AND !$direct_cache AND ($cachefile == "")) {
 			$image = @imagecreatefromstring($img_str);
 
 			if($image === FALSE) die();
@@ -165,25 +183,31 @@ function privacy_image_cache_init() {
 		} else {
 			$img = new Photo($img_str, $mime);
 			if($img->is_valid()) {
-				$img->store(0, 0, $urlhash, $_REQUEST['url'], '', 100);
-				if ($thumb)
+				if (!$direct_cache AND ($cachefile == ""))
+					$img->store(0, 0, $urlhash, $_REQUEST['url'], '', 100);
+
+				if ($thumb) {
 					$img->scaleImage(200); // Test
-				$img_str = $img->imageString();
+					$img_str = $img->imageString();
+				}
 			}
 			//$mime = "image/jpeg";
 		}
 	}
+
 	// reduce quality - if it isn't a GIF
 	if ($mime != "image/gif") {
 		$img = new Photo($img_str, $mime);
-		if($img->is_valid())
+		if($img->is_valid()) {
+			$img->scaleImage(1024); // Test
 			$img_str = $img->imageString();
+		}
 	}
 
 	// If there is a real existing directory then put the cache file there
 	// advantage: real file access is really fast
 	// Otherwise write in cachefile
-	if ($valid AND is_dir($_SERVER["DOCUMENT_ROOT"]."/privacy_image_cache"))
+	if ($valid AND $direct_cache)
 		file_put_contents($_SERVER["DOCUMENT_ROOT"]."/privacy_image_cache/".privacy_image_cache_cachename($_REQUEST['url'], true), $img_str);
 	elseif ($cachefile != '')
 		file_put_contents($cachefile, $img_str);
@@ -306,13 +330,12 @@ function privacy_image_cache_display_item_hook(&$a, &$o) {
     if (isset($o["output"])) {
         if (isset($o["output"]["thumb"]) && !privacy_image_cache_is_local_image($o["output"]["thumb"]))
             $o["output"]["thumb"] = $a->get_baseurl() . "/privacy_image_cache/".privacy_image_cache_cachename($o["output"]["thumb"]);
-            //$o["output"]["thumb"] = $a->get_baseurl() . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["output"]["thumb"])));
         if (isset($o["output"]["author-avatar"]) && !privacy_image_cache_is_local_image($o["output"]["author-avatar"]))
             $o["output"]["author-avatar"] = $a->get_baseurl() . "/privacy_image_cache/".privacy_image_cache_cachename($o["output"]["author-avatar"]);
-            //$o["output"]["author-avatar"] = $a->get_baseurl() . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["output"]["author-avatar"])));
         if (isset($o["output"]["owner-avatar"]) && !privacy_image_cache_is_local_image($o["output"]["owner-avatar"]))
             $o["output"]["owner-avatar"] = $a->get_baseurl() . "/privacy_image_cache/".privacy_image_cache_cachename($o["output"]["owner-avatar"]);
-            //$o["output"]["owner-avatar"] = $a->get_baseurl() . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["output"]["owner-avatar"])));
+        if (isset($o["output"]["owner_photo"]) && !privacy_image_cache_is_local_image($o["output"]["owner_photo"]))
+            $o["output"]["owner_photo"] = $a->get_baseurl() . "/privacy_image_cache/".privacy_image_cache_cachename($o["output"]["owner_photo"]);
     }
 }
 

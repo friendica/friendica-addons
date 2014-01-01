@@ -169,6 +169,7 @@ function twitter_settings_post ($a,$post) {
 		del_pconfig(local_user(), 'twitter', 'intelligent_shortening');
 		del_pconfig(local_user(), 'twitter', 'import');
 		del_pconfig(local_user(), 'twitter', 'create_user');
+		del_pconfig(local_user(), 'twitter', 'own_id');
 	} else {
 	if (isset($_POST['twitter-pin'])) {
 		//  if the user supplied us with a PIN from Twitter, let the magic of OAuth happen
@@ -632,8 +633,12 @@ function twitter_post_hook(&$a,&$b) {
                         $orig_post = $r[0];
                 }
 
-		// To-Do: Ab dem letzten / nehmen
-		$b["body"] = "@".substr($orig_post["author-link"], 20)." ".$b["body"];
+		$nickname = preg_replace("=https?://twitter.com/(.*)=ism", "$1", $orig_post["author-link"]);
+		$nickname = "@[url=".$orig_post["author-link"]."]".$nickname."[/url]";
+
+		logger("twitter_post_hook: comparing ".$nickname." with ".$b["body"], LOGGER_DEBUG);
+		if (strpos($b["body"], $nickname) === false)
+			$b["body"] = $nickname." ".$b["body"];
 
 		logger("twitter_post_hook: parent found ".print_r($orig_post, true), LOGGER_DATA);
 	} else {
@@ -680,9 +685,14 @@ function twitter_post_hook(&$a,&$b) {
 	if($ckey && $csecret && $otoken && $osecret) {
 		logger('twitter: we have customer key and oauth stuff, going to send.', LOGGER_DEBUG);
 
+		// If it's a repeated message from twitter then do a native retweet and exit
+		if (twitter_is_retweet($a, $b['uid'], $b['body']))
+			return;
+
 		require_once('library/twitteroauth.php');
 		require_once('include/bbcode.php');
 		$tweet = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
+
                 // in theory max char is 140 but T. uses t.co to make links 
                 // longer so we give them 10 characters extra
 		if (!$intelligent_shortening) {
@@ -767,6 +777,7 @@ function twitter_post_hook(&$a,&$b) {
                         $msg = $msgarr["msg"];
                         $image = $msgarr["image"];
 		}
+
 		// and now tweet it :-)
 		if(strlen($msg) and ($image != "")) {
 			$img_str = fetch_url($image);
@@ -791,16 +802,6 @@ function twitter_post_hook(&$a,&$b) {
 
 			$result = $cb->statuses_updateWithMedia($post);
 			unlink($tempfile);
-
-			/*
-			// Old Code
-			$mime = image_type_to_mime_type(exif_imagetype($tempfile));
-			unlink($tempfile);
-
-			$filename = "upload";
-
-			$result = $tweet->post('statuses/update_with_media', array('media[]' => "{$img_str};type=".$mime.";filename={$filename}" , 'status' => $msg));
-			*/
 
 			logger('twitter_post_with_media send, result: ' . print_r($result, true), LOGGER_DEBUG);
 			if ($result->errors OR $result->error) {
@@ -1119,6 +1120,24 @@ function twitter_queue_hook(&$a,&$b) {
 
 function twitter_fetch_contact($uid, $contact, $create_user) {
 
+	// Check if the unique contact is existing
+	// To-Do: only update once a while
+	 $r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
+			dbesc(normalise_link("https://twitter.com/".$contact->screen_name)));
+
+	if (count($r) == 0)
+		q("INSERT INTO unique_contacts (url, name, nick, avatar) VALUES ('%s', '%s', '%s', '%s')",
+			dbesc(normalise_link("https://twitter.com/".$contact->screen_name)),
+			dbesc($contact->name),
+			dbesc($contact->screen_name),
+			dbesc($contact->profile_image_url_https));
+	else
+		q("UPDATE unique_contacts SET name = '%s', nick = '%s', avatar = '%s' WHERE url = '%s'",
+			dbesc($contact->name),
+			dbesc($contact->screen_name),
+			dbesc($contact->profile_image_url_https),
+			dbesc(normalise_link("https://twitter.com/".$contact->screen_name)));
+
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
 		intval($uid), dbesc("twitter::".$contact->id_str));
 
@@ -1191,6 +1210,7 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 			dbesc(datetime_convert()),
 			intval($contact_id)
 		);
+
 	} else {
 		// update profile photos once every two weeks as we have no notification of when they change.
 
@@ -1282,6 +1302,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 	$has_picture = false;
 
 	$postarray = array();
+	$postarray['network'] = NETWORK_TWITTER;
 	$postarray['gravity'] = 0;
 	$postarray['uid'] = $uid;
 	$postarray['wall'] = 0;
@@ -1425,6 +1446,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 		$postarray['body'] = $converted["body"];
 		$postarray['tag'] = $converted["tags"];
 
+		twitter_fetch_contact($uid, $post->retweeted_status->user, false);
 
 		// Deactivated at the moment, since there are problems with answers to retweets
 		if (false AND !intval(get_config('system','wall-to-wall_share'))) {
@@ -1439,6 +1461,10 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 			$postarray['author-name'] = $post->retweeted_status->user->name;
 			$postarray['author-link'] = "https://twitter.com/".$post->retweeted_status->user->screen_name;
 			$postarray['author-avatar'] = $post->retweeted_status->user->profile_image_url_https;
+			//if (($post->retweeted_status->user->screen_name != "") AND ($post->retweeted_status->id_str != "")) {
+			//	$postarray['plink'] = "https://twitter.com/".$post->retweeted_status->user->screen_name."/status/".$post->retweeted_status->id_str;
+			//	$postarray['uri'] = "twitter::".$post->retweeted_status->id_str;
+			//}
 		}
 
 	}
@@ -1757,7 +1783,8 @@ function twitter_siteinfo($url, $dontincludemedia) {
 
 	if (sizeof($data["images"]) > 0) {
 		$imagedata = $data["images"][0];
-		$text .= '[img='.$imagedata["width"].'x'.$imagedata["height"].']'.$imagedata["src"].'[/img]' . "\n";
+		//$text .= '[img='.$imagedata["width"].'x'.$imagedata["height"].']'.$imagedata["src"].'[/img]' . "\n";
+		$text .= '[img]'.$imagedata["src"].'[/img]'."\n";
 	}
 
 	if (is_string($data["text"]))
@@ -1789,17 +1816,6 @@ function twitter_convertmsg($a, $body, $no_tags = false, $dontincludemedia) {
 			if ($type == "")
 				$type = $oembed_data->type;
 
-			// To-Do:
-			// Twitlonger
-
-//			if (strstr($expanded_url, "//www.youtube.com/"))
-//				$body = str_replace($match[2], "\n[youtube]".$expanded_url."[/youtube]\n", $body);
-//			elseif (strstr($expanded_url, "//player.vimeo.com/"))
-//				$body = str_replace($match[2], "\n[vimeo]".$expanded_url."[/vimeo]\n", $body);
-//			elseif (strstr($expanded_url, "//twitpic.com/")) // Test
-//				$body = str_replace($match[2], "\n[url]".$expanded_url."[/url]\n", $body);
-//			elseif (strstr($expanded_url, "//instagram.com/"))
-//				$body = str_replace($match[2], "\n[url]".$expanded_url."[/url]\n", $body);
 			if ($oembed_data->type != "link")
 				$body = str_replace($match[2], "\n[url]".$expanded_url."[/url]\n", $body);
 			else {
@@ -1914,8 +1930,57 @@ function twitter_fetch_own_contact($a, $uid) {
         	        intval($uid), dbesc("twitter::".$own_id));
 		if(count($r))
 			$contact_id = $r[0]["id"];
+		else
+			del_pconfig($uid, 'twitter', 'own_id');
+
 	}
 
 	return($contact_id);
 }
+
+function twitter_is_retweet($a, $uid, $body) {
+	$body = trim($body);
+
+	// Skip if it isn't a pure repeated messages
+	// Does it start with a share?
+	if (strpos($body, "[share") > 0)
+		return(false);
+
+	// Does it end with a share?
+	if (strlen($body) > (strrpos($body, "[/share]") + 8))
+		return(false);
+
+	$attributes = preg_replace("/\[share(.*?)\]\s?(.*?)\s?\[\/share\]\s?/ism","$1",$body);
+	// Skip if there is no shared message in there
+	if ($body == $attributes)
+		return(false);
+
+	$link = "";
+	preg_match("/link='(.*?)'/ism", $attributes, $matches);
+	if ($matches[1] != "")
+		$link = $matches[1];
+
+	preg_match('/link="(.*?)"/ism', $attributes, $matches);
+	if ($matches[1] != "")
+		$link = $matches[1];
+
+	$id = preg_replace("=https?://twitter.com/(.*)/status/(.*)=ism", "$2", $link);
+	if ($id == $link)
+		return(false);
+
+	logger('twitter_is_retweet: Retweeting id '.$id.' for user '.$uid, LOGGER_DEBUG);
+
+	$ckey    = get_config('twitter', 'consumerkey');
+	$csecret = get_config('twitter', 'consumersecret');
+	$otoken  = get_pconfig($uid, 'twitter', 'oauthtoken');
+	$osecret = get_pconfig($uid, 'twitter', 'oauthsecret');
+
+	require_once('library/twitteroauth.php');
+	$connection = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
+
+	$result = $connection->post('statuses/retweet/'.$id);
+
+	return(!isset($result->errors));
+}
+
 ?>
