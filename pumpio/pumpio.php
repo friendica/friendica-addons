@@ -880,6 +880,22 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id) {
 
 function pumpio_get_contact($uid, $contact) {
 
+	$r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
+		dbesc(normalise_link($contact->url)));
+
+	if (count($r) == 0)
+		q("INSERT INTO unique_contacts (url, name, nick, avatar) VALUES ('%s', '%s', '%s', '%s')",
+			dbesc(normalise_link($contact->url)),
+			dbesc($contact->displayName),
+			dbesc($contact->preferredUsername),
+			dbesc($contact->image->url));
+	else
+		q("UPDATE unique_contacts SET name = '%s', nick = '%s', avatar = '%s' WHERE url = '%s'",
+			dbesc($contact->displayName),
+			dbesc($contact->preferredUsername),
+			dbesc($contact->image->url),
+			dbesc(normalise_link($contact->url)));
+
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `url` = '%s' LIMIT 1",
 		intval($uid), dbesc($contact->url));
 
