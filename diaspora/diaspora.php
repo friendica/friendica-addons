@@ -107,66 +107,84 @@ function diaspora_queue_hook(&$a,&$b) {
 
 function diaspora_settings(&$a,&$s) {
 
-    if(! local_user())
-        return;
+	if(! local_user())
+		return;
 
-    /* Add our stylesheet to the page so we can make our settings look nice */
+	/* Add our stylesheet to the page so we can make our settings look nice */
 
-    $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/diaspora/diaspora.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/diaspora/diaspora.css' . '" media="all" />' . "\r\n";
 
-    /* Get the current state of our config variables */
+	/* Get the current state of our config variables */
 
-    $enabled = get_pconfig(local_user(),'diaspora','post');
+	$enabled = get_pconfig(local_user(),'diaspora','post');
 
-    $checked = (($enabled) ? ' checked="checked" ' : '');
+	$checked = (($enabled) ? ' checked="checked" ' : '');
 
-    $def_enabled = get_pconfig(local_user(),'diaspora','post_by_default');
+	$def_enabled = get_pconfig(local_user(),'diaspora','post_by_default');
 
-    $def_checked = (($def_enabled) ? ' checked="checked" ' : '');
+	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
-    $diaspora_username = get_pconfig(local_user(), 'diaspora', 'diaspora_username');
-    $diaspora_password = get_pconfig(local_user(), 'diaspora', 'diaspora_password');
-    $diaspora_url = get_pconfig(local_user(), 'diaspora', 'diaspora_url');
+	$diaspora_username = get_pconfig(local_user(), 'diaspora', 'diaspora_username');
+	$diaspora_password = get_pconfig(local_user(), 'diaspora', 'diaspora_password');
+	$diaspora_url = get_pconfig(local_user(), 'diaspora', 'diaspora_url');
 
+	$status = "";
 
-    /* Add some HTML to the existing form */
+	if ($diaspora_username AND $diaspora_password AND $diaspora_url) {
+		try {
+			require_once("addon/diaspora/diasphp.php");
 
-    $s .= '<span id="settings_diaspora_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_diaspora_expanded\'); openClose(\'settings_diaspora_inflated\');">';
-    $s .= '<h3>' . t('Diaspora') . '</h3>';
-    $s .= '</span>';
-    $s .= '<div id="settings_diaspora_expanded" class="settings-block" style="display: none;">';
-    $s .= '<span class="fakelink" onclick="openClose(\'settings_diaspora_expanded\'); openClose(\'settings_diaspora_inflated\');">';
-    $s .= '<h3>' . t('Diaspora') . '</h3>';
-    $s .= '</span>';
+			$conn = new Diasphp($diaspora_url);
+			$conn->login($diaspora_username, $diaspora_password);
+		} catch (Exception $e) {
+			$status = t("Can't login to your Diaspora account. Please check username and password and ensure you used the complete address (including http...)");
+		}
+	}
 
-    $s .= '<div id="diaspora-enable-wrapper">';
-    $s .= '<label id="diaspora-enable-label" for="diaspora-checkbox">' . t('Enable Diaspora Post Plugin') . '</label>';
-    $s .= '<input id="diaspora-checkbox" type="checkbox" name="diaspora" value="1" ' . $checked . '/>';
-    $s .= '</div><div class="clear"></div>';
+	/* Add some HTML to the existing form */
 
-    $s .= '<div id="diaspora-username-wrapper">';
-    $s .= '<label id="diaspora-username-label" for="diaspora-username">' . t('Diaspora username') . '</label>';
-    $s .= '<input id="diaspora-username" type="text" name="diaspora_username" value="' . $diaspora_username . '" />';
-    $s .= '</div><div class="clear"></div>';
+	$s .= '<span id="settings_diaspora_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_diaspora_expanded\'); openClose(\'settings_diaspora_inflated\');">';
+	$s .= '<h3>' . t('Diaspora') . '</h3>';
+	$s .= '</span>';
+	$s .= '<div id="settings_diaspora_expanded" class="settings-block" style="display: none;">';
+	$s .= '<span class="fakelink" onclick="openClose(\'settings_diaspora_expanded\'); openClose(\'settings_diaspora_inflated\');">';
+	$s .= '<h3>' . t('Diaspora') . '</h3>';
+	$s .= '</span>';
 
-    $s .= '<div id="diaspora-password-wrapper">';
-    $s .= '<label id="diaspora-password-label" for="diaspora-password">' . t('Diaspora password') . '</label>';
-    $s .= '<input id="diaspora-password" type="password" name="diaspora_password" value="' . $diaspora_password . '" />';
-    $s .= '</div><div class="clear"></div>';
+	if ($status) {
+		$s .= '<div id="diaspora-status-wrapper"><strong>';
+		$s .= $status;
+		$s .= '</strong></div><div class="clear"></div>';
+	}
 
-    $s .= '<div id="diaspora-url-wrapper">';
-    $s .= '<label id="diaspora-url-label" for="diaspora-url">' . t('Diaspora site URL') . '</label>';
-    $s .= '<input id="diaspora-url" type="text" name="diaspora_url" value="' . $diaspora_url . '" />';
-    $s .= '</div><div class="clear"></div>';
+	$s .= '<div id="diaspora-enable-wrapper">';
+	$s .= '<label id="diaspora-enable-label" for="diaspora-checkbox">' . t('Enable Diaspora Post Plugin') . '</label>';
+	$s .= '<input id="diaspora-checkbox" type="checkbox" name="diaspora" value="1" ' . $checked . '/>';
+	$s .= '</div><div class="clear"></div>';
 
-    $s .= '<div id="diaspora-bydefault-wrapper">';
-    $s .= '<label id="diaspora-bydefault-label" for="diaspora-bydefault">' . t('Post to Diaspora by default') . '</label>';
-    $s .= '<input id="diaspora-bydefault" type="checkbox" name="diaspora_bydefault" value="1" ' . $def_checked . '/>';
-    $s .= '</div><div class="clear"></div>';
+	$s .= '<div id="diaspora-username-wrapper">';
+	$s .= '<label id="diaspora-username-label" for="diaspora-username">' . t('Diaspora username') . '</label>';
+	$s .= '<input id="diaspora-username" type="text" name="diaspora_username" value="' . $diaspora_username . '" />';
+	$s .= '</div><div class="clear"></div>';
 
-    /* provide a submit button */
+	$s .= '<div id="diaspora-password-wrapper">';
+	$s .= '<label id="diaspora-password-label" for="diaspora-password">' . t('Diaspora password') . '</label>';
+	$s .= '<input id="diaspora-password" type="password" name="diaspora_password" value="' . $diaspora_password . '" />';
+	$s .= '</div><div class="clear"></div>';
 
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="diaspora-submit" name="diaspora-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+	$s .= '<div id="diaspora-url-wrapper">';
+	$s .= '<label id="diaspora-url-label" for="diaspora-url">' . t('Diaspora site URL') . '</label>';
+	$s .= '<input id="diaspora-url" type="text" name="diaspora_url" value="' . $diaspora_url . '" />';
+	$s .= '</div><div class="clear"></div>';
+
+	$s .= '<div id="diaspora-bydefault-wrapper">';
+	$s .= '<label id="diaspora-bydefault-label" for="diaspora-bydefault">' . t('Post to Diaspora by default') . '</label>';
+	$s .= '<input id="diaspora-bydefault" type="checkbox" name="diaspora_bydefault" value="1" ' . $def_checked . '/>';
+	$s .= '</div><div class="clear"></div>';
+
+	/* provide a submit button */
+
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="diaspora-submit" name="diaspora-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
 
 }
 
