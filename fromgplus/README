@@ -13,3 +13,13 @@ You need an API key for "Simple API Access".
 - At the bottom of the page you see "Simple API Access".
 
 The value after "API key:" is the key that you need.
+
+
+The new cloudbased Developerconsole
+
+- You go to https://code.google.com/apis/console/
+- Then you got to "APIs & auth" > "Apis" switch on Google+ API
+- Then you go to "Credentials" 
+- At the bottom of the Page you see "Public API access"
+
+The value after "API key:" is the key that you need.
