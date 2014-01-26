@@ -764,7 +764,10 @@ function fbpost_post_hook(&$a,&$b) {
 						);
 					}
 					else {
-						if(! $likes) {
+						// Only add to queue if its a toplevel post.
+						// Sometimes posts are accepted from facebook although it telling an error
+						// This leads to endless comment flooding.
+						if(! $likes AND $toplevel) {
 							$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", intval($b['uid']));
 							if (count($r))
 								$a->contact = $r[0]["id"];

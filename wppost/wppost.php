@@ -194,7 +194,10 @@ function wppost_send(&$a,&$b) {
 
 			// If no bookmark is found then take the first line
 			if ($wptitle == '') {
-				$title = html2plain(bbcode($b['body'], false, false), 0, true)."\n";
+				// Remove the share element before fetching the first line
+				$title = trim(preg_replace("/\[share.*?\](.*?)\[\/share\]/ism","\n$1\n",$b['body']));
+
+				$title = html2plain(bbcode($title, false, false), 0, true)."\n";
 				$pos = strpos($title, "\n");
 				$trailer = "";
 				if (($pos == 0) or ($pos > 100)) {
@@ -207,7 +210,7 @@ function wppost_send(&$a,&$b) {
 		}
 
 		$title = '<title>' . (($wptitle) ? $wptitle : t('Post from Friendica')) . '</title>';
-		$post = bbcode($b['body'], false, false);
+		$post = bbcode($b['body'], false, false, 4);
 
 		// If a link goes to youtube then remove the stuff around it. Wordpress detects youtube links and embeds it
 		$post = preg_replace('/<a.*?href="(https?:\/\/www.youtube.com\/.*?)".*?>(.*?)<\/a>/ism',"\n$1\n",$post);

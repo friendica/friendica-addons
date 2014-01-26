@@ -372,21 +372,23 @@ function short_link ($url) {
 } };
 
 function twitter_shortenmsg($b, $shortlink = false) {
+	require_once("include/api.php");
 	require_once("include/bbcode.php");
 	require_once("include/html2plain.php");
 
 	$max_char = 140;
 
 	// Looking for the first image
+	$cleaned_body = api_clean_plain_items($b['body']);
 	$image = '';
-	if(preg_match("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/is",$b['body'],$matches))
+	if(preg_match("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/is",$cleaned_body,$matches))
 		$image = $matches[3];
 
 	if ($image == '')
-		if(preg_match("/\[img\](.*?)\[\/img\]/is",$b['body'],$matches))
+		if(preg_match("/\[img\](.*?)\[\/img\]/is",$cleaned_body,$matches))
 			$image = $matches[1];
 
-	$multipleimages = (strpos($b['body'], "[img") != strrpos($b['body'], "[img"));
+	$multipleimages = (strpos($cleaned_body, "[img") != strrpos($cleaned_body, "[img"));
 
 	// When saved into the database the content is sent through htmlspecialchars
 	// That means that we have to decode all image-urls
@@ -426,7 +428,7 @@ function twitter_shortenmsg($b, $shortlink = false) {
 	//$body = preg_replace("/\[share(.*?)\](.*?)\[\/share\]/ism","\n\n$2\n\n",$body);
 
 	// At first convert the text to html
-	$html = bbcode($body, false, false, 2);
+	$html = bbcode(api_clean_plain_items($body), false, false, 2, true);
 
 	// Then convert it to plain text
 	$msg = trim(html2plain($html, 0, true));
@@ -1002,7 +1004,8 @@ function twitter_fetchtimeline($a, $uid) {
 					}
 				}
 
-				$converted = twitter_convertmsg($a, $_REQUEST['body'], true, $has_picture);
+				//$converted = twitter_convertmsg($a, $_REQUEST['body'], true, $has_picture);
+				$converted = twitter_expand_entities($a, $_REQUEST['body'], $post->retweeted_status, true, $has_picture);
 				$_REQUEST['body'] = $converted["body"];
 
 				$_REQUEST['body'] = "[share author='".$post->retweeted_status->user->name.
@@ -1025,7 +1028,8 @@ function twitter_fetchtimeline($a, $uid) {
 					}
 				}
 
-				$converted = twitter_convertmsg($a, $_REQUEST["body"], true, $has_picture);
+				//$converted = twitter_convertmsg($a, $_REQUEST["body"], true, $has_picture);
+				$converted = twitter_expand_entities($a, $_REQUEST["body"], $post, true, $has_picture);
 				$_REQUEST['body'] = $converted["body"];
 			}
 
@@ -1297,6 +1301,141 @@ function twitter_fetchuser($a, $uid, $screen_name = "", $user_id = "") {
 	return $contact_id;
 }
 
+function twitter_expand_entities($a, $body, $item, $no_tags = false, $dontincludemedia) {
+	require_once("include/oembed.php");
+
+	$tags = "";
+
+	if (isset($item->entities->urls)) {
+		$type = "";
+		$footerurl = "";
+		$footerlink = "";
+		$footer = "";
+
+		foreach ($item->entities->urls AS $url) {
+			if ($url->url AND $url->expanded_url AND $url->display_url) {
+
+				$expanded_url = twitter_original_url($url->expanded_url);
+
+				$oembed_data = oembed_fetch_url($expanded_url);
+
+				// Quickfix: Workaround for URL with "[" and "]" in it
+				if (strpos($expanded_url, "[") OR strpos($expanded_url, "]"))
+					$expanded_url = $url->url;
+
+				if ($type == "")
+					$type = $oembed_data->type;
+
+				if ($oembed_data->type == "video") {
+					$body = str_replace($url->url,
+							"[video]".$expanded_url."[/video]", $body);
+					$dontincludemedia = true;
+				} elseif (($oembed_data->type == "photo") AND isset($oembed_data->url) AND !$dontincludemedia) {
+					$body = str_replace($url->url,
+							"[url=".$expanded_url."][img]".$oembed_data->url."[/img][/url]",
+							$body);
+					$dontincludemedia = true;
+				} elseif ($oembed_data->type != "link")
+					$body = str_replace($url->url,
+							"[url=".$expanded_url."]".$expanded_url."[/url]",
+							$body);
+							//"[url=".$expanded_url."]".$url->display_url."[/url]",
+				else {
+					$img_str = fetch_url($expanded_url, true, $redirects, 4);
+
+					$tempfile = tempnam(get_config("system","temppath"), "cache");
+					file_put_contents($tempfile, $img_str);
+					$mime = image_type_to_mime_type(exif_imagetype($tempfile));
+					unlink($tempfile);
+
+					if (substr($mime, 0, 6) == "image/") {
+						$type = "photo";
+						$body = str_replace($url->url, "[img]".$expanded_url."[/img]", $body);
+						$dontincludemedia = true;
+					} else {
+						$type = $oembed_data->type;
+						$footerurl = $expanded_url;
+						$footerlink = "[url=".$expanded_url."]".$expanded_url."[/url]";
+						//$footerlink = "[url=".$expanded_url."]".$url->display_url."[/url]";
+
+						$body = str_replace($url->url, $footerlink, $body);
+					}
+				}
+			}
+		}
+
+		if ($footerurl != "")
+			$footer = twitter_siteinfo($footerurl, $dontincludemedia);
+
+		if (($footerlink != "") AND (trim($footer) != "")) {
+			$removedlink = trim(str_replace($footerlink, "", $body));
+
+			if (strstr($body, $removedlink))
+				$body = $removedlink;
+
+			$body .= "\n\n[class=type-".$type."]".$footer."[/class]";
+		}
+
+		if ($no_tags)
+			return(array("body" => $body, "tags" => ""));
+
+		$tags_arr = array();
+
+		foreach ($item->entities->hashtags AS $hashtag) {
+			$url = "#[url=".$a->get_baseurl()."/search?tag=".rawurlencode($hashtag->text)."]".$hashtag->text."[/url]";
+			$tags_arr["#".$hashtag->text] = $url;
+			$body = str_replace("#".$hashtag->text, $url, $body);
+		}
+
+		foreach ($item->entities->user_mentions AS $mention) {
+			$url = "@[url=https://twitter.com/".rawurlencode($mention->screen_name)."]".$mention->screen_name."[/url]";
+			$tags_arr["@".$mention->screen_name] = $url;
+			$body = str_replace("@".$mention->screen_name, $url, $body);
+		}
+
+		// it seems as if the entities aren't always covering all mentions. So the rest will be checked here
+	        $tags = get_tags($body);
+
+        	if(count($tags)) {
+			foreach($tags as $tag) {
+				if (strstr(trim($tag), " "))
+					continue;
+
+	                        if(strpos($tag,'#') === 0) {
+        	                        if(strpos($tag,'[url='))
+                	                        continue;
+
+					// don't link tags that are already embedded in links
+
+					if(preg_match('/\[(.*?)' . preg_quote($tag,'/') . '(.*?)\]/',$body))
+						continue;
+					if(preg_match('/\[(.*?)\]\((.*?)' . preg_quote($tag,'/') . '(.*?)\)/',$body))
+						continue;
+
+					$basetag = str_replace('_',' ',substr($tag,1));
+					$url = '#[url='.$a->get_baseurl().'/search?tag='.rawurlencode($basetag).']'.$basetag.'[/url]';
+					$body = str_replace($tag,$url,$body);
+					$tags_arr["#".$basetag] = $url;
+					continue;
+				} elseif(strpos($tag,'@') === 0) {
+        	                        if(strpos($tag,'[url='))
+                	                        continue;
+
+					$basetag = substr($tag,1);
+					$url = '@[url=https://twitter.com/'.rawurlencode($basetag).']'.$basetag.'[/url]';
+					$body = str_replace($tag,$url,$body);
+					$tags_arr["@".$basetag] = $url;
+				}
+			}
+		}
+
+
+		$tags = implode($tags_arr, ",");
+
+	}
+	return(array("body" => $body, "tags" => $tags));
+}
+
 function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing_contact) {
 
 	$has_picture = false;
@@ -1405,7 +1544,8 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 		}
 	}
 
-	$converted = twitter_convertmsg($a, $postarray['body'], false, $has_picture);
+	//$converted = twitter_convertmsg($a, $postarray['body'], false, $has_picture);
+	$converted = twitter_expand_entities($a, $postarray['body'], $post, false, $has_picture);
 	$postarray['body'] = $converted["body"];
 	$postarray['tag'] = $converted["tags"];
 
@@ -1442,7 +1582,8 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 			}
 		}
 
-		$converted = twitter_convertmsg($a, $postarray['body'], false, $has_picture);
+		//$converted = twitter_convertmsg($a, $postarray['body'], false, $has_picture);
+		$converted = twitter_expand_entities($a, $postarray['body'], $post->retweeted_status, false, $has_picture);
 		$postarray['body'] = $converted["body"];
 		$postarray['tag'] = $converted["tags"];
 
@@ -1854,7 +1995,7 @@ function twitter_convertmsg($a, $body, $no_tags = false, $dontincludemedia) {
 	}
 
 	if ($no_tags)
-		return(array("body" => $body, $tags => ""));
+		return(array("body" => $body, "tags" => ""));
 
 	$str_tags = '';
 
@@ -1979,6 +2120,8 @@ function twitter_is_retweet($a, $uid, $body) {
 	$connection = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
 
 	$result = $connection->post('statuses/retweet/'.$id);
+
+	logger('twitter_is_retweet: result '.print_r($result, true), LOGGER_DEBUG);
 
 	return(!isset($result->errors));
 }

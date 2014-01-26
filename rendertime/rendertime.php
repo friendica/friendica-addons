@@ -26,10 +26,8 @@ function rendertime_page_end(&$a, &$o) {
 
 	$duration = microtime(true)-$a->performance["start"];
 
-	if (!is_site_admin())
-		return
-
-	$o = $o.'<div class="renderinfo">'.sprintf(t("Performance: Database: %s, Network: %s, Rendering: %s, Parser: %s, I/O: %s, Other: %s, Total: %s"),
+	if (is_site_admin())
+		$o = $o.'<div class="renderinfo">'.sprintf(t("Performance: Database: %s, Network: %s, Rendering: %s, Parser: %s, I/O: %s, Other: %s, Total: %s"),
 						round($a->performance["database"], 3),
 						round($a->performance["network"], 3),
 						round($a->performance["rendering"], 3),
