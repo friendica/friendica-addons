@@ -71,7 +71,6 @@ function statistics_json_init() {
 
 	header("Content-Type: application/json");
 	echo json_encode($statistics);
-print_r($users);
 	logger("statistics_init: printed ".print_r($statistics, true));
 	killme();
 }
