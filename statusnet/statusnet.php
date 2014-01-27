@@ -448,19 +448,21 @@ function short_link($url) {
 } };
 
 function statusnet_shortenmsg($b, $max_char) {
+	require_once("include/api.php");
 	require_once("include/bbcode.php");
 	require_once("include/html2plain.php");
 
 	// Looking for the first image
+	$cleaned_body = api_clean_plain_items($b['body']);
 	$image = '';
-	if(preg_match("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/is",$b['body'],$matches))
+	if(preg_match("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/is",$cleaned_body,$matches))
 		$image = $matches[3];
 
 	if ($image == '')
-		if(preg_match("/\[img\](.*?)\[\/img\]/is",$b['body'],$matches))
+		if(preg_match("/\[img\](.*?)\[\/img\]/is",$cleaned_body,$matches))
 			$image = $matches[1];
 
-	$multipleimages = (strpos($b['body'], "[img") != strrpos($b['body'], "[img"));
+	$multipleimages = (strpos($cleaned_body, "[img") != strrpos($cleaned_body, "[img"));
 
 	// When saved into the database the content is sent through htmlspecialchars
 	// That means that we have to decode all image-urls
@@ -500,7 +502,7 @@ function statusnet_shortenmsg($b, $max_char) {
 	//$body = preg_replace("/\[share(.*?)\](.*?)\[\/share\]/ism","\n\n$2\n\n",$body);
 
 	// At first convert the text to html
-	$html = bbcode($body, false, false, 2);
+	$html = bbcode(api_clean_plain_items($body), false, false, 2, true);
 
 	// Then convert it to plain text
 	//$msg = trim($b['title']." \n\n".html2plain($html, 0, true));
