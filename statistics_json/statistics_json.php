@@ -25,16 +25,17 @@ function statistics_json_init() {
 			"registrations_open" => ($a->config['register_policy'] != 0),
 			);
 
-	$users = q("SELECT `user`.`login_date`, `lastitem`.`lastitem_date`
+	$users = q("SELECT profile.*, `user`.`login_date`, `lastitem`.`lastitem_date`
 			FROM (SELECT MAX(`item`.`changed`) as `lastitem_date`, `item`.`uid`
 				FROM `item`
 					WHERE `item`.`type` = 'wall'
 						GROUP BY `item`.`uid`) AS `lastitem`
-						RIGHT OUTER JOIN `user` ON `user`.`uid` = `lastitem`.`uid`, `contact`
+						RIGHT OUTER JOIN `user` ON `user`.`uid` = `lastitem`.`uid`, `contact`, `profile`
                                 WHERE
-					`user`.`uid` = `contact`.`uid`
+					`user`.`uid` = `contact`.`uid` AND `profile`.`uid` = `user`.`uid`
+					AND `profile`.`is-default` AND (`profile`.`publish` OR `profile`.`net-publish`)
 					AND `user`.`verified` AND `contact`.`self`
-					AND NOT `user`.`blocked` AND NOT `user`.`hidewall`
+					AND NOT `user`.`blocked`
 					AND NOT `user`.`account_removed`
 					AND NOT `user`.`account_expired`");
 
@@ -70,7 +71,7 @@ function statistics_json_init() {
 
 	header("Content-Type: application/json");
 	echo json_encode($statistics);
-
+print_r($users);
 	logger("statistics_init: printed ".print_r($statistics, true));
 	killme();
 }
