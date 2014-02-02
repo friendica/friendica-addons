@@ -23,6 +23,7 @@ function statistics_json_init() {
 
 	$statistics = array(
 			"name" => $a->config["sitename"],
+			"network" => FRIENDICA_PLATFORM,
 			"version" => FRIENDICA_VERSION,
 			"registrations_open" => ($a->config['register_policy'] != 0),
 			"total_users" => get_config('statistics_json','total_users'),
@@ -90,7 +91,7 @@ function statistics_json_cron($a,$b) {
 			set_config('statistics_json','active_users_monthly', $active_users_monthly);
 	}
 
-	$posts = q("SELECT COUNT(*) AS local_posts FROM `item` WHERE `wall` AND id=parent");
+	$posts = q("SELECT COUNT(*) AS local_posts FROM `item` WHERE `wall`");
 
 	if (!is_array($posts))
 		$local_posts = -1;
