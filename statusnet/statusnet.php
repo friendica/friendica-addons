@@ -502,7 +502,7 @@ function statusnet_shortenmsg($b, $max_char) {
 	//$body = preg_replace("/\[share(.*?)\](.*?)\[\/share\]/ism","\n\n$2\n\n",$body);
 
 	// At first convert the text to html
-	$html = bbcode(api_clean_plain_items($body), false, false, 2, true);
+	$html = bbcode(api_clean_plain_items($body), false, false, 2);
 
 	// Then convert it to plain text
 	//$msg = trim($b['title']." \n\n".html2plain($html, 0, true));
