@@ -46,7 +46,7 @@ function statistics_json_cron($a,$b) {
 		$next = $last + (180 * 60);
 		if($next > time()) {
 			logger('statistics_json_cron: calculation intervall not reached');
-			return;
+	//		return;
 		}
 	}
         logger('statistics_json_cron: cron_start');
@@ -91,7 +91,7 @@ function statistics_json_cron($a,$b) {
 			set_config('statistics_json','active_users_monthly', $active_users_monthly);
 	}
 
-	$posts = q("SELECT COUNT(*) AS local_posts FROM `item` WHERE `wall` left(body, 6) != '[share'");
+	$posts = q("SELECT COUNT(*) AS local_posts FROM `item` WHERE `wall` AND left(body, 6) != '[share'");
 
 	if (!is_array($posts))
 		$local_posts = -1;
