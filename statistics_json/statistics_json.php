@@ -42,11 +42,11 @@ function statistics_json_cron($a,$b) {
 	$last = get_config('statistics_json','last_calucation');
 
 	if($last) {
-		// Calculate all 3 hours
-		$next = $last + (180 * 60);
+		// Calculate all 6 hours
+		$next = $last + (360 * 60);
 		if($next > time()) {
 			logger('statistics_json_cron: calculation intervall not reached');
-			return;
+//			return;
 		}
 	}
         logger('statistics_json_cron: cron_start');
@@ -101,6 +101,12 @@ function statistics_json_cron($a,$b) {
 	set_config('statistics_json','local_posts', $local_posts);
 
         logger('statistics_json_cron: local_posts: '.$local_posts, LOGGER_DEBUG);
+
+	// Now trying to register
+	$url = "http://pods.jasonrobinson.me/register/".$a->get_hostname();
+        logger('statistics_json_cron: registering url: '.$url, LOGGER_DEBUG);
+	$ret = fetch_url($url);
+        logger('statistics_json_cron: registering answer: '.$ret, LOGGER_DEBUG);
 
         logger('statistics_json_cron: cron_end');
 	set_config('statistics_json','last_calucation', time());
