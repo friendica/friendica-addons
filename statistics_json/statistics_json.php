@@ -46,7 +46,7 @@ function statistics_json_cron($a,$b) {
 		$next = $last + (360 * 60);
 		if($next > time()) {
 			logger('statistics_json_cron: calculation intervall not reached');
-//			return;
+			return;
 		}
 	}
         logger('statistics_json_cron: cron_start');
