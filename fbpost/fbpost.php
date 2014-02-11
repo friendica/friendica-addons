@@ -762,12 +762,13 @@ function fbpost_post_hook(&$a,&$b) {
 							intval($b['id']),
 							intval($b['id'])
 						);
-					}
-					else {
-						// Only add to queue if its a toplevel post.
+					} else {
 						// Sometimes posts are accepted from facebook although it telling an error
 						// This leads to endless comment flooding.
-						if(! $likes AND $toplevel) {
+
+						// If it is a special kind of failure the post was receiced
+						// Although facebook said it wasn't received ...
+						if (!$likes AND (($retj->error->type != "OAuthException") OR ($retj->error->code != 2))) {
 							$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", intval($b['uid']));
 							if (count($r))
 								$a->contact = $r[0]["id"];
@@ -913,10 +914,16 @@ function fbpost_queue_hook(&$a,&$b) {
 					);
 					logger('fbpost_queue_hook: success: ' . $j);
 					remove_queue_item($x['id']);
-				}
-				else {
+				} else {
 					logger('fbpost_queue_hook: failed: ' . $j);
-					update_queue_time($x['id']);
+
+					// If it is a special kind of failure the post was receiced
+					// Although facebook said it wasn't received ...
+					$ret = json_decode($j);
+					if (($ret->error->type != "OAuthException") OR ($ret->error->code != 2))
+						update_queue_time($x['id']);
+					else
+						logger('fbpost_queue_hook: Not requeued, since it seems to be received');
 				}
 			} else {
 				logger('fbpost_queue_hook: No fb_post or fb_token.');
