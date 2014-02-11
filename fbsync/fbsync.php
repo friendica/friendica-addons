@@ -424,6 +424,11 @@ function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $appl
 
 	$contact_id = fbsync_fetch_contact($uid, $contacts[$comment->fromid], array(), false);
 
+	if ($contact_id == -1) {
+		logger('fbsync_createcomment: Contact was blocked. Comment not imported '.print_r($comment, true), LOGGER_DEBUG);
+		return;
+	}
+
 	if ($contact_id <= 0)
 		$contact_id = $self[0]["id"];
 
