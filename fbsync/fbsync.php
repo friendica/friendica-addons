@@ -248,10 +248,13 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 		}
 	}
 
-	if ($contact_id == 0) {
+	if ($contact_id <= 0) {
 		$contact_id = fbsync_fetch_contact($uid, $contacts[$post->source_id], $create_user);
 
-		if (($contact_id <= 0) AND !$create_user) {
+		if ($contact_id == -1) {
+			logger('fbsync_createpost: Contact is blocked. Post not imported '.print_r($post, true), LOGGER_DEBUG);
+			return;
+		} elseif (($contact_id <= 0) AND !$create_user) {
 			logger('fbsync_createpost: No matching contact found. Post not imported '.print_r($post, true), LOGGER_DEBUG);
 			return;
 		} elseif ($contact_id == 0) {
@@ -388,26 +391,53 @@ function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $appl
 		return;
 
 	$parent_uri = "";
+	$parent_contact = 0;
 
 	// Fetch the parent uri (Checking if the parent exists)
-	$r = q("SELECT `uri` FROM `item` WHERE `uid` = %d AND `uri` = '%s' LIMIT 1",
+	$r = q("SELECT `uri`, `contact-id` FROM `item` WHERE `uid` = %d AND `uri` = '%s' LIMIT 1",
 		intval($uid),
 		dbesc('fb::'.$comment->post_id)
 	);
-	if(count($r))
+	if(count($r)) {
 		$parent_uri = $r[0]["uri"];
+		$parent_contact = $r[0]["contact-id"];
+	}
 
 	// check if it is a reply to an own post (separate posting for performance reasons)
-	$r = q("SELECT `uri` FROM `item` WHERE `uid` = %d AND `extid` = '%s' LIMIT 1",
+	$r = q("SELECT `uri`, `contact-id` FROM `item` WHERE `uid` = %d AND `extid` = '%s' LIMIT 1",
 		intval($uid),
 		dbesc('fb::'.$comment->post_id)
 	);
-	if(count($r))
+	if(count($r)) {
 		$parent_uri = $r[0]["uri"];
+		$parent_contact = $r[0]["contact-id"];
+	}
 
 	// No parent? Then quit
 	if ($parent_uri == "")
 		return;
+
+	//logger("fbsync_createcomment: Checking if parent contact is blocked: ".$parent_contact." - ".$parent_uri, LOGGER_DEBUG);
+
+	// Check if the contact id was blocked
+	if ($parent_contact > 0) {
+		$r = q("SELECT `blocked`, `readonly`, `nick` FROM `contact` WHERE `uid` = %d AND `id` = %d LIMIT 1",
+        	        intval($uid), intval($parent_contact));
+
+		// Should only happen if someone deleted the contact manually
+	        if(!count($r)) {
+                	logger("fbsync_createcomment: Contact ".$parent_contact." doesn't seem to exist.", LOGGER_DEBUG);
+	                return;
+		}
+
+		// Is blocked? Then return
+        	if (count($r) AND ($r[0]["readonly"] OR $r[0]["blocked"])) {
+                	logger("fbsync_createcomment: Contact '".$r[0]["nick"]."' is blocked or readonly.", LOGGER_DEBUG);
+	                return;
+		}
+
+               	//logger("fbsync_createcomment: Contact '".$r[0]["nick"]."' isn't blocked.", LOGGER_DEBUG);
+	}
 
 	$postarray = array();
 	$postarray['gravity'] = 0;
@@ -429,6 +459,11 @@ function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $appl
 		return;
 	}
 
+	// If no contact was found, take it from the thread owner
+	if ($contact_id <= 0)
+		$contact_id = $parent_contact;
+
+	// This case here should never happen
 	if ($contact_id <= 0)
 		$contact_id = $self[0]["id"];
 
@@ -809,7 +844,12 @@ function fbsync_fetchuser($a, $uid, $id) {
 		intval($uid), dbesc("facebook::".$id));
 
 	if (count($contact)) {
-		$user["contact-id"] = $contact[0]["id"];
+		if (($contact[0]["readonly"] OR $contact[0]["blocked"])) {
+        	        logger("fbsync_fetchuser: Contact '".$contact[0]["nick"]."' is blocked or readonly.", LOGGER_DEBUG);
+			$user["contact-id"] = -1;
+        	} else
+			$user["contact-id"] = $contact[0]["id"];
+
 		$user["name"] = $contact[0]["name"];
 		$user["link"] = $contact[0]["url"];
 		$user["avatar"] = $contact[0]["photo"];
