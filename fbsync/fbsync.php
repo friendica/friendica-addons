@@ -392,6 +392,7 @@ function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $appl
 
 	$parent_uri = "";
 	$parent_contact = 0;
+	$parent_nick = "";
 
 	// Fetch the parent uri (Checking if the parent exists)
 	$r = q("SELECT `uri`, `contact-id` FROM `item` WHERE `uid` = %d AND `uri` = '%s' LIMIT 1",
@@ -426,17 +427,18 @@ function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $appl
 
 		// Should only happen if someone deleted the contact manually
 	        if(!count($r)) {
-                	logger("fbsync_createcomment: Contact ".$parent_contact." doesn't seem to exist.", LOGGER_DEBUG);
+                	logger("fbsync_createcomment: UID ".$uid." - Contact ".$parent_contact." doesn't seem to exist.", LOGGER_DEBUG);
 	                return;
 		}
 
 		// Is blocked? Then return
-        	if (count($r) AND ($r[0]["readonly"] OR $r[0]["blocked"])) {
-                	logger("fbsync_createcomment: Contact '".$r[0]["nick"]."' is blocked or readonly.", LOGGER_DEBUG);
+        	if ($r[0]["readonly"] OR $r[0]["blocked"]) {
+                	logger("fbsync_createcomment: UID ".$uid." - Contact '".$r[0]["nick"]."' is blocked or readonly.", LOGGER_DEBUG);
 	                return;
 		}
 
-               	//logger("fbsync_createcomment: Contact '".$r[0]["nick"]."' isn't blocked.", LOGGER_DEBUG);
+		$parent_nick = $r[0]["nick"];
+		logger("fbsync_createcomment: UID ".$uid." - Contact '".$r[0]["nick"]."' isn't blocked. ".print_r($r, true), LOGGER_DEBUG);
 	}
 
 	$postarray = array();
@@ -454,18 +456,24 @@ function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $appl
 
 	$contact_id = fbsync_fetch_contact($uid, $contacts[$comment->fromid], array(), false);
 
+	$contact_nick = $contacts[$comment->fromid]->name;
+
 	if ($contact_id == -1) {
 		logger('fbsync_createcomment: Contact was blocked. Comment not imported '.print_r($comment, true), LOGGER_DEBUG);
 		return;
 	}
 
 	// If no contact was found, take it from the thread owner
-	if ($contact_id <= 0)
+	if ($contact_id <= 0) {
 		$contact_id = $parent_contact;
+		$contact_nick = $parent_nick;
+	}
 
 	// This case here should never happen
-	if ($contact_id <= 0)
+	if ($contact_id <= 0) {
 		$contact_id = $self[0]["id"];
+		$contact_nick = $self[0]["nick"];
+	}
 
 	if ($comment->fromid != $self_id) {
 		$postarray['contact-id'] = $contact_id;
@@ -477,6 +485,7 @@ function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $appl
 		$postarray['owner-name'] = $self[0]["name"];
 		$postarray['owner-link'] = $self[0]["url"];
 		$postarray['owner-avatar'] = $self[0]["photo"];
+		$contact_nick = $self[0]["nick"];
 	}
 
 	$postarray['author-name'] = $postarray['owner-name'];
@@ -500,7 +509,7 @@ function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $appl
 		return;
 
 	$item = item_store($postarray);
-	logger('fbsync_createcomment: User '.$self[0]["nick"].' posted comment '.$item, LOGGER_DEBUG);
+	logger('fbsync_createcomment: UID '.$uid.' - CID '.$postarray['contact-id'].' - Nick '.$contact_nick.' posted comment '.$item, LOGGER_DEBUG);
 
 	if ($item == 0)
 		return;
@@ -919,7 +928,7 @@ function fbsync_fetchfeed($a, $uid) {
 	$url = "https://graph.facebook.com/fql?q=".urlencode(json_encode($fql))."&access_token=".$access_token;
 
 	$feed = fetch_url($url);
-
+//file_put_contents("/home/ike/pirati.ca/htdocs/fb.".$uid, $feed);
 	$data = json_decode($feed);
 
 	if (!is_array($data->data)) {
