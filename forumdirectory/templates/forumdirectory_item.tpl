@@ -32,7 +32,7 @@
 			<div class="forumdirectory-detailscolumn-wrapper" id="forumdirectory-detailscolumn2-wrapper-{{$id}}">	
 				{{if $marital}}<dl class="marital"><dt class="marital-label"><span class="heart">&hearts;</span>{{$marital}}</dt><dd class="marital-text">{{$profile.marital}}</dd></dl>{{/if}}
 
-				{{if $homepage}}<dl class="homepage"><dt class="homepage-label">{{$homepage}}</dt><dd class="homepage-url"><a href="{{$profile.homepage}}" target="external-link">{{$profile.homepage}}</a></dd></dl>{{/if}}
+				{{if $homepage}}<dl class="homepage"><dt class="homepage-label">{{$homepage}}</dt><dd class="homepage-url"><a href="{{$profile.homepage}}" target="_blank">{{$profile.homepage}}</a></dd></dl>{{/if}}
 			</div>
 		</div>
 	  	<div class="forumdirectory-copy-wrapper" id="forumdirectory-copy-wrapper-{{$id}}" >
