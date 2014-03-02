@@ -42,8 +42,8 @@ function statistics_json_cron($a,$b) {
 	$last = get_config('statistics_json','last_calucation');
 
 	if($last) {
-		// Calculate all 6 hours
-		$next = $last + (360 * 60);
+		// Calculate every 24 hours
+		$next = $last + (24 * 60 * 60);
 		if($next > time()) {
 			logger('statistics_json_cron: calculation intervall not reached');
 			return;

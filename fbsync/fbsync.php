@@ -328,7 +328,7 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 		$postarray["body"] .= "[class=type-".$type."]";
 
 	if ($content)
-		$postarray["body"] .= $content;
+		$postarray["body"] .= trim($content);
 
 	if ($quote)
 		$postarray["body"] .= "\n[quote]".trim($quote)."[/quote]";

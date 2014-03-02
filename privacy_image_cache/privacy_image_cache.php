@@ -345,8 +345,8 @@ function privacy_image_cache_display_item_hook(&$a, &$o) {
  * @param string $o
  */
 function privacy_image_cache_ping_xmlize_hook(&$a, &$o) {
-    if ($o["photo"] != "" && !privacy_image_cache_is_local_image($o["photo"]))
-        $o["photo"] = $a->get_baseurl() . "/privacy_image_cache/".privacy_image_cache_cachename($o["photo"]);
+	if ($o["photo"] != "" && !privacy_image_cache_is_local_image($o["photo"]))
+		$o["photo"] = $a->get_baseurl() . "/privacy_image_cache/".privacy_image_cache_cachename($o["photo"]);
         //$o["photo"] = $a->get_baseurl() . "/privacy_image_cache/?url=" . escape_tags(addslashes(rawurlencode($o["photo"])));
 }
 
