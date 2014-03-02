@@ -271,7 +271,7 @@ function fromgplus_handleattachments($item, $displaytext) {
 				//elseif ($images["full"] != "")
 				//	$post .= "\n[img]".$images["full"]."[/img]\n";
 				if ($images["full"] != "")
-					$post .= "\n[img]".$images["full"]."[/img]\n";
+					$post .= "\n[img]".$images["full"]."[/img]";
 
 				//$post .= "[quote]".trim(fromgplus_html2bbcode($attachment->content))."[/quote]";
 				$quote = trim(fromgplus_html2bbcode($attachment->content));

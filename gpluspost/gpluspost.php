@@ -284,6 +284,8 @@ function gpluspost_feeditem($pid, $uid) {
 	$items = q("SELECT `uri`, `plink`, `author-link`, `author-name`, `created`, `edited`, `id`, `title`, `body` from `item` WHERE id=%d", intval($pid));
 	foreach ($items AS $item) {
 
+		$item['body'] = bb_CleanPictureLinks($item['body']);
+
 		// Looking for the first image
 		$image = '';
 		if(preg_match("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/is",$item['body'],$matches))

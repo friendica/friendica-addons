@@ -378,6 +378,8 @@ function twitter_shortenmsg($b, $shortlink = false) {
 
 	$max_char = 140;
 
+	$b['body'] = bb_CleanPictureLinks($b['body']);
+
 	// Looking for the first image
 	$cleaned_body = api_clean_plain_items($b['body']);
 	$image = '';

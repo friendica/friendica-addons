@@ -363,6 +363,8 @@ function fbpost_createmsg($b) {
 	require_once("include/bbcode.php");
 	require_once("include/html2plain.php");
 
+	$b['body'] = bb_CleanPictureLinks($b['body']);
+
 	// Looking for the first image
 	$image = '';
 	if(preg_match("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/is",$b['body'],$matches))
@@ -632,6 +634,7 @@ function fbpost_post_hook(&$a,&$b) {
 
 				logger('fbpost_post_hook: original msg=' . $msg, LOGGER_DATA);
 
+				// To-Do: if it is a reply, then only do a simple bbcode2plain conversion
 				$msgarr = fbpost_createmsg($b);
 				$msg = $msgarr["msg"];
 				$link = $msgarr["link"];
@@ -768,7 +771,7 @@ function fbpost_post_hook(&$a,&$b) {
 
 						// If it is a special kind of failure the post was receiced
 						// Although facebook said it wasn't received ...
-						if (!$likes AND (($retj->error->type != "OAuthException") OR ($retj->error->code != 2))) {
+						if (!$likes AND (($retj->error->type != "OAuthException") OR ($retj->error->code != 2)) AND ($x <> "")) {
 							$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", intval($b['uid']));
 							if (count($r))
 								$a->contact = $r[0]["id"];
@@ -920,7 +923,7 @@ function fbpost_queue_hook(&$a,&$b) {
 					// If it is a special kind of failure the post was receiced
 					// Although facebook said it wasn't received ...
 					$ret = json_decode($j);
-					if (($ret->error->type != "OAuthException") OR ($ret->error->code != 2))
+					if (($ret->error->type != "OAuthException") OR ($ret->error->code != 2) AND ($j <> ""))
 						update_queue_time($x['id']);
 					else
 						logger('fbpost_queue_hook: Not requeued, since it seems to be received');
@@ -1109,7 +1112,7 @@ function fbpost_fetchwall($a, $uid) {
 			$_REQUEST["body"] .= "[class=type-".$type."]";
 
 		if ($content)
-			$_REQUEST["body"] .= $content;
+			$_REQUEST["body"] .= trim($content);
 
 		if ($quote)
 			$_REQUEST["body"] .= "\n[quote]".$quote."[/quote]";
