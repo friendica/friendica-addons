@@ -36,7 +36,7 @@ function public_server_register_account($a,$b) {
 	if(! $days)
 		return;
 
-	$r = q("UPDATE user set account_expires_on = '%s', expire = %d where uid = %d limit 1",
+	$r = q("UPDATE user set account_expires_on = '%s', expire = %d where uid = %d",
 		dbesc(datetime_convert('UTC','UTC','now +' . $days . ' days')),
 		intval($days_posts),
 		intval($uid)
@@ -66,7 +66,7 @@ function public_server_cron($a,$b) {
 				'source_photo' => $a->get_baseurl() . '/images/person-80.jpg',
 			));
 
-			q("update user set expire_notification_sent = '%s' where uid = %d limit 1",
+			q("update user set expire_notification_sent = '%s' where uid = %d",
 				dbesc(datetime_convert()),
 				intval($rr['uid'])
 			);
@@ -85,7 +85,7 @@ function public_server_cron($a,$b) {
 		$r = q("select uid from user where account_expired = 0 and login_date = '0000-00-00 00:00:00' and register_date <  UTC_TIMESTAMP() - INTERVAL %d DAY and account_expires_on = '0000-00-00 00:00:00'",intval($nologin));
 		if(count($r)) {
 			foreach($r as $rr)
-				q("update user set account_expires_on = '%s' where uid = %d limit 1",
+				q("update user set account_expires_on = '%s' where uid = %d",
 					dbesc(datetime_convert('UTC','UTC','now +' . '6 days')),
 					intval($rr['uid'])
 			);
@@ -98,7 +98,7 @@ function public_server_cron($a,$b) {
 		$r = q("select uid from user where account_expired = 0 and login_date < UTC_TIMESTAMP() - INTERVAL %d DAY and account_expires_on = '0000-00-00 00:00:00' and `page-flags` = 0",intval($flagusers));
 		if(count($r)) {
 			foreach($r as $rr)
-				q("update user set account_expires_on = '%s' where uid = %d limit 1",
+				q("update user set account_expires_on = '%s' where uid = %d",
 					dbesc(datetime_convert('UTC','UTC','now +' . '6 days')),
 					intval($rr['uid'])
 				);
@@ -111,7 +111,7 @@ function public_server_cron($a,$b) {
 		$r = q("select uid from user where account_expired = 0 and login_date < UTC_TIMESTAMP() - INTERVAL %d DAY and account_expires_on = '0000-00-00 00:00:00' and expire = 0 and `page-flags` = 0",intval($flagposts));
 		if(count($r)) {
 			foreach($r as $rr)
-				q("update user set expire = %d where uid = %d limit 1",
+				q("update user set expire = %d where uid = %d",
 					intval($flagpostsexpire),
 					intval($rr['uid'])
 				);
@@ -136,7 +136,7 @@ function public_server_login($a,$b) {
 	$days = get_config('public_server','expiredays');
 	if(! $days)
 		return;
-	$r = q("UPDATE user set account_expires_on = '%s' where uid = %d and account_expires_on > '0000-00-00 00:00:00' limit 1",
+	$r = q("UPDATE user set account_expires_on = '%s' where uid = %d and account_expires_on > '0000-00-00 00:00:00'",
 	dbesc(datetime_convert('UTC','UTC','now +' . $days . ' days')),
 	local_user()
 	);

@@ -1022,6 +1022,7 @@ function pumpio_dodelete(&$a, $uid, $self, $post, $own_id) {
 
 function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcompletion = false) {
 	require_once('include/items.php');
+	require_once('include/html2bbcode.php');
 
 	if (($post->verb == "like") OR ($post->verb == "favorite"))
 		return pumpio_dolike($a, $uid, $self, $post, $own_id);

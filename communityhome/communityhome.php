@@ -75,8 +75,8 @@ function communityhome_home(&$a, &$o){
 	// this query don't work on some mysql versions
 	if (get_config('communityhome','showactiveusers')===true){
 		$r = q("SELECT `uni`.`contacts`,`uni`.`items`, `profile`.*, `profile`.`uid` AS `profile_uid`, `user`.`nickname`  FROM
-				(SELECT COUNT(`id`) as `contacts`, `uid` FROM `contact` WHERE `self`=0 GROUP BY `uid`) AS `con`,
-				(SELECT COUNT(`id`) as `items`, `uid` FROM `item` WHERE `item`.`changed` > DATE(NOW() - INTERVAL 1 MONTH) AND `item`.`wall` = 1 GROUP BY `uid`) AS `ite`,
+				(SELECT COUNT(*) as `contacts`, `uid` FROM `contact` WHERE `self`=0 GROUP BY `uid`) AS `con`,
+				(SELECT COUNT(*) as `items`, `uid` FROM `item` WHERE `item`.`changed` > DATE(NOW() - INTERVAL 1 MONTH) AND `item`.`wall` = 1 GROUP BY `uid`) AS `ite`,
 				(
 				SELECT `contacts`,`items`,`ite`.`uid` FROM `con` RIGHT OUTER JOIN `ite` ON `con`.`uid`=`ite`.`uid` 
 				UNION ALL 

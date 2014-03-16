@@ -289,7 +289,7 @@ function fb_get_friends_sync_parsecontact($uid, $contact) {
                                         `name-date` = '%s',
                                         `uri-date` = '%s',
                                         `avatar-date` = '%s'
-                                        WHERE `id` = %d LIMIT 1
+                                        WHERE `id` = %d
                                 ",
                 dbesc($photos[0]),
                 dbesc($photos[1]),
@@ -356,7 +356,7 @@ function fb_get_friends_sync_parsecontact($uid, $contact) {
                         `name-date` = '%s',
                         `uri-date` = '%s',
                         `avatar-date` = '%s'
-                        WHERE `id` = %d LIMIT 1
+                        WHERE `id` = %d
                 ",
         dbesc($photos[0]),
         dbesc($photos[1]),
@@ -742,19 +742,19 @@ function facebook_plugin_admin(&$a, &$o){
 
 
 	$o = '<input type="hidden" name="form_security_token" value="' . get_form_security_token("fbsave") . '">';
-	
+
 	$o .= '<h4>' . t('Facebook API Key') . '</h4>';
-	
+
 	$appid  = get_config('facebook', 'appid'  );
 	$appsecret = get_config('facebook', 'appsecret' );
 	$poll_interval = get_config('facebook', 'poll_interval' );
 	$sync_comments = get_config('facebook', 'sync_comments' );
 	if (!$poll_interval) $poll_interval = FACEBOOK_DEFAULT_POLL_INTERVAL;
-	
+
 	$ret1 = q("SELECT `v` FROM `config` WHERE `cat` = 'facebook' AND `k` = 'appid' LIMIT 1");
 	$ret2 = q("SELECT `v` FROM `config` WHERE `cat` = 'facebook' AND `k` = 'appsecret' LIMIT 1");
 	if ((count($ret1) > 0 && $ret1[0]['v'] != $appid) || (count($ret2) > 0 && $ret2[0]['v'] != $appsecret)) $o .= t('Error: it appears that you have specified the App-ID and -Secret in your .htconfig.php file. As long as they are specified there, they cannot be set using this form.<br><br>');
-	
+
 	$working_connection = false;
 	if ($appid && $appsecret) {
 		$subs = facebook_subscriptions_get();
@@ -764,7 +764,7 @@ function facebook_plugin_admin(&$a, &$o){
 			$working_connection = true;
 		} else $o .= t('The correctness of the API Key could not be detected. Something strange\'s going on.') . '<br>';
 	}
-	
+
 	$o .= '<label for="fb_appid">' . t('App-ID / API-Key') . '</label><input id="fb_appid" name="appid" type="text" value="' . escape_tags($appid ? $appid : "") . '"><br style="clear: both;">';
 	$o .= '<label for="fb_appsecret">' . t('Application secret') . '</label><input id="fb_appsecret" name="appsecret" type="text" value="' . escape_tags($appsecret ? $appsecret : "") . '"><br style="clear: both;">';
 	$o .= '<label for="fb_poll_interval">' . sprintf(t('Polling Interval in minutes (minimum %1$s minutes)'), FACEBOOK_MIN_POLL_INTERVAL) . '</label><input name="poll_interval" id="fb_poll_interval" type="number" min="' . FACEBOOK_MIN_POLL_INTERVAL . '" value="' . $poll_interval . '"><br style="clear: both;">';
@@ -1171,7 +1171,7 @@ function facebook_post_hook(&$a,&$b) {
 
 					$retj = json_decode($x);
 					if($retj->id) {
-						q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d LIMIT 1",
+						q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d",
 							dbesc('fb::' . $retj->id),
 							intval($b['id'])
 						);
@@ -1183,14 +1183,14 @@ function facebook_post_hook(&$a,&$b) {
 							add_to_queue($a->contact,NETWORK_FACEBOOK,$s);
 							notice( t('Facebook post failed. Queued for retry.') . EOL);
 						}
-						
+
 						if (isset($retj->error) && $retj->error->type == "OAuthException" && $retj->error->code == 190) {
 							logger('Facebook session has expired due to changed password.', LOGGER_DEBUG);
-							
+
 							$last_notification = get_pconfig($b['uid'], 'facebook', 'session_expired_mailsent');
 							if (!$last_notification || $last_notification < (time() - FACEBOOK_SESSION_ERR_NOTIFICATION_INTERVAL)) {
 								require_once('include/enotify.php');
-							
+
 								$r = q("SELECT * FROM `user` WHERE `uid` = %d LIMIT 1", intval($b['uid']) );
 								notification(array(
 									'uid' => $b['uid'],
@@ -1203,7 +1203,7 @@ function facebook_post_hook(&$a,&$b) {
 									'source_link'  => $a->config["system"]["url"],
 									'source_photo' => $a->config["system"]["url"] . '/images/person-80.jpg',
 								));
-								
+
 								set_pconfig($b['uid'], 'facebook', 'session_expired_mailsent', time());
 							} else logger('Facebook: No notification, as the last one was sent on ' . $last_notification, LOGGER_DEBUG);
 						}
@@ -1307,11 +1307,11 @@ function fb_queue_hook(&$a,&$b) {
 
 				$retj = json_decode($j);
 				if($retj->id) {
-					q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d LIMIT 1",
+					q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d",
 						dbesc('fb::' . $retj->id),
 						intval($item)
 					);
-					logger('facebook_queue: success: ' . $j); 
+					logger('facebook_queue: success: ' . $j);
 					remove_queue_item($x['id']);
 				}
 				else {
