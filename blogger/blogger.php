@@ -71,11 +71,11 @@ function blogger_settings(&$a,&$s) {
     /* Add some HTML to the existing form */
 
     $s .= '<span id="settings_blogger_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_blogger_expanded\'); openClose(\'settings_blogger_inflated\');">';
-    $s .= '<h3>' . t('Blogger Post Settings') . '</h3>';
+    $s .= '<h3>' . t('Blogger') . '</h3>';
     $s .= '</span>';
     $s .= '<div id="settings_blogger_expanded" class="settings-block" style="display: none;">';
     $s .= '<span class="fakelink" onclick="openClose(\'settings_blogger_expanded\'); openClose(\'settings_blogger_inflated\');">';
-    $s .= '<h3>' . t('Blogger Post Settings') . '</h3>';
+    $s .= '<h3>' . t('Blogger') . '</h3>';
     $s .= '</span>';
 
     $s .= '<div id="blogger-enable-wrapper">';

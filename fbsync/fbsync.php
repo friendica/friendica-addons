@@ -120,11 +120,11 @@ function fbsync_settings(&$a,&$s) {
 	/* Add some HTML to the existing form */
 
 	$s .= '<span id="settings_fbsync_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_fbsync_expanded\'); openClose(\'settings_fbsync_inflated\');">';
-	$s .= '<h3>' . t('Facebook Import Settings') . '</h3>';
+	$s .= '<h3>' . t('Facebook Import') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_fbsync_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_fbsync_expanded\'); openClose(\'settings_fbsync_inflated\');">';
-	$s .= '<h3>' . t('Facebook Import Settings') . '</h3>';
+	$s .= '<h3>' . t('Facebook Import') . '</h3>';
 	$s .= '</span>';
 
 	$s .= '<div id="fbsync-enable-wrapper">';

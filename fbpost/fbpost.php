@@ -207,7 +207,7 @@ function fbpost_content(&$a) {
 	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'
 		. $a->get_baseurl() . '/addon/fbpost/fbpost.css' . '" media="all" />' . "\r\n";
 
-	$o .= '<h3>' . t('Facebook Post') . '</h3>';
+	$o .= '<h3>' . t('Facebook') . '</h3>';
 
 	if(! $fb_installed) {
 		$o .= '<div id="fbpost-enable-wrapper">';
@@ -293,8 +293,7 @@ function fbpost_content(&$a) {
 function fbpost_plugin_settings(&$a,&$b) {
 
 	$b .= '<div class="settings-block">';
-	//$b .= '<h3>' . t('Facebook Post Settings') . '</h3>';
-	$b .= '<a href="fbpost"><h3>' . t('Facebook Post Settings') . '</a></h3>';
+	$b .= '<a href="fbpost"><h3>' . t('Facebook') . '</a></h3>';
 	$b .= '</div>';
 
 }

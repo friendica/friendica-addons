@@ -182,11 +182,11 @@ function tumblr_settings(&$a,&$s) {
     /* Add some HTML to the existing form */
 
     $s .= '<span id="settings_tumblr_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_tumblr_expanded\'); openClose(\'settings_tumblr_inflated\');">';
-    $s .= '<h3>' . t('Tumblr Post Settings') . '</h3>';
+    $s .= '<h3>' . t('Tumblr') . '</h3>';
     $s .= '</span>';
     $s .= '<div id="settings_tumblr_expanded" class="settings-block" style="display: none;">';
     $s .= '<span class="fakelink" onclick="openClose(\'settings_tumblr_expanded\'); openClose(\'settings_tumblr_inflated\');">';
-    $s .= '<h3>' . t('Tumblr Post Settings') . '</h3>';
+    $s .= '<h3>' . t('Tumblr') . '</h3>';
     $s .= '</span>';
 
     $s .= '<div id="tumblr-username-wrapper">';

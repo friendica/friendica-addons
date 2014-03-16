@@ -231,11 +231,11 @@ function twitter_settings(&$a,&$s) {
         $create_userchecked = (($create_userenabled) ? ' checked="checked" ' : '');
 
 	$s .= '<span id="settings_twitter_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_twitter_expanded\'); openClose(\'settings_twitter_inflated\');">';
-	$s .= '<h3>'. t('Twitter Settings') .'</h3>';
+	$s .= '<h3>'. t('Twitter') .'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_twitter_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_twitter_expanded\'); openClose(\'settings_twitter_inflated\');">';
-	$s .= '<h3>'. t('Twitter Settings') .'</h3>';
+	$s .= '<h3>'. t('Twitter') .'</h3>';
 	$s .= '</span>';
 
 	if ( (!$ckey) && (!$csecret) ) {

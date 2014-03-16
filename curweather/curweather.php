@@ -87,7 +87,7 @@ function curweather_plugin_settings(&$a,&$s) {
 	/* Add some HTML to the existing form */
 
 	$s .= '<div class="settings-block">';
-	$s .= '<h3>' . t('Current Weather Settings') . '</h3>';
+	$s .= '<h3>' . t('Current Weather') . '</h3>';
 	$s .= '<div id="curweather-settings-wrapper">';
 	$s .= '<p>Find the location code for the airport/weather station nearest you <a href="http://en.wikipedia.org/wiki/International_Air_Transport_Association_airport_code" target="_blank">here</a>.</p>';
 	$s .= '<label id="curweather-location-label" for="curweather_loc">' . t('Weather Location: ') . '</label>';
