@@ -1173,7 +1173,7 @@ function fbpost_get_photo($uid,$link) {
 
 function fpost_cleanpicture($image) {
 
-	if (strpos($image, ".fbcdn.net/") and (substr($image, -6) == "_s.jpg"))
+	if ((strpos($image, ".fbcdn.net/") OR strpos($image, "/fbcdn-photos-")) and (substr($image, -6) == "_s.jpg"))
 		$image = substr($image, 0, -6)."_n.jpg";
 
 	$queryvar = fbpost_parse_query($image);
