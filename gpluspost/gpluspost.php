@@ -59,11 +59,11 @@ function gpluspost_settings(&$a,&$s) {
 	$skip_checked = (($skip_enabled) ? ' checked="checked" ' : '');
 
 	$s .= '<span id="settings_gpluspost_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_gpluspost_expanded\'); openClose(\'settings_gpluspost_inflated\');">';
-	$s .= '<h3>' . t('Google+ Post Settings') . '</h3>';
+	$s .= '<h3>' . t('Google+') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_gpluspost_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_gpluspost_expanded\'); openClose(\'settings_gpluspost_inflated\');">';
-	$s .= '<h3>' . t('Google+ Post Settings') . '</h3>';
+	$s .= '<h3>' . t('Google+') . '</h3>';
 	$s .= '</span>';
 
 	$s .= '<div id="gpluspost-enable-wrapper">';

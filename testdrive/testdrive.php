@@ -41,13 +41,13 @@ function testdrive_register_account($a,$b) {
 	if(! $days)
 		return;
 
-	$r = q("UPDATE user set account_expires_on = '%s' where uid = %d limit 1",
+	$r = q("UPDATE user set account_expires_on = '%s' where uid = %d",
 		dbesc(datetime_convert('UTC','UTC','now +' . $days . ' days')),
 		intval($uid)
 	);
 
 };
-	
+
 
 function testdrive_cron($a,$b) {
 	require_once('include/enotify.php');
@@ -69,11 +69,11 @@ function testdrive_cron($a,$b) {
 				'source_photo' => $a->get_baseurl() . '/images/person-80.jpg',
 			));
 
-			q("update user set expire_notification_sent = '%s' where uid = %d limit 1",
+			q("update user set expire_notification_sent = '%s' where uid = %d",
 				dbesc(datetime_convert()),
 				intval($rr['uid'])
 			);
- 
+
 		}
 	}
 

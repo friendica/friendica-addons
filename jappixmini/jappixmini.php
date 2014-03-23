@@ -295,11 +295,11 @@ function jappixmini_settings(&$a, &$s) {
     }
 
     $s .= '<span id="settings_jappixmini_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_jappixmini_expanded\'); openClose(\'settings_jappixmini_inflated\');">';
-    $s .= '<h3>'.t('Jappix Mini addon settings').'</h3>';
+    $s .= '<h3>'.t('Jappix Mini').'</h3>';
     $s .= '</span>';
     $s .= '<div id="settings_jappixmini_expanded" class="settings-block" style="display: none;">';
     $s .= '<span class="fakelink" onclick="openClose(\'settings_jappixmini_expanded\'); openClose(\'settings_jappixmini_inflated\');">';
-    $s .= '<h3>'.t('Jappix Mini addon settings').'</h3>';
+    $s .= '<h3>'.t('Jappix Mini').'</h3>';
     $s .= '</span>';
 
     $s .= '<label for="jappixmini-activate">'.t('Activate addon').'</label>';

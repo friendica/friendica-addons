@@ -219,11 +219,11 @@ function pumpio_settings(&$a,&$s) {
     /* Add some HTML to the existing form */
 
     $s .= '<span id="settings_pumpio_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_pumpio_expanded\'); openClose(\'settings_pumpio_inflated\');">';
-    $s .= '<h3>' . t('Pump.io Post Settings') . '</h3>';
+    $s .= '<h3>' . t('Pump.io') . '</h3>';
     $s .= '</span>';
     $s .= '<div id="settings_pumpio_expanded" class="settings-block" style="display: none;">';
     $s .= '<span class="fakelink" onclick="openClose(\'settings_pumpio_expanded\'); openClose(\'settings_pumpio_inflated\');">';
-    $s .= '<h3>' . t('Pump.io Post Settings') . '</h3>';
+    $s .= '<h3>' . t('Pump.io') . '</h3>';
     $s .= '</span>';
 
     $s .= '<div id="pumpio-username-wrapper">';
@@ -1022,6 +1022,7 @@ function pumpio_dodelete(&$a, $uid, $self, $post, $own_id) {
 
 function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcompletion = false) {
 	require_once('include/items.php');
+	require_once('include/html2bbcode.php');
 
 	if (($post->verb == "like") OR ($post->verb == "favorite"))
 		return pumpio_dolike($a, $uid, $self, $post, $own_id);

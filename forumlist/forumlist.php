@@ -158,11 +158,11 @@ function forumlist_plugin_settings(&$a,&$s) {
 
 	/* Add some HTML to the existing form */
 	$s .= '<span id="settings_forumlist_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_forumlist_expanded\'); openClose(\'settings_forumlist_inflated\');">';
-	$s .= '<h3>' . t('Forumlist Settings') . '</h3>';
+	$s .= '<h3>' . t('Forumlist') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_forumlist_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_forumlist_expanded\'); openClose(\'settings_forumlist_inflated\');">';
-	$s .= '<h3>' . t('Forumlist Settings') . '</h3>';
+	$s .= '<h3>' . t('Forumlist') . '</h3>';
 	$s .= '</span>';
 
 	$s .= '<div id="forumlist-settings-wrapper">';

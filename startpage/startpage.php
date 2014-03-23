@@ -80,11 +80,11 @@ function startpage_settings(&$a,&$s) {
 	/* Add some HTML to the existing form */
 
 	$s .= '<span id="settings_startpage_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_startpage_expanded\'); openClose(\'settings_startpage_inflated\');">';
-	$s .= '<h3>' . t('Startpage Settings') . '</h3>';
+	$s .= '<h3>' . t('Startpage') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_startpage_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_startpage_expanded\'); openClose(\'settings_startpage_inflated\');">';
-	$s .= '<h3>' . t('Startpage Settings') . '</h3>';
+	$s .= '<h3>' . t('Startpage') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="startpage-page-wrapper">';
 	$s .= '<label id="startpage-page-label" for="startpage-page">' . t('Home page to load after login  - leave blank for profile wall') . '</label>';
