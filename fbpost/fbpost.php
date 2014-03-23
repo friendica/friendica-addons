@@ -96,7 +96,7 @@ function fbpost_init(&$a) {
 
 		if(strpos($x,'access_token=') !== false) {
 			$token = str_replace('access_token=', '', $x);
- 			if(strpos($token,'&') !== false)
+			if(strpos($token,'&') !== false)
 				$token = substr($token,0,strpos($token,'&'));
 			set_pconfig($uid,'facebook','access_token',$token);
 			set_pconfig($uid,'facebook','post','1');
@@ -571,7 +571,8 @@ function fbpost_post_hook(&$a,&$b) {
 
 			$allow_str = dbesc(implode(', ',$recipients));
 			if($allow_str) {
-				$r = q("SELECT `notify` FROM `contact` WHERE `id` IN ( $allow_str ) AND `network` = 'face'"); 
+				logger("fbpost_post_hook: private post to: ".$allow_str, LOGGER_DEBUG);
+				$r = q("SELECT `notify` FROM `contact` WHERE `id` IN ( $allow_str ) AND `network` = 'face'");
 				if(count($r))
 					foreach($r as $rr)
 						$allow_arr[] = $rr['notify'];
@@ -579,7 +580,7 @@ function fbpost_post_hook(&$a,&$b) {
 
 			$deny_str = dbesc(implode(', ',$deny));
 			if($deny_str) {
-				$r = q("SELECT `notify` FROM `contact` WHERE `id` IN ( $deny_str ) AND `network` = 'face'"); 
+				$r = q("SELECT `notify` FROM `contact` WHERE `id` IN ( $deny_str ) AND `network` = 'face'");
 				if(count($r))
 					foreach($r as $rr)
 						$deny_arr[] = $rr['notify'];
@@ -962,7 +963,7 @@ function fbpost_get_app_access_token() {
 		logger('fb_get_app_access_token: returned access token: ' . $x, LOGGER_DATA);
 
 		$token = str_replace('access_token=', '', $x);
- 		if(strpos($token,'&') !== false)
+		if(strpos($token,'&') !== false)
 			$token = substr($token,0,strpos($token,'&'));
 
 		if ($token == "") {
