@@ -53,11 +53,11 @@ function appnetpost_settings(&$a,&$s) {
 	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
 	$s .= '<span id="settings_appnetpost_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_appnetpost_expanded\'); openClose(\'settings_appnetpost_inflated\');">';
-	$s .= '<h3>' . t('App.net') . '</h3>';
+	$s .= '<h3>' . t('App.net Export') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_appnetpost_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_appnetpost_expanded\'); openClose(\'settings_appnetpost_inflated\');">';
-	$s .= '<h3>' . t('App.net') . '</h3>';
+	$s .= '<h3>' . t('App.net Export') . '</h3>';
 	$s .= '</span>';
 
 	$s .= '<div id="appnetpost-enable-wrapper">';
@@ -196,65 +196,6 @@ function appnetpost_init() {
 	killme();
 }
 
-function appnetpost_original_url($url, $depth=1) {
-
-	if ($depth > 10)
-		return($url);
-
-	$siteinfo = array();
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $url);
-	curl_setopt($ch, CURLOPT_HEADER, 1);
-	curl_setopt($ch, CURLOPT_NOBODY, 0);
-	curl_setopt($ch, CURLOPT_TIMEOUT, 3);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch,CURLOPT_USERAGENT,'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0');
-
-	$header = curl_exec($ch);
-	$curl_info = @curl_getinfo($ch);
-	$http_code = $curl_info['http_code'];
-	curl_close($ch);
-
-	if ((($curl_info['http_code'] == "301") OR ($curl_info['http_code'] == "302"))
-		AND (($curl_info['redirect_url'] != "") OR ($curl_info['location'] != ""))) {
-		if ($curl_info['redirect_url'] != "")
-			return(appnetpost_original_url($curl_info['redirect_url'], ++$depth));
-		else
-			return(appnetpost_original_url($curl_info['location'], ++$depth));
-	}
-
-	$pos = strpos($header, "\r\n\r\n");
-
-	if ($pos)
-		$body = trim(substr($header, $pos));
-	else
-		$body = $header;
-
-	$doc = new DOMDocument();
-	@$doc->loadHTML($body);
-
-	$xpath = new DomXPath($doc);
-
-	$list = $xpath->query("//meta[@content]");
-	foreach ($list as $node) {
-		$attr = array();
-		if ($node->attributes->length)
-			foreach ($node->attributes as $attribute)
-				$attr[$attribute->name] = $attribute->value;
-
-		if (@$attr["http-equiv"] == 'refresh') {
-			$path = $attr["content"];
-			$pathinfo = explode(";", $path);
-			$content = "";
-			foreach ($pathinfo AS $value)
-				if (substr(strtolower($value), 0, 4) == "url=")
-					return(appnetpost_original_url(substr($value, 4), ++$depth));
-		}
-	}
-
-	return($url);
-}
-
 if (! function_exists( 'short_link' )) {
 function short_link($url) {
 	require_once('library/slinky.php');
@@ -387,7 +328,7 @@ function appnetpost_feeditem($pid, $uid) {
 		if ($title == "")
 			continue;
 
-		//$origlink = appnetpost_original_url($origlink);
+		//$origlink = original_url($origlink);
 
 		$html = nl2br($title);
 
