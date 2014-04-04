@@ -207,7 +207,7 @@ function fbpost_content(&$a) {
 	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'
 		. $a->get_baseurl() . '/addon/fbpost/fbpost.css' . '" media="all" />' . "\r\n";
 
-	$o .= '<h3>' . t('Facebook') . '</h3>';
+	$o .= '<h3>' . t('Facebook Export/Mirror') . '</h3>';
 
 	if(! $fb_installed) {
 		$o .= '<div id="fbpost-enable-wrapper">';
@@ -293,7 +293,7 @@ function fbpost_content(&$a) {
 function fbpost_plugin_settings(&$a,&$b) {
 
 	$b .= '<div class="settings-block">';
-	$b .= '<a href="fbpost"><h3>' . t('Facebook') . '</a></h3>';
+	$b .= '<a href="fbpost"><h3>' . t('Facebook Export/Mirror') . '</a></h3>';
 	$b .= '</div>';
 
 }
@@ -634,22 +634,32 @@ function fbpost_post_hook(&$a,&$b) {
 
 				logger('fbpost_post_hook: original msg=' . $msg, LOGGER_DATA);
 
-				// To-Do: if it is a reply, then only do a simple bbcode2plain conversion
-				$msgarr = fbpost_createmsg($b);
-				$msg = $msgarr["msg"];
-				$link = $msgarr["link"];
-				$image = $msgarr["image"];
-				$linkname = $msgarr["linkname"];
+				if ($toplevel) {
+					$msgarr = fbpost_createmsg($b);
+					$msg = $msgarr["msg"];
+					$link = $msgarr["link"];
+					$image = $msgarr["image"];
+					$linkname = $msgarr["linkname"];
 
-				// Fallback - if message is empty
-				if(!strlen($msg))
-					$msg = $linkname;
+					// Fallback - if message is empty
+					if(!strlen($msg))
+						$msg = $linkname;
 
-				if(!strlen($msg))
-					$msg = $link;
+					if(!strlen($msg))
+						$msg = $link;
 
-				if(!strlen($msg))
-					$msg = $image;
+					if(!strlen($msg))
+						$msg = $image;
+				} else {
+					require_once("include/bbcode.php");
+					require_once("include/html2plain.php");
+					$msg = bb_CleanPictureLinks($msg);
+					$msg = bbcode($msg, false, false, 2, true);
+					$msg = trim(html2plain($msg, 0));
+					$link = "";
+					$image = "";
+					$linkname = "";
+				}
 
 				// If there is nothing to post then exit
 				if(!strlen($msg))
@@ -1106,7 +1116,7 @@ function fbpost_fetchwall($a, $uid) {
 		}
 
 		if ($content)
-			$_REQUEST["body"] .= "\n\n";
+			$_REQUEST["body"] .= "\n";
 
 		if ($type)
 			$_REQUEST["body"] .= "[class=type-".$type."]";
