@@ -322,7 +322,7 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	}
 
 	if ($content)
-		$postarray["body"] .= "\n\n";
+		$postarray["body"] .= "\n";
 
 	if ($type)
 		$postarray["body"] .= "[class=type-".$type."]";
