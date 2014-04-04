@@ -24,6 +24,8 @@
 #statusnet-sendtaglinks-label,
 #statusnet-shortening-label, 
 #statusnet-mirror-label,
+#statusnet-import-label,
+#statusnet-create_user-label,
 #statusnet-pin-label,
 #statusnet-enable-label {
 	float: left;
