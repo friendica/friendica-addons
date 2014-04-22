@@ -39,6 +39,8 @@ function diaspora_jot_nets(&$a,&$b) {
 }
 
 function diaspora_queue_hook(&$a,&$b) {
+	$hostname = $a->get_hostname();
+
 	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
 		dbesc(NETWORK_DIASPORA2)
 	);
@@ -85,7 +87,7 @@ function diaspora_queue_hook(&$a,&$b) {
 				logger('diaspora_queue: try to log in '.$diaspora_username, LOGGER_DEBUG);
 				$conn->login($diaspora_username, $diaspora_password);
 				logger('diaspora_queue: try to send '.$body, LOGGER_DEBUG);
-				$conn->post($post);
+				$conn->post($post, $hostname);
 
                                 logger('diaspora_queue: send '.$userdata['uid'].' success', LOGGER_DEBUG);
 
@@ -233,6 +235,7 @@ function diaspora_post_local(&$a,&$b) {
 
 
 function diaspora_send(&$a,&$b) {
+	$hostname = $a->get_hostname();
 
 	logger('diaspora_send: invoked');
 
@@ -303,7 +306,7 @@ function diaspora_send(&$a,&$b) {
 			logger('diaspora_send: try to send '.$body, LOGGER_DEBUG);
 
 			//throw new Exception('Test');
-			$conn->post($body);
+			$conn->post($body, $hostname);
 
 			logger('diaspora_send: success');
 		} catch (Exception $e) {

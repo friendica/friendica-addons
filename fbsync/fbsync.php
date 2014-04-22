@@ -177,7 +177,7 @@ function fbsync_cron($a,$b) {
 		}
 	}
 
-	logger('fbsync: cron_end');
+	logger('fbsync_cron: cron_end');
 
 	set_config('fbsync','last_poll', time());
 }
