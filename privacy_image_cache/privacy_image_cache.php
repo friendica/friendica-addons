@@ -288,11 +288,11 @@ function privacy_image_cache_img_cb($matches) {
 
 	// if the picture seems to be from another picture cache then take the original source
 	$queryvar = privacy_image_cache_parse_query($matches[2]);
-	if ($queryvar['url'] != "")
+	if (($queryvar['url'] != "") AND (substr($queryvar['url'], 0, 4) == "http"))
 		$matches[2] = urldecode($queryvar['url']);
 
 	// if fetching facebook pictures don't fetch the thumbnail but the big one
-	if (strpos($matches[2], ".fbcdn.net/") and (substr($matches[2], -6) == "_s.jpg"))
+	if (((strpos($matches[2], ".fbcdn.net/") OR strpos($matches[2], "/fbcdn-photos-"))) and (substr($matches[2], -6) == "_s.jpg"))
 		$matches[2] = substr($matches[2], 0, -6)."_n.jpg";
 
 	// following line changed per bug #431

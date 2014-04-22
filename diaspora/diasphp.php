@@ -61,11 +61,12 @@ class Diasphp {
 		return $this;
 	}
 
-	function post($text) {
+	function post($text, $provider = "diasphp") {
 		// post-daten vorbereiten
 		$datatopost = json_encode(array(
 				'aspect_ids' => 'public',
-				'status_message' => array('text' => $text)
+				'status_message' => array('text' => $text,
+							'provider_display_name' => $provider)
 		));
 
 		// header vorbereiten

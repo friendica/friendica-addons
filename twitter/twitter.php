@@ -230,12 +230,14 @@ function twitter_settings(&$a,&$s) {
         $create_userenabled = get_pconfig(local_user(),'twitter','create_user');
         $create_userchecked = (($create_userenabled) ? ' checked="checked" ' : '');
 
+	$globalshortening = get_config('twitter','intelligent_shortening');
+
 	$s .= '<span id="settings_twitter_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_twitter_expanded\'); openClose(\'settings_twitter_inflated\');">';
-	$s .= '<h3>'. t('Twitter') .'</h3>';
+	$s .= '<h3>'. t('Twitter Import/Export/Mirror') .'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_twitter_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_twitter_expanded\'); openClose(\'settings_twitter_inflated\');">';
-	$s .= '<h3>'. t('Twitter') .'</h3>';
+	$s .= '<h3>'. t('Twitter Import/Export/Mirror') .'</h3>';
 	$s .= '</span>';
 
 	if ( (!$ckey) && (!$csecret) ) {
@@ -296,13 +298,16 @@ function twitter_settings(&$a,&$s) {
                         $s .= '<input id="twitter-mirror" type="checkbox" name="twitter-mirror" value="1" '. $mirrorchecked . '/>';
 			$s .= '<div class="clear"></div>';
 
-                        $s .= '<label id="twitter-shortening-label" for="twitter-shortening">'.t('Shortening method that optimizes the tweet').'</label>';
-                        $s .= '<input id="twitter-shortening" type="checkbox" name="twitter-shortening" value="1" '. $shorteningchecked . '/>';
-			$s .= '<div class="clear"></div>';
+			if (!$globalshortening) {
+	                        $s .= '<label id="twitter-shortening-label" for="twitter-shortening">'.t('Shortening method that optimizes the tweet').'</label>';
+	                        $s .= '<input id="twitter-shortening" type="checkbox" name="twitter-shortening" value="1" '. $shorteningchecked . '/>';
+				$s .= '<div class="clear"></div>';
 
-                        $s .= '<label id="twitter-sendtaglinks-label" for="twitter-sendtaglinks">'.t('Send linked #-tags and @-names to Twitter').'</label>';
-                        $s .= '<input id="twitter-sendtaglinks" type="checkbox" name="twitter-sendtaglinks" value="1" '. $linkschecked . '/>';
-			$s .= '</div><div class="clear"></div>';
+	                        $s .= '<label id="twitter-sendtaglinks-label" for="twitter-sendtaglinks">'.t('Send linked #-tags and @-names to Twitter').'</label>';
+	                        $s .= '<input id="twitter-sendtaglinks" type="checkbox" name="twitter-sendtaglinks" value="1" '. $linkschecked . '/>';
+				$s .= '<div class="clear"></div>';
+			}
+			$s .= '</div>';
 
                         $s .= '<label id="twitter-import-label" for="twitter-import">'.t('Import the remote timeline').'</label>';
                         $s .= '<input id="twitter-import" type="checkbox" name="twitter-import" value="1" '. $importchecked . '/>';
@@ -1006,7 +1011,6 @@ function twitter_fetchtimeline($a, $uid) {
 					}
 				}
 
-				//$converted = twitter_convertmsg($a, $_REQUEST['body'], true, $has_picture);
 				$converted = twitter_expand_entities($a, $_REQUEST['body'], $post->retweeted_status, true, $has_picture);
 				$_REQUEST['body'] = $converted["body"];
 
@@ -1030,7 +1034,6 @@ function twitter_fetchtimeline($a, $uid) {
 					}
 				}
 
-				//$converted = twitter_convertmsg($a, $_REQUEST["body"], true, $has_picture);
 				$converted = twitter_expand_entities($a, $_REQUEST["body"], $post, true, $has_picture);
 				$_REQUEST['body'] = $converted["body"];
 			}
@@ -1305,6 +1308,7 @@ function twitter_fetchuser($a, $uid, $screen_name = "", $user_id = "") {
 
 function twitter_expand_entities($a, $body, $item, $no_tags = false, $dontincludemedia) {
 	require_once("include/oembed.php");
+	require_once("include/network.php");
 
 	$tags = "";
 
@@ -1317,7 +1321,7 @@ function twitter_expand_entities($a, $body, $item, $no_tags = false, $dontinclud
 		foreach ($item->entities->urls AS $url) {
 			if ($url->url AND $url->expanded_url AND $url->display_url) {
 
-				$expanded_url = twitter_original_url($url->expanded_url);
+				$expanded_url = original_url($url->expanded_url);
 
 				$oembed_data = oembed_fetch_url($expanded_url);
 
@@ -1341,7 +1345,6 @@ function twitter_expand_entities($a, $body, $item, $no_tags = false, $dontinclud
 					$body = str_replace($url->url,
 							"[url=".$expanded_url."]".$expanded_url."[/url]",
 							$body);
-							//"[url=".$expanded_url."]".$url->display_url."[/url]",
 				else {
 					$img_str = fetch_url($expanded_url, true, $redirects, 4);
 
@@ -1358,7 +1361,6 @@ function twitter_expand_entities($a, $body, $item, $no_tags = false, $dontinclud
 						$type = $oembed_data->type;
 						$footerurl = $expanded_url;
 						$footerlink = "[url=".$expanded_url."]".$expanded_url."[/url]";
-						//$footerlink = "[url=".$expanded_url."]".$url->display_url."[/url]";
 
 						$body = str_replace($url->url, $footerlink, $body);
 					}
@@ -1367,7 +1369,7 @@ function twitter_expand_entities($a, $body, $item, $no_tags = false, $dontinclud
 		}
 
 		if ($footerurl != "")
-			$footer = twitter_siteinfo($footerurl, $dontincludemedia);
+			$footer = add_page_info($footerurl);
 
 		if (($footerlink != "") AND (trim($footer) != "")) {
 			$removedlink = trim(str_replace($footerlink, "", $body));
@@ -1375,7 +1377,7 @@ function twitter_expand_entities($a, $body, $item, $no_tags = false, $dontinclud
 			if (strstr($body, $removedlink))
 				$body = $removedlink;
 
-			$body .= "\n\n[class=type-".$type."]".$footer."[/class]";
+			$body .= $footer;
 		}
 
 		if ($no_tags)
@@ -1546,7 +1548,6 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 		}
 	}
 
-	//$converted = twitter_convertmsg($a, $postarray['body'], false, $has_picture);
 	$converted = twitter_expand_entities($a, $postarray['body'], $post, false, $has_picture);
 	$postarray['body'] = $converted["body"];
 	$postarray['tag'] = $converted["tags"];
@@ -1584,7 +1585,6 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 			}
 		}
 
-		//$converted = twitter_convertmsg($a, $postarray['body'], false, $has_picture);
 		$converted = twitter_expand_entities($a, $postarray['body'], $post->retweeted_status, false, $has_picture);
 		$postarray['body'] = $converted["body"];
 		$postarray['tag'] = $converted["tags"];
@@ -1837,213 +1837,6 @@ function twitter_fetchhometimeline($a, $uid) {
 	}
 
 	set_pconfig($uid, 'twitter', 'lastmentionid', $lastid);
-}
-
-function twitter_original_url($url, $depth=1, $fetchbody = false) {
-        if ($depth > 10)
-                return($url);
-
-        $siteinfo = array();
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HEADER, 1);
-
-	if ($fetchbody)
-	        curl_setopt($ch, CURLOPT_NOBODY, 0);
-	else
-	        curl_setopt($ch, CURLOPT_NOBODY, 1);
-
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch,CURLOPT_USERAGENT,'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0');
-
-        $header = curl_exec($ch);
-        $curl_info = @curl_getinfo($ch);
-        $http_code = $curl_info['http_code'];
-        curl_close($ch);
-
-        if ((($curl_info['http_code'] == "301") OR ($curl_info['http_code'] == "302"))
-                AND (($curl_info['redirect_url'] != "") OR ($curl_info['location'] != ""))) {
-                if ($curl_info['redirect_url'] != "")
-                        return(twitter_original_url($curl_info['redirect_url'], ++$depth, $fetchbody));
-                else
-                        return(twitter_original_url($curl_info['location'], ++$depth, $fetchbody));
-        }
-
-        $pos = strpos($header, "\r\n\r\n");
-
-        if ($pos)
-                $body = trim(substr($header, $pos));
-        else
-                $body = $header;
-
-	if (trim($body) == "")
-		return(twitter_original_url($url, ++$depth, true));
-
-        $doc = new DOMDocument();
-        @$doc->loadHTML($body);
-
-        $xpath = new DomXPath($doc);
-
-        $list = $xpath->query("//meta[@content]");
-        foreach ($list as $node) {
-                $attr = array();
-                if ($node->attributes->length)
-                        foreach ($node->attributes as $attribute)
-                                $attr[$attribute->name] = $attribute->value;
-
-                if (@$attr["http-equiv"] == 'refresh') {
-                        $path = $attr["content"];
-                        $pathinfo = explode(";", $path);
-                        $content = "";
-                        foreach ($pathinfo AS $value)
-                                if (substr(strtolower($value), 0, 4) == "url=")
-                                        return(twitter_original_url(substr($value, 4), ++$depth));
-                }
-        }
-
-        return($url);
-}
-
-function twitter_siteinfo($url, $dontincludemedia) {
-	require_once("mod/parse_url.php");
-
-	// Fetch site infos - but only from the meta data
-	$data = parseurl_getsiteinfo($url, true);
-
-	if ($dontincludemedia)
-		unset($data["images"]);
-
-	if (!is_string($data["text"]) AND (sizeof($data["images"]) == 0) AND ($data["title"] == $url))
-		return("");
-
-	if (is_string($data["title"]))
-		$text .= "[bookmark=".$url."]".trim($data["title"])."[/bookmark]\n";
-
-	// Add a spoiler to the extra information
-	//if ((sizeof($data["images"]) > 0) OR is_string($data["text"]))
-	//	$text .= "[spoiler]";
-
-	if (sizeof($data["images"]) > 0) {
-		$imagedata = $data["images"][0];
-		//$text .= '[img='.$imagedata["width"].'x'.$imagedata["height"].']'.$imagedata["src"].'[/img]' . "\n";
-		$text .= '[img]'.$imagedata["src"].'[/img]'."\n";
-	}
-
-	if (is_string($data["text"]))
-		$text .= "[quote]".$data["text"]."[/quote]";
-
-	//if ((sizeof($data["images"]) > 0) OR is_string($data["text"]))
-	//	$text .= "[/spoiler]";
-
-	return($text);
-
-}
-
-function twitter_convertmsg($a, $body, $no_tags = false, $dontincludemedia) {
-
-	require_once("include/oembed.php");
-
-	$links = preg_match_all("/([^\]\='".'"'."]|^)(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/ism", $body,$matches,PREG_SET_ORDER);
-
-	$footer = "";
-	$footerurl = "";
-	$type = "";
-
-	if ($links) {
-		foreach ($matches AS $match) {
-			$expanded_url = twitter_original_url($match[2]);
-
-			$oembed_data = oembed_fetch_url($expanded_url);
-
-			if ($type == "")
-				$type = $oembed_data->type;
-
-			if ($oembed_data->type != "link")
-				$body = str_replace($match[2], "\n[url]".$expanded_url."[/url]\n", $body);
-			else {
-				$img_str = fetch_url($expanded_url, true, $redirects, 4);
-
-				$tempfile = tempnam(get_config("system","temppath"), "cache");
-				file_put_contents($tempfile, $img_str);
-				$mime = image_type_to_mime_type(exif_imagetype($tempfile));
-				unlink($tempfile);
-
-				if (substr($mime, 0, 6) == "image/") {
-					$type = "photo";
-					$body = str_replace($match[2], "[img]".$expanded_url."[/img]", $body);
-					$dontincludemedia = true;
-				} else {
-					$type = $oembed_data->type;
-					$footerurl = $expanded_url;
-					$footerlink = "[url=".$expanded_url."]".$expanded_url."[/url]";
-
-					$body = str_replace($match[2], $footerlink, $body);
-				}
-			}
-		}
-
-		if ($footerurl != "")
-			$footer = twitter_siteinfo($footerurl, $dontincludemedia);
-
-		if (($footerlink != "") AND (trim($footer) != "")) {
-			$removedlink = trim(str_replace($footerlink, "", $body));
-
-			if (strstr($body, $removedlink))
-				$body = $removedlink;
-
-			$body .= "\n\n[class=type-".$type."]".$footer."[/class]";
-		}
-	}
-
-	if ($no_tags)
-		return(array("body" => $body, "tags" => ""));
-
-	$str_tags = '';
-
-        $tags = get_tags($body);
-
-        if(count($tags)) {
-                foreach($tags as $tag) {
-			if (strstr(trim($tag), " "))
-				continue;
-
-                        if(strpos($tag,'#') === 0) {
-                                if(strpos($tag,'[url='))
-                                        continue;
-
-                                // don't link tags that are already embedded in links
-
-                                if(preg_match('/\[(.*?)' . preg_quote($tag,'/') . '(.*?)\]/',$body))
-                                        continue;
-                                if(preg_match('/\[(.*?)\]\((.*?)' . preg_quote($tag,'/') . '(.*?)\)/',$body))
-                                        continue;
-
-                                $basetag = str_replace('_',' ',substr($tag,1));
-                                $body = str_replace($tag,'#[url=' . $a->get_baseurl() . '/search?tag=' . rawurlencode($basetag) . ']' . $basetag . '[/url]',$body);
-                                if(strlen($str_tags))
-                                        $str_tags .= ',';
-                                $str_tags .= '#[url=' . $a->get_baseurl() . '/search?tag=' . rawurlencode($basetag) . ']' . $basetag . '[/url]';
-                                continue;
-                        } elseif(strpos($tag,'@') === 0) {
-                                $basetag = substr($tag,1);
-                                $body = str_replace($tag,'@[url=https://twitter.com/' . rawurlencode($basetag) . ']' . $basetag . '[/url]',$body);
-			}
-
-                }
-        }
-
-        $cnt = preg_match_all('/@\[url=(.*?)\[\/url\]/ism',$body,$matches,PREG_SET_ORDER);
-        if($cnt) {
-                foreach($matches as $mtch) {
-                        if(strlen($str_tags))
-                                $str_tags .= ',';
-                        $str_tags .= '@[url=' . $mtch[1] . '[/url]';
-                }
-        }
-
-	return(array("body"=>$body, "tags"=>$str_tags));
-
 }
 
 function twitter_fetch_own_contact($a, $uid) {

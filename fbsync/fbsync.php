@@ -177,7 +177,7 @@ function fbsync_cron($a,$b) {
 		}
 	}
 
-	logger('fbsync: cron_end');
+	logger('fbsync_cron: cron_end');
 
 	set_config('fbsync','last_poll', time());
 }
@@ -322,7 +322,7 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	}
 
 	if ($content)
-		$postarray["body"] .= "\n\n";
+		$postarray["body"] .= "\n";
 
 	if ($type)
 		$postarray["body"] .= "[class=type-".$type."]";
@@ -423,18 +423,18 @@ function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $appl
 	// Check if the contact id was blocked
 	if ($parent_contact > 0) {
 		$r = q("SELECT `blocked`, `readonly`, `nick` FROM `contact` WHERE `uid` = %d AND `id` = %d LIMIT 1",
-        	        intval($uid), intval($parent_contact));
+			intval($uid), intval($parent_contact));
 
 		// Should only happen if someone deleted the contact manually
-	        if(!count($r)) {
-                	logger("fbsync_createcomment: UID ".$uid." - Contact ".$parent_contact." doesn't seem to exist.", LOGGER_DEBUG);
-	                return;
+		if(!count($r)) {
+			logger("fbsync_createcomment: UID ".$uid." - Contact ".$parent_contact." doesn't seem to exist.", LOGGER_DEBUG);
+			return;
 		}
 
 		// Is blocked? Then return
-        	if ($r[0]["readonly"] OR $r[0]["blocked"]) {
-                	logger("fbsync_createcomment: UID ".$uid." - Contact '".$r[0]["nick"]."' is blocked or readonly.", LOGGER_DEBUG);
-	                return;
+		if ($r[0]["readonly"] OR $r[0]["blocked"]) {
+			logger("fbsync_createcomment: UID ".$uid." - Contact '".$r[0]["nick"]."' is blocked or readonly.", LOGGER_DEBUG);
+			return;
 		}
 
 		$parent_nick = $r[0]["nick"];
@@ -522,8 +522,8 @@ function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $appl
 	if(count($myconv)) {
 		$importer_url = $a->get_baseurl() . '/profile/' . $user[0]['nickname'];
 
-	        $own_contact = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
-        	        intval($uid), dbesc("facebook::".$self_id));
+		$own_contact = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
+			intval($uid), dbesc("facebook::".$self_id));
 
 		if (!count($own_contact))
 			return;
@@ -570,8 +570,8 @@ function fbsync_createlike($a, $uid, $self_id, $self, $contacts, $like) {
 				intval($uid)
 		);
 
-        if (count($r))
-                $orig_post = $r[0];
+	if (count($r))
+		$orig_post = $r[0];
 	else
 		return;
 
@@ -597,15 +597,15 @@ function fbsync_createlike($a, $uid, $self_id, $self, $contacts, $like) {
 		$contact_id = $self[0]["id"];
 
 	$likedata = array();
-        $likedata['parent'] = $orig_post['id'];
-        $likedata['verb'] = ACTIVITY_LIKE;
+	$likedata['parent'] = $orig_post['id'];
+	$likedata['verb'] = ACTIVITY_LIKE;
 	$likedate['network'] =  dbesc(NETWORK_FACEBOOK);
-        $likedata['gravity'] = 3;
-        $likedata['uid'] = $uid;
-        $likedata['wall'] = 0;
-        $likedata['uri'] = item_new_uri($a->get_baseurl(), $uid);
-        $likedata['parent-uri'] = $orig_post["uri"];
-        $likedata['app'] = "Facebook";
+	$likedata['gravity'] = 3;
+	$likedata['uid'] = $uid;
+	$likedata['wall'] = 0;
+	$likedata['uri'] = item_new_uri($a->get_baseurl(), $uid);
+	$likedata['parent-uri'] = $orig_post["uri"];
+	$likedata['app'] = "Facebook";
 
 	if ($like->user_id != $self_id) {
 		$likedata['contact-id'] = $contact_id;
@@ -625,12 +625,12 @@ function fbsync_createlike($a, $uid, $self_id, $self, $contacts, $like) {
 	$post_type = t('status');
 
 	$plink = '[url=' . $orig_post['plink'] . ']' . $post_type . '[/url]';
-        $likedata['object-type'] = ACTIVITY_OBJ_NOTE;
+	$likedata['object-type'] = ACTIVITY_OBJ_NOTE;
 
-        $likedata['body'] = sprintf( t('%1$s likes %2$s\'s %3$s'), $author, $objauthor, $plink);
+	$likedata['body'] = sprintf( t('%1$s likes %2$s\'s %3$s'), $author, $objauthor, $plink);
 
-        $likedata['object'] = '<object><type>' . ACTIVITY_OBJ_NOTE . '</type><local>1</local>' .
-                '<id>' . $orig_post['uri'] . '</id><link>' . xmlify('<link rel="alternate" type="text/html" href="' . xmlify($orig_post['plink']) . '" />') . '</link><title>' . $orig_post['title'] . '</title><content>' . $orig_post['body'] . '</content></object>';
+	$likedata['object'] = '<object><type>' . ACTIVITY_OBJ_NOTE . '</type><local>1</local>' .
+		'<id>' . $orig_post['uri'] . '</id><link>' . xmlify('<link rel="alternate" type="text/html" href="' . xmlify($orig_post['plink']) . '" />') . '</link><title>' . $orig_post['title'] . '</title><content>' . $orig_post['body'] . '</content></object>';
 
 
 	$r = q("SELECT * FROM `item` WHERE `parent-uri` = '%s' AND `author-link` = '%s' AND `verb` = '%s' AND `uid` = %d LIMIT 1",
@@ -640,7 +640,7 @@ function fbsync_createlike($a, $uid, $self_id, $self, $contacts, $like) {
 				intval($uid)
 		);
 
-        if (count($r))
+	if (count($r))
 		return;
 
 	$item = item_store($likedata);
@@ -657,131 +657,133 @@ function fbsync_fetch_contact($uid, $contact, $create_user) {
 	if (count($r) == 0)
 		q("INSERT INTO unique_contacts (url, name, nick, avatar) VALUES ('%s', '%s', '%s', '%s')",
 			dbesc(normalise_link($contact->url)),
-                        dbesc($contact->name),
-                        dbesc($contact->username),
+			dbesc($contact->name),
+			dbesc($contact->username),
 			dbesc($contact->pic_square));
 	else
 		q("UPDATE unique_contacts SET name = '%s', nick = '%s', avatar = '%s' WHERE url = '%s'",
-                        dbesc($contact->name),
-                        dbesc($contact->username),
+			dbesc($contact->name),
+			dbesc($contact->username),
 			dbesc($contact->pic_square),
 			dbesc(normalise_link($contact->url)));
 
-        $r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
-                intval($uid), dbesc("facebook::".$contact->id));
+	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
+		intval($uid), dbesc("facebook::".$contact->id));
 
-        if(!count($r) AND !$create_user)
-                return(0);
+	if(!count($r) AND !$create_user)
+		return(0);
 
-        if (count($r) AND ($r[0]["readonly"] OR $r[0]["blocked"])) {
-                logger("fbsync_fetch_contact: Contact '".$r[0]["nick"]."' is blocked or readonly.", LOGGER_DEBUG);
-                return(-1);
-        }
+	if (count($r) AND ($r[0]["readonly"] OR $r[0]["blocked"])) {
+		logger("fbsync_fetch_contact: Contact '".$r[0]["nick"]."' is blocked or readonly.", LOGGER_DEBUG);
+		return(-1);
+	}
 
 	$avatarpicture = $contact->pic_square;
 
-        if(!count($r)) {
-                // create contact record
-                q("INSERT INTO `contact` (`uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
-                                        `name`, `nick`, `photo`, `network`, `rel`, `priority`,
-                                        `writable`, `blocked`, `readonly`, `pending`)
-                                        VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, 0, 0, 0)",
-                        intval($uid),
-                        dbesc(datetime_convert()),
-                        dbesc($contact->url),
-                        dbesc(normalise_link($contact->url)),
-                        dbesc($contact->username."@facebook.com"),
-                        dbesc("facebook::".$contact->id),
-                        dbesc(''),
-                        dbesc("facebook::".$contact->id),
-                        dbesc($contact->name),
-                        dbesc($contact->username),
-                        dbesc($avatarpicture),
-                        dbesc(NETWORK_FACEBOOK),
-                        intval(CONTACT_IS_FRIEND),
-                        intval(1),
-                        intval(1)
-                );
+	if(!count($r)) {
+		// create contact record
+		q("INSERT INTO `contact` (`uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
+					`name`, `nick`, `photo`, `network`, `rel`, `priority`,
+					`writable`, `blocked`, `readonly`, `pending`)
+					VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, 0, 0, 0)",
+			intval($uid),
+			dbesc(datetime_convert()),
+			dbesc($contact->url),
+			dbesc(normalise_link($contact->url)),
+			dbesc($contact->username."@facebook.com"),
+			dbesc("facebook::".$contact->id),
+			dbesc($contact->id),
+			dbesc("facebook::".$contact->id),
+			dbesc($contact->name),
+			dbesc($contact->username),
+			dbesc($avatarpicture),
+			dbesc(NETWORK_FACEBOOK),
+			intval(CONTACT_IS_FRIEND),
+			intval(1),
+			intval(1)
+		);
 
-                $r = q("SELECT * FROM `contact` WHERE `alias` = '%s' AND `uid` = %d LIMIT 1",
-                        dbesc("facebook::".$contact->id),
-                        intval($uid)
-                        );
+		$r = q("SELECT * FROM `contact` WHERE `alias` = '%s' AND `uid` = %d LIMIT 1",
+			dbesc("facebook::".$contact->id),
+			intval($uid)
+			);
 
-                if(! count($r))
-                        return(false);
+		if(! count($r))
+			return(false);
 
-                $contact_id  = $r[0]['id'];
+		$contact_id  = $r[0]['id'];
 
-                $g = q("SELECT def_gid FROM user WHERE uid = %d LIMIT 1",
-                        intval($uid)
-                );
+		$g = q("SELECT def_gid FROM user WHERE uid = %d LIMIT 1",
+			intval($uid)
+		);
 
-                if($g && intval($g[0]['def_gid'])) {
-                        require_once('include/group.php');
-                        group_add_member($uid,'',$contact_id,$g[0]['def_gid']);
-                }
+		if($g && intval($g[0]['def_gid'])) {
+			require_once('include/group.php');
+			group_add_member($uid,'',$contact_id,$g[0]['def_gid']);
+		}
 
-                require_once("Photo.php");
+		require_once("Photo.php");
 
-                $photos = import_profile_photo($avatarpicture,$uid,$contact_id);
+		$photos = import_profile_photo($avatarpicture,$uid,$contact_id);
 
-                q("UPDATE `contact` SET `photo` = '%s',
-                                        `thumb` = '%s',
-                                        `micro` = '%s',
-                                        `name-date` = '%s',
-                                        `uri-date` = '%s',
-                                        `avatar-date` = '%s'
-                                WHERE `id` = %d",
-                        dbesc($photos[0]),
-                        dbesc($photos[1]),
-                        dbesc($photos[2]),
-                        dbesc(datetime_convert()),
-                        dbesc(datetime_convert()),
-                        dbesc(datetime_convert()),
-                        intval($contact_id)
-                );
-        } else {
-                // update profile photos once every 12 hours as we have no notification of when they change.
-                $update_photo = ($r[0]['avatar-date'] < datetime_convert('','','now -12 hours'));
+		q("UPDATE `contact` SET `photo` = '%s',
+					`thumb` = '%s',
+					`micro` = '%s',
+					`name-date` = '%s',
+					`uri-date` = '%s',
+					`avatar-date` = '%s'
+				WHERE `id` = %d",
+			dbesc($photos[0]),
+			dbesc($photos[1]),
+			dbesc($photos[2]),
+			dbesc(datetime_convert()),
+			dbesc(datetime_convert()),
+			dbesc(datetime_convert()),
+			intval($contact_id)
+		);
+	} else {
+		// update profile photos once every 12 hours as we have no notification of when they change.
+		$update_photo = ($r[0]['avatar-date'] < datetime_convert('','','now -12 hours'));
 
-                // check that we have all the photos, this has been known to fail on occasion
-                if((! $r[0]['photo']) || (! $r[0]['thumb']) || (! $r[0]['micro']) || ($update_photo)) {
+		// check that we have all the photos, this has been known to fail on occasion
+		if((! $r[0]['photo']) || (! $r[0]['thumb']) || (! $r[0]['micro']) || ($update_photo)) {
 
-                        logger("fbsync_fetch_contact: Updating contact ".$contact->username, LOGGER_DEBUG);
+			logger("fbsync_fetch_contact: Updating contact ".$contact->username, LOGGER_DEBUG);
 
-                        require_once("Photo.php");
+			require_once("Photo.php");
 
-                        $photos = import_profile_photo($avatarpicture, $uid, $r[0]['id']);
+			$photos = import_profile_photo($avatarpicture, $uid, $r[0]['id']);
 
-                        q("UPDATE `contact` SET `photo` = '%s',
-                                                `thumb` = '%s',
-                                                `micro` = '%s',
-                                                `name-date` = '%s',
-                                                `uri-date` = '%s',
-                                                `avatar-date` = '%s',
-                                                `url` = '%s',
-                                                `nurl` = '%s',
-                                                `addr` = '%s',
-                                                `name` = '%s',
-                                                `nick` = '%s'
-                                        WHERE `id` = %d",
-                                dbesc($photos[0]),
-                                dbesc($photos[1]),
-                                dbesc($photos[2]),
-                                dbesc(datetime_convert()),
-                                dbesc(datetime_convert()),
-                                dbesc(datetime_convert()),
-                                dbesc($contact->url),
-                                dbesc(normalise_link($contact->url)),
-                                dbesc($contact->username."@facebook.com"),
-                                dbesc($contact->name),
-                                dbesc($contact->username),
-                                intval($r[0]['id'])
-                        );
-                }
-        }
-        return($r[0]["id"]);
+			q("UPDATE `contact` SET `photo` = '%s',
+						`thumb` = '%s',
+						`micro` = '%s',
+						`name-date` = '%s',
+						`uri-date` = '%s',
+						`avatar-date` = '%s',
+						`url` = '%s',
+						`nurl` = '%s',
+						`addr` = '%s',
+						`name` = '%s',
+						`nick` = '%s',
+						`notify` = '%s'
+					WHERE `id` = %d",
+				dbesc($photos[0]),
+				dbesc($photos[1]),
+				dbesc($photos[2]),
+				dbesc(datetime_convert()),
+				dbesc(datetime_convert()),
+				dbesc(datetime_convert()),
+				dbesc($contact->url),
+				dbesc(normalise_link($contact->url)),
+				dbesc($contact->username."@facebook.com"),
+				dbesc($contact->name),
+				dbesc($contact->username),
+				dbesc($contact->id),
+				intval($r[0]['id'])
+			);
+		}
+	}
+	return($r[0]["id"]);
 }
 
 function fbsync_get_self($uid) {
@@ -854,9 +856,9 @@ function fbsync_fetchuser($a, $uid, $id) {
 
 	if (count($contact)) {
 		if (($contact[0]["readonly"] OR $contact[0]["blocked"])) {
-        	        logger("fbsync_fetchuser: Contact '".$contact[0]["nick"]."' is blocked or readonly.", LOGGER_DEBUG);
+			logger("fbsync_fetchuser: Contact '".$contact[0]["nick"]."' is blocked or readonly.", LOGGER_DEBUG);
 			$user["contact-id"] = -1;
-        	} else
+		} else
 			$user["contact-id"] = $contact[0]["id"];
 
 		$user["name"] = $contact[0]["name"];
