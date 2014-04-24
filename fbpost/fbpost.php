@@ -189,6 +189,9 @@ function fbpost_content(&$a) {
 		info( t('Facebook Post disabled') . EOL);
 	}
 
+	require_once("mod/settings.php");
+	settings_init($a);
+
 	$o = '';
 
 	$fb_installed = false;
