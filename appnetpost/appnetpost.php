@@ -72,7 +72,7 @@ function appnetpost_settings(&$a,&$s) {
 
 	/* provide a submit button */
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="appnetpost-submit" name="appnetpost-submit" class="settings-submit" value="' . t('Submit') . '" /></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="appnetpost-submit" name="appnetpost-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
 	$s .= '<p>Register an account at <a href="https://ifttt.com">IFTTT</a> and create a recipe with the following values:';
 	$s .= '<ul><li>If: New feed item (via RSS)</li>';
 	$s .= '<li>Then: Post an update (via app.net)</li>';
