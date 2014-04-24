@@ -30,15 +30,20 @@ function fromgplus_addon_settings(&$a,&$s) {
 	if(! local_user())
 		return;
 
+	// If "gpluspost" is installed as well, then the settings are displayed there
+	$result = q("SELECT `installed` FROM `addon` WHERE `name` = 'gpluspost' AND `installed`");
+	if (count($result) > 0)
+		return;
+
 	$enable_checked = (intval(get_pconfig(local_user(),'fromgplus','enable')) ? ' checked="checked"' : '');
 	$account = get_pconfig(local_user(),'fromgplus','account');
 
 	$s .= '<span id="settings_fromgplus_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_fromgplus_expanded\'); openClose(\'settings_fromgplus_inflated\');">';
-	$s .= '<h3>' . t('Google+ Mirror').'</h3>';
+	$s .= '<img class="connector" src="images/googleplus.png" /><h3 class="connector">'. t('Google+ Mirror').'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_fromgplus_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_fromgplus_expanded\'); openClose(\'settings_fromgplus_inflated\');">';
-	$s .= '<h3>' . t('Google+ Mirror').'</h3>';
+	$s .= '<img class="connector" src="images/googleplus.png" /><h3 class="connector">'. t('Google+ Mirror').'</h3>';
 	$s .= '</span>';
 
 	$s .= '<div id="fromgplus-wrapper">';

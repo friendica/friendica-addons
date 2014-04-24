@@ -152,6 +152,12 @@ function fbpost_post(&$a) {
 		set_pconfig($uid,'facebook','post_to_page', $values[0]);
 		set_pconfig($uid,'facebook','page_access_token', $values[1]);
 
+		$result = q("SELECT `installed` FROM `addon` WHERE `name` = 'fbsync' AND `installed`");
+		if (count($result) > 0) {
+			set_pconfig(local_user(),'fbsync','sync',intval($_POST['fbsync']));
+	                set_pconfig(local_user(),'fbsync','create_user',intval($_POST['create_user']));
+		}
+
 		info( t('Settings updated.') . EOL);
 	}
 
@@ -207,7 +213,15 @@ function fbpost_content(&$a) {
 	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'
 		. $a->get_baseurl() . '/addon/fbpost/fbpost.css' . '" media="all" />' . "\r\n";
 
-	$o .= '<h3>' . t('Facebook Export/Mirror') . '</h3>';
+	$result = q("SELECT `installed` FROM `addon` WHERE `name` = 'fbsync' AND `installed`");
+	$fbsync = (count($result) > 0);
+
+	if($fbsync)
+		$title = t('Facebook Import/Export/Mirror');
+	else
+		$title = t('Facebook Export/Mirror');
+
+	$o .= '<img class="connector" src="images/facebook.png" /><h3 class="connector">'.$title.'</h3>';
 
 	if(! $fb_installed) {
 		$o .= '<div id="fbpost-enable-wrapper">';
@@ -279,8 +293,20 @@ function fbpost_content(&$a) {
 
 		$o .= "</select>";
 
-		$o .= '<p><input type="submit" name="submit" value="' . t('Save Settings') . '" /></form></div>';
+		if ($fbsync) {
 
+			$o .= '<div class="clear"></div>';
+
+		        $sync_enabled = get_pconfig(local_user(),'fbsync','sync');
+			$checked = (($sync_enabled) ? ' checked="checked" ' : '');
+			$o .= '<input type="checkbox" name="fbsync" value="1"' . $checked . '/>' . ' ' . t('Import Facebook newsfeed.') . EOL;
+
+		        $create_user = get_pconfig(local_user(),'fbsync','create_user');
+			$checked = (($create_user) ? ' checked="checked" ' : '');
+			$o .= '<input type="checkbox" name="create_user" value="1"' . $checked . '/>' . ' ' . t('Automatically create contacts.') . EOL;
+
+		}
+		$o .= '<p><input type="submit" name="submit" value="' . t('Save Settings') . '" /></form></div>';
 	}
 
 	return $o;
@@ -291,11 +317,15 @@ function fbpost_content(&$a) {
  * @param null|object $b
  */
 function fbpost_plugin_settings(&$a,&$b) {
+	$result = q("SELECT `installed` FROM `addon` WHERE `name` = 'fbsync' AND `installed`");
+	if(count($result) > 0)
+		$title = t('Facebook Import/Export/Mirror');
+	else
+		$title = t('Facebook Export/Mirror');
 
 	$b .= '<div class="settings-block">';
-	$b .= '<a href="fbpost"><h3>' . t('Facebook Export/Mirror') . '</a></h3>';
+	$b .= '<a href="fbpost"><img class="connector" src="images/facebook.png" /><h3 class="connector">'.$title.'</h3></a>';
 	$b .= '</div>';
-
 }
 
 

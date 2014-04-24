@@ -291,11 +291,11 @@ function statusnet_settings(&$a,&$s) {
 
 
 	$s .= '<span id="settings_statusnet_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_statusnet_expanded\'); openClose(\'settings_statusnet_inflated\');">';
-	$s .= '<h3>'. t('StatusNet Import/Export/Mirror').'</h3>';
+	$s .= '<img class="connector" src="images/gnusocial.png" /><h3 class="connector">'. t('StatusNet Import/Export/Mirror').'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_statusnet_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_statusnet_expanded\'); openClose(\'settings_statusnet_inflated\');">';
-	$s .= '<h3>'. t('StatusNet Import/Export/Mirror').'</h3>';
+	$s .= '<img class="connector" src="images/gnusocial.png" /><h3 class="connector">'. t('StatusNet Import/Export/Mirror').'</h3>';
 	$s .= '</span>';
 
 	if ( (!$ckey) && (!$csecret) ) {
