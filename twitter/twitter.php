@@ -230,14 +230,16 @@ function twitter_settings(&$a,&$s) {
         $create_userenabled = get_pconfig(local_user(),'twitter','create_user');
         $create_userchecked = (($create_userenabled) ? ' checked="checked" ' : '');
 
+	$css = (($enabled) ? '' : '-disabled');
+
 	$globalshortening = get_config('twitter','intelligent_shortening');
 
 	$s .= '<span id="settings_twitter_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_twitter_expanded\'); openClose(\'settings_twitter_inflated\');">';
-	$s .= '<img class="connector" src="images/twitter.png" /><h3 class="connector">'. t('Twitter Import/Export/Mirror').'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/twitter.png" /><h3 class="connector">'. t('Twitter Import/Export/Mirror').'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_twitter_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_twitter_expanded\'); openClose(\'settings_twitter_inflated\');">';
-	$s .= '<img class="connector" src="images/twitter.png" /><h3 class="connector">'. t('Twitter Import/Export/Mirror').'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/twitter.png" /><h3 class="connector">'. t('Twitter Import/Export/Mirror').'</h3>';
 	$s .= '</span>';
 
 	if ( (!$ckey) && (!$csecret) ) {

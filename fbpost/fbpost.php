@@ -320,6 +320,10 @@ function fbpost_content(&$a) {
  * @param null|object $b
  */
 function fbpost_plugin_settings(&$a,&$b) {
+
+	$enabled = get_pconfig(local_user(),'facebook','post');
+	$css = (($enabled) ? '' : '-disabled');
+
 	$result = q("SELECT `installed` FROM `addon` WHERE `name` = 'fbsync' AND `installed`");
 	if(count($result) > 0)
 		$title = t('Facebook Import/Export/Mirror');
@@ -327,7 +331,7 @@ function fbpost_plugin_settings(&$a,&$b) {
 		$title = t('Facebook Export/Mirror');
 
 	$b .= '<div class="settings-block">';
-	$b .= '<a href="fbpost"><img class="connector" src="images/facebook.png" /><h3 class="connector">'.$title.'</h3></a>';
+	$b .= '<a href="fbpost"><img class="connector'.$css.'" src="images/facebook.png" /><h3 class="connector">'.$title.'</h3></a>';
 	$b .= '</div>';
 }
 

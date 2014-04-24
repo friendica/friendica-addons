@@ -50,8 +50,8 @@ function libertree_settings(&$a,&$s) {
     /* Get the current state of our config variables */
 
     $enabled = get_pconfig(local_user(),'libertree','post');
-
     $checked = (($enabled) ? ' checked="checked" ' : '');
+    $css = (($enabled) ? '' : '-disabled');
 
     $def_enabled = get_pconfig(local_user(),'libertree','post_by_default');
 
@@ -64,11 +64,11 @@ function libertree_settings(&$a,&$s) {
     /* Add some HTML to the existing form */
 
     $s .= '<span id="settings_libertree_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_libertree_expanded\'); openClose(\'settings_libertree_inflated\');">';
-    $s .= '<img class="connector" src="images/libertree.png" /><h3 class="connector">'. t('libertree Export').'</h3>';
+    $s .= '<img class="connector'.$css.'" src="images/libertree.png" /><h3 class="connector">'. t('libertree Export').'</h3>';
     $s .= '</span>';
     $s .= '<div id="settings_libertree_expanded" class="settings-block" style="display: none;">';
     $s .= '<span class="fakelink" onclick="openClose(\'settings_libertree_expanded\'); openClose(\'settings_libertree_inflated\');">';
-    $s .= '<img class="connector" src="images/libertree.png" /><h3 class="connector">'. t('libertree Export').'</h3>';
+    $s .= '<img class="connector'.$css.'" src="images/libertree.png" /><h3 class="connector">'. t('libertree Export').'</h3>';
     $s .= '</span>';
 
     $s .= '<div id="libertree-enable-wrapper">';

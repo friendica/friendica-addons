@@ -49,15 +49,17 @@ function appnetpost_settings(&$a,&$s) {
 	$enabled = get_pconfig(local_user(),'appnetpost','post');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 
+	$css = (($enabled) ? '' : '-disabled');
+
 	$def_enabled = get_pconfig(local_user(),'appnetpost','post_by_default');
 	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
 	$s .= '<span id="settings_appnetpost_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_appnetpost_expanded\'); openClose(\'settings_appnetpost_inflated\');">';
-	$s .= '<img class="connector" src="images/appnet.png" /><h3 class="connector">'. t('App.net Export').'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/appnet.png" /><h3 class="connector">'. t('App.net Export').'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_appnetpost_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_appnetpost_expanded\'); openClose(\'settings_appnetpost_inflated\');">';
-	$s .= '<img class="connector" src="images/appnet.png" /><h3 class="connector">'. t('App.net Export').'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/appnet.png" /><h3 class="connector">'. t('App.net Export').'</h3>';
 	$s .= '</span>';
 
 	$s .= '<div id="appnetpost-enable-wrapper">';
