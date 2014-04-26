@@ -65,9 +65,14 @@ function ijpost_settings(&$a,&$s) {
 
 
     /* Add some HTML to the existing form */
+    $s .= '<span id="settings_ijpost_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_ijpost_expanded\'); openClose(\'settings_ijpost_inflated\');">';
+    $s .= '<img class="connector" src="images/insanejournal.gif" /><h3 class="connector">'. t("InsaneJournal Export").'</h3>';
+    $s .= '</span>';
+    $s .= '<div id="settings_ijpost_expanded" class="settings-block" style="display: none;">';
+    $s .= '<span class="fakelink" onclick="openClose(\'settings_ijpost_expanded\'); openClose(\'settings_ijpost_inflated\');">';
+    $s .= '<img class="connector" src="images/insanejournal.gif" /><h3 class="connector">'. t("InsaneJournal Export").'</h3>';
+    $s .= '</span>';
 
-    $s .= '<div class="settings-block">';
-    $s .= '<h3>' . t('InsaneJournal Post Settings') . '</h3>';
     $s .= '<div id="ijpost-enable-wrapper">';
     $s .= '<label id="ijpost-enable-label" for="ijpost-checkbox">' . t('Enable InsaneJournal Post Plugin') . '</label>';
     $s .= '<input id="ijpost-checkbox" type="checkbox" name="ijpost" value="1" ' . $checked . '/>';

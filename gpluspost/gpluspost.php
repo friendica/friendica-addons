@@ -58,6 +58,7 @@ function gpluspost_settings(&$a,&$s) {
 
 	$enabled = get_pconfig(local_user(),'gpluspost','post');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
+	$css = (($enabled) ? '' : '-disabled');
 
 	$def_enabled = get_pconfig(local_user(),'gpluspost','post_by_default');
 	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
@@ -81,11 +82,11 @@ function gpluspost_settings(&$a,&$s) {
 		$title = "Google+ Export";
 
 	$s .= '<span id="settings_gpluspost_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_gpluspost_expanded\'); openClose(\'settings_gpluspost_inflated\');">';
-	$s .= '<img class="connector" src="images/googleplus.png" /><h3 class="connector">'. t($title).'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/googleplus.png" /><h3 class="connector">'. t($title).'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_gpluspost_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_gpluspost_expanded\'); openClose(\'settings_gpluspost_inflated\');">';
-	$s .= '<img class="connector" src="images/googleplus.png" /><h3 class="connector">'. t($title).'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/googleplus.png" /><h3 class="connector">'. t($title).'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="gpluspost-enable-wrapper">';
 

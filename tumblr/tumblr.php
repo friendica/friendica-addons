@@ -172,8 +172,8 @@ function tumblr_settings(&$a,&$s) {
     /* Get the current state of our config variables */
 
     $enabled = get_pconfig(local_user(),'tumblr','post');
-
     $checked = (($enabled) ? ' checked="checked" ' : '');
+    $css = (($enabled) ? '' : '-disabled');
 
     $def_enabled = get_pconfig(local_user(),'tumblr','post_by_default');
 
@@ -182,11 +182,11 @@ function tumblr_settings(&$a,&$s) {
     /* Add some HTML to the existing form */
 
     $s .= '<span id="settings_tumblr_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_tumblr_expanded\'); openClose(\'settings_tumblr_inflated\');">';
-    $s .= '<img class="connector" src="images/tumblr.png" /><h3 class="connector">'. t('Tumblr Export').'</h3>';
+    $s .= '<img class="connector'.$css.'" src="images/tumblr.png" /><h3 class="connector">'. t('Tumblr Export').'</h3>';
     $s .= '</span>';
     $s .= '<div id="settings_tumblr_expanded" class="settings-block" style="display: none;">';
     $s .= '<span class="fakelink" onclick="openClose(\'settings_tumblr_expanded\'); openClose(\'settings_tumblr_inflated\');">';
-    $s .= '<img class="connector" src="images/tumblr.png" /><h3 class="connector">'. t('Tumblr Export').'</h3>';
+    $s .= '<img class="connector'.$css.'" src="images/tumblr.png" /><h3 class="connector">'. t('Tumblr Export').'</h3>';
     $s .= '</span>';
 
     $s .= '<div id="tumblr-username-wrapper">';

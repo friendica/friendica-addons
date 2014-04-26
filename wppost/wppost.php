@@ -56,8 +56,9 @@ function wppost_settings(&$a,&$s) {
     /* Get the current state of our config variables */
 
     $enabled = get_pconfig(local_user(),'wppost','post');
-
     $checked = (($enabled) ? ' checked="checked" ' : '');
+
+    $css = (($enabled) ? '' : '-disabled');
 
     $def_enabled = get_pconfig(local_user(),'wppost','post_by_default');
     $back_enabled = get_pconfig(local_user(),'wppost','backlink');
@@ -73,11 +74,11 @@ function wppost_settings(&$a,&$s) {
     /* Add some HTML to the existing form */
 
     $s .= '<span id="settings_wppost_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_wppost_expanded\'); openClose(\'settings_wppost_inflated\');">';
-    $s .= '<img class="connector" src="images/wordpress.png" /><h3 class="connector">'. t('Wordpress Export').'</h3>';
+    $s .= '<img class="connector'.$css.'" src="images/wordpress.png" /><h3 class="connector">'. t('Wordpress Export').'</h3>';
     $s .= '</span>';
     $s .= '<div id="settings_wppost_expanded" class="settings-block" style="display: none;">';
     $s .= '<span class="fakelink" onclick="openClose(\'settings_wppost_expanded\'); openClose(\'settings_wppost_inflated\');">';
-    $s .= '<img class="connector" src="images/wordpress.png" /><h3 class="connector">'. t('Wordpress Export').'</h3>';
+    $s .= '<img class="connector'.$css.'" src="images/wordpress.png" /><h3 class="connector">'. t('Wordpress Export').'</h3>';
     $s .= '</span>';
     $s .= '<div id="wppost-enable-wrapper">';
     $s .= '<label id="wppost-enable-label" for="wppost-checkbox">' . t('Enable WordPress Post Plugin') . '</label>';
