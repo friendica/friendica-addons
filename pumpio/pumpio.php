@@ -410,6 +410,9 @@ function pumpio_send(&$a,&$b) {
 	if($b['app'] == "pump.io")
 		return;
 
+	// To-Do;
+	// Support for native shares
+	// http://<hostname>/api/<type>/shares?id=<the-object-id>
 
 	$oauth_token = get_pconfig($b['uid'], "pumpio", "oauth_token");
 	$oauth_token_secret = get_pconfig($b['uid'], "pumpio", "oauth_token_secret");

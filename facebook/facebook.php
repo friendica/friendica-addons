@@ -4,7 +4,7 @@
  * Version: 1.3
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * Author: Tobias Hößl <https://github.com/CatoTH/>
- *
+ * Status: Unsupported
  */
 
 /**
