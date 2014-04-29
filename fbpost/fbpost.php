@@ -134,10 +134,6 @@ function fbpost_post(&$a) {
 	$uid = local_user();
 	if($uid){
 
-
-		$fb_limited = get_config('facebook','crestrict');
-
-
 		$value = ((x($_POST,'post_by_default')) ? intval($_POST['post_by_default']) : 0);
 		set_pconfig($uid,'facebook','post_by_default', $value);
 
@@ -193,15 +189,32 @@ function fbpost_content(&$a) {
 	settings_init($a);
 
 	$o = '';
+	$accounts = array();
 
 	$fb_installed = false;
 	if (get_pconfig(local_user(),'facebook','post')) {
 		$access_token = get_pconfig(local_user(),'facebook','access_token');
 		if ($access_token) {
-			$s = fetch_url('https://graph.facebook.com/me/feed?access_token=' . $access_token);
+			// fetching the list of accounts to check, if facebook is working
+			// The value is needed several lines below.
+			$url = 'https://graph.facebook.com/me/accounts';
+			$s = fetch_url($url."?access_token=".$access_token, false, $redirects, 10);
 			if($s) {
-				$j = json_decode($s);
-				if (isset($j->data)) $fb_installed = true;
+				$accounts = json_decode($s);
+				if (isset($accounts->data))
+					$fb_installed = true;
+			}
+
+			// I'm not totally sure, if this above will work in every situation,
+			// So this old code will be called as well.
+			if (!$fb_installed) {
+				$url ="https://graph.facebook.com/me/feed";
+				$s = fetch_url($url."?access_token=".$access_token."&limit=1", false, $redirects, 10);
+				if($s) {
+					$j = json_decode($s);
+					if (isset($j->data))
+						$fb_installed = true;
+				}
 			}
 		}
 	}
@@ -265,9 +278,9 @@ function fbpost_content(&$a) {
 		$post_to_page = get_pconfig(local_user(),'facebook','post_to_page');
 		$page_access_token = get_pconfig(local_user(),'facebook','page_access_token');
 		$fb_token  = get_pconfig($a->user['uid'],'facebook','access_token');
-		$url = 'https://graph.facebook.com/me/accounts';
-		$x = fetch_url($url."?access_token=".$fb_token);
-		$accounts = json_decode($x);
+		//$url = 'https://graph.facebook.com/me/accounts';
+		//$x = fetch_url($url."?access_token=".$fb_token, false, $redirects, 10);
+		//$accounts = json_decode($x);
 
 		$o .= t("Post to page/group:")."<select name='post_to_page'>";
 		if (intval($post_to_page) == 0)
@@ -284,7 +297,7 @@ function fbpost_content(&$a) {
 		}
 
 		$url = 'https://graph.facebook.com/me/groups';
-		$x = fetch_url($url."?access_token=".$fb_token);
+		$x = fetch_url($url."?access_token=".$fb_token, false, $redirects, 10);
 		$groups = json_decode($x);
 
 		foreach($groups->data as $group) {
