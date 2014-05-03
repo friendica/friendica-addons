@@ -354,7 +354,7 @@ function buffer_send(&$a,&$b) {
 				if (isset($post["description"]))
 					$message["media[description]"] = $post["description"];
 
-				if (isset($post["url"]))
+				if (isset($post["url"]) AND ($post["type"] != "photo"))
 					$message["media[link]"] = $post["url"];
 
 				if (isset($post["image"])) {
