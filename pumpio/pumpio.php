@@ -39,10 +39,8 @@ function pumpio_content(&$a) {
 		return '';
 	}
 
-	if (function_exists("apc_delete")) {
-		$toDelete = new APCIterator('user', APC_ITER_VALUE);
-		apc_delete($toDelete);
-	}
+	require_once("mod/settings.php");
+	settings_init($a);
 
 	if (isset($a->argv[1]))
 		switch ($a->argv[1]) {
@@ -323,7 +321,7 @@ function pumpio_settings_post(&$a,&$b) {
 			set_pconfig(local_user(),'pumpio','mirror',$_POST['pumpio_mirror']);
 			set_pconfig(local_user(),'pumpio','post_by_default',intval($_POST['pumpio_bydefault']));
 
-			header("Location: ".$a->get_baseurl()."/pumpio/connect");
+			//header("Location: ".$a->get_baseurl()."/pumpio/connect");
 		}
 	}
 }
