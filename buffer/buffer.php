@@ -326,21 +326,19 @@ function buffer_send(&$a,&$b) {
 						$post["preview"] = $a->get_baseurl() . "/privacy_image_cache/".privacy_image_cache_cachename($post["preview"]);
 				}
 
-				//if ($includedlinks AND isset($post["url"]))
-				//	$post["url"] = short_link($post["url"]);
+				if ($includedlinks) {
+					if (isset($post["url"]))
+						$post["url"] = short_link($post["url"]);
+					if (isset($post["image"]))
+						$post["image"] = short_link($post["image"]);
+					if (isset($post["preview"]))
+						$post["preview"] = short_link($post["preview"]);
+				}
 
 				// Seems like a bug to me
 				// Buffer doesn't add links to Twitter and App.net (but pictures)
 				if ($includedlinks AND isset($post["url"]))
-					$post["text"] .= " ".short_link($post["url"]);
-
-				//if ($includedlinks AND ($post["type"] == "link"))
-				//	$post["text"] .= " ".$post["url"];
-
-				//if ($includedlinks AND ($post["type"] == "video"))
-				//	$post["text"] .= " ".$post["url"];
-
-				//print_r($post);
+					$post["text"] .= " ".$post["url"];
 
 				$message = array();
 				$message["text"] = $post["text"];
