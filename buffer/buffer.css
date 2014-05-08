@@ -1,0 +1,15 @@
+#buffer-enable-label, #buffer-bydefault-label, #buffer-delete-label {
+	float: left;
+	width: 200px;
+	margin-top: 10px;
+}
+
+#buffer-checkbox, #buffer-bydefault, #buffer-delete {
+	float: left;
+	margin-top: 10px;
+}
+
+#buffer-submit {
+	margin-top: 15px;
+}
+

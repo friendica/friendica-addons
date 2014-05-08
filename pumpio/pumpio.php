@@ -39,10 +39,8 @@ function pumpio_content(&$a) {
 		return '';
 	}
 
-	if (function_exists("apc_delete")) {
-		$toDelete = new APCIterator('user', APC_ITER_VALUE);
-		apc_delete($toDelete);
-	}
+	require_once("mod/settings.php");
+	settings_init($a);
 
 	if (isset($a->argv[1]))
 		switch ($a->argv[1]) {
@@ -323,7 +321,7 @@ function pumpio_settings_post(&$a,&$b) {
 			set_pconfig(local_user(),'pumpio','mirror',$_POST['pumpio_mirror']);
 			set_pconfig(local_user(),'pumpio','post_by_default',intval($_POST['pumpio_bydefault']));
 
-			header("Location: ".$a->get_baseurl()."/pumpio/connect");
+			//header("Location: ".$a->get_baseurl()."/pumpio/connect");
 		}
 	}
 }
@@ -410,6 +408,9 @@ function pumpio_send(&$a,&$b) {
 	if($b['app'] == "pump.io")
 		return;
 
+	// To-Do;
+	// Support for native shares
+	// http://<hostname>/api/<type>/shares?id=<the-object-id>
 
 	$oauth_token = get_pconfig($b['uid'], "pumpio", "oauth_token");
 	$oauth_token_secret = get_pconfig($b['uid'], "pumpio", "oauth_token_secret");

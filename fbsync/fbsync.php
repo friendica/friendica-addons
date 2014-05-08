@@ -2,7 +2,7 @@
 /**
  * Name: Facebook Sync
  * Description: Synchronizes the Facebook Newsfeed
- * Version: 0.0.1 alpha
+ * Version: 1.0
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
 

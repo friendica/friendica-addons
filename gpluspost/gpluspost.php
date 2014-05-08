@@ -321,6 +321,7 @@ function gpluspost_createmsg($b) {
         $image = htmlspecialchars_decode($image);
 
         $body = $b["body"];
+
         if ($b["title"] != "")
                 $body = "*".$b["title"]."*\n\n".$body;
 
@@ -558,6 +559,7 @@ function gpluspost_init() {
 function gpluspost_feeditem($pid, $uid) {
 	global $a;
 
+	require_once('include/api.php');
 	require_once('include/bbcode.php');
 	require_once("include/html2plain.php");
 	require_once("include/network.php");
@@ -568,6 +570,11 @@ function gpluspost_feeditem($pid, $uid) {
 	foreach ($items AS $item) {
 
 		$item['body'] = bb_CleanPictureLinks($item['body']);
+
+		$item['body'] = bb_remove_share_information($item['body'], true);
+
+	        if ($item["title"] != "")
+        	        $item['body'] = "*".$item["title"]."*\n\n".$item['body'];
 
 		// Looking for the first image
 		$image = '';
@@ -593,8 +600,12 @@ function gpluspost_feeditem($pid, $uid) {
 
 		$body = $item['body'];
 
+	        $body = preg_replace("(\[b\](.*?)\[\/b\])ism",'*$1*',$body);
+	        $body = preg_replace("(\[i\](.*?)\[\/i\])ism",'_$1_',$body);
+	        $body = preg_replace("(\[s\](.*?)\[\/s\])ism",'-$1-',$body);
+
 		// At first convert the text to html
-		$html = bbcode($body, false, false, 2);
+		$html = bbcode(api_clean_plain_items($body), false, false, 2);
 
 		// Then convert it to plain text
 		$msg = trim(html2plain($html, 0, true));
@@ -655,6 +666,11 @@ function gpluspost_feeditem($pid, $uid) {
 
 		$msglink = htmlspecialchars(html_entity_decode($msglink));
 
+		if (strpos($msg, $msglink) == 0)
+			$msg .= "\n".$msglink;
+
+		$msg = nl2br($msg);
+
 		$title = str_replace("&", "&amp;", $title);
 		//$html = str_replace("&", "&amp;", $html);
 
@@ -668,7 +684,7 @@ function gpluspost_feeditem($pid, $uid) {
 		echo "\t\t<author>\n\t\t\t<name><![CDATA[".$item["author-name"]."]]></name>\n";
 		echo "\t\t\t<uri>".$item["author-link"]."</uri>\n\t\t</author>\n";
 		//echo '<content type="image/png" src="http://media.example.org/the_beach.png"/>';
-		echo "\t\t".'<content type="html" xml:space="preserve" xml:base="'.$item["plink"].'"><![CDATA['.$html."]]></content>\n";
+		echo "\t\t".'<content type="html" xml:space="preserve" xml:base="'.$item["plink"].'"><![CDATA['.$msg."]]></content>\n";
 		echo "\t</entry>\n";
 	}
 }
