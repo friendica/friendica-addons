@@ -293,12 +293,16 @@ function pumpio_settings_post(&$a,&$b) {
 		if(x($_POST,'pumpio_delete')) {
 			set_pconfig(local_user(),'pumpio','consumer_key','');
 			set_pconfig(local_user(),'pumpio','consumer_secret','');
-			set_pconfig(local_user(),'pumpio','host','');
 			set_pconfig(local_user(),'pumpio','oauth_token','');
 			set_pconfig(local_user(),'pumpio','oauth_token_secret','');
 			set_pconfig(local_user(),'pumpio','post',false);
-			set_pconfig(local_user(),'pumpio','post_by_default',false);
+			set_pconfig(local_user(),'pumpio','import',false);
+			set_pconfig(local_user(),'pumpio','host','');
 			set_pconfig(local_user(),'pumpio','user','');
+			set_pconfig(local_user(),'pumpio','public',false);
+			set_pconfig(local_user(),'pumpio','mirror',false);
+			set_pconfig(local_user(),'pumpio','post_by_default',false);
+			set_pconfig(local_user(),'pumpio','lastdate', 0);
 		} else {
 			// filtering the username if it is filled wrong
 			$user = $_POST['pumpio_user'];
@@ -320,6 +324,9 @@ function pumpio_settings_post(&$a,&$b) {
 			set_pconfig(local_user(),'pumpio','public',$_POST['pumpio_public']);
 			set_pconfig(local_user(),'pumpio','mirror',$_POST['pumpio_mirror']);
 			set_pconfig(local_user(),'pumpio','post_by_default',intval($_POST['pumpio_bydefault']));
+
+			if (!$_POST['pumpio_mirror'])
+				set_pconfig(local_user(),'pumpio','lastdate', $lastdate);
 
 			//header("Location: ".$a->get_baseurl()."/pumpio/connect");
 		}
