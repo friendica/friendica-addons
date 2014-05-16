@@ -678,11 +678,11 @@ function pumpio_fetchtimeline(&$a, $uid) {
 
 	if (count($posts)) {
 		foreach ($posts as $post) {
-			if ($post->generator->published <= $initiallastdate)
+			if ($post->published <= $initiallastdate)
 				continue;
 
-			if ($lastdate < $post->generator->published)
-				$lastdate = $post->generator->published;
+			if ($lastdate < $post->published)
+				$lastdate = $post->published;
 
 			if ($first_time)
 				continue;

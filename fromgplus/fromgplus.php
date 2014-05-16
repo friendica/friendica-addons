@@ -257,28 +257,16 @@ function fromgplus_handleattachments($item, $displaytext) {
 	foreach ($item->object->attachments as $attachment) {
 		switch($attachment->objectType) {
 			case "video":
-				$post .= "\n\n[bookmark=".$attachment->url."]".fromgplus_html2bbcode($attachment->displayName)."[/bookmark]\n";
-
-				/*$images = cleanupgoogleproxy($attachment->fullImage, $attachment->image);
-				if ($images["preview"] != "")
-					$post .= "\n[url=".$images["full"]."][img]".$images["preview"]."[/img][/url]\n";
-				elseif ($images["full"] != "")
-					$post .= "\n[img]".$images["full"]."[/img]\n";*/
-
+				$post .= "\n[class=type-video][bookmark=".$attachment->url."]".fromgplus_html2bbcode($attachment->displayName)."[/bookmark]\n[/class]";
 				break;
 
 			case "article":
 				$post .= "\n[class=type-link][bookmark=".$attachment->url."]".fromgplus_html2bbcode($attachment->displayName)."[/bookmark]\n";
 
 				$images = fromgplus_cleanupgoogleproxy($attachment->fullImage, $attachment->image);
-				//if ($images["preview"] != "")
-				//	$post .= "\n[url=".$images["full"]."][img]".$images["preview"]."[/img][/url]\n";
-				//elseif ($images["full"] != "")
-				//	$post .= "\n[img]".$images["full"]."[/img]\n";
 				if ($images["full"] != "")
 					$post .= "\n[img]".$images["full"]."[/img]";
 
-				//$post .= "[quote]".trim(fromgplus_html2bbcode($attachment->content))."[/quote]";
 				$quote = trim(fromgplus_html2bbcode($attachment->content));
 				if ($quote != "")
 					$quote = "\n[quote]".$quote."[/quote]";
@@ -309,13 +297,23 @@ function fromgplus_handleattachments($item, $displaytext) {
 				break;
 
 			case "album":
-				foreach($attachment->thumbnails as $thumb) {
-					$preview = "/w".$thumb->image->width."-h".$thumb->image->height."/";
-					$preview2 = "/w".$thumb->image->width."-h".$thumb->image->height."-p/";
-					$image = str_replace(array($preview, $preview2), array("/", "/"), $thumb->image->url);
+				$post .= "\n[class=type-link][bookmark=".$attachment->url."]".fromgplus_html2bbcode($attachment->displayName)."[/bookmark]";
 
-					$post .= "\n[url=".$thumb->url."][img]".$image."[/img][/url]\n";
-				}
+				$thumb = $attachment->thumbnails[0];
+				$post .= "\n[img]".$thumb->image->url."[/img]";
+
+				$quote = trim(fromgplus_html2bbcode($thumb->description));
+				if ($quote != "")
+					$quote = "\n[quote]".$quote."[/quote]";
+
+				//foreach($attachment->thumbnails as $thumb) {
+				//	$preview = "/w".$thumb->image->width."-h".$thumb->image->height."/";
+				//	$preview2 = "/w".$thumb->image->width."-h".$thumb->image->height."-p/";
+				//	$image = str_replace(array($preview, $preview2), array("/", "/"), $thumb->image->url);
+
+				//	$post .= "\n[url=".$thumb->url."][img]".$image."[/img][/url]\n";
+				//}
+				$quote .= "[/class]";
 				break;
 			case "audio":
 				$post .= "\n\n[bookmark=".$attachment->url."]".fromgplus_html2bbcode($attachment->displayName)."[/bookmark]\n";
@@ -338,6 +336,7 @@ function fromgplus_fetch($a, $uid) {
 
 	$result = fetch_url("https://www.googleapis.com/plus/v1/people/".$account."/activities/public?alt=json&pp=1&key=".$key."&maxResults=".$maxfetch);
 	//$result = file_get_contents("google.txt");
+	//$result = file_get_contents("addon/fromgplus/album.txt");
 	//file_put_contents("google.txt", $result);
 
 	$activities = json_decode($result);
