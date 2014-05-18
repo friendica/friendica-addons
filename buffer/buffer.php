@@ -326,6 +326,7 @@ function buffer_send(&$a,&$b) {
 						$post["preview"] = $a->get_baseurl() . "/privacy_image_cache/".privacy_image_cache_cachename($post["preview"]);
 				}
 
+				//if ($profile->service == "twitter") {
 				if ($includedlinks) {
 					if (isset($post["url"]))
 						$post["url"] = short_link($post["url"]);
@@ -337,8 +338,20 @@ function buffer_send(&$a,&$b) {
 
 				// Seems like a bug to me
 				// Buffer doesn't add links to Twitter and App.net (but pictures)
-				if ($includedlinks AND isset($post["url"]))
+				//if ($includedlinks AND isset($post["url"]))
+				if (($profile->service == "twitter") AND isset($post["url"]))
 					$post["text"] .= " ".$post["url"];
+				elseif (($profile->service == "appdotnet") AND isset($post["url"]) AND isset($post["title"])) {
+					$maxdesclength = $limit - (strlen($post["text"]) + 1);
+					if (strlen($post["title"]) > $maxdesclength)
+						$posttitle = trim(substr($post["title"], 0, $maxdesclength - 3))."...";
+					else
+						$posttitle = trim($post["title"]);
+
+					$post["text"] .= "\n[".$posttitle."](".$post["url"].")";
+				} elseif (($profile->service == "appdotnet") AND isset($post["url"]))
+					$post["text"] .= " ".$post["url"];
+
 
 				$message = array();
 				$message["text"] = $post["text"];

@@ -282,6 +282,9 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	if (isset($post->attachment->name) and isset($post->attachment->href)) {
 		$oembed_data = oembed_fetch_url($post->attachment->href);
 		$type = $oembed_data->type;
+		if ($type == "rich")
+			$type = "link";
+
 		$content = "[bookmark=".$post->attachment->href."]".$post->attachment->name."[/bookmark]";
 	} elseif (isset($post->attachment->name) AND ($post->attachment->name != ""))
 		$content = "[b]" . $post->attachment->name."[/b]";
@@ -370,7 +373,6 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	//	$postarray["body"] = "Type: ".$post->type."\n".$postarray["body"];
 	//print_r($post);
 	//print_r($postarray);
-
 	$item = item_store($postarray);
 	logger('fbsync_createpost: User '.$self[0]["nick"].' posted feed item '.$item, LOGGER_DEBUG);
 }
@@ -933,7 +935,6 @@ function fbsync_fetchfeed($a, $uid) {
 	$url = "https://graph.facebook.com/fql?q=".urlencode(json_encode($fql))."&access_token=".$access_token;
 
 	$feed = fetch_url($url);
-//file_put_contents("/home/ike/pirati.ca/htdocs/fb.".$uid, $feed);
 	$data = json_decode($feed);
 
 	if (!is_array($data->data)) {
