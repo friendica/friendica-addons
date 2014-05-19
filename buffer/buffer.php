@@ -342,16 +342,11 @@ function buffer_send(&$a,&$b) {
 				if (($profile->service == "twitter") AND isset($post["url"]))
 					$post["text"] .= " ".$post["url"];
 				elseif (($profile->service == "appdotnet") AND isset($post["url"]) AND isset($post["title"])) {
-					$maxdesclength = $limit - (strlen($post["text"]) + 1);
-					if (strlen($post["title"]) > $maxdesclength)
-						$posttitle = trim(substr($post["title"], 0, $maxdesclength - 3))."...";
-					else
-						$posttitle = trim($post["title"]);
-
-					$post["text"] .= "\n[".$posttitle."](".$post["url"].")";
+					$post["title"] = shortenmsg($post["title"], 90);
+					$post["text"] = shortenmsg($post["text"], $limit - (24 + strlen($post["title"])));
+					$post["text"] .= "\n[".$post["title"]."](".$post["url"].")";
 				} elseif (($profile->service == "appdotnet") AND isset($post["url"]))
 					$post["text"] .= " ".$post["url"];
-
 
 				$message = array();
 				$message["text"] = $post["text"];
