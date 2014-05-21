@@ -195,23 +195,8 @@ function buffer_settings_post(&$a,&$b) {
 			set_pconfig(local_user(),'buffer','post',false);
 			set_pconfig(local_user(),'buffer','post_by_default',false);
 		} else {
-			// filtering the username if it is filled wrong
-			$user = $_POST['buffer_user'];
-			if (strstr($user, "@")) {
-				$pos = strpos($user, "@");
-				if ($pos > 0)
-					$user = substr($user, 0, $pos);
-			}
-
-			// Filtering the hostname if someone is entering it with "http"
-			$host = $_POST['buffer_host'];
-			$host = trim($host);
-			$host = str_replace(array("https://", "http://"), array("", ""), $host);
-
 			set_pconfig(local_user(),'buffer','post',intval($_POST['buffer']));
 			set_pconfig(local_user(),'buffer','post_by_default',intval($_POST['buffer_bydefault']));
-
-			//header("Location: ".$a->get_baseurl()."/buffer/connect");
 		}
 	}
 }
