@@ -837,9 +837,29 @@ function statusnet_post_hook(&$a,&$b) {
 			$msg = trim($msg);
 			$postdata = array('status' => $msg);
 		} else {
-			$msgarr = statusnet_shortenmsg($b, $max_char);
+/*			$msgarr = statusnet_shortenmsg($b, $max_char);
 			$msg = $msgarr["msg"];
 			$image = $msgarr["image"];
+*/
+			require_once("include/plaintext.php");
+			require_once("include/network.php");
+			$msgarr = plaintext($a, $b, $max_char, true);
+			$msg = $msgarr["text"];
+
+			if (($msg == "") AND isset($msgarr["title"]))
+				$msg = shortenmsg($msgarr["title"], $max_char - 50);
+
+			$image = "";
+
+			if (isset($msgarr["url"])) {
+				if ((strlen($msgarr["url"]) > 20) AND
+					((strlen($msg." ".$msgarr["url"]) > $max_char)))
+					$msg .= " ".short_link($msgarr["url"]);
+				else
+					$msg .= " ".$msgarr["url"];
+			} elseif (isset($msgarr["image"]))
+				$image = $msgarr["image"];
+
 			if ($image != "") {
 				$img_str = fetch_url($image);
 				$tempfile = tempnam(get_config("system","temppath"), "cache");
@@ -1661,21 +1681,23 @@ function statusnet_complete_conversation($a, $uid, $self, $create_user, $nick, $
 	$parameters["count"] = 200;
 
 	$items = $connection->get('statusnet/conversation/'.$conversation, $parameters);
-	$posts = array_reverse($items);
+	if (is_array($items)) {
+		$posts = array_reverse($items);
 
-	foreach($posts AS $post) {
-		$postarray = statusnet_createpost($a, $uid, $post, $self, $create_user, true);
+		foreach($posts AS $post) {
+			$postarray = statusnet_createpost($a, $uid, $post, $self, $create_user, true);
 
-		if (trim($postarray['body']) == "")
-			continue;
+			if (trim($postarray['body']) == "")
+				continue;
 
-		//print_r($postarray);
-		$item = item_store($postarray);
+			//print_r($postarray);
+			$item = item_store($postarray);
 
-		logger('statusnet_complete_conversation: User '.$self["nick"].' posted home timeline item '.$item);
+			logger('statusnet_complete_conversation: User '.$self["nick"].' posted home timeline item '.$item);
 
-		if ($item != 0)
-			statusnet_checknotification($a, $uid, $nick, $item, $postarray);
+			if ($item != 0)
+				statusnet_checknotification($a, $uid, $nick, $item, $postarray);
+		}
 	}
 }
 
