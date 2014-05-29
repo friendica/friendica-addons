@@ -5,6 +5,7 @@
  * Description: Posts to app.net with the help of ifttt.com
  * Version: 0.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
+ * Status: Unsupported
  */
 
 function appnetpost_install() {

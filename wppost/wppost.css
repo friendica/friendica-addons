@@ -1,13 +1,15 @@
 
 #wppost-enable-label, #wppost-username-label, #wppost-password-label, 
-#wppost-blog-label, #wppost-bydefault-label, #wppost-backlink-label {
+#wppost-blog-label, #wppost-bydefault-label, 
+#wppost-backlink-label, #wppost-shortcheck-label {
 	float: left;
 	width: 200px;
 	margin-top: 10px;
 }
 
 #wppost-checkbox, #wppost-username, #wppost-password, 
-#wppost-blog, #wppost-bydefault, #wppost-backlink {
+#wppost-blog, #wppost-bydefault, 
+#wppost-shortcheck, #wppost-backlink {
 	float: left;
 	margin-top: 10px;
 }

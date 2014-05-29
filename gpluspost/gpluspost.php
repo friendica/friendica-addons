@@ -257,7 +257,6 @@ function gpluspost_send(&$a,&$b) {
 		if($username && $password) {
 			require_once("addon/gpluspost/postToGooglePlus.php");
 			require_once("include/plaintext.php");
-			require_once("include/network.php");
 
 			$item = $b;
 

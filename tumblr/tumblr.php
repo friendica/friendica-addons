@@ -3,8 +3,9 @@
 /**
  * Name: Tumblr Post Connector
  * Description: Post to Tumblr
- * Version: 1.0
+ * Version: 2.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
+ * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
 
 require_once('library/OAuth1.php');
@@ -316,53 +317,67 @@ function tumblr_send(&$a,&$b) {
 		if(count($tag_arr))
 			$tags = implode(',',$tag_arr);
 
-		$link = "";
-		$video = false;
 		$title = trim($b['title']);
+		require_once('include/plaintext.php');
 
-		// Checking for a bookmark
-		if(preg_match("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/is",$b['body'],$matches)) {
-			$link = $matches[1];
-			if ($title == '')
-				$title = html_entity_decode($matches[2],ENT_QUOTES,'UTF-8');
-
-			$body = $b['body'];
-			// splitting the text in two parts:
-			// before and after the bookmark
-			$pos = strpos($body, "[bookmark");
-			$body1 = substr($body, 0, $pos);
-			$body2 = substr($body, $pos);
-
-			// Removing the bookmark
-			$body2 = preg_replace("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/ism",'',$body2);
-			$body = $body1.$body2;
-
-			$video = ((stristr($link,'youtube')) || (stristr($link,'youtu.be')) || (stristr($mtch[1],'vimeo')));
-		}
+		$siteinfo = get_attached_data($b["body"]);
 
 		$params = array(
-			'format' => 'html',
+			'state' => 'published',
+			'tags' => $tags,
 			'tweet' => 'off',
-			'tags' => $tags);
+			'format' => 'html');
 
-		if (($link != '') and $video) {
-			$params['type'] = "video";
-			$params['embed'] = $link;
-			if ($title != '')
-				$params['caption'] = '<h1><a href="'.$link.'">'.$title.
-							"</a></h1><p>".bbcode($body, false, false, 4)."</p>";
-			else
+		if (!isset($siteinfo["type"]))
+			$siteinfo["type"] = "";
+
+		if (($title == "") AND isset($siteinfo["title"]))
+			$title = $siteinfo["title"];
+
+		if (isset($siteinfo["text"]))
+			$body = $siteinfo["text"];
+		else
+			$body = bb_remove_share_information($b["body"]);
+
+		switch ($siteinfo["type"]) {
+			case "photo":
+				$params['type'] = "photo";
 				$params['caption'] = bbcode($body, false, false, 4);
-		} else if (($link != '') and !$video) {
-			$params['type'] = "link";
-			$params['title'] = $title;
-			$params['url'] = $link;
-			$params['description'] = bbcode($b["body"], false, false, 4);
-		} else {
-			$params['type'] = "text";
-			$params['title'] = $title;
-			$params['body'] = bbcode($b['body'], false, false, 4);
+
+				if (isset($siteinfo["url"]))
+					$params['link'] = $siteinfo["url"];
+
+				$params['source'] = $siteinfo["image"];
+				break;
+			case "link":
+				$params['type'] = "link";
+				$params['title'] = $title;
+				$params['url'] = $siteinfo["url"];
+				$params['description'] = bbcode($body, false, false, 4);
+				break;
+			case "audio":
+				$params['type'] = "audio";
+				$params['external_url'] = $siteinfo["url"];
+				$params['caption'] = bbcode($body, false, false, 4);
+				break;
+			case "video":
+				$params['type'] = "video";
+				$params['embed'] = $siteinfo["url"];
+				$params['caption'] = bbcode($body, false, false, 4);
+				break;
+			default:
+				$params['type'] = "text";
+				$params['title'] = $title;
+				$params['body'] = bbcode($b['body'], false, false, 4);
+				break;
 		}
+
+		if (isset($params['caption']) AND (trim($title) != ""))
+			$params['caption'] = '<h1>'.$title."</h1>".
+						"<p>".$params['caption']."</p>";
+
+		if (trim($params['caption']) == "")
+			$params['caption'] = bbcode("[quote]".$siteinfo["description"]."[/quote]", false, false, 4);
 
 		$consumer_key = get_config('tumblr','consumer_key');
 		$consumer_secret = get_config('tumblr','consumer_secret');
@@ -371,9 +386,8 @@ function tumblr_send(&$a,&$b) {
 
 		// Make an API call with the TumblrOAuth instance.
 		$x = $tum_oauth->post($tmbl_blog,$params);
-
 		$ret_code = $tum_oauth->http_code;
-
+		//print_r($params);
 		if($ret_code == 201)
 			logger('tumblr_send: success');
 		elseif($ret_code == 403)

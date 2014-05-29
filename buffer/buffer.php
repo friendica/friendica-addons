@@ -1,8 +1,8 @@
 <?php
 /**
  * Name: Buffer Post Connector
- * Description: Post to Buffer
- * Version: 0.1 alpha
+ * Description: Post to Buffer (Linkedin, App.net, Google+, Facebook, Twitter)
+ * Version: 0.2
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  */
 require('addon/buffer/bufferapp.php');

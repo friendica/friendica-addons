@@ -47,7 +47,7 @@ function openstreetmap_location($a, &$item) {
 	$location = '';
 	$coord = '';
 
-	
+
 	if($item['location'] && !$item['coord'] && true){ //if only a location is given, find the lat-lon
 		$geo_account='demo';
 
@@ -57,24 +57,24 @@ function openstreetmap_location($a, &$item) {
 			$xml = parse_xml_string($s);
 
 			if($xml->geoname->lat && $xml->geoname->lng){
-				$item['coord'] = $xml->geoname->lat . ' ' . $xml->geoname->lng;
+				$item['coord'] = $xml->geoname->lat.' '.$xml->geoname->lng;
 			}
 		}
 	}
 
-	$location = (($item['location']) ? '<a target="map" title="' . $item['location'] . '" href="'.$tmsserver.'?q=' . urlencode($item['location']) . '">' . $item['location'] . '</a>' : '');
+	$location = (($item['location']) ? '<a target="map" title="'.$item['location'].'" href="'.$tmsserver.'?q='.urlencode($item['location']).'">'.$item['location'].'</a>' : '');
 
 	if($item['coord']) {
 		$coords = explode(' ', $item['coord']);
 		if(count($coords) > 1) {
-			$coord = '<a target="map" class="OSMMapLink" title="' . $item['coord'] . '" href="'.$tmsserver.'?lat=' . urlencode($coords[0]) . '&lon=' . urlencode($coords[1]) . '&zoom='.$zoom.'"> Map </a>' ;
+			$coord = '<a target="map" class="OSMMapLink" title="'.$item['coord'].'" href="'.$tmsserver.'?lat='.urlencode($coords[0]).'&lon=' . urlencode($coords[1]).'&zoom='.$zoom.'">'.t("Map").'</a>' ;
 		}
 	}
 	if(strlen($coord)) {
 		if($location)
-			$location .= '<br /><span class="smalltext">(' . $coord . ')</span>';
+			$location .= ' <span class="smalltext">('.$coord.')</span>';
 		else
-			$location = '<span class="smalltext">' . $coord . '</span>';
+			$location = '<span class="smalltext">'.$coord.'</span>';
 	}
 	$item['html'] = $location;
 	return;
