@@ -46,25 +46,27 @@ function wppost_jot_nets(&$a,&$b) {
 
 function wppost_settings(&$a,&$s) {
 
-    if(! local_user())
-        return;
+	if(! local_user())
+		return;
 
-    /* Add our stylesheet to the page so we can make our settings look nice */
+	/* Add our stylesheet to the page so we can make our settings look nice */
 
-    $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/wppost/wppost.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/wppost/wppost.css' . '" media="all" />' . "\r\n";
 
-    /* Get the current state of our config variables */
+	/* Get the current state of our config variables */
 
-    $enabled = get_pconfig(local_user(),'wppost','post');
-    $checked = (($enabled) ? ' checked="checked" ' : '');
+	$enabled = get_pconfig(local_user(),'wppost','post');
+	$checked = (($enabled) ? ' checked="checked" ' : '');
 
-    $css = (($enabled) ? '' : '-disabled');
+	$css = (($enabled) ? '' : '-disabled');
 
-    $def_enabled = get_pconfig(local_user(),'wppost','post_by_default');
-    $back_enabled = get_pconfig(local_user(),'wppost','backlink');
+	$def_enabled = get_pconfig(local_user(),'wppost','post_by_default');
+	$back_enabled = get_pconfig(local_user(),'wppost','backlink');
+	$shortcheck_enabled = get_pconfig(local_user(),'wppost','shortcheck');
 
-    $def_checked = (($def_enabled) ? ' checked="checked" ' : '');
-    $back_checked = (($back_enabled) ? ' checked="checked" ' : '');
+	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
+	$back_checked = (($back_enabled) ? ' checked="checked" ' : '');
+	$shortcheck_checked = (($shortcheck_enabled) ? ' checked="checked" ' : '');
 
 	$wp_username = get_pconfig(local_user(), 'wppost', 'wp_username');
 	$wp_password = get_pconfig(local_user(), 'wppost', 'wp_password');
@@ -108,7 +110,11 @@ function wppost_settings(&$a,&$s) {
     $s .= '<div id="wppost-backlink-wrapper">';
     $s .= '<label id="wppost-backlink-label" for="wppost-backlink">' . t('Provide a backlink to the Friendica post') . '</label>';
     $s .= '<input id="wppost-backlink" type="checkbox" name="wp_backlink" value="1" ' . $back_checked . '/>';
+    $s .= '</div><div class="clear"></div>';
 
+    $s .= '<div id="wppost-shortcheck-wrapper">';
+    $s .= '<label id="wppost-shortcheck-label" for="wppost-shortcheck">' . t("Don't post messages that are too short") . '</label>';
+    $s .= '<input id="wppost-shortcheck" type="checkbox" name="wp_shortcheck" value="1" '.$shortcheck_checked.'/>';
     $s .= '</div><div class="clear"></div>';
 
     /* provide a submit button */
@@ -128,6 +134,7 @@ function wppost_settings_post(&$a,&$b) {
 		set_pconfig(local_user(),'wppost','wp_password',trim($_POST['wp_password']));
 		set_pconfig(local_user(),'wppost','wp_blog',trim($_POST['wp_blog']));
 		set_pconfig(local_user(),'wppost','backlink',trim($_POST['wp_backlink']));
+		set_pconfig(local_user(),'wppost','shortcheck',trim($_POST['wp_shortcheck']));
 
 	}
 
@@ -166,14 +173,14 @@ function wppost_post_local(&$a,&$b) {
 
 function wppost_send(&$a,&$b) {
 
-    if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
-        return;
+	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
+		return;
 
-    if(! strstr($b['postopts'],'wppost'))
-        return;
+	if(! strstr($b['postopts'],'wppost'))
+		return;
 
-    if($b['parent'] != $b['id'])
-        return;
+	if($b['parent'] != $b['id'])
+		return;
 
 
 	$wp_username = xmlify(get_pconfig($b['uid'],'wppost','wp_username'));
@@ -184,8 +191,31 @@ function wppost_send(&$a,&$b) {
 
 		require_once('include/bbcode.php');
 		require_once('include/html2plain.php');
+		require_once('include/plaintext.php');
 
 		$wptitle = trim($b['title']);
+
+		if (intval(get_pconfig($b['uid'],'wppost','shortcheck'))) {
+			// Checking, if its a post that is worth a blog post
+			$postentry = false;
+			$siteinfo = get_attached_data($b["body"]);
+
+			// Is it a link to an aricle, a video or a photo?
+			if (isset($siteinfo["type"]))
+				if (in_array($siteinfo["type"], array("link", "audio", "video", "photo")))
+					$postentry = true;
+
+			// Does it have a title?
+			if ($wptitle != "")
+				$postentry = true;
+
+			// Is it larger than 500 characters?
+			if (strlen($b['body']) > 500)
+				$postentry = true;
+
+			if (!$postentry)
+				return;
+		}
 
 		// If the title is empty then try to guess
 		if ($wptitle == '') {

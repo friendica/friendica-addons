@@ -1333,7 +1333,7 @@ function pumpio_getallusers(&$a, $uid) {
 	}
 
 	foreach ($users->items AS $user)
-		echo pumpio_get_contact($uid, $user)."\n";
+		pumpio_get_contact($uid, $user);
 }
 
 function pumpio_queue_hook(&$a,&$b) {

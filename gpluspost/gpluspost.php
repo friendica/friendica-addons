@@ -13,7 +13,7 @@ function gpluspost_install() {
 	register_hook('jot_networks',         'addon/gpluspost/gpluspost.php', 'gpluspost_jot_nets');
 	register_hook('connector_settings',      'addon/gpluspost/gpluspost.php', 'gpluspost_settings');
 	register_hook('connector_settings_post', 'addon/gpluspost/gpluspost.php', 'gpluspost_settings_post');
-        register_hook('queue_predeliver', 'addon/gpluspost/gpluspost.php', 'gpluspost_queue_hook');
+	register_hook('queue_predeliver', 'addon/gpluspost/gpluspost.php', 'gpluspost_queue_hook');
 }
 
 
@@ -23,7 +23,7 @@ function gpluspost_uninstall() {
 	unregister_hook('jot_networks',     'addon/gpluspost/gpluspost.php', 'gpluspost_jot_nets');
 	unregister_hook('connector_settings',      'addon/gpluspost/gpluspost.php', 'gpluspost_settings');
 	unregister_hook('connector_settings_post', 'addon/gpluspost/gpluspost.php', 'gpluspost_settings_post');
-        unregister_hook('queue_predeliver', 'addon/gpluspost/gpluspost.php', 'gpluspost_queue_hook');
+	unregister_hook('queue_predeliver', 'addon/gpluspost/gpluspost.php', 'gpluspost_queue_hook');
 }
 
 function gpluspost_jot_nets(&$a,&$b) {
@@ -228,7 +228,7 @@ function gpluspost_send(&$a,&$b) {
 
 	// if post comes from Google+ don't send it back
 	if (!get_pconfig($b["uid"],'gpluspost','no_loop_prevention') and ($b['app'] == "Google+"))
-                return;
+		return;
 
 	// Always do the export via RSS-Feed (even if NextScripts is enabled), since it doesn't hurt
 	$itemlist = get_pconfig($b["uid"],'gpluspost','itemlist');
@@ -249,260 +249,141 @@ function gpluspost_send(&$a,&$b) {
 	// Posting via NextScripts
 	if (gpluspost_nextscripts()) {
 		$username = get_pconfig($b['uid'],'gpluspost','username');
-	        $password = get_pconfig($b['uid'],'gpluspost','password');
-	        $page = get_pconfig($b['uid'],'gpluspost','page');
+		$password = get_pconfig($b['uid'],'gpluspost','password');
+		$page = get_pconfig($b['uid'],'gpluspost','page');
 
-	        $success = false;
+		$success = false;
 
-	        if($username && $password) {
-	                require_once("addon/gpluspost/postToGooglePlus.php");
+		if($username && $password) {
+			require_once("addon/gpluspost/postToGooglePlus.php");
+			require_once("include/plaintext.php");
 
-	                $data = gpluspost_createmsg($b);
+			$item = $b;
 
-	                logger('gpluspost_send: data: '.print_r($data, true), LOGGER_DEBUG);
+			// Markup for Google+
+			if  ($item["title"] != "")
+				$item["title"] = "*".$item["title"]."*";
 
-	                $loginError = doConnectToGooglePlus2($username, $password);
-	                if (!$loginError) {
-	                        if ($data["link"] != "")
-        	                        $lnk = doGetGoogleUrlInfo2($data["link"]);
-                	        elseif ($data["image"] != "")
-                        	        $lnk = array('img'=>$data["image"]);
-	                        else
-        	                        $lnk = "";
+			$item["body"] = preg_replace("(\[b\](.*?)\[\/b\])ism",'*$1*',$item["body"]);
+			$item["body"] = preg_replace("(\[i\](.*?)\[\/i\])ism",'_$1_',$item["body"]);
+			$item["body"] = preg_replace("(\[s\](.*?)\[\/s\])ism",'-$1-',$item["body"]);
 
-                	        // Send a special blank to identify the post through the "fromgplus" addon
-                        	$blank = html_entity_decode("&#x00A0;", ENT_QUOTES, 'UTF-8');
+			$data = plaintext($a, $item, 0, false);
 
-	                        doPostToGooglePlus2($data["msg"].$blank, $lnk, $page);
+			logger('gpluspost_send: data: '.print_r($data, true), LOGGER_DEBUG);
 
-        	                $success = true;
+			$loginError = doConnectToGooglePlus2($username, $password);
+			if (!$loginError) {
+				if ($data["url"] != "")
+					$lnk = doGetGoogleUrlInfo2($data["url"]);
+				elseif ($data["image"] != "")
+					$lnk = array('img'=>$data["image"]);
+				else
+					$lnk = "";
 
-	                        logger('gpluspost_send: '.$b['uid'].' success', LOGGER_DEBUG);
-        	        } else
-                	        logger('gpluspost_send: '.$b['uid'].' failed '.$loginError, LOGGER_DEBUG);
+				// Send a special blank to identify the post through the "fromgplus" addon
+				$blank = html_entity_decode("&#x00A0;", ENT_QUOTES, 'UTF-8');
 
-	                if (!$success) {
-        	                logger('gpluspost_send: requeueing '.$b['uid'], LOGGER_DEBUG);
+				doPostToGooglePlus2($data["text"].$blank, $lnk, $page);
 
-                	        $r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $b['uid']);
-                        	if (count($r))
-                                	$a->contact = $r[0]["id"];
+				$success = true;
 
-	                        $s = serialize(array('url' => $url, 'item' => $b['id'], 'post' => $data));
-        	                require_once('include/queue_fn.php');
-                	        add_to_queue($a->contact,NETWORK_GPLUS,$s);
-                        	notice(t('Google+ post failed. Queued for retry.').EOL);
-	                }
-	        } else
-	                        logger('gpluspost_send: '.$b['uid'].' missing username or password', LOGGER_DEBUG);
+				logger('gpluspost_send: '.$b['uid'].' success', LOGGER_DEBUG);
+			} else
+				logger('gpluspost_send: '.$b['uid'].' failed '.$loginError, LOGGER_DEBUG);
+
+			if (!$success) {
+				logger('gpluspost_send: requeueing '.$b['uid'], LOGGER_DEBUG);
+
+				$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $b['uid']);
+				if (count($r))
+					$a->contact = $r[0]["id"];
+
+				$s = serialize(array('url' => $url, 'item' => $b['id'], 'post' => $data));
+				require_once('include/queue_fn.php');
+				add_to_queue($a->contact,NETWORK_GPLUS,$s);
+				notice(t('Google+ post failed. Queued for retry.').EOL);
+			}
+		} else
+				logger('gpluspost_send: '.$b['uid'].' missing username or password', LOGGER_DEBUG);
 	}
 
 }
 
-function gpluspost_createmsg($b) {
-        require_once("include/bbcode.php");
-        require_once("include/html2plain.php");
-
-        $b['body'] = bb_CleanPictureLinks($b['body']);
-
-        // Looking for the first image
-        $image = '';
-        if(preg_match("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/is",$b['body'],$matches))
-                $image = $matches[3];
-
-        if ($image == '')
-                if(preg_match("/\[img\](.*?)\[\/img\]/is",$b['body'],$matches))
-                        $image = $matches[1];
-
-        $multipleimages = (strpos($b['body'], "[img") != strrpos($b['body'], "[img"));
-
-        // When saved into the database the content is sent through htmlspecialchars
-        // That means that we have to decode all image-urls
-        $image = htmlspecialchars_decode($image);
-
-        $body = $b["body"];
-
-        if ($b["title"] != "")
-                $body = "*".$b["title"]."*\n\n".$body;
-
-        if (strpos($body, "[bookmark") !== false) {
-                // splitting the text in two parts:
-                // before and after the bookmark
-                $pos = strpos($body, "[bookmark");
-                $body1 = substr($body, 0, $pos);
-                $body2 = substr($body, $pos);
-
-                // Removing all quotes after the bookmark
-                // they are mostly only the content after the bookmark.
-                $body2 = preg_replace("/\[quote\=([^\]]*)\](.*?)\[\/quote\]/ism",'',$body2);
-                $body2 = preg_replace("/\[quote\](.*?)\[\/quote\]/ism",'',$body2);
-
-                $pos2 = strpos($body2, "[/bookmark]");
-                if ($pos2)
-                        $body2 = substr($body2, $pos2 + 11);
-
-                $body = $body1.$body2;
-        }
-
-        // Add some newlines so that the message could be cut better
-        $body = str_replace(array("[quote", "[bookmark", "[/bookmark]", "[/quote]"),
-                                array("\n[quote", "\n[bookmark", "[/bookmark]\n", "[/quote]\n"), $body);
-
-        // remove the recycle signs and the names since they aren't helpful on twitter
-        // recycle 1
-        $recycle = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8');
-        $body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n", $body);
-
-        // remove the share element
-        //$body = preg_replace("/\[share(.*?)\](.*?)\[\/share\]/ism","\n\n$2\n\n",$body);
-
-        $body = preg_replace("(\[b\](.*?)\[\/b\])ism",'*$1*',$body);
-        $body = preg_replace("(\[i\](.*?)\[\/i\])ism",'_$1_',$body);
-        $body = preg_replace("(\[s\](.*?)\[\/s\])ism",'-$1-',$body);
-
-        // At first convert the text to html
-        $html = bbcode($body, false, false, 2);
-
-        // Then convert it to plain text
-        //$msg = trim($b['title']." \n\n".html2plain($html, 0, true));
-        $msg = trim(html2plain($html, 0, true));
-        $msg = html_entity_decode($msg,ENT_QUOTES,'UTF-8');
-
-        // Removing multiple newlines
-        while (strpos($msg, "\n\n\n") !== false)
-                $msg = str_replace("\n\n\n", "\n\n", $msg);
-
-        // Removing multiple spaces
-        while (strpos($msg, "  ") !== false)
-                $msg = str_replace("  ", " ", $msg);
-
-        // Removing URLs
-        $msg = preg_replace('/(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/i', "", $msg);
-
-        $msg = trim($msg);
-
-        $link = '';
-        // look for bookmark-bbcode and handle it with priority
-        if(preg_match("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/is",$b['body'],$matches))
-                $link = $matches[1];
-
-        $multiplelinks = (strpos($b['body'], "[bookmark") != strrpos($b['body'], "[bookmark"));
-
-        // If there is no bookmark element then take the first link
-        if ($link == '') {
-                $links = collecturls($html);
-                if (sizeof($links) > 0) {
-                        reset($links);
-                        $link = current($links);
-                }
-                $multiplelinks = (sizeof($links) > 1);
-        }
-
-        $msglink = "";
-        if ($multiplelinks)
-                $msglink = $b["plink"];
-        else if ($link != "")
-                $msglink = $link;
-        else if ($multipleimages)
-                $msglink = $b["plink"];
-        else if ($image != "")
-                $msglink = $image;
-
-        // Removing multiple spaces - again
-        while (strpos($msg, "  ") !== false)
-                $msg = str_replace("  ", " ", $msg);
-
-        if ($msglink != "") {
-                // Looking if the link points to an image
-                $img_str = fetch_url($msglink);
-
-                $tempfile = tempnam(get_config("system","temppath"), "cache");
-                file_put_contents($tempfile, $img_str);
-                $mime = image_type_to_mime_type(exif_imagetype($tempfile));
-                unlink($tempfile);
-        } else
-                $mime = "";
-
-        if (($image == $msglink) OR (substr($mime, 0, 6) == "image/"))
-                return(array("msg"=>trim($msg), "link"=>"", "image"=>$msglink));
-        else
-                return(array("msg"=>trim($msg), "link"=>$msglink, "image"=>""));
-}
-
 function gpluspost_queue_hook(&$a,&$b) {
 
-        $qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
-                dbesc(NETWORK_GPLUS)
-        );
-        if(! count($qi))
-                return;
+	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
+		dbesc(NETWORK_GPLUS)
+	);
+	if(! count($qi))
+		return;
 
-        require_once('include/queue_fn.php');
+	require_once('include/queue_fn.php');
 
-        foreach($qi as $x) {
-                if($x['network'] !== NETWORK_GPLUS)
-                        continue;
+	foreach($qi as $x) {
+		if($x['network'] !== NETWORK_GPLUS)
+			continue;
 
-                logger('gpluspost_queue: run');
+		logger('gpluspost_queue: run');
 
-                $r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` on `contact`.`uid` = `user`.`uid` 
-                        WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
-                        intval($x['cid'])
-                );
-                if(! count($r))
-                        continue;
+		$r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` on `contact`.`uid` = `user`.`uid` 
+			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
+			intval($x['cid'])
+		);
+		if(! count($r))
+			continue;
 
-                $userdata = $r[0];
+		$userdata = $r[0];
 
-                //logger('gpluspost_queue: fetching userdata '.print_r($userdata, true));
+		//logger('gpluspost_queue: fetching userdata '.print_r($userdata, true));
 
-                $username = get_pconfig($userdata['uid'],'gpluspost','username');
-                $password = get_pconfig($userdata['uid'],'gpluspost','password');
-                $page = get_pconfig($userdata['uid'],'gpluspost','page');
+		$username = get_pconfig($userdata['uid'],'gpluspost','username');
+		$password = get_pconfig($userdata['uid'],'gpluspost','password');
+		$page = get_pconfig($userdata['uid'],'gpluspost','page');
 
-                $success = false;
+		$success = false;
 
-                if($username && $password) {
-                        require_once("addon/googleplus/postToGooglePlus.php");
+		if($username && $password) {
+			require_once("addon/googleplus/postToGooglePlus.php");
 
-                        logger('gpluspost_queue: able to post for user '.$username);
+			logger('gpluspost_queue: able to post for user '.$username);
 
-                        $z = unserialize($x['content']);
+			$z = unserialize($x['content']);
 
-                        $data = $z['post'];
-                        // $z['url']
+			$data = $z['post'];
+			// $z['url']
 
-                        logger('gpluspost_send: data: '.print_r($data, true), LOGGER_DATA);
+			logger('gpluspost_send: data: '.print_r($data, true), LOGGER_DATA);
 
-                        $loginError = doConnectToGooglePlus2($username, $password);
-                        if (!$loginError) {
-                                if ($data["link"] != "")
-                                        $lnk = doGetGoogleUrlInfo2($data["link"]);
-                                elseif ($data["image"] != "")
-                                        $lnk = array('img'=>$data["image"]);
-                                else
-                                        $lnk = "";
+			$loginError = doConnectToGooglePlus2($username, $password);
+			if (!$loginError) {
+				if ($data["url"] != "")
+					$lnk = doGetGoogleUrlInfo2($data["url"]);
+				elseif ($data["image"] != "")
+					$lnk = array('img'=>$data["image"]);
+				else
+					$lnk = "";
 
-                                // Send a special blank to identify the post through the "fromgplus" addon
-                                $blank = html_entity_decode("&#x00A0;", ENT_QUOTES, 'UTF-8');
+				// Send a special blank to identify the post through the "fromgplus" addon
+				$blank = html_entity_decode("&#x00A0;", ENT_QUOTES, 'UTF-8');
 
-                                doPostToGooglePlus2($data["msg"].$blank, $lnk, $page);
+				doPostToGooglePlus2($data["text"].$blank, $lnk, $page);
 
-                                logger('gpluspost_queue: send '.$userdata['uid'].' success', LOGGER_DEBUG);
+				logger('gpluspost_queue: send '.$userdata['uid'].' success', LOGGER_DEBUG);
 
-                                $success = true;
+				$success = true;
 
-                                remove_queue_item($x['id']);
-                        } else
-                                logger('gpluspost_queue: send '.$userdata['uid'].' failed '.$loginError, LOGGER_DEBUG);
-                } else
-                        logger('gpluspost_queue: send '.$userdata['uid'].' missing username or password', LOGGER_DEBUG);
+				remove_queue_item($x['id']);
+			} else
+				logger('gpluspost_queue: send '.$userdata['uid'].' failed '.$loginError, LOGGER_DEBUG);
+		} else
+			logger('gpluspost_queue: send '.$userdata['uid'].' missing username or password', LOGGER_DEBUG);
 
-                if (!$success) {
-                        logger('gpluspost_queue: delayed');
-                        update_queue_time($x['id']);
-                }
-        }
+		if (!$success) {
+			logger('gpluspost_queue: delayed');
+			update_queue_time($x['id']);
+		}
+	}
 }
 
 function gpluspost_module() {}
@@ -573,8 +454,8 @@ function gpluspost_feeditem($pid, $uid) {
 
 		$item['body'] = bb_remove_share_information($item['body'], true);
 
-	        if ($item["title"] != "")
-        	        $item['body'] = "*".$item["title"]."*\n\n".$item['body'];
+		if ($item["title"] != "")
+			$item['body'] = "*".$item["title"]."*\n\n".$item['body'];
 
 		// Looking for the first image
 		$image = '';
@@ -600,9 +481,9 @@ function gpluspost_feeditem($pid, $uid) {
 
 		$body = $item['body'];
 
-	        $body = preg_replace("(\[b\](.*?)\[\/b\])ism",'*$1*',$body);
-	        $body = preg_replace("(\[i\](.*?)\[\/i\])ism",'_$1_',$body);
-	        $body = preg_replace("(\[s\](.*?)\[\/s\])ism",'-$1-',$body);
+		$body = preg_replace("(\[b\](.*?)\[\/b\])ism",'*$1*',$body);
+		$body = preg_replace("(\[i\](.*?)\[\/i\])ism",'_$1_',$body);
+		$body = preg_replace("(\[s\](.*?)\[\/s\])ism",'-$1-',$body);
 
 		// At first convert the text to html
 		$html = bbcode(api_clean_plain_items($body), false, false, 2);

@@ -243,7 +243,7 @@ function fromgplus_cleantext($text) {
 	$trash = html_entity_decode("&#xFEFF;", ENT_QUOTES, 'UTF-8');
 
 	$text = strip_tags($text);
-	$text = html_entity_decode($text);
+	$text = html_entity_decode($text, ENT_QUOTES);
 	$text = trim($text);
 	$text = str_replace(array("\n", "\r", " ", $trash), array("", "", "", ""), $text);
 	return($text);

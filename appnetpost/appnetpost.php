@@ -5,6 +5,7 @@
  * Description: Posts to app.net with the help of ifttt.com
  * Version: 0.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
+ * Status: Unsupported
  */
 
 function appnetpost_install() {
@@ -198,35 +199,12 @@ function appnetpost_init() {
 	killme();
 }
 
-if (! function_exists( 'short_link' )) {
-function short_link($url) {
-	require_once('library/slinky.php');
-	$slinky = new Slinky( $url );
-	$yourls_url = get_config('yourls','url1');
-	if ($yourls_url) {
-		$yourls_username = get_config('yourls','username1');
-		$yourls_password = get_config('yourls', 'password1');
-		$yourls_ssl = get_config('yourls', 'ssl1');
-		$yourls = new Slinky_YourLS();
-		$yourls->set( 'username', $yourls_username );
-		$yourls->set( 'password', $yourls_password );
-		$yourls->set( 'ssl', $yourls_ssl );
-		$yourls->set( 'yourls-url', $yourls_url );
-		$slinky->set_cascade( array( $yourls, new Slinky_UR1ca(), new Slinky_Trim(), new Slinky_IsGd(), new Slinky_TinyURL() ) );
-	} else {
-		// setup a cascade of shortening services
-		// try to get a short link from these services
-		// in the order ur1.ca, trim, id.gd, tinyurl
-		$slinky->set_cascade( array( new Slinky_UR1ca(), new Slinky_Trim(), new Slinky_IsGd(), new Slinky_TinyURL() ) );
-	}
-	return $slinky->short();
-} };
-
 function appnetpost_feeditem($pid, $uid) {
 	global $a;
 
 	require_once('include/bbcode.php');
 	require_once("include/html2plain.php");
+	require_once("include/network.php");
 
 	$items = q("SELECT `uri`, `plink`, `author-link`, `author-name`, `created`, `edited`, `id`, `title`, `body` from `item` WHERE id=%d", intval($pid));
 	foreach ($items AS $item) {

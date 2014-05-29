@@ -168,10 +168,8 @@ function statusnet_settings_post ($a,$post) {
 		del_pconfig(local_user(), 'statusnet', 'oauthtoken');
 		del_pconfig(local_user(), 'statusnet', 'oauthsecret');
 		del_pconfig(local_user(), 'statusnet', 'baseapi');
-		del_pconfig(local_user(), 'statusnet', 'post_taglinks');
 		del_pconfig(local_user(), 'statusnet', 'lastid');
 		del_pconfig(local_user(), 'statusnet', 'mirror_posts');
-		del_pconfig(local_user(), 'statusnet', 'intelligent_shortening');
 		del_pconfig(local_user(), 'statusnet', 'import');
         	del_pconfig(local_user(), 'statusnet', 'create_user');
         	del_pconfig(local_user(), 'statusnet', 'own_id');
@@ -249,9 +247,7 @@ function statusnet_settings_post ($a,$post) {
 		//  to post a dent for every new __public__ posting to the wall
 		set_pconfig(local_user(),'statusnet','post',intval($_POST['statusnet-enable']));
 		set_pconfig(local_user(),'statusnet','post_by_default',intval($_POST['statusnet-default']));
-		set_pconfig(local_user(),'statusnet','post_taglinks',intval($_POST['statusnet-sendtaglinks']));
 		set_pconfig(local_user(), 'statusnet', 'mirror_posts', intval($_POST['statusnet-mirror']));
-		set_pconfig(local_user(), 'statusnet', 'intelligent_shortening', intval($_POST['statusnet-shortening']));
 		set_pconfig(local_user(), 'statusnet', 'import', intval($_POST['statusnet-import']));
 		set_pconfig(local_user(), 'statusnet', 'create_user', intval($_POST['statusnet-create_user']));
 		info( t('StatusNet settings updated.') . EOL);
@@ -268,29 +264,22 @@ function statusnet_settings(&$a,&$s) {
 	 * 3) Checkbox for "Send public notices (respect size limitation)
 	 */
 	$api     = get_pconfig(local_user(), 'statusnet', 'baseapi');
-	$ckey    = get_pconfig(local_user(), 'statusnet', 'consumerkey' );
-	$csecret = get_pconfig(local_user(), 'statusnet', 'consumersecret' );
-	$otoken  = get_pconfig(local_user(), 'statusnet', 'oauthtoken'  );
-	$osecret = get_pconfig(local_user(), 'statusnet', 'oauthsecret' );
+	$ckey    = get_pconfig(local_user(), 'statusnet', 'consumerkey');
+	$csecret = get_pconfig(local_user(), 'statusnet', 'consumersecret');
+	$otoken  = get_pconfig(local_user(), 'statusnet', 'oauthtoken');
+	$osecret = get_pconfig(local_user(), 'statusnet', 'oauthsecret');
 	$enabled = get_pconfig(local_user(), 'statusnet', 'post');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 	$defenabled = get_pconfig(local_user(),'statusnet','post_by_default');
 	$defchecked = (($defenabled) ? ' checked="checked" ' : '');
-	$linksenabled = get_pconfig(local_user(),'statusnet','post_taglinks');
-	$linkschecked = (($linksenabled) ? ' checked="checked" ' : '');
 	$mirrorenabled = get_pconfig(local_user(),'statusnet','mirror_posts');
 	$mirrorchecked = (($mirrorenabled) ? ' checked="checked" ' : '');
-	$shorteningenabled = get_pconfig(local_user(),'statusnet','intelligent_shortening');
-	$shorteningchecked = (($shorteningenabled) ? ' checked="checked" ' : '');
 	$importenabled = get_pconfig(local_user(),'statusnet','import');
         $importchecked = (($importenabled) ? ' checked="checked" ' : '');
         $create_userenabled = get_pconfig(local_user(),'statusnet','create_user');
         $create_userchecked = (($create_userenabled) ? ' checked="checked" ' : '');
 
 	$css = (($enabled) ? '' : '-disabled');
-
-	$globalshortening = get_config('statusnet','intelligent_shortening');
-
 
 	$s .= '<span id="settings_statusnet_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_statusnet_expanded\'); openClose(\'settings_statusnet_inflated\');">';
 	$s .= '<img class="connector'.$css.'" src="images/gnusocial.png" /><h3 class="connector">'. t('StatusNet Import/Export/Mirror').'</h3>';
@@ -394,16 +383,6 @@ function statusnet_settings(&$a,&$s) {
 			$s .= '<label id="statusnet-mirror-label" for="statusnet-mirror">'.t('Mirror all posts from statusnet that are no replies or repeated messages').'</label>';
 			$s .= '<input id="statusnet-mirror" type="checkbox" name="statusnet-mirror" value="1" '. $mirrorchecked . '/>';
 			$s .= '<div class="clear"></div>';
-
-			if (!$globalshortening) {
-				$s .= '<label id="statusnet-shortening-label" for="statusnet-shortening">'.t('Shortening method that optimizes the post').'</label>';
-				$s .= '<input id="statusnet-shortening" type="checkbox" name="statusnet-shortening" value="1" '. $shorteningchecked . '/>';
-				$s .= '<div class="clear"></div>';
-
-				$s .= '<label id="statusnet-sendtaglinks-label" for="statusnet-sendtaglinks">'.t('Send linked #-tags and @-names to StatusNet').'</label>';
-				$s .= '<input id="statusnet-sendtaglinks" type="checkbox" name="statusnet-sendtaglinks" value="1" '. $linkschecked . '/>';
-				$s .= '<div class="clear"></div>';
-			}
 			$s .= '</div>';
 
 			$s .= '<label id="statusnet-import-label" for="statusnet-import">'.t('Import the remote timeline').'</label>';
@@ -445,192 +424,6 @@ function statusnet_post_local(&$a,&$b) {
 			$b['postopts'] .= ',';
 		$b['postopts'] .= 'statusnet';
 	}
-}
-
-if (! function_exists( 'short_link' )) {
-function short_link($url) {
-    require_once('library/slinky.php');
-    $slinky = new Slinky( $url );
-    $yourls_url = get_config('yourls','url1');
-    if ($yourls_url) {
-	    $yourls_username = get_config('yourls','username1');
-	    $yourls_password = get_config('yourls', 'password1');
-	    $yourls_ssl = get_config('yourls', 'ssl1');
-	    $yourls = new Slinky_YourLS();
-	    $yourls->set( 'username', $yourls_username );
-	    $yourls->set( 'password', $yourls_password );
-	    $yourls->set( 'ssl', $yourls_ssl );
-	    $yourls->set( 'yourls-url', $yourls_url );
-	    $slinky->set_cascade( array( $yourls, new Slinky_UR1ca(), new Slinky_Trim(), new Slinky_IsGd(), new Slinky_TinyURL() ) );
-    }
-    else {
-	    // setup a cascade of shortening services
-	    // try to get a short link from these services
-	    // in the order ur1.ca, trim, id.gd, tinyurl
-	    $slinky->set_cascade( array( new Slinky_UR1ca(), new Slinky_Trim(), new Slinky_IsGd(), new Slinky_TinyURL() ) );
-    }
-    return $slinky->short();
-} };
-
-function statusnet_shortenmsg($b, $max_char) {
-	require_once("include/api.php");
-	require_once("include/bbcode.php");
-	require_once("include/html2plain.php");
-
-	$b['body'] = bb_CleanPictureLinks($b['body']);
-
-	// Looking for the first image
-	$cleaned_body = api_clean_plain_items($b['body']);
-	$image = '';
-	if(preg_match("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/is",$cleaned_body,$matches))
-		$image = $matches[3];
-
-	if ($image == '')
-		if(preg_match("/\[img\](.*?)\[\/img\]/is",$cleaned_body,$matches))
-			$image = $matches[1];
-
-	$multipleimages = (strpos($cleaned_body, "[img") != strrpos($cleaned_body, "[img"));
-
-	// When saved into the database the content is sent through htmlspecialchars
-	// That means that we have to decode all image-urls
-	$image = htmlspecialchars_decode($image);
-
-	$body = $b["body"];
-	if ($b["title"] != "")
-		$body = $b["title"]."\n\n".$body;
-
-	if (strpos($body, "[bookmark") !== false) {
-		// splitting the text in two parts:
-		// before and after the bookmark
-		$pos = strpos($body, "[bookmark");
-		$body1 = substr($body, 0, $pos);
-		$body2 = substr($body, $pos);
-
-		// Removing all quotes after the bookmark
-		// they are mostly only the content after the bookmark.
-		$body2 = preg_replace("/\[quote\=([^\]]*)\](.*?)\[\/quote\]/ism",'',$body2);
-		$body2 = preg_replace("/\[quote\](.*?)\[\/quote\]/ism",'',$body2);
-		$body = $body1.$body2;
-	}
-
-	// Add some newlines so that the message could be cut better
-	$body = str_replace(array("[quote", "[bookmark", "[/bookmark]", "[/quote]"),
-				array("\n[quote", "\n[bookmark", "[/bookmark]\n", "[/quote]\n"), $body);
-
-	// remove the recycle signs and the names since they aren't helpful on statusnet
-	// recycle 1
-	$recycle = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8');
-	$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n", $body);
-	// recycle 2 (Test)
-	$recycle = html_entity_decode("&#x25CC; ", ENT_QUOTES, 'UTF-8');
-	$body = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', "\n", $body);
-
-	// remove the share element
-	//$body = preg_replace("/\[share(.*?)\](.*?)\[\/share\]/ism","\n\n$2\n\n",$body);
-
-	// At first convert the text to html
-	$html = bbcode(api_clean_plain_items($body), false, false, 2);
-
-	// Then convert it to plain text
-	//$msg = trim($b['title']." \n\n".html2plain($html, 0, true));
-	$msg = trim(html2plain($html, 0, true));
-	$msg = html_entity_decode($msg,ENT_QUOTES,'UTF-8');
-
-	// Removing multiple newlines
-	while (strpos($msg, "\n\n\n") !== false)
-		$msg = str_replace("\n\n\n", "\n\n", $msg);
-
-	// Removing multiple spaces
-	while (strpos($msg, "  ") !== false)
-		$msg = str_replace("  ", " ", $msg);
-
-	$origmsg = $msg;
-
-	// Removing URLs
-	$msg = preg_replace('/(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/i', "", $msg);
-
-	$msg = trim($msg);
-
-	$link = '';
-	// look for bookmark-bbcode and handle it with priority
-	if(preg_match("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/is",$b['body'],$matches))
-		$link = $matches[1];
-
-	$multiplelinks = (strpos($b['body'], "[bookmark") != strrpos($b['body'], "[bookmark"));
-
-	// If there is no bookmark element then take the first link
-	if ($link == '') {
-		$links = collecturls($html);
-		if (sizeof($links) > 0) {
-			reset($links);
-			$link = current($links);
-		}
-		$multiplelinks = (sizeof($links) > 1);
-	}
-
-	$msglink = "";
-	if ($multiplelinks)
-		$msglink = $b["plink"];
-	else if ($link != "")
-		$msglink = $link;
-	else if ($multipleimages)
-		$msglink = $b["plink"];
-	else if ($image != "")
-		$msglink = $image;
-
-	if (($msglink == "") and strlen($msg) > $max_char)
-		$msglink = $b["plink"];
-
-	// If the message is short enough then don't modify it. (if the link exists in the original message)
-	if ((strlen(trim($origmsg)) <= $max_char) AND (($msglink == "") OR strpos($origmsg, $msglink)))
-		return(array("msg"=>trim($origmsg), "image"=>""));
-
-	// If the message is short enough and contains a picture then post the picture as well
-	if ((strlen(trim($origmsg)) <= ($max_char - 20)) AND strpos($origmsg, $msglink))
-		return(array("msg"=>trim($origmsg), "image"=>$image));
-
-	// If the message is short enough and the link exists in the original message don't modify it as well
-	if ((strlen(trim($origmsg)) <= $max_char) AND strpos($origmsg, $msglink))
-		return(array("msg"=>trim($origmsg), "image"=>""));
-
-	// Preserve the unshortened link
-	$orig_link = $msglink;
-
-	if (strlen($msglink) > 20)
-		$msglink = short_link($msglink);
-
-	if (strlen(trim($msg." ".$msglink)) > $max_char) {
-		$msg = substr($msg, 0, $max_char - (strlen($msglink)));
-		$lastchar = substr($msg, -1);
-		$msg = substr($msg, 0, -1);
-		$pos = strrpos($msg, "\n");
-		if ($pos > 0)
-			$msg = substr($msg, 0, $pos);
-		else if ($lastchar != "\n")
-			$msg = substr($msg, 0, -3)."...";
-	}
-	//$msg = str_replace("\n", " ", $msg);
-
-	// Removing multiple spaces - again
-	while (strpos($msg, "  ") !== false)
-		$msg = str_replace("  ", " ", $msg);
-
-	//return(array("msg"=>trim($msg."\n".$msglink), "image"=>$image));
-
-	// Looking if the link points to an image
-	$img_str = fetch_url($orig_link);
-
-	$tempfile = tempnam(get_config("system","temppath"), "cache");
-	file_put_contents($tempfile, $img_str);
-	$mime = image_type_to_mime_type(exif_imagetype($tempfile));
-	unlink($tempfile);
-
-	if (($image == $orig_link) OR (substr($mime, 0, 6) == "image/"))
-		return(array("msg"=>trim($msg), "image"=>$orig_link));
-	else if (($image != $orig_link) AND ($image != "") AND (strlen($msg." ".$msglink) <= ($max_char - 20)))
-		return(array("msg"=>trim($msg." ".$msglink)."\n", "image"=>$image));
-	else
-		return(array("msg"=>trim($msg." ".$msglink), "image"=>""));
 }
 
 function statusnet_action($a, $uid, $pid, $action) {
@@ -740,11 +533,6 @@ function statusnet_post_hook(&$a,&$b) {
 	$csecret = get_pconfig($b['uid'], 'statusnet', 'consumersecret');
 	$otoken  = get_pconfig($b['uid'], 'statusnet', 'oauthtoken');
 	$osecret = get_pconfig($b['uid'], 'statusnet', 'oauthsecret');
-	$intelligent_shortening = get_pconfig($b['uid'], 'statusnet', 'intelligent_shortening');
-
-	// Global setting overrides this
-	if (get_config('statusnet','intelligent_shortening'))
-		$intelligent_shortening = get_config('statusnet','intelligent_shortening');
 
 	if($ckey && $csecret && $otoken && $osecret) {
 
@@ -755,99 +543,34 @@ function statusnet_post_hook(&$a,&$b) {
 		require_once('include/bbcode.php');
 		$dent = new StatusNetOAuth($api,$ckey,$csecret,$otoken,$osecret);
 		$max_char = $dent->get_maxlength(); // max. length for a dent
-		// we will only work with up to two times the length of the dent
-		// we can later send to StatusNet. This way we can "gain" some
-		// information during shortening of potential links but do not
-		// shorten all the links in a 200000 character long essay.
 
 		$tempfile = "";
-		$intelligent_shortening = get_config('statusnet','intelligent_shortening');
-		if (!$intelligent_shortening) {
-			if (! $b['title']=='') {
-				$tmp = $b['title'].": \n".$b['body'];
-	//                    $tmp = substr($tmp, 0, 4*$max_char);
-			} else {
-			    $tmp = $b['body']; // substr($b['body'], 0, 3*$max_char);
-			}
-			// if [url=bla][img]blub.png[/img][/url] get blub.png
-			$tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\]\[img\](\\w+.*?)\\[\\/img\]\\[\\/url\]/i', '$2', $tmp);
-			// preserve links to images, videos and audios
-			$tmp = preg_replace( '/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/ism', '$3', $tmp);
-			$tmp = preg_replace( '/\[\\/?img(\\s+.*?\]|\])/i', '', $tmp);
-			$tmp = preg_replace( '/\[\\/?video(\\s+.*?\]|\])/i', '', $tmp);
-			$tmp = preg_replace( '/\[\\/?youtube(\\s+.*?\]|\])/i', '', $tmp);
-			$tmp = preg_replace( '/\[\\/?vimeo(\\s+.*?\]|\])/i', '', $tmp);
-			$tmp = preg_replace( '/\[\\/?audio(\\s+.*?\]|\])/i', '', $tmp);
-			$linksenabled = get_pconfig($b['uid'],'statusnet','post_taglinks');
-			// if a #tag is linked, don't send the [url] over to SN
-			// that is, don't send if the option is not set in the
-			// connector settings
-			if ($linksenabled=='0') {
-				// #-tags
-				$tmp = preg_replace( '/#\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '#$2', $tmp);
-				// @-mentions
-				$tmp = preg_replace( '/@\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', '@$2', $tmp);
-				// recycle 1
-				$recycle = html_entity_decode("&#x2672; ", ENT_QUOTES, 'UTF-8');
-				$tmp = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', $recycle.'$2', $tmp);
-				// recycle 2 (test)
-				$recycle = html_entity_decode("&#x25CC; ", ENT_QUOTES, 'UTF-8');
-				$tmp = preg_replace( '/'.$recycle.'\[url\=(\w+.*?)\](\w+.*?)\[\/url\]/i', $recycle.'$2', $tmp);
-			}
-			// preserve links to webpages
-			$tmp = preg_replace( '/\[url\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/url\]/i', '$2 $1', $tmp);
-			$tmp = preg_replace( '/\[bookmark\=(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)\](\w+.*?)\[\/bookmark\]/i', '$2 $1', $tmp);
-			// find all http or https links in the body of the entry and 
-			// apply the shortener if the link is longer then 20 characters 
-			if (( strlen($tmp)>$max_char ) && ( $max_char > 0 )) {
-			    preg_match_all ( '/(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/i', $tmp, $allurls  );
-			    foreach ($allurls as $url) {
-				foreach ($url as $u) {
-				    if (strlen($u)>20) {
-					$sl = short_link($u);
-					$tmp = str_replace( $u, $sl, $tmp );
-				    }
-				}
-			    }
-			}
-			// ok, all the links we want to send out are save, now strip 
-			// away the remaining bbcode
-			//$msg = strip_tags(bbcode($tmp, false, false));
-			$msg = bbcode($tmp, false, false, true);
-			$msg = str_replace(array('<br>','<br />'),"\n",$msg);
-			$msg = strip_tags($msg);
+		require_once("include/plaintext.php");
+		require_once("include/network.php");
+		$msgarr = plaintext($a, $b, $max_char, true);
+		$msg = $msgarr["text"];
 
-			// quotes not working - let's try this
-			$msg = html_entity_decode($msg);
+		if (($msg == "") AND isset($msgarr["title"]))
+			$msg = shortenmsg($msgarr["title"], $max_char - 50);
 
-			if (( strlen($msg) > $max_char) && $max_char > 0) {
-				$shortlink = short_link( $b['plink'] );
-				// the new message will be shortened such that "... $shortlink"
-				// will fit into the character limit
-				$msg = nl2br(substr($msg, 0, $max_char-strlen($shortlink)-4));
-				$msg = str_replace(array('<br>','<br />'),' ',$msg);
-				$e = explode(' ', $msg);
-				//  remove the last word from the cut down message to
-				//  avoid sending cut words to the MicroBlog
-				array_pop($e);
-				$msg = implode(' ', $e);
-				$msg .= '... ' . $shortlink;
-			}
+		$image = "";
 
-			$msg = trim($msg);
-			$postdata = array('status' => $msg);
-		} else {
-			$msgarr = statusnet_shortenmsg($b, $max_char);
-			$msg = $msgarr["msg"];
+		if (isset($msgarr["url"])) {
+			if ((strlen($msgarr["url"]) > 20) AND
+				((strlen($msg." \n".$msgarr["url"]) > $max_char)))
+				$msg .= " \n".short_link($msgarr["url"]);
+			else
+				$msg .= " \n".$msgarr["url"];
+		} elseif (isset($msgarr["image"]))
 			$image = $msgarr["image"];
-			if ($image != "") {
-				$img_str = fetch_url($image);
-				$tempfile = tempnam(get_config("system","temppath"), "cache");
-				file_put_contents($tempfile, $img_str);
-				$postdata = array("status" => $msg, "media[]" => $tempfile);
-			} else
-				$postdata = array("status"=>$msg);
-		}
+
+		if ($image != "") {
+			$img_str = fetch_url($image);
+			$tempfile = tempnam(get_config("system","temppath"), "cache");
+			file_put_contents($tempfile, $img_str);
+			$postdata = array("status" => $msg, "media[]" => $tempfile);
+		} else
+			$postdata = array("status"=>$msg);
 
 		// and now dent it :-)
 		if(strlen($msg)) {
@@ -1661,21 +1384,23 @@ function statusnet_complete_conversation($a, $uid, $self, $create_user, $nick, $
 	$parameters["count"] = 200;
 
 	$items = $connection->get('statusnet/conversation/'.$conversation, $parameters);
-	$posts = array_reverse($items);
+	if (is_array($items)) {
+		$posts = array_reverse($items);
 
-	foreach($posts AS $post) {
-		$postarray = statusnet_createpost($a, $uid, $post, $self, $create_user, true);
+		foreach($posts AS $post) {
+			$postarray = statusnet_createpost($a, $uid, $post, $self, $create_user, true);
 
-		if (trim($postarray['body']) == "")
-			continue;
+			if (trim($postarray['body']) == "")
+				continue;
 
-		//print_r($postarray);
-		$item = item_store($postarray);
+			//print_r($postarray);
+			$item = item_store($postarray);
 
-		logger('statusnet_complete_conversation: User '.$self["nick"].' posted home timeline item '.$item);
+			logger('statusnet_complete_conversation: User '.$self["nick"].' posted home timeline item '.$item);
 
-		if ($item != 0)
-			statusnet_checknotification($a, $uid, $nick, $item, $postarray);
+			if ($item != 0)
+				statusnet_checknotification($a, $uid, $nick, $item, $postarray);
+		}
 	}
 }
 
@@ -1690,6 +1415,7 @@ function statusnet_convertmsg($a, $body, $no_tags = false) {
 
 	$footer = "";
 	$footerurl = "";
+	$footerlink = "";
 	$type = "";
 
 	if ($links) {
@@ -1698,14 +1424,18 @@ function statusnet_convertmsg($a, $body, $no_tags = false) {
 
 			$expanded_url = original_url($match[1]);
 
-			$oembed_data = oembed_fetch_url($expanded_url);
-
+			$oembed_data = oembed_fetch_url($expanded_url, true);
+print_r($oembed_data);
 			if ($type == "")
 				$type = $oembed_data->type;
+			if ($oembed_data->type == "video") {
+				//$body = str_replace($search, "[video]".$expanded_url."[/video]", $body);
+				$type = $oembed_data->type;
+				$footerurl = $expanded_url;
+				$footerlink = "[url=".$expanded_url."]".$expanded_url."[/url]";
 
-			if ($oembed_data->type == "video")
-				$body = str_replace($search, "[video]".$expanded_url."[/video]", $body);
-			elseif (($oembed_data->type == "photo") AND isset($oembed_data->url) AND !$dontincludemedia)
+				$body = str_replace($search, $footerlink, $body);
+			} elseif (($oembed_data->type == "photo") AND isset($oembed_data->url) AND !$dontincludemedia)
 				$body = str_replace($search, "[url=".$expanded_url."][img]".$oembed_data->url."[/img][/url]", $body);
 			elseif ($oembed_data->type != "link")
 				$body = str_replace($search,  "[url=".$expanded_url."]".$expanded_url."[/url]", $body);
@@ -1725,7 +1455,7 @@ function statusnet_convertmsg($a, $body, $no_tags = false) {
 					$footerurl = $expanded_url;
 					$footerlink = "[url=".$expanded_url."]".$expanded_url."[/url]";
 
-					$body = str_replace($search, $expanded_url, $body);
+					$body = str_replace($search, $footerlink, $body);
 				}
 			}
 		}
