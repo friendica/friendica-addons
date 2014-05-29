@@ -71,6 +71,10 @@ function fromgplus_addon_settings_post(&$a,&$b) {
 		set_pconfig(local_user(),'fromgplus','account',trim($_POST['fromgplus-account']));
 		$enable = ((x($_POST,'fromgplus-enable')) ? intval($_POST['fromgplus-enable']) : 0);
 		set_pconfig(local_user(),'fromgplus','enable', $enable);
+
+		if (!$enable)
+			del_pconfig(local_user(),'fromgplus','lastdate');
+
 		info( t('Google+ Import Settings saved.') . EOL);
 	}
 }

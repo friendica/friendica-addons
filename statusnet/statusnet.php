@@ -250,6 +250,10 @@ function statusnet_settings_post ($a,$post) {
 		set_pconfig(local_user(), 'statusnet', 'mirror_posts', intval($_POST['statusnet-mirror']));
 		set_pconfig(local_user(), 'statusnet', 'import', intval($_POST['statusnet-import']));
 		set_pconfig(local_user(), 'statusnet', 'create_user', intval($_POST['statusnet-create_user']));
+
+		if (!intval($_POST['statusnet-mirror']))
+			del_pconfig(local_user(),'statusnet','lastid');
+
 		info( t('StatusNet settings updated.') . EOL);
 	}}}}
 }

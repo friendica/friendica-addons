@@ -194,7 +194,11 @@ function twitter_settings_post ($a,$post) {
 		set_pconfig(local_user(), 'twitter', 'mirror_posts', intval($_POST['twitter-mirror']));
 		set_pconfig(local_user(), 'twitter', 'import', intval($_POST['twitter-import']));
 		set_pconfig(local_user(), 'twitter', 'create_user', intval($_POST['twitter-create_user']));
-                info( t('Twitter settings updated.') . EOL);
+
+                if (!intval($_POST['twitter-mirror']))
+                        del_pconfig(local_user(),'twitter','lastid');
+
+                info(t('Twitter settings updated.') . EOL);
 	}}
 }
 function twitter_settings(&$a,&$s) {
