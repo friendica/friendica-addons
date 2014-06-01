@@ -140,6 +140,9 @@ function fbpost_post(&$a) {
 		$value = ((x($_POST,'mirror_posts')) ? intval($_POST['mirror_posts']) : 0);
 		set_pconfig($uid,'facebook','mirror_posts', $value);
 
+		if (!$value)
+			del_pconfig($uid,'facebook','last_created');
+
 		$value = ((x($_POST,'suppress_view_on_friendica')) ? intval($_POST['suppress_view_on_friendica']) : 0);
 		set_pconfig($uid,'facebook','suppress_view_on_friendica', $value);
 
