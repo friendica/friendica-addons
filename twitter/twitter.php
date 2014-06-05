@@ -64,7 +64,7 @@ define('TWITTER_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
 function twitter_install() {
 	//  we need some hooks, for the configuration and for sending tweets
-	register_hook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings'); 
+	register_hook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings');
 	register_hook('connector_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
 	register_hook('post_local', 'addon/twitter/twitter.php', 'twitter_post_local');
 	register_hook('notifier_normal', 'addon/twitter/twitter.php', 'twitter_post_hook');
@@ -72,12 +72,13 @@ function twitter_install() {
 	register_hook('cron', 'addon/twitter/twitter.php', 'twitter_cron');
 	register_hook('queue_predeliver', 'addon/twitter/twitter.php', 'twitter_queue_hook');
 	register_hook('follow', 'addon/twitter/twitter.php', 'twitter_follow');
+	register_hook('expire', 'addon/twitter/twitter.php', 'twitter_expire');
 	logger("installed twitter");
 }
 
 
 function twitter_uninstall() {
-	unregister_hook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings'); 
+	unregister_hook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings');
 	unregister_hook('connector_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
 	unregister_hook('post_local', 'addon/twitter/twitter.php', 'twitter_post_local');
 	unregister_hook('notifier_normal', 'addon/twitter/twitter.php', 'twitter_post_hook');
@@ -85,10 +86,11 @@ function twitter_uninstall() {
 	unregister_hook('cron', 'addon/twitter/twitter.php', 'twitter_cron');
 	unregister_hook('queue_predeliver', 'addon/twitter/twitter.php', 'twitter_queue_hook');
 	unregister_hook('follow', 'addon/twitter/twitter.php', 'twitter_follow');
+	unregister_hook('expire', 'addon/twitter/twitter.php', 'twitter_expire');
 
 	// old setting - remove only
 	unregister_hook('post_local_end', 'addon/twitter/twitter.php', 'twitter_post_hook');
-	unregister_hook('plugin_settings', 'addon/twitter/twitter.php', 'twitter_settings'); 
+	unregister_hook('plugin_settings', 'addon/twitter/twitter.php', 'twitter_settings');
 	unregister_hook('plugin_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
 
 }
@@ -622,6 +624,30 @@ function twitter_cron($a,$b) {
 	logger('twitter: cron_end');
 
 	set_config('twitter','last_poll', time());
+}
+
+function twitter_expire($a,$b) {
+
+        $days = get_config('twitter', 'expire');
+
+        if ($days == 0)
+                return;
+
+	$r = q("DELETE FROM `item` WHERE `deleted` AND `network` = '%s'", dbesc(NETWORK_TWITTER));
+
+        require_once("include/items.php");
+
+        logger('twitter_expire: expire_start');
+
+        $r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'import' AND `v` = '1' ORDER BY RAND()");
+        if(count($r)) {
+                foreach($r as $rr) {
+                        logger('twitter_expire: user '.$rr['uid']);
+                        item_expire($rr['uid'], $days, NETWORK_TWITTER, true);
+                }
+        }
+
+        logger('twitter_expire: expire_end');
 }
 
 function twitter_fetchtimeline($a, $uid) {
