@@ -1,0 +1,74 @@
+# ADDON newmemberwidget
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica newmemberwidget addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-01 12:06+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: newmemberwidget.php:21
+msgid "New Member"
+msgstr "Neue Nutzer"
+
+#: newmemberwidget.php:22
+msgid "Tips for New Members"
+msgstr "Tipps für neue Nutzer"
+
+#: newmemberwidget.php:24
+msgid "Global Support Forum"
+msgstr "Globales Forum für Hilfsanfragen"
+
+#: newmemberwidget.php:26
+msgid "Local Support Forum"
+msgstr "Lokales Forum für Hilfsanfragen"
+
+#: newmemberwidget.php:47
+msgid "Save Settings"
+msgstr "Einstellungen Speichern"
+
+#: newmemberwidget.php:48
+msgid "Message"
+msgstr "Nachricht"
+
+#: newmemberwidget.php:48
+msgid "Your message for new members. You can use bbcode here."
+msgstr "Deine Nachricht für neue Nutzer. BBCode kann verwendet werden."
+
+#: newmemberwidget.php:49
+msgid "Add a link to global support forum"
+msgstr "Link zum globalen Support Forum anzeigen"
+
+#: newmemberwidget.php:49
+msgid "Should a link to the global support forum be displayed?"
+msgstr "Soll ein Link zum globalen Support Forum angezeigt werden?"
+
+#: newmemberwidget.php:50
+msgid "Add a link to the local support forum"
+msgstr "Link zum lokalen Support Forum anzeigen"
+
+#: newmemberwidget.php:50
+msgid ""
+"If you have a local support forum and wand to have a link displayed in the "
+"widget, check this box."
+msgstr "Wenn du ein lokales Support Forum eingerichtet hast und Link darauf angezeigt werden soll, hier klicken"
+
+#: newmemberwidget.php:51
+msgid "Name of the local support group"
+msgstr "Name des lokalen Support Forums"
+
+#: newmemberwidget.php:51
+msgid ""
+"If you checked the above, specify the <em>nickname</em> of the local support "
+"group here (i.e. helpers)"
+msgstr "Wenn der Link angezeigt werden soll, dann trage hier den <em>Spitznamen</em> des Forums ein (z.B. helpers)"
