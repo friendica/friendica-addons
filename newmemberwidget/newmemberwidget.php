@@ -21,7 +21,7 @@ function newmemberwidget_network_mod_init ( $a, $b) {
     if (x($_SESSION['new_member'])) {
 	$t = '<div id="newmember_widget" class="widget">'.EOL;
 	$t .= '<h3>'.t('New Member').'</h3>'.EOL;
-	$t .= '<a href="newmember" id="newmemberwidget-tips">' . t('Tips for New Members') . '</a>i<br />'.EOL;
+	$t .= '<a href="newmember" id="newmemberwidget-tips">' . t('Tips for New Members') . '</a><br />'.EOL;
 	if (get_config('newmemberwidget','linkglobalsupport')==1)
 	    $t .= '<a href="https://helpers.pyxis.uberspace.de/profile/helpers" target="_new">'.t('Global Support Forum').'</a><br />'.EOL;
 	if (get_config('newmemberwidget','linklocalsupport')==1)
