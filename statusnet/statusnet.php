@@ -171,8 +171,8 @@ function statusnet_settings_post ($a,$post) {
 		del_pconfig(local_user(), 'statusnet', 'lastid');
 		del_pconfig(local_user(), 'statusnet', 'mirror_posts');
 		del_pconfig(local_user(), 'statusnet', 'import');
-        	del_pconfig(local_user(), 'statusnet', 'create_user');
-        	del_pconfig(local_user(), 'statusnet', 'own_id');
+		del_pconfig(local_user(), 'statusnet', 'create_user');
+		del_pconfig(local_user(), 'statusnet', 'own_id');
 	} else {
 	if (isset($_POST['statusnet-preconf-apiurl'])) {
 		/***
@@ -279,9 +279,9 @@ function statusnet_settings(&$a,&$s) {
 	$mirrorenabled = get_pconfig(local_user(),'statusnet','mirror_posts');
 	$mirrorchecked = (($mirrorenabled) ? ' checked="checked" ' : '');
 	$importenabled = get_pconfig(local_user(),'statusnet','import');
-        $importchecked = (($importenabled) ? ' checked="checked" ' : '');
-        $create_userenabled = get_pconfig(local_user(),'statusnet','create_user');
-        $create_userchecked = (($create_userenabled) ? ' checked="checked" ' : '');
+	$importchecked = (($importenabled) ? ' checked="checked" ' : '');
+	$create_userenabled = get_pconfig(local_user(),'statusnet','create_user');
+	$create_userchecked = (($create_userenabled) ? ' checked="checked" ' : '');
 
 	$css = (($enabled) ? '' : '-disabled');
 
@@ -390,12 +390,12 @@ function statusnet_settings(&$a,&$s) {
 			$s .= '</div>';
 
 			$s .= '<label id="statusnet-import-label" for="statusnet-import">'.t('Import the remote timeline').'</label>';
-                        $s .= '<input id="statusnet-import" type="checkbox" name="statusnet-import" value="1" '. $importchecked . '/>';
-                        $s .= '<div class="clear"></div>';
+			$s .= '<input id="statusnet-import" type="checkbox" name="statusnet-import" value="1" '. $importchecked . '/>';
+			$s .= '<div class="clear"></div>';
 /*
-                        $s .= '<label id="statusnet-create_user-label" for="statusnet-create_user">'.t('Automatically create contacts').'</label>';
-                        $s .= '<input id="statusnet-create_user" type="checkbox" name="statusnet-create_user" value="1" '. $create_userchecked . '/>';
-                        $s .= '<div class="clear"></div>';
+			$s .= '<label id="statusnet-create_user-label" for="statusnet-create_user">'.t('Automatically create contacts').'</label>';
+			$s .= '<input id="statusnet-create_user" type="checkbox" name="statusnet-create_user" value="1" '. $create_userchecked . '/>';
+			$s .= '<div class="clear"></div>';
 */
 			$s .= '<div id="statusnet-disconnect-wrapper">';
 			$s .= '<label id="statusnet-disconnect-label" for="statusnet-disconnect">'. t('Clear OAuth configuration') .'</label>';
@@ -439,20 +439,20 @@ function statusnet_action($a, $uid, $pid, $action) {
 
 	$connection = new StatusNetOAuth($api,$ckey,$csecret,$otoken,$osecret);
 
-        logger("statusnet_action '".$action."' ID: ".$pid, LOGGER_DATA);
+	logger("statusnet_action '".$action."' ID: ".$pid, LOGGER_DATA);
 
-        switch ($action) {
-                case "delete":
-                        $result = $connection->post("statuses/destroy/".$pid);
-                        break;
-                case "like":
-                        $result = $connection->post("favorites/create/".$pid);
-                        break;
-                case "unlike":
-                        $result = $connection->post("favorites/destroy/".$pid);
-                        break;
-        }
-        logger("statusnet_action '".$action."' send, result: " . print_r($result, true), LOGGER_DEBUG);
+	switch ($action) {
+		case "delete":
+			$result = $connection->post("statuses/destroy/".$pid);
+			break;
+		case "like":
+			$result = $connection->post("favorites/create/".$pid);
+			break;
+		case "unlike":
+			$result = $connection->post("favorites/destroy/".$pid);
+			break;
+	}
+	logger("statusnet_action '".$action."' send, result: " . print_r($result, true), LOGGER_DEBUG);
 }
 
 function statusnet_post_hook(&$a,&$b) {
@@ -510,19 +510,19 @@ function statusnet_post_hook(&$a,&$b) {
 	}
 
 	if (($b['verb'] == ACTIVITY_POST) AND $b['deleted'])
-                statusnet_action($a, $b["uid"], substr($orig_post["uri"], $hostlength), "delete");
+		statusnet_action($a, $b["uid"], substr($orig_post["uri"], $hostlength), "delete");
 
-        if($b['verb'] == ACTIVITY_LIKE) {
-                logger("statusnet_post_hook: parameter 2 ".substr($b["thr-parent"], $hostlength), LOGGER_DEBUG);
-                if ($b['deleted'])
-                        statusnet_action($a, $b["uid"], substr($b["thr-parent"], $hostlength), "unlike");
-                else
-                        statusnet_action($a, $b["uid"], substr($b["thr-parent"], $hostlength), "like");
-                return;
+	if($b['verb'] == ACTIVITY_LIKE) {
+		logger("statusnet_post_hook: parameter 2 ".substr($b["thr-parent"], $hostlength), LOGGER_DEBUG);
+		if ($b['deleted'])
+			statusnet_action($a, $b["uid"], substr($b["thr-parent"], $hostlength), "unlike");
+		else
+			statusnet_action($a, $b["uid"], substr($b["thr-parent"], $hostlength), "like");
+		return;
 	}
 
-        if($b['deleted'] || ($b['created'] !== $b['edited']))
-                return;
+	if($b['deleted'] || ($b['created'] !== $b['edited']))
+		return;
 
 	// if posts comes from statusnet don't send it back
 	if($b['app'] == "StatusNet")
@@ -700,12 +700,12 @@ function statusnet_cron($a,$b) {
 	}
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'statusnet' AND `k` = 'import' AND `v` = '1' ORDER BY RAND()");
-        if(count($r)) {
-                foreach($r as $rr) {
-                        logger('statusnet: importing timeline from user '.$rr['uid']);
-                        statusnet_fetchhometimeline($a, $rr["uid"]);
-                }
-        }
+	if(count($r)) {
+		foreach($r as $rr) {
+			logger('statusnet: importing timeline from user '.$rr['uid']);
+			statusnet_fetchhometimeline($a, $rr["uid"]);
+		}
+	}
 
 	logger('statusnet: cron_end');
 
@@ -1429,7 +1429,7 @@ function statusnet_convertmsg($a, $body, $no_tags = false) {
 			$expanded_url = original_url($match[1]);
 
 			$oembed_data = oembed_fetch_url($expanded_url, true);
-print_r($oembed_data);
+
 			if ($type == "")
 				$type = $oembed_data->type;
 			if ($oembed_data->type == "video") {

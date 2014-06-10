@@ -69,7 +69,7 @@ function fbpost_init(&$a) {
 
 	if(strlen($nick))
 		$r = q("SELECT `uid` FROM `user` WHERE `nickname` = '%s' LIMIT 1",
-				dbesc($nick)
+			dbesc($nick)
 		);
 	if(!(isset($r) && count($r)))
 		return;
@@ -154,7 +154,7 @@ function fbpost_post(&$a) {
 		$result = q("SELECT `installed` FROM `addon` WHERE `name` = 'fbsync' AND `installed`");
 		if (count($result) > 0) {
 			set_pconfig(local_user(),'fbsync','sync',intval($_POST['fbsync']));
-	                set_pconfig(local_user(),'fbsync','create_user',intval($_POST['create_user']));
+			set_pconfig(local_user(),'fbsync','create_user',intval($_POST['create_user']));
 		}
 
 		info( t('Settings updated.') . EOL);
@@ -316,11 +316,11 @@ function fbpost_content(&$a) {
 
 			$o .= '<div class="clear"></div>';
 
-		        $sync_enabled = get_pconfig(local_user(),'fbsync','sync');
+			$sync_enabled = get_pconfig(local_user(),'fbsync','sync');
 			$checked = (($sync_enabled) ? ' checked="checked" ' : '');
 			$o .= '<input type="checkbox" name="fbsync" value="1"' . $checked . '/>' . ' ' . t('Import Facebook newsfeed.') . EOL;
 
-		        $create_user = get_pconfig(local_user(),'fbsync','create_user');
+			$create_user = get_pconfig(local_user(),'fbsync','create_user');
 			$checked = (($create_user) ? ' checked="checked" ' : '');
 			$o .= '<input type="checkbox" name="create_user" value="1"' . $checked . '/>' . ' ' . t('Automatically create contacts.') . EOL;
 
