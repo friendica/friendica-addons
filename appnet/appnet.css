@@ -1,4 +1,4 @@
-#appnet-disconnect-label, #appnet-token-label,
+#appnet-import-label, #appnet-disconnect-label, #appnet-token-label,
 #appnet-enable-label, #appnet-bydefault-label,
 #appnet-clientid-label, #appnet-clientsecret-label {
 	float: left;
@@ -6,7 +6,7 @@
 	margin-top: 10px;
 }
 
-#appnet-disconnect, #appnet-token,
+#appnet-import, #appnet-disconnect, #appnet-token,
 #appnet-checkbox, #appnet-bydefault,
 #appnet-clientid, #appnet-clientsecret {
 	float: left;
