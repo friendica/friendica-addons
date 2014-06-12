@@ -69,7 +69,7 @@ function fbpost_init(&$a) {
 
 	if(strlen($nick))
 		$r = q("SELECT `uid` FROM `user` WHERE `nickname` = '%s' LIMIT 1",
-				dbesc($nick)
+			dbesc($nick)
 		);
 	if(!(isset($r) && count($r)))
 		return;
@@ -154,7 +154,7 @@ function fbpost_post(&$a) {
 		$result = q("SELECT `installed` FROM `addon` WHERE `name` = 'fbsync' AND `installed`");
 		if (count($result) > 0) {
 			set_pconfig(local_user(),'fbsync','sync',intval($_POST['fbsync']));
-	                set_pconfig(local_user(),'fbsync','create_user',intval($_POST['create_user']));
+			set_pconfig(local_user(),'fbsync','create_user',intval($_POST['create_user']));
 		}
 
 		info( t('Settings updated.') . EOL);
@@ -248,7 +248,7 @@ function fbpost_content(&$a) {
 		//read_stream,publish_stream,manage_pages,photo_upload,user_groups,offline_access
 
 		$o .= '<a href="https://www.facebook.com/dialog/oauth?client_id=' . $appid . '&redirect_uri=' 
-			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=export_stream,read_stream,publish_stream,manage_pages,photo_upload,user_groups,publish_actions,user_friends,create_note,share_item,video_upload,status_update">' . t('Install Facebook Post connector for this account.') . '</a>';
+			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=export_stream,read_stream,publish_stream,manage_pages,photo_upload,user_groups,publish_actions,user_friends,share_item,video_upload,status_update">' . t('Install Facebook Post connector for this account.') . '</a>';
 		$o .= '</div>';
 	}
 
@@ -260,7 +260,7 @@ function fbpost_content(&$a) {
 		$o .= '<div id="fbpost-enable-wrapper">';
 
 		$o .= '<a href="https://www.facebook.com/dialog/oauth?client_id=' . $appid . '&redirect_uri=' 
-			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=export_stream,read_stream,publish_stream,manage_pages,photo_upload,user_groups,publish_actions,user_friends,create_note,share_item,video_upload,status_update">' . t('Re-authenticate [This is necessary whenever your Facebook password is changed.]') . '</a>';
+			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=export_stream,read_stream,publish_stream,manage_pages,photo_upload,user_groups,publish_actions,user_friends,share_item,video_upload,status_update">' . t('Re-authenticate [This is necessary whenever your Facebook password is changed.]') . '</a>';
 		$o .= '</div>';
 
 		$o .= '<div id="fbpost-post-default-form">';
@@ -316,11 +316,11 @@ function fbpost_content(&$a) {
 
 			$o .= '<div class="clear"></div>';
 
-		        $sync_enabled = get_pconfig(local_user(),'fbsync','sync');
+			$sync_enabled = get_pconfig(local_user(),'fbsync','sync');
 			$checked = (($sync_enabled) ? ' checked="checked" ' : '');
 			$o .= '<input type="checkbox" name="fbsync" value="1"' . $checked . '/>' . ' ' . t('Import Facebook newsfeed.') . EOL;
 
-		        $create_user = get_pconfig(local_user(),'fbsync','create_user');
+			$create_user = get_pconfig(local_user(),'fbsync','create_user');
 			$checked = (($create_user) ? ' checked="checked" ' : '');
 			$o .= '<input type="checkbox" name="create_user" value="1"' . $checked . '/>' . ' ' . t('Automatically create contacts.') . EOL;
 
@@ -666,11 +666,13 @@ function fbpost_post_hook(&$a,&$b) {
 						$postvars['message'] = $msg;
 
 					$url = 'https://graph.facebook.com/'.$target.'/photos';
-				} else if (($link != "") or ($image != "") or ($b['title'] == '') or (strlen($msg) < 500)) {
+				//} else if (($link != "") or ($image != "") or ($b['title'] == '') or (strlen($msg) < 500)) {
+				} else {
 					$url = 'https://graph.facebook.com/'.$target.'/feed';
 					if (!get_pconfig($b['uid'],'facebook','suppress_view_on_friendica') and $b['plink'])
 						$postvars['actions'] = '{"name": "' . t('View on Friendica') . '", "link": "' .  $b['plink'] . '"}';
-				} else {
+				}
+/*				} else {
 					// if its only a message and a subject and the message is larger than 500 characters then post it as note
 					$postvars = array(
 						'access_token' => $fb_token,
@@ -678,7 +680,7 @@ function fbpost_post_hook(&$a,&$b) {
 						'subject' => $b['title'],
 					);
 					$url = 'https://graph.facebook.com/'.$target.'/notes';
-				}
+				} */
 
 				// Post to page?
 				if (!$reply and ($target != "me") and $page_access_token)
@@ -946,6 +948,7 @@ function fbpost_cron($a,$b) {
 
 function fbpost_fetchwall($a, $uid) {
 	require_once("include/oembed.php");
+	require_once('mod/item.php');
 
 	$access_token = get_pconfig($uid,'facebook','access_token');
 	$post_to_page = get_pconfig($uid,'facebook','post_to_page');
@@ -1081,8 +1084,6 @@ function fbpost_fetchwall($a, $uid) {
 
 		//print_r($_REQUEST);
 		logger('facebook: posting for user '.$uid);
-
-		require_once('mod/item.php');
 		item_post($a);
 	}
 

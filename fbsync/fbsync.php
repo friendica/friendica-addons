@@ -26,6 +26,7 @@ function fbsync_install() {
 	register_hook('connector_settings_post', 'addon/fbsync/fbsync.php', 'fbsync_settings_post');
 	register_hook('cron', 'addon/fbsync/fbsync.php', 'fbsync_cron');
 	register_hook('follow', 'addon/fbsync/fbsync.php', 'fbsync_follow');
+	register_hook('expire', 'addon/fbsync/fbsync.php', 'fbsync_expire');
 }
 
 function fbsync_uninstall() {
@@ -33,6 +34,7 @@ function fbsync_uninstall() {
 	unregister_hook('connector_settings_post', 'addon/fbsync/fbsync.php', 'fbsync_settings_post');
 	unregister_hook('cron', 'addon/fbsync/fbsync.php', 'fbsync_cron');
 	unregister_hook('follow', 'addon/fbsync/fbsync.php', 'fbsync_follow');
+	unregister_hook('expire', 'addon/fbsync/fbsync.php', 'fbsync_expire');
 }
 
 function fbsync_follow($a, &$contact) {
@@ -183,6 +185,30 @@ function fbsync_cron($a,$b) {
 	logger('fbsync_cron: cron_end');
 
 	set_config('fbsync','last_poll', time());
+}
+
+function fbsync_expire($a,$b) {
+
+	$days = get_config('fbsync', 'expire');
+
+	if ($days == 0)
+		return;
+
+	$r = q("DELETE FROM `item` WHERE `deleted` AND `network` = '%s'", dbesc(NETWORK_FACEBOOK));
+
+	require_once("include/items.php");
+
+	logger('fbsync_expire: expire_start');
+
+	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'fbsync' AND `k` = 'sync' AND `v` = '1' ORDER BY RAND()");
+	if(count($r)) {
+		foreach($r as $rr) {
+			logger('fbsync_expire: user '.$rr['uid']);
+			item_expire($rr['uid'], $days, NETWORK_FACEBOOK, true);
+		}
+	}
+
+	logger('fbsync_expire: expire_end');
 }
 
 function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $create_user) {
@@ -1018,7 +1044,6 @@ function fbsync_fetchfeed($a, $uid) {
 	foreach ($post_data AS $post) {
 		if ($post->updated_time > $last_updated)
 			$last_updated = $post->updated_time;
-
 		fbsync_createpost($a, $uid, $self, $contacts, $application_data, $post, $create_user);
 	}
 

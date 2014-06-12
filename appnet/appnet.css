@@ -1,0 +1,29 @@
+#appnet-import-label, #appnet-disconnect-label, #appnet-token-label,
+#appnet-enable-label, #appnet-bydefault-label,
+#appnet-clientid-label, #appnet-clientsecret-label {
+	float: left;
+	width: 200px;
+	margin-top: 10px;
+}
+
+#appnet-import, #appnet-disconnect, #appnet-token,
+#appnet-checkbox, #appnet-bydefault,
+#appnet-clientid, #appnet-clientsecret {
+	float: left;
+	margin-top: 10px;
+}
+
+#appnet-submit {
+	margin-top: 15px;
+}
+
+#appnet-avatar {
+        float: left;
+        width: 48px;
+        height: 48px;
+        padding: 2px;
+}
+#appnet-info-block {
+        height: 52px;
+        vertical-align: middle;
+}
