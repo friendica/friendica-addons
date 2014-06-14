@@ -8,7 +8,10 @@
  */
 
 /*
- Some marker in the post so that reimported posts can be treated better. (BBCode over app.net?)
+ To-Do:
+ - Use embedded pictures for the attachment information (large attachment)
+ - Sound links must be handled
+ - https://alpha.app.net/sr_rolando/post/32365203 - double pictures
 */
 
 define('APPNET_DEFAULT_POLL_INTERVAL', 5); // given in minutes
@@ -158,7 +161,6 @@ function appnet_settings(&$a,&$s) {
 		catch (AppDotNetException $e) {
 			$s .= t("<p>Error fetching user profile. Please clear the configuration and try again.</p>");
 		}
-		//$s .= print_r($userdata, true);
 
 	} elseif (($app_clientId == '') OR ($app_clientSecret == '')) {
 		$s .= t("<p>You have two ways to connect to App.net.</p>");
@@ -256,6 +258,94 @@ function appnet_post_local(&$a,&$b) {
 	}
 }
 
+function appnet_create_entities($a, $b, $postdata) {
+	require_once("include/bbcode.php");
+	require_once("include/plaintext.php");
+
+	$bbcode = $b["body"];
+	$bbcode = bb_remove_share_information($bbcode, false, true);
+
+	// Change pure links in text to bbcode uris
+	$bbcode = preg_replace("/([^\]\='".'"'."]|^)(https?\:\/\/[a-zA-Z0-9\:\/\-\?\&\;\.\=\_\~\#\%\$\!\+\,]+)/ism", '$1[url=$2]$2[/url]', $bbcode);
+
+	$URLSearchString = "^\[\]";
+
+	$bbcode = preg_replace("/#\[url\=([$URLSearchString]*)\](.*?)\[\/url\]/ism",'#$2',$bbcode);
+	$bbcode = preg_replace("/@\[url\=([$URLSearchString]*)\](.*?)\[\/url\]/ism",'@$2',$bbcode);
+	$bbcode = preg_replace("/\[bookmark\=([$URLSearchString]*)\](.*?)\[\/bookmark\]/ism",'[url=$1]$2[/url]',$bbcode);
+	$bbcode = preg_replace("/\[video\](.*?)\[\/video\]/ism",'[url=$1]$1[/url]',$bbcode);
+	$bbcode = preg_replace("/\[youtube\]([A-Za-z0-9\-_=]+)(.*?)\[\/youtube\]/ism",
+			       '[url=https://www.youtube.com/watch?v=$1]https://www.youtube.com/watch?v=$1[/url]', $bbcode);
+	$bbcode = preg_replace("/\[youtube\](.*?)\[\/youtube\]/ism",'[url=$1]$1[/url]',$bbcode);
+	$bbcode = preg_replace("/\[vimeo\]([0-9]+)(.*?)\[\/vimeo\]/ism",
+				'[url=https://vimeo.com/$1]https://vimeo.com/$1[/url]', $bbcode);
+	$bbcode = preg_replace("/\[vimeo\](.*?)\[\/vimeo\]/ism",'[url=$1]$1[/url]',$bbcode);
+
+	$bbcode = preg_replace("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/ism", '[img]$3[/img]', $bbcode);
+
+
+	preg_match_all("/\[url\=([$URLSearchString]*)\](.*?)\[\/url\]/ism", $bbcode, $urls, PREG_SET_ORDER);
+
+	$bbcode = preg_replace("/\[url\=([$URLSearchString]*)\](.*?)\[\/url\]/ism",'$1',$bbcode);
+
+	$b["body"] = $bbcode;
+
+	// To-Do:
+	// Bilder
+	// https://alpha.app.net/heluecht/post/32424376
+	// https://alpha.app.net/heluecht/post/32424307
+
+	$plaintext = plaintext($a, $b, 0, false, 6);
+
+	$text = $plaintext["text"];
+
+	$start = 0;
+	$entities = array();
+
+	foreach ($urls AS $url) {
+		$lenurl = iconv_strlen($url[1], "UTF-8");
+		$len = iconv_strlen($url[2], "UTF-8");
+		$pos = iconv_strpos($text, $url[1], $start, "UTF-8");
+		$pre = iconv_substr($text, 0, $pos, "UTF-8");
+		$post = iconv_substr($text, $pos + $lenurl, 1000000, "UTF-8");
+
+		$mid = $url[2];
+		$html = bbcode($mid, false, false, 6);
+		$mid = html2plain($html, 0, true);
+		$mid = trim(html_entity_decode($mid,ENT_QUOTES,'UTF-8'));
+
+		$text = $pre.$mid.$post;
+
+		if ($mid != "")
+			$entities[] = array("pos" => $pos, "len" => $len, "url" => $url[1], "text" => $mid);
+
+		$start = $pos + 1;
+	}
+
+	if (isset($postdata["url"]) AND isset($postdata["title"])) {
+		$postdata["title"] = shortenmsg($postdata["title"], 90);
+		$text = shortenmsg($text, 256 - strlen($postdata["title"]));
+		$text .= "\n[".$postdata["title"]."](".$postdata["url"].")";
+	} elseif (isset($postdata["url"])) {
+		$postdata["url"] = short_link($postdata["url"]);
+		$text = shortenmsg($text, 240);
+		$text .= " [".$postdata["url"]."](".$postdata["url"].")";
+	} else
+		$text = shortenmsg($text, 256);
+
+	krsort($entities);
+	foreach ($entities AS $entity) {
+		if (iconv_strlen($text) >= $entity["pos"] + $entity["len"]) {
+			$pre = iconv_substr($text, 0, $entity["pos"], "UTF-8");
+			$post = iconv_substr($text, $entity["pos"] + $entity["len"], 1000000, "UTF-8");
+
+			$text = $pre."[".$entity["text"]."](".$entity["url"].")".$post;
+		}
+	}
+
+	return($text);
+}
+
 function appnet_send(&$a,&$b) {
 
 	logger('appnet_send: invoked for post '.$b['id']." ".$b['app']);
@@ -340,7 +430,7 @@ function appnet_send(&$a,&$b) {
 		require_once("include/plaintext.php");
 		require_once("include/network.php");
 
-		$post = plaintext($a, $b, 256, false);
+		$post = plaintext($a, $b, 256, false, 6);
 		logger("appnet_send: converted message ".$b["id"]." result: ".print_r($post, true), LOGGER_DEBUG);
 
 		if (isset($post["image"])) {
@@ -362,7 +452,7 @@ function appnet_send(&$a,&$b) {
 								);
 			}
 			catch (AppDotNetException $e) {
-				logger("appnet_send: Error creating file");
+				logger("appnet_send: Error creating file ".$e->getMessage());
 			}
 
 			unlink($tempfile);
@@ -376,22 +466,19 @@ function appnet_send(&$a,&$b) {
 							);
 
 		// Adding the original post
+		$attached_data = get_attached_data($b["body"]);
+		$attached_data["post-uri"] = $b["uri"];
+		$attached_data["post-title"] = $b["title"];
+		$attached_data["post-body"] = substr($b["body"], 0, 4000); // To-Do: Better shortening
+		$attached_data["post-tag"] = $b["tag"];
+		$attached_data["author-name"] = $b["author-name"];
+		$attached_data["author-link"] = $b["author-link"];
+		$attached_data["author-avatar"] = $b["author-avatar"];
+
 		$data["annotations"][] = array(
 						"type" => "com.friendica.post",
-						"value" => array(
-								"uri" => $b["uri"],
-								"title" => $b["title"],
-								"body" => substr($b["body"], 0, 4000), // To-Do: Better shortening
-								"tag" => $b["tag"],
-								"author-name" => $b["author-name"],
-								"author-link" => $b["author-link"],
-								"author-avatar" => $b["author-avatar"],
-								)
+						"value" => $attached_data
 						);
-
-
-		// To-Do
-		// Alle Links verkürzen
 
 		if (isset($post["url"]) AND !isset($post["title"])) {
 			$display_url = str_replace(array("http://www.", "https://www."), array("", ""), $post["url"]);
@@ -403,27 +490,17 @@ function appnet_send(&$a,&$b) {
 			$post["title"] = $display_url;
 		}
 
-		if (isset($post["url"]) AND isset($post["title"])) {
-			$post["title"] = shortenmsg($post["title"], 90);
-			$post["text"] = shortenmsg($post["text"], 256 - strlen($post["title"]));
-			$post["text"] .= "\n[".$post["title"]."](".$post["url"].")";
-		} elseif (isset($post["url"])) {
-			$post["url"] = short_link($post["url"]);
-			$post["text"] = shortenmsg($post["text"], 240);
-			$post["text"] .= " ".$post["url"];
-		}
+		$text = appnet_create_entities($a, $b, $post);
 
-		//print_r($post);
-		$data["entities"]["parse_links"] = true;
 		$data["entities"]["parse_markdown_links"] = true;
 
 		if ($iscomment)
 			$data["reply_to"] = substr($orig_post["uri"], 5);
 
 		try {
-			$ret = $app->createPost($post["text"], $data);
+			logger("appnet_send: sending message ".$b["id"]." ".$text." ".print_r($data, true), LOGGER_DEBUG);
+			$ret = $app->createPost($text, $data);
 			logger("appnet_send: send message ".$b["id"]." result: ".print_r($ret, true), LOGGER_DEBUG);
-
 			if ($iscomment) {
 				logger('appnet_send: Update extid '.$ret["id"]." for post id ".$b['id']);
 				q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d",
@@ -433,7 +510,7 @@ function appnet_send(&$a,&$b) {
 			}
 		}
 		catch (AppDotNetException $e) {
-			logger("appnet_send: Error sending message ".$b["id"]);
+			logger("appnet_send: Error sending message ".$b["id"]." ".$e->getMessage());
 		}
 	}
 }
@@ -465,7 +542,7 @@ function appnet_action($a, $uid, $pid, $action) {
 		logger("appnet_action '".$action."' send, result: " . print_r($result, true), LOGGER_DEBUG);
 	}
 	catch (AppDotNetException $e) {
-		logger("appnet_action: Error sending action ".$action." pid ".$pid, LOGGER_DEBUG);
+		logger("appnet_action: Error sending action ".$action." pid ".$pid." ".$e->getMessage(), LOGGER_DEBUG);
 	}
 }
 
@@ -516,7 +593,7 @@ function appnet_is_repost($a, $uid, $body) {
 		return true;
 	}
 	catch (AppDotNetException $e) {
-		logger('appnet_is_repost: error doing repost', LOGGER_DEBUG);
+		logger('appnet_is_repost: error doing repost '.$e->getMessage(), LOGGER_DEBUG);
 		return false;
 	}
 }
@@ -568,7 +645,7 @@ function appnet_fetchstream($a, $uid) {
 		$stream = $app->getUserStream($param);
 	}
 	catch (AppDotNetException $e) {
-		logger("appnet_fetchstream: Error fetching stream for user ".$uid);
+		logger("appnet_fetchstream: Error fetching stream for user ".$uid." ".$e->getMessage());
 	}
 
 	$stream = array_reverse($stream);
@@ -622,7 +699,7 @@ function appnet_fetchstream($a, $uid) {
 		$mentions = $app->getUserMentions("me", $param);
 	}
 	catch (AppDotNetException $e) {
-		logger("appnet_fetchstream: Error fetching mentions for user ".$uid);
+		logger("appnet_fetchstream: Error fetching mentions for user ".$uid." ".$e->getMessage());
 	}
 
 	$mentions = array_reverse($mentions);
@@ -729,7 +806,7 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 					$thread = $app->getPostReplies($post["thread_id"], $param);
 				}
 				catch (AppDotNetException $e) {
-					logger("appnet_createpost: Error fetching thread for user ".$uid);
+					logger("appnet_createpost: Error fetching thread for user ".$uid." ".$e->getMessage());
 				}
 				$thread = array_reverse($thread);
 				foreach ($thread AS $tpost) {
@@ -778,9 +855,6 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 	} else
 		$postarray['body'] = $content["text"];
 
-	if (is_array($content["annotations"]))
-		$postarray['body'] = appnet_expand_annotations($a, $postarray['body'], $content["annotations"]);
-
 	if (sizeof($content["entities"]["links"]))
 		foreach($content["entities"]["links"] AS $link) {
 			$url = normalise_link($link["url"]);
@@ -796,15 +870,16 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 						unset($links[$url]);
 				}
 			} elseif ($annotation[type] == "com.friendica.post") {
-				$links = array();
-				if (isset($annotation["value"]["embeddable_url"]))
-					$postarray['title'] = $annotation["value"]["title"];
+				// Nur zum Testen deaktiviert
+				//$links = array();
+				//if (isset($annotation["value"]["post-title"]))
+				//	$postarray['title'] = $annotation["value"]["post-title"];
 
-				if (isset($annotation["value"]["body"]))
-					$postarray['body'] = $annotation["value"]["body"];
+				//if (isset($annotation["value"]["post-body"]))
+				//	$postarray['body'] = $annotation["value"]["post-body"];
 
-				if (isset($annotation["value"]["tag"]))
-					$postarray['tag'] = $annotation["value"]["tag"];
+				//if (isset($annotation["value"]["post-tag"]))
+				//	$postarray['tag'] = $annotation["value"]["post-tag"];
 
 				if (isset($annotation["value"]["author-name"]))
 					$postarray['author-name'] = $annotation["value"]["author-name"];
@@ -818,6 +893,17 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 
 		}
 
+	$page_info = "";
+
+	if (is_array($content["annotations"])) {
+		$photo = appnet_expand_annotations($a, $content["annotations"]);
+		if (($photo["large"] != "") AND ($photo["url"] != ""))
+			$page_info = "\n[url=".$photo["url"]."][img]".$photo["large"]."[/img][/url]";
+		elseif ($photo["url"] != "")
+			$page_info = "\n[img]".$photo["url"]."[/img]";
+	} else
+		$photo = array("url" => "", "large" => "");
+
 	if (sizeof($links)) {
 		$link = array_pop($links);
 		$url = "[url=".$link."]".$link."[/url]";
@@ -827,8 +913,10 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 		if (($removedlink == "") OR strstr($postarray['body'], $removedlink))
 			$postarray['body'] = $removedlink;
 
-		$postarray['body'] .= add_page_info($link);
+		$page_info = add_page_info($link, false, $photo["url"]);
 	}
+
+	$postarray['body'] .= $page_info;
 
 	$postarray['created'] = datetime_convert('UTC','UTC',$post["created_at"]);
 	$postarray['edited'] = datetime_convert('UTC','UTC',$post["created_at"]);
@@ -836,8 +924,6 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 	$postarray['app'] = $post["source"]["name"];
 
 	return($postarray);
-	//print_r($postarray);
-	//print_r($post);
 }
 
 function appnet_expand_entities($a, $body, $entities) {
@@ -866,7 +952,10 @@ function appnet_expand_entities($a, $body, $entities) {
 
 	foreach ($entities["links"] AS $links) {
 		$url = "[url=".$links["url"]."]".$links["text"]."[/url]";
-		$replace[$links["pos"]] = array("pos"=> $links["pos"], "len"=> $links["len"], "replace"=> $url);
+		if (isset($links["amended_len"]) AND ($links["amended_len"] > $links["len"]))
+			$replace[$links["pos"]] = array("pos"=> $links["pos"], "len"=> $links["amended_len"], "replace"=> $url);
+		else
+			$replace[$links["pos"]] = array("pos"=> $links["pos"], "len"=> $links["len"], "replace"=> $url);
 	}
 
 
@@ -875,6 +964,8 @@ function appnet_expand_entities($a, $body, $entities) {
 		foreach ($replace AS $entity) {
 			$pre = substr_unicode($body, 0, $entity["pos"]);
 			$post = substr_unicode($body, $entity["pos"] + $entity["len"]);
+			//$pre = iconv_substr($body, 0, $entity["pos"], "UTF-8");
+			//$post = iconv_substr($body, $entity["pos"] + $entity["len"], "UTF-8");
 
 			$body = $pre.$entity["replace"].$post;
 		}
@@ -883,16 +974,24 @@ function appnet_expand_entities($a, $body, $entities) {
 	return(array("body" => $body, "tags" => implode($tags_arr, ",")));
 }
 
-function appnet_expand_annotations($a, $body, $annotations) {
+function appnet_expand_annotations($a, $annotations) {
+	$photo = array("url" => "", "large" => "");
 	foreach ($annotations AS $annotation) {
-		if ($annotation["value"]["type"] == "photo") {
-			if (($annotation["value"]["thumbnail_large_url"] != "") AND ($annotation["value"]["url"] != ""))
-				$body .= "\n[url=".$annotation["value"]["url"]."][img]".$annotation["value"]["thumbnail_large_url"]."[/img][/url]";
-			elseif ($annotation["value"]["url"] != "")
-				$body .= "\n[img]".$annotation["value"]["url"]."[/img]";
+		if (($annotation[type] == "net.app.core.oembed") AND
+			($annotation["value"]["type"] == "photo")) {
+			if ($annotation["value"]["url"] != "")
+				$photo["url"] = $annotation["value"]["url"];
+
+			if ($annotation["value"]["thumbnail_large_url"] != "")
+				$photo["large"] = $annotation["value"]["thumbnail_large_url"];
+
+			//if (($annotation["value"]["thumbnail_large_url"] != "") AND ($annotation["value"]["url"] != ""))
+			//	$embedded = "\n[url=".$annotation["value"]["url"]."][img]".$annotation["value"]["thumbnail_large_url"]."[/img][/url]";
+			//elseif ($annotation["value"]["url"] != "")
+			//	$embedded = "\n[img]".$annotation["value"]["url"]."[/img]";
 		}
 	}
-	return $body;
+	return $photo;
 }
 
 function appnet_fetchcontact($a, $uid, $contact, $me, $create_user) {
@@ -975,7 +1074,7 @@ function appnet_fetchcontact($a, $uid, $contact, $me, $create_user) {
 
 		//$update_photo = (($r[0]['avatar-date'] < datetime_convert('','','now -2 days')) ? true : false);
 		$update_photo = ($r[0]['avatar-date'] < datetime_convert('','','now -12 hours'));
-$update_photo = true;
+
 		// check that we have all the photos, this has been known to fail on occasion
 
 		if((! $r[0]['photo']) || (! $r[0]['thumb']) || (! $r[0]['micro']) || ($update_photo)) {

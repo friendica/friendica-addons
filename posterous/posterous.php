@@ -6,6 +6,7 @@
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * Author: Tony Baldwin <https://free-haven.org/u/tony>
+ * Status: Unsupported
  */
 
 function posterous_install() {
