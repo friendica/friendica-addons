@@ -365,7 +365,7 @@ function appnet_create_entities($a, $b, $postdata) {
 
 	krsort($entities);
 	foreach ($entities AS $entity) {
-		if (iconv_strlen($text) >= $entity["pos"] + $entity["len"]) {
+		if (iconv_strlen($text, "UTF-8") >= $entity["pos"] + $entity["len"]) {
 			$pre = iconv_substr($text, 0, $entity["pos"], "UTF-8");
 			$post = iconv_substr($text, $entity["pos"] + $entity["len"], 1000000, "UTF-8");
 
