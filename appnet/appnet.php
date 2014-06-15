@@ -125,11 +125,11 @@ function appnet_settings(&$a,&$s) {
 	$ownid =  get_pconfig(local_user(),'appnet','ownid');
 
 	$s .= '<span id="settings_appnet_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_appnet_expanded\'); openClose(\'settings_appnet_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/appnet.png" /><h3 class="connector">'. t('App.net Export').'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/appnet.png" /><h3 class="connector">'. t('App.net Import/Export').'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_appnet_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_appnet_expanded\'); openClose(\'settings_appnet_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/appnet.png" /><h3 class="connector">'. t('App.net Export').'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/appnet.png" /><h3 class="connector">'. t('App.net Import/Export').'</h3>';
 	$s .= '</span>';
 
 	if ($token != "") {
