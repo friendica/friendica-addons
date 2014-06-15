@@ -61,11 +61,35 @@ function appnet_content(&$a) {
 	return $o;
 }
 
+function appnet_plugin_admin(&$a, &$o){
+        $t = get_markup_template( "admin.tpl", "addon/appnet/" );
+
+        $o = replace_macros($t, array(
+                '$submit' => t('Save Settings'),
+                                                                // name, label, value, help, [extra values]
+                '$clientid' => array('clientid', t('Client ID'),  get_config('appnet', 'clientid' ), ''),
+                '$clientsecret' => array('clientsecret', t('Client Secret'),  get_config('appnet', 'clientsecret' ), ''),
+        ));
+}
+
+function appnet_plugin_admin_post(&$a){
+        $clientid     =       ((x($_POST,'clientid'))              ? notags(trim($_POST['clientid']))   : '');
+        $clientsecret =       ((x($_POST,'clientsecret'))   ? notags(trim($_POST['clientsecret'])): '');
+        set_config('appnet','clientid',$clientid);
+        set_config('appnet','clientsecret',$clientsecret);
+        info( t('Settings updated.'). EOL );
+}
+
 function appnet_connect(&$a) {
 	require_once 'addon/appnet/AppDotNet.php';
 
-	$clientId     = get_pconfig(local_user(),'appnet','clientid');
-	$clientSecret = get_pconfig(local_user(),'appnet','clientsecret');
+	$clientId     = get_config('appnet','clientid');
+	$clientSecret = get_config('appnet','clientsecret');
+
+	if (($clientId == "") OR ($clientSecret == "")) {
+		$clientId     = get_pconfig(local_user(),'appnet','clientid');
+		$clientSecret = get_pconfig(local_user(),'appnet','clientsecret');
+	}
 
 	$app = new AppDotNet($clientId, $clientSecret);
 
@@ -105,8 +129,14 @@ function appnet_settings(&$a,&$s) {
 		return;
 
 	$token = get_pconfig(local_user(),'appnet','token');
-	$app_clientId     = get_pconfig(local_user(),'appnet','clientid');
-	$app_clientSecret = get_pconfig(local_user(),'appnet','clientsecret');
+
+	$app_clientId     = get_config('appnet','clientid');
+	$app_clientSecret = get_config('appnet','clientsecret');
+
+	if (($app_clientId == "") OR ($app_clientSecret == "")) {
+		$app_clientId     = get_pconfig(local_user(),'appnet','clientid');
+		$app_clientSecret = get_pconfig(local_user(),'appnet','clientsecret');
+	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/appnet/appnet.css' . '" media="all" />' . "\r\n";
@@ -169,11 +199,11 @@ function appnet_settings(&$a,&$s) {
 		$s .= sprintf(t("Use '%s' as Redirect URI<p>"), $a->get_baseurl().'/appnet/connect');
 		$s .= '<div id="appnet-clientid-wrapper">';
 		$s .= '<label id="appnet-clientid-label" for="appnet-clientid">' . t('Client ID') . '</label>';
-		$s .= '<input id="appnet-clientid" type="text" name="clientid" value="'.$app_clientId.'" />';
+		$s .= '<input id="appnet-clientid" type="text" name="clientid" value="" />';
 		$s .= '</div><div class="clear"></div>';
 		$s .= '<div id="appnet-clientsecret-wrapper">';
 		$s .= '<label id="appnet-clientsecret-label" for="appnet-clientsecret">' . t('Client Secret') . '</label>';
-		$s .= '<input id="appnet-clientsecret" type="text" name="clientsecret" value="'.$app_clientSecret.'" />';
+		$s .= '<input id="appnet-clientsecret" type="text" name="clientsecret" value="" />';
 		$s .= '</div><div class="clear"></div>';
 		$s .= "<hr />";
 		$s .= t('<p>Second way: fetch a token at <a href="http://dev-lite.jonathonduerig.com/">http://dev-lite.jonathonduerig.com/</a>. ');
