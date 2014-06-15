@@ -54,6 +54,25 @@ function tumblr_content(&$a) {
 	return $o;
 }
 
+function tumblr_plugin_admin(&$a, &$o){
+        $t = get_markup_template( "admin.tpl", "addon/tumblr/" );
+
+        $o = replace_macros($t, array(
+                '$submit' => t('Save Settings'),
+                                                                // name, label, value, help, [extra values]
+                '$consumer_key' => array('consumer_key', t('Consumer Key'),  get_config('tumblr', 'consumer_key' ), ''),
+                '$consumer_secret' => array('consumer_secret', t('Consumer Secret'),  get_config('tumblr', 'consumer_secret' ), ''),
+        ));
+}
+
+function tumblr_plugin_admin_post(&$a){
+        $consumer_key     =       ((x($_POST,'consumer_key'))              ? notags(trim($_POST['consumer_key']))   : '');
+        $consumer_secret =       ((x($_POST,'consumer_secret'))   ? notags(trim($_POST['consumer_secret'])): '');
+        set_config('tumblr','consumer_key',$consumer_key);
+        set_config('tumblr','consumer_secret',$consumer_secret);
+        info( t('Settings updated.'). EOL );
+}
+
 function tumblr_connect($a) {
 	// Start a session.  This is necessary to hold on to  a few keys the callback script will also need
 	session_start();

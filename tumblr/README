@@ -1,9 +1,7 @@
-Define in your .htconfig.php:
-$a->config['tumblr']['consumer_key'] = "your-consumer-key";
-$a->config['tumblr']['consumer_secret'] = "your-consumer-secret";
-
-You can get it here:
+Register an application at this address:
 http://www.tumblr.com/oauth/apps
+
+use (your server name)addon/tumblr/callback.php as callback URL
 
 Tumblr-OAuth-Library:
 https://groups.google.com/d/msg/tumblr-api/g6SeIBWvsnE/gnWqT9jFSlEJ
