@@ -342,6 +342,7 @@ function appnet_create_entities($a, $b, $postdata) {
 		$mid = $url[2];
 		$html = bbcode($mid, false, false, 6);
 		$mid = html2plain($html, 0, true);
+
 		$mid = trim(html_entity_decode($mid,ENT_QUOTES,'UTF-8'));
 
 		$text = $pre.$mid.$post;
@@ -354,24 +355,33 @@ function appnet_create_entities($a, $b, $postdata) {
 
 	if (isset($postdata["url"]) AND isset($postdata["title"])) {
 		$postdata["title"] = shortenmsg($postdata["title"], 90);
-		$text = shortenmsg($text, 256 - strlen($postdata["title"]));
+		$max = 256 - strlen($postdata["title"]);
+		$text = shortenmsg($text, $max);
 		$text .= "\n[".$postdata["title"]."](".$postdata["url"].")";
 	} elseif (isset($postdata["url"])) {
 		$postdata["url"] = short_link($postdata["url"]);
-		$text = shortenmsg($text, 240);
+		$max = 240;
+		$text = shortenmsg($text, $max);
 		$text .= " [".$postdata["url"]."](".$postdata["url"].")";
-	} else
-		$text = shortenmsg($text, 256);
+	} else {
+		$max = 256;
+		$text = shortenmsg($text, $max);
+	}
+
+	if (iconv_strlen($text, "UTF-8") < $max)
+		$max = iconv_strlen($text, "UTF-8");
 
 	krsort($entities);
 	foreach ($entities AS $entity) {
-		if (iconv_strlen($text, "UTF-8") >= $entity["pos"] + $entity["len"]) {
+		//if (iconv_strlen($text, "UTF-8") >= $entity["pos"] + $entity["len"]) {
+		if (($entity["pos"] + $entity["len"]) <= $max) {
 			$pre = iconv_substr($text, 0, $entity["pos"], "UTF-8");
 			$post = iconv_substr($text, $entity["pos"] + $entity["len"], 1000000, "UTF-8");
 
 			$text = $pre."[".$entity["text"]."](".$entity["url"].")".$post;
 		}
 	}
+
 
 	return($text);
 }
@@ -482,7 +492,7 @@ function appnet_send(&$a,&$b) {
 								);
 			}
 			catch (AppDotNetException $e) {
-				logger("appnet_send: Error creating file ".$e->getMessage());
+				logger("appnet_send: Error creating file ".appnet_error($e->getMessage()));
 			}
 
 			unlink($tempfile);
@@ -540,7 +550,7 @@ function appnet_send(&$a,&$b) {
 			}
 		}
 		catch (AppDotNetException $e) {
-			logger("appnet_send: Error sending message ".$b["id"]." ".$e->getMessage());
+			logger("appnet_send: Error sending message ".$b["id"]." ".appnet_error($e->getMessage()));
 		}
 	}
 }
@@ -572,7 +582,7 @@ function appnet_action($a, $uid, $pid, $action) {
 		logger("appnet_action '".$action."' send, result: " . print_r($result, true), LOGGER_DEBUG);
 	}
 	catch (AppDotNetException $e) {
-		logger("appnet_action: Error sending action ".$action." pid ".$pid." ".$e->getMessage(), LOGGER_DEBUG);
+		logger("appnet_action: Error sending action ".$action." pid ".$pid." ".appnet_error($e->getMessage()), LOGGER_DEBUG);
 	}
 }
 
@@ -623,7 +633,7 @@ function appnet_is_repost($a, $uid, $body) {
 		return true;
 	}
 	catch (AppDotNetException $e) {
-		logger('appnet_is_repost: error doing repost '.$e->getMessage(), LOGGER_DEBUG);
+		logger('appnet_is_repost: error doing repost '.appnet_error($e->getMessage()), LOGGER_DEBUG);
 		return false;
 	}
 }
@@ -675,7 +685,7 @@ function appnet_fetchstream($a, $uid) {
 		$stream = $app->getUserStream($param);
 	}
 	catch (AppDotNetException $e) {
-		logger("appnet_fetchstream: Error fetching stream for user ".$uid." ".$e->getMessage());
+		logger("appnet_fetchstream: Error fetching stream for user ".$uid." ".appnet_error($e->getMessage()));
 	}
 
 	$stream = array_reverse($stream);
@@ -729,7 +739,7 @@ function appnet_fetchstream($a, $uid) {
 		$mentions = $app->getUserMentions("me", $param);
 	}
 	catch (AppDotNetException $e) {
-		logger("appnet_fetchstream: Error fetching mentions for user ".$uid." ".$e->getMessage());
+		logger("appnet_fetchstream: Error fetching mentions for user ".$uid." ".appnet_error($e->getMessage()));
 	}
 
 	$mentions = array_reverse($mentions);
@@ -836,7 +846,7 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 					$thread = $app->getPostReplies($post["thread_id"], $param);
 				}
 				catch (AppDotNetException $e) {
-					logger("appnet_createpost: Error fetching thread for user ".$uid." ".$e->getMessage());
+					logger("appnet_createpost: Error fetching thread for user ".$uid." ".appnet_error($e->getMessage()));
 				}
 				$thread = array_reverse($thread);
 				foreach ($thread AS $tpost) {
@@ -1173,4 +1183,24 @@ function appnet_cron($a,$b) {
 	logger('appnet_cron: cron_end');
 
 	set_config('appnet','last_poll', time());
+}
+
+function appnet_error($msg) {
+        $msg = trim($msg);
+        $pos = strrpos($msg, "\r\n\r\n");
+
+        if (!$pos)
+                return($msg);
+
+        $msg = substr($msg, $pos + 4);
+
+        $error = json_decode($msg);
+
+        if ($error == NULL)
+                return($msg);
+
+	if (isset($error->meta->error_message))
+		return($error->meta->error_message);
+        else
+                return(print_r($error));
 }
