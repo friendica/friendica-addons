@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,35 +17,35 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: blockem.php:51
-msgid "\"Blockem\" Settings"
+#: blockem.php:53 blockem.php:57
+msgid "\"Blockem\""
 msgstr ""
 
-#: blockem.php:53
+#: blockem.php:61
 msgid "Comma separated profile URLS to block"
 msgstr ""
 
-#: blockem.php:57
-msgid "Submit"
+#: blockem.php:65
+msgid "Save Settings"
 msgstr ""
 
-#: blockem.php:70
+#: blockem.php:78
 msgid "BLOCKEM Settings saved."
 msgstr ""
 
-#: blockem.php:105
+#: blockem.php:142
 #, php-format
 msgid "Blocked %s - Click to open/close"
 msgstr ""
 
-#: blockem.php:160
+#: blockem.php:197
 msgid "Unblock Author"
 msgstr ""
 
-#: blockem.php:162
+#: blockem.php:199
 msgid "Block Author"
 msgstr ""
 
-#: blockem.php:194
+#: blockem.php:231
 msgid "blockem settings updated"
 msgstr ""
