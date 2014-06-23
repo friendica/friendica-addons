@@ -479,7 +479,7 @@ function twitter_post_hook(&$a,&$b) {
 		if(strlen($msg) and ($image != "")) {
 			$img_str = fetch_url($image);
 
-			$tempfile = tempnam(get_config("system","temppath"), "cache");
+			$tempfile = tempnam(get_temppath(), "cache");
 			file_put_contents($tempfile, $img_str);
 
 			// Twitter had changed something so that the old library doesn't work anymore
@@ -1075,7 +1075,7 @@ function twitter_expand_entities($a, $body, $item, $no_tags = false, $picture) {
 				else {
 					$img_str = fetch_url($expanded_url, true, $redirects, 4);
 
-					$tempfile = tempnam(get_config("system","temppath"), "cache");
+					$tempfile = tempnam(get_temppath(), "cache");
 					file_put_contents($tempfile, $img_str);
 					$mime = image_type_to_mime_type(exif_imagetype($tempfile));
 					unlink($tempfile);

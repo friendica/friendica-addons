@@ -156,7 +156,7 @@ function privacy_image_cache_init() {
 		$redirects = 0;
 		$img_str = fetch_url($_REQUEST['url'],true, $redirects, 10);
 
-		$tempfile = tempnam(get_config("system","temppath"), "cache");
+		$tempfile = tempnam(get_temppath(), "cache");
 		file_put_contents($tempfile, $img_str);
 		$mime = image_type_to_mime_type(exif_imagetype($tempfile));
 		unlink($tempfile);

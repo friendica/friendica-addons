@@ -570,7 +570,7 @@ function statusnet_post_hook(&$a,&$b) {
 
 		if ($image != "") {
 			$img_str = fetch_url($image);
-			$tempfile = tempnam(get_config("system","temppath"), "cache");
+			$tempfile = tempnam(get_temppath(), "cache");
 			file_put_contents($tempfile, $img_str);
 			$postdata = array("status" => $msg, "media[]" => $tempfile);
 		} else
@@ -1446,7 +1446,7 @@ function statusnet_convertmsg($a, $body, $no_tags = false) {
 			else {
 				$img_str = fetch_url($expanded_url, true, $redirects, 4);
 
-				$tempfile = tempnam(get_config("system","temppath"), "cache");
+				$tempfile = tempnam(get_temppath(), "cache");
 				file_put_contents($tempfile, $img_str);
 				$mime = image_type_to_mime_type(exif_imagetype($tempfile));
 				unlink($tempfile);

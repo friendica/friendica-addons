@@ -475,7 +475,7 @@ function appnet_send(&$a,&$b) {
 
 		if (isset($post["image"])) {
 			$img_str = fetch_url($post['image'],true, $redirects, 10);
-			$tempfile = tempnam(get_config("system","temppath"), "cache");
+			$tempfile = tempnam(get_temppath(), "cache");
 			file_put_contents($tempfile, $img_str);
 
 			try {
