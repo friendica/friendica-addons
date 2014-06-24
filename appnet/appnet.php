@@ -304,12 +304,13 @@ function appnet_create_entities($a, $b, $postdata) {
 	$bbcode = preg_replace("/@\[url\=([$URLSearchString]*)\](.*?)\[\/url\]/ism",'@$2',$bbcode);
 	$bbcode = preg_replace("/\[bookmark\=([$URLSearchString]*)\](.*?)\[\/bookmark\]/ism",'[url=$1]$2[/url]',$bbcode);
 	$bbcode = preg_replace("/\[video\](.*?)\[\/video\]/ism",'[url=$1]$1[/url]',$bbcode);
+	$bbcode = preg_replace("/\[youtube\]https?:\/\/(.*?)\[\/youtube\]/ism",'[url=https://$1]https://$1[/url]',$bbcode);
 	$bbcode = preg_replace("/\[youtube\]([A-Za-z0-9\-_=]+)(.*?)\[\/youtube\]/ism",
 			       '[url=https://www.youtube.com/watch?v=$1]https://www.youtube.com/watch?v=$1[/url]', $bbcode);
-	$bbcode = preg_replace("/\[youtube\](.*?)\[\/youtube\]/ism",'[url=$1]$1[/url]',$bbcode);
+	$bbcode = preg_replace("/\[vimeo\]https?:\/\/(.*?)\[\/vimeo\]/ism",'[url=https://$1]https://$1[/url]',$bbcode);
 	$bbcode = preg_replace("/\[vimeo\]([0-9]+)(.*?)\[\/vimeo\]/ism",
 				'[url=https://vimeo.com/$1]https://vimeo.com/$1[/url]', $bbcode);
-	$bbcode = preg_replace("/\[vimeo\](.*?)\[\/vimeo\]/ism",'[url=$1]$1[/url]',$bbcode);
+	//$bbcode = preg_replace("/\[vimeo\](.*?)\[\/vimeo\]/ism",'[url=$1]$1[/url]',$bbcode);
 
 	$bbcode = preg_replace("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/ism", '[img]$3[/img]', $bbcode);
 
