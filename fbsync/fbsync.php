@@ -278,6 +278,9 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	}
 
 	if ($contact_id <= 0) {
+		// To-Do:
+		// $contacts[$post->source_id] seems to be wrong by repeated posts
+		// must be changed in future
 		$contact_id = fbsync_fetch_contact($uid, $contacts[$post->source_id], $create_user);
 
 		if ($contact_id == -1) {

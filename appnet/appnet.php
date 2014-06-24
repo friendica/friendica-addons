@@ -856,6 +856,8 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 				}
 			}
 		}
+		// Don't create accounts of people who just comment something
+		$createuser = false;
 	} else
 		$postarray['thr-parent'] = $postarray['uri'];
 
@@ -1042,6 +1044,8 @@ function appnet_fetchcontact($a, $uid, $contact, $me, $create_user) {
 	if(!count($r) AND !$create_user)
 		return($me);
 
+	if ($contact["canonical_url"] == "")
+		return($me);
 
 	if (count($r) AND ($r[0]["readonly"] OR $r[0]["blocked"])) {
 		logger("appnet_fetchcontact: Contact '".$r[0]["nick"]."' is blocked or readonly.", LOGGER_DEBUG);
@@ -1049,6 +1053,13 @@ function appnet_fetchcontact($a, $uid, $contact, $me, $create_user) {
 	}
 
 	if(!count($r)) {
+
+		if ($contact["name"] == "")
+			$contact["name"] = $contact["username"];
+
+		if ($contact["username"] == "")
+			$contact["username"] = $contact["name"];
+
 		// create contact record
 		q("INSERT INTO `contact` (`uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
 					`name`, `nick`, `photo`, `network`, `rel`, `priority`,

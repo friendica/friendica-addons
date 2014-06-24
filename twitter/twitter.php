@@ -1232,6 +1232,8 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 			} else
 				return(array());
 		}
+		// Don't create accounts of people who just comment something
+		$create_user = false;
 	} else
 		$postarray['parent-uri'] = $postarray['uri'];
 
