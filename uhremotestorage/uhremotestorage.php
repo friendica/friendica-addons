@@ -4,6 +4,7 @@
  * Description: Expose in user XRD the link to external user's unhosted-enabled storage
  * Version: 1.0
  * Author: Fabio Comuni <http://kirgroup.com/profile/fabrixxm>
+ * Status: Unsupported
  */
  
  function uhremotestorage_install() {

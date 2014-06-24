@@ -820,7 +820,7 @@ class CodebirdSN
                 }
 
 		// To-Do
-		$tempfile = tempnam(get_config("system","temppath"), "mimecheck");
+		$tempfile = tempnam(get_temppath(), "mimecheck");
 		file_put_contents($tempfile, $data);
 		$mime = image_type_to_mime_type(exif_imagetype($tempfile));
 		unlink($tempfile);

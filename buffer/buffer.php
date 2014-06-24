@@ -60,6 +60,13 @@ function buffer_plugin_admin(&$a, &$o){
 		'$client_secret' => array('client_secret', t('Client Secret'),  get_config('buffer', 'client_secret' ), ''),
 	));
 }
+function buffer_plugin_admin_post(&$a){
+        $client_id     =       ((x($_POST,'client_id'))              ? notags(trim($_POST['client_id']))   : '');
+        $client_secret =       ((x($_POST,'client_secret'))   ? notags(trim($_POST['client_secret'])): '');
+        set_config('buffer','client_id',$client_id);
+        set_config('buffer','client_secret',$client_secret);
+        info( t('Settings updated.'). EOL );
+}
 
 function buffer_connect(&$a) {
 

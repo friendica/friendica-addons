@@ -479,7 +479,7 @@ function twitter_post_hook(&$a,&$b) {
 		if(strlen($msg) and ($image != "")) {
 			$img_str = fetch_url($image);
 
-			$tempfile = tempnam(get_config("system","temppath"), "cache");
+			$tempfile = tempnam(get_temppath(), "cache");
 			file_put_contents($tempfile, $img_str);
 
 			// Twitter had changed something so that the old library doesn't work anymore
@@ -712,19 +712,23 @@ function twitter_fetchtimeline($a, $uid) {
 
 				$_REQUEST['body'] = $post->retweeted_status->text;
 
+				$picture = "";
+
 				// media
 				if (is_array($post->retweeted_status->entities->media)) {
 					foreach($post->retweeted_status->entities->media AS $media) {
 						switch($media->type) {
 							case 'photo':
-								$_REQUEST['body'] = str_replace($media->url, "\n\n[img]".$media->media_url_https."[/img]\n", $_REQUEST['body']);
-								$has_picture = true;
+								//$_REQUEST['body'] = str_replace($media->url, "\n\n[img]".$media->media_url_https."[/img]\n", $_REQUEST['body']);
+								//$has_picture = true;
+								$_REQUEST['body'] = str_replace($media->url, "", $_REQUEST['body']);
+								$picture = $media->media_url_https;
 								break;
 						}
 					}
 				}
 
-				$converted = twitter_expand_entities($a, $_REQUEST['body'], $post->retweeted_status, true, $has_picture);
+				$converted = twitter_expand_entities($a, $_REQUEST['body'], $post->retweeted_status, true, $picture);
 				$_REQUEST['body'] = $converted["body"];
 
 				$_REQUEST['body'] = "[share author='".$post->retweeted_status->user->name.
@@ -736,18 +740,22 @@ function twitter_fetchtimeline($a, $uid) {
 			} else {
 				$_REQUEST["body"] = $post->text;
 
+				$picture = "";
+
 				if (is_array($post->entities->media)) {
 					foreach($post->entities->media AS $media) {
 						switch($media->type) {
 							case 'photo':
-								$_REQUEST['body'] = str_replace($media->url, "\n\n[img]".$media->media_url_https."[/img]\n", $_REQUEST['body']);
-								$has_picture = true;
+								//$_REQUEST['body'] = str_replace($media->url, "\n\n[img]".$media->media_url_https."[/img]\n", $_REQUEST['body']);
+								//$has_picture = true;
+								$_REQUEST['body'] = str_replace($media->url, "", $_REQUEST['body']);
+								$picture = $media->media_url_https;
 								break;
 						}
 					}
 				}
 
-				$converted = twitter_expand_entities($a, $_REQUEST["body"], $post, true, $has_picture);
+				$converted = twitter_expand_entities($a, $_REQUEST["body"], $post, true, $picture);
 				$_REQUEST['body'] = $converted["body"];
 			}
 
@@ -1019,7 +1027,7 @@ function twitter_fetchuser($a, $uid, $screen_name = "", $user_id = "") {
 	return $contact_id;
 }
 
-function twitter_expand_entities($a, $body, $item, $no_tags = false, $dontincludemedia) {
+function twitter_expand_entities($a, $body, $item, $no_tags = false, $picture) {
 	require_once("include/oembed.php");
 	require_once("include/network.php");
 
@@ -1054,11 +1062,12 @@ function twitter_expand_entities($a, $body, $item, $no_tags = false, $dontinclud
 					$footerlink = "[url=".$expanded_url."]".$expanded_url."[/url]";
 
 					$body = str_replace($url->url, $footerlink, $body);
-				} elseif (($oembed_data->type == "photo") AND isset($oembed_data->url) AND !$dontincludemedia) {
+				//} elseif (($oembed_data->type == "photo") AND isset($oembed_data->url) AND !$dontincludemedia) {
+				} elseif (($oembed_data->type == "photo") AND isset($oembed_data->url)) {
 					$body = str_replace($url->url,
 							"[url=".$expanded_url."][img]".$oembed_data->url."[/img][/url]",
 							$body);
-					$dontincludemedia = true;
+					//$dontincludemedia = true;
 				} elseif ($oembed_data->type != "link")
 					$body = str_replace($url->url,
 							"[url=".$expanded_url."]".$expanded_url."[/url]",
@@ -1066,7 +1075,7 @@ function twitter_expand_entities($a, $body, $item, $no_tags = false, $dontinclud
 				else {
 					$img_str = fetch_url($expanded_url, true, $redirects, 4);
 
-					$tempfile = tempnam(get_config("system","temppath"), "cache");
+					$tempfile = tempnam(get_temppath(), "cache");
 					file_put_contents($tempfile, $img_str);
 					$mime = image_type_to_mime_type(exif_imagetype($tempfile));
 					unlink($tempfile);
@@ -1074,7 +1083,7 @@ function twitter_expand_entities($a, $body, $item, $no_tags = false, $dontinclud
 					if (substr($mime, 0, 6) == "image/") {
 						$type = "photo";
 						$body = str_replace($url->url, "[img]".$expanded_url."[/img]", $body);
-						$dontincludemedia = true;
+						//$dontincludemedia = true;
 					} else {
 						$type = $oembed_data->type;
 						$footerurl = $expanded_url;
@@ -1087,7 +1096,7 @@ function twitter_expand_entities($a, $body, $item, $no_tags = false, $dontinclud
 		}
 
 		if ($footerurl != "")
-			$footer = add_page_info($footerurl);
+			$footer = add_page_info($footerurl, false, $picture);
 
 		if (($footerlink != "") AND (trim($footer) != "")) {
 			$removedlink = trim(str_replace($footerlink, "", $body));
@@ -1097,6 +1106,9 @@ function twitter_expand_entities($a, $body, $item, $no_tags = false, $dontinclud
 
 			$body .= $footer;
 		}
+
+		if (($footer == "") AND ($picture != ""))
+			$body .= "\n\n[img]".$picture."[/img]\n";
 
 		if ($no_tags)
 			return(array("body" => $body, "tags" => ""));
@@ -1252,13 +1264,17 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 
 	$postarray['body'] = $post->text;
 
+	$picture = "";
+
 	// media
 	if (is_array($post->entities->media)) {
 		foreach($post->entities->media AS $media) {
 			switch($media->type) {
 				case 'photo':
-					$postarray['body'] = str_replace($media->url, "\n\n[img]".$media->media_url_https."[/img]\n", $postarray['body']);
-					$has_picture = true;
+					//$postarray['body'] = str_replace($media->url, "\n\n[img]".$media->media_url_https."[/img]\n", $postarray['body']);
+					//$has_picture = true;
+					$postarray['body'] = str_replace($media->url, "", $postarray['body']);
+					$picture = $media->media_url_https;
 					break;
 				default:
 					$postarray['body'] .= print_r($media, true);
@@ -1266,7 +1282,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 		}
 	}
 
-	$converted = twitter_expand_entities($a, $postarray['body'], $post, false, $has_picture);
+	$converted = twitter_expand_entities($a, $postarray['body'], $post, false, $picture);
 	$postarray['body'] = $converted["body"];
 	$postarray['tag'] = $converted["tags"];
 
@@ -1289,13 +1305,17 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 
 		$postarray['body'] = $post->retweeted_status->text;
 
+		$picture = "";
+
 		// media
 		if (is_array($post->retweeted_status->entities->media)) {
 			foreach($post->retweeted_status->entities->media AS $media) {
 				switch($media->type) {
 					case 'photo':
-						$postarray['body'] = str_replace($media->url, "\n\n[img]".$media->media_url_https."[/img]\n", $postarray['body']);
-						$has_picture = true;
+						//$postarray['body'] = str_replace($media->url, "\n\n[img]".$media->media_url_https."[/img]\n", $postarray['body']);
+						//$has_picture = true;
+						$postarray['body'] = str_replace($media->url, "", $postarray['body']);
+						$picture = $media->media_url_https;
 						break;
 					default:
 						$postarray['body'] .= print_r($media, true);
@@ -1303,7 +1323,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 			}
 		}
 
-		$converted = twitter_expand_entities($a, $postarray['body'], $post->retweeted_status, false, $has_picture);
+		$converted = twitter_expand_entities($a, $postarray['body'], $post->retweeted_status, false, $picture);
 		$postarray['body'] = $converted["body"];
 		$postarray['tag'] = $converted["tags"];
 

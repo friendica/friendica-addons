@@ -61,6 +61,7 @@ function privacy_image_cache_init() {
 	}
 
 	$thumb = false;
+	$size = 1024;
 
 	// If the cache path isn't there, try to create it
 	if (!is_dir($_SERVER["DOCUMENT_ROOT"]."/privacy_image_cache"))
@@ -79,6 +80,20 @@ function privacy_image_cache_init() {
 		else
 			$url = $a->argv[1];
 
+		//$thumb = (isset($a->argv[3]) and ($a->argv[3] == "thumb"));
+		if (isset($a->argv[3]) and ($a->argv[3] == "thumb"))
+			$size = 200;
+
+		// thumb, small, medium and large.
+		if (substr($url, -6) == ":thumb")
+			$size = 150;
+		if (substr($url, -6) == ":small")
+			$size = 340;
+		if (substr($url, -7) == ":medium")
+			$size = 600;
+		if (substr($url, -6) == ":large")
+			$size = 1024;
+
 		$pos = strrpos($url, "=.");
 		if ($pos)
 			$url = substr($url, 0, $pos+1);
@@ -89,7 +104,6 @@ function privacy_image_cache_init() {
 
 		if ($url)
 			$_REQUEST['url'] = $url;
-		$thumb = (isset($a->argv[3]) and ($a->argv[3] == "thumb"));
 	}
 
 	if (!$direct_cache) {
@@ -142,7 +156,7 @@ function privacy_image_cache_init() {
 		$redirects = 0;
 		$img_str = fetch_url($_REQUEST['url'],true, $redirects, 10);
 
-		$tempfile = tempnam(get_config("system","temppath"), "cache");
+		$tempfile = tempnam(get_temppath(), "cache");
 		file_put_contents($tempfile, $img_str);
 		$mime = image_type_to_mime_type(exif_imagetype($tempfile));
 		unlink($tempfile);
@@ -186,10 +200,10 @@ function privacy_image_cache_init() {
 				if (!$direct_cache AND ($cachefile == ""))
 					$img->store(0, 0, $urlhash, $_REQUEST['url'], '', 100);
 
-				if ($thumb) {
-					$img->scaleImage(200); // Test
-					$img_str = $img->imageString();
-				}
+				//if ($thumb) {
+				//	$img->scaleImage(200); // Test
+				//	$img_str = $img->imageString();
+				//}
 			}
 			//$mime = "image/jpeg";
 		}
@@ -199,7 +213,8 @@ function privacy_image_cache_init() {
 	if ($mime != "image/gif") {
 		$img = new Photo($img_str, $mime);
 		if($img->is_valid()) {
-			$img->scaleImage(1024); // Test
+			//$img->scaleImage(1024); // Test
+			$img->scaleImage($size);
 			$img_str = $img->imageString();
 		}
 	}
