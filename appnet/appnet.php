@@ -851,7 +851,7 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 				}
 				$thread = array_reverse($thread);
 				foreach ($thread AS $tpost) {
-					$threadpost = appnet_createpost($a, $uid, $tpost, $me, $user, $ownid, $createuser, false);
+					$threadpost = appnet_createpost($a, $uid, $tpost, $me, $user, $ownid, false, false);
 					$item = item_store($threadpost);
 				}
 			}
