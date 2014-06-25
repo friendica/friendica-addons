@@ -888,9 +888,6 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id) {
 
 function pumpio_get_contact($uid, $contact) {
 
-	if (($contact->url == "") OR ($contact->id == 0))
-		return(false);
-
 	$r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
 		dbesc(normalise_link($contact->url)));
 
