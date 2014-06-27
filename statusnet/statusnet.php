@@ -1394,7 +1394,7 @@ function statusnet_complete_conversation($a, $uid, $self, $create_user, $nick, $
 		$posts = array_reverse($items);
 
 		foreach($posts AS $post) {
-			$postarray = statusnet_createpost($a, $uid, $post, $self, $create_user, true);
+			$postarray = statusnet_createpost($a, $uid, $post, $self, false, false);
 
 			if (trim($postarray['body']) == "")
 				continue;

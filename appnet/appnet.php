@@ -825,13 +825,15 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 	if (isset($post["reply_to"]) AND ($post["reply_to"] != "")) {
 		$postarray['thr-parent'] = "adn::".$post["reply_to"];
 
-		// Complete the thread if the parent doesn't exists
+		// Complete the thread (if the parent doesn't exists)
 		if ($threadcompletion) {
-			$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
-				dbesc($postarray['thr-parent']),
-				intval($uid)
-				);
-			if (!count($r)) {
+			//$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
+			//	dbesc($postarray['thr-parent']),
+			//	intval($uid)
+			//	);
+			//if (!count($r)) {
+				logger("appnet_createpost: completing thread ".$post["thread_id"]." for user ".$uid, LOGGER_DEBUG);
+
 				require_once("addon/appnet/AppDotNet.php");
 
 				$token = get_pconfig($uid,'appnet','token');
@@ -850,11 +852,15 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 					logger("appnet_createpost: Error fetching thread for user ".$uid." ".appnet_error($e->getMessage()));
 				}
 				$thread = array_reverse($thread);
+
+				logger("appnet_createpost: fetched ".count($thread)." items for thread ".$post["thread_id"]." for user ".$uid, LOGGER_DEBUG);
+
 				foreach ($thread AS $tpost) {
 					$threadpost = appnet_createpost($a, $uid, $tpost, $me, $user, $ownid, false, false);
 					$item = item_store($threadpost);
+					logger("appnet_createpost: stored post ".$post["id"]." thread ".$post["thread_id"]." in item ".$item, LOGGER_DEBUG);
 				}
-			}
+			//}
 		}
 		// Don't create accounts of people who just comment something
 		$createuser = false;
@@ -1042,10 +1048,10 @@ function appnet_fetchcontact($a, $uid, $contact, $me, $create_user) {
 		intval($uid), dbesc("adn::".$contact["id"]));
 
 	if(!count($r) AND !$create_user)
-		return($me);
+		return($me["id"]);
 
 	if ($contact["canonical_url"] == "")
-		return($me);
+		return($me["id"]);
 
 	if (count($r) AND ($r[0]["readonly"] OR $r[0]["blocked"])) {
 		logger("appnet_fetchcontact: Contact '".$r[0]["nick"]."' is blocked or readonly.", LOGGER_DEBUG);
