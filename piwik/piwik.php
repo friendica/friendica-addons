@@ -102,5 +102,3 @@ function piwik_plugin_admin_post (&$a) {
 	set_config('piwik', 'async', $async);
 	info( t('Settings updated.'). EOL);
 }
-;
-	  $b .= 
