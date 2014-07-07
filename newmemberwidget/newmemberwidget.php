@@ -51,7 +51,7 @@ function newmemberwidget_plugin_admin(&$a, &$o){
 	'$submit' => t('Save Settings'),
 	'$freetext' => array( "freetext", t("Message"), get_config( "newmemberwidget", "freetext" ), t("Your message for new members. You can use bbcode here.")),
 	'$linkglobalsupport' => array( "linkglobalsupport", t('Add a link to global support forum'), get_config( 'newmemberwidget', 'linkglobalsupport'), t('Should a link to the global support forum be displayed?')." (<a href='https://helpers.pyxis.uberspace.de/profile/helpers'>@helpers</a>)"),
-	'$linklocalsupport' => array( "linklocalsupport", t('Add a link to the local support forum'), get_config( 'newmemberwidget', 'linklocalsupport'), t('If you have a local support forum and wand to have a link displayed in the widget, check this box.')),
+	'$linklocalsupport' => array( "linklocalsupport", t('Add a link to the local support forum'), get_config( 'newmemberwidget', 'linklocalsupport'), t('If you have a local support forum and want to have a link displayed in the widget, check this box.')),
 	'$localsupportname' => array( "localsupportname", t('Name of the local support group'), get_config( 'newmemberwidget', 'localsupport'), t('If you checked the above, specify the <em>nickname</em> of the local support group here (i.e. helpers)')),
     ));
 }
