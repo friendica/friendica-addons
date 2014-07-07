@@ -1588,9 +1588,3 @@ function statusnet_is_retweet($a, $uid, $body) {
 	logger('statusnet_is_retweet: result '.print_r($result, true), LOGGER_DEBUG);
 	return(isset($result->id));
 }
-get_hostname();
-
-	$connection = new StatusNetOAuth($api, $ckey,$csecret,$otoken,$osecret);
-
-	$parameters = array( true);
-	//$parameters[image/
