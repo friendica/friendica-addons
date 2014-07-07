@@ -306,7 +306,7 @@ function statusnet_settings(&$a,&$s) {
 		 */
 		if (! $globalsn == null) {
 			$s .= '<h4>' . t('Globally Available StatusNet OAuthKeys') . '</h4>';
-			$s .= '<p>'. t("There are preconfigured OAuth key pairs for some StatusNet servers available. If you are useing one of them, please use these credentials. If not feel free to connect to any other StatusNet instance \x28see below\x29.") .'</p>';
+			$s .= '<p>'. t("There are preconfigured OAuth key pairs for some StatusNet servers available. If you are using one of them, please use these credentials. If not feel free to connect to any other StatusNet instance \x28see below\x29.") .'</p>';
 			$s .= '<div id="statusnet-preconf-wrapper">';
 			foreach ($globalsn as $asn) {
 				$s .= '<input type="radio" name="statusnet-preconf-apiurl" value="'. $asn['apiurl'] .'">'. $asn['sitename'] .'<br />';
@@ -1588,3 +1588,9 @@ function statusnet_is_retweet($a, $uid, $body) {
 	logger('statusnet_is_retweet: result '.print_r($result, true), LOGGER_DEBUG);
 	return(isset($result->id));
 }
+get_hostname();
+
+	$connection = new StatusNetOAuth($api, $ckey,$csecret,$otoken,$osecret);
+
+	$parameters = array( true);
+	//$parameters[image/
