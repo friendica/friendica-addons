@@ -77,7 +77,7 @@ function piwik_analytics($a,&$b) {
 		$b .= t("This website is tracked using the <a href='http://www.piwik.org'>Piwik</a> analytics tool.");
 		$b .= " ";
 		$the_url =  "http://".$baseurl ."index.php?module=CoreAdminHome&action=optOut";
-		$b .= sprintf(t("If you do not want that your visits are logged this way you <a href='%s'>can set a cookie to prevent Piwik from tracking further visits of the site</a> (opt-out)."), $the_url);
+		$b .= sprintf(t("If you do not want that your visits are logged in this way you <a href='%s'>can set a cookie to prevent Piwik from tracking further visits of the site</a> (opt-out)."), $the_url);
 		$b .= "</div>";
 	}
 }
@@ -102,3 +102,5 @@ function piwik_plugin_admin_post (&$a) {
 	set_config('piwik', 'async', $async);
 	info( t('Settings updated.'). EOL);
 }
+;
+	  $b .= 
