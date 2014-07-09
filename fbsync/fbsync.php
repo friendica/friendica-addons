@@ -692,6 +692,9 @@ function fbsync_createlike($a, $uid, $self_id, $self, $contacts, $like) {
 
 function fbsync_fetch_contact($uid, $contact, $create_user) {
 
+	if($contact->url == "")
+		return(0);
+
 	// Check if the unique contact is existing
 	// To-Do: only update once a while
 	$r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",

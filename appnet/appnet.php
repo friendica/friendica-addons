@@ -23,6 +23,7 @@ function appnet_install() {
 	register_hook('cron',			'addon/appnet/appnet.php', 'appnet_cron');
 	register_hook('connector_settings',	'addon/appnet/appnet.php', 'appnet_settings');
 	register_hook('connector_settings_post','addon/appnet/appnet.php', 'appnet_settings_post');
+	register_hook('prepare_body', 		'addon/appnet/appnet.php', 'appnet_prepare_body');
 }
 
 
@@ -31,8 +32,9 @@ function appnet_uninstall() {
 	unregister_hook('notifier_normal',  'addon/appnet/appnet.php', 'appnet_send');
 	unregister_hook('jot_networks',     'addon/appnet/appnet.php', 'appnet_jot_nets');
 	unregister_hook('cron',			'addon/appnet/appnet.php', 'appnet_cron');
-	unregister_hook('connector_settings',      'addon/appnet/appnet.php', 'appnet_settings');
+	unregister_hook('connector_settings',	'addon/appnet/appnet.php', 'appnet_settings');
 	unregister_hook('connector_settings_post', 'addon/appnet/appnet.php', 'appnet_settings_post');
+	unregister_hook('prepare_body', 	'addon/appnet/appnet.php', 'appnet_prepare_body');
 }
 
 function appnet_module() {}
@@ -1172,6 +1174,43 @@ function appnet_fetchcontact($a, $uid, $contact, $me, $create_user) {
 	}
 
 	return($r[0]["id"]);
+}
+
+function appnet_prepare_body(&$a,&$b) {
+        if ($b["item"]["network"] != NETWORK_APPNET)
+                return;
+
+        if ($b["preview"]) {
+                $max_char = 256;
+                require_once("include/plaintext.php");
+                $item = $b["item"];
+                $item["plink"] = $a->get_baseurl()."/display/".$a->user["nickname"]."/".$item["parent"];
+
+                $r = q("SELECT `author-link` FROM item WHERE item.uri = '%s' AND item.uid = %d LIMIT 1",
+                        dbesc($item["thr-parent"]),
+                        intval(local_user()));
+
+                if(count($r)) {
+                        $orig_post = $r[0];
+
+	                $nicknameplain = preg_replace("=https?://alpha.app.net/(.*)=ism", "$1", $orig_post["author-link"]);
+	                $nickname = "@[url=".$orig_post["author-link"]."]".$nicknameplain."[/url]";
+	                $nicknameplain = "@".$nicknameplain;
+
+	                if ((strpos($item["body"], $nickname) === false) AND (strpos($item["body"], $nicknameplain) === false))
+	                        $item["body"] = $nickname." ".$item["body"];
+                }
+
+
+
+                $msgarr = plaintext($a, $item, $max_char, true);
+		$msg = appnet_create_entities($a, $item, $msgarr);
+
+		require_once("library/markdown.php");
+		$msg = Markdown($msg);
+
+                $b['html'] = $msg;
+        }
 }
 
 function appnet_cron($a,$b) {
