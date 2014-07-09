@@ -555,7 +555,7 @@ function statusnet_post_hook(&$a,&$b) {
 		$tempfile = "";
 		require_once("include/plaintext.php");
 		require_once("include/network.php");
-		$msgarr = plaintext($a, $b, $max_char, true);
+		$msgarr = plaintext($a, $b, $max_char, true, 7);
 		$msg = $msgarr["text"];
 
 		if (($msg == "") AND isset($msgarr["title"]))
@@ -709,7 +709,7 @@ function statusnet_prepare_body(&$a,&$b) {
                 }
 
 
-                $msgarr = plaintext($a, $item, $max_char, true);
+                $msgarr = plaintext($a, $item, $max_char, true, 7);
                 $msg = $msgarr["text"];
 
                 if (isset($msgarr["url"]))

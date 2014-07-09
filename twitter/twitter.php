@@ -464,7 +464,7 @@ function twitter_post_hook(&$a,&$b) {
 
 		$max_char = 140;
 		require_once("include/plaintext.php");
-		$msgarr = plaintext($a, $b, $max_char, true);
+		$msgarr = plaintext($a, $b, $max_char, true, 8);
 		$msg = $msgarr["text"];
 
 		if (($msg == "") AND isset($msgarr["title"]))
@@ -680,7 +680,7 @@ function twitter_prepare_body(&$a,&$b) {
 		}
 
 
-		$msgarr = plaintext($a, $item, $max_char, true);
+		$msgarr = plaintext($a, $item, $max_char, true, 8);
 		$msg = $msgarr["text"];
 
 		if (isset($msgarr["url"]))
