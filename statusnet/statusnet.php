@@ -118,6 +118,7 @@ function statusnet_install() {
 	register_hook('post_local', 'addon/statusnet/statusnet.php', 'statusnet_post_local');
 	register_hook('jot_networks',    'addon/statusnet/statusnet.php', 'statusnet_jot_nets');
 	register_hook('cron', 'addon/statusnet/statusnet.php', 'statusnet_cron');
+	register_hook('prepare_body', 'addon/statusnet/statusnet.php', 'statusnet_prepare_body');
 	logger("installed statusnet");
 }
 
@@ -129,6 +130,7 @@ function statusnet_uninstall() {
 	unregister_hook('post_local', 'addon/statusnet/statusnet.php', 'statusnet_post_local');
 	unregister_hook('jot_networks',    'addon/statusnet/statusnet.php', 'statusnet_jot_nets');
 	unregister_hook('cron', 'addon/statusnet/statusnet.php', 'statusnet_cron');
+	unregister_hook('prepare_body', 'addon/statusnet/statusnet.php', 'statusnet_prepare_body');
 
 	// old setting - remove only
 	unregister_hook('post_local_end', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
@@ -548,10 +550,12 @@ function statusnet_post_hook(&$a,&$b) {
 		$dent = new StatusNetOAuth($api,$ckey,$csecret,$otoken,$osecret);
 		$max_char = $dent->get_maxlength(); // max. length for a dent
 
+		set_pconfig($b['uid'], 'statusnet', 'max_char', $max_char);
+
 		$tempfile = "";
 		require_once("include/plaintext.php");
 		require_once("include/network.php");
-		$msgarr = plaintext($a, $b, $max_char, true);
+		$msgarr = plaintext($a, $b, $max_char, true, 7);
 		$msg = $msgarr["text"];
 
 		if (($msg == "") AND isset($msgarr["title"]))
@@ -565,7 +569,7 @@ function statusnet_post_hook(&$a,&$b) {
 				$msg .= " \n".short_link($msgarr["url"]);
 			else
 				$msg .= " \n".$msgarr["url"];
-		} elseif (isset($msgarr["image"]))
+		} elseif (isset($msgarr["image"]) AND ($msgarr["type"] != "video"))
 			$image = $msgarr["image"];
 
 		if ($image != "") {
@@ -673,6 +677,49 @@ function statusnet_plugin_admin(&$a, &$o){
 		'$submit' => t('Save Settings'),
 		'$sites' => $sitesform,
 	));
+}
+
+function statusnet_prepare_body(&$a,&$b) {
+        if ($b["item"]["network"] != NETWORK_STATUSNET)
+                return;
+
+        if ($b["preview"]) {
+		$max_char = get_pconfig(local_user(),'statusnet','max_char');
+		if (intval($max_char) == 0)
+			$max_char = 140;
+
+                require_once("include/plaintext.php");
+                $item = $b["item"];
+                $item["plink"] = $a->get_baseurl()."/display/".$a->user["nickname"]."/".$item["parent"];
+
+		$r = q("SELECT `item`.`author-link`, `item`.`uri`, `contact`.`nick` AS contact_nick
+                        FROM `item` INNER JOIN `contact` ON `contact`.`id` = `item`.`contact-id`
+                        WHERE `item`.`uri` = '%s' AND `item`.`uid` = %d LIMIT 1",
+                        dbesc($item["thr-parent"]),
+                        intval(local_user()));
+
+                if(count($r)) {
+                        $orig_post = $r[0];
+
+	                $nickname = "@[url=".$orig_post["author-link"]."]".$orig_post["contact_nick"]."[/url]";
+	                $nicknameplain = "@".$orig_post["contact_nick"];
+
+	                if ((strpos($item["body"], $nickname) === false) AND (strpos($item["body"], $nicknameplain) === false))
+	                        $item["body"] = $nickname." ".$item["body"];
+                }
+
+
+                $msgarr = plaintext($a, $item, $max_char, true, 7);
+                $msg = $msgarr["text"];
+
+                if (isset($msgarr["url"]))
+                        $msg .= " ".$msgarr["url"];
+
+                if (isset($msgarr["image"]))
+                        $msg .= " ".$msgarr["image"];
+
+                $b['html'] = nl2br(htmlspecialchars($msg));
+        }
 }
 
 function statusnet_cron($a,$b) {
@@ -998,6 +1045,8 @@ function statusnet_createpost($a, $uid, $post, $self, $create_user, $only_existi
 
 	require_once("include/html2bbcode.php");
 
+	logger("statusnet_createpost: start", LOGGER_DEBUG);
+
 	$api = get_pconfig($uid, 'statusnet', 'baseapi');
 	$hostname = preg_replace("=https?://([\w\.]*)/.*=ism", "$1", $api);
 
@@ -1059,6 +1108,8 @@ function statusnet_createpost($a, $uid, $post, $self, $create_user, $only_existi
 			} else
 				return(array());
 		}
+		// Don't create accounts of people who just comment something
+		$create_user = false;
 	} else
 		$postarray['parent-uri'] = $postarray['uri'];
 
@@ -1126,6 +1177,7 @@ function statusnet_createpost($a, $uid, $post, $self, $create_user, $only_existi
 		$postarray['author-link'] = $post->retweeted_status->user->statusnet_profile_url;
 		$postarray['author-avatar'] = $post->retweeted_status->user->profile_image_url;
 	}
+	logger("statusnet_createpost: end", LOGGER_DEBUG);
 	return($postarray);
 }
 
@@ -1392,7 +1444,7 @@ function statusnet_complete_conversation($a, $uid, $self, $create_user, $nick, $
 		$posts = array_reverse($items);
 
 		foreach($posts AS $post) {
-			$postarray = statusnet_createpost($a, $uid, $post, $self, $create_user, true);
+			$postarray = statusnet_createpost($a, $uid, $post, $self, false, false);
 
 			if (trim($postarray['body']) == "")
 				continue;
@@ -1414,6 +1466,8 @@ function statusnet_convertmsg($a, $body, $no_tags = false) {
 	require_once("include/items.php");
 	require_once("include/network.php");
 
+	$body = preg_replace("=\[url\=https?://([0-9]*).([0-9]*).([0-9]*).([0-9]*)/([0-9]*)\](.*?)\[\/url\]=ism","$1.$2.$3.$4/$5",$body);
+
 	$URLSearchString = "^\[\]";
 	$links = preg_match_all("/[^!#@]\[url\=([$URLSearchString]*)\](.*?)\[\/url\]/ism", $body,$matches,PREG_SET_ORDER);
 
@@ -1426,9 +1480,15 @@ function statusnet_convertmsg($a, $body, $no_tags = false) {
 		foreach ($matches AS $match) {
 			$search = "[url=".$match[1]."]".$match[2]."[/url]";
 
+			logger("statusnet_convertmsg: expanding url ".$match[1], LOGGER_DEBUG);
+
 			$expanded_url = original_url($match[1]);
 
+			logger("statusnet_convertmsg: fetching data for ".$expanded_url, LOGGER_DEBUG);
+
 			$oembed_data = oembed_fetch_url($expanded_url, true);
+
+			logger("statusnet_convertmsg: fetching data: done", LOGGER_DEBUG);
 
 			if ($type == "")
 				$type = $oembed_data->type;

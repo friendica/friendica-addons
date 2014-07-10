@@ -34,6 +34,7 @@ function fbpost_install() {
 	register_hook('enotify',          'addon/fbpost/fbpost.php', 'fbpost_enotify');
 	register_hook('queue_predeliver', 'addon/fbpost/fbpost.php', 'fbpost_queue_hook');
 	register_hook('cron', 		  'addon/fbpost/fbpost.php', 'fbpost_cron');
+	register_hook('prepare_body',     'addon/fbpost/fbpost.php', 'fbpost_prepare_body');
 }
 
 
@@ -45,6 +46,7 @@ function fbpost_uninstall() {
 	unregister_hook('enotify',          'addon/fbpost/fbpost.php', 'fbpost_enotify');
 	unregister_hook('queue_predeliver', 'addon/fbpost/fbpost.php', 'fbpost_queue_hook');
 	unregister_hook('cron', 	    'addon/fbpost/fbpost.php', 'fbpost_cron');
+	unregister_hook('prepare_body',     'addon/fbpost/fbpost.php', 'fbpost_prepare_body');
 }
 
 
@@ -565,8 +567,10 @@ function fbpost_post_hook(&$a,&$b) {
 					$msgarr = plaintext($a, $b, 0, false);
 					$msg = $msgarr["text"];
 					$link = $msgarr["url"];
-					$image = $msgarr["image"];
 					$linkname = $msgarr["title"];
+
+					if ($msgarr["type"] != "video")
+						$image = $msgarr["image"];
 
 					// Fallback - if message is empty
 					if(!strlen($msg))
@@ -915,6 +919,23 @@ function fbpost_get_app_access_token() {
 		logger('fb_get_app_access_token: response did not contain an access_token: ' . $x, LOGGER_DATA);
 		return false;
 	}
+}
+
+function fbpost_prepare_body(&$a,&$b) {
+        if ($b["item"]["network"] != NETWORK_FACEBOOK)
+                return;
+
+        if ($b["preview"]) {
+                $msg = $b["item"]["body"];
+
+		require_once("include/bbcode.php");
+		require_once("include/html2plain.php");
+		$msg = bb_CleanPictureLinks($msg);
+		$msg = bbcode($msg, false, false, 2, true);
+		$msg = trim(html2plain($msg, 0));
+
+                $b['html'] = nl2br(htmlspecialchars($msg));
+        }
 }
 
 function fbpost_cron($a,$b) {

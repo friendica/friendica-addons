@@ -278,7 +278,19 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	}
 
 	if ($contact_id <= 0) {
-		$contact_id = fbsync_fetch_contact($uid, $contacts[$post->source_id], $create_user);
+		if ($post->actor_id != $post->source_id) {
+			// Testing if we know the source or the actor
+			$contact_id = fbsync_fetch_contact($uid, $contacts[$post->source_id], false);
+
+			if (($contact_id == 0) and array_key_exists($post->actor_id, $contacts))
+				$contact_id = fbsync_fetch_contact($uid, $contacts[$post->actor_id], false);
+
+			// If we don't know anyone, we guess we should know the source. Could be the wrong decision
+			if ($contact_id == 0)
+				$contact_id = fbsync_fetch_contact($uid, $contacts[$post->source_id], $create_user);
+		} else
+			$contact_id = fbsync_fetch_contact($uid, $contacts[$post->source_id], $create_user);
+
 
 		if ($contact_id == -1) {
 			logger('fbsync_createpost: Contact is blocked. Post not imported '.print_r($post, true), LOGGER_DEBUG);
@@ -679,6 +691,9 @@ function fbsync_createlike($a, $uid, $self_id, $self, $contacts, $like) {
 }
 
 function fbsync_fetch_contact($uid, $contact, $create_user) {
+
+	if($contact->url == "")
+		return(0);
 
 	// Check if the unique contact is existing
 	// To-Do: only update once a while
