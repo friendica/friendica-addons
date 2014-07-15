@@ -12,6 +12,7 @@
  - Use embedded pictures for the attachment information (large attachment)
  - Sound links must be handled
  - https://alpha.app.net/sr_rolando/post/32365203 - double pictures
+ - https://alpha.app.net/opendev/post/34396399 - location data
 */
 
 define('APPNET_DEFAULT_POLL_INTERVAL', 5); // given in minutes

@@ -195,14 +195,15 @@ function fromgplus_parse_query($var)
 }
 
 function fromgplus_cleanupgoogleproxy($fullImage, $image) {
+	//$preview = "/w".$fullImage->width."-h".$fullImage->height."/";
+	//$preview2 = "/w".$fullImage->width."-h".$fullImage->height."-p/";
+	//$fullImage = str_replace(array($preview, $preview2), array("/", "/"), $fullImage->url);
+	$fullImage = $fullImage->url;
 
-	$preview = "/w".$fullImage->width."-h".$fullImage->height."/";
-	$preview2 = "/w".$fullImage->width."-h".$fullImage->height."-p/";
-	$fullImage = str_replace(array($preview, $preview2), array("/", "/"), $fullImage->url);
-
-	$preview = "/w".$image->width."-h".$image->height."/";
-	$preview2 = "/w".$image->width."-h".$image->height."-p/";
-	$image = str_replace(array($preview, $preview2), array("/", "/"), $image->url);
+	//$preview = "/w".$image->width."-h".$image->height."/";
+	//$preview2 = "/w".$image->width."-h".$image->height."-p/";
+	//$image = str_replace(array($preview, $preview2), array("/", "/"), $image->url);
+	$image = $image->url;
 
        	$cleaned = array();
 
@@ -227,7 +228,23 @@ function fromgplus_cleanupgoogleproxy($fullImage, $image) {
 		$cleaned["preview"] = "";
 	}
 
-	if ($cleaned["full"] == $cleaned["preview"])
+	if ($cleaned["full"] != "")
+		$infoFull = get_photo_info($cleaned["full"]);
+	else
+		$infoFull = array("0" => 0, "1" => 0);
+
+	if ($cleaned["preview"] != "")
+		$infoPreview = get_photo_info($cleaned["preview"]);
+	else
+		$infoFull = array("0" => 0, "1" => 0);
+
+	if (($infoPreview[0] >= $infoFull[0]) AND ($infoPreview[1] >= $infoFull[1])) {
+		$temp = $cleaned["full"];
+		$cleaned["full"] = $cleaned["preview"];
+		$cleaned["preview"] = $temp;
+	}
+
+	if (($cleaned["full"] == $cleaned["preview"]) OR (($infoPreview[0] == $infoFull[0]) AND ($infoPreview[1] == $infoFull[1])))
 		$cleaned["preview"] = "";
 
 	if ($cleaned["full"] == "")
@@ -236,7 +253,10 @@ function fromgplus_cleanupgoogleproxy($fullImage, $image) {
 
 	if ($cleaned["full"] == "")
 		if (@exif_imagetype($image) != 0)
-			$cleaned["full"] = $fullImage;
+			$cleaned["full"] = $image;
+
+	// Could be changed in the future to a link to the album
+	$cleaned["page"] = $cleaned["full"];
 
 	return($cleaned);
 }
@@ -253,7 +273,9 @@ function fromgplus_cleantext($text) {
 	return($text);
 }
 
-function fromgplus_handleattachments($item, $displaytext) {
+function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
+	require_once("include/Photo.php");
+
 	$post = "";
 	$quote = "";
 	$type = "";
@@ -279,9 +301,18 @@ function fromgplus_handleattachments($item, $displaytext) {
 				break;
 
 			case "photo":
-				$images = fromgplus_cleanupgoogleproxy($attachment->fullImage, $attachment->image);
+				// Don't store shared pictures in your wall photos (to prevent a possible violating of licenses)
+				if ($shared)
+					$images = fromgplus_cleanupgoogleproxy($attachment->fullImage, $attachment->image);
+				else {
+					if ($attachment->fullImage->url != "")
+						$images = store_photo($a, $uid, "", $attachment->fullImage->url);
+					elseif ($attachment->image->url != "")
+						$images = store_photo($a, $uid, "", $attachment->image->url);
+				}
+
 				if ($images["preview"] != "")
-					$post .= "\n[url=".$images["full"]."][img]".$images["preview"]."[/img][/url]\n";
+					$post .= "\n[url=".$images["page"]."][img]".$images["preview"]."[/img][/url]\n";
 				elseif ($images["full"] != "")
 					$post .= "\n[img]".$images["full"]."[/img]\n";
 
@@ -381,7 +412,7 @@ function fromgplus_fetch($a, $uid) {
 					$post = fromgplus_html2bbcode($item->object->content);
 
 					if (is_array($item->object->attachments))
-						$post .= fromgplus_handleattachments($item, $item->object->content);
+						$post .= fromgplus_handleattachments($a, $uid, $item, $item->object->content, false);
 
 					// geocode, placeName
 					if (isset($item->address))
@@ -406,7 +437,7 @@ function fromgplus_fetch($a, $uid) {
 						$post .= fromgplus_html2bbcode($item->object->content);
 
 						if (is_array($item->object->attachments))
-							$post .= "\n".trim(fromgplus_handleattachments($item, $item->object->content));
+							$post .= "\n".trim(fromgplus_handleattachments($a, $uid, $item, $item->object->content, true));
 
 						$post .= "[/share]";
 					} else {
@@ -415,7 +446,7 @@ function fromgplus_fetch($a, $uid) {
 						$post .= fromgplus_html2bbcode($item->object->content);
 
 						if (is_array($item->object->attachments))
-							$post .= "\n".trim(fromgplus_handleattachments($item, $item->object->content));
+							$post .= "\n".trim(fromgplus_handleattachments($a, $uid, $item, $item->object->content, true));
 					}
 
 					if (isset($item->address))
@@ -431,22 +462,3 @@ function fromgplus_fetch($a, $uid) {
 	if ($lastdate != 0)
 		set_pconfig($uid,'fromgplus','lastdate', $lastdate);
 }
-
-/*
-// Test
-require_once("boot.php");
-
-if(@is_null($a)) {
-        $a = new App;
-}
-
-if(@is_null($db)) {
-        @include(".htconfig.php");
-        require_once("include/dba.php");
-        $db = new dba($db_host, $db_user, $db_pass, $db_data);
-        unset($db_host, $db_user, $db_pass, $db_data);
-};
-
-$test = array();
-fromgplus_cron($a, $test);
-*/
