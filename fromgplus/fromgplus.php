@@ -391,6 +391,12 @@ function fromgplus_fetch($a, $uid) {
 		if (strtotime($item->published) <= $initiallastdate)
 			continue;
 
+		// Don't publish items that are too young
+		if (strtotime($item->published) > (time() - 3*60)) {
+			logger('fromgplus_fetch: item too new '.$item->published);
+			continue;
+		}
+
 		if ($lastdate < strtotime($item->published))
 			$lastdate = strtotime($item->published);
 
