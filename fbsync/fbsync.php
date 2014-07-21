@@ -229,6 +229,7 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	$postarray['wall'] = 0;
 
 	$postarray['verb'] = ACTIVITY_POST;
+	$postarray['object-type'] = ACTIVITY_OBJ_NOTE; // default value - is maybe changed later when media is attached
 	$postarray['network'] =  dbesc(NETWORK_FACEBOOK);
 
 	$postarray['uri'] = "fb::".$post->post_id;
@@ -314,6 +315,24 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	$postarray["body"] = $msgdata["body"];
 	$postarray["tag"] = $msgdata["tags"];
 
+	// Change the object type when an attachment is present
+	if (isset($post->attachment->fb_object_type))
+		logger('fb_object_type: '.$post->attachment->fb_object_type." ".print_r($post->attachment, true), LOGGER_DEBUG);
+		switch ($post->attachment->fb_object_type) {
+			case 'photo':
+				$postarray['object-type'] = ACTIVITY_OBJ_IMAGE; // photo is deprecated: http://activitystrea.ms/head/activity-schema.html#image
+				break;
+			case 'video':
+				$postarray['object-type'] = ACTIVITY_OBJ_VIDEO;
+				break;
+			case '':
+				//$postarray['object-type'] = ACTIVITY_OBJ_BOOKMARK;
+				break;
+			default:
+				logger('Unknown object type '.$post->attachment->fb_object_type, LOGGER_DEBUG);
+				break;
+		}
+
 	$content = "";
 	$type = "";
 
@@ -328,42 +347,43 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 		$content = "[b]" . $post->attachment->name."[/b]";
 
 	$quote = "";
-	if(isset($post->attachment->description) and ($post->attachment->fb_object_type != "photo"))
+	if (isset($post->attachment->description) and ($post->attachment->fb_object_type != "photo"))
 		$quote = $post->attachment->description;
 
-	if(isset($post->attachment->caption) and ($post->attachment->fb_object_type == "photo"))
+	if (isset($post->attachment->caption) and ($post->attachment->fb_object_type == "photo"))
 		$quote = $post->attachment->caption;
 
 	if ($quote.$post->attachment->href.$content.$postarray["body"] == "")
 		return;
 
-	if (isset($post->attachment->media) // AND !strstr($post->attachment->href, "://www.youtube.com/")
-		//AND !strstr($post->attachment->href, "://youtu.be/")
-		//AND !strstr($post->attachment->href, ".vimeo.com/"))
-		AND (($type == "") OR ($type == "link"))) {
+	if (isset($post->attachment->media) AND (($type == "") OR ($type == "link"))) {
 		foreach ($post->attachment->media AS $media) {
-			//$media->photo->owner = number_format($media->photo->owner, 0, '', '');
-			//if ($media->photo->owner != '') {
-			//	$postarray['author-name'] = $contacts[$media->photo->owner]->name;
-			//	$postarray['author-link'] = $contacts[$media->photo->owner]->url;
-			//	$postarray['author-avatar'] = $contacts[$media->photo->owner]->pic_square;
-			//}
 
 			if (isset($media->type))
 				$type = $media->type;
 
-			if(isset($media->src) && isset($media->href) AND ($media->src != "") AND ($media->href != ""))
-				$content .= "\n".'[url='.$media->href.'][img]'.fpost_cleanpicture($media->src).'[/img][/url]';
+			if (isset($media->src))
+				$preview = $media->src;
+
+			if (isset($media->photo))
+				if (isset($media->photo->images) AND (count($media->photo->images) > 1))
+					$preview = $media->photo->images[1]->src;
+
+			if (isset($media->href) AND ($preview != "") AND ($media->href != ""))
+				$content .= "\n".'[url='.$media->href.'][img]'.$preview.'[/img][/url]';
 			else {
-				if (isset($media->src) AND ($media->src != ""))
-					$content .= "\n".'[img]'.fpost_cleanpicture($media->src).'[/img]';
+				if ($preview != "")
+					$content .= "\n".'[img]'.$preview.'[/img]';
 
 				// if just a link, it may be a wall photo - check
-				if(isset($post->link))
+				if (isset($post->link))
 					$content .= fbpost_get_photo($media->href);
 			}
 		}
 	}
+
+	if ($type == "link")
+		$postarray["object-type"] = ACTIVITY_OBJ_BOOKMARK;
 
 	if ($content)
 		$postarray["body"] .= "\n";
@@ -490,6 +510,7 @@ function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $appl
 	$postarray['wall'] = 0;
 
 	$postarray['verb'] = ACTIVITY_POST;
+	$postarray['object-type'] = ACTIVITY_OBJ_COMMENT;
 	$postarray['network'] =  dbesc(NETWORK_FACEBOOK);
 
 	$postarray['uri'] = "fb::".$comment->id;
@@ -589,7 +610,8 @@ function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $appl
 					'to_email'     => $user[0]['email'],
 					'uid'          => $user[0]['uid'],
 					'item'         => $postarray,
-					'link'             => $a->get_baseurl() . '/display/' . $user[0]['nickname'] . '/' . $item,
+					//'link'         => $a->get_baseurl() . '/display/' . $user[0]['nickname'] . '/' . $item,
+					'link'         => $a->get_baseurl().'/display/'.get_item_guid($item),
 					'source_name'  => $postarray['author-name'],
 					'source_link'  => $postarray['author-link'],
 					'source_photo' => $postarray['author-avatar'],
@@ -641,8 +663,11 @@ function fbsync_createlike($a, $uid, $self_id, $self, $contacts, $like) {
 
 	$likedata = array();
 	$likedata['parent'] = $orig_post['id'];
+
 	$likedata['verb'] = ACTIVITY_LIKE;
+	$likedata['object-type'] = ACTIVITY_OBJ_NOTE;
 	$likedate['network'] =  dbesc(NETWORK_FACEBOOK);
+
 	$likedata['gravity'] = 3;
 	$likedata['uid'] = $uid;
 	$likedata['wall'] = 0;
@@ -976,6 +1001,7 @@ function fbsync_fetchfeed($a, $uid) {
 	$url = "https://graph.facebook.com/fql?q=".urlencode(json_encode($fql))."&access_token=".$access_token;
 
 	$feed = fetch_url($url);
+	file_put_contents("fb.".$uid);
 	$data = json_decode($feed);
 
 	if (!is_array($data->data)) {

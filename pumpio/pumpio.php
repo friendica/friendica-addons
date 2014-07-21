@@ -472,6 +472,9 @@ function pumpio_send(&$a,&$b) {
 			$inReplyTo = array("id" => $orig_post["uri"],
 					"objectType" => "note");
 
+			if (($orig_post["object-type"] != "") AND (strstr($orig_post["object-type"], NAMESPACE_ACTIVITY_SCHEMA)))
+				$inReplyTo["objectType"] = str_replace(NAMESPACE_ACTIVITY_SCHEMA, '', $orig_post["object-type"]);
+
 			$params["object"] = array(
 						'objectType' => "comment",
 						'content' => $title.$content,
@@ -546,7 +549,9 @@ function pumpio_action(&$a, $uid, $uri, $action, $content) {
 	else
 		$uri = $orig_post["uri"];
 
-	if (strstr($uri, "/api/comment/"))
+	if (($orig_post["object-type"] != "") AND (strstr($orig_post["object-type"], NAMESPACE_ACTIVITY_SCHEMA)))
+		$objectType = str_replace(NAMESPACE_ACTIVITY_SCHEMA, '', $orig_post["object-type"]);
+	elseif (strstr($uri, "/api/comment/"))
 		$objectType = "comment";
 	elseif (strstr($uri, "/api/note/"))
 		$objectType = "note";
@@ -865,7 +870,6 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id) {
 	$likedata['parent-uri'] = $orig_post["uri"];
 	$likedata['contact-id'] = $contactid;
 	$likedata['app'] = $post->generator->displayName;
-	$likedata['verb'] = ACTIVITY_LIKE;
 	$likedata['author-name'] = $post->actor->displayName;
 	$likedata['author-link'] = $post->actor->url;
 	$likedata['author-avatar'] = $post->actor->image->url;
@@ -1081,6 +1085,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 	$postarray['uid'] = $uid;
 	$postarray['wall'] = 0;
 	$postarray['uri'] = $post->object->id;
+	$postarray['object-type'] = NAMESPACE_ACTIVITY_SCHEMA.strtolower($post->object->objectType);
 
 	if ($post->object->objectType != "comment") {
 		$contact_id = pumpio_get_contact($uid, $post->actor);
@@ -1238,7 +1243,8 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 					'to_email'     => $user[0]['email'],
 					'uid'          => $user[0]['uid'],
 					'item'         => $postarray,
-					'link'             => $a->get_baseurl() . '/display/' . $user[0]['nickname'] . '/' . $top_item,
+					//'link'             => $a->get_baseurl() . '/display/' . $user[0]['nickname'] . '/' . $top_item,
+					'link'         => $a->get_baseurl().'/display/'.get_item_guid($top_item),
 					'source_name'  => $postarray['author-name'],
 					'source_link'  => $postarray['author-link'],
 					'source_photo' => $postarray['author-avatar'],
