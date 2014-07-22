@@ -1001,7 +1001,6 @@ function fbsync_fetchfeed($a, $uid) {
 	$url = "https://graph.facebook.com/fql?q=".urlencode(json_encode($fql))."&access_token=".$access_token;
 
 	$feed = fetch_url($url);
-	file_put_contents("fb.".$uid);
 	$data = json_decode($feed);
 
 	if (!is_array($data->data)) {
