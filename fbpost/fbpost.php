@@ -564,7 +564,7 @@ function fbpost_post_hook(&$a,&$b) {
 
 				if ($toplevel) {
 					require_once("include/plaintext.php");
-					$msgarr = plaintext($a, $b, 0, false);
+					$msgarr = plaintext($a, $b, 0, false, 9);
 					$msg = $msgarr["text"];
 					$link = $msgarr["url"];
 					$linkname = $msgarr["title"];
