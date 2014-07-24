@@ -12,6 +12,7 @@
  - Use embedded pictures for the attachment information (large attachment)
  - Sound links must be handled
  - https://alpha.app.net/sr_rolando/post/32365203 - double pictures
+ - https://alpha.app.net/opendev/post/34396399 - location data
 */
 
 define('APPNET_DEFAULT_POLL_INTERVAL', 5); // given in minutes
@@ -715,7 +716,8 @@ function appnet_fetchstream($a, $uid) {
 					'to_email'     => $user['email'],
 					'uid'          => $user['uid'],
 					'item'         => $postarray,
-					'link'         => $a->get_baseurl() . '/display/' . $user['nickname'] . '/' . $item,
+					//'link'         => $a->get_baseurl() . '/display/' . $user['nickname'] . '/' . $item,
+					'link'         => $a->get_baseurl().'/display/'.get_item_guid($item),
 					'source_name'  => $postarray['author-name'],
 					'source_link'  => $postarray['author-link'],
 					'source_photo' => $postarray['author-avatar'],
@@ -769,7 +771,8 @@ function appnet_fetchstream($a, $uid) {
 				'to_email'     => $user['email'],
 				'uid'          => $user['uid'],
 				'item'         => $postarray,
-				'link'         => $a->get_baseurl() . '/display/' . $user['nickname'] . '/' . $item,
+				//'link'         => $a->get_baseurl() . '/display/' . $user['nickname'] . '/' . $item,
+				'link'         => $a->get_baseurl().'/display/'.get_item_guid($item),
 				'source_name'  => $postarray['author-name'],
 				'source_link'  => $postarray['author-link'],
 				'source_photo' => $postarray['author-avatar'],
@@ -866,8 +869,12 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 		}
 		// Don't create accounts of people who just comment something
 		$createuser = false;
-	} else
+
+		$postarray['object-type'] = ACTIVITY_OBJ_COMMENT;
+	} else {
 		$postarray['thr-parent'] = $postarray['uri'];
+		$postarray['object-type'] = ACTIVITY_OBJ_NOTE;
+	}
 
 	$postarray['plink'] = $post["canonical_url"];
 
@@ -952,6 +959,10 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 			$page_info = "\n[url=".$photo["url"]."][img]".$photo["large"]."[/img][/url]";
 		elseif ($photo["url"] != "")
 			$page_info = "\n[img]".$photo["url"]."[/img]";
+
+		if ($photo["url"] != "")
+			$postarray['object-type'] = ACTIVITY_OBJ_IMAGE;
+
 	} else
 		$photo = array("url" => "", "large" => "");
 

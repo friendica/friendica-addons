@@ -1243,6 +1243,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 		if (count($r)) {
 			$postarray['thr-parent'] = $r[0]["uri"];
 			$postarray['parent-uri'] = $r[0]["parent-uri"];
+			$postarray['object-type'] = ACTIVITY_OBJ_COMMENT;
 		} else {
 			$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
 					dbesc($parent),
@@ -1251,9 +1252,11 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 			if (count($r)) {
 				$postarray['thr-parent'] = $r[0]['uri'];
 				$postarray['parent-uri'] = $r[0]['parent-uri'];
+				$postarray['object-type'] = ACTIVITY_OBJ_COMMENT;
 			} else {
 				$postarray['thr-parent'] = $postarray['uri'];
 				$postarray['parent-uri'] = $postarray['uri'];
+				$postarray['object-type'] = ACTIVITY_OBJ_NOTE;
 			}
 		}
 
@@ -1275,8 +1278,10 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 		}
 		// Don't create accounts of people who just comment something
 		$create_user = false;
-	} else
+	} else {
 		$postarray['parent-uri'] = $postarray['uri'];
+		$postarray['object-type'] = ACTIVITY_OBJ_NOTE;
+	}
 
 	if ($contactid == 0) {
 		$contactid = twitter_fetch_contact($uid, $post->user, $create_user);
@@ -1317,6 +1322,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 					//$postarray['body'] = str_replace($media->url, "\n\n[img]".$media->media_url_https."[/img]\n", $postarray['body']);
 					//$has_picture = true;
 					$postarray['body'] = str_replace($media->url, "", $postarray['body']);
+					$postarray['object-type'] = ACTIVITY_OBJ_IMAGE;
 					$picture = $media->media_url_https;
 					break;
 				default:
@@ -1358,6 +1364,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 						//$postarray['body'] = str_replace($media->url, "\n\n[img]".$media->media_url_https."[/img]\n", $postarray['body']);
 						//$has_picture = true;
 						$postarray['body'] = str_replace($media->url, "", $postarray['body']);
+						$postarray['object-type'] = ACTIVITY_OBJ_IMAGE;
 						$picture = $media->media_url_https;
 						break;
 					default:
@@ -1445,7 +1452,8 @@ function twitter_checknotification($a, $uid, $own_id, $top_item, $postarray) {
 				'to_email'     => $user[0]['email'],
 				'uid'          => $user[0]['uid'],
 				'item'         => $postarray,
-				'link'             => $a->get_baseurl() . '/display/' . $user[0]['nickname'] . '/' . $top_item,
+				//'link'             => $a->get_baseurl() . '/display/' . $user[0]['nickname'] . '/' . $top_item,
+				'link'         => $a->get_baseurl().'/display/'.get_item_guid($top_item),
 				'source_name'  => $postarray['author-name'],
 				'source_link'  => $postarray['author-link'],
 				'source_photo' => $postarray['author-avatar'],
@@ -1606,7 +1614,8 @@ function twitter_fetchhometimeline($a, $uid) {
 					'to_email'     => $u[0]['email'],
 					'uid'          => $u[0]['uid'],
 					'item'         => $postarray,
-					'link'         => $a->get_baseurl() . '/display/' . $u[0]['nickname'] . '/' . $item,
+					//'link'         => $a->get_baseurl() . '/display/' . $u[0]['nickname'] . '/' . $item,
+					'link'         => $a->get_baseurl().'/display/'.get_item_guid($item),
 					'source_name'  => $postarray['author-name'],
 					'source_link'  => $postarray['author-link'],
 					'source_photo' => $postarray['author-avatar'],
