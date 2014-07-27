@@ -975,6 +975,9 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 		if (($removedlink == "") OR strstr($postarray['body'], $removedlink))
 			$postarray['body'] = $removedlink;
 
+		if (($removedlink == "") OR strstr("[url]".$postarray['body']."[/url]", $removedlink))
+			$postarray['body'] = $removedlink;
+
 		$page_info = add_page_info($link, false, $photo["url"]);
 	}
 
