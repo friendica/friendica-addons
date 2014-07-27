@@ -213,6 +213,8 @@ function fbsync_expire($a,$b) {
 
 function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $create_user) {
 
+	$access_token = get_pconfig($uid,'facebook','access_token');
+
 	require_once("include/oembed.php");
 
 	// check if it was already imported
@@ -365,9 +367,21 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 			if (isset($media->src))
 				$preview = $media->src;
 
-			if (isset($media->photo))
+			if (isset($media->photo)) {
 				if (isset($media->photo->images) AND (count($media->photo->images) > 1))
 					$preview = $media->photo->images[1]->src;
+
+				if (isset($media->photo->fbid)) {
+					logger('fbsync_createpost: fetching fbid '.$media->photo->fbid, LOGGER_DEBUG);
+					$url = "https://graph.facebook.com/v2.0/".$media->photo->fbid."/?access_token=".$access_token;
+					$feed = fetch_url($url);
+					$data = json_decode($feed);
+					if (isset($data->images)) {
+						$preview = $data->images[0]->source;
+						logger('fbsync_createpost: got fbid image '.$preview, LOGGER_DEBUG);
+					}
+				}
+			}
 
 			if (isset($media->href) AND ($preview != "") AND ($media->href != ""))
 				$content .= "\n".'[url='.$media->href.'][img]'.$preview.'[/img][/url]';

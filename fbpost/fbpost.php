@@ -1050,11 +1050,25 @@ function fbpost_fetchwall($a, $uid) {
 
 			$type = $item->type;
 
-			if(isset($item->picture) && isset($item->link))
-				$content .= "\n".'[url='.$item->link.'][img]'.fpost_cleanpicture($item->picture).'[/img][/url]';
+			if (isset($item->picture))
+				$picture = $item->picture;
+
+			if (($type == "photo") AND isset($item->object_id)) {
+				 logger('fbpost_fetchwall: fetching fbid '.$item->object_id, LOGGER_DEBUG);
+				$url = "https://graph.facebook.com/v2.0/".$item->object_id."/?access_token=".$access_token;
+				$feed = fetch_url($url);
+				$data = json_decode($feed);
+				if (isset($data->images)) {
+					$picture = $data->images[0]->source;
+					logger('fbpost_fetchwall: got fbid image '.$preview, LOGGER_DEBUG);
+				}
+			}
+
+			if(($picture != "") && isset($item->link))
+				$content .= "\n".'[url='.$item->link.'][img]'.$picture.'[/img][/url]';
 			else {
-				if (isset($item->picture))
-					$content .= "\n".'[img]'.fpost_cleanpicture($item->picture).'[/img]';
+				if ($picture != "")
+					$content .= "\n".'[img]'.$picture.'[/img]';
 				// if just a link, it may be a wall photo - check
 				if(isset($item->link))
 					$content .= fbpost_get_photo($uid,$item->link);
@@ -1125,7 +1139,7 @@ function fbpost_get_photo($uid,$link) {
 	$x = fetch_url('https://graph.facebook.com/'.$photo_id.'?access_token='.$access_token);
 	$j = json_decode($x);
 	if($j->picture)
-		return "\n\n".'[url='.$link.'][img]'.fpost_cleanpicture($j->picture).'[/img][/url]';
+		return "\n\n".'[url='.$link.'][img]'.$j->picture.'[/img][/url]';
 
 	return "";
 }
