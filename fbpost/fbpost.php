@@ -1055,7 +1055,7 @@ function fbpost_fetchwall($a, $uid) {
 
 			if (($type == "photo") AND isset($item->object_id)) {
 				 logger('fbpost_fetchwall: fetching fbid '.$item->object_id, LOGGER_DEBUG);
-				$url = "https://graph.facebook.com/v2.0/".$item->object_id."/?access_token=".$access_token;
+				$url = "https://graph.facebook.com/".$item->object_id."?access_token=".$access_token;
 				$feed = fetch_url($url);
 				$data = json_decode($feed);
 				if (isset($data->images)) {

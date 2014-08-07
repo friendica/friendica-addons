@@ -373,13 +373,14 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 
 				if (isset($media->photo->fbid)) {
 					logger('fbsync_createpost: fetching fbid '.$media->photo->fbid, LOGGER_DEBUG);
-					$url = "https://graph.facebook.com/v2.0/".$media->photo->fbid."/?access_token=".$access_token;
+					$url = "https://graph.facebook.com/".$media->photo->fbid."?access_token=".$access_token;
 					$feed = fetch_url($url);
 					$data = json_decode($feed);
 					if (isset($data->images)) {
 						$preview = $data->images[0]->source;
-						logger('fbsync_createpost: got fbid image '.$preview, LOGGER_DEBUG);
-					}
+						logger('fbsync_createpost: got fbid '.$media->photo->fbid.' image '.$preview, LOGGER_DEBUG);
+					} else
+						logger('fbsync_createpost: error fetching fbid '.$media->photo->fbid.' '.print_r($data, true), LOGGER_DEBUG);
 				}
 			}
 
