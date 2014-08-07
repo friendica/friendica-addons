@@ -271,7 +271,7 @@ function gpluspost_send(&$a,&$b) {
 			$item["body"] = preg_replace("(\[i\](.*?)\[\/i\])ism",'_$1_',$item["body"]);
 			$item["body"] = preg_replace("(\[s\](.*?)\[\/s\])ism",'-$1-',$item["body"]);
 
-			$data = plaintext($a, $item, 0, false);
+			$data = plaintext($a, $item, 0, false, 9);
 
 			logger('gpluspost_send: data: '.print_r($data, true), LOGGER_DEBUG);
 

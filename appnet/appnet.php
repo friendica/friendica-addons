@@ -968,10 +968,9 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 
 	if (sizeof($links)) {
 		$link = array_pop($links);
-		$url = "[url=".$link."]".$link."[/url]";
+		$url = str_replace(array('/', '.'), array('\/', '\.'), $link);
 
-		$removedlink = trim(str_replace($url, "", $postarray['body']));
-
+		$removedlink = preg_replace("/\[url\=".$url."\](.*?)\[\/url\]/ism", '', $postarray['body']);
 		if (($removedlink == "") OR strstr($postarray['body'], $removedlink))
 			$postarray['body'] = $removedlink;
 

@@ -1538,7 +1538,7 @@ function statusnet_convertmsg($a, $body, $no_tags = false) {
 		if (($footerlink != "") AND (trim($footer) != "")) {
 			$removedlink = trim(str_replace($footerlink, "", $body));
 
-			if (strstr($body, $removedlink))
+			if (($removedlink == "") OR strstr($body, $removedlink))
 				$body = $removedlink;
 
 			$body .= $footer;

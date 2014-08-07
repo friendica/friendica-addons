@@ -485,7 +485,8 @@ function jappixmini_script(&$a,&$s) {
 		dbesc($dfrn_id),
 		dbesc($dfrn_id)
 	);
-	$name = $r[0]["name"];
+	if (count($r))
+		$name = $r[0]["name"];
 
         $value = $row['v'];
         $pos = strpos($value, ":");
