@@ -716,8 +716,7 @@ function appnet_fetchstream($a, $uid) {
 					'to_email'     => $user['email'],
 					'uid'          => $user['uid'],
 					'item'         => $postarray,
-					//'link'         => $a->get_baseurl() . '/display/' . $user['nickname'] . '/' . $item,
-					'link'         => $a->get_baseurl().'/display/'.get_item_guid($item),
+					'link'         => $a->get_baseurl().'/display/'.urlencode(get_item_guid($item)),
 					'source_name'  => $postarray['author-name'],
 					'source_link'  => $postarray['author-link'],
 					'source_photo' => $postarray['author-avatar'],
@@ -761,7 +760,8 @@ function appnet_fetchstream($a, $uid) {
 
 		$lastid = $post["id"];
 
-		if (($item != 0) AND ($postarray['contact-id'] != $me["id"])) {
+		//if (($item != 0) AND ($postarray['contact-id'] != $me["id"])) {
+		if ($item != 0) {
 			require_once('include/enotify.php');
 			notification(array(
 				'type'         => NOTIFY_TAGSELF,
@@ -771,8 +771,7 @@ function appnet_fetchstream($a, $uid) {
 				'to_email'     => $user['email'],
 				'uid'          => $user['uid'],
 				'item'         => $postarray,
-				//'link'         => $a->get_baseurl() . '/display/' . $user['nickname'] . '/' . $item,
-				'link'         => $a->get_baseurl().'/display/'.get_item_guid($item),
+				'link'         => $a->get_baseurl().'/display/'.urlencode(get_item_guid($item)),
 				'source_name'  => $postarray['author-name'],
 				'source_link'  => $postarray['author-link'],
 				'source_photo' => $postarray['author-avatar'],
