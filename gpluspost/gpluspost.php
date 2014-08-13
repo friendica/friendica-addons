@@ -233,24 +233,25 @@ function gpluspost_send(&$a,&$b) {
 	if (!get_pconfig($b["uid"],'gpluspost','no_loop_prevention') and ($b['app'] == "Google+"))
 		return;
 
-	// Always do the export via RSS-Feed (even if NextScripts is enabled), since it doesn't hurt
-	$itemlist = get_pconfig($b["uid"],'gpluspost','itemlist');
-	$items = explode(",", $itemlist);
+	if (!gpluspost_nextscripts()) {
+		// Posting via RSS-Feed and Hootsuite
+		$itemlist = get_pconfig($b["uid"],'gpluspost','itemlist');
+		$items = explode(",", $itemlist);
 
-	$i = 0;
-	$newitems = array($b['id']);
-	foreach ($items AS $item)
-		if ($i++ < 9)
-			$newitems[] = $item;
+		$i = 0;
+		$newitems = array($b['id']);
+		foreach ($items AS $item)
+			if ($i++ < 9)
+				$newitems[] = $item;
 
-	$itemlist = implode(",", $newitems);
+		$itemlist = implode(",", $newitems);
 
-	logger('gpluspost_send: new itemlist: '.$itemlist." for uid ".$b["uid"]);
+		logger('gpluspost_send: new itemlist: '.$itemlist." for uid ".$b["uid"]);
 
-	set_pconfig($b["uid"],'gpluspost','itemlist', $itemlist);
+		set_pconfig($b["uid"],'gpluspost','itemlist', $itemlist);
 
-	// Posting via NextScripts
-	if (gpluspost_nextscripts()) {
+	} else {
+		// Posting via NextScripts
 		$username = get_pconfig($b['uid'],'gpluspost','username');
 		$password = get_pconfig($b['uid'],'gpluspost','password');
 		$page = get_pconfig($b['uid'],'gpluspost','page');
