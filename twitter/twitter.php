@@ -1243,6 +1243,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 		if (count($r)) {
 			$postarray['thr-parent'] = $r[0]["uri"];
 			$postarray['parent-uri'] = $r[0]["parent-uri"];
+			$postarray['parent'] = $r[0]["parent"];
 			$postarray['object-type'] = ACTIVITY_OBJ_COMMENT;
 		} else {
 			$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
@@ -1252,6 +1253,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 			if (count($r)) {
 				$postarray['thr-parent'] = $r[0]['uri'];
 				$postarray['parent-uri'] = $r[0]['parent-uri'];
+				$postarray['parent'] = $r[0]['parent'];
 				$postarray['object-type'] = ACTIVITY_OBJ_COMMENT;
 			} else {
 				$postarray['thr-parent'] = $postarray['uri'];
@@ -1403,6 +1405,8 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 }
 
 function twitter_checknotification($a, $uid, $own_id, $top_item, $postarray) {
+
+	// this whole function doesn't seem to work. Needs complete check
 
 	$user = q("SELECT * FROM `contact` WHERE `uid` = %d AND `self` LIMIT 1",
 			intval($uid)
@@ -1592,6 +1596,9 @@ function twitter_fetchhometimeline($a, $uid) {
 
 			$item = item_store($postarray);
 
+			if (!isset($postarray["parent"]) OR ($postarray["parent"] == 0))
+				$postarray["parent"] = $item;
+
 			logger('twitter_fetchhometimeline: User '.$self["nick"].' posted mention timeline item '.$item);
 
 			if ($item == 0) {
@@ -1599,9 +1606,12 @@ function twitter_fetchhometimeline($a, $uid) {
 					dbesc($postarray['uri']),
 					intval($uid)
 				);
-				if (count($r))
+				if (count($r)) {
 					$item = $r[0]['id'];
-			}
+					$parent_id = $r[0]['parent'];
+				}
+			} else
+				$parent_id = $postarray['parent'];
 
 			if ($item != 0) {
 				require_once('include/enotify.php');
@@ -1618,7 +1628,8 @@ function twitter_fetchhometimeline($a, $uid) {
 					'source_link'  => $postarray['author-link'],
 					'source_photo' => $postarray['author-avatar'],
 					'verb'         => ACTIVITY_TAG,
-					'otype'        => 'item'
+					'otype'        => 'item',
+					'parent'       => $parent_id
 				));
 			}
 		}

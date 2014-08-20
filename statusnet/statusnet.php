@@ -1078,6 +1078,7 @@ function statusnet_createpost($a, $uid, $post, $self, $create_user, $only_existi
 		if (count($r)) {
 			$postarray['thr-parent'] = $r[0]["uri"];
 			$postarray['parent-uri'] = $r[0]["parent-uri"];
+			$postarray['parent'] = $r[0]["parent"];
 			$postarray['object-type'] = ACTIVITY_OBJ_COMMENT;
 		} else {
 			$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
@@ -1087,6 +1088,7 @@ function statusnet_createpost($a, $uid, $post, $self, $create_user, $only_existi
 			if (count($r)) {
 				$postarray['thr-parent'] = $r[0]['uri'];
 				$postarray['parent-uri'] = $r[0]['parent-uri'];
+				$postarray['parent'] = $r[0]['parent'];
 				$postarray['object-type'] = ACTIVITY_OBJ_COMMENT;
 			} else {
 				$postarray['thr-parent'] = $postarray['uri'];
@@ -1188,6 +1190,8 @@ function statusnet_createpost($a, $uid, $post, $self, $create_user, $only_existi
 }
 
 function statusnet_checknotification($a, $uid, $own_url, $top_item, $postarray) {
+
+	// This function necer worked and need cleanup
 
 	$user = q("SELECT * FROM `contact` WHERE `uid` = %d AND `self` LIMIT 1",
 			intval($uid)
@@ -1405,8 +1409,10 @@ function statusnet_fetchhometimeline($a, $uid) {
 				dbesc($postarray['uri']),
 				intval($uid)
 			);
-			if (count($r))
+			if (count($r)) {
 				$item = $r[0]['id'];
+				$parent_id = $r[0]['parent'];
+			}
 
 			if ($item != 0) {
 				require_once('include/enotify.php');
@@ -1423,7 +1429,8 @@ function statusnet_fetchhometimeline($a, $uid) {
 					'source_link'  => $postarray['author-link'],
 					'source_photo' => $postarray['author-avatar'],
 					'verb'         => ACTIVITY_TAG,
-					'otype'        => 'item'
+					'otype'        => 'item',
+					'parent'       => $parent_id,
 				));
 			}
 		}

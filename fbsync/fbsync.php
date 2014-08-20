@@ -345,6 +345,13 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 			$type = "link";
 
 		$content = "[bookmark=".$post->attachment->href."]".$post->attachment->name."[/bookmark]";
+
+		// If a link is not only attached but also added in the body, look if it can be removed in the body.
+		$removedlink = trim(str_replace($post->attachment->href, "", $postarray["body"]));
+
+		if (($removedlink == "") OR strstr($postarray["body"], $removedlink))
+			$postarray["body"] = $removedlink;
+
 	} elseif (isset($post->attachment->name) AND ($post->attachment->name != ""))
 		$content = "[b]" . $post->attachment->name."[/b]";
 
