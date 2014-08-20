@@ -253,9 +253,6 @@ function buffer_send(&$a,&$b) {
 	if($access_token) {
 		$buffer = new BufferApp($client_id, $client_secret, $callback_url, $access_token);
 
-		$result = q("SELECT `installed` FROM `addon` WHERE `name` = 'privacy_image_cache' AND `installed`");
-		$image_cache = (count($result) > 0);
-
 		require_once("include/plaintext.php");
 		require_once("include/network.php");
 
@@ -308,15 +305,13 @@ function buffer_send(&$a,&$b) {
 				$post = plaintext($a, $item, $limit, $includedlinks);
 				logger("buffer_send: converted message ".$b["id"]." result: ".print_r($post, true), LOGGER_DEBUG);
 
-				// The image cache is used as a sanitizer. Buffer seems to be really picky about pictures
-				if ($image_cache) {
-					require_once("addon/privacy_image_cache/privacy_image_cache.php");
-					if (isset($post["image"]))
-						$post["image"] = $a->get_baseurl() . "/privacy_image_cache/".privacy_image_cache_cachename($post["image"]);
+				// The image proxy is used as a sanitizer. Buffer seems to be really picky about pictures
+				require_once("mod/proxy.php");
+				if (isset($post["image"]))
+					$post["image"] = proxy_url($post["image"]);
 
-					if (isset($post["preview"]))
-						$post["preview"] = $a->get_baseurl() . "/privacy_image_cache/".privacy_image_cache_cachename($post["preview"]);
-				}
+				if (isset($post["preview"]))
+					$post["preview"] = proxy_url($post["preview"]);
 
 				//if ($profile->service == "twitter") {
 				if ($includedlinks) {

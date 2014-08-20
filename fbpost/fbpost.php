@@ -1032,6 +1032,13 @@ function fbpost_fetchwall($a, $uid) {
 			$oembed_data = oembed_fetch_url($item->link);
 			$type = $oembed_data->type;
 			$content = "[bookmark=".$item->link."]".$item->name."[/bookmark]";
+
+			// If a link is not only attached but also added in the body, look if it can be removed in the body.
+			$removedlink = trim(str_replace($item->link, "", $_REQUEST["body"]));
+
+			if (($removedlink == "") OR strstr($_REQUEST["body"], $removedlink))
+				$_REQUEST["body"] = $removedlink;
+
 		} elseif (isset($item->name))
 			$content .= "[b]".$item->name."[/b]";
 

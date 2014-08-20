@@ -4,6 +4,7 @@
  * Name: Privacy Image Cache
  * Version: 0.1
  * Author: Tobias Hößl <https://github.com/CatoTH/>
+ * Status: Unsupported
  */
 
 define("PRIVACY_IMAGE_CACHE_DEFAULT_TIME", 86400); // 1 Day
