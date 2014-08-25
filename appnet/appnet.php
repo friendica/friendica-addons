@@ -944,7 +944,7 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 			$links[$url] = $link["url"];
 		}
 
-	if (sizeof($content["annotations"]))
+	/* if (sizeof($content["annotations"]))
 		foreach($content["annotations"] AS $annotation) {
 			if ($annotation[type] == "net.app.core.oembed") {
 				if (isset($annotation["value"]["embeddable_url"])) {
@@ -953,7 +953,6 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 						unset($links[$url]);
 				}
 			} elseif ($annotation[type] == "com.friendica.post") {
-				// Nur zum Testen deaktiviert
 				//$links = array();
 				//if (isset($annotation["value"]["post-title"]))
 				//	$postarray['title'] = $annotation["value"]["post-title"];
@@ -974,7 +973,7 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 					$postarray['author-avatar'] = $annotation["value"]["author-avatar"];
 			}
 
-		}
+		} */
 
 	$page_info = "";
 
