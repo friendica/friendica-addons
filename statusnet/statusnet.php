@@ -496,8 +496,13 @@ function statusnet_post_hook(&$a,&$b) {
 			$orig_post = $r[0];
 		}
 
-		$nickname = "@[url=".$orig_post["author-link"]."]".$orig_post["contact_nick"]."[/url]";
-		$nicknameplain = "@".$orig_post["contact_nick"];
+		//$nickname = "@[url=".$orig_post["author-link"]."]".$orig_post["contact_nick"]."[/url]";
+		//$nicknameplain = "@".$orig_post["contact_nick"];
+
+		$nick = preg_replace("=https?://(.*)/(.*)=ism", "$2", $orig_post["author-link"]);
+
+		$nickname = "@[url=".$orig_post["author-link"]."]".$nick."[/url]";
+		$nicknameplain = "@".$nick;
 
 		logger("statusnet_post_hook: comparing ".$nickname." and ".$nicknameplain." with ".$b["body"], LOGGER_DEBUG);
 		if ((strpos($b["body"], $nickname) === false) AND (strpos($b["body"], $nicknameplain) === false))
@@ -700,9 +705,13 @@ function statusnet_prepare_body(&$a,&$b) {
 
                 if(count($r)) {
                         $orig_post = $r[0];
+			//$nickname = "@[url=".$orig_post["author-link"]."]".$orig_post["contact_nick"]."[/url]";
+			//$nicknameplain = "@".$orig_post["contact_nick"];
 
-	                $nickname = "@[url=".$orig_post["author-link"]."]".$orig_post["contact_nick"]."[/url]";
-	                $nicknameplain = "@".$orig_post["contact_nick"];
+			$nick = preg_replace("=https?://(.*)/(.*)=ism", "$2", $orig_post["author-link"]);
+
+			$nickname = "@[url=".$orig_post["author-link"]."]".$nick."[/url]";
+			$nicknameplain = "@".$nick;
 
 	                if ((strpos($item["body"], $nickname) === false) AND (strpos($item["body"], $nicknameplain) === false))
 	                        $item["body"] = $nickname." ".$item["body"];
@@ -1055,7 +1064,14 @@ function statusnet_createpost($a, $uid, $post, $self, $create_user, $only_existi
 	$postarray['gravity'] = 0;
 	$postarray['uid'] = $uid;
 	$postarray['wall'] = 0;
-	$postarray['uri'] = $hostname."::".$post->id;
+
+	if (is_object($post->retweeted_status)) {
+		$content = $post->retweeted_status;
+		statusnet_fetch_contact($uid, $content->user, false);
+	} else
+		$content = $post;
+
+	$postarray['uri'] = $hostname."::".$content->id;
 
 	$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
 			dbesc($postarray['uri']),
@@ -1067,9 +1083,9 @@ function statusnet_createpost($a, $uid, $post, $self, $create_user, $only_existi
 
 	$contactid = 0;
 
-	if ($post->in_reply_to_status_id != "") {
+	if ($content->in_reply_to_status_id != "") {
 
-		$parent = $hostname."::".$post->in_reply_to_status_id;
+		$parent = $hostname."::".$content->in_reply_to_status_id;
 
 		$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
 				dbesc($parent),
@@ -1078,6 +1094,7 @@ function statusnet_createpost($a, $uid, $post, $self, $create_user, $only_existi
 		if (count($r)) {
 			$postarray['thr-parent'] = $r[0]["uri"];
 			$postarray['parent-uri'] = $r[0]["parent-uri"];
+			$postarray['parent'] = $r[0]["parent"];
 			$postarray['object-type'] = ACTIVITY_OBJ_COMMENT;
 		} else {
 			$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
@@ -1087,6 +1104,7 @@ function statusnet_createpost($a, $uid, $post, $self, $create_user, $only_existi
 			if (count($r)) {
 				$postarray['thr-parent'] = $r[0]['uri'];
 				$postarray['parent-uri'] = $r[0]['parent-uri'];
+				$postarray['parent'] = $r[0]['parent'];
 				$postarray['object-type'] = ACTIVITY_OBJ_COMMENT;
 			} else {
 				$postarray['thr-parent'] = $postarray['uri'];
@@ -1098,7 +1116,7 @@ function statusnet_createpost($a, $uid, $post, $self, $create_user, $only_existi
 		// Is it me?
 		$own_url = get_pconfig($uid, 'statusnet', 'own_url');
 
-		if ($post->user->id == $own_url) {
+		if ($content->user->id == $own_url) {
 			$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 				intval($uid));
 
@@ -1133,43 +1151,43 @@ function statusnet_createpost($a, $uid, $post, $self, $create_user, $only_existi
 
 	$postarray['verb'] = ACTIVITY_POST;
 
-	$postarray['author-name'] = $postarray['owner-name'];
-	$postarray['author-link'] = $postarray['owner-link'];
-	$postarray['author-avatar'] = $postarray['owner-avatar'];
+	$postarray['author-name'] = $content->user->name;
+	$postarray['author-link'] = $content->user->statusnet_profile_url;
+	$postarray['author-avatar'] = $content->user->profile_image_url;
 
 	// To-Do: Maybe unreliable? Can the api be entered without trailing "/"?
 	$hostname = str_replace("/api/", "/notice/", get_pconfig($uid, 'statusnet', 'baseapi'));
 
-	$postarray['plink'] = $hostname.$post->id;
-	$postarray['app'] = strip_tags($post->source);
+	$postarray['plink'] = $hostname.$content->id;
+	$postarray['app'] = strip_tags($content->source);
 
-	if ($post->user->protected) {
+	if ($content->user->protected) {
 		$postarray['private'] = 1;
 		$postarray['allow_cid'] = '<' . $self['id'] . '>';
 	}
 
-	$postarray['body'] = html2bbcode($post->statusnet_html);
+	$postarray['body'] = html2bbcode($content->statusnet_html);
 
 	$converted = statusnet_convertmsg($a, $postarray['body'], false);
 	$postarray['body'] = $converted["body"];
 	$postarray['tag'] = $converted["tags"];
 
-	$postarray['created'] = datetime_convert('UTC','UTC',$post->created_at);
-	$postarray['edited'] = datetime_convert('UTC','UTC',$post->created_at);
+	$postarray['created'] = datetime_convert('UTC','UTC',$content->created_at);
+	$postarray['edited'] = datetime_convert('UTC','UTC',$content->created_at);
 
-	if (is_string($post->place->name))
-		$postarray["location"] = $post->place->name;
+	if (is_string($content->place->name))
+		$postarray["location"] = $content->place->name;
 
-	if (is_string($post->place->full_name))
-		$postarray["location"] = $post->place->full_name;
+	if (is_string($content->place->full_name))
+		$postarray["location"] = $content->place->full_name;
 
-	if (is_array($post->geo->coordinates))
-		$postarray["coord"] = $post->geo->coordinates[0]." ".$post->geo->coordinates[1];
+	if (is_array($content->geo->coordinates))
+		$postarray["coord"] = $content->geo->coordinates[0]." ".$content->geo->coordinates[1];
 
-	if (is_array($post->coordinates->coordinates))
-		$postarray["coord"] = $post->coordinates->coordinates[1]." ".$post->coordinates->coordinates[0];
+	if (is_array($content->coordinates->coordinates))
+		$postarray["coord"] = $content->coordinates->coordinates[1]." ".$content->coordinates->coordinates[0];
 
-	if (is_object($post->retweeted_status)) {
+	/*if (is_object($post->retweeted_status)) {
 		$postarray['body'] = html2bbcode($post->retweeted_status->statusnet_html);
 
 		$converted = statusnet_convertmsg($a, $postarray['body'], false);
@@ -1182,12 +1200,14 @@ function statusnet_createpost($a, $uid, $post, $self, $create_user, $only_existi
 		$postarray['author-name'] = $post->retweeted_status->user->name;
 		$postarray['author-link'] = $post->retweeted_status->user->statusnet_profile_url;
 		$postarray['author-avatar'] = $post->retweeted_status->user->profile_image_url;
-	}
+	}*/
 	logger("statusnet_createpost: end", LOGGER_DEBUG);
 	return($postarray);
 }
 
 function statusnet_checknotification($a, $uid, $own_url, $top_item, $postarray) {
+
+	// This function necer worked and need cleanup
 
 	$user = q("SELECT * FROM `contact` WHERE `uid` = %d AND `self` LIMIT 1",
 			intval($uid)
@@ -1405,8 +1425,10 @@ function statusnet_fetchhometimeline($a, $uid) {
 				dbesc($postarray['uri']),
 				intval($uid)
 			);
-			if (count($r))
+			if (count($r)) {
 				$item = $r[0]['id'];
+				$parent_id = $r[0]['parent'];
+			}
 
 			if ($item != 0) {
 				require_once('include/enotify.php');
@@ -1423,7 +1445,8 @@ function statusnet_fetchhometimeline($a, $uid) {
 					'source_link'  => $postarray['author-link'],
 					'source_photo' => $postarray['author-avatar'],
 					'verb'         => ACTIVITY_TAG,
-					'otype'        => 'item'
+					'otype'        => 'item',
+					'parent'       => $parent_id,
 				));
 			}
 		}

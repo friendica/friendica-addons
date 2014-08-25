@@ -750,13 +750,30 @@ function appnet_fetchstream($a, $uid) {
 	foreach ($mentions AS $post) {
 		$postarray = appnet_createpost($a, $uid, $post, $me, $user, $ownid, false);
 
-		if (isset($postarray["id"]))
+		if (isset($postarray["id"])) {
 			$item = $postarray["id"];
-		elseif (isset($postarray["body"])) {
+			$parent_id = $postarray['parent'];
+		} elseif (isset($postarray["body"])) {
 			$item = item_store($postarray);
+			$parent_id = 0;
 			logger('appnet_fetchstream: User '.$uid.' posted mention item '.$item);
-		} else
+		} else {
 			$item = 0;
+			$parent_id = 0;
+		}
+
+		// Fetch the parent and id
+		if (($parent_id == 0) AND ($postarray['uri'] != "")) {
+			$r = q("SELECT `id`, `parent` FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
+				dbesc($postarray['uri']),
+				intval($uid)
+			);
+
+			if (count($r)) {
+				$item = $r[0]['id'];
+				$parent_id = $r[0]['parent'];
+			}
+		}
 
 		$lastid = $post["id"];
 
@@ -776,7 +793,8 @@ function appnet_fetchstream($a, $uid) {
 				'source_link'  => $postarray['author-link'],
 				'source_photo' => $postarray['author-avatar'],
 				'verb'         => ACTIVITY_TAG,
-				'otype'        => 'item'
+				'otype'        => 'item',
+				'parent'       => $parent_id,
 			));
 		}
 	}
@@ -792,7 +810,7 @@ function appnet_fetchstream($a, $uid) {
 */
 }
 
-function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $threadcompletion = true) {
+function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $threadcompletion = true, $nodupcheck = false) {
 	require_once('include/items.php');
 
 	if ($post["machine_only"])
@@ -807,25 +825,33 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 	$postarray['wall'] = 0;
 	$postarray['verb'] = ACTIVITY_POST;
 	$postarray['network'] =  dbesc(NETWORK_APPNET);
-	$postarray['uri'] = "adn::".$post["id"];
+	if (is_array($post["repost_of"])) {
+		// You can't reply to reposts. So use the original id and thread-id
+		$postarray['uri'] = "adn::".$post["repost_of"]["id"];
+		$postarray['parent-uri'] = "adn::".$post["repost_of"]["thread_id"];
+	} else {
+		$postarray['uri'] = "adn::".$post["id"];
+		$postarray['parent-uri'] = "adn::".$post["thread_id"];
+	}
 
-	$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
-		dbesc($postarray['uri']),
-		intval($uid)
-		);
+	if (!$nodupcheck) {
+		$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
+			dbesc($postarray['uri']),
+			intval($uid)
+			);
 
-	if (count($r))
-		return($r[0]);
+		if (count($r))
+			return($r[0]);
 
-	$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
-		dbesc($postarray['uri']),
-		intval($uid)
-		);
+		$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
+			dbesc($postarray['uri']),
+			intval($uid)
+			);
 
-	if (count($r))
-		return($r[0]);
+		if (count($r))
+			return($r[0]);
+	}
 
-	$postarray['parent-uri'] = "adn::".$post["thread_id"];
 	if (isset($post["reply_to"]) AND ($post["reply_to"] != "")) {
 		$postarray['thr-parent'] = "adn::".$post["reply_to"];
 
@@ -875,8 +901,6 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 		$postarray['object-type'] = ACTIVITY_OBJ_NOTE;
 	}
 
-	$postarray['plink'] = $post["canonical_url"];
-
 	if (($post["user"]["id"] != $ownid) OR ($postarray['thr-parent'] == $postarray['uri'])) {
 		$postarray['owner-name'] = $post["user"]["name"];
 		$postarray['owner-link'] = $post["user"]["canonical_url"];
@@ -905,6 +929,8 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 		$content = $post;
 	}
 
+	$postarray['plink'] = $content["canonical_url"];
+
 	if (is_array($content["entities"])) {
 		$converted = appnet_expand_entities($a, $content["text"], $content["entities"]);
 		$postarray['body'] = $converted["body"];
@@ -918,7 +944,7 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 			$links[$url] = $link["url"];
 		}
 
-	if (sizeof($content["annotations"]))
+	/* if (sizeof($content["annotations"]))
 		foreach($content["annotations"] AS $annotation) {
 			if ($annotation[type] == "net.app.core.oembed") {
 				if (isset($annotation["value"]["embeddable_url"])) {
@@ -927,7 +953,6 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 						unset($links[$url]);
 				}
 			} elseif ($annotation[type] == "com.friendica.post") {
-				// Nur zum Testen deaktiviert
 				//$links = array();
 				//if (isset($annotation["value"]["post-title"]))
 				//	$postarray['title'] = $annotation["value"]["post-title"];
@@ -948,7 +973,7 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 					$postarray['author-avatar'] = $annotation["value"]["author-avatar"];
 			}
 
-		}
+		} */
 
 	$page_info = "";
 
@@ -969,11 +994,13 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 		$link = array_pop($links);
 		$url = str_replace(array('/', '.'), array('\/', '\.'), $link);
 
-		$removedlink = preg_replace("/\[url\=".$url."\](.*?)\[\/url\]/ism", '', $postarray['body']);
-		if (($removedlink == "") OR strstr($postarray['body'], $removedlink))
-			$postarray['body'] = $removedlink;
-
 		$page_info = add_page_info($link, false, $photo["url"]);
+
+		if (trim($page_info) != "") {
+			$removedlink = preg_replace("/\[url\=".$url."\](.*?)\[\/url\]/ism", '', $postarray['body']);
+			if (($removedlink == "") OR strstr($postarray['body'], $removedlink))
+				$postarray['body'] = $removedlink;
+		}
 	}
 
 	$postarray['body'] .= $page_info;
