@@ -521,7 +521,7 @@ function pumpio_send(&$a,&$b) {
 	}
 }
 
-function pumpio_action(&$a, $uid, $uri, $action, $content) {
+function pumpio_action(&$a, $uid, $uri, $action, $content = "") {
 
 	// Don't do likes and other stuff if you don't import the timeline
 	if (!get_pconfig($uid,'pumpio','import'))
