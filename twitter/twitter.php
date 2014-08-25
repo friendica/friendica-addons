@@ -890,6 +890,13 @@ function twitter_queue_hook(&$a,&$b) {
 }
 
 function twitter_fetch_contact($uid, $contact, $create_user) {
+	require_once("include/Photo.php");
+
+	$avatar = str_replace("_normal.", ".", $contact->profile_image_url_https);
+
+	$info = get_photo_info($avatar);
+	if (!$info)
+		$avatar = $contact->profile_image_url_https;
 
 	// Check if the unique contact is existing
 	// To-Do: only update once a while
@@ -901,12 +908,12 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 			dbesc(normalise_link("https://twitter.com/".$contact->screen_name)),
 			dbesc($contact->name),
 			dbesc($contact->screen_name),
-			dbesc($contact->profile_image_url_https));
+			dbesc($avatar));
 	else
 		q("UPDATE unique_contacts SET name = '%s', nick = '%s', avatar = '%s' WHERE url = '%s'",
 			dbesc($contact->name),
 			dbesc($contact->screen_name),
-			dbesc($contact->profile_image_url_https),
+			dbesc($avatar),
 			dbesc(normalise_link("https://twitter.com/".$contact->screen_name)));
 
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
@@ -936,7 +943,7 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 			dbesc("twitter::".$contact->id_str),
 			dbesc($contact->name),
 			dbesc($contact->screen_name),
-			dbesc($contact->profile_image_url_https),
+			dbesc($avatar),
 			dbesc(NETWORK_TWITTER),
 			intval(CONTACT_IS_FRIEND),
 			intval(1),
@@ -964,7 +971,7 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 
 		require_once("Photo.php");
 
-		$photos = import_profile_photo($contact->profile_image_url_https,$uid,$contact_id);
+		$photos = import_profile_photo($avatar,$uid,$contact_id);
 
 		q("UPDATE `contact` SET `photo` = '%s',
 					`thumb` = '%s',
@@ -996,7 +1003,7 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 
 			require_once("Photo.php");
 
-			$photos = import_profile_photo($contact->profile_image_url_https, $uid, $r[0]['id']);
+			$photos = import_profile_photo($avatar, $uid, $r[0]['id']);
 
 			q("UPDATE `contact` SET `photo` = '%s',
 						`thumb` = '%s',
