@@ -2,7 +2,7 @@
 /**
  * Name: Piwik Analytics
  * Description: Piwik Analytics Plugin for Friendica
- * Version: 1.1
+ * Version: 1.2
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  * Author: Klaus Weidenbach
  */
@@ -15,7 +15,9 @@
  *   License: 3-clause BSD license
  *
  *   Configuration:
- *     Add the following lines to your .htconfig.php file:
+ *     Use the administration panel to configure the Piwik tracking addon, or
+ *     in case you don't use this add the following lines to your .htconfig.php
+ *     file:
  *
  *     $a->config['piwik']['baseurl'] = 'www.example.com/piwik/';
  *     $a->config['piwik']['siteid'] = '1';
@@ -62,10 +64,10 @@ function piwik_analytics($a,&$b) {
 	 *   If async is set to true use asynchronous tracking
 	 */
 	if ($async) {
-	  $a->page['htmlhead'] .= "<!-- Piwik --> <script type=\"text/javascript\">\r\nvar _paq = _paq || [];\r\n(function(){ var u=((\"https:\" == document.location.protocol) ? \"https://".$baseurl."\" : \"http://".$baseurl."\");\r\n_paq.push(['setSiteId', ".$siteid."]);\r\n_paq.push(['setTrackerUrl', u+'piwik.php']);\r\n_paq.push(['trackPageView']);\r\n_paq.push(['enableLinkTracking']);\r\nvar d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript';\r\ng.defer=true; g.async=true; g.src=u+'piwik.js';\r\ns.parentNode.insertBefore(g,s); })();\r\n </script>\r\n<!-- End Piwik Code -->\r\n";
+	  $b .= "<!-- Piwik --> <script type=\"text/javascript\"> var _paq = _paq || []; _paq.push(['trackPageView']); _paq.push(['enableLinkTracking']); (function() { var u=((\"https:\" == document.location.protocol) ? \"https\" : \"http\") + \"://".$baseurl."\"; _paq.push(['setTrackerUrl', u+'piwik.php']); _paq.push(['setSiteId', ".$siteid."]); var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript'; g.defer=true; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s); })(); </script> <!-- End Piwik Code -->\r\n";
 	  $b .= "<div id='piwik-code-block'> <!-- Piwik -->\r\n<noscript><p><img src=\"//".$baseurl."piwik.php?idsite=".$siteid."\" style=\"border:0\" alt=\"\" /></p></noscript>\r\n <!-- End Piwik Tracking Tag --> </div>";
 	} else {
-		$b .= "<div id='piwik-code-block'> <!-- Piwik -->\r\n <script type=\"text/javascript\">\r\n var pkBaseURL = ((\"https:\" == document.location.protocol) ? \"https://".$baseurl."\" : \"http://".$baseurl."\");\r\n document.write(unescape(\"%3Cscript src='\" + pkBaseURL + \"piwik.js' type='text/javascript'%3E%3C/script%3E\"));\r\n </script>\r\n<script type=\"text/javascript\">\r\n try {\r\n var piwikTracker = Piwik.getTracker(pkBaseURL + \"piwik.php\", ".$siteid.");\r\n piwikTracker.trackPageView();\r\n piwikTracker.enableLinkTracking();\r\n }\r\n catch( err ) {}\r\n </script>\r\n<noscript><p><img src=\"//".$baseurl."piwik.php?idsite=".$siteid."\" style=\"border:0\" alt=\"\" /></p></noscript>\r\n <!-- End Piwik Tracking Tag --> </div>";
+	  $b .= "<!-- Piwik --> <script type=\"text/javascript\"> var _paq = _paq || []; _paq.push(['trackPageView']); _paq.push(['enableLinkTracking']); (function() { var u=((\"https:\" == document.location.protocol) ? \"https\" : \"http\") + \"://".$baseurl."\"; _paq.push(['setTrackerUrl', u+'piwik.php']); _paq.push(['setSiteId', ".$siteid."]); var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript'; g.defer=true; g.async=false; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s); })(); </script> <!-- End Piwik Code -->\r\n";
 	}
 
 	/*
