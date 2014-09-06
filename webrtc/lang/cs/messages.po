@@ -1,0 +1,59 @@
+# ADDON webrtc
+# Copyright (C)
+# This file is distributed under the same license as the Friendica webrtc addon package.
+# 
+# 
+# Translators:
+# Michal Šupler <msupler@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-07-02 15:10+0000\n"
+"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: webrtc.php:20
+msgid "WebRTC Videochat"
+msgstr "WebRTC Videochat"
+
+#: webrtc.php:26
+msgid "Save Settings"
+msgstr "Uložit Nastavení"
+
+#: webrtc.php:27
+msgid "WebRTC Base URL"
+msgstr "WebRTC Base adresa URL"
+
+#: webrtc.php:27
+msgid ""
+"Page your users will create a WebRTC chat room on. For example you could use"
+" https://live.mayfirst.org ."
+msgstr "Stránka, na které budou vaši uživatelé vytvářet  WebRTC chatovací místnosti. Například můžete zadat https://live.mayfirst.org."
+
+#: webrtc.php:33
+msgid "Settings updated."
+msgstr "Nastavení aktualizováno."
+
+#: webrtc.php:47
+msgid "Video Chat"
+msgstr "Video Chat"
+
+#: webrtc.php:48
+msgid ""
+"WebRTC is a video and audio conferencing tool that works with Firefox "
+"(version 21 and above) and Chrome/Chromium (version 25 and above). Just "
+"create a new chat room and send the link to someone you want to chat with."
+msgstr "WebRTC je video a audio konferenční nástroj který funguje s prohlížeči Firefox (verze 21 a vyšší) a Chrome/Chromium (verze 25 a vyšší). Stačí vytvořit novou chatovací místnost a poslat link někomu, se kterým chcete chatovat."
+
+#: webrtc.php:50
+msgid ""
+"Please contact your friendica admin and send a reminder to configure the "
+"WebRTC addon."
+msgstr "Prosím kontaktujte vašeho administrátora serveru friendica a požádejte ho o konfiguraci WebRTC rozšíření."

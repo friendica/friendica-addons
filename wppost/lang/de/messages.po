@@ -1,0 +1,68 @@
+# ADDON wppost
+# Copyright (C)
+# This file is distributed under the same license as the Friendica wppost addon package.
+# 
+# 
+# Translators:
+# bavatar <tobias.diekershoff@gmx.net>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-07-11 06:33+0000\n"
+"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: wppost.php:42
+msgid "Post to Wordpress"
+msgstr "Bei WordPress veröffentlichen"
+
+#: wppost.php:79 wppost.php:83
+msgid "Wordpress Export"
+msgstr "WordPress-Passwort"
+
+#: wppost.php:86
+msgid "Enable WordPress Post Plugin"
+msgstr "WordPress Plugin aktivieren"
+
+#: wppost.php:91
+msgid "WordPress username"
+msgstr "WordPress-Benutzername"
+
+#: wppost.php:96
+msgid "WordPress password"
+msgstr "WordPress-Passwort"
+
+#: wppost.php:101
+msgid "WordPress API URL"
+msgstr "WordPress-API-URL"
+
+#: wppost.php:106
+msgid "Post to WordPress by default"
+msgstr "Standardmäßig auf WordPress veröffentlichen"
+
+#: wppost.php:111
+msgid "Provide a backlink to the Friendica post"
+msgstr "Einen zurück zum Friendica-Beitrag hinzufügen"
+
+#: wppost.php:116
+msgid "Don't post messages that are too short"
+msgstr "Beiträge die zu kurz sind nicht veröffentlichen"
+
+#: wppost.php:122
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: wppost.php:243
+msgid "Post from Friendica"
+msgstr "Post via Friendica"
+
+#: wppost.php:255
+msgid "Read the original post and comment stream on Friendica"
+msgstr "Den Original-Beitrag samt Kommentaren bei Friendica lesen"

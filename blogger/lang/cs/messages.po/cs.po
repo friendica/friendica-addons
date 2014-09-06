@@ -1,0 +1,56 @@
+# ADDON blogger
+# Copyright (C)
+# This file is distributed under the same license as the Friendica blogger addon package.
+# 
+# 
+# Translators:
+# Michal Šupler <msupler@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-02 15:29+0000\n"
+"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: blogger.php:42
+msgid "Post to blogger"
+msgstr "Poslat na blogger"
+
+#: blogger.php:74 blogger.php:78
+msgid "Blogger Export"
+msgstr "Blogger Export"
+
+#: blogger.php:82
+msgid "Enable Blogger Post Plugin"
+msgstr "Povolit Blogger Post Plugin"
+
+#: blogger.php:87
+msgid "Blogger username"
+msgstr "Blogger uživatelské jméno"
+
+#: blogger.php:92
+msgid "Blogger password"
+msgstr "Blogger heslo"
+
+#: blogger.php:97
+msgid "Blogger API URL"
+msgstr "Blogger API URL"
+
+#: blogger.php:102
+msgid "Post to Blogger by default"
+msgstr "Defaultně zaslat na Blogger"
+
+#: blogger.php:108
+msgid "Save Settings"
+msgstr "Uložit Nastavení"
+
+#: blogger.php:178
+msgid "Post from Friendica"
+msgstr "Příspěvek z Friendica"

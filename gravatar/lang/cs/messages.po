@@ -1,0 +1,75 @@
+# ADDON gravatar
+# Copyright (C)
+# This file is distributed under the same license as the Friendica gravatar addon package.
+# 
+# 
+# Translators:
+# Michal Šupler <msupler@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-07 19:10+0000\n"
+"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: gravatar.php:71
+msgid "generic profile image"
+msgstr "generický profilový obrázek"
+
+#: gravatar.php:72
+msgid "random geometric pattern"
+msgstr "náhodný geometrický vzor"
+
+#: gravatar.php:73
+msgid "monster face"
+msgstr "tvář příšery"
+
+#: gravatar.php:74
+msgid "computer generated face"
+msgstr "počítačově generovaná tvář"
+
+#: gravatar.php:75
+msgid "retro arcade style face"
+msgstr "tvář v retro arkádovém stylu"
+
+#: gravatar.php:89
+msgid "Information"
+msgstr "Informace"
+
+#: gravatar.php:89
+msgid ""
+"Libravatar addon is installed, too. Please disable Libravatar addon or this "
+"Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if "
+"nothing was found at Libravatar."
+msgstr "Libravatar doplněk je také nainstalován. Prosím zakažte doplněk Libravatar nebo tento doplněk Gravatar.<br>Libravatar doplněk se vrátí k doplňku Gravatar, pokud na Libravataru nebude nic nalezeno."
+
+#: gravatar.php:95
+msgid "Save Settings"
+msgstr "Uložit Nastavení"
+
+#: gravatar.php:96
+msgid "Default avatar image"
+msgstr "Defaultní obrázek avataru"
+
+#: gravatar.php:96
+msgid "Select default avatar image if none was found at Gravatar. See README"
+msgstr "Nastavte defaulní obrázek avatara pokud ho již nemáte na Gravatar. Více viz. soubor README."
+
+#: gravatar.php:97
+msgid "Rating of images"
+msgstr "Hodnocení obrázků"
+
+#: gravatar.php:97
+msgid "Select the appropriate avatar rating for your site. See README"
+msgstr "Zadejte ohodnocení příslušného avatara pro vaši stránku. Viz README."
+
+#: gravatar.php:111
+msgid "Gravatar settings updated."
+msgstr "Nastavení Gravatar aktualizováno."

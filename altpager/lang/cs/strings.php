@@ -1,5 +1,10 @@
 <?php
 
+if(! function_exists("string_plural_select_cs")) {
+function string_plural_select_cs($n){
+	return ($n==1) ? 0 : ($n>=2 && $n<=4) ? 1 : 2;;
+}}
+;
 $a->strings["Altpager settings updated."] = "Nastavení Altpager aktualizováno.";
 $a->strings["Alternate Pagination Setting"] = "Alternate Pagination nastavení";
 $a->strings["Use links to \"newer\" and \"older\" pages in place of page numbers?"] = "Použít odkazy na \"novější\" a \"starší\" stránky místo čísel stránek?";

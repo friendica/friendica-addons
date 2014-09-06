@@ -1,8 +1,13 @@
 <?php
 
+if(! function_exists("string_plural_select_cs")) {
+function string_plural_select_cs($n){
+	return ($n==1) ? 0 : ($n>=2 && $n<=4) ? 1 : 2;;
+}}
+;
 $a->strings["Remote Permissions Settings"] = "Nastavení Vzdálených oprávnění";
 $a->strings["Allow recipients of your private posts to see the other recipients of the posts"] = "Umožnit příjemcům Vašich soukromých příspěvků vidět ostatní příjemce příspěvků";
-$a->strings["Submit"] = "Odeslat";
+$a->strings["Save Settings"] = "Uložit Nastavení";
 $a->strings["Remote Permissions settings updated."] = "Nastavení Vzdálených opravnění aktualizováno.";
 $a->strings["Visible to:"] = "Viditelné pro:";
 $a->strings["Visible to"] = "Viditelné pro";

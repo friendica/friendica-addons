@@ -1,0 +1,36 @@
+# ADDON group_text
+# Copyright (C)
+# This file is distributed under the same license as the Friendica group_text addon package.
+# 
+# 
+# Translators:
+# Michal Šupler <msupler@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-07 19:10+0000\n"
+"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: group_text.php:46
+msgid "Group Text settings updated."
+msgstr "Nastavení textu skupiny aktualizováno."
+
+#: group_text.php:76
+msgid "Group Text"
+msgstr "Skupinový text"
+
+#: group_text.php:78
+msgid "Use a text only (non-image) group selector in the \"group edit\" menu"
+msgstr "Použijte pouze textový (neobrázkový) výběr skupiny v menu editace skupin."
+
+#: group_text.php:84
+msgid "Save Settings"
+msgstr "Uložit Nastavení"

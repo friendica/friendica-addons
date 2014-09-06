@@ -1,0 +1,58 @@
+# ADDON nsfw
+# Copyright (C)
+# This file is distributed under the same license as the Friendica nsfw addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-08 12:00+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: nsfw.php:78 nsfw.php:82
+msgid "Not Safe For Work (General Purpose Content Filter)"
+msgstr "Nesigur Pentru Lucru (Filtrare de Conținut pentru Uz General )"
+
+#: nsfw.php:86
+msgid ""
+"This plugin looks in posts for the words/text you specify below, and "
+"collapses any content containing those keywords so it is not displayed at "
+"inappropriate times, such as sexual innuendo that may be improper in a work "
+"setting. It is polite and recommended to tag any content containing nudity "
+"with #NSFW.  This filter can also match any other word/text you specify, and"
+" can thereby be used as a general purpose content filter."
+msgstr "Acest modul verifică în postări, cuvintele/textele pe care le specificați mai jos, și cenzurează orice conținut cu aceste cuvinte cheie, astfel încât să nu se afișeze în momentele necorespunzătoare, precum aluziile sexuale ce pot fi necorespunzătoare într-un mediu de lucru. Este politicos și recomandat să etichetați orice conținut cu nuditate, folosind eticheta #NSFW. Acest filtru poate de asemenea, potrivi orice alt cuvânt/text specificat, şi poate fi folosit astfel și ca filtru de conținut cu scop general."
+
+#: nsfw.php:87
+msgid "Enable Content filter"
+msgstr "Activare filtru de Conținut"
+
+#: nsfw.php:90
+msgid "Comma separated list of keywords to hide"
+msgstr "Lista cu separator prin virgulă a cuvintelor cheie, ce vor declanșa ascunderea"
+
+#: nsfw.php:94
+msgid "Save Settings"
+msgstr "Salvare Configurări"
+
+#: nsfw.php:95
+msgid "Use /expression/ to provide regular expressions"
+msgstr "Utilizați /expresia/ pentru a oferi expresii regulate"
+
+#: nsfw.php:111
+msgid "NSFW Settings saved."
+msgstr "Configurările NSFW au fost salvate."
+
+#: nsfw.php:166
+#, php-format
+msgid "%s - Click to open/close"
+msgstr "%s - Apăsați pentru a deschide/închide"

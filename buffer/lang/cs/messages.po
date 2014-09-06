@@ -1,0 +1,76 @@
+# ADDON buffer
+# Copyright (C)
+# This file is distributed under the same license as the Friendica buffer addon package.
+# 
+# 
+# Translators:
+# Michal Šupler <msupler@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-07 18:27+0000\n"
+"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: buffer.php:31
+msgid "Permission denied."
+msgstr "Přístup odmítnut."
+
+#: buffer.php:57 buffer.php:185
+msgid "Save Settings"
+msgstr "Uložit Nastavení"
+
+#: buffer.php:59
+msgid "Client ID"
+msgstr "Client ID"
+
+#: buffer.php:60
+msgid "Client Secret"
+msgstr "Client Secret"
+
+#: buffer.php:67
+msgid "Error when registering buffer connection:"
+msgstr "Chyba při registraci buffer spojená"
+
+#: buffer.php:86
+msgid "You are now authenticated to buffer. "
+msgstr "Nyní jste přihlášen k bufferu."
+
+#: buffer.php:87
+msgid "return to the connector page"
+msgstr "návrat ke stránce konektor"
+
+#: buffer.php:103
+msgid "Post to Buffer"
+msgstr "Příspěvek na Buffer"
+
+#: buffer.php:128 buffer.php:132
+msgid "Buffer Export"
+msgstr "Buffer Export"
+
+#: buffer.php:142
+msgid "Authenticate your Buffer connection"
+msgstr "Přihlásit ke spojení na Buffer"
+
+#: buffer.php:146
+msgid "Enable Buffer Post Plugin"
+msgstr "Povolit Buffer Post Plugin"
+
+#: buffer.php:151
+msgid "Post to Buffer by default"
+msgstr "Defaultně zaslat na Buffer"
+
+#: buffer.php:156
+msgid "Check to delete this preset"
+msgstr "Zaškrtnout pro smazání tohoto nastavení"
+
+#: buffer.php:165
+msgid "Posts are going to all accounts that are enabled by default:"
+msgstr "Příspěvky jsou zasílány na všechny účty, které jsou defaultně povoleny:"

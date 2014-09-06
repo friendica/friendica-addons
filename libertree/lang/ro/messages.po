@@ -1,0 +1,47 @@
+# ADDON libertree
+# Copyright (C)
+# This file is distributed under the same license as the Friendica libertree addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-08 11:56+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: libertree.php:36
+msgid "Post to libertree"
+msgstr "Postați pe libertree"
+
+#: libertree.php:67 libertree.php:71
+msgid "libertree Export"
+msgstr "Export Libertree"
+
+#: libertree.php:75
+msgid "Enable Libertree Post Plugin"
+msgstr "Activare Modul Postare Libertree"
+
+#: libertree.php:80
+msgid "Libertree API token"
+msgstr "Token API Libertree"
+
+#: libertree.php:85
+msgid "Libertree site URL"
+msgstr "URL site Libertree"
+
+#: libertree.php:90
+msgid "Post to Libertree by default"
+msgstr "Postați implicit pe Libertree"
+
+#: libertree.php:96
+msgid "Save Settings"
+msgstr "Salvare Configurări"

@@ -1,0 +1,102 @@
+# ADDON retriever
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica retriever addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: retriever.php:445
+msgid "Retrieved"
+msgstr ""
+
+#: retriever.php:654
+msgid "Enabled"
+msgstr ""
+
+#: retriever.php:658
+msgid "URL Pattern"
+msgstr ""
+
+#: retriever.php:660
+msgid "Regular expression matching part of the URL to replace"
+msgstr ""
+
+#: retriever.php:663
+msgid "URL Replace"
+msgstr ""
+
+#: retriever.php:665
+msgid "Text to replace matching part of above regular expression"
+msgstr ""
+
+#: retriever.php:668
+msgid "Download Images"
+msgstr ""
+
+#: retriever.php:672
+msgid "Retrospectively Apply"
+msgstr ""
+
+#: retriever.php:674
+msgid "Reapply the rules to this number of posts"
+msgstr ""
+
+#: retriever.php:675
+msgid "Retrieve Feed Content"
+msgstr ""
+
+#: retriever.php:677 retriever.php:721
+msgid "Save Settings"
+msgstr ""
+
+#: retriever.php:679
+msgid "Tag"
+msgstr ""
+
+#: retriever.php:680
+msgid "Attribute"
+msgstr ""
+
+#: retriever.php:681
+msgid "Value"
+msgstr ""
+
+#: retriever.php:682
+msgid "Add"
+msgstr ""
+
+#: retriever.php:683
+msgid "Remove"
+msgstr ""
+
+#: retriever.php:684
+msgid "Include"
+msgstr ""
+
+#: retriever.php:686
+msgid "Exclude"
+msgstr ""
+
+#: retriever.php:697
+msgid "Retriever"
+msgstr ""
+
+#: retriever.php:722
+msgid "Retriever Settings"
+msgstr ""
+
+#: retriever.php:725
+msgid "All Photos"
+msgstr ""

@@ -1,0 +1,75 @@
+# ADDON buffer
+# Copyright (C)
+# This file is distributed under the same license as the Friendica buffer addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-08 11:45+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: buffer.php:31
+msgid "Permission denied."
+msgstr "Permisiune refuzată."
+
+#: buffer.php:57 buffer.php:185
+msgid "Save Settings"
+msgstr "Salvare Configurări"
+
+#: buffer.php:59
+msgid "Client ID"
+msgstr "ID Client"
+
+#: buffer.php:60
+msgid "Client Secret"
+msgstr "Cheia Secretă Client"
+
+#: buffer.php:67
+msgid "Error when registering buffer connection:"
+msgstr "Eroare la înregistrarea conexiunii Buffer:"
+
+#: buffer.php:86
+msgid "You are now authenticated to buffer. "
+msgstr "Acum sunteți autentificat pe Buffer."
+
+#: buffer.php:87
+msgid "return to the connector page"
+msgstr "revenire la pagina de conectare"
+
+#: buffer.php:103
+msgid "Post to Buffer"
+msgstr "Postați pe Buffer"
+
+#: buffer.php:128 buffer.php:132
+msgid "Buffer Export"
+msgstr "Export pe Buffer "
+
+#: buffer.php:142
+msgid "Authenticate your Buffer connection"
+msgstr "Autentificați-vă conectarea la Buffer"
+
+#: buffer.php:146
+msgid "Enable Buffer Post Plugin"
+msgstr "Activare Modul Postare pe Buffer"
+
+#: buffer.php:151
+msgid "Post to Buffer by default"
+msgstr "Postați implicit pe Buffer"
+
+#: buffer.php:156
+msgid "Check to delete this preset"
+msgstr "Bifați pentru a șterge această presetare"
+
+#: buffer.php:165
+msgid "Posts are going to all accounts that are enabled by default:"
+msgstr "Posturile merg către toate conturile care sunt activate implicit:"

@@ -1,5 +1,10 @@
 <?php
 
+if(! function_exists("string_plural_select_cs")) {
+function string_plural_select_cs($n){
+	return ($n==1) ? 0 : ($n>=2 && $n<=4) ? 1 : 2;;
+}}
+;
 $a->strings["Upload a file"] = "Nahrát soubor";
 $a->strings["Drop files here to upload"] = "Přeneste sem soubory k nahrání";
 $a->strings["Cancel"] = "Zrušit";

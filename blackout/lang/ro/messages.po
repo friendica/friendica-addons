@@ -1,0 +1,51 @@
+# ADDON blackout
+# Copyright (C)
+# This file is distributed under the same license as the Friendica blackout addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-08 11:42+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: blackout.php:99
+msgid "Save Settings"
+msgstr "Salvare Configurări"
+
+#: blackout.php:100
+msgid "Redirect URL"
+msgstr "URL de Redirecționare"
+
+#: blackout.php:100
+msgid "all your visitors from the web will be redirected to this URL"
+msgstr "toți vizitatorii dvs. de pe web vor fi redirecționați către acest URL"
+
+#: blackout.php:101
+msgid "Begin of the Blackout"
+msgstr "Pornire punct Blackout"
+
+#: blackout.php:101
+msgid ""
+"format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, "
+"<em>hh</em> hour and <em>mm</em> minute"
+msgstr "formatul este <em>YYYY</em> anul, <em>MM</em> luna, <em>DD</em> ziua, <em>hh</em> ora și <em>mm</em> minute"
+
+#: blackout.php:102
+msgid "End of the Blackout"
+msgstr "Finalizare punct Blackout"
+
+#: blackout.php:108
+msgid ""
+"The end-date is prior to the start-date of the blackout, you should fix "
+"this."
+msgstr "Data de finalizare este anterioară punctului blackout de pornire, ar trebui să corectați aceasta."

@@ -1,5 +1,10 @@
 <?php
 
+if(! function_exists("string_plural_select_de")) {
+function string_plural_select_de($n){
+	return ($n != 1);;
+}}
+;
 $a->strings["Forum Directory"] = "Foren Verzeichnis";
 $a->strings["Public access denied."] = "Öffentlicher Zugriff verweigert.";
 $a->strings["Global Directory"] = "Weltweites Verzeichnis";

@@ -1,0 +1,63 @@
+# ADDON tumblr
+# Copyright (C)
+# This file is distributed under the same license as the Friendica tumblr addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-07-08 12:10+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: tumblr.php:35
+msgid "Permission denied."
+msgstr "Permisiune refuzată."
+
+#: tumblr.php:145
+msgid "You are now authenticated to tumblr."
+msgstr "Acum sunteți autentificat pe tumblr."
+
+#: tumblr.php:146
+msgid "return to the connector page"
+msgstr "revenire la pagina de conectare"
+
+#: tumblr.php:159
+msgid "Post to Tumblr"
+msgstr "Postați pe Tumblr"
+
+#: tumblr.php:186 tumblr.php:190
+msgid "Tumblr Export"
+msgstr "Export Tumblr"
+
+#: tumblr.php:194
+msgid "(Re-)Authenticate your tumblr page"
+msgstr "(Re- )Autentificare pagină tumblr "
+
+#: tumblr.php:198
+msgid "Enable Tumblr Post Plugin"
+msgstr "Activare Modul Postare pe Tumblr "
+
+#: tumblr.php:203
+msgid "Post to Tumblr by default"
+msgstr "Postați implicit pe Tumblr"
+
+#: tumblr.php:223
+msgid "Post to page:"
+msgstr "Postare pe pagina:"
+
+#: tumblr.php:235
+msgid "You are not authenticated to tumblr"
+msgstr "Nu sunteți autentificat pe tumblr."
+
+#: tumblr.php:240
+msgid "Save Settings"
+msgstr "Salvare Configurări"

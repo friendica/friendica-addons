@@ -1,0 +1,88 @@
+# ADDON impressum
+# Copyright (C)
+# This file is distributed under the same license as the Friendica impressum addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-08 11:54+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: impressum.php:45
+msgid "Impressum"
+msgstr "Impressum"
+
+#: impressum.php:58 impressum.php:60 impressum.php:92
+msgid "Site Owner"
+msgstr "Deținător Site"
+
+#: impressum.php:58 impressum.php:96
+msgid "Email Address"
+msgstr "Adresă de mail"
+
+#: impressum.php:63 impressum.php:94
+msgid "Postal Address"
+msgstr "Adresă poștală"
+
+#: impressum.php:69
+msgid ""
+"The impressum addon needs to be configured!<br />Please add at least the "
+"<tt>owner</tt> variable to your config file. For other variables please "
+"refer to the README file of the addon."
+msgstr "Modulul Impressum trebuie configurat! <br />Vă rugăm să adăugați cel puțin variabila <tt>deținător</tt> în fișierul de configurare. Pentru alte variabile vă rugăm să consultați fișierul README al modulului."
+
+#: impressum.php:86
+msgid "Settings updated."
+msgstr "Configurări actualizate."
+
+#: impressum.php:91
+msgid "Save Settings"
+msgstr "Salvare Configurări"
+
+#: impressum.php:92
+msgid "The page operators name."
+msgstr "Pagina numelor operatorilor."
+
+#: impressum.php:93
+msgid "Site Owners Profile"
+msgstr "Profil Deținători Site "
+
+#: impressum.php:93
+msgid "Profile address of the operator."
+msgstr "Adresa de profil a operatorului."
+
+#: impressum.php:94
+msgid "How to contact the operator via snail mail. You can use BBCode here."
+msgstr "Cum să contactați operatorul prin corespondență lentă. Puteți folosi aici Codul BB."
+
+#: impressum.php:95
+msgid "Notes"
+msgstr "Note"
+
+#: impressum.php:95
+msgid ""
+"Additional notes that are displayed beneath the contact information. You can"
+" use BBCode here."
+msgstr "Notele suplimentare care sunt afișate sub informațiile de contact. Puteți folosi aici Codul BB."
+
+#: impressum.php:96
+msgid "How to contact the operator via email. (will be displayed obfuscated)"
+msgstr "Modul de contactare al operatorului prin e-mail. (va fi afișat eclipsat)"
+
+#: impressum.php:97
+msgid "Footer note"
+msgstr "Notă de Subsol"
+
+#: impressum.php:97
+msgid "Text for the footer. You can use BBCode here."
+msgstr "Textul de pagina de subsol. Puteți folosi aici Codul BB."

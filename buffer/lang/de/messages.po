@@ -1,0 +1,76 @@
+# ADDON buffer
+# Copyright (C)
+# This file is distributed under the same license as the Friendica buffer addon package.
+# 
+# 
+# Translators:
+# bavatar <tobias.diekershoff@gmx.net>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-03 05:49+0000\n"
+"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: buffer.php:31
+msgid "Permission denied."
+msgstr "Zugriff verweigert."
+
+#: buffer.php:57 buffer.php:185
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: buffer.php:59
+msgid "Client ID"
+msgstr "Client ID"
+
+#: buffer.php:60
+msgid "Client Secret"
+msgstr "Client Secret"
+
+#: buffer.php:67
+msgid "Error when registering buffer connection:"
+msgstr "Fehler beim Registrieren des buffer Connectors."
+
+#: buffer.php:86
+msgid "You are now authenticated to buffer. "
+msgstr "Du bist nun auf buffer authentifiziert."
+
+#: buffer.php:87
+msgid "return to the connector page"
+msgstr "zurück zur Connector Seite"
+
+#: buffer.php:103
+msgid "Post to Buffer"
+msgstr "Auf buffer veröffentlichen"
+
+#: buffer.php:128 buffer.php:132
+msgid "Buffer Export"
+msgstr "Buffer Export"
+
+#: buffer.php:142
+msgid "Authenticate your Buffer connection"
+msgstr "Authentifiziere deine Verbindung zu buffer"
+
+#: buffer.php:146
+msgid "Enable Buffer Post Plugin"
+msgstr "Buffer Post-Plugin aktivieren"
+
+#: buffer.php:151
+msgid "Post to Buffer by default"
+msgstr "Standardmäßig auf buffer veröffentlichen"
+
+#: buffer.php:156
+msgid "Check to delete this preset"
+msgstr "Markieren um dieses Preset zu löschen"
+
+#: buffer.php:165
+msgid "Posts are going to all accounts that are enabled by default:"
+msgstr "Beiträge werden an alle Accounts geschickt, die Standardmäßig aktiviert sind."

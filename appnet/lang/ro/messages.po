@@ -1,0 +1,117 @@
+# ADDON appnet
+# Copyright (C)
+# This file is distributed under the same license as the Friendica appnet addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 11:47+0200\n"
+"PO-Revision-Date: 2014-07-08 11:40+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: appnet.php:39
+msgid "Permission denied."
+msgstr "Permisiune refuzată."
+
+#: appnet.php:73
+msgid "You are now authenticated to app.net. "
+msgstr "Acum sunteți autentificat pe App.net."
+
+#: appnet.php:77
+msgid "<p>Error fetching token. Please try again.</p>"
+msgstr "<p>Eroare la procesarea token-ului. Vă rugăm să reîncercați.</p>"
+
+#: appnet.php:80
+msgid "return to the connector page"
+msgstr "revenire la pagina de conectare"
+
+#: appnet.php:94
+msgid "Post to app.net"
+msgstr "Postați pe App.net"
+
+#: appnet.php:125 appnet.php:129
+msgid "App.net Export"
+msgstr "Exportare pe App.net"
+
+#: appnet.php:142
+msgid "Currently connected to: "
+msgstr "Conectat curent la:"
+
+#: appnet.php:144
+msgid "Enable App.net Post Plugin"
+msgstr "Activare Modul Postare pe App.net"
+
+#: appnet.php:149
+msgid "Post to App.net by default"
+msgstr "Postați implicit pe App.net"
+
+#: appnet.php:153
+msgid "Import the remote timeline"
+msgstr "Importare cronologie la distanță"
+
+#: appnet.php:159
+msgid ""
+"<p>Error fetching user profile. Please clear the configuration and try "
+"again.</p>"
+msgstr "<p>Eroare la procesarea profilului de utilizator. Vă rugăm să ștergeți configurarea şi apoi reîncercați.</p>"
+
+#: appnet.php:164
+msgid "<p>You have two ways to connect to App.net.</p>"
+msgstr "<p>Aveți două modalități de a vă conecta la App.net.</p>"
+
+#: appnet.php:166
+msgid ""
+"<p>First way: Register an application at <a "
+"href=\"https://account.app.net/developer/apps/\">https://account.app.net/developer/apps/</a>"
+" and enter Client ID and Client Secret. "
+msgstr "<p>Prima modalitate: Înregistrați o cerere pe <a href=\"https://account.app.net/developer/apps/\">https://account.app.net/developer/apps/</a> şi introduceți ID Client şi Cheia Secretă Client."
+
+#: appnet.php:167
+#, php-format
+msgid "Use '%s' as Redirect URI<p>"
+msgstr "Utilizați '%s' ca URI de Redirecţionare<p>"
+
+#: appnet.php:169
+msgid "Client ID"
+msgstr "ID Client"
+
+#: appnet.php:173
+msgid "Client Secret"
+msgstr "Cheia Secretă Client"
+
+#: appnet.php:177
+msgid ""
+"<p>Second way: fetch a token at <a href=\"http://dev-"
+"lite.jonathonduerig.com/\">http://dev-lite.jonathonduerig.com/</a>. "
+msgstr "<p>A doua cale: autorizați un indicativ de acces token de pe <a href=\"http://dev-lite.jonathonduerig.com/\">http://dev-lite.jonathonduerig.com/</a> ."
+
+#: appnet.php:178
+msgid ""
+"Set these scopes: 'Basic', 'Stream', 'Write Post', 'Public Messages', "
+"'Messages'.</p>"
+msgstr "Stabiliți aceste scopuri: 'De Bază', 'Flux', 'Scriere Postare', 'Mesaje Publice', 'Mesaje'.</p>"
+
+#: appnet.php:180
+msgid "Token"
+msgstr "Token"
+
+#: appnet.php:192
+msgid "Sign in using App.net"
+msgstr "Autentificați-vă utilizând App.net"
+
+#: appnet.php:197
+msgid "Clear OAuth configuration"
+msgstr "Ștergeți configurările OAuth"
+
+#: appnet.php:204
+msgid "Save Settings"
+msgstr "Salvare Configurări"

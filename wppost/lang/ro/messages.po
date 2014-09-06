@@ -1,0 +1,67 @@
+# ADDON wppost
+# Copyright (C)
+# This file is distributed under the same license as the Friendica wppost addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-07-08 12:12+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: wppost.php:42
+msgid "Post to Wordpress"
+msgstr "Postați pe Wordpress"
+
+#: wppost.php:79 wppost.php:83
+msgid "Wordpress Export"
+msgstr "Export pe Wordpress"
+
+#: wppost.php:86
+msgid "Enable WordPress Post Plugin"
+msgstr "Activare Modul Postare pe Wordpress"
+
+#: wppost.php:91
+msgid "WordPress username"
+msgstr "Utilizator WordPress "
+
+#: wppost.php:96
+msgid "WordPress password"
+msgstr "Parolă WordPress "
+
+#: wppost.php:101
+msgid "WordPress API URL"
+msgstr "URL Cheie API WordPress"
+
+#: wppost.php:106
+msgid "Post to WordPress by default"
+msgstr "Postați implicit pe Wordpress"
+
+#: wppost.php:111
+msgid "Provide a backlink to the Friendica post"
+msgstr "Oferiți un backlink către postarea de pe Friendica"
+
+#: wppost.php:116
+msgid "Don't post messages that are too short"
+msgstr "Nu publica mesajele prea scurte"
+
+#: wppost.php:122
+msgid "Save Settings"
+msgstr "Salvare Configurări"
+
+#: wppost.php:243
+msgid "Post from Friendica"
+msgstr "Postați din Friendica"
+
+#: wppost.php:255
+msgid "Read the original post and comment stream on Friendica"
+msgstr "Citiți publicația originală și fluxul de comentarii, pe Friendica"

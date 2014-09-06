@@ -1,0 +1,75 @@
+# ADDON gravatar
+# Copyright (C)
+# This file is distributed under the same license as the Friendica gravatar addon package.
+# 
+# 
+# Translators:
+# bavatar <tobias.diekershoff@gmx.net>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-06-28 06:14+0000\n"
+"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: gravatar.php:71
+msgid "generic profile image"
+msgstr "generisches Profilbild"
+
+#: gravatar.php:72
+msgid "random geometric pattern"
+msgstr "zufälliges Profilbild"
+
+#: gravatar.php:73
+msgid "monster face"
+msgstr "Monsterfratze"
+
+#: gravatar.php:74
+msgid "computer generated face"
+msgstr "computergeneriertes Gesicht"
+
+#: gravatar.php:75
+msgid "retro arcade style face"
+msgstr "Retro Arcade Design Gesicht"
+
+#: gravatar.php:89
+msgid "Information"
+msgstr "Information"
+
+#: gravatar.php:89
+msgid ""
+"Libravatar addon is installed, too. Please disable Libravatar addon or this "
+"Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if "
+"nothing was found at Libravatar."
+msgstr "Das Libravatar Addon ist ebenfalls installiert. Bitte deaktiviere das Libravatar Addon oder dieses Gravatar Addon.<br>"
+
+#: gravatar.php:95
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: gravatar.php:96
+msgid "Default avatar image"
+msgstr "Standard Profilbild "
+
+#: gravatar.php:96
+msgid "Select default avatar image if none was found at Gravatar. See README"
+msgstr "Wähle das Standardprofilbild, wenn kein Bild auf Gravatar gefunden wurde. Schaue auch sonst im README nach."
+
+#: gravatar.php:97
+msgid "Rating of images"
+msgstr "Bildbewertung"
+
+#: gravatar.php:97
+msgid "Select the appropriate avatar rating for your site. See README"
+msgstr "Wähle eine angemessene Bildbewertung für deinen Server. Schaue auch sonst im README nach."
+
+#: gravatar.php:111
+msgid "Gravatar settings updated."
+msgstr "Gravatar Einstellungen aktualisiert."

@@ -1,7 +1,12 @@
 <?php
 
-$a->strings["bitchslap"] = "";
-$a->strings["bitchslapped"] = "";
+if(! function_exists("string_plural_select_cs")) {
+function string_plural_select_cs($n){
+	return ($n==1) ? 0 : ($n>=2 && $n<=4) ? 1 : 2;;
+}}
+;
+$a->strings["bitchslap"] = "dát facku";
+$a->strings["bitchslapped"] = "dostat facku";
 $a->strings["shag"] = "";
 $a->strings["shagged"] = "";
 $a->strings["do something obscenely biological to"] = "udělat něco obscéně biologického uživateli";

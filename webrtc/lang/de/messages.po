@@ -1,0 +1,59 @@
+# ADDON webrtc
+# Copyright (C)
+# This file is distributed under the same license as the Friendica webrtc addon package.
+# 
+# 
+# Translators:
+# bavatar <tobias.diekershoff@gmx.net>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-07-11 05:33+0000\n"
+"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: webrtc.php:20
+msgid "WebRTC Videochat"
+msgstr "WebRTC Videochat"
+
+#: webrtc.php:26
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: webrtc.php:27
+msgid "WebRTC Base URL"
+msgstr "Basis-URL des WebRTC Servers"
+
+#: webrtc.php:27
+msgid ""
+"Page your users will create a WebRTC chat room on. For example you could use"
+" https://live.mayfirst.org ."
+msgstr "Auf welcher Seite sollten deine Nutzer einen WebRTC Chatraum anlegen. Z.B. könntest du https://live.mayfirst.org verwenden."
+
+#: webrtc.php:33
+msgid "Settings updated."
+msgstr "Einstellungen aktualisiert."
+
+#: webrtc.php:47
+msgid "Video Chat"
+msgstr "Video Chat"
+
+#: webrtc.php:48
+msgid ""
+"WebRTC is a video and audio conferencing tool that works with Firefox "
+"(version 21 and above) and Chrome/Chromium (version 25 and above). Just "
+"create a new chat room and send the link to someone you want to chat with."
+msgstr "WebRTC ist ein Werkzeug für Audio- und Videokonferenzen das mit Firefox (Version 21 und höher) und Chrome/Chromium (Versionen 25 und höher) funktioniert. Lege einfach einen neuen Chatraum an und sende den Link an die Personen mit denen du chatten willst."
+
+#: webrtc.php:50
+msgid ""
+"Please contact your friendica admin and send a reminder to configure the "
+"WebRTC addon."
+msgstr "Bitte schicke eine Erinnerung an deinen friendica Admin, dass WebRTC noch nicht richtig konfiguriert ist."

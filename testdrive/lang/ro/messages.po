@@ -1,0 +1,40 @@
+# ADDON testdrive
+# Copyright (C)
+# This file is distributed under the same license as the Friendica testdrive addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-07-08 12:09+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: testdrive.php:67
+msgid "Administrator"
+msgstr "Administrator"
+
+#: testdrive.php:94
+#, php-format
+msgid "Your account on %s will expire in a few days."
+msgstr "Contul dvs. de pe %s va expira în câteva zile."
+
+#: testdrive.php:95
+msgid "Your Friendica test account is about to expire."
+msgstr "Contul dvs. de testare Friendica, este pe cale sa expire."
+
+#: testdrive.php:96
+#, php-format
+msgid ""
+"Hi %1$s,\n"
+"\n"
+"Your test account on %2$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at http://dir.friendica.com/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at http://friendica.com."
+msgstr "Bună ziua %1$s,\n\nContul dumneavoastră de testare de pe %2$s va expira în mai puțin de cinci zile. Sperăm că v-ați bucurat de această perioadă de testare, şi că veți folosi această oportunitate pentru a găsi un site Friendica permanent, pentru integrarea comunicațiilor dvs. sociale. O listă a site-urilor publice este disponibilă pe http://dir.friendica.com/siteinfo - şi pentru mai multe informații referitoare la configurarea propriului server Friendica, vă rugăm să consultați site-ul web al proiectului Friendica, pe http://friendica.com."

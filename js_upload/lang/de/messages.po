@@ -1,0 +1,56 @@
+# ADDON js_upload
+# Copyright (C)
+# This file is distributed under the same license as the Friendica js_upload addon package.
+# 
+# 
+# Translators:
+# bavatar <tobias.diekershoff@gmx.net>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-11 06:01+0000\n"
+"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: js_upload.php:43
+msgid "Upload a file"
+msgstr "Datei hochladen"
+
+#: js_upload.php:44
+msgid "Drop files here to upload"
+msgstr "Ziehe die Dateien hierher die du hochladen willst"
+
+#: js_upload.php:45
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: js_upload.php:46
+msgid "Failed"
+msgstr "Fehlgeschlagen"
+
+#: js_upload.php:303
+msgid "No files were uploaded."
+msgstr "Keine Dateien hochgeladen."
+
+#: js_upload.php:309
+msgid "Uploaded file is empty"
+msgstr "Hochgeladene Datei ist leer"
+
+#: js_upload.php:321
+msgid "Image exceeds size limit of "
+msgstr "Die Bildgröße übersteigt das Limit von "
+
+#: js_upload.php:332
+msgid "File has an invalid extension, it should be one of "
+msgstr "Die Dateiextension ist nicht erlaubt, sie muss eine der folgenden sein "
+
+#: js_upload.php:343
+msgid "Upload was cancelled, or server error encountered"
+msgstr "Upload abgebrochen oder Serverfehler aufgetreten"

@@ -1,0 +1,49 @@
+# ADDON openstreetmap
+# Copyright (C)
+# This file is distributed under the same license as the Friendica openstreetmap addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-08 12:01+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: openstreetmap.php:70
+msgid "Map"
+msgstr "Hartă"
+
+#: openstreetmap.php:94
+msgid "Save Settings"
+msgstr "Salvare Configurări"
+
+#: openstreetmap.php:95
+msgid "Tile Server URL"
+msgstr "URL Server pentru Stratificare Hărți"
+
+#: openstreetmap.php:95
+msgid ""
+"A list of <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" "
+"target=\"_blank\">public tile servers</a>"
+msgstr "O lista cu <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" target=\"_blank\">servere publice cu tipuri de hărți</a>"
+
+#: openstreetmap.php:96
+msgid "Default zoom"
+msgstr "Magnificare implicită"
+
+#: openstreetmap.php:96
+msgid "The default zoom level. (1:world, 18:highest)"
+msgstr "Nivelul implicit de magnificare. (1:nivel global, 18:cea mai mare)"
+
+#: openstreetmap.php:104
+msgid "Settings updated."
+msgstr "Configurări actualizate."

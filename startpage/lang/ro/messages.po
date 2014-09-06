@@ -1,0 +1,35 @@
+# ADDON startpage
+# Copyright (C)
+# This file is distributed under the same license as the Friendica startpage addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-07-08 12:07+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: startpage.php:83 startpage.php:87
+msgid "Startpage"
+msgstr "Startpage"
+
+#: startpage.php:90
+msgid "Home page to load after login  - leave blank for profile wall"
+msgstr "Pagina de întâmpinare ce va fi încărcată după autentificare - lăsați necompletat pentru perete de profil"
+
+#: startpage.php:93
+msgid "Examples: &quot;network&quot; or &quot;notifications/system&quot;"
+msgstr "Exemple: &quot;rețea&quot; sau &quot;notificări/sistem&quot;"
+
+#: startpage.php:97
+msgid "Save Settings"
+msgstr "Salvare Configurări"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-19 13:20+0200\n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,22 +33,22 @@ msgstr ""
 msgid "This calendar format is not supported"
 msgstr ""
 
-#: cal.php:174
+#: cal.php:181 cal.php:185
 msgid "Export Events"
 msgstr ""
 
-#: cal.php:175
+#: cal.php:189
 msgid "If this is enabled, your public events will be available at"
 msgstr ""
 
-#: cal.php:176
+#: cal.php:190
 msgid "Currently supported formats are ical and csv."
 msgstr ""
 
-#: cal.php:178
+#: cal.php:191
 msgid "Enable calendar export"
 msgstr ""
 
-#: cal.php:181
-msgid "Submit"
+#: cal.php:193
+msgid "Save Settings"
 msgstr ""

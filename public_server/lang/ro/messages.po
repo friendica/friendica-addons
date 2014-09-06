@@ -1,0 +1,52 @@
+# ADDON public_server
+# Copyright (C)
+# This file is distributed under the same license as the Friendica public_server addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-08 12:03+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: public_server.php:64
+msgid "Administrator"
+msgstr "Administrator"
+
+#: public_server.php:129
+#, php-format
+msgid "Your account on %s will expire in a few days."
+msgstr "Contul dvs. de pe %s va expira în câteva zile."
+
+#: public_server.php:130
+msgid "Your Friendica account is about to expire."
+msgstr "Contul dvs. Friendica este pe cale sa expire."
+
+#: public_server.php:131
+#, php-format
+msgid ""
+"Hi %1$s,\n"
+"\n"
+"Your account on %2$s will expire in less than five days. You may keep your account by logging in at least once every 30 days"
+msgstr "Bună ziua %1$s,\n\nContul dvs. de pe %2$s va expira în mai puțin de cinci zile. Vă puteți păstra contul conectându-vă la el, cel puțin o dată la fiecare 30 de zile"
+
+#: public_server.php:159
+msgid "Settings saved"
+msgstr "Configurări salvate"
+
+#: public_server.php:165
+msgid "Save Settings"
+msgstr "Salvare Configurări"
+
+#: public_server.php:167
+msgid "Set any of these options to 0 to deactivate it."
+msgstr "Stabiliți oricare din aceste opțiuni de 0 pentru a-l dezactiva."

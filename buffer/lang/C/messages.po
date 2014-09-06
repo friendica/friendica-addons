@@ -1,0 +1,74 @@
+# ADDON buffer
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica buffer addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: buffer.php:31
+msgid "Permission denied."
+msgstr ""
+
+#: buffer.php:57 buffer.php:185
+msgid "Save Settings"
+msgstr ""
+
+#: buffer.php:59
+msgid "Client ID"
+msgstr ""
+
+#: buffer.php:60
+msgid "Client Secret"
+msgstr ""
+
+#: buffer.php:67
+msgid "Error when registering buffer connection:"
+msgstr ""
+
+#: buffer.php:86
+msgid "You are now authenticated to buffer. "
+msgstr ""
+
+#: buffer.php:87
+msgid "return to the connector page"
+msgstr ""
+
+#: buffer.php:103
+msgid "Post to Buffer"
+msgstr ""
+
+#: buffer.php:128 buffer.php:132
+msgid "Buffer Export"
+msgstr ""
+
+#: buffer.php:142
+msgid "Authenticate your Buffer connection"
+msgstr ""
+
+#: buffer.php:146
+msgid "Enable Buffer Post Plugin"
+msgstr ""
+
+#: buffer.php:151
+msgid "Post to Buffer by default"
+msgstr ""
+
+#: buffer.php:156
+msgid "Check to delete this preset"
+msgstr ""
+
+#: buffer.php:165
+msgid "Posts are going to all accounts that are enabled by default:"
+msgstr ""

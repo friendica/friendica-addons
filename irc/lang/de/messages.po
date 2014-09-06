@@ -1,0 +1,48 @@
+# ADDON irc
+# Copyright (C)
+# This file is distributed under the same license as the Friendica irc addon package.
+# 
+# 
+# Translators:
+# bavatar <tobias.diekershoff@gmx.net>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-08 19:15+0000\n"
+"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: irc.php:44
+msgid "IRC Settings"
+msgstr "IRC Einstellungen"
+
+#: irc.php:46
+msgid "Channel(s) to auto connect (comma separated)"
+msgstr "mit diesen Kanälen soll man automatisch verbunden werden (Komma getrennt)"
+
+#: irc.php:51
+msgid "Popular Channels (comma separated)"
+msgstr "Beliebte Kanäle (mit Komma getrennt)"
+
+#: irc.php:55
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: irc.php:69
+msgid "IRC settings saved."
+msgstr "IRC Einstellungen gespeichert."
+
+#: irc.php:74
+msgid "IRC Chatroom"
+msgstr "IRC Chatraum"
+
+#: irc.php:96
+msgid "Popular Channels"
+msgstr "Beliebte Räume"

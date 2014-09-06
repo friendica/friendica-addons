@@ -1,0 +1,63 @@
+# ADDON piwik
+# Copyright (C)
+# This file is distributed under the same license as the Friendica piwik addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-08 12:02+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: piwik.php:77
+msgid ""
+"This website is tracked using the <a href='http://www.piwik.org'>Piwik</a> "
+"analytics tool."
+msgstr "Acest site web este contorizat folosind instrumentul analitic <a href='http://www.piwik.org'>Piwik</a>."
+
+#: piwik.php:80
+#, php-format
+msgid ""
+"If you do not want that your visits are logged this way you <a href='%s'>can"
+" set a cookie to prevent Piwik from tracking further visits of the site</a> "
+"(opt-out)."
+msgstr "Dacă nu doriți ca vizitele dumneavoastră să fie înregistrate în acest mod,<a href='%s'> puteți stabili un cookie pentru a împiedica Piwik să vă contorizeze viitoarele vizite pe site</a> (renunțare la opțiune)."
+
+#: piwik.php:87
+msgid "Save Settings"
+msgstr "Salvare Configurări"
+
+#: piwik.php:88
+msgid "Piwik Base URL"
+msgstr "Adresa URL de Bază Piwik"
+
+#: piwik.php:88
+msgid ""
+"Absolute path to your Piwik installation. (without protocol (http/s), with "
+"trailing slash)"
+msgstr "Calea absolută către locația de instalare Piwik. (fără protocolul (http/s), urmată de slash-uri)"
+
+#: piwik.php:89
+msgid "Site ID"
+msgstr "ID Site"
+
+#: piwik.php:90
+msgid "Show opt-out cookie link?"
+msgstr "Se afișează legătura cookie de renunțare la opțiune?"
+
+#: piwik.php:91
+msgid "Asynchronous tracking"
+msgstr "Contorizare asincronă"
+
+#: piwik.php:103
+msgid "Settings updated."
+msgstr "Configurări actualizate."

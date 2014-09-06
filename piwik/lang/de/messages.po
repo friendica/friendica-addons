@@ -1,0 +1,64 @@
+# ADDON piwik
+# Copyright (C)
+# This file is distributed under the same license as the Friendica piwik addon package.
+# 
+# 
+# Translators:
+# bavatar <tobias.diekershoff@gmx.net>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-08 19:18+0000\n"
+"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: piwik.php:77
+msgid ""
+"This website is tracked using the <a href='http://www.piwik.org'>Piwik</a> "
+"analytics tool."
+msgstr "Diese Website benutzt <a href='http://www.piwik.org'>Piwik</a>, eine Open Source-Software zur statistischen Auswertung der Besucherzugriffe."
+
+#: piwik.php:80
+#, php-format
+msgid ""
+"If you do not want that your visits are logged this way you <a href='%s'>can"
+" set a cookie to prevent Piwik from tracking further visits of the site</a> "
+"(opt-out)."
+msgstr "Wenn Du nicht willst, dass Deine Besuche auf diese Weise gespeichert werden, kannst Du <a href='%s'>ein Cookie setzen</a>. Dann wird Piwik Dich auf dieser Website nicht mehr verfolgen (opt-out)."
+
+#: piwik.php:87
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: piwik.php:88
+msgid "Piwik Base URL"
+msgstr "Piwik Basis URL"
+
+#: piwik.php:88
+msgid ""
+"Absolute path to your Piwik installation. (without protocol (http/s), with "
+"trailing slash)"
+msgstr "Absoluter Pfad zu deiner Piwik Installation (ohne Protokoll (http/s) und mit abschließendem Schrägstrich)"
+
+#: piwik.php:89
+msgid "Site ID"
+msgstr "Seiten ID"
+
+#: piwik.php:90
+msgid "Show opt-out cookie link?"
+msgstr "Link zum Setzen des Opt-Out Cookies anzeigen?"
+
+#: piwik.php:91
+msgid "Asynchronous tracking"
+msgstr "Asynchrones Tracking"
+
+#: piwik.php:103
+msgid "Settings updated."
+msgstr "Einstellungen aktualisiert."

@@ -1,0 +1,80 @@
+# ADDON forumdirectory
+# Copyright (C)
+# This file is distributed under the same license as the Friendica forumdirectory addon package.
+# 
+# 
+# Translators:
+# Michal Šupler <msupler@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-07 18:45+0000\n"
+"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: forumdirectory.php:22
+msgid "Forum Directory"
+msgstr "Adresář Fór"
+
+#: forumdirectory.php:53
+msgid "Public access denied."
+msgstr "Veřejný přístup odepřen."
+
+#: forumdirectory.php:71
+msgid "Global Directory"
+msgstr "Globální adresář"
+
+#: forumdirectory.php:79
+msgid "Find on this site"
+msgstr "Nalézt na tomto webu"
+
+#: forumdirectory.php:81
+msgid "Finding: "
+msgstr "Zjištění: "
+
+#: forumdirectory.php:82
+msgid "Site Directory"
+msgstr "Adresář serveru"
+
+#: forumdirectory.php:83
+msgid "Find"
+msgstr "Najít"
+
+#: forumdirectory.php:133
+msgid "Age: "
+msgstr "Věk: "
+
+#: forumdirectory.php:136
+msgid "Gender: "
+msgstr "Pohlaví: "
+
+#: forumdirectory.php:156
+msgid "Location:"
+msgstr "Místo:"
+
+#: forumdirectory.php:158
+msgid "Gender:"
+msgstr "Pohlaví:"
+
+#: forumdirectory.php:160
+msgid "Status:"
+msgstr "Status:"
+
+#: forumdirectory.php:162
+msgid "Homepage:"
+msgstr "Domácí stránka:"
+
+#: forumdirectory.php:164
+msgid "About:"
+msgstr "O mě:"
+
+#: forumdirectory.php:201
+msgid "No entries (some entries may be hidden)."
+msgstr "Žádné záznamy (některé položky mohou být skryty)."

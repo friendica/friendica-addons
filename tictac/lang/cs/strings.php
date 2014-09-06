@@ -1,5 +1,10 @@
 <?php
 
+if(! function_exists("string_plural_select_cs")) {
+function string_plural_select_cs($n){
+	return ($n==1) ? 0 : ($n>=2 && $n<=4) ? 1 : 2;;
+}}
+;
 $a->strings["Three Dimensional Tic-Tac-Toe"] = "Trojrozměrné Tic-Tac-Toe";
 $a->strings["3D Tic-Tac-Toe"] = "3D Tic-Tac-Toe";
 $a->strings["New game"] = "Nová hra";
@@ -10,5 +15,5 @@ $a->strings["The handicap game disables the center position on the middle level 
 $a->strings["You go first..."] = "Vy začněte ...";
 $a->strings["I'm going first this time..."] = "Tentokrát začnu já...";
 $a->strings["You won!"] = "Vyhrál jste!";
-$a->strings["\"Cat\" game!"] = "\"Kočičí\" hra!";
+$a->strings["\"Cat\" game!"] = "Pat hra!";
 $a->strings["I won!"] = "Vyhrál jsem!";
