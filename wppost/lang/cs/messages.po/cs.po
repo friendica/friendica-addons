@@ -1,0 +1,68 @@
+# ADDON wppost
+# Copyright (C)
+# This file is distributed under the same license as the Friendica wppost addon package.
+# 
+# 
+# Translators:
+# Michal Šupler <msupler@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-07-02 15:14+0000\n"
+"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: wppost.php:42
+msgid "Post to Wordpress"
+msgstr "Příspěvky do WordPress"
+
+#: wppost.php:79 wppost.php:83
+msgid "Wordpress Export"
+msgstr "Wordpress Export"
+
+#: wppost.php:86
+msgid "Enable WordPress Post Plugin"
+msgstr "Povolit rozšíření na WordPress"
+
+#: wppost.php:91
+msgid "WordPress username"
+msgstr "WordPress uživatelské jméno"
+
+#: wppost.php:96
+msgid "WordPress password"
+msgstr "WordPress heslo"
+
+#: wppost.php:101
+msgid "WordPress API URL"
+msgstr "URL adresa API WordPress"
+
+#: wppost.php:106
+msgid "Post to WordPress by default"
+msgstr "standardně posílat příspěvky na WordPress"
+
+#: wppost.php:111
+msgid "Provide a backlink to the Friendica post"
+msgstr "Poskytuje zpětný link na Friendica příspěvek"
+
+#: wppost.php:116
+msgid "Don't post messages that are too short"
+msgstr "Neposílat zprávy, které jsou příliš krátké"
+
+#: wppost.php:122
+msgid "Save Settings"
+msgstr "Uložit Nastavení"
+
+#: wppost.php:243
+msgid "Post from Friendica"
+msgstr "Příspěvek z Friendica"
+
+#: wppost.php:255
+msgid "Read the original post and comment stream on Friendica"
+msgstr "Přečíst si originální příspěvek a komentáře na Friendica"

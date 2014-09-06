@@ -1,0 +1,48 @@
+# ADDON ljpost
+# Copyright (C)
+# This file is distributed under the same license as the Friendica ljpost addon package.
+# 
+# 
+# Translators:
+# Michal Šupler <msupler@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-07 19:14+0000\n"
+"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: ljpost.php:39
+msgid "Post to LiveJournal"
+msgstr "Poslat na LiveJournal"
+
+#: ljpost.php:70
+msgid "LiveJournal Post Settings"
+msgstr "Nastavení LiveJournal Post"
+
+#: ljpost.php:72
+msgid "Enable LiveJournal Post Plugin"
+msgstr "Povolit LiveJournal Post plugin"
+
+#: ljpost.php:77
+msgid "LiveJournal username"
+msgstr "LiveJournal uživatelské jméno"
+
+#: ljpost.php:82
+msgid "LiveJournal password"
+msgstr "LiveJournal heslo"
+
+#: ljpost.php:87
+msgid "Post to LiveJournal by default"
+msgstr "Defaultně umístit na LiveJournal"
+
+#: ljpost.php:93
+msgid "Save Settings"
+msgstr "Uložit Nastavení"

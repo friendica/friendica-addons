@@ -1,0 +1,50 @@
+# ADDON openstreetmap
+# Copyright (C)
+# This file is distributed under the same license as the Friendica openstreetmap addon package.
+# 
+# 
+# Translators:
+# Michal Šupler <msupler@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-07 19:27+0000\n"
+"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: openstreetmap.php:70
+msgid "Map"
+msgstr "Mapa"
+
+#: openstreetmap.php:94
+msgid "Save Settings"
+msgstr "Uložit Nastavení"
+
+#: openstreetmap.php:95
+msgid "Tile Server URL"
+msgstr "URL adresa Tile serveru"
+
+#: openstreetmap.php:95
+msgid ""
+"A list of <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" "
+"target=\"_blank\">public tile servers</a>"
+msgstr "Seznam <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" target=\"_blank\">veřejných tile serverů</a>"
+
+#: openstreetmap.php:96
+msgid "Default zoom"
+msgstr "Defaultní lupa"
+
+#: openstreetmap.php:96
+msgid "The default zoom level. (1:world, 18:highest)"
+msgstr "Defaultní nastavení lupy (1:svět, 18:nejvyšší)"
+
+#: openstreetmap.php:104
+msgid "Settings updated."
+msgstr "Nastavení aktualizováno."

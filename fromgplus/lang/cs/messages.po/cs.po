@@ -1,0 +1,40 @@
+# ADDON fromgplus
+# Copyright (C)
+# This file is distributed under the same license as the Friendica fromgplus addon package.
+# 
+# 
+# Translators:
+# Michal Šupler <msupler@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-07 19:04+0000\n"
+"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: fromgplus.php:42 fromgplus.php:46
+msgid "Google+ Mirror"
+msgstr "Google+ Mirror"
+
+#: fromgplus.php:51
+msgid "Enable Google+ Import"
+msgstr "Povolit Import z Google+"
+
+#: fromgplus.php:54
+msgid "Google Account ID"
+msgstr "název účtu Google "
+
+#: fromgplus.php:59
+msgid "Save Settings"
+msgstr "Uložit Nastavení"
+
+#: fromgplus.php:78
+msgid "Google+ Import Settings saved."
+msgstr "Nastavení importu z Google+ uloženo."

@@ -1,0 +1,48 @@
+# ADDON dwpost
+# Copyright (C)
+# This file is distributed under the same license as the Friendica dwpost addon package.
+# 
+# 
+# Translators:
+# Michal Šupler <msupler@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-07 18:44+0000\n"
+"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: dwpost.php:39
+msgid "Post to Dreamwidth"
+msgstr "Poslat na Dreamwidth"
+
+#: dwpost.php:70 dwpost.php:74
+msgid "Dreamwidth Export"
+msgstr "Dreamwidth export"
+
+#: dwpost.php:78
+msgid "Enable dreamwidth Post Plugin"
+msgstr "Povolit dreamwidth Plugin"
+
+#: dwpost.php:83
+msgid "dreamwidth username"
+msgstr "dreamwidth uživatelské jméno"
+
+#: dwpost.php:88
+msgid "dreamwidth password"
+msgstr "dreamwidth heslo"
+
+#: dwpost.php:93
+msgid "Post to dreamwidth by default"
+msgstr "Defaultně umístit na dreamwidth"
+
+#: dwpost.php:99
+msgid "Save Settings"
+msgstr "Uložit Nastavení"

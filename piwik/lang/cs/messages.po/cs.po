@@ -1,0 +1,64 @@
+# ADDON piwik
+# Copyright (C)
+# This file is distributed under the same license as the Friendica piwik addon package.
+# 
+# 
+# Translators:
+# Michal Šupler <msupler@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-28 18:01+0000\n"
+"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: piwik.php:77
+msgid ""
+"This website is tracked using the <a href='http://www.piwik.org'>Piwik</a> "
+"analytics tool."
+msgstr "Tato webová stránka je sledována pomocí nástroje pro analýzu <a href='http://www.piwik.org'>Piwik</a>."
+
+#: piwik.php:80
+#, php-format
+msgid ""
+"If you do not want that your visits are logged this way you <a href='%s'>can"
+" set a cookie to prevent Piwik from tracking further visits of the site</a> "
+"(opt-out)."
+msgstr "Pokud si nepřejete, aby vaše návštěvy byly takto sledovány, <a href='%s'>můžete si nastavit cookie, které zastaví sledování dalších návštěv na tomto webu</a> (opt-out)."
+
+#: piwik.php:87
+msgid "Save Settings"
+msgstr "Uložit Nastavení"
+
+#: piwik.php:88
+msgid "Piwik Base URL"
+msgstr "Piwik Base adresa URL"
+
+#: piwik.php:88
+msgid ""
+"Absolute path to your Piwik installation. (without protocol (http/s), with "
+"trailing slash)"
+msgstr "Absolutní cesta k Vaší instalaci Piwik. (bez protokolu (http/s), s koncovým lomítkem)"
+
+#: piwik.php:89
+msgid "Site ID"
+msgstr "ID webu"
+
+#: piwik.php:90
+msgid "Show opt-out cookie link?"
+msgstr "Zobrazit odkaz opt-out cookie?"
+
+#: piwik.php:91
+msgid "Asynchronous tracking"
+msgstr "Asynchronní sledování"
+
+#: piwik.php:103
+msgid "Settings updated."
+msgstr "Nastavení aktualizováno."

@@ -1,0 +1,74 @@
+# ADDON tictac
+# Copyright (C)
+# This file is distributed under the same license as the Friendica tictac addon package.
+# 
+# 
+# Translators:
+# Michal Šupler <msupler@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-07-28 18:18+0000\n"
+"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: tictac.php:20
+msgid "Three Dimensional Tic-Tac-Toe"
+msgstr "Trojrozměrné Tic-Tac-Toe"
+
+#: tictac.php:53
+msgid "3D Tic-Tac-Toe"
+msgstr "3D Tic-Tac-Toe"
+
+#: tictac.php:58
+msgid "New game"
+msgstr "Nová hra"
+
+#: tictac.php:59
+msgid "New game with handicap"
+msgstr "Nová hra s handicapem"
+
+#: tictac.php:60
+msgid ""
+"Three dimensional tic-tac-toe is just like the traditional game except that "
+"it is played on multiple levels simultaneously. "
+msgstr "Trojrozměrné tic-tac-toe je podobná této tradiční hře kromě toho, že se hraje na více úrovních současně."
+
+#: tictac.php:61
+msgid ""
+"In this case there are three levels. You win by getting three in a row on "
+"any level, as well as up, down, and diagonally across the different levels."
+msgstr "V tomto případě existují tři úrovně. Vyhrajete tím, že dostane tři v řadě na jakékoli úrovni, stejně jako nahoru, dolů a šikmo na různých úrovních."
+
+#: tictac.php:63
+msgid ""
+"The handicap game disables the center position on the middle level because "
+"the player claiming this square often has an unfair advantage."
+msgstr "Hra s handicapem zakáže centrální pozici na střední úrovni, protože hráč zaujímající tuto polohu má často nespravedlivou výhodu."
+
+#: tictac.php:182
+msgid "You go first..."
+msgstr "Vy začněte ..."
+
+#: tictac.php:187
+msgid "I'm going first this time..."
+msgstr "Tentokrát začnu já..."
+
+#: tictac.php:193
+msgid "You won!"
+msgstr "Vyhrál jste!"
+
+#: tictac.php:199 tictac.php:224
+msgid "\"Cat\" game!"
+msgstr "Pat hra!"
+
+#: tictac.php:222
+msgid "I won!"
+msgstr "Vyhrál jsem!"

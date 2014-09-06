@@ -1,0 +1,167 @@
+# ADDON morepokes
+# Copyright (C)
+# This file is distributed under the same license as the Friendica morepokes addon package.
+# 
+# 
+# Translators:
+# Michal Šupler <msupler@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-28 18:21+0000\n"
+"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: morepokes.php:19
+msgid "bitchslap"
+msgstr "dát facku"
+
+#: morepokes.php:19
+msgid "bitchslapped"
+msgstr "dostat facku"
+
+#: morepokes.php:20
+msgid "shag"
+msgstr ""
+
+#: morepokes.php:20
+msgid "shagged"
+msgstr ""
+
+#: morepokes.php:21
+msgid "do something obscenely biological to"
+msgstr "udělat něco obscéně biologického uživateli"
+
+#: morepokes.php:21
+msgid "did something obscenely biological to"
+msgstr "udělal něco obscéně biologického uživateli"
+
+#: morepokes.php:22
+msgid "point out the poke feature to"
+msgstr "upozornit na poke funkci uživatele"
+
+#: morepokes.php:22
+msgid "pointed out the poke feature to"
+msgstr "upozorněn na poke funkci "
+
+#: morepokes.php:23
+msgid "declare undying love for"
+msgstr "vyjadřit nehynoucí lásku ke"
+
+#: morepokes.php:23
+msgid "declared undying love for"
+msgstr "vyjadřil nehynoucí lásku ke"
+
+#: morepokes.php:24
+msgid "patent"
+msgstr "patentovat"
+
+#: morepokes.php:24
+msgid "patented"
+msgstr "patentován"
+
+#: morepokes.php:25
+msgid "stroke beard"
+msgstr "pohladit plnovous"
+
+#: morepokes.php:25
+msgid "stroked their beard at"
+msgstr "pohladit něčí plnovous"
+
+#: morepokes.php:26
+msgid ""
+"bemoan the declining standards of modern secondary and tertiary education to"
+msgstr "stěžující si na klesající úroveň moderního sekundárního a terciárního vzdělávání u"
+
+#: morepokes.php:26
+msgid ""
+"bemoans the declining standards of modern secondary and tertiary education "
+"to"
+msgstr "stěžovat si na klesající úroveň moderního sekundárního a terciárního vzdělávání u"
+
+#: morepokes.php:27
+msgid "hug"
+msgstr "obejmout"
+
+#: morepokes.php:27
+msgid "hugged"
+msgstr "obejmut "
+
+#: morepokes.php:28
+msgid "kiss"
+msgstr "políbit"
+
+#: morepokes.php:28
+msgid "kissed"
+msgstr "políben"
+
+#: morepokes.php:29
+msgid "raise eyebrows at"
+msgstr "zvednout obočí na"
+
+#: morepokes.php:29
+msgid "raised their eyebrows at"
+msgstr "zvednul obočí na"
+
+#: morepokes.php:30
+msgid "insult"
+msgstr "urazit"
+
+#: morepokes.php:30
+msgid "insulted"
+msgstr "uražen"
+
+#: morepokes.php:31
+msgid "praise"
+msgstr "pochválit"
+
+#: morepokes.php:31
+msgid "praised"
+msgstr "pochválen"
+
+#: morepokes.php:32
+msgid "be dubious of"
+msgstr "mít pochyby o"
+
+#: morepokes.php:32
+msgid "was dubious of"
+msgstr "má pochybnosti z"
+
+#: morepokes.php:33
+msgid "eat"
+msgstr "sníst"
+
+#: morepokes.php:33
+msgid "ate"
+msgstr "snězen"
+
+#: morepokes.php:34
+msgid "giggle and fawn at"
+msgstr "hihňat se"
+
+#: morepokes.php:34
+msgid "giggled and fawned at"
+msgstr "hihňá se"
+
+#: morepokes.php:35
+msgid "doubt"
+msgstr "pochybovat"
+
+#: morepokes.php:35
+msgid "doubted"
+msgstr "pochybující"
+
+#: morepokes.php:36
+msgid "glare"
+msgstr "zabodáván pohledem"
+
+#: morepokes.php:36
+msgid "glared at"
+msgstr "zabodávat pohledem "

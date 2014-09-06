@@ -1,0 +1,41 @@
+# ADDON testdrive
+# Copyright (C)
+# This file is distributed under the same license as the Friendica testdrive addon package.
+# 
+# 
+# Translators:
+# Michal Šupler <msupler@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-07-28 18:16+0000\n"
+"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: testdrive.php:67
+msgid "Administrator"
+msgstr "Administrátor"
+
+#: testdrive.php:94
+#, php-format
+msgid "Your account on %s will expire in a few days."
+msgstr "Platnost Vašeho účtu na %s vyprší během několika dní."
+
+#: testdrive.php:95
+msgid "Your Friendica test account is about to expire."
+msgstr "Váš Friendica testovací účet brzy vyprší."
+
+#: testdrive.php:96
+#, php-format
+msgid ""
+"Hi %1$s,\n"
+"\n"
+"Your test account on %2$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at http://dir.friendica.com/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at http://friendica.com."
+msgstr "Ahoj %1$s,\n\nplatnost Vašeho testovacího účtu na %2$s vyprší za méně než 5 dní. Doufáme, že jste si testovací jízdu užili a že se Vám povedlo najít trvalý Friendica server pro Vaši integrovanou sociální komunikaci. List veřejně dostupných serverů je k dispozici na http://dir.friendica.com/siteinfo - a pro více informací, jak si vytvořit svůj vlastní server, navštivte stránky projektu Friendica na adrese http://friendica.com."

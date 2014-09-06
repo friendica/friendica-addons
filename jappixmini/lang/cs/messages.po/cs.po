@@ -1,0 +1,77 @@
+# ADDON jappixmini
+# Copyright (C)
+# This file is distributed under the same license as the Friendica jappixmini addon package.
+# 
+# 
+# Translators:
+# Michal Šupler <msupler@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-07 19:12+0000\n"
+"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: jappixmini.php:298 jappixmini.php:302
+msgid "Jappix Mini"
+msgstr "Jappix Mini"
+
+#: jappixmini.php:305
+msgid "Activate addon"
+msgstr "Aktivovat rozšíření"
+
+#: jappixmini.php:308
+msgid ""
+"Do <em>not</em> insert the Jappixmini Chat-Widget into the webinterface"
+msgstr "<em>Nevlkádejte</em> Jappixmini Chat-Widget do webového rozhraní"
+
+#: jappixmini.php:311
+msgid "Jabber username"
+msgstr "Jabber uživatelské jméno"
+
+#: jappixmini.php:314
+msgid "Jabber server"
+msgstr "Jabber server"
+
+#: jappixmini.php:319
+msgid "Jabber BOSH host"
+msgstr "Jabber BOSH host"
+
+#: jappixmini.php:325
+msgid "Jabber password"
+msgstr "Jabber heslo"
+
+#: jappixmini.php:330
+msgid "Encrypt Jabber password with Friendica password (recommended)"
+msgstr "Zašifrovat Jabber heslo s heslem Friendica (doporučeno)"
+
+#: jappixmini.php:333
+msgid "Friendica password"
+msgstr "Friendica heslo"
+
+#: jappixmini.php:336
+msgid "Approve subscription requests from Friendica contacts automatically"
+msgstr "Automaticky schválit požadavek na členství od Friedica kontaktů."
+
+#: jappixmini.php:339
+msgid "Subscribe to Friendica contacts automatically"
+msgstr "Automaticky zaslat požadavek na členství Friedica kontaktům."
+
+#: jappixmini.php:342
+msgid "Purge internal list of jabber addresses of contacts"
+msgstr "Očistit interní seznam jabber adres kontaktů"
+
+#: jappixmini.php:347
+msgid "Save Settings"
+msgstr "Uložit Nastavení"
+
+#: jappixmini.php:348
+msgid "Add contact"
+msgstr "Přidat kontakt"
