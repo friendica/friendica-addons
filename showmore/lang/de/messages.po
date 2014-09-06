@@ -1,0 +1,44 @@
+# ADDON showmore
+# Copyright (C)
+# This file is distributed under the same license as the Friendica showmore addon package.
+# 
+# 
+# Translators:
+# bavatar <tobias.diekershoff@gmx.net>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-08 19:22+0000\n"
+"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: showmore.php:38 showmore.php:42
+msgid "\"Show more\" Settings"
+msgstr "\"Mehr zeigen\" Einstellungen"
+
+#: showmore.php:47
+msgid "Enable Show More"
+msgstr "Aktiviere \"Mehr zeigen\""
+
+#: showmore.php:50
+msgid "Cutting posts after how much characters"
+msgstr "Begrenze Beiträge nach einer bestimmten Anzahl an Buchstaben"
+
+#: showmore.php:54
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: showmore.php:71
+msgid "Show More Settings saved."
+msgstr "\"Mehr zeigen\" Einstellungen gesichert."
+
+#: showmore.php:125
+msgid "show more"
+msgstr "mehr anzeigen"

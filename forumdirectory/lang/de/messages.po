@@ -1,0 +1,80 @@
+# ADDON forumdirectory
+# Copyright (C)
+# This file is distributed under the same license as the Friendica forumdirectory addon package.
+# 
+# 
+# Translators:
+# bavatar <tobias.diekershoff@gmx.net>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-11 06:00+0000\n"
+"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: forumdirectory.php:22
+msgid "Forum Directory"
+msgstr "Foren Verzeichnis"
+
+#: forumdirectory.php:53
+msgid "Public access denied."
+msgstr "Öffentlicher Zugriff verweigert."
+
+#: forumdirectory.php:71
+msgid "Global Directory"
+msgstr "Weltweites Verzeichnis"
+
+#: forumdirectory.php:79
+msgid "Find on this site"
+msgstr "Auf diesem Server suchen"
+
+#: forumdirectory.php:81
+msgid "Finding: "
+msgstr "Funde: "
+
+#: forumdirectory.php:82
+msgid "Site Directory"
+msgstr "Verzeichnis"
+
+#: forumdirectory.php:83
+msgid "Find"
+msgstr "Finde"
+
+#: forumdirectory.php:133
+msgid "Age: "
+msgstr "Alter: "
+
+#: forumdirectory.php:136
+msgid "Gender: "
+msgstr "Geschlecht:"
+
+#: forumdirectory.php:156
+msgid "Location:"
+msgstr "Ort:"
+
+#: forumdirectory.php:158
+msgid "Gender:"
+msgstr "Geschlecht:"
+
+#: forumdirectory.php:160
+msgid "Status:"
+msgstr "Status:"
+
+#: forumdirectory.php:162
+msgid "Homepage:"
+msgstr "Homepage:"
+
+#: forumdirectory.php:164
+msgid "About:"
+msgstr "Über:"
+
+#: forumdirectory.php:201
+msgid "No entries (some entries may be hidden)."
+msgstr "Keine Einträge (einige Einträge könnten versteckt sein)."

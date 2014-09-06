@@ -1,0 +1,32 @@
+# ADDON randplace
+# Copyright (C)
+# This file is distributed under the same license as the Friendica randplace addon package.
+# 
+# 
+# Translators:
+# bavatar <tobias.diekershoff@gmx.net>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-08 19:23+0000\n"
+"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: randplace.php:169
+msgid "Randplace Settings"
+msgstr "Randplace-Einstellungen"
+
+#: randplace.php:171
+msgid "Enable Randplace Plugin"
+msgstr "Randplace-Plugin aktivieren"
+
+#: randplace.php:177
+msgid "Save Settings"
+msgstr "Einstellungen speichern"

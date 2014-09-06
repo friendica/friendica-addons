@@ -1,0 +1,127 @@
+# ADDON twitter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica twitter addon package.
+# 
+# 
+# Translators:
+# bavatar <tobias.diekershoff@gmx.net>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-09-06 11:55+0000\n"
+"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: twitter.php:146
+msgid "Post to Twitter"
+msgstr "An Twitter senden"
+
+#: twitter.php:203
+msgid "Twitter settings updated."
+msgstr "Twitter Einstellungen aktualisiert."
+
+#: twitter.php:233 twitter.php:237
+msgid "Twitter Import/Export/Mirror"
+msgstr "Twitter Import/Export/Spiegeln"
+
+#: twitter.php:245
+msgid ""
+"No consumer key pair for Twitter found. Please contact your site "
+"administrator."
+msgstr "Kein Consumer Schlüsselpaar für Twitter gefunden. Bitte wende dich an den Administrator der Seite."
+
+#: twitter.php:264
+msgid ""
+"At this Friendica instance the Twitter plugin was enabled but you have not "
+"yet connected your account to your Twitter account. To do so click the "
+"button below to get a PIN from Twitter which you have to copy into the input"
+" box below and submit the form. Only your <strong>public</strong> posts will"
+" be posted to Twitter."
+msgstr "Auf diesem Friendica-Server wurde das Twitter-Plugin aktiviert, aber du hast deinen Account noch nicht mit deinem Twitter-Account verbunden. Klicke dazu auf die Schaltfläche unten. Du erhältst dann eine PIN von Twitter, die du dann in das Eingabefeld unten einfügst. Denk daran, den Senden-Knopf zu drücken! Nur <strong>öffentliche</strong> Beiträge werden bei Twitter veröffentlicht."
+
+#: twitter.php:265
+msgid "Log in with Twitter"
+msgstr "bei Twitter anmelden"
+
+#: twitter.php:267
+msgid "Copy the PIN from Twitter here"
+msgstr "Kopiere die Twitter-PIN hier her"
+
+#: twitter.php:272 twitter.php:311 twitter.php:569
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: twitter.php:281
+msgid "Currently connected to: "
+msgstr "Momentan verbunden mit: "
+
+#: twitter.php:282
+msgid ""
+"If enabled all your <strong>public</strong> postings can be posted to the "
+"associated Twitter account. You can choose to do so by default (here) or for"
+" every posting separately in the posting options when writing the entry."
+msgstr "Wenn aktiviert können all deine <strong>öffentlichen</strong> Einträge auf dem verbundenen Twitter Konto veröffentlicht werden. Du kannst dies (hier) als Standardverhalten einstellen oder beim Schreiben eines Beitrags in den Beitragsoptionen festlegen."
+
+#: twitter.php:284
+msgid ""
+"<strong>Note</strong>: Due your privacy settings (<em>Hide your profile "
+"details from unknown viewers?</em>) the link potentially included in public "
+"postings relayed to Twitter will lead the visitor to a blank page informing "
+"the visitor that the access to your profile has been restricted."
+msgstr "<strong>Hinweis</strong>: Aufgrund deiner Privatsphären-Einstellungen (<em>Profil-Details vor unbekannten Betrachtern verbergen?</em>) wird der Link, der eventuell an an deinen Twitter Account angehängt wird, um auf den original Artikel zu verweisen, den Betrachter auf eine leere Seite führen, die ihn darüber informiert, dass der Zugriff eingeschränkt wurde."
+
+#: twitter.php:287
+msgid "Allow posting to Twitter"
+msgstr "Veröffentlichung bei Twitter erlauben"
+
+#: twitter.php:290
+msgid "Send public postings to Twitter by default"
+msgstr "Veröffentliche öffentliche Beiträge standardmäßig bei Twitter"
+
+#: twitter.php:294
+msgid "Mirror all posts from twitter that are no replies"
+msgstr "Spiegle alle Beiträge von Twitter die keine Antworten oder wiederholten Nachrichten sind"
+
+#: twitter.php:299
+msgid "Import the remote timeline"
+msgstr "Importiere die entfernte Zeitleiste"
+
+#: twitter.php:303
+msgid "Automatically create contacts"
+msgstr "Automatisch Kontakte anlegen"
+
+#: twitter.php:308
+msgid "Clear OAuth configuration"
+msgstr "OAuth Konfiguration löschen"
+
+#: twitter.php:539
+msgid "Twitter post failed. Queued for retry."
+msgstr "Twitter post failed. Queued for retry."
+
+#: twitter.php:563
+msgid "Settings updated."
+msgstr "Einstellungen aktualisiert."
+
+#: twitter.php:571
+msgid "Consumer key"
+msgstr "Consumer Key"
+
+#: twitter.php:572
+msgid "Consumer secret"
+msgstr "Consumer Secret"
+
+#: twitter.php:573
+msgid "Name of the Twitter Application"
+msgstr "Name der Twitter Anwendung"
+
+#: twitter.php:573
+msgid ""
+"set this to avoid mirroring postings from ~friendica back to ~friendica"
+msgstr "Setze dies um eine Spiegelung von ~friendica zu ~friendica zu vermeiden"
