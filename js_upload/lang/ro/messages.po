@@ -1,0 +1,55 @@
+# ADDON js_upload
+# Copyright (C)
+# This file is distributed under the same license as the Friendica js_upload addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-08 11:56+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: js_upload.php:43
+msgid "Upload a file"
+msgstr "Încărcați un fișier"
+
+#: js_upload.php:44
+msgid "Drop files here to upload"
+msgstr "Fixați fișierele aici pentru încărcare"
+
+#: js_upload.php:45
+msgid "Cancel"
+msgstr "Anulare"
+
+#: js_upload.php:46
+msgid "Failed"
+msgstr "Eșuat"
+
+#: js_upload.php:303
+msgid "No files were uploaded."
+msgstr "Nici un fișier nu a fost încărcat."
+
+#: js_upload.php:309
+msgid "Uploaded file is empty"
+msgstr "Fișierul încărcat este gol"
+
+#: js_upload.php:321
+msgid "Image exceeds size limit of "
+msgstr "Dimensiunea imaginii depășește limita de"
+
+#: js_upload.php:332
+msgid "File has an invalid extension, it should be one of "
+msgstr "Fișierul are o extensie invalidă, acesta trebuie să fie una de tipul"
+
+#: js_upload.php:343
+msgid "Upload was cancelled, or server error encountered"
+msgstr "Încărcarea a fost anulată, sau a apărut o eroare de server"

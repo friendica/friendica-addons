@@ -1,0 +1,170 @@
+# ADDON statusnet
+# Copyright (C)
+# This file is distributed under the same license as the Friendica statusnet addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-07-08 12:08+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: statusnet.php:149
+msgid "Post to StatusNet"
+msgstr "Postați pe StatusNet"
+
+#: statusnet.php:194
+msgid ""
+"Please contact your site administrator.<br />The provided API URL is not "
+"valid."
+msgstr "Vă rugăm să vă contactați administratorul de site. <br />URL-ul API furnizat, nu este valid."
+
+#: statusnet.php:223
+msgid "We could not contact the StatusNet API with the Path you entered."
+msgstr "Nu am putut conecta API pentru StatusNet la Calea pe care ați introdus-o."
+
+#: statusnet.php:257
+msgid "StatusNet settings updated."
+msgstr "Configurările StatusNet au fost actualizate."
+
+#: statusnet.php:289 statusnet.php:293
+msgid "StatusNet Import/Export/Mirror"
+msgstr "Import/Export/Clonare StatusNet"
+
+#: statusnet.php:308
+msgid "Globally Available StatusNet OAuthKeys"
+msgstr "Cheile OAuthKeys StatusNet Disponibile Global"
+
+#: statusnet.php:309
+msgid ""
+"There are preconfigured OAuth key pairs for some StatusNet servers "
+"available. If you are useing one of them, please use these credentials. If "
+"not feel free to connect to any other StatusNet instance (see below)."
+msgstr "Acolo sunt preconfigurate perechile de chei OAuthKeys pentru anumite servere StatusNet disponibile. Dacă folosiți una dintre ele, vă rugăm să utilizați aceste acreditive. Dacă nu, vă puteți conecta la orice altă instanță StatusNet (vedeți mai jos)."
+
+#: statusnet.php:315 statusnet.php:332 statusnet.php:359 statusnet.php:366
+#: statusnet.php:404 statusnet.php:673
+msgid "Save Settings"
+msgstr "Salvare Configurări"
+
+#: statusnet.php:317
+msgid "Provide your own OAuth Credentials"
+msgstr "Furnizați propriile dvs. Acreditive OAuth"
+
+#: statusnet.php:318
+msgid ""
+"No consumer key pair for StatusNet found. Register your Friendica Account as"
+" an desktop client on your StatusNet account, copy the consumer key pair "
+"here and enter the API base root.<br />Before you register your own OAuth "
+"key pair ask the administrator if there is already a key pair for this "
+"Friendica installation at your favorited StatusNet installation."
+msgstr "Nici o pereche de chei de utilizator pentru StatusNet, nu fost găsită. Înregistrați-vă Contul Friendica, ca și client  desktop, pe contul dvs. StatusNet, copiați aici pereche de chei de utilizator, şi introduceți rădăcina-bazei API. <br />Înainte să vă înregistrați propria pereche de chei OAuth, întrebați administratorul dacă nu există deja o pereche de chei, pentru această instalare Friendica, conectată la instalarea dvs. favorită StatusNet."
+
+#: statusnet.php:320
+msgid "OAuth Consumer Key"
+msgstr "Cheia Utilizatorului OAuth"
+
+#: statusnet.php:323
+msgid "OAuth Consumer Secret"
+msgstr "Cheia Secretă a Utilizatorului OAuth"
+
+#: statusnet.php:326 statusnet.php:653 statusnet.php:665
+msgid "Base API Path (remember the trailing /)"
+msgstr "Cale-Bază API (nu uitați de slash /)"
+
+#: statusnet.php:329
+msgid "StatusNet application name"
+msgstr "Numele Aplicației StatusNet"
+
+#: statusnet.php:351
+msgid ""
+"To connect to your StatusNet account click the button below to get a "
+"security code from StatusNet which you have to copy into the input box below"
+" and submit the form. Only your <strong>public</strong> posts will be posted"
+" to StatusNet."
+msgstr "Pentru a vă conecta la contul dvs. StatusNet apăsați pe butonul de mai jos pentru a obține un cod de securitate de la StatusNet, pe care va trebui să îl copiați în caseta de introducere mai jos şi trimiteți formularul. Numai postările dvs.<strong>publice</strong> vor fi postate pe StatusNet."
+
+#: statusnet.php:352
+msgid "Log in with StatusNet"
+msgstr "Autentificare cu StatusNet"
+
+#: statusnet.php:354
+msgid "Copy the security code from StatusNet here"
+msgstr "Copiați aici codul de securitate din StatusNet"
+
+#: statusnet.php:360
+msgid "Cancel Connection Process"
+msgstr "Anulare Proces de Conectare"
+
+#: statusnet.php:362
+msgid "Current StatusNet API is"
+msgstr "Cheia API StatusNet Curentă este"
+
+#: statusnet.php:363
+msgid "Cancel StatusNet Connection"
+msgstr "Anulare Conectare StatusNet"
+
+#: statusnet.php:374
+msgid "Currently connected to: "
+msgstr "Conectat curent la:"
+
+#: statusnet.php:375
+msgid ""
+"If enabled all your <strong>public</strong> postings can be posted to the "
+"associated StatusNet account. You can choose to do so by default (here) or "
+"for every posting separately in the posting options when writing the entry."
+msgstr "Dacă activați, toate postările dvs. <strong>publice</strong> pot fi publicate în contul StatusNet asociat. Puteți face acest lucru, implicit (aici), sau pentru fiecare postare separată, prin opțiunile de postare atunci când compuneți un mesaj."
+
+#: statusnet.php:377
+msgid ""
+"<strong>Note</strong>: Due your privacy settings (<em>Hide your profile "
+"details from unknown viewers?</em>) the link potentially included in public "
+"postings relayed to StatusNet will lead the visitor to a blank page "
+"informing the visitor that the access to your profile has been restricted."
+msgstr "<strong>Notă</strong>: Datorită configurărilor de confidenţialitate (<em>Se ascund detaliile profilului dvs. de vizitatorii necunoscuți?</em>), legătura potențial inclusă în postările publice transmise către StatusNet, va conduce vizitatorul la o pagină goală, informându-l pe vizitator că accesul la profilul dvs. a fost restricţionat."
+
+#: statusnet.php:380
+msgid "Allow posting to StatusNet"
+msgstr "Permite postarea pe StatusNet"
+
+#: statusnet.php:383
+msgid "Send public postings to StatusNet by default"
+msgstr "Trimite postările publice pe StatusNet, ca și implicit"
+
+#: statusnet.php:387
+msgid ""
+"Mirror all posts from statusnet that are no replies or repeated messages"
+msgstr "Clonează toate postările, din StatusNet, care nu sunt răspunsuri sau mesaje repetate"
+
+#: statusnet.php:392
+msgid "Import the remote timeline"
+msgstr "Importare cronologie la distanță"
+
+#: statusnet.php:401
+msgid "Clear OAuth configuration"
+msgstr "Ștergeți configurările OAuth "
+
+#: statusnet.php:664
+msgid "Site name"
+msgstr "Numele saitului"
+
+#: statusnet.php:666
+msgid "Consumer Secret"
+msgstr "Cheia Secretă a Utilizatorului"
+
+#: statusnet.php:667
+msgid "Consumer Key"
+msgstr "Cheia Utilizatorului"
+
+#: statusnet.php:668
+msgid "Application name"
+msgstr "Numele aplicației"

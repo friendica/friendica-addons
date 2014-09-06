@@ -1,0 +1,35 @@
+# ADDON geonames
+# Copyright (C)
+# This file is distributed under the same license as the Friendica geonames addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-08 11:51+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: geonames.php:143
+msgid "Geonames settings updated."
+msgstr "Configurări Geonume actualizate."
+
+#: geonames.php:179
+msgid "Geonames Settings"
+msgstr "Configurări Geonume"
+
+#: geonames.php:181
+msgid "Enable Geonames Plugin"
+msgstr "Permite Modul Geonume"
+
+#: geonames.php:187
+msgid "Save Settings"
+msgstr "Salvare Configurări"

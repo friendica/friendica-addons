@@ -1,0 +1,55 @@
+# ADDON altpager
+# Copyright (C)
+# This file is distributed under the same license as the Friendica altpager addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2014-07-08 11:39+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: altpager.php:46
+msgid "Altpager settings updated."
+msgstr "Configurările Altpager au fost actualizate."
+
+#: altpager.php:83
+msgid "Alternate Pagination Setting"
+msgstr "Configurare Paginație Alternantă"
+
+#: altpager.php:85
+msgid "Use links to \"newer\" and \"older\" pages in place of page numbers?"
+msgstr "Se utilizează legături pentru paginile \"mai noi\" şi \"mai vechi\", în locul de numerelor de pagină?"
+
+#: altpager.php:91 altpager.php:98
+msgid "Submit"
+msgstr "Trimite"
+
+#: altpager.php:99
+msgid "Global"
+msgstr "Global"
+
+#: altpager.php:99
+msgid "Force global use of the alternate pager"
+msgstr "Se forțează utilizarea globală a paginatorului alternant"
+
+#: altpager.php:100
+msgid "Individual"
+msgstr "Individual"
+
+#: altpager.php:100
+msgid "Each user chooses whether to use the alternate pager"
+msgstr "Fiecare utilizator alege dacă va utiliza paginatorul alternant"
+
+#: altpager.php:107
+msgid "Settings updated."
+msgstr "Configurări actualizate."

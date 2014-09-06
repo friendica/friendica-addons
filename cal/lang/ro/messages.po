@@ -1,0 +1,55 @@
+# ADDON cal
+# Copyright (C)
+# This file is distributed under the same license as the Friendica cal addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-06-19 13:20+0200\n"
+"PO-Revision-Date: 2014-07-08 11:46+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: cal.php:33
+msgid "Event Export"
+msgstr "Exportare Eveniment"
+
+#: cal.php:33
+msgid "You can download public events from: "
+msgstr "Puteți descărca evenimente publice de la:"
+
+#: cal.php:53
+msgid "The user does not export the calendar."
+msgstr "Utilizatorul nu își exportă calendarul."
+
+#: cal.php:83
+msgid "This calendar format is not supported"
+msgstr "Acest format de calendar nu este acceptat"
+
+#: cal.php:174
+msgid "Export Events"
+msgstr "Exportați Evenimente"
+
+#: cal.php:175
+msgid "If this is enabled, your public events will be available at"
+msgstr "Dacă este activat, evenimente dvs publice vor fi disponibile pe"
+
+#: cal.php:176
+msgid "Currently supported formats are ical and csv."
+msgstr "Formate acceptate în prezent sunt ical şi csv."
+
+#: cal.php:178
+msgid "Enable calendar export"
+msgstr "Activați exportarea calendarului"
+
+#: cal.php:181
+msgid "Submit"
+msgstr "Trimite"

@@ -1,0 +1,35 @@
+# ADDON editplain
+# Copyright (C)
+# This file is distributed under the same license as the Friendica editplain addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-08 11:49+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: editplain.php:46
+msgid "Editplain settings updated."
+msgstr "Configurările Editplain au fost actualizate."
+
+#: editplain.php:76
+msgid "Editplain Settings"
+msgstr "Configurări Editplain"
+
+#: editplain.php:78
+msgid "Disable richtext status editor"
+msgstr "Dezactivare editorul status de text îmbogățit"
+
+#: editplain.php:84
+msgid "Save Settings"
+msgstr "Salvare Configurări"

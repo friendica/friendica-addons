@@ -1,0 +1,26 @@
+# ADDON rendertime
+# Copyright (C)
+# This file is distributed under the same license as the Friendica rendertime addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-08 12:06+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: rendertime.php:30
+#, php-format
+msgid ""
+"Performance: Database: %s, Network: %s, Rendering: %s, Parser: %s, I/O: %s, "
+"Other: %s, Total: %s"
+msgstr "Performantă: Baza de Date: %s, Rețea: %s, Procesare: %s, Analizator: %s, I/O: %s Altele: %s, Total: %s"

@@ -1,0 +1,52 @@
+# ADDON mathjax
+# Copyright (C)
+# This file is distributed under the same license as the Friendica mathjax addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-07-08 11:58+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: mathjax.php:36 mathjax.php:40
+msgid "Settings"
+msgstr "Configurări"
+
+#: mathjax.php:42
+msgid ""
+"The MathJax addon renders mathematical formulae written using the LaTeX "
+"syntax surrounded by the usual $$ or an eqnarray block in the postings of "
+"your wall,network tab and private mail."
+msgstr "Suplimentul MathJax procesează formule matematice scrise folosind sintaxa LaTeX încapsulată de obicei prin semnul $$ sau într-un bloc eqnarray, în postările de perete, fila de rețea și şi poșta privată."
+
+#: mathjax.php:43
+msgid "Use the MathJax renderer"
+msgstr "Utilizare funcția renderer MathJax"
+
+#: mathjax.php:47 mathjax.php:80
+msgid "Save Settings"
+msgstr "Salvare Configurări"
+
+#: mathjax.php:71
+msgid "Settings updated."
+msgstr "Configurări actualizate."
+
+#: mathjax.php:81
+msgid "MathJax Base URL"
+msgstr "Adresa URL de Bază MathJax"
+
+#: mathjax.php:81
+msgid ""
+"The URL for the javascript file that should be included to use MathJax. Can "
+"be either the MathJax CDN or another installation of MathJax."
+msgstr "Adresa URL pentru fișierul de javascript care ar trebui să fie inclus pentru a putea utiliza MathJax. Pot fi, fie CDN MathJax sau o altă instalare de MathJax."

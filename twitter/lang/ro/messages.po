@@ -1,0 +1,126 @@
+# ADDON twitter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica twitter addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-07-08 12:10+0000\n"
+"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro_RO\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: twitter.php:146
+msgid "Post to Twitter"
+msgstr "Postați pe Twitter"
+
+#: twitter.php:203
+msgid "Twitter settings updated."
+msgstr "Configurările Twitter au fost actualizate."
+
+#: twitter.php:233 twitter.php:237
+msgid "Twitter Import/Export/Mirror"
+msgstr "Import/Export/Clonare Twitter"
+
+#: twitter.php:245
+msgid ""
+"No consumer key pair for Twitter found. Please contact your site "
+"administrator."
+msgstr "Nici o pereche de chei de utilizator pentru Twitter nu a fost găsită. Vă rugăm să vă contactați administratorul de site."
+
+#: twitter.php:264
+msgid ""
+"At this Friendica instance the Twitter plugin was enabled but you have not "
+"yet connected your account to your Twitter account. To do so click the "
+"button below to get a PIN from Twitter which you have to copy into the input"
+" box below and submit the form. Only your <strong>public</strong> posts will"
+" be posted to Twitter."
+msgstr "Pe această sesiune Friendica, modulul Twitter era activat, dar încă nu v-ați conectat contul la profilul dvs. Twitter. Pentru aceasta apăsați pe butonul de mai jos pentru a obține un PIN de pe Twitter pe care va trebui să îl copiați în caseta de introducere mai jos şi trimiteți formularul. Numai postările dumneavoastră <strong>publice</strong> vor fi postate pe Twitter."
+
+#: twitter.php:265
+msgid "Log in with Twitter"
+msgstr "Autentificare prin Twitter"
+
+#: twitter.php:267
+msgid "Copy the PIN from Twitter here"
+msgstr "Copiați aici PIN-ul de la Twitter"
+
+#: twitter.php:272 twitter.php:311 twitter.php:569
+msgid "Save Settings"
+msgstr "Salvare Configurări"
+
+#: twitter.php:281
+msgid "Currently connected to: "
+msgstr "Conectat curent la:"
+
+#: twitter.php:282
+msgid ""
+"If enabled all your <strong>public</strong> postings can be posted to the "
+"associated Twitter account. You can choose to do so by default (here) or for"
+" every posting separately in the posting options when writing the entry."
+msgstr "Dacă activați, toate postările dvs. <strong>publice</strong> pot fi publicate în contul Twitter asociat. Puteți face acest lucru, implicit (aici), sau pentru fiecare postare separată, prin opțiunile de postare atunci când compuneți un mesaj."
+
+#: twitter.php:284
+msgid ""
+"<strong>Note</strong>: Due your privacy settings (<em>Hide your profile "
+"details from unknown viewers?</em>) the link potentially included in public "
+"postings relayed to Twitter will lead the visitor to a blank page informing "
+"the visitor that the access to your profile has been restricted."
+msgstr "<strong>Notă</strong>: Datorită configurărilor de confidenţialitate (<em>Se ascund detaliile profilului dvs. de vizitatorii necunoscuți?</em>), legătura potențial inclusă în postările publice transmise către Twitter, va conduce vizitatorul la o pagină goală, informându-l pe vizitator că accesul la profilul dvs. a fost restricţionat."
+
+#: twitter.php:287
+msgid "Allow posting to Twitter"
+msgstr "Permite postarea pe Twitter"
+
+#: twitter.php:290
+msgid "Send public postings to Twitter by default"
+msgstr "Trimite postările publice pe Twitter, ca și implicit"
+
+#: twitter.php:294
+msgid "Mirror all posts from twitter that are no replies"
+msgstr "Clonează toate postările, din Twitter, care nu sunt răspunsuri"
+
+#: twitter.php:299
+msgid "Import the remote timeline"
+msgstr "Importare cronologie la distanță"
+
+#: twitter.php:303
+msgid "Automatically create contacts"
+msgstr "Creați Automat contactele"
+
+#: twitter.php:308
+msgid "Clear OAuth configuration"
+msgstr "Ștergeți configurările OAuth"
+
+#: twitter.php:539
+msgid "Twitter post failed. Queued for retry."
+msgstr "Postarea pe Twitter a eșuat. S-a pus în așteptare pentru reîncercare."
+
+#: twitter.php:563
+msgid "Settings updated."
+msgstr "Configurări actualizate."
+
+#: twitter.php:571
+msgid "Consumer key"
+msgstr "Cheia Utilizatorului"
+
+#: twitter.php:572
+msgid "Consumer secret"
+msgstr "Cheia Secretă a Utilizatorului"
+
+#: twitter.php:573
+msgid "Name of the Twitter Application"
+msgstr "Numele Aplicației Twitter"
+
+#: twitter.php:573
+msgid ""
+"set this to avoid mirroring postings from ~friendica back to ~friendica"
+msgstr "stabiliți aceasta pentru a evita clonarea postărilor din ~friendica înapoi la ~friendica"
