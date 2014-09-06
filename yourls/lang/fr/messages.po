@@ -1,0 +1,48 @@
+# ADDON yourls
+# Copyright (C)
+# This file is distributed under the same license as the Friendica yourls addon package.
+# 
+# 
+# Translators:
+# Tubuntu <tubuntu@testimonium.be>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-06-25 14:21+0000\n"
+"Last-Translator: Tubuntu <tubuntu@testimonium.be>\n"
+"Language-Team: French (http://www.transifex.com/projects/p/friendica/language/fr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: yourls.php:55 yourls.php:59
+msgid "YourLS"
+msgstr "YourLS"
+
+#: yourls.php:63
+msgid "URL: http://"
+msgstr "URL: http://"
+
+#: yourls.php:68
+msgid "Username:"
+msgstr "Nom d'utilisateur :"
+
+#: yourls.php:73
+msgid "Password:"
+msgstr "Mot de passe :"
+
+#: yourls.php:78
+msgid "Use SSL "
+msgstr "Utiliser SSL"
+
+#: yourls.php:82
+msgid "Save Settings"
+msgstr "Sauvegarder les paramètres"
+
+#: yourls.php:98
+msgid "yourls Settings saved."
+msgstr "paramètres YourLS sauvegardés."
