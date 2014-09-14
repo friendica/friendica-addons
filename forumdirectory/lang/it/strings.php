@@ -1,6 +1,11 @@
 <?php
 
-$a->strings["Forum Directory"] = "";
+if(! function_exists("string_plural_select_it")) {
+function string_plural_select_it($n){
+	return ($n != 1);;
+}}
+;
+$a->strings["Forum Directory"] = "Elenco Forum";
 $a->strings["Public access denied."] = "Accesso negato.";
 $a->strings["Global Directory"] = "Elenco globale";
 $a->strings["Find on this site"] = "Cerca nel sito";

@@ -1,9 +1,14 @@
 <?php
 
-$a->strings["YourLS Settings"] = "Impostazioni YourLS";
-$a->strings["URL: http://"] = "URL: http://";
-$a->strings["Username:"] = "Nome utente:";
-$a->strings["Password:"] = "Password:";
-$a->strings["Use SSL "] = "Usa SSL";
-$a->strings["Submit"] = "Invia";
-$a->strings["yourls Settings saved."] = "Impostazioni yourls salvate.";
+if(! function_exists("string_plural_select_it")) {
+function string_plural_select_it($n){
+	return ($n != 1);;
+}}
+;
+$a->strings["YourLS"] = "";
+$a->strings["URL: http://"] = "";
+$a->strings["Username:"] = "";
+$a->strings["Password:"] = "";
+$a->strings["Use SSL "] = "";
+$a->strings["Save Settings"] = "";
+$a->strings["yourls Settings saved."] = "";

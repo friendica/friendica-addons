@@ -1,0 +1,58 @@
+# ADDON webrtc
+# Copyright (C)
+# This file is distributed under the same license as the Friendica webrtc addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-06-23 13:05+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: webrtc.php:20
+msgid "WebRTC Videochat"
+msgstr ""
+
+#: webrtc.php:26
+msgid "Save Settings"
+msgstr ""
+
+#: webrtc.php:27
+msgid "WebRTC Base URL"
+msgstr ""
+
+#: webrtc.php:27
+msgid ""
+"Page your users will create a WebRTC chat room on. For example you could use"
+" https://live.mayfirst.org ."
+msgstr ""
+
+#: webrtc.php:33
+msgid "Settings updated."
+msgstr ""
+
+#: webrtc.php:47
+msgid "Video Chat"
+msgstr ""
+
+#: webrtc.php:48
+msgid ""
+"WebRTC is a video and audio conferencing tool that works with Firefox "
+"(version 21 and above) and Chrome/Chromium (version 25 and above). Just "
+"create a new chat room and send the link to someone you want to chat with."
+msgstr ""
+
+#: webrtc.php:50
+msgid ""
+"Please contact your friendica admin and send a reminder to configure the "
+"WebRTC addon."
+msgstr ""

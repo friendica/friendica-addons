@@ -1,0 +1,52 @@
+# ADDON blackout
+# Copyright (C)
+# This file is distributed under the same license as the Friendica blackout addon package.
+# 
+# 
+# Translators:
+# fabrixxm <fabrix.xm@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-09-10 10:22+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: blackout.php:99
+msgid "Save Settings"
+msgstr "Salva Impostazioni"
+
+#: blackout.php:100
+msgid "Redirect URL"
+msgstr "URL di reindirizzamento"
+
+#: blackout.php:100
+msgid "all your visitors from the web will be redirected to this URL"
+msgstr "tutti i visitatori dal web verranno reindirizzati a questo URL"
+
+#: blackout.php:101
+msgid "Begin of the Blackout"
+msgstr "Inzio del blackout"
+
+#: blackout.php:101
+msgid ""
+"format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, "
+"<em>hh</em> hour and <em>mm</em> minute"
+msgstr "il formato è <em>YYYY</em> anno, <em>MM</em> mese, <em>DD</em> giorno, <em>hh</em> ora e <em>mm</em> minuto"
+
+#: blackout.php:102
+msgid "End of the Blackout"
+msgstr "Fine del blackout"
+
+#: blackout.php:108
+msgid ""
+"The end-date is prior to the start-date of the blackout, you should fix "
+"this."
+msgstr "La data di fine è precedente alla data di inizio. Dovresti sistemarla."

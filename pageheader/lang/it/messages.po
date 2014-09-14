@@ -1,0 +1,31 @@
+# ADDON pageheader
+# Copyright (C)
+# This file is distributed under the same license as the Friendica pageheader addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-06-23 11:17+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: pageheader.php:50
+msgid "\"pageheader\" Settings"
+msgstr ""
+
+#: pageheader.php:55
+msgid "Save Settings"
+msgstr ""
+
+#: pageheader.php:68
+msgid "pageheader Settings saved."
+msgstr ""

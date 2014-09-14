@@ -1,0 +1,166 @@
+# ADDON morepokes
+# Copyright (C)
+# This file is distributed under the same license as the Friendica morepokes addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-06-23 10:18+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: morepokes.php:19
+msgid "bitchslap"
+msgstr ""
+
+#: morepokes.php:19
+msgid "bitchslapped"
+msgstr ""
+
+#: morepokes.php:20
+msgid "shag"
+msgstr ""
+
+#: morepokes.php:20
+msgid "shagged"
+msgstr ""
+
+#: morepokes.php:21
+msgid "do something obscenely biological to"
+msgstr ""
+
+#: morepokes.php:21
+msgid "did something obscenely biological to"
+msgstr ""
+
+#: morepokes.php:22
+msgid "point out the poke feature to"
+msgstr ""
+
+#: morepokes.php:22
+msgid "pointed out the poke feature to"
+msgstr ""
+
+#: morepokes.php:23
+msgid "declare undying love for"
+msgstr ""
+
+#: morepokes.php:23
+msgid "declared undying love for"
+msgstr ""
+
+#: morepokes.php:24
+msgid "patent"
+msgstr ""
+
+#: morepokes.php:24
+msgid "patented"
+msgstr ""
+
+#: morepokes.php:25
+msgid "stroke beard"
+msgstr ""
+
+#: morepokes.php:25
+msgid "stroked their beard at"
+msgstr ""
+
+#: morepokes.php:26
+msgid ""
+"bemoan the declining standards of modern secondary and tertiary education to"
+msgstr ""
+
+#: morepokes.php:26
+msgid ""
+"bemoans the declining standards of modern secondary and tertiary education "
+"to"
+msgstr ""
+
+#: morepokes.php:27
+msgid "hug"
+msgstr ""
+
+#: morepokes.php:27
+msgid "hugged"
+msgstr ""
+
+#: morepokes.php:28
+msgid "kiss"
+msgstr ""
+
+#: morepokes.php:28
+msgid "kissed"
+msgstr ""
+
+#: morepokes.php:29
+msgid "raise eyebrows at"
+msgstr ""
+
+#: morepokes.php:29
+msgid "raised their eyebrows at"
+msgstr ""
+
+#: morepokes.php:30
+msgid "insult"
+msgstr ""
+
+#: morepokes.php:30
+msgid "insulted"
+msgstr ""
+
+#: morepokes.php:31
+msgid "praise"
+msgstr ""
+
+#: morepokes.php:31
+msgid "praised"
+msgstr ""
+
+#: morepokes.php:32
+msgid "be dubious of"
+msgstr ""
+
+#: morepokes.php:32
+msgid "was dubious of"
+msgstr ""
+
+#: morepokes.php:33
+msgid "eat"
+msgstr ""
+
+#: morepokes.php:33
+msgid "ate"
+msgstr ""
+
+#: morepokes.php:34
+msgid "giggle and fawn at"
+msgstr ""
+
+#: morepokes.php:34
+msgid "giggled and fawned at"
+msgstr ""
+
+#: morepokes.php:35
+msgid "doubt"
+msgstr ""
+
+#: morepokes.php:35
+msgid "doubted"
+msgstr ""
+
+#: morepokes.php:36
+msgid "glare"
+msgstr ""
+
+#: morepokes.php:36
+msgid "glared at"
+msgstr ""
