@@ -1,5 +1,10 @@
 <?php
 
+if(! function_exists("string_plural_select_it")) {
+function string_plural_select_it($n){
+	return ($n != 1);;
+}}
+;
 $a->strings["bitchslap"] = "";
 $a->strings["bitchslapped"] = "";
 $a->strings["shag"] = "";
@@ -16,20 +21,20 @@ $a->strings["stroke beard"] = "";
 $a->strings["stroked their beard at"] = "";
 $a->strings["bemoan the declining standards of modern secondary and tertiary education to"] = "";
 $a->strings["bemoans the declining standards of modern secondary and tertiary education to"] = "";
-$a->strings["hug"] = "abbraccia";
-$a->strings["hugged"] = "ha abbracciato";
-$a->strings["kiss"] = "bacia";
-$a->strings["kissed"] = "ha baciato";
-$a->strings["raise eyebrows at"] = "solleva un sopracciglio a";
-$a->strings["raised their eyebrows at"] = "ha sollevato un sopracciglio a";
-$a->strings["insult"] = "insulta";
-$a->strings["insulted"] = "ha insultato";
-$a->strings["praise"] = "prega";
-$a->strings["praised"] = "ha pregato";
-$a->strings["be dubious of"] = "è dubbioso di";
+$a->strings["hug"] = "";
+$a->strings["hugged"] = "";
+$a->strings["kiss"] = "";
+$a->strings["kissed"] = "";
+$a->strings["raise eyebrows at"] = "";
+$a->strings["raised their eyebrows at"] = "";
+$a->strings["insult"] = "";
+$a->strings["insulted"] = "";
+$a->strings["praise"] = "";
+$a->strings["praised"] = "";
+$a->strings["be dubious of"] = "";
 $a->strings["was dubious of"] = "";
-$a->strings["eat"] = "mangia";
-$a->strings["ate"] = "ha mangiato";
+$a->strings["eat"] = "";
+$a->strings["ate"] = "";
 $a->strings["giggle and fawn at"] = "";
 $a->strings["giggled and fawned at"] = "";
 $a->strings["doubt"] = "";

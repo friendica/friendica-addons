@@ -1,5 +1,10 @@
 <?php
 
-$a->strings["\"pageheader\" Settings"] = "Impostazioni \"pageheader\"";
-$a->strings["Submit"] = "Invia";
-$a->strings["pageheader Settings saved."] = "Impostazioni salvate.";
+if(! function_exists("string_plural_select_it")) {
+function string_plural_select_it($n){
+	return ($n != 1);;
+}}
+;
+$a->strings["\"pageheader\" Settings"] = "";
+$a->strings["Save Settings"] = "";
+$a->strings["pageheader Settings saved."] = "";

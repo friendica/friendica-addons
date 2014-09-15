@@ -1,11 +1,16 @@
 <?php
 
-$a->strings["Post to blogger"] = "Posta su blogger";
-$a->strings["Blogger Post Settings"] = "Impostazioni post per blogger";
-$a->strings["Enable Blogger Post Plugin"] = "Abilita il plugin Blogger";
-$a->strings["Blogger username"] = "Blogger username";
-$a->strings["Blogger password"] = "Blogger password";
-$a->strings["Blogger API URL"] = "Blogger API URL";
+if(! function_exists("string_plural_select_it")) {
+function string_plural_select_it($n){
+	return ($n != 1);;
+}}
+;
+$a->strings["Post to blogger"] = "Invia a Blogger";
+$a->strings["Blogger Export"] = "Esporta Blogger";
+$a->strings["Enable Blogger Post Plugin"] = "Abilita il plugin di invio a Blogger";
+$a->strings["Blogger username"] = "Nome utente Blogger";
+$a->strings["Blogger password"] = "Password Blogger";
+$a->strings["Blogger API URL"] = "Indirizzo API Blogger";
 $a->strings["Post to Blogger by default"] = "Invia sempre a Blogger";
-$a->strings["Submit"] = "Invia";
+$a->strings["Save Settings"] = "Salva Impostazioni";
 $a->strings["Post from Friendica"] = "Messaggio da Friendica";

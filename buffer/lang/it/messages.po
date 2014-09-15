@@ -1,0 +1,76 @@
+# ADDON buffer
+# Copyright (C)
+# This file is distributed under the same license as the Friendica buffer addon package.
+# 
+# 
+# Translators:
+# fabrixxm <fabrix.xm@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-09-10 10:27+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: buffer.php:31
+msgid "Permission denied."
+msgstr "Permesso negato."
+
+#: buffer.php:57 buffer.php:185
+msgid "Save Settings"
+msgstr "Salva Impostazioni"
+
+#: buffer.php:59
+msgid "Client ID"
+msgstr "Client ID"
+
+#: buffer.php:60
+msgid "Client Secret"
+msgstr "Client Secret"
+
+#: buffer.php:67
+msgid "Error when registering buffer connection:"
+msgstr "Errore registrando la connessione a buffer:"
+
+#: buffer.php:86
+msgid "You are now authenticated to buffer. "
+msgstr "Sei autenticato su buffer."
+
+#: buffer.php:87
+msgid "return to the connector page"
+msgstr "ritorna alla pagina del connettore"
+
+#: buffer.php:103
+msgid "Post to Buffer"
+msgstr "Invia a Buffer"
+
+#: buffer.php:128 buffer.php:132
+msgid "Buffer Export"
+msgstr "Esporta Buffer"
+
+#: buffer.php:142
+msgid "Authenticate your Buffer connection"
+msgstr "Autentica la tua connessione a Buffer"
+
+#: buffer.php:146
+msgid "Enable Buffer Post Plugin"
+msgstr "Abilita il plugin di invio a Buffer"
+
+#: buffer.php:151
+msgid "Post to Buffer by default"
+msgstr "Invia sempre a Buffer"
+
+#: buffer.php:156
+msgid "Check to delete this preset"
+msgstr "Seleziona per elimiare queto preset"
+
+#: buffer.php:165
+msgid "Posts are going to all accounts that are enabled by default:"
+msgstr "I messaggi andranno a tutti gli account che sono abilitati:"

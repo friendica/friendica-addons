@@ -1,0 +1,74 @@
+# ADDON gravatar
+# Copyright (C)
+# This file is distributed under the same license as the Friendica gravatar addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-06-23 08:33+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: gravatar.php:71
+msgid "generic profile image"
+msgstr ""
+
+#: gravatar.php:72
+msgid "random geometric pattern"
+msgstr ""
+
+#: gravatar.php:73
+msgid "monster face"
+msgstr ""
+
+#: gravatar.php:74
+msgid "computer generated face"
+msgstr ""
+
+#: gravatar.php:75
+msgid "retro arcade style face"
+msgstr ""
+
+#: gravatar.php:89
+msgid "Information"
+msgstr ""
+
+#: gravatar.php:89
+msgid ""
+"Libravatar addon is installed, too. Please disable Libravatar addon or this "
+"Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if "
+"nothing was found at Libravatar."
+msgstr ""
+
+#: gravatar.php:95
+msgid "Save Settings"
+msgstr ""
+
+#: gravatar.php:96
+msgid "Default avatar image"
+msgstr ""
+
+#: gravatar.php:96
+msgid "Select default avatar image if none was found at Gravatar. See README"
+msgstr ""
+
+#: gravatar.php:97
+msgid "Rating of images"
+msgstr ""
+
+#: gravatar.php:97
+msgid "Select the appropriate avatar rating for your site. See README"
+msgstr ""
+
+#: gravatar.php:111
+msgid "Gravatar settings updated."
+msgstr ""
