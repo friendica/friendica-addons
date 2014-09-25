@@ -213,6 +213,10 @@ function fbsync_expire($a,$b) {
 
 function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $create_user) {
 
+    $post->actor_id = number_format($post->actor_id, 0, '', '');
+	$post->source_id = number_format($post->source_id, 0, '', '');
+    $post->app_id = number_format($post->app_id, 0, '', '');
+        
 	$access_token = get_pconfig($uid,'facebook','access_token');
 
 	require_once("include/oembed.php");
@@ -1078,23 +1082,16 @@ function fbsync_fetchfeed($a, $uid) {
 	}
 	unset($applications);
 
-	foreach ($posts AS $post) {
-		$post->actor_id = number_format($post->actor_id, 0, '', '');
-		$post->source_id = number_format($post->source_id, 0, '', '');
-		$post->app_id = number_format($post->app_id, 0, '', '');
-		$post_data[$post->post_id] = $post;
-	}
-	unset($posts);
-
 	foreach($comments AS $comment) {
 		$comment->fromid = number_format($comment->fromid, 0, '', '');
 		$comment_data[$comment->id] = $comment;
 	}
 	unset($comments);
 
-	foreach ($post_data AS $post) {
+	foreach ($posts AS $post) {
 		if ($post->updated_time > $last_updated)
 			$last_updated = $post->updated_time;
+            
 		fbsync_createpost($a, $uid, $self, $contacts, $application_data, $post, $create_user);
 	}
 
