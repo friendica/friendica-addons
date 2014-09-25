@@ -452,6 +452,8 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 }
 
 function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $applications, $comment) {
+    //Sanitize Data
+    $comment->fromid = number_format($comment->fromid, 0, '', '');
 
 	// check if it was already imported
 	$r = q("SELECT `uri` FROM `item` WHERE `uid` = %d AND `uri` = '%s' LIMIT 1",
@@ -1076,27 +1078,20 @@ function fbsync_fetchfeed($a, $uid) {
 	unset($profiles);
 	unset($square_avatars);
 
-	foreach ($applications AS $application) {
+	foreach ($applications AS $key = $application) {
 		$application->app_id = number_format($application->app_id, 0, '', '');
-		$application_data[$application->app_id] = $application;
+		$applications[$key] = $application;
 	}
-	unset($applications);
-
-	foreach($comments AS $comment) {
-		$comment->fromid = number_format($comment->fromid, 0, '', '');
-		$comment_data[$comment->id] = $comment;
-	}
-	unset($comments);
-
+    
 	foreach ($posts AS $post) {
 		if ($post->updated_time > $last_updated)
 			$last_updated = $post->updated_time;
             
-		fbsync_createpost($a, $uid, $self, $contacts, $application_data, $post, $create_user);
+		fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $create_user);
 	}
 
-	foreach ($comment_data AS $comment) {
-		fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $application_data, $comment);
+	foreach ($comments AS $comment) {
+		fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $applications, $comment);
 	}
 
 	foreach($likes AS $like) {
@@ -1104,7 +1099,7 @@ function fbsync_fetchfeed($a, $uid) {
 
 		fbsync_createlike($a, $uid, $self_id, $self, $contacts, $like);
 	}
-
+    
 	set_pconfig($uid,'fbsync','last_updated', $last_updated);
 }
 ?>
