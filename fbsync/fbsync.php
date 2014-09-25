@@ -158,7 +158,6 @@ function fbsync_settings_post(&$a,&$b) {
 
 function fbsync_cron($a,$b) {
 	$last = get_config('fbsync','last_poll');
-
 	$poll_interval = intval(get_config('fbsync','poll_interval'));
 	if(! $poll_interval)
 		$poll_interval = FBSYNC_DEFAULT_POLL_INTERVAL;
@@ -166,13 +165,14 @@ function fbsync_cron($a,$b) {
 	if($last) {
 		$next = $last + ($poll_interval * 60);
 		if($next > time()) {
-			logger('fbsync_cron: poll intervall not reached');
+			logger('fbsync_cron: poll intervall not reached. poll interval: ' . $poll_interval * 60 . '; actual interval: ' . $poll_interval);
 			return;
 		}
 	}
 	logger('fbsync_cron: cron_start');
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'fbsync' AND `k` = 'sync' AND `v` = '1' ORDER BY RAND()");
+    
 	if(count($r)) {
 		foreach($r as $rr) {
 			fbsync_get_self($rr['uid']);
@@ -442,17 +442,7 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 		$postarray['private'] = 1;
 		$postarray['allow_cid'] = '<' . $self[0]['id'] . '>';
 	}
-
-	/*
-	$postarray["location"] = $post->place->name;
-	postarray["coord"] = $post->geo->coordinates[0]." ".$post->geo->coordinates[1];
-	*/
-
-	//$types = array(46, 80, 237, 247, 308);
-	//if (!in_array($post->type, $types))
-	//	$postarray["body"] = "Type: ".$post->type."\n".$postarray["body"];
-	//print_r($post);
-	//print_r($postarray);
+    
 	$item = item_store($postarray);
 	logger('fbsync_createpost: User '.$self[0]["nick"].' posted feed item '.$item, LOGGER_DEBUG);
 }
@@ -1005,31 +995,31 @@ function fbsync_fetchfeed($a, $uid) {
 	//if ($last_updated == "")
 		$last_updated = 0;
 
-	logger("fbsync_fetchfeed: fetching content for user ".$self_id);
-
+	logger("fbsync_fetchfeed: fetching content for user " . $self_id);
+    
 	$fql = array(
 		"posts" => "SELECT action_links, actor_id, app_data, app_id, attachment, attribution, comment_info, created_time, filter_key, like_info, message, message_tags, parent_post_id, permalink, place, post_id, privacy, share_count, share_info, source_id, subscribed, tagged_ids, type, updated_time, with_tags FROM stream where filter_key in (SELECT filter_key FROM stream_filter WHERE uid=me() AND type='newsfeed') AND updated_time > $last_updated ORDER BY updated_time DESC LIMIT 500",
 		"comments" => "SELECT app_id, attachment, post_id, id, likes, fromid, time, text, text_tags, user_likes, likes FROM comment WHERE post_id IN (SELECT post_id FROM #posts) ORDER BY time DESC LIMIT 500",
 		"profiles" => "SELECT id, name, username, url, pic_square FROM profile WHERE id IN (SELECT actor_id FROM #posts) OR id IN (SELECT fromid FROM #comments) OR id IN (SELECT source_id FROM #posts) LIMIT 500",
 		"applications" => "SELECT app_id, display_name FROM application WHERE app_id IN (SELECT app_id FROM #posts) OR app_id IN (SELECT app_id FROM #comments) LIMIT 500",
 		"avatars" => "SELECT id, real_size, size, url FROM square_profile_pic WHERE id IN (SELECT id FROM #profiles) AND size = 256 LIMIT 500");
-
+    
 	if ($do_likes) {
 		$fql["likes"] = "SELECT post_id, user_id FROM like WHERE post_id IN (SELECT post_id FROM #posts)";
 		$fql["profiles"] .= " OR id IN (SELECT user_id FROM #likes)";
 	}
 
 	$url = "https://graph.facebook.com/fql?q=".urlencode(json_encode($fql))."&access_token=".$access_token;
-
-	$feed = fetch_url($url);
+    
+    $feed = fetch_url($url);
 	$data = json_decode($feed);
-
+    
 	if (!is_array($data->data)) {
 		logger("fbsync_fetchfeed: Error fetching data for user ".$uid.": ".print_r($data, true));
 		return;
 	}
-
-	$posts = array();
+    
+    $posts = array();
 	$comments = array();
 	$likes = array();
 	$profiles = array();
