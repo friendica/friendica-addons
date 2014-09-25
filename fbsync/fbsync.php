@@ -178,7 +178,8 @@ function fbsync_cron($a,$b) {
 			fbsync_get_self($rr['uid']);
 
 			logger('fbsync_cron: importing timeline from user '.$rr['uid']);
-			fbsync_fetchfeed($a, $rr['uid']);
+			$data = fbsync_fetchfeed($a, $rr['uid']);
+            fbsync_processfeed($data);
 		}
 	}
 
@@ -646,6 +647,8 @@ function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $appl
 }
 
 function fbsync_createlike($a, $uid, $self_id, $self, $contacts, $like) {
+    //Sanitize data
+    $like->user_id = number_format($like->user_id, 0, '', '');
 
 	$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
 				dbesc("fb::".$like->post_id),
@@ -1025,6 +1028,10 @@ function fbsync_fetchfeed($a, $uid) {
 		return;
 	}
     
+    return $data;    
+}
+
+function fbsync_processfeed($data){
     $posts = array();
 	$comments = array();
 	$likes = array();
@@ -1061,12 +1068,14 @@ function fbsync_fetchfeed($a, $uid) {
 	$post_data = array();
 	$comment_data = array();
 
+    //These Indexes are Used for lookups in the next loop
 	foreach ($avatars AS $avatar) {
 		$avatar->id = number_format($avatar->id, 0, '', '');
 		$square_avatars[$avatar->id] = $avatar;
 	}
 	unset($avatars);
 
+    //These Indexes are used for lookups elsewhere
 	foreach ($profiles AS $profile) {
 		$profile->id = number_format($profile->id, 0, '', '');
 
@@ -1078,10 +1087,12 @@ function fbsync_fetchfeed($a, $uid) {
 	unset($profiles);
 	unset($square_avatars);
 
-	foreach ($applications AS $key = $application) {
+    //These Indexes are Used for lookups elsewhere
+	foreach ($applications AS $application) {
 		$application->app_id = number_format($application->app_id, 0, '', '');
-		$applications[$key] = $application;
+        $application_data[$application->app_id] = $application;
 	}
+    unset($applications);
     
 	foreach ($posts AS $post) {
 		if ($post->updated_time > $last_updated)
@@ -1095,8 +1106,6 @@ function fbsync_fetchfeed($a, $uid) {
 	}
 
 	foreach($likes AS $like) {
-		$like->user_id = number_format($like->user_id, 0, '', '');
-
 		fbsync_createlike($a, $uid, $self_id, $self, $contacts, $like);
 	}
     
