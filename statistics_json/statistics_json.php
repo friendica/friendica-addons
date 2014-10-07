@@ -18,6 +18,11 @@ function statistics_json_uninstall() {
 
 function statistics_json_module() {}
 
+function statistics_json_plugin_enabled($plugin) {
+	$r = q("SELECT * FROM `addon` WHERE `installed` = 1 AND `name` = '%s'", $plugin);
+	return((bool)(count($r) > 0));
+}
+
 function statistics_json_init() {
 	global $a;
 
@@ -31,6 +36,18 @@ function statistics_json_init() {
 			"active_users_monthly" => get_config('statistics_json','active_users_monthly'),
 			"local_posts" => get_config('statistics_json','local_posts')
 			);
+
+	$statistics["facebook"] = statistics_json_plugin_enabled("fbpost");
+	$statistics["twitter"] = statistics_json_plugin_enabled("twitter");
+	$statistics["tumblr"] = statistics_json_plugin_enabled("tumblr");
+	$statistics["wordpress"] = statistics_json_plugin_enabled("wppost");
+	$statistics["appnet"] = statistics_json_plugin_enabled("appnet");
+	$statistics["blogger"] = statistics_json_plugin_enabled("blogger");
+	$statistics["buffer"] = statistics_json_plugin_enabled("buffer");
+	$statistics["googleplus"] = statistics_json_plugin_enabled("gpluspost");
+	$statistics["libertree"] = statistics_json_plugin_enabled("libertree");
+	$statistics["pumpio"] = statistics_json_plugin_enabled("pumpio");
+	$statistics["gnusocial"] = statistics_json_plugin_enabled("statusnet");
 
 	header("Content-Type: application/json");
 	echo json_encode($statistics);
