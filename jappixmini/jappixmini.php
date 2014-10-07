@@ -315,7 +315,7 @@ function jappixmini_settings(&$a, &$s) {
     $s .= ' <input id="jappixmini-server" type="text" name="jappixmini-server" value="'.$server.'" />';
     $s .= '<br />';
 
-    if (defaultbosh == "") {
+    if ($defaultbosh == "") {
 	$s .= '<label for="jappixmini-bosh">'.t('Jabber BOSH host').'</label>';
 	$s .= ' <input id="jappixmini-bosh" type="text" name="jappixmini-bosh" value="'.$bosh.'" />';
 	$s .= '<br />';
