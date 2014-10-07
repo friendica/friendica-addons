@@ -189,6 +189,7 @@ function relativeDate(to_parse) {
 
 // Reads a message delay
 function readMessageDelay(node) {
+    try {
 	// Initialize
 	var delay, d_delay;
 	
@@ -209,4 +210,5 @@ function readMessageDelay(node) {
 	}
 	
 	return delay;
+    } catch(e) {}
 }
