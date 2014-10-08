@@ -213,7 +213,7 @@ function fbsync_expire($a,$b) {
 }
 
 function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $create_user) {
-
+    //Sanitize Inputs
     $post->actor_id = number_format($post->actor_id, 0, '', '');
 	$post->source_id = number_format($post->source_id, 0, '', '');
     $post->app_id = number_format($post->app_id, 0, '', '');

@@ -9,9 +9,24 @@ $d = datetime_convert();
 global $db;
 $db = new dba($db_host, $db_user, $db_pass, $db_data, $install);
 
-$data = fbsync_fetchfeed($a, 1);
 
-var_dump($data);
+//Test Data Retrieval
+//$data = fbsync_fetchfeed($a, 1);
+//var_dump($data);
+
+//Test Data Processing
+
+// Test Base Class
+require_once("./addon/fbsync/object/Facebook.php");
+$myFBSync = new Facebook();
+
+// Test graph 2.1 class
+require_once("./addon/fbsync/object/Facebook_Graph21.php");
+$myFBSync = new Facebook_Graph21();
+$uid = 1;
+$post = json_decode(readfile("./addon/fbsync/tests/graph2.1.txt"));
+$myFBSync->CreatePost($a,$uid,0,0,0,$post,0);
+
 
 /*
 https://developers.facebook.com/tools/explorer
