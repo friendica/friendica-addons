@@ -1,6 +1,7 @@
 <?php
+require_once('include/items.php');
 
-class Facebook
+class Facebook 
 {
     function CreatePost($a, $uid, $self, $contacts, $applications, $post, $create_user)
     {
