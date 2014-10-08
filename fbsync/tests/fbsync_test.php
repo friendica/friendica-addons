@@ -15,6 +15,7 @@ $db = new dba($db_host, $db_user, $db_pass, $db_data, $install);
 //var_dump($data);
 
 //Test Data Processing
+$uid = 1;
 
 // Test Base Class
 require_once("./addon/fbsync/object/Facebook.php");
@@ -22,10 +23,23 @@ $myFBSync = new Facebook();
 
 // Test graph 2.1 class
 require_once("./addon/fbsync/object/Facebook_Graph21.php");
-$myFBSync = new Facebook_Graph21();
-$uid = 1;
-$post = json_decode(readfile("./addon/fbsync/tests/graph2.1.txt"));
-$myFBSync->CreatePost($a,$uid,0,0,0,$post,0);
+$myFBSync = new Facebook_Graph21($uid);
+
+//verify class loaded correctly
+if ($myFBSync->uid != 1) die("class did not load");
+if ($myFBSync->access_token == '') die("failed to load access_token");
+
+
+$posts = json_decode(file_get_contents("./addon/fbsync/tests/graph2.1.txt"));
+
+$post = $myFBSync->CreatePost($a,0,0,0,$posts->data[0],0);
+
+//verify data
+if ($post['uri'] != "fb::109524391244_10152483187826245") die("uri does not match");
+if ($post['plink'] != "https://www.facebook.com/109524391244/posts/10152483187826245") die("plink does not match");
+
+//var_dump($posts->data[0]);
+//test creating the same post again
 
 
 /*
