@@ -212,7 +212,7 @@ function fbsync_expire($a,$b) {
 	logger('fbsync_expire: expire_end');
 }
 
-function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $create_user) {
+function fbsync_createpost($a, $uid, $contacts, $applications, $post, $create_user) {
     //Sanitize Inputs
     $post->actor_id = number_format($post->actor_id, 0, '', '');
 	$post->source_id = number_format($post->source_id, 0, '', '');
@@ -325,20 +325,21 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	// Change the object type when an attachment is present
 	if (isset($post->attachment->fb_object_type))
 		logger('fb_object_type: '.$post->attachment->fb_object_type." ".print_r($post->attachment, true), LOGGER_DEBUG);
-		switch ($post->attachment->fb_object_type) {
-			case 'photo':
-				$postarray['object-type'] = ACTIVITY_OBJ_IMAGE; // photo is deprecated: http://activitystrea.ms/head/activity-schema.html#image
-				break;
-			case 'video':
-				$postarray['object-type'] = ACTIVITY_OBJ_VIDEO;
-				break;
-			case '':
-				//$postarray['object-type'] = ACTIVITY_OBJ_BOOKMARK;
-				break;
-			default:
-				logger('Unknown object type '.$post->attachment->fb_object_type, LOGGER_DEBUG);
-				break;
-		}
+    
+    switch ($post->attachment->fb_object_type) {
+        case 'photo':
+            $postarray['object-type'] = ACTIVITY_OBJ_IMAGE; // photo is deprecated: http://activitystrea.ms/head/activity-schema.html#image
+            break;
+        case 'video':
+            $postarray['object-type'] = ACTIVITY_OBJ_VIDEO;
+            break;
+        case '':
+            //$postarray['object-type'] = ACTIVITY_OBJ_BOOKMARK;
+            break;
+        default:
+            logger('Unknown object type '.$post->attachment->fb_object_type, LOGGER_DEBUG);
+            break;
+    }
 
 	$content = "";
 	$type = "";
@@ -445,11 +446,11 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 
 	if(isset($post->privacy) && $post->privacy->value !== '') {
 		$postarray['private'] = 1;
-		$postarray['allow_cid'] = '<' . $self[0]['id'] . '>';
+		$postarray['allow_cid'] = '<' . $uid . '>';
 	}
     
 	$item = item_store($postarray);
-	logger('fbsync_createpost: User '.$self[0]["nick"].' posted feed item '.$item, LOGGER_DEBUG);
+	logger('fbsync_createpost: User ' . $uid . ' posted feed item '.$item, LOGGER_DEBUG);
 }
 
 function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $applications, $comment) {
@@ -1094,11 +1095,13 @@ function fbsync_processfeed($data){
 	}
     unset($applications);
     
+    
+    //FIXME:  Need $self, which is in the fetch_data function
 	foreach ($posts AS $post) {
 		if ($post->updated_time > $last_updated)
 			$last_updated = $post->updated_time;
             
-		fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $create_user);
+		fbsync_createpost($a, $uid, $contacts, $applications, $post, $create_user);
 	}
 
 	foreach ($comments AS $comment) {
