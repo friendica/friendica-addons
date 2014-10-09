@@ -32,7 +32,9 @@ if ($myFBSync->access_token == '') die("failed to load access_token");
 //Test FetchContact 
 
 //Test CreatePost
-$posts = json_decode(file_get_contents("./addon/fbsync/tests/graph2.1.txt"));
+$posts = json_decode(file_get_contents("./addon/fbsync/tests/graph2.1-no-filter.txt"));
+
+var_dump($posts);   
 
 $post = $myFBSync->CreatePost($a,0,0,0,$posts->data[0],0);
 
@@ -52,7 +54,7 @@ SELECT action_links, actor_id, app_data, app_id, attachment, attribution, commen
 
 //Todo:Actions can probably be removed
 me/home?fields=actions&since=992438&updated_time=0&filter=nf&limit=1
-me/home?fields=actions,link,id,created_time,application,attachments,updated_time,object_id,with_tags,comments{can_comment,comment_count},likes,message,message_tags,description,parent_id,place,privacy,shares&limit=1
+me/home?fields=actions,link,id,created_time,application,attachments,updated_time,object_id,with_tags,comments{can_comment,comment_count},likes,message,message_tags,description,parent_id,place,privacy,shares,from&limit=1
 https://developers.facebook.com/docs/graph-api/reference/v2.1/test-user
 
 
