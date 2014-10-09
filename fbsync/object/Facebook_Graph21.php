@@ -80,7 +80,7 @@ Class Facebook_Graph21 extends Facebook
             $type = "link";
         */
         
-        //TODO: Body needs more testing, and has some more frindge cases.
+        //TODO: Body needs more testing, and has some more fringe cases.
         $postarray["body"] = $this->AssembleBody($post->name, $post->link, $post->description, $post->picture); //"This is the body. [quote]This is the quote.[/quote]";
         
         //TODO: Do tags

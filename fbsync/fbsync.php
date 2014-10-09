@@ -175,11 +175,19 @@ function fbsync_cron($a,$b) {
     
 	if(count($r)) {
 		foreach($r as $rr) {
-			fbsync_get_self($rr['uid']);
-
-			logger('fbsync_cron: importing timeline from user '.$rr['uid']);
-			$data = fbsync_fetchfeed($a, $rr['uid']);
-            fbsync_processfeed($data);
+            logger('fbsync_cron: importing timeline from user '.$rr['uid']);
+			
+            $uid = fbsync_get_self($rr['uid']);
+            $self_id = get_pconfig($uid,'fbsync','self_id');
+            $last_updated = get_pconfig($uid,'fbsync','last_updated');
+            
+            $self = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1", intval($uid));
+            $user = q("SELECT * FROM `user` WHERE `uid` = %d AND `account_expired` = 0 LIMIT 1", intval($uid));
+            if(! count($user))
+                return;
+                
+			$data = fbsync_fetchfeed($a, $uid, $self_id, $last_updated);
+            fbsync_processfeed($data, $self, $a, $uid, $self_id, $user, $last_updated);
 		}
 	}
 
@@ -982,23 +990,9 @@ function fbsync_fetchuser($a, $uid, $id) {
 	return($user);
 }
 
-function fbsync_fetchfeed($a, $uid) {
+function fbsync_fetchfeed($a, $uid, $self_id, $last_updated) {
 	$access_token = get_pconfig($uid,'facebook','access_token');
-	$last_updated = get_pconfig($uid,'fbsync','last_updated');
-	$self_id = get_pconfig($uid,'fbsync','self_id');
-
-	$create_user = get_pconfig($uid, 'fbsync', 'create_user');
-	$do_likes = get_config('fbsync', 'do_likes');
-
-	$self = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
-		intval($uid)
-	);
-
-	$user = q("SELECT * FROM `user` WHERE `uid` = %d AND `account_expired` = 0 LIMIT 1",
-		intval($uid)
-	);
-	if(! count($user))
-		return;
+    $do_likes = get_config('fbsync', 'do_likes');
 
 	require_once('include/items.php');
 
@@ -1032,7 +1026,10 @@ function fbsync_fetchfeed($a, $uid) {
     return $data;    
 }
 
-function fbsync_processfeed($data){
+function fbsync_processfeed($data, $self, $a, $uid, $self_id, $user, $last_updated){
+    
+	$create_user = get_pconfig($uid, 'fbsync', 'create_user');
+    
     $posts = array();
 	$comments = array();
 	$likes = array();
@@ -1095,8 +1092,6 @@ function fbsync_processfeed($data){
 	}
     unset($applications);
     
-    
-    //FIXME:  Need $self, which is in the fetch_data function
 	foreach ($posts AS $post) {
 		if ($post->updated_time > $last_updated)
 			$last_updated = $post->updated_time;
