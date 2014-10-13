@@ -18,6 +18,11 @@ function statistics_json_uninstall() {
 
 function statistics_json_module() {}
 
+function statistics_json_plugin_enabled($plugin) {
+	$r = q("SELECT * FROM `addon` WHERE `installed` = 1 AND `name` = '%s'", $plugin);
+	return((bool)(count($r) > 0));
+}
+
 function statistics_json_init() {
 	global $a;
 
@@ -31,6 +36,35 @@ function statistics_json_init() {
 			"active_users_monthly" => get_config('statistics_json','active_users_monthly'),
 			"local_posts" => get_config('statistics_json','local_posts')
 			);
+
+	$statistics["services"] = array();
+	$statistics["services"]["appnet"] = statistics_json_plugin_enabled("appnet");
+	$statistics["services"]["blogger"] = statistics_json_plugin_enabled("blogger");
+	$statistics["services"]["buffer"] = statistics_json_plugin_enabled("buffer");
+	$statistics["services"]["dreamwidth"] = statistics_json_plugin_enabled("dwpost");
+	$statistics["services"]["facebook"] = statistics_json_plugin_enabled("fbpost");
+	$statistics["services"]["gnusocial"] = statistics_json_plugin_enabled("statusnet");
+	$statistics["services"]["googleplus"] = statistics_json_plugin_enabled("gpluspost");
+	$statistics["services"]["libertree"] = statistics_json_plugin_enabled("libertree");
+	$statistics["services"]["livejournal"] = statistics_json_plugin_enabled("ljpost");
+	$statistics["services"]["pumpio"] = statistics_json_plugin_enabled("pumpio");
+	$statistics["services"]["twitter"] = statistics_json_plugin_enabled("twitter");
+	$statistics["services"]["tumblr"] = statistics_json_plugin_enabled("tumblr");
+	$statistics["services"]["wordpress"] = statistics_json_plugin_enabled("wppost");
+
+	$statistics["appnet"] = $statistics["services"]["appnet"];
+	$statistics["blogger"] = $statistics["services"]["blogger"];
+	$statistics["buffer"] = $statistics["services"]["buffer"];
+	$statistics["dreamwidth"] = $statistics["services"]["dreamwidth"];
+	$statistics["facebook"] = $statistics["services"]["facebook"];
+	$statistics["gnusocial"] = $statistics["services"]["gnusocial"];
+	$statistics["googleplus"] = $statistics["services"]["googleplus"];
+	$statistics["libertree"] = $statistics["services"]["libertree"];
+	$statistics["livejournal"] = $statistics["services"]["livejournal"];
+	$statistics["pumpio"] = $statistics["services"]["pumpio"];
+	$statistics["twitter"] = $statistics["services"]["twitter"];
+	$statistics["tumblr"] = $statistics["services"]["tumblr"];
+	$statistics["wordpress"] = $statistics["services"]["wordpress"];
 
 	header("Content-Type: application/json");
 	echo json_encode($statistics);
