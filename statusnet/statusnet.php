@@ -1338,7 +1338,7 @@ function statusnet_fetchhometimeline($a, $uid) {
 	$items = $connection->get('statuses/home_timeline', $parameters);
 
 	if (!is_array($items)) {
-		logger("statusnet_fetchhometimeline: Error fetching home timeline: ".print_r($items, true), LOGGER_DEBUG);
+		logger("statusnet_fetchhometimeline: Error fetching home timeline: ".$items, LOGGER_DEBUG);
 		return;
 	}
 
