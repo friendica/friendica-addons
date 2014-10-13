@@ -24,7 +24,10 @@ Class Facebook_Graph21 extends Facebook
                 dbesc('fb::'.$post->id)
             );
         if(count($r))
+        {
+            logger('fbsync_createpost: skipping post $post->id--already exists', LOGGER_DEBUG);
             return;
+        }
         
         $postarray = array();
         $postarray['gravity'] = 0;
@@ -64,7 +67,8 @@ Class Facebook_Graph21 extends Facebook
         $postarray['contact-id'] = 1;
         
         //Set Object Type
-        if (!isset($post->attachment[0]->type))
+        //TODO: This code is broken.
+        if (!isset($post->attachment[0]->type))  //This is never set since its from the FQL dataset.
         {
             //Default Object Type
             $postarray['object-type'] = ACTIVITY_OBJ_NOTE; // default value - is maybe changed later when media is attached
@@ -79,14 +83,19 @@ Class Facebook_Graph21 extends Facebook
         if ($type == "rich")
             $type = "link";
         */
-        
+        /*
+        echo "type: " . $postarray['object-type'];
+        die();
+        */
         //TODO: Body needs more testing, and has some more fringe cases.
-        $postarray["body"] = $this->AssembleBody($post->name, $post->link, $post->description, $post->picture); //"This is the body. [quote]This is the quote.[/quote]";
+        $postarray["body"] = $this->AssembleBody($post->name, $post->link, $post->description, $post->picture, $postarray['object-type']);
+        
+        
         
         //TODO: Do tags
         $postarray["tag"] = "This is the tag";
         
-        $postarray['app'] = ($post->application->name == "" ? "Facebook" : $post->application->name);
+        $postarray['app'] = ($post->application->name == "Links" ? "Facebook" : $post->application->name);
         
         if(isset($post->privacy) && $post->privacy->value !== '') {
             $postarray['private'] = 1;
@@ -99,17 +108,16 @@ Class Facebook_Graph21 extends Facebook
         return $postarray;
     }
     
-    function AssembleBody($Title, $Href, $Body, $Picture)
+    function AssembleBody($Title, $Href, $Body, $Picture, $ObjectType)
     {
-        //TODO: Need to do prebody code still.
-        //TODO: Need to add class (aka type) code
+        /*
         $postarray["body"] = (isset($post->message) ? escape_tags($post->message) : '');
 
         $msgdata = fbsync_convertmsg($a, $postarray["body"]);
 
         $postarray["body"] = $msgdata["body"];
         $postarray["tag"] = $msgdata["tags"];
-
+        */
         $content = "";
 
         if ($Picture != "")
@@ -181,32 +189,21 @@ Class Facebook_Graph21 extends Facebook
                 }
             }
         }
-
-        if ($type == "link")
-            $postarray["object-type"] = ACTIVITY_OBJ_BOOKMARK;
-
-        if ($content)
-            $postarray["body"] .= "\n";
-
-        if ($type)
-            $postarray["body"] .= "[class=type-".$type."]";
-
-        if ($content)
-            $postarray["body"] .= trim($content);
-
-        if ($quote)
-            $postarray["body"] .= "\n[quote]".trim($quote)."[/quote]";
-
-        if ($type)
-            $postarray["body"] .= "[/class]";
-
-        $postarray["body"] = trim($postarray["body"]);
-
-        if (trim($postarray["body"]) == "")
-            return;
-
-        if ($prebody != "")
-            $postarray["body"] = $prebody.$postarray["body"]."[/share]";
+        */
+        
+        $content = '[class="type-'. $ObjectType . '"]' . $content . '[/class]';
+        
+        /*
+        TODO: 
+        * What is the wall-to-wall system setting supposed to do?  What is the "Share" syntax used for?
+        This code does not seem to match what happens with the previous posts.  I stripped out some stuff comparing author and source below.
+        
+        if (!intval(get_config('system','wall-to-wall_share'))) {
+            $ShareAuthor = "Test Share Author";
+            $ShareAuthorLink = "http://test.com";
+            
+            $content = '[share author="' . $ShareAuthor . '" profile="' . $ShareAuthorLink . '" avatar="' .  $ShareAuthorAvatar . '"]' . $content . '[/share]';
+        }
         */
         
         return $content;

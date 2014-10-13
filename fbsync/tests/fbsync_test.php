@@ -14,8 +14,23 @@ $db = new dba($db_host, $db_user, $db_pass, $db_data, $install);
 //$data = fbsync_fetchfeed($a, 1);
 //var_dump($data);
 
-//Test Data Processing
+//Test Data Prcoessing -- Constants-- used in both tests
 $uid = 1;
+$self_id = get_pconfig($uid,'fbsync','self_id');
+$last_updated = get_pconfig($uid,'fbsync','last_updated');
+$self = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1", intval($uid));
+$user = q("SELECT * FROM `user` WHERE `uid` = %d AND `account_expired` = 0 LIMIT 1", intval($uid));
+$create_user = get_pconfig($uid, 'fbsync', 'create_user');
+
+//Test Data Processing fql
+$data = json_decode(file_get_contents("./addon/fbsync/tests/fql-full.txt"));
+$result = fbsync_processfeed($data, $self, $a, $uid, $self_id, $user, $last_updated);
+
+if ($result != 0) die("FQL Processing broken.\n");
+
+echo "Done with fql_data processing.\n";
+
+//Test data processing -- graph`
 
 // Test Base Class
 require_once("./addon/fbsync/object/Facebook.php");
@@ -30,11 +45,10 @@ if ($myFBSync->uid != 1) die("class did not load");
 if ($myFBSync->access_token == '') die("failed to load access_token");
 
 //Test FetchContact 
+//TODO: build tests for facebook api requests using API test user functions
 
 //Test CreatePost
 $posts = json_decode(file_get_contents("./addon/fbsync/tests/graph2.1-no-filter.txt"));
-
-var_dump($posts);   
 
 $post = $myFBSync->CreatePost($a,0,0,0,$posts->data[0],0);
 
@@ -43,7 +57,8 @@ if ($post['uri'] != "fb::109524391244_10152483187826245") die("uri does not matc
 if ($post['plink'] != "https://www.facebook.com/109524391244/posts/10152483187826245") die("plink does not match");
 
 //var_dump($posts->data[0]);
-//test creating the same post again
+
+//TODO: test creating the same post again
 
 
 echo "All done\n";
@@ -85,4 +100,4 @@ https://developers.facebook.com/docs/graph-api/reference/v2.1/test-user
     
     
 */
-?>
+?> 

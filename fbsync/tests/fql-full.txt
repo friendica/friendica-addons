@@ -1,0 +1,101 @@
+{
+  "data": [
+    {
+      "name": "posts",
+      "fql_result_set": [
+        {
+          "action_links": null,
+          "actor_id": 568851657,
+          "app_data": [
+          ],
+          "app_id": null,
+          "attachment": {
+            "description": ""
+          },
+          "attribution": null,
+          "comment_info": {
+            "can_comment": true,
+            "comment_count": 3,
+            "comment_order": "chronological"
+          },
+          "created_time": 1413220907,
+          "filter_key": "nf",
+          "like_info": {
+            "can_like": true,
+            "like_count": 1,
+            "user_likes": false
+          },
+          "message": "Max Gladstone on modern magic:\n\n\"[C]onsider the smartphone I have in my pocket. No single human being knows how to make this phone. I acquired the phone, and I use it. People who know more about the phone can tell it to do more things than I can, but they're still bound by the limits of the hardware. A few communities are dedicated to modding and hacking phones like mine, yes, but for most people most of the time a smartphone is a portable magic mirror. We make mystic passes before the glass, address the indwelling spirit with suitably respectful tones, and LEARN THE FUTURE. (\"Siri, what will the weather be like tomorrow?\") The same thought experiment works for many modern technologies.\"",
+          "message_tags": [
+          ],
+          "parent_post_id": null,
+          "permalink": "https://www.facebook.com/stephen.carr.547/posts/10152403039101658",
+          "place": null,
+          "post_id": "568851657_10152403039101658",
+          "privacy": {
+            "value": ""
+          },
+          "share_count": 0,
+          "share_info": {
+            "can_share": true,
+            "share_count": 0
+          },
+          "source_id": 568851657,
+          "subscribed": false,
+          "tagged_ids": [
+          ],
+          "type": 46,
+          "updated_time": 1413222111,
+          "with_tags": [
+          ]
+        }
+      ]
+    },
+    {
+      "name": "comments",
+      "fql_result_set": [
+        {
+          "app_id": 0,
+          "attachment": null,
+          "post_id": "568851657_10152403039101658",
+          "id": "10152403039101658_10152403084216658",
+          "likes": 0,
+          "fromid": 568851657,
+          "time": 1413222111,
+          "text": "And Siri said unto them, \"I'm sorry, I did not understand that.\" And the pharisees were wroth, and sought to harden the heart of Palmius Pilot against her.",
+          "text_tags": [
+          ],
+          "user_likes": false
+        }
+      ]
+    },
+    {
+      "name": "applications",
+      "fql_result_set": [
+      ]
+    },
+    {
+      "name": "profiles",
+      "fql_result_set": [
+        {
+          "id": 568851657,
+          "name": "Stephen Carr",
+          "username": "stephen.carr.547",
+          "url": "https://www.facebook.com/stephen.carr.547",
+          "pic_square": "https://scontent-a.xx.fbcdn.net/hprofile-xpa1/v/t1.0-1/c0.0.50.50/p50x50/1229928_10152376737046658_8387683222153583301_n.jpg?oh=4c9cf110c2953f26e0c83bc644449730&oe=54B95BF9"
+        }
+      ]
+    },
+    {
+      "name": "avatars",
+      "fql_result_set": [
+        {
+          "id": 568851657,
+          "real_size": 320,
+          "size": 256,
+          "url": "https://scontent-a.xx.fbcdn.net/hprofile-xpa1/v/t1.0-1/c0.0.320.320/p320x320/1229928_10152376737046658_8387683222153583301_n.jpg?oh=9627591ac52d10005212abbae4c1f451&oe=54AD7B88"
+        }
+      ]
+    }
+  ]
+}

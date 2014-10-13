@@ -18,6 +18,7 @@ FBPost:
 */
 
 require_once("addon/fbpost/fbpost.php");
+require_once("include/items.php");
 
 define('FBSYNC_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
@@ -205,8 +206,7 @@ function fbsync_expire($a,$b) {
 
 	$r = q("DELETE FROM `item` WHERE `deleted` AND `network` = '%s'", dbesc(NETWORK_FACEBOOK));
 
-	require_once("include/items.php");
-
+	
 	logger('fbsync_expire: expire_start');
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'fbsync' AND `k` = 'sync' AND `v` = '1' ORDER BY RAND()");
@@ -236,7 +236,7 @@ function fbsync_createpost($a, $uid, $contacts, $applications, $post, $create_us
 		dbesc('fb::'.$post->post_id)
 	);
 	if(count($r))
-		return;
+		return 1;
 
 	$postarray = array();
 	$postarray['gravity'] = 0;
@@ -310,10 +310,10 @@ function fbsync_createpost($a, $uid, $contacts, $applications, $post, $create_us
 
 		if ($contact_id == -1) {
 			logger('fbsync_createpost: Contact is blocked. Post not imported '.print_r($post, true), LOGGER_DEBUG);
-			return;
+			return 2;
 		} elseif (($contact_id <= 0) AND !$create_user) {
 			logger('fbsync_createpost: No matching contact found. Post not imported '.print_r($post, true), LOGGER_DEBUG);
-			return;
+			return 3;
 		} elseif ($contact_id == 0) {
 			// This case should never happen
 			logger('fbsync_createpost: No matching contact found. Using own id. (Should never happen) '.print_r($post, true), LOGGER_DEBUG);
@@ -377,7 +377,7 @@ function fbsync_createpost($a, $uid, $contacts, $applications, $post, $create_us
 		$quote = $post->attachment->caption;
 
 	if ($quote.$post->attachment->href.$content.$postarray["body"] == "")
-		return;
+		return 3;
 
 	if (isset($post->attachment->media) AND (($type == "") OR ($type == "link"))) {
 		foreach ($post->attachment->media AS $media) {
@@ -439,7 +439,7 @@ function fbsync_createpost($a, $uid, $contacts, $applications, $post, $create_us
 	$postarray["body"] = trim($postarray["body"]);
 
 	if (trim($postarray["body"]) == "")
-		return;
+		return 4;
 
 	if ($prebody != "")
 		$postarray["body"] = $prebody.$postarray["body"]."[/share]";
@@ -459,6 +459,7 @@ function fbsync_createpost($a, $uid, $contacts, $applications, $post, $create_us
     
 	$item = item_store($postarray);
 	logger('fbsync_createpost: User ' . $uid . ' posted feed item '.$item, LOGGER_DEBUG);
+    return 0;
 }
 
 function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $applications, $comment) {
@@ -994,8 +995,6 @@ function fbsync_fetchfeed($a, $uid, $self_id, $last_updated) {
 	$access_token = get_pconfig($uid,'facebook','access_token');
     $do_likes = get_config('fbsync', 'do_likes');
 
-	require_once('include/items.php');
-
 	//if ($last_updated == "")
 		$last_updated = 0;
 
@@ -1012,9 +1011,9 @@ function fbsync_fetchfeed($a, $uid, $self_id, $last_updated) {
 		$fql["likes"] = "SELECT post_id, user_id FROM like WHERE post_id IN (SELECT post_id FROM #posts)";
 		$fql["profiles"] .= " OR id IN (SELECT user_id FROM #likes)";
 	}
-
-	$url = "https://graph.facebook.com/fql?q=".urlencode(json_encode($fql))."&access_token=".$access_token;
     
+	$url = "https://graph.facebook.com/fql?q=".urlencode(json_encode($fql))."&access_token=".$access_token;
+    echo $url;
     $feed = fetch_url($url);
 	$data = json_decode($feed);
     
@@ -1092,11 +1091,14 @@ function fbsync_processfeed($data, $self, $a, $uid, $self_id, $user, $last_updat
 	}
     unset($applications);
     
+    
 	foreach ($posts AS $post) {
 		if ($post->updated_time > $last_updated)
 			$last_updated = $post->updated_time;
-            
-		fbsync_createpost($a, $uid, $contacts, $applications, $post, $create_user);
+        
+		$result = fbsync_createpost($a, $uid, $contacts, $applications, $post, $create_user);
+        
+        echo $result;
 	}
 
 	foreach ($comments AS $comment) {
