@@ -1338,7 +1338,16 @@ function statusnet_fetchhometimeline($a, $uid) {
 	$items = $connection->get('statuses/home_timeline', $parameters);
 
 	if (!is_array($items)) {
-		logger("statusnet_fetchhometimeline: Error fetching home timeline: ".$items, LOGGER_DEBUG);
+		if (is_object($items) AND isset($items->error))
+			$errormsg = $items->error;
+		elseif (is_object($items))
+			$errormsg = print_r($items, true);
+		elseif (is_string($items) OR is_float($items) OR is_int($items))
+			$errormsg = $items;
+		else
+			$errormsg = "Unknown error";
+
+		logger("statusnet_fetchhometimeline: Error fetching home timeline: ".$errormsg, LOGGER_DEBUG);
 		return;
 	}
 
