@@ -1,0 +1,36 @@
+#windowsphonepush-device_url-wrapper {
+	margin-top: 25px;
+}
+
+
+#windowsphonepush-enable-label {
+	float: left;
+	width: 200px;
+	margin-bottom: 25px;
+}
+
+#windowsphonepush-enable-chk {
+	float: left;
+}
+
+#windowsphonepush-device_url-label {
+	float: left;
+	width: 200px;
+	margin-bottom: 25px;
+}
+
+#windowsphonepush-device_url-text {
+	float: left;
+	background-color: #C0C0C0; 
+	width: 500px;
+}
+
+#windowsphonepush-senditemtext-label {
+	float: left;
+	width: 200px;
+	margin-bottom: 25px;
+}
+
+#windowsphonepush-senditemtext-chk {
+	float: left;
+}
