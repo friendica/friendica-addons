@@ -1,0 +1,30 @@
+# ADDON windowsphonepush
+# Copyright (C)
+# This file is distributed under the same license as the Friendica windowsphonepush addon package.
+# 
+# 
+# Translators:
+# Gerhard Seeber <gerhard@seeber.at>, 2014
+msgid ""
+msgstr ""
+
+#: windowsphonepush.php:85
+msgid "WindowsPhonePush settings updated."
+msgstr "WindowsPhonePush Einstellungen aktualisiert"
+
+#: geonames.php:114
+msgid "WindowsPhonePush Settings"
+msgstr "WindowsPhonePush Einstellungen"
+
+#: geonames.php:117
+msgid "Enable WindowsPhonePush Plugin"
+msgstr "WindowsPhonePush Plugin aktivieren"
+
+#: windowspushphone.php: 122
+msgid "Push text of new item"
+msgstr "Sende Text aus neuem Eintrag"
+
+#: geonames.php:127
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
