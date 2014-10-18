@@ -872,6 +872,9 @@ function statusnet_address($contact) {
 }
 
 function statusnet_fetch_contact($uid, $contact, $create_user) {
+	if ($contact->statusnet_profile_url == "")
+		return(-1);
+
 	// Check if the unique contact is existing
 	// To-Do: only update once a while
 	 $r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
@@ -950,15 +953,11 @@ function statusnet_fetch_contact($uid, $contact, $create_user) {
 		q("UPDATE `contact` SET `photo` = '%s',
 					`thumb` = '%s',
 					`micro` = '%s',
-					`name-date` = '%s',
-					`uri-date` = '%s',
 					`avatar-date` = '%s'
 				WHERE `id` = %d",
 			dbesc($photos[0]),
 			dbesc($photos[1]),
 			dbesc($photos[2]),
-			dbesc(datetime_convert()),
-			dbesc(datetime_convert()),
 			dbesc(datetime_convert()),
 			intval($contact_id)
 		);
@@ -971,7 +970,7 @@ function statusnet_fetch_contact($uid, $contact, $create_user) {
 
 		// check that we have all the photos, this has been known to fail on occasion
 
-		if((! $r[0]['photo']) || (! $r[0]['thumb']) || (! $r[0]['micro']) || ($update_photo)) {
+		if((!$r[0]['photo']) || (!$r[0]['thumb']) || (!$r[0]['micro']) || ($update_photo)) {
 
 			logger("statusnet_fetch_contact: Updating contact ".$contact->screen_name, LOGGER_DEBUG);
 

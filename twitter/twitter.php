@@ -892,6 +892,9 @@ function twitter_queue_hook(&$a,&$b) {
 function twitter_fetch_contact($uid, $contact, $create_user) {
 	require_once("include/Photo.php");
 
+	if ($contact->id_str == "")
+		return(-1);
+
 	$avatar = str_replace("_normal.", ".", $contact->profile_image_url_https);
 
 	$info = get_photo_info($avatar);
