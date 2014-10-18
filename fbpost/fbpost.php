@@ -967,21 +967,8 @@ function fbpost_cron($a,$b) {
 	set_config('facebook','last_poll', time());
 }
 
-function fbpost_cleanpicture($url) {
-	require_once("include/Photo.php");
-
-	$urldata = parse_url($url);
-	if (isset($urldata["query"])) {
-		parse_str($urldata["query"], $querydata);
-		if (isset($querydata["url"]) AND (get_photo_info($querydata["url"])))
-			return($querydata["url"]);
-	}
-	return($url);
-}
-
 function fbpost_fetchwall($a, $uid) {
 	require_once("include/oembed.php");
-	require_once("include/network.php");
 	require_once('mod/item.php');
 
 	$access_token = get_pconfig($uid,'facebook','access_token');
@@ -1042,7 +1029,6 @@ function fbpost_fetchwall($a, $uid) {
 		$type = "";
 
 		if(isset($item->name) and isset($item->link)) {
-			$item->link = original_url($item->link);
 			$oembed_data = oembed_fetch_url($item->link);
 			$type = $oembed_data->type;
 			$content = "[bookmark=".$item->link."]".$item->name."[/bookmark]";
@@ -1085,12 +1071,9 @@ function fbpost_fetchwall($a, $uid) {
 				}
 			}
 
-			$picture = fbpost_cleanpicture($picture);
-
-			if(($picture != "") && isset($item->link)) {
-				$item->link = original_url($item->link);
+			if(($picture != "") && isset($item->link))
 				$content .= "\n".'[url='.$item->link.'][img]'.$picture.'[/img][/url]';
-			} else {
+			else {
 				if ($picture != "")
 					$content .= "\n".'[img]'.$picture.'[/img]';
 				// if just a link, it may be a wall photo - check
