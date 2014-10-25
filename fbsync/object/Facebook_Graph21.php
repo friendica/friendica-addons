@@ -6,12 +6,150 @@ Class Facebook_Graph21 extends Facebook
 {
     public $access_token;// = "test";
     public $uid;
+    private $cachedContacts = array();
+    public $graphBase = "https://graph.facebook.com/v2.1/";
     
     function __construct($uid)
     {
         $this->uid = $uid;
         $this->access_token = get_pconfig($uid,'facebook','access_token');
     }
+    
+    function PictureURL($facebookID)
+    {
+        //Picture is always here.  This url redirects to CDN.  CDN images should not be used as they can move around.
+        //TODO: the Proxy URL that is being used to serve images is screwing up this URL
+        //TODO: Add this to make image sized correctly '&type=square&width=80&height=80'
+        return $this->graphBase . $post->from->id . '/picture';
+    }
+    
+    //Every User Request must be processed individually.
+    //Facebook no longer allows you to request all of a users contacts.
+    function FetchContact($facebookID, $uid, $create_user)
+    {
+        /*
+            $facebookID     - The facebook user to fetch
+            $uid            - The user to associate the fetched facebook contact with.
+            $create_user    - If the fetched user doesn't exist, create him as a contact.
+        */
+        
+        $url = $graphBase . $facebookID . '/&access_token=' . $access_token;
+        $contact = fetch_url($url);
+        $contact = json_decode($contact);
+        $url = normalise_link($contact->link);
+        
+        // Check if the unique contact is existing
+        $r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
+            dbesc($url));
+
+        if (count($r) == 0)
+            q("INSERT INTO unique_contacts (url, name, nick, avatar) VALUES ('%s', '%s', '%s', '%s')",
+                dbesc($url),
+                dbesc($contact->name),
+                dbesc($contact->username),
+                dbesc($this->PictureURL($contact->id)));
+        else
+            q("UPDATE unique_contacts SET name = '%s', nick = '%s', avatar = '%s' WHERE url = '%s'",
+                dbesc($contact->name),
+                dbesc($contact->username),
+                dbesc($this->PictureURL($contact-id)),
+                dbesc($url));
+
+        //TODO: uid is undefined
+        $r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
+            intval($uid), dbesc("facebook::".$contact->id));
+        
+        if(!count($r) AND !$create_user)
+            return(0);
+
+        if (count($r) AND ($r[0]["readonly"] OR $r[0]["blocked"])) {
+            logger("fbsync_fetch_contact: Contact '".$r[0]["nick"]."' is blocked or readonly.", LOGGER_DEBUG);
+            return(-1);
+        }
+        //This should probably happen always if the unique_contacts record is created.
+        if(!count($r)) 
+        {
+            // create contact record if it doesn't exist
+            q(" INSERT INTO `contact` (
+                    `uid`, 
+                    `created`, 
+                    `alias`,
+                    `poll`, 
+                    `network`, 
+                    `rel`, 
+                    `priority`,
+                    `writable`, 
+                    `blocked`, 
+                    `readonly`, 
+                    `pending`
+                ) VALUES (
+                    %d, 
+                    '%s', 
+                    '%s'
+                    1,
+                    1,
+                    0,
+                    0,
+                    0
+                )",
+                intval($uid),                       //uid
+                dbesc(datetime_convert()),          //created
+                dbesc("facebook::".$contact->id),   //alias                
+                dbesc("facebook::".$contact->id),   //poll
+                dbesc(NETWORK_FACEBOOK),            //network
+                intval(CONTACT_IS_FRIEND)           //rel
+            );
+
+            $r = q("SELECT * FROM `contact` WHERE `alias` = '%s' AND `uid` = %d LIMIT 1",
+                dbesc("facebook::".$contact->id),
+                intval($uid)
+                );
+        }       
+                
+		// update profile photos once every 12 hours as we have no notification of when they change.
+        //TODO: Probably need to test if avatar-date is null
+		$update_photo = ($r[0]['avatar-date'] < datetime_convert('','','now -12 hours'));
+
+		// check that we have all the photos, this has been known to fail on occasion
+		if((! $r[0]['photo']) || (! $r[0]['thumb']) || (! $r[0]['micro']) || ($update_photo)) {
+
+			logger("fbsync_fetch_contact: Updating contact ".$contact->username, LOGGER_DEBUG);
+
+			require_once("Photo.php");
+
+			$photos = import_profile_photo($this->PictureURL($facebookID), $uid, $r[0]['id']);
+
+			q("UPDATE `contact` SET `photo` = '%s',
+						`thumb` = '%s',
+						`micro` = '%s',
+						`name-date` = '%s',
+						`uri-date` = '%s',
+						`avatar-date` = '%s',
+						`url` = '%s',
+						`nurl` = '%s',
+						`addr` = '%s',
+						`name` = '%s',
+						`nick` = '%s',
+						`notify` = '%s'
+					WHERE `id` = %d",
+				dbesc($photos[0]),
+				dbesc($photos[1]),
+				dbesc($photos[2]),
+				dbesc(datetime_convert()),
+				dbesc(datetime_convert()),
+				dbesc(datetime_convert()),
+				dbesc($contact->url),
+				dbesc(normalise_link($contact->url)),
+				dbesc($contact->username."@facebook.com"),
+				dbesc($contact->name),
+				dbesc($contact->username),
+				dbesc($contact->id),
+				intval($r[0]['id'])
+			);
+		}
+        
+        return($r[0]["id"]);
+	}
     
     function CreatePost($a, $self, $contacts, $applications, $post, $create_user)
     {
@@ -53,8 +191,8 @@ Class Facebook_Graph21 extends Facebook
         $postarray['author-name'] = $post->from->name; // $contacts[$post->actor_id]->name;
         $postarray['author-link'] = 'https://www.facebook.com/' . $post->from->id; //$contacts[$post->actor_id]->url;
         
-        //TODO: Pic not included in graph
-        //$postarray['author-avatar'] = $contacts[$post->actor_id]->pic_square;
+        
+        $postarray['author-avatar'] = $this->PictureURL($post->from->id);
         
         //TODO: Source not in in graph api.  What was this before?  Seemed like it was the same as the author with FQL
         //$postarray['owner-name'] = $contacts[$post->source_id]->name;
@@ -64,7 +202,9 @@ Class Facebook_Graph21 extends Facebook
         //TODO: Parent Post Code
         
         //TODO: Set $postarray['contact-id'] = $contact_id;  Should either be the actor_id or the source_id (not in graph?)
-        $postarray['contact-id'] = 1;
+        echo $post->from->id;
+        //TODO: From Needs to be added in order to be set for item?
+        $postarray['contact-id'] = 1; //$post->from->id;
         
         //Set Object Type
         //TODO: This code is broken.

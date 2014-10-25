@@ -783,10 +783,26 @@ function fbsync_fetch_contact($uid, $contact, $create_user) {
 
 	if(!count($r)) {
 		// create contact record
-		q("INSERT INTO `contact` (`uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
-					`name`, `nick`, `photo`, `network`, `rel`, `priority`,
-					`writable`, `blocked`, `readonly`, `pending`)
-					VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, 0, 0, 0)",
+		q("INSERT INTO `contact` (
+            `uid`, 
+            `created`, 
+            `url`, 
+            `nurl`, 
+            `addr`, 
+            `alias`, 
+            `notify`, 
+            `poll`,
+			`name`, 
+            `nick`, 
+            `photo`, 
+            `network`, 
+            `rel`, 
+            `priority`,
+            `writable`, 
+            `blocked`, 
+            `readonly`, 
+            `pending`
+        ) VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, 0, 0, 0)",
 			intval($uid),
 			dbesc(datetime_convert()),
 			dbesc($contact->url),
@@ -1013,7 +1029,7 @@ function fbsync_fetchfeed($a, $uid, $self_id, $last_updated) {
 	}
     
 	$url = "https://graph.facebook.com/fql?q=".urlencode(json_encode($fql))."&access_token=".$access_token;
-    echo $url;
+    logger("fbsync_fetchfeed: query: $url",LOGGER_DEBUG);
     $feed = fetch_url($url);
 	$data = json_decode($feed);
     
@@ -1098,7 +1114,7 @@ function fbsync_processfeed($data, $self, $a, $uid, $self_id, $user, $last_updat
         
 		$result = fbsync_createpost($a, $uid, $contacts, $applications, $post, $create_user);
         
-        echo $result;
+        //echo $result;
 	}
 
 	foreach ($comments AS $comment) {

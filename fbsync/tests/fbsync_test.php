@@ -29,7 +29,7 @@ $result = fbsync_processfeed($data, $self, $a, $uid, $self_id, $user, $last_upda
 if ($result != 0) die("FQL Processing broken.\n");
 
 echo "Done with fql_data processing.\n";
-
+//die();
 //Test data processing -- graph`
 
 // Test Base Class
@@ -64,6 +64,12 @@ if ($post['plink'] != "https://www.facebook.com/109524391244/posts/1015248318782
 echo "All done\n";
 
 /*
+
+Outstanding Questions:
+
+
+
+
 https://developers.facebook.com/tools/explorer
 SELECT action_links, actor_id, app_data, app_id, attachment, attribution, comment_info, created_time, filter_key, like_info, message, message_tags, parent_post_id, permalink, place, post_id, privacy, share_count, share_info, source_id, subscribed, tagged_ids, type, updated_time, with_tags FROM stream where filter_key ='nf' ORDER BY updated_time DESC LIMIT 5
 
