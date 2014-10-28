@@ -802,7 +802,7 @@ function fbsync_fetch_contact($uid, $contact, $create_user) {
             `blocked`, 
             `readonly`, 
             `pending`
-        ) VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, 0, 0, 0)",
+        ) VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, %d, %d, %d)",
 			intval($uid),
 			dbesc(datetime_convert()),
 			dbesc($contact->url),
@@ -817,7 +817,10 @@ function fbsync_fetch_contact($uid, $contact, $create_user) {
 			dbesc(NETWORK_FACEBOOK),
 			intval(CONTACT_IS_FRIEND),
 			intval(1),
-			intval(1)
+			intval(1),
+            intval(0),
+            intval(0),
+            intval(0)
 		);
 
 		$r = q("SELECT * FROM `contact` WHERE `alias` = '%s' AND `uid` = %d LIMIT 1",

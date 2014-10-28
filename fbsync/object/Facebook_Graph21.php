@@ -82,22 +82,18 @@ Class Facebook_Graph21 extends Facebook
                     `blocked`, 
                     `readonly`, 
                     `pending`
-                ) VALUES (
-                    %d, 
-                    '%s', 
-                    '%s'
-                    1,
-                    1,
-                    0,
-                    0,
-                    0
-                )",
+                ) VALUES ( %d, '%s', '%s', '%s', '%s', %d, %d, %d, %d, %d, %d)",
                 intval($uid),                       //uid
                 dbesc(datetime_convert()),          //created
                 dbesc("facebook::".$contact->id),   //alias                
                 dbesc("facebook::".$contact->id),   //poll
                 dbesc(NETWORK_FACEBOOK),            //network
-                intval(CONTACT_IS_FRIEND)           //rel
+                intval(CONTACT_IS_FRIEND),          //rel
+                intval(1),                          //priority
+                intval(1),                          //writable
+                intval(0),                          //blocked
+                intval(0),                          //readonly
+                intval(0)                           //pending
             );
 
             $r = q("SELECT * FROM `contact` WHERE `alias` = '%s' AND `uid` = %d LIMIT 1",
