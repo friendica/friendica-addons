@@ -46,8 +46,14 @@ if ($myFBSync->access_token == '') die("failed to load access_token");
 
 //Test FetchContact 
 //TODO: build tests for facebook api requests using API test user functions
+$create_user = 1;
+$facebookID = 109524391244; //BaltimoreNode
+$id1 = $myFBSync->FetchContact($facebookID, $uid, $create_user);
+//Re fetch the user, and make sure the id mataches
+$id2 = $myFBSync->FetchContact($facebookID, $uid, $create_user);
+if ($id1 != $id2) die("fetch contact did not work consistently");
 
-//Test CreatePost
+//Test CreatePost in friendica
 $posts = json_decode(file_get_contents("./addon/fbsync/tests/graph2.1-no-filter.txt"));
 
 $post = $myFBSync->CreatePost($a,0,0,0,$posts->data[0],0);

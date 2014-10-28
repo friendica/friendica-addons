@@ -25,15 +25,15 @@ Class Facebook_Graph21 extends Facebook
     
     //Every User Request must be processed individually.
     //Facebook no longer allows you to request all of a users contacts.
-    function FetchContact($facebookID, $uid, $create_user)
+    function FetchContact($facebookID, $create_user)
     {
         /*
             $facebookID     - The facebook user to fetch
-            $uid            - The user to associate the fetched facebook contact with.
             $create_user    - If the fetched user doesn't exist, create him as a contact.
         */
         
-        $url = $graphBase . $facebookID . '/&access_token=' . $access_token;
+        //TODO: check if the contact has been updated recently before making this hit.  Not sure if this is possible.
+        $url = $this->graphBase . $facebookID . '?access_token=' . $this->access_token;
         $contact = fetch_url($url);
         $contact = json_decode($contact);
         $url = normalise_link($contact->link);
@@ -55,9 +55,8 @@ Class Facebook_Graph21 extends Facebook
                 dbesc($this->PictureURL($contact-id)),
                 dbesc($url));
 
-        //TODO: uid is undefined
         $r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
-            intval($uid), dbesc("facebook::".$contact->id));
+            intval($this->uid), dbesc("facebook::".$contact->id));
         
         if(!count($r) AND !$create_user)
             return(0);
@@ -83,7 +82,7 @@ Class Facebook_Graph21 extends Facebook
                     `readonly`, 
                     `pending`
                 ) VALUES ( %d, '%s', '%s', '%s', '%s', %d, %d, %d, %d, %d, %d)",
-                intval($uid),                       //uid
+                intval($this->uid),                       //uid
                 dbesc(datetime_convert()),          //created
                 dbesc("facebook::".$contact->id),   //alias                
                 dbesc("facebook::".$contact->id),   //poll
@@ -98,7 +97,7 @@ Class Facebook_Graph21 extends Facebook
 
             $r = q("SELECT * FROM `contact` WHERE `alias` = '%s' AND `uid` = %d LIMIT 1",
                 dbesc("facebook::".$contact->id),
-                intval($uid)
+                intval($this->uid)
                 );
         }       
                 
@@ -113,9 +112,10 @@ Class Facebook_Graph21 extends Facebook
 
 			require_once("Photo.php");
 
-			$photos = import_profile_photo($this->PictureURL($facebookID), $uid, $r[0]['id']);
+			$photos = import_profile_photo($this->PictureURL($facebookID), $this->uid, $r[0]['id']);
 
-			q("UPDATE `contact` SET `photo` = '%s',
+			q("UPDATE `contact` SET 
+                        `photo` = '%s',
 						`thumb` = '%s',
 						`micro` = '%s',
 						`name-date` = '%s',
@@ -198,9 +198,9 @@ Class Facebook_Graph21 extends Facebook
         //TODO: Parent Post Code
         
         //TODO: Set $postarray['contact-id'] = $contact_id;  Should either be the actor_id or the source_id (not in graph?)
-        echo $post->from->id;
+        //echo $post->from->id;
         //TODO: From Needs to be added in order to be set for item?
-        $postarray['contact-id'] = 1; //$post->from->id;
+        $postarray['contact-id'] = $this->FetchContact($post->from->id, $create_user);
         
         //Set Object Type
         //TODO: This code is broken.
