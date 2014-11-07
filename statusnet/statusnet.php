@@ -532,6 +532,9 @@ function statusnet_post_hook(&$a,&$b) {
 		return;
 
 	// if posts comes from statusnet don't send it back
+	if($b['extid'] == NETWORK_STATUSNET)
+		return;
+
 	if($b['app'] == "StatusNet")
 		return;
 
@@ -829,7 +832,9 @@ function statusnet_fetchtimeline($a, $uid) {
 			$_REQUEST["type"] = "wall";
 			$_REQUEST["api_source"] = true;
 			$_REQUEST["profile_uid"] = $uid;
-			$_REQUEST["source"] = "StatusNet";
+			//$_REQUEST["source"] = "StatusNet";
+			$_REQUEST["source"] = $post->source;
+			$_REQUEST["extid"] = NETWORK_STATUSNET;
 
 			//$_REQUEST["date"] = $post->created_at;
 

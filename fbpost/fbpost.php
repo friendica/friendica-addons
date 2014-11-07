@@ -428,6 +428,9 @@ function fbpost_post_hook(&$a,&$b) {
 	logger('fbpost_post_hook: Facebook post first check successful', LOGGER_DEBUG);
 
 	// if post comes from facebook don't send it back
+	if($b['extid'] == NETWORK_FACEBOOK)
+		return;
+
 	if(($b['app'] == "Facebook") AND ($b['verb'] != ACTIVITY_LIKE))
 		return;
 
@@ -967,8 +970,21 @@ function fbpost_cron($a,$b) {
 	set_config('facebook','last_poll', time());
 }
 
+function fbpost_cleanpicture($url) {
+	require_once("include/Photo.php");
+
+	$urldata = parse_url($url);
+	if (isset($urldata["query"])) {
+		parse_str($urldata["query"], $querydata);
+		if (isset($querydata["url"]) AND (get_photo_info($querydata["url"])))
+			return($querydata["url"]);
+	}
+	return($url);
+}
+
 function fbpost_fetchwall($a, $uid) {
 	require_once("include/oembed.php");
+	require_once("include/network.php");
 	require_once('mod/item.php');
 
 	$access_token = get_pconfig($uid,'facebook','access_token');
@@ -1019,7 +1035,9 @@ function fbpost_fetchwall($a, $uid) {
 		$_REQUEST["type"] = "wall";
 		$_REQUEST["api_source"] = true;
 		$_REQUEST["profile_uid"] = $uid;
-		$_REQUEST["source"] = "Facebook";
+		//$_REQUEST["source"] = "Facebook";
+		$_REQUEST["source"] = $item->application->name;
+		$_REQUEST["extid"] = NETWORK_FACEBOOK;
 
 		$_REQUEST["title"] = "";
 
@@ -1029,6 +1047,7 @@ function fbpost_fetchwall($a, $uid) {
 		$type = "";
 
 		if(isset($item->name) and isset($item->link)) {
+			$item->link = original_url($item->link);
 			$oembed_data = oembed_fetch_url($item->link);
 			$type = $oembed_data->type;
 			$content = "[bookmark=".$item->link."]".$item->name."[/bookmark]";
@@ -1071,9 +1090,17 @@ function fbpost_fetchwall($a, $uid) {
 				}
 			}
 
-			if(($picture != "") && isset($item->link))
+			if(trim($_REQUEST["body"].$content.$quote) == '') {
+				logger('facebook: empty body 2 '.$item->id.' '.print_r($item, true));
+				continue;
+			}
+
+			$picture = fbpost_cleanpicture($picture);
+
+			if(($picture != "") && isset($item->link)) {
+				$item->link = original_url($item->link);
 				$content .= "\n".'[url='.$item->link.'][img]'.$picture.'[/img][/url]';
-			else {
+			} else {
 				if ($picture != "")
 					$content .= "\n".'[img]'.$picture.'[/img]';
 				// if just a link, it may be a wall photo - check
