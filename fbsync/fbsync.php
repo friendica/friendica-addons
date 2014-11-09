@@ -216,6 +216,7 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	$access_token = get_pconfig($uid,'facebook','access_token');
 
 	require_once("include/oembed.php");
+	require_once("include/network.php");
 
 	// check if it was already imported
 	$r = q("SELECT * FROM `item` WHERE `uid` = %d AND `uri` = '%s' LIMIT 1",
@@ -339,6 +340,7 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	$type = "";
 
 	if (isset($post->attachment->name) and isset($post->attachment->href)) {
+		$post->attachment->href = original_url($post->attachment->href);
 		$oembed_data = oembed_fetch_url($post->attachment->href);
 		$type = $oembed_data->type;
 		if ($type == "rich")
@@ -390,6 +392,8 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 						logger('fbsync_createpost: error fetching fbid '.$media->photo->fbid.' '.print_r($data, true), LOGGER_DEBUG);
 				}
 			}
+
+			$preview = fbpost_cleanpicture($preview);
 
 			if (isset($media->href) AND ($preview != "") AND ($media->href != ""))
 				$content .= "\n".'[url='.$media->href.'][img]'.$preview.'[/img][/url]';
