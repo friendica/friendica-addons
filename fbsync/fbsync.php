@@ -217,6 +217,7 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 
 	require_once("include/oembed.php");
 	require_once("include/network.php");
+	require_once("include/items.php");
 
 	// check if it was already imported
 	$r = q("SELECT * FROM `item` WHERE `uid` = %d AND `uri` = '%s' LIMIT 1",
@@ -336,16 +337,19 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 				break;
 		}
 
+	$pagedata = array();
 	$content = "";
-	$type = "";
+	$pagedata["type"] = "";
 
 	if (isset($post->attachment->name) and isset($post->attachment->href)) {
 		$post->attachment->href = original_url($post->attachment->href);
 		$oembed_data = oembed_fetch_url($post->attachment->href);
-		$type = $oembed_data->type;
-		if ($type == "rich")
-			$type = "link";
+		$pagedata["type"] = $oembed_data->type;
+		if ($pagedata["type"] == "rich")
+			$pagedata["type"] = "link";
 
+		$pagedata["url"] = $post->attachment->href;
+		$pagedata["title"] = $post->attachment->name;
 		$content = "[bookmark=".$post->attachment->href."]".$post->attachment->name."[/bookmark]";
 
 		// If a link is not only attached but also added in the body, look if it can be removed in the body.
@@ -357,28 +361,28 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	} elseif (isset($post->attachment->name) AND ($post->attachment->name != ""))
 		$content = "[b]" . $post->attachment->name."[/b]";
 
-	$quote = "";
+	$pagedata["text"] = "";
 	if (isset($post->attachment->description) and ($post->attachment->fb_object_type != "photo"))
-		$quote = $post->attachment->description;
+		$pagedata["text"] = $post->attachment->description;
 
 	if (isset($post->attachment->caption) and ($post->attachment->fb_object_type == "photo"))
-		$quote = $post->attachment->caption;
+		$pagedata["text"] = $post->attachment->caption;
 
-	if ($quote.$post->attachment->href.$content.$postarray["body"] == "")
+	if ($pagedata["text"].$post->attachment->href.$content.$postarray["body"] == "")
 		return;
 
-	if (isset($post->attachment->media) AND (($type == "") OR ($type == "link"))) {
+	if (isset($post->attachment->media) AND (($pagedata["type"] == "") OR ($pagedata["type"] == "link"))) {
 		foreach ($post->attachment->media AS $media) {
 
 			if (isset($media->type))
-				$type = $media->type;
+				$pagedata["type"] = $media->type;
 
 			if (isset($media->src))
-				$preview = $media->src;
+				$pagedata["images"][0]["src"] = $media->src;
 
 			if (isset($media->photo)) {
 				if (isset($media->photo->images) AND (count($media->photo->images) > 1))
-					$preview = $media->photo->images[1]->src;
+					$pagedata["images"][0]["src"] = $media->photo->images[1]->src;
 
 				if (isset($media->photo->fbid)) {
 					logger('fbsync_createpost: fetching fbid '.$media->photo->fbid, LOGGER_DEBUG);
@@ -386,20 +390,22 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 					$feed = fetch_url($url);
 					$data = json_decode($feed);
 					if (isset($data->images)) {
-						$preview = $data->images[0]->source;
-						logger('fbsync_createpost: got fbid '.$media->photo->fbid.' image '.$preview, LOGGER_DEBUG);
+						$pagedata["images"][0]["src"] = $data->images[0]->source;
+						logger('fbsync_createpost: got fbid '.$media->photo->fbid.' image '.$pagedata["images"][0]["src"], LOGGER_DEBUG);
 					} else
 						logger('fbsync_createpost: error fetching fbid '.$media->photo->fbid.' '.print_r($data, true), LOGGER_DEBUG);
 				}
 			}
 
-			$preview = fbpost_cleanpicture($preview);
+			$pagedata["images"][0]["src"] = fbpost_cleanpicture($pagedata["images"][0]["src"]);
 
-			if (isset($media->href) AND ($preview != "") AND ($media->href != ""))
-				$content .= "\n".'[url='.$media->href.'][img]'.$preview.'[/img][/url]';
-			else {
-				if ($preview != "")
-					$content .= "\n".'[img]'.$preview.'[/img]';
+			if (isset($media->href) AND ($pagedata["images"][0]["src"] != "") AND ($media->href != "")) {
+				$media->href = original_url($media->href);
+				$pagedata["url"] = $media->href;
+				$content .= "\n".'[url='.$media->href.'][img]'.$pagedata["images"][0]["src"].'[/img][/url]';
+			} else {
+				if ($pagedata["images"][0]["src"] != "")
+					$content .= "\n".'[img]'.$pagedata["images"][0]["src"].'[/img]';
 
 				// if just a link, it may be a wall photo - check
 				if (isset($post->link))
@@ -408,25 +414,20 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 		}
 	}
 
-	if ($type == "link")
-		$postarray["object-type"] = ACTIVITY_OBJ_BOOKMARK;
+	if ($pagedata["type"] != "") {
+		if ($pagedata["type"] == "link")
+			$postarray["object-type"] = ACTIVITY_OBJ_BOOKMARK;
 
-	if ($content)
-		$postarray["body"] .= "\n";
+		$postarray["body"] .= add_page_info_data($pagedata);
+	} else {
+		if ($content)
+			$postarray["body"] .= "\n".trim($content);
 
-	if ($type)
-		$postarray["body"] .= "[class=type-".$type."]";
+		if ($pagedata["text"])
+			$postarray["body"] .= "\n[quote]".trim($pagedata["text"])."[/quote]";
 
-	if ($content)
-		$postarray["body"] .= trim($content);
-
-	if ($quote)
-		$postarray["body"] .= "\n[quote]".trim($quote)."[/quote]";
-
-	if ($type)
-		$postarray["body"] .= "[/class]";
-
-	$postarray["body"] = trim($postarray["body"]);
+		$postarray["body"] = trim($postarray["body"]);
+	}
 
 	if (trim($postarray["body"]) == "")
 		return;
