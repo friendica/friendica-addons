@@ -18,6 +18,7 @@ FBPost:
 */
 
 require_once("addon/fbpost/fbpost.php");
+require_once("include/items.php");
 
 define('FBSYNC_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
@@ -158,7 +159,6 @@ function fbsync_settings_post(&$a,&$b) {
 
 function fbsync_cron($a,$b) {
 	$last = get_config('fbsync','last_poll');
-
 	$poll_interval = intval(get_config('fbsync','poll_interval'));
 	if(! $poll_interval)
 		$poll_interval = FBSYNC_DEFAULT_POLL_INTERVAL;
@@ -166,19 +166,29 @@ function fbsync_cron($a,$b) {
 	if($last) {
 		$next = $last + ($poll_interval * 60);
 		if($next > time()) {
-			logger('fbsync_cron: poll intervall not reached');
+			logger('fbsync_cron: poll intervall not reached. poll interval: ' . $poll_interval * 60 . '; actual interval: ' . $poll_interval);
 			return;
 		}
 	}
 	logger('fbsync_cron: cron_start');
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'fbsync' AND `k` = 'sync' AND `v` = '1' ORDER BY RAND()");
+    
 	if(count($r)) {
 		foreach($r as $rr) {
-			fbsync_get_self($rr['uid']);
-
-			logger('fbsync_cron: importing timeline from user '.$rr['uid']);
-			fbsync_fetchfeed($a, $rr['uid']);
+            logger('fbsync_cron: importing timeline from user '.$rr['uid']);
+			
+            $uid = fbsync_get_self($rr['uid']);
+            $self_id = get_pconfig($uid,'fbsync','self_id');
+            $last_updated = get_pconfig($uid,'fbsync','last_updated');
+            
+            $self = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1", intval($uid));
+            $user = q("SELECT * FROM `user` WHERE `uid` = %d AND `account_expired` = 0 LIMIT 1", intval($uid));
+            if(! count($user))
+                return;
+                
+			$data = fbsync_fetchfeed($a, $uid, $self_id, $last_updated);
+            fbsync_processfeed($data, $self, $a, $uid, $self_id, $user, $last_updated);
 		}
 	}
 
@@ -196,8 +206,7 @@ function fbsync_expire($a,$b) {
 
 	$r = q("DELETE FROM `item` WHERE `deleted` AND `network` = '%s'", dbesc(NETWORK_FACEBOOK));
 
-	require_once("include/items.php");
-
+	
 	logger('fbsync_expire: expire_start');
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'fbsync' AND `k` = 'sync' AND `v` = '1' ORDER BY RAND()");
@@ -211,8 +220,12 @@ function fbsync_expire($a,$b) {
 	logger('fbsync_expire: expire_end');
 }
 
-function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $create_user) {
-
+function fbsync_createpost($a, $uid, $contacts, $applications, $post, $create_user) {
+    //Sanitize Inputs
+    $post->actor_id = number_format($post->actor_id, 0, '', '');
+	$post->source_id = number_format($post->source_id, 0, '', '');
+    $post->app_id = number_format($post->app_id, 0, '', '');
+        
 	$access_token = get_pconfig($uid,'facebook','access_token');
 
 	require_once("include/oembed.php");
@@ -224,7 +237,7 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 		dbesc('fb::'.$post->post_id)
 	);
 	if(count($r))
-		return;
+		return 1;
 
 	$postarray = array();
 	$postarray['gravity'] = 0;
@@ -298,10 +311,10 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 
 		if ($contact_id == -1) {
 			logger('fbsync_createpost: Contact is blocked. Post not imported '.print_r($post, true), LOGGER_DEBUG);
-			return;
+			return 2;
 		} elseif (($contact_id <= 0) AND !$create_user) {
 			logger('fbsync_createpost: No matching contact found. Post not imported '.print_r($post, true), LOGGER_DEBUG);
-			return;
+			return 3;
 		} elseif ($contact_id == 0) {
 			// This case should never happen
 			logger('fbsync_createpost: No matching contact found. Using own id. (Should never happen) '.print_r($post, true), LOGGER_DEBUG);
@@ -321,20 +334,21 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	// Change the object type when an attachment is present
 	if (isset($post->attachment->fb_object_type))
 		logger('fb_object_type: '.$post->attachment->fb_object_type." ".print_r($post->attachment, true), LOGGER_DEBUG);
-		switch ($post->attachment->fb_object_type) {
-			case 'photo':
-				$postarray['object-type'] = ACTIVITY_OBJ_IMAGE; // photo is deprecated: http://activitystrea.ms/head/activity-schema.html#image
-				break;
-			case 'video':
-				$postarray['object-type'] = ACTIVITY_OBJ_VIDEO;
-				break;
-			case '':
-				//$postarray['object-type'] = ACTIVITY_OBJ_BOOKMARK;
-				break;
-			default:
-				logger('Unknown object type '.$post->attachment->fb_object_type, LOGGER_DEBUG);
-				break;
-		}
+    
+    switch ($post->attachment->fb_object_type) {
+        case 'photo':
+            $postarray['object-type'] = ACTIVITY_OBJ_IMAGE; // photo is deprecated: http://activitystrea.ms/head/activity-schema.html#image
+            break;
+        case 'video':
+            $postarray['object-type'] = ACTIVITY_OBJ_VIDEO;
+            break;
+        case '':
+            //$postarray['object-type'] = ACTIVITY_OBJ_BOOKMARK;
+            break;
+        default:
+            logger('Unknown object type '.$post->attachment->fb_object_type, LOGGER_DEBUG);
+            break;
+    }
 
 	$content = "";
 	$type = "";
@@ -365,7 +379,7 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 		$quote = $post->attachment->caption;
 
 	if ($quote.$post->attachment->href.$content.$postarray["body"] == "")
-		return;
+		return 3;
 
 	if (isset($post->attachment->media) AND (($type == "") OR ($type == "link"))) {
 		foreach ($post->attachment->media AS $media) {
@@ -429,7 +443,7 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	$postarray["body"] = trim($postarray["body"]);
 
 	if (trim($postarray["body"]) == "")
-		return;
+		return 4;
 
 	if ($prebody != "")
 		$postarray["body"] = $prebody.$postarray["body"]."[/share]";
@@ -444,24 +458,17 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 
 	if(isset($post->privacy) && $post->privacy->value !== '') {
 		$postarray['private'] = 1;
-		$postarray['allow_cid'] = '<' . $self[0]['id'] . '>';
+		$postarray['allow_cid'] = '<' . $uid . '>';
 	}
-
-	/*
-	$postarray["location"] = $post->place->name;
-	postarray["coord"] = $post->geo->coordinates[0]." ".$post->geo->coordinates[1];
-	*/
-
-	//$types = array(46, 80, 237, 247, 308);
-	//if (!in_array($post->type, $types))
-	//	$postarray["body"] = "Type: ".$post->type."\n".$postarray["body"];
-	//print_r($post);
-	//print_r($postarray);
+    
 	$item = item_store($postarray);
-	logger('fbsync_createpost: User '.$self[0]["nick"].' posted feed item '.$item, LOGGER_DEBUG);
+	logger('fbsync_createpost: User ' . $uid . ' posted feed item '.$item, LOGGER_DEBUG);
+    return 0;
 }
 
 function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $applications, $comment) {
+    //Sanitize Data
+    $comment->fromid = number_format($comment->fromid, 0, '', '');
 
 	// check if it was already imported
 	$r = q("SELECT `uri` FROM `item` WHERE `uid` = %d AND `uri` = '%s' LIMIT 1",
@@ -654,6 +661,8 @@ function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $appl
 }
 
 function fbsync_createlike($a, $uid, $self_id, $self, $contacts, $like) {
+    //Sanitize data
+    $like->user_id = number_format($like->user_id, 0, '', '');
 
 	$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
 				dbesc("fb::".$like->post_id),
@@ -778,10 +787,26 @@ function fbsync_fetch_contact($uid, $contact, $create_user) {
 
 	if(!count($r)) {
 		// create contact record
-		q("INSERT INTO `contact` (`uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
-					`name`, `nick`, `photo`, `network`, `rel`, `priority`,
-					`writable`, `blocked`, `readonly`, `pending`)
-					VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, 0, 0, 0)",
+		q("INSERT INTO `contact` (
+            `uid`, 
+            `created`, 
+            `url`, 
+            `nurl`, 
+            `addr`, 
+            `alias`, 
+            `notify`, 
+            `poll`,
+			`name`, 
+            `nick`, 
+            `photo`, 
+            `network`, 
+            `rel`, 
+            `priority`,
+            `writable`, 
+            `blocked`, 
+            `readonly`, 
+            `pending`
+        ) VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, %d, %d, %d)",
 			intval($uid),
 			dbesc(datetime_convert()),
 			dbesc($contact->url),
@@ -796,7 +821,10 @@ function fbsync_fetch_contact($uid, $contact, $create_user) {
 			dbesc(NETWORK_FACEBOOK),
 			intval(CONTACT_IS_FRIEND),
 			intval(1),
-			intval(1)
+			intval(1),
+            intval(0),
+            intval(0),
+            intval(0)
 		);
 
 		$r = q("SELECT * FROM `contact` WHERE `alias` = '%s' AND `uid` = %d LIMIT 1",
@@ -986,54 +1014,45 @@ function fbsync_fetchuser($a, $uid, $id) {
 	return($user);
 }
 
-function fbsync_fetchfeed($a, $uid) {
+function fbsync_fetchfeed($a, $uid, $self_id, $last_updated) {
 	$access_token = get_pconfig($uid,'facebook','access_token');
-	$last_updated = get_pconfig($uid,'fbsync','last_updated');
-	$self_id = get_pconfig($uid,'fbsync','self_id');
-
-	$create_user = get_pconfig($uid, 'fbsync', 'create_user');
-	$do_likes = get_config('fbsync', 'do_likes');
-
-	$self = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
-		intval($uid)
-	);
-
-	$user = q("SELECT * FROM `user` WHERE `uid` = %d AND `account_expired` = 0 LIMIT 1",
-		intval($uid)
-	);
-	if(! count($user))
-		return;
-
-	require_once('include/items.php');
+    $do_likes = get_config('fbsync', 'do_likes');
 
 	//if ($last_updated == "")
 		$last_updated = 0;
 
-	logger("fbsync_fetchfeed: fetching content for user ".$self_id);
-
+	logger("fbsync_fetchfeed: fetching content for user " . $self_id);
+    
 	$fql = array(
 		"posts" => "SELECT action_links, actor_id, app_data, app_id, attachment, attribution, comment_info, created_time, filter_key, like_info, message, message_tags, parent_post_id, permalink, place, post_id, privacy, share_count, share_info, source_id, subscribed, tagged_ids, type, updated_time, with_tags FROM stream where filter_key in (SELECT filter_key FROM stream_filter WHERE uid=me() AND type='newsfeed') AND updated_time > $last_updated ORDER BY updated_time DESC LIMIT 500",
 		"comments" => "SELECT app_id, attachment, post_id, id, likes, fromid, time, text, text_tags, user_likes, likes FROM comment WHERE post_id IN (SELECT post_id FROM #posts) ORDER BY time DESC LIMIT 500",
 		"profiles" => "SELECT id, name, username, url, pic_square FROM profile WHERE id IN (SELECT actor_id FROM #posts) OR id IN (SELECT fromid FROM #comments) OR id IN (SELECT source_id FROM #posts) LIMIT 500",
 		"applications" => "SELECT app_id, display_name FROM application WHERE app_id IN (SELECT app_id FROM #posts) OR app_id IN (SELECT app_id FROM #comments) LIMIT 500",
 		"avatars" => "SELECT id, real_size, size, url FROM square_profile_pic WHERE id IN (SELECT id FROM #profiles) AND size = 256 LIMIT 500");
-
+    
 	if ($do_likes) {
 		$fql["likes"] = "SELECT post_id, user_id FROM like WHERE post_id IN (SELECT post_id FROM #posts)";
 		$fql["profiles"] .= " OR id IN (SELECT user_id FROM #likes)";
 	}
-
+    
 	$url = "https://graph.facebook.com/fql?q=".urlencode(json_encode($fql))."&access_token=".$access_token;
-
-	$feed = fetch_url($url);
+    logger("fbsync_fetchfeed: query: $url",LOGGER_DEBUG);
+    $feed = fetch_url($url);
 	$data = json_decode($feed);
-
+    
 	if (!is_array($data->data)) {
 		logger("fbsync_fetchfeed: Error fetching data for user ".$uid.": ".print_r($data, true));
 		return;
 	}
+    
+    return $data;    
+}
 
-	$posts = array();
+function fbsync_processfeed($data, $self, $a, $uid, $self_id, $user, $last_updated){
+    
+	$create_user = get_pconfig($uid, 'fbsync', 'create_user');
+    
+    $posts = array();
 	$comments = array();
 	$likes = array();
 	$profiles = array();
@@ -1069,12 +1088,14 @@ function fbsync_fetchfeed($a, $uid) {
 	$post_data = array();
 	$comment_data = array();
 
+    //These Indexes are Used for lookups in the next loop
 	foreach ($avatars AS $avatar) {
 		$avatar->id = number_format($avatar->id, 0, '', '');
 		$square_avatars[$avatar->id] = $avatar;
 	}
 	unset($avatars);
 
+    //These Indexes are used for lookups elsewhere
 	foreach ($profiles AS $profile) {
 		$profile->id = number_format($profile->id, 0, '', '');
 
@@ -1086,42 +1107,31 @@ function fbsync_fetchfeed($a, $uid) {
 	unset($profiles);
 	unset($square_avatars);
 
+    //These Indexes are Used for lookups elsewhere
 	foreach ($applications AS $application) {
 		$application->app_id = number_format($application->app_id, 0, '', '');
-		$application_data[$application->app_id] = $application;
+        $application_data[$application->app_id] = $application;
 	}
-	unset($applications);
-
+    unset($applications);
+    
+    
 	foreach ($posts AS $post) {
-		$post->actor_id = number_format($post->actor_id, 0, '', '');
-		$post->source_id = number_format($post->source_id, 0, '', '');
-		$post->app_id = number_format($post->app_id, 0, '', '');
-		$post_data[$post->post_id] = $post;
-	}
-	unset($posts);
-
-	foreach($comments AS $comment) {
-		$comment->fromid = number_format($comment->fromid, 0, '', '');
-		$comment_data[$comment->id] = $comment;
-	}
-	unset($comments);
-
-	foreach ($post_data AS $post) {
 		if ($post->updated_time > $last_updated)
 			$last_updated = $post->updated_time;
-		fbsync_createpost($a, $uid, $self, $contacts, $application_data, $post, $create_user);
+        
+		$result = fbsync_createpost($a, $uid, $contacts, $applications, $post, $create_user);
+        
+        //echo $result;
 	}
 
-	foreach ($comment_data AS $comment) {
-		fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $application_data, $comment);
+	foreach ($comments AS $comment) {
+		fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $applications, $comment);
 	}
 
 	foreach($likes AS $like) {
-		$like->user_id = number_format($like->user_id, 0, '', '');
-
 		fbsync_createlike($a, $uid, $self_id, $self, $contacts, $like);
 	}
-
+    
 	set_pconfig($uid,'fbsync','last_updated', $last_updated);
 }
 ?>
