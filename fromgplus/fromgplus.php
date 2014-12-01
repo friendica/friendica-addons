@@ -138,6 +138,7 @@ function fromgplus_post($a, $uid, $source, $body, $location) {
 
 	$_REQUEST['profile_uid'] = $uid;
 	$_REQUEST['source'] = $source;
+	$_REQUEST['extid'] = NETWORK_GPLUS;
 
 	// $_REQUEST['verb']
 	// $_REQUEST['parent']
@@ -276,6 +277,7 @@ function fromgplus_cleantext($text) {
 function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 	require_once("include/Photo.php");
 	require_once("include/items.php");
+	require_once("include/network.php");
 
 	$post = "";
 	$quote = "";
@@ -286,13 +288,13 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 		switch($attachment->objectType) {
 			case "video":
 				$pagedata["type"] = "video";
-				$pagedata["url"] = $attachment->url;
+				$pagedata["url"] = original_url($attachment->url);
 				$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
 				break;
 
 			case "article":
 				$pagedata["type"] = "link";
-				$pagedata["url"] = $attachment->url;
+				$pagedata["url"] = original_url($attachment->url);
 				$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
 
 				$images = fromgplus_cleanupgoogleproxy($attachment->fullImage, $attachment->image);
@@ -336,9 +338,9 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 				break;
 
 			case "photo-album":
-				$pagedata["url"] = $attachment->url;
+				$pagedata["url"] = original_url($attachment->url);
 				$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
-				$post .= "\n\n[bookmark=".$attachment->url."]".fromgplus_html2bbcode($attachment->displayName)."[/bookmark]\n";
+				$post .= "\n\n[bookmark=".$pagedata["url"]."]".$pagedata["title"]."[/bookmark]\n";
 
 				$images = fromgplus_cleanupgoogleproxy($attachment->fullImage, $attachment->image);
 
@@ -357,7 +359,7 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 
 			case "album":
 				$pagedata["type"] = "link";
-				$pagedata["url"] = $attachment->url;
+				$pagedata["url"] = original_url($attachment->url);
 				$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
 
 				$thumb = $attachment->thumbnails[0];
@@ -370,7 +372,7 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 				break;
 
 			case "audio":
-				$pagedata["url"] = $attachment->url;
+				$pagedata["url"] = original_url($attachment->url);
 				$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
 				$post .= "\n\n[bookmark=".$pagedata["url"]."]".$pagedata["title"]."[/bookmark]\n";
 				break;
