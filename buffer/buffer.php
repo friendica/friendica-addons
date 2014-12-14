@@ -234,8 +234,6 @@ function buffer_send(&$a,&$b) {
 	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
 		return;
 
-	logger("buffer_send: parameter ".print_r($b, true), LOGGER_DATA);
-
 	if(! strstr($b['postopts'],'buffer'))
 		return;
 
@@ -243,8 +241,8 @@ function buffer_send(&$a,&$b) {
 		return;
 
 	// if post comes from buffer don't send it back
-	if($b['app'] == "Buffer")
-		return;
+	//if($b['app'] == "Buffer")
+	//	return;
 
 	$client_id = get_config("buffer", "client_id");
 	$client_secret = get_config("buffer", "client_secret");
@@ -258,37 +256,54 @@ function buffer_send(&$a,&$b) {
 
 		$profiles = $buffer->go('/profiles');
 		if (is_array($profiles)) {
+			logger("Will send these parameter ".print_r($b, true), LOGGER_DEBUG);
+
 			foreach ($profiles as $profile) {
 				if (!$profile->default)
 					continue;
 
+				$send = false;
+
 				switch ($profile->service) {
 					case 'appdotnet':
+						$send = ($b["extid"] != NETWORK_APPNET);
 						$limit = 256;
 						$markup = false;
 						$includedlinks = true;
+						$htmlmode = 6;
 						break;
 					case 'facebook':
+						$send = ($b["extid"] != NETWORK_FACEBOOK);
 						$limit = 0;
 						$markup = false;
 						$includedlinks = false;
+						$htmlmode = 9;
 						break;
 					case 'google':
+						$send = ($b["extid"] != NETWORK_GPLUS);
 						$limit = 0;
 						$markup = true;
 						$includedlinks = false;
+						$htmlmode = 9;
 						break;
 					case 'twitter':
+						$send = ($b["extid"] != NETWORK_TWITTER);
 						$limit = 140;
 						$markup = false;
 						$includedlinks = true;
+						$htmlmode = 8;
 						break;
 					case 'linkedin':
+						$send = ($b["extid"] != NETWORK_LINKEDIN);
 						$limit = 700;
 						$markup = false;
 						$includedlinks = true;
+						$htmlmode = 2;
 						break;
 				}
+
+				if (!$send)
+					continue;
 
 				$item = $b;
 
@@ -302,7 +317,7 @@ function buffer_send(&$a,&$b) {
 					$item["body"] = preg_replace("(\[s\](.*?)\[\/s\])ism",'-$1-',$item["body"]);
 				}
 
-				$post = plaintext($a, $item, $limit, $includedlinks);
+				$post = plaintext($a, $item, $limit, $includedlinks, $htmlmode);
 				logger("buffer_send: converted message ".$b["id"]." result: ".print_r($post, true), LOGGER_DEBUG);
 
 				// The image proxy is used as a sanitizer. Buffer seems to be really picky about pictures
@@ -334,6 +349,8 @@ function buffer_send(&$a,&$b) {
 					$post["text"] .= "\n[".$post["title"]."](".$post["url"].")";
 				} elseif (($profile->service == "appdotnet") AND isset($post["url"]))
 					$post["text"] .= " ".$post["url"];
+				elseif ($profile->service == "google")
+					$post["text"] .= html_entity_decode("&#x00A0;", ENT_QUOTES, 'UTF-8'); // Send a special blank to identify the post through the "fromgplus" addon
 
 				$message = array();
 				$message["text"] = $post["text"];

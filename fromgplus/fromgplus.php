@@ -138,6 +138,7 @@ function fromgplus_post($a, $uid, $source, $body, $location) {
 
 	$_REQUEST['profile_uid'] = $uid;
 	$_REQUEST['source'] = $source;
+	$_REQUEST['extid'] = NETWORK_GPLUS;
 
 	// $_REQUEST['verb']
 	// $_REQUEST['parent']
@@ -275,29 +276,36 @@ function fromgplus_cleantext($text) {
 
 function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 	require_once("include/Photo.php");
+	require_once("include/items.php");
+	require_once("include/network.php");
 
 	$post = "";
 	$quote = "";
-	$type = "";
+	$pagedata = array();
+	$pagedata["type"] = "";
 
 	foreach ($item->object->attachments as $attachment) {
 		switch($attachment->objectType) {
 			case "video":
-				$post .= "\n[class=type-video][bookmark=".$attachment->url."]".fromgplus_html2bbcode($attachment->displayName)."[/bookmark]\n[/class]";
+				$pagedata["type"] = "video";
+				$pagedata["url"] = original_url($attachment->url);
+				$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
 				break;
 
 			case "article":
-				$post .= "\n[class=type-link][bookmark=".$attachment->url."]".fromgplus_html2bbcode($attachment->displayName)."[/bookmark]\n";
+				$pagedata["type"] = "link";
+				$pagedata["url"] = original_url($attachment->url);
+				$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
 
 				$images = fromgplus_cleanupgoogleproxy($attachment->fullImage, $attachment->image);
 				if ($images["full"] != "")
-					$post .= "\n[img]".$images["full"]."[/img]";
+					$pagedata["images"][0]["src"] = $images["full"];
 
 				$quote = trim(fromgplus_html2bbcode($attachment->content));
-				if ($quote != "")
-					$quote = "\n[quote]".$quote."[/quote]";
 
-				$quote .= "[/class]";
+				if ($quote != "")
+					$pagedata["text"] = $quote;
+
 				break;
 
 			case "photo":
@@ -311,52 +319,72 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 						$images = store_photo($a, $uid, "", $attachment->image->url);
 				}
 
-				if ($images["preview"] != "")
+				if ($images["preview"] != "") {
 					$post .= "\n[url=".$images["page"]."][img]".$images["preview"]."[/img][/url]\n";
-				elseif ($images["full"] != "")
+					$pagedata["images"][0]["src"] = $images["preview"];
+					$pagedata["url"] = $images["page"];
+				} elseif ($images["full"] != "") {
 					$post .= "\n[img]".$images["full"]."[/img]\n";
+					$pagedata["images"][0]["src"] = $images["full"];
 
-				if (($attachment->displayName != "") AND (fromgplus_cleantext($attachment->displayName) != fromgplus_cleantext($displaytext)))
+					if ($images["preview"] != "")
+						$pagedata["images"][1]["src"] = $images["preview"];
+				}
+
+				if (($attachment->displayName != "") AND (fromgplus_cleantext($attachment->displayName) != fromgplus_cleantext($displaytext))) {
 					$post .= fromgplus_html2bbcode($attachment->displayName)."\n";
+					$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
+				}
 				break;
 
 			case "photo-album":
-				$post .= "\n\n[bookmark=".$attachment->url."]".fromgplus_html2bbcode($attachment->displayName)."[/bookmark]\n";
+				$pagedata["url"] = original_url($attachment->url);
+				$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
+				$post .= "\n\n[bookmark=".$pagedata["url"]."]".$pagedata["title"]."[/bookmark]\n";
 
 				$images = fromgplus_cleanupgoogleproxy($attachment->fullImage, $attachment->image);
-				if ($images["preview"] != "")
-					$post .= "\n[url=".$images["full"]."][img]".$images["preview"]."[/img][/url]\n";
-				elseif ($images["full"] != "")
-					$post .= "\n[img]".$images["full"]."[/img]\n";
 
+				if ($images["preview"] != "") {
+					$post .= "\n[url=".$images["full"]."][img]".$images["preview"]."[/img][/url]\n";
+					$pagedata["images"][0]["src"] = $images["preview"];
+					$pagedata["url"] = $images["full"];
+				} elseif ($images["full"] != "") {
+					$post .= "\n[img]".$images["full"]."[/img]\n";
+					$pagedata["images"][0]["src"] = $images["full"];
+
+					if ($images["preview"] != "")
+						$pagedata["images"][1]["src"] = $images["preview"];
+				}
 				break;
 
 			case "album":
-				$post .= "\n[class=type-link][bookmark=".$attachment->url."]".fromgplus_html2bbcode($attachment->displayName)."[/bookmark]";
+				$pagedata["type"] = "link";
+				$pagedata["url"] = original_url($attachment->url);
+				$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
 
 				$thumb = $attachment->thumbnails[0];
-				$post .= "\n[img]".$thumb->image->url."[/img]";
+				$pagedata["images"][0]["src"] = $thumb->image->url;
 
 				$quote = trim(fromgplus_html2bbcode($thumb->description));
 				if ($quote != "")
-					$quote = "\n[quote]".$quote."[/quote]";
+					$pagedata["text"] = $quote;
 
-				//foreach($attachment->thumbnails as $thumb) {
-				//	$preview = "/w".$thumb->image->width."-h".$thumb->image->height."/";
-				//	$preview2 = "/w".$thumb->image->width."-h".$thumb->image->height."-p/";
-				//	$image = str_replace(array($preview, $preview2), array("/", "/"), $thumb->image->url);
-
-				//	$post .= "\n[url=".$thumb->url."][img]".$image."[/img][/url]\n";
-				//}
-				$quote .= "[/class]";
 				break;
+
 			case "audio":
-				$post .= "\n\n[bookmark=".$attachment->url."]".fromgplus_html2bbcode($attachment->displayName)."[/bookmark]\n";
+				$pagedata["url"] = original_url($attachment->url);
+				$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
+				$post .= "\n\n[bookmark=".$pagedata["url"]."]".$pagedata["title"]."[/bookmark]\n";
 				break;
+
 			//default:
 			//	die($attachment->objectType);
 		}
 	}
+
+	if ($pagedata["type"] != "")
+		return(add_page_info_data($pagedata));
+
 	return($post.$quote);
 }
 

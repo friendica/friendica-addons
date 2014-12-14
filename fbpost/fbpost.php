@@ -428,6 +428,9 @@ function fbpost_post_hook(&$a,&$b) {
 	logger('fbpost_post_hook: Facebook post first check successful', LOGGER_DEBUG);
 
 	// if post comes from facebook don't send it back
+	if($b['extid'] == NETWORK_FACEBOOK)
+		return;
+
 	if(($b['app'] == "Facebook") AND ($b['verb'] != ACTIVITY_LIKE))
 		return;
 
@@ -967,9 +970,23 @@ function fbpost_cron($a,$b) {
 	set_config('facebook','last_poll', time());
 }
 
+function fbpost_cleanpicture($url) {
+	require_once("include/Photo.php");
+
+	$urldata = parse_url($url);
+	if (isset($urldata["query"])) {
+		parse_str($urldata["query"], $querydata);
+		if (isset($querydata["url"]) AND (get_photo_info($querydata["url"])))
+			return($querydata["url"]);
+	}
+	return($url);
+}
+
 function fbpost_fetchwall($a, $uid) {
 	require_once("include/oembed.php");
-	require_once('mod/item.php');
+	require_once("include/network.php");
+	require_once("include/items.php");
+	require_once("mod/item.php");
 
 	$access_token = get_pconfig($uid,'facebook','access_token');
 	$post_to_page = get_pconfig($uid,'facebook','post_to_page');
@@ -1019,18 +1036,24 @@ function fbpost_fetchwall($a, $uid) {
 		$_REQUEST["type"] = "wall";
 		$_REQUEST["api_source"] = true;
 		$_REQUEST["profile_uid"] = $uid;
-		$_REQUEST["source"] = "Facebook";
+		//$_REQUEST["source"] = "Facebook";
+		$_REQUEST["source"] = $item->application->name;
+		$_REQUEST["extid"] = NETWORK_FACEBOOK;
 
 		$_REQUEST["title"] = "";
 
 		$_REQUEST["body"] = (isset($item->message) ? escape_tags($item->message) : '');
 
+		$pagedata = array();
 		$content = "";
-		$type = "";
+		$pagedata["type"] = "";
 
 		if(isset($item->name) and isset($item->link)) {
+			$item->link = original_url($item->link);
 			$oembed_data = oembed_fetch_url($item->link);
-			$type = $oembed_data->type;
+			$pagedata["type"] = $oembed_data->type;
+			$pagedata["url"] = $item->link;
+			$pagedata["title"] = $item->name;
 			$content = "[bookmark=".$item->link."]".$item->name."[/bookmark]";
 
 			// If a link is not only attached but also added in the body, look if it can be removed in the body.
@@ -1042,67 +1065,71 @@ function fbpost_fetchwall($a, $uid) {
 		} elseif (isset($item->name))
 			$content .= "[b]".$item->name."[/b]";
 
-		$quote = "";
+		$pagedata["text"] = "";
 		if(isset($item->description) and ($item->type != "photo"))
-			$quote = $item->description;
+			$pagedata["text"] = $item->description;
 
 		if(isset($item->caption) and ($item->type == "photo"))
-			$quote = $item->caption;
+			$pagedata["text"] = $item->caption;
 
 		// Only import the picture when the message is no video
 		// oembed display a picture of the video as well
 		//if ($item->type != "video") {
 		//if (($item->type != "video") and ($item->type != "photo")) {
-		if (($type == "") OR ($type == "link")) {
+		if (($pagedata["type"] == "") OR ($pagedata["type"] == "link")) {
 
-			$type = $item->type;
+			$pagedata["type"] = $item->type;
 
 			if (isset($item->picture))
-				$picture = $item->picture;
+				$pagedata["images"][0]["src"] = $item->picture;
 
-			if (($type == "photo") AND isset($item->object_id)) {
+			if (($pagedata["type"] == "photo") AND isset($item->object_id)) {
 				 logger('fbpost_fetchwall: fetching fbid '.$item->object_id, LOGGER_DEBUG);
 				$url = "https://graph.facebook.com/".$item->object_id."?access_token=".$access_token;
 				$feed = fetch_url($url);
 				$data = json_decode($feed);
 				if (isset($data->images)) {
-					$picture = $data->images[0]->source;
+					$pagedata["images"][0]["src"] = $data->images[0]->source;
 					logger('fbpost_fetchwall: got fbid image '.$preview, LOGGER_DEBUG);
 				}
 			}
 
-			if(($picture != "") && isset($item->link))
-				$content .= "\n".'[url='.$item->link.'][img]'.$picture.'[/img][/url]';
-			else {
-				if ($picture != "")
-					$content .= "\n".'[img]'.$picture.'[/img]';
+			if(trim($_REQUEST["body"].$content.$pagedata["text"]) == '') {
+				logger('facebook: empty body 2 '.$item->id.' '.print_r($item, true));
+				continue;
+			}
+
+			$pagedata["images"][0]["src"] = fbpost_cleanpicture($pagedata["images"][0]["src"]);
+
+			if(($pagedata["images"][0]["src"] != "") && isset($item->link)) {
+				$item->link = original_url($item->link);
+				$pagedata["url"] = $item->link;
+				$content .= "\n".'[url='.$item->link.'][img]'.$pagedata["images"][0]["src"].'[/img][/url]';
+			} else {
+				if ($pagedata["images"][0]["src"] != "")
+					$content .= "\n".'[img]'.$pagedata["images"][0]["src"].'[/img]';
 				// if just a link, it may be a wall photo - check
 				if(isset($item->link))
 					$content .= fbpost_get_photo($uid,$item->link);
 			}
 		}
 
-		if(trim($_REQUEST["body"].$content.$quote) == '') {
+		if(trim($_REQUEST["body"].$content.$pagedata["text"]) == '') {
 			logger('facebook: empty body '.$item->id.' '.print_r($item, true));
 			continue;
 		}
 
-		if ($content)
-			$_REQUEST["body"] .= "\n";
+		if ($pagedata["type"] != "")
+			$_REQUEST["body"] .= add_page_info_data($pagedata);
+		else {
+			if ($content)
+				$_REQUEST["body"] .= "\n".trim($content);
 
-		if ($type)
-			$_REQUEST["body"] .= "[class=type-".$type."]";
+			if ($pagedata["text"])
+				$_REQUEST["body"] .= "\n[quote]".$pagedata["text"]."[/quote]";
 
-		if ($content)
-			$_REQUEST["body"] .= trim($content);
-
-		if ($quote)
-			$_REQUEST["body"] .= "\n[quote]".$quote."[/quote]";
-
-		if ($type)
-			$_REQUEST["body"] .= "[/class]";
-
-		$_REQUEST["body"] = trim($_REQUEST["body"]);
+			$_REQUEST["body"] = trim($_REQUEST["body"]);
+		}
 
 		if (isset($item->place)) {
 			if ($item->place->name or $item->place->location->street or

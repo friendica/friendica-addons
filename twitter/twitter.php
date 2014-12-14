@@ -438,6 +438,9 @@ function twitter_post_hook(&$a,&$b) {
 		return;
 
 	// if post comes from twitter don't send it back
+	if($b['extid'] == NETWORK_TWITTER)
+		return;
+
 	if($b['app'] == "Twitter")
 		return;
 
@@ -743,7 +746,9 @@ function twitter_fetchtimeline($a, $uid) {
 			$_REQUEST["type"] = "wall";
 			$_REQUEST["api_source"] = true;
 			$_REQUEST["profile_uid"] = $uid;
-			$_REQUEST["source"] = "Twitter";
+			//$_REQUEST["source"] = "Twitter";
+			$_REQUEST["source"] = $post->source;
+			$_REQUEST["extid"] = NETWORK_TWITTER;
 
 			//$_REQUEST["date"] = $post->created_at;
 
@@ -891,6 +896,9 @@ function twitter_queue_hook(&$a,&$b) {
 
 function twitter_fetch_contact($uid, $contact, $create_user) {
 	require_once("include/Photo.php");
+
+	if ($contact->id_str == "")
+		return(-1);
 
 	$avatar = str_replace("_normal.", ".", $contact->profile_image_url_https);
 
