@@ -2,7 +2,7 @@
 /**
  * Name: WindowsPhonePush
  * Description: Enable push notification to send information to Friendica Mobile app on Windows phone (count of unread timeline entries, text of last posting - if wished by user)
- * Version: 1.0
+ * Version: 1.1
  * Author: Gerhard Seeber <http://friendica.seeber.at/profile/admin>
  * 
  * 
@@ -15,6 +15,9 @@
  * If the addon is removed from the configuration list, the 
  * system will call the name_uninstall() function.
  *
+ * Version history:
+ * 1.1  : addon crashed on php versions >= 5.4 as of removed deprecated call-time 
+ *        pass-by-reference used in function calls within function windowsphonepush_content
  */
 
 
@@ -312,7 +315,7 @@ function send_push($device_url, $headers, $msg) {
 	$output = curl_exec($ch);
 	curl_close($ch);
 
-	// if we received "Expired" from Novartis server we will delete the obsolete device-URL
+	// if we received "Expired" from Microsoft server we will delete the obsolete device-URL
 	// and log this fact
 	$subscriptionStatus = get_header_value($output, 'X-SubscriptionStatus');
 	if ($subscriptionStatus == "Expired") {
@@ -350,11 +353,11 @@ function windowsphonepush_content(&$a) {
 	if ($path == "windowsphonepush") {
 		switch ($path2) {
 			case "show_settings":
-				windowsphonepush_showsettings(&$a);
+				windowsphonepush_showsettings($a);
 				killme();
 				break;
 			case "update_settings":
-				$ret = windowsphonepush_updatesettings(&$a);
+				$ret = windowsphonepush_updatesettings($a);
 				header("Content-Type: application/json; charset=utf-8");	
 				echo json_encode(array('status' => $ret));
 				killme();				
