@@ -1007,7 +1007,7 @@ function fbsync_fetchfeed($a, $uid) {
 
 	require_once('include/items.php');
 
-	//if ($last_updated == "")
+	if ($last_updated == "")
 		$last_updated = 0;
 
 	logger("fbsync_fetchfeed: fetching content for user ".$self_id);
