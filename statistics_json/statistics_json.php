@@ -137,7 +137,7 @@ function statistics_json_cron($a,$b) {
         logger('statistics_json_cron: local_posts: '.$local_posts, LOGGER_DEBUG);
 
 	// Now trying to register
-	$url = "http://pods.jasonrobinson.me/register/".$a->get_hostname();
+	$url = "http://the-federation.info/register/".$a->get_hostname();
         logger('statistics_json_cron: registering url: '.$url, LOGGER_DEBUG);
 	$ret = fetch_url($url);
         logger('statistics_json_cron: registering answer: '.$ret, LOGGER_DEBUG);
