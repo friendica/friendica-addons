@@ -1095,7 +1095,7 @@ function fbpost_fetchwall($a, $uid) {
 			}
 
 			if(trim($_REQUEST["body"].$content.$pagedata["text"]) == '') {
-				logger('facebook: empty body 2 '.$item->id.' '.print_r($item, true));
+				logger('facebook: empty body 1 '.$item->id.' '.print_r($item, true));
 				continue;
 			}
 
@@ -1115,7 +1115,7 @@ function fbpost_fetchwall($a, $uid) {
 		}
 
 		if(trim($_REQUEST["body"].$content.$pagedata["text"]) == '') {
-			logger('facebook: empty body '.$item->id.' '.print_r($item, true));
+			logger('facebook: empty body 2 '.$item->id.' '.print_r($item, true));
 			continue;
 		}
 
@@ -1149,6 +1149,11 @@ function fbpost_fetchwall($a, $uid) {
 			if ($item->place->location->latitude and $item->place->location->longitude)
 				$_REQUEST["coord"] = substr($item->place->location->latitude, 0, 8)
 						.' '.substr($item->place->location->longitude, 0, 8);
+		}
+
+		if(trim($_REQUEST["body"]) == '') {
+			logger('facebook: empty body 3 '.$item->id.' '.print_r($item, true));
+			continue;
 		}
 
 		//print_r($_REQUEST);
