@@ -2,7 +2,7 @@
 
 /**
  * Name: Statistics
- * Description: Generates some statistics for http://pods.jasonrobinson.me/
+ * Description: Generates some statistics for http://http://the-federation.info/
  * Version: 0.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
