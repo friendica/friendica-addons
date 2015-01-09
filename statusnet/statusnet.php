@@ -758,9 +758,23 @@ function statusnet_cron($a,$b) {
 		}
 	}
 
+	$abandon_days = intval(get_config('system','account_abandon_days'));
+	if ($abandon_days < 1)
+		$abandon_days = 0;
+
+	$abandon_limit = date("Y-m-d H:i:s", time() - $abandon_days * 86400);
+
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'statusnet' AND `k` = 'import' AND `v` = '1' ORDER BY RAND()");
 	if(count($r)) {
 		foreach($r as $rr) {
+			if ($abandon_days != 0) {
+				$user = q("SELECT `login_date` FROM `user` WHERE uid=%d AND `login_date` >= '%s'", $rr['uid'], $abandon_limit);
+				if (!count($user)) {
+					logger('abandoned account: timeline from user '.$rr['uid'].' will not be imported');
+					continue;
+				}
+			}
+
 			logger('statusnet: importing timeline from user '.$rr['uid']);
 			statusnet_fetchhometimeline($a, $rr["uid"]);
 		}
@@ -898,6 +912,12 @@ function statusnet_fetch_contact($uid, $contact, $create_user) {
 			dbesc($contact->profile_image_url),
 			dbesc(normalise_link($contact->statusnet_profile_url)));
 
+	if (DB_UPDATE_VERSION >= "1177")
+		q("UPDATE `unique_contacts` SET `location` = '%s', `about` = '%s' WHERE url = '%s'",
+			dbesc($contact->location),
+			dbesc($contact->description),
+			dbesc(normalise_link($contact->statusnet_profile_url)));
+
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
 		intval($uid), dbesc(normalise_link($contact->statusnet_profile_url)));
 
@@ -967,6 +987,15 @@ function statusnet_fetch_contact($uid, $contact, $create_user) {
 			intval($contact_id)
 		);
 
+		if (DB_UPDATE_VERSION >= "1177")
+			q("UPDATE `contact` SET `location` = '%s',
+						`about` = '%s'
+					WHERE `id` = %d",
+				dbesc($contact->location),
+				dbesc($contact->description),
+				intval($contact_id)
+			);
+
 	} else {
 		// update profile photos once every two weeks as we have no notification of when they change.
 
@@ -1008,6 +1037,15 @@ function statusnet_fetch_contact($uid, $contact, $create_user) {
 				dbesc($contact->screen_name),
 				intval($r[0]['id'])
 			);
+
+			if (DB_UPDATE_VERSION >= "1177")
+				q("UPDATE `contact` SET `location` = '%s',
+							`about` = '%s'
+						WHERE `id` = %d",
+					dbesc($contact->location),
+					dbesc($contact->description),
+					intval($r[0]['id'])
+				);
 		}
 	}
 

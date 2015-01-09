@@ -172,9 +172,24 @@ function fbsync_cron($a,$b) {
 	}
 	logger('fbsync_cron: cron_start');
 
+	$abandon_days = intval(get_config('system','account_abandon_days'));
+	if ($abandon_days < 1)
+		$abandon_days = 0;
+
+	$abandon_limit = date("Y-m-d H:i:s", time() - $abandon_days * 86400);
+
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'fbsync' AND `k` = 'sync' AND `v` = '1' ORDER BY RAND()");
 	if(count($r)) {
 		foreach($r as $rr) {
+
+			if ($abandon_days != 0) {
+				$user = q("SELECT `login_date` FROM `user` WHERE uid=%d AND `login_date` >= '%s'", $rr['uid'], $abandon_limit);
+				if (!count($user)) {
+					logger('abandoned account: timeline from user '.$rr['uid'].' will not be imported');
+					continue;
+				}
+			}
+
 			fbsync_get_self($rr['uid']);
 
 			logger('fbsync_cron: importing timeline from user '.$rr['uid']);

@@ -603,10 +603,23 @@ function twitter_cron($a,$b) {
 		}
 	}
 
+	$abandon_days = intval(get_config('system','account_abandon_days'));
+	if ($abandon_days < 1)
+		$abandon_days = 0;
+
+	$abandon_limit = date("Y-m-d H:i:s", time() - $abandon_days * 86400);
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'import' AND `v` = '1' ORDER BY RAND()");
 	if(count($r)) {
 		foreach($r as $rr) {
+			if ($abandon_days != 0) {
+				$user = q("SELECT `login_date` FROM `user` WHERE uid=%d AND `login_date` >= '%s'", $rr['uid'], $abandon_limit);
+				if (!count($user)) {
+					logger('abandoned account: timeline from user '.$rr['uid'].' will not be imported');
+					continue;
+				}
+			}
+
 			logger('twitter: importing timeline from user '.$rr['uid']);
 			twitter_fetchhometimeline($a, $rr["uid"]);
 
@@ -924,6 +937,12 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 			dbesc($avatar),
 			dbesc(normalise_link("https://twitter.com/".$contact->screen_name)));
 
+	if (DB_UPDATE_VERSION >= "1177")
+		q("UPDATE `unique_contacts` SET `location` = '%s', `about` = '%s' WHERE url = '%s'",
+			dbesc($contact->location),
+			dbesc($contact->description),
+			dbesc(normalise_link("https://twitter.com/".$contact->screen_name)));
+
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
 		intval($uid), dbesc("twitter::".$contact->id_str));
 
@@ -940,7 +959,7 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 		q("INSERT INTO `contact` ( `uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
 					`name`, `nick`, `photo`, `network`, `rel`, `priority`,
 					`writable`, `blocked`, `readonly`, `pending` )
-					VALUES ( %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, 0, 0, 0 ) ",
+					VALUES ( %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, 0, 0, 0) ",
 			intval($uid),
 			dbesc(datetime_convert()),
 			dbesc("https://twitter.com/".$contact->screen_name),
@@ -997,6 +1016,15 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 			intval($contact_id)
 		);
 
+		if (DB_UPDATE_VERSION >= "1177")
+			q("UPDATE `contact` SET `location` = '%s',
+						`about` = '%s'
+					WHERE `id` = %d",
+				dbesc($contact->location),
+				dbesc($contact->description),
+				intval($contact_id)
+			);
+
 	} else {
 		// update profile photos once every two weeks as we have no notification of when they change.
 
@@ -1038,6 +1066,15 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 				dbesc($contact->screen_name),
 				intval($r[0]['id'])
 			);
+
+			if (DB_UPDATE_VERSION >= "1177")
+				q("UPDATE `contact` SET `location` = '%s',
+							`about` = '%s'
+						WHERE `id` = %d",
+					dbesc($contact->location),
+					dbesc($contact->description),
+					intval($r[0]['id'])
+				);
 		}
 	}
 

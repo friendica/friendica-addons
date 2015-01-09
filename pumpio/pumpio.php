@@ -624,9 +624,23 @@ function pumpio_cron(&$a,$b) {
 		}
 	}
 
+	$abandon_days = intval(get_config('system','account_abandon_days'));
+	if ($abandon_days < 1)
+		$abandon_days = 0;
+
+	$abandon_limit = date("Y-m-d H:i:s", time() - $abandon_days * 86400);
+
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'pumpio' AND `k` = 'import' AND `v` = '1' ORDER BY RAND() ");
 	if(count($r)) {
 		foreach($r as $rr) {
+			if ($abandon_days != 0) {
+				$user = q("SELECT `login_date` FROM `user` WHERE uid=%d AND `login_date` >= '%s'", $rr['uid'], $abandon_limit);
+				if (!count($user)) {
+					logger('abandoned account: timeline from user '.$rr['uid'].' will not be imported');
+					continue;
+				}
+			}
+
 			logger('pumpio: importing timeline from user '.$rr['uid']);
 			pumpio_fetchinbox($a, $rr['uid']);
 
@@ -919,6 +933,12 @@ function pumpio_get_contact($uid, $contact) {
 			dbesc($contact->image->url),
 			dbesc(normalise_link($contact->url)));
 
+	if (DB_UPDATE_VERSION >= "1177")
+		q("UPDATE `unique_contacts` SET `location` = '%s', `about` = '%s' WHERE url = '%s'",
+			dbesc($contact->location->displayName),
+			dbesc($contact->summary),
+			dbesc(normalise_link($contact->url)));
+
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `url` = '%s' LIMIT 1",
 		intval($uid), dbesc($contact->url));
 
@@ -984,10 +1004,19 @@ function pumpio_get_contact($uid, $contact) {
 		dbesc(datetime_convert()),
 		intval($contact_id)
 		);
+
+                if (DB_UPDATE_VERSION >= "1177")
+			q("UPDATE `contact` SET `location` = '%s',
+						`about` = '%s'
+					WHERE `id` = %d",
+				dbesc($contact->location->displayName),
+				dbesc($contact->summary),
+				intval($contact_id)
+			);
 	} else {
 		// update profile photos once every two weeks as we have no notification of when they change.
-
-		$update_photo = (($r[0]['avatar-date'] < datetime_convert('','','now -14 days')) ? true : false);
+		//$update_photo = (($r[0]['avatar-date'] < datetime_convert('','','now -14 days')) ? true : false);
+                $update_photo = ($r[0]['avatar-date'] < datetime_convert('','','now -12 hours'));
 
 		// check that we have all the photos, this has been known to fail on occasion
 
@@ -1016,6 +1045,15 @@ function pumpio_get_contact($uid, $contact) {
 			dbesc($contact->preferredUsername),
 			intval($r[0]['id'])
 			);
+
+			if (DB_UPDATE_VERSION >= "1177")
+				q("UPDATE `contact` SET `location` = '%s',
+							`about` = '%s'
+						WHERE `id` = %d",
+					dbesc($contact->location->displayName),
+					dbesc($contact->summary),
+					intval($r[0]['id'])
+				);
 		}
 
 	}
