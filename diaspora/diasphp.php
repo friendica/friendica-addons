@@ -5,11 +5,18 @@
  */
 
 class Diasphp {
+	private $cookiejar;
+
 	function __construct($pod) {
 		$this->token_regex = '/content="(.*?)" name="csrf-token/';
 
 		$this->pod = $pod;
 		$this->cookiejar = tempnam(sys_get_temp_dir(), 'cookies');
+	}
+
+	function __destruct() {
+		if (file_exists($this->cookiejar))
+			unlink($this->cookiejar);
 	}
 
 	function _fetch_token() {

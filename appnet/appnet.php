@@ -1082,6 +1082,30 @@ function appnet_expand_annotations($a, $annotations) {
 }
 
 function appnet_fetchcontact($a, $uid, $contact, $me, $create_user) {
+
+	$r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
+			dbesc(normalise_link($contact["canonical_url"])));
+
+	if (count($r) == 0)
+		q("INSERT INTO unique_contacts (url, name, nick, avatar) VALUES ('%s', '%s', '%s', '%s')",
+			dbesc(normalise_link($contact["canonical_url"])),
+			dbesc($contact["name"]),
+			dbesc($contact["username"]),
+			dbesc($contact["avatar_image"]["url"]));
+	else
+		q("UPDATE unique_contacts SET name = '%s', nick = '%s', avatar = '%s' WHERE url = '%s'",
+			dbesc($contact["name"]),
+			dbesc($contact["username"]),
+			dbesc($contact["avatar_image"]["url"]),
+			dbesc(normalise_link($contact["canonical_url"])));
+
+	if (DB_UPDATE_VERSION >= "1177")
+		q("UPDATE `unique_contacts` SET `location` = '%s', `about` = '%s' WHERE url = '%s'",
+			dbesc(""),
+			dbesc($contact["description"]["text"]),
+			dbesc(normalise_link($contact["canonical_url"])));
+
+
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
 		intval($uid), dbesc("adn::".$contact["id"]));
 
@@ -1165,6 +1189,14 @@ function appnet_fetchcontact($a, $uid, $contact, $me, $create_user) {
 			intval($contact_id)
 		);
 
+		if (DB_UPDATE_VERSION >= "1177")
+			q("UPDATE `contact` SET `location` = '%s',
+						`about` = '%s'
+					WHERE `id` = %d",
+				dbesc(""),
+				dbesc($contact["description"]["text"]),
+				intval($contact_id)
+			);
 	} else {
 		// update profile photos once every two weeks as we have no notification of when they change.
 
@@ -1206,6 +1238,14 @@ function appnet_fetchcontact($a, $uid, $contact, $me, $create_user) {
 				dbesc($contact["username"]),
 				intval($r[0]['id'])
 			);
+			if (DB_UPDATE_VERSION >= "1177")
+				q("UPDATE `contact` SET `location` = '%s',
+							`about` = '%s'
+						WHERE `id` = %d",
+					dbesc(""),
+					dbesc($contact["description"]["text"]),
+					intval($r[0]['id'])
+				);
 		}
 	}
 
@@ -1265,9 +1305,23 @@ function appnet_cron($a,$b) {
 	}
 	logger('appnet_cron: cron_start');
 
+	$abandon_days = intval(get_config('system','account_abandon_days'));
+	if ($abandon_days < 1)
+		$abandon_days = 0;
+
+	$abandon_limit = date("Y-m-d H:i:s", time() - $abandon_days * 86400);
+
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'appnet' AND `k` = 'import' AND `v` = '1' ORDER BY RAND()");
 	if(count($r)) {
 		foreach($r as $rr) {
+			if ($abandon_days != 0) {
+				$user = q("SELECT `login_date` FROM `user` WHERE uid=%d AND `login_date` >= '%s'", $rr['uid'], $abandon_limit);
+				if (!count($user)) {
+					logger('abandoned account: timeline from user '.$rr['uid'].' will not be imported');
+					continue;
+				}
+			}
+
 			logger('appnet_cron: importing timeline from user '.$rr['uid']);
 			appnet_fetchstream($a, $rr["uid"]);
 		}
