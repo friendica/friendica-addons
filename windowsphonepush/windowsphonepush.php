@@ -2,7 +2,7 @@
 /**
  * Name: WindowsPhonePush
  * Description: Enable push notification to send information to Friendica Mobile app on Windows phone (count of unread timeline entries, text of last posting - if wished by user)
- * Version: 1.1
+ * Version: 2.0
  * Author: Gerhard Seeber <http://friendica.seeber.at/profile/admin>
  * 
  * 
@@ -18,6 +18,11 @@
  * Version history:
  * 1.1  : addon crashed on php versions >= 5.4 as of removed deprecated call-time 
  *        pass-by-reference used in function calls within function windowsphonepush_content
+ * 2.0  : adaption for supporting emphasizing new entries in app (count on tile cannot be read out,
+ *        so we need to retrieve counter through show_settings secondly). Provide new function for 
+ *        calling from app to set the counter back after start (if user starts again before cronjob
+ *        sets the counter back
+ *        count only unseen elements which are not type=activity (likes and dislikes not seen as new elements)
  */
 
 
@@ -81,8 +86,13 @@ function windowsphonepush_module() {}
 function windowsphonepush_settings_post($a,$post) {
 	if(! local_user() || (! x($_POST,'windowsphonepush-submit')))
 		return;
+	$enable = intval($_POST['windowsphonepush']);
+	set_pconfig(local_user(),'windowsphonepush','enable',$enable);
 
-	set_pconfig(local_user(),'windowsphonepush','enable',intval($_POST['windowsphonepush']));
+	if($enable) {
+		set_pconfig(local_user(),'windowsphonepush','counterunseen', 0);
+	}
+
 	set_pconfig(local_user(),'windowsphonepush','senditemtext',intval($_POST['windowsphonepush-senditemtext']));
 
 	info( t('WindowsPhonePush settings updated.') . EOL);
@@ -164,7 +174,7 @@ function windowsphonepush_cron() {
 			} else {
 				// retrieve the number of unseen items and the id of the latest one (if there are more than 
 				// one new entries since last poller run, only the latest one will be pushed)
-				$count = q("SELECT count(`id`) as count, max(`id`) as max FROM `item` WHERE `unseen` = 1 AND `uid` = %d",
+				$count = q("SELECT count(`id`) as count, max(`id`) as max FROM `item` WHERE `unseen` = 1 AND `type` <> 'activity' AND `uid` = %d",
 					intval($rr['uid'])
 				);
 
@@ -174,7 +184,8 @@ function windowsphonepush_cron() {
 				$res_tile = send_tile_update($device_url, "", $count[0]['count'], "");
 				switch (trim($res_tile)) {
 					case "Received":
-						// ok, count has been pushed
+						// ok, count has been pushed, let's save it in personal settings 
+						set_pconfig($rr['uid'], 'windowsphonepush', 'counterunseen', $count[0]['count']);
 						break;
 					case "QueueFull":
 						// maximum of 30 messages reached, server rejects any further push notification until device reconnects
@@ -342,6 +353,7 @@ function get_header_value($content, $header) {
  * reading information from url and deciding which function to start
  * show_settings = delivering settings to check
  * update_settings = set the device_url
+ * update_counterunseen = set counter for unseen elements to zero
  *
  */
 function windowsphonepush_content(&$a) {	
@@ -362,6 +374,12 @@ function windowsphonepush_content(&$a) {
 				echo json_encode(array('status' => $ret));
 				killme();				
 				break;
+			case "update_counterunseen":
+				$ret = windowsphonepush_updatecounterunseen();
+				header("Content-Type: application/json; charset=utf-8");
+				echo json_encode(array('status' => $ret));
+				killme();
+				break;
 			default:
 				echo "Fehler";
 		}
@@ -379,6 +397,8 @@ function windowsphonepush_showsettings(&$a) {
 	$device_url = get_pconfig(local_user(), 'windowsphonepush', 'device_url');
 	$senditemtext = get_pconfig(local_user(), 'windowsphonepush', 'senditemtext');
 	$lastpushid = get_pconfig(local_user(), 'windowsphonepush', 'lastpushid');
+	$counterunseen = get_pconfig(local_user(), 'windowsphonepush', 'counterunseen');
+	$addonversion = "2.0";
 
 	if (!$device_url)
 		$device_url = "";
@@ -391,7 +411,9 @@ function windowsphonepush_showsettings(&$a) {
 				'enable' => $enable, 
 				'device_url' => $device_url, 
 				'senditemtext' => $senditemtext,
-				'lastpushid' => $lastpushid));
+				'lastpushid' => $lastpushid, 
+				'counterunseen' => $counterunseen, 
+				'addonversion' => $addonversion));
 }
 
 /* 
@@ -435,6 +457,24 @@ function windowsphonepush_updatesettings(&$a) {
 	// output the successfull update of the device URL to the logger for error analysis if necessary
 	logger("INFO: Device-URL for user '" . local_user() . "' has been updated with '" . $device_url . "'");
 	return "Device-URL updated successfully!";
+}
+
+/* 
+ * update_counterunseen is used to reset the counter to zero from Windows Phone app 
+ */
+function windowsphonepush_updatecounterunseen() {
+	if(! local_user()) {  
+		return "Not Authenticated";
+	}
+
+	// no updating if user hasn't enabled the plugin
+	$enable = get_pconfig(local_user(), 'windowsphonepush', 'enable');
+	if(! $enable) {
+		return "Plug-in not enabled";
+	}
+
+	set_pconfig(local_user(),'windowsphonepush','counterunseen', 0);
+	return "Counter set to zero";
 }
 
 /*
