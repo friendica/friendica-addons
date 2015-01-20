@@ -85,9 +85,8 @@ function securemail_emailer_send_prepare(&$a, &$b) {
 
     # using the key, encrypt your plain text using the public key
     $txt_encrypted = $gpg->encrypt($pub_key,$b['textVersion']);
-    $html_encrypted = $gpg->encrypt($pub_key,$b['htmlVersion']);
+    #$html_encrypted = $gpg->encrypt($pub_key,$b['htmlVersion']);
 
     $b['textVersion'] = $txt_encrypted;
-    $b['htmlVersion'] = $html_encrypted;
-    #var_dump($b);
+    $b['htmlVersion'] = null;
 }
