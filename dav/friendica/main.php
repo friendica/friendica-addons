@@ -253,6 +253,7 @@ function dav_cron(&$a, &$b)
 	dav_include_files();
 
 	$r = q("SELECT * FROM %s%snotifications WHERE `notified` = 0 AND `alert_date` <= NOW()", CALDAV_SQL_DB, CALDAV_SQL_PREFIX);
+    if (is_array($r)) {
 	foreach ($r as $not) {
 		q("UPDATE %s%snotifications SET `notified` = 1 WHERE `id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $not["id"]);
 		$event    = q("SELECT * FROM %s%sjqcalendar WHERE `calendarobject_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $not["calendarobject_id"]);
@@ -290,6 +291,7 @@ function dav_cron(&$a, &$b)
 				break;
 		}
 	}
+    }
 }
 
 
