@@ -987,6 +987,7 @@ function fbpost_fetchwall($a, $uid) {
 	require_once("include/network.php");
 	require_once("include/items.php");
 	require_once("mod/item.php");
+	require_once("include/bbcode.php");
 
 	$access_token = get_pconfig($uid,'facebook','access_token');
 	$post_to_page = get_pconfig($uid,'facebook','post_to_page');
@@ -1155,6 +1156,12 @@ function fbpost_fetchwall($a, $uid) {
 			logger('facebook: empty body 3 '.$item->id.' '.print_r($item, true));
 			continue;
 		}
+
+		if(trim(strip_tags(bbcode($_REQUEST["body"], false, false))) == '') {
+			logger('facebook: empty body 4 '.$item->id.' '.print_r($item, true));
+			continue;
+		}
+
 
 		//print_r($_REQUEST);
 		logger('facebook: posting for user '.$uid);
