@@ -1,4 +1,4 @@
-<?
+<?php
 	class BufferApp {
 		private $client_id;
 		private $client_secret;
