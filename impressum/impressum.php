@@ -8,6 +8,7 @@
  */
 
 require_once('include/bbcode.php');
+require_once('mod/proxy.php');
 
 function impressum_install() {
     register_hook('about_hook', 'addon/impressum/impressum.php', 'impressum_show');
@@ -34,7 +35,7 @@ function obfuscate_email ($s) {
     return $s;
 }
 function impressum_footer($a, &$b) {
-    $text = bbcode(get_config('impressum','footer_text'), true);
+    $text = proxy_parse_html(bbcode(get_config('impressum','footer_text'), true));
     if (! $text == '') {
         $a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->get_baseurl().'/addon/impressum/impressum.css" media="all" />';
         $b .= '<div class="clear"></div>';
@@ -45,8 +46,8 @@ function impressum_show($a,&$b) {
     $b .= '<h3>'.t('Impressum').'</h3>';
     $owner = get_config('impressum', 'owner');
     $owner_profile = get_config('impressum','ownerprofile');
-    $postal = bbcode(get_config('impressum', 'postal'), true);
-    $notes = bbcode(get_config('impressum', 'notes'), true);
+    $postal = proxy_parse_html(bbcode(get_config('impressum', 'postal'), true));
+    $notes = proxy_parse_html(bbcode(get_config('impressum', 'notes'), true));
     $email = obfuscate_email( get_config('impressum','email') );
     if (strlen($owner)) {
         if (strlen($owner_profile)) {
