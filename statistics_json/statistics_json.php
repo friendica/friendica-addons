@@ -3,7 +3,7 @@
 /**
  * Name: Statistics
  * Description: Generates some statistics for http://the-federation.info/
- * Version: 0.1
+ * Version: 0.2
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
 
@@ -29,7 +29,7 @@ function statistics_json_init() {
 	$statistics = array(
 			"name" => $a->config["sitename"],
 			"network" => FRIENDICA_PLATFORM,
-			"version" => FRIENDICA_VERSION,
+			"version" => FRIENDICA_VERSION."-".DB_UPDATE_VERSION,
 			"registrations_open" => ($a->config['register_policy'] != 0),
 			"total_users" => get_config('statistics_json','total_users'),
 			"active_users_halfyear" => get_config('statistics_json','active_users_halfyear'),
@@ -125,7 +125,7 @@ function statistics_json_cron($a,$b) {
 			set_config('statistics_json','active_users_monthly', $active_users_monthly);
 	}
 
-	$posts = q("SELECT COUNT(*) AS local_posts FROM `item` WHERE `wall` AND left(body, 6) != '[share'");
+	$posts = q("SELECT COUNT(*) AS local_posts FROM `item` WHERE `wall` AND `uid` != 0 AND `id` = `parent` AND left(body, 6) != '[share'");
 
 	if (!is_array($posts))
 		$local_posts = -1;
