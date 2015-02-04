@@ -25,12 +25,31 @@
  * Note when using with Windows Active Directory: you may need to set TLS_CACERT in your site
  * ldap.conf file to the signing cert for your LDAP server. 
  * 
- * The required configuration options for this module may be set in the .htconfig.php file
+ * The configuration options for this module may be set in the .htconfig.php file
  * e.g.:
  *
+ * // ldap hostname server - required
  * $a->config['ldapauth']['ldap_server'] = 'host.example.com';
- * ...etc.
+ * // dn to search users - required
+ * $a->config['ldapauth']['ldap_searchdn'] = 'ou=users,dc=example,dc=com';
+ * // attribute to find username - required
+ * $a->config['ldapauth']['ldap_userattr'] = 'uid';
  *
+ * // admin dn - optional - only if ldap server dont have anonymous access
+ * $a->config['ldapauth']['ldap_binddn'] = 'cn=admin,dc=example,dc=com';
+ * // admin password - optional - only if ldap server dont have anonymous access
+ * $a->config['ldapauth']['ldap_bindpw'] = 'password';
+ *
+ * // for create Friendica account if user exist in ldap
+ * //     required an email and a simple (beautiful) nickname on user ldap object
+ * //   active account creation - optional - default none
+ * $a->config['ldapauth']['ldap_autocreateaccount'] = 'true';
+ * //   attribute to get email - optional - default : 'mail'
+ * $a->config['ldapauth']['ldap_autocreateaccount_emailattribute'] = 'mail';
+ * //   attribute to get nickname - optional - default : 'givenName'
+ * $a->config['ldapauth']['ldap_autocreateaccount_nameattribute'] = 'givenName';
+ *
+ * ...etc.
  */
 
 require_once('include/user.php');
