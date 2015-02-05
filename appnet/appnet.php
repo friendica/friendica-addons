@@ -690,7 +690,11 @@ function appnet_fetchstream($a, $uid) {
 	}
 	catch (AppDotNetException $e) {
 		logger("appnet_fetchstream: Error fetching stream for user ".$uid." ".appnet_error($e->getMessage()));
+		return;
 	}
+
+	if (!is_array($stream))
+		$stream = array();
 
 	$stream = array_reverse($stream);
 	foreach ($stream AS $post) {
@@ -744,7 +748,11 @@ function appnet_fetchstream($a, $uid) {
 	}
 	catch (AppDotNetException $e) {
 		logger("appnet_fetchstream: Error fetching mentions for user ".$uid." ".appnet_error($e->getMessage()));
+		return;
 	}
+
+	if (!is_array($mentions))
+		$mentions = array();
 
 	$mentions = array_reverse($mentions);
 	foreach ($mentions AS $post) {
