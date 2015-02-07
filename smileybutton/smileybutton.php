@@ -2,68 +2,42 @@
 /**
  * Name: Smileybutton
  * Description: Adds a smileybutton to the Inputbox
- * Version: 0.1
- * Author: Johannes Schwab <http://friendica.jschwab.mooo.com/profile/ddorian>
+ * Version: 0.2
+ * Author: Johannes Schwab <https://friendica.jschwab.org/profile/ddorian>
  */
 
 
 function smileybutton_install() {
-
-	/**
-	 * 
-	 * Register hooks for jot_tool and plugin_settings
-	 *
-	 */
-
+	//Register hooks 
 	register_hook('jot_tool', 'addon/smileybutton/smileybutton.php', 'show_button');
-	register_hook('plugin_settings', 'addon/smileybutton/smileybutton.php', 'smileybutton_settings');
-	register_hook('plugin_settings_post', 'addon/smileybutton/smileybutton.php', 'smileybutton_settings_post');
  
 	logger("installed smileybutton");
 }
 
 
 function smileybutton_uninstall() {
-
-	/**
-	 *
-	 * Delet registered hooks
-	 *
-	 */
-
+	//Delet registered hooks
 	unregister_hook('jot_tool',    'addon/smileybutton/smileybutton.php', 'show_button');	
-	unregister_hook('plugin_settings', 'addon/smileybutton/smileybutton.php', 'smileybutton_settings');
-	unregister_hook('plugin_settings_post', 'addon/smileybutton/smileybutton.php', 'smileybutton_settings_post');
-	 
+
 	logger("removed smileybutton");
 }
 
 
 
 function show_button($a, &$b) {
+	// Disable if theme is quattro
+	// TODO add style for quattro
+	if (current_theme() == 'quattro')
+		return;
+
+	// Disable for mobile because most mobiles have a smiley key for ther own
+	if ($a->is_mobile || $a->is_tablet)
+		return;
 
 	/**
 	 *
-	 * Check if it is a local user and he has enabled smileybutton
-	 *
-	 */
-
-	if(! local_user()) {
-		$nobutton = false;
-	} else {
-		$nobutton = get_pconfig(local_user(), 'smileybutton', 'nobutton');
-	}
-
-	/**
-	 *
-	 * Prepare the Smilie-Arrays
-	 *
-	 */
-
-	/**
-	 *
- 	 * I have copied this from /include/text.php, removed dobles
-	 * and some escapes.
+ 	 * I have copied this from /include/text.php, removed doubles
+	 * and escaped them.
 	 *
 	 */
 
@@ -120,22 +94,12 @@ function show_button($a, &$b) {
 		'<img class="smiley" src="' . $a->get_baseurl() . '/images/rhash-16.png" alt="red" />'
 	);
 	
-	/**
-	 * 
-	 * Call hooks to get aditional smileies from other addons
-	 *
-	 */
-
+	// Call hooks to get aditional smileies from other addons
 	$params = array('texts' => $texts, 'icons' => $icons, 'string' => ""); //changed
 	call_hooks('smilie', $params);
 
-	/**
-	 *
-	 * Generate html for smileylist
-	 *
-	 */
-
-	$s = "\t<table class=\"smiley-preview\"><tr>\n";
+	//Generate html for smiley list
+	$s = "<table class=\"smiley-preview\"><tr>\n\t";
 	for($x = 0; $x < count($params['texts']); $x ++) {
 		$icon = $params['icons'][$x];
 		$icon = str_replace('/>', 'onclick="smileybutton_addsmiley(\'' . $params['texts'][$x] . '\')"/>', $icon);
@@ -145,139 +109,58 @@ function show_button($a, &$b) {
 			$s .= "</tr>\n\t<tr>";
 		}
 	}
-	$s .= "\t</tr></table>\n";
+	$s .= "\t</tr></table>";
 
-	/**
-	 *
-	 * Add css to page
-	 *
-	 */	
+	//Add css to header
+	$css_file = 'addon/smileybutton/view/'.current_theme().'.css';
+	if (! file_exists($css_file)) 
+		$css_file = 'addon/smileybutton/view/default.css';
+	$css_url = $a->get_baseurl().'/'.$css_file;
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/smileybutton/smileybutton.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$css_url.'" media="all" />'."\r\n";
 
-	/**
-	 *
-	 * Add the button to the Inputbox
-	 *
-	 */	
-	if (! $nobutton) {
-		$b = "<div id=\"profile-smiley-wrapper\" style=\"display: block;\" >\n";
-		$b .= "\t<img src=\"" . $a->get_baseurl() . "/addon/smileybutton/icon.gif\" onclick=\"toggle_smileybutton()\" alt=\"smiley\">\n";
-		$b .= "\t</div>\n";
-	}
+	
+	//Get the correct image for the theme
+	$image = 'addon/smileybutton/view/'.current_theme().'.png';
+	if (! file_exists($image)) 
+		$image = 'addon/smileybutton/view/default.png';
+	$image_url = $a->get_baseurl().'/'.$image;
 
- 
-	/**
-	 *
-	 * Write the smileies to an (hidden) div
-	 *
-	 */
+	//Add the hmtl and script to the page
+	$b = <<< EOT
+	<div id="profile-smiley-wrapper" style="display: block;" >
+		<img src="$image_url" class="smiley_button" onclick="toggle_smileybutton()" alt="smiley">
+	</div>
 
-	if ($nobutton) {
-		$b .= "\t<div id=\"smileybutton\">\n";
-	} else {
-		$b .= "\t<div id=\"smileybutton\" style=\"display:none;\">\n";
-	}
-	$b .= $s . "\n"; 
-	$b .= "</div>\n";
+	<div id="smileybutton" style="display:none;">
+	$s
+	</div>
 
-	/**
-	 *
-	 * Function to show and hide the smiley-list in the hidden div
-	 *
-	 */
+	<script>
+		var smileybutton_is_shown = 0;
+		function toggle_smileybutton() {
+			if (! smileybutton_is_shown) {
+				$("#smileybutton").show();
+				smileybutton_is_shown = 1;
+			} else {
+				$("#smileybutton").hide();
+				smileybutton_is_shown = 0;
+			}
+		}
 
-	$b .= "<script>\n"; 
-
-	if (! $nobutton) {
-		$b .= "	smileybutton_show = 0;\n";
-		$b .= "	function toggle_smileybutton() {\n";
-		$b .= "	if (! smileybutton_show) {\n";
-		$b .= "		$(\"#smileybutton\").show();\n";
-		$b .= "		smileybutton_show = 1;\n";
-		$b .= "	} else {\n";
-		$b .= "		$(\"#smileybutton\").hide();\n";
-		$b .= "		smileybutton_show = 0;\n";
-		$b .= "	}}\n";
-	} 
-
-	/**
-	 *
-	 * Function to add the chosen smiley to the inputbox
-	 *
-	 */
-
-	$b .= "	function smileybutton_addsmiley(text) {\n";
-	$b .= "		if(plaintext == 'none') {\n";
-	$b .= "			var v = $(\"#profile-jot-text\").val();\n";
-	$b .= "			v = v + text;\n";
-	$b .= "			$(\"#profile-jot-text\").val(v);\n";
-	$b .= "			$(\"#profile-jot-text\").focus();\n";
-	$b .= "		} else {\n";
-	$b .= "			var v = tinymce.activeEditor.getContent();\n";
-	$b .= "			v = v + text;\n";
-	$b .= "			tinymce.activeEditor.setContent(v);\n";
-	$b .= "			tinymce.activeEditor.focus();\n";
-	$b .= "		}\n";
-	$b .= "	}\n";
-	$b .= "</script>\n";
-}
-
-
-
-
-
-/**
- *
- * Set the configuration
- *
- */
-
-function smileybutton_settings_post($a,$post) {
-	if(! local_user())
-		return;
-	if($_POST['smileybutton-submit'])
-		set_pconfig(local_user(),'smileybutton','nobutton',intval($_POST['smileybutton']));
-
-}
-
-
-/**
- *
- * Add configuration-dialog to form
- *
- */
-
-
-function smileybutton_settings(&$a,&$s) {
-
-	if(! local_user())
-		return;
-
-	/* Add our stylesheet to the page so we can make our settings look nice */
-
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/smileybutton/smileybutton.css' . '" media="all" />' . "\r\n";
-
-	/* Get the current state of our config variable */
-
-	$nobutton = get_pconfig(local_user(),'smileybutton','nobutton');
-	$checked = (($nobutton) ? ' checked="checked" ' : '');
-
-	/* Add some HTML to the existing form */
-
-	$s .= '<div class="settings-block">';
-	$s .= '<h3>Smileybutton settings</h3>';
-	$s .= '<div id="smileybutton-enable-wrapper">';
-
-	$s .= 'You can hide the button and show the smilies directly.<br /><br />';
-
-	$s .= '<label id="smileybutton-enable-label" for="smileybutton-nobutton-checkbox">Hide the button</label>';
-	$s .= '<input id="smileybutton-nobutton-checkbox" type="checkbox" name="smileybutton" value="1" ' . $checked . '/>';
-
-	$s .= '</div><div class="clear"></div>';
-
-	/* provide a submit button */
-
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="smileybutton-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
-
+		function smileybutton_addsmiley(text) {
+			if(plaintext == "none") {
+				var v = $("#profile-jot-text").val();
+				v = v + text;
+				$("#profile-jot-text").val(v);
+				$("#profile-jot-text").focus();
+			} else {
+				var v = tinymce.activeEditor.getContent();
+				v = v + text;
+				tinymce.activeEditor.setContent(v);
+				tinymce.activeEditor.focus();
+			}
+		}
+	</script>
+EOT;
 }
