@@ -838,7 +838,7 @@ function statusnet_fetchtimeline($a, $uid) {
 		if ($post->in_reply_to_status_id != "")
 			continue;
 
-		if (!strpos($post->source, $application_name)) {
+		if (!stristr($post->source, $application_name)) {
 			$_SESSION["authenticated"] = true;
 			$_SESSION["uid"] = $uid;
 

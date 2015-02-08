@@ -751,7 +751,7 @@ function twitter_fetchtimeline($a, $uid) {
 		if ($first_time)
 			continue;
 
-		if (!strpos($post->source, $application_name)) {
+		if (!stristr($post->source, $application_name)) {
 			$_SESSION["authenticated"] = true;
 			$_SESSION["uid"] = $uid;
 

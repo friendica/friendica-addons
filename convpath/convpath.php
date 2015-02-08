@@ -4,7 +4,7 @@
  * Description: Converts all internal paths according to the current scheme (http or https)
  * Version: 1.0
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
- * 
+ * Status: Unsupported
  */
 
 function convpath_install() {

@@ -731,7 +731,7 @@ function pumpio_fetchtimeline(&$a, $uid) {
 					if ($receiver->id == "http://activityschema.org/collection/public")
 						$public = true;
 
-			if ($public AND !strstr($post->generator->displayName, $application_name)) {
+			if ($public AND !stristr($post->generator->displayName, $application_name)) {
 				require_once('include/html2bbcode.php');
 
 				$_SESSION["authenticated"] = true;
