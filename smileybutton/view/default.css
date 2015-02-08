@@ -1,0 +1,13 @@
+img.smiley_button {
+	height: 18px;
+	width: 18px;
+}
+
+img.smiley_preview {
+	max-height: 25px;
+	max-width: 25px;
+}
+
+table.smiley-preview {
+	border: 1px solid #AAAAAA;
+}

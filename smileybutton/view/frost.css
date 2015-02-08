@@ -1,0 +1,21 @@
+img.smiley_button {
+	height: 25;
+	width: 25px;
+	position: relative;
+	left: 335px;
+	top: -45px;
+}
+
+img.smiley_preview {
+	max-height: 25px;
+	max-width: 25px;
+}
+
+table.smiley-preview {
+	border: 1px solid #AAAAAA;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	position: relative;
+	left: 285px;
+	top: -36px;
+}
