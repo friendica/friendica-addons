@@ -4,13 +4,14 @@
 # 
 # 
 # Translators:
+# fabrixxm <fabrix.xm@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-06-23 10:18+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2015-02-09 10:51+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,134 +21,134 @@ msgstr ""
 
 #: morepokes.php:19
 msgid "bitchslap"
-msgstr ""
+msgstr "schiaffeggia"
 
 #: morepokes.php:19
 msgid "bitchslapped"
-msgstr ""
+msgstr "ha schiaffeggiato"
 
 #: morepokes.php:20
 msgid "shag"
-msgstr ""
+msgstr "scopa"
 
 #: morepokes.php:20
 msgid "shagged"
-msgstr ""
+msgstr "ha scopato"
 
 #: morepokes.php:21
 msgid "do something obscenely biological to"
-msgstr ""
+msgstr "fa qualcosa di biologicamente osceno a"
 
 #: morepokes.php:21
 msgid "did something obscenely biological to"
-msgstr ""
+msgstr "ha fatto qualcosa di biologicamente osceno a"
 
 #: morepokes.php:22
 msgid "point out the poke feature to"
-msgstr ""
+msgstr "fa vedere la funzione \"stuzzica\" a"
 
 #: morepokes.php:22
 msgid "pointed out the poke feature to"
-msgstr ""
+msgstr "ha fatto vedere la funzione \"stuzzica\" a"
 
 #: morepokes.php:23
 msgid "declare undying love for"
-msgstr ""
+msgstr "dichiara eterno amore per"
 
 #: morepokes.php:23
 msgid "declared undying love for"
-msgstr ""
+msgstr "ha dichiarato eterno amore per"
 
 #: morepokes.php:24
 msgid "patent"
-msgstr ""
+msgstr "brevetta"
 
 #: morepokes.php:24
 msgid "patented"
-msgstr ""
+msgstr "ha brevettato"
 
 #: morepokes.php:25
 msgid "stroke beard"
-msgstr ""
+msgstr "tirare la barba"
 
 #: morepokes.php:25
 msgid "stroked their beard at"
-msgstr ""
+msgstr "ha tirato la barba di"
 
 #: morepokes.php:26
 msgid ""
 "bemoan the declining standards of modern secondary and tertiary education to"
-msgstr ""
+msgstr "lamentati del declino degli standard della moderna istruzione secondaria e terziaria con"
 
 #: morepokes.php:26
 msgid ""
 "bemoans the declining standards of modern secondary and tertiary education "
 "to"
-msgstr ""
+msgstr "si è lamentato del declino degli standard della moderna istruzione secondaria e terziaria con"
 
 #: morepokes.php:27
 msgid "hug"
-msgstr ""
+msgstr "abbraccia"
 
 #: morepokes.php:27
 msgid "hugged"
-msgstr ""
+msgstr "ha abbracciato"
 
 #: morepokes.php:28
 msgid "kiss"
-msgstr ""
+msgstr "bacia"
 
 #: morepokes.php:28
 msgid "kissed"
-msgstr ""
+msgstr "ha baciato"
 
 #: morepokes.php:29
 msgid "raise eyebrows at"
-msgstr ""
+msgstr "solleva un sopracciglio verso"
 
 #: morepokes.php:29
 msgid "raised their eyebrows at"
-msgstr ""
+msgstr "ha sollevato un sopracciglio verso"
 
 #: morepokes.php:30
 msgid "insult"
-msgstr ""
+msgstr "insulta"
 
 #: morepokes.php:30
 msgid "insulted"
-msgstr ""
+msgstr "ha insultato"
 
 #: morepokes.php:31
 msgid "praise"
-msgstr ""
+msgstr "prega"
 
 #: morepokes.php:31
 msgid "praised"
-msgstr ""
+msgstr "ha pregato"
 
 #: morepokes.php:32
 msgid "be dubious of"
-msgstr ""
+msgstr "dubita di"
 
 #: morepokes.php:32
 msgid "was dubious of"
-msgstr ""
+msgstr "ha dubitato di"
 
 #: morepokes.php:33
 msgid "eat"
-msgstr ""
+msgstr "mangia"
 
 #: morepokes.php:33
 msgid "ate"
-msgstr ""
+msgstr "ha mangiato"
 
 #: morepokes.php:34
 msgid "giggle and fawn at"
-msgstr ""
+msgstr "sorridi e adula"
 
 #: morepokes.php:34
 msgid "giggled and fawned at"
-msgstr ""
+msgstr "ha sorriso e adulato"
 
 #: morepokes.php:35
 msgid "doubt"
@@ -159,8 +160,8 @@ msgstr ""
 
 #: morepokes.php:36
 msgid "glare"
-msgstr ""
+msgstr "guarda con aria feroce"
 
 #: morepokes.php:36
 msgid "glared at"
-msgstr ""
+msgstr "ha guardato con aria feroce"
