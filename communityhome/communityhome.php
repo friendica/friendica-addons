@@ -90,7 +90,7 @@ function communityhome_home(&$a, &$o){
 		if($r && count($r)) {
 			$aside['$activeusers_title']  = t('Most active users');
 			$aside['$activeusers_items']  = array();
-			
+
 			$photo = 'thumb';
 			foreach($r as $rr) {
 				$profile_link = $a->get_baseurl() . '/profile/' . ((strlen($rr['nickname'])) ? $rr['nickname'] : $rr['profile_uid']);
@@ -123,14 +123,14 @@ function communityhome_home(&$a, &$o){
 					dbesc(t('Profile Photos'))
 					);
 
-			
+
 		if(count($r)) {
 	#		$tpl = file_get_contents( dirname(__file__).'/directory_item.tpl');
 			$tpl = get_markup_template( 'directory_item.tpl', 'addon/communityhome/' );
 			foreach($r as $rr) {
 				$photo_page = $a->get_baseurl() . '/photos/' . $rr['nickname'] . '/image/' . $rr['resource-id'];
 				$photo_url = $a->get_baseurl() . '/photo/' .  $rr['resource-id'] . '-' . $rr['scale'] .'.jpg';
-			
+
 				$entry = replace_macros($tpl,array(
 					'$id' => $rr['id'],
 					'$profile_link' => $photo_page,
@@ -142,7 +142,7 @@ function communityhome_home(&$a, &$o){
 			}
 		}
 	}
-	
+
 	// last 10 liked items
 	if (get_config('communityhome','showlastlike')===true){
 		$aside['$like_title'] = t('Latest likes');
@@ -161,7 +161,7 @@ function communityhome_home(&$a, &$o){
 		foreach ($r as $rr) {
 			$author	 = '<a href="' . $rr['liker-link'] . '">' . $rr['liker'] . '</a>';
 			$objauthor =  '<a href="' . $rr['author-link'] . '">' . $rr['author-name'] . '</a>';
-			
+
 			//var_dump($rr['verb'],$rr['object-type']); killme();
 			switch($rr['verb']){
 				case 'http://activitystrea.ms/schema/1.0/post':
@@ -185,23 +185,27 @@ function communityhome_home(&$a, &$o){
 			$plink = '<a href="' . $rr['plink'] . '">' . $post_type . '</a>';
 
 			$aside['$like_items'][] = sprintf( t('%1$s likes %2$s\'s %3$s'), $author, $objauthor, $plink);
-			
+
 		}
 	}
-	
+
 #	$tpl = file_get_contents(dirname(__file__).'/communityhome.tpl');
 	$tpl = get_markup_template('communityhome.tpl', 'addon/communityhome/');
 	$a->page['aside'] = replace_macros($tpl, $aside);
-	
+
 	$o = '<h1>' . ((x($a->config,'sitename')) ? sprintf( t("Welcome to %s") ,$a->config['sitename']) : "" ) . '</h1>';
-	
+
 	if(file_exists('home.html'))
  		$o = file_get_contents('home.html');
-	
+
 	if (get_config('communityhome','showcommunitystream')===true){
-		$oldset = get_config('system','no_community_page');
-		set_config('system','no_community_page', false);
+		$oldset = get_config('system','community_page_style');
+		if ($oldset == CP_NO_COMMUNITY_PAGE)
+			set_config('system','community_page_style', CP_USERS_ON_SERVER);
+
 		$o .= community_content($a,1);
-		set_config('system','no_community_page', $oldset);
+
+		if ($oldset == CP_NO_COMMUNITY_PAGE)
+			set_config('system','community_page_style', $oldset);
 	}
 }
