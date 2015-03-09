@@ -66,11 +66,14 @@ function ldapauth_uninstall() {
 
 
 function ldapauth_hook_authenticate($a,&$b) {
-	if(ldapauth_authenticate($b['username'],$b['password']) && is_existing_account($b['username'])) {
-		$b['user_record'] = $results[0];
-		$b['authenticated'] = 1;
-	}
-	return;
+    if(ldapauth_authenticate($b['username'],$b['password'])) {
+    	$results = get_existing_account($b['username']);
+    	if(! empty($results)){
+            $b['user_record'] = $results[0];
+            $b['authenticated'] = 1;
+    	}
+    }
+    return;
 }
 
 function ldapauth_authenticate($username,$password) {
@@ -81,14 +84,9 @@ function ldapauth_authenticate($username,$password) {
     $ldap_searchdn = get_config('ldapauth','ldap_searchdn');
     $ldap_userattr = get_config('ldapauth','ldap_userattr');
     $ldap_group    = get_config('ldapauth','ldap_group');
-	$ldap_autocreateaccount = get_config('ldapauth','ldap_autocreateaccount');
-	$ldap_autocreateaccount_emailattribute = get_config('ldapauth','ldap_autocreateaccount_emailattribute');
-	$ldap_autocreateaccount_nameattribute = get_config('ldapauth','ldap_autocreateaccount_nameattribute');
-
-	if(! strlen($ldap_autocreateaccount_emailattribute))
-		$ldap_autocreateaccount_emailattribute = "mail";
-	if(! strlen($ldap_autocreateaccount_nameattribute))
-		$ldap_autocreateaccount_nameattribute = "givenName";
+    $ldap_autocreateaccount = get_config('ldapauth','ldap_autocreateaccount');
+    $ldap_autocreateaccount_emailattribute = get_config('ldapauth','ldap_autocreateaccount_emailattribute');
+    $ldap_autocreateaccount_nameattribute = get_config('ldapauth','ldap_autocreateaccount_nameattribute');
 	
     if(! ((strlen($password))
             && (function_exists('ldap_connect'))
@@ -122,14 +120,22 @@ function ldapauth_authenticate($username,$password) {
 
     if(! @ldap_bind($connect,$dn,$password))
         return false;
-		
-	$emailarray = @ldap_get_values($connect, $id, $ldap_autocreateaccount_emailattribute);
-	$namearray = @ldap_get_values($connect, $id, $ldap_autocreateaccount_nameattribute);
+    
+    $emailarray = [];
+    $namearray = [];
+    if($ldap_autocreateaccount == "true"){
+        if(! strlen($ldap_autocreateaccount_emailattribute))
+            $ldap_autocreateaccount_emailattribute = "mail";
+        if(! strlen($ldap_autocreateaccount_nameattribute))
+            $ldap_autocreateaccount_nameattribute = "givenName";
+    	$emailarray = @ldap_get_values($connect, $id, $ldap_autocreateaccount_emailattribute);
+    	$namearray = @ldap_get_values($connect, $id, $ldap_autocreateaccount_nameattribute);
+    }
 
     if(! strlen($ldap_group)){
-		ldap_autocreateaccount($ldap_autocreateaccount,$username,$password,$emailarray[0],$namearray[0]);
+    	ldap_autocreateaccount($ldap_autocreateaccount,$username,$password,$emailarray[0],$namearray[0]);
         return true;
-	}
+    }
 
     $r = @ldap_compare($connect,$ldap_group,'member',$dn);
     if ($r === -1) {
@@ -155,30 +161,29 @@ function ldapauth_authenticate($username,$password) {
         return false;
     }
 
-	ldap_autocreateaccount($ldap_autocreateaccount,$username,$password,$emailarray[0],$namearray[0]);
+    ldap_autocreateaccount($ldap_autocreateaccount,$username,$password,$emailarray[0],$namearray[0]);
     return true;
 }
 
 function ldap_autocreateaccount($ldap_autocreateaccount,$username,$password,$email,$name) {
-	if($ldap_autocreateaccount == "true" && !is_existing_account($username)){
-		if (strlen($email) > 0 && strlen($name) > 0){
-			$arr = array('username'=>$name,'nickname'=>$username,'email'=>$email,'password'=>$password,'verified'=>1);
-			$result = create_user($arr);
-			if ($result['success']){
-				logger("ldapauth: account " . $username . " created");
-			}else{
-				logger("ldapauth: account " . $username . " was not created ! : " . implode($result));
-			}
-		}else{
-			logger("ldapauth: unable to create account, no email or nickname found");
-		}
-	}
+    if($ldap_autocreateaccount == "true"){
+        $results = get_existing_account($username);
+        if(empty($results)){
+            if (strlen($email) > 0 && strlen($name) > 0){
+                $arr = array('username'=>$name,'nickname'=>$username,'email'=>$email,'password'=>$password,'verified'=>1);
+                $result = create_user($arr);
+                if ($result['success']){
+                    logger("ldapauth: account " . $username . " created");
+                }else{
+                    logger("ldapauth: account " . $username . " was not created ! : " . implode($result));
+                }
+            }else{
+                logger("ldapauth: unable to create account, no email or nickname found");
+            }
+        }
+    }
 }
 
-function is_existing_account($username){
-	$results = q("SELECT * FROM `user` WHERE `nickname` = '%s' AND `blocked` = 0 AND `verified` = 1 LIMIT 1",$username);
-	if(count($results)) {
-		return true;
-	}
-	return false;
+function get_existing_account($username){
+    return q("SELECT * FROM `user` WHERE `nickname` = '%s' AND `blocked` = 0 AND `verified` = 1 LIMIT 1",$username);
 }
