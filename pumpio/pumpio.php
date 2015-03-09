@@ -1130,6 +1130,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 				$public = true;
 
 	$postarray = array();
+        $postarray['network'] = NETWORK_PUMPIO;
 	$postarray['gravity'] = 0;
 	$postarray['uid'] = $uid;
 	$postarray['wall'] = 0;
