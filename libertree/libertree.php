@@ -159,10 +159,10 @@ function libertree_send(&$a,&$b) {
 	$ltree_api_token = get_pconfig($b['uid'],'libertree','libertree_api_token');
 	$ltree_url = get_pconfig($b['uid'],'libertree','libertree_url');
 	$ltree_blog = "$ltree_url/api/v1/posts/create/?token=$ltree_api_token";
-	if (isset($a->config['sitename']) AND ($a->config['sitename'] != ""))
-		$ltree_source = $a->config['sitename'];
-	else
-		$ltree_source = "Friendica";
+	$ltree_source = $a->get_hostname();
+
+	if ($b['app'] != "")
+		$ltree_source .= " (".$b['app'].")";
 
 	if($ltree_url && $ltree_api_token && $ltree_blog && $ltree_source) {
 
