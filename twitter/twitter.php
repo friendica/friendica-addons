@@ -506,6 +506,10 @@ function twitter_post_hook(&$a,&$b) {
 			unlink($tempfile);
 
 			logger('twitter_post_with_media send, result: ' . print_r($result, true), LOGGER_DEBUG);
+
+			if ($result->source)
+				set_config("twitter", "application_name", strip_tags($result->source));
+
 			if ($result->errors OR $result->error) {
 				logger('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
 
@@ -531,6 +535,10 @@ function twitter_post_hook(&$a,&$b) {
 
 			$result = $tweet->post($url, $post);
 			logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
+
+			if ($result->source)
+				set_config("twitter", "application_name", strip_tags($result->source));
+
 			if ($result->errors) {
 				logger('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
 

@@ -606,6 +606,10 @@ function statusnet_post_hook(&$a,&$b) {
 			//$result = $dent->post('statuses/update', $postdata);
 			logger('statusnet_post send, result: ' . print_r($result, true).
 				"\nmessage: ".$msg, LOGGER_DEBUG."\nOriginal post: ".print_r($b, true)."\nPost Data: ".print_r($postdata, true));
+
+			if ($result->source)
+				set_pconfig($b["uid"], "statusnet", "application_name", strip_tags($result->source));
+
 			if ($result->error) {
 				logger('Send to StatusNet failed: "'.$result->error.'"');
 			} elseif ($iscomment) {

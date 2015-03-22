@@ -416,6 +416,7 @@ function fromgplus_fetch($a, $uid) {
 	$reversed = array_reverse($activities->items);
 
 	foreach($reversed as $item) {
+
 		if (strtotime($item->published) <= $initiallastdate)
 			continue;
 
@@ -431,14 +432,11 @@ function fromgplus_fetch($a, $uid) {
 		if ($first_time)
 			continue;
 
-		if ($item->access->description == "Public")
-
-			// Loop prevention - ignore postings from HootSuite
-			if ($item->provider->title == "HootSuite")
-				continue;
+		if ($item->access->description == "Public") {
 
 			// Loop prevention through the special blank from the googleplus connector
-			if (strstr($item->object->content, $blank))
+			//if (strstr($item->object->content, $blank))
+			if (strrpos($item->object->content, $blank) >= strlen($item->object->content) - 5)
 				continue;
 
 			switch($item->object->objectType) {
@@ -454,8 +452,8 @@ function fromgplus_fetch($a, $uid) {
 					else
 						$location = "";
 
-					fromgplus_post($a, $uid, "Google+", $post, $location);
-					//fromgplus_post($a, $uid, $item->provider->title, $post, $location);
+					//fromgplus_post($a, $uid, "Google+", $post, $location);
+					fromgplus_post($a, $uid, $item->provider->title, $post, $location);
 
 					break;
 
@@ -488,10 +486,11 @@ function fromgplus_fetch($a, $uid) {
 					else
 						$location = "";
 
-					fromgplus_post($a, $uid, "Google+", $post, $location);
-					//fromgplus_post($a, $uid, $item->provider->title, $post, $location);
+					//fromgplus_post($a, $uid, "Google+", $post, $location);
+					fromgplus_post($a, $uid, $item->provider->title, $post, $location);
 					break;
 			}
+		}
 	}
 	if ($lastdate != 0)
 		set_pconfig($uid,'fromgplus','lastdate', $lastdate);
