@@ -191,7 +191,7 @@ function statusnet_settings_post ($a,$post) {
 					set_pconfig(local_user(), 'statusnet', 'consumerkey', $asn['consumerkey'] );
 					set_pconfig(local_user(), 'statusnet', 'consumersecret', $asn['consumersecret'] );
 					set_pconfig(local_user(), 'statusnet', 'baseapi', $asn['apiurl'] );
-					set_pconfig(local_user(), 'statusnet', 'application_name', $asn['applicationname'] );
+					//set_pconfig(local_user(), 'statusnet', 'application_name', $asn['applicationname'] );
 				} else {
 					notice( t('Please contact your site administrator.<br />The provided API URL is not valid.').EOL.$asn['apiurl'].EOL );
 				}
@@ -210,7 +210,7 @@ function statusnet_settings_post ($a,$post) {
 			set_pconfig(local_user(), 'statusnet', 'consumerkey', $_POST['statusnet-consumerkey']);
 			set_pconfig(local_user(), 'statusnet', 'consumersecret', $_POST['statusnet-consumersecret']);
 			set_pconfig(local_user(), 'statusnet', 'baseapi', $apibase );
-			set_pconfig(local_user(), 'statusnet', 'application_name', $_POST['statusnet-applicationname'] );
+			//set_pconfig(local_user(), 'statusnet', 'application_name', $_POST['statusnet-applicationname'] );
 		} else {
 			//  the API path is not correct, maybe missing trailing / ?
 			$apibase = $apibase . '/';
@@ -328,8 +328,8 @@ function statusnet_settings(&$a,&$s) {
 		$s .= '<label id="statusnet-baseapi-label" for="statusnet-baseapi">'. t("Base API Path \x28remember the trailing /\x29") .'</label>';
 		$s .= '<input id="statusnet-baseapi" type="text" name="statusnet-baseapi" size="35" /><br />';
 		$s .= '<div class="clear"></div>';
-		$s .= '<label id="statusnet-applicationname-label" for="statusnet-applicationname">'.t('StatusNet application name').'</label>';
-		$s .= '<input id="statusnet-applicationname" type="text" name="statusnet-applicationname" size="35" /><br />';
+		//$s .= '<label id="statusnet-applicationname-label" for="statusnet-applicationname">'.t('StatusNet application name').'</label>';
+		//$s .= '<input id="statusnet-applicationname" type="text" name="statusnet-applicationname" size="35" /><br />';
 		$s .= '<p></p><div class="clear"></div>';
 		$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
 		$s .= '</div>';
@@ -637,7 +637,7 @@ function statusnet_plugin_admin_post(&$a){
 		    $apiurl=$apiurl.'/';
 		$secret=trim($_POST['secret'][$id]);
 		$key=trim($_POST['key'][$id]);
-		$applicationname = ((x($_POST, 'applicationname')) ? notags(trim($_POST['applicationname'][$id])):'');
+		//$applicationname = ((x($_POST, 'applicationname')) ? notags(trim($_POST['applicationname'][$id])):'');
 		if ($sitename!="" &&
 			$apiurl!="" &&
 			$secret!="" &&
@@ -649,7 +649,7 @@ function statusnet_plugin_admin_post(&$a){
 					'apiurl' => $apiurl,
 					'consumersecret' => $secret,
 					'consumerkey' => $key,
-					'applicationname' => $applicationname
+					//'applicationname' => $applicationname
 				);
 		}
 	}
@@ -669,7 +669,7 @@ function statusnet_plugin_admin(&$a, &$o){
 				'apiurl' => Array("apiurl[$id]", "Api url", $s['apiurl'], t("Base API Path \x28remember the trailing /\x29") ),
 				'secret' => Array("secret[$id]", "Secret", $s['consumersecret'], ""),
 				'key' => Array("key[$id]", "Key", $s['consumerkey'], ""),
-				'applicationname' => Array("applicationname[$id]", "Application name", $s['applicationname'], ""),
+				//'applicationname' => Array("applicationname[$id]", "Application name", $s['applicationname'], ""),
 				'delete' => Array("delete[$id]", "Delete", False , "Check to delete this preset"),
 			);
 		}
@@ -681,7 +681,7 @@ function statusnet_plugin_admin(&$a, &$o){
 		'apiurl' => Array("apiurl[$id]", "Api url", "", t("Base API Path \x28remember the trailing /\x29") ),
 		'secret' => Array("secret[$id]", t("Consumer Secret"), "", ""),
 		'key' => Array("key[$id]", t("Consumer Key"), "", ""),
-		'applicationname' => Array("applicationname[$id]", t("Application name"), "", ""),
+		//'applicationname' => Array("applicationname[$id]", t("Application name"), "", ""),
 	);
 
 	$t = get_markup_template( "admin.tpl", "addon/statusnet/" );

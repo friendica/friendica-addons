@@ -572,7 +572,7 @@ function twitter_plugin_admin_post(&$a){
 	$applicationname = ((x($_POST, 'applicationname')) ? notags(trim($_POST['applicationname'])):'');
 	set_config('twitter','consumerkey',$consumerkey);
 	set_config('twitter','consumersecret',$consumersecret);
-	set_config('twitter','application_name',$applicationname);
+	//set_config('twitter','application_name',$applicationname);
 	info( t('Settings updated.'). EOL );
 }
 function twitter_plugin_admin(&$a, &$o){
@@ -583,7 +583,7 @@ function twitter_plugin_admin(&$a, &$o){
 								// name, label, value, help, [extra values]
 		'$consumerkey' => array('consumerkey', t('Consumer key'),  get_config('twitter', 'consumerkey' ), ''),
 		'$consumersecret' => array('consumersecret', t('Consumer secret'),  get_config('twitter', 'consumersecret' ), ''),
-		'$applicationname' => array('applicationname', t('Name of the Twitter Application'), get_config('twitter','application_name'),t('Set this to the exact name you gave the app on twitter.com/apps to avoid mirroring postings from ~friendica back to ~friendica'))
+		//'$applicationname' => array('applicationname', t('Name of the Twitter Application'), get_config('twitter','application_name'),t('Set this to the exact name you gave the app on twitter.com/apps to avoid mirroring postings from ~friendica back to ~friendica'))
 	));
 }
 
