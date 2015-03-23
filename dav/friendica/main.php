@@ -285,8 +285,8 @@ function dav_cron(&$a, &$b)
 						'textVersion'          => $text_text,
 						'additionalMailHeader' => "",
 					);
-					require_once('include/enotify.php');
-					enotify::send($params);
+					require_once('include/Emailer.php');
+					Emailer::send($params);
 				}
 				break;
 		}
