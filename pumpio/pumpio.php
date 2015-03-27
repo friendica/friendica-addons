@@ -433,9 +433,6 @@ function pumpio_send(&$a,&$b) {
 
 		$title = trim($b['title']);
 
-		//if ($title != '')
-		//	$title = "<h4>".$title."</h4>";
-
 		$content = bbcode($b['body'], false, false, 4);
 
 		// Enhance the way, videos are displayed
@@ -502,6 +499,10 @@ function pumpio_send(&$a,&$b) {
 		$success = $client->CallAPI($url, 'POST', $params, array('FailOnAccessError'=>true, 'RequestContentType'=>'application/json'), $user);
 
 		if($success) {
+
+			if ($user->generator->displayName)
+				set_pconfig($b["uid"], "pumpio", "application_name", $user->generator->displayName);
+
 			$post_id = $user->object->id;
 			logger('pumpio_send '.$username.': success '.$post_id);
 			if($post_id AND $iscomment) {
@@ -672,8 +673,12 @@ function pumpio_fetchtimeline(&$a, $uid) {
 	$hostname = get_pconfig($uid, 'pumpio','host');
 	$username = get_pconfig($uid, "pumpio", "user");
 
-	$application_name  = get_config('pumpio', 'application_name');
-
+	//  get the application name for the pump.io app
+	//  1st try personal config, then system config and fallback to the
+	//  hostname of the node if neither one is set.
+	$application_name  = get_pconfig( $uid, 'pumpio', 'application_name');
+	if ($application_name == "")
+		$application_name  = get_config('pumpio', 'application_name');
 	if ($application_name == "")
 		$application_name = $a->get_hostname();
 

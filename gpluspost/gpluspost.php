@@ -230,7 +230,7 @@ function gpluspost_send(&$a,&$b) {
 		return;
 
 	// if post comes from Google+ don't send it back
-	if (!get_pconfig($b["uid"],'gpluspost','no_loop_prevention') and ($b['app'] == "Google+"))
+	if (!get_pconfig($b["uid"],'gpluspost','no_loop_prevention') and (($b['app'] == "Google+") OR ($b["extid"] == NETWORK_GPLUS)))
 		return;
 
 	if (!gpluspost_nextscripts()) {

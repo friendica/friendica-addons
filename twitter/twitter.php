@@ -506,6 +506,10 @@ function twitter_post_hook(&$a,&$b) {
 			unlink($tempfile);
 
 			logger('twitter_post_with_media send, result: ' . print_r($result, true), LOGGER_DEBUG);
+
+			if ($result->source)
+				set_config("twitter", "application_name", strip_tags($result->source));
+
 			if ($result->errors OR $result->error) {
 				logger('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
 
@@ -531,6 +535,10 @@ function twitter_post_hook(&$a,&$b) {
 
 			$result = $tweet->post($url, $post);
 			logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
+
+			if ($result->source)
+				set_config("twitter", "application_name", strip_tags($result->source));
+
 			if ($result->errors) {
 				logger('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
 
@@ -564,7 +572,7 @@ function twitter_plugin_admin_post(&$a){
 	$applicationname = ((x($_POST, 'applicationname')) ? notags(trim($_POST['applicationname'])):'');
 	set_config('twitter','consumerkey',$consumerkey);
 	set_config('twitter','consumersecret',$consumersecret);
-	set_config('twitter','application_name',$applicationname);
+	//set_config('twitter','application_name',$applicationname);
 	info( t('Settings updated.'). EOL );
 }
 function twitter_plugin_admin(&$a, &$o){
@@ -575,7 +583,7 @@ function twitter_plugin_admin(&$a, &$o){
 								// name, label, value, help, [extra values]
 		'$consumerkey' => array('consumerkey', t('Consumer key'),  get_config('twitter', 'consumerkey' ), ''),
 		'$consumersecret' => array('consumersecret', t('Consumer secret'),  get_config('twitter', 'consumersecret' ), ''),
-		'$applicationname' => array('applicationname', t('Name of the Twitter Application'), get_config('twitter','application_name'),t('Set this to the exact name you gave the app on twitter.com/apps to avoid mirroring postings from ~friendica back to ~friendica'))
+		//'$applicationname' => array('applicationname', t('Name of the Twitter Application'), get_config('twitter','application_name'),t('Set this to the exact name you gave the app on twitter.com/apps to avoid mirroring postings from ~friendica back to ~friendica'))
 	));
 }
 
