@@ -248,9 +248,10 @@ function fbpost_content(&$a) {
 		$o .= '<div id="fbpost-enable-wrapper">';
 
 		//read_stream,publish_stream,manage_pages,photo_upload,user_groups,offline_access
+		//export_stream,read_stream,publish_stream,manage_pages,photo_upload,user_groups,publish_actions,user_friends,share_item,video_upload,status_update
 
-		$o .= '<a href="https://www.facebook.com/dialog/oauth?client_id=' . $appid . '&redirect_uri=' 
-			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=export_stream,read_stream,publish_stream,manage_pages,photo_upload,user_groups,publish_actions,user_friends,share_item,video_upload,status_update">' . t('Install Facebook Post connector for this account.') . '</a>';
+		$o .= '<a href="https://www.facebook.com/dialog/oauth?client_id=' . $appid . '&redirect_uri='
+			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=publish_actions,publish_pages,user_posts,user_photos,user_status,user_videos,manage_pages">' . t('Install Facebook Post connector for this account.') . '</a>';
 		$o .= '</div>';
 	}
 
@@ -261,8 +262,10 @@ function fbpost_content(&$a) {
 
 		$o .= '<div id="fbpost-enable-wrapper">';
 
-		$o .= '<a href="https://www.facebook.com/dialog/oauth?client_id=' . $appid . '&redirect_uri=' 
-			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=export_stream,read_stream,publish_stream,manage_pages,photo_upload,user_groups,publish_actions,user_friends,share_item,video_upload,status_update">' . t('Re-authenticate [This is necessary whenever your Facebook password is changed.]') . '</a>';
+		//export_stream,read_stream,publish_stream,manage_pages,photo_upload,user_groups,publish_actions,user_friends,share_item,video_upload,status_update
+
+		$o .= '<a href="https://www.facebook.com/dialog/oauth?client_id=' . $appid . '&redirect_uri='
+			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=publish_actions,publish_pages,user_posts,user_photos,user_status,user_videos,manage_pages">' . t('Re-authenticate [This is necessary whenever your Facebook password is changed.]') . '</a>';
 		$o .= '</div>';
 
 		$o .= '<div id="fbpost-post-default-form">';
@@ -991,10 +994,14 @@ function fbpost_fetchwall($a, $uid) {
 
 	$access_token = get_pconfig($uid,'facebook','access_token');
 	$post_to_page = get_pconfig($uid,'facebook','post_to_page');
+	$mirror_page = get_pconfig($uid,'facebook','mirror_page');
 	$lastcreated = get_pconfig($uid,'facebook','last_created');
 
 	if ((int)$post_to_page == 0)
 		$post_to_page = "me";
+
+	if ((int)$mirror_page != 0)
+		$post_to_page = $mirror_page;
 
 	$url = "https://graph.facebook.com/".$post_to_page."/feed?access_token=".$access_token;
 
@@ -1021,7 +1028,8 @@ function fbpost_fetchwall($a, $uid) {
 		if ($item->application->id == get_config('facebook','appid'))
 			continue;
 
-		if(isset($item->privacy) && ($item->privacy->value !== 'EVERYONE') && ($item->privacy->value !== ''))
+		//if(isset($item->privacy) && ($item->privacy->value !== 'EVERYONE') && ($item->privacy->value !== ''))
+		if((isset($item->privacy) && ($item->privacy->value !== 'EVERYONE')) OR !isset($item->privacy))
 			continue;
 
 		if (($post_to_page != $item->from->id) AND ((int)$post_to_page != 0))
@@ -1091,7 +1099,13 @@ function fbpost_fetchwall($a, $uid) {
 				$data = json_decode($feed);
 				if (isset($data->images)) {
 					$pagedata["images"][0]["src"] = $data->images[0]->source;
-					logger('fbpost_fetchwall: got fbid image '.$preview, LOGGER_DEBUG);
+					logger('got fbid image from images for '.$item->object_id, LOGGER_DEBUG);
+				} elseif (isset($data->source)) {
+					$pagedata["images"][0]["src"] = $data->source;
+					logger('got fbid image from source for '.$item->object_id, LOGGER_DEBUG);
+				} elseif (isset($data->picture)) {
+					$pagedata["images"][0]["src"] = $data->picture;
+					logger('got fbid image from picture for '.$item->object_id, LOGGER_DEBUG);
 				}
 			}
 
