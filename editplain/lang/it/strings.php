@@ -8,4 +8,4 @@ function string_plural_select_it($n){
 $a->strings["Editplain settings updated."] = "Impostazioni 'Editplain' aggiornate.";
 $a->strings["Editplain Settings"] = "Impostazioni Editplain";
 $a->strings["Disable richtext status editor"] = "Disabilita l'editor di testo visuale";
-$a->strings["Save Settings"] = "Salva Impostazioni";
+$a->strings["Submit"] = "Invia";

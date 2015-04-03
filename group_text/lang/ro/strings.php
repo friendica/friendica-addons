@@ -8,4 +8,4 @@ function string_plural_select_ro($n){
 $a->strings["Group Text settings updated."] = "Configurările Text Grup, au fost actualizate.";
 $a->strings["Group Text"] = "Text Grup";
 $a->strings["Use a text only (non-image) group selector in the \"group edit\" menu"] = "Folosiți în meniul \"editare grup\" un selector de grup strict textual (fără-imagine)";
-$a->strings["Save Settings"] = "Salvare Configurări";
+$a->strings["Submit"] = "Trimite";

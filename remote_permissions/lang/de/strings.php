@@ -1,8 +1,13 @@
 <?php
 
+if(! function_exists("string_plural_select_de")) {
+function string_plural_select_de($n){
+	return ($n != 1);;
+}}
+;
 $a->strings["Remote Permissions Settings"] = "Entfernte Privatsphäreneinstellungen";
 $a->strings["Allow recipients of your private posts to see the other recipients of the posts"] = "Erlaube Empfängern von privaten Nachrichten zu sehen wer die anderen Empfänger sind";
-$a->strings["Submit"] = "Senden";
+$a->strings["Save Settings"] = "Einstellungen speichern";
 $a->strings["Remote Permissions settings updated."] = "Entfernte Privatsphäreneinstellungen aktualisiert.";
 $a->strings["Visible to:"] = "Sichtbar für:";
 $a->strings["Visible to"] = "Sichtbar für";

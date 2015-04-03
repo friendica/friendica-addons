@@ -1,7 +1,12 @@
 <?php
 
-$a->strings["bitchslap"] = "abwatschen";
-$a->strings["bitchslapped"] = "watschte";
+if(! function_exists("string_plural_select_de")) {
+function string_plural_select_de($n){
+	return ($n != 1);;
+}}
+;
+$a->strings["bitchslap"] = "ohrfeigen";
+$a->strings["bitchslapped"] = "ohrfeigte";
 $a->strings["shag"] = "poppen";
 $a->strings["shagged"] = "poppte";
 $a->strings["do something obscenely biological to"] = "mit ihm/ihr etwas obszönes Körperliches machen";

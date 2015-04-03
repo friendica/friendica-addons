@@ -8,4 +8,4 @@ function string_plural_select_ro($n){
 $a->strings["Numfriends settings updated."] = "Configurările NumFriends au fost actualizate.";
 $a->strings["Numfriends Settings"] = "Configurări NumFriends";
 $a->strings["How many contacts to display on profile sidebar"] = "Câte contacte se afișează în bara laterală a profilului ";
-$a->strings["Save Settings"] = "Salvare Configurări";
+$a->strings["Submit"] = "Trimite";

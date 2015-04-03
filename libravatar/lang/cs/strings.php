@@ -16,7 +16,7 @@ $a->strings["Your PHP version %s is lower than the required PHP >= 5.3."] = "Va�
 $a->strings["This addon is not functional on your server."] = "Tento doplněk není funkční na Vašem serveru.";
 $a->strings["Information"] = "Informace";
 $a->strings["Gravatar addon is installed. Please disable the Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar."] = "Gravatar doplněk je nainstalován. Prosím zakažte doplněk Gravatar. <br>Libravatar doplněk se vrátí k doplňku Gravatar, pokud na Libravataru nebude nic nalezeno.";
-$a->strings["Save Settings"] = "Uložit Nastavení";
+$a->strings["Submit"] = "Odeslat";
 $a->strings["Default avatar image"] = "Defaultní obrázek avataru";
 $a->strings["Select default avatar image if none was found. See README"] = "Vyberte defaultní avatar obrázek pokud nebyl žádný nalezen. Více viz. soubor README.";
 $a->strings["Libravatar settings updated."] = "Nastavení Libravatar aktualizováno.";

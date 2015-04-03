@@ -6,5 +6,5 @@ function string_plural_select_de($n){
 }}
 ;
 $a->strings["\"pageheader\" Settings"] = "\"pageheader\"-Einstellungen";
-$a->strings["Save Settings"] = "Einstellungen speichern";
+$a->strings["Submit"] = "Senden";
 $a->strings["pageheader Settings saved."] = "pageheader-Einstellungen gespeichert.";

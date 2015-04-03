@@ -11,4 +11,4 @@ $a->strings["Enable LiveJournal Post Plugin"] = "Activare Modul Postare LiveJour
 $a->strings["LiveJournal username"] = "Utilizator LiveJournal";
 $a->strings["LiveJournal password"] = "Parolă LiveJournal ";
 $a->strings["Post to LiveJournal by default"] = "Postați implicit pe LiveJournal";
-$a->strings["Save Settings"] = "Salvare Configurări";
+$a->strings["Submit"] = "Trimite";

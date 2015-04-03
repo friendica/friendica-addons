@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-09-10 12:08+0000\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2014-10-15 08:33+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -23,19 +23,19 @@ msgstr ""
 msgid "Fromapp settings updated."
 msgstr "Impostazioni \"FromApp\" aggiornato."
 
-#: fromapp.php:64 fromapp.php:68
+#: fromapp.php:64
 msgid "FromApp Settings"
 msgstr "Imnpostazioni \"FromApp\""
 
-#: fromapp.php:71
+#: fromapp.php:66
 msgid ""
 "The application name you would like to show your posts originating from."
 msgstr "Il nome dell'applicazione che vuoi mostrare come sorgente dei tuoi messaggi."
 
-#: fromapp.php:75
+#: fromapp.php:70
 msgid "Use this application name even if another application was used."
 msgstr "Usa questo nome anche se un'altra applicazione è stata effettivamente usata."
 
-#: fromapp.php:82
-msgid "Save Settings"
-msgstr "Salva Impostazioni"
+#: fromapp.php:77
+msgid "Submit"
+msgstr ""

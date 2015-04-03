@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
 "PO-Revision-Date: 2014-09-10 10:30+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
@@ -19,56 +19,56 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: communityhome.php:29 communityhome.php:35
+#: communityhome.php:28 communityhome.php:34
 msgid "Login"
 msgstr "Accedi"
 
-#: communityhome.php:30
+#: communityhome.php:29
 msgid "OpenID"
 msgstr "OpenID"
 
-#: communityhome.php:46
+#: communityhome.php:39
 msgid "Latest users"
 msgstr "Ultimi utenti"
 
-#: communityhome.php:91
+#: communityhome.php:84
 msgid "Most active users"
 msgstr "Utenti più attivi"
 
-#: communityhome.php:109
+#: communityhome.php:102
 msgid "Latest photos"
 msgstr "Ultime foto"
 
-#: communityhome.php:122
+#: communityhome.php:115
 msgid "Contact Photos"
 msgstr "Foto dei contatti"
 
-#: communityhome.php:123
+#: communityhome.php:116
 msgid "Profile Photos"
 msgstr "Foto del profilo"
 
-#: communityhome.php:148
+#: communityhome.php:141
 msgid "Latest likes"
 msgstr "Ultimi \"mi piace\""
 
-#: communityhome.php:170
+#: communityhome.php:163
 msgid "event"
 msgstr "l'evento"
 
-#: communityhome.php:173 communityhome.php:182
+#: communityhome.php:166 communityhome.php:175
 msgid "status"
 msgstr "lo stato"
 
-#: communityhome.php:178
+#: communityhome.php:171
 msgid "photo"
 msgstr "la foto"
 
-#: communityhome.php:187
+#: communityhome.php:180
 #, php-format
 msgid "%1$s likes %2$s's %3$s"
 msgstr "a %1$s piace %2$s di %3$s"
 
-#: communityhome.php:196
+#: communityhome.php:189
 #, php-format
 msgid "Welcome to %s"
 msgstr "Benvenuto su %s"

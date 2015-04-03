@@ -4,14 +4,15 @@
 # 
 # 
 # Translators:
+# Abrax <webmaster@a-zwenkau.de>, 2014
 # bavatar <tobias.diekershoff@gmx.net>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-07-08 19:17+0000\n"
-"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2014-10-15 12:32+0000\n"
+"Last-Translator: Abrax <webmaster@a-zwenkau.de>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,11 +20,11 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: nsfw.php:78 nsfw.php:82
-msgid "Not Safe For Work (General Purpose Content Filter)"
-msgstr "Not Safe for Work (alg. Filter für ungewollte Inhalte) Einstellungen:"
+#: nsfw.php:78
+msgid "Not Safe For Work (General Purpose Content Filter) settings"
+msgstr "Not Safe for Work (Filter für ungewollte Inhalte) Einstellungen:"
 
-#: nsfw.php:86
+#: nsfw.php:80
 msgid ""
 "This plugin looks in posts for the words/text you specify below, and "
 "collapses any content containing those keywords so it is not displayed at "
@@ -33,27 +34,27 @@ msgid ""
 " can thereby be used as a general purpose content filter."
 msgstr "Dieses Plugin sucht in Beiträgen nach Wörtern oder Textbauteilen die du weiter unten eingibst, findet es diese Bausteine, dann wird der entsprechende Beitrag zusammengefaltet dargestellt. Auf diese Weise wird verhindert, dass Inhalte, wie z.B. sexuelle Anspielungen, in unpassenden Momenten angezeigt werden. Du solltest den #NSFW Tag für Beiträge verwenden von denen du ausgehen kannst, dass andere sie anstößig finden könnten. Su kannst beliebige Wörter in der Filterliste angeben und ihn so als allgemeinen Filter verwenden."
 
-#: nsfw.php:87
+#: nsfw.php:81
 msgid "Enable Content filter"
 msgstr "Aktiviere den Inhaltsfilter"
 
-#: nsfw.php:90
+#: nsfw.php:84
 msgid "Comma separated list of keywords to hide"
 msgstr "Durch Kommata getrennte Liste von Schlüsselwörtern die verborgen werden sollen"
 
-#: nsfw.php:94
-msgid "Save Settings"
-msgstr "Einstellungen speichern"
+#: nsfw.php:88
+msgid "Submit"
+msgstr "Senden"
 
-#: nsfw.php:95
+#: nsfw.php:89
 msgid "Use /expression/ to provide regular expressions"
 msgstr "Verwende /expression/ um Reguläre Ausdrücke zu verwenden"
 
-#: nsfw.php:111
+#: nsfw.php:105
 msgid "NSFW Settings saved."
 msgstr "NSFW-Einstellungen gespeichert"
 
-#: nsfw.php:166
+#: nsfw.php:157
 #, php-format
 msgid "%s - Click to open/close"
 msgstr "%s – Zum Öffnen/Schließen klicken"

@@ -4,13 +4,14 @@
 # 
 # 
 # Translators:
+# fabrixxm <fabrix.xm@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-06-23 10:30+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2014-10-15 08:56+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,16 +21,16 @@ msgstr ""
 
 #: notimeline.php:32
 msgid "No Timeline settings updated."
-msgstr ""
+msgstr "Impostazioni \"No Timeline\" aggiornate."
 
 #: notimeline.php:56
 msgid "No Timeline Settings"
-msgstr ""
+msgstr "Impostazioni \"No Timeline\""
 
 #: notimeline.php:58
 msgid "Disable Archive selector on profile wall"
-msgstr ""
+msgstr "Disabilita il selettore dell'archivio sulla pagina del profilo"
 
 #: notimeline.php:64
-msgid "Save Settings"
+msgid "Submit"
 msgstr ""

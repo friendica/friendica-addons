@@ -1,0 +1,89 @@
+# ADDON impressum
+# Copyright (C)
+# This file is distributed under the same license as the Friendica impressum addon package.
+# 
+# 
+# Translators:
+# Damien Goutte-Gattat <damien+transifex@incenp.org>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2015-02-04 11:56+0000\n"
+"Last-Translator: Damien Goutte-Gattat <damien+transifex@incenp.org>\n"
+"Language-Team: French (http://www.transifex.com/projects/p/friendica/language/fr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: impressum.php:37
+msgid "Impressum"
+msgstr "Mentions légales"
+
+#: impressum.php:50 impressum.php:52 impressum.php:84
+msgid "Site Owner"
+msgstr "Propriétaire du site"
+
+#: impressum.php:50 impressum.php:88
+msgid "Email Address"
+msgstr "Adresse courriel"
+
+#: impressum.php:55 impressum.php:86
+msgid "Postal Address"
+msgstr "Adresse postale"
+
+#: impressum.php:61
+msgid ""
+"The impressum addon needs to be configured!<br />Please add at least the "
+"<tt>owner</tt> variable to your config file. For other variables please "
+"refer to the README file of the addon."
+msgstr "L’extension “Impressum” (Mentions légales) n’est pas configurée !<br />Veuillez renseigner au minimum la variable <tt>owner</tt> dans votre fichier de configuration. Pour les autres variables, reportez-vous au fichier README accompagnant l’extension."
+
+#: impressum.php:78
+msgid "Settings updated."
+msgstr "Réglages mis à jour."
+
+#: impressum.php:83
+msgid "Submit"
+msgstr "Envoyer"
+
+#: impressum.php:84
+msgid "The page operators name."
+msgstr "Le nom de l'administrateur de la page."
+
+#: impressum.php:85
+msgid "Site Owners Profile"
+msgstr "Profil du propriétaire"
+
+#: impressum.php:85
+msgid "Profile address of the operator."
+msgstr "L’adresse du profil de l’administrateur."
+
+#: impressum.php:86
+msgid "How to contact the operator via snail mail. You can use BBCode here."
+msgstr "Comment contacter l’administrateur par courrier postal. Vous pouvez utiliser du BBCode."
+
+#: impressum.php:87
+msgid "Notes"
+msgstr "Notes"
+
+#: impressum.php:87
+msgid ""
+"Additional notes that are displayed beneath the contact information. You can"
+" use BBCode here."
+msgstr "Notes additionnelles à afficher sous les informations de contact. Vous pouvez utiliser du BBCode."
+
+#: impressum.php:88
+msgid "How to contact the operator via email. (will be displayed obfuscated)"
+msgstr "Comment contacter l’administrateur par courriel. (L’adresse sera modifiée à l’affichage pour brouiller les collecteurs d’adresses.)"
+
+#: impressum.php:89
+msgid "Footer note"
+msgstr "Note de bas de page"
+
+#: impressum.php:89
+msgid "Text for the footer. You can use BBCode here."
+msgstr "Texte du pied de page. Vous pouvez utiliser du BBCode."

@@ -8,4 +8,4 @@ function string_plural_select_ro($n){
 $a->strings["No Timeline settings updated."] = "Configurările pentru Lipsă Cronologie, au fost actualizate.";
 $a->strings["No Timeline Settings"] = "Configurări pentru Lipsă Cronologie";
 $a->strings["Disable Archive selector on profile wall"] = "Dezactivare selector Arhivă din peretele de profil";
-$a->strings["Save Settings"] = "Salvare Configurări";
+$a->strings["Submit"] = "Trimite";

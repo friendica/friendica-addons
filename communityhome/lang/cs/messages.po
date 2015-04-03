@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
 "PO-Revision-Date: 2014-07-07 18:33+0000\n"
 "Last-Translator: Michal Šupler <msupler@gmail.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
@@ -19,56 +19,56 @@ msgstr ""
 "Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: communityhome.php:29 communityhome.php:35
+#: communityhome.php:28 communityhome.php:34
 msgid "Login"
 msgstr "Přihlásit se"
 
-#: communityhome.php:30
+#: communityhome.php:29
 msgid "OpenID"
 msgstr "OpenID"
 
-#: communityhome.php:46
+#: communityhome.php:39
 msgid "Latest users"
 msgstr "Poslední uživatelé"
 
-#: communityhome.php:91
+#: communityhome.php:84
 msgid "Most active users"
 msgstr "Nejaktivnější uživatelé"
 
-#: communityhome.php:109
+#: communityhome.php:102
 msgid "Latest photos"
 msgstr "Poslední fotky"
 
-#: communityhome.php:122
+#: communityhome.php:115
 msgid "Contact Photos"
 msgstr "Fotogalerie kontaktu"
 
-#: communityhome.php:123
+#: communityhome.php:116
 msgid "Profile Photos"
 msgstr "Profilové fotografie"
 
-#: communityhome.php:148
+#: communityhome.php:141
 msgid "Latest likes"
 msgstr "Poslední \"líbí se mi\""
 
-#: communityhome.php:170
+#: communityhome.php:163
 msgid "event"
 msgstr "událost"
 
-#: communityhome.php:173 communityhome.php:182
+#: communityhome.php:166 communityhome.php:175
 msgid "status"
 msgstr "Stav"
 
-#: communityhome.php:178
+#: communityhome.php:171
 msgid "photo"
 msgstr "fotografie"
 
-#: communityhome.php:187
+#: communityhome.php:180
 #, php-format
 msgid "%1$s likes %2$s's %3$s"
 msgstr "Uživateli %1$s se líbí %3$s uživatele %2$s"
 
-#: communityhome.php:196
+#: communityhome.php:189
 #, php-format
 msgid "Welcome to %s"
 msgstr "Vítá Vás %s"

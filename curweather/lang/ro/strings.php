@@ -7,6 +7,7 @@ function string_plural_select_ro($n){
 ;
 $a->strings["Current Weather"] = "Starea Vremii";
 $a->strings["Current Weather settings updated."] = "Configurări actualizate pentru Starea Vremii";
+$a->strings["Current Weather Settings"] = "Configurări  pentru Starea Vremii";
 $a->strings["Weather Location: "] = "Locație Meteo:";
 $a->strings["Enable Current Weather"] = "Activare Starea Vremii";
-$a->strings["Save Settings"] = "Salvare Configurări";
+$a->strings["Submit"] = "Trimite";

@@ -5,14 +5,14 @@ function string_plural_select_it($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["Permission denied."] = "";
-$a->strings["You are now authenticated to tumblr."] = "";
-$a->strings["return to the connector page"] = "";
-$a->strings["Post to Tumblr"] = "";
-$a->strings["Tumblr Export"] = "";
-$a->strings["(Re-)Authenticate your tumblr page"] = "";
-$a->strings["Enable Tumblr Post Plugin"] = "";
-$a->strings["Post to Tumblr by default"] = "";
-$a->strings["Post to page:"] = "";
-$a->strings["You are not authenticated to tumblr"] = "";
-$a->strings["Save Settings"] = "";
+$a->strings["Permission denied."] = "Permesso negato.";
+$a->strings["You are now authenticated to tumblr."] = "Sei autenticato su Tumblr.";
+$a->strings["return to the connector page"] = "ritorna alla pagina del connettore";
+$a->strings["Post to Tumblr"] = "Invia a Tumblr";
+$a->strings["Tumblr Export"] = "Esporta Tumblr";
+$a->strings["(Re-)Authenticate your tumblr page"] = "(Ri)Autenticati con la tua pagina Tumblr";
+$a->strings["Enable Tumblr Post Plugin"] = "Abilita Plugin Tumblr";
+$a->strings["Post to Tumblr by default"] = "Invia sempre a Tumblr";
+$a->strings["Post to page:"] = "Invia alla pagina:";
+$a->strings["You are not authenticated to tumblr"] = "Non sei autenticato su Tumblr";
+$a->strings["Save Settings"] = "Salva Impostazioni";

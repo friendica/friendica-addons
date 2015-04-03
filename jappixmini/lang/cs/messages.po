@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014
+# Michal Šupler <msupler@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-07-07 19:12+0000\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2015-02-11 19:41+0000\n"
 "Last-Translator: Michal Šupler <msupler@gmail.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -19,59 +19,59 @@ msgstr ""
 "Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: jappixmini.php:298 jappixmini.php:302
-msgid "Jappix Mini"
-msgstr "Jappix Mini"
+#: jappixmini.php:266
+msgid "Jappix Mini addon settings"
+msgstr "Nastavení rozšíření Jappix Mini"
 
-#: jappixmini.php:305
+#: jappixmini.php:268
 msgid "Activate addon"
 msgstr "Aktivovat rozšíření"
 
-#: jappixmini.php:308
+#: jappixmini.php:271
 msgid ""
 "Do <em>not</em> insert the Jappixmini Chat-Widget into the webinterface"
 msgstr "<em>Nevlkádejte</em> Jappixmini Chat-Widget do webového rozhraní"
 
-#: jappixmini.php:311
+#: jappixmini.php:274
 msgid "Jabber username"
 msgstr "Jabber uživatelské jméno"
 
-#: jappixmini.php:314
+#: jappixmini.php:277
 msgid "Jabber server"
 msgstr "Jabber server"
 
-#: jappixmini.php:319
+#: jappixmini.php:281
 msgid "Jabber BOSH host"
 msgstr "Jabber BOSH host"
 
-#: jappixmini.php:325
+#: jappixmini.php:285
 msgid "Jabber password"
 msgstr "Jabber heslo"
 
-#: jappixmini.php:330
+#: jappixmini.php:290
 msgid "Encrypt Jabber password with Friendica password (recommended)"
 msgstr "Zašifrovat Jabber heslo s heslem Friendica (doporučeno)"
 
-#: jappixmini.php:333
+#: jappixmini.php:293
 msgid "Friendica password"
 msgstr "Friendica heslo"
 
-#: jappixmini.php:336
+#: jappixmini.php:296
 msgid "Approve subscription requests from Friendica contacts automatically"
 msgstr "Automaticky schválit požadavek na členství od Friedica kontaktů."
 
-#: jappixmini.php:339
+#: jappixmini.php:299
 msgid "Subscribe to Friendica contacts automatically"
 msgstr "Automaticky zaslat požadavek na členství Friedica kontaktům."
 
-#: jappixmini.php:342
+#: jappixmini.php:302
 msgid "Purge internal list of jabber addresses of contacts"
 msgstr "Očistit interní seznam jabber adres kontaktů"
 
-#: jappixmini.php:347
-msgid "Save Settings"
-msgstr "Uložit Nastavení"
+#: jappixmini.php:307
+msgid "Submit"
+msgstr "Odeslat"
 
-#: jappixmini.php:348
+#: jappixmini.php:308
 msgid "Add contact"
 msgstr "Přidat kontakt"

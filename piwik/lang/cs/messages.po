@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014
+# Michal Šupler <msupler@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-07-28 18:01+0000\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2015-02-11 19:39+0000\n"
 "Last-Translator: Michal Šupler <msupler@gmail.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -19,13 +19,13 @@ msgstr ""
 "Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: piwik.php:77
+#: piwik.php:79
 msgid ""
 "This website is tracked using the <a href='http://www.piwik.org'>Piwik</a> "
 "analytics tool."
 msgstr "Tato webová stránka je sledována pomocí nástroje pro analýzu <a href='http://www.piwik.org'>Piwik</a>."
 
-#: piwik.php:80
+#: piwik.php:82
 #, php-format
 msgid ""
 "If you do not want that your visits are logged this way you <a href='%s'>can"
@@ -33,32 +33,32 @@ msgid ""
 "(opt-out)."
 msgstr "Pokud si nepřejete, aby vaše návštěvy byly takto sledovány, <a href='%s'>můžete si nastavit cookie, které zastaví sledování dalších návštěv na tomto webu</a> (opt-out)."
 
-#: piwik.php:87
-msgid "Save Settings"
-msgstr "Uložit Nastavení"
+#: piwik.php:89
+msgid "Submit"
+msgstr "Odeslat"
 
-#: piwik.php:88
+#: piwik.php:90
 msgid "Piwik Base URL"
 msgstr "Piwik Base adresa URL"
 
-#: piwik.php:88
+#: piwik.php:90
 msgid ""
 "Absolute path to your Piwik installation. (without protocol (http/s), with "
 "trailing slash)"
 msgstr "Absolutní cesta k Vaší instalaci Piwik. (bez protokolu (http/s), s koncovým lomítkem)"
 
-#: piwik.php:89
+#: piwik.php:91
 msgid "Site ID"
 msgstr "ID webu"
 
-#: piwik.php:90
+#: piwik.php:92
 msgid "Show opt-out cookie link?"
 msgstr "Zobrazit odkaz opt-out cookie?"
 
-#: piwik.php:91
+#: piwik.php:93
 msgid "Asynchronous tracking"
 msgstr "Asynchronní sledování"
 
-#: piwik.php:103
+#: piwik.php:105
 msgid "Settings updated."
 msgstr "Nastavení aktualizováno."

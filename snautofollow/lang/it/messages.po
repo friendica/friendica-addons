@@ -4,13 +4,14 @@
 # 
 # 
 # Translators:
+# fabrixxm <fabrix.xm@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2014-06-23 12:49+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2014-09-10 14:34+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,16 +21,16 @@ msgstr ""
 
 #: snautofollow.php:32
 msgid "StatusNet AutoFollow settings updated."
-msgstr ""
+msgstr "Impostazioni \"StatusNet AutoFollow\" aggiornate."
 
 #: snautofollow.php:56 snautofollow.php:60
 msgid "StatusNet AutoFollow"
-msgstr ""
+msgstr "StatusNet AutoFollow"
 
 #: snautofollow.php:64
 msgid "Automatically follow any StatusNet followers/mentioners"
-msgstr ""
+msgstr "Segui automanticamente chiunque da StatusNet ti segua o ti menzioni"
 
 #: snautofollow.php:70
 msgid "Save Settings"
-msgstr ""
+msgstr "Salva Impostazioni"

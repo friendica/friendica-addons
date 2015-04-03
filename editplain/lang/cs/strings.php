@@ -8,4 +8,4 @@ function string_plural_select_cs($n){
 $a->strings["Editplain settings updated."] = "Editplain nastavení aktualizováno";
 $a->strings["Editplain Settings"] = "Editplain nastavení";
 $a->strings["Disable richtext status editor"] = "Zakázat richtext status editor";
-$a->strings["Save Settings"] = "Uložit Nastavení";
+$a->strings["Submit"] = "Odeslat";

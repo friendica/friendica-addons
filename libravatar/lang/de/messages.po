@@ -4,14 +4,15 @@
 # 
 # 
 # Translators:
+# Abrax <webmaster@a-zwenkau.de>, 2014
 # bavatar <tobias.diekershoff@gmx.net>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-07-11 06:25+0000\n"
-"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2014-10-15 12:30+0000\n"
+"Last-Translator: Abrax <webmaster@a-zwenkau.de>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -68,8 +69,8 @@ msgid ""
 msgstr "Das Gravatar Addon ist installiert. Bitte schalte das Gravatar Addon aus.<br>Das Libravatar Addon nutzt Gravater, sollte nichts auf Libravatar gefunden werden."
 
 #: libravatar.php:99
-msgid "Save Settings"
-msgstr "Einstellungen speichern"
+msgid "Submit"
+msgstr "Senden"
 
 #: libravatar.php:100
 msgid "Default avatar image"

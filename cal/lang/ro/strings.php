@@ -13,4 +13,4 @@ $a->strings["Export Events"] = "Exportați Evenimente";
 $a->strings["If this is enabled, your public events will be available at"] = "Dacă este activat, evenimente dvs publice vor fi disponibile pe";
 $a->strings["Currently supported formats are ical and csv."] = "Formate acceptate în prezent sunt ical şi csv.";
 $a->strings["Enable calendar export"] = "Activați exportarea calendarului";
-$a->strings["Submit"] = "Trimite";
+$a->strings["Save Settings"] = "Salvare Configurări";

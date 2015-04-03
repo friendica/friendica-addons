@@ -1,0 +1,171 @@
+# ADDON statusnet
+# Copyright (C)
+# This file is distributed under the same license as the Friendica statusnet addon package.
+# 
+# 
+# Translators:
+# Abrax <webmaster@a-zwenkau.de>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-10-14 08:37+0000\n"
+"Last-Translator: Abrax <webmaster@a-zwenkau.de>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: statusnet.php:149
+msgid "Post to StatusNet"
+msgstr "Bei StatusNet veröffentlichen"
+
+#: statusnet.php:194
+msgid ""
+"Please contact your site administrator.<br />The provided API URL is not "
+"valid."
+msgstr "Bitte kontaktiere den Administrator der Seite.<br />Die gegebene API URL ist nicht gültig."
+
+#: statusnet.php:223
+msgid "We could not contact the StatusNet API with the Path you entered."
+msgstr "Die StatusNet API konnte mit dem angegebenen Pfad nicht erreicht werden."
+
+#: statusnet.php:257
+msgid "StatusNet settings updated."
+msgstr "StatusNet Einstellungen aktualisiert."
+
+#: statusnet.php:289 statusnet.php:293
+msgid "StatusNet Import/Export/Mirror"
+msgstr "StatusNet Import/Export/Mirror"
+
+#: statusnet.php:308
+msgid "Globally Available StatusNet OAuthKeys"
+msgstr "Verfügbare OAuth Schlüssel für StatusNet"
+
+#: statusnet.php:309
+msgid ""
+"There are preconfigured OAuth key pairs for some StatusNet servers "
+"available. If you are useing one of them, please use these credentials. If "
+"not feel free to connect to any other StatusNet instance (see below)."
+msgstr "Für einige StatusNet Server sind OAuth Schlüsselpaare verfügbar. Solltest du einen dieser Server benutzen, dann verwende doch bitte diese Schlüssel. Falls nicht kannst du weiter unten deine eigenen OAuth Schlüssel eintragen."
+
+#: statusnet.php:315 statusnet.php:332 statusnet.php:359 statusnet.php:366
+#: statusnet.php:404 statusnet.php:673
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: statusnet.php:317
+msgid "Provide your own OAuth Credentials"
+msgstr "Eigene OAuth Schlüssel eintragen"
+
+#: statusnet.php:318
+msgid ""
+"No consumer key pair for StatusNet found. Register your Friendica Account as"
+" an desktop client on your StatusNet account, copy the consumer key pair "
+"here and enter the API base root.<br />Before you register your own OAuth "
+"key pair ask the administrator if there is already a key pair for this "
+"Friendica installation at your favorited StatusNet installation."
+msgstr "Kein Consumer-Schlüsselpaar für StatusNet gefunden. Registriere deinen Friendica-Account als Desktop-Client, kopiere das Consumer-Schlüsselpaar hierher und gib die API-URL ein.<br />Bevor du dein eigenes Consumer-Schlüsselpaar registrierst, frage den Administrator dieses Friendica-Servers, ob schon ein Schlüsselpaar für diesen Friendica-Server auf diesem StatusNet-Server existiert."
+
+#: statusnet.php:320
+msgid "OAuth Consumer Key"
+msgstr "OAuth Consumer Key"
+
+#: statusnet.php:323
+msgid "OAuth Consumer Secret"
+msgstr "OAuth Consumer Secret"
+
+#: statusnet.php:326 statusnet.php:653 statusnet.php:665
+msgid "Base API Path (remember the trailing /)"
+msgstr "Basis-URL der StatusNet API (vergiss den abschließenden / nicht)"
+
+#: statusnet.php:329
+msgid "StatusNet application name"
+msgstr "StatusNet Anwendung"
+
+#: statusnet.php:351
+msgid ""
+"To connect to your StatusNet account click the button below to get a "
+"security code from StatusNet which you have to copy into the input box below"
+" and submit the form. Only your <strong>public</strong> posts will be posted"
+" to StatusNet."
+msgstr "Um deinen Account mit einem StatusNet Account zu verknüpfen, klicke den Button an um einen Sicherheitscode von StatusNet zu erhalten und kopiere diesen in die Eingabebox weiter unten. Es werden ausschließlich deine <strong>öffentlichen</strong> Nachrichten bei StatusNet veröffentllicht."
+
+#: statusnet.php:352
+msgid "Log in with StatusNet"
+msgstr "Bei StatusNet anmelden"
+
+#: statusnet.php:354
+msgid "Copy the security code from StatusNet here"
+msgstr "Kopiere den Sicherheitscode von StatusNet hier hin"
+
+#: statusnet.php:360
+msgid "Cancel Connection Process"
+msgstr "Verbindungsprozess abbrechen"
+
+#: statusnet.php:362
+msgid "Current StatusNet API is"
+msgstr "Derzeitige StatusNet API URL lautet"
+
+#: statusnet.php:363
+msgid "Cancel StatusNet Connection"
+msgstr "Verbindung zum StatusNet Server abbrechen"
+
+#: statusnet.php:374
+msgid "Currently connected to: "
+msgstr "Momentan verbunden mit: "
+
+#: statusnet.php:375
+msgid ""
+"If enabled all your <strong>public</strong> postings can be posted to the "
+"associated StatusNet account. You can choose to do so by default (here) or "
+"for every posting separately in the posting options when writing the entry."
+msgstr "Wenn aktiviert, können all deine <strong>öffentlichen</strong> Einträge auf dem verbundenen StatusNet-Konto veröffentlicht werden. Du kannst das (hier) als Standardverhalten einstellen oder beim Schreiben eines Beitrags in den Beitragsoptionen festlegen."
+
+#: statusnet.php:377
+msgid ""
+"<strong>Note</strong>: Due your privacy settings (<em>Hide your profile "
+"details from unknown viewers?</em>) the link potentially included in public "
+"postings relayed to StatusNet will lead the visitor to a blank page "
+"informing the visitor that the access to your profile has been restricted."
+msgstr "<strong>Hinweis</strong>: Aufgrund deiner Privatsphären-Einstellungen (<em>Profil-Details vor unbekannten Betrachtern verbergen?</em>) wird der Link, der eventuell an deinen StatusNet Account angehängt wird, um auf den original Artikel zu verweisen, den Betrachter auf eine leere Seite führen, die ihn darüber informiert, dass der Zugriff eingeschränkt wurde."
+
+#: statusnet.php:380
+msgid "Allow posting to StatusNet"
+msgstr "Nach StatusNet senden erlauben"
+
+#: statusnet.php:383
+msgid "Send public postings to StatusNet by default"
+msgstr "Veröffentliche öffentliche Beiträge standardmäßig bei StatusNet"
+
+#: statusnet.php:387
+msgid ""
+"Mirror all posts from statusnet that are no replies or repeated messages"
+msgstr "Spiegle alle Beiträge von StatusNet die keine Antworten oder wiederholten Nachrichten sind"
+
+#: statusnet.php:392
+msgid "Import the remote timeline"
+msgstr "Importiere die entfernte Zeitleiste"
+
+#: statusnet.php:401
+msgid "Clear OAuth configuration"
+msgstr "OAuth Konfiguration löschen"
+
+#: statusnet.php:664
+msgid "Site name"
+msgstr "Seitenname"
+
+#: statusnet.php:666
+msgid "Consumer Secret"
+msgstr "Consumer Secret"
+
+#: statusnet.php:667
+msgid "Consumer Key"
+msgstr "Consumer Key"
+
+#: statusnet.php:668
+msgid "Application name"
+msgstr "Anwendungen"

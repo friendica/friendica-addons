@@ -1,0 +1,80 @@
+# ADDON mailstream
+# Copyright (C)
+# This file is distributed under the same license as the Friendica mailstream addon package.
+# 
+# 
+# Translators:
+# Abrax <webmaster@a-zwenkau.de>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-10-14 09:25+0000\n"
+"Last-Translator: Abrax <webmaster@a-zwenkau.de>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: mailstream.php:55
+msgid "From Address"
+msgstr "Absender"
+
+#: mailstream.php:57
+msgid "Email address that stream items will appear to be from."
+msgstr "E-Mail-Adresse, die in hochgeladenen Artikeln erscheint."
+
+#: mailstream.php:60 mailstream.php:282
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: mailstream.php:165
+msgid "Re:"
+msgstr "Re:"
+
+#: mailstream.php:173
+msgid "Friendica post"
+msgstr "Friendica Veröffentlichung"
+
+#: mailstream.php:176
+msgid "Diaspora post"
+msgstr "Diaspora Veröffentlichung"
+
+#: mailstream.php:183
+msgid "Feed item"
+msgstr "Artikel-Feed"
+
+#: mailstream.php:186
+msgid "Email"
+msgstr "E-Mail"
+
+#: mailstream.php:188
+msgid "Friendica Item"
+msgstr "Friendica Artikel"
+
+#: mailstream.php:229
+msgid "Upstream"
+msgstr "Upstream"
+
+#: mailstream.php:230
+msgid "Local"
+msgstr "Lokal"
+
+#: mailstream.php:274
+msgid "Email Address"
+msgstr "E-Mail-Adresse"
+
+#: mailstream.php:276
+msgid "Leave blank to use your account email address"
+msgstr "Leer lassen für Deine Konto-E-Mail-Addresse"
+
+#: mailstream.php:279
+msgid "Enabled"
+msgstr "eingeschaltet"
+
+#: mailstream.php:281
+msgid "Mail Stream Settings"
+msgstr "Mail-Nachrichten Einstellungen"

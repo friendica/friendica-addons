@@ -6,5 +6,5 @@ function string_plural_select_ro($n){
 }}
 ;
 $a->strings["\"pageheader\" Settings"] = "Configurări \"Pageheader\"";
-$a->strings["Save Settings"] = "Salvare Configurări";
+$a->strings["Submit"] = "Trimite";
 $a->strings["pageheader Settings saved."] = "Configurările antetului de pagină au fost salvate.";

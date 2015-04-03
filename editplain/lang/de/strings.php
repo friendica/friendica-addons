@@ -8,4 +8,4 @@ function string_plural_select_de($n){
 $a->strings["Editplain settings updated."] = "Editplain Einstellungen gespeichert.";
 $a->strings["Editplain Settings"] = "Editplain Einstellungen";
 $a->strings["Disable richtext status editor"] = "Web-Editor für Beiträge deakivieren";
-$a->strings["Save Settings"] = "Einstellungen speichern";
+$a->strings["Submit"] = "Senden";

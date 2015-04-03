@@ -8,4 +8,4 @@ function string_plural_select_ro($n){
 $a->strings["Editplain settings updated."] = "Configurările Editplain au fost actualizate.";
 $a->strings["Editplain Settings"] = "Configurări Editplain";
 $a->strings["Disable richtext status editor"] = "Dezactivare editorul status de text îmbogățit";
-$a->strings["Save Settings"] = "Salvare Configurări";
+$a->strings["Submit"] = "Trimite";

@@ -9,4 +9,4 @@ $a->strings["Fromapp settings updated."] = "Fromapp nastavení aktualizováno.";
 $a->strings["FromApp Settings"] = "FromApp nastavení";
 $a->strings["The application name you would like to show your posts originating from."] = "Jméno zdrojové aplikace";
 $a->strings["Use this application name even if another application was used."] = "Použij toto jméno aplikace i když byla použita jiná aplikace";
-$a->strings["Save Settings"] = "Uložit Nastavení";
+$a->strings["Submit"] = "Odeslat";

@@ -1,0 +1,78 @@
+# ADDON jappixmini
+# Copyright (C)
+# This file is distributed under the same license as the Friendica jappixmini addon package.
+# 
+# 
+# Translators:
+# Abrax <webmaster@a-zwenkau.de>, 2014
+# bavatar <tobias.diekershoff@gmx.net>, 2014-2015
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2015-01-31 21:14+0000\n"
+"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: jappixmini.php:266
+msgid "Jappix Mini addon settings"
+msgstr "Jappix Mini Addon Einstellungen"
+
+#: jappixmini.php:268
+msgid "Activate addon"
+msgstr "Addon aktivieren"
+
+#: jappixmini.php:271
+msgid ""
+"Do <em>not</em> insert the Jappixmini Chat-Widget into the webinterface"
+msgstr "Füge das Jappix Mini Chat Widget <em>nicht</em> zum Webinterface hinzu"
+
+#: jappixmini.php:274
+msgid "Jabber username"
+msgstr "Jabber Nutzername"
+
+#: jappixmini.php:277
+msgid "Jabber server"
+msgstr "Jabber Server"
+
+#: jappixmini.php:281
+msgid "Jabber BOSH host"
+msgstr "Jabber BOSH Host"
+
+#: jappixmini.php:285
+msgid "Jabber password"
+msgstr "Jabber Passwort"
+
+#: jappixmini.php:290
+msgid "Encrypt Jabber password with Friendica password (recommended)"
+msgstr "Verschlüssele das Jabber Passwort mit dem Friendica Passwort (empfohlen)"
+
+#: jappixmini.php:293
+msgid "Friendica password"
+msgstr "Friendica Passwort"
+
+#: jappixmini.php:296
+msgid "Approve subscription requests from Friendica contacts automatically"
+msgstr "Kontaktanfragen von Friendica Kontakten automatisch akzeptieren"
+
+#: jappixmini.php:299
+msgid "Subscribe to Friendica contacts automatically"
+msgstr "Automatisch Friendica Kontakten bei Jabber folgen"
+
+#: jappixmini.php:302
+msgid "Purge internal list of jabber addresses of contacts"
+msgstr "Lösche die interne Liste der Jabber Adressen der Kontakte"
+
+#: jappixmini.php:307
+msgid "Submit"
+msgstr "Senden"
+
+#: jappixmini.php:308
+msgid "Add contact"
+msgstr "Kontakt hinzufügen"

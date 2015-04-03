@@ -4,13 +4,14 @@
 # 
 # 
 # Translators:
+# fabrixxm <fabrix.xm@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-06-23 09:54+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-09-10 13:02+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,60 +21,60 @@ msgstr ""
 
 #: mailstream.php:55
 msgid "From Address"
-msgstr ""
+msgstr "Indirizzo di invio"
 
 #: mailstream.php:57
 msgid "Email address that stream items will appear to be from."
-msgstr ""
+msgstr "Indirizzo email da cui i messaggi appariranno inviati"
 
 #: mailstream.php:60 mailstream.php:282
 msgid "Save Settings"
-msgstr ""
+msgstr "Salva Impostazioni"
 
 #: mailstream.php:165
 msgid "Re:"
-msgstr ""
+msgstr "R:"
 
 #: mailstream.php:173
 msgid "Friendica post"
-msgstr ""
+msgstr "Messaggio Friendica"
 
 #: mailstream.php:176
 msgid "Diaspora post"
-msgstr ""
+msgstr "Messaggio Diaspora"
 
 #: mailstream.php:183
 msgid "Feed item"
-msgstr ""
+msgstr "Elemento da feed"
 
 #: mailstream.php:186
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #: mailstream.php:188
 msgid "Friendica Item"
-msgstr ""
+msgstr "Elemento da Friendica"
 
 #: mailstream.php:229
 msgid "Upstream"
-msgstr ""
+msgstr "Upstream"
 
 #: mailstream.php:230
 msgid "Local"
-msgstr ""
+msgstr "Locale"
 
 #: mailstream.php:274
 msgid "Email Address"
-msgstr ""
+msgstr "Indirizzo Email"
 
 #: mailstream.php:276
 msgid "Leave blank to use your account email address"
-msgstr ""
+msgstr "Lascia in bianco per usare l'indirizzo email del tuo account"
 
 #: mailstream.php:279
 msgid "Enabled"
-msgstr ""
+msgstr "Abilitato"
 
 #: mailstream.php:281
 msgid "Mail Stream Settings"
-msgstr ""
+msgstr "Impostazioni Mail Stream"

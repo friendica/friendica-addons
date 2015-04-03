@@ -5,6 +5,6 @@ function string_plural_select_it($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["\"pageheader\" Settings"] = "";
-$a->strings["Save Settings"] = "";
-$a->strings["pageheader Settings saved."] = "";
+$a->strings["\"pageheader\" Settings"] = "Impostazioni \"Intestazione pagina\"";
+$a->strings["Submit"] = "";
+$a->strings["pageheader Settings saved."] = "Impostazioni \"Intestazione pagina\" salvate.";

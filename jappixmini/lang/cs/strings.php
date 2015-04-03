@@ -5,7 +5,7 @@ function string_plural_select_cs($n){
 	return ($n==1) ? 0 : ($n>=2 && $n<=4) ? 1 : 2;;
 }}
 ;
-$a->strings["Jappix Mini"] = "Jappix Mini";
+$a->strings["Jappix Mini addon settings"] = "Nastavení rozšíření Jappix Mini";
 $a->strings["Activate addon"] = "Aktivovat rozšíření";
 $a->strings["Do <em>not</em> insert the Jappixmini Chat-Widget into the webinterface"] = "<em>Nevlkádejte</em> Jappixmini Chat-Widget do webového rozhraní";
 $a->strings["Jabber username"] = "Jabber uživatelské jméno";
@@ -17,5 +17,5 @@ $a->strings["Friendica password"] = "Friendica heslo";
 $a->strings["Approve subscription requests from Friendica contacts automatically"] = "Automaticky schválit požadavek na členství od Friedica kontaktů.";
 $a->strings["Subscribe to Friendica contacts automatically"] = "Automaticky zaslat požadavek na členství Friedica kontaktům.";
 $a->strings["Purge internal list of jabber addresses of contacts"] = "Očistit interní seznam jabber adres kontaktů";
-$a->strings["Save Settings"] = "Uložit Nastavení";
+$a->strings["Submit"] = "Odeslat";
 $a->strings["Add contact"] = "Přidat kontakt";

@@ -1,0 +1,64 @@
+# ADDON tumblr
+# Copyright (C)
+# This file is distributed under the same license as the Friendica tumblr addon package.
+# 
+# 
+# Translators:
+# bavatar <tobias.diekershoff@gmx.net>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-10-14 08:00+0000\n"
+"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: tumblr.php:35
+msgid "Permission denied."
+msgstr "Zugriff verweigert."
+
+#: tumblr.php:145
+msgid "You are now authenticated to tumblr."
+msgstr "Du bist nun auf tumblr authentifiziert."
+
+#: tumblr.php:146
+msgid "return to the connector page"
+msgstr "zurück zur Connector Seite"
+
+#: tumblr.php:159
+msgid "Post to Tumblr"
+msgstr "Auf Tumblr veröffentlichen"
+
+#: tumblr.php:186 tumblr.php:190
+msgid "Tumblr Export"
+msgstr "Blogger Export"
+
+#: tumblr.php:194
+msgid "(Re-)Authenticate your tumblr page"
+msgstr "(Re-)Authentifizierung deiner tumblr Seite"
+
+#: tumblr.php:198
+msgid "Enable Tumblr Post Plugin"
+msgstr "Tumblr-Post-Plugin aktivieren"
+
+#: tumblr.php:203
+msgid "Post to Tumblr by default"
+msgstr "Standardmäßig bei Tumblr veröffentlichen"
+
+#: tumblr.php:223
+msgid "Post to page:"
+msgstr "Auf tumblr veröffentlichen"
+
+#: tumblr.php:235
+msgid "You are not authenticated to tumblr"
+msgstr "Du bist gegenüber tumblr nicht authentifiziert"
+
+#: tumblr.php:240
+msgid "Save Settings"
+msgstr "Einstellungen speichern"

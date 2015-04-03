@@ -4,13 +4,14 @@
 # 
 # 
 # Translators:
+# Doru  DEACONU <dumitrudeaconu@yahoo.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-07-08 12:00+0000\n"
-"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2014-11-27 14:17+0000\n"
+"Last-Translator: Doru  DEACONU <dumitrudeaconu@yahoo.com>\n"
 "Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,11 +19,11 @@ msgstr ""
 "Language: ro_RO\n"
 "Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
 
-#: nsfw.php:78 nsfw.php:82
-msgid "Not Safe For Work (General Purpose Content Filter)"
+#: nsfw.php:78
+msgid "Not Safe For Work (General Purpose Content Filter) settings"
 msgstr "Nesigur Pentru Lucru (Filtrare de Conținut pentru Uz General )"
 
-#: nsfw.php:86
+#: nsfw.php:80
 msgid ""
 "This plugin looks in posts for the words/text you specify below, and "
 "collapses any content containing those keywords so it is not displayed at "
@@ -32,27 +33,27 @@ msgid ""
 " can thereby be used as a general purpose content filter."
 msgstr "Acest modul verifică în postări, cuvintele/textele pe care le specificați mai jos, și cenzurează orice conținut cu aceste cuvinte cheie, astfel încât să nu se afișeze în momentele necorespunzătoare, precum aluziile sexuale ce pot fi necorespunzătoare într-un mediu de lucru. Este politicos și recomandat să etichetați orice conținut cu nuditate, folosind eticheta #NSFW. Acest filtru poate de asemenea, potrivi orice alt cuvânt/text specificat, şi poate fi folosit astfel și ca filtru de conținut cu scop general."
 
-#: nsfw.php:87
+#: nsfw.php:81
 msgid "Enable Content filter"
 msgstr "Activare filtru de Conținut"
 
-#: nsfw.php:90
+#: nsfw.php:84
 msgid "Comma separated list of keywords to hide"
 msgstr "Lista cu separator prin virgulă a cuvintelor cheie, ce vor declanșa ascunderea"
 
-#: nsfw.php:94
-msgid "Save Settings"
-msgstr "Salvare Configurări"
+#: nsfw.php:88
+msgid "Submit"
+msgstr "Trimite"
 
-#: nsfw.php:95
+#: nsfw.php:89
 msgid "Use /expression/ to provide regular expressions"
 msgstr "Utilizați /expresia/ pentru a oferi expresii regulate"
 
-#: nsfw.php:111
+#: nsfw.php:105
 msgid "NSFW Settings saved."
 msgstr "Configurările NSFW au fost salvate."
 
-#: nsfw.php:166
+#: nsfw.php:157
 #, php-format
 msgid "%s - Click to open/close"
 msgstr "%s - Apăsați pentru a deschide/închide"

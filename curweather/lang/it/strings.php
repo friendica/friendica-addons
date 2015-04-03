@@ -7,6 +7,7 @@ function string_plural_select_it($n){
 ;
 $a->strings["Current Weather"] = "Meteo";
 $a->strings["Current Weather settings updated."] = "Impostazioni Meteo aggiornate.";
+$a->strings["Current Weather Settings"] = "";
 $a->strings["Weather Location: "] = "Posizione del meteo:";
 $a->strings["Enable Current Weather"] = "Abilita Meteo";
-$a->strings["Save Settings"] = "Salva Impostazioni";
+$a->strings["Submit"] = "";

@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014
+# Michal Šupler <msupler@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-07-07 19:26+0000\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2015-02-11 19:39+0000\n"
 "Last-Translator: Michal Šupler <msupler@gmail.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -19,11 +19,11 @@ msgstr ""
 "Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: nsfw.php:78 nsfw.php:82
-msgid "Not Safe For Work (General Purpose Content Filter)"
-msgstr "Not Safe For Work (General Purpose Content Filter)"
+#: nsfw.php:78
+msgid "Not Safe For Work (General Purpose Content Filter) settings"
+msgstr "Not Safe For Work (General Purpose Content Filter) nastavení"
 
-#: nsfw.php:86
+#: nsfw.php:80
 msgid ""
 "This plugin looks in posts for the words/text you specify below, and "
 "collapses any content containing those keywords so it is not displayed at "
@@ -33,27 +33,27 @@ msgid ""
 " can thereby be used as a general purpose content filter."
 msgstr "Tento plugin hledá v příspěvcích slova zadáná níže a skryje jakýkoliv obsah, který tyto slova obsahuje v prostředích, kde to není vhodné. Je slušné a doporučené jakékoliv příspěvky s mahotou označit s #NSFW.  Tento filtr může také vyhledávat jakékoliv Vámi specifikované slovní spojení, takže může být využit jako obecný kontextový filtr."
 
-#: nsfw.php:87
+#: nsfw.php:81
 msgid "Enable Content filter"
 msgstr "Povolit Kontextový filtr"
 
-#: nsfw.php:90
+#: nsfw.php:84
 msgid "Comma separated list of keywords to hide"
 msgstr "Čárkou oddělený seznam klíčových slov ke skrytí"
 
-#: nsfw.php:94
-msgid "Save Settings"
-msgstr "Uložit Nastavení"
+#: nsfw.php:88
+msgid "Submit"
+msgstr "Odeslat"
 
-#: nsfw.php:95
+#: nsfw.php:89
 msgid "Use /expression/ to provide regular expressions"
 msgstr "Použít /výraz/ pro použití regulárních výrazů"
 
-#: nsfw.php:111
+#: nsfw.php:105
 msgid "NSFW Settings saved."
 msgstr "NSFW nastavení uloženo"
 
-#: nsfw.php:166
+#: nsfw.php:157
 #, php-format
 msgid "%s - Click to open/close"
 msgstr "%s - Klikněte pro otevření/zavření"

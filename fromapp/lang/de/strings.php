@@ -9,4 +9,4 @@ $a->strings["Fromapp settings updated."] = "Fromapp Einstellungen aktualisiert."
 $a->strings["FromApp Settings"] = "FromApp Einstellungen";
 $a->strings["The application name you would like to show your posts originating from."] = "Der Name der Applikation der als Quelle deiner Beiträge angezeigt werden soll.";
 $a->strings["Use this application name even if another application was used."] = "Verwende diesen Namen selbst wenn eine andere Applikation verwendet wurde";
-$a->strings["Save Settings"] = "Einstellungen speichern";
+$a->strings["Submit"] = "Senden";

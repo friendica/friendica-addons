@@ -5,7 +5,7 @@ function string_plural_select_it($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["Numfriends settings updated."] = "";
-$a->strings["Numfriends Settings"] = "";
-$a->strings["How many contacts to display on profile sidebar"] = "";
-$a->strings["Save Settings"] = "";
+$a->strings["Numfriends settings updated."] = "Impostazioni \"Numfriends' aggiornate.";
+$a->strings["Numfriends Settings"] = "Impostazioni Numfriends";
+$a->strings["How many contacts to display on profile sidebar"] = "Quanti contatti visualizzare nella barra laterale del profilo";
+$a->strings["Submit"] = "";

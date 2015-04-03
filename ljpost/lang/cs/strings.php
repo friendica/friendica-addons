@@ -11,4 +11,4 @@ $a->strings["Enable LiveJournal Post Plugin"] = "Povolit LiveJournal Post plugin
 $a->strings["LiveJournal username"] = "LiveJournal uživatelské jméno";
 $a->strings["LiveJournal password"] = "LiveJournal heslo";
 $a->strings["Post to LiveJournal by default"] = "Defaultně umístit na LiveJournal";
-$a->strings["Save Settings"] = "Uložit Nastavení";
+$a->strings["Submit"] = "Odeslat";

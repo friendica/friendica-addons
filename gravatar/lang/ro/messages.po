@@ -4,13 +4,14 @@
 # 
 # 
 # Translators:
+# Doru  DEACONU <dumitrudeaconu@yahoo.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-07-08 11:53+0000\n"
-"Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2014-11-27 14:18+0000\n"
+"Last-Translator: Doru  DEACONU <dumitrudeaconu@yahoo.com>\n"
 "Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -50,8 +51,8 @@ msgid ""
 msgstr "Modulul Libravatar este instalat, de asemenea. Vă rugăm să dezactivați modulul Libravatar sau acest modul Gravatar. <br>Modulul Libravatar va reveni înapoi la Gravatar, dacă nu s-a găsit nimic în Libravatar."
 
 #: gravatar.php:95
-msgid "Save Settings"
-msgstr "Salvare Configurări"
+msgid "Submit"
+msgstr "Trimite"
 
 #: gravatar.php:96
 msgid "Default avatar image"

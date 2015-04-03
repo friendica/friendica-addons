@@ -1,0 +1,68 @@
+# ADDON gpluspost
+# Copyright (C)
+# This file is distributed under the same license as the Friendica gpluspost addon package.
+# 
+# 
+# Translators:
+# Abrax <webmaster@a-zwenkau.de>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:44+0200\n"
+"PO-Revision-Date: 2014-10-14 09:17+0000\n"
+"Last-Translator: Abrax <webmaster@a-zwenkau.de>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: gpluspost.php:38
+msgid "Post to Google+"
+msgstr "An Google+ senden"
+
+#: gpluspost.php:93
+msgid "Enable Google+ Post Plugin"
+msgstr "Google+ Plugin aktivieren"
+
+#: gpluspost.php:108
+msgid "Google+ username"
+msgstr "Google+ Benutzername"
+
+#: gpluspost.php:113
+msgid "Google+ password"
+msgstr "Google+ Passwort"
+
+#: gpluspost.php:118
+msgid "Google+ page number"
+msgstr "Google+ Seitennummer"
+
+#: gpluspost.php:124
+msgid "Post to Google+ by default"
+msgstr "Sende standardmäßig an Google+"
+
+#: gpluspost.php:129
+msgid "Do not prevent posting loops"
+msgstr "Posten von Schleifen nicht verhindern"
+
+#: gpluspost.php:135
+msgid "Skip messages without links"
+msgstr "Überspringe Nachrichten ohne Links"
+
+#: gpluspost.php:142
+msgid "Mirror all public posts"
+msgstr "Spiegle alle öffentlichen Nachrichten"
+
+#: gpluspost.php:146
+msgid "Mirror Google Account ID"
+msgstr "Spiegle Google Account ID"
+
+#: gpluspost.php:153
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: gpluspost.php:308
+msgid "Google+ post failed. Queued for retry."
+msgstr "Veröffentlichung bei Google+ gescheitert. Wir versuchen es später erneut."

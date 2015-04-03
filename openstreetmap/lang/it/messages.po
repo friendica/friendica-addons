@@ -4,13 +4,14 @@
 # 
 # 
 # Translators:
+# fabrixxm <fabrix.xm@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-06-23 11:01+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2014-10-15 08:59+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,32 +19,28 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: openstreetmap.php:70
-msgid "Map"
-msgstr ""
-
 #: openstreetmap.php:94
-msgid "Save Settings"
+msgid "Submit"
 msgstr ""
 
 #: openstreetmap.php:95
 msgid "Tile Server URL"
-msgstr ""
+msgstr "Indirizzo del server dei tasselli"
 
 #: openstreetmap.php:95
 msgid ""
 "A list of <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" "
 "target=\"_blank\">public tile servers</a>"
-msgstr ""
+msgstr "Lista dei <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" target=\"_blank\">server dei tasselli pubblici</a>"
 
 #: openstreetmap.php:96
 msgid "Default zoom"
-msgstr ""
+msgstr "Zoom predefinito"
 
 #: openstreetmap.php:96
 msgid "The default zoom level. (1:world, 18:highest)"
-msgstr ""
+msgstr "Il livello di zoom predefinito (1:Mondo, 18:il massimo)"
 
 #: openstreetmap.php:104
 msgid "Settings updated."
-msgstr ""
+msgstr "Impostazioni aggiornate."
