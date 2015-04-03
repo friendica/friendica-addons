@@ -1,0 +1,41 @@
+# ADDON testdrive
+# Copyright (C)
+# This file is distributed under the same license as the Friendica testdrive addon package.
+# 
+# 
+# Translators:
+# bavatar <tobias.diekershoff@gmx.net>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-10-14 06:00+0000\n"
+"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: testdrive.php:67
+msgid "Administrator"
+msgstr "Administrator"
+
+#: testdrive.php:94
+#, php-format
+msgid "Your account on %s will expire in a few days."
+msgstr "Dein Konto auf %s wird in ein paar Tagen verfallen."
+
+#: testdrive.php:95
+msgid "Your Friendica test account is about to expire."
+msgstr "Dein Friendica-Testkonto wird bald verfallen."
+
+#: testdrive.php:96
+#, php-format
+msgid ""
+"Hi %1$s,\n"
+"\n"
+"Your test account on %2$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at http://dir.friendica.com/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at http://friendica.com."
+msgstr "Hallo %1$s,\n\ndein Test-Konto auf %2$s wird in weniger als fünf Tagen verfallen. Wir hoffen, dass dir dieser Testlauf gefallen hat, so dass du die Gelegenheit nutzt und dir eine feste Friendica-Site für deine integrierte Social-Network-Kommunikation suchst. Eine Liste öffentlicher Sites findest du auf http://dir.friendica.com/siteinfo. Um mehr Information darüber zu bekommen, wie man einen eigenen Friendica-Server aufsetzt, kannst du auch einen Blick auf die Friendica Projektseite werfen: http://friendica.com"

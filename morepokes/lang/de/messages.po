@@ -1,0 +1,167 @@
+# ADDON morepokes
+# Copyright (C)
+# This file is distributed under the same license as the Friendica morepokes addon package.
+# 
+# 
+# Translators:
+# bavatar <tobias.diekershoff@gmx.net>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2014-10-14 07:57+0000\n"
+"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: morepokes.php:19
+msgid "bitchslap"
+msgstr "ohrfeigen"
+
+#: morepokes.php:19
+msgid "bitchslapped"
+msgstr "ohrfeigte"
+
+#: morepokes.php:20
+msgid "shag"
+msgstr "poppen"
+
+#: morepokes.php:20
+msgid "shagged"
+msgstr "poppte"
+
+#: morepokes.php:21
+msgid "do something obscenely biological to"
+msgstr "mit ihm/ihr etwas obszönes Körperliches machen"
+
+#: morepokes.php:21
+msgid "did something obscenely biological to"
+msgstr "machte etwas obszönes Körperliches mit"
+
+#: morepokes.php:22
+msgid "point out the poke feature to"
+msgstr "zeigte die neue Anstups-Funktion"
+
+#: morepokes.php:22
+msgid "pointed out the poke feature to"
+msgstr "zeigte die neue Anstups-Funktion"
+
+#: morepokes.php:23
+msgid "declare undying love for"
+msgstr "unterbliche Liebe verkünden"
+
+#: morepokes.php:23
+msgid "declared undying love for"
+msgstr "verkündete unsterbliche Liebe für"
+
+#: morepokes.php:24
+msgid "patent"
+msgstr "patentieren"
+
+#: morepokes.php:24
+msgid "patented"
+msgstr "patentierte"
+
+#: morepokes.php:25
+msgid "stroke beard"
+msgstr "sich den Bart kratzen"
+
+#: morepokes.php:25
+msgid "stroked their beard at"
+msgstr "kratzte sich den Bart in Richtung"
+
+#: morepokes.php:26
+msgid ""
+"bemoan the declining standards of modern secondary and tertiary education to"
+msgstr "sich über die sinkenden Standards der Schul- und Hochschulbildung beklagen"
+
+#: morepokes.php:26
+msgid ""
+"bemoans the declining standards of modern secondary and tertiary education "
+"to"
+msgstr "beklagte sich über die sinkenden Standards der Schul- und Hochschulbildung bei"
+
+#: morepokes.php:27
+msgid "hug"
+msgstr "umarmen"
+
+#: morepokes.php:27
+msgid "hugged"
+msgstr "umarmte"
+
+#: morepokes.php:28
+msgid "kiss"
+msgstr "küssen"
+
+#: morepokes.php:28
+msgid "kissed"
+msgstr "küsste"
+
+#: morepokes.php:29
+msgid "raise eyebrows at"
+msgstr "Augenbrauen hochziehen"
+
+#: morepokes.php:29
+msgid "raised their eyebrows at"
+msgstr "zog die Augenbrauen hoch in Richtung"
+
+#: morepokes.php:30
+msgid "insult"
+msgstr "beleidigen"
+
+#: morepokes.php:30
+msgid "insulted"
+msgstr "beleidigte"
+
+#: morepokes.php:31
+msgid "praise"
+msgstr "preisen"
+
+#: morepokes.php:31
+msgid "praised"
+msgstr "pries"
+
+#: morepokes.php:32
+msgid "be dubious of"
+msgstr "ungewiss sein"
+
+#: morepokes.php:32
+msgid "was dubious of"
+msgstr "war ungewiss über"
+
+#: morepokes.php:33
+msgid "eat"
+msgstr "essen"
+
+#: morepokes.php:33
+msgid "ate"
+msgstr "aß"
+
+#: morepokes.php:34
+msgid "giggle and fawn at"
+msgstr "kichern und einschleimen"
+
+#: morepokes.php:34
+msgid "giggled and fawned at"
+msgstr "kicherte und schleimte sich ein bei"
+
+#: morepokes.php:35
+msgid "doubt"
+msgstr "bezweifeln"
+
+#: morepokes.php:35
+msgid "doubted"
+msgstr "bezweifelte"
+
+#: morepokes.php:36
+msgid "glare"
+msgstr "zornig anstarren"
+
+#: morepokes.php:36
+msgid "glared at"
+msgstr "starrte zornig auf"

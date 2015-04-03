@@ -1,0 +1,57 @@
+# ADDON altpager
+# Copyright (C)
+# This file is distributed under the same license as the Friendica altpager addon package.
+# 
+# 
+# Translators:
+# Cyboulette <cyboulette58@hotmail.fr>, 2014
+# Jak <jacques@riseup.net>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2014-12-09 10:57+0000\n"
+"Last-Translator: Jak <jacques@riseup.net>\n"
+"Language-Team: French (http://www.transifex.com/projects/p/friendica/language/fr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: altpager.php:46
+msgid "Altpager settings updated."
+msgstr "Les paramètres d'Altpager ont été mis à jour"
+
+#: altpager.php:83
+msgid "Alternate Pagination Setting"
+msgstr "Paramètre de pagination"
+
+#: altpager.php:85
+msgid "Use links to \"newer\" and \"older\" pages in place of page numbers?"
+msgstr "Utiliser les liens \"plus récent\" et \"plus ancien\" à la place de la numérotation des pages ?"
+
+#: altpager.php:91 altpager.php:98
+msgid "Submit"
+msgstr "Valider"
+
+#: altpager.php:99
+msgid "Global"
+msgstr "Global"
+
+#: altpager.php:99
+msgid "Force global use of the alternate pager"
+msgstr "Forcer l'utilisation globale des pages alternatives"
+
+#: altpager.php:100
+msgid "Individual"
+msgstr "Individuel"
+
+#: altpager.php:100
+msgid "Each user chooses whether to use the alternate pager"
+msgstr "Chaque utilisateur choisi d'utiliser ou non les pages alternatives"
+
+#: altpager.php:107
+msgid "Settings updated."
+msgstr "Paramètres sauvegardés"
