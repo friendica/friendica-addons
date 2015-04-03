@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014
+# Michal Šupler <msupler@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-07-07 18:44+0000\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2015-02-11 19:40+0000\n"
 "Last-Translator: Michal Šupler <msupler@gmail.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -23,26 +23,26 @@ msgstr ""
 msgid "Post to Dreamwidth"
 msgstr "Poslat na Dreamwidth"
 
-#: dwpost.php:70 dwpost.php:74
-msgid "Dreamwidth Export"
-msgstr "Dreamwidth export"
+#: dwpost.php:70
+msgid "Dreamwidth Post Settings"
+msgstr "Dreamwidth nastavení příspěvků"
 
-#: dwpost.php:78
+#: dwpost.php:72
 msgid "Enable dreamwidth Post Plugin"
 msgstr "Povolit dreamwidth Plugin"
 
-#: dwpost.php:83
+#: dwpost.php:77
 msgid "dreamwidth username"
 msgstr "dreamwidth uživatelské jméno"
 
-#: dwpost.php:88
+#: dwpost.php:82
 msgid "dreamwidth password"
 msgstr "dreamwidth heslo"
 
-#: dwpost.php:93
+#: dwpost.php:87
 msgid "Post to dreamwidth by default"
 msgstr "Defaultně umístit na dreamwidth"
 
-#: dwpost.php:99
-msgid "Save Settings"
-msgstr "Uložit Nastavení"
+#: dwpost.php:93
+msgid "Submit"
+msgstr "Odeslat"

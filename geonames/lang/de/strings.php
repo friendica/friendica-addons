@@ -8,4 +8,4 @@ function string_plural_select_de($n){
 $a->strings["Geonames settings updated."] = "Geonames Einstellungen aktualisiert";
 $a->strings["Geonames Settings"] = "Geonames Einstellungen";
 $a->strings["Enable Geonames Plugin"] = "Geonames Plugin aktivieren";
-$a->strings["Save Settings"] = "Einstellungen speichern";
+$a->strings["Submit"] = "Senden";

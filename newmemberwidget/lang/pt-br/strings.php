@@ -1,4 +1,9 @@
 <?php
+
+if(! function_exists("string_plural_select_pt_br")) {
+function string_plural_select_pt_br($n){
+	return ($n > 1);;
+}}
 ;
 $a->strings["New Member"] = "Novo Membro";
 $a->strings["Tips for New Members"] = "Dicas para Novos Membros";

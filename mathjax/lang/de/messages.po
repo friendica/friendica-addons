@@ -4,14 +4,15 @@
 # 
 # 
 # Translators:
+# Abrax <webmaster@a-zwenkau.de>, 2014
 # bavatar <tobias.diekershoff@gmx.net>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-07-11 06:28+0000\n"
-"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2014-10-15 12:30+0000\n"
+"Last-Translator: Abrax <webmaster@a-zwenkau.de>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,34 +20,34 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: mathjax.php:36 mathjax.php:40
+#: mathjax.php:36
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: mathjax.php:42
+#: mathjax.php:37
 msgid ""
 "The MathJax addon renders mathematical formulae written using the LaTeX "
 "syntax surrounded by the usual $$ or an eqnarray block in the postings of "
 "your wall,network tab and private mail."
 msgstr "Mit dem MathJax Addon können mathematische Formeln, die mit LaTeX geschrieben wurden, dargestellt werden. Die Formel wird mit den üblichen $$ oder einem eqnarray Block gekennzeichnet. Formeln werden in allen Beiträgen auf deiner Pinnwand, dem Netzwerkstream sowie privaten Nachrichten gerendert."
 
-#: mathjax.php:43
+#: mathjax.php:38
 msgid "Use the MathJax renderer"
 msgstr "MathJax verwenden"
 
-#: mathjax.php:47 mathjax.php:80
-msgid "Save Settings"
-msgstr "Einstellungen speichern"
+#: mathjax.php:42
+msgid "Submit"
+msgstr "Senden"
 
-#: mathjax.php:71
+#: mathjax.php:66
 msgid "Settings updated."
 msgstr "Einstellungen aktualisiert."
 
-#: mathjax.php:81
+#: mathjax.php:75
 msgid "MathJax Base URL"
 msgstr "MathJax Basis-URL"
 
-#: mathjax.php:81
+#: mathjax.php:75
 msgid ""
 "The URL for the javascript file that should be included to use MathJax. Can "
 "be either the MathJax CDN or another installation of MathJax."

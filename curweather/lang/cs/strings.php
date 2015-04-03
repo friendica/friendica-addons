@@ -7,6 +7,7 @@ function string_plural_select_cs($n){
 ;
 $a->strings["Current Weather"] = "Aktuální počasí";
 $a->strings["Current Weather settings updated."] = "Nastavení pro Aktuální počasí aktualizováno.";
+$a->strings["Current Weather Settings"] = "Nastavení Aktuálního počasí";
 $a->strings["Weather Location: "] = "Poloha počasí:";
 $a->strings["Enable Current Weather"] = "Povolit Aktuální počasí";
-$a->strings["Save Settings"] = "Uložit Nastavení";
+$a->strings["Submit"] = "Odeslat";

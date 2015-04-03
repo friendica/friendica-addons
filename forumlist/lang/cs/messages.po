@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014
+# Michal Šupler <msupler@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-07-07 18:47+0000\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2015-02-11 19:40+0000\n"
 "Last-Translator: Michal Šupler <msupler@gmail.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -39,22 +39,22 @@ msgstr "Fóra:"
 msgid "Forumlist settings updated."
 msgstr "Nastavení Forumlist aktualizováno."
 
-#: forumlist.php:161 forumlist.php:165
-msgid "Forumlist"
-msgstr "Forumlist"
+#: forumlist.php:162
+msgid "Forumlist Settings"
+msgstr "Nastavení Forumlist"
 
-#: forumlist.php:169
+#: forumlist.php:164
 msgid "Randomise forum list"
 msgstr "Zamíchat lis fór"
 
-#: forumlist.php:172
+#: forumlist.php:167
 msgid "Show forums on profile page"
 msgstr "Zobrazit fóra na profilové stránce"
 
-#: forumlist.php:175
+#: forumlist.php:170
 msgid "Show forums on network page"
 msgstr "Zobrazit fóra na stránce Síť"
 
-#: forumlist.php:183
-msgid "Save Settings"
-msgstr "Uložit Nastavení"
+#: forumlist.php:178
+msgid "Submit"
+msgstr "Odeslat"

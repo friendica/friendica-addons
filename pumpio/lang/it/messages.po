@@ -4,13 +4,14 @@
 # 
 # 
 # Translators:
+# fabrixxm <fabrix.xm@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-06-23 11:30+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2014-09-10 14:24+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,82 +21,82 @@ msgstr ""
 
 #: pumpio.php:38
 msgid "Permission denied."
-msgstr ""
+msgstr "Permesso negato."
 
 #: pumpio.php:124
 #, php-format
 msgid "Unable to register the client at the pump.io server '%s'."
-msgstr ""
+msgstr "Impossibile registrare il client sul server pump.io '%s'"
 
 #: pumpio.php:164
 msgid "You are now authenticated to pumpio."
-msgstr ""
+msgstr "Sei autenticato su pump.io"
 
 #: pumpio.php:165
 msgid "return to the connector page"
-msgstr ""
+msgstr "ritorna alla pagina del connettore"
 
 #: pumpio.php:183
 msgid "Post to pumpio"
-msgstr ""
+msgstr "Invia a pump.io"
 
 #: pumpio.php:221 pumpio.php:225
 msgid "Pump.io Import/Export/Mirror"
-msgstr ""
+msgstr "Esporta/Importa/Clona pump.io"
 
 #: pumpio.php:229
 msgid "pump.io username (without the servername)"
-msgstr ""
+msgstr "nome utente pump.io (senza il nome del server)"
 
 #: pumpio.php:234
 msgid "pump.io servername (without \"http://\" or \"https://\" )"
-msgstr ""
+msgstr "nome del server pump.io (senza \"http://\" o \"https://\")"
 
 #: pumpio.php:246
 msgid "Authenticate your pump.io connection"
-msgstr ""
+msgstr "Autentica la tua connessione pump.io"
 
 #: pumpio.php:250
 msgid "Import the remote timeline"
-msgstr ""
+msgstr "Importa la timeline remota"
 
 #: pumpio.php:255
 msgid "Enable pump.io Post Plugin"
-msgstr ""
+msgstr "Abilita il plugin di invio ad pump.io"
 
 #: pumpio.php:260
 msgid "Post to pump.io by default"
-msgstr ""
+msgstr "Invia sempre a pump.io"
 
 #: pumpio.php:265
 msgid "Should posts be public?"
-msgstr ""
+msgstr "I messaggi devono essere pubblici?"
 
 #: pumpio.php:270
 msgid "Mirror all public posts"
-msgstr ""
+msgstr "Clona tutti i messaggi pubblici"
 
 #: pumpio.php:275
 msgid "Check to delete this preset"
-msgstr ""
+msgstr "Seleziona per elimiare queto preset"
 
 #: pumpio.php:285
 msgid "Save Settings"
-msgstr ""
+msgstr "Salva Impostazioni"
 
 #: pumpio.php:515
 msgid "Pump.io post failed. Queued for retry."
-msgstr ""
+msgstr "Invio a pump.io fallito. In attesa di riprovare."
 
 #: pumpio.php:587
 msgid "Pump.io like failed. Queued for retry."
-msgstr ""
+msgstr "Invio 'mi piace' a pump.io fallito. In attesa di riprovare."
 
 #: pumpio.php:875
 msgid "status"
-msgstr ""
+msgstr "stato"
 
 #: pumpio.php:879
 #, php-format
 msgid "%1$s likes %2$s's %3$s"
-msgstr ""
+msgstr "a %1$s piace %2$s di %3$s"

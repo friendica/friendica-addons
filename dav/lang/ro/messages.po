@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
 "PO-Revision-Date: 2014-07-08 11:47+0000\n"
 "Last-Translator: Arian - Cazare Muncitori <arianserv@gmail.com>\n"
 "Language-Team: Romanian (Romania) (http://www.transifex.com/projects/p/friendica/language/ro_RO/)\n"
@@ -18,25 +18,9 @@ msgstr ""
 "Language: ro_RO\n"
 "Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
 
-#: friendica/calendar.friendica.fnk.php:206
-msgid "Private Calendar"
-msgstr "Calendar Privat"
-
-#: friendica/calendar.friendica.fnk.php:207
-msgid "Friendica Events: Mine"
-msgstr "Evenimente Friendica: ale Mele"
-
-#: friendica/calendar.friendica.fnk.php:208
-msgid "Friendica Events: Contacts"
-msgstr "Evenimente Friendica: Contacte"
-
-#: friendica/calendar.friendica.fnk.php:248
-msgid "Private Addresses"
-msgstr "Adresele Private"
-
-#: friendica/calendar.friendica.fnk.php:249
-msgid "Friendica Contacts"
-msgstr "Contacte Friendica"
+#: friendica/dav_caldav_backend_virtual_friendica.inc.php:36
+msgid "Friendica-Native events"
+msgstr "Evenimente Native-Friendica"
 
 #: friendica/dav_carddav_backend_virtual_friendica.inc.php:36
 #: friendica/dav_carddav_backend_virtual_friendica.inc.php:59
@@ -46,110 +30,6 @@ msgstr "Contacte-Friendica"
 #: friendica/dav_carddav_backend_virtual_friendica.inc.php:60
 msgid "Your Friendica-Contacts"
 msgstr "Contactele-Dvs-Friendica"
-
-#: friendica/dav_caldav_backend_virtual_friendica.inc.php:36
-msgid "Friendica-Native events"
-msgstr "Evenimente Native-Friendica"
-
-#: friendica/main.php:202
-msgid ""
-"The current version of this plugin has not been set up correctly. Please "
-"contact the system administrator of your installation of friendica to fix "
-"this."
-msgstr "Versiunea curentă a acestui modul nu a fost corect configurată. Vă rugăm să contactați administratorul de sistem al aplicației dvs. friendica, pentru a corecta această situație."
-
-#: friendica/main.php:239 common/wdcal_edit.inc.php:146
-msgid "Calendar"
-msgstr "Calendar"
-
-#: friendica/main.php:242
-msgid "Extended calendar with CalDAV-support"
-msgstr "Calendar extins cu suport-CalDAV"
-
-#: friendica/main.php:279 friendica/main.php:280
-msgid "noreply"
-msgstr "nu-răspunde"
-
-#: friendica/main.php:282
-msgid "Notification: "
-msgstr "Notificare:"
-
-#: friendica/main.php:309
-msgid "The database tables have been installed."
-msgstr "Tabelele bazei de date au fost instalate."
-
-#: friendica/main.php:310
-msgid "An error occurred during the installation."
-msgstr "A apărut o eroare la instalare."
-
-#: friendica/main.php:316
-msgid "The database tables have been updated."
-msgstr "Tabelele bazei de date au fost actualizate."
-
-#: friendica/main.php:317
-msgid "An error occurred during the update."
-msgstr "A apărut o eroare în timpul actualizării."
-
-#: friendica/main.php:333
-msgid "No system-wide settings yet."
-msgstr "Nu există încă configurări globale de sistem."
-
-#: friendica/main.php:336
-msgid "Database status"
-msgstr "Status bază de date"
-
-#: friendica/main.php:339
-msgid "Installed"
-msgstr "Instalat"
-
-#: friendica/main.php:343
-msgid "Upgrade needed"
-msgstr "Necesită actualizare"
-
-#: friendica/main.php:343
-msgid ""
-"Please back up all calendar data (the tables beginning with dav_*) before "
-"proceeding. While all calendar events <i>should</i> be converted to the new "
-"database structure, it's always safe to have a backup. Below, you can have a"
-" look at the database-queries that will be made when pressing the "
-"'update'-button."
-msgstr "Vă rugăm să faceți backup la toate datele din calendar (tabelele cu sufixul dav_*), înainte de a continua. În timp ce toate evenimentele din calendar <i>ar trebui</i> să fie convertite la noua structură a bazei date, e întotdeauna mai sigur să dețineți o copie de backup. Mai jos, puteți vizualiza interogările-bazei-de-date ce vor fi făcute la apăsarea butonului 'actualizare'."
-
-#: friendica/main.php:343
-msgid "Upgrade"
-msgstr "Actualizare"
-
-#: friendica/main.php:346
-msgid "Not installed"
-msgstr "Nu este instalat"
-
-#: friendica/main.php:346
-msgid "Install"
-msgstr "Instalați"
-
-#: friendica/main.php:350
-msgid "Unknown"
-msgstr "Necunoscut"
-
-#: friendica/main.php:350
-msgid ""
-"Something really went wrong. I cannot recover from this state automatically,"
-" sorry. Please go to the database backend, back up the data, and delete all "
-"tables beginning with 'dav_' manually. Afterwards, this installation routine"
-" should be able to reinitialize the tables automatically."
-msgstr "Ceva chiar nu a mers bine. Nu se poate reveni automat din această stare, ne pare rău. Vă rugăm să vă deplasați către zona de administrare a bazei de date, faceți backup pentru toate datele, şi ștergeți manual toate tabelele cu sufixul 'dav_'. După aceea, această sesiune de instalare ar trebui să fie capabilă să reinițializeze tabelele automat."
-
-#: friendica/main.php:355
-msgid "Troubleshooting"
-msgstr "Rezolvarea problemelor"
-
-#: friendica/main.php:356
-msgid "Manual creation of the database tables:"
-msgstr "Crearea manuală a tabelelor bazei de date:"
-
-#: friendica/main.php:357
-msgid "Show SQL-statements"
-msgstr "Afișare declarații-SQL"
 
 #: friendica/layout.fnk.php:99 friendica/layout.fnk.php:136
 msgid ""
@@ -301,6 +181,126 @@ msgstr "Sincronizați acest calendar cu iPhone"
 #: friendica/layout.fnk.php:522
 msgid "Synchronizing your Friendica-Contacts with the iPhone"
 msgstr "Sincronizați contactele Friendica cu iPhone"
+
+#: friendica/main.php:202
+msgid ""
+"The current version of this plugin has not been set up correctly. Please "
+"contact the system administrator of your installation of friendica to fix "
+"this."
+msgstr "Versiunea curentă a acestui modul nu a fost corect configurată. Vă rugăm să contactați administratorul de sistem al aplicației dvs. friendica, pentru a corecta această situație."
+
+#: friendica/main.php:239 common/wdcal_edit.inc.php:146
+msgid "Calendar"
+msgstr "Calendar"
+
+#: friendica/main.php:242
+msgid "Extended calendar with CalDAV-support"
+msgstr "Calendar extins cu suport-CalDAV"
+
+#: friendica/main.php:279 friendica/main.php:280
+msgid "noreply"
+msgstr "nu-răspunde"
+
+#: friendica/main.php:282
+msgid "Notification: "
+msgstr "Notificare:"
+
+#: friendica/main.php:309
+msgid "The database tables have been installed."
+msgstr "Tabelele bazei de date au fost instalate."
+
+#: friendica/main.php:310
+msgid "An error occurred during the installation."
+msgstr "A apărut o eroare la instalare."
+
+#: friendica/main.php:316
+msgid "The database tables have been updated."
+msgstr "Tabelele bazei de date au fost actualizate."
+
+#: friendica/main.php:317
+msgid "An error occurred during the update."
+msgstr "A apărut o eroare în timpul actualizării."
+
+#: friendica/main.php:333
+msgid "No system-wide settings yet."
+msgstr "Nu există încă configurări globale de sistem."
+
+#: friendica/main.php:336
+msgid "Database status"
+msgstr "Status bază de date"
+
+#: friendica/main.php:339
+msgid "Installed"
+msgstr "Instalat"
+
+#: friendica/main.php:343
+msgid "Upgrade needed"
+msgstr "Necesită actualizare"
+
+#: friendica/main.php:343
+msgid ""
+"Please back up all calendar data (the tables beginning with dav_*) before "
+"proceeding. While all calendar events <i>should</i> be converted to the new "
+"database structure, it's always safe to have a backup. Below, you can have a"
+" look at the database-queries that will be made when pressing the "
+"'update'-button."
+msgstr "Vă rugăm să faceți backup la toate datele din calendar (tabelele cu sufixul dav_*), înainte de a continua. În timp ce toate evenimentele din calendar <i>ar trebui</i> să fie convertite la noua structură a bazei date, e întotdeauna mai sigur să dețineți o copie de backup. Mai jos, puteți vizualiza interogările-bazei-de-date ce vor fi făcute la apăsarea butonului 'actualizare'."
+
+#: friendica/main.php:343
+msgid "Upgrade"
+msgstr "Actualizare"
+
+#: friendica/main.php:346
+msgid "Not installed"
+msgstr "Nu este instalat"
+
+#: friendica/main.php:346
+msgid "Install"
+msgstr "Instalați"
+
+#: friendica/main.php:350
+msgid "Unknown"
+msgstr "Necunoscut"
+
+#: friendica/main.php:350
+msgid ""
+"Something really went wrong. I cannot recover from this state automatically,"
+" sorry. Please go to the database backend, back up the data, and delete all "
+"tables beginning with 'dav_' manually. Afterwards, this installation routine"
+" should be able to reinitialize the tables automatically."
+msgstr "Ceva chiar nu a mers bine. Nu se poate reveni automat din această stare, ne pare rău. Vă rugăm să vă deplasați către zona de administrare a bazei de date, faceți backup pentru toate datele, şi ștergeți manual toate tabelele cu sufixul 'dav_'. După aceea, această sesiune de instalare ar trebui să fie capabilă să reinițializeze tabelele automat."
+
+#: friendica/main.php:355
+msgid "Troubleshooting"
+msgstr "Rezolvarea problemelor"
+
+#: friendica/main.php:356
+msgid "Manual creation of the database tables:"
+msgstr "Crearea manuală a tabelelor bazei de date:"
+
+#: friendica/main.php:357
+msgid "Show SQL-statements"
+msgstr "Afișare declarații-SQL"
+
+#: friendica/calendar.friendica.fnk.php:206
+msgid "Private Calendar"
+msgstr "Calendar Privat"
+
+#: friendica/calendar.friendica.fnk.php:207
+msgid "Friendica Events: Mine"
+msgstr "Evenimente Friendica: ale Mele"
+
+#: friendica/calendar.friendica.fnk.php:208
+msgid "Friendica Events: Contacts"
+msgstr "Evenimente Friendica: Contacte"
+
+#: friendica/calendar.friendica.fnk.php:248
+msgid "Private Addresses"
+msgstr "Adresele Private"
+
+#: friendica/calendar.friendica.fnk.php:249
+msgid "Friendica Contacts"
+msgstr "Contacte Friendica"
 
 #: common/wdcal_edit.inc.php:30 common/wdcal_edit.inc.php:738
 msgid "Could not open component for editing"
@@ -554,9 +554,13 @@ msgstr "#Nume# este pe cale să înceapă."
 msgid "Saved"
 msgstr "Salvat"
 
-#: common/dav_carddav_backend_private.inc.php:46
-msgid "Private Addressbooks"
-msgstr "Agende Private"
+#: common/wdcal_configuration.php:148
+msgid "U.S. Time Format (mm/dd/YYYY)"
+msgstr "Format Dată S.U.A. (mm/dd/YYYY)"
+
+#: common/wdcal_configuration.php:243
+msgid "German Time Format (dd.mm.YYYY)"
+msgstr "Format Dată Germania (dd.mm.YYYY)"
 
 #: common/dav_caldav_backend_private.inc.php:39
 msgid "Private Events"
@@ -568,10 +572,6 @@ msgstr "Evenimente Private"
 msgid "No access"
 msgstr "Nu aveți acces"
 
-#: common/wdcal_configuration.php:148
-msgid "U.S. Time Format (mm/dd/YYYY)"
-msgstr "Format Dată S.U.A. (mm/dd/YYYY)"
-
-#: common/wdcal_configuration.php:243
-msgid "German Time Format (dd.mm.YYYY)"
-msgstr "Format Dată Germania (dd.mm.YYYY)"
+#: common/dav_carddav_backend_private.inc.php:46
+msgid "Private Addressbooks"
+msgstr "Agende Private"

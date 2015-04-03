@@ -7,6 +7,7 @@ function string_plural_select_de($n){
 ;
 $a->strings["Current Weather"] = "Aktuelles Wetter";
 $a->strings["Current Weather settings updated."] = "Einstellungen des Aktuellen Wetter Addons aktualisiert.";
+$a->strings["Current Weather Settings"] = "Einstellungen";
 $a->strings["Weather Location: "] = "Wetter Standort";
 $a->strings["Enable Current Weather"] = "Aktuelles Wetter aktivieren";
-$a->strings["Save Settings"] = "Einstellungen speichern";
+$a->strings["Submit"] = "Senden";

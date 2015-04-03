@@ -13,4 +13,4 @@ $a->strings["Export Events"] = "Export událostí";
 $a->strings["If this is enabled, your public events will be available at"] = "Pokud je toto povoleno, vaše veřejné události budou viditelné na";
 $a->strings["Currently supported formats are ical and csv."] = "Aktuálně podporované formáty jsou ical a csv.";
 $a->strings["Enable calendar export"] = "Povolit export kalendáře";
-$a->strings["Submit"] = "Odeslat";
+$a->strings["Save Settings"] = "Uložit Nastavení";

@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014
+# Michal Šupler <msupler@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-07-07 19:18+0000\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2015-02-11 19:38+0000\n"
 "Last-Translator: Michal Šupler <msupler@gmail.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -19,34 +19,34 @@ msgstr ""
 "Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: mathjax.php:36 mathjax.php:40
+#: mathjax.php:36
 msgid "Settings"
 msgstr "Nastavení"
 
-#: mathjax.php:42
+#: mathjax.php:37
 msgid ""
 "The MathJax addon renders mathematical formulae written using the LaTeX "
 "syntax surrounded by the usual $$ or an eqnarray block in the postings of "
 "your wall,network tab and private mail."
 msgstr "Rozšíření MathJax vykresluje matematické vzorce zapsané s použitím syntaxe LaTeX označené obvyklými znaky $$ nebo v bloku \"eqnarray\"  v příspěvcích na vaší zdi, záložce síť a soukromých zprávách."
 
-#: mathjax.php:43
+#: mathjax.php:38
 msgid "Use the MathJax renderer"
 msgstr "Použít Mathjax vykreslování"
 
-#: mathjax.php:47 mathjax.php:80
-msgid "Save Settings"
-msgstr "Uložit Nastavení"
+#: mathjax.php:42
+msgid "Submit"
+msgstr "Odeslat"
 
-#: mathjax.php:71
+#: mathjax.php:66
 msgid "Settings updated."
 msgstr "Nastavení aktualizováno."
 
-#: mathjax.php:81
+#: mathjax.php:75
 msgid "MathJax Base URL"
 msgstr "Základní MathJax adresa URL"
 
-#: mathjax.php:81
+#: mathjax.php:75
 msgid ""
 "The URL for the javascript file that should be included to use MathJax. Can "
 "be either the MathJax CDN or another installation of MathJax."

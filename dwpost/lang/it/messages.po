@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-09-10 11:57+0000\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2014-10-22 07:54+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -23,26 +23,26 @@ msgstr ""
 msgid "Post to Dreamwidth"
 msgstr "Posta su Dreamwidth"
 
-#: dwpost.php:70 dwpost.php:74
-msgid "Dreamwidth Export"
-msgstr "Esporta Dreamwidth"
+#: dwpost.php:70
+msgid "Dreamwidth Post Settings"
+msgstr "Impostazioni di invio a Dreamwidth"
 
-#: dwpost.php:78
+#: dwpost.php:72
 msgid "Enable dreamwidth Post Plugin"
 msgstr "Abilita il plugin di invio a Dreamwidth"
 
-#: dwpost.php:83
+#: dwpost.php:77
 msgid "dreamwidth username"
 msgstr "Nome utente Dreamwidth"
 
-#: dwpost.php:88
+#: dwpost.php:82
 msgid "dreamwidth password"
 msgstr "password Dreamwidth"
 
-#: dwpost.php:93
+#: dwpost.php:87
 msgid "Post to dreamwidth by default"
 msgstr "Invia sempre a Dreamwidth"
 
-#: dwpost.php:99
-msgid "Save Settings"
-msgstr "Salva Impostazioni"
+#: dwpost.php:93
+msgid "Submit"
+msgstr "Invia"

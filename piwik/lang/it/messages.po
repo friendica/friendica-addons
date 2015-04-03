@@ -4,13 +4,14 @@
 # 
 # 
 # Translators:
+# fabrixxm <fabrix.xm@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-06-23 11:18+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2014-10-15 09:01+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,46 +19,46 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: piwik.php:77
+#: piwik.php:79
 msgid ""
 "This website is tracked using the <a href='http://www.piwik.org'>Piwik</a> "
 "analytics tool."
-msgstr ""
+msgstr "Questo sito è monitorato con lo strumento di analisi <a href='http://www.piwik.org'>Piwik</a>."
 
-#: piwik.php:80
+#: piwik.php:82
 #, php-format
 msgid ""
 "If you do not want that your visits are logged this way you <a href='%s'>can"
 " set a cookie to prevent Piwik from tracking further visits of the site</a> "
 "(opt-out)."
-msgstr ""
-
-#: piwik.php:87
-msgid "Save Settings"
-msgstr ""
-
-#: piwik.php:88
-msgid "Piwik Base URL"
-msgstr ""
-
-#: piwik.php:88
-msgid ""
-"Absolute path to your Piwik installation. (without protocol (http/s), with "
-"trailing slash)"
-msgstr ""
+msgstr "Se non vuoi che le tue visite vengano registrate in questo modo è  possibile <a href='%s'>impostare un cookie per evitare che Piwik rintracci ulteriori visite del sito</a> (opt-out)."
 
 #: piwik.php:89
-msgid "Site ID"
+msgid "Submit"
 msgstr ""
 
 #: piwik.php:90
-msgid "Show opt-out cookie link?"
-msgstr ""
+msgid "Piwik Base URL"
+msgstr "Indirizzo di base di Piwik"
+
+#: piwik.php:90
+msgid ""
+"Absolute path to your Piwik installation. (without protocol (http/s), with "
+"trailing slash)"
+msgstr "Percorso assoluto alla tua installazione di Piwik, senza il protocollo (http o https), con la barra alla fine"
 
 #: piwik.php:91
-msgid "Asynchronous tracking"
-msgstr ""
+msgid "Site ID"
+msgstr "ID del sito"
 
-#: piwik.php:103
+#: piwik.php:92
+msgid "Show opt-out cookie link?"
+msgstr "Mostra il link per il cookie opt-out?"
+
+#: piwik.php:93
+msgid "Asynchronous tracking"
+msgstr "Tracciamento asincrono"
+
+#: piwik.php:105
 msgid "Settings updated."
-msgstr ""
+msgstr "Impostazioni aggiornate."

@@ -4,13 +4,14 @@
 # 
 # 
 # Translators:
+# fabrixxm <fabrix.xm@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-06-23 10:34+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2014-10-15 08:56+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,11 +19,11 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: nsfw.php:78 nsfw.php:82
-msgid "Not Safe For Work (General Purpose Content Filter)"
+#: nsfw.php:78
+msgid "Not Safe For Work (General Purpose Content Filter) settings"
 msgstr ""
 
-#: nsfw.php:86
+#: nsfw.php:80
 msgid ""
 "This plugin looks in posts for the words/text you specify below, and "
 "collapses any content containing those keywords so it is not displayed at "
@@ -30,29 +31,29 @@ msgid ""
 "setting. It is polite and recommended to tag any content containing nudity "
 "with #NSFW.  This filter can also match any other word/text you specify, and"
 " can thereby be used as a general purpose content filter."
-msgstr ""
+msgstr "Questo plugin cerca nei messagi le parole/testo che inserisci qui sotto, e collassa i messaggi che li contengono, per non mostrare contenuto inappropriato nel momento sbagliato, come contenuto a sfondo sessuale che può essere inappropriato in un ambiente di lavoro. E' educato (e consigliato) taggare i messaggi che contengono nudità con #NSFW (Not Safe For Work: Non Sicuro Per il Lavoro). Questo filtro può cercare anche qualsiasi parola che inserisci, quindi può essere usato come filtro di contenuti generico."
 
-#: nsfw.php:87
+#: nsfw.php:81
 msgid "Enable Content filter"
-msgstr ""
+msgstr "Abilita il Filtro Contenuti"
 
-#: nsfw.php:90
+#: nsfw.php:84
 msgid "Comma separated list of keywords to hide"
+msgstr "Elenco separato da virgole di parole da nascondere"
+
+#: nsfw.php:88
+msgid "Submit"
 msgstr ""
 
-#: nsfw.php:94
-msgid "Save Settings"
-msgstr ""
-
-#: nsfw.php:95
+#: nsfw.php:89
 msgid "Use /expression/ to provide regular expressions"
-msgstr ""
+msgstr "Utilizza /espressione/ per inserire espressioni regolari"
 
-#: nsfw.php:111
+#: nsfw.php:105
 msgid "NSFW Settings saved."
-msgstr ""
+msgstr "Impostazioni NSFW salvate."
 
-#: nsfw.php:166
+#: nsfw.php:157
 #, php-format
 msgid "%s - Click to open/close"
-msgstr ""
+msgstr "%s - Clicca per aprire / chiudere"

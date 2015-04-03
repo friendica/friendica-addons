@@ -4,13 +4,14 @@
 # 
 # 
 # Translators:
+# fabrixxm <fabrix.xm@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2014-06-23 12:57+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2014-09-10 14:43+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,54 +21,54 @@ msgstr ""
 
 #: tictac.php:20
 msgid "Three Dimensional Tic-Tac-Toe"
-msgstr ""
+msgstr "Tic-Tac-Toe tridimensionale"
 
 #: tictac.php:53
 msgid "3D Tic-Tac-Toe"
-msgstr ""
+msgstr "3D Tic-Tac-Toe"
 
 #: tictac.php:58
 msgid "New game"
-msgstr ""
+msgstr "Nuova partita"
 
 #: tictac.php:59
 msgid "New game with handicap"
-msgstr ""
+msgstr "Nuova partita con handicap"
 
 #: tictac.php:60
 msgid ""
 "Three dimensional tic-tac-toe is just like the traditional game except that "
 "it is played on multiple levels simultaneously. "
-msgstr ""
+msgstr "Tic-tac-toe tridimensionale è come il gioco tradizionale, solo che si gioca su livelli multipli contemporaneamente."
 
 #: tictac.php:61
 msgid ""
 "In this case there are three levels. You win by getting three in a row on "
 "any level, as well as up, down, and diagonally across the different levels."
-msgstr ""
+msgstr "In questo caso ci sono tre livelli. Puoi vincere mettendo tre segni in fila su ogni livello, anche verso l'alto, il basso e diagonalmente anche attraverso i diversi livelli."
 
 #: tictac.php:63
 msgid ""
 "The handicap game disables the center position on the middle level because "
 "the player claiming this square often has an unfair advantage."
-msgstr ""
+msgstr "L'handicap disabilita la casella centrale sul livello di mezzo, perchè il giocatore che si prende quella casella spesso ha un deciso vantaggio."
 
 #: tictac.php:182
 msgid "You go first..."
-msgstr ""
+msgstr "Cominci tu..."
 
 #: tictac.php:187
 msgid "I'm going first this time..."
-msgstr ""
+msgstr "Comincio io questa volta..."
 
 #: tictac.php:193
 msgid "You won!"
-msgstr ""
+msgstr "Hai vinto!"
 
 #: tictac.php:199 tictac.php:224
 msgid "\"Cat\" game!"
-msgstr ""
+msgstr "Stallo!"
 
 #: tictac.php:222
 msgid "I won!"
-msgstr ""
+msgstr "Ho vinto!"

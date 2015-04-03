@@ -4,13 +4,14 @@
 # 
 # 
 # Translators:
+# fabrixxm <fabrix.xm@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-06-23 08:46+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2014-09-10 12:26+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,36 +21,36 @@ msgstr ""
 
 #: js_upload.php:43
 msgid "Upload a file"
-msgstr ""
+msgstr "Carica un file"
 
 #: js_upload.php:44
 msgid "Drop files here to upload"
-msgstr ""
+msgstr "Trascina un file qui per caricarlo"
 
 #: js_upload.php:45
 msgid "Cancel"
-msgstr ""
+msgstr "Annulla"
 
 #: js_upload.php:46
 msgid "Failed"
-msgstr ""
+msgstr "Caricamento fallito"
 
 #: js_upload.php:303
 msgid "No files were uploaded."
-msgstr ""
+msgstr "Nessun file è stato caricato."
 
 #: js_upload.php:309
 msgid "Uploaded file is empty"
-msgstr ""
+msgstr "Il file caricato è vuoto"
 
 #: js_upload.php:321
 msgid "Image exceeds size limit of "
-msgstr ""
+msgstr "L'immagine supera il limite di"
 
 #: js_upload.php:332
 msgid "File has an invalid extension, it should be one of "
-msgstr ""
+msgstr "Il file ha un'estensione non valida, dovrebbe essere una tra "
 
 #: js_upload.php:343
 msgid "Upload was cancelled, or server error encountered"
-msgstr ""
+msgstr "Il caricamento è stato cancellato, o si è verificato un errore sul server"

@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-09-10 10:31+0000\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2014-10-15 08:25+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -19,13 +19,17 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: curweather.php:46 curweather.php:90
+#: curweather.php:46
 msgid "Current Weather"
 msgstr "Meteo"
 
 #: curweather.php:67
 msgid "Current Weather settings updated."
 msgstr "Impostazioni Meteo aggiornate."
+
+#: curweather.php:90
+msgid "Current Weather Settings"
+msgstr ""
 
 #: curweather.php:93
 msgid "Weather Location: "
@@ -36,5 +40,5 @@ msgid "Enable Current Weather"
 msgstr "Abilita Meteo"
 
 #: curweather.php:104
-msgid "Save Settings"
-msgstr "Salva Impostazioni"
+msgid "Submit"
+msgstr ""

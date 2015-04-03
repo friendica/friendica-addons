@@ -7,7 +7,7 @@ function string_plural_select_ro($n){
 ;
 $a->strings["This website is tracked using the <a href='http://www.piwik.org'>Piwik</a> analytics tool."] = "Acest site web este contorizat folosind instrumentul analitic <a href='http://www.piwik.org'>Piwik</a>.";
 $a->strings["If you do not want that your visits are logged this way you <a href='%s'>can set a cookie to prevent Piwik from tracking further visits of the site</a> (opt-out)."] = "Dacă nu doriți ca vizitele dumneavoastră să fie înregistrate în acest mod,<a href='%s'> puteți stabili un cookie pentru a împiedica Piwik să vă contorizeze viitoarele vizite pe site</a> (renunțare la opțiune).";
-$a->strings["Save Settings"] = "Salvare Configurări";
+$a->strings["Submit"] = "Trimite";
 $a->strings["Piwik Base URL"] = "Adresa URL de Bază Piwik";
 $a->strings["Absolute path to your Piwik installation. (without protocol (http/s), with trailing slash)"] = "Calea absolută către locația de instalare Piwik. (fără protocolul (http/s), urmată de slash-uri)";
 $a->strings["Site ID"] = "ID Site";

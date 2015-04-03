@@ -4,13 +4,14 @@
 # 
 # 
 # Translators:
+# fabrixxm <fabrix.xm@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-06-23 12:35+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2014-09-10 14:32+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,50 +21,50 @@ msgstr ""
 
 #: remote_permissions.php:45
 msgid "Remote Permissions Settings"
-msgstr ""
+msgstr "Impostazioni Permissi Remoti"
 
 #: remote_permissions.php:46
 msgid ""
 "Allow recipients of your private posts to see the other recipients of the "
 "posts"
-msgstr ""
+msgstr "Permetti ai destinatari dei tuoi messaggi privati di vedere gli altri destinatari del messaggio"
 
 #: remote_permissions.php:48 remote_permissions.php:196
 msgid "Save Settings"
-msgstr ""
+msgstr "Salva Impostazioni"
 
 #: remote_permissions.php:58
 msgid "Remote Permissions settings updated."
-msgstr ""
+msgstr "Impostazioni Permessi Remoti aggiornate."
 
 #: remote_permissions.php:124
 msgid "Visible to:"
-msgstr ""
+msgstr "Visibile a:"
 
 #: remote_permissions.php:178
 msgid "Visible to"
-msgstr ""
+msgstr "Visibile a"
 
 #: remote_permissions.php:178
 msgid "may only be a partial list"
-msgstr ""
+msgstr "può essere solo una lista parziale"
 
 #: remote_permissions.php:197
 msgid "Global"
-msgstr ""
+msgstr "Globale"
 
 #: remote_permissions.php:197
 msgid "The posts of every user on this server show the post recipients"
-msgstr ""
+msgstr "I messaggi di tutti gli utenti di questo server mostrano i destinatari"
 
 #: remote_permissions.php:198
 msgid "Individual"
-msgstr ""
+msgstr "Individuale"
 
 #: remote_permissions.php:198
 msgid "Each user chooses whether his/her posts show the post recipients"
-msgstr ""
+msgstr "Ogni utente sceglie se i suoi messaggi mostreranno i destinatari"
 
 #: remote_permissions.php:205
 msgid "Settings updated."
-msgstr ""
+msgstr "Impostazioni aggiornate."

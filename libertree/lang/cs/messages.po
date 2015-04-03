@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014
+# Michal Šupler <msupler@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-07-07 19:13+0000\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2015-02-11 19:39+0000\n"
 "Last-Translator: Michal Šupler <msupler@gmail.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -23,26 +23,26 @@ msgstr ""
 msgid "Post to libertree"
 msgstr "Poslat na libertree"
 
-#: libertree.php:67 libertree.php:71
-msgid "libertree Export"
-msgstr "libertree export"
+#: libertree.php:67
+msgid "libertree Post Settings"
+msgstr "libertree nastavení příspěvků"
 
-#: libertree.php:75
+#: libertree.php:69
 msgid "Enable Libertree Post Plugin"
 msgstr "Povolit Libertree Post rozšíření"
 
-#: libertree.php:80
+#: libertree.php:74
 msgid "Libertree API token"
 msgstr "Libertree API token"
 
-#: libertree.php:85
+#: libertree.php:79
 msgid "Libertree site URL"
 msgstr "URL adresa Libertree "
 
-#: libertree.php:90
+#: libertree.php:84
 msgid "Post to Libertree by default"
 msgstr "Defaultně poslat na Libertree"
 
-#: libertree.php:96
-msgid "Save Settings"
-msgstr "Uložit Nastavení"
+#: libertree.php:90
+msgid "Submit"
+msgstr "Odeslat"

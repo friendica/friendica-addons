@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014
+# Michal Šupler <msupler@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-07-07 19:10+0000\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2015-02-11 19:41+0000\n"
 "Last-Translator: Michal Šupler <msupler@gmail.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -51,8 +51,8 @@ msgid ""
 msgstr "Libravatar doplněk je také nainstalován. Prosím zakažte doplněk Libravatar nebo tento doplněk Gravatar.<br>Libravatar doplněk se vrátí k doplňku Gravatar, pokud na Libravataru nebude nic nalezeno."
 
 #: gravatar.php:95
-msgid "Save Settings"
-msgstr "Uložit Nastavení"
+msgid "Submit"
+msgstr "Odeslat"
 
 #: gravatar.php:96
 msgid "Default avatar image"

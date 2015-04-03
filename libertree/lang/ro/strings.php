@@ -6,9 +6,9 @@ function string_plural_select_ro($n){
 }}
 ;
 $a->strings["Post to libertree"] = "Postați pe libertree";
-$a->strings["libertree Export"] = "Export Libertree";
+$a->strings["libertree Post Settings"] = "Configurări Postări libertree ";
 $a->strings["Enable Libertree Post Plugin"] = "Activare Modul Postare Libertree";
 $a->strings["Libertree API token"] = "Token API Libertree";
 $a->strings["Libertree site URL"] = "URL site Libertree";
 $a->strings["Post to Libertree by default"] = "Postați implicit pe Libertree";
-$a->strings["Save Settings"] = "Salvare Configurări";
+$a->strings["Submit"] = "Trimite";

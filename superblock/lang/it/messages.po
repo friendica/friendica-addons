@@ -4,13 +4,14 @@
 # 
 # 
 # Translators:
+# fabrixxm <fabrix.xm@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2014-06-23 12:55+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2014-09-10 14:40+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,24 +21,24 @@ msgstr ""
 
 #: superblock.php:52
 msgid "\"Superblock\" Settings"
-msgstr ""
+msgstr "Impostazioni \"Superblock\""
 
 #: superblock.php:54
 msgid "Comma separated profile URLS to block"
-msgstr ""
+msgstr "Lista, separata da virgola, di indirizzi di profili da bloccare"
 
 #: superblock.php:58
 msgid "Save Settings"
-msgstr ""
+msgstr "Salva Impostazioni"
 
 #: superblock.php:71
 msgid "SUPERBLOCK Settings saved."
-msgstr ""
+msgstr "Impostazioni \"Superblock\" salvate."
 
 #: superblock.php:143
 msgid "Block Completely"
-msgstr ""
+msgstr "Blocca completamente"
 
 #: superblock.php:163
 msgid "superblock settings updated"
-msgstr ""
+msgstr "Impostazioni \"Superblock\" aggiornate"

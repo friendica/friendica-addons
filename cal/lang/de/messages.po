@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-19 13:20+0200\n"
-"PO-Revision-Date: 2014-06-26 07:44+0000\n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-09-28 10:39+0000\n"
 "Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -35,22 +35,22 @@ msgstr "Diese_r Nutzer_in exportiert den Kalender nicht."
 msgid "This calendar format is not supported"
 msgstr "Dieses Kalenderformat wird nicht unterstützt."
 
-#: cal.php:174
+#: cal.php:181 cal.php:185
 msgid "Export Events"
 msgstr "Exportiere Ereignisse"
 
-#: cal.php:175
+#: cal.php:189
 msgid "If this is enabled, your public events will be available at"
 msgstr "Wenn dies aktiviert ist, werden alle öffentliche Ereignisse unter folgender URL verfügbar sein"
 
-#: cal.php:176
+#: cal.php:190
 msgid "Currently supported formats are ical and csv."
 msgstr "Derzeit werden die Formate ical und csv unterstützt."
 
-#: cal.php:178
+#: cal.php:191
 msgid "Enable calendar export"
 msgstr "Kalenderexport aktivieren"
 
-#: cal.php:181
-msgid "Submit"
-msgstr "Senden"
+#: cal.php:193
+msgid "Save Settings"
+msgstr "Einstellungen speichern"

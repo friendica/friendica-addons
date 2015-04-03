@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-19 13:20+0200\n"
-"PO-Revision-Date: 2014-07-07 18:29+0000\n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2014-09-07 11:04+0000\n"
 "Last-Translator: Michal Šupler <msupler@gmail.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -35,22 +35,22 @@ msgstr "Uživatel kalenář neexportuje."
 msgid "This calendar format is not supported"
 msgstr "Tento kalendářový formát není podporován."
 
-#: cal.php:174
+#: cal.php:181 cal.php:185
 msgid "Export Events"
 msgstr "Export událostí"
 
-#: cal.php:175
+#: cal.php:189
 msgid "If this is enabled, your public events will be available at"
 msgstr "Pokud je toto povoleno, vaše veřejné události budou viditelné na"
 
-#: cal.php:176
+#: cal.php:190
 msgid "Currently supported formats are ical and csv."
 msgstr "Aktuálně podporované formáty jsou ical a csv."
 
-#: cal.php:178
+#: cal.php:191
 msgid "Enable calendar export"
 msgstr "Povolit export kalendáře"
 
-#: cal.php:181
-msgid "Submit"
-msgstr "Odeslat"
+#: cal.php:193
+msgid "Save Settings"
+msgstr "Uložit Nastavení"

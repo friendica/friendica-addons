@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014
+# Michal Šupler <msupler@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-07-07 19:11+0000\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2015-02-11 19:40+0000\n"
 "Last-Translator: Michal Šupler <msupler@gmail.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -23,26 +23,26 @@ msgstr ""
 msgid "Post to Insanejournal"
 msgstr "Odeslat na Insanejournal"
 
-#: ijpost.php:69 ijpost.php:73
-msgid "InsaneJournal Export"
-msgstr "Insanejournal export"
+#: ijpost.php:70
+msgid "InsaneJournal Post Settings"
+msgstr "Nastavení příspěvků pro InsaneJournal"
 
-#: ijpost.php:77
+#: ijpost.php:72
 msgid "Enable InsaneJournal Post Plugin"
 msgstr "Povolit Insanejournal plugin"
 
-#: ijpost.php:82
+#: ijpost.php:77
 msgid "InsaneJournal username"
 msgstr "Insanejournal uživatelské jméno"
 
-#: ijpost.php:87
+#: ijpost.php:82
 msgid "InsaneJournal password"
 msgstr "Insanejournal heslo"
 
-#: ijpost.php:92
+#: ijpost.php:87
 msgid "Post to InsaneJournal by default"
 msgstr "Defaultně zasílat  příspěvky na InsaneJournal"
 
-#: ijpost.php:98
-msgid "Save Settings"
-msgstr "Uložit Nastavení"
+#: ijpost.php:93
+msgid "Submit"
+msgstr "Odeslat"

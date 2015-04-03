@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-09-10 12:07+0000\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2014-10-22 07:55+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -39,22 +39,22 @@ msgstr "Forum:"
 msgid "Forumlist settings updated."
 msgstr "Impostazioni Elenco Forum aggiornate."
 
-#: forumlist.php:161 forumlist.php:165
-msgid "Forumlist"
-msgstr "Elenco Forum"
+#: forumlist.php:162
+msgid "Forumlist Settings"
+msgstr "Impostazioni Elenco Forum"
 
-#: forumlist.php:169
+#: forumlist.php:164
 msgid "Randomise forum list"
 msgstr "Ordina casualmente l'elenco"
 
-#: forumlist.php:172
+#: forumlist.php:167
 msgid "Show forums on profile page"
 msgstr "Mostra i forum sulla pagina profilo"
 
-#: forumlist.php:175
+#: forumlist.php:170
 msgid "Show forums on network page"
 msgstr "Mostra i forum sulla pagina Rete"
 
-#: forumlist.php:183
-msgid "Save Settings"
-msgstr "Salva Impostazioni"
+#: forumlist.php:178
+msgid "Submit"
+msgstr "Invia"

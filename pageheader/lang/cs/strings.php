@@ -6,5 +6,5 @@ function string_plural_select_cs($n){
 }}
 ;
 $a->strings["\"pageheader\" Settings"] = "Nastavení záhlaví stránky";
-$a->strings["Save Settings"] = "Uložit Nastavení";
+$a->strings["Submit"] = "Odeslat";
 $a->strings["pageheader Settings saved."] = "Nastavení záhlaví stránky uloženo.";

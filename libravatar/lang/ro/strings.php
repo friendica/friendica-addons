@@ -16,7 +16,7 @@ $a->strings["Your PHP version %s is lower than the required PHP >= 5.3."] = "Ver
 $a->strings["This addon is not functional on your server."] = "Acest supliment nu este funcțional pe serverul dumneavoastră.";
 $a->strings["Information"] = "Informaţii";
 $a->strings["Gravatar addon is installed. Please disable the Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar."] = "Suplimentul Gravatar este instalat. Vă rugăm să dezactivați suplimentul Gravatar.<br> Suplimentul Libravatar va reveni înapoi la Gravatar, dacă nu s-a găsit nimic în Libravatar.";
-$a->strings["Save Settings"] = "Salvare Configurări";
+$a->strings["Submit"] = "Trimite";
 $a->strings["Default avatar image"] = "Imagine avatar implicită";
 $a->strings["Select default avatar image if none was found. See README"] = "Selectați imaginea avatar implicită, dacă nici una nu fost găsită. Consultați FIŞIERUL README";
 $a->strings["Libravatar settings updated."] = "Configurările Libravatar au fost actualizate.";

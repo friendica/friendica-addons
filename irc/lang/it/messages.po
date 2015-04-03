@@ -4,13 +4,14 @@
 # 
 # 
 # Translators:
+# fabrixxm <fabrix.xm@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-06-23 08:41+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2014-10-15 08:41+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,28 +21,28 @@ msgstr ""
 
 #: irc.php:44
 msgid "IRC Settings"
-msgstr ""
+msgstr "Impostazioni IRC"
 
 #: irc.php:46
 msgid "Channel(s) to auto connect (comma separated)"
-msgstr ""
+msgstr "Canale(i) a cui autocollegarsi (separati da virgola)"
 
 #: irc.php:51
 msgid "Popular Channels (comma separated)"
-msgstr ""
+msgstr "Canali popolari (separati da virgola)"
 
 #: irc.php:55
-msgid "Save Settings"
+msgid "Submit"
 msgstr ""
 
 #: irc.php:69
 msgid "IRC settings saved."
-msgstr ""
+msgstr "Impostazioni IRC salvate."
 
 #: irc.php:74
 msgid "IRC Chatroom"
-msgstr ""
+msgstr "Stanza IRC"
 
 #: irc.php:96
 msgid "Popular Channels"
-msgstr ""
+msgstr "Canali Popolari"

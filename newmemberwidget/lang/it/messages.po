@@ -4,13 +4,14 @@
 # 
 # 
 # Translators:
+# fabrixxm <fabrix.xm@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-06-23 10:26+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-06-01 14:12+0200\n"
+"PO-Revision-Date: 2014-09-10 14:12+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,58 +19,58 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: newmemberwidget.php:23
+#: newmemberwidget.php:21
 msgid "New Member"
-msgstr ""
+msgstr "Nuovi Utenti"
+
+#: newmemberwidget.php:22
+msgid "Tips for New Members"
+msgstr "Consigli per i Nuovi Utenti"
 
 #: newmemberwidget.php:24
-msgid "Tips for New Members"
-msgstr ""
+msgid "Global Support Forum"
+msgstr "Forum Globale di Supporto"
 
 #: newmemberwidget.php:26
-msgid "Global Support Forum"
-msgstr ""
-
-#: newmemberwidget.php:28
 msgid "Local Support Forum"
-msgstr ""
+msgstr "Forum Locale di Supporto"
+
+#: newmemberwidget.php:49
+msgid "Save Settings"
+msgstr "Salva Impostazioni"
+
+#: newmemberwidget.php:50
+msgid "Message"
+msgstr "Messaggio"
+
+#: newmemberwidget.php:50
+msgid "Your message for new members. You can use bbcode here."
+msgstr "Il tuo messaggio per i nuovi utenti. Puoi usare BBCode"
 
 #: newmemberwidget.php:51
-msgid "Save Settings"
-msgstr ""
-
-#: newmemberwidget.php:52
-msgid "Message"
-msgstr ""
-
-#: newmemberwidget.php:52
-msgid "Your message for new members. You can use bbcode here."
-msgstr ""
-
-#: newmemberwidget.php:53
 msgid "Add a link to global support forum"
-msgstr ""
+msgstr "Aggiunge un link al forum di supporto globale"
 
-#: newmemberwidget.php:53
+#: newmemberwidget.php:51
 msgid "Should a link to the global support forum be displayed?"
-msgstr ""
+msgstr "Mostrare il link al forum di supporto globale?"
 
-#: newmemberwidget.php:54
+#: newmemberwidget.php:52
 msgid "Add a link to the local support forum"
-msgstr ""
+msgstr "Aggiunge un link al forum di supporto locale"
 
-#: newmemberwidget.php:54
+#: newmemberwidget.php:52
 msgid ""
 "If you have a local support forum and wand to have a link displayed in the "
 "widget, check this box."
-msgstr ""
+msgstr "Se hai un forum di supporto locale e vuoi che sia mostrato il link nel widget, seleziona questo box."
 
-#: newmemberwidget.php:55
+#: newmemberwidget.php:53
 msgid "Name of the local support group"
-msgstr ""
+msgstr "Nome del gruppo locale di supporto"
 
-#: newmemberwidget.php:55
+#: newmemberwidget.php:53
 msgid ""
 "If you checked the above, specify the <em>nickname</em> of the local support"
 " group here (i.e. helpers)"
-msgstr ""
+msgstr "Se hai selezionato il box sopra, specifica qui il <em>nome utente</em> del gruppo locale di supporto (e.s. 'supporto')"
