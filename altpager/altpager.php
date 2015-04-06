@@ -4,8 +4,7 @@
  * Description: Change pagination from using explicit page numbers to simple "newer" and "older" page links. This will speed up page load times.
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- * 
- *
+ * Status: Unsupported
  */
 
 
