@@ -733,6 +733,7 @@ function twitter_fetchtimeline($a, $uid) {
 
 	require_once('mod/item.php');
 	require_once('include/items.php');
+	require_once('mod/share.php');
 
 	require_once('library/twitteroauth.php');
 	$connection = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
@@ -798,11 +799,20 @@ function twitter_fetchtimeline($a, $uid) {
 				$converted = twitter_expand_entities($a, $_REQUEST['body'], $post->retweeted_status, true, $picture);
 				$_REQUEST['body'] = $converted["body"];
 
-				$_REQUEST['body'] = "[share author='".$post->retweeted_status->user->name.
-					"' profile='https://twitter.com/".$post->retweeted_status->user->screen_name.
-					"' avatar='".$post->retweeted_status->user->profile_image_url_https.
-					"' link='https://twitter.com/".$post->retweeted_status->user->screen_name."/status/".$post->retweeted_status->id_str."']".
-					$_REQUEST['body'];
+				if (function_exists("share_header"))
+					$_REQUEST['body'] = share_header($post->retweeted_status->user->name, "https://twitter.com/".$post->retweeted_status->user->screen_name,
+									$post->retweeted_status->user->profile_image_url_https, "",
+									datetime_convert('UTC','UTC',$post->retweeted_status->created_at),
+									"https://twitter.com/".$post->retweeted_status->user->screen_name."/status/".$post->retweeted_status->id_str).
+								$_REQUEST['body'];
+				else
+					$_REQUEST['body'] = "[share author='".$post->retweeted_status->user->name.
+						"' profile='https://twitter.com/".$post->retweeted_status->user->screen_name.
+						"' avatar='".$post->retweeted_status->user->profile_image_url_https.
+						"' posted='".datetime_convert('UTC','UTC',$post->retweeted_status->created_at).
+						"' link='https://twitter.com/".$post->retweeted_status->user->screen_name."/status/".$post->retweeted_status->id_str."']".
+						$_REQUEST['body'];
+
 				$_REQUEST['body'] .= "[/share]";
 			} else {
 				$_REQUEST["body"] = $post->text;
@@ -1446,6 +1456,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 			$postarray['body'] = "[share author='".$post->retweeted_status->user->name.
 				"' profile='https://twitter.com/".$post->retweeted_status->user->screen_name.
 				"' avatar='".$post->retweeted_status->user->profile_image_url_https.
+				"' posted='".datetime_convert('UTC','UTC',$post->retweeted_status->created_at).
 				"' link='https://twitter.com/".$post->retweeted_status->user->screen_name."/status/".$post->retweeted_status->id_str."']".
 				$postarray['body'];
 			$postarray['body'] .= "[/share]";
