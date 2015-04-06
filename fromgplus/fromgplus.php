@@ -9,6 +9,8 @@
 
 define('FROMGPLUS_DEFAULT_POLL_INTERVAL', 30); // given in minutes
 
+require_once('mod/share.php');
+
 function fromgplus_install() {
 	register_hook('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
 	register_hook('connector_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
@@ -461,10 +463,17 @@ function fromgplus_fetch($a, $uid) {
 					$post = fromgplus_html2bbcode($item->annotation)."\n";
 
 					if (!intval(get_config('system','old_share'))) {
-						$post .= "[share author='".str_replace("'", "&#039;",$item->object->actor->displayName).
-								"' profile='".$item->object->actor->url.
-								"' avatar='".$item->object->actor->image->url.
-								"' link='".$item->object->url."']";
+
+						if (function_exists("share_header"))
+							$post .= share_header($item->object->actor->displayName, $item->object->actor->url,
+										$item->object->actor->image->url, "",
+										datetime_convert('UTC','UTC',$item->object->published),$item->object->url);
+						else
+							$post .= "[share author='".str_replace("'", "&#039;",$item->object->actor->displayName).
+									"' profile='".$item->object->actor->url.
+									"' avatar='".$item->object->actor->image->url.
+									"' posted='".datetime_convert('UTC','UTC',$item->object->published).
+									"' link='".$item->object->url."']";
 
 						$post .= fromgplus_html2bbcode($item->object->content);
 

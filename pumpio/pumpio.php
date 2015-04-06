@@ -68,8 +68,10 @@ function pumpio_registerclient(&$a, $host) {
 	if ($application_name == "")
 		$application_name = $a->get_hostname();
 
+	$adminlist = explode(",", str_replace(" ", "", $a->config['admin_email']));
+
 	$params["type"] = "client_associate";
-	$params["contacts"] = $a->config['admin_email'];
+	$params["contacts"] = $adminlist[0];
 	$params["application_type"] = "native";
 	$params["application_name"] = $application_name;
 	$params["logo_url"] = $a->get_baseurl()."/images/friendica-256.png";
@@ -302,6 +304,7 @@ function pumpio_settings_post(&$a,&$b) {
 			set_pconfig(local_user(),'pumpio','mirror',false);
 			set_pconfig(local_user(),'pumpio','post_by_default',false);
 			set_pconfig(local_user(),'pumpio','lastdate', 0);
+			set_pconfig(local_user(),'pumpio','last_id', '');
 		} else {
 			// filtering the username if it is filled wrong
 			$user = $_POST['pumpio_user'];
@@ -1233,6 +1236,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 			$postarray['body'] = "[share author='".$post->object->author->displayName.
 					"' profile='".$post->object->author->url.
 					"' avatar='".$post->object->author->image->url.
+					"' posted='".datetime_convert('UTC','UTC',$post->object->created).
 					"' link='".$post->links->self->href."']".$postarray['body']."[/share]";
 		} else {
 			// Let shares look like wall-to-wall posts
