@@ -1028,8 +1028,11 @@ function fbpost_fetchwall($a, $uid) {
 		if ($item->application->id == get_config('facebook','appid'))
 			continue;
 
-		//if(isset($item->privacy) && ($item->privacy->value !== 'EVERYONE') && ($item->privacy->value !== ''))
-		if((isset($item->privacy) && ($item->privacy->value !== 'EVERYONE')) OR !isset($item->privacy))
+		if(isset($item->privacy) && ($item->privacy->value !== 'EVERYONE') && ((int)$mirror_page == 0))
+			continue;
+		elseif(isset($item->privacy) && ($item->privacy->value !== 'EVERYONE') && ($item->privacy->value !== ''))
+			continue;
+		elseif(!isset($item->privacy))
 			continue;
 
 		if (($post_to_page != $item->from->id) AND ((int)$post_to_page != 0))
