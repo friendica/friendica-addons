@@ -1,0 +1,76 @@
+# ADDON buffer
+# Copyright (C)
+# This file is distributed under the same license as the Friendica buffer addon package.
+# 
+# 
+# Translators:
+# Rui Andrada <shingonoide@gmail.com>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2015-04-13 13:18+0000\n"
+"Last-Translator: Rui Andrada <shingonoide@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/friendica/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: buffer.php:31
+msgid "Permission denied."
+msgstr "Permissão negada."
+
+#: buffer.php:57 buffer.php:185
+msgid "Save Settings"
+msgstr "Salvar configurações"
+
+#: buffer.php:59
+msgid "Client ID"
+msgstr ""
+
+#: buffer.php:60
+msgid "Client Secret"
+msgstr ""
+
+#: buffer.php:67
+msgid "Error when registering buffer connection:"
+msgstr ""
+
+#: buffer.php:86
+msgid "You are now authenticated to buffer. "
+msgstr "Você está autenticado no buffer."
+
+#: buffer.php:87
+msgid "return to the connector page"
+msgstr "Volte a página de conectores."
+
+#: buffer.php:103
+msgid "Post to Buffer"
+msgstr "Publicar no Buffer"
+
+#: buffer.php:128 buffer.php:132
+msgid "Buffer Export"
+msgstr "Exportar Buffer"
+
+#: buffer.php:142
+msgid "Authenticate your Buffer connection"
+msgstr ""
+
+#: buffer.php:146
+msgid "Enable Buffer Post Plugin"
+msgstr "Habilita plugin para publicar no Buffer"
+
+#: buffer.php:151
+msgid "Post to Buffer by default"
+msgstr "Publica no Buffer por padrão"
+
+#: buffer.php:156
+msgid "Check to delete this preset"
+msgstr "Marque para excluir este perfil"
+
+#: buffer.php:165
+msgid "Posts are going to all accounts that are enabled by default:"
+msgstr ""
