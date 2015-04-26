@@ -701,6 +701,8 @@ function appnet_fetchstream($a, $uid) {
 		$postarray = appnet_createpost($a, $uid, $post, $me, $user, $ownid, true);
 
 		$item = item_store($postarray);
+		$postarray["id"] = $item;
+
 		logger('appnet_fetchstream: User '.$uid.' posted stream item '.$item);
 
 		$lastid = $post["id"];
@@ -763,6 +765,8 @@ function appnet_fetchstream($a, $uid) {
 			$parent_id = $postarray['parent'];
 		} elseif (isset($postarray["body"])) {
 			$item = item_store($postarray);
+			$postarray["id"] = $item;
+
 			$parent_id = 0;
 			logger('appnet_fetchstream: User '.$uid.' posted mention item '.$item);
 		} else {
@@ -896,6 +900,8 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 				foreach ($thread AS $tpost) {
 					$threadpost = appnet_createpost($a, $uid, $tpost, $me, $user, $ownid, false, false);
 					$item = item_store($threadpost);
+					$threadpost["id"] = $item;
+
 					logger("appnet_createpost: stored post ".$post["id"]." thread ".$post["thread_id"]." in item ".$item, LOGGER_DEBUG);
 				}
 			//}

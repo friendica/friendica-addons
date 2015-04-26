@@ -1623,6 +1623,7 @@ function twitter_fetchhometimeline($a, $uid) {
 				continue;
 
 			$item = item_store($postarray);
+			$postarray["id"] = $item;
 
 			logger('twitter_fetchhometimeline: User '.$self["nick"].' posted home timeline item '.$item);
 
@@ -1666,6 +1667,7 @@ function twitter_fetchhometimeline($a, $uid) {
 				continue;
 
 			$item = item_store($postarray);
+			$postarray["id"] = $item;
 
 			if (!isset($postarray["parent"]) OR ($postarray["parent"] == 0))
 				$postarray["parent"] = $item;

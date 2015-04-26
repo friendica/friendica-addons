@@ -1250,6 +1250,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 		return false;
 
 	$top_item = item_store($postarray);
+	$postarray["id"] = $top_item;
 
 	if (($top_item == 0) AND ($post->verb == "update")) {
 		$r = q("UPDATE `item` SET `title` = '%s', `body` = '%s' , `changed` = '%s' WHERE `uri` = '%s' AND `uid` = %d",
