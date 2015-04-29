@@ -1422,6 +1422,7 @@ function statusnet_fetchhometimeline($a, $uid) {
 					continue;
 
 				$item = item_store($postarray);
+				$postarray["id"] = $item;
 
 				logger('statusnet_fetchhometimeline: User '.$self["nick"].' posted home timeline item '.$item);
 
@@ -1471,6 +1472,7 @@ function statusnet_fetchhometimeline($a, $uid) {
 					continue;
 
 					$item = item_store($postarray);
+					$postarray["id"] = $item;
 
 					logger('statusnet_fetchhometimeline: User '.$self["nick"].' posted mention timeline item '.$item);
 				}
@@ -1535,6 +1537,7 @@ function statusnet_complete_conversation($a, $uid, $self, $create_user, $nick, $
 
 			//print_r($postarray);
 			$item = item_store($postarray);
+			$postarray["id"] = $item;
 
 			logger('statusnet_complete_conversation: User '.$self["nick"].' posted home timeline item '.$item);
 
