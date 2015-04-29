@@ -251,7 +251,7 @@ function fbpost_content(&$a) {
 		//export_stream,read_stream,publish_stream,manage_pages,photo_upload,user_groups,publish_actions,user_friends,share_item,video_upload,status_update
 
 		$o .= '<a href="https://www.facebook.com/dialog/oauth?client_id=' . $appid . '&redirect_uri='
-			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=publish_actions,publish_pages,user_posts,user_photos,user_status,user_videos,manage_pages">' . t('Install Facebook Post connector for this account.') . '</a>';
+			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=publish_actions,publish_pages,user_posts,user_photos,user_status,user_videos,manage_pages,user_managed_groups">' . t('Install Facebook Post connector for this account.') . '</a>';
 		$o .= '</div>';
 	}
 
@@ -265,7 +265,7 @@ function fbpost_content(&$a) {
 		//export_stream,read_stream,publish_stream,manage_pages,photo_upload,user_groups,publish_actions,user_friends,share_item,video_upload,status_update
 
 		$o .= '<a href="https://www.facebook.com/dialog/oauth?client_id=' . $appid . '&redirect_uri='
-			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=publish_actions,publish_pages,user_posts,user_photos,user_status,user_videos,manage_pages">' . t('Re-authenticate [This is necessary whenever your Facebook password is changed.]') . '</a>';
+			. $a->get_baseurl() . '/fbpost/' . $a->user['nickname'] . '&scope=publish_actions,publish_pages,user_posts,user_photos,user_status,user_videos,manage_pages,user_managed_groups">' . t('Re-authenticate [This is necessary whenever your Facebook password is changed.]') . '</a>';
 		$o .= '</div>';
 
 		$o .= '<div id="fbpost-post-default-form">';
