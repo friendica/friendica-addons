@@ -4,7 +4,7 @@
 /**
  * Name: Page Header
  * Description: Inserts a page header
- * Version: 1.0
+ * Version: 1.1
  * Author: Keith Fernie <http://friendika.me4.it/profile/keith>
  *         Hauke Altmann <https://snarl.de/profile/tugelblend>
  * 
