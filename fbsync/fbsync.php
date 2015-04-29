@@ -4,6 +4,7 @@
  * Description: Synchronizes the Facebook Newsfeed
  * Version: 1.0
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
+ * Status: Unsupported
  */
 
 /* To-Do
@@ -615,6 +616,8 @@ function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $appl
 		return;
 
 	$item = item_store($postarray);
+	$postarray["id"] = $item;
+
 	logger('fbsync_createcomment: UID '.$uid.' - CID '.$postarray['contact-id'].' - Nick '.$contact_nick.' posted comment '.$item, LOGGER_DEBUG);
 
 	if ($item == 0)
