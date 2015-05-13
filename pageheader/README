@@ -4,4 +4,5 @@ For server admins only.
 Displays a text message for system announcements'
 The message is entered in the admin account at settings, Plugin settings.
 
-BBcode can be used to format text or add links.
+If you want to use HTML in the pageheader, create a file called pageheader.html 
+in the document root of your friendica instance and add the html there.

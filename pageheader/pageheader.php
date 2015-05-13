@@ -75,10 +75,16 @@ function pageheader_addon_settings_post(&$a,&$b) {
 }
 
 function pageheader_fetch($a,&$b) {
+	
+	if(file_exists('pageheader.html')){
+		$s = file_get_contents('pageheader.html');
+	} else {
+		$s = get_config('pageheader', 'text');
+	}
 
     $a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'
         . $a->get_baseurl() . '/addon/pageheader/pageheader.css' . '" media="all" />' . "\r\n";
-    $s = proxy_parse_html(bbcode(get_config('pageheader', 'text'), true));
+    
     if(! $s)
         $s = '';
     if ($s != '')
