@@ -10,9 +10,6 @@
  * 
  */
 
-require_once('include/bbcode.php');
-require_once('mod/proxy.php');
-
 function pageheader_install() {
     register_hook('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
 	register_hook('plugin_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
