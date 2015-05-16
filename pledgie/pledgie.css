@@ -1,21 +1,26 @@
-#pageheader-label {
+#pledgie-label {
 	float: left;
 	width: 300px;
 	margin-top: 10px;
 }
 
-#pageheader-words {
+#pledgie-campaign {
 	float: left;
 	margin-top: 10px;
-	width: 400px;
-	height: 150px;
+	width: 100px;
 }
 
-#pageheader-submit {
+#pledgie-describe {
+	float: left;
+	margin-top: 10px;
+	width: 300px;
+}
+
+#pledgie-submit {
 	margin-top: 15px;
 }
 
-.pageheader {
+.pledgie {
     text-align: center;
 	width 100%;
 	margin-top: 25px;
