@@ -42,7 +42,7 @@ function gravatar_lookup($a, &$b) {
 
 	$hash = md5(trim(strtolower($b['email'])));
 
-	$url = 'http://www.gravatar.com/avatar/' .$hash .'.jpg';
+	$url = 'https://secure.gravatar.com/avatar/' .$hash .'.jpg';
 	$url .= '?s=' .$b['size'] .'&r=' .$rating;
 	if ($default_avatar != "gravatar")
 		$url .= '&d=' .$default_avatar;
