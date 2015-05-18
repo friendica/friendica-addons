@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: Pledgie
- * Description: Show link to Friendica pledgie account for donating
+ * Description: Show link to a pledgie account for donating
  * Version: 1.1
  * Author: tony baldwin <tony@free-haven.org>
  *         Hauke Altmann <https://snarl.de/profile/tugelblend>
@@ -70,7 +70,7 @@ function pledgie_addon_settings_post(&$a,&$b) {
 function pledgie_active(&$a,&$b) {
 	$campaign = get_config('pledgie-campaign','text');
 	$describe = get_config('pledgie-describe','text');
-	$b .= '<div style="position: fixed; bottom: 5px; left: 60px;">';
+	$b .= '<div id="pledgie-box">';
 	$b .= $describe . '<br/><a href=\'http://www.pledgie.com/campaigns/';
 	$b .= $campaign;
 	$b .= '\'><img alt=\'Click here to lend your support to: ' . $describe .  '!\' src=\'http://www.pledgie.com/campaigns/';
