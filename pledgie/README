@@ -1,0 +1,11 @@
+Pledgie
+
+Allows administrators to add a Pledgie-Donation Button to all their friendica pages. 
+This could be useful f.e. for public nodes that want to raise some money for server 
+maintenance costs.
+
+Usage: 
+Add the campaign number of your pledgie campaign in the first field. To find out the campaign number, 
+go to your Pledgie campaign webpage. The campaign number is the number at the end of the URL.
+
+Add a describtion of your campaign in the second field.
