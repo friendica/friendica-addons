@@ -70,7 +70,7 @@ function pledgie_addon_settings_post(&$a,&$b) {
 function pledgie_active(&$a,&$b) {
 	$campaign = get_config('pledgie-campaign','text');
 	$describe = get_config('pledgie-describe','text');
-	$b .= '<div id="pledgie-box">';
+	$b .= '<div style="position: fixed; bottom: 5px; left: 20px; z-index: 1000;	width: 150px; font-size: 12px; font-weight: bold;">';
 	$b .= $describe . '<br/><a href=\'http://www.pledgie.com/campaigns/';
 	$b .= $campaign;
 	$b .= '\'><img alt=\'Click here to lend your support to: ' . $describe .  '!\' src=\'http://www.pledgie.com/campaigns/';

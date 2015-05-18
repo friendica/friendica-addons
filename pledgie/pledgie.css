@@ -26,13 +26,3 @@
 	margin-top: 25px;
 	font-size: 20px;
 }
-
-#pledgie-box {
-	position: fixed; 
-	bottom: 5px; 
-	left: 20px; 
-	z-index: 1000;
-	width: 150px;
-	font-size: 12px;
-	font-weight: bold;
-}
