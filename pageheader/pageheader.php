@@ -50,7 +50,7 @@ function pageheader_addon_settings(&$a,&$s) {
     $s .= '<div class="settings-block">';
     $s .= '<h3>' . t('"pageheader" Settings') . '</h3>';
     $s .= '<div id="pageheader-wrapper">';
-    $s .= '<label id="pageheader-label" for="pageheader-words">' . t('Message to display on every page on this server') . ' </label>';
+    $s .= '<label id="pageheader-label" for="pageheader-words">' . t('Message to display on every page on this server (or put a pageheader.html file in your docroot)') . ' </label>';
     $s .= '<textarea id="pageheader-words" type="text" name="pageheader-words">' . $words . '</textarea>';
     $s .= '</div><div class="clear"></div>';
 
