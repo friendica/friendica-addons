@@ -98,7 +98,7 @@ function gpluspost_settings(&$a,&$s) {
 		/*
 		// To-Do: Option to check the credentials if requested
 		if (($username != "") AND ($password != "")) {
-			require_once("addon/googleplus/postToGooglePlus.php");
+			require_once("addon/gpluspost/postToGooglePlus.php");
 			$loginError = doConnectToGooglePlus2($username, $password);
 			if ($loginError)
 				$s .= '<p>Login Error. Please enter the correct credentials.</p>';
@@ -348,7 +348,7 @@ function gpluspost_queue_hook(&$a,&$b) {
 		$success = false;
 
 		if($username && $password) {
-			require_once("addon/googleplus/postToGooglePlus.php");
+			require_once("addon/gpluspost/postToGooglePlus.php");
 
 			logger('gpluspost_queue: able to post for user '.$username);
 
