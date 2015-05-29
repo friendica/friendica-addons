@@ -5,6 +5,7 @@
  * Description: Post to Diaspora
  * Version: 0.1
  * Author: Michael Vogel <heluecht@pirati.ca>
+ * Status: Unsupported
  */
 
 function diaspora_install() {
