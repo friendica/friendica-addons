@@ -280,8 +280,11 @@ function statusnet_settings(&$a,&$s) {
 	$defchecked = (($defenabled) ? ' checked="checked" ' : '');
 	$mirrorenabled = get_pconfig(local_user(),'statusnet','mirror_posts');
 	$mirrorchecked = (($mirrorenabled) ? ' checked="checked" ' : '');
-	$importenabled = get_pconfig(local_user(),'statusnet','import');
-	$importchecked = (($importenabled) ? ' checked="checked" ' : '');
+	$import = get_pconfig(local_user(),'statusnet','import');
+	$importselected = array("", "", "");
+	$importselected[$import] = ' selected="selected"';
+	//$importenabled = get_pconfig(local_user(),'statusnet','import');
+	//$importchecked = (($importenabled) ? ' checked="checked" ' : '');
 	$create_userenabled = get_pconfig(local_user(),'statusnet','create_user');
 	$create_userchecked = (($create_userenabled) ? ' checked="checked" ' : '');
 
@@ -388,11 +391,18 @@ function statusnet_settings(&$a,&$s) {
 
 			$s .= '<label id="statusnet-mirror-label" for="statusnet-mirror">'.t('Mirror all posts from statusnet that are no replies or repeated messages').'</label>';
 			$s .= '<input id="statusnet-mirror" type="checkbox" name="statusnet-mirror" value="1" '. $mirrorchecked . '/>';
+
 			$s .= '<div class="clear"></div>';
 			$s .= '</div>';
 
 			$s .= '<label id="statusnet-import-label" for="statusnet-import">'.t('Import the remote timeline').'</label>';
-			$s .= '<input id="statusnet-import" type="checkbox" name="statusnet-import" value="1" '. $importchecked . '/>';
+			//$s .= '<input id="statusnet-import" type="checkbox" name="statusnet-import" value="1" '. $importchecked . '/>';
+
+			$s .= '<select name="statusnet-import" id="statusnet-import" />';
+			$s .= '<option value="0" '.$importselected[0].'>'.t("Disabled").'</option>';
+			$s .= '<option value="1" '.$importselected[1].'>'.t("Full Timeline").'</option>';
+			$s .= '<option value="2" '.$importselected[2].'>'.t("Only Mentions").'</option>';
+			$s .= '</select>';
 			$s .= '<div class="clear"></div>';
 /*
 			$s .= '<label id="statusnet-create_user-label" for="statusnet-create_user">'.t('Automatically create contacts').'</label>';
@@ -768,7 +778,7 @@ function statusnet_cron($a,$b) {
 
 	$abandon_limit = date("Y-m-d H:i:s", time() - $abandon_days * 86400);
 
-	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'statusnet' AND `k` = 'import' AND `v` = '1' ORDER BY RAND()");
+	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'statusnet' AND `k` = 'import' AND `v` ORDER BY RAND()");
 	if(count($r)) {
 		foreach($r as $rr) {
 			if ($abandon_days != 0) {
@@ -780,7 +790,7 @@ function statusnet_cron($a,$b) {
 			}
 
 			logger('statusnet: importing timeline from user '.$rr['uid']);
-			statusnet_fetchhometimeline($a, $rr["uid"]);
+			statusnet_fetchhometimeline($a, $rr["uid"], $rr["v"]);
 		}
 	}
 
@@ -1318,7 +1328,7 @@ function statusnet_checknotification($a, $uid, $own_url, $top_item, $postarray) 
 	}
 }
 
-function statusnet_fetchhometimeline($a, $uid) {
+function statusnet_fetchhometimeline($a, $uid, $mode = 1) {
 	$conversations = array();
 
 	$ckey    = get_pconfig($uid, 'statusnet', 'consumerkey');
@@ -1371,68 +1381,69 @@ function statusnet_fetchhometimeline($a, $uid) {
 	$parameters = array("exclude_replies" => false, "trim_user" => false, "contributor_details" => true, "include_rts" => true);
 	//$parameters["count"] = 200;
 
+	if ($mode == 1) {
+		// Fetching timeline
+		$lastid  = get_pconfig($uid, 'statusnet', 'lasthometimelineid');
+		//$lastid = 1;
 
-	// Fetching timeline
-	$lastid  = get_pconfig($uid, 'statusnet', 'lasthometimelineid');
-	//$lastid = 1;
+		$first_time = ($lastid == "");
 
-	$first_time = ($lastid == "");
+		if ($lastid <> "")
+			$parameters["since_id"] = $lastid;
 
-	if ($lastid <> "")
-		$parameters["since_id"] = $lastid;
+		$items = $connection->get('statuses/home_timeline', $parameters);
 
-	$items = $connection->get('statuses/home_timeline', $parameters);
+		if (!is_array($items)) {
+			if (is_object($items) AND isset($items->error))
+				$errormsg = $items->error;
+			elseif (is_object($items))
+				$errormsg = print_r($items, true);
+			elseif (is_string($items) OR is_float($items) OR is_int($items))
+				$errormsg = $items;
+			else
+				$errormsg = "Unknown error";
 
-	if (!is_array($items)) {
-		if (is_object($items) AND isset($items->error))
-			$errormsg = $items->error;
-		elseif (is_object($items))
-			$errormsg = print_r($items, true);
-		elseif (is_string($items) OR is_float($items) OR is_int($items))
-			$errormsg = $items;
-		else
-			$errormsg = "Unknown error";
+			logger("statusnet_fetchhometimeline: Error fetching home timeline: ".$errormsg, LOGGER_DEBUG);
+			return;
+		}
 
-		logger("statusnet_fetchhometimeline: Error fetching home timeline: ".$errormsg, LOGGER_DEBUG);
-		return;
-	}
+		$posts = array_reverse($items);
 
-	$posts = array_reverse($items);
+		logger("statusnet_fetchhometimeline: Fetching timeline for user ".$uid." ".sizeof($posts)." items", LOGGER_DEBUG);
 
-	logger("statusnet_fetchhometimeline: Fetching timeline for user ".$uid." ".sizeof($posts)." items", LOGGER_DEBUG);
+		if (count($posts)) {
+			foreach ($posts as $post) {
 
-	if (count($posts)) {
-		foreach ($posts as $post) {
+				if ($post->id > $lastid)
+					$lastid = $post->id;
 
-			if ($post->id > $lastid)
-				$lastid = $post->id;
-
-			if ($first_time)
-				continue;
-
-			if (isset($post->statusnet_conversation_id)) {
-				if (!isset($conversations[$post->statusnet_conversation_id])) {
-					statusnet_complete_conversation($a, $uid, $self, $create_user, $nick, $post->statusnet_conversation_id);
-					$conversations[$post->statusnet_conversation_id] = $post->statusnet_conversation_id;
-				}
-			} else {
-				$postarray = statusnet_createpost($a, $uid, $post, $self, $create_user, true);
-
-				if (trim($postarray['body']) == "")
+				if ($first_time)
 					continue;
 
-				$item = item_store($postarray);
-				$postarray["id"] = $item;
+				if (isset($post->statusnet_conversation_id)) {
+					if (!isset($conversations[$post->statusnet_conversation_id])) {
+						statusnet_complete_conversation($a, $uid, $self, $create_user, $nick, $post->statusnet_conversation_id);
+						$conversations[$post->statusnet_conversation_id] = $post->statusnet_conversation_id;
+					}
+				} else {
+					$postarray = statusnet_createpost($a, $uid, $post, $self, $create_user, true);
 
-				logger('statusnet_fetchhometimeline: User '.$self["nick"].' posted home timeline item '.$item);
+					if (trim($postarray['body']) == "")
+						continue;
 
-				if ($item != 0)
-					statusnet_checknotification($a, $uid, $nick, $item, $postarray);
+					$item = item_store($postarray);
+					$postarray["id"] = $item;
+
+					logger('statusnet_fetchhometimeline: User '.$self["nick"].' posted home timeline item '.$item);
+
+					if ($item != 0)
+						statusnet_checknotification($a, $uid, $nick, $item, $postarray);
+				}
+
 			}
-
 		}
+		set_pconfig($uid, 'statusnet', 'lasthometimelineid', $lastid);
 	}
-	set_pconfig($uid, 'statusnet', 'lasthometimelineid', $lastid);
 
 	// Fetching mentions
 	$lastid  = get_pconfig($uid, 'statusnet', 'lastmentionid');
