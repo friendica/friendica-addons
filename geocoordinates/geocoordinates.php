@@ -29,13 +29,19 @@ function geocoordinates_resolve_item(&$item) {
 	if ($language == "")
 		$language = "de";
 
-	$result = Cache::get("geocoordinates:".$language.":".$item["coord"]);
+	$coords = explode(' ',$item["coord"]);
+
+	if (count($coords) < 2)
+		return;
+
+	$coords[0] = round($coords[0], 5);
+	$coords[1] = round($coords[1], 5);
+
+	$result = Cache::get("geocoordinates:".$language.":".$coords[0]."-".$coords[1]);
 	if (!is_null($result)) {
 		$item["location"] = $result;
 		return;
 	}
-
-	$coords = explode(' ',$item["coord"]);
 
 	$s = fetch_url("https://api.opencagedata.com/geocode/v1/json?q=".$coords[0].",".$coords[1]."&key=".$key."&language=".$language);
 
@@ -58,10 +64,10 @@ function geocoordinates_resolve_item(&$item) {
 
 	$item["location"] = $data->results[0]->formatted;
 
-	logger("Got location for coordinates ".$item["coord"].": ".$item["location"], LOGGER_DEBUG);
+	logger("Got location for coordinates ".$coords[0]."-".$coords[1].": ".$item["location"], LOGGER_DEBUG);
 
 	if ($item["location"] != "")
-		Cache::set("geocoordinates:".$language.":".$item["coord"], $item["location"]);
+		Cache::set("geocoordinates:".$language.":".$coords[0]."-".$coords[1], $item["location"]);
 }
 
 function geocoordinates_post_hook($a, &$item) {
