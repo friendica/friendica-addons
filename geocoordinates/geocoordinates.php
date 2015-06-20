@@ -52,7 +52,7 @@ function geocoordinates_resolve_item(&$item) {
 	}
 
 	if (($data->total_results == 0) OR (count($data->results) == 0)) {
-		logger("No results found", LOGGER_DEBUG);
+		logger("No results found for coordinates ".$item["coord"], LOGGER_DEBUG);
 		return;
 	}
 
