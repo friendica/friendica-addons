@@ -51,7 +51,7 @@ function openstreetmap_location($a, &$item) {
 
 	/*
 	 * Get the configuration variables from the config.
-	 * @todo Separate the tile map server from the text-string to map tile server 
+	 * @todo Separate the tile map server from the text-string to map tile server
 	 * since they apparently use different URL conventions.
 	 * We use OSM's current convention of "#map=zoom/lat/lon" and optional
 	 * ?mlat=lat&mlon=lon for markers.
@@ -73,31 +73,27 @@ function openstreetmap_location($a, &$item) {
 	if(! $marker)
 		$marker = 0;
 
-	$location = '';
-	$coord = '';
-
-	$location = $item['location'];
-
-	$location = (($location && (! $item['coord'])) ? '<a target="map" title="' . $item['location'] . '" href="'.$nomserver . '?q=' . urlencode($item['location']) . '">' . $item['location'] . '</a>' : $location);
-
-	if($item['coord']) {
+	if ($item['coord'] != "") {
 		$coords = explode(' ', $item['coord']);
 		if(count($coords) > 1) {
 			$lat = urlencode(round($coords[0], 5));
 			$lon = urlencode(round($coords[1], 5));
-			$coord = '<a target="map" class="OSMMapLink" title="' . $item['coord'] . '" href="'. $tmsserver;
+			$target = $tmsserver;
 			if($marker > 0)
-				$coord .= '?mlat=' . $lat . '&mlon=' . $lon;
-			$coord .= '#map=' . intval($zoom) . '/' . $lat . '/' . $lon .'">Map</a>';
+				$target .= '?mlat='.$lat.'&mlon='.$lon;
+			$target .= '#map='.intval($zoom).'/'.$lat.'/'.$lon;
 		}
 	}
-	if(strlen($coord)) {
-		if($location)
-			$location .= '&nbsp;<span class="smalltext">(' . $coord . ')</span>';
-		else
-			$location = '<span class="smalltext">' . $coord . '</span>';
-	}
-	$item['html'] = $location;
+
+	if ($target == "")
+		$target = $nomserver.'?q='.urlencode($item['location']);
+
+	if ($item['location'] != "")
+		$title = $item['location'];
+	else
+		$title = $item['coord'];
+
+	$item['html'] = '<a target="map" title="'.$title.'" href= "'.$target.'">'.$title.'</a>';
 }
 
 
@@ -112,15 +108,13 @@ function openstreetmap_generate_named_map(&$a,&$b) {
 	$x = z_fetch_url($nomserver . $args);
 	if($x['success']) {
 		$j = json_decode($x['body'],true);
-		
+
 		if($j && is_array($j) && $j[0]['lat'] && $j[0]['lon']) {
 			$arr = array('lat' => $j[0]['lat'],'lon' => $j[0]['lon'],'location' => $b['location'], 'html' => '');
 			openstreetmap_generate_map($a,$arr);
 			$b['html'] = $arr['html'];
 		}
 	}
-	
-	
 }
 
 function openstreetmap_generate_map(&$a,&$b) {
