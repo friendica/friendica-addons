@@ -12,7 +12,7 @@ This will clone the entire repository in a directory called addon.  They can now
 * Install Manually *
 ********************
 
-1. Download the archive (AddonName.tgz) containing the addon you want to install.
+1. Download the archive (Download ZIP button) containing the addons.
 2. Unzip the contents of the archive to your harddrive.
 3. Upload the extracted directory and all it's contents to /path/to/friendica/addon.  You will need to create the addon directory if this is the first addon you have installed.
 4. Activate the addon in the plugins section of your admin panel.
