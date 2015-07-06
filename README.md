@@ -29,3 +29,6 @@ Development
 The addon interface of Friendica is very flexible and powerful, so if you are
 missing functionality, your chances are high it may be added with an addon.
 See the [documentation](https://github.com/friendica/friendica/blob/master/doc/Plugins.md) for more informations on the plugin development.
+
+Addons can be translated like any other part of Friendica. Translations for the
+addons included in this repository are done at the [Transifex project](https://www.transifex.com/projects/p/friendica/) for Friendica.
