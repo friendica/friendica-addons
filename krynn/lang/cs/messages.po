@@ -1,0 +1,32 @@
+# ADDON planets
+# Copyright (C)
+# This file is distributed under the same license as the Friendica planets addon package.
+# 
+# 
+# Translators:
+# Michal Šupler <msupler@gmail.com>, 2014-2015
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2015-02-11 19:37+0000\n"
+"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: planets.php:150
+msgid "Planets Settings"
+msgstr "Planets Nastavení"
+
+#: planets.php:152
+msgid "Enable Planets Plugin"
+msgstr "Povolit Planets plugin"
+
+#: planets.php:158
+msgid "Submit"
+msgstr "Odeslat"
