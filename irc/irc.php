@@ -48,8 +48,6 @@ function irc_addon_settings(&$a,&$s) {
 	$s .= '<h3>' . t('IRC Settings') . '</h3>';
 	$s .= '</span>';
 
-	$s .= '<div class="settings-block">';
-	$s .= '<h3>' . t('IRC Settings') . '</h3>';
 	$s .= '<div id="irc-chans">';
 	$s .= '<label id="irc-auto-label" for="autochans">' . t('Channel(s) to auto connect (comma separated)') . '</label>';
 	$s .= '<input id="irc-autochans" type="text" name="autochans" value="' . $autochans .'" />';
@@ -61,7 +59,6 @@ function irc_addon_settings(&$a,&$s) {
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="irc-submit" name="irc-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
-	$s .= '</div>';
 
 	return;
 
