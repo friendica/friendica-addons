@@ -1,6 +1,6 @@
 <?php
 /**
- * Name: Dragonlace Krynn locales
+ * Name: Dragonlance Krynn locales
  * Description: Sample Friendica plugin/addon. Set a random locale from the Dragonlance Realm of Krynn when posting. Based on the krynn frindica addon by Mike Macgirvin and Tony Baldwin
  * Version: 1.0
  * Planets Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
