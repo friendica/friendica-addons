@@ -163,8 +163,7 @@ function krynn_settings(&$a,&$s) {
 	$s .= '<div id="krynn-enable-wrapper">';
 	$s .= '<label id="krynn-enable-label" for="krynn-checkbox">' . t('Enable Krynn Plugin') . '</label>';
 	$s .= '<input id="krynn-checkbox" type="checkbox" name="krynn" value="1" ' . $checked . '/>';
-	$s .= '</div><div class="clear"></div>';
-
+        $s .= '</div><div class="clear"></div></div>';
 	/* provide a submit button */
 
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="krynn-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
