@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: Dragonlance Krynn locales
- * Description: Sample Friendica plugin/addon. Set a random locale from the Dragonlance Realm of Krynn when posting. Based on the krynn frindica addon by Mike Macgirvin and Tony Baldwin
+ * Description: Set a random locale from the Dragonlance Realm of Krynn when posting. Based on the krynn frindica addon by Mike Macgirvin and Tony Baldwin
  * Version: 1.0
  * Planets Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * Planets Author: Tony Baldwin <https://free-haven.org/profile/tony>
@@ -95,7 +95,7 @@ function krynn_post_hook($a, &$item) {
 	 *
 	 */
 
-	$krynn = array('Ansalon','Abanasinia','Solace','Haven','Gateway','Qualinost','Ankatavaka','Pax Tharkas','Ergoth','Newsea','Straights of Schallsea','Plains of Dust','Tarsis','Barren Hills','Que Shu','Citadel of Light','Solinari','Hedge Maze','Tower of High Sorcery','Inn of the Last Home','Last Heroes Tomb','Academy of Sorcery','Gods Row','Temple of Majere','Temple of Kiri-Jolith','Temple of Mishakal','Temple of Zeboim,','The Trough','Sad Town','Xak Tsaroth','ZHaman','SKullcap',);
+	$krynn = array('Ansalon','Abanasinia','Solace','Haven','Gateway','Qualinost','Ankatavaka','Pax Tharkas','Ergoth','Newsea','Straights of Schallsea','Plains of Dust','Tarsis','Barren Hills','Que Shu','Citadel of Light','Solinari','Hedge Maze','Tower of High Sorcery','Inn of the Last Home','Last Heroes Tomb','Academy of Sorcery','Gods Row','Temple of Majere','Temple of Kiri-Jolith','Temple of Mishakal','Temple of Zeboim,','The Trough','Sad Town','Xak Tsaroth','Zhaman','Skullcap',);
 
 	$planet = array_rand($krynn,1);
 	$item['location'] = $krynn[$planet];
