@@ -1,5 +1,5 @@
 <?php
 
-$a->strings["Planets Settings"] = "Agordo pri Planets";
-$a->strings["Enable Planets Plugin"] = "Ŝalti la Planets kromprogamon";
+$a->strings["Krynn Settings"] = "Agordo pri Krynn";
+$a->strings["Enable Krynn Plugin"] = "Ŝalti la Krynn kromprogamon";
 $a->strings["Submit"] = "Sendi";

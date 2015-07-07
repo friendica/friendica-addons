@@ -20,11 +20,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: krynn.php:150
-msgid "Planets Settings"
+msgid "Krynn Settings"
 msgstr "Impostazioni \"Pianeti\""
 
 #: krynn.php:152
-msgid "Enable Planets Plugin"
+msgid "Enable Krynn Plugin"
 msgstr "Abilita il plugin \"Pianeti\""
 
 #: krynn.php:158

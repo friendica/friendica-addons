@@ -7,7 +7,7 @@
  * Planets Author: Tony Baldwin <https://free-haven.org/profile/tony>
  * Krynn modifications: Dylan Thiedeke
  *
- *"My body was my sacrifice... for my magic. This damage is permanent." - Raislin Majere
+ *"My body was my sacrifice... for my magic. This damage is permanent." - Raistlin Majere
  */
 
 

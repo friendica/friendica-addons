@@ -1,5 +1,5 @@
 <?php
 
-$a->strings["Planets Settings"] = "Réglages des Planets";
-$a->strings["Enable Planets Plugin"] = "Activer Planets";
+$a->strings["Krynn Settings"] = "Réglages des Krynn";
+$a->strings["Enable Krynn Plugin"] = "Activer Krynn";
 $a->strings["Submit"] = "Envoyer";

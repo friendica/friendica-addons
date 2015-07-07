@@ -5,6 +5,6 @@ function string_plural_select_de($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["Planets Settings"] = "Planeten Einstellungen";
-$a->strings["Enable Planets Plugin"] = "Planeten-Plugin aktivieren";
+$a->strings["Krynn Settings"] = "Krynn Einstellungen";
+$a->strings["Enable Krynn Plugin"] = "Krynn-Plugin aktivieren";
 $a->strings["Submit"] = "Senden";
