@@ -150,7 +150,7 @@ function planets_settings(&$a,&$s) {
 	$s .= '<h3>' . t('Planets Settings') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_planets_expanded" class="settings-block" style="display: none;">';
-	$s .= '<span id="settings_planets_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_planets_expanded\'); openClose(\'settings_planets_inflated\');">';
+	$s .= '<span class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_planets_expanded\'); openClose(\'settings_planets_inflated\');">';
 	$s .= '<h3>' . t('Planets Settings') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="planets-enable-wrapper">';
