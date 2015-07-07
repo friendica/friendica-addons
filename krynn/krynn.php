@@ -5,7 +5,7 @@
  * Version: 1.0
  * Planets Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * Planets Author: Tony Baldwin <https://free-haven.org/profile/tony>
- * Kryn Authoer: Dylan Thiedeke <https://theronin.net/profile/swathe>
+ * Author: Dylan Thiedeke <https://theronin.net/profile/swathe>
  *
  *"My body was my sacrifice... for my magic. This damage is permanent." - Raistlin Majere
  */
