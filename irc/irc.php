@@ -2,7 +2,7 @@
 /**
 * Name: IRC Chat Plugin
 * Description: add an Internet Relay Chat chatroom on freenode
-* Version: 1.0
+* Version: 1.1
 * Author: tony baldwin <https://free-haven.org/profile/tony>
 * Author: Tobias Diekershoff <tobias@f.diekershoff.de>
 */
