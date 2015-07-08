@@ -1,17 +1,11 @@
 <?php
 /**
 * Name: IRC Chat Plugin
-* Description: add an Internet Relay Chat chatroom
+* Description: add an Internet Relay Chat chatroom on freenode
 * Version: 1.0
 * Author: tony baldwin <https://free-haven.org/profile/tony>
+* Author: Tobias Diekershoff <tobias@f.diekershoff.de>
 */
-
-/* enable in admin->plugins
- * you will then have "irc chatroom" listed at yoursite/apps
- * and the app will run at yoursite/irc
- * documentation at http://tonybaldwin.me/hax/doku.php?id=friendica:irc
- * admin can set popular chans, auto connect chans in settings->plugin settings
- */
 
 function irc_install() {
 	register_hook('app_menu', 'addon/irc/irc.php', 'irc_app_menu');
@@ -27,62 +21,50 @@ function irc_uninstall() {
 
 
 function irc_addon_settings(&$a,&$s) {
-
-
-	if(! is_site_admin())
+	if(! local_user())
 		return;
 
     /* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/irc/irc.css' . '" media="all" />' . "\r\n";
+//	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/irc/irc.css' . '" media="all" />' . "\r\n";
 
     /* setting popular channels, auto connect channels */
-	$sitechats = get_config('irc','sitechats'); /* popular channels */
-	$autochans = get_config('irc','autochans');  /* auto connect chans */
+	$sitechats = get_pconfig( local_user(), 'irc','sitechats'); /* popular channels */
+	$autochans = get_pconfig( local_user(), 'irc','autochans');  /* auto connect chans */
 
-	$s .= '<span id="settings_irc_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_irc_expanded\'); openClose(\'settings_irc_inflated\');">';
-	$s .= '<h3>' . t('IRC Settings') . '</h3>';
-	$s .= '</span>';
-	$s .= '<div id="settings_irc_expanded" class="settings-block" style="display: none;">';
-	$s .= '<span class="fakelink" onclick="openClose(\'settings_irc_expanded\'); openClose(\'settings_irc_inflated\');">';
-	$s .= '<h3>' . t('IRC Settings') . '</h3>';
-	$s .= '</span>';
+	$t = get_markup_template( "settings.tpl", "addon/irc/" );
+	$s = replace_macros($t, array(
+	    	'$header' => t('IRC Settings'),
+		'$info' => t('Here you can change the system wide settings for the channels to automatically join and access via the side bar. Note the changes you do here, only effect the channel selection if you are logged in.'),
+		'$submit' => t('Save Settings'),
+		'$autochans' => array( 'autochans', t('Channel(s) to auto connect (comma separated)'), $autochans, t('List of channels that shall automatically connected to when the app is launched.')),
+		'$sitechats' => array( 'sitechats', t('Popular Channels (comma separated)'), $sitechats, t('List of popular channels, will be displayed at the side and hotlinked for easy joining.') )
+	));
 
-	$s .= '<div id="irc-chans">';
-	$s .= '<label id="irc-auto-label" for="autochans">' . t('Channel(s) to auto connect (comma separated)') . '</label>';
-	$s .= '<input id="irc-autochans" type="text" name="autochans" value="' . $autochans .'" />';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div id="irc-popchans">';
-	$s .= '<label id="irc-pop-label" for="sitechats">' . t('Popular Channels (comma separated)') . '</label>';
-	$s .= '<input id="irc-sitechats" type="text" name="sitechats" value="' . $sitechats.'" />';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="irc-submit" name="irc-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
 
 	return;
 
 }
 
 function irc_addon_settings_post(&$a,&$b) {
-	if(! is_site_admin())
+	if(! local_user())
 		return;
 
 	if($_POST['irc-submit']) {
-		set_config('irc','autochans',trim($_POST['autochans']));
-		set_config('irc','sitechats',trim($_POST['sitechats']));
-		/* stupid pop-up thing */
+		set_pconfig( local_user(), 'irc','autochans',trim($_POST['autochans']));
+		set_pconfig( local_user(), 'irc','sitechats',trim($_POST['sitechats']));
+		/* upid pop-up thing */
 		info( t('IRC settings saved.') . EOL);
 	}
 }
 
 function irc_app_menu($a,&$b) {
-$b['app_menu'][] = '<div class="app-title"><a href="irc">' . t('IRC Chatroom') . '</a></div>';
+	$b['app_menu'][] = '<div class="app-title"><a href="irc">' . t('IRC Chatroom') . '</a></div>';
 }
 
 
 function irc_module() {
-return;
+	return;
 }
 
 
@@ -92,7 +74,13 @@ function irc_content(&$a) {
 	$o = '';
 
 	/* set the list of popular channels */
-	$sitechats = get_config('irc','sitechats');
+	if (local_user()) {
+	    $sitechats = get_pconfig( local_user(), 'irc', 'sitechats');
+	    if (!$sitechats)
+		$sitechats = get_config('irc', 'sitechats');
+	} else {
+	    $sitechats = get_config('irc','sitechats');
+	}
 	if($sitechats)
 		$chats = explode(',',$sitechats);
 	else
@@ -106,7 +94,13 @@ function irc_content(&$a) {
 	$a->page['aside'] .= '</ul></div>';
 
         /* setting the channel(s) to auto connect */
-	$autochans = get_config('irc','autochans');
+	if (local_user()) {
+	    $autochans = get_pconfig(local_user(), 'irc', 'autochans');
+	    if (!$autochans)
+		$autochans = get_config('irc','autochans');
+	} else {
+	    $autochans = get_config('irc','autochans');
+	}
 	if($autochans)
 		$channels = $autochans;
 	else
@@ -116,11 +110,31 @@ function irc_content(&$a) {
   $o .= <<< EOT
 <h2>IRC chat</h2>
 <p><a href="http://tldp.org/HOWTO/IRC/beginners.html" target="_blank">A beginner's guide to using IRC. [en]</a></p>
-<iframe src="//webchat.freenode.net?channels=$channels" width="600" height="600"></iframe>
+<iframe src="//webchat.freenode.net?channels=$channels" style="width:100%; max-width:900px; height: 600px;"></iframe>
 EOT;
 
 return $o;
     
 }
 
+function irc_plugin_admin_post (&$a) {
+	if(! is_site_admin())
+		return;
 
+	if($_POST['irc-submit']) {
+		set_config('irc','autochans',trim($_POST['autochans']));
+		set_config('irc','sitechats',trim($_POST['sitechats']));
+		/* stupid pop-up thing */
+		info( t('IRC settings saved.') . EOL);
+	}
+}
+function irc_plugin_admin (&$a, &$o) {
+	$sitechats = get_config('irc','sitechats'); /* popular channels */
+	$autochans = get_config('irc','autochans');  /* auto connect chans */
+	$t = get_markup_template( "admin.tpl", "addon/irc/" );
+	$o = replace_macros($t, array(
+		'$submit' => t('Save Settings'),
+		'$autochans' => array( 'autochans', t('Channel(s) to auto connect (comma separated)'), $autochans, t('List of channels that shall automatically connected to when the app is launched.')),
+		'$sitechats' => array( 'sitechats', t('Popular Channels (comma separated)'), $sitechats, t('List of popular channels, will be displayed at the side and hotlinked for easy joining.') )
+	));
+}
