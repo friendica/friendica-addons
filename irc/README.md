@@ -12,3 +12,5 @@ You can specify two sets of channel lists.
    the channels in this list will be linked so your users can easily join them.
 
 If you don't specify a list of popular channels, the following will be shown: friendica, chat, chatback, hottub, ircbar, dateroom, debian
+
+Users can set their own list of channels in the settings.
