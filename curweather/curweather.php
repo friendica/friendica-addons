@@ -9,6 +9,7 @@
  *
  */
 use Cmfcmf\OpenWeatherMap;
+use Cmfcmf\OpenWeatherMap\AbstractCache;
 use Cmfcmf\OpenWeatherMap\Exception as OWMException;
 
 // Must point to composer's autoload file.
@@ -28,6 +29,51 @@ function curweather_uninstall() {
 
 }
 
+//  The caching mechanism is taken from the cache example of the
+//  OpenWeatherMap-PHP-API library and a bit customized to allow admins to set
+//  the caching time depending on the plans they got from openweathermap.org
+
+class ExampleCache extends AbstractCache
+{
+    private function urlToPath($url)
+    {
+        $tmp = sys_get_temp_dir();
+        $dir = $tmp . DIRECTORY_SEPARATOR . "OpenWeatherMapPHPAPI";
+        if (!is_dir($dir)) {
+            mkdir($dir);
+        }
+
+        $path = $dir . DIRECTORY_SEPARATOR . md5($url);
+        return $path;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isCached($url)
+    {
+        $path = $this->urlToPath($url);
+        if (!file_exists($path) || filectime($path) + $this->seconds < time()) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * @inheritdoc
+     */
+    public function getCached($url)
+    {
+        return file_get_contents($this->urlToPath($url));
+    }
+    /**
+     * @inheritdoc
+     */
+    public function setCached($url, $content)
+    {
+        file_put_contents($this->urlToPath($url), $content);
+    }
+}
+
 
 function curweather_network_mod_init(&$fk_app,&$b) {
 
@@ -36,9 +82,14 @@ function curweather_network_mod_init(&$fk_app,&$b) {
 
     $fk_app->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $fk_app->get_baseurl() . '/addon/curweather/curweather.css' . '" media="all" />' . "\r\n";
 
-    // the getweather file does all the work here
+    // the OpenWeatherMap-PHP-APIlib does all the work here
     // the $rpt value is needed for location
-    // which getweather uses to fetch the weather data for weather and temp
+    // $lang will be taken from the browser session to honour user settings
+    // $units can be set in the settings by the user
+    // $appid is configured by the admin in the admin panel
+    // those parameters will be used to get: cloud status, temperature, preassure
+    // and relative humidity for display, also the relevent area of the map is
+    // linked from lat/log of the reply of OWMp
     $rpt = get_pconfig(local_user(), 'curweather', 'curweather_loc');
 
 
@@ -46,11 +97,13 @@ function curweather_network_mod_init(&$fk_app,&$b) {
     $lang = $_SESSION['language'];
     $units = get_pconfig( local_user(), 'curweather', 'curweather_units');
     $appid = get_config('curweather','appid');
+    $cachetime = intval(get_config('curweather','cachetime'));
     if ($units==="")
 	$units = 'metric';
     // Get OpenWeatherMap object. Don't use caching (take a look into
     // Example_Cache.php to see how it works).
-    $owm = new OpenWeatherMap();
+    //$owm = new OpenWeatherMap();
+    $owm = new OpenWeatherMap(null, new ExampleCache(), $cachetime);
     
     try {
 	$weather = $owm->getWeather($rpt, $units, $lang, $appid);
@@ -62,7 +115,7 @@ function curweather_network_mod_init(&$fk_app,&$b) {
 	};
 	$rhumid = $weather->humidity;
 	$pressure = $weather->pressure;
-	$wind = $weather->wind->speed . " " . $weather->wind->direction;
+	$wind = $weather->wind->speed->getDescription().', '.$weather->wind->speed . " " . $weather->wind->direction;
 	$description = $weather->clouds->getDescription();
     } catch(OWMException $e) {
         alert ( 'OpenWeatherMap exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').');
@@ -137,6 +190,7 @@ function curweather_plugin_admin_post (&$a) {
 	    return;
 	if ($_POST['curweather-submit']) {
 	    set_config('curweather','appid',trim($_POST['appid']));
+	    set_config('curweather','cachetime',trim($_POST['cachetime']));
 	    info( t('Curweather settings saved.'.EOL));
 	}
 }
@@ -147,6 +201,7 @@ function curweather_plugin_admin (&$a, &$o) {
     $t = get_markup_template("admin.tpl", "addon/curweather/" );
     $o = replace_macros ($t, array(
 	'$submit' => t('Save Settings'),
+	'$cachetime' => array('cachetime', t('Caching Interval'), $cachetime, t('For how long should the weather data be cached? Choose according your OpenWeatherMap account type.'), array('0'=>t('no cache'), '300'=>'5 '.t('minutes'), '900'=>'15 '.t('minutes'), '1800'=>'30 '.t('minutes'), '3600'=>'60 '.t('minutes'))),
 	'$appid' => array('appid', t('Your APPID'), $appid, t('Your API key provided by OpenWeatherMap'))
     ));
 }
