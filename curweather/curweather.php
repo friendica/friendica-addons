@@ -125,7 +125,7 @@ function curweather_network_mod_init(&$fk_app,&$b) {
 
     $curweather = '<div id="curweather-network" class="widget">
 		<div class="title tool">
-                <h4>'.t("Current Weather").': '.$weather->city->name.'</h4></div>';
+                <h4 title="'.$weather->lastUpdate->format('r').'">'.t("Current Weather").': '.$weather->city->name.'</h4></div>';
 
     $curweather .= "$description; $temp<br />";
     $curweather .= t('Relative Humidity').": $rhumid<br />";
