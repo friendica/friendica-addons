@@ -198,6 +198,7 @@ function curweather_plugin_admin (&$a, &$o) {
     if(! is_site_admin())
 	    return;
     $appid = get_config('curweather','appid');
+    $cachetime = get_config('curweather','cachetime');
     $t = get_markup_template("admin.tpl", "addon/curweather/" );
     $o = replace_macros ($t, array(
 	'$submit' => t('Save Settings'),
