@@ -32,12 +32,13 @@ function curweather_uninstall() {
 //  The caching mechanism is taken from the cache example of the
 //  OpenWeatherMap-PHP-API library and a bit customized to allow admins to set
 //  the caching time depending on the plans they got from openweathermap.org
+//  and the usage of the friendica temppath
 
 class ExampleCache extends AbstractCache
 {
     private function urlToPath($url)
     {
-        $tmp = sys_get_temp_dir();
+	$tmp = get_config('system','temppath');
         $dir = $tmp . DIRECTORY_SEPARATOR . "OpenWeatherMapPHPAPI";
         if (!is_dir($dir)) {
             mkdir($dir);
