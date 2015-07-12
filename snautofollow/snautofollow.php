@@ -4,8 +4,7 @@
  * Description: Automatic follow/friend of statusnet people who mention/follow you
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- * 
- *
+ * Status: Unsupported
  */
 
 
