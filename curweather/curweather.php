@@ -161,7 +161,7 @@ function curweather_plugin_settings(&$a,&$s) {
 	$curweather_loc = get_pconfig(local_user(), 'curweather', 'curweather_loc');
 	$curweather_units = get_pconfig(local_user(), 'curweather', 'curweather_units');
 	$appid = get_config('curweather','appid');
-	if (x($appid)) { 
+	if ($appid=="") { 
 		$noappidtext = t('No APPID found, please contact your admin to optain one.');
 	} else {
 	    $noappidtext = '';
@@ -174,7 +174,7 @@ function curweather_plugin_settings(&$a,&$s) {
 	$s = replace_macros ($t, array(
     		'$submit' => t('Save Settings'),	    
 		'$header' => t('Current Weather').' '.t('Settings'),
-		'$noappidtext' => t('No APPID found, please contact your admin to optain one.'),
+		'$noappidtext' => $noappidtext,
 		'$info' => t('Enter either the name of your location or the zip code.'),
 		'$curweather_loc' => array( 'curweather_loc', t('Your Location'), $curweather_loc, t('Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or <em>14476,DE</em>.') ),
 		'$curweather_units' => array( 'curweather_units', t('Units'), $curweather_units, t('select if the temperatur should be displayed in °C or °F'), array('metric'=>'°C', 'imperial'=>'°F')),
