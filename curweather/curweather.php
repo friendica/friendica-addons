@@ -118,14 +118,14 @@ function curweather_network_mod_init(&$fk_app,&$b) {
 	$wind = $weather->wind->speed->getDescription().', '.$weather->wind->speed . " " . $weather->wind->direction;
 	$description = $weather->clouds->getDescription();
     } catch(OWMException $e) {
-        alert ( 'OpenWeatherMap exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').');
+        info ( 'OpenWeatherMap exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').');
     } catch(\Exception $e) {
-        alert ('General exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').');
+        info ('General exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').');
     }
 
     $curweather = '<div id="curweather-network" class="widget">
 		<div class="title tool">
-                <h4 title="'.$weather->lastUpdate->format('r').'">'.t("Current Weather").': '.$weather->city->name.'</h4></div>';
+                <h4>'.t("Current Weather").': '.$weather->city->name.'</h4></div>';
 
     $curweather .= "$description; $temp<br />";
     $curweather .= t('Relative Humidity').": $rhumid<br />";
@@ -173,7 +173,7 @@ function curweather_plugin_settings(&$a,&$s) {
 	$t = get_markup_template("settings.tpl", "addon/curweather/" );
 	$s = replace_macros ($t, array(
     		'$submit' => t('Save Settings'),	    
-		'$header' => t('curweather Settings'),
+		'$header' => t('Current Weather').' '.t('Settings'),
 		'$noappidtext' => t('No APPID found, please contact your admin to optain one.'),
 		'$info' => t('Enter either the name of your location or the zip code.'),
 		'$curweather_loc' => array( 'curweather_loc', t('Your Location'), $curweather_loc, t('Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or <em>14476,DE</em>.') ),
