@@ -21,3 +21,9 @@ Credits
 * Tobias Diekershoff switched the sources to OpenWeatherMap after the original
   provider turned off support for locations outside of the USA.
 
+Known Issues
+------------
+
+* Localization does not work (Jul 15) data requested via XML are EN only but
+  have moew information available compared to data requested via JSON which is
+  available in other languages as well. Right now we use the XML dataset
