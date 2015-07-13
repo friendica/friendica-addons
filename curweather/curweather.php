@@ -8,76 +8,51 @@
  * Author: Tobias Diekershoff <https://f.diekershoff.de/u/tobias>
  *
  */
-use Cmfcmf\OpenWeatherMap;
-use Cmfcmf\OpenWeatherMap\AbstractCache;
-use Cmfcmf\OpenWeatherMap\Exception as OWMException;
 
-// Must point to composer's autoload file.
-require('vendor/autoload.php');
-//require('addon/curweather/openweathermap-php-api/Cmfcmf/OpenWeatherMap.php');
-//require('addon/curweather/vendor/cmfcmf/openweathermap-php-api/Cmfcmf/OpenWeatherMap.php');
+require_once('include/network.php');
+include_once('include/text.php');
+
+//  get the weather data from OpenWeatherMap
+function getWeather( $loc, $units='metric', $lang='en', $appid='') {
+    $url = "http://api.openweathermap.org/data/2.5/weather?q=".$loc."&appid=".$appid."&lang=".$lang."&units=".$units."&mode=xml";
+    try {
+    	$res = new SimpleXMLElement(fetch_url($url));
+    } catch (Exception $e) {
+	info(t('Error fetching weather data.\nError was: '.$e->getMessage()));
+	return false;
+    }
+    if ((string)$res->temperature['unit']==='metric') {
+	$tunit = '°C';
+	$wunit = 'm/s';
+    } else {
+	$tunit = '°F';
+	$wunit = 'mph';
+    }
+    return array(
+	'city'=> (string) $res->city['name'][0],
+	'country' => (string) $res->city->country[0],
+	'lat' => (string) $res->city->coord['lat'],
+	'lon' => (string) $res->city->coord['lon'],
+	'temperature' => (string) $res->temperature['value'][0].$tunit,
+	'pressure' => (string) $res->pressure['value'].(string)$res->pressure['unit'],
+	'humidity' => (string) $res->humidity['value'].(string)$res->humidity['unit'],
+	'descripion' => (string)$res->weather['value'].', '.(string)$res->clouds['name'],
+	'wind' => (string)$res->wind->speed['name'].' ('.(string)$res->wind->speed['value'].$wunit.')',
+	'update' => (string)$res->lastupdate['value']
+    );
+}
 
 function curweather_install() {
 	register_hook('network_mod_init', 'addon/curweather/curweather.php', 'curweather_network_mod_init');
 	register_hook('plugin_settings', 'addon/curweather/curweather.php', 'curweather_plugin_settings');
 	register_hook('plugin_settings_post', 'addon/curweather/curweather.php', 'curweather_plugin_settings_post');
-
 }
 
 function curweather_uninstall() {
 	unregister_hook('network_mod_init', 'addon/curweather/curweather.php', 'curweather_network_mod_init');
 	unregister_hook('plugin_settings', 'addon/curweather/curweather.php', 'curweather_plugin_settings');
 	unregister_hook('plugin_settings_post', 'addon/curweather/curweather.php', 'curweather_plugin_settings_post');
-
 }
-
-//  The caching mechanism is taken from the cache example of the
-//  OpenWeatherMap-PHP-API library and a bit customized to allow admins to set
-//  the caching time depending on the plans they got from openweathermap.org
-//  and the usage of the friendica temppath
-
-class CWCache extends AbstractCache
-{
-    private function urlToPath($url)
-    {
-	//  take friendicas tmp directory as base for the cache
-	$tmp = get_config('system','temppath');
-        $dir = $tmp . DIRECTORY_SEPARATOR . "OpenWeatherMapPHPAPI";
-        if (!is_dir($dir)) {
-            mkdir($dir);
-        }
-
-        $path = $dir . DIRECTORY_SEPARATOR . md5($url);
-        return $path;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isCached($url)
-    {
-        $path = $this->urlToPath($url);
-        if (!file_exists($path) || filectime($path) + $this->seconds < time()) {
-            return false;
-        }
-        return true;
-    }
-    /**
-     * @inheritdoc
-     */
-    public function getCached($url)
-    {
-        return file_get_contents($this->urlToPath($url));
-    }
-    /**
-     * @inheritdoc
-     */
-    public function setCached($url, $content)
-    {
-        file_put_contents($this->urlToPath($url), $content);
-    }
-}
-
 
 function curweather_network_mod_init(&$fk_app,&$b) {
 
@@ -104,47 +79,26 @@ function curweather_network_mod_init(&$fk_app,&$b) {
     $cachetime = intval(get_config('curweather','cachetime'));
     if ($units==="")
 	$units = 'metric';
-    // Get OpenWeatherMap object. Don't use caching (take a look into
-    // Example_Cache.php to see how it works).
-    //$owm = new OpenWeatherMap();
-    $owm = new OpenWeatherMap(null, new CWCache(), $cachetime);
     $ok = true;
     
-    try {
-	$weather = $owm->getWeather($rpt, $units, $lang, $appid);
-	$temp = $weather->temperature->getValue();
-        if ( $units === 'metric') {
-	    $temp .= '°C';
-	} else {
-	    $temp .= '°F';
-	};
-	$rhumid = $weather->humidity;
-	$pressure = $weather->pressure;
-	$wind = $weather->wind->speed->getDescription().', '.$weather->wind->speed . " " . $weather->wind->direction;
-	$description = $weather->clouds->getDescription();
-	$city = array(
-	    'name'=>$weather->city->name,
-	    'lon' =>$weather->city->lon,
-	    'lat' =>$weather->city->lat
-	);
-    } catch(OWMException $e) {
-	info ( 'OpenWeatherMap exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').');
+    $res = getWeather($rpt, $units, $lang, $appid);
+    if ($res===false)
 	$ok = false;
-    } catch(\Exception $e) {
-	info ('General exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').');
-	$ok = false;
-    }
+    // TODO Caching
 
     if ($ok) {
 	$t = get_markup_template("widget.tpl", "addon/curweather/" );
 	$curweather = replace_macros ($t, array(
 	    '$title' => t("Current Weather"),
-	    '$city' => $city,
-	    '$description' => $description,
-	    '$temp' => $temp,
-	    '$relhumidity' => array('caption'=>t('Relative Humidity'), 'val'=>$rhumid),
-	    '$pressure' => array('caption'=>t('Pressure'), 'val'=>$pressure),
-	    '$wind' => array('caption'=>t('Wind'), 'val'=> $wind),
+	    '$city' => $res['city'],
+	    '$lon' => $res['lon'],
+	    '$lat' => $res['lat'],
+	    '$description' => $res['descripion'],
+	    '$temp' => $res['temperature'],
+	    '$relhumidity' => array('caption'=>t('Relative Humidity'), 'val'=>$res['humidity']),
+	    '$pressure' => array('caption'=>t('Pressure'), 'val'=>$res['pressure']),
+	    '$wind' => array('caption'=>t('Wind'), 'val'=> $res['wind']),
+	    '$lastupdate' => t('Last Updated').': '.$res['update'],
 	    '$databy' =>  t('Data by'),
 	    '$showonmap' => t('Show on map')
 	));

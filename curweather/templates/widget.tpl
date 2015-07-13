@@ -1,6 +1,6 @@
 <div id="curweather-network" class="widget">
 	<div class="title tool">
-		<h4>{{$title}}: {{$city['name']}}</h4>
+		<h4 title="{{$lastupdate}}">{{$title}}: {{$city}}</h4>
 	</div>
 	<p>{{$description}}, {{$temp}}
 	<ul class="curweather-details">
