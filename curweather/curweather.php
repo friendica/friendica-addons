@@ -14,6 +14,8 @@ use Cmfcmf\OpenWeatherMap\Exception as OWMException;
 
 // Must point to composer's autoload file.
 require('vendor/autoload.php');
+//require('addon/curweather/openweathermap-php-api/Cmfcmf/OpenWeatherMap.php');
+//require('addon/curweather/vendor/cmfcmf/openweathermap-php-api/Cmfcmf/OpenWeatherMap.php');
 
 function curweather_install() {
 	register_hook('network_mod_init', 'addon/curweather/curweather.php', 'curweather_network_mod_init');
@@ -106,6 +108,7 @@ function curweather_network_mod_init(&$fk_app,&$b) {
     // Example_Cache.php to see how it works).
     //$owm = new OpenWeatherMap();
     $owm = new OpenWeatherMap(null, new CWCache(), $cachetime);
+    $ok = true;
     
     try {
 	$weather = $owm->getWeather($rpt, $units, $lang, $appid);
@@ -125,23 +128,34 @@ function curweather_network_mod_init(&$fk_app,&$b) {
 	    'lat' =>$weather->city->lat
 	);
     } catch(OWMException $e) {
-        info ( 'OpenWeatherMap exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').');
+	info ( 'OpenWeatherMap exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').');
+	$ok = false;
     } catch(\Exception $e) {
-        info ('General exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').');
+	info ('General exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').');
+	$ok = false;
     }
 
-    $t = get_markup_template("widget.tpl", "addon/curweather/" );
-    $curweather = replace_macros ($t, array(
-	'$title' => t("Current Weather"),
-	'$city' => $city,
-	'$description' => $description,
-	'$temp' => $temp,
-	'$relhumidity' => array('caption'=>t('Relative Humidity'), 'val'=>$rhumid),
-	'$pressure' => array('caption'=>t('Pressure'), 'val'=>$pressure),
-	'$wind' => array('caption'=>t('Wind'), 'val'=> $wind),
-	'$databy' =>  t('Data by'),
-	'$showonmap' => t('Show on map')
-    ));
+    if ($ok) {
+	$t = get_markup_template("widget.tpl", "addon/curweather/" );
+	$curweather = replace_macros ($t, array(
+	    '$title' => t("Current Weather"),
+	    '$city' => $city,
+	    '$description' => $description,
+	    '$temp' => $temp,
+	    '$relhumidity' => array('caption'=>t('Relative Humidity'), 'val'=>$rhumid),
+	    '$pressure' => array('caption'=>t('Pressure'), 'val'=>$pressure),
+	    '$wind' => array('caption'=>t('Wind'), 'val'=> $wind),
+	    '$databy' =>  t('Data by'),
+	    '$showonmap' => t('Show on map')
+	));
+    } else {
+	$t = get_markup_template('widget-error.tpl', 'addon/curweather/');
+	$curweather = replace_macros( $t, array(
+	    '$problem' => t('There was a problem accessing the weather data. But have a look'),
+	    '$rpt' => $rpt,
+	    '$atOWM' => t('at OpenWeatherMap')
+	));
+    }
 
     $fk_app->page['aside'] = $curweather.$fk_app->page['aside'];
 
