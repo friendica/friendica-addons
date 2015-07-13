@@ -21,7 +21,3 @@ Credits
 * Tobias Diekershoff switched the sources to OpenWeatherMap after the original
   provider turned off support for locations outside of the USA.
 
-To access the API of OpenWeatherMap the library
-[OpenWeatherMap-PHP-API](https://github.com/cmfcmf/OpenWeatherMap-PHP-Api) by
-Christian Flach is used (MIT license).
-
