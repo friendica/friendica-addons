@@ -34,10 +34,11 @@ function curweather_uninstall() {
 //  the caching time depending on the plans they got from openweathermap.org
 //  and the usage of the friendica temppath
 
-class ExampleCache extends AbstractCache
+class CWCache extends AbstractCache
 {
     private function urlToPath($url)
     {
+	//  take friendicas tmp directory as base for the cache
 	$tmp = get_config('system','temppath');
         $dir = $tmp . DIRECTORY_SEPARATOR . "OpenWeatherMapPHPAPI";
         if (!is_dir($dir)) {
@@ -104,7 +105,7 @@ function curweather_network_mod_init(&$fk_app,&$b) {
     // Get OpenWeatherMap object. Don't use caching (take a look into
     // Example_Cache.php to see how it works).
     //$owm = new OpenWeatherMap();
-    $owm = new OpenWeatherMap(null, new ExampleCache(), $cachetime);
+    $owm = new OpenWeatherMap(null, new CWCache(), $cachetime);
     
     try {
 	$weather = $owm->getWeather($rpt, $units, $lang, $appid);
@@ -118,23 +119,29 @@ function curweather_network_mod_init(&$fk_app,&$b) {
 	$pressure = $weather->pressure;
 	$wind = $weather->wind->speed->getDescription().', '.$weather->wind->speed . " " . $weather->wind->direction;
 	$description = $weather->clouds->getDescription();
+	$city = array(
+	    'name'=>$weather->city->name,
+	    'lon' =>$weather->city->lon,
+	    'lat' =>$weather->city->lat
+	);
     } catch(OWMException $e) {
         info ( 'OpenWeatherMap exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').');
     } catch(\Exception $e) {
         info ('General exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').');
     }
 
-    $curweather = '<div id="curweather-network" class="widget">
-		<div class="title tool">
-                <h4>'.t("Current Weather").': '.$weather->city->name.'</h4></div>';
-
-    $curweather .= "$description; $temp<br />";
-    $curweather .= t('Relative Humidity').": $rhumid<br />";
-    $curweather .= t('Pressure').": $pressure<br />";
-    $curweather .= t('Wind').": $wind<br />";
-    $curweather .= '<span style="font-size:0.8em;">'. t('Data by').': <a href="http://openweathermap.org">OpenWeatherMap</a>. <a href="http://openweathermap.org/Maps?zoom=7&lat='.$weather->city->lat.'&lon='.$weather->city->lon.'&layers=B0FTTFF">'.t('Show on map').'</a></span>';
-
-    $curweather .= '</div><div class="clear"></div>';
+    $t = get_markup_template("widget.tpl", "addon/curweather/" );
+    $curweather = replace_macros ($t, array(
+	'$title' => t("Current Weather"),
+	'$city' => $city,
+	'$description' => $description,
+	'$temp' => $temp,
+	'$relhumidity' => array('caption'=>t('Relative Humidity'), 'val'=>$rhumid),
+	'$pressure' => array('caption'=>t('Pressure'), 'val'=>$pressure),
+	'$wind' => array('caption'=>t('Wind'), 'val'=> $wind),
+	'$databy' =>  t('Data by'),
+	'$showonmap' => t('Show on map')
+    ));
 
     $fk_app->page['aside'] = $curweather.$fk_app->page['aside'];
 

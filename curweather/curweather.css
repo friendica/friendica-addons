@@ -1,10 +1,7 @@
-
-#curtemp-settings-label, #curtemp-location-label, #curtemp-enable-label {
-	float: left;
-	width: 200px;
-	margin-bottom: 25px;
+ul.curweather-details li {
+    list-type: none;
 }
-#curtemp-network {
-	float: left;
+p.curweather-footer {
+    font-size: 0.8em;
 }
 
