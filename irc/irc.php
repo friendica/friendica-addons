@@ -4,7 +4,7 @@
 * Description: add an Internet Relay Chat chatroom on freenode
 * Version: 1.1
 * Author: tony baldwin <https://free-haven.org/profile/tony>
-* Author: Tobias Diekershoff <tobias@f.diekershoff.de>
+* Author: Tobias Diekershoff <https://f.diekershoff.de/u/tobias>
 */
 
 function irc_install() {
