@@ -13,8 +13,17 @@ require_once('include/network.php');
 include_once('include/text.php');
 
 //  get the weather data from OpenWeatherMap
-function getWeather( $loc, $units='metric', $lang='en', $appid='') {
+function getWeather( $loc, $units='metric', $lang='en', $appid='', $cachetime=0) {
     $url = "http://api.openweathermap.org/data/2.5/weather?q=".$loc."&appid=".$appid."&lang=".$lang."&units=".$units."&mode=xml";
+    $cached = Cache::get('curweather'.md5($url));
+    $now = new DateTime();
+    if (!is_null($cached)) {
+	$cdate = get_pconfig(local_user(), 'curweather', 'last');
+	$cached = unserialize($cached);
+	if ($cdate + $cachetime > $now->getTimestamp()) {
+	    return $cached;
+	}
+    }
     try {
     	$res = new SimpleXMLElement(fetch_url($url));
     } catch (Exception $e) {
@@ -28,7 +37,7 @@ function getWeather( $loc, $units='metric', $lang='en', $appid='') {
 	$tunit = '°F';
 	$wunit = 'mph';
     }
-    return array(
+    $r = array(
 	'city'=> (string) $res->city['name'][0],
 	'country' => (string) $res->city->country[0],
 	'lat' => (string) $res->city->coord['lat'],
@@ -40,6 +49,9 @@ function getWeather( $loc, $units='metric', $lang='en', $appid='') {
 	'wind' => (string)$res->wind->speed['name'].' ('.(string)$res->wind->speed['value'].$wunit.')',
 	'update' => (string)$res->lastupdate['value']
     );
+    set_pconfig(local_user(), 'curweather', 'last', $now->getTimestamp());
+    Cache::set('curweather'.md5($url), serialize($r));
+    return $r;
 }
 
 function curweather_install() {
@@ -80,11 +92,10 @@ function curweather_network_mod_init(&$fk_app,&$b) {
     if ($units==="")
 	$units = 'metric';
     $ok = true;
-    
-    $res = getWeather($rpt, $units, $lang, $appid);
+
+    $res = getWeather($rpt, $units, $lang, $appid, $cachetime);
     if ($res===false)
 	$ok = false;
-    // TODO Caching
 
     if ($ok) {
 	$t = get_markup_template("widget.tpl", "addon/curweather/" );
@@ -98,7 +109,7 @@ function curweather_network_mod_init(&$fk_app,&$b) {
 	    '$relhumidity' => array('caption'=>t('Relative Humidity'), 'val'=>$res['humidity']),
 	    '$pressure' => array('caption'=>t('Pressure'), 'val'=>$res['pressure']),
 	    '$wind' => array('caption'=>t('Wind'), 'val'=> $res['wind']),
-	    '$lastupdate' => t('Last Updated').': '.$res['update'],
+	    '$lastupdate' => t('Last Updated').': '.$res['update'].'UTC',
 	    '$databy' =>  t('Data by'),
 	    '$showonmap' => t('Show on map')
 	));
