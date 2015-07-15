@@ -37,6 +37,11 @@ function getWeather( $loc, $units='metric', $lang='en', $appid='', $cachetime=0)
 	$tunit = '°F';
 	$wunit = 'mph';
     }
+    if ( trim((string)$res->weather['value']) == trim((string)$res->clouds['name']) ) {
+	$desc = (string)$res->clouds['name'];
+    } else {
+	$desc = (string)$res->weather['value'].', '.(string)$res->clouds['name'];
+    }
     $r = array(
 	'city'=> (string) $res->city['name'][0],
 	'country' => (string) $res->city->country[0],
@@ -45,7 +50,7 @@ function getWeather( $loc, $units='metric', $lang='en', $appid='', $cachetime=0)
 	'temperature' => (string) $res->temperature['value'][0].$tunit,
 	'pressure' => (string) $res->pressure['value'].(string)$res->pressure['unit'],
 	'humidity' => (string) $res->humidity['value'].(string)$res->humidity['unit'],
-	'descripion' => (string)$res->weather['value'].', '.(string)$res->clouds['name'],
+	'descripion' => $desc,
 	'wind' => (string)$res->wind->speed['name'].' ('.(string)$res->wind->speed['value'].$wunit.')',
 	'update' => (string)$res->lastupdate['value']
     );
@@ -73,9 +78,10 @@ function curweather_network_mod_init(&$fk_app,&$b) {
 
     $fk_app->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $fk_app->get_baseurl() . '/addon/curweather/curweather.css' . '" media="all" />' . "\r\n";
 
-    // the OpenWeatherMap-PHP-APIlib does all the work here
-    // the $rpt value is needed for location
+    // $rpt value is needed for location
     // $lang will be taken from the browser session to honour user settings
+    // TODO $lang does not work if the default settings are used
+    //      and not all response strings are translated
     // $units can be set in the settings by the user
     // $appid is configured by the admin in the admin panel
     // those parameters will be used to get: cloud status, temperature, preassure

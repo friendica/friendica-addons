@@ -1,6 +1,4 @@
-<span id="settings_curweather_inflated" class="settings-block fakelink"
-style="display: block;" onclick="openClose('settings_curweather_expanded');
-openClose('settings_curweather_inflated');">
+<span id="settings_curweather_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose('settings_curweather_expanded'); openClose('settings_curweather_inflated');">
 	<h3>{{$header}}</h3>
 </span>
 <div id="settings_curweather_expanded" class="settings-block" style="display: none;">
