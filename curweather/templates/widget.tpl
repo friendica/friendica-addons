@@ -3,7 +3,7 @@
 		<h4 title="{{$lastupdate}}">{{$title}}: {{$city}}</h4>
 	</div>
 	<p>
-	<img src="http://openweathermap.org/img/w/{{$icon}}.png" title="{{$description}}">
+	<img src="{{$icon}}" title="{{$description}}">
 	<ul class="curweather-details">
 	    <li><strong>{{$temp}}</strong></li>
 	    <li>{{$relhumidity['caption']}}: {{$relhumidity['val']}}</li>

@@ -10,7 +10,8 @@
  */
 
 require_once('include/network.php');
-include_once('include/text.php');
+require_once("mod/proxy.php");
+require_once('include/text.php');
 
 //  get the weather data from OpenWeatherMap
 function getWeather( $loc, $units='metric', $lang='en', $appid='', $cachetime=0) {
@@ -108,7 +109,7 @@ function curweather_network_mod_init(&$fk_app,&$b) {
 	$t = get_markup_template("widget.tpl", "addon/curweather/" );
 	$curweather = replace_macros ($t, array(
 	    '$title' => t("Current Weather"),
-	    '$icon' => $res['icon'],
+	    '$icon' => proxy_url('http://openweathermap.org/img/w/'.$res['icon'].'.png'),
 	    '$city' => $res['city'],
 	    '$lon' => $res['lon'],
 	    '$lat' => $res['lat'],
