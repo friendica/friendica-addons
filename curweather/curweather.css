@@ -1,3 +1,7 @@
+#curweather-network img {
+    float: left;
+    margin: 20px 10px;
+}
 ul.curweather-details li {
     list-type: none;
 }

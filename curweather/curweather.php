@@ -52,7 +52,8 @@ function getWeather( $loc, $units='metric', $lang='en', $appid='', $cachetime=0)
 	'humidity' => (string) $res->humidity['value'].(string)$res->humidity['unit'],
 	'descripion' => $desc,
 	'wind' => (string)$res->wind->speed['name'].' ('.(string)$res->wind->speed['value'].$wunit.')',
-	'update' => (string)$res->lastupdate['value']
+	'update' => (string)$res->lastupdate['value'],
+	'icon' => (string)$res->weather['icon']
     );
     set_pconfig(local_user(), 'curweather', 'last', $now->getTimestamp());
     Cache::set('curweather'.md5($url), serialize($r));
@@ -107,6 +108,7 @@ function curweather_network_mod_init(&$fk_app,&$b) {
 	$t = get_markup_template("widget.tpl", "addon/curweather/" );
 	$curweather = replace_macros ($t, array(
 	    '$title' => t("Current Weather"),
+	    '$icon' => $res['icon'],
 	    '$city' => $res['city'],
 	    '$lon' => $res['lon'],
 	    '$lat' => $res['lat'],
