@@ -1542,6 +1542,54 @@ function twitter_checknotification($a, $uid, $own_id, $top_item, $postarray) {
 	}
 }
 
+function twitter_fetchparentposts($a, $uid, $post, $connection, $self, $own_id) {
+	logger("twitter_fetchparentposts: Fetching for user ".$uid." and post ".$post->id_str, LOGGER_DEBUG);
+
+	$posts = array();
+
+	while ($post->in_reply_to_status_id_str != "") {
+		$parameters = array("trim_user" => false, "id" => $post->in_reply_to_status_id_str);
+
+		$post = $connection->get('statuses/show', $parameters);
+
+		if (!count($post)) {
+			logger("twitter_fetchparentposts: Can't fetch post ".$parameters->id, LOGGER_DEBUG);
+			break;
+		}
+
+		$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
+				dbesc("twitter::".$post->id_str),
+				intval($uid)
+			);
+
+		if (count($r))
+			break;
+		
+		$posts[] = $post;
+	}
+
+	logger("twitter_fetchparentposts: Fetching ".count($posts)." parents", LOGGER_DEBUG);
+
+	$posts = array_reverse($posts);
+
+	if (count($posts)) {
+		foreach ($posts as $post) {
+			$postarray = twitter_createpost($a, $uid, $post, $self, false, false);
+
+			if (trim($postarray['body']) == "")
+				continue;
+
+			$item = item_store($postarray);
+			$postarray["id"] = $item;
+
+			logger('twitter_fetchparentpost: User '.$self["nick"].' posted parent timeline item '.$item);
+
+			if ($item != 0)
+				twitter_checknotification($a, $uid, $own_id, $item, $postarray);
+		}
+	}
+}
+
 function twitter_fetchhometimeline($a, $uid) {
 	$ckey    = get_config('twitter', 'consumerkey');
 	$csecret = get_config('twitter', 'consumersecret');
@@ -1624,14 +1672,17 @@ function twitter_fetchhometimeline($a, $uid) {
 				continue;
 
 			if (stristr($post->source, $application_name) && $post->user->screen_name == $own_id) {
-				logger("twitter_fetchhometimeline: Skip previously sended post for user ".$uid, LOGGER_DEBUG);
+				logger("twitter_fetchhometimeline: Skip previously sended post", LOGGER_DEBUG);
 				continue;
 			}
 
 			if ($mirror_posts && $post->user->screen_name == $own_id && $post->in_reply_to_status_id_str == "") {
-				logger("twitter_fetchhometimeline: Skip post that will be mirrored for user ".$uid, LOGGER_DEBUG);
+				logger("twitter_fetchhometimeline: Skip post that will be mirrored", LOGGER_DEBUG);
 				continue;
 			}
+
+			if ($post->in_reply_to_status_id_str != "")
+				twitter_fetchparentposts($a, $uid, $post, $connection, $self, $own_id);
 
 			$postarray = twitter_createpost($a, $uid, $post, $self, $create_user, true);
 
@@ -1676,6 +1727,9 @@ function twitter_fetchhometimeline($a, $uid) {
 
 			if ($first_time)
 				continue;
+
+			if ($post->in_reply_to_status_id_str != "")
+				twitter_fetchparentposts($a, $uid, $post, $connection, $self, $own_id);
 
 			$postarray = twitter_createpost($a, $uid, $post, $self, false, false);
 
