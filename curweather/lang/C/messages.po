@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2015-07-13 18:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,26 +17,114 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: curweather.php:46
+#: curweather.php:30
+msgid "Error fetching weather data.\\nError was: "
+msgstr ""
+
+#: curweather.php:103 curweather.php:163
 msgid "Current Weather"
 msgstr ""
 
-#: curweather.php:67
+#: curweather.php:109
+msgid "Relative Humidity"
+msgstr ""
+
+#: curweather.php:110
+msgid "Pressure"
+msgstr ""
+
+#: curweather.php:111
+msgid "Wind"
+msgstr ""
+
+#: curweather.php:112
+msgid "Last Updated"
+msgstr ""
+
+#: curweather.php:113
+msgid "Data by"
+msgstr ""
+
+#: curweather.php:114
+msgid "Show on map"
+msgstr ""
+
+#: curweather.php:119
+msgid "There was a problem accessing the weather data. But have a look"
+msgstr ""
+
+#: curweather.php:121
+msgid "at OpenWeatherMap"
+msgstr ""
+
+#: curweather.php:137
 msgid "Current Weather settings updated."
 msgstr ""
 
-#: curweather.php:90
-msgid "Current Weather Settings"
+#: curweather.php:152
+msgid "No APPID found, please contact your admin to optain one."
 msgstr ""
 
-#: curweather.php:93
-msgid "Weather Location: "
+#: curweather.php:162 curweather.php:191
+msgid "Save Settings"
 msgstr ""
 
-#: curweather.php:96
-msgid "Enable Current Weather"
+#: curweather.php:163
+msgid "Settings"
 msgstr ""
 
-#: curweather.php:104
-msgid "Submit"
+#: curweather.php:165
+msgid "Enter either the name of your location or the zip code."
+msgstr ""
+
+#: curweather.php:166
+msgid "Your Location"
+msgstr ""
+
+#: curweather.php:166
+msgid ""
+"Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or "
+"<em>14476,DE</em>."
+msgstr ""
+
+#: curweather.php:167
+msgid "Units"
+msgstr ""
+
+#: curweather.php:167
+msgid "select if the temperatur should be displayed in °C or °F"
+msgstr ""
+
+#: curweather.php:168
+msgid "Show weather data"
+msgstr ""
+
+#: curweather.php:181
+msgid "Curweather settings saved."
+msgstr ""
+
+#: curweather.php:192
+msgid "Caching Interval"
+msgstr ""
+
+#: curweather.php:192
+msgid ""
+"For how long should the weather data be cached? Choose according your "
+"OpenWeatherMap account type."
+msgstr ""
+
+#: curweather.php:192
+msgid "no cache"
+msgstr ""
+
+#: curweather.php:192
+msgid "minutes"
+msgstr ""
+
+#: curweather.php:193
+msgid "Your APPID"
+msgstr ""
+
+#: curweather.php:193
+msgid "Your API key provided by OpenWeatherMap"
 msgstr ""
