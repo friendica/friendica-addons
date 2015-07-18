@@ -1548,8 +1548,14 @@ function twitter_fetchhometimeline($a, $uid) {
 	$otoken  = get_pconfig($uid, 'twitter', 'oauthtoken');
 	$osecret = get_pconfig($uid, 'twitter', 'oauthsecret');
 	$create_user = get_pconfig($uid, 'twitter', 'create_user');
+	$mirror_posts = get_pconfig($uid, 'twitter', 'mirror_posts');
 
 	logger("twitter_fetchhometimeline: Fetching for user ".$uid, LOGGER_DEBUG);
+
+	$application_name  = get_config('twitter', 'application_name');
+
+	if ($application_name == "")
+		$application_name = $a->get_hostname();
 
 	require_once('library/twitteroauth.php');
 	require_once('include/items.php');
@@ -1616,6 +1622,16 @@ function twitter_fetchhometimeline($a, $uid) {
 
 			if ($first_time)
 				continue;
+
+			if (stristr($post->source, $application_name) && $post->user->screen_name == $own_id) {
+				logger("twitter_fetchhometimeline: Skip previously sended post for user ".$uid, LOGGER_DEBUG);
+				continue;
+			}
+
+			if ($mirror_posts && $post->user->screen_name == $own_id && $post->in_reply_to_status_id_str == "") {
+				logger("twitter_fetchhometimeline: Skip post that will be mirrored for user ".$uid, LOGGER_DEBUG);
+				continue;
+			}
 
 			$postarray = twitter_createpost($a, $uid, $post, $self, $create_user, true);
 
