@@ -1,0 +1,61 @@
+# ADDON langfilter
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica langfilter addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-07-24 19:01+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: langfilter.php:43
+msgid "Language Filter"
+msgstr ""
+
+#: langfilter.php:44
+msgid ""
+"This addon tries to identify the language of a postings. If it does not "
+"match any language spoken by you (see below) the posting will be collapsed. "
+"Remember detecting the language is not perfect, especially with short "
+"postings."
+msgstr ""
+
+#: langfilter.php:45
+msgid "Use the language filter"
+msgstr ""
+
+#: langfilter.php:46
+msgid "Use /expression/ to provide regular expressions"
+msgstr ""
+
+#: langfilter.php:47
+msgid "I speak"
+msgstr ""
+
+#: langfilter.php:47
+msgid ""
+"List of abbreviations for languages you speak, comma seperated. For excample "
+"\"de,it\"."
+msgstr ""
+
+#: langfilter.php:48
+msgid "Save Settings"
+msgstr ""
+
+#: langfilter.php:67
+msgid "Language Filter Settings saved."
+msgstr ""
+
+#: langfilter.php:106
+#, php-format
+msgid "unspoken language %s - Click to open/close"
+msgstr ""
