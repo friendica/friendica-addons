@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-24 19:01+0200\n"
+"POT-Creation-Date: 2015-07-24 19:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,28 +34,24 @@ msgid "Use the language filter"
 msgstr ""
 
 #: langfilter.php:46
-msgid "Use /expression/ to provide regular expressions"
-msgstr ""
-
-#: langfilter.php:47
 msgid "I speak"
 msgstr ""
 
-#: langfilter.php:47
+#: langfilter.php:46
 msgid ""
 "List of abbreviations for languages you speak, comma seperated. For excample "
 "\"de,it\"."
 msgstr ""
 
-#: langfilter.php:48
+#: langfilter.php:47
 msgid "Save Settings"
 msgstr ""
 
-#: langfilter.php:67
+#: langfilter.php:66
 msgid "Language Filter Settings saved."
 msgstr ""
 
-#: langfilter.php:106
+#: langfilter.php:105
 #, php-format
 msgid "unspoken language %s - Click to open/close"
 msgstr ""

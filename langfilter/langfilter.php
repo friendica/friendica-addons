@@ -43,7 +43,6 @@ function langfilter_addon_settings(&$a,&$s) {
 	    '$title' => t("Language Filter"),
 	    '$intro' => t ('This addon tries to identify the language of a postings. If it does not match any language spoken by you (see below) the posting will be collapsed. Remember detecting the language is not perfect, especially with short postings.'),
 	    '$enabled' => array('langfilter_enable', t('Use the language filter'), $enable_checked, ''),
-	    '$regex' => t('Use /expression/ to provide regular expressions'),
 	    '$languages' => array('langfilter_languages', t('I speak'), $languages, t('List of abbreviations for languages you speak, comma seperated. For excample "de,it".') ),
 	    '$submit' => t('Save Settings'),
 	));
