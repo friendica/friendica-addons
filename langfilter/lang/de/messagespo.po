@@ -1,0 +1,59 @@
+# ADDON langfilter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica langfilter addon package.
+# 
+# 
+# Translators:
+# bavatar <tobias.diekershoff@gmx.net>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-07-24 19:11+0200\n"
+"PO-Revision-Date: 2015-07-25 08:26+0000\n"
+"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: langfilter.php:43
+msgid "Language Filter"
+msgstr "Sprachfilter"
+
+#: langfilter.php:44
+msgid ""
+"This addon tries to identify the language of a postings. If it does not "
+"match any language spoken by you (see below) the posting will be collapsed. "
+"Remember detecting the language is not perfect, especially with short "
+"postings."
+msgstr "Dieses Addon versucht die Sprache eines Beitrags zu ermitteln und verbirgt den Inhalt, wenn du die Sprache nicht sprichst. Die Spracherkennung ist allerdings nicht perfekt, insbesondere bei kurzen Beiträgen."
+
+#: langfilter.php:45
+msgid "Use the language filter"
+msgstr "Den Sprachfilter verwenden"
+
+#: langfilter.php:46
+msgid "I speak"
+msgstr "Ich spreche"
+
+#: langfilter.php:46
+msgid ""
+"List of abbreviations for languages you speak, comma seperated. For excample"
+" \"de,it\"."
+msgstr "Liste von Abkürzungen der Sprachen die du sprichst, getrennt durch Komma. Zum Beispiel: \"de,it\"."
+
+#: langfilter.php:47
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: langfilter.php:66
+msgid "Language Filter Settings saved."
+msgstr "Sprachfilter Einstellungen gespeichert."
+
+#: langfilter.php:105
+#, php-format
+msgid "unspoken language %s - Click to open/close"
+msgstr "nicht gesprochene Sprache %s - Zum öffnen/schließen klicken"

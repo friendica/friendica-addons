@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2015-07-26 12:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,13 +26,13 @@ msgstr ""
 #: piwik.php:82
 #, php-format
 msgid ""
-"If you do not want that your visits are logged this way you <a href='%s'>can "
-"set a cookie to prevent Piwik from tracking further visits of the site</a> "
-"(opt-out)."
+"If you do not want that your visits are logged in this way you <a "
+"href='%s'>can set a cookie to prevent Piwik from tracking further visits of "
+"the site</a> (opt-out)."
 msgstr ""
 
 #: piwik.php:89
-msgid "Submit"
+msgid "Save Settings"
 msgstr ""
 
 #: piwik.php:90
