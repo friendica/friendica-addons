@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# bavatar <tobias.diekershoff@gmx.net>, 2014
+# bavatar <tobias.diekershoff@gmx.net>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-10-14 05:56+0000\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2015-07-27 05:19+0000\n"
 "Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -30,8 +30,8 @@ msgid ""
 msgstr "Erlaube Empfängern von privaten Nachrichten zu sehen wer die anderen Empfänger sind"
 
 #: remote_permissions.php:48 remote_permissions.php:196
-msgid "Save Settings"
-msgstr "Einstellungen speichern"
+msgid "Submit"
+msgstr "Senden"
 
 #: remote_permissions.php:58
 msgid "Remote Permissions settings updated."
