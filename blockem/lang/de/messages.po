@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# bavatar <tobias.diekershoff@gmx.net>, 2014
+# bavatar <tobias.diekershoff@gmx.net>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-07-03 05:44+0000\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2015-07-27 05:29+0000\n"
 "Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -19,35 +19,35 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: blockem.php:53 blockem.php:57
-msgid "\"Blockem\""
-msgstr "\"Blockem\""
+#: blockem.php:51
+msgid "\"Blockem\" Settings"
+msgstr "\"Blockem\"-Einstellungen"
 
-#: blockem.php:61
+#: blockem.php:53
 msgid "Comma separated profile URLS to block"
-msgstr "Liste von Profil URLs die geblockt werden soll (durch Kommas getrennt)"
+msgstr "Profil-URLs, die geblockt werden sollen (durch Kommas getrennt)"
 
-#: blockem.php:65
-msgid "Save Settings"
-msgstr "Einstellungen speichern"
+#: blockem.php:57
+msgid "Submit"
+msgstr "Senden"
 
-#: blockem.php:78
+#: blockem.php:70
 msgid "BLOCKEM Settings saved."
 msgstr "BLOCKEM-Einstellungen gesichert."
 
-#: blockem.php:142
+#: blockem.php:105
 #, php-format
 msgid "Blocked %s - Click to open/close"
 msgstr "%s blockiert - Zum Öffnen/Schließen klicken"
 
-#: blockem.php:197
+#: blockem.php:160
 msgid "Unblock Author"
 msgstr "Autor freischalten"
 
-#: blockem.php:199
+#: blockem.php:162
 msgid "Block Author"
 msgstr "Autor blockieren"
 
-#: blockem.php:231
+#: blockem.php:194
 msgid "blockem settings updated"
 msgstr "blockem Einstellungen aktualisiert"
