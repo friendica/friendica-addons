@@ -4,14 +4,14 @@
 # 
 # 
 # Translators:
-# Abrax <webmaster@a-zwenkau.de>, 2014
+# Abrax <webmaster@a-zwenkau.de>, 2014-2015
 # bavatar <tobias.diekershoff@gmx.net>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2014-10-15 12:32+0000\n"
+"POT-Creation-Date: 2015-07-26 12:49+0200\n"
+"PO-Revision-Date: 2015-07-27 13:07+0000\n"
 "Last-Translator: Abrax <webmaster@a-zwenkau.de>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -29,14 +29,14 @@ msgstr "Diese Website benutzt <a href='http://www.piwik.org'>Piwik</a>, eine Ope
 #: piwik.php:82
 #, php-format
 msgid ""
-"If you do not want that your visits are logged this way you <a href='%s'>can"
-" set a cookie to prevent Piwik from tracking further visits of the site</a> "
-"(opt-out)."
+"If you do not want that your visits are logged in this way you <a "
+"href='%s'>can set a cookie to prevent Piwik from tracking further visits of "
+"the site</a> (opt-out)."
 msgstr "Wenn Du nicht willst, dass Deine Besuche auf diese Weise gespeichert werden, kannst Du <a href='%s'>ein Cookie setzen</a>. Dann wird Piwik Dich auf dieser Website nicht mehr verfolgen (opt-out)."
 
 #: piwik.php:89
-msgid "Submit"
-msgstr "Senden"
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
 
 #: piwik.php:90
 msgid "Piwik Base URL"
