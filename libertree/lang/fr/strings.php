@@ -1,5 +1,10 @@
 <?php
 
+if(! function_exists("string_plural_select_fr")) {
+function string_plural_select_fr($n){
+	return ($n > 1);;
+}}
+;
 $a->strings["Post to libertree"] = "Publier sur libertree";
 $a->strings["libertree Post Settings"] = "Réglages des messages sur libertree";
 $a->strings["Enable Libertree Post Plugin"] = "Activer le plugin de publication sur libertree";
