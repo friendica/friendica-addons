@@ -2,3 +2,4 @@
     padding-top: 15px;
     font-size: 0.8em;
 }
+.minimal #impressum_footer { display: none; }
