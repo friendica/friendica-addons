@@ -5,6 +5,7 @@
  * Description: Generates some statistics for http://the-federation.info/
  * Version: 0.2
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
+ * Status: Unsupported
  */
 
 function statistics_json_install() {
