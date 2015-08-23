@@ -85,14 +85,14 @@ function testdrive_cron($a,$b) {
 
 	}
 
-}		
+}
 
 function testdrive_enotify(&$a, &$b) {
-    if (x($b, 'params') && $b['params']['type'] == NOTIFY_SYSTEM 
+    if (x($b, 'params') && $b['params']['type'] == NOTIFY_SYSTEM
 		&& x($b['params'], 'system_type') && $b['params']['system_type'] === 'testdrive_expire') {
         $b['itemlink'] = $a->get_baseurl();
         $b['epreamble'] = $b['preamble'] = sprintf( t('Your account on %s will expire in a few days.'), get_config('system','sitename'));
         $b['subject'] = t('Your Friendica test account is about to expire.');
-        $b['body'] = sprintf( t("Hi %1\$s,\n\nYour test account on %2\$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at http://dir.friendica.com/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at http://friendica.com."), $b['params']['to_name'], "[url=" . $app->config["system"]["url"] . "]" . $app->config["sitename"] . "[/url]");
+        $b['body'] = sprintf( t("Hi %1\$s,\n\nYour test account on %2\$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at %s/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at http://friendica.com."), $b['params']['to_name'], "[url=".$app->config["system"]["url"]."]".$app->config["sitename"]."[/url]", get_server());
     }
 }
