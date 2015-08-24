@@ -4,15 +4,15 @@
 # 
 # 
 # Translators:
-# bavatar <tobias.diekershoff@gmx.net>, 2014
+# bavatar <tobias.diekershoff@gmx.net>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2014-10-14 06:00+0000\n"
+"POT-Creation-Date: 2015-08-23 17:30+0200\n"
+"PO-Revision-Date: 2015-08-24 10:59+0000\n"
 "Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -37,5 +37,5 @@ msgstr "Dein Friendica-Testkonto wird bald verfallen."
 msgid ""
 "Hi %1$s,\n"
 "\n"
-"Your test account on %2$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at http://dir.friendica.com/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at http://friendica.com."
-msgstr "Hallo %1$s,\n\ndein Test-Konto auf %2$s wird in weniger als fünf Tagen verfallen. Wir hoffen, dass dir dieser Testlauf gefallen hat, so dass du die Gelegenheit nutzt und dir eine feste Friendica-Site für deine integrierte Social-Network-Kommunikation suchst. Eine Liste öffentlicher Sites findest du auf http://dir.friendica.com/siteinfo. Um mehr Information darüber zu bekommen, wie man einen eigenen Friendica-Server aufsetzt, kannst du auch einen Blick auf die Friendica Projektseite werfen: http://friendica.com"
+"Your test account on %2$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at %s/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at http://friendica.com."
+msgstr "Hallo %1$s,\n\ndein Testkonto auf %2$s wird in weniger als fünf Tagen verfallen. Wir hoffen, dass dir dieser Testlauf gefallen hat, so dass du die Gelegenheit nutzt und dir einen normalen Friendica-Server für deine integrierte Social-Network-Kommunikation suchst. Eine Liste öffentlicher Server findest du auf %s/siteinfo . Um mehr Information darüber zu bekommen, wie man einen eigenen Friendica-Server aufsetzt, kannst du auch einen Blick auf die Friendica-Projektseite werfen: http://friendica.com"
