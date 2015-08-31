@@ -4,168 +4,172 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014
+# fabrixxm <fabrix.xm@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2014-09-10 14:39+0000\n"
+"POT-Creation-Date: 2015-07-27 07:21+0200\n"
+"PO-Revision-Date: 2015-08-31 10:27+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
+"Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: statusnet.php:149
-msgid "Post to StatusNet"
-msgstr "Invia a StatusNet"
+#: statusnet.php:151
+msgid "Post to GNU Social"
+msgstr "Invia a GNU Social"
 
-#: statusnet.php:194
+#: statusnet.php:196
 msgid ""
 "Please contact your site administrator.<br />The provided API URL is not "
 "valid."
 msgstr "Contatta l'amministratore del sito.<br/>L'URL delle API fornito non è valido."
 
-#: statusnet.php:223
-msgid "We could not contact the StatusNet API with the Path you entered."
-msgstr "Non possiamo conttattare le API di StatusNet con il percorso che hai inserito."
+#: statusnet.php:225
+msgid "We could not contact the GNU Social API with the Path you entered."
+msgstr "Non possiamo conttattare le API di GNU Social con il percorso che hai inserito."
 
-#: statusnet.php:257
-msgid "StatusNet settings updated."
-msgstr "Impostazioni StatusNet aggiornate."
+#: statusnet.php:259
+msgid "GNU Social settings updated."
+msgstr "Impostazioni di GNU Social aggiornate."
 
-#: statusnet.php:289 statusnet.php:293
-msgid "StatusNet Import/Export/Mirror"
-msgstr "Esporta/Importa/Clona StatusNet"
+#: statusnet.php:294 statusnet.php:298
+msgid "GNU Social Import/Export/Mirror"
+msgstr "Esporta/Importa/Clona GNU Social"
 
-#: statusnet.php:308
-msgid "Globally Available StatusNet OAuthKeys"
-msgstr "OAuthKeys globali di StatusNet"
+#: statusnet.php:313
+msgid "Globally Available GNU Social OAuthKeys"
+msgstr "OAuthKeys globali di GNU Social"
 
-#: statusnet.php:309
+#: statusnet.php:314
 msgid ""
-"There are preconfigured OAuth key pairs for some StatusNet servers "
-"available. If you are useing one of them, please use these credentials. If "
-"not feel free to connect to any other StatusNet instance (see below)."
-msgstr "Esistono coppie di chiavi OAuth precofigurate per alcuni server StatusNet. Se usi uno di questi server, per favore scegli queste credenziali. Altrimenti sei libero di collegarti a un'altra installazione di StatusNet (vedi sotto)."
+"There are preconfigured OAuth key pairs for some GNU Social servers "
+"available. If you are using one of them, please use these credentials. If "
+"not feel free to connect to any other GNU Social instance (see below)."
+msgstr "Esistono coppie di chiavi OAuth precofigurate per alcuni server GNU Social. Se usi uno di questi server, per favore scegli queste credenziali. Altrimenti sei libero di collegarti a un'altra installazione di GNU Social (vedi sotto)."
 
-#: statusnet.php:315 statusnet.php:332 statusnet.php:359 statusnet.php:366
-#: statusnet.php:404 statusnet.php:673
+#: statusnet.php:320 statusnet.php:337 statusnet.php:364 statusnet.php:371
+#: statusnet.php:416 statusnet.php:699
 msgid "Save Settings"
 msgstr "Salva Impostazioni"
 
-#: statusnet.php:317
+#: statusnet.php:322
 msgid "Provide your own OAuth Credentials"
 msgstr "Fornisci le tue credenziali OAuth"
 
-#: statusnet.php:318
+#: statusnet.php:323
 msgid ""
-"No consumer key pair for StatusNet found. Register your Friendica Account as"
-" an desktop client on your StatusNet account, copy the consumer key pair "
+"No consumer key pair for GNU Social found. Register your Friendica Account "
+"as an desktop client on your GNU Social account, copy the consumer key pair "
 "here and enter the API base root.<br />Before you register your own OAuth "
 "key pair ask the administrator if there is already a key pair for this "
-"Friendica installation at your favorited StatusNet installation."
-msgstr "Nessuna coppia di chiavi consumer trovate per StatusNet. Registra il tuo account Friendica come un client desktop nel tuo account StatusNet, copia la coppia di chiavi consumer qui e inserisci l'url base delle API.<br/>Prima di registrare la tua coppia di chiavi OAuth, chiedi all'amministratore se esiste già una coppia di chiavi per questo sito Friendica presso la tua installazione StatusNet preferita."
+"Friendica installation at your favorited GNU Social installation."
+msgstr "Nessuna coppia di chiavi consumer trovate per GNU Social. Registra il tuo account Friendica come un client desktop nel tuo account GNU Social, copia la coppia di chiavi consumer qui e inserisci l'url base delle API.<br/>Prima di registrare la tua coppia di chiavi OAuth, chiedi all'amministratore se esiste già una coppia di chiavi per questo sito Friendica presso la tua installazione GNU Social preferita."
 
-#: statusnet.php:320
+#: statusnet.php:325
 msgid "OAuth Consumer Key"
 msgstr "OAuth Consumer Key"
 
-#: statusnet.php:323
+#: statusnet.php:328
 msgid "OAuth Consumer Secret"
 msgstr "OAuth Consumer Secret"
 
-#: statusnet.php:326 statusnet.php:653 statusnet.php:665
+#: statusnet.php:331 statusnet.php:679 statusnet.php:691
 msgid "Base API Path (remember the trailing /)"
 msgstr "Indirizzo di base per le API (ricorda la / alla fine)"
 
-#: statusnet.php:329
-msgid "StatusNet application name"
-msgstr "Nome applicazione StatusNet"
-
-#: statusnet.php:351
+#: statusnet.php:356
 msgid ""
-"To connect to your StatusNet account click the button below to get a "
-"security code from StatusNet which you have to copy into the input box below"
-" and submit the form. Only your <strong>public</strong> posts will be posted"
-" to StatusNet."
-msgstr "Per collegare il tuo account StatusNet, clicca sul bottone per ottenere un codice di sicurezza da StatusNet, che dovrai copiare nel box sottostante e poi inviare la form. Solo i tuoi messaggi <strong>pubblici</strong> saranno inviati a StatusNet."
+"To connect to your GNU Social account click the button below to get a "
+"security code from GNU Social which you have to copy into the input box "
+"below and submit the form. Only your <strong>public</strong> posts will be "
+"posted to GNU Social."
+msgstr "Per collegare il tuo account GNU Social, clicca sul bottone per ottenere un codice di sicurezza da GNU Social, che dovrai copiare nel box sottostante e poi inviare la form. Solo i tuoi messaggi <strong>pubblici</strong> saranno inviati a GNU Social."
 
-#: statusnet.php:352
-msgid "Log in with StatusNet"
-msgstr "Accedi con StatuNet"
+#: statusnet.php:357
+msgid "Log in with GNU Social"
+msgstr "Accedi con GNU Social"
 
-#: statusnet.php:354
-msgid "Copy the security code from StatusNet here"
-msgstr "Copia il codice di sicurezza da StatusNet qui"
+#: statusnet.php:359
+msgid "Copy the security code from GNU Social here"
+msgstr "Copia il codice di sicurezza da GNU Social qui"
 
-#: statusnet.php:360
+#: statusnet.php:365
 msgid "Cancel Connection Process"
 msgstr "Annulla il processo di connessione"
 
-#: statusnet.php:362
-msgid "Current StatusNet API is"
-msgstr "Le API StatusNet correnti sono"
+#: statusnet.php:367
+msgid "Current GNU Social API is"
+msgstr "Le API GNU Social correnti sono"
 
-#: statusnet.php:363
-msgid "Cancel StatusNet Connection"
-msgstr "Annulla la connessione a StatusNet"
+#: statusnet.php:368
+msgid "Cancel GNU Social Connection"
+msgstr "Annulla la connessione a GNU Social"
 
-#: statusnet.php:374
+#: statusnet.php:379
 msgid "Currently connected to: "
 msgstr "Al momento connesso con:"
 
-#: statusnet.php:375
+#: statusnet.php:380
 msgid ""
 "If enabled all your <strong>public</strong> postings can be posted to the "
-"associated StatusNet account. You can choose to do so by default (here) or "
+"associated GNU Social account. You can choose to do so by default (here) or "
 "for every posting separately in the posting options when writing the entry."
-msgstr "Se abilitato tutti i tuoi messaggi <strong>pubblici</strong> possono essere inviati all'account StatusNet associato. Puoi scegliere di farlo sempre (qui) o ogni volta che invii, nelle impostazioni di privacy del messaggio."
+msgstr "Se abilitato tutti i tuoi messaggi <strong>pubblici</strong> possono essere inviati all'account GNU Social associato. Puoi scegliere di farlo sempre (qui) o ogni volta che invii, nelle impostazioni di privacy del messaggio."
 
-#: statusnet.php:377
+#: statusnet.php:382
 msgid ""
 "<strong>Note</strong>: Due your privacy settings (<em>Hide your profile "
 "details from unknown viewers?</em>) the link potentially included in public "
-"postings relayed to StatusNet will lead the visitor to a blank page "
+"postings relayed to GNU Social will lead the visitor to a blank page "
 "informing the visitor that the access to your profile has been restricted."
-msgstr "<strong>Nota</strong>: A causa delle tue impostazioni di privacy(<em>Nascondi i dettagli del tuo profilo ai visitatori sconosciuti?</em>) il link potenzialmente incluso nei messaggi pubblici inviati a StatusNet porterà i visitatori a una pagina bianca con una nota che li informa che l'accesso al tuo profilo è stato limitato."
+msgstr "<strong>Nota</strong>: A causa delle tue impostazioni di privacy(<em>Nascondi i dettagli del tuo profilo ai visitatori sconosciuti?</em>) il link potenzialmente incluse nei messaggi pubblici inviati a GNU Social porterà i visitatori a una pagina bianca con una nota che li informa che l'accesso al tuo profilo è stato limitato."
 
-#: statusnet.php:380
-msgid "Allow posting to StatusNet"
-msgstr "Permetti l'invio a StatusNet"
+#: statusnet.php:385
+msgid "Allow posting to GNU Social"
+msgstr "Permetti l'invio a GNU Social"
 
-#: statusnet.php:383
-msgid "Send public postings to StatusNet by default"
-msgstr "Invia sempre i messaggi pubblici a StatusNet"
-
-#: statusnet.php:387
-msgid ""
-"Mirror all posts from statusnet that are no replies or repeated messages"
-msgstr "Clona tutti i messaggi da StatusNet che non sono risposte o messaggi ripetuti"
+#: statusnet.php:388
+msgid "Send public postings to GNU Social by default"
+msgstr "Invia sempre i messaggi pubblici a GNU Social"
 
 #: statusnet.php:392
+msgid ""
+"Mirror all posts from GNU Social that are no replies or repeated messages"
+msgstr "Clona tutti i messaggi da GNU Social che non sono risposte o messaggi ripetuti"
+
+#: statusnet.php:398
 msgid "Import the remote timeline"
 msgstr "Importa la timeline remota"
 
-#: statusnet.php:401
+#: statusnet.php:402
+msgid "Disabled"
+msgstr "Disabilitato"
+
+#: statusnet.php:403
+msgid "Full Timeline"
+msgstr "Timeline completa"
+
+#: statusnet.php:404
+msgid "Only Mentions"
+msgstr "Solo menzioni"
+
+#: statusnet.php:413
 msgid "Clear OAuth configuration"
 msgstr "Rimuovi la configurazione OAuth"
 
-#: statusnet.php:664
+#: statusnet.php:690
 msgid "Site name"
 msgstr "Nome del sito"
 
-#: statusnet.php:666
+#: statusnet.php:692
 msgid "Consumer Secret"
 msgstr "Consumer Secret"
 
-#: statusnet.php:667
+#: statusnet.php:693
 msgid "Consumer Key"
 msgstr "Consumer Key"
-
-#: statusnet.php:668
-msgid "Application name"
-msgstr "Nome applicazione"

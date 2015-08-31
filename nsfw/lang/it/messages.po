@@ -4,15 +4,15 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014
+# fabrixxm <fabrix.xm@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2014-10-15 08:56+0000\n"
+"PO-Revision-Date: 2015-08-31 10:21+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
+"Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: nsfw.php:78
 msgid "Not Safe For Work (General Purpose Content Filter) settings"
-msgstr ""
+msgstr "Impostazioni per NSWF (Filtro Contenuti Generico)"
 
 #: nsfw.php:80
 msgid ""
@@ -43,7 +43,7 @@ msgstr "Elenco separato da virgole di parole da nascondere"
 
 #: nsfw.php:88
 msgid "Submit"
-msgstr ""
+msgstr "Invia"
 
 #: nsfw.php:89
 msgid "Use /expression/ to provide regular expressions"

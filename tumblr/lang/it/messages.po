@@ -4,61 +4,61 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014
+# fabrixxm <fabrix.xm@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2014-09-10 14:45+0000\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2015-08-31 10:28+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
+"Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: tumblr.php:35
+#: tumblr.php:34
 msgid "Permission denied."
 msgstr "Permesso negato."
 
-#: tumblr.php:145
+#: tumblr.php:144
 msgid "You are now authenticated to tumblr."
 msgstr "Sei autenticato su Tumblr."
 
-#: tumblr.php:146
+#: tumblr.php:145
 msgid "return to the connector page"
 msgstr "ritorna alla pagina del connettore"
 
-#: tumblr.php:159
+#: tumblr.php:158
 msgid "Post to Tumblr"
 msgstr "Invia a Tumblr"
 
-#: tumblr.php:186 tumblr.php:190
-msgid "Tumblr Export"
-msgstr "Esporta Tumblr"
+#: tumblr.php:185
+msgid "Tumblr Post Settings"
+msgstr "Impostazioni di invio a Tumblr"
 
-#: tumblr.php:194
+#: tumblr.php:188
 msgid "(Re-)Authenticate your tumblr page"
 msgstr "(Ri)Autenticati con la tua pagina Tumblr"
 
-#: tumblr.php:198
+#: tumblr.php:192
 msgid "Enable Tumblr Post Plugin"
 msgstr "Abilita Plugin Tumblr"
 
-#: tumblr.php:203
+#: tumblr.php:197
 msgid "Post to Tumblr by default"
 msgstr "Invia sempre a Tumblr"
 
-#: tumblr.php:223
+#: tumblr.php:217
 msgid "Post to page:"
 msgstr "Invia alla pagina:"
 
-#: tumblr.php:235
+#: tumblr.php:228
 msgid "You are not authenticated to tumblr"
 msgstr "Non sei autenticato su Tumblr"
 
-#: tumblr.php:240
-msgid "Save Settings"
-msgstr "Salva Impostazioni"
+#: tumblr.php:233
+msgid "Submit"
+msgstr "Invia"

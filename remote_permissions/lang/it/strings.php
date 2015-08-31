@@ -7,7 +7,7 @@ function string_plural_select_it($n){
 ;
 $a->strings["Remote Permissions Settings"] = "Impostazioni Permissi Remoti";
 $a->strings["Allow recipients of your private posts to see the other recipients of the posts"] = "Permetti ai destinatari dei tuoi messaggi privati di vedere gli altri destinatari del messaggio";
-$a->strings["Save Settings"] = "Salva Impostazioni";
+$a->strings["Submit"] = "Invia";
 $a->strings["Remote Permissions settings updated."] = "Impostazioni Permessi Remoti aggiornate.";
 $a->strings["Visible to:"] = "Visibile a:";
 $a->strings["Visible to"] = "Visibile a";
