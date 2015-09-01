@@ -1,44 +1,53 @@
-# ADDON superblock
+# ADDON blockem
 # Copyright (C)
-# This file is distributed under the same license as the Friendica superblock addon package.
+# This file is distributed under the same license as the Friendica blockem addon package.
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014
+# fabrixxm <fabrix.xm@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2014-09-10 14:40+0000\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2015-08-31 10:28+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
+"Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: superblock.php:52
-msgid "\"Superblock\" Settings"
-msgstr "Impostazioni \"Superblock\""
+#: blockem.php:51
+msgid "\"Blockem\" Settings"
+msgstr "Impostazioni \"Blockem\""
 
-#: superblock.php:54
+#: blockem.php:53
 msgid "Comma separated profile URLS to block"
 msgstr "Lista, separata da virgola, di indirizzi di profili da bloccare"
 
-#: superblock.php:58
-msgid "Save Settings"
-msgstr "Salva Impostazioni"
+#: blockem.php:57
+msgid "Submit"
+msgstr "Invia"
 
-#: superblock.php:71
-msgid "SUPERBLOCK Settings saved."
-msgstr "Impostazioni \"Superblock\" salvate."
+#: blockem.php:70
+msgid "BLOCKEM Settings saved."
+msgstr "Impostazioni \"Blockem\" salvate."
 
-#: superblock.php:143
-msgid "Block Completely"
-msgstr "Blocca completamente"
+#: blockem.php:105
+#, php-format
+msgid "Blocked %s - Click to open/close"
+msgstr "%s bloccato - Clicca per aprire/chiudere"
 
-#: superblock.php:163
-msgid "superblock settings updated"
-msgstr "Impostazioni \"Superblock\" aggiornate"
+#: blockem.php:160
+msgid "Unblock Author"
+msgstr "Sblocca autore"
+
+#: blockem.php:162
+msgid "Block Author"
+msgstr "Blocca autore"
+
+#: blockem.php:194
+msgid "blockem settings updated"
+msgstr "Impostazioni 'blockem' aggiornate."

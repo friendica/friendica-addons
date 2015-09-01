@@ -1,0 +1,59 @@
+# ADDON langfilter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica langfilter addon package.
+# 
+# 
+# Translators:
+# fabrixxm <fabrix.xm@gmail.com>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-07-24 19:11+0200\n"
+"PO-Revision-Date: 2015-08-31 11:58+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
+"Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: langfilter.php:43
+msgid "Language Filter"
+msgstr "Filtro Lingua"
+
+#: langfilter.php:44
+msgid ""
+"This addon tries to identify the language of a postings. If it does not "
+"match any language spoken by you (see below) the posting will be collapsed. "
+"Remember detecting the language is not perfect, especially with short "
+"postings."
+msgstr "Questo plugin prova ad identificare la lingua usata in un messaggio. Se questa non corrisponde a una delle lingue da te parlata (vedi sotto), il messaggio verrà nascosto. Ricorda che la rilevazione della lingua non è perfetta, specie con i messaggi corti."
+
+#: langfilter.php:45
+msgid "Use the language filter"
+msgstr "Usa il filtro lingua"
+
+#: langfilter.php:46
+msgid "I speak"
+msgstr "I parlo"
+
+#: langfilter.php:46
+msgid ""
+"List of abbreviations for languages you speak, comma seperated. For excample"
+" \"de,it\"."
+msgstr "Lista di abbreviazioni per le lingue che parli, separate da virgola. Per esempio \"it,de\""
+
+#: langfilter.php:47
+msgid "Save Settings"
+msgstr "Salva Impostazioni"
+
+#: langfilter.php:66
+msgid "Language Filter Settings saved."
+msgstr "Impostazioni Filtro Lingua salvate."
+
+#: langfilter.php:105
+#, php-format
+msgid "unspoken language %s - Click to open/close"
+msgstr "lingua non parlata %s - Clicca per aprire/chiudere"

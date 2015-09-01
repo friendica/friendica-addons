@@ -11,4 +11,4 @@ $a->strings["Enable LiveJournal Post Plugin"] = "Abilita il plugin di invio a Li
 $a->strings["LiveJournal username"] = "Nome utente LiveJournal";
 $a->strings["LiveJournal password"] = "Password LiveJournal";
 $a->strings["Post to LiveJournal by default"] = "Invia sempre a LiveJournal";
-$a->strings["Submit"] = "";
+$a->strings["Submit"] = "Invia";

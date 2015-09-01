@@ -6,5 +6,5 @@ function string_plural_select_it($n){
 }}
 ;
 $a->strings["\"pageheader\" Settings"] = "Impostazioni \"Intestazione pagina\"";
-$a->strings["Submit"] = "";
+$a->strings["Submit"] = "Invia";
 $a->strings["pageheader Settings saved."] = "Impostazioni \"Intestazione pagina\" salvate.";

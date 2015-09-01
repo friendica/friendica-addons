@@ -4,41 +4,129 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014
+# fabrixxm <fabrix.xm@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2014-10-15 08:25+0000\n"
+"POT-Creation-Date: 2015-07-13 18:46+0200\n"
+"PO-Revision-Date: 2015-08-31 10:11+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
+"Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: curweather.php:46
+#: curweather.php:30
+msgid "Error fetching weather data.\\nError was: "
+msgstr "Errore recuperando i dati meteo: "
+
+#: curweather.php:103 curweather.php:163
 msgid "Current Weather"
 msgstr "Meteo"
 
-#: curweather.php:67
+#: curweather.php:109
+msgid "Relative Humidity"
+msgstr "Umidità Relativa"
+
+#: curweather.php:110
+msgid "Pressure"
+msgstr "Pressione"
+
+#: curweather.php:111
+msgid "Wind"
+msgstr "Vento"
+
+#: curweather.php:112
+msgid "Last Updated"
+msgstr "Ultimo Aggiornamento: "
+
+#: curweather.php:113
+msgid "Data by"
+msgstr "Data da"
+
+#: curweather.php:114
+msgid "Show on map"
+msgstr "Mostra sulla mappa"
+
+#: curweather.php:119
+msgid "There was a problem accessing the weather data. But have a look"
+msgstr "C'è stato un problema accedendo ai dati meteo, ma dai un'occhiata"
+
+#: curweather.php:121
+msgid "at OpenWeatherMap"
+msgstr "a OpenWeatherMap"
+
+#: curweather.php:137
 msgid "Current Weather settings updated."
 msgstr "Impostazioni Meteo aggiornate."
 
-#: curweather.php:90
-msgid "Current Weather Settings"
-msgstr ""
+#: curweather.php:152
+msgid "No APPID found, please contact your admin to optain one."
+msgstr "APPID non trovata, contatta il tuo amministratore per averne una."
 
-#: curweather.php:93
-msgid "Weather Location: "
-msgstr "Posizione del meteo:"
+#: curweather.php:162 curweather.php:191
+msgid "Save Settings"
+msgstr "Salva Impostazioni"
 
-#: curweather.php:96
-msgid "Enable Current Weather"
-msgstr "Abilita Meteo"
+#: curweather.php:163
+msgid "Settings"
+msgstr "Impostazioni"
 
-#: curweather.php:104
-msgid "Submit"
-msgstr ""
+#: curweather.php:165
+msgid "Enter either the name of your location or the zip code."
+msgstr "Inserisci il nome della tua posizione o il CAP"
+
+#: curweather.php:166
+msgid "Your Location"
+msgstr "La tua Posizione"
+
+#: curweather.php:166
+msgid ""
+"Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or "
+"<em>14476,DE</em>."
+msgstr "Identificatore della tua posizione (nome o CAP), p.e. <em>Roma, IT</em> or <em>00186,IT</em>."
+
+#: curweather.php:167
+msgid "Units"
+msgstr "Unità"
+
+#: curweather.php:167
+msgid "select if the temperatur should be displayed in °C or °F"
+msgstr "scegli se la temperatura deve essere mostrata in °C o in °F"
+
+#: curweather.php:168
+msgid "Show weather data"
+msgstr "Mostra dati meteo"
+
+#: curweather.php:181
+msgid "Curweather settings saved."
+msgstr "Impostazioni Curweather salvati."
+
+#: curweather.php:192
+msgid "Caching Interval"
+msgstr "Intervallo di cache"
+
+#: curweather.php:192
+msgid ""
+"For how long should the weather data be cached? Choose according your "
+"OpenWeatherMap account type."
+msgstr "Per quanto tempo i dati meteo devono essere memorizzati? Scegli a seconda del tuo tipo di account su OpenWeatherMap."
+
+#: curweather.php:192
+msgid "no cache"
+msgstr "nessuna cache"
+
+#: curweather.php:192
+msgid "minutes"
+msgstr "minuti"
+
+#: curweather.php:193
+msgid "Your APPID"
+msgstr "Il tuo APPID"
+
+#: curweather.php:193
+msgid "Your API key provided by OpenWeatherMap"
+msgstr "La tua chiave API da OpenWeatherMap"

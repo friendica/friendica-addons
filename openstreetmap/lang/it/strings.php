@@ -5,7 +5,7 @@ function string_plural_select_it($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["Submit"] = "";
+$a->strings["Submit"] = "Invia";
 $a->strings["Tile Server URL"] = "Indirizzo del server dei tasselli";
 $a->strings["A list of <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" target=\"_blank\">public tile servers</a>"] = "Lista dei <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" target=\"_blank\">server dei tasselli pubblici</a>";
 $a->strings["Default zoom"] = "Zoom predefinito";

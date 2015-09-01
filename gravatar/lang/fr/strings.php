@@ -5,7 +5,7 @@ function string_plural_select_fr($n){
 	return ($n > 1);;
 }}
 ;
-$a->strings["generic profile image"] = "";
+$a->strings["generic profile image"] = "image de profil générique";
 $a->strings["random geometric pattern"] = "";
 $a->strings["monster face"] = "";
 $a->strings["computer generated face"] = "visage généré par ordinateur";
