@@ -111,7 +111,7 @@ function langfilter_prepare_body(&$a,&$b) {
 
 	if($found) {
 		$rnd = random_string(8);
-		$b['html'] = '<div id="langfilter-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'langfilter-' . $rnd . '\'); >' . sprintf( t('unspoken language %s - Click to open/close'),$lng ) . '</div><div id="langfilter-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';  
+		$b['html'] = '<div id="langfilter-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'langfilter-' . $rnd . '\'); >' . sprintf( t('unspoken language %s - Click to open/close'),$lang ) . '</div><div id="langfilter-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
 	}
 }
 ?>
