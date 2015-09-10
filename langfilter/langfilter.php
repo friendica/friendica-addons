@@ -93,11 +93,15 @@ function langfilter_prepare_body(&$a,&$b) {
 	}
 
 	$found = false;
-    $l = new Text_LanguageDetect;
-    $l->_name_mode = 2;   // two letter codes
-    $l->_threshold = 600; // make it a bit harder to be confident with a lng
-                          // IOW make it more possible that lng is correct
-    $lng = $l->detectSimple($b['html']);
+
+    $opts = $b['item']['postopts'];
+    if ( $opts ) {
+      if ( preg_match('/^lang=([^;]*)/', $opts, $matches ) )
+      {
+         $lang = $matches[1];
+	 $lng = Text_LanguageDetect_ISO639::nameToCode2($lang);
+      }
+    }
     if ($lng==null)
 		return;
     if (! in_array($lng, $arr))
@@ -107,7 +111,7 @@ function langfilter_prepare_body(&$a,&$b) {
 
 	if($found) {
 		$rnd = random_string(8);
-		$b['html'] = '<div id="langfilter-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'langfilter-' . $rnd . '\'); >' . sprintf( t('unspoken language %s - Click to open/close'),$lng ) . '</div><div id="langfilter-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';  
+		$b['html'] = '<div id="langfilter-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'langfilter-' . $rnd . '\'); >' . sprintf( t('unspoken language %s - Click to open/close'),$lang ) . '</div><div id="langfilter-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
 	}
 }
 ?>
