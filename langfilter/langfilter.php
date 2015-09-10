@@ -78,6 +78,11 @@ function langfilter_prepare_body(&$a,&$b) {
 	if(get_pconfig(local_user(),'langfilter','disable'))
 		return;
 
+	# Never filter own messages
+	# TODO: find a better way to extract this
+	$logged_user_profile = $a->config['system']['url'] . '/profile/' . $a->user['nickname'];
+	if ( $logged_user_profile == $b['item']['author-link'] ) return;
+
 	if(local_user()) {
 		$langs = get_pconfig(local_user(),'langfilter','languages');
 	}
