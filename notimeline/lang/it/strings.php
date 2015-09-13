@@ -8,4 +8,4 @@ function string_plural_select_it($n){
 $a->strings["No Timeline settings updated."] = "Impostazioni \"No Timeline\" aggiornate.";
 $a->strings["No Timeline Settings"] = "Impostazioni \"No Timeline\"";
 $a->strings["Disable Archive selector on profile wall"] = "Disabilita il selettore dell'archivio sulla pagina del profilo";
-$a->strings["Submit"] = "";
+$a->strings["Submit"] = "Invia";

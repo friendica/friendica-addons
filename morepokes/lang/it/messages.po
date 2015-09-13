@@ -10,9 +10,9 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2015-02-09 10:51+0000\n"
+"PO-Revision-Date: 2015-08-31 10:20+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
+"Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -152,11 +152,11 @@ msgstr "ha sorriso e adulato"
 
 #: morepokes.php:35
 msgid "doubt"
-msgstr ""
+msgstr "dubita"
 
 #: morepokes.php:35
 msgid "doubted"
-msgstr ""
+msgstr "dubitato"
 
 #: morepokes.php:36
 msgid "glare"

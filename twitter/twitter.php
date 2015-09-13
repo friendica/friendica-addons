@@ -359,7 +359,7 @@ function twitter_action($a, $uid, $pid, $action) {
 
 	switch ($action) {
 		case "delete":
-			$result = $cb->statuses_destroy($post);
+			// To-Do: $result = $cb->statuses_destroy($post);
 			break;
 		case "like":
 			$result = $cb->favorites_create($post);

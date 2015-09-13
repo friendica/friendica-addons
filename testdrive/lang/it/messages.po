@@ -4,15 +4,15 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014
+# fabrixxm <fabrix.xm@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2014-09-10 14:43+0000\n"
+"POT-Creation-Date: 2015-08-23 17:30+0200\n"
+"PO-Revision-Date: 2015-08-31 10:28+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
+"Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -37,5 +37,5 @@ msgstr "Il tuo account di prova su Friendica sta per scadere."
 msgid ""
 "Hi %1$s,\n"
 "\n"
-"Your test account on %2$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at http://dir.friendica.com/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at http://friendica.com."
-msgstr "Ciao %1$s,\n\nIl tuo account di prova su %2$s scadrà in meno di cinque giorni. Ci auguriamo che tu abbia gradito questo giro di prova e che tu possa trovare un sito su cui creare un account Friendica permanente. Una lista di siti pubblici è disponibile presso http://dir.friendica.com/siteinfo . Per maggiori informazioni su come installare un tuo server Friendica personale, vai sul sito del progetto Friendica presso http://friendica.com."
+"Your test account on %2$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at %s/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at http://friendica.com."
+msgstr "Ciao %1$s,\n\nIl tuo account di prova su %2$s scadrà in meno di cinque giorni. Ci auguriamo che tu abbia gradito questo giro di prova e che tu possa trovare un sito su cui creare un account Friendica permanente. Una lista di siti pubblici è disponibile presso %s/siteinfo . Per maggiori informazioni su come installare un tuo server Friendica personale, vai sul sito del progetto Friendica presso http://friendica.com."

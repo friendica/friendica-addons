@@ -4,65 +4,61 @@
 # 
 # 
 # Translators:
-# bavatar <tobias.diekershoff@gmx.net>, 2014
+# fabrixxm <fabrix.xm@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2014-07-11 06:33+0000\n"
-"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2015-08-31 10:30+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
+"Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: de\n"
+"Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: wppost.php:42
 msgid "Post to Wordpress"
-msgstr "Bei WordPress veröffentlichen"
+msgstr "Invia a Wordpress"
 
-#: wppost.php:79 wppost.php:83
-msgid "Wordpress Export"
-msgstr "WordPress-Passwort"
+#: wppost.php:76
+msgid "WordPress Post Settings"
+msgstr "Impostazioni invio a WordPress"
 
-#: wppost.php:86
+#: wppost.php:78
 msgid "Enable WordPress Post Plugin"
-msgstr "WordPress Plugin aktivieren"
+msgstr "Abilita il plugin di invio a Wordpress"
 
-#: wppost.php:91
+#: wppost.php:83
 msgid "WordPress username"
-msgstr "WordPress-Benutzername"
+msgstr "Nome utente Wordpress"
 
-#: wppost.php:96
+#: wppost.php:88
 msgid "WordPress password"
-msgstr "WordPress-Passwort"
+msgstr "Password Wordpress"
 
-#: wppost.php:101
+#: wppost.php:93
 msgid "WordPress API URL"
-msgstr "WordPress-API-URL"
+msgstr "Indirizzo API Wordpress"
 
-#: wppost.php:106
+#: wppost.php:98
 msgid "Post to WordPress by default"
-msgstr "Standardmäßig auf WordPress veröffentlichen"
+msgstr "Invia sempre a Wordpress"
 
-#: wppost.php:111
+#: wppost.php:103
 msgid "Provide a backlink to the Friendica post"
-msgstr "Einen zurück zum Friendica-Beitrag hinzufügen"
+msgstr "Inserisci un link al messaggio originale su Friendica"
 
-#: wppost.php:116
-msgid "Don't post messages that are too short"
-msgstr "Beiträge die zu kurz sind nicht veröffentlichen"
+#: wppost.php:110
+msgid "Submit"
+msgstr "Invia"
 
-#: wppost.php:122
-msgid "Save Settings"
-msgstr "Einstellungen speichern"
-
-#: wppost.php:243
+#: wppost.php:201
 msgid "Post from Friendica"
-msgstr "Post via Friendica"
+msgstr "Messaggio da Friendica"
 
-#: wppost.php:255
+#: wppost.php:207
 msgid "Read the original post and comment stream on Friendica"
-msgstr "Den Original-Beitrag samt Kommentaren bei Friendica lesen"
+msgstr "Leggi il messaggio originale e i commenti su Friendica"

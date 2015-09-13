@@ -4,41 +4,41 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014
+# fabrixxm <fabrix.xm@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-09-10 14:33+0000\n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2015-08-31 10:23+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/projects/p/friendica/language/it/)\n"
+"Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: showmore.php:38 showmore.php:42
+#: showmore.php:38
 msgid "\"Show more\" Settings"
 msgstr "Impostazioni \"Mostra altro\""
 
-#: showmore.php:47
+#: showmore.php:41
 msgid "Enable Show More"
 msgstr "Abilita \"Mostra altro\""
 
-#: showmore.php:50
+#: showmore.php:44
 msgid "Cutting posts after how much characters"
 msgstr "Dopo quanti caratteri tagliare il messaggio"
 
-#: showmore.php:54
-msgid "Save Settings"
-msgstr "Salva Impostazioni"
+#: showmore.php:48
+msgid "Submit"
+msgstr "Invia"
 
-#: showmore.php:71
+#: showmore.php:65
 msgid "Show More Settings saved."
 msgstr "Impostazioni \"Mostra altro\" salvate."
 
-#: showmore.php:125
+#: showmore.php:119
 msgid "show more"
 msgstr "mostra di più"

@@ -5,7 +5,7 @@ function string_plural_select_it($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["Jappix Mini addon settings"] = "";
+$a->strings["Jappix Mini addon settings"] = "Impostazioni plugin Jappix Mini";
 $a->strings["Activate addon"] = "Abilita plugin";
 $a->strings["Do <em>not</em> insert the Jappixmini Chat-Widget into the webinterface"] = "Non inserire Jappixmini nell'intrerfaccia web";
 $a->strings["Jabber username"] = "Nome utente Jabber";
@@ -17,5 +17,5 @@ $a->strings["Friendica password"] = "Password Friendica";
 $a->strings["Approve subscription requests from Friendica contacts automatically"] = "Approva le richieste di collegamento dai tuoi contatti Friendica automaticamente";
 $a->strings["Subscribe to Friendica contacts automatically"] = "Sottoscrivi automaticamente i contatti Friendica";
 $a->strings["Purge internal list of jabber addresses of contacts"] = "Pulisci la lista interna degli indirizzi Jabber dei contatti";
-$a->strings["Submit"] = "";
+$a->strings["Submit"] = "Invia";
 $a->strings["Add contact"] = "Aggiungi contatto";
