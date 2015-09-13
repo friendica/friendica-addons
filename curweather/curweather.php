@@ -57,7 +57,7 @@ function getWeather( $loc, $units='metric', $lang='en', $appid='', $cachetime=0)
 	'icon' => (string)$res->weather['icon']
     );
     set_pconfig(local_user(), 'curweather', 'last', $now->getTimestamp());
-    Cache::set('curweather'.md5($url), serialize($r));
+    Cache::set('curweather'.md5($url), serialize($r), CACHE_HOUR);
     return $r;
 }
 
