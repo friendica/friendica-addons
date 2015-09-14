@@ -603,8 +603,7 @@ function pumpio_action(&$a, $uid, $uri, $action, $content = "") {
 	}
 }
 
-
-function pumpio_cron(&$a,$b) {
+function pumpio_sync(&$a) {
 	$last = get_config('pumpio','last_poll');
 
 	$poll_interval = intval(get_config('pumpio','poll_interval'));
@@ -665,6 +664,11 @@ function pumpio_cron(&$a,$b) {
 	logger('pumpio: cron_end');
 
 	set_config('pumpio','last_poll', time());
+}
+
+function pumpio_cron(&$a,$b) {
+	//pumpio_sync($a);
+	proc_run("php","addon/pumpio/pumpio_sync.php");
 }
 
 function pumpio_fetchtimeline(&$a, $uid) {
