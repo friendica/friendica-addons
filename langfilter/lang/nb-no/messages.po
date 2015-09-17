@@ -1,0 +1,60 @@
+# ADDON langfilter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica langfilter addon package.
+# 
+# 
+# Translators:
+# Haakon Meland Eriksen <haakon.eriksen@far.no>, 2015
+# Tino <knirchzwerg@web.de>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-07-24 19:11+0200\n"
+"PO-Revision-Date: 2015-09-17 04:48+0000\n"
+"Last-Translator: Haakon Meland Eriksen <haakon.eriksen@far.no>\n"
+"Language-Team: Norwegian Bokmål (Norway) (http://www.transifex.com/Friendica/friendica/language/nb_NO/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nb_NO\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: langfilter.php:43
+msgid "Language Filter"
+msgstr "Språkfilter"
+
+#: langfilter.php:44
+msgid ""
+"This addon tries to identify the language of a postings. If it does not "
+"match any language spoken by you (see below) the posting will be collapsed. "
+"Remember detecting the language is not perfect, especially with short "
+"postings."
+msgstr "Dette tillegg prøver å identifisere innleggets språk. Hvis det ikke passer til noen språk du snakker (se under) inlegget vil bli skjult. Husk at språkidentifiseringen er ikke perfekt, særlig ved korte innlegg!"
+
+#: langfilter.php:45
+msgid "Use the language filter"
+msgstr "Bruk språkfilter"
+
+#: langfilter.php:46
+msgid "I speak"
+msgstr "Jeg kan"
+
+#: langfilter.php:46
+msgid ""
+"List of abbreviations for languages you speak, comma seperated. For excample"
+" \"de,it\"."
+msgstr "Liste med forkortelser for språk du kan, kommaseparert. For eksempel \"no, en\"."
+
+#: langfilter.php:47
+msgid "Save Settings"
+msgstr "Lagre innstillinger"
+
+#: langfilter.php:66
+msgid "Language Filter Settings saved."
+msgstr "Språkfilter-innstillinger er lagret."
+
+#: langfilter.php:105
+#, php-format
+msgid "unspoken language %s - Click to open/close"
+msgstr "Uuttalt språk %s - klikk for å åpne/stenge"
