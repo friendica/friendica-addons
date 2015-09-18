@@ -4,61 +4,61 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014-2015
+# bavatar <tobias.diekershoff@gmx.net>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2015-08-31 10:30+0000\n"
-"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
+"PO-Revision-Date: 2015-07-28 17:31+0000\n"
+"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: it\n"
+"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: wppost.php:42
 msgid "Post to Wordpress"
-msgstr "Bei Wordpress veröffentlichen"
+msgstr "Bei WordPress veröffentlichen"
 
 #: wppost.php:76
 msgid "WordPress Post Settings"
-msgstr "Impostazioni invio a WordPress"
+msgstr "WordPress-Beitragseinstellungen"
 
 #: wppost.php:78
 msgid "Enable WordPress Post Plugin"
-msgstr "Abilita il plugin di invio a Wordpress"
+msgstr "WordPress Plugin aktivieren"
 
 #: wppost.php:83
 msgid "WordPress username"
-msgstr "Nome utente Wordpress"
+msgstr "WordPress-Benutzername"
 
 #: wppost.php:88
 msgid "WordPress password"
-msgstr "Password Wordpress"
+msgstr "WordPress-Passwort"
 
 #: wppost.php:93
 msgid "WordPress API URL"
-msgstr "Indirizzo API Wordpress"
+msgstr "WordPress-API-URL"
 
 #: wppost.php:98
 msgid "Post to WordPress by default"
-msgstr "Invia sempre a Wordpress"
+msgstr "Standardmäßig auf WordPress veröffentlichen"
 
 #: wppost.php:103
 msgid "Provide a backlink to the Friendica post"
-msgstr "Inserisci un link al messaggio originale su Friendica"
+msgstr "Einen zurück zum Friendica-Beitrag hinzufügen"
 
 #: wppost.php:110
 msgid "Submit"
-msgstr "Invia"
+msgstr "Senden"
 
 #: wppost.php:201
 msgid "Post from Friendica"
-msgstr "Messaggio da Friendica"
+msgstr "Post via Friendica"
 
 #: wppost.php:207
 msgid "Read the original post and comment stream on Friendica"
-msgstr "Leggi il messaggio originale e i commenti su Friendica"
+msgstr "Den Original-Beitrag samt Kommentaren bei Friendica lesen"
