@@ -21,7 +21,7 @@ msgstr ""
 
 #: wppost.php:42
 msgid "Post to Wordpress"
-msgstr "Invia a Wordpress"
+msgstr "Bei Wordpress veröffentlichen"
 
 #: wppost.php:76
 msgid "WordPress Post Settings"
