@@ -5,7 +5,7 @@ function string_plural_select_de($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["Post to Wordpress"] = "Invia a Wordpress";
+$a->strings["Post to Wordpress"] = "Bei Wordpress veröffentlichen";
 $a->strings["WordPress Post Settings"] = "Impostazioni invio a WordPress";
 $a->strings["Enable WordPress Post Plugin"] = "Abilita il plugin di invio a Wordpress";
 $a->strings["WordPress username"] = "Nome utente Wordpress";
