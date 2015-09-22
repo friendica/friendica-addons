@@ -43,7 +43,7 @@ function langfilter_addon_settings(&$a,&$s) {
 	    '$title' => t("Language Filter"),
 	    '$intro' => t ('This addon tries to identify the language of a postings. If it does not match any language spoken by you (see below) the posting will be collapsed. Remember detecting the language is not perfect, especially with short postings.'),
 	    '$enabled' => array('langfilter_enable', t('Use the language filter'), $enable_checked, ''),
-	    '$languages' => array('langfilter_languages', t('I speak'), $languages, t('List of abbreviations (iso2 codes) for languages you speak, comma separated. For excample "de,it".') ),
+	    '$languages' => array('langfilter_languages', t('I speak'), $languages, t('List of abbreviations (iso2 codes) for languages you speak, comma separated. For example "de,it".') ),
 	    '$submit' => t('Save Settings'),
 	));
 
@@ -63,7 +63,8 @@ function langfilter_addon_settings_post(&$a,&$b) {
 		$enable = ((x($_POST,'langfilter_enable')) ? intval($_POST['langfilter_enable']) : 0);
 		$disable = 1-$enable;
 		set_pconfig(local_user(),'langfilter','disable', $disable);
-		set_pconfig(local_user(),'langfilter','minconfidence', $disable);
+		$confidence = ((x($_POST,'langfilter_minconfidence')) ? intval($_POST['langfilter_minconfidence']) : 0);
+		set_pconfig(local_user(),'langfilter','minconfidence', $confidence);
 		info( t('Language Filter Settings saved.') . EOL);
 	}
 }
@@ -89,6 +90,7 @@ function langfilter_prepare_body(&$a,&$b) {
     if( get_pconfig($logged_user,'langfilter','disable') ) return;
 
     $spoken_config = get_pconfig(local_user(),'langfilter','languages');
+    $minconfidence = get_pconfig(local_user(),'langfilter','minconfidence');
 
     # Don't filter if no spoken languages are configured 
     if ( ! $spoken_config ) return;
@@ -103,7 +105,8 @@ function langfilter_prepare_body(&$a,&$b) {
     $lang = $matches[1];
     $confidence = $matches[2];
 
-    # TODO: accept a confidence threshold in settings
+    # Do not filter if language detection confidence is too low
+    if ( $minconfidence && $confidence < $minconfidence ) return;
 
     $iso2 = Text_LanguageDetect_ISO639::nameToCode2($lang);
 
