@@ -35,6 +35,7 @@ function langfilter_addon_settings(&$a,&$s) {
 
 	$enable_checked = (intval(get_pconfig(local_user(),'langfilter','disable')) ? '' : ' checked="checked" ');
 	$languages = get_pconfig(local_user(),'langfilter','languages');
+	$minconfidence = get_pconfig(local_user(),'langfilter','minconfidence')*100;
 	if(! $languages)
 		$languages = 'en,de,fr,it,es';
 
@@ -43,7 +44,8 @@ function langfilter_addon_settings(&$a,&$s) {
 	    '$title' => t("Language Filter"),
 	    '$intro' => t ('This addon tries to identify the language of a postings. If it does not match any language spoken by you (see below) the posting will be collapsed. Remember detecting the language is not perfect, especially with short postings.'),
 	    '$enabled' => array('langfilter_enable', t('Use the language filter'), $enable_checked, ''),
-	    '$languages' => array('langfilter_languages', t('I speak'), $languages, t('List of abbreviations for languages you speak, comma seperated. For excample "de,it".') ),
+	    '$languages' => array('langfilter_languages', t('I speak'), $languages, t('List of abbreviations (iso2 codes) for languages you speak, comma separated. For example "de,it".') ),
+	    '$minconfidence' => array('langfilter_minconfidence', t('Minimum confidence in language detection'), $minconfidence, t('Minimum confidence in language detection being correct, from 0 to 100. Posts will not be filtered when the confidence of language detection is below this percent value.') ),
 	    '$submit' => t('Save Settings'),
 	));
 
@@ -63,55 +65,62 @@ function langfilter_addon_settings_post(&$a,&$b) {
 		$enable = ((x($_POST,'langfilter_enable')) ? intval($_POST['langfilter_enable']) : 0);
 		$disable = 1-$enable;
 		set_pconfig(local_user(),'langfilter','disable', $disable);
+		$minconfidence = 0+$_POST['langfilter_minconfidence'];
+		if ( ! $minconfidence ) $minconfidence = 0;
+		else if ( $minconfidence < 0 ) $minconfidence = 0;
+		else if ( $minconfidence > 100 ) $minconfidence = 100;
+		set_pconfig(local_user(),'langfilter','minconfidence', $minconfidence/100.0);
 		info( t('Language Filter Settings saved.') . EOL);
 	}
 }
 /* Actually filter postings by their language
  * 1st check if the user wants to filter postings
  * 2nd get the user settings which languages shall be not filtered out
- * 3rd determine the language of a posting
+ * 3rd extract the language of a posting
  * 4th if the determined language does not fit to the spoken languages
  *     of the user, then collapse the posting, but provide a link to
  *     expand it again.
  */
 function langfilter_prepare_body(&$a,&$b) {
-	if(get_pconfig(local_user(),'langfilter','disable'))
-		return;
 
-	# Never filter own messages
-	# TODO: find a better way to extract this
-	$logged_user_profile = $a->config['system']['url'] . '/profile/' . $a->user['nickname'];
-	if ( $logged_user_profile == $b['item']['author-link'] ) return;
+    $logged_user = local_user();
+    if ( ! $logged_user ) return;
 
-	if(local_user()) {
-		$langs = get_pconfig(local_user(),'langfilter','languages');
-	}
-	if($langs) {
-		$arr = explode(',',$langs);
-	} else {
-		return;
-	}
+    # Never filter own messages
+    # TODO: find a better way to extract this
+    $logged_user_profile = $a->config['system']['url'] . '/profile/' . $a->user['nickname'];
+    if ( $logged_user_profile == $b['item']['author-link'] ) return;
 
-	$found = false;
+    # Don't filter if language filter is disabled
+    if( get_pconfig($logged_user,'langfilter','disable') ) return;
 
+    $spoken_config = get_pconfig(local_user(),'langfilter','languages');
+    $minconfidence = get_pconfig(local_user(),'langfilter','minconfidence');
+
+    # Don't filter if no spoken languages are configured 
+    if ( ! $spoken_config ) return;
+    $spoken_languages = explode(',', $spoken_config);
+
+    # Extract the language of the post
     $opts = $b['item']['postopts'];
-    if ( $opts ) {
-      if ( preg_match('/^lang=([^;]*)/', $opts, $matches ) )
-      {
-         $lang = $matches[1];
-	 $lng = Text_LanguageDetect_ISO639::nameToCode2($lang);
-      }
-    }
-    if ($lng==null)
-		return;
-    if (! in_array($lng, $arr))
-		$found = true;
-	if ($lng==null)
-		$found = false;
+    if ( ! $opts ) return; # no options associated to post
+    if ( ! preg_match('/\blang=([^;]*);([^:]*)/', $opts, $matches ) )
+            return; # no lang options associated to post
 
-	if($found) {
-		$rnd = random_string(8);
-		$b['html'] = '<div id="langfilter-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'langfilter-' . $rnd . '\'); >' . sprintf( t('unspoken language %s - Click to open/close'),$lang ) . '</div><div id="langfilter-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
-	}
+    $lang = $matches[1];
+    $confidence = $matches[2];
+
+    # Do not filter if language detection confidence is too low
+    if ( $minconfidence && $confidence < $minconfidence ) return;
+
+    $iso2 = Text_LanguageDetect_ISO639::nameToCode2($lang);
+
+    if ( ! $iso2 ) return;
+    $spoken = in_array($iso2, $spoken_languages);
+
+    if( ! $spoken ) {
+        $rnd = random_string(8);
+        $b['html'] = '<div id="langfilter-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'langfilter-' . $rnd . '\'); >' . sprintf( t('unspoken language %s - Click to open/close'),$lang ) . '</div><div id="langfilter-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
+    }
 }
 ?>
