@@ -35,6 +35,7 @@ function langfilter_addon_settings(&$a,&$s) {
 
 	$enable_checked = (intval(get_pconfig(local_user(),'langfilter','disable')) ? '' : ' checked="checked" ');
 	$languages = get_pconfig(local_user(),'langfilter','languages');
+	$minconfidence = get_pconfig(local_user(),'langfilter','minconfidence')*100;
 	if(! $languages)
 		$languages = 'en,de,fr,it,es';
 
@@ -44,6 +45,7 @@ function langfilter_addon_settings(&$a,&$s) {
 	    '$intro' => t ('This addon tries to identify the language of a postings. If it does not match any language spoken by you (see below) the posting will be collapsed. Remember detecting the language is not perfect, especially with short postings.'),
 	    '$enabled' => array('langfilter_enable', t('Use the language filter'), $enable_checked, ''),
 	    '$languages' => array('langfilter_languages', t('I speak'), $languages, t('List of abbreviations (iso2 codes) for languages you speak, comma separated. For example "de,it".') ),
+	    '$minconfidence' => array('langfilter_minconfidence', t('Minimum confidence in language detection'), $minconfidence, t('Minimum confidence in language detection being correct, from 0 to 100. Posts will not be filtered when the confidence of language detection is below this percent value.') ),
 	    '$submit' => t('Save Settings'),
 	));
 
@@ -63,8 +65,11 @@ function langfilter_addon_settings_post(&$a,&$b) {
 		$enable = ((x($_POST,'langfilter_enable')) ? intval($_POST['langfilter_enable']) : 0);
 		$disable = 1-$enable;
 		set_pconfig(local_user(),'langfilter','disable', $disable);
-		$confidence = ((x($_POST,'langfilter_minconfidence')) ? intval($_POST['langfilter_minconfidence']) : 0);
-		set_pconfig(local_user(),'langfilter','minconfidence', $confidence);
+		$minconfidence = 0+$_POST['langfilter_minconfidence'];
+		if ( ! $minconfidence ) $minconfidence = 0;
+		else if ( $minconfidence < 0 ) $minconfidence = 0;
+		else if ( $minconfidence > 100 ) $minconfidence = 100;
+		set_pconfig(local_user(),'langfilter','minconfidence', $minconfidence/100.0);
 		info( t('Language Filter Settings saved.') . EOL);
 	}
 }
