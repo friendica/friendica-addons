@@ -26,11 +26,41 @@ function leistungsschutzrecht_getsiteinfo($a, &$siteinfo) {
 	if (!leistungsschutzrecht_is_member_site($siteinfo["url"]))
 		return;
 
-	$siteinfo["title"] = $siteinfo["url"];
-	unset($siteinfo["text"]);
+	//$siteinfo["title"] = $siteinfo["url"];
+	$siteinfo["text"] = leistungsschutzrecht_cuttext($siteinfo["text"]);
 	unset($siteinfo["image"]);
 	unset($siteinfo["images"]);
 	unset($siteinfo["keywords"]);
+}
+
+function leistungsschutzrecht_cuttext($text) {
+	$text = str_replace(array("\r", "\n"), array(" ", " "), $text);
+
+	do {
+		$oldtext = $text;
+		$text = str_replace("  ", " ", $text);
+	} while ($oldtext != $text);
+
+	$words = explode(" ", $text);
+
+	$text = "";
+	$count = 0;
+	$limit = 7;
+
+	foreach ($words as $word) {
+		if ($text != "")
+			$text .= " ";
+
+		$text .= $word;
+
+		if (++$count >= $limit) {
+			if (sizeof($words) > $limit)
+				$text .= " ...";
+
+			break;
+		}
+	}
+	return $text;
 }
 
 function leistungsschutzrecht_fetchsites() {
