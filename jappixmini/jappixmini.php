@@ -439,6 +439,9 @@ function jappixmini_script(&$a,&$s) {
 
     if(! local_user()) return;
 
+    if ($_GET["mode"] == "minimal")
+	return;
+
     $activate = get_pconfig(local_user(),'jappixmini','activate');
     $dontinsertchat = get_pconfig(local_user(), 'jappixmini','dontinsertchat');
     if (!$activate or $dontinsertchat) return;
