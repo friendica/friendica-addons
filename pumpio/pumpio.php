@@ -604,6 +604,12 @@ function pumpio_action(&$a, $uid, $uri, $action, $content = "") {
 }
 
 function pumpio_sync(&$a) {
+	$r = q("SELECT * FROM `addon` WHERE `installed` = 1 AND `name` = 'pumpio'",
+		$plugin);
+
+	if (!count($r))
+		return;
+
 	$last = get_config('pumpio','last_poll');
 
 	$poll_interval = intval(get_config('pumpio','poll_interval'));
