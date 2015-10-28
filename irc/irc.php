@@ -33,7 +33,7 @@ function irc_addon_settings(&$a,&$s) {
 	$autochans = get_pconfig( local_user(), 'irc','autochans');  /* auto connect chans */
 
 	$t = get_markup_template( "settings.tpl", "addon/irc/" );
-	$s = replace_macros($t, array(
+	$s .= replace_macros($t, array(
 	    	'$header' => t('IRC Settings'),
 		'$info' => t('Here you can change the system wide settings for the channels to automatically join and access via the side bar. Note the changes you do here, only effect the channel selection if you are logged in.'),
 		'$submit' => t('Save Settings'),
