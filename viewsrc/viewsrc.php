@@ -34,8 +34,26 @@ EOS;
 }
 
 function viewsrc_item_photo_menu(&$a,&$b) {
-	if((! local_user()) || (local_user() != $b['item']['uid']))
+	if(!local_user())
 		return;
-	$b['menu'] = array_merge( array( t('View Source') => $a->get_baseurl() . '/viewsrc/'. $b['item']['id']), $b['menu']);
+
+	if (local_user() != $b['item']['uid']) {
+		$r = q("SELECT `id` FROM `item` WHERE `uid` = %d AND `guid` = '%s'",
+				intval(local_user()), dbesc($b['item']['guid']));
+
+		if (!$r)
+			return;
+
+		$item_id = $r[0]['id'];
+
+	} else
+		$item_id = $b['item']['id'];
+
+	$b['menu'] = array_merge( array( t('View Source') => $a->get_baseurl() . '/viewsrc/'. $item_id), $b['menu']);
+
+	//if((! local_user()) || (local_user() != $b['item']['uid']))
+	//	return;
+
+	//$b['menu'] = array_merge( array( t('View Source') => $a->get_baseurl() . '/viewsrc/'. $b['item']['id']), $b['menu']);
 
 }
