@@ -998,6 +998,8 @@ class oauth_client_class
 		$this->response_status = 0;
 		$http = new http_class;
 		$http->debug = ($this->debug && $this->debug_http);
+		$http->timeout = 30;
+		$http->data_timeout = 60;
 		$http->log_debug = true;
 		$http->sasl_authenticate = 0;
 		$http->user_agent = $this->oauth_user_agent;
