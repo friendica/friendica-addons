@@ -53,6 +53,9 @@ function xmpp_converse(&$a,&$s) {
 	if ($_GET["mode"] == "minimal")
 		return;
 
+	if ($a->is_mobile || $a->is_tablet)
+		return;
+
 	$a->page['htmlhead'] .= '<link type="text/css" rel="stylesheet" media="screen" href="addon/xmpp/converse/css/converse.css" />'."\n";
 	$a->page['htmlhead'] .= '<script src="addon/xmpp/converse/builds/converse.min.js"></script>'."\n";
 
