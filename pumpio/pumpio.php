@@ -1715,8 +1715,7 @@ function pumpio_fetchallcomments(&$a, $uid, $id) {
 
 function pumpio_reachable($url) {
 	$data = z_fetch_url($url, false, $redirects, array('timeout'=>10));
-
-	return($data['success']);
+	return(intval($data['return_code']) != 0);
 }
 
 /*
