@@ -17,5 +17,5 @@ $a->strings["Buffer Export"] = "Esporta Buffer";
 $a->strings["Authenticate your Buffer connection"] = "Autentica la tua connessione a Buffer";
 $a->strings["Enable Buffer Post Plugin"] = "Abilita il plugin di invio a Buffer";
 $a->strings["Post to Buffer by default"] = "Invia sempre a Buffer";
-$a->strings["Check to delete this preset"] = "Seleziona per elimiare queto preset";
+$a->strings["Check to delete this preset"] = "Seleziona per eliminare questo preset";
 $a->strings["Posts are going to all accounts that are enabled by default:"] = "I messaggi andranno a tutti gli account che sono abilitati:";
