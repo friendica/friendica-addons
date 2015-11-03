@@ -499,7 +499,10 @@ function pumpio_send(&$a,&$b) {
 		$username = $user.'@'.$host;
 		$url = 'https://'.$host.'/api/user/'.$user.'/feed';
 
-		$success = $client->CallAPI($url, 'POST', $params, array('FailOnAccessError'=>true, 'RequestContentType'=>'application/json'), $user);
+		if (pumpio_reachable($url))
+			$success = $client->CallAPI($url, 'POST', $params, array('FailOnAccessError'=>true, 'RequestContentType'=>'application/json'), $user);
+		else
+			$success = false;
 
 		if($success) {
 
@@ -585,7 +588,10 @@ function pumpio_action(&$a, $uid, $uri, $action, $content = "") {
 
 	$url = 'https://'.$hostname.'/api/user/'.$username.'/feed';
 
-	$success = $client->CallAPI($url, 'POST', $params, array('FailOnAccessError'=>true, 'RequestContentType'=>'application/json'), $user);
+	if (pumpio_reachable($url))
+		$success = $client->CallAPI($url, 'POST', $params, array('FailOnAccessError'=>true, 'RequestContentType'=>'application/json'), $user);
+	else
+		$success = false;
 
 	if($success)
 		logger('pumpio_action '.$username.' '.$action.': success '.$uri);
@@ -713,7 +719,10 @@ function pumpio_fetchtimeline(&$a, $uid) {
 
 	$username = $user.'@'.$host;
 
-	$success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $user);
+	if (pumpio_reachable($url))
+		$success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $user);
+	else
+		$success = false;
 
 	if (!$success) {
 		logger('pumpio: error fetching posts for user '.$uid." ".$username." ".print_r($user, true));
@@ -1371,7 +1380,10 @@ function pumpio_fetchinbox(&$a, $uid) {
 	if ($last_id != "")
 		$url .= '?since='.urlencode($last_id);
 
-	$success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $user);
+	if (pumpio_reachable($url))
+		$success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $user);
+	else
+		$success = false;
 
 	if ($user->items) {
 	    $posts = array_reverse($user->items);
@@ -1409,12 +1421,18 @@ function pumpio_getallusers(&$a, $uid) {
 
 	$url = 'https://'.$hostname.'/api/user/'.$username.'/following';
 
-	$success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $users);
+	if (pumpio_reachable($url))
+		$success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $users);
+	else
+		$success = false;
 
 	if ($users->totalItems > count($users->items)) {
 		$url = 'https://'.$hostname.'/api/user/'.$username.'/following?count='.$users->totalItems;
 
-		$success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $users);
+		if (pumpio_reachable($url))
+			$success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $users);
+		else
+			$success = false;
 	}
 
 	foreach ($users->items AS $user)
@@ -1475,7 +1493,10 @@ function pumpio_queue_hook(&$a,&$b) {
 			$client->client_id = $consumer_key;
 			$client->client_secret = $consumer_secret;
 
-			$success = $client->CallAPI($z['url'], 'POST', $z['post'], array('FailOnAccessError'=>true, 'RequestContentType'=>'application/json'), $user);
+			if (pumpio_reachable($z['url']))
+				$success = $client->CallAPI($z['url'], 'POST', $z['post'], array('FailOnAccessError'=>true, 'RequestContentType'=>'application/json'), $user);
+			else
+				$success = false;
 
 			if($success) {
 				$post_id = $user->object->id;
@@ -1623,7 +1644,10 @@ function pumpio_fetchallcomments(&$a, $uid, $id) {
 
 	logger("pumpio_fetchallcomments: fetching comment for user ".$uid." url ".$url);
 
-	$success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $item);
+	if (pumpio_reachable($url))
+		$success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $item);
+	else
+		$success = false;
 
 	if (!$success)
 		return;
@@ -1686,6 +1710,12 @@ function pumpio_fetchallcomments(&$a, $uid, $id) {
 		logger("pumpio_fetchallcomments: posting comment ".$post->object->id." ".print_r($post, true));
 		pumpio_dopost($a, $client, $uid, $self, $post, $own_id, false);
 	}
+}
+
+
+function pumpio_reachable($url) {
+	$data = z_fetch_url($url, false, $redirects, array('timeout'=>10));
+	return(intval($data['return_code']) != 0);
 }
 
 /*
