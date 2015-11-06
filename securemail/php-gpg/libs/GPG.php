@@ -35,8 +35,6 @@ class GPG
 	private function gpg_encrypt($key, $text) {
 
 		$i = 0;
-		$i = 0;
-		$len = strlen($text);
 		$len = strlen($text);
 		$iblock = array_fill(0, $this->width, 0);
 		$rblock = array_fill(0, $this->width, 0);
@@ -82,12 +80,30 @@ class GPG
 
 	private function gpg_header($tag, $len)
 	{
-		if ($len > 0xff) $tag += 1;
-		$h = chr($tag);
-		if ($len > 0xff) $h .= chr($len / 0x100);
-		$h .= chr($len % 0x100);
-
+		$h = "";
+		if ($len < 0x100) {
+		  $h .= chr($tag);
+		  $h .= chr($len);
+		} else if ($len < 0x10000) {
+		  $tag+=1;
+		  $h .= chr($tag);
+		  $h .= $this->writeNumber($len, 2);
+		} else {
+		  $tag+=2;
+		  $h .= chr($tag);
+		  $h .= $this->writeNumber($len, 4);
+		}
 		return $h;
+	}
+
+	private function writeNumber($n, $bytes)
+	{
+		// credits for this function go to OpenPGP.js
+		$b = '';
+		for ($i = 0; $i < $bytes; $i++) {
+		  $b .= chr(($n >> (8 * ($bytes - $i - 1))) & 0xff);
+		}
+		return $b;
 	}
 
 	private function gpg_session($key_id, $key_type, $session_key, $public_key)
@@ -174,7 +190,7 @@ class GPG
 			$this->gpg_data($session_key, $plaintext);
 
 		$code = base64_encode($cp);
-		$code = wordwrap($code, 60, "\n", 1);
+		$code = wordwrap($code, 64, "\n", 1);
 
 		return
 			"-----BEGIN PGP MESSAGE-----\nVersion: VerySimple PHP-GPG v".$this->version."\n\n" .
