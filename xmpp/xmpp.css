@@ -1,0 +1,10 @@
+#xmpp-enabled-label, #xmpp-individual-label, #xmpp-bosh-proxy-label
+ {
+	float: left;
+	width: 200px;
+}
+
+#xmpp-enabled, #xmpp-individual, #xmpp-bosh-proxy {
+	float: left;
+}
+
