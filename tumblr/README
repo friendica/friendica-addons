@@ -1,7 +1,0 @@
-Register an application at this address:
-http://www.tumblr.com/oauth/apps
-
-use (your server name)addon/tumblr/callback.php as callback URL
-
-Tumblr-OAuth-Library:
-https://groups.google.com/d/msg/tumblr-api/g6SeIBWvsnE/gnWqT9jFSlEJ

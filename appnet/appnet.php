@@ -2,7 +2,7 @@
 
 /**
  * Name: App.net Connector
- * Description: app.net postings import and export
+ * Description: Bidirectional (posting and reading) connector for app.net.
  * Version: 0.2
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
