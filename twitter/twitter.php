@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: Twitter Connector
- * Description: Relay public postings to a connected Twitter account
+ * Description: Bidirectional (posting, relaying and reading) connector for Twitter.
  * Version: 1.0.4
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>

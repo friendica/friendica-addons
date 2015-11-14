@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: pump.io Post Connector
- * Description: Post to pump.io
+ * Description: Bidirectional (posting, relaying and reading) connector for pump.io.
  * Version: 0.2
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  */
