@@ -7,4 +7,3 @@ To get the needed API key please follow these steps:
 * Activate the Google+ API
 * Go to the credentials
 * Create an API key (browser key) and leave the field for the referrer empty
-* 
