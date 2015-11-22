@@ -81,6 +81,21 @@ function fromgplus_addon_settings_post(&$a,&$b) {
 	}
 }
 
+function fromgplus_plugin_admin(&$a, &$o){
+        $t = get_markup_template("admin.tpl", "addon/fromgplus/");
+
+        $o = replace_macros($t, array(
+                '$submit' => t('Save Settings'),
+                '$key' => array('key', t('Key'), trim(get_config('fromgplus', 'key')), t('')),
+        ));
+}
+
+function fromgplus_plugin_admin_post(&$a){
+        $key = ((x($_POST,'key')) ? trim($_POST['key']) : '');
+        set_config('fromgplus','key',$key);
+        info( t('Settings updated.'). EOL );
+}
+
 function fromgplus_cron($a,$b) {
 	$last = get_config('fromgplus','last_poll');
 
