@@ -6,6 +6,7 @@
  * Author: Mike Macgirvin <mike@macgirvin.com>
  * based on pages plugin by
  * Author: Michael Vogel <ike@piratenpartei.de>
+ * Status: Unsupported
  *
  */
 
