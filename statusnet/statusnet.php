@@ -932,8 +932,8 @@ function statusnet_fetch_contact($uid, $contact, $create_user) {
 			dbesc($contact->description),
 			dbesc(normalise_link($contact->statusnet_profile_url)));
 
-	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
-		intval($uid), dbesc(normalise_link($contact->statusnet_profile_url)));
+	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' AND `network` = '%s'LIMIT 1",
+		intval($uid), dbesc(normalise_link($contact->statusnet_profile_url)), dbesc(NETWORK_STATUSNET));
 
 	if(!count($r) AND !$create_user)
 		return(0);
@@ -966,10 +966,10 @@ function statusnet_fetch_contact($uid, $contact, $create_user) {
 			intval(1)
 		);
 
-		$r = q("SELECT * FROM `contact` WHERE `alias` = '%s' AND `uid` = %d LIMIT 1",
+		$r = q("SELECT * FROM `contact` WHERE `alias` = '%s' AND `uid` = %d AND `network` = '%s' LIMIT 1",
 			dbesc($contact->statusnet_profile_url),
-			intval($uid)
-			);
+			intval($uid),
+			dbesc(NETWORK_STATUSNET));
 
 		if(! count($r))
 			return(false);
