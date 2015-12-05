@@ -357,12 +357,12 @@ function appnet_create_entities($a, $b, $postdata) {
 		$start = $pos + 1;
 	}
 
-	if (isset($postdata["url"]) AND isset($postdata["title"])) {
+	if (isset($postdata["url"]) AND isset($postdata["title"]) AND ($postdata["type"] != "photo")) {
 		$postdata["title"] = shortenmsg($postdata["title"], 90);
 		$max = 256 - strlen($postdata["title"]);
 		$text = shortenmsg($text, $max);
 		$text .= "\n[".$postdata["title"]."](".$postdata["url"].")";
-	} elseif (isset($postdata["url"])) {
+	} elseif (isset($postdata["url"]) AND ($postdata["type"] != "photo")) {
 		$postdata["url"] = short_link($postdata["url"]);
 		$max = 240;
 		$text = shortenmsg($text, $max);
@@ -524,7 +524,7 @@ function appnet_send(&$a,&$b) {
 						"value" => $attached_data
 						);
 
-		if (isset($post["url"]) AND !isset($post["title"])) {
+		if (isset($post["url"]) AND !isset($post["title"]) AND ($post["type"] != "photo")) {
 			$display_url = str_replace(array("http://www.", "https://www."), array("", ""), $post["url"]);
 			$display_url = str_replace(array("http://", "https://"), array("", ""), $display_url);
 
