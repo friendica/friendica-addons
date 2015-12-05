@@ -475,7 +475,7 @@ function twitter_post_hook(&$a,&$b) {
 
 		$image = "";
 
-		if (isset($msgarr["url"]))
+		if (isset($msgarr["url"]) AND ($msgarr["type"] != "photo"))
 			$msg .= "\n".$msgarr["url"];
 		elseif (isset($msgarr["image"]) AND ($msgarr["type"] != "video"))
 			$image = $msgarr["image"];
@@ -707,7 +707,7 @@ function twitter_prepare_body(&$a,&$b) {
 		$msgarr = plaintext($a, $item, $max_char, true, 8);
 		$msg = $msgarr["text"];
 
-		if (isset($msgarr["url"]))
+		if (isset($msgarr["url"]) AND ($msgarr["type"] != "photo"))
 			$msg .= " ".$msgarr["url"];
 
 		if (isset($msgarr["image"]))

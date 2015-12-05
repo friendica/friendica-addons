@@ -341,13 +341,13 @@ function buffer_send(&$a,&$b) {
 				// Seems like a bug to me
 				// Buffer doesn't add links to Twitter and App.net (but pictures)
 				//if ($includedlinks AND isset($post["url"]))
-				if (($profile->service == "twitter") AND isset($post["url"]))
+				if (($profile->service == "twitter") AND isset($post["url"]) AND ($post["type"] != "photo"))
 					$post["text"] .= " ".$post["url"];
-				elseif (($profile->service == "appdotnet") AND isset($post["url"]) AND isset($post["title"])) {
+				elseif (($profile->service == "appdotnet") AND isset($post["url"]) AND isset($post["title"]) AND ($post["type"] != "photo")) {
 					$post["title"] = shortenmsg($post["title"], 90);
 					$post["text"] = shortenmsg($post["text"], $limit - (24 + strlen($post["title"])));
 					$post["text"] .= "\n[".$post["title"]."](".$post["url"].")";
-				} elseif (($profile->service == "appdotnet") AND isset($post["url"]))
+				} elseif (($profile->service == "appdotnet") AND isset($post["url"]) AND ($post["type"] != "photo"))
 					$post["text"] .= " ".$post["url"];
 				elseif ($profile->service == "google")
 					$post["text"] .= html_entity_decode("&#x00A0;", ENT_QUOTES, 'UTF-8'); // Send a special blank to identify the post through the "fromgplus" addon

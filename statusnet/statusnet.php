@@ -581,7 +581,7 @@ function statusnet_post_hook(&$a,&$b) {
 
 		$image = "";
 
-		if (isset($msgarr["url"])) {
+		if (isset($msgarr["url"]) AND ($msgarr["type"] != "photo")) {
 			if ((strlen($msgarr["url"]) > 20) AND
 				((strlen($msg." \n".$msgarr["url"]) > $max_char)))
 				$msg .= " \n".short_link($msgarr["url"]);
@@ -738,7 +738,7 @@ function statusnet_prepare_body(&$a,&$b) {
                 $msgarr = plaintext($a, $item, $max_char, true, 7);
                 $msg = $msgarr["text"];
 
-                if (isset($msgarr["url"]))
+                if (isset($msgarr["url"]) AND ($msgarr["type"] != "photo"))
                         $msg .= " ".$msgarr["url"];
 
                 if (isset($msgarr["image"]))
