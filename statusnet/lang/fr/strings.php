@@ -6,7 +6,7 @@ function string_plural_select_fr($n){
 }}
 ;
 $a->strings["Post to GNU Social"] = "Publier sur GNU Social";
-$a->strings["Please contact your site administrator.<br />The provided API URL is not valid."] = "";
+$a->strings["Please contact your site administrator.<br />The provided API URL is not valid."] = "Merci de contacter l'administrateur du site.<br />L'URL d'API fournie est invalide.";
 $a->strings["We could not contact the GNU Social API with the Path you entered."] = "";
 $a->strings["GNU Social settings updated."] = "Paramètres du GNU Social mis à jour.";
 $a->strings["GNU Social Import/Export/Mirror"] = "";
