@@ -377,6 +377,7 @@ function buffer_send(&$a,&$b) {
 					$message["media[thumbnail]"] = $post["preview"];
 
 				//print_r($message);
+				logger("buffer_send: data for message ".$b["id"].": ".print_r($message, true), LOGGER_DEBUG);
 				$ret = $buffer->go('/updates/create', $message);
 				logger("buffer_send: send message ".$b["id"]." result: ".print_r($ret, true), LOGGER_DEBUG);
 			}

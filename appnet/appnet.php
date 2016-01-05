@@ -1097,6 +1097,14 @@ function appnet_expand_annotations($a, $annotations) {
 
 function appnet_fetchcontact($a, $uid, $contact, $me, $create_user) {
 
+	if (function_exists("update_gcontact"))
+		update_gcontact($contact["canonical_url"],
+				NETWORK_APPNET, $contact["avatar_image"]["url"],
+				$contact["name"], $contact["username"],
+				"", $contact["description"]["text"],
+				$contact["username"]."@app.net");
+
+	// Old Code
 	$r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
 			dbesc(normalise_link($contact["canonical_url"])));
 

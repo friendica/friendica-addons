@@ -908,6 +908,13 @@ function statusnet_fetch_contact($uid, $contact, $create_user) {
 	if ($contact->statusnet_profile_url == "")
 		return(-1);
 
+	if (function_exists("update_gcontact"))
+		update_gcontact($contact->statusnet_profile_url,
+				NETWORK_STATUSNET, $contact->profile_image_url,
+				$contact->name, $contact->screen_name,
+				$contact->location, $contact->description,
+				statusnet_address($contact));
+
 	// Check if the unique contact is existing
 	// To-Do: only update once a while
 	 $r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",

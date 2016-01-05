@@ -925,18 +925,38 @@ function twitter_queue_hook(&$a,&$b) {
 	}
 }
 
+function twitter_fix_avatar($avatar) {
+	$new_avatar = str_replace("_normal.", ".", $avatar);
+
+	$info = get_photo_info($new_avatar);
+	if (!$info)
+		$new_avatar = $avatar;
+
+	return $new_avatar;
+}
+
 function twitter_fetch_contact($uid, $contact, $create_user) {
 	require_once("include/Photo.php");
 
 	if ($contact->id_str == "")
 		return(-1);
 
-	$avatar = str_replace("_normal.", ".", $contact->profile_image_url_https);
+	$avatar = twitter_fix_avatar($contact->profile_image_url_https);
 
-	$info = get_photo_info($avatar);
-	if (!$info)
-		$avatar = $contact->profile_image_url_https;
+	//$avatar = str_replace("_normal.", ".", $contact->profile_image_url_https);
 
+	//$info = get_photo_info($avatar);
+	//if (!$info)
+	//	$avatar = $contact->profile_image_url_https;
+
+	if (function_exists("update_gcontact"))
+		update_gcontact("https://twitter.com/".$contact->screen_name,
+				NETWORK_TWITTER, $avatar,
+				$contact->name, $contact->screen_name,
+				$contact->location, $contact->description,
+				$contact->screen_name."@twitter.com");
+
+	// Old stuff - will be removed later
 	// Check if the unique contact is existing
 	// To-Do: only update once a while
 	$r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
@@ -1220,6 +1240,8 @@ function twitter_expand_entities($a, $body, $item, $no_tags = false, $picture) {
 
 		if (($footer == "") AND ($picture != ""))
 			$body .= "\n\n[img]".$picture."[/img]\n";
+		elseif (($footer == "") AND ($picture == ""))
+			$body = add_page_info_to_body($body);
 
 		if ($no_tags)
 			return(array("body" => $body, "tags" => ""));
@@ -1360,7 +1382,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 
 		$postarray['owner-name'] = $post->user->name;
 		$postarray['owner-link'] = "https://twitter.com/".$post->user->screen_name;
-		$postarray['owner-avatar'] = $post->user->profile_image_url_https;
+		$postarray['owner-avatar'] = twitter_fix_avatar($post->user->profile_image_url_https);
 	}
 
 	if(($contactid == 0) AND !$only_existing_contact)
@@ -1464,7 +1486,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 			// Let retweets look like wall-to-wall posts
 			$postarray['author-name'] = $post->retweeted_status->user->name;
 			$postarray['author-link'] = "https://twitter.com/".$post->retweeted_status->user->screen_name;
-			$postarray['author-avatar'] = $post->retweeted_status->user->profile_image_url_https;
+			$postarray['author-avatar'] = twitter_fix_avatar($post->retweeted_status->user->profile_image_url_https);
 			//if (($post->retweeted_status->user->screen_name != "") AND ($post->retweeted_status->id_str != "")) {
 			//	$postarray['plink'] = "https://twitter.com/".$post->retweeted_status->user->screen_name."/status/".$post->retweeted_status->id_str;
 			//	$postarray['uri'] = "twitter::".$post->retweeted_status->id_str;

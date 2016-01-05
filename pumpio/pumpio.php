@@ -944,6 +944,13 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 
 function pumpio_get_contact($uid, $contact) {
 
+	if (function_exists("update_gcontact"))
+		update_gcontact($contact->url,
+				NETWORK_PUMPIO, $contact->image->url,
+				$contact->displayName, $contact->preferredUsername,
+				$contact->location->displayName, $contact->summary,
+				str_replace("acct:", "", $contact->id));
+
 	$r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
 		dbesc(normalise_link($contact->url)));
 
