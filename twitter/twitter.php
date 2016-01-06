@@ -926,6 +926,8 @@ function twitter_queue_hook(&$a,&$b) {
 }
 
 function twitter_fix_avatar($avatar) {
+	require_once("include/Photo.php");
+
 	$new_avatar = str_replace("_normal.", ".", $avatar);
 
 	$info = get_photo_info($new_avatar);
@@ -936,50 +938,42 @@ function twitter_fix_avatar($avatar) {
 }
 
 function twitter_fetch_contact($uid, $contact, $create_user) {
-	require_once("include/Photo.php");
 
 	if ($contact->id_str == "")
 		return(-1);
 
 	$avatar = twitter_fix_avatar($contact->profile_image_url_https);
 
-	//$avatar = str_replace("_normal.", ".", $contact->profile_image_url_https);
-
-	//$info = get_photo_info($avatar);
-	//if (!$info)
-	//	$avatar = $contact->profile_image_url_https;
-
 	if (function_exists("update_gcontact"))
-		update_gcontact("https://twitter.com/".$contact->screen_name,
-				NETWORK_TWITTER, $avatar,
-				$contact->name, $contact->screen_name,
-				$contact->location, $contact->description,
-				$contact->screen_name."@twitter.com");
+		update_gcontact(array("url" => "https://twitter.com/".$contact->screen_name,
+				"network" => NETWORK_TWITTER, "photo" => $avatar,  "hide" => true,
+				"name" => $contact->name, "nick" => $contact->screen_name,
+				"location" => $contact->location, "about" => $contact->description,
+				"addr" => $contact->screen_name."@twitter.com", "generation" => 2));
+	else {
+		// Old Code
+		$r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
+				dbesc(normalise_link("https://twitter.com/".$contact->screen_name)));
 
-	// Old stuff - will be removed later
-	// Check if the unique contact is existing
-	// To-Do: only update once a while
-	$r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
-			dbesc(normalise_link("https://twitter.com/".$contact->screen_name)));
+		if (count($r) == 0)
+			q("INSERT INTO unique_contacts (url, name, nick, avatar) VALUES ('%s', '%s', '%s', '%s')",
+				dbesc(normalise_link("https://twitter.com/".$contact->screen_name)),
+				dbesc($contact->name),
+				dbesc($contact->screen_name),
+				dbesc($avatar));
+		else
+			q("UPDATE unique_contacts SET name = '%s', nick = '%s', avatar = '%s' WHERE url = '%s'",
+				dbesc($contact->name),
+				dbesc($contact->screen_name),
+				dbesc($avatar),
+				dbesc(normalise_link("https://twitter.com/".$contact->screen_name)));
 
-	if (count($r) == 0)
-		q("INSERT INTO unique_contacts (url, name, nick, avatar) VALUES ('%s', '%s', '%s', '%s')",
-			dbesc(normalise_link("https://twitter.com/".$contact->screen_name)),
-			dbesc($contact->name),
-			dbesc($contact->screen_name),
-			dbesc($avatar));
-	else
-		q("UPDATE unique_contacts SET name = '%s', nick = '%s', avatar = '%s' WHERE url = '%s'",
-			dbesc($contact->name),
-			dbesc($contact->screen_name),
-			dbesc($avatar),
-			dbesc(normalise_link("https://twitter.com/".$contact->screen_name)));
-
-	if (DB_UPDATE_VERSION >= "1177")
-		q("UPDATE `unique_contacts` SET `location` = '%s', `about` = '%s' WHERE url = '%s'",
-			dbesc($contact->location),
-			dbesc($contact->description),
-			dbesc(normalise_link("https://twitter.com/".$contact->screen_name)));
+		if (DB_UPDATE_VERSION >= "1177")
+			q("UPDATE `unique_contacts` SET `location` = '%s', `about` = '%s' WHERE url = '%s'",
+				dbesc($contact->location),
+				dbesc($contact->description),
+				dbesc(normalise_link("https://twitter.com/".$contact->screen_name)));
+	}
 
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
 		intval($uid), dbesc("twitter::".$contact->id_str));
