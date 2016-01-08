@@ -4,14 +4,15 @@
 # 
 # 
 # Translators:
+# Damien Goutte-Gattat <damien+transifex@incenp.org>, 2015
 # Nicola Spanti <translations@nicola-spanti.info>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-27 07:21+0200\n"
-"PO-Revision-Date: 2015-08-30 17:23+0000\n"
-"Last-Translator: Nicola Spanti <translations@nicola-spanti.info>\n"
+"PO-Revision-Date: 2015-12-12 11:28+0000\n"
+"Last-Translator: Damien Goutte-Gattat <damien+transifex@incenp.org>\n"
 "Language-Team: French (http://www.transifex.com/Friendica/friendica/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,7 +28,7 @@ msgstr "Publier sur GNU Social"
 msgid ""
 "Please contact your site administrator.<br />The provided API URL is not "
 "valid."
-msgstr ""
+msgstr "Merci de contacter l'administrateur du site.<br />L'URL d'API fournie est invalide."
 
 #: statusnet.php:225
 msgid "We could not contact the GNU Social API with the Path you entered."

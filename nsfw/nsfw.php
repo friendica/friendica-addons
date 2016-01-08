@@ -88,7 +88,7 @@ function nsfw_addon_settings(&$a,&$s) {
     $s .= '<input id="nsfw-enable" type="checkbox" name="nsfw-enable" value="1"' . $enable_checked . ' />';
 	$s .= '<div class="clear"></div>';
     $s .= '<label id="nsfw-label" for="nsfw-words">' . t('Comma separated list of keywords to hide') . ' </label>';
-    $s .= '<input id="nsfw-words" type="text" name="nsfw-words" value="' . $words .'" />';
+    $s .= '<textarea id="nsfw-words" type="text" name="nsfw-words">' . $words .'</textarea>';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="nsfw-submit" name="nsfw-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
