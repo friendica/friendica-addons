@@ -908,29 +908,36 @@ function statusnet_fetch_contact($uid, $contact, $create_user) {
 	if ($contact->statusnet_profile_url == "")
 		return(-1);
 
-	// Check if the unique contact is existing
-	// To-Do: only update once a while
-	 $r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
-			dbesc(normalise_link($contact->statusnet_profile_url)));
+	if (function_exists("update_gcontact"))
+		update_gcontact(array("url" => $contact->statusnet_profile_url,
+				"network" => NETWORK_STATUSNET, "photo" => $contact->profile_image_url,
+				"name" => $contact->name, "nick" => $contact->screen_name,
+				"location" => $contact->location, "about" => $contact->description,
+				"addr" => statusnet_address($contact), "generation" => 3));
+	else {
+		// Old Code
+		 $r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
+				dbesc(normalise_link($contact->statusnet_profile_url)));
 
-	if (count($r) == 0)
-		q("INSERT INTO unique_contacts (url, name, nick, avatar) VALUES ('%s', '%s', '%s', '%s')",
-			dbesc(normalise_link($contact->statusnet_profile_url)),
-			dbesc($contact->name),
-			dbesc($contact->screen_name),
-			dbesc($contact->profile_image_url));
-	else
-		q("UPDATE unique_contacts SET name = '%s', nick = '%s', avatar = '%s' WHERE url = '%s'",
-			dbesc($contact->name),
-			dbesc($contact->screen_name),
-			dbesc($contact->profile_image_url),
-			dbesc(normalise_link($contact->statusnet_profile_url)));
+		if (count($r) == 0)
+			q("INSERT INTO unique_contacts (url, name, nick, avatar) VALUES ('%s', '%s', '%s', '%s')",
+				dbesc(normalise_link($contact->statusnet_profile_url)),
+				dbesc($contact->name),
+				dbesc($contact->screen_name),
+				dbesc($contact->profile_image_url));
+		else
+			q("UPDATE unique_contacts SET name = '%s', nick = '%s', avatar = '%s' WHERE url = '%s'",
+				dbesc($contact->name),
+				dbesc($contact->screen_name),
+				dbesc($contact->profile_image_url),
+				dbesc(normalise_link($contact->statusnet_profile_url)));
 
-	if (DB_UPDATE_VERSION >= "1177")
-		q("UPDATE `unique_contacts` SET `location` = '%s', `about` = '%s' WHERE url = '%s'",
-			dbesc($contact->location),
-			dbesc($contact->description),
-			dbesc(normalise_link($contact->statusnet_profile_url)));
+		if (DB_UPDATE_VERSION >= "1177")
+			q("UPDATE `unique_contacts` SET `location` = '%s', `about` = '%s' WHERE url = '%s'",
+				dbesc($contact->location),
+				dbesc($contact->description),
+				dbesc(normalise_link($contact->statusnet_profile_url)));
+	}
 
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' AND `network` = '%s'LIMIT 1",
 		intval($uid), dbesc(normalise_link($contact->statusnet_profile_url)), dbesc(NETWORK_STATUSNET));

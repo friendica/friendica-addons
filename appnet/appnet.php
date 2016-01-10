@@ -1097,28 +1097,36 @@ function appnet_expand_annotations($a, $annotations) {
 
 function appnet_fetchcontact($a, $uid, $contact, $me, $create_user) {
 
-	$r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
-			dbesc(normalise_link($contact["canonical_url"])));
+	if (function_exists("update_gcontact"))
+		update_gcontact(array("url" => $contact["canonical_url"], "generation" => 2,
+				"network" => NETWORK_APPNET, "photo" => $contact["avatar_image"]["url"],
+				"name" => $contact["name"], "nick" => $contact["username"],
+				"about" => $contact["description"]["text"], "hide" => true,
+				"addr" => $contact["username"]."@app.net"));
+	else {
+		// Old Code
+		$r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
+				dbesc(normalise_link($contact["canonical_url"])));
 
-	if (count($r) == 0)
-		q("INSERT INTO unique_contacts (url, name, nick, avatar) VALUES ('%s', '%s', '%s', '%s')",
-			dbesc(normalise_link($contact["canonical_url"])),
-			dbesc($contact["name"]),
-			dbesc($contact["username"]),
-			dbesc($contact["avatar_image"]["url"]));
-	else
-		q("UPDATE unique_contacts SET name = '%s', nick = '%s', avatar = '%s' WHERE url = '%s'",
-			dbesc($contact["name"]),
-			dbesc($contact["username"]),
-			dbesc($contact["avatar_image"]["url"]),
-			dbesc(normalise_link($contact["canonical_url"])));
+		if (count($r) == 0)
+			q("INSERT INTO unique_contacts (url, name, nick, avatar) VALUES ('%s', '%s', '%s', '%s')",
+				dbesc(normalise_link($contact["canonical_url"])),
+				dbesc($contact["name"]),
+				dbesc($contact["username"]),
+				dbesc($contact["avatar_image"]["url"]));
+		else
+			q("UPDATE unique_contacts SET name = '%s', nick = '%s', avatar = '%s' WHERE url = '%s'",
+				dbesc($contact["name"]),
+				dbesc($contact["username"]),
+				dbesc($contact["avatar_image"]["url"]),
+				dbesc(normalise_link($contact["canonical_url"])));
 
-	if (DB_UPDATE_VERSION >= "1177")
-		q("UPDATE `unique_contacts` SET `location` = '%s', `about` = '%s' WHERE url = '%s'",
-			dbesc(""),
-			dbesc($contact["description"]["text"]),
-			dbesc(normalise_link($contact["canonical_url"])));
-
+		if (DB_UPDATE_VERSION >= "1177")
+			q("UPDATE `unique_contacts` SET `location` = '%s', `about` = '%s' WHERE url = '%s'",
+				dbesc(""),
+				dbesc($contact["description"]["text"]),
+				dbesc(normalise_link($contact["canonical_url"])));
+	}
 
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
 		intval($uid), dbesc("adn::".$contact["id"]));
