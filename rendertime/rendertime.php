@@ -26,7 +26,7 @@ function rendertime_page_end(&$a, &$o) {
 
 	$duration = microtime(true)-$a->performance["start"];
 
-	if (is_site_admin() AND ($_GET["mode"] != "minimal") AND !$a->is_mobile AND !$a->is_tablet)
+	if (is_site_admin() AND ($_GET["mode"] != "minimal") AND !$a->is_mobile AND !$a->is_tablet) {
 		$o = $o.'<div class="renderinfo">'.sprintf(t("Performance: Database: %s, Network: %s, Rendering: %s, Parser: %s, I/O: %s, Other: %s, Total: %s"),
 						round($a->performance["database"], 3),
 						round($a->performance["network"], 3),
@@ -41,4 +41,23 @@ function rendertime_page_end(&$a, &$o) {
 						//round($a->performance["plugin"], 3)
 						)."</div>";
 
+		if (get_config("rendertime", "callstack")) {
+			$o .= "<pre>";
+			$o .= "\nDatabase:\n";
+			foreach ($a->callstack["database"] AS $func => $time) {
+				$time = round($time, 3);
+				if ($time > 0)
+					$o .= $func.": ".$time."\n";
+			}
+
+			$o .= "\nNetwork:\n";
+			foreach ($a->callstack["network"] AS $func => $time) {
+				$time = round($time, 3);
+				if ($time > 0)
+					$o .= $func.": ".$time."\n";
+			}
+
+			$o .= "</pre>";
+		}
+	}
 }
