@@ -4,6 +4,7 @@
  * Description: Choose which Additional Features are on by default for new users on the site.
  * Version: 1.0
  * Author: Michael Johnston
+ * Status: Unsupported
  */
 
 function defaultfeatures_install() {
