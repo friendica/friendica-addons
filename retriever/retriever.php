@@ -2,9 +2,12 @@
 /**
  * Name: Retrieve Feed Content
  * Description: Follow the permalink of RSS/Atom feed items and replace the summary with the full content.
- * Version: 0.2
+ * Version: 1.0
  * Author: Matthew Exon <http://mat.exon.name>
  */
+
+require_once('include/html2bbcode.php');	
+require_once('include/Photo.php');	
 
 function retriever_install() {
     register_hook('plugin_settings', 'addon/retriever/retriever.php', 'retriever_plugin_settings');
@@ -12,12 +15,6 @@ function retriever_install() {
     register_hook('post_remote', 'addon/retriever/retriever.php', 'retriever_post_remote_hook');
     register_hook('contact_photo_menu', 'addon/retriever/retriever.php', 'retriever_contact_photo_menu');
     register_hook('cron', 'addon/retriever/retriever.php', 'retriever_cron');
-
-    $schema = file_get_contents(dirname(__file__).'/database.sql');
-    $arr = explode(';', $schema);
-    foreach ($arr as $a) {
-        $r = q($a);
-    }
 
     $r = q("SELECT `id` FROM `pconfig` WHERE `cat` LIKE 'retriever_%%'");
     if (count($r) || (get_config('retriever', 'dbversion') == '0.1')) {
@@ -33,17 +30,21 @@ function retriever_install() {
             q("INSERT INTO `retriever_rule` (`uid`, `contact-id`, `data`) VALUES (%d, %d, '%s')",
               intval($uid), intval($k), dbesc(json_encode($v)));
         }
-        q("DELETE FROM `pconfig` WHERE `cat` LIKE 'retriever%%'");
+        q("DELETE FROM `pconfig` WHERE `cat` LIKE 'retriever_%%'");
+        set_config('retriever', 'dbversion', '0.2');
     }
     if (get_config('retriever', 'dbversion') == '0.2') {
         q("ALTER TABLE `retriever_resource` DROP COLUMN `retriever`");
+        set_config('retriever', 'dbversion', '0.3');
     }
     if (get_config('retriever', 'dbversion') == '0.3') {
         q("ALTER TABLE `retriever_item` MODIFY COLUMN `item-uri` varchar(800) CHARACTER SET ascii NOT NULL");
         q("ALTER TABLE `retriever_resource` MODIFY COLUMN `url` varchar(800) CHARACTER SET ascii NOT NULL");
+        set_config('retriever', 'dbversion', '0.4');
     }
     if (get_config('retriever', 'dbversion') == '0.4') {
         q("ALTER TABLE `retriever_item` ADD COLUMN `finished` tinyint(1) unsigned NOT NULL DEFAULT '0'");
+        set_config('retriever', 'dbversion', '0.5');
     }
     if (get_config('retriever', 'dbversion') == '0.5') {
         q('ALTER TABLE `retriever_resource` CHANGE `created` `created` timestamp NOT NULL DEFAULT now()');
@@ -51,6 +52,7 @@ function retriever_install() {
         q('ALTER TABLE `retriever_resource` CHANGE `last-try` `last-try` timestamp NULL DEFAULT NULL');
         q('ALTER TABLE `retriever_item` DROP KEY `all`');
         q('ALTER TABLE `retriever_item` ADD KEY `all` (`item-uri`, `item-uid`, `contact-id`)');
+        set_config('retriever', 'dbversion', '0.6');
     }
     if (get_config('retriever', 'dbversion') == '0.6') {
         q('ALTER TABLE `retriever_item` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin');
@@ -58,6 +60,7 @@ function retriever_install() {
         q('ALTER TABLE `retriever_resource` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin');
         q('ALTER TABLE `retriever_resource` CHANGE `url` `url`  varchar(800) CHARACTER SET ascii COLLATE ascii_bin NOT NULL');
         q('ALTER TABLE `retriever_rule` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin');
+        set_config('retriever', 'dbversion', '0.7');
     }
     if (get_config('retriever', 'dbversion') == '0.7') {
         $r = q("SELECT `id`, `data` FROM `retriever_rule`");
@@ -113,8 +116,26 @@ function retriever_install() {
             $r = q('UPDATE `retriever_rule` SET `data` = "%s" WHERE `id` = %d', dbesc(json_encode($data)), $rr['id']);
             logger('retriever_install: retriever ' . $rr['id'] . ' new config ' . json_encode($data), LOGGER_DATA);
         }
+        set_config('retriever', 'dbversion', '0.8');
     }
-    set_config('retriever', 'dbversion', '0.8');
+    if (get_config('retriever', 'dbversion') == '0.8') {
+        q("ALTER TABLE `retriever_resource` ADD COLUMN `http-code` smallint(1) unsigned NULL DEFAULT NULL");
+        set_config('retriever', 'dbversion', '0.9');
+    }
+    if (get_config('retriever', 'dbversion') == '0.9') {
+        q("ALTER TABLE `retriever_item` DROP COLUMN `parent`");
+        q("ALTER TABLE `retriever_resource` ADD COLUMN `redirect-url` varchar(800) CHARACTER SET ascii COLLATE ascii_bin NULL DEFAULT NULL");
+        set_config('retriever', 'dbversion', '0.10');
+    }
+
+    if (get_config('retriever', 'dbversion') != '0.10') {
+        $schema = file_get_contents(dirname(__file__).'/database.sql');
+        $arr = explode(';', $schema);
+        foreach ($arr as $a) {
+            $r = q($a);
+        }
+        set_config('retriever', 'dbversion', '0.10');
+    }
 }
 
 function retriever_uninstall() {
@@ -158,13 +179,18 @@ function retriever_retrieve_items($max_items) {
     }
 
     $retrieve_items = $max_items - $retriever_item_count;
+    logger('retriever_retrieve_items: asked for maximum ' . $max_items . ', already retrieved ' . $retriever_item_count . ', retrieve ' . $retrieve_items, LOGGER_DEBUG);
     do {
         $r = q("SELECT * FROM `retriever_resource` WHERE `completed` IS NULL AND (`last-try` IS NULL OR %s) ORDER BY `last-try` ASC LIMIT %d",
                dbesc(implode($schedule_clauses, ' OR ')),
                intval($retrieve_items));
+        if (!is_array($r)) {
+            break;
+        }
         if (count($r) == 0) {
             break;
         }
+        logger('retriever_retrieve_items: found ' . count($r) . ' waiting resources in database', LOGGER_DEBUG);
         foreach ($r as $rr) {
             retrieve_resource($rr);
             $retriever_item_count++;
@@ -182,22 +208,24 @@ function retriever_retrieve_items($max_items) {
     if (!$r) {
         $r = array();
     }
+    logger('retriever_retrieve_items: items waiting even though resource has completed: ' . count($r), LOGGER_DEBUG);
     foreach ($r as $rr) {
         $resource = q("SELECT * FROM retriever_resource WHERE `id` = %d", $rr['resource']);
         $retriever_item = retriever_get_retriever_item($rr['item']);
         if (!$retriever_item) {
-            logger('retriever_retrieve_items: no retriever item with id ' . $rr['item']);
+            logger('retriever_retrieve_items: no retriever item with id ' . $rr['item'], LOGGER_NORMAL);
             continue;
         }
         $item = retriever_get_item($retriever_item);
         if (!$item) {
-            logger('retriever_retrieve_items: no item ' . $retriever_item['item-uri']);
+            logger('retriever_retrieve_items: no item ' . $retriever_item['item-uri'], LOGGER_NORMAL);
             continue;
         }
         $retriever = get_retriever($item['contact-id'], $item['uid']);
         if (!$retriever) {
             logger('retriever_retrieve_items: no retriever for item ' .
-                   $retriever_item['item-uri'] . ' ' . $retriever_item['uid'] . ' ' . $item['contact-id']);
+                   $retriever_item['item-uri'] . ' ' . $retriever_item['uid'] . ' ' . $item['contact-id'],
+                   LOGGER_NORMAL);
             continue;
         }
         retriever_apply_completed_resource_to_item($retriever, $item, $resource[0]);
@@ -212,22 +240,37 @@ function retriever_tidy() {
     q("DELETE FROM retriever_resource WHERE completed IS NULL AND created < DATE_SUB(now(), INTERVAL 3 MONTH)");
 
     $r = q("SELECT retriever_item.id FROM retriever_item LEFT OUTER JOIN retriever_resource ON (retriever_item.resource = retriever_resource.id) WHERE retriever_resource.id is null");
+    logger('retriever_tidy: found ' . count($r) . ' retriever_items with no retriever_resource');
     foreach ($r as $rr) {
         q('DELETE FROM retriever_item WHERE id = %d', intval($rr['id']));
     }
 }
 
 function retrieve_resource($resource) {
+    $a = get_app();
+
     logger('retrieve_resource: ' . ($resource['num-tries'] + 1) .
            ' attempt at resource ' . $resource['id'] . ' ' . $resource['url'], LOGGER_DEBUG);
-    q("UPDATE `retriever_resource` SET `last-try` = now(), `num-tries` = `num-tries` + 1 WHERE id = %d",
+    $redirects;
+    $cookiejar = tempnam(get_temppath(), 'cookiejar-retriever-');
+    $fetch_result = z_fetch_url($resource['url'], $resource['binary'], $redirects, array('cookiejar' => $cookiejar));
+    unlink($cookiejar);
+    $resource['data'] = $fetch_result['body'];
+    $resource['http-code'] = $a->get_curl_code();
+    $resource['type'] = $a->get_curl_content_type();
+    $resource['redirect-url'] = $fetch_result['redirect_url'];
+    logger('retrieve_resource: got code ' . $resource['http-code'] .
+           ' retrieving resource ' . $resource['id'] .
+           ' final url ' . $resource['redirect-url'], LOGGER_DEBUG);
+    q("UPDATE `retriever_resource` SET `last-try` = now(), `num-tries` = `num-tries` + 1, `http-code` = %d, `redirect-url` = '%s' WHERE id = %d",
+      intval($resource['http-code']),
+      dbesc($resource['redirect-url']),
       intval($resource['id']));
-    $data = fetch_url($resource['url'], $resource['binary'], $resource['type']);
-    $resource['type'] = get_app()->get_curl_content_type();
-    if ($data) {
-        $resource['data'] = $data;
+    if ($resource['data']) {
         q("UPDATE `retriever_resource` SET `completed` = now(), `data` = '%s', `type` = '%s' WHERE id = %d",
-          dbesc($data), dbesc($resource['type']), intval($resource['id']));
+          dbesc($resource['data']),
+          dbesc($resource['type']),
+          intval($resource['id']));
         retriever_resource_completed($resource);
     }
 }
@@ -304,6 +347,7 @@ function apply_retrospective($retriever, $num) {
            intval($retriever['contact-id']), intval($num));
     foreach ($r as $item) {
         q('UPDATE `item` SET `visible` = 0 WHERE `id` = %d', $item['id']);
+        q('UPDATE `thread` SET `visible` = 0 WHERE `iid` = %d', $item['id']);
         retriever_on_item_insert($retriever, $item);
     }
 }
@@ -330,18 +374,53 @@ function retriever_on_item_insert($retriever, &$item) {
 
 function add_retriever_resource($url, $binary = false) {
     logger('add_retriever_resource: ' . $url, LOGGER_DEBUG);
+
+    $scheme = parse_url($url, PHP_URL_SCHEME);
+    if ($scheme == 'data') {
+        $fp = fopen($url, 'r');
+        $meta = stream_get_meta_data($fp);
+        $type = $meta['mediatype'];
+        $data = stream_get_contents($fp);
+        fclose($fp);
+
+        $url = 'md5://' . hash('md5', $url);
+        $r = q("SELECT * FROM `retriever_resource` WHERE `url` = '%s'", dbesc($url));
+        $resource = $r[0];
+        if (count($r)) {
+            logger('add_retriever_resource: Resource ' . $url . ' already requested', LOGGER_DEBUG);
+            return $resource;
+        }
+
+        logger('retrieve_resource: got data URL type ' . $resource['type'], LOGGER_DEBUG);
+        q("INSERT INTO `retriever_resource` (`type`, `binary`, `url`, `completed`, `data`) " .
+          "VALUES ('%s', %d, '%s', now(), '%s')",
+          dbesc($type),
+          intval($binary ? 1 : 0),
+          dbesc($url),
+          dbesc($data));
+        $r = q("SELECT * FROM `retriever_resource` WHERE `url` = '%s'", dbesc($url));
+        $resource = $r[0];
+        if (count($r)) {
+            retriever_resource_completed($resource);
+        }
+        return $resource;
+    }
+
+    if (strlen($url) > 800) {
+        logger('add_retriever_resource: URL is longer than 800 characters', LOGGER_NORMAL);
+    }
+
     $r = q("SELECT * FROM `retriever_resource` WHERE `url` = '%s'", dbesc($url));
     $resource = $r[0];
     if (count($r)) {
         logger('add_retriever_resource: Resource ' . $url . ' already requested', LOGGER_DEBUG);
-        return $r[0];
+        return $resource;
     }
-    else {
-        q("INSERT INTO `retriever_resource` (`binary`, `url`) " .
-          "VALUES (%d, '%s')", intval($binary ? 1 : 0), dbesc($url));
-        $r = q("SELECT * FROM `retriever_resource` WHERE `url` = '%s'", dbesc($url));
-        return $r[0];
-    }
+
+    q("INSERT INTO `retriever_resource` (`binary`, `url`) " .
+      "VALUES (%d, '%s')", intval($binary ? 1 : 0), dbesc($url));
+    $r = q("SELECT * FROM `retriever_resource` WHERE `url` = '%s'", dbesc($url));
+    return $r[0];
 }
 
 function add_retriever_item(&$item, $resource) {
@@ -371,38 +450,26 @@ function retriever_get_encoding($resource) {
     return 'utf-8';
 }
 
-function retriever_construct_xpath($spec) {
-    if (gettype($spec) != "array") {
-        return;
+function retriever_apply_xslt_text($xslt_text, $doc) {
+    if (!$xslt_text) {
+        logger('retriever_apply_xslt_text: empty XSLT text', LOGGER_NORMAL);
+        return $doc;
     }
-    $components = array();
-    foreach ($spec as $clause) {
-        if (!$clause['attribute']) {
-            $components[] = $clause['element'];
-            continue;
-        }
-        if ($clause['attribute'] === 'class') {
-            $components[] =
-                $clause['element'] .
-                "[contains(concat(' ', normalize-space(@class), ' '), ' " .
-                $clause['value'] . " ')]";
-        }
-        else {
-            $components[] =
-                $clause['element'] . '[@' .
-                $clause['attribute'] . "='" .
-                $clause['value'] . "']";
-        }
+    $xslt_doc = new DOMDocument();
+    if (!$xslt_doc->loadXML($xslt_text)) {
+        logger('retriever_apply_xslt_text: could not load XML', LOGGER_NORMAL);
+        return $doc;
     }
-    // It would be better to do this in smarty3 in extract.tpl
-    return implode('|', $components);
+    $xp = new XsltProcessor();
+    $xp->importStylesheet($xslt_doc);
+    $result = $xp->transformToDoc($doc);
+    return $result;
 }
 
 function retriever_apply_dom_filter($retriever, &$item, $resource) {
-    logger('retriever_apply_dom_filter: applying XSLT to ' . $item['id'] . ' ' . $item['plink'], LOGGER_DEBUG);
-    require_once('include/html2bbcode.php');	
+    logger('retriever_apply_dom_filter: applying XSLT to ' . $item['id'] . ' ' . $item['uri'] . ' contact ' . $item['contact-id'], LOGGER_DEBUG);
 
-    if (!$retriever['data']['include']) {
+    if (!$retriever['data']['include'] && !$retriever['data']['customxslt']) {
         return;
     }
     if (!$resource['data']) {
@@ -411,33 +478,42 @@ function retriever_apply_dom_filter($retriever, &$item, $resource) {
     }
 
     $encoding = retriever_get_encoding($resource);
-    logger('@@@ item type ' . $resource['type'] . ' encoding ' . $encoding);
-    $extracter_template = get_markup_template('extract.tpl', 'addon/retriever/');
-    $doc = new DOMDocument('1.0', 'utf-8');
+    $content = mb_convert_encoding($resource['data'], 'HTML-ENTITIES', $encoding);
+    $doc = new DOMDocument('1.0', 'UTF-8');
     if (strpos($resource['type'], 'html') !== false) {
-        @$doc->loadHTML($resource['data']);
+        @$doc->loadHTML($content);
     }
     else {
-        $doc->loadXML($resource['data']);
+        $doc->loadXML($content);
     }
-    logger('@@@ actual encoding of document is ' . $doc->encoding);
 
-    $components = parse_url($item['plink']);
+    $params = array('$spec' => $retriever['data']);
+    $extract_template = get_markup_template('extract.tpl', 'addon/retriever/');
+    $extract_xslt = replace_macros($extract_template, $params);
+    if ($retriever['data']['include']) {
+        $doc = retriever_apply_xslt_text($extract_xslt, $doc);
+    }
+    if ($retriever['data']['customxslt']) {
+        $doc = retriever_apply_xslt_text($retriever['data']['customxslt'], $doc);
+    }
+    if (!$doc) {
+        logger('retriever_apply_dom_filter: failed to apply extract XSLT template', LOGGER_NORMAL);
+        return;
+    }
+
+    $components = parse_url($resource['redirect-url']);
     $rooturl = $components['scheme'] . "://" . $components['host'];
     $dirurl = $rooturl . dirname($components['path']) . "/";
+    $params = array('$dirurl' => $dirurl, '$rooturl' => $rooturl);
+    $fix_urls_template = get_markup_template('fix-urls.tpl', 'addon/retriever/');
+    $fix_urls_xslt = replace_macros($fix_urls_template, $params);
+    $doc = retriever_apply_xslt_text($fix_urls_xslt, $doc);
+    if (!$doc) {
+        logger('retriever_apply_dom_filter: failed to apply fix urls XSLT template', LOGGER_NORMAL);
+        return;
+    }
 
-    $params = array('$include' => retriever_construct_xpath($retriever['data']['include']),
-                    '$exclude' => retriever_construct_xpath($retriever['data']['exclude']),
-                    '$pageurl' => $item['plink'],
-                    '$dirurl' => $dirurl,
-                    '$rooturl' => $rooturl);
-    $xslt = replace_macros($extracter_template, $params);
-    $xmldoc = new DOMDocument();
-    $xmldoc->loadXML($xslt);
-    $xp = new XsltProcessor();
-    $xp->importStylesheet($xmldoc);
-    $transformed = $xp->transformToXML($doc);
-    $item['body'] = html2bbcode($transformed);
+    $item['body'] = html2bbcode($doc->saveXML());
     if (!strlen($item['body'])) {
         logger('retriever_apply_dom_filter retriever ' . $retriever['id'] . ' item ' . $item['id'] . ': output was empty', LOGGER_NORMAL);
         return;
@@ -485,8 +561,9 @@ function retriever_check_item_completed(&$item)
         q("UPDATE `item` SET `visible` = %d WHERE `id` = %d",
           intval($item['visible']),
           intval($item['id']));
-// disable due to possible security issue
-//        proc_run('php', "include/notifier.php", 'edit_post', $item['id']);
+        q("UPDATE `thread` SET `visible` = %d WHERE `iid` = %d",
+          intval($item['visible']),
+          intval($item['id']));
     }
 }
 
@@ -562,8 +639,6 @@ function retriever_store_photo($item, &$resource) {
 }
 
 function retriever_transform_images(&$item, $resource) {
-    require_once('include/Photo.php');	
-
     if (!$resource["data"]) {
         logger('retriever_transform_images: no data available for '
                . $resource['id'] . ' ' . $resource['url'], LOGGER_NORMAL);
@@ -616,7 +691,7 @@ function retriever_content($a) {
         if (x($_POST["id"])) {
             $retriever = get_retriever($a->argv[1], local_user(), true);
             $retriever["data"] = array();
-            foreach (array('pattern', 'replace', 'enable', 'images') as $setting) {
+            foreach (array('pattern', 'replace', 'enable', 'images', 'customxslt') as $setting) {
                 if (x($_POST['retriever_' . $setting])) {
                     $retriever["data"][$setting] = $_POST['retriever_' . $setting];
                 }
@@ -672,8 +747,15 @@ function retriever_content($a) {
                                                       t('Retrospectively Apply'),
                                                       '0',
                                                       t('Reapply the rules to this number of posts')),
+                                                  '$customxslt' => array(
+                                                      'retriever_customxslt',
+                                                      t('Custom XSLT'),
+                                                      $retriever['data']['customxslt'],
+                                                      t("When standard rules aren't enough, apply custom XSLT to the article")),
                                                   '$title' => t('Retrieve Feed Content'),
                                                   '$help' => $a->get_baseurl() . '/retriever/help',
+                                                  '$help_t' => t('Get Help'),
+                                                  '$submit_t' => t('Submit'),
                                                   '$submit' => t('Save Settings'),
                                                   '$id' => ($retriever["id"] ? $retriever["id"] : "create"),
                                                   '$tag_t' => t('Tag'),
@@ -706,6 +788,13 @@ function retriever_post_remote_hook(&$a, &$item) {
         retriever_on_item_insert($retriever, $item);
     }
     else {
+        if (get_pconfig($item["uid"], 'retriever', 'oembed')) {
+            // Convert to HTML and back to take advantage of bbcode's resolution of oembeds.
+            $body = html2bbcode(bbcode($item['body']));
+            if ($body) {
+                $item['body'] = $body;
+            }
+        }
         if (get_pconfig($item["uid"], 'retriever', 'all_photos')) {
             retrieve_images($item, null);
         }
@@ -715,21 +804,35 @@ function retriever_post_remote_hook(&$a, &$item) {
 
 function retriever_plugin_settings(&$a,&$s) {
     $all_photos = get_pconfig(local_user(), 'retriever', 'all_photos');
-    $all_photos_mu = ($all_photos == 'on') ? ' checked="true"' : '';
+    $oembed = get_pconfig(local_user(), 'retriever', 'oembed');
     $template = get_markup_template('/settings.tpl', 'addon/retriever/');
     $s .= replace_macros($template, array(
+                             '$allphotos' => array(
+                                 'retriever_all_photos',
+                                 t('All Photos'),
+                                 $all_photos,
+                                 t('Check this to retrieve photos for all posts')),
+                             '$oembed' => array(
+                                 'retriever_oembed',
+                                 t('Resolve OEmbed'),
+                                 $oembed,
+                                 t('Check this to attempt to retrieve embedded content for all posts - useful e.g. for Facebook posts')),
                              '$submit' => t('Save Settings'),
                              '$title' => t('Retriever Settings'),
-                             '$help' => $a->get_baseurl() . '/retriever/help',
-                             '$all_photos' => $all_photos_mu,
-                             '$all_photos_t' => t('All Photos')));
+                             '$help' => $a->get_baseurl() . '/retriever/help'));
 }
 
 function retriever_plugin_settings_post($a,$post) {
-    if ($_POST['all_photos']) {
-        set_pconfig(local_user(), 'retriever', 'all_photos', $_POST['all_photos']);
+    if ($_POST['retriever_all_photos']) {
+        set_pconfig(local_user(), 'retriever', 'all_photos', $_POST['retriever_all_photos']);
     }
     else {
         del_pconfig(local_user(), 'retriever', 'all_photos');
+    }
+    if ($_POST['retriever_oembed']) {
+        set_pconfig(local_user(), 'retriever', 'oembed', $_POST['retriever_oembed']);
+    }
+    else {
+        del_pconfig(local_user(), 'retriever', 'oembed');
     }
 }
