@@ -130,10 +130,9 @@ function show_button($a, &$b) {
 	$b = <<< EOT
 	<div id="profile-smiley-wrapper" style="display: block;" >
 		<img src="$image_url" class="smiley_button" onclick="toggle_smileybutton()" alt="smiley">
-	</div>
-
-	<div id="smileybutton" style="display:none;">
-	$s
+		<div id="smileybutton" style="display:none;">
+		$s
+		</div>
 	</div>
 
 	<script>
