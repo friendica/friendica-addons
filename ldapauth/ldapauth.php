@@ -47,7 +47,7 @@
  * //   attribute to get email - optional - default : 'mail'
  * $a->config['ldapauth']['ldap_autocreateaccount_emailattribute'] = 'mail';
  * //   attribute to get nickname - optional - default : 'givenName'
- * $a->config['ldapauth']['ldap_autocreateaccount_nameattribute'] = 'givenName';
+ * $a->config['ldapauth']['ldap_autocreateaccount_nameattribute'] = 'cn';
  *
  * ...etc.
  */
@@ -97,7 +97,7 @@ function ldapauth_authenticate($username,$password) {
 
     $connect = @ldap_connect($ldap_server);
 
-    if(! $connect) {
+    if($connect === false) {
         logger("ldapauth: could not connect to $ldap_server");
         return false;
     }
