@@ -90,23 +90,29 @@ function ldapauth_authenticate($username,$password) {
 	
     if(! ((strlen($password))
             && (function_exists('ldap_connect'))
-            && (strlen($ldap_server))))
+            && (strlen($ldap_server)))) {
+            logger("ldapauth: not configured or missing php-ldap module");
             return false;
+    }
 
     $connect = @ldap_connect($ldap_server);
 
-    if(! $connect)
+    if(! $connect) {
+        logger("ldapauth: could not connect to $ldap_server");
         return false;
+    }
 
     @ldap_set_option($connect, LDAP_OPT_PROTOCOL_VERSION,3);
     @ldap_set_option($connect, LDAP_OPT_REFERRALS, 0);
     if((@ldap_bind($connect,$ldap_binddn,$ldap_bindpw)) === false) {
+        logger("ldapauth: could not bind $ldap_server as $ldap_binddn");
         return false;
     }
 
     $res = @ldap_search($connect,$ldap_searchdn, $ldap_userattr . '=' . $username);
 
     if(! $res) {
+        logger("ldapauth: $ldap_userattr=$username,$ldap_searchdn not found");
         return false;
     }
 
