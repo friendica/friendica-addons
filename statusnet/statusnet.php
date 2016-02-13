@@ -44,6 +44,7 @@
 define('STATUSNET_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
 require_once('library/twitteroauth.php');
+require_once('include/enotify.php');
 
 class StatusNetOAuth extends TwitterOAuth {
     function get_maxlength() {
@@ -119,6 +120,7 @@ function statusnet_install() {
 	register_hook('jot_networks',    'addon/statusnet/statusnet.php', 'statusnet_jot_nets');
 	register_hook('cron', 'addon/statusnet/statusnet.php', 'statusnet_cron');
 	register_hook('prepare_body', 'addon/statusnet/statusnet.php', 'statusnet_prepare_body');
+	register_hook('check_item_notification','addon/statusnet/statusnet.php', 'statusnet_check_item_notification');
 	logger("installed GNU Social");
 }
 
@@ -131,12 +133,17 @@ function statusnet_uninstall() {
 	unregister_hook('jot_networks',    'addon/statusnet/statusnet.php', 'statusnet_jot_nets');
 	unregister_hook('cron', 'addon/statusnet/statusnet.php', 'statusnet_cron');
 	unregister_hook('prepare_body', 'addon/statusnet/statusnet.php', 'statusnet_prepare_body');
+	unregister_hook('check_item_notification','addon/statusnet/statusnet.php', 'statusnet_check_item_notification');
 
 	// old setting - remove only
 	unregister_hook('post_local_end', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
 	unregister_hook('plugin_settings', 'addon/statusnet/statusnet.php', 'statusnet_settings');
 	unregister_hook('plugin_settings_post', 'addon/statusnet/statusnet.php', 'statusnet_settings_post');
 
+}
+
+function statusnet_check_item_notification($a, &$notification_data) {
+	$notification_data["profiles"][] = get_pconfig($notification_data["uid"], 'statusnet', 'own_url');
 }
 
 function statusnet_jot_nets(&$a,&$b) {
@@ -1443,7 +1450,7 @@ function statusnet_fetchhometimeline($a, $uid, $mode = 1) {
 
 					logger('statusnet_fetchhometimeline: User '.$self["nick"].' posted home timeline item '.$item);
 
-					if ($item != 0)
+					if ($item AND !function_exists("check_item_notification"))
 						statusnet_checknotification($a, $uid, $nick, $item, $postarray);
 				}
 
@@ -1493,6 +1500,9 @@ function statusnet_fetchhometimeline($a, $uid, $mode = 1) {
 					$postarray["id"] = $item;
 
 					logger('statusnet_fetchhometimeline: User '.$self["nick"].' posted mention timeline item '.$item);
+
+					if ($item AND function_exists("check_item_notification"))
+						check_item_notification($item, $uid, NOTIFY_TAGSELF);
 				}
 			}
 
@@ -1505,7 +1515,7 @@ function statusnet_fetchhometimeline($a, $uid, $mode = 1) {
 				$parent_id = $r[0]['parent'];
 			}
 
-			if ($item != 0) {
+			if (($item != 0) AND !function_exists("check_item_notification")) {
 				require_once('include/enotify.php');
 				notification(array(
 					'type'         => NOTIFY_TAGSELF,
@@ -1536,6 +1546,7 @@ function statusnet_complete_conversation($a, $uid, $self, $create_user, $nick, $
 	$api     = get_pconfig($uid, 'statusnet', 'baseapi');
 	$otoken  = get_pconfig($uid, 'statusnet', 'oauthtoken');
 	$osecret = get_pconfig($uid, 'statusnet', 'oauthsecret');
+	$own_url = get_pconfig($uid, 'statusnet', 'own_url');
 
 	require_once('library/twitteroauth.php');
 
@@ -1559,7 +1570,7 @@ function statusnet_complete_conversation($a, $uid, $self, $create_user, $nick, $
 
 			logger('statusnet_complete_conversation: User '.$self["nick"].' posted home timeline item '.$item);
 
-			if ($item != 0)
+			if ($item AND !function_exists("check_item_notification"))
 				statusnet_checknotification($a, $uid, $nick, $item, $postarray);
 		}
 	}

@@ -15,6 +15,8 @@
  - https://alpha.app.net/opendev/post/34396399 - location data
 */
 
+require_once('include/enotify.php');
+
 define('APPNET_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
 function appnet_install() {
@@ -25,6 +27,7 @@ function appnet_install() {
 	register_hook('connector_settings',	'addon/appnet/appnet.php', 'appnet_settings');
 	register_hook('connector_settings_post','addon/appnet/appnet.php', 'appnet_settings_post');
 	register_hook('prepare_body', 		'addon/appnet/appnet.php', 'appnet_prepare_body');
+	register_hook('check_item_notification','addon/appnet/appnet.php', 'appnet_check_item_notification');
 }
 
 
@@ -36,6 +39,7 @@ function appnet_uninstall() {
 	unregister_hook('connector_settings',	'addon/appnet/appnet.php', 'appnet_settings');
 	unregister_hook('connector_settings_post', 'addon/appnet/appnet.php', 'appnet_settings_post');
 	unregister_hook('prepare_body', 	'addon/appnet/appnet.php', 'appnet_prepare_body');
+	unregister_hook('check_item_notification','addon/appnet/appnet.php', 'appnet_check_item_notification');
 }
 
 function appnet_module() {}
@@ -62,6 +66,18 @@ function appnet_content(&$a) {
 		$o = appnet_connect($a);
 
 	return $o;
+}
+
+function appnet_check_item_notification($a, &$notification_data) {
+        $own_id = get_pconfig($notification_data["uid"], 'appnet', 'ownid');
+
+        $own_user = q("SELECT `url` FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
+                        intval($notification_data["uid"]),
+                        dbesc("adn::".$own_id)
+                );
+
+        if ($own_user)
+                $notification_data["profiles"][] = $own_user[0]["url"];
 }
 
 function appnet_plugin_admin(&$a, &$o){
@@ -707,7 +723,7 @@ function appnet_fetchstream($a, $uid) {
 
 		$lastid = $post["id"];
 
-		if (($item != 0) AND ($postarray['contact-id'] != $me["id"])) {
+		if (($item != 0) AND ($postarray['contact-id'] != $me["id"]) AND !function_exists("check_item_notification")) {
 			$r = q("SELECT `thread`.`iid` AS `parent` FROM `thread`
 				INNER JOIN `item` ON `thread`.`iid` = `item`.`parent` AND `thread`.`uid` = `item`.`uid`
 				WHERE `item`.`id` = %d AND `thread`.`mention` LIMIT 1", dbesc($item));
@@ -769,6 +785,10 @@ function appnet_fetchstream($a, $uid) {
 
 			$parent_id = 0;
 			logger('appnet_fetchstream: User '.$uid.' posted mention item '.$item);
+
+			if ($item AND function_exists("check_item_notification"))
+				check_item_notification($item, $uid, NOTIFY_TAGSELF);
+
 		} else {
 			$item = 0;
 			$parent_id = 0;
@@ -790,7 +810,7 @@ function appnet_fetchstream($a, $uid) {
 		$lastid = $post["id"];
 
 		//if (($item != 0) AND ($postarray['contact-id'] != $me["id"])) {
-		if ($item != 0) {
+		if (($item != 0) AND !function_exists("check_item_notification")) {
 			require_once('include/enotify.php');
 			notification(array(
 				'type'         => NOTIFY_TAGSELF,

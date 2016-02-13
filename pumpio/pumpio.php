@@ -7,6 +7,7 @@
  */
 require('addon/pumpio/oauth/http.php');
 require('addon/pumpio/oauth/oauth_client.php');
+require_once('include/enotify.php');
 
 define('PUMPIO_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
@@ -18,6 +19,7 @@ function pumpio_install() {
 	register_hook('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
 	register_hook('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
 	register_hook('queue_predeliver', 'addon/pumpio/pumpio.php', 'pumpio_queue_hook');
+	register_hook('check_item_notification','addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
 }
 
 function pumpio_uninstall() {
@@ -28,6 +30,7 @@ function pumpio_uninstall() {
 	unregister_hook('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
 	unregister_hook('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
 	unregister_hook('queue_predeliver', 'addon/pumpio/pumpio.php', 'pumpio_queue_hook');
+	unregister_hook('check_item_notification','addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
 }
 
 function pumpio_module() {}
@@ -56,6 +59,14 @@ function pumpio_content(&$a) {
 
 	return $o;
 }
+
+function pumpio_check_item_notification($a, &$notification_data) {
+	$hostname = get_pconfig($notification_data["uid"], 'pumpio','host');
+	$username = get_pconfig($notification_data["uid"], "pumpio", "user");
+
+        $notification_data["profiles"][] = "https://".$hostname."/".$username;
+}
+
 
 function pumpio_registerclient(&$a, $host) {
 
@@ -857,17 +868,19 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 
 	// Searching for the liked post
 	// Two queries for speed issues
-	$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
+	$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d AND `network` = '%s' LIMIT 1",
 				dbesc($post->object->id),
-				intval($uid)
+				intval($uid),
+				dbesc(NETWORK_PUMPIO)
 		);
 
 	if (count($r))
 		$orig_post = $r[0];
 	else {
-		$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
+		$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d AND `network` = '%s' LIMIT 1",
 					dbesc($post->object->id),
-					intval($uid)
+					intval($uid),
+					dbesc(NETWORK_PUMPIO)
 			);
 
 		if (!count($r))
@@ -1306,42 +1319,44 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 		if (link_compare($own_id, $postarray['author-link']))
 			return $top_item;
 
-		$myconv = q("SELECT `author-link`, `author-avatar`, `parent` FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `parent` != 0 AND `deleted` = 0",
-				dbesc($postarray['parent-uri']),
-				intval($uid)
-				);
+		if (!function_exists("check_item_notification")) {
+			$myconv = q("SELECT `author-link`, `author-avatar`, `parent` FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `parent` != 0 AND `deleted` = 0",
+					dbesc($postarray['parent-uri']),
+					intval($uid)
+					);
 
-		if(count($myconv)) {
+			if(count($myconv)) {
 
-			foreach($myconv as $conv) {
-				// now if we find a match, it means we're in this conversation
+				foreach($myconv as $conv) {
+					// now if we find a match, it means we're in this conversation
 
-				if(!link_compare($conv['author-link'],$importer_url) AND !link_compare($conv['author-link'],$own_id))
-					continue;
+					if(!link_compare($conv['author-link'],$importer_url) AND !link_compare($conv['author-link'],$own_id))
+						continue;
 
-				require_once('include/enotify.php');
+					require_once('include/enotify.php');
 
-				$conv_parent = $conv['parent'];
+					$conv_parent = $conv['parent'];
 
-				notification(array(
-					'type'         => NOTIFY_COMMENT,
-					'notify_flags' => $user[0]['notify-flags'],
-					'language'     => $user[0]['language'],
-					'to_name'      => $user[0]['username'],
-					'to_email'     => $user[0]['email'],
-					'uid'          => $user[0]['uid'],
-					'item'         => $postarray,
-					'link'         => $a->get_baseurl().'/display/'.urlencode(get_item_guid($top_item)),
-					'source_name'  => $postarray['author-name'],
-					'source_link'  => $postarray['author-link'],
-					'source_photo' => $postarray['author-avatar'],
-					'verb'         => ACTIVITY_POST,
-					'otype'        => 'item',
-					'parent'       => $conv_parent,
-					));
+					notification(array(
+						'type'         => NOTIFY_COMMENT,
+						'notify_flags' => $user[0]['notify-flags'],
+						'language'     => $user[0]['language'],
+						'to_name'      => $user[0]['username'],
+						'to_email'     => $user[0]['email'],
+						'uid'          => $user[0]['uid'],
+						'item'         => $postarray,
+						'link'         => $a->get_baseurl().'/display/'.urlencode(get_item_guid($top_item)),
+						'source_name'  => $postarray['author-name'],
+						'source_link'  => $postarray['author-link'],
+						'source_photo' => $postarray['author-avatar'],
+						'verb'         => ACTIVITY_POST,
+						'otype'        => 'item',
+						'parent'       => $conv_parent,
+						));
 
-				// only send one notification
-				break;
+					// only send one notification
+					break;
+				}
 			}
 		}
 	}
