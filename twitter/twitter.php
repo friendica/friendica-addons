@@ -60,6 +60,8 @@
  *     Requirements: PHP5, curl [Slinky library]
  */
 
+require_once('include/enotify.php');
+
 define('TWITTER_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
 function twitter_install() {
@@ -74,6 +76,7 @@ function twitter_install() {
 	register_hook('follow', 'addon/twitter/twitter.php', 'twitter_follow');
 	register_hook('expire', 'addon/twitter/twitter.php', 'twitter_expire');
 	register_hook('prepare_body', 'addon/twitter/twitter.php', 'twitter_prepare_body');
+	register_hook('check_item_notification','addon/twitter/twitter.php', 'twitter_check_item_notification');
 	logger("installed twitter");
 }
 
@@ -89,12 +92,25 @@ function twitter_uninstall() {
 	unregister_hook('follow', 'addon/twitter/twitter.php', 'twitter_follow');
 	unregister_hook('expire', 'addon/twitter/twitter.php', 'twitter_expire');
 	unregister_hook('prepare_body', 'addon/twitter/twitter.php', 'twitter_prepare_body');
+	unregister_hook('check_item_notification','addon/twitter/twitter.php', 'twitter_check_item_notification');
 
 	// old setting - remove only
 	unregister_hook('post_local_end', 'addon/twitter/twitter.php', 'twitter_post_hook');
 	unregister_hook('plugin_settings', 'addon/twitter/twitter.php', 'twitter_settings');
 	unregister_hook('plugin_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
 
+}
+
+function twitter_check_item_notification($a, &$notification_data) {
+	$own_id = get_pconfig($notification_data["uid"], 'twitter', 'own_id');
+
+	$own_user = q("SELECT `url` FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
+			intval($notification_data["uid"]),
+			dbesc("twitter::".$own_id)
+		);
+
+	if ($own_user)
+		$notification_data["profiles"][] = $own_user[0]["url"];
 }
 
 function twitter_follow($a, &$contact) {
@@ -1580,7 +1596,7 @@ function twitter_fetchparentposts($a, $uid, $post, $connection, $self, $own_id) 
 
 		if (count($r))
 			break;
-		
+
 		$posts[] = $post;
 	}
 
@@ -1600,7 +1616,7 @@ function twitter_fetchparentposts($a, $uid, $post, $connection, $self, $own_id) 
 
 			logger('twitter_fetchparentpost: User '.$self["nick"].' posted parent timeline item '.$item);
 
-			if ($item != 0)
+			if ($item AND !function_exists("check_item_notification"))
 				twitter_checknotification($a, $uid, $own_id, $item, $postarray);
 		}
 	}
@@ -1710,7 +1726,7 @@ function twitter_fetchhometimeline($a, $uid) {
 
 			logger('twitter_fetchhometimeline: User '.$self["nick"].' posted home timeline item '.$item);
 
-			if ($item != 0)
+			if ($item AND !function_exists("check_item_notification"))
 				twitter_checknotification($a, $uid, $own_id, $item, $postarray);
 
 		}
@@ -1755,6 +1771,9 @@ function twitter_fetchhometimeline($a, $uid) {
 			$item = item_store($postarray);
 			$postarray["id"] = $item;
 
+			if ($item AND function_exists("check_item_notification"))
+				check_item_notification($item, $uid, NOTIFY_TAGSELF);
+
 			if (!isset($postarray["parent"]) OR ($postarray["parent"] == 0))
 				$postarray["parent"] = $item;
 
@@ -1772,7 +1791,7 @@ function twitter_fetchhometimeline($a, $uid) {
 			} else
 				$parent_id = $postarray['parent'];
 
-			if ($item != 0) {
+			if (($item != 0) AND !function_exists("check_item_notification")) {
 				require_once('include/enotify.php');
 				notification(array(
 					'type'         => NOTIFY_TAGSELF,
