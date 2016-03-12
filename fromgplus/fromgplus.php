@@ -10,6 +10,7 @@
 define('FROMGPLUS_DEFAULT_POLL_INTERVAL', 30); // given in minutes
 
 require_once('mod/share.php');
+require_once('mod/parse_url.php');
 
 function fromgplus_install() {
 	register_hook('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
@@ -322,6 +323,11 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 
 				if ($quote != "")
 					$pagedata["text"] = $quote;
+
+				// Add Keywords to page link
+				$data = parseurl_getsiteinfo_cached($pagedata["url"], true);
+				if (isset($data["keywords"]))
+					$pagedata["keywords"] = $data["keywords"];
 
 				break;
 
