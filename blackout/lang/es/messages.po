@@ -1,0 +1,52 @@
+# ADDON blackout
+# Copyright (C)
+# This file is distributed under the same license as the Friendica blackout addon package.
+# 
+# 
+# Translators:
+# Tupambae.org, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2016-04-18 19:20+0000\n"
+"Last-Translator: Tupambae.org\n"
+"Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: blackout.php:99
+msgid "Save Settings"
+msgstr "Guardar configuración"
+
+#: blackout.php:100
+msgid "Redirect URL"
+msgstr "Redirigir URL"
+
+#: blackout.php:100
+msgid "all your visitors from the web will be redirected to this URL"
+msgstr "todos los visitantes de la web serán redirigidos a esta dirección."
+
+#: blackout.php:101
+msgid "Begin of the Blackout"
+msgstr "Inicio del apagón."
+
+#: blackout.php:101
+msgid ""
+"format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, "
+"<em>hh</em> hour and <em>mm</em> minute"
+msgstr "formato es <em>YYYY</em> año, <em>MM</em> mes, <em>DD</em> día, <em>hh</em> hora y <em>mm</em> minuto"
+
+#: blackout.php:102
+msgid "End of the Blackout"
+msgstr "Fin del apagón."
+
+#: blackout.php:108
+msgid ""
+"The end-date is prior to the start-date of the blackout, you should fix "
+"this."
+msgstr "La fecha de final del apagón es antes de la fecha de inicio, deberías arreglar esto."
