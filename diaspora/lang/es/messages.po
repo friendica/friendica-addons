@@ -1,0 +1,62 @@
+# ADDON diaspora
+# Copyright (C)
+# This file is distributed under the same license as the Friendica diaspora addon package.
+# 
+# 
+# Translators:
+# Tupambae.org, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2016-04-18 19:36+0000\n"
+"Last-Translator: Tupambae.org\n"
+"Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: diaspora.php:37
+msgid "Post to Diaspora"
+msgstr "Publicar hacia Diaspora*"
+
+#: diaspora.php:142
+msgid ""
+"Can't login to your Diaspora account. Please check username and password and"
+" ensure you used the complete address (including http...)"
+msgstr "No se puede ingresar a tu cuenta de Diaspora*. Por favor verificar nombre de usuario, contraseña y asegura de usar la dirección completa, incluyendo https.. ."
+
+#: diaspora.php:149 diaspora.php:153
+msgid "Diaspora Export"
+msgstr "Exportar a Diaspora*"
+
+#: diaspora.php:163
+msgid "Enable Diaspora Post Plugin"
+msgstr "Habilitar publicar a traves de Diaspora* plugin."
+
+#: diaspora.php:168
+msgid "Diaspora username"
+msgstr "Nombre de usuario de Diaspora*."
+
+#: diaspora.php:173
+msgid "Diaspora password"
+msgstr "Contraseña Diaspora*"
+
+#: diaspora.php:178
+msgid "Diaspora site URL"
+msgstr "URL sitio Diaspora*"
+
+#: diaspora.php:183
+msgid "Post to Diaspora by default"
+msgstr "Publicar hacia Diaspora* como estándar."
+
+#: diaspora.php:189
+msgid "Save Settings"
+msgstr "Guardar configuración"
+
+#: diaspora.php:324
+msgid "Diaspora post failed. Queued for retry."
+msgstr "La publicación hacia Diaspora* fallo, puesto en espera para nuevo intento."
