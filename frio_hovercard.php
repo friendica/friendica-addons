@@ -75,7 +75,6 @@ function frio_hovercard_content() {
 		'addr'	=> (($contact["addr"] != "") ? $contact["addr"] : $contact["url"]),
 		'thumb' => proxy_url($contact["photo"], false, PROXY_SIZE_THUMB),
 		'url' => ($cid ? ("redir/".$cid) : zrl($contact["url"])),
-		'nurl' => $contact["nurl"], // We additionaly strore the nurl as identifier
 //		'alias' => $contact["alias"],
 		'location' => $contact["location"],
 		'gender' => $contact["gender"],
@@ -126,4 +125,16 @@ function get_template_content($template, $root = "") {
 	}
 
 	return false;
+}
+
+
+function save_this_query() {
+    $contacts = q("SELECT * FROM `gcontact`
+					WHERE ((NOT `gcontact`.`hide` AND `gcontact`.`network` IN ('%s', '%s', '%s') AND
+					((`gcontact`.`last_contact` >= `gcontact`.`last_failure`) OR (`gcontact`.`updated` >= `gcontact`.`last_failure`)))) AND
+					(`gcontact`.`addr` = '%s' OR `gcontact`.`nurl` = '%s')
+						LIMIT 1",
+					dbesc(NETWORK_DFRN), dbesc($ostatus), dbesc($diaspora),
+					dbesc(escape_tags($url)) 
+			);
 }
