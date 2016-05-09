@@ -35,7 +35,8 @@ function frio_hovercard_content() {
 	// (We need to discuss possible security lacks before doing this)
 	if ($datatype == "tpl") {
 		$templatecontent = get_template_content("hovercard.tpl", "addon/frio_hovercard/");
-		return $templatecontent;
+		echo $templatecontent;
+		killme();
 	}
 
 	// If a contact is connected the url is internally changed to "redir/CID". We need the pure url to search for
