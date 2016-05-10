@@ -65,7 +65,8 @@ function frio_hovercard_content() {
 		return;
 
 	// Get the photo_menu - the menu if possible contact actions
-	$actions = contact_photo_menu($contact);
+	if(local_user())
+		$actions = contact_photo_menu($contact);
 
 
 	// Move the contact data to the profile array so we can deliver it to
