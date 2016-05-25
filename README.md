@@ -2,7 +2,8 @@
 friendica hovercard addon for the frio theme
 
 This addon provides a hovercard for firendicas frio theme.
-**It not intended to use the plugin without the frio theme or vice versa.
+
+**It not intended to use the plugin without the frio theme or vice versa.**
 
 It's a sample implementation how friendica could provide json userdata for
 the hovercard. Ideally we should implement something like a profile data api endpoint like 
