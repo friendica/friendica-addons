@@ -11,3 +11,5 @@ it is done in diaspora & gnu social. This would search at the foreign server for
 We could also think about supporting requesting the api of diaspora  and gnu social.
 
 At the present state the data comes from the own contact and gcontact table
+
+[original commit history](https://github.com/rabuzarus/frio_hovercard/commits/master)
