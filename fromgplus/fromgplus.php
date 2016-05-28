@@ -130,7 +130,7 @@ function fromgplus_cron($a,$b) {
 	set_config('fromgplus','last_poll', time());
 }
 
-function fromgplus_post($a, $uid, $source, $body, $location) {
+function fromgplus_post($a, $uid, $source, $body, $location, $coord) {
 
 	//$uid = 2;
 
@@ -165,6 +165,7 @@ function fromgplus_post($a, $uid, $source, $body, $location) {
 	$_REQUEST['title'] = $title;
 	$_REQUEST['body'] = $body;
 	$_REQUEST['location'] = $location;
+	$_REQUEST['coord'] = $coord;
 
 	if (($_REQUEST['title'] == "") AND ($_REQUEST['body'] == "")) {
 	        logger('fromgplus: empty post for user '.$uid." ".print_r($_REQUEST, true));
@@ -422,7 +423,6 @@ function fromgplus_fetch($a, $uid) {
 
 	$result = fetch_url("https://www.googleapis.com/plus/v1/people/".$account."/activities/public?alt=json&pp=1&key=".$key."&maxResults=".$maxfetch);
 	//$result = file_get_contents("google.txt");
-	//$result = file_get_contents("addon/fromgplus/album.txt");
 	//file_put_contents("google.txt", $result);
 
 	$activities = json_decode($result);
@@ -469,14 +469,23 @@ function fromgplus_fetch($a, $uid) {
 					if (is_array($item->object->attachments))
 						$post .= fromgplus_handleattachments($a, $uid, $item, $item->object->content, false);
 
-					// geocode, placeName
-					if (isset($item->address))
-						$location = $item->address;
-					else
-						$location = "";
+					$coord = "";
+					$location = "";
+					if (isset($item->location)) {
+						if (isset($item->location->address->formatted))
+							$location = $item->location->address->formatted;
 
-					//fromgplus_post($a, $uid, "Google+", $post, $location);
-					fromgplus_post($a, $uid, $item->provider->title, $post, $location);
+						if (isset($item->location->displayName))
+							$location = $item->location->displayName;
+
+						if (isset($item->location->position->latitude) AND
+							isset($item->location->position->longitude))
+							$coord = $item->location->position->latitude." ".$item->location->position->longitude;
+
+					} elseif (isset($item->address))
+						$location = $item->address;
+
+					fromgplus_post($a, $uid, $item->provider->title, $post, $location, $coord);
 
 					break;
 
@@ -511,13 +520,23 @@ function fromgplus_fetch($a, $uid) {
 							$post .= "\n".trim(fromgplus_handleattachments($a, $uid, $item, $item->object->content, true));
 					}
 
-					if (isset($item->address))
-						$location = $item->address;
-					else
-						$location = "";
+					$coord = "";
+					$location = "";
+					if (isset($item->location)) {
+						if (isset($item->location->address->formatted))
+							$location = $item->location->address->formatted;
 
-					//fromgplus_post($a, $uid, "Google+", $post, $location);
-					fromgplus_post($a, $uid, $item->provider->title, $post, $location);
+						if (isset($item->location->displayName))
+							$location = $item->location->displayName;
+
+						if (isset($item->location->position->latitude) AND
+							isset($item->location->position->longitude))
+							$coord = $item->location->position->latitude." ".$item->location->position->longitude;
+
+					} elseif (isset($item->address))
+						$location = $item->address;
+
+					fromgplus_post($a, $uid, $item->provider->title, $post, $location, $coord);
 					break;
 			}
 		}

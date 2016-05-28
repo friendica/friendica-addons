@@ -449,15 +449,6 @@ function pumpio_send(&$a,&$b) {
 
 		$content = bbcode($b['body'], false, false, 4);
 
-		// Enhance the way, videos are displayed
-		$content = preg_replace('/<a href="(https?:\/\/www.youtube.com\/.*?)".*?>(.*?)<\/a>/ism',"\n[url]$1[/url]\n",$content);
-		$content = preg_replace('/<a href="(https?:\/\/youtu.be\/.*?)".*?>(.*?)<\/a>/ism',"\n$1\n",$content);
-		$content = preg_replace('/<a href="(https?:\/\/vimeo.com\/.*?)".*?>(.*?)<\/a>/ism',"\n$1\n",$content);
-		$content = preg_replace('/<a href="(https?:\/\/player.vimeo.com\/.*?)".*?>(.*?)<\/a>/ism',"\n$1\n",$content);
-
-		$URLSearchString = "^\[\]";
-		$content = preg_replace_callback("/\[url\]([$URLSearchString]*)\[\/url\]/ism",'tryoembed',$content);
-
 		$params = array();
 
 		$params["verb"] = "post";
@@ -1261,6 +1252,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 	$postarray['plink'] = $post->object->url;
 	$postarray['app'] = $post->generator->displayName;
 	$postarray['body'] = html2bbcode($post->object->content);
+	$postarray['object'] = json_encode($post);
 
 	if ($post->object->fullImage->url != "")
 		$postarray["body"] = "[url=".$post->object->fullImage->url."][img]".$post->object->image->url."[/img][/url]\n".$postarray["body"];
