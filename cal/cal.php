@@ -5,6 +5,7 @@
  * Version: 0.1
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  * License: MIT
+ * Status: Unsupported
  * ******************************************************************/
 
 
