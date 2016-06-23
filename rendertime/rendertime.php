@@ -27,11 +27,11 @@ function rendertime_page_end(&$a, &$o) {
 	$duration = microtime(true)-$a->performance["start"];
 
 	if (is_site_admin() AND ($_GET["mode"] != "minimal") AND !$a->is_mobile AND !$a->is_tablet) {
-		$o = $o.'<div class="renderinfo">'.sprintf(t("Database: %s, Network: %s, Rendering: %s, I/O: %s, Other: %s, Total: %s"),
+		$o = $o.'<div class="renderinfo">'.sprintf(t("Database: %s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: %s, Total: %s"),
 						round($a->performance["database"], 3),
 						round($a->performance["network"], 3),
 						round($a->performance["rendering"], 3),
-						// round($a->performance["parser"], 3), // Not used anymore
+						round($a->performance["parser"], 3),
 						round($a->performance["file"], 3),
 						round($duration - $a->performance["database"] - $a->performance["network"]
 							 - $a->performance["rendering"] - $a->performance["parser"]
