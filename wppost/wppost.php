@@ -219,9 +219,10 @@ function wppost_send(&$a,&$b) {
 
 		// If the title is empty then try to guess
 		if ($wptitle == '') {
-			// Take the description from the bookmark
-			if(preg_match("/\[bookmark\=([^\]]*)\](.*?)\[\/bookmark\]/is",$b['body'],$matches))
-				$wptitle = $matches[2];
+			// Fetch information about the post
+			$siteinfo = get_attached_data($b["body"]);
+			if (isset($siteinfo["title"]))
+				$wptitle = $siteinfo["title"];
 
 			// If no bookmark is found then take the first line
 			if ($wptitle == '') {
