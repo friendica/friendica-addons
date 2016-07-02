@@ -8,6 +8,9 @@
 require('addon/pumpio/oauth/http.php');
 require('addon/pumpio/oauth/oauth_client.php');
 require_once('include/enotify.php');
+require_once('include/socgraph.php');
+require_once("include/Photo.php");
+require_once("mod/share.php");
 
 define('PUMPIO_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
@@ -946,37 +949,17 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 	logger("pumpio_dolike: ".$ret." User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
 }
 
-function pumpio_get_contact($uid, $contact) {
+function pumpio_get_contact($uid, $contact, $no_insert = false) {
 
-	if (function_exists("update_gcontact"))
-		update_gcontact(array("url" => $contact->url, "network" => NETWORK_PUMPIO, "generation" => 2,
-				"photo" => $contact->image->url, "name" => $contact->displayName,  "hide" => true,
-				"nick" => $contact->preferredUsername, "location" => $contact->location->displayName,
-				"about" => $contact->summary, "addr" => str_replace("acct:", "", $contact->id)));
-	else {
-		// Old Code
-		$r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
-			dbesc(normalise_link($contact->url)));
+	update_gcontact(array("url" => $contact->url, "network" => NETWORK_PUMPIO, "generation" => 2,
+			"photo" => $contact->image->url, "name" => $contact->displayName,  "hide" => true,
+			"nick" => $contact->preferredUsername, "location" => $contact->location->displayName,
+			"about" => $contact->summary, "addr" => str_replace("acct:", "", $contact->id)));
 
-		if (count($r) == 0)
-			q("INSERT INTO unique_contacts (url, name, nick, avatar) VALUES ('%s', '%s', '%s', '%s')",
-				dbesc(normalise_link($contact->url)),
-				dbesc($contact->displayName),
-				dbesc($contact->preferredUsername),
-				dbesc($contact->image->url));
-		else
-			q("UPDATE unique_contacts SET name = '%s', nick = '%s', avatar = '%s' WHERE url = '%s'",
-				dbesc($contact->displayName),
-				dbesc($contact->preferredUsername),
-				dbesc($contact->image->url),
-				dbesc(normalise_link($contact->url)));
+	$cid = get_contact($contact->url, $uid);
 
-		if (DB_UPDATE_VERSION >= "1177")
-			q("UPDATE `unique_contacts` SET `location` = '%s', `about` = '%s' WHERE url = '%s'",
-				dbesc($contact->location->displayName),
-				dbesc($contact->summary),
-				dbesc(normalise_link($contact->url)));
-	}
+	if ($no_insert)
+		return($cid);
 
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `url` = '%s' LIMIT 1",
 		intval($uid), dbesc($contact->url));
@@ -1023,27 +1006,6 @@ function pumpio_get_contact($uid, $contact) {
 			group_add_member($uid,'',$contact_id,$g[0]['def_gid']);
 		}
 
-		require_once("Photo.php");
-
-		$photos = import_profile_photo($contact->image->url,$uid,$contact_id);
-
-		q("UPDATE `contact` SET `photo` = '%s',
-					`thumb` = '%s',
-					`micro` = '%s',
-					`name-date` = '%s',
-					`uri-date` = '%s',
-					`avatar-date` = '%s'
-				WHERE `id` = %d
-			",
-		dbesc($photos[0]),
-		dbesc($photos[1]),
-		dbesc($photos[2]),
-		dbesc(datetime_convert()),
-		dbesc(datetime_convert()),
-		dbesc(datetime_convert()),
-		intval($contact_id)
-		);
-
                 if (DB_UPDATE_VERSION >= "1177")
 			q("UPDATE `contact` SET `location` = '%s',
 						`about` = '%s'
@@ -1053,39 +1015,9 @@ function pumpio_get_contact($uid, $contact) {
 				intval($contact_id)
 			);
 	} else {
-		// update profile photos once every two weeks as we have no notification of when they change.
-		//$update_photo = (($r[0]['avatar-date'] < datetime_convert('','','now -14 days')) ? true : false);
-                $update_photo = ($r[0]['avatar-date'] < datetime_convert('','','now -12 hours'));
+		$contact_id = $r[0]["id"];
 
-		// check that we have all the photos, this has been known to fail on occasion
-
-		if((! $r[0]['photo']) || (! $r[0]['thumb']) || (! $r[0]['micro']) || ($update_photo)) {
-			require_once("Photo.php");
-
-			$photos = import_profile_photo($contact->image->url, $uid, $r[0]['id']);
-
-			q("UPDATE `contact` SET `photo` = '%s',
-					`thumb` = '%s',
-					`micro` = '%s',
-					`name-date` = '%s',
-					`uri-date` = '%s',
-					`avatar-date` = '%s',
-					`name` = '%s',
-					`nick` = '%s'
-					WHERE `id` = %d
-				",
-			dbesc($photos[0]),
-			dbesc($photos[1]),
-			dbesc($photos[2]),
-			dbesc(datetime_convert()),
-			dbesc(datetime_convert()),
-			dbesc(datetime_convert()),
-			dbesc($contact->displayName),
-			dbesc($contact->preferredUsername),
-			intval($r[0]['id'])
-			);
-
-			if (DB_UPDATE_VERSION >= "1177")
+		/*	if (DB_UPDATE_VERSION >= "1177")
 				q("UPDATE `contact` SET `location` = '%s',
 							`about` = '%s'
 						WHERE `id` = %d",
@@ -1093,11 +1025,12 @@ function pumpio_get_contact($uid, $contact) {
 					dbesc($contact->summary),
 					intval($r[0]['id'])
 				);
-		}
-
+		*/
 	}
 
-	return($r[0]["id"]);
+	update_contact_avatar($contact->image->url, $uid, $contact_id);
+
+	return($contact_id);
 }
 
 function pumpio_dodelete(&$a, $uid, $self, $post, $own_id) {
@@ -1189,14 +1122,14 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 			$postarray['allow_cid'] = '<' . $self[0]['id'] . '>';
 		}
 	} else {
-		$contact_id = 0;
+		$contact_id = pumpio_get_contact($uid, $post->actor, true);
 
-		if(link_compare($post->actor->url, $own_id)) {
+		if (link_compare($post->actor->url, $own_id)) {
 			$contact_id = $self[0]['id'];
 			$post->actor->displayName = $self[0]['name'];
 			$post->actor->url = $self[0]['url'];
 			$post->actor->image->url = $self[0]['photo'];
-		} else {
+		} elseif ($contact_id == 0) {
 			// Take an existing contact, the contact of the note or - as a fallback - the id of the user
 			$r = q("SELECT * FROM `contact` WHERE `url` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
 				dbesc($post->actor->url),
@@ -1261,15 +1194,35 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 		$postarray['title'] = $post->object->displayName;
 
 	$postarray['created'] = datetime_convert('UTC','UTC',$post->published);
-	$postarray['edited'] = datetime_convert('UTC','UTC',$post->received);
+	if (isset($post->updated))
+		$postarray['edited'] = datetime_convert('UTC','UTC',$post->updated);
+	elseif (isset($post->received))
+		$postarray['edited'] = datetime_convert('UTC','UTC',$post->received);
+	else
+		$postarray['edited'] = $postarray['created'];
 
 	if ($post->verb == "share") {
 		if (!intval(get_config('system','wall-to-wall_share'))) {
-			$postarray['body'] = "[share author='".$post->object->author->displayName.
+			if (isset($post->object->author->displayName) AND ($post->object->author->displayName != ""))
+				$share_author = $post->object->author->displayName;
+			elseif (isset($post->object->author->preferredUsername) AND ($post->object->author->preferredUsername != ""))
+				$share_author = $post->object->author->preferredUsername;
+			else
+				$share_author = $post->object->author->url;
+
+			$postarray['body'] = share_header($share_author, $post->object->author->url,
+							$post->object->author->image->url, "",
+							datetime_convert('UTC','UTC',$post->object->created),
+							$post->links->self->href).
+						$postarray['body']."[/share]";
+
+			/*
+			$postarray['body'] = "[share author='".$share_author.
 					"' profile='".$post->object->author->url.
 					"' avatar='".$post->object->author->image->url.
 					"' posted='".datetime_convert('UTC','UTC',$post->object->created).
 					"' link='".$post->links->self->href."']".$postarray['body']."[/share]";
+			*/
 		} else {
 			// Let shares look like wall-to-wall posts
 			$postarray['author-name'] = $post->object->author->displayName;
