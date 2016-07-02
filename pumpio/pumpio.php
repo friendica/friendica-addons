@@ -1055,7 +1055,8 @@ function pumpio_get_contact($uid, $contact, $no_insert = false) {
 		*/
 	}
 
-	update_contact_avatar($contact->image->url, $uid, $contact_id);
+	if (function_exists("update_contact_avatar"))
+		update_contact_avatar($contact->image->url, $uid, $contact_id);
 
 	return($contact_id);
 }
