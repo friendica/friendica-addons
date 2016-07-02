@@ -61,6 +61,7 @@
  */
 
 require_once('include/enotify.php');
+require_once("include/socgraph.php");
 
 define('TWITTER_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
