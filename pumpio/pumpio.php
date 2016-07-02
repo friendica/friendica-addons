@@ -951,12 +951,39 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 
 function pumpio_get_contact($uid, $contact, $no_insert = false) {
 
-	update_gcontact(array("url" => $contact->url, "network" => NETWORK_PUMPIO, "generation" => 2,
-			"photo" => $contact->image->url, "name" => $contact->displayName,  "hide" => true,
-			"nick" => $contact->preferredUsername, "location" => $contact->location->displayName,
-			"about" => $contact->summary, "addr" => str_replace("acct:", "", $contact->id)));
+	if (function_exists("update_gcontact")) {
+		update_gcontact(array("url" => $contact->url, "network" => NETWORK_PUMPIO, "generation" => 2,
+				"photo" => $contact->image->url, "name" => $contact->displayName,  "hide" => true,
+				"nick" => $contact->preferredUsername, "location" => $contact->location->displayName,
+				"about" => $contact->summary, "addr" => str_replace("acct:", "", $contact->id)));
 
-	$cid = get_contact($contact->url, $uid);
+		$cid = get_contact($contact->url, $uid);
+	} else {
+		// Old Code
+		$r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
+			dbesc(normalise_link($contact->url)));
+
+		if (count($r) == 0)
+			q("INSERT INTO unique_contacts (url, name, nick, avatar) VALUES ('%s', '%s', '%s', '%s')",
+				dbesc(normalise_link($contact->url)),
+				dbesc($contact->displayName),
+				dbesc($contact->preferredUsername),
+				dbesc($contact->image->url));
+		else
+			q("UPDATE unique_contacts SET name = '%s', nick = '%s', avatar = '%s' WHERE url = '%s'",
+				dbesc($contact->displayName),
+				dbesc($contact->preferredUsername),
+				dbesc($contact->image->url),
+				dbesc(normalise_link($contact->url)));
+
+		if (DB_UPDATE_VERSION >= "1177")
+			q("UPDATE `unique_contacts` SET `location` = '%s', `about` = '%s' WHERE url = '%s'",
+				dbesc($contact->location->displayName),
+				dbesc($contact->summary),
+				dbesc(normalise_link($contact->url)));
+
+		$cid = 0;
+	}
 
 	if ($no_insert)
 		return($cid);
