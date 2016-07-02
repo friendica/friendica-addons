@@ -45,6 +45,7 @@ define('STATUSNET_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
 require_once('library/twitteroauth.php');
 require_once('include/enotify.php');
+require_once("include/socgraph.php");
 
 class StatusNetOAuth extends TwitterOAuth {
     function get_maxlength() {
