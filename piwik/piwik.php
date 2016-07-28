@@ -2,7 +2,7 @@
 /**
  * Name: Piwik Analytics
  * Description: Piwik Analytics Plugin for Friendica
- * Version: 1.2
+ * Version: 1.3
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  * Author: Klaus Weidenbach
  */
@@ -87,7 +87,7 @@ function piwik_plugin_admin (&$a, &$o) {
 	$t = get_markup_template( "admin.tpl", "addon/piwik/" );
 	$o = replace_macros( $t, array(
 		'$submit' => t('Save Settings'),
-		'$baseurl' => array('baseurl', t('Piwik Base URL'), get_config('piwik','baseurl' ), t('Absolute path to your Piwik installation. (without protocol (http/s), with trailing slash)')),
+		'$piwikbaseurl' => array('baseurl', t('Piwik Base URL'), get_config('piwik','baseurl' ), t('Absolute path to your Piwik installation. (without protocol (http/s), with trailing slash)')),
 		'$siteid' => array('siteid', t('Site ID'), get_config('piwik','siteid' ), ''),
 		'$optout' => array('optout', t('Show opt-out cookie link?'), get_config('piwik','optout' ), ''),
 		'$async' => array('async', t('Asynchronous tracking'), get_config('piwik','async' ), ''),
