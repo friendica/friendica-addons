@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2016-08-18 19:15+0000\n"
+"PO-Revision-Date: 2016-08-19 20:38+0000\n"
 "Last-Translator: Beatriz Vital <vitalb@riseup.net>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/Friendica/friendica/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -79,7 +79,7 @@ msgstr ""
 
 #: twitter.php:206
 msgid "Allow posting to Twitter"
-msgstr ""
+msgstr "Permitir a publicação no Twitter"
 
 #: twitter.php:209
 msgid "Send public postings to Twitter by default"

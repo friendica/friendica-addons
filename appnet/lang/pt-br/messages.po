@@ -4,15 +4,16 @@
 # 
 # 
 # Translators:
+# Beatriz Vital <vitalb@riseup.net>, 2016
 # Calango Jr <jcsojr@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 11:47+0200\n"
-"PO-Revision-Date: 2014-10-04 04:09+0000\n"
-"Last-Translator: Calango Jr <jcsojr@gmail.com>\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/friendica/language/pt_BR/)\n"
+"PO-Revision-Date: 2016-08-19 20:37+0000\n"
+"Last-Translator: Beatriz Vital <vitalb@riseup.net>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/Friendica/friendica/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -37,7 +38,7 @@ msgstr "Volte a página de conectores."
 
 #: appnet.php:94
 msgid "Post to app.net"
-msgstr "Postar no app.net"
+msgstr "Publicar no App.net"
 
 #: appnet.php:125 appnet.php:129
 msgid "App.net Export"
@@ -49,15 +50,15 @@ msgstr "Atualmente conectado em: "
 
 #: appnet.php:144
 msgid "Enable App.net Post Plugin"
-msgstr "Habilitar App.net Plugin de publicação/postagem"
+msgstr "Habilitar plug-in para publicar no App.net"
 
 #: appnet.php:149
 msgid "Post to App.net by default"
-msgstr "Postar em App.net por padrão"
+msgstr "Publicar em App.net por padrão"
 
 #: appnet.php:153
 msgid "Import the remote timeline"
-msgstr "Importar timeline remota"
+msgstr "Importar a linha do tempo remota"
 
 #: appnet.php:159
 msgid ""
@@ -107,7 +108,7 @@ msgstr "Token"
 
 #: appnet.php:192
 msgid "Sign in using App.net"
-msgstr "Registre-se usando App.net"
+msgstr "Entre usando o App.net"
 
 #: appnet.php:197
 msgid "Clear OAuth configuration"
