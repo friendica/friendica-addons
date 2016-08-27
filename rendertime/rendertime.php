@@ -27,24 +27,31 @@ function rendertime_page_end(&$a, &$o) {
 	$duration = microtime(true)-$a->performance["start"];
 
 	if (is_site_admin() AND ($_GET["mode"] != "minimal") AND !$a->is_mobile AND !$a->is_tablet) {
-		$o = $o.'<div class="renderinfo">'.sprintf(t("Database: %s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: %s, Total: %s"),
-						round($a->performance["database"], 3),
-						round($a->performance["network"], 3),
-						round($a->performance["rendering"], 3),
-						round($a->performance["parser"], 3),
-						round($a->performance["file"], 3),
-						round($duration - $a->performance["database"] - $a->performance["network"]
-							 - $a->performance["rendering"] - $a->performance["parser"]
-							 - $a->performance["file"], 3),
-						round($duration, 3)
+		$o = $o.'<div class="renderinfo">'.sprintf(t("Database: %s/%s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: %s, Total: %s"),
+						round($a->performance["database"] - $a->performance["database_write"], 3),
+						round($a->performance["database_write"], 3),
+						round($a->performance["network"], 2),
+						round($a->performance["rendering"], 2),
+						round($a->performance["parser"], 2),
+						round($a->performance["file"], 2),
+						round($duration - $a->performance["database"]
+							 - $a->performance["network"] - $a->performance["rendering"]
+							 - $a->performance["parser"] - $a->performance["file"], 2),
+						round($duration, 2)
 						//round($a->performance["markstart"], 3)
 						//round($a->performance["plugin"], 3)
 						)."</div>";
 
 		if (get_config("rendertime", "callstack")) {
 			$o .= "<pre>";
-			$o .= "\nDatabase:\n";
+			$o .= "\nDatabase Read:\n";
 			foreach ($a->callstack["database"] AS $func => $time) {
+				$time = round($time, 3);
+				if ($time > 0)
+					$o .= $func.": ".$time."\n";
+			}
+			$o .= "\nDatabase Write:\n";
+			foreach ($a->callstack["database_write"] AS $func => $time) {
 				$time = round($time, 3);
 				if ($time > 0)
 					$o .= $func.": ".$time."\n";
