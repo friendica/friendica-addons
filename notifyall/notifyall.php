@@ -42,20 +42,26 @@ function notifyall_post(&$a) {
 		$sender_name = sprintf(t('%s Administrator'), $sitename);
 	else
 		$sender_name = sprintf(t('%1$s, %2$s Administrator'), $a->config['admin_name'], $sitename);
+	
+	if (! x($a->config['sender_email']))
+		$sender_email = 'noreply@' . $a->get_hostname();
+	else
+		$sender_email = $a->config['sender_email'];
 
-    if (! x($a->config['sender_email']))
-        $sender_email = 'noreply@' . $a->get_hostname();
-    else
-        $sender_email = $a->config['sender_email'];
 	$subject = $_REQUEST['subject'];
 
 
 	$textversion = strip_tags(html_entity_decode(bbcode(stripslashes(str_replace(array("\\r", "\\n"),array( "", "\n"), $text))),ENT_QUOTES,'UTF-8'));
 
 	$htmlversion = bbcode(stripslashes(str_replace(array("\\r","\\n"), array("","<br />\n"),$text)));
-
-	$sql_extra = ((intval($_REQUEST['test'])) ? sprintf(" AND `email` = '%s' ", get_config('system','admin_email')) : ''); 
-
+	
+	// if this is a test, send it only to the admin(s)
+	// admin_email might be a comma separated list, but we need "a@b','c@d','e@f
+	if ( intval($_REQUEST['test'])) {
+		$email = $a->config['admin_email'];
+		$email = "'" . str_replace(array(" ",","), array("","','"), $email) . "'";
+	}
+	$sql_extra = ((intval($_REQUEST['test'])) ? sprintf(" AND `email` in ( %s )", $email) : '');
 
 	$recips = q("SELECT `email` FROM `user` WHERE `verified` AND NOT `account_removed` AND NOT `account_expired` $sql_extra");
 
