@@ -43,7 +43,10 @@ function notifyall_post(&$a) {
 	else
 		$sender_name = sprintf(t('%1$s, %2$s Administrator'), $a->config['admin_name'], $sitename);
 
-	$sender_email = 'sys@' . $a->get_hostname();
+    if (! x($a->config['sender_email']))
+        $sender_email = 'noreply@' . $a->get_hostname();
+    else
+        $sender_email = $a->config['sender_email'];
 	$subject = $_REQUEST['subject'];
 
 
