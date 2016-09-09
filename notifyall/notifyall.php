@@ -63,7 +63,7 @@ function notifyall_post(&$a) {
 	}
 	$sql_extra = ((intval($_REQUEST['test'])) ? sprintf(" AND `email` in ( %s )", $email) : '');
 
-	$recips = q("SELECT `email` FROM `user` WHERE `verified` AND NOT `account_removed` AND NOT `account_expired` $sql_extra");
+	$recips = q("SELECT DISTINCT `email` FROM `user` WHERE `verified` AND NOT `account_removed` AND NOT `account_expired` $sql_extra");
 
 	if(! $recips) {
 		notice( t('No recipients found.') . EOL);
