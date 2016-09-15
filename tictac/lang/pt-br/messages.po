@@ -1,0 +1,74 @@
+# ADDON tictac
+# Copyright (C)
+# This file is distributed under the same license as the Friendica tictac addon package.
+# 
+# 
+# Translators:
+# Beatriz Vital <vitalb@riseup.net>, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2016-08-16 12:47+0000\n"
+"Last-Translator: Beatriz Vital <vitalb@riseup.net>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/Friendica/friendica/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: tictac.php:20
+msgid "Three Dimensional Tic-Tac-Toe"
+msgstr "Jogo da Velha Tridimensional"
+
+#: tictac.php:53
+msgid "3D Tic-Tac-Toe"
+msgstr "Jogo da Velha 3D"
+
+#: tictac.php:58
+msgid "New game"
+msgstr "Novo jogo"
+
+#: tictac.php:59
+msgid "New game with handicap"
+msgstr "Novo jogo com limitador"
+
+#: tictac.php:60
+msgid ""
+"Three dimensional tic-tac-toe is just like the traditional game except that "
+"it is played on multiple levels simultaneously. "
+msgstr "O jogo da velha tridimensional é como o jogo tradicional, exceto por ser jogado em vários níveis simultaneamente."
+
+#: tictac.php:61
+msgid ""
+"In this case there are three levels. You win by getting three in a row on "
+"any level, as well as up, down, and diagonally across the different levels."
+msgstr "Neste caso, há três níveis. Vence quem conseguir alinhar três quadrados em qualquer um dos níveis, assim como para cima, para baixo e na diagonal, em níveis diferentes."
+
+#: tictac.php:63
+msgid ""
+"The handicap game disables the center position on the middle level because "
+"the player claiming this square often has an unfair advantage."
+msgstr "No jogo com limitador, a posição central do nível do meio é desativada, porque o jogador que marcasse esse quadrado teria uma vantagem injusta."
+
+#: tictac.php:182
+msgid "You go first..."
+msgstr "Você vai primeiro..."
+
+#: tictac.php:187
+msgid "I'm going first this time..."
+msgstr "Eu vou primeiro desta vez..."
+
+#: tictac.php:193
+msgid "You won!"
+msgstr "Você venceu!"
+
+#: tictac.php:199 tictac.php:224
+msgid "\"Cat\" game!"
+msgstr "Empatamos!"
+
+#: tictac.php:222
+msgid "I won!"
+msgstr "Venci!"

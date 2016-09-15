@@ -1,0 +1,41 @@
+# ADDON public_server
+# Copyright (C)
+# This file is distributed under the same license as the Friendica public_server addon package.
+# 
+# 
+# Translators:
+# Beatriz Vital <vitalb@riseup.net>, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2016-08-19 20:32+0000\n"
+"Last-Translator: Beatriz Vital <vitalb@riseup.net>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/Friendica/friendica/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: public_server.php:62
+msgid "Administrator"
+msgstr ""
+
+#: public_server.php:126
+#, php-format
+msgid "Your account on %s will expire in a few days."
+msgstr "Sua conta do %s vai expirar em alguns dias."
+
+#: public_server.php:127
+msgid "Your Friendica account is about to expire."
+msgstr "Sua conta no Friendica está prestes a expirar."
+
+#: public_server.php:128
+#, php-format
+msgid ""
+"Hi %1$s,\n"
+"\n"
+"Your account on %2$s will expire in less than five days. You may keep your account by logging in at least once every 30 days"
+msgstr "Olá, %1$s,\n\nSua conta no %2$s vai expirar em menos de cinco dias. Para manter sua conta, lembre-se de entrar pelo menos uma vez a cada 30 dias."

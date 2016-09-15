@@ -1,0 +1,80 @@
+# ADDON forumdirectory
+# Copyright (C)
+# This file is distributed under the same license as the Friendica forumdirectory addon package.
+# 
+# 
+# Translators:
+# Beatriz Vital <vitalb@riseup.net>, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2016-08-19 17:03+0000\n"
+"Last-Translator: Beatriz Vital <vitalb@riseup.net>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/Friendica/friendica/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: forumdirectory.php:22
+msgid "Forum Directory"
+msgstr "Diretório de Fóruns"
+
+#: forumdirectory.php:53
+msgid "Public access denied."
+msgstr "Acesso do público negado."
+
+#: forumdirectory.php:71
+msgid "Global Directory"
+msgstr "Diretório Global"
+
+#: forumdirectory.php:79
+msgid "Find on this site"
+msgstr "Procurar neste site"
+
+#: forumdirectory.php:81
+msgid "Finding: "
+msgstr "Procurando:"
+
+#: forumdirectory.php:82
+msgid "Site Directory"
+msgstr "Diretório do Site"
+
+#: forumdirectory.php:83
+msgid "Find"
+msgstr "Procurar"
+
+#: forumdirectory.php:133
+msgid "Age: "
+msgstr "Idade:"
+
+#: forumdirectory.php:136
+msgid "Gender: "
+msgstr "Sexo:"
+
+#: forumdirectory.php:156
+msgid "Location:"
+msgstr "Local:"
+
+#: forumdirectory.php:158
+msgid "Gender:"
+msgstr "Sexo:"
+
+#: forumdirectory.php:160
+msgid "Status:"
+msgstr "Estado:"
+
+#: forumdirectory.php:162
+msgid "Homepage:"
+msgstr "Página principal:"
+
+#: forumdirectory.php:164
+msgid "About:"
+msgstr "Sobre:"
+
+#: forumdirectory.php:201
+msgid "No entries (some entries may be hidden)."
+msgstr "Sem resultados (alguns resultados podem estar ocultos)."
