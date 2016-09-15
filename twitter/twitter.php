@@ -771,8 +771,10 @@ function twitter_fetchtimeline($a, $uid) {
 
 	if (count($posts)) {
 	    foreach ($posts as $post) {
-		if ($post->id_str > $lastid)
+		if ($post->id_str > $lastid) {
 			$lastid = $post->id_str;
+			set_pconfig($uid, 'twitter', 'lastid', $lastid);
+		}
 
 		if ($first_time)
 			continue;
@@ -1698,8 +1700,10 @@ function twitter_fetchhometimeline($a, $uid) {
 
 	if (count($posts)) {
 		foreach ($posts as $post) {
-			if ($post->id_str > $lastid)
+			if ($post->id_str > $lastid) {
 				$lastid = $post->id_str;
+				set_pconfig($uid, 'twitter', 'lasthometimelineid', $lastid);
+			}
 
 			if ($first_time)
 				continue;
