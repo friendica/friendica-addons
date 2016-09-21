@@ -6,7 +6,7 @@ function string_plural_select_pt_br($n){
 }}
 ;
 $a->strings["Error fetching weather data.\\nError was: "] = "Houve um erro na obtenção de dados do clima\\nErro:";
-$a->strings["Current Weather"] = "";
+$a->strings["Current Weather"] = "Clima atual";
 $a->strings["Relative Humidity"] = "Umidade relativa";
 $a->strings["Pressure"] = "Pressão";
 $a->strings["Wind"] = "Vento";
@@ -15,7 +15,7 @@ $a->strings["Data by"] = "Dados de";
 $a->strings["Show on map"] = "Mostrar no mapa";
 $a->strings["There was a problem accessing the weather data. But have a look"] = "Houve um problema no acesso aos dados do clima. Mas dê uma olhada";
 $a->strings["at OpenWeatherMap"] = "em OpenWeatherMap";
-$a->strings["Current Weather settings updated."] = "";
+$a->strings["Current Weather settings updated."] = "Atualização das Configurações de clima.";
 $a->strings["No APPID found, please contact your admin to optain one."] = "Não foi encontrado nenhum AppID; fale com seu administrador para receber um.";
 $a->strings["Save Settings"] = "Salvar Configurações";
 $a->strings["Settings"] = "Configurações";
