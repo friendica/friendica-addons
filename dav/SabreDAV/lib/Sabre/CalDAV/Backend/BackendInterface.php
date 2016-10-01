@@ -2,15 +2,13 @@
 
 /**
  * Every CalDAV backend must at least implement this interface.
- * 
- * @package Sabre
- * @subpackage CalDAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
- * @author Evert Pot (http://www.rooftopsolutions.nl/) 
+ *
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
+ * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-interface Sabre_CalDAV_Backend_BackendInterface {
-
+interface Sabre_CalDAV_Backend_BackendInterface
+{
     /**
      * Returns a list of calendars for a principal.
      *
@@ -26,6 +24,7 @@ interface Sabre_CalDAV_Backend_BackendInterface {
      * common one is '{DAV:}displayname'.
      *
      * @param string $principalUri
+     *
      * @return array
      */
     public function getCalendarsForUser($principalUri);
@@ -38,10 +37,9 @@ interface Sabre_CalDAV_Backend_BackendInterface {
      *
      * @param string $principalUri
      * @param string $calendarUri
-     * @param array $properties
-     * @return void
+     * @param array  $properties
      */
-    public function createCalendar($principalUri,$calendarUri,array $properties);
+    public function createCalendar($principalUri, $calendarUri, array $properties);
 
     /**
      * Updates properties for a calendar.
@@ -77,15 +75,15 @@ interface Sabre_CalDAV_Backend_BackendInterface {
      *
      * @param mixed $calendarId
      * @param array $mutations
+     *
      * @return bool|array
      */
-    public function updateCalendar($calendarId, array $mutations); 
+    public function updateCalendar($calendarId, array $mutations);
 
     /**
-     * Delete a calendar and all it's objects
+     * Delete a calendar and all it's objects.
      *
      * @param mixed $calendarId
-     * @return void
      */
     public function deleteCalendar($calendarId);
 
@@ -114,6 +112,7 @@ interface Sabre_CalDAV_Backend_BackendInterface {
      * amount of times this is needed is reduced by a great degree.
      *
      * @param mixed $calendarId
+     *
      * @return array
      */
     public function getCalendarObjects($calendarId);
@@ -126,11 +125,12 @@ interface Sabre_CalDAV_Backend_BackendInterface {
      * 'calendardata' object is required here though, while it's not required
      * for getCalendarObjects.
      *
-     * @param mixed $calendarId
+     * @param mixed  $calendarId
      * @param string $objectUri
+     *
      * @return array
      */
-    public function getCalendarObject($calendarId,$objectUri);
+    public function getCalendarObject($calendarId, $objectUri);
 
     /**
      * Creates a new calendar object.
@@ -143,12 +143,13 @@ interface Sabre_CalDAV_Backend_BackendInterface {
      * calendar-data. If the result of a subsequent GET to this object is not
      * the exact same as this request body, you should omit the ETag.
      *
-     * @param mixed $calendarId
+     * @param mixed  $calendarId
      * @param string $objectUri
      * @param string $calendarData
+     *
      * @return string|null
      */
-    public function createCalendarObject($calendarId,$objectUri,$calendarData);
+    public function createCalendarObject($calendarId, $objectUri, $calendarData);
 
     /**
      * Updates an existing calendarobject, based on it's uri.
@@ -161,21 +162,21 @@ interface Sabre_CalDAV_Backend_BackendInterface {
      * calendar-data. If the result of a subsequent GET to this object is not
      * the exact same as this request body, you should omit the ETag.
      *
-     * @param mixed $calendarId
+     * @param mixed  $calendarId
      * @param string $objectUri
      * @param string $calendarData
+     *
      * @return string|null
      */
-    public function updateCalendarObject($calendarId,$objectUri,$calendarData);
+    public function updateCalendarObject($calendarId, $objectUri, $calendarData);
 
     /**
      * Deletes an existing calendar object.
      *
-     * @param mixed $calendarId
+     * @param mixed  $calendarId
      * @param string $objectUri
-     * @return void
      */
-    public function deleteCalendarObject($calendarId,$objectUri);
+    public function deleteCalendarObject($calendarId, $objectUri);
 
     /**
      * Performs a calendar-query on the contents of this calendar.
@@ -224,8 +225,8 @@ interface Sabre_CalDAV_Backend_BackendInterface {
      *
      * @param mixed $calendarId
      * @param array $filters
+     *
      * @return array
      */
-    public function calendarQuery($calendarId, array $filters); 
-
+    public function calendarQuery($calendarId, array $filters);
 }

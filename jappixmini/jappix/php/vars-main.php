@@ -14,8 +14,9 @@ Last revision: 26/08/11
 */
 
 // Someone is trying to hack us?
-if(!defined('JAPPIX_BASE'))
-	exit;
+if (!defined('JAPPIX_BASE')) {
+    exit;
+}
 
 // Define the vars with the main configuration constants
 $service_name = htmlspecialchars(SERVICE_NAME);
@@ -33,5 +34,3 @@ $https_force = htmlspecialchars(HTTPS_FORCE);
 $compression = htmlspecialchars(COMPRESSION);
 $multi_files = htmlspecialchars(MULTI_FILES);
 $developer = htmlspecialchars(DEVELOPER);
-
-?>

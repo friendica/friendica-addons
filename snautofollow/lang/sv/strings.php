@@ -1,3 +1,3 @@
 <?php
 
-$a->strings["Submit"] = "Spara";
+$a->strings['Submit'] = 'Spara';

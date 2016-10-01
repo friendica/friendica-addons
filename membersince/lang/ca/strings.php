@@ -1,3 +1,3 @@
 <?php
 
-$a->strings["Member since:"] = "Membre des de:";
+$a->strings['Member since:'] = 'Membre des de:';

@@ -1,20 +1,20 @@
 <?php
 
-class Sabre_CardDAV_AddressBookQueryParserTest extends PHPUnit_Framework_TestCase {
-
-    function parse($xml) {
-
+class Sabre_CardDAV_AddressBookQueryParserTest extends PHPUnit_Framework_TestCase
+{
+    public function parse($xml)
+    {
         $xml = implode("\n", $xml);
         $dom = Sabre_DAV_XMLUtil::loadDOMDocument($xml);
 
         $q = new Sabre_CardDAV_AddressBookQueryParser($dom);
         $q->parse();
-        return $q;
 
+        return $q;
     }
 
-    function testFilterBasic() {
-
+    public function testFilterBasic()
+    {
         $xml = array(
             '<?xml version="1.0"?>',
             '<c:addressbook-query xmlns:c="urn:ietf:params:xml:ns:carddav" xmlns:d="DAV:">',
@@ -24,7 +24,7 @@ class Sabre_CardDAV_AddressBookQueryParserTest extends PHPUnit_Framework_TestCas
             '   <c:filter>',
             '     <c:prop-filter name="NICKNAME" />',
             '   </c:filter>',
-            '</c:addressbook-query>'
+            '</c:addressbook-query>',
         );
 
         $q = $this->parse($xml);
@@ -49,10 +49,10 @@ class Sabre_CardDAV_AddressBookQueryParserTest extends PHPUnit_Framework_TestCas
 
         $this->assertNull($q->limit);
         $this->assertEquals('anyof', $q->test);
-
     }
 
-    function testNoFilter() {
+    public function testNoFilter()
+    {
 
         // This is non-standard, but helps working around a KDE bug
         $xml = array(
@@ -61,7 +61,7 @@ class Sabre_CardDAV_AddressBookQueryParserTest extends PHPUnit_Framework_TestCas
             '   <d:prop>',
             '      <d:foo />',
             '   </d:prop>',
-            '</c:addressbook-query>'
+            '</c:addressbook-query>',
         );
 
         $q = $this->parse($xml);
@@ -78,14 +78,13 @@ class Sabre_CardDAV_AddressBookQueryParserTest extends PHPUnit_Framework_TestCas
 
         $this->assertNull($q->limit);
         $this->assertEquals('anyof', $q->test);
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_BadRequest
      */
-    function testFilterDoubleFilter() {
-
+    public function testFilterDoubleFilter()
+    {
         $xml = array(
             '<?xml version="1.0"?>',
             '<c:addressbook-query xmlns:c="urn:ietf:params:xml:ns:carddav" xmlns:d="DAV:">',
@@ -98,17 +97,16 @@ class Sabre_CardDAV_AddressBookQueryParserTest extends PHPUnit_Framework_TestCas
             '   <c:filter>',
             '     <c:prop-filter name="NICKNAME" />',
             '   </c:filter>',
-            '</c:addressbook-query>'
+            '</c:addressbook-query>',
         );
 
         $q = $this->parse($xml);
-
     }
     /**
      * @expectedException Sabre_DAV_Exception_BadRequest
      */
-    function testFilterCorruptTest() {
-
+    public function testFilterCorruptTest()
+    {
         $xml = array(
             '<?xml version="1.0"?>',
             '<c:addressbook-query xmlns:c="urn:ietf:params:xml:ns:carddav" xmlns:d="DAV:">',
@@ -118,15 +116,14 @@ class Sabre_CardDAV_AddressBookQueryParserTest extends PHPUnit_Framework_TestCas
             '   <c:filter test="foo">',
             '     <c:prop-filter name="NICKNAME" />',
             '   </c:filter>',
-            '</c:addressbook-query>'
+            '</c:addressbook-query>',
         );
 
         $q = $this->parse($xml);
-
     }
 
-    function testPropFilter() {
-
+    public function testPropFilter()
+    {
         $xml = array(
             '<?xml version="1.0"?>',
             '<c:addressbook-query xmlns:c="urn:ietf:params:xml:ns:carddav" xmlns:d="DAV:">',
@@ -141,7 +138,7 @@ class Sabre_CardDAV_AddressBookQueryParserTest extends PHPUnit_Framework_TestCas
             '     </c:prop-filter>',
             '   </c:filter>',
             '   <c:limit><c:nresults>4</c:nresults></c:limit>',
-            '</c:addressbook-query>'
+            '</c:addressbook-query>',
         );
 
         $q = $this->parse($xml);
@@ -173,13 +170,12 @@ class Sabre_CardDAV_AddressBookQueryParserTest extends PHPUnit_Framework_TestCas
             $q->filters
         );
 
-        $this->assertEquals(4,$q->limit);
+        $this->assertEquals(4, $q->limit);
         $this->assertEquals('allof', $q->test);
-
     }
 
-    function testParamFilter() {
-
+    public function testParamFilter()
+    {
         $xml = array(
             '<?xml version="1.0"?>',
             '<c:addressbook-query xmlns:c="urn:ietf:params:xml:ns:carddav" xmlns:d="DAV:">',
@@ -194,7 +190,7 @@ class Sabre_CardDAV_AddressBookQueryParserTest extends PHPUnit_Framework_TestCas
             '        </c:param-filter>',
             '     </c:prop-filter>',
             '   </c:filter>',
-            '</c:addressbook-query>'
+            '</c:addressbook-query>',
         );
 
         $q = $this->parse($xml);
@@ -209,12 +205,12 @@ class Sabre_CardDAV_AddressBookQueryParserTest extends PHPUnit_Framework_TestCas
                         array(
                             'name' => 'BLA',
                             'is-not-defined' => false,
-                            'text-match' => null
+                            'text-match' => null,
                         ),
                         array(
                             'name' => 'BLA2',
                             'is-not-defined' => true,
-                            'text-match' => null
+                            'text-match' => null,
                         ),
                     ),
                     'text-matches' => array(),
@@ -222,11 +218,10 @@ class Sabre_CardDAV_AddressBookQueryParserTest extends PHPUnit_Framework_TestCas
             ),
             $q->filters
         );
-
     }
 
-    function testTextMatch() {
-
+    public function testTextMatch()
+    {
         $xml = array(
             '<?xml version="1.0"?>',
             '<c:addressbook-query xmlns:c="urn:ietf:params:xml:ns:carddav" xmlns:d="DAV:">',
@@ -244,7 +239,7 @@ class Sabre_CardDAV_AddressBookQueryParserTest extends PHPUnit_Framework_TestCas
             '        </c:param-filter>',
             '     </c:prop-filter>',
             '   </c:filter>',
-            '</c:addressbook-query>'
+            '</c:addressbook-query>',
         );
 
         $q = $this->parse($xml);
@@ -263,7 +258,7 @@ class Sabre_CardDAV_AddressBookQueryParserTest extends PHPUnit_Framework_TestCas
                                 'negate-condition' => false,
                                 'collation' => 'i;unicode-casemap',
                                 'match-type' => 'contains',
-                                'value'     => 'foo',
+                                'value' => 'foo',
                             ),
                         ),
                     ),
@@ -272,39 +267,38 @@ class Sabre_CardDAV_AddressBookQueryParserTest extends PHPUnit_Framework_TestCas
                             'negate-condition' => false,
                             'collation' => 'i;unicode-casemap',
                             'match-type' => 'contains',
-                            'value'     => 'evert',
+                            'value' => 'evert',
                         ),
                         array(
                             'negate-condition' => false,
                             'collation' => 'i;octet',
                             'match-type' => 'contains',
-                            'value'     => 'evert',
+                            'value' => 'evert',
                         ),
                         array(
                             'negate-condition' => true,
                             'collation' => 'i;unicode-casemap',
                             'match-type' => 'contains',
-                            'value'     => 'rene',
+                            'value' => 'rene',
                         ),
                         array(
                             'negate-condition' => false,
                             'collation' => 'i;unicode-casemap',
                             'match-type' => 'starts-with',
-                            'value'     => 'e',
+                            'value' => 'e',
                         ),
                     ),
                 ),
             ),
             $q->filters
         );
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_BadRequest
      */
-    function testBadTextMatch() {
-
+    public function testBadTextMatch()
+    {
         $xml = array(
             '<?xml version="1.0"?>',
             '<c:addressbook-query xmlns:c="urn:ietf:params:xml:ns:carddav" xmlns:d="DAV:">',
@@ -316,10 +310,9 @@ class Sabre_CardDAV_AddressBookQueryParserTest extends PHPUnit_Framework_TestCas
             '        <c:text-match match-type="foo">evert</c:text-match>',
             '     </c:prop-filter>',
             '   </c:filter>',
-            '</c:addressbook-query>'
+            '</c:addressbook-query>',
         );
 
         $q = $this->parse($xml);
-
     }
 }

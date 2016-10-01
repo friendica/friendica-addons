@@ -3,32 +3,30 @@
  * Name: Calculator App
  * Description: Simple Calculator Application
  * Version: 1.0
- * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
+ * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>.
  */
-
-
-function calc_install() {
-	register_hook('app_menu', 'addon/calc/calc.php', 'calc_app_menu');
+function calc_install()
+{
+    register_hook('app_menu', 'addon/calc/calc.php', 'calc_app_menu');
 }
 
-function calc_uninstall() {
-	unregister_hook('app_menu', 'addon/calc/calc.php', 'calc_app_menu');
-
+function calc_uninstall()
+{
+    unregister_hook('app_menu', 'addon/calc/calc.php', 'calc_app_menu');
 }
 
-function calc_app_menu($a,&$b) {
-	$b['app_menu'][] = '<div class="app-title"><a href="calc">Calculator</a></div>'; 
+function calc_app_menu($a, &$b)
+{
+    $b['app_menu'][] = '<div class="app-title"><a href="calc">Calculator</a></div>';
 }
 
+function calc_module()
+{
+}
 
-function calc_module() {}
-
-
-
-
-function calc_init($a) {
-
-$x = <<< EOT
+function calc_init($a)
+{
+    $x = <<< 'EOT'
 
 <script language="JavaScript">
 /**************************************
@@ -284,14 +282,14 @@ id.value = ""
 </script>
 
 EOT;
-$a->page['htmlhead'] .= $x;
+    $a->page['htmlhead'] .= $x;
 }
 
-function calc_content($app) {
+function calc_content($app)
+{
+    $o = '';
 
-$o = '';
-
-$o .=  <<< EOT
+    $o .= <<< 'EOT'
 
 <h3>Calculator</h3>
 <br /><br />
@@ -358,6 +356,6 @@ $o .=  <<< EOT
 </td></tr></tbody></table>
 
 EOT;
-return $o;
 
+    return $o;
 }

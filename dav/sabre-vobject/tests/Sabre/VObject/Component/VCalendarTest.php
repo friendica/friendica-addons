@@ -4,13 +4,13 @@ namespace Sabre\VObject\Component;
 
 use Sabre\VObject;
 
-class VCalendarTest extends \PHPUnit_Framework_TestCase {
-
+class VCalendarTest extends \PHPUnit_Framework_TestCase
+{
     /**
      * @dataProvider expandData
      */
-    public function testExpand($input, $output) {
-
+    public function testExpand($input, $output)
+    {
         $vcal = VObject\Reader::read($input);
         $vcal->expand(
             new \DateTime('2011-12-01'),
@@ -21,11 +21,10 @@ class VCalendarTest extends \PHPUnit_Framework_TestCase {
         $output = VObject\Reader::read($output)->serialize();
 
         $this->assertEquals($output, $vcal->serialize());
-
     }
 
-    public function expandData() {
-
+    public function expandData()
+    {
         $tests = array();
 
         // No data
@@ -36,8 +35,7 @@ END:VCALENDAR
 ';
 
         $output = $input;
-        $tests[] = array($input,$output);
-
+        $tests[] = array($input, $output);
 
         // Simple events
         $input = 'BEGIN:VCALENDAR
@@ -215,15 +213,15 @@ END:VCALENDAR
 ';
 
         $tests[] = array($input, $output);
-        return $tests;
 
+        return $tests;
     }
 
     /**
      * @expectedException LogicException
      */
-    public function testBrokenEventExpand() {
-
+    public function testBrokenEventExpand()
+    {
         $input = 'BEGIN:VCALENDAR
 CALSCALE:GREGORIAN
 VERSION:2.0
@@ -238,7 +236,5 @@ END:VCALENDAR
             new \DateTime('2011-12-01'),
             new \DateTime('2011-12-31')
         );
-
     }
-
 }

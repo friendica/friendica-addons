@@ -1,1 +1,1 @@
-<?php header('Content-type: application/javascript'); ?>
+<?php header('Content-type: application/javascript');

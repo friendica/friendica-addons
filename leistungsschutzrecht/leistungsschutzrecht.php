@@ -3,137 +3,152 @@
  * Name: Leistungsschutzrecht
  * Description: Only useful in germany: Remove data from snippets from members of the VG Media
  * Version: 0.1
- * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
+ * Author: Michael Vogel <https://pirati.ca/profile/heluecht>.
  */
-
-function leistungsschutzrecht_install() {
-	register_hook('cron', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_cron');
-	register_hook('getsiteinfo', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
-	register_hook('page_info_data', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
+function leistungsschutzrecht_install()
+{
+    register_hook('cron', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_cron');
+    register_hook('getsiteinfo', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
+    register_hook('page_info_data', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
 }
 
-
-function leistungsschutzrecht_uninstall() {
-	unregister_hook('cron', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_cron');
-	unregister_hook('getsiteinfo', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
-	unregister_hook('page_info_data', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
+function leistungsschutzrecht_uninstall()
+{
+    unregister_hook('cron', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_cron');
+    unregister_hook('getsiteinfo', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
+    unregister_hook('page_info_data', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
 }
 
-function leistungsschutzrecht_getsiteinfo($a, &$siteinfo) {
-	if (!isset($siteinfo["url"]))
-		return;
+function leistungsschutzrecht_getsiteinfo($a, &$siteinfo)
+{
+    if (!isset($siteinfo['url'])) {
+        return;
+    }
 
-	if (!leistungsschutzrecht_is_member_site($siteinfo["url"]))
-		return;
+    if (!leistungsschutzrecht_is_member_site($siteinfo['url'])) {
+        return;
+    }
 
-	//$siteinfo["title"] = $siteinfo["url"];
-	$siteinfo["text"] = leistungsschutzrecht_cuttext($siteinfo["text"]);
-	unset($siteinfo["image"]);
-	unset($siteinfo["images"]);
-	unset($siteinfo["keywords"]);
+    //$siteinfo["title"] = $siteinfo["url"];
+    $siteinfo['text'] = leistungsschutzrecht_cuttext($siteinfo['text']);
+    unset($siteinfo['image']);
+    unset($siteinfo['images']);
+    unset($siteinfo['keywords']);
 }
 
-function leistungsschutzrecht_cuttext($text) {
-	$text = str_replace(array("\r", "\n"), array(" ", " "), $text);
+function leistungsschutzrecht_cuttext($text)
+{
+    $text = str_replace(array("\r", "\n"), array(' ', ' '), $text);
 
-	do {
-		$oldtext = $text;
-		$text = str_replace("  ", " ", $text);
-	} while ($oldtext != $text);
+    do {
+        $oldtext = $text;
+        $text = str_replace('  ', ' ', $text);
+    } while ($oldtext != $text);
 
-	$words = explode(" ", $text);
+    $words = explode(' ', $text);
 
-	$text = "";
-	$count = 0;
-	$limit = 7;
+    $text = '';
+    $count = 0;
+    $limit = 7;
 
-	foreach ($words as $word) {
-		if ($text != "")
-			$text .= " ";
+    foreach ($words as $word) {
+        if ($text != '') {
+            $text .= ' ';
+        }
 
-		$text .= $word;
+        $text .= $word;
 
-		if (++$count >= $limit) {
-			if (sizeof($words) > $limit)
-				$text .= " ...";
+        if (++$count >= $limit) {
+            if (sizeof($words) > $limit) {
+                $text .= ' ...';
+            }
 
-			break;
-		}
-	}
-	return $text;
+            break;
+        }
+    }
+
+    return $text;
 }
 
-function leistungsschutzrecht_fetchsites() {
-	require_once("include/network.php");
+function leistungsschutzrecht_fetchsites()
+{
+    require_once 'include/network.php';
 
-	$sites = array();
+    $sites = array();
 
-	$url = "http://www.vg-media.de/lizenzen/digitale-verlegerische-angebote/wahrnehmungsberechtigte-digitale-verlegerische-angebote.html";
+    $url = 'http://www.vg-media.de/lizenzen/digitale-verlegerische-angebote/wahrnehmungsberechtigte-digitale-verlegerische-angebote.html';
 
-	$site = fetch_url($url);
+    $site = fetch_url($url);
 
-	$doc = new DOMDocument();
-	@$doc->loadHTML($site);
+    $doc = new DOMDocument();
+    @$doc->loadHTML($site);
 
-	$xpath = new DomXPath($doc);
-	$list = $xpath->query("//td/a");
-	foreach ($list as $node) {
-		$attr = array();
-		if ($node->attributes->length)
-			foreach ($node->attributes as $attribute)
-				$attr[$attribute->name] = $attribute->value;
+    $xpath = new DomXPath($doc);
+    $list = $xpath->query('//td/a');
+    foreach ($list as $node) {
+        $attr = array();
+        if ($node->attributes->length) {
+            foreach ($node->attributes as $attribute) {
+                $attr[$attribute->name] = $attribute->value;
+            }
+        }
 
-		if (isset($attr["href"])) {
-			$urldata = parse_url($attr["href"]);
+        if (isset($attr['href'])) {
+            $urldata = parse_url($attr['href']);
 
-			if (isset($urldata["host"]) AND !isset($urldata["path"])) {
-				$cleanedurlpart = explode("%", $urldata["host"]);
+            if (isset($urldata['host']) and !isset($urldata['path'])) {
+                $cleanedurlpart = explode('%', $urldata['host']);
 
-				$hostname = explode(".", $cleanedurlpart[0]);
-				$site = $hostname[sizeof($hostname) - 2].".".$hostname[sizeof($hostname) - 1];
-				$sites[$site] = $site;
-			}
-		}
-	}
+                $hostname = explode('.', $cleanedurlpart[0]);
+                $site = $hostname[sizeof($hostname) - 2].'.'.$hostname[sizeof($hostname) - 1];
+                $sites[$site] = $site;
+            }
+        }
+    }
 
-	if (sizeof($sites)) {
-		set_config('leistungsschutzrecht','sites',$sites);
-	}
+    if (sizeof($sites)) {
+        set_config('leistungsschutzrecht', 'sites', $sites);
+    }
 }
 
-function leistungsschutzrecht_is_member_site($url) {
-	$sites = get_config('leistungsschutzrecht','sites');
+function leistungsschutzrecht_is_member_site($url)
+{
+    $sites = get_config('leistungsschutzrecht', 'sites');
 
-	if ($sites == "")
-		return(false);
+    if ($sites == '') {
+        return false;
+    }
 
-	if (sizeof($sites) == 0)
-		return(false);
+    if (sizeof($sites) == 0) {
+        return false;
+    }
 
-	$urldata = parse_url($url);
+    $urldata = parse_url($url);
 
-	if (!isset($urldata["host"]))
-		return(false);
+    if (!isset($urldata['host'])) {
+        return false;
+    }
 
-	$cleanedurlpart = explode("%", $urldata["host"]);
+    $cleanedurlpart = explode('%', $urldata['host']);
 
-	$hostname = explode(".", $cleanedurlpart[0]);
-	$site = $hostname[sizeof($hostname) - 2].".".$hostname[sizeof($hostname) - 1];
+    $hostname = explode('.', $cleanedurlpart[0]);
+    $site = $hostname[sizeof($hostname) - 2].'.'.$hostname[sizeof($hostname) - 1];
 
-	return (isset($sites[$site]));
+    return isset($sites[$site]);
 }
 
-function leistungsschutzrecht_cron($a,$b) {
-	$last = get_config('leistungsschutzrecht','last_poll');
+function leistungsschutzrecht_cron($a, $b)
+{
+    $last = get_config('leistungsschutzrecht', 'last_poll');
 
-	if($last) {
-		$next = $last + 86400;
-		if($next > time()) {
-			logger('poll intervall not reached');
-			return;
-		}
-	}
-	leistungsschutzrecht_fetchsites();
-	set_config('leistungsschutzrecht','last_poll', time());
+    if ($last) {
+        $next = $last + 86400;
+        if ($next > time()) {
+            logger('poll intervall not reached');
+
+            return;
+        }
+    }
+    leistungsschutzrecht_fetchsites();
+    set_config('leistungsschutzrecht', 'last_poll', time());
 }
-?>

@@ -1,20 +1,18 @@
 <?php
 
 /**
- * Represents {DAV:}lockdiscovery property
+ * Represents {DAV:}lockdiscovery property.
  *
  * This property contains all the open locks on a given resource
  *
- * @package Sabre
- * @subpackage DAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_DAV_Property_LockDiscovery extends Sabre_DAV_Property {
-
+class Sabre_DAV_Property_LockDiscovery extends Sabre_DAV_Property
+{
     /**
-     * locks
+     * locks.
      *
      * @var array
      */
@@ -33,70 +31,63 @@ class Sabre_DAV_Property_LockDiscovery extends Sabre_DAV_Property {
      * It was reported that showing the lockroot in the response can break
      * Office 2000 compatibility.
      */
-    static public $hideLockRoot = false;
+    public static $hideLockRoot = false;
 
     /**
-     * __construct
+     * __construct.
      *
      * @param array $locks
-     * @param bool $revealLockToken
+     * @param bool  $revealLockToken
      */
-    public function __construct($locks, $revealLockToken = false) {
-
+    public function __construct($locks, $revealLockToken = false)
+    {
         $this->locks = $locks;
         $this->revealLockToken = $revealLockToken;
-
     }
 
     /**
-     * serialize
+     * serialize.
      *
      * @param Sabre_DAV_Server $server
      * @param DOMElement       $prop
-     * @return void
      */
-    public function serialize(Sabre_DAV_Server $server, DOMElement $prop) {
-
+    public function serialize(Sabre_DAV_Server $server, DOMElement $prop)
+    {
         $doc = $prop->ownerDocument;
 
-        foreach($this->locks as $lock) {
-
-            $activeLock = $doc->createElementNS('DAV:','d:activelock');
+        foreach ($this->locks as $lock) {
+            $activeLock = $doc->createElementNS('DAV:', 'd:activelock');
             $prop->appendChild($activeLock);
 
-            $lockScope = $doc->createElementNS('DAV:','d:lockscope');
+            $lockScope = $doc->createElementNS('DAV:', 'd:lockscope');
             $activeLock->appendChild($lockScope);
 
-            $lockScope->appendChild($doc->createElementNS('DAV:','d:' . ($lock->scope==Sabre_DAV_Locks_LockInfo::EXCLUSIVE?'exclusive':'shared')));
+            $lockScope->appendChild($doc->createElementNS('DAV:', 'd:'.($lock->scope == Sabre_DAV_Locks_LockInfo::EXCLUSIVE ? 'exclusive' : 'shared')));
 
-            $lockType = $doc->createElementNS('DAV:','d:locktype');
+            $lockType = $doc->createElementNS('DAV:', 'd:locktype');
             $activeLock->appendChild($lockType);
 
-            $lockType->appendChild($doc->createElementNS('DAV:','d:write'));
+            $lockType->appendChild($doc->createElementNS('DAV:', 'd:write'));
 
             /* {DAV:}lockroot */
             if (!self::$hideLockRoot) {
-                $lockRoot = $doc->createElementNS('DAV:','d:lockroot');
+                $lockRoot = $doc->createElementNS('DAV:', 'd:lockroot');
                 $activeLock->appendChild($lockRoot);
-                $href = $doc->createElementNS('DAV:','d:href');
-                $href->appendChild($doc->createTextNode($server->getBaseUri() . $lock->uri));
+                $href = $doc->createElementNS('DAV:', 'd:href');
+                $href->appendChild($doc->createTextNode($server->getBaseUri().$lock->uri));
                 $lockRoot->appendChild($href);
             }
 
-            $activeLock->appendChild($doc->createElementNS('DAV:','d:depth',($lock->depth == Sabre_DAV_Server::DEPTH_INFINITY?'infinity':$lock->depth)));
-            $activeLock->appendChild($doc->createElementNS('DAV:','d:timeout','Second-' . $lock->timeout));
+            $activeLock->appendChild($doc->createElementNS('DAV:', 'd:depth', ($lock->depth == Sabre_DAV_Server::DEPTH_INFINITY ? 'infinity' : $lock->depth)));
+            $activeLock->appendChild($doc->createElementNS('DAV:', 'd:timeout', 'Second-'.$lock->timeout));
 
             if ($this->revealLockToken) {
-                $lockToken = $doc->createElementNS('DAV:','d:locktoken');
+                $lockToken = $doc->createElementNS('DAV:', 'd:locktoken');
                 $activeLock->appendChild($lockToken);
-                $lockToken->appendChild($doc->createElementNS('DAV:','d:href','opaquelocktoken:' . $lock->token));
+                $lockToken->appendChild($doc->createElementNS('DAV:', 'd:href', 'opaquelocktoken:'.$lock->token));
             }
 
-            $activeLock->appendChild($doc->createElementNS('DAV:','d:owner',$lock->owner));
-
+            $activeLock->appendChild($doc->createElementNS('DAV:', 'd:owner', $lock->owner));
         }
-
     }
-
 }
-

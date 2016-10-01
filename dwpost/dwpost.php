@@ -6,190 +6,191 @@
  * Version: 1.0
  * Author: Tony Baldwin <https://free-haven.org/profile/tony>
  * Author: Michael Johnston
- * Author: Cat Gray <https://free-haven.org/profile/catness>
+ * Author: Cat Gray <https://free-haven.org/profile/catness>.
  */
-
-function dwpost_install() {
+function dwpost_install()
+{
     register_hook('post_local',           'addon/dwpost/dwpost.php', 'dwpost_post_local');
     register_hook('notifier_normal',      'addon/dwpost/dwpost.php', 'dwpost_send');
     register_hook('jot_networks',         'addon/dwpost/dwpost.php', 'dwpost_jot_nets');
     register_hook('connector_settings',      'addon/dwpost/dwpost.php', 'dwpost_settings');
     register_hook('connector_settings_post', 'addon/dwpost/dwpost.php', 'dwpost_settings_post');
-
 }
-function dwpost_uninstall() {
+function dwpost_uninstall()
+{
     unregister_hook('post_local',       'addon/dwpost/dwpost.php', 'dwpost_post_local');
     unregister_hook('notifier_normal',  'addon/dwpost/dwpost.php', 'dwpost_send');
     unregister_hook('jot_networks',     'addon/dwpost/dwpost.php', 'dwpost_jot_nets');
     unregister_hook('connector_settings',      'addon/dwpost/dwpost.php', 'dwpost_settings');
     unregister_hook('connector_settings_post', 'addon/dwpost/dwpost.php', 'dwpost_settings_post');
-
 }
 
-
-function dwpost_jot_nets(&$a,&$b) {
-    if(! local_user())
+function dwpost_jot_nets(&$a, &$b)
+{
+    if (!local_user()) {
         return;
+    }
 
-    $dw_post = get_pconfig(local_user(),'dwpost','post');
-    if(intval($dw_post) == 1) {
-        $dw_defpost = get_pconfig(local_user(),'dwpost','post_by_default');
+    $dw_post = get_pconfig(local_user(), 'dwpost', 'post');
+    if (intval($dw_post) == 1) {
+        $dw_defpost = get_pconfig(local_user(), 'dwpost', 'post_by_default');
         $selected = ((intval($dw_defpost) == 1) ? ' checked="checked" ' : '');
-        $b .= '<div class="profile-jot-net"><input type="checkbox" name="dwpost_enable" ' . $selected . ' value="1" /> '
-            . t('Post to Dreamwidth') . '</div>';
+        $b .= '<div class="profile-jot-net"><input type="checkbox" name="dwpost_enable" '.$selected.' value="1" /> '
+            .t('Post to Dreamwidth').'</div>';
     }
 }
 
-
-function dwpost_settings(&$a,&$s) {
-
-    if(! local_user())
+function dwpost_settings(&$a, &$s)
+{
+    if (!local_user()) {
         return;
+    }
 
     /* Add our stylesheet to the page so we can make our settings look nice */
 
-    $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/dwpost/dwpost.css' . '" media="all" />' . "\r\n";
+    $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="'.$a->get_baseurl().'/addon/dwpost/dwpost.css'.'" media="all" />'."\r\n";
 
     /* Get the current state of our config variables */
 
-    $enabled = get_pconfig(local_user(),'dwpost','post');
+    $enabled = get_pconfig(local_user(), 'dwpost', 'post');
 
     $checked = (($enabled) ? ' checked="checked" ' : '');
 
-    $def_enabled = get_pconfig(local_user(),'dwpost','post_by_default');
+    $def_enabled = get_pconfig(local_user(), 'dwpost', 'post_by_default');
 
     $def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
-	$dw_username = get_pconfig(local_user(), 'dwpost', 'dw_username');
-	$dw_password = get_pconfig(local_user(), 'dwpost', 'dw_password');
-
+    $dw_username = get_pconfig(local_user(), 'dwpost', 'dw_username');
+    $dw_password = get_pconfig(local_user(), 'dwpost', 'dw_password');
 
     /* Add some HTML to the existing form */
 
     $s .= '<span id="settings_dwpost_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_dwpost_expanded\'); openClose(\'settings_dwpost_inflated\');">';
-    $s .= '<img class="connector" src="images/dreamwidth.png" /><h3 class="connector">'. t("Dreamwidth Export").'</h3>';
+    $s .= '<img class="connector" src="images/dreamwidth.png" /><h3 class="connector">'.t('Dreamwidth Export').'</h3>';
     $s .= '</span>';
     $s .= '<div id="settings_dwpost_expanded" class="settings-block" style="display: none;">';
     $s .= '<span class="fakelink" onclick="openClose(\'settings_dwpost_expanded\'); openClose(\'settings_dwpost_inflated\');">';
-    $s .= '<img class="connector" src="images/dreamwidth.png" /><h3 class="connector">'. t("Dreamwidth Export").'</h3>';
+    $s .= '<img class="connector" src="images/dreamwidth.png" /><h3 class="connector">'.t('Dreamwidth Export').'</h3>';
     $s .= '</span>';
 
     $s .= '<div id="dwpost-enable-wrapper">';
-    $s .= '<label id="dwpost-enable-label" for="dwpost-checkbox">' . t('Enable dreamwidth Post Plugin') . '</label>';
-    $s .= '<input id="dwpost-checkbox" type="checkbox" name="dwpost" value="1" ' . $checked . '/>';
+    $s .= '<label id="dwpost-enable-label" for="dwpost-checkbox">'.t('Enable dreamwidth Post Plugin').'</label>';
+    $s .= '<input id="dwpost-checkbox" type="checkbox" name="dwpost" value="1" '.$checked.'/>';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="dwpost-username-wrapper">';
-    $s .= '<label id="dwpost-username-label" for="dwpost-username">' . t('dreamwidth username') . '</label>';
-    $s .= '<input id="dwpost-username" type="text" name="dw_username" value="' . $dw_username . '" />';
+    $s .= '<label id="dwpost-username-label" for="dwpost-username">'.t('dreamwidth username').'</label>';
+    $s .= '<input id="dwpost-username" type="text" name="dw_username" value="'.$dw_username.'" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="dwpost-password-wrapper">';
-    $s .= '<label id="dwpost-password-label" for="dwpost-password">' . t('dreamwidth password') . '</label>';
-    $s .= '<input id="dwpost-password" type="password" name="dw_password" value="' . $dw_password . '" />';
+    $s .= '<label id="dwpost-password-label" for="dwpost-password">'.t('dreamwidth password').'</label>';
+    $s .= '<input id="dwpost-password" type="password" name="dw_password" value="'.$dw_password.'" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="dwpost-bydefault-wrapper">';
-    $s .= '<label id="dwpost-bydefault-label" for="dwpost-bydefault">' . t('Post to dreamwidth by default') . '</label>';
-    $s .= '<input id="dwpost-bydefault" type="checkbox" name="dw_bydefault" value="1" ' . $def_checked . '/>';
+    $s .= '<label id="dwpost-bydefault-label" for="dwpost-bydefault">'.t('Post to dreamwidth by default').'</label>';
+    $s .= '<input id="dwpost-bydefault" type="checkbox" name="dw_bydefault" value="1" '.$def_checked.'/>';
     $s .= '</div><div class="clear"></div>';
 
     /* provide a submit button */
 
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="dwpost-submit" name="dwpost-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
-
+    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="dwpost-submit" name="dwpost-submit" class="settings-submit" value="'.t('Save Settings').'" /></div></div>';
 }
 
-
-function dwpost_settings_post(&$a,&$b) {
-
-	if(x($_POST,'dwpost-submit')) {
-
-		set_pconfig(local_user(),'dwpost','post',intval($_POST['dwpost']));
-		set_pconfig(local_user(),'dwpost','post_by_default',intval($_POST['dw_bydefault']));
-		set_pconfig(local_user(),'dwpost','dw_username',trim($_POST['dw_username']));
-		set_pconfig(local_user(),'dwpost','dw_password',trim($_POST['dw_password']));
-
-	}
-
+function dwpost_settings_post(&$a, &$b)
+{
+    if (x($_POST, 'dwpost-submit')) {
+        set_pconfig(local_user(), 'dwpost', 'post', intval($_POST['dwpost']));
+        set_pconfig(local_user(), 'dwpost', 'post_by_default', intval($_POST['dw_bydefault']));
+        set_pconfig(local_user(), 'dwpost', 'dw_username', trim($_POST['dw_username']));
+        set_pconfig(local_user(), 'dwpost', 'dw_password', trim($_POST['dw_password']));
+    }
 }
 
-function dwpost_post_local(&$a,&$b) {
+function dwpost_post_local(&$a, &$b)
+{
 
-	// This can probably be changed to allow editing by pointing to a different API endpoint
+    // This can probably be changed to allow editing by pointing to a different API endpoint
 
-	if($b['edit'])
-		return;
+    if ($b['edit']) {
+        return;
+    }
 
-	if((! local_user()) || (local_user() != $b['uid']))
-		return;
+    if ((!local_user()) || (local_user() != $b['uid'])) {
+        return;
+    }
 
-	if($b['private'] || $b['parent'])
-		return;
+    if ($b['private'] || $b['parent']) {
+        return;
+    }
 
-    $dw_post   = intval(get_pconfig(local_user(),'dwpost','post'));
+    $dw_post = intval(get_pconfig(local_user(), 'dwpost', 'post'));
 
-	$dw_enable = (($dw_post && x($_REQUEST,'dwpost_enable')) ? intval($_REQUEST['dwpost_enable']) : 0);
+    $dw_enable = (($dw_post && x($_REQUEST, 'dwpost_enable')) ? intval($_REQUEST['dwpost_enable']) : 0);
 
-	if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'dwpost','post_by_default')))
-		$dw_enable = 1;
+    if ($_REQUEST['api_source'] && intval(get_pconfig(local_user(), 'dwpost', 'post_by_default'))) {
+        $dw_enable = 1;
+    }
 
-    if(! $dw_enable)
-       return;
+    if (!$dw_enable) {
+        return;
+    }
 
-    if(strlen($b['postopts']))
-       $b['postopts'] .= ',';
-     $b['postopts'] .= 'dwpost';
+    if (strlen($b['postopts'])) {
+        $b['postopts'] .= ',';
+    }
+    $b['postopts'] .= 'dwpost';
 }
 
-
-
-
-function dwpost_send(&$a,&$b) {
-
-    if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
+function dwpost_send(&$a, &$b)
+{
+    if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
         return;
+    }
 
-    if(! strstr($b['postopts'],'dwpost'))
+    if (!strstr($b['postopts'], 'dwpost')) {
         return;
+    }
 
-    if($b['parent'] != $b['id'])
+    if ($b['parent'] != $b['id']) {
         return;
+    }
 
-	// dreamwidth post in the LJ user's timezone. 
-	// Hopefully the person's Friendica account
-	// will be set to the same thing.
+    // dreamwidth post in the LJ user's timezone.
+    // Hopefully the person's Friendica account
+    // will be set to the same thing.
 
-	$tz = 'UTC';
+    $tz = 'UTC';
 
-	$x = q("select timezone from user where uid = %d limit 1",
-		intval($b['uid'])
-	);
-	if($x && strlen($x[0]['timezone']))
-		$tz = $x[0]['timezone'];	
+    $x = q('select timezone from user where uid = %d limit 1',
+        intval($b['uid'])
+    );
+    if ($x && strlen($x[0]['timezone'])) {
+        $tz = $x[0]['timezone'];
+    }
 
-	$dw_username = get_pconfig($b['uid'],'dwpost','dw_username');
-	$dw_password = get_pconfig($b['uid'],'dwpost','dw_password');
-	$dw_blog = 'http://www.dreamwidth.org/interface/xmlrpc';
+    $dw_username = get_pconfig($b['uid'], 'dwpost', 'dw_username');
+    $dw_password = get_pconfig($b['uid'], 'dwpost', 'dw_password');
+    $dw_blog = 'http://www.dreamwidth.org/interface/xmlrpc';
 
-	if($dw_username && $dw_password && $dw_blog) {
+    if ($dw_username && $dw_password && $dw_blog) {
+        require_once 'include/bbcode.php';
+        require_once 'include/datetime.php';
 
-		require_once('include/bbcode.php');
-		require_once('include/datetime.php');
+        $title = $b['title'];
+        $post = bbcode($b['body']);
+        $post = xmlify($post);
+        $tags = dwpost_get_tags($b['tag']);
 
-		$title = $b['title'];
-		$post = bbcode($b['body']);
-		$post = xmlify($post);
-		$tags = dwpost_get_tags($b['tag']);
+        $date = datetime_convert('UTC', $tz, $b['created'], 'Y-m-d H:i:s');
+        $year = intval(substr($date, 0, 4));
+        $mon = intval(substr($date, 5, 2));
+        $day = intval(substr($date, 8, 2));
+        $hour = intval(substr($date, 11, 2));
+        $min = intval(substr($date, 14, 2));
 
-		$date = datetime_convert('UTC',$tz,$b['created'],'Y-m-d H:i:s');
-		$year = intval(substr($date,0,4));
-		$mon  = intval(substr($date,5,2));
-		$day  = intval(substr($date,8,2));
-		$hour = intval(substr($date,11,2));
-		$min  = intval(substr($date,14,2));
-
-		$xml = <<< EOT
+        $xml = <<< EOT
 <?xml version="1.0" encoding="utf-8"?>
 <methodCall><methodName>LJ.XMLRPC.postevent</methodName>
 <params><param>
@@ -216,18 +217,19 @@ function dwpost_send(&$a,&$b) {
 
 EOT;
 
-		logger('dwpost: data: ' . $xml, LOGGER_DATA);
+        logger('dwpost: data: '.$xml, LOGGER_DATA);
 
-		if($dw_blog !== 'test')
-			$x = post_url($dw_blog,$xml,array("Content-Type: text/xml"));
-		logger('posted to dreamwidth: ' . ($x) ? $x : '', LOGGER_DEBUG);
-
-	}
+        if ($dw_blog !== 'test') {
+            $x = post_url($dw_blog, $xml, array('Content-Type: text/xml'));
+        }
+        logger('posted to dreamwidth: '.($x) ? $x : '', LOGGER_DEBUG);
+    }
 }
 
 function dwpost_get_tags($post)
 {
-	preg_match_all("/\]([^\[#]+)\[/",$post,$matches);
-	$tags = implode(', ',$matches[1]);
-	return $tags;
+    preg_match_all("/\]([^\[#]+)\[/", $post, $matches);
+    $tags = implode(', ', $matches[1]);
+
+    return $tags;
 }

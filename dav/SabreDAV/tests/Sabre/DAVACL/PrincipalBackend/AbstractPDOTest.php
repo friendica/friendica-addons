@@ -1,22 +1,21 @@
 <?php
 
-abstract class Sabre_DAVACL_PrincipalBackend_AbstractPDOTest extends PHPUnit_Framework_TestCase {
+abstract class Sabre_DAVACL_PrincipalBackend_AbstractPDOTest extends PHPUnit_Framework_TestCase
+{
+    abstract public function getPDO();
 
-    abstract function getPDO();
-
-    function testConstruct() {
-
+    public function testConstruct()
+    {
         $pdo = $this->getPDO();
         $backend = new Sabre_DAVACL_PrincipalBackend_PDO($pdo);
         $this->assertTrue($backend instanceof Sabre_DAVACL_PrincipalBackend_PDO);
-
     }
 
     /**
      * @depends testConstruct
      */
-    function testGetPrincipalsByPrefix() {
-
+    public function testGetPrincipalsByPrefix()
+    {
         $pdo = $this->getPDO();
         $backend = new Sabre_DAVACL_PrincipalBackend_PDO($pdo);
 
@@ -35,14 +34,13 @@ abstract class Sabre_DAVACL_PrincipalBackend_AbstractPDOTest extends PHPUnit_Fra
 
         $this->assertEquals($expected, $backend->getPrincipalsByPrefix('principals'));
         $this->assertEquals(array(), $backend->getPrincipalsByPrefix('foo'));
-
     }
 
     /**
      * @depends testConstruct
      */
-    function testGetPrincipalByPath() {
-
+    public function testGetPrincipalByPath()
+    {
         $pdo = $this->getPDO();
         $backend = new Sabre_DAVACL_PrincipalBackend_PDO($pdo);
 
@@ -55,31 +53,28 @@ abstract class Sabre_DAVACL_PrincipalBackend_AbstractPDOTest extends PHPUnit_Fra
 
         $this->assertEquals($expected, $backend->getPrincipalByPath('principals/user'));
         $this->assertEquals(null, $backend->getPrincipalByPath('foo'));
-
     }
 
-    function testGetGroupMemberSet() {
-
+    public function testGetGroupMemberSet()
+    {
         $pdo = $this->getPDO();
         $backend = new Sabre_DAVACL_PrincipalBackend_PDO($pdo);
         $expected = array('principals/user');
 
-        $this->assertEquals($expected,$backend->getGroupMemberSet('principals/group'));
-
+        $this->assertEquals($expected, $backend->getGroupMemberSet('principals/group'));
     }
 
-    function testGetGroupMembership() {
-
+    public function testGetGroupMembership()
+    {
         $pdo = $this->getPDO();
         $backend = new Sabre_DAVACL_PrincipalBackend_PDO($pdo);
         $expected = array('principals/group');
 
-        $this->assertEquals($expected,$backend->getGroupMembership('principals/user'));
-
+        $this->assertEquals($expected, $backend->getGroupMembership('principals/user'));
     }
 
-    function testSetGroupMemberSet() {
-
+    public function testSetGroupMemberSet()
+    {
         $pdo = $this->getPDO();
 
         // Start situation
@@ -93,12 +88,10 @@ abstract class Sabre_DAVACL_PrincipalBackend_AbstractPDOTest extends PHPUnit_Fra
         // Adding principals again
         $backend->setGroupMemberSet('principals/group', array('principals/user'));
         $this->assertEquals(array('principals/user'), $backend->getGroupMemberSet('principals/group'));
-
-
     }
 
-    function testSearchPrincipals() {
-
+    public function testSearchPrincipals()
+    {
         $pdo = $this->getPDO();
 
         $backend = new Sabre_DAVACL_PrincipalBackend_PDO($pdo);
@@ -114,11 +107,10 @@ abstract class Sabre_DAVACL_PrincipalBackend_AbstractPDOTest extends PHPUnit_Fra
 
         $result = $backend->searchPrincipals('mom', array('{DAV:}displayname' => 'UsEr', '{http://sabredav.org/ns}email-address' => 'USER@EXAMPLE'));
         $this->assertEquals(array(), $result);
-
     }
 
-    function testUpdatePrincipal() {
-
+    public function testUpdatePrincipal()
+    {
         $pdo = $this->getPDO();
         $backend = new Sabre_DAVACL_PrincipalBackend_PDO($pdo);
 
@@ -136,11 +128,10 @@ abstract class Sabre_DAVACL_PrincipalBackend_AbstractPDOTest extends PHPUnit_Fra
             '{http://sabredav.org/ns}vcard-url' => 'blabla',
             '{http://sabredav.org/ns}email-address' => 'user@example.org',
         ), $backend->getPrincipalByPath('principals/user'));
-
     }
 
-    function testUpdatePrincipalUnknownField() {
-
+    public function testUpdatePrincipalUnknownField()
+    {
         $pdo = $this->getPDO();
         $backend = new Sabre_DAVACL_PrincipalBackend_PDO($pdo);
 
@@ -158,7 +149,7 @@ abstract class Sabre_DAVACL_PrincipalBackend_AbstractPDOTest extends PHPUnit_Fra
             403 => array(
                 '{DAV:}unknown' => null,
             ),
-        ), $result); 
+        ), $result);
 
         $this->assertEquals(array(
             'id' => '1',
@@ -166,7 +157,5 @@ abstract class Sabre_DAVACL_PrincipalBackend_AbstractPDOTest extends PHPUnit_Fra
             '{DAV:}displayname' => 'User',
             '{http://sabredav.org/ns}email-address' => 'user@example.org',
         ), $backend->getPrincipalByPath('principals/user'));
-
     }
-
 }

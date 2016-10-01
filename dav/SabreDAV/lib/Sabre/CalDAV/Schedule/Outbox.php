@@ -1,36 +1,33 @@
 <?php
 
 /**
- * The CalDAV scheduling outbox
+ * The CalDAV scheduling outbox.
  *
  * The outbox is mainly used as an endpoint in the tree for a client to do
  * free-busy requests. This functionality is completely handled by the
  * Scheduling plugin, so this object is actually mostly static.
  *
- * @package Sabre
- * @subpackage CalDAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_CalDAV_Schedule_Outbox extends Sabre_DAV_Collection implements Sabre_CalDAV_Schedule_IOutbox {
-
+class Sabre_CalDAV_Schedule_Outbox extends Sabre_DAV_Collection implements Sabre_CalDAV_Schedule_IOutbox
+{
     /**
-     * The principal Uri
+     * The principal Uri.
      *
      * @var string
      */
     protected $principalUri;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string $principalUri
      */
-    public function __construct($principalUri) {
-
+    public function __construct($principalUri)
+    {
         $this->principalUri = $principalUri;
-
     }
 
     /**
@@ -40,47 +37,43 @@ class Sabre_CalDAV_Schedule_Outbox extends Sabre_DAV_Collection implements Sabre
      *
      * @return string
      */
-    public function getName() {
-
+    public function getName()
+    {
         return 'outbox';
-
     }
 
     /**
-     * Returns an array with all the child nodes
+     * Returns an array with all the child nodes.
      *
      * @return Sabre_DAV_INode[]
      */
-    public function getChildren() {
-
+    public function getChildren()
+    {
         return array();
-
     }
 
     /**
-     * Returns the owner principal
+     * Returns the owner principal.
      *
      * This must be a url to a principal, or null if there's no owner
      *
      * @return string|null
      */
-    public function getOwner() {
-
+    public function getOwner()
+    {
         return $this->principalUri;
-
     }
 
     /**
-     * Returns a group principal
+     * Returns a group principal.
      *
      * This must be a url to a principal, or null if there's no owner
      *
      * @return string|null
      */
-    public function getGroup() {
-
+    public function getGroup()
+    {
         return null;
-
     }
 
     /**
@@ -95,11 +88,11 @@ class Sabre_CalDAV_Schedule_Outbox extends Sabre_DAV_Collection implements Sabre
      *
      * @return array
      */
-    public function getACL() {
-
+    public function getACL()
+    {
         return array(
             array(
-                'privilege' => '{' . Sabre_CalDAV_Plugin::NS_CALDAV . '}schedule-query-freebusy',
+                'privilege' => '{'.Sabre_CalDAV_Plugin::NS_CALDAV.'}schedule-query-freebusy',
                 'principal' => $this->getOwner(),
                 'protected' => true,
             ),
@@ -109,21 +102,18 @@ class Sabre_CalDAV_Schedule_Outbox extends Sabre_DAV_Collection implements Sabre
                 'protected' => true,
             ),
         );
-
     }
 
     /**
-     * Updates the ACL
+     * Updates the ACL.
      *
      * This method will receive a list of new ACE's.
      *
      * @param array $acl
-     * @return void
      */
-    public function setACL(array $acl) {
-
+    public function setACL(array $acl)
+    {
         throw new Sabre_DAV_Exception_MethodNotAllowed('You\'re not allowed to update the ACL');
-
     }
 
     /**
@@ -138,15 +128,13 @@ class Sabre_CalDAV_Schedule_Outbox extends Sabre_DAV_Collection implements Sabre
      *
      * @return array|null
      */
-    public function getSupportedPrivilegeSet() {
-
+    public function getSupportedPrivilegeSet()
+    {
         $default = Sabre_DAVACL_Plugin::getDefaultSupportedPrivilegeSet();
         $default['aggregates'][] = array(
-            'privilege' => '{' . Sabre_CalDAV_Plugin::NS_CALDAV . '}schedule-query-freebusy',
+            'privilege' => '{'.Sabre_CalDAV_Plugin::NS_CALDAV.'}schedule-query-freebusy',
         );
 
         return $default;
-
     }
-
 }

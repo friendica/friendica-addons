@@ -2,8 +2,8 @@
 
 require_once 'Sabre/HTTP/ResponseMock.php';
 
-class Sabre_HTTP_BasicAuthTest extends PHPUnit_Framework_TestCase {
-
+class Sabre_HTTP_BasicAuthTest extends PHPUnit_Framework_TestCase
+{
     /**
      * @var Sabre_HTTP_ResponseMock
      */
@@ -13,19 +13,18 @@ class Sabre_HTTP_BasicAuthTest extends PHPUnit_Framework_TestCase {
      */
     private $basicAuth;
 
-    function setUp() {
-
+    public function setUp()
+    {
         $this->response = new Sabre_HTTP_ResponseMock();
         $this->basicAuth = new Sabre_HTTP_BasicAuth();
         $this->basicAuth->setHTTPResponse($this->response);
-
     }
 
-    function testGetUserPassApache() {
-
+    public function testGetUserPassApache()
+    {
         $server = array(
             'PHP_AUTH_USER' => 'admin',
-            'PHP_AUTH_PW'   => '1234',
+            'PHP_AUTH_PW' => '1234',
         );
 
         $request = new Sabre_HTTP_Request($server);
@@ -34,17 +33,16 @@ class Sabre_HTTP_BasicAuthTest extends PHPUnit_Framework_TestCase {
         $userPass = $this->basicAuth->getUserPass();
 
         $this->assertEquals(
-            array('admin','1234'),
+            array('admin', '1234'),
             $userPass,
             'We did not get the username and password we expected'
         );
-
     }
 
-    function testGetUserPassIIS() {
-
+    public function testGetUserPassIIS()
+    {
         $server = array(
-            'HTTP_AUTHORIZATION' => 'Basic ' . base64_encode('admin:1234'),
+            'HTTP_AUTHORIZATION' => 'Basic '.base64_encode('admin:1234'),
         );
 
         $request = new Sabre_HTTP_Request($server);
@@ -53,17 +51,16 @@ class Sabre_HTTP_BasicAuthTest extends PHPUnit_Framework_TestCase {
         $userPass = $this->basicAuth->getUserPass();
 
         $this->assertEquals(
-            array('admin','1234'),
+            array('admin', '1234'),
             $userPass,
             'We did not get the username and password we expected'
         );
-
     }
 
-    function testGetUserPassWithColon() {
-
+    public function testGetUserPassWithColon()
+    {
         $server = array(
-            'HTTP_AUTHORIZATION' => 'Basic ' . base64_encode('admin:1234:5678'),
+            'HTTP_AUTHORIZATION' => 'Basic '.base64_encode('admin:1234:5678'),
         );
 
         $request = new Sabre_HTTP_Request($server);
@@ -72,17 +69,16 @@ class Sabre_HTTP_BasicAuthTest extends PHPUnit_Framework_TestCase {
         $userPass = $this->basicAuth->getUserPass();
 
         $this->assertEquals(
-            array('admin','1234:5678'),
+            array('admin', '1234:5678'),
             $userPass,
             'We did not get the username and password we expected'
         );
-
     }
 
-    function testGetUserPassApacheEdgeCase() {
-
+    public function testGetUserPassApacheEdgeCase()
+    {
         $server = array(
-            'REDIRECT_HTTP_AUTHORIZATION' => 'Basic ' . base64_encode('admin:1234'),
+            'REDIRECT_HTTP_AUTHORIZATION' => 'Basic '.base64_encode('admin:1234'),
         );
 
         $request = new Sabre_HTTP_Request($server);
@@ -91,26 +87,24 @@ class Sabre_HTTP_BasicAuthTest extends PHPUnit_Framework_TestCase {
         $userPass = $this->basicAuth->getUserPass();
 
         $this->assertEquals(
-            array('admin','1234'),
+            array('admin', '1234'),
             $userPass,
             'We did not get the username and password we expected'
         );
-
     }
 
-    function testGetUserPassNothing() {
-
+    public function testGetUserPassNothing()
+    {
         $this->assertEquals(
             false,
             $this->basicAuth->getUserPass()
         );
-
     }
 
-    function testRequireLogin() {
-
+    public function testRequireLogin()
+    {
         $this->basicAuth->requireLogin();
-        $this->assertEquals('SabreDAV',$this->basicAuth->getRealm());
+        $this->assertEquals('SabreDAV', $this->basicAuth->getRealm());
         $this->assertEquals(
             'HTTP/1.1 401 Unauthorized',
             $this->response->status,
@@ -122,9 +116,5 @@ class Sabre_HTTP_BasicAuthTest extends PHPUnit_Framework_TestCase {
             $this->response->headers['WWW-Authenticate'],
             'The WWW-Autenticate header was not set!'
         );
-
-
-
     }
-
 }

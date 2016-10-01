@@ -2,8 +2,7 @@
 
 echo "SabreDAV migrate script for version 1.7\n";
 
-if ($argc<2) {
-
+if ($argc < 2) {
     echo <<<HELLO
 
 This script help you migrate from a pre-1.7 database to 1.7 and later\n
@@ -30,11 +29,10 @@ For example:
 HELLO;
 
     exit();
-
 }
 
-if (file_exists(__DIR__ . '/../lib/Sabre/VObject/includes.php')) {
-    include __DIR__ . '/../lib/Sabre/VObject/includes.php';
+if (file_exists(__DIR__.'/../lib/Sabre/VObject/includes.php')) {
+    include __DIR__.'/../lib/Sabre/VObject/includes.php';
 } else {
     // If, for some reason VObject was not found in the vicinity,
     // we'll try to grab it from the default path.
@@ -42,10 +40,10 @@ if (file_exists(__DIR__ . '/../lib/Sabre/VObject/includes.php')) {
 }
 
 $dsn = $argv[1];
-$user = isset($argv[2])?$argv[2]:null;
-$pass = isset($argv[3])?$argv[3]:null;
+$user = isset($argv[2]) ? $argv[2] : null;
+$pass = isset($argv[3]) ? $argv[3] : null;
 
-echo "Connecting to database: " . $dsn . "\n";
+echo 'Connecting to database: '.$dsn."\n";
 
 $pdo = new PDO($dsn, $user, $pass);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -54,7 +52,7 @@ $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 echo "Validating existing table layout\n";
 
 // The only cross-db way to do this, is to just fetch a single record.
-$row = $pdo->query("SELECT * FROM calendarobjects LIMIT 1")->fetch();
+$row = $pdo->query('SELECT * FROM calendarobjects LIMIT 1')->fetch();
 
 if (!$row) {
     echo "Error: This database did not have any records in the calendarobjects table, you should just recreate the table.\n";
@@ -62,15 +60,15 @@ if (!$row) {
 }
 
 $requiredFields = array(
-    'id', 
+    'id',
     'calendardata',
     'uri',
-    'calendarid', 
+    'calendarid',
     'lastmodified',
 );
 
-foreach($requiredFields as $requiredField) {
-    if (!array_key_exists($requiredField,$row)) {
+foreach ($requiredFields as $requiredField) {
+    if (!array_key_exists($requiredField, $row)) {
         echo "Error: The current 'calendarobjects' table was missing a field we expected to exist.\n";
         echo "For safety reasons, this process is stopped.\n";
         exit(-1);
@@ -86,9 +84,9 @@ $fields17 = array(
 );
 
 $found = 0;
-foreach($fields17 as $field) {
+foreach ($fields17 as $field) {
     if (array_key_exists($field, $row)) {
-        $found++;
+        ++$found;
     }
 }
 
@@ -96,11 +94,11 @@ if ($found === 0) {
     echo "The database had the 1.6 schema. Table will now be altered.\n";
     echo "This may take some time for large tables\n";
 
-    switch($pdo->getAttribute(PDO::ATTR_DRIVER_NAME)) {
+    switch ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME)) {
 
-        case 'mysql' :
+        case 'mysql':
 
-            $pdo->exec(<<<SQL
+            $pdo->exec(<<<'SQL'
 ALTER TABLE calendarobjects 
 ADD etag VARCHAR(32),
 ADD size INT(11) UNSIGNED,
@@ -110,7 +108,7 @@ ADD lastoccurence INT(11) UNSIGNED
 SQL
         );
             break;
-            case 'sqlite' :
+            case 'sqlite':
                 $pdo->exec('ALTER TABLE calendarobjects ADD etag text');
                 $pdo->exec('ALTER TABLE calendarobjects ADD size integer');
                 $pdo->exec('ALTER TABLE calendarobjects ADD componenttype TEXT');
@@ -118,40 +116,34 @@ SQL
                 $pdo->exec('ALTER TABLE calendarobjects ADD lastoccurence integer');
                 break;
 
-        default :
-            die('This upgrade script does not support this driver (' . $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) . ")\n");
+        default:
+            die('This upgrade script does not support this driver ('.$pdo->getAttribute(PDO::ATTR_DRIVER_NAME).")\n");
 
-    } 
+    }
     echo "Database schema upgraded.\n";
-
 } elseif ($found === 5) {
-
     echo "Database already had the 1.7 schema\n";
-
 } else {
-
     echo "The database had $found out of 5 from the changes for 1.7. This is scary and unusual, so we have to abort.\n";
     echo "You can manually try to upgrade the schema, and then run this script again.\n";
     exit(-1);
-
 }
 
 echo "Now, we need to parse every record and pull out some information.\n";
 
 $result = $pdo->query('SELECT id, calendardata FROM calendarobjects');
-$stmt = $pdo->prepare('UPDATE calendarobjects SET etag = ?, size = ?, componenttype = ?, firstoccurence = ?, lastoccurence = ? WHERE id = ?'); 
+$stmt = $pdo->prepare('UPDATE calendarobjects SET etag = ?, size = ?, componenttype = ?, firstoccurence = ?, lastoccurence = ? WHERE id = ?');
 
-echo "Total records found: " . $result->rowCount() . "\n";
+echo 'Total records found: '.$result->rowCount()."\n";
 $done = 0;
 $total = $result->rowCount();
-while($row = $result->fetch()) {
-
+while ($row = $result->fetch()) {
     try {
         $newData = getDenormalizedData($row['calendardata']);
     } catch (Exception $e) {
         echo "===\nException caught will trying to parser calendarobject.\n";
-        echo "Error message: " . $e->getMessage() . "\n";
-        echo "Record id: " . $row['id'] . "\n";
+        echo 'Error message: '.$e->getMessage()."\n";
+        echo 'Record id: '.$row['id']."\n";
         echo "This record is ignored, you should inspect it to see if there's anything wrong.\n===\n";
         continue;
     }
@@ -163,11 +155,11 @@ while($row = $result->fetch()) {
         $newData['lastOccurence'],
         $row['id'],
     ));
-    $done++;
+    ++$done;
 
     if ($done % 500 === 0) {
         echo "Completed: $done / $total\n";
-    } 
+    }
 }
 
 echo "Process completed!\n";
@@ -186,17 +178,18 @@ echo "Process completed!\n";
  *   * lastOccurence
  *
  * @param string $calendarData
+ *
  * @return array
  */
-function getDenormalizedData($calendarData) {
-
+function getDenormalizedData($calendarData)
+{
     $vObject = Sabre_VObject_Reader::read($calendarData);
     $componentType = null;
     $component = null;
     $firstOccurence = null;
     $lastOccurence = null;
-    foreach($vObject->getComponents() as $component) {
-        if ($component->name!=='VTIMEZONE') {
+    foreach ($vObject->getComponents() as $component) {
+        if ($component->name !== 'VTIMEZONE') {
             $componentType = $component->name;
             break;
         }
@@ -214,7 +207,7 @@ function getDenormalizedData($calendarData) {
                 $endDate = clone $component->DTSTART->getDateTime();
                 $endDate->add(Sabre_VObject_DateTimeParser::parse($component->DURATION->value));
                 $lastOccurence = $endDate->getTimeStamp();
-            } elseif ($component->DTSTART->getDateType()===Sabre_VObject_Property_DateTime::DATE) {
+            } elseif ($component->DTSTART->getDateType() === Sabre_VObject_Property_DateTime::DATE) {
                 $endDate = clone $component->DTSTART->getDateTime();
                 $endDate->modify('+1 day');
                 $lastOccurence = $endDate->getTimeStamp();
@@ -222,20 +215,18 @@ function getDenormalizedData($calendarData) {
                 $lastOccurence = $firstOccurence;
             }
         } else {
-            $it = new Sabre_VObject_RecurrenceIterator($vObject, (string)$component->UID);
+            $it = new Sabre_VObject_RecurrenceIterator($vObject, (string) $component->UID);
             $maxDate = new DateTime(Sabre_CalDAV_Backend_PDO::MAX_DATE);
             if ($it->isInfinite()) {
                 $lastOccurence = $maxDate->getTimeStamp();
             } else {
                 $end = $it->getDtEnd();
-                while($it->valid() && $end < $maxDate) {
+                while ($it->valid() && $end < $maxDate) {
                     $end = $it->getDtEnd();
                     $it->next();
-
                 }
                 $lastOccurence = $end->getTimeStamp();
             }
-
         }
     }
 
@@ -244,7 +235,6 @@ function getDenormalizedData($calendarData) {
         'size' => strlen($calendarData),
         'componentType' => $componentType,
         'firstOccurence' => $firstOccurence,
-        'lastOccurence'  => $lastOccurence,
+        'lastOccurence' => $lastOccurence,
     );
-
 }

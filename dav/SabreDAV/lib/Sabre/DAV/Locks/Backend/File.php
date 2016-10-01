@@ -8,34 +8,31 @@
  * Note that this is not nearly as robust as a database, you are encouraged
  * to use the PDO backend instead.
  *
- * @package Sabre
- * @subpackage DAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_DAV_Locks_Backend_File extends Sabre_DAV_Locks_Backend_Abstract {
-
+class Sabre_DAV_Locks_Backend_File extends Sabre_DAV_Locks_Backend_Abstract
+{
     /**
-     * The storage file
+     * The storage file.
      *
      * @var string
      */
     private $locksFile;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string $locksFile path to file
      */
-    public function __construct($locksFile) {
-
+    public function __construct($locksFile)
+    {
         $this->locksFile = $locksFile;
-
     }
 
     /**
-     * Returns a list of Sabre_DAV_Locks_LockInfo objects
+     * Returns a list of Sabre_DAV_Locks_LockInfo objects.
      *
      * This method should return all the locks for a particular uri, including
      * locks that might be set on a parent uri.
@@ -44,46 +41,47 @@ class Sabre_DAV_Locks_Backend_File extends Sabre_DAV_Locks_Backend_Abstract {
      * any locks in the subtree of the uri for locks.
      *
      * @param string $uri
-     * @param bool $returnChildLocks
+     * @param bool   $returnChildLocks
+     *
      * @return array
      */
-    public function getLocks($uri, $returnChildLocks) {
-
+    public function getLocks($uri, $returnChildLocks)
+    {
         $newLocks = array();
 
         $locks = $this->getData();
 
-        foreach($locks as $lock) {
-
+        foreach ($locks as $lock) {
             if ($lock->uri === $uri ||
                 //deep locks on parents
-                ($lock->depth!=0 && strpos($uri, $lock->uri . '/')===0) ||
+                ($lock->depth != 0 && strpos($uri, $lock->uri.'/') === 0) ||
 
                 // locks on children
-                ($returnChildLocks && (strpos($lock->uri, $uri . '/')===0)) ) {
-
+                ($returnChildLocks && (strpos($lock->uri, $uri.'/') === 0))) {
                 $newLocks[] = $lock;
-
             }
-
         }
 
         // Checking if we can remove any of these locks
-        foreach($newLocks as $k=>$lock) {
-            if (time() > $lock->timeout + $lock->created) unset($newLocks[$k]);
+        foreach ($newLocks as $k => $lock) {
+            if (time() > $lock->timeout + $lock->created) {
+                unset($newLocks[$k]);
+            }
         }
-        return $newLocks;
 
+        return $newLocks;
     }
 
     /**
-     * Locks a uri
+     * Locks a uri.
      *
-     * @param string $uri
+     * @param string                   $uri
      * @param Sabre_DAV_Locks_LockInfo $lockInfo
+     *
      * @return bool
      */
-    public function lock($uri, Sabre_DAV_Locks_LockInfo $lockInfo) {
+    public function lock($uri, Sabre_DAV_Locks_LockInfo $lockInfo)
+    {
 
         // We're making the lock timeout 30 minutes
         $lockInfo->timeout = 1800;
@@ -92,7 +90,7 @@ class Sabre_DAV_Locks_Backend_File extends Sabre_DAV_Locks_Backend_Abstract {
 
         $locks = $this->getData();
 
-        foreach($locks as $k=>$lock) {
+        foreach ($locks as $k => $lock) {
             if (
                 ($lock->token == $lockInfo->token) ||
                 (time() > $lock->timeout + $lock->created)
@@ -102,32 +100,31 @@ class Sabre_DAV_Locks_Backend_File extends Sabre_DAV_Locks_Backend_Abstract {
         }
         $locks[] = $lockInfo;
         $this->putData($locks);
-        return true;
 
+        return true;
     }
 
     /**
-     * Removes a lock from a uri
+     * Removes a lock from a uri.
      *
-     * @param string $uri
+     * @param string                   $uri
      * @param Sabre_DAV_Locks_LockInfo $lockInfo
+     *
      * @return bool
      */
-    public function unlock($uri, Sabre_DAV_Locks_LockInfo $lockInfo) {
-
+    public function unlock($uri, Sabre_DAV_Locks_LockInfo $lockInfo)
+    {
         $locks = $this->getData();
-        foreach($locks as $k=>$lock) {
-
+        foreach ($locks as $k => $lock) {
             if ($lock->token == $lockInfo->token) {
-
                 unset($locks[$k]);
                 $this->putData($locks);
-                return true;
 
+                return true;
             }
         }
-        return false;
 
+        return false;
     }
 
     /**
@@ -135,13 +132,15 @@ class Sabre_DAV_Locks_Backend_File extends Sabre_DAV_Locks_Backend_Abstract {
      *
      * @return array
      */
-    protected function getData() {
-
-        if (!file_exists($this->locksFile)) return array();
+    protected function getData()
+    {
+        if (!file_exists($this->locksFile)) {
+            return array();
+        }
 
         // opening up the file, and creating a shared lock
-        $handle = fopen($this->locksFile,'r');
-        flock($handle,LOCK_SH);
+        $handle = fopen($this->locksFile, 'r');
+        flock($handle, LOCK_SH);
 
         // Reading data until the eof
         $data = stream_get_contents($handle);
@@ -151,31 +150,30 @@ class Sabre_DAV_Locks_Backend_File extends Sabre_DAV_Locks_Backend_Abstract {
 
         // Unserializing and checking if the resource file contains data for this file
         $data = unserialize($data);
-        if (!$data) return array();
-        return $data;
+        if (!$data) {
+            return array();
+        }
 
+        return $data;
     }
 
     /**
-     * Saves the lockdata
+     * Saves the lockdata.
      *
      * @param array $newData
-     * @return void
      */
-    protected function putData(array $newData) {
+    protected function putData(array $newData)
+    {
 
         // opening up the file, and creating an exclusive lock
-        $handle = fopen($this->locksFile,'a+');
-        flock($handle,LOCK_EX);
+        $handle = fopen($this->locksFile, 'a+');
+        flock($handle, LOCK_EX);
 
         // We can only truncate and rewind once the lock is acquired.
-        ftruncate($handle,0);
+        ftruncate($handle, 0);
         rewind($handle);
 
-        fwrite($handle,serialize($newData));
+        fwrite($handle, serialize($newData));
         fclose($handle);
-
     }
-
 }
-

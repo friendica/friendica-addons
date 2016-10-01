@@ -17,10 +17,8 @@ $auth = new Sabre_HTTP_BasicAuth();
 
 $result = $auth->getUserPass();
 
-if (!$result || $result[0]!=$u || $result[1]!=$p) {
-
+if (!$result || $result[0] != $u || $result[1] != $p) {
     $auth->requireLogin();
     echo "Authentication required\n";
     die();
-
 }

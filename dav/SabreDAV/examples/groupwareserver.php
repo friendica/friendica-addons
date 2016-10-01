@@ -27,13 +27,13 @@ date_default_timezone_set('UTC');
 $baseUri = '/';
 
 /**
- * Database
+ * Database.
  *
  * Feel free to switch this to MySQL, it will definitely be better for higher
  * concurrency.
  */
 $pdo = new PDO('sqlite:data/db.sqlite');
-$pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 /**
  * Mapping PHP errors to exceptions.
@@ -42,10 +42,11 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
  * E_NOTICE or anything appears in your code, this allows SabreDAV to intercept
  * the issue and send a proper response back to the client (HTTP/1.1 500).
  */
-function exception_error_handler($errno, $errstr, $errfile, $errline ) {
+function exception_error_handler($errno, $errstr, $errfile, $errline)
+{
     throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
 }
-set_error_handler("exception_error_handler");
+set_error_handler('exception_error_handler');
 
 // Autoloader
 require_once 'lib/Sabre/autoload.php';
@@ -56,13 +57,13 @@ require_once 'lib/Sabre/autoload.php';
  * This allows any developer to subclass just any of them and hook into their
  * own backend systems.
  */
-$authBackend      = new Sabre_DAV_Auth_Backend_PDO($pdo);
+$authBackend = new Sabre_DAV_Auth_Backend_PDO($pdo);
 $principalBackend = new Sabre_DAVACL_PrincipalBackend_PDO($pdo);
-$carddavBackend   = new Sabre_CardDAV_Backend_PDO($pdo);
-$caldavBackend    = new Sabre_CalDAV_Backend_PDO($pdo);
+$carddavBackend = new Sabre_CardDAV_Backend_PDO($pdo);
+$caldavBackend = new Sabre_CalDAV_Backend_PDO($pdo);
 
 /**
- * The directory tree
+ * The directory tree.
  *
  * Basically this is an array which contains the 'top-level' directories in the
  * WebDAV server.
@@ -81,7 +82,7 @@ $server = new Sabre_DAV_Server($nodes);
 $server->setBaseUri($baseUri);
 
 // Plugins
-$server->addPlugin(new Sabre_DAV_Auth_Plugin($authBackend,'SabreDAV'));
+$server->addPlugin(new Sabre_DAV_Auth_Plugin($authBackend, 'SabreDAV'));
 $server->addPlugin(new Sabre_DAV_Browser_Plugin());
 $server->addPlugin(new Sabre_CalDAV_Plugin());
 $server->addPlugin(new Sabre_CardDAV_Plugin());

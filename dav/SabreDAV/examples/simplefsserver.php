@@ -26,91 +26,82 @@ $publicDir = 'public';
 // Files we need
 require_once 'Sabre/autoload.php';
 
-class MyDirectory extends Sabre_DAV_Directory {
+class MyDirectory extends Sabre_DAV_Directory
+{
+    private $myPath;
 
-  private $myPath;
+    public function __construct($myPath)
+    {
+        $this->myPath = $myPath;
+    }
 
-  function __construct($myPath) {
-
-    $this->myPath = $myPath;
-
-  }
-
-  function getChildren() {
-
-    $children = array();
+    public function getChildren()
+    {
+        $children = array();
     // Loop through the directory, and create objects for each node
-    foreach(scandir($this->myPath) as $node) {
+    foreach (scandir($this->myPath) as $node) {
 
       // Ignoring files staring with .
-      if ($node[0]==='.') continue;
+      if ($node[0] === '.') {
+          continue;
+      }
 
-      $children[] = $this->getChild($node);
-
+        $children[] = $this->getChild($node);
     }
 
-    return $children;
+        return $children;
+    }
 
-  }
-
-    function getChild($name) {
-
-        $path = $this->myPath . '/' . $name;
+    public function getChild($name)
+    {
+        $path = $this->myPath.'/'.$name;
 
         // We have to throw a NotFound exception if the file didn't exist
-        if (!file_exists($this->myPath)) throw new Sabre_DAV_Exception_NotFound('The file with name: ' . $name . ' could not be found');
+        if (!file_exists($this->myPath)) {
+            throw new Sabre_DAV_Exception_NotFound('The file with name: '.$name.' could not be found');
+        }
         // Some added security
 
-        if ($name[0]=='.')  throw new Sabre_DAV_Exception_NotFound('Access denied');
-
-        if (is_dir($path)) {
-
-            return new MyDirectory($name);
-
-        } else {
-
-            return new MyFile($path);
-
+        if ($name[0] == '.') {
+            throw new Sabre_DAV_Exception_NotFound('Access denied');
         }
 
+        if (is_dir($path)) {
+            return new self($name);
+        } else {
+            return new MyFile($path);
+        }
     }
 
-    function getName() {
-
+    public function getName()
+    {
         return basename($this->myPath);
-
     }
-
 }
 
-class MyFile extends Sabre_DAV_File {
+class MyFile extends Sabre_DAV_File
+{
+    private $myPath;
 
-  private $myPath;
+    public function __construct($myPath)
+    {
+        $this->myPath = $myPath;
+    }
 
-  function __construct($myPath) {
+    public function getName()
+    {
+        return basename($this->myPath);
+    }
 
-    $this->myPath = $myPath;
+    public function get()
+    {
+        return fopen($this->myPath, 'r');
+    }
 
-  }
-
-  function getName() {
-
-      return basename($this->myPath);
-
-  }
-
-  function get() {
-
-    return fopen($this->myPath,'r');
-
-  }
-
-  function getSize() {
-
-      return filesize($this->myPath);
-
-  }
-
+    public function getSize()
+    {
+        return filesize($this->myPath);
+    }
 }
 
 // Make sure there is a directory in your current directory named 'public'. We will be exposing that directory to WebDAV

@@ -3,15 +3,15 @@
 use Sabre\VObject;
 
 /**
- * This unittest is created to find out why an overwritten DAILY event has wrong DTSTART, DTEND, SUMMARY and RECURRENCEID
+ * This unittest is created to find out why an overwritten DAILY event has wrong DTSTART, DTEND, SUMMARY and RECURRENCEID.
  *
  *
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_CalDAV_Issue203Test extends Sabre_DAVServerTest {
-
+class Sabre_CalDAV_Issue203Test extends Sabre_DAVServerTest
+{
     protected $setupCalDAV = true;
 
     protected $caldavCalendars = array(
@@ -20,7 +20,7 @@ class Sabre_CalDAV_Issue203Test extends Sabre_DAVServerTest {
             'name' => 'Calendar',
             'principaluri' => 'principals/user1',
             'uri' => 'calendar1',
-        )
+        ),
     );
 
     protected $caldavCalendarObjects = array(
@@ -54,8 +54,8 @@ END:VCALENDAR
         ),
     );
 
-    function testIssue203() {
-
+    public function testIssue203()
+    {
         $request = new Sabre_HTTP_Request(array(
             'REQUEST_METHOD' => 'REPORT',
             'HTTP_CONTENT_TYPE' => 'application/xml',
@@ -88,38 +88,34 @@ END:VCALENDAR
             $start = strpos($response->body, 'BEGIN:VCALENDAR'),
             strpos($response->body, 'END:VCALENDAR') - $start + 13
         );
-        $body = str_replace('&#13;','',$body);
+        $body = str_replace('&#13;', '', $body);
 
         $vObject = VObject\Reader::read($body);
 
         $this->assertEquals(2, count($vObject->VEVENT));
 
-
         $expectedEvents = array(
             array(
                 'DTSTART' => '20120326T135200Z',
-                'DTEND'   => '20120326T145200Z',
+                'DTEND' => '20120326T145200Z',
                 'SUMMARY' => 'original summary',
             ),
             array(
-                'DTSTART'       => '20120328T135200Z',
-                'DTEND'         => '20120328T145200Z',
-                'SUMMARY'       => 'overwritten summary',
+                'DTSTART' => '20120328T135200Z',
+                'DTEND' => '20120328T145200Z',
+                'SUMMARY' => 'overwritten summary',
                 'RECURRENCE-ID' => '20120327T135200Z',
-            )
+            ),
         );
 
         // try to match agains $expectedEvents array
         foreach ($expectedEvents as $expectedEvent) {
-
             $matching = false;
 
             foreach ($vObject->VEVENT as $vevent) {
                 /** @var $vevent Sabre\VObject\Component\VEvent */
-
                 foreach ($vevent->children as $child) {
                     /** @var $child Sabre\VObject\Property */
-
                     if (isset($expectedEvent[$child->name])) {
                         if ($expectedEvent[$child->name] != $child->value) {
                             continue 2;

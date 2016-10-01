@@ -12,37 +12,33 @@
  *
  * You are recommended to use either the PDO or the File backend instead.
  *
- * @package Sabre
- * @subpackage DAV
  * @deprecated
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ *
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_DAV_Locks_Backend_FS extends Sabre_DAV_Locks_Backend_Abstract {
-
+class Sabre_DAV_Locks_Backend_FS extends Sabre_DAV_Locks_Backend_Abstract
+{
     /**
-     * The default data directory
+     * The default data directory.
      *
      * @var string
      */
     private $dataDir;
 
-    public function __construct($dataDir) {
-
+    public function __construct($dataDir)
+    {
         $this->dataDir = $dataDir;
-
     }
 
-    protected function getFileNameForUri($uri) {
-
-        return $this->dataDir . '/sabredav_' . md5($uri) . '.locks';
-
+    protected function getFileNameForUri($uri)
+    {
+        return $this->dataDir.'/sabredav_'.md5($uri).'.locks';
     }
-
 
     /**
-     * Returns a list of Sabre_DAV_Locks_LockInfo objects
+     * Returns a list of Sabre_DAV_Locks_LockInfo objects.
      *
      * This method should return all the locks for a particular uri, including
      * locks that might be set on a parent uri.
@@ -51,108 +47,117 @@ class Sabre_DAV_Locks_Backend_FS extends Sabre_DAV_Locks_Backend_Abstract {
      * any locks in the subtree of the uri for locks.
      *
      * @param string $uri
-     * @param bool $returnChildLocks
+     * @param bool   $returnChildLocks
+     *
      * @return array
      */
-    public function getLocks($uri, $returnChildLocks) {
-
+    public function getLocks($uri, $returnChildLocks)
+    {
         $lockList = array();
         $currentPath = '';
 
-        foreach(explode('/',$uri) as $uriPart) {
+        foreach (explode('/', $uri) as $uriPart) {
 
             // weird algorithm that can probably be improved, but we're traversing the path top down
-            if ($currentPath) $currentPath.='/';
-            $currentPath.=$uriPart;
+            if ($currentPath) {
+                $currentPath .= '/';
+            }
+            $currentPath .= $uriPart;
 
             $uriLocks = $this->getData($currentPath);
 
-            foreach($uriLocks as $uriLock) {
+            foreach ($uriLocks as $uriLock) {
 
                 // Unless we're on the leaf of the uri-tree we should ignore locks with depth 0
-                if($uri==$currentPath || $uriLock->depth!=0) {
+                if ($uri == $currentPath || $uriLock->depth != 0) {
                     $uriLock->uri = $currentPath;
                     $lockList[] = $uriLock;
                 }
-
             }
-
         }
 
         // Checking if we can remove any of these locks
-        foreach($lockList as $k=>$lock) {
-            if (time() > $lock->timeout + $lock->created) unset($lockList[$k]);
+        foreach ($lockList as $k => $lock) {
+            if (time() > $lock->timeout + $lock->created) {
+                unset($lockList[$k]);
+            }
         }
-        return $lockList;
 
+        return $lockList;
     }
 
     /**
-     * Locks a uri
+     * Locks a uri.
      *
-     * @param string $uri
+     * @param string                   $uri
      * @param Sabre_DAV_Locks_LockInfo $lockInfo
+     *
      * @return bool
      */
-    public function lock($uri,Sabre_DAV_Locks_LockInfo $lockInfo) {
+    public function lock($uri, Sabre_DAV_Locks_LockInfo $lockInfo)
+    {
 
         // We're making the lock timeout 30 minutes
         $lockInfo->timeout = 1800;
         $lockInfo->created = time();
 
-        $locks = $this->getLocks($uri,false);
-        foreach($locks as $k=>$lock) {
-            if ($lock->token == $lockInfo->token) unset($locks[$k]);
-        }
-        $locks[] = $lockInfo;
-        $this->putData($uri,$locks);
-        return true;
-
-    }
-
-    /**
-     * Removes a lock from a uri
-     *
-     * @param string $uri
-     * @param Sabre_DAV_Locks_LockInfo $lockInfo
-     * @return bool
-     */
-    public function unlock($uri,Sabre_DAV_Locks_LockInfo $lockInfo) {
-
-        $locks = $this->getLocks($uri,false);
-        foreach($locks as $k=>$lock) {
-
+        $locks = $this->getLocks($uri, false);
+        foreach ($locks as $k => $lock) {
             if ($lock->token == $lockInfo->token) {
-
                 unset($locks[$k]);
-                $this->putData($uri,$locks);
-                return true;
-
             }
         }
-        return false;
+        $locks[] = $lockInfo;
+        $this->putData($uri, $locks);
 
+        return true;
     }
 
     /**
-     * Returns the stored data for a uri
+     * Removes a lock from a uri.
+     *
+     * @param string                   $uri
+     * @param Sabre_DAV_Locks_LockInfo $lockInfo
+     *
+     * @return bool
+     */
+    public function unlock($uri, Sabre_DAV_Locks_LockInfo $lockInfo)
+    {
+        $locks = $this->getLocks($uri, false);
+        foreach ($locks as $k => $lock) {
+            if ($lock->token == $lockInfo->token) {
+                unset($locks[$k]);
+                $this->putData($uri, $locks);
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns the stored data for a uri.
      *
      * @param string $uri
+     *
      * @return array
      */
-    protected function getData($uri) {
-
+    protected function getData($uri)
+    {
         $path = $this->getFilenameForUri($uri);
-        if (!file_exists($path)) return array();
+        if (!file_exists($path)) {
+            return array();
+        }
 
         // opening up the file, and creating a shared lock
-        $handle = fopen($path,'r');
-        flock($handle,LOCK_SH);
+        $handle = fopen($path, 'r');
+        flock($handle, LOCK_SH);
         $data = '';
 
         // Reading data until the eof
-        while(!feof($handle)) {
-            $data.=fread($handle,8192);
+        while (!feof($handle)) {
+            $data .= fread($handle, 8192);
         }
 
         // We're all good
@@ -160,32 +165,30 @@ class Sabre_DAV_Locks_Backend_FS extends Sabre_DAV_Locks_Backend_Abstract {
 
         // Unserializing and checking if the resource file contains data for this file
         $data = unserialize($data);
-        if (!$data) return array();
-        return $data;
+        if (!$data) {
+            return array();
+        }
 
+        return $data;
     }
 
     /**
-     * Updates the lock information
+     * Updates the lock information.
      *
      * @param string $uri
-     * @param array $newData
-     * @return void
+     * @param array  $newData
      */
-    protected function putData($uri,array $newData) {
-
+    protected function putData($uri, array $newData)
+    {
         $path = $this->getFileNameForUri($uri);
 
         // opening up the file, and creating a shared lock
-        $handle = fopen($path,'a+');
-        flock($handle,LOCK_EX);
-        ftruncate($handle,0);
+        $handle = fopen($path, 'a+');
+        flock($handle, LOCK_EX);
+        ftruncate($handle, 0);
         rewind($handle);
 
-        fwrite($handle,serialize($newData));
+        fwrite($handle, serialize($newData));
         fclose($handle);
-
     }
-
 }
-

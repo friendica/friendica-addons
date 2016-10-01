@@ -1,42 +1,38 @@
 <?php
-/**
- * @package GPG::Tests
- */
+
 /* ensure the framework libraries can be located */
 set_include_path(
-		realpath("../libs") .
-		PATH_SEPARATOR . get_include_path()
+        realpath('../libs').
+        PATH_SEPARATOR.get_include_path()
 );
 
 require_once 'PHPUnit/Framework/TestCase.php';
 require_once 'GPG.php';
 
-/**
- * 
- */
 class EncryptTest extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * @see PHPUnit_Framework_TestCase::setUp()
-	 */
-	function setUp()
-	{
-	}
-	
-	/**
-	 * @see PHPUnit_Framework_TestCase::tearDown()
-	 */
-	function tearDown()
-	{
-	}
-	
-	/**
-	 * Return a public key used for encryption
-	 * @return string PGP public key
-	 */
-	function getTestKey()
-	{
-		return "-----BEGIN PGP PUBLIC KEY BLOCK-----
+    /**
+     * @see PHPUnit_Framework_TestCase::setUp()
+     */
+    public function setUp()
+    {
+    }
+
+    /**
+     * @see PHPUnit_Framework_TestCase::tearDown()
+     */
+    public function tearDown()
+    {
+    }
+
+    /**
+     * Return a public key used for encryption.
+     *
+     * @return string PGP public key
+     */
+    public function getTestKey()
+    {
+        return '-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG/MacGPG2 v2.0.22 (Darwin)
 Comment: GPGTools - https://gpgtools.org
 
@@ -100,36 +96,32 @@ gPLPMkHxaqGn4wygONP9T2Ehth8Fi8eo5OpkMM/uU30n5xlchqBQSPxWiJSIk1cN
 rrkM+tFI6ij510nyAL0uF4l3vc3aBQ90I3iS9J51j1MQQ2pt8/3Ofq5CiHKNUGPL
 0w==
 =Opd1
------END PGP PUBLIC KEY BLOCK-----";
-	}
-	
-	/**
-	 * Test that basic encryption returns a valid encrypted message
-	 */
-	function test_Encrypt()
-	{
-		// jason's public key
-		$public_key_ascii = $this->getTestKey();
-		
-		// plain text message
-		$plain_text_string = "Whatever 90's tote bag, meggings put a bird on it cray bicycle rights vinyl semiotics Wes Anderson. Selvage Austin umami, letterpress Tumblr deep v kitsch polaroid. Trust fund messenger bag sartorial gluten-free, cred cray church-key pop-up Intelligentsia. Food truck Tumblr paleo mixtape XOXO banjo PBR&B Pinterest tofu banh mi. Portland messenger bag cornhole PBR Tonx High Life, DIY pork belly bespoke hoodie Terry Richardson dreamcatcher ethical forage. Put a bird on it slow-carb mixtape cardigan craft beer messenger bag. Aesthetic twee art party, Odd Future trust fund banjo ugh small batch semiotics.
+-----END PGP PUBLIC KEY BLOCK-----';
+    }
+
+    /**
+     * Test that basic encryption returns a valid encrypted message.
+     */
+    public function test_Encrypt()
+    {
+        // jason's public key
+        $public_key_ascii = $this->getTestKey();
+
+        // plain text message
+        $plain_text_string = "Whatever 90's tote bag, meggings put a bird on it cray bicycle rights vinyl semiotics Wes Anderson. Selvage Austin umami, letterpress Tumblr deep v kitsch polaroid. Trust fund messenger bag sartorial gluten-free, cred cray church-key pop-up Intelligentsia. Food truck Tumblr paleo mixtape XOXO banjo PBR&B Pinterest tofu banh mi. Portland messenger bag cornhole PBR Tonx High Life, DIY pork belly bespoke hoodie Terry Richardson dreamcatcher ethical forage. Put a bird on it slow-carb mixtape cardigan craft beer messenger bag. Aesthetic twee art party, Odd Future trust fund banjo ugh small batch semiotics.
 
 Whatever asymmetrical keffiyeh literally narwhal. Keytar Odd Future blog, wayfarers literally gluten-free beard. Authentic Cosby sweater sustainable hashtag, VHS food truck kogi seitan put a bird on it YOLO. Selvage tousled mustache, flannel craft beer try-hard McSweeney's literally four loko YOLO keytar beard synth forage. Salvia Schlitz narwhal Terry Richardson typewriter, Wes Anderson butcher wolf. Slow-carb whatever bitters, letterpress trust fund pug before they sold out food truck artisan tousled. Church-key Vice craft beer Wes Anderson artisan flexitarian, kogi YOLO hella Tonx chia Neutra.
 
 Farm-to-table actually Portland, artisan shabby chic vinyl organic seitan roof party distillery. Street art PBR&B banh mi, Tonx authentic you probably haven't heard of them fixie whatever tofu gluten-free. Gentrify locavore lo-fi umami, Thundercats salvia wolf four loko. Mixtape messenger bag gluten-free, squid American Apparel hella Shoreditch whatever selfies sriracha before they sold out. Pickled farm-to-table Intelligentsia occupy. Tumblr Etsy farm-to-table, mlkshk hella shabby chic meh jean shorts dreamcatcher fashion axe trust fund lomo Neutra. Freegan vegan narwhal tousled hoodie wolf flexitarian.
 
 Flannel sriracha XOXO, slow-carb Godard ennui tousled American Apparel street art drinking vinegar lo-fi blog. Whatever Intelligentsia cardigan, Pinterest PBR&B pop-up semiotics. Jean shorts chillwave semiotics biodiesel. McSweeney's fap cardigan messenger bag fanny pack Cosby sweater Odd Future, Pitchfork four loko Marfa keytar mlkshk. 3 wolf moon McSweeney's gluten-free, umami freegan biodiesel fingerstache aesthetic sriracha swag Echo Park. Shabby chic selfies fixie, art party XOXO four loko chambray post-ironic letterpress messenger bag. Mustache beard lo-fi, flexitarian artisan tofu freegan occupy kale chips Carles twee chia bespoke.";
-		
-		$gpg = new GPG();
-		$pub_key = new GPG_Public_Key($public_key_ascii);
-		$encrypted = $gpg->encrypt($pub_key,$plain_text_string);
-		
-		$this->assertContains('-----BEGIN PGP MESSAGE-----', $encrypted, 'PGP Header Expected');
-		
-		$this->assertContains('-----END PGP MESSAGE-----', $encrypted, 'PGP Footer Expected');
 
-	}
+        $gpg = new GPG();
+        $pub_key = new GPG_Public_Key($public_key_ascii);
+        $encrypted = $gpg->encrypt($pub_key, $plain_text_string);
 
+        $this->assertContains('-----BEGIN PGP MESSAGE-----', $encrypted, 'PGP Header Expected');
+
+        $this->assertContains('-----END PGP MESSAGE-----', $encrypted, 'PGP Footer Expected');
+    }
 }
-
-?>

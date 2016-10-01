@@ -1,7 +1,7 @@
 <?php
 
 /**
- * URL utility class
+ * URL utility class.
  *
  * This class provides methods to deal with encoding and decoding url (percent encoded) strings.
  *
@@ -12,81 +12,76 @@
  * ). Since these are reserved, but don't have a reserved meaning in url, these characters are
  * kept as-is.
  *
- * @package Sabre
- * @subpackage DAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_DAV_URLUtil {
-
+class Sabre_DAV_URLUtil
+{
     /**
      * Encodes the path of a url.
      *
      * slashes (/) are treated as path-separators.
      *
      * @param string $path
+     *
      * @return string
      */
-    static function encodePath($path) {
-
-        return preg_replace_callback('/([^A-Za-z0-9_\-\.~\(\)\/])/',function($match) {
-
-            return '%'.sprintf('%02x',ord($match[0]));
-
+    public static function encodePath($path)
+    {
+        return preg_replace_callback('/([^A-Za-z0-9_\-\.~\(\)\/])/', function ($match) {
+            return '%'.sprintf('%02x', ord($match[0]));
         }, $path);
-
     }
 
     /**
-     * Encodes a 1 segment of a path
+     * Encodes a 1 segment of a path.
      *
      * Slashes are considered part of the name, and are encoded as %2f
      *
      * @param string $pathSegment
+     *
      * @return string
      */
-    static function encodePathSegment($pathSegment) {
-
-        return preg_replace_callback('/([^A-Za-z0-9_\-\.~\(\)])/',function($match) {
-
-            return '%'.sprintf('%02x',ord($match[0]));
-
+    public static function encodePathSegment($pathSegment)
+    {
+        return preg_replace_callback('/([^A-Za-z0-9_\-\.~\(\)])/', function ($match) {
+            return '%'.sprintf('%02x', ord($match[0]));
         }, $pathSegment);
     }
 
     /**
-     * Decodes a url-encoded path
+     * Decodes a url-encoded path.
      *
      * @param string $path
+     *
      * @return string
      */
-    static function decodePath($path) {
-
+    public static function decodePath($path)
+    {
         return self::decodePathSegment($path);
-
     }
 
     /**
-     * Decodes a url-encoded path segment
+     * Decodes a url-encoded path segment.
      *
      * @param string $path
+     *
      * @return string
      */
-    static function decodePathSegment($path) {
-
+    public static function decodePathSegment($path)
+    {
         $path = rawurldecode($path);
-        $encoding = mb_detect_encoding($path, array('UTF-8','ISO-8859-1'));
+        $encoding = mb_detect_encoding($path, array('UTF-8', 'ISO-8859-1'));
 
-        switch($encoding) {
+        switch ($encoding) {
 
-            case 'ISO-8859-1' :
+            case 'ISO-8859-1':
                 $path = utf8_encode($path);
 
         }
 
         return $path;
-
     }
 
     /**
@@ -105,17 +100,16 @@ class Sabre_DAV_URLUtil {
      * string is stripped off.
      *
      * @param string $path
+     *
      * @return array
      */
-    static function splitPath($path) {
-
+    public static function splitPath($path)
+    {
         $matches = array();
-        if(preg_match('/^(?:(?:(.*)(?:\/+))?([^\/]+))(?:\/?)$/u',$path,$matches)) {
-            return array($matches[1],$matches[2]);
+        if (preg_match('/^(?:(?:(.*)(?:\/+))?([^\/]+))(?:\/?)$/u', $path, $matches)) {
+            return array($matches[1], $matches[2]);
         } else {
-            return array(null,null);
+            return array(null, null);
         }
-
     }
-
 }

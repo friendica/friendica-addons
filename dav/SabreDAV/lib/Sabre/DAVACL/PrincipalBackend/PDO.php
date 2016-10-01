@@ -1,7 +1,7 @@
 <?php
 
 /**
- * PDO principal backend
+ * PDO principal backend.
  *
  * This is a simple principal backend that maps exactly to the users table, as
  * used by Sabre_DAV_Auth_Backend_PDO.
@@ -9,50 +9,48 @@
  * It assumes all principals are in a single collection. The default collection
  * is 'principals/', but this can be overriden.
  *
- * @package Sabre
- * @subpackage DAVACL
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_DAVACL_PrincipalBackend_PDO implements Sabre_DAVACL_IPrincipalBackend {
-
+class Sabre_DAVACL_PrincipalBackend_PDO implements Sabre_DAVACL_IPrincipalBackend
+{
     /**
-     * pdo
+     * pdo.
      *
      * @var PDO
      */
     protected $pdo;
 
     /**
-     * PDO table name for 'principals'
+     * PDO table name for 'principals'.
      *
      * @var string
      */
     protected $tableName;
 
     /**
-     * PDO table name for 'group members'
+     * PDO table name for 'group members'.
      *
      * @var string
      */
     protected $groupMembersTableName;
 
     /**
-     * A list of additional fields to support
+     * A list of additional fields to support.
      *
      * @var array
      */
     protected $fieldMap = array(
 
-        /**
+        /*
          * This property can be used to display the users' real name.
          */
         '{DAV:}displayname' => array(
             'dbField' => 'displayname',
         ),
 
-        /**
+        /*
          * This property is actually used by the CardDAV plugin, where it gets
          * mapped to {http://calendarserver.orgi/ns/}me-card.
          *
@@ -63,7 +61,7 @@ class Sabre_DAVACL_PrincipalBackend_PDO implements Sabre_DAVACL_IPrincipalBacken
         '{http://sabredav.org/ns}vcard-url' => array(
             'dbField' => 'vcardurl',
         ),
-        /**
+        /*
          * This is the users' primary email-address.
          */
         '{http://sabredav.org/ns}email-address' => array(
@@ -74,18 +72,16 @@ class Sabre_DAVACL_PrincipalBackend_PDO implements Sabre_DAVACL_IPrincipalBacken
     /**
      * Sets up the backend.
      *
-     * @param PDO $pdo
+     * @param PDO    $pdo
      * @param string $tableName
      * @param string $groupMembersTableName
      */
-    public function __construct(PDO $pdo, $tableName = 'principals', $groupMembersTableName = 'groupmembers') {
-
+    public function __construct(PDO $pdo, $tableName = 'principals', $groupMembersTableName = 'groupmembers')
+    {
         $this->pdo = $pdo;
         $this->tableName = $tableName;
         $this->groupMembersTableName = $groupMembersTableName;
-
     }
-
 
     /**
      * Returns a list of principals based on a prefix.
@@ -101,41 +97,42 @@ class Sabre_DAVACL_PrincipalBackend_PDO implements Sabre_DAVACL_IPrincipalBacken
      *     you have an email address, use this property.
      *
      * @param string $prefixPath
+     *
      * @return array
      */
-    public function getPrincipalsByPrefix($prefixPath) {
-
+    public function getPrincipalsByPrefix($prefixPath)
+    {
         $fields = array(
             'uri',
         );
 
-        foreach($this->fieldMap as $key=>$value) {
+        foreach ($this->fieldMap as $key => $value) {
             $fields[] = $value['dbField'];
         }
-        $result = $this->pdo->query('SELECT '.implode(',', $fields).'  FROM '. $this->tableName);
+        $result = $this->pdo->query('SELECT '.implode(',', $fields).'  FROM '.$this->tableName);
 
         $principals = array();
 
-        while($row = $result->fetch(PDO::FETCH_ASSOC)) {
+        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
 
             // Checking if the principal is in the prefix
             list($rowPrefix) = Sabre_DAV_URLUtil::splitPath($row['uri']);
-            if ($rowPrefix !== $prefixPath) continue;
+            if ($rowPrefix !== $prefixPath) {
+                continue;
+            }
 
             $principal = array(
                 'uri' => $row['uri'],
             );
-            foreach($this->fieldMap as $key=>$value) {
+            foreach ($this->fieldMap as $key => $value) {
                 if ($row[$value['dbField']]) {
                     $principal[$key] = $row[$value['dbField']];
                 }
             }
             $principals[] = $principal;
-
         }
 
         return $principals;
-
     }
 
     /**
@@ -144,35 +141,38 @@ class Sabre_DAVACL_PrincipalBackend_PDO implements Sabre_DAVACL_IPrincipalBacken
      * getPrincipalsByPrefix.
      *
      * @param string $path
+     *
      * @return array
      */
-    public function getPrincipalByPath($path) {
-
+    public function getPrincipalByPath($path)
+    {
         $fields = array(
             'id',
             'uri',
         );
 
-        foreach($this->fieldMap as $key=>$value) {
+        foreach ($this->fieldMap as $key => $value) {
             $fields[] = $value['dbField'];
         }
-        $stmt = $this->pdo->prepare('SELECT '.implode(',', $fields).'  FROM '. $this->tableName . ' WHERE uri = ?');
+        $stmt = $this->pdo->prepare('SELECT '.implode(',', $fields).'  FROM '.$this->tableName.' WHERE uri = ?');
         $stmt->execute(array($path));
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (!$row) return;
+        if (!$row) {
+            return;
+        }
 
         $principal = array(
-            'id'  => $row['id'],
+            'id' => $row['id'],
             'uri' => $row['uri'],
         );
-        foreach($this->fieldMap as $key=>$value) {
+        foreach ($this->fieldMap as $key => $value) {
             if ($row[$value['dbField']]) {
                 $principal[$key] = $row[$value['dbField']];
             }
         }
-        return $principal;
 
+        return $principal;
     }
 
     /**
@@ -220,17 +220,17 @@ class Sabre_DAVACL_PrincipalBackend_PDO implements Sabre_DAVACL_IPrincipalBacken
      * return true or false.
      *
      * @param string $path
-     * @param array $mutations
+     * @param array  $mutations
+     *
      * @return array|bool
      */
-    public function updatePrincipal($path, $mutations) {
-
+    public function updatePrincipal($path, $mutations)
+    {
         $updateAble = array();
-        foreach($mutations as $key=>$value) {
+        foreach ($mutations as $key => $value) {
 
             // We are not aware of this field, we must fail.
             if (!isset($this->fieldMap[$key])) {
-
                 $response = array(
                     403 => array(
                         $key => null,
@@ -239,36 +239,35 @@ class Sabre_DAVACL_PrincipalBackend_PDO implements Sabre_DAVACL_IPrincipalBacken
                 );
 
                 // Adding the rest to the response as a 424
-                foreach($mutations as $subKey=>$subValue) {
+                foreach ($mutations as $subKey => $subValue) {
                     if ($subKey !== $key) {
                         $response[424][$subKey] = null;
                     }
                 }
+
                 return $response;
             }
 
             $updateAble[$this->fieldMap[$key]['dbField']] = $value;
-
         }
 
         // No fields to update
-        $query = "UPDATE " . $this->tableName . " SET ";
+        $query = 'UPDATE '.$this->tableName.' SET ';
 
         $first = true;
-        foreach($updateAble as $key => $value) {
+        foreach ($updateAble as $key => $value) {
             if (!$first) {
-                $query.= ', ';
+                $query .= ', ';
             }
             $first = false;
-            $query.= "$key = :$key ";
+            $query .= "$key = :$key ";
         }
-        $query.='WHERE uri = :uri';
+        $query .= 'WHERE uri = :uri';
         $stmt = $this->pdo->prepare($query);
-        $updateAble['uri'] =  $path;
+        $updateAble['uri'] = $path;
         $stmt->execute($updateAble);
 
         return true;
-
     }
 
     /**
@@ -296,60 +295,62 @@ class Sabre_DAVACL_PrincipalBackend_PDO implements Sabre_DAVACL_IPrincipalBacken
      * from working.
      *
      * @param string $prefixPath
-     * @param array $searchProperties
+     * @param array  $searchProperties
+     *
      * @return array
      */
-    public function searchPrincipals($prefixPath, array $searchProperties) {
-
-        $query = 'SELECT uri FROM ' . $this->tableName . ' WHERE 1=1 ';
+    public function searchPrincipals($prefixPath, array $searchProperties)
+    {
+        $query = 'SELECT uri FROM '.$this->tableName.' WHERE 1=1 ';
         $values = array();
-        foreach($searchProperties as $property => $value) {
+        foreach ($searchProperties as $property => $value) {
+            switch ($property) {
 
-            switch($property) {
-
-                case '{DAV:}displayname' :
-                    $query.=' AND displayname LIKE ?';
-                    $values[] = '%' . $value . '%';
+                case '{DAV:}displayname':
+                    $query .= ' AND displayname LIKE ?';
+                    $values[] = '%'.$value.'%';
                     break;
-                case '{http://sabredav.org/ns}email-address' :
-                    $query.=' AND email LIKE ?';
-                    $values[] = '%' . $value . '%';
+                case '{http://sabredav.org/ns}email-address':
+                    $query .= ' AND email LIKE ?';
+                    $values[] = '%'.$value.'%';
                     break;
-                default :
+                default:
                     // Unsupported property
                     return array();
 
             }
-
         }
         $stmt = $this->pdo->prepare($query);
         $stmt->execute($values);
 
         $principals = array();
-        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
             // Checking if the principal is in the prefix
             list($rowPrefix) = Sabre_DAV_URLUtil::splitPath($row['uri']);
-            if ($rowPrefix !== $prefixPath) continue;
+            if ($rowPrefix !== $prefixPath) {
+                continue;
+            }
 
             $principals[] = $row['uri'];
-
         }
 
         return $principals;
-
     }
 
     /**
-     * Returns the list of members for a group-principal
+     * Returns the list of members for a group-principal.
      *
      * @param string $principal
+     *
      * @return array
      */
-    public function getGroupMemberSet($principal) {
-
+    public function getGroupMemberSet($principal)
+    {
         $principal = $this->getPrincipalByPath($principal);
-        if (!$principal) throw new Sabre_DAV_Exception('Principal not found');
+        if (!$principal) {
+            throw new Sabre_DAV_Exception('Principal not found');
+        }
 
         $stmt = $this->pdo->prepare('SELECT principals.uri as uri FROM '.$this->groupMembersTableName.' AS groupmembers LEFT JOIN '.$this->tableName.' AS principals ON groupmembers.member_id = principals.id WHERE groupmembers.principal_id = ?');
         $stmt->execute(array($principal['id']));
@@ -358,20 +359,23 @@ class Sabre_DAVACL_PrincipalBackend_PDO implements Sabre_DAVACL_IPrincipalBacken
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $result[] = $row['uri'];
         }
-        return $result;
 
+        return $result;
     }
 
     /**
-     * Returns the list of groups a principal is a member of
+     * Returns the list of groups a principal is a member of.
      *
      * @param string $principal
+     *
      * @return array
      */
-    public function getGroupMembership($principal) {
-
+    public function getGroupMembership($principal)
+    {
         $principal = $this->getPrincipalByPath($principal);
-        if (!$principal) throw new Sabre_DAV_Exception('Principal not found');
+        if (!$principal) {
+            throw new Sabre_DAV_Exception('Principal not found');
+        }
 
         $stmt = $this->pdo->prepare('SELECT principals.uri as uri FROM '.$this->groupMembersTableName.' AS groupmembers LEFT JOIN '.$this->tableName.' AS principals ON groupmembers.principal_id = principals.id WHERE groupmembers.member_id = ?');
         $stmt->execute(array($principal['id']));
@@ -380,8 +384,8 @@ class Sabre_DAVACL_PrincipalBackend_PDO implements Sabre_DAVACL_IPrincipalBacken
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $result[] = $row['uri'];
         }
-        return $result;
 
+        return $result;
     }
 
     /**
@@ -390,38 +394,36 @@ class Sabre_DAVACL_PrincipalBackend_PDO implements Sabre_DAVACL_IPrincipalBacken
      * The principals should be passed as a list of uri's.
      *
      * @param string $principal
-     * @param array $members
-     * @return void
+     * @param array  $members
      */
-    public function setGroupMemberSet($principal, array $members) {
+    public function setGroupMemberSet($principal, array $members)
+    {
 
         // Grabbing the list of principal id's.
-        $stmt = $this->pdo->prepare('SELECT id, uri FROM '.$this->tableName.' WHERE uri IN (? ' . str_repeat(', ? ', count($members)) . ');');
+        $stmt = $this->pdo->prepare('SELECT id, uri FROM '.$this->tableName.' WHERE uri IN (? '.str_repeat(', ? ', count($members)).');');
         $stmt->execute(array_merge(array($principal), $members));
 
         $memberIds = array();
         $principalId = null;
 
-        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             if ($row['uri'] == $principal) {
                 $principalId = $row['id'];
             } else {
                 $memberIds[] = $row['id'];
             }
         }
-        if (!$principalId) throw new Sabre_DAV_Exception('Principal not found');
+        if (!$principalId) {
+            throw new Sabre_DAV_Exception('Principal not found');
+        }
 
         // Wiping out old members
         $stmt = $this->pdo->prepare('DELETE FROM '.$this->groupMembersTableName.' WHERE principal_id = ?;');
         $stmt->execute(array($principalId));
 
-        foreach($memberIds as $memberId) {
-
+        foreach ($memberIds as $memberId) {
             $stmt = $this->pdo->prepare('INSERT INTO '.$this->groupMembersTableName.' (principal_id, member_id) VALUES (?, ?);');
             $stmt->execute(array($principalId, $memberId));
-
         }
-
     }
-
 }

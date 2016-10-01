@@ -10,52 +10,49 @@
  * This collection should only return Sabre_CalDAV_Notifications_INode nodes as
  * its children.
  *
- * @package Sabre
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_CalDAV_Notifications_Collection extends Sabre_DAV_Collection implements Sabre_CalDAV_Notifications_ICollection {
-
+class Sabre_CalDAV_Notifications_Collection extends Sabre_DAV_Collection implements Sabre_CalDAV_Notifications_ICollection
+{
     /**
-     * The notification backend
+     * The notification backend.
      *
      * @var Sabre_CalDAV_Backend_NotificationSupport
      */
     protected $caldavBackend;
 
     /**
-     * Principal uri
+     * Principal uri.
      *
      * @var string
      */
     protected $principalUri;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Sabre_CalDAV_Backend_NotificationSupport $caldavBackend
-     * @param string $principalUri
+     * @param string                                   $principalUri
      */
-    public function __construct(Sabre_CalDAV_Backend_NotificationSupport $caldavBackend, $principalUri) {
-
+    public function __construct(Sabre_CalDAV_Backend_NotificationSupport $caldavBackend, $principalUri)
+    {
         $this->caldavBackend = $caldavBackend;
         $this->principalUri = $principalUri;
-
     }
 
     /**
-     * Returns all notifications for a principal
+     * Returns all notifications for a principal.
      *
      * @return array
      */
-    public function getChildren() {
-
+    public function getChildren()
+    {
         $children = array();
         $notifications = $this->caldavBackend->getNotificationsForPrincipal($this->principalUri);
 
-        foreach($notifications as $notification) {
-
+        foreach ($notifications as $notification) {
             $children[] = new Sabre_CalDAV_Notifications_Node(
                 $this->caldavBackend,
                 $notification
@@ -63,18 +60,15 @@ class Sabre_CalDAV_Notifications_Collection extends Sabre_DAV_Collection impleme
         }
 
         return $children;
-
     }
 
     /**
-     * Returns the name of this object
+     * Returns the name of this object.
      *
      * @return string
      */
-    public function getName() {
-
+    public function getName()
+    {
         return 'notifications';
-
     }
-
 }

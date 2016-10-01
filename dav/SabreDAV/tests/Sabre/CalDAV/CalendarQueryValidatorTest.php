@@ -2,13 +2,13 @@
 
 use Sabre\VObject;
 
-class Sabre_CalDAV_CalendarQueryValidatorTest extends PHPUnit_Framework_TestCase {
-
+class Sabre_CalDAV_CalendarQueryValidatorTest extends PHPUnit_Framework_TestCase
+{
     /**
      * @dataProvider provider
      */
-    function testValid($icalObject, $filters, $outcome) {
-
+    public function testValid($icalObject, $filters, $outcome)
+    {
         $validator = new Sabre_CalDAV_CalendarQueryValidator();
 
         // Wrapping filter in a VCALENDAR component filter, as this is always
@@ -23,14 +23,14 @@ class Sabre_CalDAV_CalendarQueryValidatorTest extends PHPUnit_Framework_TestCase
 
         $vObject = VObject\Reader::read($icalObject);
 
-        switch($outcome) {
-            case 0 :
+        switch ($outcome) {
+            case 0:
                 $this->assertFalse($validator->validate($vObject, $filters));
                 break;
-            case 1 :
+            case 1:
                 $this->assertTrue($validator->validate($vObject, $filters));
                 break;
-            case -1 :
+            case -1:
                 try {
                     $validator->validate($vObject, $filters);
                 } catch (Exception $e) {
@@ -39,12 +39,11 @@ class Sabre_CalDAV_CalendarQueryValidatorTest extends PHPUnit_Framework_TestCase
                 break;
 
         }
-
     }
 
-    function provider() {
-
-        $blob1 = <<<yow
+    public function provider()
+    {
+        $blob1 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 SUMMARY:hi
@@ -52,7 +51,7 @@ END:VEVENT
 END:VCALENDAR
 yow;
 
-        $blob2 = <<<yow
+        $blob2 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 SUMMARY:hi
@@ -63,7 +62,7 @@ END:VEVENT
 END:VCALENDAR
 yow;
 
-        $blob3 = <<<yow
+        $blob3 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 SUMMARY:hi
@@ -71,14 +70,14 @@ DTSTART;VALUE=DATE:20110704
 END:VEVENT
 END:VCALENDAR
 yow;
-        $blob4 = <<<yow
+        $blob4 = <<<'yow'
 BEGIN:VCARD
 VERSION:3.0
 FN:Evert
 END:VCARD
 yow;
 
-        $blob5 = <<<yow
+        $blob5 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20110101T120000Z
@@ -87,7 +86,7 @@ END:VEVENT
 END:VCALENDAR
 yow;
 
-        $blob6 = <<<yow
+        $blob6 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20110101T120000Z
@@ -96,7 +95,7 @@ END:VEVENT
 END:VCALENDAR
 yow;
 
-        $blob7 = <<<yow
+        $blob7 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART;VALUE=DATE:20110101
@@ -104,7 +103,7 @@ END:VEVENT
 END:VCALENDAR
 yow;
 
-        $blob8 = <<<yow
+        $blob8 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20110101T120000Z
@@ -112,7 +111,7 @@ END:VEVENT
 END:VCALENDAR
 yow;
 
-        $blob9 = <<<yow
+        $blob9 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VTODO
 DTSTART:20110101T120000Z
@@ -120,7 +119,7 @@ DURATION:PT1H
 END:VTODO
 END:VCALENDAR
 yow;
-        $blob10 = <<<yow
+        $blob10 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VTODO
 DTSTART:20110101T120000Z
@@ -128,7 +127,7 @@ DUE:20110101T130000Z
 END:VTODO
 END:VCALENDAR
 yow;
-        $blob11 = <<<yow
+        $blob11 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VTODO
 DTSTART:20110101T120000Z
@@ -136,7 +135,7 @@ END:VTODO
 END:VCALENDAR
 yow;
 
-        $blob12 = <<<yow
+        $blob12 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VTODO
 DUE:20110101T130000Z
@@ -144,7 +143,7 @@ END:VTODO
 END:VCALENDAR
 yow;
 
-        $blob13 = <<<yow
+        $blob13 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VTODO
 COMPLETED:20110101T130000Z
@@ -153,7 +152,7 @@ END:VTODO
 END:VCALENDAR
 yow;
 
-        $blob14 = <<<yow
+        $blob14 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VTODO
 COMPLETED:20110101T130000Z
@@ -161,7 +160,7 @@ END:VTODO
 END:VCALENDAR
 yow;
 
-        $blob15 = <<<yow
+        $blob15 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VTODO
 CREATED:20110101T110000Z
@@ -169,22 +168,21 @@ END:VTODO
 END:VCALENDAR
 yow;
 
-
-        $blob16 = <<<yow
+        $blob16 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VTODO
 END:VTODO
 END:VCALENDAR
 yow;
 
-        $blob17 = <<<yow
+        $blob17 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VJOURNAL
 END:VJOURNAL
 END:VCALENDAR
 yow;
 
-        $blob18 = <<<yow
+        $blob18 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VJOURNAL
 DTSTART:20110101T120000Z
@@ -192,7 +190,7 @@ END:VJOURNAL
 END:VCALENDAR
 yow;
 
-        $blob19 = <<<yow
+        $blob19 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VJOURNAL
 DTSTART;VALUE=DATE:20110101
@@ -200,14 +198,14 @@ END:VJOURNAL
 END:VCALENDAR
 yow;
 
-        $blob20 = <<<yow
+        $blob20 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VFREEBUSY
 END:VFREEBUSY
 END:VCALENDAR
 yow;
 
-        $blob21 = <<<yow
+        $blob21 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20110101T120000Z
@@ -218,7 +216,7 @@ END:VEVENT
 END:VCALENDAR
 yow;
 
-        $blob22 = <<<yow
+        $blob22 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20110101T120000Z
@@ -229,7 +227,7 @@ END:VEVENT
 END:VCALENDAR
 yow;
 
-        $blob23 = <<<yow
+        $blob23 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20110101T120000Z
@@ -240,7 +238,7 @@ END:VEVENT
 END:VCALENDAR
 yow;
 
-        $blob24 = <<<yow
+        $blob24 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20110101T120000Z
@@ -252,7 +250,7 @@ END:VEVENT
 END:VCALENDAR
 yow;
 
-        $blob25 = <<<yow
+        $blob25 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20110101T120000Z
@@ -264,7 +262,7 @@ END:VEVENT
 END:VCALENDAR
 yow;
 
-        $blob26 = <<<yow
+        $blob26 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20110101T120000Z
@@ -276,8 +274,7 @@ END:VEVENT
 END:VCALENDAR
 yow;
 
-
-        $blob27 = <<<yow
+        $blob27 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VTODO
 DTSTART:20110101T120000Z
@@ -289,7 +286,7 @@ END:VTODO
 END:VCALENDAR
 yow;
 
-        $blob28 = <<<yow
+        $blob28 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VJOURNAL
 DTSTART:20110101T120000Z
@@ -300,7 +297,7 @@ END:VJOURNAL
 END:VCALENDAR
 yow;
 
-        $blob29 = <<<yow
+        $blob29 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20110101T120000Z
@@ -314,7 +311,7 @@ END:VEVENT
 END:VCALENDAR
 yow;
 
-        $blob30 = <<<yow
+        $blob30 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20110101T120000Z
@@ -327,7 +324,7 @@ END:VEVENT
 END:VCALENDAR
 yow;
 
-        $blob31 = <<<yow
+        $blob31 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20080101T120000Z
@@ -337,7 +334,7 @@ END:VEVENT
 END:VCALENDAR
 yow;
 
-        $blob32 = <<<yow
+        $blob32 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20080102T120000Z
@@ -346,7 +343,7 @@ RRULE:FREQ=YEARLY
 END:VEVENT
 END:VCALENDAR
 yow;
-        $blob33 = <<<yow
+        $blob33 = <<<'yow'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART;VALUE=DATE:20120628
@@ -622,7 +619,7 @@ yow;
             'time-range' => array(
                 'start' => new DateTime('2012-07-01 00:00:00', new DateTimeZone('UTC')),
                 'end' => new DateTime('2012-08-01 00:00:00', new DateTimeZone('UTC')),
-            )
+            ),
         );
 
         return array(
@@ -754,7 +751,6 @@ yow;
             array($blob30, $filter31, 0),
             array($blob30, $filter32, 0),
 
-
             // Time-range with RRULE
             array($blob31, $filter20, 1),
             array($blob32, $filter20, 0),
@@ -763,7 +759,5 @@ yow;
             array($blob33, $filter38, 1),
 
         );
-
     }
-
 }

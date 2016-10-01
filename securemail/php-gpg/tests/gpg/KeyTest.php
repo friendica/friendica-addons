@@ -1,38 +1,33 @@
 <?php
-/**
- * @package GPG::Tests
- */
+
 /* ensure the framework libraries can be located */
 set_include_path(
-		realpath("../libs") .
-		PATH_SEPARATOR . get_include_path()
+        realpath('../libs').
+        PATH_SEPARATOR.get_include_path()
 );
 
 require_once 'PHPUnit/Framework/TestCase.php';
 require_once 'GPG.php';
 
-/**
- * 
- */
 class KeyTest extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * @see PHPUnit_Framework_TestCase::setUp()
-	 */
-	function setUp()
-	{
-	}
-	
-	/**
-	 * @see PHPUnit_Framework_TestCase::tearDown()
-	 */
-	function tearDown()
-	{
-	}
-	
-	function getGnuPGDSAKey()
-	{
-		return "-----BEGIN PGP PUBLIC KEY BLOCK-----
+    /**
+     * @see PHPUnit_Framework_TestCase::setUp()
+     */
+    public function setUp()
+    {
+    }
+
+    /**
+     * @see PHPUnit_Framework_TestCase::tearDown()
+     */
+    public function tearDown()
+    {
+    }
+
+    public function getGnuPGDSAKey()
+    {
+        return '-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG/MacGPG2 v2.0.22 (Darwin)
 Comment: GPGTools - https://gpgtools.org
 
@@ -1278,16 +1273,17 @@ BBgRCAAPBQJMbSHzAhsMBQkJZgGAAAoJEHbXjwUA0CbEgWQA/1YM8w4hoLbte6uJ
 WT1lMDb2ptI9u4cBt8kFQMlRBpQWAQC/iFwbyETCxZsHQUPTVk+OSQxo9j9ukQJ7
 Bo827CdOXA==
 =nadi
------END PGP PUBLIC KEY BLOCK-----";
-	}
-	
-	/**
-	 * Return a public key used for encryption
-	 * @return string PGP public key
-	 */
-	function getOpenPGPTestKey1()
-	{
-		return "-----BEGIN PGP PUBLIC KEY BLOCK-----
+-----END PGP PUBLIC KEY BLOCK-----';
+    }
+
+    /**
+     * Return a public key used for encryption.
+     *
+     * @return string PGP public key
+     */
+    public function getOpenPGPTestKey1()
+    {
+        return '-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: OpenPGP.js v.1.20140106
 Comment: http://openpgpjs.org
 
@@ -1300,16 +1296,17 @@ TQstABEBAAHNF1Rlc3QgPHRlc3RAZXhhbXBsZS5jb20+wpwEEAEIABAFAlLL
 igkfsrJr68qHEQztSXRufP/jv7OX+0EF+ve0+IFa6r5LPRmibl0qta522gHd
 2LVudfBDDi0Y6k4=
 =JjPg
------END PGP PUBLIC KEY BLOCK-----";
-	}
-	
-	/**
-	 * Return a public key used for encryption
-	 * @return string PGP public key
-	 */
-	function getOpenPGPTestKey2()
-	{
-		return "-----BEGIN PGP PUBLIC KEY BLOCK-----
+-----END PGP PUBLIC KEY BLOCK-----';
+    }
+
+    /**
+     * Return a public key used for encryption.
+     *
+     * @return string PGP public key
+     */
+    public function getOpenPGPTestKey2()
+    {
+        return '-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: OpenPGP.js v.1.20140106
 Comment: http://openpgpjs.org
 
@@ -1327,16 +1324,17 @@ Xe0c8AaAF8qz10+JyapyDlUlFVr8+n/UjGwsUp15ODnDt0nsGTfw6jKelTU2
 y/d0ckERWE0rWT2eooAxqxIoVayJkEZTzbfx/mHJXeGhOFwjg5danv7JnDI/
 FHAUVqBD8zTkqmjdk9LZ6GnF6tuKRAWS59qU7y4+fchP58dhjep0mIFa6FQ=
 =8aNP
------END PGP PUBLIC KEY BLOCK-----";
-	}
-	
-	/**
-	 * Return a public key used for encryption
-	 * @return string PGP public key
-	 */
-	function getGnuPGTestKey()
-	{
-		return "-----BEGIN PGP PUBLIC KEY BLOCK-----
+-----END PGP PUBLIC KEY BLOCK-----';
+    }
+
+    /**
+     * Return a public key used for encryption.
+     *
+     * @return string PGP public key
+     */
+    public function getGnuPGTestKey()
+    {
+        return '-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG/MacGPG2 v2.0.22 (Darwin)
 Comment: GPGTools - https://gpgtools.org
 
@@ -1400,75 +1398,67 @@ gPLPMkHxaqGn4wygONP9T2Ehth8Fi8eo5OpkMM/uU30n5xlchqBQSPxWiJSIk1cN
 rrkM+tFI6ij510nyAL0uF4l3vc3aBQ90I3iS9J51j1MQQ2pt8/3Ofq5CiHKNUGPL
 0w==
 =Opd1
------END PGP PUBLIC KEY BLOCK-----";
-	}
-	
-	/**
-	 * Test key ID
-	 */
-	function test_VerifyGnuPGKey()
-	{
-		// jason's public key
-		$public_key_ascii = $this->getGnuPGTestKey();
-	
-		$gpg = new GPG();
-		$pub_key = new GPG_Public_Key($public_key_ascii);
-	
-		$this->assertEquals(PK_TYPE_RSA,$pub_key->GetKeyType(),'OpenPGP Incorrect Key Type');
-		$this->assertEquals('47009B66424E9476',$pub_key->GetKeyId(),'OpenPGP Incorrect Key ID');
-		$this->assertEquals('ED4F E89E 38A3 7833 3CD4 D6FA 4700 9B66 424E 9476',$pub_key->GetFingerprint(),'OpenPGP Incorrect Fingerprint');
-	
-	}
+-----END PGP PUBLIC KEY BLOCK-----';
+    }
 
-	/**
-	 * Test key ID
-	 */
-	function test_VerifyOpenPGPKey1()
-	{
-		// OpenPGP Test Key
-		$public_key_ascii = $this->getOpenPGPTestKey1();
-	
-		$gpg = new GPG();
-		$pub_key = new GPG_Public_Key($public_key_ascii);
-			
-		$this->assertEquals(PK_TYPE_RSA,$pub_key->GetKeyType(),'OpenPGP Incorrect Key Type');
-		$this->assertEquals('8DCE498F6091DFD6',$pub_key->GetKeyId(),'OpenPGP Incorrect Key ID');
-		$this->assertEquals('C893 35AC EDF1 6046 7534 B25E 8DCE 498F 6091 DFD6',$pub_key->GetFingerprint(),'OpenPGP Incorrect Fingerprint');
-	
-	}
-	
-	/**
-	 * Test key ID
-	 */
-	function test_VerifyOpenPGPKey2()
-	{
-		// OpenPGP Test Key
-		$public_key_ascii = $this->getOpenPGPTestKey2();
+    /**
+     * Test key ID.
+     */
+    public function test_VerifyGnuPGKey()
+    {
+        // jason's public key
+        $public_key_ascii = $this->getGnuPGTestKey();
 
-		$gpg = new GPG();
-		$pub_key = new GPG_Public_Key($public_key_ascii);
-			
-		$this->assertEquals(PK_TYPE_RSA,$pub_key->GetKeyType(),'OpenPGP Incorrect Key Type');
-		$this->assertEquals('C87538697986219A',$pub_key->GetKeyId(),'OpenPGP Incorrect Key ID');
-		$this->assertEquals('3C05 9D07 C624 84A4 EF2D 3651 C875 3869 7986 219A',$pub_key->GetFingerprint(),'OpenPGP Incorrect Fingerprint');
-	
-	}
-	
-	function test_VerifyGnuPGDSAKey()
-	{
-		// OpenPGP Test Key
-		$public_key_ascii = $this->getGnuPGDSAKey();
-		
-		$gpg = new GPG();
-		$pub_key = new GPG_Public_Key($public_key_ascii);
-			
-		$this->assertEquals(PK_TYPE_ELGAMAL,$pub_key->GetKeyType(),'OpenPGP Incorrect Key Type');
-		$this->assertEquals('76D78F0500D026C4',$pub_key->GetKeyId(),'OpenPGP Incorrect Key ID');
-		$this->assertEquals('85E3 8F69 046B 44C1 EC9F B07B 76D7 8F05 00D0 26C4',$pub_key->GetFingerprint(),'OpenPGP Incorrect Fingerprint');
-		
-		
-	}
+        $gpg = new GPG();
+        $pub_key = new GPG_Public_Key($public_key_ascii);
 
+        $this->assertEquals(PK_TYPE_RSA, $pub_key->GetKeyType(), 'OpenPGP Incorrect Key Type');
+        $this->assertEquals('47009B66424E9476', $pub_key->GetKeyId(), 'OpenPGP Incorrect Key ID');
+        $this->assertEquals('ED4F E89E 38A3 7833 3CD4 D6FA 4700 9B66 424E 9476', $pub_key->GetFingerprint(), 'OpenPGP Incorrect Fingerprint');
+    }
+
+    /**
+     * Test key ID.
+     */
+    public function test_VerifyOpenPGPKey1()
+    {
+        // OpenPGP Test Key
+        $public_key_ascii = $this->getOpenPGPTestKey1();
+
+        $gpg = new GPG();
+        $pub_key = new GPG_Public_Key($public_key_ascii);
+
+        $this->assertEquals(PK_TYPE_RSA, $pub_key->GetKeyType(), 'OpenPGP Incorrect Key Type');
+        $this->assertEquals('8DCE498F6091DFD6', $pub_key->GetKeyId(), 'OpenPGP Incorrect Key ID');
+        $this->assertEquals('C893 35AC EDF1 6046 7534 B25E 8DCE 498F 6091 DFD6', $pub_key->GetFingerprint(), 'OpenPGP Incorrect Fingerprint');
+    }
+
+    /**
+     * Test key ID.
+     */
+    public function test_VerifyOpenPGPKey2()
+    {
+        // OpenPGP Test Key
+        $public_key_ascii = $this->getOpenPGPTestKey2();
+
+        $gpg = new GPG();
+        $pub_key = new GPG_Public_Key($public_key_ascii);
+
+        $this->assertEquals(PK_TYPE_RSA, $pub_key->GetKeyType(), 'OpenPGP Incorrect Key Type');
+        $this->assertEquals('C87538697986219A', $pub_key->GetKeyId(), 'OpenPGP Incorrect Key ID');
+        $this->assertEquals('3C05 9D07 C624 84A4 EF2D 3651 C875 3869 7986 219A', $pub_key->GetFingerprint(), 'OpenPGP Incorrect Fingerprint');
+    }
+
+    public function test_VerifyGnuPGDSAKey()
+    {
+        // OpenPGP Test Key
+        $public_key_ascii = $this->getGnuPGDSAKey();
+
+        $gpg = new GPG();
+        $pub_key = new GPG_Public_Key($public_key_ascii);
+
+        $this->assertEquals(PK_TYPE_ELGAMAL, $pub_key->GetKeyType(), 'OpenPGP Incorrect Key Type');
+        $this->assertEquals('76D78F0500D026C4', $pub_key->GetKeyId(), 'OpenPGP Incorrect Key ID');
+        $this->assertEquals('85E3 8F69 046B 44C1 EC9F B07B 76D7 8F05 00D0 26C4', $pub_key->GetFingerprint(), 'OpenPGP Incorrect Fingerprint');
+    }
 }
-
-?>

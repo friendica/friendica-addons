@@ -11,13 +11,12 @@ require_once 'Sabre/DAVACL/MockPrincipalBackend.php';
  * This class is supposed to provide a reasonably big framework to quickly get
  * a testing environment running.
  *
- * @package Sabre
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-abstract class Sabre_DAVServerTest extends PHPUnit_Framework_TestCase {
-
+abstract class Sabre_DAVServerTest extends PHPUnit_Framework_TestCase
+{
     protected $setupCalDAV = false;
     protected $setupCardDAV = false;
 
@@ -43,8 +42,8 @@ abstract class Sabre_DAVServerTest extends PHPUnit_Framework_TestCase {
     protected $caldavPlugin;
     protected $carddavPlugin;
 
-    function setUp() {
-
+    public function setUp()
+    {
         $this->setUpBackends();
         $this->setUpTree();
 
@@ -58,7 +57,6 @@ abstract class Sabre_DAVServerTest extends PHPUnit_Framework_TestCase {
             $this->carddavPlugin = new Sabre_CardDAV_Plugin();
             $this->server->addPlugin($this->carddavPlugin);
         }
-
     }
 
     /**
@@ -68,10 +66,11 @@ abstract class Sabre_DAVServerTest extends PHPUnit_Framework_TestCase {
      * which will then be used as the _SERVER array.
      *
      * @param array|Sabre_HTTP_Request $request
+     *
      * @return Sabre_HTTP_Response
      */
-    function request($request) {
-
+    public function request($request)
+    {
         if (is_array($request)) {
             $request = new Sabre_HTTP_Request($request);
         }
@@ -80,11 +79,10 @@ abstract class Sabre_DAVServerTest extends PHPUnit_Framework_TestCase {
         $this->server->exec();
 
         return $this->server->httpResponse;
-
     }
 
-    function setUpTree() {
-
+    public function setUpTree()
+    {
         if ($this->setupCalDAV) {
             $this->tree[] = new Sabre_CalDAV_CalendarRootNode(
                 $this->principalBackend,
@@ -103,11 +101,10 @@ abstract class Sabre_DAVServerTest extends PHPUnit_Framework_TestCase {
                 $this->principalBackend
             );
         }
-
     }
 
-    function setUpBackends() {
-
+    public function setUpBackends()
+    {
         if ($this->setupCalDAV) {
             $this->caldavBackend = new Sabre_CalDAV_Backend_Mock($this->caldavCalendars, $this->caldavCalendarObjects);
         }
@@ -117,15 +114,11 @@ abstract class Sabre_DAVServerTest extends PHPUnit_Framework_TestCase {
         if ($this->setupCardDAV || $this->setupCalDAV) {
             $this->principalBackend = new Sabre_DAVACL_MockPrincipalBackend();
         }
-
     }
 
-
-    function assertHTTPStatus($expectedStatus, Sabre_HTTP_Request $req) {
-
+    public function assertHTTPStatus($expectedStatus, Sabre_HTTP_Request $req)
+    {
         $resp = $this->request($req);
-        $this->assertEquals($resp->getStatusMessage($expectedStatus), $resp->status,'Incorrect HTTP status received: ' . $resp->body);
-
+        $this->assertEquals($resp->getStatusMessage($expectedStatus), $resp->status, 'Incorrect HTTP status received: '.$resp->body);
     }
-
 }

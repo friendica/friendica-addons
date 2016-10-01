@@ -4,19 +4,19 @@ namespace Sabre\VObject\Component;
 
 use Sabre\VObject;
 
-class VCardTest extends \PHPUnit_Framework_TestCase {
-
+class VCardTest extends \PHPUnit_Framework_TestCase
+{
     /**
      * @dataProvider validateData
      */
-    function testValidate($input, $expectedWarnings, $expectedRepairedOutput) {
-
+    public function testValidate($input, $expectedWarnings, $expectedRepairedOutput)
+    {
         $vcard = VObject\Reader::read($input);
 
         $warnings = $vcard->validate();
 
         $warnMsg = array();
-        foreach($warnings as $warning) {
+        foreach ($warnings as $warning) {
             $warnMsg[] = $warning['message'];
         }
 
@@ -28,11 +28,10 @@ class VCardTest extends \PHPUnit_Framework_TestCase {
             $expectedRepairedOutput,
             $vcard->serialize()
         );
-
     }
 
-    public function validateData() {
-
+    public function validateData()
+    {
         $tests = array();
 
         // Correct
@@ -93,8 +92,7 @@ class VCardTest extends \PHPUnit_Framework_TestCase {
             ),
             "BEGIN:VCARD\r\nVERSION:4.0\r\nORG:Acme Co.\r\nFN:Acme Co.\r\nEND:VCARD\r\n",
         );
+
         return $tests;
-
     }
-
 }

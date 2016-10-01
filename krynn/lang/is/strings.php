@@ -1,5 +1,5 @@
 <?php
 
-$a->strings["Krynn Settings"] = "";
-$a->strings["Enable Krynn Plugin"] = "";
-$a->strings["Submit"] = "Senda inn";
+$a->strings['Krynn Settings'] = '';
+$a->strings['Enable Krynn Plugin'] = '';
+$a->strings['Submit'] = 'Senda inn';

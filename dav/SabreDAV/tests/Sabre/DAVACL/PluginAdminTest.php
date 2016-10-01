@@ -5,19 +5,19 @@ require_once 'Sabre/DAV/Auth/MockBackend.php';
 require_once 'Sabre/HTTP/ResponseMock.php';
 require_once 'Sabre/DAVACL/MockPrincipalBackend.php';
 
-class Sabre_DAVACL_PluginAdminTest extends PHPUnit_Framework_TestCase {
-
-    function testNoAdminAccess() {
-
+class Sabre_DAVACL_PluginAdminTest extends PHPUnit_Framework_TestCase
+{
+    public function testNoAdminAccess()
+    {
         $principalBackend = new Sabre_DAVACL_MockPrincipalBackend();
 
         $tree = array(
             new Sabre_DAVACL_MockACLNode('adminonly', array()),
-            new Sabre_DAVACL_PrincipalCollection($principalBackend), 
+            new Sabre_DAVACL_PrincipalCollection($principalBackend),
         );
 
         $fakeServer = new Sabre_DAV_Server($tree);
-        $plugin = new Sabre_DAV_Auth_Plugin(new Sabre_DAV_Auth_MockBackend(),'realm');
+        $plugin = new Sabre_DAV_Auth_Plugin(new Sabre_DAV_Auth_MockBackend(), 'realm');
         $fakeServer->addPlugin($plugin);
         $plugin = new Sabre_DAVACL_Plugin();
         $fakeServer->addPlugin($plugin);
@@ -35,24 +35,23 @@ class Sabre_DAVACL_PluginAdminTest extends PHPUnit_Framework_TestCase {
 
         $fakeServer->exec();
 
-        $this->assertEquals('HTTP/1.1 403 Forbidden', $response->status); 
-
+        $this->assertEquals('HTTP/1.1 403 Forbidden', $response->status);
     }
 
     /**
      * @depends testNoAdminAccess
      */
-    function testAdminAccess() {
-
+    public function testAdminAccess()
+    {
         $principalBackend = new Sabre_DAVACL_MockPrincipalBackend();
 
         $tree = array(
             new Sabre_DAVACL_MockACLNode('adminonly', array()),
-            new Sabre_DAVACL_PrincipalCollection($principalBackend), 
+            new Sabre_DAVACL_PrincipalCollection($principalBackend),
         );
 
         $fakeServer = new Sabre_DAV_Server($tree);
-        $plugin = new Sabre_DAV_Auth_Plugin(new Sabre_DAV_Auth_MockBackend(),'realm');
+        $plugin = new Sabre_DAV_Auth_Plugin(new Sabre_DAV_Auth_MockBackend(), 'realm');
         $fakeServer->addPlugin($plugin);
         $plugin = new Sabre_DAVACL_Plugin();
         $plugin->adminPrincipals = array(
@@ -73,7 +72,6 @@ class Sabre_DAVACL_PluginAdminTest extends PHPUnit_Framework_TestCase {
 
         $fakeServer->exec();
 
-        $this->assertEquals('HTTP/1.1 200 OK', $response->status); 
-
+        $this->assertEquals('HTTP/1.1 200 OK', $response->status);
     }
 }

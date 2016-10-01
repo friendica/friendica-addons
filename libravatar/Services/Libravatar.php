@@ -1,4 +1,5 @@
 <?php
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 /**
  * PHP support for the Libravatar.org service.
@@ -28,10 +29,11 @@
  * THE SOFTWARE.
  *
  * @category  Services
- * @package   Services_Libravatar
+ *
  * @author    Melissa Draper <melissa@meldraweb.com>
- * @copyright 2011 Services_Libravatar committers.
+ * @copyright 2011 Services_Libravatar committers
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
+ *
  * @link      http://pear.php.net/package/Services_Libravatar
  * @since     File available since Release 0.1.0
  */
@@ -64,55 +66,60 @@
  * </code>
  *
  * @category  Services
- * @package   Services_Libravatar
+ *
  * @author    Melissa Draper <melissa@meldraweb.com>
- * @copyright 2011 Services_Libravatar committers.
+ * @copyright 2011 Services_Libravatar committers
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
+ *
  * @version   Release: 0.2.1
+ *
  * @link      http://pear.php.net/package/Services_Libravatar
  * @since     Class available since Release 0.1.0
  */
 class Services_Libravatar
 {
     /**
-     * Hashing algorithm to use
+     * Hashing algorithm to use.
      *
      * @var string
+     *
      * @see processAlgorithm()
      * @see setAlgorithm()
      */
     protected $algorithm = 'md5';
 
     /**
-     * Default image URL to use
+     * Default image URL to use.
      *
      * @var string
+     *
      * @see processDefault()
      * @see setDefault()
      */
     protected $default;
 
     /**
-     * If HTTPS URLs should be used
+     * If HTTPS URLs should be used.
      *
-     * @var boolean
+     * @var bool
+     *
      * @see detectHttps()
      * @see setHttps()
      */
     protected $https;
 
     /**
-     * Image size in pixels
+     * Image size in pixels.
      *
-     * @var integer
+     * @var int
+     *
      * @see processSize()
      * @see setSize()
      */
     protected $size;
 
-
     /**
-     * Composes a URL for the identifier and options passed in
+     * Composes a URL for the identifier and options passed in.
      *
      * Compose a full URL as specified by the Libravatar API, based on the
      * email address or openid URL passed in, and the options specified.
@@ -121,7 +128,7 @@ class Services_Libravatar
      *                           or an openid url
      * @param array  $options    an array of (bool) https, (string) algorithm
      *                           (string) size, (string) default.
-     *                           See the set* methods.
+     *                           See the set* methods
      *
      * @return string A string of a full URL for an avatar image
      *
@@ -134,7 +141,7 @@ class Services_Libravatar
     }
 
     /**
-     * Composes a URL for the identifier and options passed in
+     * Composes a URL for the identifier and options passed in.
      *
      * Compose a full URL as specified by the Libravatar API, based on the
      * email address or openid URL passed in, and the options specified.
@@ -143,11 +150,12 @@ class Services_Libravatar
      *                           or an openid url
      * @param array  $options    an array of (bool) https, (string) algorithm
      *                           (string) size, (string) default.
-     *                           See the set* methods.
+     *                           See the set* methods
      *
      * @return string A string of a full URL for an avatar image
      *
      * @since  Method available since Release 0.2.0
+     *
      * @throws InvalidArgumentException When an invalid option is passed
      */
     public function getUrl($identifier, $options = array())
@@ -164,7 +172,7 @@ class Services_Libravatar
         $options = $this->checkOptionsArray($options);
         $https = $this->https;
         if (isset($options['https'])) {
-            $https = (bool)$options['https'];
+            $https = (bool) $options['https'];
         }
 
         $algorithm = $this->algorithm;
@@ -181,7 +189,6 @@ class Services_Libravatar
             $size = $this->processSize($options['size']);
         }
 
-
         $identifierHash = $this->identifierHash($identifier, $algorithm);
 
         // Get the domain so we can determine the SRV stuff for federation
@@ -189,7 +196,7 @@ class Services_Libravatar
 
         // If https has been specified in $options, make sure we make the
         // correct SRV lookup
-        $service  = $this->srvGet($domain, $https);
+        $service = $this->srvGet($domain, $https);
         $protocol = $https ? 'https' : 'http';
 
         $params = array();
@@ -201,12 +208,12 @@ class Services_Libravatar
         }
         $paramString = '';
         if (count($params) > 0) {
-            $paramString = '?' . http_build_query($params);
+            $paramString = '?'.http_build_query($params);
         }
 
         // Compose the URL from the pieces we generated
-        $url = $protocol . '://' . $service . '/avatar/' . $identifierHash
-            . $paramString;
+        $url = $protocol.'://'.$service.'/avatar/'.$identifierHash
+            .$paramString;
 
         // Return the URL string
         return $url;
@@ -217,7 +224,6 @@ class Services_Libravatar
      *
      * @param array $options Array of options for getUrl()
      *
-     * @return void
      * @throws Exception When an invalid option is used
      */
     protected function checkOptionsArray($options)
@@ -234,14 +240,14 @@ class Services_Libravatar
 
         $allowedOptions = array(
             'algorithm' => true,
-            'default'   => true,
-            'https'     => true,
-            'size'      => true,
+            'default' => true,
+            'https' => true,
+            'size' => true,
         );
         foreach ($options as $key => $value) {
             if (!isset($allowedOptions[$key])) {
                 throw new InvalidArgumentException(
-                    'Invalid option in array: ' . $key
+                    'Invalid option in array: '.$key
                 );
             }
         }
@@ -250,7 +256,7 @@ class Services_Libravatar
     }
 
     /**
-     * Normalizes the identifier (E-mail address or OpenID)
+     * Normalizes the identifier (E-mail address or OpenID).
      *
      * @param string $identifier E-Mail address or OpenID
      *
@@ -277,7 +283,7 @@ class Services_Libravatar
      *                           Uses the php implementation of hash()
      *                           MD5 preferred for Gravatar fallback
      *
-     * @return string A string hash of the identifier.
+     * @return string A string hash of the identifier
      *
      * @since Method available since Release 0.1.0
      */
@@ -294,12 +300,12 @@ class Services_Libravatar
     }
 
     /**
-     * Normalizes an identifier (URI or XRI)
+     * Normalizes an identifier (URI or XRI).
      *
      * @param mixed $identifier URI or XRI to be normalized
      *
      * @return string Normalized Identifier.
-     *                Empty string when the OpenID is invalid.
+     *                Empty string when the OpenID is invalid
      *
      * @internal Adapted from OpenID::normalizeIdentifier()
      */
@@ -316,7 +322,7 @@ class Services_Libravatar
 
         // URL
         if (!preg_match('@^http[s]?://@i', $identifier)) {
-            $identifier = 'http://' . $identifier;
+            $identifier = 'http://'.$identifier;
         }
         if (strpos($identifier, '/', 8) === false) {
             $identifier .= '/';
@@ -327,23 +333,23 @@ class Services_Libravatar
 
         $parts = parse_url($identifier);
         $parts['scheme'] = strtolower($parts['scheme']);
-        $parts['host']   = strtolower($parts['host']);
+        $parts['host'] = strtolower($parts['host']);
 
         //http://openid.net/specs/openid-authentication-2_0.html#normalization
-        return $parts['scheme'] . '://'
-            . (isset($parts['user']) ? $parts['user'] : '')
-            . (isset($parts['pass']) ? ':' . $parts['pass'] : '')
-            . (isset($parts['user']) || isset($parts['pass']) ? '@' : '')
-            . $parts['host']
-            . (
+        return $parts['scheme'].'://'
+            .(isset($parts['user']) ? $parts['user'] : '')
+            .(isset($parts['pass']) ? ':'.$parts['pass'] : '')
+            .(isset($parts['user']) || isset($parts['pass']) ? '@' : '')
+            .$parts['host']
+            .(
                 (isset($parts['port'])
                 && $parts['scheme'] === 'http' && $parts['port'] != 80)
                 || (isset($parts['port'])
                 && $parts['scheme'] === 'https' && $parts['port'] != 443)
-                ? ':' . $parts['port'] : ''
+                ? ':'.$parts['port'] : ''
             )
-            . $parts['path']
-            . (isset($parts['query']) ? '?' . $parts['query'] : '');
+            .$parts['path']
+            .(isset($parts['query']) ? '?'.$parts['query'] : '');
             //leave out fragment as requested by the spec
     }
 
@@ -368,18 +374,19 @@ class Services_Libravatar
         // important bit out.
         if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
             $email = explode('@', $identifier);
+
             return $email[1];
         }
 
         //OpenID
-        $url    = parse_url($identifier);
+        $url = parse_url($identifier);
         $domain = $url['host'];
         if (isset($url['port']) && $url['scheme'] === 'http'
             && $url['port'] != 80
             || isset($url['port']) && $url['scheme'] === 'https'
             && $url['port'] != 443
         ) {
-            $domain .= ':' . $url['port'];
+            $domain .= ':'.$url['port'];
         }
 
         return $domain;
@@ -391,11 +398,11 @@ class Services_Libravatar
      * Get the SRV record, filtered by priority and weight. If our domain
      * has no SRV records, fall back to Libravatar.org
      *
-     * @param string  $domain A string of the domain we extracted from the
-     *                        provided identifier with domainGet()
-     * @param boolean $https  Whether or not to look for https records
+     * @param string $domain A string of the domain we extracted from the
+     *                       provided identifier with domainGet()
+     * @param bool   $https  Whether or not to look for https records
      *
-     * @return string The target URL.
+     * @return string The target URL
      *
      * @since Method available since Release 0.1.0
      */
@@ -405,20 +412,20 @@ class Services_Libravatar
         // Are we going secure? Set up a fallback too.
         if (isset($https) && $https === true) {
             $subdomain = '_avatars-sec._tcp.';
-            $fallback  = 'seccdn.';
+            $fallback = 'seccdn.';
         } else {
             $subdomain = '_avatars._tcp.';
-            $fallback  = 'cdn.';
+            $fallback = 'cdn.';
         }
 
         // Lets try get us some records based on the choice of subdomain
         // and the domain we had passed in.
-        $srv = dns_get_record($subdomain . $domain, DNS_SRV);
+        $srv = dns_get_record($subdomain.$domain, DNS_SRV);
 
         // Did we get anything? No?
         if (count($srv) == 0) {
             // Then let's try Libravatar.org.
-            return $fallback . 'libravatar.org';
+            return $fallback.'libravatar.org';
         }
 
         // Sort by the priority. We must get the lowest.
@@ -500,7 +507,7 @@ class Services_Libravatar
     /**
      * Verify and cast the email address hashing algorithm to use.
      *
-     * @param string $algorithm Algorithm to use, "sha256" or "md5".
+     * @param string $algorithm Algorithm to use, "sha256" or "md5"
      *
      * @return string Algorithm
      *
@@ -508,7 +515,7 @@ class Services_Libravatar
      */
     protected function processAlgorithm($algorithm)
     {
-        $algorithm = (string)$algorithm;
+        $algorithm = (string) $algorithm;
         if ($algorithm !== 'md5' && $algorithm !== 'sha256') {
             throw new InvalidArgumentException(
                 'Only md5 and sha256 hashing supported'
@@ -540,7 +547,7 @@ class Services_Libravatar
             return $url;
         }
 
-        $url = (string)$url;
+        $url = (string) $url;
 
         switch ($url) {
         case '404':
@@ -564,10 +571,10 @@ class Services_Libravatar
     /**
      * Verify and cast the required size of the images.
      *
-     * @param integer $size Size (width and height in pixels) of the image.
-     *                      NULL for the default width.
+     * @param int $size Size (width and height in pixels) of the image.
+     *                  NULL for the default width
      *
-     * @return integer Size
+     * @return int Size
      *
      * @throws InvalidArgumentException When a size <= 0 is given
      */
@@ -577,22 +584,22 @@ class Services_Libravatar
             return $size;
         }
 
-        $size = (int)$size;
+        $size = (int) $size;
         if ($size <= 0) {
             throw new InvalidArgumentException('Size has to be larger than 0');
         }
 
-        return (int)$size;
+        return (int) $size;
     }
-
 
     /**
      * Set the email address hashing algorithm to use.
      * To keep gravatar compatibility, use "md5".
      *
-     * @param string $algorithm Algorithm to use, "sha256" or "md5".
+     * @param string $algorithm Algorithm to use, "sha256" or "md5"
      *
      * @return self
+     *
      * @throws InvalidArgumentException When an unsupported algorithm is given
      */
     public function setAlgorithm($algorithm)
@@ -615,6 +622,7 @@ class Services_Libravatar
      *                    - "retro"
      *
      * @return self
+     *
      * @throws InvalidArgumentException When an invalid URL is given
      */
     public function setDefault($url)
@@ -627,7 +635,7 @@ class Services_Libravatar
     /**
      * Set if HTTPS URLs shall be returned.
      *
-     * @param boolean $useHttps If HTTPS url shall be returned
+     * @param bool $useHttps If HTTPS url shall be returned
      *
      * @return self
      *
@@ -635,7 +643,7 @@ class Services_Libravatar
      */
     public function setHttps($useHttps)
     {
-        $this->https = (bool)$useHttps;
+        $this->https = (bool) $useHttps;
 
         return $this;
     }
@@ -644,9 +652,10 @@ class Services_Libravatar
      * Set the required size of the images.
      * Every avatar image is square sized, which means you need to set only number.
      *
-     * @param integer $size Size (width and height) of the image
+     * @param int $size Size (width and height) of the image
      *
      * @return self
+     *
      * @throws InvalidArgumentException When a size <= 0 is given
      */
     public function setSize($size)
@@ -655,7 +664,6 @@ class Services_Libravatar
 
         return $this;
     }
-
 }
 
 /*
@@ -664,6 +672,4 @@ class Services_Libravatar
  * c-basic-offset: 4
  * c-hanging-comment-ender-p: nil
  * End:
- */
-
-?>
+ */;

@@ -1,9 +1,9 @@
 <?php
 
-class Sabre_DAVACL_Property_CurrentUserPrivilegeSetTest extends PHPUnit_Framework_TestCase {
-
-    function testSerialize() {
-
+class Sabre_DAVACL_Property_CurrentUserPrivilegeSetTest extends PHPUnit_Framework_TestCase
+{
+    public function testSerialize()
+    {
         $privileges = array(
             '{DAV:}read',
             '{DAV:}write',
@@ -11,8 +11,8 @@ class Sabre_DAVACL_Property_CurrentUserPrivilegeSetTest extends PHPUnit_Framewor
         $prop = new Sabre_DAVACL_Property_CurrentUserPrivilegeSet($privileges);
 
         $server = new Sabre_DAV_Server();
-        $dom = new DOMDocument('1.0','utf-8');
-        $root = $dom->createElementNS('DAV:','d:root');
+        $dom = new DOMDocument('1.0', 'utf-8');
+        $root = $dom->createElementNS('DAV:', 'd:root');
         $dom->appendChild($root);
 
         $prop->serialize($server, $root);
@@ -29,13 +29,9 @@ class Sabre_DAVACL_Property_CurrentUserPrivilegeSetTest extends PHPUnit_Framewor
         $dom2->loadXML($dom->saveXML());
 
         $dxpath = new DOMXPath($dom2);
-        $dxpath->registerNamespace('d','DAV:');
-        foreach($xpaths as $xpath=>$count) {
-
-            $this->assertEquals($count, $dxpath->query($xpath)->length, 'Looking for : ' . $xpath . ', we could only find ' . $dxpath->query($xpath)->length . ' elements, while we expected ' . $count);
-
+        $dxpath->registerNamespace('d', 'DAV:');
+        foreach ($xpaths as $xpath => $count) {
+            $this->assertEquals($count, $dxpath->query($xpath)->length, 'Looking for : '.$xpath.', we could only find '.$dxpath->query($xpath)->length.' elements, while we expected '.$count);
         }
-
     }
-
 }

@@ -4,28 +4,27 @@ require_once 'Sabre/DAV/Auth/MockBackend.php';
 require_once 'Sabre/DAVACL/MockPrincipal.php';
 require_once 'Sabre/DAVACL/MockACLNode.php';
 
-class Sabre_DAVACL_SimplePluginTest extends PHPUnit_Framework_TestCase {
-
-    function testValues() {
-
+class Sabre_DAVACL_SimplePluginTest extends PHPUnit_Framework_TestCase
+{
+    public function testValues()
+    {
         $aclPlugin = new Sabre_DAVACL_Plugin();
-        $this->assertEquals('acl',$aclPlugin->getPluginName());
+        $this->assertEquals('acl', $aclPlugin->getPluginName());
         $this->assertEquals(array('access-control'), $aclPlugin->getFeatures());
 
         $this->assertEquals(
             array(
                 '{DAV:}expand-property',
                 '{DAV:}principal-property-search',
-                '{DAV:}principal-search-property-set'
+                '{DAV:}principal-search-property-set',
             ),
             $aclPlugin->getSupportedReportSet(''));
 
         $this->assertEquals(array('ACL'), $aclPlugin->getMethods(''));
-
     }
 
-    function testGetFlatPrivilegeSet() {
-
+    public function testGetFlatPrivilegeSet()
+    {
         $expected = array(
             '{DAV:}all' => array(
                 'privilege' => '{DAV:}all',
@@ -113,26 +112,24 @@ class Sabre_DAVACL_SimplePluginTest extends PHPUnit_Framework_TestCase {
         $server = new Sabre_DAV_Server();
         $server->addPlugin($plugin);
         $this->assertEquals($expected, $plugin->getFlatPrivilegeSet(''));
-
     }
 
-    function testCurrentUserPrincipalsNotLoggedIn() {
-
+    public function testCurrentUserPrincipalsNotLoggedIn()
+    {
         $acl = new Sabre_DAVACL_Plugin();
         $server = new Sabre_DAV_Server();
         $server->addPlugin($acl);
 
-        $this->assertEquals(array(),$acl->getCurrentUserPrincipals());
-
+        $this->assertEquals(array(), $acl->getCurrentUserPrincipals());
     }
 
-    function testCurrentUserPrincipalsSimple() {
-
+    public function testCurrentUserPrincipalsSimple()
+    {
         $tree = array(
 
             new Sabre_DAV_SimpleCollection('principals', array(
-                new Sabre_DAVACL_MockPrincipal('admin','principals/admin'),
-            ))
+                new Sabre_DAVACL_MockPrincipal('admin', 'principals/admin'),
+            )),
 
         );
 
@@ -140,26 +137,25 @@ class Sabre_DAVACL_SimplePluginTest extends PHPUnit_Framework_TestCase {
         $server = new Sabre_DAV_Server($tree);
         $server->addPlugin($acl);
 
-        $auth = new Sabre_DAV_Auth_Plugin(new Sabre_DAV_Auth_MockBackend(),'SabreDAV');
+        $auth = new Sabre_DAV_Auth_Plugin(new Sabre_DAV_Auth_MockBackend(), 'SabreDAV');
         $server->addPlugin($auth);
 
         //forcing login
-        $auth->beforeMethod('GET','/');
+        $auth->beforeMethod('GET', '/');
 
-        $this->assertEquals(array('principals/admin'),$acl->getCurrentUserPrincipals());
-
+        $this->assertEquals(array('principals/admin'), $acl->getCurrentUserPrincipals());
     }
 
-    function testCurrentUserPrincipalsGroups() {
-
+    public function testCurrentUserPrincipalsGroups()
+    {
         $tree = array(
 
             new Sabre_DAV_SimpleCollection('principals', array(
-                new Sabre_DAVACL_MockPrincipal('admin','principals/admin',array('principals/administrators', 'principals/everyone')),
-                new Sabre_DAVACL_MockPrincipal('administrators','principals/administrators',array('principals/groups'), array('principals/admin')),
-                new Sabre_DAVACL_MockPrincipal('everyone','principals/everyone',array(), array('principals/admin')),
-                new Sabre_DAVACL_MockPrincipal('groups','principals/groups',array(), array('principals/administrators')),
-            ))
+                new Sabre_DAVACL_MockPrincipal('admin', 'principals/admin', array('principals/administrators', 'principals/everyone')),
+                new Sabre_DAVACL_MockPrincipal('administrators', 'principals/administrators', array('principals/groups'), array('principals/admin')),
+                new Sabre_DAVACL_MockPrincipal('everyone', 'principals/everyone', array(), array('principals/admin')),
+                new Sabre_DAVACL_MockPrincipal('groups', 'principals/groups', array(), array('principals/administrators')),
+            )),
 
         );
 
@@ -167,11 +163,11 @@ class Sabre_DAVACL_SimplePluginTest extends PHPUnit_Framework_TestCase {
         $server = new Sabre_DAV_Server($tree);
         $server->addPlugin($acl);
 
-        $auth = new Sabre_DAV_Auth_Plugin(new Sabre_DAV_Auth_MockBackend(),'SabreDAV');
+        $auth = new Sabre_DAV_Auth_Plugin(new Sabre_DAV_Auth_MockBackend(), 'SabreDAV');
         $server->addPlugin($auth);
 
         //forcing login
-        $auth->beforeMethod('GET','/');
+        $auth->beforeMethod('GET', '/');
 
         $expected = array(
             'principals/admin',
@@ -180,12 +176,11 @@ class Sabre_DAVACL_SimplePluginTest extends PHPUnit_Framework_TestCase {
             'principals/groups',
         );
 
-        $this->assertEquals($expected,$acl->getCurrentUserPrincipals());
-
+        $this->assertEquals($expected, $acl->getCurrentUserPrincipals());
     }
 
-    function testGetACL() {
-
+    public function testGetACL()
+    {
         $acl = array(
             array(
                 'principal' => 'principals/admin',
@@ -197,21 +192,19 @@ class Sabre_DAVACL_SimplePluginTest extends PHPUnit_Framework_TestCase {
             ),
         );
 
-
         $tree = array(
-            new Sabre_DAVACL_MockACLNode('foo',$acl),
+            new Sabre_DAVACL_MockACLNode('foo', $acl),
         );
 
         $server = new Sabre_DAV_Server($tree);
         $aclPlugin = new Sabre_DAVACL_Plugin();
         $server->addPlugin($aclPlugin);
 
-        $this->assertEquals($acl,$aclPlugin->getACL('foo'));
-
+        $this->assertEquals($acl, $aclPlugin->getACL('foo'));
     }
 
-    function testGetCurrentUserPrivilegeSet() {
-
+    public function testGetCurrentUserPrivilegeSet()
+    {
         $acl = array(
             array(
                 'principal' => 'principals/admin',
@@ -227,12 +220,11 @@ class Sabre_DAVACL_SimplePluginTest extends PHPUnit_Framework_TestCase {
             ),
         );
 
-
         $tree = array(
-            new Sabre_DAVACL_MockACLNode('foo',$acl),
+            new Sabre_DAVACL_MockACLNode('foo', $acl),
 
             new Sabre_DAV_SimpleCollection('principals', array(
-                new Sabre_DAVACL_MockPrincipal('admin','principals/admin'),
+                new Sabre_DAVACL_MockPrincipal('admin', 'principals/admin'),
             )),
 
         );
@@ -241,11 +233,11 @@ class Sabre_DAVACL_SimplePluginTest extends PHPUnit_Framework_TestCase {
         $aclPlugin = new Sabre_DAVACL_Plugin();
         $server->addPlugin($aclPlugin);
 
-        $auth = new Sabre_DAV_Auth_Plugin(new Sabre_DAV_Auth_MockBackend(),'SabreDAV');
+        $auth = new Sabre_DAV_Auth_Plugin(new Sabre_DAV_Auth_MockBackend(), 'SabreDAV');
         $server->addPlugin($auth);
 
         //forcing login
-        $auth->beforeMethod('GET','/');
+        $auth->beforeMethod('GET', '/');
 
         $expected = array(
             '{DAV:}write',
@@ -260,12 +252,11 @@ class Sabre_DAVACL_SimplePluginTest extends PHPUnit_Framework_TestCase {
             '{DAV:}read-current-user-privilege-set',
         );
 
-        $this->assertEquals($expected,$aclPlugin->getCurrentUserPrivilegeSet('foo'));
-
+        $this->assertEquals($expected, $aclPlugin->getCurrentUserPrivilegeSet('foo'));
     }
 
-    function testCheckPrivileges() {
-
+    public function testCheckPrivileges()
+    {
         $acl = array(
             array(
                 'principal' => 'principals/admin',
@@ -281,12 +272,11 @@ class Sabre_DAVACL_SimplePluginTest extends PHPUnit_Framework_TestCase {
             ),
         );
 
-
         $tree = array(
-            new Sabre_DAVACL_MockACLNode('foo',$acl),
+            new Sabre_DAVACL_MockACLNode('foo', $acl),
 
             new Sabre_DAV_SimpleCollection('principals', array(
-                new Sabre_DAVACL_MockPrincipal('admin','principals/admin'),
+                new Sabre_DAVACL_MockPrincipal('admin', 'principals/admin'),
             )),
 
         );
@@ -295,17 +285,12 @@ class Sabre_DAVACL_SimplePluginTest extends PHPUnit_Framework_TestCase {
         $aclPlugin = new Sabre_DAVACL_Plugin();
         $server->addPlugin($aclPlugin);
 
-        $auth = new Sabre_DAV_Auth_Plugin(new Sabre_DAV_Auth_MockBackend(),'SabreDAV');
+        $auth = new Sabre_DAV_Auth_Plugin(new Sabre_DAV_Auth_MockBackend(), 'SabreDAV');
         $server->addPlugin($auth);
 
         //forcing login
         //$auth->beforeMethod('GET','/');
 
         $this->assertFalse($aclPlugin->checkPrivileges('foo', array('{DAV:}read'), Sabre_DAVACL_Plugin::R_PARENT, false));
-
     }
 }
-
-
-
-

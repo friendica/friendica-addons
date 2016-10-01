@@ -1,9 +1,9 @@
 <?php
 
-class Sabre_DAV_UUIDUtilTest extends PHPUnit_Framework_TestCase {
-
-    function testValidateUUID() {
-
+class Sabre_DAV_UUIDUtilTest extends PHPUnit_Framework_TestCase
+{
+    public function testValidateUUID()
+    {
         $this->assertTrue(
             Sabre_DAV_UUIDUtil::validateUUID('11111111-2222-3333-4444-555555555555')
         );
@@ -16,8 +16,5 @@ class Sabre_DAV_UUIDUtilTest extends PHPUnit_Framework_TestCase {
         $this->assertFalse(
             Sabre_DAV_UUIDUtil::validateUUID('fffffffg-2222-3333-4444-555555555555')
         );
-
-
     }
-
 }

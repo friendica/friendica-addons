@@ -1,7 +1,7 @@
 <?php
 
 /**
- * CalDAV server
+ * CalDAV server.
  *
  * Deprecated! Warning: This class is now officially deprecated
  *
@@ -13,17 +13,16 @@
  * not subclass this server, but use Sabre_DAV_Server directly instead. This
  * class is nothing more than an 'easy setup'.
  *
- * @package Sabre
- * @subpackage CalDAV
- * @deprecated Don't use this class anymore, it will be removed in version 1.7.
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
- * @author Evert Pot (http://www.rooftopsolutions.nl/) 
+ * @deprecated Don't use this class anymore, it will be removed in version 1.7
+ *
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
+ * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_CalDAV_Server extends Sabre_DAV_Server {
-
+class Sabre_CalDAV_Server extends Sabre_DAV_Server
+{
     /**
-     * The authentication realm
+     * The authentication realm.
      *
      * Note that if this changes, the hashes in the auth backend must also
      * be recalculated.
@@ -37,7 +36,8 @@ class Sabre_CalDAV_Server extends Sabre_DAV_Server {
      *
      * @param PDO $pdo
      */
-    public function __construct(PDO $pdo) {
+    public function __construct(PDO $pdo)
+    {
 
         /* Backends */
         $authBackend = new Sabre_DAV_Auth_Backend_PDO($pdo);
@@ -54,7 +54,7 @@ class Sabre_CalDAV_Server extends Sabre_DAV_Server {
         parent::__construct($tree);
 
         /* Server Plugins */
-        $authPlugin = new Sabre_DAV_Auth_Plugin($authBackend,$this->authRealm);
+        $authPlugin = new Sabre_DAV_Auth_Plugin($authBackend, $this->authRealm);
         $this->addPlugin($authPlugin);
 
         $aclPlugin = new Sabre_DAVACL_Plugin();
@@ -62,7 +62,5 @@ class Sabre_CalDAV_Server extends Sabre_DAV_Server {
 
         $caldavPlugin = new Sabre_CalDAV_Plugin();
         $this->addPlugin($caldavPlugin);
-
     }
-
 }

@@ -2,16 +2,18 @@
 
 require_once 'Sabre/CalDAV/TestUtil.php';
 
-class Sabre_CalDAV_ServerTest extends PHPUnit_Framework_TestCase {
-
+class Sabre_CalDAV_ServerTest extends PHPUnit_Framework_TestCase
+{
     /**
      * The CalDAV server is a simple script that just composes a
      * Sabre_DAV_Server. All we really have to do is check if the setup
      * is done correctly.
      */
-    function testSetup() {
-
-        if (!SABRE_HASSQLITE) $this->markTestSkipped('SQLite driver is not available');
+    public function testSetup()
+    {
+        if (!SABRE_HASSQLITE) {
+            $this->markTestSkipped('SQLite driver is not available');
+        }
         $pdo = Sabre_CalDAV_TestUtil::getSQLiteDB();
         $server = new Sabre_CalDAV_Server($pdo);
 
@@ -25,7 +27,5 @@ class Sabre_CalDAV_ServerTest extends PHPUnit_Framework_TestCase {
         $this->assertTrue($node instanceof Sabre_DAV_SimpleCollection);
 
         $this->assertEquals('root', $node->getName());
-
     }
-
 }

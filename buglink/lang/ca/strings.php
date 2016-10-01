@@ -1,3 +1,3 @@
 <?php
 
-$a->strings["Report Bug"] = "Informar de problema";
+$a->strings['Report Bug'] = 'Informar de problema';

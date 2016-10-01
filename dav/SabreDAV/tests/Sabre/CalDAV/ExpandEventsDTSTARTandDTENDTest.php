@@ -3,15 +3,15 @@
 use Sabre\VObject;
 
 /**
- * This unittests is created to find out why recurring events have wrong DTSTART value
+ * This unittests is created to find out why recurring events have wrong DTSTART value.
  *
  *
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_CalDAV_ExpandEventsDTSTARTandDTENDTest extends Sabre_DAVServerTest {
-
+class Sabre_CalDAV_ExpandEventsDTSTARTandDTENDTest extends Sabre_DAVServerTest
+{
     protected $setupCalDAV = true;
 
     protected $caldavCalendars = array(
@@ -20,7 +20,7 @@ class Sabre_CalDAV_ExpandEventsDTSTARTandDTENDTest extends Sabre_DAVServerTest {
             'name' => 'Calendar',
             'principaluri' => 'principals/user1',
             'uri' => 'calendar1',
-        )
+        ),
     );
 
     protected $caldavCalendarObjects = array(
@@ -49,8 +49,8 @@ END:VCALENDAR
         ),
     );
 
-    function testExpand() {
-
+    public function testExpand()
+    {
         $request = new Sabre_HTTP_Request(array(
             'REQUEST_METHOD' => 'REPORT',
             'HTTP_CONTENT_TYPE' => 'application/xml',
@@ -83,7 +83,7 @@ END:VCALENDAR
             $start = strpos($response->body, 'BEGIN:VCALENDAR'),
             strpos($response->body, 'END:VCALENDAR') - $start + 13
         );
-        $body = str_replace('&#13;','',$body);
+        $body = str_replace('&#13;', '', $body);
 
         $vObject = VObject\Reader::read($body);
 
@@ -92,7 +92,6 @@ END:VCALENDAR
             /** @var $vevent Sabre\VObject\Component_VEvent */
             foreach ($vevent->children as $child) {
                 /** @var $child Sabre\VObject\Property */
-
                 if ($child->name == 'DTSTART') {
                     // DTSTART has to be one of three valid values
                     $this->assertContains($child->value, array('20120207T171500Z', '20120208T171500Z', '20120209T171500Z'), 'DTSTART is not a valid value: '.$child->value);
@@ -103,6 +102,4 @@ END:VCALENDAR
             }
         }
     }
-
 }
-

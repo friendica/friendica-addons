@@ -2,14 +2,14 @@
 
 use Sabre\VObject;
 
-class Sabre_CalDAV_CalendarQueryVAlarmTest extends PHPUnit_Framework_TestCase {
-
+class Sabre_CalDAV_CalendarQueryVAlarmTest extends PHPUnit_Framework_TestCase
+{
     /**
      * This test is specifically for a time-range query on a VALARM, contained
-     * in a VEVENT that's recurring
+     * in a VEVENT that's recurring.
      */
-    function testValarm() {
-
+    public function testValarm()
+    {
         $vevent = VObject\Component::create('VEVENT');
         $vevent->RRULE = 'FREQ=MONTHLY';
         $vevent->DTSTART = '20120101T120000Z';
@@ -52,7 +52,6 @@ class Sabre_CalDAV_CalendarQueryVAlarmTest extends PHPUnit_Framework_TestCase {
         $validator = new Sabre_CalDAV_CalendarQueryValidator();
         $this->assertTrue($validator->validate($vcalendar, $filter));
 
-
         // A limited recurrence rule, should return false
         $vevent = VObject\Component::create('VEVENT');
         $vevent->RRULE = 'FREQ=MONTHLY;COUNT=1';
@@ -69,8 +68,8 @@ class Sabre_CalDAV_CalendarQueryVAlarmTest extends PHPUnit_Framework_TestCase {
         $this->assertFalse($validator->validate($vcalendar, $filter));
     }
 
-    function testAlarmWayBefore() {
-
+    public function testAlarmWayBefore()
+    {
         $vevent = VObject\Component::create('VEVENT');
         $vevent->DTSTART = '20120101T120000Z';
         $vevent->UID = 'bla';
@@ -111,7 +110,5 @@ class Sabre_CalDAV_CalendarQueryVAlarmTest extends PHPUnit_Framework_TestCase {
 
         $validator = new Sabre_CalDAV_CalendarQueryValidator();
         $this->assertTrue($validator->validate($vcalendar, $filter));
-
     }
-
 }

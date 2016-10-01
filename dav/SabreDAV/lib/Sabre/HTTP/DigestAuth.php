@@ -1,7 +1,7 @@
 <?php
 
 /**
- * HTTP Digest Authentication handler
+ * HTTP Digest Authentication handler.
  *
  * Use this class for easy http digest authentication.
  * Instructions:
@@ -19,16 +19,14 @@
  *     requireLogin() method.
  *
  *
- * @package Sabre
- * @subpackage HTTP
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
- * @author Evert Pot (http://www.rooftopsolutions.nl/) 
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
+ * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_HTTP_DigestAuth extends Sabre_HTTP_AbstractAuth {
-
+class Sabre_HTTP_DigestAuth extends Sabre_HTTP_AbstractAuth
+{
     /**
-     * These constants are used in setQOP();
+     * These constants are used in setQOP();.
      */
     const QOP_AUTH = 1;
     const QOP_AUTHINT = 2;
@@ -40,28 +38,24 @@ class Sabre_HTTP_DigestAuth extends Sabre_HTTP_AbstractAuth {
     protected $qop = self::QOP_AUTH;
 
     /**
-     * Initializes the object
+     * Initializes the object.
      */
-    public function __construct() {
-
+    public function __construct()
+    {
         $this->nonce = uniqid();
         $this->opaque = md5($this->realm);
         parent::__construct();
-
     }
 
     /**
-     * Gathers all information from the headers
+     * Gathers all information from the headers.
      *
      * This method needs to be called prior to anything else.
-     *
-     * @return void
      */
-    public function init() {
-
+    public function init()
+    {
         $digest = $this->getDigest();
         $this->digestParts = $this->parseDigest($digest);
-
     }
 
     /**
@@ -78,12 +72,10 @@ class Sabre_HTTP_DigestAuth extends Sabre_HTTP_AbstractAuth {
      * request body to be md5'ed, which can put strains on CPU and memory.
      *
      * @param int $qop
-     * @return void
      */
-    public function setQOP($qop) {
-
+    public function setQOP($qop)
+    {
         $this->qop = $qop;
-
     }
 
     /**
@@ -92,13 +84,14 @@ class Sabre_HTTP_DigestAuth extends Sabre_HTTP_AbstractAuth {
      * The A1 parameter should be md5($username . ':' . $realm . ':' . $password);
      *
      * @param string $A1
+     *
      * @return bool
      */
-    public function validateA1($A1) {
-
+    public function validateA1($A1)
+    {
         $this->A1 = $A1;
-        return $this->validate();
 
+        return $this->validate();
     }
 
     /**
@@ -106,78 +99,76 @@ class Sabre_HTTP_DigestAuth extends Sabre_HTTP_AbstractAuth {
      * It is strongly recommended not store the password in plain-text and use validateA1 instead.
      *
      * @param string $password
+     *
      * @return bool
      */
-    public function validatePassword($password) {
+    public function validatePassword($password)
+    {
+        $this->A1 = md5($this->digestParts['username'].':'.$this->realm.':'.$password);
 
-        $this->A1 = md5($this->digestParts['username'] . ':' . $this->realm . ':' . $password);
         return $this->validate();
-
     }
 
     /**
-     * Returns the username for the request
+     * Returns the username for the request.
      *
      * @return string
      */
-    public function getUsername() {
-
+    public function getUsername()
+    {
         return $this->digestParts['username'];
-
     }
 
     /**
-     * Validates the digest challenge
+     * Validates the digest challenge.
      *
      * @return bool
      */
-    protected function validate() {
+    protected function validate()
+    {
+        $A2 = $this->httpRequest->getMethod().':'.$this->digestParts['uri'];
 
-        $A2 = $this->httpRequest->getMethod() . ':' . $this->digestParts['uri'];
-
-        if ($this->digestParts['qop']=='auth-int') {
+        if ($this->digestParts['qop'] == 'auth-int') {
             // Making sure we support this qop value
-            if (!($this->qop & self::QOP_AUTHINT)) return false;
+            if (!($this->qop & self::QOP_AUTHINT)) {
+                return false;
+            }
             // We need to add an md5 of the entire request body to the A2 part of the hash
             $body = $this->httpRequest->getBody(true);
-            $this->httpRequest->setBody($body,true);
-            $A2 .= ':' . md5($body);
+            $this->httpRequest->setBody($body, true);
+            $A2 .= ':'.md5($body);
         } else {
 
             // We need to make sure we support this qop value
-            if (!($this->qop & self::QOP_AUTH)) return false;
+            if (!($this->qop & self::QOP_AUTH)) {
+                return false;
+            }
         }
 
         $A2 = md5($A2);
 
         $validResponse = md5("{$this->A1}:{$this->digestParts['nonce']}:{$this->digestParts['nc']}:{$this->digestParts['cnonce']}:{$this->digestParts['qop']}:{$A2}");
 
-        return $this->digestParts['response']==$validResponse;
-
-
+        return $this->digestParts['response'] == $validResponse;
     }
 
     /**
-     * Returns an HTTP 401 header, forcing login
+     * Returns an HTTP 401 header, forcing login.
      *
      * This should be called when username and password are incorrect, or not supplied at all
-     *
-     * @return void
      */
-    public function requireLogin() {
-
+    public function requireLogin()
+    {
         $qop = '';
-        switch($this->qop) {
-            case self::QOP_AUTH    : $qop = 'auth'; break;
-            case self::QOP_AUTHINT : $qop = 'auth-int'; break;
-            case self::QOP_AUTH | self::QOP_AUTHINT : $qop = 'auth,auth-int'; break;
+        switch ($this->qop) {
+            case self::QOP_AUTH: $qop = 'auth'; break;
+            case self::QOP_AUTHINT: $qop = 'auth-int'; break;
+            case self::QOP_AUTH | self::QOP_AUTHINT: $qop = 'auth,auth-int'; break;
         }
 
-        $this->httpResponse->setHeader('WWW-Authenticate','Digest realm="' . $this->realm . '",qop="'.$qop.'",nonce="' . $this->nonce . '",opaque="' . $this->opaque . '"');
+        $this->httpResponse->setHeader('WWW-Authenticate', 'Digest realm="'.$this->realm.'",qop="'.$qop.'",nonce="'.$this->nonce.'",opaque="'.$this->opaque.'"');
         $this->httpResponse->sendStatus(401);
-
     }
-
 
     /**
      * This method returns the full digest string.
@@ -188,11 +179,14 @@ class Sabre_HTTP_DigestAuth extends Sabre_HTTP_AbstractAuth {
      *
      * @return mixed
      */
-    public function getDigest() {
+    public function getDigest()
+    {
 
         // mod_php
         $digest = $this->httpRequest->getRawServerValue('PHP_AUTH_DIGEST');
-        if ($digest) return $digest;
+        if ($digest) {
+            return $digest;
+        }
 
         // most other servers
         $digest = $this->httpRequest->getHeader('Authorization');
@@ -203,14 +197,12 @@ class Sabre_HTTP_DigestAuth extends Sabre_HTTP_AbstractAuth {
             $digest = $this->httpRequest->getRawServerValue('REDIRECT_HTTP_AUTHORIZATION');
         }
 
-        if ($digest && strpos(strtolower($digest),'digest')===0) {
-            return substr($digest,7);
+        if ($digest && strpos(strtolower($digest), 'digest') === 0) {
+            return substr($digest, 7);
         } else {
             return null;
         }
-
     }
-
 
     /**
      * Parses the different pieces of the digest string into an array.
@@ -218,12 +210,14 @@ class Sabre_HTTP_DigestAuth extends Sabre_HTTP_AbstractAuth {
      * This method returns false if an incomplete digest was supplied
      *
      * @param string $digest
+     *
      * @return mixed
      */
-    protected function parseDigest($digest) {
+    protected function parseDigest($digest)
+    {
 
         // protect against missing data
-        $needed_parts = array('nonce'=>1, 'nc'=>1, 'cnonce'=>1, 'qop'=>1, 'username'=>1, 'uri'=>1, 'response'=>1);
+        $needed_parts = array('nonce' => 1, 'nc' => 1, 'cnonce' => 1, 'qop' => 1, 'username' => 1, 'uri' => 1, 'response' => 1);
         $data = array();
 
         preg_match_all('@(\w+)=(?:(?:")([^"]+)"|([^\s,$]+))@', $digest, $matches, PREG_SET_ORDER);
@@ -234,7 +228,5 @@ class Sabre_HTTP_DigestAuth extends Sabre_HTTP_AbstractAuth {
         }
 
         return $needed_parts ? false : $data;
-
     }
-
 }

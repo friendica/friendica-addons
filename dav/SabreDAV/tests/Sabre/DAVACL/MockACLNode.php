@@ -1,51 +1,43 @@
 <?php
 
-class Sabre_DAVACL_MockACLNode extends Sabre_DAV_Node implements Sabre_DAVACL_IACL {
-
+class Sabre_DAVACL_MockACLNode extends Sabre_DAV_Node implements Sabre_DAVACL_IACL
+{
     public $name;
     public $acl;
 
-    function __construct($name, array $acl = array()) {
-
+    public function __construct($name, array $acl = array())
+    {
         $this->name = $name;
         $this->acl = $acl;
-
     }
 
-    function getName() {
-
+    public function getName()
+    {
         return $this->name;
-
     }
 
-    function getOwner() {
-
+    public function getOwner()
+    {
         return null;
-
     }
 
-    function getGroup() {
-
+    public function getGroup()
+    {
         return null;
-
     }
 
-    function getACL() {
-
+    public function getACL()
+    {
         return $this->acl;
-
     }
 
-    function setACL(array $acl) {
-
+    public function setACL(array $acl)
+    {
         $this->acl = $acl;
-
     }
 
-    function getSupportedPrivilegeSet() {
-
+    public function getSupportedPrivilegeSet()
+    {
         return null;
-
     }
-
 }

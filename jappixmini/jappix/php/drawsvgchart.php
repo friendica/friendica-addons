@@ -4,16 +4,16 @@
 
 //   This file is a part of CodingTeam. Take a look at <http://codingteam.org>.
 //   Copyright © 2007-2010 Erwan Briand <erwan@codingteam.net>
-//
+
 //   This program is free software: you can redistribute it and/or modify it
 //   under the terms of the GNU Affero General Public License as published by
 //   the Free Software Foundation, version 3 only.
-//
+
 //   This program is distributed in the hope that it will be useful, but
 //   WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 //   or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public
 //   License for more details.
-//
+
 //   You should have received a copy of the GNU Affero General Public License
 //   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
@@ -23,44 +23,45 @@
  */
 
 /**
- * DrawSVGChart class
+ * DrawSVGChart class.
  */
-class DrawSVGChart {
+class drawsvgchart
+{
     private $datas, $legend, $link, $xml_object, $svg,
             $xml_elements, $evolution;
     public $has_errors;
 
-    function createChart($datas=array(), $legend=array(), $link,
-                         $evolution=FALSE, $type='others')
+    public function createChart($datas, $legend, $link,
+                         $evolution = false, $type = 'others')
     {
-        $this->has_errors = FALSE;
+        $this->has_errors = false;
         $max = 0;
 
         // One or two data arrays
-        if (isset($datas[0]) && is_array($datas[0]))
-        {
+        if (isset($datas[0]) && is_array($datas[0])) {
             $datas_number = count($datas[0]);
 
-            if ($datas_number >= 1)
+            if ($datas_number >= 1) {
                 $max = max($datas[0]);
-            else
-                $this->has_errors = TRUE;
-        }
-        else
-        {
+            } else {
+                $this->has_errors = true;
+            }
+        } else {
             $datas_number = count($datas);
 
-            if ($datas_number >= 1)
+            if ($datas_number >= 1) {
                 $max = max($datas);
-            else
-                $this->has_errors = TRUE;
+            } else {
+                $this->has_errors = true;
+            }
         }
 
         // Set the width of the chart
-        if ($datas_number * 55 > 400)
+        if ($datas_number * 55 > 400) {
             $width = $datas_number * 55;
-        else
+        } else {
             $width = 400;
+        }
 
         $height = 250;
         $this->datas = $datas;
@@ -71,37 +72,37 @@ class DrawSVGChart {
         $this->xml_elements = array();
 
         // Scale
-        if ($max <= 20)
-        {
+        if ($max <= 20) {
             $scale[4] = 20;
             $scale[3] = 15;
             $scale[2] = 10;
             $scale[1] = 5;
-        }
-        else
-        {
+        } else {
             $scale[4] = ceil($max / 20) * 20;
-            $scale[3] = $scale[4] * 3/4;
-            $scale[2] = $scale[4] * 2/4;
-            $scale[1] = $scale[4] * 1/4;
+            $scale[3] = $scale[4] * 3 / 4;
+            $scale[2] = $scale[4] * 2 / 4;
+            $scale[1] = $scale[4] * 1 / 4;
         }
 
-        if ($scale[4] == 0 || $max == 0)
-            $this->has_errors = TRUE;
+        if ($scale[4] == 0 || $max == 0) {
+            $this->has_errors = true;
+        }
 
-        if ($this->has_errors)
-            return TRUE;
+        if ($this->has_errors) {
+            return true;
+        }
 
         $this->xml_object = new DOMDocument('1.0', 'utf-8');
-	
-	// Process the static file host prefix
-	$static_prefix = '.';
-	
-	if(hasStatic())
-		$static_prefix = HOST_STATIC.'/php';
-	
+
+    // Process the static file host prefix
+    $static_prefix = '.';
+
+        if (hasStatic()) {
+            $static_prefix = HOST_STATIC.'/php';
+        }
+
         // Add the stylesheet
-        $style = $this->xml_object->createProcessingInstruction("xml-stylesheet",
+        $style = $this->xml_object->createProcessingInstruction('xml-stylesheet',
                  "type='text/css' href='".getFiles(genHash(getVersion()), '', 'css', '', 'stats-svg.css')."'");
         $this->xml_object->appendChild($style);
 
@@ -139,13 +140,12 @@ class DrawSVGChart {
         $this->drawChart($scale, $width);
     }
 
-    function drawLegend()
+    public function drawLegend()
     {
         $pstart = 3;
         $tstart = 7;
 
-        foreach ($this->legend as $item)
-        {
+        foreach ($this->legend as $item) {
             $val_path = $pstart + 11;
             $val_text = $tstart + 10;
 
@@ -175,23 +175,24 @@ class DrawSVGChart {
         }
     }
 
-    function drawTable($scale, $width)
+    public function drawTable($scale, $width)
     {
         // Create left scale
-        $top = TRUE;
+        $top = true;
         $start = -17;
 
-        foreach ($scale as $level)
-        {
+        foreach ($scale as $level) {
             $type = $this->type;
-            
-            if(($type == 'share') || ($type == 'others'))
+
+            if (($type == 'share') || ($type == 'others')) {
                 $level = formatBytes($level);
-            
-            if ($top)
+            }
+
+            if ($top) {
                 $color = '#CED0D5';
-            else
+            } else {
                 $color = '#EAEAEA';
+            }
 
             $m = $start + 50;
 
@@ -209,7 +210,7 @@ class DrawSVGChart {
             $this->xml_elements['static_background']->appendChild($path);
             $this->xml_elements['static_background']->appendChild($text);
 
-            $top = FALSE;
+            $top = false;
             $start = $m;
         }
 
@@ -223,19 +224,16 @@ class DrawSVGChart {
         $this->xml_elements['static_background']->appendChild($text);
     }
 
-    function drawChart($scale, $width)
+    public function drawChart($scale, $width)
     {
-        if (isset($this->datas[0]) && is_array($this->datas[0]))
-        {
+        if (isset($this->datas[0]) && is_array($this->datas[0])) {
             $foreached_datas = $this->datas[0];
             $onlykeys_datas = array_keys($this->datas[0]);
             $secondary_datas = array_keys($this->datas[1]);
-        }
-        else
-        {
+        } else {
             $foreached_datas = $this->datas;
             $onlykeys_datas = array_keys($this->datas);
-            $secondary_datas = FALSE;
+            $secondary_datas = false;
         }
 
         // Create graphics data
@@ -253,12 +251,13 @@ class DrawSVGChart {
         $path = $this->xml_object->createElement('path');
         $path->setAttribute('id', 'bubble');
 
-        if ($this->evolution)
+        if ($this->evolution) {
             $path->setAttribute('d', 'M 4.7871575,0.5 L 39.084404,0.5 C 41.459488,0.5 43.371561,2.73 43.371561,5.5 L 43.371561,25.49999 L 43.30,31.05 L 4.7871575,30.49999 C 2.412072,30.49999 0.5,28.26999 0.5,25.49999 L 0.5,5.5 C 0.5,2.73 2.412072,0.5 4.7871575,0.5 z');
-        elseif ($secondary_datas)
+        } elseif ($secondary_datas) {
             $path->setAttribute('d', 'M 1,0 v 8 l -6,-10 c -1.5,-2 -1.5,-2 -6,-2 h -36                        c -3,0 -6,-3 -6,-6 v -28 c 0,-3 3,-6 6,-6 h 43 c 3,0 6,3 6,6 z');
-        else
+        } else {
             $path->setAttribute('d', 'M 4.7871575,0.5 L 39.084404,0.5 C 41.459488,0.5 43.371561,2.73 43.371561,5.5 L 43.371561,25.49999 C 43.371561,27.07677 43.83887,41.00777 42.990767,40.95796 C 42.137828,40.90787 37.97451,30.49999 36.951406,30.49999 L 4.7871575,30.49999 C 2.412072,30.49999 0.5,28.26999 0.5,25.49999 L 0.5,5.5 C 0.5,2.73 2.412072,0.5 4.7871575,0.5 z');
+        }
 
         $path->setAttribute('fill', 'none');
         $path->setAttribute('fill-opacity', '0.85');
@@ -301,27 +300,28 @@ class DrawSVGChart {
         $xprevious = 38;
         $tprevious = 233;
 
-        foreach ($foreached_datas as $key => $data)
-        {
+        foreach ($foreached_datas as $key => $data) {
             $x = 27 + $x_base;
             $y = 107 + $y_base;
 
             $top = 233 - ceil($data / ($scale[4] / 100) * 2);
 
-            if ($top <= 50)
+            if ($top <= 50) {
                 $bubble_top = 55;
-            elseif (!$secondary_datas)
+            } elseif (!$secondary_datas) {
                 $bubble_top = ($top - 42);
-            elseif ($secondary_datas)
+            } elseif ($secondary_datas) {
                 $bubble_top = ($top - 10);
+            }
 
             $type = $this->type;
 
-            if(($type == 'share') || ($type == 'others'))
+            if (($type == 'share') || ($type == 'others')) {
                 $value = formatBytes($data);
-            else
+            } else {
                 $value = $data;
-            
+            }
+
             // Create the chart with datas
             $g = $this->xml_object->createElement('g');
             $g->setAttribute('transform', 'translate('.$x.')');
@@ -334,17 +334,16 @@ class DrawSVGChart {
             $data_g = $this->xml_object->createElement('g');
             $data_g->setAttribute('class', 'gbar');
 
-            if ($this->link)
-            {
-                $text = $this->xml_object->createElement('text');            
+            if ($this->link) {
+                $text = $this->xml_object->createElement('text');
 
                 $link = $this->xml_object->createElement('a', mb_substr(filterSpecialXML($onlykeys_datas[$element]), 0, 7));
                 $link->setAttribute('xlink:href', str_replace('{data}', filterSpecialXML($onlykeys_datas[$element]), $this->link));
                 $link->setAttribute('target', '_main');
                 $text->appendChild($link);
-            }
-            else
+            } else {
                 $text = $this->xml_object->createElement('text', mb_substr(filterSpecialXML($onlykeys_datas[$element]), 0, 7));
+            }
 
             $text->setAttribute('class', 'reftext');
             $text->setAttribute('y', 248);
@@ -357,8 +356,7 @@ class DrawSVGChart {
             $uselink->setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
             $data_g->appendChild($uselink);
 
-            if (!$this->evolution)
-            {
+            if (!$this->evolution) {
                 $rect = $this->xml_object->createElement('rect');
                 $rect->setAttribute('class', 'bluebar');
                 $rect->setAttribute('height', (233 - $top));
@@ -368,26 +366,24 @@ class DrawSVGChart {
                 $rect->setAttribute('fill', $this->legend[0][0]);
                 $rect->setAttribute('fill-opacity', '0.6');
                 $data_g->appendChild($rect);
-            }
-            else
-            {
+            } else {
                 $use = $this->xml_object->createElement('use');
                 $use->setAttribute('xlink:href', '#rectpoint');
                 $use->setAttribute('y', ($top - 1));
                 $use->setAttribute('x', -2);
                 $data_g->appendChild($use);
 
-                if ($x != (35 + 27))
+                if ($x != (35 + 27)) {
                     $chart_defs .= 'L '.$x.' '.$top.'  ';
-                else
+                } else {
                     $chart_defs .= 'M '.$xprevious.' '.$tprevious.' L '.$x.' '.$top.'  ';
+                }
 
                 $xprevious = $x;
                 $tprevious = $top;
             }
 
-            if ($secondary_datas && isset($secondary_datas[$element]))
-            {
+            if ($secondary_datas && isset($secondary_datas[$element])) {
                 $datalink = $secondary_datas[$element];
                 $dataval = $this->datas[1][$datalink];
                 $stop = 233 - ceil($dataval / ($scale[4] / 100) * 2);
@@ -403,8 +399,7 @@ class DrawSVGChart {
                 $data_g->appendChild($rect);
             }
 
-            if (!$this->evolution)
-            {
+            if (!$this->evolution) {
                 $path = $this->xml_object->createElement('path');
                 $path->setAttribute('stroke', '#5276A9');
                 $path->setAttribute('stroke-width', '2px');
@@ -418,8 +413,9 @@ class DrawSVGChart {
             $uselink->setAttribute('xlink:href', '#bubble');
             $uselink->setAttribute('y', $bubble_top);
 
-            if (!$secondary_datas)
+            if (!$secondary_datas) {
                 $uselink->setAttribute('x', -42);
+            }
 
             $data_g->appendChild($uselink);
 
@@ -427,16 +423,16 @@ class DrawSVGChart {
             $text->setAttribute('class', 'bubbletextblue');
             $text->setAttribute('x', -10);
 
-            if (!$secondary_datas)
+            if (!$secondary_datas) {
                 $text->setAttribute('y', ($bubble_top + 20));
-            else
+            } else {
                 $text->setAttribute('y', ($bubble_top - 27));
+            }
 
             $text->setAttribute('fill', 'none');
             $data_g->appendChild($text);
 
-            if ($secondary_datas && isset($secondary_datas[$element]))
-            {
+            if ($secondary_datas && isset($secondary_datas[$element])) {
                 $text = $this->xml_object->createElement('text', $dataval);
                 $text->setAttribute('class', 'bubbletextred');
                 $text->setAttribute('x', -10);
@@ -450,11 +446,10 @@ class DrawSVGChart {
 
             $x_base = $x_base + 50;
             $y_base = $y_base + 20;
-            $element ++;            
+            ++$element;
         }
 
-        if ($this->evolution)
-        {
+        if ($this->evolution) {
             $path = $this->xml_object->createElement('path');
             $path->setAttribute('d', $chart_defs);
             $path->setAttribute('stroke', $this->legend[0][0]);
@@ -473,23 +468,23 @@ class DrawSVGChart {
         $this->xml_elements['final_path'] = $path;
     }
 
-    function has_errors()
+    public function has_errors()
     {
         return $this->has_errors;
     }
 
-    function getXMLOutput()
+    public function getXMLOutput()
     {
-        if (isset($this->xml_object))
-        {
+        if (isset($this->xml_object)) {
             // Add SVG elements to the DOM object
-            foreach($this->xml_elements as $element)
+            foreach ($this->xml_elements as $element) {
                 $this->svg->appendChild($element);
+            }
 
             // Return the XML
-            $this->xml_object->formatOutput = true; 
+            $this->xml_object->formatOutput = true;
+
             return $this->xml_object->saveXML();
         }
     }
 }
-?>

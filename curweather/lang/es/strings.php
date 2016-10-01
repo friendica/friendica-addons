@@ -1,3 +1,3 @@
 <?php
 
-$a->strings["Submit"] = "Envíar";
+$a->strings['Submit'] = 'Envíar';

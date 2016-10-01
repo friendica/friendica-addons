@@ -1,24 +1,23 @@
 <?php
 
 /**
- * Sabre_HTTP_Response
+ * Sabre_HTTP_Response.
  *
- * @package Sabre
- * @subpackage HTTP 
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_HTTP_Response {
-
+class Sabre_HTTP_Response
+{
     /**
-     * Returns a full HTTP status message for an HTTP status code
+     * Returns a full HTTP status message for an HTTP status code.
      *
      * @param int $code
+     *
      * @return string
      */
-    public function getStatusMessage($code) {
-
+    public function getStatusMessage($code)
+    {
         $msg = array(
             100 => 'Continue',
             101 => 'Switching Protocols',
@@ -81,77 +80,73 @@ class Sabre_HTTP_Response {
             511 => 'Network Authentication Required', // draft-nottingham-http-new-status
        );
 
-       return 'HTTP/1.1 ' . $code . ' ' . $msg[$code];
-
+        return 'HTTP/1.1 '.$code.' '.$msg[$code];
     }
 
     /**
-     * Sends an HTTP status header to the client
+     * Sends an HTTP status header to the client.
      *
      * @param int $code HTTP status code
+     *
      * @return bool
      */
-    public function sendStatus($code) {
-
-        if (!headers_sent())
+    public function sendStatus($code)
+    {
+        if (!headers_sent()) {
             return header($this->getStatusMessage($code));
-        else return false;
-
+        } else {
+            return false;
+        }
     }
 
     /**
-     * Sets an HTTP header for the response
+     * Sets an HTTP header for the response.
      *
      * @param string $name
      * @param string $value
-     * @param bool $replace
+     * @param bool   $replace
+     *
      * @return bool
      */
-    public function setHeader($name, $value, $replace = true) {
-
-        $value = str_replace(array("\r","\n"),array('\r','\n'),$value);
-        if (!headers_sent())
-            return header($name . ': ' . $value, $replace);
-        else return false;
-
+    public function setHeader($name, $value, $replace = true)
+    {
+        $value = str_replace(array("\r", "\n"), array('\r', '\n'), $value);
+        if (!headers_sent()) {
+            return header($name.': '.$value, $replace);
+        } else {
+            return false;
+        }
     }
 
     /**
-     * Sets a bunch of HTTP Headers
+     * Sets a bunch of HTTP Headers.
      *
      * headersnames are specified as keys, value in the array value
      *
      * @param array $headers
-     * @return void
      */
-    public function setHeaders(array $headers) {
-
-        foreach($headers as $key=>$value)
+    public function setHeaders(array $headers)
+    {
+        foreach ($headers as $key => $value) {
             $this->setHeader($key, $value);
-
+        }
     }
 
     /**
-     * Sends the entire response body
+     * Sends the entire response body.
      *
      * This method can accept either an open filestream, or a string.
      *
      * @param mixed $body
-     * @return void
      */
-    public function sendBody($body) {
-
+    public function sendBody($body)
+    {
         if (is_resource($body)) {
-
             fpassthru($body);
-
         } else {
 
             // We assume a string
             echo $body;
-
         }
-
     }
-
 }

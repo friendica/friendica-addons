@@ -1,14 +1,12 @@
 <?php
 
 /**
- * SabreDAV base exception
+ * SabreDAV base exception.
  *
  * This is SabreDAV's base exception file, use this to implement your own exception.
  *
- * @package Sabre
- * @subpackage DAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
- * @author Evert Pot (http://www.rooftopsolutions.nl/) 
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
+ * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
 
@@ -21,29 +19,26 @@
  * This class also allows you to generate custom xml data for your exceptions. This will be displayed
  * in the 'error' element in the failing response.
  */
-class Sabre_DAV_Exception extends Exception {
-
+class Sabre_DAV_Exception extends Exception
+{
     /**
-     * Returns the HTTP statuscode for this exception
+     * Returns the HTTP statuscode for this exception.
      *
      * @return int
      */
-    public function getHTTPCode() {
-
+    public function getHTTPCode()
+    {
         return 500;
-
     }
 
     /**
-     * This method allows the exception to include additional information into the WebDAV error response
+     * This method allows the exception to include additional information into the WebDAV error response.
      *
      * @param Sabre_DAV_Server $server
-     * @param DOMElement $errorNode
-     * @return void
+     * @param DOMElement       $errorNode
      */
-    public function serialize(Sabre_DAV_Server $server,DOMElement $errorNode) {
-
-
+    public function serialize(Sabre_DAV_Server $server, DOMElement $errorNode)
+    {
     }
 
     /**
@@ -52,13 +47,11 @@ class Sabre_DAV_Exception extends Exception {
      * The headers must be returned as an array.
      *
      * @param Sabre_DAV_Server $server
+     *
      * @return array
      */
-    public function getHTTPHeaders(Sabre_DAV_Server $server) {
-
+    public function getHTTPHeaders(Sabre_DAV_Server $server)
+    {
         return array();
-
     }
-
 }
-

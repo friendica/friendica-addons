@@ -1,125 +1,113 @@
 <?php
 
 /**
- * This class represents the {DAV:}resourcetype property
+ * This class represents the {DAV:}resourcetype property.
  *
  * Normally for files this is empty, and for collection {DAV:}collection.
  * However, other specs define different values for this.
  *
- * @package Sabre
- * @subpackage DAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_DAV_Property_ResourceType extends Sabre_DAV_Property {
-
+class Sabre_DAV_Property_ResourceType extends Sabre_DAV_Property
+{
     /**
-     * resourceType
+     * resourceType.
      *
      * @var array
      */
     public $resourceType = array();
 
     /**
-     * __construct
+     * __construct.
      *
      * @param mixed $resourceType
      */
-    public function __construct($resourceType = array()) {
-
-        if ($resourceType === Sabre_DAV_Server::NODE_FILE)
+    public function __construct($resourceType = array())
+    {
+        if ($resourceType === Sabre_DAV_Server::NODE_FILE) {
             $this->resourceType = array();
-        elseif ($resourceType === Sabre_DAV_Server::NODE_DIRECTORY)
+        } elseif ($resourceType === Sabre_DAV_Server::NODE_DIRECTORY) {
             $this->resourceType = array('{DAV:}collection');
-        elseif (is_array($resourceType))
+        } elseif (is_array($resourceType)) {
             $this->resourceType = $resourceType;
-        else
+        } else {
             $this->resourceType = array($resourceType);
-
+        }
     }
 
     /**
-     * serialize
+     * serialize.
      *
      * @param Sabre_DAV_Server $server
-     * @param DOMElement $prop
-     * @return void
+     * @param DOMElement       $prop
      */
-    public function serialize(Sabre_DAV_Server $server, DOMElement $prop) {
-
+    public function serialize(Sabre_DAV_Server $server, DOMElement $prop)
+    {
         $propName = null;
         $rt = $this->resourceType;
 
-        foreach($rt as $resourceType) {
-            if (preg_match('/^{([^}]*)}(.*)$/',$resourceType,$propName)) {
-
+        foreach ($rt as $resourceType) {
+            if (preg_match('/^{([^}]*)}(.*)$/', $resourceType, $propName)) {
                 if (isset($server->xmlNamespaces[$propName[1]])) {
-                    $prop->appendChild($prop->ownerDocument->createElement($server->xmlNamespaces[$propName[1]] . ':' . $propName[2]));
+                    $prop->appendChild($prop->ownerDocument->createElement($server->xmlNamespaces[$propName[1]].':'.$propName[2]));
                 } else {
-                    $prop->appendChild($prop->ownerDocument->createElementNS($propName[1],'custom:' . $propName[2]));
+                    $prop->appendChild($prop->ownerDocument->createElementNS($propName[1], 'custom:'.$propName[2]));
                 }
-
             }
         }
-
     }
 
     /**
-     * Returns the values in clark-notation
+     * Returns the values in clark-notation.
      *
      * For example array('{DAV:}collection')
      *
      * @return array
      */
-    public function getValue() {
-
+    public function getValue()
+    {
         return $this->resourceType;
-
     }
 
     /**
-     * Checks if the principal contains a certain value
+     * Checks if the principal contains a certain value.
      *
      * @param string $type
+     *
      * @return bool
      */
-    public function is($type) {
-
+    public function is($type)
+    {
         return in_array($type, $this->resourceType);
-
     }
 
     /**
-     * Adds a resourcetype value to this property
+     * Adds a resourcetype value to this property.
      *
      * @param string $type
-     * @return void
      */
-    public function add($type) {
-
+    public function add($type)
+    {
         $this->resourceType[] = $type;
         $this->resourceType = array_unique($this->resourceType);
-
     }
 
     /**
      * Unserializes a DOM element into a ResourceType property.
      *
      * @param DOMElement $dom
+     *
      * @return Sabre_DAV_Property_ResourceType
      */
-    static public function unserialize(DOMElement $dom) {
-
+    public static function unserialize(DOMElement $dom)
+    {
         $value = array();
-        foreach($dom->childNodes as $child) {
-
+        foreach ($dom->childNodes as $child) {
             $value[] = Sabre_DAV_XMLUtil::toClarkNotation($child);
-
         }
 
         return new self($value);
-
     }
-
 }

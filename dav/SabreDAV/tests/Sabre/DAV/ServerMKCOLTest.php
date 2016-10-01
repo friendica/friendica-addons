@@ -4,84 +4,81 @@ require_once 'Sabre/HTTP/ResponseMock.php';
 require_once 'Sabre/DAV/AbstractServer.php';
 require_once 'Sabre/DAV/Exception.php';
 
-class Sabre_DAV_ServerMKCOLTest extends Sabre_DAV_AbstractServer {
-
-    function testMkcol() {
-
+class Sabre_DAV_ServerMKCOLTest extends Sabre_DAV_AbstractServer
+{
+    public function testMkcol()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/testcol',
+            'REQUEST_URI' => '/testcol',
             'REQUEST_METHOD' => 'MKCOL',
         );
 
         $request = new Sabre_HTTP_Request($serverVars);
-        $request->setBody("");
+        $request->setBody('');
         $this->server->httpRequest = ($request);
         $this->server->exec();
 
         $this->assertEquals(array(
             'Content-Length' => '0',
-        ),$this->response->headers);
+        ), $this->response->headers);
 
-        $this->assertEquals('HTTP/1.1 201 Created',$this->response->status);
+        $this->assertEquals('HTTP/1.1 201 Created', $this->response->status);
         $this->assertEquals('', $this->response->body);
-        $this->assertTrue(is_dir($this->tempDir . '/testcol'));
-
+        $this->assertTrue(is_dir($this->tempDir.'/testcol'));
     }
 
     /**
      * @depends testMkcol
      */
-    function testMKCOLUnknownBody() {
-
+    public function testMKCOLUnknownBody()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/testcol',
+            'REQUEST_URI' => '/testcol',
             'REQUEST_METHOD' => 'MKCOL',
         );
 
         $request = new Sabre_HTTP_Request($serverVars);
-        $request->setBody("Hello");
+        $request->setBody('Hello');
         $this->server->httpRequest = ($request);
         $this->server->exec();
 
         $this->assertEquals(array(
             'Content-Type' => 'application/xml; charset=utf-8',
-        ),$this->response->headers);
+        ), $this->response->headers);
 
-        $this->assertEquals('HTTP/1.1 415 Unsupported Media Type',$this->response->status);
-
+        $this->assertEquals('HTTP/1.1 415 Unsupported Media Type', $this->response->status);
     }
 
     /**
      * @depends testMkcol
      */
-    function testMKCOLBrokenXML() {
-
+    public function testMKCOLBrokenXML()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/testcol',
+            'REQUEST_URI' => '/testcol',
             'REQUEST_METHOD' => 'MKCOL',
             'HTTP_CONTENT_TYPE' => 'application/xml',
         );
 
         $request = new Sabre_HTTP_Request($serverVars);
-        $request->setBody("Hello");
+        $request->setBody('Hello');
         $this->server->httpRequest = ($request);
         $this->server->exec();
 
         $this->assertEquals(array(
             'Content-Type' => 'application/xml; charset=utf-8',
-        ),$this->response->headers);
+        ), $this->response->headers);
 
-        $this->assertEquals('HTTP/1.1 400 Bad request',$this->response->status);
-
+        $this->assertEquals('HTTP/1.1 400 Bad request', $this->response->status);
     }
 
     /**
      * @depends testMkcol
      */
-    function testMKCOLUnknownXML() {
-
+    public function testMKCOLUnknownXML()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/testcol',
+            'REQUEST_URI' => '/testcol',
             'REQUEST_METHOD' => 'MKCOL',
             'HTTP_CONTENT_TYPE' => 'application/xml',
         );
@@ -93,19 +90,18 @@ class Sabre_DAV_ServerMKCOLTest extends Sabre_DAV_AbstractServer {
 
         $this->assertEquals(array(
             'Content-Type' => 'application/xml; charset=utf-8',
-        ),$this->response->headers);
+        ), $this->response->headers);
 
-        $this->assertEquals('HTTP/1.1 415 Unsupported Media Type',$this->response->status);
-
+        $this->assertEquals('HTTP/1.1 415 Unsupported Media Type', $this->response->status);
     }
 
     /**
      * @depends testMkcol
      */
-    function testMKCOLNoResourceType() {
-
+    public function testMKCOLNoResourceType()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/testcol',
+            'REQUEST_URI' => '/testcol',
             'REQUEST_METHOD' => 'MKCOL',
             'HTTP_CONTENT_TYPE' => 'application/xml',
         );
@@ -124,19 +120,18 @@ class Sabre_DAV_ServerMKCOLTest extends Sabre_DAV_AbstractServer {
 
         $this->assertEquals(array(
             'Content-Type' => 'application/xml; charset=utf-8',
-        ),$this->response->headers);
+        ), $this->response->headers);
 
-        $this->assertEquals('HTTP/1.1 400 Bad request',$this->response->status,'Wrong statuscode received. Full response body: ' .$this->response->body);
-
+        $this->assertEquals('HTTP/1.1 400 Bad request', $this->response->status, 'Wrong statuscode received. Full response body: '.$this->response->body);
     }
 
     /**
      * @depends testMKCOLNoResourceType
      */
-    function testMKCOLIncorrectResourceType() {
-
+    public function testMKCOLIncorrectResourceType()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/testcol',
+            'REQUEST_URI' => '/testcol',
             'REQUEST_METHOD' => 'MKCOL',
             'HTTP_CONTENT_TYPE' => 'application/xml',
         );
@@ -155,19 +150,18 @@ class Sabre_DAV_ServerMKCOLTest extends Sabre_DAV_AbstractServer {
 
         $this->assertEquals(array(
             'Content-Type' => 'application/xml; charset=utf-8',
-        ),$this->response->headers);
+        ), $this->response->headers);
 
-        $this->assertEquals('HTTP/1.1 403 Forbidden',$this->response->status,'Wrong statuscode received. Full response body: ' .$this->response->body);
-
+        $this->assertEquals('HTTP/1.1 403 Forbidden', $this->response->status, 'Wrong statuscode received. Full response body: '.$this->response->body);
     }
 
     /**
      * @depends testMKCOLIncorrectResourceType
      */
-    function testMKCOLIncorrectResourceType2() {
-
+    public function testMKCOLIncorrectResourceType2()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/testcol',
+            'REQUEST_URI' => '/testcol',
             'REQUEST_METHOD' => 'MKCOL',
             'HTTP_CONTENT_TYPE' => 'application/xml',
         );
@@ -186,19 +180,18 @@ class Sabre_DAV_ServerMKCOLTest extends Sabre_DAV_AbstractServer {
 
         $this->assertEquals(array(
             'Content-Type' => 'application/xml; charset=utf-8',
-        ),$this->response->headers);
+        ), $this->response->headers);
 
-        $this->assertEquals('HTTP/1.1 403 Forbidden',$this->response->status,'Wrong statuscode received. Full response body: ' .$this->response->body);
-
+        $this->assertEquals('HTTP/1.1 403 Forbidden', $this->response->status, 'Wrong statuscode received. Full response body: '.$this->response->body);
     }
 
     /**
      * @depends testMKCOLIncorrectResourceType2
      */
-    function testMKCOLSuccess() {
-
+    public function testMKCOLSuccess()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/testcol',
+            'REQUEST_URI' => '/testcol',
             'REQUEST_METHOD' => 'MKCOL',
             'HTTP_CONTENT_TYPE' => 'application/xml',
         );
@@ -217,19 +210,18 @@ class Sabre_DAV_ServerMKCOLTest extends Sabre_DAV_AbstractServer {
 
         $this->assertEquals(array(
             'Content-Length' => '0',
-        ),$this->response->headers);
+        ), $this->response->headers);
 
-        $this->assertEquals('HTTP/1.1 201 Created',$this->response->status,'Wrong statuscode received. Full response body: ' .$this->response->body);
-
+        $this->assertEquals('HTTP/1.1 201 Created', $this->response->status, 'Wrong statuscode received. Full response body: '.$this->response->body);
     }
 
     /**
      * @depends testMKCOLIncorrectResourceType2
      */
-    function testMKCOLWhiteSpaceResourceType() {
-
+    public function testMKCOLWhiteSpaceResourceType()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/testcol',
+            'REQUEST_URI' => '/testcol',
             'REQUEST_METHOD' => 'MKCOL',
             'HTTP_CONTENT_TYPE' => 'application/xml',
         );
@@ -250,19 +242,18 @@ class Sabre_DAV_ServerMKCOLTest extends Sabre_DAV_AbstractServer {
 
         $this->assertEquals(array(
             'Content-Length' => '0',
-        ),$this->response->headers);
+        ), $this->response->headers);
 
-        $this->assertEquals('HTTP/1.1 201 Created',$this->response->status,'Wrong statuscode received. Full response body: ' .$this->response->body);
-
+        $this->assertEquals('HTTP/1.1 201 Created', $this->response->status, 'Wrong statuscode received. Full response body: '.$this->response->body);
     }
 
     /**
      * @depends testMKCOLIncorrectResourceType2
      */
-    function testMKCOLNoParent() {
-
+    public function testMKCOLNoParent()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/testnoparent/409me',
+            'REQUEST_URI' => '/testnoparent/409me',
             'REQUEST_METHOD' => 'MKCOL',
         );
 
@@ -274,19 +265,18 @@ class Sabre_DAV_ServerMKCOLTest extends Sabre_DAV_AbstractServer {
 
         $this->assertEquals(array(
             'Content-Type' => 'application/xml; charset=utf-8',
-        ),$this->response->headers);
+        ), $this->response->headers);
 
-        $this->assertEquals('HTTP/1.1 409 Conflict',$this->response->status,'Wrong statuscode received. Full response body: ' .$this->response->body);
-
+        $this->assertEquals('HTTP/1.1 409 Conflict', $this->response->status, 'Wrong statuscode received. Full response body: '.$this->response->body);
     }
 
     /**
      * @depends testMKCOLIncorrectResourceType2
      */
-    function testMKCOLParentIsNoCollection() {
-
+    public function testMKCOLParentIsNoCollection()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/test.txt/409me',
+            'REQUEST_URI' => '/test.txt/409me',
             'REQUEST_METHOD' => 'MKCOL',
         );
 
@@ -298,19 +288,18 @@ class Sabre_DAV_ServerMKCOLTest extends Sabre_DAV_AbstractServer {
 
         $this->assertEquals(array(
             'Content-Type' => 'application/xml; charset=utf-8',
-        ),$this->response->headers);
+        ), $this->response->headers);
 
-        $this->assertEquals('HTTP/1.1 409 Conflict',$this->response->status,'Wrong statuscode received. Full response body: ' .$this->response->body);
-
+        $this->assertEquals('HTTP/1.1 409 Conflict', $this->response->status, 'Wrong statuscode received. Full response body: '.$this->response->body);
     }
 
     /**
      * @depends testMKCOLIncorrectResourceType2
      */
-    function testMKCOLAlreadyExists() {
-
+    public function testMKCOLAlreadyExists()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/test.txt',
+            'REQUEST_URI' => '/test.txt',
             'REQUEST_METHOD' => 'MKCOL',
         );
 
@@ -322,21 +311,20 @@ class Sabre_DAV_ServerMKCOLTest extends Sabre_DAV_AbstractServer {
 
         $this->assertEquals(array(
             'Content-Type' => 'application/xml; charset=utf-8',
-            'Allow'        => 'OPTIONS, GET, HEAD, DELETE, PROPFIND, PUT, PROPPATCH, COPY, MOVE, REPORT',
-        ),$this->response->headers);
+            'Allow' => 'OPTIONS, GET, HEAD, DELETE, PROPFIND, PUT, PROPPATCH, COPY, MOVE, REPORT',
+        ), $this->response->headers);
 
-        $this->assertEquals('HTTP/1.1 405 Method Not Allowed',$this->response->status,'Wrong statuscode received. Full response body: ' .$this->response->body);
-
+        $this->assertEquals('HTTP/1.1 405 Method Not Allowed', $this->response->status, 'Wrong statuscode received. Full response body: '.$this->response->body);
     }
 
     /**
      * @depends testMKCOLSuccess
      * @depends testMKCOLAlreadyExists
      */
-    function testMKCOLAndProps() {
-
+    public function testMKCOLAndProps()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/testcol',
+            'REQUEST_URI' => '/testcol',
             'REQUEST_METHOD' => 'MKCOL',
             'HTTP_CONTENT_TYPE' => 'application/xml',
         );
@@ -354,14 +342,10 @@ class Sabre_DAV_ServerMKCOLTest extends Sabre_DAV_AbstractServer {
         $this->server->httpRequest = ($request);
         $this->server->exec();
 
-        $this->assertEquals('HTTP/1.1 207 Multi-Status',$this->response->status,'Wrong statuscode received. Full response body: ' .$this->response->body);
+        $this->assertEquals('HTTP/1.1 207 Multi-Status', $this->response->status, 'Wrong statuscode received. Full response body: '.$this->response->body);
 
         $this->assertEquals(array(
             'Content-Type' => 'application/xml; charset=utf-8',
-        ),$this->response->headers);
-
-
-
+        ), $this->response->headers);
     }
-
 }

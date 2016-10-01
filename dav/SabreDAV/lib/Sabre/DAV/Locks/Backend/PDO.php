@@ -6,16 +6,14 @@
  * This Lock Manager stores all its data in a database. You must pass a PDO
  * connection object in the constructor.
  *
- * @package Sabre
- * @subpackage DAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_DAV_Locks_Backend_PDO extends Sabre_DAV_Locks_Backend_Abstract {
-
+class Sabre_DAV_Locks_Backend_PDO extends Sabre_DAV_Locks_Backend_Abstract
+{
     /**
-     * The PDO connection object
+     * The PDO connection object.
      *
      * @var pdo
      */
@@ -29,20 +27,19 @@ class Sabre_DAV_Locks_Backend_PDO extends Sabre_DAV_Locks_Backend_Abstract {
     protected $tableName;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param PDO $pdo
+     * @param PDO    $pdo
      * @param string $tableName
      */
-    public function __construct(PDO $pdo, $tableName = 'locks') {
-
+    public function __construct(PDO $pdo, $tableName = 'locks')
+    {
         $this->pdo = $pdo;
         $this->tableName = $tableName;
-
     }
 
     /**
-     * Returns a list of Sabre_DAV_Locks_LockInfo objects
+     * Returns a list of Sabre_DAV_Locks_LockInfo objects.
      *
      * This method should return all the locks for a particular uri, including
      * locks that might be set on a parent uri.
@@ -51,50 +48,49 @@ class Sabre_DAV_Locks_Backend_PDO extends Sabre_DAV_Locks_Backend_Abstract {
      * any locks in the subtree of the uri for locks.
      *
      * @param string $uri
-     * @param bool $returnChildLocks
+     * @param bool   $returnChildLocks
+     *
      * @return array
      */
-    public function getLocks($uri, $returnChildLocks) {
+    public function getLocks($uri, $returnChildLocks)
+    {
 
         // NOTE: the following 10 lines or so could be easily replaced by
         // pure sql. MySQL's non-standard string concatenation prevents us
         // from doing this though.
         $query = 'SELECT owner, token, timeout, created, scope, depth, uri FROM '.$this->tableName.' WHERE ((created + timeout) > CAST(? AS UNSIGNED INTEGER)) AND ((uri = ?)';
-        $params = array(time(),$uri);
+        $params = array(time(), $uri);
 
         // We need to check locks for every part in the uri.
-        $uriParts = explode('/',$uri);
+        $uriParts = explode('/', $uri);
 
         // We already covered the last part of the uri
         array_pop($uriParts);
 
-        $currentPath='';
+        $currentPath = '';
 
-        foreach($uriParts as $part) {
+        foreach ($uriParts as $part) {
+            if ($currentPath) {
+                $currentPath .= '/';
+            }
+            $currentPath .= $part;
 
-            if ($currentPath) $currentPath.='/';
-            $currentPath.=$part;
-
-            $query.=' OR (depth!=0 AND uri = ?)';
+            $query .= ' OR (depth!=0 AND uri = ?)';
             $params[] = $currentPath;
-
         }
 
         if ($returnChildLocks) {
-
-            $query.=' OR (uri LIKE ?)';
-            $params[] = $uri . '/%';
-
+            $query .= ' OR (uri LIKE ?)';
+            $params[] = $uri.'/%';
         }
-        $query.=')';
+        $query .= ')';
 
         $stmt = $this->pdo->prepare($query);
         $stmt->execute($params);
         $result = $stmt->fetchAll();
 
         $lockList = array();
-        foreach($result as $row) {
-
+        foreach ($result as $row) {
             $lockInfo = new Sabre_DAV_Locks_LockInfo();
             $lockInfo->owner = $row['owner'];
             $lockInfo->token = $row['token'];
@@ -102,64 +98,61 @@ class Sabre_DAV_Locks_Backend_PDO extends Sabre_DAV_Locks_Backend_Abstract {
             $lockInfo->created = $row['created'];
             $lockInfo->scope = $row['scope'];
             $lockInfo->depth = $row['depth'];
-            $lockInfo->uri   = $row['uri'];
+            $lockInfo->uri = $row['uri'];
             $lockList[] = $lockInfo;
-
         }
 
         return $lockList;
-
     }
 
     /**
-     * Locks a uri
+     * Locks a uri.
      *
-     * @param string $uri
+     * @param string                   $uri
      * @param Sabre_DAV_Locks_LockInfo $lockInfo
+     *
      * @return bool
      */
-    public function lock($uri,Sabre_DAV_Locks_LockInfo $lockInfo) {
+    public function lock($uri, Sabre_DAV_Locks_LockInfo $lockInfo)
+    {
 
         // We're making the lock timeout 30 minutes
-        $lockInfo->timeout = 30*60;
+        $lockInfo->timeout = 30 * 60;
         $lockInfo->created = time();
         $lockInfo->uri = $uri;
 
-        $locks = $this->getLocks($uri,false);
+        $locks = $this->getLocks($uri, false);
         $exists = false;
-        foreach($locks as $lock) {
-            if ($lock->token == $lockInfo->token) $exists = true;
+        foreach ($locks as $lock) {
+            if ($lock->token == $lockInfo->token) {
+                $exists = true;
+            }
         }
 
         if ($exists) {
             $stmt = $this->pdo->prepare('UPDATE '.$this->tableName.' SET owner = ?, timeout = ?, scope = ?, depth = ?, uri = ?, created = ? WHERE token = ?');
-            $stmt->execute(array($lockInfo->owner,$lockInfo->timeout,$lockInfo->scope,$lockInfo->depth,$uri,$lockInfo->created,$lockInfo->token));
+            $stmt->execute(array($lockInfo->owner, $lockInfo->timeout, $lockInfo->scope, $lockInfo->depth, $uri, $lockInfo->created, $lockInfo->token));
         } else {
             $stmt = $this->pdo->prepare('INSERT INTO '.$this->tableName.' (owner,timeout,scope,depth,uri,created,token) VALUES (?,?,?,?,?,?,?)');
-            $stmt->execute(array($lockInfo->owner,$lockInfo->timeout,$lockInfo->scope,$lockInfo->depth,$uri,$lockInfo->created,$lockInfo->token));
+            $stmt->execute(array($lockInfo->owner, $lockInfo->timeout, $lockInfo->scope, $lockInfo->depth, $uri, $lockInfo->created, $lockInfo->token));
         }
 
         return true;
-
     }
-
-
 
     /**
-     * Removes a lock from a uri
+     * Removes a lock from a uri.
      *
-     * @param string $uri
+     * @param string                   $uri
      * @param Sabre_DAV_Locks_LockInfo $lockInfo
+     *
      * @return bool
      */
-    public function unlock($uri,Sabre_DAV_Locks_LockInfo $lockInfo) {
-
+    public function unlock($uri, Sabre_DAV_Locks_LockInfo $lockInfo)
+    {
         $stmt = $this->pdo->prepare('DELETE FROM '.$this->tableName.' WHERE uri = ? AND token = ?');
-        $stmt->execute(array($uri,$lockInfo->token));
+        $stmt->execute(array($uri, $lockInfo->token));
 
-        return $stmt->rowCount()===1;
-
+        return $stmt->rowCount() === 1;
     }
-
 }
-

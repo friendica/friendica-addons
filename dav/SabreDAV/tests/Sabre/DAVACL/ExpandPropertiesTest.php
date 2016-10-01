@@ -2,24 +2,24 @@
 
 require_once 'Sabre/HTTP/ResponseMock.php';
 
-class Sabre_DAVACL_ExpandPropertiesTest extends PHPUnit_Framework_TestCase {
-
-    function getServer() {
-
+class Sabre_DAVACL_ExpandPropertiesTest extends PHPUnit_Framework_TestCase
+{
+    public function getServer()
+    {
         $tree = array(
             new Sabre_DAVACL_MockPropertyNode('node1', array(
                 '{http://sabredav.org/ns}simple' => 'foo',
-                '{http://sabredav.org/ns}href'   => new Sabre_DAV_Property_Href('node2'),
-                '{DAV:}displayname'     => 'Node 1',
+                '{http://sabredav.org/ns}href' => new Sabre_DAV_Property_Href('node2'),
+                '{DAV:}displayname' => 'Node 1',
             )),
             new Sabre_DAVACL_MockPropertyNode('node2', array(
                 '{http://sabredav.org/ns}simple' => 'simple',
-                '{http://sabredav.org/ns}hreflist' => new Sabre_DAV_Property_HrefList(array('node1','node3')),
-                '{DAV:}displayname'     => 'Node 2',
+                '{http://sabredav.org/ns}hreflist' => new Sabre_DAV_Property_HrefList(array('node1', 'node3')),
+                '{DAV:}displayname' => 'Node 2',
             )),
             new Sabre_DAVACL_MockPropertyNode('node3', array(
                 '{http://sabredav.org/ns}simple' => 'simple',
-                '{DAV:}displayname'     => 'Node 3',
+                '{DAV:}displayname' => 'Node 3',
             )),
         );
 
@@ -34,11 +34,10 @@ class Sabre_DAVACL_ExpandPropertiesTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($plugin, $fakeServer->getPlugin('acl'));
 
         return $fakeServer;
-
     }
 
-    function testSimple() {
-
+    public function testSimple()
+    {
         $xml = '<?xml version="1.0"?>
 <d:expand-property xmlns:d="DAV:">
   <d:property name="displayname" />
@@ -49,8 +48,8 @@ class Sabre_DAVACL_ExpandPropertiesTest extends PHPUnit_Framework_TestCase {
 
         $serverVars = array(
             'REQUEST_METHOD' => 'REPORT',
-            'HTTP_DEPTH'     => '0',
-            'REQUEST_URI'    => '/node1',
+            'HTTP_DEPTH' => '0',
+            'REQUEST_URI' => '/node1',
         );
 
         $request = new Sabre_HTTP_Request($serverVars);
@@ -61,11 +60,10 @@ class Sabre_DAVACL_ExpandPropertiesTest extends PHPUnit_Framework_TestCase {
 
         $server->exec();
 
-        $this->assertEquals('HTTP/1.1 207 Multi-Status', $server->httpResponse->status,'Incorrect status code received. Full body: ' . $server->httpResponse->body);
+        $this->assertEquals('HTTP/1.1 207 Multi-Status', $server->httpResponse->status, 'Incorrect status code received. Full body: '.$server->httpResponse->body);
         $this->assertEquals(array(
             'Content-Type' => 'application/xml; charset=utf-8',
         ), $server->httpResponse->headers);
-
 
         $check = array(
             '/d:multistatus',
@@ -80,28 +78,27 @@ class Sabre_DAVACL_ExpandPropertiesTest extends PHPUnit_Framework_TestCase {
         );
 
         $xml = simplexml_load_string($server->httpResponse->body);
-        $xml->registerXPathNamespace('d','DAV:');
-        $xml->registerXPathNamespace('s','http://sabredav.org/ns');
-        foreach($check as $v1=>$v2) {
-
-            $xpath = is_int($v1)?$v2:$v1;
+        $xml->registerXPathNamespace('d', 'DAV:');
+        $xml->registerXPathNamespace('s', 'http://sabredav.org/ns');
+        foreach ($check as $v1 => $v2) {
+            $xpath = is_int($v1) ? $v2 : $v1;
 
             $result = $xml->xpath($xpath);
 
             $count = 1;
-            if (!is_int($v1)) $count = $v2;
+            if (!is_int($v1)) {
+                $count = $v2;
+            }
 
-            $this->assertEquals($count,count($result), 'we expected ' . $count . ' appearances of ' . $xpath . ' . We found ' . count($result) . '. Full response: ' . $server->httpResponse->body);
-
+            $this->assertEquals($count, count($result), 'we expected '.$count.' appearances of '.$xpath.' . We found '.count($result).'. Full response: '.$server->httpResponse->body);
         }
-
     }
 
     /**
      * @depends testSimple
      */
-    function testExpand() {
-
+    public function testExpand()
+    {
         $xml = '<?xml version="1.0"?>
 <d:expand-property xmlns:d="DAV:">
   <d:property name="href" namespace="http://sabredav.org/ns">
@@ -111,8 +108,8 @@ class Sabre_DAVACL_ExpandPropertiesTest extends PHPUnit_Framework_TestCase {
 
         $serverVars = array(
             'REQUEST_METHOD' => 'REPORT',
-            'HTTP_DEPTH'     => '0',
-            'REQUEST_URI'    => '/node1',
+            'HTTP_DEPTH' => '0',
+            'REQUEST_URI' => '/node1',
         );
 
         $request = new Sabre_HTTP_Request($serverVars);
@@ -123,11 +120,10 @@ class Sabre_DAVACL_ExpandPropertiesTest extends PHPUnit_Framework_TestCase {
 
         $server->exec();
 
-        $this->assertEquals('HTTP/1.1 207 Multi-Status', $server->httpResponse->status, 'Incorrect response status received. Full response body: ' . $server->httpResponse->body);
+        $this->assertEquals('HTTP/1.1 207 Multi-Status', $server->httpResponse->status, 'Incorrect response status received. Full response body: '.$server->httpResponse->body);
         $this->assertEquals(array(
             'Content-Type' => 'application/xml; charset=utf-8',
         ), $server->httpResponse->headers);
-
 
         $check = array(
             '/d:multistatus',
@@ -144,28 +140,27 @@ class Sabre_DAVACL_ExpandPropertiesTest extends PHPUnit_Framework_TestCase {
         );
 
         $xml = simplexml_load_string($server->httpResponse->body);
-        $xml->registerXPathNamespace('d','DAV:');
-        $xml->registerXPathNamespace('s','http://sabredav.org/ns');
-        foreach($check as $v1=>$v2) {
-
-            $xpath = is_int($v1)?$v2:$v1;
+        $xml->registerXPathNamespace('d', 'DAV:');
+        $xml->registerXPathNamespace('s', 'http://sabredav.org/ns');
+        foreach ($check as $v1 => $v2) {
+            $xpath = is_int($v1) ? $v2 : $v1;
 
             $result = $xml->xpath($xpath);
 
             $count = 1;
-            if (!is_int($v1)) $count = $v2;
+            if (!is_int($v1)) {
+                $count = $v2;
+            }
 
-            $this->assertEquals($count,count($result), 'we expected ' . $count . ' appearances of ' . $xpath . ' . We found ' . count($result));
-
+            $this->assertEquals($count, count($result), 'we expected '.$count.' appearances of '.$xpath.' . We found '.count($result));
         }
-
     }
 
     /**
      * @depends testSimple
      */
-    function testExpandHrefList() {
-
+    public function testExpandHrefList()
+    {
         $xml = '<?xml version="1.0"?>
 <d:expand-property xmlns:d="DAV:">
   <d:property name="hreflist" namespace="http://sabredav.org/ns">
@@ -175,8 +170,8 @@ class Sabre_DAVACL_ExpandPropertiesTest extends PHPUnit_Framework_TestCase {
 
         $serverVars = array(
             'REQUEST_METHOD' => 'REPORT',
-            'HTTP_DEPTH'     => '0',
-            'REQUEST_URI'    => '/node2',
+            'HTTP_DEPTH' => '0',
+            'REQUEST_URI' => '/node2',
         );
 
         $request = new Sabre_HTTP_Request($serverVars);
@@ -191,7 +186,6 @@ class Sabre_DAVACL_ExpandPropertiesTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(array(
             'Content-Type' => 'application/xml; charset=utf-8',
         ), $server->httpResponse->headers);
-
 
         $check = array(
             '/d:multistatus',
@@ -208,28 +202,27 @@ class Sabre_DAVACL_ExpandPropertiesTest extends PHPUnit_Framework_TestCase {
         );
 
         $xml = simplexml_load_string($server->httpResponse->body);
-        $xml->registerXPathNamespace('d','DAV:');
-        $xml->registerXPathNamespace('s','http://sabredav.org/ns');
-        foreach($check as $v1=>$v2) {
-
-            $xpath = is_int($v1)?$v2:$v1;
+        $xml->registerXPathNamespace('d', 'DAV:');
+        $xml->registerXPathNamespace('s', 'http://sabredav.org/ns');
+        foreach ($check as $v1 => $v2) {
+            $xpath = is_int($v1) ? $v2 : $v1;
 
             $result = $xml->xpath($xpath);
 
             $count = 1;
-            if (!is_int($v1)) $count = $v2;
+            if (!is_int($v1)) {
+                $count = $v2;
+            }
 
-            $this->assertEquals($count,count($result), 'we expected ' . $count . ' appearances of ' . $xpath . ' . We found ' . count($result));
-
+            $this->assertEquals($count, count($result), 'we expected '.$count.' appearances of '.$xpath.' . We found '.count($result));
         }
-
     }
 
     /**
      * @depends testExpand
      */
-    function testExpandDeep() {
-
+    public function testExpandDeep()
+    {
         $xml = '<?xml version="1.0"?>
 <d:expand-property xmlns:d="DAV:">
   <d:property name="hreflist" namespace="http://sabredav.org/ns">
@@ -242,8 +235,8 @@ class Sabre_DAVACL_ExpandPropertiesTest extends PHPUnit_Framework_TestCase {
 
         $serverVars = array(
             'REQUEST_METHOD' => 'REPORT',
-            'HTTP_DEPTH'     => '0',
-            'REQUEST_URI'    => '/node2',
+            'HTTP_DEPTH' => '0',
+            'REQUEST_URI' => '/node2',
         );
 
         $request = new Sabre_HTTP_Request($serverVars);
@@ -258,7 +251,6 @@ class Sabre_DAVACL_ExpandPropertiesTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(array(
             'Content-Type' => 'application/xml; charset=utf-8',
         ), $server->httpResponse->headers);
-
 
         $check = array(
             '/d:multistatus',
@@ -281,73 +273,65 @@ class Sabre_DAVACL_ExpandPropertiesTest extends PHPUnit_Framework_TestCase {
         );
 
         $xml = simplexml_load_string($server->httpResponse->body);
-        $xml->registerXPathNamespace('d','DAV:');
-        $xml->registerXPathNamespace('s','http://sabredav.org/ns');
-        foreach($check as $v1=>$v2) {
-
-            $xpath = is_int($v1)?$v2:$v1;
+        $xml->registerXPathNamespace('d', 'DAV:');
+        $xml->registerXPathNamespace('s', 'http://sabredav.org/ns');
+        foreach ($check as $v1 => $v2) {
+            $xpath = is_int($v1) ? $v2 : $v1;
 
             $result = $xml->xpath($xpath);
 
             $count = 1;
-            if (!is_int($v1)) $count = $v2;
+            if (!is_int($v1)) {
+                $count = $v2;
+            }
 
-            $this->assertEquals($count,count($result), 'we expected ' . $count . ' appearances of ' . $xpath . ' . We found ' . count($result));
-
+            $this->assertEquals($count, count($result), 'we expected '.$count.' appearances of '.$xpath.' . We found '.count($result));
         }
-
     }
 }
-class Sabre_DAVACL_MockPropertyNode implements Sabre_DAV_INode, Sabre_DAV_IProperties {
-
-    function __construct($name, array $properties) {
-
+class Sabre_DAVACL_MockPropertyNode implements Sabre_DAV_INode, Sabre_DAV_IProperties
+{
+    public function __construct($name, array $properties)
+    {
         $this->name = $name;
         $this->properties = $properties;
-
     }
 
-    function getName() {
-
+    public function getName()
+    {
         return $this->name;
-
     }
 
-    function getProperties($requestedProperties) {
-
+    public function getProperties($requestedProperties)
+    {
         $returnedProperties = array();
-        foreach($requestedProperties as $requestedProperty) {
+        foreach ($requestedProperties as $requestedProperty) {
             if (isset($this->properties[$requestedProperty])) {
                 $returnedProperties[$requestedProperty] =
                     $this->properties[$requestedProperty];
             }
         }
+
         return $returnedProperties;
-
     }
 
-    function delete() {
-
+    public function delete()
+    {
         throw new Sabre_DAV_Exception('Not implemented');
-
     }
 
-    function setName($name) {
-
+    public function setName($name)
+    {
         throw new Sabre_DAV_Exception('Not implemented');
-
     }
 
-    function getLastModified() {
-
+    public function getLastModified()
+    {
         return null;
-
     }
 
-    function updateProperties($properties) {
-
+    public function updateProperties($properties)
+    {
         throw new Sabre_DAV_Exception('Not implemented');
-
     }
-
 }

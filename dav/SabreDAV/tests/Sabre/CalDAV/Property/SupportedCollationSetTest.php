@@ -1,24 +1,23 @@
 <?php
 
-class Sabre_CalDAV_Property_SupportedCollationSetTest extends PHPUnit_Framework_TestCase {
-
-    function testSimple() {
-
+class Sabre_CalDAV_Property_SupportedCollationSetTest extends PHPUnit_Framework_TestCase
+{
+    public function testSimple()
+    {
         $scs = new Sabre_CalDAV_Property_SupportedCollationSet();
-
     }
 
     /**
      * @depends testSimple
      */
-    function testSerialize() {
-
+    public function testSerialize()
+    {
         $property = new Sabre_CalDAV_Property_SupportedCollationSet();
 
         $doc = new DOMDocument();
         $root = $doc->createElement('d:root');
-        $root->setAttribute('xmlns:d','DAV:');
-        $root->setAttribute('xmlns:cal',Sabre_CalDAV_Plugin::NS_CALDAV);
+        $root->setAttribute('xmlns:d', 'DAV:');
+        $root->setAttribute('xmlns:cal', Sabre_CalDAV_Plugin::NS_CALDAV);
 
         $doc->appendChild($root);
         $objectTree = new Sabre_DAV_ObjectTree(new Sabre_DAV_SimpleCollection('rootdir'));
@@ -30,13 +29,11 @@ class Sabre_CalDAV_Property_SupportedCollationSetTest extends PHPUnit_Framework_
 
         $this->assertEquals(
 '<?xml version="1.0"?>
-<d:root xmlns:d="DAV:" xmlns:cal="' . Sabre_CalDAV_Plugin::NS_CALDAV . '">' .
-'<cal:supported-collation>i;ascii-casemap</cal:supported-collation>' .
-'<cal:supported-collation>i;octet</cal:supported-collation>' .
-'<cal:supported-collation>i;unicode-casemap</cal:supported-collation>' .
+<d:root xmlns:d="DAV:" xmlns:cal="' .Sabre_CalDAV_Plugin::NS_CALDAV.'">'.
+'<cal:supported-collation>i;ascii-casemap</cal:supported-collation>'.
+'<cal:supported-collation>i;octet</cal:supported-collation>'.
+'<cal:supported-collation>i;unicode-casemap</cal:supported-collation>'.
 '</d:root>
 ', $xml);
-
     }
-
 }

@@ -17,9 +17,7 @@ $auth = new Sabre_HTTP_DigestAuth();
 $auth->init();
 
 if ($auth->getUsername() != $u || !$auth->validatePassword($p)) {
-
     $auth->requireLogin();
     echo "Authentication required\n";
     die();
-
 }

@@ -2,16 +2,16 @@
 
 require_once 'Sabre/CardDAV/Backend/Mock.php';
 
-class Sabre_CardDAV_AddressBookTest extends PHPUnit_Framework_TestCase {
-
+class Sabre_CardDAV_AddressBookTest extends PHPUnit_Framework_TestCase
+{
     /**
      * @var Sabre_CardDAV_AddressBook
      */
     protected $ab;
     protected $backend;
 
-    function setUp() {
-
+    public function setUp()
+    {
         $this->backend = new Sabre_CardDAV_Backend_Mock();
         $this->ab = new Sabre_CardDAV_AddressBook(
             $this->backend,
@@ -22,105 +22,93 @@ class Sabre_CardDAV_AddressBookTest extends PHPUnit_Framework_TestCase {
                 'principaluri' => 'principals/user1',
             )
         );
-
     }
 
-    function testGetName() {
-
+    public function testGetName()
+    {
         $this->assertEquals('book1', $this->ab->getName());
-
     }
 
-    function testGetChild() {
-
+    public function testGetChild()
+    {
         $card = $this->ab->getChild('card1');
         $this->assertInstanceOf('Sabre_CardDAV_Card', $card);
         $this->assertEquals('card1', $card->getName());
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_NotFound
      */
-    function testGetChildNotFound() {
-
+    public function testGetChildNotFound()
+    {
         $card = $this->ab->getChild('card3');
-
     }
 
-    function testGetChildren() {
-
+    public function testGetChildren()
+    {
         $cards = $this->ab->getChildren();
         $this->assertEquals(2, count($cards));
 
         $this->assertEquals('card1', $cards[0]->getName());
         $this->assertEquals('card2', $cards[1]->getName());
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_MethodNotAllowed
      */
-    function testCreateDirectory() {
-
+    public function testCreateDirectory()
+    {
         $this->ab->createDirectory('name');
-
     }
 
-    function testCreateFile() {
-
-        $file = fopen('php://memory','r+');
-        fwrite($file,'foo');
+    public function testCreateFile()
+    {
+        $file = fopen('php://memory', 'r+');
+        fwrite($file, 'foo');
         rewind($file);
-        $this->ab->createFile('card2',$file);
+        $this->ab->createFile('card2', $file);
 
         $this->assertEquals('foo', $this->backend->cards['foo']['card2']);
-
     }
 
-    function testDelete() {
-
+    public function testDelete()
+    {
         $this->ab->delete();
         $this->assertEquals(array(), $this->backend->addressBooks);
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_MethodNotAllowed
      */
-    function testSetName() {
-
+    public function testSetName()
+    {
         $this->ab->setName('foo');
-
     }
 
-    function testGetLastModified() {
-
+    public function testGetLastModified()
+    {
         $this->assertNull($this->ab->getLastModified());
-
     }
 
-    function testUpdateProperties() {
-
+    public function testUpdateProperties()
+    {
         $this->assertTrue(
             $this->ab->updateProperties(array('{DAV:}displayname' => 'barrr'))
         );
 
         $this->assertEquals('barrr', $this->backend->addressBooks[0]['{DAV:}displayname']);
-
     }
 
-    function testGetProperties() {
-
+    public function testGetProperties()
+    {
         $props = $this->ab->getProperties(array('{DAV:}displayname'));
         $this->assertEquals(array(
             '{DAV:}displayname' => 'd-name',
         ), $props);
-
     }
 
-    function testACLMethods() {
-
+    public function testACLMethods()
+    {
         $this->assertEquals('principals/user1', $this->ab->getOwner());
         $this->assertNull($this->ab->getGroup());
         $this->assertEquals(array(
@@ -135,25 +123,20 @@ class Sabre_CardDAV_AddressBookTest extends PHPUnit_Framework_TestCase {
                 'protected' => true,
             ),
         ), $this->ab->getACL());
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_MethodNotAllowed
      */
-    function testSetACL() {
-
-       $this->ab->setACL(array());
-
+    public function testSetACL()
+    {
+        $this->ab->setACL(array());
     }
 
-    function testGetSupportedPrivilegeSet() {
-
+    public function testGetSupportedPrivilegeSet()
+    {
         $this->assertNull(
             $this->ab->getSupportedPrivilegeSet()
         );
-
     }
-
-
 }

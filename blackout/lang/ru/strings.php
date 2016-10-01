@@ -1,3 +1,3 @@
 <?php
 
-$a->strings["Submit"] = "Подтвердить";
+$a->strings['Submit'] = 'Подтвердить';

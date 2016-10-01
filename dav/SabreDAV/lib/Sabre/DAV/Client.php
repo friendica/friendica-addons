@@ -1,21 +1,19 @@
 <?php
 
 /**
- * SabreDAV DAV client
+ * SabreDAV DAV client.
  *
  * This client wraps around Curl to provide a convenient API to a WebDAV
  * server.
  *
  * NOTE: This class is experimental, it's api will likely change in the future.
  *
- * @package Sabre
- * @subpackage DAVClient
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_DAV_Client {
-
+class Sabre_DAV_Client
+{
     /**
      * The propertyMap is a key-value array.
      *
@@ -36,12 +34,12 @@ class Sabre_DAV_Client {
     protected $proxy;
 
     /**
-     * Basic authentication
+     * Basic authentication.
      */
     const AUTH_BASIC = 1;
 
     /**
-     * Digest authentication
+     * Digest authentication.
      */
     const AUTH_DIGEST = 2;
 
@@ -58,7 +56,7 @@ class Sabre_DAV_Client {
     protected $authType;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * Settings are provided through the 'settings' argument. The following
      * settings are supported:
@@ -70,8 +68,8 @@ class Sabre_DAV_Client {
      *
      * @param array $settings
      */
-    public function __construct(array $settings) {
-
+    public function __construct(array $settings)
+    {
         if (!isset($settings['baseUri'])) {
             throw new InvalidArgumentException('A baseUri must be provided');
         }
@@ -83,7 +81,7 @@ class Sabre_DAV_Client {
             'proxy',
         );
 
-        foreach($validSettings as $validSetting) {
+        foreach ($validSettings as $validSetting) {
             if (isset($settings[$validSetting])) {
                 $this->$validSetting = $settings[$validSetting];
             }
@@ -96,11 +94,10 @@ class Sabre_DAV_Client {
         }
 
         $this->propertyMap['{DAV:}resourcetype'] = 'Sabre_DAV_Property_ResourceType';
-
     }
 
     /**
-     * Does a PROPFIND request
+     * Does a PROPFIND request.
      *
      * The list of requested properties must be specified as an array, in clark
      * notation.
@@ -116,127 +113,117 @@ class Sabre_DAV_Client {
      * made to the server to also return all child resources.
      *
      * @param string $url
-     * @param array $properties
-     * @param int $depth
+     * @param array  $properties
+     * @param int    $depth
+     *
      * @return array
      */
-    public function propFind($url, array $properties, $depth = 0) {
+    public function propFind($url, array $properties, $depth = 0)
+    {
+        $body = '<?xml version="1.0"?>'."\n";
+        $body .= '<d:propfind xmlns:d="DAV:">'."\n";
+        $body .= '  <d:prop>'."\n";
 
-        $body = '<?xml version="1.0"?>' . "\n";
-        $body.= '<d:propfind xmlns:d="DAV:">' . "\n";
-        $body.= '  <d:prop>' . "\n";
-
-        foreach($properties as $property) {
-
+        foreach ($properties as $property) {
             list(
                 $namespace,
                 $elementName
             ) = Sabre_DAV_XMLUtil::parseClarkNotation($property);
 
             if ($namespace === 'DAV:') {
-                $body.='    <d:' . $elementName . ' />' . "\n";
+                $body .= '    <d:'.$elementName.' />'."\n";
             } else {
-                $body.="    <x:" . $elementName . " xmlns:x=\"" . $namespace . "\"/>\n";
+                $body .= '    <x:'.$elementName.' xmlns:x="'.$namespace."\"/>\n";
             }
-
         }
 
-        $body.= '  </d:prop>' . "\n";
-        $body.= '</d:propfind>';
+        $body .= '  </d:prop>'."\n";
+        $body .= '</d:propfind>';
 
         $response = $this->request('PROPFIND', $url, $body, array(
             'Depth' => $depth,
-            'Content-Type' => 'application/xml'
+            'Content-Type' => 'application/xml',
         ));
 
         $result = $this->parseMultiStatus($response['body']);
 
         // If depth was 0, we only return the top item
-        if ($depth===0) {
+        if ($depth === 0) {
             reset($result);
             $result = current($result);
+
             return $result[200];
         }
 
         $newResult = array();
-        foreach($result as $href => $statusList) {
-
+        foreach ($result as $href => $statusList) {
             $newResult[$href] = $statusList[200];
-
         }
 
         return $newResult;
-
     }
 
     /**
-     * Updates a list of properties on the server
+     * Updates a list of properties on the server.
      *
      * The list of properties must have clark-notation properties for the keys,
      * and the actual (string) value for the value. If the value is null, an
      * attempt is made to delete the property.
      *
      * @todo Must be building the request using the DOM, and does not yet
-     *       support complex properties.
+     *       support complex properties
+     *
      * @param string $url
-     * @param array $properties
-     * @return void
+     * @param array  $properties
      */
-    public function propPatch($url, array $properties) {
+    public function propPatch($url, array $properties)
+    {
+        $body = '<?xml version="1.0"?>'."\n";
+        $body .= '<d:propertyupdate xmlns:d="DAV:">'."\n";
 
-        $body = '<?xml version="1.0"?>' . "\n";
-        $body.= '<d:propertyupdate xmlns:d="DAV:">' . "\n";
-
-        foreach($properties as $propName => $propValue) {
-
+        foreach ($properties as $propName => $propValue) {
             list(
                 $namespace,
                 $elementName
             ) = Sabre_DAV_XMLUtil::parseClarkNotation($propName);
 
             if ($propValue === null) {
-
-                $body.="<d:remove><d:prop>\n";
+                $body .= "<d:remove><d:prop>\n";
 
                 if ($namespace === 'DAV:') {
-                    $body.='    <d:' . $elementName . ' />' . "\n";
+                    $body .= '    <d:'.$elementName.' />'."\n";
                 } else {
-                    $body.="    <x:" . $elementName . " xmlns:x=\"" . $namespace . "\"/>\n";
+                    $body .= '    <x:'.$elementName.' xmlns:x="'.$namespace."\"/>\n";
                 }
 
-                $body.="</d:prop></d:remove>\n";
-
+                $body .= "</d:prop></d:remove>\n";
             } else {
-
-                $body.="<d:set><d:prop>\n";
+                $body .= "<d:set><d:prop>\n";
                 if ($namespace === 'DAV:') {
-                    $body.='    <d:' . $elementName . '>';
+                    $body .= '    <d:'.$elementName.'>';
                 } else {
-                    $body.="    <x:" . $elementName . " xmlns:x=\"" . $namespace . "\">";
+                    $body .= '    <x:'.$elementName.' xmlns:x="'.$namespace.'">';
                 }
                 // Shitty.. i know
-                $body.=htmlspecialchars($propValue, ENT_NOQUOTES, 'UTF-8');
+                $body .= htmlspecialchars($propValue, ENT_NOQUOTES, 'UTF-8');
                 if ($namespace === 'DAV:') {
-                    $body.='</d:' . $elementName . '>' . "\n";
+                    $body .= '</d:'.$elementName.'>'."\n";
                 } else {
-                    $body.="</x:" . $elementName . ">\n";
+                    $body .= '</x:'.$elementName.">\n";
                 }
-                $body.="</d:prop></d:set>\n";
-
+                $body .= "</d:prop></d:set>\n";
             }
-
         }
 
-        $body.= '</d:propertyupdate>';
+        $body .= '</d:propertyupdate>';
 
         $this->request('PROPPATCH', $url, $body, array(
-            'Content-Type' => 'application/xml'
+            'Content-Type' => 'application/xml',
         ));
-
     }
 
     /**
-     * Performs an HTTP options request
+     * Performs an HTTP options request.
      *
      * This method returns all the features from the 'DAV:' header as an array.
      * If there was no DAV header, or no contents this method will return an
@@ -244,19 +231,19 @@ class Sabre_DAV_Client {
      *
      * @return array
      */
-    public function options() {
-
+    public function options()
+    {
         $result = $this->request('OPTIONS');
         if (!isset($result['headers']['dav'])) {
             return array();
         }
 
         $features = explode(',', $result['headers']['dav']);
-        foreach($features as &$v) {
+        foreach ($features as &$v) {
             $v = trim($v);
         }
-        return $features;
 
+        return $features;
     }
 
     /**
@@ -274,11 +261,12 @@ class Sabre_DAV_Client {
      * @param string $method
      * @param string $url
      * @param string $body
-     * @param array $headers
+     * @param array  $headers
+     *
      * @return array
      */
-    public function request($method, $url = '', $body = null, $headers = array()) {
-
+    public function request($method, $url = '', $body = null, $headers = array())
+    {
         $url = $this->getAbsoluteUrl($url);
 
         $curlSettings = array(
@@ -292,7 +280,7 @@ class Sabre_DAV_Client {
         );
 
         switch ($method) {
-            case 'HEAD' :
+            case 'HEAD':
 
                 // do not read body with HEAD requests (this is neccessary because cURL does not ignore the body with HEAD
                 // requests when the Content-Length header is given - which in turn is perfectly valid according to HTTP
@@ -311,10 +299,8 @@ class Sabre_DAV_Client {
 
         // Adding HTTP headers
         $nHeaders = array();
-        foreach($headers as $key=>$value) {
-
-            $nHeaders[] = $key . ': ' . $value;
-
+        foreach ($headers as $key => $value) {
+            $nHeaders[] = $key.': '.$value;
         }
         $curlSettings[CURLOPT_HTTPHEADER] = $nHeaders;
 
@@ -331,7 +317,7 @@ class Sabre_DAV_Client {
                 $curlType |= CURLAUTH_DIGEST;
             }
             $curlSettings[CURLOPT_HTTPAUTH] = $curlType;
-            $curlSettings[CURLOPT_USERPWD] = $this->userName . ':' . $this->password;
+            $curlSettings[CURLOPT_USERPWD] = $this->userName.':'.$this->password;
         }
 
         list(
@@ -350,15 +336,15 @@ class Sabre_DAV_Client {
         $headerBlob = explode("\r\n\r\n", trim($headerBlob, "\r\n"));
 
         // We only care about the last set of headers
-        $headerBlob = $headerBlob[count($headerBlob)-1];
+        $headerBlob = $headerBlob[count($headerBlob) - 1];
 
         // Splitting headers
         $headerBlob = explode("\r\n", $headerBlob);
 
         $headers = array();
-        foreach($headerBlob as $header) {
+        foreach ($headerBlob as $header) {
             $parts = explode(':', $header, 2);
-            if (count($parts)==2) {
+            if (count($parts) == 2) {
                 $headers[strtolower(trim($parts[0]))] = trim($parts[1]);
             }
         }
@@ -366,46 +352,45 @@ class Sabre_DAV_Client {
         $response = array(
             'body' => $response,
             'statusCode' => $curlInfo['http_code'],
-            'headers' => $headers
+            'headers' => $headers,
         );
 
         if ($curlErrNo) {
-            throw new Sabre_DAV_Exception('[CURL] Error while making request: ' . $curlError . ' (error code: ' . $curlErrNo . ')');
+            throw new Sabre_DAV_Exception('[CURL] Error while making request: '.$curlError.' (error code: '.$curlErrNo.')');
         }
 
-        if ($response['statusCode']>=400) {
+        if ($response['statusCode'] >= 400) {
             switch ($response['statusCode']) {
-                case 400 :
+                case 400:
                     throw new Sabre_DAV_Exception_BadRequest('Bad request');
-                case 401 :
+                case 401:
                     throw new Sabre_DAV_Exception_NotAuthenticated('Not authenticated');
-                case 402 :
+                case 402:
                     throw new Sabre_DAV_Exception_PaymentRequired('Payment required');
-                case 403 :
+                case 403:
                     throw new Sabre_DAV_Exception_Forbidden('Forbidden');
                 case 404:
                     throw new Sabre_DAV_Exception_NotFound('Resource not found.');
-                case 405 :
+                case 405:
                     throw new Sabre_DAV_Exception_MethodNotAllowed('Method not allowed');
-                case 409 :
+                case 409:
                     throw new Sabre_DAV_Exception_Conflict('Conflict');
-                case 412 :
+                case 412:
                     throw new Sabre_DAV_Exception_PreconditionFailed('Precondition failed');
-                case 416 :
+                case 416:
                     throw new Sabre_DAV_Exception_RequestedRangeNotSatisfiable('Requested Range Not Satisfiable');
-                case 500 :
+                case 500:
                     throw new Sabre_DAV_Exception('Internal server error');
-                case 501 :
+                case 501:
                     throw new Sabre_DAV_Exception_NotImplemented('Not Implemeneted');
-                case 507 :
+                case 507:
                     throw new Sabre_DAV_Exception_InsufficientStorage('Insufficient storage');
                 default:
-                    throw new Sabre_DAV_Exception('HTTP error response. (errorcode ' . $response['statusCode'] . ')');
+                    throw new Sabre_DAV_Exception('HTTP error response. (errorcode '.$response['statusCode'].')');
             }
         }
 
         return $response;
-
     }
 
     /**
@@ -415,11 +400,12 @@ class Sabre_DAV_Client {
      * becomes easier to unittest.
      *
      * @param string $url
-     * @param array $settings
+     * @param array  $settings
+     *
      * @return array
      */
-    protected function curlRequest($url, $settings) {
-
+    protected function curlRequest($url, $settings)
+    {
         $curl = curl_init($url);
         curl_setopt_array($curl, $settings);
 
@@ -427,9 +413,8 @@ class Sabre_DAV_Client {
             curl_exec($curl),
             curl_getinfo($curl),
             curl_errno($curl),
-            curl_error($curl)
+            curl_error($curl),
         );
-
     }
 
     /**
@@ -437,9 +422,11 @@ class Sabre_DAV_Client {
      * urls are expanded based on the base url as given by the server.
      *
      * @param string $url
+     *
      * @return string
      */
-    protected function getAbsoluteUrl($url) {
+    protected function getAbsoluteUrl($url)
+    {
 
         // If the url starts with http:// or https://, the url is already absolute.
         if (preg_match('/^http(s?):\/\//', $url)) {
@@ -448,18 +435,18 @@ class Sabre_DAV_Client {
 
         // If the url starts with a slash, we must calculate the url based off
         // the root of the base url.
-        if (strpos($url,'/') === 0) {
+        if (strpos($url, '/') === 0) {
             $parts = parse_url($this->baseUri);
-            return $parts['scheme'] . '://' . $parts['host'] . (isset($parts['port'])?':' . $parts['port']:'') . $url;
+
+            return $parts['scheme'].'://'.$parts['host'].(isset($parts['port']) ? ':'.$parts['port'] : '').$url;
         }
 
         // Otherwise...
-        return $this->baseUri . $url;
-
+        return $this->baseUri.$url;
     }
 
     /**
-     * Parses a WebDAV multistatus response body
+     * Parses a WebDAV multistatus response body.
      *
      * This method returns an array with the following structure
      *
@@ -481,12 +468,13 @@ class Sabre_DAV_Client {
      *
      *
      * @param string $body xml body
+     *
      * @return array
      */
-    public function parseMultiStatus($body) {
-
+    public function parseMultiStatus($body)
+    {
         $responseXML = simplexml_load_string($body, null, LIBXML_NOBLANKS | LIBXML_NOCDATA);
-        if ($responseXML===false) {
+        if ($responseXML === false) {
             throw new InvalidArgumentException('The passed data is not valid XML');
         }
 
@@ -494,29 +482,24 @@ class Sabre_DAV_Client {
 
         $propResult = array();
 
-        foreach($responseXML->xpath('d:response') as $response) {
+        foreach ($responseXML->xpath('d:response') as $response) {
             $response->registerXPathNamespace('d', 'DAV:');
             $href = $response->xpath('d:href');
-            $href = (string)$href[0];
+            $href = (string) $href[0];
 
             $properties = array();
 
-            foreach($response->xpath('d:propstat') as $propStat) {
-
+            foreach ($response->xpath('d:propstat') as $propStat) {
                 $propStat->registerXPathNamespace('d', 'DAV:');
                 $status = $propStat->xpath('d:status');
-                list($httpVersion, $statusCode, $message) = explode(' ', (string)$status[0],3);
+                list($httpVersion, $statusCode, $message) = explode(' ', (string) $status[0], 3);
 
                 $properties[$statusCode] = Sabre_DAV_XMLUtil::parseProperties(dom_import_simplexml($propStat), $this->propertyMap);
-
             }
 
             $propResult[$href] = $properties;
-
         }
 
         return $propResult;
-
     }
-
 }

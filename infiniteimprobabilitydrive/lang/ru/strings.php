@@ -1,3 +1,3 @@
 <?php
 
-$a->strings["Infinite Improbability Drive"] = "";
+$a->strings['Infinite Improbability Drive'] = '';

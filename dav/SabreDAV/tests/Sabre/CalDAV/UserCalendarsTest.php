@@ -6,8 +6,8 @@ require_once 'Sabre/DAVACL/MockPrincipalBackend.php';
 /**
  * @covers Sabre_CalDAV_UserCalendars
  */
-class Sabre_CalDAV_UserCalendarsTest extends PHPUnit_Framework_TestCase {
-
+class Sabre_CalDAV_UserCalendarsTest extends PHPUnit_Framework_TestCase
+{
     /**
      * @var Sabre_CalDAV_UserCalendars
      */
@@ -18,52 +18,48 @@ class Sabre_CalDAV_UserCalendarsTest extends PHPUnit_Framework_TestCase {
     protected $backend;
     protected $principalBackend;
 
-    function setup() {
-
-        if (!SABRE_HASSQLITE) $this->markTestSkipped('SQLite driver is not available');
+    public function setup()
+    {
+        if (!SABRE_HASSQLITE) {
+            $this->markTestSkipped('SQLite driver is not available');
+        }
         $this->backend = Sabre_CalDAV_TestUtil::getBackend();
         $this->principalBackend = new Sabre_DAVACL_MockPrincipalBackend('realm');
         $this->usercalendars = new Sabre_CalDAV_UserCalendars($this->principalBackend, $this->backend, 'principals/user1');
-
     }
 
-    function testSimple() {
-
-        $this->assertEquals('user1',$this->usercalendars->getName());
-
+    public function testSimple()
+    {
+        $this->assertEquals('user1', $this->usercalendars->getName());
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_NotFound
      * @depends testSimple
      */
-    function testGetChildNotFound() {
-
+    public function testGetChildNotFound()
+    {
         $this->usercalendars->getChild('randomname');
-
     }
 
-    function testChildExists() {
-
+    public function testChildExists()
+    {
         $this->assertFalse($this->usercalendars->childExists('foo'));
         $this->assertTrue($this->usercalendars->childExists('UUID-123467'));
-
     }
 
-    function testGetOwner() {
-
+    public function testGetOwner()
+    {
         $this->assertEquals('principals/user1', $this->usercalendars->getOwner());
-
     }
 
-    function testGetGroup() {
-
+    public function testGetGroup()
+    {
         $this->assertNull($this->usercalendars->getGroup());
-
     }
 
-    function testGetACL() {
-
+    public function testGetACL()
+    {
         $expected = array(
             array(
                 'privilege' => '{DAV:}read',
@@ -92,94 +88,82 @@ class Sabre_CalDAV_UserCalendarsTest extends PHPUnit_Framework_TestCase {
             ),
         );
         $this->assertEquals($expected, $this->usercalendars->getACL());
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_MethodNotAllowed
      */
-    function testSetACL() {
-
+    public function testSetACL()
+    {
         $this->usercalendars->setACL(array());
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_Forbidden
      * @depends testSimple
      */
-    function testSetName() {
-
+    public function testSetName()
+    {
         $this->usercalendars->setName('bla');
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_Forbidden
      * @depends testSimple
      */
-    function testDelete() {
-
+    public function testDelete()
+    {
         $this->usercalendars->delete();
-
     }
 
     /**
      * @depends testSimple
      */
-    function testGetLastModified() {
-
+    public function testGetLastModified()
+    {
         $this->assertNull($this->usercalendars->getLastModified());
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_MethodNotAllowed
      * @depends testSimple
      */
-    function testCreateFile() {
-
+    public function testCreateFile()
+    {
         $this->usercalendars->createFile('bla');
-
     }
-
 
     /**
      * @expectedException Sabre_DAV_Exception_MethodNotAllowed
      * @depends testSimple
      */
-    function testCreateDirectory() {
-
+    public function testCreateDirectory()
+    {
         $this->usercalendars->createDirectory('bla');
-
     }
 
     /**
      * @depends testSimple
      */
-    function testCreateExtendedCollection() {
-
+    public function testCreateExtendedCollection()
+    {
         $result = $this->usercalendars->createExtendedCollection('newcalendar', array('{DAV:}collection', '{urn:ietf:params:xml:ns:caldav}calendar'), array());
         $this->assertNull($result);
         $cals = $this->backend->getCalendarsForUser('principals/user1');
-        $this->assertEquals(3,count($cals));
-
+        $this->assertEquals(3, count($cals));
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_InvalidResourceType
      * @depends testSimple
      */
-    function testCreateExtendedCollectionBadResourceType() {
-
-        $this->usercalendars->createExtendedCollection('newcalendar', array('{DAV:}collection','{DAV:}blabla'), array());
-
+    public function testCreateExtendedCollectionBadResourceType()
+    {
+        $this->usercalendars->createExtendedCollection('newcalendar', array('{DAV:}collection', '{DAV:}blabla'), array());
     }
 
-    function testGetSupportedPrivilegesSet() {
-
+    public function testGetSupportedPrivilegesSet()
+    {
         $this->assertNull($this->usercalendars->getSupportedPrivilegeSet());
-
     }
-
 }

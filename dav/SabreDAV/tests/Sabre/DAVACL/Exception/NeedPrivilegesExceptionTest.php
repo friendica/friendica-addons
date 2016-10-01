@@ -1,9 +1,9 @@
 <?php
 
-class Sabre_DAVACL_Exception_NeedPrivilegesTest extends PHPUnit_Framework_TestCase {
-
-    function testSerialize() {
-
+class Sabre_DAVACL_Exception_NeedPrivilegesTest extends PHPUnit_Framework_TestCase
+{
+    public function testSerialize()
+    {
         $uri = 'foo';
         $privileges = array(
             '{DAV:}read',
@@ -12,8 +12,8 @@ class Sabre_DAVACL_Exception_NeedPrivilegesTest extends PHPUnit_Framework_TestCa
         $ex = new Sabre_DAVACL_Exception_NeedPrivileges($uri, $privileges);
 
         $server = new Sabre_DAV_Server();
-        $dom = new DOMDocument('1.0','utf-8');
-        $root = $dom->createElementNS('DAV:','d:root');
+        $dom = new DOMDocument('1.0', 'utf-8');
+        $root = $dom->createElementNS('DAV:', 'd:root');
         $dom->appendChild($root);
 
         $ex->serialize($server, $root);
@@ -33,13 +33,9 @@ class Sabre_DAVACL_Exception_NeedPrivilegesTest extends PHPUnit_Framework_TestCa
         $dom2->loadXML($dom->saveXML());
 
         $dxpath = new DOMXPath($dom2);
-        $dxpath->registerNamespace('d','DAV:');
-        foreach($xpaths as $xpath=>$count) {
-
-            $this->assertEquals($count, $dxpath->query($xpath)->length, 'Looking for : ' . $xpath . ', we could only find ' . $dxpath->query($xpath)->length . ' elements, while we expected ' . $count);
-
+        $dxpath->registerNamespace('d', 'DAV:');
+        foreach ($xpaths as $xpath => $count) {
+            $this->assertEquals($count, $dxpath->query($xpath)->length, 'Looking for : '.$xpath.', we could only find '.$dxpath->query($xpath)->length.' elements, while we expected '.$count);
         }
-
     }
-
 }

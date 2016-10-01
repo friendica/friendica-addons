@@ -2,7 +2,7 @@
 
 // !!!! Make sure the Sabre directory is in the include_path !!!
 // example:
-set_include_path('lib/' . PATH_SEPARATOR . get_include_path());
+set_include_path('lib/'.PATH_SEPARATOR.get_include_path());
 
 /*
 
@@ -22,7 +22,6 @@ $tmpDir = 'tmpdata';
 // You can override the baseUri here.
 // $baseUri = '/';
 
-
 // Files we need
 require_once 'Sabre/autoload.php';
 
@@ -32,11 +31,12 @@ $root = new Sabre_DAV_FS_Directory($publicDir);
 // The rootnode needs in turn to be passed to the server class
 $server = new Sabre_DAV_Server($root);
 
-if (isset($baseUri))
+if (isset($baseUri)) {
     $server->setBaseUri($baseUri);
+}
 
 // Support for LOCK and UNLOCK
-$lockBackend = new Sabre_DAV_Locks_Backend_File($tmpDir . '/locksdb');
+$lockBackend = new Sabre_DAV_Locks_Backend_File($tmpDir.'/locksdb');
 $lockPlugin = new Sabre_DAV_Locks_Plugin($lockBackend);
 $server->addPlugin($lockPlugin);
 
@@ -49,7 +49,7 @@ $server->addPlugin(new Sabre_DAV_Browser_GuessContentType());
 
 // Authentication backend
 $authBackend = new Sabre_DAV_Auth_Backend_File('.htdigest');
-$auth = new Sabre_DAV_Auth_Plugin($authBackend,'SabreDAV');
+$auth = new Sabre_DAV_Auth_Plugin($authBackend, 'SabreDAV');
 $server->addPlugin($auth);
 
 // Temporary file filter

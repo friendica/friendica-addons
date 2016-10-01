@@ -1,96 +1,87 @@
 <?php
 
 /**
- * The UserCalenders class contains all calendars associated to one user
+ * The UserCalenders class contains all calendars associated to one user.
  *
- * @package Sabre
- * @subpackage CalDAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
- * @author Evert Pot (http://www.rooftopsolutions.nl/) 
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
+ * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_CalDAV_UserCalendars implements Sabre_DAV_IExtendedCollection, Sabre_DAVACL_IACL {
-
+class Sabre_CalDAV_UserCalendars implements Sabre_DAV_IExtendedCollection, Sabre_DAVACL_IACL
+{
     /**
-     * Principal backend
+     * Principal backend.
      *
      * @var Sabre_DAVACL_IPrincipalBackend
      */
     protected $principalBackend;
 
     /**
-     * CalDAV backend
+     * CalDAV backend.
      *
      * @var Sabre_CalDAV_Backend_BackendInterface
      */
     protected $caldavBackend;
 
     /**
-     * Principal information
+     * Principal information.
      *
      * @var array
      */
     protected $principalInfo;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param Sabre_DAVACL_IPrincipalBackend $principalBackend
+     * @param Sabre_DAVACL_IPrincipalBackend        $principalBackend
      * @param Sabre_CalDAV_Backend_BackendInterface $caldavBackend
-     * @param mixed $userUri
+     * @param mixed                                 $userUri
      */
-    public function __construct(Sabre_DAVACL_IPrincipalBackend $principalBackend, Sabre_CalDAV_Backend_BackendInterface $caldavBackend, $userUri) {
-
+    public function __construct(Sabre_DAVACL_IPrincipalBackend $principalBackend, Sabre_CalDAV_Backend_BackendInterface $caldavBackend, $userUri)
+    {
         $this->principalBackend = $principalBackend;
         $this->caldavBackend = $caldavBackend;
         $this->principalInfo = $principalBackend->getPrincipalByPath($userUri);
-
     }
 
     /**
-     * Returns the name of this object
+     * Returns the name of this object.
      *
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
+        list(, $name) = Sabre_DAV_URLUtil::splitPath($this->principalInfo['uri']);
 
-        list(,$name) = Sabre_DAV_URLUtil::splitPath($this->principalInfo['uri']);
         return $name;
-
     }
 
     /**
-     * Updates the name of this object
+     * Updates the name of this object.
      *
      * @param string $name
-     * @return void
      */
-    public function setName($name) {
-
+    public function setName($name)
+    {
         throw new Sabre_DAV_Exception_Forbidden();
-
     }
 
     /**
-     * Deletes this object
-     *
-     * @return void
+     * Deletes this object.
      */
-    public function delete() {
-
+    public function delete()
+    {
         throw new Sabre_DAV_Exception_Forbidden();
-
     }
 
     /**
-     * Returns the last modification date
+     * Returns the last modification date.
      *
      * @return int
      */
-    public function getLastModified() {
-
+    public function getLastModified()
+    {
         return null;
-
     }
 
     /**
@@ -98,14 +89,12 @@ class Sabre_CalDAV_UserCalendars implements Sabre_DAV_IExtendedCollection, Sabre
      *
      * This is currently not allowed
      *
-     * @param string $filename
+     * @param string   $filename
      * @param resource $data
-     * @return void
      */
-    public function createFile($filename, $data=null) {
-
+    public function createFile($filename, $data = null)
+    {
         throw new Sabre_DAV_Exception_MethodNotAllowed('Creating new files in this collection is not supported');
-
     }
 
     /**
@@ -114,60 +103,61 @@ class Sabre_CalDAV_UserCalendars implements Sabre_DAV_IExtendedCollection, Sabre
      * This is currently not allowed.
      *
      * @param string $filename
-     * @return void
      */
-    public function createDirectory($filename) {
-
+    public function createDirectory($filename)
+    {
         throw new Sabre_DAV_Exception_MethodNotAllowed('Creating new collections in this collection is not supported');
-
     }
 
     /**
-     * Returns a single calendar, by name
+     * Returns a single calendar, by name.
      *
      * @param string $name
+     *
      * @todo needs optimizing
+     *
      * @return Sabre_CalDAV_Calendar
      */
-    public function getChild($name) {
-
-        foreach($this->getChildren() as $child) {
-            if ($name==$child->getName())
+    public function getChild($name)
+    {
+        foreach ($this->getChildren() as $child) {
+            if ($name == $child->getName()) {
                 return $child;
-
+            }
         }
-        throw new Sabre_DAV_Exception_NotFound('Calendar with name \'' . $name . '\' could not be found');
-
+        throw new Sabre_DAV_Exception_NotFound('Calendar with name \''.$name.'\' could not be found');
     }
 
     /**
      * Checks if a calendar exists.
      *
      * @param string $name
+     *
      * @todo needs optimizing
+     *
      * @return bool
      */
-    public function childExists($name) {
-
-        foreach($this->getChildren() as $child) {
-            if ($name==$child->getName())
+    public function childExists($name)
+    {
+        foreach ($this->getChildren() as $child) {
+            if ($name == $child->getName()) {
                 return true;
-
+            }
         }
-        return false;
 
+        return false;
     }
 
     /**
-     * Returns a list of calendars
+     * Returns a list of calendars.
      *
      * @return array
      */
-    public function getChildren() {
-
+    public function getChildren()
+    {
         $calendars = $this->caldavBackend->getCalendarsForUser($this->principalInfo['uri']);
         $objs = array();
-        foreach($calendars as $calendar) {
+        foreach ($calendars as $calendar) {
             $objs[] = new Sabre_CalDAV_Calendar($this->principalBackend, $this->caldavBackend, $calendar);
         }
         $objs[] = new Sabre_CalDAV_Schedule_Outbox($this->principalInfo['uri']);
@@ -176,51 +166,47 @@ class Sabre_CalDAV_UserCalendars implements Sabre_DAV_IExtendedCollection, Sabre
         if ($this->caldavBackend instanceof Sabre_CalDAV_Backend_NotificationSupport) {
             $objs[] = new Sabre_CalDAV_Notifications_Collection($this->caldavBackend, $this->principalInfo['uri']);
         }
-        return $objs;
 
+        return $objs;
     }
 
     /**
-     * Creates a new calendar
+     * Creates a new calendar.
      *
      * @param string $name
-     * @param array $resourceType
-     * @param array $properties
-     * @return void
+     * @param array  $resourceType
+     * @param array  $properties
      */
-    public function createExtendedCollection($name, array $resourceType, array $properties) {
-
-        if (!in_array('{urn:ietf:params:xml:ns:caldav}calendar',$resourceType) || count($resourceType)!==2) {
+    public function createExtendedCollection($name, array $resourceType, array $properties)
+    {
+        if (!in_array('{urn:ietf:params:xml:ns:caldav}calendar', $resourceType) || count($resourceType) !== 2) {
             throw new Sabre_DAV_Exception_InvalidResourceType('Unknown resourceType for this collection');
         }
         $this->caldavBackend->createCalendar($this->principalInfo['uri'], $name, $properties);
-
     }
 
     /**
-     * Returns the owner principal
+     * Returns the owner principal.
      *
      * This must be a url to a principal, or null if there's no owner
      *
      * @return string|null
      */
-    public function getOwner() {
-
+    public function getOwner()
+    {
         return $this->principalInfo['uri'];
-
     }
 
     /**
-     * Returns a group principal
+     * Returns a group principal.
      *
      * This must be a url to a principal, or null if there's no owner
      *
      * @return string|null
      */
-    public function getGroup() {
-
+    public function getGroup()
+    {
         return null;
-
     }
 
     /**
@@ -235,8 +221,8 @@ class Sabre_CalDAV_UserCalendars implements Sabre_DAV_IExtendedCollection, Sabre
      *
      * @return array
      */
-    public function getACL() {
-
+    public function getACL()
+    {
         return array(
             array(
                 'privilege' => '{DAV:}read',
@@ -250,36 +236,33 @@ class Sabre_CalDAV_UserCalendars implements Sabre_DAV_IExtendedCollection, Sabre
             ),
             array(
                 'privilege' => '{DAV:}read',
-                'principal' => $this->principalInfo['uri'] . '/calendar-proxy-write',
+                'principal' => $this->principalInfo['uri'].'/calendar-proxy-write',
                 'protected' => true,
             ),
             array(
                 'privilege' => '{DAV:}write',
-                'principal' => $this->principalInfo['uri'] . '/calendar-proxy-write',
+                'principal' => $this->principalInfo['uri'].'/calendar-proxy-write',
                 'protected' => true,
             ),
             array(
                 'privilege' => '{DAV:}read',
-                'principal' => $this->principalInfo['uri'] . '/calendar-proxy-read',
+                'principal' => $this->principalInfo['uri'].'/calendar-proxy-read',
                 'protected' => true,
             ),
 
         );
-
     }
 
     /**
-     * Updates the ACL
+     * Updates the ACL.
      *
      * This method will receive a list of new ACE's.
      *
      * @param array $acl
-     * @return void
      */
-    public function setACL(array $acl) {
-
+    public function setACL(array $acl)
+    {
         throw new Sabre_DAV_Exception_MethodNotAllowed('Changing ACL is not yet supported');
-
     }
 
     /**
@@ -294,10 +277,8 @@ class Sabre_CalDAV_UserCalendars implements Sabre_DAV_IExtendedCollection, Sabre
      *
      * @return array|null
      */
-    public function getSupportedPrivilegeSet() {
-
+    public function getSupportedPrivilegeSet()
+    {
         return null;
-
     }
-
 }

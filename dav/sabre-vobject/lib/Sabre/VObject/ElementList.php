@@ -3,19 +3,19 @@
 namespace Sabre\VObject;
 
 /**
- * VObject ElementList
+ * VObject ElementList.
  *
  * This class represents a list of elements. Lists are the result of queries,
  * such as doing $vcalendar->vevent where there's multiple VEVENT objects.
  *
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class ElementList implements \Iterator, \Countable, \ArrayAccess {
-
+class ElementList implements \Iterator, \Countable, \ArrayAccess
+{
     /**
-     * Inner elements
+     * Inner elements.
      *
      * @var array
      */
@@ -26,74 +26,64 @@ class ElementList implements \Iterator, \Countable, \ArrayAccess {
      *
      * @param array $elements
      */
-    public function __construct(array $elements) {
-
+    public function __construct(array $elements)
+    {
         $this->elements = $elements;
-
     }
 
     /* {{{ Iterator interface */
 
     /**
-     * Current position
+     * Current position.
      *
      * @var int
      */
     private $key = 0;
 
     /**
-     * Returns current item in iteration
+     * Returns current item in iteration.
      *
      * @return Element
      */
-    public function current() {
-
+    public function current()
+    {
         return $this->elements[$this->key];
-
     }
 
     /**
-     * To the next item in the iterator
-     *
-     * @return void
+     * To the next item in the iterator.
      */
-    public function next() {
-
-        $this->key++;
-
+    public function next()
+    {
+        ++$this->key;
     }
 
     /**
-     * Returns the current iterator key
+     * Returns the current iterator key.
      *
      * @return int
      */
-    public function key() {
-
+    public function key()
+    {
         return $this->key;
-
     }
 
     /**
-     * Returns true if the current position in the iterator is a valid one
+     * Returns true if the current position in the iterator is a valid one.
      *
      * @return bool
      */
-    public function valid() {
-
+    public function valid()
+    {
         return isset($this->elements[$this->key]);
-
     }
 
     /**
-     * Rewinds the iterator
-     *
-     * @return void
+     * Rewinds the iterator.
      */
-    public function rewind() {
-
+    public function rewind()
+    {
         $this->key = 0;
-
     }
 
     /* }}} */
@@ -101,56 +91,52 @@ class ElementList implements \Iterator, \Countable, \ArrayAccess {
     /* {{{ Countable interface */
 
     /**
-     * Returns the number of elements
+     * Returns the number of elements.
      *
      * @return int
      */
-    public function count() {
-
+    public function count()
+    {
         return count($this->elements);
-
     }
 
     /* }}} */
 
     /* {{{ ArrayAccess Interface */
 
-
     /**
      * Checks if an item exists through ArrayAccess.
      *
      * @param int $offset
+     *
      * @return bool
      */
-    public function offsetExists($offset) {
-
+    public function offsetExists($offset)
+    {
         return isset($this->elements[$offset]);
-
     }
 
     /**
      * Gets an item through ArrayAccess.
      *
      * @param int $offset
+     *
      * @return mixed
      */
-    public function offsetGet($offset) {
-
+    public function offsetGet($offset)
+    {
         return $this->elements[$offset];
-
     }
 
     /**
      * Sets an item through ArrayAccess.
      *
-     * @param int $offset
+     * @param int   $offset
      * @param mixed $value
-     * @return void
      */
-    public function offsetSet($offset,$value) {
-
+    public function offsetSet($offset, $value)
+    {
         throw new \LogicException('You can not add new objects to an ElementList');
-
     }
 
     /**
@@ -159,14 +145,11 @@ class ElementList implements \Iterator, \Countable, \ArrayAccess {
      * This method just forwards the request to the inner iterator
      *
      * @param int $offset
-     * @return void
      */
-    public function offsetUnset($offset) {
-
+    public function offsetUnset($offset)
+    {
         throw new \LogicException('You can not remove objects from an ElementList');
-
     }
 
     /* }}} */
-
 }

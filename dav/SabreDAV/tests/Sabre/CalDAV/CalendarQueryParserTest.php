@@ -1,54 +1,52 @@
 <?php
 
-class Sabre_CalDAV_CalendarQueryParserTest extends PHPUnit_Framework_TestCase {
-
-    function parse($xml) {
-
+class Sabre_CalDAV_CalendarQueryParserTest extends PHPUnit_Framework_TestCase
+{
+    public function parse($xml)
+    {
         $xml =
 '<?xml version="1.0"?>
 <c:calendar-query xmlns:c="urn:ietf:params:xml:ns:caldav" xmlns:d="DAV:">
-' . implode("\n", $xml) . '
+' .implode("\n", $xml).'
 </c:calendar-query>';
 
         $dom = Sabre_DAV_XMLUtil::loadDOMDocument($xml);
 
         $q = new Sabre_CalDAV_CalendarQueryParser($dom);
         $q->parse();
-        return $q->filters;
 
+        return $q->filters;
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_BadRequest
      */
-    function testNoFilter() {
-
+    public function testNoFilter()
+    {
         $xml = array();
         $this->parse($xml);
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_BadRequest
      */
-    function testTwoCompFilter() {
-
+    public function testTwoCompFilter()
+    {
         $xml = array(
             '<c:filter>',
             '  <c:comp-filter name="VEVENT" />',
             '  <c:comp-filter name="VEVENT" />',
-            '</c:filter>'
+            '</c:filter>',
         );
         $this->parse($xml);
-
     }
 
-    function testBasicFilter() {
-
+    public function testBasicFilter()
+    {
         $xml = array(
             '<c:filter>',
             '  <c:comp-filter name="VCALENDAR" />',
-            '</c:filter>'
+            '</c:filter>',
         );
         $result = $this->parse($xml);
 
@@ -57,18 +55,17 @@ class Sabre_CalDAV_CalendarQueryParserTest extends PHPUnit_Framework_TestCase {
             'comp-filters' => array(),
             'prop-filters' => array(),
             'is-not-defined' => false,
-            'time-range' => false
+            'time-range' => false,
         );
 
         $this->assertEquals(
             $expected,
             $result
         );
-
     }
 
-    function testCompIsNotDefined() {
-
+    public function testCompIsNotDefined()
+    {
         $xml = array(
             '<c:filter>',
             '  <c:comp-filter name="VCALENDAR">',
@@ -76,7 +73,7 @@ class Sabre_CalDAV_CalendarQueryParserTest extends PHPUnit_Framework_TestCase {
             '       <c:is-not-defined/>',
             '    </c:comp-filter>',
             '  </c:comp-filter>',
-            '</c:filter>'
+            '</c:filter>',
         );
         $result = $this->parse($xml);
 
@@ -88,39 +85,37 @@ class Sabre_CalDAV_CalendarQueryParserTest extends PHPUnit_Framework_TestCase {
                     'comp-filters' => array(),
                     'prop-filters' => array(),
                     'is-not-defined' => true,
-                    'time-range' => false
+                    'time-range' => false,
                 ),
             ),
             'prop-filters' => array(),
             'is-not-defined' => false,
-            'time-range' => false
+            'time-range' => false,
         );
 
         $this->assertEquals(
             $expected,
             $result
         );
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_BadRequest
      */
-    function testCompTimeRangeOnVCALENDAR() {
-
+    public function testCompTimeRangeOnVCALENDAR()
+    {
         $xml = array(
             '<c:filter>',
             '  <c:comp-filter name="VCALENDAR">',
             '     <c:time-range start="20110101T000000Z" end="20111231T235959Z" />',
             '  </c:comp-filter>',
-            '</c:filter>'
+            '</c:filter>',
         );
         $result = $this->parse($xml);
-
     }
 
-    function testCompTimeRange() {
-
+    public function testCompTimeRange()
+    {
         $xml = array(
             '<c:filter>',
             '  <c:comp-filter name="VCALENDAR">',
@@ -134,7 +129,7 @@ class Sabre_CalDAV_CalendarQueryParserTest extends PHPUnit_Framework_TestCase {
             '       <c:time-range end="20111231T235959Z" />',
             '    </c:comp-filter>',
             '  </c:comp-filter>',
-            '</c:filter>'
+            '</c:filter>',
         );
         $result = $this->parse($xml);
 
@@ -174,21 +169,20 @@ class Sabre_CalDAV_CalendarQueryParserTest extends PHPUnit_Framework_TestCase {
             ),
             'prop-filters' => array(),
             'is-not-defined' => false,
-            'time-range' => false
+            'time-range' => false,
         );
 
         $this->assertEquals(
             $expected,
             $result
         );
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_BadRequest
      */
-    function testCompTimeRangeBadRange() {
-
+    public function testCompTimeRangeBadRange()
+    {
         $xml = array(
             '<c:filter>',
             '  <c:comp-filter name="VCALENDAR">',
@@ -196,14 +190,13 @@ class Sabre_CalDAV_CalendarQueryParserTest extends PHPUnit_Framework_TestCase {
             '       <c:time-range start="20110101T000000Z" end="20100101T000000Z" />',
             '    </c:comp-filter>',
             '  </c:comp-filter>',
-            '</c:filter>'
+            '</c:filter>',
         );
         $this->parse($xml);
-
     }
 
-    function testProp() {
-
+    public function testProp()
+    {
         $xml = array(
             '<c:filter>',
             '  <c:comp-filter name="VCALENDAR">',
@@ -213,7 +206,7 @@ class Sabre_CalDAV_CalendarQueryParserTest extends PHPUnit_Framework_TestCase {
             '       </c:prop-filter>',
             '    </c:comp-filter>',
             '  </c:comp-filter>',
-            '</c:filter>'
+            '</c:filter>',
         );
         $result = $this->parse($xml);
 
@@ -242,18 +235,17 @@ class Sabre_CalDAV_CalendarQueryParserTest extends PHPUnit_Framework_TestCase {
             ),
             'prop-filters' => array(),
             'is-not-defined' => false,
-            'time-range' => false
+            'time-range' => false,
         );
 
         $this->assertEquals(
             $expected,
             $result
         );
-
     }
 
-    function testComplex() {
-
+    public function testComplex()
+    {
         $xml = array(
             '<c:filter>',
             '  <c:comp-filter name="VCALENDAR">',
@@ -274,7 +266,7 @@ class Sabre_CalDAV_CalendarQueryParserTest extends PHPUnit_Framework_TestCase {
             '       </c:prop-filter>',
             '    </c:comp-filter>',
             '  </c:comp-filter>',
-            '</c:filter>'
+            '</c:filter>',
         );
         $result = $this->parse($xml);
 
@@ -337,21 +329,21 @@ class Sabre_CalDAV_CalendarQueryParserTest extends PHPUnit_Framework_TestCase {
             ),
             'prop-filters' => array(),
             'is-not-defined' => false,
-            'time-range' => false
+            'time-range' => false,
         );
 
         $this->assertEquals(
             $expected,
             $result
         );
-
     }
 
-    function testOther1() {
+    public function testOther1()
+    {
 
         // This body was exactly sent to us from the sabredav mailing list. Checking if this parses correctly.
 
-        $body = <<<BLA
+        $body = <<<'BLA'
 <?xml version="1.0" encoding="utf-8" ?>
 <C:calendar-query xmlns:D="DAV:"
 xmlns:C="urn:ietf:params:xml:ns:caldav">
@@ -399,11 +391,10 @@ BLA;
         );
 
         $this->assertEquals($expectedFilters, $q->filters);
-
     }
 
-    function testExpand() {
-
+    public function testExpand()
+    {
         $xml = array(
             '<d:prop>',
             '  <c:calendar-data>',
@@ -412,26 +403,25 @@ BLA;
             '</d:prop>',
             '<c:filter>',
             '  <c:comp-filter name="VCALENDAR" />',
-            '</c:filter>'
+            '</c:filter>',
         );
 
         $xml =
 '<?xml version="1.0"?>
 <c:calendar-query xmlns:c="urn:ietf:params:xml:ns:caldav" xmlns:d="DAV:">
-' . implode("\n", $xml) . '
+' .implode("\n", $xml).'
 </c:calendar-query>';
 
         $dom = Sabre_DAV_XMLUtil::loadDOMDocument($xml);
         $q = new Sabre_CalDAV_CalendarQueryParser($dom);
         $q->parse();
 
-
         $expected = array(
             'name' => 'VCALENDAR',
             'comp-filters' => array(),
             'prop-filters' => array(),
             'is-not-defined' => false,
-            'time-range' => false
+            'time-range' => false,
         );
 
         $this->assertEquals(
@@ -450,14 +440,13 @@ BLA;
             ),
             $q->expand
         );
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_BadRequest
      */
-    function testExpandNoStart() {
-
+    public function testExpandNoStart()
+    {
         $xml = array(
             '<d:prop>',
             '  <c:calendar-data>',
@@ -466,25 +455,24 @@ BLA;
             '</d:prop>',
             '<c:filter>',
             '  <c:comp-filter name="VCALENDAR" />',
-            '</c:filter>'
+            '</c:filter>',
         );
 
         $xml =
 '<?xml version="1.0"?>
 <c:calendar-query xmlns:c="urn:ietf:params:xml:ns:caldav" xmlns:d="DAV:">
-' . implode("\n", $xml) . '
+' .implode("\n", $xml).'
 </c:calendar-query>';
 
         $dom = Sabre_DAV_XMLUtil::loadDOMDocument($xml);
         $q = new Sabre_CalDAV_CalendarQueryParser($dom);
         $q->parse();
-
     }
     /**
      * @expectedException Sabre_DAV_Exception_BadRequest
      */
-    function testExpandNoEnd() {
-
+    public function testExpandNoEnd()
+    {
         $xml = array(
             '<d:prop>',
             '  <c:calendar-data>',
@@ -493,25 +481,24 @@ BLA;
             '</d:prop>',
             '<c:filter>',
             '  <c:comp-filter name="VCALENDAR" />',
-            '</c:filter>'
+            '</c:filter>',
         );
 
         $xml =
 '<?xml version="1.0"?>
 <c:calendar-query xmlns:c="urn:ietf:params:xml:ns:caldav" xmlns:d="DAV:">
-' . implode("\n", $xml) . '
+' .implode("\n", $xml).'
 </c:calendar-query>';
 
         $dom = Sabre_DAV_XMLUtil::loadDOMDocument($xml);
         $q = new Sabre_CalDAV_CalendarQueryParser($dom);
         $q->parse();
-
     }
     /**
      * @expectedException Sabre_DAV_Exception_BadRequest
      */
-    function testExpandBadTimes() {
-
+    public function testExpandBadTimes()
+    {
         $xml = array(
             '<d:prop>',
             '  <c:calendar-data>',
@@ -520,18 +507,17 @@ BLA;
             '</d:prop>',
             '<c:filter>',
             '  <c:comp-filter name="VCALENDAR" />',
-            '</c:filter>'
+            '</c:filter>',
         );
 
         $xml =
 '<?xml version="1.0"?>
 <c:calendar-query xmlns:c="urn:ietf:params:xml:ns:caldav" xmlns:d="DAV:">
-' . implode("\n", $xml) . '
+' .implode("\n", $xml).'
 </c:calendar-query>';
 
         $dom = Sabre_DAV_XMLUtil::loadDOMDocument($xml);
         $q = new Sabre_CalDAV_CalendarQueryParser($dom);
         $q->parse();
-
     }
 }

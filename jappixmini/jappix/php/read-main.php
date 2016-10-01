@@ -14,27 +14,28 @@ Last revision: 26/08/11
 */
 
 // Someone is trying to hack us?
-if(!defined('JAPPIX_BASE'))
-	exit;
+if (!defined('JAPPIX_BASE')) {
+    exit;
+}
 
 // Define the default main configuration values
 $main_conf = array(
-	     	'name'			=> 'Jappix',
-	     	'desc'			=> 'a free social network',
-	     	'resource'		=> 'Jappix',
-	     	'lock'			=> 'on',
-	     	'anonymous'		=> 'on',
-	     	'registration'		=> 'on',
-	     	'bosh_proxy'		=> 'on',
-	     	'manager_link'		=> 'on',
-	     	'groupchats_join'	=> '',
-	     	'encryption'		=> 'on',
-	     	'https_storage'		=> 'off',
-	     	'https_force'		=> 'off',
-	     	'compression'		=> 'off',
-	     	'multi_files'		=> 'off',
-	     	'developer'		=> 'off'
-	     );
+             'name' => 'Jappix',
+             'desc' => 'a free social network',
+             'resource' => 'Jappix',
+             'lock' => 'on',
+             'anonymous' => 'on',
+             'registration' => 'on',
+             'bosh_proxy' => 'on',
+             'manager_link' => 'on',
+             'groupchats_join' => '',
+             'encryption' => 'on',
+             'https_storage' => 'off',
+             'https_force' => 'off',
+             'compression' => 'off',
+             'multi_files' => 'off',
+             'developer' => 'off',
+         );
 
 // Define a default values array
 $main_default = $main_conf;
@@ -43,18 +44,19 @@ $main_default = $main_conf;
 $main_data = readXML('conf', 'main');
 
 // Read the main configuration file
-if($main_data) {
-	// Initialize the main configuration XML data
-	$main_xml = new SimpleXMLElement($main_data);
-	
-	// Loop the main configuration elements
-	foreach($main_xml->children() as $main_child) {
-		$main_value = $main_child->getName();
-		
-		// Only push this to the array if it exists
-		if(isset($main_conf[$main_value]) && $main_child)
-			$main_conf[$main_value] = $main_child;
-	}
+if ($main_data) {
+    // Initialize the main configuration XML data
+    $main_xml = new SimpleXMLElement($main_data);
+
+    // Loop the main configuration elements
+    foreach ($main_xml->children() as $main_child) {
+        $main_value = $main_child->getName();
+
+        // Only push this to the array if it exists
+        if (isset($main_conf[$main_value]) && $main_child) {
+            $main_conf[$main_value] = $main_child;
+        }
+    }
 }
 
 // Finally, define the main configuration globals
@@ -73,5 +75,3 @@ define('HTTPS_FORCE', $main_conf['https_force']);
 define('COMPRESSION', $main_conf['compression']);
 define('MULTI_FILES', $main_conf['multi_files']);
 define('DEVELOPER', $main_conf['developer']);
-
-?>

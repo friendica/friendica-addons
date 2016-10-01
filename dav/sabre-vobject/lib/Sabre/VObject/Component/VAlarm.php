@@ -1,19 +1,20 @@
 <?php
 
 namespace Sabre\VObject\Component;
+
 use Sabre\VObject;
 
 /**
- * VAlarm component
+ * VAlarm component.
  *
  * This component contains some additional functionality specific for VALARMs.
  *
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class VAlarm extends VObject\Component {
-
+class VAlarm extends VObject\Component
+{
     /**
      * Returns a DateTime object when this alarm is going to trigger.
      *
@@ -21,10 +22,10 @@ class VAlarm extends VObject\Component {
      *
      * @return DateTime
      */
-    public function getEffectiveTriggerTime() {
-
+    public function getEffectiveTriggerTime()
+    {
         $trigger = $this->TRIGGER;
-        if(!isset($trigger['VALUE']) || strtoupper($trigger['VALUE']) === 'DURATION') {
+        if (!isset($trigger['VALUE']) || strtoupper($trigger['VALUE']) === 'DURATION') {
             $triggerDuration = VObject\DateTimeParser::parseDuration($this->TRIGGER);
             $related = (isset($trigger['RELATED']) && strtoupper($trigger['RELATED']) == 'END') ? 'END' : 'START';
 
@@ -57,8 +58,8 @@ class VAlarm extends VObject\Component {
         } else {
             $effectiveTrigger = $trigger->getDateTime();
         }
-        return $effectiveTrigger;
 
+        return $effectiveTrigger;
     }
 
     /**
@@ -70,32 +71,31 @@ class VAlarm extends VObject\Component {
      *
      * @param \DateTime $start
      * @param \DateTime $end
+     *
      * @return bool
      */
-    public function isInTimeRange(\DateTime $start, \DateTime $end) {
-
+    public function isInTimeRange(\DateTime $start, \DateTime $end)
+    {
         $effectiveTrigger = $this->getEffectiveTriggerTime();
 
         if (isset($this->DURATION)) {
             $duration = VObject\DateTimeParser::parseDuration($this->DURATION);
-            $repeat = (string)$this->repeat;
+            $repeat = (string) $this->repeat;
             if (!$repeat) {
                 $repeat = 1;
             }
 
-            $period = new \DatePeriod($effectiveTrigger, $duration, (int)$repeat);
+            $period = new \DatePeriod($effectiveTrigger, $duration, (int) $repeat);
 
-            foreach($period as $occurrence) {
-
+            foreach ($period as $occurrence) {
                 if ($start <= $occurrence && $end > $occurrence) {
                     return true;
                 }
             }
+
             return false;
         } else {
-            return ($start <= $effectiveTrigger && $end > $effectiveTrigger);
+            return $start <= $effectiveTrigger && $end > $effectiveTrigger;
         }
-
     }
-
 }

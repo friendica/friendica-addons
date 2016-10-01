@@ -3,44 +3,43 @@
 namespace Sabre\VObject;
 
 /**
- * VObject Parameter
+ * VObject Parameter.
  *
  * This class represents a parameter. A parameter is always tied to a property.
  * In the case of:
  *   DTSTART;VALUE=DATE:20101108
  * VALUE=DATE would be the parameter name and value.
  *
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Parameter extends Node {
-
+class Parameter extends Node
+{
     /**
-     * Parameter name
+     * Parameter name.
      *
      * @var string
      */
     public $name;
 
     /**
-     * Parameter value
+     * Parameter value.
      *
      * @var string
      */
     public $value;
 
     /**
-     * Sets up the object
+     * Sets up the object.
      *
      * @param string $name
      * @param string $value
      */
-    public function __construct($name, $value = null) {
-
+    public function __construct($name, $value = null)
+    {
         $this->name = strtoupper($name);
         $this->value = $value;
-
     }
 
     /**
@@ -48,8 +47,8 @@ class Parameter extends Node {
      *
      * @return string
      */
-    public function serialize() {
-
+    public function serialize()
+    {
         if (is_null($this->value)) {
             return $this->name;
         }
@@ -66,19 +65,16 @@ class Parameter extends Node {
             '\,',
         );
 
-        return $this->name . '=' . str_replace($src, $out, $this->value);
-
+        return $this->name.'='.str_replace($src, $out, $this->value);
     }
 
     /**
-     * Called when this object is being cast to a string
+     * Called when this object is being cast to a string.
      *
      * @return string
      */
-    public function __toString() {
-
+    public function __toString()
+    {
         return $this->value;
-
     }
-
 }

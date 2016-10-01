@@ -17,55 +17,58 @@ Last revision: 26/08/11
 define('JAPPIX_BASE', '..');
 
 // Get the needed files
-require_once('./functions.php');
-require_once('./read-main.php');
-require_once('./read-hosts.php');
+require_once './functions.php';
+require_once './read-main.php';
+require_once './read-hosts.php';
 
 // Optimize the page rendering
 hideErrors();
 compressThis();
 
 // Not allowed for a special node
-if(isStatic() || isUpload())
-	exit;
+if (isStatic() || isUpload()) {
+    exit;
+}
 
 // Create the HTML file to be downloaded
-if(isset($_POST['content']) && isset($_POST['xid']) && !empty($_POST['xid']) && isset($_POST['nick']) && !empty($_POST['nick']) && isset($_POST['avatar']) && !empty($_POST['avatar']) && isset($_POST['date']) && !empty($_POST['date']) && isset($_POST['type']) && !empty($_POST['type'])) {
-	// Get the POST vars
-	$original = $_POST['content'];
-	$xid = $_POST['xid'];
-	$nick = $_POST['nick'];
-	$avatar = $_POST['avatar'];
-	$date = $_POST['date'];
-	$type = $_POST['type'];
-	
-	// Generate the XID link
-	$xid_link = 'xmpp:'.$xid;
-	
-	if($type == 'groupchat')
-		$xid_link .= '?join';
-	
-	// Generates the avatar code
-	if($avatar != 'none')
-		$avatar = '<div class="avatar-container">'.$avatar.'</div>';
-	else
-		$avatar = '';
-	
-	// Generates an human-readable date
-	$date = explode('T', $date);
-	$date = explode('-', $date[0]);
-	$date = $date[2].'/'.$date[1].'/'.$date[0];
-	
-	// Generate some values
-	$content_dir = '../store/logs/';
-	$filename = 'chat_log-'.md5($xid.time());
-	$filepath = $content_dir.$filename.'.html';
-	
-	// Generate Jappix logo Base64 code
-	$logo = base64_encode(file_get_contents(JAPPIX_BASE.'/img/sprites/logs.png'));
-	
-	// Create the HTML code
-	$new_text_inter = 
+if (isset($_POST['content']) && isset($_POST['xid']) && !empty($_POST['xid']) && isset($_POST['nick']) && !empty($_POST['nick']) && isset($_POST['avatar']) && !empty($_POST['avatar']) && isset($_POST['date']) && !empty($_POST['date']) && isset($_POST['type']) && !empty($_POST['type'])) {
+    // Get the POST vars
+    $original = $_POST['content'];
+    $xid = $_POST['xid'];
+    $nick = $_POST['nick'];
+    $avatar = $_POST['avatar'];
+    $date = $_POST['date'];
+    $type = $_POST['type'];
+
+    // Generate the XID link
+    $xid_link = 'xmpp:'.$xid;
+
+    if ($type == 'groupchat') {
+        $xid_link .= '?join';
+    }
+
+    // Generates the avatar code
+    if ($avatar != 'none') {
+        $avatar = '<div class="avatar-container">'.$avatar.'</div>';
+    } else {
+        $avatar = '';
+    }
+
+    // Generates an human-readable date
+    $date = explode('T', $date);
+    $date = explode('-', $date[0]);
+    $date = $date[2].'/'.$date[1].'/'.$date[0];
+
+    // Generate some values
+    $content_dir = '../store/logs/';
+    $filename = 'chat_log-'.md5($xid.time());
+    $filepath = $content_dir.$filename.'.html';
+
+    // Generate Jappix logo Base64 code
+    $logo = base64_encode(file_get_contents(JAPPIX_BASE.'/img/sprites/logs.png'));
+
+    // Create the HTML code
+    $new_text_inter =
 '<!DOCTYPE html>
 <html>	
 
@@ -216,20 +219,18 @@ if(isset($_POST['content']) && isset($_POST['xid']) && !empty($_POST['xid']) && 
 </body>
 </html>'
 ;
-	
-	$new_text = stripslashes($new_text_inter);
-	
-	// Write the code into a file
-	file_put_contents($filepath, $new_text);
-	
-	// Security: remove the file and stop the script if too bit (+6MiB)
-	if(filesize($filepath) > 6000000) {
-		unlink($filepath);
-		exit;
-	}
-	
-	// Return to the user the generated file ID
-	exit($filename);
-}
 
-?>
+    $new_text = stripslashes($new_text_inter);
+
+    // Write the code into a file
+    file_put_contents($filepath, $new_text);
+
+    // Security: remove the file and stop the script if too bit (+6MiB)
+    if (filesize($filepath) > 6000000) {
+        unlink($filepath);
+        exit;
+    }
+
+    // Return to the user the generated file ID
+    exit($filename);
+}

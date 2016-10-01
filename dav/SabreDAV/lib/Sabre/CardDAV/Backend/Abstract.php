@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Abstract Backend class
+ * Abstract Backend class.
  *
  * This class serves as a base-class for addressbook backends
  *
@@ -9,14 +9,12 @@
  * class. The value of the addressBookId is completely up to you, it can be any
  * arbitrary value you can use as an unique identifier.
  *
- * @package Sabre
- * @subpackage CardDAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-abstract class Sabre_CardDAV_Backend_Abstract {
-
+abstract class Sabre_CardDAV_Backend_Abstract
+{
     /**
      * Returns the list of addressbooks for a specific user.
      *
@@ -32,38 +30,39 @@ abstract class Sabre_CardDAV_Backend_Abstract {
      *   {http://calendarserver.org/ns/}getctag
      *
      * @param string $principalUri
+     *
      * @return array
      */
-    public abstract function getAddressBooksForUser($principalUri);
+    abstract public function getAddressBooksForUser($principalUri);
 
     /**
-     * Updates an addressbook's properties
+     * Updates an addressbook's properties.
      *
      * See Sabre_DAV_IProperties for a description of the mutations array, as
      * well as the return value.
      *
      * @param mixed $addressBookId
      * @param array $mutations
+     *
      * @see Sabre_DAV_IProperties::updateProperties
+     *
      * @return bool|array
      */
-    public abstract function updateAddressBook($addressBookId, array $mutations);
+    abstract public function updateAddressBook($addressBookId, array $mutations);
 
     /**
-     * Creates a new address book
+     * Creates a new address book.
      *
      * @param string $principalUri
-     * @param string $url Just the 'basename' of the url.
-     * @param array $properties
-     * @return void
+     * @param string $url          Just the 'basename' of the url
+     * @param array  $properties
      */
     abstract public function createAddressBook($principalUri, $url, array $properties);
 
     /**
-     * Deletes an entire addressbook and all its contents
+     * Deletes an entire addressbook and all its contents.
      *
      * @param mixed $addressBookId
-     * @return void
      */
     abstract public function deleteAddressBook($addressBookId);
 
@@ -84,9 +83,10 @@ abstract class Sabre_CardDAV_Backend_Abstract {
      * This may speed up certain requests, especially with large cards.
      *
      * @param mixed $addressbookId
+     *
      * @return array
      */
-    public abstract function getCards($addressbookId);
+    abstract public function getCards($addressbookId);
 
     /**
      * Returns a specfic card.
@@ -94,11 +94,12 @@ abstract class Sabre_CardDAV_Backend_Abstract {
      * The same set of properties must be returned as with getCards. The only
      * exception is that 'carddata' is absolutely required.
      *
-     * @param mixed $addressBookId
+     * @param mixed  $addressBookId
      * @param string $cardUri
+     *
      * @return array
      */
-    public abstract function getCard($addressBookId, $cardUri);
+    abstract public function getCard($addressBookId, $cardUri);
 
     /**
      * Creates a new card.
@@ -120,9 +121,10 @@ abstract class Sabre_CardDAV_Backend_Abstract {
      *
      * If you don't return an ETag, you can just return null.
      *
-     * @param mixed $addressBookId
+     * @param mixed  $addressBookId
      * @param string $cardUri
      * @param string $cardData
+     *
      * @return string|null
      */
     abstract public function createCard($addressBookId, $cardUri, $cardData);
@@ -147,20 +149,21 @@ abstract class Sabre_CardDAV_Backend_Abstract {
      *
      * If you don't return an ETag, you can just return null.
      *
-     * @param mixed $addressBookId
+     * @param mixed  $addressBookId
      * @param string $cardUri
      * @param string $cardData
+     *
      * @return string|null
      */
     abstract public function updateCard($addressBookId, $cardUri, $cardData);
 
     /**
-     * Deletes a card
+     * Deletes a card.
      *
-     * @param mixed $addressBookId
+     * @param mixed  $addressBookId
      * @param string $cardUri
+     *
      * @return bool
      */
     abstract public function deleteCard($addressBookId, $cardUri);
-
 }

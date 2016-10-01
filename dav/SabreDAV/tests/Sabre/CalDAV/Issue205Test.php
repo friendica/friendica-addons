@@ -3,15 +3,15 @@
 use Sabre\VObject;
 
 /**
- * This unittest is created to check if a VALARM TRIGGER of PT0S is supported
+ * This unittest is created to check if a VALARM TRIGGER of PT0S is supported.
  *
  *
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_CalDAV_Issue205Test extends Sabre_DAVServerTest {
-
+class Sabre_CalDAV_Issue205Test extends Sabre_DAVServerTest
+{
     protected $setupCalDAV = true;
 
     protected $caldavCalendars = array(
@@ -20,7 +20,7 @@ class Sabre_CalDAV_Issue205Test extends Sabre_DAVServerTest {
             'name' => 'Calendar',
             'principaluri' => 'principals/user1',
             'uri' => 'calendar1',
-        )
+        ),
     );
 
     protected $caldavCalendarObjects = array(
@@ -47,8 +47,8 @@ END:VCALENDAR
         ),
     );
 
-    function testIssue205() {
-
+    public function testIssue205()
+    {
         $request = new Sabre_HTTP_Request(array(
             'REQUEST_METHOD' => 'REPORT',
             'HTTP_CONTENT_TYPE' => 'application/xml',
@@ -77,8 +77,8 @@ END:VCALENDAR
 
         $response = $this->request($request);
 
-        $this->assertFalse(strpos($response->body, '<s:exception>Exception</s:exception>'), 'Exception occurred: ' . $response->body);
-        $this->assertFalse(strpos($response->body, 'Unknown or bad format'), 'DateTime unknown format Exception: ' . $response->body);
+        $this->assertFalse(strpos($response->body, '<s:exception>Exception</s:exception>'), 'Exception occurred: '.$response->body);
+        $this->assertFalse(strpos($response->body, 'Unknown or bad format'), 'DateTime unknown format Exception: '.$response->body);
 
         // Everts super awesome xml parser.
         $body = substr(
@@ -86,11 +86,10 @@ END:VCALENDAR
             $start = strpos($response->body, 'BEGIN:VCALENDAR'),
             strpos($response->body, 'END:VCALENDAR') - $start + 13
         );
-        $body = str_replace('&#13;','',$body);
+        $body = str_replace('&#13;', '', $body);
 
         $vObject = VObject\Reader::read($body);
 
         $this->assertEquals(1, count($vObject->VEVENT));
-
     }
 }

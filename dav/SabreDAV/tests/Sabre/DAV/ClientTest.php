@@ -2,36 +2,34 @@
 
 require_once 'Sabre/DAV/ClientMock.php';
 
-class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
-
-    function testConstruct() {
-
+class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase
+{
+    public function testConstruct()
+    {
         $client = new Sabre_DAV_ClientMock(array(
             'baseUri' => '/',
         ));
-
     }
 
     /**
      * @expectedException InvalidArgumentException
      */
-    function testConstructNoBaseUri() {
-
+    public function testConstructNoBaseUri()
+    {
         $client = new Sabre_DAV_ClientMock(array());
-
     }
 
-    function testRequest() {
-
+    public function testRequest()
+    {
         $client = new Sabre_DAV_ClientMock(array(
             'baseUri' => 'http://example.org/foo/bar/',
         ));
 
         $responseBlob = array(
-            "HTTP/1.1 200 OK",
-            "Content-Type: text/plain",
-            "",
-            "Hello there!"
+            'HTTP/1.1 200 OK',
+            'Content-Type: text/plain',
+            '',
+            'Hello there!',
         );
 
         $client->response = array(
@@ -41,7 +39,7 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
                 'http_code' => 200,
             ),
             0,
-            ""
+            '',
         );
 
         $result = $client->request('POST', 'baz', 'sillybody', array('Content-Type' => 'text/plain'));
@@ -62,25 +60,22 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
             'headers' => array(
                 'content-type' => 'text/plain',
             ),
-            'body' => 'Hello there!'
+            'body' => 'Hello there!',
         ), $result);
-
-
     }
 
-
-    function testRequestProxy() {
-
+    public function testRequestProxy()
+    {
         $client = new Sabre_DAV_ClientMock(array(
             'baseUri' => 'http://example.org/foo/bar/',
             'proxy' => 'http://localhost:8000/',
         ));
 
         $responseBlob = array(
-            "HTTP/1.1 200 OK",
-            "Content-Type: text/plain",
-            "",
-            "Hello there!"
+            'HTTP/1.1 200 OK',
+            'Content-Type: text/plain',
+            '',
+            'Hello there!',
         );
 
         $client->response = array(
@@ -90,7 +85,7 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
                 'http_code' => 200,
             ),
             0,
-            ""
+            '',
         );
 
         $result = $client->request('POST', 'baz', 'sillybody', array('Content-Type' => 'text/plain'));
@@ -112,14 +107,12 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
             'headers' => array(
                 'content-type' => 'text/plain',
             ),
-            'body' => 'Hello there!'
+            'body' => 'Hello there!',
         ), $result);
-
     }
 
-
-    function testRequestAuth() {
-
+    public function testRequestAuth()
+    {
         $client = new Sabre_DAV_ClientMock(array(
             'baseUri' => 'http://example.org/foo/bar/',
             'userName' => 'user',
@@ -127,10 +120,10 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
         ));
 
         $responseBlob = array(
-            "HTTP/1.1 200 OK",
-            "Content-Type: text/plain",
-            "",
-            "Hello there!"
+            'HTTP/1.1 200 OK',
+            'Content-Type: text/plain',
+            '',
+            'Hello there!',
         );
 
         $client->response = array(
@@ -140,7 +133,7 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
                 'http_code' => 200,
             ),
             0,
-            ""
+            '',
         );
 
         $result = $client->request('POST', 'baz', 'sillybody', array('Content-Type' => 'text/plain'));
@@ -155,7 +148,7 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
             CURLOPT_HEADER => true,
             CURLOPT_HTTPHEADER => array('Content-Type: text/plain'),
             CURLOPT_HTTPAUTH => CURLAUTH_BASIC | CURLAUTH_DIGEST,
-            CURLOPT_USERPWD => 'user:password'
+            CURLOPT_USERPWD => 'user:password',
         ), $client->curlSettings);
 
         $this->assertEquals(array(
@@ -163,13 +156,12 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
             'headers' => array(
                 'content-type' => 'text/plain',
             ),
-            'body' => 'Hello there!'
+            'body' => 'Hello there!',
         ), $result);
-
     }
 
-    function testRequestAuthBasic() {
-
+    public function testRequestAuthBasic()
+    {
         $client = new Sabre_DAV_ClientMock(array(
             'baseUri' => 'http://example.org/foo/bar/',
             'userName' => 'user',
@@ -178,10 +170,10 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
         ));
 
         $responseBlob = array(
-            "HTTP/1.1 200 OK",
-            "Content-Type: text/plain",
-            "",
-            "Hello there!"
+            'HTTP/1.1 200 OK',
+            'Content-Type: text/plain',
+            '',
+            'Hello there!',
         );
 
         $client->response = array(
@@ -191,7 +183,7 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
                 'http_code' => 200,
             ),
             0,
-            ""
+            '',
         );
 
         $result = $client->request('POST', 'baz', 'sillybody', array('Content-Type' => 'text/plain'));
@@ -206,7 +198,7 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
             CURLOPT_HEADER => true,
             CURLOPT_HTTPHEADER => array('Content-Type: text/plain'),
             CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
-            CURLOPT_USERPWD => 'user:password'
+            CURLOPT_USERPWD => 'user:password',
         ), $client->curlSettings);
 
         $this->assertEquals(array(
@@ -214,13 +206,12 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
             'headers' => array(
                 'content-type' => 'text/plain',
             ),
-            'body' => 'Hello there!'
+            'body' => 'Hello there!',
         ), $result);
-
     }
 
-    function testRequestAuthDigest() {
-
+    public function testRequestAuthDigest()
+    {
         $client = new Sabre_DAV_ClientMock(array(
             'baseUri' => 'http://example.org/foo/bar/',
             'userName' => 'user',
@@ -229,10 +220,10 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
         ));
 
         $responseBlob = array(
-            "HTTP/1.1 200 OK",
-            "Content-Type: text/plain",
-            "",
-            "Hello there!"
+            'HTTP/1.1 200 OK',
+            'Content-Type: text/plain',
+            '',
+            'Hello there!',
         );
 
         $client->response = array(
@@ -242,7 +233,7 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
                 'http_code' => 200,
             ),
             0,
-            ""
+            '',
         );
 
         $result = $client->request('POST', 'baz', 'sillybody', array('Content-Type' => 'text/plain'));
@@ -257,7 +248,7 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
             CURLOPT_HEADER => true,
             CURLOPT_HTTPHEADER => array('Content-Type: text/plain'),
             CURLOPT_HTTPAUTH => CURLAUTH_DIGEST,
-            CURLOPT_USERPWD => 'user:password'
+            CURLOPT_USERPWD => 'user:password',
         ), $client->curlSettings);
 
         $this->assertEquals(array(
@@ -265,21 +256,20 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
             'headers' => array(
                 'content-type' => 'text/plain',
             ),
-            'body' => 'Hello there!'
+            'body' => 'Hello there!',
         ), $result);
-
     }
-    function testRequestError() {
-
+    public function testRequestError()
+    {
         $client = new Sabre_DAV_ClientMock(array(
             'baseUri' => 'http://example.org/foo/bar/',
         ));
 
         $responseBlob = array(
-            "HTTP/1.1 200 OK",
-            "Content-Type: text/plain",
-            "",
-            "Hello there!"
+            'HTTP/1.1 200 OK',
+            'Content-Type: text/plain',
+            '',
+            'Hello there!',
         );
 
         $client->response = array(
@@ -289,7 +279,7 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
                 'http_code' => 200,
             ),
             CURLE_COULDNT_CONNECT,
-            "Could not connect, or something"
+            'Could not connect, or something',
         );
 
         $caught = false;
@@ -301,20 +291,19 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
         if (!$caught) {
             $this->markTestFailed('Exception was not thrown');
         }
-
     }
 
-    function testRequestHTTPError() {
-
+    public function testRequestHTTPError()
+    {
         $client = new Sabre_DAV_ClientMock(array(
             'baseUri' => 'http://example.org/foo/bar/',
         ));
 
         $responseBlob = array(
-            "HTTP/1.1 400 Bad Request",
-            "Content-Type: text/plain",
-            "",
-            "Hello there!"
+            'HTTP/1.1 400 Bad Request',
+            'Content-Type: text/plain',
+            '',
+            'Hello there!',
         );
 
         $client->response = array(
@@ -324,7 +313,7 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
                 'http_code' => 400,
             ),
             0,
-            ""
+            '',
         );
 
         $caught = false;
@@ -336,20 +325,19 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
         if (!$caught) {
             $this->fail('Exception was not thrown');
         }
-
     }
 
-    function testRequestHTTP404() {
-
+    public function testRequestHTTP404()
+    {
         $client = new Sabre_DAV_ClientMock(array(
             'baseUri' => 'http://example.org/foo/bar/',
         ));
 
         $responseBlob = array(
-            "HTTP/1.1 404 Not Found",
-            "Content-Type: text/plain",
-            "",
-            "Hello there!"
+            'HTTP/1.1 404 Not Found',
+            'Content-Type: text/plain',
+            '',
+            'Hello there!',
         );
 
         $client->response = array(
@@ -359,7 +347,7 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
                 'http_code' => 404,
             ),
             0,
-            ""
+            '',
         );
 
         $caught = false;
@@ -371,23 +359,22 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
         if (!$caught) {
             $this->fail('Exception was not thrown');
         }
-
     }
 
     /**
      * @dataProvider supportedHTTPCodes
      */
-    function testSpecificHTTPErrors($error) {
-
+    public function testSpecificHTTPErrors($error)
+    {
         $client = new Sabre_DAV_ClientMock(array(
             'baseUri' => 'http://example.org/foo/bar/',
         ));
 
         $responseBlob = array(
             "HTTP/1.1 $error blabla",
-            "Content-Type: text/plain",
-            "",
-            "Hello there!"
+            'Content-Type: text/plain',
+            '',
+            'Hello there!',
         );
 
         $client->response = array(
@@ -397,7 +384,7 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
                 'http_code' => $error,
             ),
             0,
-            ""
+            '',
         );
 
         $caught = false;
@@ -410,12 +397,10 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
         if (!$caught) {
             $this->fail('Exception was not thrown');
         }
-
-
     }
 
-    public function supportedHTTPCodes() {
-
+    public function supportedHTTPCodes()
+    {
         return array(
             array(400),
             array(401),
@@ -430,11 +415,10 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
             array(501),
             array(507),
         );
-
     }
 
-    function testGetAbsoluteUrl() {
-
+    public function testGetAbsoluteUrl()
+    {
         $client = new Sabre_DAV_ClientMock(array(
             'baseUri' => 'http://example.org/foo/',
         ));
@@ -453,19 +437,18 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
             'http://example.com/bar',
             $client->getAbsoluteUrl('http://example.com/bar')
         );
-
     }
 
-    function testOptions() {
-
+    public function testOptions()
+    {
         $client = new Sabre_DAV_ClientMock(array(
             'baseUri' => 'http://example.org/foo/bar/',
         ));
 
         $responseBlob = array(
-            "HTTP/1.1 200 OK",
-            "DAV: feature1, feature2",
-            "",
+            'HTTP/1.1 200 OK',
+            'DAV: feature1, feature2',
+            '',
         );
 
         $client->response = array(
@@ -475,7 +458,7 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
                 'http_code' => 200,
             ),
             0,
-            ""
+            '',
         );
 
         $result = $client->options();
@@ -483,18 +466,17 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
             array('feature1', 'feature2'),
             $result
         );
-
     }
 
-    function testOptionsNoDav() {
-
+    public function testOptionsNoDav()
+    {
         $client = new Sabre_DAV_ClientMock(array(
             'baseUri' => 'http://example.org/foo/bar/',
         ));
 
         $responseBlob = array(
-            "HTTP/1.1 200 OK",
-            "",
+            'HTTP/1.1 200 OK',
+            '',
         );
 
         $client->response = array(
@@ -504,7 +486,7 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
                 'http_code' => 200,
             ),
             0,
-            ""
+            '',
         );
 
         $result = $client->options();
@@ -512,21 +494,20 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
             array(),
             $result
         );
-
     }
 
     /**
      * @expectedException InvalidArgumentException
      */
-    function testPropFindNoXML() {
-
+    public function testPropFindNoXML()
+    {
         $client = new Sabre_DAV_ClientMock(array(
             'baseUri' => 'http://example.org/foo/bar/',
         ));
 
         $responseBlob = array(
-            "HTTP/1.1 200 OK",
-            "",
+            'HTTP/1.1 200 OK',
+            '',
         );
 
         $client->response = array(
@@ -536,40 +517,39 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
                 'http_code' => 200,
             ),
             0,
-            ""
+            '',
         );
 
-        $client->propfind('', array('{DAV:}foo','{DAV:}bar'));
-
+        $client->propfind('', array('{DAV:}foo', '{DAV:}bar'));
     }
 
-    function testPropFind() {
-
+    public function testPropFind()
+    {
         $client = new Sabre_DAV_ClientMock(array(
             'baseUri' => 'http://example.org/foo/bar/',
         ));
 
         $responseBlob = array(
-            "HTTP/1.1 200 OK",
-            "",
-            "<?xml version=\"1.0\"?>",
-            "<d:multistatus xmlns:d=\"DAV:\">",
-            "  <d:response>",
-            "    <d:href>/foo/bar/</d:href>",
-            "    <d:propstat>",
-            "      <d:prop>",
-            "         <d:foo>hello</d:foo>",
-            "      </d:prop>",
-            "      <d:status>HTTP/1.1 200 OK</d:status>",
-            "    </d:propstat>",
-            "    <d:propstat>",
-            "      <d:prop>",
-            "         <d:bar />",
-            "      </d:prop>",
-            "      <d:status>HTTP/1.1 404 Not Found</d:status>",
-            "    </d:propstat>",
-            "  </d:response>",
-            "</d:multistatus>",
+            'HTTP/1.1 200 OK',
+            '',
+            '<?xml version="1.0"?>',
+            '<d:multistatus xmlns:d="DAV:">',
+            '  <d:response>',
+            '    <d:href>/foo/bar/</d:href>',
+            '    <d:propstat>',
+            '      <d:prop>',
+            '         <d:foo>hello</d:foo>',
+            '      </d:prop>',
+            '      <d:status>HTTP/1.1 200 OK</d:status>',
+            '    </d:propstat>',
+            '    <d:propstat>',
+            '      <d:prop>',
+            '         <d:bar />',
+            '      </d:prop>',
+            '      <d:status>HTTP/1.1 404 Not Found</d:status>',
+            '    </d:propstat>',
+            '  </d:response>',
+            '</d:multistatus>',
         );
 
         $client->response = array(
@@ -579,10 +559,10 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
                 'http_code' => 200,
             ),
             0,
-            ""
+            '',
         );
 
-        $result = $client->propfind('', array('{DAV:}foo','{DAV:}bar'));
+        $result = $client->propfind('', array('{DAV:}foo', '{DAV:}bar'));
 
         $this->assertEquals(array(
             '{DAV:}foo' => 'hello',
@@ -595,36 +575,35 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
             '    <d:foo />',
             '    <d:bar />',
             '  </d:prop>',
-            '</d:propfind>'
+            '</d:propfind>',
         );
         $requestBody = implode("\n", $requestBody);
 
         $this->assertEquals($requestBody, $client->curlSettings[CURLOPT_POSTFIELDS]);
-
     }
 
-    function testPropFindDepth1CustomProp() {
-
+    public function testPropFindDepth1CustomProp()
+    {
         $client = new Sabre_DAV_ClientMock(array(
             'baseUri' => 'http://example.org/foo/bar/',
         ));
 
         $responseBlob = array(
-            "HTTP/1.1 200 OK",
-            "",
-            "<?xml version=\"1.0\"?>",
-            "<d:multistatus xmlns:d=\"DAV:\" xmlns:x=\"urn:custom\">",
-            "  <d:response>",
-            "    <d:href>/foo/bar/</d:href>",
-            "    <d:propstat>",
-            "      <d:prop>",
-            "         <d:foo>hello</d:foo>",
-            "         <x:bar>world</x:bar>",
-            "      </d:prop>",
-            "      <d:status>HTTP/1.1 200 OK</d:status>",
-            "    </d:propstat>",
-            "  </d:response>",
-            "</d:multistatus>",
+            'HTTP/1.1 200 OK',
+            '',
+            '<?xml version="1.0"?>',
+            '<d:multistatus xmlns:d="DAV:" xmlns:x="urn:custom">',
+            '  <d:response>',
+            '    <d:href>/foo/bar/</d:href>',
+            '    <d:propstat>',
+            '      <d:prop>',
+            '         <d:foo>hello</d:foo>',
+            '         <x:bar>world</x:bar>',
+            '      </d:prop>',
+            '      <d:status>HTTP/1.1 200 OK</d:status>',
+            '    </d:propstat>',
+            '  </d:response>',
+            '</d:multistatus>',
         );
 
         $client->response = array(
@@ -634,13 +613,13 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
                 'http_code' => 200,
             ),
             0,
-            ""
+            '',
         );
 
-        $result = $client->propfind('', array('{DAV:}foo','{urn:custom}bar'),1);
+        $result = $client->propfind('', array('{DAV:}foo', '{urn:custom}bar'), 1);
 
         $this->assertEquals(array(
-            "/foo/bar/" => array(
+            '/foo/bar/' => array(
                 '{DAV:}foo' => 'hello',
                 '{urn:custom}bar' => 'world',
             ),
@@ -653,23 +632,22 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
             '    <d:foo />',
             '    <x:bar xmlns:x="urn:custom"/>',
             '  </d:prop>',
-            '</d:propfind>'
+            '</d:propfind>',
         );
         $requestBody = implode("\n", $requestBody);
 
         $this->assertEquals($requestBody, $client->curlSettings[CURLOPT_POSTFIELDS]);
-
     }
 
-    function testPropPatch() {
-
+    public function testPropPatch()
+    {
         $client = new Sabre_DAV_ClientMock(array(
             'baseUri' => 'http://example.org/foo/bar/',
         ));
 
         $responseBlob = array(
-            "HTTP/1.1 200 OK",
-            "",
+            'HTTP/1.1 200 OK',
+            '',
         );
 
         $client->response = array(
@@ -679,7 +657,7 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
                 'http_code' => 200,
             ),
             0,
-            ""
+            '',
         );
 
         $client->proppatch('', array(
@@ -704,25 +682,24 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
             '<d:remove><d:prop>',
             '    <x:bar xmlns:x="urn:custom"/>',
             '</d:prop></d:remove>',
-            '</d:propertyupdate>'
+            '</d:propertyupdate>',
         );
         $requestBody = implode("\n", $requestBody);
 
         $this->assertEquals($requestBody, $client->curlSettings[CURLOPT_POSTFIELDS]);
-
     }
 
-    function testHEADRequest() {
-
+    public function testHEADRequest()
+    {
         $client = new Sabre_DAV_ClientMock(array(
             'baseUri' => 'http://example.org/foo/bar/',
         ));
 
         $responseBlob = array(
-            "HTTP/1.1 200 OK",
-            "Content-Type: text/plain",
-            "",
-            "Hello there!"
+            'HTTP/1.1 200 OK',
+            'Content-Type: text/plain',
+            '',
+            'Hello there!',
         );
 
         $client->response = array(
@@ -732,7 +709,7 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
                 'http_code' => 200,
             ),
             0,
-            ""
+            '',
         );
 
         $result = $client->request('HEAD', 'baz');
@@ -748,20 +725,19 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
             CURLOPT_HTTPHEADER => array(),
             CURLOPT_POSTFIELDS => null,
         ), $client->curlSettings);
-
     }
 
-    function testPUTRequest() {
-
+    public function testPUTRequest()
+    {
         $client = new Sabre_DAV_ClientMock(array(
             'baseUri' => 'http://example.org/foo/bar/',
         ));
 
         $responseBlob = array(
-            "HTTP/1.1 200 OK",
-            "Content-Type: text/plain",
-            "",
-            "Hello there!"
+            'HTTP/1.1 200 OK',
+            'Content-Type: text/plain',
+            '',
+            'Hello there!',
         );
 
         $client->response = array(
@@ -771,21 +747,20 @@ class Sabre_DAV_ClientTest extends PHPUnit_Framework_TestCase {
                 'http_code' => 200,
             ),
             0,
-            ""
+            '',
         );
 
-        $result = $client->request('PUT', 'bar','newcontent');
+        $result = $client->request('PUT', 'bar', 'newcontent');
 
         $this->assertEquals('http://example.org/foo/bar/bar', $client->url);
         $this->assertEquals(array(
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_MAXREDIRS => 5,
-            CURLOPT_CUSTOMREQUEST => "PUT",
+            CURLOPT_CUSTOMREQUEST => 'PUT',
             CURLOPT_POSTFIELDS => 'newcontent',
             CURLOPT_HEADER => true,
             CURLOPT_HTTPHEADER => array(),
         ), $client->curlSettings);
-
     }
 }

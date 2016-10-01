@@ -1,3 +1,3 @@
 <?php
 
-$a->strings["Infinite Improbability Drive"] = "无穷不至于机车";
+$a->strings['Infinite Improbability Drive'] = '无穷不至于机车';

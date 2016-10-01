@@ -1,16 +1,15 @@
 <?php
 
-class Sabre_CalDAV_Backend_AbstractTest extends PHPUnit_Framework_TestCase {
-
-    function testUpdateCalendar() {
-
+class Sabre_CalDAV_Backend_AbstractTest extends PHPUnit_Framework_TestCase
+{
+    public function testUpdateCalendar()
+    {
         $abstract = new Sabre_CalDAV_Backend_AbstractMock();
         $this->assertEquals(false, $abstract->updateCalendar('randomid', array('{DAV:}displayname' => 'anything')));
-
     }
 
-    function testCalendarQuery() {
-
+    public function testCalendarQuery()
+    {
         $abstract = new Sabre_CalDAV_Backend_AbstractMock();
         $filters = array(
             'name' => 'VCALENDAR',
@@ -31,18 +30,22 @@ class Sabre_CalDAV_Backend_AbstractTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(array(
             'event1.ics',
         ), $abstract->calendarQuery(1, $filters));
-
     }
-
 }
 
-class Sabre_CalDAV_Backend_AbstractMock extends Sabre_CalDAV_Backend_Abstract {
-
-    function getCalendarsForUser($principalUri) { }
-    function createCalendar($principalUri,$calendarUri,array $properties) { }
-    function deleteCalendar($calendarId) { }
-    function getCalendarObjects($calendarId) { 
-
+class Sabre_CalDAV_Backend_AbstractMock extends Sabre_CalDAV_Backend_Abstract
+{
+    public function getCalendarsForUser($principalUri)
+    {
+    }
+    public function createCalendar($principalUri, $calendarUri, array $properties)
+    {
+    }
+    public function deleteCalendar($calendarId)
+    {
+    }
+    public function getCalendarObjects($calendarId)
+    {
         return array(
             array(
                 'id' => 1,
@@ -55,20 +58,19 @@ class Sabre_CalDAV_Backend_AbstractMock extends Sabre_CalDAV_Backend_Abstract {
                 'uri' => 'task1.ics',
             ),
         );
-
     }
-    function getCalendarObject($calendarId,$objectUri) { 
+    public function getCalendarObject($calendarId, $objectUri)
+    {
+        switch ($objectUri) {
 
-        switch($objectUri) {
-
-            case 'event1.ics' :
+            case 'event1.ics':
                 return array(
                     'id' => 1,
                     'calendarid' => 1,
                     'uri' => 'event1.ics',
                     'calendardata' => "BEGIN:VCALENDAR\r\nBEGIN:VEVENT\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n",
                 );
-            case 'task1.ics' :
+            case 'task1.ics':
                 return array(
                     'id' => 1,
                     'calendarid' => 1,
@@ -77,10 +79,14 @@ class Sabre_CalDAV_Backend_AbstractMock extends Sabre_CalDAV_Backend_Abstract {
                 );
 
         }
-
     }
-    function createCalendarObject($calendarId,$objectUri,$calendarData) { }
-    function updateCalendarObject($calendarId,$objectUri,$calendarData) { }
-    function deleteCalendarObject($calendarId,$objectUri) { }
-
+    public function createCalendarObject($calendarId, $objectUri, $calendarData)
+    {
+    }
+    public function updateCalendarObject($calendarId, $objectUri, $calendarData)
+    {
+    }
+    public function deleteCalendarObject($calendarId, $objectUri)
+    {
+    }
 }

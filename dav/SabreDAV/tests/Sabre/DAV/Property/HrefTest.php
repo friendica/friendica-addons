@@ -1,22 +1,21 @@
 <?php
 
-class Sabre_DAV_Property_HrefTest extends PHPUnit_Framework_TestCase {
-
-    function testConstruct() {
-
+class Sabre_DAV_Property_HrefTest extends PHPUnit_Framework_TestCase
+{
+    public function testConstruct()
+    {
         $href = new Sabre_DAV_Property_Href('path');
-        $this->assertEquals('path',$href->getHref());
-
+        $this->assertEquals('path', $href->getHref());
     }
 
-    function testSerialize() {
-
+    public function testSerialize()
+    {
         $href = new Sabre_DAV_Property_Href('path');
-        $this->assertEquals('path',$href->getHref());
+        $this->assertEquals('path', $href->getHref());
 
         $doc = new DOMDocument();
         $root = $doc->createElement('d:anything');
-        $root->setAttribute('xmlns:d','DAV:');
+        $root->setAttribute('xmlns:d', 'DAV:');
 
         $doc->appendChild($root);
         $server = new Sabre_DAV_Server();
@@ -30,17 +29,16 @@ class Sabre_DAV_Property_HrefTest extends PHPUnit_Framework_TestCase {
 '<?xml version="1.0"?>
 <d:anything xmlns:d="DAV:"><d:href>/bla/path</d:href></d:anything>
 ', $xml);
-
     }
 
-    function testSerializeNoPrefix() {
-
-        $href = new Sabre_DAV_Property_Href('path',false);
-        $this->assertEquals('path',$href->getHref());
+    public function testSerializeNoPrefix()
+    {
+        $href = new Sabre_DAV_Property_Href('path', false);
+        $this->assertEquals('path', $href->getHref());
 
         $doc = new DOMDocument();
         $root = $doc->createElement('d:anything');
-        $root->setAttribute('xmlns:d','DAV:');
+        $root->setAttribute('xmlns:d', 'DAV:');
 
         $doc->appendChild($root);
         $server = new Sabre_DAV_Server();
@@ -54,11 +52,10 @@ class Sabre_DAV_Property_HrefTest extends PHPUnit_Framework_TestCase {
 '<?xml version="1.0"?>
 <d:anything xmlns:d="DAV:"><d:href>path</d:href></d:anything>
 ', $xml);
-
     }
 
-    function testUnserialize() {
-
+    public function testUnserialize()
+    {
         $xml = '<?xml version="1.0"?>
 <d:anything xmlns:d="DAV:"><d:href>/bla/path</d:href></d:anything>
 ';
@@ -67,12 +64,11 @@ class Sabre_DAV_Property_HrefTest extends PHPUnit_Framework_TestCase {
         $dom->loadXML($xml);
 
         $href = Sabre_DAV_Property_Href::unserialize($dom->firstChild);
-        $this->assertEquals('/bla/path',$href->getHref());
-
+        $this->assertEquals('/bla/path', $href->getHref());
     }
 
-    function testUnserializeIncompatible() {
-
+    public function testUnserializeIncompatible()
+    {
         $xml = '<?xml version="1.0"?>
 <d:anything xmlns:d="DAV:"><d:href2>/bla/path</d:href2></d:anything>
 ';
@@ -82,7 +78,5 @@ class Sabre_DAV_Property_HrefTest extends PHPUnit_Framework_TestCase {
 
         $href = Sabre_DAV_Property_Href::unserialize($dom->firstChild);
         $this->assertNull($href);
-
     }
-
 }

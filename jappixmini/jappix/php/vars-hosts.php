@@ -14,8 +14,9 @@ Last revision: 27/05/11
 */
 
 // Someone is trying to hack us?
-if(!defined('JAPPIX_BASE'))
-	exit;
+if (!defined('JAPPIX_BASE')) {
+    exit;
+}
 
 // Define the vars with the hosts configuration constants
 $host_main = htmlspecialchars(HOST_MAIN);
@@ -28,5 +29,3 @@ $host_bosh_main = htmlspecialchars(HOST_BOSH_MAIN);
 $host_bosh_mini = htmlspecialchars(HOST_BOSH_MINI);
 $host_static = htmlspecialchars(HOST_STATIC);
 $host_upload = htmlspecialchars(HOST_UPLOAD);
-
-?>

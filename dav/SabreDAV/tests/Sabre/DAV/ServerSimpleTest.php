@@ -4,46 +4,43 @@ require_once 'Sabre/HTTP/ResponseMock.php';
 require_once 'Sabre/DAV/AbstractServer.php';
 require_once 'Sabre/DAV/Exception.php';
 
-class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
-
-    function testConstructArray() {
-
+class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer
+{
+    public function testConstructArray()
+    {
         $nodes = array(
-            new Sabre_DAV_SimpleCollection('hello')
+            new Sabre_DAV_SimpleCollection('hello'),
         );
 
         $server = new Sabre_DAV_Server($nodes);
         $this->assertEquals($nodes[0], $server->tree->getNodeForPath('hello'));
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception
      */
-    function testConstructIncorrectObj() {
-
+    public function testConstructIncorrectObj()
+    {
         $nodes = array(
             new Sabre_DAV_SimpleCollection('hello'),
             new STDClass(),
         );
 
         $server = new Sabre_DAV_Server($nodes);
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception
      */
-    function testConstructInvalidArg() {
-
+    public function testConstructInvalidArg()
+    {
         $server = new Sabre_DAV_Server(1);
-
     }
 
-    function testGet() {
-
+    public function testGet()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/test.txt',
+            'REQUEST_URI' => '/test.txt',
             'REQUEST_METHOD' => 'GET',
         );
 
@@ -54,54 +51,50 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
         $this->assertEquals(array(
             'Content-Type' => 'application/octet-stream',
             'Content-Length' => 13,
-            'Last-Modified' => Sabre_HTTP_Util::toHTTPDate(new DateTime('@' . filemtime($this->tempDir . '/test.txt'))),
+            'Last-Modified' => Sabre_HTTP_Util::toHTTPDate(new DateTime('@'.filemtime($this->tempDir.'/test.txt'))),
             ),
             $this->response->headers
          );
 
-        $this->assertEquals('HTTP/1.1 200 OK',$this->response->status);
+        $this->assertEquals('HTTP/1.1 200 OK', $this->response->status);
         $this->assertEquals('Test contents', stream_get_contents($this->response->body));
-
     }
 
-    function testGetDoesntExist() {
-
+    public function testGetDoesntExist()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/test.txt_randomblbla',
+            'REQUEST_URI' => '/test.txt_randomblbla',
             'REQUEST_METHOD' => 'GET',
         );
 
         $request = new Sabre_HTTP_Request($serverVars);
         $this->server->httpRequest = ($request);
         $this->server->exec();
-        $this->assertEquals('HTTP/1.1 404 Not Found',$this->response->status);
-
+        $this->assertEquals('HTTP/1.1 404 Not Found', $this->response->status);
     }
 
-    function testGetDoesntExist2() {
-
+    public function testGetDoesntExist2()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/test.txt/randomblbla',
+            'REQUEST_URI' => '/test.txt/randomblbla',
             'REQUEST_METHOD' => 'GET',
         );
 
         $request = new Sabre_HTTP_Request($serverVars);
         $this->server->httpRequest = ($request);
         $this->server->exec();
-        $this->assertEquals('HTTP/1.1 404 Not Found',$this->response->status);
-
+        $this->assertEquals('HTTP/1.1 404 Not Found', $this->response->status);
     }
 
     /**
      * This test should have the exact same result as testGet.
      *
      * The idea is that double slashes // are converted to single ones /
-     *
      */
-    function testGetDoubleSlash() {
-
+    public function testGetDoubleSlash()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '//test.txt',
+            'REQUEST_URI' => '//test.txt',
             'REQUEST_METHOD' => 'GET',
         );
 
@@ -112,21 +105,19 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
         $this->assertEquals(array(
             'Content-Type' => 'application/octet-stream',
             'Content-Length' => 13,
-            'Last-Modified' => Sabre_HTTP_Util::toHTTPDate(new DateTime('@' . filemtime($this->tempDir . '/test.txt'))),
+            'Last-Modified' => Sabre_HTTP_Util::toHTTPDate(new DateTime('@'.filemtime($this->tempDir.'/test.txt'))),
             ),
             $this->response->headers
          );
 
-        $this->assertEquals('HTTP/1.1 200 OK',$this->response->status);
+        $this->assertEquals('HTTP/1.1 200 OK', $this->response->status);
         $this->assertEquals('Test contents', stream_get_contents($this->response->body));
-
     }
 
-
-    function testHEAD() {
-
+    public function testHEAD()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/test.txt',
+            'REQUEST_URI' => '/test.txt',
             'REQUEST_METHOD' => 'HEAD',
         );
 
@@ -137,20 +128,19 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
         $this->assertEquals(array(
             'Content-Type' => 'application/octet-stream',
             'Content-Length' => 13,
-            'Last-Modified' => Sabre_HTTP_Util::toHTTPDate(new DateTime('@' .  filemtime($this->tempDir . '/test.txt'))),
+            'Last-Modified' => Sabre_HTTP_Util::toHTTPDate(new DateTime('@'.filemtime($this->tempDir.'/test.txt'))),
             ),
             $this->response->headers
          );
 
-        $this->assertEquals('HTTP/1.1 200 OK',$this->response->status);
+        $this->assertEquals('HTTP/1.1 200 OK', $this->response->status);
         $this->assertEquals('', $this->response->body);
-
     }
 
-    function testPut() {
-
+    public function testPut()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/testput.txt',
+            'REQUEST_URI' => '/testput.txt',
             'REQUEST_METHOD' => 'PUT',
         );
 
@@ -160,19 +150,18 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
         $this->server->exec();
 
         $this->assertEquals('', $this->response->body);
-        $this->assertEquals('HTTP/1.1 201 Created',$this->response->status);
+        $this->assertEquals('HTTP/1.1 201 Created', $this->response->status);
         $this->assertEquals(array(
-            "Content-Length" => "0",
+            'Content-Length' => '0',
         ), $this->response->headers);
 
-        $this->assertEquals('Testing new file',file_get_contents($this->tempDir . '/testput.txt'));
-
+        $this->assertEquals('Testing new file', file_get_contents($this->tempDir.'/testput.txt'));
     }
 
-    function testPutAlreadyExists() {
-
+    public function testPutAlreadyExists()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/test.txt',
+            'REQUEST_URI' => '/test.txt',
             'REQUEST_METHOD' => 'PUT',
             'HTTP_IF_NONE_MATCH' => '*',
         );
@@ -184,17 +173,16 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
 
         $this->assertEquals(array(
             'Content-Type' => 'application/xml; charset=utf-8',
-        ),$this->response->headers);
+        ), $this->response->headers);
 
-        $this->assertEquals('HTTP/1.1 412 Precondition failed',$this->response->status);
-        $this->assertNotEquals('Testing new file',file_get_contents($this->tempDir . '/test.txt'));
-
+        $this->assertEquals('HTTP/1.1 412 Precondition failed', $this->response->status);
+        $this->assertNotEquals('Testing new file', file_get_contents($this->tempDir.'/test.txt'));
     }
 
-    function testPutUpdate() {
-
+    public function testPutUpdate()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/test.txt',
+            'REQUEST_URI' => '/test.txt',
             'REQUEST_METHOD' => 'PUT',
         );
 
@@ -205,16 +193,15 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
 
         $this->assertEquals('0', $this->response->headers['Content-Length']);
 
-        $this->assertEquals('HTTP/1.1 204 No Content',$this->response->status);
+        $this->assertEquals('HTTP/1.1 204 No Content', $this->response->status);
         $this->assertEquals('', $this->response->body);
-        $this->assertEquals('Testing updated file',file_get_contents($this->tempDir . '/test.txt'));
-
+        $this->assertEquals('Testing updated file', file_get_contents($this->tempDir.'/test.txt'));
     }
 
-    function testPutContentRange() {
-
+    public function testPutContentRange()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/testput.txt',
+            'REQUEST_URI' => '/testput.txt',
             'REQUEST_METHOD' => 'PUT',
             'HTTP_CONTENT_RANGE' => 'bytes/100-200',
         );
@@ -224,15 +211,13 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
         $this->server->httpRequest = ($request);
         $this->server->exec();
 
-        $this->assertEquals('HTTP/1.1 501 Not Implemented',$this->response->status);
-
+        $this->assertEquals('HTTP/1.1 501 Not Implemented', $this->response->status);
     }
 
-
-    function testDelete() {
-
+    public function testDelete()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/test.txt',
+            'REQUEST_URI' => '/test.txt',
             'REQUEST_METHOD' => 'DELETE',
         );
 
@@ -242,23 +227,22 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
 
         $this->assertEquals(array(
             'Content-Length' => '0',
-        ),$this->response->headers);
+        ), $this->response->headers);
 
-        $this->assertEquals('HTTP/1.1 204 No Content',$this->response->status);
+        $this->assertEquals('HTTP/1.1 204 No Content', $this->response->status);
         $this->assertEquals('', $this->response->body);
-        $this->assertFalse(file_exists($this->tempDir . '/test.txt'));
-
+        $this->assertFalse(file_exists($this->tempDir.'/test.txt'));
     }
 
-    function testDeleteDirectory() {
-
+    public function testDeleteDirectory()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/testcol',
+            'REQUEST_URI' => '/testcol',
             'REQUEST_METHOD' => 'DELETE',
         );
 
         mkdir($this->tempDir.'/testcol');
-        file_put_contents($this->tempDir.'/testcol/test.txt','Hi! I\'m a file with a short lifespan');
+        file_put_contents($this->tempDir.'/testcol/test.txt', 'Hi! I\'m a file with a short lifespan');
 
         $request = new Sabre_HTTP_Request($serverVars);
         $this->server->httpRequest = ($request);
@@ -266,17 +250,16 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
 
         $this->assertEquals(array(
             'Content-Length' => '0',
-        ),$this->response->headers);
-        $this->assertEquals('HTTP/1.1 204 No Content',$this->response->status);
+        ), $this->response->headers);
+        $this->assertEquals('HTTP/1.1 204 No Content', $this->response->status);
         $this->assertEquals('', $this->response->body);
-        $this->assertFalse(file_exists($this->tempDir . '/col'));
-
+        $this->assertFalse(file_exists($this->tempDir.'/col'));
     }
 
-    function testOptions() {
-
+    public function testOptions()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/',
+            'REQUEST_URI' => '/',
             'REQUEST_METHOD' => 'OPTIONS',
         );
 
@@ -285,23 +268,21 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
         $this->server->exec();
 
         $this->assertEquals(array(
-            'DAV'            => '1, 3, extended-mkcol',
-            'MS-Author-Via'  => 'DAV',
-            'Allow'          => 'OPTIONS, GET, HEAD, DELETE, PROPFIND, PUT, PROPPATCH, COPY, MOVE, REPORT',
-            'Accept-Ranges'  => 'bytes',
+            'DAV' => '1, 3, extended-mkcol',
+            'MS-Author-Via' => 'DAV',
+            'Allow' => 'OPTIONS, GET, HEAD, DELETE, PROPFIND, PUT, PROPPATCH, COPY, MOVE, REPORT',
+            'Accept-Ranges' => 'bytes',
             'Content-Length' => '0',
             'X-Sabre-Version' => Sabre_DAV_Version::VERSION,
-        ),$this->response->headers);
+        ), $this->response->headers);
 
-        $this->assertEquals('HTTP/1.1 200 OK',$this->response->status);
+        $this->assertEquals('HTTP/1.1 200 OK', $this->response->status);
         $this->assertEquals('', $this->response->body);
-
-
     }
-    function testNonExistantMethod() {
-
+    public function testNonExistantMethod()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/',
+            'REQUEST_URI' => '/',
             'REQUEST_METHOD' => 'BLABLA',
         );
 
@@ -311,17 +292,15 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
 
         $this->assertEquals(array(
             'Content-Type' => 'application/xml; charset=utf-8',
-        ),$this->response->headers);
+        ), $this->response->headers);
 
-        $this->assertEquals('HTTP/1.1 501 Not Implemented',$this->response->status);
-
-
+        $this->assertEquals('HTTP/1.1 501 Not Implemented', $this->response->status);
     }
 
-    function testGETOnCollection() {
-
+    public function testGETOnCollection()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/',
+            'REQUEST_URI' => '/',
             'REQUEST_METHOD' => 'GET',
         );
 
@@ -331,16 +310,15 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
 
         $this->assertEquals(array(
             'Content-Type' => 'application/xml; charset=utf-8',
-        ),$this->response->headers);
+        ), $this->response->headers);
 
-        $this->assertEquals('HTTP/1.1 501 Not Implemented',$this->response->status);
-
+        $this->assertEquals('HTTP/1.1 501 Not Implemented', $this->response->status);
     }
 
-    function testHEADOnCollection() {
-
+    public function testHEADOnCollection()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/',
+            'REQUEST_URI' => '/',
             'REQUEST_METHOD' => 'HEAD',
         );
 
@@ -348,57 +326,53 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
         $this->server->httpRequest = ($request);
         $this->server->exec();
 
-        $this->assertEquals('HTTP/1.1 200 OK',$this->response->status);
-
+        $this->assertEquals('HTTP/1.1 200 OK', $this->response->status);
     }
 
-    function testBaseUri() {
-
+    public function testBaseUri()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/blabla/test.txt',
+            'REQUEST_URI' => '/blabla/test.txt',
             'REQUEST_METHOD' => 'GET',
         );
 
         $request = new Sabre_HTTP_Request($serverVars);
         $this->server->setBaseUri('/blabla/');
-        $this->assertEquals('/blabla/',$this->server->getBaseUri());
+        $this->assertEquals('/blabla/', $this->server->getBaseUri());
         $this->server->httpRequest = ($request);
         $this->server->exec();
 
         $this->assertEquals(array(
             'Content-Type' => 'application/octet-stream',
             'Content-Length' => 13,
-            'Last-Modified' => Sabre_HTTP_Util::toHTTPDate(new DateTime('@' . filemtime($this->tempDir . '/test.txt'))),
+            'Last-Modified' => Sabre_HTTP_Util::toHTTPDate(new DateTime('@'.filemtime($this->tempDir.'/test.txt'))),
             ),
             $this->response->headers
          );
 
-        $this->assertEquals('HTTP/1.1 200 OK',$this->response->status);
+        $this->assertEquals('HTTP/1.1 200 OK', $this->response->status);
         $this->assertEquals('Test contents', stream_get_contents($this->response->body));
-
     }
 
-    function testBaseUriAddSlash() {
-
+    public function testBaseUriAddSlash()
+    {
         $tests = array(
-            '/'         => '/',
-            '/foo'      => '/foo/',
-            '/foo/'     => '/foo/',
-            '/foo/bar'  => '/foo/bar/',
+            '/' => '/',
+            '/foo' => '/foo/',
+            '/foo/' => '/foo/',
+            '/foo/bar' => '/foo/bar/',
             '/foo/bar/' => '/foo/bar/',
         );
 
-        foreach($tests as $test=>$result) {
+        foreach ($tests as $test => $result) {
             $this->server->setBaseUri($test);
 
             $this->assertEquals($result, $this->server->getBaseUri());
-
         }
-
     }
 
-    function testCalculateUri() {
-
+    public function testCalculateUri()
+    {
         $uris = array(
             'http://www.example.org/root/somepath',
             '/root/somepath',
@@ -407,89 +381,73 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
 
         $this->server->setBaseUri('/root/');
 
-        foreach($uris as $uri) {
-
-            $this->assertEquals('somepath',$this->server->calculateUri($uri));
-
+        foreach ($uris as $uri) {
+            $this->assertEquals('somepath', $this->server->calculateUri($uri));
         }
 
         $this->server->setBaseUri('/root');
 
-        foreach($uris as $uri) {
-
-            $this->assertEquals('somepath',$this->server->calculateUri($uri));
-
+        foreach ($uris as $uri) {
+            $this->assertEquals('somepath', $this->server->calculateUri($uri));
         }
 
         $this->assertEquals('', $this->server->calculateUri('/root'));
-
     }
 
-    function testCalculateUriSpecialChars() {
-
+    public function testCalculateUriSpecialChars()
+    {
         $uris = array(
             'http://www.example.org/root/%C3%A0fo%C3%B3',
             '/root/%C3%A0fo%C3%B3',
-            '/root/%C3%A0fo%C3%B3/'
+            '/root/%C3%A0fo%C3%B3/',
         );
 
         $this->server->setBaseUri('/root/');
 
-        foreach($uris as $uri) {
-
-            $this->assertEquals("\xc3\xa0fo\xc3\xb3",$this->server->calculateUri($uri));
-
+        foreach ($uris as $uri) {
+            $this->assertEquals("\xc3\xa0fo\xc3\xb3", $this->server->calculateUri($uri));
         }
 
         $this->server->setBaseUri('/root');
 
-        foreach($uris as $uri) {
-
-            $this->assertEquals("\xc3\xa0fo\xc3\xb3",$this->server->calculateUri($uri));
-
+        foreach ($uris as $uri) {
+            $this->assertEquals("\xc3\xa0fo\xc3\xb3", $this->server->calculateUri($uri));
         }
 
         $this->server->setBaseUri('/');
 
-        foreach($uris as $uri) {
-
-            $this->assertEquals("root/\xc3\xa0fo\xc3\xb3",$this->server->calculateUri($uri));
-
+        foreach ($uris as $uri) {
+            $this->assertEquals("root/\xc3\xa0fo\xc3\xb3", $this->server->calculateUri($uri));
         }
-
     }
 
-    function testBaseUriCheck() {
-
+    public function testBaseUriCheck()
+    {
         $uris = array(
             'http://www.example.org/root/somepath',
             '/root/somepath',
-            '/root/somepath/'
+            '/root/somepath/',
         );
 
         try {
-
             $this->server->setBaseUri('root/');
             $this->server->calculateUri('/root/testuri');
 
             $this->fail('Expected an exception');
-
         } catch (Sabre_DAV_Exception_Forbidden $e) {
 
             // This was expected
-
         }
-
     }
 
     /**
      * @covers Sabre_DAV_Server::guessBaseUri
      */
-    function testGuessBaseUri() {
-
+    public function testGuessBaseUri()
+    {
         $serverVars = array(
             'REQUEST_URI' => '/index.php/root',
-            'PATH_INFO'   => '/root',
+            'PATH_INFO' => '/root',
         );
 
         $httpRequest = new Sabre_HTTP_Request($serverVars);
@@ -497,18 +455,17 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
         $server->httpRequest = $httpRequest;
 
         $this->assertEquals('/index.php/', $server->guessBaseUri());
-
     }
 
     /**
      * @depends testGuessBaseUri
      * @covers Sabre_DAV_Server::guessBaseUri
      */
-    function testGuessBaseUriPercentEncoding() {
-
+    public function testGuessBaseUriPercentEncoding()
+    {
         $serverVars = array(
             'REQUEST_URI' => '/index.php/dir/path2/path%20with%20spaces',
-            'PATH_INFO'   => '/dir/path2/path with spaces',
+            'PATH_INFO' => '/dir/path2/path with spaces',
         );
 
         $httpRequest = new Sabre_HTTP_Request($serverVars);
@@ -516,7 +473,6 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
         $server->httpRequest = $httpRequest;
 
         $this->assertEquals('/index.php/', $server->guessBaseUri());
-
     }
 
     /**
@@ -540,11 +496,11 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
 
     }*/
 
-    function testGuessBaseUri2() {
-
+    public function testGuessBaseUri2()
+    {
         $serverVars = array(
             'REQUEST_URI' => '/index.php/root/',
-            'PATH_INFO'   => '/root/',
+            'PATH_INFO' => '/root/',
         );
 
         $httpRequest = new Sabre_HTTP_Request($serverVars);
@@ -552,11 +508,10 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
         $server->httpRequest = $httpRequest;
 
         $this->assertEquals('/index.php/', $server->guessBaseUri());
-
     }
 
-    function testGuessBaseUriNoPathInfo() {
-
+    public function testGuessBaseUriNoPathInfo()
+    {
         $serverVars = array(
             'REQUEST_URI' => '/index.php/root',
         );
@@ -566,11 +521,10 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
         $server->httpRequest = $httpRequest;
 
         $this->assertEquals('/', $server->guessBaseUri());
-
     }
 
-    function testGuessBaseUriNoPathInfo2() {
-
+    public function testGuessBaseUriNoPathInfo2()
+    {
         $serverVars = array(
             'REQUEST_URI' => '/a/b/c/test.php',
         );
@@ -580,19 +534,17 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
         $server->httpRequest = $httpRequest;
 
         $this->assertEquals('/', $server->guessBaseUri());
-
     }
-
 
     /**
      * @covers Sabre_DAV_Server::guessBaseUri
      * @depends testGuessBaseUri
      */
-    function testGuessBaseUriQueryString() {
-
+    public function testGuessBaseUriQueryString()
+    {
         $serverVars = array(
             'REQUEST_URI' => '/index.php/root?query_string=blabla',
-            'PATH_INFO'   => '/root',
+            'PATH_INFO' => '/root',
         );
 
         $httpRequest = new Sabre_HTTP_Request($serverVars);
@@ -600,32 +552,29 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
         $server->httpRequest = $httpRequest;
 
         $this->assertEquals('/index.php/', $server->guessBaseUri());
-
     }
 
-    function testTriggerException() {
-
-        $this->server->subscribeEvent('beforeMethod',array($this,'exceptionTrigger'));
+    public function testTriggerException()
+    {
+        $this->server->subscribeEvent('beforeMethod', array($this, 'exceptionTrigger'));
         $this->server->exec();
 
         $this->assertEquals(array(
             'Content-Type' => 'application/xml; charset=utf-8',
-        ),$this->response->headers);
+        ), $this->response->headers);
 
-        $this->assertEquals('HTTP/1.1 500 Internal Server Error',$this->response->status);
-
+        $this->assertEquals('HTTP/1.1 500 Internal Server Error', $this->response->status);
     }
 
-    function exceptionTrigger() {
-
+    public function exceptionTrigger()
+    {
         throw new Sabre_DAV_Exception('Hola');
-
     }
 
-    function testReportNotFound() {
-
+    public function testReportNotFound()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/',
+            'REQUEST_URI' => '/',
             'REQUEST_METHOD' => 'REPORT',
         );
 
@@ -640,21 +589,20 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
             $this->response->headers
          );
 
-        $this->assertEquals('HTTP/1.1 501 Not Implemented',$this->response->status,'We got an incorrect status back. Full response body follows: ' . $this->response->body);
-
+        $this->assertEquals('HTTP/1.1 501 Not Implemented', $this->response->status, 'We got an incorrect status back. Full response body follows: '.$this->response->body);
     }
 
-    function testReportIntercepted() {
-
+    public function testReportIntercepted()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/',
+            'REQUEST_URI' => '/',
             'REQUEST_METHOD' => 'REPORT',
         );
 
         $request = new Sabre_HTTP_Request($serverVars);
         $this->server->httpRequest = ($request);
         $this->server->httpRequest->setBody('<?xml version="1.0"?><bla:myreport xmlns:bla="http://www.rooftopsolutions.nl/NS"></bla:myreport>');
-        $this->server->subscribeEvent('report',array($this,'reportHandler'));
+        $this->server->subscribeEvent('report', array($this, 'reportHandler'));
         $this->server->exec();
 
         $this->assertEquals(array(
@@ -663,24 +611,24 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
             $this->response->headers
         );
 
-        $this->assertEquals('HTTP/1.1 418 I\'m a teapot',$this->response->status,'We got an incorrect status back. Full response body follows: ' . $this->response->body);
-
+        $this->assertEquals('HTTP/1.1 418 I\'m a teapot', $this->response->status, 'We got an incorrect status back. Full response body follows: '.$this->response->body);
     }
 
-    function reportHandler($reportName) {
-
-        if ($reportName=='{http://www.rooftopsolutions.nl/NS}myreport') {
+    public function reportHandler($reportName)
+    {
+        if ($reportName == '{http://www.rooftopsolutions.nl/NS}myreport') {
             $this->server->httpResponse->sendStatus(418);
-            $this->server->httpResponse->setHeader('testheader','testvalue');
-            return false;
-        }
-        else return;
+            $this->server->httpResponse->setHeader('testheader', 'testvalue');
 
+            return false;
+        } else {
+            return;
+        }
     }
 
-    function testGetPropertiesForChildren() {
-
-        $result = $this->server->getPropertiesForChildren('',array(
+    public function testGetPropertiesForChildren()
+    {
+        $result = $this->server->getPropertiesForChildren('', array(
             '{DAV:}getcontentlength',
         ));
 
@@ -689,8 +637,6 @@ class Sabre_DAV_ServerSimpleTest extends Sabre_DAV_AbstractServer{
             'dir/' => array(),
         );
 
-        $this->assertEquals($expected,$result);
-
+        $this->assertEquals($expected, $result);
     }
-
 }

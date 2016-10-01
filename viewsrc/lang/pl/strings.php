@@ -1,3 +1,3 @@
 <?php
 
-$a->strings["View Source"] = "Podgląd źródła";
+$a->strings['View Source'] = 'Podgląd źródła';

@@ -5,22 +5,21 @@ namespace Sabre\VObject\Component;
 use Sabre\VObject\Component;
 use DateTime;
 
-class VAlarmTest extends \PHPUnit_Framework_TestCase {
-
+class VAlarmTest extends \PHPUnit_Framework_TestCase
+{
     /**
      * @dataProvider timeRangeTestData
      */
-    public function testInTimeRange(VAlarm $valarm,$start,$end,$outcome) {
-
+    public function testInTimeRange(VAlarm $valarm, $start, $end, $outcome)
+    {
         $this->assertEquals($outcome, $valarm->isInTimeRange($start, $end));
-
     }
 
-    public function timeRangeTestData() {
-
+    public function timeRangeTestData()
+    {
         $tests = array();
 
-        // Hard date and time        
+        // Hard date and time
         $valarm1 = Component::create('VALARM');
         $valarm1->TRIGGER = '20120312T130000Z';
         $valarm1->TRIGGER['VALUE'] = 'DATE-TIME';
@@ -44,7 +43,7 @@ class VAlarmTest extends \PHPUnit_Framework_TestCase {
         $valarm3 = Component::create('VALARM');
         $valarm3->TRIGGER = '-P1D';
         $valarm3->TRIGGER['VALUE'] = 'DURATION';
-        $valarm3->TRIGGER['RELATED']= 'END';
+        $valarm3->TRIGGER['RELATED'] = 'END';
 
         $vevent3 = Component::create('VEVENT');
         $vevent3->DTSTART = '20120301T130000Z';
@@ -54,11 +53,11 @@ class VAlarmTest extends \PHPUnit_Framework_TestCase {
         $tests[] = array($valarm3, new DateTime('2012-02-25 01:00:00'), new DateTime('2012-03-05 01:00:00'), false);
         $tests[] = array($valarm3, new DateTime('2012-03-25 01:00:00'), new DateTime('2012-04-05 01:00:00'), true);
 
-        // Relation to end time of todo 
+        // Relation to end time of todo
         $valarm4 = Component::create('VALARM');
         $valarm4->TRIGGER = '-P1D';
         $valarm4->TRIGGER['VALUE'] = 'DURATION';
-        $valarm4->TRIGGER['RELATED']= 'END';
+        $valarm4->TRIGGER['RELATED'] = 'END';
 
         $vtodo4 = Component::create('VTODO');
         $vtodo4->DTSTART = '20120301T130000Z';
@@ -94,12 +93,11 @@ class VAlarmTest extends \PHPUnit_Framework_TestCase {
         $tests[] = array($valarm6, new DateTime('2012-03-01 01:00:00'), new DateTime('2012-04-01 01:00:00'), true);
         $tests[] = array($valarm6, new DateTime('2012-03-01 01:00:00'), new DateTime('2012-03-10 01:00:00'), false);
 
-
         // Relation to end time of event (DURATION instead of DTEND)
         $valarm7 = Component::create('VALARM');
         $valarm7->TRIGGER = '-P1D';
         $valarm7->TRIGGER['VALUE'] = 'DURATION';
-        $valarm7->TRIGGER['RELATED']= 'END';
+        $valarm7->TRIGGER['RELATED'] = 'END';
 
         $vevent7 = Component::create('VEVENT');
         $vevent7->DTSTART = '20120301T130000Z';
@@ -113,7 +111,7 @@ class VAlarmTest extends \PHPUnit_Framework_TestCase {
         $valarm7 = Component::create('VALARM');
         $valarm7->TRIGGER = '-P1D';
         $valarm7->TRIGGER['VALUE'] = 'DURATION';
-        $valarm7->TRIGGER['RELATED']= 'END';
+        $valarm7->TRIGGER['RELATED'] = 'END';
 
         $vevent7 = Component::create('VEVENT');
         $vevent7->DTSTART = '20120301T130000Z';
@@ -122,15 +120,14 @@ class VAlarmTest extends \PHPUnit_Framework_TestCase {
         $tests[] = array($valarm7, new DateTime('2012-02-25 01:00:00'), new DateTime('2012-03-05 01:00:00'), true);
         $tests[] = array($valarm7, new DateTime('2012-03-25 01:00:00'), new DateTime('2012-04-05 01:00:00'), false);
 
-
         return $tests;
     }
 
     /**
      * @expectedException LogicException
      */
-    public function testInTimeRangeInvalidComponent() {
-
+    public function testInTimeRangeInvalidComponent()
+    {
         $valarm = Component::create('VALARM');
         $valarm->TRIGGER = '-P1D';
         $valarm->TRIGGER['RELATED'] = 'END';
@@ -139,8 +136,5 @@ class VAlarmTest extends \PHPUnit_Framework_TestCase {
         $vjournal->add($valarm);
 
         $valarm->isInTimeRange(new DateTime('2012-02-25 01:00:00'), new DateTime('2012-03-05 01:00:00'));
-
     }
-
 }
-
