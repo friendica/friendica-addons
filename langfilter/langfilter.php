@@ -36,6 +36,7 @@ function langfilter_addon_settings(&$a,&$s) {
 	$enable_checked = (intval(get_pconfig(local_user(),'langfilter','disable')) ? '' : ' checked="checked" ');
 	$languages = get_pconfig(local_user(),'langfilter','languages');
 	$minconfidence = get_pconfig(local_user(),'langfilter','minconfidence')*100;
+	$minlength = get_pconfig(local_user(),'langfilter','minlength');
 	if(! $languages)
 		$languages = 'en,de,fr,it,es';
 
@@ -46,6 +47,7 @@ function langfilter_addon_settings(&$a,&$s) {
 	    '$enabled' => array('langfilter_enable', t('Use the language filter'), $enable_checked, ''),
 	    '$languages' => array('langfilter_languages', t('I speak'), $languages, t('List of abbreviations (iso2 codes) for languages you speak, comma separated. For example "de,it".') ),
 	    '$minconfidence' => array('langfilter_minconfidence', t('Minimum confidence in language detection'), $minconfidence, t('Minimum confidence in language detection being correct, from 0 to 100. Posts will not be filtered when the confidence of language detection is below this percent value.') ),
+	    '$minlength' => array('langfilter_minlength', t('Minimum length of message body'), $minlength, t('Minimum length of message body for language filter to be used. Posts shorter than this number of characters will not be filtered.') ),
 	    '$submit' => t('Save Settings'),
 	));
 
@@ -70,6 +72,12 @@ function langfilter_addon_settings_post(&$a,&$b) {
 		else if ( $minconfidence < 0 ) $minconfidence = 0;
 		else if ( $minconfidence > 100 ) $minconfidence = 100;
 		set_pconfig(local_user(),'langfilter','minconfidence', $minconfidence/100.0);
+
+		$minlength = 0+$_POST['langfilter_minlength'];
+		if ( ! $minlength ) $minlength = 32;
+		else if ( $minlength < 0 ) $minlength = 32;
+		set_pconfig(local_user(),'langfilter','minlength', $minlength);
+
 		info( t('Language Filter Settings saved.') . EOL);
 	}
 }
@@ -93,6 +101,11 @@ function langfilter_prepare_body(&$a,&$b) {
 
     # Don't filter if language filter is disabled
     if( get_pconfig($logged_user,'langfilter','disable') ) return;
+
+    # Don't filter if body lenght is below minimum
+    $minlen = get_pconfig(local_user(),'langfilter','minlength');
+    if ( ! $minlen ) $minlen = 32;
+    if ( strlen($b['item']['body']) < $minlen ) return;
 
     $spoken_config = get_pconfig(local_user(),'langfilter','languages');
     $minconfidence = get_pconfig(local_user(),'langfilter','minconfidence');
