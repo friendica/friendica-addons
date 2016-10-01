@@ -1,101 +1,91 @@
 <?php
 
-class Sabre_CardDAV_UserAddressBooksTest extends PHPUnit_Framework_TestCase {
-
+class Sabre_CardDAV_UserAddressBooksTest extends PHPUnit_Framework_TestCase
+{
     /**
      * @var Sabre_CardDAV_UserAddressBooks
      */
     protected $s;
     protected $backend;
 
-    function setUp() {
-
+    public function setUp()
+    {
         $this->backend = new Sabre_CardDAV_Backend_Mock();
         $this->s = new Sabre_CardDAV_UserAddressBooks(
             $this->backend,
             'principals/user1'
         );
-
     }
 
-    function testGetName() {
-
+    public function testGetName()
+    {
         $this->assertEquals('user1', $this->s->getName());
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_MethodNotAllowed
      */
-    function testSetName() {
-
+    public function testSetName()
+    {
         $this->s->setName('user2');
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_MethodNotAllowed
      */
-    function testDelete() {
-
+    public function testDelete()
+    {
         $this->s->delete();
-
     }
 
-    function testGetLastModified() {
-
+    public function testGetLastModified()
+    {
         $this->assertNull($this->s->getLastModified());
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_MethodNotAllowed
      */
-    function testCreateFile() {
-
+    public function testCreateFile()
+    {
         $this->s->createFile('bla');
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_MethodNotAllowed
      */
-    function testCreateDirectory() {
-
+    public function testCreateDirectory()
+    {
         $this->s->createDirectory('bla');
-
     }
 
-    function testGetChild() {
-
+    public function testGetChild()
+    {
         $child = $this->s->getChild('book1');
         $this->assertInstanceOf('Sabre_CardDAV_AddressBook', $child);
         $this->assertEquals('book1', $child->getName());
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_NotFound
      */
-    function testGetChild404() {
-
+    public function testGetChild404()
+    {
         $this->s->getChild('book2');
-
     }
 
-    function testGetChildren() {
-
+    public function testGetChildren()
+    {
         $children = $this->s->getChildren();
         $this->assertEquals(1, count($children));
         $this->assertInstanceOf('Sabre_CardDAV_AddressBook', $children[0]);
         $this->assertEquals('book1', $children[0]->getName());
-
     }
 
-    function testCreateExtendedCollection() {
-
+    public function testCreateExtendedCollection()
+    {
         $resourceType = array(
-            '{' . Sabre_CardDAV_Plugin::NS_CARDDAV . '}addressbook',
+            '{'.Sabre_CardDAV_Plugin::NS_CARDDAV.'}addressbook',
             '{DAV:}collection',
         );
         $this->s->createExtendedCollection('book2', $resourceType, array('{DAV:}displayname' => 'a-book 2'));
@@ -106,24 +96,21 @@ class Sabre_CardDAV_UserAddressBooksTest extends PHPUnit_Framework_TestCase {
             '{DAV:}displayname' => 'a-book 2',
             'principaluri' => 'principals/user1',
         ), $this->backend->addressBooks[1]);
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_InvalidResourceType
      */
-    function testCreateExtendedCollectionInvalid() {
-
+    public function testCreateExtendedCollectionInvalid()
+    {
         $resourceType = array(
             '{DAV:}collection',
         );
         $this->s->createExtendedCollection('book2', $resourceType, array('{DAV:}displayname' => 'a-book 2'));
-
     }
 
-
-    function testACLMethods() {
-
+    public function testACLMethods()
+    {
         $this->assertEquals('principals/user1', $this->s->getOwner());
         $this->assertNull($this->s->getGroup());
         $this->assertEquals(array(
@@ -138,23 +125,20 @@ class Sabre_CardDAV_UserAddressBooksTest extends PHPUnit_Framework_TestCase {
                 'protected' => true,
             ),
         ), $this->s->getACL());
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_MethodNotAllowed
      */
-    function testSetACL() {
-
-       $this->s->setACL(array());
-
+    public function testSetACL()
+    {
+        $this->s->setACL(array());
     }
 
-    function testGetSupportedPrivilegeSet() {
-
+    public function testGetSupportedPrivilegeSet()
+    {
         $this->assertNull(
             $this->s->getSupportedPrivilegeSet()
         );
-
     }
 }

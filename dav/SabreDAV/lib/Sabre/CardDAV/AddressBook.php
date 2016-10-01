@@ -1,159 +1,148 @@
 <?php
 
 /**
- * The AddressBook class represents a CardDAV addressbook, owned by a specific user
+ * The AddressBook class represents a CardDAV addressbook, owned by a specific user.
  *
  * The AddressBook can contain multiple vcards
  *
- * @package Sabre
- * @subpackage CardDAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_CardDAV_AddressBook extends Sabre_DAV_Collection implements Sabre_CardDAV_IAddressBook, Sabre_DAV_IProperties, Sabre_DAVACL_IACL {
-
+class Sabre_CardDAV_AddressBook extends Sabre_DAV_Collection implements Sabre_CardDAV_IAddressBook, Sabre_DAV_IProperties, Sabre_DAVACL_IACL
+{
     /**
-     * This is an array with addressbook information
+     * This is an array with addressbook information.
      *
      * @var array
      */
     private $addressBookInfo;
 
     /**
-     * CardDAV backend
+     * CardDAV backend.
      *
      * @var Sabre_CardDAV_Backend_Abstract
      */
     private $carddavBackend;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Sabre_CardDAV_Backend_Abstract $carddavBackend
-     * @param array $addressBookInfo
+     * @param array                          $addressBookInfo
      */
-    public function __construct(Sabre_CardDAV_Backend_Abstract $carddavBackend, array $addressBookInfo) {
-
+    public function __construct(Sabre_CardDAV_Backend_Abstract $carddavBackend, array $addressBookInfo)
+    {
         $this->carddavBackend = $carddavBackend;
         $this->addressBookInfo = $addressBookInfo;
-
     }
 
     /**
-     * Returns the name of the addressbook
+     * Returns the name of the addressbook.
      *
      * @return string
      */
-    public function getName() {
-
+    public function getName()
+    {
         return $this->addressBookInfo['uri'];
-
     }
 
     /**
-     * Returns a card
+     * Returns a card.
      *
      * @param string $name
+     *
      * @return Sabre_CardDAV_ICard
      */
-    public function getChild($name) {
+    public function getChild($name)
+    {
+        $obj = $this->carddavBackend->getCard($this->addressBookInfo['id'], $name);
+        if (!$obj) {
+            throw new Sabre_DAV_Exception_NotFound('Card not found');
+        }
 
-        $obj = $this->carddavBackend->getCard($this->addressBookInfo['id'],$name);
-        if (!$obj) throw new Sabre_DAV_Exception_NotFound('Card not found');
-        return new Sabre_CardDAV_Card($this->carddavBackend,$this->addressBookInfo,$obj);
-
+        return new Sabre_CardDAV_Card($this->carddavBackend, $this->addressBookInfo, $obj);
     }
 
     /**
-     * Returns the full list of cards
+     * Returns the full list of cards.
      *
      * @return array
      */
-    public function getChildren() {
-
+    public function getChildren()
+    {
         $objs = $this->carddavBackend->getCards($this->addressBookInfo['id']);
         $children = array();
-        foreach($objs as $obj) {
-            $children[] = new Sabre_CardDAV_Card($this->carddavBackend,$this->addressBookInfo,$obj);
+        foreach ($objs as $obj) {
+            $children[] = new Sabre_CardDAV_Card($this->carddavBackend, $this->addressBookInfo, $obj);
         }
-        return $children;
 
+        return $children;
     }
 
     /**
-     * Creates a new directory
+     * Creates a new directory.
      *
      * We actually block this, as subdirectories are not allowed in addressbooks.
      *
      * @param string $name
-     * @return void
      */
-    public function createDirectory($name) {
-
+    public function createDirectory($name)
+    {
         throw new Sabre_DAV_Exception_MethodNotAllowed('Creating collections in addressbooks is not allowed');
-
     }
 
     /**
-     * Creates a new file
+     * Creates a new file.
      *
      * The contents of the new file must be a valid VCARD.
      *
      * This method may return an ETag.
      *
-     * @param string $name
+     * @param string   $name
      * @param resource $vcardData
+     *
      * @return string|null
      */
-    public function createFile($name,$vcardData = null) {
-
+    public function createFile($name, $vcardData = null)
+    {
         if (is_resource($vcardData)) {
             $vcardData = stream_get_contents($vcardData);
         }
         // Converting to UTF-8, if needed
         $vcardData = Sabre_DAV_StringUtil::ensureUTF8($vcardData);
 
-        return $this->carddavBackend->createCard($this->addressBookInfo['id'],$name,$vcardData);
-
+        return $this->carddavBackend->createCard($this->addressBookInfo['id'], $name, $vcardData);
     }
 
     /**
      * Deletes the entire addressbook.
-     *
-     * @return void
      */
-    public function delete() {
-
+    public function delete()
+    {
         $this->carddavBackend->deleteAddressBook($this->addressBookInfo['id']);
-
     }
 
     /**
-     * Renames the addressbook
+     * Renames the addressbook.
      *
      * @param string $newName
-     * @return void
      */
-    public function setName($newName) {
-
+    public function setName($newName)
+    {
         throw new Sabre_DAV_Exception_MethodNotAllowed('Renaming addressbooks is not yet supported');
-
     }
 
     /**
      * Returns the last modification date as a unix timestamp.
-     *
-     * @return void
      */
-    public function getLastModified() {
-
+    public function getLastModified()
+    {
         return null;
-
     }
 
     /**
-     * Updates properties on this node,
+     * Updates properties on this node,.
      *
      * The properties array uses the propertyName in clark-notation as key,
      * and the array value for the property value. In the case a property
@@ -185,12 +174,12 @@ class Sabre_CardDAV_AddressBook extends Sabre_DAV_Collection implements Sabre_Ca
      * (424 Failed Dependency) because the request needs to be atomic.
      *
      * @param array $mutations
+     *
      * @return bool|array
      */
-    public function updateProperties($mutations) {
-
+    public function updateProperties($mutations)
+    {
         return $this->carddavBackend->updateAddressBook($this->addressBookInfo['id'], $mutations);
-
     }
 
     /**
@@ -202,49 +191,43 @@ class Sabre_CardDAV_AddressBook extends Sabre_DAV_Collection implements Sabre_Ca
      * If the array is empty, it means 'all properties' were requested.
      *
      * @param array $properties
+     *
      * @return array
      */
-    public function getProperties($properties) {
-
+    public function getProperties($properties)
+    {
         $response = array();
-        foreach($properties as $propertyName) {
-
+        foreach ($properties as $propertyName) {
             if (isset($this->addressBookInfo[$propertyName])) {
-
                 $response[$propertyName] = $this->addressBookInfo[$propertyName];
-
             }
-
         }
 
         return $response;
-
     }
 
     /**
-     * Returns the owner principal
+     * Returns the owner principal.
      *
      * This must be a url to a principal, or null if there's no owner
      *
      * @return string|null
      */
-    public function getOwner() {
-
+    public function getOwner()
+    {
         return $this->addressBookInfo['principaluri'];
-
     }
 
     /**
-     * Returns a group principal
+     * Returns a group principal.
      *
      * This must be a url to a principal, or null if there's no owner
      *
      * @return string|null
      */
-    public function getGroup() {
-
+    public function getGroup()
+    {
         return null;
-
     }
 
     /**
@@ -259,8 +242,8 @@ class Sabre_CardDAV_AddressBook extends Sabre_DAV_Collection implements Sabre_Ca
      *
      * @return array
      */
-    public function getACL() {
-
+    public function getACL()
+    {
         return array(
             array(
                 'privilege' => '{DAV:}read',
@@ -274,21 +257,18 @@ class Sabre_CardDAV_AddressBook extends Sabre_DAV_Collection implements Sabre_Ca
             ),
 
         );
-
     }
 
     /**
-     * Updates the ACL
+     * Updates the ACL.
      *
      * This method will receive a list of new ACE's.
      *
      * @param array $acl
-     * @return void
      */
-    public function setACL(array $acl) {
-
+    public function setACL(array $acl)
+    {
         throw new Sabre_DAV_Exception_MethodNotAllowed('Changing ACL is not yet supported');
-
     }
 
     /**
@@ -303,10 +283,8 @@ class Sabre_CardDAV_AddressBook extends Sabre_DAV_Collection implements Sabre_Ca
      *
      * @return array|null
      */
-    public function getSupportedPrivilegeSet() {
-
+    public function getSupportedPrivilegeSet()
+    {
         return null;
-
     }
-
 }

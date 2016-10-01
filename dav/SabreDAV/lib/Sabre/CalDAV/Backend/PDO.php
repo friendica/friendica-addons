@@ -3,21 +3,19 @@
 use Sabre\VObject;
 
 /**
- * PDO CalDAV backend
+ * PDO CalDAV backend.
  *
  * This backend is used to store calendar-data in a PDO database, such as
  * sqlite or MySQL
  *
- * @package Sabre
- * @subpackage CalDAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
-
+class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract
+{
     /**
-     * We need to specify a max date, because we need to stop *somewhere*
+     * We need to specify a max date, because we need to stop *somewhere*.
      *
      * On 32 bit system the maximum for a signed integer is 2147483647, so
      * MAX_DATE cannot be higher than date('Y-m-d', 2147483647) which results
@@ -27,54 +25,53 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
     const MAX_DATE = '2038-01-01';
 
     /**
-     * pdo
+     * pdo.
      *
      * @var PDO
      */
     protected $pdo;
 
     /**
-     * The table name that will be used for calendars
+     * The table name that will be used for calendars.
      *
      * @var string
      */
     protected $calendarTableName;
 
     /**
-     * The table name that will be used for calendar objects
+     * The table name that will be used for calendar objects.
      *
      * @var string
      */
     protected $calendarObjectTableName;
 
     /**
-     * List of CalDAV properties, and how they map to database fieldnames
+     * List of CalDAV properties, and how they map to database fieldnames.
      *
      * Add your own properties by simply adding on to this array
      *
      * @var array
      */
     public $propertyMap = array(
-        '{DAV:}displayname'                          => 'displayname',
+        '{DAV:}displayname' => 'displayname',
         '{urn:ietf:params:xml:ns:caldav}calendar-description' => 'description',
-        '{urn:ietf:params:xml:ns:caldav}calendar-timezone'    => 'timezone',
-        '{http://apple.com/ns/ical/}calendar-order'  => 'calendarorder',
-        '{http://apple.com/ns/ical/}calendar-color'  => 'calendarcolor',
+        '{urn:ietf:params:xml:ns:caldav}calendar-timezone' => 'timezone',
+        '{http://apple.com/ns/ical/}calendar-order' => 'calendarorder',
+        '{http://apple.com/ns/ical/}calendar-color' => 'calendarcolor',
     );
 
     /**
-     * Creates the backend
+     * Creates the backend.
      *
-     * @param PDO $pdo
+     * @param PDO    $pdo
      * @param string $calendarTableName
      * @param string $calendarObjectTableName
      */
-    public function __construct(PDO $pdo, $calendarTableName = 'calendars', $calendarObjectTableName = 'calendarobjects') {
-
+    public function __construct(PDO $pdo, $calendarTableName = 'calendars', $calendarObjectTableName = 'calendarobjects')
+    {
         $this->pdo = $pdo;
         $this->calendarTableName = $calendarTableName;
         $this->calendarObjectTableName = $calendarObjectTableName;
-
     }
 
     /**
@@ -92,10 +89,11 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
      * common one is '{DAV:}displayname'.
      *
      * @param string $principalUri
+     *
      * @return array
      */
-    public function getCalendarsForUser($principalUri) {
-
+    public function getCalendarsForUser($principalUri)
+    {
         $fields = array_values($this->propertyMap);
         $fields[] = 'id';
         $fields[] = 'uri';
@@ -105,36 +103,32 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
 
         // Making fields a comma-delimited list
         $fields = implode(', ', $fields);
-        $stmt = $this->pdo->prepare("SELECT " . $fields . " FROM ".$this->calendarTableName." WHERE principaluri = ? ORDER BY calendarorder ASC");
+        $stmt = $this->pdo->prepare('SELECT '.$fields.' FROM '.$this->calendarTableName.' WHERE principaluri = ? ORDER BY calendarorder ASC');
         $stmt->execute(array($principalUri));
 
         $calendars = array();
-        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $components = array();
             if ($row['components']) {
-                $components = explode(',',$row['components']);
+                $components = explode(',', $row['components']);
             }
 
             $calendar = array(
                 'id' => $row['id'],
                 'uri' => $row['uri'],
                 'principaluri' => $row['principaluri'],
-                '{' . Sabre_CalDAV_Plugin::NS_CALENDARSERVER . '}getctag' => $row['ctag']?$row['ctag']:'0',
-                '{' . Sabre_CalDAV_Plugin::NS_CALDAV . '}supported-calendar-component-set' => new Sabre_CalDAV_Property_SupportedCalendarComponentSet($components),
+                '{'.Sabre_CalDAV_Plugin::NS_CALENDARSERVER.'}getctag' => $row['ctag'] ? $row['ctag'] : '0',
+                '{'.Sabre_CalDAV_Plugin::NS_CALDAV.'}supported-calendar-component-set' => new Sabre_CalDAV_Property_SupportedCalendarComponentSet($components),
             );
 
-
-            foreach($this->propertyMap as $xmlName=>$dbName) {
+            foreach ($this->propertyMap as $xmlName => $dbName) {
                 $calendar[$xmlName] = $row[$dbName];
             }
 
             $calendars[] = $calendar;
-
         }
 
         return $calendars;
-
     }
 
     /**
@@ -145,11 +139,12 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
      *
      * @param string $principalUri
      * @param string $calendarUri
-     * @param array $properties
+     * @param array  $properties
+     *
      * @return string
      */
-    public function createCalendar($principalUri, $calendarUri, array $properties) {
-
+    public function createCalendar($principalUri, $calendarUri, array $properties)
+    {
         $fieldNames = array(
             'principaluri',
             'uri',
@@ -157,8 +152,8 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
         );
         $values = array(
             ':principaluri' => $principalUri,
-            ':uri'          => $calendarUri,
-            ':ctag'         => 1,
+            ':uri' => $calendarUri,
+            ':ctag' => 1,
         );
 
         // Default value
@@ -168,24 +163,22 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
             $values[':components'] = 'VEVENT,VTODO';
         } else {
             if (!($properties[$sccs] instanceof Sabre_CalDAV_Property_SupportedCalendarComponentSet)) {
-                throw new Sabre_DAV_Exception('The ' . $sccs . ' property must be of type: Sabre_CalDAV_Property_SupportedCalendarComponentSet');
+                throw new Sabre_DAV_Exception('The '.$sccs.' property must be of type: Sabre_CalDAV_Property_SupportedCalendarComponentSet');
             }
-            $values[':components'] = implode(',',$properties[$sccs]->getValue());
+            $values[':components'] = implode(',', $properties[$sccs]->getValue());
         }
 
-        foreach($this->propertyMap as $xmlName=>$dbName) {
+        foreach ($this->propertyMap as $xmlName => $dbName) {
             if (isset($properties[$xmlName])) {
-
-                $values[':' . $dbName] = $properties[$xmlName];
+                $values[':'.$dbName] = $properties[$xmlName];
                 $fieldNames[] = $dbName;
             }
         }
 
-        $stmt = $this->pdo->prepare("INSERT INTO ".$this->calendarTableName." (".implode(', ', $fieldNames).") VALUES (".implode(', ',array_keys($values)).")");
+        $stmt = $this->pdo->prepare('INSERT INTO '.$this->calendarTableName.' ('.implode(', ', $fieldNames).') VALUES ('.implode(', ', array_keys($values)).')');
         $stmt->execute($values);
 
         return $this->pdo->lastInsertId();
-
     }
 
     /**
@@ -221,11 +214,12 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
      * (424 Failed Dependency) because the request needs to be atomic.
      *
      * @param string $calendarId
-     * @param array $mutations
+     * @param array  $mutations
+     *
      * @return bool|array
      */
-    public function updateCalendar($calendarId, array $mutations) {
-
+    public function updateCalendar($calendarId, array $mutations)
+    {
         $newValues = array();
         $result = array(
             200 => array(), // Ok
@@ -235,7 +229,7 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
 
         $hasError = false;
 
-        foreach($mutations as $propertyName=>$propertyValue) {
+        foreach ($mutations as $propertyName => $propertyValue) {
 
             // We don't know about this property.
             if (!isset($this->propertyMap[$propertyName])) {
@@ -247,56 +241,53 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
 
             $fieldName = $this->propertyMap[$propertyName];
             $newValues[$fieldName] = $propertyValue;
-
         }
 
         // If there were any errors we need to fail the request
         if ($hasError) {
             // Properties has the remaining properties
-            foreach($mutations as $propertyName=>$propertyValue) {
+            foreach ($mutations as $propertyName => $propertyValue) {
                 $result[424][$propertyName] = null;
             }
 
             // Removing unused statuscodes for cleanliness
-            foreach($result as $status=>$properties) {
-                if (is_array($properties) && count($properties)===0) unset($result[$status]);
+            foreach ($result as $status => $properties) {
+                if (is_array($properties) && count($properties) === 0) {
+                    unset($result[$status]);
+                }
             }
 
             return $result;
-
         }
 
         // Success
 
         // Now we're generating the sql query.
         $valuesSql = array();
-        foreach($newValues as $fieldName=>$value) {
-            $valuesSql[] = $fieldName . ' = ?';
+        foreach ($newValues as $fieldName => $value) {
+            $valuesSql[] = $fieldName.' = ?';
         }
         $valuesSql[] = 'ctag = ctag + 1';
 
-        $stmt = $this->pdo->prepare("UPDATE " . $this->calendarTableName . " SET " . implode(', ',$valuesSql) . " WHERE id = ?");
+        $stmt = $this->pdo->prepare('UPDATE '.$this->calendarTableName.' SET '.implode(', ', $valuesSql).' WHERE id = ?');
         $newValues['id'] = $calendarId;
         $stmt->execute(array_values($newValues));
 
         return true;
-
     }
 
     /**
-     * Delete a calendar and all it's objects
+     * Delete a calendar and all it's objects.
      *
      * @param string $calendarId
-     * @return void
      */
-    public function deleteCalendar($calendarId) {
-
+    public function deleteCalendar($calendarId)
+    {
         $stmt = $this->pdo->prepare('DELETE FROM '.$this->calendarObjectTableName.' WHERE calendarid = ?');
         $stmt->execute(array($calendarId));
 
         $stmt = $this->pdo->prepare('DELETE FROM '.$this->calendarTableName.' WHERE id = ?');
         $stmt->execute(array($calendarId));
-
     }
 
     /**
@@ -324,27 +315,27 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
      * amount of times this is needed is reduced by a great degree.
      *
      * @param string $calendarId
+     *
      * @return array
      */
-    public function getCalendarObjects($calendarId) {
-
+    public function getCalendarObjects($calendarId)
+    {
         $stmt = $this->pdo->prepare('SELECT id, uri, lastmodified, etag, calendarid, size FROM '.$this->calendarObjectTableName.' WHERE calendarid = ?');
         $stmt->execute(array($calendarId));
 
         $result = array();
-        foreach($stmt->fetchAll(\PDO::FETCH_ASSOC) as $row) {
+        foreach ($stmt->fetchAll(\PDO::FETCH_ASSOC) as $row) {
             $result[] = array(
-                'id'           => $row['id'],
-                'uri'          => $row['uri'],
+                'id' => $row['id'],
+                'uri' => $row['uri'],
                 'lastmodified' => $row['lastmodified'],
-                'etag'         => '"' . $row['etag'] . '"',
-                'calendarid'   => $row['calendarid'],
-                'size'         => (int)$row['size'],
+                'etag' => '"'.$row['etag'].'"',
+                'calendarid' => $row['calendarid'],
+                'size' => (int) $row['size'],
             );
         }
 
         return $result;
-
     }
 
     /**
@@ -357,28 +348,29 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
      *
      * @param string $calendarId
      * @param string $objectUri
+     *
      * @return array
      */
-    public function getCalendarObject($calendarId,$objectUri) {
-
+    public function getCalendarObject($calendarId, $objectUri)
+    {
         $stmt = $this->pdo->prepare('SELECT id, uri, lastmodified, etag, calendarid, size, calendardata FROM '.$this->calendarObjectTableName.' WHERE calendarid = ? AND uri = ?');
         $stmt->execute(array($calendarId, $objectUri));
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-        if(!$row) return null;
+        if (!$row) {
+            return null;
+        }
 
         return array(
-            'id'           => $row['id'],
-            'uri'          => $row['uri'],
+            'id' => $row['id'],
+            'uri' => $row['uri'],
             'lastmodified' => $row['lastmodified'],
-            'etag'         => '"' . $row['etag'] . '"',
-            'calendarid'   => $row['calendarid'],
-            'size'         => (int)$row['size'],
+            'etag' => '"'.$row['etag'].'"',
+            'calendarid' => $row['calendarid'],
+            'size' => (int) $row['size'],
             'calendardata' => $row['calendardata'],
          );
-
     }
-
 
     /**
      * Creates a new calendar object.
@@ -391,13 +383,14 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
      * calendar-data. If the result of a subsequent GET to this object is not
      * the exact same as this request body, you should omit the ETag.
      *
-     * @param mixed $calendarId
+     * @param mixed  $calendarId
      * @param string $objectUri
      * @param string $calendarData
+     *
      * @return string|null
      */
-    public function createCalendarObject($calendarId,$objectUri,$calendarData) {
-
+    public function createCalendarObject($calendarId, $objectUri, $calendarData)
+    {
         $extraData = $this->getDenormalizedData($calendarData);
 
         $stmt = $this->pdo->prepare('INSERT INTO '.$this->calendarObjectTableName.' (calendarid, uri, calendardata, lastmodified, etag, size, componenttype, firstoccurence, lastoccurence) VALUES (?,?,?,?,?,?,?,?,?)');
@@ -415,8 +408,7 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
         $stmt = $this->pdo->prepare('UPDATE '.$this->calendarTableName.' SET ctag = ctag + 1 WHERE id = ?');
         $stmt->execute(array($calendarId));
 
-        return '"' . $extraData['etag'] . '"';
-
+        return '"'.$extraData['etag'].'"';
     }
 
     /**
@@ -430,22 +422,22 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
      * calendar-data. If the result of a subsequent GET to this object is not
      * the exact same as this request body, you should omit the ETag.
      *
-     * @param mixed $calendarId
+     * @param mixed  $calendarId
      * @param string $objectUri
      * @param string $calendarData
+     *
      * @return string|null
      */
-    public function updateCalendarObject($calendarId,$objectUri,$calendarData) {
-
+    public function updateCalendarObject($calendarId, $objectUri, $calendarData)
+    {
         $extraData = $this->getDenormalizedData($calendarData);
 
         $stmt = $this->pdo->prepare('UPDATE '.$this->calendarObjectTableName.' SET calendardata = ?, lastmodified = ?, etag = ?, size = ?, componenttype = ?, firstoccurence = ?, lastoccurence = ? WHERE calendarid = ? AND uri = ?');
-        $stmt->execute(array($calendarData,time(), $extraData['etag'], $extraData['size'], $extraData['componentType'], $extraData['firstOccurence'], $extraData['lastOccurence'] ,$calendarId,$objectUri));
+        $stmt->execute(array($calendarData, time(), $extraData['etag'], $extraData['size'], $extraData['componentType'], $extraData['firstOccurence'], $extraData['lastOccurence'], $calendarId, $objectUri));
         $stmt = $this->pdo->prepare('UPDATE '.$this->calendarTableName.' SET ctag = ctag + 1 WHERE id = ?');
         $stmt->execute(array($calendarId));
 
-        return '"' . $extraData['etag'] . '"';
-
+        return '"'.$extraData['etag'].'"';
     }
 
     /**
@@ -460,17 +452,18 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
      *   * lastOccurence
      *
      * @param string $calendarData
+     *
      * @return array
      */
-    protected function getDenormalizedData($calendarData) {
-
+    protected function getDenormalizedData($calendarData)
+    {
         $vObject = VObject\Reader::read($calendarData);
         $componentType = null;
         $component = null;
         $firstOccurence = null;
         $lastOccurence = null;
-        foreach($vObject->getComponents() as $component) {
-            if ($component->name!=='VTIMEZONE') {
+        foreach ($vObject->getComponents() as $component) {
+            if ($component->name !== 'VTIMEZONE') {
                 $componentType = $component->name;
                 break;
             }
@@ -488,7 +481,7 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
                     $endDate = clone $component->DTSTART->getDateTime();
                     $endDate->add(VObject\DateTimeParser::parse($component->DURATION->value));
                     $lastOccurence = $endDate->getTimeStamp();
-                } elseif ($component->DTSTART->getDateType()===VObject\Property\DateTime::DATE) {
+                } elseif ($component->DTSTART->getDateType() === VObject\Property\DateTime::DATE) {
                     $endDate = clone $component->DTSTART->getDateTime();
                     $endDate->modify('+1 day');
                     $lastOccurence = $endDate->getTimeStamp();
@@ -496,20 +489,18 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
                     $lastOccurence = $firstOccurence;
                 }
             } else {
-                $it = new VObject\RecurrenceIterator($vObject, (string)$component->UID);
+                $it = new VObject\RecurrenceIterator($vObject, (string) $component->UID);
                 $maxDate = new DateTime(self::MAX_DATE);
                 if ($it->isInfinite()) {
                     $lastOccurence = $maxDate->getTimeStamp();
                 } else {
                     $end = $it->getDtEnd();
-                    while($it->valid() && $end < $maxDate) {
+                    while ($it->valid() && $end < $maxDate) {
                         $end = $it->getDtEnd();
                         $it->next();
-
                     }
                     $lastOccurence = $end->getTimeStamp();
                 }
-
             }
         }
 
@@ -518,9 +509,8 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
             'size' => strlen($calendarData),
             'componentType' => $componentType,
             'firstOccurence' => $firstOccurence,
-            'lastOccurence'  => $lastOccurence,
+            'lastOccurence' => $lastOccurence,
         );
-
     }
 
     /**
@@ -528,15 +518,13 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
      *
      * @param string $calendarId
      * @param string $objectUri
-     * @return void
      */
-    public function deleteCalendarObject($calendarId,$objectUri) {
-
+    public function deleteCalendarObject($calendarId, $objectUri)
+    {
         $stmt = $this->pdo->prepare('DELETE FROM '.$this->calendarObjectTableName.' WHERE calendarid = ? AND uri = ?');
-        $stmt->execute(array($calendarId,$objectUri));
-        $stmt = $this->pdo->prepare('UPDATE '. $this->calendarTableName .' SET ctag = ctag + 1 WHERE id = ?');
+        $stmt->execute(array($calendarId, $objectUri));
+        $stmt = $this->pdo->prepare('UPDATE '.$this->calendarTableName.' SET ctag = ctag + 1 WHERE id = ?');
         $stmt->execute(array($calendarId));
-
     }
 
     /**
@@ -588,11 +576,12 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
      * specific components, and VEVENT time-ranges.
      *
      * @param string $calendarId
-     * @param array $filters
+     * @param array  $filters
+     *
      * @return array
      */
-    public function calendarQuery($calendarId, array $filters) {
-
+    public function calendarQuery($calendarId, array $filters)
+    {
         $result = array();
         $validator = new Sabre_CalDAV_CalendarQueryValidator();
 
@@ -617,13 +606,12 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
             if ($componentType == 'VEVENT' && isset($filters['comp-filters'][0]['time-range'])) {
                 $timeRange = $filters['comp-filters'][0]['time-range'];
             }
-
         }
 
         if ($requirePostFilter) {
-            $query = "SELECT uri, calendardata FROM ".$this->calendarObjectTableName." WHERE calendarid = :calendarid";
+            $query = 'SELECT uri, calendardata FROM '.$this->calendarObjectTableName.' WHERE calendarid = :calendarid';
         } else {
-            $query = "SELECT uri FROM ".$this->calendarObjectTableName." WHERE calendarid = :calendarid";
+            $query = 'SELECT uri FROM '.$this->calendarObjectTableName.' WHERE calendarid = :calendarid';
         }
 
         $values = array(
@@ -631,16 +619,16 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
         );
 
         if ($componentType) {
-            $query.=" AND componenttype = :componenttype";
+            $query .= ' AND componenttype = :componenttype';
             $values['componenttype'] = $componentType;
         }
 
         if ($timeRange && $timeRange['start']) {
-            $query.=" AND lastoccurence > :startdate";
+            $query .= ' AND lastoccurence > :startdate';
             $values['startdate'] = $timeRange['start']->getTimeStamp();
         }
         if ($timeRange && $timeRange['end']) {
-            $query.=" AND firstoccurence < :enddate";
+            $query .= ' AND firstoccurence < :enddate';
             $values['enddate'] = $timeRange['end']->getTimeStamp();
         }
 
@@ -648,17 +636,15 @@ class Sabre_CalDAV_Backend_PDO extends Sabre_CalDAV_Backend_Abstract {
         $stmt->execute($values);
 
         $result = array();
-        while($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             if ($requirePostFilter) {
                 if (!$this->validateFilterForObject($row, $filters)) {
                     continue;
                 }
             }
             $result[] = $row['uri'];
-
         }
 
         return $result;
-
     }
 }

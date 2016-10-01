@@ -1,12 +1,12 @@
 <?php
 
-class Sabre_CardDAV_Backend_Mock extends Sabre_CardDAV_Backend_Abstract {
-
+class Sabre_CardDAV_Backend_Mock extends Sabre_CardDAV_Backend_Abstract
+{
     public $addressBooks;
     public $cards;
 
-    function __construct($addressBooks = null, $cards = null) {
-
+    public function __construct($addressBooks = null, $cards = null)
+    {
         $this->addressBooks = $addressBooks;
         $this->cards = $cards;
 
@@ -27,72 +27,71 @@ class Sabre_CardDAV_Backend_Mock extends Sabre_CardDAV_Backend_Abstract {
                 ),
             );
         }
-
     }
 
-
-    function getAddressBooksForUser($principalUri) {
-
+    public function getAddressBooksForUser($principalUri)
+    {
         $books = array();
-        foreach($this->addressBooks as $book) {
+        foreach ($this->addressBooks as $book) {
             if ($book['principaluri'] === $principalUri) {
                 $books[] = $book;
             }
         }
-        return $books;
 
+        return $books;
     }
 
-    function updateAddressBook($addressBookId, array $mutations) {
-
-        foreach($this->addressBooks as &$book) {
-            if ($book['id'] !== $addressBookId)
+    public function updateAddressBook($addressBookId, array $mutations)
+    {
+        foreach ($this->addressBooks as &$book) {
+            if ($book['id'] !== $addressBookId) {
                 continue;
+            }
 
-            foreach($mutations as $key=>$value) {
+            foreach ($mutations as $key => $value) {
                 $book[$key] = $value;
             }
+
             return true;
         }
-        return false;
 
+        return false;
     }
 
-    function createAddressBook($principalUri, $url, array $properties) {
-
+    public function createAddressBook($principalUri, $url, array $properties)
+    {
         $this->addressBooks[] = array_merge($properties, array(
             'id' => $url,
             'uri' => $url,
             'principaluri' => $principalUri,
         ));
-
     }
 
-    function deleteAddressBook($addressBookId) {
-
-        foreach($this->addressBooks as $key=>$value) {
-            if ($value['id'] === $addressBookId)
+    public function deleteAddressBook($addressBookId)
+    {
+        foreach ($this->addressBooks as $key => $value) {
+            if ($value['id'] === $addressBookId) {
                 unset($this->addressBooks[$key]);
+            }
         }
         unset($this->cards[$addressBookId]);
-
     }
 
-    function getCards($addressBookId) {
-
+    public function getCards($addressBookId)
+    {
         $cards = array();
-        foreach($this->cards[$addressBookId] as $uri=>$data) {
+        foreach ($this->cards[$addressBookId] as $uri => $data) {
             $cards[] = array(
                 'uri' => $uri,
                 'carddata' => $data,
             );
         }
-        return $cards;
 
+        return $cards;
     }
 
-    function getCard($addressBookId, $cardUri) {
-
+    public function getCard($addressBookId, $cardUri)
+    {
         if (!isset($this->cards[$addressBookId][$cardUri])) {
             return false;
         }
@@ -101,25 +100,20 @@ class Sabre_CardDAV_Backend_Mock extends Sabre_CardDAV_Backend_Abstract {
             'uri' => $cardUri,
             'carddata' => $this->cards[$addressBookId][$cardUri],
         );
-
     }
 
-    function createCard($addressBookId, $cardUri, $cardData) {
-
+    public function createCard($addressBookId, $cardUri, $cardData)
+    {
         $this->cards[$addressBookId][$cardUri] = $cardData;
-
     }
 
-    function updateCard($addressBookId, $cardUri, $cardData) {
-
+    public function updateCard($addressBookId, $cardUri, $cardData)
+    {
         $this->cards[$addressBookId][$cardUri] = $cardData;
-
     }
 
-    function deleteCard($addressBookId, $cardUri) {
-
+    public function deleteCard($addressBookId, $cardUri)
+    {
         unset($this->cards[$addressBookId][$cardUri]);
-
     }
-
 }

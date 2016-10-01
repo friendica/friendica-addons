@@ -17,13 +17,14 @@ date_default_timezone_set('Canada/Eastern');
 
 /* Database */
 $pdo = new PDO('sqlite:data/db.sqlite');
-$pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 //Mapping PHP errors to exceptions
-function exception_error_handler($errno, $errstr, $errfile, $errline ) {
+function exception_error_handler($errno, $errstr, $errfile, $errline)
+{
     throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
 }
-set_error_handler("exception_error_handler");
+set_error_handler('exception_error_handler');
 
 // Files we need
 require_once 'lib/Sabre/autoload.php';
@@ -33,7 +34,7 @@ $authBackend = new Sabre_DAV_Auth_Backend_PDO($pdo);
 $calendarBackend = new Sabre_CalDAV_Backend_PDO($pdo);
 $principalBackend = new Sabre_DAVACL_PrincipalBackend_PDO($pdo);
 
-// Directory structure 
+// Directory structure
 $tree = array(
     new Sabre_CalDAV_Principal_Collection($principalBackend),
     new Sabre_CalDAV_CalendarRootNode($principalBackend, $calendarBackend),
@@ -41,11 +42,12 @@ $tree = array(
 
 $server = new Sabre_DAV_Server($tree);
 
-if (isset($baseUri))
+if (isset($baseUri)) {
     $server->setBaseUri($baseUri);
+}
 
 /* Server Plugins */
-$authPlugin = new Sabre_DAV_Auth_Plugin($authBackend,'SabreDAV');
+$authPlugin = new Sabre_DAV_Auth_Plugin($authBackend, 'SabreDAV');
 $server->addPlugin($authPlugin);
 
 $aclPlugin = new Sabre_DAVACL_Plugin();

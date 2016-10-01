@@ -2,11 +2,12 @@
 
 use Sabre\VObject;
 
-class Sabre_CalDAV_Issue172Test extends PHPUnit_Framework_TestCase {
-
+class Sabre_CalDAV_Issue172Test extends PHPUnit_Framework_TestCase
+{
     // DateTimeZone() native name: America/Los_Angeles (GMT-8 in January)
-    function testBuiltInTimezoneName() {
-        $input = <<<HI
+    public function testBuiltInTimezoneName()
+    {
+        $input = <<<'HI'
 BEGIN:VCALENDAR
 VERSION:2.0
 BEGIN:VEVENT
@@ -26,19 +27,20 @@ HI;
                     'is-not-defined' => false,
                     'time-range' => array(
                         'start' => new DateTime('2012-01-18 21:00:00 GMT-08:00'),
-                        'end'   => new DateTime('2012-01-18 21:00:00 GMT-08:00'),
+                        'end' => new DateTime('2012-01-18 21:00:00 GMT-08:00'),
                     ),
                 ),
             ),
             'prop-filters' => array(),
         );
         $input = VObject\Reader::read($input);
-        $this->assertTrue($validator->validate($input,$filters));
+        $this->assertTrue($validator->validate($input, $filters));
     }
 
     // Pacific Standard Time, translates to America/Los_Angeles (GMT-8 in January)
-    function testOutlookTimezoneName() {
-        $input = <<<HI
+    public function testOutlookTimezoneName()
+    {
+        $input = <<<'HI'
 BEGIN:VCALENDAR
 VERSION:2.0
 BEGIN:VTIMEZONE
@@ -73,19 +75,20 @@ HI;
                     'is-not-defined' => false,
                     'time-range' => array(
                         'start' => new DateTime('2012-01-13 10:30:00 GMT-08:00'),
-                        'end'   => new DateTime('2012-01-13 10:30:00 GMT-08:00'),
+                        'end' => new DateTime('2012-01-13 10:30:00 GMT-08:00'),
                     ),
                 ),
             ),
             'prop-filters' => array(),
         );
         $input = VObject\Reader::read($input);
-        $this->assertTrue($validator->validate($input,$filters));
+        $this->assertTrue($validator->validate($input, $filters));
     }
 
     // X-LIC-LOCATION, translates to America/Los_Angeles (GMT-8 in January)
-    function testLibICalLocationName() {
-        $input = <<<HI
+    public function testLibICalLocationName()
+    {
+        $input = <<<'HI'
 BEGIN:VCALENDAR
 VERSION:2.0
 BEGIN:VTIMEZONE
@@ -121,13 +124,13 @@ HI;
                     'is-not-defined' => false,
                     'time-range' => array(
                         'start' => new DateTime('2012-01-13 10:30:00 GMT-08:00'),
-                        'end'   => new DateTime('2012-01-13 10:30:00 GMT-08:00'),
+                        'end' => new DateTime('2012-01-13 10:30:00 GMT-08:00'),
                     ),
                 ),
             ),
             'prop-filters' => array(),
         );
         $input = VObject\Reader::read($input);
-        $this->assertTrue($validator->validate($input,$filters));
+        $this->assertTrue($validator->validate($input, $filters));
     }
 }

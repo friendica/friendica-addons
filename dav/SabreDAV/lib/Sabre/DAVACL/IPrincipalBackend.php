@@ -7,14 +7,12 @@
  * implement Sabre_DAVACL_IPrincipal directly. This interface is used solely by
  * Sabre_DAVACL_AbstractPrincipalCollection.
  *
- * @package Sabre
- * @subpackage DAVACL
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-interface Sabre_DAVACL_IPrincipalBackend {
-
+interface Sabre_DAVACL_IPrincipalBackend
+{
     /**
      * Returns a list of principals based on a prefix.
      *
@@ -29,9 +27,10 @@ interface Sabre_DAVACL_IPrincipalBackend {
      *     you have an email address, use this property.
      *
      * @param string $prefixPath
+     *
      * @return array
      */
-    function getPrincipalsByPrefix($prefixPath);
+    public function getPrincipalsByPrefix($prefixPath);
 
     /**
      * Returns a specific principal, specified by it's path.
@@ -39,9 +38,10 @@ interface Sabre_DAVACL_IPrincipalBackend {
      * getPrincipalsByPrefix.
      *
      * @param string $path
+     *
      * @return array
      */
-    function getPrincipalByPath($path);
+    public function getPrincipalByPath($path);
 
     /**
      * Updates one ore more webdav properties on a principal.
@@ -88,10 +88,11 @@ interface Sabre_DAVACL_IPrincipalBackend {
      * return true or false.
      *
      * @param string $path
-     * @param array $mutations
+     * @param array  $mutations
+     *
      * @return array|bool
      */
-    function updatePrincipal($path, $mutations);
+    public function updatePrincipal($path, $mutations);
 
     /**
      * This method is used to search for principals matching a set of
@@ -118,26 +119,29 @@ interface Sabre_DAVACL_IPrincipalBackend {
      * from working.
      *
      * @param string $prefixPath
-     * @param array $searchProperties
+     * @param array  $searchProperties
+     *
      * @return array
      */
-    function searchPrincipals($prefixPath, array $searchProperties);
+    public function searchPrincipals($prefixPath, array $searchProperties);
 
     /**
-     * Returns the list of members for a group-principal
+     * Returns the list of members for a group-principal.
      *
      * @param string $principal
+     *
      * @return array
      */
-    function getGroupMemberSet($principal);
+    public function getGroupMemberSet($principal);
 
     /**
-     * Returns the list of groups a principal is a member of
+     * Returns the list of groups a principal is a member of.
      *
      * @param string $principal
+     *
      * @return array
      */
-    function getGroupMembership($principal);
+    public function getGroupMembership($principal);
 
     /**
      * Updates the list of group members for a group principal.
@@ -145,9 +149,7 @@ interface Sabre_DAVACL_IPrincipalBackend {
      * The principals should be passed as a list of uri's.
      *
      * @param string $principal
-     * @param array $members
-     * @return void
+     * @param array  $members
      */
-    function setGroupMemberSet($principal, array $members);
-
+    public function setGroupMemberSet($principal, array $members);
 }

@@ -5,7 +5,7 @@ namespace Sabre\VObject\Property;
 use Sabre\VObject;
 
 /**
- * Multi-DateTime property
+ * Multi-DateTime property.
  *
  * This element is used for iCalendar properties such as the EXDATE property.
  * It basically provides a few helper functions that make it easier to deal
@@ -17,21 +17,21 @@ use Sabre\VObject;
  * If you use the 'value' or properties directly, this object does not keep
  * reference and results might appear incorrectly.
  *
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class MultiDateTime extends VObject\Property {
-
+class MultiDateTime extends VObject\Property
+{
     /**
-     * DateTime representation
+     * DateTime representation.
      *
      * @var DateTime[]
      */
     protected $dateTimes;
 
     /**
-     * dateType
+     * dateType.
      *
      * This is one of the Sabre\VObject\Property\DateTime constants.
      *
@@ -40,63 +40,63 @@ class MultiDateTime extends VObject\Property {
     protected $dateType;
 
     /**
-     * Updates the value
+     * Updates the value.
      *
-     * @param array $dt Must be an array of DateTime objects.
-     * @param int $dateType
-     * @return void
+     * @param array $dt       Must be an array of DateTime objects
+     * @param int   $dateType
      */
-    public function setDateTimes(array $dt, $dateType = VObject\Property\DateTime::LOCALTZ) {
-
-        foreach($dt as $i)
-            if (!$i instanceof \DateTime)
+    public function setDateTimes(array $dt, $dateType = VObject\Property\DateTime::LOCALTZ)
+    {
+        foreach ($dt as $i) {
+            if (!$i instanceof \DateTime) {
                 throw new \InvalidArgumentException('You must pass an array of DateTime objects');
+            }
+        }
 
         $this->offsetUnset('VALUE');
         $this->offsetUnset('TZID');
-        switch($dateType) {
+        switch ($dateType) {
 
-            case DateTime::LOCAL :
+            case DateTime::LOCAL:
                 $val = array();
-                foreach($dt as $i) {
+                foreach ($dt as $i) {
                     $val[] = $i->format('Ymd\\THis');
                 }
-                $this->setValue(implode(',',$val));
-                $this->offsetSet('VALUE','DATE-TIME');
+                $this->setValue(implode(',', $val));
+                $this->offsetSet('VALUE', 'DATE-TIME');
                 break;
-            case DateTime::UTC :
+            case DateTime::UTC:
                 $val = array();
-                foreach($dt as $i) {
+                foreach ($dt as $i) {
                     $i->setTimeZone(new \DateTimeZone('UTC'));
                     $val[] = $i->format('Ymd\\THis\\Z');
                 }
-                $this->setValue(implode(',',$val));
-                $this->offsetSet('VALUE','DATE-TIME');
+                $this->setValue(implode(',', $val));
+                $this->offsetSet('VALUE', 'DATE-TIME');
                 break;
-            case DateTime::LOCALTZ :
+            case DateTime::LOCALTZ:
                 $val = array();
-                foreach($dt as $i) {
+                foreach ($dt as $i) {
                     $val[] = $i->format('Ymd\\THis');
                 }
-                $this->setValue(implode(',',$val));
-                $this->offsetSet('VALUE','DATE-TIME');
+                $this->setValue(implode(',', $val));
+                $this->offsetSet('VALUE', 'DATE-TIME');
                 $this->offsetSet('TZID', $dt[0]->getTimeZone()->getName());
                 break;
-            case DateTime::DATE :
+            case DateTime::DATE:
                 $val = array();
-                foreach($dt as $i) {
+                foreach ($dt as $i) {
                     $val[] = $i->format('Ymd');
                 }
-                $this->setValue(implode(',',$val));
-                $this->offsetSet('VALUE','DATE');
+                $this->setValue(implode(',', $val));
+                $this->offsetSet('VALUE', 'DATE');
                 break;
-            default :
+            default:
                 throw new \InvalidArgumentException('You must pass a valid dateType constant');
 
         }
         $this->dateTimes = $dt;
         $this->dateType = $dateType;
-
     }
 
     /**
@@ -106,20 +106,22 @@ class MultiDateTime extends VObject\Property {
      *
      * @return array|null
      */
-    public function getDateTimes() {
-
-        if ($this->dateTimes)
+    public function getDateTimes()
+    {
+        if ($this->dateTimes) {
             return $this->dateTimes;
+        }
 
         $dts = array();
 
         if (!$this->value) {
             $this->dateTimes = null;
             $this->dateType = null;
+
             return null;
         }
 
-        foreach(explode(',',$this->value) as $val) {
+        foreach (explode(',', $this->value) as $val) {
             list(
                 $type,
                 $dt
@@ -128,8 +130,8 @@ class MultiDateTime extends VObject\Property {
             $this->dateType = $type;
         }
         $this->dateTimes = $dts;
-        return $this->dateTimes;
 
+        return $this->dateTimes;
     }
 
     /**
@@ -140,19 +142,21 @@ class MultiDateTime extends VObject\Property {
      *
      * @return int|null
      */
-    public function getDateType() {
-
-        if ($this->dateType)
+    public function getDateType()
+    {
+        if ($this->dateType) {
             return $this->dateType;
+        }
 
         if (!$this->value) {
             $this->dateTimes = null;
             $this->dateType = null;
+
             return null;
         }
 
         $dts = array();
-        foreach(explode(',',$this->value) as $val) {
+        foreach (explode(',', $this->value) as $val) {
             list(
                 $type,
                 $dt
@@ -161,8 +165,7 @@ class MultiDateTime extends VObject\Property {
             $this->dateType = $type;
         }
         $this->dateTimes = $dts;
+
         return $this->dateType;
-
     }
-
 }

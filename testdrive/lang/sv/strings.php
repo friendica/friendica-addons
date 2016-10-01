@@ -1,3 +1,3 @@
 <?php
 
-$a->strings["Administrator"] = "Admin";
+$a->strings['Administrator'] = 'Admin';

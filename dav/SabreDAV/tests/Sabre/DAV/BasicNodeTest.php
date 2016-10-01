@@ -1,232 +1,205 @@
 <?php
 
-class Sabre_DAV_BasicNodeTest extends PHPUnit_Framework_TestCase {
-
+class Sabre_DAV_BasicNodeTest extends PHPUnit_Framework_TestCase
+{
     /**
      * @expectedException Sabre_DAV_Exception_Forbidden
      */
-    public function testPut() {
-
+    public function testPut()
+    {
         $file = new Sabre_DAV_FileMock();
         $file->put('hi');
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_Forbidden
      */
-    public function testGet() {
-
+    public function testGet()
+    {
         $file = new Sabre_DAV_FileMock();
         $file->get();
-
     }
 
-    public function testGetSize() {
-
+    public function testGetSize()
+    {
         $file = new Sabre_DAV_FileMock();
-        $this->assertEquals(0,$file->getSize());
-
+        $this->assertEquals(0, $file->getSize());
     }
 
-
-    public function testGetETag() {
-
+    public function testGetETag()
+    {
         $file = new Sabre_DAV_FileMock();
         $this->assertNull($file->getETag());
-
     }
 
-    public function testGetContentType() {
-
+    public function testGetContentType()
+    {
         $file = new Sabre_DAV_FileMock();
         $this->assertNull($file->getContentType());
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_Forbidden
      */
-    public function testDelete() {
-
+    public function testDelete()
+    {
         $file = new Sabre_DAV_FileMock();
         $file->delete();
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_Forbidden
      */
-    public function testSetName() {
-
+    public function testSetName()
+    {
         $file = new Sabre_DAV_FileMock();
         $file->setName('hi');
-
     }
 
-    public function testGetLastModified() {
-
+    public function testGetLastModified()
+    {
         $file = new Sabre_DAV_FileMock();
         // checking if lastmod is within the range of a few seconds
         $lastMod = $file->getLastModified();
-        $compareTime = ($lastMod + 1)-time();
+        $compareTime = ($lastMod + 1) - time();
         $this->assertTrue($compareTime < 3);
-
     }
 
-    public function testGetChild() {
-
+    public function testGetChild()
+    {
         $dir = new Sabre_DAV_DirectoryMock();
         $file = $dir->getChild('mockfile');
         $this->assertTrue($file instanceof Sabre_DAV_FileMock);
-
     }
 
-    public function testChildExists() {
-
+    public function testChildExists()
+    {
         $dir = new Sabre_DAV_DirectoryMock();
         $this->assertTrue($dir->childExists('mockfile'));
-
     }
 
-    public function testChildExistsFalse() {
-
+    public function testChildExistsFalse()
+    {
         $dir = new Sabre_DAV_DirectoryMock();
         $this->assertFalse($dir->childExists('mockfile2'));
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_NotFound
      */
-    public function testGetChild404() {
-
+    public function testGetChild404()
+    {
         $dir = new Sabre_DAV_DirectoryMock();
         $file = $dir->getChild('blabla');
-
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_Forbidden
      */
-    public function testCreateFile() {
-
+    public function testCreateFile()
+    {
         $dir = new Sabre_DAV_DirectoryMock();
-        $dir->createFile('hello','data');
-
+        $dir->createFile('hello', 'data');
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_Forbidden
      */
-    public function testCreateDirectory() {
-
+    public function testCreateDirectory()
+    {
         $dir = new Sabre_DAV_DirectoryMock();
         $dir->createDirectory('hello');
-
     }
 
-    public function testSimpleDirectoryConstruct() {
-
-        $dir = new Sabre_DAV_SimpleCollection('simpledir',array());
-
+    public function testSimpleDirectoryConstruct()
+    {
+        $dir = new Sabre_DAV_SimpleCollection('simpledir', array());
     }
 
     /**
      * @depends testSimpleDirectoryConstruct
      */
-    public function testSimpleDirectoryConstructChild() {
-
+    public function testSimpleDirectoryConstructChild()
+    {
         $file = new Sabre_DAV_FileMock();
-        $dir = new Sabre_DAV_SimpleCollection('simpledir',array($file));
+        $dir = new Sabre_DAV_SimpleCollection('simpledir', array($file));
         $file2 = $dir->getChild('mockfile');
 
-        $this->assertEquals($file,$file2);
-
+        $this->assertEquals($file, $file2);
     }
 
     /**
      * @expectedException Sabre_DAV_Exception
      * @depends testSimpleDirectoryConstruct
      */
-    public function testSimpleDirectoryBadParam() {
-
-        $dir = new Sabre_DAV_SimpleCollection('simpledir',array('string shouldn\'t be here'));
-
+    public function testSimpleDirectoryBadParam()
+    {
+        $dir = new Sabre_DAV_SimpleCollection('simpledir', array('string shouldn\'t be here'));
     }
 
     /**
      * @depends testSimpleDirectoryConstruct
      */
-    public function testSimpleDirectoryAddChild() {
-
+    public function testSimpleDirectoryAddChild()
+    {
         $file = new Sabre_DAV_FileMock();
         $dir = new Sabre_DAV_SimpleCollection('simpledir');
         $dir->addChild($file);
         $file2 = $dir->getChild('mockfile');
 
-        $this->assertEquals($file,$file2);
-
+        $this->assertEquals($file, $file2);
     }
 
     /**
      * @depends testSimpleDirectoryConstruct
      * @depends testSimpleDirectoryAddChild
      */
-    public function testSimpleDirectoryGetChildren() {
-
+    public function testSimpleDirectoryGetChildren()
+    {
         $file = new Sabre_DAV_FileMock();
         $dir = new Sabre_DAV_SimpleCollection('simpledir');
         $dir->addChild($file);
 
-        $this->assertEquals(array($file),$dir->getChildren());
-
+        $this->assertEquals(array($file), $dir->getChildren());
     }
 
     /*
      * @depends testSimpleDirectoryConstruct
      */
-    public function testSimpleDirectoryGetName() {
-
+    public function testSimpleDirectoryGetName()
+    {
         $dir = new Sabre_DAV_SimpleCollection('simpledir');
-        $this->assertEquals('simpledir',$dir->getName());
-
+        $this->assertEquals('simpledir', $dir->getName());
     }
 
     /**
      * @depends testSimpleDirectoryConstruct
      * @expectedException Sabre_DAV_Exception_NotFound
      */
-    public function testSimpleDirectoryGetChild404() {
-
+    public function testSimpleDirectoryGetChild404()
+    {
         $dir = new Sabre_DAV_SimpleCollection('simpledir');
         $dir->getChild('blabla');
-
     }
 }
 
-class Sabre_DAV_DirectoryMock extends Sabre_DAV_Collection {
-
-    function getName() {
-
+class Sabre_DAV_DirectoryMock extends Sabre_DAV_Collection
+{
+    public function getName()
+    {
         return 'mockdir';
-
     }
 
-    function getChildren() {
-
+    public function getChildren()
+    {
         return array(new Sabre_DAV_FileMock());
-
     }
-
 }
 
-class Sabre_DAV_FileMock extends Sabre_DAV_File {
-
-    function getName() {
-
+class Sabre_DAV_FileMock extends Sabre_DAV_File
+{
+    public function getName()
+    {
         return 'mockfile';
-
     }
-
 }

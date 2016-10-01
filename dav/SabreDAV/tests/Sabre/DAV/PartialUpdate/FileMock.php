@@ -1,76 +1,62 @@
 <?php
 
-class Sabre_DAV_PartialUpdate_FileMock implements Sabre_DAV_PartialUpdate_IFile {
-
+class Sabre_DAV_PartialUpdate_FileMock implements Sabre_DAV_PartialUpdate_IFile
+{
     protected $data = '';
 
-    function put($str) {
-
+    public function put($str)
+    {
         if (is_resource($str)) {
             $str = stream_get_contents($str);
         }
         $this->data = $str;
-
     }
 
-    function putRange($str,$start) {
-
+    public function putRange($str, $start)
+    {
         if (is_resource($str)) {
             $str = stream_get_contents($str);
         }
-        $this->data = substr($this->data, 0, $start) . $str . substr($this->data, $start + strlen($str));
-
-
-
+        $this->data = substr($this->data, 0, $start).$str.substr($this->data, $start + strlen($str));
     }
 
-    function get() {
-
+    public function get()
+    {
         return $this->data;
-
     }
 
-    function getContentType() {
-
+    public function getContentType()
+    {
         return 'text/plain';
-
     }
 
-    function getSize() {
-
+    public function getSize()
+    {
         return strlen($this->data);
-
     }
 
-    function getETag() {
-
-        return '"' . $this->data . '"';
-
+    public function getETag()
+    {
+        return '"'.$this->data.'"';
     }
 
-    function delete() {
-
+    public function delete()
+    {
         throw new Sabre_DAV_Exception_MethodNotAllowed();
-
     }
 
-    function setName($name) {
-
+    public function setName($name)
+    {
         throw new Sabre_DAV_Exception_MethodNotAllowed();
-
     }
 
-    function getName() {
-
+    public function getName()
+    {
         return 'partial';
-
     }
 
-    function getLastModified() {
-
+    public function getLastModified()
+    {
         return null;
-
     }
-
-
 }

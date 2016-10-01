@@ -2,19 +2,18 @@
 
 require_once 'Sabre/DAV/AbstractServer.php';
 
-class Sabre_DAV_Browser_MapGetToPropFindTest extends Sabre_DAV_AbstractServer {
-
-    function setUp() {
-
+class Sabre_DAV_Browser_MapGetToPropFindTest extends Sabre_DAV_AbstractServer
+{
+    public function setUp()
+    {
         parent::setUp();
         $this->server->addPlugin(new Sabre_DAV_Browser_MapGetToPropFind());
-
     }
 
-    function testCollectionGet() {
-
+    public function testCollectionGet()
+    {
         $serverVars = array(
-            'REQUEST_URI'    => '/',
+            'REQUEST_URI' => '/',
             'REQUEST_METHOD' => 'GET',
         );
 
@@ -30,9 +29,6 @@ class Sabre_DAV_Browser_MapGetToPropFindTest extends Sabre_DAV_AbstractServer {
             $this->response->headers
          );
 
-        $this->assertEquals('HTTP/1.1 207 Multi-Status',$this->response->status,'Incorrect status response received. Full response body: ' . $this->response->body);
-
+        $this->assertEquals('HTTP/1.1 207 Multi-Status', $this->response->status, 'Incorrect status response received. Full response body: '.$this->response->body);
     }
-
-
 }

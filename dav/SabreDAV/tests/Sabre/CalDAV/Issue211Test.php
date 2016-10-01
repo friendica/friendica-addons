@@ -1,15 +1,15 @@
 <?php
 
 /**
- * This unittest is created to check for an endless loop in Sabre_CalDAV_CalendarQueryValidator
+ * This unittest is created to check for an endless loop in Sabre_CalDAV_CalendarQueryValidator.
  *
  *
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_CalDAV_Issue211Test extends Sabre_DAVServerTest {
-
+class Sabre_CalDAV_Issue211Test extends Sabre_DAVServerTest
+{
     protected $setupCalDAV = true;
 
     protected $caldavCalendars = array(
@@ -18,7 +18,7 @@ class Sabre_CalDAV_Issue211Test extends Sabre_DAVServerTest {
             'name' => 'Calendar',
             'principaluri' => 'principals/user1',
             'uri' => 'calendar1',
-        )
+        ),
     );
 
     protected $caldavCalendarObjects = array(
@@ -50,8 +50,8 @@ END:VCALENDAR
         ),
     );
 
-    function testIssue211() {
-
+    public function testIssue211()
+    {
         $request = new Sabre_HTTP_Request(array(
             'REQUEST_METHOD' => 'REPORT',
             'HTTP_CONTENT_TYPE' => 'application/xml',
@@ -81,6 +81,5 @@ END:VCALENDAR
         // if this assert is reached, the endless loop is gone
         // There should be no matching events
         $this->assertFalse(strpos('BEGIN:VEVENT', $response->body));
-
     }
 }

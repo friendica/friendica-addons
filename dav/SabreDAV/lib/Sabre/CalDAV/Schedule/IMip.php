@@ -12,14 +12,12 @@ use Sabre\VObject;
  * If you want to customize the email that gets sent out, you can do so by
  * extending this class and overriding the sendMessage method.
  *
- * @package Sabre
- * @subpackage CalDAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_CalDAV_Schedule_IMip {
-
+class Sabre_CalDAV_Schedule_IMip
+{
     /**
      * Email address used in From: header.
      *
@@ -33,73 +31,64 @@ class Sabre_CalDAV_Schedule_IMip {
      * @param string $senderEmail. The 'senderEmail' is the email that shows up
      *                             in the 'From:' address. This should
      *                             generally be some kind of no-reply email
-     *                             address you own.
+     *                             address you own
      */
-    public function __construct($senderEmail) {
-
+    public function __construct($senderEmail)
+    {
         $this->senderEmail = $senderEmail;
-
     }
 
     /**
      * Sends one or more iTip messages through email.
      *
-     * @param string $originator Originator Email
-     * @param array $recipients Array of email addresses
+     * @param string                  $originator Originator Email
+     * @param array                   $recipients Array of email addresses
      * @param Sabre\VObject\Component $vObject
-     * @param string $principal Principal Url of the originator
-     * @return void
+     * @param string                  $principal  Principal Url of the originator
      */
-    public function sendMessage($originator, array $recipients, VObject\Component $vObject, $principal) {
-
-        foreach($recipients as $recipient) {
-
+    public function sendMessage($originator, array $recipients, VObject\Component $vObject, $principal)
+    {
+        foreach ($recipients as $recipient) {
             $to = $recipient;
             $replyTo = $originator;
             $subject = 'SabreDAV iTIP message';
 
-            switch(strtoupper($vObject->METHOD)) {
-                case 'REPLY' :
-                    $subject = 'Response for: ' . $vObject->VEVENT->SUMMARY;
+            switch (strtoupper($vObject->METHOD)) {
+                case 'REPLY':
+                    $subject = 'Response for: '.$vObject->VEVENT->SUMMARY;
                     break;
-                case 'REQUEST' :
-                    $subject = 'Invitation for: ' .$vObject->VEVENT->SUMMARY;
+                case 'REQUEST':
+                    $subject = 'Invitation for: '.$vObject->VEVENT->SUMMARY;
                     break;
-                case 'CANCEL' :
-                    $subject = 'Cancelled event: ' . $vObject->VEVENT->SUMMARY;
+                case 'CANCEL':
+                    $subject = 'Cancelled event: '.$vObject->VEVENT->SUMMARY;
                     break;
             }
 
             $headers = array();
-            $headers[] = 'Reply-To: ' . $replyTo;
-            $headers[] = 'From: ' . $this->senderEmail;
-            $headers[] = 'Content-Type: text/calendar; method=' . (string)$vObject->method . '; charset=utf-8';
+            $headers[] = 'Reply-To: '.$replyTo;
+            $headers[] = 'From: '.$this->senderEmail;
+            $headers[] = 'Content-Type: text/calendar; method='.(string) $vObject->method.'; charset=utf-8';
             if (Sabre_DAV_Server::$exposeVersion) {
-                $headers[] = 'X-Sabre-Version: ' . Sabre_DAV_Version::VERSION . '-' . Sabre_DAV_Version::STABILITY;
+                $headers[] = 'X-Sabre-Version: '.Sabre_DAV_Version::VERSION.'-'.Sabre_DAV_Version::STABILITY;
             }
 
             $vcalBody = $vObject->serialize();
 
             $this->mail($to, $subject, $vcalBody, $headers);
-
         }
-
     }
 
     /**
      * This function is reponsible for sending the actual email.
      *
-     * @param string $to Recipient email address
+     * @param string $to      Recipient email address
      * @param string $subject Subject of the email
-     * @param string $body iCalendar body
-     * @param array $headers List of headers
-     * @return void
+     * @param string $body    iCalendar body
+     * @param array  $headers List of headers
      */
-    protected function mail($to, $subject, $body, array $headers) {
-
+    protected function mail($to, $subject, $body, array $headers)
+    {
         mail($to, $subject, $body, implode("\r\n", $headers));
-
     }
-
-
 }

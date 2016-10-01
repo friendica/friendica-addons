@@ -1,39 +1,36 @@
 <?php
 
-class Sabre_DAV_Property_GetLastModifiedTest extends PHPUnit_Framework_TestCase {
-
-    function testConstructDateTime() {
-
+class Sabre_DAV_Property_GetLastModifiedTest extends PHPUnit_Framework_TestCase
+{
+    public function testConstructDateTime()
+    {
         $dt = new DateTime('2010-03-14 16:35', new DateTimeZone('UTC'));
         $lastMod = new Sabre_DAV_Property_GetLastModified($dt);
         $this->assertEquals($dt->format(DateTime::ATOM), $lastMod->getTime()->format(DateTime::ATOM));
-
     }
 
-    function testConstructString() {
-
+    public function testConstructString()
+    {
         $dt = new DateTime('2010-03-14 16:35', new DateTimeZone('UTC'));
         $lastMod = new Sabre_DAV_Property_GetLastModified('2010-03-14 16:35');
         $this->assertEquals($dt->format(DateTime::ATOM), $lastMod->getTime()->format(DateTime::ATOM));
-
     }
 
-    function testConstructInt() {
-
+    public function testConstructInt()
+    {
         $dt = new DateTime('2010-03-14 16:35', new DateTimeZone('UTC'));
-        $lastMod = new Sabre_DAV_Property_GetLastModified((int)$dt->format('U'));
+        $lastMod = new Sabre_DAV_Property_GetLastModified((int) $dt->format('U'));
         $this->assertEquals($dt->format(DateTime::ATOM), $lastMod->getTime()->format(DateTime::ATOM));
-
     }
 
-    function testSerialize() {
-
+    public function testSerialize()
+    {
         $dt = new DateTime('2010-03-14 16:35', new DateTimeZone('UTC'));
         $lastMod = new Sabre_DAV_Property_GetLastModified($dt);
 
         $doc = new DOMDocument();
         $root = $doc->createElement('d:getlastmodified');
-        $root->setAttribute('xmlns:d','DAV:');
+        $root->setAttribute('xmlns:d', 'DAV:');
 
         $doc->appendChild($root);
         $objectTree = new Sabre_DAV_ObjectTree(new Sabre_DAV_SimpleCollection('rootdir'));
@@ -46,7 +43,7 @@ class Sabre_DAV_Property_GetLastModifiedTest extends PHPUnit_Framework_TestCase 
         $this->assertEquals(
 '<?xml version="1.0"?>
 <d:getlastmodified xmlns:d="DAV:" xmlns:b="urn:uuid:c2f41010-65b3-11d1-a29f-00aa00c14882/" b:dt="dateTime.rfc1123">' .
-Sabre_HTTP_Util::toHTTPDate($dt) .
+Sabre_HTTP_Util::toHTTPDate($dt).
 '</d:getlastmodified>
 ', $xml);
 
@@ -56,8 +53,8 @@ Sabre_HTTP_Util::toHTTPDate($dt) .
         } catch (Sabre_DAV_Exception $e) {
             $ok = true;
         }
-        if (!$ok) $this->markTestFailed('Unserialize should not be supported');
-
+        if (!$ok) {
+            $this->markTestFailed('Unserialize should not be supported');
+        }
     }
-
 }

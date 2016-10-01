@@ -2,11 +2,11 @@
 
 namespace Sabre\VObject;
 
-class RecurrenceIteratorFifthTuesdayProblemTest extends \PHPUnit_Framework_TestCase {
-
-    function testGetDTEnd() {
-
-        $ics = <<<ICS
+class RecurrenceIteratorFifthTuesdayProblemTest extends \PHPUnit_Framework_TestCase
+{
+    public function testGetDTEnd()
+    {
+        $ics = <<<'ICS'
 BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Apple Inc.//iCal 4.0.4//EN
@@ -29,18 +29,14 @@ END:VCALENDAR
 ICS;
 
         $vObject = Reader::read($ics);
-        $it = new RecurrenceIterator($vObject, (string)$vObject->VEVENT->UID);
+        $it = new RecurrenceIterator($vObject, (string) $vObject->VEVENT->UID);
 
-        while($it->valid()) {
+        while ($it->valid()) {
             $it->next();
         }
 
-        // If we got here, it means we were successful. The bug that was in teh 
-        // system before would fail on the 5th tuesday of the month, if the 5th 
+        // If we got here, it means we were successful. The bug that was in teh
+        // system before would fail on the 5th tuesday of the month, if the 5th
         // tuesday did not exist.
-       
     }
-
 }
-
-?>

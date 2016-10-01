@@ -4,10 +4,10 @@ require_once 'Sabre/HTTP/ResponseMock.php';
 require_once 'Sabre/DAV/Auth/MockBackend.php';
 require_once 'Sabre/DAVACL/MockPrincipalBackend.php';
 
-class Sabre_DAVACL_PrincipalPropertySearchTest extends PHPUnit_Framework_TestCase {
-
-    function getServer() {
-
+class Sabre_DAVACL_PrincipalPropertySearchTest extends PHPUnit_Framework_TestCase
+{
+    public function getServer()
+    {
         $backend = new Sabre_DAVACL_MockPrincipalBackend();
 
         $dir = new Sabre_DAV_SimpleCollection('root');
@@ -17,7 +17,7 @@ class Sabre_DAVACL_PrincipalPropertySearchTest extends PHPUnit_Framework_TestCas
         $fakeServer = new Sabre_DAV_Server(new Sabre_DAV_ObjectTree($dir));
         $fakeServer->httpResponse = new Sabre_HTTP_ResponseMock();
         $fakeServer->debugExceptions = true;
-        $plugin = new Sabre_DAVACL_MockPlugin($backend,'realm');
+        $plugin = new Sabre_DAVACL_MockPlugin($backend, 'realm');
         $plugin->allowAccessToNodesWithoutACL = true;
 
         $this->assertTrue($plugin instanceof Sabre_DAVACL_Plugin);
@@ -25,11 +25,10 @@ class Sabre_DAVACL_PrincipalPropertySearchTest extends PHPUnit_Framework_TestCas
         $this->assertEquals($plugin, $fakeServer->getPlugin('acl'));
 
         return $fakeServer;
-
     }
 
-    function testDepth1() {
-
+    public function testDepth1()
+    {
         $xml = '<?xml version="1.0"?>
 <d:principal-property-search xmlns:d="DAV:">
   <d:property-search>
@@ -46,8 +45,8 @@ class Sabre_DAVACL_PrincipalPropertySearchTest extends PHPUnit_Framework_TestCas
 
         $serverVars = array(
             'REQUEST_METHOD' => 'REPORT',
-            'HTTP_DEPTH'     => '1',
-            'REQUEST_URI'    => '/principals',
+            'HTTP_DEPTH' => '1',
+            'REQUEST_URI' => '/principals',
         );
 
         $request = new Sabre_HTTP_Request($serverVars);
@@ -62,12 +61,10 @@ class Sabre_DAVACL_PrincipalPropertySearchTest extends PHPUnit_Framework_TestCas
         $this->assertEquals(array(
             'Content-Type' => 'application/xml; charset=utf-8',
         ), $server->httpResponse->headers);
-
     }
 
-
-    function testUnknownSearchField() {
-
+    public function testUnknownSearchField()
+    {
         $xml = '<?xml version="1.0"?>
 <d:principal-property-search xmlns:d="DAV:">
   <d:property-search>
@@ -84,8 +81,8 @@ class Sabre_DAVACL_PrincipalPropertySearchTest extends PHPUnit_Framework_TestCas
 
         $serverVars = array(
             'REQUEST_METHOD' => 'REPORT',
-            'HTTP_DEPTH'     => '0',
-            'REQUEST_URI'    => '/principals',
+            'HTTP_DEPTH' => '0',
+            'REQUEST_URI' => '/principals',
         );
 
         $request = new Sabre_HTTP_Request($serverVars);
@@ -100,11 +97,10 @@ class Sabre_DAVACL_PrincipalPropertySearchTest extends PHPUnit_Framework_TestCas
         $this->assertEquals(array(
             'Content-Type' => 'application/xml; charset=utf-8',
         ), $server->httpResponse->headers);
-
     }
 
-    function testCorrect() {
-
+    public function testCorrect()
+    {
         $xml = '<?xml version="1.0"?>
 <d:principal-property-search xmlns:d="DAV:">
   <d:apply-to-principal-collection-set />
@@ -122,8 +118,8 @@ class Sabre_DAVACL_PrincipalPropertySearchTest extends PHPUnit_Framework_TestCas
 
         $serverVars = array(
             'REQUEST_METHOD' => 'REPORT',
-            'HTTP_DEPTH'     => '0',
-            'REQUEST_URI'    => '/',
+            'HTTP_DEPTH' => '0',
+            'REQUEST_URI' => '/',
         );
 
         $request = new Sabre_HTTP_Request($serverVars);
@@ -139,7 +135,6 @@ class Sabre_DAVACL_PrincipalPropertySearchTest extends PHPUnit_Framework_TestCas
             'Content-Type' => 'application/xml; charset=utf-8',
         ), $server->httpResponse->headers);
 
-
         $check = array(
             '/d:multistatus',
             '/d:multistatus/d:response' => 2,
@@ -152,23 +147,22 @@ class Sabre_DAVACL_PrincipalPropertySearchTest extends PHPUnit_Framework_TestCas
         );
 
         $xml = simplexml_load_string($server->httpResponse->body);
-        $xml->registerXPathNamespace('d','DAV:');
-        foreach($check as $v1=>$v2) {
-
-            $xpath = is_int($v1)?$v2:$v1;
+        $xml->registerXPathNamespace('d', 'DAV:');
+        foreach ($check as $v1 => $v2) {
+            $xpath = is_int($v1) ? $v2 : $v1;
 
             $result = $xml->xpath($xpath);
 
             $count = 1;
-            if (!is_int($v1)) $count = $v2;
+            if (!is_int($v1)) {
+                $count = $v2;
+            }
 
-            $this->assertEquals($count,count($result), 'we expected ' . $count . ' appearances of ' . $xpath . ' . We found ' . count($result) . '. Full response body: ' . $server->httpResponse->body);
-
+            $this->assertEquals($count, count($result), 'we expected '.$count.' appearances of '.$xpath.' . We found '.count($result).'. Full response body: '.$server->httpResponse->body);
         }
-
     }
-    function testWrongUri() {
-
+    public function testWrongUri()
+    {
         $xml = '<?xml version="1.0"?>
 <d:principal-property-search xmlns:d="DAV:">
   <d:property-search>
@@ -185,8 +179,8 @@ class Sabre_DAVACL_PrincipalPropertySearchTest extends PHPUnit_Framework_TestCas
 
         $serverVars = array(
             'REQUEST_METHOD' => 'REPORT',
-            'HTTP_DEPTH'     => '0',
-            'REQUEST_URI'    => '/',
+            'HTTP_DEPTH' => '0',
+            'REQUEST_URI' => '/',
         );
 
         $request = new Sabre_HTTP_Request($serverVars);
@@ -202,39 +196,35 @@ class Sabre_DAVACL_PrincipalPropertySearchTest extends PHPUnit_Framework_TestCas
             'Content-Type' => 'application/xml; charset=utf-8',
         ), $server->httpResponse->headers);
 
-
         $check = array(
             '/d:multistatus',
             '/d:multistatus/d:response' => 0,
         );
 
         $xml = simplexml_load_string($server->httpResponse->body);
-        $xml->registerXPathNamespace('d','DAV:');
-        foreach($check as $v1=>$v2) {
-
-            $xpath = is_int($v1)?$v2:$v1;
+        $xml->registerXPathNamespace('d', 'DAV:');
+        foreach ($check as $v1 => $v2) {
+            $xpath = is_int($v1) ? $v2 : $v1;
 
             $result = $xml->xpath($xpath);
 
             $count = 1;
-            if (!is_int($v1)) $count = $v2;
+            if (!is_int($v1)) {
+                $count = $v2;
+            }
 
-            $this->assertEquals($count,count($result), 'we expected ' . $count . ' appearances of ' . $xpath . ' . We found ' . count($result) . '. Full response body: ' . $server->httpResponse->body);
-
+            $this->assertEquals($count, count($result), 'we expected '.$count.' appearances of '.$xpath.' . We found '.count($result).'. Full response body: '.$server->httpResponse->body);
         }
-
     }
 }
 
-class Sabre_DAVACL_MockPlugin extends Sabre_DAVACL_Plugin {
-
-    function getCurrentUserPrivilegeSet($node) {
-
+class Sabre_DAVACL_MockPlugin extends Sabre_DAVACL_Plugin
+{
+    public function getCurrentUserPrivilegeSet($node)
+    {
         return array(
             '{DAV:}read',
             '{DAV:}write',
         );
-
     }
-
 }

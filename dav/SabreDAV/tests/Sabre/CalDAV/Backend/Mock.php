@@ -1,17 +1,16 @@
 <?php
 
-class Sabre_CalDAV_Backend_Mock extends Sabre_CalDAV_Backend_Abstract implements Sabre_CalDAV_Backend_NotificationSupport {
-
+class Sabre_CalDAV_Backend_Mock extends Sabre_CalDAV_Backend_Abstract implements Sabre_CalDAV_Backend_NotificationSupport
+{
     private $calendarData;
     private $calendars;
     private $notifications;
 
-    function __construct(array $calendars, array $calendarData, array $notifications = array()) {
-
+    public function __construct(array $calendars, array $calendarData, array $notifications = array())
+    {
         $this->calendars = $calendars;
         $this->calendarData = $calendarData;
         $this->notifications = $notifications;
-
     }
 
     /**
@@ -29,19 +28,19 @@ class Sabre_CalDAV_Backend_Mock extends Sabre_CalDAV_Backend_Abstract implements
      * common one is '{DAV:}displayname'.
      *
      * @param string $principalUri
+     *
      * @return array
      */
-    function getCalendarsForUser($principalUri) {
-
+    public function getCalendarsForUser($principalUri)
+    {
         $r = array();
-        foreach($this->calendars as $row) {
+        foreach ($this->calendars as $row) {
             if ($row['principaluri'] == $principalUri) {
                 $r[] = $row;
             }
         }
 
         return $r;
-
     }
 
     /**
@@ -55,25 +54,25 @@ class Sabre_CalDAV_Backend_Mock extends Sabre_CalDAV_Backend_Abstract implements
      *
      * @param string $principalUri
      * @param string $calendarUri
-     * @param array $properties
+     * @param array  $properties
+     *
      * @return string|int
      */
-    function createCalendar($principalUri,$calendarUri,array $properties) {
-
+    public function createCalendar($principalUri, $calendarUri, array $properties)
+    {
         $id = Sabre_DAV_UUIDUtil::getUUID();
         $this->calendars[] = array_merge(array(
             'id' => $id,
             'principaluri' => $principalUri,
             'uri' => $calendarUri,
-            '{' . Sabre_CalDAV_Plugin::NS_CALDAV . '}supported-calendar-component-set' => new Sabre_CalDAV_Property_SupportedCalendarComponentSet(array('VEVENT','VTODO')),
+            '{'.Sabre_CalDAV_Plugin::NS_CALDAV.'}supported-calendar-component-set' => new Sabre_CalDAV_Property_SupportedCalendarComponentSet(array('VEVENT', 'VTODO')),
         ), $properties);
 
         return $id;
-
     }
 
     /**
-     * Updates properties on this node,
+     * Updates properties on this node,.
      *
      * The properties array uses the propertyName in clark-notation as key,
      * and the array value for the property value. In the case a property
@@ -105,29 +104,27 @@ class Sabre_CalDAV_Backend_Mock extends Sabre_CalDAV_Backend_Abstract implements
      * (424 Failed Dependency) because the request needs to be atomic.
      *
      * @param string $calendarId
-     * @param array $properties
+     * @param array  $properties
+     *
      * @return bool|array
      */
-    public function updateCalendar($calendarId, array $properties) {
-
+    public function updateCalendar($calendarId, array $properties)
+    {
         return false;
-
     }
 
     /**
-     * Delete a calendar and all it's objects
+     * Delete a calendar and all it's objects.
      *
      * @param string $calendarId
-     * @return void
      */
-    public function deleteCalendar($calendarId) {
-
-        foreach($this->calendars as $k=>$calendar) {
+    public function deleteCalendar($calendarId)
+    {
+        foreach ($this->calendars as $k => $calendar) {
             if ($calendar['id'] === $calendarId) {
                 unset($this->calendars[$k]);
             }
         }
-
     }
 
     /**
@@ -150,21 +147,22 @@ class Sabre_CalDAV_Backend_Mock extends Sabre_CalDAV_Backend_Abstract implements
      * calendardata.
      *
      * @param string $calendarId
+     *
      * @return array
      */
-    public function getCalendarObjects($calendarId) {
-
-        if (!isset($this->calendarData[$calendarId]))
+    public function getCalendarObjects($calendarId)
+    {
+        if (!isset($this->calendarData[$calendarId])) {
             return array();
+        }
 
         $objects = $this->calendarData[$calendarId];
-        foreach($objects as $uri => &$object) {
+        foreach ($objects as $uri => &$object) {
             $object['calendarid'] = $calendarId;
             $object['uri'] = $uri;
-
         }
-        return $objects;
 
+        return $objects;
     }
 
     /**
@@ -177,18 +175,19 @@ class Sabre_CalDAV_Backend_Mock extends Sabre_CalDAV_Backend_Abstract implements
      *
      * @param string $calendarId
      * @param string $objectUri
+     *
      * @return array
      */
-    function getCalendarObject($calendarId,$objectUri) {
-
+    public function getCalendarObject($calendarId, $objectUri)
+    {
         if (!isset($this->calendarData[$calendarId][$objectUri])) {
             throw new Sabre_DAV_Exception_NotFound('Object could not be found');
         }
         $object = $this->calendarData[$calendarId][$objectUri];
         $object['calendarid'] = $calendarId;
         $object['uri'] = $objectUri;
-        return $object;
 
+        return $object;
     }
 
     /**
@@ -197,16 +196,14 @@ class Sabre_CalDAV_Backend_Mock extends Sabre_CalDAV_Backend_Abstract implements
      * @param string $calendarId
      * @param string $objectUri
      * @param string $calendarData
-     * @return void
      */
-    function createCalendarObject($calendarId,$objectUri,$calendarData) {
-
+    public function createCalendarObject($calendarId, $objectUri, $calendarData)
+    {
         $this->calendarData[$calendarId][$objectUri] = array(
             'calendardata' => $calendarData,
             'calendarid' => $calendarId,
             'uri' => $objectUri,
         );
-
     }
 
     /**
@@ -215,16 +212,14 @@ class Sabre_CalDAV_Backend_Mock extends Sabre_CalDAV_Backend_Abstract implements
      * @param string $calendarId
      * @param string $objectUri
      * @param string $calendarData
-     * @return void
      */
-    function updateCalendarObject($calendarId,$objectUri,$calendarData) {
-
+    public function updateCalendarObject($calendarId, $objectUri, $calendarData)
+    {
         $this->calendarData[$calendarId][$objectUri] = array(
             'calendardata' => $calendarData,
             'calendarid' => $calendarId,
             'uri' => $objectUri,
         );
-
     }
 
     /**
@@ -232,13 +227,10 @@ class Sabre_CalDAV_Backend_Mock extends Sabre_CalDAV_Backend_Abstract implements
      *
      * @param string $calendarId
      * @param string $objectUri
-     * @return void
      */
-    function deleteCalendarObject($calendarId,$objectUri) {
-
+    public function deleteCalendarObject($calendarId, $objectUri)
+    {
         throw new Exception('Not implemented');
-
-
     }
 
     /**
@@ -248,15 +240,16 @@ class Sabre_CalDAV_Backend_Mock extends Sabre_CalDAV_Backend_Abstract implements
      * Sabre_CalDAV_Notifications_INotificationType.
      *
      * @param string $principalUri
+     *
      * @return array
      */
-    public function getNotificationsForPrincipal($principalUri) {
-
+    public function getNotificationsForPrincipal($principalUri)
+    {
         if (isset($this->notifications[$principalUri])) {
             return $this->notifications[$principalUri];
         }
-        return array();
 
+        return array();
     }
 
     /**
@@ -264,14 +257,11 @@ class Sabre_CalDAV_Backend_Mock extends Sabre_CalDAV_Backend_Abstract implements
      *
      * This may be called by a client once it deems a notification handled.
      *
-     * @param string $principalUri
+     * @param string                                       $principalUri
      * @param Sabre_CalDAV_Notifications_INotificationType $notification
-     * @return void
      */
-    public function deleteNotification($principalUri, Sabre_CalDAV_Notifications_INotificationType $notification) {
-
+    public function deleteNotification($principalUri, Sabre_CalDAV_Notifications_INotificationType $notification)
+    {
         throw new Sabre_DAV_Exception_NotImplemented('This doesn\'t work!');
-
     }
-
 }

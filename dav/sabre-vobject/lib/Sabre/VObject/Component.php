@@ -3,27 +3,27 @@
 namespace Sabre\VObject;
 
 /**
- * VObject Component
+ * VObject Component.
  *
  * This class represents a VCALENDAR/VCARD component. A component is for example
  * VEVENT, VTODO and also VCALENDAR. It starts with BEGIN:COMPONENTNAME and
  * ends with END:COMPONENTNAME
  *
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Component extends Element {
-
+class Component extends Element
+{
     /**
-     * Name, for example VEVENT
+     * Name, for example VEVENT.
      *
      * @var string
      */
     public $name;
 
     /**
-     * Children properties and components
+     * Children properties and components.
      *
      * @var array
      */
@@ -41,13 +41,13 @@ class Component extends Element {
      *
      * @var array
      */
-    static public $classMap = array(
-        'VALARM'        => 'Sabre\\VObject\\Component\\VAlarm',
-        'VCALENDAR'     => 'Sabre\\VObject\\Component\\VCalendar',
-        'VCARD'         => 'Sabre\\VObject\\Component\\VCard',
-        'VEVENT'        => 'Sabre\\VObject\\Component\\VEvent',
-        'VJOURNAL'      => 'Sabre\\VObject\\Component\\VJournal',
-        'VTODO'         => 'Sabre\\VObject\\Component\\VTodo',
+    public static $classMap = array(
+        'VALARM' => 'Sabre\\VObject\\Component\\VAlarm',
+        'VCALENDAR' => 'Sabre\\VObject\\Component\\VCalendar',
+        'VCARD' => 'Sabre\\VObject\\Component\\VCard',
+        'VEVENT' => 'Sabre\\VObject\\Component\\VEvent',
+        'VJOURNAL' => 'Sabre\\VObject\\Component\\VJournal',
+        'VTODO' => 'Sabre\\VObject\\Component\\VTodo',
     );
 
     /**
@@ -56,10 +56,11 @@ class Component extends Element {
      *
      * @param string $name
      * @param string $value
+     *
      * @return Component
      */
-    static public function create($name, $value = null) {
-
+    public static function create($name, $value = null)
+    {
         $name = strtoupper($name);
 
         if (isset(self::$classMap[$name])) {
@@ -67,7 +68,6 @@ class Component extends Element {
         } else {
             return new self($name, $value);
         }
-
     }
 
     /**
@@ -76,14 +76,15 @@ class Component extends Element {
      * By default this object will iterate over its own children, but this can
      * be overridden with the iterator argument
      *
-     * @param string $name
+     * @param string      $name
      * @param ElementList $iterator
      */
-    public function __construct($name, ElementList $iterator = null) {
-
+    public function __construct($name, ElementList $iterator = null)
+    {
         $this->name = strtoupper($name);
-        if (!is_null($iterator)) $this->iterator = $iterator;
-
+        if (!is_null($iterator)) {
+            $this->iterator = $iterator;
+        }
     }
 
     /**
@@ -91,9 +92,9 @@ class Component extends Element {
      *
      * @return string
      */
-    public function serialize() {
-
-        $str = "BEGIN:" . $this->name . "\r\n";
+    public function serialize()
+    {
+        $str = 'BEGIN:'.$this->name."\r\n";
 
         /**
          * Gives a component a 'score' for sorting purposes.
@@ -105,61 +106,65 @@ class Component extends Element {
          * space to accomodate elements. The $key is added to the $score to
          * preserve the original relative order of elements.
          *
-         * @param int $key
+         * @param int   $key
          * @param array $array
+         *
          * @return int
          */
-        $sortScore = function($key, $array) {
-
+        $sortScore = function ($key, $array) {
             if ($array[$key] instanceof Component) {
 
                 // We want to encode VTIMEZONE first, this is a personal
                 // preference.
                 if ($array[$key]->name === 'VTIMEZONE') {
-                    $score=300000000;
-                    return $score+$key;
+                    $score = 300000000;
+
+                    return $score + $key;
                 } else {
-                    $score=400000000;
-                    return $score+$key;
+                    $score = 400000000;
+
+                    return $score + $key;
                 }
             } else {
                 // Properties get encoded first
                 // VCARD version 4.0 wants the VERSION property to appear first
                 if ($array[$key] instanceof Property) {
                     if ($array[$key]->name === 'VERSION') {
-                        $score=100000000;
-                        return $score+$key;
+                        $score = 100000000;
+
+                        return $score + $key;
                     } else {
                         // All other properties
-                        $score=200000000;
-                        return $score+$key;
+                        $score = 200000000;
+
+                        return $score + $key;
                     }
                 }
             }
-
         };
 
         $tmp = $this->children;
-        uksort($this->children, function($a, $b) use ($sortScore, $tmp) {
-
+        uksort($this->children, function ($a, $b) use ($sortScore, $tmp) {
             $sA = $sortScore($a, $tmp);
             $sB = $sortScore($b, $tmp);
 
-            if ($sA === $sB) return 0;
+            if ($sA === $sB) {
+                return 0;
+            }
 
             return ($sA < $sB) ? -1 : 1;
-
         });
 
-        foreach($this->children as $child) $str.=$child->serialize();
-        $str.= "END:" . $this->name . "\r\n";
+        foreach ($this->children as $child) {
+            $str .= $child->serialize();
+        }
+        $str .= 'END:'.$this->name."\r\n";
 
         return $str;
-
     }
 
     /**
-     * Adds a new component or element
+     * Adds a new component or element.
      *
      * You can call this method with the following syntaxes:
      *
@@ -171,42 +176,35 @@ class Component extends Element {
      *
      * @param mixed $item
      * @param mixed $itemValue
-     * @return void
      */
-    public function add($item, $itemValue = null, array $parameters = array()) {
-
+    public function add($item, $itemValue = null, array $parameters = array())
+    {
         if ($item instanceof Element) {
             if (!is_null($itemValue)) {
                 throw new \InvalidArgumentException('The second argument must not be specified, when passing a VObject');
             }
             $item->parent = $this;
             $this->children[] = $item;
-        } elseif(is_string($item)) {
-
+        } elseif (is_string($item)) {
             if (!is_scalar($itemValue)) {
                 throw new \InvalidArgumentException('The second argument must be scalar');
             }
-            $item = Property::create($item,$itemValue, $parameters);
+            $item = Property::create($item, $itemValue, $parameters);
             $item->parent = $this;
             $this->children[] = $item;
-
         } else {
-
             throw new \InvalidArgumentException('The first argument must either be a \\Sabre\\VObject\\Element or a string');
-
         }
-
     }
 
     /**
-     * Returns an iterable list of children
+     * Returns an iterable list of children.
      *
      * @return ElementList
      */
-    public function children() {
-
+    public function children()
+    {
         return new ElementList($this->children);
-
     }
 
     /**
@@ -223,32 +221,30 @@ class Component extends Element {
      * certain cases.
      *
      * @param string $name
+     *
      * @return array
      */
-    public function select($name) {
-
+    public function select($name)
+    {
         $group = null;
         $name = strtoupper($name);
-        if (strpos($name,'.')!==false) {
-            list($group,$name) = explode('.', $name, 2);
+        if (strpos($name, '.') !== false) {
+            list($group, $name) = explode('.', $name, 2);
         }
 
         $result = array();
-        foreach($this->children as $key=>$child) {
-
+        foreach ($this->children as $key => $child) {
             if (
                 strtoupper($child->name) === $name &&
-                (is_null($group) || ( $child instanceof Property && strtoupper($child->group) === $group))
+                (is_null($group) || ($child instanceof Property && strtoupper($child->group) === $group))
             ) {
-
                 $result[$key] = $child;
-
             }
         }
 
         reset($result);
-        return $result;
 
+        return $result;
     }
 
     /**
@@ -257,17 +253,16 @@ class Component extends Element {
      *
      * @return array
      */
-    public function getComponents() {
-
+    public function getComponents()
+    {
         $result = array();
-        foreach($this->children as $child) {
-            if ($child instanceof Component) {
+        foreach ($this->children as $child) {
+            if ($child instanceof self) {
                 $result[] = $child;
             }
         }
 
         return $result;
-
     }
 
     /**
@@ -285,58 +280,61 @@ class Component extends Element {
      *    * node - (reference to the offending node)
      *
      * @param int $options
+     *
      * @return array
      */
-    public function validate($options = 0) {
-
+    public function validate($options = 0)
+    {
         $result = array();
-        foreach($this->children as $child) {
+        foreach ($this->children as $child) {
             $result = array_merge($result, $child->validate());
         }
-        return $result;
 
+        return $result;
     }
 
     /* Magic property accessors {{{ */
 
     /**
-     * Using 'get' you will either get a property or component,
+     * Using 'get' you will either get a property or component,.
      *
      * If there were no child-elements found with the specified name,
      * null is returned.
      *
      * @param string $name
+     *
      * @return Property
      */
-    public function __get($name) {
-
+    public function __get($name)
+    {
         $matches = $this->select($name);
-        if (count($matches)===0) {
+        if (count($matches) === 0) {
             return null;
         } else {
             $firstMatch = current($matches);
-            /** @var $firstMatch Property */
+            /* @var $firstMatch Property */
             $firstMatch->setIterator(new ElementList(array_values($matches)));
+
             return $firstMatch;
         }
-
     }
 
     /**
      * This method checks if a sub-element with the specified name exists.
      *
      * @param string $name
+     *
      * @return bool
      */
-    public function __isset($name) {
-
+    public function __isset($name)
+    {
         $matches = $this->select($name);
-        return count($matches)>0;
 
+        return count($matches) > 0;
     }
 
     /**
-     * Using the setter method you can add properties or subcomponents
+     * Using the setter method you can add properties or subcomponents.
      *
      * You can either pass a Component, Property
      * object, or a string to automatically create a Property.
@@ -345,15 +343,14 @@ class Component extends Element {
      * a new item with the same name, always use the add() method.
      *
      * @param string $name
-     * @param mixed $value
-     * @return void
+     * @param mixed  $value
      */
-    public function __set($name, $value) {
-
+    public function __set($name, $value)
+    {
         $matches = $this->select($name);
-        $overWrite = count($matches)?key($matches):null;
+        $overWrite = count($matches) ? key($matches) : null;
 
-        if ($value instanceof Component || $value instanceof Property) {
+        if ($value instanceof self || $value instanceof Property) {
             $value->parent = $this;
             if (!is_null($overWrite)) {
                 $this->children[$overWrite] = $value;
@@ -361,7 +358,7 @@ class Component extends Element {
                 $this->children[] = $value;
             }
         } elseif (is_scalar($value)) {
-            $property = Property::create($name,$value);
+            $property = Property::create($name, $value);
             $property->parent = $this;
             if (!is_null($overWrite)) {
                 $this->children[$overWrite] = $property;
@@ -371,25 +368,20 @@ class Component extends Element {
         } else {
             throw new \InvalidArgumentException('You must pass a \\Sabre\\VObject\\Component, \\Sabre\\VObject\\Property or scalar type');
         }
-
     }
 
     /**
      * Removes all properties and components within this component.
      *
      * @param string $name
-     * @return void
      */
-    public function __unset($name) {
-
+    public function __unset($name)
+    {
         $matches = $this->select($name);
-        foreach($matches as $k=>$child) {
-
+        foreach ($matches as $k => $child) {
             unset($this->children[$k]);
             $child->parent = null;
-
         }
-
     }
 
     /* }}} */
@@ -397,16 +389,12 @@ class Component extends Element {
     /**
      * This method is automatically called when the object is cloned.
      * Specifically, this will ensure all child elements are also cloned.
-     *
-     * @return void
      */
-    public function __clone() {
-
-        foreach($this->children as $key=>$child) {
+    public function __clone()
+    {
+        foreach ($this->children as $key => $child) {
             $this->children[$key] = clone $child;
             $this->children[$key]->parent = $this;
         }
-
     }
-
 }

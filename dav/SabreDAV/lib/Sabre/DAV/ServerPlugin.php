@@ -5,14 +5,12 @@
  *
  * Plugins can modify or extend the servers behaviour.
  *
- * @package Sabre
- * @subpackage DAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-abstract class Sabre_DAV_ServerPlugin {
-
+abstract class Sabre_DAV_ServerPlugin
+{
     /**
      * This initializes the plugin.
      *
@@ -22,7 +20,6 @@ abstract class Sabre_DAV_ServerPlugin {
      * This method should set up the requires event subscriptions.
      *
      * @param Sabre_DAV_Server $server
-     * @return void
      */
     abstract public function initialize(Sabre_DAV_Server $server);
 
@@ -34,10 +31,9 @@ abstract class Sabre_DAV_ServerPlugin {
      *
      * @return array
      */
-    public function getFeatures() {
-
+    public function getFeatures()
+    {
         return array();
-
     }
 
     /**
@@ -48,12 +44,12 @@ abstract class Sabre_DAV_ServerPlugin {
      * available for the specified uri.
      *
      * @param string $uri
+     *
      * @return array
      */
-    public function getHTTPMethods($uri) {
-
+    public function getHTTPMethods($uri)
+    {
         return array();
-
     }
 
     /**
@@ -64,10 +60,9 @@ abstract class Sabre_DAV_ServerPlugin {
      *
      * @return string
      */
-    public function getPluginName() {
-
+    public function getPluginName()
+    {
         return get_class($this);
-
     }
 
     /**
@@ -78,13 +73,11 @@ abstract class Sabre_DAV_ServerPlugin {
      * implement them
      *
      * @param string $uri
+     *
      * @return array
      */
-    public function getSupportedReportSet($uri) {
-
+    public function getSupportedReportSet($uri)
+    {
         return array();
-
     }
-
 }
-

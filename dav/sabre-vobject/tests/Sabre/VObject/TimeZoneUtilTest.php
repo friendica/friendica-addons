@@ -2,32 +2,31 @@
 
 namespace Sabre\VObject;
 
-class TimezoneUtilTest extends \PHPUnit_Framework_TestCase {
-
+class TimeZoneUtilTest extends \PHPUnit_Framework_TestCase
+{
     /**
      * @dataProvider getMapping
      */
-    function testCorrectTZ($timezoneName) {
-
+    public function testCorrectTZ($timezoneName)
+    {
         $tz = new \DateTimeZone($timezoneName);
-
     }
 
-    function getMapping() {
+    public function getMapping()
+    {
 
         // PHPUNit requires an array of arrays
         return array_map(
-            function($value) {
+            function ($value) {
                 return array($value);
             },
             TimeZoneUtil::$map
         );
-
     }
 
-    function testExchangeMap() {
-
-        $vobj = <<<HI
+    public function testExchangeMap()
+    {
+        $vobj = <<<'HI'
 BEGIN:VCALENDAR
 METHOD:REQUEST
 VERSION:2.0
@@ -63,12 +62,11 @@ HI;
         $tz = TimeZoneUtil::getTimeZone('foo', Reader::read($vobj));
 
         $this->assertEquals(new \DateTimeZone('Europe/Sarajevo'), $tz);
-
     }
 
-    function testUnknownExchangeId() {
-
-        $vobj = <<<HI
+    public function testUnknownExchangeId()
+    {
+        $vobj = <<<'HI'
 BEGIN:VCALENDAR
 METHOD:REQUEST
 VERSION:2.0
@@ -104,19 +102,17 @@ HI;
         $tz = TimeZoneUtil::getTimeZone('foo', Reader::read($vobj));
 
         $this->assertEquals(new \DateTimeZone(date_default_timezone_get()), $tz);
-
     }
 
-    function testWindowsTimeZone() {
-
+    public function testWindowsTimeZone()
+    {
         $tz = TimeZoneUtil::getTimeZone('Eastern Standard Time');
         $this->assertEquals(new \DateTimeZone('America/New_York'), $tz);
-
     }
 
-    function testFallBack() {
-
-        $vobj = <<<HI
+    public function testFallBack()
+    {
+        $vobj = <<<'HI'
 BEGIN:VCALENDAR
 METHOD:REQUEST
 VERSION:2.0
@@ -149,7 +145,5 @@ HI;
         $tz = TimeZoneUtil::getTimeZone('foo', Reader::read($vobj));
 
         $this->assertEquals(new \DateTimeZone(date_default_timezone_get()), $tz);
-
     }
-
 }

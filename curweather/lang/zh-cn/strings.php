@@ -1,3 +1,3 @@
 <?php
 
-$a->strings["Submit"] = "提交";
+$a->strings['Submit'] = '提交';

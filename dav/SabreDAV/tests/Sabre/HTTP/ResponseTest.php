@@ -2,60 +2,52 @@
 
 require_once 'Sabre/HTTP/ResponseMock.php';
 
-class Sabre_HTTP_ResponseTest extends PHPUnit_Framework_TestCase {
-
+class Sabre_HTTP_ResponseTest extends PHPUnit_Framework_TestCase
+{
     /**
      * @var Sabre_HTTP_ResponseMock
      */
     private $response;
 
-    function setUp() {
-
+    public function setUp()
+    {
         $this->response = new Sabre_HTTP_ResponseMock();
-
     }
 
-    function testGetStatusMessage() {
-
+    public function testGetStatusMessage()
+    {
         $msg = $this->response->getStatusMessage(200);
-        $this->assertEquals('HTTP/1.1 200 OK',$msg);
-
+        $this->assertEquals('HTTP/1.1 200 OK', $msg);
     }
 
-    function testSetHeader() {
-
-        $this->response->setHeader('Content-Type','text/html');
+    public function testSetHeader()
+    {
+        $this->response->setHeader('Content-Type', 'text/html');
         $this->assertEquals('text/html', $this->response->headers['Content-Type']);
-
-
     }
 
-    function testSendStatus() {
-
+    public function testSendStatus()
+    {
         $this->response->sendStatus(404);
         $this->assertEquals('HTTP/1.1 404 Not Found', $this->response->status);
-
     }
 
-    function testSendBody() {
-
+    public function testSendBody()
+    {
         ob_start();
         $response = new Sabre_HTTP_Response();
         $response->sendBody('hello');
-        $this->assertEquals('hello',ob_get_clean());
-
+        $this->assertEquals('hello', ob_get_clean());
     }
 
-    function testSendBodyStream() {
-
+    public function testSendBodyStream()
+    {
         ob_start();
-        $stream = fopen('php://memory','r+');
-        fwrite($stream,'hello');
+        $stream = fopen('php://memory', 'r+');
+        fwrite($stream, 'hello');
         rewind($stream);
         $response = new Sabre_HTTP_Response();
         $response->sendBody($stream);
-        $this->assertEquals('hello',ob_get_clean());
-
+        $this->assertEquals('hello', ob_get_clean());
     }
-
 }

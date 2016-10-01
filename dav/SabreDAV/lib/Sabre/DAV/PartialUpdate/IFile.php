@@ -3,18 +3,16 @@
 /**
  * This interface provides a way to modify only part of a target resource
  * It may be used to update a file chunk, upload big a file into smaller
- * chunks or resume an upload
+ * chunks or resume an upload.
  *
- * @package Sabre
- * @subpackage DAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Jean-Tiare LE BIGOT (http://www.jtlebi.fr/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-interface Sabre_DAV_PartialUpdate_IFile extends Sabre_DAV_IFile {
-
+interface Sabre_DAV_PartialUpdate_IFile extends Sabre_DAV_IFile
+{
     /**
-     * Updates the data at a given offset
+     * Updates the data at a given offset.
      *
      * The data argument is a readable stream resource.
      * The offset argument is an integer describing the offset. Contrary to
@@ -29,10 +27,9 @@ interface Sabre_DAV_PartialUpdate_IFile extends Sabre_DAV_IFile {
      * time.
      *
      * @param resource $data
-     * @param integer $offset
+     * @param int      $offset
+     *
      * @return string|null
      */
-    function putRange($data, $offset);
-
+    public function putRange($data, $offset);
 }
-

@@ -3,30 +3,30 @@
 namespace Sabre\VObject;
 
 /**
- * Base class for all nodes
+ * Base class for all nodes.
  *
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-abstract class Node implements \IteratorAggregate, \ArrayAccess, \Countable {
-
+abstract class Node implements \IteratorAggregate, \ArrayAccess, \Countable
+{
     /**
      * Turns the object back into a serialized blob.
      *
      * @return string
      */
-    abstract function serialize();
+    abstract public function serialize();
 
     /**
-     * Iterator override
+     * Iterator override.
      *
      * @var ElementList
      */
     protected $iterator = null;
 
     /**
-     * A link to the parent node
+     * A link to the parent node.
      *
      * @var Node
      */
@@ -43,40 +43,37 @@ abstract class Node implements \IteratorAggregate, \ArrayAccess, \Countable {
      *
      * @return array
      */
-    public function validate() {
-
+    public function validate()
+    {
         return array();
-
     }
 
     /* {{{ IteratorAggregator interface */
 
     /**
-     * Returns the iterator for this object
+     * Returns the iterator for this object.
      *
      * @return ElementList
      */
-    public function getIterator() {
-
-        if (!is_null($this->iterator))
+    public function getIterator()
+    {
+        if (!is_null($this->iterator)) {
             return $this->iterator;
+        }
 
         return new ElementList(array($this));
-
     }
 
     /**
-     * Sets the overridden iterator
+     * Sets the overridden iterator.
      *
      * Note that this is not actually part of the iterator interface
      *
      * @param ElementList $iterator
-     * @return void
      */
-    public function setIterator(ElementList $iterator) {
-
+    public function setIterator(ElementList $iterator)
+    {
         $this->iterator = $iterator;
-
     }
 
     /* }}} */
@@ -84,21 +81,20 @@ abstract class Node implements \IteratorAggregate, \ArrayAccess, \Countable {
     /* {{{ Countable interface */
 
     /**
-     * Returns the number of elements
+     * Returns the number of elements.
      *
      * @return int
      */
-    public function count() {
-
+    public function count()
+    {
         $it = $this->getIterator();
-        return $it->count();
 
+        return $it->count();
     }
 
     /* }}} */
 
     /* {{{ ArrayAccess Interface */
-
 
     /**
      * Checks if an item exists through ArrayAccess.
@@ -106,13 +102,14 @@ abstract class Node implements \IteratorAggregate, \ArrayAccess, \Countable {
      * This method just forwards the request to the inner iterator
      *
      * @param int $offset
+     *
      * @return bool
      */
-    public function offsetExists($offset) {
-
+    public function offsetExists($offset)
+    {
         $iterator = $this->getIterator();
-        return $iterator->offsetExists($offset);
 
+        return $iterator->offsetExists($offset);
     }
 
     /**
@@ -121,13 +118,14 @@ abstract class Node implements \IteratorAggregate, \ArrayAccess, \Countable {
      * This method just forwards the request to the inner iterator
      *
      * @param int $offset
+     *
      * @return mixed
      */
-    public function offsetGet($offset) {
-
+    public function offsetGet($offset)
+    {
         $iterator = $this->getIterator();
+
         return $iterator->offsetGet($offset);
-
     }
 
     /**
@@ -135,15 +133,13 @@ abstract class Node implements \IteratorAggregate, \ArrayAccess, \Countable {
      *
      * This method just forwards the request to the inner iterator
      *
-     * @param int $offset
+     * @param int   $offset
      * @param mixed $value
-     * @return void
      */
-    public function offsetSet($offset,$value) {
-
+    public function offsetSet($offset, $value)
+    {
         $iterator = $this->getIterator();
-        $iterator->offsetSet($offset,$value);
-
+        $iterator->offsetSet($offset, $value);
     }
 
     /**
@@ -152,15 +148,12 @@ abstract class Node implements \IteratorAggregate, \ArrayAccess, \Countable {
      * This method just forwards the request to the inner iterator
      *
      * @param int $offset
-     * @return void
      */
-    public function offsetUnset($offset) {
-
+    public function offsetUnset($offset)
+    {
         $iterator = $this->getIterator();
         $iterator->offsetUnset($offset);
-
     }
 
     /* }}} */
-
 }

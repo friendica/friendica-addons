@@ -14,8 +14,9 @@ Last revision: 10/07/11
 */
 
 // Someone is trying to hack us?
-if(!defined('JAPPIX_BASE'))
-	exit;
+if (!defined('JAPPIX_BASE')) {
+    exit;
+}
 
 ?>
 
@@ -25,7 +26,7 @@ if(!defined('JAPPIX_BASE'))
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<meta content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" name="viewport">
-	<title><?php _e("Jappix Mobile"); ?></title>
+	<title><?php _e('Jappix Mobile'); ?></title>
 	<link rel="shortcut icon" href="./favicon.ico" />
 	<?php echoGetFiles($hash, '', 'css', 'mobile.xml', ''); echo "\n"; ?>
 	<?php echoGetFiles($hash, $locale, 'js', 'mobile.xml', ''); echo "\n"; ?>
@@ -39,32 +40,34 @@ if(!defined('JAPPIX_BASE'))
 		
 		<noscript>
 			<div class="notification" id="noscript">
-				<?php _e("Please enable JavaScript"); ?>
+				<?php _e('Please enable JavaScript'); ?>
 			</div>
 		</noscript>
 		
 		<div class="notification" id="error">
-			<?php _e("Error"); ?>
+			<?php _e('Error'); ?>
 		</div>
 		
 		<div class="notification" id="info">
-			<?php _e("Please wait..."); ?>
+			<?php _e('Please wait...'); ?>
 		</div>
 		
 		<div class="login">
-			<?php _e("Login"); ?>
+			<?php _e('Login'); ?>
 			
 			<form action="#" method="post" onsubmit="return doLogin(this);">
 				<input class="xid mobile-images" type="text" name="xid" required="" />
 				<input class="password mobile-images" type="password" id="pwd" name="pwd" required="" />
-				<?php if(REGISTRATION != 'off') { ?>
-				<label><input class="register" type="checkbox" id="reg" name="reg" /><?php _e("Register"); ?></label>
-				<?php } ?>
-				<input type="submit" name="ok" value="<?php _e("Here we go!"); ?>" />
+				<?php if (REGISTRATION != 'off') {
+    ?>
+				<label><input class="register" type="checkbox" id="reg" name="reg" /><?php _e('Register'); ?></label>
+				<?php 
+} ?>
+				<input type="submit" name="ok" value="<?php _e('Here we go!'); ?>" />
 			</form>
 		</div>
 		
-		<a href="./?m=desktop<?php echo keepGet('m', false); ?>"><?php _e("Desktop"); ?></a>
+		<a href="./?m=desktop<?php echo keepGet('m', false); ?>"><?php _e('Desktop'); ?></a>
 	</div>
 </body>
 

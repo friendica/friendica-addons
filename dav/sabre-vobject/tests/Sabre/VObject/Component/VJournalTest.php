@@ -4,19 +4,18 @@ namespace Sabre\VObject\Component;
 
 use Sabre\VObject\Component;
 
-class VJournalTest extends \PHPUnit_Framework_TestCase {
-
+class VJournalTest extends \PHPUnit_Framework_TestCase
+{
     /**
      * @dataProvider timeRangeTestData
      */
-    public function testInTimeRange(VJournal $vtodo,$start,$end,$outcome) {
-
+    public function testInTimeRange(VJournal $vtodo, $start, $end, $outcome)
+    {
         $this->assertEquals($outcome, $vtodo->isInTimeRange($start, $end));
-
     }
 
-    public function timeRangeTestData() {
-
+    public function timeRangeTestData()
+    {
         $tests = array();
 
         $vjournal = Component::create('VJOURNAL');
@@ -36,6 +35,4 @@ class VJournalTest extends \PHPUnit_Framework_TestCase {
 
         return $tests;
     }
-
 }
-

@@ -2,20 +2,19 @@
 
 require_once 'Sabre/CalDAV/Backend/AbstractPDOTest.php';
 
-class Sabre_CalDAV_Backend_PDOSQLiteTest extends Sabre_CalDAV_Backend_AbstractPDOTest {
-
-    function setup() {
-
-        if (!SABRE_HASSQLITE) $this->markTestSkipped('SQLite driver is not available');
+class Sabre_CalDAV_Backend_PDOSqliteTest extends Sabre_CalDAV_Backend_AbstractPDOTest
+{
+    public function setup()
+    {
+        if (!SABRE_HASSQLITE) {
+            $this->markTestSkipped('SQLite driver is not available');
+        }
         $this->pdo = Sabre_CalDAV_TestUtil::getSQLiteDB();
-
     }
 
-    function teardown() {
-
+    public function teardown()
+    {
         $this->pdo = null;
-        unlink(SABRE_TEMPDIR . '/testdb.sqlite');
-
+        unlink(SABRE_TEMPDIR.'/testdb.sqlite');
     }
-
 }

@@ -5,88 +5,84 @@ namespace Sabre\VObject;
 use DateTime;
 use DateTimeZone;
 
-class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
-
-    function testValues() {
-
+class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase
+{
+    public function testValues()
+    {
         $ev = new Component('VEVENT');
         $ev->UID = 'bla';
         $ev->RRULE = 'FREQ=DAILY;BYHOUR=10;BYMINUTE=5;BYSECOND=16;BYWEEKNO=32;BYYEARDAY=100,200';
         $dtStart = new Property\DateTime('DTSTART');
-        $dtStart->setDateTime(new DateTime('2011-10-07'),Property\DateTime::UTC);
+        $dtStart->setDateTime(new DateTime('2011-10-07'), Property\DateTime::UTC);
 
         $ev->add($dtStart);
 
         $vcal = Component::create('VCALENDAR');
         $vcal->add($ev);
 
-        $it = new RecurrenceIterator($vcal,(string)$ev->uid);
+        $it = new RecurrenceIterator($vcal, (string) $ev->uid);
 
         $this->assertEquals(array(10), $it->byHour);
         $this->assertEquals(array(5), $it->byMinute);
         $this->assertEquals(array(16), $it->bySecond);
         $this->assertEquals(array(32), $it->byWeekNo);
-        $this->assertEquals(array(100,200), $it->byYearDay);
-
+        $this->assertEquals(array(100, 200), $it->byYearDay);
     }
 
     /**
      * @expectedException InvalidArgumentException
      * @depends testValues
      */
-    function testInvalidFreq() {
-
+    public function testInvalidFreq()
+    {
         $ev = new Component('VEVENT');
         $ev->RRULE = 'FREQ=SMONTHLY;INTERVAL=3;UNTIL=20111025T000000Z';
         $dtStart = new Property\DateTime('DTSTART');
-        $dtStart->setDateTime(new DateTime('2011-10-07'),Property\DateTime::UTC);
+        $dtStart->setDateTime(new DateTime('2011-10-07'), Property\DateTime::UTC);
 
         $ev->add($dtStart);
 
         $vcal = Component::create('VCALENDAR');
         $vcal->add($ev);
 
-        $it = new RecurrenceIterator($vcal,(string)$ev->uid);
-
+        $it = new RecurrenceIterator($vcal, (string) $ev->uid);
     }
 
     /**
      * @expectedException InvalidArgumentException
      */
-    function testVCalendarNoUID() {
-
+    public function testVCalendarNoUID()
+    {
         $vcal = new Component('VCALENDAR');
         $it = new RecurrenceIterator($vcal);
-
     }
 
     /**
      * @expectedException InvalidArgumentException
      */
-    function testVCalendarInvalidUID() {
-
+    public function testVCalendarInvalidUID()
+    {
         $vcal = new Component('VCALENDAR');
-        $it = new RecurrenceIterator($vcal,'foo');
-
+        $it = new RecurrenceIterator($vcal, 'foo');
     }
 
     /**
      * @depends testValues
      */
-    function testDaily() {
-
+    public function testDaily()
+    {
         $ev = new Component('VEVENT');
         $ev->UID = 'bla';
         $ev->RRULE = 'FREQ=DAILY;INTERVAL=3;UNTIL=20111025T000000Z';
         $dtStart = new Property\DateTime('DTSTART');
-        $dtStart->setDateTime(new DateTime('2011-10-07', new DateTimeZone('UTC')),Property\DateTime::UTC);
+        $dtStart->setDateTime(new DateTime('2011-10-07', new DateTimeZone('UTC')), Property\DateTime::UTC);
 
         $ev->add($dtStart);
 
         $vcal = Component::create('VCALENDAR');
         $vcal->add($ev);
 
-        $it = new RecurrenceIterator($vcal,$ev->uid);
+        $it = new RecurrenceIterator($vcal, $ev->uid);
 
         $this->assertEquals('daily', $it->frequency);
         $this->assertEquals(3, $it->interval);
@@ -95,13 +91,13 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
         // Max is to prevent overflow
         $max = 12;
         $result = array();
-        foreach($it as $item) {
-
+        foreach ($it as $item) {
             $result[] = $item;
-            $max--;
+            --$max;
 
-            if (!$max) break;
-
+            if (!$max) {
+                break;
+            }
         }
 
         $tz = new DateTimeZone('UTC');
@@ -118,25 +114,24 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
             ),
             $result
         );
-
     }
 
     /**
      * @depends testValues
      */
-    function testNoRRULE() {
-
+    public function testNoRRULE()
+    {
         $ev = new Component('VEVENT');
         $ev->UID = 'bla';
         $dtStart = new Property\DateTime('DTSTART');
-        $dtStart->setDateTime(new DateTime('2011-10-07', new DateTimeZone('UTC')),Property\DateTime::UTC);
+        $dtStart->setDateTime(new DateTime('2011-10-07', new DateTimeZone('UTC')), Property\DateTime::UTC);
 
         $ev->add($dtStart);
 
         $vcal = Component::create('VCALENDAR');
         $vcal->add($ev);
 
-        $it = new RecurrenceIterator($vcal,$ev->uid);
+        $it = new RecurrenceIterator($vcal, $ev->uid);
 
         $this->assertEquals('daily', $it->frequency);
         $this->assertEquals(1, $it->interval);
@@ -144,13 +139,13 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
         // Max is to prevent overflow
         $max = 12;
         $result = array();
-        foreach($it as $item) {
-
+        foreach ($it as $item) {
             $result[] = $item;
-            $max--;
+            --$max;
 
-            if (!$max) break;
-
+            if (!$max) {
+                break;
+            }
         }
 
         $tz = new DateTimeZone('UTC');
@@ -161,41 +156,40 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
             ),
             $result
         );
-
     }
 
     /**
      * @depends testValues
      */
-    function testDailyByDay() {
-
+    public function testDailyByDay()
+    {
         $ev = new Component('VEVENT');
         $ev->UID = 'bla';
         $ev->RRULE = 'FREQ=DAILY;INTERVAL=2;BYDAY=TU,WE,FR';
         $dtStart = new Property\DateTime('DTSTART');
-        $dtStart->setDateTime(new DateTime('2011-10-07', new DateTimeZone('UTC')),Property\DateTime::UTC);
+        $dtStart->setDateTime(new DateTime('2011-10-07', new DateTimeZone('UTC')), Property\DateTime::UTC);
 
         $ev->add($dtStart);
 
         $vcal = Component::create('VCALENDAR');
         $vcal->add($ev);
 
-        $it = new RecurrenceIterator($vcal,(string)$ev->uid);
+        $it = new RecurrenceIterator($vcal, (string) $ev->uid);
 
         $this->assertEquals('daily', $it->frequency);
         $this->assertEquals(2, $it->interval);
-        $this->assertEquals(array('TU','WE','FR'), $it->byDay);
+        $this->assertEquals(array('TU', 'WE', 'FR'), $it->byDay);
 
         // Grabbing the next 12 items
         $max = 12;
         $result = array();
-        foreach($it as $item) {
-
+        foreach ($it as $item) {
             $result[] = $item;
-            $max--;
+            --$max;
 
-            if (!$max) break;
-
+            if (!$max) {
+                break;
+            }
         }
 
         $tz = new DateTimeZone('UTC');
@@ -217,26 +211,25 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
             ),
             $result
         );
-
     }
 
     /**
      * @depends testValues
      */
-    function testWeekly() {
-
+    public function testWeekly()
+    {
         $ev = new Component('VEVENT');
         $ev->UID = 'bla';
         $ev->RRULE = 'FREQ=WEEKLY;INTERVAL=2;COUNT=10';
         $dtStart = new Property\DateTime('DTSTART');
-        $dtStart->setDateTime(new DateTime('2011-10-07', new DateTimeZone('UTC')),Property\DateTime::UTC);
+        $dtStart->setDateTime(new DateTime('2011-10-07', new DateTimeZone('UTC')), Property\DateTime::UTC);
 
         $ev->add($dtStart);
 
         $vcal = Component::create('VCALENDAR');
         $vcal->add($ev);
 
-        $it = new RecurrenceIterator($vcal,(string)$ev->uid);
+        $it = new RecurrenceIterator($vcal, (string) $ev->uid);
 
         $this->assertEquals('weekly', $it->frequency);
         $this->assertEquals(2, $it->interval);
@@ -245,13 +238,13 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
         // Max is to prevent overflow
         $max = 12;
         $result = array();
-        foreach($it as $item) {
-
+        foreach ($it as $item) {
             $result[] = $item;
-            $max--;
+            --$max;
 
-            if (!$max) break;
-
+            if (!$max) {
+                break;
+            }
         }
 
         $tz = new DateTimeZone('UTC');
@@ -271,42 +264,41 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
             ),
             $result
         );
-
     }
 
     /**
      * @depends testValues
      */
-    function testWeeklyByDay() {
-
+    public function testWeeklyByDay()
+    {
         $ev = new Component('VEVENT');
         $ev->UID = 'bla';
         $ev->RRULE = 'FREQ=WEEKLY;INTERVAL=2;BYDAY=TU,WE,FR;WKST=SU';
         $dtStart = new Property\DateTime('DTSTART');
-        $dtStart->setDateTime(new DateTime('2011-10-07', new DateTimeZone('UTC')),Property\DateTime::UTC);
+        $dtStart->setDateTime(new DateTime('2011-10-07', new DateTimeZone('UTC')), Property\DateTime::UTC);
 
         $ev->add($dtStart);
 
         $vcal = Component::create('VCALENDAR');
         $vcal->add($ev);
 
-        $it = new RecurrenceIterator($vcal,(string)$ev->uid);
+        $it = new RecurrenceIterator($vcal, (string) $ev->uid);
 
         $this->assertEquals('weekly', $it->frequency);
         $this->assertEquals(2, $it->interval);
-        $this->assertEquals(array('TU','WE','FR'), $it->byDay);
+        $this->assertEquals(array('TU', 'WE', 'FR'), $it->byDay);
         $this->assertEquals('SU', $it->weekStart);
 
         // Grabbing the next 12 items
         $max = 12;
         $result = array();
-        foreach($it as $item) {
-
+        foreach ($it as $item) {
             $result[] = $item;
-            $max--;
+            --$max;
 
-            if (!$max) break;
-
+            if (!$max) {
+                break;
+            }
         }
 
         $tz = new DateTimeZone('UTC');
@@ -328,26 +320,25 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
             ),
             $result
         );
-
     }
 
     /**
      * @depends testValues
      */
-    function testMonthly() {
-
+    public function testMonthly()
+    {
         $ev = new Component('VEVENT');
         $ev->UID = 'bla';
         $ev->RRULE = 'FREQ=MONTHLY;INTERVAL=3;COUNT=5';
         $dtStart = new Property\DateTime('DTSTART');
-        $dtStart->setDateTime(new DateTime('2011-12-05', new DateTimeZone('UTC')),Property\DateTime::UTC);
+        $dtStart->setDateTime(new DateTime('2011-12-05', new DateTimeZone('UTC')), Property\DateTime::UTC);
 
         $ev->add($dtStart);
 
         $vcal = Component::create('VCALENDAR');
         $vcal->add($ev);
 
-        $it = new RecurrenceIterator($vcal,(string)$ev->uid);
+        $it = new RecurrenceIterator($vcal, (string) $ev->uid);
 
         $this->assertEquals('monthly', $it->frequency);
         $this->assertEquals(3, $it->interval);
@@ -355,13 +346,13 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
 
         $max = 14;
         $result = array();
-        foreach($it as $item) {
-
+        foreach ($it as $item) {
             $result[] = $item;
-            $max--;
+            --$max;
 
-            if (!$max) break;
-
+            if (!$max) {
+                break;
+            }
         }
 
         $tz = new DateTimeZone('UTC');
@@ -376,27 +367,25 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
             ),
             $result
         );
-
-
     }
 
     /**
      * @depends testValues
      */
-    function testMonthlyEndOfMonth() {
-
+    public function testMonthlyEndOfMonth()
+    {
         $ev = new Component('VEVENT');
         $ev->UID = 'bla';
         $ev->RRULE = 'FREQ=MONTHLY;INTERVAL=2;COUNT=12';
         $dtStart = new Property\DateTime('DTSTART');
-        $dtStart->setDateTime(new DateTime('2011-12-31', new DateTimeZone('UTC')),Property\DateTime::UTC);
+        $dtStart->setDateTime(new DateTime('2011-12-31', new DateTimeZone('UTC')), Property\DateTime::UTC);
 
         $ev->add($dtStart);
 
         $vcal = Component::create('VCALENDAR');
         $vcal->add($ev);
 
-        $it = new RecurrenceIterator($vcal,(string)$ev->uid);
+        $it = new RecurrenceIterator($vcal, (string) $ev->uid);
 
         $this->assertEquals('monthly', $it->frequency);
         $this->assertEquals(2, $it->interval);
@@ -404,13 +393,13 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
 
         $max = 14;
         $result = array();
-        foreach($it as $item) {
-
+        foreach ($it as $item) {
             $result[] = $item;
-            $max--;
+            --$max;
 
-            if (!$max) break;
-
+            if (!$max) {
+                break;
+            }
         }
 
         $tz = new DateTimeZone('UTC');
@@ -432,27 +421,25 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
             ),
             $result
         );
-
-
     }
 
     /**
      * @depends testValues
      */
-    function testMonthlyByMonthDay() {
-
+    public function testMonthlyByMonthDay()
+    {
         $ev = new Component('VEVENT');
         $ev->UID = 'bla';
         $ev->RRULE = 'FREQ=MONTHLY;INTERVAL=5;COUNT=9;BYMONTHDAY=1,31,-7';
         $dtStart = new Property\DateTime('DTSTART');
-        $dtStart->setDateTime(new DateTime('2011-01-01', new DateTimeZone('UTC')),Property\DateTime::UTC);
+        $dtStart->setDateTime(new DateTime('2011-01-01', new DateTimeZone('UTC')), Property\DateTime::UTC);
 
         $ev->add($dtStart);
 
         $vcal = Component::create('VCALENDAR');
         $vcal->add($ev);
 
-        $it = new RecurrenceIterator($vcal,(string)$ev->uid);
+        $it = new RecurrenceIterator($vcal, (string) $ev->uid);
 
         $this->assertEquals('monthly', $it->frequency);
         $this->assertEquals(5, $it->interval);
@@ -461,13 +448,13 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
 
         $max = 14;
         $result = array();
-        foreach($it as $item) {
-
+        foreach ($it as $item) {
             $result[] = $item;
-            $max--;
+            --$max;
 
-            if (!$max) break;
-
+            if (!$max) {
+                break;
+            }
         }
 
         $tz = new DateTimeZone('UTC');
@@ -486,41 +473,40 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
             ),
             $result
         );
-
     }
 
     /**
      * @depends testValues
      */
-    function testMonthlyByDay() {
-
+    public function testMonthlyByDay()
+    {
         $ev = new Component('VEVENT');
         $ev->UID = 'bla';
         $ev->RRULE = 'FREQ=MONTHLY;INTERVAL=2;COUNT=16;BYDAY=MO,-2TU,+1WE,3TH';
         $dtStart = new Property\DateTime('DTSTART');
-        $dtStart->setDateTime(new DateTime('2011-01-03', new DateTimeZone('UTC')),Property\DateTime::UTC);
+        $dtStart->setDateTime(new DateTime('2011-01-03', new DateTimeZone('UTC')), Property\DateTime::UTC);
 
         $ev->add($dtStart);
 
         $vcal = Component::create('VCALENDAR');
         $vcal->add($ev);
 
-        $it = new RecurrenceIterator($vcal,(string)$ev->uid);
+        $it = new RecurrenceIterator($vcal, (string) $ev->uid);
 
         $this->assertEquals('monthly', $it->frequency);
         $this->assertEquals(2, $it->interval);
         $this->assertEquals(16, $it->count);
-        $this->assertEquals(array('MO','-2TU','+1WE','3TH'), $it->byDay);
+        $this->assertEquals(array('MO', '-2TU', '+1WE', '3TH'), $it->byDay);
 
         $max = 20;
         $result = array();
-        foreach($it as $k=>$item) {
-
+        foreach ($it as $k => $item) {
             $result[] = $item;
-            $max--;
+            --$max;
 
-            if (!$max) break;
-
+            if (!$max) {
+                break;
+            }
         }
 
         $tz = new DateTimeZone('UTC');
@@ -546,26 +532,25 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
             ),
             $result
         );
-
     }
 
     /**
      * @depends testValues
      */
-    function testMonthlyByDayByMonthDay() {
-
+    public function testMonthlyByDayByMonthDay()
+    {
         $ev = new Component('VEVENT');
         $ev->UID = 'bla';
         $ev->RRULE = 'FREQ=MONTHLY;COUNT=10;BYDAY=MO;BYMONTHDAY=1';
         $dtStart = new Property\DateTime('DTSTART');
-        $dtStart->setDateTime(new DateTime('2011-08-01', new DateTimeZone('UTC')),Property\DateTime::UTC);
+        $dtStart->setDateTime(new DateTime('2011-08-01', new DateTimeZone('UTC')), Property\DateTime::UTC);
 
         $ev->add($dtStart);
 
         $vcal = Component::create('VCALENDAR');
         $vcal->add($ev);
 
-        $it = new RecurrenceIterator($vcal,(string)$ev->uid);
+        $it = new RecurrenceIterator($vcal, (string) $ev->uid);
 
         $this->assertEquals('monthly', $it->frequency);
         $this->assertEquals(1, $it->interval);
@@ -575,13 +560,13 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
 
         $max = 20;
         $result = array();
-        foreach($it as $k=>$item) {
-
+        foreach ($it as $k => $item) {
             $result[] = $item;
-            $max--;
+            --$max;
 
-            if (!$max) break;
-
+            if (!$max) {
+                break;
+            }
         }
 
         $tz = new DateTimeZone('UTC');
@@ -601,42 +586,41 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
             ),
             $result
         );
-
     }
 
     /**
      * @depends testValues
      */
-    function testMonthlyByDayBySetPos() {
-
+    public function testMonthlyByDayBySetPos()
+    {
         $ev = new Component('VEVENT');
         $ev->UID = 'bla';
         $ev->RRULE = 'FREQ=MONTHLY;COUNT=10;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=1,-1';
         $dtStart = new Property\DateTime('DTSTART');
-        $dtStart->setDateTime(new DateTime('2011-01-03', new DateTimeZone('UTC')),Property\DateTime::UTC);
+        $dtStart->setDateTime(new DateTime('2011-01-03', new DateTimeZone('UTC')), Property\DateTime::UTC);
 
         $ev->add($dtStart);
 
         $vcal = Component::create('VCALENDAR');
         $vcal->add($ev);
 
-        $it = new RecurrenceIterator($vcal,(string)$ev->uid);
+        $it = new RecurrenceIterator($vcal, (string) $ev->uid);
 
         $this->assertEquals('monthly', $it->frequency);
         $this->assertEquals(1, $it->interval);
         $this->assertEquals(10, $it->count);
-        $this->assertEquals(array('MO','TU','WE','TH','FR'), $it->byDay);
-        $this->assertEquals(array(1,-1), $it->bySetPos);
+        $this->assertEquals(array('MO', 'TU', 'WE', 'TH', 'FR'), $it->byDay);
+        $this->assertEquals(array(1, -1), $it->bySetPos);
 
         $max = 20;
         $result = array();
-        foreach($it as $k=>$item) {
-
+        foreach ($it as $k => $item) {
             $result[] = $item;
-            $max--;
+            --$max;
 
-            if (!$max) break;
-
+            if (!$max) {
+                break;
+            }
         }
 
         $tz = new DateTimeZone('UTC');
@@ -656,26 +640,25 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
             ),
             $result
         );
-
     }
 
     /**
      * @depends testValues
      */
-    function testYearly() {
-
+    public function testYearly()
+    {
         $ev = new Component('VEVENT');
         $ev->UID = 'bla';
         $ev->RRULE = 'FREQ=YEARLY;COUNT=10;INTERVAL=3';
         $dtStart = new Property\DateTime('DTSTART');
-        $dtStart->setDateTime(new DateTime('2011-01-01', new DateTimeZone('UTC')),Property\DateTime::UTC);
+        $dtStart->setDateTime(new DateTime('2011-01-01', new DateTimeZone('UTC')), Property\DateTime::UTC);
 
         $ev->add($dtStart);
 
         $vcal = Component::create('VCALENDAR');
         $vcal->add($ev);
 
-        $it = new RecurrenceIterator($vcal,(string)$ev->uid);
+        $it = new RecurrenceIterator($vcal, (string) $ev->uid);
 
         $this->assertEquals('yearly', $it->frequency);
         $this->assertEquals(3, $it->interval);
@@ -683,13 +666,13 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
 
         $max = 20;
         $result = array();
-        foreach($it as $k=>$item) {
-
+        foreach ($it as $k => $item) {
             $result[] = $item;
-            $max--;
+            --$max;
 
-            if (!$max) break;
-
+            if (!$max) {
+                break;
+            }
         }
 
         $tz = new DateTimeZone('UTC');
@@ -709,39 +692,38 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
             ),
             $result
         );
-
     }
 
     /**
      * @depends testValues
      */
-    function testYearlyLeapYear() {
-
+    public function testYearlyLeapYear()
+    {
         $ev = new Component('VEVENT');
         $ev->UID = 'bla';
         $ev->RRULE = 'FREQ=YEARLY;COUNT=3';
         $dtStart = new Property\DateTime('DTSTART');
-        $dtStart->setDateTime(new DateTime('2012-02-29', new DateTimeZone('UTC')),Property\DateTime::UTC);
+        $dtStart->setDateTime(new DateTime('2012-02-29', new DateTimeZone('UTC')), Property\DateTime::UTC);
 
         $ev->add($dtStart);
 
         $vcal = Component::create('VCALENDAR');
         $vcal->add($ev);
 
-        $it = new RecurrenceIterator($vcal,(string)$ev->uid);
+        $it = new RecurrenceIterator($vcal, (string) $ev->uid);
 
         $this->assertEquals('yearly', $it->frequency);
         $this->assertEquals(3, $it->count);
 
         $max = 20;
         $result = array();
-        foreach($it as $k=>$item) {
-
+        foreach ($it as $k => $item) {
             $result[] = $item;
-            $max--;
+            --$max;
 
-            if (!$max) break;
-
+            if (!$max) {
+                break;
+            }
         }
 
         $tz = new DateTimeZone('UTC');
@@ -754,41 +736,40 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
             ),
             $result
         );
-
     }
 
     /**
      * @depends testValues
      */
-    function testYearlyByMonth() {
-
+    public function testYearlyByMonth()
+    {
         $ev = new Component('VEVENT');
         $ev->UID = 'bla';
         $ev->RRULE = 'FREQ=YEARLY;COUNT=8;INTERVAL=4;BYMONTH=4,10';
         $dtStart = new Property\DateTime('DTSTART');
-        $dtStart->setDateTime(new DateTime('2011-04-07', new DateTimeZone('UTC')),Property\DateTime::UTC);
+        $dtStart->setDateTime(new DateTime('2011-04-07', new DateTimeZone('UTC')), Property\DateTime::UTC);
 
         $ev->add($dtStart);
 
         $vcal = Component::create('VCALENDAR');
         $vcal->add($ev);
 
-        $it = new RecurrenceIterator($vcal,(string)$ev->uid);
+        $it = new RecurrenceIterator($vcal, (string) $ev->uid);
 
         $this->assertEquals('yearly', $it->frequency);
         $this->assertEquals(4, $it->interval);
         $this->assertEquals(8, $it->count);
-        $this->assertEquals(array(4,10), $it->byMonth);
+        $this->assertEquals(array(4, 10), $it->byMonth);
 
         $max = 20;
         $result = array();
-        foreach($it as $k=>$item) {
-
+        foreach ($it as $k => $item) {
             $result[] = $item;
-            $max--;
+            --$max;
 
-            if (!$max) break;
-
+            if (!$max) {
+                break;
+            }
         }
 
         $tz = new DateTimeZone('UTC');
@@ -806,42 +787,41 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
             ),
             $result
         );
-
     }
 
     /**
      * @depends testValues
      */
-    function testYearlyByMonthByDay() {
-
+    public function testYearlyByMonthByDay()
+    {
         $ev = new Component('VEVENT');
         $ev->UID = 'bla';
         $ev->RRULE = 'FREQ=YEARLY;COUNT=8;INTERVAL=5;BYMONTH=4,10;BYDAY=1MO,-1SU';
         $dtStart = new Property\DateTime('DTSTART');
-        $dtStart->setDateTime(new DateTime('2011-04-04', new DateTimeZone('UTC')),Property\DateTime::UTC);
+        $dtStart->setDateTime(new DateTime('2011-04-04', new DateTimeZone('UTC')), Property\DateTime::UTC);
 
         $ev->add($dtStart);
 
         $vcal = Component::create('VCALENDAR');
         $vcal->add($ev);
 
-        $it = new RecurrenceIterator($vcal,(string)$ev->uid);
+        $it = new RecurrenceIterator($vcal, (string) $ev->uid);
 
         $this->assertEquals('yearly', $it->frequency);
         $this->assertEquals(5, $it->interval);
         $this->assertEquals(8, $it->count);
-        $this->assertEquals(array(4,10), $it->byMonth);
-        $this->assertEquals(array('1MO','-1SU'), $it->byDay);
+        $this->assertEquals(array(4, 10), $it->byMonth);
+        $this->assertEquals(array('1MO', '-1SU'), $it->byDay);
 
         $max = 20;
         $result = array();
-        foreach($it as $k=>$item) {
-
+        foreach ($it as $k => $item) {
             $result[] = $item;
-            $max--;
+            --$max;
 
-            if (!$max) break;
-
+            if (!$max) {
+                break;
+            }
         }
 
         $tz = new DateTimeZone('UTC');
@@ -859,26 +839,25 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
             ),
             $result
         );
-
     }
 
     /**
      * @depends testValues
      */
-    function testFastForward() {
-
+    public function testFastForward()
+    {
         $ev = new Component('VEVENT');
         $ev->UID = 'bla';
         $ev->RRULE = 'FREQ=YEARLY;COUNT=8;INTERVAL=5;BYMONTH=4,10;BYDAY=1MO,-1SU';
         $dtStart = new Property\DateTime('DTSTART');
-        $dtStart->setDateTime(new DateTime('2011-04-04', new DateTimeZone('UTC')),Property\DateTime::UTC);
+        $dtStart->setDateTime(new DateTime('2011-04-04', new DateTimeZone('UTC')), Property\DateTime::UTC);
 
         $ev->add($dtStart);
 
         $vcal = Component::create('VCALENDAR');
         $vcal->add($ev);
 
-        $it = new RecurrenceIterator($vcal,(string)$ev->uid);
+        $it = new RecurrenceIterator($vcal, (string) $ev->uid);
 
         // The idea is that we're fast-forwarding too far in the future, so
         // there will be no results left.
@@ -886,33 +865,32 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
 
         $max = 20;
         $result = array();
-        while($item = $it->current()) {
-
+        while ($item = $it->current()) {
             $result[] = $item;
-            $max--;
+            --$max;
 
-            if (!$max) break;
+            if (!$max) {
+                break;
+            }
             $it->next();
-
         }
 
         $tz = new DateTimeZone('UTC');
         $this->assertEquals(array(), $result);
-
     }
 
     /**
      * @depends testValues
      */
-    function testComplexExclusions() {
-
+    public function testComplexExclusions()
+    {
         $ev = new Component('VEVENT');
         $ev->UID = 'bla';
         $ev->RRULE = 'FREQ=YEARLY;COUNT=10';
         $dtStart = new Property\DateTime('DTSTART');
 
         $tz = new DateTimeZone('Canada/Eastern');
-        $dtStart->setDateTime(new DateTime('2011-01-01 13:50:20', $tz),Property\DateTime::LOCALTZ);
+        $dtStart->setDateTime(new DateTime('2011-01-01 13:50:20', $tz), Property\DateTime::LOCALTZ);
 
         $exDate1 = new Property\MultiDateTime('EXDATE');
         $exDate1->setDateTimes(array(new DateTime('2012-01-01 13:50:20', $tz), new DateTime('2014-01-01 13:50:20', $tz)), Property\DateTime::LOCALTZ);
@@ -926,7 +904,7 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
         $vcal = Component::create('VCALENDAR');
         $vcal->add($ev);
 
-        $it = new RecurrenceIterator($vcal,(string)$ev->uid);
+        $it = new RecurrenceIterator($vcal, (string) $ev->uid);
 
         $this->assertEquals('yearly', $it->frequency);
         $this->assertEquals(1, $it->interval);
@@ -934,13 +912,13 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
 
         $max = 20;
         $result = array();
-        foreach($it as $k=>$item) {
-
+        foreach ($it as $k => $item) {
             $result[] = $item;
-            $max--;
+            --$max;
 
-            if (!$max) break;
-
+            if (!$max) {
+                break;
+            }
         }
 
         $this->assertEquals(
@@ -955,14 +933,13 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
             ),
             $result
         );
-
     }
 
     /**
      * @depends testValues
      */
-    function testOverridenEvent() {
-
+    public function testOverridenEvent()
+    {
         $vcal = Component::create('VCALENDAR');
 
         $ev1 = Component::create('VEVENT');
@@ -982,7 +959,7 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
 
         $vcal->add($ev2);
 
-        // ev3 overrides an event, and puts it 2 days and 2 hours later 
+        // ev3 overrides an event, and puts it 2 days and 2 hours later
         $ev3 = Component::create('VEVENT');
         $ev3->UID = 'overridden';
         $ev3->{'RECURRENCE-ID'} = '20120113T120000Z';
@@ -991,30 +968,28 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
 
         $vcal->add($ev3);
 
-        $it = new RecurrenceIterator($vcal,'overridden');
+        $it = new RecurrenceIterator($vcal, 'overridden');
 
         $dates = array();
         $summaries = array();
-        while($it->valid()) {
-
+        while ($it->valid()) {
             $dates[] = $it->getDTStart();
-            $summaries[] = (string)$it->getEventObject()->SUMMARY;
+            $summaries[] = (string) $it->getEventObject()->SUMMARY;
             $it->next();
-
         }
 
         $tz = new DateTimeZone('GMT');
         $this->assertEquals(array(
-            new DateTime('2012-01-07 12:00:00',$tz),
-            new DateTime('2012-01-08 12:00:00',$tz),
-            new DateTime('2012-01-09 12:00:00',$tz),
-            new DateTime('2012-01-10 14:00:00',$tz),
-            new DateTime('2012-01-11 12:00:00',$tz),
-            new DateTime('2012-01-12 12:00:00',$tz),
-            new DateTime('2012-01-14 12:00:00',$tz),
-            new DateTime('2012-01-15 12:00:00',$tz),
-            new DateTime('2012-01-15 14:00:00',$tz),
-            new DateTime('2012-01-16 12:00:00',$tz),
+            new DateTime('2012-01-07 12:00:00', $tz),
+            new DateTime('2012-01-08 12:00:00', $tz),
+            new DateTime('2012-01-09 12:00:00', $tz),
+            new DateTime('2012-01-10 14:00:00', $tz),
+            new DateTime('2012-01-11 12:00:00', $tz),
+            new DateTime('2012-01-12 12:00:00', $tz),
+            new DateTime('2012-01-14 12:00:00', $tz),
+            new DateTime('2012-01-15 12:00:00', $tz),
+            new DateTime('2012-01-15 14:00:00', $tz),
+            new DateTime('2012-01-16 12:00:00', $tz),
         ), $dates);
 
         $this->assertEquals(array(
@@ -1029,14 +1004,13 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
             'Event 3',
             'baseEvent',
         ), $summaries);
-
     }
 
     /**
      * @depends testValues
      */
-    function testOverridenEvent2() {
-
+    public function testOverridenEvent2()
+    {
         $vcal = Component::create('VCALENDAR');
 
         $ev1 = Component::create('VEVENT');
@@ -1056,23 +1030,21 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
 
         $vcal->add($ev2);
 
-        $it = new RecurrenceIterator($vcal,'overridden');
+        $it = new RecurrenceIterator($vcal, 'overridden');
 
         $dates = array();
         $summaries = array();
-        while($it->valid()) {
-
+        while ($it->valid()) {
             $dates[] = $it->getDTStart();
-            $summaries[] = (string)$it->getEventObject()->SUMMARY;
+            $summaries[] = (string) $it->getEventObject()->SUMMARY;
             $it->next();
-
         }
 
         $tz = new DateTimeZone('GMT');
         $this->assertEquals(array(
-            new DateTime('2012-01-12 12:00:00',$tz),
-            new DateTime('2012-01-13 12:00:00',$tz),
-            new DateTime('2012-01-26 12:00:00',$tz),
+            new DateTime('2012-01-12 12:00:00', $tz),
+            new DateTime('2012-01-13 12:00:00', $tz),
+            new DateTime('2012-01-26 12:00:00', $tz),
 
         ), $dates);
 
@@ -1081,14 +1053,13 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
             'Override!',
             'baseEvent',
         ), $summaries);
-
     }
 
     /**
      * @depends testValues
      */
-    function testOverridenEventNoValuesExpected() {
-
+    public function testOverridenEventNoValuesExpected()
+    {
         $vcal = Component::create('VCALENDAR');
 
         $ev1 = Component::create('VEVENT');
@@ -1108,30 +1079,26 @@ class RecurrenceIteratorTest extends \PHPUnit_Framework_TestCase {
 
         $vcal->add($ev2);
 
-        $it = new RecurrenceIterator($vcal,'overridden');
+        $it = new RecurrenceIterator($vcal, 'overridden');
 
         $dates = array();
         $summaries = array();
 
-        // The reported problem was specifically related to the VCALENDAR 
-        // expansion. In this parcitular case, we had to forward to the 28th of 
+        // The reported problem was specifically related to the VCALENDAR
+        // expansion. In this parcitular case, we had to forward to the 28th of
         // january.
         $it->fastForward(new DateTime('2012-01-28 23:00:00'));
 
-        // We stop the loop when it hits the 6th of februari. Normally this 
-        // iterator would hit 24, 25 (overriden from 31) and 7 feb but because 
+        // We stop the loop when it hits the 6th of februari. Normally this
+        // iterator would hit 24, 25 (overriden from 31) and 7 feb but because
         // we 'filter' from the 28th till the 6th, we should get 0 results.
-        while($it->valid() && $it->getDTSTart() < new DateTime('2012-02-06 23:00:00')) {
-
+        while ($it->valid() && $it->getDTSTart() < new DateTime('2012-02-06 23:00:00')) {
             $dates[] = $it->getDTStart();
-            $summaries[] = (string)$it->getEventObject()->SUMMARY;
+            $summaries[] = (string) $it->getEventObject()->SUMMARY;
             $it->next();
-
         }
 
         $this->assertEquals(array(), $dates);
         $this->assertEquals(array(), $summaries);
-
     }
 }
-

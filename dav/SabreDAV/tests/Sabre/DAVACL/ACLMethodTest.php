@@ -1,37 +1,35 @@
 <?php
 
-class Sabre_DAVACL_ACLMethodTest extends PHPUnit_Framework_TestCase {
-
+class Sabre_DAVACL_ACLMethodTest extends PHPUnit_Framework_TestCase
+{
     /**
      * @expectedException Sabre_DAV_Exception_BadRequest
      */
-    function testCallback() {
-
+    public function testCallback()
+    {
         $acl = new Sabre_DAVACL_Plugin();
         $server = new Sabre_DAV_Server();
         $server->addPlugin($acl);
 
-        $acl->unknownMethod('ACL','test');
-
+        $acl->unknownMethod('ACL', 'test');
     }
 
-    function testCallbackPassthru() {
-
+    public function testCallbackPassthru()
+    {
         $acl = new Sabre_DAVACL_Plugin();
         $server = new Sabre_DAV_Server();
         $server->addPlugin($acl);
 
-        $this->assertNull($acl->unknownMethod('FOO','test'));
-
+        $this->assertNull($acl->unknownMethod('FOO', 'test'));
     }
 
     /**
 
-    /**
+     /**
      * @expectedException Sabre_DAV_Exception_MethodNotAllowed
      */
-    function testNotSupportedByNode() {
-
+    public function testNotSupportedByNode()
+    {
         $tree = array(
             new Sabre_DAV_SimpleCollection('test'),
         );
@@ -45,13 +43,12 @@ class Sabre_DAVACL_ACLMethodTest extends PHPUnit_Framework_TestCase {
         $server->addPlugin($acl);
 
         $acl->httpACL('test');
-
     }
 
-    function testSuccessSimple() {
-
+    public function testSuccessSimple()
+    {
         $tree = array(
-            new Sabre_DAVACL_MockACLNode('test',array()),
+            new Sabre_DAVACL_MockACLNode('test', array()),
         );
         $acl = new Sabre_DAVACL_Plugin();
         $server = new Sabre_DAV_Server($tree);
@@ -63,16 +60,15 @@ class Sabre_DAVACL_ACLMethodTest extends PHPUnit_Framework_TestCase {
         $server->addPlugin($acl);
 
         $this->assertNull($acl->httpACL('test'));
-
     }
 
     /**
      * @expectedException Sabre_DAVACL_Exception_NotRecognizedPrincipal
      */
-    function testUnrecognizedPrincipal() {
-
+    public function testUnrecognizedPrincipal()
+    {
         $tree = array(
-            new Sabre_DAVACL_MockACLNode('test',array()),
+            new Sabre_DAVACL_MockACLNode('test', array()),
         );
         $acl = new Sabre_DAVACL_Plugin();
         $server = new Sabre_DAV_Server($tree);
@@ -88,17 +84,16 @@ class Sabre_DAVACL_ACLMethodTest extends PHPUnit_Framework_TestCase {
         $server->addPlugin($acl);
 
         $acl->httpACL('test');
-
     }
 
     /**
      * @expectedException Sabre_DAVACL_Exception_NotRecognizedPrincipal
      */
-    function testUnrecognizedPrincipal2() {
-
+    public function testUnrecognizedPrincipal2()
+    {
         $tree = array(
-            new Sabre_DAVACL_MockACLNode('test',array()),
-            new Sabre_DAV_SimpleCollection('principals',array(
+            new Sabre_DAVACL_MockACLNode('test', array()),
+            new Sabre_DAV_SimpleCollection('principals', array(
                 new Sabre_DAV_SimpleCollection('notaprincipal'),
             )),
         );
@@ -116,16 +111,15 @@ class Sabre_DAVACL_ACLMethodTest extends PHPUnit_Framework_TestCase {
         $server->addPlugin($acl);
 
         $acl->httpACL('test');
-
     }
 
     /**
      * @expectedException Sabre_DAVACL_Exception_NotSupportedPrivilege
      */
-    function testUnknownPrivilege() {
-
+    public function testUnknownPrivilege()
+    {
         $tree = array(
-            new Sabre_DAVACL_MockACLNode('test',array()),
+            new Sabre_DAVACL_MockACLNode('test', array()),
         );
         $acl = new Sabre_DAVACL_Plugin();
         $server = new Sabre_DAV_Server($tree);
@@ -141,16 +135,15 @@ class Sabre_DAVACL_ACLMethodTest extends PHPUnit_Framework_TestCase {
         $server->addPlugin($acl);
 
         $acl->httpACL('test');
-
     }
 
     /**
      * @expectedException Sabre_DAVACL_Exception_NoAbstract
      */
-    function testAbstractPrivilege() {
-
+    public function testAbstractPrivilege()
+    {
         $tree = array(
-            new Sabre_DAVACL_MockACLNode('test',array()),
+            new Sabre_DAVACL_MockACLNode('test', array()),
         );
         $acl = new Sabre_DAVACL_Plugin();
         $server = new Sabre_DAV_Server($tree);
@@ -166,14 +159,13 @@ class Sabre_DAVACL_ACLMethodTest extends PHPUnit_Framework_TestCase {
         $server->addPlugin($acl);
 
         $acl->httpACL('test');
-
     }
 
     /**
      * @expectedException Sabre_DAVACL_Exception_AceConflict
      */
-    function testUpdateProtectedPrivilege() {
-
+    public function testUpdateProtectedPrivilege()
+    {
         $oldACL = array(
             array(
                 'principal' => 'principals/notfound',
@@ -183,7 +175,7 @@ class Sabre_DAVACL_ACLMethodTest extends PHPUnit_Framework_TestCase {
         );
 
         $tree = array(
-            new Sabre_DAVACL_MockACLNode('test',$oldACL),
+            new Sabre_DAVACL_MockACLNode('test', $oldACL),
         );
         $acl = new Sabre_DAVACL_Plugin();
         $server = new Sabre_DAV_Server($tree);
@@ -199,14 +191,13 @@ class Sabre_DAVACL_ACLMethodTest extends PHPUnit_Framework_TestCase {
         $server->addPlugin($acl);
 
         $acl->httpACL('test');
-
     }
 
     /**
      * @expectedException Sabre_DAVACL_Exception_AceConflict
      */
-    function testUpdateProtectedPrivilege2() {
-
+    public function testUpdateProtectedPrivilege2()
+    {
         $oldACL = array(
             array(
                 'principal' => 'principals/notfound',
@@ -216,7 +207,7 @@ class Sabre_DAVACL_ACLMethodTest extends PHPUnit_Framework_TestCase {
         );
 
         $tree = array(
-            new Sabre_DAVACL_MockACLNode('test',$oldACL),
+            new Sabre_DAVACL_MockACLNode('test', $oldACL),
         );
         $acl = new Sabre_DAVACL_Plugin();
         $server = new Sabre_DAV_Server($tree);
@@ -232,14 +223,13 @@ class Sabre_DAVACL_ACLMethodTest extends PHPUnit_Framework_TestCase {
         $server->addPlugin($acl);
 
         $acl->httpACL('test');
-
     }
 
     /**
      * @expectedException Sabre_DAVACL_Exception_AceConflict
      */
-    function testUpdateProtectedPrivilege3() {
-
+    public function testUpdateProtectedPrivilege3()
+    {
         $oldACL = array(
             array(
                 'principal' => 'principals/notfound',
@@ -249,7 +239,7 @@ class Sabre_DAVACL_ACLMethodTest extends PHPUnit_Framework_TestCase {
         );
 
         $tree = array(
-            new Sabre_DAVACL_MockACLNode('test',$oldACL),
+            new Sabre_DAVACL_MockACLNode('test', $oldACL),
         );
         $acl = new Sabre_DAVACL_Plugin();
         $server = new Sabre_DAV_Server($tree);
@@ -265,11 +255,10 @@ class Sabre_DAVACL_ACLMethodTest extends PHPUnit_Framework_TestCase {
         $server->addPlugin($acl);
 
         $acl->httpACL('test');
-
     }
 
-    function testSuccessComplex () {
-
+    public function testSuccessComplex()
+    {
         $oldACL = array(
             array(
                 'principal' => 'principals/foo',
@@ -283,10 +272,10 @@ class Sabre_DAVACL_ACLMethodTest extends PHPUnit_Framework_TestCase {
         );
 
         $tree = array(
-            $node = new Sabre_DAVACL_MockACLNode('test',$oldACL),
+            $node = new Sabre_DAVACL_MockACLNode('test', $oldACL),
             new Sabre_DAV_SimpleCollection('principals', array(
-                new Sabre_DAVACL_MockPrincipal('foo','principals/foo'),
-                new Sabre_DAVACL_MockPrincipal('baz','principals/baz'),
+                new Sabre_DAVACL_MockPrincipal('foo', 'principals/foo'),
+                new Sabre_DAVACL_MockPrincipal('baz', 'principals/baz'),
             )),
         );
         $acl = new Sabre_DAVACL_Plugin();
@@ -307,7 +296,7 @@ class Sabre_DAVACL_ACLMethodTest extends PHPUnit_Framework_TestCase {
         $server->httpRequest->setBody($body);
         $server->addPlugin($acl);
 
-        $this->assertFalse($acl->unknownMethod('ACL','test'));
+        $this->assertFalse($acl->unknownMethod('ACL', 'test'));
 
         $this->assertEquals(array(
             array(
@@ -321,6 +310,5 @@ class Sabre_DAVACL_ACLMethodTest extends PHPUnit_Framework_TestCase {
                 'protected' => false,
             ),
         ), $node->getACL());
-
     }
 }

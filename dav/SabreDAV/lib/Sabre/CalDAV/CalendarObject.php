@@ -3,44 +3,42 @@
 /**
  * The CalendarObject represents a single VEVENT or VTODO within a Calendar.
  *
- * @package Sabre
- * @subpackage CalDAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_CalDAV_CalendarObject extends Sabre_DAV_File implements Sabre_CalDAV_ICalendarObject, Sabre_DAVACL_IACL {
-
+class Sabre_CalDAV_CalendarObject extends Sabre_DAV_File implements Sabre_CalDAV_ICalendarObject, Sabre_DAVACL_IACL
+{
     /**
-     * Sabre_CalDAV_Backend_BackendInterface
+     * Sabre_CalDAV_Backend_BackendInterface.
      *
      * @var array
      */
     protected $caldavBackend;
 
     /**
-     * Array with information about this CalendarObject
+     * Array with information about this CalendarObject.
      *
      * @var array
      */
     protected $objectData;
 
     /**
-     * Array with information about the containing calendar
+     * Array with information about the containing calendar.
      *
      * @var array
      */
     protected $calendarInfo;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Sabre_CalDAV_Backend_BackendInterface $caldavBackend
-     * @param array $calendarInfo
-     * @param array $objectData
+     * @param array                                 $calendarInfo
+     * @param array                                 $objectData
      */
-    public function __construct(Sabre_CalDAV_Backend_BackendInterface $caldavBackend,array $calendarInfo,array $objectData) {
-
+    public function __construct(Sabre_CalDAV_Backend_BackendInterface $caldavBackend, array $calendarInfo, array $objectData)
+    {
         $this->caldavBackend = $caldavBackend;
 
         if (!isset($objectData['calendarid'])) {
@@ -52,75 +50,70 @@ class Sabre_CalDAV_CalendarObject extends Sabre_DAV_File implements Sabre_CalDAV
 
         $this->calendarInfo = $calendarInfo;
         $this->objectData = $objectData;
-
     }
 
     /**
-     * Returns the uri for this object
+     * Returns the uri for this object.
      *
      * @return string
      */
-    public function getName() {
-
+    public function getName()
+    {
         return $this->objectData['uri'];
-
     }
 
     /**
-     * Returns the ICalendar-formatted object
+     * Returns the ICalendar-formatted object.
      *
      * @return string
      */
-    public function get() {
+    public function get()
+    {
 
         // Pre-populating the 'calendardata' is optional, if we don't have it
         // already we fetch it from the backend.
         if (!isset($this->objectData['calendardata'])) {
             $this->objectData = $this->caldavBackend->getCalendarObject($this->objectData['calendarid'], $this->objectData['uri']);
         }
-        return $this->objectData['calendardata'];
 
+        return $this->objectData['calendardata'];
     }
 
     /**
-     * Updates the ICalendar-formatted object
+     * Updates the ICalendar-formatted object.
      *
      * @param string|resource $calendarData
+     *
      * @return string
      */
-    public function put($calendarData) {
-
+    public function put($calendarData)
+    {
         if (is_resource($calendarData)) {
             $calendarData = stream_get_contents($calendarData);
         }
-        $etag = $this->caldavBackend->updateCalendarObject($this->calendarInfo['id'],$this->objectData['uri'],$calendarData);
+        $etag = $this->caldavBackend->updateCalendarObject($this->calendarInfo['id'], $this->objectData['uri'], $calendarData);
         $this->objectData['calendardata'] = $calendarData;
         $this->objectData['etag'] = $etag;
 
         return $etag;
-
     }
 
     /**
-     * Deletes the calendar object
-     *
-     * @return void
+     * Deletes the calendar object.
      */
-    public function delete() {
-
-        $this->caldavBackend->deleteCalendarObject($this->calendarInfo['id'],$this->objectData['uri']);
-
+    public function delete()
+    {
+        $this->caldavBackend->deleteCalendarObject($this->calendarInfo['id'], $this->objectData['uri']);
     }
 
     /**
-     * Returns the mime content-type
+     * Returns the mime content-type.
      *
      * @return string
      */
-    public function getContentType() {
-
+    public function getContentType()
+    {
         return 'text/calendar; charset=utf-8';
-
     }
 
     /**
@@ -130,66 +123,61 @@ class Sabre_CalDAV_CalendarObject extends Sabre_DAV_File implements Sabre_CalDAV
      *
      * @return string
      */
-    public function getETag() {
-
+    public function getETag()
+    {
         if (isset($this->objectData['etag'])) {
             return $this->objectData['etag'];
         } else {
-            return '"' . md5($this->get()). '"';
+            return '"'.md5($this->get()).'"';
         }
-
     }
 
     /**
-     * Returns the last modification date as a unix timestamp
+     * Returns the last modification date as a unix timestamp.
      *
      * @return int
      */
-    public function getLastModified() {
-
+    public function getLastModified()
+    {
         return $this->objectData['lastmodified'];
-
     }
 
     /**
-     * Returns the size of this object in bytes
+     * Returns the size of this object in bytes.
      *
      * @return int
      */
-    public function getSize() {
-
-        if (array_key_exists('size',$this->objectData)) {
+    public function getSize()
+    {
+        if (array_key_exists('size', $this->objectData)) {
             return $this->objectData['size'];
         } else {
             return strlen($this->get());
         }
-
     }
 
     /**
-     * Returns the owner principal
+     * Returns the owner principal.
      *
      * This must be a url to a principal, or null if there's no owner
      *
      * @return string|null
      */
-    public function getOwner() {
-
+    public function getOwner()
+    {
         return $this->calendarInfo['principaluri'];
-
     }
 
     /**
-     * Returns a group principal
+     * Returns a group principal.
      *
      * This must be a url to a principal, or null if there's no owner
      *
      * @return string|null
      */
-    public function getGroup() {
-
+    public function getGroup()
+    {
         return null;
-
     }
 
     /**
@@ -204,8 +192,8 @@ class Sabre_CalDAV_CalendarObject extends Sabre_DAV_File implements Sabre_CalDAV
      *
      * @return array
      */
-    public function getACL() {
-
+    public function getACL()
+    {
         return array(
             array(
                 'privilege' => '{DAV:}read',
@@ -219,36 +207,33 @@ class Sabre_CalDAV_CalendarObject extends Sabre_DAV_File implements Sabre_CalDAV
             ),
             array(
                 'privilege' => '{DAV:}read',
-                'principal' => $this->calendarInfo['principaluri'] . '/calendar-proxy-write',
+                'principal' => $this->calendarInfo['principaluri'].'/calendar-proxy-write',
                 'protected' => true,
             ),
             array(
                 'privilege' => '{DAV:}write',
-                'principal' => $this->calendarInfo['principaluri'] . '/calendar-proxy-write',
+                'principal' => $this->calendarInfo['principaluri'].'/calendar-proxy-write',
                 'protected' => true,
             ),
             array(
                 'privilege' => '{DAV:}read',
-                'principal' => $this->calendarInfo['principaluri'] . '/calendar-proxy-read',
+                'principal' => $this->calendarInfo['principaluri'].'/calendar-proxy-read',
                 'protected' => true,
             ),
 
         );
-
     }
 
     /**
-     * Updates the ACL
+     * Updates the ACL.
      *
      * This method will receive a list of new ACE's.
      *
      * @param array $acl
-     * @return void
      */
-    public function setACL(array $acl) {
-
+    public function setACL(array $acl)
+    {
         throw new Sabre_DAV_Exception_MethodNotAllowed('Changing ACL is not yet supported');
-
     }
 
     /**
@@ -263,11 +248,8 @@ class Sabre_CalDAV_CalendarObject extends Sabre_DAV_File implements Sabre_CalDAV
      *
      * @return array|null
      */
-    public function getSupportedPrivilegeSet() {
-
+    public function getSupportedPrivilegeSet()
+    {
         return null;
-
     }
-
 }
-

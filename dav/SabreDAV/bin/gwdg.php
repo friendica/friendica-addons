@@ -2,7 +2,7 @@
 <?php
 
 /**
- * Documentation generator
+ * Documentation generator.
  *
  * This scripts scans all files in the lib/ directory, and generates
  * Google Code wiki documentation.
@@ -18,89 +18,86 @@
  */
 date_default_timezone_set('UTC');
 
-$libDir = realpath(__DIR__ . '/../lib');
-$outputDir = __DIR__ . '/../docs/wikidocs';
+$libDir = realpath(__DIR__.'/../lib');
+$outputDir = __DIR__.'/../docs/wikidocs';
 
-if (!is_dir($outputDir)) mkdir($outputDir);
+if (!is_dir($outputDir)) {
+    mkdir($outputDir);
+}
 
 $files = new RecursiveDirectoryIterator($libDir);
 $files = new RecursiveIteratorIterator($files, RecursiveIteratorIterator::LEAVES_ONLY);
 
-include_once $libDir . '/Sabre/autoload.php';
+include_once $libDir.'/Sabre/autoload.php';
 
 // Finding all classnames
 $classNames = findClassNames($files);
-echo "Found: " . count($classNames) . " classes and interfaces\n";
+echo 'Found: '.count($classNames)." classes and interfaces\n";
 
 echo "Generating class tree\n";
 $classTree = getClassTree($classNames);
 
 $packageList = array();
 
-foreach($classNames as $className) {
+foreach ($classNames as $className) {
+    echo 'Creating docs for: '.$className."\n";
 
-    echo "Creating docs for: " . $className . "\n";
-
-    $output = createDoc($className,isset($classTree[$className])?$classTree[$className]:array());
-    file_put_contents($outputDir . '/' . $className . '.wiki', $output);
-
+    $output = createDoc($className, isset($classTree[$className]) ? $classTree[$className] : array());
+    file_put_contents($outputDir.'/'.$className.'.wiki', $output);
 }
 
 echo "Creating indexes\n";
 $output = createSidebarIndex($packageList);
-file_put_contents($outputDir . '/APIIndex.wiki', $output);
+file_put_contents($outputDir.'/APIIndex.wiki', $output);
 
-
-function findClassNames($files) {
-
+function findClassNames($files)
+{
     $classNames = array();
-    foreach($files as $fileName=>$fileInfo) {
-
+    foreach ($files as $fileName => $fileInfo) {
         $tokens = token_get_all(file_get_contents($fileName));
-        foreach($tokens as $tokenIndex=>$token) {
-
-            if ($token[0]===T_CLASS || $token[0]===T_INTERFACE) {
-                $classNames[] = $tokens[$tokenIndex+2][1];
+        foreach ($tokens as $tokenIndex => $token) {
+            if ($token[0] === T_CLASS || $token[0] === T_INTERFACE) {
+                $classNames[] = $tokens[$tokenIndex + 2][1];
             }
-
         }
-
     }
 
     return $classNames;
-
 }
 
-function getClassTree($classNames) {
-
+function getClassTree($classNames)
+{
     $classTree = array();
 
-    foreach($classNames as $className) {
-
-        if (!class_exists($className) && !interface_exists($className)) continue;
+    foreach ($classNames as $className) {
+        if (!class_exists($className) && !interface_exists($className)) {
+            continue;
+        }
         $rClass = new ReflectionClass($className);
 
         $parent = $rClass->getParentClass();
-        if ($parent) $parent = $parent->name;
+        if ($parent) {
+            $parent = $parent->name;
+        }
 
-        if (!isset($classTree[$parent])) $classTree[$parent] = array();
+        if (!isset($classTree[$parent])) {
+            $classTree[$parent] = array();
+        }
         $classTree[$parent][] = $className;
 
-        foreach($rClass->getInterfaceNames() as $interface) {
-
+        foreach ($rClass->getInterfaceNames() as $interface) {
             if (!isset($classTree[$interface])) {
                 $classTree[$interface] = array();
             }
             $classTree[$interface][] = $className;
-
         }
-
     }
-    return $classTree;
 
+    return $classTree;
 }
 
-function createDoc($className, $extendedBy) {
+function createDoc($className, $extendedBy)
+{
 
     // ew
     global $packageList;
@@ -108,26 +105,28 @@ function createDoc($className, $extendedBy) {
     ob_start();
     $rClass = new ReflectionClass($className);
 
-    echo "#summary API documentation for: ", $rClass->getName() , "\n";
+    echo '#summary API documentation for: ', $rClass->getName() , "\n";
     echo "#labels APIDoc\n";
     echo "#sidebar APIIndex\n";
-    echo "=`" . $rClass->getName() . "`=\n";
+    echo '=`'.$rClass->getName()."`=\n";
     echo "\n";
 
     $docs = parseDocs($rClass->getDocComment());
-    echo $docs['description'] . "\n";
+    echo $docs['description']."\n";
     echo "\n";
 
     $parentClass = $rClass->getParentClass();
 
-    if($parentClass) {
-        echo "  * Parent class: [" . $parentClass->getName() . "]\n";
+    if ($parentClass) {
+        echo '  * Parent class: ['.$parentClass->getName()."]\n";
     }
     if ($interfaces = $rClass->getInterfaceNames()) {
-        $interfaces = array_map(function($int) { return '[' . $int . ']'; },$interfaces);
-        echo "  * Implements: " . implode(", ", $interfaces) . "\n";
+        $interfaces = array_map(function ($int) {
+            return '['.$int.']';
+        }, $interfaces);
+        echo '  * Implements: '.implode(', ', $interfaces)."\n";
     }
-    $classType = $rClass->isInterface()?'interface':'class';
+    $classType = $rClass->isInterface() ? 'interface' : 'class';
     if (isset($docs['deprecated'])) {
         echo "  * *Warning: This $classType is deprecated, and should not longer be used.*\n";
     }
@@ -139,7 +138,7 @@ function createDoc($className, $extendedBy) {
     if (isset($docs['package'])) {
         $package = $docs['package'];
         if (isset($docs['subpackage'])) {
-            $package.='_' . $docs['subpackage'];
+            $package .= '_'.$docs['subpackage'];
         }
         if (!isset($packageList[$package])) {
             $packageList[$package] = array();
@@ -148,13 +147,12 @@ function createDoc($className, $extendedBy) {
     }
 
     if ($extendedBy) {
-
         echo "\n";
-        if ($classType==='interface') {
+        if ($classType === 'interface') {
             echo "This interface is extended by the following interfaces:\n";
-            foreach($extendedBy as $className) {
+            foreach ($extendedBy as $className) {
                 if (interface_exists($className)) {
-                    echo "  * [" . $className . "]\n";
+                    echo '  * ['.$className."]\n";
                 }
             }
             echo "\n";
@@ -162,13 +160,12 @@ function createDoc($className, $extendedBy) {
         } else {
             echo "This class is extended by the following classes:\n";
         }
-        foreach($extendedBy as $className) {
+        foreach ($extendedBy as $className) {
             if (class_exists($className)) {
-                echo "  * [" . $className . "]\n";
+                echo '  * ['.$className."]\n";
             }
         }
         echo "\n";
-
     }
     echo "\n";
 
@@ -178,11 +175,9 @@ function createDoc($className, $extendedBy) {
 
     $properties = $rClass->getProperties(ReflectionProperty::IS_STATIC | ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED);
 
-    if (count($properties)>0) {
-        foreach($properties as $rProperty) {
-
+    if (count($properties) > 0) {
+        foreach ($properties as $rProperty) {
             createPropertyDoc($rProperty);
-
         }
     } else {
         echo "This $classType does not define any public or protected properties.\n";
@@ -196,54 +191,52 @@ function createDoc($className, $extendedBy) {
 
     $methods = $rClass->getMethods(ReflectionMethod::IS_PUBLIC | ReflectionMethod::IS_PROTECTED);
 
-    if (count($methods)>0) {
-        foreach($methods as $rMethod) {
-
+    if (count($methods) > 0) {
+        foreach ($methods as $rMethod) {
             createMethodDoc($rMethod, $rClass);
-
         }
     } else {
         echo "\nThis $classType does not define any public or protected methods.\n";
     }
 
     return ob_get_clean();
-
 }
 
-function createMethodDoc($rMethod, $rClass) {
-
-    echo "===`" . $rMethod->getName() . "`===\n";
+function createMethodDoc($rMethod, $rClass)
+{
+    echo '===`'.$rMethod->getName()."`===\n";
     echo "\n";
 
     $docs = parseDocs($rMethod->getDocComment());
 
-    $return = isset($docs['return'])?$docs['return']:'void';
+    $return = isset($docs['return']) ? $docs['return'] : 'void';
 
     echo "{{{\n";
-    echo $return . " " . $rMethod->class . "::" . $rMethod->getName() . "(";
-    foreach($rMethod->getParameters() as $parameter) {
-        if ($parameter->getPosition()>0) echo ", ";
+    echo $return.' '.$rMethod->class.'::'.$rMethod->getName().'(';
+    foreach ($rMethod->getParameters() as $parameter) {
+        if ($parameter->getPosition() > 0) {
+            echo ', ';
+        }
         if ($class = $parameter->getClass()) {
-            echo $class->name . " ";
+            echo $class->name.' ';
         } elseif (isset($docs['param'][$parameter->name])) {
-            echo $docs['param'][$parameter->name] . " ";
+            echo $docs['param'][$parameter->name].' ';
         }
 
-        echo '$' . $parameter->name;
+        echo '$'.$parameter->name;
 
         if ($parameter->isOptional() && $parameter->isDefaultValueAvailable()) {
             $default = $parameter->getDefaultValue();
-            $default = var_export($default,true);
-            $default = str_replace("\n","",$default);
-            echo " = " . $default;
-
+            $default = var_export($default, true);
+            $default = str_replace("\n", '', $default);
+            echo ' = '.$default;
         }
     }
     echo ")\n";
     echo "}}}\n";
     echo "\n";
 
-    echo $docs['description'] . "\n";
+    echo $docs['description']."\n";
 
     echo "\n";
 
@@ -266,31 +259,36 @@ function createMethodDoc($rMethod, $rClass) {
     }
 
     if ($rMethod->class != $rClass->name) {
-        echo " * Defined in [" . $rMethod->class . "]\n";
+        echo ' * Defined in ['.$rMethod->class."]\n";
         $hasProp = true;
     }
 
-    if ($hasProp) echo "\n";
-
+    if ($hasProp) {
+        echo "\n";
+    }
 }
 
-function createPropertyDoc($rProperty) {
-
-    echo "===`" . $rProperty->getName() . "`===\n";
+function createPropertyDoc($rProperty)
+{
+    echo '===`'.$rProperty->getName()."`===\n";
     echo "\n";
 
     $docs = parseDocs($rProperty->getDocComment());
 
     $visibility = 'public';
-    if ($rProperty->isProtected()) $visibility = 'protected';
-    if ($rProperty->isPrivate()) $visibility = 'private';
+    if ($rProperty->isProtected()) {
+        $visibility = 'protected';
+    }
+    if ($rProperty->isPrivate()) {
+        $visibility = 'private';
+    }
 
     echo "{{{\n";
-    echo $visibility . " " . $rProperty->class . "::$" . $rProperty->getName();
+    echo $visibility.' '.$rProperty->class.'::$'.$rProperty->getName();
     echo "\n}}}\n";
     echo "\n";
 
-    echo $docs['description'] . "\n";
+    echo $docs['description']."\n";
 
     echo "\n";
 
@@ -312,67 +310,62 @@ function createPropertyDoc($rProperty) {
         $hasProp = true;
     }
 
-    if ($hasProp) echo "\n";
-
+    if ($hasProp) {
+        echo "\n";
+    }
 }
 
-function parseDocs($docString) {
-
+function parseDocs($docString)
+{
     $params = array();
     $description = array();
 
     // Trimming all the comment characters
-    $docString = trim($docString,"\n*/ ");
-    $docString = explode("\n",$docString);
+    $docString = trim($docString, "\n*/ ");
+    $docString = explode("\n", $docString);
 
-    foreach($docString as $str) {
-
-        $str = ltrim($str,'* ');
+    foreach ($docString as $str) {
+        $str = ltrim($str, '* ');
         $str = trim($str);
-        if ($str && $str[0]==='@') {
-            $r = explode(' ',substr($str,1),2);
+        if ($str && $str[0] === '@') {
+            $r = explode(' ', substr($str, 1), 2);
             $paramName = $r[0];
-            $paramValue = (count($r)>1)?$r[1]:'';
+            $paramValue = (count($r) > 1) ? $r[1] : '';
 
             // 'param' paramName is special. Confusing, I know.
-            if ($paramName==='param') {
-                if (!isset($params['param'])) $params['param'] = array();
-                $paramValue = explode(' ', $paramValue,3);
-                $params['param'][substr($paramValue[1],1)] = $paramValue[0];
+            if ($paramName === 'param') {
+                if (!isset($params['param'])) {
+                    $params['param'] = array();
+                }
+                $paramValue = explode(' ', $paramValue, 3);
+                $params['param'][substr($paramValue[1], 1)] = $paramValue[0];
             } else {
                 $params[$paramName] = trim($paramValue);
             }
         } else {
-            $description[]=$str;
+            $description[] = $str;
         }
-
     }
 
-    $params['description'] = trim(implode("\n",$description),"\n ");
+    $params['description'] = trim(implode("\n", $description), "\n ");
 
     return $params;
-
 }
 
-function createSidebarIndex($packageList) {
-
+function createSidebarIndex($packageList)
+{
     ob_start();
     echo "#labels APIDocs\n";
     echo "#summary List of all classes, neatly organized\n";
     echo "=API Index=\n";
 
-    foreach($packageList as $package=>$classes) {
-
+    foreach ($packageList as $package => $classes) {
         echo "  * $package\n";
         sort($classes);
-        foreach($classes as $class) {
-
+        foreach ($classes as $class) {
             echo "    * [$class $class]\n";
-
         }
-
     }
 
     return ob_get_clean();
-
 }

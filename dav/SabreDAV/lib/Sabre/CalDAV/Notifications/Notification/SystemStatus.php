@@ -1,25 +1,23 @@
 <?php
 
 /**
- * SystemStatus notification
+ * SystemStatus notification.
  *
  * This notification can be used to indicate to the user that the system is
  * down.
  *
- * @package Sabre
- * @subpackage CalDAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_CalDAV_Notifications_Notification_SystemStatus extends Sabre_DAV_Property implements Sabre_CalDAV_Notifications_INotificationType {
-
+class Sabre_CalDAV_Notifications_Notification_SystemStatus extends Sabre_DAV_Property implements Sabre_CalDAV_Notifications_INotificationType
+{
     const TYPE_LOW = 1;
     const TYPE_MEDIUM = 2;
     const TYPE_HIGH = 3;
 
     /**
-     * A unique id
+     * A unique id.
      *
      * @var string
      */
@@ -53,17 +51,16 @@ class Sabre_CalDAV_Notifications_Notification_SystemStatus extends Sabre_DAV_Pro
      * url.
      *
      * @param string $id
-     * @param int $type
+     * @param int    $type
      * @param string $description
      * @param string $href
      */
-    public function __construct($id, $type = self::TYPE_HIGH, $description = null, $href = null) {
-
+    public function __construct($id, $type = self::TYPE_HIGH, $description = null, $href = null)
+    {
         $this->id = $id;
         $this->type = $type;
         $this->description = $description;
         $this->href = $href;
-
     }
 
     /**
@@ -73,20 +70,19 @@ class Sabre_CalDAV_Notifications_Notification_SystemStatus extends Sabre_DAV_Pro
      * notification.
      *
      * @param Sabre_DAV_Server $server
-     * @param DOMElement $node
-     * @return void
+     * @param DOMElement       $node
      */
-    public function serialize(Sabre_DAV_Server $server, \DOMElement $node) {
-
-        switch($this->type) {
-            case self::TYPE_LOW :
+    public function serialize(Sabre_DAV_Server $server, \DOMElement $node)
+    {
+        switch ($this->type) {
+            case self::TYPE_LOW:
                 $type = 'low';
                 break;
-            case self::TYPE_MEDIUM :
+            case self::TYPE_MEDIUM:
                 $type = 'medium';
                 break;
-            default :
-            case self::TYPE_HIGH :
+            default:
+            case self::TYPE_HIGH:
                 $type = 'high';
                 break;
         }
@@ -95,7 +91,6 @@ class Sabre_CalDAV_Notifications_Notification_SystemStatus extends Sabre_DAV_Pro
         $prop->setAttribute('type', $type);
 
         $node->appendChild($prop);
-
     }
 
     /**
@@ -103,20 +98,19 @@ class Sabre_CalDAV_Notifications_Notification_SystemStatus extends Sabre_DAV_Pro
      * response body.
      *
      * @param Sabre_DAV_Server $server
-     * @param DOMElement $node
-     * @return void
+     * @param DOMElement       $node
      */
-    public function serializeBody(Sabre_DAV_Server $server, \DOMElement $node) {
-
-        switch($this->type) {
-            case self::TYPE_LOW :
+    public function serializeBody(Sabre_DAV_Server $server, \DOMElement $node)
+    {
+        switch ($this->type) {
+            case self::TYPE_LOW:
                 $type = 'low';
                 break;
-            case self::TYPE_MEDIUM :
+            case self::TYPE_MEDIUM:
                 $type = 'medium';
                 break;
-            default :
-            case self::TYPE_HIGH :
+            default:
+            case self::TYPE_HIGH:
                 $type = 'high';
                 break;
         }
@@ -138,21 +132,18 @@ class Sabre_CalDAV_Notifications_Notification_SystemStatus extends Sabre_DAV_Pro
         }
 
         $node->appendChild($prop);
-
     }
 
     /**
-     * Returns a unique id for this notification
+     * Returns a unique id for this notification.
      *
      * This is just the base url. This should generally be some kind of unique
      * id.
      *
      * @return string
      */
-    public function getId() {
-
+    public function getId()
+    {
         return $this->id;
-
     }
-
 }

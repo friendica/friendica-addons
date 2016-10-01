@@ -2,10 +2,10 @@
 
 require_once 'Sabre/HTTP/ResponseMock.php';
 
-class Sabre_CardDAV_MultiGetTest extends Sabre_CardDAV_AbstractPluginTest {
-
-    function testMultiGet() {
-
+class Sabre_CardDAV_MultiGetTest extends Sabre_CardDAV_AbstractPluginTest
+{
+    public function testMultiGet()
+    {
         $request = new Sabre_HTTP_Request(array(
             'REQUEST_METHOD' => 'REPORT',
             'REQUEST_URI' => '/addressbooks/user1/book1',
@@ -29,22 +29,20 @@ class Sabre_CardDAV_MultiGetTest extends Sabre_CardDAV_AbstractPluginTest {
 
         $this->server->exec();
 
-        $this->assertEquals('HTTP/1.1 207 Multi-Status', $response->status, 'Incorrect status code. Full response body:' . $response->body);
+        $this->assertEquals('HTTP/1.1 207 Multi-Status', $response->status, 'Incorrect status code. Full response body:'.$response->body);
 
         // using the client for parsing
-        $client = new Sabre_DAV_Client(array('baseUri'=>'/'));
+        $client = new Sabre_DAV_Client(array('baseUri' => '/'));
 
         $result = $client->parseMultiStatus($response->body);
 
         $this->assertEquals(array(
             '/addressbooks/user1/book1/card1' => array(
                 200 => array(
-                    '{DAV:}getetag' => '"' . md5("BEGIN:VCARD\nVERSION:3.0\nUID:12345\nEND:VCARD") . '"',
+                    '{DAV:}getetag' => '"'.md5("BEGIN:VCARD\nVERSION:3.0\nUID:12345\nEND:VCARD").'"',
                     '{urn:ietf:params:xml:ns:carddav}address-data' => "BEGIN:VCARD\nVERSION:3.0\nUID:12345\nEND:VCARD",
-                )
-            )
+                ),
+            ),
         ), $result);
-
     }
-
 }

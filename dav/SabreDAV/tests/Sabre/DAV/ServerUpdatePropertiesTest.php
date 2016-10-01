@@ -1,16 +1,16 @@
 <?php
 
-class Sabre_DAV_ServerUpdatePropertiesTest extends PHPUnit_Framework_TestCase {
-
-    function testUpdatePropertiesFail() {
-
+class Sabre_DAV_ServerUpdatePropertiesTest extends PHPUnit_Framework_TestCase
+{
+    public function testUpdatePropertiesFail()
+    {
         $tree = array(
             new Sabre_DAV_SimpleCollection('foo'),
         );
         $server = new Sabre_DAV_Server($tree);
 
         $result = $server->updateProperties('foo', array(
-            '{DAV:}foo' => 'bar'
+            '{DAV:}foo' => 'bar',
         ));
 
         $expected = array(
@@ -20,11 +20,10 @@ class Sabre_DAV_ServerUpdatePropertiesTest extends PHPUnit_Framework_TestCase {
             ),
         );
         $this->assertEquals($expected, $result);
-
     }
 
-    function testUpdatePropertiesProtected() {
-
+    public function testUpdatePropertiesProtected()
+    {
         $tree = array(
             new Sabre_DAV_SimpleCollection('foo'),
         );
@@ -32,7 +31,7 @@ class Sabre_DAV_ServerUpdatePropertiesTest extends PHPUnit_Framework_TestCase {
 
         $result = $server->updateProperties('foo', array(
             '{DAV:}getetag' => 'bla',
-            '{DAV:}foo' => 'bar'
+            '{DAV:}foo' => 'bar',
         ));
 
         $expected = array(
@@ -45,16 +44,15 @@ class Sabre_DAV_ServerUpdatePropertiesTest extends PHPUnit_Framework_TestCase {
             ),
         );
         $this->assertEquals($expected, $result);
-
     }
 
-    function testUpdatePropertiesEventFail() {
-
+    public function testUpdatePropertiesEventFail()
+    {
         $tree = array(
             new Sabre_DAV_SimpleCollection('foo'),
         );
         $server = new Sabre_DAV_Server($tree);
-        $server->subscribeEvent('updateProperties', array($this,'updatepropfail'));
+        $server->subscribeEvent('updateProperties', array($this, 'updatepropfail'));
 
         $result = $server->updateProperties('foo', array(
             '{DAV:}foo' => 'bar',
@@ -71,27 +69,25 @@ class Sabre_DAV_ServerUpdatePropertiesTest extends PHPUnit_Framework_TestCase {
             ),
         );
         $this->assertEquals($expected, $result);
-
     }
 
-    function updatePropFail(&$propertyDelta, &$result, $node) {
-
+    public function updatePropFail(&$propertyDelta, &$result, $node)
+    {
         $result[404] = array(
             '{DAV:}foo' => null,
         );
         unset($propertyDelta['{DAV:}foo']);
-        return false;
 
+        return false;
     }
 
-
-    function testUpdatePropertiesEventSuccess() {
-
+    public function testUpdatePropertiesEventSuccess()
+    {
         $tree = array(
             new Sabre_DAV_SimpleCollection('foo'),
         );
         $server = new Sabre_DAV_Server($tree);
-        $server->subscribeEvent('updateProperties', array($this,'updatepropsuccess'));
+        $server->subscribeEvent('updateProperties', array($this, 'updatepropsuccess'));
 
         $result = $server->updateProperties('foo', array(
             '{DAV:}foo' => 'bar',
@@ -108,11 +104,10 @@ class Sabre_DAV_ServerUpdatePropertiesTest extends PHPUnit_Framework_TestCase {
             ),
         );
         $this->assertEquals($expected, $result);
-
     }
 
-    function updatePropSuccess(&$propertyDelta, &$result, $node) {
-
+    public function updatePropSuccess(&$propertyDelta, &$result, $node)
+    {
         $result[200] = array(
             '{DAV:}foo' => null,
         );
@@ -121,7 +116,7 @@ class Sabre_DAV_ServerUpdatePropertiesTest extends PHPUnit_Framework_TestCase {
         );
         unset($propertyDelta['{DAV:}foo']);
         unset($propertyDelta['{DAV:}foo2']);
-        return;
 
+        return;
     }
 }

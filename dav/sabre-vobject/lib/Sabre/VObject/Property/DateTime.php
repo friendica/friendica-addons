@@ -5,7 +5,7 @@ namespace Sabre\VObject\Property;
 use Sabre\VObject;
 
 /**
- * DateTime property
+ * DateTime property.
  *
  * This element is used for iCalendar properties such as the DTSTART property.
  * It basically provides a few helper functions that make it easier to deal
@@ -17,41 +17,41 @@ use Sabre\VObject;
  * If you use the 'value' or properties directly, this object does not keep
  * reference and results might appear incorrectly.
  *
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class DateTime extends VObject\Property {
-
+class DateTime extends VObject\Property
+{
     /**
-     * Local 'floating' time
+     * Local 'floating' time.
      */
     const LOCAL = 1;
 
     /**
-     * UTC-based time
+     * UTC-based time.
      */
     const UTC = 2;
 
     /**
-     * Local time plus timezone
+     * Local time plus timezone.
      */
     const LOCALTZ = 3;
 
     /**
-     * Only a date, time is ignored
+     * Only a date, time is ignored.
      */
     const DATE = 4;
 
     /**
-     * DateTime representation
+     * DateTime representation.
      *
      * @var \DateTime
      */
     protected $dateTime;
 
     /**
-     * dateType
+     * dateType.
      *
      * @var int
      */
@@ -61,46 +61,44 @@ class DateTime extends VObject\Property {
      * Updates the Date and Time.
      *
      * @param \DateTime $dt
-     * @param int $dateType
-     * @return void
+     * @param int       $dateType
      */
-    public function setDateTime(\DateTime $dt, $dateType = self::LOCALTZ) {
+    public function setDateTime(\DateTime $dt, $dateType = self::LOCALTZ)
+    {
+        switch ($dateType) {
 
-        switch($dateType) {
-
-            case self::LOCAL :
+            case self::LOCAL:
                 $this->setValue($dt->format('Ymd\\THis'));
                 $this->offsetUnset('VALUE');
                 $this->offsetUnset('TZID');
-                $this->offsetSet('VALUE','DATE-TIME');
+                $this->offsetSet('VALUE', 'DATE-TIME');
                 break;
-            case self::UTC :
+            case self::UTC:
                 $dt->setTimeZone(new \DateTimeZone('UTC'));
                 $this->setValue($dt->format('Ymd\\THis\\Z'));
                 $this->offsetUnset('VALUE');
                 $this->offsetUnset('TZID');
-                $this->offsetSet('VALUE','DATE-TIME');
+                $this->offsetSet('VALUE', 'DATE-TIME');
                 break;
-            case self::LOCALTZ :
+            case self::LOCALTZ:
                 $this->setValue($dt->format('Ymd\\THis'));
                 $this->offsetUnset('VALUE');
                 $this->offsetUnset('TZID');
-                $this->offsetSet('VALUE','DATE-TIME');
+                $this->offsetSet('VALUE', 'DATE-TIME');
                 $this->offsetSet('TZID', $dt->getTimeZone()->getName());
                 break;
-            case self::DATE :
+            case self::DATE:
                 $this->setValue($dt->format('Ymd'));
                 $this->offsetUnset('VALUE');
                 $this->offsetUnset('TZID');
-                $this->offsetSet('VALUE','DATE');
+                $this->offsetSet('VALUE', 'DATE');
                 break;
-            default :
+            default:
                 throw new \InvalidArgumentException('You must pass a valid dateType constant');
 
         }
         $this->dateTime = $dt;
         $this->dateType = $dateType;
-
     }
 
     /**
@@ -110,17 +108,18 @@ class DateTime extends VObject\Property {
      *
      * @return \DateTime|null
      */
-    public function getDateTime() {
-
-        if ($this->dateTime)
+    public function getDateTime()
+    {
+        if ($this->dateTime) {
             return $this->dateTime;
+        }
 
         list(
             $this->dateType,
             $this->dateTime
         ) = self::parseData($this->value, $this);
-        return $this->dateTime;
 
+        return $this->dateTime;
     }
 
     /**
@@ -131,17 +130,17 @@ class DateTime extends VObject\Property {
      *
      * @return int|null
      */
-    public function getDateType() {
-
-        if ($this->dateType)
+    public function getDateType()
+    {
+        if ($this->dateType) {
             return $this->dateType;
+        }
 
         list(
             $this->dateType,
-            $this->dateTime,
-        ) = self::parseData($this->value, $this);
-        return $this->dateType;
+            $this->dateTime) = self::parseData($this->value, $this);
 
+        return $this->dateType;
     }
 
     /**
@@ -152,14 +151,15 @@ class DateTime extends VObject\Property {
      *   1. A 'DateType' constant (as defined on this class), or null.
      *   2. A DateTime object (or null)
      *
-     * @param string|null $propertyValue The string to parse (yymmdd or
-     *                                   ymmddThhmmss, etc..)
-     * @param \Sabre\VObject\Property|null $property The instance of the
-     *                                              property we're parsing.
+     * @param string|null                  $propertyValue The string to parse (yymmdd or
+     *                                                    ymmddThhmmss, etc..)
+     * @param \Sabre\VObject\Property|null $property      The instance of the
+     *                                                    property we're parsing
+     *
      * @return array
      */
-    static public function parseData($propertyValue, VObject\Property $property = null) {
-
+    public static function parseData($propertyValue, VObject\Property $property = null)
+    {
         if (is_null($propertyValue)) {
             return array(null, null);
         }
@@ -169,31 +169,32 @@ class DateTime extends VObject\Property {
         $regex = "/^$date(T$time(?P<isutc>Z)?)?$/";
 
         if (!preg_match($regex, $propertyValue, $matches)) {
-            throw new \InvalidArgumentException($propertyValue . ' is not a valid \DateTime or Date string');
+            throw new \InvalidArgumentException($propertyValue.' is not a valid \DateTime or Date string');
         }
 
         if (!isset($matches['hour'])) {
             // Date-only
             return array(
                 self::DATE,
-                new \DateTime($matches['year'] . '-' . $matches['month'] . '-' . $matches['date'] . ' 00:00:00', new \DateTimeZone('UTC')),
+                new \DateTime($matches['year'].'-'.$matches['month'].'-'.$matches['date'].' 00:00:00', new \DateTimeZone('UTC')),
             );
         }
 
         $dateStr =
-            $matches['year'] .'-' .
-            $matches['month'] . '-' .
-            $matches['date'] . ' ' .
-            $matches['hour'] . ':' .
-            $matches['minute'] . ':' .
+            $matches['year'].'-'.
+            $matches['month'].'-'.
+            $matches['date'].' '.
+            $matches['hour'].':'.
+            $matches['minute'].':'.
             $matches['second'];
 
         if (isset($matches['isutc'])) {
-            $dt = new \DateTime($dateStr,new \DateTimeZone('UTC'));
+            $dt = new \DateTime($dateStr, new \DateTimeZone('UTC'));
             $dt->setTimeZone(new \DateTimeZone('UTC'));
+
             return array(
                 self::UTC,
-                $dt
+                $dt,
             );
         }
 
@@ -205,19 +206,19 @@ class DateTime extends VObject\Property {
             // setting.
             return array(
                 self::LOCAL,
-                new \DateTime($dateStr)
+                new \DateTime($dateStr),
             );
         }
 
         // To look up the timezone, we must first find the VCALENDAR component.
         $root = $property;
-        while($root->parent) {
+        while ($root->parent) {
             $root = $root->parent;
         }
         if ($root->name === 'VCALENDAR') {
-            $tz = VObject\TimeZoneUtil::getTimeZone((string)$tzid, $root);
+            $tz = VObject\TimeZoneUtil::getTimeZone((string) $tzid, $root);
         } else {
-            $tz = VObject\TimeZoneUtil::getTimeZone((string)$tzid);
+            $tz = VObject\TimeZoneUtil::getTimeZone((string) $tzid);
         }
 
         $dt = new \DateTime($dateStr, $tz);
@@ -225,9 +226,7 @@ class DateTime extends VObject\Property {
 
         return array(
             self::LOCALTZ,
-            $dt
+            $dt,
         );
-
     }
-
 }

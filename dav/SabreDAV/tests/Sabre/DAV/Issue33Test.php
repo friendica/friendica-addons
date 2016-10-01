@@ -2,18 +2,17 @@
 
 require_once 'Sabre/TestUtil.php';
 
-class Sabre_DAV_Issue33Test extends PHPUnit_Framework_TestCase {
-
-    function setUp() {
-
+class Sabre_DAV_Issue33Test extends PHPUnit_Framework_TestCase
+{
+    public function setUp()
+    {
         Sabre_TestUtil::clearTempDir();
-
     }
 
-    function testCopyMoveInfo() {
-
+    public function testCopyMoveInfo()
+    {
         $foo = new Sabre_DAV_SimpleCollection('foo');
-        $root = new Sabre_DAV_SimpleCollection('webdav',array($foo));
+        $root = new Sabre_DAV_SimpleCollection('webdav', array($foo));
 
         $tree = new Sabre_DAV_ObjectTree($root);
         $server = new Sabre_DAV_Server($tree);
@@ -34,38 +33,36 @@ class Sabre_DAV_Issue33Test extends PHPUnit_Framework_TestCase {
         $this->assertEquals('%C3%A0fo%C3%B3', urlencode($info['destination']));
         $this->assertFalse($info['destinationExists']);
         $this->assertFalse($info['destinationNode']);
-
     }
 
-    function testTreeMove() {
-
-        mkdir(SABRE_TEMPDIR . '/issue33');
-        $dir = new Sabre_DAV_FS_Directory(SABRE_TEMPDIR . '/issue33');
+    public function testTreeMove()
+    {
+        mkdir(SABRE_TEMPDIR.'/issue33');
+        $dir = new Sabre_DAV_FS_Directory(SABRE_TEMPDIR.'/issue33');
 
         $dir->createDirectory('foo');
 
         $tree = new Sabre_DAV_ObjectTree($dir);
-        $tree->move('foo',urldecode('%C3%A0fo%C3%B3'));
+        $tree->move('foo', urldecode('%C3%A0fo%C3%B3'));
 
         $node = $tree->getNodeForPath(urldecode('%C3%A0fo%C3%B3'));
-        $this->assertEquals(urldecode('%C3%A0fo%C3%B3'),$node->getName());
-
+        $this->assertEquals(urldecode('%C3%A0fo%C3%B3'), $node->getName());
     }
 
-    function testDirName() {
-
+    public function testDirName()
+    {
         $dirname1 = 'foo';
-        $dirname2 = urlencode('%C3%A0fo%C3%B3');;
+        $dirname2 = urlencode('%C3%A0fo%C3%B3');
 
-        $this->assertTrue(dirname($dirname1)==dirname($dirname2));
-
+        $this->assertTrue(dirname($dirname1) == dirname($dirname2));
     }
 
     /**
      * @depends testTreeMove
      * @depends testCopyMoveInfo
      */
-    function testEverything() {
+    public function testEverything()
+    {
 
         // Request object
         $serverVars = array(
@@ -81,8 +78,8 @@ class Sabre_DAV_Issue33Test extends PHPUnit_Framework_TestCase {
         $response = new Sabre_HTTP_ResponseMock();
 
         // Server setup
-        mkdir(SABRE_TEMPDIR . '/issue33');
-        $dir = new Sabre_DAV_FS_Directory(SABRE_TEMPDIR . '/issue33');
+        mkdir(SABRE_TEMPDIR.'/issue33');
+        $dir = new Sabre_DAV_FS_Directory(SABRE_TEMPDIR.'/issue33');
 
         $dir->createDirectory('foo');
 
@@ -95,8 +92,6 @@ class Sabre_DAV_Issue33Test extends PHPUnit_Framework_TestCase {
         $server->httpResponse = $response;
         $server->exec();
 
-        $this->assertTrue(file_exists(SABRE_TEMPDIR  . '/issue33/' . urldecode('%C3%A0fo%C3%B3')));
-
+        $this->assertTrue(file_exists(SABRE_TEMPDIR.'/issue33/'.urldecode('%C3%A0fo%C3%B3')));
     }
-
 }

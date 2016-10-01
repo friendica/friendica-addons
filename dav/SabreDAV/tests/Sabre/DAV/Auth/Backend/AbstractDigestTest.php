@@ -2,28 +2,27 @@
 
 require_once 'Sabre/HTTP/ResponseMock.php';
 
-class Sabre_DAV_Auth_Backend_AbstractDigestTest extends PHPUnit_Framework_TestCase {
-
+class Sabre_DAV_Auth_Backend_AbstractDigestTest extends PHPUnit_Framework_TestCase
+{
     /**
      * @expectedException Sabre_DAV_Exception_NotAuthenticated
      */
-    public function testAuthenticateNoHeaders() {
-
+    public function testAuthenticateNoHeaders()
+    {
         $response = new Sabre_HTTP_ResponseMock();
         $tree = new Sabre_DAV_ObjectTree(new Sabre_DAV_SimpleCollection('bla'));
         $server = new Sabre_DAV_Server($tree);
         $server->httpResponse = $response;
 
         $backend = new Sabre_DAV_Auth_Backend_AbstractDigestMock();
-        $backend->authenticate($server,'myRealm');
-
+        $backend->authenticate($server, 'myRealm');
     }
 
     /**
      * @expectedException Sabre_DAV_Exception
      */
-    public function testAuthenticateBadGetUserInfoResponse() {
-
+    public function testAuthenticateBadGetUserInfoResponse()
+    {
         $response = new Sabre_HTTP_ResponseMock();
         $tree = new Sabre_DAV_ObjectTree(new Sabre_DAV_SimpleCollection('bla'));
         $server = new Sabre_DAV_Server($tree);
@@ -36,15 +35,14 @@ class Sabre_DAV_Auth_Backend_AbstractDigestTest extends PHPUnit_Framework_TestCa
         $server->httpRequest = $request;
 
         $backend = new Sabre_DAV_Auth_Backend_AbstractDigestMock();
-        $backend->authenticate($server,'myRealm');
-
+        $backend->authenticate($server, 'myRealm');
     }
 
     /**
      * @expectedException Sabre_DAV_Exception
      */
-    public function testAuthenticateBadGetUserInfoResponse2() {
-
+    public function testAuthenticateBadGetUserInfoResponse2()
+    {
         $response = new Sabre_HTTP_ResponseMock();
         $tree = new Sabre_DAV_ObjectTree(new Sabre_DAV_SimpleCollection('bla'));
         $server = new Sabre_DAV_Server($tree);
@@ -57,15 +55,14 @@ class Sabre_DAV_Auth_Backend_AbstractDigestTest extends PHPUnit_Framework_TestCa
         $server->httpRequest = $request;
 
         $backend = new Sabre_DAV_Auth_Backend_AbstractDigestMock();
-        $backend->authenticate($server,'myRealm');
-
+        $backend->authenticate($server, 'myRealm');
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_NotAuthenticated
      */
-    public function testAuthenticateUnknownUser() {
-
+    public function testAuthenticateUnknownUser()
+    {
         $response = new Sabre_HTTP_ResponseMock();
         $tree = new Sabre_DAV_ObjectTree(new Sabre_DAV_SimpleCollection('bla'));
         $server = new Sabre_DAV_Server($tree);
@@ -78,15 +75,14 @@ class Sabre_DAV_Auth_Backend_AbstractDigestTest extends PHPUnit_Framework_TestCa
         $server->httpRequest = $request;
 
         $backend = new Sabre_DAV_Auth_Backend_AbstractDigestMock();
-        $backend->authenticate($server,'myRealm');
-
+        $backend->authenticate($server, 'myRealm');
     }
 
     /**
      * @expectedException Sabre_DAV_Exception_NotAuthenticated
      */
-    public function testAuthenticateBadPassword() {
-
+    public function testAuthenticateBadPassword()
+    {
         $response = new Sabre_HTTP_ResponseMock();
         $tree = new Sabre_DAV_ObjectTree(new Sabre_DAV_SimpleCollection('bla'));
         $server = new Sabre_DAV_Server($tree);
@@ -95,56 +91,49 @@ class Sabre_DAV_Auth_Backend_AbstractDigestTest extends PHPUnit_Framework_TestCa
         $header = 'username=user, realm=myRealm, nonce=12345, uri=/, response=HASH, opaque=1, qop=auth, nc=1, cnonce=1';
         $request = new Sabre_HTTP_Request(array(
             'PHP_AUTH_DIGEST' => $header,
-            'REQUEST_METHOD'  => 'PUT',
+            'REQUEST_METHOD' => 'PUT',
         ));
         $server->httpRequest = $request;
 
         $backend = new Sabre_DAV_Auth_Backend_AbstractDigestMock();
-        $backend->authenticate($server,'myRealm');
-
+        $backend->authenticate($server, 'myRealm');
     }
 
-    public function testAuthenticate() {
-
+    public function testAuthenticate()
+    {
         $response = new Sabre_HTTP_ResponseMock();
         $tree = new Sabre_DAV_ObjectTree(new Sabre_DAV_SimpleCollection('bla'));
         $server = new Sabre_DAV_Server($tree);
         $server->httpResponse = $response;
 
-        $digestHash = md5('HELLO:12345:1:1:auth:' . md5('GET:/'));
+        $digestHash = md5('HELLO:12345:1:1:auth:'.md5('GET:/'));
         $header = 'username=user, realm=myRealm, nonce=12345, uri=/, response='.$digestHash.', opaque=1, qop=auth, nc=1, cnonce=1';
         $request = new Sabre_HTTP_Request(array(
-            'REQUEST_METHOD'  => 'GET',
+            'REQUEST_METHOD' => 'GET',
             'PHP_AUTH_DIGEST' => $header,
-            'REQUEST_URI'     => '/',
+            'REQUEST_URI' => '/',
         ));
         $server->httpRequest = $request;
 
         $backend = new Sabre_DAV_Auth_Backend_AbstractDigestMock();
-        $this->assertTrue($backend->authenticate($server,'myRealm'));
+        $this->assertTrue($backend->authenticate($server, 'myRealm'));
 
         $result = $backend->getCurrentUser();
 
         $this->assertEquals('user', $result);
         $this->assertEquals('HELLO', $backend->getDigestHash('myRealm', $result));
-
     }
-
-
 }
 
-
-class Sabre_DAV_Auth_Backend_AbstractDigestMock extends Sabre_DAV_Auth_Backend_AbstractDigest {
-
-    function getDigestHash($realm, $userName) {
-
-        switch($userName) {
-            case 'null' : return null;
-            case 'false' : return false;
-            case 'array' : return array();
-            case 'user'  : return 'HELLO';
+class Sabre_DAV_Auth_Backend_AbstractDigestMock extends Sabre_DAV_Auth_Backend_AbstractDigest
+{
+    public function getDigestHash($realm, $userName)
+    {
+        switch ($userName) {
+            case 'null': return null;
+            case 'false': return false;
+            case 'array': return array();
+            case 'user': return 'HELLO';
         }
-
     }
-
 }

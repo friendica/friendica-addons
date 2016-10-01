@@ -14,8 +14,9 @@ Last revision: 25/08/11
 */
 
 // Someone is trying to hack us?
-if(!defined('JAPPIX_BASE'))
-	exit;
+if (!defined('JAPPIX_BASE')) {
+    exit;
+}
 
 // Define initial logo form values
 $logo_default = ' checked=""';
@@ -45,5 +46,3 @@ $notice_text = '';
 
 // Current background folder
 $backgrounds_folder = 'backgrounds';
-
-?>

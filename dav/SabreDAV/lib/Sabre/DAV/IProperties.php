@@ -1,20 +1,18 @@
 <?php
 
 /**
- * IProperties interface
+ * IProperties interface.
  *
  * Implement this interface to support custom WebDAV properties requested and sent from clients.
  *
- * @package Sabre
- * @subpackage DAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-interface Sabre_DAV_IProperties extends Sabre_DAV_INode {
-
+interface Sabre_DAV_IProperties extends Sabre_DAV_INode
+{
     /**
-     * Updates properties on this node,
+     * Updates properties on this node,.
      *
      * The properties array uses the propertyName in clark-notation as key,
      * and the array value for the property value. In the case a property
@@ -46,9 +44,10 @@ interface Sabre_DAV_IProperties extends Sabre_DAV_INode {
      * (424 Failed Dependency) because the request needs to be atomic.
      *
      * @param array $mutations
+     *
      * @return bool|array
      */
-    function updateProperties($mutations);
+    public function updateProperties($mutations);
 
     /**
      * Returns a list of properties for this nodes.
@@ -59,9 +58,6 @@ interface Sabre_DAV_IProperties extends Sabre_DAV_INode {
      * If the array is empty, it means 'all properties' were requested.
      *
      * @param array $properties
-     * @return void
      */
-    function getProperties($properties);
-
+    public function getProperties($properties);
 }
-

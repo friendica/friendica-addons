@@ -2,12 +2,13 @@
 
 namespace Sabre\VObject;
 
-class FreeBusyGeneratorTest extends \PHPUnit_Framework_TestCase {
-
-    function getInput() {
+class FreeBusyGeneratorTest extends \PHPUnit_Framework_TestCase
+{
+    public function getInput()
+    {
 
         // shows up
-$blob1 = <<<ICS
+$blob1 = <<<'ICS'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20110101T120000Z
@@ -17,7 +18,7 @@ END:VCALENDAR
 ICS;
 
     // opaque, shows up
-$blob2 = <<<ICS
+$blob2 = <<<'ICS'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 TRANSP:OPAQUE
@@ -28,7 +29,7 @@ END:VCALENDAR
 ICS;
 
     // transparent, hidden
-$blob3 = <<<ICS
+$blob3 = <<<'ICS'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 TRANSP:TRANSPARENT
@@ -39,7 +40,7 @@ END:VCALENDAR
 ICS;
 
     // cancelled, hidden
-$blob4 = <<<ICS
+$blob4 = <<<'ICS'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 STATUS:CANCELLED
@@ -50,7 +51,7 @@ END:VCALENDAR
 ICS;
 
     // tentative, shows up
-$blob5 = <<<ICS
+$blob5 = <<<'ICS'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 STATUS:TENTATIVE
@@ -61,7 +62,7 @@ END:VCALENDAR
 ICS;
 
     // outside of time-range, hidden
-$blob6 = <<<ICS
+$blob6 = <<<'ICS'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20110101T090000Z
@@ -71,7 +72,7 @@ END:VCALENDAR
 ICS;
 
     // outside of time-range, hidden
-$blob7 = <<<ICS
+$blob7 = <<<'ICS'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20110104T090000Z
@@ -81,7 +82,7 @@ END:VCALENDAR
 ICS;
 
     // using duration, shows up
-$blob8 = <<<ICS
+$blob8 = <<<'ICS'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20110101T190000Z
@@ -91,7 +92,7 @@ END:VCALENDAR
 ICS;
 
     // Day-long event, shows up
-$blob9 = <<<ICS
+$blob9 = <<<'ICS'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART;TYPE=DATE:20110102
@@ -100,7 +101,7 @@ END:VCALENDAR
 ICS;
 
 // No duration, does not show up
-$blob10 = <<<ICS
+$blob10 = <<<'ICS'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20110101T200000Z
@@ -109,7 +110,7 @@ END:VCALENDAR
 ICS;
 
 // encoded as object, shows up
-$blob11 = <<<ICS
+$blob11 = <<<'ICS'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20110101T210000Z
@@ -119,7 +120,7 @@ END:VCALENDAR
 ICS;
 
 // Freebusy. Some parts show up
-$blob12 = <<<ICS
+$blob12 = <<<'ICS'
 BEGIN:VCALENDAR
 BEGIN:VFREEBUSY
 FREEBUSY:20110103T010000Z/20110103T020000Z
@@ -132,7 +133,7 @@ END:VCALENDAR
 ICS;
 
 // Yearly recurrence rule, shows up
-$blob13 = <<<ICS
+$blob13 = <<<'ICS'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20100101T220000Z
@@ -143,7 +144,7 @@ END:VCALENDAR
 ICS;
 
 // Yearly recurrence rule + duration, shows up
-$blob14 = <<<ICS
+$blob14 = <<<'ICS'
 BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART:20100101T230000Z
@@ -152,7 +153,6 @@ RRULE:FREQ=YEARLY
 END:VEVENT
 END:VCALENDAR
 ICS;
-
 
         return array(
             $blob1,
@@ -170,11 +170,10 @@ ICS;
             $blob13,
             $blob14,
         );
-
     }
 
-    function testGenerator() {
-
+    public function testGenerator()
+    {
         $gen = new FreeBusyGenerator(
             new \DateTime('20110101T110000Z', new \DateTimeZone('UTC')),
             new \DateTime('20110103T110000Z', new \DateTimeZone('UTC')),
@@ -200,23 +199,19 @@ ICS;
             '20110101T230000Z/20110102T000000Z',
         );
 
-        foreach($result->VFREEBUSY->FREEBUSY as $fb) {
+        foreach ($result->VFREEBUSY->FREEBUSY as $fb) {
+            $this->assertContains((string) $fb, $expected);
 
-            $this->assertContains((string)$fb, $expected);
-
-            $k = array_search((string)$fb, $expected);
+            $k = array_search((string) $fb, $expected);
             unset($expected[$k]);
-
         }
-        if (count($expected)>0) {
-            $this->fail('There were elements in the expected array that were not found in the output: ' . "\n"  . print_r($expected,true) . "\n" . $result->serialize());
-
+        if (count($expected) > 0) {
+            $this->fail('There were elements in the expected array that were not found in the output: '."\n".print_r($expected, true)."\n".$result->serialize());
         }
-
     }
 
-    function testGeneratorBaseObject() {
-
+    public function testGeneratorBaseObject()
+    {
         $obj = new Component('VCALENDAR');
         $obj->METHOD = 'PUBLISH';
 
@@ -227,20 +222,17 @@ ICS;
         $result = $gen->getResult();
 
         $this->assertEquals('PUBLISH', $result->METHOD->value);
-
     }
 
     /**
      * @expectedException InvalidArgumentException
      */
-    function testInvalidArg() {
-
+    public function testInvalidArg()
+    {
         $gen = new FreeBusyGenerator(
             new \DateTime('2012-01-01'),
             new \DateTime('2012-12-31'),
             new \StdClass()
         );
-
     }
-
 }

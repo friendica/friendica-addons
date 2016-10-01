@@ -1,9 +1,9 @@
 <?php
 
-class Sabre_CalDAV_Schedule_OutboxTest extends PHPUnit_Framework_TestCase {
-
-    function testSetup() {
-
+class Sabre_CalDAV_Schedule_OutboxTest extends PHPUnit_Framework_TestCase
+{
+    public function testSetup()
+    {
         $outbox = new Sabre_CalDAV_Schedule_Outbox('principals/user1');
         $this->assertEquals('outbox', $outbox->getName());
         $this->assertEquals(array(), $outbox->getChildren());
@@ -12,7 +12,7 @@ class Sabre_CalDAV_Schedule_OutboxTest extends PHPUnit_Framework_TestCase {
 
         $this->assertEquals(array(
             array(
-                'privilege' => '{' . Sabre_CalDAV_Plugin::NS_CALDAV . '}schedule-query-freebusy',
+                'privilege' => '{'.Sabre_CalDAV_Plugin::NS_CALDAV.'}schedule-query-freebusy',
                 'principal' => 'principals/user1',
                 'protected' => true,
             ),
@@ -32,27 +32,22 @@ class Sabre_CalDAV_Schedule_OutboxTest extends PHPUnit_Framework_TestCase {
         if (!$ok) {
             $this->fail('Exception was not emitted');
         }
-
     }
 
-    function testGetSupportedPrivilegeSet() {
-
+    public function testGetSupportedPrivilegeSet()
+    {
         $outbox = new Sabre_CalDAV_Schedule_Outbox('principals/user1');
         $r = $outbox->getSupportedPrivilegeSet();
 
         $ok = false;
-        foreach($r['aggregates'] as $priv) {
-
-            if ($priv['privilege'] == '{' . Sabre_CalDAV_Plugin::NS_CALDAV . '}schedule-query-freebusy') {
+        foreach ($r['aggregates'] as $priv) {
+            if ($priv['privilege'] == '{'.Sabre_CalDAV_Plugin::NS_CALDAV.'}schedule-query-freebusy') {
                 $ok = true;
             }
         }
 
         if (!$ok) {
-            $this->fail('{' . Sabre_CalDAV_Plugin::NS_CALDAV . '}schedule-query-freebusy was not found as a supported privilege');
+            $this->fail('{'.Sabre_CalDAV_Plugin::NS_CALDAV.'}schedule-query-freebusy was not found as a supported privilege');
         }
-
     }
-
-
 }

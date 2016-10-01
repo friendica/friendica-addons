@@ -2,24 +2,23 @@
 
 require_once 'Sabre/CardDAV/AbstractPluginTest.php';
 
-class Sabre_CardDAV_ValidateFilterTest extends Sabre_CardDAV_AbstractPluginTest {
-
+class Sabre_CardDAV_ValidateFilterTest extends Sabre_CardDAV_AbstractPluginTest
+{
     /**
      * @dataProvider data
      */
-    function testFilter($input, $filters, $test, $result, $message = null) {
-
+    public function testFilter($input, $filters, $test, $result, $message = null)
+    {
         if ($result) {
             $this->assertTrue($this->plugin->validateFilters($input, $filters, $test), $message);
         } else {
             $this->assertFalse($this->plugin->validateFilters($input, $filters, $test), $message);
         }
-
     }
 
-    function data() {
-
-        $body1 = <<<HELLO
+    public function data()
+    {
+        $body1 = <<<'HELLO'
 BEGIN:VCARD
 VERSION:3.0
 ORG:Company;
@@ -39,7 +38,7 @@ FN:First Last
 N:Last;First;Middle;Dr
 BDAY:1985-07-20
 ADR;TYPE=HOME:;;Street;City;;3556;Montenegro
-ADR;TYPE=WORK:;;Street\\nStreet2;Harkema;;35444;Australia
+ADR;TYPE=WORK:;;Street\nStreet2;Harkema;;35444;Australia
 URL:http://google.com
 END:VCARD
 HELLO;
@@ -70,7 +69,7 @@ HELLO;
                     array(
                         'name' => 'type',
                         'is-not-defined' => false,
-                        'text-match' => null
+                        'text-match' => null,
                     ),
                 ),
                 'text-matches' => array(),
@@ -138,7 +137,6 @@ HELLO;
         $filter16 = $filter15;
         $filter16['param-filters'][0]['text-match']['negate-condition'] = true;
 
-
         // Param filter + text filter
         $filter17 = $filter5;
         $filter17['test'] = 'anyof';
@@ -157,18 +155,18 @@ HELLO;
         return array(
 
             // Basic filters
-            array($body1, array($filter1), 'anyof',true),
-            array($body1, array($filter2), 'anyof',false),
-            array($body1, array($filter3), 'anyof',false),
-            array($body1, array($filter4), 'anyof',true),
+            array($body1, array($filter1), 'anyof', true),
+            array($body1, array($filter2), 'anyof', false),
+            array($body1, array($filter3), 'anyof', false),
+            array($body1, array($filter4), 'anyof', true),
 
             // Combinations
-            array($body1, array($filter1, $filter2), 'anyof',true),
-            array($body1, array($filter1, $filter2), 'allof',false),
-            array($body1, array($filter1, $filter4), 'anyof',true),
-            array($body1, array($filter1, $filter4), 'allof',true),
-            array($body1, array($filter2, $filter3), 'anyof',false),
-            array($body1, array($filter2, $filter3), 'allof',false),
+            array($body1, array($filter1, $filter2), 'anyof', true),
+            array($body1, array($filter1, $filter2), 'allof', false),
+            array($body1, array($filter1, $filter4), 'anyof', true),
+            array($body1, array($filter1, $filter4), 'allof', true),
+            array($body1, array($filter2, $filter3), 'anyof', false),
+            array($body1, array($filter2, $filter3), 'allof', false),
 
             // Basic parameters
             array($body1, array($filter5), 'anyof', true, 'TEL;TYPE is defined, so this should return true'),
@@ -196,7 +194,5 @@ HELLO;
             array($body1, array($filter18), 'anyof', false),
             array($body1, array($filter18), 'anyof', false),
         );
-
     }
-
 }

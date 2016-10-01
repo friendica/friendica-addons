@@ -1,1 +1,1 @@
-<?php header('Content-type: application/json'); ?>
+<?php header('Content-type: application/json');

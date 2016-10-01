@@ -3,16 +3,16 @@
 require_once 'Sabre/HTTP/ResponseMock.php';
 require_once 'Sabre/TestUtil.php';
 
-class Sabre_DAV_Locks_MSWordTest extends PHPUnit_Framework_TestCase {
-
-    function testLockEtc() {
-
-        mkdir(SABRE_TEMPDIR . '/mstest');
-        $tree = new Sabre_DAV_FS_Directory(SABRE_TEMPDIR . '/mstest');
+class Sabre_DAV_Locks_MSWordTest extends PHPUnit_Framework_TestCase
+{
+    public function testLockEtc()
+    {
+        mkdir(SABRE_TEMPDIR.'/mstest');
+        $tree = new Sabre_DAV_FS_Directory(SABRE_TEMPDIR.'/mstest');
 
         $server = new Sabre_DAV_Server($tree);
         $server->debugExceptions = true;
-        $locksBackend = new Sabre_DAV_Locks_Backend_File(SABRE_TEMPDIR . '/locksdb');
+        $locksBackend = new Sabre_DAV_Locks_Backend_File(SABRE_TEMPDIR.'/locksdb');
         $locksPlugin = new Sabre_DAV_Locks_Plugin($locksBackend);
         $server->addPlugin($locksPlugin);
 
@@ -45,22 +45,20 @@ class Sabre_DAV_Locks_MSWordTest extends PHPUnit_Framework_TestCase {
         $server->exec();
 
         $this->assertEquals('HTTP/1.1 204 No Content', $server->httpResponse->status);
-
     }
 
-    function tearDown() {
-
+    public function tearDown()
+    {
         Sabre_TestUtil::clearTempDir();
-
     }
 
-    function getLockRequest() {
-
+    public function getLockRequest()
+    {
         $request = new Sabre_HTTP_Request(array(
-           'REQUEST_METHOD'    => 'LOCK',
+           'REQUEST_METHOD' => 'LOCK',
            'HTTP_CONTENT_TYPE' => 'application/xml',
-           'HTTP_TIMEOUT'      => 'Second-3600',
-           'REQUEST_URI'       => '/Nouveau%20Microsoft%20Office%20Excel%20Worksheet.xlsx',
+           'HTTP_TIMEOUT' => 'Second-3600',
+           'REQUEST_URI' => '/Nouveau%20Microsoft%20Office%20Excel%20Worksheet.xlsx',
         ));
 
         $request->setBody('<D:lockinfo xmlns:D="DAV:">
@@ -76,15 +74,14 @@ class Sabre_DAV_Locks_MSWordTest extends PHPUnit_Framework_TestCase {
 </D:lockinfo>');
 
         return $request;
-
     }
-    function getLockRequest2() {
-
+    public function getLockRequest2()
+    {
         $request = new Sabre_HTTP_Request(array(
-           'REQUEST_METHOD'    => 'LOCK',
+           'REQUEST_METHOD' => 'LOCK',
            'HTTP_CONTENT_TYPE' => 'application/xml',
-           'HTTP_TIMEOUT'      => 'Second-3600',
-           'REQUEST_URI'       => '/~$Nouveau%20Microsoft%20Office%20Excel%20Worksheet.xlsx',
+           'HTTP_TIMEOUT' => 'Second-3600',
+           'REQUEST_URI' => '/~$Nouveau%20Microsoft%20Office%20Excel%20Worksheet.xlsx',
         ));
 
         $request->setBody('<D:lockinfo xmlns:D="DAV:">
@@ -100,19 +97,17 @@ class Sabre_DAV_Locks_MSWordTest extends PHPUnit_Framework_TestCase {
 </D:lockinfo>');
 
         return $request;
-
     }
 
-    function getPutRequest($lockToken) {
-
+    public function getPutRequest($lockToken)
+    {
         $request = new Sabre_HTTP_Request(array(
-           'REQUEST_METHOD'    => 'PUT',
-           'REQUEST_URI'       => '/Nouveau%20Microsoft%20Office%20Excel%20Worksheet.xlsx',
-           'HTTP_IF'           => 'If: ('.$lockToken.')',
+           'REQUEST_METHOD' => 'PUT',
+           'REQUEST_URI' => '/Nouveau%20Microsoft%20Office%20Excel%20Worksheet.xlsx',
+           'HTTP_IF' => 'If: ('.$lockToken.')',
         ));
         $request->setBody('FAKE BODY');
+
         return $request;
-
     }
-
 }

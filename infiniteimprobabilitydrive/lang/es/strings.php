@@ -1,3 +1,3 @@
 <?php
 
-$a->strings["Infinite Improbability Drive"] = "Unidad de improbabilidad infinita";
+$a->strings['Infinite Improbability Drive'] = 'Unidad de improbabilidad infinita';

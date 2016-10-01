@@ -8,12 +8,12 @@ use Sabre\VObject;
  * Hopefully, by the time I'm done with this, I've both found the problem, and
  * fixed it :)
  *
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_CalDAV_ExpandEventsDoubleEventsTest extends Sabre_DAVServerTest {
-
+class Sabre_CalDAV_ExpandEventsDoubleEventsTest extends Sabre_DAVServerTest
+{
     protected $setupCalDAV = true;
 
     protected $caldavCalendars = array(
@@ -22,7 +22,7 @@ class Sabre_CalDAV_ExpandEventsDoubleEventsTest extends Sabre_DAVServerTest {
             'name' => 'Calendar',
             'principaluri' => 'principals/user1',
             'uri' => 'calendar1',
-        )
+        ),
     );
 
     protected $caldavCalendarObjects = array(
@@ -51,8 +51,8 @@ END:VCALENDAR
         ),
     );
 
-    function testExpand() {
-
+    public function testExpand()
+    {
         $request = new Sabre_HTTP_Request(array(
             'REQUEST_METHOD' => 'REPORT',
             'HTTP_CONTENT_TYPE' => 'application/xml',
@@ -85,17 +85,14 @@ END:VCALENDAR
             $start = strpos($response->body, 'BEGIN:VCALENDAR'),
             strpos($response->body, 'END:VCALENDAR') - $start + 13
         );
-        $body = str_replace('&#13;','',$body);
+        $body = str_replace('&#13;', '', $body);
 
         $vObject = VObject\Reader::read($body);
 
         // We only expect 3 events
-        $this->assertEquals(3, count($vObject->VEVENT),'We got 6 events instead of 3. Output: ' . $body);
+        $this->assertEquals(3, count($vObject->VEVENT), 'We got 6 events instead of 3. Output: '.$body);
 
         // TZID should be gone
         $this->assertFalse(isset($vObject->VEVENT->DTSTART['TZID']));
-
     }
-
 }
-

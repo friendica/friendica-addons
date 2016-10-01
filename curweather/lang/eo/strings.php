@@ -1,3 +1,3 @@
 <?php
 
-$a->strings["Submit"] = "Sendi";
+$a->strings['Submit'] = 'Sendi';

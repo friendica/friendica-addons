@@ -1,188 +1,177 @@
 <?php
 
 /**
- * The Card object represents a single Card from an addressbook
+ * The Card object represents a single Card from an addressbook.
  *
- * @package Sabre
- * @subpackage CardDAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
  * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Sabre_CardDAV_Card extends Sabre_DAV_File implements Sabre_CardDAV_ICard, Sabre_DAVACL_IACL {
-
+class Sabre_CardDAV_Card extends Sabre_DAV_File implements Sabre_CardDAV_ICard, Sabre_DAVACL_IACL
+{
     /**
-     * CardDAV backend
+     * CardDAV backend.
      *
      * @var Sabre_CardDAV_Backend_Abstract
      */
     private $carddavBackend;
 
     /**
-     * Array with information about this Card
+     * Array with information about this Card.
      *
      * @var array
      */
     private $cardData;
 
     /**
-     * Array with information about the containing addressbook
+     * Array with information about the containing addressbook.
      *
      * @var array
      */
     private $addressBookInfo;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param Sabre_CardDAV_Backend_Abstract $carddavBackend
-     * @param array $addressBookInfo
-     * @param array $cardData
+     * @param array                          $addressBookInfo
+     * @param array                          $cardData
      */
-    public function __construct(Sabre_CardDAV_Backend_Abstract $carddavBackend,array $addressBookInfo,array $cardData) {
-
+    public function __construct(Sabre_CardDAV_Backend_Abstract $carddavBackend, array $addressBookInfo, array $cardData)
+    {
         $this->carddavBackend = $carddavBackend;
         $this->addressBookInfo = $addressBookInfo;
         $this->cardData = $cardData;
-
     }
 
     /**
-     * Returns the uri for this object
+     * Returns the uri for this object.
      *
      * @return string
      */
-    public function getName() {
-
+    public function getName()
+    {
         return $this->cardData['uri'];
-
     }
 
     /**
-     * Returns the VCard-formatted object
+     * Returns the VCard-formatted object.
      *
      * @return string
      */
-    public function get() {
+    public function get()
+    {
 
         // Pre-populating 'carddata' is optional. If we don't yet have it
         // already, we fetch it from the backend.
         if (!isset($this->cardData['carddata'])) {
             $this->cardData = $this->carddavBackend->getCard($this->addressBookInfo['id'], $this->cardData['uri']);
         }
-        return $this->cardData['carddata'];
 
+        return $this->cardData['carddata'];
     }
 
     /**
-     * Updates the VCard-formatted object
+     * Updates the VCard-formatted object.
      *
      * @param string $cardData
+     *
      * @return string|null
      */
-    public function put($cardData) {
-
-        if (is_resource($cardData))
+    public function put($cardData)
+    {
+        if (is_resource($cardData)) {
             $cardData = stream_get_contents($cardData);
+        }
 
         // Converting to UTF-8, if needed
         $cardData = Sabre_DAV_StringUtil::ensureUTF8($cardData);
 
-        $etag = $this->carddavBackend->updateCard($this->addressBookInfo['id'],$this->cardData['uri'],$cardData);
+        $etag = $this->carddavBackend->updateCard($this->addressBookInfo['id'], $this->cardData['uri'], $cardData);
         $this->cardData['carddata'] = $cardData;
         $this->cardData['etag'] = $etag;
 
         return $etag;
-
     }
 
     /**
-     * Deletes the card
-     *
-     * @return void
+     * Deletes the card.
      */
-    public function delete() {
-
-        $this->carddavBackend->deleteCard($this->addressBookInfo['id'],$this->cardData['uri']);
-
+    public function delete()
+    {
+        $this->carddavBackend->deleteCard($this->addressBookInfo['id'], $this->cardData['uri']);
     }
 
     /**
-     * Returns the mime content-type
+     * Returns the mime content-type.
      *
      * @return string
      */
-    public function getContentType() {
-
+    public function getContentType()
+    {
         return 'text/x-vcard; charset=utf-8';
-
     }
 
     /**
-     * Returns an ETag for this object
+     * Returns an ETag for this object.
      *
      * @return string
      */
-    public function getETag() {
-
+    public function getETag()
+    {
         if (isset($this->cardData['etag'])) {
             return $this->cardData['etag'];
         } else {
-            return '"' . md5($this->get()) . '"';
+            return '"'.md5($this->get()).'"';
         }
-
     }
 
     /**
-     * Returns the last modification date as a unix timestamp
+     * Returns the last modification date as a unix timestamp.
      *
      * @return int
      */
-    public function getLastModified() {
-
-        return isset($this->cardData['lastmodified'])?$this->cardData['lastmodified']:null;
-
+    public function getLastModified()
+    {
+        return isset($this->cardData['lastmodified']) ? $this->cardData['lastmodified'] : null;
     }
 
     /**
-     * Returns the size of this object in bytes
+     * Returns the size of this object in bytes.
      *
      * @return int
      */
-    public function getSize() {
-
+    public function getSize()
+    {
         if (array_key_exists('size', $this->cardData)) {
             return $this->cardData['size'];
         } else {
             return strlen($this->get());
         }
-
     }
 
     /**
-     * Returns the owner principal
+     * Returns the owner principal.
      *
      * This must be a url to a principal, or null if there's no owner
      *
      * @return string|null
      */
-    public function getOwner() {
-
+    public function getOwner()
+    {
         return $this->addressBookInfo['principaluri'];
-
     }
 
     /**
-     * Returns a group principal
+     * Returns a group principal.
      *
      * This must be a url to a principal, or null if there's no owner
      *
      * @return string|null
      */
-    public function getGroup() {
-
+    public function getGroup()
+    {
         return null;
-
     }
 
     /**
@@ -197,8 +186,8 @@ class Sabre_CardDAV_Card extends Sabre_DAV_File implements Sabre_CardDAV_ICard, 
      *
      * @return array
      */
-    public function getACL() {
-
+    public function getACL()
+    {
         return array(
             array(
                 'privilege' => '{DAV:}read',
@@ -211,21 +200,18 @@ class Sabre_CardDAV_Card extends Sabre_DAV_File implements Sabre_CardDAV_ICard, 
                 'protected' => true,
             ),
         );
-
     }
 
     /**
-     * Updates the ACL
+     * Updates the ACL.
      *
      * This method will receive a list of new ACE's.
      *
      * @param array $acl
-     * @return void
      */
-    public function setACL(array $acl) {
-
+    public function setACL(array $acl)
+    {
         throw new Sabre_DAV_Exception_MethodNotAllowed('Changing ACL is not yet supported');
-
     }
 
     /**
@@ -240,11 +226,8 @@ class Sabre_CardDAV_Card extends Sabre_DAV_File implements Sabre_CardDAV_ICard, 
      *
      * @return array|null
      */
-    public function getSupportedPrivilegeSet() {
-
+    public function getSupportedPrivilegeSet()
+    {
         return null;
-
     }
-
 }
-

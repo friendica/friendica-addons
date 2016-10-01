@@ -3,14 +3,12 @@
 /**
  * This is the base class for any authentication object.
  *
- * @package Sabre
- * @subpackage DAV
- * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved.
- * @author Evert Pot (http://www.rooftopsolutions.nl/) 
+ * @copyright Copyright (C) 2007-2012 Rooftop Solutions. All rights reserved
+ * @author Evert Pot (http://www.rooftopsolutions.nl/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-interface Sabre_DAV_Auth_IBackend {
-
+interface Sabre_DAV_Auth_IBackend
+{
     /**
      * Authenticates the user based on the current request.
      *
@@ -18,10 +16,11 @@ interface Sabre_DAV_Auth_IBackend {
      * If authentication fails, an exception must be thrown.
      *
      * @param Sabre_DAV_Server $server
-     * @param string $realm
+     * @param string           $realm
+     *
      * @return bool
      */
-    function authenticate(Sabre_DAV_Server $server,$realm);
+    public function authenticate(Sabre_DAV_Server $server, $realm);
 
     /**
      * Returns information about the currently logged in username.
@@ -30,7 +29,5 @@ interface Sabre_DAV_Auth_IBackend {
      *
      * @return string|null
      */
-    function getCurrentUser();
-
+    public function getCurrentUser();
 }
-

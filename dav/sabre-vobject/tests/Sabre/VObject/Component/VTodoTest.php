@@ -4,19 +4,18 @@ namespace Sabre\VObject\Component;
 
 use Sabre\VObject\Component;
 
-class VTodoTest extends \PHPUnit_Framework_TestCase {
-
+class VTodoTest extends \PHPUnit_Framework_TestCase
+{
     /**
      * @dataProvider timeRangeTestData
      */
-    public function testInTimeRange(VTodo $vtodo,$start,$end,$outcome) {
-
+    public function testInTimeRange(VTodo $vtodo, $start, $end, $outcome)
+    {
         $this->assertEquals($outcome, $vtodo->isInTimeRange($start, $end));
-
     }
 
-    public function timeRangeTestData() {
-
+    public function timeRangeTestData()
+    {
         $tests = array();
 
         $vtodo = Component::create('VTODO');
@@ -60,8 +59,5 @@ class VTodoTest extends \PHPUnit_Framework_TestCase {
         $tests[] = array($vtodo7, new \DateTime('2011-01-01'), new \DateTime('2011-11-01'), true);
 
         return $tests;
-
     }
-
 }
-

@@ -2,11 +2,11 @@
 
 use Sabre\VObject;
 
-class Sabre_CalDAV_Issue166Test extends PHPUnit_Framework_TestCase {
-
-    function testFlaw() {
-
-        $input = <<<HI
+class Sabre_CalDAV_Issue166Test extends PHPUnit_Framework_TestCase
+{
+    public function testFlaw()
+    {
+        $input = <<<'HI'
 BEGIN:VCALENDAR
 PRODID:-//Mozilla.org/NONSGML Mozilla Calendar V1.1//EN
 VERSION:2.0
@@ -45,7 +45,7 @@ HI;
                     'is-not-defined' => false,
                     'time-range' => array(
                         'start' => new DateTime('2011-12-01'),
-                        'end'   => new DateTime('2012-02-01'),
+                        'end' => new DateTime('2012-02-01'),
                     ),
                 ),
             ),
@@ -54,8 +54,6 @@ HI;
             'time-range' => null,
         );
         $input = VObject\Reader::read($input);
-        $this->assertTrue($validator->validate($input,$filters));
-
+        $this->assertTrue($validator->validate($input, $filters));
     }
-
 }

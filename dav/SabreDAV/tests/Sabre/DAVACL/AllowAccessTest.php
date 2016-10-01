@@ -1,14 +1,14 @@
 <?php
 
-class Sabre_DAVACL_AllowAccessTest extends PHPUnit_Framework_TestCase {
-
+class Sabre_DAVACL_AllowAccessTest extends PHPUnit_Framework_TestCase
+{
     /**
      * @var Sabre_DAV_Server
      */
     protected $server;
 
-    function setUp() {
-
+    public function setUp()
+    {
         $nodes = array(
             new Sabre_DAV_SimpleCollection('testdir'),
         );
@@ -17,85 +17,71 @@ class Sabre_DAVACL_AllowAccessTest extends PHPUnit_Framework_TestCase {
         $aclPlugin = new Sabre_DAVACL_Plugin();
         $aclPlugin->allowAccessToNodesWithoutACL = true;
         $this->server->addPlugin($aclPlugin);
-
     }
 
-    function testGet() {
-
-        $this->assertTrue($this->server->broadcastEvent('beforeMethod',array('GET','testdir')));
-
+    public function testGet()
+    {
+        $this->assertTrue($this->server->broadcastEvent('beforeMethod', array('GET', 'testdir')));
     }
 
-    function testGetDoesntExist() {
-
-        $r = $this->server->broadcastEvent('beforeMethod',array('GET','foo'));
+    public function testGetDoesntExist()
+    {
+        $r = $this->server->broadcastEvent('beforeMethod', array('GET', 'foo'));
         $this->assertTrue($r);
-
     }
 
-    function testHEAD() {
-
-        $this->assertTrue($this->server->broadcastEvent('beforeMethod',array('HEAD','testdir')));
-
+    public function testHEAD()
+    {
+        $this->assertTrue($this->server->broadcastEvent('beforeMethod', array('HEAD', 'testdir')));
     }
 
-    function testOPTIONS() {
-
-        $this->assertTrue($this->server->broadcastEvent('beforeMethod',array('OPTIONS','testdir')));
-
+    public function testOPTIONS()
+    {
+        $this->assertTrue($this->server->broadcastEvent('beforeMethod', array('OPTIONS', 'testdir')));
     }
 
-    function testPUT() {
-
-        $this->assertTrue($this->server->broadcastEvent('beforeMethod',array('PUT','testdir')));
-
+    public function testPUT()
+    {
+        $this->assertTrue($this->server->broadcastEvent('beforeMethod', array('PUT', 'testdir')));
     }
 
-    function testACL() {
-
-        $this->assertTrue($this->server->broadcastEvent('beforeMethod',array('ACL','testdir')));
-
+    public function testACL()
+    {
+        $this->assertTrue($this->server->broadcastEvent('beforeMethod', array('ACL', 'testdir')));
     }
 
-    function testPROPPATCH() {
-
-        $this->assertTrue($this->server->broadcastEvent('beforeMethod',array('PROPPATCH','testdir')));
-
+    public function testPROPPATCH()
+    {
+        $this->assertTrue($this->server->broadcastEvent('beforeMethod', array('PROPPATCH', 'testdir')));
     }
 
-    function testCOPY() {
-
-        $this->assertTrue($this->server->broadcastEvent('beforeMethod',array('COPY','testdir')));
-
+    public function testCOPY()
+    {
+        $this->assertTrue($this->server->broadcastEvent('beforeMethod', array('COPY', 'testdir')));
     }
 
-    function testMOVE() {
-
-        $this->assertTrue($this->server->broadcastEvent('beforeMethod',array('MOVE','testdir')));
-
+    public function testMOVE()
+    {
+        $this->assertTrue($this->server->broadcastEvent('beforeMethod', array('MOVE', 'testdir')));
     }
 
-    function testLOCK() {
-
-        $this->assertTrue($this->server->broadcastEvent('beforeMethod',array('LOCK','testdir')));
-
+    public function testLOCK()
+    {
+        $this->assertTrue($this->server->broadcastEvent('beforeMethod', array('LOCK', 'testdir')));
     }
 
-    function testBeforeBind() {
-
-        $this->assertTrue($this->server->broadcastEvent('beforeBind',array('testdir/file')));
-
+    public function testBeforeBind()
+    {
+        $this->assertTrue($this->server->broadcastEvent('beforeBind', array('testdir/file')));
     }
 
-
-    function testBeforeUnbind() {
-
-        $this->assertTrue($this->server->broadcastEvent('beforeUnbind',array('testdir')));
-
+    public function testBeforeUnbind()
+    {
+        $this->assertTrue($this->server->broadcastEvent('beforeUnbind', array('testdir')));
     }
 
-    function testAfterGetProperties() {
-
+    public function testAfterGetProperties()
+    {
         $properties = array(
             'href' => 'foo',
             '200' => array(
@@ -124,11 +110,9 @@ class Sabre_DAVACL_AllowAccessTest extends PHPUnit_Framework_TestCase {
             ),
         );
 
-        $r = $this->server->broadcastEvent('afterGetProperties',array('testdir',&$properties));
+        $r = $this->server->broadcastEvent('afterGetProperties', array('testdir', &$properties));
         $this->assertTrue($r);
 
         $this->assertEquals($expected, $properties);
-
     }
-
 }

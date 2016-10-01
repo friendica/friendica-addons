@@ -2,25 +2,23 @@
 
 require_once 'Sabre/TestUtil.php';
 
-class Sabre_DAV_FSExt_NodeTest extends PHPUnit_Framework_TestCase {
-
-    function setUp() {
-
-        mkdir(SABRE_TEMPDIR . '/dir');
-        file_put_contents(SABRE_TEMPDIR . '/dir/file.txt', 'Contents');
-        file_put_contents(SABRE_TEMPDIR . '/dir/file2.txt', 'Contents2');
-
+class Sabre_DAV_FSExt_NodeTest extends PHPUnit_Framework_TestCase
+{
+    public function setUp()
+    {
+        mkdir(SABRE_TEMPDIR.'/dir');
+        file_put_contents(SABRE_TEMPDIR.'/dir/file.txt', 'Contents');
+        file_put_contents(SABRE_TEMPDIR.'/dir/file2.txt', 'Contents2');
     }
 
-    function tearDown() {
-
+    public function tearDown()
+    {
         Sabre_TestUtil::clearTempDir();
-
     }
 
-    function testUpdateProperties() {
-
-        $file = new Sabre_DAV_FSExt_File(SABRE_TEMPDIR . '/dir/file.txt');
+    public function testUpdateProperties()
+    {
+        $file = new Sabre_DAV_FSExt_File(SABRE_TEMPDIR.'/dir/file.txt');
         $properties = array(
             '{http://sabredav.org/NS/2010}test1' => 'foo',
             '{http://sabredav.org/NS/2010}test2' => 'bar',
@@ -34,15 +32,14 @@ class Sabre_DAV_FSExt_NodeTest extends PHPUnit_Framework_TestCase {
         $getProperties = $file->getProperties(array_keys($properties));
 
         $this->assertEquals($properties, $getProperties);
-
     }
 
     /**
      * @depends testUpdateProperties
      */
-    function testUpdatePropertiesAgain() {
-
-        $file = new Sabre_DAV_FSExt_File(SABRE_TEMPDIR . '/dir/file.txt');
+    public function testUpdatePropertiesAgain()
+    {
+        $file = new Sabre_DAV_FSExt_File(SABRE_TEMPDIR.'/dir/file.txt');
         $mutations = array(
             '{http://sabredav.org/NS/2010}test1' => 'foo',
             '{http://sabredav.org/NS/2010}test2' => 'bar',
@@ -65,9 +62,9 @@ class Sabre_DAV_FSExt_NodeTest extends PHPUnit_Framework_TestCase {
     /**
      * @depends testUpdateProperties
      */
-    function testUpdatePropertiesDelete() {
-
-        $file = new Sabre_DAV_FSExt_File(SABRE_TEMPDIR . '/dir/file.txt');
+    public function testUpdatePropertiesDelete()
+    {
+        $file = new Sabre_DAV_FSExt_File(SABRE_TEMPDIR.'/dir/file.txt');
 
         $mutations = array(
             '{http://sabredav.org/NS/2010}test1' => 'foo',
@@ -80,14 +77,14 @@ class Sabre_DAV_FSExt_NodeTest extends PHPUnit_Framework_TestCase {
 
         $mutations = array(
             '{http://sabredav.org/NS/2010}test1' => null,
-            '{http://sabredav.org/NS/2010}test3' => null
+            '{http://sabredav.org/NS/2010}test3' => null,
         );
 
         $result = $file->updateProperties($mutations);
 
         $this->assertEquals(true, $result);
 
-        $properties = $file->getProperties(array('http://sabredav.org/NS/2010}test1','{http://sabredav.org/NS/2010}test2','{http://sabredav.org/NS/2010}test3'));
+        $properties = $file->getProperties(array('http://sabredav.org/NS/2010}test1', '{http://sabredav.org/NS/2010}test2', '{http://sabredav.org/NS/2010}test3'));
 
         $this->assertEquals(array(
             '{http://sabredav.org/NS/2010}test2' => 'bar',
@@ -97,9 +94,9 @@ class Sabre_DAV_FSExt_NodeTest extends PHPUnit_Framework_TestCase {
     /**
      * @depends testUpdateProperties
      */
-    function testUpdatePropertiesMove() {
-
-        $file = new Sabre_DAV_FSExt_File(SABRE_TEMPDIR . '/dir/file.txt');
+    public function testUpdatePropertiesMove()
+    {
+        $file = new Sabre_DAV_FSExt_File(SABRE_TEMPDIR.'/dir/file.txt');
 
         $mutations = array(
             '{http://sabredav.org/NS/2010}test1' => 'foo',
@@ -110,7 +107,7 @@ class Sabre_DAV_FSExt_NodeTest extends PHPUnit_Framework_TestCase {
 
         $this->assertEquals(true, $result);
 
-        $properties = $file->getProperties(array('{http://sabredav.org/NS/2010}test1','{http://sabredav.org/NS/2010}test2','{http://sabredav.org/NS/2010}test3'));
+        $properties = $file->getProperties(array('{http://sabredav.org/NS/2010}test1', '{http://sabredav.org/NS/2010}test2', '{http://sabredav.org/NS/2010}test3'));
 
         $this->assertEquals(array(
             '{http://sabredav.org/NS/2010}test1' => 'foo',
@@ -120,14 +117,14 @@ class Sabre_DAV_FSExt_NodeTest extends PHPUnit_Framework_TestCase {
         // Renaming
         $file->setName('file3.txt');
 
-        $this->assertFalse(file_exists(SABRE_TEMPDIR . '/dir/file.txt'));
-        $this->assertTrue(file_exists(SABRE_TEMPDIR . '/dir/file3.txt'));
-        $this->assertEquals('file3.txt',$file->getName());
+        $this->assertFalse(file_exists(SABRE_TEMPDIR.'/dir/file.txt'));
+        $this->assertTrue(file_exists(SABRE_TEMPDIR.'/dir/file3.txt'));
+        $this->assertEquals('file3.txt', $file->getName());
 
-        $newFile = new Sabre_DAV_FSExt_File(SABRE_TEMPDIR . '/dir/file3.txt');
-        $this->assertEquals('file3.txt',$newFile->getName());
+        $newFile = new Sabre_DAV_FSExt_File(SABRE_TEMPDIR.'/dir/file3.txt');
+        $this->assertEquals('file3.txt', $newFile->getName());
 
-        $properties = $newFile->getProperties(array('{http://sabredav.org/NS/2010}test1','{http://sabredav.org/NS/2010}test2','{http://sabredav.org/NS/2010}test3'));
+        $properties = $newFile->getProperties(array('{http://sabredav.org/NS/2010}test1', '{http://sabredav.org/NS/2010}test2', '{http://sabredav.org/NS/2010}test3'));
 
         $this->assertEquals(array(
             '{http://sabredav.org/NS/2010}test1' => 'foo',
@@ -138,9 +135,9 @@ class Sabre_DAV_FSExt_NodeTest extends PHPUnit_Framework_TestCase {
     /**
      * @depends testUpdatePropertiesMove
      */
-    function testUpdatePropertiesDeleteBleed() {
-
-        $file = new Sabre_DAV_FSExt_File(SABRE_TEMPDIR . '/dir/file.txt');
+    public function testUpdatePropertiesDeleteBleed()
+    {
+        $file = new Sabre_DAV_FSExt_File(SABRE_TEMPDIR.'/dir/file.txt');
         $mutations = array(
             '{http://sabredav.org/NS/2010}test1' => 'foo',
             '{http://sabredav.org/NS/2010}test2' => 'bar',
@@ -150,7 +147,7 @@ class Sabre_DAV_FSExt_NodeTest extends PHPUnit_Framework_TestCase {
 
         $this->assertEquals(true, $result);
 
-        $properties = $file->getProperties(array('{http://sabredav.org/NS/2010}test1','{http://sabredav.org/NS/2010}test2','{http://sabredav.org/NS/2010}test3'));
+        $properties = $file->getProperties(array('{http://sabredav.org/NS/2010}test1', '{http://sabredav.org/NS/2010}test2', '{http://sabredav.org/NS/2010}test3'));
 
         $this->assertEquals(array(
             '{http://sabredav.org/NS/2010}test1' => 'foo',
@@ -160,16 +157,14 @@ class Sabre_DAV_FSExt_NodeTest extends PHPUnit_Framework_TestCase {
         // Deleting
         $file->delete();
 
-        $this->assertFalse(file_exists(SABRE_TEMPDIR . '/dir/file.txt'));
+        $this->assertFalse(file_exists(SABRE_TEMPDIR.'/dir/file.txt'));
 
         // Creating it again
-        file_put_contents(SABRE_TEMPDIR . '/dir/file.txt','New Contents');
-        $file = new Sabre_DAV_FSExt_File(SABRE_TEMPDIR . '/dir/file.txt');
+        file_put_contents(SABRE_TEMPDIR.'/dir/file.txt', 'New Contents');
+        $file = new Sabre_DAV_FSExt_File(SABRE_TEMPDIR.'/dir/file.txt');
 
-        $properties = $file->getProperties(array('http://sabredav.org/NS/2010}test1','{http://sabredav.org/NS/2010}test2','{http://sabredav.org/NS/2010}test3'));
+        $properties = $file->getProperties(array('http://sabredav.org/NS/2010}test1', '{http://sabredav.org/NS/2010}test2', '{http://sabredav.org/NS/2010}test3'));
 
         $this->assertEquals(array(), $properties);
-
     }
-
 }
