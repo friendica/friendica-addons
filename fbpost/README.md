@@ -1,3 +1,7 @@
+> # Note
+> **Facebook Connector, Facebook Post Connector and Facebook Sync plugins are deprecated.**
+> As of the moment you cannot bridge from or to Facebook with Friendica.
+
 #### Installing the Friendica/Facebook connector
 
 Please register a Facebook application at [developers.facebook.com](https://developers.facebook.com/apps/async/create/platform-setup/dialog/)

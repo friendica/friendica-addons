@@ -4,6 +4,7 @@
 # 
 # 
 # Translators:
+# Damien Goutte-Gattat <damien+transifex@incenp.org>, 2016
 # Nicola Spanti <translations@nicola-spanti.info>, 2015
 # StefOfficiel <pichard.stephane@free.fr>, 2015
 msgid ""
@@ -11,8 +12,8 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2015-08-30 17:24+0000\n"
-"Last-Translator: Nicola Spanti <translations@nicola-spanti.info>\n"
+"PO-Revision-Date: 2016-09-12 15:41+0000\n"
+"Last-Translator: Damien Goutte-Gattat <damien+transifex@incenp.org>\n"
 "Language-Team: French (http://www.transifex.com/Friendica/friendica/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,13 +27,13 @@ msgstr "Envoyer"
 
 #: openstreetmap.php:95
 msgid "Tile Server URL"
-msgstr ""
+msgstr "URL du serveur de tuiles"
 
 #: openstreetmap.php:95
 msgid ""
 "A list of <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" "
 "target=\"_blank\">public tile servers</a>"
-msgstr ""
+msgstr "Une liste de <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" target=\"_blank\">serveurs de tuiles publics</a>"
 
 #: openstreetmap.php:96
 msgid "Default zoom"
@@ -40,7 +41,7 @@ msgstr "Zoom par défaut"
 
 #: openstreetmap.php:96
 msgid "The default zoom level. (1:world, 18:highest)"
-msgstr ""
+msgstr "Le niveau de zoom affiché par défaut. (1: monde entier, 18: détail maximum)"
 
 #: openstreetmap.php:104
 msgid "Settings updated."

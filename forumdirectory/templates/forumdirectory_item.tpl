@@ -18,11 +18,11 @@
 				<dd class="adr">
 					{{if $profile.address}}<div class="street-address">{{$profile.address}}</div>{{/if}}
 					<span class="city-state-zip">
-						<span class="locality">{{$profile.locality}}</span>{{if $profile.locality}}, {{/if}}
-						<span class="region">{{$profile.region}}</span>
-						<span class="postal-code">{{$profile.postal-code}}</span>
+						{{if $profile.locality}}<span class="locality">{{$profile.locality}}</span>, {{/if}}
+						{{if $profile.region}}<span class="region">{{$profile.region}}</span>{{/if}}
+						{{if $profile['postal-code']}}<span class="postal-code">{{$profile['postal-code']}}</span>{{/if}}
 					</span>
-					{{if $profile.country-name}}<span class="country-name">{{$profile.country-name}}</span>{{/if}}
+					{{if $profile['country-name']}}<span class="country-name">{{$profile['country-name']}}</span>{{/if}}
 				</dd>
 				</dl>
 			{{/if}}
