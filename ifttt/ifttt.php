@@ -48,7 +48,7 @@ function ifttt_settings(&$a,&$s) {
         $s .= '<div id="ifttt-configuration-wrapper">';
 	$s .= '<p>'.t("Create an account at <a href='http://www.ifttt.com'>IFTTT</a>. Create three Facebook recipes that are connected with <a href='https://ifttt.com/maker'>Maker</a> (In the form 'if Facebook then Maker') with the following parameters:").'</p>';
 	$s .= '<h4>URL</h4>';
-	$s .= '<p>'.$a->get_baseurl()."/ifttt/".'</p>';
+	$s .= '<p>' . $a->get_baseurl() . '/ifttt/' . $a->user['nickname'] . '</p>';
 	$s .= '<h4>Method</h4>';
 	$s .= '<p>POST</p>';
 	$s .= '<h4>Content Type</h4>';
