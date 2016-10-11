@@ -1,0 +1,73 @@
+# ADDON communityhome
+# Copyright (C)
+# This file is distributed under the same license as the Friendica communityhome addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2016-10-10 20:53+0000\n"
+"Last-Translator: Athalbert\n"
+"Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: communityhome.php:28 communityhome.php:34
+msgid "Login"
+msgstr "Acceder"
+
+#: communityhome.php:29
+msgid "OpenID"
+msgstr "ID Abierta"
+
+#: communityhome.php:39
+msgid "Latest users"
+msgstr "Usuarios recientes"
+
+#: communityhome.php:84
+msgid "Most active users"
+msgstr "Usuarios más activos"
+
+#: communityhome.php:102
+msgid "Latest photos"
+msgstr "Fotos recientes"
+
+#: communityhome.php:115
+msgid "Contact Photos"
+msgstr "Fotos de contacto"
+
+#: communityhome.php:116
+msgid "Profile Photos"
+msgstr "Fotos de perfil"
+
+#: communityhome.php:141
+msgid "Latest likes"
+msgstr "Últomos Me gusta"
+
+#: communityhome.php:163
+msgid "event"
+msgstr "evento"
+
+#: communityhome.php:166 communityhome.php:175
+msgid "status"
+msgstr "estatus social"
+
+#: communityhome.php:171
+msgid "photo"
+msgstr "foto"
+
+#: communityhome.php:180
+#, php-format
+msgid "%1$s likes %2$s's %3$s"
+msgstr "A %1$s le gusta %2$s's %3$s"
+
+#: communityhome.php:189
+#, php-format
+msgid "Welcome to %s"
+msgstr "Bienvenido a %s"
