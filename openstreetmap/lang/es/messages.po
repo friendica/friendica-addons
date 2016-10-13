@@ -1,0 +1,46 @@
+# ADDON openstreetmap
+# Copyright (C)
+# This file is distributed under the same license as the Friendica openstreetmap addon package.
+# 
+# 
+# Translators:
+# Alberto Díaz <albertodiaztormo@gmail.com>, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2016-10-12 15:01+0000\n"
+"Last-Translator: Alberto Díaz <albertodiaztormo@gmail.com>\n"
+"Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: openstreetmap.php:94
+msgid "Submit"
+msgstr "Enviar"
+
+#: openstreetmap.php:95
+msgid "Tile Server URL"
+msgstr "URL del mosaico de servidor"
+
+#: openstreetmap.php:95
+msgid ""
+"A list of <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" "
+"target=\"_blank\">public tile servers</a>"
+msgstr "Una lista de <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" target=\"_blank\">mosaico de servidores públicos</a>"
+
+#: openstreetmap.php:96
+msgid "Default zoom"
+msgstr "Zoom por defecto"
+
+#: openstreetmap.php:96
+msgid "The default zoom level. (1:world, 18:highest)"
+msgstr "El nivel por defecto de zoom. (1:world, 18:highest)"
+
+#: openstreetmap.php:104
+msgid "Settings updated."
+msgstr "Ajustes actualizados"
