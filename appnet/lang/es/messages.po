@@ -4,13 +4,14 @@
 # 
 # 
 # Translators:
+# Alberto Díaz Tormo <albertodiaztormo@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 11:47+0200\n"
-"PO-Revision-Date: 2016-10-10 17:59+0000\n"
-"Last-Translator: Athalbert\n"
+"PO-Revision-Date: 2016-10-13 21:25+0000\n"
+"Last-Translator: Alberto Díaz Tormo <albertodiaztormo@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -73,7 +74,7 @@ msgid ""
 "<p>First way: Register an application at <a "
 "href=\"https://account.app.net/developer/apps/\">https://account.app.net/developer/apps/</a>"
 " and enter Client ID and Client Secret. "
-msgstr ""
+msgstr "<p>Primera forma: Registrar una aplicación en <a href=\"https://account.app.net/developer/apps/\">https://account.app.net/developer/apps/</a> y seleccionar Client ID y Client Secret. "
 
 #: appnet.php:167
 #, php-format
