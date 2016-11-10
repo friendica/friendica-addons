@@ -17,7 +17,7 @@ $a->strings["Post to App.net by default"] = "Publicar en App.net por defecto";
 $a->strings["Import the remote timeline"] = "Importar la línea de tiempo remota";
 $a->strings["<p>Error fetching user profile. Please clear the configuration and try again.</p>"] = "<p>Advertencia de error de perfil. Por favor borre la configuración e inténtelo de nuevo.</p>";
 $a->strings["<p>You have two ways to connect to App.net.</p>"] = "<p>Tiene dos formas de conectar a App.net.</p>";
-$a->strings["<p>First way: Register an application at <a href=\"https://account.app.net/developer/apps/\">https://account.app.net/developer/apps/</a> and enter Client ID and Client Secret. "] = "";
+$a->strings["<p>First way: Register an application at <a href=\"https://account.app.net/developer/apps/\">https://account.app.net/developer/apps/</a> and enter Client ID and Client Secret. "] = "<p>Primera forma: Registrar una aplicación en <a href=\"https://account.app.net/developer/apps/\">https://account.app.net/developer/apps/</a> y seleccionar Client ID y Client Secret. ";
 $a->strings["Use '%s' as Redirect URI<p>"] = "Use '%s' como Redirigir URI";
 $a->strings["Client ID"] = "ID de cliente";
 $a->strings["Client Secret"] = "Secreto de cliente";
