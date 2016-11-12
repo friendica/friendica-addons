@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2016-11-12 16:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,22 +17,34 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: fromgplus.php:33
-msgid "Google+ Import Settings"
+#: fromgplus.php:46 fromgplus.php:50
+msgid "Google+ Mirror"
 msgstr ""
 
-#: fromgplus.php:36
+#: fromgplus.php:55
 msgid "Enable Google+ Import"
 msgstr ""
 
-#: fromgplus.php:39
+#: fromgplus.php:58
 msgid "Google Account ID"
 msgstr ""
 
-#: fromgplus.php:44
-msgid "Submit"
+#: fromgplus.php:61
+msgid "Add keywords to post"
 msgstr ""
 
-#: fromgplus.php:59
+#: fromgplus.php:66 fromgplus.php:95
+msgid "Save Settings"
+msgstr ""
+
+#: fromgplus.php:87
 msgid "Google+ Import Settings saved."
+msgstr ""
+
+#: fromgplus.php:96
+msgid "Key"
+msgstr ""
+
+#: fromgplus.php:103
+msgid "Settings updated."
 msgstr ""

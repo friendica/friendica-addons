@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-23 14:44+0200\n"
+"POT-Creation-Date: 2016-11-12 16:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,50 +17,50 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gpluspost.php:38
+#: gpluspost.php:39
 msgid "Post to Google+"
 msgstr ""
 
-#: gpluspost.php:93
+#: gpluspost.php:94
 msgid "Enable Google+ Post Plugin"
 msgstr ""
 
-#: gpluspost.php:108
+#: gpluspost.php:109
 msgid "Google+ username"
 msgstr ""
 
-#: gpluspost.php:113
+#: gpluspost.php:114
 msgid "Google+ password"
 msgstr ""
 
-#: gpluspost.php:118
+#: gpluspost.php:119
 msgid "Google+ page number"
 msgstr ""
 
-#: gpluspost.php:124
+#: gpluspost.php:125
 msgid "Post to Google+ by default"
 msgstr ""
 
-#: gpluspost.php:129
+#: gpluspost.php:130
 msgid "Do not prevent posting loops"
 msgstr ""
 
-#: gpluspost.php:135
+#: gpluspost.php:136
 msgid "Skip messages without links"
 msgstr ""
 
-#: gpluspost.php:142
+#: gpluspost.php:143
 msgid "Mirror all public posts"
 msgstr ""
 
-#: gpluspost.php:146
+#: gpluspost.php:147
 msgid "Mirror Google Account ID"
 msgstr ""
 
-#: gpluspost.php:153
+#: gpluspost.php:154
 msgid "Save Settings"
 msgstr ""
 
-#: gpluspost.php:308
+#: gpluspost.php:310
 msgid "Google+ post failed. Queued for retry."
 msgstr ""
