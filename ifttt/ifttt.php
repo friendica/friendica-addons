@@ -155,8 +155,11 @@ function ifttt_message($uid, $item) {
 	//$_REQUEST["date"] = $item["date"];
 	//$_REQUEST["uri"] = $item["url"];
 
-	if (strstr($item["url"], "facebook.com"))
+	if (strstr($item["url"], "facebook.com")) {
+		$hash = hash("ripemd128", item["url"]);
 		$_REQUEST["extid"] = NETWORK_FACEBOOK;
+		$_REQUEST['message_id'] = item_new_uri($a->get_hostname(), $uid, NETWORK_FACEBOOK.":".$hash);
+	}
 
 	if ($item["type"] == "link") {
 		$data = query_page_info($item["link"]);

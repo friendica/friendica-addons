@@ -791,8 +791,9 @@ function twitter_fetchtimeline($a, $uid) {
 			$_REQUEST["source"] = $post->source;
 			$_REQUEST["extid"] = NETWORK_TWITTER;
 
-			if (isset($post->id))
-				$_REQUEST['message_id'] = NETWORK_TWITTER.":".$post->id;
+			if (isset($post->id)) {
+				$_REQUEST['message_id'] = item_new_uri($a->get_hostname(), $uid, NETWORK_TWITTER.":".$post->id);
+			}
 
 			//$_REQUEST["date"] = $post->created_at;
 
