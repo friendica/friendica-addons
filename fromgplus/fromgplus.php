@@ -11,6 +11,7 @@ define('FROMGPLUS_DEFAULT_POLL_INTERVAL', 30); // given in minutes
 
 require_once('mod/share.php');
 require_once('mod/parse_url.php');
+require_once('include/text.php');
 
 function fromgplus_install() {
 	register_hook('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
@@ -164,8 +165,9 @@ function fromgplus_post($a, $uid, $source, $body, $location, $coord, $id) {
 	$_REQUEST['source'] = $source;
 	$_REQUEST['extid'] = NETWORK_GPLUS;
 
-	if (isset($id))
-		$_REQUEST['message_id'] = NETWORK_GPLUS.":".$id;
+	if (isset($id)) {
+		$_REQUEST['message_id'] = item_new_uri($a->get_hostname(), $uid, NETWORK_GPLUS.':'.$id);
+	}
 
 	// $_REQUEST['verb']
 	// $_REQUEST['parent']
