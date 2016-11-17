@@ -1,9 +1,14 @@
 <?php
 
+if(! function_exists("string_plural_select_es")) {
+function string_plural_select_es($n){
+	return ($n != 1);;
+}}
+;
 $a->strings["Post to Insanejournal"] = "Publicar en Insanejournal";
-$a->strings["InsaneJournal Post Settings"] = "Configuración de publicación en Insanejournal";
-$a->strings["Enable InsaneJournal Post Plugin"] = "Activar el módulo de publicación en Insanejournal";
-$a->strings["InsaneJournal username"] = "Nombre de usuario de Insanejournal";
-$a->strings["InsaneJournal password"] = "Contraseña de Insanejournal";
-$a->strings["Post to InsaneJournal by default"] = "Publicar en Insanejournal por defecto";
-$a->strings["Submit"] = "Envíar";
+$a->strings["InsaneJournal Post Settings"] = "Ajustes de Entrada de InsaneJournal";
+$a->strings["Enable InsaneJournal Post Plugin"] = "Habilitar el Plugin de Entrada InsaneJournal";
+$a->strings["InsaneJournal username"] = "Nombre de usuario InsaneJournal";
+$a->strings["InsaneJournal password"] = "Contraseña de InsaneJournal";
+$a->strings["Post to InsaneJournal by default"] = "Publicar en InsaneJournal por defecto";
+$a->strings["Submit"] = "Enviar";

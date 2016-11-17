@@ -4,14 +4,15 @@
 # 
 # 
 # Translators:
-# Alberto Díaz Tormo <albertodiaztormo@gmail.com>, 2016
+# Albert, 2016
+# Albert, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2016-11-08 16:28+0000\n"
-"Last-Translator: Alberto Díaz Tormo <albertodiaztormo@gmail.com>\n"
+"PO-Revision-Date: 2016-11-16 20:48+0000\n"
+"Last-Translator: Albert\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -204,39 +205,39 @@ msgstr "no responder"
 
 #: friendica/main.php:282
 msgid "Notification: "
-msgstr ""
+msgstr "Notificación: "
 
 #: friendica/main.php:309
 msgid "The database tables have been installed."
-msgstr ""
+msgstr "Las tablas de bases de datos se han instalado."
 
 #: friendica/main.php:310
 msgid "An error occurred during the installation."
-msgstr ""
+msgstr "Hubo un error durante la instalación."
 
 #: friendica/main.php:316
 msgid "The database tables have been updated."
-msgstr ""
+msgstr "Las tablas de bases de datos se han actualizado."
 
 #: friendica/main.php:317
 msgid "An error occurred during the update."
-msgstr ""
+msgstr "Hubo un error durante la actualización."
 
 #: friendica/main.php:333
 msgid "No system-wide settings yet."
-msgstr ""
+msgstr "Aún no hay ajustes para todo el sistema."
 
 #: friendica/main.php:336
 msgid "Database status"
-msgstr ""
+msgstr "Estado de base de datos"
 
 #: friendica/main.php:339
 msgid "Installed"
-msgstr ""
+msgstr "Instalado"
 
 #: friendica/main.php:343
 msgid "Upgrade needed"
-msgstr ""
+msgstr "Actualización requerida"
 
 #: friendica/main.php:343
 msgid ""
@@ -245,23 +246,23 @@ msgid ""
 "database structure, it's always safe to have a backup. Below, you can have a"
 " look at the database-queries that will be made when pressing the "
 "'update'-button."
-msgstr ""
+msgstr "Por favor haga una copia de seguridad de toda la información de calendario (las tablas que empiezan por dav_*) antes de proceder. Mientras todos los eventos de calendario <i>deberían</i> de ser convertidos a la nueva estructura de base de datos, siempre es seguro tener copia de seguridad. Debajo, puede echar un vistazo a las colsultas de base de datos que se crearán al presionar el botón 'actualizar'."
 
 #: friendica/main.php:343
 msgid "Upgrade"
-msgstr ""
+msgstr "Actualizar"
 
 #: friendica/main.php:346
 msgid "Not installed"
-msgstr ""
+msgstr "No instalado"
 
 #: friendica/main.php:346
 msgid "Install"
-msgstr ""
+msgstr "Instalar"
 
 #: friendica/main.php:350
 msgid "Unknown"
-msgstr ""
+msgstr "Desconocido"
 
 #: friendica/main.php:350
 msgid ""
@@ -269,310 +270,310 @@ msgid ""
 " sorry. Please go to the database backend, back up the data, and delete all "
 "tables beginning with 'dav_' manually. Afterwards, this installation routine"
 " should be able to reinitialize the tables automatically."
-msgstr ""
+msgstr "Algo fue realmente mal. No puedo recuperarme de este estado automáticamente, lo siento. Por favor vaya a la parte trasera de la base de datos, haga una copia de seguridad de la información, y elimine todas las tablas que empiecen por 'dav_' manualmente. Después de eso, esta rutina de instalación debería ser capaz de reiniciar las tablas automáticamente."
 
 #: friendica/main.php:355
 msgid "Troubleshooting"
-msgstr ""
+msgstr "Resolución de problemas"
 
 #: friendica/main.php:356
 msgid "Manual creation of the database tables:"
-msgstr ""
+msgstr "Creación manual de las tablas de base de datos:"
 
 #: friendica/main.php:357
 msgid "Show SQL-statements"
-msgstr ""
+msgstr "Mostrar declaraciones SQL"
 
 #: friendica/calendar.friendica.fnk.php:206
 msgid "Private Calendar"
-msgstr ""
+msgstr "Calendario Privado"
 
 #: friendica/calendar.friendica.fnk.php:207
 msgid "Friendica Events: Mine"
-msgstr ""
+msgstr "Eventos de Friendica: Mío"
 
 #: friendica/calendar.friendica.fnk.php:208
 msgid "Friendica Events: Contacts"
-msgstr ""
+msgstr "Efentos de Friendica: Contactos"
 
 #: friendica/calendar.friendica.fnk.php:248
 msgid "Private Addresses"
-msgstr ""
+msgstr "Direcciones Privadas"
 
 #: friendica/calendar.friendica.fnk.php:249
 msgid "Friendica Contacts"
-msgstr ""
+msgstr "Contactos de Friendica"
 
 #: common/wdcal_edit.inc.php:30 common/wdcal_edit.inc.php:738
 msgid "Could not open component for editing"
-msgstr ""
+msgstr "Podría no abrir el componente para editar"
 
 #: common/wdcal_edit.inc.php:144
 msgid "Event data"
-msgstr ""
+msgstr "Información de evento"
 
 #: common/wdcal_edit.inc.php:163
 msgid "Special color"
-msgstr ""
+msgstr "Color especial"
 
 #: common/wdcal_edit.inc.php:169
 msgid "Subject"
-msgstr ""
+msgstr "Tema"
 
 #: common/wdcal_edit.inc.php:173
 msgid "Starts"
-msgstr ""
+msgstr "Empieza"
 
 #: common/wdcal_edit.inc.php:178
 msgid "Ends"
-msgstr ""
+msgstr "Termina"
 
 #: common/wdcal_edit.inc.php:183
 msgid "Location"
-msgstr ""
+msgstr "Ubicación"
 
 #: common/wdcal_edit.inc.php:185
 msgid "Description"
-msgstr ""
+msgstr "Descripción"
 
 #: common/wdcal_edit.inc.php:188
 msgid "Recurrence"
-msgstr ""
+msgstr "Repetición"
 
 #: common/wdcal_edit.inc.php:190
 msgid "Frequency"
-msgstr ""
+msgstr "Frecuencia"
 
 #: common/wdcal_edit.inc.php:191
 msgid "None"
-msgstr ""
+msgstr "Ninguno"
 
 #: common/wdcal_edit.inc.php:194
 msgid "Daily"
-msgstr ""
+msgstr "Diariamente"
 
 #: common/wdcal_edit.inc.php:197
 msgid "Weekly"
-msgstr ""
+msgstr "Semanalmente"
 
 #: common/wdcal_edit.inc.php:200
 msgid "Monthly"
-msgstr ""
+msgstr "Mensual"
 
 #: common/wdcal_edit.inc.php:203
 msgid "Yearly"
-msgstr ""
+msgstr "Anualmente"
 
 #: common/wdcal_edit.inc.php:214
 msgid "days"
-msgstr ""
+msgstr "días"
 
 #: common/wdcal_edit.inc.php:215
 msgid "weeks"
-msgstr ""
+msgstr "semanas"
 
 #: common/wdcal_edit.inc.php:216
 msgid "months"
-msgstr ""
+msgstr "meses"
 
 #: common/wdcal_edit.inc.php:217
 msgid "years"
-msgstr ""
+msgstr "años"
 
 #: common/wdcal_edit.inc.php:218
 msgid "Interval"
-msgstr ""
+msgstr "intervalo"
 
 #: common/wdcal_edit.inc.php:218
 msgid "All %select% %time%"
-msgstr ""
+msgstr "Todo el %select% %time%"
 
 #: common/wdcal_edit.inc.php:222 common/wdcal_edit.inc.php:260
 #: common/wdcal_edit.inc.php:481
 msgid "Days"
-msgstr ""
+msgstr "Días"
 
 #: common/wdcal_edit.inc.php:231 common/wdcal_edit.inc.php:254
 #: common/wdcal_edit.inc.php:270 common/wdcal_edit.inc.php:293
 #: common/wdcal_edit.inc.php:305
 msgid "Sunday"
-msgstr ""
+msgstr "Domingo"
 
 #: common/wdcal_edit.inc.php:235 common/wdcal_edit.inc.php:274
 #: common/wdcal_edit.inc.php:308
 msgid "Monday"
-msgstr ""
+msgstr "Lunes"
 
 #: common/wdcal_edit.inc.php:238 common/wdcal_edit.inc.php:277
 msgid "Tuesday"
-msgstr ""
+msgstr "Martes"
 
 #: common/wdcal_edit.inc.php:241 common/wdcal_edit.inc.php:280
 msgid "Wednesday"
-msgstr ""
+msgstr "Miércoles"
 
 #: common/wdcal_edit.inc.php:244 common/wdcal_edit.inc.php:283
 msgid "Thursday"
-msgstr ""
+msgstr "Jueves"
 
 #: common/wdcal_edit.inc.php:247 common/wdcal_edit.inc.php:286
 msgid "Friday"
-msgstr ""
+msgstr "Viernes"
 
 #: common/wdcal_edit.inc.php:250 common/wdcal_edit.inc.php:289
 msgid "Saturday"
-msgstr ""
+msgstr "Sábado"
 
 #: common/wdcal_edit.inc.php:297
 msgid "First day of week:"
-msgstr ""
+msgstr "Primer día de la semana:"
 
 #: common/wdcal_edit.inc.php:350 common/wdcal_edit.inc.php:373
 msgid "Day of month"
-msgstr ""
+msgstr "Día del mes"
 
 #: common/wdcal_edit.inc.php:354
 msgid "#num#th of each month"
-msgstr ""
+msgstr "#num#th de cada mes"
 
 #: common/wdcal_edit.inc.php:357
 msgid "#num#th-last of each month"
-msgstr ""
+msgstr "#num#th-last de cada mes"
 
 #: common/wdcal_edit.inc.php:360
 msgid "#num#th #wkday# of each month"
-msgstr ""
+msgstr "#num#th #wkday# de cada mes"
 
 #: common/wdcal_edit.inc.php:363
 msgid "#num#th-last #wkday# of each month"
-msgstr ""
+msgstr "#num#th-last #wkday# de cada mes"
 
 #: common/wdcal_edit.inc.php:377
 msgid "#num#th of the given month"
-msgstr ""
+msgstr "#num#th del mes dado"
 
 #: common/wdcal_edit.inc.php:380
 msgid "#num#th-last of the given month"
-msgstr ""
+msgstr "#num#th-last del mes dado"
 
 #: common/wdcal_edit.inc.php:383
 msgid "#num#th #wkday# of the given month"
-msgstr ""
+msgstr "#num#th #wkday# del mes dado"
 
 #: common/wdcal_edit.inc.php:386
 msgid "#num#th-last #wkday# of the given month"
-msgstr ""
+msgstr "#num#th-last #wkday# del mes dado"
 
 #: common/wdcal_edit.inc.php:413
 msgid "Repeat until"
-msgstr ""
+msgstr "Repetir hasta"
 
 #: common/wdcal_edit.inc.php:417
 msgid "Infinite"
-msgstr ""
+msgstr "Infinito"
 
 #: common/wdcal_edit.inc.php:420
 msgid "Until the following date"
-msgstr ""
+msgstr "Hasta la siguiente fecha"
 
 #: common/wdcal_edit.inc.php:423
 msgid "Number of times"
-msgstr ""
+msgstr "Número de veces"
 
 #: common/wdcal_edit.inc.php:429
 msgid "Exceptions"
-msgstr ""
+msgstr "Excepciones"
 
 #: common/wdcal_edit.inc.php:432
 msgid "none"
-msgstr ""
+msgstr "Ninguno"
 
 #: common/wdcal_edit.inc.php:449
 msgid "Notification"
-msgstr ""
+msgstr "Notificación"
 
 #: common/wdcal_edit.inc.php:466
 msgid "Notify by"
-msgstr ""
+msgstr "Notificar mediante"
 
 #: common/wdcal_edit.inc.php:468
 msgid "Remove"
-msgstr ""
+msgstr "Eliminar"
 
 #: common/wdcal_edit.inc.php:469
 msgid "E-Mail"
-msgstr ""
+msgstr "E-Mail"
 
 #: common/wdcal_edit.inc.php:470
 msgid "On Friendica / Display"
-msgstr ""
+msgstr "El Friendica / Mostrar"
 
 #: common/wdcal_edit.inc.php:474
 msgid "Time"
-msgstr ""
+msgstr "Tiempo"
 
 #: common/wdcal_edit.inc.php:478
 msgid "Hours"
-msgstr ""
+msgstr "Horas"
 
 #: common/wdcal_edit.inc.php:479
 msgid "Minutes"
-msgstr ""
+msgstr "Minutos"
 
 #: common/wdcal_edit.inc.php:480
 msgid "Seconds"
-msgstr ""
+msgstr "Segundos"
 
 #: common/wdcal_edit.inc.php:482
 msgid "Weeks"
-msgstr ""
+msgstr "Semanas"
 
 #: common/wdcal_edit.inc.php:485
 msgid "before the"
-msgstr ""
+msgstr "antes del"
 
 #: common/wdcal_edit.inc.php:486
 msgid "start of the event"
-msgstr ""
+msgstr "inicio del evento"
 
 #: common/wdcal_edit.inc.php:487
 msgid "end of the event"
-msgstr ""
+msgstr "fin del evento"
 
 #: common/wdcal_edit.inc.php:492
 msgid "Add a notification"
-msgstr ""
+msgstr "Añadir una notificación"
 
 #: common/wdcal_edit.inc.php:687
 msgid "The event #name# will start at #date"
-msgstr ""
+msgstr "El evento #name# empezará el #date"
 
 #: common/wdcal_edit.inc.php:696
 msgid "#name# is about to begin."
-msgstr ""
+msgstr "#name# está a punto de empezar."
 
 #: common/wdcal_edit.inc.php:769
 msgid "Saved"
-msgstr ""
+msgstr "Guardado"
 
 #: common/wdcal_configuration.php:148
 msgid "U.S. Time Format (mm/dd/YYYY)"
-msgstr ""
+msgstr "EE.UU. Formato de Fecha (mm/dd/YYYY)"
 
 #: common/wdcal_configuration.php:243
 msgid "German Time Format (dd.mm.YYYY)"
-msgstr ""
+msgstr "Formato de fecha alemán (dd.mm.YYYY)"
 
 #: common/dav_caldav_backend_private.inc.php:39
 msgid "Private Events"
-msgstr ""
+msgstr "Eventos privados"
 
 #: common/wdcal_backend.inc.php:92 common/wdcal_backend.inc.php:166
 #: common/wdcal_backend.inc.php:178 common/wdcal_backend.inc.php:206
 #: common/wdcal_backend.inc.php:214 common/wdcal_backend.inc.php:229
 msgid "No access"
-msgstr ""
+msgstr "Sin acceso"
 
 #: common/dav_carddav_backend_private.inc.php:46
 msgid "Private Addressbooks"
-msgstr ""
+msgstr "Agenda Privada"

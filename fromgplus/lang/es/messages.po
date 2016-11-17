@@ -4,14 +4,15 @@
 # 
 # 
 # Translators:
-# Alberto Díaz Tormo <albertodiaztormo@gmail.com>, 2016
+# Albert, 2016
+# Albert, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2016-10-23 13:49+0000\n"
-"Last-Translator: Alberto Díaz Tormo <albertodiaztormo@gmail.com>\n"
+"POT-Creation-Date: 2016-11-12 16:52+0000\n"
+"PO-Revision-Date: 2016-11-16 16:34+0000\n"
+"Last-Translator: Albert\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,22 +20,34 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: fromgplus.php:33
-msgid "Google+ Import Settings"
-msgstr "Ajustes de importación de Google+"
+#: fromgplus.php:46 fromgplus.php:50
+msgid "Google+ Mirror"
+msgstr "Reflector de Google+"
 
-#: fromgplus.php:36
+#: fromgplus.php:55
 msgid "Enable Google+ Import"
 msgstr "Habilitar importación de Google+"
 
-#: fromgplus.php:39
+#: fromgplus.php:58
 msgid "Google Account ID"
 msgstr "ID de cuenta de Google"
 
-#: fromgplus.php:44
-msgid "Submit"
-msgstr "Enviar"
+#: fromgplus.php:61
+msgid "Add keywords to post"
+msgstr "Añadir palabras clave a la entrada"
 
-#: fromgplus.php:59
+#: fromgplus.php:66 fromgplus.php:95
+msgid "Save Settings"
+msgstr "Guardar Ajustes"
+
+#: fromgplus.php:87
 msgid "Google+ Import Settings saved."
 msgstr "Ajustes de importación de Google+ guardados."
+
+#: fromgplus.php:96
+msgid "Key"
+msgstr "Clave"
+
+#: fromgplus.php:103
+msgid "Settings updated."
+msgstr "Ajustes actualizados."
