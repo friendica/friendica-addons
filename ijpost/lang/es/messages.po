@@ -1,0 +1,48 @@
+# ADDON ijpost
+# Copyright (C)
+# This file is distributed under the same license as the Friendica ijpost addon package.
+# 
+# 
+# Translators:
+# Albert, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2016-11-16 16:55+0000\n"
+"Last-Translator: Albert\n"
+"Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ijpost.php:39
+msgid "Post to Insanejournal"
+msgstr "Publicar en Insanejournal"
+
+#: ijpost.php:70
+msgid "InsaneJournal Post Settings"
+msgstr "Ajustes de Entrada de InsaneJournal"
+
+#: ijpost.php:72
+msgid "Enable InsaneJournal Post Plugin"
+msgstr "Habilitar el Plugin de Entrada InsaneJournal"
+
+#: ijpost.php:77
+msgid "InsaneJournal username"
+msgstr "Nombre de usuario InsaneJournal"
+
+#: ijpost.php:82
+msgid "InsaneJournal password"
+msgstr "Contraseña de InsaneJournal"
+
+#: ijpost.php:87
+msgid "Post to InsaneJournal by default"
+msgstr "Publicar en InsaneJournal por defecto"
+
+#: ijpost.php:93
+msgid "Submit"
+msgstr "Enviar"
