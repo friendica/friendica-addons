@@ -1,6 +1,11 @@
 <?php
 
-$a->strings["Startpage Settings"] = "Configuración de página inicial";
-$a->strings["Home page to load after login  - leave blank for profile wall"] = "Página por defecto, dejálo en blanco para cargar tu perfil";
-$a->strings["Examples: &quot;network&quot; or &quot;notifications/system&quot;"] = "Ejemplos: &quot;red&quot; o &quot;notificaciones/sistema&quot;";
-$a->strings["Submit"] = "Envíar";
+if(! function_exists("string_plural_select_es")) {
+function string_plural_select_es($n){
+	return ($n != 1);;
+}}
+;
+$a->strings["Startpage Settings"] = "Ajustes de Startpage";
+$a->strings["Home page to load after login  - leave blank for profile wall"] = "Página principal a cargar tras el acceso - dejar en blanco para el muro de perfil";
+$a->strings["Examples: &quot;network&quot; or &quot;notifications/system&quot;"] = "Ejemplos: &quot;network&quot; o &quot;notifications/system&quot;";
+$a->strings["Submit"] = "Enviar";
