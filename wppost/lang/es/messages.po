@@ -1,0 +1,64 @@
+# ADDON wppost
+# Copyright (C)
+# This file is distributed under the same license as the Friendica wppost addon package.
+# 
+# 
+# Translators:
+# Albert, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2016-11-19 11:38+0000\n"
+"Last-Translator: Albert\n"
+"Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: wppost.php:42
+msgid "Post to Wordpress"
+msgstr "Publicar en Wordpress"
+
+#: wppost.php:76
+msgid "WordPress Post Settings"
+msgstr "Ajustes de publicación de WordPress"
+
+#: wppost.php:78
+msgid "Enable WordPress Post Plugin"
+msgstr "Habilitar Plugin de publicación de WordPress"
+
+#: wppost.php:83
+msgid "WordPress username"
+msgstr "Nombre de usuario de WordPress"
+
+#: wppost.php:88
+msgid "WordPress password"
+msgstr "Contraseña de WordPress"
+
+#: wppost.php:93
+msgid "WordPress API URL"
+msgstr "URL de API de WordPress"
+
+#: wppost.php:98
+msgid "Post to WordPress by default"
+msgstr "Publicar en WordPress por defecto"
+
+#: wppost.php:103
+msgid "Provide a backlink to the Friendica post"
+msgstr "Proveer un enlace inverso a la entrada de Friendica"
+
+#: wppost.php:110
+msgid "Submit"
+msgstr "Enviar"
+
+#: wppost.php:201
+msgid "Post from Friendica"
+msgstr "Publicar desde Friendica"
+
+#: wppost.php:207
+msgid "Read the original post and comment stream on Friendica"
+msgstr "Leer la entrada original y transmitir comentarios en Friendica"
