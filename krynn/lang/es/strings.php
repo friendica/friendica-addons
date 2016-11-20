@@ -1,5 +1,10 @@
 <?php
 
-$a->strings["Krynn Settings"] = "Configuración de Krynn";
-$a->strings["Enable Krynn Plugin"] = "Activar el módulo de planetas Krynn";
-$a->strings["Submit"] = "Envíar";
+if(! function_exists("string_plural_select_es")) {
+function string_plural_select_es($n){
+	return ($n != 1);;
+}}
+;
+$a->strings["Krynn Settings"] = "Ajustes de Krynn";
+$a->strings["Enable Krynn Plugin"] = "Habilitar Plugin de Krynn";
+$a->strings["Submit"] = "Enviar";
