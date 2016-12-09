@@ -1181,6 +1181,8 @@ function twitter_expand_entities($a, $body, $item, $no_tags = false, $picture) {
 
 	$tags = "";
 
+	$plain = $body;
+
 	if (isset($item->entities->urls)) {
 		$type = "";
 		$footerurl = "";
@@ -1188,6 +1190,9 @@ function twitter_expand_entities($a, $body, $item, $no_tags = false, $picture) {
 		$footer = "";
 
 		foreach ($item->entities->urls AS $url) {
+
+			$plain = str_replace($url->url, '', $plain);
+
 			if ($url->url AND $url->expanded_url AND $url->display_url) {
 
 				$expanded_url = original_url($url->expanded_url);
@@ -1261,7 +1266,7 @@ function twitter_expand_entities($a, $body, $item, $no_tags = false, $picture) {
 			$body = add_page_info_to_body($body);
 
 		if ($no_tags)
-			return(array("body" => $body, "tags" => ""));
+			return array("body" => $body, "tags" => "", "plain" => $plain);
 
 		$tags_arr = array();
 
@@ -1317,7 +1322,7 @@ function twitter_expand_entities($a, $body, $item, $no_tags = false, $picture) {
 		$tags = implode($tags_arr, ",");
 
 	}
-	return(array("body" => $body, "tags" => $tags));
+	return array("body" => $body, "tags" => $tags, "plain" => $plain);
 }
 
 function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing_contact) {
@@ -1330,14 +1335,16 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 	$postarray['uid'] = $uid;
 	$postarray['wall'] = 0;
 	$postarray['uri'] = "twitter::".$post->id_str;
+	$postarray['object'] = json_encode($post);
 
 	$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
 			dbesc($postarray['uri']),
 			intval($uid)
 		);
 
-	if (count($r))
+	if (count($r)) {
 		return(array());
+	}
 
 	$contactid = 0;
 
@@ -1384,8 +1391,9 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 				$postarray['owner-name'] =  $r[0]["name"];
 				$postarray['owner-link'] = $r[0]["url"];
 				$postarray['owner-avatar'] =  $r[0]["photo"];
-			} else
+			} else {
 				return(array());
+			}
 		}
 		// Don't create accounts of people who just comment something
 		$create_user = false;
@@ -1402,10 +1410,11 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 		$postarray['owner-avatar'] = twitter_fix_avatar($post->user->profile_image_url_https);
 	}
 
-	if(($contactid == 0) AND !$only_existing_contact)
+	if(($contactid == 0) AND !$only_existing_contact) {
 		$contactid = $self['id'];
-	elseif ($contactid <= 0)
+	} elseif ($contactid <= 0) {
 		return(array());
+	}
 
 	$postarray['contact-id'] = $contactid;
 
@@ -1421,7 +1430,11 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 		$postarray['allow_cid'] = '<' . $self['id'] . '>';
 	}
 
-	$postarray['body'] = $post->text;
+	if (is_string($post->full_text)) {
+		$postarray['body'] = $post->full_text;
+	} else {
+		$postarray['body'] = $post->text;
+	}
 
 	$picture = "";
 
@@ -1445,72 +1458,45 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 	$converted = twitter_expand_entities($a, $postarray['body'], $post, false, $picture);
 	$postarray['body'] = $converted["body"];
 	$postarray['tag'] = $converted["tags"];
-
 	$postarray['created'] = datetime_convert('UTC','UTC',$post->created_at);
 	$postarray['edited'] = datetime_convert('UTC','UTC',$post->created_at);
 
-	if (is_string($post->place->name))
+	$statustext = $converted["plain"];
+
+	if (is_string($post->place->name)) {
 		$postarray["location"] = $post->place->name;
-
-	if (is_string($post->place->full_name))
-		$postarray["location"] = $post->place->full_name;
-
-	if (is_array($post->geo->coordinates))
-		$postarray["coord"] = $post->geo->coordinates[0]." ".$post->geo->coordinates[1];
-
-	if (is_array($post->coordinates->coordinates))
-		$postarray["coord"] = $post->coordinates->coordinates[1]." ".$post->coordinates->coordinates[0];
-
-	if (is_object($post->retweeted_status)) {
-
-		$postarray['body'] = $post->retweeted_status->text;
-
-		$picture = "";
-
-		// media
-		if (is_array($post->retweeted_status->entities->media)) {
-			foreach($post->retweeted_status->entities->media AS $media) {
-				switch($media->type) {
-					case 'photo':
-						//$postarray['body'] = str_replace($media->url, "\n\n[img]".$media->media_url_https."[/img]\n", $postarray['body']);
-						//$has_picture = true;
-						$postarray['body'] = str_replace($media->url, "", $postarray['body']);
-						$postarray['object-type'] = ACTIVITY_OBJ_IMAGE;
-						$picture = $media->media_url_https;
-						break;
-					default:
-						$postarray['body'] .= print_r($media, true);
-				}
-			}
-		}
-
-		$converted = twitter_expand_entities($a, $postarray['body'], $post->retweeted_status, false, $picture);
-		$postarray['body'] = $converted["body"];
-		$postarray['tag'] = $converted["tags"];
-
-		twitter_fetch_contact($uid, $post->retweeted_status->user, false);
-
-		// Deactivated at the moment, since there are problems with answers to retweets
-		if (false AND !intval(get_config('system','wall-to-wall_share'))) {
-			$postarray['body'] = "[share author='".$post->retweeted_status->user->name.
-				"' profile='https://twitter.com/".$post->retweeted_status->user->screen_name.
-				"' avatar='".$post->retweeted_status->user->profile_image_url_https.
-				"' posted='".datetime_convert('UTC','UTC',$post->retweeted_status->created_at).
-				"' link='https://twitter.com/".$post->retweeted_status->user->screen_name."/status/".$post->retweeted_status->id_str."']".
-				$postarray['body'];
-			$postarray['body'] .= "[/share]";
-		} else {
-			// Let retweets look like wall-to-wall posts
-			$postarray['author-name'] = $post->retweeted_status->user->name;
-			$postarray['author-link'] = "https://twitter.com/".$post->retweeted_status->user->screen_name;
-			$postarray['author-avatar'] = twitter_fix_avatar($post->retweeted_status->user->profile_image_url_https);
-			//if (($post->retweeted_status->user->screen_name != "") AND ($post->retweeted_status->id_str != "")) {
-			//	$postarray['plink'] = "https://twitter.com/".$post->retweeted_status->user->screen_name."/status/".$post->retweeted_status->id_str;
-			//	$postarray['uri'] = "twitter::".$post->retweeted_status->id_str;
-			//}
-		}
-
 	}
+	if (is_string($post->place->full_name)) {
+		$postarray["location"] = $post->place->full_name;
+	}
+	if (is_array($post->geo->coordinates)) {
+		$postarray["coord"] = $post->geo->coordinates[0]." ".$post->geo->coordinates[1];
+	}
+	if (is_array($post->coordinates->coordinates)) {
+		$postarray["coord"] = $post->coordinates->coordinates[1]." ".$post->coordinates->coordinates[0];
+	}
+	if (is_object($post->retweeted_status)) {
+		$retweet = twitter_createpost($a, $uid, $post->retweeted_status, $self, false, false);
+
+		$retweet['contact-id'] = $postarray['contact-id'];
+		$retweet['owner-name'] = $postarray['owner-name'];
+		$retweet['owner-link'] = $postarray['owner-link'];
+		$retweet['owner-avatar'] = $postarray['owner-avatar'];
+
+		$postarray = $retweet;
+	}
+
+	if (is_object($post->quoted_status)) {
+		$quoted = twitter_createpost($a, $uid, $post->quoted_status, $self, false, false);
+
+		$postarray['body'] = $statustext;
+
+		$postarray['body'] .= "\n".share_header($quoted['author-name'], $quoted['author-link'], $quoted['author-avatar'], "",
+							$quoted['created'], $quoted['plink']);
+
+		$postarray['body'] .= $quoted['body'].'[/share]';
+	}
+
 	return($postarray);
 }
 
@@ -1679,7 +1665,7 @@ function twitter_fetchhometimeline($a, $uid) {
 		return;
 	}
 
-	$parameters = array("exclude_replies" => false, "trim_user" => false, "contributor_details" => true, "include_rts" => true);
+	$parameters = array("exclude_replies" => false, "trim_user" => false, "contributor_details" => true, "include_rts" => true, "tweet_mode" => "extended");
 	//$parameters["count"] = 200;
 
 
