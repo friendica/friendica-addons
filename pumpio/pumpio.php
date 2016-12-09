@@ -775,6 +775,10 @@ function pumpio_fetchtimeline(&$a, $uid) {
 				$_REQUEST["profile_uid"] = $uid;
 				$_REQUEST["source"] = "pump.io";
 
+				if (isset($post->object->id)) {
+					$_REQUEST['message_id'] = NETWORK_PUMPIO.":".$post->object->id;
+				}
+
 				if ($post->object->displayName != "")
 					$_REQUEST["title"] = html2bbcode($post->object->displayName);
 				else
@@ -1352,9 +1356,10 @@ function pumpio_fetchinbox(&$a, $uid) {
 	$self = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 		intval($uid));
 
-	$lastitems = q("SELECT uri FROM `item` WHERE `network` = '%s' AND `uid` = %d AND
- 			`extid` != '' AND `id` = `parent`
-			ORDER BY `commented` DESC LIMIT 10",
+	$lastitems = q("SELECT `uri` FROM `thread`
+			INNER JOIN `item` ON `item`.`id` = `thread`.`iid`
+			WHERE `thread`.`network` = '%s' AND `thread`.`uid` = %d AND `item`.`extid` != ''
+			ORDER BY `thread`.`commented` DESC LIMIT 10",
 				dbesc(NETWORK_PUMPIO),
 				intval($uid)
 			);
