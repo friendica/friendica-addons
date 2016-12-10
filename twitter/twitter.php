@@ -1357,6 +1357,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 	$postarray['uri'] = "twitter::".$post->id_str;
 	$postarray['object'] = json_encode($post);
 
+	// Don't import our own comments
 	$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
 			dbesc($postarray['uri']),
 			intval($uid)
@@ -1488,6 +1489,8 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 		$retweet = twitter_createpost($a, $uid, $post->retweeted_status, $self, false, false, $noquote);
 
 		$retweet['object'] = $postarray['object'];
+		$retweet['private'] = $postarray['private'];
+		$retweet['allow_cid'] = $postarray['allow_cid'];
 		$retweet['contact-id'] = $postarray['contact-id'];
 		$retweet['owner-name'] = $postarray['owner-name'];
 		$retweet['owner-link'] = $postarray['owner-link'];
