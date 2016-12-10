@@ -734,6 +734,15 @@ function twitter_prepare_body(&$a,&$b) {
 	}
 }
 
+/**
+ * @brief Build the item array for the mirrored post
+ *
+ * @param object $a Application class
+ * @param integer $uid User id
+ * @param object $post Twitter object with the post
+ *
+ * @return array item data to be posted
+ */
 function twitter_do_mirrorpost($a, $uid, $post) {
 	$datarray["type"] = "wall";
 	$datarray["api_source"] = true;
@@ -823,99 +832,7 @@ function twitter_fetchtimeline($a, $uid) {
 
 			$_REQUEST = twitter_do_mirrorpost($a, $uid, $post);
 
-/*
-			unset($_REQUEST);
-			$_REQUEST["type"] = "wall";
-			$_REQUEST["api_source"] = true;
-			$_REQUEST["profile_uid"] = $uid;
-			//$_REQUEST["source"] = "Twitter";
-			$_REQUEST["source"] = $post->source;
-			$_REQUEST["extid"] = NETWORK_TWITTER;
-
-			if (isset($post->id)) {
-				$_REQUEST['message_id'] = item_new_uri($a->get_hostname(), $uid, NETWORK_TWITTER.":".$post->id);
-			}
-
-			//$_REQUEST["date"] = $post->created_at;
-
-			$_REQUEST["title"] = "";
-
-			if (is_object($post->retweeted_status)) {
-
-				$_REQUEST['body'] = $post->retweeted_status->text;
-
-				$picture = "";
-
-				// media
-				if (is_array($post->retweeted_status->entities->media)) {
-					foreach($post->retweeted_status->entities->media AS $media) {
-						switch($media->type) {
-							case 'photo':
-								//$_REQUEST['body'] = str_replace($media->url, "\n\n[img]".$media->media_url_https."[/img]\n", $_REQUEST['body']);
-								//$has_picture = true;
-								$_REQUEST['body'] = str_replace($media->url, "", $_REQUEST['body']);
-								$picture = $media->media_url_https;
-								break;
-						}
-					}
-				}
-
-				$converted = twitter_expand_entities($a, $_REQUEST['body'], $post->retweeted_status, true, $picture);
-				$_REQUEST['body'] = $converted["body"];
-
-				if (function_exists("share_header"))
-					$_REQUEST['body'] = share_header($post->retweeted_status->user->name, "https://twitter.com/".$post->retweeted_status->user->screen_name,
-									$post->retweeted_status->user->profile_image_url_https, "",
-									datetime_convert('UTC','UTC',$post->retweeted_status->created_at),
-									"https://twitter.com/".$post->retweeted_status->user->screen_name."/status/".$post->retweeted_status->id_str).
-								$_REQUEST['body'];
-				else
-					$_REQUEST['body'] = "[share author='".$post->retweeted_status->user->name.
-						"' profile='https://twitter.com/".$post->retweeted_status->user->screen_name.
-						"' avatar='".$post->retweeted_status->user->profile_image_url_https.
-						"' posted='".datetime_convert('UTC','UTC',$post->retweeted_status->created_at).
-						"' link='https://twitter.com/".$post->retweeted_status->user->screen_name."/status/".$post->retweeted_status->id_str."']".
-						$_REQUEST['body'];
-
-				$_REQUEST['body'] .= "[/share]";
-			} else {
-				$_REQUEST["body"] = $post->text;
-
-				$picture = "";
-
-				if (is_array($post->entities->media)) {
-					foreach($post->entities->media AS $media) {
-						switch($media->type) {
-							case 'photo':
-								//$_REQUEST['body'] = str_replace($media->url, "\n\n[img]".$media->media_url_https."[/img]\n", $_REQUEST['body']);
-								//$has_picture = true;
-								$_REQUEST['body'] = str_replace($media->url, "", $_REQUEST['body']);
-								$picture = $media->media_url_https;
-								break;
-						}
-					}
-				}
-
-				$converted = twitter_expand_entities($a, $_REQUEST["body"], $post, true, $picture);
-				$_REQUEST['body'] = $converted["body"];
-			}
-
-			if (is_string($post->place->name))
-				$_REQUEST["location"] = $post->place->name;
-
-			if (is_string($post->place->full_name))
-				$_REQUEST["location"] = $post->place->full_name;
-
-			if (is_array($post->geo->coordinates))
-				$_REQUEST["coord"] = $post->geo->coordinates[0]." ".$post->geo->coordinates[1];
-
-			if (is_array($post->coordinates->coordinates))
-				$_REQUEST["coord"] = $post->coordinates->coordinates[1]." ".$post->coordinates->coordinates[0];
-*/
-			//print_r($_REQUEST);
 			logger('twitter: posting for user '.$uid);
-
-//			require_once('mod/item.php');
 
 			item_post($a);
 		}
