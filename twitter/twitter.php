@@ -743,6 +743,7 @@ function twitter_do_mirrorpost($a, $uid, $post) {
 	$datarray["title"] = "";
 
 	if (is_object($post->retweeted_status)) {
+		// We don't support nested shares, so we mustn't show quotes as shares on retweets
 		$item = twitter_createpost($a, $uid, $post, array('id' => 0), false, false, true);
 
 		$datarray['body'] = "\n".share_header($item['author-name'], $item['author-link'], $item['author-avatar'], "",
@@ -1381,8 +1382,8 @@ function twitter_media_entities($post, &$postarray) {
 	}
 
 	// When the post links to an external page, we only take one picture.
-	// This could be improved in the future.
-	if (count($post->entities->urls) > 0) {
+	// We only do this when there is exactly one media.
+	if ((count($post->entities->urls) > 0) AND (count($post->extended_entities->media) == 1)) {
 		$picture = "";
 		foreach($post->extended_entities->media AS $medium) {
 			if (isset($medium->media_url_https)) {
