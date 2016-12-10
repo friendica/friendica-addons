@@ -800,7 +800,6 @@ function twitter_fetchtimeline($a, $uid) {
 	require_once('library/twitteroauth.php');
 	$connection = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
 
-	//$parameters = array("exclude_replies" => true, "trim_user" => false, "contributor_details" => true, "include_rts" => true);
 	$parameters = array("exclude_replies" => true, "trim_user" => false, "contributor_details" => true, "include_rts" => true, "tweet_mode" => "extended");
 
 	$first_time = ($lastid == "");
