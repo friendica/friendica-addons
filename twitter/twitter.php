@@ -749,11 +749,12 @@ function twitter_do_mirrorpost($a, $uid, $post) {
 	$datarray["profile_uid"] = $uid;
 	$datarray["extid"] = NETWORK_TWITTER;
 	$datarray['message_id'] = item_new_uri($a->get_hostname(), $uid, NETWORK_TWITTER.":".$post->id);
+	$datarray['object'] = json_encode($post);
 	$datarray["title"] = "";
 
 	if (is_object($post->retweeted_status)) {
 		// We don't support nested shares, so we mustn't show quotes as shares on retweets
-		$item = twitter_createpost($a, $uid, $post, array('id' => 0), false, false, true);
+		$item = twitter_createpost($a, $uid, $post->retweeted_status, array('id' => 0), false, false, true);
 
 		$datarray['body'] = "\n".share_header($item['author-name'], $item['author-link'], $item['author-avatar'], "",
 					$item['created'], $item['plink']);
@@ -1363,6 +1364,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 		);
 
 	if (count($r)) {
+		logger("Item with extid ".$postarray['uri']." found.", LOGGER_DEBUG);
 		return(array());
 	}
 
@@ -1412,6 +1414,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 				$postarray['owner-link'] = $r[0]["url"];
 				$postarray['owner-avatar'] =  $r[0]["photo"];
 			} else {
+				logger("No self contact for user ".$uid, LOGGER_DEBUG);
 				return(array());
 			}
 		}
@@ -1433,6 +1436,7 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 	if(($contactid == 0) AND !$only_existing_contact) {
 		$contactid = $self['id'];
 	} elseif ($contactid <= 0) {
+		logger("Contact ID is zero or less than zero.", LOGGER_DEBUG);
 		return(array());
 	}
 
