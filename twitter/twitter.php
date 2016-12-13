@@ -494,7 +494,8 @@ function twitter_post_hook(&$a,&$b) {
 
 		if (isset($msgarr["url"]) AND ($msgarr["type"] != "photo"))
 			$msg .= "\n".$msgarr["url"];
-		elseif (isset($msgarr["image"]) AND ($msgarr["type"] != "video"))
+
+		if (isset($msgarr["image"]) AND ($msgarr["type"] != "video"))
 			$image = $msgarr["image"];
 
 		// and now tweet it :-)
