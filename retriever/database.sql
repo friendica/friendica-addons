@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `retriever_rule` (
        PRIMARY KEY (`id`),
        KEY `uid` (`uid`),
        KEY `contact-id` (`contact-id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE IF NOT EXISTS `retriever_item` (
        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `retriever_item` (
        KEY `resource` (`resource`),
        KEY `all` (`item-uri`, `item-uid`, `contact-id`),
        PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE IF NOT EXISTS `retriever_resource` (
        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -33,4 +33,4 @@ CREATE TABLE IF NOT EXISTS `retriever_resource` (
        `http-code` smallint(1) unsigned NULL DEFAULT NULL,
        `redirect-url` varchar(800) CHARACTER SET ascii COLLATE ascii_bin NULL DEFAULT NULL,
        PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+) DEFAULT CHARSET=utf8 COLLATE=utf8_bin
