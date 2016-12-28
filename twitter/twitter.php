@@ -625,7 +625,12 @@ function twitter_cron($a,$b) {
 	if(count($r)) {
 		foreach($r as $rr) {
 			logger('twitter: fetching for user '.$rr['uid']);
-			twitter_fetchtimeline($a, $rr['uid']);
+
+			if (get_config("system", "worker")) {
+				proc_run(PRIORITY_MEDIUM, "addon/twitter/twitter_sync.php", 1, $rr['uid']);
+			} else {
+				twitter_fetchtimeline($a, $rr['uid']);
+			}
 		}
 	}
 
@@ -647,8 +652,12 @@ function twitter_cron($a,$b) {
 			}
 
 			logger('twitter: importing timeline from user '.$rr['uid']);
-			twitter_fetchhometimeline($a, $rr["uid"]);
 
+			if (get_config("system", "worker")) {
+				proc_run(PRIORITY_MEDIUM, "addon/twitter/twitter_sync.php", 2, $rr['uid']);
+			} else {
+				twitter_fetchhometimeline($a, $rr["uid"]);
+			}
 /*
 			// To-Do
 			// check for new contacts once a day
