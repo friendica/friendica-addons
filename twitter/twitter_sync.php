@@ -16,11 +16,11 @@ require_once("boot.php");
 function twitter_sync_run($argv, $argc){
 	global $a, $db;
 
-	if(is_null($a)) {
+	if (is_null($a)) {
 		$a = new App;
 	}
 
-	if(is_null($db)) {
+	if (is_null($db)) {
 		@include(".htconfig.php");
 		require_once("include/dba.php");
 		$db = new dba($db_host, $db_user, $db_pass, $db_data);
@@ -31,11 +31,12 @@ function twitter_sync_run($argv, $argc){
 	require_once("include/pidfile.php");
 
 	$maxsysload = intval(get_config('system','maxloadavg'));
-	if($maxsysload < 1)
+	if ($maxsysload < 1) {
 		$maxsysload = 50;
-	if(function_exists('sys_getloadavg')) {
+	}
+	if (function_exists('sys_getloadavg')) {
 		$load = sys_getloadavg();
-		if(intval($load[0]) > $maxsysload) {
+		if (intval($load[0]) > $maxsysload) {
 			logger('system: load ' . $load[0] . ' too high. Twitter sync deferred to next scheduled run.');
 			return;
 		}
@@ -52,7 +53,7 @@ function twitter_sync_run($argv, $argc){
 	$lockpath = get_lockpath();
 	if ($lockpath != '') {
 		$pidfile = new pidfile($lockpath, 'twitter_sync-'.$mode.'-'.$uid);
-		if($pidfile->is_already_running()) {
+		if ($pidfile->is_already_running()) {
 			logger("Already running");
 			if ($pidfile->running_time() > 9*60) {
 				$pidfile->kill();
