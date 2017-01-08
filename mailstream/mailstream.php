@@ -2,7 +2,7 @@
 /**
  * Name: Mail Stream
  * Description: Mail all items coming into your network feed to an email address
- * Version: 1.0
+ * Version: 1.1
  * Author: Matthew Exon <http://mat.exon.name>
  */
 
