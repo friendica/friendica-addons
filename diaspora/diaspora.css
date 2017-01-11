@@ -1,11 +1,11 @@
 
-#diaspora-enable-label, #diaspora-username-label, #diaspora-password-label, #diaspora-url-label, #diaspora-bydefault-label {
+#diaspora-enable-label, #diaspora-username-label, #diaspora-password-label, #diaspora-bydefault-label, #diaspora-aspect-label {
 	float: left;
 	width: 200px;
 	margin-top: 10px;
 }
 
-#diaspora-checkbox, #diaspora-username, #diaspora-password, #diaspora-url, #diaspora-bydefault {
+#diaspora-checkbox, #diaspora-username, #diaspora-password, #diaspora-bydefault, #diaspora-aspect {
 	float: left;
 	margin-top: 10px;
 }
