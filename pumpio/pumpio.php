@@ -864,6 +864,11 @@ function pumpio_dounlike(&$a, $uid, $self, $post, $own_id) {
 function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = true) {
 	require_once('include/items.php');
 
+	if ($post->object->id == "") {
+		logger('Got empty like: '.print_r($post, true), LOGGER_DEBUG);
+		return;
+	}
+
 	// Searching for the liked post
 	// Two queries for speed issues
 	$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d AND `network` = '%s' LIMIT 1",
@@ -899,8 +904,8 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 		$post->actor->url = $self[0]['url'];
 		$post->actor->image->url = $self[0]['photo'];
 	} else {
-		$r = q("SELECT * FROM `contact` WHERE `url` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
-			dbesc($post->actor->url),
+		$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
+			dbesc(normalise_link($post->actor->url)),
 			intval($uid)
 		);
 
