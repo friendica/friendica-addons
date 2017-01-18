@@ -5,7 +5,7 @@
 # 
 # Translators:
 # fabrixxm <fabrix.xm@gmail.com>, 2015
-# Sandro Santilli <strk@keybit.net>, 2015
+# Sandro Santilli <strk@kbt.io>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
