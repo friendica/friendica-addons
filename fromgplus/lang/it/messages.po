@@ -4,15 +4,15 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014-2015
+# fabrixxm <fabrix.xm@gmail.com>, 2014-2015,2017
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-11-12 16:52+0000\n"
-"PO-Revision-Date: 2016-11-22 06:48+0000\n"
-"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
+"PO-Revision-Date: 2017-01-18 10:38+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -34,7 +34,7 @@ msgstr "ID Google Account"
 
 #: fromgplus.php:61
 msgid "Add keywords to post"
-msgstr ""
+msgstr "Aggiungi parole chiave ai post"
 
 #: fromgplus.php:66 fromgplus.php:95
 msgid "Save Settings"
@@ -46,7 +46,7 @@ msgstr "Impostazioni Importa Google+ salvate"
 
 #: fromgplus.php:96
 msgid "Key"
-msgstr ""
+msgstr "Chiave"
 
 #: fromgplus.php:103
 msgid "Settings updated."

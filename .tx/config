@@ -1,0 +1,392 @@
+[main]
+host = https://www.transifex.com
+
+[friendica.addon_appnet_messagespo]
+file_filter = appnet/lang/<lang>/messages.po
+source_file = appnet/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_blackout_messagespo]
+file_filter = blackout/lang/<lang>/messages.po
+source_file = blackout/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_blockem_messagespo]
+file_filter = blockem/lang/<lang>/messages.po
+source_file = blockem/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_blogger_messagespo]
+file_filter = blogger/lang/<lang>/messages.po
+source_file = blogger/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_buffer_messagespo]
+file_filter = buffer/lang/<lang>/messages.po
+source_file = buffer/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_buglink_messagespo]
+file_filter = buglink/lang/<lang>/messages.po
+source_file = buglink/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_cal_messagespo]
+file_filter = cal/lang/<lang>/messages.po
+source_file = cal/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_communityhome_messagespo]
+file_filter = communityhome/lang/<lang>/messages.po
+source_file = communityhome/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_curweather_messagespo]
+file_filter = curweather/lang/<lang>/messages.po
+source_file = curweather/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_dav_messagespo]
+file_filter = dav/lang/<lang>/messages.po
+source_file = dav/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_diaspora_messagespo]
+file_filter = diaspora/lang/<lang>/messages.po
+source_file = diaspora/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_dwpost_messagespo]
+file_filter = dwpost/lang/<lang>/messages.po
+source_file = dwpost/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_editplain_messagespo]
+file_filter = editplain/lang/<lang>/messages.po
+source_file = editplain/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_forumdirectory_messagespo]
+file_filter = forumdirectory/lang/<lang>/messages.po
+source_file = forumdirectory/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_forumlist_messagespo]
+file_filter = forumlist/lang/<lang>/messages.po
+source_file = forumlist/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_fromapp_messagespo]
+file_filter = fromapp/lang/<lang>/messages.po
+source_file = fromapp/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_fromgplus_messagespo]
+file_filter = fromgplus/lang/<lang>/messages.po
+source_file = fromgplus/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_geonames_messagespo]
+file_filter = geonames/lang/<lang>/messages.po
+source_file = geonames/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_gnot_messagespo]
+file_filter = gnot/lang/<lang>/messages.po
+source_file = gnot/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_gpluspost_messagespo]
+file_filter = gpluspost/lang/<lang>/messages.po
+source_file = gpluspost/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_gravatar_messagespo]
+file_filter = gravatar/lang/<lang>/messages.po
+source_file = gravatar/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_group_text_messagespo]
+file_filter = group_text/lang/<lang>/messages.po
+source_file = group_text/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_ijpost_messagespo]
+file_filter = ijpost/lang/<lang>/messages.po
+source_file = ijpost/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_impressum_messagespo]
+file_filter = impressum/lang/<lang>/messages.po
+source_file = impressum/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_infiniteimprobabilitydrive_messagespo]
+file_filter = infiniteimprobabilitydrive/lang/<lang>/messages.po
+source_file = infiniteimprobabilitydrive/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_irc_messagespo]
+file_filter = irc/lang/<lang>/messages.po
+source_file = irc/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_jappixmini_messagespo]
+file_filter = jappixmini/lang/<lang>/messages.po
+source_file = jappixmini/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_js_upload_messagespo]
+file_filter = js_upload/lang/<lang>/messages.po
+source_file = js_upload/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_krynn_messagespo]
+file_filter = krynn/lang/<lang>/messages.po
+source_file = krynn/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_langfilter_messagespo]
+file_filter = langfilter/lang/<lang>/messages.po
+source_file = langfilter/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_libertree_messagespo]
+file_filter = libertree/lang/<lang>/messages.po
+source_file = libertree/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_libravatar_messagespo]
+file_filter = libravatar/lang/<lang>/messages.po
+source_file = libravatar/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_ljpost_messagespo]
+file_filter = ljpost/lang/<lang>/messages.po
+source_file = ljpost/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_mailstream_messagespo]
+file_filter = mailstream/lang/<lang>/messages.po
+source_file = mailstream/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_morepokes_messagespo]
+file_filter = morepokes/lang/<lang>/messages.po
+source_file = morepokes/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_newmemberwidget_messagespo]
+file_filter = newmemberwidget/lang/<lang>/messages.po
+source_file = newmemberwidget/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_notifyall_messagespo]
+file_filter = notifyall/lang/<lang>/messages.po
+source_file = notifyall/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_notimeline_messagespo]
+file_filter = notimeline/lang/<lang>/messages.po
+source_file = notimeline/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_nsfw_messagespo]
+file_filter = nsfw/lang/<lang>/messages.po
+source_file = nsfw/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_numfriends_messagespo]
+file_filter = numfriends/lang/<lang>/messages.po
+source_file = numfriends/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_openstreetmap_messagespo]
+file_filter = openstreetmap/lang/<lang>/messages.po
+source_file = openstreetmap/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_pageheader_messagespo]
+file_filter = pageheader/lang/<lang>/messages.po
+source_file = pageheader/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_piwik_messagespo]
+file_filter = piwik/lang/<lang>/messages.po
+source_file = piwik/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_planets_messagespo]
+file_filter = planets/lang/<lang>/messages.po
+source_file = planets/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_public_server_messagespo]
+file_filter = public_server/lang/<lang>/messages.po
+source_file = public_server/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_pumpio_messagespo]
+file_filter = pumpio/lang/<lang>/messages.po
+source_file = pumpio/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_qcomment_messagespo]
+file_filter = qcomment/lang/<lang>/messages.po
+source_file = qcomment/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_randplace_messagespo]
+file_filter = randplace/lang/<lang>/messages.po
+source_file = randplace/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_remote_permissions_messagespo]
+file_filter = remote_permissions/lang/<lang>/messages.po
+source_file = remote_permissions/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_rendertime_messagespo]
+file_filter = rendertime/lang/<lang>/messages.po
+source_file = rendertime/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_showmore_messagespo]
+file_filter = showmore/lang/<lang>/messages.po
+source_file = showmore/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_smileybutton_messagespo]
+file_filter = smileybutton/lang/<lang>/messages.po
+source_file = smileybutton/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_snautofollow_messagespo]
+file_filter = snautofollow/lang/<lang>/messages.po
+source_file = snautofollow/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_startpage_messagespo]
+file_filter = startpage/lang/<lang>/messages.po
+source_file = startpage/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_statusnet_messagespo]
+file_filter = statusnet/lang/<lang>/messages.po
+source_file = statusnet/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_superblock_messagespo]
+file_filter = superblock/lang/<lang>/messages.po
+source_file = superblock/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_testdrive_messagespo]
+file_filter = testdrive/lang/<lang>/messages.po
+source_file = testdrive/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_tictac_messagespo]
+file_filter = tictac/lang/<lang>/messages.po
+source_file = tictac/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_tumblr_messagespo]
+file_filter = tumblr/lang/<lang>/messages.po
+source_file = tumblr/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_twitter_messagespo]
+file_filter = twitter/lang/<lang>/messages.po
+source_file = twitter/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_uhremotestorage_messagespo]
+file_filter = uhremotestorage/lang/<lang>/messages.po
+source_file = uhremotestorage/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_webrtc_messagespo]
+file_filter = webrtc/lang/<lang>/messages.po
+source_file = webrtc/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_windowsphonepush_messagespo]
+file_filter = windowsphonepush/lang/<lang>/messages.po
+source_file = windowsphonepush/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_wppost_messagespo]
+file_filter = wppost/lang/<lang>/messages.po
+source_file = wppost/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_yourls_messagespo]
+file_filter = yourls/lang/<lang>/messages.po
+source_file = yourls/lang/C/messages.po
+source_lang = en
+type = PO
