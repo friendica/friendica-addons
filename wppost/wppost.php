@@ -3,7 +3,7 @@
 /**
  * Name: WordPress Post Connector
  * Description: Post to WordPress (or anything else which uses blogger XMLRPC API)
- * Version: 1.0
+ * Version: 1.1
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
 
@@ -71,6 +71,7 @@ function wppost_settings(&$a,&$s) {
 	$wp_username = get_pconfig(local_user(), 'wppost', 'wp_username');
 	$wp_password = get_pconfig(local_user(), 'wppost', 'wp_password');
 	$wp_blog = get_pconfig(local_user(), 'wppost', 'wp_blog');
+	$wp_backlink_text = get_pconfig(local_user(), 'wppost', 'wp_backlink_text');
 
 
     /* Add some HTML to the existing form */
@@ -111,6 +112,10 @@ function wppost_settings(&$a,&$s) {
     $s .= '<label id="wppost-backlink-label" for="wppost-backlink">' . t('Provide a backlink to the Friendica post') . '</label>';
     $s .= '<input id="wppost-backlink" type="checkbox" name="wp_backlink" value="1" ' . $back_checked . '/>';
     $s .= '</div><div class="clear"></div>';
+    $s .= '<div id="wppost-backlinktext-wrapper">';
+    $s .= '<label id="wppost-backlinktext-label" for="wp_backlink_text">' . t('Text for the backlink, e.g. Read the original post and comment stream on Friendica.') . '</label>';
+    $s .= '<input id="wppost-backlinktext" type="text" name="wp_backlink_text" value="'. $wp_backlink_text.'" ' . $wp_backlink_text . '/>';
+    $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="wppost-shortcheck-wrapper">';
     $s .= '<label id="wppost-shortcheck-label" for="wppost-shortcheck">' . t("Don't post messages that are too short") . '</label>';
@@ -135,6 +140,10 @@ function wppost_settings_post(&$a,&$b) {
 		set_pconfig(local_user(),'wppost','wp_blog',trim($_POST['wp_blog']));
 		set_pconfig(local_user(),'wppost','backlink',trim($_POST['wp_backlink']));
 		set_pconfig(local_user(),'wppost','shortcheck',trim($_POST['wp_shortcheck']));
+		$wp_backlink_text = notags(trim($_POST['wp_backlink_text']));
+		$wp_backlink_text = bbcode($wp_backlink_text, false, false, 8);
+		$wp_backlink_text = html2plain($wp_backlink_text, 0, true);
+		set_pconfig(local_user(),'wppost','wp_backlink_text', $wp_backlink_text);
 
 	}
 
@@ -144,28 +153,34 @@ function wppost_post_local(&$a,&$b) {
 
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
-	if($b['edit'])
+	if($b['edit']) {
 		return;
+	}
 
-	if((! local_user()) || (local_user() != $b['uid']))
+	if((! local_user()) || (local_user() != $b['uid'])) {
 		return;
+	}
 
-	if($b['private'] || $b['parent'])
+	if($b['private'] || $b['parent']) {
 		return;
+	}
 
     $wp_post   = intval(get_pconfig(local_user(),'wppost','post'));
 
 	$wp_enable = (($wp_post && x($_REQUEST,'wppost_enable')) ? intval($_REQUEST['wppost_enable']) : 0);
 
-	if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'wppost','post_by_default')))
+	if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'wppost','post_by_default'))) {
 		$wp_enable = 1;
+	}
 
-    if(! $wp_enable)
+    if(! $wp_enable) {
        return;
+    }
 
-    if(strlen($b['postopts']))
+    if(strlen($b['postopts'])) {
        $b['postopts'] .= ',';
-     $b['postopts'] .= 'wppost';
+    }
+    $b['postopts'] .= 'wppost';
 }
 
 
@@ -186,6 +201,10 @@ function wppost_send(&$a,&$b) {
 	$wp_username = xmlify(get_pconfig($b['uid'],'wppost','wp_username'));
 	$wp_password = xmlify(get_pconfig($b['uid'],'wppost','wp_password'));
 	$wp_blog = get_pconfig($b['uid'],'wppost','wp_blog');
+	$wp_backlink_text = get_pconfig($b['uid'],'wppost','wp_backlink_text');
+	if ($wp_backlink_text == '') {
+		$wp_backlink_text = t('Read the orig­i­nal post and com­ment stream on Friendica');
+	}
 
 	if($wp_username && $wp_password && $wp_blog) {
 
@@ -201,28 +220,34 @@ function wppost_send(&$a,&$b) {
 			$siteinfo = get_attached_data($b["body"]);
 
 			// Is it a link to an aricle, a video or a photo?
-			if (isset($siteinfo["type"]))
-				if (in_array($siteinfo["type"], array("link", "audio", "video", "photo")))
+			if (isset($siteinfo["type"])) {
+				if (in_array($siteinfo["type"], array("link", "audio", "video", "photo"))) {
 					$postentry = true;
+				}
+			}
 
 			// Does it have a title?
-			if ($wptitle != "")
+			if ($wptitle != "") {
 				$postentry = true;
+			}
 
 			// Is it larger than 500 characters?
-			if (strlen($b['body']) > 500)
+			if (strlen($b['body']) > 500) {
 				$postentry = true;
+			}
 
-			if (!$postentry)
+			if (!$postentry) {
 				return;
+			}
 		}
 
 		// If the title is empty then try to guess
 		if ($wptitle == '') {
 			// Fetch information about the post
 			$siteinfo = get_attached_data($b["body"]);
-			if (isset($siteinfo["title"]))
+			if (isset($siteinfo["title"])) {
 				$wptitle = $siteinfo["title"];
+			}
 
 			// If no bookmark is found then take the first line
 			if ($wptitle == '') {
@@ -251,9 +276,10 @@ function wppost_send(&$a,&$b) {
 		$post = $title.$post;
 
 		$wp_backlink = intval(get_pconfig($b['uid'],'wppost','backlink'));
-		if($wp_backlink && $b['plink'])
+		if($wp_backlink && $b['plink']) {
 			$post .= EOL . EOL . '<a href="' . $b['plink'] . '">'
-				. t('Read the original post and comment stream on Friendica') . '</a>' . EOL . EOL;
+				. $wp_backlink_text . '</a>' . EOL . EOL;
+		}
 
 		$post = xmlify($post);
 
@@ -276,10 +302,10 @@ EOT;
 
 		logger('wppost: data: ' . $xml, LOGGER_DATA);
 
-		if($wp_blog !== 'test')
+		if($wp_blog !== 'test') {
 			$x = post_url($wp_blog,$xml);
+		}
 		logger('posted to wordpress: ' . (($x) ? $x : ''), LOGGER_DEBUG);
 
 	}
 }
-
