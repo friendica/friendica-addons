@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2015-08-31 10:30+0000\n"
+"POT-Creation-Date: 2017-01-24 21:06+0100\n"
+"PO-Revision-Date: 2017-02-10 08:18+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -23,42 +23,52 @@ msgstr ""
 msgid "Post to Wordpress"
 msgstr "Invia a Wordpress"
 
-#: wppost.php:76
-msgid "WordPress Post Settings"
-msgstr "Impostazioni invio a WordPress"
+#: wppost.php:80 wppost.php:84
+msgid "Wordpress Export"
+msgstr ""
 
-#: wppost.php:78
+#: wppost.php:87
 msgid "Enable WordPress Post Plugin"
 msgstr "Abilita il plugin di invio a Wordpress"
 
-#: wppost.php:83
+#: wppost.php:92
 msgid "WordPress username"
 msgstr "Nome utente Wordpress"
 
-#: wppost.php:88
+#: wppost.php:97
 msgid "WordPress password"
 msgstr "Password Wordpress"
 
-#: wppost.php:93
+#: wppost.php:102
 msgid "WordPress API URL"
 msgstr "Indirizzo API Wordpress"
 
-#: wppost.php:98
+#: wppost.php:107
 msgid "Post to WordPress by default"
 msgstr "Invia sempre a Wordpress"
 
-#: wppost.php:103
+#: wppost.php:112
 msgid "Provide a backlink to the Friendica post"
 msgstr "Inserisci un link al messaggio originale su Friendica"
 
-#: wppost.php:110
-msgid "Submit"
-msgstr "Invia"
+#: wppost.php:116
+msgid ""
+"Text for the backlink, e.g. Read the original post and comment stream on "
+"Friendica."
+msgstr ""
 
-#: wppost.php:201
+#: wppost.php:121
+msgid "Don't post messages that are too short"
+msgstr ""
+
+#: wppost.php:127
+msgid "Save Settings"
+msgstr ""
+
+#: wppost.php:206
+msgid "Read the orig­i­nal post and com­ment stream on Friendica"
+msgstr ""
+
+#: wppost.php:269
 msgid "Post from Friendica"
 msgstr "Messaggio da Friendica"
-
-#: wppost.php:207
-msgid "Read the original post and comment stream on Friendica"
-msgstr "Leggi il messaggio originale e i commenti su Friendica"
