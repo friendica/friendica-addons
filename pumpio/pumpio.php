@@ -976,8 +976,8 @@ function pumpio_get_contact($uid, $contact, $no_insert = false) {
 		// create contact record
 		q("INSERT INTO `contact` (`uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
 					`name`, `nick`, `photo`, `network`, `rel`, `priority`,
-					`writable`, `blocked`, `readonly`, `pending` )
-				VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, 0, 0, 0)",
+					`location`, `about`, `writable`, `blocked`, `readonly`, `pending` )
+				VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', %d, 0, 0, 0)",
 			intval($uid),
 			dbesc(datetime_convert()),
 			dbesc($contact->url),
@@ -992,6 +992,8 @@ function pumpio_get_contact($uid, $contact, $no_insert = false) {
 			dbesc(NETWORK_PUMPIO),
 			intval(CONTACT_IS_FRIEND),
 			intval(1),
+			dbesc($contact->location->displayName),
+			dbesc($contact->summary),
 			intval(1)
 		);
 
@@ -1014,15 +1016,6 @@ function pumpio_get_contact($uid, $contact, $no_insert = false) {
 			require_once('include/group.php');
 			group_add_member($uid,'',$contact_id,$g[0]['def_gid']);
 		}
-
-                if (DB_UPDATE_VERSION >= "1177")
-			q("UPDATE `contact` SET `location` = '%s',
-						`about` = '%s'
-					WHERE `id` = %d",
-				dbesc($contact->location->displayName),
-				dbesc($contact->summary),
-				intval($contact_id)
-			);
 	} else {
 		$contact_id = $r[0]["id"];
 
