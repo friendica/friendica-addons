@@ -935,36 +935,11 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 
 	$avatar = twitter_fix_avatar($contact->profile_image_url_https);
 
-	if (function_exists("update_gcontact"))
-		update_gcontact(array("url" => "https://twitter.com/".$contact->screen_name,
-				"network" => NETWORK_TWITTER, "photo" => $avatar,  "hide" => true,
-				"name" => $contact->name, "nick" => $contact->screen_name,
-				"location" => $contact->location, "about" => $contact->description,
-				"addr" => $contact->screen_name."@twitter.com", "generation" => 2));
-	else {
-		// Old Code
-		$r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
-				dbesc(normalise_link("https://twitter.com/".$contact->screen_name)));
-
-		if (count($r) == 0)
-			q("INSERT INTO unique_contacts (url, name, nick, avatar) VALUES ('%s', '%s', '%s', '%s')",
-				dbesc(normalise_link("https://twitter.com/".$contact->screen_name)),
-				dbesc($contact->name),
-				dbesc($contact->screen_name),
-				dbesc($avatar));
-		else
-			q("UPDATE unique_contacts SET name = '%s', nick = '%s', avatar = '%s' WHERE url = '%s'",
-				dbesc($contact->name),
-				dbesc($contact->screen_name),
-				dbesc($avatar),
-				dbesc(normalise_link("https://twitter.com/".$contact->screen_name)));
-
-		if (DB_UPDATE_VERSION >= "1177")
-			q("UPDATE `unique_contacts` SET `location` = '%s', `about` = '%s' WHERE url = '%s'",
-				dbesc($contact->location),
-				dbesc($contact->description),
-				dbesc(normalise_link("https://twitter.com/".$contact->screen_name)));
-	}
+	update_gcontact(array("url" => "https://twitter.com/".$contact->screen_name,
+			"network" => NETWORK_TWITTER, "photo" => $avatar,  "hide" => true,
+			"name" => $contact->name, "nick" => $contact->screen_name,
+			"location" => $contact->location, "about" => $contact->description,
+			"addr" => $contact->screen_name."@twitter.com", "generation" => 2));
 
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
 		intval($uid), dbesc("twitter::".$contact->id_str));
@@ -979,10 +954,10 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 
 	if(!count($r)) {
 		// create contact record
-		q("INSERT INTO `contact` ( `uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
+		q("INSERT INTO `contact` (`uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
 					`name`, `nick`, `photo`, `network`, `rel`, `priority`,
-					`writable`, `blocked`, `readonly`, `pending` )
-					VALUES ( %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, 0, 0, 0) ",
+					`location`, `about`, `writable`, `blocked`, `readonly`, `pending`)
+					VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', %d, 0, 0, 0)",
 			intval($uid),
 			dbesc(datetime_convert()),
 			dbesc("https://twitter.com/".$contact->screen_name),
@@ -997,6 +972,8 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 			dbesc(NETWORK_TWITTER),
 			intval(CONTACT_IS_FRIEND),
 			intval(1),
+			dbesc($contact->location),
+			dbesc($contact->description),
 			intval(1)
 		);
 
@@ -1021,33 +998,25 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 
 		require_once("Photo.php");
 
-		$photos = import_profile_photo($avatar,$uid,$contact_id);
+		$photos = import_profile_photo($avatar, $uid, $contact_id, true);
 
-		q("UPDATE `contact` SET `photo` = '%s',
-					`thumb` = '%s',
-					`micro` = '%s',
-					`name-date` = '%s',
-					`uri-date` = '%s',
-					`avatar-date` = '%s'
-				WHERE `id` = %d",
-			dbesc($photos[0]),
-			dbesc($photos[1]),
-			dbesc($photos[2]),
-			dbesc(datetime_convert()),
-			dbesc(datetime_convert()),
-			dbesc(datetime_convert()),
-			intval($contact_id)
-		);
-
-		if (DB_UPDATE_VERSION >= "1177")
-			q("UPDATE `contact` SET `location` = '%s',
-						`about` = '%s'
+		if ($photos) {
+			q("UPDATE `contact` SET `photo` = '%s',
+						`thumb` = '%s',
+						`micro` = '%s',
+						`name-date` = '%s',
+						`uri-date` = '%s',
+							`avatar-date` = '%s'
 					WHERE `id` = %d",
-				dbesc($contact->location),
-				dbesc($contact->description),
+				dbesc($photos[0]),
+				dbesc($photos[1]),
+				dbesc($photos[2]),
+				dbesc(datetime_convert()),
+				dbesc(datetime_convert()),
+				dbesc(datetime_convert()),
 				intval($contact_id)
 			);
-
+		}
 	} else {
 		// update profile photos once every two weeks as we have no notification of when they change.
 
@@ -1062,42 +1031,39 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 
 			require_once("Photo.php");
 
-			$photos = import_profile_photo($avatar, $uid, $r[0]['id']);
+			$photos = import_profile_photo($avatar, $uid, $r[0]['id'], true);
 
-			q("UPDATE `contact` SET `photo` = '%s',
-						`thumb` = '%s',
-						`micro` = '%s',
-						`name-date` = '%s',
-						`uri-date` = '%s',
-						`avatar-date` = '%s',
-						`url` = '%s',
-						`nurl` = '%s',
-						`addr` = '%s',
-						`name` = '%s',
-						`nick` = '%s'
-					WHERE `id` = %d",
-				dbesc($photos[0]),
-				dbesc($photos[1]),
-				dbesc($photos[2]),
-				dbesc(datetime_convert()),
-				dbesc(datetime_convert()),
-				dbesc(datetime_convert()),
-				dbesc("https://twitter.com/".$contact->screen_name),
-				dbesc(normalise_link("https://twitter.com/".$contact->screen_name)),
-				dbesc($contact->screen_name."@twitter.com"),
-				dbesc($contact->name),
-				dbesc($contact->screen_name),
-				intval($r[0]['id'])
-			);
-
-			if (DB_UPDATE_VERSION >= "1177")
-				q("UPDATE `contact` SET `location` = '%s',
+			if ($photos) {
+				q("UPDATE `contact` SET `photo` = '%s',
+							`thumb` = '%s',
+							`micro` = '%s',
+							`name-date` = '%s',
+							`uri-date` = '%s',
+							`avatar-date` = '%s',
+							`url` = '%s',
+							`nurl` = '%s',
+							`addr` = '%s',
+							`name` = '%s',
+							`nick` = '%s',
+							`location` = '%s',
 							`about` = '%s'
 						WHERE `id` = %d",
+					dbesc($photos[0]),
+					dbesc($photos[1]),
+					dbesc($photos[2]),
+					dbesc(datetime_convert()),
+					dbesc(datetime_convert()),
+					dbesc(datetime_convert()),
+					dbesc("https://twitter.com/".$contact->screen_name),
+					dbesc(normalise_link("https://twitter.com/".$contact->screen_name)),
+					dbesc($contact->screen_name."@twitter.com"),
+					dbesc($contact->name),
+					dbesc($contact->screen_name),
 					dbesc($contact->location),
 					dbesc($contact->description),
 					intval($r[0]['id'])
 				);
+			}
 		}
 	}
 

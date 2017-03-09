@@ -920,36 +920,11 @@ function statusnet_fetch_contact($uid, $contact, $create_user) {
 	if ($contact->statusnet_profile_url == "")
 		return(-1);
 
-	if (function_exists("update_gcontact"))
-		update_gcontact(array("url" => $contact->statusnet_profile_url,
-				"network" => NETWORK_STATUSNET, "photo" => $contact->profile_image_url,
-				"name" => $contact->name, "nick" => $contact->screen_name,
-				"location" => $contact->location, "about" => $contact->description,
-				"addr" => statusnet_address($contact), "generation" => 3));
-	else {
-		// Old Code
-		 $r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
-				dbesc(normalise_link($contact->statusnet_profile_url)));
-
-		if (count($r) == 0)
-			q("INSERT INTO unique_contacts (url, name, nick, avatar) VALUES ('%s', '%s', '%s', '%s')",
-				dbesc(normalise_link($contact->statusnet_profile_url)),
-				dbesc($contact->name),
-				dbesc($contact->screen_name),
-				dbesc($contact->profile_image_url));
-		else
-			q("UPDATE unique_contacts SET name = '%s', nick = '%s', avatar = '%s' WHERE url = '%s'",
-				dbesc($contact->name),
-				dbesc($contact->screen_name),
-				dbesc($contact->profile_image_url),
-				dbesc(normalise_link($contact->statusnet_profile_url)));
-
-		if (DB_UPDATE_VERSION >= "1177")
-			q("UPDATE `unique_contacts` SET `location` = '%s', `about` = '%s' WHERE url = '%s'",
-				dbesc($contact->location),
-				dbesc($contact->description),
-				dbesc(normalise_link($contact->statusnet_profile_url)));
-	}
+	update_gcontact(array("url" => $contact->statusnet_profile_url,
+			"network" => NETWORK_STATUSNET, "photo" => $contact->profile_image_url,
+			"name" => $contact->name, "nick" => $contact->screen_name,
+			"location" => $contact->location, "about" => $contact->description,
+			"addr" => statusnet_address($contact), "generation" => 3));
 
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' AND `network` = '%s'LIMIT 1",
 		intval($uid), dbesc(normalise_link($contact->statusnet_profile_url)), dbesc(NETWORK_STATUSNET));
@@ -966,8 +941,8 @@ function statusnet_fetch_contact($uid, $contact, $create_user) {
 		// create contact record
 		q("INSERT INTO `contact` ( `uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
 					`name`, `nick`, `photo`, `network`, `rel`, `priority`,
-					`writable`, `blocked`, `readonly`, `pending` )
-					VALUES ( %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, 0, 0, 0 ) ",
+					`location`, `about`, `writable`, `blocked`, `readonly`, `pending` )
+					VALUES ( %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', %d, 0, 0, 0 ) ",
 			intval($uid),
 			dbesc(datetime_convert()),
 			dbesc($contact->statusnet_profile_url),
@@ -982,6 +957,8 @@ function statusnet_fetch_contact($uid, $contact, $create_user) {
 			dbesc(NETWORK_STATUSNET),
 			intval(CONTACT_IS_FRIEND),
 			intval(1),
+			dbesc($contact->location),
+			dbesc($contact->description),
 			intval(1)
 		);
 
@@ -1019,16 +996,6 @@ function statusnet_fetch_contact($uid, $contact, $create_user) {
 			dbesc(datetime_convert()),
 			intval($contact_id)
 		);
-
-		if (DB_UPDATE_VERSION >= "1177")
-			q("UPDATE `contact` SET `location` = '%s',
-						`about` = '%s'
-					WHERE `id` = %d",
-				dbesc($contact->location),
-				dbesc($contact->description),
-				intval($contact_id)
-			);
-
 	} else {
 		// update profile photos once every two weeks as we have no notification of when they change.
 
@@ -1055,7 +1022,9 @@ function statusnet_fetch_contact($uid, $contact, $create_user) {
 						`nurl` = '%s',
 						`addr` = '%s',
 						`name` = '%s',
-						`nick` = '%s'
+						`nick` = '%s',
+						`location` = '%s',
+						`about` = '%s'
 					WHERE `id` = %d",
 				dbesc($photos[0]),
 				dbesc($photos[1]),
@@ -1068,17 +1037,10 @@ function statusnet_fetch_contact($uid, $contact, $create_user) {
 				dbesc(statusnet_address($contact)),
 				dbesc($contact->name),
 				dbesc($contact->screen_name),
+				dbesc($contact->location),
+				dbesc($contact->description),
 				intval($r[0]['id'])
 			);
-
-			if (DB_UPDATE_VERSION >= "1177")
-				q("UPDATE `contact` SET `location` = '%s',
-							`about` = '%s'
-						WHERE `id` = %d",
-					dbesc($contact->location),
-					dbesc($contact->description),
-					intval($r[0]['id'])
-				);
 		}
 	}
 

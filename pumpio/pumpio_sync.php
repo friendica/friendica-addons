@@ -41,21 +41,23 @@ function pumpio_sync_run(&$argv, &$argc){
 		}
 	}
 
-	$lockpath = get_lockpath();
-	if ($lockpath != '') {
-		$pidfile = new pidfile($lockpath, 'pumpio_sync');
-		if($pidfile->is_already_running()) {
-			logger("Already running");
-			if ($pidfile->running_time() > 9*60) {
-				$pidfile->kill();
-				logger("killed stale process");
-				// Calling a new instance
-				proc_run('php','addon/pumpio/pumpio_sync.php');
+	// This is deprecated with the worker
+	if (function_exists("get_lockpath")) {
+		$lockpath = get_lockpath();
+		if ($lockpath != '') {
+			$pidfile = new pidfile($lockpath, 'pumpio_sync');
+			if($pidfile->is_already_running()) {
+				logger("Already running");
+				if ($pidfile->running_time() > 9*60) {
+					$pidfile->kill();
+					logger("killed stale process");
+					// Calling a new instance
+					proc_run('php','addon/pumpio/pumpio_sync.php');
+				}
+				exit;
 			}
-			exit;
 		}
 	}
-
 	pumpio_sync($a);
 }
 

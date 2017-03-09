@@ -5,6 +5,7 @@
  * Description: Bidirectional (posting and reading) connector for app.net.
  * Version: 0.2
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
+ * Status: Unsupported
  */
 
 /*
@@ -1118,36 +1119,11 @@ function appnet_expand_annotations($a, $annotations) {
 
 function appnet_fetchcontact($a, $uid, $contact, $me, $create_user) {
 
-	if (function_exists("update_gcontact"))
-		update_gcontact(array("url" => $contact["canonical_url"], "generation" => 2,
-				"network" => NETWORK_APPNET, "photo" => $contact["avatar_image"]["url"],
-				"name" => $contact["name"], "nick" => $contact["username"],
-				"about" => $contact["description"]["text"], "hide" => true,
-				"addr" => $contact["username"]."@app.net"));
-	else {
-		// Old Code
-		$r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
-				dbesc(normalise_link($contact["canonical_url"])));
-
-		if (count($r) == 0)
-			q("INSERT INTO unique_contacts (url, name, nick, avatar) VALUES ('%s', '%s', '%s', '%s')",
-				dbesc(normalise_link($contact["canonical_url"])),
-				dbesc($contact["name"]),
-				dbesc($contact["username"]),
-				dbesc($contact["avatar_image"]["url"]));
-		else
-			q("UPDATE unique_contacts SET name = '%s', nick = '%s', avatar = '%s' WHERE url = '%s'",
-				dbesc($contact["name"]),
-				dbesc($contact["username"]),
-				dbesc($contact["avatar_image"]["url"]),
-				dbesc(normalise_link($contact["canonical_url"])));
-
-		if (DB_UPDATE_VERSION >= "1177")
-			q("UPDATE `unique_contacts` SET `location` = '%s', `about` = '%s' WHERE url = '%s'",
-				dbesc(""),
-				dbesc($contact["description"]["text"]),
-				dbesc(normalise_link($contact["canonical_url"])));
-	}
+	update_gcontact(array("url" => $contact["canonical_url"], "generation" => 2,
+			"network" => NETWORK_APPNET, "photo" => $contact["avatar_image"]["url"],
+			"name" => $contact["name"], "nick" => $contact["username"],
+			"about" => $contact["description"]["text"], "hide" => true,
+			"addr" => $contact["username"]."@app.net"));
 
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
 		intval($uid), dbesc("adn::".$contact["id"]));
@@ -1174,8 +1150,8 @@ function appnet_fetchcontact($a, $uid, $contact, $me, $create_user) {
 		// create contact record
 		q("INSERT INTO `contact` (`uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
 					`name`, `nick`, `photo`, `network`, `rel`, `priority`,
-					`writable`, `blocked`, `readonly`, `pending` )
-					VALUES ( %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, 0, 0, 0 ) ",
+					`about`, `writable`, `blocked`, `readonly`, `pending` )
+					VALUES ( %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', %d, 0, 0, 0 ) ",
 			intval($uid),
 			dbesc(datetime_convert()),
 			dbesc($contact["canonical_url"]),
@@ -1190,6 +1166,7 @@ function appnet_fetchcontact($a, $uid, $contact, $me, $create_user) {
 			dbesc(NETWORK_APPNET),
 			intval(CONTACT_IS_FRIEND),
 			intval(1),
+			dbesc($contact["description"]["text"]),
 			intval(1)
 		);
 
@@ -1231,15 +1208,6 @@ function appnet_fetchcontact($a, $uid, $contact, $me, $create_user) {
 			dbesc(datetime_convert()),
 			intval($contact_id)
 		);
-
-		if (DB_UPDATE_VERSION >= "1177")
-			q("UPDATE `contact` SET `location` = '%s',
-						`about` = '%s'
-					WHERE `id` = %d",
-				dbesc(""),
-				dbesc($contact["description"]["text"]),
-				intval($contact_id)
-			);
 	} else {
 		// update profile photos once every two weeks as we have no notification of when they change.
 
@@ -1266,7 +1234,8 @@ function appnet_fetchcontact($a, $uid, $contact, $me, $create_user) {
 						`nurl` = '%s',
 						`addr` = '%s',
 						`name` = '%s',
-						`nick` = '%s'
+						`nick` = '%s',
+						`about` = '%s'
 					WHERE `id` = %d",
 				dbesc($photos[0]),
 				dbesc($photos[1]),
@@ -1279,16 +1248,9 @@ function appnet_fetchcontact($a, $uid, $contact, $me, $create_user) {
 				dbesc($contact["username"]."@app.net"),
 				dbesc($contact["name"]),
 				dbesc($contact["username"]),
+				dbesc($contact["description"]["text"]),
 				intval($r[0]['id'])
 			);
-			if (DB_UPDATE_VERSION >= "1177")
-				q("UPDATE `contact` SET `location` = '%s',
-							`about` = '%s'
-						WHERE `id` = %d",
-					dbesc(""),
-					dbesc($contact["description"]["text"]),
-					intval($r[0]['id'])
-				);
 		}
 	}
 

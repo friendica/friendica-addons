@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: Buffer Post Connector
- * Description: Post to Buffer (Linkedin, App.net, Google+, Facebook, Twitter)
+ * Description: Post to Buffer (Facebook, Google+, LinkedIn, Twitter)
  * Version: 0.2
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  */
@@ -328,15 +328,14 @@ function buffer_send(&$a,&$b) {
 				if (isset($post["preview"]))
 					$post["preview"] = proxy_url($post["preview"]);
 
-				//if ($profile->service == "twitter") {
-				if ($includedlinks) {
-					if (isset($post["url"]))
-						$post["url"] = short_link($post["url"]);
-					if (isset($post["image"]))
-						$post["image"] = short_link($post["image"]);
-					if (isset($post["preview"]))
-						$post["preview"] = short_link($post["preview"]);
-				}
+				//if ($includedlinks) {
+				//	if (isset($post["url"]))
+				//		$post["url"] = short_link($post["url"]);
+				//	if (isset($post["image"]))
+				//		$post["image"] = short_link($post["image"]);
+				//	if (isset($post["preview"]))
+				//		$post["preview"] = short_link($post["preview"]);
+				//}
 
 				// Seems like a bug to me
 				// Buffer doesn't add links to Twitter and App.net (but pictures)
