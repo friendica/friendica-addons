@@ -71,9 +71,9 @@ function pledgie_active(&$a,&$b) {
 	$campaign = get_config('pledgie-campaign','text');
 	$describe = get_config('pledgie-describe','text');
 	$b .= '<div style="position: fixed; padding:5px; border-style:dotted; border-width:1px; background-color: white; line-height: 1; bottom: 5px; left: 20px; z-index: 1000; width: 150px; font-size: 12px;">';
-	$b .= $describe . '<br/><a href="https://www.pledgie.com/campaigns/';
+	$b .= $describe . '<br/><a href="https://pledgie.com/campaigns/';
 	$b .= $campaign;
-	$b .= '"><img alt="Click here to lend your support to: ' . $describe .  '!" src="https://www.pledgie.com/campaigns/';
+	$b .= '"><img alt="Click here to lend your support to: ' . $describe .  '!" src="https://pledgie.com/campaigns/';
 	$b .= $campaign;
 	$b .= '.png?skin_name=chrome" border="0" target="_blank" /></a></div>';
 }
