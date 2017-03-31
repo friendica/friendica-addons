@@ -1,0 +1,123 @@
+# ADDON twitter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica twitter addon package.
+# 
+# 
+# Translators:
+# Athalbert, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2016-10-10 15:07+0000\n"
+"Last-Translator: Athalbert\n"
+"Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: twitter.php:77
+msgid "Post to Twitter"
+msgstr "Entrada para Twitter"
+
+#: twitter.php:129
+msgid "Twitter settings updated."
+msgstr "Ajustes de Twitter actualizados."
+
+#: twitter.php:157
+msgid "Twitter Posting Settings"
+msgstr "Ajustes de publicación de Twitter"
+
+#: twitter.php:164
+msgid ""
+"No consumer key pair for Twitter found. Please contact your site "
+"administrator."
+msgstr "No hay par de claves para encuentro de Twitter."
+
+#: twitter.php:183
+msgid ""
+"At this Friendica instance the Twitter plugin was enabled but you have not "
+"yet connected your account to your Twitter account. To do so click the "
+"button below to get a PIN from Twitter which you have to copy into the input"
+" box below and submit the form. Only your <strong>public</strong> posts will"
+" be posted to Twitter."
+msgstr "En esta petición de Friendica el plugin de Twitter estaba activo pero usted no ha conectado aún su cuenta con la cuenta de Twitter. Para hacerlo click en el botón de abajo para obtener un PIN desde Twitter que tiene que copiar en la caja de texto de abajo y enviar el formulario. Sólo sus entradas <strong>públicas</strong> serán posteadas en Twitter"
+
+#: twitter.php:184
+msgid "Log in with Twitter"
+msgstr "Iniciar sesión con Twitter"
+
+#: twitter.php:186
+msgid "Copy the PIN from Twitter here"
+msgstr "Copie el PIN de Twitter aquí"
+
+#: twitter.php:191 twitter.php:229 twitter.php:556
+msgid "Submit"
+msgstr "Enviar"
+
+#: twitter.php:200
+msgid "Currently connected to: "
+msgstr "Moneda conectada a:"
+
+#: twitter.php:201
+msgid ""
+"If enabled all your <strong>public</strong> postings can be posted to the "
+"associated Twitter account. You can choose to do so by default (here) or for"
+" every posting separately in the posting options when writing the entry."
+msgstr "Si habilita todas sus publicaciones <strong>públicas</strong> pueden ser publicadas en la cuenta de Twitter asociada. Puede elegir hacer eso por defecto (aquí) o por cada publicación por separado en las opciones de entrada cuando escriba la entrada."
+
+#: twitter.php:203
+msgid ""
+"<strong>Note</strong>: Due your privacy settings (<em>Hide your profile "
+"details from unknown viewers?</em>) the link potentially included in public "
+"postings relayed to Twitter will lead the visitor to a blank page informing "
+"the visitor that the access to your profile has been restricted."
+msgstr "<strong>Nota</strong>: Debido a sus ajustes de privacidad (<em>¿Ocultar sus detalles de perfil de espectadores desconocidos?</em>) el enlace potencialmente incluido en publicaciones públicas relevado a Twitter llevará al visitante a una página en blanco informándole de que el acceso a su perfil ha sido restringido."
+
+#: twitter.php:206
+msgid "Allow posting to Twitter"
+msgstr "Permitir publicar en Twitter"
+
+#: twitter.php:209
+msgid "Send public postings to Twitter by default"
+msgstr "Enviar publicaciones públicas a Twitter por defecto"
+
+#: twitter.php:213
+msgid "Mirror all posts from twitter that are no replies or retweets"
+msgstr "Reflejar todas las publicaciones de Twitter que no son respuestas o retweets."
+
+#: twitter.php:217
+msgid "Shortening method that optimizes the tweet"
+msgstr "Método de corte the optimiza el tweet"
+
+#: twitter.php:221
+msgid "Send linked #-tags and @-names to Twitter"
+msgstr "Enviar #-etiquetas enlazadas y @-nombres a Twitter"
+
+#: twitter.php:226
+msgid "Clear OAuth configuration"
+msgstr "Borrar configuración OAuth"
+
+#: twitter.php:550
+msgid "Settings updated."
+msgstr "Ajustes actualizados"
+
+#: twitter.php:558
+msgid "Consumer key"
+msgstr "Clave de consumidor"
+
+#: twitter.php:559
+msgid "Consumer secret"
+msgstr "Secreto de consumidor"
+
+#: twitter.php:560
+msgid "Name of the Twitter Application"
+msgstr "Nombre de la aplicación de Twitter"
+
+#: twitter.php:560
+msgid ""
+"set this to avoid mirroring postings from ~friendica back to ~friendica"
+msgstr "Fijar esto para evitar el reflejo de publicaciones de ~friendica de vuelta a ~friendica"

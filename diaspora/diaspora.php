@@ -3,10 +3,11 @@
 /**
  * Name: Diaspora Post Connector
  * Description: Post to Diaspora
- * Version: 0.1
+ * Version: 0.2
  * Author: Michael Vogel <heluecht@pirati.ca>
- * Status: Unsupported
  */
+
+require_once("addon/diaspora/Diaspora_Connection.php");
 
 function diaspora_install() {
 	register_hook('post_local',           'addon/diaspora/diaspora.php', 'diaspora_post_local');
@@ -65,16 +66,14 @@ function diaspora_queue_hook(&$a,&$b) {
 
 		$userdata = $r[0];
 
-		$diaspora_username = get_pconfig($userdata['uid'],'diaspora','diaspora_username');
-		$diaspora_password = get_pconfig($userdata['uid'],'diaspora','diaspora_password');
-		$diaspora_url = get_pconfig($userdata['uid'],'diaspora','diaspora_url');
+		$handle = get_pconfig($userdata['uid'],'diaspora','handle');
+		$password = get_pconfig($userdata['uid'],'diaspora','password');
+		$aspect = get_pconfig($userdata['uid'],'diaspora','aspect');
 
 		$success = false;
 
-		if($diaspora_url && $diaspora_username && $diaspora_password) {
-			require_once("addon/diaspora/diasphp.php");
-
-                        logger('diaspora_queue: able to post for user '.$diaspora_username);
+		if ($handle && $password) {
+                        logger('diaspora_queue: able to post for user '.$handle);
 
 			$z = unserialize($x['content']);
 
@@ -84,11 +83,12 @@ function diaspora_queue_hook(&$a,&$b) {
 
 			try {
 				logger('diaspora_queue: prepare', LOGGER_DEBUG);
-				$conn = new Diasphp($diaspora_url);
-				logger('diaspora_queue: try to log in '.$diaspora_username, LOGGER_DEBUG);
-				$conn->login($diaspora_username, $diaspora_password);
+				$conn = new Diaspora_Connection($handle, $password);
+				logger('diaspora_queue: try to log in '.$handle, LOGGER_DEBUG);
+				$conn->logIn();
 				logger('diaspora_queue: try to send '.$body, LOGGER_DEBUG);
-				$conn->post($post, $hostname);
+				$conn->provider = $hostname;
+				$conn->postStatusMessage($post, $aspect);
 
                                 logger('diaspora_queue: send '.$userdata['uid'].' success', LOGGER_DEBUG);
 
@@ -127,20 +127,27 @@ function diaspora_settings(&$a,&$s) {
 
 	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
-	$diaspora_username = get_pconfig(local_user(), 'diaspora', 'diaspora_username');
-	$diaspora_password = get_pconfig(local_user(), 'diaspora', 'diaspora_password');
-	$diaspora_url = get_pconfig(local_user(), 'diaspora', 'diaspora_url');
+	$handle = get_pconfig(local_user(), 'diaspora', 'handle');
+	$password = get_pconfig(local_user(), 'diaspora', 'password');
+	$aspect = get_pconfig(local_user(),'diaspora','aspect');
 
 	$status = "";
 
-	if ($diaspora_username AND $diaspora_password AND $diaspora_url) {
-		try {
-			require_once("addon/diaspora/diasphp.php");
+	$r = q("SELECT `addr` FROM `contact` WHERE `self` AND `uid` = %d", intval(local_user()));
+	if (dbm::is_result($r)) {
+		$status = sprintf(t("Please remember: You can always be reached from Diaspora with your Friendica handle %s. "), $r[0]['addr']);
+		$status .= t('This connector is only meant if you still want to use your old Diaspora account for some time. ');
+		$status .= sprintf(t('However, it is preferred that you tell your Diaspora contacts the new handle %s instead.'), $r[0]['addr']);
+	}
 
-			$conn = new Diasphp($diaspora_url);
-			$conn->login($diaspora_username, $diaspora_password);
-		} catch (Exception $e) {
-			$status = t("Can't login to your Diaspora account. Please check username and password and ensure you used the complete address (including http...)");
+	$aspects = false;
+
+	if ($handle AND $password) {
+		$conn = new Diaspora_Connection($handle, $password);
+		$conn->logIn();
+		$aspects = $conn->getAspects();
+		if (!$aspects) {
+			$status = t("Can't login to your Diaspora account. Please check handle (in the format user@domain.tld) and password.");
 		}
 	}
 
@@ -166,19 +173,38 @@ function diaspora_settings(&$a,&$s) {
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="diaspora-username-wrapper">';
-	$s .= '<label id="diaspora-username-label" for="diaspora-username">' . t('Diaspora username') . '</label>';
-	$s .= '<input id="diaspora-username" type="text" name="diaspora_username" value="' . $diaspora_username . '" />';
+	$s .= '<label id="diaspora-username-label" for="diaspora-username">' . t('Diaspora handle') . '</label>';
+	$s .= '<input id="diaspora-username" type="text" name="handle" value="' . $handle . '" />';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="diaspora-password-wrapper">';
 	$s .= '<label id="diaspora-password-label" for="diaspora-password">' . t('Diaspora password') . '</label>';
-	$s .= '<input id="diaspora-password" type="password" name="diaspora_password" value="' . $diaspora_password . '" />';
+	$s .= '<input id="diaspora-password" type="password" name="password" value="' . $password . '" />';
 	$s .= '</div><div class="clear"></div>';
 
-	$s .= '<div id="diaspora-url-wrapper">';
-	$s .= '<label id="diaspora-url-label" for="diaspora-url">' . t('Diaspora site URL') . '</label>';
-	$s .= '<input id="diaspora-url" type="text" name="diaspora_url" value="' . $diaspora_url . '" />';
-	$s .= '</div><div class="clear"></div>';
+	if ($aspects) {
+		$single_aspect =  new stdClass();
+		$single_aspect->id = 'all_aspects';
+		$single_aspect->name = t('All aspects');
+		$aspects[] = $single_aspect;
+
+		$single_aspect =  new stdClass();
+		$single_aspect->id = 'public';
+		$single_aspect->name = t('Public');
+		$aspects[] = $single_aspect;
+
+		$s .= '<label id="diaspora-aspect-label" for="diaspora-aspect">' . t('Post to aspect:') . '</label>';
+		$s .= '<select name="aspect" id="diaspora-aspect">';
+		foreach($aspects as $single_aspect) {
+			if ($single_aspect->id == $aspect)
+				$s .= "<option value='".$single_aspect->id."' selected>".$single_aspect->name."</option>";
+			else
+				$s .= "<option value='".$single_aspect->id."'>".$single_aspect->name."</option>";
+		}
+
+		$s .= "</select>";
+		$s .= '<div class="clear"></div>';
+	}
 
 	$s .= '<div id="diaspora-bydefault-wrapper">';
 	$s .= '<label id="diaspora-bydefault-label" for="diaspora-bydefault">' . t('Post to Diaspora by default') . '</label>';
@@ -198,10 +224,9 @@ function diaspora_settings_post(&$a,&$b) {
 
 		set_pconfig(local_user(),'diaspora','post',intval($_POST['diaspora']));
 		set_pconfig(local_user(),'diaspora','post_by_default',intval($_POST['diaspora_bydefault']));
-		set_pconfig(local_user(),'diaspora','diaspora_username',trim($_POST['diaspora_username']));
-		set_pconfig(local_user(),'diaspora','diaspora_password',trim($_POST['diaspora_password']));
-		set_pconfig(local_user(),'diaspora','diaspora_url',trim($_POST['diaspora_url']));
-
+		set_pconfig(local_user(),'diaspora','handle',trim($_POST['handle']));
+		set_pconfig(local_user(),'diaspora','password',trim($_POST['password']));
+		set_pconfig(local_user(),'diaspora','aspect',trim($_POST['aspect']));
 	}
 
 }
@@ -251,11 +276,11 @@ function diaspora_send(&$a,&$b) {
 
 	logger('diaspora_send: prepare posting', LOGGER_DEBUG);
 
-	$diaspora_username = get_pconfig($b['uid'],'diaspora','diaspora_username');
-	$diaspora_password = get_pconfig($b['uid'],'diaspora','diaspora_password');
-	$diaspora_url = get_pconfig($b['uid'],'diaspora','diaspora_url');
+	$handle = get_pconfig($b['uid'],'diaspora','handle');
+	$password = get_pconfig($b['uid'],'diaspora','password');
+	$aspect = get_pconfig($b['uid'],'diaspora','aspect');
 
-	if($diaspora_url && $diaspora_username && $diaspora_password) {
+	if ($handle && $password) {
 
 		logger('diaspora_send: all values seem to be okay', LOGGER_DEBUG);
 
@@ -301,13 +326,13 @@ function diaspora_send(&$a,&$b) {
 
 		try {
 			logger('diaspora_send: prepare', LOGGER_DEBUG);
-			$conn = new Diasphp($diaspora_url);
-			logger('diaspora_send: try to log in '.$diaspora_username, LOGGER_DEBUG);
-			$conn->login($diaspora_username, $diaspora_password);
+			$conn = new Diaspora_Connection($handle, $password);
+			logger('diaspora_send: try to log in '.$handle, LOGGER_DEBUG);
+			$conn->logIn();
 			logger('diaspora_send: try to send '.$body, LOGGER_DEBUG);
 
-			//throw new Exception('Test');
-			$conn->post($body, $hostname);
+			$conn->provider = $hostname;
+			$conn->postStatusMessage($body, $aspect);
 
 			logger('diaspora_send: success');
 		} catch (Exception $e) {

@@ -1,0 +1,70 @@
+# ADDON langfilter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica langfilter addon package.
+# 
+# 
+# Translators:
+# Albert, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-09-22 15:18+0200\n"
+"PO-Revision-Date: 2016-11-19 11:47+0000\n"
+"Last-Translator: Albert\n"
+"Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: langfilter.php:44
+msgid "Language Filter"
+msgstr "Filtro de Idioma"
+
+#: langfilter.php:45
+msgid ""
+"This addon tries to identify the language of a postings. If it does not "
+"match any language spoken by you (see below) the posting will be collapsed. "
+"Remember detecting the language is not perfect, especially with short "
+"postings."
+msgstr "Este addon intenta identificar el idioma de las publicaciones. Si no encuentra ningún idioma hablado por usted (ver abajo) la entrada se colapsará. Recordar detectar el idioma no es perfecto, especialmente con entradas cortas."
+
+#: langfilter.php:46
+msgid "Use the language filter"
+msgstr "Usar el filtro de idioma"
+
+#: langfilter.php:47
+msgid "I speak"
+msgstr "Yo hablo"
+
+#: langfilter.php:47
+msgid ""
+"List of abbreviations (iso2 codes) for languages you speak, comma separated."
+" For example \"de,it\"."
+msgstr "Lista de abreviaciones (códigos iso2) para los idiomas que habla, separadas por comas. Por ejemplo \"de,it\"."
+
+#: langfilter.php:48
+msgid "Minimum confidence in language detection"
+msgstr "Mínima confianza en la detección de idioma"
+
+#: langfilter.php:48
+msgid ""
+"Minimum confidence in language detection being correct, from 0 to 100. Posts"
+" will not be filtered when the confidence of language detection is below "
+"this percent value."
+msgstr "Mínima confianza en que la detección de idioma sea correcta, de 0 a 100. Las entradas no se filtrarán cuando la confianza de la detección del idioma es inferior a su valor de porcentaje."
+
+#: langfilter.php:49
+msgid "Save Settings"
+msgstr "Guardar Ajustes"
+
+#: langfilter.php:73
+msgid "Language Filter Settings saved."
+msgstr "Ajustes de Filtro de Idioma guardados."
+
+#: langfilter.php:123
+#, php-format
+msgid "unspoken language %s - Click to open/close"
+msgstr "Idioma sobreentendido %s - Click para abrir/cerrar"

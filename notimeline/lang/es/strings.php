@@ -1,6 +1,11 @@
 <?php
 
-$a->strings["No Timeline settings updated."] = "Configuración Sin Linea Temporal actualizada.";
-$a->strings["No Timeline Settings"] = "Configuración Sin Linea Temporal";
-$a->strings["Disable Archive selector on profile wall"] = "Desactivar el selector de archivos en el muro del perfil";
-$a->strings["Submit"] = "Envíar";
+if(! function_exists("string_plural_select_es")) {
+function string_plural_select_es($n){
+	return ($n != 1);;
+}}
+;
+$a->strings["No Timeline settings updated."] = "Ningún ajuste de Línea de Tiempo actualizado";
+$a->strings["No Timeline Settings"] = "No hay ajustes de Línea de Tiempo";
+$a->strings["Disable Archive selector on profile wall"] = "Deshabilitar el selector Archivo en el muro de perfil";
+$a->strings["Submit"] = "Enviar";

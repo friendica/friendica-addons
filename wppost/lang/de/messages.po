@@ -4,14 +4,16 @@
 # 
 # 
 # Translators:
-# bavatar <tobias.diekershoff@gmx.net>, 2014-2015
+# Andreas H., 2017
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014-2015
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2015-07-28 17:31+0000\n"
-"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
+"POT-Creation-Date: 2017-01-24 21:06+0100\n"
+"PO-Revision-Date: 2017-02-10 11:11+0000\n"
+"Last-Translator: Andreas H.\n"
 "Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,42 +25,52 @@ msgstr ""
 msgid "Post to Wordpress"
 msgstr "Bei WordPress veröffentlichen"
 
-#: wppost.php:76
-msgid "WordPress Post Settings"
-msgstr "WordPress-Beitragseinstellungen"
+#: wppost.php:80 wppost.php:84
+msgid "Wordpress Export"
+msgstr "Wordpress Export"
 
-#: wppost.php:78
+#: wppost.php:87
 msgid "Enable WordPress Post Plugin"
 msgstr "WordPress Plugin aktivieren"
 
-#: wppost.php:83
+#: wppost.php:92
 msgid "WordPress username"
 msgstr "WordPress-Benutzername"
 
-#: wppost.php:88
+#: wppost.php:97
 msgid "WordPress password"
 msgstr "WordPress-Passwort"
 
-#: wppost.php:93
+#: wppost.php:102
 msgid "WordPress API URL"
 msgstr "WordPress-API-URL"
 
-#: wppost.php:98
+#: wppost.php:107
 msgid "Post to WordPress by default"
 msgstr "Standardmäßig auf WordPress veröffentlichen"
 
-#: wppost.php:103
+#: wppost.php:112
 msgid "Provide a backlink to the Friendica post"
-msgstr "Einen zurück zum Friendica-Beitrag hinzufügen"
+msgstr "Einen Link zurück zum Friendica-Beitrag hinzufügen"
 
-#: wppost.php:110
-msgid "Submit"
-msgstr "Senden"
+#: wppost.php:116
+msgid ""
+"Text for the backlink, e.g. Read the original post and comment stream on "
+"Friendica."
+msgstr "Text für den Link zurück, z.B. lies den Original-Post und die Kommentare auf Friendica."
 
-#: wppost.php:201
+#: wppost.php:121
+msgid "Don't post messages that are too short"
+msgstr "Zu kurze Mitteilungen nicht posten"
+
+#: wppost.php:127
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: wppost.php:206
+msgid "Read the orig­i­nal post and com­ment stream on Friendica"
+msgstr "Lies den Original-Post und die Kommentare auf Friendica"
+
+#: wppost.php:269
 msgid "Post from Friendica"
 msgstr "Post via Friendica"
-
-#: wppost.php:207
-msgid "Read the original post and comment stream on Friendica"
-msgstr "Den Original-Beitrag samt Kommentaren bei Friendica lesen"

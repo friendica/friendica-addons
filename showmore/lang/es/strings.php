@@ -1,8 +1,13 @@
 <?php
 
-$a->strings["\"Show more\" Settings"] = "Configuración de \"Muéstrame más\"";
-$a->strings["Enable Show More"] = "Activar Muéstrame más";
-$a->strings["Cutting posts after how much characters"] = "Cortar las publicaciones después de cuántos caracteres";
-$a->strings["Submit"] = "Envíar";
-$a->strings["Show More Settings saved."] = "Configuración de Muéstrame más guardada.";
-$a->strings["show more"] = "ver más";
+if(! function_exists("string_plural_select_es")) {
+function string_plural_select_es($n){
+	return ($n != 1);;
+}}
+;
+$a->strings["\"Show more\" Settings"] = "Ajustes de \"Mostrar más\"";
+$a->strings["Enable Show More"] = "Habilitar Mostrar Más";
+$a->strings["Cutting posts after how much characters"] = "Cortar entradas después de tantos carácteres";
+$a->strings["Submit"] = "Enviar";
+$a->strings["Show More Settings saved."] = "Ajustes de Mostrar Más guardados.";
+$a->strings["show more"] = "mostrar más";

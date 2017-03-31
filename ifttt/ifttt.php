@@ -48,7 +48,7 @@ function ifttt_settings(&$a,&$s) {
         $s .= '<div id="ifttt-configuration-wrapper">';
 	$s .= '<p>'.t("Create an account at <a href='http://www.ifttt.com'>IFTTT</a>. Create three Facebook recipes that are connected with <a href='https://ifttt.com/maker'>Maker</a> (In the form 'if Facebook then Maker') with the following parameters:").'</p>';
 	$s .= '<h4>URL</h4>';
-	$s .= '<p>'.$a->get_baseurl()."/ifttt/".'</p>';
+	$s .= '<p>' . $a->get_baseurl() . '/ifttt/' . $a->user['nickname'] . '</p>';
 	$s .= '<h4>Method</h4>';
 	$s .= '<p>POST</p>';
 	$s .= '<h4>Content Type</h4>';
@@ -155,8 +155,11 @@ function ifttt_message($uid, $item) {
 	//$_REQUEST["date"] = $item["date"];
 	//$_REQUEST["uri"] = $item["url"];
 
-	if (strstr($item["url"], "facebook.com"))
+	if (strstr($item["url"], "facebook.com")) {
+		$hash = hash("ripemd128", item["url"]);
 		$_REQUEST["extid"] = NETWORK_FACEBOOK;
+		$_REQUEST['message_id'] = item_new_uri($a->get_hostname(), $uid, NETWORK_FACEBOOK.":".$hash);
+	}
 
 	if ($item["type"] == "link") {
 		$data = query_page_info($item["link"]);

@@ -1,0 +1,54 @@
+# ADDON qcomment
+# Copyright (C)
+# This file is distributed under the same license as the Friendica qcomment addon package.
+# 
+# 
+# Translators:
+# Albert, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2016-11-17 22:22+0000\n"
+"Last-Translator: Albert\n"
+"Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: qcomment.php:51
+msgid ":-)"
+msgstr ":-)"
+
+#: qcomment.php:51
+msgid ":-("
+msgstr ":-("
+
+#: qcomment.php:51
+msgid "lol"
+msgstr "LOL"
+
+#: qcomment.php:54
+msgid "Quick Comment Settings"
+msgstr "Ajustes de Comentario Rápido"
+
+#: qcomment.php:56
+msgid ""
+"Quick comments are found near comment boxes, sometimes hidden. Click them to"
+" provide simple replies."
+msgstr "Los comentarios rápidos están junto a las cajas de comentario, a veces ocultos. Click sobre ellos para proveer respuestas simples."
+
+#: qcomment.php:57
+msgid "Enter quick comments, one per line"
+msgstr "Introducir comentarios rápidos, uno por línea"
+
+#: qcomment.php:61
+msgid "Submit"
+msgstr "Enviar"
+
+#: qcomment.php:75
+msgid "Quick Comment settings saved."
+msgstr "Ajustes de Comentario Rápido guardados."

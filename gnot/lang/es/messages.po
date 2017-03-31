@@ -1,0 +1,47 @@
+# ADDON gnot
+# Copyright (C)
+# This file is distributed under the same license as the Friendica gnot addon package.
+# 
+# 
+# Translators:
+# Albert, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2016-11-16 16:38+0000\n"
+"Last-Translator: Albert\n"
+"Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: gnot.php:48
+msgid "Gnot settings updated."
+msgstr "Ajustes de Gnot actualizados."
+
+#: gnot.php:79
+msgid "Gnot Settings"
+msgstr "Ajustes de Gnot"
+
+#: gnot.php:81
+msgid ""
+"Allows threading of email comment notifications on Gmail and anonymising the"
+" subject line."
+msgstr "Permite limpiar las notificaciones de comentario de email en Gmail y anonimizar la línea del tema."
+
+#: gnot.php:82
+msgid "Enable this plugin/addon?"
+msgstr "¿Habilitar este plugin/addon?"
+
+#: gnot.php:88
+msgid "Submit"
+msgstr "Enviar"
+
+#: gnot.php:97
+#, php-format
+msgid "[Friendica:Notify] Comment to conversation #%d"
+msgstr "[Friendica:Notify] Comentar en conversación #%d"

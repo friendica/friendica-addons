@@ -1,11 +1,16 @@
 <?php
 
-$a->strings["Post to blogger"] = "Publícar en Blogger";
-$a->strings["Blogger Post Settings"] = "Configuración de las publicaciones en Blogger";
-$a->strings["Enable Blogger Post Plugin"] = "Activar el módulo de publicación en Blogger";
+if(! function_exists("string_plural_select_es")) {
+function string_plural_select_es($n){
+	return ($n != 1);;
+}}
+;
+$a->strings["Post to blogger"] = "Entrada para blogger";
+$a->strings["Blogger Export"] = "Esportar Blogger";
+$a->strings["Enable Blogger Post Plugin"] = "Activar plugin de entrada de Blogger";
 $a->strings["Blogger username"] = "Nombre de usuario de Blogger";
 $a->strings["Blogger password"] = "Contraseña de Blogger";
-$a->strings["Blogger API URL"] = "Dirección de la API de Blogger";
-$a->strings["Post to Blogger by default"] = "Publicar en Blogger por defecto";
-$a->strings["Submit"] = "Envíar";
-$a->strings["Post from Friendica"] = "Publicado desde Friendica";
+$a->strings["Blogger API URL"] = "URL API de Blogger";
+$a->strings["Post to Blogger by default"] = "Entrada a Blogger por defecto";
+$a->strings["Save Settings"] = "Guardar ajustes";
+$a->strings["Post from Friendica"] = "Entrada desde Friendica";

@@ -26,7 +26,10 @@ function rendertime_page_end(&$a, &$o) {
 
 	$duration = microtime(true)-$a->performance["start"];
 
-	if (is_site_admin() AND ($_GET["mode"] != "minimal") AND !$a->is_mobile AND !$a->is_tablet) {
+	$ignored_modules = array("fbrowser");
+	$ignored = in_array($a->module, $ignored_modules);
+
+	if (is_site_admin() AND ($_GET["mode"] != "minimal") AND !$a->is_mobile AND !$a->is_tablet AND !$ignored) {
 		$o = $o.'<div class="renderinfo">'.sprintf(t("Database: %s/%s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: %s, Total: %s"),
 						round($a->performance["database"] - $a->performance["database_write"], 3),
 						round($a->performance["database_write"], 3),

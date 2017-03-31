@@ -10,4 +10,4 @@ CREATE TABLE IF NOT EXISTS `mailstream_item` (
        KEY `message-id` (`message-id`),
        KEY `created` (`created`),
        KEY `completed` (`completed`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

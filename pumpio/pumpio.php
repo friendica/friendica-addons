@@ -775,6 +775,10 @@ function pumpio_fetchtimeline(&$a, $uid) {
 				$_REQUEST["profile_uid"] = $uid;
 				$_REQUEST["source"] = "pump.io";
 
+				if (isset($post->object->id)) {
+					$_REQUEST['message_id'] = NETWORK_PUMPIO.":".$post->object->id;
+				}
+
 				if ($post->object->displayName != "")
 					$_REQUEST["title"] = html2bbcode($post->object->displayName);
 				else
@@ -831,8 +835,8 @@ function pumpio_dounlike(&$a, $uid, $self, $post, $own_id) {
 	if(link_compare($post->actor->url, $own_id)) {
 		$contactid = $self[0]['id'];
 	} else {
-		$r = q("SELECT * FROM `contact` WHERE `url` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
-			dbesc($post->actor->url),
+		$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
+			dbesc(normalise_link($post->actor->url)),
 			intval($uid)
 		);
 
@@ -859,6 +863,11 @@ function pumpio_dounlike(&$a, $uid, $self, $post, $own_id) {
 
 function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = true) {
 	require_once('include/items.php');
+
+	if ($post->object->id == "") {
+		logger('Got empty like: '.print_r($post, true), LOGGER_DEBUG);
+		return;
+	}
 
 	// Searching for the liked post
 	// Two queries for speed issues
@@ -895,8 +904,8 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 		$post->actor->url = $self[0]['url'];
 		$post->actor->image->url = $self[0]['photo'];
 	} else {
-		$r = q("SELECT * FROM `contact` WHERE `url` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
-			dbesc($post->actor->url),
+		$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
+			dbesc(normalise_link($post->actor->url)),
 			intval($uid)
 		);
 
@@ -951,52 +960,24 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 
 function pumpio_get_contact($uid, $contact, $no_insert = false) {
 
-	if (function_exists("update_gcontact")) {
-		update_gcontact(array("url" => $contact->url, "network" => NETWORK_PUMPIO, "generation" => 2,
-				"photo" => $contact->image->url, "name" => $contact->displayName,  "hide" => true,
-				"nick" => $contact->preferredUsername, "location" => $contact->location->displayName,
-				"about" => $contact->summary, "addr" => str_replace("acct:", "", $contact->id)));
-
-		$cid = get_contact($contact->url, $uid);
-	} else {
-		// Old Code
-		$r = q("SELECT id FROM unique_contacts WHERE url='%s' LIMIT 1",
-			dbesc(normalise_link($contact->url)));
-
-		if (count($r) == 0)
-			q("INSERT INTO unique_contacts (url, name, nick, avatar) VALUES ('%s', '%s', '%s', '%s')",
-				dbesc(normalise_link($contact->url)),
-				dbesc($contact->displayName),
-				dbesc($contact->preferredUsername),
-				dbesc($contact->image->url));
-		else
-			q("UPDATE unique_contacts SET name = '%s', nick = '%s', avatar = '%s' WHERE url = '%s'",
-				dbesc($contact->displayName),
-				dbesc($contact->preferredUsername),
-				dbesc($contact->image->url),
-				dbesc(normalise_link($contact->url)));
-
-		if (DB_UPDATE_VERSION >= "1177")
-			q("UPDATE `unique_contacts` SET `location` = '%s', `about` = '%s' WHERE url = '%s'",
-				dbesc($contact->location->displayName),
-				dbesc($contact->summary),
-				dbesc(normalise_link($contact->url)));
-
-		$cid = 0;
-	}
+	update_gcontact(array("url" => $contact->url, "network" => NETWORK_PUMPIO, "generation" => 2,
+			"photo" => $contact->image->url, "name" => $contact->displayName,  "hide" => true,
+			"nick" => $contact->preferredUsername, "location" => $contact->location->displayName,
+			"about" => $contact->summary, "addr" => str_replace("acct:", "", $contact->id)));
+	$cid = get_contact($contact->url, $uid);
 
 	if ($no_insert)
 		return($cid);
 
-	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `url` = '%s' LIMIT 1",
-		intval($uid), dbesc($contact->url));
+	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `nurl` = '%s' LIMIT 1",
+		intval($uid), dbesc(normalise_link($contact->url)));
 
-	if(!count($r)) {
+	if (!count($r)) {
 		// create contact record
-		q("INSERT INTO `contact` ( `uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
+		q("INSERT INTO `contact` (`uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
 					`name`, `nick`, `photo`, `network`, `rel`, `priority`,
-					`writable`, `blocked`, `readonly`, `pending` )
-				VALUES ( %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, %d, 0, 0, 0 ) ",
+					`location`, `about`, `writable`, `blocked`, `readonly`, `pending` )
+				VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', %d, 0, 0, 0)",
 			intval($uid),
 			dbesc(datetime_convert()),
 			dbesc($contact->url),
@@ -1011,18 +992,21 @@ function pumpio_get_contact($uid, $contact, $no_insert = false) {
 			dbesc(NETWORK_PUMPIO),
 			intval(CONTACT_IS_FRIEND),
 			intval(1),
+			dbesc($contact->location->displayName),
+			dbesc($contact->summary),
 			intval(1)
 		);
 
-		$r = q("SELECT * FROM `contact` WHERE `url` = '%s' AND `uid` = %d LIMIT 1",
-			dbesc($contact->url),
+		$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d LIMIT 1",
+			dbesc(normalise_link($contact->url)),
 			intval($uid)
 			);
 
-		if(! count($r))
+		if (!count($r)) {
 			return(false);
+		}
 
-		$contact_id  = $r[0]['id'];
+		$contact_id = $r[0]['id'];
 
 		$g = q("select def_gid from user where uid = %d limit 1",
 			intval($uid)
@@ -1032,15 +1016,6 @@ function pumpio_get_contact($uid, $contact, $no_insert = false) {
 			require_once('include/group.php');
 			group_add_member($uid,'',$contact_id,$g[0]['def_gid']);
 		}
-
-                if (DB_UPDATE_VERSION >= "1177")
-			q("UPDATE `contact` SET `location` = '%s',
-						`about` = '%s'
-					WHERE `id` = %d",
-				dbesc($contact->location->displayName),
-				dbesc($contact->summary),
-				intval($contact_id)
-			);
 	} else {
 		$contact_id = $r[0]["id"];
 
@@ -1159,16 +1134,16 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 			$post->actor->image->url = $self[0]['photo'];
 		} elseif ($contact_id == 0) {
 			// Take an existing contact, the contact of the note or - as a fallback - the id of the user
-			$r = q("SELECT * FROM `contact` WHERE `url` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
-				dbesc($post->actor->url),
+			$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
+				dbesc(normalise_link($post->actor->url)),
 				intval($uid)
 			);
 
 			if(count($r))
 				$contact_id = $r[0]['id'];
 			else {
-				$r = q("SELECT * FROM `contact` WHERE `url` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
-					dbesc($post->actor->url),
+				$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
+					dbesc(normalise_link($post->actor->url)),
 					intval($uid)
 				);
 
@@ -1352,9 +1327,10 @@ function pumpio_fetchinbox(&$a, $uid) {
 	$self = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 		intval($uid));
 
-	$lastitems = q("SELECT uri FROM `item` WHERE `network` = '%s' AND `uid` = %d AND
- 			`extid` != '' AND `id` = `parent`
-			ORDER BY `commented` DESC LIMIT 10",
+	$lastitems = q("SELECT `uri` FROM `thread`
+			INNER JOIN `item` ON `item`.`id` = `thread`.`iid`
+			WHERE `thread`.`network` = '%s' AND `thread`.`uid` = %d AND `item`.`extid` != ''
+			ORDER BY `thread`.`commented` DESC LIMIT 10",
 				dbesc(NETWORK_PUMPIO),
 				intval($uid)
 			);

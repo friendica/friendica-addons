@@ -10,6 +10,8 @@
 define('FROMGPLUS_DEFAULT_POLL_INTERVAL', 30); // given in minutes
 
 require_once('mod/share.php');
+require_once('mod/parse_url.php');
+require_once('include/text.php');
 
 function fromgplus_install() {
 	register_hook('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
@@ -38,6 +40,7 @@ function fromgplus_addon_settings(&$a,&$s) {
 		return;
 
 	$enable_checked = (intval(get_pconfig(local_user(),'fromgplus','enable')) ? ' checked="checked"' : '');
+	$keywords_checked = (intval(get_pconfig(local_user(), 'fromgplus', 'keywords')) ? ' checked="checked"' : '');
 	$account = get_pconfig(local_user(),'fromgplus','account');
 
 	$s .= '<span id="settings_fromgplus_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_fromgplus_expanded\'); openClose(\'settings_fromgplus_inflated\');">';
@@ -56,6 +59,9 @@ function fromgplus_addon_settings(&$a,&$s) {
 	$s .= '<label id="fromgplus-label" for="fromgplus-account">'.t('Google Account ID').' </label>';
 	$s .= '<input id="fromgplus-account" type="text" name="fromgplus-account" value="'.$account.'" />';
 	$s .= '</div><div class="clear"></div>';
+	$s .= '<label id="fromgplus-keywords-label" for="fromgplus-keywords">'.t('Add keywords to post').'</label>';
+	$s .= '<input id="fromgplus-keywords" type="checkbox" name="fromgplus-keywords" value="1"'.$keywords_checked.' />';
+	$s .= '<div class="clear"></div>';
 
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="fromgplus-submit" name="fromgplus-submit" 
 class="settings-submit" value="' . t('Save Settings') . '" /></div>';
@@ -73,6 +79,8 @@ function fromgplus_addon_settings_post(&$a,&$b) {
 		set_pconfig(local_user(),'fromgplus','account',trim($_POST['fromgplus-account']));
 		$enable = ((x($_POST,'fromgplus-enable')) ? intval($_POST['fromgplus-enable']) : 0);
 		set_pconfig(local_user(),'fromgplus','enable', $enable);
+		$keywords = ((x($_POST, 'fromgplus-keywords')) ? intval($_POST['fromgplus-keywords']) : 0);
+		set_pconfig(local_user(),'fromgplus', 'keywords', $keywords);
 
 		if (!$enable)
 			del_pconfig(local_user(),'fromgplus','lastdate');
@@ -129,7 +137,7 @@ function fromgplus_cron($a,$b) {
 	set_config('fromgplus','last_poll', time());
 }
 
-function fromgplus_post($a, $uid, $source, $body, $location, $coord) {
+function fromgplus_post($a, $uid, $source, $body, $location, $coord, $id) {
 
 	//$uid = 2;
 
@@ -156,6 +164,10 @@ function fromgplus_post($a, $uid, $source, $body, $location, $coord) {
 	$_REQUEST['profile_uid'] = $uid;
 	$_REQUEST['source'] = $source;
 	$_REQUEST['extid'] = NETWORK_GPLUS;
+
+	if (isset($id)) {
+		$_REQUEST['message_id'] = item_new_uri($a->get_hostname(), $uid, NETWORK_GPLUS.':'.$id);
+	}
 
 	// $_REQUEST['verb']
 	// $_REQUEST['parent']
@@ -324,6 +336,11 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 				if ($quote != "")
 					$pagedata["text"] = $quote;
 
+				// Add Keywords to page link
+				$data = parseurl_getsiteinfo_cached($pagedata["url"], true);
+				if (isset($data["keywords"]) AND get_pconfig($uid, 'fromgplus', 'keywords')) {
+					$pagedata["keywords"] = $data["keywords"];
+				}
 				break;
 
 			case "photo":
@@ -446,6 +463,8 @@ function fromgplus_fetch($a, $uid) {
 		if ($lastdate < strtotime($item->published))
 			$lastdate = strtotime($item->published);
 
+		set_pconfig($uid,'fromgplus','lastdate', $lastdate);
+
 		if ($first_time)
 			continue;
 
@@ -479,7 +498,7 @@ function fromgplus_fetch($a, $uid) {
 					} elseif (isset($item->address))
 						$location = $item->address;
 
-					fromgplus_post($a, $uid, $item->provider->title, $post, $location, $coord);
+					fromgplus_post($a, $uid, $item->provider->title, $post, $location, $coord, $item->id);
 
 					break;
 
@@ -530,7 +549,7 @@ function fromgplus_fetch($a, $uid) {
 					} elseif (isset($item->address))
 						$location = $item->address;
 
-					fromgplus_post($a, $uid, $item->provider->title, $post, $location, $coord);
+					fromgplus_post($a, $uid, $item->provider->title, $post, $location, $coord, $item->id);
 					break;
 			}
 		}
