@@ -1,0 +1,123 @@
+# ADDON twitter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica twitter addon package.
+# 
+# 
+# Translators:
+# Stanislav N. <pztrn@pztrn.name>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2017-04-08 05:49+0000\n"
+"Last-Translator: Stanislav N. <pztrn@pztrn.name>\n"
+"Language-Team: Russian (http://www.transifex.com/Friendica/friendica/language/ru/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: twitter.php:77
+msgid "Post to Twitter"
+msgstr "Отправить в Twitter"
+
+#: twitter.php:129
+msgid "Twitter settings updated."
+msgstr "Настройки Twitter обновлены."
+
+#: twitter.php:157
+msgid "Twitter Posting Settings"
+msgstr "Настройка отправки сообщений в Twitter"
+
+#: twitter.php:164
+msgid ""
+"No consumer key pair for Twitter found. Please contact your site "
+"administrator."
+msgstr "Не найдено пары потребительских ключей для Twitter. Пожалуйста, обратитесь к администратору сайта."
+
+#: twitter.php:183
+msgid ""
+"At this Friendica instance the Twitter plugin was enabled but you have not "
+"yet connected your account to your Twitter account. To do so click the "
+"button below to get a PIN from Twitter which you have to copy into the input"
+" box below and submit the form. Only your <strong>public</strong> posts will"
+" be posted to Twitter."
+msgstr "Чтобы подключиться к Twitter аккаунту, нажмите на кнопку ниже, чтобы получить код безопасности от Twitter, который нужно скопировать в поле ввода ниже, и отправить форму. Только ваши <strong>публичные сообщения</strong> будут отправляться на Twitter."
+
+#: twitter.php:184
+msgid "Log in with Twitter"
+msgstr "Войдите через Twitter"
+
+#: twitter.php:186
+msgid "Copy the PIN from Twitter here"
+msgstr "Скопируйте PIN с Twitter сюда"
+
+#: twitter.php:191 twitter.php:229 twitter.php:556
+msgid "Submit"
+msgstr "Подтвердить"
+
+#: twitter.php:200
+msgid "Currently connected to: "
+msgstr "В настоящее время соединены с: "
+
+#: twitter.php:201
+msgid ""
+"If enabled all your <strong>public</strong> postings can be posted to the "
+"associated Twitter account. You can choose to do so by default (here) or for"
+" every posting separately in the posting options when writing the entry."
+msgstr "Если включено, то все ваши <strong>общественные сообщения</strong> могут быть отправлены на связанный аккаунт Twitter. Вы можете сделать это по умолчанию (здесь) или для каждого сообщения отдельно при написании записи."
+
+#: twitter.php:203
+msgid ""
+"<strong>Note</strong>: Due your privacy settings (<em>Hide your profile "
+"details from unknown viewers?</em>) the link potentially included in public "
+"postings relayed to Twitter will lead the visitor to a blank page informing "
+"the visitor that the access to your profile has been restricted."
+msgstr "<strong>Внимание</strong>: Из-за настроек приватности (<em>Hide your profile details from unknown viewers?</em>) ссылка, которая может быть включена в твит, будет вести посетителя на пустую страницу с информированием о том, что доступ к профилю запрещен."
+
+#: twitter.php:206
+msgid "Allow posting to Twitter"
+msgstr "Разрешить отправку сообщений на Twitter"
+
+#: twitter.php:209
+msgid "Send public postings to Twitter by default"
+msgstr "Отправлять сообщения для всех в Twitter по умолчанию"
+
+#: twitter.php:213
+msgid "Mirror all posts from twitter that are no replies or retweets"
+msgstr "Получать посты с Twitter у которых нет ответов и ретвитов"
+
+#: twitter.php:217
+msgid "Shortening method that optimizes the tweet"
+msgstr "Метод сокращения ссылок для оптимизации твита"
+
+#: twitter.php:221
+msgid "Send linked #-tags and @-names to Twitter"
+msgstr "Отправлять #-теги и @-имена в Twitter ссылками"
+
+#: twitter.php:226
+msgid "Clear OAuth configuration"
+msgstr "Удалить конфигурацию OAuth"
+
+#: twitter.php:550
+msgid "Settings updated."
+msgstr "Настройки обновлены."
+
+#: twitter.php:558
+msgid "Consumer key"
+msgstr "Consumer key"
+
+#: twitter.php:559
+msgid "Consumer secret"
+msgstr "Consumer secret"
+
+#: twitter.php:560
+msgid "Name of the Twitter Application"
+msgstr "Имя приложения для Twitter"
+
+#: twitter.php:560
+msgid ""
+"set this to avoid mirroring postings from ~friendica back to ~friendica"
+msgstr "установите это для избежания отправки сообщений из Friendica обратно в Friendica"
