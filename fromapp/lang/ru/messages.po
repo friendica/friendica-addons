@@ -1,0 +1,41 @@
+# ADDON fromapp
+# Copyright (C)
+# This file is distributed under the same license as the Friendica fromapp addon package.
+# 
+# 
+# Translators:
+# Stanislav N. <pztrn@pztrn.name>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2017-04-08 17:15+0000\n"
+"Last-Translator: Stanislav N. <pztrn@pztrn.name>\n"
+"Language-Team: Russian (http://www.transifex.com/Friendica/friendica/language/ru/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: fromapp.php:38
+msgid "Fromapp settings updated."
+msgstr "Настройки Fromapp обновлены."
+
+#: fromapp.php:64
+msgid "FromApp Settings"
+msgstr "Настройки Fromapp"
+
+#: fromapp.php:66
+msgid ""
+"The application name you would like to show your posts originating from."
+msgstr "Имя приложения, которое будет показываться при просмотре сообщения."
+
+#: fromapp.php:70
+msgid "Use this application name even if another application was used."
+msgstr "Использовать это имя приложения даже если используется другое приложение."
+
+#: fromapp.php:77
+msgid "Submit"
+msgstr "Добавить"
