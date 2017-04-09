@@ -1,0 +1,52 @@
+# ADDON blackout
+# Copyright (C)
+# This file is distributed under the same license as the Friendica blackout addon package.
+# 
+# 
+# Translators:
+# Stanislav N. <pztrn@pztrn.name>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2017-04-08 05:34+0000\n"
+"Last-Translator: Stanislav N. <pztrn@pztrn.name>\n"
+"Language-Team: Russian (http://www.transifex.com/Friendica/friendica/language/ru/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: blackout.php:99
+msgid "Save Settings"
+msgstr "Сохранить настройки"
+
+#: blackout.php:100
+msgid "Redirect URL"
+msgstr "Ссылка для перенаправления"
+
+#: blackout.php:100
+msgid "all your visitors from the web will be redirected to this URL"
+msgstr "все посетители будут перенаправлены на этот URL"
+
+#: blackout.php:101
+msgid "Begin of the Blackout"
+msgstr "Начало блэкаута"
+
+#: blackout.php:101
+msgid ""
+"format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, "
+"<em>hh</em> hour and <em>mm</em> minute"
+msgstr "формат: <em>YYYY</em> год, <em>MM</em> месяц, <em>DD</em> день, <em>hh</em> час и <em>mm</em> минута"
+
+#: blackout.php:102
+msgid "End of the Blackout"
+msgstr "Конец блэкаута"
+
+#: blackout.php:108
+msgid ""
+"The end-date is prior to the start-date of the blackout, you should fix "
+"this."
+msgstr "Указана более ранняя дата окончания, чем дата начала. Это надо исправить."
