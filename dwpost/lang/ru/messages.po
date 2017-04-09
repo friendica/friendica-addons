@@ -1,0 +1,48 @@
+# ADDON dwpost
+# Copyright (C)
+# This file is distributed under the same license as the Friendica dwpost addon package.
+# 
+# 
+# Translators:
+# Stanislav N. <pztrn@pztrn.name>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2017-04-08 17:09+0000\n"
+"Last-Translator: Stanislav N. <pztrn@pztrn.name>\n"
+"Language-Team: Russian (http://www.transifex.com/Friendica/friendica/language/ru/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: dwpost.php:39
+msgid "Post to Dreamwidth"
+msgstr "Отправить в Dreamwidth"
+
+#: dwpost.php:70
+msgid "Dreamwidth Post Settings"
+msgstr "Настройки сообщений Dreamwidth"
+
+#: dwpost.php:72
+msgid "Enable dreamwidth Post Plugin"
+msgstr "Включить плагин отправки сообщений в Dreamwidth"
+
+#: dwpost.php:77
+msgid "dreamwidth username"
+msgstr "Имя пользователя Dreamwidth"
+
+#: dwpost.php:82
+msgid "dreamwidth password"
+msgstr "Пароль Dreamwidth"
+
+#: dwpost.php:87
+msgid "Post to dreamwidth by default"
+msgstr "Отправлять сообщения в Dreamwidth по умолчанию"
+
+#: dwpost.php:93
+msgid "Submit"
+msgstr "Добавить"
