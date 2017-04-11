@@ -2,12 +2,25 @@
 /**
  * Name: Secure Mail
  * Description: Send notification mail encrypted with user-defined public GPG key
- * Version: 1.0
+ * Version: 2.0
  * Author: Fabio Comuni <http://kirgroup.com/profile/fabrixxm>
  */
- require_once 'php-gpg/libs/GPG.php';
 
- function securemail_install() {
+require_once "include/Emailer.php";
+
+/* because the fraking openpgp-php is in composer, require libs in composer
+ * and then don't use autoloader to load classes... */
+$path = __DIR__."/vendor/phpseclib/phpseclib/phpseclib/";
+set_include_path(get_include_path() . PATH_SEPARATOR . $path);
+/* so, we don't use the autoloader and include what we need */
+$path = __DIR__."/vendor/singpolyma/openpgp-php/lib";
+set_include_path(get_include_path() . PATH_SEPARATOR . $path);
+
+require_once "openpgp.php";
+require_once "openpgp_crypt_symmetric.php";
+
+
+function securemail_install() {
     register_hook('plugin_settings', 'addon/securemail/securemail.php', 'securemail_settings');
     register_hook('plugin_settings_post', 'addon/securemail/securemail.php', 'securemail_settings_post');
 
@@ -27,66 +40,136 @@ function securemail_uninstall() {
 
 
 function securemail_settings(&$a,&$s){
-    if(! local_user())
-	    return;
+    if(! local_user()) {
+        return;
+    }
 
-    $enable_checked = (intval(get_pconfig(local_user(),'securemail','enable')) ? ' checked="checked"' : '');
+    $enable = intval(get_pconfig(local_user(),'securemail','enable'));
     $publickey = get_pconfig(local_user(),'securemail','pkey');
 
-    # all of this should be in a template...
-    $s .= '<span id="settings_securemail_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_securemail_expanded\'); openClose(\'settings_securemail_inflated\');">';
-    $s .= '<h3>' . t('"Secure Mail" Settings').'</h3>';
-    $s .= '</span>';
-    $s .= '<div id="settings_securemail_expanded" class="settings-block" style="display: none;">';
-    $s .= '<span class="fakelink" onclick="openClose(\'settings_securemail_expanded\'); openClose(\'settings_securemail_inflated\');">';
-    $s .= '<h3>' . t('"Secure Mail" Settings').'</h3>';
-    $s .= '</span>';
-    $s .= '<div id="securemail-wrapper">';
+    $t = get_markup_template( "admin.tpl", "addon/securemail/" );
 
-    $s .= '<input id="securemail-enable" type="checkbox" name="securemail-enable" value="1"'.$enable_checked.' />';
-    $s .= '<label id="securemail-enable-label" for="securemail-enable">'.t('Enable Secure Mail').'</label>';
+    $s = replace_macros($t, array(
+        '$title' => t('"Secure Mail" Settings'),
+        '$submit' => t('Save Settings'),
+        '$test' => t('Save and send test'), //NOTE: update also in 'post'
+        '$enable' => array('securemail-enable', t('Enable Secure Mail'), $enable, ""),
+        '$publickey' => array('securemail-pkey', t('Public key'), $publickey, t("Your public PGP key, ascii armored format"), "rows='10'")
+    ));
 
-    $s .= '<div class="clear"></div>';
-    $s .= '<label id="securemail-label" for="securemail-pkey">'.t('Public key').' </label>';
-    $s .= '<textarea id="securemail-pkey" name="securemail-pkey">'.$publickey.'</textarea>';
-    $s .= '</div><div class="clear"></div>';
 
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="securemail-submit" name="securemail-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
-    $s .= '</div>';
 
     return;
 }
 function securemail_settings_post(&$a, &$b){
 
-    if(! local_user())
+    if(! local_user()) {
         return;
+    }
 
     if($_POST['securemail-submit']) {
-		set_pconfig(local_user(),'securemail','pkey',trim($_POST['securemail-pkey']));
-		$enable = ((x($_POST,'securemail-enable')) ? 1 : 0);
-		set_pconfig(local_user(),'securemail','enable', $enable);
-		info( t('Secure Mail Settings saved.') . EOL);
+        set_pconfig(local_user(),'securemail','pkey',trim($_POST['securemail-pkey']));
+        $enable = ((x($_POST,'securemail-enable')) ? 1 : 0);
+        set_pconfig(local_user(),'securemail','enable', $enable);
+        info( t('Secure Mail Settings saved.') . EOL);
+
+        if ($_POST['securemail-submit'] == t('Save and send test')) {
+            $sitename = $a->config['sitename'];
+
+            $hostname = $a->get_hostname();
+            if (strpos($hostname, ':')){
+                $hostname = substr($hostname, 0, strpos($hostname, ':'));
+            }
+
+            $sender_email = $a->config['sender_email'];
+            if (empty($sender_email)){
+                $sender_email = 'noreply@'.$hostname;
+            }
+
+            $subject = "Friendica - Secure Mail - Test";
+            $message = "This is a test message from your Friendica Secure Mail addon.\n\nBye!";
+
+            $params = array(
+                'uid' => local_user(),
+                'fromName' => $sitename,
+                'fromEmail' => $sender_email,
+                'toEmail' => $a->user['email'],
+                'messageSubject' => $subject,
+                'htmlVersion' => "<p>{$message}</p>",
+                'textVersion' => $message,
+            );
+
+            // enable addon for test
+            set_pconfig(local_user(),'securemail','enable', 1);
+
+            $res = Emailer::send($params);
+
+            // revert to saved value
+            set_pconfig(local_user(),'securemail','enable', $enable);
+
+            if ($res) {
+                info( t("Test email sent") . EOL);
+            } else {
+                notice( t("There was an error sending the test email") .EOL);
+            }
+        }
     }
 }
 
 function securemail_emailer_send_prepare(&$a, &$b) {
-    if (!x($b,'uid')) return;
-	$uid = $b['uid'];
+    if (!x($b,'uid')) {
+        return;
+    }
+
+    $uid = $b['uid'];
 
     $enable_checked = get_pconfig($uid,'securemail','enable');
-    if (!$enable_checked) return;
+    if (!$enable_checked) {
+        return;
+    }
 
     $public_key_ascii = get_pconfig($uid,'securemail','pkey');
 
-    $gpg = new GPG();
+    preg_match('/-----BEGIN ([A-Za-z ]+)-----/', $public_key_ascii, $matches);
+    $marker = (empty($matches[1])) ? 'MESSAGE' : $matches[1];
+    $public_key = OpenPGP::unarmor($public_key_ascii, $marker);
 
-    # create an instance of a GPG public key object based on ASCII key
-    $pub_key = new GPG_Public_Key($public_key_ascii);
+    $key = OpenPGP_Message::parse($public_key);
 
-    # using the key, encrypt your plain text using the public key
-    $txt_encrypted = $gpg->encrypt($pub_key,$b['textVersion']);
-    #$html_encrypted = $gpg->encrypt($pub_key,$b['htmlVersion']);
+    $data = new OpenPGP_LiteralDataPacket($b['textVersion'], array(
+        'format' => 'u',
+        'filename' => 'encrypted.gpg'
+    ));
+    $encrypted = OpenPGP_Crypt_Symmetric::encrypt($key, new OpenPGP_Message(array($data)));
+    $armored_encrypted = wordwrap(OpenPGP::enarmor($encrypted->to_bytes(), "PGP MESSAGE"), 64, "\n", true);
 
-    $b['textVersion'] = $txt_encrypted;
+    $b['textVersion'] = $armored_encrypted;
     $b['htmlVersion'] = null;
 }
+
+
+/**
+ * add addon composer autoloader maps to system autoloader
+
+function securemail_autoloader() {
+
+    $loader = require dirname(dirname(__DIR__))."/vendor/autoload.php";
+
+    $map = require __DIR__ . '/vendor/composer/autoload_namespaces.php';
+    foreach ($map as $namespace => $path) {
+        $loader->set($namespace, $path);
+    }
+
+    $map = require __DIR__ . '/vendor/composer/autoload_psr4.php';
+    foreach ($map as $namespace => $path) {
+        $loader->setPsr4($namespace, $path);
+    }
+
+    $classMap = require __DIR__ . '/vendor/composer/autoload_classmap.php';
+    if ($classMap) {
+        $loader->addClassMap($classMap);
+    }
+}
+securemail_autoloader();
+
+*/
