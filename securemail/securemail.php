@@ -48,7 +48,7 @@ function securemail_uninstall() {
  *
  * @see App
  */
-function securemail_settings(App &$a, string &$s){
+function securemail_settings(App &$a, &$s){
     if (!local_user()) {
         return;
     }
@@ -103,7 +103,7 @@ function securemail_settings_post(App &$a, array &$b){
             }
 
             $subject = 'Friendica - Secure Mail - Test';
-            $message = 'This is a test message from your Friendica Secure Mail addon.\n\nBye!';
+            $message = 'This is a test message from your Friendica Secure Mail addon.';
 
             $params = array(
                 'uid' => local_user(),
@@ -143,7 +143,7 @@ function securemail_settings_post(App &$a, array &$b){
  * @see App
  */
 function securemail_emailer_send_prepare(App &$a, array &$b) {
-    if (!x($b,'uid')) {
+    if (!x($b, 'uid')) {
         return;
     }
 
@@ -170,7 +170,7 @@ function securemail_emailer_send_prepare(App &$a, array &$b) {
     $armored_encrypted = wordwrap(
         OpenPGP::enarmor($encrypted->to_bytes(), 'PGP MESSAGE'),
         64,
-        '\n',
+        "\n",
         true
     );
 
