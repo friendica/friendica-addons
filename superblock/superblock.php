@@ -6,7 +6,7 @@
  * Description: block people
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- * 
+ *
  */
 
 function superblock_install() {
@@ -36,29 +36,34 @@ function superblock_uninstall() {
 
 function superblock_addon_settings(&$a,&$s) {
 
-	if(! local_user())
+	if(! local_user()) {
 		return;
+	}
 
-    /* Add our stylesheet to the page so we can make our settings look nice */
+	/* Add our stylesheet to the page so we can make our settings look nice */
 
-    $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/superblock/superblock.css' . '" media="all" />' . "\r\n";
-
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/superblock/superblock.css' . '" media="all" />' . "\r\n";
 
 	$words = get_pconfig(local_user(),'system','blocked');
-	if(! $words)
+	if(! $words) {
 		$words = '';
+	}
 
-    $s .= '<div class="settings-block">';
-    $s .= '<h3>' . t('"Superblock" Settings') . '</h3>';
-    $s .= '<div id="superblock-wrapper">';
-    $s .= '<label id="superblock-label" for="superblock-words">' . t('Comma separated profile URLS to block') . ' </label>';
-    $s .= '<textarea id="superblock-words" type="text" name="superblock-words" >' . htmlspecialchars($words) . '</textarea>';
-    $s .= '</div><div class="clear"></div>';
+	$s .= '<span id="settings_superblock_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_superblock_expanded\'); openClose(\'settings_superblock_inflated\');">';
+	$s .= '<h3>' . t('"Superblock"') . '</h3>';
+	$s .= '</span>';
+	$s .= '<div id="settings_superblock_expanded" class="settings-block" style="display: none;">';
+	$s .= '<span class="fakelink" onclick="openClose(\'settings_superblock_expanded\'); openClose(\'settings_superblock_inflated\');">';
+	$s .= '<h3>' . t('"Superblock"') . '</h3>';
+	$s .= '</span>';
+	$s .= '<div id="superblock-wrapper">';
+	$s .= '<label id="superblock-label" for="superblock-words">' . t('Comma separated profile URLS to block') . ' </label>';
+	$s .= '<textarea id="superblock-words" type="text" name="superblock-words" >' . htmlspecialchars($words) . '</textarea>';
+	$s .= '</div><div class="clear"></div>';
 
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="superblock-submit" name="superblock-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="superblock-submit" name="superblock-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
 
 	return;
-
 }
 
 function superblock_addon_settings_post(&$a,&$b) {
