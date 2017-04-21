@@ -1,6 +1,6 @@
-# ADDON blockem
+# ADDON superblock
 # Copyright (C) 
-# This file is distributed under the same license as the Friendica blockem addon package.
+# This file is distributed under the same license as the Friendica superblock addon package.
 # 
 #
 #, fuzzy
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2017-04-21 08:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,35 +17,26 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: blockem.php:51
-msgid "\"Blockem\" Settings"
+#: superblock.php:53 superblock.php:57
+msgid "\"Superblock\""
 msgstr ""
 
-#: blockem.php:53
+#: superblock.php:60
 msgid "Comma separated profile URLS to block"
 msgstr ""
 
-#: blockem.php:57
-msgid "Submit"
+#: superblock.php:64
+msgid "Save Settings"
 msgstr ""
 
-#: blockem.php:70
-msgid "BLOCKEM Settings saved."
+#: superblock.php:76
+msgid "SUPERBLOCK Settings saved."
 msgstr ""
 
-#: blockem.php:105
-#, php-format
-msgid "Blocked %s - Click to open/close"
+#: superblock.php:148
+msgid "Block Completely"
 msgstr ""
 
-#: blockem.php:160
-msgid "Unblock Author"
-msgstr ""
-
-#: blockem.php:162
-msgid "Block Author"
-msgstr ""
-
-#: blockem.php:194
-msgid "blockem settings updated"
+#: superblock.php:168
+msgid "superblock settings updated"
 msgstr ""
