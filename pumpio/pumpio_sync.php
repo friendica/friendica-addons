@@ -1,4 +1,7 @@
 <?php
+
+use Friendica\App;
+
 if (!file_exists("boot.php") AND (sizeof($_SERVER["argv"]) != 0)) {
 	$directory = dirname($_SERVER["argv"][0]);
 
