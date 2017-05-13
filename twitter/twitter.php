@@ -688,7 +688,15 @@ function twitter_expire($a,$b) {
 	if ($days == 0)
 		return;
 
-	$r = q("DELETE FROM `item` WHERE `deleted` AND `network` = '%s'", dbesc(NETWORK_TWITTER));
+	if (method_exists('dba', 'delete')) {
+		$r = dba::select('item', array('id'), array('deleted' => true, 'network' => NETWORK_TWITTER));
+		while ($row = dba::fetch($r)) {
+			dba::delete('item', array('id' => $row['id']));
+		}
+		dba::close($r);
+	} else {
+		$r = q("DELETE FROM `item` WHERE `deleted` AND `network` = '%s'", dbesc(NETWORK_TWITTER));
+	}
 
 	require_once("include/items.php");
 
