@@ -6,6 +6,8 @@
  * Author: Fabio Comuni <http://kirgroup.com/profile/fabrixxm>
  */
 
+use Friendica\App;
+
 require_once 'include/Emailer.php';
 
 /* because the fraking openpgp-php is in composer, require libs in composer
