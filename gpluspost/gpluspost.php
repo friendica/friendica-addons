@@ -98,7 +98,7 @@ function gpluspost_settings(&$a,&$s) {
 	if (gpluspost_nextscripts()) {
 		/*
 		// To-Do: Option to check the credentials if requested
-		if (($username != "") AND ($password != "")) {
+		if (($username != "") && ($password != "")) {
 			require_once("addon/gpluspost/postToGooglePlus.php");
 			$loginError = doConnectToGooglePlus2($username, $password);
 			if ($loginError)
@@ -231,7 +231,7 @@ function gpluspost_send(&$a,&$b) {
 		return;
 
 	// if post comes from Google+ don't send it back
-	if (!get_pconfig($b["uid"],'gpluspost','no_loop_prevention') and (($b['app'] == "Google+") OR ($b["extid"] == NETWORK_GPLUS)))
+	if (!get_pconfig($b["uid"],'gpluspost','no_loop_prevention') && (($b['app'] == "Google+") || ($b["extid"] == NETWORK_GPLUS)))
 		return;
 
 	if (!gpluspost_nextscripts()) {
@@ -331,7 +331,7 @@ function gpluspost_queue_hook(&$a,&$b) {
 
 		logger('gpluspost_queue: run');
 
-		$r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` on `contact`.`uid` = `user`.`uid` 
+		$r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` on `contact`.`uid` = `user`.`uid`
 			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
 			intval($x['cid'])
 		);
@@ -527,7 +527,7 @@ function gpluspost_feeditem($pid, $uid) {
 		else if ($image != "")
 			$msglink = $image;
 
-		if (($msglink == "") AND $skipwithoutlink)
+		if (($msglink == "") && $skipwithoutlink)
 			continue;
 		else if ($msglink == "")
 			$msglink = $item["plink"];

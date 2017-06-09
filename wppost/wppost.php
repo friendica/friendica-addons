@@ -257,7 +257,7 @@ function wppost_send(&$a,&$b) {
 				$title = html2plain(bbcode($title, false, false), 0, true)."\n";
 				$pos = strpos($title, "\n");
 				$trailer = "";
-				if (($pos == 0) or ($pos > 100)) {
+				if (($pos == 0) || ($pos > 100)) {
 					$pos = 100;
 					$trailer = "...";
 				}

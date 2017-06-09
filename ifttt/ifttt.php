@@ -132,7 +132,7 @@ function ifttt_post(&$a) {
 	if (isset($_REQUEST["url"]))
 		$item["url"] = trim($_REQUEST["url"]);
 
-	if ((substr($item["msg"], 0, 3) == "<<<") AND (substr($item["msg"], -3, 3) == ">>>"))
+	if ((substr($item["msg"], 0, 3) == "<<<") && (substr($item["msg"], -3, 3) == ">>>"))
 		$item["msg"] = substr($item["msg"], 3, -3);
 
 	ifttt_message($uid, $item);
@@ -164,17 +164,16 @@ function ifttt_message($uid, $item) {
 	if ($item["type"] == "link") {
 		$data = query_page_info($item["link"]);
 
-		if (isset($item["title"]) AND (trim($item["title"]) != ""))
+		if (isset($item["title"]) && (trim($item["title"]) != ""))
 			$data["title"] = $item["title"];
 
-		if (isset($item["description"]) AND (trim($item["description"]) != ""))
+		if (isset($item["description"]) && (trim($item["description"]) != ""))
 			$data["text"] = $item["description"];
 
 		$_REQUEST["body"] .=  add_page_info_data($data);
-	} elseif (($item["type"] == "photo") AND ($item["image"] != ""))
+	} elseif (($item["type"] == "photo") && ($item["image"] != ""))
 		$_REQUEST["body"] .= "\n\n[img]".$item["image"]."[/img]\n";
 
 	//print_r($_REQUEST);
 	item_post($a);
 }
-?>

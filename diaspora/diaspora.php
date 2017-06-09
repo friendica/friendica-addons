@@ -142,7 +142,7 @@ function diaspora_settings(&$a,&$s) {
 
 	$aspects = false;
 
-	if ($handle AND $password) {
+	if ($handle && $password) {
 		$conn = new Diaspora_Connection($handle, $password);
 		$conn->logIn();
 		$aspects = $conn->getAspects();

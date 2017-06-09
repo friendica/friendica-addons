@@ -63,7 +63,7 @@ function fromgplus_addon_settings(&$a,&$s) {
 	$s .= '<input id="fromgplus-keywords" type="checkbox" name="fromgplus-keywords" value="1"'.$keywords_checked.' />';
 	$s .= '<div class="clear"></div>';
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="fromgplus-submit" name="fromgplus-submit" 
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="fromgplus-submit" name="fromgplus-submit"
 class="settings-submit" value="' . t('Save Settings') . '" /></div>';
 	$s .= '</div>';
 
@@ -178,7 +178,7 @@ function fromgplus_post($a, $uid, $source, $body, $location, $coord, $id) {
 	$_REQUEST['location'] = $location;
 	$_REQUEST['coord'] = $coord;
 
-	if (($_REQUEST['title'] == "") AND ($_REQUEST['body'] == "")) {
+	if (($_REQUEST['title'] == "") && ($_REQUEST['body'] == "")) {
 	        logger('fromgplus: empty post for user '.$uid." ".print_r($_REQUEST, true));
 		return;
 	}
@@ -269,13 +269,13 @@ function fromgplus_cleanupgoogleproxy($fullImage, $image) {
 	else
 		$infoFull = array("0" => 0, "1" => 0);
 
-	if (($infoPreview[0] >= $infoFull[0]) AND ($infoPreview[1] >= $infoFull[1])) {
+	if (($infoPreview[0] >= $infoFull[0]) && ($infoPreview[1] >= $infoFull[1])) {
 		$temp = $cleaned["full"];
 		$cleaned["full"] = $cleaned["preview"];
 		$cleaned["preview"] = $temp;
 	}
 
-	if (($cleaned["full"] == $cleaned["preview"]) OR (($infoPreview[0] == $infoFull[0]) AND ($infoPreview[1] == $infoFull[1])))
+	if (($cleaned["full"] == $cleaned["preview"]) || (($infoPreview[0] == $infoFull[0]) && ($infoPreview[1] == $infoFull[1])))
 		$cleaned["preview"] = "";
 
 	if ($cleaned["full"] == "")
@@ -338,7 +338,7 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 
 				// Add Keywords to page link
 				$data = parseurl_getsiteinfo_cached($pagedata["url"], true);
-				if (isset($data["keywords"]) AND get_pconfig($uid, 'fromgplus', 'keywords')) {
+				if (isset($data["keywords"]) && get_pconfig($uid, 'fromgplus', 'keywords')) {
 					$pagedata["keywords"] = $data["keywords"];
 				}
 				break;
@@ -366,7 +366,7 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 						$pagedata["images"][1]["src"] = $images["preview"];
 				}
 
-				if (($attachment->displayName != "") AND (fromgplus_cleantext($attachment->displayName) != fromgplus_cleantext($displaytext))) {
+				if (($attachment->displayName != "") && (fromgplus_cleantext($attachment->displayName) != fromgplus_cleantext($displaytext))) {
 					$post .= fromgplus_html2bbcode($attachment->displayName)."\n";
 					$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
 				}
@@ -491,7 +491,7 @@ function fromgplus_fetch($a, $uid) {
 						if (isset($item->location->displayName))
 							$location = $item->location->displayName;
 
-						if (isset($item->location->position->latitude) AND
+						if (isset($item->location->position->latitude) &&
 							isset($item->location->position->longitude))
 							$coord = $item->location->position->latitude." ".$item->location->position->longitude;
 
@@ -542,7 +542,7 @@ function fromgplus_fetch($a, $uid) {
 						if (isset($item->location->displayName))
 							$location = $item->location->displayName;
 
-						if (isset($item->location->position->latitude) AND
+						if (isset($item->location->position->latitude) &&
 							isset($item->location->position->longitude))
 							$coord = $item->location->position->latitude." ".$item->location->position->longitude;
 
