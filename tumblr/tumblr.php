@@ -143,7 +143,7 @@ function tumblr_callback($a) {
 	// It'll need our Consumer Key and Secret as well as our Request Token and Secret
 	$tum_oauth = new TumblrOAuth($consumer_key, $consumer_secret, $_SESSION['request_token'], $_SESSION['request_token_secret']);
 
-	// Ok, let's get an Access Token. We'll need to pass along our oauth_verifier which was given to us in the URL. 
+	// Ok, let's get an Access Token. We'll need to pass along our oauth_verifier which was given to us in the URL.
 	$access_token = $tum_oauth->getAccessToken($_REQUEST['oauth_verifier']);
 
 	// We're done with the Request Token and Secret so let's remove those.
@@ -227,7 +227,7 @@ function tumblr_settings(&$a,&$s) {
 	$oauth_token_secret = get_pconfig(local_user(), "tumblr", "oauth_token_secret");
 
 	$s .= '<div id="tumblr-page-wrapper">';
-	if (($oauth_token != "") and ($oauth_token_secret != "")) {
+	if (($oauth_token != "") && ($oauth_token_secret != "")) {
 
 		$page = get_pconfig(local_user(),'tumblr','page');
 		$consumer_key = get_config('tumblr','consumer_key');
@@ -350,7 +350,7 @@ function tumblr_send(&$a,&$b) {
 		if (!isset($siteinfo["type"]))
 			$siteinfo["type"] = "";
 
-		if (($title == "") AND isset($siteinfo["title"]))
+		if (($title == "") && isset($siteinfo["title"]))
 			$title = $siteinfo["title"];
 
 		if (isset($siteinfo["text"]))
@@ -391,7 +391,7 @@ function tumblr_send(&$a,&$b) {
 				break;
 		}
 
-		if (isset($params['caption']) AND (trim($title) != ""))
+		if (isset($params['caption']) && (trim($title) != ""))
 			$params['caption'] = '<h1>'.$title."</h1>".
 						"<p>".$params['caption']."</p>";
 

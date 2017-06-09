@@ -57,7 +57,7 @@ function geocoordinates_resolve_item(&$item) {
 		return;
 	}
 
-	if (($data->total_results == 0) OR (count($data->results) == 0)) {
+	if (($data->total_results == 0) || (count($data->results) == 0)) {
 		logger("No results found for coordinates ".$item["coord"], LOGGER_DEBUG);
 		return;
 	}

@@ -269,7 +269,7 @@ function jappixmini_settings(&$a, &$s) {
     if ($server == "")
 	$server = get_config("jappixmini", "default_server");
 
-    if (($username == "") and get_config("jappixmini", "default_user"))
+    if (($username == "") && get_config("jappixmini", "default_user"))
 	$username = $a->user["nickname"];
 
     $info_text = get_config("jappixmini", "infotext");
@@ -444,7 +444,7 @@ function jappixmini_script(&$a,&$s) {
 
     $activate = get_pconfig(local_user(),'jappixmini','activate');
     $dontinsertchat = get_pconfig(local_user(), 'jappixmini','dontinsertchat');
-    if (!$activate or $dontinsertchat) return;
+    if (!$activate || $dontinsertchat) return;
 
     $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;g=mini.xml"></script>'."\r\n";
     $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=presence.js~caps.js~name.js~roster.js"></script>'."\r\n";

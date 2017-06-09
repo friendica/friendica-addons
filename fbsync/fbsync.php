@@ -42,7 +42,7 @@ function fbsync_follow($a, &$contact) {
 
 	logger("fbsync_follow: Check if contact is facebook contact. ".$contact["url"], LOGGER_DEBUG);
 
-	if (!strstr($contact["url"], "://www.facebook.com") AND !strstr($contact["url"], "://facebook.com") AND !strstr($contact["url"], "@facebook.com"))
+	if (!strstr($contact["url"], "://www.facebook.com") && !strstr($contact["url"], "://facebook.com") && !strstr($contact["url"], "@facebook.com"))
 		return;
 
 	// contact seems to be a facebook contact, so continue
@@ -267,7 +267,7 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 
 	$contact_id = 0;
 
-	if (($post->parent_post_id != "") AND ($post->actor_id == $post->source_id)) {
+	if (($post->parent_post_id != "") && ($post->actor_id == $post->source_id)) {
 		$pos = strpos($post->parent_post_id, "_");
 
 		if ($pos != 0) {
@@ -279,7 +279,7 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 
 			$postarray['contact-id'] = $contact_id;
 
-			if (array_key_exists("name", $userdata) AND ($userdata["name"] != "") AND !link_compare($userdata["link"], $postarray['author-link'])) {
+			if (array_key_exists("name", $userdata) && ($userdata["name"] != "") && !link_compare($userdata["link"], $postarray['author-link'])) {
 				$postarray['owner-name'] = $userdata["name"];
 				$postarray['owner-link'] = $userdata["link"];
 				$postarray['owner-avatar'] = $userdata["avatar"];
@@ -303,7 +303,7 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 			// Testing if we know the source or the actor
 			$contact_id = fbsync_fetch_contact($uid, $contacts[$post->source_id], false);
 
-			if (($contact_id == 0) and array_key_exists($post->actor_id, $contacts))
+			if (($contact_id == 0) && array_key_exists($post->actor_id, $contacts))
 				$contact_id = fbsync_fetch_contact($uid, $contacts[$post->actor_id], false);
 
 			// If we don't know anyone, we guess we should know the source. Could be the wrong decision
@@ -316,7 +316,7 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 		if ($contact_id == -1) {
 			logger('fbsync_createpost: Contact is blocked. Post not imported '.print_r($post, true), LOGGER_DEBUG);
 			return;
-		} elseif (($contact_id <= 0) AND !$create_user) {
+		} elseif (($contact_id <= 0) && !$create_user) {
 			logger('fbsync_createpost: No matching contact found. Post not imported '.print_r($post, true), LOGGER_DEBUG);
 			return;
 		} elseif ($contact_id == 0) {
@@ -357,7 +357,7 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 	$content = "";
 	$pagedata["type"] = "";
 
-	if (isset($post->attachment->name) and isset($post->attachment->href)) {
+	if (isset($post->attachment->name) && isset($post->attachment->href)) {
 		$post->attachment->href = original_url($post->attachment->href);
 		$oembed_data = oembed_fetch_url($post->attachment->href);
 		$pagedata["type"] = $oembed_data->type;
@@ -371,23 +371,23 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 		// If a link is not only attached but also added in the body, look if it can be removed in the body.
 		$removedlink = trim(str_replace($post->attachment->href, "", $postarray["body"]));
 
-		if (($removedlink == "") OR strstr($postarray["body"], $removedlink))
+		if (($removedlink == "") || strstr($postarray["body"], $removedlink))
 			$postarray["body"] = $removedlink;
 
-	} elseif (isset($post->attachment->name) AND ($post->attachment->name != ""))
+	} elseif (isset($post->attachment->name) && ($post->attachment->name != ""))
 		$content = "[b]" . $post->attachment->name."[/b]";
 
 	$pagedata["text"] = "";
-	if (isset($post->attachment->description) and ($post->attachment->fb_object_type != "photo"))
+	if (isset($post->attachment->description) && ($post->attachment->fb_object_type != "photo"))
 		$pagedata["text"] = $post->attachment->description;
 
-	if (isset($post->attachment->caption) and ($post->attachment->fb_object_type == "photo"))
+	if (isset($post->attachment->caption) && ($post->attachment->fb_object_type == "photo"))
 		$pagedata["text"] = $post->attachment->caption;
 
 	if ($pagedata["text"].$post->attachment->href.$content.$postarray["body"] == "")
 		return;
 
-	if (isset($post->attachment->media) AND (($pagedata["type"] == "") OR ($pagedata["type"] == "link"))) {
+	if (isset($post->attachment->media) && (($pagedata["type"] == "") || ($pagedata["type"] == "link"))) {
 		foreach ($post->attachment->media AS $media) {
 
 			if (isset($media->type))
@@ -397,7 +397,7 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 				$pagedata["images"][0]["src"] = $media->src;
 
 			if (isset($media->photo)) {
-				if (isset($media->photo->images) AND (count($media->photo->images) > 1))
+				if (isset($media->photo->images) && (count($media->photo->images) > 1))
 					$pagedata["images"][0]["src"] = $media->photo->images[1]->src;
 
 				if (isset($media->photo->fbid)) {
@@ -415,7 +415,7 @@ function fbsync_createpost($a, $uid, $self, $contacts, $applications, $post, $cr
 
 			$pagedata["images"][0]["src"] = fbpost_cleanpicture($pagedata["images"][0]["src"]);
 
-			if (isset($media->href) AND ($pagedata["images"][0]["src"] != "") AND ($media->href != "")) {
+			if (isset($media->href) && ($pagedata["images"][0]["src"] != "") && ($media->href != "")) {
 				$media->href = original_url($media->href);
 				$pagedata["url"] = $media->href;
 				$content .= "\n".'[url='.$media->href.'][img]'.$pagedata["images"][0]["src"].'[/img][/url]';
@@ -538,7 +538,7 @@ function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $appl
 		}
 
 		// Is blocked? Then return
-		if ($r[0]["readonly"] OR $r[0]["blocked"]) {
+		if ($r[0]["readonly"] || $r[0]["blocked"]) {
 			logger("fbsync_createcomment: UID ".$uid." - Contact '".$r[0]["nick"]."' is blocked or readonly.", LOGGER_DEBUG);
 			return;
 		}
@@ -640,7 +640,7 @@ function fbsync_createcomment($a, $uid, $self_id, $self, $user, $contacts, $appl
 		foreach($myconv as $conv) {
 
 			// now if we find a match, it means we're in this conversation
-			if(!link_compare($conv['author-link'],$importer_url) AND !link_compare($conv['author-link'],$own_contact[0]["url"]))
+			if(!link_compare($conv['author-link'],$importer_url) && !link_compare($conv['author-link'],$own_contact[0]["url"]))
 				continue;
 
 			require_once('include/enotify.php');
@@ -785,10 +785,10 @@ function fbsync_fetch_contact($uid, $contact, $create_user) {
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
 		intval($uid), dbesc("facebook::".$contact->id));
 
-	if(!count($r) AND !$create_user)
+	if(!count($r) && !$create_user)
 		return(0);
 
-	if (count($r) AND ($r[0]["readonly"] OR $r[0]["blocked"])) {
+	if (count($r) && ($r[0]["readonly"] || $r[0]["blocked"])) {
 		logger("fbsync_fetch_contact: Contact '".$r[0]["nick"]."' is blocked or readonly.", LOGGER_DEBUG);
 		return(-1);
 	}
@@ -970,7 +970,7 @@ function fbsync_fetchuser($a, $uid, $id) {
 		intval($uid), dbesc("facebook::".$id));
 
 	if (count($contact)) {
-		if (($contact[0]["readonly"] OR $contact[0]["blocked"])) {
+		if (($contact[0]["readonly"] || $contact[0]["blocked"])) {
 			logger("fbsync_fetchuser: Contact '".$contact[0]["nick"]."' is blocked or readonly.", LOGGER_DEBUG);
 			$user["contact-id"] = -1;
 		} else

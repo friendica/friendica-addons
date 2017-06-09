@@ -85,7 +85,7 @@
 			if ($callback_url) $this->set_callback_url($callback_url);
 			if ($access_token) $this->access_token = $access_token;
 
-			if (isset($_GET['code']) AND $_GET['code']) {
+			if (isset($_GET['code']) && $_GET['code']) {
 				$this->code = $_GET['code'];
 				$this->create_access_token_url();
 			}

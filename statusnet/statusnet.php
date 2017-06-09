@@ -155,7 +155,7 @@ function statusnet_jot_nets(&$a,&$b) {
 	if(intval($statusnet_post) == 1) {
 		$statusnet_defpost = get_pconfig(local_user(),'statusnet','post_by_default');
 		$selected = ((intval($statusnet_defpost) == 1) ? ' checked="checked" ' : '');
-		$b .= '<div class="profile-jot-net"><input type="checkbox" name="statusnet_enable"' . $selected . ' value="1" /> ' 
+		$b .= '<div class="profile-jot-net"><input type="checkbox" name="statusnet_enable"' . $selected . ' value="1" /> '
 			. t('Post to GNU Social') . '</div>';
 	}
 }
@@ -421,7 +421,7 @@ function statusnet_settings(&$a,&$s) {
 			$s .= '<label id="statusnet-disconnect-label" for="statusnet-disconnect">'. t('Clear OAuth configuration') .'</label>';
 			$s .= '<input id="statusnet-disconnect" type="checkbox" name="statusnet-disconnect" value="1" />';
 			$s .= '</div><div class="clear"></div>';
-			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>'; 
+			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
 		}
 	}
 	$s .= '</div><div class="clear"></div>';
@@ -494,8 +494,8 @@ function statusnet_post_hook(&$a,&$b) {
 
 		// Looking if its a reply to a GNU Social post
 		$hostlength = strlen($hostname) + 2;
-		if ((substr($b["parent-uri"], 0, $hostlength) != $hostname."::") AND (substr($b["extid"], 0, $hostlength) != $hostname."::")
-			AND (substr($b["thr-parent"], 0, $hostlength) != $hostname."::")) {
+		if ((substr($b["parent-uri"], 0, $hostlength) != $hostname."::") && (substr($b["extid"], 0, $hostlength) != $hostname."::")
+			&& (substr($b["thr-parent"], 0, $hostlength) != $hostname."::")) {
 			logger("statusnet_post_hook: no GNU Social post ".$b["parent"]);
 			return;
 		}
@@ -523,18 +523,18 @@ function statusnet_post_hook(&$a,&$b) {
 		$nicknameplain = "@".$nick;
 
 		logger("statusnet_post_hook: comparing ".$nickname." and ".$nicknameplain." with ".$b["body"], LOGGER_DEBUG);
-		if ((strpos($b["body"], $nickname) === false) AND (strpos($b["body"], $nicknameplain) === false))
+		if ((strpos($b["body"], $nickname) === false) && (strpos($b["body"], $nicknameplain) === false))
 			$b["body"] = $nickname." ".$b["body"];
 
 		logger("statusnet_post_hook: parent found ".print_r($orig_post, true), LOGGER_DEBUG);
 	} else {
 		$iscomment = false;
 
-		if($b['private'] OR !strstr($b['postopts'],'statusnet'))
+		if($b['private'] || !strstr($b['postopts'],'statusnet'))
 			return;
 	}
 
-	if (($b['verb'] == ACTIVITY_POST) AND $b['deleted'])
+	if (($b['verb'] == ACTIVITY_POST) && $b['deleted'])
 		statusnet_action($a, $b["uid"], substr($orig_post["uri"], $hostlength), "delete");
 
 	if($b['verb'] == ACTIVITY_LIKE) {
@@ -584,18 +584,18 @@ function statusnet_post_hook(&$a,&$b) {
 		$msgarr = plaintext($a, $b, $max_char, true, 7);
 		$msg = $msgarr["text"];
 
-		if (($msg == "") AND isset($msgarr["title"]))
+		if (($msg == "") && isset($msgarr["title"]))
 			$msg = shortenmsg($msgarr["title"], $max_char - 50);
 
 		$image = "";
 
-		if (isset($msgarr["url"]) AND ($msgarr["type"] != "photo")) {
-			if ((strlen($msgarr["url"]) > 20) AND
+		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {
+			if ((strlen($msgarr["url"]) > 20) &&
 				((strlen($msg." \n".$msgarr["url"]) > $max_char)))
 				$msg .= " \n".short_link($msgarr["url"]);
 			else
 				$msg .= " \n".$msgarr["url"];
-		} elseif (isset($msgarr["image"]) AND ($msgarr["type"] != "video"))
+		} elseif (isset($msgarr["image"]) && ($msgarr["type"] != "video"))
 			$image = $msgarr["image"];
 
 		if ($image != "") {
@@ -738,7 +738,7 @@ function statusnet_prepare_body(&$a,&$b) {
 			$nickname = "@[url=".$orig_post["author-link"]."]".$nick."[/url]";
 			$nicknameplain = "@".$nick;
 
-	                if ((strpos($item["body"], $nickname) === false) AND (strpos($item["body"], $nicknameplain) === false))
+	                if ((strpos($item["body"], $nickname) === false) && (strpos($item["body"], $nicknameplain) === false))
 	                        $item["body"] = $nickname." ".$item["body"];
                 }
 
@@ -746,7 +746,7 @@ function statusnet_prepare_body(&$a,&$b) {
                 $msgarr = plaintext($a, $item, $max_char, true, 7);
                 $msg = $msgarr["text"];
 
-                if (isset($msgarr["url"]) AND ($msgarr["type"] != "photo"))
+                if (isset($msgarr["url"]) && ($msgarr["type"] != "photo"))
                         $msg .= " ".$msgarr["url"];
 
                 if (isset($msgarr["image"]))
@@ -929,10 +929,10 @@ function statusnet_fetch_contact($uid, $contact, $create_user) {
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' AND `network` = '%s'LIMIT 1",
 		intval($uid), dbesc(normalise_link($contact->statusnet_profile_url)), dbesc(NETWORK_STATUSNET));
 
-	if(!count($r) AND !$create_user)
+	if(!count($r) && !$create_user)
 		return(0);
 
-	if (count($r) AND ($r[0]["readonly"] OR $r[0]["blocked"])) {
+	if (count($r) && ($r[0]["readonly"] || $r[0]["blocked"])) {
 		logger("statusnet_fetch_contact: Contact '".$r[0]["nick"]."' is blocked or readonly.", LOGGER_DEBUG);
 		return(-1);
 	}
@@ -1179,7 +1179,7 @@ function statusnet_createpost($a, $uid, $post, $self, $create_user, $only_existi
 		$postarray['owner-link'] = $post->user->statusnet_profile_url;
 		$postarray['owner-avatar'] = $post->user->profile_image_url;
 	}
-	if(($contactid == 0) AND !$only_existing_contact)
+	if(($contactid == 0) && !$only_existing_contact)
 		$contactid = $self['id'];
 	elseif ($contactid <= 0)
 		return(array());
@@ -1279,7 +1279,7 @@ function statusnet_checknotification($a, $uid, $own_url, $top_item, $postarray) 
 		foreach($myconv as $conv) {
 			// now if we find a match, it means we're in this conversation
 
-			if(!link_compare($conv['author-link'],$user[0]["url"]) AND !link_compare($conv['author-link'],$own_user[0]["url"]))
+			if(!link_compare($conv['author-link'],$user[0]["url"]) && !link_compare($conv['author-link'],$own_user[0]["url"]))
 				continue;
 
 			require_once('include/enotify.php');
@@ -1375,11 +1375,11 @@ function statusnet_fetchhometimeline($a, $uid, $mode = 1) {
 		$items = $connection->get('statuses/home_timeline', $parameters);
 
 		if (!is_array($items)) {
-			if (is_object($items) AND isset($items->error))
+			if (is_object($items) && isset($items->error))
 				$errormsg = $items->error;
 			elseif (is_object($items))
 				$errormsg = print_r($items, true);
-			elseif (is_string($items) OR is_float($items) OR is_int($items))
+			elseif (is_string($items) || is_float($items) || is_int($items))
 				$errormsg = $items;
 			else
 				$errormsg = "Unknown error";
@@ -1417,7 +1417,7 @@ function statusnet_fetchhometimeline($a, $uid, $mode = 1) {
 
 					logger('statusnet_fetchhometimeline: User '.$self["nick"].' posted home timeline item '.$item);
 
-					if ($item AND !function_exists("check_item_notification"))
+					if ($item && !function_exists("check_item_notification"))
 						statusnet_checknotification($a, $uid, $nick, $item, $postarray);
 				}
 
@@ -1468,7 +1468,7 @@ function statusnet_fetchhometimeline($a, $uid, $mode = 1) {
 
 					logger('statusnet_fetchhometimeline: User '.$self["nick"].' posted mention timeline item '.$item);
 
-					if ($item AND function_exists("check_item_notification"))
+					if ($item && function_exists("check_item_notification"))
 						check_item_notification($item, $uid, NOTIFY_TAGSELF);
 				}
 			}
@@ -1482,7 +1482,7 @@ function statusnet_fetchhometimeline($a, $uid, $mode = 1) {
 				$parent_id = $r[0]['parent'];
 			}
 
-			if (($item != 0) AND !function_exists("check_item_notification")) {
+			if (($item != 0) && !function_exists("check_item_notification")) {
 				require_once('include/enotify.php');
 				notification(array(
 					'type'         => NOTIFY_TAGSELF,
@@ -1537,7 +1537,7 @@ function statusnet_complete_conversation($a, $uid, $self, $create_user, $nick, $
 
 			logger('statusnet_complete_conversation: User '.$self["nick"].' posted home timeline item '.$item);
 
-			if ($item AND !function_exists("check_item_notification"))
+			if ($item && !function_exists("check_item_notification"))
 				statusnet_checknotification($a, $uid, $nick, $item, $postarray);
 		}
 	}
@@ -1582,7 +1582,7 @@ function statusnet_convertmsg($a, $body, $no_tags = false) {
 				$footerlink = "[url=".$expanded_url."]".$expanded_url."[/url]";
 
 				$body = str_replace($search, $footerlink, $body);
-			} elseif (($oembed_data->type == "photo") AND isset($oembed_data->url) AND !$dontincludemedia)
+			} elseif (($oembed_data->type == "photo") && isset($oembed_data->url) && !$dontincludemedia)
 				$body = str_replace($search, "[url=".$expanded_url."][img]".$oembed_data->url."[/img][/url]", $body);
 			elseif ($oembed_data->type != "link")
 				$body = str_replace($search,  "[url=".$expanded_url."]".$expanded_url."[/url]", $body);
@@ -1610,10 +1610,10 @@ function statusnet_convertmsg($a, $body, $no_tags = false) {
 		if ($footerurl != "")
 			$footer = add_page_info($footerurl);
 
-		if (($footerlink != "") AND (trim($footer) != "")) {
+		if (($footerlink != "") && (trim($footer) != "")) {
 			$removedlink = trim(str_replace($footerlink, "", $body));
 
-			if (($removedlink == "") OR strstr($body, $removedlink))
+			if (($removedlink == "") || strstr($body, $removedlink))
 				$body = $removedlink;
 
 			$body .= $footer;

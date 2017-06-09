@@ -412,7 +412,7 @@ function fbpost_jot_nets(&$a,&$b) {
 	if(intval($fb_post) == 1) {
 		$fb_defpost = get_pconfig(local_user(),'facebook','post_by_default');
 		$selected = ((intval($fb_defpost) == 1) ? ' checked="checked" ' : '');
-		$b .= '<div class="profile-jot-net"><input type="checkbox" name="facebook_enable"' . $selected . ' value="1" /> ' 
+		$b .= '<div class="profile-jot-net"><input type="checkbox" name="facebook_enable"' . $selected . ' value="1" /> '
 			. t('Post to Facebook') . '</div>';
 	}
 }
@@ -435,7 +435,7 @@ function fbpost_post_hook(&$a,&$b) {
 	if($b['extid'] == NETWORK_FACEBOOK)
 		return;
 
-	if(($b['app'] == "Facebook") AND ($b['verb'] != ACTIVITY_LIKE))
+	if(($b['app'] == "Facebook") && ($b['verb'] != ACTIVITY_LIKE))
 		return;
 
 	logger('fbpost_post_hook: Facebook post accepted', LOGGER_DEBUG);
@@ -473,7 +473,7 @@ function fbpost_post_hook(&$a,&$b) {
 		// A reply to a toplevel post is only allowed for "real" facebook posts
 		if(count($r) && substr($r[0]['uri'],0,4) === 'fb::')
 			$reply = substr($r[0]['uri'],4);
-		elseif(count($r) && (substr($r[0]['extid'],0,4) === 'fb::') AND ($r[0]['id'] != $r[0]['parent']))
+		elseif(count($r) && (substr($r[0]['extid'],0,4) === 'fb::') && ($r[0]['id'] != $r[0]['parent']))
 			$reply = substr($r[0]['extid'],4);
 		else
 			return;
@@ -525,8 +525,8 @@ function fbpost_post_hook(&$a,&$b) {
 
 				// One or more FB folks were denied access but nobody on FB was specifically allowed access.
 				// This might cause the post to be open to public on Facebook, but only to selected members
-				// on another network. Since this could potentially leak a post to somebody who was denied, 
-				// we will skip posting it to Facebook with a slightly vague but relevant message that will 
+				// on another network. Since this could potentially leak a post to somebody who was denied,
+				// we will skip posting it to Facebook with a slightly vague but relevant message that will
 				// hopefully lead somebody to this code comment for a better explanation of what went wrong.
 
 				notice( t('Post to Facebook cancelled because of multi-network access permission conflict.') . EOL);
@@ -647,14 +647,14 @@ function fbpost_post_hook(&$a,&$b) {
 
 				$post_to_page = get_pconfig($b['uid'],'facebook','post_to_page');
 				$page_access_token = get_pconfig($b['uid'],'facebook','page_access_token');
-				if ((intval($post_to_page) != 0) and ($page_access_token != ""))
+				if ((intval($post_to_page) != 0) && ($page_access_token != ""))
 					$target = $post_to_page;
 				else
 					$target = "me";
 
 				if($reply) {
 					$url = 'https://graph.facebook.com/' . $reply . '/' . (($likes) ? 'likes' : 'comments');
-				} else if (($video != "") or (($image == "") and ($link != ""))) {
+				} else if (($video != "") || (($image == "") && ($link != ""))) {
 					// If it is a link to a video or a link without a preview picture then post it as a link
 					if ($video != "")
 						$link = $video;
@@ -667,7 +667,7 @@ function fbpost_post_hook(&$a,&$b) {
 						$postvars['message'] = $msg;
 
 					$url = 'https://graph.facebook.com/'.$target.'/links';
-				} else if (($link == "") and ($image != "")) {
+				} else if (($link == "") && ($image != "")) {
 					// If it is only an image without a page link then post this image as a photo
 					$postvars = array(
 						'access_token' => $fb_token,
@@ -677,10 +677,10 @@ function fbpost_post_hook(&$a,&$b) {
 						$postvars['message'] = $msg;
 
 					$url = 'https://graph.facebook.com/'.$target.'/photos';
-				//} else if (($link != "") or ($image != "") or ($b['title'] == '') or (strlen($msg) < 500)) {
+				//} else if (($link != "") || ($image != "") || ($b['title'] == '') || (strlen($msg) < 500)) {
 				} else {
 					$url = 'https://graph.facebook.com/'.$target.'/feed';
-					if (!get_pconfig($b['uid'],'facebook','suppress_view_on_friendica') and $b['plink'])
+					if (!get_pconfig($b['uid'],'facebook','suppress_view_on_friendica') && $b['plink'])
 						$postvars['actions'] = '{"name": "' . t('View on Friendica') . '", "link": "' .  $b['plink'] . '"}';
 				}
 /*				} else {
@@ -694,7 +694,7 @@ function fbpost_post_hook(&$a,&$b) {
 				} */
 
 				// Post to page?
-				if (!$reply and ($target != "me") and $page_access_token)
+				if (!$reply && ($target != "me") && $page_access_token)
 					$postvars['access_token'] = $page_access_token;
 
 				logger('fbpost_post_hook: post to ' . $url);
@@ -721,7 +721,7 @@ function fbpost_post_hook(&$a,&$b) {
 
 						// If it is a special kind of failure the post was receiced
 						// Although facebook said it wasn't received ...
-						if (!$likes AND (($retj->error->type != "OAuthException") OR ($retj->error->code != 2)) AND ($x <> "")) {
+						if (!$likes && (($retj->error->type != "OAuthException") || ($retj->error->code != 2)) && ($x <> "")) {
 							$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", intval($b['uid']));
 							if (count($r))
 								$a->contact = $r[0]["id"];
@@ -830,7 +830,7 @@ function fbpost_queue_hook(&$a,&$b) {
 
 		logger('fbpost_queue_hook: run');
 
-		$r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` on `contact`.`uid` = `user`.`uid` 
+		$r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` on `contact`.`uid` = `user`.`uid`
 			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
 			intval($x['cid'])
 		);
@@ -873,7 +873,7 @@ function fbpost_queue_hook(&$a,&$b) {
 					// If it is a special kind of failure the post was receiced
 					// Although facebook said it wasn't received ...
 					$ret = json_decode($j);
-					if (($ret->error->type != "OAuthException") OR ($ret->error->code != 2) AND ($j <> ""))
+					if (($ret->error->type != "OAuthException") || ($ret->error->code != 2) && ($j <> ""))
 						update_queue_time($x['id']);
 					else
 						logger('fbpost_queue_hook: Not requeued, since it seems to be received');
@@ -980,7 +980,7 @@ function fbpost_cleanpicture($url) {
 	$urldata = parse_url($url);
 	if (isset($urldata["query"])) {
 		parse_str($urldata["query"], $querydata);
-		if (isset($querydata["url"]) AND (get_photo_info($querydata["url"])))
+		if (isset($querydata["url"]) && (get_photo_info($querydata["url"])))
 			return($querydata["url"]);
 	}
 	return($url);
@@ -1036,10 +1036,10 @@ function fbpost_fetchwall($a, $uid) {
 		elseif(!isset($item->privacy))
 			continue;
 
-		if (($post_to_page != $item->from->id) AND ((int)$post_to_page != 0))
+		if (($post_to_page != $item->from->id) && ((int)$post_to_page != 0))
 			continue;
 
-		if (!strstr($item->id, $item->from->id."_") AND isset($item->to) AND ((int)$post_to_page == 0))
+		if (!strstr($item->id, $item->from->id."_") && isset($item->to) && ((int)$post_to_page == 0))
 			continue;
 
 		$_SESSION["authenticated"] = true;
@@ -1061,7 +1061,7 @@ function fbpost_fetchwall($a, $uid) {
 		$content = "";
 		$pagedata["type"] = "";
 
-		if(isset($item->name) and isset($item->link)) {
+		if(isset($item->name) && isset($item->link)) {
 			$item->link = original_url($item->link);
 			$oembed_data = oembed_fetch_url($item->link);
 			$pagedata["type"] = $oembed_data->type;
@@ -1072,31 +1072,31 @@ function fbpost_fetchwall($a, $uid) {
 			// If a link is not only attached but also added in the body, look if it can be removed in the body.
 			$removedlink = trim(str_replace($item->link, "", $_REQUEST["body"]));
 
-			if (($removedlink == "") OR strstr($_REQUEST["body"], $removedlink))
+			if (($removedlink == "") || strstr($_REQUEST["body"], $removedlink))
 				$_REQUEST["body"] = $removedlink;
 
 		} elseif (isset($item->name))
 			$content .= "[b]".$item->name."[/b]";
 
 		$pagedata["text"] = "";
-		if(isset($item->description) and ($item->type != "photo"))
+		if(isset($item->description) && ($item->type != "photo"))
 			$pagedata["text"] = $item->description;
 
-		if(isset($item->caption) and ($item->type == "photo"))
+		if(isset($item->caption) && ($item->type == "photo"))
 			$pagedata["text"] = $item->caption;
 
 		// Only import the picture when the message is no video
 		// oembed display a picture of the video as well
 		//if ($item->type != "video") {
-		//if (($item->type != "video") and ($item->type != "photo")) {
-		if (($pagedata["type"] == "") OR ($pagedata["type"] == "link")) {
+		//if (($item->type != "video") && ($item->type != "photo")) {
+		if (($pagedata["type"] == "") || ($pagedata["type"] == "link")) {
 
 			$pagedata["type"] = $item->type;
 
 			if (isset($item->picture))
 				$pagedata["images"][0]["src"] = $item->picture;
 
-			if (($pagedata["type"] == "photo") AND isset($item->object_id)) {
+			if (($pagedata["type"] == "photo") && isset($item->object_id)) {
 				 logger('fbpost_fetchwall: fetching fbid '.$item->object_id, LOGGER_DEBUG);
 				$url = "https://graph.facebook.com/".$item->object_id."?access_token=".$access_token;
 				$feed = fetch_url($url);
@@ -1151,8 +1151,8 @@ function fbpost_fetchwall($a, $uid) {
 		}
 
 		if (isset($item->place)) {
-			if ($item->place->name or $item->place->location->street or
-				$item->place->location->city or $item->place->location->country) {
+			if ($item->place->name || $item->place->location->street ||
+				$item->place->location->city || $item->place->location->country) {
 				$_REQUEST["location"] = '';
 				if ($item->place->name)
 					$_REQUEST["location"] .= $item->place->name;
@@ -1165,7 +1165,7 @@ function fbpost_fetchwall($a, $uid) {
 
 				$_REQUEST["location"] = trim($_REQUEST["location"]);
 			}
-			if ($item->place->location->latitude and $item->place->location->longitude)
+			if ($item->place->location->latitude && $item->place->location->longitude)
 				$_REQUEST["coord"] = substr($item->place->location->latitude, 0, 8)
 						.' '.substr($item->place->location->longitude, 0, 8);
 		}
@@ -1210,7 +1210,7 @@ function fbpost_get_photo($uid,$link) {
 
 function fpost_cleanpicture($image) {
 
-	if ((strpos($image, ".fbcdn.net/") OR strpos($image, "/fbcdn-photos-")) and (substr($image, -6) == "_s.jpg"))
+	if ((strpos($image, ".fbcdn.net/") || strpos($image, "/fbcdn-photos-")) && (substr($image, -6) == "_s.jpg"))
 		$image = substr($image, 0, -6)."_n.jpg";
 
 	$queryvar = fbpost_parse_query($image);

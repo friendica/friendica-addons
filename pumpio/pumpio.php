@@ -122,7 +122,7 @@ function pumpio_connect(&$a) {
 	$consumer_secret = get_pconfig(local_user(), 'pumpio','consumer_secret');
 	$hostname = get_pconfig(local_user(), 'pumpio','host');
 
-	if ((($consumer_key == "") OR ($consumer_secret == "")) AND ($hostname != "")) {
+	if ((($consumer_key == "") || ($consumer_secret == "")) && ($hostname != "")) {
 		logger("pumpio_connect: register client");
 		$clientdata = pumpio_registerclient($a, $hostname);
 		set_pconfig(local_user(), 'pumpio','consumer_key', $clientdata->client_id);
@@ -134,7 +134,7 @@ function pumpio_connect(&$a) {
 		logger("pumpio_connect: ckey: ".$consumer_key." csecrect: ".$consumer_secret, LOGGER_DEBUG);
 	}
 
-	if (($consumer_key == "") OR ($consumer_secret == "")) {
+	if (($consumer_key == "") || ($consumer_secret == "")) {
 		logger("pumpio_connect: ".sprintf("Unable to register the client at the pump.io server '%s'.", $hostname));
 
 		$o .= sprintf(t("Unable to register the client at the pump.io server '%s'."), $hostname);
@@ -251,13 +251,13 @@ function pumpio_settings(&$a,&$s) {
 	$s .= '<input id="pumpio-servername" type="text" name="pumpio_host" value="'.$servername.'" />';
 	$s .= '</div><div class="clear"></div>';
 
-	if (($username != '') AND ($servername != '')) {
+	if (($username != '') && ($servername != '')) {
 
 		$oauth_token = get_pconfig(local_user(), "pumpio", "oauth_token");
 		$oauth_token_secret = get_pconfig(local_user(), "pumpio", "oauth_token_secret");
 
 		$s .= '<div id="pumpio-password-wrapper">';
-		if (($oauth_token == "") OR ($oauth_token_secret == "")) {
+		if (($oauth_token == "") || ($oauth_token_secret == "")) {
 			$s .= '<div id="pumpio-authenticate-wrapper">';
 			$s .= '<a href="'.$a->get_baseurl().'/pumpio/connect">'.t("Authenticate your pump.io connection").'</a>';
 			$s .= '</div><div class="clear"></div>';
@@ -403,7 +403,7 @@ function pumpio_send(&$a,&$b) {
 
 		logger("pumpio_send: receiver ".print_r($receiver, true));
 
-		if (!count($receiver) AND ($b['private'] OR !strstr($b['postopts'],'pumpio')))
+		if (!count($receiver) && ($b['private'] || !strstr($b['postopts'],'pumpio')))
 			return;
 	}
 
@@ -418,10 +418,10 @@ function pumpio_send(&$a,&$b) {
 	if($b['verb'] == ACTIVITY_DISLIKE)
 		return;
 
-	if (($b['verb'] == ACTIVITY_POST) AND ($b['created'] !== $b['edited']) AND !$b['deleted'])
+	if (($b['verb'] == ACTIVITY_POST) && ($b['created'] !== $b['edited']) && !$b['deleted'])
 			pumpio_action($a, $b["uid"], $b["uri"], "update", $b["body"]);
 
-	if (($b['verb'] == ACTIVITY_POST) AND $b['deleted'])
+	if (($b['verb'] == ACTIVITY_POST) && $b['deleted'])
 			pumpio_action($a, $b["uid"], $b["uri"], "delete");
 
 	if($b['deleted'] || ($b['created'] !== $b['edited']))
@@ -480,7 +480,7 @@ function pumpio_send(&$a,&$b) {
 			$inReplyTo = array("id" => $orig_post["uri"],
 					"objectType" => "note");
 
-			if (($orig_post["object-type"] != "") AND (strstr($orig_post["object-type"], NAMESPACE_ACTIVITY_SCHEMA)))
+			if (($orig_post["object-type"] != "") && (strstr($orig_post["object-type"], NAMESPACE_ACTIVITY_SCHEMA)))
 				$inReplyTo["objectType"] = str_replace(NAMESPACE_ACTIVITY_SCHEMA, '', $orig_post["object-type"]);
 
 			$params["object"] = array(
@@ -516,7 +516,7 @@ function pumpio_send(&$a,&$b) {
 
 			$post_id = $user->object->id;
 			logger('pumpio_send '.$username.': success '.$post_id);
-			if($post_id AND $iscomment) {
+			if($post_id && $iscomment) {
 				logger('pumpio_send '.$username.': Update extid '.$post_id." for post id ".$b['id']);
 				q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d",
 					dbesc($post_id),
@@ -562,12 +562,12 @@ function pumpio_action(&$a, $uid, $uri, $action, $content = "") {
 
 	$orig_post = $r[0];
 
-	if ($orig_post["extid"] AND !strstr($orig_post["extid"], "/proxy/"))
+	if ($orig_post["extid"] && !strstr($orig_post["extid"], "/proxy/"))
 		$uri = $orig_post["extid"];
 	else
 		$uri = $orig_post["uri"];
 
-	if (($orig_post["object-type"] != "") AND (strstr($orig_post["object-type"], NAMESPACE_ACTIVITY_SCHEMA)))
+	if (($orig_post["object-type"] != "") && (strstr($orig_post["object-type"], NAMESPACE_ACTIVITY_SCHEMA)))
 		$objectType = str_replace(NAMESPACE_ACTIVITY_SCHEMA, '', $orig_post["object-type"]);
 	elseif (strstr($uri, "/api/comment/"))
 		$objectType = "comment";
@@ -763,7 +763,7 @@ function pumpio_fetchtimeline(&$a, $uid) {
 					if ($receiver->id == "http://activityschema.org/collection/public")
 						$public = true;
 
-			if ($public AND !stristr($post->generator->displayName, $application_name)) {
+			if ($public && !stristr($post->generator->displayName, $application_name)) {
 				require_once('include/html2bbcode.php');
 
 				$_SESSION["authenticated"] = true;
@@ -1060,10 +1060,10 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 	require_once('include/items.php');
 	require_once('include/html2bbcode.php');
 
-	if (($post->verb == "like") OR ($post->verb == "favorite"))
+	if (($post->verb == "like") || ($post->verb == "favorite"))
 		return pumpio_dolike($a, $uid, $self, $post, $own_id);
 
-	if (($post->verb == "unlike") OR ($post->verb == "unfavorite"))
+	if (($post->verb == "unlike") || ($post->verb == "unfavorite"))
 		return pumpio_dounlike($a, $uid, $self, $post, $own_id);
 
 	if ($post->verb == "delete")
@@ -1206,9 +1206,9 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 
 	if ($post->verb == "share") {
 		if (!intval(get_config('system','wall-to-wall_share'))) {
-			if (isset($post->object->author->displayName) AND ($post->object->author->displayName != ""))
+			if (isset($post->object->author->displayName) && ($post->object->author->displayName != ""))
 				$share_author = $post->object->author->displayName;
-			elseif (isset($post->object->author->preferredUsername) AND ($post->object->author->preferredUsername != ""))
+			elseif (isset($post->object->author->preferredUsername) && ($post->object->author->preferredUsername != ""))
 				$share_author = $post->object->author->preferredUsername;
 			else
 				$share_author = $post->object->author->url;
@@ -1240,7 +1240,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 	$top_item = item_store($postarray);
 	$postarray["id"] = $top_item;
 
-	if (($top_item == 0) AND ($post->verb == "update")) {
+	if (($top_item == 0) && ($post->verb == "update")) {
 		$r = q("UPDATE `item` SET `title` = '%s', `body` = '%s' , `changed` = '%s' WHERE `uri` = '%s' AND `uid` = %d",
 			dbesc($postarray["title"]),
 			dbesc($postarray["body"]),
@@ -1278,7 +1278,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 				foreach($myconv as $conv) {
 					// now if we find a match, it means we're in this conversation
 
-					if(!link_compare($conv['author-link'],$importer_url) AND !link_compare($conv['author-link'],$own_id))
+					if(!link_compare($conv['author-link'],$importer_url) && !link_compare($conv['author-link'],$own_id))
 						continue;
 
 					require_once('include/enotify.php');
@@ -1427,7 +1427,7 @@ function pumpio_queue_hook(&$a,&$b) {
 
 		logger('pumpio_queue: run');
 
-		$r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` on `contact`.`uid` = `user`.`uid` 
+		$r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` ON `contact`.`uid` = `user`.`uid`
 			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
 			intval($x['cid'])
 		);
@@ -1448,8 +1448,8 @@ function pumpio_queue_hook(&$a,&$b) {
 
 		$success = false;
 
-		if ($oauth_token AND $oauth_token_secret AND
-			$consumer_key AND $consumer_secret) {
+		if ($oauth_token && $oauth_token_secret &&
+			$consumer_key && $consumer_secret) {
 			$username = $user.'@'.$host;
 
 			logger('pumpio_queue: able to post for user '.$username);
@@ -1473,7 +1473,7 @@ function pumpio_queue_hook(&$a,&$b) {
 			if($success) {
 				$post_id = $user->object->id;
 				logger('pumpio_queue: send '.$username.': success '.$post_id);
-				if($post_id AND $iscomment) {
+				if($post_id && $iscomment) {
 					logger('pumpio_send '.$username.': Update extid '.$post_id." for post id ".$z['item']);
 					q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d",
 						dbesc($post_id),

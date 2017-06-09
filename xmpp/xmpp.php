@@ -69,7 +69,7 @@ function xmpp_plugin_settings(&$a,&$s) {
 		$s .= '<div class="clear"></div>';
 	}
 
-	if (!get_config("xmpp", "central_userbase") OR get_pconfig(local_user(),"xmpp","individual")) {
+	if (!get_config("xmpp", "central_userbase") || get_pconfig(local_user(),"xmpp","individual")) {
 		$s .= '<label id="xmpp-bosh-proxy-label" for="xmpp-bosh-proxy">'.t('Jabber BOSH host').'</label>';
 		$s .= ' <input id="xmpp-bosh-proxy" type="text" name="xmpp_bosh_proxy" value="'.$bosh_proxy.'" />';
 		$s .= '<div class="clear"></div>';
@@ -131,7 +131,7 @@ function xmpp_converse(&$a,&$s) {
 	$a->page['htmlhead'] .= '<link type="text/css" rel="stylesheet" media="screen" href="addon/xmpp/converse/css/converse.css" />'."\n";
 	$a->page['htmlhead'] .= '<script src="addon/xmpp/converse/builds/converse.min.js"></script>'."\n";
 
-	if (get_config("xmpp", "central_userbase") AND !get_pconfig(local_user(),"xmpp","individual")) {
+	if (get_config("xmpp", "central_userbase") && !get_pconfig(local_user(),"xmpp","individual")) {
 		$bosh_proxy = get_config("xmpp", "bosh_proxy");
 
 		$password = get_pconfig(local_user(), "xmpp", "password");

@@ -107,7 +107,7 @@ function appnet_connect(&$a) {
 	$clientId     = get_config('appnet','clientid');
 	$clientSecret = get_config('appnet','clientsecret');
 
-	if (($clientId == "") OR ($clientSecret == "")) {
+	if (($clientId == "") || ($clientSecret == "")) {
 		$clientId     = get_pconfig(local_user(),'appnet','clientid');
 		$clientSecret = get_pconfig(local_user(),'appnet','clientsecret');
 	}
@@ -154,7 +154,7 @@ function appnet_settings(&$a,&$s) {
 	$app_clientId     = get_config('appnet','clientid');
 	$app_clientSecret = get_config('appnet','clientsecret');
 
-	if (($app_clientId == "") OR ($app_clientSecret == "")) {
+	if (($app_clientId == "") || ($app_clientSecret == "")) {
 		$app_clientId     = get_pconfig(local_user(),'appnet','clientid');
 		$app_clientSecret = get_pconfig(local_user(),'appnet','clientsecret');
 	}
@@ -213,7 +213,7 @@ function appnet_settings(&$a,&$s) {
 			$s .= t("<p>Error fetching user profile. Please clear the configuration and try again.</p>");
 		}
 
-	} elseif (($app_clientId == '') OR ($app_clientSecret == '')) {
+	} elseif (($app_clientId == '') || ($app_clientSecret == '')) {
 		$s .= t("<p>You have two ways to connect to App.net.</p>");
 		$s .= "<hr />";
 		$s .= t('<p>First way: Register an application at <a href="https://account.app.net/developer/apps/">https://account.app.net/developer/apps/</a> and enter Client ID and Client Secret. ');
@@ -245,7 +245,7 @@ function appnet_settings(&$a,&$s) {
 		$s .= '<a href="'.$url.'">'.t("Sign in using App.net").'</a>';
 	}
 
-	if (($app_clientId != '') OR ($app_clientSecret != '') OR ($token !='')) {
+	if (($app_clientId != '') || ($app_clientSecret != '') || ($token !='')) {
 		$s .= '<div id="appnet-disconnect-wrapper">';
 		$s .= '<label id="appnet-disconnect-label" for="appnet-disconnect">'. t('Clear OAuth configuration') .'</label>';
 
@@ -278,7 +278,7 @@ function appnet_settings_post(&$a,&$b) {
 		if (isset($_POST["clientid"]))
 			set_pconfig(local_user(),'appnet','clientid', $_POST['clientid']);
 
-		if (isset($_POST["token"]) AND ($_POST["token"] != ""))
+		if (isset($_POST["token"]) && ($_POST["token"] != ""))
 			set_pconfig(local_user(),'appnet','token', $_POST['token']);
 
 		set_pconfig(local_user(), 'appnet', 'post', intval($_POST['appnet']));
@@ -375,12 +375,12 @@ function appnet_create_entities($a, $b, $postdata) {
 		$start = $pos + 1;
 	}
 
-	if (isset($postdata["url"]) AND isset($postdata["title"]) AND ($postdata["type"] != "photo")) {
+	if (isset($postdata["url"]) && isset($postdata["title"]) && ($postdata["type"] != "photo")) {
 		$postdata["title"] = shortenmsg($postdata["title"], 90);
 		$max = 256 - strlen($postdata["title"]);
 		$text = shortenmsg($text, $max);
 		$text .= "\n[".$postdata["title"]."](".$postdata["url"].")";
-	} elseif (isset($postdata["url"]) AND ($postdata["type"] != "photo")) {
+	} elseif (isset($postdata["url"]) && ($postdata["type"] != "photo")) {
 		$postdata["url"] = short_link($postdata["url"]);
 		$max = 240;
 		$text = shortenmsg($text, $max);
@@ -421,7 +421,7 @@ function appnet_send(&$a,&$b) {
 		logger("appnet_send: parameter ".print_r($b, true), LOGGER_DATA);
 
 		// Looking if its a reply to an app.net post
-		if ((substr($b["parent-uri"], 0, 5) != "adn::") AND (substr($b["extid"], 0, 5) != "adn::") AND (substr($b["thr-parent"], 0, 5) != "adn::")) {
+		if ((substr($b["parent-uri"], 0, 5) != "adn::") && (substr($b["extid"], 0, 5) != "adn::") && (substr($b["thr-parent"], 0, 5) != "adn::")) {
 			logger("appnet_send: no app.net post ".$b["parent"]);
 			return;
 		}
@@ -443,18 +443,18 @@ function appnet_send(&$a,&$b) {
 		$nicknameplain = "@".$nicknameplain;
 
 		logger("appnet_send: comparing ".$nickname." and ".$nicknameplain." with ".$b["body"], LOGGER_DEBUG);
-		if ((strpos($b["body"], $nickname) === false) AND (strpos($b["body"], $nicknameplain) === false))
+		if ((strpos($b["body"], $nickname) === false) && (strpos($b["body"], $nicknameplain) === false))
 			$b["body"] = $nickname." ".$b["body"];
 
 		logger("appnet_send: parent found ".print_r($orig_post, true), LOGGER_DATA);
 	} else {
 		$iscomment = false;
 
-		if($b['private'] OR !strstr($b['postopts'],'appnet'))
+		if($b['private'] || !strstr($b['postopts'],'appnet'))
 			return;
 	}
 
-	if (($b['verb'] == ACTIVITY_POST) AND $b['deleted'])
+	if (($b['verb'] == ACTIVITY_POST) && $b['deleted'])
 		appnet_action($a, $b["uid"], substr($orig_post["uri"], 5), "delete");
 
 	if($b['verb'] == ACTIVITY_LIKE) {
@@ -542,7 +542,7 @@ function appnet_send(&$a,&$b) {
 						"value" => $attached_data
 						);
 
-		if (isset($post["url"]) AND !isset($post["title"]) AND ($post["type"] != "photo")) {
+		if (isset($post["url"]) && !isset($post["title"]) && ($post["type"] != "photo")) {
 			$display_url = str_replace(array("http://www.", "https://www."), array("", ""), $post["url"]);
 			$display_url = str_replace(array("http://", "https://"), array("", ""), $display_url);
 
@@ -725,7 +725,7 @@ function appnet_fetchstream($a, $uid) {
 
 		$lastid = $post["id"];
 
-		if (($item != 0) AND ($postarray['contact-id'] != $me["id"]) AND !function_exists("check_item_notification")) {
+		if (($item != 0) && ($postarray['contact-id'] != $me["id"]) && !function_exists("check_item_notification")) {
 			$r = q("SELECT `thread`.`iid` AS `parent` FROM `thread`
 				INNER JOIN `item` ON `thread`.`iid` = `item`.`parent` AND `thread`.`uid` = `item`.`uid`
 				WHERE `item`.`id` = %d AND `thread`.`mention` LIMIT 1", dbesc($item));
@@ -788,7 +788,7 @@ function appnet_fetchstream($a, $uid) {
 			$parent_id = 0;
 			logger('appnet_fetchstream: User '.$uid.' posted mention item '.$item);
 
-			if ($item AND function_exists("check_item_notification"))
+			if ($item && function_exists("check_item_notification"))
 				check_item_notification($item, $uid, NOTIFY_TAGSELF);
 
 		} else {
@@ -797,7 +797,7 @@ function appnet_fetchstream($a, $uid) {
 		}
 
 		// Fetch the parent and id
-		if (($parent_id == 0) AND ($postarray['uri'] != "")) {
+		if (($parent_id == 0) && ($postarray['uri'] != "")) {
 			$r = q("SELECT `id`, `parent` FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
 				dbesc($postarray['uri']),
 				intval($uid)
@@ -811,8 +811,8 @@ function appnet_fetchstream($a, $uid) {
 
 		$lastid = $post["id"];
 
-		//if (($item != 0) AND ($postarray['contact-id'] != $me["id"])) {
-		if (($item != 0) AND !function_exists("check_item_notification")) {
+		//if (($item != 0) && ($postarray['contact-id'] != $me["id"])) {
+		if (($item != 0) && !function_exists("check_item_notification")) {
 			require_once('include/enotify.php');
 			notification(array(
 				'type'         => NOTIFY_TAGSELF,
@@ -886,7 +886,7 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 			return($r[0]);
 	}
 
-	if (isset($post["reply_to"]) AND ($post["reply_to"] != "")) {
+	if (isset($post["reply_to"]) && ($post["reply_to"] != "")) {
 		$postarray['thr-parent'] = "adn::".$post["reply_to"];
 
 		// Complete the thread (if the parent doesn't exists)
@@ -937,7 +937,7 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 		$postarray['object-type'] = ACTIVITY_OBJ_NOTE;
 	}
 
-	if (($post["user"]["id"] != $ownid) OR ($postarray['thr-parent'] == $postarray['uri'])) {
+	if (($post["user"]["id"] != $ownid) || ($postarray['thr-parent'] == $postarray['uri'])) {
 		$postarray['owner-name'] = $post["user"]["name"];
 		$postarray['owner-link'] = $post["user"]["canonical_url"];
 		$postarray['owner-avatar'] = $post["user"]["avatar_image"]["url"];
@@ -1015,7 +1015,7 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 
 	if (is_array($content["annotations"])) {
 		$photo = appnet_expand_annotations($a, $content["annotations"]);
-		if (($photo["large"] != "") AND ($photo["url"] != ""))
+		if (($photo["large"] != "") && ($photo["url"] != ""))
 			$page_info = "\n[url=".$photo["url"]."][img]".$photo["large"]."[/img][/url]";
 		elseif ($photo["url"] != "")
 			$page_info = "\n[img]".$photo["url"]."[/img]";
@@ -1034,7 +1034,7 @@ function appnet_createpost($a, $uid, $post, $me, $user, $ownid, $createuser, $th
 
 		if (trim($page_info) != "") {
 			$removedlink = preg_replace("/\[url\=".$url."\](.*?)\[\/url\]/ism", '', $postarray['body']);
-			if (($removedlink == "") OR strstr($postarray['body'], $removedlink))
+			if (($removedlink == "") || strstr($postarray['body'], $removedlink))
 				$postarray['body'] = $removedlink;
 		}
 	}
@@ -1075,7 +1075,7 @@ function appnet_expand_entities($a, $body, $entities) {
 
 	foreach ($entities["links"] AS $links) {
 		$url = "[url=".$links["url"]."]".$links["text"]."[/url]";
-		if (isset($links["amended_len"]) AND ($links["amended_len"] > $links["len"]))
+		if (isset($links["amended_len"]) && ($links["amended_len"] > $links["len"]))
 			$replace[$links["pos"]] = array("pos"=> $links["pos"], "len"=> $links["amended_len"], "replace"=> $url);
 		else
 			$replace[$links["pos"]] = array("pos"=> $links["pos"], "len"=> $links["len"], "replace"=> $url);
@@ -1100,7 +1100,7 @@ function appnet_expand_entities($a, $body, $entities) {
 function appnet_expand_annotations($a, $annotations) {
 	$photo = array("url" => "", "large" => "");
 	foreach ($annotations AS $annotation) {
-		if (($annotation[type] == "net.app.core.oembed") AND
+		if (($annotation[type] == "net.app.core.oembed") &&
 			($annotation["value"]["type"] == "photo")) {
 			if ($annotation["value"]["url"] != "")
 				$photo["url"] = $annotation["value"]["url"];
@@ -1108,7 +1108,7 @@ function appnet_expand_annotations($a, $annotations) {
 			if ($annotation["value"]["thumbnail_large_url"] != "")
 				$photo["large"] = $annotation["value"]["thumbnail_large_url"];
 
-			//if (($annotation["value"]["thumbnail_large_url"] != "") AND ($annotation["value"]["url"] != ""))
+			//if (($annotation["value"]["thumbnail_large_url"] != "") && ($annotation["value"]["url"] != ""))
 			//	$embedded = "\n[url=".$annotation["value"]["url"]."][img]".$annotation["value"]["thumbnail_large_url"]."[/img][/url]";
 			//elseif ($annotation["value"]["url"] != "")
 			//	$embedded = "\n[img]".$annotation["value"]["url"]."[/img]";
@@ -1128,13 +1128,13 @@ function appnet_fetchcontact($a, $uid, $contact, $me, $create_user) {
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
 		intval($uid), dbesc("adn::".$contact["id"]));
 
-	if(!count($r) AND !$create_user)
+	if(!count($r) && !$create_user)
 		return($me["id"]);
 
 	if ($contact["canonical_url"] == "")
 		return($me["id"]);
 
-	if (count($r) AND ($r[0]["readonly"] OR $r[0]["blocked"])) {
+	if (count($r) && ($r[0]["readonly"] || $r[0]["blocked"])) {
 		logger("appnet_fetchcontact: Contact '".$r[0]["nick"]."' is blocked or readonly.", LOGGER_DEBUG);
 		return(-1);
 	}
@@ -1278,7 +1278,7 @@ function appnet_prepare_body(&$a,&$b) {
 	                $nickname = "@[url=".$orig_post["author-link"]."]".$nicknameplain."[/url]";
 	                $nicknameplain = "@".$nicknameplain;
 
-	                if ((strpos($item["body"], $nickname) === false) AND (strpos($item["body"], $nicknameplain) === false))
+	                if ((strpos($item["body"], $nickname) === false) && (strpos($item["body"], $nicknameplain) === false))
 	                        $item["body"] = $nickname." ".$item["body"];
                 }
 

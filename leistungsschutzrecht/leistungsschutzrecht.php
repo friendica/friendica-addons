@@ -86,7 +86,7 @@ function leistungsschutzrecht_fetchsites() {
 		if (isset($attr["href"])) {
 			$urldata = parse_url($attr["href"]);
 
-			if (isset($urldata["host"]) AND !isset($urldata["path"])) {
+			if (isset($urldata["host"]) && !isset($urldata["path"])) {
 				$cleanedurlpart = explode("%", $urldata["host"]);
 
 				$hostname = explode(".", $cleanedurlpart[0]);
