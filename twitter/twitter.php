@@ -621,16 +621,11 @@ function twitter_cron($a,$b) {
 	}
 	logger('twitter: cron_start');
 
-	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'mirror_posts' AND `v` = '1' ORDER BY RAND()");
+	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'mirror_posts' AND `v` = '1'");
 	if(count($r)) {
 		foreach($r as $rr) {
 			logger('twitter: fetching for user '.$rr['uid']);
-
-			if (get_config("system", "worker")) {
-				proc_run(PRIORITY_MEDIUM, "addon/twitter/twitter_sync.php", 1, $rr['uid']);
-			} else {
-				twitter_fetchtimeline($a, $rr['uid']);
-			}
+			proc_run(PRIORITY_MEDIUM, "addon/twitter/twitter_sync.php", 1, (int)$rr['uid']);
 		}
 	}
 
@@ -640,7 +635,7 @@ function twitter_cron($a,$b) {
 
 	$abandon_limit = date("Y-m-d H:i:s", time() - $abandon_days * 86400);
 
-	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'import' AND `v` = '1' ORDER BY RAND()");
+	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'import' AND `v` = '1'");
 	if(count($r)) {
 		foreach($r as $rr) {
 			if ($abandon_days != 0) {
@@ -652,12 +647,7 @@ function twitter_cron($a,$b) {
 			}
 
 			logger('twitter: importing timeline from user '.$rr['uid']);
-
-			if (get_config("system", "worker")) {
-				proc_run(PRIORITY_MEDIUM, "addon/twitter/twitter_sync.php", 2, $rr['uid']);
-			} else {
-				twitter_fetchhometimeline($a, $rr["uid"]);
-			}
+			proc_run(PRIORITY_MEDIUM, "addon/twitter/twitter_sync.php", 2, (int)$rr['uid']);
 /*
 			// To-Do
 			// check for new contacts once a day
