@@ -66,6 +66,19 @@ function leistungsschutzrecht_cuttext($text) {
 function leistungsschutzrecht_fetchsites() {
 	require_once("include/network.php");
 
+	// This list works - but question is how current it is
+	$url = "http://leistungsschutzrecht-stoppen.d-64.org/blacklist.txt";
+	$sitelist = fetch_url($url);
+	$siteurls = explode(',', $sitelist);
+
+	$sites = array();
+	foreach ($siteurls AS $site) {
+		$sites[$site] = $site;
+	}
+
+	// I would prefer parsing the list from the original site, but I haven't found a list.
+	// The following stays here to possibly reenable it in the future without having to reinvent the wheel completely.
+/*
 	$sites = array();
 
 	$url = "http://www.vg-media.de/lizenzen/digitale-verlegerische-angebote/wahrnehmungsberechtigte-digitale-verlegerische-angebote.html";
@@ -95,6 +108,7 @@ function leistungsschutzrecht_fetchsites() {
 			}
 		}
 	}
+*/
 
 	if (sizeof($sites)) {
 		set_config('leistungsschutzrecht','sites',$sites);
