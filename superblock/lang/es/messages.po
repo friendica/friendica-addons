@@ -1,17 +1,18 @@
-# ADDON blockem
+# ADDON superblock
 # Copyright (C)
-# This file is distributed under the same license as the Friendica blockem addon package.
+# This file is distributed under the same license as the Friendica superblock addon package.
 # 
 # 
 # Translators:
 # Albert, 2016
+# juanman <juanma@gnutn.org.ar>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2016-11-18 11:53+0000\n"
-"Last-Translator: Albert\n"
+"POT-Creation-Date: 2017-04-21 08:45+0200\n"
+"PO-Revision-Date: 2017-07-04 16:27+0000\n"
+"Last-Translator: juanman <juanma@gnutn.org.ar>\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,35 +20,26 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: blockem.php:51
-msgid "\"Blockem\" Settings"
-msgstr "Ajustes de \"Blockem\""
+#: superblock.php:53 superblock.php:57
+msgid "\"Superblock\""
+msgstr ""
 
-#: blockem.php:53
+#: superblock.php:60
 msgid "Comma separated profile URLS to block"
 msgstr "Perfil de URLS a bloque separado por comas"
 
-#: blockem.php:57
-msgid "Submit"
-msgstr "Enviar"
+#: superblock.php:64
+msgid "Save Settings"
+msgstr "Guardar configuración"
 
-#: blockem.php:70
-msgid "BLOCKEM Settings saved."
-msgstr "Ajustes de BLOCKEM guardados."
+#: superblock.php:76
+msgid "SUPERBLOCK Settings saved."
+msgstr ""
 
-#: blockem.php:105
-#, php-format
-msgid "Blocked %s - Click to open/close"
-msgstr "%s bloqueados - Click para abrir/cerrar"
+#: superblock.php:148
+msgid "Block Completely"
+msgstr "Bloquear completamente"
 
-#: blockem.php:160
-msgid "Unblock Author"
-msgstr "Desbloquear Autor"
-
-#: blockem.php:162
-msgid "Block Author"
-msgstr "Bloquear autor"
-
-#: blockem.php:194
-msgid "blockem settings updated"
-msgstr "Ajustes de Blockem actualizados"
+#: superblock.php:168
+msgid "superblock settings updated"
+msgstr ""
