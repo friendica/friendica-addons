@@ -71,9 +71,13 @@ function leistungsschutzrecht_fetchsites() {
 	$sitelist = fetch_url($url);
 	$siteurls = explode(',', $sitelist);
 
+	$whitelist = array('tagesschau.de', 'heute.de', 'wdr.de');
+
 	$sites = array();
 	foreach ($siteurls AS $site) {
-		$sites[$site] = $site;
+		if (!in_array($site, $whitelist)) {
+			$sites[$site] = $site;
+		}
 	}
 
 	// I would prefer parsing the list from the original site, but I haven't found a list.
