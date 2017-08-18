@@ -4,6 +4,7 @@
  * Description: Follow the permalink of RSS/Atom feed items and replace the summary with the full content.
  * Version: 1.0
  * Author: Matthew Exon <http://mat.exon.name>
+ * Status: Unsupported
  */
 
 require_once('include/html2bbcode.php');	
