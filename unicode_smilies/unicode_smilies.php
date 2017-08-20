@@ -21,6 +21,7 @@ function unicode_smilies_smilies(&$a,&$b) {
 	Smilies::add($b, ':)', '&#x1F600;');
 	Smilies::add($b, ':-(', '&#x1F641;');
 	Smilies::add($b, ':(', '&#x1F641;');
+	Smilies::add($b, ':-[', '&#x1F633;');
 	Smilies::add($b, ':-D', '&#x1F601;');
 	Smilies::add($b, ':D', '&#x1F601;');
 	Smilies::add($b, ';-)', '&#x1F609;');
@@ -31,29 +32,26 @@ function unicode_smilies_smilies(&$a,&$b) {
 	Smilies::add($b, ':-x', '&#x1F910;');
 	Smilies::add($b, '8-)', '&#x1F60E;');
 	Smilies::add($b, ':-/', '&#x1F615;');
+	Smilies::add($b, ':-"', '&#x1F48F;');
+	Smilies::add($b, ':-&quot;', '&#x1F48F;');
 	Smilies::add($b, ':-!', '&#x1F912;');
 	Smilies::add($b, '&lt;3', '&#x2764;');
 	Smilies::add($b, '&lt;/3', '&#x1F494;');
 	Smilies::add($b, '&lt;\\3', '&#x1F494;');
-//	Smilies::add($b, ':-"', '&#x;');
-//	Smilies::add($b, ':-&quot;', '&#x;');
-//	Smilies::add($b, '8-|', '&#x;');
-//	Smilies::add($b, '8-O', '&#x;');
-//	Smilies::add($b, '\\o/', '&#x;');
-//	Smilies::add($b, ':'(', '&#x;');
+	Smilies::add($b, '8-|', '&#x1F632;');
+	Smilies::add($b, '8-O', '&#x1F632;');
+	Smilies::add($b, '\\o/', '&#x1F44D;');
+	Smilies::add($b, ":'(", '&#x1F622;');
 	Smilies::add($b, ':coffee', '&#x2615;');
 	Smilies::add($b, ':beer', '&#x1F37A;');
-//	Smilies::add($b, ':homebrew', '&#x;');
+	Smilies::add($b, ':homebrew', '&#x1F37A;');
 	Smilies::add($b, ':like', '&#x1F44D;');
 	Smilies::add($b, ':dislike', '&#x1F44E;');
-//	Smilies::add($b, '\\\\o/', '&#x;');
-//	Smilies::add($b, ":\'(", '&#x;');
 //	Smilies::add($b, 'o.O', '&#x;');
 //	Smilies::add($b, 'O.o', '&#x;');
 //	Smilies::add($b, 'o_O', '&#x;');
 //	Smilies::add($b, 'O_o', '&#x;');
-//	Smilies::add($b, ':-[', '&#x;');
-//	Smilies::add($b, ':facepalm', '&#x;');
+//	Smilies::add($b, ':facepalm', '&#x1F926;'); // Bad client support
 
 // Animal smileys.
 
@@ -79,14 +77,14 @@ function unicode_smilies_smilies(&$a,&$b) {
 	Smilies::add($b, ':dog', '&#x1F436;');
 	Smilies::add($b, ':elephant', '&#x1F418;');
 	Smilies::add($b, ':fish', '&#x1F41F;');
-	Smilies::add($b, ':giraffe', '&#x1F992;');
+//	Smilies::add($b, ':giraffe', '&#x1F992;'); // Bad client support
 	Smilies::add($b, ':pig', '&#x1F416;');
 
 // Baby Smileys
 
 	Smilies::add($b, ':baby', '&#x1F476;');
 //	Smilies::add($b, ':babycot', '&#x;');
-	Smilies::add($b, ':pregnant', '&#x1F930;');
+//	Smilies::add($b, ':pregnant', '&#x1F930;'); // Bad client support
 //	Smilies::add($b, ':stork', '&#x;');
 
 // Confused Smileys
@@ -121,7 +119,7 @@ function unicode_smilies_smilies(&$a,&$b) {
 // Drinks
 
 	Smilies::add($b, ':tea', '&#x2615;');
-	Smilies::add($b, ':drool', '&#x1F924;');
+//	Smilies::add($b, ':drool', '&#x1F924;'); // Bad client support
 
 // Sad smileys
 
@@ -195,7 +193,7 @@ function unicode_smilies_smilies(&$a,&$b) {
 	Smilies::add($b, ':apple', '&#x1F34E;');
 //	Smilies::add($b, ':broccoli', '&#x;');
 	Smilies::add($b, ':cake', '&#x1F370;');
-	Smilies::add($b, ':carrot', '&#x1F955;');
+//	Smilies::add($b, ':carrot', '&#x1F955;'); // Bad client support
 	Smilies::add($b, ':popcorn', '&#x1F37F;');
 	Smilies::add($b, ':tomato', '&#x1F345;');
 	Smilies::add($b, ':banana', '&#x1F34C;');
@@ -219,18 +217,17 @@ function unicode_smilies_smilies(&$a,&$b) {
 
 //	Smilies::add($b, ':hahaha', '&#x;');
 //	Smilies::add($b, ':loltv', '&#x;');
-	Smilies::add($b, ':rofl', '&#x1F923;');
-
+//	Smilies::add($b, ':rofl', '&#x1F923;'); // Bad client support
 // Music smileys
 
-	Smilies::add($b, ':drums', '&#x1F941;');
+//	Smilies::add($b, ':drums', '&#x1F941;'); // Bad client support
 	Smilies::add($b, ':guitar', '&#x1F3B8;');
 	Smilies::add($b, ':trumpet', '&#x1F3BA;');
 
 // Smileys that used to be in core
 
 //	Smilies::add($b, ':headbang', '&#x;');
-	Smilies::add($b, ':beard', '&#x1F9D4;');
+//	Smilies::add($b, ':beard', '&#x1F9D4;'); // Bad client support
 //	Smilies::add($b, ':whitebeard', '&#x;');
 //	Smilies::add($b, ':shaka', '&#x;');
 //	Smilies::add($b, ':\\.../', '&#x;');
@@ -246,7 +243,7 @@ function unicode_smilies_smilies(&$a,&$b) {
 //  at the start of $OtherLanguage.
 
 	Smilies::add($b, ':cool', '&#x1F192;');
-	Smilies::add($b, ':vomit', '&#x1F92E;');
+//	Smilies::add($b, ':vomit', '&#x1F92E;'); // Bad client support
 	Smilies::add($b, ':golf', '&#x1F3CC;');
 	Smilies::add($b, ':football', '&#x1F3C8;');
 	Smilies::add($b, ':tennis', '&#x1F3BE;');
