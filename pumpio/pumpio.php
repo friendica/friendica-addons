@@ -1407,8 +1407,11 @@ function pumpio_getallusers(&$a, $uid) {
 			$success = false;
 	}
 
-	foreach ($users->items AS $user)
-		pumpio_get_contact($uid, $user);
+	if (is_array($users->items)) {
+		foreach ($users->items AS $user) {
+			pumpio_get_contact($uid, $user);
+		}
+	}
 }
 
 function pumpio_queue_hook(&$a,&$b) {
