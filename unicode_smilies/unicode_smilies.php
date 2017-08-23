@@ -25,6 +25,7 @@ function unicode_smilies_smilies(&$a,&$b) {
 	Smilies::add($b, ':-D', '&#x1F601;');
 	Smilies::add($b, ':D', '&#x1F601;');
 	Smilies::add($b, ';-)', '&#x1F609;');
+	Smilies::add($b, ';)', '&#x1F609;');
 	Smilies::add($b, ':-P', '&#x1F61B;');
 	Smilies::add($b, ':-p', '&#x1F61B;');
 	Smilies::add($b, ':-O', '&#x1F62E;');

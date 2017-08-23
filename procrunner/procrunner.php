@@ -5,6 +5,7 @@
  * Version: 1.0
  * Author: Fabio Comuni <http://kirgroup.com/profile/fabrix>
  * Author: Mike Macgirvin
+ * Status: Unsupported
  */
 
 function procrunner_install() {
@@ -40,6 +41,7 @@ function procrunner_uninstall() {
 
 
 function procrunner_procrun(&$a, &$arr) {
+	return; // deactivated
 
 	$argv = $arr['args'];
 	$arr['run_cmd'] = false;
