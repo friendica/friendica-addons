@@ -1,7 +1,7 @@
 <?php
 /*
  * Name: Unicode Smilies
- * Description: Smilies based on the unicode emojis
+ * Description: Smilies based on the unicode emojis - On Linux use https://github.com/eosrei/emojione-color-font to see them in color
  * Version: 1.0
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  */

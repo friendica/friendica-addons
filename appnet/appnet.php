@@ -296,7 +296,7 @@ function appnet_post_local(&$a,&$b) {
 		$appnet_enable = (($appnet_post && x($_REQUEST,'appnet_enable')) ? intval($_REQUEST['appnet_enable']) : 0);
 
 		// if API is used, default to the chosen settings
-		if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'appnet','post_by_default')))
+		if($b['api_source'] && intval(get_pconfig(local_user(),'appnet','post_by_default')))
 			$appnet_enable = 1;
 
 		if(! $appnet_enable)

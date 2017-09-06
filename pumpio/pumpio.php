@@ -349,23 +349,27 @@ function pumpio_settings_post(&$a,&$b) {
 	}
 }
 
-function pumpio_post_local(&$a,&$b) {
+function pumpio_post_local(&$a, &$b) {
 
-	if((! local_user()) || (local_user() != $b['uid']))
+	if (!local_user() || (local_user() != $b['uid'])) {
 		return;
+	}
 
-	$pumpio_post   = intval(get_pconfig(local_user(),'pumpio','post'));
+	$pumpio_post   = intval(get_pconfig(local_user(), 'pumpio', 'post'));
 
 	$pumpio_enable = (($pumpio_post && x($_REQUEST,'pumpio_enable')) ? intval($_REQUEST['pumpio_enable']) : 0);
 
-	if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'pumpio','post_by_default')))
+	if ($b['api_source'] && intval(get_pconfig(local_user(), 'pumpio', 'post_by_default'))) {
 		$pumpio_enable = 1;
+	}
 
-	if(! $pumpio_enable)
+	if (!$pumpio_enable) {
 		return;
+	}
 
-	if(strlen($b['postopts']))
+	if (strlen($b['postopts'])) {
 		$b['postopts'] .= ',';
+	}
 
 	$b['postopts'] .= 'pumpio';
 }

@@ -428,26 +428,32 @@ function statusnet_settings(&$a,&$s) {
 }
 
 
-function statusnet_post_local(&$a,&$b) {
-	if($b['edit'])
+function statusnet_post_local(&$a, &$b) {
+	if ($b['edit']) {
 		return;
-
-	if((local_user()) && (local_user() == $b['uid']) && (! $b['private'])) {
-
-		$statusnet_post = get_pconfig(local_user(),'statusnet','post');
-		$statusnet_enable = (($statusnet_post && x($_REQUEST,'statusnet_enable')) ? intval($_REQUEST['statusnet_enable']) : 0);
-
-		// if API is used, default to the chosen settings
-		if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'statusnet','post_by_default')))
-			$statusnet_enable = 1;
-
-		if(! $statusnet_enable)
-			return;
-
-		if(strlen($b['postopts']))
-			$b['postopts'] .= ',';
-		$b['postopts'] .= 'statusnet';
 	}
+
+	if (!local_user() || (local_user() != $b['uid'])) {
+		return;
+	}
+
+	$statusnet_post = get_pconfig(local_user(),'statusnet','post');
+	$statusnet_enable = (($statusnet_post && x($_REQUEST,'statusnet_enable')) ? intval($_REQUEST['statusnet_enable']) : 0);
+
+	// if API is used, default to the chosen settings
+	if ($b['api_source'] && intval(get_pconfig(local_user(),'statusnet','post_by_default'))) {
+		$statusnet_enable = 1;
+	}
+
+	if (!$statusnet_enable) {
+		return;
+	}
+
+	if (strlen($b['postopts'])) {
+		$b['postopts'] .= ',';
+	}
+
+	$b['postopts'] .= 'statusnet';
 }
 
 function statusnet_action($a, $uid, $pid, $action) {

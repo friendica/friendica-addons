@@ -273,31 +273,38 @@ function tumblr_settings_post(&$a,&$b) {
 
 }
 
-function tumblr_post_local(&$a,&$b) {
+function tumblr_post_local(&$a, &$b) {
 
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
-	if($b['edit'])
+	if ($b['edit']) {
 		return;
+	}
 
-	if((! local_user()) || (local_user() != $b['uid']))
+	if (!local_user() || (local_user() != $b['uid'])) {
 		return;
+	}
 
-	if($b['private'] || $b['parent'])
+	if ($b['private'] || $b['parent']) {
 		return;
+	}
 
 	$tmbl_post   = intval(get_pconfig(local_user(),'tumblr','post'));
 
 	$tmbl_enable = (($tmbl_post && x($_REQUEST,'tumblr_enable')) ? intval($_REQUEST['tumblr_enable']) : 0);
 
-	if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'tumblr','post_by_default')))
+	if ($b['api_source'] && intval(get_pconfig(local_user(),'tumblr','post_by_default'))) {
 		$tmbl_enable = 1;
+	}
 
-	if(! $tmbl_enable)
+	if (!$tmbl_enable) {
 		return;
+	}
 
-	if(strlen($b['postopts']))
+	if (strlen($b['postopts'])) {
 		$b['postopts'] .= ',';
+	}
+
 	$b['postopts'] .= 'tumblr';
 }
 
