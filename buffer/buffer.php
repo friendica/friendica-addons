@@ -210,21 +210,25 @@ function buffer_settings_post(&$a,&$b) {
 
 function buffer_post_local(&$a,&$b) {
 
-	if((! local_user()) || (local_user() != $b['uid']))
+	if (!local_user() || (local_user() != $b['uid'])) {
 		return;
+	}
 
 	$buffer_post   = intval(get_pconfig(local_user(),'buffer','post'));
 
 	$buffer_enable = (($buffer_post && x($_REQUEST,'buffer_enable')) ? intval($_REQUEST['buffer_enable']) : 0);
 
-	if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'buffer','post_by_default')))
+	if ($b['api_source'] && intval(get_pconfig(local_user(),'buffer','post_by_default'))) {
 		$buffer_enable = 1;
+	}
 
-	if(! $buffer_enable)
+	if (!$buffer_enable) {
 		return;
+	}
 
-	if(strlen($b['postopts']))
+	if (strlen($b['postopts'])) {
 		$b['postopts'] .= ',';
+	}
 
 	$b['postopts'] .= 'buffer';
 }

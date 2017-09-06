@@ -115,28 +115,35 @@ function libertree_post_local(&$a,&$b) {
 
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
-	if($b['edit'])
+	if ($b['edit']) {
 		return;
+	}
 
-	if((! local_user()) || (local_user() != $b['uid']))
+	if ((! local_user()) || (local_user() != $b['uid'])) {
 		return;
+	}
 
-	if($b['private'] || $b['parent'])
+	if ($b['private'] || $b['parent']) {
 		return;
+	}
 
 	$ltree_post   = intval(get_pconfig(local_user(),'libertree','post'));
 
 	$ltree_enable = (($ltree_post && x($_REQUEST,'libertree_enable')) ? intval($_REQUEST['libertree_enable']) : 0);
 
-	if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'libertree','post_by_default')))
+	if ($b['api_source'] && intval(get_pconfig(local_user(),'libertree','post_by_default'))) {
 		$ltree_enable = 1;
+	}
 
-    if(! $ltree_enable)
-       return;
+	if (!$ltree_enable) {
+		return;
+	}
 
-    if(strlen($b['postopts']))
-       $b['postopts'] .= ',';
-     $b['postopts'] .= 'libertree';
+	if (strlen($b['postopts'])) {
+		$b['postopts'] .= ',';
+	}
+
+	$b['postopts'] .= 'libertree';
 }
 
 

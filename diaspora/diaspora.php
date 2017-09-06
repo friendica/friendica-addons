@@ -233,28 +233,35 @@ function diaspora_settings_post(&$a,&$b) {
 
 function diaspora_post_local(&$a,&$b) {
 
-	if($b['edit'])
+	if ($b['edit']) {
 		return;
+	}
 
-	if((! local_user()) || (local_user() != $b['uid']))
+	if (!local_user() || (local_user() != $b['uid'])) {
 		return;
+	}
 
-	if($b['private'] || $b['parent'])
+	if ($b['private'] || $b['parent']) {
 		return;
+	}
 
 	$diaspora_post   = intval(get_pconfig(local_user(),'diaspora','post'));
 
 	$diaspora_enable = (($diaspora_post && x($_REQUEST,'diaspora_enable')) ? intval($_REQUEST['diaspora_enable']) : 0);
 
-	if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'diaspora','post_by_default')))
+	if ($b['api_source'] && intval(get_pconfig(local_user(),'diaspora','post_by_default'))) {
 		$diaspora_enable = 1;
+	}
 
-    if(! $diaspora_enable)
-       return;
+	if (!$diaspora_enable) {
+		return;
+	}
 
-    if(strlen($b['postopts']))
-       $b['postopts'] .= ',';
-     $b['postopts'] .= 'diaspora';
+	if (strlen($b['postopts'])) {
+		$b['postopts'] .= ',';
+	}
+
+	$b['postopts'] .= 'diaspora';
 }
 
 

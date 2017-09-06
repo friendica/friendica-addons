@@ -149,38 +149,39 @@ function wppost_settings_post(&$a,&$b) {
 
 }
 
-function wppost_post_local(&$a,&$b) {
+function wppost_post_local(&$a, &$b) {
 
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
-	if($b['edit']) {
+	if ($b['edit']) {
 		return;
 	}
 
-	if((! local_user()) || (local_user() != $b['uid'])) {
+	if (!local_user() || (local_user() != $b['uid'])) {
 		return;
 	}
 
-	if($b['private'] || $b['parent']) {
+	if ($b['private'] || $b['parent']) {
 		return;
 	}
 
-    $wp_post   = intval(get_pconfig(local_user(),'wppost','post'));
+	$wp_post   = intval(get_pconfig(local_user(),'wppost','post'));
 
 	$wp_enable = (($wp_post && x($_REQUEST,'wppost_enable')) ? intval($_REQUEST['wppost_enable']) : 0);
 
-	if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'wppost','post_by_default'))) {
+	if ($b['api_source'] && intval(get_pconfig(local_user(),'wppost','post_by_default'))) {
 		$wp_enable = 1;
 	}
 
-    if(! $wp_enable) {
-       return;
-    }
+	if (!$wp_enable) {
+		return;
+	}
 
-    if(strlen($b['postopts'])) {
-       $b['postopts'] .= ',';
-    }
-    $b['postopts'] .= 'wppost';
+	if (strlen($b['postopts'])) {
+		$b['postopts'] .= ',';
+	}
+
+	$b['postopts'] .= 'wppost';
 }
 
 

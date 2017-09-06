@@ -141,7 +141,7 @@ function blogger_post_local(&$a,&$b) {
 
 	$bl_enable = (($bl_post && x($_REQUEST,'blogger_enable')) ? intval($_REQUEST['blogger_enable']) : 0);
 
-	if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'blogger','post_by_default')))
+	if($b['api_source'] && intval(get_pconfig(local_user(),'blogger','post_by_default')))
 		$bl_enable = 1;
 
     if(! $bl_enable)
