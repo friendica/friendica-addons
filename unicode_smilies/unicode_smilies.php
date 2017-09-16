@@ -117,11 +117,6 @@ function unicode_smilies_smilies(&$a,&$b) {
 //	Smilies::add($b, ':fartinbed', '&#x;');
 //	Smilies::add($b, ':fartblush', '&#x;');
 
-// Drinks
-
-	Smilies::add($b, ':tea', '&#x2615;');
-//	Smilies::add($b, ':drool', '&#x1F924;'); // Bad client support
-
 // Sad smileys
 
 	Smilies::add($b, ':crying', '&#x1F622;');
@@ -242,6 +237,11 @@ function unicode_smilies_smilies(&$a,&$b) {
 
 //  Regex killers - stick these at the bottom so they appear at the end of the English and
 //  at the start of $OtherLanguage.
+
+// Drinks
+
+	Smilies::add($b, ':tea', '&#x2615;');
+//	Smilies::add($b, ':drool', '&#x1F924;'); // Bad client support
 
 	Smilies::add($b, ':cool', '&#x1F192;');
 //	Smilies::add($b, ':vomit', '&#x1F92E;'); // Bad client support
