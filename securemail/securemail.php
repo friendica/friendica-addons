@@ -60,7 +60,7 @@ function securemail_settings(App &$a, &$s){
 
     $t = get_markup_template('admin.tpl', 'addon/securemail/');
 
-    $s = replace_macros($t, array(
+    $s .= replace_macros($t, array(
         '$title' => t('"Secure Mail" Settings'),
         '$submit' => t('Save Settings'),
         '$test' => t('Save and send test'), //NOTE: update also in 'post'
