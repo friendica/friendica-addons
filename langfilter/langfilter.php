@@ -7,8 +7,6 @@
  * License: MIT
  */
 
-require_once('library/langdet/Text/LanguageDetect.php');
-
 /* Define the hooks we want to use
  * that is, we have settings, we need to save the settings and we want
  * to modify the content of a posting when friendica prepares it.
@@ -110,7 +108,7 @@ function langfilter_prepare_body(&$a,&$b) {
     $spoken_config = get_pconfig(local_user(),'langfilter','languages');
     $minconfidence = get_pconfig(local_user(),'langfilter','minconfidence');
 
-    # Don't filter if no spoken languages are configured 
+    # Don't filter if no spoken languages are configured
     if ( ! $spoken_config ) return;
     $spoken_languages = explode(',', $spoken_config);
 
