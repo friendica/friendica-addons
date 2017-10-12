@@ -242,10 +242,11 @@ function dav_create_tables()
 	$stms   = dav_get_create_statements();
 	$errors = array();
 
-	global $db;
 	foreach ($stms as $st) { // @TODO Friendica-dependent
-		$db->q($st);
-		if ($db->error) $errors[] = $db->error;
+		dba::e($st);
+		if (dba::errorMessage()) {
+			$errors[] = dba::errorMessage();
+		}
 	}
 
 	return $errors;
@@ -261,10 +262,12 @@ function dav_upgrade_tables()
 	$stms   = dav_get_update_statements($ver);
 
 	$errors = array();
-	global $db;
+
 	foreach ($stms as $st) { // @TODO Friendica-dependent
-		$db->q($st);
-		if ($db->error) $errors[] = $db->error;
+		dba::e($st);
+		if (dba::errorMessage()) {
+			$errors[] = dba::errorMessage();
+		}
 	}
 
 	return $errors;
