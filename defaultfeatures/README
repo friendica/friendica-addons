@@ -1,7 +1,0 @@
-Default Features Plugin
-
-This plugin allows the site admin to choose which Additional Features
- are on by default for newly created users on the site. The defaults 
- apply to all new users upon registration, but do not impact a user's
- ability to turn features on/off once their account has been created.
-These default settings do not impact existing users.
