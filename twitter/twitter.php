@@ -551,8 +551,20 @@ function twitter_post_hook(&$a,&$b) {
 		}
 
 		if(strlen($msg) && ($image == "")) {
+// -----------------
+			$max_char = 280;
+			require_once("include/plaintext.php");
+			$msgarr = plaintext($a, $b, $max_char, true, 8);
+			$msg = $msgarr["text"];
+
+			if (($msg == "") && isset($msgarr["title"]))
+				$msg = shortenmsg($msgarr["title"], $max_char - 50);
+
+			if (isset($msgarr["url"]))
+				$msg .= "\n".$msgarr["url"];
+// -----------------
 			$url = 'statuses/update';
-			$post = array('status' => $msg);
+			$post = array('status' => $msg, 'weighted_character_count' => 'true');
 
 			if ($iscomment)
 				$post["in_reply_to_status_id"] = substr($orig_post["uri"], 9);
