@@ -4,15 +4,15 @@
 # 
 # 
 # Translators:
-# Albert, 2016
+# Albert, 2016-2017
 # juanman <juanma@gnutn.org.ar>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-04-21 08:45+0200\n"
-"PO-Revision-Date: 2017-07-04 16:27+0000\n"
-"Last-Translator: juanman <juanma@gnutn.org.ar>\n"
+"PO-Revision-Date: 2017-10-26 18:00+0000\n"
+"Last-Translator: Albert\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,7 +22,7 @@ msgstr ""
 
 #: superblock.php:53 superblock.php:57
 msgid "\"Superblock\""
-msgstr ""
+msgstr "«Superbloque»"
 
 #: superblock.php:60
 msgid "Comma separated profile URLS to block"
@@ -34,7 +34,7 @@ msgstr "Guardar configuración"
 
 #: superblock.php:76
 msgid "SUPERBLOCK Settings saved."
-msgstr ""
+msgstr "Ajustes de SUPERBLOQUE guardados."
 
 #: superblock.php:148
 msgid "Block Completely"
@@ -42,4 +42,4 @@ msgstr "Bloquear completamente"
 
 #: superblock.php:168
 msgid "superblock settings updated"
-msgstr ""
+msgstr "ajustes de superbloque actualizados"
