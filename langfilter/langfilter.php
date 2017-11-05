@@ -8,7 +8,6 @@
  * License: MIT
  */
 
-require_once('library/langdet/Text/LanguageDetect.php');
 use Friendica\App;
 
 /* Define the hooks we want to use
