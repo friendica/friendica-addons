@@ -9,6 +9,7 @@
  */
 
 use Friendica\App;
+use Friendica\Core\PConfig;
 
 /* Define the hooks we want to use
  * that is, we have settings, we need to save the settings and we want
@@ -41,10 +42,10 @@ function langfilter_addon_settings(App $a, &$s)
 		return;
 	}
 
-	$enable_checked = (intval(get_pconfig(local_user(), 'langfilter', 'disable')) ? '' : ' checked="checked" ');
-	$languages      = get_pconfig(local_user(), 'langfilter', 'languages');
-	$minconfidence  = get_pconfig(local_user(), 'langfilter', 'minconfidence') * 100;
-	$minlength      = get_pconfig(local_user(), 'langfilter', 'minlength');
+	$enable_checked = (intval(PConfig::get(local_user(), 'langfilter', 'disable')) ? '' : ' checked="checked" ');
+	$languages      = PConfig::get(local_user(), 'langfilter', 'languages');
+	$minconfidence  = PConfig::get(local_user(), 'langfilter', 'minconfidence') * 100;
+	$minlength      = PConfig::get(local_user(), 'langfilter', 'minlength');
 
 	if (!$languages) {
 		$languages = 'en,de,fr,it,es';
@@ -77,27 +78,27 @@ function langfilter_addon_settings_post(App $a, &$b)
 	}
 
 	if ($_POST['langfilter-settings-submit']) {
-		set_pconfig(local_user(), 'langfilter', 'languages', trim($_POST['langfilter_languages']));
+		PConfig::set(local_user(), 'langfilter', 'languages', trim($_POST['langfilter_languages']));
 		$enable = ((x($_POST, 'langfilter_enable')) ? intval($_POST['langfilter_enable']) : 0);
 		$disable = 1 - $enable;
-		set_pconfig(local_user(), 'langfilter', 'disable', $disable);
+		PConfig::set(local_user(), 'langfilter', 'disable', $disable);
 		$minconfidence = 0 + $_POST['langfilter_minconfidence'];
 		if (!$minconfidence) {
 			$minconfidence = 0;
-		} else if ($minconfidence < 0) {
+		} elseif ($minconfidence < 0) {
 			$minconfidence = 0;
-		} else if ($minconfidence > 100) {
+		} elseif ($minconfidence > 100) {
 			$minconfidence = 100;
 		}
-		set_pconfig(local_user(), 'langfilter', 'minconfidence', $minconfidence / 100.0);
+		PConfig::set(local_user(), 'langfilter', 'minconfidence', $minconfidence / 100.0);
 
 		$minlength = 0 + $_POST['langfilter_minlength'];
 		if (!$minlength) {
 			$minlength = 32;
-		} else if ($minlengt8h < 0) {
+		} elseif ($minlengt8h < 0) {
 			$minlength = 32;
 		}
-		set_pconfig(local_user(), 'langfilter', 'minlength', $minlength);
+		PConfig::set(local_user(), 'langfilter', 'minlength', $minlength);
 
 		info(t('Language Filter Settings saved.') . EOL);
 	}
@@ -127,12 +128,12 @@ function langfilter_prepare_body(App $a, &$b)
 	}
 
 	// Don't filter if language filter is disabled
-	if (get_pconfig($logged_user, 'langfilter', 'disable')) {
+	if (PConfig::get($logged_user, 'langfilter', 'disable')) {
 		return;
 	}
 
 	// Don't filter if body lenght is below minimum
-	$minlen = get_pconfig(local_user(), 'langfilter', 'minlength');
+	$minlen = PConfig::get(local_user(), 'langfilter', 'minlength');
 	if (!$minlen) {
 		$minlen = 32;
 	}
@@ -140,8 +141,8 @@ function langfilter_prepare_body(App $a, &$b)
 		return;
 	}
 
-	$spoken_config = get_pconfig(local_user(), 'langfilter', 'languages');
-	$minconfidence = get_pconfig(local_user(), 'langfilter', 'minconfidence');
+	$spoken_config = PConfig::get(local_user(), 'langfilter', 'languages');
+	$minconfidence = PConfig::get(local_user(), 'langfilter', 'minconfidence');
 
 	// Don't filter if no spoken languages are configured
 	if (!$spoken_config)
