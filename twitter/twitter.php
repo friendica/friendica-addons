@@ -60,6 +60,8 @@
  *     Requirements: PHP5, curl [Slinky library]
  */
 
+use Friendica\Core\Worker;
+
 require_once('include/enotify.php');
 require_once("include/socgraph.php");
 
@@ -643,7 +645,7 @@ function twitter_cron($a,$b) {
 	if(count($r)) {
 		foreach($r as $rr) {
 			logger('twitter: fetching for user '.$rr['uid']);
-			proc_run(PRIORITY_MEDIUM, "addon/twitter/twitter_sync.php", 1, (int)$rr['uid']);
+			Worker::add(PRIORITY_MEDIUM, "addon/twitter/twitter_sync.php", 1, (int)$rr['uid']);
 		}
 	}
 
@@ -665,7 +667,7 @@ function twitter_cron($a,$b) {
 			}
 
 			logger('twitter: importing timeline from user '.$rr['uid']);
-			proc_run(PRIORITY_MEDIUM, "addon/twitter/twitter_sync.php", 2, (int)$rr['uid']);
+			Worker::add(PRIORITY_MEDIUM, "addon/twitter/twitter_sync.php", 2, (int)$rr['uid']);
 /*
 			// To-Do
 			// check for new contacts once a day

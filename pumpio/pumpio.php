@@ -5,6 +5,9 @@
  * Version: 0.2
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  */
+
+use Friendica\Core\Worker;
+
 require('addon/pumpio/oauth/http.php');
 require('addon/pumpio/oauth/oauth_client.php');
 require_once('include/enotify.php');
@@ -688,8 +691,7 @@ function pumpio_sync(&$a) {
 }
 
 function pumpio_cron(&$a,$b) {
-	//pumpio_sync($a);
-	proc_run("php","addon/pumpio/pumpio_sync.php");
+	Worker::add(PRIORITY_MEDIUM,"addon/pumpio/pumpio_sync.php");
 }
 
 function pumpio_fetchtimeline(&$a, $uid) {
