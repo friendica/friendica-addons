@@ -8,6 +8,7 @@
  *
  */
 
+use Friendica\Core\PConfig;
 
 function group_text_install() {
 
@@ -41,7 +42,7 @@ function group_text_uninstall() {
 function group_text_settings_post($a,$post) {
 	if(! local_user() || (! x($_POST,'group_text-submit')))
 		return;
-	set_pconfig(local_user(),'system','groupedit_image_limit',intval($_POST['group_text']));
+	PConfig::set(local_user(),'system','groupedit_image_limit',intval($_POST['group_text']));
 
 	info( t('Group Text settings updated.') . EOL);
 }
@@ -67,7 +68,7 @@ function group_text_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$enabled = get_pconfig(local_user(),'system','groupedit_image_limit');
+	$enabled = PConfig::get(local_user(),'system','groupedit_image_limit');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 
 	/* Add some HTML to the existing form */

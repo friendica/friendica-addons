@@ -11,6 +11,8 @@
  
 require_once('include/cache.php');
 
+use Friendica\Core\Config;
+
 
 function openstreetmap_install() {
 	register_hook('render_location', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_location');
@@ -57,19 +59,19 @@ function openstreetmap_location($a, &$item) {
 	 * ?mlat=lat&mlon=lon for markers.
 	 */
 
-	$tmsserver = get_config('openstreetmap', 'tmsserver');
+	$tmsserver = Config::get('openstreetmap', 'tmsserver');
 	if(! $tmsserver)
 		$tmsserver = 'http://www.openstreetmap.org';
 
-	$nomserver = get_config('openstreetmap', 'nomserver');
+	$nomserver = Config::get('openstreetmap', 'nomserver');
 	if(! $nomserver)
 		$nomserver = 'http://nominatim.openstreetmap.org/search.php';
 
-	$zoom = get_config('openstreetmap', 'zoom');
+	$zoom = Config::get('openstreetmap', 'zoom');
 	if(! $zoom)
 		$zoom = 16;
 
-	$marker = get_config('openstreetmap', 'marker');
+	$marker = Config::get('openstreetmap', 'marker');
 	if(! $marker)
 		$marker = 0;
 
@@ -100,7 +102,7 @@ function openstreetmap_location($a, &$item) {
 function openstreetmap_generate_named_map(&$a,&$b) {
 
 
-	$nomserver = get_config('openstreetmap', 'nomserver');
+	$nomserver = Config::get('openstreetmap', 'nomserver');
 	if(! $nomserver)
 		$nomserver = 'http://nominatim.openstreetmap.org/search.php';
 	$args = '?q=' . urlencode($b['location']) . '&format=json';
@@ -119,18 +121,18 @@ function openstreetmap_generate_named_map(&$a,&$b) {
 
 function openstreetmap_generate_map(&$a,&$b) {
 
-	$tmsserver = get_config('openstreetmap', 'tmsserver');
+	$tmsserver = Config::get('openstreetmap', 'tmsserver');
 	if(! $tmsserver)
 		$tmsserver = 'http://www.openstreetmap.org';
 	if(strpos(z_root(),'https:') !== false)
 		$tmsserver = str_replace('http:','https:',$tmsserver);
 
 
-	$zoom = get_config('openstreetmap', 'zoom');
+	$zoom = Config::get('openstreetmap', 'zoom');
 	if(! $zoom)
 		$zoom = 16;
 
-	$marker = get_config('openstreetmap', 'marker');
+	$marker = Config::get('openstreetmap', 'marker');
 	if(! $marker)
 		$marker = 0;
 
@@ -151,16 +153,16 @@ function openstreetmap_generate_map(&$a,&$b) {
 
 function openstreetmap_plugin_admin(&$a, &$o) {
 	$t = get_markup_template("admin.tpl", "addon/openstreetmap/");
-	$tmsserver = get_config('openstreetmap', 'tmsserver');
+	$tmsserver = Config::get('openstreetmap', 'tmsserver');
 	if(! $tmsserver)
 		$tmsserver = 'http://www.openstreetmap.org';
-	$nomserver = get_config('openstreetmap', 'nomserver');
+	$nomserver = Config::get('openstreetmap', 'nomserver');
 	if(! $nomserver)
 		$nomserver = 'http://nominatim.openstreetmap.org/search.php';
-	$zoom = get_config('openstreetmap', 'zoom');
+	$zoom = Config::get('openstreetmap', 'zoom');
 	if(! $zoom)
 		$zoom = 16;
-	$marker = get_config('openstreetmap', 'marker');
+	$marker = Config::get('openstreetmap', 'marker');
 	if(! $marker)
 		$marker = 0;
 
@@ -177,10 +179,10 @@ function openstreetmap_plugin_admin_post(&$a) {
 	$urlnom = ((x($_POST, 'nomserver')) ? notags(trim($_POST['nomserver'])) : '');
 	$zoom = ((x($_POST, 'zoom')) ? intval(trim($_POST['zoom'])) : '16');
 	$marker = ((x($_POST, 'marker')) ? intval(trim($_POST['marker'])) : '0');
-	set_config('openstreetmap', 'tmsserver', $urltms);
-	set_config('openstreetmap', 'nomserver', $urlnom);
-	set_config('openstreetmap', 'zoom', $zoom);
-	set_config('openstreetmap', 'marker', $marker);
+	Config::set('openstreetmap', 'tmsserver', $urltms);
+	Config::set('openstreetmap', 'nomserver', $urlnom);
+	Config::set('openstreetmap', 'zoom', $zoom);
+	Config::set('openstreetmap', 'marker', $marker);
 	info( t('Settings updated.') . EOL);
 }
 

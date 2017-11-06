@@ -8,6 +8,7 @@
  *
  */
 
+use Friendica\Core\PConfig;
 
 function notimeline_install() {
 
@@ -28,7 +29,7 @@ function notimeline_settings_post($a,$post) {
 	if(! local_user() || (! x($_POST,'notimeline-submit')))
 		return;
 
-	set_pconfig(local_user(),'system','no_wall_archive_widget',intval($_POST['notimeline']));
+	PConfig::set(local_user(),'system','no_wall_archive_widget',intval($_POST['notimeline']));
 	info( t('No Timeline settings updated.') . EOL);
 }
 
@@ -43,7 +44,7 @@ function notimeline_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$notimeline = get_pconfig(local_user(),'system','no_wall_archive_widget');
+	$notimeline = PConfig::get(local_user(),'system','no_wall_archive_widget');
 	if($notimeline === false)
 		$notimeline = false;
 

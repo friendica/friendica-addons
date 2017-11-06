@@ -7,6 +7,9 @@
  */
 require('addon/buffer/bufferapp.php');
 
+use Friendica\Core\Config;
+use Friendica\Core\PConfig;
+
 function buffer_install() {
 	register_hook('post_local',           'addon/buffer/buffer.php', 'buffer_post_local');
 	register_hook('notifier_normal',      'addon/buffer/buffer.php', 'buffer_send');
@@ -56,15 +59,15 @@ function buffer_plugin_admin(&$a, &$o){
 	$o = replace_macros($t, array(
 		'$submit' => t('Save Settings'),
 								// name, label, value, help, [extra values]
-		'$client_id' => array('client_id', t('Client ID'),  get_config('buffer', 'client_id' ), ''),
-		'$client_secret' => array('client_secret', t('Client Secret'),  get_config('buffer', 'client_secret' ), ''),
+		'$client_id' => array('client_id', t('Client ID'),  Config::get('buffer', 'client_id' ), ''),
+		'$client_secret' => array('client_secret', t('Client Secret'),  Config::get('buffer', 'client_secret' ), ''),
 	));
 }
 function buffer_plugin_admin_post(&$a){
         $client_id     =       ((x($_POST,'client_id'))              ? notags(trim($_POST['client_id']))   : '');
         $client_secret =       ((x($_POST,'client_secret'))   ? notags(trim($_POST['client_secret'])): '');
-        set_config('buffer','client_id',$client_id);
-        set_config('buffer','client_secret',$client_secret);
+        Config::set('buffer','client_id',$client_id);
+        Config::set('buffer','client_secret',$client_secret);
         info( t('Settings updated.'). EOL );
 }
 
@@ -78,8 +81,8 @@ function buffer_connect(&$a) {
 	session_start();
 
 	// Define the needed keys
-	$client_id = get_config('buffer','client_id');
-	$client_secret = get_config('buffer','client_secret');
+	$client_id = Config::get('buffer','client_id');
+	$client_secret = Config::get('buffer','client_secret');
 
 	// The callback URL is the script that gets called after the user authenticates with buffer
 	$callback_url = $a->get_baseurl()."/buffer/connect";
@@ -92,7 +95,7 @@ function buffer_connect(&$a) {
 		logger("buffer_connect: authenticated");
 		$o .= t("You are now authenticated to buffer. ");
 		$o .= '<br /><a href="'.$a->get_baseurl().'/settings/connectors">'.t("return to the connector page").'</a>';
-		set_pconfig(local_user(), 'buffer','access_token', $buffer->access_token);
+		PConfig::set(local_user(), 'buffer','access_token', $buffer->access_token);
 	}
 
 	return($o);
@@ -102,9 +105,9 @@ function buffer_jot_nets(&$a,&$b) {
 	if(! local_user())
 		return;
 
-	$buffer_post = get_pconfig(local_user(),'buffer','post');
+	$buffer_post = PConfig::get(local_user(),'buffer','post');
 	if(intval($buffer_post) == 1) {
-		$buffer_defpost = get_pconfig(local_user(),'buffer','post_by_default');
+		$buffer_defpost = PConfig::get(local_user(),'buffer','post_by_default');
 		$selected = ((intval($buffer_defpost) == 1) ? ' checked="checked" ' : '');
 		$b .= '<div class="profile-jot-net"><input type="checkbox" name="buffer_enable"' . $selected . ' value="1" /> '
 		    . t('Post to Buffer') . '</div>';
@@ -122,11 +125,11 @@ function buffer_settings(&$a,&$s) {
 
 	/* Get the current state of our config variables */
 
-	$enabled = get_pconfig(local_user(),'buffer','post');
+	$enabled = PConfig::get(local_user(),'buffer','post');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 	$css = (($enabled) ? '' : '-disabled');
 
-	$def_enabled = get_pconfig(local_user(),'buffer','post_by_default');
+	$def_enabled = PConfig::get(local_user(),'buffer','post_by_default');
 	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
 	/* Add some HTML to the existing form */
@@ -139,9 +142,9 @@ function buffer_settings(&$a,&$s) {
 	$s .= '<img class="connector'.$css.'" src="images/buffer.png" /><h3 class="connector">'. t('Buffer Export').'</h3>';
 	$s .= '</span>';
 
-	$client_id = get_config("buffer", "client_id");
-	$client_secret = get_config("buffer", "client_secret");
-	$access_token = get_pconfig(local_user(), "buffer", "access_token");
+	$client_id = Config::get("buffer", "client_id");
+	$client_secret = Config::get("buffer", "client_secret");
+	$access_token = PConfig::get(local_user(), "buffer", "access_token");
 
 	$s .= '<div id="buffer-password-wrapper">';
 	if ($access_token == "") {
@@ -198,12 +201,12 @@ function buffer_settings_post(&$a,&$b) {
 
 	if(x($_POST,'buffer-submit')) {
 		if(x($_POST,'buffer_delete')) {
-			set_pconfig(local_user(),'buffer','access_token','');
-			set_pconfig(local_user(),'buffer','post',false);
-			set_pconfig(local_user(),'buffer','post_by_default',false);
+			PConfig::set(local_user(),'buffer','access_token','');
+			PConfig::set(local_user(),'buffer','post',false);
+			PConfig::set(local_user(),'buffer','post_by_default',false);
 		} else {
-			set_pconfig(local_user(),'buffer','post',intval($_POST['buffer']));
-			set_pconfig(local_user(),'buffer','post_by_default',intval($_POST['buffer_bydefault']));
+			PConfig::set(local_user(),'buffer','post',intval($_POST['buffer']));
+			PConfig::set(local_user(),'buffer','post_by_default',intval($_POST['buffer_bydefault']));
 		}
 	}
 }
@@ -214,11 +217,11 @@ function buffer_post_local(&$a,&$b) {
 		return;
 	}
 
-	$buffer_post   = intval(get_pconfig(local_user(),'buffer','post'));
+	$buffer_post   = intval(PConfig::get(local_user(),'buffer','post'));
 
 	$buffer_enable = (($buffer_post && x($_REQUEST,'buffer_enable')) ? intval($_REQUEST['buffer_enable']) : 0);
 
-	if ($b['api_source'] && intval(get_pconfig(local_user(),'buffer','post_by_default'))) {
+	if ($b['api_source'] && intval(PConfig::get(local_user(),'buffer','post_by_default'))) {
 		$buffer_enable = 1;
 	}
 
@@ -248,9 +251,9 @@ function buffer_send(&$a,&$b) {
 	//if($b['app'] == "Buffer")
 	//	return;
 
-	$client_id = get_config("buffer", "client_id");
-	$client_secret = get_config("buffer", "client_secret");
-	$access_token = get_pconfig($b['uid'], "buffer","access_token");
+	$client_id = Config::get("buffer", "client_id");
+	$client_secret = Config::get("buffer", "client_secret");
+	$access_token = PConfig::get($b['uid'], "buffer","access_token");
 
 	if($access_token) {
 		$buffer = new BufferApp($client_id, $client_secret, $callback_url, $access_token);

@@ -8,6 +8,8 @@
  *      
  */
 
+use Friendica\Core\Config;
+
 function pledgie_install() { 
 	register_hook('page_end', 'addon/pledgie/pledgie.php', 'pledgie_active'); 
 	register_hook('plugin_settings', 'addon/pledgie/pledgie.php', 'pledgie_addon_settings');
@@ -29,8 +31,8 @@ function pledgie_addon_settings(&$a,&$s) {
 
 	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/pledgie/pledgie.css' . '" media="all" />' . "\r\n";
 
-	$campaign = get_config('pledgie-campaign','text');
-	$describe = get_config('pledgie-describe','text');
+	$campaign = Config::get('pledgie-campaign','text');
+	$describe = Config::get('pledgie-describe','text');
 	
 	if(! $campaign)
 		$campaign = '';
@@ -61,15 +63,15 @@ function pledgie_addon_settings_post(&$a,&$b) {
 		return;
 
 	if($_POST['pledgie-submit']) {
-		set_config('pledgie-describe','text',trim(strip_tags($_POST['pledgie-describe'])));
-		set_config('pledgie-campaign','text',trim(strip_tags($_POST['pledgie-campaign'])));
+		Config::set('pledgie-describe','text',trim(strip_tags($_POST['pledgie-describe'])));
+		Config::set('pledgie-campaign','text',trim(strip_tags($_POST['pledgie-campaign'])));
 		info( t('pledgie Settings saved.') . EOL);
 	}
 }
 
 function pledgie_active(&$a,&$b) {
-	$campaign = get_config('pledgie-campaign','text');
-	$describe = get_config('pledgie-describe','text');
+	$campaign = Config::get('pledgie-campaign','text');
+	$describe = Config::get('pledgie-describe','text');
 	$b .= '<div style="position: fixed; padding:5px; border-style:dotted; border-width:1px; background-color: white; line-height: 1; bottom: 5px; left: 20px; z-index: 1000; width: 150px; font-size: 12px;">';
 	$b .= $describe . '<br/><a href="https://pledgie.com/campaigns/';
 	$b .= $campaign;

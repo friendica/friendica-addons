@@ -6,6 +6,8 @@
  * Author: Klaus Weidenbach <http://friendica.dszdw.net/profile/klaus>
  */
 
+use Friendica\Core\Config;
+
 /**
  * Installs the plugin hook
  */
@@ -31,8 +33,8 @@ function gravatar_uninstall() {
  * @param &$b array
  */
 function gravatar_lookup($a, &$b) {
-	$default_avatar = get_config('gravatar', 'default_img');
-	$rating = get_config('gravatar', 'rating');
+	$default_avatar = Config::get('gravatar', 'default_img');
+	$rating = Config::get('gravatar', 'rating');
 
 	// setting default value if nothing configured
 	if(! $default_avatar)
@@ -57,8 +59,8 @@ function gravatar_lookup($a, &$b) {
 function gravatar_plugin_admin (&$a, &$o) {
 	$t = get_markup_template( "admin.tpl", "addon/gravatar/" );
 
-	$default_avatar = get_config('gravatar', 'default_img');
-	$rating = get_config('gravatar', 'rating');
+	$default_avatar = Config::get('gravatar', 'default_img');
+	$rating = Config::get('gravatar', 'rating');
 
 	// set default values for first configuration
 	if(! $default_avatar)
@@ -106,8 +108,8 @@ function gravatar_plugin_admin_post (&$a) {
 
 	$default_avatar = ((x($_POST, 'avatar')) ? notags(trim($_POST['avatar'])) : 'identicon');
 	$rating = ((x($_POST, 'rating')) ? notags(trim($_POST['rating'])) : 'g');
-	set_config('gravatar', 'default_img', $default_avatar);
-	set_config('gravatar', 'rating', $rating);
+	Config::set('gravatar', 'default_img', $default_avatar);
+	Config::set('gravatar', 'rating', $rating);
 	info( t('Gravatar settings updated.') .EOL);
 }
 ?>

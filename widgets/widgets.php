@@ -5,8 +5,9 @@
  * Version: 1.0
  * Author: Fabio Comuni <http://kirgroup.com/profile/fabrix/>
  */
- 
-	 
+
+use Friendica\Core\PConfig;
+
 function widgets_install() {
 	register_hook('plugin_settings', 'addon/widgets/widgets.php', 'widgets_settings'); 
 	register_hook('plugin_settings_post', 'addon/widgets/widgets.php', 'widgets_settings_post');
@@ -32,8 +33,8 @@ function widgets_settings(&$a,&$o) {
 		return;		
 	
 	
-	$key = get_pconfig(local_user(), 'widgets', 'key' );
-	if ($key=='') { $key = mt_rand(); set_pconfig(local_user(), 'widgets', 'key', $key); }
+	$key = PConfig::get(local_user(), 'widgets', 'key' );
+	if ($key=='') { $key = mt_rand(); PConfig::set(local_user(), 'widgets', 'key', $key); }
 
 	$widgets = array();
 	$d = dir(dirname(__file__));

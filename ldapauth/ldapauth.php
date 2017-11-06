@@ -54,6 +54,8 @@
 
 require_once('include/user.php');
 
+use Friendica\Core\Config;
+
 
 function ldapauth_install() {
 	register_hook('authenticate', 'addon/ldapauth/ldapauth.php', 'ldapauth_hook_authenticate');
@@ -78,15 +80,15 @@ function ldapauth_hook_authenticate($a,&$b) {
 
 function ldapauth_authenticate($username,$password) {
 
-    $ldap_server   = get_config('ldapauth','ldap_server');
-    $ldap_binddn   = get_config('ldapauth','ldap_binddn');
-    $ldap_bindpw   = get_config('ldapauth','ldap_bindpw');
-    $ldap_searchdn = get_config('ldapauth','ldap_searchdn');
-    $ldap_userattr = get_config('ldapauth','ldap_userattr');
-    $ldap_group    = get_config('ldapauth','ldap_group');
-    $ldap_autocreateaccount = get_config('ldapauth','ldap_autocreateaccount');
-    $ldap_autocreateaccount_emailattribute = get_config('ldapauth','ldap_autocreateaccount_emailattribute');
-    $ldap_autocreateaccount_nameattribute = get_config('ldapauth','ldap_autocreateaccount_nameattribute');
+    $ldap_server   = Config::get('ldapauth','ldap_server');
+    $ldap_binddn   = Config::get('ldapauth','ldap_binddn');
+    $ldap_bindpw   = Config::get('ldapauth','ldap_bindpw');
+    $ldap_searchdn = Config::get('ldapauth','ldap_searchdn');
+    $ldap_userattr = Config::get('ldapauth','ldap_userattr');
+    $ldap_group    = Config::get('ldapauth','ldap_group');
+    $ldap_autocreateaccount = Config::get('ldapauth','ldap_autocreateaccount');
+    $ldap_autocreateaccount_emailattribute = Config::get('ldapauth','ldap_autocreateaccount_emailattribute');
+    $ldap_autocreateaccount_nameattribute = Config::get('ldapauth','ldap_autocreateaccount_nameattribute');
 	
     if(! ((strlen($password))
             && (function_exists('ldap_connect'))

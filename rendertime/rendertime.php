@@ -9,6 +9,8 @@
  *
  */
 
+use Friendica\Core\Config;
+
 function rendertime_install() {
 	register_hook('page_end', 'addon/rendertime/rendertime.php', 'rendertime_page_end');
 }
@@ -45,7 +47,7 @@ function rendertime_page_end(&$a, &$o) {
 						//round($a->performance["plugin"], 3)
 						)."</div>";
 
-		if (get_config("rendertime", "callstack")) {
+		if (Config::get("rendertime", "callstack")) {
 			$o .= "<pre>";
 			$o .= "\nDatabase Read:\n";
 			foreach ($a->callstack["database"] AS $func => $time) {

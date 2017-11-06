@@ -6,6 +6,8 @@
  * Author: Klaus Weidenbach <http://friendica.dszdw.net/profile/klaus>
  */
 
+use Friendica\Core\Config;
+
 /**
  * Installs the plugin hook
  */
@@ -36,11 +38,11 @@ function libravatar_uninstall() {
  * @param &$b array
  */
 function libravatar_lookup($a, &$b) {
-	$default_avatar = get_config('libravatar', 'default_img');
+	$default_avatar = Config::get('libravatar', 'default_img');
 
 	if (! $default_avatar) {
 		// if not set, look up if there was one from the gravatar addon
-		$default_avatar = get_config('gravatar', 'default_img');
+		$default_avatar = Config::get('gravatar', 'default_img');
 		// setting default avatar if nothing configured
 		if (! $default_avatar)
 			$default_avatar = 'identicon'; // default image will be a random pattern
@@ -62,7 +64,7 @@ function libravatar_lookup($a, &$b) {
 function libravatar_plugin_admin (&$a, &$o) {
 	$t = get_markup_template( "admin.tpl", "addon/libravatar" );
 
-	$default_avatar = get_config('libravatar', 'default_img');
+	$default_avatar = Config::get('libravatar', 'default_img');
 
 	// set default values for first configuration
 	if(! $default_avatar)
@@ -108,7 +110,7 @@ function libravatar_plugin_admin_post (&$a) {
 	check_form_security_token('libravatarrsave');
 
 	$default_avatar = ((x($_POST, 'avatar')) ? notags(trim($_POST['avatar'])) : 'identicon');
-	set_config('libravatar', 'default_img', $default_avatar);
+	Config::set('libravatar', 'default_img', $default_avatar);
 	info(t('Libravatar settings updated.') .EOL);
 }
 ?>

@@ -20,6 +20,8 @@
  *
  */
 
+use Friendica\Core\PConfig;
+
 function qcomment_install() {
 	register_hook('plugin_settings', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings');
 	register_hook('plugin_settings_post', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings_post');
@@ -46,7 +48,7 @@ function qcomment_addon_settings(&$a,&$s) {
 
     $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/qcomment/qcomment.css' . '" media="all" />' . "\r\n";
 
-	$words = get_pconfig(local_user(),'qcomment','words');
+	$words = PConfig::get(local_user(),'qcomment','words');
 	if($words === false)
 		$words = t(':-)') . "\n" . t(':-(') . "\n" .  t('lol');
 
@@ -71,7 +73,7 @@ function qcomment_addon_settings_post(&$a,&$b) {
 		return;
 
 	if($_POST['qcomment-submit']) {
-		set_pconfig(local_user(),'qcomment','words',xmlify($_POST['qcomment-words']));
+		PConfig::set(local_user(),'qcomment','words',xmlify($_POST['qcomment-words']));
 		info( t('Quick Comment settings saved.') . EOL);
 	}
 }

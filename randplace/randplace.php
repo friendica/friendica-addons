@@ -19,6 +19,7 @@
  *
  */
 
+use Friendica\Core\PConfig;
 
 function randplace_install() {
 
@@ -90,7 +91,7 @@ function randplace_post_hook($a, &$item) {
 
 	/* Retrieve our personal config setting */
 
-	$active = get_pconfig(local_user(), 'randplace', 'enable');
+	$active = PConfig::get(local_user(), 'randplace', 'enable');
 
 	if(! $active)
 		return;
@@ -135,7 +136,7 @@ function randplace_settings_post($a,$post) {
 	if(! local_user())
 		return;
 	if($_POST['randplace-submit'])
-		set_pconfig(local_user(),'randplace','enable',intval($_POST['randplace']));
+		PConfig::set(local_user(),'randplace','enable',intval($_POST['randplace']));
 }
 
 
@@ -159,7 +160,7 @@ function randplace_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$enabled = get_pconfig(local_user(),'randplace','enable');
+	$enabled = PConfig::get(local_user(),'randplace','enable');
 
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 

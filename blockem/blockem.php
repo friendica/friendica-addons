@@ -9,6 +9,8 @@
  * 
  */
 
+use Friendica\Core\PConfig;
+
 function blockem_install() {
 	register_hook('prepare_body', 'addon/blockem/blockem.php', 'blockem_prepare_body');
 	register_hook('display_item', 'addon/blockem/blockem.php', 'blockem_display_item');
@@ -45,7 +47,7 @@ function blockem_addon_settings(&$a,&$s) {
     $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/blockem/blockem.css' . '" media="all" />' . "\r\n";
 
 
-	$words = get_pconfig(local_user(),'blockem','words');
+	$words = PConfig::get(local_user(),'blockem','words');
 	if(! $words)
 		$words = '';
 
@@ -74,7 +76,7 @@ function blockem_addon_settings_post(&$a,&$b) {
 		return;
 
 	if($_POST['blockem-submit']) {
-		set_pconfig(local_user(),'blockem','words',trim($_POST['blockem-words']));
+		PConfig::set(local_user(),'blockem','words',trim($_POST['blockem-words']));
 		info( t('BLOCKEM Settings saved.') . EOL);
 	}
 }
@@ -82,7 +84,7 @@ function blockem_addon_settings_post(&$a,&$b) {
 
 function blockem_enotify_store(&$a,&$b) {
 
-	$words = get_pconfig($b['uid'],'blockem','words');
+	$words = PConfig::get($b['uid'],'blockem','words');
 	if($words) {
 		$arr = explode(',',$words);
 	}
@@ -115,7 +117,7 @@ function blockem_prepare_body(&$a,&$b) {
 
 	$words = null;
 	if(local_user()) {
-		$words = get_pconfig(local_user(),'blockem','words');
+		$words = PConfig::get(local_user(),'blockem','words');
 	}
 	if($words) {
 		$arr = explode(',',$words);
@@ -155,7 +157,7 @@ function blockem_conversation_start(&$a,&$b) {
 	if(! local_user())
 		return;
 
-	$words = get_pconfig(local_user(),'blockem','words');
+	$words = PConfig::get(local_user(),'blockem','words');
 	if($words) {
 		$a->data['blockem'] = explode(',',$words);
 	}
@@ -207,7 +209,7 @@ function blockem_init(&$a) {
 	if(! local_user())
 		return;
 
-	$words = get_pconfig(local_user(),'blockem','words');
+	$words = PConfig::get(local_user(),'blockem','words');
 
 	if(array_key_exists('block',$_GET) && $_GET['block']) {
 		if(strlen($words))
@@ -227,7 +229,7 @@ function blockem_init(&$a) {
 		$words = implode(',',$newarr);
 	}
 
-	set_pconfig(local_user(),'blockem','words',$words);
+	PConfig::set(local_user(),'blockem','words',$words);
 	info( t('blockem settings updated') . EOL );
 	killme();
 }

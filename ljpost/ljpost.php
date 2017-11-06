@@ -9,6 +9,8 @@
  * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
 
+use Friendica\Core\PConfig;
+
 function ljpost_install() {
     register_hook('post_local',           'addon/ljpost/ljpost.php', 'ljpost_post_local');
     register_hook('notifier_normal',      'addon/ljpost/ljpost.php', 'ljpost_send');
@@ -31,9 +33,9 @@ function ljpost_jot_nets(&$a,&$b) {
     if(! local_user())
         return;
 
-    $lj_post = get_pconfig(local_user(),'ljpost','post');
+    $lj_post = PConfig::get(local_user(),'ljpost','post');
     if(intval($lj_post) == 1) {
-        $lj_defpost = get_pconfig(local_user(),'ljpost','post_by_default');
+        $lj_defpost = PConfig::get(local_user(),'ljpost','post_by_default');
         $selected = ((intval($lj_defpost) == 1) ? ' checked="checked" ' : '');
         $b .= '<div class="profile-jot-net"><input type="checkbox" name="ljpost_enable" ' . $selected . ' value="1" /> '
             . t('Post to LiveJournal') . '</div>';
@@ -52,16 +54,16 @@ function ljpost_settings(&$a,&$s) {
 
     /* Get the current state of our config variables */
 
-    $enabled = get_pconfig(local_user(),'ljpost','post');
+    $enabled = PConfig::get(local_user(),'ljpost','post');
 
     $checked = (($enabled) ? ' checked="checked" ' : '');
 
-    $def_enabled = get_pconfig(local_user(),'ljpost','post_by_default');
+    $def_enabled = PConfig::get(local_user(),'ljpost','post_by_default');
 
     $def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
-	$lj_username = get_pconfig(local_user(), 'ljpost', 'lj_username');
-	$lj_password = get_pconfig(local_user(), 'ljpost', 'lj_password');
+	$lj_username = PConfig::get(local_user(), 'ljpost', 'lj_username');
+	$lj_password = PConfig::get(local_user(), 'ljpost', 'lj_password');
 
 
     /* Add some HTML to the existing form */
@@ -99,10 +101,10 @@ function ljpost_settings_post(&$a,&$b) {
 
 	if(x($_POST,'ljpost-submit')) {
 
-		set_pconfig(local_user(),'ljpost','post',intval($_POST['ljpost']));
-		set_pconfig(local_user(),'ljpost','post_by_default',intval($_POST['lj_bydefault']));
-		set_pconfig(local_user(),'ljpost','lj_username',trim($_POST['lj_username']));
-		set_pconfig(local_user(),'ljpost','lj_password',trim($_POST['lj_password']));
+		PConfig::set(local_user(),'ljpost','post',intval($_POST['ljpost']));
+		PConfig::set(local_user(),'ljpost','post_by_default',intval($_POST['lj_bydefault']));
+		PConfig::set(local_user(),'ljpost','lj_username',trim($_POST['lj_username']));
+		PConfig::set(local_user(),'ljpost','lj_password',trim($_POST['lj_password']));
 
 	}
 
@@ -121,11 +123,11 @@ function ljpost_post_local(&$a,&$b) {
 	if($b['private'] || $b['parent'])
 		return;
 
-    $lj_post   = intval(get_pconfig(local_user(),'ljpost','post'));
+    $lj_post   = intval(PConfig::get(local_user(),'ljpost','post'));
 
 	$lj_enable = (($lj_post && x($_REQUEST,'ljpost_enable')) ? intval($_REQUEST['ljpost_enable']) : 0);
 
-	if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'ljpost','post_by_default')))
+	if($_REQUEST['api_source'] && intval(PConfig::get(local_user(),'ljpost','post_by_default')))
 		$lj_enable = 1;
 
     if(! $lj_enable)
@@ -162,13 +164,13 @@ function ljpost_send(&$a,&$b) {
 	if($x && strlen($x[0]['timezone']))
 		$tz = $x[0]['timezone'];	
 
-	$lj_username = xmlify(get_pconfig($b['uid'],'ljpost','lj_username'));
-	$lj_password = xmlify(get_pconfig($b['uid'],'ljpost','lj_password'));
-	$lj_journal = xmlify(get_pconfig($b['uid'],'ljpost','lj_journal'));
+	$lj_username = xmlify(PConfig::get($b['uid'],'ljpost','lj_username'));
+	$lj_password = xmlify(PConfig::get($b['uid'],'ljpost','lj_password'));
+	$lj_journal = xmlify(PConfig::get($b['uid'],'ljpost','lj_journal'));
 //	if(! $lj_journal)
 //		$lj_journal = $lj_username;
 
-	$lj_blog = xmlify(get_pconfig($b['uid'],'ljpost','lj_blog'));
+	$lj_blog = xmlify(PConfig::get($b['uid'],'ljpost','lj_blog'));
 	if(! strlen($lj_blog))
 		$lj_blog = xmlify('http://www.livejournal.com/interface/xmlrpc');
 

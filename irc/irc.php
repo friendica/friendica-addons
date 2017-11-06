@@ -7,6 +7,9 @@
 * Author: Tobias Diekershoff <https://f.diekershoff.de/u/tobias>
 */
 
+use Friendica\Core\Config;
+use Friendica\Core\PConfig;
+
 function irc_install() {
 	register_hook('app_menu', 'addon/irc/irc.php', 'irc_app_menu');
 	register_hook('plugin_settings', 'addon/irc/irc.php', 'irc_addon_settings');
@@ -29,8 +32,8 @@ function irc_addon_settings(&$a,&$s) {
 //	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/irc/irc.css' . '" media="all" />' . "\r\n";
 
     /* setting popular channels, auto connect channels */
-	$sitechats = get_pconfig( local_user(), 'irc','sitechats'); /* popular channels */
-	$autochans = get_pconfig( local_user(), 'irc','autochans');  /* auto connect chans */
+	$sitechats = PConfig::get( local_user(), 'irc','sitechats'); /* popular channels */
+	$autochans = PConfig::get( local_user(), 'irc','autochans');  /* auto connect chans */
 
 	$t = get_markup_template( "settings.tpl", "addon/irc/" );
 	$s .= replace_macros($t, array(
@@ -51,8 +54,8 @@ function irc_addon_settings_post(&$a,&$b) {
 		return;
 
 	if($_POST['irc-submit']) {
-		set_pconfig( local_user(), 'irc','autochans',trim($_POST['autochans']));
-		set_pconfig( local_user(), 'irc','sitechats',trim($_POST['sitechats']));
+		PConfig::set( local_user(), 'irc','autochans',trim($_POST['autochans']));
+		PConfig::set( local_user(), 'irc','sitechats',trim($_POST['sitechats']));
 		/* upid pop-up thing */
 		info( t('IRC settings saved.') . EOL);
 	}
@@ -75,11 +78,11 @@ function irc_content(&$a) {
 
 	/* set the list of popular channels */
 	if (local_user()) {
-	    $sitechats = get_pconfig( local_user(), 'irc', 'sitechats');
+	    $sitechats = PConfig::get( local_user(), 'irc', 'sitechats');
 	    if (!$sitechats)
-		$sitechats = get_config('irc', 'sitechats');
+		$sitechats = Config::get('irc', 'sitechats');
 	} else {
-	    $sitechats = get_config('irc','sitechats');
+	    $sitechats = Config::get('irc','sitechats');
 	}
 	if($sitechats)
 		$chats = explode(',',$sitechats);
@@ -95,11 +98,11 @@ function irc_content(&$a) {
 
         /* setting the channel(s) to auto connect */
 	if (local_user()) {
-	    $autochans = get_pconfig(local_user(), 'irc', 'autochans');
+	    $autochans = PConfig::get(local_user(), 'irc', 'autochans');
 	    if (!$autochans)
-		$autochans = get_config('irc','autochans');
+		$autochans = Config::get('irc','autochans');
 	} else {
-	    $autochans = get_config('irc','autochans');
+	    $autochans = Config::get('irc','autochans');
 	}
 	if($autochans)
 		$channels = $autochans;
@@ -122,15 +125,15 @@ function irc_plugin_admin_post (&$a) {
 		return;
 
 	if($_POST['irc-submit']) {
-		set_config('irc','autochans',trim($_POST['autochans']));
-		set_config('irc','sitechats',trim($_POST['sitechats']));
+		Config::set('irc','autochans',trim($_POST['autochans']));
+		Config::set('irc','sitechats',trim($_POST['sitechats']));
 		/* stupid pop-up thing */
 		info( t('IRC settings saved.') . EOL);
 	}
 }
 function irc_plugin_admin (&$a, &$o) {
-	$sitechats = get_config('irc','sitechats'); /* popular channels */
-	$autochans = get_config('irc','autochans');  /* auto connect chans */
+	$sitechats = Config::get('irc','sitechats'); /* popular channels */
+	$autochans = Config::get('irc','autochans');  /* auto connect chans */
 	$t = get_markup_template( "admin.tpl", "addon/irc/" );
 	$o = replace_macros($t, array(
 		'$submit' => t('Save Settings'),

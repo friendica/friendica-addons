@@ -6,6 +6,8 @@
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
 
+use Friendica\Core\Config;
+
 function leistungsschutzrecht_install() {
 	register_hook('cron', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_cron');
 	register_hook('getsiteinfo', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
@@ -115,12 +117,12 @@ function leistungsschutzrecht_fetchsites() {
 */
 
 	if (sizeof($sites)) {
-		set_config('leistungsschutzrecht','sites',$sites);
+		Config::set('leistungsschutzrecht','sites',$sites);
 	}
 }
 
 function leistungsschutzrecht_is_member_site($url) {
-	$sites = get_config('leistungsschutzrecht','sites');
+	$sites = Config::get('leistungsschutzrecht','sites');
 
 	if ($sites == "")
 		return(false);
@@ -142,7 +144,7 @@ function leistungsschutzrecht_is_member_site($url) {
 }
 
 function leistungsschutzrecht_cron($a,$b) {
-	$last = get_config('leistungsschutzrecht','last_poll');
+	$last = Config::get('leistungsschutzrecht','last_poll');
 
 	if($last) {
 		$next = $last + 86400;
@@ -152,6 +154,6 @@ function leistungsschutzrecht_cron($a,$b) {
 		}
 	}
 	leistungsschutzrecht_fetchsites();
-	set_config('leistungsschutzrecht','last_poll', time());
+	Config::set('leistungsschutzrecht','last_poll', time());
 }
 ?>

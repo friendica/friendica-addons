@@ -7,6 +7,7 @@
  */
 
 use Friendica\App;
+use Friendica\Core\PConfig;
 
 require_once 'include/Emailer.php';
 
@@ -55,8 +56,8 @@ function securemail_settings(App &$a, &$s){
         return;
     }
 
-    $enable = intval(get_pconfig(local_user(), 'securemail', 'enable'));
-    $publickey = get_pconfig(local_user(), 'securemail', 'pkey');
+    $enable = intval(PConfig::get(local_user(), 'securemail', 'enable'));
+    $publickey = PConfig::get(local_user(), 'securemail', 'pkey');
 
     $t = get_markup_template('admin.tpl', 'addon/securemail/');
 
@@ -86,9 +87,9 @@ function securemail_settings_post(App &$a, array &$b){
     }
 
     if ($_POST['securemail-submit']) {
-        set_pconfig(local_user(), 'securemail', 'pkey', trim($_POST['securemail-pkey']));
+        PConfig::set(local_user(), 'securemail', 'pkey', trim($_POST['securemail-pkey']));
         $enable = ((x($_POST, 'securemail-enable')) ? 1 : 0);
-        set_pconfig(local_user(), 'securemail', 'enable', $enable);
+        PConfig::set(local_user(), 'securemail', 'enable', $enable);
         info(t('Secure Mail Settings saved.') . EOL);
 
         if ($_POST['securemail-submit'] == t('Save and send test')) {
@@ -118,12 +119,12 @@ function securemail_settings_post(App &$a, array &$b){
             );
 
             // enable addon for test
-            set_pconfig(local_user(), 'securemail', 'enable', 1);
+            PConfig::set(local_user(), 'securemail', 'enable', 1);
 
             $res = Emailer::send($params);
 
             // revert to saved value
-            set_pconfig(local_user(), 'securemail', 'enable', $enable);
+            PConfig::set(local_user(), 'securemail', 'enable', $enable);
 
             if ($res) {
                 info(t('Test email sent') . EOL);
@@ -151,12 +152,12 @@ function securemail_emailer_send_prepare(App &$a, array &$b) {
 
     $uid = $b['uid'];
 
-    $enable_checked = get_pconfig($uid, 'securemail', 'enable');
+    $enable_checked = PConfig::get($uid, 'securemail', 'enable');
     if (!$enable_checked) {
         return;
     }
 
-    $public_key_ascii = get_pconfig($uid, 'securemail', 'pkey');
+    $public_key_ascii = PConfig::get($uid, 'securemail', 'pkey');
 
     preg_match('/-----BEGIN ([A-Za-z ]+)-----/', $public_key_ascii, $matches);
     $marker = (empty($matches[1])) ? 'MESSAGE' : $matches[1];
