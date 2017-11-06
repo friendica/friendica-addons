@@ -64,7 +64,7 @@ This can be prevented by
 
 	/\badvent\b/
 
-The first part if the regex above
+The first part of the regex above
 
 	(?<!the )
 
