@@ -645,7 +645,7 @@ function twitter_cron($a,$b) {
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'mirror_posts' AND `v` = '1'");
 	if(count($r)) {
 		foreach($r as $rr) {
-			logger('twitter:PConfig::get fetching for user '.$rr['uid']);
+			logger('twitter: fetching for user '.$rr['uid']);
 			proc_run(PRIORITY_MEDIUM, "addon/twitter/twitter_sync.php", 1, (int)$rr['uid']);
 		}
 	}
