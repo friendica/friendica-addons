@@ -9,6 +9,7 @@
 
 require_once('mod/community.php');
 
+use Friendica\Core\Config;
 
 function communityhome_install() {
 	register_hook('home_content', 'addon/communityhome/communityhome.php', 'communityhome_home');
@@ -24,11 +25,11 @@ function communityhome_home(&$a, &$o){
 	// custom css
 	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->get_baseurl().'/addon/communityhome/communityhome.css" media="all" />';
 
-	if (!get_config('communityhome','hidelogin')){
+	if (!Config::get('communityhome','hidelogin')){
 		$aside = array(
 			'$tab_1' => t('Login'),
 			'$tab_2' => t('OpenID'),
-			'$noOid' => get_config('system','no_openid'),
+			'$noOid' => Config::get('system','no_openid'),
 		);
 
 		// login form
@@ -38,15 +39,15 @@ function communityhome_home(&$a, &$o){
 		$aside = array(
 			//'$tab_1' => t('Login'),
 			//'$tab_2' => t('OpenID'),
-			//'$noOid' => get_config('system','no_openid'),
+			//'$noOid' => Config::get('system','no_openid'),
 		);
 
 	// last 12 users
-	if (get_config('communityhome','showlastusers')===true){
+	if (Config::get('communityhome','showlastusers')===true){
 		$aside['$lastusers_title'] = t('Latest users');
 		$aside['$lastusers_items'] = array();
 		$sql_extra = "";
-		$publish = (get_config('system','publish_all') ? '' : " AND `publish` = 1 " );
+		$publish = (Config::get('system','publish_all') ? '' : " AND `publish` = 1 " );
 		$order = " ORDER BY `register_date` DESC ";
 
 		$r = q("SELECT `profile`.*, `profile`.`uid` AS `profile_uid`, `user`.`nickname`
@@ -73,7 +74,7 @@ function communityhome_home(&$a, &$o){
 	}
 	// 12 most active users (by posts and contacts)
 	// this query don't work on some mysql versions
-	if (get_config('communityhome','showactiveusers')===true){
+	if (Config::get('communityhome','showactiveusers')===true){
 		$r = q("SELECT `uni`.`contacts`,`uni`.`items`, `profile`.*, `profile`.`uid` AS `profile_uid`, `user`.`nickname`  FROM
 				(SELECT COUNT(*) as `contacts`, `uid` FROM `contact` WHERE `self`=0 GROUP BY `uid`) AS `con`,
 				(SELECT COUNT(*) as `items`, `uid` FROM `item` WHERE `item`.`changed` > DATE(NOW() - INTERVAL 1 MONTH) AND `item`.`wall` = 1 GROUP BY `uid`) AS `ite`,
@@ -105,7 +106,7 @@ function communityhome_home(&$a, &$o){
 		}
 	}
 	// last 12 photos
-	if (get_config('communityhome','showlastphotos')===true){
+	if (Config::get('communityhome','showlastphotos')===true){
 		$aside['$photos_title'] = t('Latest photos');
 		$aside['$photos_items'] = array();
 		$r = q("SELECT `photo`.`id`, `photo`.`resource-id`, `photo`.`scale`, `photo`.`desc`, `user`.`nickname`, `user`.`username` FROM 
@@ -144,7 +145,7 @@ function communityhome_home(&$a, &$o){
 	}
 
 	// last 10 liked items
-	if (get_config('communityhome','showlastlike')===true){
+	if (Config::get('communityhome','showlastlike')===true){
 		$aside['$like_title'] = t('Latest likes');
 		$aside['$like_items'] = array();
 		$r = q("SELECT `T1`.`created`, `T1`.`liker`, `T1`.`liker-link`, `item`.* FROM 
@@ -198,14 +199,14 @@ function communityhome_home(&$a, &$o){
 	if(file_exists('home.html'))
  		$o = file_get_contents('home.html');
 
-	if (get_config('communityhome','showcommunitystream')===true){
-		$oldset = get_config('system','community_page_style');
+	if (Config::get('communityhome','showcommunitystream')===true){
+		$oldset = Config::get('system','community_page_style');
 		if ($oldset == CP_NO_COMMUNITY_PAGE)
-			set_config('system','community_page_style', CP_USERS_ON_SERVER);
+			Config::set('system','community_page_style', CP_USERS_ON_SERVER);
 
 		$o .= community_content($a,1);
 
 		if ($oldset == CP_NO_COMMUNITY_PAGE)
-			set_config('system','community_page_style', $oldset);
+			Config::set('system','community_page_style', $oldset);
 	}
 }

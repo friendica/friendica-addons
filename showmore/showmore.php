@@ -8,6 +8,8 @@
  *
  */
 
+use Friendica\Core\PConfig;
+
 function showmore_install() {
 	register_hook('prepare_body', 'addon/showmore/showmore.php', 'showmore_prepare_body');
 	register_hook('plugin_settings', 'addon/showmore/showmore.php', 'showmore_addon_settings');
@@ -29,8 +31,8 @@ function showmore_addon_settings(&$a,&$s) {
 
 	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->get_baseurl().'/addon/showmore/showmore.css'.'" media="all"/>'."\r\n";
 
-	$enable_checked = (intval(get_pconfig(local_user(),'showmore','disable')) ? '' : ' checked="checked"');
-	$chars = get_pconfig(local_user(),'showmore','chars');
+	$enable_checked = (intval(PConfig::get(local_user(),'showmore','disable')) ? '' : ' checked="checked"');
+	$chars = PConfig::get(local_user(),'showmore','chars');
 	if(!$chars)
 		$chars = '1100';
 
@@ -64,10 +66,10 @@ function showmore_addon_settings_post(&$a,&$b) {
 		return;
 
 	if($_POST['showmore-submit']) {
-		set_pconfig(local_user(),'showmore','chars',trim($_POST['showmore-chars']));
+		PConfig::set(local_user(),'showmore','chars',trim($_POST['showmore-chars']));
 		$enable = ((x($_POST,'showmore-enable')) ? intval($_POST['showmore-enable']) : 0);
 		$disable = 1-$enable;
-		set_pconfig(local_user(),'showmore','disable', $disable);
+		PConfig::set(local_user(),'showmore','disable', $disable);
 		info( t('Show More Settings saved.') . EOL);
 	}
 }
@@ -107,10 +109,10 @@ function get_body_length($body) {
 function showmore_prepare_body(&$a,&$b) {
 
 	$words = null;
-	if(get_pconfig(local_user(),'showmore','disable'))
+	if(PConfig::get(local_user(),'showmore','disable'))
 		return;
 
-	$chars = (int)get_pconfig(local_user(),'showmore','chars');
+	$chars = (int)PConfig::get(local_user(),'showmore','chars');
 	if(!$chars)
 		$chars = 1100;
 

@@ -7,6 +7,8 @@
  * 
  */
 
+use Friendica\Core\PConfig;
+
 function blogger_install() {
     register_hook('post_local',           'addon/blogger/blogger.php', 'blogger_post_local');
     register_hook('notifier_normal',      'addon/blogger/blogger.php', 'blogger_send');
@@ -34,9 +36,9 @@ function blogger_jot_nets(&$a,&$b) {
     if(! local_user())
         return;
 
-    $bl_post = get_pconfig(local_user(),'blogger','post');
+    $bl_post = PConfig::get(local_user(),'blogger','post');
     if(intval($bl_post) == 1) {
-        $bl_defpost = get_pconfig(local_user(),'blogger','post_by_default');
+        $bl_defpost = PConfig::get(local_user(),'blogger','post_by_default');
         $selected = ((intval($bl_defpost) == 1) ? ' checked="checked" ' : '');
         $b .= '<div class="profile-jot-net"><input type="checkbox" name="blogger_enable" ' . $selected . ' value="1" /> '
             . t('Post to blogger') . '</div>';
@@ -55,17 +57,17 @@ function blogger_settings(&$a,&$s) {
 
     /* Get the current state of our config variables */
 
-    $enabled = get_pconfig(local_user(),'blogger','post');
+    $enabled = PConfig::get(local_user(),'blogger','post');
     $checked = (($enabled) ? ' checked="checked" ' : '');
     $css = (($enabled) ? '' : '-disabled');
 
-    $def_enabled = get_pconfig(local_user(),'blogger','post_by_default');
+    $def_enabled = PConfig::get(local_user(),'blogger','post_by_default');
 
     $def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
-	$bl_username = get_pconfig(local_user(), 'blogger', 'bl_username');
-	$bl_password = get_pconfig(local_user(), 'blogger', 'bl_password');
-	$bl_blog = get_pconfig(local_user(), 'blogger', 'bl_blog');
+	$bl_username = PConfig::get(local_user(), 'blogger', 'bl_username');
+	$bl_password = PConfig::get(local_user(), 'blogger', 'bl_password');
+	$bl_blog = PConfig::get(local_user(), 'blogger', 'bl_blog');
 
 
     /* Add some HTML to the existing form */
@@ -114,11 +116,11 @@ function blogger_settings_post(&$a,&$b) {
 
 	if(x($_POST,'blogger-submit')) {
 
-		set_pconfig(local_user(),'blogger','post',intval($_POST['blogger']));
-		set_pconfig(local_user(),'blogger','post_by_default',intval($_POST['bl_bydefault']));
-		set_pconfig(local_user(),'blogger','bl_username',trim($_POST['bl_username']));
-		set_pconfig(local_user(),'blogger','bl_password',trim($_POST['bl_password']));
-		set_pconfig(local_user(),'blogger','bl_blog',trim($_POST['bl_blog']));
+		PConfig::set(local_user(),'blogger','post',intval($_POST['blogger']));
+		PConfig::set(local_user(),'blogger','post_by_default',intval($_POST['bl_bydefault']));
+		PConfig::set(local_user(),'blogger','bl_username',trim($_POST['bl_username']));
+		PConfig::set(local_user(),'blogger','bl_password',trim($_POST['bl_password']));
+		PConfig::set(local_user(),'blogger','bl_blog',trim($_POST['bl_blog']));
 
 	}
 
@@ -137,11 +139,11 @@ function blogger_post_local(&$a,&$b) {
 	if($b['private'] || $b['parent'])
 		return;
 
-    $bl_post   = intval(get_pconfig(local_user(),'blogger','post'));
+    $bl_post   = intval(PConfig::get(local_user(),'blogger','post'));
 
 	$bl_enable = (($bl_post && x($_REQUEST,'blogger_enable')) ? intval($_REQUEST['blogger_enable']) : 0);
 
-	if($b['api_source'] && intval(get_pconfig(local_user(),'blogger','post_by_default')))
+	if($b['api_source'] && intval(PConfig::get(local_user(),'blogger','post_by_default')))
 		$bl_enable = 1;
 
     if(! $bl_enable)
@@ -167,9 +169,9 @@ function blogger_send(&$a,&$b) {
         return;
 
 
-	$bl_username = xmlify(get_pconfig($b['uid'],'blogger','bl_username'));
-	$bl_password = xmlify(get_pconfig($b['uid'],'blogger','bl_password'));
-	$bl_blog = get_pconfig($b['uid'],'blogger','bl_blog');
+	$bl_username = xmlify(PConfig::get($b['uid'],'blogger','bl_username'));
+	$bl_password = xmlify(PConfig::get($b['uid'],'blogger','bl_password'));
+	$bl_blog = PConfig::get($b['uid'],'blogger','bl_blog');
 
 	if($bl_username && $bl_password && $bl_blog) {
 

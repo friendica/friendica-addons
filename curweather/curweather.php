@@ -13,13 +13,16 @@ require_once('include/network.php');
 require_once("mod/proxy.php");
 require_once('include/text.php');
 
+use Friendica\Core\Config;
+use Friendica\Core\PConfig;
+
 //  get the weather data from OpenWeatherMap
 function getWeather( $loc, $units='metric', $lang='en', $appid='', $cachetime=0) {
     $url = "http://api.openweathermap.org/data/2.5/weather?q=".$loc."&appid=".$appid."&lang=".$lang."&units=".$units."&mode=xml";
     $cached = Cache::get('curweather'.md5($url));
     $now = new DateTime();
     if (!is_null($cached)) {
-	$cdate = get_pconfig(local_user(), 'curweather', 'last');
+	$cdate = PConfig::get(local_user(), 'curweather', 'last');
 	$cached = unserialize($cached);
 	if ($cdate + $cachetime > $now->getTimestamp()) {
 	    return $cached;
@@ -56,7 +59,7 @@ function getWeather( $loc, $units='metric', $lang='en', $appid='', $cachetime=0)
 	'update' => (string)$res->lastupdate['value'],
 	'icon' => (string)$res->weather['icon']
     );
-    set_pconfig(local_user(), 'curweather', 'last', $now->getTimestamp());
+    PConfig::set(local_user(), 'curweather', 'last', $now->getTimestamp());
     Cache::set('curweather'.md5($url), serialize($r), CACHE_HOUR);
     return $r;
 }
@@ -75,7 +78,7 @@ function curweather_uninstall() {
 
 function curweather_network_mod_init(&$fk_app,&$b) {
 
-    if(! intval(get_pconfig(local_user(),'curweather','curweather_enable')))
+    if(! intval(PConfig::get(local_user(),'curweather','curweather_enable')))
         return;
 
     $fk_app->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $fk_app->get_baseurl() . '/addon/curweather/curweather.css' . '" media="all" />' . "\r\n";
@@ -89,14 +92,14 @@ function curweather_network_mod_init(&$fk_app,&$b) {
     // those parameters will be used to get: cloud status, temperature, preassure
     // and relative humidity for display, also the relevent area of the map is
     // linked from lat/log of the reply of OWMp
-    $rpt = get_pconfig(local_user(), 'curweather', 'curweather_loc');
+    $rpt = PConfig::get(local_user(), 'curweather', 'curweather_loc');
 
 
     //  set the language to the browsers language and use metric units
     $lang = $_SESSION['language'];
-    $units = get_pconfig( local_user(), 'curweather', 'curweather_units');
-    $appid = get_config('curweather','appid');
-    $cachetime = intval(get_config('curweather','cachetime'));
+    $units = PConfig::get( local_user(), 'curweather', 'curweather_units');
+    $appid = Config::get('curweather','appid');
+    $cachetime = intval(Config::get('curweather','cachetime'));
     if ($units==="")
 	$units = 'metric';
     $ok = true;
@@ -139,9 +142,9 @@ function curweather_network_mod_init(&$fk_app,&$b) {
 function curweather_plugin_settings_post($a,$post) {
 	if(! local_user() || (! x($_POST,'curweather-settings-submit')))
 		return;
-	set_pconfig(local_user(),'curweather','curweather_loc',trim($_POST['curweather_loc']));
-	set_pconfig(local_user(),'curweather','curweather_enable',intval($_POST['curweather_enable']));
-	set_pconfig(local_user(),'curweather','curweather_units',trim($_POST['curweather_units']));
+	PConfig::set(local_user(),'curweather','curweather_loc',trim($_POST['curweather_loc']));
+	PConfig::set(local_user(),'curweather','curweather_enable',intval($_POST['curweather_enable']));
+	PConfig::set(local_user(),'curweather','curweather_units',trim($_POST['curweather_units']));
 
 	info( t('Current Weather settings updated.') . EOL);
 }
@@ -154,15 +157,15 @@ function curweather_plugin_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$curweather_loc = get_pconfig(local_user(), 'curweather', 'curweather_loc');
-	$curweather_units = get_pconfig(local_user(), 'curweather', 'curweather_units');
-	$appid = get_config('curweather','appid');
+	$curweather_loc = PConfig::get(local_user(), 'curweather', 'curweather_loc');
+	$curweather_units = PConfig::get(local_user(), 'curweather', 'curweather_units');
+	$appid = Config::get('curweather','appid');
 	if ($appid=="") { 
 		$noappidtext = t('No APPID found, please contact your admin to obtain one.');
 	} else {
 	    $noappidtext = '';
 	}
-	$enable = intval(get_pconfig(local_user(),'curweather','curweather_enable'));
+	$enable = intval(PConfig::get(local_user(),'curweather','curweather_enable'));
 	$enable_checked = (($enable) ? ' checked="checked" ' : '');
 	
 	// load template and replace the macros
@@ -185,16 +188,16 @@ function curweather_plugin_admin_post (&$a) {
 	if(! is_site_admin())
 	    return;
 	if ($_POST['curweather-submit']) {
-	    set_config('curweather','appid',trim($_POST['appid']));
-	    set_config('curweather','cachetime',trim($_POST['cachetime']));
+	    Config::set('curweather','appid',trim($_POST['appid']));
+	    Config::set('curweather','cachetime',trim($_POST['cachetime']));
 	    info( t('Curweather settings saved.'.EOL));
 	}
 }
 function curweather_plugin_admin (&$a, &$o) {
     if(! is_site_admin())
 	    return;
-    $appid = get_config('curweather','appid');
-    $cachetime = get_config('curweather','cachetime');
+    $appid = Config::get('curweather','appid');
+    $cachetime = Config::get('curweather','cachetime');
     $t = get_markup_template("admin.tpl", "addon/curweather/" );
     $o = replace_macros ($t, array(
 	'$submit' => t('Save Settings'),

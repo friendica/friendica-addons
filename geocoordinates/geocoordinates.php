@@ -6,6 +6,8 @@
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
 
+use Friendica\Core\Config;
+
 function geocoordinates_install() {
 	register_hook('post_local', 'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
 	register_hook('post_remote', 'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
@@ -21,11 +23,11 @@ function geocoordinates_resolve_item(&$item) {
 	if((!$item["coord"]) || ($item["location"]))
 		return;
 
-	$key = get_config("geocoordinates", "api_key");
+	$key = Config::get("geocoordinates", "api_key");
 	if ($key == "")
 		return;
 
-	$language = get_config("geocoordinates", "language");
+	$language = Config::get("geocoordinates", "language");
 	if ($language == "")
 		$language = "de";
 
@@ -80,16 +82,16 @@ function geocoordinates_plugin_admin(&$a,&$o) {
 
 	$o = replace_macros($t, array(
 		'$submit' => t('Save Settings'),
-		'$api_key' => array('api_key', t('API Key'),  get_config('geocoordinates', 'api_key' ), ''),
-		'$language' => array('language', t('Language code (IETF format)'),  get_config('geocoordinates', 'language' ), ''),
+		'$api_key' => array('api_key', t('API Key'),  Config::get('geocoordinates', 'api_key' ), ''),
+		'$language' => array('language', t('Language code (IETF format)'),  Config::get('geocoordinates', 'language' ), ''),
 	));
 }
 
 function geocoordinates_plugin_admin_post(&$a) {
 	$api_key  = ((x($_POST,'api_key')) ? notags(trim($_POST['api_key']))   : '');
-	set_config('geocoordinates','api_key',$api_key);
+	Config::set('geocoordinates','api_key',$api_key);
 
 	$language  = ((x($_POST,'language')) ? notags(trim($_POST['language']))   : '');
-	set_config('geocoordinates','language',$language);
+	Config::set('geocoordinates','language',$language);
 	info(t('Settings updated.'). EOL);
 }

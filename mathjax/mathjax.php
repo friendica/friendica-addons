@@ -8,6 +8,9 @@
  * License: 3-clause BSD license
  */
 
+use Friendica\Core\Config;
+use Friendica\Core\PConfig;
+
 function mathjax_install() {
     register_hook('page_header', 'addon/mathjax/mathjax.php', 'mathjax_page_header');
     register_hook('plugin_settings', 'addon/mathjax/mathjax.php', 'mathjax_settings'); 
@@ -25,12 +28,12 @@ function mathjax_settings_post ($a, $post) {
     // don't check statusnet settings if statusnet submit button is not clicked
     if (!x($_POST,'mathjax-submit'))
         return;
-    set_pconfig(local_user(),'mathjax','use',intval($_POST['mathjax_use']));
+    PConfig::set(local_user(),'mathjax','use',intval($_POST['mathjax_use']));
 }
 function mathjax_settings (&$a, &$s) {
     if (! local_user())
         return;
-    $use = get_pconfig(local_user(),'mathjax','use');
+    $use = PConfig::get(local_user(),'mathjax','use');
     $usetext = (($use) ? ' checked="checked" ' : '');
     $s .= '<span id="settings_mathjax_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_mathjax_expanded\'); openClose(\'settings_mathjax_inflated\');">';
     $s .= '<h3>MathJax '.t('Settings').'</h3>';
@@ -53,13 +56,13 @@ function mathjax_settings (&$a, &$s) {
 function mathjax_page_header($a, &$b) {
     //  if the visitor of the page is not a local_user, use MathJax
     //  otherwise check the users settings.
-    $url = get_config ('mathjax','baseurl');
+    $url = Config::get ('mathjax','baseurl');
 	if(! $url)
 		$url = 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
     if (! local_user()) {
         $b .= '<script type="text/javascript" src="'.$url.'"></script>';
     } else {
-        $use = get_pconfig(local_user(),'mathjax','use');
+        $use = PConfig::get(local_user(),'mathjax','use');
         if ($use) { 
             $b .= '<script type="text/javascript" src="'.$url.'"></script>';
         }
@@ -67,17 +70,17 @@ function mathjax_page_header($a, &$b) {
 }
 function mathjax_plugin_admin_post (&$a) {
     $baseurl = ((x($_POST, 'baseurl')) ? trim($_POST['baseurl']) : 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML');
-    set_config('mathjax','baseurl',$baseurl);
+    Config::set('mathjax','baseurl',$baseurl);
     info( t('Settings updated.'). EOL);
 }
 function mathjax_plugin_admin (&$a, &$o) {
 	$t = get_markup_template( "admin.tpl", "addon/mathjax/" );
-	if (get_config('mathjax','baseurl','') == '') {
-		set_config('mathjax','baseurl','http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML');
+	if (Config::get('mathjax','baseurl','') == '') {
+		Config::set('mathjax','baseurl','http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML');
 	}
 
 	$o = replace_macros( $t, array(
 		'$submit' => t('Save Settings'),
-		'$baseurl' => array('baseurl', t('MathJax Base URL'), get_config('mathjax','baseurl' ), t('The URL for the javascript file that should be included to use MathJax. Can be either the MathJax CDN or another installation of MathJax.')),
+		'$baseurl' => array('baseurl', t('MathJax Base URL'), Config::get('mathjax','baseurl' ), t('The URL for the javascript file that should be included to use MathJax. Can be either the MathJax CDN or another installation of MathJax.')),
 	));
 }

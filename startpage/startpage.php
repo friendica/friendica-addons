@@ -7,6 +7,7 @@
  * 
  */
 
+use Friendica\Core\PConfig;
 
 function startpage_install() {
 	register_hook('home_init', 'addon/startpage/startpage.php', 'startpage_home_init');
@@ -27,7 +28,7 @@ function startpage_home_init($a, $b) {
 	if(! local_user())
 		return;
 
-	$page = get_pconfig(local_user(),'startpage','startpage');
+	$page = PConfig::get(local_user(),'startpage','startpage');
 	if(strlen($page)) {
 		$slash = ((strpos($page,'/') === 0) ? true : false);
 		if(stristr($page,'://'))
@@ -50,7 +51,7 @@ function startpage_settings_post($a,$post) {
 	if(! local_user())
 		return;
 	if($_POST['startpage-submit'])
-		set_pconfig(local_user(),'startpage','startpage',strip_tags(trim($_POST['startpage'])));
+		PConfig::set(local_user(),'startpage','startpage',strip_tags(trim($_POST['startpage'])));
 }
 
 
@@ -74,7 +75,7 @@ function startpage_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$page = get_pconfig(local_user(),'startpage','startpage');
+	$page = PConfig::get(local_user(),'startpage','startpage');
 
 
 	/* Add some HTML to the existing form */

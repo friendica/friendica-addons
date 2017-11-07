@@ -1,5 +1,7 @@
 <?php
 
+use Friendica\Core\Config;
+use Friendica\Core\PConfig;
 
 /**
  *
@@ -23,7 +25,7 @@ function wdcal_addRequiredHeaders()
 	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/dav/wdcal/css/calendar.css' . '" media="all" />' . "\r\n";
 	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/dav/wdcal/css/main.css' . '" media="all" />' . "\r\n";
 
-	switch (get_config("system", "language")) {
+	switch (Config::get("system", "language")) {
 		case "de":
 			$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/common/wdcal/js/wdCalendar_lang_DE.js"></script>' . "\r\n";
 			$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/jqueryui/jquery.ui.datepicker-de.js"></script>' . "\r\n";
@@ -357,7 +359,7 @@ function wdcal_getSettingsPage(&$a)
 
 	if (isset($_REQUEST["save"])) {
 		check_form_security_token_redirectOnErr('/dav/settings/', 'calprop');
-		set_pconfig($a->user["uid"], "dav", "dateformat", $_REQUEST["wdcal_date_format"]);
+		PConfig::set($a->user["uid"], "dav", "dateformat", $_REQUEST["wdcal_date_format"]);
 		info(t('The new values have been saved.'));
 	}
 

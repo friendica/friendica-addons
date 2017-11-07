@@ -1,5 +1,7 @@
 <?php
 
+use Friendica\Core\PConfig;
+
 abstract class wdcal_local
 {
 
@@ -34,7 +36,7 @@ abstract class wdcal_local
 	 * @return wdcal_local
 	 */
 	static function getInstanceByUser($uid = 0) {
-		$dateformat = get_pconfig($uid, "dav", "dateformat");
+		$dateformat = PConfig::get($uid, "dav", "dateformat");
 		$format = self::getInstance($dateformat);
 		if ($format == null) $format = self::getInstance(self::LOCAL_US);
 		return $format;

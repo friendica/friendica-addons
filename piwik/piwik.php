@@ -30,6 +30,8 @@
  *     setting.
  */
 
+use Friendica\Core\Config;
+
 function piwik_install() {
 	register_hook('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
@@ -54,10 +56,10 @@ function piwik_analytics($a,&$b) {
 	/*
 	 *   Get the configuration variables from the .htconfig file.
 	 */
-	$baseurl = get_config('piwik','baseurl');
-	$siteid  = get_config('piwik','siteid');
-	$optout  = get_config('piwik','optout');
-	$async   = get_config('piwik','async');
+	$baseurl = Config::get('piwik','baseurl');
+	$siteid  = Config::get('piwik','siteid');
+	$optout  = Config::get('piwik','optout');
+	$async   = Config::get('piwik','async');
 
 	/*
 	 *   Add the Piwik tracking code for the site.
@@ -87,10 +89,10 @@ function piwik_plugin_admin (&$a, &$o) {
 	$t = get_markup_template( "admin.tpl", "addon/piwik/" );
 	$o = replace_macros( $t, array(
 		'$submit' => t('Save Settings'),
-		'$piwikbaseurl' => array('baseurl', t('Piwik Base URL'), get_config('piwik','baseurl' ), t('Absolute path to your Piwik installation. (without protocol (http/s), with trailing slash)')),
-		'$siteid' => array('siteid', t('Site ID'), get_config('piwik','siteid' ), ''),
-		'$optout' => array('optout', t('Show opt-out cookie link?'), get_config('piwik','optout' ), ''),
-		'$async' => array('async', t('Asynchronous tracking'), get_config('piwik','async' ), ''),
+		'$piwikbaseurl' => array('baseurl', t('Piwik Base URL'), Config::get('piwik','baseurl' ), t('Absolute path to your Piwik installation. (without protocol (http/s), with trailing slash)')),
+		'$siteid' => array('siteid', t('Site ID'), Config::get('piwik','siteid' ), ''),
+		'$optout' => array('optout', t('Show opt-out cookie link?'), Config::get('piwik','optout' ), ''),
+		'$async' => array('async', t('Asynchronous tracking'), Config::get('piwik','async' ), ''),
 	));
 }
 function piwik_plugin_admin_post (&$a) {
@@ -98,9 +100,9 @@ function piwik_plugin_admin_post (&$a) {
 	$id = ((x($_POST, 'siteid')) ? trim($_POST['siteid']) : '');
 	$optout = ((x($_POST, 'optout')) ? trim($_POST['optout']) : '');
 	$async = ((x($_POST, 'async')) ? trim($_POST['async']) : '');
-	set_config('piwik', 'baseurl', $url);
-	set_config('piwik', 'siteid', $id);
-	set_config('piwik', 'optout', $optout);
-	set_config('piwik', 'async', $async);
+	Config::set('piwik', 'baseurl', $url);
+	Config::set('piwik', 'siteid', $id);
+	Config::set('piwik', 'optout', $optout);
+	Config::set('piwik', 'async', $async);
 	info( t('Settings updated.'). EOL);
 }
