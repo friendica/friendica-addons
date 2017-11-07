@@ -567,7 +567,7 @@ function statusnet_post_hook(&$a,&$b) {
 
 	logger('GNU Socialpost invoked');
 
-	load_pconfig($b['uid'], 'statusnet');
+	PConfig::load($b['uid'], 'statusnet');
 
 	$api     = PConfig::get($b['uid'], 'statusnet', 'baseapi');
 	$ckey    = PConfig::get($b['uid'], 'statusnet', 'consumerkey');

@@ -473,7 +473,7 @@ function twitter_post_hook(&$a,&$b) {
 	logger('twitter post invoked');
 
 
-	load_pconfig($b['uid'], 'twitter');
+	PConfig::load($b['uid'], 'twitter');
 
 	$ckey    = Config::get('twitter', 'consumerkey');
 	$csecret = Config::get('twitter', 'consumersecret');
