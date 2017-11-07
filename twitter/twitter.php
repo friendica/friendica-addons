@@ -232,7 +232,7 @@ function twitter_settings(&$a,&$s) {
 	/***
 	 * 1) Check that we have global consumer key & secret
 	 * 2) If no OAuthtoken & stuff is present, generate button to get some
-	 * 3) Checkbox for "Send public notices (140 chars only)
+	 * 3) Checkbox for "Send public notices (280 chars only)
 	 */
 	$ckey    = Config::get('twitter', 'consumerkey' );
 	$csecret = Config::get('twitter', 'consumersecret' );
@@ -491,7 +491,7 @@ function twitter_post_hook(&$a,&$b) {
 		require_once('include/bbcode.php');
 		$tweet = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
 
-		$max_char = 140;
+		$max_char = 280;
 		require_once("include/plaintext.php");
 		$msgarr = plaintext($a, $b, $max_char, true, 8);
 		$msg = $msgarr["text"];
@@ -729,7 +729,7 @@ function twitter_prepare_body(&$a,&$b) {
 		return;
 
 	if ($b["preview"]) {
-		$max_char = 140;
+		$max_char = 280;
 		require_once("include/plaintext.php");
 		$item = $b["item"];
 		$item["plink"] = $a->get_baseurl()."/display/".$a->user["nickname"]."/".$item["parent"];

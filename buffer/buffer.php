@@ -295,7 +295,7 @@ function buffer_send(&$a,&$b) {
 						break;
 					case 'twitter':
 						$send = ($b["extid"] != NETWORK_TWITTER);
-						$limit = 140;
+						$limit = 280;
 						$markup = false;
 						$includedlinks = true;
 						$htmlmode = 8;
