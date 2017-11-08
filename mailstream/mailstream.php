@@ -8,6 +8,7 @@
 
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
+use Friendica\Database\DBM;
 
 function mailstream_install() {
 	register_hook('plugin_settings', 'addon/mailstream/mailstream.php', 'mailstream_plugin_settings');
@@ -167,7 +168,7 @@ function mailstream_do_images($a, &$item, &$attachments) {
 
 function mailstream_sender($item) {
 	$r = q('SELECT * FROM `contact` WHERE `id` = %d', $item['contact-id']);
-	if (dbm::is_result($r)) {
+	if (DBM::is_result($r)) {
 		$contact = $r[0];
 		if ($contact['name'] != $item['author-name']) {
 			return $contact['name'] . ' - ' . $item['author-name'];
@@ -208,7 +209,7 @@ function mailstream_subject($item) {
 	// Don't look more than 100 levels deep for a subject, in case of loops
 	for ($i = 0; ($i < 100) && $parent; $i++) {
 		$r = q("SELECT `thr-parent`, `title` FROM `item` WHERE `uri` = '%s'", dbesc($parent));
-		if (!dbm::is_result($r)) {
+		if (!DBM::is_result($r)) {
 			break;
 		}
 		if ($r[0]['thr-parent'] === $parent) {
