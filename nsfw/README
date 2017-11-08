@@ -47,7 +47,25 @@ done with a single regex, which matches all of them:
 Another use case could be, that you are simply not
 interested in postings about christmas.
 
-	/christmas([-_ ]?(tree|time|eve|pudding))?/
+	/christmas([-_ ]?(?:tree|time|eve|pudding))?/
+
+
+ATTENTION:
+
+It is absolutely important, that you use grouping
+parantheses instead of capturing parantheses!!
+
+Grouping parantheses are:
+
+	(?: )
+
+If you use capturing parantheses, which are
+
+	( )
+
+it will produce errors and the regex won't work and
+at least your targets will not get collapsed.
+
 
 
 3)
