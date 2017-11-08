@@ -10,6 +10,7 @@
 require_once("addon/diaspora/Diaspora_Connection.php");
 
 use Friendica\Core\PConfig;
+use Friendica\Database\DBM;
 
 function diaspora_install() {
 	register_hook('post_local',           'addon/diaspora/diaspora.php', 'diaspora_post_local');
@@ -136,7 +137,7 @@ function diaspora_settings(&$a,&$s) {
 	$status = "";
 
 	$r = q("SELECT `addr` FROM `contact` WHERE `self` AND `uid` = %d", intval(local_user()));
-	if (dbm::is_result($r)) {
+	if (DBM::is_result($r)) {
 		$status = sprintf(t("Please remember: You can always be reached from Diaspora with your Friendica handle %s. "), $r[0]['addr']);
 		$status .= t('This connector is only meant if you still want to use your old Diaspora account for some time. ');
 		$status .= sprintf(t('However, it is preferred that you tell your Diaspora contacts the new handle %s instead.'), $r[0]['addr']);
