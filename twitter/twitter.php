@@ -181,17 +181,17 @@ function twitter_settings_post ($a,$post) {
 		 * if the twitter-disconnect checkbox is set, clear the OAuth key/secret pair
 		 * from the user configuration
 		 */
-		del_pconfig(local_user(), 'twitter', 'consumerkey');
-		del_pconfig(local_user(), 'twitter', 'consumersecret');
-		del_pconfig(local_user(), 'twitter', 'oauthtoken');
-		del_pconfig(local_user(), 'twitter', 'oauthsecret');
-		del_pconfig(local_user(), 'twitter', 'post');
-		del_pconfig(local_user(), 'twitter', 'post_by_default');
-		del_pconfig(local_user(), 'twitter', 'lastid');
-		del_pconfig(local_user(), 'twitter', 'mirror_posts');
-		del_pconfig(local_user(), 'twitter', 'import');
-		del_pconfig(local_user(), 'twitter', 'create_user');
-		del_pconfig(local_user(), 'twitter', 'own_id');
+		PConfig::delete(local_user(), 'twitter', 'consumerkey');
+		PConfig::delete(local_user(), 'twitter', 'consumersecret');
+		PConfig::delete(local_user(), 'twitter', 'oauthtoken');
+		PConfig::delete(local_user(), 'twitter', 'oauthsecret');
+		PConfig::delete(local_user(), 'twitter', 'post');
+		PConfig::delete(local_user(), 'twitter', 'post_by_default');
+		PConfig::delete(local_user(), 'twitter', 'lastid');
+		PConfig::delete(local_user(), 'twitter', 'mirror_posts');
+		PConfig::delete(local_user(), 'twitter', 'import');
+		PConfig::delete(local_user(), 'twitter', 'create_user');
+		PConfig::delete(local_user(), 'twitter', 'own_id');
 	} else {
 	if (isset($_POST['twitter-pin'])) {
 		//  if the user supplied us with a PIN from Twitter, let the magic of OAuth happen
@@ -220,7 +220,7 @@ function twitter_settings_post ($a,$post) {
 		PConfig::set(local_user(), 'twitter', 'create_user', intval($_POST['twitter-create_user']));
 
 		if (!intval($_POST['twitter-mirror']))
-			del_pconfig(local_user(),'twitter','lastid');
+			PConfig::delete(local_user(),'twitter','lastid');
 
 		info(t('Twitter settings updated.') . EOL);
 	}}
@@ -1850,7 +1850,7 @@ function twitter_fetch_own_contact($a, $uid) {
 		if(count($r))
 			$contact_id = $r[0]["id"];
 		else
-			del_pconfig($uid, 'twitter', 'own_id');
+			PConfig::delete($uid, 'twitter', 'own_id');
 
 	}
 
