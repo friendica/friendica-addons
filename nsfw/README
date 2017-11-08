@@ -47,7 +47,7 @@ done with a single regex, which matches all of them:
 Another use case could be, that you are simply not
 interested in postings about christmas.
 
-	/christmas([-_ ]?(?:tree|time|eve|pudding))?/
+	/christmas(?:[-_ ]?(?:tree|time|eve|pudding))?/
 
 
 ATTENTION:
