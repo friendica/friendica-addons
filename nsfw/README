@@ -53,13 +53,13 @@ interested in postings about christmas.
 ATTENTION:
 
 It is absolutely important, that you use grouping
-parantheses instead of capturing parantheses!!
+parentheses instead of capturing parentheses!!
 
-Grouping parantheses are:
+Grouping parentheses are:
 
 	(?: )
 
-If you use capturing parantheses, which are
+If you use capturing parentheses, which are
 
 	( )
 
