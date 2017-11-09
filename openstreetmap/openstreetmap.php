@@ -9,12 +9,12 @@
  *
  */
  
-require_once('include/cache.php');
-
+use Friendica\Core\Cache;
 use Friendica\Core\Config;
 
 
-function openstreetmap_install() {
+function openstreetmap_install()
+{
 	register_hook('render_location', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_location');
 	register_hook('generate_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_map');
 	register_hook('generate_named_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_named_map');
@@ -23,7 +23,8 @@ function openstreetmap_install() {
 	logger("installed openstreetmap");
 }
 
-function openstreetmap_uninstall() {
+function openstreetmap_uninstall()
+{
 	unregister_hook('render_location', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_location');
 	unregister_hook('generate_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_map');
 	unregister_hook('generate_named_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_named_map');
@@ -32,7 +33,8 @@ function openstreetmap_uninstall() {
 	logger("removed openstreetmap");
 }
 
-function openstreetmap_alterheader($a, &$navHtml) {
+function openstreetmap_alterheader($a, &$navHtml)
+{
 	$addScriptTag = '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/openstreetmap/openstreetmap.js"></script>' . "\r\n";
 	$a->page['htmlhead'] .= $addScriptTag;
 }
@@ -48,8 +50,9 @@ function openstreetmap_alterheader($a, &$navHtml) {
  */
 function openstreetmap_location($a, &$item) {
 
-	if(! (strlen($item['location']) || strlen($item['coord'])))
+	if(! (strlen($item['location']) || strlen($item['coord']))) {
 		return;
+	}
 
 	/*
 	 * Get the configuration variables from the config.
@@ -60,20 +63,24 @@ function openstreetmap_location($a, &$item) {
 	 */
 
 	$tmsserver = Config::get('openstreetmap', 'tmsserver');
-	if(! $tmsserver)
+	if(! $tmsserver) {
 		$tmsserver = 'http://www.openstreetmap.org';
+	}
 
 	$nomserver = Config::get('openstreetmap', 'nomserver');
-	if(! $nomserver)
+	if(! $nomserver) {
 		$nomserver = 'http://nominatim.openstreetmap.org/search.php';
+	}
 
 	$zoom = Config::get('openstreetmap', 'zoom');
-	if(! $zoom)
+	if(! $zoom) {
 		$zoom = 16;
+	}
 
 	$marker = Config::get('openstreetmap', 'marker');
-	if(! $marker)
+	if(! $marker) {
 		$marker = 0;
+	}
 
 	if ($item['coord'] != "") {
 		$coords = explode(' ', $item['coord']);
@@ -87,21 +94,22 @@ function openstreetmap_location($a, &$item) {
 		}
 	}
 
-	if ($target == "")
+	if ($target == "") {
 		$target = $nomserver.'?q='.urlencode($item['location']);
+	}
 
-	if ($item['location'] != "")
+	if ($item['location'] != "") {
 		$title = $item['location'];
-	else
+	} else {
 		$title = $item['coord'];
+	}
 
 	$item['html'] = '<a target="map" title="'.$title.'" href= "'.$target.'">'.$title.'</a>';
 }
 
 
-function openstreetmap_generate_named_map(&$a,&$b) {
-
-
+function openstreetmap_generate_named_map(&$a, &$b)
+{
 	$nomserver = Config::get('openstreetmap', 'nomserver');
 	if(! $nomserver)
 		$nomserver = 'http://nominatim.openstreetmap.org/search.php';
@@ -119,22 +127,26 @@ function openstreetmap_generate_named_map(&$a,&$b) {
 	}
 }
 
-function openstreetmap_generate_map(&$a,&$b) {
-
+function openstreetmap_generate_map(&$a, &$b)
+{
 	$tmsserver = Config::get('openstreetmap', 'tmsserver');
-	if(! $tmsserver)
+	if(! $tmsserver) {
 		$tmsserver = 'http://www.openstreetmap.org';
-	if(strpos(z_root(),'https:') !== false)
+	}
+	if(strpos(z_root(),'https:') !== false) {
 		$tmsserver = str_replace('http:','https:',$tmsserver);
+	}
 
 
 	$zoom = Config::get('openstreetmap', 'zoom');
-	if(! $zoom)
+	if(! $zoom) {
 		$zoom = 16;
+	}
 
 	$marker = Config::get('openstreetmap', 'marker');
-	if(! $marker)
+	if(! $marker) {
 		$marker = 0;
+	}
 
 	$lat = $b['lat']; // round($b['lat'], 5);
 	$lon = $b['lon']; // round($b['lon'], 5);
@@ -151,20 +163,25 @@ function openstreetmap_generate_map(&$a,&$b) {
 
 }
 
-function openstreetmap_plugin_admin(&$a, &$o) {
+function openstreetmap_plugin_admin(&$a, &$o)
+{
 	$t = get_markup_template("admin.tpl", "addon/openstreetmap/");
 	$tmsserver = Config::get('openstreetmap', 'tmsserver');
-	if(! $tmsserver)
+	if(! $tmsserver) {
 		$tmsserver = 'http://www.openstreetmap.org';
+	}
 	$nomserver = Config::get('openstreetmap', 'nomserver');
-	if(! $nomserver)
+	if(! $nomserver) {
 		$nomserver = 'http://nominatim.openstreetmap.org/search.php';
+	}
 	$zoom = Config::get('openstreetmap', 'zoom');
-	if(! $zoom)
+	if(! $zoom) {
 		$zoom = 16;
+	}
 	$marker = Config::get('openstreetmap', 'marker');
-	if(! $marker)
+	if(! $marker) {
 		$marker = 0;
+	}
 
 	$o = replace_macros($t, array(
 			'$submit' => t('Submit'),
@@ -174,7 +191,9 @@ function openstreetmap_plugin_admin(&$a, &$o) {
 			'$marker' => array('marker', t('Include marker on map'), $marker, t('Include a marker on the map.')),
 	));
 }
-function openstreetmap_plugin_admin_post(&$a) {
+
+function openstreetmap_plugin_admin_post(&$a)
+{
 	$urltms = ((x($_POST, 'tmsserver')) ? notags(trim($_POST['tmsserver'])) : '');
 	$urlnom = ((x($_POST, 'nomserver')) ? notags(trim($_POST['nomserver'])) : '');
 	$zoom = ((x($_POST, 'zoom')) ? intval(trim($_POST['zoom'])) : '16');
@@ -185,5 +204,3 @@ function openstreetmap_plugin_admin_post(&$a) {
 	Config::set('openstreetmap', 'marker', $marker);
 	info( t('Settings updated.') . EOL);
 }
-
-

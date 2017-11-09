@@ -13,6 +13,7 @@ require_once('include/network.php');
 require_once("mod/proxy.php");
 require_once('include/text.php');
 
+use Friendica\Core\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 
