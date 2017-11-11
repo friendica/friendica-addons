@@ -174,18 +174,18 @@ function statusnet_settings_post ($a,$post) {
 		/***
 		 * if the GNU Social-disconnect checkbox is set, clear the GNU Social configuration
 		 */
-		del_pconfig(local_user(), 'statusnet', 'consumerkey');
-		del_pconfig(local_user(), 'statusnet', 'consumersecret');
-		del_pconfig(local_user(), 'statusnet', 'post');
-		del_pconfig(local_user(), 'statusnet', 'post_by_default');
-		del_pconfig(local_user(), 'statusnet', 'oauthtoken');
-		del_pconfig(local_user(), 'statusnet', 'oauthsecret');
-		del_pconfig(local_user(), 'statusnet', 'baseapi');
-		del_pconfig(local_user(), 'statusnet', 'lastid');
-		del_pconfig(local_user(), 'statusnet', 'mirror_posts');
-		del_pconfig(local_user(), 'statusnet', 'import');
-		del_pconfig(local_user(), 'statusnet', 'create_user');
-		del_pconfig(local_user(), 'statusnet', 'own_id');
+		PConfig::delete(local_user(), 'statusnet', 'consumerkey');
+		PConfig::delete(local_user(), 'statusnet', 'consumersecret');
+		PConfig::delete(local_user(), 'statusnet', 'post');
+		PConfig::delete(local_user(), 'statusnet', 'post_by_default');
+		PConfig::delete(local_user(), 'statusnet', 'oauthtoken');
+		PConfig::delete(local_user(), 'statusnet', 'oauthsecret');
+		PConfig::delete(local_user(), 'statusnet', 'baseapi');
+		PConfig::delete(local_user(), 'statusnet', 'lastid');
+		PConfig::delete(local_user(), 'statusnet', 'mirror_posts');
+		PConfig::delete(local_user(), 'statusnet', 'import');
+		PConfig::delete(local_user(), 'statusnet', 'create_user');
+		PConfig::delete(local_user(), 'statusnet', 'own_id');
 	} else {
 	if (isset($_POST['statusnet-preconf-apiurl'])) {
 		/***
@@ -265,7 +265,7 @@ function statusnet_settings_post ($a,$post) {
 		PConfig::set(local_user(), 'statusnet', 'create_user', intval($_POST['statusnet-create_user']));
 
 		if (!intval($_POST['statusnet-mirror']))
-			del_pconfig(local_user(),'statusnet','lastid');
+			PConfig::delete(local_user(),'statusnet','lastid');
 
 		info( t('GNU Social settings updated.') . EOL);
 	}}}}
@@ -1687,7 +1687,7 @@ function statusnet_fetch_own_contact($a, $uid) {
 		if(count($r))
 			$contact_id = $r[0]["id"];
 		else
-			del_pconfig($uid, 'statusnet', 'own_url');
+			PConfig::delete($uid, 'statusnet', 'own_url');
 
 	}
 	return($contact_id);

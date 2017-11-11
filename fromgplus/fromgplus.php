@@ -86,7 +86,7 @@ function fromgplus_addon_settings_post(&$a,&$b) {
 		PConfig::set(local_user(),'fromgplus', 'keywords', $keywords);
 
 		if (!$enable)
-			del_pconfig(local_user(),'fromgplus','lastdate');
+			PConfig::delete(local_user(),'fromgplus','lastdate');
 
 		info( t('Google+ Import Settings saved.') . EOL);
 	}
