@@ -77,7 +77,7 @@ function ifttt_settings_post(&$a,&$b) {
 
         if(x($_POST,'ifttt-submit'))
                 if (isset($_POST['ifttt-rekey']))
-                        del_pconfig(local_user(), 'ifttt', 'key');
+                        PConfig::delete(local_user(), 'ifttt', 'key');
 }
 
 function ifttt_post(&$a) {
