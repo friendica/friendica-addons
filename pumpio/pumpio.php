@@ -348,7 +348,7 @@ function pumpio_settings_post(&$a,&$b) {
 			PConfig::set(local_user(),'pumpio','post_by_default',intval($_POST['pumpio_bydefault']));
 
 			if (!$_POST['pumpio_mirror'])
-				del_pconfig(local_user(),'pumpio','lastdate');
+				PConfig::delete(local_user(),'pumpio','lastdate');
 
 			//header("Location: ".$a->get_baseurl()."/pumpio/connect");
 		}
