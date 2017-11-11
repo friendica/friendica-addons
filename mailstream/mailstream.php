@@ -381,25 +381,25 @@ function mailstream_plugin_settings_post($a,$post) {
 		PConfig::set(local_user(), 'mailstream', 'address', $_POST['mailstream_address']);
 	}
 	else {
-		del_pconfig(local_user(), 'mailstream', 'address');
+		PConfig::delete(local_user(), 'mailstream', 'address');
 	}
 	if ($_POST['mailstream_nolikes']) {
 		PConfig::set(local_user(), 'mailstream', 'nolikes', $_POST['mailstream_enabled']);
 	}
 	else {
-		del_pconfig(local_user(), 'mailstream', 'nolikes');
+		PConfig::delete(local_user(), 'mailstream', 'nolikes');
 	}
 	if ($_POST['mailstream_enabled']) {
 		PConfig::set(local_user(), 'mailstream', 'enabled', $_POST['mailstream_enabled']);
 	}
 	else {
-		del_pconfig(local_user(), 'mailstream', 'enabled');
+		PConfig::delete(local_user(), 'mailstream', 'enabled');
 	}
 	if ($_POST['mailstream_attachimg']) {
 		PConfig::set(local_user(), 'mailstream', 'attachimg', $_POST['mailstream_attachimg']);
 	}
 	else {
-		del_pconfig(local_user(), 'mailstream', 'attachimg');
+		PConfig::delete(local_user(), 'mailstream', 'attachimg');
 	}
 }
 
