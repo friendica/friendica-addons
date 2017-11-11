@@ -6,7 +6,7 @@
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  */
 
-require_once 'include/Smilies.php';
+use Friendica\Content\Smilies;
 
 function unicode_smilies_install() {
 	register_hook('smilie', 'addon/unicode_smilies/unicode_smilies.php', 'unicode_smilies_smilies');
