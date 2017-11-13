@@ -968,7 +968,7 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 
 function pumpio_get_contact($uid, $contact, $no_insert = false) {
 
-	GContact::updateGContact(array("url" => $contact->url, "network" => NETWORK_PUMPIO, "generation" => 2,
+	GContact::update(array("url" => $contact->url, "network" => NETWORK_PUMPIO, "generation" => 2,
 			"photo" => $contact->image->url, "name" => $contact->displayName,  "hide" => true,
 			"nick" => $contact->preferredUsername, "location" => $contact->location->displayName,
 			"about" => $contact->summary, "addr" => str_replace("acct:", "", $contact->id)));

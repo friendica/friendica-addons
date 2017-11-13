@@ -929,7 +929,7 @@ function statusnet_fetch_contact($uid, $contact, $create_user) {
 	if ($contact->statusnet_profile_url == "")
 		return(-1);
 
-	GContact::updateGContact(array("url" => $contact->statusnet_profile_url,
+	GContact::update(array("url" => $contact->statusnet_profile_url,
 			"network" => NETWORK_STATUSNET, "photo" => $contact->profile_image_url,
 			"name" => $contact->name, "nick" => $contact->screen_name,
 			"location" => $contact->location, "about" => $contact->description,

@@ -956,7 +956,7 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 
 	$avatar = twitter_fix_avatar($contact->profile_image_url_https);
 
-	GContact::updateGContact(array("url" => "https://twitter.com/".$contact->screen_name,
+	GContact::update(array("url" => "https://twitter.com/".$contact->screen_name,
 			"network" => NETWORK_TWITTER, "photo" => $avatar,  "hide" => true,
 			"name" => $contact->name, "nick" => $contact->screen_name,
 			"location" => $contact->location, "about" => $contact->description,
