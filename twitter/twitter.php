@@ -63,7 +63,7 @@
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
-use Friendica\Model\GContact;
+use Friendica\Model\GlobalContact;
 
 require_once 'include/enotify.php';
 
@@ -956,7 +956,7 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 
 	$avatar = twitter_fix_avatar($contact->profile_image_url_https);
 
-	GContact::update(array("url" => "https://twitter.com/".$contact->screen_name,
+	GlobalContact::update(array("url" => "https://twitter.com/".$contact->screen_name,
 			"network" => NETWORK_TWITTER, "photo" => $avatar,  "hide" => true,
 			"name" => $contact->name, "nick" => $contact->screen_name,
 			"location" => $contact->location, "about" => $contact->description,
