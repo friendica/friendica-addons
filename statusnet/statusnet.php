@@ -43,12 +43,12 @@
 
 define('STATUSNET_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
-require_once('library/twitteroauth.php');
-require_once('include/enotify.php');
-require_once("include/socgraph.php");
+require_once 'library/twitteroauth.php';
+require_once 'include/enotify.php';
 
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
+use Friendica\Model\GContact;
 
 class StatusNetOAuth extends TwitterOAuth {
     function get_maxlength() {
@@ -929,7 +929,7 @@ function statusnet_fetch_contact($uid, $contact, $create_user) {
 	if ($contact->statusnet_profile_url == "")
 		return(-1);
 
-	update_gcontact(array("url" => $contact->statusnet_profile_url,
+	GContact::updateGContact(array("url" => $contact->statusnet_profile_url,
 			"network" => NETWORK_STATUSNET, "photo" => $contact->profile_image_url,
 			"name" => $contact->name, "nick" => $contact->screen_name,
 			"location" => $contact->location, "about" => $contact->description,
