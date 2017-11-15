@@ -60,13 +60,13 @@
  *     Requirements: PHP5, curl [Slinky library]
  */
 
-use Friendica\Core\Worker;
-
-require_once('include/enotify.php');
-require_once("include/socgraph.php");
-
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
+use Friendica\Core\Worker;
+use Friendica\Model\GlobalContact;
+
+require_once 'include/enotify.php';
+
 
 define('TWITTER_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
@@ -956,7 +956,7 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 
 	$avatar = twitter_fix_avatar($contact->profile_image_url_https);
 
-	update_gcontact(array("url" => "https://twitter.com/".$contact->screen_name,
+	GlobalContact::update(array("url" => "https://twitter.com/".$contact->screen_name,
 			"network" => NETWORK_TWITTER, "photo" => $avatar,  "hide" => true,
 			"name" => $contact->name, "nick" => $contact->screen_name,
 			"location" => $contact->location, "about" => $contact->description,
