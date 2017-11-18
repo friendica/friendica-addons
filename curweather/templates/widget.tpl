@@ -11,7 +11,7 @@
 	    <li>{{$wind['caption']}}: {{$wind['val']}}</li>
 	</ul></p>
 	<p class="curweather-footer">
-		{{$databy}}: <a	href="http://openweathermap.org">OpenWeatherMap</a>. <a href="http://openweathermap.org/Maps?zoom=7&lat={{$lat}}&lon={{$lon}}&layers=B0FTTFF">{{$showonmap}}</a>
+		{{$databy}}: <a	href="http://openweathermap.org">OpenWeatherMap</a>. <a href="http://openweathermap.org/weathermap?basemap=map&cities=true&layer=temperature&lat={{$lat}}&lon={{$lon}}&zoom=10">{{$showonmap}}</a>
 	</p>
 </div>
 <div class="clear"></div>
