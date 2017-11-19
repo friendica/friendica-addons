@@ -8,6 +8,7 @@
  */
 
 use Friendica\Core\Config;
+use Friendica\Model\User;
 
 
 function public_server_install() {
@@ -75,10 +76,9 @@ function public_server_cron($a,$b) {
 
 	$r = q("select * from user where account_expired = 1 and account_expires_on < UTC_TIMESTAMP() - INTERVAL 5 DAY and account_expires_on > '0000-00-00 00:00:00'");
 	if(count($r)) {
-		require_once('include/Contact.php');
-		foreach($r as $rr)
-			user_remove($rr['uid']);
-
+		foreach($r as $rr) {
+			User::remove($rr['uid']);
+		}
 	}
 	$nologin = Config::get('public_server','nologin');
 	if($nologin) {
@@ -123,7 +123,7 @@ function public_server_cron($a,$b) {
 }
 
 function public_server_enotify(&$a, &$b) {
-    if (x($b, 'params') && $b['params']['type'] == NOTIFY_SYSTEM 
+    if (x($b, 'params') && $b['params']['type'] == NOTIFY_SYSTEM
 		&& x($b['params'], 'system_type') && $b['params']['system_type'] === 'public_server_expire') {
         $b['itemlink'] = $a->get_baseurl();
         $b['epreamble'] = $b['preamble'] = sprintf( t('Your account on %s will expire in a few days.'), Config::get('system','sitename'));

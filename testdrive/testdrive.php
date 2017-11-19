@@ -8,6 +8,7 @@
  */
 
 use Friendica\Core\Config;
+use Friendica\Model\User;
 
 
 function testdrive_install() {
@@ -79,12 +80,10 @@ function testdrive_cron($a,$b) {
 
 	$r = q("select * from user where account_expired = 1 and account_expires_on < UTC_TIMESTAMP() - INTERVAL 5 DAY ");
 	if(count($r)) {
-		require_once('include/Contact.php');
-		foreach($r as $rr)
-			user_remove($rr['uid']);
-
+		foreach($r as $rr) {
+			User::remove($rr['uid']);
+		}
 	}
-
 }
 
 function testdrive_enotify(&$a, &$b) {
