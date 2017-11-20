@@ -10,6 +10,7 @@ use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
 use Friendica\Model\GlobalContact;
+use Friendica\Object\Contact;
 
 require 'addon/pumpio/oauth/http.php';
 require 'addon/pumpio/oauth/oauth_client.php';
@@ -972,7 +973,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false) {
 			"photo" => $contact->image->url, "name" => $contact->displayName,  "hide" => true,
 			"nick" => $contact->preferredUsername, "location" => $contact->location->displayName,
 			"about" => $contact->summary, "addr" => str_replace("acct:", "", $contact->id)));
-	$cid = get_contact($contact->url, $uid);
+	$cid = Contact::getIdForURL($contact->url, $uid);
 
 	if ($no_insert)
 		return($cid);
