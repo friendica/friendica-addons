@@ -1,6 +1,8 @@
 <?php
 use Friendica\Util\Emailer;
 
+use Friendica\Util\Emailer;
+
 require_once('include/security.php');
 
 function dav_install()
