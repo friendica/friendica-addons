@@ -1,4 +1,5 @@
 <?php
+use Friendica\Util\Emailer;
 
 require_once('include/security.php');
 
@@ -285,7 +286,6 @@ function dav_cron(&$a, &$b)
 						'textVersion'          => $text_text,
 						'additionalMailHeader' => "",
 					);
-					require_once('include/Emailer.php');
 					Emailer::send($params);
 				}
 				break;

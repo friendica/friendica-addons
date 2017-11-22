@@ -9,7 +9,7 @@
  * Author: Rabuzarus <https://friendica.kommune4.de/profile/rabuzarus> (Port to Friendica)
  */
 
-require_once('include/Emailer.php');
+use Friendica\Util\Emailer;
 
 function notifyall_install() {
 	logger("installed notifyall");
