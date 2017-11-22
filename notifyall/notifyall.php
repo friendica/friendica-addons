@@ -9,7 +9,7 @@
  * Author: Rabuzarus <https://friendica.kommune4.de/profile/rabuzarus> (Port to Friendica)
  */
 
-require_once('include/Emailer.php');
+use Friendica\Util\Emailer;
 
 function notifyall_install() {
 	logger("installed notifyall");
@@ -42,7 +42,7 @@ function notifyall_post(&$a) {
 		$sender_name = sprintf(t('%s Administrator'), $sitename);
 	else
 		$sender_name = sprintf(t('%1$s, %2$s Administrator'), $a->config['admin_name'], $sitename);
-	
+
 	if (! x($a->config['sender_email']))
 		$sender_email = 'noreply@' . $a->get_hostname();
 	else
@@ -54,7 +54,7 @@ function notifyall_post(&$a) {
 	$textversion = strip_tags(html_entity_decode(bbcode(stripslashes(str_replace(array("\\r", "\\n"),array( "", "\n"), $text))),ENT_QUOTES,'UTF-8'));
 
 	$htmlversion = bbcode(stripslashes(str_replace(array("\\r","\\n"), array("","<br />\n"),$text)));
-	
+
 	// if this is a test, send it only to the admin(s)
 	// admin_email might be a comma separated list, but we need "a@b','c@d','e@f
 	if ( intval($_REQUEST['test'])) {

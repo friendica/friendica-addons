@@ -8,8 +8,7 @@
 
 use Friendica\App;
 use Friendica\Core\PConfig;
-
-require_once 'include/Emailer.php';
+use Friendica\Util\Emailer;
 
 /* because the fraking openpgp-php is in composer, require libs in composer
  * and then don't use autoloader to load classes... */
