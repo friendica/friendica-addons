@@ -247,6 +247,13 @@ function buffer_send(&$a,&$b) {
 	if($b['parent'] != $b['id'])
 		return;
 
+	// Dont't post if the post doesn't belong to us.
+	// This is a check for forum postings
+	$self = dba::select('contact', array('id'), array('uid' => $b['uid'], 'self' => true), array('limit' => 1));
+	if ($b['contact-id'] != $self['id']) {
+		return;
+	}
+
 	// if post comes from buffer don't send it back
 	//if($b['app'] == "Buffer")
 	//	return;
