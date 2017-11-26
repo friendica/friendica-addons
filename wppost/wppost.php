@@ -200,6 +200,12 @@ function wppost_send(&$a,&$b) {
 	if($b['parent'] != $b['id'])
 		return;
 
+	// Dont't post if the post doesn't belong to us.
+	// This is a check for forum postings
+	$self = dba::select('contact', array('id'), array('uid' => $b['uid'], 'self' => true), array('limit' => 1));
+	if ($b['contact-id'] != $self['id']) {
+		return;
+	}
 
 	$wp_username = xmlify(PConfig::get($b['uid'],'wppost','wp_username'));
 	$wp_password = xmlify(PConfig::get($b['uid'],'wppost','wp_password'));

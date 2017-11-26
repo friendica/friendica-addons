@@ -541,6 +541,13 @@ function statusnet_post_hook(&$a,&$b) {
 
 		if($b['private'] || !strstr($b['postopts'],'statusnet'))
 			return;
+
+		// Dont't post if the post doesn't belong to us.
+		// This is a check for forum postings
+		$self = dba::select('contact', array('id'), array('uid' => $b['uid'], 'self' => true), array('limit' => 1));
+		if ($b['contact-id'] != $self['id']) {
+			return;
+		}
 	}
 
 	if (($b['verb'] == ACTIVITY_POST) && $b['deleted'])

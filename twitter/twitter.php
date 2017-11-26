@@ -171,7 +171,7 @@ function twitter_jot_nets(&$a,&$b) {
 	}
 }
 
-function twitter_settings_post ($a,$post) {
+function twitter_settings_post($a,$post) {
 	if(! local_user())
 		return;
 	// don't check twitter settings if twitter submit button is not clicked
@@ -412,7 +412,7 @@ function twitter_post_hook(&$a,&$b) {
 			return;
 	}
 
-	if($b['parent'] != $b['id']) {
+	if ($b['parent'] != $b['id']) {
 		logger("twitter_post_hook: parameter ".print_r($b, true), LOGGER_DATA);
 
 		// Looking if its a reply to a twitter post
@@ -446,8 +446,16 @@ function twitter_post_hook(&$a,&$b) {
 	} else {
 		$iscomment = false;
 
-		if($b['private'] || !strstr($b['postopts'],'twitter'))
+		if ($b['private'] || !strstr($b['postopts'],'twitter')) {
 			return;
+		}
+
+		// Dont't post if the post doesn't belong to us.
+		// This is a check for forum postings
+		$self = dba::select('contact', array('id'), array('uid' => $b['uid'], 'self' => true), array('limit' => 1));
+		if ($b['contact-id'] != $self['id']) {
+			return;
+		}
 	}
 
 	if (($b['verb'] == ACTIVITY_POST) && $b['deleted'])

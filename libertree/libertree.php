@@ -155,15 +155,21 @@ function libertree_send(&$a,&$b) {
 
 	logger('libertree_send: invoked');
 
-    if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
-        return;
+	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
+		return;
 
-    if(! strstr($b['postopts'],'libertree'))
-        return;
+	if (! strstr($b['postopts'],'libertree'))
+		return;
 
-    if($b['parent'] != $b['id'])
-        return;
+	if ($b['parent'] != $b['id'])
+		return;
 
+	// Dont't post if the post doesn't belong to us.
+	// This is a check for forum postings
+	$self = dba::select('contact', array('id'), array('uid' => $b['uid'], 'self' => true), array('limit' => 1));
+	if ($b['contact-id'] != $self['id']) {
+		return;
+	}
 
 	$ltree_api_token = PConfig::get($b['uid'],'libertree','libertree_api_token');
 	$ltree_url = PConfig::get($b['uid'],'libertree','libertree_url');
