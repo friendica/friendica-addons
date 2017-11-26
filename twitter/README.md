@@ -4,7 +4,7 @@ Twitter Plugin
 Main authors Tobias Diekershoff and Michael Vogel.
 
 With this addon to friendica you can give your users the possibility to post their *public* messages to Twitter and 
-to import their timeline. The messages will be strapped their rich context and shortened to 140 characters length if 
+to import their timeline. The messages will be strapped their rich context and shortened to 280 characters length if 
 necessary.
 
 The addon can also mirror a users Tweets into the ~friendica wall.
