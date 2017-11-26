@@ -94,7 +94,7 @@ function xmpp_plugin_settings(App $a, &$s)
 function xmpp_login()
 {
 	if (!$_SESSION["allow_api"]) {
-		$password = substr(random_string(),0,16);
+		$password = random_string(16);
 		PConfig::set(local_user(), "xmpp", "password", $password);
 	}
 }

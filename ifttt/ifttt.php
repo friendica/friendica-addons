@@ -45,7 +45,7 @@ function ifttt_settings(App $a, &$s)
 	$key = PConfig::get(local_user(), 'ifttt', 'key');
 
 	if (!$key) {
-		$key = substr(random_string(),0,20);
+		$key = random_string(20);
 		PConfig::set(local_user(), 'ifttt', 'key', $key);
 	}
 
