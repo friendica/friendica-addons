@@ -177,7 +177,7 @@ function forumdirectory_content(&$a) {
 				'$details' => $pdesc . $details,
 				'$page_type' => $page_type,
 				'$profile' => $profile,
-				'$location' => template_escape($location),
+				'$location' => $location,
 				'$gender'   => $gender,
 				'$pdesc'	=> $pdesc,
 				'$marital'  => $marital,
