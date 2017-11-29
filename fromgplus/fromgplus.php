@@ -264,12 +264,12 @@ function fromgplus_cleanupgoogleproxy($fullImage, $image) {
 	}
 
 	if ($cleaned["full"] != "")
-		$infoFull = Photo::getPhotoInfo($cleaned["full"]);
+		$infoFull = Photo::getInfoFromURL($cleaned["full"]);
 	else
 		$infoFull = array("0" => 0, "1" => 0);
 
 	if ($cleaned["preview"] != "")
-		$infoPreview = Photo::getPhotoInfo($cleaned["preview"]);
+		$infoPreview = Photo::getInfoFromURL($cleaned["preview"]);
 	else
 		$infoFull = array("0" => 0, "1" => 0);
 

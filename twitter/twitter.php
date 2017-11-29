@@ -951,7 +951,7 @@ function twitter_fix_avatar($avatar) {
 
 	$new_avatar = str_replace("_normal.", ".", $avatar);
 
-	$info = Photo::getPhotoInfo($new_avatar);
+	$info = Photo::getInfoFromURL($new_avatar);
 	if (!$info)
 		$new_avatar = $avatar;
 
