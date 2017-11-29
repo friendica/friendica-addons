@@ -11,10 +11,11 @@ define('FROMGPLUS_DEFAULT_POLL_INTERVAL', 30); // given in minutes
 
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
+use Friendica\Object\Photo;
 
-require_once('mod/share.php');
-require_once('mod/parse_url.php');
-require_once('include/text.php');
+require_once 'mod/share.php';
+require_once 'mod/parse_url.php';
+require_once 'include/text.php';
 
 function fromgplus_install() {
 	register_hook('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
@@ -263,12 +264,12 @@ function fromgplus_cleanupgoogleproxy($fullImage, $image) {
 	}
 
 	if ($cleaned["full"] != "")
-		$infoFull = get_photo_info($cleaned["full"]);
+		$infoFull = Photo::getPhotoInfo($cleaned["full"]);
 	else
 		$infoFull = array("0" => 0, "1" => 0);
 
 	if ($cleaned["preview"] != "")
-		$infoPreview = get_photo_info($cleaned["preview"]);
+		$infoPreview = Photo::getPhotoInfo($cleaned["preview"]);
 	else
 		$infoFull = array("0" => 0, "1" => 0);
 

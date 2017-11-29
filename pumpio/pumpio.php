@@ -5,12 +5,12 @@
  * Version: 0.2
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  */
-
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
 use Friendica\Model\GlobalContact;
 use Friendica\Object\Contact;
+use Friendica\Object\Photo;
 
 require 'addon/pumpio/oauth/http.php';
 require 'addon/pumpio/oauth/oauth_client.php';
@@ -1046,8 +1046,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false) {
 		*/
 	}
 
-	if (function_exists("update_contact_avatar"))
-		update_contact_avatar($contact->image->url, $uid, $contact_id);
+	Photo::updateContactAvatar($contact->image->url, $uid, $contact_id);
 
 	return($contact_id);
 }

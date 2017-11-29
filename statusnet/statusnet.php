@@ -49,6 +49,7 @@ require_once 'include/enotify.php';
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 use Friendica\Model\GlobalContact;
+use Friendica\Object\Photo;
 
 class StatusNetOAuth extends TwitterOAuth {
     function get_maxlength() {
@@ -999,7 +1000,7 @@ function statusnet_fetch_contact($uid, $contact, $create_user) {
 
 		require_once("Photo.php");
 
-		$photos = import_profile_photo($contact->profile_image_url,$uid,$contact_id);
+		$photos = Photo::importProfilePhoto($contact->profile_image_url,$uid,$contact_id);
 
 		q("UPDATE `contact` SET `photo` = '%s',
 					`thumb` = '%s',
@@ -1026,7 +1027,7 @@ function statusnet_fetch_contact($uid, $contact, $create_user) {
 
 			require_once("Photo.php");
 
-			$photos = import_profile_photo($contact->profile_image_url, $uid, $r[0]['id']);
+			$photos = Photo::importProfilePhoto($contact->profile_image_url, $uid, $r[0]['id']);
 
 			q("UPDATE `contact` SET `photo` = '%s',
 						`thumb` = '%s',
