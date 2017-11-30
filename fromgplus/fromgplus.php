@@ -349,13 +349,14 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 
 			case "photo":
 				// Don't store shared pictures in your wall photos (to prevent a possible violating of licenses)
-				if ($shared)
+				if ($shared) {
 					$images = fromgplus_cleanupgoogleproxy($attachment->fullImage, $attachment->image);
-				else {
-					if ($attachment->fullImage->url != "")
-						$images = store_photo($a, $uid, "", $attachment->fullImage->url);
-					elseif ($attachment->image->url != "")
-						$images = store_photo($a, $uid, "", $attachment->image->url);
+				} else {
+					if ($attachment->fullImage->url != "") {
+						$images = Photo::storePhoto($a, $uid, "", $attachment->fullImage->url);
+					} elseif ($attachment->image->url != "") {
+						$images = Photo::storePhoto($a, $uid, "", $attachment->image->url);
+					}
 				}
 
 				if ($images["preview"] != "") {
@@ -366,8 +367,9 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 					$post .= "\n[img]".$images["full"]."[/img]\n";
 					$pagedata["images"][0]["src"] = $images["full"];
 
-					if ($images["preview"] != "")
+					if ($images["preview"] != "") {
 						$pagedata["images"][1]["src"] = $images["preview"];
+					}
 				}
 
 				if (($attachment->displayName != "") && (fromgplus_cleantext($attachment->displayName) != fromgplus_cleantext($displaytext))) {
