@@ -947,8 +947,6 @@ function twitter_queue_hook(&$a,&$b) {
 }
 
 function twitter_fix_avatar($avatar) {
-	require_once("include/Photo.php");
-
 	$new_avatar = str_replace("_normal.", ".", $avatar);
 
 	$info = Photo::getInfoFromURL($new_avatar);
