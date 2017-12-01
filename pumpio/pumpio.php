@@ -5,7 +5,6 @@
  * Version: 0.2
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  */
-
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
@@ -1046,8 +1045,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false) {
 		*/
 	}
 
-	if (function_exists("update_contact_avatar"))
-		update_contact_avatar($contact->image->url, $uid, $contact_id);
+	Contact::updateAvatar($contact->image->url, $uid, $contact_id);
 
 	return($contact_id);
 }

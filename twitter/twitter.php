@@ -64,6 +64,7 @@ use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
 use Friendica\Model\GlobalContact;
+use Friendica\Object\Photo;
 
 require_once 'include/enotify.php';
 
@@ -950,7 +951,7 @@ function twitter_fix_avatar($avatar) {
 
 	$new_avatar = str_replace("_normal.", ".", $avatar);
 
-	$info = get_photo_info($new_avatar);
+	$info = Photo::getInfoFromURL($new_avatar);
 	if (!$info)
 		$new_avatar = $avatar;
 
@@ -1027,7 +1028,7 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 
 		require_once("Photo.php");
 
-		$photos = import_profile_photo($avatar, $uid, $contact_id, true);
+		$photos = Photo::importProfilePhoto($avatar, $uid, $contact_id, true);
 
 		if ($photos) {
 			q("UPDATE `contact` SET `photo` = '%s',
@@ -1060,7 +1061,7 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 
 			require_once("Photo.php");
 
-			$photos = import_profile_photo($avatar, $uid, $r[0]['id'], true);
+			$photos = Photo::importProfilePhoto($avatar, $uid, $r[0]['id'], true);
 
 			if ($photos) {
 				q("UPDATE `contact` SET `photo` = '%s',

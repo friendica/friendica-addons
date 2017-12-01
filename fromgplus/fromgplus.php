@@ -11,10 +11,11 @@ define('FROMGPLUS_DEFAULT_POLL_INTERVAL', 30); // given in minutes
 
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
+use Friendica\Object\Photo;
 
-require_once('mod/share.php');
-require_once('mod/parse_url.php');
-require_once('include/text.php');
+require_once 'mod/share.php';
+require_once 'mod/parse_url.php';
+require_once 'include/text.php';
 
 function fromgplus_install() {
 	register_hook('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
@@ -263,12 +264,12 @@ function fromgplus_cleanupgoogleproxy($fullImage, $image) {
 	}
 
 	if ($cleaned["full"] != "")
-		$infoFull = get_photo_info($cleaned["full"]);
+		$infoFull = Photo::getInfoFromURL($cleaned["full"]);
 	else
 		$infoFull = array("0" => 0, "1" => 0);
 
 	if ($cleaned["preview"] != "")
-		$infoPreview = get_photo_info($cleaned["preview"]);
+		$infoPreview = Photo::getInfoFromURL($cleaned["preview"]);
 	else
 		$infoFull = array("0" => 0, "1" => 0);
 
@@ -348,13 +349,14 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 
 			case "photo":
 				// Don't store shared pictures in your wall photos (to prevent a possible violating of licenses)
-				if ($shared)
+				if ($shared) {
 					$images = fromgplus_cleanupgoogleproxy($attachment->fullImage, $attachment->image);
-				else {
-					if ($attachment->fullImage->url != "")
-						$images = store_photo($a, $uid, "", $attachment->fullImage->url);
-					elseif ($attachment->image->url != "")
-						$images = store_photo($a, $uid, "", $attachment->image->url);
+				} else {
+					if ($attachment->fullImage->url != "") {
+						$images = Photo::storePhoto($a, $uid, "", $attachment->fullImage->url);
+					} elseif ($attachment->image->url != "") {
+						$images = Photo::storePhoto($a, $uid, "", $attachment->image->url);
+					}
 				}
 
 				if ($images["preview"] != "") {
@@ -365,8 +367,9 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 					$post .= "\n[img]".$images["full"]."[/img]\n";
 					$pagedata["images"][0]["src"] = $images["full"];
 
-					if ($images["preview"] != "")
+					if ($images["preview"] != "") {
 						$pagedata["images"][1]["src"] = $images["preview"];
+					}
 				}
 
 				if (($attachment->displayName != "") && (fromgplus_cleantext($attachment->displayName) != fromgplus_cleantext($displaytext))) {
