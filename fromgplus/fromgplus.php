@@ -309,7 +309,6 @@ function fromgplus_cleantext($text) {
 }
 
 function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
-	require_once("include/Photo.php");
 	require_once("include/items.php");
 	require_once("include/network.php");
 

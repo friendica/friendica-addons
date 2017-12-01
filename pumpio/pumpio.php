@@ -14,7 +14,6 @@ use Friendica\Object\Contact;
 require 'addon/pumpio/oauth/http.php';
 require 'addon/pumpio/oauth/oauth_client.php';
 require_once 'include/enotify.php';
-require_once "include/Photo.php";
 require_once "mod/share.php";
 
 define('PUMPIO_DEFAULT_POLL_INTERVAL', 5); // given in minutes
