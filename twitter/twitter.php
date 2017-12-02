@@ -1024,8 +1024,6 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 			group_add_member($uid,'',$contact_id,$g[0]['def_gid']);
 		}
 
-		require_once("Photo.php");
-
 		$photos = Photo::importProfilePhoto($avatar, $uid, $contact_id, true);
 
 		if ($photos) {
@@ -1056,8 +1054,6 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 		if((! $r[0]['photo']) || (! $r[0]['thumb']) || (! $r[0]['micro']) || ($update_photo)) {
 
 			logger("twitter_fetch_contact: Updating contact ".$contact->screen_name, LOGGER_DEBUG);
-
-			require_once("Photo.php");
 
 			$photos = Photo::importProfilePhoto($avatar, $uid, $r[0]['id'], true);
 
