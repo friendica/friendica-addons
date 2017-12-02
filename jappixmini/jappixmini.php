@@ -429,11 +429,7 @@ function jappixmini_settings_post(App $a, &$b)
 		if ($encrypt) {
 			// check that Jabber password was encrypted with correct Friendica password
 			$friendica_password = trim($b['jappixmini-friendica-password']);
-			$encrypted = hash('whirlpool',$friendica_password);
-			$r = q("SELECT * FROM `user` WHERE `uid`=$uid AND `password`='%s'",
-				dbesc($encrypted)
-			);
-			if (!count($r)) {
+			if (!User::authenticate((int) $uid, $friendica_password)) {
 				info("Wrong friendica password!");
 				return;
 			}

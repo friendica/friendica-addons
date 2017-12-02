@@ -455,19 +455,10 @@ function windowsphonepush_login(App $a)
 		die('This api requires login');
 	}
 
-	$user = $_SERVER['PHP_AUTH_USER'];
-	$encrypted = hash('whirlpool',trim($_SERVER['PHP_AUTH_PW']));
+	$user_id = User::authenticate($_SERVER['PHP_AUTH_USER'], trim($_SERVER['PHP_AUTH_PW']));
 
-	// check if user specified by app is available in the user table
-	$r = q("SELECT * FROM `user` WHERE ( `email` = '%s' OR `nickname` = '%s' )
-	    AND `password` = '%s' AND `blocked` = 0 AND `account_expired` = 0 AND `account_removed` = 0 AND `verified` = 1 LIMIT 1",
-	    dbesc(trim($user)),
-	    dbesc(trim($user)),
-	    dbesc($encrypted)
-	);
-
-	if(count($r)){
-	    $record = $r[0];
+	if ($user_id) {
+		$record = dba::select('user', [], ['uid' => $user_id], ['limit' => 1]);
 	} else {
 		logger('API_login failure: ' . print_r($_SERVER, true), LOGGER_DEBUG);
 		header('WWW-Authenticate: Basic realm="Friendica"');

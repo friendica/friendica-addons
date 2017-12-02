@@ -67,7 +67,7 @@ class Sabre_DAV_Auth_Backend_Std extends Sabre_DAV_Auth_Backend_AbstractBasic
 		}
 
 		// Authenticates the user
-		if (!$this->validateUserPass($userpass[0],$userpass[1])) {
+		if (!$this->validateUserPass($userpass[0], $userpass[1])) {
 			$auth->requireLogin();
 			throw new Sabre_DAV_Exception_NotAuthenticated('Username or password does not match');
 		}
@@ -80,13 +80,8 @@ class Sabre_DAV_Auth_Backend_Std extends Sabre_DAV_Auth_Backend_AbstractBasic
 	 * @param string $password
 	 * @return bool
 	 */
-	protected function validateUserPass($username, $password) {
-		$encrypted = hash('whirlpool',trim($password));
-		$r = q("SELECT COUNT(*) anz FROM `user` WHERE `nickname` = '%s' AND `password` = '%s' AND `blocked` = 0 AND `account_expired` = 0 AND `verified` = 1 LIMIT 1",
-			dbesc(trim($username)),
-			dbesc($encrypted)
-		);
-		return ($r[0]["anz"] == 1);
-    }
-    
+	protected function validateUserPass($username, $password)
+	{
+		return User::authenticate($username, $password);
+	}
 }
