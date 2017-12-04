@@ -52,10 +52,8 @@
  *
  * ...etc.
  */
-
-require_once('include/user.php');
-
 use Friendica\Core\Config;
+use Friendica\Model\User;
 
 function ldapauth_install()
 {
@@ -179,7 +177,7 @@ function ldap_autocreateaccount($ldap_autocreateaccount, $username, $password, $
 		if (empty($results)) {
 			if (strlen($email) > 0 && strlen($name) > 0) {
 				$arr = array('username' => $name, 'nickname' => $username, 'email' => $email, 'password' => $password, 'verified' => 1);
-				$result = create_user($arr);
+				$result = User::create($arr);
 				if ($result['success']) {
 					logger("ldapauth: account " . $username . " created");
 				} else {
