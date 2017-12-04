@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: LDAP Authenticate
  * Description: Authenticate a user against an LDAP directory
@@ -6,10 +7,10 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * Author: aymhce
  */
- 
+
 /**
  * Friendica addon
- * 
+ *
  * Module: LDAP Authenticate
  *
  * Authenticate a user against an LDAP directory
@@ -18,13 +19,13 @@
  *
  * Optionally authenticates only if a member of a given group in the directory.
  *
- * By default, the person must have registered with Friendica using the normal registration 
+ * By default, the person must have registered with Friendica using the normal registration
  * procedures in order to have a Friendica user record, contact, and profile.
  * However, it's possible with an option to automate the creation of a Friendica basic account.
  *
  * Note when using with Windows Active Directory: you may need to set TLS_CACERT in your site
- * ldap.conf file to the signing cert for your LDAP server. 
- * 
+ * ldap.conf file to the signing cert for your LDAP server.
+ *
  * The configuration options for this module may be set in the .htconfig.php file
  * e.g.:
  *
@@ -51,147 +52,145 @@
  *
  * ...etc.
  */
-
-require_once('include/user.php');
-
 use Friendica\Core\Config;
+use Friendica\Model\User;
 
-
-function ldapauth_install() {
+function ldapauth_install()
+{
 	register_hook('authenticate', 'addon/ldapauth/ldapauth.php', 'ldapauth_hook_authenticate');
 }
 
-
-function ldapauth_uninstall() {
+function ldapauth_uninstall()
+{
 	unregister_hook('authenticate', 'addon/ldapauth/ldapauth.php', 'ldapauth_hook_authenticate');
 }
 
-
-function ldapauth_hook_authenticate($a,&$b) {
-    if(ldapauth_authenticate($b['username'],$b['password'])) {
-    	$results = get_existing_account($b['username']);
-    	if(! empty($results)){
-            $b['user_record'] = $results[0];
-            $b['authenticated'] = 1;
-    	}
-    }
-    return;
+function ldapauth_hook_authenticate($a, &$b)
+{
+	if (ldapauth_authenticate($b['username'], $b['password'])) {
+		$results = get_existing_account($b['username']);
+		if (!empty($results)) {
+			$b['user_record'] = $results[0];
+			$b['authenticated'] = 1;
+		}
+	}
+	return;
 }
 
-function ldapauth_authenticate($username,$password) {
+function ldapauth_authenticate($username, $password)
+{
+	$ldap_server   = Config::get('ldapauth', 'ldap_server');
+	$ldap_binddn   = Config::get('ldapauth', 'ldap_binddn');
+	$ldap_bindpw   = Config::get('ldapauth', 'ldap_bindpw');
+	$ldap_searchdn = Config::get('ldapauth', 'ldap_searchdn');
+	$ldap_userattr = Config::get('ldapauth', 'ldap_userattr');
+	$ldap_group    = Config::get('ldapauth', 'ldap_group');
+	$ldap_autocreateaccount = Config::get('ldapauth', 'ldap_autocreateaccount');
+	$ldap_autocreateaccount_emailattribute = Config::get('ldapauth', 'ldap_autocreateaccount_emailattribute');
+	$ldap_autocreateaccount_nameattribute  = Config::get('ldapauth', 'ldap_autocreateaccount_nameattribute');
 
-    $ldap_server   = Config::get('ldapauth','ldap_server');
-    $ldap_binddn   = Config::get('ldapauth','ldap_binddn');
-    $ldap_bindpw   = Config::get('ldapauth','ldap_bindpw');
-    $ldap_searchdn = Config::get('ldapauth','ldap_searchdn');
-    $ldap_userattr = Config::get('ldapauth','ldap_userattr');
-    $ldap_group    = Config::get('ldapauth','ldap_group');
-    $ldap_autocreateaccount = Config::get('ldapauth','ldap_autocreateaccount');
-    $ldap_autocreateaccount_emailattribute = Config::get('ldapauth','ldap_autocreateaccount_emailattribute');
-    $ldap_autocreateaccount_nameattribute = Config::get('ldapauth','ldap_autocreateaccount_nameattribute');
-	
-    if(! ((strlen($password))
-            && (function_exists('ldap_connect'))
-            && (strlen($ldap_server)))) {
-            logger("ldapauth: not configured or missing php-ldap module");
-            return false;
-    }
+	if (!(strlen($password) && function_exists('ldap_connect') && strlen($ldap_server))) {
+		logger("ldapauth: not configured or missing php-ldap module");
+		return false;
+	}
 
-    $connect = @ldap_connect($ldap_server);
+	$connect = @ldap_connect($ldap_server);
 
-    if($connect === false) {
-        logger("ldapauth: could not connect to $ldap_server");
-        return false;
-    }
+	if ($connect === false) {
+		logger("ldapauth: could not connect to $ldap_server");
+		return false;
+	}
 
-    @ldap_set_option($connect, LDAP_OPT_PROTOCOL_VERSION,3);
-    @ldap_set_option($connect, LDAP_OPT_REFERRALS, 0);
-    if((@ldap_bind($connect,$ldap_binddn,$ldap_bindpw)) === false) {
-        logger("ldapauth: could not bind $ldap_server as $ldap_binddn");
-        return false;
-    }
+	@ldap_set_option($connect, LDAP_OPT_PROTOCOL_VERSION, 3);
+	@ldap_set_option($connect, LDAP_OPT_REFERRALS, 0);
+	if ((@ldap_bind($connect, $ldap_binddn, $ldap_bindpw)) === false) {
+		logger("ldapauth: could not bind $ldap_server as $ldap_binddn");
+		return false;
+	}
 
-    $res = @ldap_search($connect,$ldap_searchdn, $ldap_userattr . '=' . $username);
+	$res = @ldap_search($connect, $ldap_searchdn, $ldap_userattr . '=' . $username);
 
-    if(! $res) {
-        logger("ldapauth: $ldap_userattr=$username,$ldap_searchdn not found");
-        return false;
-    }
+	if (!$res) {
+		logger("ldapauth: $ldap_userattr=$username,$ldap_searchdn not found");
+		return false;
+	}
 
-    $id = @ldap_first_entry($connect,$res);
+	$id = @ldap_first_entry($connect, $res);
 
-    if(! $id) {
-        return false;
-    }
+	if (!$id) {
+		return false;
+	}
 
-    $dn = @ldap_get_dn($connect,$id);
+	$dn = @ldap_get_dn($connect, $id);
 
-    if(! @ldap_bind($connect,$dn,$password))
-        return false;
-    
-    $emailarray = [];
-    $namearray = [];
-    if($ldap_autocreateaccount == "true"){
-        if(! strlen($ldap_autocreateaccount_emailattribute))
-            $ldap_autocreateaccount_emailattribute = "mail";
-        if(! strlen($ldap_autocreateaccount_nameattribute))
-            $ldap_autocreateaccount_nameattribute = "givenName";
-    	$emailarray = @ldap_get_values($connect, $id, $ldap_autocreateaccount_emailattribute);
-    	$namearray = @ldap_get_values($connect, $id, $ldap_autocreateaccount_nameattribute);
-    }
+	if (!@ldap_bind($connect, $dn, $password)) {
+		return false;
+	}
 
-    if(! strlen($ldap_group)){
-    	ldap_autocreateaccount($ldap_autocreateaccount,$username,$password,$emailarray[0],$namearray[0]);
-        return true;
-    }
+	$emailarray = [];
+	$namearray = [];
+	if ($ldap_autocreateaccount == "true") {
+		if (!strlen($ldap_autocreateaccount_emailattribute)) {
+			$ldap_autocreateaccount_emailattribute = "mail";
+		}
+		if (!strlen($ldap_autocreateaccount_nameattribute)) {
+			$ldap_autocreateaccount_nameattribute = "givenName";
+		}
+		$emailarray = @ldap_get_values($connect, $id, $ldap_autocreateaccount_emailattribute);
+		$namearray = @ldap_get_values($connect, $id, $ldap_autocreateaccount_nameattribute);
+	}
 
-    $r = @ldap_compare($connect,$ldap_group,'member',$dn);
-    if ($r === -1) {
-        $err = @ldap_error($connect);
-        $eno = @ldap_errno($connect);
-        @ldap_close($connect);
+	if (!strlen($ldap_group)) {
+		ldap_autocreateaccount($ldap_autocreateaccount, $username, $password, $emailarray[0], $namearray[0]);
+		return true;
+	}
 
-        if ($eno === 32) {
-            logger("ldapauth: access control group Does Not Exist");
-            return false;
-        }
-        elseif ($eno === 16) {
-            logger('ldapauth: membership attribute does not exist in access control group');
-            return false;
-        }
-        else {
-            logger('ldapauth: error: ' . $err);
-            return false;
-        }
-    }
-    elseif ($r === false) {
-        @ldap_close($connect);
-        return false;
-    }
+	$r = @ldap_compare($connect, $ldap_group, 'member', $dn);
+	if ($r === -1) {
+		$err = @ldap_error($connect);
+		$eno = @ldap_errno($connect);
+		@ldap_close($connect);
 
-    ldap_autocreateaccount($ldap_autocreateaccount,$username,$password,$emailarray[0],$namearray[0]);
-    return true;
+		if ($eno === 32) {
+			logger("ldapauth: access control group Does Not Exist");
+			return false;
+		} elseif ($eno === 16) {
+			logger('ldapauth: membership attribute does not exist in access control group');
+			return false;
+		} else {
+			logger('ldapauth: error: ' . $err);
+			return false;
+		}
+	} elseif ($r === false) {
+		@ldap_close($connect);
+		return false;
+	}
+
+	ldap_autocreateaccount($ldap_autocreateaccount, $username, $password, $emailarray[0], $namearray[0]);
+	return true;
 }
 
-function ldap_autocreateaccount($ldap_autocreateaccount,$username,$password,$email,$name) {
-    if($ldap_autocreateaccount == "true"){
-        $results = get_existing_account($username);
-        if(empty($results)){
-            if (strlen($email) > 0 && strlen($name) > 0){
-                $arr = array('username'=>$name,'nickname'=>$username,'email'=>$email,'password'=>$password,'verified'=>1);
-                $result = create_user($arr);
-                if ($result['success']){
-                    logger("ldapauth: account " . $username . " created");
-                }else{
-                    logger("ldapauth: account " . $username . " was not created ! : " . implode($result));
-                }
-            }else{
-                logger("ldapauth: unable to create account, no email or nickname found");
-            }
-        }
-    }
+function ldap_autocreateaccount($ldap_autocreateaccount, $username, $password, $email, $name)
+{
+	if ($ldap_autocreateaccount == "true") {
+		$results = get_existing_account($username);
+		if (empty($results)) {
+			if (strlen($email) > 0 && strlen($name) > 0) {
+				$arr = array('username' => $name, 'nickname' => $username, 'email' => $email, 'password' => $password, 'verified' => 1);
+				$result = User::create($arr);
+				if ($result['success']) {
+					logger("ldapauth: account " . $username . " created");
+				} else {
+					logger("ldapauth: account " . $username . " was not created ! : " . implode($result));
+				}
+			} else {
+				logger("ldapauth: unable to create account, no email or nickname found");
+			}
+		}
+	}
 }
 
-function get_existing_account($username){
-    return q("SELECT * FROM `user` WHERE `nickname` = '%s' AND `blocked` = 0 AND `verified` = 1 LIMIT 1",$username);
+function get_existing_account($username)
+{
+	return q("SELECT * FROM `user` WHERE `nickname` = '%s' AND `blocked` = 0 AND `verified` = 1 LIMIT 1", $username);
 }
