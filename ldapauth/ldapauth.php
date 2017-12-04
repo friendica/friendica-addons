@@ -89,7 +89,7 @@ function ldapauth_authenticate($username, $password)
 	$ldap_autocreateaccount_emailattribute = Config::get('ldapauth', 'ldap_autocreateaccount_emailattribute');
 	$ldap_autocreateaccount_nameattribute  = Config::get('ldapauth', 'ldap_autocreateaccount_nameattribute');
 
-	if (!((strlen($password)) && (function_exists('ldap_connect')) && (strlen($ldap_server)))) {
+	if (!(strlen($password) && function_exists('ldap_connect') && strlen($ldap_server))) {
 		logger("ldapauth: not configured or missing php-ldap module");
 		return false;
 	}
