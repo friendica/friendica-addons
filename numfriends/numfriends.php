@@ -57,10 +57,11 @@ function numfriends_settings_post($a,$post) {
 
 
 
-function numfriends_settings(&$a,&$s) {
-
-	if(! local_user())
+function numfriends_settings(&$a, &$s)
+{
+	if (! local_user()) {
 		return;
+	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
@@ -68,9 +69,7 @@ function numfriends_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$numfriends = PConfig::get(local_user(),'system','display_friend_count');
-	if($numfriends === false)
-		$numfriends = 24;
+	$numfriends = PConfig::get(local_user(), 'system', 'display_friend_count', 24);
 	
 	/* Add some HTML to the existing form */
 
@@ -84,5 +83,4 @@ function numfriends_settings(&$a,&$s) {
 	/* provide a submit button */
 
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="numfriends-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
-
 }
