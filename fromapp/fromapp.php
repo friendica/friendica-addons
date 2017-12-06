@@ -51,7 +51,7 @@ function fromapp_settings(&$a,&$s) {
 	/* Get the current state of our config variable */
 
 	$fromapp = PConfig::get(local_user(),'fromapp','app');
-	if($fromapp === false)
+	if(is_null($fromapp))
 		$fromapp = '';
 
 	$force = intval(PConfig::get(local_user(),'fromapp','force'));
@@ -84,24 +84,29 @@ function fromapp_settings(&$a,&$s) {
 
 }
 
-function fromapp_post_hook(&$a,&$item) {
-   if(! local_user())
-        return;
+function fromapp_post_hook(&$a,&$item)
+{
+	if(! local_user()) {
+		return;
+	}
 
-    if(local_user() != $item['uid'])
-        return;
+    if(local_user() != $item['uid']) {
+		return;
+	}
 
     $app = PConfig::get(local_user(), 'fromapp', 'app');
 	$force = intval(PConfig::get(local_user(), 'fromapp','force'));
 
-    if(($app === false) || (! strlen($app)))
-        return;
-
-	if(strlen(trim($item['app'])) && (! $force))
+    if(is_null($app) || (! strlen($app))) {
 		return;
+	}
+
+	if(strlen(trim($item['app'])) && (! $force)) {
+		return;
+	}
 
 	$apps = explode(',',$app);
 	$item['app'] = trim($apps[mt_rand(0,count($apps)-1)]);
+	
 	return;
-
 }

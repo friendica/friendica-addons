@@ -45,8 +45,9 @@ function notimeline_settings(&$a,&$s) {
 	/* Get the current state of our config variable */
 
 	$notimeline = PConfig::get(local_user(),'system','no_wall_archive_widget');
-	if($notimeline === false)
+	if(is_null($notimeline)) {
 		$notimeline = false;
+	}
 
 	$notimeline_checked = (($notimeline) ? ' checked="checked" ' : '');
 
