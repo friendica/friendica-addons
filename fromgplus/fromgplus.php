@@ -11,7 +11,7 @@ define('FROMGPLUS_DEFAULT_POLL_INTERVAL', 30); // given in minutes
 
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
-use Friendica\Object\Image;
+use Friendica\Object\Photo;
 
 require_once 'mod/share.php';
 require_once 'mod/parse_url.php';
@@ -264,12 +264,12 @@ function fromgplus_cleanupgoogleproxy($fullImage, $image) {
 	}
 
 	if ($cleaned["full"] != "")
-		$infoFull = Image::getInfoFromURL($cleaned["full"]);
+		$infoFull = Photo::getInfoFromURL($cleaned["full"]);
 	else
 		$infoFull = array("0" => 0, "1" => 0);
 
 	if ($cleaned["preview"] != "")
-		$infoPreview = Image::getInfoFromURL($cleaned["preview"]);
+		$infoPreview = Photo::getInfoFromURL($cleaned["preview"]);
 	else
 		$infoFull = array("0" => 0, "1" => 0);
 
@@ -352,9 +352,9 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 					$images = fromgplus_cleanupgoogleproxy($attachment->fullImage, $attachment->image);
 				} else {
 					if ($attachment->fullImage->url != "") {
-						$images = Image::storePhoto($a, $uid, "", $attachment->fullImage->url);
+						$images = Photo::storePhoto($a, $uid, "", $attachment->fullImage->url);
 					} elseif ($attachment->image->url != "") {
-						$images = Image::storePhoto($a, $uid, "", $attachment->image->url);
+						$images = Photo::storePhoto($a, $uid, "", $attachment->image->url);
 					}
 				}
 
