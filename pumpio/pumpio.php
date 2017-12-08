@@ -8,8 +8,8 @@
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
-use Friendica\Model\GlobalContact;
-use Friendica\Object\Contact;
+use Friendica\Model\Contact;
+use Friendica\Model\GContact;
 
 require 'addon/pumpio/oauth/http.php';
 require 'addon/pumpio/oauth/oauth_client.php';
@@ -974,7 +974,7 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 
 function pumpio_get_contact($uid, $contact, $no_insert = false) {
 
-	GlobalContact::update(array("url" => $contact->url, "network" => NETWORK_PUMPIO, "generation" => 2,
+	GContact::update(array("url" => $contact->url, "network" => NETWORK_PUMPIO, "generation" => 2,
 			"photo" => $contact->image->url, "name" => $contact->displayName,  "hide" => true,
 			"nick" => $contact->preferredUsername, "location" => $contact->location->displayName,
 			"about" => $contact->summary, "addr" => str_replace("acct:", "", $contact->id)));
