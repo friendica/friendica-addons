@@ -63,8 +63,9 @@
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
-use Friendica\Model\GlobalContact;
-use Friendica\Object\Photo;
+use Friendica\Model\GContact;
+use Friendica\Model\Photo;
+use Friendica\Object\Image;
 
 require_once 'include/enotify.php';
 
@@ -949,7 +950,7 @@ function twitter_queue_hook(&$a,&$b) {
 function twitter_fix_avatar($avatar) {
 	$new_avatar = str_replace("_normal.", ".", $avatar);
 
-	$info = Photo::getInfoFromURL($new_avatar);
+	$info = Image::getInfoFromURL($new_avatar);
 	if (!$info)
 		$new_avatar = $avatar;
 
@@ -963,7 +964,7 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 
 	$avatar = twitter_fix_avatar($contact->profile_image_url_https);
 
-	GlobalContact::update(array("url" => "https://twitter.com/".$contact->screen_name,
+	GContact::update(array("url" => "https://twitter.com/".$contact->screen_name,
 			"network" => NETWORK_TWITTER, "photo" => $avatar,  "hide" => true,
 			"name" => $contact->name, "nick" => $contact->screen_name,
 			"location" => $contact->location, "about" => $contact->description,
