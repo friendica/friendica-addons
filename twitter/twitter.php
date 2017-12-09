@@ -65,7 +65,9 @@ use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
 use Friendica\Model\GContact;
+use Friendica\Model\Group;
 use Friendica\Model\Photo;
+use Friendica\Model\User;
 use Friendica\Object\Image;
 
 require_once 'include/enotify.php';
@@ -1055,14 +1057,8 @@ function twitter_fetch_contact($uid, $contact, $create_user)
 
 		$contact_id = $r[0]['id'];
 
-		$g = q("SELECT def_gid FROM user WHERE uid = %d LIMIT 1",
-			intval($uid)
-		);
-
-		if ($g && intval($g[0]['def_gid'])) {
 			require_once 'include/group.php';
-			group_add_member($uid, '', $contact_id, $g[0]['def_gid']);
-		}
+		Group::addMember(User::getDefaultGroup($uid), $contact_id);
 
 		$photos = Photo::importProfilePhoto($avatar, $uid, $contact_id, true);
 
