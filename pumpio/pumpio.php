@@ -1024,7 +1024,6 @@ function pumpio_get_contact($uid, $contact, $no_insert = false) {
 
 		$contact_id = $r[0]['id'];
 
-			require_once('include/group.php');
 		Group::addMember(User::getDefaultGroup($uid), $contact_id);
 	} else {
 		$contact_id = $r[0]["id"];

@@ -1056,7 +1056,6 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 
 		$contact_id = $r[0]['id'];
 
-			require_once 'include/group.php';
 		Group::addMember(User::getDefaultGroup($uid), $contact_id);
 
 		$photos = Photo::importProfilePhoto($contact->profile_image_url, $uid, $contact_id);
