@@ -10,6 +10,8 @@ use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
 use Friendica\Model\Contact;
 use Friendica\Model\GContact;
+use Friendica\Model\Group;
+use Friendica\Model\User;
 
 require 'addon/pumpio/oauth/http.php';
 require 'addon/pumpio/oauth/oauth_client.php';
@@ -1022,14 +1024,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false) {
 
 		$contact_id = $r[0]['id'];
 
-		$g = q("select def_gid from user where uid = %d limit 1",
-			intval($uid)
-		);
-
-		if($g && intval($g[0]['def_gid'])) {
-			require_once('include/group.php');
-			group_add_member($uid,'',$contact_id,$g[0]['def_gid']);
-		}
+		Group::addMember(User::getDefaultGroup($uid), $contact_id);
 	} else {
 		$contact_id = $r[0]["id"];
 
