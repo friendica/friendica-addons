@@ -177,11 +177,12 @@ function ldap_autocreateaccount($ldap_autocreateaccount, $username, $password, $
 		if (empty($results)) {
 			if (strlen($email) > 0 && strlen($name) > 0) {
 				$arr = array('username' => $name, 'nickname' => $username, 'email' => $email, 'password' => $password, 'verified' => 1);
-				$result = User::create($arr);
-				if ($result['success']) {
+
+				try {
+					User::create($arr);
 					logger("ldapauth: account " . $username . " created");
-				} else {
-					logger("ldapauth: account " . $username . " was not created ! : " . implode($result));
+				} catch (Exception $ex) {
+					logger("ldapauth: account " . $username . " was not created ! : " . $ex->getMessage());
 				}
 			} else {
 				logger("ldapauth: unable to create account, no email or nickname found");
