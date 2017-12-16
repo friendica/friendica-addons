@@ -1544,10 +1544,9 @@ function pumpio_getreceiver(&$a, $b) {
 			$gid = trim($gid, " <>");
 
 			$r = q("SELECT `contact`.`name`, `contact`.`nick`, `contact`.`url`, `contact`.`network` ".
-				"FROM `group_member`, `contact` WHERE `group_member`.`gid` = %d AND `group_member`.`uid` = %d ".
+				"FROM `group_member`, `contact` WHERE `group_member`.`gid` = %d ".
 				"AND `contact`.`id` = `group_member`.`contact-id` AND `contact`.`network` = '%s'",
 					intval($gid),
-					intval($b["uid"]),
 					dbesc(NETWORK_PUMPIO)
 				);
 
