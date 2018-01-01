@@ -46,6 +46,7 @@ require_once 'library/twitteroauth.php';
 require_once 'include/enotify.php';
 
 use Friendica\App;
+use Friendica\Content\OEmbed;
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 use Friendica\Model\GContact;
@@ -1629,7 +1630,6 @@ function statusnet_complete_conversation(App $a, $uid, $self, $create_user, $nic
 
 function statusnet_convertmsg(App $a, $body, $no_tags = false)
 {
-	require_once "include/oembed.php";
 	require_once "include/items.php";
 	require_once "include/network.php";
 
@@ -1653,7 +1653,7 @@ function statusnet_convertmsg(App $a, $body, $no_tags = false)
 
 			logger("statusnet_convertmsg: fetching data for " . $expanded_url, LOGGER_DEBUG);
 
-			$oembed_data = oembed_fetch_url($expanded_url, true);
+			$oembed_data = OEmbed::fetchURL($expanded_url, true);
 
 			logger("statusnet_convertmsg: fetching data: done", LOGGER_DEBUG);
 
