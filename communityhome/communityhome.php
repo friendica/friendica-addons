@@ -7,6 +7,7 @@
  */
 
 use Friendica\Core\Config;
+use Friendica\Module\Login;
 
 require_once('mod/community.php');
 
@@ -43,7 +44,7 @@ function communityhome_plugin_admin(&$a, &$o) {
 	foreach($opts as $k=>$v) {
 		$ctx['fields'][] = ['communityhome_'.$k, $v, Config::get('communityhome', $k)];
 	}
-	$o = replace_macros($tpl, $ctx);	
+	$o = replace_macros($tpl, $ctx);
 }
 
 function communityhome_plugin_admin_post(&$a,&$b) {
@@ -69,7 +70,7 @@ function communityhome_home(&$a, &$o){
 
 		// login form
 		$aside['$login_title'] =  t('Login');
-		$aside['$login_form'] = login(($a->config['register_policy'] == REGISTER_CLOSED) ? false : true);
+		$aside['$login_form'] = Login::form($a->query_string, $a->config['register_policy'] == REGISTER_CLOSED ? false : true);
 	} else  {
 		$aside = array(
 			//'$tab_1' => t('Login'),
@@ -87,7 +88,7 @@ function communityhome_home(&$a, &$o){
 		$order = " ORDER BY `register_date` DESC ";
 
 		$r = q("SELECT `profile`.*, `profile`.`uid` AS `profile_uid`, `user`.`nickname`
-				FROM `profile` LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid` 
+				FROM `profile` LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid`
 				WHERE `is-default` = 1 $publish AND `user`.`blocked` = 0 $sql_extra $order LIMIT %d , %d ",
 			0,
 			12
@@ -115,8 +116,8 @@ function communityhome_home(&$a, &$o){
 				(SELECT COUNT(*) as `contacts`, `uid` FROM `contact` WHERE `self`=0 GROUP BY `uid`) AS `con`,
 				(SELECT COUNT(*) as `items`, `uid` FROM `item` WHERE `item`.`changed` > DATE(NOW() - INTERVAL 1 MONTH) AND `item`.`wall` = 1 GROUP BY `uid`) AS `ite`,
 				(
-				SELECT `contacts`,`items`,`ite`.`uid` FROM `con` RIGHT OUTER JOIN `ite` ON `con`.`uid`=`ite`.`uid` 
-				UNION ALL 
+				SELECT `contacts`,`items`,`ite`.`uid` FROM `con` RIGHT OUTER JOIN `ite` ON `con`.`uid`=`ite`.`uid`
+				UNION ALL
 				SELECT `contacts`,`items`,`con`.`uid` FROM `con` LEFT OUTER JOIN `ite` ON `con`.`uid`=`ite`.`uid`
 				) AS `uni`, `user`, `profile`
 				WHERE `uni`.`uid`=`user`.`uid`
@@ -145,12 +146,12 @@ function communityhome_home(&$a, &$o){
 	if (Config::get('communityhome','showlastphotos')){
 		$aside['$photos_title'] = t('Latest photos');
 		$aside['$photos_items'] = array();
-		$r = q("SELECT `photo`.`id`, `photo`.`resource-id`, `photo`.`scale`, `photo`.`desc`, `user`.`nickname`, `user`.`username` FROM 
-					(SELECT `resource-id`, MAX(`scale`) as maxscale FROM `photo` 
+		$r = q("SELECT `photo`.`id`, `photo`.`resource-id`, `photo`.`scale`, `photo`.`desc`, `user`.`nickname`, `user`.`username` FROM
+					(SELECT `resource-id`, MAX(`scale`) as maxscale FROM `photo`
 						WHERE `profile`=0 AND `contact-id`=0 AND `album` NOT IN ('Contact Photos', '%s', 'Profile Photos', '%s')
 							AND `allow_cid`='' AND `allow_gid`='' AND `deny_cid`='' AND `deny_gid`='' GROUP BY `resource-id`) AS `t1`
 					INNER JOIN `photo` ON `photo`.`resource-id`=`t1`.`resource-id` AND `photo`.`scale` = `t1`.`maxscale`,
-					`user` 
+					`user`
 					WHERE `user`.`uid` = `photo`.`uid`
 					AND `user`.`blockwall`=0
 					AND `user`.`hidewall` = 0
@@ -185,10 +186,10 @@ function communityhome_home(&$a, &$o){
 	if (Config::get('communityhome','showlastlike')){
 		$aside['$like_title'] = t('Latest likes');
 		$aside['$like_items'] = array();
-		$r = q("SELECT `T1`.`created`, `T1`.`liker`, `T1`.`liker-link`, `item`.* FROM 
-				(SELECT `parent-uri`, `created`, `author-name` AS `liker`,`author-link` AS `liker-link` 
+		$r = q("SELECT `T1`.`created`, `T1`.`liker`, `T1`.`liker-link`, `item`.* FROM
+				(SELECT `parent-uri`, `created`, `author-name` AS `liker`,`author-link` AS `liker-link`
 					FROM `item` WHERE `verb`='http://activitystrea.ms/schema/1.0/like' GROUP BY `parent-uri` ORDER BY `created` DESC) AS T1
-				INNER JOIN `item` ON `item`.`uri`=`T1`.`parent-uri` 
+				INNER JOIN `item` ON `item`.`uri`=`T1`.`parent-uri`
 				WHERE `T1`.`liker-link` LIKE '%s%%' OR `item`.`author-link` LIKE '%s%%'
 				GROUP BY `uri`
 				ORDER BY `T1`.`created` DESC
