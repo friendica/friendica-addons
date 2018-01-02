@@ -61,6 +61,7 @@
  */
 
 use Friendica\App;
+use Friendica\Content\OEmbed;
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
@@ -1172,7 +1173,6 @@ function twitter_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 
 function twitter_expand_entities(App $a, $body, $item, $no_tags = false, $picture)
 {
-	require_once "include/oembed.php";
 	require_once "include/network.php";
 
 	$tags = "";
@@ -1191,7 +1191,7 @@ function twitter_expand_entities(App $a, $body, $item, $no_tags = false, $pictur
 			if ($url->url && $url->expanded_url && $url->display_url) {
 				$expanded_url = original_url($url->expanded_url);
 
-				$oembed_data = oembed_fetch_url($expanded_url);
+				$oembed_data = OEmbed::fetchURL($expanded_url);
 
 				// Quickfix: Workaround for URL with "[" and "]" in it
 				if (strpos($expanded_url, "[") || strpos($expanded_url, "]")) {
