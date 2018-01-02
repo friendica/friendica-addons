@@ -122,7 +122,7 @@ function langfilter_prepare_body(App $a, &$b)
 
 	// Never filter own messages
 	// TODO: find a better way to extract this
-	$logged_user_profile = $a->config['system']['url'] . '/profile/' . $a->user['nickname'];
+	$logged_user_profile = $a->get_baseurl() . '/profile/' . $a->user['nickname'];
 	if ($logged_user_profile == $b['item']['author-link']) {
 		return;
 	}
@@ -177,6 +177,6 @@ function langfilter_prepare_body(App $a, &$b)
 
 	if (!$spoken) {
 		$rnd = random_string(8);
-		$b['html'] = '<div id="langfilter-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'langfilter-' . $rnd . '\'); >' . sprintf(t('unspoken language %s - Click to open/close'), $lang) . '</div><div id="langfilter-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
+		$b['html'] = '<div id="langfilter-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'langfilter-' . $rnd . '\'); >' . t('unspoken language %s - Click to open/close', $lang) . '</div><div id="langfilter-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
 	}
 }
