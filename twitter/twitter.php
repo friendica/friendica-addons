@@ -523,7 +523,7 @@ function twitter_post_hook(App $a, &$b)
 
 		$max_char = 280;
 		require_once "include/plaintext.php";
-		$msgarr = plaintext($a, $b, $max_char, true, 8);
+		$msgarr = plaintext($b, $max_char, true, 8);
 		$msg = $msgarr["text"];
 
 		if (($msg == "") && isset($msgarr["title"])) {
@@ -592,7 +592,7 @@ function twitter_post_hook(App $a, &$b)
 // -----------------
 			$max_char = 280;
 			require_once "include/plaintext.php";
-			$msgarr = plaintext($a, $b, $max_char, true, 8);
+			$msgarr = plaintext($b, $max_char, true, 8);
 			$msg = $msgarr["text"];
 
 			if (($msg == "") && isset($msgarr["title"])) {
@@ -789,7 +789,7 @@ function twitter_prepare_body(App $a, &$b)
 			}
 		}
 
-		$msgarr = plaintext($a, $item, $max_char, true, 8);
+		$msgarr = plaintext($item, $max_char, true, 8);
 		$msg = $msgarr["text"];
 
 		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {
