@@ -5,8 +5,9 @@
  * Version: 0.2
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  */
-require('addon/buffer/bufferapp.php');
+require 'addon/buffer/bufferapp.php';
 
+use Friendica\App;
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 
@@ -236,8 +237,8 @@ function buffer_post_local(&$a,&$b) {
 	$b['postopts'] .= 'buffer';
 }
 
-function buffer_send(&$a,&$b) {
-
+function buffer_send(App $a, &$b)
+{
 	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
 		return;
 
@@ -331,7 +332,7 @@ function buffer_send(&$a,&$b) {
 					$item["body"] = preg_replace("(\[s\](.*?)\[\/s\])ism",'-$1-',$item["body"]);
 				}
 
-				$post = plaintext($a, $item, $limit, $includedlinks, $htmlmode);
+				$post = plaintext($item, $limit, $includedlinks, $htmlmode);
 				logger("buffer_send: converted message ".$b["id"]." result: ".print_r($post, true), LOGGER_DEBUG);
 
 				// The image proxy is used as a sanitizer. Buffer seems to be really picky about pictures

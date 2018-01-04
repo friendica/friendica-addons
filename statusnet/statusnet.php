@@ -637,7 +637,7 @@ function statusnet_post_hook(App $a, &$b)
 		$tempfile = "";
 		require_once "include/plaintext.php";
 		require_once "include/network.php";
-		$msgarr = plaintext($a, $b, $max_char, true, 7);
+		$msgarr = plaintext($b, $max_char, true, 7);
 		$msg = $msgarr["text"];
 
 		if (($msg == "") && isset($msgarr["title"]))
@@ -806,7 +806,7 @@ function statusnet_prepare_body(App $a, &$b)
 			}
 		}
 
-		$msgarr = plaintext($a, $item, $max_char, true, 7);
+		$msgarr = plaintext($item, $max_char, true, 7);
 		$msg = $msgarr["text"];
 
 		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {
