@@ -1,4 +1,6 @@
 <?php
+
+use Friendica\Module\Login;
 use Friendica\Util\Emailer;
 
 require_once('include/security.php');
@@ -148,7 +150,7 @@ function dav_content()
 {
 	$a = get_app();
 	if (!isset($a->user["uid"]) || $a->user["uid"] == 0) {
-		return login();
+		return Login::form();
 	}
 
 	$x = "";
@@ -164,7 +166,7 @@ function dav_content()
 						$ret = wdcal_postEditPage("new", "", $a->user["uid"], $a->timezone, $a->get_baseurl() . "/dav/wdcal/");
 						if ($ret["ok"]) notice($ret["msg"]);
 						else info($ret["msg"]);
-						goaway($a->get_baseurl() . "/dav/wdcal/");
+						goaway('dav/wdcal/');
 					}
 					$o .= wdcal_getNewPage();
 					return $o;
@@ -182,7 +184,7 @@ function dav_content()
 								$ret = wdcal_postEditPage($a->argv[3], $a->user["uid"], $a->timezone, $a->get_baseurl() . "/dav/wdcal/");
 								if ($ret["ok"]) notice($ret["msg"]);
 								else info($ret["msg"]);
-								goaway($a->get_baseurl() . "/dav/wdcal/");
+								goaway('dav/wdcal/');
 							}
 							$o .= wdcal_getEditPage($calendar_id, $a->argv[3]);
 							return $o;

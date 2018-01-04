@@ -225,7 +225,7 @@ function twitter_settings_post(App $a, $post)
 			PConfig::set(local_user(), 'twitter', 'oauthsecret', $token['oauth_token_secret']);
 			PConfig::set(local_user(), 'twitter', 'post', 1);
 			//  reload the Addon Settings page, if we don't do it see Bug #42
-			goaway($a->get_baseurl() . '/settings/connectors');
+			goaway('settings/connectors');
 		} else {
 			//  if no PIN is supplied in the POST variables, the user has changed the setting
 			//  to post a tweet for every new __public__ posting to the wall

@@ -80,7 +80,7 @@ function wdcal_import_user_ics($calendar_id) {
 
 	$server = dav_create_server(true, true, false);
 	$calendar = dav_get_current_user_calendar_by_id($server, $calendar_id, DAV_ACL_WRITE);
-	if (!$calendar) goaway($a->get_baseurl() . "/dav/wdcal/");
+	if (!$calendar) goaway('dav/wdcal/');
 
 	if (isset($_REQUEST["save"])) {
 		check_form_security_token_redirectOnErr('/dav/settings/', 'icsimport');
@@ -308,12 +308,12 @@ function wdcal_getDetailPage($calendar_id, $calendarobject_id)
 		$calbackend = wdcal_calendar_factory_by_id($calendar_id);
 		$redirect   = $calbackend->getItemDetailRedirect($calendar_id, $calendarobject_id);
 
-		if ($redirect !== null) goaway($a->get_baseurl() . $redirect);
+		if ($redirect !== null) goaway($redirect);
 
 		$details = $obj;
 	} catch (Exception $e) {
 		info(t("Error") . ": " . $e);
-		goaway($a->get_baseurl() . "/dav/wdcal/");
+		goaway('dav/wdcal/');
 	}
 
 	return print_r($details, true);

@@ -4,7 +4,7 @@
  * Description: Set a preferred page to load on login from home page
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- * 
+ *
  */
 
 use Friendica\Core\PConfig;
@@ -30,10 +30,7 @@ function startpage_home_init($a, $b) {
 
 	$page = PConfig::get(local_user(),'startpage','startpage');
 	if(strlen($page)) {
-		$slash = ((strpos($page,'/') === 0) ? true : false);
-		if(stristr($page,'://'))
-			goaway($page);
-		goaway($a->get_baseurl() . (($slash) ? '' : '/') . $page);
+		goaway($page);
 	}
 	return;
 }
@@ -57,7 +54,7 @@ function startpage_settings_post($a,$post) {
 
 /**
  *
- * Called from the Plugin Setting form. 
+ * Called from the Plugin Setting form.
  * Add our own settings info to the page.
  *
  */
