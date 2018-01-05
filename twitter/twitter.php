@@ -259,16 +259,12 @@ function twitter_settings(App $a, &$s)
 	$csecret = Config::get('twitter', 'consumersecret' );
 	$otoken  = PConfig::get(local_user(), 'twitter', 'oauthtoken'  );
 	$osecret = PConfig::get(local_user(), 'twitter', 'oauthsecret' );
-	$enabled = PConfig::get(local_user(), 'twitter', 'post');
-	$checked = (($enabled) ? ' checked="checked" ' : '');
-	$defenabled = PConfig::get(local_user(), 'twitter', 'post_by_default');
-	$defchecked = (($defenabled) ? ' checked="checked" ' : '');
-	$mirrorenabled = PConfig::get(local_user(), 'twitter', 'mirror_posts');
-	$mirrorchecked = (($mirrorenabled) ? ' checked="checked" ' : '');
-	$importenabled = PConfig::get(local_user(), 'twitter', 'import');
-	$importchecked = (($importenabled) ? ' checked="checked" ' : '');
-	$create_userenabled = PConfig::get(local_user(), 'twitter', 'create_user');
-	$create_userchecked = (($create_userenabled) ? ' checked="checked" ' : '');
+
+	$enabled            = intval(PConfig::get(local_user(), 'twitter', 'post'));
+	$defenabled         = intval(PConfig::get(local_user(), 'twitter', 'post_by_default'));
+	$mirrorenabled      = intval(PConfig::get(local_user(), 'twitter', 'mirror_posts'));
+	$importenabled      = intval(PConfig::get(local_user(), 'twitter', 'import'));
+	$create_userenabled = intval(PConfig::get(local_user(), 'twitter', 'create_user'));
 
 	$css = (($enabled) ? '' : '-disabled');
 
@@ -321,36 +317,40 @@ function twitter_settings(App $a, &$s)
 			require_once 'library/twitteroauth.php';
 			$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 			$details = $connection->get('account/verify_credentials');
-			$s .= '<div id="twitter-info" ><img id="twitter-avatar" src="' . $details->profile_image_url . '" /><p id="twitter-info-block">' . t('Currently connected to: ') . '<a href="https://twitter.com/' . $details->screen_name . '" target="_twitter">' . $details->screen_name . '</a><br /><em>' . $details->description . '</em></p></div>';
-			$s .= '<p>' . t('If enabled all your <strong>public</strong> postings can be posted to the associated Twitter account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.') . '</p>';
+
+			$field_checkbox = get_markup_template('field_checkbox.tpl');
+
+			$s .= '<div id="twitter-info" >
+				<p>' . t('Currently connected to: ') . '<a href="https://twitter.com/' . $details->screen_name . '" target="_twitter">' . $details->screen_name . '</a>
+					<button type="submit" name="twitter-disconnect" value="1">' . t('Disconnect') . '</button>
+				</p>
+				<p id="twitter-info-block">
+					<a href="https://twitter.com/' . $details->screen_name . '" target="_twitter"><img id="twitter-avatar" src="' . $details->profile_image_url . '" /></a>
+					<em>' . $details->description . '</em>
+				</p>
+			</div>';
+			$s .= '<div class="clear"></div>';
+
+			$s .= replace_macros($field_checkbox, array(
+				'$field' => array('twitter-enable', t('Allow posting to Twitter'), $enabled, t('If enabled all your <strong>public</strong> postings can be posted to the associated Twitter account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.'))
+			));
 			if ($a->user['hidewall']) {
-				$s .= '<p>' . t('<strong>Note</strong>: Due your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to Twitter will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted.') . '</p>';
+				$s .= '<p>' . t('<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to Twitter will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted.') . '</p>';
 			}
-			$s .= '<div id="twitter-enable-wrapper">';
-			$s .= '<label id="twitter-enable-label" for="twitter-checkbox">' . t('Allow posting to Twitter') . '</label>';
-			$s .= '<input id="twitter-checkbox" type="checkbox" name="twitter-enable" value="1" ' . $checked . '/>';
-			$s .= '<div class="clear"></div>';
-			$s .= '<label id="twitter-default-label" for="twitter-default">' . t('Send public postings to Twitter by default') . '</label>';
-			$s .= '<input id="twitter-default" type="checkbox" name="twitter-default" value="1" ' . $defchecked . '/>';
-			$s .= '<div class="clear"></div>';
+			$s .= replace_macros($field_checkbox, array(
+				'$field' => array('twitter-default', t('Send public postings to Twitter by default'), $defenabled, '')
+			));
+			$s .= replace_macros($field_checkbox, array(
+				'$field' => array('twitter-mirror', t('Mirror all posts from twitter that are no replies'), $mirrorenabled, '')
+			));
+			$s .= replace_macros($field_checkbox, array(
+				'$field' => array('twitter-import', t('Import the remote timeline'), $importenabled, '')
+			));
+			$s .= replace_macros($field_checkbox, array(
+				'$field' => array('twitter-create_user', t('Automatically create contacts'), $create_userenabled, '')
+			));
 
-			$s .= '<label id="twitter-mirror-label" for="twitter-mirror">' . t('Mirror all posts from twitter that are no replies') . '</label>';
-			$s .= '<input id="twitter-mirror" type="checkbox" name="twitter-mirror" value="1" ' . $mirrorchecked . '/>';
 			$s .= '<div class="clear"></div>';
-			$s .= '</div>';
-
-			$s .= '<label id="twitter-import-label" for="twitter-import">' . t('Import the remote timeline') . '</label>';
-			$s .= '<input id="twitter-import" type="checkbox" name="twitter-import" value="1" ' . $importchecked . '/>';
-			$s .= '<div class="clear"></div>';
-
-			$s .= '<label id="twitter-create_user-label" for="twitter-create_user">' . t('Automatically create contacts') . '</label>';
-			$s .= '<input id="twitter-create_user" type="checkbox" name="twitter-create_user" value="1" ' . $create_userchecked . '/>';
-			$s .= '<div class="clear"></div>';
-
-			$s .= '<div id="twitter-disconnect-wrapper">';
-			$s .= '<label id="twitter-disconnect-label" for="twitter-disconnect">' . t('Clear OAuth configuration') . '</label>';
-			$s .= '<input id="twitter-disconnect" type="checkbox" name="twitter-disconnect" value="1" />';
-			$s .= '</div><div class="clear"></div>';
 			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
 		}
 	}
