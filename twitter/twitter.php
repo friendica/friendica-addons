@@ -335,7 +335,7 @@ function twitter_settings(App $a, &$s)
 				'$field' => array('twitter-enable', t('Allow posting to Twitter'), $enabled, t('If enabled all your <strong>public</strong> postings can be posted to the associated Twitter account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.'))
 			));
 			if ($a->user['hidewall']) {
-				$s .= '<p>' . t('<strong>Note</strong>: Due your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to Twitter will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted.') . '</p>';
+				$s .= '<p>' . t('<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to Twitter will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted.') . '</p>';
 			}
 			$s .= replace_macros($field_checkbox, array(
 				'$field' => array('twitter-default', t('Send public postings to Twitter by default'), $defenabled, '')
