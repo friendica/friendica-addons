@@ -152,7 +152,7 @@ function xmpp_converse(App $a)
 	if (Config::get("xmpp", "central_userbase") && !PConfig::get(local_user(), "xmpp", "individual")) {
 		$bosh_proxy = Config::get("xmpp", "bosh_proxy");
 
-		$password = PConfig::get(local_user(), "xmpp", "password");
+		$password = PConfig::get(local_user(), "xmpp", "password", '', true);
 
 		if ($password == "") {
 			$password = random_string(16);
