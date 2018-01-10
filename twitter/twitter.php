@@ -468,7 +468,7 @@ function twitter_post_hook(App $a, &$b)
 
 		// Dont't post if the post doesn't belong to us.
 		// This is a check for forum postings
-		$self = dba::selectOne('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
+		$self = dba::selectFirst('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
 		if ($b['contact-id'] != $self['id']) {
 			return;
 		}
