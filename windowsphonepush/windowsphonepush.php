@@ -458,7 +458,7 @@ function windowsphonepush_login(App $a)
 	$user_id = User::authenticate($_SERVER['PHP_AUTH_USER'], trim($_SERVER['PHP_AUTH_PW']));
 
 	if ($user_id) {
-		$record = dba::select('user', [], ['uid' => $user_id], ['limit' => 1]);
+		$record = dba::selectFirst('user', [], ['uid' => $user_id]);
 	} else {
 		logger('API_login failure: ' . print_r($_SERVER, true), LOGGER_DEBUG);
 		header('WWW-Authenticate: Basic realm="Friendica"');

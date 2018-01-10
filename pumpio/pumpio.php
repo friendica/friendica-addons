@@ -413,12 +413,13 @@ function pumpio_send(&$a,&$b) {
 
 		logger("pumpio_send: receiver ".print_r($receiver, true));
 
-		if (!count($receiver) && ($b['private'] || !strstr($b['postopts'],'pumpio')))
+		if (!count($receiver) && ($b['private'] || !strstr($b['postopts'],'pumpio'))) {
 			return;
+		}
 
 		// Dont't post if the post doesn't belong to us.
 		// This is a check for forum postings
-		$self = dba::select('contact', array('id'), array('uid' => $b['uid'], 'self' => true), array('limit' => 1));
+		$self = dba::selectFirst('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
 		if ($b['contact-id'] != $self['id']) {
 			return;
 		}

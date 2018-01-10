@@ -239,18 +239,21 @@ function buffer_post_local(&$a,&$b) {
 
 function buffer_send(App $a, &$b)
 {
-	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
+	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
+	}
 
-	if(! strstr($b['postopts'],'buffer'))
+	if(! strstr($b['postopts'],'buffer')) {
 		return;
+	}
 
-	if($b['parent'] != $b['id'])
+	if($b['parent'] != $b['id']) {
 		return;
+	}
 
 	// Dont't post if the post doesn't belong to us.
 	// This is a check for forum postings
-	$self = dba::select('contact', array('id'), array('uid' => $b['uid'], 'self' => true), array('limit' => 1));
+	$self = dba::selectFirst('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
 	if ($b['contact-id'] != $self['id']) {
 		return;
 	}
