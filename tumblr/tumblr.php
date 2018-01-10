@@ -316,14 +316,17 @@ function tumblr_post_local(&$a, &$b) {
 
 function tumblr_send(&$a,&$b) {
 
-	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
+	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
+	}
 
-	if(! strstr($b['postopts'],'tumblr'))
+	if(! strstr($b['postopts'],'tumblr')) {
 		return;
+	}
 
-	if($b['parent'] != $b['id'])
+	if($b['parent'] != $b['id']) {
 		return;
+	}
 
 	// Dont't post if the post doesn't belong to us.
 	// This is a check for forum postings

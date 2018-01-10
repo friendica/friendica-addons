@@ -568,15 +568,17 @@ function statusnet_post_hook(App $a, &$b)
 		$nicknameplain = "@" . $nick;
 
 		logger("statusnet_post_hook: comparing " . $nickname . " and " . $nicknameplain . " with " . $b["body"], LOGGER_DEBUG);
-		if ((strpos($b["body"], $nickname) === false) && (strpos($b["body"], $nicknameplain) === false))
+		if ((strpos($b["body"], $nickname) === false) && (strpos($b["body"], $nicknameplain) === false)) {
 			$b["body"] = $nickname . " " . $b["body"];
+		}
 
 		logger("statusnet_post_hook: parent found " . print_r($orig_post, true), LOGGER_DEBUG);
 	} else {
 		$iscomment = false;
 
-		if ($b['private'] || !strstr($b['postopts'], 'statusnet'))
+		if ($b['private'] || !strstr($b['postopts'], 'statusnet')) {
 			return;
+		}
 
 		// Dont't post if the post doesn't belong to us.
 		// This is a check for forum postings

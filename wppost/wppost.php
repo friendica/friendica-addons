@@ -191,14 +191,17 @@ function wppost_post_local(&$a, &$b) {
 
 function wppost_send(&$a,&$b) {
 
-	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
+	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
+	}
 
-	if(! strstr($b['postopts'],'wppost'))
+	if(! strstr($b['postopts'],'wppost')) {
 		return;
+	}
 
-	if($b['parent'] != $b['id'])
+	if($b['parent'] != $b['id']) {
 		return;
+	}
 
 	// Dont't post if the post doesn't belong to us.
 	// This is a check for forum postings

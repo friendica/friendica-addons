@@ -155,14 +155,17 @@ function libertree_send(&$a,&$b) {
 
 	logger('libertree_send: invoked');
 
-	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
+	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
+	}
 
-	if (! strstr($b['postopts'],'libertree'))
+	if (! strstr($b['postopts'],'libertree')) {
 		return;
+	}
 
-	if ($b['parent'] != $b['id'])
+	if ($b['parent'] != $b['id']) {
 		return;
+	}
 
 	// Dont't post if the post doesn't belong to us.
 	// This is a check for forum postings

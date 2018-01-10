@@ -239,14 +239,17 @@ function buffer_post_local(&$a,&$b) {
 
 function buffer_send(App $a, &$b)
 {
-	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
+	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
+	}
 
-	if(! strstr($b['postopts'],'buffer'))
+	if(! strstr($b['postopts'],'buffer')) {
 		return;
+	}
 
-	if($b['parent'] != $b['id'])
+	if($b['parent'] != $b['id']) {
 		return;
+	}
 
 	// Dont't post if the post doesn't belong to us.
 	// This is a check for forum postings
