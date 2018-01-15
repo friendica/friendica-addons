@@ -8,7 +8,7 @@
  * Author: Klaus Weidenbach
  *
  */
- 
+
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
 
@@ -44,7 +44,7 @@ function openstreetmap_alterheader($a, &$navHtml)
  *
  * If an item has coordinates add link to a tile map server, e.g. openstreetmap.org.
  * If an item has a location open it with the help of OSM's Nominatim reverse geocode search.
- * 
+ *
  * @param mixed $a
  * @param array& $item
  */
@@ -120,7 +120,7 @@ function openstreetmap_generate_named_map(&$a, &$b)
 		$j = json_decode($x['body'],true);
 
 		if($j && is_array($j) && $j[0]['lat'] && $j[0]['lon']) {
-			$arr = array('lat' => $j[0]['lat'],'lon' => $j[0]['lon'],'location' => $b['location'], 'html' => '');
+			$arr = ['lat' => $j[0]['lat'],'lon' => $j[0]['lon'],'location' => $b['location'], 'html' => ''];
 			openstreetmap_generate_map($a,$arr);
 			$b['html'] = $arr['html'];
 		}
@@ -183,13 +183,13 @@ function openstreetmap_plugin_admin(&$a, &$o)
 		$marker = 0;
 	}
 
-	$o = replace_macros($t, array(
+	$o = replace_macros($t, [
 			'$submit' => t('Submit'),
-			'$tmsserver' => array('tmsserver', t('Tile Server URL'), $tmsserver, t('A list of <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank">public tile servers</a>')),
-			'$nomserver' => array('nomserver', t('Nominatim (reverse geocoding) Server URL'), $nomserver, t('A list of <a href="http://wiki.openstreetmap.org/wiki/Nominatim" target="_blank">Nominatim servers</a>')),
-			'$zoom' => array('zoom', t('Default zoom'), $zoom, t('The default zoom level. (1:world, 18:highest, also depends on tile server)')),
-			'$marker' => array('marker', t('Include marker on map'), $marker, t('Include a marker on the map.')),
-	));
+			'$tmsserver' => ['tmsserver', t('Tile Server URL'), $tmsserver, t('A list of <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank">public tile servers</a>')],
+			'$nomserver' => ['nomserver', t('Nominatim (reverse geocoding) Server URL'), $nomserver, t('A list of <a href="http://wiki.openstreetmap.org/wiki/Nominatim" target="_blank">Nominatim servers</a>')],
+			'$zoom' => ['zoom', t('Default zoom'), $zoom, t('The default zoom level. (1:world, 18:highest, also depends on tile server)')],
+			'$marker' => ['marker', t('Include marker on map'), $marker, t('Include a marker on the map.')],
+	]);
 }
 
 function openstreetmap_plugin_admin_post(&$a)

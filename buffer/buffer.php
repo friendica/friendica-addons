@@ -57,12 +57,12 @@ function buffer_content(&$a) {
 function buffer_plugin_admin(&$a, &$o){
 	$t = get_markup_template( "admin.tpl", "addon/buffer/" );
 
-	$o = replace_macros($t, array(
+	$o = replace_macros($t, [
 		'$submit' => t('Save Settings'),
 								// name, label, value, help, [extra values]
-		'$client_id' => array('client_id', t('Client ID'),  Config::get('buffer', 'client_id' ), ''),
-		'$client_secret' => array('client_secret', t('Client Secret'),  Config::get('buffer', 'client_secret' ), ''),
-	));
+		'$client_id' => ['client_id', t('Client ID'),  Config::get('buffer', 'client_id' ), ''],
+		'$client_secret' => ['client_secret', t('Client Secret'),  Config::get('buffer', 'client_secret' ), ''],
+	]);
 }
 function buffer_plugin_admin_post(&$a){
         $client_id     =       ((x($_POST,'client_id'))              ? notags(trim($_POST['client_id']))   : '');
@@ -369,7 +369,7 @@ function buffer_send(App $a, &$b)
 				elseif ($profile->service == "google")
 					$post["text"] .= html_entity_decode("&#x00A0;", ENT_QUOTES, 'UTF-8'); // Send a special blank to identify the post through the "fromgplus" addon
 
-				$message = array();
+				$message = [];
 				$message["text"] = $post["text"];
 				$message["profile_ids[]"] = $profile->id;
 				$message["shorten"] = false;

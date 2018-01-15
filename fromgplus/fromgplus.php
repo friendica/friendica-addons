@@ -96,10 +96,10 @@ function fromgplus_addon_settings_post(&$a,&$b) {
 function fromgplus_plugin_admin(&$a, &$o){
         $t = get_markup_template("admin.tpl", "addon/fromgplus/");
 
-        $o = replace_macros($t, array(
+        $o = replace_macros($t, [
                 '$submit' => t('Save Settings'),
-                '$key' => array('key', t('Key'), trim(Config::get('fromgplus', 'key')), t('')),
-        ));
+                '$key' => ['key', t('Key'), trim(Config::get('fromgplus', 'key')), t('')],
+        ]);
 }
 
 function fromgplus_plugin_admin_post(&$a){
@@ -198,13 +198,13 @@ function fromgplus_html2bbcode($html) {
 
 	$bbcode = html_entity_decode($html, ENT_QUOTES, 'UTF-8');
 
-	$bbcode = str_ireplace(array("\n"), array(""), $bbcode);
-	$bbcode = str_ireplace(array("<b>", "</b>"), array("[b]", "[/b]"), $bbcode);
-	$bbcode = str_ireplace(array("<i>", "</i>"), array("[i]", "[/i]"), $bbcode);
-	$bbcode = str_ireplace(array("<s>", "</s>"), array("[s]", "[/s]"), $bbcode);
-	$bbcode = str_ireplace(array("<br />"), array("\n"), $bbcode);
-	$bbcode = str_ireplace(array("<br/>"), array("\n"), $bbcode);
-	$bbcode = str_ireplace(array("<br>"), array("\n"), $bbcode);
+	$bbcode = str_ireplace(["\n"], [""], $bbcode);
+	$bbcode = str_ireplace(["<b>", "</b>"], ["[b]", "[/b]"], $bbcode);
+	$bbcode = str_ireplace(["<i>", "</i>"], ["[i]", "[/i]"], $bbcode);
+	$bbcode = str_ireplace(["<s>", "</s>"], ["[s]", "[/s]"], $bbcode);
+	$bbcode = str_ireplace(["<br />"], ["\n"], $bbcode);
+	$bbcode = str_ireplace(["<br/>"], ["\n"], $bbcode);
+	$bbcode = str_ireplace(["<br>"], ["\n"], $bbcode);
 
 	$bbcode = trim(strip_tags($bbcode));
 	return($bbcode);
@@ -219,7 +219,7 @@ function fromgplus_parse_query($var)
 	$var  = parse_url($var, PHP_URL_QUERY);
 	$var  = html_entity_decode($var);
 	$var  = explode('&', $var);
-	$arr  = array();
+	$arr  = [];
 
 	foreach($var as $val) {
 		$x          = explode('=', $val);
@@ -240,7 +240,7 @@ function fromgplus_cleanupgoogleproxy($fullImage, $image) {
 	//$image = str_replace(array($preview, $preview2), array("/", "/"), $image->url);
 	$image = $image->url;
 
-       	$cleaned = array();
+       	$cleaned = [];
 
 	$queryvar = fromgplus_parse_query($fullImage);
 	if ($queryvar['url'] != "")
@@ -266,12 +266,12 @@ function fromgplus_cleanupgoogleproxy($fullImage, $image) {
 	if ($cleaned["full"] != "")
 		$infoFull = Image::getInfoFromURL($cleaned["full"]);
 	else
-		$infoFull = array("0" => 0, "1" => 0);
+		$infoFull = ["0" => 0, "1" => 0];
 
 	if ($cleaned["preview"] != "")
 		$infoPreview = Image::getInfoFromURL($cleaned["preview"]);
 	else
-		$infoFull = array("0" => 0, "1" => 0);
+		$infoFull = ["0" => 0, "1" => 0];
 
 	if (($infoPreview[0] >= $infoFull[0]) && ($infoPreview[1] >= $infoFull[1])) {
 		$temp = $cleaned["full"];
@@ -304,7 +304,7 @@ function fromgplus_cleantext($text) {
 	$text = strip_tags($text);
 	$text = html_entity_decode($text, ENT_QUOTES);
 	$text = trim($text);
-	$text = str_replace(array("\n", "\r", " ", $trash), array("", "", "", ""), $text);
+	$text = str_replace(["\n", "\r", " ", $trash], ["", "", "", ""], $text);
 	return($text);
 }
 
@@ -314,7 +314,7 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 
 	$post = "";
 	$quote = "";
-	$pagedata = array();
+	$pagedata = [];
 	$pagedata["type"] = "";
 
 	foreach ($item->object->attachments as $attachment) {

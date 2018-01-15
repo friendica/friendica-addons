@@ -87,13 +87,13 @@ function piwik_analytics($a,&$b) {
 }
 function piwik_plugin_admin (&$a, &$o) {
 	$t = get_markup_template( "admin.tpl", "addon/piwik/" );
-	$o = replace_macros( $t, array(
+	$o = replace_macros( $t, [
 		'$submit' => t('Save Settings'),
-		'$piwikbaseurl' => array('baseurl', t('Piwik Base URL'), Config::get('piwik','baseurl' ), t('Absolute path to your Piwik installation. (without protocol (http/s), with trailing slash)')),
-		'$siteid' => array('siteid', t('Site ID'), Config::get('piwik','siteid' ), ''),
-		'$optout' => array('optout', t('Show opt-out cookie link?'), Config::get('piwik','optout' ), ''),
-		'$async' => array('async', t('Asynchronous tracking'), Config::get('piwik','async' ), ''),
-	));
+		'$piwikbaseurl' => ['baseurl', t('Piwik Base URL'), Config::get('piwik','baseurl' ), t('Absolute path to your Piwik installation. (without protocol (http/s), with trailing slash)')],
+		'$siteid' => ['siteid', t('Site ID'), Config::get('piwik','siteid' ), ''],
+		'$optout' => ['optout', t('Show opt-out cookie link?'), Config::get('piwik','optout' ), ''],
+		'$async' => ['async', t('Asynchronous tracking'), Config::get('piwik','async' ), ''],
+	]);
 }
 function piwik_plugin_admin_post (&$a) {
 	$url = ((x($_POST, 'baseurl')) ? notags(trim($_POST['baseurl'])) : '');

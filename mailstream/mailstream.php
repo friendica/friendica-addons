@@ -69,13 +69,13 @@ function mailstream_module() {}
 function mailstream_plugin_admin(&$a,&$o) {
 	$frommail = Config::get('mailstream', 'frommail');
 	$template = get_markup_template('admin.tpl', 'addon/mailstream/');
-	$config = array('frommail',
+	$config = ['frommail',
 			t('From Address'),
 			$frommail,
-			t('Email address that stream items will appear to be from.'));
-	$o .= replace_macros($template, array(
+			t('Email address that stream items will appear to be from.')];
+	$o .= replace_macros($template, [
 				 '$frommail' => $config,
-				 '$submit' => t('Save Settings')));
+				 '$submit' => t('Save Settings')]);
 }
 
 function mailstream_plugin_admin_post ($a) {
@@ -146,18 +146,18 @@ function mailstream_do_images($a, &$item, &$attachments) {
 	if (!PConfig::get($item['uid'], 'mailstream', 'attachimg')) {
 		return;
 	}
-	$attachments = array();
+	$attachments = [];
 	$baseurl = $a->get_baseurl();
 	preg_match_all("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/ism", $item["body"], $matches1);
 	preg_match_all("/\[img\](.*?)\[\/img\]/ism", $item["body"], $matches2);
 	foreach (array_merge($matches1[3], $matches2[1]) as $url) {
 		$redirects;
 		$cookiejar = tempnam(get_temppath(), 'cookiejar-mailstream-');
-		$attachments[$url] = array(
+		$attachments[$url] = [
 			'data' => fetch_url($url, true, $redirects, 0, Null, $cookiejar),
 			'guid' => hash("crc32", $url),
 			'filename' => basename($url),
-			'type' => $a->get_curl_content_type());
+			'type' => $a->get_curl_content_type()];
 		if (strlen($attachments[$url]['data'])) {
 			$item['body'] = str_replace($url, 'cid:' . $attachments[$url]['guid'], $item['body']);
 			continue;
@@ -254,7 +254,7 @@ function mailstream_send($a, $message_id, $item, $user) {
 	}
 	require_once(dirname(__file__).'/phpmailer/class.phpmailer.php');
 	require_once('include/bbcode.php');
-	$attachments = array();
+	$attachments = [];
 	mailstream_do_images($a, $item, $attachments);
 	$frommail = Config::get('mailstream', 'frommail');
 	if ($frommail == "") {
@@ -285,10 +285,10 @@ function mailstream_send($a, $message_id, $item, $user) {
 		$template = get_markup_template('mail.tpl', 'addon/mailstream/');
 		$item['body'] = bbcode($item['body']);
 		$item['url'] = $a->get_baseurl() . '/display/' . $user['nickname'] . '/' . $item['id'];
-		$mail->Body = replace_macros($template, array(
+		$mail->Body = replace_macros($template, [
 						 '$upstream' => t('Upstream'),
 						 '$local' => t('Local'),
-						 '$item' => $item));
+						 '$item' => $item]);
 		mailstream_html_wrap($mail->Body);
 		if (!$mail->Send()) {
 			throw new Exception($mail->ErrorInfo);
@@ -352,28 +352,28 @@ function mailstream_plugin_settings(&$a,&$s) {
 	$nolikes = PConfig::get(local_user(), 'mailstream', 'nolikes');
 	$attachimg= PConfig::get(local_user(), 'mailstream', 'attachimg');
 	$template = get_markup_template('settings.tpl', 'addon/mailstream/');
-	$s .= replace_macros($template, array(
-				 '$enabled' => array(
+	$s .= replace_macros($template, [
+				 '$enabled' => [
 					'mailstream_enabled',
 					t('Enabled'),
-					$enabled),
-				 '$address' => array(
+					$enabled],
+				 '$address' => [
 					'mailstream_address',
 					t('Email Address'),
 					$address,
-					t("Leave blank to use your account email address")),
-				 '$nolikes' => array(
+					t("Leave blank to use your account email address")],
+				 '$nolikes' => [
 					'mailstream_nolikes',
 					t('Exclude Likes'),
 					$nolikes,
-					t("Check this to omit mailing \"Like\" notifications")),
-				 '$attachimg' => array(
+					t("Check this to omit mailing \"Like\" notifications")],
+				 '$attachimg' => [
 					'mailstream_attachimg',
 					t('Attach Images'),
 					$attachimg,
-					t("Download images in posts and attach them to the email.  Useful for reading email while offline.")),
+					t("Download images in posts and attach them to the email.  Useful for reading email while offline.")],
 				 '$title' => t('Mail Stream Settings'),
-				 '$submit' => t('Save Settings')));
+				 '$submit' => t('Save Settings')]);
 }
 
 function mailstream_plugin_settings_post($a,$post) {

@@ -97,7 +97,7 @@ class StatusNetOAuth extends TwitterOAuth
 	 */
 	function http($url, $method, $postfields = NULL)
 	{
-		$this->http_info = array();
+		$this->http_info = [];
 		$ci = curl_init();
 		/* Curl settings */
 		$prx = Config::get('system', 'proxy');
@@ -113,9 +113,9 @@ class StatusNetOAuth extends TwitterOAuth
 		curl_setopt($ci, CURLOPT_CONNECTTIMEOUT, $this->connecttimeout);
 		curl_setopt($ci, CURLOPT_TIMEOUT, $this->timeout);
 		curl_setopt($ci, CURLOPT_RETURNTRANSFER, TRUE);
-		curl_setopt($ci, CURLOPT_HTTPHEADER, array('Expect:'));
+		curl_setopt($ci, CURLOPT_HTTPHEADER, ['Expect:']);
 		curl_setopt($ci, CURLOPT_SSL_VERIFYPEER, $this->ssl_verifypeer);
-		curl_setopt($ci, CURLOPT_HEADERFUNCTION, array($this, 'getHeader'));
+		curl_setopt($ci, CURLOPT_HEADERFUNCTION, [$this, 'getHeader']);
 		curl_setopt($ci, CURLOPT_HEADER, FALSE);
 
 		switch ($method) {
@@ -331,7 +331,7 @@ function statusnet_settings(App $a, &$s)
 	$mirrorenabled = PConfig::get(local_user(), 'statusnet', 'mirror_posts');
 	$mirrorchecked = (($mirrorenabled) ? ' checked="checked" ' : '');
 	$import = PConfig::get(local_user(), 'statusnet', 'import');
-	$importselected = array("", "", "");
+	$importselected = ["", "", ""];
 	$importselected[$import] = ' selected="selected"';
 	//$importenabled = PConfig::get(local_user(),'statusnet','import');
 	//$importchecked = (($importenabled) ? ' checked="checked" ' : '');
@@ -662,9 +662,9 @@ function statusnet_post_hook(App $a, &$b)
 			$img_str = fetch_url($image);
 			$tempfile = tempnam(get_temppath(), "cache");
 			file_put_contents($tempfile, $img_str);
-			$postdata = array("status" => $msg, "media[]" => $tempfile);
+			$postdata = ["status" => $msg, "media[]" => $tempfile];
 		} else {
-			$postdata = array("status" => $msg);
+			$postdata = ["status" => $msg];
 		}
 
 		// and now dent it :-)
@@ -708,7 +708,7 @@ function statusnet_post_hook(App $a, &$b)
 
 function statusnet_plugin_admin_post(App $a)
 {
-	$sites = array();
+	$sites = [];
 
 	foreach ($_POST['sitename'] as $id => $sitename) {
 		$sitename = trim($sitename);
@@ -725,13 +725,13 @@ function statusnet_plugin_admin_post(App $a)
 			$key != "" &&
 			!x($_POST['delete'][$id])) {
 
-			$sites[] = Array(
+			$sites[] = [
 				'sitename' => $sitename,
 				'apiurl' => $apiurl,
 				'consumersecret' => $secret,
 				'consumerkey' => $key,
 				//'applicationname' => $applicationname
-			);
+			];
 		}
 	}
 
@@ -741,34 +741,34 @@ function statusnet_plugin_admin_post(App $a)
 function statusnet_plugin_admin(App $a, &$o)
 {
 	$sites = Config::get('statusnet', 'sites');
-	$sitesform = array();
+	$sitesform = [];
 	if (is_array($sites)) {
 		foreach ($sites as $id => $s) {
-			$sitesform[] = Array(
-				'sitename' => Array("sitename[$id]", "Site name", $s['sitename'], ""),
-				'apiurl' => Array("apiurl[$id]", "Api url", $s['apiurl'], t("Base API Path \x28remember the trailing /\x29")),
-				'secret' => Array("secret[$id]", "Secret", $s['consumersecret'], ""),
-				'key' => Array("key[$id]", "Key", $s['consumerkey'], ""),
+			$sitesform[] = [
+				'sitename' => ["sitename[$id]", "Site name", $s['sitename'], ""],
+				'apiurl' => ["apiurl[$id]", "Api url", $s['apiurl'], t("Base API Path \x28remember the trailing /\x29")],
+				'secret' => ["secret[$id]", "Secret", $s['consumersecret'], ""],
+				'key' => ["key[$id]", "Key", $s['consumerkey'], ""],
 				//'applicationname' => Array("applicationname[$id]", "Application name", $s['applicationname'], ""),
-				'delete' => Array("delete[$id]", "Delete", False, "Check to delete this preset"),
-			);
+				'delete' => ["delete[$id]", "Delete", False, "Check to delete this preset"],
+			];
 		}
 	}
 	/* empty form to add new site */
 	$id++;
-	$sitesform[] = Array(
-		'sitename' => Array("sitename[$id]", t("Site name"), "", ""),
-		'apiurl' => Array("apiurl[$id]", "Api url", "", t("Base API Path \x28remember the trailing /\x29")),
-		'secret' => Array("secret[$id]", t("Consumer Secret"), "", ""),
-		'key' => Array("key[$id]", t("Consumer Key"), "", ""),
+	$sitesform[] = [
+		'sitename' => ["sitename[$id]", t("Site name"), "", ""],
+		'apiurl' => ["apiurl[$id]", "Api url", "", t("Base API Path \x28remember the trailing /\x29")],
+		'secret' => ["secret[$id]", t("Consumer Secret"), "", ""],
+		'key' => ["key[$id]", t("Consumer Key"), "", ""],
 		//'applicationname' => Array("applicationname[$id]", t("Application name"), "", ""),
-	);
+	];
 
 	$t = get_markup_template("admin.tpl", "addon/statusnet/");
-	$o = replace_macros($t, array(
+	$o = replace_macros($t, [
 		'$submit' => t('Save Settings'),
 		'$sites' => $sitesform,
-	));
+	]);
 }
 
 function statusnet_prepare_body(App $a, &$b)
@@ -902,7 +902,7 @@ function statusnet_fetchtimeline(App $a, $uid)
 
 	$connection = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
 
-	$parameters = array("exclude_replies" => true, "trim_user" => true, "contributor_details" => false, "include_rts" => false);
+	$parameters = ["exclude_replies" => true, "trim_user" => true, "contributor_details" => false, "include_rts" => false];
 
 	$first_time = ($lastid == "");
 
@@ -1006,11 +1006,11 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 		return -1;
 	}
 
-	GContact::update(array("url" => $contact->statusnet_profile_url,
+	GContact::update(["url" => $contact->statusnet_profile_url,
 		"network" => NETWORK_STATUSNET, "photo" => $contact->profile_image_url,
 		"name" => $contact->name, "nick" => $contact->screen_name,
 		"location" => $contact->location, "about" => $contact->description,
-		"addr" => statusnet_address($contact), "generation" => 3));
+		"addr" => statusnet_address($contact), "generation" => 3]);
 
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' AND `network` = '%s'LIMIT 1", intval($uid), dbesc(normalise_link($contact->statusnet_profile_url)), dbesc(NETWORK_STATUSNET));
 
@@ -1143,7 +1143,7 @@ function statusnet_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 		return;
 	}
 
-	$parameters = array();
+	$parameters = [];
 
 	if ($screen_name != "") {
 		$parameters["screen_name"] = $screen_name;
@@ -1174,7 +1174,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 	$api = PConfig::get($uid, 'statusnet', 'baseapi');
 	$hostname = preg_replace("=https?://([\w\.]*)/.*=ism", "$1", $api);
 
-	$postarray = array();
+	$postarray = [];
 	$postarray['network'] = NETWORK_STATUSNET;
 	$postarray['gravity'] = 0;
 	$postarray['uid'] = $uid;
@@ -1195,7 +1195,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 	);
 
 	if (count($r)) {
-		return array();
+		return [];
 	}
 
 	$contactid = 0;
@@ -1244,7 +1244,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 				$postarray['owner-link'] = $r[0]["url"];
 				$postarray['owner-avatar'] = $r[0]["photo"];
 			} else {
-				return array();
+				return [];
 			}
 		}
 		// Don't create accounts of people who just comment something
@@ -1263,7 +1263,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 	if (($contactid == 0) && !$only_existing_contact) {
 		$contactid = $self['id'];
 	} elseif ($contactid <= 0) {
-		return array();
+		return [];
 	}
 
 	$postarray['contact-id'] = $contactid;
@@ -1361,7 +1361,7 @@ function statusnet_checknotification(App $a, $uid, $own_url, $top_item, $postarr
 
 			$conv_parent = $conv['parent'];
 
-			notification(array(
+			notification([
 				'type' => NOTIFY_COMMENT,
 				'notify_flags' => $user[0]['notify-flags'],
 				'language' => $user[0]['language'],
@@ -1376,7 +1376,7 @@ function statusnet_checknotification(App $a, $uid, $own_url, $top_item, $postarr
 				'verb' => ACTIVITY_POST,
 				'otype' => 'item',
 				'parent' => $conv_parent,
-			));
+			]);
 
 			// only send one notification
 			break;
@@ -1386,7 +1386,7 @@ function statusnet_checknotification(App $a, $uid, $own_url, $top_item, $postarr
 
 function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 {
-	$conversations = array();
+	$conversations = [];
 
 	$ckey    = PConfig::get($uid, 'statusnet', 'consumerkey');
 	$csecret = PConfig::get($uid, 'statusnet', 'consumersecret');
@@ -1435,7 +1435,7 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 		return;
 	}
 
-	$parameters = array("exclude_replies" => false, "trim_user" => false, "contributor_details" => true, "include_rts" => true);
+	$parameters = ["exclude_replies" => false, "trim_user" => false, "contributor_details" => true, "include_rts" => true];
 	//$parameters["count"] = 200;
 
 	if ($mode == 1) {
@@ -1569,7 +1569,7 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 
 			if (($item != 0) && !function_exists("check_item_notification")) {
 				require_once 'include/enotify.php';
-				notification(array(
+				notification([
 					'type'         => NOTIFY_TAGSELF,
 					'notify_flags' => $u[0]['notify-flags'],
 					'language'     => $u[0]['language'],
@@ -1584,7 +1584,7 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 					'verb'         => ACTIVITY_TAG,
 					'otype'        => 'item',
 					'parent'       => $parent_id,
-				));
+				]);
 			}
 		}
 	}
@@ -1711,7 +1711,7 @@ function statusnet_convertmsg(App $a, $body, $no_tags = false)
 	}
 
 	if ($no_tags) {
-		return array("body" => $body, "tags" => "");
+		return ["body" => $body, "tags" => ""];
 	}
 
 	$str_tags = '';
@@ -1739,7 +1739,7 @@ function statusnet_convertmsg(App $a, $body, $no_tags = false)
 		}
 	}
 
-	return array("body" => $body, "tags" => $str_tags);
+	return ["body" => $body, "tags" => $str_tags];
 }
 
 function statusnet_fetch_own_contact(App $a, $uid)

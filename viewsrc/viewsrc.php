@@ -6,7 +6,7 @@
  * Description: Add "View Source" link to item context
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- * 
+ *
  */
 
 function viewsrc_install() {
@@ -49,7 +49,7 @@ function viewsrc_item_photo_menu(&$a,&$b) {
 	} else
 		$item_id = $b['item']['id'];
 
-	$b['menu'] = array_merge( array( t('View Source') => $a->get_baseurl() . '/viewsrc/'. $item_id), $b['menu']);
+	$b['menu'] = array_merge( [ t('View Source') => $a->get_baseurl() . '/viewsrc/'. $item_id], $b['menu']);
 
 	//if((! local_user()) || (local_user() != $b['item']['uid']))
 	//	return;

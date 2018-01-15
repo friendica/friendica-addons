@@ -49,7 +49,7 @@ function gravatar_lookup($a, &$b) {
 	if ($default_avatar != "gravatar")
 		$url .= '&d=' .$default_avatar;
 
-	$b['url'] = $url;	
+	$b['url'] = $url;
 	$b['success'] = true;
 }
 
@@ -69,19 +69,19 @@ function gravatar_plugin_admin (&$a, &$o) {
 		$rating = 'g'; // suitable for display on all websites with any audience type
 
 	// Available options for the select boxes
-	$default_avatars = array(
+	$default_avatars = [
 		'mm' => t('generic profile image'),
 		'identicon' => t('random geometric pattern'),
 		'monsterid' => t('monster face'),
 		'wavatar' => t('computer generated face'),
 		'retro' => t('retro arcade style face'),
-	);
-	$ratings = array(
+	];
+	$ratings = [
 		'g' => 'g',
 		'pg' => 'pg',
 		'r' => 'r',
 		'x' => 'x'
-	);
+	];
 
 	// Check if Libravatar is enabled and show warning
 	$r = q("SELECT * FROM `addon` WHERE `name` = '%s' and `installed` = 1",
@@ -93,11 +93,11 @@ function gravatar_plugin_admin (&$a, &$o) {
 
 	// output Gravatar settings
 	$o .= '<input type="hidden" name="form_security_token" value="' .get_form_security_token("gravatarsave") .'">';
-	$o .= replace_macros( $t, array(
+	$o .= replace_macros( $t, [
 		'$submit' => t('Save Settings'),
-		'$default_avatar' => array('avatar', t('Default avatar image'), $default_avatar, t('Select default avatar image if none was found at Gravatar. See README'), $default_avatars),
-		'$rating' => array('rating', t('Rating of images'), $rating, t('Select the appropriate avatar rating for your site. See README'), $ratings),
-	));
+		'$default_avatar' => ['avatar', t('Default avatar image'), $default_avatar, t('Select default avatar image if none was found at Gravatar. See README'), $default_avatars],
+		'$rating' => ['rating', t('Rating of images'), $rating, t('Select the appropriate avatar rating for your site. See README'), $ratings],
+	]);
 }
 
 /**

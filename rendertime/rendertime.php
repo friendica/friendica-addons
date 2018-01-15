@@ -28,7 +28,7 @@ function rendertime_page_end(&$a, &$o) {
 
 	$duration = microtime(true)-$a->performance["start"];
 
-	$ignored_modules = array("fbrowser");
+	$ignored_modules = ["fbrowser"];
 	$ignored = in_array($a->module, $ignored_modules);
 
 	if (is_site_admin() && ($_GET["mode"] != "minimal") && !$a->is_mobile && !$a->is_tablet && !$ignored) {

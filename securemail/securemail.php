@@ -60,13 +60,13 @@ function securemail_settings(App &$a, &$s){
 
     $t = get_markup_template('admin.tpl', 'addon/securemail/');
 
-    $s .= replace_macros($t, array(
+    $s .= replace_macros($t, [
         '$title' => t('"Secure Mail" Settings'),
         '$submit' => t('Save Settings'),
         '$test' => t('Save and send test'), //NOTE: update also in 'post'
-        '$enable' => array('securemail-enable', t('Enable Secure Mail'), $enable, ''),
-        '$publickey' => array('securemail-pkey', t('Public key'), $publickey, t('Your public PGP key, ascii armored format'), 'rows="10"')
-    ));
+        '$enable' => ['securemail-enable', t('Enable Secure Mail'), $enable, ''],
+        '$publickey' => ['securemail-pkey', t('Public key'), $publickey, t('Your public PGP key, ascii armored format'), 'rows="10"']
+    ]);
 }
 
 /**
@@ -107,7 +107,7 @@ function securemail_settings_post(App &$a, array &$b){
             $subject = 'Friendica - Secure Mail - Test';
             $message = 'This is a test message from your Friendica Secure Mail addon.';
 
-            $params = array(
+            $params = [
                 'uid' => local_user(),
                 'fromName' => $sitename,
                 'fromEmail' => $sender_email,
@@ -115,7 +115,7 @@ function securemail_settings_post(App &$a, array &$b){
                 'messageSubject' => $subject,
                 'htmlVersion' => "<p>{$message}</p>",
                 'textVersion' => $message,
-            );
+            ];
 
             // enable addon for test
             PConfig::set(local_user(), 'securemail', 'enable', 1);
@@ -164,11 +164,11 @@ function securemail_emailer_send_prepare(App &$a, array &$b) {
 
     $key = OpenPGP_Message::parse($public_key);
 
-    $data = new OpenPGP_LiteralDataPacket($b['textVersion'], array(
+    $data = new OpenPGP_LiteralDataPacket($b['textVersion'], [
         'format' => 'u',
         'filename' => 'encrypted.gpg'
-    ));
-    $encrypted = OpenPGP_Crypt_Symmetric::encrypt($key, new OpenPGP_Message(array($data)));
+    ]);
+    $encrypted = OpenPGP_Crypt_Symmetric::encrypt($key, new OpenPGP_Message([$data]));
     $armored_encrypted = wordwrap(
         OpenPGP::enarmor($encrypted->to_bytes(), 'PGP MESSAGE'),
         64,

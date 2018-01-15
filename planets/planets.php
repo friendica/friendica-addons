@@ -12,7 +12,7 @@ use Friendica\Core\PConfig;
 function planets_install() {
 
 	/**
-	 * 
+	 *
 	 * Our demo plugin will attach in three places.
 	 * The first is just prior to storing a local post.
 	 *
@@ -22,7 +22,7 @@ function planets_install() {
 
 	/**
 	 *
-	 * Then we'll attach into the plugin settings page, and also the 
+	 * Then we'll attach into the plugin settings page, and also the
 	 * settings post hook so that we can create and update
 	 * user preferences.
 	 *
@@ -93,7 +93,7 @@ function planets_post_hook($a, &$item) {
 	 *
 	 */
 
-	$planets = array('Alderaan','Tatooine','Dagobah','Polis Massa','Coruscant','Hoth','Endor','Kamino','Rattatak','Mustafar','Iego','Geonosis','Felucia','Dantooine','Ansion','Artaru','Bespin','Boz Pity','Cato Neimoidia','Christophsis','Kashyyyk','Kessel','Malastare','Mygeeto','Nar Shaddaa','Ord Mantell','Saleucami','Subterrel','Death Star','Teth','Tund','Utapau','Yavin');
+	$planets = ['Alderaan','Tatooine','Dagobah','Polis Massa','Coruscant','Hoth','Endor','Kamino','Rattatak','Mustafar','Iego','Geonosis','Felucia','Dantooine','Ansion','Artaru','Bespin','Boz Pity','Cato Neimoidia','Christophsis','Kashyyyk','Kessel','Malastare','Mygeeto','Nar Shaddaa','Ord Mantell','Saleucami','Subterrel','Death Star','Teth','Tund','Utapau','Yavin'];
 
 	$planet = array_rand($planets,1);
 	$item['location'] = $planets[$planet];
@@ -123,7 +123,7 @@ function planets_settings_post($a,$post) {
 
 /**
  *
- * Called from the Plugin Setting form. 
+ * Called from the Plugin Setting form.
  * Add our own settings info to the page.
  *
  */

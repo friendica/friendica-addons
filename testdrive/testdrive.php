@@ -58,7 +58,7 @@ function testdrive_cron($a,$b) {
 
 	if(count($r)) {
 		foreach($r as $rr) {
-			notification(array(
+			notification([
 				'uid' => $rr['uid'],
 				'type' => NOTIFY_SYSTEM,
 				'system_type' => 'testdrive_expire',
@@ -68,7 +68,7 @@ function testdrive_cron($a,$b) {
 				'source_name'  => t('Administrator'),
 				'source_link'  => $a->get_baseurl(),
 				'source_photo' => $a->get_baseurl() . '/images/person-80.jpg',
-			));
+			]);
 
 			q("update user set expire_notification_sent = '%s' where uid = %d",
 				dbesc(datetime_convert()),

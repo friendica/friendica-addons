@@ -158,7 +158,7 @@ function dwpost_send(&$a,&$b) {
     if($b['parent'] != $b['id'])
         return;
 
-	// dreamwidth post in the LJ user's timezone. 
+	// dreamwidth post in the LJ user's timezone.
 	// Hopefully the person's Friendica account
 	// will be set to the same thing.
 
@@ -168,7 +168,7 @@ function dwpost_send(&$a,&$b) {
 		intval($b['uid'])
 	);
 	if($x && strlen($x[0]['timezone']))
-		$tz = $x[0]['timezone'];	
+		$tz = $x[0]['timezone'];
 
 	$dw_username = PConfig::get($b['uid'],'dwpost','dw_username');
 	$dw_password = PConfig::get($b['uid'],'dwpost','dw_password');
@@ -221,7 +221,7 @@ EOT;
 		logger('dwpost: data: ' . $xml, LOGGER_DATA);
 
 		if($dw_blog !== 'test')
-			$x = post_url($dw_blog,$xml,array("Content-Type: text/xml"));
+			$x = post_url($dw_blog,$xml,["Content-Type: text/xml"]);
 		logger('posted to dreamwidth: ' . ($x) ? $x : '', LOGGER_DEBUG);
 
 	}

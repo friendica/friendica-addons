@@ -6,7 +6,7 @@
  * Description: Collapse posts with inappropriate content
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- * 
+ *
  */
 
 use Friendica\Core\PConfig;
@@ -26,15 +26,15 @@ function nsfw_uninstall() {
 
 }
 
-// This function isn't perfect and isn't trying to preserve the html structure - it's just a 
-// quick and dirty filter to pull out embedded photo blobs because 'nsfw' seems to come up 
+// This function isn't perfect and isn't trying to preserve the html structure - it's just a
+// quick and dirty filter to pull out embedded photo blobs because 'nsfw' seems to come up
 // inside them quite often. We don't need anything fancy, just pull out the data blob so we can
-// check against the rest of the body. 
- 
+// check against the rest of the body.
+
 function nsfw_extract_photos($body) {
 
 	$new_body = '';
-	
+
 	$img_start = strpos($body,'src="data:');
 	$img_end = (($img_start !== false) ? strpos(substr($body,$img_start),'>') : false);
 
@@ -43,7 +43,7 @@ function nsfw_extract_photos($body) {
 	while($img_end !== false) {
 		$img_end += $img_start;
 		$new_body = $new_body . substr($body,0,$img_start);
-	
+
 		$cnt ++;
 		$body = substr($body,0,$img_end);
 
@@ -128,7 +128,7 @@ function nsfw_prepare_body(&$a,&$b) {
 		$arr = explode(',',$words);
 	}
 	else {
-		$arr = array('nsfw');
+		$arr = ['nsfw'];
 	}
 
 	$found = false;
@@ -160,11 +160,11 @@ function nsfw_prepare_body(&$a,&$b) {
 						}
 					}
 				}
-			} 
-		}		
+			}
+		}
 	}
 	if($found) {
 		$rnd = random_string(8);
-		$b['html'] = '<div id="nsfw-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'nsfw-' . $rnd . '\'); >' . sprintf( t('%s - Click to open/close'),$word ) . '</div><div id="nsfw-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';  
+		$b['html'] = '<div id="nsfw-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'nsfw-' . $rnd . '\'); >' . sprintf( t('%s - Click to open/close'),$word ) . '</div><div id="nsfw-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
 	}
 }

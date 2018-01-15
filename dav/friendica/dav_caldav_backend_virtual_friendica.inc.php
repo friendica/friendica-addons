@@ -124,7 +124,7 @@ class Sabre_CalDAV_Backend_Friendica extends Sabre_CalDAV_Backend_Virtual
 
 		$summary = (($row["summary"]) ? $row["summary"] : substr(preg_replace("/\[[^\]]*\]/", "", $row["desc"]), 0, 100));
 
-		return array(
+		return [
 			"jq_id"             => $row["id"],
 			"ev_id"             => $row["id"],
 			"summary"           => escape_tags($summary),
@@ -142,7 +142,7 @@ class Sabre_CalDAV_Backend_Friendica extends Sabre_CalDAV_Backend_Virtual
 			"url_detail"        => $base_path . "/events/event/" . $row["id"],
 			"url_edit"          => "",
 			"special_type"      => ($row["type"] == "birthday" ? "birthday" : ""),
-		);
+		];
 	}
 
 
@@ -179,7 +179,7 @@ class Sabre_CalDAV_Backend_Friendica extends Sabre_CalDAV_Backend_Virtual
 			if (is_numeric($date_to)) $sql_where .= " AND `start` <= '" . date("Y-m-d H:i:s", $date_to) . "'";
 			else $sql_where .= " AND `start` <= '" . dbesc($date_to) . "'";
 		}
-		$ret = array();
+		$ret = [];
 
 		$r = q("SELECT * FROM `event` WHERE `uid` = %d " . $sql_where . " ORDER BY `start`", IntVal($calendar["namespace_id"]));
 
@@ -214,21 +214,21 @@ class Sabre_CalDAV_Backend_Friendica extends Sabre_CalDAV_Backend_Virtual
 	public function getCalendarsForUser($principalUri)
 	{
 		$n = dav_compat_principal2namespace($principalUri);
-		if ($n["namespace"] != $this->getNamespace()) return array();
+		if ($n["namespace"] != $this->getNamespace()) return [];
 
 		$cals = q("SELECT * FROM %s%scalendars WHERE `namespace` = %d AND `namespace_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $this->getNamespace(), IntVal($n["namespace_id"]));
-		$ret  = array();
+		$ret  = [];
 		foreach ($cals as $cal) {
 			if (!in_array($cal["uri"], $GLOBALS["CALDAV_PRIVATE_SYSTEM_CALENDARS"])) continue;
 
-			$dat = array(
+			$dat = [
 				"id"                                                      => $cal["id"],
 				"uri"                                                     => $cal["uri"],
 				"principaluri"                                            => $principalUri,
 				'{' . Sabre_CalDAV_Plugin::NS_CALENDARSERVER . '}getctag' => $cal['ctag'] ? $cal['ctag'] : '0',
-				'{' . Sabre_CalDAV_Plugin::NS_CALDAV . '}supported-calendar-component-set' => new Sabre_CalDAV_Property_SupportedCalendarComponentSet(array("VEVENT")),
+				'{' . Sabre_CalDAV_Plugin::NS_CALDAV . '}supported-calendar-component-set' => new Sabre_CalDAV_Property_SupportedCalendarComponentSet(["VEVENT"]),
 				"calendar_class"                                          => "Sabre_CalDAV_Calendar_Virtual",
-			);
+			];
 			foreach ($this->propertyMap as $key=> $field) $dat[$key] = $cal[$field];
 
 			$ret[] = $dat;

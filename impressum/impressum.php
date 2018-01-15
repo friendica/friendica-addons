@@ -90,13 +90,13 @@ function impressum_plugin_admin_post (&$a) {
 }
 function impressum_plugin_admin (&$a, &$o) {
     $t = get_markup_template( "admin.tpl", "addon/impressum/" );
-    $o = replace_macros($t, array(
+    $o = replace_macros($t, [
         '$submit' => t('Save Settings'),
-        '$owner' => array('owner', t('Site Owner'), Config::get('impressum','owner'), t('The page operators name.')),
-        '$ownerprofile' => array('ownerprofile', t('Site Owners Profile'), Config::get('impressum','ownerprofile'), t('Profile address of the operator.')),
-        '$postal' => array('postal', t('Postal Address'), Config::get('impressum','postal'), t('How to contact the operator via snail mail. You can use BBCode here.')),
-        '$notes' => array('notes', t('Notes'), Config::get('impressum','notes'), t('Additional notes that are displayed beneath the contact information. You can use BBCode here.')),
-        '$email' => array('email', t('Email Address'), Config::get('impressum','email'), t('How to contact the operator via email. (will be displayed obfuscated)')),
-        '$footer_text' => array('footer_text', t('Footer note'), Config::get('impressum','footer_text'), t('Text for the footer. You can use BBCode here.')),
-    ));
+        '$owner' => ['owner', t('Site Owner'), Config::get('impressum','owner'), t('The page operators name.')],
+        '$ownerprofile' => ['ownerprofile', t('Site Owners Profile'), Config::get('impressum','ownerprofile'), t('Profile address of the operator.')],
+        '$postal' => ['postal', t('Postal Address'), Config::get('impressum','postal'), t('How to contact the operator via snail mail. You can use BBCode here.')],
+        '$notes' => ['notes', t('Notes'), Config::get('impressum','notes'), t('Additional notes that are displayed beneath the contact information. You can use BBCode here.')],
+        '$email' => ['email', t('Email Address'), Config::get('impressum','email'), t('How to contact the operator via email. (will be displayed obfuscated)')],
+        '$footer_text' => ['footer_text', t('Footer note'), Config::get('impressum','footer_text'), t('Text for the footer. You can use BBCode here.')],
+    ]);
 }

@@ -26,7 +26,7 @@ class Sabre_DAV_Auth_Backend_Std extends Sabre_DAV_Auth_Backend_AbstractBasic
 	 */
 	public function getUsers()
 	{
-		return array($this->currentUser);
+		return [$this->currentUser];
 	}
 
 	/**

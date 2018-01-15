@@ -52,15 +52,15 @@ function langfilter_addon_settings(App $a, &$s)
 	}
 
 	$t = get_markup_template("settings.tpl", "addon/langfilter/");
-	$s .= replace_macros($t, array(
+	$s .= replace_macros($t, [
 		'$title'         => t("Language Filter"),
 		'$intro'         => t('This addon tries to identify the language of a postings. If it does not match any language spoken by you (see below) the posting will be collapsed. Remember detecting the language is not perfect, especially with short postings.'),
-		'$enabled'       => array('langfilter_enable', t('Use the language filter'), $enable_checked, ''),
-		'$languages'     => array('langfilter_languages', t('I speak'), $languages, t('List of abbreviations (iso2 codes) for languages you speak, comma separated. For example "de,it".')),
-		'$minconfidence' => array('langfilter_minconfidence', t('Minimum confidence in language detection'), $minconfidence, t('Minimum confidence in language detection being correct, from 0 to 100. Posts will not be filtered when the confidence of language detection is below this percent value.')),
-		'$minlength'     => array('langfilter_minlength', t('Minimum length of message body'), $minlength, t('Minimum length of message body for language filter to be used. Posts shorter than this number of characters will not be filtered.')),
+		'$enabled'       => ['langfilter_enable', t('Use the language filter'), $enable_checked, ''],
+		'$languages'     => ['langfilter_languages', t('I speak'), $languages, t('List of abbreviations (iso2 codes) for languages you speak, comma separated. For example "de,it".')],
+		'$minconfidence' => ['langfilter_minconfidence', t('Minimum confidence in language detection'), $minconfidence, t('Minimum confidence in language detection being correct, from 0 to 100. Posts will not be filtered when the confidence of language detection is below this percent value.')],
+		'$minlength'     => ['langfilter_minlength', t('Minimum length of message body'), $minlength, t('Minimum length of message body for language filter to be used. Posts shorter than this number of characters will not be filtered.')],
 		'$submit'        => t('Save Settings'),
-	));
+	]);
 
 	return;
 }

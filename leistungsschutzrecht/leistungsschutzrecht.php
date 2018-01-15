@@ -36,7 +36,7 @@ function leistungsschutzrecht_getsiteinfo($a, &$siteinfo) {
 }
 
 function leistungsschutzrecht_cuttext($text) {
-	$text = str_replace(array("\r", "\n"), array(" ", " "), $text);
+	$text = str_replace(["\r", "\n"], [" ", " "], $text);
 
 	do {
 		$oldtext = $text;
@@ -73,9 +73,9 @@ function leistungsschutzrecht_fetchsites() {
 	$sitelist = fetch_url($url);
 	$siteurls = explode(',', $sitelist);
 
-	$whitelist = array('tagesschau.de', 'heute.de', 'wdr.de');
+	$whitelist = ['tagesschau.de', 'heute.de', 'wdr.de'];
 
-	$sites = array();
+	$sites = [];
 	foreach ($siteurls AS $site) {
 		if (!in_array($site, $whitelist)) {
 			$sites[$site] = $site;

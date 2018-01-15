@@ -305,7 +305,7 @@ function diaspora_send(&$a,&$b) {
 		logger('diaspora_send: all values seem to be okay', LOGGER_DEBUG);
 
 		require_once('include/bb2diaspora.php');
-		$tag_arr = array();
+		$tag_arr = [];
 		$tags = '';
 		$x = preg_match_all('/\#\[(.*?)\](.*?)\[/',$b['tag'],$matches,PREG_SET_ORDER);
 
@@ -364,7 +364,7 @@ function diaspora_send(&$a,&$b) {
 			if (count($r))
 				$a->contact = $r[0]["id"];
 
-			$s = serialize(array('url' => $url, 'item' => $b['id'], 'post' => $body));
+			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $body]);
 			require_once('include/queue_fn.php');
 			add_to_queue($a->contact,NETWORK_DIASPORA2,$s);
 			notice(t('Diaspora post failed. Queued for retry.').EOL);

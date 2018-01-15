@@ -185,7 +185,7 @@ function libertree_send(&$a,&$b) {
 	if($ltree_url && $ltree_api_token && $ltree_blog && $ltree_source) {
 
 		require_once('include/bb2diaspora.php');
-		$tag_arr = array();
+		$tag_arr = [];
 		$tags = '';
 		$x = preg_match_all('/\#\[(.*?)\](.*?)\[/',$b['tag'],$matches,PREG_SET_ORDER);
 
@@ -223,11 +223,11 @@ function libertree_send(&$a,&$b) {
 			$body = "## ".html_entity_decode($title)."\n\n".$body;
 
 
-		$params = array(
+		$params = [
 			'text' => $body,
 			'source' => $ltree_source
 		//	'token' => $ltree_api_token
-		);
+		];
 
 		$result = post_url($ltree_blog,$params);
 		logger('libertree: ' . $result);

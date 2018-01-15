@@ -36,13 +36,13 @@ function irc_addon_settings(&$a,&$s) {
 	$autochans = PConfig::get( local_user(), 'irc','autochans');  /* auto connect chans */
 
 	$t = get_markup_template( "settings.tpl", "addon/irc/" );
-	$s .= replace_macros($t, array(
+	$s .= replace_macros($t, [
 	    	'$header' => t('IRC Settings'),
 		'$info' => t('Here you can change the system wide settings for the channels to automatically join and access via the side bar. Note the changes you do here, only effect the channel selection if you are logged in.'),
 		'$submit' => t('Save Settings'),
-		'$autochans' => array( 'autochans', t('Channel(s) to auto connect (comma separated)'), $autochans, t('List of channels that shall automatically connected to when the app is launched.')),
-		'$sitechats' => array( 'sitechats', t('Popular Channels (comma separated)'), $sitechats, t('List of popular channels, will be displayed at the side and hotlinked for easy joining.') )
-	));
+		'$autochans' => [ 'autochans', t('Channel(s) to auto connect (comma separated)'), $autochans, t('List of channels that shall automatically connected to when the app is launched.')],
+		'$sitechats' => [ 'sitechats', t('Popular Channels (comma separated)'), $sitechats, t('List of popular channels, will be displayed at the side and hotlinked for easy joining.') ]
+	]);
 
 
 	return;
@@ -87,7 +87,7 @@ function irc_content(&$a) {
 	if($sitechats)
 		$chats = explode(',',$sitechats);
 	else
-		$chats = array('friendica','chat','chatback','hottub','ircbar','dateroom','debian');
+		$chats = ['friendica','chat','chatback','hottub','ircbar','dateroom','debian'];
 
 
 	$a->page['aside'] .= '<div class="widget"><h3>' . t('Popular Channels') . '</h3><ul>';
@@ -117,7 +117,7 @@ function irc_content(&$a) {
 EOT;
 
 return $o;
-    
+
 }
 
 function irc_plugin_admin_post (&$a) {
@@ -135,9 +135,9 @@ function irc_plugin_admin (&$a, &$o) {
 	$sitechats = Config::get('irc','sitechats'); /* popular channels */
 	$autochans = Config::get('irc','autochans');  /* auto connect chans */
 	$t = get_markup_template( "admin.tpl", "addon/irc/" );
-	$o = replace_macros($t, array(
+	$o = replace_macros($t, [
 		'$submit' => t('Save Settings'),
-		'$autochans' => array( 'autochans', t('Channel(s) to auto connect (comma separated)'), $autochans, t('List of channels that shall automatically connected to when the app is launched.')),
-		'$sitechats' => array( 'sitechats', t('Popular Channels (comma separated)'), $sitechats, t('List of popular channels, will be displayed at the side and hotlinked for easy joining.') )
-	));
+		'$autochans' => [ 'autochans', t('Channel(s) to auto connect (comma separated)'), $autochans, t('List of channels that shall automatically connected to when the app is launched.')],
+		'$sitechats' => [ 'sitechats', t('Popular Channels (comma separated)'), $sitechats, t('List of popular channels, will be displayed at the side and hotlinked for easy joining.') ]
+	]);
 }
