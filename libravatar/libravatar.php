@@ -71,13 +71,13 @@ function libravatar_plugin_admin (&$a, &$o) {
 		$default_avatar = 'identicon'; // pseudo-random geometric pattern based on email hash
 
 	// Available options for the select boxes
-	$default_avatars = array(
+	$default_avatars = [
 		'mm' => t('generic profile image'),
 		'identicon' => t('random geometric pattern'),
 		'monsterid' => t('monster face'),
 		'wavatar' => t('computer generated face'),
 		'retro' => t('retro arcade style face'),
-	);
+	];
 
 	// Show warning if PHP version is too old
 	if (! version_compare(PHP_VERSION, '5.3.0', '>=')) {
@@ -97,10 +97,10 @@ function libravatar_plugin_admin (&$a, &$o) {
 
 	// output Libravatar settings
 	$o .= '<input type="hidden" name="form_security_token" value="' .get_form_security_token("libravatarsave") .'">';
-	$o .= replace_macros( $t, array(
+	$o .= replace_macros( $t, [
 		'$submit' => t('Save Settings'),
-		'$default_avatar' => array('avatar', t('Default avatar image'), $default_avatar, t('Select default avatar image if none was found. See README'), $default_avatars),
-	));
+		'$default_avatar' => ['avatar', t('Default avatar image'), $default_avatar, t('Select default avatar image if none was found. See README'), $default_avatars],
+	]);
 }
 
 /**

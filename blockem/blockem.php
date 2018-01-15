@@ -6,7 +6,7 @@
  * Description: block people
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- * 
+ *
  */
 
 use Friendica\Core\PConfig;
@@ -141,7 +141,7 @@ function blockem_prepare_body(&$a,&$b) {
 	}
 	if($found) {
 		$rnd = random_string(8);
-		$b['html'] = '<div id="blockem-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'blockem-' . $rnd . '\'); >' . sprintf( t('Blocked %s - Click to open/close'),$word ) . '</div><div id="blockem-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';  
+		$b['html'] = '<div id="blockem-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'blockem-' . $rnd . '\'); >' . sprintf( t('Blocked %s - Click to open/close'),$word ) . '</div><div id="blockem-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
 	}
 }
 
@@ -218,7 +218,7 @@ function blockem_init(&$a) {
 	}
 	if(array_key_exists('unblock',$_GET) && $_GET['unblock']) {
 		$arr = explode(',',$words);
-		$newarr = array();
+		$newarr = [];
 
 		if(count($arr)) {
 			foreach($arr as $x) {

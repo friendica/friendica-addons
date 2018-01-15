@@ -75,7 +75,7 @@ function forumdirectory_content(&$a) {
 
 	$admin = '';
 
-	$o .= replace_macros($tpl, array(
+	$o .= replace_macros($tpl, [
 		'$search' => $search,
 		'$globaldir' => $globaldir,
 		'$desc' => t('Find on this site'),
@@ -83,7 +83,7 @@ function forumdirectory_content(&$a) {
 		'$finding' => (strlen($search) ? '<h4>' . t('Finding: ') . "'" . $search . "'" . '</h4>' : ""),
 		'$sitedir' => t('Site Directory'),
 		'$submit' => t('Find')
-	));
+	]);
 
 	if($search)
 		$search = dbesc($search);
@@ -96,7 +96,7 @@ function forumdirectory_content(&$a) {
 	if(count($r))
 		$a->set_pager_total($r[0]['total']);
 
-	$order = " ORDER BY `name` ASC "; 
+	$order = " ORDER BY `name` ASC ";
 
 
 	$r = q("SELECT `profile`.*, `profile`.`uid` AS `profile_uid`, `user`.`nickname`, `user`.`timezone` , `user`.`page-flags` FROM `profile` LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid` WHERE `is-default` = 1 $publish AND `user`.`blocked` = 0 AND `page-flags` = 2 $sql_extra $order LIMIT %d , %d ",
@@ -114,7 +114,7 @@ function forumdirectory_content(&$a) {
 
 
 			$profile_link = $a->get_baseurl() . '/profile/' . ((strlen($rr['nickname'])) ? $rr['nickname'] : $rr['profile_uid']);
-		
+
 			$pdesc = (($rr['pdesc']) ? $rr['pdesc'] . '<br />' : '');
 
 			$details = '';
@@ -132,7 +132,7 @@ function forumdirectory_content(&$a) {
 			}
 			if(strlen($rr['dob'])) {
 				if(($years = age($rr['dob'],$rr['timezone'],'')) != 0)
-					$details .= '<br />' . t('Age: ') . $years ; 
+					$details .= '<br />' . t('Age: ') . $years ;
 			}
 			if(strlen($rr['gender']))
 				$details .= '<br />' . t('Gender: ') . $rr['gender'];
@@ -164,11 +164,11 @@ function forumdirectory_content(&$a) {
 			$homepage = ((x($profile,'homepage') == 1) ?  t('Homepage:') : False);
 
 			$about = ((x($profile,'about') == 1) ?  t('About:') : False);
-			
+
 #			$tpl = file_get_contents( dirname(__file__).'/forumdirectory_item.tpl');
 			$tpl = get_markup_template( 'forumdirectory_item.tpl', 'addon/forumdirectory/' );
 
-			$entry = replace_macros($tpl,array(
+			$entry = replace_macros($tpl,[
 				'$id' => $rr['id'],
 				'$profile_link' => $profile_link,
 				'$photo' => $a->get_cached_avatar_image($rr[$photo]),
@@ -184,9 +184,9 @@ function forumdirectory_content(&$a) {
 				'$homepage' => $homepage,
 				'$about' => $about,
 
-			));
+			]);
 
-			$arr = array('contact' => $rr, 'entry' => $entry);
+			$arr = ['contact' => $rr, 'entry' => $entry];
 
 			unset($profile);
 			unset($location);

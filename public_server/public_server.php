@@ -55,7 +55,7 @@ function public_server_cron($a,$b) {
 
 	if(count($r)) {
 		foreach($r as $rr) {
-			notification(array(
+			notification([
 				'uid' => $rr['uid'],
 				'type' => NOTIFY_SYSTEM,
 				'system_type' => 'public_server_expire',
@@ -65,7 +65,7 @@ function public_server_cron($a,$b) {
 				'source_name'  => t('Administrator'),
 				'source_link'  => $a->get_baseurl(),
 				'source_photo' => $a->get_baseurl() . '/images/person-80.jpg',
-			));
+			]);
 
 			q("update user set expire_notification_sent = '%s' where uid = %d",
 				dbesc(datetime_convert()),
@@ -161,16 +161,16 @@ function public_server_plugin_admin_post ( &$a ) {
 function public_server_plugin_admin ( &$a, &$o) {
     $token = get_form_security_token("publicserver");
     $t = get_markup_template( "admin.tpl", "addon/public_server");
-    $o = replace_macros($t, array(
+    $o = replace_macros($t, [
 	'$submit' => t('Save Settings'),
 	'$form_security_token' => $token,
 	'$infotext' => t('Set any of these options to 0 to deactivate it.'),
-	'$expiredays' => Array( "expiredays","Expire Days", intval(Config::get('public_server', 'expiredays')), "When an account is created on the site, it is given a hard "),
-	'$expireposts' => Array( "expireposts", "Expire Posts", intval(Config::get('public_server','expireposts')), "Set the default days for posts to expire here"),
-	'$nologin' => Array( "nologin", "No Login", intval(Config::get('public_server','nologin')), "Remove users who have never logged in after nologin days "),
-	'$flagusers' => Array( "flagusers", "Flag users", intval(Config::get('public_server','flagusers')), "Remove users who last logged in over flagusers days ago"),
-	'$flagposts' => Array( "flagposts", "Flag posts", intval(Config::get('public_server','flagposts')), "For users who last logged in over flagposts days ago set post expiry days to flagpostsexpire "),
-	'$flagpostsexpire' => Array( "flagpostsexpire", "Flag posts expire", intval(Config::get('public_server','flagpostsexpire'))),
-    ));
+	'$expiredays' => [ "expiredays","Expire Days", intval(Config::get('public_server', 'expiredays')), "When an account is created on the site, it is given a hard "],
+	'$expireposts' => [ "expireposts", "Expire Posts", intval(Config::get('public_server','expireposts')), "Set the default days for posts to expire here"],
+	'$nologin' => [ "nologin", "No Login", intval(Config::get('public_server','nologin')), "Remove users who have never logged in after nologin days "],
+	'$flagusers' => [ "flagusers", "Flag users", intval(Config::get('public_server','flagusers')), "Remove users who last logged in over flagusers days ago"],
+	'$flagposts' => [ "flagposts", "Flag posts", intval(Config::get('public_server','flagposts')), "For users who last logged in over flagposts days ago set post expiry days to flagpostsexpire "],
+	'$flagpostsexpire' => [ "flagpostsexpire", "Flag posts expire", intval(Config::get('public_server','flagpostsexpire'))],
+    ]);
 }
 

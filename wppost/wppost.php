@@ -233,7 +233,7 @@ function wppost_send(&$a,&$b) {
 
 			// Is it a link to an aricle, a video or a photo?
 			if (isset($siteinfo["type"])) {
-				if (in_array($siteinfo["type"], array("link", "audio", "video", "photo"))) {
+				if (in_array($siteinfo["type"], ["link", "audio", "video", "photo"])) {
 					$postentry = true;
 				}
 			}

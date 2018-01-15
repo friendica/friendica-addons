@@ -103,11 +103,11 @@ function xmpp_plugin_admin(App $a, &$o)
 {
 	$t = get_markup_template("admin.tpl", "addon/xmpp/");
 
-	$o = replace_macros($t, array(
+	$o = replace_macros($t, [
 		'$submit' => t('Save Settings'),
-		'$bosh_proxy' => array('bosh_proxy', t('Jabber BOSH host'), Config::get('xmpp', 'bosh_proxy'), ''),
-		'$central_userbase' => array('central_userbase', t('Use central userbase'), Config::get('xmpp', 'central_userbase'), t('If enabled, users will automatically login to an ejabberd server that has to be installed on this machine with synchronized credentials via the "auth_ejabberd.php" script.')),
-	));
+		'$bosh_proxy' => ['bosh_proxy', t('Jabber BOSH host'), Config::get('xmpp', 'bosh_proxy'), ''],
+		'$central_userbase' => ['central_userbase', t('Use central userbase'), Config::get('xmpp', 'central_userbase'), t('If enabled, users will automatically login to an ejabberd server that has to be installed on this machine with synchronized credentials via the "auth_ejabberd.php" script.')],
+	]);
 }
 
 function xmpp_plugin_admin_post()
@@ -142,7 +142,7 @@ function xmpp_converse(App $a)
 		return;
 	}
 
-	if (in_array($a->query_string, array("admin/federation/"))) {
+	if (in_array($a->query_string, ["admin/federation/"])) {
 		return;
 	}
 
@@ -176,7 +176,7 @@ function xmpp_converse(App $a)
 		return;
 	}
 
-	if (in_array($a->argv[0], array("manage", "logout"))) {
+	if (in_array($a->argv[0], ["manage", "logout"])) {
 		$additional_commands = "converse.user.logout();\n";
 	} else {
 		$additional_commands = "";

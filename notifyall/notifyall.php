@@ -42,7 +42,7 @@ function notifyall_post(&$a) {
 		$sender_name = sprintf(t('%s Administrator'), $sitename);
 	else
 		$sender_name = sprintf(t('%1$s, %2$s Administrator'), $a->config['admin_name'], $sitename);
-	
+
 	if (! x($a->config['sender_email']))
 		$sender_email = 'noreply@' . $a->get_hostname();
 	else
@@ -51,15 +51,15 @@ function notifyall_post(&$a) {
 	$subject = $_REQUEST['subject'];
 
 
-	$textversion = strip_tags(html_entity_decode(bbcode(stripslashes(str_replace(array("\\r", "\\n"),array( "", "\n"), $text))),ENT_QUOTES,'UTF-8'));
+	$textversion = strip_tags(html_entity_decode(bbcode(stripslashes(str_replace(["\\r", "\\n"],[ "", "\n"], $text))),ENT_QUOTES,'UTF-8'));
 
-	$htmlversion = bbcode(stripslashes(str_replace(array("\\r","\\n"), array("","<br />\n"),$text)));
-	
+	$htmlversion = bbcode(stripslashes(str_replace(["\\r","\\n"], ["","<br />\n"],$text)));
+
 	// if this is a test, send it only to the admin(s)
 	// admin_email might be a comma separated list, but we need "a@b','c@d','e@f
 	if ( intval($_REQUEST['test'])) {
 		$email = $a->config['admin_email'];
-		$email = "'" . str_replace(array(" ",","), array("","','"), $email) . "'";
+		$email = "'" . str_replace([" ",","], ["","','"], $email) . "'";
 	}
 	$sql_extra = ((intval($_REQUEST['test'])) ? sprintf(" AND `email` in ( %s )", $email) : '');
 
@@ -73,7 +73,7 @@ function notifyall_post(&$a) {
 	foreach($recips as $recip) {
 
 
-		Emailer::send(array(
+		Emailer::send([
 			'fromName'             => $sender_name,
 			'fromEmail'            => $sender_email,
 			'replyTo'              => $sender_email,
@@ -81,7 +81,7 @@ function notifyall_post(&$a) {
 			'messageSubject'       => $subject,
 			'htmlVersion'          => $htmlversion,
 			'textVersion'          => $textversion
-		));
+		]);
 	}
 
 	notice( t('Emails sent'));
@@ -94,13 +94,13 @@ function notifyall_content(&$a) {
 
 	$title = t('Send email to all members of this Friendica instance.');
 
-	$o = replace_macros(get_markup_template('notifyall_form.tpl','addon/notifyall/'),array(
+	$o = replace_macros(get_markup_template('notifyall_form.tpl','addon/notifyall/'),[
 		'$title' => $title,
 		'$text' => htmlspecialchars($_REQUEST['text']),
-		'$subject' => array('subject',t('Message subject'),$_REQUEST['subject'],''),
-		'$test' => array('test',t('Test mode (only send to administrator)'), 0,''),
+		'$subject' => ['subject',t('Message subject'),$_REQUEST['subject'],''],
+		'$test' => ['test',t('Test mode (only send to administrator)'), 0,''],
 		'$submit' => t('Submit')
-	));
+	]);
 
 	return $o;
 

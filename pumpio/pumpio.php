@@ -81,7 +81,7 @@ function pumpio_registerclient(&$a, $host) {
 
 	$url = "https://".$host."/api/client/register";
 
-	$params = array();
+	$params = [];
 
 	$application_name  = Config::get('pumpio', 'application_name');
 
@@ -337,7 +337,7 @@ function pumpio_settings_post(&$a,&$b) {
 			// Filtering the hostname if someone is entering it with "http"
 			$host = $_POST['pumpio_host'];
 			$host = trim($host);
-			$host = str_replace(array("https://", "http://"), array("", ""), $host);
+			$host = str_replace(["https://", "http://"], ["", ""], $host);
 
 			PConfig::set(local_user(),'pumpio','post',intval($_POST['pumpio']));
 			PConfig::set(local_user(),'pumpio','import',$_POST['pumpio_import']);
@@ -470,14 +470,14 @@ function pumpio_send(&$a,&$b) {
 
 		$content = bbcode($b['body'], false, false, 4);
 
-		$params = array();
+		$params = [];
 
 		$params["verb"] = "post";
 
 		if (!$iscomment) {
-			$params["object"] = array(
+			$params["object"] = [
 						'objectType' => "note",
-						'content' => $content);
+						'content' => $content];
 
 			if ($title != "")
 				$params["object"]["displayName"] = $title;
@@ -495,16 +495,16 @@ function pumpio_send(&$a,&$b) {
 				$params["bcc"] = $receiver["bcc"];
 
 		 } else {
-			$inReplyTo = array("id" => $orig_post["uri"],
-					"objectType" => "note");
+			$inReplyTo = ["id" => $orig_post["uri"],
+					"objectType" => "note"];
 
 			if (($orig_post["object-type"] != "") && (strstr($orig_post["object-type"], NAMESPACE_ACTIVITY_SCHEMA)))
 				$inReplyTo["objectType"] = str_replace(NAMESPACE_ACTIVITY_SCHEMA, '', $orig_post["object-type"]);
 
-			$params["object"] = array(
+			$params["object"] = [
 						'objectType' => "comment",
 						'content' => $content,
-						'inReplyTo' => $inReplyTo);
+						'inReplyTo' => $inReplyTo];
 
 			if ($title != "")
 				$params["object"]["displayName"] = $title;
@@ -523,7 +523,7 @@ function pumpio_send(&$a,&$b) {
 		$url = 'https://'.$host.'/api/user/'.$user.'/feed';
 
 		if (pumpio_reachable($url))
-			$success = $client->CallAPI($url, 'POST', $params, array('FailOnAccessError'=>true, 'RequestContentType'=>'application/json'), $user);
+			$success = $client->CallAPI($url, 'POST', $params, ['FailOnAccessError'=>true, 'RequestContentType'=>'application/json'], $user);
 		else
 			$success = false;
 
@@ -548,7 +548,7 @@ function pumpio_send(&$a,&$b) {
 			if (count($r))
 				$a->contact = $r[0]["id"];
 
-			$s = serialize(array('url' => $url, 'item' => $b['id'], 'post' => $params));
+			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $params]);
 			require_once('include/queue_fn.php');
 			add_to_queue($a->contact,NETWORK_PUMPIO,$s);
 			notice(t('Pump.io post failed. Queued for retry.').EOL);
@@ -595,9 +595,9 @@ function pumpio_action(&$a, $uid, $uri, $action, $content = "") {
 		$objectType = "image";
 
 	$params["verb"] = $action;
-	$params["object"] = array('id' => $uri,
+	$params["object"] = ['id' => $uri,
 				"objectType" => $objectType,
-				"content" => $content);
+				"content" => $content];
 
 	$client = new oauth_client_class;
 	$client->oauth_version = '1.0a';
@@ -612,7 +612,7 @@ function pumpio_action(&$a, $uid, $uri, $action, $content = "") {
 	$url = 'https://'.$hostname.'/api/user/'.$username.'/feed';
 
 	if (pumpio_reachable($url))
-		$success = $client->CallAPI($url, 'POST', $params, array('FailOnAccessError'=>true, 'RequestContentType'=>'application/json'), $user);
+		$success = $client->CallAPI($url, 'POST', $params, ['FailOnAccessError'=>true, 'RequestContentType'=>'application/json'], $user);
 	else
 		$success = false;
 
@@ -625,7 +625,7 @@ function pumpio_action(&$a, $uid, $uri, $action, $content = "") {
 		if (count($r))
 			$a->contact = $r[0]["id"];
 
-		$s = serialize(array('url' => $url, 'item' => $orig_post["id"], 'post' => $params));
+		$s = serialize(['url' => $url, 'item' => $orig_post["id"], 'post' => $params]);
 		require_once('include/queue_fn.php');
 		add_to_queue($a->contact,NETWORK_PUMPIO,$s);
 		notice(t('Pump.io like failed. Queued for retry.').EOL);
@@ -742,7 +742,7 @@ function pumpio_fetchtimeline(&$a, $uid) {
 	$username = $user.'@'.$host;
 
 	if (pumpio_reachable($url))
-		$success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $user);
+		$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError'=>true], $user);
 	else
 		$success = false;
 
@@ -767,7 +767,7 @@ function pumpio_fetchtimeline(&$a, $uid) {
 			if ($first_time)
 				continue;
 
-			$receiptians = array();
+			$receiptians = [];
 			if (@is_array($post->cc))
 				$receiptians = array_merge($receiptians, $post->cc);
 
@@ -945,7 +945,7 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 		return;
 	}
 
-	$likedata = array();
+	$likedata = [];
 	$likedata['parent'] = $orig_post['id'];
 	$likedata['verb'] = ACTIVITY_LIKE;
 	$likedata['gravity'] = 3;
@@ -977,10 +977,10 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 
 function pumpio_get_contact($uid, $contact, $no_insert = false) {
 
-	GContact::update(array("url" => $contact->url, "network" => NETWORK_PUMPIO, "generation" => 2,
+	GContact::update(["url" => $contact->url, "network" => NETWORK_PUMPIO, "generation" => 2,
 			"photo" => $contact->image->url, "name" => $contact->displayName,  "hide" => true,
 			"nick" => $contact->preferredUsername, "location" => $contact->location->displayName,
-			"about" => $contact->summary, "addr" => str_replace("acct:", "", $contact->id)));
+			"about" => $contact->summary, "addr" => str_replace("acct:", "", $contact->id)]);
 	$cid = Contact::getIdForURL($contact->url, $uid);
 
 	if ($no_insert)
@@ -1101,7 +1101,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 	if (!strstr("post|share|update", $post->verb))
 		return false;
 
-	$receiptians = array();
+	$receiptians = [];
 	if (@is_array($post->cc))
 		$receiptians = array_merge($receiptians, $post->cc);
 
@@ -1113,7 +1113,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 			if ($receiver->id == "http://activityschema.org/collection/public")
 				$public = true;
 
-	$postarray = array();
+	$postarray = [];
         $postarray['network'] = NETWORK_PUMPIO;
 	$postarray['gravity'] = 0;
 	$postarray['uid'] = $uid;
@@ -1294,7 +1294,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 
 					$conv_parent = $conv['parent'];
 
-					notification(array(
+					notification([
 						'type'         => NOTIFY_COMMENT,
 						'notify_flags' => $user[0]['notify-flags'],
 						'language'     => $user[0]['language'],
@@ -1309,7 +1309,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 						'verb'         => ACTIVITY_POST,
 						'otype'        => 'item',
 						'parent'       => $conv_parent,
-						));
+						]);
 
 					// only send one notification
 					break;
@@ -1362,7 +1362,7 @@ function pumpio_fetchinbox(&$a, $uid) {
 		$url .= '?since='.urlencode($last_id);
 
 	if (pumpio_reachable($url))
-		$success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $user);
+		$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError'=>true], $user);
 	else
 		$success = false;
 
@@ -1403,7 +1403,7 @@ function pumpio_getallusers(&$a, $uid) {
 	$url = 'https://'.$hostname.'/api/user/'.$username.'/following';
 
 	if (pumpio_reachable($url))
-		$success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $users);
+		$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError'=>true], $users);
 	else
 		$success = false;
 
@@ -1411,7 +1411,7 @@ function pumpio_getallusers(&$a, $uid) {
 		$url = 'https://'.$hostname.'/api/user/'.$username.'/following?count='.$users->totalItems;
 
 		if (pumpio_reachable($url))
-			$success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $users);
+			$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError'=>true], $users);
 		else
 			$success = false;
 	}
@@ -1478,7 +1478,7 @@ function pumpio_queue_hook(&$a,&$b) {
 			$client->client_secret = $consumer_secret;
 
 			if (pumpio_reachable($z['url']))
-				$success = $client->CallAPI($z['url'], 'POST', $z['post'], array('FailOnAccessError'=>true, 'RequestContentType'=>'application/json'), $user);
+				$success = $client->CallAPI($z['url'], 'POST', $z['post'], ['FailOnAccessError'=>true, 'RequestContentType'=>'application/json'], $user);
 			else
 				$success = false;
 
@@ -1507,7 +1507,7 @@ function pumpio_queue_hook(&$a,&$b) {
 
 function pumpio_getreceiver(&$a, $b) {
 
-	$receiver = array();
+	$receiver = [];
 
 	if (!$b["private"]) {
 
@@ -1517,9 +1517,9 @@ function pumpio_getreceiver(&$a, $b) {
 		$public = PConfig::get($b['uid'], "pumpio", "public");
 
 		if ($public)
-			$receiver["to"][] = Array(
+			$receiver["to"][] = [
 						"objectType" => "collection",
-						"id" => "http://activityschema.org/collection/public");
+						"id" => "http://activityschema.org/collection/public"];
 	} else {
 		$cids = explode("><", $b["allow_cid"]);
 		$gids = explode("><", $b["allow_gid"]);
@@ -1534,11 +1534,11 @@ function pumpio_getreceiver(&$a, $b) {
 				);
 
 			if (count($r)) {
-				$receiver["bcc"][] = Array(
+				$receiver["bcc"][] = [
 							"displayName" => $r[0]["name"],
 							"objectType" => "person",
 							"preferredUsername" => $r[0]["nick"],
-							"url" => $r[0]["url"]);
+							"url" => $r[0]["url"]];
 			}
 		}
 		foreach ($gids AS $gid) {
@@ -1552,11 +1552,11 @@ function pumpio_getreceiver(&$a, $b) {
 				);
 
 			foreach ($r AS $row)
-				$receiver["bcc"][] = Array(
+				$receiver["bcc"][] = [
 							"displayName" => $row["name"],
 							"objectType" => "person",
 							"preferredUsername" => $row["nick"],
-							"url" => $row["url"]);
+							"url" => $row["url"]];
 		}
 	}
 
@@ -1577,11 +1577,11 @@ function pumpio_getreceiver(&$a, $b) {
 				);
 
 			if (count($r)) {
-					$receiver["to"][] = Array(
+					$receiver["to"][] = [
 								"displayName" => $r[0]["name"],
 								"objectType" => "person",
 								"preferredUsername" => $r[0]["nick"],
-								"url" => $r[0]["url"]);
+								"url" => $r[0]["url"]];
 			}
 		}
 	}
@@ -1628,7 +1628,7 @@ function pumpio_fetchallcomments(&$a, $uid, $id) {
 	logger("pumpio_fetchallcomments: fetching comment for user ".$uid." url ".$url);
 
 	if (pumpio_reachable($url))
-		$success = $client->CallAPI($url, 'GET', array(), array('FailOnAccessError'=>true), $item);
+		$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError'=>true], $item);
 	else
 		$success = false;
 
@@ -1697,7 +1697,7 @@ function pumpio_fetchallcomments(&$a, $uid, $id) {
 
 
 function pumpio_reachable($url) {
-	$data = z_fetch_url($url, false, $redirects, array('timeout'=>10));
+	$data = z_fetch_url($url, false, $redirects, ['timeout'=>10]);
 	return(intval($data['return_code']) != 0);
 }
 

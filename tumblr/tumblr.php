@@ -60,12 +60,12 @@ function tumblr_content(&$a) {
 function tumblr_plugin_admin(&$a, &$o){
         $t = get_markup_template( "admin.tpl", "addon/tumblr/" );
 
-        $o = replace_macros($t, array(
+        $o = replace_macros($t, [
                 '$submit' => t('Save Settings'),
                                                                 // name, label, value, help, [extra values]
-                '$consumer_key' => array('consumer_key', t('Consumer Key'),  Config::get('tumblr', 'consumer_key' ), ''),
-                '$consumer_secret' => array('consumer_secret', t('Consumer Secret'),  Config::get('tumblr', 'consumer_secret' ), ''),
-        ));
+                '$consumer_key' => ['consumer_key', t('Consumer Key'),  Config::get('tumblr', 'consumer_key' ), ''],
+                '$consumer_secret' => ['consumer_secret', t('Consumer Secret'),  Config::get('tumblr', 'consumer_secret' ), ''],
+        ]);
 }
 
 function tumblr_plugin_admin_post(&$a){
@@ -240,12 +240,12 @@ function tumblr_settings(&$a,&$s) {
 
 		$userinfo = $tum_oauth->get('user/info');
 
-		$blogs = array();
+		$blogs = [];
 
 		$s .= '<label id="tumblr-page-label" for="tumblr-page">' . t('Post to page:') . '</label>';
 		$s .= '<select name="tumblr_page" id="tumblr-page">';
 		foreach($userinfo->response->user->blogs as $blog) {
-			$blogurl = substr(str_replace(array("http://", "https://"), array("", ""), $blog->url), 0, -1);
+			$blogurl = substr(str_replace(["http://", "https://"], ["", ""], $blog->url), 0, -1);
 			if ($page == $blogurl)
 				$s .= "<option value='".$blogurl."' selected>".$blogurl."</option>";
 			else
@@ -344,7 +344,7 @@ function tumblr_send(&$a,&$b) {
 
 		require_once('include/bbcode.php');
 
-		$tag_arr = array();
+		$tag_arr = [];
 		$tags = '';
 		$x = preg_match_all('/\#\[(.*?)\](.*?)\[/',$b['tag'],$matches,PREG_SET_ORDER);
 
@@ -361,11 +361,11 @@ function tumblr_send(&$a,&$b) {
 
 		$siteinfo = get_attached_data($b["body"]);
 
-		$params = array(
+		$params = [
 			'state' => 'published',
 			'tags' => $tags,
 			'tweet' => 'off',
-			'format' => 'html');
+			'format' => 'html'];
 
 		if (!isset($siteinfo["type"]))
 			$siteinfo["type"] = "";

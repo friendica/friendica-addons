@@ -91,7 +91,7 @@ function wdcal_import_user_ics($calendar_id) {
 			/** @var Sabre\VObject\Component\VCalendar $vObject  */
 			$vObject        = Sabre\VObject\Reader::read($text);
 			$comp = $vObject->getComponents();
-			$imported = array();
+			$imported = [];
 			foreach ($comp as $c) try {
 				/** @var Sabre\VObject\Component\VEvent $c */
 				$uid = $c->__get("UID")->value;
@@ -171,18 +171,18 @@ function wdcal_import_user_ics($calendar_id) {
  * @param bool $show_nav
  * @return string
  */
-function wdcal_printCalendar($calendars, $calendars_selected, $data_feed_url, $view = "week", $theme = 0, $height_diff = 175, $readonly = false, $curr_day = "", $add_params = array(), $show_nav = true)
+function wdcal_printCalendar($calendars, $calendars_selected, $data_feed_url, $view = "week", $theme = 0, $height_diff = 175, $readonly = false, $curr_day = "", $add_params = [], $show_nav = true)
 {
 
 	$a            = get_app();
 	$localization = wdcal_local::getInstanceByUser($a->user["uid"]);
 
 	if (count($calendars_selected) == 0) foreach ($calendars as $c) {
-		$prop                 = $c->getProperties(array("id"));
+		$prop                 = $c->getProperties(["id"]);
 		$calendars_selected[] = $prop["id"];
 	}
 
-	$opts = array(
+	$opts = [
 		"view"             => $view,
 		"theme"            => $theme,
 		"readonly"         => $readonly,
@@ -194,7 +194,7 @@ function wdcal_printCalendar($calendars, $calendars_selected, $data_feed_url, $v
 		"date_format_dm3"  => $localization->dateformat_js_dm3(),
 		"date_format_full" => $localization->dateformat_datepicker_js(),
 		"baseurl"          => $a->get_baseurl() . "/dav/wdcal/",
-	);
+	];
 
 	$x = '
 <script>
@@ -207,7 +207,7 @@ function wdcal_printCalendar($calendars, $calendars_selected, $data_feed_url, $v
 	<div class="calselect"><strong>Available Calendars:</strong>';
 
 	foreach ($calendars as $cal) {
-		$cal_id = $cal->getProperties(array("id", DAV_DISPLAYNAME));
+		$cal_id = $cal->getProperties(["id", DAV_DISPLAYNAME]);
 		$x .= '<label style="margin-left: 10px; margin-right: 10px;"><input type="checkbox" name="cals[]" value="' . $cal_id["id"] . '"';
 		$found = false;
 		foreach ($calendars_selected as $pre) if ($pre["id"] == $cal_id["id"]) $found = true;

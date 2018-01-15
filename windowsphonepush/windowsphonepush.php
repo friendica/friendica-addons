@@ -247,10 +247,10 @@ function send_tile_update($device_url, $image_url, $count, $title, $priority = 1
 		"</wp:Tile> " .
 		"</wp:Notification>";
 
-	$result = send_push($device_url, array(
+	$result = send_push($device_url, [
 		'X-WindowsPhone-Target: token',
 		'X-NotificationClass: ' . $priority,
-		), $msg);
+		], $msg);
 	return $result;
 }
 
@@ -269,10 +269,10 @@ function send_toast($device_url, $title, $message, $priority = 2)
 		"</wp:Toast>" .
 		"</wp:Notification>";
 
-	$result = send_push($device_url, array(
+	$result = send_push($device_url, [
 		'X-WindowsPhone-Target: toast',
 		'X-NotificationClass: ' . $priority,
-		), $msg);
+		], $msg);
 	return $result;
 }
 
@@ -284,11 +284,11 @@ function send_push($device_url, $headers, $msg)
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($ch, CURLOPT_POST, true);
 	curl_setopt($ch, CURLOPT_HEADER, true);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers + array(
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers + [
 		'Content-Type: text/xml',
 		'charset=utf-8',
 		'Accept: application/*',
-		)
+		]
 	);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $msg);
 
@@ -336,13 +336,13 @@ function windowsphonepush_content(App $a)
 			case "update_settings":
 				$ret = windowsphonepush_updatesettings($a);
 				header("Content-Type: application/json; charset=utf-8");
-				echo json_encode(array('status' => $ret));
+				echo json_encode(['status' => $ret]);
 				killme();
 				break;
 			case "update_counterunseen":
 				$ret = windowsphonepush_updatecounterunseen();
 				header("Content-Type: application/json; charset=utf-8");
-				echo json_encode(array('status' => $ret));
+				echo json_encode(['status' => $ret]);
 				killme();
 				break;
 			default:
@@ -374,13 +374,13 @@ function windowsphonepush_showsettings()
 	}
 
 	header("Content-Type: application/json");
-	echo json_encode(array('uid' => local_user(),
+	echo json_encode(['uid' => local_user(),
 		'enable' => $enable,
 		'device_url' => $device_url,
 		'senditemtext' => $senditemtext,
 		'lastpushid' => $lastpushid,
 		'counterunseen' => $counterunseen,
-		'addonversion' => $addonversion));
+		'addonversion' => $addonversion]);
 }
 
 /* update_settings is used to transfer the device_url from WP device to the Friendica server

@@ -156,7 +156,7 @@ function showmore_cutitem($text, $limit) {
 	@$doc->loadHTML($doctype."<html><body>".$text."</body></html>");
 
 	$text = $doc->saveHTML();
-	$text = str_replace(array("<html><body>", "</body></html>", $doctype), array("", "", ""), $text);
+	$text = str_replace(["<html><body>", "</body></html>", $doctype], ["", "", ""], $text);
 
 	return($text);
 }

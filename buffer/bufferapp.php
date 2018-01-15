@@ -12,7 +12,7 @@
 
 		public $ok = false;
 
-		private $endpoints = array(
+		private $endpoints = [
 			'/user' => 'get',
 
 			'/profiles' => 'get',
@@ -37,9 +37,9 @@
 
 			'/info/configuration' => 'get',
 
-		);
+		];
 
-		public $errors = array(
+		public $errors = [
 			'invalid-endpoint' => 'The endpoint you supplied does not appear to be valid.',
 
 			'403' => 'Permission denied.',
@@ -77,7 +77,7 @@
 			'1042' => 'User did not save successfully.',
 			'1050' => 'Client could not be found.',
 			'1051' => 'No authorization to access client.',
-		);
+		];
 
 		function __construct($client_id = '', $client_secret = '', $callback_url = '', $access_token = '') {
 			if ($client_id) $this->set_client_id($client_id);
@@ -110,7 +110,7 @@
 				if (!$ok) return $this->error('invalid-endpoint');
 			}
 
-			if (!$data || !is_array($data)) $data = array();
+			if (!$data || !is_array($data)) $data = [];
 			$data['access_token'] = $this->access_token;
 
 			$method = $this->endpoints[$done_endpoint]; //get() or post()
@@ -130,17 +130,17 @@
 		}
 
 		function error($error) {
-			return (object) array('error' => $this->errors[$error]);
+			return (object) ['error' => $this->errors[$error]];
 		}
 
 		function create_access_token_url() {
-			$data = array(
+			$data = [
 				'code' => $this->code,
 				'grant_type' => 'authorization_code',
 				'client_id' => $this->client_id,
 				'client_secret' => $this->client_secret,
 				'redirect_uri' => $this->callback_url,
-			);
+			];
 
 			$obj = $this->post($this->access_token_url, $data);
 			$this->access_token = $obj->access_token;
@@ -150,15 +150,15 @@
 
 		function req($url = '', $data = '', $post = true) {
 			if (!$url) return false;
-			if (!$data || !is_array($data)) $data = array();
+			if (!$data || !is_array($data)) $data = [];
 
-			$options = array(CURLOPT_RETURNTRANSFER => true, CURLOPT_HEADER => false);
+			$options = [CURLOPT_RETURNTRANSFER => true, CURLOPT_HEADER => false];
 
 			if ($post) {
-				$options += array(
+				$options += [
 					CURLOPT_POST => $post,
 					CURLOPT_POSTFIELDS => $data
-				);
+				];
 			} else {
 				$url .= '?' . http_build_query($data);
 			}

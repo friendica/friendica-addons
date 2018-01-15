@@ -1,6 +1,6 @@
 <?php
 /**
- * Name: Current Weather 
+ * Name: Current Weather
  * Description: Shows current weather conditions for user's location on their network page.
  * Version: 1.1
  * Author: Tony Baldwin <http://friendica.tonybaldwin.info/u/t0ny>
@@ -47,7 +47,7 @@ function getWeather( $loc, $units='metric', $lang='en', $appid='', $cachetime=0)
     } else {
 	$desc = (string)$res->weather['value'].', '.(string)$res->clouds['name'];
     }
-    $r = array(
+    $r = [
 	'city'=> (string) $res->city['name'][0],
 	'country' => (string) $res->city->country[0],
 	'lat' => (string) $res->city->coord['lat'],
@@ -59,7 +59,7 @@ function getWeather( $loc, $units='metric', $lang='en', $appid='', $cachetime=0)
 	'wind' => (string)$res->wind->speed['name'].' ('.(string)$res->wind->speed['value'].$wunit.')',
 	'update' => (string)$res->lastupdate['value'],
 	'icon' => (string)$res->weather['icon']
-    );
+    ];
     PConfig::set(local_user(), 'curweather', 'last', $now->getTimestamp());
     Cache::set('curweather'.md5($url), serialize($r), CACHE_HOUR);
     return $r;
@@ -111,7 +111,7 @@ function curweather_network_mod_init(&$fk_app,&$b) {
 
     if ($ok) {
 	$t = get_markup_template("widget.tpl", "addon/curweather/" );
-	$curweather = replace_macros ($t, array(
+	$curweather = replace_macros ($t, [
 	    '$title' => t("Current Weather"),
 	    '$icon' => proxy_url('http://openweathermap.org/img/w/'.$res['icon'].'.png'),
 	    '$city' => $res['city'],
@@ -119,20 +119,20 @@ function curweather_network_mod_init(&$fk_app,&$b) {
 	    '$lat' => $res['lat'],
 	    '$description' => $res['descripion'],
 	    '$temp' => $res['temperature'],
-	    '$relhumidity' => array('caption'=>t('Relative Humidity'), 'val'=>$res['humidity']),
-	    '$pressure' => array('caption'=>t('Pressure'), 'val'=>$res['pressure']),
-	    '$wind' => array('caption'=>t('Wind'), 'val'=> $res['wind']),
+	    '$relhumidity' => ['caption'=>t('Relative Humidity'), 'val'=>$res['humidity']],
+	    '$pressure' => ['caption'=>t('Pressure'), 'val'=>$res['pressure']],
+	    '$wind' => ['caption'=>t('Wind'), 'val'=> $res['wind']],
 	    '$lastupdate' => t('Last Updated').': '.$res['update'].'UTC',
 	    '$databy' =>  t('Data by'),
 	    '$showonmap' => t('Show on map')
-	));
+	]);
     } else {
 	$t = get_markup_template('widget-error.tpl', 'addon/curweather/');
-	$curweather = replace_macros( $t, array(
+	$curweather = replace_macros( $t, [
 	    '$problem' => t('There was a problem accessing the weather data. But have a look'),
 	    '$rpt' => $rpt,
 	    '$atOWM' => t('at OpenWeatherMap')
-	));
+	]);
     }
 
     $fk_app->page['aside'] = $curweather.$fk_app->page['aside'];
@@ -161,25 +161,25 @@ function curweather_plugin_settings(&$a,&$s) {
 	$curweather_loc = PConfig::get(local_user(), 'curweather', 'curweather_loc');
 	$curweather_units = PConfig::get(local_user(), 'curweather', 'curweather_units');
 	$appid = Config::get('curweather','appid');
-	if ($appid=="") { 
+	if ($appid=="") {
 		$noappidtext = t('No APPID found, please contact your admin to obtain one.');
 	} else {
 	    $noappidtext = '';
 	}
 	$enable = intval(PConfig::get(local_user(),'curweather','curweather_enable'));
 	$enable_checked = (($enable) ? ' checked="checked" ' : '');
-	
+
 	// load template and replace the macros
 	$t = get_markup_template("settings.tpl", "addon/curweather/" );
-	$s = replace_macros ($t, array(
-    		'$submit' => t('Save Settings'),	    
+	$s = replace_macros ($t, [
+    		'$submit' => t('Save Settings'),
 		'$header' => t('Current Weather').' '.t('Settings'),
 		'$noappidtext' => $noappidtext,
 		'$info' => t('Enter either the name of your location or the zip code.'),
-		'$curweather_loc' => array( 'curweather_loc', t('Your Location'), $curweather_loc, t('Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or <em>14476,DE</em>.') ),
-		'$curweather_units' => array( 'curweather_units', t('Units'), $curweather_units, t('select if the temperature should be displayed in &deg;C or &deg;F'), array('metric'=>'°C', 'imperial'=>'°F')),
-		'$enabled' => array( 'curweather_enable', t('Show weather data'), $enable, '')
-	    ));
+		'$curweather_loc' => [ 'curweather_loc', t('Your Location'), $curweather_loc, t('Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or <em>14476,DE</em>.') ],
+		'$curweather_units' => [ 'curweather_units', t('Units'), $curweather_units, t('select if the temperature should be displayed in &deg;C or &deg;F'), ['metric'=>'°C', 'imperial'=>'°F']],
+		'$enabled' => [ 'curweather_enable', t('Show weather data'), $enable, '']
+	    ]);
 	return;
 
 }
@@ -200,9 +200,9 @@ function curweather_plugin_admin (&$a, &$o) {
     $appid = Config::get('curweather','appid');
     $cachetime = Config::get('curweather','cachetime');
     $t = get_markup_template("admin.tpl", "addon/curweather/" );
-    $o = replace_macros ($t, array(
+    $o = replace_macros ($t, [
 	'$submit' => t('Save Settings'),
-	'$cachetime' => array('cachetime', t('Caching Interval'), $cachetime, t('For how long should the weather data be cached? Choose according your OpenWeatherMap account type.'), array('0'=>t('no cache'), '300'=>'5 '.t('minutes'), '900'=>'15 '.t('minutes'), '1800'=>'30 '.t('minutes'), '3600'=>'60 '.t('minutes'))),
-	'$appid' => array('appid', t('Your APPID'), $appid, t('Your API key provided by OpenWeatherMap'))
-    ));
+	'$cachetime' => ['cachetime', t('Caching Interval'), $cachetime, t('For how long should the weather data be cached? Choose according your OpenWeatherMap account type.'), ['0'=>t('no cache'), '300'=>'5 '.t('minutes'), '900'=>'15 '.t('minutes'), '1800'=>'30 '.t('minutes'), '3600'=>'60 '.t('minutes')]],
+	'$appid' => ['appid', t('Your APPID'), $appid, t('Your API key provided by OpenWeatherMap')]
+    ]);
 }

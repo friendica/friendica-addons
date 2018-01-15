@@ -152,7 +152,7 @@ function ljpost_send(&$a,&$b) {
     if($b['parent'] != $b['id'])
         return;
 
-	// LiveJournal post in the LJ user's timezone. 
+	// LiveJournal post in the LJ user's timezone.
 	// Hopefully the person's Friendica account
 	// will be set to the same thing.
 
@@ -162,7 +162,7 @@ function ljpost_send(&$a,&$b) {
 		intval($b['uid'])
 	);
 	if($x && strlen($x[0]['timezone']))
-		$tz = $x[0]['timezone'];	
+		$tz = $x[0]['timezone'];
 
 	$lj_username = xmlify(PConfig::get($b['uid'],'ljpost','lj_username'));
 	$lj_password = xmlify(PConfig::get($b['uid'],'ljpost','lj_password'));
@@ -234,7 +234,7 @@ EOT;
 		logger('ljpost: data: ' . $xml, LOGGER_DATA);
 
 		if($lj_blog !== 'test')
-			$x = post_url($lj_blog,$xml,array("Content-Type: text/xml"));
+			$x = post_url($lj_blog,$xml,["Content-Type: text/xml"]);
 		logger('posted to livejournal: ' . ($x) ? $x : '', LOGGER_DEBUG);
 
 	}

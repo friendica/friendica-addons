@@ -15,7 +15,7 @@ use Friendica\Core\PConfig;
 function krynn_install() {
 
 	/**
-	 * 
+	 *
 	 * Our demo plugin will attach in three places.
 	 * The first is just prior to storing a local post.
 	 *
@@ -25,7 +25,7 @@ function krynn_install() {
 
 	/**
 	 *
-	 * Then we'll attach into the plugin settings page, and also the 
+	 * Then we'll attach into the plugin settings page, and also the
 	 * settings post hook so that we can create and update
 	 * user preferences.
 	 *
@@ -96,7 +96,7 @@ function krynn_post_hook($a, &$item) {
 	 *
 	 */
 
-	$krynn = array('Ansalon','Abanasinia','Solace','Haven','Gateway','Qualinost','Ankatavaka','Pax Tharkas','Ergoth','Newsea','Straights of Schallsea','Plains of Dust','Tarsis','Barren Hills','Que Shu','Citadel of Light','Solinari','Hedge Maze','Tower of High Sorcery','Inn of the Last Home','Last Heroes Tomb','Academy of Sorcery','Gods Row','Temple of Majere','Temple of Kiri-Jolith','Temple of Mishakal','Temple of Zeboim','The Trough','Sad Town','Xak Tsaroth','Zhaman','Skullcap','Saifhum','Karthay','Mithas','Kothas','Silver Dragon Mountain','Silvanesti');
+	$krynn = ['Ansalon','Abanasinia','Solace','Haven','Gateway','Qualinost','Ankatavaka','Pax Tharkas','Ergoth','Newsea','Straights of Schallsea','Plains of Dust','Tarsis','Barren Hills','Que Shu','Citadel of Light','Solinari','Hedge Maze','Tower of High Sorcery','Inn of the Last Home','Last Heroes Tomb','Academy of Sorcery','Gods Row','Temple of Majere','Temple of Kiri-Jolith','Temple of Mishakal','Temple of Zeboim','The Trough','Sad Town','Xak Tsaroth','Zhaman','Skullcap','Saifhum','Karthay','Mithas','Kothas','Silver Dragon Mountain','Silvanesti'];
 
 	$planet = array_rand($krynn,1);
 	$item['location'] = $krynn[$planet];
@@ -126,7 +126,7 @@ function krynn_settings_post($a,$post) {
 
 /**
  *
- * Called from the Plugin Setting form. 
+ * Called from the Plugin Setting form.
  * Add our own settings info to the page.
  *
  */

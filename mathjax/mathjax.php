@@ -13,13 +13,13 @@ use Friendica\Core\PConfig;
 
 function mathjax_install() {
     register_hook('page_header', 'addon/mathjax/mathjax.php', 'mathjax_page_header');
-    register_hook('plugin_settings', 'addon/mathjax/mathjax.php', 'mathjax_settings'); 
+    register_hook('plugin_settings', 'addon/mathjax/mathjax.php', 'mathjax_settings');
     register_hook('plugin_settings_post', 'addon/mathjax/mathjax.php', 'mathjax_settings_post');
     logger('installed js_math plugin');
 }
 function mathjax_uninstall() {
     unregister_hook('page_header', 'addon/mathjax/mathjax.php', 'mathjax_page_header');
-    unregister_hook('plugin_settings', 'addon/mathjax/mathjax.php', 'mathjax_settings'); 
+    unregister_hook('plugin_settings', 'addon/mathjax/mathjax.php', 'mathjax_settings');
     unregister_hook('plugin_settings_post', 'addon/mathjax/mathjax.php', 'mathjax_settings_post');
 }
 function mathjax_settings_post ($a, $post) {
@@ -63,7 +63,7 @@ function mathjax_page_header($a, &$b) {
         $b .= '<script type="text/javascript" src="'.$url.'"></script>';
     } else {
         $use = PConfig::get(local_user(),'mathjax','use');
-        if ($use) { 
+        if ($use) {
             $b .= '<script type="text/javascript" src="'.$url.'"></script>';
         }
     }
@@ -79,8 +79,8 @@ function mathjax_plugin_admin (&$a, &$o) {
 		Config::set('mathjax','baseurl','http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML');
 	}
 
-	$o = replace_macros( $t, array(
+	$o = replace_macros( $t, [
 		'$submit' => t('Save Settings'),
-		'$baseurl' => array('baseurl', t('MathJax Base URL'), Config::get('mathjax','baseurl' ), t('The URL for the javascript file that should be included to use MathJax. Can be either the MathJax CDN or another installation of MathJax.')),
-	));
+		'$baseurl' => ['baseurl', t('MathJax Base URL'), Config::get('mathjax','baseurl' ), t('The URL for the javascript file that should be included to use MathJax. Can be either the MathJax CDN or another installation of MathJax.')],
+	]);
 }

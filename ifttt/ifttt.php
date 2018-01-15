@@ -120,13 +120,13 @@ function ifttt_post(App $a)
 		return;
 	}
 
-	$item = array();
+	$item = [];
 
 	if (isset($_REQUEST['type'])) {
 		$item['type'] = $_REQUEST['type'];
 	}
 
-	if (!in_array($item['type'], array('status', 'link', 'photo'))) {
+	if (!in_array($item['type'], ['status', 'link', 'photo'])) {
 		logger('Unknown item type ' . $item['type'], LOGGER_DEBUG);
 		return;
 	}

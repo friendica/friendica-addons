@@ -157,7 +157,7 @@ function ijpost_send(&$a,&$b) {
     if($b['parent'] != $b['id'])
         return;
 
-	// insanejournal post in the LJ user's timezone. 
+	// insanejournal post in the LJ user's timezone.
 	// Hopefully the person's Friendica account
 	// will be set to the same thing.
 
@@ -167,7 +167,7 @@ function ijpost_send(&$a,&$b) {
 		intval($b['uid'])
 	);
 	if($x && strlen($x[0]['timezone']))
-		$tz = $x[0]['timezone'];	
+		$tz = $x[0]['timezone'];
 
 	$ij_username = PConfig::get($b['uid'],'ijpost','ij_username');
 	$ij_password = PConfig::get($b['uid'],'ijpost','ij_password');
@@ -220,7 +220,7 @@ EOT;
 		logger('ijpost: data: ' . $xml, LOGGER_DATA);
 
 		if($ij_blog !== 'test')
-			$x = post_url($ij_blog,$xml,array("Content-Type: text/xml"));
+			$x = post_url($ij_blog,$xml,["Content-Type: text/xml"]);
 		logger('posted to insanejournal: ' . ($x) ? $x : '', LOGGER_DEBUG);
 
 	}

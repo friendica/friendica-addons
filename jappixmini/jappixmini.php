@@ -246,10 +246,10 @@ function jappixmini_init()
 
 		$encrypted_address_hex = bin2hex($encrypted_address);
 
-		$answer = Array(
+		$answer = [
 			"status" => "ok",
 			"encrypted_address" => $encrypted_address_hex
-		);
+		];
 
 		$answer_json = json_encode($answer);
 		echo $answer_json;
@@ -514,7 +514,7 @@ function jappixmini_script(App $a)
 	}
 
 	// get a list of jabber accounts of the contacts
-	$contacts = Array();
+	$contacts = [];
 	$uid = local_user();
 	$rows = q("SELECT * FROM `pconfig` WHERE `uid`=$uid AND `cat`='jappixmini' AND `k` LIKE 'id:%%'");
 	foreach ($rows as $row) {

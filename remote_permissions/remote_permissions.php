@@ -4,7 +4,7 @@
  * Description: Allow the recipients of private posts to see who else can see the post by clicking the lock icon
  * Version: 1.0
  * Author: Zach <https://f.shmuz.in/profile/techcity>
- * 
+ *
  */
 
 use Friendica\Core\Config;
@@ -38,17 +38,17 @@ function remote_permissions_settings(&$a,&$o) {
 	/* Get the current state of our config variable */
 
 	$remote_perms = PConfig::get(local_user(),'remote_perms','show');
-	
+
 	/* Add some HTML to the existing form */
 
 //	$t = file_get_contents("addon/remote_permissions/settings.tpl" );
 	$t = get_markup_template("settings.tpl", "addon/remote_permissions/" );
-	$o .= replace_macros($t, array(
+	$o .= replace_macros($t, [
 		'$remote_perms_title' => t('Remote Permissions Settings'),
 		'$remote_perms_label' => t('Allow recipients of your private posts to see the other recipients of the posts'),
 		'$checked' => (($remote_perms == 1) ? 'checked="checked"' : ''),
 		'$submit' => t('Save Settings')
-	));
+	]);
 
 }
 
@@ -71,7 +71,7 @@ function remote_permissions_content($a, $item_copy) {
 		$r = q("SELECT nick, url FROM contact WHERE id = %d LIMIT 1",
 		       intval($item_copy['contact-id'])
 		);
-		if(! $r) 
+		if(! $r)
 			return;
 
 		// Find out if the contact lives here
@@ -95,7 +95,7 @@ function remote_permissions_content($a, $item_copy) {
 	if(($item_copy['private'] == 1) && (! strlen($item_copy['allow_cid'])) && (! strlen($item_copy['allow_gid']))
 		&& (! strlen($item_copy['deny_cid'])) && (! strlen($item_copy['deny_gid']))) {
 
-		$allow_names = array();
+		$allow_names = [];
 
 		// Check for the original post here -- that's the only way
 		// to definitely get all of the recipients
@@ -124,14 +124,14 @@ function remote_permissions_content($a, $item_copy) {
 			$deny_groups = expand_acl($item['deny_gid']);
 
 			$o = t('Visible to:') . '<br />';
-			$allow = array();
-			$deny = array();
+			$allow = [];
+			$deny = [];
 
 			if(count($allowed_groups)) {
 				$r = q("SELECT DISTINCT `contact-id` FROM group_member WHERE gid IN ( %s )",
 					dbesc(implode(', ', $allowed_groups))
 				);
-				foreach($r as $rr) 
+				foreach($r as $rr)
 					$allow[] = $rr['contact-id'];
 			}
 			$allow = array_unique($allow + $allowed_users);
@@ -140,7 +140,7 @@ function remote_permissions_content($a, $item_copy) {
 				$r = q("SELECT DISTINCT `contact-id` FROM group_member WHERE gid IN ( %s )",
 					dbesc(implode(', ', $deny_groups))
 				);
-				foreach($r as $rr) 
+				foreach($r as $rr)
 					$deny[] = $rr['contact-id'];
 			}
 			$deny = $deny + $deny_users;
@@ -167,7 +167,7 @@ function remote_permissions_content($a, $item_copy) {
 			if(! $r)
 				return;
 
-			$allow = array();
+			$allow = [];
 			foreach($r as $rr)
 				$allow[] = $rr['uid'];
 
@@ -194,11 +194,11 @@ function remote_permissions_content($a, $item_copy) {
 
 function remote_permissions_plugin_admin(&$a, &$o){
 	$t = get_markup_template( "admin.tpl", "addon/remote_permissions/" );
-	$o = replace_macros($t, array(
+	$o = replace_macros($t, [
 		'$submit' => t('Save Settings'),
-		'$global' => array('remotepermschoice', t('Global'), 1, t('The posts of every user on this server show the post recipients'),  Config::get('remote_perms', 'global') == 1),
-		'$individual' => array('remotepermschoice', t('Individual'), 2, t('Each user chooses whether his/her posts show the post recipients'),  Config::get('remote_perms', 'global') == 0)
-	));
+		'$global' => ['remotepermschoice', t('Global'), 1, t('The posts of every user on this server show the post recipients'),  Config::get('remote_perms', 'global') == 1],
+		'$individual' => ['remotepermschoice', t('Individual'), 2, t('Each user chooses whether his/her posts show the post recipients'),  Config::get('remote_perms', 'global') == 0]
+	]);
 }
 
 function remote_permissions_plugin_admin_post(&$a){

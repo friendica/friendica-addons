@@ -86,11 +86,11 @@ function geocoordinates_plugin_admin(&$a, &$o)
 
 	$t = get_markup_template("admin.tpl", "addon/geocoordinates/");
 
-	$o = replace_macros($t, array(
+	$o = replace_macros($t, [
 		'$submit' => t('Save Settings'),
-		'$api_key' => array('api_key', t('API Key'),  Config::get('geocoordinates', 'api_key' ), ''),
-		'$language' => array('language', t('Language code (IETF format)'),  Config::get('geocoordinates', 'language' ), ''),
-	));
+		'$api_key' => ['api_key', t('API Key'),  Config::get('geocoordinates', 'api_key' ), ''],
+		'$language' => ['language', t('Language code (IETF format)'),  Config::get('geocoordinates', 'language' ), ''],
+	]);
 }
 
 function geocoordinates_plugin_admin_post(&$a)

@@ -62,27 +62,27 @@ function communityhome_home(&$a, &$o){
 	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->get_baseurl().'/addon/communityhome/communityhome.css" media="all" />';
 
 	if (!Config::get('communityhome','hidelogin')){
-		$aside = array(
+		$aside = [
 			'$tab_1' => t('Login'),
 			'$tab_2' => t('OpenID'),
 			'$noOid' => Config::get('system','no_openid'),
-		);
+		];
 
 		// login form
 		$aside['$login_title'] =  t('Login');
 		$aside['$login_form'] = Login::form($a->query_string, $a->config['register_policy'] == REGISTER_CLOSED ? false : true);
 	} else  {
-		$aside = array(
+		$aside = [
 			//'$tab_1' => t('Login'),
 			//'$tab_2' => t('OpenID'),
 			//'$noOid' => Config::get('system','no_openid'),
-		);
+		];
 	}
 
 	// last 12 users
 	if (Config::get('communityhome','showlastusers')){
 		$aside['$lastusers_title'] = t('Latest users');
-		$aside['$lastusers_items'] = array();
+		$aside['$lastusers_items'] = [];
 		$sql_extra = "";
 		$publish = (Config::get('system','publish_all') ? '' : " AND `publish` = 1 " );
 		$order = " ORDER BY `register_date` DESC ";
@@ -99,12 +99,12 @@ function communityhome_home(&$a, &$o){
 			$photo = 'thumb';
 			foreach($r as $rr) {
 				$profile_link = $a->get_baseurl() . '/profile/' . ((strlen($rr['nickname'])) ? $rr['nickname'] : $rr['profile_uid']);
-				$entry = replace_macros($tpl,array(
+				$entry = replace_macros($tpl,[
 					'$id' => $rr['id'],
 					'$profile_link' => $profile_link,
 					'$photo' => $a->get_cached_avatar_image($rr[$photo]),
 					'$alt_text' => $rr['name'],
-				));
+				]);
 				$aside['$lastusers_items'][] = $entry;
 			}
 		}
@@ -127,17 +127,17 @@ function communityhome_home(&$a, &$o){
 				LIMIT 0,10");
 		if($r && count($r)) {
 			$aside['$activeusers_title']  = t('Most active users');
-			$aside['$activeusers_items']  = array();
+			$aside['$activeusers_items']  = [];
 
 			$photo = 'thumb';
 			foreach($r as $rr) {
 				$profile_link = $a->get_baseurl() . '/profile/' . ((strlen($rr['nickname'])) ? $rr['nickname'] : $rr['profile_uid']);
-				$entry = replace_macros($tpl,array(
+				$entry = replace_macros($tpl,[
 					'$id' => $rr['id'],
 					'$profile_link' => $profile_link,
 					'$photo' => $rr[$photo],
 					'$photo_user' => sprintf("%s (%s posts, %s contacts)",$rr['name'], ($rr['items']?$rr['items']:'0'), ($rr['contacts']?$rr['contacts']:'0'))
-				));
+				]);
 				$aside['$activeusers_items'][] = $entry;
 			}
 		}
@@ -145,7 +145,7 @@ function communityhome_home(&$a, &$o){
 	// last 12 photos
 	if (Config::get('communityhome','showlastphotos')){
 		$aside['$photos_title'] = t('Latest photos');
-		$aside['$photos_items'] = array();
+		$aside['$photos_items'] = [];
 		$r = q("SELECT `photo`.`id`, `photo`.`resource-id`, `photo`.`scale`, `photo`.`desc`, `user`.`nickname`, `user`.`username` FROM
 					(SELECT `resource-id`, MAX(`scale`) as maxscale FROM `photo`
 						WHERE `profile`=0 AND `contact-id`=0 AND `album` NOT IN ('Contact Photos', '%s', 'Profile Photos', '%s')
@@ -169,13 +169,13 @@ function communityhome_home(&$a, &$o){
 				$photo_page = $a->get_baseurl() . '/photos/' . $rr['nickname'] . '/image/' . $rr['resource-id'];
 				$photo_url = $a->get_baseurl() . '/photo/' .  $rr['resource-id'] . '-' . $rr['scale'] .'.jpg';
 
-				$entry = replace_macros($tpl,array(
+				$entry = replace_macros($tpl,[
 					'$id' => $rr['id'],
 					'$profile_link' => $photo_page,
 					'$photo' => $photo_url,
 					'$photo_user' => $rr['username'],
 					'$photo_title' => $rr['desc']
-				));
+				]);
 
 				$aside['$photos_items'][] = $entry;
 			}
@@ -185,7 +185,7 @@ function communityhome_home(&$a, &$o){
 	// last 10 liked items
 	if (Config::get('communityhome','showlastlike')){
 		$aside['$like_title'] = t('Latest likes');
-		$aside['$like_items'] = array();
+		$aside['$like_items'] = [];
 		$r = q("SELECT `T1`.`created`, `T1`.`liker`, `T1`.`liker-link`, `item`.* FROM
 				(SELECT `parent-uri`, `created`, `author-name` AS `liker`,`author-link` AS `liker-link`
 					FROM `item` WHERE `verb`='http://activitystrea.ms/schema/1.0/like' GROUP BY `parent-uri` ORDER BY `created` DESC) AS T1
@@ -215,7 +215,7 @@ function communityhome_home(&$a, &$o){
 				default:
 					if ($rr['resource-id']){
 						$post_type = t('photo');
-						$m=array();	preg_match("/\[url=([^]]*)\]/", $rr['body'], $m);
+						$m=[];	preg_match("/\[url=([^]]*)\]/", $rr['body'], $m);
 						$rr['plink'] = $m[1];
 					} else {
 						$post_type = t('status');
