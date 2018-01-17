@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * Name: blockem
  * Description: block people
@@ -8,28 +6,28 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  *
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 
 function blockem_install() {
-	register_hook('prepare_body', 'addon/blockem/blockem.php', 'blockem_prepare_body');
-	register_hook('display_item', 'addon/blockem/blockem.php', 'blockem_display_item');
-	register_hook('plugin_settings', 'addon/blockem/blockem.php', 'blockem_addon_settings');
-	register_hook('plugin_settings_post', 'addon/blockem/blockem.php', 'blockem_addon_settings_post');
-	register_hook('conversation_start', 'addon/blockem/blockem.php', 'blockem_conversation_start');
-	register_hook('item_photo_menu', 'addon/blockem/blockem.php', 'blockem_item_photo_menu');
-	register_hook('enotify_store', 'addon/blockem/blockem.php', 'blockem_enotify_store' );
+	Addon::registerHook('prepare_body', 'addon/blockem/blockem.php', 'blockem_prepare_body');
+	Addon::registerHook('display_item', 'addon/blockem/blockem.php', 'blockem_display_item');
+	Addon::registerHook('plugin_settings', 'addon/blockem/blockem.php', 'blockem_addon_settings');
+	Addon::registerHook('plugin_settings_post', 'addon/blockem/blockem.php', 'blockem_addon_settings_post');
+	Addon::registerHook('conversation_start', 'addon/blockem/blockem.php', 'blockem_conversation_start');
+	Addon::registerHook('item_photo_menu', 'addon/blockem/blockem.php', 'blockem_item_photo_menu');
+	Addon::registerHook('enotify_store', 'addon/blockem/blockem.php', 'blockem_enotify_store' );
 }
 
 
 function blockem_uninstall() {
-	unregister_hook('prepare_body', 'addon/blockem/blockem.php', 'blockem_prepare_body');
-	unregister_hook('display_item', 'addon/blockem/blockem.php', 'blockem_display_item');
-	unregister_hook('plugin_settings', 'addon/blockem/blockem.php', 'blockem_addon_settings');
-	unregister_hook('plugin_settings_post', 'addon/blockem/blockem.php', 'blockem_addon_settings_post');
-	unregister_hook('conversation_start', 'addon/blockem/blockem.php', 'blockem_conversation_start');
-	unregister_hook('item_photo_menu', 'addon/blockem/blockem.php', 'blockem_item_photo_menu');
-	unregister_hook('enotify_store', 'addon/blockem/blockem.php', 'blockem_enotify_store' );
+	Addon::unregisterHook('prepare_body', 'addon/blockem/blockem.php', 'blockem_prepare_body');
+	Addon::unregisterHook('display_item', 'addon/blockem/blockem.php', 'blockem_display_item');
+	Addon::unregisterHook('plugin_settings', 'addon/blockem/blockem.php', 'blockem_addon_settings');
+	Addon::unregisterHook('plugin_settings_post', 'addon/blockem/blockem.php', 'blockem_addon_settings_post');
+	Addon::unregisterHook('conversation_start', 'addon/blockem/blockem.php', 'blockem_conversation_start');
+	Addon::unregisterHook('item_photo_menu', 'addon/blockem/blockem.php', 'blockem_item_photo_menu');
+	Addon::unregisterHook('enotify_store', 'addon/blockem/blockem.php', 'blockem_enotify_store' );
 
 }
 

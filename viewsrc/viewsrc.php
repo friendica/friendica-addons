@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * Name: viewsrc
  * Description: Add "View Source" link to item context
@@ -8,16 +6,17 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  *
  */
+use Friendica\Core\Addon;
 
 function viewsrc_install() {
-	register_hook('item_photo_menu', 'addon/viewsrc/viewsrc.php', 'viewsrc_item_photo_menu');
-	register_hook('page_end', 'addon/viewsrc/viewsrc.php', 'viewsrc_page_end');
+	Addon::registerHook('item_photo_menu', 'addon/viewsrc/viewsrc.php', 'viewsrc_item_photo_menu');
+	Addon::registerHook('page_end', 'addon/viewsrc/viewsrc.php', 'viewsrc_page_end');
 }
 
 
 function viewsrc_uninstall() {
-	unregister_hook('item_photo_menu', 'addon/viewsrc/viewsrc.php', 'viewsrc_item_photo_menu');
-	unregister_hook('page_end', 'addon/viewsrc/viewsrc.php', 'viewsrc_page_end');
+	Addon::unregisterHook('item_photo_menu', 'addon/viewsrc/viewsrc.php', 'viewsrc_item_photo_menu');
+	Addon::unregisterHook('page_end', 'addon/viewsrc/viewsrc.php', 'viewsrc_page_end');
 
 }
 

@@ -11,19 +11,20 @@ require_once 'include/items.php';
 require_once 'include/text.php';
 
 use Friendica\App;
+use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBM;
 
 function ifttt_install()
 {
-	register_hook('connector_settings', 'addon/ifttt/ifttt.php', 'ifttt_settings');
-	register_hook('connector_settings_post', 'addon/ifttt/ifttt.php', 'ifttt_settings_post');
+	Addon::registerHook('connector_settings', 'addon/ifttt/ifttt.php', 'ifttt_settings');
+	Addon::registerHook('connector_settings_post', 'addon/ifttt/ifttt.php', 'ifttt_settings_post');
 }
 
 function ifttt_uninstall()
 {
-	unregister_hook('connector_settings', 'addon/ifttt/ifttt.php', 'ifttt_settings');
-	unregister_hook('connector_settings_post', 'addon/ifttt/ifttt.php', 'ifttt_settings_post');
+	Addon::unregisterHook('connector_settings', 'addon/ifttt/ifttt.php', 'ifttt_settings');
+	Addon::unregisterHook('connector_settings_post', 'addon/ifttt/ifttt.php', 'ifttt_settings_post');
 }
 
 function ifttt_module()

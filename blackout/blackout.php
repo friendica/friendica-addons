@@ -50,13 +50,14 @@
  */
 
 use Friendica\Core\Config;
+use Friendica\Core\Addon;
 
 function blackout_install() {
-    register_hook('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');
+    Addon::registerHook('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');
 }
 
 function blackout_uninstall() {
-    unregister_hook('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');
+    Addon::unregisterHook('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');
 }
 function blackout_redirect ($a, $b) {
     // if we have a logged in user, don't throw her out

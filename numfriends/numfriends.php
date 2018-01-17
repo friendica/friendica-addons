@@ -4,16 +4,14 @@
  * Description: Change number of contacts shown of profile sidebar
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- * 
- *
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 
 function numfriends_install() {
 
-	register_hook('plugin_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
-	register_hook('plugin_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
+	Addon::registerHook('plugin_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
+	Addon::registerHook('plugin_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
 
 	logger("installed numfriends");
 }
@@ -21,8 +19,8 @@ function numfriends_install() {
 
 function numfriends_uninstall() {
 
-	unregister_hook('plugin_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
-	unregister_hook('plugin_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
+	Addon::unregisterHook('plugin_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
+	Addon::unregisterHook('plugin_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
 
 
 	logger("removed numfriends");

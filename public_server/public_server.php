@@ -1,31 +1,30 @@
 <?php
-
 /**
  * Name: public_server
  * Description: Friendica plugin/addon with functions suitable for a public server.
  * Version: 1.1
  * Author: Keith Fernie <http://friendika.me4.it/profile/keith>
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Model\User;
 
 
 function public_server_install() {
 
-	register_hook('register_account', 'addon/public_server/public_server.php', 'public_server_register_account');
-	register_hook('cron', 'addon/public_server/public_server.php', 'public_server_cron');
-        register_hook('enotify','addon/public_server/public_server.php', 'public_server_enotify');
-	register_hook('logged_in', 'addon/public_server/public_server.php', 'public_server_login');
+	Addon::registerHook('register_account', 'addon/public_server/public_server.php', 'public_server_register_account');
+	Addon::registerHook('cron', 'addon/public_server/public_server.php', 'public_server_cron');
+    Addon::registerHook('enotify','addon/public_server/public_server.php', 'public_server_enotify');
+	Addon::registerHook('logged_in', 'addon/public_server/public_server.php', 'public_server_login');
 }
 
 
 function public_server_uninstall() {
 
-	unregister_hook('register_account', 'addon/public_server/public_server.php', 'public_server_register_account');
-	unregister_hook('cron', 'addon/public_server/public_server.php', 'public_server_cron');
-        unregister_hook('enotify','addon/public_server/public_server.php', 'public_server_enotify');
-	unregister_hook('logged_in', 'addon/public_server/public_server.php', 'public_server_login');
+	Addon::unregisterHook('register_account', 'addon/public_server/public_server.php', 'public_server_register_account');
+	Addon::unregisterHook('cron', 'addon/public_server/public_server.php', 'public_server_cron');
+    Addon::unregisterHook('enotify','addon/public_server/public_server.php', 'public_server_enotify');
+	Addon::unregisterHook('logged_in', 'addon/public_server/public_server.php', 'public_server_login');
 }
 
 function public_server_register_account($a,$b) {

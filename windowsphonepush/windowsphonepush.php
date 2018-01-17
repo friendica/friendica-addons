@@ -26,6 +26,7 @@
  *        count only unseen elements which are not type=activity (likes and dislikes not seen as new elements)
  */
 use Friendica\App;
+use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 use Friendica\Model\User;
 
@@ -35,15 +36,15 @@ function windowsphonepush_install()
 	 * The first is within cron - so the push notifications will be
 	 * sent every 10 minutes (or whatever is set in crontab).
 	 */
-	register_hook('cron', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_cron');
+	Addon::registerHook('cron', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_cron');
 
 	/* Then we'll attach into the plugin settings page, and also the
 	 * settings post hook so that we can create and update
 	 * user preferences. User shall be able to activate the plugin and
 	 * define whether he allows pushing first characters of item text
 	 */
-	register_hook('plugin_settings', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings');
-	register_hook('plugin_settings_post', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings_post');
+	Addon::registerHook('plugin_settings', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings');
+	Addon::registerHook('plugin_settings_post', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings_post');
 
 	logger("installed windowsphonepush");
 }
@@ -53,9 +54,9 @@ function windowsphonepush_uninstall()
 	/* uninstall unregisters any hooks created with register_hook
 	 * during install. Don't delete data in table `pconfig`.
 	 */
-	unregister_hook('cron', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_cron');
-	unregister_hook('plugin_settings', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings');
-	unregister_hook('plugin_settings_post', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings_post');
+	Addon::unregisterHook('cron', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_cron');
+	Addon::unregisterHook('plugin_settings', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings');
+	Addon::unregisterHook('plugin_settings_post', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings_post');
 
 	logger("removed windowsphonepush");
 }

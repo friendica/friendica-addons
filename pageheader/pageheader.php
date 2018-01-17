@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * Name: Page Header
  * Description: Inserts a page header
@@ -9,24 +7,24 @@
  *         Hauke Altmann <https://snarl.de/profile/tugelblend>
  * 
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 
 function pageheader_install() {
-    register_hook('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
-	register_hook('plugin_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
-	register_hook('plugin_settings_post', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings_post');
+    Addon::registerHook('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
+	Addon::registerHook('plugin_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
+	Addon::registerHook('plugin_settings_post', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings_post');
 
 }
 
 
 function pageheader_uninstall() {
-    unregister_hook('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
-	unregister_hook('plugin_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
-	unregister_hook('plugin_settings_post', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings_post');
+    Addon::unregisterHook('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
+	Addon::unregisterHook('plugin_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
+	Addon::unregisterHook('plugin_settings_post', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings_post');
 
 	// hook moved, uninstall the old one if still there. 
-    unregister_hook('page_header', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
+    Addon::unregisterHook('page_header', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
 
 }
 

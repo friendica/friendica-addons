@@ -1,5 +1,6 @@
 <?php
 
+use Friendica\Core\Addon;
 use Friendica\Module\Login;
 use Friendica\Util\Emailer;
 
@@ -7,19 +8,19 @@ require_once('include/security.php');
 
 function dav_install()
 {
-	register_hook('event_created', 'addon/dav/dav.php', 'dav_event_created_hook');
-	register_hook('event_updated', 'addon/dav/dav.php', 'dav_event_updated_hook');
-	register_hook('profile_tabs', 'addon/dav/dav.php', 'dav_profile_tabs_hook');
-	register_hook('cron', 'addon/dav/dav.php', 'dav_cron');
+	Addon::registerHook('event_created', 'addon/dav/dav.php', 'dav_event_created_hook');
+	Addon::registerHook('event_updated', 'addon/dav/dav.php', 'dav_event_updated_hook');
+	Addon::registerHook('profile_tabs', 'addon/dav/dav.php', 'dav_profile_tabs_hook');
+	Addon::registerHook('cron', 'addon/dav/dav.php', 'dav_cron');
 }
 
 
 function dav_uninstall()
 {
-	unregister_hook('event_created', 'addon/dav/dav.php', 'dav_event_created_hook');
-	unregister_hook('event_updated', 'addon/dav/dav.php', 'dav_event_updated_hook');
-	unregister_hook('profile_tabs', 'addon/dav/dav.php', 'dav_profile_tabs_hook');
-	unregister_hook('cron', 'addon/dav/dav.php', 'dav_cron');
+	Addon::unregisterHook('event_created', 'addon/dav/dav.php', 'dav_event_created_hook');
+	Addon::unregisterHook('event_updated', 'addon/dav/dav.php', 'dav_event_updated_hook');
+	Addon::unregisterHook('profile_tabs', 'addon/dav/dav.php', 'dav_profile_tabs_hook');
+	Addon::unregisterHook('cron', 'addon/dav/dav.php', 'dav_cron');
 }
 
 

@@ -6,28 +6,28 @@
  * Version: 1.1
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 
 function wppost_install() {
-    register_hook('post_local',           'addon/wppost/wppost.php', 'wppost_post_local');
-    register_hook('notifier_normal',      'addon/wppost/wppost.php', 'wppost_send');
-    register_hook('jot_networks',         'addon/wppost/wppost.php', 'wppost_jot_nets');
-    register_hook('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
-    register_hook('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
+    Addon::registerHook('post_local',           'addon/wppost/wppost.php', 'wppost_post_local');
+    Addon::registerHook('notifier_normal',      'addon/wppost/wppost.php', 'wppost_send');
+    Addon::registerHook('jot_networks',         'addon/wppost/wppost.php', 'wppost_jot_nets');
+    Addon::registerHook('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
+    Addon::registerHook('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
 
 }
 function wppost_uninstall() {
-    unregister_hook('post_local',       'addon/wppost/wppost.php', 'wppost_post_local');
-    unregister_hook('notifier_normal',  'addon/wppost/wppost.php', 'wppost_send');
-    unregister_hook('jot_networks',     'addon/wppost/wppost.php', 'wppost_jot_nets');
-    unregister_hook('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
-    unregister_hook('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
+    Addon::unregisterHook('post_local',       'addon/wppost/wppost.php', 'wppost_post_local');
+    Addon::unregisterHook('notifier_normal',  'addon/wppost/wppost.php', 'wppost_send');
+    Addon::unregisterHook('jot_networks',     'addon/wppost/wppost.php', 'wppost_jot_nets');
+    Addon::unregisterHook('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
+    Addon::unregisterHook('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
 
 	// obsolete - remove
-    unregister_hook('post_local_end',   'addon/wppost/wppost.php', 'wppost_send');
-    unregister_hook('plugin_settings',  'addon/wppost/wppost.php', 'wppost_settings');
-    unregister_hook('plugin_settings_post',  'addon/wppost/wppost.php', 'wppost_settings_post');
+    Addon::unregisterHook('post_local_end',   'addon/wppost/wppost.php', 'wppost_send');
+    Addon::unregisterHook('plugin_settings',  'addon/wppost/wppost.php', 'wppost_settings');
+    Addon::unregisterHook('plugin_settings_post',  'addon/wppost/wppost.php', 'wppost_settings_post');
 
 }
 

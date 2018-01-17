@@ -8,27 +8,27 @@
  * Author: Klaus Weidenbach
  *
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
 
 
 function openstreetmap_install()
 {
-	register_hook('render_location', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_location');
-	register_hook('generate_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_map');
-	register_hook('generate_named_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_named_map');
-	register_hook('page_header', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_alterheader');
+	Addon::registerHook('render_location', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_location');
+	Addon::registerHook('generate_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_map');
+	Addon::registerHook('generate_named_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_named_map');
+	Addon::registerHook('page_header', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_alterheader');
 
 	logger("installed openstreetmap");
 }
 
 function openstreetmap_uninstall()
 {
-	unregister_hook('render_location', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_location');
-	unregister_hook('generate_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_map');
-	unregister_hook('generate_named_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_named_map');
-	unregister_hook('page_header', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_alterheader');
+	Addon::unregisterHook('render_location', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_location');
+	Addon::unregisterHook('generate_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_map');
+	Addon::unregisterHook('generate_named_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_named_map');
+	Addon::unregisterHook('page_header', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_alterheader');
 
 	logger("removed openstreetmap");
 }

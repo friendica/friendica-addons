@@ -9,6 +9,7 @@
  */
 
 use Friendica\App;
+use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 
 /* Define the hooks we want to use
@@ -18,16 +19,16 @@ use Friendica\Core\PConfig;
 
 function langfilter_install()
 {
-	register_hook('prepare_body', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body', 10);
-	register_hook('plugin_settings', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
-	register_hook('plugin_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
+	Addon::registerHook('prepare_body', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body', 10);
+	Addon::registerHook('plugin_settings', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
+	Addon::registerHook('plugin_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
 }
 
 function langfilter_uninstall()
 {
-	unregister_hook('prepare_body', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body');
-	unregister_hook('plugin_settings', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
-	unregister_hook('plugin_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
+	Addon::unregisterHook('prepare_body', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body');
+	Addon::unregisterHook('plugin_settings', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
+	Addon::unregisterHook('plugin_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
 }
 
 /* The settings

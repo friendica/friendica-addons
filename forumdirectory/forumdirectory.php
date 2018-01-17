@@ -5,15 +5,15 @@
 * Version: 1.0
 * Author: Thomas Willingham <https://beardyunixer.com/profile/beardyunixer>
 */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 
 function forumdirectory_install() {
-register_hook('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
+Addon::registerHook('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
 }
 
 function forumdirectory_uninstall() {
-unregister_hook('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
+Addon::unregisterHook('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
 }
 
 function forumdirectory_module() {
