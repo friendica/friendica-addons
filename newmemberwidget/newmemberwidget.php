@@ -9,14 +9,15 @@
 
 require_once('include/bbcode.php');
 
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 
 function newmemberwidget_install () {
-    register_hook( 'network_mod_init', 'addon/newmemberwidget/newmemberwidget.php', 'newmemberwidget_network_mod_init');
+    Addon::registerHook( 'network_mod_init', 'addon/newmemberwidget/newmemberwidget.php', 'newmemberwidget_network_mod_init');
     logger('newmemberwidget installed');
 }
 function newmemberwidget_uninstall () {
-    unregister_hook( 'network_mod_init', 'addon/newmemberwidget/newmemberwidget.php', 'newmemberwidget_network_mod_init');
+    Addon::unregisterHook( 'network_mod_init', 'addon/newmemberwidget/newmemberwidget.php', 'newmemberwidget_network_mod_init');
 }
 
 function newmemberwidget_network_mod_init ( $a, $b) {

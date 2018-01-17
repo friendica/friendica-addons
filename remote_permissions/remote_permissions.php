@@ -6,20 +6,20 @@
  * Author: Zach <https://f.shmuz.in/profile/techcity>
  *
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 
 function remote_permissions_install() {
-	register_hook('lockview_content', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_content');
-	register_hook('plugin_settings', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings');
-	register_hook('plugin_settings_post', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings_post');
+	Addon::registerHook('lockview_content', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_content');
+	Addon::registerHook('plugin_settings', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings');
+	Addon::registerHook('plugin_settings_post', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings_post');
 }
 
 function remote_permissions_uninstall() {
-	unregister_hook('lockview_content', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_content');
-	unregister_hook('plugin_settings', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings');
-	unregister_hook('plugin_settings_post', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings_post');
+	Addon::unregisterHook('lockview_content', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_content');
+	Addon::unregisterHook('plugin_settings', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings');
+	Addon::unregisterHook('plugin_settings_post', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings_post');
 }
 
 function remote_permissions_settings(&$a,&$o) {

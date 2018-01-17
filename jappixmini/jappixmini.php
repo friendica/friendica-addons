@@ -63,22 +63,23 @@
  */
 
 use Friendica\App;
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 use Friendica\Model\User;
 
 function jappixmini_install()
 {
-	register_hook('plugin_settings', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings');
-	register_hook('plugin_settings_post', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings_post');
+	Addon::registerHook('plugin_settings', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings');
+	Addon::registerHook('plugin_settings_post', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings_post');
 
-	register_hook('page_end', 'addon/jappixmini/jappixmini.php', 'jappixmini_script');
-	register_hook('authenticate', 'addon/jappixmini/jappixmini.php', 'jappixmini_login');
+	Addon::registerHook('page_end', 'addon/jappixmini/jappixmini.php', 'jappixmini_script');
+	Addon::registerHook('authenticate', 'addon/jappixmini/jappixmini.php', 'jappixmini_login');
 
-	register_hook('cron', 'addon/jappixmini/jappixmini.php', 'jappixmini_cron');
+	Addon::registerHook('cron', 'addon/jappixmini/jappixmini.php', 'jappixmini_cron');
 
 	// Jappix source download as required by AGPL
-	register_hook('about_hook', 'addon/jappixmini/jappixmini.php', 'jappixmini_download_source');
+	Addon::registerHook('about_hook', 'addon/jappixmini/jappixmini.php', 'jappixmini_download_source');
 
 	// set standard configuration
 	$info_text = Config::get("jappixmini", "infotext");
@@ -103,15 +104,15 @@ function jappixmini_install()
 
 function jappixmini_uninstall()
 {
-	unregister_hook('plugin_settings', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings');
-	unregister_hook('plugin_settings_post', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings_post');
+	Addon::unregisterHook('plugin_settings', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings');
+	Addon::unregisterHook('plugin_settings_post', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings_post');
 
-	unregister_hook('page_end', 'addon/jappixmini/jappixmini.php', 'jappixmini_script');
-	unregister_hook('authenticate', 'addon/jappixmini/jappixmini.php', 'jappixmini_login');
+	Addon::unregisterHook('page_end', 'addon/jappixmini/jappixmini.php', 'jappixmini_script');
+	Addon::unregisterHook('authenticate', 'addon/jappixmini/jappixmini.php', 'jappixmini_login');
 
-	unregister_hook('cron', 'addon/jappixmini/jappixmini.php', 'jappixmini_cron');
+	Addon::unregisterHook('cron', 'addon/jappixmini/jappixmini.php', 'jappixmini_cron');
 
-	unregister_hook('about_hook', 'addon/jappixmini/jappixmini.php', 'jappixmini_download_source');
+	Addon::unregisterHook('about_hook', 'addon/jappixmini/jappixmini.php', 'jappixmini_download_source');
 }
 
 function jappixmini_plugin_admin(App $a, &$o)

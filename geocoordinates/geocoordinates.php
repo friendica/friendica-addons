@@ -5,21 +5,21 @@
  * Version: 0.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
 
 function geocoordinates_install()
 {
-	register_hook('post_local', 'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
-	register_hook('post_remote', 'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
+	Addon::registerHook('post_local', 'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
+	Addon::registerHook('post_remote', 'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
 }
 
 
 function geocoordinates_uninstall()
 {
-	unregister_hook('post_local',    'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
-	unregister_hook('post_remote',    'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
+	Addon::unregisterHook('post_local',    'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
+	Addon::unregisterHook('post_remote',    'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
 }
 
 function geocoordinates_resolve_item(&$item)

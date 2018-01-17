@@ -6,13 +6,14 @@
  * Author: Thomas Willingham <https://kakste.com/profile/beardyunixer>
  *
  */
+use Friendica\Core\Addon;
 
 function morepokes_install() {
-	  register_hook('poke_verbs', 'addon/morepokes/morepokes.php', 'morepokes_poke_verbs');
+	  Addon::registerHook('poke_verbs', 'addon/morepokes/morepokes.php', 'morepokes_poke_verbs');
 }
 
 function morepokes_uninstall() {
-	  unregister_hook('poke_verbs', 'addon/morepokes/morepokes.php', 'morepokes_poke_verbs');
+	  Addon::unregisterHook('poke_verbs', 'addon/morepokes/morepokes.php', 'morepokes_poke_verbs');
 }
 
 function morepokes_poke_verbs($a,&$b) {

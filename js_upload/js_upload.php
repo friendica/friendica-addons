@@ -15,23 +15,23 @@
  * Module Author: Chris Case
  *
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 
 
 function js_upload_install() {
-	register_hook('photo_upload_form', 'addon/js_upload/js_upload.php', 'js_upload_form');
-	register_hook('photo_post_init',   'addon/js_upload/js_upload.php', 'js_upload_post_init');
-	register_hook('photo_post_file',   'addon/js_upload/js_upload.php', 'js_upload_post_file');
-	register_hook('photo_post_end',    'addon/js_upload/js_upload.php', 'js_upload_post_end');
+	Addon::registerHook('photo_upload_form', 'addon/js_upload/js_upload.php', 'js_upload_form');
+	Addon::registerHook('photo_post_init',   'addon/js_upload/js_upload.php', 'js_upload_post_init');
+	Addon::registerHook('photo_post_file',   'addon/js_upload/js_upload.php', 'js_upload_post_file');
+	Addon::registerHook('photo_post_end',    'addon/js_upload/js_upload.php', 'js_upload_post_end');
 }
 
 
 function js_upload_uninstall() {
-	unregister_hook('photo_upload_form', 'addon/js_upload/js_upload.php', 'js_upload_form');
-	unregister_hook('photo_post_init',   'addon/js_upload/js_upload.php', 'js_upload_post_init');
-	unregister_hook('photo_post_file',   'addon/js_upload/js_upload.php', 'js_upload_post_file');
-	unregister_hook('photo_post_end',    'addon/js_upload/js_upload.php', 'js_upload_post_end');
+	Addon::unregisterHook('photo_upload_form', 'addon/js_upload/js_upload.php', 'js_upload_form');
+	Addon::unregisterHook('photo_post_init',   'addon/js_upload/js_upload.php', 'js_upload_post_init');
+	Addon::unregisterHook('photo_post_file',   'addon/js_upload/js_upload.php', 'js_upload_post_file');
+	Addon::unregisterHook('photo_post_end',    'addon/js_upload/js_upload.php', 'js_upload_post_end');
 }
 
 

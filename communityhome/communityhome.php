@@ -5,7 +5,7 @@
  * Version: 2.0
  * Author: Fabio Comuni <http://kirgroup.com/profile/fabrixxm>
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Module\Login;
 
@@ -13,12 +13,12 @@ require_once('mod/community.php');
 
 
 function communityhome_install() {
-	register_hook('home_content', 'addon/communityhome/communityhome.php', 'communityhome_home');
+	Addon::registerHook('home_content', 'addon/communityhome/communityhome.php', 'communityhome_home');
 	logger("installed communityhome");
 }
 
 function communityhome_uninstall() {
-	unregister_hook('home_content', 'addon/communityhome/communityhome.php', 'communityhome_home');
+	Addon::unregisterHook('home_content', 'addon/communityhome/communityhome.php', 'communityhome_home');
 	logger("removed communityhome");
 }
 
