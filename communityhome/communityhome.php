@@ -102,7 +102,7 @@ function communityhome_home(&$a, &$o){
 				$entry = replace_macros($tpl,[
 					'$id' => $rr['id'],
 					'$profile_link' => $profile_link,
-					'$photo' => $a->get_cached_avatar_image($rr[$photo]),
+					'$photo' => $rr[$photo],
 					'$alt_text' => $rr['name'],
 				]);
 				$aside['$lastusers_items'][] = $entry;

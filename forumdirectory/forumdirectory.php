@@ -171,7 +171,7 @@ function forumdirectory_content(&$a) {
 			$entry = replace_macros($tpl,[
 				'$id' => $rr['id'],
 				'$profile_link' => $profile_link,
-				'$photo' => $a->get_cached_avatar_image($rr[$photo]),
+				'$photo' => $rr[$photo],
 				'$alt_text' => $rr['name'],
 				'$name' => $rr['name'],
 				'$details' => $pdesc . $details,
