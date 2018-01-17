@@ -10,17 +10,18 @@
 require_once('include/bbcode.php');
 require_once('mod/proxy.php');
 
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 
 function impressum_install() {
-    register_hook('about_hook', 'addon/impressum/impressum.php', 'impressum_show');
-    register_hook('page_end', 'addon/impressum/impressum.php', 'impressum_footer');
+    Addon::registerHook('about_hook', 'addon/impressum/impressum.php', 'impressum_show');
+    Addon::registerHook('page_end', 'addon/impressum/impressum.php', 'impressum_footer');
     logger("installed impressum plugin");
 }
 
 function impressum_uninstall() {
-    unregister_hook('about_hook', 'addon/impressum/impressum.php', 'impressum_show');
-    unregister_hook('page_end', 'addon/impressum/impressum.php', 'impressum_footer');
+    Addon::unregisterHook('about_hook', 'addon/impressum/impressum.php', 'impressum_show');
+    Addon::unregisterHook('page_end', 'addon/impressum/impressum.php', 'impressum_footer');
     logger("uninstalled impressum plugin");
 }
 

@@ -7,23 +7,24 @@
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
 use Friendica\App;
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 
 function xmpp_install()
 {
-	register_hook('plugin_settings', 'addon/xmpp/xmpp.php', 'xmpp_plugin_settings');
-	register_hook('plugin_settings_post', 'addon/xmpp/xmpp.php', 'xmpp_plugin_settings_post');
-	register_hook('page_end', 'addon/xmpp/xmpp.php', 'xmpp_script');
-	register_hook('logged_in', 'addon/xmpp/xmpp.php', 'xmpp_login');
+	Addon::registerHook('plugin_settings', 'addon/xmpp/xmpp.php', 'xmpp_plugin_settings');
+	Addon::registerHook('plugin_settings_post', 'addon/xmpp/xmpp.php', 'xmpp_plugin_settings_post');
+	Addon::registerHook('page_end', 'addon/xmpp/xmpp.php', 'xmpp_script');
+	Addon::registerHook('logged_in', 'addon/xmpp/xmpp.php', 'xmpp_login');
 }
 
 function xmpp_uninstall()
 {
-	unregister_hook('plugin_settings', 'addon/xmpp/xmpp.php', 'xmpp_plugin_settings');
-	unregister_hook('plugin_settings_post', 'addon/xmpp/xmpp.php', 'xmpp_plugin_settings_post');
-	unregister_hook('page_end', 'addon/xmpp/xmpp.php', 'xmpp_script');
-	unregister_hook('logged_in', 'addon/xmpp/xmpp.php', 'xmpp_login');
+	Addon::unregisterHook('plugin_settings', 'addon/xmpp/xmpp.php', 'xmpp_plugin_settings');
+	Addon::unregisterHook('plugin_settings_post', 'addon/xmpp/xmpp.php', 'xmpp_plugin_settings_post');
+	Addon::unregisterHook('page_end', 'addon/xmpp/xmpp.php', 'xmpp_script');
+	Addon::unregisterHook('logged_in', 'addon/xmpp/xmpp.php', 'xmpp_login');
 }
 
 function xmpp_plugin_settings_post()

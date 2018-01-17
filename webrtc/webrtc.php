@@ -6,15 +6,15 @@
  * Author: Stephen Mahood <https://friends.mayfirst.org/profile/marxistvegan>
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 
 function webrtc_install() {
-        register_hook('app_menu', 'addon/webrtc/webrtc.php', 'webrtc_app_menu');
+        Addon::registerHook('app_menu', 'addon/webrtc/webrtc.php', 'webrtc_app_menu');
 }
 
 function webrtc_uninstall() {
-        unregister_hook('app_menu', 'addon/webrtc/webrtc.php', 'webrtc_app_menu');
+        Addon::unregisterHook('app_menu', 'addon/webrtc/webrtc.php', 'webrtc_app_menu');
 
 }
 

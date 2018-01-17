@@ -18,7 +18,7 @@
  * system will call the name_uninstall() function.
  *
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 
 function randplace_install() {
@@ -30,7 +30,7 @@ function randplace_install() {
 	 *
 	 */
 
-	register_hook('post_local', 'addon/randplace/randplace.php', 'randplace_post_hook');
+	Addon::registerHook('post_local', 'addon/randplace/randplace.php', 'randplace_post_hook');
 
 	/**
 	 *
@@ -40,8 +40,8 @@ function randplace_install() {
 	 *
 	 */
 
-	register_hook('plugin_settings', 'addon/randplace/randplace.php', 'randplace_settings');
-	register_hook('plugin_settings_post', 'addon/randplace/randplace.php', 'randplace_settings_post');
+	Addon::registerHook('plugin_settings', 'addon/randplace/randplace.php', 'randplace_settings');
+	Addon::registerHook('plugin_settings_post', 'addon/randplace/randplace.php', 'randplace_settings_post');
 
 	logger("installed randplace");
 }
@@ -57,9 +57,9 @@ function randplace_uninstall() {
 	 *
 	 */
 
-	unregister_hook('post_local',    'addon/randplace/randplace.php', 'randplace_post_hook');
-	unregister_hook('plugin_settings', 'addon/randplace/randplace.php', 'randplace_settings');
-	unregister_hook('plugin_settings_post', 'addon/randplace/randplace.php', 'randplace_settings_post');
+	Addon::unregisterHook('post_local',    'addon/randplace/randplace.php', 'randplace_post_hook');
+	Addon::unregisterHook('plugin_settings', 'addon/randplace/randplace.php', 'randplace_settings');
+	Addon::unregisterHook('plugin_settings_post', 'addon/randplace/randplace.php', 'randplace_settings_post');
 
 
 	logger("removed randplace");

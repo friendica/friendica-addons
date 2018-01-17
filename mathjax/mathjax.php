@@ -7,20 +7,20 @@
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  * License: 3-clause BSD license
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 
 function mathjax_install() {
-    register_hook('page_header', 'addon/mathjax/mathjax.php', 'mathjax_page_header');
-    register_hook('plugin_settings', 'addon/mathjax/mathjax.php', 'mathjax_settings');
-    register_hook('plugin_settings_post', 'addon/mathjax/mathjax.php', 'mathjax_settings_post');
+    Addon::registerHook('page_header', 'addon/mathjax/mathjax.php', 'mathjax_page_header');
+    Addon::registerHook('plugin_settings', 'addon/mathjax/mathjax.php', 'mathjax_settings');
+    Addon::registerHook('plugin_settings_post', 'addon/mathjax/mathjax.php', 'mathjax_settings_post');
     logger('installed js_math plugin');
 }
 function mathjax_uninstall() {
-    unregister_hook('page_header', 'addon/mathjax/mathjax.php', 'mathjax_page_header');
-    unregister_hook('plugin_settings', 'addon/mathjax/mathjax.php', 'mathjax_settings');
-    unregister_hook('plugin_settings_post', 'addon/mathjax/mathjax.php', 'mathjax_settings_post');
+    Addon::unregisterHook('page_header', 'addon/mathjax/mathjax.php', 'mathjax_page_header');
+    Addon::unregisterHook('plugin_settings', 'addon/mathjax/mathjax.php', 'mathjax_settings');
+    Addon::unregisterHook('plugin_settings_post', 'addon/mathjax/mathjax.php', 'mathjax_settings_post');
 }
 function mathjax_settings_post ($a, $post) {
     if (! local_user())

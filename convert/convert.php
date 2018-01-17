@@ -5,13 +5,14 @@
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
+use Friendica\Core\Addon;
 
 function convert_install() {
-	register_hook('app_menu', 'addon/convert/convert.php', 'convert_app_menu');
+	Addon::registerHook('app_menu', 'addon/convert/convert.php', 'convert_app_menu');
 }
 
 function convert_uninstall() {
-	unregister_hook('app_menu', 'addon/convert/convert.php', 'convert_app_menu');
+	Addon::unregisterHook('app_menu', 'addon/convert/convert.php', 'convert_app_menu');
 }
 
 function convert_app_menu($a,&$b) {

@@ -9,7 +9,7 @@
  *
  *"My body was my sacrifice... for my magic. This damage is permanent." - Raistlin Majere
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 
 function krynn_install() {
@@ -21,7 +21,7 @@ function krynn_install() {
 	 *
 	 */
 
-	register_hook('post_local', 'addon/krynn/krynn.php', 'krynn_post_hook');
+	Addon::registerHook('post_local', 'addon/krynn/krynn.php', 'krynn_post_hook');
 
 	/**
 	 *
@@ -31,8 +31,8 @@ function krynn_install() {
 	 *
 	 */
 
-	register_hook('plugin_settings', 'addon/krynn/krynn.php', 'krynn_settings');
-	register_hook('plugin_settings_post', 'addon/krynn/krynn.php', 'krynn_settings_post');
+	Addon::registerHook('plugin_settings', 'addon/krynn/krynn.php', 'krynn_settings');
+	Addon::registerHook('plugin_settings_post', 'addon/krynn/krynn.php', 'krynn_settings_post');
 
 	logger("installed krynn");
 }
@@ -48,9 +48,9 @@ function krynn_uninstall() {
 	 *
 	 */
 
-	unregister_hook('post_local',    'addon/krynn/krynn.php', 'krynn_post_hook');
-	unregister_hook('plugin_settings', 'addon/krynn/krynn.php', 'krynn_settings');
-	unregister_hook('plugin_settings_post', 'addon/krynn/krynn.php', 'krynn_settings_post');
+	Addon::unregisterHook('post_local',    'addon/krynn/krynn.php', 'krynn_post_hook');
+	Addon::unregisterHook('plugin_settings', 'addon/krynn/krynn.php', 'krynn_settings');
+	Addon::unregisterHook('plugin_settings_post', 'addon/krynn/krynn.php', 'krynn_settings_post');
 
 
 	logger("removed krynn");

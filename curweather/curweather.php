@@ -13,6 +13,7 @@ require_once('include/network.php');
 require_once("mod/proxy.php");
 require_once('include/text.php');
 
+use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
@@ -66,15 +67,15 @@ function getWeather( $loc, $units='metric', $lang='en', $appid='', $cachetime=0)
 }
 
 function curweather_install() {
-	register_hook('network_mod_init', 'addon/curweather/curweather.php', 'curweather_network_mod_init');
-	register_hook('plugin_settings', 'addon/curweather/curweather.php', 'curweather_plugin_settings');
-	register_hook('plugin_settings_post', 'addon/curweather/curweather.php', 'curweather_plugin_settings_post');
+	Addon::registerHook('network_mod_init', 'addon/curweather/curweather.php', 'curweather_network_mod_init');
+	Addon::registerHook('plugin_settings', 'addon/curweather/curweather.php', 'curweather_plugin_settings');
+	Addon::registerHook('plugin_settings_post', 'addon/curweather/curweather.php', 'curweather_plugin_settings_post');
 }
 
 function curweather_uninstall() {
-	unregister_hook('network_mod_init', 'addon/curweather/curweather.php', 'curweather_network_mod_init');
-	unregister_hook('plugin_settings', 'addon/curweather/curweather.php', 'curweather_plugin_settings');
-	unregister_hook('plugin_settings_post', 'addon/curweather/curweather.php', 'curweather_plugin_settings_post');
+	Addon::unregisterHook('network_mod_init', 'addon/curweather/curweather.php', 'curweather_network_mod_init');
+	Addon::unregisterHook('plugin_settings', 'addon/curweather/curweather.php', 'curweather_plugin_settings');
+	Addon::unregisterHook('plugin_settings_post', 'addon/curweather/curweather.php', 'curweather_plugin_settings_post');
 }
 
 function curweather_network_mod_init(&$fk_app,&$b) {
