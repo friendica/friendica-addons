@@ -5,17 +5,17 @@
  * Version: 1.0
  * Author: Fabio Comuni <http://kirgroup.com/profile/fabrix/>
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 
 function widgets_install() {
-	register_hook('plugin_settings', 'addon/widgets/widgets.php', 'widgets_settings');
-	register_hook('plugin_settings_post', 'addon/widgets/widgets.php', 'widgets_settings_post');
+	Addon::registerHook('plugin_settings', 'addon/widgets/widgets.php', 'widgets_settings');
+	Addon::registerHook('plugin_settings_post', 'addon/widgets/widgets.php', 'widgets_settings_post');
 	logger("installed widgets");
 }
 function widgets_uninstall() {
-	unregister_hook('plugin_settings', 'addon/widgets/widgets.php', 'widgets_settings');
-	unregister_hook('plugin_settings_post', 'addon/widgets/widgets.php', 'widgets_settings_post');
+	Addon::unregisterHook('plugin_settings', 'addon/widgets/widgets.php', 'widgets_settings');
+	Addon::unregisterHook('plugin_settings_post', 'addon/widgets/widgets.php', 'widgets_settings_post');
 }
 
 

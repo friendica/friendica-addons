@@ -5,7 +5,7 @@
  * Version: 1.1
  * Author: Klaus Weidenbach <http://friendica.dszdw.net/profile/klaus>
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 
 /**
@@ -17,7 +17,7 @@ function libravatar_install() {
 		// avoid registering the hook
 		return false;
 	}
-	register_hook('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
+	Addon::registerHook('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
 
 	logger("registered libravatar in avatar_lookup hook");
 }
@@ -26,7 +26,7 @@ function libravatar_install() {
  * Removes the plugin hook
  */
 function libravatar_uninstall() {
-	unregister_hook('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
+	Addon::unregisterHook('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
 
 	logger("unregistered libravatar in avatar_lookup hook");
 }

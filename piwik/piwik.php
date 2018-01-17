@@ -29,17 +29,17 @@
  *     about http/https but beware to put the trailing / at the end of your
  *     setting.
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 
 function piwik_install() {
-	register_hook('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
+	Addon::registerHook('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
 	logger("installed piwik plugin");
 }
 
 function piwik_uninstall() {
-	unregister_hook('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
+	Addon::unregisterHook('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
 	logger("uninstalled piwik plugin");
 }

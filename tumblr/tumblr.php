@@ -11,23 +11,24 @@
 require_once('library/OAuth1.php');
 require_once('addon/tumblr/tumblroauth/tumblroauth.php');
 
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 
 function tumblr_install() {
-	register_hook('post_local',           'addon/tumblr/tumblr.php', 'tumblr_post_local');
-	register_hook('notifier_normal',      'addon/tumblr/tumblr.php', 'tumblr_send');
-	register_hook('jot_networks',         'addon/tumblr/tumblr.php', 'tumblr_jot_nets');
-	register_hook('connector_settings',      'addon/tumblr/tumblr.php', 'tumblr_settings');
-	register_hook('connector_settings_post', 'addon/tumblr/tumblr.php', 'tumblr_settings_post');
+	Addon::registerHook('post_local',           'addon/tumblr/tumblr.php', 'tumblr_post_local');
+	Addon::registerHook('notifier_normal',      'addon/tumblr/tumblr.php', 'tumblr_send');
+	Addon::registerHook('jot_networks',         'addon/tumblr/tumblr.php', 'tumblr_jot_nets');
+	Addon::registerHook('connector_settings',      'addon/tumblr/tumblr.php', 'tumblr_settings');
+	Addon::registerHook('connector_settings_post', 'addon/tumblr/tumblr.php', 'tumblr_settings_post');
 
 }
 function tumblr_uninstall() {
-	unregister_hook('post_local',       'addon/tumblr/tumblr.php', 'tumblr_post_local');
-	unregister_hook('notifier_normal',  'addon/tumblr/tumblr.php', 'tumblr_send');
-	unregister_hook('jot_networks',     'addon/tumblr/tumblr.php', 'tumblr_jot_nets');
-	unregister_hook('connector_settings',      'addon/tumblr/tumblr.php', 'tumblr_settings');
-	unregister_hook('connector_settings_post', 'addon/tumblr/tumblr.php', 'tumblr_settings_post');
+	Addon::unregisterHook('post_local',       'addon/tumblr/tumblr.php', 'tumblr_post_local');
+	Addon::unregisterHook('notifier_normal',  'addon/tumblr/tumblr.php', 'tumblr_send');
+	Addon::unregisterHook('jot_networks',     'addon/tumblr/tumblr.php', 'tumblr_jot_nets');
+	Addon::unregisterHook('connector_settings',      'addon/tumblr/tumblr.php', 'tumblr_settings');
+	Addon::unregisterHook('connector_settings_post', 'addon/tumblr/tumblr.php', 'tumblr_settings_post');
 }
 
 function tumblr_module() {}

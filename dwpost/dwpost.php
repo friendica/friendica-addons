@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: Dreamwidth Post Connector
  * Description: Post to dreamwidth
@@ -8,23 +7,23 @@
  * Author: Michael Johnston
  * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 
 function dwpost_install() {
-    register_hook('post_local',           'addon/dwpost/dwpost.php', 'dwpost_post_local');
-    register_hook('notifier_normal',      'addon/dwpost/dwpost.php', 'dwpost_send');
-    register_hook('jot_networks',         'addon/dwpost/dwpost.php', 'dwpost_jot_nets');
-    register_hook('connector_settings',      'addon/dwpost/dwpost.php', 'dwpost_settings');
-    register_hook('connector_settings_post', 'addon/dwpost/dwpost.php', 'dwpost_settings_post');
+	Addon::registerHook('post_local',           'addon/dwpost/dwpost.php', 'dwpost_post_local');
+	Addon::registerHook('notifier_normal',      'addon/dwpost/dwpost.php', 'dwpost_send');
+	Addon::registerHook('jot_networks',         'addon/dwpost/dwpost.php', 'dwpost_jot_nets');
+	Addon::registerHook('connector_settings',      'addon/dwpost/dwpost.php', 'dwpost_settings');
+	Addon::registerHook('connector_settings_post', 'addon/dwpost/dwpost.php', 'dwpost_settings_post');
 
 }
 function dwpost_uninstall() {
-    unregister_hook('post_local',       'addon/dwpost/dwpost.php', 'dwpost_post_local');
-    unregister_hook('notifier_normal',  'addon/dwpost/dwpost.php', 'dwpost_send');
-    unregister_hook('jot_networks',     'addon/dwpost/dwpost.php', 'dwpost_jot_nets');
-    unregister_hook('connector_settings',      'addon/dwpost/dwpost.php', 'dwpost_settings');
-    unregister_hook('connector_settings_post', 'addon/dwpost/dwpost.php', 'dwpost_settings_post');
+	Addon::unregisterHook('post_local',       'addon/dwpost/dwpost.php', 'dwpost_post_local');
+	Addon::unregisterHook('notifier_normal',  'addon/dwpost/dwpost.php', 'dwpost_send');
+	Addon::unregisterHook('jot_networks',     'addon/dwpost/dwpost.php', 'dwpost_jot_nets');
+	Addon::unregisterHook('connector_settings',      'addon/dwpost/dwpost.php', 'dwpost_settings');
+	Addon::unregisterHook('connector_settings_post', 'addon/dwpost/dwpost.php', 'dwpost_settings_post');
 
 }
 

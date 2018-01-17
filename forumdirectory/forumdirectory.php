@@ -9,17 +9,16 @@
 
 use Friendica\Content\Nav;
 use Friendica\Content\Widget;
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Database\DBM;
 
-function forumdirectory_install()
-{
-	register_hook('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
+function forumdirectory_install() {
+Addon::registerHook('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
 }
 
-function forumdirectory_uninstall()
-{
-	unregister_hook('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
+function forumdirectory_uninstall() {
+Addon::unregisterHook('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
 }
 
 function forumdirectory_module()

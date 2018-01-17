@@ -7,16 +7,14 @@
  * All smileys from sites offering them as Public Domain
  */
 
-/**
-
-*/
+use Friendica\Core\Addon;
 
 function smiley_pack_install() {
-	register_hook('smilie', 'addon/smiley_pack/smiley_pack.php', 'smiley_pack_smilies');
+	Addon::registerHook('smilie', 'addon/smiley_pack/smiley_pack.php', 'smiley_pack_smilies');
 }
 
 function smiley_pack_uninstall() {
-	unregister_hook('smilie', 'addon/smiley_pack/smiley_pack.php', 'smiley_pack_smilies');
+	Addon::unregisterHook('smilie', 'addon/smiley_pack/smiley_pack.php', 'smiley_pack_smilies');
 }
 
  

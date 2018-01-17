@@ -19,7 +19,7 @@
  * system will call the name_uninstall() function.
  *
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 
@@ -32,7 +32,7 @@ function geonames_install() {
 	 *
 	 */
 
-	register_hook('post_local', 'addon/geonames/geonames.php', 'geonames_post_hook');
+	Addon::registerHook('post_local', 'addon/geonames/geonames.php', 'geonames_post_hook');
 
 	/**
 	 *
@@ -42,8 +42,8 @@ function geonames_install() {
 	 *
 	 */
 
-	register_hook('plugin_settings', 'addon/geonames/geonames.php', 'geonames_plugin_admin');
-	register_hook('plugin_settings_post', 'addon/geonames/geonames.php', 'geonames_plugin_admin_post');
+	Addon::registerHook('plugin_settings', 'addon/geonames/geonames.php', 'geonames_plugin_admin');
+	Addon::registerHook('plugin_settings_post', 'addon/geonames/geonames.php', 'geonames_plugin_admin_post');
 
 	logger("installed geonames");
 }
@@ -59,9 +59,9 @@ function geonames_uninstall() {
 	 *
 	 */
 
-	unregister_hook('post_local',    'addon/geonames/geonames.php', 'geonames_post_hook');
-	unregister_hook('plugin_settings', 'addon/geonames/geonames.php', 'geonames_plugin_admin');
-	unregister_hook('plugin_settings_post', 'addon/geonames/geonames.php', 'geonames_plugin_admin_post');
+	Addon::unregisterHook('post_local',    'addon/geonames/geonames.php', 'geonames_post_hook');
+	Addon::unregisterHook('plugin_settings', 'addon/geonames/geonames.php', 'geonames_plugin_admin');
+	Addon::unregisterHook('plugin_settings_post', 'addon/geonames/geonames.php', 'geonames_plugin_admin_post');
 
 
 	logger("removed geonames");

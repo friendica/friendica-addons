@@ -5,14 +5,14 @@
  * Version: 1.1
  * Author: Klaus Weidenbach <http://friendica.dszdw.net/profile/klaus>
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 
 /**
  * Installs the plugin hook
  */
 function gravatar_install() {
-	register_hook('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
+	Addon::registerHook('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
 
 	logger("registered gravatar in avatar_lookup hook");
 }
@@ -21,7 +21,7 @@ function gravatar_install() {
  * Removes the plugin hook
  */
 function gravatar_uninstall() {
-	unregister_hook('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
+	Addon::unregisterHook('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
 
 	logger("unregistered gravatar in avatar_lookup hook");
 }

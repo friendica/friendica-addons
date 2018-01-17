@@ -62,6 +62,7 @@
 
 use Friendica\App;
 use Friendica\Content\OEmbed;
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
@@ -78,38 +79,38 @@ define('TWITTER_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 function twitter_install()
 {
 	//  we need some hooks, for the configuration and for sending tweets
-	register_hook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings');
-	register_hook('connector_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
-	register_hook('post_local', 'addon/twitter/twitter.php', 'twitter_post_local');
-	register_hook('notifier_normal', 'addon/twitter/twitter.php', 'twitter_post_hook');
-	register_hook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
-	register_hook('cron', 'addon/twitter/twitter.php', 'twitter_cron');
-	register_hook('queue_predeliver', 'addon/twitter/twitter.php', 'twitter_queue_hook');
-	register_hook('follow', 'addon/twitter/twitter.php', 'twitter_follow');
-	register_hook('expire', 'addon/twitter/twitter.php', 'twitter_expire');
-	register_hook('prepare_body', 'addon/twitter/twitter.php', 'twitter_prepare_body');
-	register_hook('check_item_notification', 'addon/twitter/twitter.php', 'twitter_check_item_notification');
+	Addon::registerHook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings');
+	Addon::registerHook('connector_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
+	Addon::registerHook('post_local', 'addon/twitter/twitter.php', 'twitter_post_local');
+	Addon::registerHook('notifier_normal', 'addon/twitter/twitter.php', 'twitter_post_hook');
+	Addon::registerHook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
+	Addon::registerHook('cron', 'addon/twitter/twitter.php', 'twitter_cron');
+	Addon::registerHook('queue_predeliver', 'addon/twitter/twitter.php', 'twitter_queue_hook');
+	Addon::registerHook('follow', 'addon/twitter/twitter.php', 'twitter_follow');
+	Addon::registerHook('expire', 'addon/twitter/twitter.php', 'twitter_expire');
+	Addon::registerHook('prepare_body', 'addon/twitter/twitter.php', 'twitter_prepare_body');
+	Addon::registerHook('check_item_notification', 'addon/twitter/twitter.php', 'twitter_check_item_notification');
 	logger("installed twitter");
 }
 
 function twitter_uninstall()
 {
-	unregister_hook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings');
-	unregister_hook('connector_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
-	unregister_hook('post_local', 'addon/twitter/twitter.php', 'twitter_post_local');
-	unregister_hook('notifier_normal', 'addon/twitter/twitter.php', 'twitter_post_hook');
-	unregister_hook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
-	unregister_hook('cron', 'addon/twitter/twitter.php', 'twitter_cron');
-	unregister_hook('queue_predeliver', 'addon/twitter/twitter.php', 'twitter_queue_hook');
-	unregister_hook('follow', 'addon/twitter/twitter.php', 'twitter_follow');
-	unregister_hook('expire', 'addon/twitter/twitter.php', 'twitter_expire');
-	unregister_hook('prepare_body', 'addon/twitter/twitter.php', 'twitter_prepare_body');
-	unregister_hook('check_item_notification', 'addon/twitter/twitter.php', 'twitter_check_item_notification');
+	Addon::unregisterHook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings');
+	Addon::unregisterHook('connector_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
+	Addon::unregisterHook('post_local', 'addon/twitter/twitter.php', 'twitter_post_local');
+	Addon::unregisterHook('notifier_normal', 'addon/twitter/twitter.php', 'twitter_post_hook');
+	Addon::unregisterHook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
+	Addon::unregisterHook('cron', 'addon/twitter/twitter.php', 'twitter_cron');
+	Addon::unregisterHook('queue_predeliver', 'addon/twitter/twitter.php', 'twitter_queue_hook');
+	Addon::unregisterHook('follow', 'addon/twitter/twitter.php', 'twitter_follow');
+	Addon::unregisterHook('expire', 'addon/twitter/twitter.php', 'twitter_expire');
+	Addon::unregisterHook('prepare_body', 'addon/twitter/twitter.php', 'twitter_prepare_body');
+	Addon::unregisterHook('check_item_notification', 'addon/twitter/twitter.php', 'twitter_check_item_notification');
 
 	// old setting - remove only
-	unregister_hook('post_local_end', 'addon/twitter/twitter.php', 'twitter_post_hook');
-	unregister_hook('plugin_settings', 'addon/twitter/twitter.php', 'twitter_settings');
-	unregister_hook('plugin_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
+	Addon::unregisterHook('post_local_end', 'addon/twitter/twitter.php', 'twitter_post_hook');
+	Addon::unregisterHook('plugin_settings', 'addon/twitter/twitter.php', 'twitter_settings');
+	Addon::unregisterHook('plugin_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
 }
 
 function twitter_check_item_notification(App $a, &$notification_data)
