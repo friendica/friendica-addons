@@ -12,6 +12,7 @@ use Friendica\Model\Contact;
 use Friendica\Model\GContact;
 use Friendica\Model\Group;
 use Friendica\Model\User;
+use Friendica\Model\Item;
 
 require 'addon/pumpio/oauth/http.php';
 require 'addon/pumpio/oauth/oauth_client.php';
@@ -1054,7 +1055,7 @@ function pumpio_dodelete(&$a, $uid, $self, $post, $own_id) {
 		);
 
 	if (count($r))
-		return drop_item($r[0]["id"], $false);
+		return Item::delete($r[0]["id"]);
 
 	$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
 				dbesc($post->object->id),
@@ -1062,7 +1063,7 @@ function pumpio_dodelete(&$a, $uid, $self, $post, $own_id) {
 		);
 
 	if (count($r))
-		return drop_item($r[0]["id"], $false);
+		return Item::delete($r[0]["id"]);
 }
 
 function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcompletion = true) {
