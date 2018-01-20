@@ -37,7 +37,7 @@ function newmemberwidget_network_mod_init ( $a, $b) {
     }
 }
 
-function newmemberwidget_plugin_admin_post( &$a ) {
+function newmemberwidget_addon_admin_post( &$a ) {
     $ft = ((x($_POST, 'freetext')) ? trim($_POST['freetext']) : "");
     $lsn = ((x($_POST, 'localsupportname')) ? notags(trim($_POST['localsupportname'])) : "");
     $gs = intval($_POST['linkglobalsupport']);
@@ -48,7 +48,7 @@ function newmemberwidget_plugin_admin_post( &$a ) {
     Config::set ( 'newmemberwidget', 'localsupport',       trim($lsn));
 }
 
-function newmemberwidget_plugin_admin(&$a, &$o){
+function newmemberwidget_addon_admin(&$a, &$o){
     $t = get_markup_template('admin.tpl','addon/newmemberwidget');
     $o = replace_macros($t, [
 	'$submit' => t('Save Settings'),

@@ -26,8 +26,8 @@ function wppost_uninstall() {
 
 	// obsolete - remove
     Addon::unregisterHook('post_local_end',   'addon/wppost/wppost.php', 'wppost_send');
-    Addon::unregisterHook('plugin_settings',  'addon/wppost/wppost.php', 'wppost_settings');
-    Addon::unregisterHook('plugin_settings_post',  'addon/wppost/wppost.php', 'wppost_settings_post');
+    Addon::unregisterHook('addon_settings',  'addon/wppost/wppost.php', 'wppost_settings');
+    Addon::unregisterHook('addon_settings_post',  'addon/wppost/wppost.php', 'wppost_settings_post');
 
 }
 
@@ -86,7 +86,7 @@ function wppost_settings(&$a,&$s) {
     $s .= '<img class="connector'.$css.'" src="images/wordpress.png" /><h3 class="connector">'. t('Wordpress Export').'</h3>';
     $s .= '</span>';
     $s .= '<div id="wppost-enable-wrapper">';
-    $s .= '<label id="wppost-enable-label" for="wppost-checkbox">' . t('Enable WordPress Post Plugin') . '</label>';
+    $s .= '<label id="wppost-enable-label" for="wppost-checkbox">' . t('Enable WordPress Post Addon') . '</label>';
     $s .= '<input id="wppost-checkbox" type="checkbox" name="wppost" value="1" ' . $checked . '/>';
     $s .= '</div><div class="clear"></div>';
 

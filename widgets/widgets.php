@@ -9,13 +9,13 @@ use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 
 function widgets_install() {
-	Addon::registerHook('plugin_settings', 'addon/widgets/widgets.php', 'widgets_settings');
-	Addon::registerHook('plugin_settings_post', 'addon/widgets/widgets.php', 'widgets_settings_post');
+	Addon::registerHook('addon_settings', 'addon/widgets/widgets.php', 'widgets_settings');
+	Addon::registerHook('addon_settings_post', 'addon/widgets/widgets.php', 'widgets_settings_post');
 	logger("installed widgets");
 }
 function widgets_uninstall() {
-	Addon::unregisterHook('plugin_settings', 'addon/widgets/widgets.php', 'widgets_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/widgets/widgets.php', 'widgets_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/widgets/widgets.php', 'widgets_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/widgets/widgets.php', 'widgets_settings_post');
 }
 
 
@@ -122,7 +122,7 @@ function widgets_content(&$a) {
 		if (isset($_GET['p']) && local_user()==$conf['uid'] ) {
 			$o .= "<style>.f9k_widget { float: left;border:1px solid black; }</style>";
 			$o .= "<h1>Preview Widget</h1>";
-			$o .= '<a href="'.$a->get_baseurl().'/settings/addon">'. t("Plugin Settings") .'</a>';
+			$o .= '<a href="'.$a->get_baseurl().'/settings/addon">'. t("Addon Settings") .'</a>';
 
 			$o .=  "<h4>".call_user_func($a->argv[1].'_widget_name')."</h4>";
 			$o .=  call_user_func($a->argv[1].'_widget_help');

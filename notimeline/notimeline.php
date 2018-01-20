@@ -12,15 +12,15 @@ use Friendica\Core\PConfig;
 
 function notimeline_install() {
 
-	Addon::registerHook('plugin_settings', 'addon/notimeline/notimeline.php', 'notimeline_settings');
-	Addon::registerHook('plugin_settings_post', 'addon/notimeline/notimeline.php', 'notimeline_settings_post');
+	Addon::registerHook('addon_settings', 'addon/notimeline/notimeline.php', 'notimeline_settings');
+	Addon::registerHook('addon_settings_post', 'addon/notimeline/notimeline.php', 'notimeline_settings_post');
 
 }
 
 
 function notimeline_uninstall() {
-	Addon::unregisterHook('plugin_settings', 'addon/notimeline/notimeline.php', 'notimeline_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/notimeline/notimeline.php', 'notimeline_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/notimeline/notimeline.php', 'notimeline_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/notimeline/notimeline.php', 'notimeline_settings_post');
 
 }
 

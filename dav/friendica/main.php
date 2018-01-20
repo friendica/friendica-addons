@@ -203,7 +203,7 @@ function dav_content()
 			}
 		}
 	} catch (DAVVersionMismatchException $e) {
-		$x = t("The current version of this plugin has not been set up correctly. Please contact the system administrator of your installation of friendica to fix this.");
+		$x = t("The current version of this addon has not been set up correctly. Please contact the system administrator of your installation of friendica to fix this.");
 	}
 	return $x;
 }
@@ -302,9 +302,9 @@ function dav_cron(&$a, &$b)
  * @param App $a
  * @param null|object $o
  */
-function dav_plugin_admin_post(&$a = null, &$o = null)
+function dav_addon_admin_post(&$a = null, &$o = null)
 {
-	check_form_security_token_redirectOnErr('/admin/plugins/dav', 'dav_admin_save');
+	check_form_security_token_redirectOnErr('/admin/addons/dav', 'dav_admin_save');
 
 	dav_include_files();
 	require_once(__DIR__ . "/database-init.inc.php");
@@ -327,7 +327,7 @@ function dav_plugin_admin_post(&$a = null, &$o = null)
  * @param App $a
  * @param string $o
  */
-function dav_plugin_admin(&$a, &$o)
+function dav_addon_admin(&$a, &$o)
 {
 	dav_include_files();
 	require_once(__DIR__ . "/database-init.inc.php");

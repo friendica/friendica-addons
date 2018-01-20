@@ -12,8 +12,8 @@ use Friendica\Core\PConfig;
 function fromapp_install() {
 
 	Addon::registerHook('post_local', 'addon/fromapp/fromapp.php', 'fromapp_post_hook');
-	Addon::registerHook('plugin_settings', 'addon/fromapp/fromapp.php', 'fromapp_settings');
-	Addon::registerHook('plugin_settings_post', 'addon/fromapp/fromapp.php', 'fromapp_settings_post');
+	Addon::registerHook('addon_settings', 'addon/fromapp/fromapp.php', 'fromapp_settings');
+	Addon::registerHook('addon_settings_post', 'addon/fromapp/fromapp.php', 'fromapp_settings_post');
 
 	logger("installed fromapp");
 }
@@ -22,8 +22,8 @@ function fromapp_install() {
 function fromapp_uninstall() {
 
 	Addon::unregisterHook('post_local', 'addon/fromapp/fromapp.php', 'fromapp_post_hook');
-	Addon::unregisterHook('plugin_settings', 'addon/fromapp/fromapp.php', 'fromapp_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/fromapp/fromapp.php', 'fromapp_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/fromapp/fromapp.php', 'fromapp_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/fromapp/fromapp.php', 'fromapp_settings_post');
 
 
 	logger("removed fromapp");

@@ -12,30 +12,25 @@ use Friendica\Core\PConfig;
 function blockem_install() {
 	Addon::registerHook('prepare_body', 'addon/blockem/blockem.php', 'blockem_prepare_body');
 	Addon::registerHook('display_item', 'addon/blockem/blockem.php', 'blockem_display_item');
-	Addon::registerHook('plugin_settings', 'addon/blockem/blockem.php', 'blockem_addon_settings');
-	Addon::registerHook('plugin_settings_post', 'addon/blockem/blockem.php', 'blockem_addon_settings_post');
+	Addon::registerHook('addon_settings', 'addon/blockem/blockem.php', 'blockem_addon_settings');
+	Addon::registerHook('addon_settings_post', 'addon/blockem/blockem.php', 'blockem_addon_settings_post');
 	Addon::registerHook('conversation_start', 'addon/blockem/blockem.php', 'blockem_conversation_start');
 	Addon::registerHook('item_photo_menu', 'addon/blockem/blockem.php', 'blockem_item_photo_menu');
-	Addon::registerHook('enotify_store', 'addon/blockem/blockem.php', 'blockem_enotify_store' );
+	Addon::registerHook('enotify_store', 'addon/blockem/blockem.php', 'blockem_enotify_store');
 }
-
 
 function blockem_uninstall() {
 	Addon::unregisterHook('prepare_body', 'addon/blockem/blockem.php', 'blockem_prepare_body');
 	Addon::unregisterHook('display_item', 'addon/blockem/blockem.php', 'blockem_display_item');
-	Addon::unregisterHook('plugin_settings', 'addon/blockem/blockem.php', 'blockem_addon_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/blockem/blockem.php', 'blockem_addon_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/blockem/blockem.php', 'blockem_addon_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/blockem/blockem.php', 'blockem_addon_settings_post');
 	Addon::unregisterHook('conversation_start', 'addon/blockem/blockem.php', 'blockem_conversation_start');
 	Addon::unregisterHook('item_photo_menu', 'addon/blockem/blockem.php', 'blockem_item_photo_menu');
-	Addon::unregisterHook('enotify_store', 'addon/blockem/blockem.php', 'blockem_enotify_store' );
-
+	Addon::unregisterHook('enotify_store', 'addon/blockem/blockem.php', 'blockem_enotify_store');
 }
 
-
-
-
-
-function blockem_addon_settings(&$a,&$s) {
+function blockem_addon_settings(&$a, &$s)
+{
 
 	if(! local_user())
 		return;
@@ -45,7 +40,7 @@ function blockem_addon_settings(&$a,&$s) {
     $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/blockem/blockem.css' . '" media="all" />' . "\r\n";
 
 
-	$words = PConfig::get(local_user(),'blockem','words');
+	$words = PConfig::get(local_user(), 'blockem', 'words');
 	if(! $words)
 		$words = '';
 
@@ -78,7 +73,6 @@ function blockem_addon_settings_post(&$a,&$b) {
 		info( t('BLOCKEM Settings saved.') . EOL);
 	}
 }
-
 
 function blockem_enotify_store(&$a,&$b) {
 
@@ -143,12 +137,10 @@ function blockem_prepare_body(&$a,&$b) {
 	}
 }
 
-
 function blockem_display_item(&$a,&$b) {
 	if(strstr($b['output']['body'],'id="blockem-wrap-'))
 		$b['output']['thumb'] = $a->get_baseurl() . "/images/person-80.jpg";
 }
-
 
 function blockem_conversation_start(&$a,&$b) {
 

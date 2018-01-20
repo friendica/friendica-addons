@@ -11,8 +11,8 @@ use Friendica\Core\PConfig;
 use Friendica\Database\DBM;
 
 function mailstream_install() {
-	Addon::registerHook('plugin_settings', 'addon/mailstream/mailstream.php', 'mailstream_plugin_settings');
-	Addon::registerHook('plugin_settings_post', 'addon/mailstream/mailstream.php', 'mailstream_plugin_settings_post');
+	Addon::registerHook('addon_settings', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings');
+	Addon::registerHook('addon_settings_post', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings_post');
 	Addon::registerHook('post_local_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
 	Addon::registerHook('post_remote_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
 	Addon::registerHook('cron', 'addon/mailstream/mailstream.php', 'mailstream_cron');
@@ -52,8 +52,8 @@ function mailstream_install() {
 }
 
 function mailstream_uninstall() {
-	Addon::unregisterHook('plugin_settings', 'addon/mailstream/mailstream.php', 'mailstream_plugin_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/mailstream/mailstream.php', 'mailstream_plugin_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings_post');
 	Addon::unregisterHook('post_local', 'addon/mailstream/mailstream.php', 'mailstream_post_local_hook');
 	Addon::unregisterHook('post_remote', 'addon/mailstream/mailstream.php', 'mailstream_post_remote_hook');
 	Addon::unregisterHook('post_local_end', 'addon/mailstream/mailstream.php', 'mailstream_post_local_hook');
@@ -66,7 +66,7 @@ function mailstream_uninstall() {
 
 function mailstream_module() {}
 
-function mailstream_plugin_admin(&$a,&$o) {
+function mailstream_addon_admin(&$a,&$o) {
 	$frommail = Config::get('mailstream', 'frommail');
 	$template = get_markup_template('admin.tpl', 'addon/mailstream/');
 	$config = ['frommail',
@@ -78,7 +78,7 @@ function mailstream_plugin_admin(&$a,&$o) {
 				 '$submit' => t('Save Settings')]);
 }
 
-function mailstream_plugin_admin_post ($a) {
+function mailstream_addon_admin_post ($a) {
 	if (x($_POST, 'frommail')) {
 		Config::set('mailstream', 'frommail', $_POST['frommail']);
 	}
@@ -266,7 +266,7 @@ function mailstream_send($a, $message_id, $item, $user) {
 	}
 	$mail = new PHPmailer;
 	try {
-		$mail->XMailer = 'Friendica Mailstream Plugin';
+		$mail->XMailer = 'Friendica Mailstream Addon';
 		$mail->SetFrom($frommail, mailstream_sender($item));
 		$mail->AddAddress($address, $user['username']);
 		$mail->MessageID = $message_id;
@@ -346,7 +346,7 @@ function mailstream_cron($a, $b) {
 	mailstream_tidy();
 }
 
-function mailstream_plugin_settings(&$a,&$s) {
+function mailstream_addon_settings(&$a,&$s) {
 	$enabled = PConfig::get(local_user(), 'mailstream', 'enabled');
 	$address = PConfig::get(local_user(), 'mailstream', 'address');
 	$nolikes = PConfig::get(local_user(), 'mailstream', 'nolikes');
@@ -376,7 +376,7 @@ function mailstream_plugin_settings(&$a,&$s) {
 				 '$submit' => t('Save Settings')]);
 }
 
-function mailstream_plugin_settings_post($a,$post) {
+function mailstream_addon_settings_post($a,$post) {
 	if ($_POST['mailstream_address'] != "") {
 		PConfig::set(local_user(), 'mailstream', 'address', $_POST['mailstream_address']);
 	}

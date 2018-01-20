@@ -13,8 +13,8 @@ use Friendica\Core\PConfig;
 
 function superblock_install() {
 
-	Addon::registerHook('plugin_settings', 'addon/superblock/superblock.php', 'superblock_addon_settings');
-	Addon::registerHook('plugin_settings_post', 'addon/superblock/superblock.php', 'superblock_addon_settings_post');
+	Addon::registerHook('addon_settings', 'addon/superblock/superblock.php', 'superblock_addon_settings');
+	Addon::registerHook('addon_settings_post', 'addon/superblock/superblock.php', 'superblock_addon_settings_post');
 	Addon::registerHook('conversation_start', 'addon/superblock/superblock.php', 'superblock_conversation_start');
 	Addon::registerHook('item_photo_menu', 'addon/superblock/superblock.php', 'superblock_item_photo_menu');
 	Addon::registerHook('enotify_store', 'addon/superblock/superblock.php', 'superblock_enotify_store');
@@ -24,8 +24,8 @@ function superblock_install() {
 
 function superblock_uninstall() {
 
-	Addon::unregisterHook('plugin_settings', 'addon/superblock/superblock.php', 'superblock_addon_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/superblock/superblock.php', 'superblock_addon_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/superblock/superblock.php', 'superblock_addon_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/superblock/superblock.php', 'superblock_addon_settings_post');
 	Addon::unregisterHook('conversation_start', 'addon/superblock/superblock.php', 'superblock_conversation_start');
 	Addon::unregisterHook('item_photo_menu', 'addon/superblock/superblock.php', 'superblock_item_photo_menu');
 	Addon::unregisterHook('enotify_store', 'addon/superblock/superblock.php', 'superblock_enotify_store');

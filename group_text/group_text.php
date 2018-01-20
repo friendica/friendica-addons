@@ -10,8 +10,8 @@ use Friendica\Core\PConfig;
 
 function group_text_install() {
 
-	Addon::registerHook('plugin_settings', 'addon/group_text/group_text.php', 'group_text_settings');
-	Addon::registerHook('plugin_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
+	Addon::registerHook('addon_settings', 'addon/group_text/group_text.php', 'group_text_settings');
+	Addon::registerHook('addon_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
 
 	logger("installed group_text");
 }
@@ -19,8 +19,8 @@ function group_text_install() {
 
 function group_text_uninstall() {
 
-	Addon::unregisterHook('plugin_settings', 'addon/group_text/group_text.php', 'group_text_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/group_text/group_text.php', 'group_text_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
 
 
 	logger("removed group_text");
@@ -48,7 +48,7 @@ function group_text_settings_post($a,$post) {
 
 /**
  *
- * Called from the Plugin Setting form. 
+ * Called from the Addon Setting form. 
  * Add our own settings info to the page.
  *
  */

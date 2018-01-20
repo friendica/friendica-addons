@@ -12,16 +12,16 @@ use Friendica\Core\Config;
 
 function pageheader_install() {
     Addon::registerHook('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
-	Addon::registerHook('plugin_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
-	Addon::registerHook('plugin_settings_post', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings_post');
+	Addon::registerHook('addon_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
+	Addon::registerHook('addon_settings_post', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings_post');
 
 }
 
 
 function pageheader_uninstall() {
     Addon::unregisterHook('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
-	Addon::unregisterHook('plugin_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings_post');
 
 	// hook moved, uninstall the old one if still there. 
     Addon::unregisterHook('page_header', 'addon/pageheader/pageheader.php', 'pageheader_fetch');

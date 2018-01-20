@@ -12,14 +12,14 @@ use Friendica\Core\PConfig;
 
 function showmore_install() {
 	Addon::registerHook('prepare_body', 'addon/showmore/showmore.php', 'showmore_prepare_body');
-	Addon::registerHook('plugin_settings', 'addon/showmore/showmore.php', 'showmore_addon_settings');
-	Addon::registerHook('plugin_settings_post', 'addon/showmore/showmore.php', 'showmore_addon_settings_post');
+	Addon::registerHook('addon_settings', 'addon/showmore/showmore.php', 'showmore_addon_settings');
+	Addon::registerHook('addon_settings_post', 'addon/showmore/showmore.php', 'showmore_addon_settings_post');
 }
 
 function showmore_uninstall() {
 	Addon::unregisterHook('prepare_body', 'addon/showmore/showmore.php', 'showmore_prepare_body');
-	Addon::unregisterHook('plugin_settings', 'addon/showmore/showmore.php', 'showmore_addon_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/showmore/showmore.php', 'showmore_addon_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/showmore/showmore.php', 'showmore_addon_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/showmore/showmore.php', 'showmore_addon_settings_post');
 }
 
 function showmore_addon_settings(&$a,&$s) {

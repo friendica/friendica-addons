@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: Gravatar Support
- * Description: If there is no avatar image for a new user or contact this plugin will look for one at Gravatar.
+ * Description: If there is no avatar image for a new user or contact this addon will look for one at Gravatar.
  * Version: 1.1
  * Author: Klaus Weidenbach <http://friendica.dszdw.net/profile/klaus>
  */
@@ -9,7 +9,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 
 /**
- * Installs the plugin hook
+ * Installs the addon hook
  */
 function gravatar_install() {
 	Addon::registerHook('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
@@ -18,7 +18,7 @@ function gravatar_install() {
 }
 
 /**
- * Removes the plugin hook
+ * Removes the addon hook
  */
 function gravatar_uninstall() {
 	Addon::unregisterHook('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
@@ -56,7 +56,7 @@ function gravatar_lookup($a, &$b) {
 /**
  * Display admin settings for this addon
  */
-function gravatar_plugin_admin (&$a, &$o) {
+function gravatar_addon_admin (&$a, &$o) {
 	$t = get_markup_template( "admin.tpl", "addon/gravatar/" );
 
 	$default_avatar = Config::get('gravatar', 'default_img');
@@ -103,7 +103,7 @@ function gravatar_plugin_admin (&$a, &$o) {
 /**
  * Save admin settings
  */
-function gravatar_plugin_admin_post (&$a) {
+function gravatar_addon_admin_post (&$a) {
 	check_form_security_token('gravatarsave');
 
 	$default_avatar = ((x($_POST, 'avatar')) ? notags(trim($_POST['avatar'])) : 'identicon');

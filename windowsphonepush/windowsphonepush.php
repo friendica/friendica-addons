@@ -10,7 +10,7 @@
  * Pre-requisite: Windows Phone mobile device (at least WP 7.0)
  *                Friendica mobile app on Windows Phone
  *
- * When plugin is installed, the system calls the plugin
+ * When addon is installed, the system calls the addon
  * name_install() function, located in 'addon/name/name.php',
  * where 'name' is the name of the addon.
  * If the addon is removed from the configuration list, the
@@ -32,19 +32,19 @@ use Friendica\Model\User;
 
 function windowsphonepush_install()
 {
-	/* Our plugin will attach in three places.
+	/* Our addon will attach in three places.
 	 * The first is within cron - so the push notifications will be
 	 * sent every 10 minutes (or whatever is set in crontab).
 	 */
 	Addon::registerHook('cron', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_cron');
 
-	/* Then we'll attach into the plugin settings page, and also the
+	/* Then we'll attach into the addon settings page, and also the
 	 * settings post hook so that we can create and update
-	 * user preferences. User shall be able to activate the plugin and
+	 * user preferences. User shall be able to activate the addon and
 	 * define whether he allows pushing first characters of item text
 	 */
-	Addon::registerHook('plugin_settings', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings');
-	Addon::registerHook('plugin_settings_post', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings_post');
+	Addon::registerHook('addon_settings', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings');
+	Addon::registerHook('addon_settings_post', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings_post');
 
 	logger("installed windowsphonepush");
 }
@@ -55,8 +55,8 @@ function windowsphonepush_uninstall()
 	 * during install. Don't delete data in table `pconfig`.
 	 */
 	Addon::unregisterHook('cron', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_cron');
-	Addon::unregisterHook('plugin_settings', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings_post');
 
 	logger("removed windowsphonepush");
 }
@@ -89,7 +89,7 @@ function windowsphonepush_settings_post($a, $post)
 	info(t('WindowsPhonePush settings updated.') . EOL);
 }
 
-/* Called from the Plugin Setting form.
+/* Called from the Addon Setting form.
  * Add our own settings info to the page.
  */
 function windowsphonepush_settings(&$a, &$s)
@@ -115,7 +115,7 @@ function windowsphonepush_settings(&$a, &$s)
 	$s .= '<h3>' . t('WindowsPhonePush Settings') . '</h3>';
 
 	$s .= '<div id="windowsphonepush-enable-wrapper">';
-	$s .= '<label id="windowsphonepush-enable-label" for="windowsphonepush-enable-chk">' . t('Enable WindowsPhonePush Plugin') . '</label>';
+	$s .= '<label id="windowsphonepush-enable-label" for="windowsphonepush-enable-chk">' . t('Enable WindowsPhonePush Addon') . '</label>';
 	$s .= '<input id="windowsphonepush-enable-chk" type="checkbox" name="windowsphonepush" value="1" ' . $checked_enabled . '/>';
 	$s .= '</div><div class="clear"></div>';
 
@@ -136,12 +136,12 @@ function windowsphonepush_settings(&$a, &$s)
 	return;
 }
 
-/* Cron function used to regularly check all users on the server with active windowsphonepushplugin and send
+/* Cron function used to regularly check all users on the server with active windowsphonepushaddon and send
  * notifications to the Microsoft servers and consequently to the Windows Phone device
  */
 function windowsphonepush_cron()
 {
-	// retrieve all UID's for which the plugin windowsphonepush is enabled and loop through every user
+	// retrieve all UID's for which the addon windowsphonepush is enabled and loop through every user
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'windowsphonepush' AND `k` = 'enable' AND `v` = 1");
 	if (count($r)) {
 		foreach ($r as $rr) {
@@ -152,7 +152,7 @@ function windowsphonepush_cron()
 			// pushing only possible if device_url (the URI on Microsoft server) is available or not "NA" (which will be sent
 			// by app if user has switched the server setting in app - sending blank not possible as this would return an update error)
 			if (( $device_url == "" ) || ( $device_url == "NA" )) {
-				// no Device-URL for the user availabe, but plugin is enabled --> write info to Logger
+				// no Device-URL for the user availabe, but addon is enabled --> write info to Logger
 				logger("WARN: windowsphonepush is enable for user " . $rr['uid'] . ", but no Device-URL is specified for the user.");
 			} else {
 				// retrieve the number of unseen items and the id of the latest one (if there are more than
@@ -393,7 +393,7 @@ function windowsphonepush_updatesettings()
 		return "Not Authenticated";
 	}
 
-	// no updating if user hasn't enabled the plugin
+	// no updating if user hasn't enabled the addon
 	$enable = PConfig::get(local_user(), 'windowsphonepush', 'enable');
 	if (!$enable) {
 		return "Plug-in not enabled";
@@ -434,7 +434,7 @@ function windowsphonepush_updatecounterunseen()
 		return "Not Authenticated";
 	}
 
-	// no updating if user hasn't enabled the plugin
+	// no updating if user hasn't enabled the addon
 	$enable = PConfig::get(local_user(), 'windowsphonepush', 'enable');
 	if (!$enable) {
 		return "Plug-in not enabled";

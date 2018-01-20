@@ -70,8 +70,8 @@ use Friendica\Model\User;
 
 function jappixmini_install()
 {
-	Addon::registerHook('plugin_settings', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings');
-	Addon::registerHook('plugin_settings_post', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings_post');
+	Addon::registerHook('addon_settings', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings');
+	Addon::registerHook('addon_settings_post', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings_post');
 
 	Addon::registerHook('page_end', 'addon/jappixmini/jappixmini.php', 'jappixmini_script');
 	Addon::registerHook('authenticate', 'addon/jappixmini/jappixmini.php', 'jappixmini_login');
@@ -104,8 +104,8 @@ function jappixmini_install()
 
 function jappixmini_uninstall()
 {
-	Addon::unregisterHook('plugin_settings', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings_post');
 
 	Addon::unregisterHook('page_end', 'addon/jappixmini/jappixmini.php', 'jappixmini_script');
 	Addon::unregisterHook('authenticate', 'addon/jappixmini/jappixmini.php', 'jappixmini_login');
@@ -115,7 +115,7 @@ function jappixmini_uninstall()
 	Addon::unregisterHook('about_hook', 'addon/jappixmini/jappixmini.php', 'jappixmini_download_source');
 }
 
-function jappixmini_plugin_admin(App $a, &$o)
+function jappixmini_addon_admin(App $a, &$o)
 {
 	// display instructions and warnings on addon settings page for admin
 	if (!file_exists("addon/jappixmini.tgz")) {
@@ -159,7 +159,7 @@ function jappixmini_plugin_admin(App $a, &$o)
 	$o .= '<input type="submit" name="jappixmini-admin-settings" value="OK" />';
 }
 
-function jappixmini_plugin_admin_post(App $a)
+function jappixmini_addon_admin_post(App $a)
 {
 	// set info text
 	$submit = $_REQUEST['jappixmini-admin-settings'];
@@ -230,7 +230,7 @@ function jappixmini_init()
 
 	}
 
-	// do not return an address if user deactivated plugin
+	// do not return an address if user deactivated addon
 	$activated = PConfig::get($uid, 'jappixmini', 'activate');
 	if (!$activated) {
 		killme();

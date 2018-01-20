@@ -9,12 +9,12 @@
  * About
  * =====
  *
- * This plugin will allow you to enter a date/time period during which
+ * This addon will allow you to enter a date/time period during which
  * all your ~friendica visitors from the web will be redirected to a page
  * you can configure in the admin panel as well.
  *
  * Calls to the API and the communication with other ~friendica nodes is
- * not effected from this plugin.
+ * not effected from this addon.
  *
  * If you enter a period the current date would be affected none of the
  * currently logged in users will be effected as well. But if they log
@@ -88,7 +88,7 @@ function blackout_redirect ($a, $b) {
     }
 }
 
-function blackout_plugin_admin(&$a, &$o) {
+function blackout_addon_admin(&$a, &$o) {
     $mystart = Config::get('blackout','begindate');
     if (! is_string($mystart)) { $mystart = "YYYY-MM-DD:hhmm"; }
     $myend   = Config::get('blackout','enddate');
@@ -112,7 +112,7 @@ function blackout_plugin_admin(&$a, &$o) {
         $o = '<p>Please double check that the current settings for the blackout. Begin will be <strong>'.$mystart.'</strong> and it will end <strong>'.$myend.'</strong>.</p>' . $o;
     }
 }
-function blackout_plugin_admin_post (&$a) {
+function blackout_addon_admin_post (&$a) {
     $begindate = trim($_POST['startdate']);
     $enddate = trim($_POST['enddate']);
     $url = trim($_POST['rurl']);

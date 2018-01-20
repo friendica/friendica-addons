@@ -12,7 +12,7 @@
  * $a->config['geonames']['username'] = 'your_username';
  * Also visit http://geonames.org/manageaccount and enable access to the free web services
  *
- * When plugin is installed, the system calls the plugin
+ * When addon is installed, the system calls the addon
  * name_install() function, located in 'addon/name/name.php',
  * where 'name' is the name of the addon.
  * If the addon is removed from the configuration list, the 
@@ -27,7 +27,7 @@ function geonames_install() {
 
 	/**
 	 * 
-	 * Our plugin will attach in three places.
+	 * Our addon will attach in three places.
 	 * The first is just prior to storing a local post.
 	 *
 	 */
@@ -36,14 +36,14 @@ function geonames_install() {
 
 	/**
 	 *
-	 * Then we'll attach into the plugin settings page, and also the 
+	 * Then we'll attach into the addon settings page, and also the 
 	 * settings post hook so that we can create and update
 	 * user preferences.
 	 *
 	 */
 
-	Addon::registerHook('plugin_settings', 'addon/geonames/geonames.php', 'geonames_plugin_admin');
-	Addon::registerHook('plugin_settings_post', 'addon/geonames/geonames.php', 'geonames_plugin_admin_post');
+	Addon::registerHook('addon_settings', 'addon/geonames/geonames.php', 'geonames_addon_admin');
+	Addon::registerHook('addon_settings_post', 'addon/geonames/geonames.php', 'geonames_addon_admin_post');
 
 	logger("installed geonames");
 }
@@ -60,8 +60,8 @@ function geonames_uninstall() {
 	 */
 
 	Addon::unregisterHook('post_local',    'addon/geonames/geonames.php', 'geonames_post_hook');
-	Addon::unregisterHook('plugin_settings', 'addon/geonames/geonames.php', 'geonames_plugin_admin');
-	Addon::unregisterHook('plugin_settings_post', 'addon/geonames/geonames.php', 'geonames_plugin_admin_post');
+	Addon::unregisterHook('addon_settings', 'addon/geonames/geonames.php', 'geonames_addon_admin');
+	Addon::unregisterHook('addon_settings_post', 'addon/geonames/geonames.php', 'geonames_addon_admin_post');
 
 
 	logger("removed geonames");
@@ -76,7 +76,7 @@ function geonames_post_hook($a, &$item) {
 	 * An item was posted on the local system.
 	 * We are going to look for specific items:
 	 *      - A status post by a profile owner
-	 *      - The profile owner must have allowed our plugin
+	 *      - The profile owner must have allowed our addon
 	 *
 	 */
 
@@ -137,7 +137,7 @@ function geonames_post_hook($a, &$item) {
  *
  */
 
-function geonames_plugin_admin_post($a,$post) {
+function geonames_addon_admin_post($a,$post) {
 	if(! local_user() || (! x($_POST,'geonames-submit')))
 		return;
 	PConfig::set(local_user(),'geonames','enable',intval($_POST['geonames']));
@@ -148,14 +148,14 @@ function geonames_plugin_admin_post($a,$post) {
 
 /**
  *
- * Called from the Plugin Setting form. 
+ * Called from the Addon Setting form. 
  * Add our own settings info to the page.
  *
  */
 
 
 
-function geonames_plugin_admin(&$a,&$s) {
+function geonames_addon_admin(&$a,&$s) {
 
 	if(! local_user())
 		return;
@@ -180,7 +180,7 @@ function geonames_plugin_admin(&$a,&$s) {
 	$s .= '<div class="settings-block">';
 	$s .= '<h3>' . t('Geonames Settings') . '</h3>';
 	$s .= '<div id="geonames-enable-wrapper">';
-	$s .= '<label id="geonames-enable-label" for="geonames-checkbox">' . t('Enable Geonames Plugin') . '</label>';
+	$s .= '<label id="geonames-enable-label" for="geonames-checkbox">' . t('Enable Geonames Addon') . '</label>';
 	$s .= '<input id="geonames-checkbox" type="checkbox" name="geonames" value="1" ' . $checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 

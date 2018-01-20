@@ -11,16 +11,16 @@ use Friendica\Core\PConfig;
 
 function nsfw_install() {
 	Addon::registerHook('prepare_body', 'addon/nsfw/nsfw.php', 'nsfw_prepare_body', 10);
-	Addon::registerHook('plugin_settings', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings');
-	Addon::registerHook('plugin_settings_post', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings_post');
+	Addon::registerHook('addon_settings', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings');
+	Addon::registerHook('addon_settings_post', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings_post');
 
 }
 
 
 function nsfw_uninstall() {
 	Addon::unregisterHook('prepare_body', 'addon/nsfw/nsfw.php', 'nsfw_prepare_body');
-	Addon::unregisterHook('plugin_settings', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings_post');
 
 }
 
@@ -83,7 +83,7 @@ function nsfw_addon_settings(&$a,&$s) {
     $s .= '</span>';
 
     $s .= '<div id="nsfw-wrapper">';
-    $s .= '<p>' . t ('This plugin looks in posts for the words/text you specify below, and collapses any content containing those keywords so it is not displayed at inappropriate times, such as sexual innuendo that may be improper in a work setting. It is polite and recommended to tag any content containing nudity with #NSFW.  This filter can also match any other word/text you specify, and can thereby be used as a general purpose content filter.') . '</p>';
+    $s .= '<p>' . t ('This addon looks in posts for the words/text you specify below, and collapses any content containing those keywords so it is not displayed at inappropriate times, such as sexual innuendo that may be improper in a work setting. It is polite and recommended to tag any content containing nudity with #NSFW.  This filter can also match any other word/text you specify, and can thereby be used as a general purpose content filter.') . '</p>';
     $s .= '<label id="nsfw-enable-label" for="nsfw-enable">' . t('Enable Content filter') . ' </label>';
     $s .= '<input id="nsfw-enable" type="checkbox" name="nsfw-enable" value="1"' . $enable_checked . ' />';
 	$s .= '<div class="clear"></div>';

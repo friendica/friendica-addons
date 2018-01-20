@@ -10,8 +10,8 @@ use Friendica\Core\PConfig;
 
 function numfriends_install() {
 
-	Addon::registerHook('plugin_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
-	Addon::registerHook('plugin_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
+	Addon::registerHook('addon_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
+	Addon::registerHook('addon_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
 
 	logger("installed numfriends");
 }
@@ -19,14 +19,12 @@ function numfriends_install() {
 
 function numfriends_uninstall() {
 
-	Addon::unregisterHook('plugin_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
 
 
 	logger("removed numfriends");
 }
-
-
 
 /**
  *
@@ -36,7 +34,6 @@ function numfriends_uninstall() {
  * and if so set our configuration setting for this person.
  *
  */
-
 function numfriends_settings_post($a,$post) {
 	if(! local_user() || (! x($_POST,'numfriends-submit')))
 		return;
@@ -48,13 +45,10 @@ function numfriends_settings_post($a,$post) {
 
 /**
  *
- * Called from the Plugin Setting form. 
+ * Called from the Addon Setting form. 
  * Add our own settings info to the page.
  *
  */
-
-
-
 function numfriends_settings(&$a, &$s)
 {
 	if (! local_user()) {

@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: public_server
- * Description: Friendica plugin/addon with functions suitable for a public server.
+ * Description: Friendica addon with functions suitable for a public server.
  * Version: 1.1
  * Author: Keith Fernie <http://friendika.me4.it/profile/keith>
  */
@@ -141,8 +141,8 @@ function public_server_login($a,$b) {
 	);
 }
 
-function public_server_plugin_admin_post ( &$a ) {
-    check_form_security_token_redirectOnErr('/admin/plugins/publicserver', 'publicserver');
+function public_server_addon_admin_post ( &$a ) {
+    check_form_security_token_redirectOnErr('/admin/addons/publicserver', 'publicserver');
     $expiredays = (( x($_POST, 'expiredays') ) ? notags(trim($_POST['expiredays'] )) : '');
     $expireposts = (( x($_POST, 'expireposts') ) ? notags(trim($_POST['expireposts'] )) : '');
     $nologin = (( x($_POST, 'nologin') ) ? notags(trim($_POST['nologin'] )) : '');
@@ -157,7 +157,7 @@ function public_server_plugin_admin_post ( &$a ) {
     Config::set( 'public_server','flagpostsexpire',$flagpostsexpire );
     info( t('Settings saved').EOL );
 }
-function public_server_plugin_admin ( &$a, &$o) {
+function public_server_addon_admin ( &$a, &$o) {
     $token = get_form_security_token("publicserver");
     $t = get_markup_template( "admin.tpl", "addon/public_server");
     $o = replace_macros($t, [

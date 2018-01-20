@@ -13,14 +13,14 @@ use Friendica\Core\PConfig;
 
 function mathjax_install() {
     Addon::registerHook('page_header', 'addon/mathjax/mathjax.php', 'mathjax_page_header');
-    Addon::registerHook('plugin_settings', 'addon/mathjax/mathjax.php', 'mathjax_settings');
-    Addon::registerHook('plugin_settings_post', 'addon/mathjax/mathjax.php', 'mathjax_settings_post');
-    logger('installed js_math plugin');
+    Addon::registerHook('addon_settings', 'addon/mathjax/mathjax.php', 'mathjax_settings');
+    Addon::registerHook('addon_settings_post', 'addon/mathjax/mathjax.php', 'mathjax_settings_post');
+    logger('installed js_math addon');
 }
 function mathjax_uninstall() {
     Addon::unregisterHook('page_header', 'addon/mathjax/mathjax.php', 'mathjax_page_header');
-    Addon::unregisterHook('plugin_settings', 'addon/mathjax/mathjax.php', 'mathjax_settings');
-    Addon::unregisterHook('plugin_settings_post', 'addon/mathjax/mathjax.php', 'mathjax_settings_post');
+    Addon::unregisterHook('addon_settings', 'addon/mathjax/mathjax.php', 'mathjax_settings');
+    Addon::unregisterHook('addon_settings_post', 'addon/mathjax/mathjax.php', 'mathjax_settings_post');
 }
 function mathjax_settings_post ($a, $post) {
     if (! local_user())
@@ -68,12 +68,12 @@ function mathjax_page_header($a, &$b) {
         }
     }
 }
-function mathjax_plugin_admin_post (&$a) {
+function mathjax_addon_admin_post (&$a) {
     $baseurl = ((x($_POST, 'baseurl')) ? trim($_POST['baseurl']) : 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML');
     Config::set('mathjax','baseurl',$baseurl);
     info( t('Settings updated.'). EOL);
 }
-function mathjax_plugin_admin (&$a, &$o) {
+function mathjax_addon_admin (&$a, &$o) {
 	$t = get_markup_template( "admin.tpl", "addon/mathjax/" );
 	if (Config::get('mathjax','baseurl','') == '') {
 		Config::set('mathjax','baseurl','http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML');

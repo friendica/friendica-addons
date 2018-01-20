@@ -11,15 +11,15 @@ use Friendica\Core\PConfig;
 
 function startpage_install() {
 	Addon::registerHook('home_init', 'addon/startpage/startpage.php', 'startpage_home_init');
-	Addon::registerHook('plugin_settings', 'addon/startpage/startpage.php', 'startpage_settings');
-	Addon::registerHook('plugin_settings_post', 'addon/startpage/startpage.php', 'startpage_settings_post');
+	Addon::registerHook('addon_settings', 'addon/startpage/startpage.php', 'startpage_settings');
+	Addon::registerHook('addon_settings_post', 'addon/startpage/startpage.php', 'startpage_settings_post');
 }
 
 
 function startpage_uninstall() {
 	Addon::unregisterHook('home_init', 'addon/startpage/startpage.php', 'startpage_home_init');
-	Addon::unregisterHook('plugin_settings', 'addon/startpage/startpage.php', 'startpage_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/startpage/startpage.php', 'startpage_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/startpage/startpage.php', 'startpage_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/startpage/startpage.php', 'startpage_settings_post');
 }
 
 
@@ -54,7 +54,7 @@ function startpage_settings_post($a,$post) {
 
 /**
  *
- * Called from the Plugin Setting form.
+ * Called from the Addon Setting form.
  * Add our own settings info to the page.
  *
  */

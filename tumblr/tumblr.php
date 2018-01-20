@@ -58,7 +58,7 @@ function tumblr_content(&$a) {
 	return $o;
 }
 
-function tumblr_plugin_admin(&$a, &$o){
+function tumblr_addon_admin(&$a, &$o){
         $t = get_markup_template( "admin.tpl", "addon/tumblr/" );
 
         $o = replace_macros($t, [
@@ -69,7 +69,7 @@ function tumblr_plugin_admin(&$a, &$o){
         ]);
 }
 
-function tumblr_plugin_admin_post(&$a){
+function tumblr_addon_admin_post(&$a){
         $consumer_key     =       ((x($_POST,'consumer_key'))              ? notags(trim($_POST['consumer_key']))   : '');
         $consumer_secret =       ((x($_POST,'consumer_secret'))   ? notags(trim($_POST['consumer_secret'])): '');
         Config::set('tumblr','consumer_key',$consumer_key);
@@ -218,7 +218,7 @@ function tumblr_settings(&$a,&$s) {
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="tumblr-enable-wrapper">';
-	$s .= '<label id="tumblr-enable-label" for="tumblr-checkbox">' . t('Enable Tumblr Post Plugin') . '</label>';
+	$s .= '<label id="tumblr-enable-label" for="tumblr-checkbox">' . t('Enable Tumblr Post Addon') . '</label>';
 	$s .= '<input id="tumblr-checkbox" type="checkbox" name="tumblr" value="1" ' . $checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 

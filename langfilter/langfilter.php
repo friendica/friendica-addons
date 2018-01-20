@@ -20,15 +20,15 @@ use Friendica\Core\PConfig;
 function langfilter_install()
 {
 	Addon::registerHook('prepare_body', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body', 10);
-	Addon::registerHook('plugin_settings', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
-	Addon::registerHook('plugin_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
+	Addon::registerHook('addon_settings', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
+	Addon::registerHook('addon_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
 }
 
 function langfilter_uninstall()
 {
 	Addon::unregisterHook('prepare_body', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body');
-	Addon::unregisterHook('plugin_settings', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
 }
 
 /* The settings

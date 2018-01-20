@@ -12,14 +12,14 @@ use Friendica\Core\PConfig;
 
 function remote_permissions_install() {
 	Addon::registerHook('lockview_content', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_content');
-	Addon::registerHook('plugin_settings', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings');
-	Addon::registerHook('plugin_settings_post', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings_post');
+	Addon::registerHook('addon_settings', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings');
+	Addon::registerHook('addon_settings_post', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings_post');
 }
 
 function remote_permissions_uninstall() {
 	Addon::unregisterHook('lockview_content', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_content');
-	Addon::unregisterHook('plugin_settings', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings_post');
 }
 
 function remote_permissions_settings(&$a,&$o) {
@@ -192,7 +192,7 @@ function remote_permissions_content($a, $item_copy) {
 	return;
 }
 
-function remote_permissions_plugin_admin(&$a, &$o){
+function remote_permissions_addon_admin(&$a, &$o){
 	$t = get_markup_template( "admin.tpl", "addon/remote_permissions/" );
 	$o = replace_macros($t, [
 		'$submit' => t('Save Settings'),
@@ -201,7 +201,7 @@ function remote_permissions_plugin_admin(&$a, &$o){
 	]);
 }
 
-function remote_permissions_plugin_admin_post(&$a){
+function remote_permissions_addon_admin_post(&$a){
 	$choice	=	((x($_POST,'remotepermschoice'))		? notags(trim($_POST['remotepermschoice']))	: '');
 	Config::set('remote_perms','global',($choice == 1 ? 1 : 0));
 	info( t('Settings updated.'). EOL );

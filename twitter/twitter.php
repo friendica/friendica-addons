@@ -33,7 +33,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-/*   Twitter Plugin for Friendica
+/*   Twitter Addon for Friendica
  *
  *   Author: Tobias Diekershoff
  *           tobias.diekershoff@gmx.net
@@ -41,7 +41,7 @@
  *   License:3-clause BSD license
  *
  *   Configuration:
- *     To use this plugin you need a OAuth Consumer key pair (key & secret)
+ *     To use this addon you need a OAuth Consumer key pair (key & secret)
  *     you can get it from Twitter at https://twitter.com/apps
  *
  *     Register your Friendica site as "Client" application with "Read & Write" access
@@ -53,9 +53,9 @@
  *     $a->config['twitter']['consumerkey'] = 'your consumer_key here';
  *     $a->config['twitter']['consumersecret'] = 'your consumer_secret here';
  *
- *     To activate the plugin itself add it to the $a->config['system']['addon']
+ *     To activate the addon itself add it to the $a->config['system']['addon']
  *     setting. After this, your user can configure their Twitter account settings
- *     from "Settings -> Plugin Settings".
+ *     from "Settings -> Addon Settings".
  *
  *     Requirements: PHP5, curl [Slinky library]
  */
@@ -109,8 +109,8 @@ function twitter_uninstall()
 
 	// old setting - remove only
 	Addon::unregisterHook('post_local_end', 'addon/twitter/twitter.php', 'twitter_post_hook');
-	Addon::unregisterHook('plugin_settings', 'addon/twitter/twitter.php', 'twitter_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/twitter/twitter.php', 'twitter_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
 }
 
 function twitter_check_item_notification(App $a, &$notification_data)
@@ -301,7 +301,7 @@ function twitter_settings(App $a, &$s)
 			/*			 * *
 			 *  make some nice form
 			 */
-			$s .= '<p>' . t('At this Friendica instance the Twitter plugin was enabled but you have not yet connected your account to your Twitter account. To do so click the button below to get a PIN from Twitter which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to Twitter.') . '</p>';
+			$s .= '<p>' . t('At this Friendica instance the Twitter addon was enabled but you have not yet connected your account to your Twitter account. To do so click the button below to get a PIN from Twitter which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to Twitter.') . '</p>';
 			$s .= '<a href="' . $connection->getAuthorizeURL($token) . '" target="_twitter"><img src="addon/twitter/lighter.png" alt="' . t('Log in with Twitter') . '"></a>';
 			$s .= '<div id="twitter-pin-wrapper">';
 			$s .= '<label id="twitter-pin-label" for="twitter-pin">' . t('Copy the PIN from Twitter here') . '</label>';
@@ -641,7 +641,7 @@ function twitter_post_hook(App $a, &$b)
 	}
 }
 
-function twitter_plugin_admin_post(App $a)
+function twitter_addon_admin_post(App $a)
 {
 	$consumerkey     = x($_POST, 'consumerkey')     ? notags(trim($_POST['consumerkey']))     : '';
 	$consumersecret  = x($_POST, 'consumersecret')  ? notags(trim($_POST['consumersecret']))  : '';
@@ -650,7 +650,7 @@ function twitter_plugin_admin_post(App $a)
 	info(t('Settings updated.') . EOL);
 }
 
-function twitter_plugin_admin(App $a, &$o)
+function twitter_addon_admin(App $a, &$o)
 {
 	$t = get_markup_template("admin.tpl", "addon/twitter/");
 

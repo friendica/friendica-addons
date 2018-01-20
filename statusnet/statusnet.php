@@ -170,8 +170,8 @@ function statusnet_uninstall()
 
 	// old setting - remove only
 	Addon::unregisterHook('post_local_end', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
-	Addon::unregisterHook('plugin_settings', 'addon/statusnet/statusnet.php', 'statusnet_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/statusnet/statusnet.php', 'statusnet_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/statusnet/statusnet.php', 'statusnet_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/statusnet/statusnet.php', 'statusnet_settings_post');
 }
 
 function statusnet_check_item_notification(App $a, &$notification_data)
@@ -707,7 +707,7 @@ function statusnet_post_hook(App $a, &$b)
 	}
 }
 
-function statusnet_plugin_admin_post(App $a)
+function statusnet_addon_admin_post(App $a)
 {
 	$sites = [];
 
@@ -739,7 +739,7 @@ function statusnet_plugin_admin_post(App $a)
 	$sites = Config::set('statusnet', 'sites', $sites);
 }
 
-function statusnet_plugin_admin(App $a, &$o)
+function statusnet_addon_admin(App $a, &$o)
 {
 	$sites = Config::get('statusnet', 'sites');
 	$sitesform = [];

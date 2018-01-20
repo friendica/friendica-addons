@@ -12,14 +12,14 @@ use Friendica\Core\Config;
 
 function pledgie_install() { 
 	Addon::registerHook('page_end', 'addon/pledgie/pledgie.php', 'pledgie_active'); 
-	Addon::registerHook('plugin_settings', 'addon/pledgie/pledgie.php', 'pledgie_addon_settings');
-	Addon::registerHook('plugin_settings_post', 'addon/pledgie/pledgie.php', 'pledgie_addon_settings_post');
+	Addon::registerHook('addon_settings', 'addon/pledgie/pledgie.php', 'pledgie_addon_settings');
+	Addon::registerHook('addon_settings_post', 'addon/pledgie/pledgie.php', 'pledgie_addon_settings_post');
 }
 
 function pledgie_uninstall() { 
 	Addon::unregisterHook('page_end', 'addon/pledgie/pledgie.php', 'pledgie_active');
-	Addon::unregisterHook('plugin_settings', 'addon/pledgie/pledgie.php', 'pledgie_addon_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/pledgie/pledgie.php', 'pledgie_addon_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/pledgie/pledgie.php', 'pledgie_addon_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/pledgie/pledgie.php', 'pledgie_addon_settings_post');
 }
 
 function pledgie_addon_settings(&$a,&$s) {

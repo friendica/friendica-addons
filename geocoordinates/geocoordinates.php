@@ -81,24 +81,24 @@ function geocoordinates_post_hook($a, &$item)
 	geocoordinates_resolve_item($item);
 }
 
-function geocoordinates_plugin_admin(&$a, &$o)
+function geocoordinates_addon_admin(&$a, &$o)
 {
 
 	$t = get_markup_template("admin.tpl", "addon/geocoordinates/");
 
 	$o = replace_macros($t, [
 		'$submit' => t('Save Settings'),
-		'$api_key' => ['api_key', t('API Key'),  Config::get('geocoordinates', 'api_key' ), ''],
-		'$language' => ['language', t('Language code (IETF format)'),  Config::get('geocoordinates', 'language' ), ''],
+		'$api_key' => ['api_key', t('API Key'), Config::get('geocoordinates', 'api_key'), ''],
+		'$language' => ['language', t('Language code (IETF format)'), Config::get('geocoordinates', 'language'), ''],
 	]);
 }
 
-function geocoordinates_plugin_admin_post(&$a)
+function geocoordinates_addon_admin_post(&$a)
 {
-	$api_key  = ((x($_POST,'api_key')) ? notags(trim($_POST['api_key']))   : '');
-	Config::set('geocoordinates','api_key',$api_key);
+	$api_key  = ((x($_POST, 'api_key')) ? notags(trim($_POST['api_key']))   : '');
+	Config::set('geocoordinates', 'api_key', $api_key);
 
-	$language  = ((x($_POST,'language')) ? notags(trim($_POST['language']))   : '');
-	Config::set('geocoordinates','language',$language);
+	$language  = ((x($_POST, 'language')) ? notags(trim($_POST['language']))   : '');
+	Config::set('geocoordinates', 'language', $language);
 	info(t('Settings updated.'). EOL);
 }

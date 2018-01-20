@@ -55,22 +55,24 @@ function buffer_content(&$a) {
 	return $o;
 }
 
-function buffer_plugin_admin(&$a, &$o){
-	$t = get_markup_template( "admin.tpl", "addon/buffer/" );
+function buffer_addon_admin(&$a, &$o)
+{
+	$t = get_markup_template("admin.tpl", "addon/buffer/");
 
 	$o = replace_macros($t, [
 		'$submit' => t('Save Settings'),
-								// name, label, value, help, [extra values]
-		'$client_id' => ['client_id', t('Client ID'),  Config::get('buffer', 'client_id' ), ''],
-		'$client_secret' => ['client_secret', t('Client Secret'),  Config::get('buffer', 'client_secret' ), ''],
+		// name, label, value, help, [extra values]
+		'$client_id' => ['client_id', t('Client ID'), Config::get('buffer', 'client_id'), ''],
+		'$client_secret' => ['client_secret', t('Client Secret'), Config::get('buffer', 'client_secret'), ''],
 	]);
 }
-function buffer_plugin_admin_post(&$a){
-        $client_id     =       ((x($_POST,'client_id'))              ? notags(trim($_POST['client_id']))   : '');
-        $client_secret =       ((x($_POST,'client_secret'))   ? notags(trim($_POST['client_secret'])): '');
-        Config::set('buffer','client_id',$client_id);
-        Config::set('buffer','client_secret',$client_secret);
-        info( t('Settings updated.'). EOL );
+function buffer_addon_admin_post(&$a)
+{
+	$client_id     =       ((x($_POST, 'client_id'))              ? notags(trim($_POST['client_id']))   : '');
+	$client_secret =       ((x($_POST, 'client_secret'))   ? notags(trim($_POST['client_secret'])): '');
+	Config::set('buffer', 'client_id', $client_id);
+	Config::set('buffer', 'client_secret', $client_secret);
+	info(t('Settings updated.'). EOL);
 }
 
 function buffer_connect(&$a) {
@@ -155,7 +157,7 @@ function buffer_settings(&$a,&$s) {
 		$s .= '</div><div class="clear"></div>';
 	} else {
 		$s .= '<div id="buffer-enable-wrapper">';
-		$s .= '<label id="buffer-enable-label" for="buffer-checkbox">' . t('Enable Buffer Post Plugin') . '</label>';
+		$s .= '<label id="buffer-enable-label" for="buffer-checkbox">' . t('Enable Buffer Post Addon') . '</label>';
 		$s .= '<input id="buffer-checkbox" type="checkbox" name="buffer" value="1" ' . $checked . '/>';
 		$s .= '</div><div class="clear"></div>';
 

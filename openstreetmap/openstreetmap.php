@@ -163,7 +163,7 @@ function openstreetmap_generate_map(&$a, &$b)
 
 }
 
-function openstreetmap_plugin_admin(&$a, &$o)
+function openstreetmap_addon_admin(&$a, &$o)
 {
 	$t = get_markup_template("admin.tpl", "addon/openstreetmap/");
 	$tmsserver = Config::get('openstreetmap', 'tmsserver');
@@ -192,7 +192,7 @@ function openstreetmap_plugin_admin(&$a, &$o)
 	]);
 }
 
-function openstreetmap_plugin_admin_post(&$a)
+function openstreetmap_addon_admin_post(&$a)
 {
 	$urltms = ((x($_POST, 'tmsserver')) ? notags(trim($_POST['tmsserver'])) : '');
 	$urlnom = ((x($_POST, 'nomserver')) ? notags(trim($_POST['nomserver'])) : '');

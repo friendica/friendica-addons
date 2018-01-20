@@ -13,21 +13,21 @@ use Friendica\Core\PConfig;
 
 function xmpp_install()
 {
-	Addon::registerHook('plugin_settings', 'addon/xmpp/xmpp.php', 'xmpp_plugin_settings');
-	Addon::registerHook('plugin_settings_post', 'addon/xmpp/xmpp.php', 'xmpp_plugin_settings_post');
+	Addon::registerHook('addon_settings', 'addon/xmpp/xmpp.php', 'xmpp_addon_settings');
+	Addon::registerHook('addon_settings_post', 'addon/xmpp/xmpp.php', 'xmpp_addon_settings_post');
 	Addon::registerHook('page_end', 'addon/xmpp/xmpp.php', 'xmpp_script');
 	Addon::registerHook('logged_in', 'addon/xmpp/xmpp.php', 'xmpp_login');
 }
 
 function xmpp_uninstall()
 {
-	Addon::unregisterHook('plugin_settings', 'addon/xmpp/xmpp.php', 'xmpp_plugin_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/xmpp/xmpp.php', 'xmpp_plugin_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/xmpp/xmpp.php', 'xmpp_addon_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/xmpp/xmpp.php', 'xmpp_addon_settings_post');
 	Addon::unregisterHook('page_end', 'addon/xmpp/xmpp.php', 'xmpp_script');
 	Addon::unregisterHook('logged_in', 'addon/xmpp/xmpp.php', 'xmpp_login');
 }
 
-function xmpp_plugin_settings_post()
+function xmpp_addon_settings_post()
 {
 	if (!local_user() || (!x($_POST, 'xmpp-settings-submit'))) {
 		return;
@@ -39,7 +39,7 @@ function xmpp_plugin_settings_post()
 	info(t('XMPP settings updated.') . EOL);
 }
 
-function xmpp_plugin_settings(App $a, &$s)
+function xmpp_addon_settings(App $a, &$s)
 {
 	if (!local_user()) {
 		return;
@@ -100,7 +100,7 @@ function xmpp_login()
 	}
 }
 
-function xmpp_plugin_admin(App $a, &$o)
+function xmpp_addon_admin(App $a, &$o)
 {
 	$t = get_markup_template("admin.tpl", "addon/xmpp/");
 
@@ -111,7 +111,7 @@ function xmpp_plugin_admin(App $a, &$o)
 	]);
 }
 
-function xmpp_plugin_admin_post()
+function xmpp_addon_admin_post()
 {
 	$bosh_proxy = ((x($_POST, 'bosh_proxy')) ? trim($_POST['bosh_proxy']) : '');
 	$central_userbase = ((x($_POST, 'central_userbase')) ? intval($_POST['central_userbase']) : false);

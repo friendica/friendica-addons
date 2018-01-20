@@ -12,8 +12,8 @@ use Friendica\Core\PConfig;
 
 function gnot_install() {
 
-	Addon::registerHook('plugin_settings', 'addon/gnot/gnot.php', 'gnot_settings');
-	Addon::registerHook('plugin_settings_post', 'addon/gnot/gnot.php', 'gnot_settings_post');
+	Addon::registerHook('addon_settings', 'addon/gnot/gnot.php', 'gnot_settings');
+	Addon::registerHook('addon_settings_post', 'addon/gnot/gnot.php', 'gnot_settings_post');
 	Addon::registerHook('enotify_mail', 'addon/gnot/gnot.php', 'gnot_enotify_mail');
 
 	logger("installed gnot");
@@ -22,8 +22,8 @@ function gnot_install() {
 
 function gnot_uninstall() {
 
-	Addon::unregisterHook('plugin_settings', 'addon/gnot/gnot.php', 'gnot_settings');
-	Addon::unregisterHook('plugin_settings_post', 'addon/gnot/gnot.php', 'gnot_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/gnot/gnot.php', 'gnot_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/gnot/gnot.php', 'gnot_settings_post');
 	Addon::unregisterHook('enotify_mail', 'addon/gnot/gnot.php', 'gnot_enotify_mail');
 
 
@@ -52,7 +52,7 @@ function gnot_settings_post($a,$post) {
 
 /**
  *
- * Called from the Plugin Setting form. 
+ * Called from the Addon Setting form. 
  * Add our own settings info to the page.
  *
  */
@@ -80,7 +80,7 @@ function gnot_settings(&$a,&$s) {
 	$s .= '<h3>' . t('Gnot Settings') . '</h3>';
 	$s .= '<div id="gnot-wrapper">';
 	$s .= '<div id="gnot-desc">' . t("Allows threading of email comment notifications on Gmail and anonymising the subject line.") . '</div>';
-	$s .= '<label id="gnot-label" for="gnot">' . t('Enable this plugin/addon?') . '</label>';
+	$s .= '<label id="gnot-label" for="gnot">' . t('Enable this addon?') . '</label>';
 	$s .= '<input id="gnot-input" type="checkbox" name="gnot" value="1"'.  $gnot_checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
