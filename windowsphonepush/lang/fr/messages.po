@@ -28,7 +28,7 @@ msgid "WindowsPhonePush Settings"
 msgstr "Paramètres WindowsPhonePush"
 
 #: windowsphonepush.php:117
-msgid "Enable WindowsPhonePush Plugin"
+msgid "Enable WindowsPhonePush Addon"
 msgstr "Activer le greffon WindowsPhonePush"
 
 #: windowsphonepush.php:122

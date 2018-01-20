@@ -6,5 +6,5 @@ function string_plural_select_es($n){
 }}
 ;
 $a->strings["Randplace Settings"] = "Ajustes de Randplace";
-$a->strings["Enable Randplace Plugin"] = "Habilitar el Plugin de Randplace";
+$a->strings["Enable Randplace Addon"] = "Habilitar el Addon de Randplace";
 $a->strings["Submit"] = "Enviar";

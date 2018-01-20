@@ -412,7 +412,7 @@ function adaptNotifications() {
 	$('.notifications-content .tools-content-subitem').css('max-height', max_height);
 }
 
-// Plugin launcher
+// Addon launcher
 function launchNotifications() {
 	// Adapt the notifications height
 	adaptNotifications();

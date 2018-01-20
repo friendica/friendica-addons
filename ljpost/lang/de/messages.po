@@ -29,8 +29,8 @@ msgid "LiveJournal Post Settings"
 msgstr "LiveJournal Veröffentlichungs-Einstellungen"
 
 #: ljpost.php:72
-msgid "Enable LiveJournal Post Plugin"
-msgstr "LiveJournal Post Plugin aktivieren"
+msgid "Enable LiveJournal Post Addon"
+msgstr "LiveJournal Post Addon aktivieren"
 
 #: ljpost.php:77
 msgid "LiveJournal username"

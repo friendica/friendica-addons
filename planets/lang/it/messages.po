@@ -24,8 +24,8 @@ msgid "Planets Settings"
 msgstr "Impostazioni \"Pianeti\""
 
 #: planets.php:152
-msgid "Enable Planets Plugin"
-msgstr "Abilita il plugin \"Pianeti\""
+msgid "Enable Planets Addon"
+msgstr "Abilita il addon\"Pianeti\""
 
 #: planets.php:158
 msgid "Submit"

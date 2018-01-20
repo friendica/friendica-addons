@@ -21,11 +21,11 @@ msgstr ""
 
 #: jappixmini.php:266
 msgid "Jappix Mini addon settings"
-msgstr "Impostazioni plugin Jappix Mini"
+msgstr "ImpostazioniaddonJappix Mini"
 
 #: jappixmini.php:268
 msgid "Activate addon"
-msgstr "Abilita plugin"
+msgstr "Abilita addon"
 
 #: jappixmini.php:271
 msgid ""

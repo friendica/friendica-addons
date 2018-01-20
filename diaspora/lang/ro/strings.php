@@ -8,7 +8,7 @@ function string_plural_select_ro($n){
 $a->strings["Post to Diaspora"] = "Postați pe Diaspora";
 $a->strings["Can't login to your Diaspora account. Please check username and password and ensure you used the complete address (including http...)"] = "Nu se poate face autentificarea pe contul dvs. Diaspora. Verificați numele de utilizator şi parola şi asigurați-vă că ați folosit adresa completă  (inclusiv http ... )";
 $a->strings["Diaspora Export"] = "Exportare pe Diaspora ";
-$a->strings["Enable Diaspora Post Plugin"] = "Activare Modul Postare pe Diaspora";
+$a->strings["Enable Diaspora Post Addon"] = "Activare Modul Postare pe Diaspora";
 $a->strings["Diaspora username"] = "Utilizator Diaspora";
 $a->strings["Diaspora password"] = "Parola Diaspora";
 $a->strings["Diaspora site URL"] = "URL site Diaspora";

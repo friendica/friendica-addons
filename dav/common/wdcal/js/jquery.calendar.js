@@ -141,7 +141,7 @@
 
 
 	if ($.fn.noSelect == undefined) {
-		$.fn.noSelect = function (p) { //no select plugin by me :-)
+		$.fn.noSelect = function (p) { //no select addon by me :-)
 			var prevent;
 			if (p == null)
 				prevent = true;

@@ -406,7 +406,7 @@ function getUserInfos(hash, xid, nick, type) {
 	presenceFunnel(xid, hash);
 }
 
-// Plugin launcher
+// Addon launcher
 function launchUserInfos() {
 	// Click events
 	$('#userinfos .tab a').click(function() {

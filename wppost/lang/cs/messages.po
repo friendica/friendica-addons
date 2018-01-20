@@ -28,7 +28,7 @@ msgid "Wordpress Export"
 msgstr "Wordpress Export"
 
 #: wppost.php:86
-msgid "Enable WordPress Post Plugin"
+msgid "Enable WordPress Post Addon"
 msgstr "Povolit rozšíření na WordPress"
 
 #: wppost.php:91

@@ -44,7 +44,7 @@ msgid "(Re-)Authenticate your tumblr page"
 msgstr "(Znovu) přihlásit k Vaší tumblr stránce"
 
 #: tumblr.php:198
-msgid "Enable Tumblr Post Plugin"
+msgid "Enable Tumblr Post Addon"
 msgstr "Povolit rozšíření Tumbir"
 
 #: tumblr.php:203

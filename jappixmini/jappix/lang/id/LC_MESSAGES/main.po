@@ -1038,8 +1038,8 @@ msgstr "Jappix harus mampu menulis dalam folder ini untuk membuat sub-direktori.
 msgid "The folder is writable, you can continue!"
 msgstr "Folder dapat ditulis, anda dapat melanjutkan!"
 
-msgid "Jappix offers you the possibility to manage your configuration, install new plugins or search for updates. That's why you must create an administrator account to access the manager."
-msgstr "Jappix menawarkan kemungkinan untuk mengelola konfigurasi anda, menginstal plugin baru atau mencari update. Itulah mengapa anda harus membuat account administrator untuk mengakses manajer."
+msgid "Jappix offers you the possibility to manage your configuration, install new addons or search for updates. That's why you must create an administrator account to access the manager."
+msgstr "Jappix menawarkan kemungkinan untuk mengelola konfigurasi anda, menginstal addon baru atau mencari update. Itulah mengapa anda harus membuat account administrator untuk mengakses manajer."
 
 msgid "When Jappix will be installed, just click on the manager link on the home page to access it."
 msgstr "Ketika Jappix akan diinstal, cukup klik pada link manajer di halaman rumah untuk mengaksesnya."

@@ -1,8 +1,8 @@
 YourLS
 
 For server admins only.
-Defines a YourLS url shortener for the Statusnet & Twitter plugins.
+Defines a YourLS url shortener for the Statusnet & Twitter addons.
 
-This plugin will not do anything else unless the Statusnet and/or Twitter plugins are installed.
+This addon will not do anything else unless the Statusnet and/or Twitter addons are installed.
 
-The message is entered in the admin account at Settings -> Plugin settings.
+The message is entered in the admin account at Settings -> Addon settings.

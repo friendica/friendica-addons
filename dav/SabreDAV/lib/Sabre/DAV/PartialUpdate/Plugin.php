@@ -1,8 +1,8 @@
 <?php
 /**
- * Partial update plugin (Patch method)
+ * Partial update addon (Patch method)
  *
- * This plugin provides a way to modify only part of a target resource
+ * This addon provides a way to modify only part of a target resource
  * It may bu used to update a file chunk, upload big a file into smaller
  * chunks or resume an upload.
  *
@@ -25,7 +25,7 @@ class Sabre_DAV_PartialUpdate_Plugin extends Sabre_DAV_ServerPlugin {
     protected $server;
 
     /**
-     * Initializes the plugin
+     * Initializes the addon
      *
      * This method is automatically called by the Server class after addPlugin.
      *
@@ -40,9 +40,9 @@ class Sabre_DAV_PartialUpdate_Plugin extends Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Returns a plugin name.
+     * Returns a addon name.
      *
-     * Using this name other plugins will be able to access other plugins
+     * Using this name other addons will be able to access other addons
      * using Sabre_DAV_Server::getPlugin
      *
      * @return string
@@ -57,7 +57,7 @@ class Sabre_DAV_PartialUpdate_Plugin extends Sabre_DAV_ServerPlugin {
      * This method is called by the Server if the user used an HTTP method
      * the server didn't recognize.
      *
-     * This plugin intercepts the PATCH methods.
+     * This addon intercepts the PATCH methods.
      *
      * @param string $method
      * @param string $uri
@@ -75,7 +75,7 @@ class Sabre_DAV_PartialUpdate_Plugin extends Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Use this method to tell the server this plugin defines additional
+     * Use this method to tell the server this addon defines additional
      * HTTP methods.
      *
      * This method is passed a uri. It should only return HTTP methods that are

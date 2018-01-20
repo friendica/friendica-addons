@@ -8,7 +8,7 @@ function string_plural_select_ru($n){
 $a->strings["Post to Diaspora"] = "Отправить в Diaspora";
 $a->strings["Can't login to your Diaspora account. Please check username and password and ensure you used the complete address (including http...)"] = "Невозможно войти в вашу учетную запись Diaspora. Пожалуйста, проверьте имя пользователя, пароль и убедитесь, что вы ввели полный адрес пода (включая http/https)";
 $a->strings["Diaspora Export"] = "Экспорт в Diaspora";
-$a->strings["Enable Diaspora Post Plugin"] = "Включить плагин отправки сообщений в Diaspora";
+$a->strings["Enable Diaspora Post Addon"] = "Включить плагин отправки сообщений в Diaspora";
 $a->strings["Diaspora username"] = "Имя пользователя Diaspora";
 $a->strings["Diaspora password"] = "Пароль Diaspora";
 $a->strings["Diaspora site URL"] = "URL пода Diaspora";

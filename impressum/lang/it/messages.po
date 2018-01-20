@@ -40,7 +40,7 @@ msgid ""
 "The impressum addon needs to be configured!<br />Please add at least the "
 "<tt>owner</tt> variable to your config file. For other variables please "
 "refer to the README file of the addon."
-msgstr "Il plugin Colophon deve essere configurato!<br>Aggiungi almeno il Proprietario del sito."
+msgstr "IladdonColophon deve essere configurato!<br>Aggiungi almeno il Proprietario del sito."
 
 #: impressum.php:78
 msgid "Settings updated."

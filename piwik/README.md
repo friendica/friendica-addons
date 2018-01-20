@@ -1,4 +1,4 @@
-Piwik Plugin
+Piwik Addon
 ============
 
 by Tobias Diekershoff and Klaus Weidenbach
@@ -9,7 +9,7 @@ tool Piwik into the Friendica pages.
 Requirements
 ------------
 
-To use this plugin you need a [piwik](http://piwik.org/) installation.
+To use this addon you need a [piwik](http://piwik.org/) installation.
 
 Where to find
 -------------

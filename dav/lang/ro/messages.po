@@ -184,7 +184,7 @@ msgstr "Sincronizați contactele Friendica cu iPhone"
 
 #: friendica/main.php:202
 msgid ""
-"The current version of this plugin has not been set up correctly. Please "
+"The current version of this addon has not been set up correctly. Please "
 "contact the system administrator of your installation of friendica to fix "
 "this."
 msgstr "Versiunea curentă a acestui modul nu a fost corect configurată. Vă rugăm să contactați administratorul de sistem al aplicației dvs. friendica, pentru a corecta această situație."

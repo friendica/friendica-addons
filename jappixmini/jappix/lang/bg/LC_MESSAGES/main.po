@@ -1038,7 +1038,7 @@ msgstr "Jappix трябва да може да вписва данни в таз
 msgid "The folder is writable, you can continue!"
 msgstr "В тази папка/директория може да се записва, можете да продължите!"
 
-msgid "Jappix offers you the possibility to manage your configuration, install new plugins or search for updates. That's why you must create an administrator account to access the manager."
+msgid "Jappix offers you the possibility to manage your configuration, install new addons or search for updates. That's why you must create an administrator account to access the manager."
 msgstr "Jappix ви позволява да управлявате и менажирате вашата конфигурация, да инсталирате нови разширения (плъгини) или да потърсите за обновления на програмата (ъпдейти). Затова трябва да създадете администраторска потребителска сметка (акаунт), за да можете да имате достъп до мениджъра с настройките на Jappix."
 
 msgid "When Jappix will be installed, just click on the manager link on the home page to access it."

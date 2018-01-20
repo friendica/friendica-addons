@@ -4,7 +4,7 @@
  * This node represents a list of notifications.
  *
  * It provides no additional functionality, but you must implement this
- * interface to allow the Notifications plugin to mark the collection
+ * interface to allow the Notifications addon to mark the collection
  * as a notifications collection.
  *
  * This collection should only return Sabre_CalDAV_Notifications_INode nodes as

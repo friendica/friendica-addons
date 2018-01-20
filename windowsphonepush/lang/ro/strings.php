@@ -7,6 +7,6 @@ function string_plural_select_ro($n){
 ;
 $a->strings["WindowsPhonePush settings updated."] = "Configurări  WindowsPhonePush actualizate.";
 $a->strings["WindowsPhonePush Settings"] = "Configurare  WindowsPhonePush";
-$a->strings["Enable WindowsPhonePush Plugin"] = "Activare Plugin WindowsPhonePush";
+$a->strings["Enable WindowsPhonePush Addon"] = "Activare Addon WindowsPhonePush";
 $a->strings["Push text of new item"] = "Tastează textul noului element";
 $a->strings["Save Settings"] = "Salvare Configurări";

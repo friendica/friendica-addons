@@ -2,7 +2,7 @@
 
 $a->strings["Post to Wordpress"] = "Publica-ho al Wordpress";
 $a->strings["WordPress Post Settings"] = "Configuració d'enviaments a WordPress";
-$a->strings["Enable WordPress Post Plugin"] = "Habilitar Configuració d'Enviaments a WordPress";
+$a->strings["Enable WordPress Post Addon"] = "Habilitar Configuració d'Enviaments a WordPress";
 $a->strings["WordPress username"] = "Nom d'usuari de WordPress";
 $a->strings["WordPress password"] = "Contrasenya de WordPress";
 $a->strings["WordPress API URL"] = "WordPress API URL";

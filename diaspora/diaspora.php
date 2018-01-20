@@ -172,7 +172,7 @@ function diaspora_settings(&$a,&$s) {
 	}
 
 	$s .= '<div id="diaspora-enable-wrapper">';
-	$s .= '<label id="diaspora-enable-label" for="diaspora-checkbox">' . t('Enable Diaspora Post Plugin') . '</label>';
+	$s .= '<label id="diaspora-enable-label" for="diaspora-checkbox">' . t('Enable Diaspora Post Addon') . '</label>';
 	$s .= '<input id="diaspora-checkbox" type="checkbox" name="diaspora" value="1" ' . $checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 

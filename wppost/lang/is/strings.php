@@ -2,7 +2,7 @@
 
 $a->strings["Post to Wordpress"] = "Senda færslu á Wordpress";
 $a->strings["WordPress Post Settings"] = "Wordpress Post stillingar";
-$a->strings["Enable WordPress Post Plugin"] = "Kveikja á WordPress Post viðbót";
+$a->strings["Enable WordPress Post Addon"] = "Kveikja á WordPress Post viðbót";
 $a->strings["WordPress username"] = "Wordpress aðgangsorð";
 $a->strings["WordPress password"] = "Wordpress aðgagnsorð";
 $a->strings["WordPress API URL"] = "Slóð á Wordpress API";

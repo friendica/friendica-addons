@@ -14,7 +14,7 @@ define ('FORTUNATE_SERVER', 'hostname.com');
 function fortunate_install() {
 	Addon::registerHook('page_end', 'addon/fortunate/fortunate.php', 'fortunate_fetch');
 	if(FORTUNATE_SERVER == 'hostname.com' && is_site_admin()) {
-		notice('Fortunate plugin requires configuration. See README');
+		notice('Fortunate addon requires configuration. See README');
 	}
 }
 

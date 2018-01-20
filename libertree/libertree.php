@@ -74,7 +74,7 @@ function libertree_settings(&$a,&$s) {
     $s .= '</span>';
 
     $s .= '<div id="libertree-enable-wrapper">';
-    $s .= '<label id="libertree-enable-label" for="libertree-checkbox">' . t('Enable Libertree Post Plugin') . '</label>';
+    $s .= '<label id="libertree-enable-label" for="libertree-checkbox">' . t('Enable Libertree Post Addon') . '</label>';
     $s .= '<input id="libertree-checkbox" type="checkbox" name="libertree" value="1" ' . $checked . '/>';
     $s .= '</div><div class="clear"></div>';
 

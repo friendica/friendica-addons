@@ -60,8 +60,8 @@ msgid "Authenticate your Buffer connection"
 msgstr "Přihlásit ke spojení na Buffer"
 
 #: buffer.php:146
-msgid "Enable Buffer Post Plugin"
-msgstr "Povolit Buffer Post Plugin"
+msgid "Enable Buffer Post Addon"
+msgstr "Povolit Buffer Post Addon"
 
 #: buffer.php:151
 msgid "Post to Buffer by default"

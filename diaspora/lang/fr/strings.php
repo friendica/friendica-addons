@@ -8,7 +8,7 @@ function string_plural_select_fr($n){
 $a->strings["Post to Diaspora"] = "Publier sur Diaspora";
 $a->strings["Can't login to your Diaspora account. Please check username and password and ensure you used the complete address (including http...)"] = "Impossible de se connecter à votre compte Diaspora. Veuillez vérifier votre identifiant et votre mot de passe, et assurez-vous d’avoir indiqué l’adresse complète (y compris le « http:// » initial).";
 $a->strings["Diaspora Export"] = "Export Diaspora";
-$a->strings["Enable Diaspora Post Plugin"] = "Activer l’extension « Publier sur Diaspora »";
+$a->strings["Enable Diaspora Post Addon"] = "Activer l’extension « Publier sur Diaspora »";
 $a->strings["Diaspora username"] = "Identifiant Diaspora";
 $a->strings["Diaspora password"] = "Mot de passe Diaspora";
 $a->strings["Diaspora site URL"] = "Adresse du site Diaspora";

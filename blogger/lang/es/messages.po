@@ -27,8 +27,8 @@ msgid "Blogger Export"
 msgstr "Esportar Blogger"
 
 #: blogger.php:82
-msgid "Enable Blogger Post Plugin"
-msgstr "Activar plugin de entrada de Blogger"
+msgid "Enable Blogger Post Addon"
+msgstr "Activar addon de entrada de Blogger"
 
 #: blogger.php:87
 msgid "Blogger username"

@@ -7,5 +7,5 @@ function string_plural_select_es($n){
 ;
 $a->strings["Geonames settings updated."] = "Ajustes de geonombres actualizados.";
 $a->strings["Geonames Settings"] = "Ajustes de Geonombres";
-$a->strings["Enable Geonames Plugin"] = "Habilitar Plugin de Geonombres";
+$a->strings["Enable Geonames Addon"] = "Habilitar Addon de Geonombres";
 $a->strings["Submit"] = "Enviar";

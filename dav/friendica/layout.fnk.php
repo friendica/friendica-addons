@@ -501,14 +501,14 @@ function wdcal_getSettingsPage(&$a)
 
 	$o .= "<br><h3>" . t("Warning") . "</h3>";
 
-	$o .= "This plugin still is in a very early stage of development. Expect major bugs!<br>";
+	$o .= "This addon still is in a very early stage of development. Expect major bugs!<br>";
 
 	$o .= "<br><h3>" . t("Synchronization (iPhone, Thunderbird Lightning, Android, ...)") . "</h3>";
 
-	$o .= 'This plugin enables synchronization of your dates and contacts with CalDAV- and CardDAV-enabled programs or devices.<br>
+	$o .= 'This addon enables synchronization of your dates and contacts with CalDAV- and CardDAV-enabled programs or devices.<br>
 		As an example, the instructions how to set up two-way synchronization with an iPhone/iPodTouch are provided below.<br>
 		Unfortunately, Android does not have native support for CalDAV or CardDAV, so an app has to be installed.<br>
-		On desktops, the Lightning-extension to Mozilla Thunderbird should be able to use this plugin as a backend.<br><br>';
+		On desktops, the Lightning-extension to Mozilla Thunderbird should be able to use this addon as a backend.<br><br>';
 
 	$o .= '<h4>' . t('Synchronizing this calendar with the iPhone') . '</h4>';
 

@@ -1038,8 +1038,8 @@ msgstr "Jappix deve avere le autorizzazioni adeguate per scrivere in questa cart
 msgid "The folder is writable, you can continue!"
 msgstr "La directory è scrivibile, puoi continuare!"
 
-msgid "Jappix offers you the possibility to manage your configuration, install new plugins or search for updates. That's why you must create an administrator account to access the manager."
-msgstr "Jappix ti offre la possibilità controllare la configurazione di Jappix, installare nuove plugins e cercare aggiornamenti. Ecco perchè devi creare un account amministrativo per accedere all'Amministrazione."
+msgid "Jappix offers you the possibility to manage your configuration, install new addons or search for updates. That's why you must create an administrator account to access the manager."
+msgstr "Jappix ti offre la possibilità controllare la configurazione di Jappix, installare nuove addons e cercare aggiornamenti. Ecco perchè devi creare un account amministrativo per accedere all'Amministrazione."
 
 msgid "When Jappix will be installed, just click on the manager link on the home page to access it."
 msgstr "Quando Jappix sarà installato, semplicemente clicca sul link “Amministrazione” nella home page per accedervi."

@@ -2,7 +2,7 @@
 
 $a->strings["Post to blogger"] = "Post na blogger";
 $a->strings["Blogger Post Settings"] = "Ustawienia postów na Blogger";
-$a->strings["Enable Blogger Post Plugin"] = "";
+$a->strings["Enable Blogger Post Addon"] = "";
 $a->strings["Blogger username"] = "Nazwa użytkownika na Blogger";
 $a->strings["Blogger password"] = "Hasło do Blogger";
 $a->strings["Blogger API URL"] = "";

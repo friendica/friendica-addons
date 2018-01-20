@@ -3,7 +3,7 @@
 /**
  * Browser Plugin
  *
- * This plugin provides a html representation, so that a WebDAV server may be accessed
+ * This addon provides a html representation, so that a WebDAV server may be accessed
  * using a browser.
  *
  * The class intercepts GET requests to collection resources and generates a simple
@@ -60,7 +60,7 @@ class Sabre_DAV_Browser_Plugin extends Sabre_DAV_ServerPlugin {
     protected $enablePost = true;
 
     /**
-     * By default the browser plugin will generate a favicon and other images.
+     * By default the browser addon will generate a favicon and other images.
      * To turn this off, set this property to false.
      *
      * @var bool
@@ -84,7 +84,7 @@ class Sabre_DAV_Browser_Plugin extends Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Initializes the plugin and subscribes to events
+     * Initializes the addon and subscribes to events
      *
      * @param Sabre_DAV_Server $server
      * @return void
@@ -122,7 +122,7 @@ class Sabre_DAV_Browser_Plugin extends Sabre_DAV_ServerPlugin {
             $node = $this->server->tree->getNodeForPath($uri);
         } catch (Sabre_DAV_Exception_NotFound $e) {
             // We're simply stopping when the file isn't found to not interfere
-            // with other plugins.
+            // with other addons.
             return;
         }
         if ($node instanceof Sabre_DAV_IFile)

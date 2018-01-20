@@ -35,8 +35,8 @@ msgid ""
 msgstr "Erlaubt das Veröffentlichen von E-Mail Kommentar Benachrichtigungen bei Gmail mit anonymisiertem Betreff"
 
 #: gnot.php:82
-msgid "Enable this plugin/addon?"
-msgstr "Dieses Plugin/Addon aktivieren?"
+msgid "Enable this addon?"
+msgstr "Dieses Addon aktivieren?"
 
 #: gnot.php:88
 msgid "Submit"

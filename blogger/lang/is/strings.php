@@ -7,7 +7,7 @@ function string_plural_select_is($n){
 ;
 $a->strings["Post to blogger"] = "Senda færslu á bloggara";
 $a->strings["Blogger Export"] = "Flytja út blogg";
-$a->strings["Enable Blogger Post Plugin"] = "Virkja sendiviðbót fyrir blogg";
+$a->strings["Enable Blogger Post Addon"] = "Virkja sendiviðbót fyrir blogg";
 $a->strings["Blogger username"] = "Notandanafn bloggara";
 $a->strings["Blogger password"] = "Aðgangsorð bloggara";
 $a->strings["Blogger API URL"] = "API slóð bloggs";

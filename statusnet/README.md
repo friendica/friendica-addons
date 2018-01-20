@@ -12,7 +12,7 @@ Requirements
 Due to the distributed nature of the GNU Social network, each user who wishes to
 forward public messages to a GNU Social account has to get the OAuth credentials
 for themselves, which makes this addon a little bit more user unfriendly than
-the Twitter Plugin is. Nothing too geeky though!
+the Twitter Addon is. Nothing too geeky though!
 
 The inclusion of a shorturl for the original posting in cases when the message
 was longer than the maximal allowed notice length requires it, that you have
@@ -57,9 +57,9 @@ During the registration of the OAuth client remember the following:
 After the required credentials for the application are stored in the
 configuration you have to actually connect your friendica account with
 GNU Social. To do so follow the Sign in with GNU Social button, allow the access
-and copy the security code into the plugin configuration. Friendica will then
+and copy the security code into the addon configuration. Friendica will then
 try to acquire the final OAuth credentials from the API, if successful the
-plugin settings will allow you to select to post your public messages to your
+addon settings will allow you to select to post your public messages to your
 GNU Social account.
 
 License

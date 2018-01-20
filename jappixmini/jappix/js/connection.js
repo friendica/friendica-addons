@@ -489,7 +489,7 @@ function getEverything() {
 	getStorage(NS_ROSTERNOTES);
 }
 
-// Plugin launcher
+// Addon launcher
 function launchConnection() {
 	// Logouts when Jappix is closed
 	$(window).bind('beforeunload', terminate);
@@ -522,5 +522,5 @@ function launchConnection() {
 	}
 }
 
-// Launch this plugin!
+// Launch this addon!
 $(document).ready(launchConnection);

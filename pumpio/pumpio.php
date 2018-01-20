@@ -276,7 +276,7 @@ function pumpio_settings(&$a,&$s) {
 			$s .= '</div><div class="clear"></div>';
 
 			$s .= '<div id="pumpio-enable-wrapper">';
-			$s .= '<label id="pumpio-enable-label" for="pumpio-checkbox">' . t('Enable pump.io Post Plugin') . '</label>';
+			$s .= '<label id="pumpio-enable-label" for="pumpio-checkbox">' . t('Enable pump.io Post Addon') . '</label>';
 			$s .= '<input id="pumpio-checkbox" type="checkbox" name="pumpio" value="1" ' . $checked . '/>';
 			$s .= '</div><div class="clear"></div>';
 

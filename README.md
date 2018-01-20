@@ -1,8 +1,8 @@
 Addons for Friendica
 ====================
 
-This repository is a collection of plugins for the [Friendica Social Communications Server](https://github.com/friendica/friendica).
-You can add these plugins to the /addon directory of your Friendica installation
+This repository is a collection of addons for the [Friendica Social Communications Server](https://github.com/friendica/friendica).
+You can add these addons to the /addon directory of your Friendica installation
 do extend the functionality of your node.
 
 After uploading the addons to your server, you need to activate the desired addons
@@ -14,7 +14,7 @@ in cases the addon developers have choosen not to include them here.
 Connectors
 ----------
 
-Among these plugins there are also the [connectors](https://github.com/friendica/friendica/blob/master/doc/Connectors.md) for various other networks
+Among these addons there are also the [connectors](https://github.com/friendica/friendica/blob/master/doc/Connectors.md) for various other networks
 (e.g. Twitter, pump.io, Google+) that are needed for communication when the
 protocoll is not supported by Friendica core (DFRN, OStatus and Diaspora).
 
@@ -28,7 +28,7 @@ Development
 
 The addon interface of Friendica is very flexible and powerful, so if you are
 missing functionality, your chances are high it may be added with an addon.
-See the [documentation](https://github.com/friendica/friendica/blob/master/doc/Plugins.md) for more informations on the plugin development.
+See the [documentation](https://github.com/friendica/friendica/blob/master/doc/Addons.md) for more informations on the addon development.
 
 Addons can be translated like any other part of Friendica. Translations for the
 addons included in this repository are done at the [Transifex project](https://www.transifex.com/projects/p/friendica/) for Friendica.

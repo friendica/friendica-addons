@@ -6,5 +6,5 @@ function string_plural_select_ro($n){
 }}
 ;
 $a->strings["Randplace Settings"] = "Configurări Randplace";
-$a->strings["Enable Randplace Plugin"] = "Activare Modul Randplace";
+$a->strings["Enable Randplace Addon"] = "Activare Modul Randplace";
 $a->strings["Save Settings"] = "Salvare Configurări";

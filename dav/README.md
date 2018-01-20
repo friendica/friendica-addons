@@ -30,7 +30,7 @@ At the moment, the calendar system supports the following features:
   - CalDAV-Sync (http://dmfs.org/caldav/) works, non-free
 
 ## Installation
-After activating, serveral tables in the database have to be created. The admin-interface of the plugin will try to do this automatically.
+After activating, serveral tables in the database have to be created. The admin-interface of the addon will try to do this automatically.
 In case of errors, the SQL-statement to create the tables manually are shown in the admin-interface.
 
 
@@ -63,7 +63,7 @@ MIT License
 
 
 
-Author of this plugin (the parts that are not part of the libraries above):
+Author of this addon (the parts that are not part of the libraries above):
 Tobias Hößl
 http://friendica.hoessl.eu/profile/cato
 http://www.hoessl.eu/

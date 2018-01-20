@@ -1,4 +1,4 @@
-Twitter Plugin
+Twitter Addon
 ==============
 
 Main authors Tobias Diekershoff and Michael Vogel.
@@ -12,9 +12,9 @@ The addon can also mirror a users Tweets into the ~friendica wall.
 Installation
 ------------
 
-To use this plugin you have to register an [application](https://apps.twitter.com/) for your friendica instance on Twitter. Please leave the field "Callback URL" empty.
+To use this addon you have to register an [application](https://apps.twitter.com/) for your friendica instance on Twitter. Please leave the field "Callback URL" empty.
 
-After the registration please enter the values for "Consumer Key" and "Consumer Secret" in the [administration](admin/plugins/twitter).
+After the registration please enter the values for "Consumer Key" and "Consumer Secret" in the [administration](admin/addons/twitter).
 
 Where to find
 -------------

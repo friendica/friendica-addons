@@ -110,7 +110,7 @@ function anonymousLogin(server) {
 	}
 }
 
-// Plugin launcher
+// Addon launcher
 function launchAnonymous() {
 	logThis('Anonymous mode detected, connecting...', 3);
 	
@@ -127,5 +127,5 @@ function launchAnonymous() {
 	anonymousLogin(HOST_ANONYMOUS);
 }
 
-// Launch this plugin!
+// Launch this addon!
 $(document).ready(launchAnonymous);

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This plugin provides support for RFC4709: Mounting WebDAV servers
+ * This addon provides support for RFC4709: Mounting WebDAV servers
  *
  * Simply append ?mount to any collection to generate the davmount response.
  *
@@ -20,7 +20,7 @@ class Sabre_DAV_Mount_Plugin extends Sabre_DAV_ServerPlugin {
     private $server;
 
     /**
-     * Initializes the plugin and registers event handles
+     * Initializes the addon and registers event handles
      *
      * @param Sabre_DAV_Server $server
      * @return void

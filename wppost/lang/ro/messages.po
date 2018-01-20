@@ -27,7 +27,7 @@ msgid "Wordpress Export"
 msgstr "Export pe Wordpress"
 
 #: wppost.php:86
-msgid "Enable WordPress Post Plugin"
+msgid "Enable WordPress Post Addon"
 msgstr "Activare Modul Postare pe Wordpress"
 
 #: wppost.php:91

@@ -30,7 +30,7 @@ msgid ""
 "match any language spoken by you (see below) the posting will be collapsed. "
 "Remember detecting the language is not perfect, especially with short "
 "postings."
-msgstr "Questo plugin prova ad identificare la lingua usata in un messaggio. Se questa non corrisponde a una delle lingue da te parlata (vedi sotto), il messaggio verrà nascosto. Ricorda che la rilevazione della lingua non è perfetta, specie con i messaggi corti."
+msgstr "Questo addon prova ad identificare la lingua usata in un messaggio. Se questa non corrisponde a una delle lingue da te parlata (vedi sotto), il messaggio verrà nascosto. Ricorda che la rilevazione della lingua non è perfetta, specie con i messaggi corti."
 
 #: langfilter.php:46
 msgid "Use the language filter"

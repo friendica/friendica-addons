@@ -66,7 +66,7 @@ function startDirectory() {
 	return false;
 }
 
-// Plugin launcher
+// Addon launcher
 function launchDirectory() {
 	// Click event
 	$('#directory .bottom .finish').click(closeDirectory);

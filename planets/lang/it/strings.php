@@ -6,5 +6,5 @@ function string_plural_select_it($n){
 }}
 ;
 $a->strings["Planets Settings"] = "Impostazioni \"Pianeti\"";
-$a->strings["Enable Planets Plugin"] = "Abilita il plugin \"Pianeti\"";
+$a->strings["Enable Planets Addon"] = "Abilita il addon \"Pianeti\"";
 $a->strings["Submit"] = "Invia";

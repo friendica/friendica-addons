@@ -7,7 +7,7 @@ function string_plural_select_ru($n){
 ;
 $a->strings["Post to blogger"] = "Написать в Blogger";
 $a->strings["Blogger Export"] = "Экспорт в Blogger";
-$a->strings["Enable Blogger Post Plugin"] = "Включить плагин Blogger";
+$a->strings["Enable Blogger Post Addon"] = "Включить плагин Blogger";
 $a->strings["Blogger username"] = "Имя пользователя Blogger";
 $a->strings["Blogger password"] = "Пароль Blogger";
 $a->strings["Blogger API URL"] = "Blogger API URL";

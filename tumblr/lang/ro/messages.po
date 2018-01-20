@@ -43,7 +43,7 @@ msgid "(Re-)Authenticate your tumblr page"
 msgstr "(Re- )Autentificare pagină tumblr "
 
 #: tumblr.php:198
-msgid "Enable Tumblr Post Plugin"
+msgid "Enable Tumblr Post Addon"
 msgstr "Activare Modul Postare pe Tumblr "
 
 #: tumblr.php:203

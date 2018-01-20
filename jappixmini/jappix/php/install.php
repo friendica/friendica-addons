@@ -163,7 +163,7 @@ else
 			else if($step == 3) { ?>
 				<h3 class="account  install-images"><?php _e("Administrator account"); ?></h3>
 				
-				<p><?php _e("Jappix offers you the possibility to manage your configuration, install new plugins or search for updates. That's why you must create an administrator account to access the manager."); ?></p>
+				<p><?php _e("Jappix offers you the possibility to manage your configuration, install new addons or search for updates. That's why you must create an administrator account to access the manager."); ?></p>
 				
 				<p><?php _e("When Jappix will be installed, just click on the manager link on the home page to access it."); ?></p>
 				

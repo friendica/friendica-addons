@@ -51,7 +51,7 @@ function closeMe() {
 	return false;
 }
 
-// Plugin launcher
+// Addon launcher
 function launchMe() {
 	// Click events
 	$('#me .content a.go').click(function() {

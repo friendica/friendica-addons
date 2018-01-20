@@ -5,7 +5,7 @@ use Sabre\VObject;
 /**
  * ICS Exporter
  *
- * This plugin adds the ability to export entire calendars as .ics files.
+ * This addon adds the ability to export entire calendars as .ics files.
  * This is useful for clients that don't support CalDAV yet. They often do
  * support ics files.
  *
@@ -25,7 +25,7 @@ class Sabre_CalDAV_ICSExportPlugin extends Sabre_DAV_ServerPlugin {
     private $server;
 
     /**
-     * Initializes the plugin and registers event handlers
+     * Initializes the addon and registers event handlers
      *
      * @param Sabre_DAV_Server $server
      * @return void

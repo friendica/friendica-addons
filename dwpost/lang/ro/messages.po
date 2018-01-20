@@ -28,7 +28,7 @@ msgid "Dreamwidth Post Settings"
 msgstr "Configurări Postări Dreamwidth "
 
 #: dwpost.php:72
-msgid "Enable dreamwidth Post Plugin"
+msgid "Enable dreamwidth Post Addon"
 msgstr "Activare Modul Postare pe Dreamwidth"
 
 #: dwpost.php:77

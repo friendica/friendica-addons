@@ -5,8 +5,8 @@ function string_plural_select_it($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["Jappix Mini addon settings"] = "Impostazioni plugin Jappix Mini";
-$a->strings["Activate addon"] = "Abilita plugin";
+$a->strings["Jappix Mini addon settings"] = "Impostazioni addon Jappix Mini";
+$a->strings["Activate addon"] = "Abilita addon";
 $a->strings["Do <em>not</em> insert the Jappixmini Chat-Widget into the webinterface"] = "Non inserire Jappixmini nell'intrerfaccia web";
 $a->strings["Jabber username"] = "Nome utente Jabber";
 $a->strings["Jabber server"] = "Server Jabber";

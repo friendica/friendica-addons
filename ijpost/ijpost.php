@@ -75,7 +75,7 @@ function ijpost_settings(&$a,&$s) {
     $s .= '</span>';
 
     $s .= '<div id="ijpost-enable-wrapper">';
-    $s .= '<label id="ijpost-enable-label" for="ijpost-checkbox">' . t('Enable InsaneJournal Post Plugin') . '</label>';
+    $s .= '<label id="ijpost-enable-label" for="ijpost-checkbox">' . t('Enable InsaneJournal Post Addon') . '</label>';
     $s .= '<input id="ijpost-checkbox" type="checkbox" name="ijpost" value="1" ' . $checked . '/>';
     $s .= '</div><div class="clear"></div>';
 

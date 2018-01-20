@@ -6,5 +6,5 @@ function string_plural_select_cs($n){
 }}
 ;
 $a->strings["Krynn Settings"] = "Krynn Nastavení";
-$a->strings["Enable Krynn Plugin"] = "Povolit Krynn plugin";
+$a->strings["Enable Krynn Addon"] = "Povolit Krynn addon";
 $a->strings["Submit"] = "Odeslat";

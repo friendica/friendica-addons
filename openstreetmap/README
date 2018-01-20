@@ -1,4 +1,4 @@
- ____ OpenStreetMap Plugin ____
+ ____ OpenStreetMap Addon ____
 by Mike Macgirvin
    Klaus Weidenbach
 
@@ -6,7 +6,7 @@ This addon allows you to use OpenStreetMap for displaying locations.
 
 ___ Requirements ___
 
-To use this plugin you need a tile Server that provides the maps.
+To use this addon you need a tile Server that provides the maps.
 OpenStreetMap data is free for everyone to use. Their tile servers are not.
 Please take a look at their "Tile Usage Policy":
 http://wiki.openstreetmap.org/wiki/Tile_usage_policy
@@ -19,9 +19,9 @@ ___ Configuration ___
 If you for any reason prefer to use a configuration file instead 
 of the admin panels, please refer to the Alternative Configuration below. 
 
-Activate the plugin from your admin panel.  
+Activate the addon from your admin panel.  
 
-You can now add a Tile Server and default zoom level in the plugin settings
+You can now add a Tile Server and default zoom level in the addon settings
 page of your admin panel.
 
 The Time Server URL points to the tile server you want to use. Use the full URL,

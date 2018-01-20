@@ -8,6 +8,6 @@ function string_plural_select_ro($n){
 $a->strings["Gnot settings updated."] = "Configurările Gnot au fost actualizate.";
 $a->strings["Gnot Settings"] = "Configurări Gnot";
 $a->strings["Allows threading of email comment notifications on Gmail and anonymising the subject line."] = "Permite înlănțuirea notificărilor prin email a comentariilor, în Gmail și anonimizarea  subiectului.";
-$a->strings["Enable this plugin/addon?"] = "Activați acest modul/supliment?";
+$a->strings["Enable this addon?"] = "Activați acest modul/supliment?";
 $a->strings["Submit"] = "Trimite";
 $a->strings["[Friendica:Notify] Comment to conversation #%d"] = "[Friendica:Notificare] Comentariu la conversația # %d";

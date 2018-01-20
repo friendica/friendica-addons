@@ -9,7 +9,7 @@ For more details check the introductory blog post - http://laktek.com/2008/10/27
 You can either clone [this repo](https://github.com/laktek/really-simple-color-picker) or download the latest build as a zip from here - http://github.com/laktek/really-simple-color-picker/zipball/master
 
 Color Picker requires jQuery 1.2.6 or higher. Make sure to load it before Color Picker (there's no other dependencies!). 
-For default styles of the color picker load the CSS file that comes with the plugin.
+For default styles of the color picker load the CSS file that comes with the addon.
 
   ```html
     <script language="javascript" type="text/javascript" src=jquery.min.js"></script>

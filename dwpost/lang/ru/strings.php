@@ -7,7 +7,7 @@ function string_plural_select_ru($n){
 ;
 $a->strings["Post to Dreamwidth"] = "Отправить в Dreamwidth";
 $a->strings["Dreamwidth Post Settings"] = "Настройки сообщений Dreamwidth";
-$a->strings["Enable dreamwidth Post Plugin"] = "Включить плагин отправки сообщений в Dreamwidth";
+$a->strings["Enable dreamwidth Post Addon"] = "Включить плагин отправки сообщений в Dreamwidth";
 $a->strings["dreamwidth username"] = "Имя пользователя Dreamwidth";
 $a->strings["dreamwidth password"] = "Пароль Dreamwidth";
 $a->strings["Post to dreamwidth by default"] = "Отправлять сообщения в Dreamwidth по умолчанию";

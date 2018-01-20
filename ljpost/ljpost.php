@@ -70,7 +70,7 @@ function ljpost_settings(&$a,&$s) {
     $s .= '<div class="settings-block">';
     $s .= '<h3>' . t('LiveJournal Post Settings') . '</h3>';
     $s .= '<div id="ljpost-enable-wrapper">';
-    $s .= '<label id="ljpost-enable-label" for="ljpost-checkbox">' . t('Enable LiveJournal Post Plugin') . '</label>';
+    $s .= '<label id="ljpost-enable-label" for="ljpost-checkbox">' . t('Enable LiveJournal Post Addon') . '</label>';
     $s .= '<input id="ljpost-checkbox" type="checkbox" name="ljpost" value="1" ' . $checked . '/>';
     $s .= '</div><div class="clear"></div>';
 

@@ -59,7 +59,7 @@ msgid "Authenticate your Buffer connection"
 msgstr "Autentificați-vă conectarea la Buffer"
 
 #: buffer.php:146
-msgid "Enable Buffer Post Plugin"
+msgid "Enable Buffer Post Addon"
 msgstr "Activare Modul Postare pe Buffer"
 
 #: buffer.php:151

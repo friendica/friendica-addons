@@ -973,7 +973,7 @@ function getUserStatus() {
 	return $('#presence-status').val();
 }
 
-// Plugin launcher
+// Addon launcher
 function launchPresence() {
 	// Click event for user presence show
 	$('#my-infos .f-presence a.picker').click(function() {

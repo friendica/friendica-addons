@@ -61,8 +61,8 @@ msgid "Import the remote timeline"
 msgstr "Importiere die entfernte Zeitleiste"
 
 #: pumpio.php:255
-msgid "Enable pump.io Post Plugin"
-msgstr "Pump.io-Post-Plugin aktivieren"
+msgid "Enable pump.io Post Addon"
+msgstr "Pump.io-Post-Addon aktivieren"
 
 #: pumpio.php:260
 msgid "Post to pump.io by default"

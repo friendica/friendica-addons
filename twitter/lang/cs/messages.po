@@ -39,12 +39,12 @@ msgstr "Nenalezen žádný spotřebitelský páru klíčů pro Twitter. Obraťte
 
 #: twitter.php:264
 msgid ""
-"At this Friendica instance the Twitter plugin was enabled but you have not "
+"At this Friendica instance the Twitter addon was enabled but you have not "
 "yet connected your account to your Twitter account. To do so click the "
 "button below to get a PIN from Twitter which you have to copy into the input"
 " box below and submit the form. Only your <strong>public</strong> posts will"
 " be posted to Twitter."
-msgstr "Na této Friendica instanci je sice povolen Twitter plugin, ale vy jste si ještě nenastavili svůj Twitter účet. Svůj účet si můžete nastavit kliknutím na tlačítko níže k získání PINu z Vašeho Twitteru, který si zkopírujte do níže uvedeného vstupního pole a odešlete formulář. Pouze vaše <strong>veřejné</strong> příspěvky budou zaslány na Twitter."
+msgstr "Na této Friendica instanci je sice povolen Twitter addon, ale vy jste si ještě nenastavili svůj Twitter účet. Svůj účet si můžete nastavit kliknutím na tlačítko níže k získání PINu z Vašeho Twitteru, který si zkopírujte do níže uvedeného vstupního pole a odešlete formulář. Pouze vaše <strong>veřejné</strong> příspěvky budou zaslány na Twitter."
 
 #: twitter.php:265
 msgid "Log in with Twitter"

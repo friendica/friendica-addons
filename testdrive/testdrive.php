@@ -2,7 +2,7 @@
 
 /**
  * Name: testdrive
- * Description: Sample Friendica plugin/addon for creating a test drive Friendica site with automatic account expiration.
+ * Description: Sample Friendica addon for creating a test drive Friendica site with automatic account expiration.
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */

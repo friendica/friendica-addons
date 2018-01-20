@@ -76,7 +76,7 @@ function dwpost_settings(&$a,&$s) {
     $s .= '</span>';
 
     $s .= '<div id="dwpost-enable-wrapper">';
-    $s .= '<label id="dwpost-enable-label" for="dwpost-checkbox">' . t('Enable dreamwidth Post Plugin') . '</label>';
+    $s .= '<label id="dwpost-enable-label" for="dwpost-checkbox">' . t('Enable dreamwidth Post Addon') . '</label>';
     $s .= '<input id="dwpost-checkbox" type="checkbox" name="dwpost" value="1" ' . $checked . '/>';
     $s .= '</div><div class="clear"></div>';
 

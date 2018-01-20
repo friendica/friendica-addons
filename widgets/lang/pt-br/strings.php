@@ -6,5 +6,5 @@ $a->strings["Connect on Friendica!"] = "Conecte no Friendica!";
 $a->strings["Generate new key"] = "Gerar nova chave";
 $a->strings["Widgets key"] = "Chave de widgets";
 $a->strings["Widgets available"] = "Widgets disponíveis";
-$a->strings["Plugin Settings"] = "Configurações do plugin";
+$a->strings["Addon Settings"] = "Configurações do addon";
 $a->strings["Get added to this list!"] = "";

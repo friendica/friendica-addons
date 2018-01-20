@@ -28,8 +28,8 @@ msgid "libertree Post Settings"
 msgstr "Ajustes de Publicación de Libertree"
 
 #: libertree.php:69
-msgid "Enable Libertree Post Plugin"
-msgstr "Habilitar Plugin de publicación de Libertree"
+msgid "Enable Libertree Post Addon"
+msgstr "Habilitar Addon de publicación de Libertree"
 
 #: libertree.php:74
 msgid "Libertree API token"

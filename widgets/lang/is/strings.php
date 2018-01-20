@@ -6,5 +6,5 @@ $a->strings["Connect on Friendica!"] = "Tengist á Friendica!";
 $a->strings["Generate new key"] = "Búa til nýjan lykil";
 $a->strings["Widgets key"] = "Lykill smáforrits ";
 $a->strings["Widgets available"] = "Smáforrit til";
-$a->strings["Plugin Settings"] = "Eininga stillingar";
+$a->strings["Addon Settings"] = "Eininga stillingar";
 $a->strings["Get added to this list!"] = "Láta bæta þér við þennan lista!";

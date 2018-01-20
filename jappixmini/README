@@ -1,10 +1,10 @@
-Jappix Mini Plugin
+Jappix Mini Addon
 ==================
 
 This quick-and-dirty addon allows you to add a Jabber-based, Facebook-like chat
 to Friendica. It uses Jappix Mini.
 
-It is necessary to use a BOSH host - so to use this plugin, each users need to
+It is necessary to use a BOSH host - so to use this addon, each users need to
 know the address of a BOSH host that works with his account. The BOSH server of
 the Jappix project (https://bind.jappix.com/) is not locked to a specific XMPP
 provider, but keep in mind that only personal usage is approved according to
