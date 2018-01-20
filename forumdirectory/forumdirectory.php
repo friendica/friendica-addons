@@ -11,6 +11,12 @@ use Friendica\Content\Nav;
 use Friendica\Content\Widget;
 use Friendica\Core\Config;
 use Friendica\Database\DBM;
+use Friendica\Model\Profile;
+
+require_once 'boot.php';
+require_once 'include/dba.php';
+require_once 'include/plugin.php';
+require_once 'include/text.php';
 
 function forumdirectory_install()
 {
@@ -74,7 +80,7 @@ function forumdirectory_content(&$a)
 	$gdirpath = Config::get('system', 'directory');
 	if (strlen($gdirpath)) {
 		$globaldir = '<ul><li><div id="global-directory-link"><a href="'
-			. zrl($gdirpath, true) . '">' . t('Global Directory') . '</a></div></li></ul>';
+			. Profile::zrl($gdirpath, true) . '">' . t('Global Directory') . '</a></div></li></ul>';
 	}
 
 	$admin = '';
