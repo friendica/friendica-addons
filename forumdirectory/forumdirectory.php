@@ -16,15 +16,14 @@ use Friendica\Model\Profile;
 
 require_once 'boot.php';
 require_once 'include/dba.php';
-require_once 'include/plugin.php';
 require_once 'include/text.php';
 
 function forumdirectory_install() {
-Addon::registerHook('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
+	Addon::registerHook('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
 }
 
 function forumdirectory_uninstall() {
-Addon::unregisterHook('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
+	Addon::unregisterHook('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
 }
 
 function forumdirectory_module()
@@ -117,6 +116,7 @@ function forumdirectory_content(&$a)
 		intval($a->pager['start']),
 		intval($a->pager['itemspage'])
 	);
+
 	if (DBM::is_result($r)) {
 		if (in_array('small', $a->argv)) {
 			$photo = 'thumb';
@@ -180,7 +180,6 @@ function forumdirectory_content(&$a)
 			$homepage = x($profile, 'homepage') == 1 ? t('Homepage:') : false;
 			$about    = x($profile, 'about')    == 1 ? t('About:')    : false;
 
-#			$tpl = file_get_contents( dirname(__file__).'/forumdirectory_item.tpl');
 			$tpl = get_markup_template('forumdirectory_item.tpl', 'addon/forumdirectory/');
 
 			$entry = replace_macros($tpl, [
