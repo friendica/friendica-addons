@@ -37,7 +37,7 @@ msgstr ""
 
 #: twitter.php:183
 msgid ""
-"At this Friendica instance the Twitter plugin was enabled but you have not "
+"At this Friendica instance the Twitter addon was enabled but you have not "
 "yet connected your account to your Twitter account. To do so click the "
 "button below to get a PIN from Twitter which you have to copy into the input "
 "box below and submit the form. Only your <strong>public</strong> posts will "

@@ -7,19 +7,19 @@
  *         Hauke Altmann <https://snarl.de/profile/tugelblend>
  *      
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 
 function pledgie_install() { 
-	register_hook('page_end', 'addon/pledgie/pledgie.php', 'pledgie_active'); 
-	register_hook('plugin_settings', 'addon/pledgie/pledgie.php', 'pledgie_addon_settings');
-	register_hook('plugin_settings_post', 'addon/pledgie/pledgie.php', 'pledgie_addon_settings_post');
+	Addon::registerHook('page_end', 'addon/pledgie/pledgie.php', 'pledgie_active'); 
+	Addon::registerHook('addon_settings', 'addon/pledgie/pledgie.php', 'pledgie_addon_settings');
+	Addon::registerHook('addon_settings_post', 'addon/pledgie/pledgie.php', 'pledgie_addon_settings_post');
 }
 
 function pledgie_uninstall() { 
-	unregister_hook('page_end', 'addon/pledgie/pledgie.php', 'pledgie_active');
-	unregister_hook('plugin_settings', 'addon/pledgie/pledgie.php', 'pledgie_addon_settings');
-	unregister_hook('plugin_settings_post', 'addon/pledgie/pledgie.php', 'pledgie_addon_settings_post');
+	Addon::unregisterHook('page_end', 'addon/pledgie/pledgie.php', 'pledgie_active');
+	Addon::unregisterHook('addon_settings', 'addon/pledgie/pledgie.php', 'pledgie_addon_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/pledgie/pledgie.php', 'pledgie_addon_settings_post');
 }
 
 function pledgie_addon_settings(&$a,&$s) {

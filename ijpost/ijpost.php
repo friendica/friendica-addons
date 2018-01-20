@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: Insanejournal Post Connector
  * Description: Post to Insanejournal
@@ -8,23 +7,23 @@
  * Author: Michael Johnston
  * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 
 function ijpost_install() {
-    register_hook('post_local',           'addon/ijpost/ijpost.php', 'ijpost_post_local');
-    register_hook('notifier_normal',      'addon/ijpost/ijpost.php', 'ijpost_send');
-    register_hook('jot_networks',         'addon/ijpost/ijpost.php', 'ijpost_jot_nets');
-    register_hook('connector_settings',      'addon/ijpost/ijpost.php', 'ijpost_settings');
-    register_hook('connector_settings_post', 'addon/ijpost/ijpost.php', 'ijpost_settings_post');
+    Addon::registerHook('post_local',           'addon/ijpost/ijpost.php', 'ijpost_post_local');
+    Addon::registerHook('notifier_normal',      'addon/ijpost/ijpost.php', 'ijpost_send');
+    Addon::registerHook('jot_networks',         'addon/ijpost/ijpost.php', 'ijpost_jot_nets');
+    Addon::registerHook('connector_settings',      'addon/ijpost/ijpost.php', 'ijpost_settings');
+    Addon::registerHook('connector_settings_post', 'addon/ijpost/ijpost.php', 'ijpost_settings_post');
 
 }
 function ijpost_uninstall() {
-    unregister_hook('post_local',       'addon/ijpost/ijpost.php', 'ijpost_post_local');
-    unregister_hook('notifier_normal',  'addon/ijpost/ijpost.php', 'ijpost_send');
-    unregister_hook('jot_networks',     'addon/ijpost/ijpost.php', 'ijpost_jot_nets');
-    unregister_hook('connector_settings',      'addon/ijpost/ijpost.php', 'ijpost_settings');
-    unregister_hook('connector_settings_post', 'addon/ijpost/ijpost.php', 'ijpost_settings_post');
+    Addon::unregisterHook('post_local',       'addon/ijpost/ijpost.php', 'ijpost_post_local');
+    Addon::unregisterHook('notifier_normal',  'addon/ijpost/ijpost.php', 'ijpost_send');
+    Addon::unregisterHook('jot_networks',     'addon/ijpost/ijpost.php', 'ijpost_jot_nets');
+    Addon::unregisterHook('connector_settings',      'addon/ijpost/ijpost.php', 'ijpost_settings');
+    Addon::unregisterHook('connector_settings_post', 'addon/ijpost/ijpost.php', 'ijpost_settings_post');
 
 }
 
@@ -76,7 +75,7 @@ function ijpost_settings(&$a,&$s) {
     $s .= '</span>';
 
     $s .= '<div id="ijpost-enable-wrapper">';
-    $s .= '<label id="ijpost-enable-label" for="ijpost-checkbox">' . t('Enable InsaneJournal Post Plugin') . '</label>';
+    $s .= '<label id="ijpost-enable-label" for="ijpost-checkbox">' . t('Enable InsaneJournal Post Addon') . '</label>';
     $s .= '<input id="ijpost-checkbox" type="checkbox" name="ijpost" value="1" ' . $checked . '/>';
     $s .= '</div><div class="clear"></div>';
 

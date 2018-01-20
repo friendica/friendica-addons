@@ -5,20 +5,21 @@
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
+use Friendica\Core\Addon;
 
 // IMPORTANT: SET THIS to your fortunate server
 
 define ('FORTUNATE_SERVER', 'hostname.com');
 
 function fortunate_install() {
-	register_hook('page_end', 'addon/fortunate/fortunate.php', 'fortunate_fetch');
+	Addon::registerHook('page_end', 'addon/fortunate/fortunate.php', 'fortunate_fetch');
 	if(FORTUNATE_SERVER == 'hostname.com' && is_site_admin()) {
-		notice('Fortunate plugin requires configuration. See README');
+		notice('Fortunate addon requires configuration. See README');
 	}
 }
 
 function fortunate_uninstall() {
-	unregister_hook('page_end', 'addon/fortunate/fortunate.php', 'fortunate_fetch');
+	Addon::unregisterHook('page_end', 'addon/fortunate/fortunate.php', 'fortunate_fetch');
 }
 
 

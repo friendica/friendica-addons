@@ -64,7 +64,7 @@
 	});
 
 
-    // plugin code
+    // addon code
 	$.fn.placeholder = function(opts) {
 		opts = $.extend({},$.placeholder.settings, opts);
 

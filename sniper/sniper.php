@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Demo plugin for adding various types of Flash games to Friendica.
+ * Demo addon for adding various types of Flash games to Friendica.
  * In this case we're using "Hot Shot Sniper" by FlashGames247
  *
  * Name: Sniper
@@ -9,14 +9,14 @@
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
-
+use Friendica\Core\Addon;
 
 function sniper_install() {
-    register_hook('app_menu', 'addon/sniper/sniper.php', 'sniper_app_menu');
+    Addon::registerHook('app_menu', 'addon/sniper/sniper.php', 'sniper_app_menu');
 }
 
 function sniper_uninstall() {
-    unregister_hook('app_menu', 'addon/sniper/sniper.php', 'sniper_app_menu');
+    Addon::unregisterHook('app_menu', 'addon/sniper/sniper.php', 'sniper_app_menu');
 
 }
 

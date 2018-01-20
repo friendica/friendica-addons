@@ -5,7 +5,7 @@
  *
  * The outbox is mainly used as an endpoint in the tree for a client to do
  * free-busy requests. This functionality is completely handled by the
- * Scheduling plugin, so this object is actually mostly static.
+ * Scheduling addon, so this object is actually mostly static.
  *
  * @package Sabre
  * @subpackage CalDAV

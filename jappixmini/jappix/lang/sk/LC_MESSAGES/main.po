@@ -1038,8 +1038,8 @@ msgstr "Jappix musí mať právo zapisovať v tejto zložke pre vytvorenie svoji
 msgid "The folder is writable, you can continue!"
 msgstr "Do zložky je možné zapisovať, môžete pokračovať!"
 
-msgid "Jappix offers you the possibility to manage your configuration, install new plugins or search for updates. That's why you must create an administrator account to access the manager."
-msgstr "Jappix vám ponúka možnosť spravovať vaše konfiguráciu, inštalovať nové pluginy alebo vyhľadať aktualizácie. Preto si musíte vytvoriť administračný účet pre prístup k Správcovi."
+msgid "Jappix offers you the possibility to manage your configuration, install new addons or search for updates. That's why you must create an administrator account to access the manager."
+msgstr "Jappix vám ponúka možnosť spravovať vaše konfiguráciu, inštalovať nové addony alebo vyhľadať aktualizácie. Preto si musíte vytvoriť administračný účet pre prístup k Správcovi."
 
 msgid "When Jappix will be installed, just click on the manager link on the home page to access it."
 msgstr "Po nainštalovaní Jappix, stačí kliknúť na odkaz Správca na domovskej stránke pre prístup."

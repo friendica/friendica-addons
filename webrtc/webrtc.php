@@ -6,15 +6,15 @@
  * Author: Stephen Mahood <https://friends.mayfirst.org/profile/marxistvegan>
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 
 function webrtc_install() {
-        register_hook('app_menu', 'addon/webrtc/webrtc.php', 'webrtc_app_menu');
+        Addon::registerHook('app_menu', 'addon/webrtc/webrtc.php', 'webrtc_app_menu');
 }
 
 function webrtc_uninstall() {
-        unregister_hook('app_menu', 'addon/webrtc/webrtc.php', 'webrtc_app_menu');
+        Addon::unregisterHook('app_menu', 'addon/webrtc/webrtc.php', 'webrtc_app_menu');
 
 }
 
@@ -22,14 +22,14 @@ function webrtc_app_menu($a,&$b) {
 	$b['app_menu'][] = '<div class="app-title"><a href="webrtc">' . t('WebRTC Videochat') . '</a></div>';
 }
 
-function webrtc_plugin_admin (&$a, &$o) {
+function webrtc_addon_admin (&$a, &$o) {
         $t = get_markup_template( "admin.tpl", "addon/webrtc/" );
 	$o = replace_macros( $t, [
 	    '$submit' => t('Save Settings'),
 	    '$webrtcurl' => ['webrtcurl', t('WebRTC Base URL'), Config::get('webrtc','webrtcurl' ), t('Page your users will create a WebRTC chat room on. For example you could use https://live.mayfirst.org .')],
 	]);
 }
-function webrtc_plugin_admin_post (&$a) {
+function webrtc_addon_admin_post (&$a) {
         $url = ((x($_POST, 'webrtcurl')) ? notags(trim($_POST['webrtcurl'])) : '');
 	    Config::set('webrtc', 'webrtcurl', $url);
 	    info( t('Settings updated.'). EOL);

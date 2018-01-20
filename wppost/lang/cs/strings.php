@@ -7,7 +7,7 @@ function string_plural_select_cs($n){
 ;
 $a->strings["Post to Wordpress"] = "Příspěvky do WordPress";
 $a->strings["Wordpress Export"] = "Wordpress Export";
-$a->strings["Enable WordPress Post Plugin"] = "Povolit rozšíření na WordPress";
+$a->strings["Enable WordPress Post Addon"] = "Povolit rozšíření na WordPress";
 $a->strings["WordPress username"] = "WordPress uživatelské jméno";
 $a->strings["WordPress password"] = "WordPress heslo";
 $a->strings["WordPress API URL"] = "URL adresa API WordPress";

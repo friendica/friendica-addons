@@ -5,6 +5,7 @@
  * Version: 0.2
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  */
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
@@ -22,25 +23,25 @@ require_once "mod/share.php";
 define('PUMPIO_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
 function pumpio_install() {
-	register_hook('post_local',           'addon/pumpio/pumpio.php', 'pumpio_post_local');
-	register_hook('notifier_normal',      'addon/pumpio/pumpio.php', 'pumpio_send');
-	register_hook('jot_networks',         'addon/pumpio/pumpio.php', 'pumpio_jot_nets');
-	register_hook('connector_settings',      'addon/pumpio/pumpio.php', 'pumpio_settings');
-	register_hook('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
-	register_hook('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
-	register_hook('queue_predeliver', 'addon/pumpio/pumpio.php', 'pumpio_queue_hook');
-	register_hook('check_item_notification','addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
+	Addon::registerHook('post_local',           'addon/pumpio/pumpio.php', 'pumpio_post_local');
+	Addon::registerHook('notifier_normal',      'addon/pumpio/pumpio.php', 'pumpio_send');
+	Addon::registerHook('jot_networks',         'addon/pumpio/pumpio.php', 'pumpio_jot_nets');
+	Addon::registerHook('connector_settings',      'addon/pumpio/pumpio.php', 'pumpio_settings');
+	Addon::registerHook('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
+	Addon::registerHook('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
+	Addon::registerHook('queue_predeliver', 'addon/pumpio/pumpio.php', 'pumpio_queue_hook');
+	Addon::registerHook('check_item_notification','addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
 }
 
 function pumpio_uninstall() {
-	unregister_hook('post_local',       'addon/pumpio/pumpio.php', 'pumpio_post_local');
-	unregister_hook('notifier_normal',  'addon/pumpio/pumpio.php', 'pumpio_send');
-	unregister_hook('jot_networks',     'addon/pumpio/pumpio.php', 'pumpio_jot_nets');
-	unregister_hook('connector_settings',      'addon/pumpio/pumpio.php', 'pumpio_settings');
-	unregister_hook('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
-	unregister_hook('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
-	unregister_hook('queue_predeliver', 'addon/pumpio/pumpio.php', 'pumpio_queue_hook');
-	unregister_hook('check_item_notification','addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
+	Addon::unregisterHook('post_local',       'addon/pumpio/pumpio.php', 'pumpio_post_local');
+	Addon::unregisterHook('notifier_normal',  'addon/pumpio/pumpio.php', 'pumpio_send');
+	Addon::unregisterHook('jot_networks',     'addon/pumpio/pumpio.php', 'pumpio_jot_nets');
+	Addon::unregisterHook('connector_settings',      'addon/pumpio/pumpio.php', 'pumpio_settings');
+	Addon::unregisterHook('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
+	Addon::unregisterHook('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
+	Addon::unregisterHook('queue_predeliver', 'addon/pumpio/pumpio.php', 'pumpio_queue_hook');
+	Addon::unregisterHook('check_item_notification','addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
 }
 
 function pumpio_module() {}
@@ -275,7 +276,7 @@ function pumpio_settings(&$a,&$s) {
 			$s .= '</div><div class="clear"></div>';
 
 			$s .= '<div id="pumpio-enable-wrapper">';
-			$s .= '<label id="pumpio-enable-label" for="pumpio-checkbox">' . t('Enable pump.io Post Plugin') . '</label>';
+			$s .= '<label id="pumpio-enable-label" for="pumpio-checkbox">' . t('Enable pump.io Post Addon') . '</label>';
 			$s .= '<input id="pumpio-checkbox" type="checkbox" name="pumpio" value="1" ' . $checked . '/>';
 			$s .= '</div><div class="clear"></div>';
 

@@ -56,4 +56,4 @@ msgstr "WebRTC è un sistema di conferenza audio/video che funziona con Firefox 
 msgid ""
 "Please contact your friendica admin and send a reminder to configure the "
 "WebRTC addon."
-msgstr "Contatta il tuo amministratore Friendica e ricordagli di configurare il plugin WebRTC."
+msgstr "Contatta il tuo amministratore Friendica e ricordagli di configurare il addonWebRTC."

@@ -2,7 +2,7 @@
 
 $a->strings["Post to Wordpress"] = "Opublikuj na Wordpress";
 $a->strings["WordPress Post Settings"] = "Ustawienia wpisów WorldPress";
-$a->strings["Enable WordPress Post Plugin"] = "Włącz plugin wpisów WorldPress";
+$a->strings["Enable WordPress Post Addon"] = "Włącz addon wpisów WorldPress";
 $a->strings["WordPress username"] = "nazwa użytkownika WordPress";
 $a->strings["WordPress password"] = "hasło WordPress";
 $a->strings["WordPress API URL"] = "WordPress API URL";

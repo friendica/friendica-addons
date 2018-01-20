@@ -26,7 +26,7 @@ msgid "libertree Post Settings"
 msgstr ""
 
 #: libertree.php:69
-msgid "Enable Libertree Post Plugin"
+msgid "Enable Libertree Post Addon"
 msgstr ""
 
 #: libertree.php:74

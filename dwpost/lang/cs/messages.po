@@ -28,8 +28,8 @@ msgid "Dreamwidth Post Settings"
 msgstr "Dreamwidth nastavení příspěvků"
 
 #: dwpost.php:72
-msgid "Enable dreamwidth Post Plugin"
-msgstr "Povolit dreamwidth Plugin"
+msgid "Enable dreamwidth Post Addon"
+msgstr "Povolit dreamwidth Addon"
 
 #: dwpost.php:77
 msgid "dreamwidth username"

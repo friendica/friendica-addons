@@ -34,8 +34,8 @@ msgid ""
 msgstr "Permetti di raggruppare le notifiche dei commenti in thread su Gmail e anonimizza l'oggetto"
 
 #: gnot.php:82
-msgid "Enable this plugin/addon?"
-msgstr "Abilita questo plugin?"
+msgid "Enable this addon?"
+msgstr "Abilita questo addon?"
 
 #: gnot.php:88
 msgid "Submit"

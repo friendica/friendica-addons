@@ -269,7 +269,7 @@ function nextWelcome() {
 	return false;
 }
 
-// Plugin launcher
+// Addon launcher
 function launchWelcome() {
 	// Click events
 	$('#welcome .tab a').click(function() {

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * GuessContentType plugin
+ * GuessContentType addon
  *
  * A lot of the built-in File objects just return application/octet-stream
  * as a content-type by default. This is a problem for some clients, because
@@ -43,7 +43,7 @@ class Sabre_DAV_Browser_GuessContentType extends Sabre_DAV_ServerPlugin {
     );
 
     /**
-     * Initializes the plugin
+     * Initializes the addon
      *
      * @param Sabre_DAV_Server $server
      * @return void

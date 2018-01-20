@@ -9,24 +9,25 @@
 
 require_once("addon/diaspora/Diaspora_Connection.php");
 
+use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBM;
 
 function diaspora_install() {
-	register_hook('post_local',           'addon/diaspora/diaspora.php', 'diaspora_post_local');
-	register_hook('notifier_normal',      'addon/diaspora/diaspora.php', 'diaspora_send');
-	register_hook('jot_networks',         'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
-	register_hook('connector_settings',      'addon/diaspora/diaspora.php', 'diaspora_settings');
-	register_hook('connector_settings_post', 'addon/diaspora/diaspora.php', 'diaspora_settings_post');
-	register_hook('queue_predeliver', 'addon/diaspora/diaspora.php', 'diaspora_queue_hook');
+	Addon::registerHook('post_local',           'addon/diaspora/diaspora.php', 'diaspora_post_local');
+	Addon::registerHook('notifier_normal',      'addon/diaspora/diaspora.php', 'diaspora_send');
+	Addon::registerHook('jot_networks',         'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
+	Addon::registerHook('connector_settings',      'addon/diaspora/diaspora.php', 'diaspora_settings');
+	Addon::registerHook('connector_settings_post', 'addon/diaspora/diaspora.php', 'diaspora_settings_post');
+	Addon::registerHook('queue_predeliver', 'addon/diaspora/diaspora.php', 'diaspora_queue_hook');
 }
 function diaspora_uninstall() {
-	unregister_hook('post_local',       'addon/diaspora/diaspora.php', 'diaspora_post_local');
-	unregister_hook('notifier_normal',  'addon/diaspora/diaspora.php', 'diaspora_send');
-	unregister_hook('jot_networks',     'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
-	unregister_hook('connector_settings',      'addon/diaspora/diaspora.php', 'diaspora_settings');
-	unregister_hook('connector_settings_post', 'addon/diaspora/diaspora.php', 'diaspora_settings_post');
-	unregister_hook('queue_predeliver', 'addon/diaspora/diaspora.php', 'diaspora_queue_hook');
+	Addon::unregisterHook('post_local',       'addon/diaspora/diaspora.php', 'diaspora_post_local');
+	Addon::unregisterHook('notifier_normal',  'addon/diaspora/diaspora.php', 'diaspora_send');
+	Addon::unregisterHook('jot_networks',     'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
+	Addon::unregisterHook('connector_settings',      'addon/diaspora/diaspora.php', 'diaspora_settings');
+	Addon::unregisterHook('connector_settings_post', 'addon/diaspora/diaspora.php', 'diaspora_settings_post');
+	Addon::unregisterHook('queue_predeliver', 'addon/diaspora/diaspora.php', 'diaspora_queue_hook');
 }
 
 
@@ -171,7 +172,7 @@ function diaspora_settings(&$a,&$s) {
 	}
 
 	$s .= '<div id="diaspora-enable-wrapper">';
-	$s .= '<label id="diaspora-enable-label" for="diaspora-checkbox">' . t('Enable Diaspora Post Plugin') . '</label>';
+	$s .= '<label id="diaspora-enable-label" for="diaspora-checkbox">' . t('Enable Diaspora Post Addon') . '</label>';
 	$s .= '<input id="diaspora-checkbox" type="checkbox" name="diaspora" value="1" ' . $checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 

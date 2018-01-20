@@ -39,12 +39,12 @@ msgstr "Nessuna coppia di chiavi per Twitter trovata. Contatta l'amministratore 
 
 #: twitter.php:183
 msgid ""
-"At this Friendica instance the Twitter plugin was enabled but you have not "
+"At this Friendica instance the Twitter addon was enabled but you have not "
 "yet connected your account to your Twitter account. To do so click the "
 "button below to get a PIN from Twitter which you have to copy into the input"
 " box below and submit the form. Only your <strong>public</strong> posts will"
 " be posted to Twitter."
-msgstr "Il plugin Twitter è abilitato ma non hai ancora collegato i tuoi account Friendica e Twitter. Per farlo, clicca il bottone qui sotto per ricevere un PIN da Twitter che dovrai copiare nel campo qui sotto. Solo i tuoi post <strong>pubblici</strong> saranno inviati a Twitter."
+msgstr "Il addon Twitter è abilitato ma non hai ancora collegato i tuoi account Friendica e Twitter. Per farlo, clicca il bottone qui sotto per ricevere un PIN da Twitter che dovrai copiare nel campo qui sotto. Solo i tuoi post <strong>pubblici</strong> saranno inviati a Twitter."
 
 #: twitter.php:184
 msgid "Log in with Twitter"

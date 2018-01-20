@@ -2,31 +2,31 @@
 
 /**
  * Name: testdrive
- * Description: Sample Friendica plugin/addon for creating a test drive Friendica site with automatic account expiration.
+ * Description: Sample Friendica addon for creating a test drive Friendica site with automatic account expiration.
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Model\User;
 
 
 function testdrive_install() {
 
-	register_hook('register_account', 'addon/testdrive/testdrive.php', 'testdrive_register_account');
-	register_hook('cron', 'addon/testdrive/testdrive.php', 'testdrive_cron');
-	register_hook('enotify','addon/testdrive/testdrive.php', 'testdrive_enotify');
-	register_hook('globaldir_update','addon/testdrive/testdrive.php', 'testdrive_globaldir_update');
+	Addon::registerHook('register_account', 'addon/testdrive/testdrive.php', 'testdrive_register_account');
+	Addon::registerHook('cron', 'addon/testdrive/testdrive.php', 'testdrive_cron');
+	Addon::registerHook('enotify','addon/testdrive/testdrive.php', 'testdrive_enotify');
+	Addon::registerHook('globaldir_update','addon/testdrive/testdrive.php', 'testdrive_globaldir_update');
 
 }
 
 
 function testdrive_uninstall() {
 
-	unregister_hook('register_account', 'addon/testdrive/testdrive.php', 'testdrive_register_account');
-	unregister_hook('cron', 'addon/testdrive/testdrive.php', 'testdrive_cron');
-	unregister_hook('enotify','addon/testdrive/testdrive.php', 'testdrive_enotify');
-	unregister_hook('globaldir_update','addon/testdrive/testdrive.php', 'testdrive_globaldir_update');
+	Addon::unregisterHook('register_account', 'addon/testdrive/testdrive.php', 'testdrive_register_account');
+	Addon::unregisterHook('cron', 'addon/testdrive/testdrive.php', 'testdrive_cron');
+	Addon::unregisterHook('enotify','addon/testdrive/testdrive.php', 'testdrive_enotify');
+	Addon::unregisterHook('globaldir_update','addon/testdrive/testdrive.php', 'testdrive_globaldir_update');
 
 }
 

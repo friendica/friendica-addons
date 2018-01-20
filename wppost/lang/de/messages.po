@@ -30,8 +30,8 @@ msgid "Wordpress Export"
 msgstr "Wordpress Export"
 
 #: wppost.php:87
-msgid "Enable WordPress Post Plugin"
-msgstr "WordPress Plugin aktivieren"
+msgid "Enable WordPress Post Addon"
+msgstr "WordPress Addon aktivieren"
 
 #: wppost.php:92
 msgid "WordPress username"

@@ -1038,8 +1038,8 @@ msgstr "Jappixil peab olema siia ja alamkataloogidesse kirjutusõigus. Kui see p
 msgid "The folder is writable, you can continue!"
 msgstr "Kataloogil on kirjutusõigused, Te võite jätkata!"
 
-msgid "Jappix offers you the possibility to manage your configuration, install new plugins or search for updates. That's why you must create an administrator account to access the manager."
-msgstr "Jappix pakub võimalust hallata oma konfiguratsiooni, installida uusi pluginaid või otsida uuendusi. Sellepärast peate te tegema administraatori konto, et haldus lehele ligi pääseda."
+msgid "Jappix offers you the possibility to manage your configuration, install new addons or search for updates. That's why you must create an administrator account to access the manager."
+msgstr "Jappix pakub võimalust hallata oma konfiguratsiooni, installida uusi addonaid või otsida uuendusi. Sellepärast peate te tegema administraatori konto, et haldus lehele ligi pääseda."
 
 msgid "When Jappix will be installed, just click on the manager link on the home page to access it."
 msgstr "Kui Jappix on paigaldatud siis lihtsalt vajutage Haldaja lingile avalehel, et sellele ligi pääseda."

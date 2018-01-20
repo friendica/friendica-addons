@@ -24,8 +24,8 @@ msgid "Randplace Settings"
 msgstr "Randplace Nastavení"
 
 #: randplace.php:171
-msgid "Enable Randplace Plugin"
-msgstr "Povolit Randplace Plugin"
+msgid "Enable Randplace Addon"
+msgstr "Povolit Randplace Addon"
 
 #: randplace.php:177
 msgid "Save Settings"

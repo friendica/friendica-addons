@@ -7,7 +7,7 @@ function string_plural_select_ro($n){
 ;
 $a->strings["Post to LiveJournal"] = "Postați pe LiveJournal";
 $a->strings["LiveJournal Post Settings"] = "Configurări Postări LiveJournal";
-$a->strings["Enable LiveJournal Post Plugin"] = "Activare Modul Postare LiveJournal";
+$a->strings["Enable LiveJournal Post Addon"] = "Activare Modul Postare LiveJournal";
 $a->strings["LiveJournal username"] = "Utilizator LiveJournal";
 $a->strings["LiveJournal password"] = "Parolă LiveJournal ";
 $a->strings["Post to LiveJournal by default"] = "Postați implicit pe LiveJournal";

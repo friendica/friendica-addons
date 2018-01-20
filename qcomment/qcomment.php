@@ -9,7 +9,7 @@
  * 
  * Provides a set of text "snippets" which can be inserted into a comment window by clicking on them.
  * First enable the addon in the system admin panel. 
- * Then each person can tailor their choice of words in Settings->Plugin Settings in the Qcomment 
+ * Then each person can tailor their choice of words in Settings->Addon Settings in the Qcomment 
  * pane. Initially no qcomments are provided, but on viewing the settings page, a default set of
  * of words is suggested. These can be accepted (click Submit) or edited first. Each text line represents 
  * a different qcomment. 
@@ -19,19 +19,19 @@
  * them to open the comment window fully and insert the qcomment. Then "Submit" will submit it.
  *
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 
 function qcomment_install() {
-	register_hook('plugin_settings', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings');
-	register_hook('plugin_settings_post', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings_post');
+	Addon::registerHook('addon_settings', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings');
+	Addon::registerHook('addon_settings_post', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings_post');
 
 }
 
 
 function qcomment_uninstall() {
-	unregister_hook('plugin_settings', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings');
-	unregister_hook('plugin_settings_post', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings_post');
 
 }
 

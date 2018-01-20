@@ -6,19 +6,19 @@
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  *
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 
 function googlemaps_install()
 {
-	register_hook('render_location', 'addon/googlemaps/googlemaps.php', 'googlemaps_location');
+	Addon::registerHook('render_location', 'addon/googlemaps/googlemaps.php', 'googlemaps_location');
 
 	logger("installed googlemaps");
 }
 
 function googlemaps_uninstall()
 {
-	unregister_hook('render_location', 'addon/googlemaps/googlemaps.php', 'googlemaps_location');
+	Addon::unregisterHook('render_location', 'addon/googlemaps/googlemaps.php', 'googlemaps_location');
 
 	logger("removed googlemaps");
 }

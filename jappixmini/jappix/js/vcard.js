@@ -566,7 +566,7 @@ function sendVCard() {
 	return false;
 }
 
-// Plugin launcher
+// Addon launcher
 function launchVCard() {
 	// Focus on the first input
 	$(document).oneTime(10, function() {

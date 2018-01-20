@@ -1,13 +1,13 @@
 <?php
 /**
  * Name: Piwik Analytics
- * Description: Piwik Analytics Plugin for Friendica
+ * Description: Piwik Analytics Addon for Friendica
  * Version: 1.3
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  * Author: Klaus Weidenbach
  */
 
-/*   Piwik Analytics Plugin for Friendica
+/*   Piwik Analytics Addon for Friendica
  *
  *   Author: Tobias Diekershoff
  *           tobias.diekershoff@gmx.net
@@ -29,25 +29,25 @@
  *     about http/https but beware to put the trailing / at the end of your
  *     setting.
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 
 function piwik_install() {
-	register_hook('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
+	Addon::registerHook('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
-	logger("installed piwik plugin");
+	logger("installed piwik addon");
 }
 
 function piwik_uninstall() {
-	unregister_hook('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
+	Addon::unregisterHook('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
-	logger("uninstalled piwik plugin");
+	logger("uninstalled piwik addon");
 }
 
 function piwik_analytics($a,&$b) {
 
 	/*
-	 *   styling of every HTML block added by this plugin is done in the
+	 *   styling of every HTML block added by this addon is done in the
 	 *   associated CSS file. We just have to tell Friendica to get it
 	 *   into the page header.
 	 */
@@ -85,7 +85,7 @@ function piwik_analytics($a,&$b) {
 		$b .= "</div>";
 	}
 }
-function piwik_plugin_admin (&$a, &$o) {
+function piwik_addon_admin (&$a, &$o) {
 	$t = get_markup_template( "admin.tpl", "addon/piwik/" );
 	$o = replace_macros( $t, [
 		'$submit' => t('Save Settings'),
@@ -95,7 +95,7 @@ function piwik_plugin_admin (&$a, &$o) {
 		'$async' => ['async', t('Asynchronous tracking'), Config::get('piwik','async' ), ''],
 	]);
 }
-function piwik_plugin_admin_post (&$a) {
+function piwik_addon_admin_post (&$a) {
 	$url = ((x($_POST, 'baseurl')) ? notags(trim($_POST['baseurl'])) : '');
 	$id = ((x($_POST, 'siteid')) ? trim($_POST['siteid']) : '');
 	$optout = ((x($_POST, 'optout')) ? trim($_POST['optout']) : '');

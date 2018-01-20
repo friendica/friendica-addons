@@ -7,7 +7,7 @@ function string_plural_select_it($n){
 ;
 $a->strings["Post to Insanejournal"] = "Invia a InsaneJournal";
 $a->strings["InsaneJournal Post Settings"] = "Impostazioni post InsaneJournal";
-$a->strings["Enable InsaneJournal Post Plugin"] = "Abilita il plugin di invio a InsaneJournal";
+$a->strings["Enable InsaneJournal Post Addon"] = "Abilita il addon di invio a InsaneJournal";
 $a->strings["InsaneJournal username"] = "Nome utente InsaneJournal";
 $a->strings["InsaneJournal password"] = "Password InsaneJournal";
 $a->strings["Post to InsaneJournal by default"] = "Invia sempre a InsaneJournal";

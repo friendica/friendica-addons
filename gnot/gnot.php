@@ -7,14 +7,14 @@
  * 
  *
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 
 function gnot_install() {
 
-	register_hook('plugin_settings', 'addon/gnot/gnot.php', 'gnot_settings');
-	register_hook('plugin_settings_post', 'addon/gnot/gnot.php', 'gnot_settings_post');
-	register_hook('enotify_mail', 'addon/gnot/gnot.php', 'gnot_enotify_mail');
+	Addon::registerHook('addon_settings', 'addon/gnot/gnot.php', 'gnot_settings');
+	Addon::registerHook('addon_settings_post', 'addon/gnot/gnot.php', 'gnot_settings_post');
+	Addon::registerHook('enotify_mail', 'addon/gnot/gnot.php', 'gnot_enotify_mail');
 
 	logger("installed gnot");
 }
@@ -22,9 +22,9 @@ function gnot_install() {
 
 function gnot_uninstall() {
 
-	unregister_hook('plugin_settings', 'addon/gnot/gnot.php', 'gnot_settings');
-	unregister_hook('plugin_settings_post', 'addon/gnot/gnot.php', 'gnot_settings_post');
-	unregister_hook('enotify_mail', 'addon/gnot/gnot.php', 'gnot_enotify_mail');
+	Addon::unregisterHook('addon_settings', 'addon/gnot/gnot.php', 'gnot_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/gnot/gnot.php', 'gnot_settings_post');
+	Addon::unregisterHook('enotify_mail', 'addon/gnot/gnot.php', 'gnot_enotify_mail');
 
 
 	logger("removed gnot");
@@ -52,7 +52,7 @@ function gnot_settings_post($a,$post) {
 
 /**
  *
- * Called from the Plugin Setting form. 
+ * Called from the Addon Setting form. 
  * Add our own settings info to the page.
  *
  */
@@ -80,7 +80,7 @@ function gnot_settings(&$a,&$s) {
 	$s .= '<h3>' . t('Gnot Settings') . '</h3>';
 	$s .= '<div id="gnot-wrapper">';
 	$s .= '<div id="gnot-desc">' . t("Allows threading of email comment notifications on Gmail and anonymising the subject line.") . '</div>';
-	$s .= '<label id="gnot-label" for="gnot">' . t('Enable this plugin/addon?') . '</label>';
+	$s .= '<label id="gnot-label" for="gnot">' . t('Enable this addon?') . '</label>';
 	$s .= '<input id="gnot-input" type="checkbox" name="gnot" value="1"'.  $gnot_checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 

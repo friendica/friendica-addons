@@ -34,7 +34,7 @@ msgid ""
 msgstr "Permite înlănțuirea notificărilor prin email a comentariilor, în Gmail și anonimizarea  subiectului."
 
 #: gnot.php:82
-msgid "Enable this plugin/addon?"
+msgid "Enable this addon?"
 msgstr "Activați acest modul/supliment?"
 
 #: gnot.php:88

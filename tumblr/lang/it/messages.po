@@ -44,8 +44,8 @@ msgid "(Re-)Authenticate your tumblr page"
 msgstr "(Ri)Autenticati con la tua pagina Tumblr"
 
 #: tumblr.php:192
-msgid "Enable Tumblr Post Plugin"
-msgstr "Abilita Plugin Tumblr"
+msgid "Enable Tumblr Post Addon"
+msgstr "Abilita Addon Tumblr"
 
 #: tumblr.php:197
 msgid "Post to Tumblr by default"

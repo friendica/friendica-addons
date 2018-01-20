@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This is a simple plugin that will map any GET request for non-files to
+ * This is a simple addon that will map any GET request for non-files to
  * PROPFIND allprops-requests.
  *
  * This should allow easy debugging of PROPFIND
@@ -22,7 +22,7 @@ class Sabre_DAV_Browser_MapGetToPropFind extends Sabre_DAV_ServerPlugin {
     protected $server;
 
     /**
-     * Initializes the plugin and subscribes to events
+     * Initializes the addon and subscribes to events
      *
      * @param Sabre_DAV_Server $server
      * @return void

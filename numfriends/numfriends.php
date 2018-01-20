@@ -4,16 +4,14 @@
  * Description: Change number of contacts shown of profile sidebar
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- * 
- *
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 
 function numfriends_install() {
 
-	register_hook('plugin_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
-	register_hook('plugin_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
+	Addon::registerHook('addon_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
+	Addon::registerHook('addon_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
 
 	logger("installed numfriends");
 }
@@ -21,14 +19,12 @@ function numfriends_install() {
 
 function numfriends_uninstall() {
 
-	unregister_hook('plugin_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
-	unregister_hook('plugin_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
 
 
 	logger("removed numfriends");
 }
-
-
 
 /**
  *
@@ -38,7 +34,6 @@ function numfriends_uninstall() {
  * and if so set our configuration setting for this person.
  *
  */
-
 function numfriends_settings_post($a,$post) {
 	if(! local_user() || (! x($_POST,'numfriends-submit')))
 		return;
@@ -50,13 +45,10 @@ function numfriends_settings_post($a,$post) {
 
 /**
  *
- * Called from the Plugin Setting form. 
+ * Called from the Addon Setting form. 
  * Add our own settings info to the page.
  *
  */
-
-
-
 function numfriends_settings(&$a, &$s)
 {
 	if (! local_user()) {

@@ -1,5 +1,6 @@
 <?php
 
+use Friendica\Core\Addon;
 use Friendica\Module\Login;
 use Friendica\Util\Emailer;
 
@@ -7,19 +8,19 @@ require_once('include/security.php');
 
 function dav_install()
 {
-	register_hook('event_created', 'addon/dav/dav.php', 'dav_event_created_hook');
-	register_hook('event_updated', 'addon/dav/dav.php', 'dav_event_updated_hook');
-	register_hook('profile_tabs', 'addon/dav/dav.php', 'dav_profile_tabs_hook');
-	register_hook('cron', 'addon/dav/dav.php', 'dav_cron');
+	Addon::registerHook('event_created', 'addon/dav/dav.php', 'dav_event_created_hook');
+	Addon::registerHook('event_updated', 'addon/dav/dav.php', 'dav_event_updated_hook');
+	Addon::registerHook('profile_tabs', 'addon/dav/dav.php', 'dav_profile_tabs_hook');
+	Addon::registerHook('cron', 'addon/dav/dav.php', 'dav_cron');
 }
 
 
 function dav_uninstall()
 {
-	unregister_hook('event_created', 'addon/dav/dav.php', 'dav_event_created_hook');
-	unregister_hook('event_updated', 'addon/dav/dav.php', 'dav_event_updated_hook');
-	unregister_hook('profile_tabs', 'addon/dav/dav.php', 'dav_profile_tabs_hook');
-	unregister_hook('cron', 'addon/dav/dav.php', 'dav_cron');
+	Addon::unregisterHook('event_created', 'addon/dav/dav.php', 'dav_event_created_hook');
+	Addon::unregisterHook('event_updated', 'addon/dav/dav.php', 'dav_event_updated_hook');
+	Addon::unregisterHook('profile_tabs', 'addon/dav/dav.php', 'dav_profile_tabs_hook');
+	Addon::unregisterHook('cron', 'addon/dav/dav.php', 'dav_cron');
 }
 
 
@@ -202,7 +203,7 @@ function dav_content()
 			}
 		}
 	} catch (DAVVersionMismatchException $e) {
-		$x = t("The current version of this plugin has not been set up correctly. Please contact the system administrator of your installation of friendica to fix this.");
+		$x = t("The current version of this addon has not been set up correctly. Please contact the system administrator of your installation of friendica to fix this.");
 	}
 	return $x;
 }
@@ -301,9 +302,9 @@ function dav_cron(&$a, &$b)
  * @param App $a
  * @param null|object $o
  */
-function dav_plugin_admin_post(&$a = null, &$o = null)
+function dav_addon_admin_post(&$a = null, &$o = null)
 {
-	check_form_security_token_redirectOnErr('/admin/plugins/dav', 'dav_admin_save');
+	check_form_security_token_redirectOnErr('/admin/addons/dav', 'dav_admin_save');
 
 	dav_include_files();
 	require_once(__DIR__ . "/database-init.inc.php");
@@ -326,7 +327,7 @@ function dav_plugin_admin_post(&$a = null, &$o = null)
  * @param App $a
  * @param string $o
  */
-function dav_plugin_admin(&$a, &$o)
+function dav_addon_admin(&$a, &$o)
 {
 	dav_include_files();
 	require_once(__DIR__ . "/database-init.inc.php");

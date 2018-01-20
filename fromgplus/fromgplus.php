@@ -9,6 +9,7 @@
 
 define('FROMGPLUS_DEFAULT_POLL_INTERVAL', 30); // given in minutes
 
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 use Friendica\Object\Image;
@@ -18,19 +19,19 @@ require_once 'mod/parse_url.php';
 require_once 'include/text.php';
 
 function fromgplus_install() {
-	register_hook('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
-	register_hook('connector_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
-	register_hook('cron', 'addon/fromgplus/fromgplus.php', 'fromgplus_cron');
+	Addon::registerHook('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
+	Addon::registerHook('connector_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
+	Addon::registerHook('cron', 'addon/fromgplus/fromgplus.php', 'fromgplus_cron');
 }
 
 function fromgplus_uninstall() {
-	unregister_hook('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
-	unregister_hook('connector_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
-	unregister_hook('cron', 'addon/fromgplus/fromgplus.php', 'fromgplus_cron');
+	Addon::unregisterHook('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
+	Addon::unregisterHook('connector_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
+	Addon::unregisterHook('cron', 'addon/fromgplus/fromgplus.php', 'fromgplus_cron');
 
 	// Old hooks
-	unregister_hook('plugin_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
-	unregister_hook('plugin_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
 }
 
 function fromgplus_addon_settings(&$a,&$s) {
@@ -93,19 +94,21 @@ function fromgplus_addon_settings_post(&$a,&$b) {
 	}
 }
 
-function fromgplus_plugin_admin(&$a, &$o){
-        $t = get_markup_template("admin.tpl", "addon/fromgplus/");
+function fromgplus_addon_admin(&$a, &$o)
+{
+	$t = get_markup_template("admin.tpl", "addon/fromgplus/");
 
-        $o = replace_macros($t, [
-                '$submit' => t('Save Settings'),
-                '$key' => ['key', t('Key'), trim(Config::get('fromgplus', 'key')), t('')],
-        ]);
+	$o = replace_macros($t, [
+			'$submit' => t('Save Settings'),
+			'$key' => ['key', t('Key'), trim(Config::get('fromgplus', 'key')), t('')],
+	]);
 }
 
-function fromgplus_plugin_admin_post(&$a){
-        $key = ((x($_POST,'key')) ? trim($_POST['key']) : '');
-        Config::set('fromgplus','key',$key);
-        info( t('Settings updated.'). EOL );
+function fromgplus_addon_admin_post(&$a)
+{
+	$key = ((x($_POST, 'key')) ? trim($_POST['key']) : '');
+	Config::set('fromgplus', 'key', $key);
+	info(t('Settings updated.'). EOL);
 }
 
 function fromgplus_cron($a,$b) {

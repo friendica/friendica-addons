@@ -21,7 +21,7 @@ function notifyall_uninstall() {
 
 function notifyall_module() {}
 
-function notifyall_plugin_admin(&$a, &$o) {
+function notifyall_addon_admin(&$a, &$o) {
 
 	$o = '<div></div>&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . z_root() . '/notifyall">' . t('Send email to all members') . '</a></br/>';
 

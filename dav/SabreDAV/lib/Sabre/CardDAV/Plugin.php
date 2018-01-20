@@ -3,9 +3,9 @@
 use Sabre\VObject;
 
 /**
- * CardDAV plugin
+ * CardDAV addon
  *
- * The CardDAV plugin adds CardDAV functionality to the WebDAV server
+ * The CardDAV addon adds CardDAV functionality to the WebDAV server
  *
  * @package Sabre
  * @subpackage CardDAV
@@ -41,7 +41,7 @@ class Sabre_CardDAV_Plugin extends Sabre_DAV_ServerPlugin {
     protected $server;
 
     /**
-     * Initializes the plugin
+     * Initializes the addon
      *
      * @param Sabre_DAV_Server $server
      * @return void
@@ -91,7 +91,7 @@ class Sabre_CardDAV_Plugin extends Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Returns a list of reports this plugin supports.
+     * Returns a list of reports this addon supports.
      *
      * This will be used in the {DAV:}supported-report-set property.
      * Note that you still need to subscribe to the 'report' event to actually
@@ -290,7 +290,7 @@ class Sabre_CardDAV_Plugin extends Sabre_DAV_ServerPlugin {
     /**
      * This method is triggered before a file gets updated with new content.
      *
-     * This plugin uses this method to ensure that Card nodes receive valid
+     * This addon uses this method to ensure that Card nodes receive valid
      * vcard data.
      *
      * @param string $path
@@ -310,7 +310,7 @@ class Sabre_CardDAV_Plugin extends Sabre_DAV_ServerPlugin {
     /**
      * This method is triggered before a new file is created.
      *
-     * This plugin uses this method to ensure that Card nodes receive valid
+     * This addon uses this method to ensure that Card nodes receive valid
      * vcard data.
      *
      * @param string $path
@@ -671,7 +671,7 @@ class Sabre_CardDAV_Plugin extends Sabre_DAV_ServerPlugin {
 
     /**
      * This method allows us to intercept the 'mkcalendar' sabreAction. This
-     * action enables the user to create new calendars from the browser plugin.
+     * action enables the user to create new calendars from the browser addon.
      *
      * @param string $uri
      * @param string $action

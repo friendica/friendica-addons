@@ -3,7 +3,7 @@
 /**
  * SabreDAV ACL Plugin
  *
- * This plugin provides functionality to enforce ACL permissions.
+ * This addon provides functionality to enforce ACL permissions.
  * ACL is defined in RFC3744.
  *
  * In addition it also provides support for the {DAV:}current-user-principal
@@ -81,7 +81,7 @@ class Sabre_DAVACL_Plugin extends Sabre_DAV_ServerPlugin {
 
     /**
      * This string is prepended to the username of the currently logged in
-     * user. This allows the plugin to determine the principal path based on
+     * user. This allows the addon to determine the principal path based on
      * the username.
      *
      * @var string
@@ -111,7 +111,7 @@ class Sabre_DAVACL_Plugin extends Sabre_DAV_ServerPlugin {
     public $adminPrincipals = array();
 
     /**
-     * Returns a list of features added by this plugin.
+     * Returns a list of features added by this addon.
      *
      * This list is used in the response of a HTTP OPTIONS request.
      *
@@ -136,9 +136,9 @@ class Sabre_DAVACL_Plugin extends Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Returns a plugin name.
+     * Returns a addon name.
      *
-     * Using this name other plugins will be able to access other plugins
+     * Using this name other addons will be able to access other addons
      * using Sabre_DAV_Server::getPlugin
      *
      * @return string
@@ -150,7 +150,7 @@ class Sabre_DAVACL_Plugin extends Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Returns a list of reports this plugin supports.
+     * Returns a list of reports this addon supports.
      *
      * This will be used in the {DAV:}supported-report-set property.
      * Note that you still need to subscribe to the 'report' event to actually
@@ -283,7 +283,7 @@ class Sabre_DAVACL_Plugin extends Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Returns the supported privilege structure for this ACL plugin.
+     * Returns the supported privilege structure for this ACL addon.
      *
      * See RFC3744 for more details. Currently we default on a simple,
      * standard structure.
@@ -608,7 +608,7 @@ class Sabre_DAVACL_Plugin extends Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Sets up the plugin
+     * Sets up the addon
      *
      * This method is automatically called by the server class.
      *
@@ -1067,7 +1067,7 @@ class Sabre_DAVACL_Plugin extends Sabre_DAV_ServerPlugin {
      * there.
      *
      * Other rfc's, such as ACL rely on this report, so it made sense to put
-     * it in this plugin.
+     * it in this addon.
      *
      * @param DOMElement $dom
      * @return void

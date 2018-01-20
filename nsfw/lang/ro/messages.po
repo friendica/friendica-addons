@@ -25,7 +25,7 @@ msgstr "Nesigur Pentru Lucru (Filtrare de Conținut pentru Uz General )"
 
 #: nsfw.php:80
 msgid ""
-"This plugin looks in posts for the words/text you specify below, and "
+"This addon looks in posts for the words/text you specify below, and "
 "collapses any content containing those keywords so it is not displayed at "
 "inappropriate times, such as sexual innuendo that may be improper in a work "
 "setting. It is polite and recommended to tag any content containing nudity "

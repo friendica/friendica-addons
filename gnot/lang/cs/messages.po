@@ -34,8 +34,8 @@ msgid ""
 msgstr "Umožnit řetězení emailových komentářových notifikací na Gmailu a anonymizací řádky předmětu."
 
 #: gnot.php:82
-msgid "Enable this plugin/addon?"
-msgstr "Povolit tento plugin/rozšíření?"
+msgid "Enable this addon?"
+msgstr "Povolit tento addon/rozšíření?"
 
 #: gnot.php:88
 msgid "Submit"

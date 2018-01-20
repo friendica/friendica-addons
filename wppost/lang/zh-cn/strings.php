@@ -2,7 +2,7 @@
 
 $a->strings["Post to Wordpress"] = "发送到Wordpress";
 $a->strings["WordPress Post Settings"] = "Wordpress发送设置";
-$a->strings["Enable WordPress Post Plugin"] = "使Wordpress发送插件可用";
+$a->strings["Enable WordPress Post Addon"] = "使Wordpress发送插件可用";
 $a->strings["WordPress username"] = "Wordpress用户名";
 $a->strings["WordPress password"] = "Wordpress密码";
 $a->strings["WordPress API URL"] = "WordPress API URL";

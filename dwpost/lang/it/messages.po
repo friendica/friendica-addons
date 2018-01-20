@@ -28,8 +28,8 @@ msgid "Dreamwidth Post Settings"
 msgstr "Impostazioni di invio a Dreamwidth"
 
 #: dwpost.php:72
-msgid "Enable dreamwidth Post Plugin"
-msgstr "Abilita il plugin di invio a Dreamwidth"
+msgid "Enable dreamwidth Post Addon"
+msgstr "Abilita il addon di invio a Dreamwidth"
 
 #: dwpost.php:77
 msgid "dreamwidth username"

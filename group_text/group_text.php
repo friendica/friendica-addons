@@ -4,16 +4,14 @@
  * Description: Disable images in group edit menu
  * Version: 1.0
  * Author: Thomas Willingham <https://kakste.com/profile/beardyunixer>
- * 
- *
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 
 function group_text_install() {
 
-	register_hook('plugin_settings', 'addon/group_text/group_text.php', 'group_text_settings');
-	register_hook('plugin_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
+	Addon::registerHook('addon_settings', 'addon/group_text/group_text.php', 'group_text_settings');
+	Addon::registerHook('addon_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
 
 	logger("installed group_text");
 }
@@ -21,8 +19,8 @@ function group_text_install() {
 
 function group_text_uninstall() {
 
-	unregister_hook('plugin_settings', 'addon/group_text/group_text.php', 'group_text_settings');
-	unregister_hook('plugin_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/group_text/group_text.php', 'group_text_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
 
 
 	logger("removed group_text");
@@ -50,7 +48,7 @@ function group_text_settings_post($a,$post) {
 
 /**
  *
- * Called from the Plugin Setting form. 
+ * Called from the Addon Setting form. 
  * Add our own settings info to the page.
  *
  */

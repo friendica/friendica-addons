@@ -13,6 +13,7 @@ require_once('include/network.php');
 require_once("mod/proxy.php");
 require_once('include/text.php');
 
+use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
@@ -65,16 +66,17 @@ function getWeather( $loc, $units='metric', $lang='en', $appid='', $cachetime=0)
     return $r;
 }
 
-function curweather_install() {
-	register_hook('network_mod_init', 'addon/curweather/curweather.php', 'curweather_network_mod_init');
-	register_hook('plugin_settings', 'addon/curweather/curweather.php', 'curweather_plugin_settings');
-	register_hook('plugin_settings_post', 'addon/curweather/curweather.php', 'curweather_plugin_settings_post');
+function curweather_install()
+{
+	Addon::registerHook('network_mod_init', 'addon/curweather/curweather.php', 'curweather_network_mod_init');
+	Addon::registerHook('addon_settings', 'addon/curweather/curweather.php', 'curweather_addon_settings');
+	Addon::registerHook('addon_settings_post', 'addon/curweather/curweather.php', 'curweather_addon_settings_post');
 }
 
 function curweather_uninstall() {
-	unregister_hook('network_mod_init', 'addon/curweather/curweather.php', 'curweather_network_mod_init');
-	unregister_hook('plugin_settings', 'addon/curweather/curweather.php', 'curweather_plugin_settings');
-	unregister_hook('plugin_settings_post', 'addon/curweather/curweather.php', 'curweather_plugin_settings_post');
+	Addon::unregisterHook('network_mod_init', 'addon/curweather/curweather.php', 'curweather_network_mod_init');
+	Addon::unregisterHook('addon_settings', 'addon/curweather/curweather.php', 'curweather_addon_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/curweather/curweather.php', 'curweather_addon_settings_post');
 }
 
 function curweather_network_mod_init(&$fk_app,&$b) {
@@ -140,7 +142,7 @@ function curweather_network_mod_init(&$fk_app,&$b) {
 }
 
 
-function curweather_plugin_settings_post($a,$post) {
+function curweather_addon_settings_post($a,$post) {
 	if(! local_user() || (! x($_POST,'curweather-settings-submit')))
 		return;
 	PConfig::set(local_user(),'curweather','curweather_loc',trim($_POST['curweather_loc']));
@@ -151,7 +153,7 @@ function curweather_plugin_settings_post($a,$post) {
 }
 
 
-function curweather_plugin_settings(&$a,&$s) {
+function curweather_addon_settings(&$a,&$s) {
 
 	if(! local_user())
 		return;
@@ -185,7 +187,7 @@ function curweather_plugin_settings(&$a,&$s) {
 }
 // Config stuff for the admin panel to let the admin of the node set a APPID
 // for accessing the API of openweathermap
-function curweather_plugin_admin_post (&$a) {
+function curweather_addon_admin_post (&$a) {
 	if(! is_site_admin())
 	    return;
 	if ($_POST['curweather-submit']) {
@@ -194,7 +196,7 @@ function curweather_plugin_admin_post (&$a) {
 	    info( t('Curweather settings saved.'.EOL));
 	}
 }
-function curweather_plugin_admin (&$a, &$o) {
+function curweather_addon_admin (&$a, &$o) {
     if(! is_site_admin())
 	    return;
     $appid = Config::get('curweather','appid');

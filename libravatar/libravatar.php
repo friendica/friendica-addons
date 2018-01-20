@@ -1,15 +1,15 @@
 <?php
 /**
  * Name: Libravatar Support
- * Description: If there is no avatar image for a new user or contact this plugin will look for one at Libravatar. Please disable Gravatar addon if you use this one. (requires PHP >= 5.3)
+ * Description: If there is no avatar image for a new user or contact this addon will look for one at Libravatar. Please disable Gravatar addon if you use this one. (requires PHP >= 5.3)
  * Version: 1.1
  * Author: Klaus Weidenbach <http://friendica.dszdw.net/profile/klaus>
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 
 /**
- * Installs the plugin hook
+ * Installs the addon hook
  */
 function libravatar_install() {
 	if (! version_compare(PHP_VERSION, '5.3.0', '>=')) {
@@ -17,16 +17,16 @@ function libravatar_install() {
 		// avoid registering the hook
 		return false;
 	}
-	register_hook('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
+	Addon::registerHook('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
 
 	logger("registered libravatar in avatar_lookup hook");
 }
 
 /**
- * Removes the plugin hook
+ * Removes the addon hook
  */
 function libravatar_uninstall() {
-	unregister_hook('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
+	Addon::unregisterHook('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
 
 	logger("unregistered libravatar in avatar_lookup hook");
 }
@@ -61,7 +61,7 @@ function libravatar_lookup($a, &$b) {
 /**
  * Display admin settings for this addon
  */
-function libravatar_plugin_admin (&$a, &$o) {
+function libravatar_addon_admin (&$a, &$o) {
 	$t = get_markup_template( "admin.tpl", "addon/libravatar" );
 
 	$default_avatar = Config::get('libravatar', 'default_img');
@@ -106,7 +106,7 @@ function libravatar_plugin_admin (&$a, &$o) {
 /**
  * Save admin settings
  */
-function libravatar_plugin_admin_post (&$a) {
+function libravatar_addon_admin_post (&$a) {
 	check_form_security_token('libravatarrsave');
 
 	$default_avatar = ((x($_POST, 'avatar')) ? notags(trim($_POST['avatar'])) : 'identicon');

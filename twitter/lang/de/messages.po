@@ -39,12 +39,12 @@ msgstr "Kein Consumer Schlüsselpaar für Twitter gefunden. Bitte wende dich an 
 
 #: twitter.php:264
 msgid ""
-"At this Friendica instance the Twitter plugin was enabled but you have not "
+"At this Friendica instance the Twitter addon was enabled but you have not "
 "yet connected your account to your Twitter account. To do so click the "
 "button below to get a PIN from Twitter which you have to copy into the input"
 " box below and submit the form. Only your <strong>public</strong> posts will"
 " be posted to Twitter."
-msgstr "Auf diesem Friendica-Server wurde das Twitter-Plugin aktiviert, aber du hast deinen Account noch nicht mit deinem Twitter-Account verbunden. Klicke dazu auf die Schaltfläche unten. Du erhältst dann eine PIN von Twitter, die du dann in das Eingabefeld unten einfügst. Denk daran, den Senden-Knopf zu drücken! Nur <strong>öffentliche</strong> Beiträge werden bei Twitter veröffentlicht."
+msgstr "Auf diesem Friendica-Server wurde das Twitter-Addon aktiviert, aber du hast deinen Account noch nicht mit deinem Twitter-Account verbunden. Klicke dazu auf die Schaltfläche unten. Du erhältst dann eine PIN von Twitter, die du dann in das Eingabefeld unten einfügst. Denk daran, den Senden-Knopf zu drücken! Nur <strong>öffentliche</strong> Beiträge werden bei Twitter veröffentlicht."
 
 #: twitter.php:265
 msgid "Log in with Twitter"

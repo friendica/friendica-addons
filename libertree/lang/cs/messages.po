@@ -28,7 +28,7 @@ msgid "libertree Post Settings"
 msgstr "libertree nastavení příspěvků"
 
 #: libertree.php:69
-msgid "Enable Libertree Post Plugin"
+msgid "Enable Libertree Post Addon"
 msgstr "Povolit Libertree Post rozšíření"
 
 #: libertree.php:74

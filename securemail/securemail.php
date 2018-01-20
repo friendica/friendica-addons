@@ -7,6 +7,7 @@
  */
 
 use Friendica\App;
+use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 use Friendica\Util\Emailer;
 
@@ -23,19 +24,19 @@ require_once 'openpgp_crypt_symmetric.php';
 
 
 function securemail_install() {
-    register_hook('plugin_settings', 'addon/securemail/securemail.php', 'securemail_settings');
-    register_hook('plugin_settings_post', 'addon/securemail/securemail.php', 'securemail_settings_post');
+    Addon::registerHook('addon_settings', 'addon/securemail/securemail.php', 'securemail_settings');
+    Addon::registerHook('addon_settings_post', 'addon/securemail/securemail.php', 'securemail_settings_post');
 
-    register_hook('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare');
+    Addon::registerHook('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare');
 
     logger('installed securemail');
 }
 
 function securemail_uninstall() {
-    unregister_hook('plugin_settings', 'addon/securemail/securemail.php', 'securemail_settings');
-    unregister_hook('plugin_settings_post', 'addon/securemail/securemail.php', 'securemail_settings_post');
+    Addon::unregisterHook('addon_settings', 'addon/securemail/securemail.php', 'securemail_settings');
+    Addon::unregisterHook('addon_settings_post', 'addon/securemail/securemail.php', 'securemail_settings_post');
 
-    unregister_hook('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare');
+    Addon::unregisterHook('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare');
 
     logger('removed securemail');
 }
@@ -43,7 +44,7 @@ function securemail_uninstall() {
 /**
  * @brief Build user settings form
  *
- * @link https://github.com/friendica/friendica/blob/develop/doc/Plugins.md#plugin_settings 'plugin_settings' hook
+ * @link https://github.com/friendica/friendica/blob/develop/doc/Addons.md#addon_settings 'addon_settings' hook
  *
  * @param App $a App instance
  * @param string $s output html
@@ -72,7 +73,7 @@ function securemail_settings(App &$a, &$s){
 /**
  * @brief Handle data from user settings form
  *
- * @link https://github.com/friendica/friendica/blob/develop/doc/Plugins.md#plugin_settings_post 'plugin_settings_post' hook
+ * @link https://github.com/friendica/friendica/blob/develop/doc/Addons.md#addon_settings_post 'addon_settings_post' hook
  *
  * @param App $a App instance
  * @param array $b hook data
@@ -137,7 +138,7 @@ function securemail_settings_post(App &$a, array &$b){
 /**
  * @brief Encrypt notification emails text
  *
- * @link https://github.com/friendica/friendica/blob/develop/doc/Plugins.md#emailer_send_prepare 'emailer_send_prepare' hook
+ * @link https://github.com/friendica/friendica/blob/develop/doc/Addons.md#emailer_send_prepare 'emailer_send_prepare' hook
  *
  * @param App $a App instance
  * @param array $b hook data

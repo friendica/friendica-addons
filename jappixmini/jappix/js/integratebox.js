@@ -316,13 +316,13 @@ function filterIntegrateBox(data) {
 	return string;
 }
 
-// Plugin launcher
+// Addon launcher
 function launchIntegratebox() {
 	// Click event
 	$('#integratebox .bottom .finish.close').click(closeIntegrateBox);
 }
 
-// Plugin keyup event
+// Addon keyup event
 $(document).keyup(function(e) {
 	// Previous item?
 	if((exists('#integratebox .bottom .finish.previous:not(.disabled)')) && (e.keyCode == 37)) {

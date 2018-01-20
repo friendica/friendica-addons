@@ -1,35 +1,35 @@
 <?php
 /**
  * Name: Random Planet, Empirial Version
- * Description: Sample Friendica plugin/addon. Set a random planet from the Emprire when posting.
+ * Description: Sample Friendica addon. Set a random planet from the Emprire when posting.
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * Author: Tony Baldwin <https://free-haven.org/profile/tony>
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 
 function planets_install() {
 
 	/**
 	 *
-	 * Our demo plugin will attach in three places.
+	 * Our demo addon will attach in three places.
 	 * The first is just prior to storing a local post.
 	 *
 	 */
 
-	register_hook('post_local', 'addon/planets/planets.php', 'planets_post_hook');
+	Addon::registerHook('post_local', 'addon/planets/planets.php', 'planets_post_hook');
 
 	/**
 	 *
-	 * Then we'll attach into the plugin settings page, and also the
+	 * Then we'll attach into the addon settings page, and also the
 	 * settings post hook so that we can create and update
 	 * user preferences.
 	 *
 	 */
 
-	register_hook('plugin_settings', 'addon/planets/planets.php', 'planets_settings');
-	register_hook('plugin_settings_post', 'addon/planets/planets.php', 'planets_settings_post');
+	Addon::registerHook('addon_settings', 'addon/planets/planets.php', 'planets_settings');
+	Addon::registerHook('addon_settings_post', 'addon/planets/planets.php', 'planets_settings_post');
 
 	logger("installed planets");
 }
@@ -45,9 +45,9 @@ function planets_uninstall() {
 	 *
 	 */
 
-	unregister_hook('post_local',    'addon/planets/planets.php', 'planets_post_hook');
-	unregister_hook('plugin_settings', 'addon/planets/planets.php', 'planets_settings');
-	unregister_hook('plugin_settings_post', 'addon/planets/planets.php', 'planets_settings_post');
+	Addon::unregisterHook('post_local',    'addon/planets/planets.php', 'planets_post_hook');
+	Addon::unregisterHook('addon_settings', 'addon/planets/planets.php', 'planets_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/planets/planets.php', 'planets_settings_post');
 
 
 	logger("removed planets");
@@ -62,7 +62,7 @@ function planets_post_hook($a, &$item) {
 	 * An item was posted on the local system.
 	 * We are going to look for specific items:
 	 *      - A status post by a profile owner
-	 *      - The profile owner must have allowed our plugin
+	 *      - The profile owner must have allowed our addon
 	 *
 	 */
 
@@ -123,7 +123,7 @@ function planets_settings_post($a,$post) {
 
 /**
  *
- * Called from the Plugin Setting form.
+ * Called from the Addon Setting form.
  * Add our own settings info to the page.
  *
  */
@@ -158,7 +158,7 @@ function planets_settings(&$a,&$s) {
     $s .= '<div class="settings-block">';
 	$s .= '<h3>' . t('Planets Settings') . '</h3>';
 	$s .= '<div id="planets-enable-wrapper">';
-	$s .= '<label id="planets-enable-label" for="planets-checkbox">' . t('Enable Planets Plugin') . '</label>';
+	$s .= '<label id="planets-enable-label" for="planets-checkbox">' . t('Enable Planets Addon') . '</label>';
 	$s .= '<input id="planets-checkbox" type="checkbox" name="planets" value="1" ' . $checked . '/>';
 	$s .= '</div><div class="clear"></div></div>';
 

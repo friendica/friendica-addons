@@ -3,24 +3,24 @@
 
 /**
  * Name: Yourls
- * Description: Defines a YourLS url shortener for the Statusnet & Twitter plugins
+ * Description: Defines a YourLS url shortener for the Statusnet & Twitter addons
  * Version: 1.0
  * Author: Keith Fernie <http://friendika.me4.it/profile/keith>
  * 
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 
 function yourls_install() {
-	register_hook('plugin_settings', 'addon/yourls/yourls.php', 'yourls_addon_settings');
-	register_hook('plugin_settings_post', 'addon/yourls/yourls.php', 'yourls_addon_settings_post');
+	Addon::registerHook('addon_settings', 'addon/yourls/yourls.php', 'yourls_addon_settings');
+	Addon::registerHook('addon_settings_post', 'addon/yourls/yourls.php', 'yourls_addon_settings_post');
 
 }
 
 
 function yourls_uninstall() {
-	unregister_hook('plugin_settings', 'addon/yourls/yourls.php', 'yourls_addon_settings');
-	unregister_hook('plugin_settings_post', 'addon/yourls/yourls.php', 'yourls_addon_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/yourls/yourls.php', 'yourls_addon_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/yourls/yourls.php', 'yourls_addon_settings_post');
 	Config::set('yourls','url1',trim($_POST['']));
 	Config::set('yourls','username1',trim($_POST['']));
 	Config::set('yourls','password1',trim($_POST['']));

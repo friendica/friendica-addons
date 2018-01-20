@@ -8,13 +8,14 @@
  * This is a template for how to extend the "smily" code.
  * 
  */
+use Friendica\Core\Addon;
 
 function smilies_adult_install() {
-	register_hook('smilie', 'addon/smilies_adult/smilies_adult.php', 'smilies_adult_smilies');
+	Addon::registerHook('smilie', 'addon/smilies_adult/smilies_adult.php', 'smilies_adult_smilies');
 }
 
 function smilies_adult_uninstall() {
-	unregister_hook('smilie', 'addon/smilies_adult/smilies_adult.php', 'smilies_adult_smilies');
+	Addon::unregisterHook('smilie', 'addon/smilies_adult/smilies_adult.php', 'smilies_adult_smilies');
 }
 
  

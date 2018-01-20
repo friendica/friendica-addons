@@ -393,7 +393,7 @@ function updateArchives() {
 	getListArchives(xid, date);
 }
 
-// Plugin launcher
+// Addon launcher
 function launchArchives() {
 	// Current date
 	var current_date = explodeThis('T', getXMPPTime(), 0);

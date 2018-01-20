@@ -62,7 +62,7 @@ msgid "Import the remote timeline"
 msgstr "Importer la timeline distante"
 
 #: pumpio.php:255
-msgid "Enable pump.io Post Plugin"
+msgid "Enable pump.io Post Addon"
 msgstr ""
 
 #: pumpio.php:260

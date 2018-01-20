@@ -708,7 +708,7 @@ function getGateways() {
 // Define a global var for buddy list all buddies displayed
 var BLIST_ALL = false;
 
-// Plugin launcher
+// Addon launcher
 function launchRoster() {
 	// Filtering tool
 	var iFilter = $('#buddy-list .filter input');

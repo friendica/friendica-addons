@@ -1430,7 +1430,7 @@ function fromInfosMicroblog(xid, hash) {
 	getMicroblog(xid, hash);
 }
 
-// Plugin launcher
+// Addon launcher
 function launchMicroblog() {
 	// Keyboard event
 	$('#channel .top input[name=microblog_body]').keyup(function(e) {

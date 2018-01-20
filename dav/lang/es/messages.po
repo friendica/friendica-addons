@@ -186,10 +186,10 @@ msgstr "Sincronizar sus contactos de Friendica con el iPhone"
 
 #: friendica/main.php:202
 msgid ""
-"The current version of this plugin has not been set up correctly. Please "
+"The current version of this addon has not been set up correctly. Please "
 "contact the system administrator of your installation of friendica to fix "
 "this."
-msgstr "La versión actual de este plugin no se ha instalado correctamente. Por favor contacte con el administrador del sistema de su instalación de Friendica para resolver esto."
+msgstr "La versión actual de este addon no se ha instalado correctamente. Por favor contacte con el administrador del sistema de su instalación de Friendica para resolver esto."
 
 #: friendica/main.php:239 common/wdcal_edit.inc.php:146
 msgid "Calendar"

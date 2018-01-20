@@ -32,7 +32,7 @@ msgid "Diaspora Export"
 msgstr ""
 
 #: diaspora.php:163
-msgid "Enable Diaspora Post Plugin"
+msgid "Enable Diaspora Post Addon"
 msgstr ""
 
 #: diaspora.php:168

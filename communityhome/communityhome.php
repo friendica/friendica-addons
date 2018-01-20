@@ -5,7 +5,7 @@
  * Version: 2.0
  * Author: Fabio Comuni <http://kirgroup.com/profile/fabrixxm>
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Module\Login;
 
@@ -13,12 +13,12 @@ require_once('mod/community.php');
 
 
 function communityhome_install() {
-	register_hook('home_content', 'addon/communityhome/communityhome.php', 'communityhome_home');
+	Addon::registerHook('home_content', 'addon/communityhome/communityhome.php', 'communityhome_home');
 	logger("installed communityhome");
 }
 
 function communityhome_uninstall() {
-	unregister_hook('home_content', 'addon/communityhome/communityhome.php', 'communityhome_home');
+	Addon::unregisterHook('home_content', 'addon/communityhome/communityhome.php', 'communityhome_home');
 	logger("removed communityhome");
 }
 
@@ -33,25 +33,28 @@ function communityhome_getopts() {
 	];
 }
 
-function communityhome_plugin_admin(&$a, &$o) {
-	$tpl = get_markup_template( 'settings.tpl', 'addon/communityhome/' );
+function communityhome_addon_admin(&$a, &$o)
+{
+	$tpl = get_markup_template('settings.tpl', 'addon/communityhome/');
 
 	$opts = communityhome_getopts();
 	$ctx = [
 		'$submit' => t("Submit"),
 		'$fields' => [],
 	];
-	foreach($opts as $k=>$v) {
+
+	foreach ($opts as $k => $v) {
 		$ctx['fields'][] = ['communityhome_'.$k, $v, Config::get('communityhome', $k)];
 	}
 	$o = replace_macros($tpl, $ctx);
 }
 
-function communityhome_plugin_admin_post(&$a,&$b) {
-	if(x($_POST,'communityhome-submit')) {
+function communityhome_addon_admin_post(&$a, &$b)
+{
+	if (x($_POST, 'communityhome-submit')) {
 		$opts = communityhome_getopts();
-		foreach($opts as $k=>$v) {
-			Config::set('communityhome', $k, x($_POST,'communityhome_'.$k));
+		foreach ($opts as $k => $v) {
+			Config::set('communityhome', $k, x($_POST, 'communityhome_'.$k));
 		}
 	}
 }

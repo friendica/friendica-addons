@@ -7,7 +7,7 @@ function string_plural_select_ro($n){
 ;
 $a->strings["Post to Dreamwidth"] = "Postați pe Dreamwidth";
 $a->strings["Dreamwidth Post Settings"] = "Configurări Postări Dreamwidth ";
-$a->strings["Enable dreamwidth Post Plugin"] = "Activare Modul Postare pe Dreamwidth";
+$a->strings["Enable dreamwidth Post Addon"] = "Activare Modul Postare pe Dreamwidth";
 $a->strings["dreamwidth username"] = "Utilizator Dreamwidth";
 $a->strings["dreamwidth password"] = "Parola Dreamwidth ";
 $a->strings["Post to dreamwidth by default"] = "Postați implicit pe Dreamwidth";

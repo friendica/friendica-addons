@@ -47,6 +47,7 @@ require_once 'include/enotify.php';
 
 use Friendica\App;
 use Friendica\Content\OEmbed;
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 use Friendica\Model\GContact;
@@ -145,32 +146,32 @@ class StatusNetOAuth extends TwitterOAuth
 function statusnet_install()
 {
 	//  we need some hooks, for the configuration and for sending tweets
-	register_hook('connector_settings', 'addon/statusnet/statusnet.php', 'statusnet_settings');
-	register_hook('connector_settings_post', 'addon/statusnet/statusnet.php', 'statusnet_settings_post');
-	register_hook('notifier_normal', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
-	register_hook('post_local', 'addon/statusnet/statusnet.php', 'statusnet_post_local');
-	register_hook('jot_networks', 'addon/statusnet/statusnet.php', 'statusnet_jot_nets');
-	register_hook('cron', 'addon/statusnet/statusnet.php', 'statusnet_cron');
-	register_hook('prepare_body', 'addon/statusnet/statusnet.php', 'statusnet_prepare_body');
-	register_hook('check_item_notification', 'addon/statusnet/statusnet.php', 'statusnet_check_item_notification');
+	Addon::registerHook('connector_settings', 'addon/statusnet/statusnet.php', 'statusnet_settings');
+	Addon::registerHook('connector_settings_post', 'addon/statusnet/statusnet.php', 'statusnet_settings_post');
+	Addon::registerHook('notifier_normal', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
+	Addon::registerHook('post_local', 'addon/statusnet/statusnet.php', 'statusnet_post_local');
+	Addon::registerHook('jot_networks', 'addon/statusnet/statusnet.php', 'statusnet_jot_nets');
+	Addon::registerHook('cron', 'addon/statusnet/statusnet.php', 'statusnet_cron');
+	Addon::registerHook('prepare_body', 'addon/statusnet/statusnet.php', 'statusnet_prepare_body');
+	Addon::registerHook('check_item_notification', 'addon/statusnet/statusnet.php', 'statusnet_check_item_notification');
 	logger("installed GNU Social");
 }
 
 function statusnet_uninstall()
 {
-	unregister_hook('connector_settings', 'addon/statusnet/statusnet.php', 'statusnet_settings');
-	unregister_hook('connector_settings_post', 'addon/statusnet/statusnet.php', 'statusnet_settings_post');
-	unregister_hook('notifier_normal', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
-	unregister_hook('post_local', 'addon/statusnet/statusnet.php', 'statusnet_post_local');
-	unregister_hook('jot_networks', 'addon/statusnet/statusnet.php', 'statusnet_jot_nets');
-	unregister_hook('cron', 'addon/statusnet/statusnet.php', 'statusnet_cron');
-	unregister_hook('prepare_body', 'addon/statusnet/statusnet.php', 'statusnet_prepare_body');
-	unregister_hook('check_item_notification', 'addon/statusnet/statusnet.php', 'statusnet_check_item_notification');
+	Addon::unregisterHook('connector_settings', 'addon/statusnet/statusnet.php', 'statusnet_settings');
+	Addon::unregisterHook('connector_settings_post', 'addon/statusnet/statusnet.php', 'statusnet_settings_post');
+	Addon::unregisterHook('notifier_normal', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
+	Addon::unregisterHook('post_local', 'addon/statusnet/statusnet.php', 'statusnet_post_local');
+	Addon::unregisterHook('jot_networks', 'addon/statusnet/statusnet.php', 'statusnet_jot_nets');
+	Addon::unregisterHook('cron', 'addon/statusnet/statusnet.php', 'statusnet_cron');
+	Addon::unregisterHook('prepare_body', 'addon/statusnet/statusnet.php', 'statusnet_prepare_body');
+	Addon::unregisterHook('check_item_notification', 'addon/statusnet/statusnet.php', 'statusnet_check_item_notification');
 
 	// old setting - remove only
-	unregister_hook('post_local_end', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
-	unregister_hook('plugin_settings', 'addon/statusnet/statusnet.php', 'statusnet_settings');
-	unregister_hook('plugin_settings_post', 'addon/statusnet/statusnet.php', 'statusnet_settings_post');
+	Addon::unregisterHook('post_local_end', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
+	Addon::unregisterHook('addon_settings', 'addon/statusnet/statusnet.php', 'statusnet_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/statusnet/statusnet.php', 'statusnet_settings_post');
 }
 
 function statusnet_check_item_notification(App $a, &$notification_data)
@@ -706,7 +707,7 @@ function statusnet_post_hook(App $a, &$b)
 	}
 }
 
-function statusnet_plugin_admin_post(App $a)
+function statusnet_addon_admin_post(App $a)
 {
 	$sites = [];
 
@@ -738,7 +739,7 @@ function statusnet_plugin_admin_post(App $a)
 	$sites = Config::set('statusnet', 'sites', $sites);
 }
 
-function statusnet_plugin_admin(App $a, &$o)
+function statusnet_addon_admin(App $a, &$o)
 {
 	$sites = Config::get('statusnet', 'sites');
 	$sitesform = [];

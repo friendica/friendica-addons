@@ -1,24 +1,24 @@
 <?php
 /**
-* Name: IRC Chat Plugin
+* Name: IRC Chat Addon
 * Description: add an Internet Relay Chat chatroom on freenode
 * Version: 1.1
 * Author: tony baldwin <https://free-haven.org/profile/tony>
 * Author: Tobias Diekershoff <https://f.diekershoff.de/u/tobias>
 */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\PConfig;
 
 function irc_install() {
-	register_hook('app_menu', 'addon/irc/irc.php', 'irc_app_menu');
-	register_hook('plugin_settings', 'addon/irc/irc.php', 'irc_addon_settings');
-	register_hook('plugin_settings_post', 'addon/irc/irc.php', 'irc_addon_settings_post');
+	Addon::registerHook('app_menu', 'addon/irc/irc.php', 'irc_app_menu');
+	Addon::registerHook('addon_settings', 'addon/irc/irc.php', 'irc_addon_settings');
+	Addon::registerHook('addon_settings_post', 'addon/irc/irc.php', 'irc_addon_settings_post');
 }
 
 function irc_uninstall() {
-	unregister_hook('app_menu', 'addon/irc/irc.php', 'irc_app_menu');
-	unregister_hook('plugin_settings', 'addon/irc/irc.php', 'irc_addon_settings');
+	Addon::unregisterHook('app_menu', 'addon/irc/irc.php', 'irc_app_menu');
+	Addon::unregisterHook('addon_settings', 'addon/irc/irc.php', 'irc_addon_settings');
 
 }
 
@@ -120,7 +120,7 @@ return $o;
 
 }
 
-function irc_plugin_admin_post (&$a) {
+function irc_addon_admin_post (&$a) {
 	if(! is_site_admin())
 		return;
 
@@ -131,7 +131,7 @@ function irc_plugin_admin_post (&$a) {
 		info( t('IRC settings saved.') . EOL);
 	}
 }
-function irc_plugin_admin (&$a, &$o) {
+function irc_addon_admin (&$a, &$o) {
 	$sitechats = Config::get('irc','sitechats'); /* popular channels */
 	$autochans = Config::get('irc','autochans');  /* auto connect chans */
 	$t = get_markup_template( "admin.tpl", "addon/irc/" );

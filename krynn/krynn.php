@@ -9,30 +9,30 @@
  *
  *"My body was my sacrifice... for my magic. This damage is permanent." - Raistlin Majere
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 
 function krynn_install() {
 
 	/**
 	 *
-	 * Our demo plugin will attach in three places.
+	 * Our demo addon will attach in three places.
 	 * The first is just prior to storing a local post.
 	 *
 	 */
 
-	register_hook('post_local', 'addon/krynn/krynn.php', 'krynn_post_hook');
+	Addon::registerHook('post_local', 'addon/krynn/krynn.php', 'krynn_post_hook');
 
 	/**
 	 *
-	 * Then we'll attach into the plugin settings page, and also the
+	 * Then we'll attach into the addon settings page, and also the
 	 * settings post hook so that we can create and update
 	 * user preferences.
 	 *
 	 */
 
-	register_hook('plugin_settings', 'addon/krynn/krynn.php', 'krynn_settings');
-	register_hook('plugin_settings_post', 'addon/krynn/krynn.php', 'krynn_settings_post');
+	Addon::registerHook('addon_settings', 'addon/krynn/krynn.php', 'krynn_settings');
+	Addon::registerHook('addon_settings_post', 'addon/krynn/krynn.php', 'krynn_settings_post');
 
 	logger("installed krynn");
 }
@@ -48,9 +48,9 @@ function krynn_uninstall() {
 	 *
 	 */
 
-	unregister_hook('post_local',    'addon/krynn/krynn.php', 'krynn_post_hook');
-	unregister_hook('plugin_settings', 'addon/krynn/krynn.php', 'krynn_settings');
-	unregister_hook('plugin_settings_post', 'addon/krynn/krynn.php', 'krynn_settings_post');
+	Addon::unregisterHook('post_local',    'addon/krynn/krynn.php', 'krynn_post_hook');
+	Addon::unregisterHook('addon_settings', 'addon/krynn/krynn.php', 'krynn_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/krynn/krynn.php', 'krynn_settings_post');
 
 
 	logger("removed krynn");
@@ -65,7 +65,7 @@ function krynn_post_hook($a, &$item) {
 	 * An item was posted on the local system.
 	 * We are going to look for specific items:
 	 *      - A status post by a profile owner
-	 *      - The profile owner must have allowed our plugin
+	 *      - The profile owner must have allowed our addon
 	 *
 	 */
 
@@ -126,7 +126,7 @@ function krynn_settings_post($a,$post) {
 
 /**
  *
- * Called from the Plugin Setting form.
+ * Called from the addon Setting form.
  * Add our own settings info to the page.
  *
  */
@@ -162,7 +162,7 @@ function krynn_settings(&$a,&$s) {
     $s .= '<div class="settings-block">';
 	$s .= '<h3>' . t('Krynn Settings') . '</h3>';
 	$s .= '<div id="krynn-enable-wrapper">';
-	$s .= '<label id="krynn-enable-label" for="krynn-checkbox">' . t('Enable Krynn Plugin') . '</label>';
+	$s .= '<label id="krynn-enable-label" for="krynn-checkbox">' . t('Enable Krynn Addon') . '</label>';
 	$s .= '<input id="krynn-checkbox" type="checkbox" name="krynn" value="1" ' . $checked . '/>';
         $s .= '</div><div class="clear"></div></div>';
 	/* provide a submit button */

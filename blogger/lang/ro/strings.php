@@ -7,7 +7,7 @@ function string_plural_select_ro($n){
 ;
 $a->strings["Post to blogger"] = "Postați pe Blogger";
 $a->strings["Blogger Export"] = "Export pe Blogger ";
-$a->strings["Enable Blogger Post Plugin"] = "Activare Modul Postare pe Blogger ";
+$a->strings["Enable Blogger Post Addon"] = "Activare Modul Postare pe Blogger ";
 $a->strings["Blogger username"] = "Utilizator Blogger";
 $a->strings["Blogger password"] = "Parolă Blogger ";
 $a->strings["Blogger API URL"] = "URL Cheie API Blogger ";

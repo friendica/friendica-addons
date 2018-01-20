@@ -361,7 +361,7 @@ function saveMucAdmin() {
 	return closeMucAdmin();
 }
 
-// Plugin launcher
+// Addon launcher
 function launchMucAdmin() {
 	// Click events
 	$('#mucadmin .bottom .finish').click(function() {

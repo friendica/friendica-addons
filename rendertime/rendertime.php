@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * Name: rendertime
  * Description: Shows the time that was needed to render the current page
@@ -8,17 +6,17 @@
  * Author: Michael Vvogel <http://pirati.ca/profile/heluecht>
  *
  */
-
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 
 function rendertime_install() {
-	register_hook('page_end', 'addon/rendertime/rendertime.php', 'rendertime_page_end');
+	Addon::registerHook('page_end', 'addon/rendertime/rendertime.php', 'rendertime_page_end');
 }
 
 
 function rendertime_uninstall() {
-	unregister_hook('init_1', 'addon/rendertime/rendertime.php', 'rendertime_init_1');
-	unregister_hook('page_end', 'addon/rendertime/rendertime.php', 'rendertime_page_end');
+	Addon::unregisterHook('init_1', 'addon/rendertime/rendertime.php', 'rendertime_init_1');
+	Addon::unregisterHook('page_end', 'addon/rendertime/rendertime.php', 'rendertime_page_end');
 }
 
 function rendertime_init_1(&$a) {

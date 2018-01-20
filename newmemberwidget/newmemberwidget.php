@@ -9,14 +9,15 @@
 
 require_once('include/bbcode.php');
 
+use Friendica\Core\Addon;
 use Friendica\Core\Config;
 
 function newmemberwidget_install () {
-    register_hook( 'network_mod_init', 'addon/newmemberwidget/newmemberwidget.php', 'newmemberwidget_network_mod_init');
+    Addon::registerHook( 'network_mod_init', 'addon/newmemberwidget/newmemberwidget.php', 'newmemberwidget_network_mod_init');
     logger('newmemberwidget installed');
 }
 function newmemberwidget_uninstall () {
-    unregister_hook( 'network_mod_init', 'addon/newmemberwidget/newmemberwidget.php', 'newmemberwidget_network_mod_init');
+    Addon::unregisterHook( 'network_mod_init', 'addon/newmemberwidget/newmemberwidget.php', 'newmemberwidget_network_mod_init');
 }
 
 function newmemberwidget_network_mod_init ( $a, $b) {
@@ -36,7 +37,7 @@ function newmemberwidget_network_mod_init ( $a, $b) {
     }
 }
 
-function newmemberwidget_plugin_admin_post( &$a ) {
+function newmemberwidget_addon_admin_post( &$a ) {
     $ft = ((x($_POST, 'freetext')) ? trim($_POST['freetext']) : "");
     $lsn = ((x($_POST, 'localsupportname')) ? notags(trim($_POST['localsupportname'])) : "");
     $gs = intval($_POST['linkglobalsupport']);
@@ -47,7 +48,7 @@ function newmemberwidget_plugin_admin_post( &$a ) {
     Config::set ( 'newmemberwidget', 'localsupport',       trim($lsn));
 }
 
-function newmemberwidget_plugin_admin(&$a, &$o){
+function newmemberwidget_addon_admin(&$a, &$o){
     $t = get_markup_template('admin.tpl','addon/newmemberwidget');
     $o = replace_macros($t, [
 	'$submit' => t('Save Settings'),

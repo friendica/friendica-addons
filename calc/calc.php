@@ -5,14 +5,14 @@
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
-
+use Friendica\Core\Addon;
 
 function calc_install() {
-	register_hook('app_menu', 'addon/calc/calc.php', 'calc_app_menu');
+	Addon::registerHook('app_menu', 'addon/calc/calc.php', 'calc_app_menu');
 }
 
 function calc_uninstall() {
-	unregister_hook('app_menu', 'addon/calc/calc.php', 'calc_app_menu');
+	Addon::unregisterHook('app_menu', 'addon/calc/calc.php', 'calc_app_menu');
 
 }
 

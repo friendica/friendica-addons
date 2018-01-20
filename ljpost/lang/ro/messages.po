@@ -28,7 +28,7 @@ msgid "LiveJournal Post Settings"
 msgstr "Configurări Postări LiveJournal"
 
 #: ljpost.php:72
-msgid "Enable LiveJournal Post Plugin"
+msgid "Enable LiveJournal Post Addon"
 msgstr "Activare Modul Postare LiveJournal"
 
 #: ljpost.php:77
