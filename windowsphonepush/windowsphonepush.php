@@ -470,5 +470,5 @@ function windowsphonepush_login(App $a)
 	require_once 'include/security.php';
 	authenticate_success($record);
 	$_SESSION["allow_api"] = true;
-	call_hooks('logged_in', $a->user);
+	Addon::callHooks('logged_in', $a->user);
 }
