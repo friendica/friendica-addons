@@ -96,7 +96,7 @@ function show_button($a, &$b) {
 
 	// Call hooks to get aditional smileies from other addons
 	$params = ['texts' => $texts, 'icons' => $icons, 'string' => ""]; //changed
-	call_hooks('smilie', $params);
+	Addon::callHooks('smilie', $params);
 
 	//Generate html for smiley list
 	$s = "<table class=\"smiley-preview\"><tr>\n\t";
