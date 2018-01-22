@@ -6,6 +6,7 @@
  * Author: Mike Macgirvin <mike@macgirvin.com>
  */
 use Friendica\Core\Addon;
+use Friendica\Core\L10n;
 
 function buglink_install()
 {
