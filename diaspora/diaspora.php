@@ -12,6 +12,7 @@ require_once("addon/diaspora/Diaspora_Connection.php");
 use Friendica\Core\Addon;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBM;
+use Friendica\Model\Queue;
 
 function diaspora_install() {
 	Addon::registerHook('post_local',           'addon/diaspora/diaspora.php', 'diaspora_post_local');
@@ -53,8 +54,6 @@ function diaspora_queue_hook(&$a,&$b) {
 	if(! count($qi))
 		return;
 
-	require_once('include/queue_fn.php');
-
 	foreach($qi as $x) {
 		if($x['network'] !== NETWORK_DIASPORA2)
 			continue;
@@ -94,20 +93,21 @@ function diaspora_queue_hook(&$a,&$b) {
 				$conn->provider = $hostname;
 				$conn->postStatusMessage($post, $aspect);
 
-                                logger('diaspora_queue: send '.$userdata['uid'].' success', LOGGER_DEBUG);
+				logger('diaspora_queue: send '.$userdata['uid'].' success', LOGGER_DEBUG);
 
-                                $success = true;
+				$success = true;
 
-                                remove_queue_item($x['id']);
+				Queue::removeItem($x['id']);
 			} catch (Exception $e) {
 				logger("diaspora_queue: Send ".$userdata['uid']." failed: ".$e->getMessage(), LOGGER_DEBUG);
 			}
-		} else
+		} else {
 			logger('diaspora_queue: send '.$userdata['uid'].' missing username or password', LOGGER_DEBUG);
+		}
 
 		if (!$success) {
 			logger('diaspora_queue: delayed');
-			update_queue_time($x['id']);
+			Queue::updateTime($x['id']);
 		}
 	}
 }
@@ -366,8 +366,8 @@ function diaspora_send(&$a,&$b) {
 				$a->contact = $r[0]["id"];
 
 			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $body]);
-			require_once('include/queue_fn.php');
-			add_to_queue($a->contact,NETWORK_DIASPORA2,$s);
+			
+			Queue::add($a->contact, NETWORK_DIASPORA2, $s);
 			notice(t('Diaspora post failed. Queued for retry.').EOL);
 		}
 	}

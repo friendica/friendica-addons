@@ -69,6 +69,7 @@ use Friendica\Core\Worker;
 use Friendica\Model\GContact;
 use Friendica\Model\Group;
 use Friendica\Model\Photo;
+use Friendica\Model\Queue;
 use Friendica\Model\User;
 use Friendica\Object\Image;
 
@@ -627,8 +628,9 @@ function twitter_post_hook(App $a, &$b)
 				}
 
 				$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $post]);
-				require_once 'include/queue_fn.php';
-				add_to_queue($a->contact, NETWORK_TWITTER, $s);
+				
+				Queue::add($a->contact, NETWORK_TWITTER, $s);
+
 				notice(t('Twitter post failed. Queued for retry.') . EOL);
 			} elseif ($iscomment) {
 				logger('twitter_post: Update extid ' . $result->id_str . " for post id " . $b['id']);
@@ -925,8 +927,6 @@ function twitter_queue_hook(App $a, &$b)
 		return;
 	}
 
-	require_once 'include/queue_fn.php';
-
 	foreach ($qi as $x) {
 		if ($x['network'] !== NETWORK_TWITTER) {
 			continue;
@@ -972,7 +972,7 @@ function twitter_queue_hook(App $a, &$b)
 				logger('twitter_queue: Send to Twitter failed: "' . print_r($result->errors, true) . '"');
 			} else {
 				$success = true;
-				remove_queue_item($x['id']);
+				Queue::removeItem($x['id']);
 			}
 		} else {
 			logger("twitter_queue: Error getting tokens for user " . $user['uid']);
@@ -980,7 +980,7 @@ function twitter_queue_hook(App $a, &$b)
 
 		if (!$success) {
 			logger('twitter_queue: delayed');
-			update_queue_time($x['id']);
+			Queue::updateTime($x['id']);
 		}
 	}
 }
