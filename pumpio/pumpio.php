@@ -14,6 +14,7 @@ use Friendica\Model\GContact;
 use Friendica\Model\Group;
 use Friendica\Model\User;
 use Friendica\Model\Item;
+use Friendica\Model\Queue;
 
 require 'addon/pumpio/oauth/http.php';
 require 'addon/pumpio/oauth/oauth_client.php';
@@ -551,11 +552,10 @@ function pumpio_send(&$a,&$b) {
 				$a->contact = $r[0]["id"];
 
 			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $params]);
-			require_once('include/queue_fn.php');
-			add_to_queue($a->contact,NETWORK_PUMPIO,$s);
+			
+			Queue::add($a->contact, NETWORK_PUMPIO, $s);
 			notice(t('Pump.io post failed. Queued for retry.').EOL);
 		}
-
 	}
 }
 
@@ -628,8 +628,8 @@ function pumpio_action(&$a, $uid, $uri, $action, $content = "") {
 			$a->contact = $r[0]["id"];
 
 		$s = serialize(['url' => $url, 'item' => $orig_post["id"], 'post' => $params]);
-		require_once('include/queue_fn.php');
-		add_to_queue($a->contact,NETWORK_PUMPIO,$s);
+		
+		Queue::add($a->contact, NETWORK_PUMPIO, $s);
 		notice(t('Pump.io like failed. Queued for retry.').EOL);
 	}
 }
@@ -1433,8 +1433,6 @@ function pumpio_queue_hook(&$a,&$b) {
 	if(! count($qi))
 		return;
 
-	require_once('include/queue_fn.php');
-
 	foreach($qi as $x) {
 		if($x['network'] !== NETWORK_PUMPIO)
 			continue;
@@ -1494,7 +1492,7 @@ function pumpio_queue_hook(&$a,&$b) {
 						intval($z['item'])
 					);
 				}
-				remove_queue_item($x['id']);
+				Queue::removeItem($x['id']);
 			} else
 				logger('pumpio_queue: send '.$username.': '.$url.' general error: ' . print_r($user,true));
 		} else
@@ -1502,7 +1500,7 @@ function pumpio_queue_hook(&$a,&$b) {
 
 		if (!$success) {
 			logger('pumpio_queue: delayed');
-			update_queue_time($x['id']);
+			Queue::updateTime($x['id']);
 		}
 	}
 }
