@@ -7,6 +7,7 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\L10n;
 use Friendica\Module\Login;
 
 require_once('mod/community.php');
@@ -24,12 +25,12 @@ function communityhome_uninstall() {
 
 function communityhome_getopts() {
 	return [
-		'hidelogin'=>t('Hide login form'),
-		'showlastusers'=>t('Show last new users'),
-		'showactiveusers'=>t('Show last active users'),
-		'showlastphotos'=>t('Show last photos'),
-		'showlastlike'=>t('Show last liked items'),
-		'showcommunitystream'=>t('Show community stream')
+		'hidelogin'=>L10n::t('Hide login form'),
+		'showlastusers'=>L10n::t('Show last new users'),
+		'showactiveusers'=>L10n::t('Show last active users'),
+		'showlastphotos'=>L10n::t('Show last photos'),
+		'showlastlike'=>L10n::t('Show last liked items'),
+		'showcommunitystream'=>L10n::t('Show community stream')
 	];
 }
 
@@ -39,7 +40,7 @@ function communityhome_addon_admin(&$a, &$o)
 
 	$opts = communityhome_getopts();
 	$ctx = [
-		'$submit' => t("Submit"),
+		'$submit' => L10n::t("Submit"),
 		'$fields' => [],
 	];
 
@@ -66,25 +67,25 @@ function communityhome_home(&$a, &$o){
 
 	if (!Config::get('communityhome','hidelogin')){
 		$aside = [
-			'$tab_1' => t('Login'),
-			'$tab_2' => t('OpenID'),
+			'$tab_1' => L10n::t('Login'),
+			'$tab_2' => L10n::t('OpenID'),
 			'$noOid' => Config::get('system','no_openid'),
 		];
 
 		// login form
-		$aside['$login_title'] =  t('Login');
+		$aside['$login_title'] =  L10n::t('Login');
 		$aside['$login_form'] = Login::form($a->query_string, $a->config['register_policy'] == REGISTER_CLOSED ? false : true);
 	} else  {
 		$aside = [
-			//'$tab_1' => t('Login'),
-			//'$tab_2' => t('OpenID'),
+			//'$tab_1' => L10n::t('Login'),
+			//'$tab_2' => L10n::t('OpenID'),
 			//'$noOid' => Config::get('system','no_openid'),
 		];
 	}
 
 	// last 12 users
 	if (Config::get('communityhome','showlastusers')){
-		$aside['$lastusers_title'] = t('Latest users');
+		$aside['$lastusers_title'] = L10n::t('Latest users');
 		$aside['$lastusers_items'] = [];
 		$sql_extra = "";
 		$publish = (Config::get('system','publish_all') ? '' : " AND `publish` = 1 " );
@@ -129,7 +130,7 @@ function communityhome_home(&$a, &$o){
 				ORDER BY `items` DESC,`contacts` DESC
 				LIMIT 0,10");
 		if($r && count($r)) {
-			$aside['$activeusers_title']  = t('Most active users');
+			$aside['$activeusers_title']  = L10n::t('Most active users');
 			$aside['$activeusers_items']  = [];
 
 			$photo = 'thumb';
@@ -147,7 +148,7 @@ function communityhome_home(&$a, &$o){
 	}
 	// last 12 photos
 	if (Config::get('communityhome','showlastphotos')){
-		$aside['$photos_title'] = t('Latest photos');
+		$aside['$photos_title'] = L10n::t('Latest photos');
 		$aside['$photos_items'] = [];
 		$r = q("SELECT `photo`.`id`, `photo`.`resource-id`, `photo`.`scale`, `photo`.`desc`, `user`.`nickname`, `user`.`username` FROM
 					(SELECT `resource-id`, MAX(`scale`) as maxscale FROM `photo`
@@ -160,8 +161,8 @@ function communityhome_home(&$a, &$o){
 					AND `user`.`hidewall` = 0
 					ORDER BY `photo`.`edited` DESC
 					LIMIT 0, 12",
-					dbesc(t('Contact Photos')),
-					dbesc(t('Profile Photos'))
+					dbesc(L10n::t('Contact Photos')),
+					dbesc(L10n::t('Profile Photos'))
 					);
 
 
@@ -187,7 +188,7 @@ function communityhome_home(&$a, &$o){
 
 	// last 10 liked items
 	if (Config::get('communityhome','showlastlike')){
-		$aside['$like_title'] = t('Latest likes');
+		$aside['$like_title'] = L10n::t('Latest likes');
 		$aside['$like_items'] = [];
 		$r = q("SELECT `T1`.`created`, `T1`.`liker`, `T1`.`liker-link`, `item`.* FROM
 				(SELECT `parent-uri`, `created`, `author-name` AS `liker`,`author-link` AS `liker-link`
@@ -209,24 +210,24 @@ function communityhome_home(&$a, &$o){
 				case 'http://activitystrea.ms/schema/1.0/post':
 					switch ($rr['object-type']){
 						case 'http://activitystrea.ms/schema/1.0/event':
-							$post_type = t('event');
+							$post_type = L10n::t('event');
 							break;
 						default:
-							$post_type = t('status');
+							$post_type = L10n::t('status');
 					}
 					break;
 				default:
 					if ($rr['resource-id']){
-						$post_type = t('photo');
+						$post_type = L10n::t('photo');
 						$m=[];	preg_match("/\[url=([^]]*)\]/", $rr['body'], $m);
 						$rr['plink'] = $m[1];
 					} else {
-						$post_type = t('status');
+						$post_type = L10n::t('status');
 					}
 			}
 			$plink = '<a href="' . $rr['plink'] . '">' . $post_type . '</a>';
 
-			$aside['$like_items'][] = sprintf( t('%1$s likes %2$s\'s %3$s'), $author, $objauthor, $plink);
+			$aside['$like_items'][] = sprintf(L10n::t('%1$s likes %2$s\'s %3$s'), $author, $objauthor, $plink);
 
 		}
 	}
@@ -235,7 +236,7 @@ function communityhome_home(&$a, &$o){
 	$tpl = get_markup_template('communityhome.tpl', 'addon/communityhome/');
 	$a->page['aside'] = replace_macros($tpl, $aside);
 
-	$o = '<h1>' . ((x($a->config,'sitename')) ? sprintf( t("Welcome to %s") ,$a->config['sitename']) : "" ) . '</h1>';
+	$o = '<h1>' . ((x($a->config,'sitename')) ? sprintf(L10n::t("Welcome to %s") ,$a->config['sitename']) : "" ) . '</h1>';
 
 	if(file_exists('home.html'))
  		$o = file_get_contents('home.html');

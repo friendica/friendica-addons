@@ -8,6 +8,7 @@
  *
  */
 use Friendica\Core\Addon;
+use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 
 function gnot_install() {
@@ -46,7 +47,7 @@ function gnot_settings_post($a,$post) {
 		return;
 
 	PConfig::set(local_user(),'gnot','enable',intval($_POST['gnot']));
-	info( t('Gnot settings updated.') . EOL);
+	info(L10n::t('Gnot settings updated.') . EOL);
 }
 
 
@@ -77,16 +78,16 @@ function gnot_settings(&$a,&$s) {
 	/* Add some HTML to the existing form */
 
 	$s .= '<div class="settings-block">';
-	$s .= '<h3>' . t('Gnot Settings') . '</h3>';
+	$s .= '<h3>' . L10n::t('Gnot Settings') . '</h3>';
 	$s .= '<div id="gnot-wrapper">';
-	$s .= '<div id="gnot-desc">' . t("Allows threading of email comment notifications on Gmail and anonymising the subject line.") . '</div>';
-	$s .= '<label id="gnot-label" for="gnot">' . t('Enable this addon?') . '</label>';
+	$s .= '<div id="gnot-desc">' . L10n::t("Allows threading of email comment notifications on Gmail and anonymising the subject line.") . '</div>';
+	$s .= '<label id="gnot-label" for="gnot">' . L10n::t('Enable this addon?') . '</label>';
 	$s .= '<input id="gnot-input" type="checkbox" name="gnot" value="1"'.  $gnot_checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
 	/* provide a submit button */
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="gnot-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="gnot-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 
 }
 
@@ -95,6 +96,5 @@ function gnot_enotify_mail(&$a,&$b) {
 	if((! $b['uid']) || (! intval(PConfig::get($b['uid'], 'gnot','enable'))))
 		return;
 	if($b['type'] == NOTIFY_COMMENT)
-		$b['subject'] = sprintf( t('[Friendica:Notify] Comment to conversation #%d'), $b['parent']);
+		$b['subject'] = sprintf(L10n::t('[Friendica:Notify] Comment to conversation #%d'), $b['parent']);
 }
-

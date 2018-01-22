@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: Tumblr Post Connector
  * Description: Post to Tumblr
@@ -8,11 +7,12 @@
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
 
-require_once('library/OAuth1.php');
-require_once('addon/tumblr/tumblroauth/tumblroauth.php');
+require_once 'library/OAuth1.php';
+require_once 'addon/tumblr/tumblroauth/tumblroauth.php';
 
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 
 function tumblr_install() {
@@ -36,7 +36,7 @@ function tumblr_module() {}
 function tumblr_content(&$a) {
 
 	if(! local_user()) {
-		notice( t('Permission denied.') . EOL);
+		notice(L10n::t('Permission denied.') . EOL);
 		return '';
 	}
 
@@ -62,10 +62,10 @@ function tumblr_addon_admin(&$a, &$o){
         $t = get_markup_template( "admin.tpl", "addon/tumblr/" );
 
         $o = replace_macros($t, [
-                '$submit' => t('Save Settings'),
+                '$submit' => L10n::t('Save Settings'),
                                                                 // name, label, value, help, [extra values]
-                '$consumer_key' => ['consumer_key', t('Consumer Key'),  Config::get('tumblr', 'consumer_key' ), ''],
-                '$consumer_secret' => ['consumer_secret', t('Consumer Secret'),  Config::get('tumblr', 'consumer_secret' ), ''],
+                '$consumer_key' => ['consumer_key', L10n::t('Consumer Key'),  Config::get('tumblr', 'consumer_key' ), ''],
+                '$consumer_secret' => ['consumer_secret', L10n::t('Consumer Secret'),  Config::get('tumblr', 'consumer_secret' ), ''],
         ]);
 }
 
@@ -74,7 +74,7 @@ function tumblr_addon_admin_post(&$a){
         $consumer_secret =       ((x($_POST,'consumer_secret'))   ? notags(trim($_POST['consumer_secret'])): '');
         Config::set('tumblr','consumer_key',$consumer_key);
         Config::set('tumblr','consumer_secret',$consumer_secret);
-        info( t('Settings updated.'). EOL );
+        info(L10n::t('Settings updated.'). EOL);
 }
 
 function tumblr_connect($a) {
@@ -165,8 +165,8 @@ function tumblr_callback($a) {
 	PConfig::set(local_user(), "tumblr", "oauth_token", $access_token['oauth_token']);
 	PConfig::set(local_user(), "tumblr", "oauth_token_secret", $access_token['oauth_token_secret']);
 
-	$o = t("You are now authenticated to tumblr.");
-	$o .= '<br /><a href="'.$a->get_baseurl().'/settings/connectors">'.t("return to the connector page").'</a>';
+	$o = L10n::t("You are now authenticated to tumblr.");
+	$o .= '<br /><a href="'.$a->get_baseurl().'/settings/connectors">'.L10n::t("return to the connector page").'</a>';
 	return($o);
 }
 
@@ -179,7 +179,7 @@ function tumblr_jot_nets(&$a,&$b) {
 		$tmbl_defpost = PConfig::get(local_user(),'tumblr','post_by_default');
 		$selected = ((intval($tmbl_defpost) == 1) ? ' checked="checked" ' : '');
 		$b .= '<div class="profile-jot-net"><input type="checkbox" name="tumblr_enable"' . $selected . ' value="1" /> '
-			. t('Post to Tumblr') . '</div>';
+			. L10n::t('Post to Tumblr') . '</div>';
 	}
 }
 
@@ -206,24 +206,24 @@ function tumblr_settings(&$a,&$s) {
 	/* Add some HTML to the existing form */
 
 	$s .= '<span id="settings_tumblr_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_tumblr_expanded\'); openClose(\'settings_tumblr_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/tumblr.png" /><h3 class="connector">'. t('Tumblr Export').'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/tumblr.png" /><h3 class="connector">'. L10n::t('Tumblr Export').'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_tumblr_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_tumblr_expanded\'); openClose(\'settings_tumblr_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/tumblr.png" /><h3 class="connector">'. t('Tumblr Export').'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/tumblr.png" /><h3 class="connector">'. L10n::t('Tumblr Export').'</h3>';
 	$s .= '</span>';
 
 	$s .= '<div id="tumblr-username-wrapper">';
-	$s .= '<a href="'.$a->get_baseurl().'/tumblr/connect">'.t("(Re-)Authenticate your tumblr page").'</a>';
+	$s .= '<a href="'.$a->get_baseurl().'/tumblr/connect">'.L10n::t("(Re-)Authenticate your tumblr page").'</a>';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="tumblr-enable-wrapper">';
-	$s .= '<label id="tumblr-enable-label" for="tumblr-checkbox">' . t('Enable Tumblr Post Addon') . '</label>';
+	$s .= '<label id="tumblr-enable-label" for="tumblr-checkbox">' . L10n::t('Enable Tumblr Post Addon') . '</label>';
 	$s .= '<input id="tumblr-checkbox" type="checkbox" name="tumblr" value="1" ' . $checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="tumblr-bydefault-wrapper">';
-	$s .= '<label id="tumblr-bydefault-label" for="tumblr-bydefault">' . t('Post to Tumblr by default') . '</label>';
+	$s .= '<label id="tumblr-bydefault-label" for="tumblr-bydefault">' . L10n::t('Post to Tumblr by default') . '</label>';
 	$s .= '<input id="tumblr-bydefault" type="checkbox" name="tumblr_bydefault" value="1" ' . $def_checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
@@ -243,7 +243,7 @@ function tumblr_settings(&$a,&$s) {
 
 		$blogs = [];
 
-		$s .= '<label id="tumblr-page-label" for="tumblr-page">' . t('Post to page:') . '</label>';
+		$s .= '<label id="tumblr-page-label" for="tumblr-page">' . L10n::t('Post to page:') . '</label>';
 		$s .= '<select name="tumblr_page" id="tumblr-page">';
 		foreach($userinfo->response->user->blogs as $blog) {
 			$blogurl = substr(str_replace(["http://", "https://"], ["", ""], $blog->url), 0, -1);
@@ -255,12 +255,12 @@ function tumblr_settings(&$a,&$s) {
 
 		$s .= "</select>";
 	} else
-		$s .= t("You are not authenticated to tumblr");
+		$s .= L10n::t("You are not authenticated to tumblr");
 	$s .= '</div><div class="clear"></div>';
 
 	/* provide a submit button */
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="tumblr-submit" name="tumblr-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="tumblr-submit" name="tumblr-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 
 }
 

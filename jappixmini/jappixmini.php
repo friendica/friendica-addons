@@ -65,6 +65,7 @@
 use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Model\User;
 
@@ -326,58 +327,58 @@ function jappixmini_settings(App $a, &$s)
 	}
 
 	$s .= '<span id="settings_jappixmini_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_jappixmini_expanded\'); openClose(\'settings_jappixmini_inflated\');">';
-	$s .= '<h3>' . t('Jappix Mini') . '</h3>';
+	$s .= '<h3>' . L10n::t('Jappix Mini') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_jappixmini_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_jappixmini_expanded\'); openClose(\'settings_jappixmini_inflated\');">';
-	$s .= '<h3>' . t('Jappix Mini') . '</h3>';
+	$s .= '<h3>' . L10n::t('Jappix Mini') . '</h3>';
 	$s .= '</span>';
 
-	$s .= '<label for="jappixmini-activate">' . t('Activate addon') . '</label>';
+	$s .= '<label for="jappixmini-activate">' . L10n::t('Activate addon') . '</label>';
 	$s .= ' <input id="jappixmini-activate" type="checkbox" name="jappixmini-activate" value="1"' . $activate . ' />';
 	$s .= '<br />';
-	$s .= '<label for"jappixmini-dont-insertchat">' . t('Do <em>not</em> insert the Jappixmini Chat-Widget into the webinterface') . '</label>';
+	$s .= '<label for"jappixmini-dont-insertchat">' . L10n::t('Do <em>not</em> insert the Jappixmini Chat-Widget into the webinterface') . '</label>';
 	$s .= '<input id="jappixmini-dont-insertchat" type="checkbox" name="jappixmini-dont-insertchat" value="1"' . $insertchat . ' />';
 	$s .= '<br />';
-	$s .= '<label for="jappixmini-username">' . t('Jabber username') . '</label>';
+	$s .= '<label for="jappixmini-username">' . L10n::t('Jabber username') . '</label>';
 	$s .= ' <input id="jappixmini-username" type="text" name="jappixmini-username" value="' . $username . '" />';
 	$s .= '<br />';
-	$s .= '<label for="jappixmini-server">' . t('Jabber server') . '</label>';
+	$s .= '<label for="jappixmini-server">' . L10n::t('Jabber server') . '</label>';
 	$s .= ' <input id="jappixmini-server" type="text" name="jappixmini-server" value="' . $server . '" />';
 	$s .= '<br />';
 
 	if ($defaultbosh == "") {
-		$s .= '<label for="jappixmini-bosh">' . t('Jabber BOSH host') . '</label>';
+		$s .= '<label for="jappixmini-bosh">' . L10n::t('Jabber BOSH host') . '</label>';
 		$s .= ' <input id="jappixmini-bosh" type="text" name="jappixmini-bosh" value="' . $bosh . '" />';
 		$s .= '<br />';
 	}
 
-	$s .= '<label for="jappixmini-password">' . t('Jabber password') . '</label>';
+	$s .= '<label for="jappixmini-password">' . L10n::t('Jabber password') . '</label>';
 	$s .= ' <input type="hidden" id="jappixmini-password" name="jappixmini-encrypted-password" value="' . $password . '" />';
 	$s .= ' <input id="jappixmini-clear-password" type="password" value="" onchange="jappixmini_set_password();" />';
 	$s .= '<br />';
 	$onchange = "document.getElementById('jappixmini-friendica-password').disabled = !this.checked;jappixmini_set_password();";
-	$s .= '<label for="jappixmini-encrypt">' . t('Encrypt Jabber password with Friendica password (recommended)') . '</label>';
+	$s .= '<label for="jappixmini-encrypt">' . L10n::t('Encrypt Jabber password with Friendica password (recommended)') . '</label>';
 	$s .= ' <input id="jappixmini-encrypt" type="checkbox" name="jappixmini-encrypt" onchange="' . $onchange . '" value="1"' . $encrypt_checked . ' />';
 	$s .= '<br />';
-	$s .= '<label for="jappixmini-friendica-password">' . t('Friendica password') . '</label>';
+	$s .= '<label for="jappixmini-friendica-password">' . L10n::t('Friendica password') . '</label>';
 	$s .= ' <input id="jappixmini-friendica-password" name="jappixmini-friendica-password" type="password" onchange="jappixmini_set_password();" value=""' . $encrypt_disabled . ' />';
 	$s .= '<br />';
-	$s .= '<label for="jappixmini-autoapprove">' . t('Approve subscription requests from Friendica contacts automatically') . '</label>';
+	$s .= '<label for="jappixmini-autoapprove">' . L10n::t('Approve subscription requests from Friendica contacts automatically') . '</label>';
 	$s .= ' <input id="jappixmini-autoapprove" type="checkbox" name="jappixmini-autoapprove" value="1"' . $autoapprove . ' />';
 	$s .= '<br />';
-	$s .= '<label for="jappixmini-autosubscribe">' . t('Subscribe to Friendica contacts automatically') . '</label>';
+	$s .= '<label for="jappixmini-autosubscribe">' . L10n::t('Subscribe to Friendica contacts automatically') . '</label>';
 	$s .= ' <input id="jappixmini-autosubscribe" type="checkbox" name="jappixmini-autosubscribe" value="1"' . $autosubscribe . ' />';
 	$s .= '<br />';
-	$s .= '<label for="jappixmini-purge">' . t('Purge internal list of jabber addresses of contacts') . '</label>';
+	$s .= '<label for="jappixmini-purge">' . L10n::t('Purge internal list of jabber addresses of contacts') . '</label>';
 	$s .= ' <input id="jappixmini-purge" type="checkbox" name="jappixmini-purge" value="1" />';
 	$s .= '<br />';
 	if ($info_text) {
 		$s .= '<br />Configuration help:<p style="margin-left:2em;">' . $info_text . '</p>';
 	}
 	$s .= '<br />Status:<p style="margin-left:2em;">Addon knows ' . $address_cnt . ' Jabber addresses of ' . $contact_cnt . ' Friendica contacts (takes some time, usually 10 minutes, to update).</p>';
-	$s .= '<input type="submit" name="jappixmini-submit" value="' . t('Save Settings') . '" />';
-	$s .= ' <input type="button" value="' . t('Add contact') . '" onclick="jappixmini_addon_subscribe();" />';
+	$s .= '<input type="submit" name="jappixmini-submit" value="' . L10n::t('Save Settings') . '" />';
+	$s .= ' <input type="button" value="' . L10n::t('Add contact') . '" onclick="jappixmini_addon_subscribe();" />';
 
 	$s .= '</div>';
 

@@ -1,6 +1,7 @@
 <?php
 
 use Friendica\Core\Addon;
+use Friendica\Core\L10n;
 use Friendica\Module\Login;
 use Friendica\Util\Emailer;
 
@@ -203,7 +204,7 @@ function dav_content()
 			}
 		}
 	} catch (DAVVersionMismatchException $e) {
-		$x = t("The current version of this addon has not been set up correctly. Please contact the system administrator of your installation of friendica to fix this.");
+		$x = L10n::t("The current version of this addon has not been set up correctly. Please contact the system administrator of your installation of friendica to fix this.");
 	}
 	return $x;
 }
@@ -240,10 +241,10 @@ function dav_event_updated_hook(&$a, &$b)
 function dav_profile_tabs_hook(&$a, &$b)
 {
 	$b["tabs"][] = [
-		"label" => t('Calendar'),
+		"label" => L10n::t('Calendar'),
 		"url"   => $a->get_baseurl() . "/dav/wdcal/",
 		"sel"   => "",
-		"title" => t('Extended calendar with CalDAV-support'),
+		"title" => L10n::t('Extended calendar with CalDAV-support'),
 	];
 }
 
@@ -281,10 +282,10 @@ function dav_cron(&$a, &$b)
 					$text_html = str_replace($find, $repl, "Hi %to%!<br>\n<br>\nThe event \"%event%\" is about to begin:<br>\n<a href='" . "%url%" . "'>%url%</a>");
 					$params    = [
 						'fromName'             => FRIENDICA_PLATFORM,
-						'fromEmail'            => t('noreply') . '@' . $a->get_hostname(),
-						'replyTo'              => t('noreply') . '@' . $a->get_hostname(),
+						'fromEmail'            => L10n::t('noreply') . '@' . $a->get_hostname(),
+						'replyTo'              => L10n::t('noreply') . '@' . $a->get_hostname(),
 						'toEmail'              => $user["email"],
-						'messageSubject'       => t("Notification: " . $event[0]["Summary"]),
+						'messageSubject'       => L10n::t("Notification: " . $event[0]["Summary"]),
 						'htmlVersion'          => $text_html,
 						'textVersion'          => $text_text,
 						'additionalMailHeader' => "",
@@ -311,15 +312,15 @@ function dav_addon_admin_post(&$a = null, &$o = null)
 
 	if (isset($_REQUEST["install"])) {
 		$errs = dav_create_tables();
-		if (count($errs) == 0) info(t('The database tables have been installed.') . EOL);
-		else notice(t("An error occurred during the installation.") . EOL);
+		if (count($errs) == 0) info(L10n::t('The database tables have been installed.') . EOL);
+		else notice(L10n::t("An error occurred during the installation.") . EOL);
 	}
 	if (isset($_REQUEST["upgrade"])) {
 		$errs = dav_upgrade_tables();
 		if (count($errs) == 0) {
 			renderAllCalDavEntries();
-			info(t('The database tables have been updated.') . EOL);
-		} else notice(t("An error occurred during the update.") . EOL);
+			info(L10n::t('The database tables have been updated.') . EOL);
+		} else notice(L10n::t("An error occurred during the update.") . EOL);
 	}
 }
 
@@ -335,31 +336,31 @@ function dav_addon_admin(&$a, &$o)
 	$dbstatus = dav_check_tables();
 
 	$o = '<input type="hidden" name="form_security_token" value="' . get_form_security_token("dav_admin_save") . '">';
-	$o .= '<i>' . t("No system-wide settings yet.") . '</i><br><br>';
+	$o .= '<i>' . L10n::t("No system-wide settings yet.") . '</i><br><br>';
 
 
-	$o .= '<h3>' . t('Database status') . '</h3>';
+	$o .= '<h3>' . L10n::t('Database status') . '</h3>';
 	switch ($dbstatus) {
 		case 0:
-			$o .= t('Installed');
+			$o .= L10n::t('Installed');
 			break;
 		case 1:
 		case 2:
-			$o .= "<strong>" . t('Upgrade needed') . "</strong><br>" . t("Please back up all calendar data (the tables beginning with dav_*) before proceeding. While all calendar events <i>should</i> be converted to the new database structure, it's always safe to have a backup. Below, you can have a look at the database-queries that will be made when pressing the 'update'-button.") . "<br><br><input type='submit' name='upgrade' value='" . t('Upgrade') . "'>";
+			$o .= "<strong>" . L10n::t('Upgrade needed') . "</strong><br>" . L10n::t("Please back up all calendar data (the tables beginning with dav_*) before proceeding. While all calendar events <i>should</i> be converted to the new database structure, it's always safe to have a backup. Below, you can have a look at the database-queries that will be made when pressing the 'update'-button.") . "<br><br><input type='submit' name='upgrade' value='" . L10n::t('Upgrade') . "'>";
 			break;
 		case -1:
-			$o .= t('Not installed') . "<br><br><input type='submit' name='install' value='" . t('Install') . "'>";
+			$o .= L10n::t('Not installed') . "<br><br><input type='submit' name='install' value='" . L10n::t('Install') . "'>";
 			break;
 		case -2:
 		default:
-			$o .= t('Unknown') . "<br><br>" . t("Something really went wrong. I cannot recover from this state automatically, sorry. Please go to the database backend, back up the data, and delete all tables beginning with 'dav_' manually. Afterwards, this installation routine should be able to reinitialize the tables automatically.");
+			$o .= L10n::t('Unknown') . "<br><br>" . L10n::t("Something really went wrong. I cannot recover from this state automatically, sorry. Please go to the database backend, back up the data, and delete all tables beginning with 'dav_' manually. Afterwards, this installation routine should be able to reinitialize the tables automatically.");
 			break;
 	}
 	$o .= "<br><br>";
 
-	$o .= "<h3>" . t("Troubleshooting") . "</h3>";
-	$o .= "<h4>" . t("Manual creation of the database tables:") . "</h4>";
-	$o .= "<a href='#' onClick='\$(\"#sqlstatements\").show(); return false;'>" . t("Show SQL-statements") . "</a><blockquote style='display: none;' id='sqlstatements'><pre>";
+	$o .= "<h3>" . L10n::t("Troubleshooting") . "</h3>";
+	$o .= "<h4>" . L10n::t("Manual creation of the database tables:") . "</h4>";
+	$o .= "<a href='#' onClick='\$(\"#sqlstatements\").show(); return false;'>" . L10n::t("Show SQL-statements") . "</a><blockquote style='display: none;' id='sqlstatements'><pre>";
 	switch ($dbstatus) {
 		case 1: case 2:
 			$tables = dav_get_update_statements($dbstatus);

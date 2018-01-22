@@ -1,5 +1,7 @@
 <?php
 
+use Friendica\Core\L10n;
+
 function like_widget_name() {
 	return "Shows likes";
 }
@@ -56,10 +58,10 @@ function like_widget_content(&$a, $conf){
 	$t = get_markup_template("widget_like.tpl", "addon/widgets/");
 	$o .= replace_macros($t, [
 		'$like'		=> $likes,
-		'$strlike'	=> sprintf( tt("%d person likes this", "%d people like this", $likes), $likes),
+		'$strlike'	=> sprintf(L10n::tt("%d person likes this", "%d people like this", $likes), $likes),
 
 		'$dislike'	=> $dislikes,
-		'$strdislike'=> sprintf( tt("%d person doesn't like this", "%d people don't like this", $dislikes), $dislikes),
+		'$strdislike'=> sprintf(L10n::tt("%d person doesn't like this", "%d people don't like this", $dislikes), $dislikes),
 
 		'$baseurl' => $a->get_baseurl(),
 	]);

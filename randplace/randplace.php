@@ -19,6 +19,7 @@
  *
  */
 use Friendica\Core\Addon;
+use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 
 function randplace_install() {
@@ -167,14 +168,14 @@ function randplace_settings(&$a,&$s) {
 	/* Add some HTML to the existing form */
 
 	$s .= '<div class="settings-block">';
-	$s .= '<h3>' . t('Randplace Settings') . '</h3>';
+	$s .= '<h3>' . L10n::t('Randplace Settings') . '</h3>';
 	$s .= '<div id="randplace-enable-wrapper">';
-	$s .= '<label id="randplace-enable-label" for="randplace-checkbox">' . t('Enable Randplace Addon') . '</label>';
+	$s .= '<label id="randplace-enable-label" for="randplace-checkbox">' . L10n::t('Enable Randplace Addon') . '</label>';
 	$s .= '<input id="randplace-checkbox" type="checkbox" name="randplace" value="1" ' . $checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
 	/* provide a submit button */
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="randplace-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="randplace-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 
 }

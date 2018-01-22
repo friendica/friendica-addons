@@ -8,6 +8,7 @@
 use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
+use Friendica\Core\L10n;
 
 function geocoordinates_install()
 {
@@ -87,9 +88,9 @@ function geocoordinates_addon_admin(&$a, &$o)
 	$t = get_markup_template("admin.tpl", "addon/geocoordinates/");
 
 	$o = replace_macros($t, [
-		'$submit' => t('Save Settings'),
-		'$api_key' => ['api_key', t('API Key'), Config::get('geocoordinates', 'api_key'), ''],
-		'$language' => ['language', t('Language code (IETF format)'), Config::get('geocoordinates', 'language'), ''],
+		'$submit' => L10n::t('Save Settings'),
+		'$api_key' => ['api_key', L10n::t('API Key'), Config::get('geocoordinates', 'api_key'), ''],
+		'$language' => ['language', L10n::t('Language code (IETF format)'), Config::get('geocoordinates', 'language'), ''],
 	]);
 }
 
@@ -100,5 +101,5 @@ function geocoordinates_addon_admin_post(&$a)
 
 	$language  = ((x($_POST, 'language')) ? notags(trim($_POST['language']))   : '');
 	Config::set('geocoordinates', 'language', $language);
-	info(t('Settings updated.'). EOL);
+	info(L10n::t('Settings updated.'). EOL);
 }

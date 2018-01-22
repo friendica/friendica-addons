@@ -8,6 +8,7 @@
 
 use Friendica\App;
 use Friendica\Core\Addon;
+use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Util\Emailer;
 
@@ -62,11 +63,11 @@ function securemail_settings(App &$a, &$s){
     $t = get_markup_template('admin.tpl', 'addon/securemail/');
 
     $s .= replace_macros($t, [
-        '$title' => t('"Secure Mail" Settings'),
-        '$submit' => t('Save Settings'),
-        '$test' => t('Save and send test'), //NOTE: update also in 'post'
-        '$enable' => ['securemail-enable', t('Enable Secure Mail'), $enable, ''],
-        '$publickey' => ['securemail-pkey', t('Public key'), $publickey, t('Your public PGP key, ascii armored format'), 'rows="10"']
+        '$title' => L10n::t('"Secure Mail" Settings'),
+        '$submit' => L10n::t('Save Settings'),
+        '$test' => L10n::t('Save and send test'), //NOTE: update also in 'post'
+        '$enable' => ['securemail-enable', L10n::t('Enable Secure Mail'), $enable, ''],
+        '$publickey' => ['securemail-pkey', L10n::t('Public key'), $publickey, L10n::t('Your public PGP key, ascii armored format'), 'rows="10"']
     ]);
 }
 
@@ -90,9 +91,9 @@ function securemail_settings_post(App &$a, array &$b){
         PConfig::set(local_user(), 'securemail', 'pkey', trim($_POST['securemail-pkey']));
         $enable = ((x($_POST, 'securemail-enable')) ? 1 : 0);
         PConfig::set(local_user(), 'securemail', 'enable', $enable);
-        info(t('Secure Mail Settings saved.') . EOL);
+        info(L10n::t('Secure Mail Settings saved.') . EOL);
 
-        if ($_POST['securemail-submit'] == t('Save and send test')) {
+        if ($_POST['securemail-submit'] == L10n::t('Save and send test')) {
             $sitename = $a->config['sitename'];
 
             $hostname = $a->get_hostname();
@@ -127,9 +128,9 @@ function securemail_settings_post(App &$a, array &$b){
             PConfig::set(local_user(), 'securemail', 'enable', $enable);
 
             if ($res) {
-                info(t('Test email sent') . EOL);
+                info(L10n::t('Test email sent') . EOL);
             } else {
-                notice(t('There was an error sending the test email') . EOL);
+                notice(L10n::t('There was an error sending the test email') . EOL);
             }
         }
     }

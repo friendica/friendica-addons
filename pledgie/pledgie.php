@@ -5,10 +5,11 @@
  * Version: 1.1
  * Author: tony baldwin <tony@free-haven.org>
  *         Hauke Altmann <https://snarl.de/profile/tugelblend>
- *      
+ *
  */
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\L10n;
 
 function pledgie_install() { 
 	Addon::registerHook('page_end', 'addon/pledgie/pledgie.php', 'pledgie_active'); 
@@ -41,18 +42,18 @@ function pledgie_addon_settings(&$a,&$s) {
 		$describe = '';
 
 	$s .= '<div class="settings-block">';
-	$s .= '<h3>' . t('"pledgie" Settings') . '</h3>';
+	$s .= '<h3>' . L10n::t('"pledgie" Settings') . '</h3>';
 	$s .= '<div id="pledgie-wrapper">';
-	$s .= '<label id="pledgie-label" for="pledgie-campaign">' . t('Pledgie campaign number to use for donations') . ' </label>';
+	$s .= '<label id="pledgie-label" for="pledgie-campaign">' . L10n::t('Pledgie campaign number to use for donations') . ' </label>';
 	$s .= '<input id="pledgie-campaign" type="text" name="pledgie-campaign" value="' . $campaign . '">';
 	$s .= '</div><div class="clear"></div>';
 	
 	$s .= '<div id="pledgie-wrapper">';
-	$s .= '<label id="pledgie-label" for="pledgie-describe">' . t('Description of the Pledgie campaign') . ' </label>';
+	$s .= '<label id="pledgie-label" for="pledgie-describe">' . L10n::t('Description of the Pledgie campaign') . ' </label>';
 	$s .= '<input id="pledgie-describe" type="text" name="pledgie-describe" value="' . $describe . '">';
 	$s .= '</div><div class="clear"></div>';
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="pledgie-submit" name="pledgie-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="pledgie-submit" name="pledgie-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 
 	return;
 }
@@ -65,7 +66,7 @@ function pledgie_addon_settings_post(&$a,&$b) {
 	if($_POST['pledgie-submit']) {
 		Config::set('pledgie-describe','text',trim(strip_tags($_POST['pledgie-describe'])));
 		Config::set('pledgie-campaign','text',trim(strip_tags($_POST['pledgie-campaign'])));
-		info( t('pledgie Settings saved.') . EOL);
+		info(L10n::t('pledgie Settings saved.') . EOL);
 	}
 }
 

@@ -7,6 +7,7 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
 use Friendica\Model\Contact;
@@ -50,7 +51,7 @@ function pumpio_module() {}
 function pumpio_content(&$a) {
 
 	if(! local_user()) {
-		notice( t('Permission denied.') . EOL);
+		notice(L10n::t('Permission denied.') . EOL);
 		return '';
 	}
 
@@ -146,7 +147,7 @@ function pumpio_connect(&$a) {
 	if (($consumer_key == "") || ($consumer_secret == "")) {
 		logger("pumpio_connect: ".sprintf("Unable to register the client at the pump.io server '%s'.", $hostname));
 
-		$o .= sprintf(t("Unable to register the client at the pump.io server '%s'."), $hostname);
+		$o .= sprintf(L10n::t("Unable to register the client at the pump.io server '%s'."), $hostname);
 		return($o);
 	}
 
@@ -186,8 +187,8 @@ function pumpio_connect(&$a) {
 
 	if($success) {
 		logger("pumpio_connect: authenticated");
-		$o .= t("You are now authenticated to pumpio.");
-		$o .= '<br /><a href="'.$a->get_baseurl().'/settings/connectors">'.t("return to the connector page").'</a>';
+		$o .= L10n::t("You are now authenticated to pumpio.");
+		$o .= '<br /><a href="'.$a->get_baseurl().'/settings/connectors">'.L10n::t("return to the connector page").'</a>';
 	} else {
 		logger("pumpio_connect: could not connect");
 		$o = 'Could not connect to pumpio. Refresh the page or try again later.';
@@ -205,7 +206,7 @@ function pumpio_jot_nets(&$a,&$b) {
 		$pumpio_defpost = PConfig::get(local_user(),'pumpio','post_by_default');
 		$selected = ((intval($pumpio_defpost) == 1) ? ' checked="checked" ' : '');
 		$b .= '<div class="profile-jot-net"><input type="checkbox" name="pumpio_enable"' . $selected . ' value="1" /> '
-			. t('Post to pumpio') . '</div>';
+			. L10n::t('Post to pumpio') . '</div>';
 	}
 }
 
@@ -243,20 +244,20 @@ function pumpio_settings(&$a,&$s) {
 	/* Add some HTML to the existing form */
 
 	$s .= '<span id="settings_pumpio_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_pumpio_expanded\'); openClose(\'settings_pumpio_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/pumpio.png" /><h3 class="connector">'. t('Pump.io Import/Export/Mirror').'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/pumpio.png" /><h3 class="connector">'. L10n::t('Pump.io Import/Export/Mirror').'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_pumpio_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_pumpio_expanded\'); openClose(\'settings_pumpio_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/pumpio.png" /><h3 class="connector">'. t('Pump.io Import/Export/Mirror').'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/pumpio.png" /><h3 class="connector">'. L10n::t('Pump.io Import/Export/Mirror').'</h3>';
 	$s .= '</span>';
 
 	$s .= '<div id="pumpio-username-wrapper">';
-	$s .= '<label id="pumpio-username-label" for="pumpio-username">'.t('pump.io username (without the servername)').'</label>';
+	$s .= '<label id="pumpio-username-label" for="pumpio-username">'.L10n::t('pump.io username (without the servername)').'</label>';
 	$s .= '<input id="pumpio-username" type="text" name="pumpio_user" value="'.$username.'" />';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="pumpio-servername-wrapper">';
-	$s .= '<label id="pumpio-servername-label" for="pumpio-servername">'.t('pump.io servername (without "http://" or "https://" )').'</label>';
+	$s .= '<label id="pumpio-servername-label" for="pumpio-servername">'.L10n::t('pump.io servername (without "http://" or "https://" )').'</label>';
 	$s .= '<input id="pumpio-servername" type="text" name="pumpio_host" value="'.$servername.'" />';
 	$s .= '</div><div class="clear"></div>';
 
@@ -268,36 +269,36 @@ function pumpio_settings(&$a,&$s) {
 		$s .= '<div id="pumpio-password-wrapper">';
 		if (($oauth_token == "") || ($oauth_token_secret == "")) {
 			$s .= '<div id="pumpio-authenticate-wrapper">';
-			$s .= '<a href="'.$a->get_baseurl().'/pumpio/connect">'.t("Authenticate your pump.io connection").'</a>';
+			$s .= '<a href="'.$a->get_baseurl().'/pumpio/connect">'.L10n::t("Authenticate your pump.io connection").'</a>';
 			$s .= '</div><div class="clear"></div>';
 		} else {
 			$s .= '<div id="pumpio-import-wrapper">';
-			$s .= '<label id="pumpio-import-label" for="pumpio-import">' . t('Import the remote timeline') . '</label>';
+			$s .= '<label id="pumpio-import-label" for="pumpio-import">' . L10n::t('Import the remote timeline') . '</label>';
 			$s .= '<input id="pumpio-import" type="checkbox" name="pumpio_import" value="1" ' . $import_checked . '/>';
 			$s .= '</div><div class="clear"></div>';
 
 			$s .= '<div id="pumpio-enable-wrapper">';
-			$s .= '<label id="pumpio-enable-label" for="pumpio-checkbox">' . t('Enable pump.io Post Addon') . '</label>';
+			$s .= '<label id="pumpio-enable-label" for="pumpio-checkbox">' . L10n::t('Enable pump.io Post Addon') . '</label>';
 			$s .= '<input id="pumpio-checkbox" type="checkbox" name="pumpio" value="1" ' . $checked . '/>';
 			$s .= '</div><div class="clear"></div>';
 
 			$s .= '<div id="pumpio-bydefault-wrapper">';
-			$s .= '<label id="pumpio-bydefault-label" for="pumpio-bydefault">' . t('Post to pump.io by default') . '</label>';
+			$s .= '<label id="pumpio-bydefault-label" for="pumpio-bydefault">' . L10n::t('Post to pump.io by default') . '</label>';
 			$s .= '<input id="pumpio-bydefault" type="checkbox" name="pumpio_bydefault" value="1" ' . $def_checked . '/>';
 			$s .= '</div><div class="clear"></div>';
 
 			$s .= '<div id="pumpio-public-wrapper">';
-			$s .= '<label id="pumpio-public-label" for="pumpio-public">' . t('Should posts be public?') . '</label>';
+			$s .= '<label id="pumpio-public-label" for="pumpio-public">' . L10n::t('Should posts be public?') . '</label>';
 			$s .= '<input id="pumpio-public" type="checkbox" name="pumpio_public" value="1" ' . $public_checked . '/>';
 			$s .= '</div><div class="clear"></div>';
 
 			$s .= '<div id="pumpio-mirror-wrapper">';
-			$s .= '<label id="pumpio-mirror-label" for="pumpio-mirror">' . t('Mirror all public posts') . '</label>';
+			$s .= '<label id="pumpio-mirror-label" for="pumpio-mirror">' . L10n::t('Mirror all public posts') . '</label>';
 			$s .= '<input id="pumpio-mirror" type="checkbox" name="pumpio_mirror" value="1" ' . $mirror_checked . '/>';
 			$s .= '</div><div class="clear"></div>';
 
 			$s .= '<div id="pumpio-delete-wrapper">';
-			$s .= '<label id="pumpio-delete-label" for="pumpio-delete">' . t('Check to delete this preset') . '</label>';
+			$s .= '<label id="pumpio-delete-label" for="pumpio-delete">' . L10n::t('Check to delete this preset') . '</label>';
 			$s .= '<input id="pumpio-delete" type="checkbox" name="pumpio_delete" value="1" />';
 			$s .= '</div><div class="clear"></div>';
 		}
@@ -307,7 +308,7 @@ function pumpio_settings(&$a,&$s) {
 
 	/* provide a submit button */
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="pumpio-submit" name="pumpio-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="pumpio-submit" name="pumpio-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 }
 
 
@@ -554,7 +555,7 @@ function pumpio_send(&$a,&$b) {
 			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $params]);
 			
 			Queue::add($a->contact, NETWORK_PUMPIO, $s);
-			notice(t('Pump.io post failed. Queued for retry.').EOL);
+			notice(L10n::t('Pump.io post failed. Queued for retry.').EOL);
 		}
 	}
 }
@@ -630,7 +631,7 @@ function pumpio_action(&$a, $uid, $uri, $action, $content = "") {
 		$s = serialize(['url' => $url, 'item' => $orig_post["id"], 'post' => $params]);
 		
 		Queue::add($a->contact, NETWORK_PUMPIO, $s);
-		notice(t('Pump.io like failed. Queued for retry.').EOL);
+		notice(L10n::t('Pump.io like failed. Queued for retry.').EOL);
 	}
 }
 
@@ -719,7 +720,7 @@ function pumpio_fetchtimeline(&$a, $uid) {
 	//  get the application name for the pump.io app
 	//  1st try personal config, then system config and fallback to the
 	//  hostname of the node if neither one is set.
-	$application_name  = PConfig::get( $uid, 'pumpio', 'application_name');
+	$application_name  = PConfig::get($uid, 'pumpio', 'application_name');
 	if ($application_name == "")
 		$application_name  = Config::get('pumpio', 'application_name');
 	if ($application_name == "")
@@ -963,11 +964,11 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 
 	$author  = '[url=' . $likedata['author-link'] . ']' . $likedata['author-name'] . '[/url]';
 	$objauthor =  '[url=' . $orig_post['author-link'] . ']' . $orig_post['author-name'] . '[/url]';
-	$post_type = t('status');
+	$post_type = L10n::t('status');
 	$plink = '[url=' . $orig_post['plink'] . ']' . $post_type . '[/url]';
 	$likedata['object-type'] = ACTIVITY_OBJ_NOTE;
 
-	$likedata['body'] = sprintf( t('%1$s likes %2$s\'s %3$s'), $author, $objauthor, $plink);
+	$likedata['body'] = sprintf(L10n::t('%1$s likes %2$s\'s %3$s'), $author, $objauthor, $plink);
 
 	$likedata['object'] = '<object><type>' . ACTIVITY_OBJ_NOTE . '</type><local>1</local>' .
 		'<id>' . $orig_post['uri'] . '</id><link>' . xmlify('<link rel="alternate" type="text/html" href="' . xmlify($orig_post['plink']) . '" />') . '</link><title>' . $orig_post['title'] . '</title><content>' . $orig_post['body'] . '</content></object>';

@@ -1,29 +1,38 @@
 <?php
 
-function friendheader_widget_name() {
+use Friendica\Core\L10n;
+
+function friendheader_widget_name()
+{
 	return "Shows friends as a bar";
 }
-function friendheader_widget_help() {
+function friendheader_widget_help()
+{
 	return "";
 }
 
-function friendheader_widget_args(){
+function friendheader_widget_args()
+{
 	return [];
 }
 
-function friendheader_widget_size(){
+function friendheader_widget_size()
+{
 	return ['780px','140px'];
 }
 
 
-function friendheader_widget_content(&$a, $conf){
-
+function friendheader_widget_content(&$a, $conf)
+{
 	$r = q("SELECT `profile`.`uid` AS `profile_uid`, `profile`.* , `user`.* FROM `profile`
 			LEFT JOIN `user` ON `profile`.`uid` = `user`.`uid`
 			WHERE `user`.`uid` = %s AND `profile`.`is-default` = 1 LIMIT 1",
-			intval($conf['uid'])
+		intval($conf['uid'])
 	);
-	if(!count($r)) return;
+	if (!count($r)) {
+		return;
+	}
+
 	$a->profile = $r[0];
 
 	$o = "";
@@ -37,7 +46,7 @@ function friendheader_widget_content(&$a, $conf){
 
 	</style>";
 	$o .= _abs_url(contact_block());
-	$o .= "<a href='".$a->get_baseurl().'/profile/'.$a->profile['nickname']."' target=new>". t('Get added to this list!') ."</a>";
+	$o .= "<a href='".$a->get_baseurl().'/profile/'.$a->profile['nickname']."' target=new>". L10n::t('Get added to this list!') ."</a>";
 
 	return $o;
 }

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: Forum Directory
  * Description: Add a directory of forums hosted on your server, with verbose descriptions.
@@ -11,6 +10,7 @@ use Friendica\Content\Nav;
 use Friendica\Content\Widget;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\L10n;
 use Friendica\Database\DBM;
 use Friendica\Model\Profile;
 
@@ -18,11 +18,13 @@ require_once 'boot.php';
 require_once 'include/dba.php';
 require_once 'include/text.php';
 
-function forumdirectory_install() {
+function forumdirectory_install()
+{
 	Addon::registerHook('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
 }
 
-function forumdirectory_uninstall() {
+function forumdirectory_uninstall()
+{
 	Addon::unregisterHook('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
 }
 
@@ -33,7 +35,7 @@ function forumdirectory_module()
 
 function forumdirectory_app_menu($a, &$b)
 {
-	$b['app_menu'][] = '<div class="app-title"><a href="forumdirectory">' . t('Forum Directory') . '</a></div>';
+	$b['app_menu'][] = '<div class="app-title"><a href="forumdirectory">' . L10n::t('Forum Directory') . '</a></div>';
 }
 
 function forumdirectory_init(&$a)
@@ -59,7 +61,7 @@ function forumdirectory_post(&$a)
 function forumdirectory_content(&$a)
 {
 	if ((Config::get('system', 'block_public')) && (!local_user()) && (!remote_user())) {
-		notice(t('Public access denied.') . EOL);
+		notice(L10n::t('Public access denied.') . EOL);
 		return;
 	}
 
@@ -78,7 +80,7 @@ function forumdirectory_content(&$a)
 	$gdirpath = Config::get('system', 'directory');
 	if (strlen($gdirpath)) {
 		$globaldir = '<ul><li><div id="global-directory-link"><a href="'
-			. Profile::zrl($gdirpath, true) . '">' . t('Global Directory') . '</a></div></li></ul>';
+			. Profile::zrl($gdirpath, true) . '">' . L10n::t('Global Directory') . '</a></div></li></ul>';
 	}
 
 	$admin = '';
@@ -86,11 +88,11 @@ function forumdirectory_content(&$a)
 	$o .= replace_macros($tpl, [
 		'$search'    => $search,
 		'$globaldir' => $globaldir,
-		'$desc'      => t('Find on this site'),
+		'$desc'      => L10n::t('Find on this site'),
 		'$admin'     => $admin,
-		'$finding'   => (strlen($search) ? '<h4>' . t('Finding: ') . "'" . $search . "'" . '</h4>' : ""),
-		'$sitedir'   => t('Site Directory'),
-		'$submit'    => t('Find')
+		'$finding'   => (strlen($search) ? '<h4>' . L10n::t('Finding: ') . "'" . $search . "'" . '</h4>' : ""),
+		'$sitedir'   => L10n::t('Site Directory'),
+		'$submit'    => L10n::t('Find')
 	]);
 
 	$sql_extra = '';
@@ -148,11 +150,11 @@ function forumdirectory_content(&$a)
 			}
 
 			if (strlen($rr['dob']) && ($years = age($rr['dob'], $rr['timezone'], '')) != 0) {
-				$details .= '<br />' . t('Age: ') . $years;
+				$details .= '<br />' . L10n::t('Age: ') . $years;
 			}
 
 			if (strlen($rr['gender'])) {
-				$details .= '<br />' . t('Gender: ') . $rr['gender'];
+				$details .= '<br />' . L10n::t('Gender: ') . $rr['gender'];
 			}
 
 			switch ($rr['page-flags']) {
@@ -172,13 +174,13 @@ function forumdirectory_content(&$a)
 				|| x($profile, 'postal-code') == 1
 				|| x($profile, 'country-name') == 1
 			) {
-				$location = t('Location:');
+				$location = L10n::t('Location:');
 			}
 
-			$gender   = x($profile, 'gender')   == 1 ? t('Gender:')   : false;
-			$marital  = x($profile, 'marital')  == 1 ? t('Status:')   : false;
-			$homepage = x($profile, 'homepage') == 1 ? t('Homepage:') : false;
-			$about    = x($profile, 'about')    == 1 ? t('About:')    : false;
+			$gender   = x($profile, 'gender')   == 1 ? L10n::t('Gender:')   : false;
+			$marital  = x($profile, 'marital')  == 1 ? L10n::t('Status:')   : false;
+			$homepage = x($profile, 'homepage') == 1 ? L10n::t('Homepage:') : false;
+			$about    = x($profile, 'about')    == 1 ? L10n::t('About:')    : false;
 
 			$tpl = get_markup_template('forumdirectory_item.tpl', 'addon/forumdirectory/');
 
@@ -205,7 +207,7 @@ function forumdirectory_content(&$a)
 		$o .= "<div class=\"directory-end\" ></div>\r\n";
 		$o .= paginate($a);
 	} else {
-		info(t("No entries \x28some entries may be hidden\x29.") . EOL);
+		info(L10n::t("No entries \x28some entries may be hidden\x29.") . EOL);
 	}
 
 	return $o;

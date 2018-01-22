@@ -8,6 +8,7 @@
 */
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 
 function irc_install() {
@@ -37,11 +38,11 @@ function irc_addon_settings(&$a,&$s) {
 
 	$t = get_markup_template( "settings.tpl", "addon/irc/" );
 	$s .= replace_macros($t, [
-	    	'$header' => t('IRC Settings'),
-		'$info' => t('Here you can change the system wide settings for the channels to automatically join and access via the side bar. Note the changes you do here, only effect the channel selection if you are logged in.'),
-		'$submit' => t('Save Settings'),
-		'$autochans' => [ 'autochans', t('Channel(s) to auto connect (comma separated)'), $autochans, t('List of channels that shall automatically connected to when the app is launched.')],
-		'$sitechats' => [ 'sitechats', t('Popular Channels (comma separated)'), $sitechats, t('List of popular channels, will be displayed at the side and hotlinked for easy joining.') ]
+	    	'$header' => L10n::t('IRC Settings'),
+		'$info' => L10n::t('Here you can change the system wide settings for the channels to automatically join and access via the side bar. Note the changes you do here, only effect the channel selection if you are logged in.'),
+		'$submit' => L10n::t('Save Settings'),
+		'$autochans' => [ 'autochans', L10n::t('Channel(s) to auto connect (comma separated)'), $autochans, L10n::t('List of channels that shall automatically connected to when the app is launched.')],
+		'$sitechats' => [ 'sitechats', L10n::t('Popular Channels (comma separated)'), $sitechats, L10n::t('List of popular channels, will be displayed at the side and hotlinked for easy joining.') ]
 	]);
 
 
@@ -57,12 +58,12 @@ function irc_addon_settings_post(&$a,&$b) {
 		PConfig::set( local_user(), 'irc','autochans',trim($_POST['autochans']));
 		PConfig::set( local_user(), 'irc','sitechats',trim($_POST['sitechats']));
 		/* upid pop-up thing */
-		info( t('IRC settings saved.') . EOL);
+		info(L10n::t('IRC settings saved.') . EOL);
 	}
 }
 
 function irc_app_menu($a,&$b) {
-	$b['app_menu'][] = '<div class="app-title"><a href="irc">' . t('IRC Chatroom') . '</a></div>';
+	$b['app_menu'][] = '<div class="app-title"><a href="irc">' . L10n::t('IRC Chatroom') . '</a></div>';
 }
 
 
@@ -90,7 +91,7 @@ function irc_content(&$a) {
 		$chats = ['friendica','chat','chatback','hottub','ircbar','dateroom','debian'];
 
 
-	$a->page['aside'] .= '<div class="widget"><h3>' . t('Popular Channels') . '</h3><ul>';
+	$a->page['aside'] .= '<div class="widget"><h3>' . L10n::t('Popular Channels') . '</h3><ul>';
 	foreach($chats as $chat) {
 		$a->page['aside'] .= '<li><a href="' . $a->get_baseurl() . '/irc?channels=' . $chat . '" >' . '#' . $chat . '</a></li>';
 	}
@@ -128,7 +129,7 @@ function irc_addon_admin_post (&$a) {
 		Config::set('irc','autochans',trim($_POST['autochans']));
 		Config::set('irc','sitechats',trim($_POST['sitechats']));
 		/* stupid pop-up thing */
-		info( t('IRC settings saved.') . EOL);
+		info(L10n::t('IRC settings saved.') . EOL);
 	}
 }
 function irc_addon_admin (&$a, &$o) {
@@ -136,8 +137,8 @@ function irc_addon_admin (&$a, &$o) {
 	$autochans = Config::get('irc','autochans');  /* auto connect chans */
 	$t = get_markup_template( "admin.tpl", "addon/irc/" );
 	$o = replace_macros($t, [
-		'$submit' => t('Save Settings'),
-		'$autochans' => [ 'autochans', t('Channel(s) to auto connect (comma separated)'), $autochans, t('List of channels that shall automatically connected to when the app is launched.')],
-		'$sitechats' => [ 'sitechats', t('Popular Channels (comma separated)'), $sitechats, t('List of popular channels, will be displayed at the side and hotlinked for easy joining.') ]
+		'$submit' => L10n::t('Save Settings'),
+		'$autochans' => [ 'autochans', L10n::t('Channel(s) to auto connect (comma separated)'), $autochans, L10n::t('List of channels that shall automatically connected to when the app is launched.')],
+		'$sitechats' => [ 'sitechats', L10n::t('Popular Channels (comma separated)'), $sitechats, L10n::t('List of popular channels, will be displayed at the side and hotlinked for easy joining.') ]
 	]);
 }

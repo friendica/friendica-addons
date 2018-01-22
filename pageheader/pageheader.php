@@ -9,6 +9,7 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\L10n;
 
 function pageheader_install() {
     Addon::registerHook('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
@@ -48,13 +49,13 @@ function pageheader_addon_settings(&$a,&$s) {
 		$words = '';
 
     $s .= '<div class="settings-block">';
-    $s .= '<h3>' . t('"pageheader" Settings') . '</h3>';
+    $s .= '<h3>' . L10n::t('"pageheader" Settings') . '</h3>';
     $s .= '<div id="pageheader-wrapper">';
-    $s .= '<label id="pageheader-label" for="pageheader-words">' . t('Message to display on every page on this server (or put a pageheader.html file in your docroot)') . ' </label>';
+    $s .= '<label id="pageheader-label" for="pageheader-words">' . L10n::t('Message to display on every page on this server (or put a pageheader.html file in your docroot)') . ' </label>';
     $s .= '<textarea id="pageheader-words" type="text" name="pageheader-words">' . $words . '</textarea>';
     $s .= '</div><div class="clear"></div>';
 
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="pageheader-submit" name="pageheader-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="pageheader-submit" name="pageheader-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 
 	return;
 
@@ -67,7 +68,7 @@ function pageheader_addon_settings_post(&$a,&$b) {
 
 	if($_POST['pageheader-submit']) {
 		Config::set('pageheader','text',trim(strip_tags($_POST['pageheader-words'])));
-		info( t('pageheader Settings saved.') . EOL);
+		info(L10n::t('pageheader Settings saved.') . EOL);
 	}
 }
 

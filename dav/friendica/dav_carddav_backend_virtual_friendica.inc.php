@@ -1,5 +1,7 @@
 <?php
 
+use Friendica\Core\L10n;
+
 class Sabre_CardDAV_Backend_Friendica extends Sabre_CardDAV_Backend_Virtual
 {
 
@@ -33,7 +35,7 @@ class Sabre_CardDAV_Backend_Friendica extends Sabre_CardDAV_Backend_Virtual
 	 * @return string
 	 */
 	public static function getBackendTypeName() {
-		return t("Friendica-Contacts");
+		return L10n::t("Friendica-Contacts");
 	}
 
 	/**
@@ -56,8 +58,8 @@ class Sabre_CardDAV_Backend_Friendica extends Sabre_CardDAV_Backend_Virtual
 			'id'                                                                => $books[0]["id"],
 			'uri'                                                               => "friendica",
 			'principaluri'                                                      => $principalUri,
-			'{DAV:}displayname'                                                 => t("Friendica-Contacts"),
-			'{' . Sabre_CardDAV_Plugin::NS_CARDDAV . '}addressbook-description' => t("Your Friendica-Contacts"),
+			'{DAV:}displayname'                                                 => L10n::t("Friendica-Contacts"),
+			'{' . Sabre_CardDAV_Plugin::NS_CARDDAV . '}addressbook-description' => L10n::t("Your Friendica-Contacts"),
 			'{http://calendarserver.org/ns/}getctag'                            => $ctag,
 			'{' . Sabre_CardDAV_Plugin::NS_CARDDAV . '}supported-address-data'  =>
 			new Sabre_CardDAV_Property_SupportedAddressData(),

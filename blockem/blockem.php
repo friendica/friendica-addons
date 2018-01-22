@@ -7,9 +7,11 @@
  *
  */
 use Friendica\Core\Addon;
+use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 
-function blockem_install() {
+function blockem_install()
+{
 	Addon::registerHook('prepare_body', 'addon/blockem/blockem.php', 'blockem_prepare_body');
 	Addon::registerHook('display_item', 'addon/blockem/blockem.php', 'blockem_display_item');
 	Addon::registerHook('addon_settings', 'addon/blockem/blockem.php', 'blockem_addon_settings');
@@ -19,7 +21,8 @@ function blockem_install() {
 	Addon::registerHook('enotify_store', 'addon/blockem/blockem.php', 'blockem_enotify_store');
 }
 
-function blockem_uninstall() {
+function blockem_uninstall()
+{
 	Addon::unregisterHook('prepare_body', 'addon/blockem/blockem.php', 'blockem_prepare_body');
 	Addon::unregisterHook('display_item', 'addon/blockem/blockem.php', 'blockem_display_item');
 	Addon::unregisterHook('addon_settings', 'addon/blockem/blockem.php', 'blockem_addon_settings');
@@ -45,19 +48,19 @@ function blockem_addon_settings(&$a, &$s)
 		$words = '';
 
     $s .= '<span id="settings_blockem_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_blockem_expanded\'); openClose(\'settings_blockem_inflated\');">';
-    $s .= '<h3>' . t('"Blockem"') . '</h3>';
+    $s .= '<h3>' . L10n::t('"Blockem"') . '</h3>';
     $s .= '</span>';
     $s .= '<div id="settings_blockem_expanded" class="settings-block" style="display: none;">';
     $s .= '<span class="fakelink" onclick="openClose(\'settings_blockem_expanded\'); openClose(\'settings_blockem_inflated\');">';
-    $s .= '<h3>' . t('"Blockem"') . '</h3>';
+    $s .= '<h3>' . L10n::t('"Blockem"') . '</h3>';
     $s .= '</span>';
 
     $s .= '<div id="blockem-wrapper">';
-    $s .= '<label id="blockem-label" for="blockem-words">' . t('Comma separated profile URLS to block') . ' </label>';
+    $s .= '<label id="blockem-label" for="blockem-words">' . L10n::t('Comma separated profile URLS to block') . ' </label>';
     $s .= '<textarea id="blockem-words" type="text" name="blockem-words" >' . htmlspecialchars($words) . '</textarea>';
     $s .= '</div><div class="clear"></div>';
 
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="blockem-submit" name="blockem-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="blockem-submit" name="blockem-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 
 	return;
 
@@ -70,7 +73,7 @@ function blockem_addon_settings_post(&$a,&$b) {
 
 	if($_POST['blockem-submit']) {
 		PConfig::set(local_user(),'blockem','words',trim($_POST['blockem-words']));
-		info( t('BLOCKEM Settings saved.') . EOL);
+		info(L10n::t('BLOCKEM Settings saved.') . EOL);
 	}
 }
 
@@ -133,7 +136,7 @@ function blockem_prepare_body(&$a,&$b) {
 	}
 	if($found) {
 		$rnd = random_string(8);
-		$b['html'] = '<div id="blockem-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'blockem-' . $rnd . '\'); >' . sprintf( t('Blocked %s - Click to open/close'),$word ) . '</div><div id="blockem-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
+		$b['html'] = '<div id="blockem-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'blockem-' . $rnd . '\'); >' . sprintf(L10n::t('Blocked %s - Click to open/close'),$word ) . '</div><div id="blockem-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
 	}
 }
 
@@ -186,9 +189,9 @@ function blockem_item_photo_menu(&$a,&$b) {
 		}
 	}
 	if($blocked)
-		$b['menu'][ t('Unblock Author')] = 'javascript:blockemUnblock(\'' . $author . '\');';
+		$b['menu'][L10n::t('Unblock Author')] = 'javascript:blockemUnblock(\'' . $author . '\');';
 	else
-		$b['menu'][ t('Block Author')] = 'javascript:blockemBlock(\'' . $author . '\');';
+		$b['menu'][L10n::t('Block Author')] = 'javascript:blockemBlock(\'' . $author . '\');';
 }
 
 function blockem_module() {}
@@ -220,6 +223,6 @@ function blockem_init(&$a) {
 	}
 
 	PConfig::set(local_user(),'blockem','words',$words);
-	info( t('blockem settings updated') . EOL );
+	info(L10n::t('blockem settings updated') . EOL );
 	killme();
 }

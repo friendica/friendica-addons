@@ -7,14 +7,14 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\L10n;
 use Friendica\Model\User;
-
 
 function public_server_install() {
 
 	Addon::registerHook('register_account', 'addon/public_server/public_server.php', 'public_server_register_account');
 	Addon::registerHook('cron', 'addon/public_server/public_server.php', 'public_server_cron');
-    Addon::registerHook('enotify','addon/public_server/public_server.php', 'public_server_enotify');
+	Addon::registerHook('enotify', 'addon/public_server/public_server.php', 'public_server_enotify');
 	Addon::registerHook('logged_in', 'addon/public_server/public_server.php', 'public_server_login');
 }
 
@@ -23,7 +23,7 @@ function public_server_uninstall() {
 
 	Addon::unregisterHook('register_account', 'addon/public_server/public_server.php', 'public_server_register_account');
 	Addon::unregisterHook('cron', 'addon/public_server/public_server.php', 'public_server_cron');
-    Addon::unregisterHook('enotify','addon/public_server/public_server.php', 'public_server_enotify');
+	Addon::unregisterHook('enotify', 'addon/public_server/public_server.php', 'public_server_enotify');
 	Addon::unregisterHook('logged_in', 'addon/public_server/public_server.php', 'public_server_login');
 }
 
@@ -61,7 +61,7 @@ function public_server_cron($a,$b) {
 				'language'     => $rr['language'],
 				'to_name'      => $rr['username'],
 				'to_email'     => $rr['email'],
-				'source_name'  => t('Administrator'),
+				'source_name'  => L10n::t('Administrator'),
 				'source_link'  => $a->get_baseurl(),
 				'source_photo' => $a->get_baseurl() . '/images/person-80.jpg',
 			]);
@@ -125,9 +125,9 @@ function public_server_enotify(&$a, &$b) {
     if (x($b, 'params') && $b['params']['type'] == NOTIFY_SYSTEM
 		&& x($b['params'], 'system_type') && $b['params']['system_type'] === 'public_server_expire') {
         $b['itemlink'] = $a->get_baseurl();
-        $b['epreamble'] = $b['preamble'] = sprintf( t('Your account on %s will expire in a few days.'), Config::get('system','sitename'));
-        $b['subject'] = t('Your Friendica account is about to expire.');
-        $b['body'] = sprintf( t("Hi %1\$s,\n\nYour account on %2\$s will expire in less than five days. You may keep your account by logging in at least once every 30 days"), $b['params']['to_name'], "[url=" . $app->config["system"]["url"] . "]" . $app->config["sitename"] . "[/url]");
+        $b['epreamble'] = $b['preamble'] = sprintf(L10n::t('Your account on %s will expire in a few days.'), Config::get('system','sitename'));
+        $b['subject'] = L10n::t('Your Friendica account is about to expire.');
+        $b['body'] = sprintf(L10n::t("Hi %1\$s,\n\nYour account on %2\$s will expire in less than five days. You may keep your account by logging in at least once every 30 days"), $b['params']['to_name'], "[url=" . $app->config["system"]["url"] . "]" . $app->config["sitename"] . "[/url]");
     }
 }
 
@@ -155,15 +155,15 @@ function public_server_addon_admin_post ( &$a ) {
     Config::set( 'public_server','flagusers',$flagusers);
     Config::set( 'public_server','flagposts',$flagposts );
     Config::set( 'public_server','flagpostsexpire',$flagpostsexpire );
-    info( t('Settings saved').EOL );
+    info(L10n::t('Settings saved').EOL );
 }
 function public_server_addon_admin ( &$a, &$o) {
     $token = get_form_security_token("publicserver");
     $t = get_markup_template( "admin.tpl", "addon/public_server");
     $o = replace_macros($t, [
-	'$submit' => t('Save Settings'),
+	'$submit' => L10n::t('Save Settings'),
 	'$form_security_token' => $token,
-	'$infotext' => t('Set any of these options to 0 to deactivate it.'),
+	'$infotext' => L10n::t('Set any of these options to 0 to deactivate it.'),
 	'$expiredays' => [ "expiredays","Expire Days", intval(Config::get('public_server', 'expiredays')), "When an account is created on the site, it is given a hard "],
 	'$expireposts' => [ "expireposts", "Expire Posts", intval(Config::get('public_server','expireposts')), "Set the default days for posts to expire here"],
 	'$nologin' => [ "nologin", "No Login", intval(Config::get('public_server','nologin')), "Remove users who have never logged in after nologin days "],
@@ -172,4 +172,3 @@ function public_server_addon_admin ( &$a, &$o) {
 	'$flagpostsexpire' => [ "flagpostsexpire", "Flag posts expire", intval(Config::get('public_server','flagpostsexpire'))],
     ]);
 }
-

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: Libertree Post Connector
  * Description: Post to libertree accounts
@@ -7,6 +6,7 @@
  * Author: Tony Baldwin <https://free-haven.org/u/tony>
  */
 use Friendica\Core\Addon;
+use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 
 function libertree_install() {
@@ -35,7 +35,7 @@ function libertree_jot_nets(&$a,&$b) {
         $ltree_defpost = PConfig::get(local_user(),'libertree','post_by_default');
         $selected = ((intval($ltree_defpost) == 1) ? ' checked="checked" ' : '');
         $b .= '<div class="profile-jot-net"><input type="checkbox" name="libertree_enable"' . $selected . ' value="1" /> '
-            . t('Post to libertree') . '</div>';
+            . L10n::t('Post to libertree') . '</div>';
     }
 }
 
@@ -66,36 +66,36 @@ function libertree_settings(&$a,&$s) {
     /* Add some HTML to the existing form */
 
     $s .= '<span id="settings_libertree_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_libertree_expanded\'); openClose(\'settings_libertree_inflated\');">';
-    $s .= '<img class="connector'.$css.'" src="images/libertree.png" /><h3 class="connector">'. t('libertree Export').'</h3>';
+    $s .= '<img class="connector'.$css.'" src="images/libertree.png" /><h3 class="connector">'. L10n::t('libertree Export').'</h3>';
     $s .= '</span>';
     $s .= '<div id="settings_libertree_expanded" class="settings-block" style="display: none;">';
     $s .= '<span class="fakelink" onclick="openClose(\'settings_libertree_expanded\'); openClose(\'settings_libertree_inflated\');">';
-    $s .= '<img class="connector'.$css.'" src="images/libertree.png" /><h3 class="connector">'. t('libertree Export').'</h3>';
+    $s .= '<img class="connector'.$css.'" src="images/libertree.png" /><h3 class="connector">'. L10n::t('libertree Export').'</h3>';
     $s .= '</span>';
 
     $s .= '<div id="libertree-enable-wrapper">';
-    $s .= '<label id="libertree-enable-label" for="libertree-checkbox">' . t('Enable Libertree Post Addon') . '</label>';
+    $s .= '<label id="libertree-enable-label" for="libertree-checkbox">' . L10n::t('Enable Libertree Post Addon') . '</label>';
     $s .= '<input id="libertree-checkbox" type="checkbox" name="libertree" value="1" ' . $checked . '/>';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="libertree-api_token-wrapper">';
-    $s .= '<label id="libertree-api_token-label" for="libertree-api_token">' . t('Libertree API token') . '</label>';
+    $s .= '<label id="libertree-api_token-label" for="libertree-api_token">' . L10n::t('Libertree API token') . '</label>';
     $s .= '<input id="libertree-api_token" type="text" name="libertree_api_token" value="' . $ltree_api_token . '" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="libertree-url-wrapper">';
-    $s .= '<label id="libertree-url-label" for="libertree-url">' . t('Libertree site URL') . '</label>';
+    $s .= '<label id="libertree-url-label" for="libertree-url">' . L10n::t('Libertree site URL') . '</label>';
     $s .= '<input id="libertree-url" type="text" name="libertree_url" value="' . $ltree_url . '" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="libertree-bydefault-wrapper">';
-    $s .= '<label id="libertree-bydefault-label" for="libertree-bydefault">' . t('Post to Libertree by default') . '</label>';
+    $s .= '<label id="libertree-bydefault-label" for="libertree-bydefault">' . L10n::t('Post to Libertree by default') . '</label>';
     $s .= '<input id="libertree-bydefault" type="checkbox" name="libertree_bydefault" value="1" ' . $def_checked . '/>';
     $s .= '</div><div class="clear"></div>';
 
     /* provide a submit button */
 
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="libertree-submit" name="libertree-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="libertree-submit" name="libertree-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 
 }
 
