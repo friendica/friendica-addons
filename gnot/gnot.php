@@ -96,5 +96,5 @@ function gnot_enotify_mail(&$a,&$b) {
 	if((! $b['uid']) || (! intval(PConfig::get($b['uid'], 'gnot','enable'))))
 		return;
 	if($b['type'] == NOTIFY_COMMENT)
-		$b['subject'] = sprintf(L10n::t('[Friendica:Notify] Comment to conversation #%d'), $b['parent']);
+		$b['subject'] = L10n::t('[Friendica:Notify] Comment to conversation #%d', $b['parent']);
 }

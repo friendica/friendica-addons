@@ -140,9 +140,9 @@ function diaspora_settings(&$a,&$s) {
 
 	$r = q("SELECT `addr` FROM `contact` WHERE `self` AND `uid` = %d", intval(local_user()));
 	if (DBM::is_result($r)) {
-		$status = sprintf(L10n::t("Please remember: You can always be reached from Diaspora with your Friendica handle %s. "), $r[0]['addr']);
+		$status = L10n::t("Please remember: You can always be reached from Diaspora with your Friendica handle %s. ", $r[0]['addr']);
 		$status .= L10n::t('This connector is only meant if you still want to use your old Diaspora account for some time. ');
-		$status .= sprintf(L10n::t('However, it is preferred that you tell your Diaspora contacts the new handle %s instead.'), $r[0]['addr']);
+		$status .= L10n::t('However, it is preferred that you tell your Diaspora contacts the new handle %s instead.', $r[0]['addr']);
 	}
 
 	$aspects = false;

@@ -88,7 +88,7 @@ function libravatar_addon_admin(&$a, &$o)
 	// Show warning if PHP version is too old
 	if (! version_compare(PHP_VERSION, '5.3.0', '>=')) {
 		$o = '<h5>' .L10n::t('Warning') .'</h5><p>';
-		$o .= sprintf(L10n::t('Your PHP version %s is lower than the required PHP >= 5.3.'), PHP_VERSION);
+		$o .= L10n::t('Your PHP version %s is lower than the required PHP >= 5.3.', PHP_VERSION);
 		$o .= '<br>' .L10n::t('This addon is not functional on your server.') .'<p><br>';
 		return;
 	}

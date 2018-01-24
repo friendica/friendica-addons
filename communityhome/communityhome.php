@@ -227,7 +227,7 @@ function communityhome_home(&$a, &$o){
 			}
 			$plink = '<a href="' . $rr['plink'] . '">' . $post_type . '</a>';
 
-			$aside['$like_items'][] = sprintf(L10n::t('%1$s likes %2$s\'s %3$s'), $author, $objauthor, $plink);
+			$aside['$like_items'][] = L10n::t('%1$s likes %2$s\'s %3$s', $author, $objauthor, $plink);
 
 		}
 	}
@@ -236,7 +236,7 @@ function communityhome_home(&$a, &$o){
 	$tpl = get_markup_template('communityhome.tpl', 'addon/communityhome/');
 	$a->page['aside'] = replace_macros($tpl, $aside);
 
-	$o = '<h1>' . ((x($a->config,'sitename')) ? sprintf(L10n::t("Welcome to %s") ,$a->config['sitename']) : "" ) . '</h1>';
+	$o = '<h1>' . ((x($a->config,'sitename')) ? L10n::t("Welcome to %s", $a->config['sitename']) : "" ) . '</h1>';
 
 	if(file_exists('home.html'))
  		$o = file_get_contents('home.html');

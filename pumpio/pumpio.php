@@ -147,7 +147,7 @@ function pumpio_connect(&$a) {
 	if (($consumer_key == "") || ($consumer_secret == "")) {
 		logger("pumpio_connect: ".sprintf("Unable to register the client at the pump.io server '%s'.", $hostname));
 
-		$o .= sprintf(L10n::t("Unable to register the client at the pump.io server '%s'."), $hostname);
+		$o .= L10n::t("Unable to register the client at the pump.io server '%s'.", $hostname);
 		return($o);
 	}
 
@@ -968,7 +968,7 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 	$plink = '[url=' . $orig_post['plink'] . ']' . $post_type . '[/url]';
 	$likedata['object-type'] = ACTIVITY_OBJ_NOTE;
 
-	$likedata['body'] = sprintf(L10n::t('%1$s likes %2$s\'s %3$s'), $author, $objauthor, $plink);
+	$likedata['body'] = L10n::t('%1$s likes %2$s\'s %3$s', $author, $objauthor, $plink);
 
 	$likedata['object'] = '<object><type>' . ACTIVITY_OBJ_NOTE . '</type><local>1</local>' .
 		'<id>' . $orig_post['uri'] . '</id><link>' . xmlify('<link rel="alternate" type="text/html" href="' . xmlify($orig_post['plink']) . '" />') . '</link><title>' . $orig_post['title'] . '</title><content>' . $orig_post['body'] . '</content></object>';

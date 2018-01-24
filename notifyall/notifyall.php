@@ -37,9 +37,9 @@ function notifyall_post(&$a) {
 	$sitename = $a->config['sitename'];
 
 	if (!x($a->config['admin_name']))
-		$sender_name = sprintf(L10n::t('%s Administrator'), $sitename);
+		$sender_name = L10n::t('%s Administrator', $sitename);
 	else
-		$sender_name = sprintf(L10n::t('%1$s, %2$s Administrator'), $a->config['admin_name'], $sitename);
+		$sender_name = L10n::t('%1$s, %2$s Administrator', $a->config['admin_name'], $sitename);
 
 	if (! x($a->config['sender_email']))
 		$sender_email = 'noreply@' . $a->get_hostname();

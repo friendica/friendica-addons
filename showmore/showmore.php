@@ -125,7 +125,7 @@ function showmore_prepare_body(&$a,&$b) {
 	if($found) {
 		$rnd = random_string(8);
 		$b['html'] = '<span id="showmore-teaser-'.$rnd.'" class="showmore-teaser" style="display: block;">'.$shortened." ".
-				'<span id="showmore-wrap-'.$rnd.'" style="white-space:nowrap;" class="showmore-wrap fakelink" onclick="openClose(\'showmore-'.$rnd.'\'); openClose(\'showmore-teaser-'.$rnd.'\');" >'.sprintf(L10n::t('show more')).'</span></span>'.
+				'<span id="showmore-wrap-'.$rnd.'" style="white-space:nowrap;" class="showmore-wrap fakelink" onclick="openClose(\'showmore-'.$rnd.'\'); openClose(\'showmore-teaser-'.$rnd.'\');" >'.L10n::t('show more').'</span></span>'.
 				'<div id="showmore-'.$rnd.'" class="showmore-content" style="display: none;">'.$b['html'].'</div>';
 	}
 }
