@@ -31,6 +31,7 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\L10n;
 
 function piwik_install() {
 	Addon::registerHook('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
@@ -78,21 +79,21 @@ function piwik_analytics($a,&$b) {
 	 */
 	if ($optout) {
 		$b .= "<div id='piwik-optout-link'>";
-		$b .= t("This website is tracked using the <a href='http://www.piwik.org'>Piwik</a> analytics tool.");
+		$b .= L10n::t("This website is tracked using the <a href='http://www.piwik.org'>Piwik</a> analytics tool.");
 		$b .= " ";
 		$the_url =  "http://".$baseurl ."index.php?module=CoreAdminHome&action=optOut";
-		$b .= sprintf(t("If you do not want that your visits are logged in this way you <a href='%s'>can set a cookie to prevent Piwik from tracking further visits of the site</a> (opt-out)."), $the_url);
+		$b .= L10n::t("If you do not want that your visits are logged in this way you <a href='%s'>can set a cookie to prevent Piwik from tracking further visits of the site</a> (opt-out).", $the_url);
 		$b .= "</div>";
 	}
 }
 function piwik_addon_admin (&$a, &$o) {
 	$t = get_markup_template( "admin.tpl", "addon/piwik/" );
 	$o = replace_macros( $t, [
-		'$submit' => t('Save Settings'),
-		'$piwikbaseurl' => ['baseurl', t('Piwik Base URL'), Config::get('piwik','baseurl' ), t('Absolute path to your Piwik installation. (without protocol (http/s), with trailing slash)')],
-		'$siteid' => ['siteid', t('Site ID'), Config::get('piwik','siteid' ), ''],
-		'$optout' => ['optout', t('Show opt-out cookie link?'), Config::get('piwik','optout' ), ''],
-		'$async' => ['async', t('Asynchronous tracking'), Config::get('piwik','async' ), ''],
+		'$submit' => L10n::t('Save Settings'),
+		'$piwikbaseurl' => ['baseurl', L10n::t('Piwik Base URL'), Config::get('piwik','baseurl' ), L10n::t('Absolute path to your Piwik installation. (without protocol (http/s), with trailing slash)')],
+		'$siteid' => ['siteid', L10n::t('Site ID'), Config::get('piwik','siteid' ), ''],
+		'$optout' => ['optout', L10n::t('Show opt-out cookie link?'), Config::get('piwik','optout' ), ''],
+		'$async' => ['async', L10n::t('Asynchronous tracking'), Config::get('piwik','async' ), ''],
 	]);
 }
 function piwik_addon_admin_post (&$a) {
@@ -104,5 +105,5 @@ function piwik_addon_admin_post (&$a) {
 	Config::set('piwik', 'siteid', $id);
 	Config::set('piwik', 'optout', $optout);
 	Config::set('piwik', 'async', $async);
-	info( t('Settings updated.'). EOL);
+	info(L10n::t('Settings updated.'). EOL);
 }

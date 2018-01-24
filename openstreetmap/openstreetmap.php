@@ -11,7 +11,7 @@
 use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
-
+use Friendica\Core\L10n;
 
 function openstreetmap_install()
 {
@@ -139,12 +139,12 @@ function openstreetmap_generate_map(&$a, &$b)
 
 
 	$zoom = Config::get('openstreetmap', 'zoom');
-	if(! $zoom) {
+	if (!$zoom) {
 		$zoom = 16;
 	}
 
 	$marker = Config::get('openstreetmap', 'marker');
-	if(! $marker) {
+	if (!$marker) {
 		$marker = 0;
 	}
 
@@ -157,38 +157,37 @@ function openstreetmap_generate_map(&$a, &$b)
 
 	$b['html'] = '<iframe style="width:100%; height:300px; border:1px solid #ccc" src="' . $tmsserver . '/export/embed.html?bbox=' . ($lon - 0.01) . '%2C' . ($lat - 0.01) . '%2C' . ($lon + 0.01) . '%2C' . ($lat + 0.01) ;
 
-	$b['html'] .=  '&amp;layer=mapnik&amp;marker=' . $lat . '%2C' . $lon . '" style="border: 1px solid black"></iframe><br/><small><a href="' . $tmsserver . '/?mlat=' . $lat . '&mlon=' . $lon . '#map=16/' . $lat . '/' . $lon . '">' . (($b['location']) ? escape_tags($b['location']) : t('View Larger')) . '</a></small>';
+	$b['html'] .=  '&amp;layer=mapnik&amp;marker=' . $lat . '%2C' . $lon . '" style="border: 1px solid black"></iframe><br/><small><a href="' . $tmsserver . '/?mlat=' . $lat . '&mlon=' . $lon . '#map=16/' . $lat . '/' . $lon . '">' . (($b['location']) ? escape_tags($b['location']) : L10n::t('View Larger')) . '</a></small>';
 
 	logger('generate_map: ' . $b['html'], LOGGER_DATA);
-
 }
 
 function openstreetmap_addon_admin(&$a, &$o)
 {
 	$t = get_markup_template("admin.tpl", "addon/openstreetmap/");
 	$tmsserver = Config::get('openstreetmap', 'tmsserver');
-	if(! $tmsserver) {
+	if (!$tmsserver) {
 		$tmsserver = 'http://www.openstreetmap.org';
 	}
 	$nomserver = Config::get('openstreetmap', 'nomserver');
-	if(! $nomserver) {
+	if (!$nomserver) {
 		$nomserver = 'http://nominatim.openstreetmap.org/search.php';
 	}
 	$zoom = Config::get('openstreetmap', 'zoom');
-	if(! $zoom) {
+	if (!$zoom) {
 		$zoom = 16;
 	}
 	$marker = Config::get('openstreetmap', 'marker');
-	if(! $marker) {
+	if (!$marker) {
 		$marker = 0;
 	}
 
 	$o = replace_macros($t, [
-			'$submit' => t('Submit'),
-			'$tmsserver' => ['tmsserver', t('Tile Server URL'), $tmsserver, t('A list of <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank">public tile servers</a>')],
-			'$nomserver' => ['nomserver', t('Nominatim (reverse geocoding) Server URL'), $nomserver, t('A list of <a href="http://wiki.openstreetmap.org/wiki/Nominatim" target="_blank">Nominatim servers</a>')],
-			'$zoom' => ['zoom', t('Default zoom'), $zoom, t('The default zoom level. (1:world, 18:highest, also depends on tile server)')],
-			'$marker' => ['marker', t('Include marker on map'), $marker, t('Include a marker on the map.')],
+			'$submit' => L10n::t('Submit'),
+			'$tmsserver' => ['tmsserver', L10n::t('Tile Server URL'), $tmsserver, L10n::t('A list of <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank">public tile servers</a>')],
+			'$nomserver' => ['nomserver', L10n::t('Nominatim (reverse geocoding) Server URL'), $nomserver, L10n::t('A list of <a href="http://wiki.openstreetmap.org/wiki/Nominatim" target="_blank">Nominatim servers</a>')],
+			'$zoom' => ['zoom', L10n::t('Default zoom'), $zoom, L10n::t('The default zoom level. (1:world, 18:highest, also depends on tile server)')],
+			'$marker' => ['marker', L10n::t('Include marker on map'), $marker, L10n::t('Include a marker on the map.')],
 	]);
 }
 
@@ -202,5 +201,5 @@ function openstreetmap_addon_admin_post(&$a)
 	Config::set('openstreetmap', 'nomserver', $urlnom);
 	Config::set('openstreetmap', 'zoom', $zoom);
 	Config::set('openstreetmap', 'marker', $marker);
-	info( t('Settings updated.') . EOL);
+	info(L10n::t('Settings updated.') . EOL);
 }

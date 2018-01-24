@@ -8,6 +8,7 @@
  * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
 use Friendica\Core\Addon;
+use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 
 function dwpost_install() {
@@ -37,7 +38,7 @@ function dwpost_jot_nets(&$a,&$b) {
         $dw_defpost = PConfig::get(local_user(),'dwpost','post_by_default');
         $selected = ((intval($dw_defpost) == 1) ? ' checked="checked" ' : '');
         $b .= '<div class="profile-jot-net"><input type="checkbox" name="dwpost_enable" ' . $selected . ' value="1" /> '
-            . t('Post to Dreamwidth') . '</div>';
+            . L10n::t('Post to Dreamwidth') . '</div>';
     }
 }
 
@@ -68,36 +69,36 @@ function dwpost_settings(&$a,&$s) {
     /* Add some HTML to the existing form */
 
     $s .= '<span id="settings_dwpost_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_dwpost_expanded\'); openClose(\'settings_dwpost_inflated\');">';
-    $s .= '<img class="connector" src="images/dreamwidth.png" /><h3 class="connector">'. t("Dreamwidth Export").'</h3>';
+    $s .= '<img class="connector" src="images/dreamwidth.png" /><h3 class="connector">'. L10n::t("Dreamwidth Export").'</h3>';
     $s .= '</span>';
     $s .= '<div id="settings_dwpost_expanded" class="settings-block" style="display: none;">';
     $s .= '<span class="fakelink" onclick="openClose(\'settings_dwpost_expanded\'); openClose(\'settings_dwpost_inflated\');">';
-    $s .= '<img class="connector" src="images/dreamwidth.png" /><h3 class="connector">'. t("Dreamwidth Export").'</h3>';
+    $s .= '<img class="connector" src="images/dreamwidth.png" /><h3 class="connector">'. L10n::t("Dreamwidth Export").'</h3>';
     $s .= '</span>';
 
     $s .= '<div id="dwpost-enable-wrapper">';
-    $s .= '<label id="dwpost-enable-label" for="dwpost-checkbox">' . t('Enable dreamwidth Post Addon') . '</label>';
+    $s .= '<label id="dwpost-enable-label" for="dwpost-checkbox">' . L10n::t('Enable dreamwidth Post Addon') . '</label>';
     $s .= '<input id="dwpost-checkbox" type="checkbox" name="dwpost" value="1" ' . $checked . '/>';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="dwpost-username-wrapper">';
-    $s .= '<label id="dwpost-username-label" for="dwpost-username">' . t('dreamwidth username') . '</label>';
+    $s .= '<label id="dwpost-username-label" for="dwpost-username">' . L10n::t('dreamwidth username') . '</label>';
     $s .= '<input id="dwpost-username" type="text" name="dw_username" value="' . $dw_username . '" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="dwpost-password-wrapper">';
-    $s .= '<label id="dwpost-password-label" for="dwpost-password">' . t('dreamwidth password') . '</label>';
+    $s .= '<label id="dwpost-password-label" for="dwpost-password">' . L10n::t('dreamwidth password') . '</label>';
     $s .= '<input id="dwpost-password" type="password" name="dw_password" value="' . $dw_password . '" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="dwpost-bydefault-wrapper">';
-    $s .= '<label id="dwpost-bydefault-label" for="dwpost-bydefault">' . t('Post to dreamwidth by default') . '</label>';
+    $s .= '<label id="dwpost-bydefault-label" for="dwpost-bydefault">' . L10n::t('Post to dreamwidth by default') . '</label>';
     $s .= '<input id="dwpost-bydefault" type="checkbox" name="dw_bydefault" value="1" ' . $def_checked . '/>';
     $s .= '</div><div class="clear"></div>';
 
     /* provide a submit button */
 
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="dwpost-submit" name="dwpost-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="dwpost-submit" name="dwpost-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 
 }
 

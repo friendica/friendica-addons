@@ -11,6 +11,7 @@ define('FROMGPLUS_DEFAULT_POLL_INTERVAL', 30); // given in minutes
 
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Object\Image;
 
@@ -49,27 +50,27 @@ function fromgplus_addon_settings(&$a,&$s) {
 	$account = PConfig::get(local_user(),'fromgplus','account');
 
 	$s .= '<span id="settings_fromgplus_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_fromgplus_expanded\'); openClose(\'settings_fromgplus_inflated\');">';
-	$s .= '<img class="connector" src="images/googleplus.png" /><h3 class="connector">'. t('Google+ Mirror').'</h3>';
+	$s .= '<img class="connector" src="images/googleplus.png" /><h3 class="connector">'. L10n::t('Google+ Mirror').'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_fromgplus_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_fromgplus_expanded\'); openClose(\'settings_fromgplus_inflated\');">';
-	$s .= '<img class="connector" src="images/googleplus.png" /><h3 class="connector">'. t('Google+ Mirror').'</h3>';
+	$s .= '<img class="connector" src="images/googleplus.png" /><h3 class="connector">'. L10n::t('Google+ Mirror').'</h3>';
 	$s .= '</span>';
 
 	$s .= '<div id="fromgplus-wrapper">';
 
-	$s .= '<label id="fromgplus-enable-label" for="fromgplus-enable">'.t('Enable Google+ Import').'</label>';
+	$s .= '<label id="fromgplus-enable-label" for="fromgplus-enable">'.L10n::t('Enable Google+ Import').'</label>';
 	$s .= '<input id="fromgplus-enable" type="checkbox" name="fromgplus-enable" value="1"'.$enable_checked.' />';
 	$s .= '<div class="clear"></div>';
-	$s .= '<label id="fromgplus-label" for="fromgplus-account">'.t('Google Account ID').' </label>';
+	$s .= '<label id="fromgplus-label" for="fromgplus-account">'.L10n::t('Google Account ID').' </label>';
 	$s .= '<input id="fromgplus-account" type="text" name="fromgplus-account" value="'.$account.'" />';
 	$s .= '</div><div class="clear"></div>';
-	$s .= '<label id="fromgplus-keywords-label" for="fromgplus-keywords">'.t('Add keywords to post').'</label>';
+	$s .= '<label id="fromgplus-keywords-label" for="fromgplus-keywords">'.L10n::t('Add keywords to post').'</label>';
 	$s .= '<input id="fromgplus-keywords" type="checkbox" name="fromgplus-keywords" value="1"'.$keywords_checked.' />';
 	$s .= '<div class="clear"></div>';
 
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="fromgplus-submit" name="fromgplus-submit"
-class="settings-submit" value="' . t('Save Settings') . '" /></div>';
+class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
 	$s .= '</div>';
 
 	return;
@@ -90,7 +91,7 @@ function fromgplus_addon_settings_post(&$a,&$b) {
 		if (!$enable)
 			PConfig::delete(local_user(),'fromgplus','lastdate');
 
-		info( t('Google+ Import Settings saved.') . EOL);
+		info(L10n::t('Google+ Import Settings saved.') . EOL);
 	}
 }
 
@@ -99,8 +100,8 @@ function fromgplus_addon_admin(&$a, &$o)
 	$t = get_markup_template("admin.tpl", "addon/fromgplus/");
 
 	$o = replace_macros($t, [
-			'$submit' => t('Save Settings'),
-			'$key' => ['key', t('Key'), trim(Config::get('fromgplus', 'key')), t('')],
+			'$submit' => L10n::t('Save Settings'),
+			'$key' => ['key', L10n::t('Key'), trim(Config::get('fromgplus', 'key')), L10n::t('')],
 	]);
 }
 
@@ -108,7 +109,7 @@ function fromgplus_addon_admin_post(&$a)
 {
 	$key = ((x($_POST, 'key')) ? trim($_POST['key']) : '');
 	Config::set('fromgplus', 'key', $key);
-	info(t('Settings updated.'). EOL);
+	info(L10n::t('Settings updated.'). EOL);
 }
 
 function fromgplus_cron($a,$b) {

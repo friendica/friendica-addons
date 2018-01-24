@@ -1,5 +1,7 @@
 <?php
 
+use Friendica\Core\L10n;
+
 $a    = get_app();
 $uri  = parse_url($a->get_baseurl());
 $path = "/";
@@ -203,9 +205,9 @@ function wdcal_create_std_calendars_get_statements($user_id, $withcheck = true)
 	$stms = [];
 	$a = get_app();
 	$uris = [
-		'private'                 => t("Private Calendar"),
-		CALDAV_FRIENDICA_MINE     => t("Friendica Events: Mine"),
-		CALDAV_FRIENDICA_CONTACTS => t("Friendica Events: Contacts"),
+		'private'                 => L10n::t("Private Calendar"),
+		CALDAV_FRIENDICA_MINE     => L10n::t("Friendica Events: Mine"),
+		CALDAV_FRIENDICA_CONTACTS => L10n::t("Friendica Events: Contacts"),
 	];
 	foreach ($uris as $uri => $name) {
 		$cals = q("SELECT * FROM %s%scalendars WHERE `namespace` = %d AND `namespace_id` = %d AND `uri` = '%s'",
@@ -245,8 +247,8 @@ function wdcal_create_std_addressbooks_get_statements($user_id, $withcheck = tru
 	$stms = [];
 	$a = get_app();
 	$uris = [
-		'private'                 => t("Private Addresses"),
-		CARDDAV_FRIENDICA_CONTACT     => t("Friendica Contacts"),
+		'private'                 => L10n::t("Private Addresses"),
+		CARDDAV_FRIENDICA_CONTACT     => L10n::t("Friendica Contacts"),
 	];
 	foreach ($uris as $uri => $name) {
 		$cals = q("SELECT * FROM %s%saddressbooks WHERE `namespace` = %d AND `namespace_id` = %d AND `uri` = '%s'",

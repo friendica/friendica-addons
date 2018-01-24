@@ -1,7 +1,6 @@
 <?php
 
-
-
+use Friendica\Core\L10n;
 
 /**
  * @param mixed $obj
@@ -89,7 +88,7 @@ function wdcal_print_feed($base_path = "")
 			$cs = wdcal_print_feed_getCal($server, DAV_ACL_WRITE);
 			if ($cs == null) {
 				echo wdcal_jsonp_encode(array('IsSuccess' => false,
-											  'Msg'       => t('No access')));
+											  'Msg'       => L10n::t('No access')));
 				killme();
 			}
 			try {
@@ -163,7 +162,7 @@ function wdcal_print_feed($base_path = "")
 			$r = q("SELECT `calendarobject_id`, `calendar_id` FROM %s%sjqcalendar WHERE `id`=%d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($_REQUEST["jq_id"]));
 			if (count($r) != 1) {
 				echo wdcal_jsonp_encode(array('IsSuccess' => false,
-											  'Msg'       => t('No access')));
+											  'Msg'       => L10n::t('No access')));
 				killme();
 			}
 			try {
@@ -175,7 +174,7 @@ function wdcal_print_feed($base_path = "")
 
 				if (!$component) {
 					echo wdcal_jsonp_encode(array('IsSuccess' => false,
-												  'Msg'       => t('No access')));
+												  'Msg'       => L10n::t('No access')));
 					killme();
 				}
 
@@ -203,7 +202,7 @@ function wdcal_print_feed($base_path = "")
 				);
 			} catch (Exception $e) {
 				echo wdcal_jsonp_encode(array('IsSuccess' => false,
-											  'Msg'       => t('No access')));
+											  'Msg'       => L10n::t('No access')));
 				killme();
 			}
 			break;
@@ -211,7 +210,7 @@ function wdcal_print_feed($base_path = "")
 			$r = q("SELECT `calendarobject_id`, `calendar_id` FROM %s%sjqcalendar WHERE `id`=%d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($_REQUEST["jq_id"]));
 			if (count($r) != 1) {
 				echo wdcal_jsonp_encode(array('IsSuccess' => false,
-											  'Msg'       => t('No access')));
+											  'Msg'       => L10n::t('No access')));
 				killme();
 			}
 			try {
@@ -226,7 +225,7 @@ function wdcal_print_feed($base_path = "")
 				);
 			} catch (Exception $e) {
 				echo wdcal_jsonp_encode(array('IsSuccess' => false,
-											  'Msg'       => t('No access')));
+											  'Msg'       => L10n::t('No access')));
 				killme();
 			}
 

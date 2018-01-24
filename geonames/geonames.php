@@ -21,6 +21,7 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 
 function geonames_install() {
@@ -142,7 +143,7 @@ function geonames_addon_admin_post($a,$post) {
 		return;
 	PConfig::set(local_user(),'geonames','enable',intval($_POST['geonames']));
 
-	info( t('Geonames settings updated.') . EOL);
+	info(L10n::t('Geonames settings updated.') . EOL);
 }
 
 
@@ -178,14 +179,14 @@ function geonames_addon_admin(&$a,&$s) {
 	/* Add some HTML to the existing form */
 
 	$s .= '<div class="settings-block">';
-	$s .= '<h3>' . t('Geonames Settings') . '</h3>';
+	$s .= '<h3>' . L10n::t('Geonames Settings') . '</h3>';
 	$s .= '<div id="geonames-enable-wrapper">';
-	$s .= '<label id="geonames-enable-label" for="geonames-checkbox">' . t('Enable Geonames Addon') . '</label>';
+	$s .= '<label id="geonames-enable-label" for="geonames-checkbox">' . L10n::t('Enable Geonames Addon') . '</label>';
 	$s .= '<input id="geonames-checkbox" type="checkbox" name="geonames" value="1" ' . $checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
 	/* provide a submit button */
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="geonames-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="geonames-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 
 }

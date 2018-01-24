@@ -7,42 +7,43 @@
  *
  */
 use Friendica\Core\Addon;
+use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 
-function fromapp_install() {
-
+function fromapp_install()
+{
 	Addon::registerHook('post_local', 'addon/fromapp/fromapp.php', 'fromapp_post_hook');
 	Addon::registerHook('addon_settings', 'addon/fromapp/fromapp.php', 'fromapp_settings');
 	Addon::registerHook('addon_settings_post', 'addon/fromapp/fromapp.php', 'fromapp_settings_post');
-
 	logger("installed fromapp");
 }
 
 
-function fromapp_uninstall() {
-
+function fromapp_uninstall()
+{
 	Addon::unregisterHook('post_local', 'addon/fromapp/fromapp.php', 'fromapp_post_hook');
 	Addon::unregisterHook('addon_settings', 'addon/fromapp/fromapp.php', 'fromapp_settings');
 	Addon::unregisterHook('addon_settings_post', 'addon/fromapp/fromapp.php', 'fromapp_settings_post');
-
-
 	logger("removed fromapp");
 }
 
-function fromapp_settings_post($a,$post) {
-	if(! local_user() || (! x($_POST,'fromapp-submit')))
+function fromapp_settings_post($a, $post)
+{
+	if (!local_user() || (! x($_POST, 'fromapp-submit'))) {
 		return;
+	}
 
-	PConfig::set(local_user(),'fromapp','app',$_POST['fromapp-input']);
-	PConfig::set(local_user(),'fromapp','force',intval($_POST['fromapp-force']));
+	PConfig::set(local_user(), 'fromapp', 'app', $_POST['fromapp-input']);
+	PConfig::set(local_user(), 'fromapp', 'force', intval($_POST['fromapp-force']));
 
-	info( t('Fromapp settings updated.') . EOL);
+	info(L10n::t('Fromapp settings updated.') . EOL);
 }
 
-function fromapp_settings(&$a,&$s) {
-
-	if(! local_user())
+function fromapp_settings(&$a, &$s)
+{
+	if (!local_user()) {
 		return;
+	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
@@ -50,9 +51,9 @@ function fromapp_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$fromapp = PConfig::get(local_user(),'fromapp', 'app', '');
+	$fromapp = PConfig::get(local_user(), 'fromapp', 'app', '');
 
-	$force = intval(PConfig::get(local_user(),'fromapp','force'));
+	$force = intval(PConfig::get(local_user(), 'fromapp', 'force'));
 
 	$force_enabled = (($force) ? ' checked="checked" ' : '');
 
@@ -60,26 +61,25 @@ function fromapp_settings(&$a,&$s) {
 	/* Add some HTML to the existing form */
 
 	$s .= '<span id="settings_fromapp_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_fromapp_expanded\'); openClose(\'settings_fromapp_inflated\');">';
-	$s .= '<h3>' . t('FromApp Settings') . '</h3>';
+	$s .= '<h3>' . L10n::t('FromApp Settings') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_fromapp_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_fromapp_expanded\'); openClose(\'settings_fromapp_inflated\');">';
-	$s .= '<h3>' . t('FromApp Settings') . '</h3>';
+	$s .= '<h3>' . L10n::t('FromApp Settings') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="fromapp-wrapper">';
-	$s .= '<label id="fromapp-label" for="fromapp-input">' . t('The application name you would like to show your posts originating from.') . '</label>';
+	$s .= '<label id="fromapp-label" for="fromapp-input">' . L10n::t('The application name you would like to show your posts originating from.') . '</label>';
 	$s .= '<input id="fromapp-input" type="text" name="fromapp-input" value="' . $fromapp . '" ' . '/>';
 	$s .= '<div class="clear"></div>';
 
-	$s .= '<label id="fromapp-force-label" for="fromapp-force">' . t('Use this application name even if another application was used.') . '</label>';
+	$s .= '<label id="fromapp-force-label" for="fromapp-force">' . L10n::t('Use this application name even if another application was used.') . '</label>';
 	$s .= '<input id="fromapp-force" type="checkbox" name="fromapp-force" value="1" ' . $force_enabled . '/>';
 
 	$s .= '</div><div class="clear"></div>';
 
 	/* provide a submit button */
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="fromapp-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
-
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="fromapp-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 }
 
 function fromapp_post_hook(&$a, &$item)

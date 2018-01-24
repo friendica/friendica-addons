@@ -8,6 +8,7 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\L10n;
 
 function webrtc_install() {
         Addon::registerHook('app_menu', 'addon/webrtc/webrtc.php', 'webrtc_app_menu');
@@ -19,20 +20,20 @@ function webrtc_uninstall() {
 }
 
 function webrtc_app_menu($a,&$b) {
-	$b['app_menu'][] = '<div class="app-title"><a href="webrtc">' . t('WebRTC Videochat') . '</a></div>';
+	$b['app_menu'][] = '<div class="app-title"><a href="webrtc">' . L10n::t('WebRTC Videochat') . '</a></div>';
 }
 
 function webrtc_addon_admin (&$a, &$o) {
         $t = get_markup_template( "admin.tpl", "addon/webrtc/" );
 	$o = replace_macros( $t, [
-	    '$submit' => t('Save Settings'),
-	    '$webrtcurl' => ['webrtcurl', t('WebRTC Base URL'), Config::get('webrtc','webrtcurl' ), t('Page your users will create a WebRTC chat room on. For example you could use https://live.mayfirst.org .')],
+	    '$submit' => L10n::t('Save Settings'),
+	    '$webrtcurl' => ['webrtcurl', L10n::t('WebRTC Base URL'), Config::get('webrtc','webrtcurl' ), L10n::t('Page your users will create a WebRTC chat room on. For example you could use https://live.mayfirst.org .')],
 	]);
 }
 function webrtc_addon_admin_post (&$a) {
         $url = ((x($_POST, 'webrtcurl')) ? notags(trim($_POST['webrtcurl'])) : '');
 	    Config::set('webrtc', 'webrtcurl', $url);
-	    info( t('Settings updated.'). EOL);
+	    info(L10n::t('Settings updated.'). EOL);
 }
 
 function webrtc_module() {
@@ -46,10 +47,10 @@ function webrtc_content(&$a) {
         $webrtcurl = Config::get('webrtc','webrtcurl');
 
         /* embedd the landing page in an iframe */
-        $o .= '<h2>'.t('Video Chat').'</h2>';
-        $o .= '<p>'.t('WebRTC is a video and audio conferencing tool that works with Firefox (version 21 and above) and Chrome/Chromium (version 25 and above). Just create a new chat room and send the link to someone you want to chat with.').'</p>';
+        $o .= '<h2>'.L10n::t('Video Chat').'</h2>';
+        $o .= '<p>'.L10n::t('WebRTC is a video and audio conferencing tool that works with Firefox (version 21 and above) and Chrome/Chromium (version 25 and above). Just create a new chat room and send the link to someone you want to chat with.').'</p>';
 	if ($webrtcurl == '') {
-	    $o .= '<p>'.t('Please contact your friendica admin and send a reminder to configure the WebRTC addon.').'</p>';
+	    $o .= '<p>'.L10n::t('Please contact your friendica admin and send a reminder to configure the WebRTC addon.').'</p>';
 	} else {
 	    $o .= '<iframe src="'.$webrtcurl.'" width="600px" height="600px"></iframe>';
 	}

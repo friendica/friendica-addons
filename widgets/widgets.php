@@ -6,6 +6,7 @@
  * Author: Fabio Comuni <http://kirgroup.com/profile/fabrix/>
  */
 use Friendica\Core\Addon;
+use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 
 function widgets_install() {
@@ -55,12 +56,12 @@ function widgets_settings(&$a,&$o) {
 #	$t = file_get_contents( dirname(__file__). "/settings.tpl" );
 	$t = get_markup_template("settings.tpl", "addon/widgets/");
 	$o .= replace_macros($t, [
-		'$submit' => t('Generate new key'),
+		'$submit' => L10n::t('Generate new key'),
 		'$baseurl' => $a->get_baseurl(),
 		'$title' => "Widgets",
-		'$label' => t('Widgets key'),
+		'$label' => L10n::t('Widgets key'),
 		'$key' => $key,
-		'$widgets_h' => t('Widgets available'),
+		'$widgets_h' => L10n::t('Widgets available'),
 		'$widgets' => $widgets,
 	]);
 
@@ -122,7 +123,7 @@ function widgets_content(&$a) {
 		if (isset($_GET['p']) && local_user()==$conf['uid'] ) {
 			$o .= "<style>.f9k_widget { float: left;border:1px solid black; }</style>";
 			$o .= "<h1>Preview Widget</h1>";
-			$o .= '<a href="'.$a->get_baseurl().'/settings/addon">'. t("Addon Settings") .'</a>';
+			$o .= '<a href="'.$a->get_baseurl().'/settings/addon">'. L10n::t("Addon Settings") .'</a>';
 
 			$o .=  "<h4>".call_user_func($a->argv[1].'_widget_name')."</h4>";
 			$o .=  call_user_func($a->argv[1].'_widget_help');
@@ -167,14 +168,8 @@ function widgets_content(&$a) {
 
 			return $o;
 		}
-
 	}
 
 	echo $o;
 	killme();
 }
-
-
-
-
-?>

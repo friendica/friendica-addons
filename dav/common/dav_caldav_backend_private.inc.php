@@ -1,5 +1,7 @@
 <?php
 
+use Friendica\Core\L10n;
+
 class Sabre_CalDAV_Backend_Private extends Sabre_CalDAV_Backend_Common
 {
 
@@ -36,7 +38,7 @@ class Sabre_CalDAV_Backend_Private extends Sabre_CalDAV_Backend_Common
 	 */
 	public static function getBackendTypeName()
 	{
-		return t("Private Events");
+		return L10n::t("Private Events");
 	}
 
 	/**

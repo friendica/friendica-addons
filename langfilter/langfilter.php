@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Name: Language Filter
  * Version: 0.1
@@ -10,6 +9,7 @@
 
 use Friendica\App;
 use Friendica\Core\Addon;
+use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 
 /* Define the hooks we want to use
@@ -54,13 +54,13 @@ function langfilter_addon_settings(App $a, &$s)
 
 	$t = get_markup_template("settings.tpl", "addon/langfilter/");
 	$s .= replace_macros($t, [
-		'$title'         => t("Language Filter"),
-		'$intro'         => t('This addon tries to identify the language of a postings. If it does not match any language spoken by you (see below) the posting will be collapsed. Remember detecting the language is not perfect, especially with short postings.'),
-		'$enabled'       => ['langfilter_enable', t('Use the language filter'), $enable_checked, ''],
-		'$languages'     => ['langfilter_languages', t('I speak'), $languages, t('List of abbreviations (iso2 codes) for languages you speak, comma separated. For example "de,it".')],
-		'$minconfidence' => ['langfilter_minconfidence', t('Minimum confidence in language detection'), $minconfidence, t('Minimum confidence in language detection being correct, from 0 to 100. Posts will not be filtered when the confidence of language detection is below this percent value.')],
-		'$minlength'     => ['langfilter_minlength', t('Minimum length of message body'), $minlength, t('Minimum length of message body for language filter to be used. Posts shorter than this number of characters will not be filtered.')],
-		'$submit'        => t('Save Settings'),
+		'$title'         => L10n::t("Language Filter"),
+		'$intro'         => L10n::t('This addon tries to identify the language of a postings. If it does not match any language spoken by you (see below) the posting will be collapsed. Remember detecting the language is not perfect, especially with short postings.'),
+		'$enabled'       => ['langfilter_enable', L10n::t('Use the language filter'), $enable_checked, ''],
+		'$languages'     => ['langfilter_languages', L10n::t('I speak'), $languages, L10n::t('List of abbreviations (iso2 codes) for languages you speak, comma separated. For example "de,it".')],
+		'$minconfidence' => ['langfilter_minconfidence', L10n::t('Minimum confidence in language detection'), $minconfidence, L10n::t('Minimum confidence in language detection being correct, from 0 to 100. Posts will not be filtered when the confidence of language detection is below this percent value.')],
+		'$minlength'     => ['langfilter_minlength', L10n::t('Minimum length of message body'), $minlength, L10n::t('Minimum length of message body for language filter to be used. Posts shorter than this number of characters will not be filtered.')],
+		'$submit'        => L10n::t('Save Settings'),
 	]);
 
 	return;
@@ -101,7 +101,7 @@ function langfilter_addon_settings_post(App $a, &$b)
 		}
 		PConfig::set(local_user(), 'langfilter', 'minlength', $minlength);
 
-		info(t('Language Filter Settings saved.') . EOL);
+		info(L10n::t('Language Filter Settings saved.') . EOL);
 	}
 }
 
@@ -178,6 +178,6 @@ function langfilter_prepare_body(App $a, &$b)
 
 	if (!$spoken) {
 		$rnd = random_string(8);
-		$b['html'] = '<div id="langfilter-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'langfilter-' . $rnd . '\'); >' . t('unspoken language %s - Click to open/close', $lang) . '</div><div id="langfilter-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
+		$b['html'] = '<div id="langfilter-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'langfilter-' . $rnd . '\'); >' . L10n::t('unspoken language %s - Click to open/close', $lang) . '</div><div id="langfilter-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
 	}
 }

@@ -27,6 +27,7 @@
  */
 use Friendica\App;
 use Friendica\Core\Addon;
+use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Model\User;
 
@@ -86,7 +87,7 @@ function windowsphonepush_settings_post($a, $post)
 
 	PConfig::set(local_user(), 'windowsphonepush', 'senditemtext', intval($_POST['windowsphonepush-senditemtext']));
 
-	info(t('WindowsPhonePush settings updated.') . EOL);
+	info(L10n::t('WindowsPhonePush settings updated.') . EOL);
 }
 
 /* Called from the Addon Setting form.
@@ -112,20 +113,20 @@ function windowsphonepush_settings(&$a, &$s)
 
 	/* Add some HTML to the existing form */
 	$s .= '<div class="settings-block">';
-	$s .= '<h3>' . t('WindowsPhonePush Settings') . '</h3>';
+	$s .= '<h3>' . L10n::t('WindowsPhonePush Settings') . '</h3>';
 
 	$s .= '<div id="windowsphonepush-enable-wrapper">';
-	$s .= '<label id="windowsphonepush-enable-label" for="windowsphonepush-enable-chk">' . t('Enable WindowsPhonePush Addon') . '</label>';
+	$s .= '<label id="windowsphonepush-enable-label" for="windowsphonepush-enable-chk">' . L10n::t('Enable WindowsPhonePush Addon') . '</label>';
 	$s .= '<input id="windowsphonepush-enable-chk" type="checkbox" name="windowsphonepush" value="1" ' . $checked_enabled . '/>';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="windowsphonepush-senditemtext-wrapper">';
-	$s .= '<label id="windowsphonepush-senditemtext-label" for="windowsphonepush-senditemtext-chk">' . t('Push text of new item') . '</label>';
+	$s .= '<label id="windowsphonepush-senditemtext-label" for="windowsphonepush-senditemtext-chk">' . L10n::t('Push text of new item') . '</label>';
 	$s .= '<input id="windowsphonepush-senditemtext-chk" type="checkbox" name="windowsphonepush-senditemtext" value="1" ' . $checked_senditemtext . '/>';
 	$s .= '</div><div class="clear"></div>';
 
 	/* provide a submit button - enable und senditemtext can be changed by the user */
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="windowsphonepush-submit" name="windowsphonepush-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div><div class="clear"></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="windowsphonepush-submit" name="windowsphonepush-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div><div class="clear"></div>';
 
 	/* provide further read-only information concerning the addon (useful for */
 	$s .= '<div id="windowsphonepush-device_url-wrapper">';

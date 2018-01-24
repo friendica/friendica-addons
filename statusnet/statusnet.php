@@ -49,6 +49,7 @@ use Friendica\App;
 use Friendica\Content\OEmbed;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Model\GContact;
 use Friendica\Model\Group;
@@ -190,7 +191,7 @@ function statusnet_jot_nets(App $a, &$b)
 		$statusnet_defpost = PConfig::get(local_user(), 'statusnet', 'post_by_default');
 		$selected = ((intval($statusnet_defpost) == 1) ? ' checked="checked" ' : '');
 		$b .= '<div class="profile-jot-net"><input type="checkbox" name="statusnet_enable"' . $selected . ' value="1" /> '
-			. t('Post to GNU Social') . '</div>';
+			. L10n::t('Post to GNU Social') . '</div>';
 	}
 }
 
@@ -238,7 +239,7 @@ function statusnet_settings_post(App $a, $post)
 						PConfig::set(local_user(), 'statusnet', 'baseapi', $asn['apiurl']);
 						//PConfig::set(local_user(), 'statusnet', 'application_name', $asn['applicationname'] );
 					} else {
-						notice(t('Please contact your site administrator.<br />The provided API URL is not valid.') . EOL . $asn['apiurl'] . EOL);
+						notice(L10n::t('Please contact your site administrator.<br />The provided API URL is not valid.') . EOL . $asn['apiurl'] . EOL);
 					}
 				}
 			}
@@ -267,7 +268,7 @@ function statusnet_settings_post(App $a, $post)
 						PConfig::set(local_user(), 'statusnet', 'baseapi', $apibase);
 					} else {
 						//  still not the correct API base, let's do noting
-						notice(t('We could not contact the GNU Social API with the Path you entered.') . EOL);
+						notice(L10n::t('We could not contact the GNU Social API with the Path you entered.') . EOL);
 					}
 				}
 				goaway('settings/connectors');
@@ -301,7 +302,7 @@ function statusnet_settings_post(App $a, $post)
 					if (!intval($_POST['statusnet-mirror']))
 						PConfig::delete(local_user(), 'statusnet', 'lastid');
 
-					info(t('GNU Social settings updated.') . EOL);
+					info(L10n::t('GNU Social settings updated.') . EOL);
 				}
 			}
 		}
@@ -342,11 +343,11 @@ function statusnet_settings(App $a, &$s)
 	$css = (($enabled) ? '' : '-disabled');
 
 	$s .= '<span id="settings_statusnet_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_statusnet_expanded\'); openClose(\'settings_statusnet_inflated\');">';
-	$s .= '<img class="connector' . $css . '" src="images/gnusocial.png" /><h3 class="connector">' . t('GNU Social Import/Export/Mirror') . '</h3>';
+	$s .= '<img class="connector' . $css . '" src="images/gnusocial.png" /><h3 class="connector">' . L10n::t('GNU Social Import/Export/Mirror') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_statusnet_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_statusnet_expanded\'); openClose(\'settings_statusnet_inflated\');">';
-	$s .= '<img class="connector' . $css . '" src="images/gnusocial.png" /><h3 class="connector">' . t('GNU Social Import/Export/Mirror') . '</h3>';
+	$s .= '<img class="connector' . $css . '" src="images/gnusocial.png" /><h3 class="connector">' . L10n::t('GNU Social Import/Export/Mirror') . '</h3>';
 	$s .= '</span>';
 
 	if ((!$ckey) && (!$csecret)) {
@@ -361,31 +362,31 @@ function statusnet_settings(App $a, &$s)
 		 * ignore this option entirely.
 		 */
 		if (!$globalsn == null) {
-			$s .= '<h4>' . t('Globally Available GNU Social OAuthKeys') . '</h4>';
-			$s .= '<p>' . t("There are preconfigured OAuth key pairs for some GNU Social servers available. If you are using one of them, please use these credentials. If not feel free to connect to any other GNU Social instance \x28see below\x29.") . '</p>';
+			$s .= '<h4>' . L10n::t('Globally Available GNU Social OAuthKeys') . '</h4>';
+			$s .= '<p>' . L10n::t("There are preconfigured OAuth key pairs for some GNU Social servers available. If you are using one of them, please use these credentials. If not feel free to connect to any other GNU Social instance \x28see below\x29.") . '</p>';
 			$s .= '<div id="statusnet-preconf-wrapper">';
 			foreach ($globalsn as $asn) {
 				$s .= '<input type="radio" name="statusnet-preconf-apiurl" value="' . $asn['apiurl'] . '">' . $asn['sitename'] . '<br />';
 			}
 			$s .= '<p></p><div class="clear"></div></div>';
-			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
+			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
 		}
-		$s .= '<h4>' . t('Provide your own OAuth Credentials') . '</h4>';
-		$s .= '<p>' . t('No consumer key pair for GNU Social found. Register your Friendica Account as an desktop client on your GNU Social account, copy the consumer key pair here and enter the API base root.<br />Before you register your own OAuth key pair ask the administrator if there is already a key pair for this Friendica installation at your favorited GNU Social installation.') . '</p>';
+		$s .= '<h4>' . L10n::t('Provide your own OAuth Credentials') . '</h4>';
+		$s .= '<p>' . L10n::t('No consumer key pair for GNU Social found. Register your Friendica Account as an desktop client on your GNU Social account, copy the consumer key pair here and enter the API base root.<br />Before you register your own OAuth key pair ask the administrator if there is already a key pair for this Friendica installation at your favorited GNU Social installation.') . '</p>';
 		$s .= '<div id="statusnet-consumer-wrapper">';
-		$s .= '<label id="statusnet-consumerkey-label" for="statusnet-consumerkey">' . t('OAuth Consumer Key') . '</label>';
+		$s .= '<label id="statusnet-consumerkey-label" for="statusnet-consumerkey">' . L10n::t('OAuth Consumer Key') . '</label>';
 		$s .= '<input id="statusnet-consumerkey" type="text" name="statusnet-consumerkey" size="35" /><br />';
 		$s .= '<div class="clear"></div>';
-		$s .= '<label id="statusnet-consumersecret-label" for="statusnet-consumersecret">' . t('OAuth Consumer Secret') . '</label>';
+		$s .= '<label id="statusnet-consumersecret-label" for="statusnet-consumersecret">' . L10n::t('OAuth Consumer Secret') . '</label>';
 		$s .= '<input id="statusnet-consumersecret" type="text" name="statusnet-consumersecret" size="35" /><br />';
 		$s .= '<div class="clear"></div>';
-		$s .= '<label id="statusnet-baseapi-label" for="statusnet-baseapi">' . t("Base API Path \x28remember the trailing /\x29") . '</label>';
+		$s .= '<label id="statusnet-baseapi-label" for="statusnet-baseapi">' . L10n::t("Base API Path \x28remember the trailing /\x29") . '</label>';
 		$s .= '<input id="statusnet-baseapi" type="text" name="statusnet-baseapi" size="35" /><br />';
 		$s .= '<div class="clear"></div>';
-		//$s .= '<label id="statusnet-applicationname-label" for="statusnet-applicationname">'.t('GNU Socialapplication name').'</label>';
+		//$s .= '<label id="statusnet-applicationname-label" for="statusnet-applicationname">'.L10n::t('GNU Socialapplication name').'</label>';
 		//$s .= '<input id="statusnet-applicationname" type="text" name="statusnet-applicationname" size="35" /><br />';
 		$s .= '<p></p><div class="clear"></div>';
-		$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
+		$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
 		$s .= '</div>';
 	} else {
 		/*		 * *
@@ -404,22 +405,22 @@ function statusnet_settings(App $a, &$s)
 			/*			 * *
 			 *  make some nice form
 			 */
-			$s .= '<p>' . t('To connect to your GNU Social account click the button below to get a security code from GNU Social which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to GNU Social.') . '</p>';
-			$s .= '<a href="' . $connection->getAuthorizeURL($token, False) . '" target="_statusnet"><img src="addon/statusnet/signinwithstatusnet.png" alt="' . t('Log in with GNU Social') . '"></a>';
+			$s .= '<p>' . L10n::t('To connect to your GNU Social account click the button below to get a security code from GNU Social which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to GNU Social.') . '</p>';
+			$s .= '<a href="' . $connection->getAuthorizeURL($token, False) . '" target="_statusnet"><img src="addon/statusnet/signinwithstatusnet.png" alt="' . L10n::t('Log in with GNU Social') . '"></a>';
 			$s .= '<div id="statusnet-pin-wrapper">';
-			$s .= '<label id="statusnet-pin-label" for="statusnet-pin">' . t('Copy the security code from GNU Social here') . '</label>';
+			$s .= '<label id="statusnet-pin-label" for="statusnet-pin">' . L10n::t('Copy the security code from GNU Social here') . '</label>';
 			$s .= '<input id="statusnet-pin" type="text" name="statusnet-pin" />';
 			$s .= '<input id="statusnet-token" type="hidden" name="statusnet-token" value="' . $token . '" />';
 			$s .= '<input id="statusnet-token2" type="hidden" name="statusnet-token2" value="' . $request_token['oauth_token_secret'] . '" />';
 			$s .= '</div><div class="clear"></div>';
-			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
-			$s .= '<h4>' . t('Cancel Connection Process') . '</h4>';
+			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
+			$s .= '<h4>' . L10n::t('Cancel Connection Process') . '</h4>';
 			$s .= '<div id="statusnet-cancel-wrapper">';
-			$s .= '<p>' . t('Current GNU Social API is') . ': ' . $api . '</p>';
-			$s .= '<label id="statusnet-cancel-label" for="statusnet-cancel">' . t('Cancel GNU Social Connection') . '</label>';
+			$s .= '<p>' . L10n::t('Current GNU Social API is') . ': ' . $api . '</p>';
+			$s .= '<label id="statusnet-cancel-label" for="statusnet-cancel">' . L10n::t('Cancel GNU Social Connection') . '</label>';
 			$s .= '<input id="statusnet-cancel" type="checkbox" name="statusnet-disconnect" value="1" />';
 			$s .= '</div><div class="clear"></div>';
-			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
+			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
 		} else {
 			/*			 * *
 			 *  we have an OAuth key / secret pair for the user
@@ -427,44 +428,44 @@ function statusnet_settings(App $a, &$s)
 			 */
 			$connection = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
 			$details = $connection->get('account/verify_credentials');
-			$s .= '<div id="statusnet-info" ><img id="statusnet-avatar" src="' . $details->profile_image_url . '" /><p id="statusnet-info-block">' . t('Currently connected to: ') . '<a href="' . $details->statusnet_profile_url . '" target="_statusnet">' . $details->screen_name . '</a><br /><em>' . $details->description . '</em></p></div>';
-			$s .= '<p>' . t('If enabled all your <strong>public</strong> postings can be posted to the associated GNU Social account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.') . '</p>';
+			$s .= '<div id="statusnet-info" ><img id="statusnet-avatar" src="' . $details->profile_image_url . '" /><p id="statusnet-info-block">' . L10n::t('Currently connected to: ') . '<a href="' . $details->statusnet_profile_url . '" target="_statusnet">' . $details->screen_name . '</a><br /><em>' . $details->description . '</em></p></div>';
+			$s .= '<p>' . L10n::t('If enabled all your <strong>public</strong> postings can be posted to the associated GNU Social account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.') . '</p>';
 			if ($a->user['hidewall']) {
-				$s .= '<p>' . t('<strong>Note</strong>: Due your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to GNU Social will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted.') . '</p>';
+				$s .= '<p>' . L10n::t('<strong>Note</strong>: Due your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to GNU Social will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted.') . '</p>';
 			}
 			$s .= '<div id="statusnet-enable-wrapper">';
-			$s .= '<label id="statusnet-enable-label" for="statusnet-checkbox">' . t('Allow posting to GNU Social') . '</label>';
+			$s .= '<label id="statusnet-enable-label" for="statusnet-checkbox">' . L10n::t('Allow posting to GNU Social') . '</label>';
 			$s .= '<input id="statusnet-checkbox" type="checkbox" name="statusnet-enable" value="1" ' . $checked . '/>';
 			$s .= '<div class="clear"></div>';
-			$s .= '<label id="statusnet-default-label" for="statusnet-default">' . t('Send public postings to GNU Social by default') . '</label>';
+			$s .= '<label id="statusnet-default-label" for="statusnet-default">' . L10n::t('Send public postings to GNU Social by default') . '</label>';
 			$s .= '<input id="statusnet-default" type="checkbox" name="statusnet-default" value="1" ' . $defchecked . '/>';
 			$s .= '<div class="clear"></div>';
 
-			$s .= '<label id="statusnet-mirror-label" for="statusnet-mirror">' . t('Mirror all posts from GNU Social that are no replies or repeated messages') . '</label>';
+			$s .= '<label id="statusnet-mirror-label" for="statusnet-mirror">' . L10n::t('Mirror all posts from GNU Social that are no replies or repeated messages') . '</label>';
 			$s .= '<input id="statusnet-mirror" type="checkbox" name="statusnet-mirror" value="1" ' . $mirrorchecked . '/>';
 
 			$s .= '<div class="clear"></div>';
 			$s .= '</div>';
 
-			$s .= '<label id="statusnet-import-label" for="statusnet-import">' . t('Import the remote timeline') . '</label>';
+			$s .= '<label id="statusnet-import-label" for="statusnet-import">' . L10n::t('Import the remote timeline') . '</label>';
 			//$s .= '<input id="statusnet-import" type="checkbox" name="statusnet-import" value="1" '. $importchecked . '/>';
 
 			$s .= '<select name="statusnet-import" id="statusnet-import" />';
-			$s .= '<option value="0" ' . $importselected[0] . '>' . t("Disabled") . '</option>';
-			$s .= '<option value="1" ' . $importselected[1] . '>' . t("Full Timeline") . '</option>';
-			$s .= '<option value="2" ' . $importselected[2] . '>' . t("Only Mentions") . '</option>';
+			$s .= '<option value="0" ' . $importselected[0] . '>' . L10n::t("Disabled") . '</option>';
+			$s .= '<option value="1" ' . $importselected[1] . '>' . L10n::t("Full Timeline") . '</option>';
+			$s .= '<option value="2" ' . $importselected[2] . '>' . L10n::t("Only Mentions") . '</option>';
 			$s .= '</select>';
 			$s .= '<div class="clear"></div>';
 			/*
-			  $s .= '<label id="statusnet-create_user-label" for="statusnet-create_user">'.t('Automatically create contacts').'</label>';
+			  $s .= '<label id="statusnet-create_user-label" for="statusnet-create_user">'.L10n::t('Automatically create contacts').'</label>';
 			  $s .= '<input id="statusnet-create_user" type="checkbox" name="statusnet-create_user" value="1" '. $create_userchecked . '/>';
 			  $s .= '<div class="clear"></div>';
 			 */
 			$s .= '<div id="statusnet-disconnect-wrapper">';
-			$s .= '<label id="statusnet-disconnect-label" for="statusnet-disconnect">' . t('Clear OAuth configuration') . '</label>';
+			$s .= '<label id="statusnet-disconnect-label" for="statusnet-disconnect">' . L10n::t('Clear OAuth configuration') . '</label>';
 			$s .= '<input id="statusnet-disconnect" type="checkbox" name="statusnet-disconnect" value="1" />';
 			$s .= '</div><div class="clear"></div>';
-			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
+			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
 		}
 	}
 	$s .= '</div><div class="clear"></div>';
@@ -747,7 +748,7 @@ function statusnet_addon_admin(App $a, &$o)
 		foreach ($sites as $id => $s) {
 			$sitesform[] = [
 				'sitename' => ["sitename[$id]", "Site name", $s['sitename'], ""],
-				'apiurl' => ["apiurl[$id]", "Api url", $s['apiurl'], t("Base API Path \x28remember the trailing /\x29")],
+				'apiurl' => ["apiurl[$id]", "Api url", $s['apiurl'], L10n::t("Base API Path \x28remember the trailing /\x29")],
 				'secret' => ["secret[$id]", "Secret", $s['consumersecret'], ""],
 				'key' => ["key[$id]", "Key", $s['consumerkey'], ""],
 				//'applicationname' => Array("applicationname[$id]", "Application name", $s['applicationname'], ""),
@@ -758,16 +759,16 @@ function statusnet_addon_admin(App $a, &$o)
 	/* empty form to add new site */
 	$id++;
 	$sitesform[] = [
-		'sitename' => ["sitename[$id]", t("Site name"), "", ""],
-		'apiurl' => ["apiurl[$id]", "Api url", "", t("Base API Path \x28remember the trailing /\x29")],
-		'secret' => ["secret[$id]", t("Consumer Secret"), "", ""],
-		'key' => ["key[$id]", t("Consumer Key"), "", ""],
-		//'applicationname' => Array("applicationname[$id]", t("Application name"), "", ""),
+		'sitename' => ["sitename[$id]", L10n::t("Site name"), "", ""],
+		'apiurl' => ["apiurl[$id]", "Api url", "", L10n::t("Base API Path \x28remember the trailing /\x29")],
+		'secret' => ["secret[$id]", L10n::t("Consumer Secret"), "", ""],
+		'key' => ["key[$id]", L10n::t("Consumer Key"), "", ""],
+		//'applicationname' => Array("applicationname[$id]", L10n::t("Application name"), "", ""),
 	];
 
 	$t = get_markup_template("admin.tpl", "addon/statusnet/");
 	$o = replace_macros($t, [
-		'$submit' => t('Save Settings'),
+		'$submit' => L10n::t('Save Settings'),
 		'$sites' => $sitesform,
 	]);
 }
