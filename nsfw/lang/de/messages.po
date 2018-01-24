@@ -4,16 +4,17 @@
 # 
 # 
 # Translators:
-# Abrax <webmaster@a-zwenkau.de>, 2014
-# bavatar <tobias.diekershoff@gmx.net>, 2014
+# Andreas H., 2014
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2014-10-15 12:32+0000\n"
-"Last-Translator: Abrax <webmaster@a-zwenkau.de>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"PO-Revision-Date: 2018-01-24 09:14+0000\n"
+"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -26,13 +27,13 @@ msgstr "Not Safe for Work (Filter für ungewollte Inhalte) Einstellungen:"
 
 #: nsfw.php:80
 msgid ""
-"This addon looks in posts for the words/text you specify below, and "
+"This plugin looks in posts for the words/text you specify below, and "
 "collapses any content containing those keywords so it is not displayed at "
 "inappropriate times, such as sexual innuendo that may be improper in a work "
 "setting. It is polite and recommended to tag any content containing nudity "
 "with #NSFW.  This filter can also match any other word/text you specify, and"
 " can thereby be used as a general purpose content filter."
-msgstr "Dieses Addon sucht in Beiträgen nach Wörtern oder Textbauteilen die du weiter unten eingibst, findet es diese Bausteine, dann wird der entsprechende Beitrag zusammengefaltet dargestellt. Auf diese Weise wird verhindert, dass Inhalte, wie z.B. sexuelle Anspielungen, in unpassenden Momenten angezeigt werden. Du solltest den #NSFW Tag für Beiträge verwenden von denen du ausgehen kannst, dass andere sie anstößig finden könnten. Su kannst beliebige Wörter in der Filterliste angeben und ihn so als allgemeinen Filter verwenden."
+msgstr "Dieses Plugin sucht in Beiträgen nach Wörtern oder Textbauteilen die du weiter unten eingibst, findet es diese Bausteine, dann wird der entsprechende Beitrag zusammengefaltet dargestellt. Auf diese Weise wird verhindert, dass Inhalte, wie z.B. sexuelle Anspielungen, in unpassenden Momenten angezeigt werden. Du solltest den #NSFW Tag für Beiträge verwenden von denen du ausgehen kannst, dass andere sie anstößig finden könnten. Du kannst beliebige Wörter in der Filterliste angeben und ihn so als allgemeinen Filter verwenden."
 
 #: nsfw.php:81
 msgid "Enable Content filter"
