@@ -5,6 +5,7 @@
  * Version: 0.2
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  */
+
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -13,10 +14,11 @@ use Friendica\Core\Worker;
 use Friendica\Model\Contact;
 use Friendica\Model\GContact;
 use Friendica\Model\Group;
-use Friendica\Model\User;
 use Friendica\Model\Item;
 use Friendica\Model\Queue;
 use Friendica\Util\Network;
+use Friendica\Model\User;
+use Friendica\Util\Temporal;
 
 require 'addon/pumpio/oauth/http.php';
 require 'addon/pumpio/oauth/oauth_client.php';
@@ -869,7 +871,7 @@ function pumpio_dounlike(&$a, $uid, $self, $post, $own_id) {
 	}
 
 	$r = q("UPDATE `item` SET `deleted` = 1, `unseen` = 1, `changed` = '%s' WHERE `verb` = '%s' AND `uid` = %d AND `contact-id` = %d AND `thr-parent` = '%s'",
-		dbesc(datetime_convert()),
+		dbesc(Temporal::convert()),
 		dbesc(ACTIVITY_LIKE),
 		intval($uid),
 		intval($contactid),
@@ -1000,7 +1002,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false) {
 					`location`, `about`, `writable`, `blocked`, `readonly`, `pending` )
 				VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', %d, 0, 0, 0)",
 			intval($uid),
-			dbesc(datetime_convert()),
+			dbesc(Temporal::convert()),
 			dbesc($contact->url),
 			dbesc(normalise_link($contact->url)),
 			dbesc(str_replace("acct:", "", $contact->id)),
@@ -1209,11 +1211,11 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 	if ($post->object->displayName != "")
 		$postarray['title'] = $post->object->displayName;
 
-	$postarray['created'] = datetime_convert('UTC','UTC',$post->published);
+	$postarray['created'] = Temporal::convert($post->published);
 	if (isset($post->updated))
-		$postarray['edited'] = datetime_convert('UTC','UTC',$post->updated);
+		$postarray['edited'] = Temporal::convert($post->updated);
 	elseif (isset($post->received))
-		$postarray['edited'] = datetime_convert('UTC','UTC',$post->received);
+		$postarray['edited'] = Temporal::convert($post->received);
 	else
 		$postarray['edited'] = $postarray['created'];
 
@@ -1228,7 +1230,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 
 			$postarray['body'] = share_header($share_author, $post->object->author->url,
 							$post->object->author->image->url, "",
-							datetime_convert('UTC','UTC',$post->object->created),
+							Temporal::convert($post->object->created),
 							$post->links->self->href).
 						$postarray['body']."[/share]";
 
@@ -1236,7 +1238,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 			$postarray['body'] = "[share author='".$share_author.
 					"' profile='".$post->object->author->url.
 					"' avatar='".$post->object->author->image->url.
-					"' posted='".datetime_convert('UTC','UTC',$post->object->created).
+					"' posted='".Temporal::convert($post->object->created, 'UTC', 'UTC', ).
 					"' link='".$post->links->self->href."']".$postarray['body']."[/share]";
 			*/
 		} else {

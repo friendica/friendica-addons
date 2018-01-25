@@ -7,10 +7,12 @@
  * Author: Michael Johnston
  * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
+
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Util\Network;
+use Friendica\Util\Temporal;
 
 function ljpost_install() {
     Addon::registerHook('post_local',           'addon/ljpost/ljpost.php', 'ljpost_post_local');
@@ -185,7 +187,7 @@ function ljpost_send(&$a,&$b) {
 		$post = xmlify($post);
 		$tags = ljpost_get_tags($b['tag']);
 
-		$date = datetime_convert('UTC',$tz,$b['created'],'Y-m-d H:i:s');
+		$date = Temporal::convert($b['created'], $tz);
 		$year = intval(substr($date,0,4));
 		$mon  = intval(substr($date,5,2));
 		$day  = intval(substr($date,8,2));

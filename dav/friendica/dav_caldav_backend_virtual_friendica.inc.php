@@ -1,6 +1,7 @@
 <?php
 
 use Friendica\Core\L10n;
+use Friendica\Util\Temporal;
 
 class Sabre_CalDAV_Backend_Friendica extends Sabre_CalDAV_Backend_Virtual
 {
@@ -67,8 +68,8 @@ class Sabre_CalDAV_Backend_Friendica extends Sabre_CalDAV_Backend_Virtual
 			$component = dav_get_eventComponent($vevent);
 
 			if ($row["adjust"]) {
-				$start  = datetime_convert('UTC', date_default_timezone_get(), $row["start"]);
-				$finish = datetime_convert('UTC', date_default_timezone_get(), $row["finish"]);
+				$start  = Temporal::convert($row["start"], date_default_timezone_get());
+				$finish = Temporal::convert($row["finish"], date_default_timezone_get());
 			} else {
 				$start  = $row["start"];
 				$finish = $row["finish"];
@@ -115,8 +116,8 @@ class Sabre_CalDAV_Backend_Friendica extends Sabre_CalDAV_Backend_Virtual
 	private function jqcal2wdcal($row, $calendar, $base_path)
 	{
 		if ($row["adjust"]) {
-			$start  = datetime_convert('UTC', date_default_timezone_get(), $row["start"]);
-			$finish = datetime_convert('UTC', date_default_timezone_get(), $row["finish"]);
+			$start  = Temporal::convert($row["start"], date_default_timezone_get());
+			$finish = Temporal::convert($row["finish"], date_default_timezone_get());
 		} else {
 			$start  = $row["start"];
 			$finish = $row["finish"];
