@@ -682,7 +682,7 @@ function twitter_cron(App $a, $b)
 		$abandon_days = 0;
 	}
 
-	$abandon_limit = date("Y-m-d H:i:s", time() - $abandon_days * 86400);
+	$abandon_limit = date(Temporal::MYSQL, time() - $abandon_days * 86400);
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'import' AND `v` = '1'");
 	if (count($r)) {

@@ -760,7 +760,7 @@ function statusnet_cron(App $a, $b)
 		$abandon_days = 0;
 	}
 
-	$abandon_limit = date("Y-m-d H:i:s", time() - $abandon_days * 86400);
+	$abandon_limit = date(Temporal::MYSQL, time() - $abandon_days * 86400);
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'statusnet' AND `k` = 'import' AND `v` ORDER BY RAND()");
 	if (count($r)) {
