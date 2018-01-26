@@ -871,7 +871,7 @@ function pumpio_dounlike(&$a, $uid, $self, $post, $own_id) {
 	}
 
 	$r = q("UPDATE `item` SET `deleted` = 1, `unseen` = 1, `changed` = '%s' WHERE `verb` = '%s' AND `uid` = %d AND `contact-id` = %d AND `thr-parent` = '%s'",
-		dbesc(Temporal::convert()),
+		dbesc(Temporal::utcNow()),
 		dbesc(ACTIVITY_LIKE),
 		intval($uid),
 		intval($contactid),
@@ -1002,7 +1002,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false) {
 					`location`, `about`, `writable`, `blocked`, `readonly`, `pending` )
 				VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', %d, 0, 0, 0)",
 			intval($uid),
-			dbesc(Temporal::convert()),
+			dbesc(Temporal::utcNow()),
 			dbesc($contact->url),
 			dbesc(normalise_link($contact->url)),
 			dbesc(str_replace("acct:", "", $contact->id)),

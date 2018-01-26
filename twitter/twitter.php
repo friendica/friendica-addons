@@ -1017,7 +1017,7 @@ function twitter_fetch_contact($uid, $contact, $create_user)
 					`location`, `about`, `writable`, `blocked`, `readonly`, `pending`)
 					VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', %d, 0, 0, 0)",
 			intval($uid),
-			dbesc(Temporal::convert()),
+			dbesc(Temporal::utcNow()),
 			dbesc("https://twitter.com/" . $contact->screen_name),
 			dbesc(normalise_link("https://twitter.com/" . $contact->screen_name)),
 			dbesc($contact->screen_name."@twitter.com"),
@@ -1061,9 +1061,9 @@ function twitter_fetch_contact($uid, $contact, $create_user)
 				dbesc($photos[0]),
 				dbesc($photos[1]),
 				dbesc($photos[2]),
-				dbesc(Temporal::convert()),
-				dbesc(Temporal::convert()),
-				dbesc(Temporal::convert()),
+				dbesc(Temporal::utcNow()),
+				dbesc(Temporal::utcNow()),
+				dbesc(Temporal::utcNow()),
 				intval($contact_id)
 			);
 		}
@@ -1096,9 +1096,9 @@ function twitter_fetch_contact($uid, $contact, $create_user)
 					dbesc($photos[0]),
 					dbesc($photos[1]),
 					dbesc($photos[2]),
-					dbesc(Temporal::convert()),
-					dbesc(Temporal::convert()),
-					dbesc(Temporal::convert()),
+					dbesc(Temporal::utcNow()),
+					dbesc(Temporal::utcNow()),
+					dbesc(Temporal::utcNow()),
 					dbesc("https://twitter.com/".$contact->screen_name),
 					dbesc(normalise_link("https://twitter.com/".$contact->screen_name)),
 					dbesc($contact->screen_name."@twitter.com"),

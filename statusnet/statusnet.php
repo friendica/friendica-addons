@@ -936,7 +936,7 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 					`location`, `about`, `writable`, `blocked`, `readonly`, `pending` )
 					VALUES ( %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', %d, 0, 0, 0 ) ",
 			intval($uid),
-			dbesc(Temporal::convert()),
+			dbesc(Temporal::utcNow()),
 			dbesc($contact->statusnet_profile_url),
 			dbesc(normalise_link($contact->statusnet_profile_url)),
 			dbesc(statusnet_address($contact)),
@@ -977,7 +977,7 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 			dbesc($photos[0]),
 			dbesc($photos[1]),
 			dbesc($photos[2]),
-			dbesc(Temporal::convert()),
+			dbesc(Temporal::utcNow()),
 			intval($contact_id)
 		);
 	} else {
@@ -1008,9 +1008,9 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 				dbesc($photos[0]),
 				dbesc($photos[1]),
 				dbesc($photos[2]),
-				dbesc(Temporal::convert()),
-				dbesc(Temporal::convert()),
-				dbesc(Temporal::convert()),
+				dbesc(Temporal::utcNow()),
+				dbesc(Temporal::utcNow()),
+				dbesc(Temporal::utcNow()),
 				dbesc($contact->statusnet_profile_url),
 				dbesc(normalise_link($contact->statusnet_profile_url)),
 				dbesc(statusnet_address($contact)),

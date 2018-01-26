@@ -72,7 +72,7 @@ function testdrive_cron($a,$b) {
 			]);
 
 			q("update user set expire_notification_sent = '%s' where uid = %d",
-				dbesc(Temporal::convert()),
+				dbesc(Temporal::utcNow()),
 				intval($rr['uid'])
 			);
 
