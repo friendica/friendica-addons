@@ -39,7 +39,7 @@ function public_server_register_account($a,$b) {
 		return;
 
 	$r = q("UPDATE user set account_expires_on = '%s', expire = %d where uid = %d",
-		dbesc(Temporal::convert('now +' . $days . ' days')),
+		dbesc(Temporal::utc('now +' . $days . ' days')),
 		intval($days_posts),
 		intval($uid)
 	);
@@ -87,7 +87,7 @@ function public_server_cron($a,$b) {
 		if(count($r)) {
 			foreach($r as $rr)
 				q("update user set account_expires_on = '%s' where uid = %d",
-					dbesc(Temporal::convert('now +' . '6 days')),
+					dbesc(Temporal::utc('now +' . '6 days')),
 					intval($rr['uid'])
 			);
 		}
@@ -100,7 +100,7 @@ function public_server_cron($a,$b) {
 		if(count($r)) {
 			foreach($r as $rr)
 				q("update user set account_expires_on = '%s' where uid = %d",
-					dbesc(Temporal::convert('now +' . '6 days')),
+					dbesc(Temporal::utc('now +' . '6 days')),
 					intval($rr['uid'])
 				);
 		}
@@ -138,7 +138,7 @@ function public_server_login($a,$b) {
 	if(! $days)
 		return;
 	$r = q("UPDATE user set account_expires_on = '%s' where uid = %d and account_expires_on > '0000-00-00 00:00:00'",
-	dbesc(Temporal::convert('now +' . $days . ' days')),
+	dbesc(Temporal::utc('now +' . $days . ' days')),
 	local_user()
 	);
 }

@@ -520,12 +520,12 @@ function fromgplus_fetch($a, $uid) {
 						if (function_exists("share_header"))
 							$post .= share_header($item->object->actor->displayName, $item->object->actor->url,
 										$item->object->actor->image->url, "",
-										Temporal::convert($item->object->published),$item->object->url);
+										Temporal::utc($item->object->published),$item->object->url);
 						else
 							$post .= "[share author='".str_replace("'", "&#039;",$item->object->actor->displayName).
 									"' profile='".$item->object->actor->url.
 									"' avatar='".$item->object->actor->image->url.
-									"' posted='".Temporal::convert($item->object->published).
+									"' posted='".Temporal::utc($item->object->published).
 									"' link='".$item->object->url."']";
 
 						$post .= fromgplus_html2bbcode($item->object->content);

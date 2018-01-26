@@ -983,7 +983,7 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 	} else {
 		// update profile photos once every two weeks as we have no notification of when they change.
 		//$update_photo = (($r[0]['avatar-date'] < Temporal::convert('now -2 days', '', '', )) ? true : false);
-		$update_photo = ($r[0]['avatar-date'] < Temporal::convert('now -12 hours'));
+		$update_photo = ($r[0]['avatar-date'] < Temporal::utc('now -12 hours'));
 
 		// check that we have all the photos, this has been known to fail on occasion
 		if ((!$r[0]['photo']) || (!$r[0]['thumb']) || (!$r[0]['micro']) || ($update_photo)) {
@@ -1197,8 +1197,8 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 	$postarray['body'] = $converted["body"];
 	$postarray['tag'] = $converted["tags"];
 
-	$postarray['created'] = Temporal::convert($content->created_at);
-	$postarray['edited'] = Temporal::convert($content->created_at);
+	$postarray['created'] = Temporal::utc($content->created_at);
+	$postarray['edited'] = Temporal::utc($content->created_at);
 
 	if (is_string($content->place->name)) {
 		$postarray["location"] = $content->place->name;

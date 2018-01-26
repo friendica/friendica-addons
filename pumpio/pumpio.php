@@ -1211,11 +1211,11 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 	if ($post->object->displayName != "")
 		$postarray['title'] = $post->object->displayName;
 
-	$postarray['created'] = Temporal::convert($post->published);
+	$postarray['created'] = Temporal::utc($post->published);
 	if (isset($post->updated))
-		$postarray['edited'] = Temporal::convert($post->updated);
+		$postarray['edited'] = Temporal::utc($post->updated);
 	elseif (isset($post->received))
-		$postarray['edited'] = Temporal::convert($post->received);
+		$postarray['edited'] = Temporal::utc($post->received);
 	else
 		$postarray['edited'] = $postarray['created'];
 
@@ -1230,7 +1230,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 
 			$postarray['body'] = share_header($share_author, $post->object->author->url,
 							$post->object->author->image->url, "",
-							Temporal::convert($post->object->created),
+							Temporal::utc($post->object->created),
 							$post->links->self->href).
 						$postarray['body']."[/share]";
 
