@@ -32,7 +32,7 @@ function getWeather( $loc, $units='metric', $lang='en', $appid='', $cachetime=0)
 	}
     }
     try {
-    	$res = new SimpleXMLElement(Network::fetchURL($url));
+    	$res = new SimpleXMLElement(Network::fetchUrl($url));
     } catch (Exception $e) {
 	info(L10n::t('Error fetching weather data.\nError was: '.$e->getMessage()));
 	return false;

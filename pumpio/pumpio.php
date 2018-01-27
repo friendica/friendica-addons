@@ -1699,7 +1699,7 @@ function pumpio_fetchallcomments(&$a, $uid, $id) {
 
 
 function pumpio_reachable($url) {
-	$data = Network::zFetchURL($url, false, $redirects, ['timeout'=>10]);
+	$data = Network::curl($url, false, $redirects, ['timeout'=>10]);
 	return(intval($data['return_code']) != 0);
 }
 

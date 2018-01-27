@@ -351,11 +351,11 @@ function buffer_send(App $a, &$b)
 
 				//if ($includedlinks) {
 				//	if (isset($post["url"]))
-				//		$post["url"] = Network::shortLink($post["url"]);
+				//		$post["url"] = Network::shortenUrl($post["url"]);
 				//	if (isset($post["image"]))
-				//		$post["image"] = Network::shortLink($post["image"]);
+				//		$post["image"] = Network::shortenUrl($post["image"]);
 				//	if (isset($post["preview"]))
-				//		$post["preview"] = Network::shortLink($post["preview"]);
+				//		$post["preview"] = Network::shortenUrl($post["preview"]);
 				//}
 
 				// Seems like a bug to me

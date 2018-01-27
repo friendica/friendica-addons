@@ -544,7 +544,7 @@ function twitter_post_hook(App $a, &$b)
 
 		// and now tweet it :-)
 		if (strlen($msg) && ($image != "")) {
-			$img_str = Network::fetchURL($image);
+			$img_str = Network::fetchUrl($image);
 
 			$tempfile = tempnam(get_temppath(), "cache");
 			file_put_contents($tempfile, $img_str);
@@ -1185,7 +1185,7 @@ function twitter_expand_entities(App $a, $body, $item, $no_tags = false, $pictur
 			$plain = str_replace($url->url, '', $plain);
 
 			if ($url->url && $url->expanded_url && $url->display_url) {
-				$expanded_url = Network::originalURL($url->expanded_url);
+				$expanded_url = Network::finalUrl($url->expanded_url);
 
 				$oembed_data = OEmbed::fetchURL($expanded_url);
 
@@ -1214,7 +1214,7 @@ function twitter_expand_entities(App $a, $body, $item, $no_tags = false, $pictur
 				} elseif ($oembed_data->type != "link") {
 					$body = str_replace($url->url, "[url=" . $expanded_url . "]" . $expanded_url . "[/url]", $body);
 				} else {
-					$img_str = Network::fetchURL($expanded_url, true, $redirects, 4);
+					$img_str = Network::fetchUrl($expanded_url, true, $redirects, 4);
 
 					$tempfile = tempnam(get_temppath(), "cache");
 					file_put_contents($tempfile, $img_str);

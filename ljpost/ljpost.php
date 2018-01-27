@@ -235,7 +235,7 @@ EOT;
 		logger('ljpost: data: ' . $xml, LOGGER_DATA);
 
 		if ($lj_blog !== 'test') {
-			$x = Network::postURL($lj_blog, $xml, ["Content-Type: text/xml"]);
+			$x = Network::post($lj_blog, $xml, ["Content-Type: text/xml"]);
 		}
 		logger('posted to livejournal: ' . ($x) ? $x : '', LOGGER_DEBUG);
 	}

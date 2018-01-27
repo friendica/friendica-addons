@@ -24,6 +24,7 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Util\Network;
+use Friendica\Util\XML;
 
 function geonames_install() {
 
@@ -112,12 +113,12 @@ function geonames_post_hook($a, &$item) {
 	 *
 	 */
 
-	$s = Network::fetchURL('http://api.geonames.org/findNearbyPlaceName?lat=' . $coords[0] . '&lng=' . $coords[1] . '&username=' . $geo_account);
+	$s = Network::fetchUrl('http://api.geonames.org/findNearbyPlaceName?lat=' . $coords[0] . '&lng=' . $coords[1] . '&username=' . $geo_account);
 
 	if(! $s)
 		return;
 
-	$xml = Network::parseXmlString($s);
+	$xml = XML::parseString($s);
 
 	if($xml->geoname->name && $xml->geoname->countryName)
 		$item['location'] = $xml->geoname->name . ', ' . $xml->geoname->countryName;

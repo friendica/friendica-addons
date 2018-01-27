@@ -314,7 +314,7 @@ EOT;
 		logger('wppost: data: ' . $xml, LOGGER_DATA);
 
 		if ($wp_blog !== 'test') {
-			$x = Network::postURL($wp_blog, $xml);
+			$x = Network::post($wp_blog, $xml);
 		}
 		logger('posted to wordpress: ' . (($x) ? $x : ''), LOGGER_DEBUG);
 	}

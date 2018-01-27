@@ -235,7 +235,7 @@ function statusnet_settings_post(App $a, $post)
 			foreach ($globalsn as $asn) {
 				if ($asn['apiurl'] == $_POST['statusnet-preconf-apiurl']) {
 					$apibase = $asn['apiurl'];
-					$c = Network::fetchURL($apibase . 'statusnet/version.xml');
+					$c = Network::fetchUrl($apibase . 'statusnet/version.xml');
 					if (strlen($c) > 0) {
 						PConfig::set(local_user(), 'statusnet', 'consumerkey', $asn['consumerkey']);
 						PConfig::set(local_user(), 'statusnet', 'consumersecret', $asn['consumersecret']);
@@ -253,7 +253,7 @@ function statusnet_settings_post(App $a, $post)
 				//  we'll check the API Version for that, if we don't get one we'll try to fix the path but will
 				//  resign quickly after this one try to fix the path ;-)
 				$apibase = $_POST['statusnet-baseapi'];
-				$c = Network::fetchURL($apibase . 'statusnet/version.xml');
+				$c = Network::fetchUrl($apibase . 'statusnet/version.xml');
 				if (strlen($c) > 0) {
 					//  ok the API path is correct, let's save the settings
 					PConfig::set(local_user(), 'statusnet', 'consumerkey', $_POST['statusnet-consumerkey']);
@@ -263,7 +263,7 @@ function statusnet_settings_post(App $a, $post)
 				} else {
 					//  the API path is not correct, maybe missing trailing / ?
 					$apibase = $apibase . '/';
-					$c = Network::fetchURL($apibase . 'statusnet/version.xml');
+					$c = Network::fetchUrl($apibase . 'statusnet/version.xml');
 					if (strlen($c) > 0) {
 						//  ok the API path is now correct, let's save the settings
 						PConfig::set(local_user(), 'statusnet', 'consumerkey', $_POST['statusnet-consumerkey']);
@@ -653,7 +653,7 @@ function statusnet_post_hook(App $a, &$b)
 		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {
 			if ((strlen($msgarr["url"]) > 20) &&
 				((strlen($msg . " \n" . $msgarr["url"]) > $max_char))) {
-				$msg .= " \n" . Network::shortLink($msgarr["url"]);
+				$msg .= " \n" . Network::shortenUrl($msgarr["url"]);
 			} else {
 				$msg .= " \n" . $msgarr["url"];
 			}
@@ -662,7 +662,7 @@ function statusnet_post_hook(App $a, &$b)
 		}
 
 		if ($image != "") {
-			$img_str = Network::fetchURL($image);
+			$img_str = Network::fetchUrl($image);
 			$tempfile = tempnam(get_temppath(), "cache");
 			file_put_contents($tempfile, $img_str);
 			$postdata = ["status" => $msg, "media[]" => $tempfile];
@@ -1652,7 +1652,7 @@ function statusnet_convertmsg(App $a, $body, $no_tags = false)
 
 			logger("statusnet_convertmsg: expanding url " . $match[1], LOGGER_DEBUG);
 
-			$expanded_url = Network::originalURL($match[1]);
+			$expanded_url = Network::finalUrl($match[1]);
 
 			logger("statusnet_convertmsg: fetching data for " . $expanded_url, LOGGER_DEBUG);
 
@@ -1676,7 +1676,7 @@ function statusnet_convertmsg(App $a, $body, $no_tags = false)
 			} elseif ($oembed_data->type != "link") {
 				$body = str_replace($search, "[url=" . $expanded_url . "]" . $expanded_url . "[/url]", $body);
 			} else {
-				$img_str = Network::fetchURL($expanded_url, true, $redirects, 4);
+				$img_str = Network::fetchUrl($expanded_url, true, $redirects, 4);
 
 				$tempfile = tempnam(get_temppath(), "cache");
 				file_put_contents($tempfile, $img_str);

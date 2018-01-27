@@ -116,7 +116,7 @@ function openstreetmap_generate_named_map(&$a, &$b)
 		$nomserver = 'http://nominatim.openstreetmap.org/search.php';
 	$args = '?q=' . urlencode($b['location']) . '&format=json';
 
-	$x = Network::zFetchURL($nomserver . $args);
+	$x = Network::curl($nomserver . $args);
 	if($x['success']) {
 		$j = json_decode($x['body'],true);
 

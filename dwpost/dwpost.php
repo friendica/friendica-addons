@@ -222,7 +222,7 @@ EOT;
 		logger('dwpost: data: ' . $xml, LOGGER_DATA);
 
 		if($dw_blog !== 'test') {
-			$x = Network::postURL($dw_blog, $xml, ["Content-Type: text/xml"]);
+			$x = Network::post($dw_blog, $xml, ["Content-Type: text/xml"]);
 		}
 		logger('posted to dreamwidth: ' . ($x) ? $x : '', LOGGER_DEBUG);
 	}

@@ -156,7 +156,7 @@ function mailstream_do_images($a, &$item, &$attachments) {
 		$redirects;
 		$cookiejar = tempnam(get_temppath(), 'cookiejar-mailstream-');
 		$attachments[$url] = [
-			'data' => Network::fetchURL($url, true, $redirects, 0, null, $cookiejar),
+			'data' => Network::fetchUrl($url, true, $redirects, 0, null, $cookiejar),
 			'guid' => hash("crc32", $url),
 			'filename' => basename($url),
 			'type' => $a->get_curl_content_type()];

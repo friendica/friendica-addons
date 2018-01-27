@@ -659,7 +659,7 @@ function jappixmini_cron(App $a, $d)
 
 			try {
 				// send request
-				$answer_json = Network::fetchURL($url);
+				$answer_json = Network::fetchUrl($url);
 
 				// parse answer
 				$answer = json_decode($answer_json);

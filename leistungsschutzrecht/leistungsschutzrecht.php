@@ -70,7 +70,7 @@ function leistungsschutzrecht_fetchsites()
 {
 	// This list works - but question is how current it is
 	$url = "http://leistungsschutzrecht-stoppen.d-64.org/blacklist.txt";
-	$sitelist = Network::fetchURL($url);
+	$sitelist = Network::fetchUrl($url);
 	$siteurls = explode(',', $sitelist);
 
 	$whitelist = ['tagesschau.de', 'heute.de', 'wdr.de'];
@@ -89,7 +89,7 @@ function leistungsschutzrecht_fetchsites()
 
 	$url = "http://www.vg-media.de/lizenzen/digitale-verlegerische-angebote/wahrnehmungsberechtigte-digitale-verlegerische-angebote.html";
 
-	$site = Network::fetchURL($url);
+	$site = Network::fetchUrl($url);
 
 	$doc = new DOMDocument();
 	@$doc->loadHTML($site);

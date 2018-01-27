@@ -32,7 +32,7 @@ function fortunate_fetch(&$a, &$b)
 		. $a->get_baseurl() . '/addon/fortunate/fortunate.css' . '" media="all" />' . "\r\n";
 
 	if (FORTUNATE_SERVER != 'hostname.com') {
-		$s = Network::fetchURL('http://' . FORTUNATE_SERVER . '/cookie.php?numlines=2&equal=1&rand=' . mt_rand());
+		$s = Network::fetchUrl('http://' . FORTUNATE_SERVER . '/cookie.php?numlines=2&equal=1&rand=' . mt_rand());
 		$b .= '<div class="fortunate">' . $s . '</div>';
 	}
 }
