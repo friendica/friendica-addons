@@ -68,6 +68,7 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Model\User;
+use Friendica\Util\Network;
 
 function jappixmini_install()
 {
@@ -658,7 +659,7 @@ function jappixmini_cron(App $a, $d)
 
 			try {
 				// send request
-				$answer_json = fetch_url($url);
+				$answer_json = Network::fetchURL($url);
 
 				// parse answer
 				$answer = json_decode($answer_json);

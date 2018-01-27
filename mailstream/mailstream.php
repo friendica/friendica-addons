@@ -10,6 +10,7 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBM;
+use Friendica\Util\Network;
 
 function mailstream_install() {
 	Addon::registerHook('addon_settings', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings');
@@ -155,7 +156,7 @@ function mailstream_do_images($a, &$item, &$attachments) {
 		$redirects;
 		$cookiejar = tempnam(get_temppath(), 'cookiejar-mailstream-');
 		$attachments[$url] = [
-			'data' => fetch_url($url, true, $redirects, 0, Null, $cookiejar),
+			'data' => Network::fetchURL($url, true, $redirects, 0, null, $cookiejar),
 			'guid' => hash("crc32", $url),
 			'filename' => basename($url),
 			'type' => $a->get_curl_content_type()];

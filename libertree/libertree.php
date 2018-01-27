@@ -8,6 +8,7 @@
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Util\Network;
 
 function libertree_install() {
     Addon::registerHook('post_local',           'addon/libertree/libertree.php', 'libertree_post_local');
@@ -229,9 +230,7 @@ function libertree_send(&$a,&$b) {
 		//	'token' => $ltree_api_token
 		];
 
-		$result = post_url($ltree_blog,$params);
+		$result = Network::postURL($ltree_blog, $params);
 		logger('libertree: ' . $result);
-
 	}
 }
-

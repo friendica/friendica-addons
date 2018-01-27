@@ -74,6 +74,7 @@ use Friendica\Model\Photo;
 use Friendica\Model\Queue;
 use Friendica\Model\User;
 use Friendica\Object\Image;
+use Friendica\Util\Network;
 
 require_once 'include/enotify.php';
 
@@ -424,8 +425,6 @@ function twitter_action(App $a, $uid, $pid, $action)
 function twitter_post_hook(App $a, &$b)
 {
 	// Post to Twitter
-	require_once "include/network.php";
-
 	if (!PConfig::get($b["uid"], 'twitter', 'import')
 		&& ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))) {
 		return;
@@ -545,7 +544,7 @@ function twitter_post_hook(App $a, &$b)
 
 		// and now tweet it :-)
 		if (strlen($msg) && ($image != "")) {
-			$img_str = fetch_url($image);
+			$img_str = Network::fetchURL($image);
 
 			$tempfile = tempnam(get_temppath(), "cache");
 			file_put_contents($tempfile, $img_str);
@@ -1172,8 +1171,6 @@ function twitter_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 
 function twitter_expand_entities(App $a, $body, $item, $no_tags = false, $picture)
 {
-	require_once "include/network.php";
-
 	$tags = "";
 
 	$plain = $body;
@@ -1184,11 +1181,11 @@ function twitter_expand_entities(App $a, $body, $item, $no_tags = false, $pictur
 		$footerlink = "";
 		$footer = "";
 
-		foreach ($item->entities->urls AS $url) {
+		foreach ($item->entities->urls as $url) {
 			$plain = str_replace($url->url, '', $plain);
 
 			if ($url->url && $url->expanded_url && $url->display_url) {
-				$expanded_url = original_url($url->expanded_url);
+				$expanded_url = Network::originalURL($url->expanded_url);
 
 				$oembed_data = OEmbed::fetchURL($expanded_url);
 
@@ -1217,7 +1214,7 @@ function twitter_expand_entities(App $a, $body, $item, $no_tags = false, $pictur
 				} elseif ($oembed_data->type != "link") {
 					$body = str_replace($url->url, "[url=" . $expanded_url . "]" . $expanded_url . "[/url]", $body);
 				} else {
-					$img_str = fetch_url($expanded_url, true, $redirects, 4);
+					$img_str = Network::fetchURL($expanded_url, true, $redirects, 4);
 
 					$tempfile = tempnam(get_temppath(), "cache");
 					file_put_contents($tempfile, $img_str);

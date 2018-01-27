@@ -272,10 +272,8 @@ function buffer_send(App $a, &$b)
 	$client_secret = Config::get("buffer", "client_secret");
 	$access_token = PConfig::get($b['uid'], "buffer","access_token");
 
-	if($access_token) {
+	if ($access_token) {
 		$buffer = new BufferApp($client_id, $client_secret, $callback_url, $access_token);
-
-		require_once 'include/network.php';
 
 		$profiles = $buffer->go('/profiles');
 		if (is_array($profiles)) {
@@ -353,11 +351,11 @@ function buffer_send(App $a, &$b)
 
 				//if ($includedlinks) {
 				//	if (isset($post["url"]))
-				//		$post["url"] = short_link($post["url"]);
+				//		$post["url"] = Network::shortLink($post["url"]);
 				//	if (isset($post["image"]))
-				//		$post["image"] = short_link($post["image"]);
+				//		$post["image"] = Network::shortLink($post["image"]);
 				//	if (isset($post["preview"]))
-				//		$post["preview"] = short_link($post["preview"]);
+				//		$post["preview"] = Network::shortLink($post["preview"]);
 				//}
 
 				// Seems like a bug to me
