@@ -10,6 +10,7 @@
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Util\Network;
 
 function ijpost_install() {
     Addon::registerHook('post_local',           'addon/ijpost/ijpost.php', 'ijpost_post_local');
@@ -219,8 +220,9 @@ EOT;
 
 		logger('ijpost: data: ' . $xml, LOGGER_DATA);
 
-		if($ij_blog !== 'test')
-			$x = post_url($ij_blog,$xml,["Content-Type: text/xml"]);
+		if($ij_blog !== 'test') {
+			$x = Network::post($ij_blog, $xml, ["Content-Type: text/xml"]);
+		}
 		logger('posted to insanejournal: ' . ($x) ? $x : '', LOGGER_DEBUG);
 
 	}

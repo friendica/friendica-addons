@@ -16,6 +16,7 @@ use Friendica\Model\Group;
 use Friendica\Model\User;
 use Friendica\Model\Item;
 use Friendica\Model\Queue;
+use Friendica\Util\Network;
 
 require 'addon/pumpio/oauth/http.php';
 require 'addon/pumpio/oauth/oauth_client.php';
@@ -1698,7 +1699,7 @@ function pumpio_fetchallcomments(&$a, $uid, $id) {
 
 
 function pumpio_reachable($url) {
-	$data = z_fetch_url($url, false, $redirects, ['timeout'=>10]);
+	$data = Network::curl($url, false, $redirects, ['timeout'=>10]);
 	return(intval($data['return_code']) != 0);
 }
 

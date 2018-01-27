@@ -14,6 +14,7 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Object\Image;
+use Friendica\Util\Network;
 
 require_once 'mod/share.php';
 require_once 'mod/parse_url.php';
@@ -313,8 +314,7 @@ function fromgplus_cleantext($text) {
 }
 
 function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
-	require_once("include/items.php");
-	require_once("include/network.php");
+	require_once 'include/items.php';
 
 	$post = "";
 	$quote = "";
@@ -325,13 +325,13 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 		switch($attachment->objectType) {
 			case "video":
 				$pagedata["type"] = "video";
-				$pagedata["url"] = original_url($attachment->url);
+				$pagedata["url"] = Network::finalUrl($attachment->url);
 				$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
 				break;
 
 			case "article":
 				$pagedata["type"] = "link";
-				$pagedata["url"] = original_url($attachment->url);
+				$pagedata["url"] = Network::finalUrl($attachment->url);
 				$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
 
 				$images = fromgplus_cleanupgoogleproxy($attachment->fullImage, $attachment->image);
@@ -382,7 +382,7 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 				break;
 
 			case "photo-album":
-				$pagedata["url"] = original_url($attachment->url);
+				$pagedata["url"] = Network::finalUrl($attachment->url);
 				$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
 				$post .= "\n\n[bookmark=".$pagedata["url"]."]".$pagedata["title"]."[/bookmark]\n";
 
@@ -403,7 +403,7 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 
 			case "album":
 				$pagedata["type"] = "link";
-				$pagedata["url"] = original_url($attachment->url);
+				$pagedata["url"] = Network::finalUrl($attachment->url);
 				$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
 
 				$thumb = $attachment->thumbnails[0];
@@ -416,7 +416,7 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 				break;
 
 			case "audio":
-				$pagedata["url"] = original_url($attachment->url);
+				$pagedata["url"] = Network::finalUrl($attachment->url);
 				$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
 				$post .= "\n\n[bookmark=".$pagedata["url"]."]".$pagedata["title"]."[/bookmark]\n";
 				break;
@@ -441,7 +441,7 @@ function fromgplus_fetch($a, $uid) {
 	$account = PConfig::get($uid,'fromgplus','account');
 	$key = Config::get('fromgplus','key');
 
-	$result = fetch_url("https://www.googleapis.com/plus/v1/people/".$account."/activities/public?alt=json&pp=1&key=".$key."&maxResults=".$maxfetch);
+	$result = Network::fetchUrl("https://www.googleapis.com/plus/v1/people/".$account."/activities/public?alt=json&pp=1&key=".$key."&maxResults=".$maxfetch);
 	//$result = file_get_contents("google.txt");
 	//file_put_contents("google.txt", $result);
 

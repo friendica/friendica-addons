@@ -8,6 +8,7 @@
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Util\Network;
 
 function blogger_install()
 {
@@ -205,7 +206,7 @@ EOT;
 		logger('blogger: data: ' . $xml, LOGGER_DATA);
 
 		if ($bl_blog !== 'test') {
-			$x = post_url($bl_blog, $xml);
+			$x = Network::post($bl_blog, $xml);
 		}
 
 		logger('posted to blogger: ' . (($x) ? $x : ''), LOGGER_DEBUG);

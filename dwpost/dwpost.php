@@ -10,6 +10,7 @@
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Util\Network;
 
 function dwpost_install() {
 	Addon::registerHook('post_local',           'addon/dwpost/dwpost.php', 'dwpost_post_local');
@@ -220,10 +221,10 @@ EOT;
 
 		logger('dwpost: data: ' . $xml, LOGGER_DATA);
 
-		if($dw_blog !== 'test')
-			$x = post_url($dw_blog,$xml,["Content-Type: text/xml"]);
+		if($dw_blog !== 'test') {
+			$x = Network::post($dw_blog, $xml, ["Content-Type: text/xml"]);
+		}
 		logger('posted to dreamwidth: ' . ($x) ? $x : '', LOGGER_DEBUG);
-
 	}
 }
 

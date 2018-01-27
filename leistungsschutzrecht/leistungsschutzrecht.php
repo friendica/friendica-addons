@@ -7,6 +7,7 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Util\Network;
 
 function leistungsschutzrecht_install() {
 	Addon::registerHook('cron', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_cron');
@@ -65,18 +66,17 @@ function leistungsschutzrecht_cuttext($text) {
 	return $text;
 }
 
-function leistungsschutzrecht_fetchsites() {
-	require_once("include/network.php");
-
+function leistungsschutzrecht_fetchsites()
+{
 	// This list works - but question is how current it is
 	$url = "http://leistungsschutzrecht-stoppen.d-64.org/blacklist.txt";
-	$sitelist = fetch_url($url);
+	$sitelist = Network::fetchUrl($url);
 	$siteurls = explode(',', $sitelist);
 
 	$whitelist = ['tagesschau.de', 'heute.de', 'wdr.de'];
 
 	$sites = [];
-	foreach ($siteurls AS $site) {
+	foreach ($siteurls as $site) {
 		if (!in_array($site, $whitelist)) {
 			$sites[$site] = $site;
 		}
@@ -89,7 +89,7 @@ function leistungsschutzrecht_fetchsites() {
 
 	$url = "http://www.vg-media.de/lizenzen/digitale-verlegerische-angebote/wahrnehmungsberechtigte-digitale-verlegerische-angebote.html";
 
-	$site = fetch_url($url);
+	$site = Network::fetchUrl($url);
 
 	$doc = new DOMDocument();
 	@$doc->loadHTML($site);

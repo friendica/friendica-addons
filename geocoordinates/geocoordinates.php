@@ -9,6 +9,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Util\Network;
 
 function geocoordinates_install()
 {
@@ -50,7 +51,7 @@ function geocoordinates_resolve_item(&$item)
 		return;
 	}
 
-	$s = fetch_url("https://api.opencagedata.com/geocode/v1/json?q=".$coords[0].",".$coords[1]."&key=".$key."&language=".$language);
+	$s = Network::fetchUrl("https://api.opencagedata.com/geocode/v1/json?q=".$coords[0].",".$coords[1]."&key=".$key."&language=".$language);
 
 	if (!$s) {
 		logger("API could not be queried", LOGGER_DEBUG);

@@ -10,6 +10,7 @@
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Util\Network;
 
 function ljpost_install() {
     Addon::registerHook('post_local',           'addon/ljpost/ljpost.php', 'ljpost_post_local');
@@ -233,10 +234,10 @@ EOT;
 
 		logger('ljpost: data: ' . $xml, LOGGER_DATA);
 
-		if($lj_blog !== 'test')
-			$x = post_url($lj_blog,$xml,["Content-Type: text/xml"]);
+		if ($lj_blog !== 'test') {
+			$x = Network::post($lj_blog, $xml, ["Content-Type: text/xml"]);
+		}
 		logger('posted to livejournal: ' . ($x) ? $x : '', LOGGER_DEBUG);
-
 	}
 }
 

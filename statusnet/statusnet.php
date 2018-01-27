@@ -57,6 +57,7 @@ use Friendica\Model\GContact;
 use Friendica\Model\Group;
 use Friendica\Model\Photo;
 use Friendica\Model\User;
+use Friendica\Util\Network;
 
 class StatusNetOAuth extends TwitterOAuth
 {
@@ -234,7 +235,7 @@ function statusnet_settings_post(App $a, $post)
 			foreach ($globalsn as $asn) {
 				if ($asn['apiurl'] == $_POST['statusnet-preconf-apiurl']) {
 					$apibase = $asn['apiurl'];
-					$c = fetch_url($apibase . 'statusnet/version.xml');
+					$c = Network::fetchUrl($apibase . 'statusnet/version.xml');
 					if (strlen($c) > 0) {
 						PConfig::set(local_user(), 'statusnet', 'consumerkey', $asn['consumerkey']);
 						PConfig::set(local_user(), 'statusnet', 'consumersecret', $asn['consumersecret']);
@@ -252,7 +253,7 @@ function statusnet_settings_post(App $a, $post)
 				//  we'll check the API Version for that, if we don't get one we'll try to fix the path but will
 				//  resign quickly after this one try to fix the path ;-)
 				$apibase = $_POST['statusnet-baseapi'];
-				$c = fetch_url($apibase . 'statusnet/version.xml');
+				$c = Network::fetchUrl($apibase . 'statusnet/version.xml');
 				if (strlen($c) > 0) {
 					//  ok the API path is correct, let's save the settings
 					PConfig::set(local_user(), 'statusnet', 'consumerkey', $_POST['statusnet-consumerkey']);
@@ -262,7 +263,7 @@ function statusnet_settings_post(App $a, $post)
 				} else {
 					//  the API path is not correct, maybe missing trailing / ?
 					$apibase = $apibase . '/';
-					$c = fetch_url($apibase . 'statusnet/version.xml');
+					$c = Network::fetchUrl($apibase . 'statusnet/version.xml');
 					if (strlen($c) > 0) {
 						//  ok the API path is now correct, let's save the settings
 						PConfig::set(local_user(), 'statusnet', 'consumerkey', $_POST['statusnet-consumerkey']);
@@ -641,7 +642,6 @@ function statusnet_post_hook(App $a, &$b)
 		PConfig::set($b['uid'], 'statusnet', 'max_char', $max_char);
 
 		$tempfile = "";
-		require_once "include/network.php";
 		$msgarr = BBCode::toPlaintext($b, $max_char, true, 7);
 		$msg = $msgarr["text"];
 
@@ -653,7 +653,7 @@ function statusnet_post_hook(App $a, &$b)
 		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {
 			if ((strlen($msgarr["url"]) > 20) &&
 				((strlen($msg . " \n" . $msgarr["url"]) > $max_char))) {
-				$msg .= " \n" . short_link($msgarr["url"]);
+				$msg .= " \n" . Network::shortenUrl($msgarr["url"]);
 			} else {
 				$msg .= " \n" . $msgarr["url"];
 			}
@@ -662,7 +662,7 @@ function statusnet_post_hook(App $a, &$b)
 		}
 
 		if ($image != "") {
-			$img_str = fetch_url($image);
+			$img_str = Network::fetchUrl($image);
 			$tempfile = tempnam(get_temppath(), "cache");
 			file_put_contents($tempfile, $img_str);
 			$postdata = ["status" => $msg, "media[]" => $tempfile];
@@ -1613,7 +1613,7 @@ function statusnet_complete_conversation(App $a, $uid, $self, $create_user, $nic
 	if (is_array($items)) {
 		$posts = array_reverse($items);
 
-		foreach ($posts AS $post) {
+		foreach ($posts as $post) {
 			$postarray = statusnet_createpost($a, $uid, $post, $self, false, false);
 
 			if (trim($postarray['body']) == "") {
@@ -1635,7 +1635,6 @@ function statusnet_complete_conversation(App $a, $uid, $self, $create_user, $nic
 function statusnet_convertmsg(App $a, $body, $no_tags = false)
 {
 	require_once "include/items.php";
-	require_once "include/network.php";
 
 	$body = preg_replace("=\[url\=https?://([0-9]*).([0-9]*).([0-9]*).([0-9]*)/([0-9]*)\](.*?)\[\/url\]=ism", "$1.$2.$3.$4/$5", $body);
 
@@ -1653,7 +1652,7 @@ function statusnet_convertmsg(App $a, $body, $no_tags = false)
 
 			logger("statusnet_convertmsg: expanding url " . $match[1], LOGGER_DEBUG);
 
-			$expanded_url = original_url($match[1]);
+			$expanded_url = Network::finalUrl($match[1]);
 
 			logger("statusnet_convertmsg: fetching data for " . $expanded_url, LOGGER_DEBUG);
 
@@ -1677,7 +1676,7 @@ function statusnet_convertmsg(App $a, $body, $no_tags = false)
 			} elseif ($oembed_data->type != "link") {
 				$body = str_replace($search, "[url=" . $expanded_url . "]" . $expanded_url . "[/url]", $body);
 			} else {
-				$img_str = fetch_url($expanded_url, true, $redirects, 4);
+				$img_str = Network::fetchUrl($expanded_url, true, $redirects, 4);
 
 				$tempfile = tempnam(get_temppath(), "cache");
 				file_put_contents($tempfile, $img_str);

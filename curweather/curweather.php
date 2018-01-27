@@ -9,7 +9,6 @@
  *
  */
 
-require_once 'include/network.php';
 require_once 'mod/proxy.php';
 require_once 'include/text.php';
 
@@ -18,6 +17,7 @@ use Friendica\Core\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Util\Network;
 
 //  get the weather data from OpenWeatherMap
 function getWeather( $loc, $units='metric', $lang='en', $appid='', $cachetime=0) {
@@ -32,7 +32,7 @@ function getWeather( $loc, $units='metric', $lang='en', $appid='', $cachetime=0)
 	}
     }
     try {
-    	$res = new SimpleXMLElement(fetch_url($url));
+    	$res = new SimpleXMLElement(Network::fetchUrl($url));
     } catch (Exception $e) {
 	info(L10n::t('Error fetching weather data.\nError was: '.$e->getMessage()));
 	return false;

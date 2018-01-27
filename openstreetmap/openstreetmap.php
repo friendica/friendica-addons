@@ -12,6 +12,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Util\Network;
 
 function openstreetmap_install()
 {
@@ -115,7 +116,7 @@ function openstreetmap_generate_named_map(&$a, &$b)
 		$nomserver = 'http://nominatim.openstreetmap.org/search.php';
 	$args = '?q=' . urlencode($b['location']) . '&format=json';
 
-	$x = z_fetch_url($nomserver . $args);
+	$x = Network::curl($nomserver . $args);
 	if($x['success']) {
 		$j = json_decode($x['body'],true);
 
