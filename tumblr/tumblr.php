@@ -10,6 +10,7 @@
 require_once 'library/OAuth1.php';
 require_once 'addon/tumblr/tumblroauth/tumblroauth.php';
 
+use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -358,9 +359,8 @@ function tumblr_send(&$a,&$b) {
 			$tags = implode(',',$tag_arr);
 
 		$title = trim($b['title']);
-		require_once('include/plaintext.php');
 
-		$siteinfo = get_attached_data($b["body"]);
+		$siteinfo = Plaintext::getAttachedData($b["body"]);
 
 		$params = [
 			'state' => 'published',

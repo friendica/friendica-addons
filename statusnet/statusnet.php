@@ -47,6 +47,7 @@ require_once 'include/enotify.php';
 
 use Friendica\App;
 use Friendica\Content\OEmbed;
+use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -639,13 +640,12 @@ function statusnet_post_hook(App $a, &$b)
 		PConfig::set($b['uid'], 'statusnet', 'max_char', $max_char);
 
 		$tempfile = "";
-		require_once "include/plaintext.php";
 		require_once "include/network.php";
-		$msgarr = plaintext($b, $max_char, true, 7);
+		$msgarr = Plaintext::toPlaintext($b, $max_char, true, 7);
 		$msg = $msgarr["text"];
 
 		if (($msg == "") && isset($msgarr["title"]))
-			$msg = shortenmsg($msgarr["title"], $max_char - 50);
+			$msg = Plaintext::shortenMsg($msgarr["title"], $max_char - 50);
 
 		$image = "";
 
@@ -785,7 +785,6 @@ function statusnet_prepare_body(App $a, &$b)
 			$max_char = 140;
 		}
 
-		require_once "include/plaintext.php";
 		$item = $b["item"];
 		$item["plink"] = $a->get_baseurl() . "/display/" . $a->user["nickname"] . "/" . $item["parent"];
 
@@ -810,7 +809,7 @@ function statusnet_prepare_body(App $a, &$b)
 			}
 		}
 
-		$msgarr = plaintext($item, $max_char, true, 7);
+		$msgarr = Plaintext::toPlaintext($item, $max_char, true, 7);
 		$msg = $msgarr["text"];
 
 		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {

@@ -5,6 +5,7 @@
  * Version: 1.1
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
+use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -218,18 +219,16 @@ function wppost_send(&$a,&$b) {
 		$wp_backlink_text = L10n::t('Read the orig­i­nal post and com­ment stream on Friendica');
 	}
 
-	if($wp_username && $wp_password && $wp_blog) {
-
-		require_once('include/bbcode.php');
-		require_once('include/html2plain.php');
-		require_once('include/plaintext.php');
+	if ($wp_username && $wp_password && $wp_blog) {
+		require_once 'include/bbcode.php';
+		require_once 'include/html2plain.php';
 
 		$wptitle = trim($b['title']);
 
-		if (intval(PConfig::get($b['uid'],'wppost','shortcheck'))) {
+		if (intval(PConfig::get($b['uid'], 'wppost', 'shortcheck'))) {
 			// Checking, if its a post that is worth a blog post
 			$postentry = false;
-			$siteinfo = get_attached_data($b["body"]);
+			$siteinfo = Plaintext::getAttachedData($b["body"]);
 
 			// Is it a link to an aricle, a video or a photo?
 			if (isset($siteinfo["type"])) {
@@ -256,7 +255,7 @@ function wppost_send(&$a,&$b) {
 		// If the title is empty then try to guess
 		if ($wptitle == '') {
 			// Fetch information about the post
-			$siteinfo = get_attached_data($b["body"]);
+			$siteinfo = Plaintext::getAttachedData($b["body"]);
 			if (isset($siteinfo["title"])) {
 				$wptitle = $siteinfo["title"];
 			}
