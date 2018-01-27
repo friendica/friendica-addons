@@ -8,6 +8,7 @@
 require 'addon/buffer/bufferapp.php';
 
 use Friendica\App;
+use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -273,8 +274,7 @@ function buffer_send(App $a, &$b)
 	if($access_token) {
 		$buffer = new BufferApp($client_id, $client_secret, $callback_url, $access_token);
 
-		require_once("include/plaintext.php");
-		require_once("include/network.php");
+		require_once 'include/network.php';
 
 		$profiles = $buffer->go('/profiles');
 		if (is_array($profiles)) {
@@ -339,7 +339,7 @@ function buffer_send(App $a, &$b)
 					$item["body"] = preg_replace("(\[s\](.*?)\[\/s\])ism",'-$1-',$item["body"]);
 				}
 
-				$post = plaintext($item, $limit, $includedlinks, $htmlmode);
+				$post = BBCode::toPlaintext($item, $limit, $includedlinks, $htmlmode);
 				logger("buffer_send: converted message ".$b["id"]." result: ".print_r($post, true), LOGGER_DEBUG);
 
 				// The image proxy is used as a sanitizer. Buffer seems to be really picky about pictures
@@ -365,8 +365,8 @@ function buffer_send(App $a, &$b)
 				if (($profile->service == "twitter") && isset($post["url"]) && ($post["type"] != "photo"))
 					$post["text"] .= " ".$post["url"];
 				elseif (($profile->service == "appdotnet") && isset($post["url"]) && isset($post["title"]) && ($post["type"] != "photo")) {
-					$post["title"] = shortenmsg($post["title"], 90);
-					$post["text"] = shortenmsg($post["text"], $limit - (24 + strlen($post["title"])));
+					$post["title"] = BBCode::shortenMsg($post["title"], 90);
+					$post["text"] = BBCode::shortenMsg($post["text"], $limit - (24 + strlen($post["title"])));
 					$post["text"] .= "\n[".$post["title"]."](".$post["url"].")";
 				} elseif (($profile->service == "appdotnet") && isset($post["url"]) && ($post["type"] != "photo"))
 					$post["text"] .= " ".$post["url"];
