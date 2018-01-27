@@ -47,7 +47,7 @@ require_once 'include/enotify.php';
 
 use Friendica\App;
 use Friendica\Content\OEmbed;
-use Friendica\Content\Text\Plaintext;
+use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -641,11 +641,11 @@ function statusnet_post_hook(App $a, &$b)
 
 		$tempfile = "";
 		require_once "include/network.php";
-		$msgarr = Plaintext::toPlaintext($b, $max_char, true, 7);
+		$msgarr = BBCode::toPlaintext($b, $max_char, true, 7);
 		$msg = $msgarr["text"];
 
 		if (($msg == "") && isset($msgarr["title"]))
-			$msg = Plaintext::shortenMsg($msgarr["title"], $max_char - 50);
+			$msg = BBCode::shortenMsg($msgarr["title"], $max_char - 50);
 
 		$image = "";
 
@@ -809,7 +809,7 @@ function statusnet_prepare_body(App $a, &$b)
 			}
 		}
 
-		$msgarr = Plaintext::toPlaintext($item, $max_char, true, 7);
+		$msgarr = BBCode::toPlaintext($item, $max_char, true, 7);
 		$msg = $msgarr["text"];
 
 		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {

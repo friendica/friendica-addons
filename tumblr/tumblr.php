@@ -10,7 +10,7 @@
 require_once 'library/OAuth1.php';
 require_once 'addon/tumblr/tumblroauth/tumblroauth.php';
 
-use Friendica\Content\Text\Plaintext;
+use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -360,7 +360,7 @@ function tumblr_send(&$a,&$b) {
 
 		$title = trim($b['title']);
 
-		$siteinfo = Plaintext::getAttachedData($b["body"]);
+		$siteinfo = BBCode::getAttachedData($b["body"]);
 
 		$params = [
 			'state' => 'published',

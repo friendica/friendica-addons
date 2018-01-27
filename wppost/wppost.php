@@ -5,7 +5,7 @@
  * Version: 1.1
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
-use Friendica\Content\Text\Plaintext;
+use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -228,7 +228,7 @@ function wppost_send(&$a,&$b) {
 		if (intval(PConfig::get($b['uid'], 'wppost', 'shortcheck'))) {
 			// Checking, if its a post that is worth a blog post
 			$postentry = false;
-			$siteinfo = Plaintext::getAttachedData($b["body"]);
+			$siteinfo = BBCode::getAttachedData($b["body"]);
 
 			// Is it a link to an aricle, a video or a photo?
 			if (isset($siteinfo["type"])) {
@@ -255,7 +255,7 @@ function wppost_send(&$a,&$b) {
 		// If the title is empty then try to guess
 		if ($wptitle == '') {
 			// Fetch information about the post
-			$siteinfo = Plaintext::getAttachedData($b["body"]);
+			$siteinfo = BBCode::getAttachedData($b["body"]);
 			if (isset($siteinfo["title"])) {
 				$wptitle = $siteinfo["title"];
 			}

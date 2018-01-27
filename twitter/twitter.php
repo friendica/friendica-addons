@@ -61,7 +61,7 @@
 
 use Friendica\App;
 use Friendica\Content\OEmbed;
-use Friendica\Content\Text\Plaintext;
+use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -525,11 +525,11 @@ function twitter_post_hook(App $a, &$b)
 		$tweet = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
 		$max_char = 280;
-		$msgarr = Plaintext::toPlaintext($b, $max_char, true, 8);
+		$msgarr = BBCode::toPlaintext($b, $max_char, true, 8);
 		$msg = $msgarr["text"];
 
 		if (($msg == "") && isset($msgarr["title"])) {
-			$msg = Plaintext::shortenMsg($msgarr["title"], $max_char - 50);
+			$msg = BBCode::shortenMsg($msgarr["title"], $max_char - 50);
 		}
 
 		$image = "";
@@ -593,11 +593,11 @@ function twitter_post_hook(App $a, &$b)
 		if (strlen($msg) && ($image == "")) {
 // -----------------
 			$max_char = 280;
-			$msgarr = Plaintext::toPlaintext($b, $max_char, true, 8);
+			$msgarr = BBCode::toPlaintext($b, $max_char, true, 8);
 			$msg = $msgarr["text"];
 
 			if (($msg == "") && isset($msgarr["title"])) {
-				$msg = Plaintext::shortenMsg($msgarr["title"], $max_char - 50);
+				$msg = BBCode::shortenMsg($msgarr["title"], $max_char - 50);
 			}
 
 			if (isset($msgarr["url"])) {
@@ -789,7 +789,7 @@ function twitter_prepare_body(App $a, &$b)
 			}
 		}
 
-		$msgarr = Plaintext::toPlaintext($item, $max_char, true, 8);
+		$msgarr = BBCode::toPlaintext($item, $max_char, true, 8);
 		$msg = $msgarr["text"];
 
 		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {
