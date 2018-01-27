@@ -1,7 +1,7 @@
 <?php
 
 use Friendica\Core\L10n;
-use Friendica\Util\Temporal;
+use Friendica\Util\DateTimeFormat;
 
 /**
  * @param wdcal_local $localization
@@ -521,9 +521,9 @@ function wdcal_set_component_date(&$component, &$localization)
 		$type     = Sabre\VObject\Property\DateTime::LOCALTZ;
 	}
 	$datetime_start = new Sabre\VObject\Property\DateTime("DTSTART");
-	$datetime_start->setDateTime(new DateTime(date(Temporal::MYSQL, $ts_start)), $type);
+	$datetime_start->setDateTime(new DateTime(date(DateTimeFormat::MYSQL, $ts_start)), $type);
 	$datetime_end = new Sabre\VObject\Property\DateTime("DTEND");
-	$datetime_end->setDateTime(new DateTime(date(Temporal::MYSQL, $ts_end)), $type);
+	$datetime_end->setDateTime(new DateTime(date(DateTimeFormat::MYSQL, $ts_end)), $type);
 
 	$component->__unset("DTSTART");
 	$component->__unset("DTEND");
@@ -599,7 +599,7 @@ function wdcal_set_component_recurrence(&$component, &$localization)
 			$date           = $localization->date_local2timestamp($_REQUEST["rec_until_date"]);
 			$part_until     = ";UNTIL=" . date("Ymd", $date);
 			$datetime_until = new Sabre\VObject\Property\DateTime("UNTIL");
-			$datetime_until->setDateTime(new DateTime(date(Temporal::MYSQL, $date)), Sabre\VObject\Property\DateTime::DATE);
+			$datetime_until->setDateTime(new DateTime(date(DateTimeFormat::MYSQL, $date)), Sabre\VObject\Property\DateTime::DATE);
 			break;
 		case "count":
 			$part_until = ";COUNT=" . IntVal($_REQUEST["rec_until_count"]);
@@ -646,7 +646,7 @@ function wdcal_set_component_recurrence(&$component, &$localization)
 	if (isset($_REQUEST["rec_exceptions"])) {
 		$arr = array();
 		foreach ($_REQUEST["rec_exceptions"] as $except) {
-			$arr[] = new DateTime(date(Temporal::MYSQL, $except));
+			$arr[] = new DateTime(date(DateTimeFormat::MYSQL, $except));
 		}
 		/** @var Sabre\VObject\Property\MultiDateTime $prop */
 		$prop = Sabre\VObject\Property::create("EXDATE");

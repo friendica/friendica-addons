@@ -10,7 +10,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Model\User;
-use Friendica\Util\Temporal;
+use Friendica\Util\DateTimeFormat;
 
 function testdrive_install() {
 
@@ -44,7 +44,7 @@ function testdrive_register_account($a,$b) {
 		return;
 
 	$r = q("UPDATE user set account_expires_on = '%s' where uid = %d",
-		dbesc(Temporal::convert('now +' . $days . ' days')),
+		dbesc(DateTimeFormat::convert('now +' . $days . ' days')),
 		intval($uid)
 	);
 
@@ -72,7 +72,7 @@ function testdrive_cron($a,$b) {
 			]);
 
 			q("update user set expire_notification_sent = '%s' where uid = %d",
-				dbesc(Temporal::utcNow()),
+				dbesc(DateTimeFormat::utcNow()),
 				intval($rr['uid'])
 			);
 

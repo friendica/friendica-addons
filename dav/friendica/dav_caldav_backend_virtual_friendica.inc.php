@@ -1,7 +1,7 @@
 <?php
 
 use Friendica\Core\L10n;
-use Friendica\Util\Temporal;
+use Friendica\Util\DateTimeFormat;
 
 class Sabre_CalDAV_Backend_Friendica extends Sabre_CalDAV_Backend_Virtual
 {
@@ -68,8 +68,8 @@ class Sabre_CalDAV_Backend_Friendica extends Sabre_CalDAV_Backend_Virtual
 			$component = dav_get_eventComponent($vevent);
 
 			if ($row["adjust"]) {
-				$start  = Temporal::local($row["start"]);
-				$finish = Temporal::local($row["finish"]);
+				$start  = DateTimeFormat::local($row["start"]);
+				$finish = DateTimeFormat::local($row["finish"]);
 			} else {
 				$start  = $row["start"];
 				$finish = $row["finish"];
@@ -88,9 +88,9 @@ class Sabre_CalDAV_Backend_Friendica extends Sabre_CalDAV_Backend_Virtual
 			$type           = ($allday ? Sabre\VObject\Property\DateTime::DATE : Sabre\VObject\Property\DateTime::LOCALTZ);
 
 			$datetime_start = new Sabre\VObject\Property\DateTime("DTSTART");
-			$datetime_start->setDateTime(new DateTime(date(Temporal::MYSQL, $ts_start)), $type);
+			$datetime_start->setDateTime(new DateTime(date(DateTimeFormat::MYSQL, $ts_start)), $type);
 			$datetime_end = new Sabre\VObject\Property\DateTime("DTEND");
-			$datetime_end->setDateTime(new DateTime(date(Temporal::MYSQL, $ts_end)), $type);
+			$datetime_end->setDateTime(new DateTime(date(DateTimeFormat::MYSQL, $ts_end)), $type);
 
 			$component->add($datetime_start);
 			$component->add($datetime_end);
@@ -116,8 +116,8 @@ class Sabre_CalDAV_Backend_Friendica extends Sabre_CalDAV_Backend_Virtual
 	private function jqcal2wdcal($row, $calendar, $base_path)
 	{
 		if ($row["adjust"]) {
-			$start  = Temporal::local($row["start"]);
-			$finish = Temporal::local($row["finish"]);
+			$start  = DateTimeFormat::local($row["start"]);
+			$finish = DateTimeFormat::local($row["finish"]);
 		} else {
 			$start  = $row["start"];
 			$finish = $row["finish"];
@@ -175,11 +175,11 @@ class Sabre_CalDAV_Backend_Friendica extends Sabre_CalDAV_Backend_Virtual
 		}
 
 		if ($date_from != "") {
-			if (is_numeric($date_from)) $sql_where .= " AND `finish` >= '" . date(Temporal::MYSQL, $date_from) . "'";
+			if (is_numeric($date_from)) $sql_where .= " AND `finish` >= '" . date(DateTimeFormat::MYSQL, $date_from) . "'";
 			else $sql_where .= " AND `finish` >= '" . dbesc($date_from) . "'";
 		}
 		if ($date_to != "") {
-			if (is_numeric($date_to)) $sql_where .= " AND `start` <= '" . date(Temporal::MYSQL, $date_to) . "'";
+			if (is_numeric($date_to)) $sql_where .= " AND `start` <= '" . date(DateTimeFormat::MYSQL, $date_to) . "'";
 			else $sql_where .= " AND `start` <= '" . dbesc($date_to) . "'";
 		}
 		$ret = [];

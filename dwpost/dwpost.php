@@ -187,7 +187,7 @@ function dwpost_send(&$a,&$b) {
 		$post = xmlify($post);
 		$tags = dwpost_get_tags($b['tag']);
 
-		$date = Temporal::convert($b['created'], $tz);
+		$date = DateTimeFormat::convert($b['created'], $tz);
 		$year = intval(substr($date,0,4));
 		$mon  = intval(substr($date,5,2));
 		$day  = intval(substr($date,8,2));

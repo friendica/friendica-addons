@@ -77,8 +77,8 @@ use Friendica\Model\Photo;
 use Friendica\Model\Queue;
 use Friendica\Model\User;
 use Friendica\Object\Image;
+use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
-use Friendica\Util\Temporal;
 
 require_once 'boot.php';
 require_once 'include/dba.php';
@@ -682,7 +682,7 @@ function twitter_cron(App $a, $b)
 		$abandon_days = 0;
 	}
 
-	$abandon_limit = date(Temporal::MYSQL, time() - $abandon_days * 86400);
+	$abandon_limit = date(DateTimeFormat::MYSQL, time() - $abandon_days * 86400);
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'import' AND `v` = '1'");
 	if (count($r)) {
@@ -1017,7 +1017,7 @@ function twitter_fetch_contact($uid, $contact, $create_user)
 					`location`, `about`, `writable`, `blocked`, `readonly`, `pending`)
 					VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', %d, 0, 0, 0)",
 			intval($uid),
-			dbesc(Temporal::utcNow()),
+			dbesc(DateTimeFormat::utcNow()),
 			dbesc("https://twitter.com/" . $contact->screen_name),
 			dbesc(normalise_link("https://twitter.com/" . $contact->screen_name)),
 			dbesc($contact->screen_name."@twitter.com"),
@@ -1061,16 +1061,16 @@ function twitter_fetch_contact($uid, $contact, $create_user)
 				dbesc($photos[0]),
 				dbesc($photos[1]),
 				dbesc($photos[2]),
-				dbesc(Temporal::utcNow()),
-				dbesc(Temporal::utcNow()),
-				dbesc(Temporal::utcNow()),
+				dbesc(DateTimeFormat::utcNow()),
+				dbesc(DateTimeFormat::utcNow()),
+				dbesc(DateTimeFormat::utcNow()),
 				intval($contact_id)
 			);
 		}
 	} else {
 		// update profile photos once every two weeks as we have no notification of when they change.
-		//$update_photo = (($r[0]['avatar-date'] < Temporal::convert('now -2 days', '', '', )) ? true : false);
-		$update_photo = ($r[0]['avatar-date'] < Temporal::utc('now -12 hours'));
+		//$update_photo = (($r[0]['avatar-date'] < DateTimeFormat::convert('now -2 days', '', '', )) ? true : false);
+		$update_photo = ($r[0]['avatar-date'] < DateTimeFormat::utc('now -12 hours'));
 
 		// check that we have all the photos, this has been known to fail on occasion
 		if ((!$r[0]['photo']) || (!$r[0]['thumb']) || (!$r[0]['micro']) || ($update_photo)) {
@@ -1096,9 +1096,9 @@ function twitter_fetch_contact($uid, $contact, $create_user)
 					dbesc($photos[0]),
 					dbesc($photos[1]),
 					dbesc($photos[2]),
-					dbesc(Temporal::utcNow()),
-					dbesc(Temporal::utcNow()),
-					dbesc(Temporal::utcNow()),
+					dbesc(DateTimeFormat::utcNow()),
+					dbesc(DateTimeFormat::utcNow()),
+					dbesc(DateTimeFormat::utcNow()),
 					dbesc("https://twitter.com/".$contact->screen_name),
 					dbesc(normalise_link("https://twitter.com/".$contact->screen_name)),
 					dbesc($contact->screen_name."@twitter.com"),
@@ -1490,8 +1490,8 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 	$converted = twitter_expand_entities($a, $postarray['body'], $post, false, $picture);
 	$postarray['body'] = $converted["body"];
 	$postarray['tag'] = $converted["tags"];
-	$postarray['created'] = Temporal::utc($post->created_at);
-	$postarray['edited'] = Temporal::utc($post->created_at);
+	$postarray['created'] = DateTimeFormat::utc($post->created_at);
+	$postarray['edited'] = DateTimeFormat::utc($post->created_at);
 
 	$statustext = $converted["plain"];
 

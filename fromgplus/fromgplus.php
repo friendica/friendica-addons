@@ -14,8 +14,8 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Object\Image;
+use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
-use Friendica\Util\Temporal;
 
 require_once 'mod/share.php';
 require_once 'mod/parse_url.php';
@@ -520,12 +520,12 @@ function fromgplus_fetch($a, $uid) {
 						if (function_exists("share_header"))
 							$post .= share_header($item->object->actor->displayName, $item->object->actor->url,
 										$item->object->actor->image->url, "",
-										Temporal::utc($item->object->published),$item->object->url);
+										DateTimeFormat::utc($item->object->published),$item->object->url);
 						else
 							$post .= "[share author='".str_replace("'", "&#039;",$item->object->actor->displayName).
 									"' profile='".$item->object->actor->url.
 									"' avatar='".$item->object->actor->image->url.
-									"' posted='".Temporal::utc($item->object->published).
+									"' posted='".DateTimeFormat::utc($item->object->published).
 									"' link='".$item->object->url."']";
 
 						$post .= fromgplus_html2bbcode($item->object->content);
