@@ -62,6 +62,7 @@
 use Friendica\App;
 use Friendica\Content\OEmbed;
 use Friendica\Content\Text\BBCode;
+use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -529,7 +530,7 @@ function twitter_post_hook(App $a, &$b)
 		$msg = $msgarr["text"];
 
 		if (($msg == "") && isset($msgarr["title"])) {
-			$msg = BBCode::shortenMsg($msgarr["title"], $max_char - 50);
+			$msg = Plaintext::shorten($msgarr["title"], $max_char - 50);
 		}
 
 		$image = "";
@@ -597,7 +598,7 @@ function twitter_post_hook(App $a, &$b)
 			$msg = $msgarr["text"];
 
 			if (($msg == "") && isset($msgarr["title"])) {
-				$msg = BBCode::shortenMsg($msgarr["title"], $max_char - 50);
+				$msg = Plaintext::shorten($msgarr["title"], $max_char - 50);
 			}
 
 			if (isset($msgarr["url"])) {

@@ -9,6 +9,7 @@ require 'addon/buffer/bufferapp.php';
 
 use Friendica\App;
 use Friendica\Content\Text\BBCode;
+use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -365,8 +366,8 @@ function buffer_send(App $a, &$b)
 				if (($profile->service == "twitter") && isset($post["url"]) && ($post["type"] != "photo"))
 					$post["text"] .= " ".$post["url"];
 				elseif (($profile->service == "appdotnet") && isset($post["url"]) && isset($post["title"]) && ($post["type"] != "photo")) {
-					$post["title"] = BBCode::shortenMsg($post["title"], 90);
-					$post["text"] = BBCode::shortenMsg($post["text"], $limit - (24 + strlen($post["title"])));
+					$post["title"] = Plaintext::shorten($post["title"], 90);
+					$post["text"] = Plaintext::shorten($post["text"], $limit - (24 + strlen($post["title"])));
 					$post["text"] .= "\n[".$post["title"]."](".$post["url"].")";
 				} elseif (($profile->service == "appdotnet") && isset($post["url"]) && ($post["type"] != "photo"))
 					$post["text"] .= " ".$post["url"];
