@@ -33,9 +33,16 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+/*
+ * We have to alter the TwitterOAuth class a little bit to work with any GNU Social
+ * installation abroad. Basically it's only make the API path variable and be happy.
+ *
+ * Thank you guys for the Twitter compatible API!
+ */
+
 define('STATUSNET_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'statusnetoauth.php';
+require_once 'library/twitteroauth.php';
 require_once 'include/enotify.php';
 
 use Friendica\App;
@@ -52,6 +59,94 @@ use Friendica\Model\Item;
 use Friendica\Model\Photo;
 use Friendica\Model\User;
 use Friendica\Util\Network;
+
+class StatusNetOAuth extends TwitterOAuth
+{
+	function get_maxlength()
+	{
+		$config = $this->get($this->host . 'statusnet/config.json');
+		return $config->site->textlimit;
+	}
+
+	function accessTokenURL()
+	{
+		return $this->host . 'oauth/access_token';
+	}
+
+	function authenticateURL()
+	{
+		return $this->host . 'oauth/authenticate';
+	}
+
+	function authorizeURL()
+	{
+		return $this->host . 'oauth/authorize';
+	}
+
+	function requestTokenURL()
+	{
+		return $this->host . 'oauth/request_token';
+	}
+
+	function __construct($apipath, $consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL)
+	{
+		parent::__construct($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
+		$this->host = $apipath;
+	}
+
+	/**
+	 * Make an HTTP request
+	 *
+	 * @return API results
+	 *
+	 * Copied here from the twitteroauth library and complemented by applying the proxy settings of friendica
+	 */
+	function http($url, $method, $postfields = NULL)
+	{
+		$this->http_info = [];
+		$ci = curl_init();
+		/* Curl settings */
+		$prx = Config::get('system', 'proxy');
+		if (strlen($prx)) {
+			curl_setopt($ci, CURLOPT_HTTPPROXYTUNNEL, 1);
+			curl_setopt($ci, CURLOPT_PROXY, $prx);
+			$prxusr = Config::get('system', 'proxyuser');
+			if (strlen($prxusr)) {
+				curl_setopt($ci, CURLOPT_PROXYUSERPWD, $prxusr);
+			}
+		}
+		curl_setopt($ci, CURLOPT_USERAGENT, $this->useragent);
+		curl_setopt($ci, CURLOPT_CONNECTTIMEOUT, $this->connecttimeout);
+		curl_setopt($ci, CURLOPT_TIMEOUT, $this->timeout);
+		curl_setopt($ci, CURLOPT_RETURNTRANSFER, TRUE);
+		curl_setopt($ci, CURLOPT_HTTPHEADER, ['Expect:']);
+		curl_setopt($ci, CURLOPT_SSL_VERIFYPEER, $this->ssl_verifypeer);
+		curl_setopt($ci, CURLOPT_HEADERFUNCTION, [$this, 'getHeader']);
+		curl_setopt($ci, CURLOPT_HEADER, FALSE);
+
+		switch ($method) {
+			case 'POST':
+				curl_setopt($ci, CURLOPT_POST, TRUE);
+				if (!empty($postfields)) {
+					curl_setopt($ci, CURLOPT_POSTFIELDS, $postfields);
+				}
+				break;
+			case 'DELETE':
+				curl_setopt($ci, CURLOPT_CUSTOMREQUEST, 'DELETE');
+				if (!empty($postfields)) {
+					$url = "{$url}?{$postfields}";
+				}
+		}
+
+		curl_setopt($ci, CURLOPT_URL, $url);
+		$response = curl_exec($ci);
+		$this->http_code = curl_getinfo($ci, CURLINFO_HTTP_CODE);
+		$this->http_info = array_merge($this->http_info, curl_getinfo($ci));
+		$this->url = $url;
+		curl_close($ci);
+		return $response;
+	}
+}
 
 function statusnet_install()
 {
@@ -576,7 +671,7 @@ function statusnet_post_hook(App $a, &$b)
 			$postdata = ["status" => $msg];
 		}
 
-		// and now send it :-)
+		// and now dent it :-)
 		if (strlen($msg)) {
 			if ($iscomment) {
 				$postdata["in_reply_to_status_id"] = substr($orig_post["uri"], $hostlength);
@@ -584,7 +679,7 @@ function statusnet_post_hook(App $a, &$b)
 			}
 
 			// New code that is able to post pictures
-			require_once __DIR__ . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'codebirdsn.php';
+			require_once "addon/statusnet/codebird.php";
 			$cb = \CodebirdSN\CodebirdSN::getInstance();
 			$cb->setAPIEndpoint($api);
 			$cb->setConsumerKey($ckey, $csecret);
@@ -1036,9 +1131,9 @@ function statusnet_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 	$otoken  = PConfig::get($uid, 'statusnet', 'oauthtoken');
 	$osecret = PConfig::get($uid, 'statusnet', 'oauthsecret');
 
-	require_once __DIR__ . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'codebirdsn.php';
+	require_once "addon/statusnet/codebird.php";
 
-	$cb = \CodebirdSN\CodebirdSN::getInstance();
+	$cb = \Codebird\Codebird::getInstance();
 	$cb->setConsumerKey($ckey, $csecret);
 	$cb->setToken($otoken, $osecret);
 
@@ -1308,6 +1403,7 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 
 	logger("statusnet_fetchhometimeline: Fetching for user " . $uid, LOGGER_DEBUG);
 
+	require_once 'library/twitteroauth.php';
 	require_once 'include/items.php';
 
 	$connection = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
@@ -1508,6 +1604,8 @@ function statusnet_complete_conversation(App $a, $uid, $self, $create_user, $nic
 	$osecret = PConfig::get($uid, 'statusnet', 'oauthsecret');
 	$own_url = PConfig::get($uid, 'statusnet', 'own_url');
 
+	require_once 'library/twitteroauth.php';
+
 	$connection = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
 
 	$parameters["count"] = 200;
@@ -1658,6 +1756,8 @@ function statusnet_fetch_own_contact(App $a, $uid)
 	$contact_id = 0;
 
 	if ($own_url == "") {
+		require_once 'library/twitteroauth.php';
+
 		$connection = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
 
 		// Fetching user data
