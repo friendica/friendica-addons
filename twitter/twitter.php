@@ -2,11 +2,12 @@
 /**
  * Name: Twitter Connector
  * Description: Bidirectional (posting, relaying and reading) connector for Twitter.
- * Version: 1.0.4
+ * Version: 1.1.0
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
+ * Maintainer: Hypolite Petovan <https://friendica.mrpetovan.com/profile/hypolite>
  *
- * Copyright (c) 2011-2013 Tobias Diekershoff, Michael Vogel
+ * Copyright (c) 2011-2013 Tobias Diekershoff, Michael Vogel, Hypolite Petovan
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,7 +57,7 @@
  *     setting. After this, your user can configure their Twitter account settings
  *     from "Settings -> Addon Settings".
  *
- *     Requirements: PHP5, curl [Slinky library]
+ *     Requirements: PHP5, curl
  */
 
 use Abraham\TwitterOAuth\TwitterOAuth;
@@ -151,9 +152,9 @@ function twitter_follow(App $a, &$contact)
 
 	$uid = $a->user["uid"];
 
-	$ckey    = Config::get('twitter', 'consumerkey');
+	$ckey = Config::get('twitter', 'consumerkey');
 	$csecret = Config::get('twitter', 'consumersecret');
-	$otoken  = PConfig::get($uid, 'twitter', 'oauthtoken');
+	$otoken = PConfig::get($uid, 'twitter', 'oauthtoken');
 	$osecret = PConfig::get($uid, 'twitter', 'oauthsecret');
 
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
@@ -257,10 +258,10 @@ function twitter_settings(App $a, &$s)
 	 * 2) If no OAuthtoken & stuff is present, generate button to get some
 	 * 3) Checkbox for "Send public notices (280 chars only)
 	 */
-	$ckey    = Config::get('twitter', 'consumerkey' );
-	$csecret = Config::get('twitter', 'consumersecret' );
-	$otoken  = PConfig::get(local_user(), 'twitter', 'oauthtoken'  );
-	$osecret = PConfig::get(local_user(), 'twitter', 'oauthsecret' );
+	$ckey    = Config::get('twitter', 'consumerkey');
+	$csecret = Config::get('twitter', 'consumersecret');
+	$otoken  = PConfig::get(local_user(), 'twitter', 'oauthtoken');
+	$osecret = PConfig::get(local_user(), 'twitter', 'oauthsecret');
 
 	$enabled            = intval(PConfig::get(local_user(), 'twitter', 'post'));
 	$defenabled         = intval(PConfig::get(local_user(), 'twitter', 'post_by_default'));
@@ -425,7 +426,10 @@ function twitter_post_hook(App $a, &$b)
 		logger("twitter_post_hook: parameter " . print_r($b, true), LOGGER_DATA);
 
 		// Looking if its a reply to a twitter post
-		if ((substr($b["parent-uri"], 0, 9) != "twitter::") && (substr($b["extid"], 0, 9) != "twitter::") && (substr($b["thr-parent"], 0, 9) != "twitter::")) {
+		if ((substr($b["parent-uri"], 0, 9) != "twitter::")
+			&& (substr($b["extid"], 0, 9) != "twitter::")
+			&& (substr($b["thr-parent"], 0, 9) != "twitter::"))
+		{
 			logger("twitter_post_hook: no twitter post " . $b["parent"]);
 			return;
 		}
@@ -474,10 +478,12 @@ function twitter_post_hook(App $a, &$b)
 
 	if ($b['verb'] == ACTIVITY_LIKE) {
 		logger("twitter_post_hook: parameter 2 " . substr($b["thr-parent"], 9), LOGGER_DEBUG);
-		if ($b['deleted'])
+		if ($b['deleted']) {
 			twitter_action($a, $b["uid"], substr($b["thr-parent"], 9), "unlike");
-		else
+		} else {
 			twitter_action($a, $b["uid"], substr($b["thr-parent"], 9), "like");
+		}
+
 		return;
 	}
 
@@ -619,8 +625,8 @@ function twitter_post_hook(App $a, &$b)
 
 function twitter_addon_admin_post(App $a)
 {
-	$consumerkey     = x($_POST, 'consumerkey')     ? notags(trim($_POST['consumerkey']))     : '';
-	$consumersecret  = x($_POST, 'consumersecret')  ? notags(trim($_POST['consumersecret']))  : '';
+	$consumerkey    = x($_POST, 'consumerkey')    ? notags(trim($_POST['consumerkey']))    : '';
+	$consumersecret = x($_POST, 'consumersecret') ? notags(trim($_POST['consumersecret'])) : '';
 	Config::set('twitter', 'consumerkey', $consumerkey);
 	Config::set('twitter', 'consumersecret', $consumersecret);
 	info(L10n::t('Settings updated.') . EOL);
@@ -665,8 +671,9 @@ function twitter_cron(App $a, $b)
 	}
 
 	$abandon_days = intval(Config::get('system', 'account_abandon_days'));
-	if ($abandon_days < 1)
+	if ($abandon_days < 1) {
 		$abandon_days = 0;
+	}
 
 	$abandon_limit = date("Y-m-d H:i:s", time() - $abandon_days * 86400);
 
@@ -803,7 +810,14 @@ function twitter_do_mirrorpost(App $a, $uid, $post)
 		// We don't support nested shares, so we mustn't show quotes as shares on retweets
 		$item = twitter_createpost($a, $uid, $post->retweeted_status, ['id' => 0], false, false, true);
 
-		$datarray['body'] = "\n" . share_header($item['author-name'], $item['author-link'], $item['author-avatar'], "", $item['created'], $item['plink']);
+		$datarray['body'] = "\n" . share_header(
+			$item['author-name'],
+			$item['author-link'],
+			$item['author-avatar'],
+			"",
+			$item['created'],
+			$item['plink']
+		);
 
 		$datarray['body'] .= $item['body'] . '[/share]';
 	} else {
@@ -977,7 +991,8 @@ function twitter_fetch_contact($uid, $contact, $create_user)
 		"addr" => $contact->screen_name . "@twitter.com", "generation" => 2]);
 
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
-		intval($uid), dbesc("twitter::" . $contact->id_str));
+		intval($uid),
+		dbesc("twitter::" . $contact->id_str));
 
 	if (!count($r) && !$create_user) {
 		return 0;
@@ -1095,9 +1110,9 @@ function twitter_fetch_contact($uid, $contact, $create_user)
 
 function twitter_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 {
-	$ckey    = Config::get('twitter', 'consumerkey');
+	$ckey = Config::get('twitter', 'consumerkey');
 	$csecret = Config::get('twitter', 'consumersecret');
-	$otoken  = PConfig::get($uid, 'twitter', 'oauthtoken');
+	$otoken = PConfig::get($uid, 'twitter', 'oauthtoken');
 	$osecret = PConfig::get($uid, 'twitter', 'oauthsecret');
 
 	$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
@@ -1357,8 +1372,8 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 
 	// Don't import our own comments
 	$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
-			dbesc($postarray['uri']),
-			intval($uid)
+		dbesc($postarray['uri']),
+		intval($uid)
 	);
 
 	if (count($r)) {
@@ -1372,8 +1387,8 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 		$parent = "twitter::" . $post->in_reply_to_status_id_str;
 
 		$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
-				dbesc($parent),
-				intval($uid)
+			dbesc($parent),
+			intval($uid)
 		);
 		if (count($r)) {
 			$postarray['thr-parent'] = $r[0]["uri"];
@@ -1382,8 +1397,8 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 			$postarray['object-type'] = ACTIVITY_OBJ_COMMENT;
 		} else {
 			$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
-					dbesc($parent),
-					intval($uid)
+				dbesc($parent),
+				intval($uid)
 			);
 			if (count($r)) {
 				$postarray['thr-parent'] = $r[0]['uri'];
@@ -1504,7 +1519,14 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 
 		$postarray['body'] = $statustext;
 
-		$postarray['body'] .= "\n" . share_header($quoted['author-name'], $quoted['author-link'], $quoted['author-avatar'], "", $quoted['created'], $quoted['plink']);
+		$postarray['body'] .= "\n" . share_header(
+			$quoted['author-name'],
+			$quoted['author-link'],
+			$quoted['author-avatar'],
+			"",
+			$quoted['created'],
+			$quoted['plink']
+		);
 
 		$postarray['body'] .= $quoted['body'] . '[/share]';
 	}
@@ -1516,7 +1538,7 @@ function twitter_checknotification(App $a, $uid, $own_id, $top_item, $postarray)
 {
 	/// TODO: this whole function doesn't seem to work. Needs complete check
 	$user = q("SELECT * FROM `contact` WHERE `uid` = %d AND `self` LIMIT 1",
-			intval($uid)
+		intval($uid)
 	);
 
 	if (!count($user)) {
@@ -1529,8 +1551,8 @@ function twitter_checknotification(App $a, $uid, $own_id, $top_item, $postarray)
 	}
 
 	$own_user = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
-			intval($uid),
-			dbesc("twitter::".$own_id)
+		intval($uid),
+		dbesc("twitter::".$own_id)
 	);
 
 	if (!count($own_user)) {
@@ -1543,8 +1565,8 @@ function twitter_checknotification(App $a, $uid, $own_id, $top_item, $postarray)
 	}
 
 	$myconv = q("SELECT `author-link`, `author-avatar`, `parent` FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `parent` != 0 AND `deleted` = 0",
-			dbesc($postarray['parent-uri']),
-			intval($uid)
+		dbesc($postarray['parent-uri']),
+		intval($uid)
 	);
 
 	if (count($myconv)) {
@@ -1598,8 +1620,8 @@ function twitter_fetchparentposts(App $a, $uid, $post, $connection, $self, $own_
 		}
 
 		$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
-				dbesc("twitter::".$post->id_str),
-				intval($uid)
+			dbesc("twitter::".$post->id_str),
+			intval($uid)
 		);
 
 		if (count($r)) {
@@ -1617,8 +1639,9 @@ function twitter_fetchparentposts(App $a, $uid, $post, $connection, $self, $own_
 		foreach ($posts as $post) {
 			$postarray = twitter_createpost($a, $uid, $post, $self, false, false, false);
 
-			if (trim($postarray['body']) == "")
+			if (trim($postarray['body']) == "") {
 				continue;
+			}
 
 			$item = item_store($postarray);
 			$postarray["id"] = $item;
@@ -1810,8 +1833,9 @@ function twitter_fetchhometimeline(App $a, $uid)
 					$item = $r[0]['id'];
 					$parent_id = $r[0]['parent'];
 				}
-			} else
+			} else {
 				$parent_id = $postarray['parent'];
+			}
 
 			if (($item != 0) && !function_exists("check_item_notification")) {
 				require_once 'include/enotify.php';
@@ -1917,7 +1941,6 @@ function twitter_is_retweet(App $a, $uid, $body)
 	$osecret = PConfig::get($uid, 'twitter', 'oauthsecret');
 
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
-
 	$result = $connection->post('statuses/retweet/' . $id);
 
 	logger('twitter_is_retweet: result ' . print_r($result, true), LOGGER_DEBUG);
