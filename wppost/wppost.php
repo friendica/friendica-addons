@@ -9,6 +9,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Util\Network;
 
 function wppost_install() {
     Addon::registerHook('post_local',           'addon/wppost/wppost.php', 'wppost_post_local');
