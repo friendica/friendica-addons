@@ -517,7 +517,7 @@ function twitter_post_hook(App $a, &$b)
 			return;
 		}
 
-		$tweet = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
+		$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
 		$max_char = 280;
 		$msgarr = BBCode::toPlaintext($b, $max_char, true, 8);
@@ -593,7 +593,7 @@ function twitter_post_hook(App $a, &$b)
 				$post["in_reply_to_status_id"] = substr($orig_post["uri"], 9);
 			}
 
-			$result = $tweet->post($url, $post);
+			$result = $connection->post($url, $post);
 			logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
 
 			if ($result->source) {
