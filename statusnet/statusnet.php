@@ -55,6 +55,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Model\GContact;
 use Friendica\Model\Group;
+use Friendica\Model\Item;
 use Friendica\Model\Photo;
 use Friendica\Model\User;
 use Friendica\Util\Network;
@@ -1371,7 +1372,7 @@ function statusnet_checknotification(App $a, $uid, $own_url, $top_item, $postarr
 				'to_email' => $user[0]['email'],
 				'uid' => $user[0]['uid'],
 				'item' => $postarray,
-				'link' => $a->get_baseurl() . '/display/' . urlencode(get_item_guid($top_item)),
+				'link' => $a->get_baseurl() . '/display/' . urlencode(Item::getGuidById($top_item)),
 				'source_name' => $postarray['author-name'],
 				'source_link' => $postarray['author-link'],
 				'source_photo' => $postarray['author-avatar'],
@@ -1495,7 +1496,7 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 						continue;
 					}
 
-					$item = item_store($postarray);
+					$item = Item::insert($postarray);
 					$postarray["id"] = $item;
 
 					logger('statusnet_fetchhometimeline: User ' . $self["nick"] . ' posted home timeline item ' . $item);
@@ -1550,7 +1551,7 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 					continue;
 				}
 
-				$item = item_store($postarray);
+				$item = Item::insert($postarray);
 				$postarray["id"] = $item;
 
 				logger('statusnet_fetchhometimeline: User ' . $self["nick"] . ' posted mention timeline item ' . $item);
@@ -1579,7 +1580,7 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 					'to_email'     => $u[0]['email'],
 					'uid'          => $u[0]['uid'],
 					'item'         => $postarray,
-					'link'         => $a->get_baseurl() . '/display/' . urlencode(get_item_guid($item)),
+					'link'         => $a->get_baseurl() . '/display/' . urlencode(Item::getGuidById($item)),
 					'source_name'  => $postarray['author-name'],
 					'source_link'  => $postarray['author-link'],
 					'source_photo' => $postarray['author-avatar'],
@@ -1620,7 +1621,7 @@ function statusnet_complete_conversation(App $a, $uid, $self, $create_user, $nic
 				continue;
 			}
 
-			$item = item_store($postarray);
+			$item = Item::insert($postarray);
 			$postarray["id"] = $item;
 
 			logger('statusnet_complete_conversation: User ' . $self["nick"] . ' posted home timeline item ' . $item);

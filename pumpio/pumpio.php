@@ -974,7 +974,7 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 	$likedata['object'] = '<object><type>' . ACTIVITY_OBJ_NOTE . '</type><local>1</local>' .
 		'<id>' . $orig_post['uri'] . '</id><link>' . xmlify('<link rel="alternate" type="text/html" href="' . xmlify($orig_post['plink']) . '" />') . '</link><title>' . $orig_post['title'] . '</title><content>' . $orig_post['body'] . '</content></object>';
 
-	$ret = item_store($likedata);
+	$ret = Item::insert($likedata);
 
 	logger("pumpio_dolike: ".$ret." User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
 }
@@ -1250,7 +1250,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 	if (trim($postarray['body']) == "")
 		return false;
 
-	$top_item = item_store($postarray);
+	$top_item = Item::insert($postarray);
 	$postarray["id"] = $top_item;
 
 	if (($top_item == 0) && ($post->verb == "update")) {
@@ -1306,7 +1306,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 						'to_email'     => $user[0]['email'],
 						'uid'          => $user[0]['uid'],
 						'item'         => $postarray,
-						'link'         => $a->get_baseurl().'/display/'.urlencode(get_item_guid($top_item)),
+						'link'         => $a->get_baseurl().'/display/'.urlencode(Item::getGuidById($top_item)),
 						'source_name'  => $postarray['author-name'],
 						'source_link'  => $postarray['author-link'],
 						'source_photo' => $postarray['author-avatar'],
