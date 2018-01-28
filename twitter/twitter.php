@@ -59,6 +59,7 @@
  *     Requirements: PHP5, curl [Slinky library]
  */
 
+use Abraham\TwitterOAuth\TwitterOAuth;
 use Friendica\App;
 use Friendica\Content\OEmbed;
 use Friendica\Content\Text\BBCode;
@@ -76,7 +77,12 @@ use Friendica\Model\User;
 use Friendica\Object\Image;
 use Friendica\Util\Network;
 
+require_once 'boot.php';
+require_once 'include/dba.php';
 require_once 'include/enotify.php';
+require_once 'include/text.php';
+
+require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 define('TWITTER_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
@@ -150,16 +156,8 @@ function twitter_follow(App $a, &$contact)
 	$otoken  = PConfig::get($uid, 'twitter', 'oauthtoken');
 	$osecret = PConfig::get($uid, 'twitter', 'oauthsecret');
 
-	require_once "addon/twitter/codebird.php";
-
-	$cb = \Codebird\Codebird::getInstance();
-	$cb->setConsumerKey($ckey, $csecret);
-	$cb->setToken($otoken, $osecret);
-
-	$parameters = [];
-	$parameters["screen_name"] = $nickname;
-
-	$user = $cb->friendships_create($parameters);
+	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
+	$connection->post('friendships/create', ['screen_name' => $nickname]);
 
 	twitter_fetchuser($a, $uid, $nickname);
 
@@ -217,7 +215,6 @@ function twitter_settings_post(App $a, $post)
 		if (isset($_POST['twitter-pin'])) {
 			//  if the user supplied us with a PIN from Twitter, let the magic of OAuth happen
 			logger('got a Twitter PIN');
-			require_once 'library/twitteroauth.php';
 			$ckey    = Config::get('twitter', 'consumerkey');
 			$csecret = Config::get('twitter', 'consumersecret');
 			//  the token and secret for which the PIN was generated were hidden in the settings
@@ -298,7 +295,6 @@ function twitter_settings(App $a, &$s)
 			 * which the user can request a PIN to connect the account to a
 			 * account at Twitter.
 			 */
-			require_once 'library/twitteroauth.php';
 			$connection = new TwitterOAuth($ckey, $csecret);
 			$request_token = $connection->getRequestToken();
 			$token = $request_token['oauth_token'];
@@ -319,7 +315,6 @@ function twitter_settings(App $a, &$s)
 			 *  we have an OAuth key / secret pair for the user
 			 *  so let's give a chance to disable the postings to Twitter
 			 */
-			require_once 'library/twitteroauth.php';
 			$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 			$details = $connection->get('account/verify_credentials');
 
@@ -398,11 +393,7 @@ function twitter_action(App $a, $uid, $pid, $action)
 	$otoken = PConfig::get($uid, 'twitter', 'oauthtoken');
 	$osecret = PConfig::get($uid, 'twitter', 'oauthsecret');
 
-	require_once "addon/twitter/codebird.php";
-
-	$cb = \Codebird\Codebird::getInstance();
-	$cb->setConsumerKey($ckey, $csecret);
-	$cb->setToken($otoken, $osecret);
+	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
 	$post = ['id' => $pid];
 
@@ -410,13 +401,13 @@ function twitter_action(App $a, $uid, $pid, $action)
 
 	switch ($action) {
 		case "delete":
-			// To-Do: $result = $cb->statuses_destroy($post);
+			// To-Do: $result = $connection->post('statuses/destroy', $post);
 			break;
 		case "like":
-			$result = $cb->favorites_create($post);
+			$result = $connection->post('favorites/create', $post);
 			break;
 		case "unlike":
-			$result = $cb->favorites_destroy($post);
+			$result = $connection->post('favorites/destroy', $post);
 			break;
 	}
 	logger("twitter_action '" . $action . "' send, result: " . print_r($result, true), LOGGER_DEBUG);
@@ -520,8 +511,6 @@ function twitter_post_hook(App $a, &$b)
 			return;
 		}
 
-		require_once 'library/twitteroauth.php';
-		require_once 'include/bbcode.php';
 		$tweet = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
 		$max_char = 280;
@@ -544,29 +533,16 @@ function twitter_post_hook(App $a, &$b)
 
 		// and now tweet it :-)
 		if (strlen($msg) && ($image != "")) {
-			$img_str = Network::fetchUrl($image);
+			$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
+			$media = $connection->upload('media/upload', ['media' => $image]);
 
-			$tempfile = tempnam(get_temppath(), "cache");
-			file_put_contents($tempfile, $img_str);
-
-			// Twitter had changed something so that the old library doesn't work anymore
-			// so we are using a new library for twitter
-			// To-Do:
-			// Switching completely to this library with all functions
-			require_once "addon/twitter/codebird.php";
-
-			$cb = \Codebird\Codebird::getInstance();
-			$cb->setConsumerKey($ckey, $csecret);
-			$cb->setToken($otoken, $osecret);
-
-			$post = ['status' => $msg, 'media[]' => $tempfile];
+			$post = ['status' => $msg, 'media_ids' => $media->media_id_string];
 
 			if ($iscomment) {
 				$post["in_reply_to_status_id"] = substr($orig_post["uri"], 9);
 			}
 
-			$result = $cb->statuses_updateWithMedia($post);
-			unlink($tempfile);
+			$result = $connection->post('statuses/update', $post);
 
 			logger('twitter_post_with_media send, result: ' . print_r($result, true), LOGGER_DEBUG);
 
@@ -627,7 +603,7 @@ function twitter_post_hook(App $a, &$b)
 				}
 
 				$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $post]);
-				
+
 				Queue::add($a->contact, NETWORK_TWITTER, $s);
 				notice(L10n::t('Twitter post failed. Queued for retry.') . EOL);
 			} elseif ($iscomment) {
@@ -870,7 +846,6 @@ function twitter_fetchtimeline(App $a, $uid)
 	require_once 'include/items.php';
 	require_once 'mod/share.php';
 
-	require_once 'library/twitteroauth.php';
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
 	$parameters = ["exclude_replies" => true, "trim_user" => false, "contributor_details" => true, "include_rts" => true, "tweet_mode" => "extended"];
@@ -953,15 +928,8 @@ function twitter_queue_hook(App $a, &$b)
 
 			$z = unserialize($x['content']);
 
-			require_once "addon/twitter/codebird.php";
-
-			$cb = \Codebird\Codebird::getInstance();
-			$cb->setConsumerKey($ckey, $csecret);
-			$cb->setToken($otoken, $osecret);
-
-			if ($z['url'] == "statuses/update") {
-				$result = $cb->statuses_update($z['post']);
-			}
+			$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
+			$result = $connection->post($z['url'], $z['post']);
 
 			logger('twitter_queue: post result: ' . print_r($result, true), LOGGER_DEBUG);
 
@@ -1132,12 +1100,6 @@ function twitter_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 	$otoken  = PConfig::get($uid, 'twitter', 'oauthtoken');
 	$osecret = PConfig::get($uid, 'twitter', 'oauthsecret');
 
-	require_once "addon/twitter/codebird.php";
-
-	$cb = \Codebird\Codebird::getInstance();
-	$cb->setConsumerKey($ckey, $csecret);
-	$cb->setToken($otoken, $osecret);
-
 	$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 		intval($uid));
 
@@ -1158,7 +1120,8 @@ function twitter_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 	}
 
 	// Fetching user data
-	$user = $cb->users_show($parameters);
+	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
+	$user = $connection->get('users/show', $parameters);
 
 	if (!is_object($user)) {
 		return;
@@ -1686,7 +1649,6 @@ function twitter_fetchhometimeline(App $a, $uid)
 		$application_name = $a->get_hostname();
 	}
 
-	require_once 'library/twitteroauth.php';
 	require_once 'include/items.php';
 
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
@@ -1888,8 +1850,6 @@ function twitter_fetch_own_contact(App $a, $uid)
 	$contact_id = 0;
 
 	if ($own_id == "") {
-		require_once 'library/twitteroauth.php';
-
 		$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
 		// Fetching user data
@@ -1956,7 +1916,6 @@ function twitter_is_retweet(App $a, $uid, $body)
 	$otoken  = PConfig::get($uid, 'twitter', 'oauthtoken');
 	$osecret = PConfig::get($uid, 'twitter', 'oauthsecret');
 
-	require_once 'library/twitteroauth.php';
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
 	$result = $connection->post('statuses/retweet/' . $id);
