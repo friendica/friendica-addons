@@ -22,6 +22,3 @@ report/
 
 #ignore smarty cache
 /view/smarty3/compiled/
-
-#ignore Composer folder
-vendor/

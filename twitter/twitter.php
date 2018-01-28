@@ -83,7 +83,7 @@ require_once 'include/dba.php';
 require_once 'include/enotify.php';
 require_once 'include/text.php';
 
-require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 define('TWITTER_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
