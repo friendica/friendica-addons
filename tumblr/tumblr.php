@@ -7,8 +7,7 @@
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
 
-require_once 'library/OAuth1.php';
-require_once 'addon/tumblr/tumblroauth/tumblroauth.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'tumblroauth.php';
 
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
