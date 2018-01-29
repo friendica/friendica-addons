@@ -298,17 +298,17 @@ function twitter_settings(App $a, &$s)
 			 * account at Twitter.
 			 */
 			$connection = new TwitterOAuth($ckey, $csecret);
-			$request_token = $connection->url('oauth/request_token', ['oauth_callback' => 'oob']);
+			$result = $connection->oauth('oauth/request_token', ['oauth_callback' => 'oob']);
 			/*			 * *
 			 *  make some nice form
 			 */
 			$s .= '<p>' . L10n::t('At this Friendica instance the Twitter addon was enabled but you have not yet connected your account to your Twitter account. To do so click the button below to get a PIN from Twitter which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to Twitter.') . '</p>';
-			$s .= '<a href="' . $connection->url('oauth/authorize', ['oauth_token' => $request_token['oauth_token']]) . '" target="_twitter"><img src="addon/twitter/lighter.png" alt="' . L10n::t('Log in with Twitter') . '"></a>';
+			$s .= '<a href="' . $connection->url('oauth/authorize', ['oauth_token' => $result->oauth_token]) . '" target="_twitter"><img src="addon/twitter/lighter.png" alt="' . L10n::t('Log in with Twitter') . '"></a>';
 			$s .= '<div id="twitter-pin-wrapper">';
 			$s .= '<label id="twitter-pin-label" for="twitter-pin">' . L10n::t('Copy the PIN from Twitter here') . '</label>';
 			$s .= '<input id="twitter-pin" type="text" name="twitter-pin" />';
-			$s .= '<input id="twitter-token" type="hidden" name="twitter-token" value="' . $request_token['oauth_token'] . '" />';
-			$s .= '<input id="twitter-token2" type="hidden" name="twitter-token2" value="' . $request_token['oauth_token_secret'] . '" />';
+			$s .= '<input id="twitter-token" type="hidden" name="twitter-token" value="' . $result->oauth_token . '" />';
+			$s .= '<input id="twitter-token2" type="hidden" name="twitter-token2" value="' . $result->oauth_token_secret . '" />';
 			$s .= '</div><div class="clear"></div>';
 			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
 		} else {
