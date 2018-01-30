@@ -158,6 +158,12 @@ function twitter_follow(App $a, &$contact)
 	$otoken = PConfig::get($uid, 'twitter', 'oauthtoken');
 	$osecret = PConfig::get($uid, 'twitter', 'oauthsecret');
 
+	// If the addon is not configured (general or for this user) quit here
+	if (empty($ckey) || empty($csecret) || empty($otoken) || empty($osecret)) {
+		$contact = false;
+		return;
+	}
+
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 	$connection->post('friendships/create', ['screen_name' => $nickname]);
 
