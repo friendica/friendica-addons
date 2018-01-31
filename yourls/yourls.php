@@ -4,7 +4,7 @@
  * Description: Defines a YourLS url shortener for the Statusnet & Twitter addons
  * Version: 1.0
  * Author: Keith Fernie <http://friendika.me4.it/profile/keith>
- * 
+ * Status: Unsupported
  */
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
