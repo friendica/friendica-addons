@@ -6,9 +6,6 @@
  * The first PHP Library to support OAuth for Tumblr's REST API.  (Originally for Twitter, modified for Tumblr by Lucas)
  */
 
-/* Load OAuth lib. You can find it at http://oauth.net */
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'OAuth1.php';
-
 /**
  * Tumblr OAuth class
  */
