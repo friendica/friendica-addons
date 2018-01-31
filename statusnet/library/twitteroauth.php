@@ -8,9 +8,6 @@
  * Version 0.2.0 kept for compatibility purpose with StatusNetOAuth
  */
 
-/* Load OAuth lib. You can find it at http://oauth.net */
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'OAuth1.php';
-
 /**
  * Twitter OAuth class
  */
