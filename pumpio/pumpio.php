@@ -158,7 +158,7 @@ function pumpio_connect(&$a) {
 	// Let's begin.  First we need a Request Token.  The request token is required to send the user
 	// to pumpio's login page.
 
-	// Create a new instance of the TumblrOAuth library.  For this step, all we need to give the library is our
+	// Create a new instance of the oauth_client_class library.  For this step, all we need to give the library is our
 	// Consumer Key and Consumer Secret
 	$client = new oauth_client_class;
 	$client->debug = 1;
@@ -554,7 +554,7 @@ function pumpio_send(&$a,&$b) {
 				$a->contact = $r[0]["id"];
 
 			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $params]);
-			
+
 			Queue::add($a->contact, NETWORK_PUMPIO, $s);
 			notice(L10n::t('Pump.io post failed. Queued for retry.').EOL);
 		}
@@ -630,7 +630,7 @@ function pumpio_action(&$a, $uid, $uri, $action, $content = "") {
 			$a->contact = $r[0]["id"];
 
 		$s = serialize(['url' => $url, 'item' => $orig_post["id"], 'post' => $params]);
-		
+
 		Queue::add($a->contact, NETWORK_PUMPIO, $s);
 		notice(L10n::t('Pump.io like failed. Queued for retry.').EOL);
 	}

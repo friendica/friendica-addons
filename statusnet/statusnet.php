@@ -557,12 +557,7 @@ function statusnet_post_hook(App $a, &$b)
 		$image = "";
 
 		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {
-			if ((strlen($msgarr["url"]) > 20) &&
-				((strlen($msg . " \n" . $msgarr["url"]) > $max_char))) {
-				$msg .= " \n" . Network::shortenUrl($msgarr["url"]);
-			} else {
-				$msg .= " \n" . $msgarr["url"];
-			}
+			$msg .= " \n" . $msgarr["url"];
 		} elseif (isset($msgarr["image"]) && ($msgarr["type"] != "video")) {
 			$image = $msgarr["image"];
 		}
