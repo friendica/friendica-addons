@@ -13,6 +13,7 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Database\DBM;
 use Friendica\Model\Profile;
+use Friendica\Util\Temporal;
 
 require_once 'boot.php';
 require_once 'include/dba.php';
@@ -149,7 +150,7 @@ function forumdirectory_content(&$a)
 				$details .= $rr['country-name'];
 			}
 
-			if (strlen($rr['dob']) && ($years = age($rr['dob'], $rr['timezone'], '')) != 0) {
+			if (strlen($rr['dob']) && ($years = Temporal::getAgeByTimezone($rr['dob'], $rr['timezone'], '')) != 0) {
 				$details .= '<br />' . L10n::t('Age: ') . $years;
 			}
 
