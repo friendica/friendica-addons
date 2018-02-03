@@ -6,8 +6,10 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  *
  */
+
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Util\DateTimeFormat;
 
 require_once 'include/datetime.php';
 
@@ -24,8 +26,8 @@ function membersince_uninstall()
 function membersince_display(&$a, &$b)
 {
 	// Works in Vier
-	$b = preg_replace('/<\/dl>/', "</dl>\n\n\n<dl id=\"aprofile-membersince\" class=\"aprofile\">\n<dt>" . L10n::t('Member since:') . "</dt>\n<dd>" . datetime_convert('UTC', date_default_timezone_get(), $a->profile['register_date']) . "</dd>\n</dl>", $b, 1);
+	$b = preg_replace('/<\/dl>/', "</dl>\n\n\n<dl id=\"aprofile-membersince\" class=\"aprofile\">\n<dt>" . L10n::t('Member since:') . "</dt>\n<dd>" . DateTimeFormat::local($a->profile['register_date']) . "</dd>\n</dl>", $b, 1);
 
 	// Trying for Frio
-	//$b = preg_replace('/<\/div>/', "<div id=\"aprofile-membersince\" class=\"aprofile\"><hr class=\"profile-separator\"><div class=\"profile-label-name\">" . L10n::t('Member since:') . "</div><div class=\"profile-entry\">" . datetime_convert('UTC', date_default_timezone_get(), $a->profile['register_date']) . "</div></div>", $b, 1);
+	//$b = preg_replace('/<\/div>/', "<div id=\"aprofile-membersince\" class=\"aprofile\"><hr class=\"profile-separator\"><div class=\"profile-label-name\">" . L10n::t('Member since:') . "</div><div class=\"profile-entry\">" . DateTimeFormat::local($a->profile['register_date']) . "</div></div>", $b, 1);
 }

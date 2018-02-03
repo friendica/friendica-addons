@@ -38,6 +38,8 @@ define('STATUSNET_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'statusnetoauth.php';
 require_once 'include/enotify.php';
 
+use Codebird\Codebird;
+use CodebirdSN\CodebirdSN;
 use Friendica\App;
 use Friendica\Content\OEmbed;
 use Friendica\Content\Text\BBCode;
@@ -51,6 +53,7 @@ use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\Photo;
 use Friendica\Model\User;
+use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
 
 function statusnet_install()
@@ -757,7 +760,7 @@ function statusnet_cron(App $a, $b)
 		$abandon_days = 0;
 	}
 
-	$abandon_limit = date("Y-m-d H:i:s", time() - $abandon_days * 86400);
+	$abandon_limit = date(DateTimeFormat::MYSQL, time() - $abandon_days * 86400);
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'statusnet' AND `k` = 'import' AND `v` ORDER BY RAND()");
 	if (count($r)) {
@@ -933,7 +936,7 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 					`location`, `about`, `writable`, `blocked`, `readonly`, `pending` )
 					VALUES ( %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', %d, 0, 0, 0 ) ",
 			intval($uid),
-			dbesc(datetime_convert()),
+			dbesc(DateTimeFormat::utcNow()),
 			dbesc($contact->statusnet_profile_url),
 			dbesc(normalise_link($contact->statusnet_profile_url)),
 			dbesc(statusnet_address($contact)),
@@ -974,13 +977,13 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 			dbesc($photos[0]),
 			dbesc($photos[1]),
 			dbesc($photos[2]),
-			dbesc(datetime_convert()),
+			dbesc(DateTimeFormat::utcNow()),
 			intval($contact_id)
 		);
 	} else {
 		// update profile photos once every two weeks as we have no notification of when they change.
-		//$update_photo = (($r[0]['avatar-date'] < datetime_convert('','','now -2 days')) ? true : false);
-		$update_photo = ($r[0]['avatar-date'] < datetime_convert('', '', 'now -12 hours'));
+		//$update_photo = (($r[0]['avatar-date'] < DateTimeFormat::convert('now -2 days', '', '', )) ? true : false);
+		$update_photo = ($r[0]['avatar-date'] < DateTimeFormat::utc('now -12 hours'));
 
 		// check that we have all the photos, this has been known to fail on occasion
 		if ((!$r[0]['photo']) || (!$r[0]['thumb']) || (!$r[0]['micro']) || ($update_photo)) {
@@ -1005,9 +1008,9 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 				dbesc($photos[0]),
 				dbesc($photos[1]),
 				dbesc($photos[2]),
-				dbesc(datetime_convert()),
-				dbesc(datetime_convert()),
-				dbesc(datetime_convert()),
+				dbesc(DateTimeFormat::utcNow()),
+				dbesc(DateTimeFormat::utcNow()),
+				dbesc(DateTimeFormat::utcNow()),
 				dbesc($contact->statusnet_profile_url),
 				dbesc(normalise_link($contact->statusnet_profile_url)),
 				dbesc(statusnet_address($contact)),
@@ -1194,8 +1197,8 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 	$postarray['body'] = $converted["body"];
 	$postarray['tag'] = $converted["tags"];
 
-	$postarray['created'] = datetime_convert('UTC', 'UTC', $content->created_at);
-	$postarray['edited'] = datetime_convert('UTC', 'UTC', $content->created_at);
+	$postarray['created'] = DateTimeFormat::utc($content->created_at);
+	$postarray['edited'] = DateTimeFormat::utc($content->created_at);
 
 	if (is_string($content->place->name)) {
 		$postarray["location"] = $content->place->name;

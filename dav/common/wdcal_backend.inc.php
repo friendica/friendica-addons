@@ -1,6 +1,7 @@
 <?php
 
 use Friendica\Core\L10n;
+use Friendica\Util\DateTimeFormat;
 
 /**
  * @param mixed $obj
@@ -100,9 +101,9 @@ function wdcal_print_feed($base_path = "")
 				else $type = Sabre\VObject\Property\DateTime::LOCALTZ;
 
 				$datetime_start = new Sabre\VObject\Property\DateTime("DTSTART");
-				$datetime_start->setDateTime(new DateTime(date("Y-m-d H:i:s", IntVal($_REQUEST["CalendarStartTime"]))), $type);
+				$datetime_start->setDateTime(new DateTime(date(DateTimeFormat::MYSQL, IntVal($_REQUEST["CalendarStartTime"]))), $type);
 				$datetime_end = new Sabre\VObject\Property\DateTime("DTEND");
-				$datetime_end->setDateTime(new DateTime(date("Y-m-d H:i:s", IntVal($_REQUEST["CalendarEndTime"]))), $type);
+				$datetime_end->setDateTime(new DateTime(date(DateTimeFormat::MYSQL, IntVal($_REQUEST["CalendarEndTime"]))), $type);
 
 				$component->add($datetime_start);
 				$component->add($datetime_end);
@@ -182,9 +183,9 @@ function wdcal_print_feed($base_path = "")
 				else $type = Sabre\VObject\Property\DateTime::LOCALTZ;
 
 				$datetime_start = new Sabre\VObject\Property\DateTime("DTSTART");
-				$datetime_start->setDateTime(new DateTime(date("Y-m-d H:i:s", IntVal($_REQUEST["CalendarStartTime"]))), $type);
+				$datetime_start->setDateTime(new DateTime(date(DateTimeFormat::MYSQL, IntVal($_REQUEST["CalendarStartTime"]))), $type);
 				$datetime_end = new Sabre\VObject\Property\DateTime("DTEND");
-				$datetime_end->setDateTime(new DateTime(date("Y-m-d H:i:s", IntVal($_REQUEST["CalendarEndTime"]))), $type);
+				$datetime_end->setDateTime(new DateTime(date(DateTimeFormat::MYSQL, IntVal($_REQUEST["CalendarEndTime"]))), $type);
 
 				$component->__unset("DTSTART");
 				$component->__unset("DTEND");
