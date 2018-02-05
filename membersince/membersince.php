@@ -11,8 +11,6 @@ use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Util\DateTimeFormat;
 
-require_once 'include/datetime.php';
-
 function membersince_install()
 {
 	Addon::registerHook('profile_advanced', 'addon/membersince/membersince.php', 'membersince_display');
