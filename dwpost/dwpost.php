@@ -180,7 +180,6 @@ function dwpost_send(&$a,&$b) {
 	if($dw_username && $dw_password && $dw_blog) {
 
 		require_once('include/bbcode.php');
-		require_once('include/datetime.php');
 
 		$title = $b['title'];
 		$post = bbcode($b['body']);

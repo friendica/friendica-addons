@@ -180,7 +180,6 @@ function ljpost_send(&$a,&$b) {
 	if($lj_username && $lj_password && $lj_blog) {
 
 		require_once('include/bbcode.php');
-		require_once('include/datetime.php');
 
 		$title = xmlify($b['title']);
 		$post = bbcode($b['body']);
