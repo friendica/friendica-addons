@@ -376,7 +376,7 @@ function tumblr_send(&$a,&$b) {
 		if (isset($siteinfo["text"]))
 			$body = $siteinfo["text"];
 		else
-			$body = bb_remove_share_information($b["body"]);
+			$body = BBCode::removeShareInformation($b["body"]);
 
 		switch ($siteinfo["type"]) {
 			case "photo":
