@@ -2,7 +2,7 @@
 /**
  * Name: MemberSince
  * Description: Display membership date in profile
- * Version: 1.0
+ * Version: 1.1
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  *
  */
