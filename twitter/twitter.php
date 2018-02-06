@@ -571,11 +571,7 @@ function twitter_post_hook(App $a, &$b)
 				$image = "";
 			} elseif ($iscomment) {
 				logger('twitter_post: Update extid ' . $result->id_str . " for post id " . $b['id']);
-				q("UPDATE `item` SET `extid` = '%s', `body` = '%s' WHERE `id` = %d",
-					dbesc("twitter::" . $result->id_str),
-					dbesc($result->text),
-					intval($b['id'])
-				);
+				Item::update(['extid' => "twitter::" . $result->id_str, 'body' => $result->text], ['id' => $b['id']]);
 			}
 		}
 
@@ -621,10 +617,7 @@ function twitter_post_hook(App $a, &$b)
 				notice(L10n::t('Twitter post failed. Queued for retry.') . EOL);
 			} elseif ($iscomment) {
 				logger('twitter_post: Update extid ' . $result->id_str . " for post id " . $b['id']);
-				q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d",
-					dbesc("twitter::" . $result->id_str),
-					intval($b['id'])
-				);
+				Item::update(['extid' => "twitter::" . $result->id_str], ['id' => $b['id']]);
 			}
 		}
 	}

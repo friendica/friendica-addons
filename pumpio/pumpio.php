@@ -543,10 +543,7 @@ function pumpio_send(&$a,&$b) {
 			logger('pumpio_send '.$username.': success '.$post_id);
 			if($post_id && $iscomment) {
 				logger('pumpio_send '.$username.': Update extid '.$post_id." for post id ".$b['id']);
-				q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d",
-					dbesc($post_id),
-					intval($b['id'])
-				);
+				Item::update(['extid' => $post_id], ['id' => $b['id']]);
 			}
 		} else {
 			logger('pumpio_send '.$username.': '.$url.' general error: ' . print_r($user,true));
@@ -870,13 +867,7 @@ function pumpio_dounlike(&$a, $uid, $self, $post, $own_id) {
 			$contactid = $orig_post['contact-id'];
 	}
 
-	$r = q("UPDATE `item` SET `deleted` = 1, `unseen` = 1, `changed` = '%s' WHERE `verb` = '%s' AND `uid` = %d AND `contact-id` = %d AND `thr-parent` = '%s'",
-		dbesc(DateTimeFormat::utcNow()),
-		dbesc(ACTIVITY_LIKE),
-		intval($uid),
-		intval($contactid),
-		dbesc($orig_post['uri'])
-	);
+	Item::delete(['verb' => ACTIVITY_LIKE, 'uid' => $uid, 'contact-id' => $contactid, 'thr-parent' => $orig_post['uri']]);
 
 	if(count($r))
 		logger("pumpio_dounlike: unliked existing like. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
@@ -1060,7 +1051,7 @@ function pumpio_dodelete(&$a, $uid, $self, $post, $own_id) {
 		);
 
 	if (count($r))
-		return Item::delete($r[0]["id"]);
+		return Item::deleteById($r[0]["id"]);
 
 	$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
 				dbesc($post->object->id),
@@ -1068,7 +1059,7 @@ function pumpio_dodelete(&$a, $uid, $self, $post, $own_id) {
 		);
 
 	if (count($r))
-		return Item::delete($r[0]["id"]);
+		return Item::deleteById($r[0]["id"]);
 }
 
 function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcompletion = true) {
@@ -1256,13 +1247,9 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 	$postarray["id"] = $top_item;
 
 	if (($top_item == 0) && ($post->verb == "update")) {
-		$r = q("UPDATE `item` SET `title` = '%s', `body` = '%s' , `changed` = '%s' WHERE `uri` = '%s' AND `uid` = %d",
-			dbesc($postarray["title"]),
-			dbesc($postarray["body"]),
-			dbesc($postarray["edited"]),
-			dbesc($postarray["uri"]),
-			intval($uid)
-			);
+		$fields = ['title' => $postarray["title"], 'body' => $postarray["body"], 'changed' => $postarray["edited"]];
+		$condition = ['uri' => $postarray["uri"], 'uid' => $uid];
+		Item::update($fields, $condition);
 	}
 
 	if ($post->object->objectType == "comment") {
@@ -1491,10 +1478,7 @@ function pumpio_queue_hook(&$a,&$b) {
 				logger('pumpio_queue: send '.$username.': success '.$post_id);
 				if($post_id && $iscomment) {
 					logger('pumpio_send '.$username.': Update extid '.$post_id." for post id ".$z['item']);
-					q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d",
-						dbesc($post_id),
-						intval($z['item'])
-					);
+					Item::update(['extid' => $post_id], ['id' => $z['item']]);
 				}
 				Queue::removeItem($x['id']);
 			} else

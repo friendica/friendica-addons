@@ -600,11 +600,7 @@ function statusnet_post_hook(App $a, &$b)
 				logger('Send to GNU Social failed: "' . $result->error . '"');
 			} elseif ($iscomment) {
 				logger('statusnet_post: Update extid ' . $result->id . " for post id " . $b['id']);
-				q("UPDATE `item` SET `extid` = '%s', `body` = '%s' WHERE `id` = %d",
-					dbesc($hostname . "::" . $result->id),
-					dbesc($result->text),
-					intval($b['id'])
-				);
+				Item::update(['extid' => $hostname . "::" . $result->id, 'body' => $result->text], ['id' => $b['id']]);
 			}
 		}
 		if ($tempfile != "") {
