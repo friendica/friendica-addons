@@ -867,7 +867,7 @@ function pumpio_dounlike(&$a, $uid, $self, $post, $own_id) {
 			$contactid = $orig_post['contact-id'];
 	}
 
-	Item::delete(["`verb` = ? AND `uid` = ? AND `contact-id` = ? AND `thr-parent` = ?", ACTIVITY_LIKE, $uid, $contactid, $orig_post['uri']]);
+	Item::delete(['verb' => ACTIVITY_LIKE, 'uid' => $uid, 'contact-id' => $contactid, 'thr-parent' => $orig_post['uri']]);
 
 	if(count($r))
 		logger("pumpio_dounlike: unliked existing like. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
