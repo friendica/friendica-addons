@@ -49,7 +49,7 @@ function membersince_display(&$a, &$b)
 		$div->appendChild($hr);
 		$div->appendChild($label);
 		$div->appendChild($entry);
-		$elm->parentNode->appendChild($div);
+		$elm->parentNode->insertBefore($div, $elm->nextSibling);
 
 		$b = $doc->saveHTML();
 	} else {
