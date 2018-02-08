@@ -1147,10 +1147,8 @@ function twitter_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 	return $contact_id;
 }
 
-function twitter_expand_entities(App $a, $body, $item, $no_tags = false, $picture)
+function twitter_expand_entities(App $a, $body, $item, $picture)
 {
-	$tags = "";
-
 	$plain = $body;
 
 	if (isset($item->entities->urls)) {
@@ -1234,10 +1232,6 @@ function twitter_expand_entities(App $a, $body, $item, $no_tags = false, $pictur
 			$body = add_page_info_to_body($body);
 		}
 
-		if ($no_tags) {
-			return ["body" => $body, "tags" => "", "plain" => $plain];
-		}
-
 		$tags_arr = [];
 
 		foreach ($item->entities->hashtags AS $hashtag) {
@@ -1302,7 +1296,7 @@ function twitter_expand_entities(App $a, $body, $item, $no_tags = false, $pictur
  * @param object $post Twitter object with the post
  * @param array $postarray Array of the item that is about to be posted
  *
- * @return $picture string Returns a a single picture string if it isn't a media post
+ * @return $picture string Image URL or empty string
  */
 function twitter_media_entities($post, &$postarray)
 {
@@ -1480,7 +1474,7 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 	// Search for media links
 	$picture = twitter_media_entities($post, $postarray);
 
-	$converted = twitter_expand_entities($a, $postarray['body'], $post, false, $picture);
+	$converted = twitter_expand_entities($a, $postarray['body'], $post, $picture);
 	$postarray['body'] = $converted["body"];
 	$postarray['tag'] = $converted["tags"];
 	$postarray['created'] = DateTimeFormat::utc($post->created_at);
