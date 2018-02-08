@@ -1151,6 +1151,20 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 {
 	$plain = $body;
 
+	$tags_arr = [];
+
+	foreach ($item->entities->hashtags AS $hashtag) {
+		$url = "#[url=" . $a->get_baseurl() . "/search?tag=" . rawurlencode($hashtag->text) . "]" . $hashtag->text . "[/url]";
+		$tags_arr["#" . $hashtag->text] = $url;
+		$body = str_replace("#" . $hashtag->text, $url, $body);
+	}
+
+	foreach ($item->entities->user_mentions AS $mention) {
+		$url = "@[url=https://twitter.com/" . rawurlencode($mention->screen_name) . "]" . $mention->screen_name . "[/url]";
+		$tags_arr["@" . $mention->screen_name] = $url;
+		$body = str_replace("@" . $mention->screen_name, $url, $body);
+	}
+
 	if (isset($item->entities->urls)) {
 		$type = "";
 		$footerurl = "";
@@ -1231,62 +1245,49 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 		} elseif (($footer == "") && ($picture == "")) {
 			$body = add_page_info_to_body($body);
 		}
+	}
 
-		$tags_arr = [];
+	// it seems as if the entities aren't always covering all mentions. So the rest will be checked here
+	$tags = get_tags($body);
 
-		foreach ($item->entities->hashtags AS $hashtag) {
-			$url = "#[url=" . $a->get_baseurl() . "/search?tag=" . rawurlencode($hashtag->text) . "]" . $hashtag->text . "[/url]";
-			$tags_arr["#" . $hashtag->text] = $url;
-			$body = str_replace("#" . $hashtag->text, $url, $body);
-		}
+	if (count($tags)) {
+		foreach ($tags as $tag) {
+			if (strstr(trim($tag), " ")) {
+				continue;
+			}
 
-		foreach ($item->entities->user_mentions AS $mention) {
-			$url = "@[url=https://twitter.com/" . rawurlencode($mention->screen_name) . "]" . $mention->screen_name . "[/url]";
-			$tags_arr["@" . $mention->screen_name] = $url;
-			$body = str_replace("@" . $mention->screen_name, $url, $body);
-		}
-
-		// it seems as if the entities aren't always covering all mentions. So the rest will be checked here
-		$tags = get_tags($body);
-
-		if (count($tags)) {
-			foreach ($tags as $tag) {
-				if (strstr(trim($tag), " ")) {
+			if (strpos($tag, '#') === 0) {
+				if (strpos($tag, '[url=')) {
 					continue;
 				}
 
-				if (strpos($tag, '#') === 0) {
-					if (strpos($tag, '[url=')) {
-						continue;
-					}
-
-					// don't link tags that are already embedded in links
-					if (preg_match('/\[(.*?)' . preg_quote($tag, '/') . '(.*?)\]/', $body)) {
-						continue;
-					}
-					if (preg_match('/\[(.*?)\]\((.*?)' . preg_quote($tag, '/') . '(.*?)\)/', $body)) {
-						continue;
-					}
-
-					$basetag = str_replace('_', ' ', substr($tag, 1));
-					$url = '#[url=' . $a->get_baseurl() . '/search?tag=' . rawurlencode($basetag) . ']' . $basetag . '[/url]';
-					$body = str_replace($tag, $url, $body);
-					$tags_arr["#" . $basetag] = $url;
-				} elseif (strpos($tag, '@') === 0) {
-					if (strpos($tag, '[url=')) {
-						continue;
-					}
-
-					$basetag = substr($tag, 1);
-					$url = '@[url=https://twitter.com/' . rawurlencode($basetag) . ']' . $basetag . '[/url]';
-					$body = str_replace($tag, $url, $body);
-					$tags_arr["@" . $basetag] = $url;
+				// don't link tags that are already embedded in links
+				if (preg_match('/\[(.*?)' . preg_quote($tag, '/') . '(.*?)\]/', $body)) {
+					continue;
 				}
+				if (preg_match('/\[(.*?)\]\((.*?)' . preg_quote($tag, '/') . '(.*?)\)/', $body)) {
+					continue;
+				}
+
+				$basetag = str_replace('_', ' ', substr($tag, 1));
+				$url = '#[url=' . $a->get_baseurl() . '/search?tag=' . rawurlencode($basetag) . ']' . $basetag . '[/url]';
+				$body = str_replace($tag, $url, $body);
+				$tags_arr["#" . $basetag] = $url;
+			} elseif (strpos($tag, '@') === 0) {
+				if (strpos($tag, '[url=')) {
+					continue;
+				}
+
+				$basetag = substr($tag, 1);
+				$url = '@[url=https://twitter.com/' . rawurlencode($basetag) . ']' . $basetag . '[/url]';
+				$body = str_replace($tag, $url, $body);
+				$tags_arr["@" . $basetag] = $url;
 			}
 		}
-
-		$tags = implode($tags_arr, ",");
 	}
+
+	$tags = implode($tags_arr, ",");
+
 	return ["body" => $body, "tags" => $tags, "plain" => $plain];
 }
 
