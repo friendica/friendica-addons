@@ -25,7 +25,7 @@ function membersince_display(&$a, &$b)
 {
 	if (current_theme() == 'frio') {
 		// Works in Frio.
-		$html = '<!DOCTYPE html><html><body>' . $b .'</body></html>';
+		$html = '<!DOCTYPE html><html><body>' . $b . '</body></html>';
 
 		$doc = new DOMDocument();
 		$doc->validateOnParse = true;
