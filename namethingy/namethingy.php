@@ -5,6 +5,7 @@
  * Description: The Ultimate Random Name Generator
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
+ * Status: Unsupported
  */
 use Friendica\Core\Addon;
 
