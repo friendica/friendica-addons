@@ -1147,11 +1147,23 @@ function twitter_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 	return $contact_id;
 }
 
-function twitter_expand_entities(App $a, $body, $item, $no_tags = false, $picture)
+function twitter_expand_entities(App $a, $body, $item, $picture)
 {
-	$tags = "";
-
 	$plain = $body;
+
+	$tags_arr = [];
+
+	foreach ($item->entities->hashtags AS $hashtag) {
+		$url = "#[url=" . $a->get_baseurl() . "/search?tag=" . rawurlencode($hashtag->text) . "]" . $hashtag->text . "[/url]";
+		$tags_arr["#" . $hashtag->text] = $url;
+		$body = str_replace("#" . $hashtag->text, $url, $body);
+	}
+
+	foreach ($item->entities->user_mentions AS $mention) {
+		$url = "@[url=https://twitter.com/" . rawurlencode($mention->screen_name) . "]" . $mention->screen_name . "[/url]";
+		$tags_arr["@" . $mention->screen_name] = $url;
+		$body = str_replace("@" . $mention->screen_name, $url, $body);
+	}
 
 	if (isset($item->entities->urls)) {
 		$type = "";
@@ -1233,66 +1245,49 @@ function twitter_expand_entities(App $a, $body, $item, $no_tags = false, $pictur
 		} elseif (($footer == "") && ($picture == "")) {
 			$body = add_page_info_to_body($body);
 		}
+	}
 
-		if ($no_tags) {
-			return ["body" => $body, "tags" => "", "plain" => $plain];
-		}
+	// it seems as if the entities aren't always covering all mentions. So the rest will be checked here
+	$tags = get_tags($body);
 
-		$tags_arr = [];
+	if (count($tags)) {
+		foreach ($tags as $tag) {
+			if (strstr(trim($tag), " ")) {
+				continue;
+			}
 
-		foreach ($item->entities->hashtags AS $hashtag) {
-			$url = "#[url=" . $a->get_baseurl() . "/search?tag=" . rawurlencode($hashtag->text) . "]" . $hashtag->text . "[/url]";
-			$tags_arr["#" . $hashtag->text] = $url;
-			$body = str_replace("#" . $hashtag->text, $url, $body);
-		}
-
-		foreach ($item->entities->user_mentions AS $mention) {
-			$url = "@[url=https://twitter.com/" . rawurlencode($mention->screen_name) . "]" . $mention->screen_name . "[/url]";
-			$tags_arr["@" . $mention->screen_name] = $url;
-			$body = str_replace("@" . $mention->screen_name, $url, $body);
-		}
-
-		// it seems as if the entities aren't always covering all mentions. So the rest will be checked here
-		$tags = get_tags($body);
-
-		if (count($tags)) {
-			foreach ($tags as $tag) {
-				if (strstr(trim($tag), " ")) {
+			if (strpos($tag, '#') === 0) {
+				if (strpos($tag, '[url=')) {
 					continue;
 				}
 
-				if (strpos($tag, '#') === 0) {
-					if (strpos($tag, '[url=')) {
-						continue;
-					}
-
-					// don't link tags that are already embedded in links
-					if (preg_match('/\[(.*?)' . preg_quote($tag, '/') . '(.*?)\]/', $body)) {
-						continue;
-					}
-					if (preg_match('/\[(.*?)\]\((.*?)' . preg_quote($tag, '/') . '(.*?)\)/', $body)) {
-						continue;
-					}
-
-					$basetag = str_replace('_', ' ', substr($tag, 1));
-					$url = '#[url=' . $a->get_baseurl() . '/search?tag=' . rawurlencode($basetag) . ']' . $basetag . '[/url]';
-					$body = str_replace($tag, $url, $body);
-					$tags_arr["#" . $basetag] = $url;
-				} elseif (strpos($tag, '@') === 0) {
-					if (strpos($tag, '[url=')) {
-						continue;
-					}
-
-					$basetag = substr($tag, 1);
-					$url = '@[url=https://twitter.com/' . rawurlencode($basetag) . ']' . $basetag . '[/url]';
-					$body = str_replace($tag, $url, $body);
-					$tags_arr["@" . $basetag] = $url;
+				// don't link tags that are already embedded in links
+				if (preg_match('/\[(.*?)' . preg_quote($tag, '/') . '(.*?)\]/', $body)) {
+					continue;
 				}
+				if (preg_match('/\[(.*?)\]\((.*?)' . preg_quote($tag, '/') . '(.*?)\)/', $body)) {
+					continue;
+				}
+
+				$basetag = str_replace('_', ' ', substr($tag, 1));
+				$url = '#[url=' . $a->get_baseurl() . '/search?tag=' . rawurlencode($basetag) . ']' . $basetag . '[/url]';
+				$body = str_replace($tag, $url, $body);
+				$tags_arr["#" . $basetag] = $url;
+			} elseif (strpos($tag, '@') === 0) {
+				if (strpos($tag, '[url=')) {
+					continue;
+				}
+
+				$basetag = substr($tag, 1);
+				$url = '@[url=https://twitter.com/' . rawurlencode($basetag) . ']' . $basetag . '[/url]';
+				$body = str_replace($tag, $url, $body);
+				$tags_arr["@" . $basetag] = $url;
 			}
 		}
-
-		$tags = implode($tags_arr, ",");
 	}
+
+	$tags = implode($tags_arr, ",");
+
 	return ["body" => $body, "tags" => $tags, "plain" => $plain];
 }
 
@@ -1302,7 +1297,7 @@ function twitter_expand_entities(App $a, $body, $item, $no_tags = false, $pictur
  * @param object $post Twitter object with the post
  * @param array $postarray Array of the item that is about to be posted
  *
- * @return $picture string Returns a a single picture string if it isn't a media post
+ * @return $picture string Image URL or empty string
  */
 function twitter_media_entities($post, &$postarray)
 {
@@ -1480,7 +1475,7 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 	// Search for media links
 	$picture = twitter_media_entities($post, $postarray);
 
-	$converted = twitter_expand_entities($a, $postarray['body'], $post, false, $picture);
+	$converted = twitter_expand_entities($a, $postarray['body'], $post, $picture);
 	$postarray['body'] = $converted["body"];
 	$postarray['tag'] = $converted["tags"];
 	$postarray['created'] = DateTimeFormat::utc($post->created_at);
