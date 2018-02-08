@@ -200,11 +200,11 @@ function twitter_settings_post(App $a, $post)
 		return;
 	}
 	// don't check twitter settings if twitter submit button is not clicked
-	if (!x($_POST, 'twitter-submit')) {
+	if (empty($_POST['twitter-disconnect']) && empty($_POST['twitter-submit'])) {
 		return;
 	}
 
-	if (isset($_POST['twitter-disconnect'])) {
+	if (!empty($_POST['twitter-disconnect'])) {
 		/*		 * *
 		 * if the twitter-disconnect checkbox is set, clear the OAuth key/secret pair
 		 * from the user configuration
@@ -229,12 +229,20 @@ function twitter_settings_post(App $a, $post)
 			//  the token and secret for which the PIN was generated were hidden in the settings
 			//  form as token and token2, we need a new connection to Twitter using these token
 			//  and secret to request a Access Token with the PIN
-			$connection = new TwitterOAuth($ckey, $csecret, $_POST['twitter-token'], $_POST['twitter-token2']);
-			$token = $connection->oauth("oauth/access_token", ["oauth_verifier" => $_POST['twitter-pin']]);
-			//  ok, now that we have the Access Token, save them in the user config
-			PConfig::set(local_user(), 'twitter', 'oauthtoken', $token['oauth_token']);
-			PConfig::set(local_user(), 'twitter', 'oauthsecret', $token['oauth_token_secret']);
-			PConfig::set(local_user(), 'twitter', 'post', 1);
+			try {
+				if (empty($_POST['twitter-pin'])) {
+					throw new Exception(L10n::t('You submitted an empty PIN, please Sign In with Twitter again to get a new one.'));
+				}
+
+				$connection = new TwitterOAuth($ckey, $csecret, $_POST['twitter-token'], $_POST['twitter-token2']);
+				$token = $connection->oauth("oauth/access_token", ["oauth_verifier" => $_POST['twitter-pin']]);
+				//  ok, now that we have the Access Token, save them in the user config
+				PConfig::set(local_user(), 'twitter', 'oauthtoken', $token['oauth_token']);
+				PConfig::set(local_user(), 'twitter', 'oauthsecret', $token['oauth_token_secret']);
+				PConfig::set(local_user(), 'twitter', 'post', 1);
+			} catch(Exception $e) {
+				info($e->getMessage());
+			}
 			//  reload the Addon Settings page, if we don't do it see Bug #42
 			goaway('settings/connectors');
 		} else {
