@@ -4,7 +4,7 @@
  * Description: Display membership date in profile
  * Version: 1.1
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- *
+ * Status: Unsupported
  */
 
 use Friendica\Core\Addon;
