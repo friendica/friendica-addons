@@ -25,8 +25,11 @@ function membersince_display(&$a, &$b)
 {
 	if (current_theme() == 'frio') {
 		// Works in Frio.
+		$html = '<!DOCTYPE html><html><body>' . $b . '</body></html>';
+
 		$doc = new DOMDocument();
-		$doc->loadHTML(mb_convert_encoding($b, 'HTML-ENTITIES', 'UTF-8'));
+		$doc->validateOnParse = true;
+		@$doc->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'));
 
 		$elm = $doc->getElementById('aprofile-fullname');
 
