@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: blockem
- * Description: block people
+ * Description: Allows users to hide content by collapsing posts and replies.
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  *
@@ -56,7 +56,8 @@ function blockem_addon_settings(&$a, &$s)
     $s .= '</span>';
 
     $s .= '<div id="blockem-wrapper">';
-    $s .= '<label id="blockem-label" for="blockem-words">' . L10n::t('Comma separated profile URLS to block') . ' </label>';
+    $s .= '<div id="blockem-desc">'. L10n::t("Hides user's content by collapsing posts. Also replaces their avatar with generic image.") . ' </div>';
+    $s .= '<label id="blockem-label" for="blockem-words">' . L10n::t('Comma separated profile URLS:') . ' </label>';
     $s .= '<textarea id="blockem-words" type="text" name="blockem-words" >' . htmlspecialchars($words) . '</textarea>';
     $s .= '</div><div class="clear"></div>';
 
@@ -136,7 +137,7 @@ function blockem_prepare_body(&$a,&$b) {
 	}
 	if($found) {
 		$rnd = random_string(8);
-		$b['html'] = '<div id="blockem-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'blockem-' . $rnd . '\'); >' . L10n::t('Blocked %s - Click to open/close', $word) . '</div><div id="blockem-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
+		$b['html'] = '<div id="blockem-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'blockem-' . $rnd . '\'); >' . L10n::t('Hidden content by %s - Click to open/close', $word) . '</div><div id="blockem-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
 	}
 }
 
