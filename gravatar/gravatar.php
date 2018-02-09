@@ -104,7 +104,7 @@ function gravatar_plugin_admin (&$a, &$o) {
 /**
  * Save admin settings
  */
-function gravatar_addon_admin_post (&$a) {
+function gravatar_plugin_admin_post (&$a) {
 	check_form_security_token('gravatarsave');
 
 	$default_avatar = ((x($_POST, 'avatar')) ? notags(trim($_POST['avatar'])) : 'identicon');
