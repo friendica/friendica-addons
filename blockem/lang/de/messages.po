@@ -4,50 +4,57 @@
 # 
 # 
 # Translators:
-# bavatar <tobias.diekershoff@gmx.net>, 2014-2015
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2015-07-27 05:29+0000\n"
-"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"POT-Creation-Date: 2018-02-09 13:00+0100\n"
+"PO-Revision-Date: 2018-02-10 17:32+0000\n"
+"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: blockem.php:51
-msgid "\"Blockem\" Settings"
-msgstr "\"Blockem\"-Einstellungen"
+#: blockem.php:51 blockem.php:55
+msgid "\"Blockem\""
+msgstr "\"Blockem\""
 
-#: blockem.php:53
-msgid "Comma separated profile URLS to block"
-msgstr "Profil-URLs, die geblockt werden sollen (durch Kommas getrennt)"
+#: blockem.php:59
+msgid ""
+"Hides user's content by collapsing posts. Also replaces their avatar with "
+"generic image."
+msgstr "Verbirgt Inhalte von Kontakten durch kollabieren der Beiträge. Des weiteren wird das Profilbild durch einen generischen Avatar ersetzt."
 
-#: blockem.php:57
-msgid "Submit"
-msgstr "Senden"
+#: blockem.php:60
+msgid "Comma separated profile URLS:"
+msgstr "Komma separierte Liste von Profil URLs"
 
-#: blockem.php:70
+#: blockem.php:64
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: blockem.php:77
 msgid "BLOCKEM Settings saved."
 msgstr "BLOCKEM-Einstellungen gesichert."
 
-#: blockem.php:105
+#: blockem.php:140
 #, php-format
-msgid "Blocked %s - Click to open/close"
-msgstr "%s blockiert - Zum Öffnen/Schließen klicken"
+msgid "Hidden content by %s - Click to open/close"
+msgstr "Verborgene Inhalte von %s - Zum Öffnen/Schließen klicken"
 
-#: blockem.php:160
+#: blockem.php:193
 msgid "Unblock Author"
 msgstr "Autor freischalten"
 
-#: blockem.php:162
+#: blockem.php:195
 msgid "Block Author"
 msgstr "Autor blockieren"
 
-#: blockem.php:194
+#: blockem.php:227
 msgid "blockem settings updated"
 msgstr "blockem Einstellungen aktualisiert"
