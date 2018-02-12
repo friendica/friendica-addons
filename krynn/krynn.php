@@ -10,12 +10,11 @@
  *"My body was my sacrifice... for my magic. This damage is permanent." - Raistlin Majere
  */
 
-use Friendica\Core\PConfig;
 
 function krynn_install() {
 
 	/**
-	 *
+	 * 
 	 * Our demo plugin will attach in three places.
 	 * The first is just prior to storing a local post.
 	 *
@@ -25,7 +24,7 @@ function krynn_install() {
 
 	/**
 	 *
-	 * Then we'll attach into the plugin settings page, and also the
+	 * Then we'll attach into the plugin settings page, and also the 
 	 * settings post hook so that we can create and update
 	 * user preferences.
 	 *
@@ -82,7 +81,7 @@ function krynn_post_hook($a, &$item) {
 
 	/* Retrieve our personal config setting */
 
-	$active = PConfig::get(local_user(), 'krynn', 'enable');
+	$active = get_pconfig(local_user(), 'krynn', 'enable');
 
 	if(! $active)
 		return;
@@ -96,7 +95,7 @@ function krynn_post_hook($a, &$item) {
 	 *
 	 */
 
-	$krynn = ['Ansalon','Abanasinia','Solace','Haven','Gateway','Qualinost','Ankatavaka','Pax Tharkas','Ergoth','Newsea','Straights of Schallsea','Plains of Dust','Tarsis','Barren Hills','Que Shu','Citadel of Light','Solinari','Hedge Maze','Tower of High Sorcery','Inn of the Last Home','Last Heroes Tomb','Academy of Sorcery','Gods Row','Temple of Majere','Temple of Kiri-Jolith','Temple of Mishakal','Temple of Zeboim','The Trough','Sad Town','Xak Tsaroth','Zhaman','Skullcap','Saifhum','Karthay','Mithas','Kothas','Silver Dragon Mountain','Silvanesti'];
+	$krynn = array('Ansalon','Abanasinia','Solace','Haven','Gateway','Qualinost','Ankatavaka','Pax Tharkas','Ergoth','Newsea','Straights of Schallsea','Plains of Dust','Tarsis','Barren Hills','Que Shu','Citadel of Light','Solinari','Hedge Maze','Tower of High Sorcery','Inn of the Last Home','Last Heroes Tomb','Academy of Sorcery','Gods Row','Temple of Majere','Temple of Kiri-Jolith','Temple of Mishakal','Temple of Zeboim','The Trough','Sad Town','Xak Tsaroth','Zhaman','Skullcap','Saifhum','Karthay','Mithas','Kothas','Silver Dragon Mountain','Silvanesti');
 
 	$planet = array_rand($krynn,1);
 	$item['location'] = $krynn[$planet];
@@ -120,13 +119,13 @@ function krynn_settings_post($a,$post) {
 	if(! local_user())
 		return;
 	if($_POST['krynn-submit'])
-		PConfig::set(local_user(),'krynn','enable',intval($_POST['krynn']));
+		set_pconfig(local_user(),'krynn','enable',intval($_POST['krynn']));
 }
 
 
 /**
  *
- * Called from the Plugin Setting form.
+ * Called from the Plugin Setting form. 
  * Add our own settings info to the page.
  *
  */
@@ -144,7 +143,7 @@ function krynn_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$enabled = PConfig::get(local_user(),'krynn','enable');
+	$enabled = get_pconfig(local_user(),'krynn','enable');
 
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 

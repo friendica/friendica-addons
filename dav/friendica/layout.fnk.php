@@ -1,7 +1,5 @@
 <?php
 
-use Friendica\Core\Config;
-use Friendica\Core\PConfig;
 
 /**
  *
@@ -25,7 +23,7 @@ function wdcal_addRequiredHeaders()
 	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/dav/wdcal/css/calendar.css' . '" media="all" />' . "\r\n";
 	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/dav/wdcal/css/main.css' . '" media="all" />' . "\r\n";
 
-	switch (Config::get("system", "language")) {
+	switch (get_config("system", "language")) {
 		case "de":
 			$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/common/wdcal/js/wdCalendar_lang_DE.js"></script>' . "\r\n";
 			$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/dav/jqueryui/jquery.ui.datepicker-de.js"></script>' . "\r\n";
@@ -80,7 +78,7 @@ function wdcal_import_user_ics($calendar_id) {
 
 	$server = dav_create_server(true, true, false);
 	$calendar = dav_get_current_user_calendar_by_id($server, $calendar_id, DAV_ACL_WRITE);
-	if (!$calendar) goaway('dav/wdcal/');
+	if (!$calendar) goaway($a->get_baseurl() . "/dav/wdcal/");
 
 	if (isset($_REQUEST["save"])) {
 		check_form_security_token_redirectOnErr('/dav/settings/', 'icsimport');
@@ -91,7 +89,7 @@ function wdcal_import_user_ics($calendar_id) {
 			/** @var Sabre\VObject\Component\VCalendar $vObject  */
 			$vObject        = Sabre\VObject\Reader::read($text);
 			$comp = $vObject->getComponents();
-			$imported = [];
+			$imported = array();
 			foreach ($comp as $c) try {
 				/** @var Sabre\VObject\Component\VEvent $c */
 				$uid = $c->__get("UID")->value;
@@ -171,18 +169,18 @@ function wdcal_import_user_ics($calendar_id) {
  * @param bool $show_nav
  * @return string
  */
-function wdcal_printCalendar($calendars, $calendars_selected, $data_feed_url, $view = "week", $theme = 0, $height_diff = 175, $readonly = false, $curr_day = "", $add_params = [], $show_nav = true)
+function wdcal_printCalendar($calendars, $calendars_selected, $data_feed_url, $view = "week", $theme = 0, $height_diff = 175, $readonly = false, $curr_day = "", $add_params = array(), $show_nav = true)
 {
 
 	$a            = get_app();
 	$localization = wdcal_local::getInstanceByUser($a->user["uid"]);
 
 	if (count($calendars_selected) == 0) foreach ($calendars as $c) {
-		$prop                 = $c->getProperties(["id"]);
+		$prop                 = $c->getProperties(array("id"));
 		$calendars_selected[] = $prop["id"];
 	}
 
-	$opts = [
+	$opts = array(
 		"view"             => $view,
 		"theme"            => $theme,
 		"readonly"         => $readonly,
@@ -194,7 +192,7 @@ function wdcal_printCalendar($calendars, $calendars_selected, $data_feed_url, $v
 		"date_format_dm3"  => $localization->dateformat_js_dm3(),
 		"date_format_full" => $localization->dateformat_datepicker_js(),
 		"baseurl"          => $a->get_baseurl() . "/dav/wdcal/",
-	];
+	);
 
 	$x = '
 <script>
@@ -207,7 +205,7 @@ function wdcal_printCalendar($calendars, $calendars_selected, $data_feed_url, $v
 	<div class="calselect"><strong>Available Calendars:</strong>';
 
 	foreach ($calendars as $cal) {
-		$cal_id = $cal->getProperties(["id", DAV_DISPLAYNAME]);
+		$cal_id = $cal->getProperties(array("id", DAV_DISPLAYNAME));
 		$x .= '<label style="margin-left: 10px; margin-right: 10px;"><input type="checkbox" name="cals[]" value="' . $cal_id["id"] . '"';
 		$found = false;
 		foreach ($calendars_selected as $pre) if ($pre["id"] == $cal_id["id"]) $found = true;
@@ -308,12 +306,12 @@ function wdcal_getDetailPage($calendar_id, $calendarobject_id)
 		$calbackend = wdcal_calendar_factory_by_id($calendar_id);
 		$redirect   = $calbackend->getItemDetailRedirect($calendar_id, $calendarobject_id);
 
-		if ($redirect !== null) goaway($redirect);
+		if ($redirect !== null) goaway($a->get_baseurl() . $redirect);
 
 		$details = $obj;
 	} catch (Exception $e) {
 		info(t("Error") . ": " . $e);
-		goaway('dav/wdcal/');
+		goaway($a->get_baseurl() . "/dav/wdcal/");
 	}
 
 	return print_r($details, true);
@@ -359,7 +357,7 @@ function wdcal_getSettingsPage(&$a)
 
 	if (isset($_REQUEST["save"])) {
 		check_form_security_token_redirectOnErr('/dav/settings/', 'calprop');
-		PConfig::set($a->user["uid"], "dav", "dateformat", $_REQUEST["wdcal_date_format"]);
+		set_pconfig($a->user["uid"], "dav", "dateformat", $_REQUEST["wdcal_date_format"]);
 		info(t('The new values have been saved.'));
 	}
 

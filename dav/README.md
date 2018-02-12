@@ -1,6 +1,4 @@
-# Calendar with CalDAV Support
-
-**THIS ADDON IS UNSUPPORTED**
+Calendar with CalDAV Support
 
 This is a rewrite of the calendar system used by the german social network [Animexx](http://www.animexx.de/).
 It's still in a very early stage, so expect major bugs. Please feel free to report any of them, by mail (cato@animexx.de) or Friendica: http://friendica.hoessl.eu/profile/cato
@@ -18,28 +16,28 @@ At the moment, the calendar system supports the following features:
 - The events of a calendar can be exported as ICS file. ICS files can be imported into a calendar
 
 
-## Internationalization:
+Internationalization:
 - At the moment, settings for the US and the german systems are selectable (regarding the date format and the first day of the week). More will be added on request.
 - The basic design of the system is aware of timezones; however this is not reflected in the UI yet. It currently assumes that the timezone set in the friendica-installation matches the user's local time and matches the local time set in the user's operating system.
 
-## CalDAV device compatibility:
+CalDAV device compatibility:
 - iOS (iPhone/iPodTouch) works
 - Thunderbird Lightning works
 - Android:
   - aCal (http://andrew.mcmillan.net.nz/projects/aCal) works, available in F-Droid and Google Play
   - CalDAV-Sync (http://dmfs.org/caldav/) works, non-free
 
-## Installation
+Installation
 After activating, serveral tables in the database have to be created. The admin-interface of the plugin will try to do this automatically.
 In case of errors, the SQL-statement to create the tables manually are shown in the admin-interface.
 
 
-## Functuality missing: (a.k.a. "Roadmap")
+Functuality missing: (a.k.a. "Roadmap")
 - Sharing events; all events are private at the moment, therefore this system is not a complete replacement for the friendica-native events
 - Attendees / Collaboration
 
 
-## Used libraries
+Used libraries
 
 SabreDAV
 http://code.google.com/p/sabredav/

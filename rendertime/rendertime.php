@@ -9,8 +9,6 @@
  *
  */
 
-use Friendica\Core\Config;
-
 function rendertime_install() {
 	register_hook('page_end', 'addon/rendertime/rendertime.php', 'rendertime_page_end');
 }
@@ -28,7 +26,7 @@ function rendertime_page_end(&$a, &$o) {
 
 	$duration = microtime(true)-$a->performance["start"];
 
-	$ignored_modules = ["fbrowser"];
+	$ignored_modules = array("fbrowser");
 	$ignored = in_array($a->module, $ignored_modules);
 
 	if (is_site_admin() && ($_GET["mode"] != "minimal") && !$a->is_mobile && !$a->is_tablet && !$ignored) {
@@ -47,7 +45,7 @@ function rendertime_page_end(&$a, &$o) {
 						//round($a->performance["plugin"], 3)
 						)."</div>";
 
-		if (Config::get("rendertime", "callstack")) {
+		if (get_config("rendertime", "callstack")) {
 			$o .= "<pre>";
 			$o .= "\nDatabase Read:\n";
 			foreach ($a->callstack["database"] AS $func => $time) {

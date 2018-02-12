@@ -7,8 +7,6 @@
  * Author: Tony Baldwin <https://free-haven.org/u/tony>
  */
 
-use Friendica\Core\PConfig;
-
 function libertree_install() {
     register_hook('post_local',           'addon/libertree/libertree.php', 'libertree_post_local');
     register_hook('notifier_normal',      'addon/libertree/libertree.php', 'libertree_send');
@@ -30,9 +28,9 @@ function libertree_jot_nets(&$a,&$b) {
     if(! local_user())
         return;
 
-    $ltree_post = PConfig::get(local_user(),'libertree','post');
+    $ltree_post = get_pconfig(local_user(),'libertree','post');
     if(intval($ltree_post) == 1) {
-        $ltree_defpost = PConfig::get(local_user(),'libertree','post_by_default');
+        $ltree_defpost = get_pconfig(local_user(),'libertree','post_by_default');
         $selected = ((intval($ltree_defpost) == 1) ? ' checked="checked" ' : '');
         $b .= '<div class="profile-jot-net"><input type="checkbox" name="libertree_enable"' . $selected . ' value="1" /> '
             . t('Post to libertree') . '</div>';
@@ -51,16 +49,16 @@ function libertree_settings(&$a,&$s) {
 
     /* Get the current state of our config variables */
 
-    $enabled = PConfig::get(local_user(),'libertree','post');
+    $enabled = get_pconfig(local_user(),'libertree','post');
     $checked = (($enabled) ? ' checked="checked" ' : '');
     $css = (($enabled) ? '' : '-disabled');
 
-    $def_enabled = PConfig::get(local_user(),'libertree','post_by_default');
+    $def_enabled = get_pconfig(local_user(),'libertree','post_by_default');
 
     $def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
-    $ltree_api_token = PConfig::get(local_user(), 'libertree', 'libertree_api_token');
-    $ltree_url = PConfig::get(local_user(), 'libertree', 'libertree_url');
+    $ltree_api_token = get_pconfig(local_user(), 'libertree', 'libertree_api_token');
+    $ltree_url = get_pconfig(local_user(), 'libertree', 'libertree_url');
 
 
     /* Add some HTML to the existing form */
@@ -104,10 +102,10 @@ function libertree_settings_post(&$a,&$b) {
 
 	if(x($_POST,'libertree-submit')) {
 
-		PConfig::set(local_user(),'libertree','post',intval($_POST['libertree']));
-		PConfig::set(local_user(),'libertree','post_by_default',intval($_POST['libertree_bydefault']));
-		PConfig::set(local_user(),'libertree','libertree_api_token',trim($_POST['libertree_api_token']));
-		PConfig::set(local_user(),'libertree','libertree_url',trim($_POST['libertree_url']));
+		set_pconfig(local_user(),'libertree','post',intval($_POST['libertree']));
+		set_pconfig(local_user(),'libertree','post_by_default',intval($_POST['libertree_bydefault']));
+		set_pconfig(local_user(),'libertree','libertree_api_token',trim($_POST['libertree_api_token']));
+		set_pconfig(local_user(),'libertree','libertree_url',trim($_POST['libertree_url']));
 
 	}
 
@@ -129,11 +127,11 @@ function libertree_post_local(&$a,&$b) {
 		return;
 	}
 
-	$ltree_post   = intval(PConfig::get(local_user(),'libertree','post'));
+	$ltree_post   = intval(get_pconfig(local_user(),'libertree','post'));
 
 	$ltree_enable = (($ltree_post && x($_REQUEST,'libertree_enable')) ? intval($_REQUEST['libertree_enable']) : 0);
 
-	if ($b['api_source'] && intval(PConfig::get(local_user(),'libertree','post_by_default'))) {
+	if ($b['api_source'] && intval(get_pconfig(local_user(),'libertree','post_by_default'))) {
 		$ltree_enable = 1;
 	}
 
@@ -155,27 +153,18 @@ function libertree_send(&$a,&$b) {
 
 	logger('libertree_send: invoked');
 
-	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
-		return;
-	}
+    if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
+        return;
 
-	if (! strstr($b['postopts'],'libertree')) {
-		return;
-	}
+    if(! strstr($b['postopts'],'libertree'))
+        return;
 
-	if ($b['parent'] != $b['id']) {
-		return;
-	}
+    if($b['parent'] != $b['id'])
+        return;
 
-	// Dont't post if the post doesn't belong to us.
-	// This is a check for forum postings
-	$self = dba::selectFirst('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
-	if ($b['contact-id'] != $self['id']) {
-		return;
-	}
 
-	$ltree_api_token = PConfig::get($b['uid'],'libertree','libertree_api_token');
-	$ltree_url = PConfig::get($b['uid'],'libertree','libertree_url');
+	$ltree_api_token = get_pconfig($b['uid'],'libertree','libertree_api_token');
+	$ltree_url = get_pconfig($b['uid'],'libertree','libertree_url');
 	$ltree_blog = "$ltree_url/api/v1/posts/create/?token=$ltree_api_token";
 	$ltree_source = $a->get_hostname();
 
@@ -185,7 +174,7 @@ function libertree_send(&$a,&$b) {
 	if($ltree_url && $ltree_api_token && $ltree_blog && $ltree_source) {
 
 		require_once('include/bb2diaspora.php');
-		$tag_arr = [];
+		$tag_arr = array();
 		$tags = '';
 		$x = preg_match_all('/\#\[(.*?)\](.*?)\[/',$b['tag'],$matches,PREG_SET_ORDER);
 
@@ -223,11 +212,11 @@ function libertree_send(&$a,&$b) {
 			$body = "## ".html_entity_decode($title)."\n\n".$body;
 
 
-		$params = [
+		$params = array(
 			'text' => $body,
 			'source' => $ltree_source
 		//	'token' => $ltree_api_token
-		];
+		);
 
 		$result = post_url($ltree_blog,$params);
 		logger('libertree: ' . $result);

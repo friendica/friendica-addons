@@ -6,8 +6,6 @@
  * Author: Klaus Weidenbach <http://friendica.dszdw.net/profile/klaus>
  */
 
-use Friendica\Core\Config;
-
 /**
  * Installs the plugin hook
  */
@@ -33,8 +31,8 @@ function gravatar_uninstall() {
  * @param &$b array
  */
 function gravatar_lookup($a, &$b) {
-	$default_avatar = Config::get('gravatar', 'default_img');
-	$rating = Config::get('gravatar', 'rating');
+	$default_avatar = get_config('gravatar', 'default_img');
+	$rating = get_config('gravatar', 'rating');
 
 	// setting default value if nothing configured
 	if(! $default_avatar)
@@ -49,7 +47,7 @@ function gravatar_lookup($a, &$b) {
 	if ($default_avatar != "gravatar")
 		$url .= '&d=' .$default_avatar;
 
-	$b['url'] = $url;
+	$b['url'] = $url;	
 	$b['success'] = true;
 }
 
@@ -59,8 +57,8 @@ function gravatar_lookup($a, &$b) {
 function gravatar_plugin_admin (&$a, &$o) {
 	$t = get_markup_template( "admin.tpl", "addon/gravatar/" );
 
-	$default_avatar = Config::get('gravatar', 'default_img');
-	$rating = Config::get('gravatar', 'rating');
+	$default_avatar = get_config('gravatar', 'default_img');
+	$rating = get_config('gravatar', 'rating');
 
 	// set default values for first configuration
 	if(! $default_avatar)
@@ -69,19 +67,19 @@ function gravatar_plugin_admin (&$a, &$o) {
 		$rating = 'g'; // suitable for display on all websites with any audience type
 
 	// Available options for the select boxes
-	$default_avatars = [
+	$default_avatars = array(
 		'mm' => t('generic profile image'),
 		'identicon' => t('random geometric pattern'),
 		'monsterid' => t('monster face'),
 		'wavatar' => t('computer generated face'),
 		'retro' => t('retro arcade style face'),
-	];
-	$ratings = [
+	);
+	$ratings = array(
 		'g' => 'g',
 		'pg' => 'pg',
 		'r' => 'r',
 		'x' => 'x'
-	];
+	);
 
 	// Check if Libravatar is enabled and show warning
 	$r = q("SELECT * FROM `addon` WHERE `name` = '%s' and `installed` = 1",
@@ -93,11 +91,11 @@ function gravatar_plugin_admin (&$a, &$o) {
 
 	// output Gravatar settings
 	$o .= '<input type="hidden" name="form_security_token" value="' .get_form_security_token("gravatarsave") .'">';
-	$o .= replace_macros( $t, [
+	$o .= replace_macros( $t, array(
 		'$submit' => t('Save Settings'),
-		'$default_avatar' => ['avatar', t('Default avatar image'), $default_avatar, t('Select default avatar image if none was found at Gravatar. See README'), $default_avatars],
-		'$rating' => ['rating', t('Rating of images'), $rating, t('Select the appropriate avatar rating for your site. See README'), $ratings],
-	]);
+		'$default_avatar' => array('avatar', t('Default avatar image'), $default_avatar, t('Select default avatar image if none was found at Gravatar. See README'), $default_avatars),
+		'$rating' => array('rating', t('Rating of images'), $rating, t('Select the appropriate avatar rating for your site. See README'), $ratings),
+	));
 }
 
 /**
@@ -108,8 +106,8 @@ function gravatar_plugin_admin_post (&$a) {
 
 	$default_avatar = ((x($_POST, 'avatar')) ? notags(trim($_POST['avatar'])) : 'identicon');
 	$rating = ((x($_POST, 'rating')) ? notags(trim($_POST['rating'])) : 'g');
-	Config::set('gravatar', 'default_img', $default_avatar);
-	Config::set('gravatar', 'rating', $rating);
+	set_config('gravatar', 'default_img', $default_avatar);
+	set_config('gravatar', 'rating', $rating);
 	info( t('Gravatar settings updated.') .EOL);
 }
 ?>

@@ -4,9 +4,9 @@
  * Description: Sample Friendica plugin/addon. Set a random place when posting.
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- *
- *
- *
+ * 
+ * 
+ * 
  *
  * Addons are registered with the system through the admin
  * panel.
@@ -14,17 +14,16 @@
  * When registration is detected, the system calls the plugin
  * name_install() function, located in 'addon/name/name.php',
  * where 'name' is the name of the addon.
- * If the addon is removed from the configuration list, the
+ * If the addon is removed from the configuration list, the 
  * system will call the name_uninstall() function.
  *
  */
 
-use Friendica\Core\PConfig;
 
 function randplace_install() {
 
 	/**
-	 *
+	 * 
 	 * Our demo plugin will attach in three places.
 	 * The first is just prior to storing a local post.
 	 *
@@ -34,7 +33,7 @@ function randplace_install() {
 
 	/**
 	 *
-	 * Then we'll attach into the plugin settings page, and also the
+	 * Then we'll attach into the plugin settings page, and also the 
 	 * settings post hook so that we can create and update
 	 * user preferences.
 	 *
@@ -91,7 +90,7 @@ function randplace_post_hook($a, &$item) {
 
 	/* Retrieve our personal config setting */
 
-	$active = PConfig::get(local_user(), 'randplace', 'enable');
+	$active = get_pconfig(local_user(), 'randplace', 'enable');
 
 	if(! $active)
 		return;
@@ -105,7 +104,7 @@ function randplace_post_hook($a, &$item) {
 	 *
 	 */
 
-	$cities = [];
+	$cities = array();
 	$zones = timezone_identifiers_list();
 	foreach($zones as $zone) {
 		if((strpos($zone,'/')) && (! stristr($zone,'US/')) && (! stristr($zone,'Etc/')))
@@ -136,13 +135,13 @@ function randplace_settings_post($a,$post) {
 	if(! local_user())
 		return;
 	if($_POST['randplace-submit'])
-		PConfig::set(local_user(),'randplace','enable',intval($_POST['randplace']));
+		set_pconfig(local_user(),'randplace','enable',intval($_POST['randplace']));
 }
 
 
 /**
  *
- * Called from the Plugin Setting form.
+ * Called from the Plugin Setting form. 
  * Add our own settings info to the page.
  *
  */
@@ -160,7 +159,7 @@ function randplace_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$enabled = PConfig::get(local_user(),'randplace','enable');
+	$enabled = get_pconfig(local_user(),'randplace','enable');
 
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 

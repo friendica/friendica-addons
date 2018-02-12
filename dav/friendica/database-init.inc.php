@@ -7,7 +7,7 @@
  */
 function dav_get_update_statements($from_version)
 {
-	$stms = [];
+	$stms = array();
 
 	if ($from_version == 1) {
 		$stms[] = "ALTER TABLE `dav_calendarobjects`
@@ -30,7 +30,7 @@ function dav_get_update_statements($from_version)
 			`dav_locks` ,
 			`dav_notifications` ;";
 
-		$stms = array_merge($stms, dav_get_create_statements(["dav_calendarobjects"]));
+		$stms = array_merge($stms, dav_get_create_statements(array("dav_calendarobjects")));
 
 		$user_ids = q("SELECT DISTINCT `uid` FROM %s%scalendars", CALDAV_SQL_DB, CALDAV_SQL_PREFIX);
 		foreach ($user_ids as $user) $stms = array_merge($stms, wdcal_create_std_calendars_get_statements($user["uid"], false));
@@ -43,7 +43,7 @@ function dav_get_update_statements($from_version)
 
 	}
 
-	if (in_array($from_version, [1, 2])) {
+	if (in_array($from_version, array(1, 2))) {
 		$stms[] = "CREATE TABLE IF NOT EXISTS `dav_addressbooks` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `namespace` mediumint(9) NOT NULL,
@@ -80,9 +80,9 @@ function dav_get_update_statements($from_version)
  * @param array $except
  * @return array
  */
-function dav_get_create_statements($except = [])
+function dav_get_create_statements($except = array())
 {
-	$arr = [];
+	$arr = array();
 
 	if (!in_array("dav_caldav_log", $except)) $arr[] = "CREATE TABLE IF NOT EXISTS `dav_caldav_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -240,7 +240,7 @@ function dav_check_tables()
 function dav_create_tables()
 {
 	$stms   = dav_get_create_statements();
-	$errors = [];
+	$errors = array();
 
 	foreach ($stms as $st) { // @TODO Friendica-dependent
 		dba::e($st);
@@ -258,10 +258,10 @@ function dav_create_tables()
 function dav_upgrade_tables()
 {
 	$ver = dav_check_tables();
-	if (!in_array($ver, [1, 2])) return ["Unknown error"];
+	if (!in_array($ver, array(1, 2))) return array("Unknown error");
 	$stms   = dav_get_update_statements($ver);
 
-	$errors = [];
+	$errors = array();
 
 	foreach ($stms as $st) { // @TODO Friendica-dependent
 		dba::e($st);

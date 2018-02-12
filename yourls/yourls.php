@@ -9,8 +9,6 @@
  * 
  */
 
-use Friendica\Core\Config;
-
 function yourls_install() {
 	register_hook('plugin_settings', 'addon/yourls/yourls.php', 'yourls_addon_settings');
 	register_hook('plugin_settings_post', 'addon/yourls/yourls.php', 'yourls_addon_settings_post');
@@ -21,10 +19,10 @@ function yourls_install() {
 function yourls_uninstall() {
 	unregister_hook('plugin_settings', 'addon/yourls/yourls.php', 'yourls_addon_settings');
 	unregister_hook('plugin_settings_post', 'addon/yourls/yourls.php', 'yourls_addon_settings_post');
-	Config::set('yourls','url1',trim($_POST['']));
-	Config::set('yourls','username1',trim($_POST['']));
-	Config::set('yourls','password1',trim($_POST['']));
-	Config::set('yourls','ssl1',trim($_POST['']));
+	set_config('yourls','url1',trim($_POST['']));
+	set_config('yourls','username1',trim($_POST['']));
+	set_config('yourls','password1',trim($_POST['']));
+	set_config('yourls','ssl1',trim($_POST['']));
 
 }
 
@@ -43,15 +41,15 @@ function yourls_addon_settings(&$a,&$s) {
 	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/yourls/yourls.css' . '" media="all" />' . "\r\n";
 
 
-	$yourls_url = Config::get('yourls','url1');
-	$yourls_username = Config::get('yourls','username1');
-	$yourls_password = Config::get('yourls', 'password1');
-	$ssl_enabled = Config::get('yourls','ssl1');
+	$yourls_url = get_config('yourls','url1');
+	$yourls_username = get_config('yourls','username1');
+	$yourls_password = get_config('yourls', 'password1');
+	$ssl_enabled = get_config('yourls','ssl1');
 	$ssl_checked = (($ssl_enabled) ? ' checked="checked" ' : '');
 
 
 
-	$yourls_ssl = Config::get('yourls', 'ssl1');
+	$yourls_ssl = get_config('yourls', 'ssl1');
 
 	$s .= '<span id="settings_yourls_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_yourls_expanded\'); openClose(\'settings_yourls_inflated\');">';
 	$s .= '<h3>' . t('YourLS') . '</h3>';
@@ -93,10 +91,10 @@ function yourls_addon_settings_post(&$a,&$b) {
 		return;
 
 	if($_POST['yourls-submit']) {
-		Config::set('yourls','url1',trim($_POST['yourls_url']));
-		Config::set('yourls','username1',trim($_POST['yourls_username']));
-		Config::set('yourls','password1',trim($_POST['yourls_password']));
-		Config::set('yourls','ssl1',intval($_POST['yourls_ssl']));
+		set_config('yourls','url1',trim($_POST['yourls_url']));
+		set_config('yourls','username1',trim($_POST['yourls_username']));
+		set_config('yourls','password1',trim($_POST['yourls_password']));
+		set_config('yourls','ssl1',intval($_POST['yourls_ssl']));
 		info( t('yourls Settings saved.') . EOL);
 	}
 }

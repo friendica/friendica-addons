@@ -6,8 +6,6 @@
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
 
-use Friendica\Core\Config;
-
 function leistungsschutzrecht_install() {
 	register_hook('cron', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_cron');
 	register_hook('getsiteinfo', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
@@ -36,7 +34,7 @@ function leistungsschutzrecht_getsiteinfo($a, &$siteinfo) {
 }
 
 function leistungsschutzrecht_cuttext($text) {
-	$text = str_replace(["\r", "\n"], [" ", " "], $text);
+	$text = str_replace(array("\r", "\n"), array(" ", " "), $text);
 
 	do {
 		$oldtext = $text;
@@ -73,9 +71,9 @@ function leistungsschutzrecht_fetchsites() {
 	$sitelist = fetch_url($url);
 	$siteurls = explode(',', $sitelist);
 
-	$whitelist = ['tagesschau.de', 'heute.de', 'wdr.de'];
+	$whitelist = array('tagesschau.de', 'heute.de', 'wdr.de');
 
-	$sites = [];
+	$sites = array();
 	foreach ($siteurls AS $site) {
 		if (!in_array($site, $whitelist)) {
 			$sites[$site] = $site;
@@ -117,12 +115,12 @@ function leistungsschutzrecht_fetchsites() {
 */
 
 	if (sizeof($sites)) {
-		Config::set('leistungsschutzrecht','sites',$sites);
+		set_config('leistungsschutzrecht','sites',$sites);
 	}
 }
 
 function leistungsschutzrecht_is_member_site($url) {
-	$sites = Config::get('leistungsschutzrecht','sites');
+	$sites = get_config('leistungsschutzrecht','sites');
 
 	if ($sites == "")
 		return(false);
@@ -144,7 +142,7 @@ function leistungsschutzrecht_is_member_site($url) {
 }
 
 function leistungsschutzrecht_cron($a,$b) {
-	$last = Config::get('leistungsschutzrecht','last_poll');
+	$last = get_config('leistungsschutzrecht','last_poll');
 
 	if($last) {
 		$next = $last + 86400;
@@ -154,6 +152,6 @@ function leistungsschutzrecht_cron($a,$b) {
 		}
 	}
 	leistungsschutzrecht_fetchsites();
-	Config::set('leistungsschutzrecht','last_poll', time());
+	set_config('leistungsschutzrecht','last_poll', time());
 }
 ?>

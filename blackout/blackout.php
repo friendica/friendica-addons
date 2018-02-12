@@ -36,10 +36,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -49,7 +49,6 @@
  * THE SOFTWARE.
  */
 
-use Friendica\Core\Config;
 
 function blackout_install() {
     register_hook('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');
@@ -68,9 +67,9 @@ function blackout_redirect ($a, $b) {
 		return true;
 
     // else...
-    $mystart = Config::get('blackout','begindate');
-    $myend   = Config::get('blackout','enddate');
-    $myurl   = Config::get('blackout','url');
+    $mystart = get_config('blackout','begindate');
+    $myend   = get_config('blackout','enddate');
+    $myurl   = get_config('blackout','url');
     $now = time();
     $date1 = DateTime::createFromFormat('Y-m-d G:i', $mystart);
     $date2 = DateTime::createFromFormat('Y-m-d G:i', $myend);
@@ -88,21 +87,21 @@ function blackout_redirect ($a, $b) {
 }
 
 function blackout_plugin_admin(&$a, &$o) {
-    $mystart = Config::get('blackout','begindate');
+    $mystart = get_config('blackout','begindate');
     if (! is_string($mystart)) { $mystart = "YYYY-MM-DD:hhmm"; }
-    $myend   = Config::get('blackout','enddate');
+    $myend   = get_config('blackout','enddate');
     if (! is_string($myend)) { $myend = "YYYY-MM-DD:hhmm"; }
-    $myurl   = Config::get('blackout','url');
+    $myurl   = get_config('blackout','url');
     if (! is_string($myurl)) { $myurl = "http://www.example.com"; }
     $t = get_markup_template( "admin.tpl", "addon/blackout/" );
-
-   $o = replace_macros($t, [
+ 
+   $o = replace_macros($t, array(
         '$submit' => t('Save Settings'),
-        '$rurl' => ["rurl", "Redirect URL", $myurl, "all your visitors from the web will be redirected to this URL"],
-        '$startdate' => ["startdate", "Begin of the Blackout<br />(YYYY-MM-DD hh:mm)", $mystart, "format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute"],
-        '$enddate' => ["enddate", "End of the Blackout<br />(YYYY-MM-DD hh:mm)", $myend, ""],
+        '$rurl' => array("rurl", "Redirect URL", $myurl, "all your visitors from the web will be redirected to this URL"),
+        '$startdate' => array("startdate", "Begin of the Blackout<br />(YYYY-MM-DD hh:mm)", $mystart, "format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute"),
+        '$enddate' => array("enddate", "End of the Blackout<br />(YYYY-MM-DD hh:mm)", $myend, ""),
 
-    ]);
+    ));
     $date1 = DateTime::createFromFormat('Y-m-d G:i', $mystart);
     $date2 = DateTime::createFromFormat('Y-m-d G:i', $myend);
     if ($date2 < $date1) {
@@ -115,7 +114,7 @@ function blackout_plugin_admin_post (&$a) {
     $begindate = trim($_POST['startdate']);
     $enddate = trim($_POST['enddate']);
     $url = trim($_POST['rurl']);
-    Config::set('blackout','begindate',$begindate);
-    Config::set('blackout','enddate',$enddate);
-    Config::set('blackout','url',$url);
+    set_config('blackout','begindate',$begindate);
+    set_config('blackout','enddate',$enddate);
+    set_config('blackout','url',$url);
 }

@@ -6,8 +6,6 @@
 * Author: Thomas Willingham <https://beardyunixer.com/profile/beardyunixer>
 */
 
-use Friendica\Core\Config;
-
 function forumdirectory_install() {
 register_hook('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
 }
@@ -51,7 +49,7 @@ function forumdirectory_post(&$a) {
 
 function forumdirectory_content(&$a) {
 
-	if((Config::get('system','block_public')) && (! local_user()) && (! remote_user())) {
+	if((get_config('system','block_public')) && (! local_user()) && (! remote_user())) {
 		notice( t('Public access denied.') . EOL);
 		return;
 	}
@@ -67,7 +65,7 @@ function forumdirectory_content(&$a) {
 	$tpl = get_markup_template('directory_header.tpl');
 
 	$globaldir = '';
-	$gdirpath = Config::get('system','directory');
+	$gdirpath = get_config('system','directory');
 	if(strlen($gdirpath)) {
 		$globaldir = '<ul><li><div id="global-directory-link"><a href="'
 		. zrl($gdirpath,true) . '">' . t('Global Directory') . '</a></div></li></ul>';
@@ -75,7 +73,7 @@ function forumdirectory_content(&$a) {
 
 	$admin = '';
 
-	$o .= replace_macros($tpl, [
+	$o .= replace_macros($tpl, array(
 		'$search' => $search,
 		'$globaldir' => $globaldir,
 		'$desc' => t('Find on this site'),
@@ -83,20 +81,20 @@ function forumdirectory_content(&$a) {
 		'$finding' => (strlen($search) ? '<h4>' . t('Finding: ') . "'" . $search . "'" . '</h4>' : ""),
 		'$sitedir' => t('Site Directory'),
 		'$submit' => t('Find')
-	]);
+	));
 
 	if($search)
 		$search = dbesc($search);
 	$sql_extra = ((strlen($search)) ? " AND MATCH (`profile`.`name`, `user`.`nickname`, `pdesc`, `locality`,`region`,`country-name`,`gender`,`marital`,`sexual`,`about`,`romance`,`work`,`education`,`pub_keywords`,`prv_keywords` ) AGAINST ('$search' IN BOOLEAN MODE) " : "");
 
-	$publish = ((Config::get('system','publish_all')) ? '' : " AND `publish` = 1 " );
+	$publish = ((get_config('system','publish_all')) ? '' : " AND `publish` = 1 " );
 
 
 	$r = q("SELECT COUNT(*) AS `total` FROM `profile` LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid` WHERE `is-default` = 1 $publish AND `user`.`blocked` = 0 AND `page-flags` = 2 $sql_extra ");
 	if(count($r))
 		$a->set_pager_total($r[0]['total']);
 
-	$order = " ORDER BY `name` ASC ";
+	$order = " ORDER BY `name` ASC "; 
 
 
 	$r = q("SELECT `profile`.*, `profile`.`uid` AS `profile_uid`, `user`.`nickname`, `user`.`timezone` , `user`.`page-flags` FROM `profile` LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid` WHERE `is-default` = 1 $publish AND `user`.`blocked` = 0 AND `page-flags` = 2 $sql_extra $order LIMIT %d , %d ",
@@ -114,7 +112,7 @@ function forumdirectory_content(&$a) {
 
 
 			$profile_link = $a->get_baseurl() . '/profile/' . ((strlen($rr['nickname'])) ? $rr['nickname'] : $rr['profile_uid']);
-
+		
 			$pdesc = (($rr['pdesc']) ? $rr['pdesc'] . '<br />' : '');
 
 			$details = '';
@@ -132,7 +130,7 @@ function forumdirectory_content(&$a) {
 			}
 			if(strlen($rr['dob'])) {
 				if(($years = age($rr['dob'],$rr['timezone'],'')) != 0)
-					$details .= '<br />' . t('Age: ') . $years ;
+					$details .= '<br />' . t('Age: ') . $years ; 
 			}
 			if(strlen($rr['gender']))
 				$details .= '<br />' . t('Gender: ') . $rr['gender'];
@@ -164,29 +162,29 @@ function forumdirectory_content(&$a) {
 			$homepage = ((x($profile,'homepage') == 1) ?  t('Homepage:') : False);
 
 			$about = ((x($profile,'about') == 1) ?  t('About:') : False);
-
+			
 #			$tpl = file_get_contents( dirname(__file__).'/forumdirectory_item.tpl');
 			$tpl = get_markup_template( 'forumdirectory_item.tpl', 'addon/forumdirectory/' );
 
-			$entry = replace_macros($tpl,[
+			$entry = replace_macros($tpl,array(
 				'$id' => $rr['id'],
 				'$profile_link' => $profile_link,
-				'$photo' => $rr[$photo],
+				'$photo' => $a->get_cached_avatar_image($rr[$photo]),
 				'$alt_text' => $rr['name'],
 				'$name' => $rr['name'],
 				'$details' => $pdesc . $details,
 				'$page_type' => $page_type,
 				'$profile' => $profile,
-				'$location' => $location,
+				'$location' => template_escape($location),
 				'$gender'   => $gender,
 				'$pdesc'	=> $pdesc,
 				'$marital'  => $marital,
 				'$homepage' => $homepage,
 				'$about' => $about,
 
-			]);
+			));
 
-			$arr = ['contact' => $rr, 'entry' => $entry];
+			$arr = array('contact' => $rr, 'entry' => $entry);
 
 			unset($profile);
 			unset($location);

@@ -17,7 +17,7 @@ function tictac_uninstall() {
 }
 
 function tictac_app_menu($a,&$b) {
-	$b['app_menu'][] = '<div class="app-title"><a href="tictac">' . t('Three Dimensional Tic-Tac-Toe') . '</a></div>';
+	$b['app_menu'][] = '<div class="app-title"><a href="tictac">' . t('Three Dimensional Tic-Tac-Toe') . '</a></div>'; 
 }
 
 
@@ -39,7 +39,7 @@ function tictac_content(&$a) {
     $dimen = $a->argv[3];
     $yours = $a->argv[4];
     $mine  = $a->argv[5];
-
+    
     $yours .= $_POST['move'];
   }
   elseif($a->argc > 1) {
@@ -59,7 +59,7 @@ function tictac_content(&$a) {
   $o .=  '<a href="tictac/1">' . t('New game with handicap') . '</a><br />';
   $o .=  '<p>' . t('Three dimensional tic-tac-toe is just like the traditional game except that it is played on multiple levels simultaneously. ');
   $o .= t('In this case there are three levels. You win by getting three in a row on any level, as well as up, down, and diagonally across the different levels.');
-  $o .= '</p><p>';
+  $o .= '</p><p>'; 
   $o .= t('The handicap game disables the center position on the middle level because the player claiming this square often has an unfair advantage.');
   $o .= '</p>';
 
@@ -73,11 +73,11 @@ class tictac {
   private $handicap = 0;
   private $yours;
   private $mine;
-  private $winning_play;
+  private $winning_play;  
   private $you;
   private $me;
   private $debug = 1;
-  private $crosses = ['011','101','110','112','121','211'];
+  private $crosses = array('011','101','110','112','121','211');
 
 /*
     '001','010','011','012','021',
@@ -85,82 +85,82 @@ class tictac {
     '201','210','211','212','221');
 */
 
-  private $corners = [
+  private $corners = array(
     '000','002','020','022',
-    '200','202','220','222'];
+    '200','202','220','222');
 
-  private $planes = [
-    ['000','001','002','010','011','012','020','021','022'], // horiz 1
-    ['100','101','102','110','111','112','120','121','122'], // 2
-    ['200','201','202','210','211','212','220','221','222'], // 3
-    ['000','010','020','100','110','120','200','210','220'], // vert left
-    ['000','001','002','100','101','102','200','201','202'], // vert top
-    ['002','012','022','102','112','122','202','212','222'], // vert right
-    ['020','021','022','120','121','122','220','221','222'], // vert bot
-    ['010','011','012','110','111','112','210','211','212'], // left vertx
-    ['001','011','021','101','111','221','201','211','221'], // top vertx
-    ['000','001','002','110','111','112','220','221','222'], // diag top
-    ['020','021','022','110','111','112','200','201','202'], // diag bot
-    ['000','010','020','101','111','121','202','212','222'], // diag left
-    ['002','012','022','101','111','121','200','210','220'], // diag right
-    ['002','011','020','102','111','120','202','211','220'], // diag x
-    ['000','011','022','100','111','122','200','211','222']  // diag x
+  private $planes = array(
+    array('000','001','002','010','011','012','020','021','022'), // horiz 1
+    array('100','101','102','110','111','112','120','121','122'), // 2
+    array('200','201','202','210','211','212','220','221','222'), // 3
+    array('000','010','020','100','110','120','200','210','220'), // vert left
+    array('000','001','002','100','101','102','200','201','202'), // vert top
+    array('002','012','022','102','112','122','202','212','222'), // vert right
+    array('020','021','022','120','121','122','220','221','222'), // vert bot
+    array('010','011','012','110','111','112','210','211','212'), // left vertx
+    array('001','011','021','101','111','221','201','211','221'), // top vertx
+    array('000','001','002','110','111','112','220','221','222'), // diag top
+    array('020','021','022','110','111','112','200','201','202'), // diag bot
+    array('000','010','020','101','111','121','202','212','222'), // diag left
+    array('002','012','022','101','111','121','200','210','220'), // diag right
+    array('002','011','020','102','111','120','202','211','220'), // diag x
+    array('000','011','022','100','111','122','200','211','222')  // diag x
+    
+  );
 
-  ];
 
+  private $winner = array(
+     array('000','001','002'),         // board 0 winners  - left corner across
+     array('000','010','020'),         // down
+     array('000','011','022'),         // diag
+     array('001','011','021'),         // middle-top down
+     array('010','011','012'),         // middle-left across
+     array('002','011','020'),         // right-top diag
+     array('002','012','022'),         // right-top down
+     array('020','021','022'),        // bottom-left across
+     array('100','101','102'),      // board 1 winners
+     array('100','110','120'),
+     array('100','111','122'),
+     array('101','111','121'),
+     array('110','111','112'),
+     array('102','111','120'),
+     array('102','112','122'),
+     array('120','121','122'),
+     array('200','201','202'),    // board 2 winners
+     array('200','210','220'),
+     array('200','211','222'),
+     array('201','211','221'),
+     array('210','211','212'),
+     array('202','211','220'),
+     array('202','212','222'),
+     array('220','221','222'),
+     array('000','100','200'),      // top-left corner 3d
+     array('000','101','202'),
+     array('000','110','220'),
+     array('000','111','222'),
+     array('001','101','201'),      // top-middle 3d
+     array('001','111','221'),
+     array('002','102','202'),      // top-right corner 3d
+     array('002','101','200'),
+     array('002','112','222'),
+     array('002','111','220'),
+     array('010','110','210'),      // left-middle 3d
+     array('010','111','212'),
+     array('011','111','211'),      // middle-middle 3d
+     array('012','112','212'),      // right-middle 3d
+     array('012','111','210'),
+     array('020','120','220'),      // bottom-left corner 3d
+     array('020','110','200'),
+     array('020','121','222'),
+     array('020','111','202'),
+     array('021','121','221'),      // bottom-middle 3d
+     array('021','111','201'),
+     array('022','122','222'),      // bottom-right corner 3d
+     array('022','121','220'),
+     array('022','112','202'),
+     array('022','111','200')
 
-  private $winner = [
-     ['000','001','002'],         // board 0 winners  - left corner across
-     ['000','010','020'],         // down
-     ['000','011','022'],         // diag
-     ['001','011','021'],         // middle-top down
-     ['010','011','012'],         // middle-left across
-     ['002','011','020'],         // right-top diag
-     ['002','012','022'],         // right-top down
-     ['020','021','022'],        // bottom-left across
-     ['100','101','102'],      // board 1 winners
-     ['100','110','120'],
-     ['100','111','122'],
-     ['101','111','121'],
-     ['110','111','112'],
-     ['102','111','120'],
-     ['102','112','122'],
-     ['120','121','122'],
-     ['200','201','202'],    // board 2 winners
-     ['200','210','220'],
-     ['200','211','222'],
-     ['201','211','221'],
-     ['210','211','212'],
-     ['202','211','220'],
-     ['202','212','222'],
-     ['220','221','222'],
-     ['000','100','200'],      // top-left corner 3d
-     ['000','101','202'],
-     ['000','110','220'],
-     ['000','111','222'],
-     ['001','101','201'],      // top-middle 3d
-     ['001','111','221'],
-     ['002','102','202'],      // top-right corner 3d
-     ['002','101','200'],
-     ['002','112','222'],
-     ['002','111','220'],
-     ['010','110','210'],      // left-middle 3d
-     ['010','111','212'],
-     ['011','111','211'],      // middle-middle 3d
-     ['012','112','212'],      // right-middle 3d
-     ['012','111','210'],
-     ['020','120','220'],      // bottom-left corner 3d
-     ['020','110','200'],
-     ['020','121','222'],
-     ['020','111','202'],
-     ['021','121','221'],      // bottom-middle 3d
-     ['021','111','201'],
-     ['022','122','222'],      // bottom-right corner 3d
-     ['022','121','220'],
-     ['022','112','202'],
-     ['022','111','200']
-
-  ];
+  );
 
   function __construct($dimen,$handicap,$mefirst,$yours,$mine) {
     $this->dimen = 3;
@@ -209,7 +209,7 @@ class tictac {
          $this->mine .= $move;
          $this->me = $this->parse_moves('me');
        }
-       else {
+       else {  
          $move = $this->offensive_move();
          if(strlen($move)) {
            $this->mine .= $move;
@@ -231,7 +231,7 @@ class tictac {
       $str = $this->mine;
     if($player == 'you')
       $str = $this->yours;
-    $ret = [];
+    $ret = array();
       while(strlen($str)) {
          $ret[] = substr($str,0,3);
          $str = substr($str,3);
@@ -299,7 +299,7 @@ function winning_move() {
       if($this->handicap) {
         $p = $this->uncontested_plane();
         foreach($this->corners as $c)
-          if((in_array($c,$p))
+          if((in_array($c,$p)) 
             && (! $this->is_yours($c)) && (! $this->is_mine($c)))
               return($c);
       }
@@ -320,11 +320,11 @@ function winning_move() {
           if(in_array($this->me[0],$this->corners)) {
             $p = $this->my_best_plane();
             foreach($this->winner as $w) {
-              if((in_array($w[0],$this->you))
+              if((in_array($w[0],$this->you)) 
               || (in_array($w[1],$this->you))
               || (in_array($w[2],$this->you)))
-                continue;
-              if(in_array($w[0],$this->corners)
+                continue;        
+              if(in_array($w[0],$this->corners) 
                 && in_array($w[2],$this->corners)
                 && in_array($w[0],$p) && in_array($w[2],$p)) {
                   if($this->me[0] == $w[0])
@@ -338,7 +338,7 @@ function winning_move() {
         else {
           $r = $this->get_corners($this->me);
           if(count($r) > 1) {
-            $w1 = []; $w2 = [];
+            $w1 = array(); $w2 = array();
             foreach($this->winner as $w) {
               if(in_array('111',$w))
                 continue;
@@ -350,13 +350,13 @@ function winning_move() {
             if(count($w1) && count($w2)) {
               foreach($w1 as $a) {
                 foreach($w2 as $b) {
-                  if((in_array($a[0],$this->you))
+                  if((in_array($a[0],$this->you)) 
                   || (in_array($a[1],$this->you))
                   || (in_array($a[2],$this->you))
                   || (in_array($b[0],$this->you))
                   || (in_array($b[1],$this->you))
                   || (in_array($b[2],$this->you)))
-                    continue;
+                    continue; 
                   if(($a[0] == $b[0]) && ! $this->is_mine($a[0])) {
                     return $a[0];
                   }
@@ -375,8 +375,8 @@ function winning_move() {
  //     && in_array($this->you[0],$this->corners)
  //     && $this->is_neighbor($this->me[0],$this->you[0])) {
 
-      // Yuck. You foiled my plan. Since you obviously aren't playing to win,
-      // I'll try again. You may keep me busy for a few rounds, but I'm
+      // Yuck. You foiled my plan. Since you obviously aren't playing to win, 
+      // I'll try again. You may keep me busy for a few rounds, but I'm 
       // gonna' get you eventually.
 
 //      $p = $this->uncontested_plane();
@@ -388,14 +388,14 @@ function winning_move() {
 
 
     // find all the winners containing my points.
-    $mywinners = [];
+    $mywinners = array();
     foreach($this->winner as $w)
       foreach($this->me as $m)
         if((in_array($m,$w)) && (! in_array($w,$mywinners)))
           $mywinners[] = $w;
 
     // find all the rules where my points are in the center.
-      $trythese = [];
+      $trythese = array();
       if(count($mywinners)) {
         foreach($mywinners as $w) {
           foreach($this->me as $m) {
@@ -406,19 +406,19 @@ function winning_move() {
         }
       }
 
-      $myplanes = [];
+      $myplanes = array();
       for($p = 0; $p < count($this->planes); $p ++) {
         if($this->handicap && in_array('111',$this->planes[$p]))
           continue;
         foreach($this->me as $m)
-          if((in_array($m,$this->planes[$p]))
+          if((in_array($m,$this->planes[$p])) 
             && (! in_array($this->planes[$p],$myplanes)))
               $myplanes[] = $this->planes[$p];
       }
       shuffle($myplanes);
 
     // find all winners which share an endpoint, and which are uncontested
-      $candidates = [];
+      $candidates = array();
       if(count($trythese) && count($myplanes)) {
         foreach($trythese as $t) {
           foreach($this->winner as $w) {
@@ -436,7 +436,7 @@ function winning_move() {
 
       // Find out if we are about to force a win.
       // Looking for two winning vectors with a common endpoint
-      // and where we own the middle of both - we are now going to
+      // and where we own the middle of both - we are now going to 
       // grab the endpoint. The game isn't yet over but we've already won.
 
       if(count($candidates)) {
@@ -452,7 +452,7 @@ function winning_move() {
        }
 
        // find opponents planes
-      $yourplanes = [];
+      $yourplanes = array();
       for($p = 0; $p < count($this->planes); $p ++) {
         if($this->handicap && in_array('111',$this->planes[$p]))
           continue;
@@ -466,7 +466,7 @@ function winning_move() {
          // We now have a list of winning strategy vectors for our second point
          // Pick one that will force you into defensive mode.
          // Pick a point close to you so we don't risk giving you two
-         // in a row when you block us. That would force *us* into
+         // in a row when you block us. That would force *us* into 
          // defensive mode.
          // We want:        or:         not:
          //           X|O|     X| |       X| |
@@ -475,41 +475,41 @@ function winning_move() {
 
          if(count($this->you) == 1) {
            foreach($this->winner as $w) {
-             if(in_array($this->me[0], $w) && in_array($c[1],$w)
-               && $this->uncontested_winner($w)
+             if(in_array($this->me[0], $w) && in_array($c[1],$w) 
+               && $this->uncontested_winner($w) 
                && $this->is_neighbor($this->you[0],$c[1])) {
                  return($c[1]);
-             }
+             }  
            }
          }
-       }
+       }         
 
-       // You're somewhere else entirely or have made more than one move
+       // You're somewhere else entirely or have made more than one move 
        // - any strategy vector which puts you on the defense will have to do
 
        foreach($candidates as $c) {
          foreach($this->winner as $w) {
-           if(in_array($this->me[0], $w) && in_array($c[1],$w)
+           if(in_array($this->me[0], $w) && in_array($c[1],$w) 
              && $this->uncontested_winner($w)) {
                    return($c[1]);
-           }
+           }  
          }
        }
      }
 
-    // worst case scenario, no strategy we can play,
+    // worst case scenario, no strategy we can play, 
     // just find an empty space and take it
 
     for($x = 0; $x < $this->dimen; $x ++)
       for($y = 0; $y < $this->dimen; $y ++)
         for($z = 0; $z < $this->dimen; $z ++)
-          if((! $this->marked_yours($x,$y,$z))
+          if((! $this->marked_yours($x,$y,$z)) 
             && (! $this->marked_mine($x,$y,$z))) {
             if($this->handicap && $x == 1 && $y == 1 && $z == 1)
               continue;
             return(sprintf("%d%d%d",$x,$y,$z));
           }
-
+       
   return '';
   }
 
@@ -540,7 +540,7 @@ function winning_move() {
   }
 
   function get_corners($a) {
-    $total = [];
+    $total = array();
     if(count($a))
       foreach($a as $b)
         if(in_array($b,$this->corners))
@@ -575,7 +575,7 @@ function winning_move() {
 
   function my_best_plane() {
 
-    $second_choice = [];
+    $second_choice = array();
     shuffle($this->planes);
     for($p = 0; $p < count($this->planes); $p ++ ) {
       $contested = 0;
@@ -585,7 +585,7 @@ function winning_move() {
         continue;
       foreach($this->you as $m) {
         if(in_array($m,$this->planes[$p]))
-          $contested ++;
+          $contested ++;   
       }
       if(! $contested)
         return($this->planes[$p]);
@@ -610,8 +610,8 @@ function winning_move() {
         if($this->handicap && in_array('111',$pl[$p]))
           continue;
        foreach($this->you as $m) {
-         if(in_array($m,$pl[$p]))
-           $freeplane = false;
+         if(in_array($m,$pl[$p]))   
+           $freeplane = false;         
        }
        if(! $freeplane) {
          $freeplane = true;
@@ -620,7 +620,7 @@ function winning_move() {
        if($freeplane)
          return($pl[$p]);
     }
-    return [];
+    return array();
   }
 
   function fullboard() {
@@ -641,7 +641,7 @@ function winning_move() {
           $bordertop = (($y != 0) ? " border-top: 2px solid #000;" : "");
           $borderleft = (($z != 0) ? " border-left: 2px solid #000;" : "");
           if($this->handicap && $x == 1 && $y == 1 && $z == 1)
-            $o .=  "<td style=\"width: 25px; height: 25px; $bordertop $borderleft\" align=\"center\">&nbsp;</td>";
+            $o .=  "<td style=\"width: 25px; height: 25px; $bordertop $borderleft\" align=\"center\">&nbsp;</td>";                  
           elseif($this->marked_yours($x,$y,$z))
             $o .=  "<td style=\"width: 25px; height: 25px; $bordertop $borderleft $winner\" align=\"center\">X</td>";
           elseif($this->marked_mine($x,$y,$z))

@@ -7,8 +7,8 @@
  */
 
 use Friendica\App;
-use Friendica\Core\PConfig;
-use Friendica\Util\Emailer;
+
+require_once 'include/Emailer.php';
 
 /* because the fraking openpgp-php is in composer, require libs in composer
  * and then don't use autoloader to load classes... */
@@ -55,18 +55,18 @@ function securemail_settings(App &$a, &$s){
         return;
     }
 
-    $enable = intval(PConfig::get(local_user(), 'securemail', 'enable'));
-    $publickey = PConfig::get(local_user(), 'securemail', 'pkey');
+    $enable = intval(get_pconfig(local_user(), 'securemail', 'enable'));
+    $publickey = get_pconfig(local_user(), 'securemail', 'pkey');
 
     $t = get_markup_template('admin.tpl', 'addon/securemail/');
 
-    $s .= replace_macros($t, [
+    $s .= replace_macros($t, array(
         '$title' => t('"Secure Mail" Settings'),
         '$submit' => t('Save Settings'),
         '$test' => t('Save and send test'), //NOTE: update also in 'post'
-        '$enable' => ['securemail-enable', t('Enable Secure Mail'), $enable, ''],
-        '$publickey' => ['securemail-pkey', t('Public key'), $publickey, t('Your public PGP key, ascii armored format'), 'rows="10"']
-    ]);
+        '$enable' => array('securemail-enable', t('Enable Secure Mail'), $enable, ''),
+        '$publickey' => array('securemail-pkey', t('Public key'), $publickey, t('Your public PGP key, ascii armored format'), 'rows="10"')
+    ));
 }
 
 /**
@@ -86,9 +86,9 @@ function securemail_settings_post(App &$a, array &$b){
     }
 
     if ($_POST['securemail-submit']) {
-        PConfig::set(local_user(), 'securemail', 'pkey', trim($_POST['securemail-pkey']));
+        set_pconfig(local_user(), 'securemail', 'pkey', trim($_POST['securemail-pkey']));
         $enable = ((x($_POST, 'securemail-enable')) ? 1 : 0);
-        PConfig::set(local_user(), 'securemail', 'enable', $enable);
+        set_pconfig(local_user(), 'securemail', 'enable', $enable);
         info(t('Secure Mail Settings saved.') . EOL);
 
         if ($_POST['securemail-submit'] == t('Save and send test')) {
@@ -107,7 +107,7 @@ function securemail_settings_post(App &$a, array &$b){
             $subject = 'Friendica - Secure Mail - Test';
             $message = 'This is a test message from your Friendica Secure Mail addon.';
 
-            $params = [
+            $params = array(
                 'uid' => local_user(),
                 'fromName' => $sitename,
                 'fromEmail' => $sender_email,
@@ -115,15 +115,15 @@ function securemail_settings_post(App &$a, array &$b){
                 'messageSubject' => $subject,
                 'htmlVersion' => "<p>{$message}</p>",
                 'textVersion' => $message,
-            ];
+            );
 
             // enable addon for test
-            PConfig::set(local_user(), 'securemail', 'enable', 1);
+            set_pconfig(local_user(), 'securemail', 'enable', 1);
 
             $res = Emailer::send($params);
 
             // revert to saved value
-            PConfig::set(local_user(), 'securemail', 'enable', $enable);
+            set_pconfig(local_user(), 'securemail', 'enable', $enable);
 
             if ($res) {
                 info(t('Test email sent') . EOL);
@@ -151,12 +151,12 @@ function securemail_emailer_send_prepare(App &$a, array &$b) {
 
     $uid = $b['uid'];
 
-    $enable_checked = PConfig::get($uid, 'securemail', 'enable');
+    $enable_checked = get_pconfig($uid, 'securemail', 'enable');
     if (!$enable_checked) {
         return;
     }
 
-    $public_key_ascii = PConfig::get($uid, 'securemail', 'pkey');
+    $public_key_ascii = get_pconfig($uid, 'securemail', 'pkey');
 
     preg_match('/-----BEGIN ([A-Za-z ]+)-----/', $public_key_ascii, $matches);
     $marker = (empty($matches[1])) ? 'MESSAGE' : $matches[1];
@@ -164,11 +164,11 @@ function securemail_emailer_send_prepare(App &$a, array &$b) {
 
     $key = OpenPGP_Message::parse($public_key);
 
-    $data = new OpenPGP_LiteralDataPacket($b['textVersion'], [
+    $data = new OpenPGP_LiteralDataPacket($b['textVersion'], array(
         'format' => 'u',
         'filename' => 'encrypted.gpg'
-    ]);
-    $encrypted = OpenPGP_Crypt_Symmetric::encrypt($key, new OpenPGP_Message([$data]));
+    ));
+    $encrypted = OpenPGP_Crypt_Symmetric::encrypt($key, new OpenPGP_Message(array($data)));
     $armored_encrypted = wordwrap(
         OpenPGP::enarmor($encrypted->to_bytes(), 'PGP MESSAGE'),
         64,

@@ -1,0 +1,16 @@
+
+#posterous-enable-label, #posterous-username-label, #posterous-password-label, #posterous-site_id-label, #posterous-api_token-label, #posterous-bydefault-label {
+	float: left;
+	width: 200px;
+	margin-top: 10px;
+}
+
+#posterous-checkbox, #posterous-username, #posterous-password, #posterous-site_id, #posterous-api_token, #posterous-bydefault {
+	float: left;
+	margin-top: 10px;
+}
+
+#posterous-submit {
+	margin-top: 15px;
+}
+

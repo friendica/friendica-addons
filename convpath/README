@@ -1,0 +1,7 @@
+convpath
+
+This addon converts all internal paths according to the current scheme. 
+
+That means that if a page is called via https then all internal links are also converted into https.
+
+Same happens when you call your page with http.

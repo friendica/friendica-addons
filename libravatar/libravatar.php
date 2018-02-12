@@ -6,8 +6,6 @@
  * Author: Klaus Weidenbach <http://friendica.dszdw.net/profile/klaus>
  */
 
-use Friendica\Core\Config;
-
 /**
  * Installs the plugin hook
  */
@@ -38,11 +36,11 @@ function libravatar_uninstall() {
  * @param &$b array
  */
 function libravatar_lookup($a, &$b) {
-	$default_avatar = Config::get('libravatar', 'default_img');
+	$default_avatar = get_config('libravatar', 'default_img');
 
 	if (! $default_avatar) {
 		// if not set, look up if there was one from the gravatar addon
-		$default_avatar = Config::get('gravatar', 'default_img');
+		$default_avatar = get_config('gravatar', 'default_img');
 		// setting default avatar if nothing configured
 		if (! $default_avatar)
 			$default_avatar = 'identicon'; // default image will be a random pattern
@@ -64,20 +62,20 @@ function libravatar_lookup($a, &$b) {
 function libravatar_plugin_admin (&$a, &$o) {
 	$t = get_markup_template( "admin.tpl", "addon/libravatar" );
 
-	$default_avatar = Config::get('libravatar', 'default_img');
+	$default_avatar = get_config('libravatar', 'default_img');
 
 	// set default values for first configuration
 	if(! $default_avatar)
 		$default_avatar = 'identicon'; // pseudo-random geometric pattern based on email hash
 
 	// Available options for the select boxes
-	$default_avatars = [
+	$default_avatars = array(
 		'mm' => t('generic profile image'),
 		'identicon' => t('random geometric pattern'),
 		'monsterid' => t('monster face'),
 		'wavatar' => t('computer generated face'),
 		'retro' => t('retro arcade style face'),
-	];
+	);
 
 	// Show warning if PHP version is too old
 	if (! version_compare(PHP_VERSION, '5.3.0', '>=')) {
@@ -97,10 +95,10 @@ function libravatar_plugin_admin (&$a, &$o) {
 
 	// output Libravatar settings
 	$o .= '<input type="hidden" name="form_security_token" value="' .get_form_security_token("libravatarsave") .'">';
-	$o .= replace_macros( $t, [
+	$o .= replace_macros( $t, array(
 		'$submit' => t('Save Settings'),
-		'$default_avatar' => ['avatar', t('Default avatar image'), $default_avatar, t('Select default avatar image if none was found. See README'), $default_avatars],
-	]);
+		'$default_avatar' => array('avatar', t('Default avatar image'), $default_avatar, t('Select default avatar image if none was found. See README'), $default_avatars),
+	));
 }
 
 /**
@@ -110,7 +108,7 @@ function libravatar_plugin_admin_post (&$a) {
 	check_form_security_token('libravatarrsave');
 
 	$default_avatar = ((x($_POST, 'avatar')) ? notags(trim($_POST['avatar'])) : 'identicon');
-	Config::set('libravatar', 'default_img', $default_avatar);
+	set_config('libravatar', 'default_img', $default_avatar);
 	info(t('Libravatar settings updated.') .EOL);
 }
 ?>

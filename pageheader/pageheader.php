@@ -10,8 +10,6 @@
  * 
  */
 
-use Friendica\Core\Config;
-
 function pageheader_install() {
     register_hook('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
 	register_hook('plugin_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
@@ -45,7 +43,7 @@ function pageheader_addon_settings(&$a,&$s) {
     $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/pageheader/pageheader.css' . '" media="all" />' . "\r\n";
 
 
-	$words = Config::get('pageheader','text');
+	$words = get_config('pageheader','text');
 	if(! $words)
 		$words = '';
 
@@ -68,7 +66,7 @@ function pageheader_addon_settings_post(&$a,&$b) {
 		return;
 
 	if($_POST['pageheader-submit']) {
-		Config::set('pageheader','text',trim(strip_tags($_POST['pageheader-words'])));
+		set_config('pageheader','text',trim(strip_tags($_POST['pageheader-words'])));
 		info( t('pageheader Settings saved.') . EOL);
 	}
 }
@@ -78,7 +76,7 @@ function pageheader_fetch($a,&$b) {
 	if(file_exists('pageheader.html')){
 		$s = file_get_contents('pageheader.html');
 	} else {
-		$s = Config::get('pageheader', 'text');
+		$s = get_config('pageheader', 'text');
 	}
 
     $a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'

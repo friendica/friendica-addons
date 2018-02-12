@@ -1,8 +1,5 @@
 <?php
 
-use Friendica\Module\Login;
-use Friendica\Util\Emailer;
-
 require_once('include/security.php');
 
 function dav_install()
@@ -150,7 +147,7 @@ function dav_content()
 {
 	$a = get_app();
 	if (!isset($a->user["uid"]) || $a->user["uid"] == 0) {
-		return Login::form();
+		return login();
 	}
 
 	$x = "";
@@ -166,7 +163,7 @@ function dav_content()
 						$ret = wdcal_postEditPage("new", "", $a->user["uid"], $a->timezone, $a->get_baseurl() . "/dav/wdcal/");
 						if ($ret["ok"]) notice($ret["msg"]);
 						else info($ret["msg"]);
-						goaway('dav/wdcal/');
+						goaway($a->get_baseurl() . "/dav/wdcal/");
 					}
 					$o .= wdcal_getNewPage();
 					return $o;
@@ -184,7 +181,7 @@ function dav_content()
 								$ret = wdcal_postEditPage($a->argv[3], $a->user["uid"], $a->timezone, $a->get_baseurl() . "/dav/wdcal/");
 								if ($ret["ok"]) notice($ret["msg"]);
 								else info($ret["msg"]);
-								goaway('dav/wdcal/');
+								goaway($a->get_baseurl() . "/dav/wdcal/");
 							}
 							$o .= wdcal_getEditPage($calendar_id, $a->argv[3]);
 							return $o;
@@ -198,7 +195,7 @@ function dav_content()
 			} else {
 				$server = dav_create_server(true, true, false);
 				$cals   = dav_get_current_user_calendars($server, DAV_ACL_READ);
-				$x      = wdcal_printCalendar($cals, [], $a->get_baseurl() . "/dav/wdcal/feed/", "week", 0, 200);
+				$x      = wdcal_printCalendar($cals, array(), $a->get_baseurl() . "/dav/wdcal/feed/", "week", 0, 200);
 			}
 		}
 	} catch (DAVVersionMismatchException $e) {
@@ -238,12 +235,12 @@ function dav_event_updated_hook(&$a, &$b)
  */
 function dav_profile_tabs_hook(&$a, &$b)
 {
-	$b["tabs"][] = [
+	$b["tabs"][] = array(
 		"label" => t('Calendar'),
 		"url"   => $a->get_baseurl() . "/dav/wdcal/",
 		"sel"   => "",
 		"title" => t('Extended calendar with CalDAV-support'),
-	];
+	);
 }
 
 
@@ -261,7 +258,7 @@ function dav_cron(&$a, &$b)
 		q("UPDATE %s%snotifications SET `notified` = 1 WHERE `id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $not["id"]);
 		$event    = q("SELECT * FROM %s%sjqcalendar WHERE `calendarobject_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $not["calendarobject_id"]);
 		$calendar = q("SELECT * FROM %s%scalendars WHERE `id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $not["calendar_id"]);
-		$users    = [];
+		$users    = array();
 		if (count($calendar) != 1 || count($event) == 0) continue;
 		switch ($calendar[0]["namespace"]) {
 			case CALDAV_NAMESPACE_PRIVATE:
@@ -274,11 +271,11 @@ function dav_cron(&$a, &$b)
 			case "email":
 			case "display": // @TODO implement "Display"
 				foreach ($users as $user) {
-					$find      = ["%to%", "%event%", "%url%"];
-					$repl      = [$user["username"], $event[0]["Summary"], $a->get_baseurl() . "/dav/wdcal/" . $calendar[0]["id"] . "/" . $not["calendarobject_id"] . "/"];
+					$find      = array("%to%", "%event%", "%url%");
+					$repl      = array($user["username"], $event[0]["Summary"], $a->get_baseurl() . "/dav/wdcal/" . $calendar[0]["id"] . "/" . $not["calendarobject_id"] . "/");
 					$text_text = str_replace($find, $repl, "Hi %to%!\n\nThe event \"%event%\" is about to begin:\n%url%");
 					$text_html = str_replace($find, $repl, "Hi %to%!<br>\n<br>\nThe event \"%event%\" is about to begin:<br>\n<a href='" . "%url%" . "'>%url%</a>");
-					$params    = [
+					$params    = array(
 						'fromName'             => FRIENDICA_PLATFORM,
 						'fromEmail'            => t('noreply') . '@' . $a->get_hostname(),
 						'replyTo'              => t('noreply') . '@' . $a->get_hostname(),
@@ -287,7 +284,8 @@ function dav_cron(&$a, &$b)
 						'htmlVersion'          => $text_html,
 						'textVersion'          => $text_text,
 						'additionalMailHeader' => "",
-					];
+					);
+					require_once('include/Emailer.php');
 					Emailer::send($params);
 				}
 				break;

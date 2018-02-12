@@ -6,8 +6,6 @@
  * Author: Fabio Comuni <http://kirgroup.com/profile/fabrixxm>
  */
 
-use Friendica\Core\Config;
-use Friendica\Module\Login;
 
 require_once('mod/community.php');
 
@@ -22,73 +20,37 @@ function communityhome_uninstall() {
 	logger("removed communityhome");
 }
 
-function communityhome_getopts() {
-	return [
-		'hidelogin'=>t('Hide login form'),
-		'showlastusers'=>t('Show last new users'),
-		'showactiveusers'=>t('Show last active users'),
-		'showlastphotos'=>t('Show last photos'),
-		'showlastlike'=>t('Show last liked items'),
-		'showcommunitystream'=>t('Show community stream')
-	];
-}
-
-function communityhome_plugin_admin(&$a, &$o) {
-	$tpl = get_markup_template( 'settings.tpl', 'addon/communityhome/' );
-
-	$opts = communityhome_getopts();
-	$ctx = [
-		'$submit' => t("Submit"),
-		'$fields' => [],
-	];
-	foreach($opts as $k=>$v) {
-		$ctx['fields'][] = ['communityhome_'.$k, $v, Config::get('communityhome', $k)];
-	}
-	$o = replace_macros($tpl, $ctx);
-}
-
-function communityhome_plugin_admin_post(&$a,&$b) {
-	if(x($_POST,'communityhome-submit')) {
-		$opts = communityhome_getopts();
-		foreach($opts as $k=>$v) {
-			Config::set('communityhome', $k, x($_POST,'communityhome_'.$k));
-		}
-	}
-}
-
-
 function communityhome_home(&$a, &$o){
 	// custom css
 	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->get_baseurl().'/addon/communityhome/communityhome.css" media="all" />';
 
-	if (!Config::get('communityhome','hidelogin')){
-		$aside = [
+	if (!get_config('communityhome','hidelogin')){
+		$aside = array(
 			'$tab_1' => t('Login'),
 			'$tab_2' => t('OpenID'),
-			'$noOid' => Config::get('system','no_openid'),
-		];
+			'$noOid' => get_config('system','no_openid'),
+		);
 
 		// login form
 		$aside['$login_title'] =  t('Login');
-		$aside['$login_form'] = Login::form($a->query_string, $a->config['register_policy'] == REGISTER_CLOSED ? false : true);
-	} else  {
-		$aside = [
+		$aside['$login_form'] = login(($a->config['register_policy'] == REGISTER_CLOSED) ? false : true);
+	} else
+		$aside = array(
 			//'$tab_1' => t('Login'),
 			//'$tab_2' => t('OpenID'),
-			//'$noOid' => Config::get('system','no_openid'),
-		];
-	}
+			//'$noOid' => get_config('system','no_openid'),
+		);
 
 	// last 12 users
-	if (Config::get('communityhome','showlastusers')){
+	if (get_config('communityhome','showlastusers')===true){
 		$aside['$lastusers_title'] = t('Latest users');
-		$aside['$lastusers_items'] = [];
+		$aside['$lastusers_items'] = array();
 		$sql_extra = "";
-		$publish = (Config::get('system','publish_all') ? '' : " AND `publish` = 1 " );
+		$publish = (get_config('system','publish_all') ? '' : " AND `publish` = 1 " );
 		$order = " ORDER BY `register_date` DESC ";
 
 		$r = q("SELECT `profile`.*, `profile`.`uid` AS `profile_uid`, `user`.`nickname`
-				FROM `profile` LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid`
+				FROM `profile` LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid` 
 				WHERE `is-default` = 1 $publish AND `user`.`blocked` = 0 $sql_extra $order LIMIT %d , %d ",
 			0,
 			12
@@ -99,25 +61,25 @@ function communityhome_home(&$a, &$o){
 			$photo = 'thumb';
 			foreach($r as $rr) {
 				$profile_link = $a->get_baseurl() . '/profile/' . ((strlen($rr['nickname'])) ? $rr['nickname'] : $rr['profile_uid']);
-				$entry = replace_macros($tpl,[
+				$entry = replace_macros($tpl,array(
 					'$id' => $rr['id'],
 					'$profile_link' => $profile_link,
-					'$photo' => $rr[$photo],
+					'$photo' => $a->get_cached_avatar_image($rr[$photo]),
 					'$alt_text' => $rr['name'],
-				]);
+				));
 				$aside['$lastusers_items'][] = $entry;
 			}
 		}
 	}
 	// 12 most active users (by posts and contacts)
 	// this query don't work on some mysql versions
-	if (Config::get('communityhome','showactiveusers')){
+	if (get_config('communityhome','showactiveusers')===true){
 		$r = q("SELECT `uni`.`contacts`,`uni`.`items`, `profile`.*, `profile`.`uid` AS `profile_uid`, `user`.`nickname`  FROM
 				(SELECT COUNT(*) as `contacts`, `uid` FROM `contact` WHERE `self`=0 GROUP BY `uid`) AS `con`,
 				(SELECT COUNT(*) as `items`, `uid` FROM `item` WHERE `item`.`changed` > DATE(NOW() - INTERVAL 1 MONTH) AND `item`.`wall` = 1 GROUP BY `uid`) AS `ite`,
 				(
-				SELECT `contacts`,`items`,`ite`.`uid` FROM `con` RIGHT OUTER JOIN `ite` ON `con`.`uid`=`ite`.`uid`
-				UNION ALL
+				SELECT `contacts`,`items`,`ite`.`uid` FROM `con` RIGHT OUTER JOIN `ite` ON `con`.`uid`=`ite`.`uid` 
+				UNION ALL 
 				SELECT `contacts`,`items`,`con`.`uid` FROM `con` LEFT OUTER JOIN `ite` ON `con`.`uid`=`ite`.`uid`
 				) AS `uni`, `user`, `profile`
 				WHERE `uni`.`uid`=`user`.`uid`
@@ -127,31 +89,31 @@ function communityhome_home(&$a, &$o){
 				LIMIT 0,10");
 		if($r && count($r)) {
 			$aside['$activeusers_title']  = t('Most active users');
-			$aside['$activeusers_items']  = [];
+			$aside['$activeusers_items']  = array();
 
 			$photo = 'thumb';
 			foreach($r as $rr) {
 				$profile_link = $a->get_baseurl() . '/profile/' . ((strlen($rr['nickname'])) ? $rr['nickname'] : $rr['profile_uid']);
-				$entry = replace_macros($tpl,[
+				$entry = replace_macros($tpl,array(
 					'$id' => $rr['id'],
 					'$profile_link' => $profile_link,
 					'$photo' => $rr[$photo],
-					'$photo_user' => sprintf("%s (%s posts, %s contacts)",$rr['name'], ($rr['items']?$rr['items']:'0'), ($rr['contacts']?$rr['contacts']:'0'))
-				]);
+					'$alt_text' => sprintf("%s (%s posts, %s contacts)",$rr['name'], ($rr['items']?$rr['items']:'0'), ($rr['contacts']?$rr['contacts']:'0'))
+				));
 				$aside['$activeusers_items'][] = $entry;
 			}
 		}
 	}
 	// last 12 photos
-	if (Config::get('communityhome','showlastphotos')){
+	if (get_config('communityhome','showlastphotos')===true){
 		$aside['$photos_title'] = t('Latest photos');
-		$aside['$photos_items'] = [];
-		$r = q("SELECT `photo`.`id`, `photo`.`resource-id`, `photo`.`scale`, `photo`.`desc`, `user`.`nickname`, `user`.`username` FROM
-					(SELECT `resource-id`, MAX(`scale`) as maxscale FROM `photo`
+		$aside['$photos_items'] = array();
+		$r = q("SELECT `photo`.`id`, `photo`.`resource-id`, `photo`.`scale`, `photo`.`desc`, `user`.`nickname`, `user`.`username` FROM 
+					(SELECT `resource-id`, MAX(`scale`) as maxscale FROM `photo` 
 						WHERE `profile`=0 AND `contact-id`=0 AND `album` NOT IN ('Contact Photos', '%s', 'Profile Photos', '%s')
 							AND `allow_cid`='' AND `allow_gid`='' AND `deny_cid`='' AND `deny_gid`='' GROUP BY `resource-id`) AS `t1`
 					INNER JOIN `photo` ON `photo`.`resource-id`=`t1`.`resource-id` AND `photo`.`scale` = `t1`.`maxscale`,
-					`user`
+					`user` 
 					WHERE `user`.`uid` = `photo`.`uid`
 					AND `user`.`blockwall`=0
 					AND `user`.`hidewall` = 0
@@ -169,13 +131,12 @@ function communityhome_home(&$a, &$o){
 				$photo_page = $a->get_baseurl() . '/photos/' . $rr['nickname'] . '/image/' . $rr['resource-id'];
 				$photo_url = $a->get_baseurl() . '/photo/' .  $rr['resource-id'] . '-' . $rr['scale'] .'.jpg';
 
-				$entry = replace_macros($tpl,[
+				$entry = replace_macros($tpl,array(
 					'$id' => $rr['id'],
 					'$profile_link' => $photo_page,
 					'$photo' => $photo_url,
-					'$photo_user' => $rr['username'],
-					'$photo_title' => $rr['desc']
-				]);
+					'$alt_text' => $rr['username']." : ".$rr['desc'],
+				));
 
 				$aside['$photos_items'][] = $entry;
 			}
@@ -183,13 +144,13 @@ function communityhome_home(&$a, &$o){
 	}
 
 	// last 10 liked items
-	if (Config::get('communityhome','showlastlike')){
+	if (get_config('communityhome','showlastlike')===true){
 		$aside['$like_title'] = t('Latest likes');
-		$aside['$like_items'] = [];
-		$r = q("SELECT `T1`.`created`, `T1`.`liker`, `T1`.`liker-link`, `item`.* FROM
-				(SELECT `parent-uri`, `created`, `author-name` AS `liker`,`author-link` AS `liker-link`
+		$aside['$like_items'] = array();
+		$r = q("SELECT `T1`.`created`, `T1`.`liker`, `T1`.`liker-link`, `item`.* FROM 
+				(SELECT `parent-uri`, `created`, `author-name` AS `liker`,`author-link` AS `liker-link` 
 					FROM `item` WHERE `verb`='http://activitystrea.ms/schema/1.0/like' GROUP BY `parent-uri` ORDER BY `created` DESC) AS T1
-				INNER JOIN `item` ON `item`.`uri`=`T1`.`parent-uri`
+				INNER JOIN `item` ON `item`.`uri`=`T1`.`parent-uri` 
 				WHERE `T1`.`liker-link` LIKE '%s%%' OR `item`.`author-link` LIKE '%s%%'
 				GROUP BY `uri`
 				ORDER BY `T1`.`created` DESC
@@ -215,7 +176,7 @@ function communityhome_home(&$a, &$o){
 				default:
 					if ($rr['resource-id']){
 						$post_type = t('photo');
-						$m=[];	preg_match("/\[url=([^]]*)\]/", $rr['body'], $m);
+						$m=array();	preg_match("/\[url=([^]]*)\]/", $rr['body'], $m);
 						$rr['plink'] = $m[1];
 					} else {
 						$post_type = t('status');
@@ -237,14 +198,14 @@ function communityhome_home(&$a, &$o){
 	if(file_exists('home.html'))
  		$o = file_get_contents('home.html');
 
-	if (Config::get('communityhome','showcommunitystream')){
-		$oldset = Config::get('system','community_page_style');
+	if (get_config('communityhome','showcommunitystream')===true){
+		$oldset = get_config('system','community_page_style');
 		if ($oldset == CP_NO_COMMUNITY_PAGE)
-			Config::set('system','community_page_style', CP_USERS_ON_SERVER);
+			set_config('system','community_page_style', CP_USERS_ON_SERVER);
 
 		$o .= community_content($a,1);
 
 		if ($oldset == CP_NO_COMMUNITY_PAGE)
-			Config::set('system','community_page_style', $oldset);
+			set_config('system','community_page_style', $oldset);
 	}
 }

@@ -11,12 +11,10 @@
  *
  * JavaScript Photo/Image Uploader
  *
- * Uses Valum 'qq' Uploader.
+ * Uses Valum 'qq' Uploader. 
  * Module Author: Chris Case
  *
  */
-
-use Friendica\Core\Config;
 
 
 function js_upload_install() {
@@ -41,25 +39,25 @@ function js_upload_form(&$a,&$b) {
 
 	$b['addon_text'] .= '<link href="' . $a->get_baseurl() . '/addon/js_upload/file-uploader/client/fileuploader.css" rel="stylesheet" type="text/css">';
 	$b['addon_text'] .= '<script src="' . $a->get_baseurl() . '/addon/js_upload/file-uploader/client/fileuploader.js" type="text/javascript"></script>';
-
+   
 	$upload_msg = t('Upload a file');
 	$drop_msg = t('Drop files here to upload');
 	$cancel = t('Cancel');
 	$failed = t('Failed');
 
-	$maximagesize = intval(Config::get('system','maximagesize'));
+	$maximagesize = intval(get_config('system','maximagesize'));
 
 	$b['addon_text'] .= <<< EOT
-
- <div id="file-uploader-demo1">
-  <noscript>
+	
+ <div id="file-uploader-demo1">		
+  <noscript>			
    <p>Please enable JavaScript to use file uploader.</p>
    <!-- or put a simple form for upload here -->
-  </noscript>
+  </noscript> 
  </div>
 
 <script type="text/javascript">
-var uploader = null;
+var uploader = null;       
 function getSelected(opt) {
             var selected = new Array();
             var index = 0;
@@ -73,16 +71,16 @@ function getSelected(opt) {
                }
             }
             return selected;
-         }
+         } 
 function createUploader() {
 	uploader = new qq.FileUploader({
 		element: document.getElementById('file-uploader-demo1'),
 		action: '{$b['post_url']}',
 
-        template: '<div class="qq-uploader">' +
+        template: '<div class="qq-uploader">' + 
                 '<div class="qq-upload-drop-area"><span>$drop_msg</span></div>' +
                 '<div class="qq-upload-button">$upload_msg</div>' +
-                '<ul class="qq-upload-list"></ul>' +
+                '<ul class="qq-upload-list"></ul>' + 
              '</div>',
 
         // template for one item in file list
@@ -92,7 +90,7 @@ function createUploader() {
                 '<span class="qq-upload-size"></span>' +
                 '<a class="qq-upload-cancel" href="#">$cancel</a>' +
                 '<span class="qq-upload-failed-text">$failed</span>' +
-            '</li>',
+            '</li>',        
 
 		debug: true,
 		sizeLimit: $maximagesize,
@@ -119,17 +117,17 @@ function createUploader() {
 				});
 			}
 		}
-	});
+	});           
 }
 
 
 // in your app create uploader as soon as the DOM is ready
-// don't wait for the window to load
-window.onload = createUploader;
+// don't wait for the window to load  
+window.onload = createUploader;     
 
 
 </script>
-
+ 
 EOT;
 
 
@@ -139,11 +137,11 @@ function js_upload_post_init(&$a,&$b) {
 
 	// list of valid extensions, ex. array("jpeg", "xml", "bmp")
 
-	$allowedExtensions = ["jpeg","gif","png","jpg"];
+	$allowedExtensions = array("jpeg","gif","png","jpg");
 
 	// max file size in bytes
 
-	$sizeLimit = Config::get('system','maximagesize'); //6 * 1024 * 1024;
+	$sizeLimit = get_config('system','maximagesize'); //6 * 1024 * 1024;
 
 	$uploader = new qqFileUploader($allowedExtensions, $sizeLimit);
 
@@ -196,10 +194,10 @@ class qqUploadedFileXhr {
      * Save the file in the temp dir.
      * @return boolean TRUE on success
      */
-    function save() {
+    function save() {    
         $input = fopen("php://input", "r");
 
-		$upload_dir = Config::get('system','tempdir');
+		$upload_dir = get_config('system','tempdir');
 		if(! $upload_dir)
 			$upload_dir = sys_get_temp_dir();
 
@@ -210,8 +208,8 @@ class qqUploadedFileXhr {
 
         fclose($input);
 		fclose($temp);
-
-        if ($realSize != $this->getSize()){
+        
+        if ($realSize != $this->getSize()){            
             return false;
         }
         return true;
@@ -227,18 +225,18 @@ class qqUploadedFileXhr {
 
     function getSize() {
         if (isset($_SERVER["CONTENT_LENGTH"])){
-            return (int)$_SERVER["CONTENT_LENGTH"];
+            return (int)$_SERVER["CONTENT_LENGTH"];            
         } else {
             throw new Exception('Getting content length is not supported.');
-        }
-    }
+        }      
+    }   
 }
 
 /**
  * Handle file uploads via regular form post (uses the $_FILES array)
  */
 
-class qqUploadedFileForm {
+class qqUploadedFileForm {  
 
 
     /**
@@ -264,63 +262,63 @@ class qqUploadedFileForm {
 }
 
 class qqFileUploader {
-    private $allowedExtensions = [];
+    private $allowedExtensions = array();
     private $sizeLimit = 10485760;
     private $file;
 
-    function __construct(array $allowedExtensions = [], $sizeLimit = 10485760){
+    function __construct(array $allowedExtensions = array(), $sizeLimit = 10485760){        
         $allowedExtensions = array_map("strtolower", $allowedExtensions);
-
-        $this->allowedExtensions = $allowedExtensions;
+            
+        $this->allowedExtensions = $allowedExtensions;        
         $this->sizeLimit = $sizeLimit;
-
+        
         if (isset($_GET['qqfile'])) {
             $this->file = new qqUploadedFileXhr();
         } elseif (isset($_FILES['qqfile'])) {
             $this->file = new qqUploadedFileForm();
         } else {
-            $this->file = false;
+            $this->file = false; 
         }
 
     }
-
-
+    
+    
     private function toBytes($str){
         $val = trim($str);
         $last = strtolower($str[strlen($str)-1]);
         switch($last) {
             case 'g': $val *= 1024;
             case 'm': $val *= 1024;
-            case 'k': $val *= 1024;
+            case 'k': $val *= 1024;        
         }
         return $val;
     }
-
+    
     /**
      * Returns array('success'=>true) or array('error'=>'error message')
      */
     function handleUpload(){
-
+        
         if (!$this->file){
-            return ['error' => t('No files were uploaded.')];
+            return array('error' => t('No files were uploaded.'));
         }
-
+        
         $size = $this->file->getSize();
-
+        
         if ($size == 0) {
-            return ['error' => t('Uploaded file is empty')];
+            return array('error' => t('Uploaded file is empty'));
         }
-
+        
 //        if ($size > $this->sizeLimit) {
 
 //            return array('error' => t('Uploaded file is too large'));
 //        }
+        
 
-
-		$maximagesize = Config::get('system','maximagesize');
+		$maximagesize = get_config('system','maximagesize');
 
 		if(($maximagesize) && ($size > $maximagesize)) {
-			return ['error' => t('Image exceeds size limit of ') . $maximagesize ];
+			return array('error' => t('Image exceeds size limit of ') . $maximagesize );
 
 		}
 
@@ -331,22 +329,22 @@ class qqFileUploader {
 
         if($this->allowedExtensions && !in_array(strtolower($ext), $this->allowedExtensions)){
             $these = implode(', ', $this->allowedExtensions);
-            return ['error' => t('File has an invalid extension, it should be one of ') . $these . '.'];
+            return array('error' => t('File has an invalid extension, it should be one of ') . $these . '.');
         }
-
+        
         if ($this->file->save()){
-            return [
+            return array(
 				'success'=>true,
-				'path' => $this->file->getPath(),
+				'path' => $this->file->getPath(), 
 				'filename' => $filename . '.' . $ext
-			];
+			);
         } else {
-            return [
+            return array(
 				'error'=> t('Upload was cancelled, or server error encountered'),
-				'path' => $this->file->getPath(),
+				'path' => $this->file->getPath(), 
 				'filename' => $filename . '.' . $ext
-			];
+			);
         }
-
-    }
+        
+    }    
 }

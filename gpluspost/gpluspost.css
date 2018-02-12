@@ -1,0 +1,19 @@
+
+#gpluspost-enable-label, #gpluspost-bydefault-label, #gpluspost-noloopprevention-label, 
+#gpluspost-skipwithoutlink-label, #gpluspost-mirror-label, #gpluspost-account-label,
+#gpluspost-username-label, #gpluspost-password-label, #gpluspost-page-label {
+	float: left;
+	width: 200px;
+	margin-top: 10px;
+}
+
+#gpluspost-checkbox, #gpluspost-bydefault, #gpluspost-noloopprevention, 
+#gpluspost-skipwithoutlink, #gpluspost-mirror, #gpluspost-account,
+#gpluspost-username, #gpluspost-password, #gpluspost-page {
+	float: left;
+	margin-top: 10px;
+}
+
+#gpluspost-submit {
+	margin-top: 15px;
+}

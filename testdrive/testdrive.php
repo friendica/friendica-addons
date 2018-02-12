@@ -7,8 +7,7 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
 
-use Friendica\Core\Config;
-use Friendica\Model\User;
+
 
 
 function testdrive_install() {
@@ -38,7 +37,7 @@ function testdrive_register_account($a,$b) {
 
 	$uid = $b;
 
-	$days = Config::get('testdrive','expiredays');
+	$days = get_config('testdrive','expiredays');
 	if(! $days)
 		return;
 
@@ -58,7 +57,7 @@ function testdrive_cron($a,$b) {
 
 	if(count($r)) {
 		foreach($r as $rr) {
-			notification([
+			notification(array(
 				'uid' => $rr['uid'],
 				'type' => NOTIFY_SYSTEM,
 				'system_type' => 'testdrive_expire',
@@ -68,7 +67,7 @@ function testdrive_cron($a,$b) {
 				'source_name'  => t('Administrator'),
 				'source_link'  => $a->get_baseurl(),
 				'source_photo' => $a->get_baseurl() . '/images/person-80.jpg',
-			]);
+			));
 
 			q("update user set expire_notification_sent = '%s' where uid = %d",
 				dbesc(datetime_convert()),
@@ -80,17 +79,19 @@ function testdrive_cron($a,$b) {
 
 	$r = q("select * from user where account_expired = 1 and account_expires_on < UTC_TIMESTAMP() - INTERVAL 5 DAY ");
 	if(count($r)) {
-		foreach($r as $rr) {
-			User::remove($rr['uid']);
-		}
+		require_once('include/Contact.php');
+		foreach($r as $rr)
+			user_remove($rr['uid']);
+
 	}
+
 }
 
 function testdrive_enotify(&$a, &$b) {
     if (x($b, 'params') && $b['params']['type'] == NOTIFY_SYSTEM
 		&& x($b['params'], 'system_type') && $b['params']['system_type'] === 'testdrive_expire') {
         $b['itemlink'] = $a->get_baseurl();
-        $b['epreamble'] = $b['preamble'] = sprintf( t('Your account on %s will expire in a few days.'), Config::get('system','sitename'));
+        $b['epreamble'] = $b['preamble'] = sprintf( t('Your account on %s will expire in a few days.'), get_config('system','sitename'));
         $b['subject'] = t('Your Friendica test account is about to expire.');
         $b['body'] = sprintf( t("Hi %1\$s,\n\nYour test account on %2\$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at %s/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at http://friendica.com."), $b['params']['to_name'], "[url=".$app->config["system"]["url"]."]".$app->config["sitename"]."[/url]", get_server());
     }

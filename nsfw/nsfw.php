@@ -6,10 +6,8 @@
  * Description: Collapse posts with inappropriate content
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- *
+ * 
  */
-
-use Friendica\Core\PConfig;
 
 function nsfw_install() {
 	register_hook('prepare_body', 'addon/nsfw/nsfw.php', 'nsfw_prepare_body', 10);
@@ -26,15 +24,15 @@ function nsfw_uninstall() {
 
 }
 
-// This function isn't perfect and isn't trying to preserve the html structure - it's just a
-// quick and dirty filter to pull out embedded photo blobs because 'nsfw' seems to come up
+// This function isn't perfect and isn't trying to preserve the html structure - it's just a 
+// quick and dirty filter to pull out embedded photo blobs because 'nsfw' seems to come up 
 // inside them quite often. We don't need anything fancy, just pull out the data blob so we can
-// check against the rest of the body.
-
+// check against the rest of the body. 
+ 
 function nsfw_extract_photos($body) {
 
 	$new_body = '';
-
+	
 	$img_start = strpos($body,'src="data:');
 	$img_end = (($img_start !== false) ? strpos(substr($body,$img_start),'>') : false);
 
@@ -43,7 +41,7 @@ function nsfw_extract_photos($body) {
 	while($img_end !== false) {
 		$img_end += $img_start;
 		$new_body = $new_body . substr($body,0,$img_start);
-
+	
 		$cnt ++;
 		$body = substr($body,0,$img_end);
 
@@ -71,8 +69,8 @@ function nsfw_addon_settings(&$a,&$s) {
 
     $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/nsfw/nsfw.css' . '" media="all" />' . "\r\n";
 
-	$enable_checked = (intval(PConfig::get(local_user(),'nsfw','disable')) ? '' : ' checked="checked" ');
-	$words = PConfig::get(local_user(),'nsfw','words');
+	$enable_checked = (intval(get_pconfig(local_user(),'nsfw','disable')) ? '' : ' checked="checked" ');
+	$words = get_pconfig(local_user(),'nsfw','words');
 	if(! $words)
 		$words = 'nsfw,';
 
@@ -106,10 +104,10 @@ function nsfw_addon_settings_post(&$a,&$b) {
 		return;
 
 	if($_POST['nsfw-submit']) {
-		PConfig::set(local_user(),'nsfw','words',trim($_POST['nsfw-words']));
+		set_pconfig(local_user(),'nsfw','words',trim($_POST['nsfw-words']));
 		$enable = ((x($_POST,'nsfw-enable')) ? intval($_POST['nsfw-enable']) : 0);
 		$disable = 1-$enable;
-		PConfig::set(local_user(),'nsfw','disable', $disable);
+		set_pconfig(local_user(),'nsfw','disable', $disable);
 		info( t('NSFW Settings saved.') . EOL);
 	}
 }
@@ -118,17 +116,17 @@ function nsfw_prepare_body(&$a,&$b) {
 
 
 	$words = null;
-	if(PConfig::get(local_user(),'nsfw','disable'))
+	if(get_pconfig(local_user(),'nsfw','disable'))
 		return;
 
 	if(local_user()) {
-		$words = PConfig::get(local_user(),'nsfw','words');
+		$words = get_pconfig(local_user(),'nsfw','words');
 	}
 	if($words) {
 		$arr = explode(',',$words);
 	}
 	else {
-		$arr = ['nsfw'];
+		$arr = array('nsfw');
 	}
 
 	$found = false;
@@ -160,11 +158,11 @@ function nsfw_prepare_body(&$a,&$b) {
 						}
 					}
 				}
-			}
-		}
+			} 
+		}		
 	}
 	if($found) {
 		$rnd = random_string(8);
-		$b['html'] = '<div id="nsfw-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'nsfw-' . $rnd . '\'); >' . sprintf( t('%s - Click to open/close'),$word ) . '</div><div id="nsfw-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
+		$b['html'] = '<div id="nsfw-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'nsfw-' . $rnd . '\'); >' . sprintf( t('%s - Click to open/close'),$word ) . '</div><div id="nsfw-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';  
 	}
 }

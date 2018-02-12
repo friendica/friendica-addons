@@ -6,10 +6,8 @@
  * Description: block people
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- *
+ * 
  */
-
-use Friendica\Core\PConfig;
 
 function blockem_install() {
 	register_hook('prepare_body', 'addon/blockem/blockem.php', 'blockem_prepare_body');
@@ -47,7 +45,7 @@ function blockem_addon_settings(&$a,&$s) {
     $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/blockem/blockem.css' . '" media="all" />' . "\r\n";
 
 
-	$words = PConfig::get(local_user(),'blockem','words');
+	$words = get_pconfig(local_user(),'blockem','words');
 	if(! $words)
 		$words = '';
 
@@ -76,7 +74,7 @@ function blockem_addon_settings_post(&$a,&$b) {
 		return;
 
 	if($_POST['blockem-submit']) {
-		PConfig::set(local_user(),'blockem','words',trim($_POST['blockem-words']));
+		set_pconfig(local_user(),'blockem','words',trim($_POST['blockem-words']));
 		info( t('BLOCKEM Settings saved.') . EOL);
 	}
 }
@@ -84,7 +82,7 @@ function blockem_addon_settings_post(&$a,&$b) {
 
 function blockem_enotify_store(&$a,&$b) {
 
-	$words = PConfig::get($b['uid'],'blockem','words');
+	$words = get_pconfig($b['uid'],'blockem','words');
 	if($words) {
 		$arr = explode(',',$words);
 	}
@@ -117,7 +115,7 @@ function blockem_prepare_body(&$a,&$b) {
 
 	$words = null;
 	if(local_user()) {
-		$words = PConfig::get(local_user(),'blockem','words');
+		$words = get_pconfig(local_user(),'blockem','words');
 	}
 	if($words) {
 		$arr = explode(',',$words);
@@ -141,7 +139,7 @@ function blockem_prepare_body(&$a,&$b) {
 	}
 	if($found) {
 		$rnd = random_string(8);
-		$b['html'] = '<div id="blockem-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'blockem-' . $rnd . '\'); >' . sprintf( t('Blocked %s - Click to open/close'),$word ) . '</div><div id="blockem-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
+		$b['html'] = '<div id="blockem-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'blockem-' . $rnd . '\'); >' . sprintf( t('Blocked %s - Click to open/close'),$word ) . '</div><div id="blockem-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';  
 	}
 }
 
@@ -157,7 +155,7 @@ function blockem_conversation_start(&$a,&$b) {
 	if(! local_user())
 		return;
 
-	$words = PConfig::get(local_user(),'blockem','words');
+	$words = get_pconfig(local_user(),'blockem','words');
 	if($words) {
 		$a->data['blockem'] = explode(',',$words);
 	}
@@ -209,7 +207,7 @@ function blockem_init(&$a) {
 	if(! local_user())
 		return;
 
-	$words = PConfig::get(local_user(),'blockem','words');
+	$words = get_pconfig(local_user(),'blockem','words');
 
 	if(array_key_exists('block',$_GET) && $_GET['block']) {
 		if(strlen($words))
@@ -218,7 +216,7 @@ function blockem_init(&$a) {
 	}
 	if(array_key_exists('unblock',$_GET) && $_GET['unblock']) {
 		$arr = explode(',',$words);
-		$newarr = [];
+		$newarr = array();
 
 		if(count($arr)) {
 			foreach($arr as $x) {
@@ -229,7 +227,7 @@ function blockem_init(&$a) {
 		$words = implode(',',$newarr);
 	}
 
-	PConfig::set(local_user(),'blockem','words',$words);
+	set_pconfig(local_user(),'blockem','words',$words);
 	info( t('blockem settings updated') . EOL );
 	killme();
 }

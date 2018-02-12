@@ -20,8 +20,6 @@
  *
  */
 
-use Friendica\Core\PConfig;
-
 function qcomment_install() {
 	register_hook('plugin_settings', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings');
 	register_hook('plugin_settings_post', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings_post');
@@ -39,30 +37,32 @@ function qcomment_uninstall() {
 
 
 
-function qcomment_addon_settings(&$a, &$s)
-{
-	if (! local_user()) {
+function qcomment_addon_settings(&$a,&$s) {
+
+	if(! local_user())
 		return;
-	}
 
-	/* Add our stylesheet to the page so we can make our settings look nice */
+    /* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/qcomment/qcomment.css' . '" media="all" />' . "\r\n";
+    $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/qcomment/qcomment.css' . '" media="all" />' . "\r\n";
 
-	$words = PConfig::get(local_user(), 'qcomment', 'words', t(':-)') . "\n" . t(':-(') . "\n" .  t('lol'));
+	$words = get_pconfig(local_user(),'qcomment','words');
+	if($words === false)
+		$words = t(':-)') . "\n" . t(':-(') . "\n" .  t('lol');
 
-	$s .= '<div class="settings-block">';
-	$s .= '<h3>' . t('Quick Comment Settings') . '</h3>';
-	$s .= '<div id="qcomment-wrapper">';
+    $s .= '<div class="settings-block">';
+    $s .= '<h3>' . t('Quick Comment Settings') . '</h3>';
+    $s .= '<div id="qcomment-wrapper">';
 	$s .= '<div id="qcomment-desc">' . t("Quick comments are found near comment boxes, sometimes hidden. Click them to provide simple replies.") . '</div>';
-	$s .= '<label id="qcomment-label" for="qcomment-words">' . t('Enter quick comments, one per line') . ' </label>';
-	$s .= '<textarea id="qcomment-words" type="text" name="qcomment-words" >' . htmlspecialchars(unxmlify($words)) . '</textarea>';
-	$s .= '</div><div class="clear"></div>';
+    $s .= '<label id="qcomment-label" for="qcomment-words">' . t('Enter quick comments, one per line') . ' </label>';
+    $s .= '<textarea id="qcomment-words" type="text" name="qcomment-words" >' . htmlspecialchars(unxmlify($words)) . '</textarea>';
+    $s .= '</div><div class="clear"></div>';
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="qcomment-submit" name="qcomment-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
+    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="qcomment-submit" name="qcomment-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
 	$s .= '</div>';
 
 	return;
+
 }
 
 function qcomment_addon_settings_post(&$a,&$b) {
@@ -71,7 +71,7 @@ function qcomment_addon_settings_post(&$a,&$b) {
 		return;
 
 	if($_POST['qcomment-submit']) {
-		PConfig::set(local_user(),'qcomment','words',xmlify($_POST['qcomment-words']));
+		set_pconfig(local_user(),'qcomment','words',xmlify($_POST['qcomment-words']));
 		info( t('Quick Comment settings saved.') . EOL);
 	}
 }

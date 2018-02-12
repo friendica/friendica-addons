@@ -8,13 +8,11 @@
  * Author: Klaus Weidenbach
  *
  */
+ 
+require_once('include/cache.php');
 
-use Friendica\Core\Cache;
-use Friendica\Core\Config;
 
-
-function openstreetmap_install()
-{
+function openstreetmap_install() {
 	register_hook('render_location', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_location');
 	register_hook('generate_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_map');
 	register_hook('generate_named_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_named_map');
@@ -23,8 +21,7 @@ function openstreetmap_install()
 	logger("installed openstreetmap");
 }
 
-function openstreetmap_uninstall()
-{
+function openstreetmap_uninstall() {
 	unregister_hook('render_location', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_location');
 	unregister_hook('generate_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_map');
 	unregister_hook('generate_named_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_named_map');
@@ -33,8 +30,7 @@ function openstreetmap_uninstall()
 	logger("removed openstreetmap");
 }
 
-function openstreetmap_alterheader($a, &$navHtml)
-{
+function openstreetmap_alterheader($a, &$navHtml) {
 	$addScriptTag = '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/openstreetmap/openstreetmap.js"></script>' . "\r\n";
 	$a->page['htmlhead'] .= $addScriptTag;
 }
@@ -44,15 +40,14 @@ function openstreetmap_alterheader($a, &$navHtml)
  *
  * If an item has coordinates add link to a tile map server, e.g. openstreetmap.org.
  * If an item has a location open it with the help of OSM's Nominatim reverse geocode search.
- *
+ * 
  * @param mixed $a
  * @param array& $item
  */
 function openstreetmap_location($a, &$item) {
 
-	if(! (strlen($item['location']) || strlen($item['coord']))) {
+	if(! (strlen($item['location']) || strlen($item['coord'])))
 		return;
-	}
 
 	/*
 	 * Get the configuration variables from the config.
@@ -62,25 +57,21 @@ function openstreetmap_location($a, &$item) {
 	 * ?mlat=lat&mlon=lon for markers.
 	 */
 
-	$tmsserver = Config::get('openstreetmap', 'tmsserver');
-	if(! $tmsserver) {
+	$tmsserver = get_config('openstreetmap', 'tmsserver');
+	if(! $tmsserver)
 		$tmsserver = 'http://www.openstreetmap.org';
-	}
 
-	$nomserver = Config::get('openstreetmap', 'nomserver');
-	if(! $nomserver) {
+	$nomserver = get_config('openstreetmap', 'nomserver');
+	if(! $nomserver)
 		$nomserver = 'http://nominatim.openstreetmap.org/search.php';
-	}
 
-	$zoom = Config::get('openstreetmap', 'zoom');
-	if(! $zoom) {
+	$zoom = get_config('openstreetmap', 'zoom');
+	if(! $zoom)
 		$zoom = 16;
-	}
 
-	$marker = Config::get('openstreetmap', 'marker');
-	if(! $marker) {
+	$marker = get_config('openstreetmap', 'marker');
+	if(! $marker)
 		$marker = 0;
-	}
 
 	if ($item['coord'] != "") {
 		$coords = explode(' ', $item['coord']);
@@ -94,23 +85,22 @@ function openstreetmap_location($a, &$item) {
 		}
 	}
 
-	if ($target == "") {
+	if ($target == "")
 		$target = $nomserver.'?q='.urlencode($item['location']);
-	}
 
-	if ($item['location'] != "") {
+	if ($item['location'] != "")
 		$title = $item['location'];
-	} else {
+	else
 		$title = $item['coord'];
-	}
 
 	$item['html'] = '<a target="map" title="'.$title.'" href= "'.$target.'">'.$title.'</a>';
 }
 
 
-function openstreetmap_generate_named_map(&$a, &$b)
-{
-	$nomserver = Config::get('openstreetmap', 'nomserver');
+function openstreetmap_generate_named_map(&$a,&$b) {
+
+
+	$nomserver = get_config('openstreetmap', 'nomserver');
 	if(! $nomserver)
 		$nomserver = 'http://nominatim.openstreetmap.org/search.php';
 	$args = '?q=' . urlencode($b['location']) . '&format=json';
@@ -120,33 +110,29 @@ function openstreetmap_generate_named_map(&$a, &$b)
 		$j = json_decode($x['body'],true);
 
 		if($j && is_array($j) && $j[0]['lat'] && $j[0]['lon']) {
-			$arr = ['lat' => $j[0]['lat'],'lon' => $j[0]['lon'],'location' => $b['location'], 'html' => ''];
+			$arr = array('lat' => $j[0]['lat'],'lon' => $j[0]['lon'],'location' => $b['location'], 'html' => '');
 			openstreetmap_generate_map($a,$arr);
 			$b['html'] = $arr['html'];
 		}
 	}
 }
 
-function openstreetmap_generate_map(&$a, &$b)
-{
-	$tmsserver = Config::get('openstreetmap', 'tmsserver');
-	if(! $tmsserver) {
+function openstreetmap_generate_map(&$a,&$b) {
+
+	$tmsserver = get_config('openstreetmap', 'tmsserver');
+	if(! $tmsserver)
 		$tmsserver = 'http://www.openstreetmap.org';
-	}
-	if(strpos(z_root(),'https:') !== false) {
+	if(strpos(z_root(),'https:') !== false)
 		$tmsserver = str_replace('http:','https:',$tmsserver);
-	}
 
 
-	$zoom = Config::get('openstreetmap', 'zoom');
-	if(! $zoom) {
+	$zoom = get_config('openstreetmap', 'zoom');
+	if(! $zoom)
 		$zoom = 16;
-	}
 
-	$marker = Config::get('openstreetmap', 'marker');
-	if(! $marker) {
+	$marker = get_config('openstreetmap', 'marker');
+	if(! $marker)
 		$marker = 0;
-	}
 
 	$lat = $b['lat']; // round($b['lat'], 5);
 	$lon = $b['lon']; // round($b['lon'], 5);
@@ -163,44 +149,39 @@ function openstreetmap_generate_map(&$a, &$b)
 
 }
 
-function openstreetmap_plugin_admin(&$a, &$o)
-{
+function openstreetmap_plugin_admin(&$a, &$o) {
 	$t = get_markup_template("admin.tpl", "addon/openstreetmap/");
-	$tmsserver = Config::get('openstreetmap', 'tmsserver');
-	if(! $tmsserver) {
+	$tmsserver = get_config('openstreetmap', 'tmsserver');
+	if(! $tmsserver)
 		$tmsserver = 'http://www.openstreetmap.org';
-	}
-	$nomserver = Config::get('openstreetmap', 'nomserver');
-	if(! $nomserver) {
+	$nomserver = get_config('openstreetmap', 'nomserver');
+	if(! $nomserver)
 		$nomserver = 'http://nominatim.openstreetmap.org/search.php';
-	}
-	$zoom = Config::get('openstreetmap', 'zoom');
-	if(! $zoom) {
+	$zoom = get_config('openstreetmap', 'zoom');
+	if(! $zoom)
 		$zoom = 16;
-	}
-	$marker = Config::get('openstreetmap', 'marker');
-	if(! $marker) {
+	$marker = get_config('openstreetmap', 'marker');
+	if(! $marker)
 		$marker = 0;
-	}
 
-	$o = replace_macros($t, [
+	$o = replace_macros($t, array(
 			'$submit' => t('Submit'),
-			'$tmsserver' => ['tmsserver', t('Tile Server URL'), $tmsserver, t('A list of <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank">public tile servers</a>')],
-			'$nomserver' => ['nomserver', t('Nominatim (reverse geocoding) Server URL'), $nomserver, t('A list of <a href="http://wiki.openstreetmap.org/wiki/Nominatim" target="_blank">Nominatim servers</a>')],
-			'$zoom' => ['zoom', t('Default zoom'), $zoom, t('The default zoom level. (1:world, 18:highest, also depends on tile server)')],
-			'$marker' => ['marker', t('Include marker on map'), $marker, t('Include a marker on the map.')],
-	]);
+			'$tmsserver' => array('tmsserver', t('Tile Server URL'), $tmsserver, t('A list of <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank">public tile servers</a>')),
+			'$nomserver' => array('nomserver', t('Nominatim (reverse geocoding) Server URL'), $nomserver, t('A list of <a href="http://wiki.openstreetmap.org/wiki/Nominatim" target="_blank">Nominatim servers</a>')),
+			'$zoom' => array('zoom', t('Default zoom'), $zoom, t('The default zoom level. (1:world, 18:highest, also depends on tile server)')),
+			'$marker' => array('marker', t('Include marker on map'), $marker, t('Include a marker on the map.')),
+	));
 }
-
-function openstreetmap_plugin_admin_post(&$a)
-{
+function openstreetmap_plugin_admin_post(&$a) {
 	$urltms = ((x($_POST, 'tmsserver')) ? notags(trim($_POST['tmsserver'])) : '');
 	$urlnom = ((x($_POST, 'nomserver')) ? notags(trim($_POST['nomserver'])) : '');
 	$zoom = ((x($_POST, 'zoom')) ? intval(trim($_POST['zoom'])) : '16');
 	$marker = ((x($_POST, 'marker')) ? intval(trim($_POST['marker'])) : '0');
-	Config::set('openstreetmap', 'tmsserver', $urltms);
-	Config::set('openstreetmap', 'nomserver', $urlnom);
-	Config::set('openstreetmap', 'zoom', $zoom);
-	Config::set('openstreetmap', 'marker', $marker);
+	set_config('openstreetmap', 'tmsserver', $urltms);
+	set_config('openstreetmap', 'nomserver', $urlnom);
+	set_config('openstreetmap', 'zoom', $zoom);
+	set_config('openstreetmap', 'marker', $marker);
 	info( t('Settings updated.') . EOL);
 }
+
+

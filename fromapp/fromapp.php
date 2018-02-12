@@ -7,7 +7,6 @@
  *
  */
 
-use Friendica\Core\PConfig;
 
 function fromapp_install() {
 
@@ -33,8 +32,8 @@ function fromapp_settings_post($a,$post) {
 	if(! local_user() || (! x($_POST,'fromapp-submit')))
 		return;
 
-	PConfig::set(local_user(),'fromapp','app',$_POST['fromapp-input']);
-	PConfig::set(local_user(),'fromapp','force',intval($_POST['fromapp-force']));
+	set_pconfig(local_user(),'fromapp','app',$_POST['fromapp-input']);
+	set_pconfig(local_user(),'fromapp','force',intval($_POST['fromapp-force']));
 
 	info( t('Fromapp settings updated.') . EOL);
 }
@@ -50,9 +49,11 @@ function fromapp_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$fromapp = PConfig::get(local_user(),'fromapp', 'app', '');
+	$fromapp = get_pconfig(local_user(),'fromapp','app');
+	if($fromapp === false)
+		$fromapp = '';
 
-	$force = intval(PConfig::get(local_user(),'fromapp','force'));
+	$force = intval(get_pconfig(local_user(),'fromapp','force'));
 
 	$force_enabled = (($force) ? ' checked="checked" ' : '');
 
@@ -82,29 +83,24 @@ function fromapp_settings(&$a,&$s) {
 
 }
 
-function fromapp_post_hook(&$a, &$item)
-{
-	if (! local_user()) {
+function fromapp_post_hook(&$a,&$item) {
+   if(! local_user())
+        return;
+
+    if(local_user() != $item['uid'])
+        return;
+
+    $app = get_pconfig(local_user(), 'fromapp', 'app');
+	$force = intval(get_pconfig(local_user(), 'fromapp','force'));
+
+    if(($app === false) || (! strlen($app)))
+        return;
+
+	if(strlen(trim($item['app'])) && (! $force))
 		return;
-	}
 
-	if (local_user() != $item['uid']) {
-		return;
-	}
-
-	$app = PConfig::get(local_user(), 'fromapp', 'app');
-	$force = intval(PConfig::get(local_user(), 'fromapp', 'force'));
-
-	if (is_null($app) || (! strlen($app))) {
-		return;
-	}
-
-	if (strlen(trim($item['app'])) && (! $force)) {
-		return;
-	}
-
-	$apps = explode(',', $app);
-	$item['app'] = trim($apps[mt_rand(0, count($apps)-1)]);
-	
+	$apps = explode(',',$app);
+	$item['app'] = trim($apps[mt_rand(0,count($apps)-1)]);
 	return;
+
 }

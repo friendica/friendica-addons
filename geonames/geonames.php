@@ -20,8 +20,6 @@
  *
  */
 
-use Friendica\Core\Config;
-use Friendica\Core\PConfig;
 
 function geonames_install() {
 
@@ -93,8 +91,8 @@ function geonames_post_hook($a, &$item) {
 
 	/* Retrieve our personal config setting */
 
-	$geo_account = Config::get('geonames', 'username');
-	$active = PConfig::get(local_user(), 'geonames', 'enable');
+	$geo_account = get_config('geonames', 'username');
+	$active = get_pconfig(local_user(), 'geonames', 'enable');
 
 	if((! $geo_account) || (! $active))
 		return;
@@ -140,7 +138,7 @@ function geonames_post_hook($a, &$item) {
 function geonames_plugin_admin_post($a,$post) {
 	if(! local_user() || (! x($_POST,'geonames-submit')))
 		return;
-	PConfig::set(local_user(),'geonames','enable',intval($_POST['geonames']));
+	set_pconfig(local_user(),'geonames','enable',intval($_POST['geonames']));
 
 	info( t('Geonames settings updated.') . EOL);
 }
@@ -160,7 +158,7 @@ function geonames_plugin_admin(&$a,&$s) {
 	if(! local_user())
 		return;
 
-	$geo_account = Config::get('geonames', 'username');
+	$geo_account = get_config('geonames', 'username');
 
 	if(! $geo_account)
 		return;
@@ -171,7 +169,7 @@ function geonames_plugin_admin(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$enabled = PConfig::get(local_user(),'geonames','enable');
+	$enabled = get_pconfig(local_user(),'geonames','enable');
 
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 

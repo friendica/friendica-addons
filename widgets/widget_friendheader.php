@@ -8,17 +8,17 @@ function friendheader_widget_help() {
 }
 
 function friendheader_widget_args(){
-	return [];
+	return Array();
 }
 
 function friendheader_widget_size(){
-	return ['780px','140px'];
+	return Array('780px','140px');
 }
 
 
 function friendheader_widget_content(&$a, $conf){
 
-	$r = q("SELECT `profile`.`uid` AS `profile_uid`, `profile`.* , `user`.* FROM `profile`
+	$r = q("SELECT `profile`.`uid` AS `profile_uid`, `profile`.* , `user`.* FROM `profile` 
 			LEFT JOIN `user` ON `profile`.`uid` = `user`.`uid`
 			WHERE `user`.`uid` = %s AND `profile`.`is-default` = 1 LIMIT 1",
 			intval($conf['uid'])
@@ -34,10 +34,10 @@ function friendheader_widget_content(&$a, $conf){
 		.allcontact-link { float: right; margin: 0px; }
 		.contact-block-content { clear:both; }
 		.contact-block-div { display: block !important; float: left!important; width: 50px!important; height: 50px!important; margin: 2px!important;}
-
+		
 	</style>";
 	$o .= _abs_url(contact_block());
 	$o .= "<a href='".$a->get_baseurl().'/profile/'.$a->profile['nickname']."' target=new>". t('Get added to this list!') ."</a>";
-
+	
 	return $o;
 }

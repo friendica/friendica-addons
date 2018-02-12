@@ -1,0 +1,56 @@
+# ADDON cal
+# Copyright (C)
+# This file is distributed under the same license as the Friendica cal addon package.
+# 
+# 
+# Translators:
+# Stanislav N. <pztrn@pztrn.name>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2017-04-08 17:06+0000\n"
+"Last-Translator: Stanislav N. <pztrn@pztrn.name>\n"
+"Language-Team: Russian (http://www.transifex.com/Friendica/friendica/language/ru/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: cal.php:33
+msgid "Event Export"
+msgstr "Экспорт событий"
+
+#: cal.php:33
+msgid "You can download public events from: "
+msgstr "Вы можете скачать публичные события из:"
+
+#: cal.php:53
+msgid "The user does not export the calendar."
+msgstr "Пользователь не экспортировал календарь."
+
+#: cal.php:83
+msgid "This calendar format is not supported"
+msgstr "Этот формат календарей не поддерживается"
+
+#: cal.php:181 cal.php:185
+msgid "Export Events"
+msgstr "Экспорт событий"
+
+#: cal.php:189
+msgid "If this is enabled, your public events will be available at"
+msgstr "Если эта настройка включена, то ваши публичные события будут доступны на:"
+
+#: cal.php:190
+msgid "Currently supported formats are ical and csv."
+msgstr "Текущие поддерживаемые форматы ical и csv."
+
+#: cal.php:191
+msgid "Enable calendar export"
+msgstr "Включить экспорт календаря"
+
+#: cal.php:193
+msgid "Save Settings"
+msgstr "Сохранить настройки"

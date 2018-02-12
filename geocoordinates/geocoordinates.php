@@ -6,32 +6,26 @@
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
 
-use Friendica\Core\Cache;
-use Friendica\Core\Config;
-
-function geocoordinates_install()
-{
+function geocoordinates_install() {
 	register_hook('post_local', 'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
 	register_hook('post_remote', 'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
 }
 
 
-function geocoordinates_uninstall()
-{
+function geocoordinates_uninstall() {
 	unregister_hook('post_local',    'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
 	unregister_hook('post_remote',    'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
 }
 
-function geocoordinates_resolve_item(&$item)
-{
+function geocoordinates_resolve_item(&$item) {
 	if((!$item["coord"]) || ($item["location"]))
 		return;
 
-	$key = Config::get("geocoordinates", "api_key");
+	$key = get_config("geocoordinates", "api_key");
 	if ($key == "")
 		return;
 
-	$language = Config::get("geocoordinates", "language");
+	$language = get_config("geocoordinates", "language");
 	if ($language == "")
 		$language = "de";
 
@@ -76,29 +70,26 @@ function geocoordinates_resolve_item(&$item)
 		Cache::set("geocoordinates:".$language.":".$coords[0]."-".$coords[1], $item["location"]);
 }
 
-function geocoordinates_post_hook($a, &$item)
-{
+function geocoordinates_post_hook($a, &$item) {
 	geocoordinates_resolve_item($item);
 }
 
-function geocoordinates_plugin_admin(&$a, &$o)
-{
+function geocoordinates_plugin_admin(&$a,&$o) {
 
 	$t = get_markup_template("admin.tpl", "addon/geocoordinates/");
 
-	$o = replace_macros($t, [
+	$o = replace_macros($t, array(
 		'$submit' => t('Save Settings'),
-		'$api_key' => ['api_key', t('API Key'),  Config::get('geocoordinates', 'api_key' ), ''],
-		'$language' => ['language', t('Language code (IETF format)'),  Config::get('geocoordinates', 'language' ), ''],
-	]);
+		'$api_key' => array('api_key', t('API Key'),  get_config('geocoordinates', 'api_key' ), ''),
+		'$language' => array('language', t('Language code (IETF format)'),  get_config('geocoordinates', 'language' ), ''),
+	));
 }
 
-function geocoordinates_plugin_admin_post(&$a)
-{
+function geocoordinates_plugin_admin_post(&$a) {
 	$api_key  = ((x($_POST,'api_key')) ? notags(trim($_POST['api_key']))   : '');
-	Config::set('geocoordinates','api_key',$api_key);
+	set_config('geocoordinates','api_key',$api_key);
 
 	$language  = ((x($_POST,'language')) ? notags(trim($_POST['language']))   : '');
-	Config::set('geocoordinates','language',$language);
+	set_config('geocoordinates','language',$language);
 	info(t('Settings updated.'). EOL);
 }

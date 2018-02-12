@@ -7,8 +7,6 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
 
-use Friendica\Core\PConfig;
-
 function wppost_install() {
     register_hook('post_local',           'addon/wppost/wppost.php', 'wppost_post_local');
     register_hook('notifier_normal',      'addon/wppost/wppost.php', 'wppost_send');
@@ -36,9 +34,9 @@ function wppost_jot_nets(&$a,&$b) {
     if(! local_user())
         return;
 
-    $wp_post = PConfig::get(local_user(),'wppost','post');
+    $wp_post = get_pconfig(local_user(),'wppost','post');
     if(intval($wp_post) == 1) {
-        $wp_defpost = PConfig::get(local_user(),'wppost','post_by_default');
+        $wp_defpost = get_pconfig(local_user(),'wppost','post_by_default');
         $selected = ((intval($wp_defpost) == 1) ? ' checked="checked" ' : '');
         $b .= '<div class="profile-jot-net"><input type="checkbox" name="wppost_enable" ' . $selected . ' value="1" /> '
             . t('Post to Wordpress') . '</div>';
@@ -57,23 +55,23 @@ function wppost_settings(&$a,&$s) {
 
 	/* Get the current state of our config variables */
 
-	$enabled = PConfig::get(local_user(),'wppost','post');
+	$enabled = get_pconfig(local_user(),'wppost','post');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 
 	$css = (($enabled) ? '' : '-disabled');
 
-	$def_enabled = PConfig::get(local_user(),'wppost','post_by_default');
-	$back_enabled = PConfig::get(local_user(),'wppost','backlink');
-	$shortcheck_enabled = PConfig::get(local_user(),'wppost','shortcheck');
+	$def_enabled = get_pconfig(local_user(),'wppost','post_by_default');
+	$back_enabled = get_pconfig(local_user(),'wppost','backlink');
+	$shortcheck_enabled = get_pconfig(local_user(),'wppost','shortcheck');
 
 	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 	$back_checked = (($back_enabled) ? ' checked="checked" ' : '');
 	$shortcheck_checked = (($shortcheck_enabled) ? ' checked="checked" ' : '');
 
-	$wp_username = PConfig::get(local_user(), 'wppost', 'wp_username');
-	$wp_password = PConfig::get(local_user(), 'wppost', 'wp_password');
-	$wp_blog = PConfig::get(local_user(), 'wppost', 'wp_blog');
-	$wp_backlink_text = PConfig::get(local_user(), 'wppost', 'wp_backlink_text');
+	$wp_username = get_pconfig(local_user(), 'wppost', 'wp_username');
+	$wp_password = get_pconfig(local_user(), 'wppost', 'wp_password');
+	$wp_blog = get_pconfig(local_user(), 'wppost', 'wp_blog');
+	$wp_backlink_text = get_pconfig(local_user(), 'wppost', 'wp_backlink_text');
 
 
     /* Add some HTML to the existing form */
@@ -135,17 +133,17 @@ function wppost_settings_post(&$a,&$b) {
 
 	if(x($_POST,'wppost-submit')) {
 
-		PConfig::set(local_user(),'wppost','post',intval($_POST['wppost']));
-		PConfig::set(local_user(),'wppost','post_by_default',intval($_POST['wp_bydefault']));
-		PConfig::set(local_user(),'wppost','wp_username',trim($_POST['wp_username']));
-		PConfig::set(local_user(),'wppost','wp_password',trim($_POST['wp_password']));
-		PConfig::set(local_user(),'wppost','wp_blog',trim($_POST['wp_blog']));
-		PConfig::set(local_user(),'wppost','backlink',trim($_POST['wp_backlink']));
-		PConfig::set(local_user(),'wppost','shortcheck',trim($_POST['wp_shortcheck']));
+		set_pconfig(local_user(),'wppost','post',intval($_POST['wppost']));
+		set_pconfig(local_user(),'wppost','post_by_default',intval($_POST['wp_bydefault']));
+		set_pconfig(local_user(),'wppost','wp_username',trim($_POST['wp_username']));
+		set_pconfig(local_user(),'wppost','wp_password',trim($_POST['wp_password']));
+		set_pconfig(local_user(),'wppost','wp_blog',trim($_POST['wp_blog']));
+		set_pconfig(local_user(),'wppost','backlink',trim($_POST['wp_backlink']));
+		set_pconfig(local_user(),'wppost','shortcheck',trim($_POST['wp_shortcheck']));
 		$wp_backlink_text = notags(trim($_POST['wp_backlink_text']));
 		$wp_backlink_text = bbcode($wp_backlink_text, false, false, 8);
 		$wp_backlink_text = html2plain($wp_backlink_text, 0, true);
-		PConfig::set(local_user(),'wppost','wp_backlink_text', $wp_backlink_text);
+		set_pconfig(local_user(),'wppost','wp_backlink_text', $wp_backlink_text);
 
 	}
 
@@ -167,11 +165,11 @@ function wppost_post_local(&$a, &$b) {
 		return;
 	}
 
-	$wp_post   = intval(PConfig::get(local_user(),'wppost','post'));
+	$wp_post   = intval(get_pconfig(local_user(),'wppost','post'));
 
 	$wp_enable = (($wp_post && x($_REQUEST,'wppost_enable')) ? intval($_REQUEST['wppost_enable']) : 0);
 
-	if ($b['api_source'] && intval(PConfig::get(local_user(),'wppost','post_by_default'))) {
+	if ($b['api_source'] && intval(get_pconfig(local_user(),'wppost','post_by_default'))) {
 		$wp_enable = 1;
 	}
 
@@ -191,29 +189,20 @@ function wppost_post_local(&$a, &$b) {
 
 function wppost_send(&$a,&$b) {
 
-	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
+	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
 		return;
-	}
 
-	if(! strstr($b['postopts'],'wppost')) {
+	if(! strstr($b['postopts'],'wppost'))
 		return;
-	}
 
-	if($b['parent'] != $b['id']) {
+	if($b['parent'] != $b['id'])
 		return;
-	}
 
-	// Dont't post if the post doesn't belong to us.
-	// This is a check for forum postings
-	$self = dba::selectFirst('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
-	if ($b['contact-id'] != $self['id']) {
-		return;
-	}
 
-	$wp_username = xmlify(PConfig::get($b['uid'],'wppost','wp_username'));
-	$wp_password = xmlify(PConfig::get($b['uid'],'wppost','wp_password'));
-	$wp_blog = PConfig::get($b['uid'],'wppost','wp_blog');
-	$wp_backlink_text = PConfig::get($b['uid'],'wppost','wp_backlink_text');
+	$wp_username = xmlify(get_pconfig($b['uid'],'wppost','wp_username'));
+	$wp_password = xmlify(get_pconfig($b['uid'],'wppost','wp_password'));
+	$wp_blog = get_pconfig($b['uid'],'wppost','wp_blog');
+	$wp_backlink_text = get_pconfig($b['uid'],'wppost','wp_backlink_text');
 	if ($wp_backlink_text == '') {
 		$wp_backlink_text = t('Read the orig­i­nal post and com­ment stream on Friendica');
 	}
@@ -226,14 +215,14 @@ function wppost_send(&$a,&$b) {
 
 		$wptitle = trim($b['title']);
 
-		if (intval(PConfig::get($b['uid'],'wppost','shortcheck'))) {
+		if (intval(get_pconfig($b['uid'],'wppost','shortcheck'))) {
 			// Checking, if its a post that is worth a blog post
 			$postentry = false;
 			$siteinfo = get_attached_data($b["body"]);
 
 			// Is it a link to an aricle, a video or a photo?
 			if (isset($siteinfo["type"])) {
-				if (in_array($siteinfo["type"], ["link", "audio", "video", "photo"])) {
+				if (in_array($siteinfo["type"], array("link", "audio", "video", "photo"))) {
 					$postentry = true;
 				}
 			}
@@ -287,7 +276,7 @@ function wppost_send(&$a,&$b) {
 
 		$post = $title.$post;
 
-		$wp_backlink = intval(PConfig::get($b['uid'],'wppost','backlink'));
+		$wp_backlink = intval(get_pconfig($b['uid'],'wppost','backlink'));
 		if($wp_backlink && $b['plink']) {
 			$post .= EOL . EOL . '<a href="' . $b['plink'] . '">'
 				. $wp_backlink_text . '</a>' . EOL . EOL;
