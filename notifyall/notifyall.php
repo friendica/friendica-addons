@@ -7,6 +7,8 @@
  * Author: Mike Macgirvin (Inital Author of the hubbwall Addon for the Hubzilla Project)
  * Author: Rabuzarus <https://friendica.kommune4.de/profile/rabuzarus> (Port to Friendica)
  */
+
+use Friendica\Content\Text\BBCode;
 use Friendica\Core\L10n;
 use Friendica\Util\Emailer;
 
@@ -49,9 +51,9 @@ function notifyall_post(&$a) {
 	$subject = $_REQUEST['subject'];
 
 
-	$textversion = strip_tags(html_entity_decode(bbcode(stripslashes(str_replace(["\\r", "\\n"],[ "", "\n"], $text))),ENT_QUOTES,'UTF-8'));
+	$textversion = strip_tags(html_entity_decode(BBCode::convert(stripslashes(str_replace(["\\r", "\\n"], ["", "\n"], $text))), ENT_QUOTES, 'UTF-8'));
 
-	$htmlversion = bbcode(stripslashes(str_replace(["\\r","\\n"], ["","<br />\n"],$text)));
+	$htmlversion = BBCode::convert(stripslashes(str_replace(["\\r", "\\n"], ["", "<br />\n"], $text)));
 
 	// if this is a test, send it only to the admin(s)
 	// admin_email might be a comma separated list, but we need "a@b','c@d','e@f

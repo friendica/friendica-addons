@@ -5,6 +5,8 @@
  * Version: 1.0
  *
  */
+
+use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -184,7 +186,7 @@ function blogger_send(&$a, &$b)
 		require_once('include/bbcode.php');
 
 		$title = '<title>' . (($b['title']) ? $b['title'] : L10n::t('Post from Friendica')) . '</title>';
-		$post = $title . bbcode($b['body']);
+		$post = $title . BBCode::convert($b['body']);
 		$post = xmlify($post);
 
 		$xml = <<< EOT

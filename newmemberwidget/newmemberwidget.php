@@ -8,6 +8,7 @@
 
 require_once 'include/bbcode.php';
 
+use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -31,7 +32,7 @@ function newmemberwidget_network_mod_init ( $a, $b) {
 	    $t .= '<a href="'.$a->get_baseurl().'/profile/'.Config::get('newmemberwidget','localsupport').'" target="_new">'.L10n::t('Local Support Forum').'</a><br />'.EOL;
 	$ft = Config::get('newmemberwidget','freetext');
 	if (!trim($ft)=="")
-	    $t .= '<p>'.bbcode(trim($ft)).'</p>';
+	    $t .= '<p>'.BBCode::convert(trim($ft)).'</p>';
 	$t .= '</div><div class="clear"></div>';
  	$a->page['aside'] = $t . $a->page['aside'];
     }

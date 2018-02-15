@@ -8,6 +8,7 @@
  * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
 
+use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -182,7 +183,7 @@ function ijpost_send(&$a,&$b) {
 		require_once('include/datetime.php');
 
 		$title = $b['title'];
-		$post = bbcode($b['body']);
+		$post = BBCode::convert($b['body']);
 		$post = xmlify($post);
 		$tags = ijpost_get_tags($b['tag']);
 

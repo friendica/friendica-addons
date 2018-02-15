@@ -145,7 +145,7 @@ function wppost_settings_post(&$a,&$b) {
 		PConfig::set(local_user(),'wppost','backlink',trim($_POST['wp_backlink']));
 		PConfig::set(local_user(),'wppost','shortcheck',trim($_POST['wp_shortcheck']));
 		$wp_backlink_text = notags(trim($_POST['wp_backlink_text']));
-		$wp_backlink_text = bbcode($wp_backlink_text, false, false, 8);
+		$wp_backlink_text = BBCode::convert($wp_backlink_text, false, 8);
 		$wp_backlink_text = html2plain($wp_backlink_text, 0, true);
 		PConfig::set(local_user(),'wppost','wp_backlink_text', $wp_backlink_text);
 
@@ -266,7 +266,7 @@ function wppost_send(&$a,&$b) {
 				// Remove the share element before fetching the first line
 				$title = trim(preg_replace("/\[share.*?\](.*?)\[\/share\]/ism","\n$1\n",$b['body']));
 
-				$title = html2plain(bbcode($title, false, false), 0, true)."\n";
+				$title = html2plain(BBCode::convert($title, false), 0, true)."\n";
 				$pos = strpos($title, "\n");
 				$trailer = "";
 				if (($pos == 0) || ($pos > 100)) {
@@ -279,7 +279,7 @@ function wppost_send(&$a,&$b) {
 		}
 
 		$title = '<title>' . (($wptitle) ? $wptitle : L10n::t('Post from Friendica')) . '</title>';
-		$post = bbcode($b['body'], false, false, 4);
+		$post = BBCode::convert($b['body'], false, 4);
 
 		// If a link goes to youtube then remove the stuff around it. Wordpress detects youtube links and embeds it
 		$post = preg_replace('/<a.*?href="(https?:\/\/www.youtube.com\/.*?)".*?>(.*?)<\/a>/ism',"\n$1\n",$post);
