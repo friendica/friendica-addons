@@ -257,7 +257,7 @@ function mailstream_send($a, $message_id, $item, $user) {
 		return;
 	}
 	require_once(dirname(__file__).'/phpmailer/class.phpmailer.php');
-	require_once('include/bbcode.php');
+
 	$attachments = [];
 	mailstream_do_images($a, $item, $attachments);
 	$frommail = Config::get('mailstream', 'frommail');

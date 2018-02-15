@@ -211,8 +211,8 @@ function windowsphonepush_cron()
 						if (substr($body, 0, 4) == "[url") {
 							$body = "URL/Image ...";
 						} else {
-							require_once('include/bbcode.php');
 							require_once("include/html2plain.php");
+
 							$body = BBCode::convert($body, false, 2, true);
 							$body = html2plain($body, 0);
 							$body = ((strlen($body) > 137) ? substr($body, 0, 137) . "..." : $body);

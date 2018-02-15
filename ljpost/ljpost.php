@@ -179,9 +179,6 @@ function ljpost_send(&$a,&$b) {
 		$lj_blog = xmlify('http://www.livejournal.com/interface/xmlrpc');
 
 	if($lj_username && $lj_password && $lj_blog) {
-
-		require_once('include/bbcode.php');
-
 		$title = xmlify($b['title']);
 		$post = BBCode::convert($b['body']);
 		$post = xmlify($post);

@@ -179,9 +179,6 @@ function dwpost_send(&$a,&$b) {
 	$dw_blog = 'http://www.dreamwidth.org/interface/xmlrpc';
 
 	if($dw_username && $dw_password && $dw_blog) {
-
-		require_once('include/bbcode.php');
-
 		$title = $b['title'];
 		$post = BBCode::convert($b['body']);
 		$post = xmlify($post);

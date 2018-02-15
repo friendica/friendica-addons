@@ -7,7 +7,6 @@
  * License: 3-clause BSD license
  */
 
-require_once 'include/bbcode.php';
 require_once 'mod/proxy.php';
 
 use Friendica\Content\Text\BBCode;

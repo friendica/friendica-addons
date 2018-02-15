@@ -178,9 +178,6 @@ function ijpost_send(&$a,&$b) {
 	$ij_blog = 'http://www.insanejournal.com/interface/xmlrpc';
 
 	if($ij_username && $ij_password && $ij_blog) {
-
-		require_once('include/bbcode.php');
-
 		$title = $b['title'];
 		$post = BBCode::convert($b['body']);
 		$post = xmlify($post);

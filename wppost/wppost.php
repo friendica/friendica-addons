@@ -221,7 +221,6 @@ function wppost_send(&$a,&$b) {
 	}
 
 	if ($wp_username && $wp_password && $wp_blog) {
-		require_once 'include/bbcode.php';
 		require_once 'include/html2plain.php';
 
 		$wptitle = trim($b['title']);

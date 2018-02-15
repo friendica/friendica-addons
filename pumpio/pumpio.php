@@ -471,9 +471,6 @@ function pumpio_send(&$a,&$b) {
 	$public = PConfig::get($b['uid'], "pumpio", "public");
 
 	if($oauth_token && $oauth_token_secret) {
-
-		require_once('include/bbcode.php');
-
 		$title = trim($b['title']);
 
 		$content = BBCode::convert($b['body'], false, 4);

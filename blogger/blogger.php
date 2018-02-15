@@ -183,8 +183,6 @@ function blogger_send(&$a, &$b)
 	$bl_blog = PConfig::get($b['uid'], 'blogger', 'bl_blog');
 
 	if ($bl_username && $bl_password && $bl_blog) {
-		require_once('include/bbcode.php');
-
 		$title = '<title>' . (($b['title']) ? $b['title'] : L10n::t('Post from Friendica')) . '</title>';
 		$post = $title . BBCode::convert($b['body']);
 		$post = xmlify($post);

@@ -6,8 +6,6 @@
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  ***/
 
-require_once 'include/bbcode.php';
-
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;

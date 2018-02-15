@@ -342,9 +342,6 @@ function tumblr_send(&$a,&$b) {
 	$tmbl_blog = 'blog/'.$page.'/post';
 
 	if($oauth_token && $oauth_token_secret && $tmbl_blog) {
-
-		require_once('include/bbcode.php');
-
 		$tag_arr = [];
 		$tags = '';
 		$x = preg_match_all('/\#\[(.*?)\](.*?)\[/',$b['tag'],$matches,PREG_SET_ORDER);
