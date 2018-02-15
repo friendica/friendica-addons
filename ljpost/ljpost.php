@@ -11,8 +11,8 @@
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
-use Friendica\Util\Temporal;
 
 function ljpost_install() {
     Addon::registerHook('post_local',           'addon/ljpost/ljpost.php', 'ljpost_post_local');

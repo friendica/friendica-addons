@@ -16,9 +16,9 @@ use Friendica\Model\GContact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\Queue;
-use Friendica\Util\Network;
 use Friendica\Model\User;
 use Friendica\Util\DateTimeFormat;
+use Friendica\Util\Network;
 
 require 'addon/pumpio/oauth/http.php';
 require 'addon/pumpio/oauth/oauth_client.php';
