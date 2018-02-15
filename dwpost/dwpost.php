@@ -8,11 +8,12 @@
  * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
 
+use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
-use Friendica\Util\Temporal;
 
 function dwpost_install() {
 	Addon::registerHook('post_local',           'addon/dwpost/dwpost.php', 'dwpost_post_local');
@@ -178,11 +179,8 @@ function dwpost_send(&$a,&$b) {
 	$dw_blog = 'http://www.dreamwidth.org/interface/xmlrpc';
 
 	if($dw_username && $dw_password && $dw_blog) {
-
-		require_once('include/bbcode.php');
-
 		$title = $b['title'];
-		$post = bbcode($b['body']);
+		$post = BBCode::convert($b['body']);
 		$post = xmlify($post);
 		$tags = dwpost_get_tags($b['tag']);
 

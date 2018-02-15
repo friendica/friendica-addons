@@ -25,7 +25,9 @@
  *        sets the counter back
  *        count only unseen elements which are not type=activity (likes and dislikes not seen as new elements)
  */
+
 use Friendica\App;
+use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -209,9 +211,9 @@ function windowsphonepush_cron()
 						if (substr($body, 0, 4) == "[url") {
 							$body = "URL/Image ...";
 						} else {
-							require_once('include/bbcode.php');
 							require_once("include/html2plain.php");
-							$body = bbcode($body, false, false, 2, true);
+
+							$body = BBCode::convert($body, false, 2, true);
 							$body = html2plain($body, 0);
 							$body = ((strlen($body) > 137) ? substr($body, 0, 137) . "..." : $body);
 						}

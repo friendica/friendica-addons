@@ -8,11 +8,12 @@
  * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
 
+use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
-use Friendica\Util\Temporal;
 
 function ijpost_install() {
     Addon::registerHook('post_local',           'addon/ijpost/ijpost.php', 'ijpost_post_local');
@@ -177,12 +178,8 @@ function ijpost_send(&$a,&$b) {
 	$ij_blog = 'http://www.insanejournal.com/interface/xmlrpc';
 
 	if($ij_username && $ij_password && $ij_blog) {
-
-		require_once('include/bbcode.php');
-		require_once('include/datetime.php');
-
 		$title = $b['title'];
-		$post = bbcode($b['body']);
+		$post = BBCode::convert($b['body']);
 		$post = xmlify($post);
 		$tags = ijpost_get_tags($b['tag']);
 

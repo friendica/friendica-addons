@@ -217,7 +217,7 @@ function libertree_send(&$a,&$b) {
                 } while ($oldbody != $body);
 
 		// convert to markdown
-		$body = bb2diaspora($body, false, false);
+		$body = bb2diaspora($body, false);
 
 		// Adding the title
 		if(strlen($title))
