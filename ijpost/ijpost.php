@@ -180,7 +180,6 @@ function ijpost_send(&$a,&$b) {
 	if($ij_username && $ij_password && $ij_blog) {
 
 		require_once('include/bbcode.php');
-		require_once('include/datetime.php');
 
 		$title = $b['title'];
 		$post = BBCode::convert($b['body']);
