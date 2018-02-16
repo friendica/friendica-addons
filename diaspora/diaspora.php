@@ -338,7 +338,7 @@ function diaspora_send(&$a,&$b) {
                 } while ($oldbody != $body);
 
 		// convert to markdown
-		$body = bb2diaspora($body, false, true);
+		$body = bb2diaspora($body);
 
 		// Adding the title
 		if(strlen($title))
@@ -367,7 +367,7 @@ function diaspora_send(&$a,&$b) {
 				$a->contact = $r[0]["id"];
 
 			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $body]);
-			
+
 			Queue::add($a->contact, NETWORK_DIASPORA2, $s);
 			notice(L10n::t('Diaspora post failed. Queued for retry.').EOL);
 		}

@@ -544,7 +544,6 @@ function statusnet_post_hook(App $a, &$b)
 			return;
 		}
 
-		require_once 'include/bbcode.php';
 		$dent = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
 		$max_char = $dent->get_maxlength(); // max. length for a dent
 

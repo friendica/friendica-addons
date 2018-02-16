@@ -342,9 +342,6 @@ function tumblr_send(&$a,&$b) {
 	$tmbl_blog = 'blog/'.$page.'/post';
 
 	if($oauth_token && $oauth_token_secret && $tmbl_blog) {
-
-		require_once('include/bbcode.php');
-
 		$tag_arr = [];
 		$tags = '';
 		$x = preg_match_all('/\#\[(.*?)\](.*?)\[/',$b['tag'],$matches,PREG_SET_ORDER);
@@ -381,7 +378,7 @@ function tumblr_send(&$a,&$b) {
 		switch ($siteinfo["type"]) {
 			case "photo":
 				$params['type'] = "photo";
-				$params['caption'] = bbcode($body, false, false, 4);
+				$params['caption'] = BBCode::convert($body, false, 4);
 
 				if (isset($siteinfo["url"]))
 					$params['link'] = $siteinfo["url"];
@@ -392,22 +389,22 @@ function tumblr_send(&$a,&$b) {
 				$params['type'] = "link";
 				$params['title'] = $title;
 				$params['url'] = $siteinfo["url"];
-				$params['description'] = bbcode($body, false, false, 4);
+				$params['description'] = BBCode::convert($body, false, 4);
 				break;
 			case "audio":
 				$params['type'] = "audio";
 				$params['external_url'] = $siteinfo["url"];
-				$params['caption'] = bbcode($body, false, false, 4);
+				$params['caption'] = BBCode::convert($body, false, 4);
 				break;
 			case "video":
 				$params['type'] = "video";
 				$params['embed'] = $siteinfo["url"];
-				$params['caption'] = bbcode($body, false, false, 4);
+				$params['caption'] = BBCode::convert($body, false, 4);
 				break;
 			default:
 				$params['type'] = "text";
 				$params['title'] = $title;
-				$params['body'] = bbcode($b['body'], false, false, 4);
+				$params['body'] = BBCode::convert($b['body'], false, 4);
 				break;
 		}
 
@@ -416,7 +413,7 @@ function tumblr_send(&$a,&$b) {
 						"<p>".$params['caption']."</p>";
 
 		if (trim($params['caption']) == "")
-			$params['caption'] = bbcode("[quote]".$siteinfo["description"]."[/quote]", false, false, 4);
+			$params['caption'] = BBCode::convert("[quote]" . $siteinfo["description"] . "[/quote]", false, 4);
 
 		$consumer_key = Config::get('tumblr','consumer_key');
 		$consumer_secret = Config::get('tumblr','consumer_secret');

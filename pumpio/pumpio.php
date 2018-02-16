@@ -6,6 +6,7 @@
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  */
 
+use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -16,9 +17,9 @@ use Friendica\Model\GContact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\Queue;
-use Friendica\Util\Network;
 use Friendica\Model\User;
 use Friendica\Util\DateTimeFormat;
+use Friendica\Util\Network;
 
 require 'addon/pumpio/oauth/http.php';
 require 'addon/pumpio/oauth/oauth_client.php';
@@ -470,12 +471,9 @@ function pumpio_send(&$a,&$b) {
 	$public = PConfig::get($b['uid'], "pumpio", "public");
 
 	if($oauth_token && $oauth_token_secret) {
-
-		require_once('include/bbcode.php');
-
 		$title = trim($b['title']);
 
-		$content = bbcode($b['body'], false, false, 4);
+		$content = BBCode::convert($b['body'], false, 4);
 
 		$params = [];
 

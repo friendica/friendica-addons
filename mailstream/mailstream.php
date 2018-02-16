@@ -5,6 +5,8 @@
  * Version: 1.1
  * Author: Matthew Exon <http://mat.exon.name>
  */
+
+use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -180,7 +182,7 @@ function mailstream_sender($item) {
 }
 
 function mailstream_decode_subject($subject) {
-	$html = bbcode($subject);
+	$html = BBCode::convert($subject);
 	if (!$html) {
 		return $subject;
 	}
@@ -255,7 +257,7 @@ function mailstream_send($a, $message_id, $item, $user) {
 		return;
 	}
 	require_once(dirname(__file__).'/phpmailer/class.phpmailer.php');
-	require_once('include/bbcode.php');
+
 	$attachments = [];
 	mailstream_do_images($a, $item, $attachments);
 	$frommail = Config::get('mailstream', 'frommail');
@@ -285,7 +287,7 @@ function mailstream_send($a, $message_id, $item, $user) {
 		$mail->IsHTML(true);
 		$mail->CharSet = 'utf-8';
 		$template = get_markup_template('mail.tpl', 'addon/mailstream/');
-		$item['body'] = bbcode($item['body']);
+		$item['body'] = BBCode::convert($item['body']);
 		$item['url'] = $a->get_baseurl() . '/display/' . $user['nickname'] . '/' . $item['id'];
 		$mail->Body = replace_macros($template, [
 						 '$upstream' => L10n::t('Upstream'),
