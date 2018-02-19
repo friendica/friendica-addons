@@ -9,6 +9,7 @@
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Database\DBM;
 use Friendica\Util\DateTimeFormat;
 
 function public_server_install()
