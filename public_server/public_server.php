@@ -11,21 +11,24 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Util\DateTimeFormat;
 
-function public_server_install() {
+function public_server_install()
+{
 	Addon::registerHook('register_account', 'addon/public_server/public_server.php', 'public_server_register_account');
 	Addon::registerHook('cron', 'addon/public_server/public_server.php', 'public_server_cron');
 	Addon::registerHook('enotify', 'addon/public_server/public_server.php', 'public_server_enotify');
 	Addon::registerHook('logged_in', 'addon/public_server/public_server.php', 'public_server_login');
 }
 
-function public_server_uninstall() {
+function public_server_uninstall()
+{
 	Addon::unregisterHook('register_account', 'addon/public_server/public_server.php', 'public_server_register_account');
 	Addon::unregisterHook('cron', 'addon/public_server/public_server.php', 'public_server_cron');
 	Addon::unregisterHook('enotify', 'addon/public_server/public_server.php', 'public_server_enotify');
 	Addon::unregisterHook('logged_in', 'addon/public_server/public_server.php', 'public_server_login');
 }
 
-function public_server_register_account($a, $b) {
+function public_server_register_account($a, $b)
+{
 	$uid = $b;
 
 	$days = Config::get('public_server', 'expiredays');
@@ -38,13 +41,14 @@ function public_server_register_account($a, $b) {
 	dba::update('user', $fields, ['uid' => $uid]);
 }
 
-function public_server_cron($a, $b) {
+function public_server_cron($a, $b)
+{
 	logger("public_server: cron start");
 
 	require_once('include/enotify.php');
-	$r = q("select * FROM `user` WHERE `account_expires_on` < UTC_TIMESTAMP() + INTERVAL 5 DAY AND
+	$r = q("SELECT * FROM `user` WHERE `account_expires_on` < UTC_TIMESTAMP() + INTERVAL 5 DAY AND
 		`account_expires_on` > '%s' AND
-		expire_notification_sent <= '%s'",
+		`expire_notification_sent` <= '%s'",
 		dbesc(NULL_DATE), dbesc(NULL_DATE));
 
 	if (DBM::is_result($r)) {
@@ -68,7 +72,7 @@ function public_server_cron($a, $b) {
 
 	$nologin = Config::get('public_server', 'nologin', false);
 	if ($nologin) {
-		$r = q("SELECT `uid` FROM `user` WHERE NOT `account_expired` AND login_date <= '%s' AND `register_date` < UTC_TIMESTAMP() - INTERVAL %d DAY AND `account_expires_on` <= '%s'",
+		$r = q("SELECT `uid` FROM `user` WHERE NOT `account_expired` AND `login_date` <= '%s' AND `register_date` < UTC_TIMESTAMP() - INTERVAL %d DAY AND `account_expires_on` <= '%s'",
 			dbesc(NULL_DATE), intval($nologin), dbesc(NULL_DATE));
 		if (DBM::is_result($r)) {
 			foreach ($r as $rr) {
@@ -105,7 +109,8 @@ function public_server_cron($a, $b) {
 	logger("public_server: cron end");
 }
 
-function public_server_enotify(&$a, &$b) {
+function public_server_enotify(&$a, &$b)
+{
 	if (x($b, 'params') && $b['params']['type'] == NOTIFY_SYSTEM
 		&& x($b['params'], 'system_type') && $b['params']['system_type'] === 'public_server_expire') {
 		$b['itemlink'] = $a->get_baseurl();
@@ -115,7 +120,8 @@ function public_server_enotify(&$a, &$b) {
 	}
 }
 
-function public_server_login($a, $b) {
+function public_server_login($a, $b)
+{
 	$days = Config::get('public_server', 'expiredays');
 	if (!$days) {
 		return;
@@ -126,7 +132,8 @@ function public_server_login($a, $b) {
 	dba::update('user', $fields, $condition);
 }
 
-function public_server_addon_admin_post (&$a) {
+function public_server_addon_admin_post(&$a)
+{
 	check_form_security_token_redirectOnErr('/admin/addons/publicserver', 'publicserver');
 	$expiredays = (x($_POST, 'expiredays') ? notags(trim($_POST['expiredays'])) : '');
 	$expireposts = (x($_POST, 'expireposts') ? notags(trim($_POST['expireposts'])) : '');
@@ -143,7 +150,8 @@ function public_server_addon_admin_post (&$a) {
 	info(L10n::t('Settings saved').EOL);
 }
 
-function public_server_addon_admin (&$a, &$o) {
+function public_server_addon_admin(&$a, &$o)
+{
 	$token = get_form_security_token("publicserver");
 	$t = get_markup_template("admin.tpl", "addon/public_server");
 	$o = replace_macros($t, [
