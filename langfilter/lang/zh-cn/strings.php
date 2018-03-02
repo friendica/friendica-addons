@@ -2,7 +2,7 @@
 
 if(! function_exists("string_plural_select_zh_cn")) {
 function string_plural_select_zh_cn($n){
-	return ($n==1) ? 0 : ($n>=2 && $n<=4) ? 1 : 2;;
+	return 0;;
 }}
 ;
 $a->strings["Language Filter"] = "";
@@ -12,6 +12,6 @@ $a->strings["I speak"] = "";
 $a->strings["List of abbreviations (iso2 codes) for languages you speak, comma separated. For example \"de,it\"."] = "";
 $a->strings["Minimum confidence in language detection"] = "";
 $a->strings["Minimum confidence in language detection being correct, from 0 to 100. Posts will not be filtered when the confidence of language detection is below this percent value."] = "";
-$a->strings["Save Settings"] = "";
+$a->strings["Save Settings"] = "保存设置";
 $a->strings["Language Filter Settings saved."] = "";
 $a->strings["unspoken language %s - Click to open/close"] = "";
