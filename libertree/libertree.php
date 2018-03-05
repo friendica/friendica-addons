@@ -5,6 +5,8 @@
  * Version: 1.0
  * Author: Tony Baldwin <https://free-haven.org/u/tony>
  */
+
+use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -184,8 +186,6 @@ function libertree_send(&$a,&$b) {
 		$ltree_source .= " (".$b['app'].")";
 
 	if($ltree_url && $ltree_api_token && $ltree_blog && $ltree_source) {
-
-		require_once('include/bb2diaspora.php');
 		$tag_arr = [];
 		$tags = '';
 		$x = preg_match_all('/\#\[(.*?)\](.*?)\[/',$b['tag'],$matches,PREG_SET_ORDER);
@@ -217,7 +217,7 @@ function libertree_send(&$a,&$b) {
                 } while ($oldbody != $body);
 
 		// convert to markdown
-		$body = bb2diaspora($body, false);
+		$body = BBCode::toMarkdown($body, false);
 
 		// Adding the title
 		if(strlen($title))

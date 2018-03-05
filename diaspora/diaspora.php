@@ -9,6 +9,7 @@
 
 require_once 'addon/diaspora/Diaspora_Connection.php';
 
+use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -303,10 +304,8 @@ function diaspora_send(&$a,&$b) {
 	$aspect = PConfig::get($b['uid'],'diaspora','aspect');
 
 	if ($handle && $password) {
-
 		logger('diaspora_send: all values seem to be okay', LOGGER_DEBUG);
 
-		require_once('include/bb2diaspora.php');
 		$tag_arr = [];
 		$tags = '';
 		$x = preg_match_all('/\#\[(.*?)\](.*?)\[/',$b['tag'],$matches,PREG_SET_ORDER);
@@ -338,7 +337,7 @@ function diaspora_send(&$a,&$b) {
                 } while ($oldbody != $body);
 
 		// convert to markdown
-		$body = bb2diaspora($body);
+		$body = BBCode::toMarkdown($body);
 
 		// Adding the title
 		if(strlen($title))
