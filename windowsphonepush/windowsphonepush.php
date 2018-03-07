@@ -28,6 +28,7 @@
 
 use Friendica\App;
 use Friendica\Content\Text\BBCode;
+use Friendica\Content\Text\HTML;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -211,10 +212,8 @@ function windowsphonepush_cron()
 						if (substr($body, 0, 4) == "[url") {
 							$body = "URL/Image ...";
 						} else {
-							require_once("include/html2plain.php");
-
 							$body = BBCode::convert($body, false, 2, true);
-							$body = html2plain($body, 0);
+							$body = HTML::toPlaintext($body, 0);
 							$body = ((strlen($body) > 137) ? substr($body, 0, 137) . "..." : $body);
 						}
 					} else {
