@@ -15,9 +15,9 @@
 			$("#tab_1").removeClass("active");
 			e.preventDefault();
 			return false;
-			
+
 		});
-		
+
 	});
 </script>
 {{if $noOid}}
@@ -40,15 +40,6 @@
 </div>
 {{/if}}
 
-
-{{if $activeusers_title}}
-<h3>{{$activeusers_title}}</h3>
-<div class='items-wrapper'>
-{{foreach $activeusers_items as $i}}
-	{{$i}}
-{{/foreach}}
-</div>
-{{/if}}
 
 {{if $photos_title}}
 <h3>{{$photos_title}}</h3>

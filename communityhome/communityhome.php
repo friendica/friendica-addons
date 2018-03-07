@@ -32,7 +32,6 @@ function communityhome_getopts()
 	return [
 		'hidelogin' => L10n::t('Hide login form'),
 		'showlastusers' => L10n::t('Show last new users'),
-		'showactiveusers' => L10n::t('Show last active users'),
 		'showlastphotos' => L10n::t('Show last photos'),
 		'showlastlike' => L10n::t('Show last liked items'),
 		'showcommunitystream' => L10n::t('Show community stream')
@@ -118,40 +117,7 @@ function communityhome_home(App $a, &$o)
 			}
 		}
 	}
-	// 12 most active users (by posts and contacts)
-	// this query don't work on some mysql versions
-	if (Config::get('communityhome', 'showactiveusers')) {
-		$r = q("SELECT `uni`.`contacts`,`uni`.`items`, `profile`.*, `profile`.`uid` AS `profile_uid`, `user`.`nickname`  FROM
-				(SELECT COUNT(*) as `contacts`, `uid` FROM `contact` WHERE `self`=0 GROUP BY `uid`) AS `con`,
-				(SELECT COUNT(*) as `items`, `uid` FROM `item` WHERE `item`.`changed` > DATE(NOW() - INTERVAL 1 MONTH) AND `item`.`wall` = 1 GROUP BY `uid`) AS `ite`,
-				(
-				SELECT `contacts`,`items`,`ite`.`uid` FROM `con` RIGHT OUTER JOIN `ite` ON `con`.`uid`=`ite`.`uid`
-				UNION ALL
-				SELECT `contacts`,`items`,`con`.`uid` FROM `con` LEFT OUTER JOIN `ite` ON `con`.`uid`=`ite`.`uid`
-				) AS `uni`, `user`, `profile`
-				WHERE `uni`.`uid`=`user`.`uid`
-				AND `uni`.`uid`=`profile`.`uid` AND `profile`.`publish`=1
-				GROUP BY `uid`
-				ORDER BY `items` DESC,`contacts` DESC
-				LIMIT 0,10");
-		if ($r && count($r)) {
-			$aside['$activeusers_title'] = L10n::t('Most active users');
-			$aside['$activeusers_items'] = [];
 
-			$photo = 'thumb';
-			foreach ($r as $rr) {
-				$profile_link = $a->get_baseurl() . '/profile/' . ((strlen($rr['nickname'])) ? $rr['nickname'] : $rr['profile_uid']);
-				$entry = replace_macros($tpl, [
-					'$id' => $rr['id'],
-					'$profile_link' => $profile_link,
-					'$photo' => $rr[$photo],
-					'$photo_user' => sprintf("%s (%s posts, %s contacts)", $rr['name'], ($rr['items'] ? $rr['items'] : '0'),
-						($rr['contacts'] ? $rr['contacts'] : '0'))
-				]);
-				$aside['$activeusers_items'][] = $entry;
-			}
-		}
-	}
 	// last 12 photos
 	if (Config::get('communityhome', 'showlastphotos')) {
 		$aside['$photos_title'] = L10n::t('Latest photos');
