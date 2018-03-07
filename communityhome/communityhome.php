@@ -6,6 +6,8 @@
  * Version: 2.0
  * Author: Fabio Comuni <http://kirgroup.com/profile/fabrixxm>
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -37,7 +39,7 @@ function communityhome_getopts()
 	];
 }
 
-function communityhome_addon_admin(&$a, &$o)
+function communityhome_addon_admin(App $a, &$o)
 {
 	$tpl = get_markup_template('settings.tpl', 'addon/communityhome/');
 
@@ -53,7 +55,7 @@ function communityhome_addon_admin(&$a, &$o)
 	$o = replace_macros($tpl, $ctx);
 }
 
-function communityhome_addon_admin_post(&$a, &$b)
+function communityhome_addon_admin_post(App $a)
 {
 	if (x($_POST, 'communityhome-submit')) {
 		$opts = communityhome_getopts();
@@ -63,7 +65,7 @@ function communityhome_addon_admin_post(&$a, &$b)
 	}
 }
 
-function communityhome_home(&$a, &$o)
+function communityhome_home(App $a, &$o)
 {
 	// custom css
 	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="' . $a->get_baseurl() . '/addon/communityhome/communityhome.css" media="all" />';
