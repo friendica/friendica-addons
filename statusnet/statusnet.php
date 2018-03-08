@@ -38,11 +38,11 @@ define('STATUSNET_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'statusnetoauth.php';
 require_once 'include/enotify.php';
 
-use Codebird\Codebird;
 use CodebirdSN\CodebirdSN;
 use Friendica\App;
 use Friendica\Content\OEmbed;
 use Friendica\Content\Text\BBCode;
+use Friendica\Content\Text\HTML;
 use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -582,7 +582,7 @@ function statusnet_post_hook(App $a, &$b)
 
 			// New code that is able to post pictures
 			require_once __DIR__ . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'codebirdsn.php';
-			$cb = \CodebirdSN\CodebirdSN::getInstance();
+			$cb = CodebirdSN::getInstance();
 			$cb->setAPIEndpoint($api);
 			$cb->setConsumerKey($ckey, $csecret);
 			$cb->setToken($otoken, $osecret);
@@ -1031,7 +1031,7 @@ function statusnet_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 
 	require_once __DIR__ . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'codebirdsn.php';
 
-	$cb = \CodebirdSN\CodebirdSN::getInstance();
+	$cb = CodebirdSN::getInstance();
 	$cb->setConsumerKey($ckey, $csecret);
 	$cb->setToken($otoken, $osecret);
 
@@ -1068,8 +1068,6 @@ function statusnet_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 
 function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_existing_contact)
 {
-	require_once "include/html2bbcode.php";
-
 	logger("statusnet_createpost: start", LOGGER_DEBUG);
 
 	$api = PConfig::get($uid, 'statusnet', 'baseapi');
@@ -1186,7 +1184,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 		$postarray['allow_cid'] = '<' . $self['id'] . '>';
 	}
 
-	$postarray['body'] = html2bbcode($content->statusnet_html);
+	$postarray['body'] = HTML::toBBCode($content->statusnet_html);
 
 	$converted = statusnet_convertmsg($a, $postarray['body'], false);
 	$postarray['body'] = $converted["body"];

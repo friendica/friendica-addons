@@ -7,6 +7,7 @@
  */
 
 use Friendica\Content\Text\BBCode;
+use Friendica\Content\Text\HTML;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -782,8 +783,6 @@ function pumpio_fetchtimeline(&$a, $uid) {
 						$public = true;
 
 			if ($public && !stristr($post->generator->displayName, $application_name)) {
-				require_once('include/html2bbcode.php');
-
 				$_SESSION["authenticated"] = true;
 				$_SESSION["uid"] = $uid;
 
@@ -798,11 +797,11 @@ function pumpio_fetchtimeline(&$a, $uid) {
 				}
 
 				if ($post->object->displayName != "")
-					$_REQUEST["title"] = html2bbcode($post->object->displayName);
+					$_REQUEST["title"] = HTML::toBBCode($post->object->displayName);
 				else
 					$_REQUEST["title"] = "";
 
-				$_REQUEST["body"] = html2bbcode($post->object->content);
+				$_REQUEST["body"] = HTML::toBBCode($post->object->content);
 
 				// To-Do: Picture has to be cached and stored locally
 				if ($post->object->fullImage->url != "") {
@@ -1062,7 +1061,6 @@ function pumpio_dodelete(&$a, $uid, $self, $post, $own_id) {
 
 function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcompletion = true) {
 	require_once('include/items.php');
-	require_once('include/html2bbcode.php');
 
 	if (($post->verb == "like") || ($post->verb == "favorite"))
 		return pumpio_dolike($a, $uid, $self, $post, $own_id);
@@ -1191,7 +1189,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 	$postarray['author-avatar'] = $post->actor->image->url;
 	$postarray['plink'] = $post->object->url;
 	$postarray['app'] = $post->generator->displayName;
-	$postarray['body'] = html2bbcode($post->object->content);
+	$postarray['body'] = HTML::toBBCode($post->object->content);
 	$postarray['object'] = json_encode($post);
 
 	if ($post->object->fullImage->url != "")
