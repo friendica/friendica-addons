@@ -5,6 +5,7 @@
  * Description: Show last community activity in homepage
  * Version: 2.0
  * Author: Fabio Comuni <http://kirgroup.com/profile/fabrixxm>
+ * Status: Unsupported
  */
 
 use Friendica\App;
