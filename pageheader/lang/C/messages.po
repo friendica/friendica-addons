@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-11 18:08+0100\n"
+"POT-Creation-Date: 2018-03-11 18:52+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,8 +17,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: pageheader.php:52
+#: pageheader.php:53
 msgid "\"pageheader\" Settings"
+msgstr ""
+
+#: pageheader.php:54
+msgid "Message"
 msgstr ""
 
 #: pageheader.php:54
@@ -27,10 +31,10 @@ msgid ""
 "file in your docroot)"
 msgstr ""
 
-#: pageheader.php:58
+#: pageheader.php:55
 msgid "Save Settings"
 msgstr ""
 
-#: pageheader.php:71
+#: pageheader.php:69
 msgid "pageheader Settings saved."
 msgstr ""
