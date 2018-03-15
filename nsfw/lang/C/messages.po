@@ -23,7 +23,7 @@ msgstr ""
 
 #: nsfw.php:80
 msgid ""
-"This addon searches for specified  words/text in posts and collapses them."
+"This addon searches for specified words/text in posts and collapses them."
 "It can be used to filter content tagged with for instance #NSFW that may be"
 "deemed inappropriate at certain times or places, such as being at work."
 "It is also useful for hiding irrelevant or annoying content from direct view."
