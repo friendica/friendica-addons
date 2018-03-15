@@ -76,11 +76,11 @@ function nsfw_addon_settings(&$a,&$s) {
 		$words = 'nsfw,';
 
     $s .= '<span id="settings_nsfw_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_nsfw_expanded\'); openClose(\'settings_nsfw_inflated\');">';
-    $s .= '<h3>' . L10n::t('Content Filter (NSFW and more)') . '</h3>';
+    $s .= '<h3>' . L10n::t('Content Filter (NSFW tag and more)') . '</h3>';
     $s .= '</span>';
     $s .= '<div id="settings_nsfw_expanded" class="settings-block" style="display: none;">';
     $s .= '<span class="fakelink" onclick="openClose(\'settings_nsfw_expanded\'); openClose(\'settings_nsfw_inflated\');">';
-    $s .= '<h3>' . L10n::t('Content Filter(#NSFW tag and more)') . '</h3>';
+    $s .= '<h3>' . L10n::t('Content Filter (NSFW tag and more)') . '</h3>';
     $s .= '</span>';
 
     $s .= '<div id="nsfw-wrapper">';
