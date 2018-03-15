@@ -167,4 +167,3 @@ function nsfw_prepare_body(&$a, &$b)
 		$b['html'] = '<div id="nsfw-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'nsfw-' . $rnd . '\'); >' . L10n::t('%s - Click to open/close', $word) . '</div><div id="nsfw-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
 	}
 }
-
