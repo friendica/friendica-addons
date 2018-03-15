@@ -80,11 +80,11 @@ function nsfw_addon_settings(&$a,&$s) {
     $s .= '</span>';
     $s .= '<div id="settings_nsfw_expanded" class="settings-block" style="display: none;">';
     $s .= '<span class="fakelink" onclick="openClose(\'settings_nsfw_expanded\'); openClose(\'settings_nsfw_inflated\');">';
-    $s .= '<h3>' . L10n::t('Not Safe For Work (General Purpose Content Filter)') . '</h3>';
+    $s .= '<h3>' . L10n::t('Content Filter(#NSFW tag and more)') . '</h3>';
     $s .= '</span>';
 
     $s .= '<div id="nsfw-wrapper">';
-    $s .= '<p>' . L10n::t('This addon looks in posts for the words/text you specify below, and collapses any content containing those keywords so it is not displayed at inappropriate times, such as sexual innuendo that may be improper in a work setting. It is polite and recommended to tag any content containing nudity with #NSFW.  This filter can also match any other word/text you specify, and can thereby be used as a general purpose content filter.') . '</p>';
+    $s .= '<p>' . L10n::t('This addon searches for specified words/text in posts and collapses them. It can be used to filter content tagged with for instance #NSFW that may be deemed inappropriate at certain times or places, such as being at work. It is also useful for hiding irrelevant or annoying content from direct view.') . '</p>';
     $s .= '<label id="nsfw-enable-label" for="nsfw-enable">' . L10n::t('Enable Content filter') . ' </label>';
     $s .= '<input id="nsfw-enable" type="checkbox" name="nsfw-enable" value="1"' . $enable_checked . ' />';
 	$s .= '<div class="clear"></div>';
