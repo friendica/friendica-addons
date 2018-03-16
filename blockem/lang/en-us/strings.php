@@ -1,7 +1,7 @@
 <?php
 
-if(! function_exists("string_plural_select_en_gb")) {
-function string_plural_select_en_gb($n){
+if(! function_exists("string_plural_select_en_us")) {
+function string_plural_select_en_us($n){
 	return ($n != 1);;
 }}
 ;

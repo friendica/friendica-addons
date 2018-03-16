@@ -4,26 +4,24 @@
 # 
 # 
 # Translators:
-# Andreas H., 2014
-# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
-# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018
+# Andy H3 <andy@hubup.pro>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-15 17:54+0700\n"
-"PO-Revision-Date: 2018-03-16 19:59+0000\n"
-"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
-"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
+"PO-Revision-Date: 2018-03-16 16:07+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
+"Language-Team: English (United States) (http://www.transifex.com/Friendica/friendica/language/en_US/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: de\n"
+"Language: en_US\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: nsfw.php:77 nsfw.php:81
 msgid "Content Filter (NSFW and more)"
-msgstr "Inhaltsfilter (NSFW und mehr)"
+msgstr ""
 
 #: nsfw.php:85
 msgid ""
@@ -31,29 +29,29 @@ msgid ""
 " can be used to filter content tagged with for instance #NSFW that may be "
 "deemed inappropriate at certain times or places, such as being at work. It "
 "is also useful for hiding irrelevant or annoying content from direct view."
-msgstr "Dieses Addon sucht nach von dir definierten Wörtern bzw. Texten in Beiträgen und kollabiert diese wenn die Wörter gefunden werden. Damit können z.B. Inhalte gefiltert werden, die mit #NSFW (nicht für die Arbeit geeignet) gekennzeichnet sind. Außerdem ist es nützlich um irrelevante oder lästige Inhalte zu verbergen."
+msgstr ""
 
 #: nsfw.php:86
 msgid "Enable Content filter"
-msgstr "Aktiviere den Inhaltsfilter"
+msgstr "Enable content filter"
 
 #: nsfw.php:89
 msgid "Comma separated list of keywords to hide"
-msgstr "Durch Kommata getrennte Liste von Schlüsselwörtern die verborgen werden sollen"
+msgstr "Comma separated list of keywords"
 
 #: nsfw.php:93
 msgid "Save Settings"
-msgstr "Einstellungen speichern"
+msgstr ""
 
 #: nsfw.php:94
 msgid "Use /expression/ to provide regular expressions"
-msgstr "Verwende /expression/ um Reguläre Ausdrücke zu verwenden"
+msgstr "Use /expression/ for regular expressions."
 
 #: nsfw.php:109
 msgid "NSFW Settings saved."
-msgstr "NSFW-Einstellungen gespeichert"
+msgstr "NSFW settings saved."
 
 #: nsfw.php:167
 #, php-format
 msgid "%s - Click to open/close"
-msgstr "%s – Zum Öffnen/Schließen klicken"
+msgstr "%s - Reveal/hide"
