@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014
+# fabrixxm <fabrix.xm@gmail.com>, 2014,2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-10-26 15:02+0100\n"
-"PO-Revision-Date: 2014-10-31 13:46+0000\n"
+"PO-Revision-Date: 2018-03-19 13:26+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,7 @@ msgstr "Impostazioni WindowsPhonePush"
 
 #: windowsphonepush.php:117
 msgid "Enable WindowsPhonePush Addon"
-msgstr "Abilita addon WindowsPhonePush"
+msgstr "Abilita componente aggiuntivo WindowsPhonePush"
 
 #: windowsphonepush.php:122
 msgid "Push text of new item"

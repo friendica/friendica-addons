@@ -5,11 +5,11 @@ function string_plural_select_it($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["Not Safe For Work (General Purpose Content Filter) settings"] = "Impostazioni per NSWF (Filtro Contenuti Generico)";
-$a->strings["This addon looks in posts for the words/text you specify below, and collapses any content containing those keywords so it is not displayed at inappropriate times, such as sexual innuendo that may be improper in a work setting. It is polite and recommended to tag any content containing nudity with #NSFW.  This filter can also match any other word/text you specify, and can thereby be used as a general purpose content filter."] = "Questo addon cerca nei messagi le parole/testo che inserisci qui sotto, e collassa i messaggi che li contengono, per non mostrare contenuto inappropriato nel momento sbagliato, come contenuto a sfondo sessuale che può essere inappropriato in un ambiente di lavoro. E' educato (e consigliato) taggare i messaggi che contengono nudità con #NSFW (Not Safe For Work: Non Sicuro Per il Lavoro). Questo filtro può cercare anche qualsiasi parola che inserisci, quindi può essere usato come filtro di contenuti generico.";
+$a->strings["Content Filter (NSFW and more)"] = "Filtro Contenuto (NSFW e altro)";
+$a->strings["This addon searches for specified words/text in posts and collapses them. It can be used to filter content tagged with for instance #NSFW that may be deemed inappropriate at certain times or places, such as being at work. It is also useful for hiding irrelevant or annoying content from direct view."] = "Questo componente aggiuntivo cerca per le parole specificate nei messaggi e li collassa. Può essere usato per filtrare contenuto taggato, per esempio, #NSFW (non sicuro per il lavoro), che puo' risultare inappropriato in certi orari o in certi luoghi, come appunto al lavoro. È anche utile per nascondere contenuto irrilevante o fastidioso.";
 $a->strings["Enable Content filter"] = "Abilita il Filtro Contenuti";
 $a->strings["Comma separated list of keywords to hide"] = "Elenco separato da virgole di parole da nascondere";
-$a->strings["Submit"] = "Invia";
+$a->strings["Save Settings"] = "Salva Impostazioni";
 $a->strings["Use /expression/ to provide regular expressions"] = "Utilizza /espressione/ per inserire espressioni regolari";
 $a->strings["NSFW Settings saved."] = "Impostazioni NSFW salvate.";
 $a->strings["%s - Click to open/close"] = "%s - Clicca per aprire / chiudere";
