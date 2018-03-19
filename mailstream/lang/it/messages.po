@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014
+# fabrixxm <fabrix.xm@gmail.com>, 2014,2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2014-09-10 13:02+0000\n"
+"POT-Creation-Date: 2018-03-11 19:13+0100\n"
+"PO-Revision-Date: 2018-03-19 13:12+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -19,62 +19,80 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: mailstream.php:55
+#: mailstream.php:77
 msgid "From Address"
 msgstr "Indirizzo di invio"
 
-#: mailstream.php:57
+#: mailstream.php:79
 msgid "Email address that stream items will appear to be from."
 msgstr "Indirizzo email da cui i messaggi appariranno inviati"
 
-#: mailstream.php:60 mailstream.php:282
+#: mailstream.php:82 mailstream.php:380
 msgid "Save Settings"
 msgstr "Salva Impostazioni"
 
-#: mailstream.php:165
+#: mailstream.php:223
 msgid "Re:"
 msgstr "R:"
 
-#: mailstream.php:173
+#: mailstream.php:231
 msgid "Friendica post"
 msgstr "Messaggio Friendica"
 
-#: mailstream.php:176
+#: mailstream.php:234
 msgid "Diaspora post"
 msgstr "Messaggio Diaspora"
 
-#: mailstream.php:183
+#: mailstream.php:244
 msgid "Feed item"
 msgstr "Elemento da feed"
 
-#: mailstream.php:186
+#: mailstream.php:247
 msgid "Email"
 msgstr "Email"
 
-#: mailstream.php:188
+#: mailstream.php:249
 msgid "Friendica Item"
 msgstr "Elemento da Friendica"
 
-#: mailstream.php:229
+#: mailstream.php:293
 msgid "Upstream"
 msgstr "Upstream"
 
-#: mailstream.php:230
+#: mailstream.php:294
 msgid "Local"
 msgstr "Locale"
 
-#: mailstream.php:274
-msgid "Email Address"
-msgstr "Indirizzo Email"
-
-#: mailstream.php:276
-msgid "Leave blank to use your account email address"
-msgstr "Lascia in bianco per usare l'indirizzo email del tuo account"
-
-#: mailstream.php:279
+#: mailstream.php:362
 msgid "Enabled"
 msgstr "Abilitato"
 
-#: mailstream.php:281
+#: mailstream.php:366
+msgid "Email Address"
+msgstr "Indirizzo Email"
+
+#: mailstream.php:368
+msgid "Leave blank to use your account email address"
+msgstr "Lascia in bianco per usare l'indirizzo email del tuo account"
+
+#: mailstream.php:371
+msgid "Exclude Likes"
+msgstr "Escludi \"Mi Piace\""
+
+#: mailstream.php:373
+msgid "Check this to omit mailing \"Like\" notifications"
+msgstr "Seleziona per evitare di inviare notifiche per \"Mi Piace\""
+
+#: mailstream.php:376
+msgid "Attach Images"
+msgstr "Allega Immagini"
+
+#: mailstream.php:378
+msgid ""
+"Download images in posts and attach them to the email.  Useful for reading "
+"email while offline."
+msgstr "Scarica le immagini nei messaggi e le allega alle email. Utile per leggere le email mentre si è offline."
+
+#: mailstream.php:379
 msgid "Mail Stream Settings"
 msgstr "Impostazioni Mail Stream"

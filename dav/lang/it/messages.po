@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014
+# fabrixxm <fabrix.xm@gmail.com>, 2014,2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2015-12-14 11:10+0000\n"
+"PO-Revision-Date: 2018-03-19 13:21+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -188,7 +188,7 @@ msgid ""
 "The current version of this addon has not been set up correctly. Please "
 "contact the system administrator of your installation of friendica to fix "
 "this."
-msgstr "La versione corrente di questo addon non è stata configurata correttamente. Contatta l'amministratore."
+msgstr "La versione corrente di questo componente aggiuntivo non è stata configurata correttamente. Contatta l'amministratore."
 
 #: friendica/main.php:239 common/wdcal_edit.inc.php:146
 msgid "Calendar"

@@ -1,16 +1,16 @@
-# ADDON blockem
+# ADDON superblock
 # Copyright (C)
-# This file is distributed under the same license as the Friendica blockem addon package.
+# This file is distributed under the same license as the Friendica superblock addon package.
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014-2015
+# fabrixxm <fabrix.xm@gmail.com>, 2014-2015,2017
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2015-08-31 10:28+0000\n"
+"POT-Creation-Date: 2017-04-21 08:45+0200\n"
+"PO-Revision-Date: 2017-09-20 06:08+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -19,35 +19,26 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: blockem.php:51
-msgid "\"Blockem\" Settings"
-msgstr "Impostazioni \"Blockem\""
+#: superblock.php:53 superblock.php:57
+msgid "\"Superblock\""
+msgstr "\"Superblocco\""
 
-#: blockem.php:53
+#: superblock.php:60
 msgid "Comma separated profile URLS to block"
 msgstr "Lista, separata da virgola, di indirizzi di profili da bloccare"
 
-#: blockem.php:57
-msgid "Submit"
-msgstr "Invia"
+#: superblock.php:64
+msgid "Save Settings"
+msgstr "Salva Impostazioni"
 
-#: blockem.php:70
-msgid "BLOCKEM Settings saved."
-msgstr "Impostazioni \"Blockem\" salvate."
+#: superblock.php:76
+msgid "SUPERBLOCK Settings saved."
+msgstr "Impostazioni \"Superblocco\" salvate."
 
-#: blockem.php:105
-#, php-format
-msgid "Blocked %s - Click to open/close"
-msgstr "%s bloccato - Clicca per aprire/chiudere"
+#: superblock.php:148
+msgid "Block Completely"
+msgstr "Blocca Completamente"
 
-#: blockem.php:160
-msgid "Unblock Author"
-msgstr "Sblocca autore"
-
-#: blockem.php:162
-msgid "Block Author"
-msgstr "Blocca autore"
-
-#: blockem.php:194
-msgid "blockem settings updated"
-msgstr "Impostazioni 'blockem' aggiornate."
+#: superblock.php:168
+msgid "superblock settings updated"
+msgstr "impostazioni \"superblocco\" aggiornate."

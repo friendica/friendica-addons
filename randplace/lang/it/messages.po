@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014-2015
+# fabrixxm <fabrix.xm@gmail.com>, 2014-2015,2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2015-08-31 10:22+0000\n"
+"PO-Revision-Date: 2018-03-19 13:25+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,7 @@ msgstr "Impostazioni \"Posizione casuale\""
 
 #: randplace.php:171
 msgid "Enable Randplace Addon"
-msgstr "Abilita il addon \"Posizione casuale\""
+msgstr "Abilita il componente aggiuntivo Posizione Casuale"
 
 #: randplace.php:177
 msgid "Submit"

@@ -4,15 +4,15 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014
+# fabrixxm <fabrix.xm@gmail.com>, 2014,2018
 # Sandro Santilli <strk@kbt.io>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2015-11-01 11:05+0000\n"
-"Last-Translator: Sandro Santilli <strk@kbt.io>\n"
+"PO-Revision-Date: 2018-03-19 13:21+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -62,7 +62,7 @@ msgstr "Autentica la tua connessione a Buffer"
 
 #: buffer.php:146
 msgid "Enable Buffer Post Addon"
-msgstr "Abilita il addon di invio a Buffer"
+msgstr "Abilita il componente aggiuntivo di invio a Buffer"
 
 #: buffer.php:151
 msgid "Post to Buffer by default"
