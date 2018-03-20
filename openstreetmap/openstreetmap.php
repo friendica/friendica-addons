@@ -16,7 +16,7 @@ use Friendica\Core\System;
 use Friendica\Util\Network;
 
 const OSM_TMS = 'http://www.openstreetmap.org';
-const OSM_NOM =	'http://nominatim.openstreetmap.org/search.php';
+const OSM_NOM = 'http://nominatim.openstreetmap.org/search.php';
 const OSM_ZOOM = 16;
 const OSM_MARKER = 0;
 
