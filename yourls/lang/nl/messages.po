@@ -1,0 +1,48 @@
+# ADDON yourls
+# Copyright (C)
+# This file is distributed under the same license as the Friendica yourls addon package.
+# 
+# 
+# Translators:
+# Karel Vandecandelaere <karel@dasrakel.eu>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-03-20 13:29+0000\n"
+"Last-Translator: Karel Vandecandelaere <karel@dasrakel.eu>\n"
+"Language-Team: Dutch (http://www.transifex.com/Friendica/friendica/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: yourls.php:55
+msgid "YourLS Settings"
+msgstr "YourLS-instellingen"
+
+#: yourls.php:57
+msgid "URL: http://"
+msgstr "URL: http://"
+
+#: yourls.php:62
+msgid "Username:"
+msgstr "Gebruikersnaam:"
+
+#: yourls.php:67
+msgid "Password:"
+msgstr "Wachtwoord:"
+
+#: yourls.php:72
+msgid "Use SSL "
+msgstr "Gebruik SSL"
+
+#: yourls.php:76
+msgid "Submit"
+msgstr "Toepassen"
+
+#: yourls.php:92
+msgid "yourls Settings saved."
+msgstr "YourLS-instellingen bijgewerkt."
