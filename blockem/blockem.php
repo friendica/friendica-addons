@@ -4,7 +4,7 @@
  * Description: Allows users to hide content by collapsing posts and replies.
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- * 
+ *
  */
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
@@ -80,7 +80,7 @@ function blockem_addon_settings_post(&$a,&$b) {
 
 function blockem_enotify_store(&$a,&$b) {
 
-	$words = get_pconfig($b['uid'],'blockem','words');
+	$words = PConfig::get($b['uid'],'blockem','words');
 	if($words) {
 		$arr = explode(',',$words);
 	}
@@ -113,7 +113,7 @@ function blockem_prepare_body(&$a,&$b) {
 
 	$words = null;
 	if(local_user()) {
-		$words = get_pconfig(local_user(),'blockem','words');
+		$words = PConfig::get(local_user(),'blockem','words');
 	}
 	if($words) {
 		$arr = explode(',',$words);
@@ -151,7 +151,7 @@ function blockem_conversation_start(&$a,&$b) {
 	if(! local_user())
 		return;
 
-	$words = get_pconfig(local_user(),'blockem','words');
+	$words = PConfig::get(local_user(),'blockem','words');
 	if($words) {
 		$a->data['blockem'] = explode(',',$words);
 	}
@@ -203,7 +203,7 @@ function blockem_init(&$a) {
 	if(! local_user())
 		return;
 
-	$words = get_pconfig(local_user(),'blockem','words');
+	$words = PConfig::get(local_user(),'blockem','words');
 
 	if(array_key_exists('block',$_GET) && $_GET['block']) {
 		if(strlen($words))
@@ -212,7 +212,7 @@ function blockem_init(&$a) {
 	}
 	if(array_key_exists('unblock',$_GET) && $_GET['unblock']) {
 		$arr = explode(',',$words);
-		$newarr = array();
+		$newarr = [];
 
 		if(count($arr)) {
 			foreach($arr as $x) {

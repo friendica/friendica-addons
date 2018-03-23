@@ -111,9 +111,9 @@ function communityhome_home(App $a, &$o)
 				$entry = replace_macros($tpl, [
 					'$id' => $rr['id'],
 					'$profile_link' => $profile_link,
-					'$photo' => $a->get_cached_avatar_image($rr[$photo]),
+					'$photo' => $rr[$photo],
 					'$alt_text' => $rr['name'],
-				));
+				]);
 				$aside['$lastusers_items'][] = $entry;
 			}
 		}
@@ -128,7 +128,7 @@ function communityhome_home(App $a, &$o)
 						WHERE `profile`=0 AND `contact-id`=0 AND `album` NOT IN ('Contact Photos', '%s', 'Profile Photos', '%s')
 							AND `allow_cid`='' AND `allow_gid`='' AND `deny_cid`='' AND `deny_gid`='' GROUP BY `resource-id`) AS `t1`
 					INNER JOIN `photo` ON `photo`.`resource-id`=`t1`.`resource-id` AND `photo`.`scale` = `t1`.`maxscale`,
-					`user` 
+					`user`
 					WHERE `user`.`uid` = `photo`.`uid`
 					AND `user`.`blockwall`=0
 					AND `user`.`hidewall` = 0
@@ -150,8 +150,9 @@ function communityhome_home(App $a, &$o)
 					'$id' => $rr['id'],
 					'$profile_link' => $photo_page,
 					'$photo' => $photo_url,
-					'$alt_text' => $rr['username']." : ".$rr['desc'],
-				));
+					'$photo_user' => $rr['username'],
+					'$photo_title' => $rr['desc']
+				]);
 
 				$aside['$photos_items'][] = $entry;
 			}
@@ -165,7 +166,7 @@ function communityhome_home(App $a, &$o)
 		$r = q("SELECT `T1`.`created`, `T1`.`liker`, `T1`.`liker-link`, `item`.* FROM
 				(SELECT `parent-uri`, `created`, `author-name` AS `liker`,`author-link` AS `liker-link`
 					FROM `item` WHERE `verb`='http://activitystrea.ms/schema/1.0/like' GROUP BY `parent-uri` ORDER BY `created` DESC) AS T1
-				INNER JOIN `item` ON `item`.`uri`=`T1`.`parent-uri` 
+				INNER JOIN `item` ON `item`.`uri`=`T1`.`parent-uri`
 				WHERE `T1`.`liker-link` LIKE '%s%%' OR `item`.`author-link` LIKE '%s%%'
 				GROUP BY `uri`
 				ORDER BY `T1`.`created` DESC

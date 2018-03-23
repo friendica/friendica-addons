@@ -47,9 +47,9 @@ function fromgplus_addon_settings(&$a,&$s) {
 	if (count($result) > 0)
 		return;
 
-	$enable_checked = (intval(get_pconfig(local_user(),'fromgplus','enable')) ? ' checked="checked"' : '');
-	$keywords_checked = (intval(get_pconfig(local_user(), 'fromgplus', 'keywords')) ? ' checked="checked"' : '');
-	$account = get_pconfig(local_user(),'fromgplus','account');
+	$enable_checked = (intval(PConfig::get(local_user(),'fromgplus','enable')) ? ' checked="checked"' : '');
+	$keywords_checked = (intval(PConfig::get(local_user(), 'fromgplus', 'keywords')) ? ' checked="checked"' : '');
+	$account = PConfig::get(local_user(),'fromgplus','account');
 
 	$s .= '<span id="settings_fromgplus_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_fromgplus_expanded\'); openClose(\'settings_fromgplus_inflated\');">';
 	$s .= '<img class="connector" src="images/googleplus.png" /><h3 class="connector">'. L10n::t('Google+ Mirror').'</h3>';
@@ -84,14 +84,14 @@ function fromgplus_addon_settings_post(&$a,&$b) {
 		return;
 
 	if($_POST['fromgplus-submit']) {
-		set_pconfig(local_user(),'fromgplus','account',trim($_POST['fromgplus-account']));
+		PConfig::set(local_user(),'fromgplus','account',trim($_POST['fromgplus-account']));
 		$enable = ((x($_POST,'fromgplus-enable')) ? intval($_POST['fromgplus-enable']) : 0);
-		set_pconfig(local_user(),'fromgplus','enable', $enable);
+		PConfig::set(local_user(),'fromgplus','enable', $enable);
 		$keywords = ((x($_POST, 'fromgplus-keywords')) ? intval($_POST['fromgplus-keywords']) : 0);
-		set_pconfig(local_user(),'fromgplus', 'keywords', $keywords);
+		PConfig::set(local_user(),'fromgplus', 'keywords', $keywords);
 
 		if (!$enable)
-			del_pconfig(local_user(),'fromgplus','lastdate');
+			PConfig::delete(local_user(),'fromgplus','lastdate');
 
 		info(L10n::t('Google+ Import Settings saved.') . EOL);
 	}
@@ -115,9 +115,9 @@ function fromgplus_addon_admin_post(&$a)
 }
 
 function fromgplus_cron($a,$b) {
-	$last = get_config('fromgplus','last_poll');
+	$last = Config::get('fromgplus','last_poll');
 
-        $poll_interval = intval(get_config('fromgplus','poll_interval'));
+        $poll_interval = intval(Config::get('fromgplus','poll_interval'));
         if(! $poll_interval)
                 $poll_interval = FROMGPLUS_DEFAULT_POLL_INTERVAL;
 
@@ -134,7 +134,7 @@ function fromgplus_cron($a,$b) {
         $r = q("SELECT * FROM `pconfig` WHERE `cat` = 'fromgplus' AND `k` = 'enable' AND `v` = '1' ORDER BY RAND() ");
         if(count($r)) {
                 foreach($r as $rr) {
-			$account = get_pconfig($rr['uid'],'fromgplus','account');
+			$account = PConfig::get($rr['uid'],'fromgplus','account');
 			if ($account) {
 		        logger('fromgplus: fetching for user '.$rr['uid']);
 				fromgplus_fetch($a, $rr['uid']);
@@ -144,7 +144,7 @@ function fromgplus_cron($a,$b) {
 
         logger('fromgplus: cron_end');
 
-	set_config('fromgplus','last_poll', time());
+	Config::set('fromgplus','last_poll', time());
 }
 
 function fromgplus_post($a, $uid, $source, $body, $location, $coord, $id) {
@@ -204,13 +204,13 @@ function fromgplus_html2bbcode($html) {
 
 	$bbcode = html_entity_decode($html, ENT_QUOTES, 'UTF-8');
 
-	$bbcode = str_ireplace(array("\n"), array(""), $bbcode);
-	$bbcode = str_ireplace(array("<b>", "</b>"), array("[b]", "[/b]"), $bbcode);
-	$bbcode = str_ireplace(array("<i>", "</i>"), array("[i]", "[/i]"), $bbcode);
-	$bbcode = str_ireplace(array("<s>", "</s>"), array("[s]", "[/s]"), $bbcode);
-	$bbcode = str_ireplace(array("<br />"), array("\n"), $bbcode);
-	$bbcode = str_ireplace(array("<br/>"), array("\n"), $bbcode);
-	$bbcode = str_ireplace(array("<br>"), array("\n"), $bbcode);
+	$bbcode = str_ireplace(["\n"], [""], $bbcode);
+	$bbcode = str_ireplace(["<b>", "</b>"], ["[b]", "[/b]"], $bbcode);
+	$bbcode = str_ireplace(["<i>", "</i>"], ["[i]", "[/i]"], $bbcode);
+	$bbcode = str_ireplace(["<s>", "</s>"], ["[s]", "[/s]"], $bbcode);
+	$bbcode = str_ireplace(["<br />"], ["\n"], $bbcode);
+	$bbcode = str_ireplace(["<br/>"], ["\n"], $bbcode);
+	$bbcode = str_ireplace(["<br>"], ["\n"], $bbcode);
 
 	$bbcode = trim(strip_tags($bbcode));
 	return($bbcode);
@@ -225,7 +225,7 @@ function fromgplus_parse_query($var)
 	$var  = parse_url($var, PHP_URL_QUERY);
 	$var  = html_entity_decode($var);
 	$var  = explode('&', $var);
-	$arr  = array();
+	$arr  = [];
 
 	foreach($var as $val) {
 		$x          = explode('=', $val);
@@ -246,7 +246,7 @@ function fromgplus_cleanupgoogleproxy($fullImage, $image) {
 	//$image = str_replace(array($preview, $preview2), array("/", "/"), $image->url);
 	$image = $image->url;
 
-       	$cleaned = array();
+       	$cleaned = [];
 
 	$queryvar = fromgplus_parse_query($fullImage);
 	if ($queryvar['url'] != "")
@@ -270,14 +270,14 @@ function fromgplus_cleanupgoogleproxy($fullImage, $image) {
 	}
 
 	if ($cleaned["full"] != "")
-		$infoFull = get_photo_info($cleaned["full"]);
+		$infoFull = Image::getInfoFromURL($cleaned["full"]);
 	else
-		$infoFull = array("0" => 0, "1" => 0);
+		$infoFull = ["0" => 0, "1" => 0];
 
 	if ($cleaned["preview"] != "")
-		$infoPreview = get_photo_info($cleaned["preview"]);
+		$infoPreview = Image::getInfoFromURL($cleaned["preview"]);
 	else
-		$infoFull = array("0" => 0, "1" => 0);
+		$infoFull = ["0" => 0, "1" => 0];
 
 	if (($infoPreview[0] >= $infoFull[0]) && ($infoPreview[1] >= $infoFull[1])) {
 		$temp = $cleaned["full"];
@@ -310,7 +310,7 @@ function fromgplus_cleantext($text) {
 	$text = strip_tags($text);
 	$text = html_entity_decode($text, ENT_QUOTES);
 	$text = trim($text);
-	$text = str_replace(array("\n", "\r", " ", $trash), array("", "", "", ""), $text);
+	$text = str_replace(["\n", "\r", " ", $trash], ["", "", "", ""], $text);
 	return($text);
 }
 
@@ -319,7 +319,7 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 
 	$post = "";
 	$quote = "";
-	$pagedata = array();
+	$pagedata = [];
 	$pagedata["type"] = "";
 
 	foreach ($item->object->attachments as $attachment) {
@@ -346,20 +346,21 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 
 				// Add Keywords to page link
 				$data = parseurl_getsiteinfo_cached($pagedata["url"], true);
-				if (isset($data["keywords"]) && get_pconfig($uid, 'fromgplus', 'keywords')) {
+				if (isset($data["keywords"]) && PConfig::get($uid, 'fromgplus', 'keywords')) {
 					$pagedata["keywords"] = $data["keywords"];
 				}
 				break;
 
 			case "photo":
 				// Don't store shared pictures in your wall photos (to prevent a possible violating of licenses)
-				if ($shared)
+				if ($shared) {
 					$images = fromgplus_cleanupgoogleproxy($attachment->fullImage, $attachment->image);
-				else {
-					if ($attachment->fullImage->url != "")
-						$images = store_photo($a, $uid, "", $attachment->fullImage->url);
-					elseif ($attachment->image->url != "")
-						$images = store_photo($a, $uid, "", $attachment->image->url);
+				} else {
+					if ($attachment->fullImage->url != "") {
+						$images = Image::storePhoto($a, $uid, "", $attachment->fullImage->url);
+					} elseif ($attachment->image->url != "") {
+						$images = Image::storePhoto($a, $uid, "", $attachment->image->url);
+					}
 				}
 
 				if ($images["preview"] != "") {
@@ -370,8 +371,9 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 					$post .= "\n[img]".$images["full"]."[/img]\n";
 					$pagedata["images"][0]["src"] = $images["full"];
 
-					if ($images["preview"] != "")
+					if ($images["preview"] != "") {
 						$pagedata["images"][1]["src"] = $images["preview"];
+					}
 				}
 
 				if (($attachment->displayName != "") && (fromgplus_cleantext($attachment->displayName) != fromgplus_cleantext($displaytext))) {
@@ -437,8 +439,8 @@ function fromgplus_fetch($a, $uid) {
 	// Special blank to identify postings from the googleplus connector
 	$blank = html_entity_decode("&#x00A0;", ENT_QUOTES, 'UTF-8');
 
-	$account = get_pconfig($uid,'fromgplus','account');
-	$key = get_config('fromgplus','key');
+	$account = PConfig::get($uid,'fromgplus','account');
+	$key = Config::get('fromgplus','key');
 
 	$result = Network::fetchUrl("https://www.googleapis.com/plus/v1/people/".$account."/activities/public?alt=json&pp=1&key=".$key."&maxResults=".$maxfetch);
 	//$result = file_get_contents("google.txt");
@@ -446,7 +448,7 @@ function fromgplus_fetch($a, $uid) {
 
 	$activities = json_decode($result);
 
-	$initiallastdate = get_pconfig($uid,'fromgplus','lastdate');
+	$initiallastdate = PConfig::get($uid,'fromgplus','lastdate');
 
 	$first_time = ($initiallastdate == "");
 
@@ -471,7 +473,7 @@ function fromgplus_fetch($a, $uid) {
 		if ($lastdate < strtotime($item->published))
 			$lastdate = strtotime($item->published);
 
-		set_pconfig($uid,'fromgplus','lastdate', $lastdate);
+		PConfig::set($uid,'fromgplus','lastdate', $lastdate);
 
 		if ($first_time)
 			continue;
@@ -513,7 +515,7 @@ function fromgplus_fetch($a, $uid) {
 				case "activity":
 					$post = fromgplus_html2bbcode($item->annotation)."\n";
 
-					if (!intval(get_config('system','old_share'))) {
+					if (!intval(Config::get('system','old_share'))) {
 
 						if (function_exists("share_header"))
 							$post .= share_header($item->object->actor->displayName, $item->object->actor->url,
@@ -563,5 +565,5 @@ function fromgplus_fetch($a, $uid) {
 		}
 	}
 	if ($lastdate != 0)
-		set_pconfig($uid,'fromgplus','lastdate', $lastdate);
+		PConfig::set($uid,'fromgplus','lastdate', $lastdate);
 }

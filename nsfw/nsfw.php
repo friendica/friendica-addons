@@ -4,7 +4,7 @@
  * Description: Collapse posts with inappropriate content
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- * 
+ *
  */
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
@@ -25,8 +25,8 @@ function nsfw_uninstall()
 	Addon::unregisterHook('addon_settings_post', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings_post');
 }
 
-// This function isn't perfect and isn't trying to preserve the html structure - it's just a 
-// quick and dirty filter to pull out embedded photo blobs because 'nsfw' seems to come up 
+// This function isn't perfect and isn't trying to preserve the html structure - it's just a
+// quick and dirty filter to pull out embedded photo blobs because 'nsfw' seems to come up
 // inside them quite often. We don't need anything fancy, just pull out the data blob so we can
 // check against the rest of the body.
 
@@ -158,8 +158,8 @@ function nsfw_prepare_body(&$a, &$b)
 						}
 					}
 				}
-			} 
-		}		
+			}
+		}
 	}
 
 	if ($found) {

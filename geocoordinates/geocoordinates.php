@@ -24,15 +24,16 @@ function geocoordinates_uninstall()
 	Addon::unregisterHook('post_remote',    'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
 }
 
-function geocoordinates_resolve_item(&$item) {
+function geocoordinates_resolve_item(&$item)
+{
 	if((!$item["coord"]) || ($item["location"]))
 		return;
 
-	$key = get_config("geocoordinates", "api_key");
+	$key = Config::get("geocoordinates", "api_key");
 	if ($key == "")
 		return;
 
-	$language = get_config("geocoordinates", "language");
+	$language = Config::get("geocoordinates", "language");
 	if ($language == "")
 		$language = "de";
 
@@ -77,7 +78,8 @@ function geocoordinates_resolve_item(&$item) {
 		Cache::set("geocoordinates:".$language.":".$coords[0]."-".$coords[1], $item["location"]);
 }
 
-function geocoordinates_post_hook($a, &$item) {
+function geocoordinates_post_hook($a, &$item)
+{
 	geocoordinates_resolve_item($item);
 }
 

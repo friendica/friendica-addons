@@ -1,6 +1,11 @@
 <?php
 
-$a->strings["Numfriends settings updated."] = "Réglages numfriends sauvés.";
-$a->strings["Numfriends Settings"] = "Réglages de numfriends";
-$a->strings["How many contacts to display on profile sidebar"] = "Nombre de contacts à montrer sur le panneau latéral du profil";
-$a->strings["Submit"] = "Envoyer";
+if(! function_exists("string_plural_select_fr")) {
+function string_plural_select_fr($n){
+	return ($n > 1);;
+}}
+;
+$a->strings["Numfriends settings updated."] = "Configuration de Numfriends mise à jour.";
+$a->strings["Numfriends Settings"] = "Réglages de Numfriends";
+$a->strings["How many contacts to display on profile sidebar"] = "Nombre de contacts à afficher dans le volet de profil";
+$a->strings["Submit"] = "Appliquer";

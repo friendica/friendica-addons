@@ -4,9 +4,9 @@
  * Description: Sample Friendica addon. Set a random place when posting.
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- * 
- * 
- * 
+ *
+ *
+ *
  *
  * Addons are registered with the system through the admin
  * panel.
@@ -14,7 +14,7 @@
  * When registration is detected, the system calls the addon
  * name_install() function, located in 'addon/name/name.php',
  * where 'name' is the name of the addon.
- * If the addon is removed from the configuration list, the 
+ * If the addon is removed from the configuration list, the
  * system will call the name_uninstall() function.
  *
  */
@@ -92,7 +92,7 @@ function randplace_post_hook($a, &$item) {
 
 	/* Retrieve our personal config setting */
 
-	$active = get_pconfig(local_user(), 'randplace', 'enable');
+	$active = PConfig::get(local_user(), 'randplace', 'enable');
 
 	if(! $active)
 		return;
@@ -106,7 +106,7 @@ function randplace_post_hook($a, &$item) {
 	 *
 	 */
 
-	$cities = array();
+	$cities = [];
 	$zones = timezone_identifiers_list();
 	foreach($zones as $zone) {
 		if((strpos($zone,'/')) && (! stristr($zone,'US/')) && (! stristr($zone,'Etc/')))
@@ -137,7 +137,7 @@ function randplace_settings_post($a,$post) {
 	if(! local_user())
 		return;
 	if($_POST['randplace-submit'])
-		set_pconfig(local_user(),'randplace','enable',intval($_POST['randplace']));
+		PConfig::set(local_user(),'randplace','enable',intval($_POST['randplace']));
 }
 
 
@@ -161,7 +161,7 @@ function randplace_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$enabled = get_pconfig(local_user(),'randplace','enable');
+	$enabled = PConfig::get(local_user(),'randplace','enable');
 
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 

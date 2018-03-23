@@ -82,24 +82,29 @@ function fromapp_settings(&$a, &$s)
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="fromapp-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 }
 
-function fromapp_post_hook(&$a,&$item) {
-   if(! local_user())
-        return;
-
-    if(local_user() != $item['uid'])
-        return;
-
-    $app = get_pconfig(local_user(), 'fromapp', 'app');
-	$force = intval(get_pconfig(local_user(), 'fromapp','force'));
-
-    if(($app === false) || (! strlen($app)))
-        return;
-
-	if(strlen(trim($item['app'])) && (! $force))
+function fromapp_post_hook(&$a, &$item)
+{
+	if (! local_user()) {
 		return;
+	}
 
-	$apps = explode(',',$app);
-	$item['app'] = trim($apps[mt_rand(0,count($apps)-1)]);
+	if (local_user() != $item['uid']) {
+		return;
+	}
+
+	$app = PConfig::get(local_user(), 'fromapp', 'app');
+	$force = intval(PConfig::get(local_user(), 'fromapp', 'force'));
+
+	if (is_null($app) || (! strlen($app))) {
+		return;
+	}
+
+	if (strlen(trim($item['app'])) && (! $force)) {
+		return;
+	}
+
+	$apps = explode(',', $app);
+	$item['app'] = trim($apps[mt_rand(0, count($apps)-1)]);
+	
 	return;
-
 }

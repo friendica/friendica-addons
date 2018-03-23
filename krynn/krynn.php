@@ -83,7 +83,7 @@ function krynn_post_hook($a, &$item) {
 
 	/* Retrieve our personal config setting */
 
-	$active = get_pconfig(local_user(), 'krynn', 'enable');
+	$active = PConfig::get(local_user(), 'krynn', 'enable');
 
 	if(! $active)
 		return;
@@ -97,7 +97,7 @@ function krynn_post_hook($a, &$item) {
 	 *
 	 */
 
-	$krynn = array('Ansalon','Abanasinia','Solace','Haven','Gateway','Qualinost','Ankatavaka','Pax Tharkas','Ergoth','Newsea','Straights of Schallsea','Plains of Dust','Tarsis','Barren Hills','Que Shu','Citadel of Light','Solinari','Hedge Maze','Tower of High Sorcery','Inn of the Last Home','Last Heroes Tomb','Academy of Sorcery','Gods Row','Temple of Majere','Temple of Kiri-Jolith','Temple of Mishakal','Temple of Zeboim','The Trough','Sad Town','Xak Tsaroth','Zhaman','Skullcap','Saifhum','Karthay','Mithas','Kothas','Silver Dragon Mountain','Silvanesti');
+	$krynn = ['Ansalon','Abanasinia','Solace','Haven','Gateway','Qualinost','Ankatavaka','Pax Tharkas','Ergoth','Newsea','Straights of Schallsea','Plains of Dust','Tarsis','Barren Hills','Que Shu','Citadel of Light','Solinari','Hedge Maze','Tower of High Sorcery','Inn of the Last Home','Last Heroes Tomb','Academy of Sorcery','Gods Row','Temple of Majere','Temple of Kiri-Jolith','Temple of Mishakal','Temple of Zeboim','The Trough','Sad Town','Xak Tsaroth','Zhaman','Skullcap','Saifhum','Karthay','Mithas','Kothas','Silver Dragon Mountain','Silvanesti'];
 
 	$planet = array_rand($krynn,1);
 	$item['location'] = $krynn[$planet];
@@ -121,7 +121,7 @@ function krynn_settings_post($a,$post) {
 	if(! local_user())
 		return;
 	if($_POST['krynn-submit'])
-		set_pconfig(local_user(),'krynn','enable',intval($_POST['krynn']));
+		PConfig::set(local_user(),'krynn','enable',intval($_POST['krynn']));
 }
 
 
@@ -145,7 +145,7 @@ function krynn_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$enabled = get_pconfig(local_user(),'krynn','enable');
+	$enabled = PConfig::get(local_user(),'krynn','enable');
 
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 

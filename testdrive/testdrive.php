@@ -39,7 +39,7 @@ function testdrive_register_account($a,$b) {
 
 	$uid = $b;
 
-	$days = get_config('testdrive','expiredays');
+	$days = Config::get('testdrive','expiredays');
 	if(! $days)
 		return;
 
@@ -59,7 +59,7 @@ function testdrive_cron($a,$b) {
 
 	if(count($r)) {
 		foreach($r as $rr) {
-			notification(array(
+			notification([
 				'uid' => $rr['uid'],
 				'type' => NOTIFY_SYSTEM,
 				'system_type' => 'testdrive_expire',
@@ -69,7 +69,7 @@ function testdrive_cron($a,$b) {
 				'source_name'  => L10n::t('Administrator'),
 				'source_link'  => $a->get_baseurl(),
 				'source_photo' => $a->get_baseurl() . '/images/person-80.jpg',
-			));
+			]);
 
 			q("update user set expire_notification_sent = '%s' where uid = %d",
 				dbesc(DateTimeFormat::utcNow()),
@@ -81,12 +81,10 @@ function testdrive_cron($a,$b) {
 
 	$r = q("select * from user where account_expired = 1 and account_expires_on < UTC_TIMESTAMP() - INTERVAL 5 DAY ");
 	if(count($r)) {
-		require_once('include/Contact.php');
-		foreach($r as $rr)
-			user_remove($rr['uid']);
-
+		foreach($r as $rr) {
+			User::remove($rr['uid']);
+		}
 	}
-
 }
 
 function testdrive_enotify(&$a, &$b) {

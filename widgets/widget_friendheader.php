@@ -43,7 +43,7 @@ function friendheader_widget_content(&$a, $conf)
 		.allcontact-link { float: right; margin: 0px; }
 		.contact-block-content { clear:both; }
 		.contact-block-div { display: block !important; float: left!important; width: 50px!important; height: 50px!important; margin: 2px!important;}
-		
+
 	</style>";
 	$o .= _abs_url(contact_block());
 	$o .= "<a href='".$a->get_baseurl().'/profile/'.$a->profile['nickname']."' target=new>". L10n::t('Get added to this list!') ."</a>";

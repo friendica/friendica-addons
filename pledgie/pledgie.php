@@ -32,8 +32,8 @@ function pledgie_addon_settings(&$a,&$s) {
 
 	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/pledgie/pledgie.css' . '" media="all" />' . "\r\n";
 
-	$campaign = get_config('pledgie-campaign','text');
-	$describe = get_config('pledgie-describe','text');
+	$campaign = Config::get('pledgie-campaign','text');
+	$describe = Config::get('pledgie-describe','text');
 	
 	if(! $campaign)
 		$campaign = '';
@@ -71,8 +71,8 @@ function pledgie_addon_settings_post(&$a,&$b) {
 }
 
 function pledgie_active(&$a,&$b) {
-	$campaign = get_config('pledgie-campaign','text');
-	$describe = get_config('pledgie-describe','text');
+	$campaign = Config::get('pledgie-campaign','text');
+	$describe = Config::get('pledgie-describe','text');
 	$b .= '<div style="position: fixed; padding:5px; border-style:dotted; border-width:1px; background-color: white; line-height: 1; bottom: 5px; left: 20px; z-index: 1000; width: 150px; font-size: 12px;">';
 	$b .= $describe . '<br/><a href="https://pledgie.com/campaigns/';
 	$b .= $campaign;

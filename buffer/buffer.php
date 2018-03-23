@@ -88,8 +88,8 @@ function buffer_connect(&$a) {
 	session_start();
 
 	// Define the needed keys
-	$client_id = get_config('buffer','client_id');
-	$client_secret = get_config('buffer','client_secret');
+	$client_id = Config::get('buffer','client_id');
+	$client_secret = Config::get('buffer','client_secret');
 
 	// The callback URL is the script that gets called after the user authenticates with buffer
 	$callback_url = $a->get_baseurl()."/buffer/connect";
@@ -112,9 +112,9 @@ function buffer_jot_nets(&$a,&$b) {
 	if(! local_user())
 		return;
 
-	$buffer_post = get_pconfig(local_user(),'buffer','post');
+	$buffer_post = PConfig::get(local_user(),'buffer','post');
 	if(intval($buffer_post) == 1) {
-		$buffer_defpost = get_pconfig(local_user(),'buffer','post_by_default');
+		$buffer_defpost = PConfig::get(local_user(),'buffer','post_by_default');
 		$selected = ((intval($buffer_defpost) == 1) ? ' checked="checked" ' : '');
 		$b .= '<div class="profile-jot-net"><input type="checkbox" name="buffer_enable"' . $selected . ' value="1" /> '
 		    . L10n::t('Post to Buffer') . '</div>';
@@ -132,11 +132,11 @@ function buffer_settings(&$a,&$s) {
 
 	/* Get the current state of our config variables */
 
-	$enabled = get_pconfig(local_user(),'buffer','post');
+	$enabled = PConfig::get(local_user(),'buffer','post');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 	$css = (($enabled) ? '' : '-disabled');
 
-	$def_enabled = get_pconfig(local_user(),'buffer','post_by_default');
+	$def_enabled = PConfig::get(local_user(),'buffer','post_by_default');
 	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
 	/* Add some HTML to the existing form */
@@ -149,9 +149,9 @@ function buffer_settings(&$a,&$s) {
 	$s .= '<img class="connector'.$css.'" src="images/buffer.png" /><h3 class="connector">'. L10n::t('Buffer Export').'</h3>';
 	$s .= '</span>';
 
-	$client_id = get_config("buffer", "client_id");
-	$client_secret = get_config("buffer", "client_secret");
-	$access_token = get_pconfig(local_user(), "buffer", "access_token");
+	$client_id = Config::get("buffer", "client_id");
+	$client_secret = Config::get("buffer", "client_secret");
+	$access_token = PConfig::get(local_user(), "buffer", "access_token");
 
 	$s .= '<div id="buffer-password-wrapper">';
 	if ($access_token == "") {
@@ -208,12 +208,12 @@ function buffer_settings_post(&$a,&$b) {
 
 	if(x($_POST,'buffer-submit')) {
 		if(x($_POST,'buffer_delete')) {
-			set_pconfig(local_user(),'buffer','access_token','');
-			set_pconfig(local_user(),'buffer','post',false);
-			set_pconfig(local_user(),'buffer','post_by_default',false);
+			PConfig::set(local_user(),'buffer','access_token','');
+			PConfig::set(local_user(),'buffer','post',false);
+			PConfig::set(local_user(),'buffer','post_by_default',false);
 		} else {
-			set_pconfig(local_user(),'buffer','post',intval($_POST['buffer']));
-			set_pconfig(local_user(),'buffer','post_by_default',intval($_POST['buffer_bydefault']));
+			PConfig::set(local_user(),'buffer','post',intval($_POST['buffer']));
+			PConfig::set(local_user(),'buffer','post_by_default',intval($_POST['buffer_bydefault']));
 		}
 	}
 }
@@ -224,11 +224,11 @@ function buffer_post_local(&$a,&$b) {
 		return;
 	}
 
-	$buffer_post   = intval(get_pconfig(local_user(),'buffer','post'));
+	$buffer_post   = intval(PConfig::get(local_user(),'buffer','post'));
 
 	$buffer_enable = (($buffer_post && x($_REQUEST,'buffer_enable')) ? intval($_REQUEST['buffer_enable']) : 0);
 
-	if ($b['api_source'] && intval(get_pconfig(local_user(),'buffer','post_by_default'))) {
+	if ($b['api_source'] && intval(PConfig::get(local_user(),'buffer','post_by_default'))) {
 		$buffer_enable = 1;
 	}
 
@@ -243,24 +243,34 @@ function buffer_post_local(&$a,&$b) {
 	$b['postopts'] .= 'buffer';
 }
 
-function buffer_send(&$a,&$b) {
-
-	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
+function buffer_send(App $a, &$b)
+{
+	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
+	}
 
-	if(! strstr($b['postopts'],'buffer'))
+	if(! strstr($b['postopts'],'buffer')) {
 		return;
+	}
 
-	if($b['parent'] != $b['id'])
+	if($b['parent'] != $b['id']) {
 		return;
+	}
+
+	// Dont't post if the post doesn't belong to us.
+	// This is a check for forum postings
+	$self = dba::selectFirst('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
+	if ($b['contact-id'] != $self['id']) {
+		return;
+	}
 
 	// if post comes from buffer don't send it back
 	//if($b['app'] == "Buffer")
 	//	return;
 
-	$client_id = get_config("buffer", "client_id");
-	$client_secret = get_config("buffer", "client_secret");
-	$access_token = get_pconfig($b['uid'], "buffer","access_token");
+	$client_id = Config::get("buffer", "client_id");
+	$client_secret = Config::get("buffer", "client_secret");
+	$access_token = PConfig::get($b['uid'], "buffer","access_token");
 
 	if ($access_token) {
 		$buffer = new BufferApp($client_id, $client_secret, $callback_url, $access_token);
@@ -299,7 +309,7 @@ function buffer_send(&$a,&$b) {
 						break;
 					case 'twitter':
 						$send = ($b["extid"] != NETWORK_TWITTER);
-						$limit = 140;
+						$limit = 280;
 						$markup = false;
 						$includedlinks = true;
 						$htmlmode = 8;
@@ -362,7 +372,7 @@ function buffer_send(&$a,&$b) {
 				elseif ($profile->service == "google")
 					$post["text"] .= html_entity_decode("&#x00A0;", ENT_QUOTES, 'UTF-8'); // Send a special blank to identify the post through the "fromgplus" addon
 
-				$message = array();
+				$message = [];
 				$message["text"] = $post["text"];
 				$message["profile_ids[]"] = $profile->id;
 				$message["shorten"] = false;

@@ -44,7 +44,7 @@ function webrtc_content(&$a) {
         $o = '';
 
         /* landingpage to create chatrooms */
-        $webrtcurl = get_config('webrtc','webrtcurl');
+        $webrtcurl = Config::get('webrtc','webrtcurl');
 
         /* embedd the landing page in an iframe */
         $o .= '<h2>'.L10n::t('Video Chat').'</h2>';

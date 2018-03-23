@@ -47,7 +47,7 @@ function superblock_addon_settings(&$a,&$s) {
 
 	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/superblock/superblock.css' . '" media="all" />' . "\r\n";
 
-	$words = get_pconfig(local_user(),'system','blocked');
+	$words = PConfig::get(local_user(),'system','blocked');
 	if(! $words) {
 		$words = '';
 	}
@@ -82,7 +82,7 @@ function superblock_addon_settings_post(&$a,&$b) {
 
 function superblock_enotify_store(&$a,&$b) {
 
-	$words = get_pconfig($b['uid'],'system','blocked');
+	$words = PConfig::get($b['uid'],'system','blocked');
 	if($words) {
 		$arr = explode(',',$words);
 	}
@@ -114,7 +114,7 @@ function superblock_conversation_start(&$a,&$b) {
 	if(! local_user())
 		return;
 
-	$words = get_pconfig(local_user(),'system','blocked');
+	$words = PConfig::get(local_user(),'system','blocked');
 	if($words) {
 		$a->data['superblock'] = explode(',',$words);
 	}
@@ -159,7 +159,7 @@ function superblock_init(&$a) {
 	if(! local_user())
 		return;
 
-	$words = get_pconfig(local_user(),'system','blocked');
+	$words = PConfig::get(local_user(),'system','blocked');
 
 	if(array_key_exists('block',$_GET) && $_GET['block']) {
 		if(strlen($words))

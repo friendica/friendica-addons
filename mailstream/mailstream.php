@@ -21,37 +21,37 @@ function mailstream_install() {
 	Addon::registerHook('post_remote_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
 	Addon::registerHook('cron', 'addon/mailstream/mailstream.php', 'mailstream_cron');
 
-	if (get_config('mailstream', 'dbversion') == '0.1') {
+	if (Config::get('mailstream', 'dbversion') == '0.1') {
 		q('ALTER TABLE `mailstream_item` DROP INDEX `uid`');
 		q('ALTER TABLE `mailstream_item` DROP INDEX `contact-id`');
 		q('ALTER TABLE `mailstream_item` DROP INDEX `plink`');
 		q('ALTER TABLE `mailstream_item` CHANGE `plink` `uri` char(255) NOT NULL');
-		set_config('mailstream', 'dbversion', '0.2');
+		Config::set('mailstream', 'dbversion', '0.2');
 	}
-	if (get_config('mailstream', 'dbversion') == '0.2') {
+	if (Config::get('mailstream', 'dbversion') == '0.2') {
 		q('DELETE FROM `pconfig` WHERE `cat` = "mailstream" AND `k` = "delay"');
-		set_config('mailstream', 'dbversion', '0.3');
+		Config::set('mailstream', 'dbversion', '0.3');
 	}
-	if (get_config('mailstream', 'dbversion') == '0.3') {
+	if (Config::get('mailstream', 'dbversion') == '0.3') {
 		q('ALTER TABLE `mailstream_item` CHANGE `created` `created` timestamp NOT NULL DEFAULT now()');
 		q('ALTER TABLE `mailstream_item` CHANGE `completed` `completed` timestamp NULL DEFAULT NULL');
-		set_config('mailstream', 'dbversion', '0.4');
+		Config::set('mailstream', 'dbversion', '0.4');
 	}
-	if (get_config('mailstream', 'dbversion') == '0.4') {
+	if (Config::get('mailstream', 'dbversion') == '0.4') {
 		q('ALTER TABLE `mailstream_item` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin');
-		set_config('mailstream', 'dbversion', '0.5');
+		Config::set('mailstream', 'dbversion', '0.5');
 	}
-	if (get_config('mailstream', 'dbversion') == '0.5') {
-		set_config('mailstream', 'dbversion', '1.0');
+	if (Config::get('mailstream', 'dbversion') == '0.5') {
+		Config::set('mailstream', 'dbversion', '1.0');
 	}
 
-	if (get_config('retriever', 'dbversion') != '1.0') {
+	if (Config::get('retriever', 'dbversion') != '1.0') {
 		$schema = file_get_contents(dirname(__file__).'/database.sql');
 		$arr = explode(';', $schema);
 		foreach ($arr as $a) {
 			$r = q($a);
 		}
-		set_config('mailstream', 'dbversion', '1.0');
+		Config::set('mailstream', 'dbversion', '1.0');
 	}
 }
 
@@ -84,7 +84,7 @@ function mailstream_addon_admin(&$a,&$o) {
 
 function mailstream_addon_admin_post ($a) {
 	if (x($_POST, 'frommail')) {
-		set_config('mailstream', 'frommail', $_POST['frommail']);
+		Config::set('mailstream', 'frommail', $_POST['frommail']);
 	}
 }
 
@@ -98,7 +98,7 @@ function mailstream_generate_id($a, $uri) {
 }
 
 function mailstream_post_hook(&$a, &$item) {
-	if (!get_pconfig($item['uid'], 'mailstream', 'enabled')) {
+	if (!PConfig::get($item['uid'], 'mailstream', 'enabled')) {
 		return;
 	}
 	if (!$item['uid']) {
@@ -110,7 +110,7 @@ function mailstream_post_hook(&$a, &$item) {
 	if (!$item['uri']) {
 		return;
 	}
-	if (get_pconfig($item['uid'], 'mailstream', 'nolikes')) {
+	if (PConfig::get($item['uid'], 'mailstream', 'nolikes')) {
 		if ($item['verb'] == ACTIVITY_LIKE) {
 			return;
 		}
@@ -147,10 +147,10 @@ function mailstream_get_user($uid) {
 }
 
 function mailstream_do_images($a, &$item, &$attachments) {
-	if (!get_pconfig($item['uid'], 'mailstream', 'attachimg')) {
+	if (!PConfig::get($item['uid'], 'mailstream', 'attachimg')) {
 		return;
 	}
-	$attachments = array();
+	$attachments = [];
 	$baseurl = $a->get_baseurl();
 	preg_match_all("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/ism", $item["body"], $matches1);
 	preg_match_all("/\[img\](.*?)\[\/img\]/ism", $item["body"], $matches2);
@@ -161,7 +161,7 @@ function mailstream_do_images($a, &$item, &$attachments) {
 			'data' => Network::fetchUrl($url, true, $redirects, 0, null, $cookiejar),
 			'guid' => hash("crc32", $url),
 			'filename' => basename($url),
-			'type' => $a->get_curl_content_type());
+			'type' => $a->get_curl_content_type()];
 		if (strlen($attachments[$url]['data'])) {
 			$item['body'] = str_replace($url, 'cid:' . $attachments[$url]['guid'], $item['body']);
 			continue;
@@ -172,7 +172,7 @@ function mailstream_do_images($a, &$item, &$attachments) {
 
 function mailstream_sender($item) {
 	$r = q('SELECT * FROM `contact` WHERE `id` = %d', $item['contact-id']);
-	if (dbm::is_result($r)) {
+	if (DBM::is_result($r)) {
 		$contact = $r[0];
 		if ($contact['name'] != $item['author-name']) {
 			return $contact['name'] . ' - ' . $item['author-name'];
@@ -213,7 +213,7 @@ function mailstream_subject($item) {
 	// Don't look more than 100 levels deep for a subject, in case of loops
 	for ($i = 0; ($i < 100) && $parent; $i++) {
 		$r = q("SELECT `thr-parent`, `title` FROM `item` WHERE `uri` = '%s'", dbesc($parent));
-		if (!dbm::is_result($r)) {
+		if (!DBM::is_result($r)) {
 			break;
 		}
 		if ($r[0]['thr-parent'] === $parent) {
@@ -260,11 +260,11 @@ function mailstream_send($a, $message_id, $item, $user) {
 
 	$attachments = [];
 	mailstream_do_images($a, $item, $attachments);
-	$frommail = get_config('mailstream', 'frommail');
+	$frommail = Config::get('mailstream', 'frommail');
 	if ($frommail == "") {
 		$frommail = 'friendica@localhost.local';
 	}
-	$address = get_pconfig($item['uid'], 'mailstream', 'address');
+	$address = PConfig::get($item['uid'], 'mailstream', 'address');
 	if (!$address) {
 		$address = $user['email'];
 	}
@@ -356,8 +356,8 @@ function mailstream_addon_settings(&$a,&$s) {
 	$nolikes = PConfig::get(local_user(), 'mailstream', 'nolikes');
 	$attachimg= PConfig::get(local_user(), 'mailstream', 'attachimg');
 	$template = get_markup_template('settings.tpl', 'addon/mailstream/');
-	$s .= replace_macros($template, array(
-				 '$enabled' => array(
+	$s .= replace_macros($template, [
+				 '$enabled' => [
 					'mailstream_enabled',
 					L10n::t('Enabled'),
 					$enabled],
@@ -382,28 +382,28 @@ function mailstream_addon_settings(&$a,&$s) {
 
 function mailstream_addon_settings_post($a,$post) {
 	if ($_POST['mailstream_address'] != "") {
-		set_pconfig(local_user(), 'mailstream', 'address', $_POST['mailstream_address']);
+		PConfig::set(local_user(), 'mailstream', 'address', $_POST['mailstream_address']);
 	}
 	else {
-		del_pconfig(local_user(), 'mailstream', 'address');
+		PConfig::delete(local_user(), 'mailstream', 'address');
 	}
 	if ($_POST['mailstream_nolikes']) {
-		set_pconfig(local_user(), 'mailstream', 'nolikes', $_POST['mailstream_enabled']);
+		PConfig::set(local_user(), 'mailstream', 'nolikes', $_POST['mailstream_enabled']);
 	}
 	else {
-		del_pconfig(local_user(), 'mailstream', 'nolikes');
+		PConfig::delete(local_user(), 'mailstream', 'nolikes');
 	}
 	if ($_POST['mailstream_enabled']) {
-		set_pconfig(local_user(), 'mailstream', 'enabled', $_POST['mailstream_enabled']);
+		PConfig::set(local_user(), 'mailstream', 'enabled', $_POST['mailstream_enabled']);
 	}
 	else {
-		del_pconfig(local_user(), 'mailstream', 'enabled');
+		PConfig::delete(local_user(), 'mailstream', 'enabled');
 	}
 	if ($_POST['mailstream_attachimg']) {
-		set_pconfig(local_user(), 'mailstream', 'attachimg', $_POST['mailstream_attachimg']);
+		PConfig::set(local_user(), 'mailstream', 'attachimg', $_POST['mailstream_attachimg']);
 	}
 	else {
-		del_pconfig(local_user(), 'mailstream', 'attachimg');
+		PConfig::delete(local_user(), 'mailstream', 'attachimg');
 	}
 }
 

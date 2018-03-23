@@ -80,7 +80,7 @@ function planets_post_hook($a, &$item) {
 
 	/* Retrieve our personal config setting */
 
-	$active = get_pconfig(local_user(), 'planets', 'enable');
+	$active = PConfig::get(local_user(), 'planets', 'enable');
 
 	if(! $active)
 		return;
@@ -94,7 +94,7 @@ function planets_post_hook($a, &$item) {
 	 *
 	 */
 
-	$planets = array('Alderaan','Tatooine','Dagobah','Polis Massa','Coruscant','Hoth','Endor','Kamino','Rattatak','Mustafar','Iego','Geonosis','Felucia','Dantooine','Ansion','Artaru','Bespin','Boz Pity','Cato Neimoidia','Christophsis','Kashyyyk','Kessel','Malastare','Mygeeto','Nar Shaddaa','Ord Mantell','Saleucami','Subterrel','Death Star','Teth','Tund','Utapau','Yavin');
+	$planets = ['Alderaan','Tatooine','Dagobah','Polis Massa','Coruscant','Hoth','Endor','Kamino','Rattatak','Mustafar','Iego','Geonosis','Felucia','Dantooine','Ansion','Artaru','Bespin','Boz Pity','Cato Neimoidia','Christophsis','Kashyyyk','Kessel','Malastare','Mygeeto','Nar Shaddaa','Ord Mantell','Saleucami','Subterrel','Death Star','Teth','Tund','Utapau','Yavin'];
 
 	$planet = array_rand($planets,1);
 	$item['location'] = $planets[$planet];
@@ -118,7 +118,7 @@ function planets_settings_post($a,$post) {
 	if(! local_user())
 		return;
 	if($_POST['planets-submit'])
-		set_pconfig(local_user(),'planets','enable',intval($_POST['planets']));
+		PConfig::set(local_user(),'planets','enable',intval($_POST['planets']));
 }
 
 
@@ -142,7 +142,7 @@ function planets_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$enabled = get_pconfig(local_user(),'planets','enable');
+	$enabled = PConfig::get(local_user(),'planets','enable');
 
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 

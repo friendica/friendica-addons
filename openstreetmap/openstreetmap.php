@@ -42,7 +42,8 @@ function openstreetmap_uninstall()
 	logger("removed openstreetmap");
 }
 
-function openstreetmap_alterheader($a, &$navHtml) {
+function openstreetmap_alterheader($a, &$navHtml)
+{
 	$addScriptTag = '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/openstreetmap/openstreetmap.js"></script>' . "\r\n";
 	$a->page['htmlhead'] .= $addScriptTag;
 }
@@ -52,7 +53,7 @@ function openstreetmap_alterheader($a, &$navHtml) {
  *
  * If an item has coordinates add link to a tile map server, e.g. openstreetmap.org.
  * If an item has a location open it with the help of OSM's Nominatim reverse geocode search.
- * 
+ *
  * @param mixed $a
  * @param array& $item
  */
@@ -60,6 +61,7 @@ function openstreetmap_location($a, &$item)
 {
 	if (!(strlen($item['location']) || strlen($item['coord']))) {
 		return;
+	}
 
 	/*
 	 * Get the configuration variables from the config.
@@ -92,13 +94,15 @@ function openstreetmap_location($a, &$item)
 		}
 	}
 
-	if ($target == "")
+	if ($target == "") {
 		$target = $nomserver.'?q='.urlencode($item['location']);
+	}
 
-	if ($item['location'] != "")
+	if ($item['location'] != "") {
 		$title = $item['location'];
-	else
+	} else {
 		$title = $item['coord'];
+	}
 
 	$item['html'] = '<a target="map" title="'.$title.'" href= "'.$target.'">'.$title.'</a>';
 }
@@ -212,5 +216,3 @@ function openstreetmap_addon_admin_post(&$a)
 
 	info(L10n::t('Settings updated.') . EOL);
 }
-
-

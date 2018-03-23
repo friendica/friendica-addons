@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: IFTTT Receiver
  * Description: Receives a post from https://ifttt.com/ and distributes it.
@@ -27,22 +28,27 @@ function ifttt_uninstall()
 	Addon::unregisterHook('connector_settings_post', 'addon/ifttt/ifttt.php', 'ifttt_settings_post');
 }
 
-function ifttt_module() {
+function ifttt_module()
+{
+
 }
 
-function ifttt_content(&$a) {
+function ifttt_content()
+{
+
 }
 
-function ifttt_settings(&$a,&$s) {
+function ifttt_settings(App $a, &$s)
+{
+	if (!local_user()) {
+		return;
+	}
 
-        if(! local_user())
-                return;
-
-        $key = get_pconfig(local_user(),'ifttt','key');
+	$key = PConfig::get(local_user(), 'ifttt', 'key');
 
 	if (!$key) {
-		$key = substr(random_string(),0,20);
-        	set_pconfig(local_user(),'ifttt','key', $key);
+		$key = random_string(20);
+		PConfig::set(local_user(), 'ifttt', 'key', $key);
 	}
 
 	$s .= '<span id="settings_ifttt_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_ifttt_expanded\'); openClose(\'settings_ifttt_inflated\');">';
@@ -78,109 +84,122 @@ function ifttt_settings(&$a,&$s) {
 	$s .= '</div>';
 }
 
-function ifttt_settings_post(&$a,&$b) {
-
-        if(x($_POST,'ifttt-submit'))
-                if (isset($_POST['ifttt-rekey']))
-                        del_pconfig(local_user(), 'ifttt', 'key');
+function ifttt_settings_post()
+{
+	if (x($_POST, 'ifttt-submit') && isset($_POST['ifttt-rekey'])) {
+		PConfig::delete(local_user(), 'ifttt', 'key');
+	}
 }
 
-function ifttt_post(&$a) {
-	if ($a->argc != 2)
-		return;
-
-	$user = $a->argv[1];
-
-	$r = q("SELECT `uid` FROM `user` WHERE `nickname` = '%s' LIMIT 1", dbesc($user));
-	if (!$r) {
-		logger("User ".$user." not found.", LOGGER_DEBUG);
+function ifttt_post(App $a)
+{
+	if ($a->argc != 2) {
 		return;
 	}
 
-	$uid = $r[0]["uid"];
+	$nickname = $a->argv[1];
 
-	logger("Received a post for user ".$uid." from ifttt ".print_r($_REQUEST, true), LOGGER_DEBUG);
-
-	if (!isset($_REQUEST["key"])) {
-		logger("No key found.");
+	$user = dba::selectFirst('user', ['uid'], ['nickname' => $nickname]);
+	if (!DBM::is_result($user)) {
+		logger('User ' . $nickname . ' not found.', LOGGER_DEBUG);
 		return;
 	}
 
-	$key = $_REQUEST["key"];
+	$uid = $user['uid'];
+
+	logger('Received a post for user ' . $uid . ' from ifttt ' . print_r($_REQUEST, true), LOGGER_DEBUG);
+
+	if (!isset($_REQUEST['key'])) {
+		logger('No key found.');
+		return;
+	}
+
+	$key = $_REQUEST['key'];
 
 	// Check the key
-        if ($key != get_pconfig($uid,'ifttt','key')) {
-		logger("Invalid key for user ".$uid, LOGGER_DEBUG);
+	if ($key != PConfig::get($uid, 'ifttt', 'key')) {
+		logger('Invalid key for user ' . $uid, LOGGER_DEBUG);
 		return;
 	}
 
-	$item = array();
+	$item = [];
 
-	if (isset($_REQUEST["type"]))
-		$item["type"] = $_REQUEST["type"];
+	if (isset($_REQUEST['type'])) {
+		$item['type'] = $_REQUEST['type'];
+	}
 
-	if (!in_array($item["type"], array("status", "link", "photo"))) {
-		logger("Unknown item type ".$item["type"], LOGGER_DEBUG);
+	if (!in_array($item['type'], ['status', 'link', 'photo'])) {
+		logger('Unknown item type ' . $item['type'], LOGGER_DEBUG);
 		return;
 	}
 
-	if (isset($_REQUEST["link"]))
-		$item["link"] = trim($_REQUEST["link"]);
-	if (isset($_REQUEST["image"]))
-		$item["image"] = trim($_REQUEST["image"]);
-	if (isset($_REQUEST["title"]))
-		$item["title"] = trim($_REQUEST["title"]);
-	if (isset($_REQUEST["msg"]))
-		$item["msg"] = trim($_REQUEST["msg"]);
-	if (isset($_REQUEST["description"]))
-		$item["description"] = trim($_REQUEST["description"]);
-	if (isset($_REQUEST["date"]))
-		$item["date"] = date("c", strtotime($date = str_replace(" at ", ", ", $_REQUEST["date"])));
-	if (isset($_REQUEST["url"]))
-		$item["url"] = trim($_REQUEST["url"]);
+	if (isset($_REQUEST['link'])) {
+		$item['link'] = trim($_REQUEST['link']);
+	}
+	if (isset($_REQUEST['image'])) {
+		$item['image'] = trim($_REQUEST['image']);
+	}
+	if (isset($_REQUEST['title'])) {
+		$item['title'] = trim($_REQUEST['title']);
+	}
+	if (isset($_REQUEST['msg'])) {
+		$item['msg'] = trim($_REQUEST['msg']);
+	}
+	if (isset($_REQUEST['description'])) {
+		$item['description'] = trim($_REQUEST['description']);
+	}
+	if (isset($_REQUEST['date'])) {
+		$item['date'] = date('c', strtotime($date = str_replace(' at ', ', ', $_REQUEST['date'])));
+	}
+	if (isset($_REQUEST['url'])) {
+		$item['url'] = trim($_REQUEST['url']);
+	}
 
-	if ((substr($item["msg"], 0, 3) == "<<<") && (substr($item["msg"], -3, 3) == ">>>"))
-		$item["msg"] = substr($item["msg"], 3, -3);
+	if ((substr($item['msg'], 0, 3) == '<<<') && (substr($item['msg'], -3, 3) == '>>>')) {
+		$item['msg'] = substr($item['msg'], 3, -3);
+	}
 
 	ifttt_message($uid, $item);
 }
 
-function ifttt_message($uid, $item) {
-
+function ifttt_message($uid, $item)
+{
 	$a = get_app();
 
-	$_SESSION["authenticated"] = true;
-	$_SESSION["uid"] = $uid;
+	$_SESSION['authenticated'] = true;
+	$_SESSION['uid'] = $uid;
 
 	unset($_REQUEST);
-	$_REQUEST["type"] = "wall";
-	$_REQUEST["api_source"] = true;
-	$_REQUEST["profile_uid"] = $uid;
-	$_REQUEST["source"] = "IFTTT";
-	$_REQUEST["title"] = "";
-	$_REQUEST["body"] = $item["msg"];
-	//$_REQUEST["date"] = $item["date"];
-	//$_REQUEST["uri"] = $item["url"];
+	$_REQUEST['type'] = 'wall';
+	$_REQUEST['api_source'] = true;
+	$_REQUEST['profile_uid'] = $uid;
+	$_REQUEST['source'] = 'IFTTT';
+	$_REQUEST['title'] = '';
+	$_REQUEST['body'] = $item['msg'];
+	//$_REQUEST['date'] = $item['date'];
+	//$_REQUEST['uri'] = $item['url'];
 
-	if (strstr($item["url"], "facebook.com")) {
-		$hash = hash("ripemd128", item["url"]);
-		$_REQUEST["extid"] = NETWORK_FACEBOOK;
-		$_REQUEST['message_id'] = item_new_uri($a->get_hostname(), $uid, NETWORK_FACEBOOK.":".$hash);
+	if (strstr($item['url'], 'facebook.com')) {
+		$hash = hash('ripemd128', item['url']);
+		$_REQUEST['extid'] = NETWORK_FACEBOOK;
+		$_REQUEST['message_id'] = item_new_uri($a->get_hostname(), $uid, NETWORK_FACEBOOK . ':' . $hash);
 	}
 
-	if ($item["type"] == "link") {
-		$data = query_page_info($item["link"]);
+	if ($item['type'] == 'link') {
+		$data = query_page_info($item['link']);
 
-		if (isset($item["title"]) && (trim($item["title"]) != ""))
-			$data["title"] = $item["title"];
+		if (isset($item['title']) && (trim($item['title']) != '')) {
+			$data['title'] = $item['title'];
+		}
 
-		if (isset($item["description"]) && (trim($item["description"]) != ""))
-			$data["text"] = $item["description"];
+		if (isset($item['description']) && (trim($item['description']) != '')) {
+			$data['text'] = $item['description'];
+		}
 
-		$_REQUEST["body"] .=  add_page_info_data($data);
-	} elseif (($item["type"] == "photo") && ($item["image"] != ""))
-		$_REQUEST["body"] .= "\n\n[img]".$item["image"]."[/img]\n";
+		$_REQUEST['body'] .= add_page_info_data($data);
+	} elseif (($item['type'] == 'photo') && ($item['image'] != '')) {
+		$_REQUEST['body'] .= "\n\n[img]" . $item['image'] . "[/img]\n";
+	}
 
-	//print_r($_REQUEST);
 	item_post($a);
 }

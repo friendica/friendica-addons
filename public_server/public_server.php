@@ -64,7 +64,7 @@ function public_server_cron($a, $b)
 				'source_name'  => L10n::t('Administrator'),
 				'source_link'  => $a->get_baseurl(),
 				'source_photo' => $a->get_baseurl() . '/images/person-80.jpg',
-			));
+			]);
 
 			$fields = ['expire_notification_sent' => DateTimeFormat::utcNow()];
 			dba::update('user', $fields, ['uid' => $rr['uid']]);

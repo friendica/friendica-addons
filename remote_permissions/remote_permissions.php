@@ -4,7 +4,7 @@
  * Description: Allow the recipients of private posts to see who else can see the post by clicking the lock icon
  * Version: 1.0
  * Author: Zach <https://f.shmuz.in/profile/techcity>
- * 
+ *
  */
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -28,7 +28,7 @@ function remote_permissions_settings(&$a,&$o) {
 	if(! local_user())
 		return;
 
-	$global = get_config("remote_perms", "global");
+	$global = Config::get("remote_perms", "global");
 	if($global == 1)
 		return;
 
@@ -38,8 +38,8 @@ function remote_permissions_settings(&$a,&$o) {
 
 	/* Get the current state of our config variable */
 
-	$remote_perms = get_pconfig(local_user(),'remote_perms','show');
-	
+	$remote_perms = PConfig::get(local_user(),'remote_perms','show');
+
 	/* Add some HTML to the existing form */
 
 //	$t = file_get_contents("addon/remote_permissions/settings.tpl" );
@@ -66,13 +66,13 @@ function remote_permissions_content($a, $item_copy) {
 	if($item_copy['uid'] != local_user())
 		return;
 
-	if(get_config('remote_perms','global') == 0) {
+	if(Config::get('remote_perms','global') == 0) {
 		// Admin has set Individual choice. We need to find
 		// the original poster. First, get the contact's info
 		$r = q("SELECT nick, url FROM contact WHERE id = %d LIMIT 1",
 		       intval($item_copy['contact-id'])
 		);
-		if(! $r) 
+		if(! $r)
 			return;
 
 		// Find out if the contact lives here
@@ -89,14 +89,14 @@ function remote_permissions_content($a, $item_copy) {
 		if(! $r)
 			return;
 
-		if(get_pconfig($r[0]['uid'],'remote_perms','show') == 0)
+		if(PConfig::get($r[0]['uid'],'remote_perms','show') == 0)
 			return;
 	}
 
 	if(($item_copy['private'] == 1) && (! strlen($item_copy['allow_cid'])) && (! strlen($item_copy['allow_gid']))
 		&& (! strlen($item_copy['deny_cid'])) && (! strlen($item_copy['deny_gid']))) {
 
-		$allow_names = array();
+		$allow_names = [];
 
 		// Check for the original post here -- that's the only way
 		// to definitely get all of the recipients
@@ -132,7 +132,7 @@ function remote_permissions_content($a, $item_copy) {
 				$r = q("SELECT DISTINCT `contact-id` FROM group_member WHERE gid IN ( %s )",
 					dbesc(implode(', ', $allowed_groups))
 				);
-				foreach($r as $rr) 
+				foreach($r as $rr)
 					$allow[] = $rr['contact-id'];
 			}
 			$allow = array_unique($allow + $allowed_users);
@@ -141,7 +141,7 @@ function remote_permissions_content($a, $item_copy) {
 				$r = q("SELECT DISTINCT `contact-id` FROM group_member WHERE gid IN ( %s )",
 					dbesc(implode(', ', $deny_groups))
 				);
-				foreach($r as $rr) 
+				foreach($r as $rr)
 					$deny[] = $rr['contact-id'];
 			}
 			$deny = $deny + $deny_users;
@@ -168,7 +168,7 @@ function remote_permissions_content($a, $item_copy) {
 			if(! $r)
 				return;
 
-			$allow = array();
+			$allow = [];
 			foreach($r as $rr)
 				$allow[] = $rr['uid'];
 

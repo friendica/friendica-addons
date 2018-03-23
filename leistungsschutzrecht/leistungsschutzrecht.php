@@ -37,7 +37,7 @@ function leistungsschutzrecht_getsiteinfo($a, &$siteinfo) {
 }
 
 function leistungsschutzrecht_cuttext($text) {
-	$text = str_replace(array("\r", "\n"), array(" ", " "), $text);
+	$text = str_replace(["\r", "\n"], [" ", " "], $text);
 
 	do {
 		$oldtext = $text;
@@ -73,7 +73,7 @@ function leistungsschutzrecht_fetchsites()
 	$sitelist = Network::fetchUrl($url);
 	$siteurls = explode(',', $sitelist);
 
-	$whitelist = array('tagesschau.de', 'heute.de', 'wdr.de');
+	$whitelist = ['tagesschau.de', 'heute.de', 'wdr.de'];
 
 	$sites = [];
 	foreach ($siteurls as $site) {
@@ -117,12 +117,12 @@ function leistungsschutzrecht_fetchsites()
 */
 
 	if (sizeof($sites)) {
-		set_config('leistungsschutzrecht','sites',$sites);
+		Config::set('leistungsschutzrecht','sites',$sites);
 	}
 }
 
 function leistungsschutzrecht_is_member_site($url) {
-	$sites = get_config('leistungsschutzrecht','sites');
+	$sites = Config::get('leistungsschutzrecht','sites');
 
 	if ($sites == "")
 		return(false);
@@ -144,7 +144,7 @@ function leistungsschutzrecht_is_member_site($url) {
 }
 
 function leistungsschutzrecht_cron($a,$b) {
-	$last = get_config('leistungsschutzrecht','last_poll');
+	$last = Config::get('leistungsschutzrecht','last_poll');
 
 	if($last) {
 		$next = $last + 86400;
@@ -154,6 +154,6 @@ function leistungsschutzrecht_cron($a,$b) {
 		}
 	}
 	leistungsschutzrecht_fetchsites();
-	set_config('leistungsschutzrecht','last_poll', time());
+	Config::set('leistungsschutzrecht','last_poll', time());
 }
 ?>

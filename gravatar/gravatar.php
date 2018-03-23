@@ -34,8 +34,8 @@ function gravatar_uninstall() {
  * @param &$b array
  */
 function gravatar_lookup($a, &$b) {
-	$default_avatar = get_config('gravatar', 'default_img');
-	$rating = get_config('gravatar', 'rating');
+	$default_avatar = Config::get('gravatar', 'default_img');
+	$rating = Config::get('gravatar', 'rating');
 
 	// setting default value if nothing configured
 	if(! $default_avatar)
@@ -50,7 +50,7 @@ function gravatar_lookup($a, &$b) {
 	if ($default_avatar != "gravatar")
 		$url .= '&d=' .$default_avatar;
 
-	$b['url'] = $url;	
+	$b['url'] = $url;
 	$b['success'] = true;
 }
 
@@ -60,8 +60,8 @@ function gravatar_lookup($a, &$b) {
 function gravatar_addon_admin (&$a, &$o) {
 	$t = get_markup_template( "admin.tpl", "addon/gravatar/" );
 
-	$default_avatar = get_config('gravatar', 'default_img');
-	$rating = get_config('gravatar', 'rating');
+	$default_avatar = Config::get('gravatar', 'default_img');
+	$rating = Config::get('gravatar', 'rating');
 
 	// set default values for first configuration
 	if(! $default_avatar)
@@ -82,7 +82,7 @@ function gravatar_addon_admin (&$a, &$o) {
 		'pg' => 'pg',
 		'r' => 'r',
 		'x' => 'x'
-	);
+	];
 
 	// Check if Libravatar is enabled and show warning
 	$r = q("SELECT * FROM `addon` WHERE `name` = '%s' and `installed` = 1",

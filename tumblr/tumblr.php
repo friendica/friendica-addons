@@ -85,8 +85,8 @@ function tumblr_connect($a) {
 	//require_once('addon/tumblr/tumblroauth/tumblroauth.php');
 
 	// Define the needed keys
-	$consumer_key = get_config('tumblr','consumer_key');
-	$consumer_secret = get_config('tumblr','consumer_secret');
+	$consumer_key = Config::get('tumblr','consumer_key');
+	$consumer_secret = Config::get('tumblr','consumer_secret');
 
 	// The callback URL is the script that gets called after the user authenticates with tumblr
 	// In this example, it would be the included callback.php
@@ -135,8 +135,8 @@ function tumblr_callback($a) {
 	//require_once('addon/tumblr/tumblroauth/tumblroauth.php');
 
 	// Define the needed keys
-	$consumer_key = get_config('tumblr','consumer_key');
-	$consumer_secret = get_config('tumblr','consumer_secret');
+	$consumer_key = Config::get('tumblr','consumer_key');
+	$consumer_secret = Config::get('tumblr','consumer_secret');
 
 	// Once the user approves your app at Tumblr, they are sent back to this script.
 	// This script is passed two parameters in the URL, oauth_token (our Request Token)
@@ -162,8 +162,8 @@ function tumblr_callback($a) {
 	}
 
 	// What's next?  Now that we have an Access Token and Secret, we can make an API call.
-	set_pconfig(local_user(), "tumblr", "oauth_token", $access_token['oauth_token']);
-	set_pconfig(local_user(), "tumblr", "oauth_token_secret", $access_token['oauth_token_secret']);
+	PConfig::set(local_user(), "tumblr", "oauth_token", $access_token['oauth_token']);
+	PConfig::set(local_user(), "tumblr", "oauth_token_secret", $access_token['oauth_token_secret']);
 
 	$o = L10n::t("You are now authenticated to tumblr.");
 	$o .= '<br /><a href="'.$a->get_baseurl().'/settings/connectors">'.L10n::t("return to the connector page").'</a>';
@@ -174,9 +174,9 @@ function tumblr_jot_nets(&$a,&$b) {
 	if(! local_user())
 		return;
 
-	$tmbl_post = get_pconfig(local_user(),'tumblr','post');
+	$tmbl_post = PConfig::get(local_user(),'tumblr','post');
 	if(intval($tmbl_post) == 1) {
-		$tmbl_defpost = get_pconfig(local_user(),'tumblr','post_by_default');
+		$tmbl_defpost = PConfig::get(local_user(),'tumblr','post_by_default');
 		$selected = ((intval($tmbl_defpost) == 1) ? ' checked="checked" ' : '');
 		$b .= '<div class="profile-jot-net"><input type="checkbox" name="tumblr_enable"' . $selected . ' value="1" /> '
 			. L10n::t('Post to Tumblr') . '</div>';
@@ -195,11 +195,11 @@ function tumblr_settings(&$a,&$s) {
 
 	/* Get the current state of our config variables */
 
-	$enabled = get_pconfig(local_user(),'tumblr','post');
+	$enabled = PConfig::get(local_user(),'tumblr','post');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 	$css = (($enabled) ? '' : '-disabled');
 
-	$def_enabled = get_pconfig(local_user(),'tumblr','post_by_default');
+	$def_enabled = PConfig::get(local_user(),'tumblr','post_by_default');
 
 	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
@@ -227,26 +227,26 @@ function tumblr_settings(&$a,&$s) {
 	$s .= '<input id="tumblr-bydefault" type="checkbox" name="tumblr_bydefault" value="1" ' . $def_checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
-	$oauth_token = get_pconfig(local_user(), "tumblr", "oauth_token");
-	$oauth_token_secret = get_pconfig(local_user(), "tumblr", "oauth_token_secret");
+	$oauth_token = PConfig::get(local_user(), "tumblr", "oauth_token");
+	$oauth_token_secret = PConfig::get(local_user(), "tumblr", "oauth_token_secret");
 
 	$s .= '<div id="tumblr-page-wrapper">';
 	if (($oauth_token != "") && ($oauth_token_secret != "")) {
 
-		$page = get_pconfig(local_user(),'tumblr','page');
-		$consumer_key = get_config('tumblr','consumer_key');
-		$consumer_secret = get_config('tumblr','consumer_secret');
+		$page = PConfig::get(local_user(),'tumblr','page');
+		$consumer_key = Config::get('tumblr','consumer_key');
+		$consumer_secret = Config::get('tumblr','consumer_secret');
 
 		$tum_oauth = new TumblrOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
 
 		$userinfo = $tum_oauth->get('user/info');
 
-		$blogs = array();
+		$blogs = [];
 
 		$s .= '<label id="tumblr-page-label" for="tumblr-page">' . L10n::t('Post to page:') . '</label>';
 		$s .= '<select name="tumblr_page" id="tumblr-page">';
 		foreach($userinfo->response->user->blogs as $blog) {
-			$blogurl = substr(str_replace(array("http://", "https://"), array("", ""), $blog->url), 0, -1);
+			$blogurl = substr(str_replace(["http://", "https://"], ["", ""], $blog->url), 0, -1);
 			if ($page == $blogurl)
 				$s .= "<option value='".$blogurl."' selected>".$blogurl."</option>";
 			else
@@ -269,9 +269,9 @@ function tumblr_settings_post(&$a,&$b) {
 
 	if(x($_POST,'tumblr-submit')) {
 
-		set_pconfig(local_user(),'tumblr','post',intval($_POST['tumblr']));
-		set_pconfig(local_user(),'tumblr','page',$_POST['tumblr_page']);
-		set_pconfig(local_user(),'tumblr','post_by_default',intval($_POST['tumblr_bydefault']));
+		PConfig::set(local_user(),'tumblr','post',intval($_POST['tumblr']));
+		PConfig::set(local_user(),'tumblr','page',$_POST['tumblr_page']);
+		PConfig::set(local_user(),'tumblr','post_by_default',intval($_POST['tumblr_bydefault']));
 
 	}
 
@@ -293,11 +293,11 @@ function tumblr_post_local(&$a, &$b) {
 		return;
 	}
 
-	$tmbl_post   = intval(get_pconfig(local_user(),'tumblr','post'));
+	$tmbl_post   = intval(PConfig::get(local_user(),'tumblr','post'));
 
 	$tmbl_enable = (($tmbl_post && x($_REQUEST,'tumblr_enable')) ? intval($_REQUEST['tumblr_enable']) : 0);
 
-	if ($b['api_source'] && intval(get_pconfig(local_user(),'tumblr','post_by_default'))) {
+	if ($b['api_source'] && intval(PConfig::get(local_user(),'tumblr','post_by_default'))) {
 		$tmbl_enable = 1;
 	}
 
@@ -317,18 +317,28 @@ function tumblr_post_local(&$a, &$b) {
 
 function tumblr_send(&$a,&$b) {
 
-	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
+	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
+	}
 
-	if(! strstr($b['postopts'],'tumblr'))
+	if(! strstr($b['postopts'],'tumblr')) {
 		return;
+	}
 
-	if($b['parent'] != $b['id'])
+	if($b['parent'] != $b['id']) {
 		return;
+	}
 
-	$oauth_token = get_pconfig($b['uid'], "tumblr", "oauth_token");
-	$oauth_token_secret = get_pconfig($b['uid'], "tumblr", "oauth_token_secret");
-	$page = get_pconfig($b['uid'], "tumblr", "page");
+	// Dont't post if the post doesn't belong to us.
+	// This is a check for forum postings
+	$self = dba::selectFirst('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
+	if ($b['contact-id'] != $self['id']) {
+		return;
+	}
+
+	$oauth_token = PConfig::get($b['uid'], "tumblr", "oauth_token");
+	$oauth_token_secret = PConfig::get($b['uid'], "tumblr", "oauth_token_secret");
+	$page = PConfig::get($b['uid'], "tumblr", "page");
 	$tmbl_blog = 'blog/'.$page.'/post';
 
 	if($oauth_token && $oauth_token_secret && $tmbl_blog) {
@@ -348,11 +358,11 @@ function tumblr_send(&$a,&$b) {
 
 		$siteinfo = BBCode::getAttachedData($b["body"]);
 
-		$params = array(
+		$params = [
 			'state' => 'published',
 			'tags' => $tags,
 			'tweet' => 'off',
-			'format' => 'html');
+			'format' => 'html'];
 
 		if (!isset($siteinfo["type"]))
 			$siteinfo["type"] = "";
@@ -405,8 +415,8 @@ function tumblr_send(&$a,&$b) {
 		if (trim($params['caption']) == "")
 			$params['caption'] = BBCode::convert("[quote]" . $siteinfo["description"] . "[/quote]", false, 4);
 
-		$consumer_key = get_config('tumblr','consumer_key');
-		$consumer_secret = get_config('tumblr','consumer_secret');
+		$consumer_key = Config::get('tumblr','consumer_key');
+		$consumer_secret = Config::get('tumblr','consumer_secret');
 
 		$tum_oauth = new TumblrOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
 

@@ -31,9 +31,10 @@ function xmpp_addon_settings_post()
 {
 	if (!local_user() || (!x($_POST, 'xmpp-settings-submit'))) {
 		return;
-	set_pconfig(local_user(),'xmpp','enabled',intval($_POST['xmpp_enabled']));
-	set_pconfig(local_user(),'xmpp','individual',intval($_POST['xmpp_individual']));
-	set_pconfig(local_user(),'xmpp','bosh_proxy',$_POST['xmpp_bosh_proxy']);
+	}
+	PConfig::set(local_user(), 'xmpp', 'enabled', intval($_POST['xmpp_enabled']));
+	PConfig::set(local_user(), 'xmpp', 'individual', intval($_POST['xmpp_individual']));
+	PConfig::set(local_user(), 'xmpp', 'bosh_proxy', $_POST['xmpp_bosh_proxy']);
 
 	info(L10n::t('XMPP settings updated.') . EOL);
 }
@@ -42,6 +43,7 @@ function xmpp_addon_settings(App $a, &$s)
 {
 	if (!local_user()) {
 		return;
+	}
 
 	/* Add our stylesheet to the xmpp so we can make our settings look nice */
 
@@ -49,13 +51,13 @@ function xmpp_addon_settings(App $a, &$s)
 
 	/* Get the current state of our config variable */
 
-	$enabled = intval(get_pconfig(local_user(),'xmpp','enabled'));
+	$enabled = intval(PConfig::get(local_user(), 'xmpp', 'enabled'));
 	$enabled_checked = (($enabled) ? ' checked="checked" ' : '');
 
-	$individual = intval(get_pconfig(local_user(),'xmpp','individual'));
+	$individual = intval(PConfig::get(local_user(), 'xmpp', 'individual'));
 	$individual_checked = (($individual) ? ' checked="checked" ' : '');
 
-	$bosh_proxy = get_pconfig(local_user(),"xmpp","bosh_proxy");
+	$bosh_proxy = PConfig::get(local_user(), "xmpp", "bosh_proxy");
 
 	/* Add some HTML to the existing form */
 	$s .= '<span id="settings_xmpp_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_xmpp_expanded\'); openClose(\'settings_xmpp_inflated\');">';
@@ -90,10 +92,11 @@ function xmpp_addon_settings(App $a, &$s)
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="xmpp-settings-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 }
 
-function xmpp_login($a,$b) {
+function xmpp_login()
+{
 	if (!$_SESSION["allow_api"]) {
-		$password = substr(random_string(),0,16);
-		set_pconfig(local_user(), "xmpp", "password", $password);
+		$password = random_string(16);
+		PConfig::set(local_user(), "xmpp", "password", $password);
 	}
 }
 
@@ -117,40 +120,47 @@ function xmpp_addon_admin_post()
 	info(L10n::t('Settings updated.') . EOL);
 }
 
-function xmpp_script(&$a,&$s) {
-	xmpp_converse($a,$s);
+function xmpp_script(App $a)
+{
+	xmpp_converse($a);
 }
 
-function xmpp_converse(&$a,&$s) {
-	if (!local_user())
+function xmpp_converse(App $a)
+{
+	if (!local_user()) {
 		return;
+	}
 
-	if ($_GET["mode"] == "minimal")
+	if ($_GET["mode"] == "minimal") {
 		return;
+	}
 
-	if ($a->is_mobile || $a->is_tablet)
+	if ($a->is_mobile || $a->is_tablet) {
 		return;
+	}
 
-	if (!get_pconfig(local_user(),"xmpp","enabled"))
+	if (!PConfig::get(local_user(), "xmpp", "enabled")) {
 		return;
+	}
 
-	if (in_array($a->query_string, array("admin/federation/")))
+	if (in_array($a->query_string, ["admin/federation/"])) {
 		return;
+	}
 
-	$a->page['htmlhead'] .= '<link type="text/css" rel="stylesheet" media="screen" href="addon/xmpp/converse/css/converse.css" />'."\n";
-	$a->page['htmlhead'] .= '<script src="addon/xmpp/converse/builds/converse.min.js"></script>'."\n";
+	$a->page['htmlhead'] .= '<link type="text/css" rel="stylesheet" media="screen" href="addon/xmpp/converse/css/converse.css" />' . "\n";
+	$a->page['htmlhead'] .= '<script src="addon/xmpp/converse/builds/converse.min.js"></script>' . "\n";
 
-	if (get_config("xmpp", "central_userbase") && !get_pconfig(local_user(),"xmpp","individual")) {
-		$bosh_proxy = get_config("xmpp", "bosh_proxy");
+	if (Config::get("xmpp", "central_userbase") && !PConfig::get(local_user(), "xmpp", "individual")) {
+		$bosh_proxy = Config::get("xmpp", "bosh_proxy");
 
-		$password = get_pconfig(local_user(), "xmpp", "password");
+		$password = PConfig::get(local_user(), "xmpp", "password", '', true);
 
 		if ($password == "") {
-			$password = substr(random_string(),0,16);
-			set_pconfig(local_user(), "xmpp", "password", $password);
+			$password = random_string(16);
+			PConfig::set(local_user(), "xmpp", "password", $password);
 		}
 
-		$jid = $a->user["nickname"]."@".$a->get_hostname()."/converse-".substr(random_string(),0,5);;
+		$jid = $a->user["nickname"] . "@" . $a->get_hostname() . "/converse-" . random_string(5);
 
 		$auto_login = "auto_login: true,
 			authentication: 'login',
@@ -158,18 +168,20 @@ function xmpp_converse(&$a,&$s) {
 			password: '$password',
 			allow_logout: false,";
 	} else {
-		$bosh_proxy = get_pconfig(local_user(), "xmpp", "bosh_proxy");
+		$bosh_proxy = PConfig::get(local_user(), "xmpp", "bosh_proxy");
 
 		$auto_login = "";
 	}
 
-	if ($bosh_proxy == "")
+	if ($bosh_proxy == "") {
 		return;
+	}
 
-	if (in_array($a->argv[0], array("manage", "logout")))
+	if (in_array($a->argv[0], ["manage", "logout"])) {
 		$additional_commands = "converse.user.logout();\n";
-	else
+	} else {
 		$additional_commands = "";
+	}
 
 	$on_ready = "";
 
@@ -206,4 +218,3 @@ function xmpp_converse(&$a,&$s) {
 					});
 				</script>";
 }
-?>
