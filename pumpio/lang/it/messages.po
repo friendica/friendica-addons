@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014
+# fabrixxm <fabrix.xm@gmail.com>, 2014,2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2015-11-01 11:05+0000\n"
+"PO-Revision-Date: 2018-03-19 13:25+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -62,7 +62,7 @@ msgstr "Importa la timeline remota"
 
 #: pumpio.php:255
 msgid "Enable pump.io Post Addon"
-msgstr "Abilita iladdondi invio ad pump.io"
+msgstr "Abilita il componente aggiuntivo di invio ad pump.io"
 
 #: pumpio.php:260
 msgid "Post to pump.io by default"

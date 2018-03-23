@@ -38,9 +38,9 @@ function diaspora_jot_nets(&$a,&$b) {
     if(! local_user())
         return;
 
-    $diaspora_post = PConfig::get(local_user(),'diaspora','post');
+    $diaspora_post = get_pconfig(local_user(),'diaspora','post');
     if(intval($diaspora_post) == 1) {
-        $diaspora_defpost = PConfig::get(local_user(),'diaspora','post_by_default');
+        $diaspora_defpost = get_pconfig(local_user(),'diaspora','post_by_default');
         $selected = ((intval($diaspora_defpost) == 1) ? ' checked="checked" ' : '');
         $b .= '<div class="profile-jot-net"><input type="checkbox" name="diaspora_enable"' . $selected . ' value="1" /> '
             . L10n::t('Post to Diaspora') . '</div>';
@@ -71,9 +71,9 @@ function diaspora_queue_hook(&$a,&$b) {
 
 		$userdata = $r[0];
 
-		$handle = PConfig::get($userdata['uid'],'diaspora','handle');
-		$password = PConfig::get($userdata['uid'],'diaspora','password');
-		$aspect = PConfig::get($userdata['uid'],'diaspora','aspect');
+		$handle = get_pconfig($userdata['uid'],'diaspora','handle');
+		$password = get_pconfig($userdata['uid'],'diaspora','password');
+		$aspect = get_pconfig($userdata['uid'],'diaspora','aspect');
 
 		$success = false;
 
@@ -125,17 +125,17 @@ function diaspora_settings(&$a,&$s) {
 
 	/* Get the current state of our config variables */
 
-	$enabled = PConfig::get(local_user(),'diaspora','post');
+	$enabled = get_pconfig(local_user(),'diaspora','post');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 	$css = (($enabled) ? '' : '-disabled');
 
-	$def_enabled = PConfig::get(local_user(),'diaspora','post_by_default');
+	$def_enabled = get_pconfig(local_user(),'diaspora','post_by_default');
 
 	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
-	$handle = PConfig::get(local_user(), 'diaspora', 'handle');
-	$password = PConfig::get(local_user(), 'diaspora', 'password');
-	$aspect = PConfig::get(local_user(),'diaspora','aspect');
+	$handle = get_pconfig(local_user(), 'diaspora', 'handle');
+	$password = get_pconfig(local_user(), 'diaspora', 'password');
+	$aspect = get_pconfig(local_user(),'diaspora','aspect');
 
 	$status = "";
 
@@ -228,11 +228,11 @@ function diaspora_settings_post(&$a,&$b) {
 
 	if(x($_POST,'diaspora-submit')) {
 
-		PConfig::set(local_user(),'diaspora','post',intval($_POST['diaspora']));
-		PConfig::set(local_user(),'diaspora','post_by_default',intval($_POST['diaspora_bydefault']));
-		PConfig::set(local_user(),'diaspora','handle',trim($_POST['handle']));
-		PConfig::set(local_user(),'diaspora','password',trim($_POST['password']));
-		PConfig::set(local_user(),'diaspora','aspect',trim($_POST['aspect']));
+		set_pconfig(local_user(),'diaspora','post',intval($_POST['diaspora']));
+		set_pconfig(local_user(),'diaspora','post_by_default',intval($_POST['diaspora_bydefault']));
+		set_pconfig(local_user(),'diaspora','handle',trim($_POST['handle']));
+		set_pconfig(local_user(),'diaspora','password',trim($_POST['password']));
+		set_pconfig(local_user(),'diaspora','aspect',trim($_POST['aspect']));
 	}
 
 }
@@ -251,11 +251,11 @@ function diaspora_post_local(&$a,&$b) {
 		return;
 	}
 
-	$diaspora_post   = intval(PConfig::get(local_user(),'diaspora','post'));
+	$diaspora_post   = intval(get_pconfig(local_user(),'diaspora','post'));
 
 	$diaspora_enable = (($diaspora_post && x($_REQUEST,'diaspora_enable')) ? intval($_REQUEST['diaspora_enable']) : 0);
 
-	if ($b['api_source'] && intval(PConfig::get(local_user(),'diaspora','post_by_default'))) {
+	if ($b['api_source'] && intval(get_pconfig(local_user(),'diaspora','post_by_default'))) {
 		$diaspora_enable = 1;
 	}
 
@@ -278,30 +278,20 @@ function diaspora_send(&$a,&$b) {
 
 	logger('diaspora_send: invoked');
 
-	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
+	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
 		return;
-	}
 
-	if(! strstr($b['postopts'],'diaspora')) {
+	if(! strstr($b['postopts'],'diaspora'))
 		return;
-	}
 
-	if($b['parent'] != $b['id']) {
+	if($b['parent'] != $b['id'])
 		return;
-	}
-
-	// Dont't post if the post doesn't belong to us.
-	// This is a check for forum postings
-	$self = dba::selectFirst('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
-	if ($b['contact-id'] != $self['id']) {
-		return;
-	}
 
 	logger('diaspora_send: prepare posting', LOGGER_DEBUG);
 
-	$handle = PConfig::get($b['uid'],'diaspora','handle');
-	$password = PConfig::get($b['uid'],'diaspora','password');
-	$aspect = PConfig::get($b['uid'],'diaspora','aspect');
+	$handle = get_pconfig($b['uid'],'diaspora','handle');
+	$password = get_pconfig($b['uid'],'diaspora','password');
+	$aspect = get_pconfig($b['uid'],'diaspora','aspect');
 
 	if ($handle && $password) {
 		logger('diaspora_send: all values seem to be okay', LOGGER_DEBUG);

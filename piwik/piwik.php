@@ -57,10 +57,10 @@ function piwik_analytics($a,&$b) {
 	/*
 	 *   Get the configuration variables from the .htconfig file.
 	 */
-	$baseurl = Config::get('piwik','baseurl');
-	$siteid  = Config::get('piwik','siteid');
-	$optout  = Config::get('piwik','optout');
-	$async   = Config::get('piwik','async');
+	$baseurl = get_config('piwik','baseurl');
+	$siteid  = get_config('piwik','siteid');
+	$optout  = get_config('piwik','optout');
+	$async   = get_config('piwik','async');
 
 	/*
 	 *   Add the Piwik tracking code for the site.

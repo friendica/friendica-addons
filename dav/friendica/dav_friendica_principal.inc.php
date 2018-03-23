@@ -61,16 +61,16 @@ class Sabre_DAVACL_PrincipalBackend_Std implements Sabre_DAVACL_IPrincipalBacken
 	{
 
 		// This backend only support principals in one collection
-		if ($prefixPath !== $this->prefix) return [];
+		if ($prefixPath !== $this->prefix) return array();
 
-		$users = [];
+		$users = array();
 
 		$r = q("SELECT `nickname` FROM `user` WHERE `nickname` = '%s'", escape_tags($this->authBackend->getCurrentUser()) );
 		foreach ($r as $t) {
-			$users[] = [
+			$users[] = array(
 				'uri'               => $this->prefix . '/' . strtolower($t['nickname']),
 				'{DAV:}displayname' => $t['nickname'],
-			];
+			);
 		}
 
 		return $users;
@@ -94,24 +94,24 @@ class Sabre_DAVACL_PrincipalBackend_Std implements Sabre_DAVACL_IPrincipalBacken
 		if ($prefixPath !== $this->prefix) return null;
 
 		$r = q("SELECT `nickname` FROM `user` WHERE `nickname` = '%s'", escape_tags($userName) );
-		if (count($r) == 0) return [];
+		if (count($r) == 0) return array();
 
-		return [
+		return array(
 			'uri'               => $this->prefix . '/' . strtolower($r[0]['nickname']),
 			'{DAV:}displayname' => $r[0]['nickname'],
-		];
+		);
 
 	}
 
 
 	function getGroupMemberSet($principal)
 	{
-		return [];
+		return array();
 	}
 
 	function getGroupMembership($principal)
 	{
-		return [];
+		return array();
 	}
 
 

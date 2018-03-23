@@ -23,24 +23,20 @@ function googlemaps_uninstall()
 	logger("removed googlemaps");
 }
 
-function googlemaps_location($a, &$item)
-{
+function googlemaps_location($a, &$item) {
 
-	if(! (strlen($item['location']) || strlen($item['coord']))) {
+	if(! (strlen($item['location']) || strlen($item['coord'])))
 		return;
-	}
 
-	if ($item['coord'] != ""){ 
+	if ($item['coord'] != "")
 		$target = "http://maps.google.com/?q=".urlencode($item['coord']);
-	} else {
+	else
 		$target = "http://maps.google.com/?q=".urlencode($item['location']);
-	}
 
-	if ($item['location'] != "") {
+	if ($item['location'] != "")
 		$title = $item['location'];
-	} else {
+	else
 		$title = $item['coord'];
-	}
 
 	$item['html'] = '<a target="map" title="'.$title.'" href= "'.$target.'">'.$title.'</a>';
 }

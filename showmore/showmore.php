@@ -32,8 +32,8 @@ function showmore_addon_settings(&$a,&$s) {
 
 	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->get_baseurl().'/addon/showmore/showmore.css'.'" media="all"/>'."\r\n";
 
-	$enable_checked = (intval(PConfig::get(local_user(),'showmore','disable')) ? '' : ' checked="checked"');
-	$chars = PConfig::get(local_user(),'showmore','chars');
+	$enable_checked = (intval(get_pconfig(local_user(),'showmore','disable')) ? '' : ' checked="checked"');
+	$chars = get_pconfig(local_user(),'showmore','chars');
 	if(!$chars)
 		$chars = '1100';
 
@@ -67,7 +67,7 @@ function showmore_addon_settings_post(&$a,&$b) {
 		return;
 
 	if($_POST['showmore-submit']) {
-		PConfig::set(local_user(),'showmore','chars',trim($_POST['showmore-chars']));
+		set_pconfig(local_user(),'showmore','chars',trim($_POST['showmore-chars']));
 		$enable = ((x($_POST,'showmore-enable')) ? intval($_POST['showmore-enable']) : 0);
 		$disable = 1-$enable;
 		PConfig::set(local_user(),'showmore','disable', $disable);
@@ -110,10 +110,10 @@ function get_body_length($body) {
 function showmore_prepare_body(&$a,&$b) {
 
 	$words = null;
-	if(PConfig::get(local_user(),'showmore','disable'))
+	if(get_pconfig(local_user(),'showmore','disable'))
 		return;
 
-	$chars = (int)PConfig::get(local_user(),'showmore','chars');
+	$chars = (int)get_pconfig(local_user(),'showmore','chars');
 	if(!$chars)
 		$chars = 1100;
 
@@ -157,7 +157,7 @@ function showmore_cutitem($text, $limit) {
 	@$doc->loadHTML($doctype."<html><body>".$text."</body></html>");
 
 	$text = $doc->saveHTML();
-	$text = str_replace(["<html><body>", "</body></html>", $doctype], ["", "", ""], $text);
+	$text = str_replace(array("<html><body>", "</body></html>", $doctype), array("", "", ""), $text);
 
 	return($text);
 }

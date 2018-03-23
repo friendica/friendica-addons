@@ -1,0 +1,118 @@
+# ADDON appnet
+# Copyright (C)
+# This file is distributed under the same license as the Friendica appnet addon package.
+# 
+# 
+# Translators:
+# fabrixxm <fabrix.xm@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 11:47+0200\n"
+"PO-Revision-Date: 2014-09-10 10:18+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
+"Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: appnet.php:39
+msgid "Permission denied."
+msgstr "Permesso negato."
+
+#: appnet.php:73
+msgid "You are now authenticated to app.net. "
+msgstr "Sei autenticato su app.net"
+
+#: appnet.php:77
+msgid "<p>Error fetching token. Please try again.</p>"
+msgstr "<p>Errore recuperando il token. Prova di nuovo</p>"
+
+#: appnet.php:80
+msgid "return to the connector page"
+msgstr "ritorna alla pagina del connettore"
+
+#: appnet.php:94
+msgid "Post to app.net"
+msgstr "Invia ad app.net"
+
+#: appnet.php:125 appnet.php:129
+msgid "App.net Export"
+msgstr "Esporta App.net"
+
+#: appnet.php:142
+msgid "Currently connected to: "
+msgstr "Al momento connesso con:"
+
+#: appnet.php:144
+msgid "Enable App.net Post Plugin"
+msgstr "Abilita il plugin di invio ad App.net"
+
+#: appnet.php:149
+msgid "Post to App.net by default"
+msgstr "Invia sempre ad App.net"
+
+#: appnet.php:153
+msgid "Import the remote timeline"
+msgstr "Importa la timeline remota"
+
+#: appnet.php:159
+msgid ""
+"<p>Error fetching user profile. Please clear the configuration and try "
+"again.</p>"
+msgstr "<p>Errore recuperando il profilo utente. Svuota la configurazione e prova di nuovo.</p>"
+
+#: appnet.php:164
+msgid "<p>You have two ways to connect to App.net.</p>"
+msgstr "<p>Puoi collegarti ad App.net in due modi.</p>"
+
+#: appnet.php:166
+msgid ""
+"<p>First way: Register an application at <a "
+"href=\"https://account.app.net/developer/apps/\">https://account.app.net/developer/apps/</a>"
+" and enter Client ID and Client Secret. "
+msgstr "<p>Registrare un'applicazione su <a href=\"https://account.app.net/developer/apps/\">https://account.app.net/developer/apps/</a> e inserire Client ID e Client Secret."
+
+#: appnet.php:167
+#, php-format
+msgid "Use '%s' as Redirect URI<p>"
+msgstr "Usa '%s' come Redirect URI</p>"
+
+#: appnet.php:169
+msgid "Client ID"
+msgstr "Client ID"
+
+#: appnet.php:173
+msgid "Client Secret"
+msgstr "Client Secret"
+
+#: appnet.php:177
+msgid ""
+"<p>Second way: fetch a token at <a href=\"http://dev-"
+"lite.jonathonduerig.com/\">http://dev-lite.jonathonduerig.com/</a>. "
+msgstr "<p>Oppure puoi recuperare un token su <a href=\"http://dev-lite.jonathonduerig.com/\">http://dev-lite.jonathonduerig.com/</a>."
+
+#: appnet.php:178
+msgid ""
+"Set these scopes: 'Basic', 'Stream', 'Write Post', 'Public Messages', "
+"'Messages'.</p>"
+msgstr "Imposta gli ambiti 'Basic', 'Stream', 'Scrivi Post', 'Messaggi Pubblici', 'Messaggi'.</p>"
+
+#: appnet.php:180
+msgid "Token"
+msgstr "Token"
+
+#: appnet.php:192
+msgid "Sign in using App.net"
+msgstr "Autenticati con App.net"
+
+#: appnet.php:197
+msgid "Clear OAuth configuration"
+msgstr "Pulisci configurazione OAuth"
+
+#: appnet.php:204
+msgid "Save Settings"
+msgstr "Salva Impostazioni"

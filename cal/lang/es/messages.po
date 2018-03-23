@@ -1,0 +1,55 @@
+# ADDON cal
+# Copyright (C)
+# This file is distributed under the same license as the Friendica cal addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2016-10-10 20:48+0000\n"
+"Last-Translator: Athalbert\n"
+"Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: cal.php:33
+msgid "Event Export"
+msgstr "Exportación de evento"
+
+#: cal.php:33
+msgid "You can download public events from: "
+msgstr "Puede descargar eventos públicos desde:"
+
+#: cal.php:53
+msgid "The user does not export the calendar."
+msgstr "El usuario no exporta el calendario."
+
+#: cal.php:83
+msgid "This calendar format is not supported"
+msgstr "No se soporta este formato de calendario"
+
+#: cal.php:181 cal.php:185
+msgid "Export Events"
+msgstr "Exportar Eventos"
+
+#: cal.php:189
+msgid "If this is enabled, your public events will be available at"
+msgstr "Si esto está habilitado, sus eventos públicos estarán permitidos en"
+
+#: cal.php:190
+msgid "Currently supported formats are ical and csv."
+msgstr "Los formatos soportados actualmente son ical y csv."
+
+#: cal.php:191
+msgid "Enable calendar export"
+msgstr "Habilitar exportar calendario"
+
+#: cal.php:193
+msgid "Save Settings"
+msgstr "Guardar Ajustes"

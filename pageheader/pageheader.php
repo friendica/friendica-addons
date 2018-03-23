@@ -44,18 +44,16 @@ function pageheader_addon_settings(&$a,&$s) {
     $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/pageheader/pageheader.css' . '" media="all" />' . "\r\n";
 
 
-	$words = Config::get('pageheader','text');
+	$words = get_config('pageheader','text');
 	if(! $words)
 		$words = '';
 
-    $s .= '<div class="settings-block">';
-    $s .= '<h3>' . L10n::t('"pageheader" Settings') . '</h3>';
-    $s .= '<div id="pageheader-wrapper">';
-    $s .= '<label id="pageheader-label" for="pageheader-words">' . L10n::t('Message to display on every page on this server (or put a pageheader.html file in your docroot)') . ' </label>';
-    $s .= '<textarea id="pageheader-words" type="text" name="pageheader-words">' . $words . '</textarea>';
-    $s .= '</div><div class="clear"></div>';
-
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="pageheader-submit" name="pageheader-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
+	$t = get_markup_template("settings.tpl", "addon/pageheader/");
+	$s .= replace_macros($t, [
+					'$title' => L10n::t('"pageheader" Settings'),
+					'$phwords' => ['pageheader-words', L10n::t('Message'), $words, L10n::t('Message to display on every page on this server (or put a pageheader.html file in your docroot)')],
+					'$submit' => L10n::t('Save Settings')
+	]);
 
 	return;
 
@@ -77,7 +75,7 @@ function pageheader_fetch($a,&$b) {
 	if(file_exists('pageheader.html')){
 		$s = file_get_contents('pageheader.html');
 	} else {
-		$s = Config::get('pageheader', 'text');
+		$s = get_config('pageheader', 'text');
 	}
 
     $a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'

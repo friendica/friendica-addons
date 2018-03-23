@@ -1,0 +1,61 @@
+# ADDON xmpp
+# Copyright (C)
+# This file is distributed under the same license as the Friendica xmpp addon package.
+# 
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-11-27 09:30+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Karel Vandecandelaere <karel@dasrakel.eu>, 2018\n"
+"Language-Team: Dutch (https://www.transifex.com/Friendica/teams/12172/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: xmpp.php:38
+msgid "XMPP settings updated."
+msgstr "XMPP-instellingen bijgewerkt."
+
+#: xmpp.php:63 xmpp.php:67
+msgid "XMPP-Chat (Jabber)"
+msgstr "XMPP-chat (Jabber)"
+
+#: xmpp.php:71
+msgid "Enable Webchat"
+msgstr "Webchat inschakelen"
+
+#: xmpp.php:76
+msgid "Individual Credentials"
+msgstr ""
+
+#: xmpp.php:82 xmpp.php:108
+msgid "Jabber BOSH host"
+msgstr "Jabber BOSH Server"
+
+#: xmpp.php:91 xmpp.php:107
+msgid "Save Settings"
+msgstr "Instellingen opslaan"
+
+#: xmpp.php:109
+msgid "Use central userbase"
+msgstr ""
+
+#: xmpp.php:109
+msgid ""
+"If enabled, users will automatically login to an ejabberd server that has to"
+" be installed on this machine with synchronized credentials via the "
+"\"auth_ejabberd.php\" script."
+msgstr ""
+"Wanneer ingeschakeld zullen gebruikers automatisch inloggen op een ejabberd-"
+"server die op deze server moet geïnstalleerd staan, met dezelfde "
+"gebruikersnaam en wachtwoord, via het \"auth_ejabberd.php\" script."
+
+#: xmpp.php:119
+msgid "Settings updated."
+msgstr "Instellingen bijgewerkt."

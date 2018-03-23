@@ -4,77 +4,96 @@
 # 
 # 
 # Translators:
-# Abrax <webmaster@a-zwenkau.de>, 2014
+# Andreas H., 2014
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2014-10-14 09:25+0000\n"
-"Last-Translator: Abrax <webmaster@a-zwenkau.de>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"POT-Creation-Date: 2018-03-11 19:13+0100\n"
+"PO-Revision-Date: 2018-03-16 07:45+0000\n"
+"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: mailstream.php:55
+#: mailstream.php:77
 msgid "From Address"
 msgstr "Absender"
 
-#: mailstream.php:57
+#: mailstream.php:79
 msgid "Email address that stream items will appear to be from."
 msgstr "E-Mail-Adresse, die in hochgeladenen Artikeln erscheint."
 
-#: mailstream.php:60 mailstream.php:282
+#: mailstream.php:82 mailstream.php:380
 msgid "Save Settings"
 msgstr "Einstellungen speichern"
 
-#: mailstream.php:165
+#: mailstream.php:223
 msgid "Re:"
 msgstr "Re:"
 
-#: mailstream.php:173
+#: mailstream.php:231
 msgid "Friendica post"
 msgstr "Friendica Veröffentlichung"
 
-#: mailstream.php:176
+#: mailstream.php:234
 msgid "Diaspora post"
 msgstr "Diaspora Veröffentlichung"
 
-#: mailstream.php:183
+#: mailstream.php:244
 msgid "Feed item"
 msgstr "Artikel-Feed"
 
-#: mailstream.php:186
+#: mailstream.php:247
 msgid "Email"
 msgstr "E-Mail"
 
-#: mailstream.php:188
+#: mailstream.php:249
 msgid "Friendica Item"
 msgstr "Friendica Artikel"
 
-#: mailstream.php:229
+#: mailstream.php:293
 msgid "Upstream"
 msgstr "Upstream"
 
-#: mailstream.php:230
+#: mailstream.php:294
 msgid "Local"
 msgstr "Lokal"
 
-#: mailstream.php:274
-msgid "Email Address"
-msgstr "E-Mail-Adresse"
-
-#: mailstream.php:276
-msgid "Leave blank to use your account email address"
-msgstr "Leer lassen für Deine Konto-E-Mail-Addresse"
-
-#: mailstream.php:279
+#: mailstream.php:362
 msgid "Enabled"
 msgstr "eingeschaltet"
 
-#: mailstream.php:281
+#: mailstream.php:366
+msgid "Email Address"
+msgstr "E-Mail-Adresse"
+
+#: mailstream.php:368
+msgid "Leave blank to use your account email address"
+msgstr "Leer lassen für Deine Konto-E-Mail-Addresse"
+
+#: mailstream.php:371
+msgid "Exclude Likes"
+msgstr "Likes ignorieren"
+
+#: mailstream.php:373
+msgid "Check this to omit mailing \"Like\" notifications"
+msgstr "Diese Option verhindert das versenden von \"Like\"-Benachrichtigungen per E-Mail."
+
+#: mailstream.php:376
+msgid "Attach Images"
+msgstr "Bolder anhängen"
+
+#: mailstream.php:378
+msgid ""
+"Download images in posts and attach them to the email.  Useful for reading "
+"email while offline."
+msgstr "Sollen Bilder die im Beitrag eingebettet sind als Dateianhang in den E-Mails mit verschickt werden?"
+
+#: mailstream.php:379
 msgid "Mail Stream Settings"
 msgstr "Mail-Nachrichten Einstellungen"

@@ -55,11 +55,13 @@ function notifyall_post(&$a) {
 
 	$htmlversion = BBCode::convert(stripslashes(str_replace(["\\r", "\\n"], ["", "<br />\n"], $text)));
 
+	$htmlversion = bbcode(stripslashes(str_replace(array("\\r","\\n"), array("","<br />\n"),$text)));
+	
 	// if this is a test, send it only to the admin(s)
 	// admin_email might be a comma separated list, but we need "a@b','c@d','e@f
 	if (intval($_REQUEST['test'])) {
 		$email = $a->config['admin_email'];
-		$email = "'" . str_replace([" ",","], ["","','"], $email) . "'";
+		$email = "'" . str_replace(array(" ",","), array("","','"), $email) . "'";
 	}
 	$sql_extra = ((intval($_REQUEST['test'])) ? sprintf(" AND `email` in ( %s )", $email) : '');
 
@@ -79,7 +81,7 @@ function notifyall_post(&$a) {
 			'messageSubject'       => $subject,
 			'htmlVersion'          => $htmlversion,
 			'textVersion'          => $textversion
-		]);
+		));
 	}
 
 	notice(L10n::t('Emails sent'));

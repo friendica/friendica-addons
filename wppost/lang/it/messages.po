@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014-2015
+# fabrixxm <fabrix.xm@gmail.com>, 2014-2015,2017-2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-01-24 21:06+0100\n"
-"PO-Revision-Date: 2017-02-10 08:18+0000\n"
+"PO-Revision-Date: 2018-03-19 13:26+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -25,11 +25,11 @@ msgstr "Invia a Wordpress"
 
 #: wppost.php:80 wppost.php:84
 msgid "Wordpress Export"
-msgstr ""
+msgstr "Esporta a Wordpress"
 
 #: wppost.php:87
 msgid "Enable WordPress Post Addon"
-msgstr "Abilita il addon di invio a Wordpress"
+msgstr "Abilita il componente aggiuntivo di invio a Wordpress"
 
 #: wppost.php:92
 msgid "WordPress username"
@@ -55,19 +55,19 @@ msgstr "Inserisci un link al messaggio originale su Friendica"
 msgid ""
 "Text for the backlink, e.g. Read the original post and comment stream on "
 "Friendica."
-msgstr ""
+msgstr "Testo per il backlink, p.e. Leggi il post originale e i commenti su Friendica."
 
 #: wppost.php:121
 msgid "Don't post messages that are too short"
-msgstr ""
+msgstr "Non inviare messaggi troppo corti"
 
 #: wppost.php:127
 msgid "Save Settings"
-msgstr ""
+msgstr "Salva Impostazioni"
 
 #: wppost.php:206
 msgid "Read the orig­i­nal post and com­ment stream on Friendica"
-msgstr ""
+msgstr "Leggi il messaggio originale e i commenti su Friendica"
 
 #: wppost.php:269
 msgid "Post from Friendica"

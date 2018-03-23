@@ -54,7 +54,6 @@ function numfriends_settings(&$a, &$s)
 {
 	if (! local_user()) {
 		return;
-	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
@@ -62,7 +61,9 @@ function numfriends_settings(&$a, &$s)
 
 	/* Get the current state of our config variable */
 
-	$numfriends = PConfig::get(local_user(), 'system', 'display_friend_count', 24);
+	$numfriends = get_pconfig(local_user(),'system','display_friend_count');
+	if($numfriends === false)
+		$numfriends = 24;
 	
 	/* Add some HTML to the existing form */
 

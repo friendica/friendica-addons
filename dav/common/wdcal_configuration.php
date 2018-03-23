@@ -37,7 +37,7 @@ abstract class wdcal_local
 	 * @return wdcal_local
 	 */
 	static function getInstanceByUser($uid = 0) {
-		$dateformat = PConfig::get($uid, "dav", "dateformat");
+		$dateformat = get_pconfig($uid, "dav", "dateformat");
 		$format = self::getInstance($dateformat);
 		if ($format == null) $format = self::getInstance(self::LOCAL_US);
 		return $format;

@@ -111,7 +111,7 @@ function forumdirectory_content(&$a)
 		$a->set_pager_total($r[0]['total']);
 	}
 
-	$order = " ORDER BY `name` ASC ";
+	$order = " ORDER BY `name` ASC "; 
 
 	$r = q("SELECT `profile`.*, `profile`.`uid` AS `profile_uid`, `user`.`nickname`, `user`.`timezone` , `user`.`page-flags`"
 		. " FROM `profile` LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid` WHERE `is-default` = 1 $publish"
@@ -129,7 +129,7 @@ function forumdirectory_content(&$a)
 
 		foreach ($r as $rr) {
 			$profile_link = $a->get_baseurl() . '/profile/' . ((strlen($rr['nickname'])) ? $rr['nickname'] : $rr['profile_uid']);
-
+		
 			$pdesc = (($rr['pdesc']) ? $rr['pdesc'] . '<br />' : '');
 
 			$details = '';

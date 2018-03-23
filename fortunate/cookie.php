@@ -23,7 +23,7 @@ else
   $adult = 0;
 
 $length = (($_GET['length']) ? intval($_GET['length']) : 0);
-$numlines = ((intval($_GET['numlines'])) ? intval($_GET['numlines']) : 0);
+$numlines = ((intval($_GET['numlines'])) ? intval($_GET['numlines']) : 0); 
 $cat = (($_GET['cat'] == '1') ? 1 : 0);
 $equal = (($_GET['equal'] == '1') ? 1 : 0);
 $stats = (($_GET['stats'] == '1') ? 1 : 0);
@@ -50,7 +50,7 @@ if($numlines < 0)
 function do_query($table,$length,$numlines,$adult,$cat,$limit,$lang,$pattern,$regex,$equal) {
   global $db;
   $rnd = mt_rand();
-  $r = [];
+  $r = array();
 
   $typesql   = (($table)  ? " WHERE `category` = '$table' " : " WHERE 1 ");
   $lengthsql = (($length) ? " AND LENGTH(`text`) < $length " : "" );
@@ -80,24 +80,24 @@ function do_query($table,$length,$numlines,$adult,$cat,$limit,$lang,$pattern,$re
   $eqsql = '';
 
   if($equal) {
-    $catsavail = [];
-    $res = @$db->query("SELECT DISTINCT ( `category` ) FROM `fortune`
+    $catsavail = array();
+    $res = @$db->query("SELECT DISTINCT ( `category` ) FROM `fortune` 
                            $typesql
                            $adultsql
                            $lengthsql
                            $langsql
-                           $patsql
+                           $patsql 
                            $regexsql ");
     if($res->num_rows) {
       while($x = $res->fetch_array(MYSQL_ASSOC))
         $catsavail[] = $x['category'];
-
+    
       $eqsql = " AND `category` = '"
         . $catsavail[mt_rand(0,$res->num_rows - 1)] . "' ";
    }
   }
 
-  $result = @$db->query("SELECT `text`, `category` FROM `fortune`
+  $result = @$db->query("SELECT `text`, `category` FROM `fortune` 
                          $typesql
                          $adultsql
                          $lengthsql
@@ -105,7 +105,7 @@ function do_query($table,$length,$numlines,$adult,$cat,$limit,$lang,$pattern,$re
                          $patsql
                          $regexsql
                          $eqsql
-                         ORDER BY RAND($rnd)
+                         ORDER BY RAND($rnd) 
                          LIMIT $limit");
 
   if($result->num_rows) {
@@ -120,7 +120,7 @@ function do_query($table,$length,$numlines,$adult,$cat,$limit,$lang,$pattern,$re
 function do_stats($table,$length,$numlines,$adult,$cat,$limit,$lang,$pattern,$regex,$equal) {
   global $db;
   $rnd = mt_rand();
-  $r = [];
+  $r = array();
 
   $typesql   = (($table)  ? " WHERE `category` = '$table' " : " WHERE 1 ");
   $lengthsql = (($length) ? " AND LENGTH(`text`) < $length " : "" );
@@ -149,7 +149,7 @@ function do_stats($table,$length,$numlines,$adult,$cat,$limit,$lang,$pattern,$re
 
   $eqsql = '';
 
-  $result = @$db->query("SELECT `text`, `category` FROM `fortune`
+  $result = @$db->query("SELECT `text`, `category` FROM `fortune` 
                          $typesql
                          $adultsql
                          $lengthsql
@@ -162,22 +162,22 @@ function do_stats($table,$length,$numlines,$adult,$cat,$limit,$lang,$pattern,$re
    echo '<br />' . $result->num_rows . ' matching quotations.<br />';
 
 
-   $res = @$db->query("SELECT DISTINCT ( `category` ) FROM `fortune`
+   $res = @$db->query("SELECT DISTINCT ( `category` ) FROM `fortune` 
                            $typesql
                            $adultsql
                            $lengthsql
                            $langsql
-                           $patsql
+                           $patsql 
                            $regexsql ");
     if($res->num_rows) {
       echo '<br />Matching Databases:<br />';
       while($x = $res->fetch_array(MYSQL_ASSOC))
         echo $x['category'].'<br />';
-
+    
    }
    else
      echo '<br />No matching databases using those search parameters - please refine your options.<br />';
-
+   
 
 }
 
@@ -195,23 +195,23 @@ function fortune_to_html($s) {
   // So for now, just remove them.
 
   $s = str_replace(
-    ["&",
+    array("&",
           "<",
           ">",
           '"',
           "\007",
           "\t",
           "\r",
-          "\n"],
+          "\n"),
 
-    ["&amp;",
+    array("&amp;",
           "&lt;",
           "&gt;",
           "&quot;",
           "",
           "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
           "",
-          "<br />"],
+          "<br />"),
     $s);
   // Replace pseudo diacritics
   // These were used to produce accented characters. For instance an accented

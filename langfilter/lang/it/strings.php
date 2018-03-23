@@ -6,7 +6,7 @@ function string_plural_select_it($n){
 }}
 ;
 $a->strings["Language Filter"] = "Filtro Lingua";
-$a->strings["This addon tries to identify the language of a postings. If it does not match any language spoken by you (see below) the posting will be collapsed. Remember detecting the language is not perfect, especially with short postings."] = "Questo addon prova ad identificare la lingua usata in un messaggio. Se questa non corrisponde a una delle lingue da te parlata (vedi sotto), il messaggio verrà nascosto. Ricorda che la rilevazione della lingua non è perfetta, specie con i messaggi corti.";
+$a->strings["This addon tries to identify the language of a postings. If it does not match any language spoken by you (see below) the posting will be collapsed. Remember detecting the language is not perfect, especially with short postings."] = "Questo plugin prova ad identificare la lingua usata in un messaggio. Se questa non corrisponde a una delle lingue da te parlata (vedi sotto), il messaggio verrà nascosto. Ricorda che la rilevazione della lingua non è perfetta, specie con i messaggi corti.";
 $a->strings["Use the language filter"] = "Usa il filtro lingua";
 $a->strings["I speak"] = "Parlo";
 $a->strings["List of abbreviations (iso2 codes) for languages you speak, comma separated. For example \"de,it\"."] = "Lista di abbreviazioni (codici iso2) per le lingue che parli, separate da virgola. Per esempio \"it,de\"";

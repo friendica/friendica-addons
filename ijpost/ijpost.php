@@ -37,9 +37,9 @@ function ijpost_jot_nets(&$a,&$b) {
     if(! local_user())
         return;
 
-    $ij_post = PConfig::get(local_user(),'ijpost','post');
+    $ij_post = get_pconfig(local_user(),'ijpost','post');
     if(intval($ij_post) == 1) {
-        $ij_defpost = PConfig::get(local_user(),'ijpost','post_by_default');
+        $ij_defpost = get_pconfig(local_user(),'ijpost','post_by_default');
         $selected = ((intval($ij_defpost) == 1) ? ' checked="checked" ' : '');
         $b .= '<div class="profile-jot-net"><input type="checkbox" name="ijpost_enable" ' . $selected . ' value="1" /> '
             . L10n::t('Post to Insanejournal') . '</div>';
@@ -58,16 +58,16 @@ function ijpost_settings(&$a,&$s) {
 
     /* Get the current state of our config variables */
 
-    $enabled = PConfig::get(local_user(),'ijpost','post');
+    $enabled = get_pconfig(local_user(),'ijpost','post');
 
     $checked = (($enabled) ? ' checked="checked" ' : '');
 
-    $def_enabled = PConfig::get(local_user(),'ijpost','post_by_default');
+    $def_enabled = get_pconfig(local_user(),'ijpost','post_by_default');
 
     $def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
-	$ij_username = PConfig::get(local_user(), 'ijpost', 'ij_username');
-	$ij_password = PConfig::get(local_user(), 'ijpost', 'ij_password');
+	$ij_username = get_pconfig(local_user(), 'ijpost', 'ij_username');
+	$ij_password = get_pconfig(local_user(), 'ijpost', 'ij_password');
 
 
     /* Add some HTML to the existing form */
@@ -110,10 +110,10 @@ function ijpost_settings_post(&$a,&$b) {
 
 	if(x($_POST,'ijpost-submit')) {
 
-		PConfig::set(local_user(),'ijpost','post',intval($_POST['ijpost']));
-		PConfig::set(local_user(),'ijpost','post_by_default',intval($_POST['ij_bydefault']));
-		PConfig::set(local_user(),'ijpost','ij_username',trim($_POST['ij_username']));
-		PConfig::set(local_user(),'ijpost','ij_password',trim($_POST['ij_password']));
+		set_pconfig(local_user(),'ijpost','post',intval($_POST['ijpost']));
+		set_pconfig(local_user(),'ijpost','post_by_default',intval($_POST['ij_bydefault']));
+		set_pconfig(local_user(),'ijpost','ij_username',trim($_POST['ij_username']));
+		set_pconfig(local_user(),'ijpost','ij_password',trim($_POST['ij_password']));
 
 	}
 
@@ -132,11 +132,11 @@ function ijpost_post_local(&$a,&$b) {
 	if($b['private'] || $b['parent'])
 		return;
 
-    $ij_post   = intval(PConfig::get(local_user(),'ijpost','post'));
+    $ij_post   = intval(get_pconfig(local_user(),'ijpost','post'));
 
 	$ij_enable = (($ij_post && x($_REQUEST,'ijpost_enable')) ? intval($_REQUEST['ijpost_enable']) : 0);
 
-	if($_REQUEST['api_source'] && intval(PConfig::get(local_user(),'ijpost','post_by_default')))
+	if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'ijpost','post_by_default')))
 		$ij_enable = 1;
 
     if(! $ij_enable)
@@ -161,7 +161,7 @@ function ijpost_send(&$a,&$b) {
     if($b['parent'] != $b['id'])
         return;
 
-	// insanejournal post in the LJ user's timezone.
+	// insanejournal post in the LJ user's timezone. 
 	// Hopefully the person's Friendica account
 	// will be set to the same thing.
 
@@ -171,10 +171,10 @@ function ijpost_send(&$a,&$b) {
 		intval($b['uid'])
 	);
 	if($x && strlen($x[0]['timezone']))
-		$tz = $x[0]['timezone'];
+		$tz = $x[0]['timezone'];	
 
-	$ij_username = PConfig::get($b['uid'],'ijpost','ij_username');
-	$ij_password = PConfig::get($b['uid'],'ijpost','ij_password');
+	$ij_username = get_pconfig($b['uid'],'ijpost','ij_username');
+	$ij_password = get_pconfig($b['uid'],'ijpost','ij_password');
 	$ij_blog = 'http://www.insanejournal.com/interface/xmlrpc';
 
 	if($ij_username && $ij_password && $ij_blog) {

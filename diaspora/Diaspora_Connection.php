@@ -69,7 +69,7 @@ class Diaspora_Connection {
 		return ($this->tls) ? 'https' : 'http';
 	}
 
-	private function doHttpRequest($url, $data = [], $headers = []) {
+	private function doHttpRequest($url, $data = array(), $headers = array()) {
 		if (0 === strpos($url, '/')) {
 			$url = $this->getScheme() . '://' . $this->host . $url;
 		}
@@ -122,14 +122,14 @@ class Diaspora_Connection {
 		return $this->last_http_result;
 	}
 
-	private function doHttpDelete($url, $data = [], $headers = []) {
+	private function doHttpDelete($url, $data = array(), $headers = array()) {
 		$this->http_method = 'DELETE';
 		$this->doHttpRequest($url, $data, $headers);
 		$this->http_method = null; // reset for next request
 	}
 
 	private function parseAuthenticityToken($str) {
-		$m = [];
+		$m = array();
 		preg_match('/<meta (?:name="csrf-token" content="(.*?)"|content="(.*?)" name="csrf-token")/', $str, $m);
 		if (empty($m[1]) && !empty($m[2])) {
 			$token = $m[2];
@@ -151,11 +151,11 @@ class Diaspora_Connection {
 	public function logIn() {
 		$this->doHttpRequest('/users/sign_in');
 
-		$params = [
+		$params = array(
 			'user[username]' => $this->user,
 			'user[password]' => $this->password,
 			'authenticity_token' => $this->csrf_token
-		];
+		);
 		$this->doHttpRequest('/users/sign_in', $params);
 		$this->doHttpRequest('/stream');
 		return (200 === $this->last_http_result->info['http_code']) ? true : false;
@@ -163,14 +163,14 @@ class Diaspora_Connection {
 
 	public function getAspects() {
 		$this->doHttpRequest('/bookmarklet');
-		$m = [];
+		$m = array();
 		preg_match('/"aspects"\:(\[.+?\])/', $this->last_http_result->response, $m);
 		return (!empty($m[1])) ? json_decode($m[1]) : false;
 	}
 
 	public function getServices() {
 		$this->doHttpRequest('/bookmarklet');
-		$m = [];
+		$m = array();
 		preg_match('/"configured_services"\:(\[.+?\])/', $this->last_http_result->response, $m);
 		return (!empty($m[1])) ? json_decode($m[1]) : false;
 	}
@@ -196,24 +196,24 @@ class Diaspora_Connection {
 		return $this->readJsonResponse($this->last_http_result->response);
 	}
 
-	public function postStatusMessage($msg, $aspect_ids = 'all_aspects', $additional_data = []) {
-		$data = [
+	public function postStatusMessage($msg, $aspect_ids = 'all_aspects', $additional_data = array()) {
+		$data = array(
 			'aspect_ids' => $aspect_ids,
-			'status_message' => [
+			'status_message' => array(
 				'text' => $msg,
 				'provider_display_name' => $this->provider
-			]
-		];
+			)
+		);
 
 		if (!empty($additional_data)) {
 			$data += $additional_data;
 		}
 
-		$headers = [
+		$headers = array(
 			'Content-Type: application/json',
 			'Accept: application/json',
 			'X-CSRF-Token: ' . $this->csrf_token
-		];
+		);
 
 		$this->http_method = 'POST';
 		$this->doHttpRequest('/status_messages', json_encode($data), $headers);
@@ -228,18 +228,18 @@ class Diaspora_Connection {
 	}
 
 	public function postPhoto($file) {
-		$params = [
+		$params = array(
 			'photo[pending]' => 'true',
 			'qqfile' => basename($file)
-		];
+		);
 		$query_string = '?' . http_build_query($params);
-		$headers = [
+		$headers = array(
 			'Accept: application/json',
 			'X-Requested-With: XMLHttpRequest',
 			'X-CSRF-Token: ' . $this->csrf_token,
 			'X-File-Name: ' . basename($file),
 			'Content-Type: application/octet-stream',
-		];
+		);
 		if ($size = @filesize($file)) {
 			$headers[] = "Content-Length: $size";
 		}
@@ -249,14 +249,14 @@ class Diaspora_Connection {
 	}
 
 	public function deletePost($id) {
-		$headers = ['X-CSRF-Token: ' . $this->csrf_token];
-		$this->doHttpDelete("/posts/$id", [], $headers);
+		$headers = array('X-CSRF-Token: ' . $this->csrf_token);
+		$this->doHttpDelete("/posts/$id", array(), $headers);
 		return (204 === $this->last_http_result->info['http_code']) ? true : false;
 	}
 
 	public function deleteComment($id) {
-		$headers = ['X-CSRF-Token: ' . $this->csrf_token];
-		$this->doHttpDelete("/comments/$id", [], $headers);
+		$headers = array('X-CSRF-Token: ' . $this->csrf_token);
+		$this->doHttpDelete("/comments/$id", array(), $headers);
 		return (204 === $this->last_http_result->info['http_code']) ? true : false;
 	}
 

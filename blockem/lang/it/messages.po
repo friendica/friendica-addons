@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014
+# fabrixxm <fabrix.xm@gmail.com>, 2014,2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-09-10 10:23+0000\n"
+"POT-Creation-Date: 2018-02-09 13:00+0100\n"
+"PO-Revision-Date: 2018-03-19 13:14+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -19,35 +19,41 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: blockem.php:53 blockem.php:57
+#: blockem.php:51 blockem.php:55
 msgid "\"Blockem\""
 msgstr "\"Blockem\""
 
-#: blockem.php:61
-msgid "Comma separated profile URLS to block"
-msgstr "Lista, separata da virgola, di indirizzi da bloccare"
+#: blockem.php:59
+msgid ""
+"Hides user's content by collapsing posts. Also replaces their avatar with "
+"generic image."
+msgstr "Nascondi il contenuto degli utenti collassando i messaggi. Sostituisce anche gli avatar con un'immagine generica."
 
-#: blockem.php:65
+#: blockem.php:60
+msgid "Comma separated profile URLS:"
+msgstr "URL profili separati da virgola:"
+
+#: blockem.php:64
 msgid "Save Settings"
 msgstr "Salva Impostazioni"
 
-#: blockem.php:78
+#: blockem.php:77
 msgid "BLOCKEM Settings saved."
 msgstr "Impostazioni BLOCKEM salvate."
 
-#: blockem.php:142
+#: blockem.php:140
 #, php-format
-msgid "Blocked %s - Click to open/close"
-msgstr "%s bloccato - Clicca per aprire/chiudere"
+msgid "Hidden content by %s - Click to open/close"
+msgstr "Contenuto di %s nascosto - Clicca per aprire/chiudere"
 
-#: blockem.php:197
+#: blockem.php:193
 msgid "Unblock Author"
 msgstr "Sblocca autore"
 
-#: blockem.php:199
+#: blockem.php:195
 msgid "Block Author"
 msgstr "Blocca autore"
 
-#: blockem.php:231
+#: blockem.php:227
 msgid "blockem settings updated"
 msgstr "Impostazioni 'blockem' aggiornate."

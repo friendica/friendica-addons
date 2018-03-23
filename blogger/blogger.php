@@ -3,7 +3,7 @@
  * Name: Blogger Post Connector
  * Description: Post to Blogger (or anything else which uses blogger XMLRPC API)
  * Version: 1.0
- *
+ * 
  */
 
 use Friendica\Content\Text\BBCode;
@@ -58,11 +58,11 @@ function blogger_settings(&$a, &$s)
 		return;
 	}
 
-	/* Add our stylesheet to the page so we can make our settings look nice */
+    /* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/blogger/blogger.css' . '" media="all" />' . "\r\n";
+    $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/blogger/blogger.css' . '" media="all" />' . "\r\n";
 
-	/* Get the current state of our config variables */
+    /* Get the current state of our config variables */
 
 	$enabled = PConfig::get(local_user(), 'blogger', 'post');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
@@ -70,11 +70,11 @@ function blogger_settings(&$a, &$s)
 
 	$def_enabled = PConfig::get(local_user(), 'blogger', 'post_by_default');
 
-	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
+    $def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
-	$bl_username = PConfig::get(local_user(), 'blogger', 'bl_username');
-	$bl_password = PConfig::get(local_user(), 'blogger', 'bl_password');
-	$bl_blog = PConfig::get(local_user(), 'blogger', 'bl_blog');
+	$bl_username = get_pconfig(local_user(), 'blogger', 'bl_username');
+	$bl_password = get_pconfig(local_user(), 'blogger', 'bl_password');
+	$bl_blog = get_pconfig(local_user(), 'blogger', 'bl_blog');
 
 	/* Add some HTML to the existing form */
 	$s .= '<span id="settings_blogger_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_blogger_expanded\'); openClose(\'settings_blogger_inflated\');">';
@@ -124,23 +124,21 @@ function blogger_settings_post(&$a, &$b)
 		PConfig::set(local_user(), 'blogger', 'bl_password', trim($_POST['bl_password']));
 		PConfig::set(local_user(), 'blogger', 'bl_blog', trim($_POST['bl_blog']));
 	}
+
 }
 
 function blogger_post_local(&$a, &$b)
 {
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
-	if ($b['edit']) {
+	if($b['edit'])
 		return;
-	}
 
-	if (!local_user() || (local_user() != $b['uid'])) {
+	if((! local_user()) || (local_user() != $b['uid']))
 		return;
-	}
 
-	if ($b['private'] || $b['parent']) {
+	if($b['private'] || $b['parent'])
 		return;
-	}
 
 	$bl_post   = intval(PConfig::get(local_user(), 'blogger', 'post'));
 
@@ -148,17 +146,13 @@ function blogger_post_local(&$a, &$b)
 
 	if ($b['api_source'] && intval(PConfig::get(local_user(), 'blogger', 'post_by_default'))) {
 		$bl_enable = 1;
-	}
 
-	if (!$bl_enable) {
-		return;
-	}
+    if(! $bl_enable)
+       return;
 
-	if (strlen($b['postopts'])) {
-		$b['postopts'] .= ',';
-	}
-
-	 $b['postopts'] .= 'blogger';
+    if(strlen($b['postopts']))
+       $b['postopts'] .= ',';
+     $b['postopts'] .= 'blogger';
 }
 
 
@@ -174,9 +168,6 @@ function blogger_send(&$a, &$b)
 		return;
 	}
 
-	if ($b['parent'] != $b['id']) {
-		return;
-	}
 
 	$bl_username = xmlify(PConfig::get($b['uid'], 'blogger', 'bl_username'));
 	$bl_password = xmlify(PConfig::get($b['uid'], 'blogger', 'bl_password'));
@@ -210,5 +201,6 @@ EOT;
 		}
 
 		logger('posted to blogger: ' . (($x) ? $x : ''), LOGGER_DEBUG);
+
 	}
 }

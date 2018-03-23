@@ -37,9 +37,9 @@ function dwpost_jot_nets(&$a,&$b) {
     if(! local_user())
         return;
 
-    $dw_post = PConfig::get(local_user(),'dwpost','post');
+    $dw_post = get_pconfig(local_user(),'dwpost','post');
     if(intval($dw_post) == 1) {
-        $dw_defpost = PConfig::get(local_user(),'dwpost','post_by_default');
+        $dw_defpost = get_pconfig(local_user(),'dwpost','post_by_default');
         $selected = ((intval($dw_defpost) == 1) ? ' checked="checked" ' : '');
         $b .= '<div class="profile-jot-net"><input type="checkbox" name="dwpost_enable" ' . $selected . ' value="1" /> '
             . L10n::t('Post to Dreamwidth') . '</div>';
@@ -58,16 +58,16 @@ function dwpost_settings(&$a,&$s) {
 
     /* Get the current state of our config variables */
 
-    $enabled = PConfig::get(local_user(),'dwpost','post');
+    $enabled = get_pconfig(local_user(),'dwpost','post');
 
     $checked = (($enabled) ? ' checked="checked" ' : '');
 
-    $def_enabled = PConfig::get(local_user(),'dwpost','post_by_default');
+    $def_enabled = get_pconfig(local_user(),'dwpost','post_by_default');
 
     $def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
-	$dw_username = PConfig::get(local_user(), 'dwpost', 'dw_username');
-	$dw_password = PConfig::get(local_user(), 'dwpost', 'dw_password');
+	$dw_username = get_pconfig(local_user(), 'dwpost', 'dw_username');
+	$dw_password = get_pconfig(local_user(), 'dwpost', 'dw_password');
 
 
     /* Add some HTML to the existing form */
@@ -111,10 +111,10 @@ function dwpost_settings_post(&$a,&$b) {
 
 	if(x($_POST,'dwpost-submit')) {
 
-		PConfig::set(local_user(),'dwpost','post',intval($_POST['dwpost']));
-		PConfig::set(local_user(),'dwpost','post_by_default',intval($_POST['dw_bydefault']));
-		PConfig::set(local_user(),'dwpost','dw_username',trim($_POST['dw_username']));
-		PConfig::set(local_user(),'dwpost','dw_password',trim($_POST['dw_password']));
+		set_pconfig(local_user(),'dwpost','post',intval($_POST['dwpost']));
+		set_pconfig(local_user(),'dwpost','post_by_default',intval($_POST['dw_bydefault']));
+		set_pconfig(local_user(),'dwpost','dw_username',trim($_POST['dw_username']));
+		set_pconfig(local_user(),'dwpost','dw_password',trim($_POST['dw_password']));
 
 	}
 
@@ -133,11 +133,11 @@ function dwpost_post_local(&$a,&$b) {
 	if($b['private'] || $b['parent'])
 		return;
 
-    $dw_post   = intval(PConfig::get(local_user(),'dwpost','post'));
+    $dw_post   = intval(get_pconfig(local_user(),'dwpost','post'));
 
 	$dw_enable = (($dw_post && x($_REQUEST,'dwpost_enable')) ? intval($_REQUEST['dwpost_enable']) : 0);
 
-	if($_REQUEST['api_source'] && intval(PConfig::get(local_user(),'dwpost','post_by_default')))
+	if($_REQUEST['api_source'] && intval(get_pconfig(local_user(),'dwpost','post_by_default')))
 		$dw_enable = 1;
 
     if(! $dw_enable)
@@ -162,7 +162,7 @@ function dwpost_send(&$a,&$b) {
     if($b['parent'] != $b['id'])
         return;
 
-	// dreamwidth post in the LJ user's timezone.
+	// dreamwidth post in the LJ user's timezone. 
 	// Hopefully the person's Friendica account
 	// will be set to the same thing.
 
@@ -172,10 +172,10 @@ function dwpost_send(&$a,&$b) {
 		intval($b['uid'])
 	);
 	if($x && strlen($x[0]['timezone']))
-		$tz = $x[0]['timezone'];
+		$tz = $x[0]['timezone'];	
 
-	$dw_username = PConfig::get($b['uid'],'dwpost','dw_username');
-	$dw_password = PConfig::get($b['uid'],'dwpost','dw_password');
+	$dw_username = get_pconfig($b['uid'],'dwpost','dw_username');
+	$dw_password = get_pconfig($b['uid'],'dwpost','dw_password');
 	$dw_blog = 'http://www.dreamwidth.org/interface/xmlrpc';
 
 	if($dw_username && $dw_password && $dw_blog) {

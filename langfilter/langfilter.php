@@ -36,21 +36,16 @@ function langfilter_uninstall()
  * 2nd get the current settings
  * 3rd parse a SMARTY3 template, replacing some translateable strings for the form
  */
-
-function langfilter_addon_settings(App $a, &$s)
-{
-	if (!local_user()) {
+function langfilter_addon_settings(&$a,&$s) {
+	if(! local_user())
 		return;
-	}
 
-	$enable_checked = (intval(PConfig::get(local_user(), 'langfilter', 'disable')) ? '' : ' checked="checked" ');
-	$languages      = PConfig::get(local_user(), 'langfilter', 'languages');
-	$minconfidence  = PConfig::get(local_user(), 'langfilter', 'minconfidence') * 100;
-	$minlength      = PConfig::get(local_user(), 'langfilter', 'minlength');
-
-	if (!$languages) {
+	$enable_checked = (intval(get_pconfig(local_user(),'langfilter','disable')) ? '' : ' checked="checked" ');
+	$languages = get_pconfig(local_user(),'langfilter','languages');
+	$minconfidence = get_pconfig(local_user(),'langfilter','minconfidence')*100;
+	$minlength = get_pconfig(local_user(),'langfilter','minlength');
+	if(! $languages)
 		$languages = 'en,de,fr,it,es';
-	}
 
 	$t = get_markup_template("settings.tpl", "addon/langfilter/");
 	$s .= replace_macros($t, [
@@ -65,18 +60,14 @@ function langfilter_addon_settings(App $a, &$s)
 
 	return;
 }
-
 /* Save the settings
  * 1st check it's a logged in user calling
  * 2nd check the langfilter form is to be saved
  * 3rd save the settings to the DB for later usage
  */
-
-function langfilter_addon_settings_post(App $a, &$b)
-{
-	if (!local_user()) {
+function langfilter_addon_settings_post(&$a,&$b) {
+	if(! local_user())
 		return;
-	}
 
 	if ($_POST['langfilter-settings-submit']) {
 		PConfig::set(local_user(), 'langfilter', 'languages', trim($_POST['langfilter_languages']));
@@ -104,7 +95,6 @@ function langfilter_addon_settings_post(App $a, &$b)
 		info(L10n::t('Language Filter Settings saved.') . EOL);
 	}
 }
-
 /* Actually filter postings by their language
  * 1st check if the user wants to filter postings
  * 2nd get the user settings which languages shall be not filtered out
@@ -113,71 +103,51 @@ function langfilter_addon_settings_post(App $a, &$b)
  *     of the user, then collapse the posting, but provide a link to
  *     expand it again.
  */
+function langfilter_prepare_body(&$a,&$b) {
 
-function langfilter_prepare_body(App $a, &$b)
-{
-	$logged_user = local_user();
-	if (!$logged_user) {
-		return;
-	}
+    $logged_user = local_user();
+    if ( ! $logged_user ) return;
 
-	// Never filter own messages
-	// TODO: find a better way to extract this
-	$logged_user_profile = $a->get_baseurl() . '/profile/' . $a->user['nickname'];
-	if ($logged_user_profile == $b['item']['author-link']) {
-		return;
-	}
+    # Never filter own messages
+    # TODO: find a better way to extract this
+    $logged_user_profile = $a->config['system']['url'] . '/profile/' . $a->user['nickname'];
+    if ( $logged_user_profile == $b['item']['author-link'] ) return;
 
-	// Don't filter if language filter is disabled
-	if (PConfig::get($logged_user, 'langfilter', 'disable')) {
-		return;
-	}
+    # Don't filter if language filter is disabled
+    if( get_pconfig($logged_user,'langfilter','disable') ) return;
 
-	// Don't filter if body lenght is below minimum
-	$minlen = PConfig::get(local_user(), 'langfilter', 'minlength');
-	if (!$minlen) {
-		$minlen = 32;
-	}
-	if (strlen($b['item']['body']) < $minlen) {
-		return;
-	}
+    # Don't filter if body lenght is below minimum
+    $minlen = get_pconfig(local_user(),'langfilter','minlength');
+    if ( ! $minlen ) $minlen = 32;
+    if ( strlen($b['item']['body']) < $minlen ) return;
 
-	$spoken_config = PConfig::get(local_user(), 'langfilter', 'languages');
-	$minconfidence = PConfig::get(local_user(), 'langfilter', 'minconfidence');
+    $spoken_config = get_pconfig(local_user(),'langfilter','languages');
+    $minconfidence = get_pconfig(local_user(),'langfilter','minconfidence');
 
-	// Don't filter if no spoken languages are configured
-	if (!$spoken_config)
-		return;
-	$spoken_languages = explode(',', $spoken_config);
+    # Don't filter if no spoken languages are configured 
+    if ( ! $spoken_config ) return;
+    $spoken_languages = explode(',', $spoken_config);
 
-	// Extract the language of the post
-	$opts = $b['item']['postopts'];
-	if (!$opts) {
-		// no options associated to post
-		return;
-	}
-	if (!preg_match('/\blang=([^;]*);([^:]*)/', $opts, $matches)) {
-		// no lang options associated to post
-		return;
-	}
+    # Extract the language of the post
+    $opts = $b['item']['postopts'];
+    if ( ! $opts ) return; # no options associated to post
+    if ( ! preg_match('/\blang=([^;]*);([^:]*)/', $opts, $matches ) )
+            return; # no lang options associated to post
 
-	$lang = $matches[1];
-	$confidence = $matches[2];
+    $lang = $matches[1];
+    $confidence = $matches[2];
 
-	// Do not filter if language detection confidence is too low
-	if ($minconfidence && $confidence < $minconfidence) {
-		return;
-	}
+    # Do not filter if language detection confidence is too low
+    if ( $minconfidence && $confidence < $minconfidence ) return;
 
-	$iso2 = Text_LanguageDetect_ISO639::nameToCode2($lang);
+    $iso2 = Text_LanguageDetect_ISO639::nameToCode2($lang);
 
-	if (!$iso2) {
-		return;
-	}
-	$spoken = in_array($iso2, $spoken_languages);
+    if ( ! $iso2 ) return;
+    $spoken = in_array($iso2, $spoken_languages);
 
 	if (!$spoken) {
 		$rnd = random_string(8);
 		$b['html'] = '<div id="langfilter-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'langfilter-' . $rnd . '\'); >' . L10n::t('unspoken language %s - Click to open/close', $lang) . '</div><div id="langfilter-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
 	}
 }
+?>

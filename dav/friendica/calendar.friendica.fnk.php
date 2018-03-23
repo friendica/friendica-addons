@@ -18,13 +18,13 @@ define("CALDAV_NAMESPACE_PRIVATE", 1);
 define("CALDAV_FRIENDICA_MINE", "friendica-mine");
 define("CALDAV_FRIENDICA_CONTACTS", "friendica-contacts");
 
-$GLOBALS["CALDAV_PRIVATE_SYSTEM_CALENDARS"] = [CALDAV_FRIENDICA_MINE, CALDAV_FRIENDICA_CONTACTS];
-$GLOBALS["CALDAV_PRIVATE_SYSTEM_BACKENDS"] = ["Sabre_CalDAV_Backend_Friendica"];
+$GLOBALS["CALDAV_PRIVATE_SYSTEM_CALENDARS"] = array(CALDAV_FRIENDICA_MINE, CALDAV_FRIENDICA_CONTACTS);
+$GLOBALS["CALDAV_PRIVATE_SYSTEM_BACKENDS"] = array("Sabre_CalDAV_Backend_Friendica");
 
 define("CARDDAV_NAMESPACE_PRIVATE", 1);
 define("CARDDAV_FRIENDICA_CONTACT", "friendica");
-$GLOBALS["CARDDAV_PRIVATE_SYSTEM_ADDRESSBOOKS"] = [CARDDAV_FRIENDICA_CONTACT];
-$GLOBALS["CARDDAV_PRIVATE_SYSTEM_BACKENDS"] = ["Sabre_CardDAV_Backend_Friendica"];
+$GLOBALS["CARDDAV_PRIVATE_SYSTEM_ADDRESSBOOKS"] = array(CARDDAV_FRIENDICA_CONTACT);
+$GLOBALS["CARDDAV_PRIVATE_SYSTEM_BACKENDS"] = array("Sabre_CardDAV_Backend_Friendica");
 
 $GLOBALS["CALDAV_ACL_PLUGIN_CLASS"] = "Sabre_DAVACL_Plugin_Friendica";
 
@@ -108,7 +108,7 @@ function dav_compat_principal2namespace($principalUri = "")
 
 	if (strpos($principalUri, "principals/users/") !== 0) return null;
 	$username = substr($principalUri, strlen("principals/users/"));
-	return ["namespace" => CALDAV_NAMESPACE_PRIVATE, "namespace_id" => dav_compat_username2id($username)];
+	return array("namespace" => CALDAV_NAMESPACE_PRIVATE, "namespace_id" => dav_compat_username2id($username));
 }
 
 
@@ -202,7 +202,7 @@ function wdcal_calendar_factory_by_id($calendar_id)
  */
 function wdcal_create_std_calendars_get_statements($user_id, $withcheck = true)
 {
-	$stms = [];
+	$stms = array();
 	$a = get_app();
 	$uris = [
 		'private'                 => L10n::t("Private Calendar"),
@@ -244,7 +244,7 @@ function wdcal_create_std_calendars()
  */
 function wdcal_create_std_addressbooks_get_statements($user_id, $withcheck = true)
 {
-	$stms = [];
+	$stms = array();
 	$a = get_app();
 	$uris = [
 		'private'                 => L10n::t("Private Addresses"),

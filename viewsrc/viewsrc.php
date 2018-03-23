@@ -4,7 +4,7 @@
  * Description: Add "View Source" link to item context
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- *
+ * 
  */
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;

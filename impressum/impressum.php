@@ -30,7 +30,7 @@ function impressum_module() {
 }
 function impressum_content() {
     $a = get_app();
-    goaway('friendica/');
+    goaway($a->get_baseurl().'/friendica/');
 }
 
 function obfuscate_email ($s) {

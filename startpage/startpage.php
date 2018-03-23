@@ -4,7 +4,7 @@
  * Description: Set a preferred page to load on login from home page
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- *
+ * 
  */
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
@@ -29,9 +29,12 @@ function startpage_home_init($a, $b) {
 	if(! local_user())
 		return;
 
-	$page = PConfig::get(local_user(),'startpage','startpage');
+	$page = get_pconfig(local_user(),'startpage','startpage');
 	if(strlen($page)) {
-		goaway($page);
+		$slash = ((strpos($page,'/') === 0) ? true : false);
+		if(stristr($page,'://'))
+			goaway($page);
+		goaway($a->get_baseurl() . (($slash) ? '' : '/') . $page);
 	}
 	return;
 }
@@ -49,7 +52,7 @@ function startpage_settings_post($a,$post) {
 	if(! local_user())
 		return;
 	if($_POST['startpage-submit'])
-		PConfig::set(local_user(),'startpage','startpage',strip_tags(trim($_POST['startpage'])));
+		set_pconfig(local_user(),'startpage','startpage',strip_tags(trim($_POST['startpage'])));
 }
 
 /**
@@ -69,7 +72,7 @@ function startpage_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$page = PConfig::get(local_user(),'startpage','startpage');
+	$page = get_pconfig(local_user(),'startpage','startpage');
 
 
 	/* Add some HTML to the existing form */
