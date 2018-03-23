@@ -210,7 +210,7 @@ function jappixmini_init()
 		}
 
 		$encrypt_func = openssl_private_encrypt;
-		$decrypt_func = openssl_private_decrypt;
+		$decrypt_func = '\Friendica\Util\Crypto::opensslPrivateDecrypt';
 		$key = $r[0]["prvkey"];
 	} else {
 		killme();
@@ -610,7 +610,7 @@ function jappixmini_cron(App $a, $d)
 				$dfrn_id = $contact_row["issued-id"];
 				$key = $contact_row["prvkey"];
 				$encrypt_func = openssl_private_encrypt;
-				$decrypt_func = openssl_private_decrypt;
+				$decrypt_func = '\Friendica\Util\Crypto::opensslPrivateDecrypt';
 				$role = "pub";
 			}
 
