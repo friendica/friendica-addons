@@ -1,12 +1,6 @@
 [main]
 host = https://www.transifex.com
 
-[friendica.addon_appnet_messagespo]
-file_filter = appnet/lang/<lang>/messages.po
-source_file = appnet/lang/C/messages.po
-source_lang = en
-type = PO
-
 [friendica.addon_blackout_messagespo]
 file_filter = blackout/lang/<lang>/messages.po
 source_file = blackout/lang/C/messages.po
@@ -34,12 +28,6 @@ type = PO
 [friendica.addon_buglink_messagespo]
 file_filter = buglink/lang/<lang>/messages.po
 source_file = buglink/lang/C/messages.po
-source_lang = en
-type = PO
-
-[friendica.addon_cal_messagespo]
-file_filter = cal/lang/<lang>/messages.po
-source_file = cal/lang/C/messages.po
 source_lang = en
 type = PO
 
@@ -73,21 +61,9 @@ source_file = dwpost/lang/C/messages.po
 source_lang = en
 type = PO
 
-[friendica.addon_editplain_messagespo]
-file_filter = editplain/lang/<lang>/messages.po
-source_file = editplain/lang/C/messages.po
-source_lang = en
-type = PO
-
 [friendica.addon_forumdirectory_messagespo]
 file_filter = forumdirectory/lang/<lang>/messages.po
 source_file = forumdirectory/lang/C/messages.po
-source_lang = en
-type = PO
-
-[friendica.addon_forumlist_messagespo]
-file_filter = forumlist/lang/<lang>/messages.po
-source_file = forumlist/lang/C/messages.po
 source_lang = en
 type = PO
 
@@ -112,12 +88,6 @@ type = PO
 [friendica.addon_gnot_messagespo]
 file_filter = gnot/lang/<lang>/messages.po
 source_file = gnot/lang/C/messages.po
-source_lang = en
-type = PO
-
-[friendica.addon_gpluspost_messagespo]
-file_filter = gpluspost/lang/<lang>/messages.po
-source_file = gpluspost/lang/C/messages.po
 source_lang = en
 type = PO
 
@@ -301,6 +271,12 @@ source_file = rendertime/lang/C/messages.po
 source_lang = en
 type = PO
 
+[friendica.addon_securemail_messagespo]
+file_filter = securemail/lang/<lang>/messages.po
+source_file = securemail/lang/C/messages.po
+source_lang = en
+type = PO
+
 [friendica.addon_showmore_messagespo]
 file_filter = showmore/lang/<lang>/messages.po
 source_file = showmore/lang/C/messages.po
@@ -310,12 +286,6 @@ type = PO
 [friendica.addon_smileybutton_messagespo]
 file_filter = smileybutton/lang/<lang>/messages.po
 source_file = smileybutton/lang/C/messages.po
-source_lang = en
-type = PO
-
-[friendica.addon_snautofollow_messagespo]
-file_filter = snautofollow/lang/<lang>/messages.po
-source_file = snautofollow/lang/C/messages.po
 source_lang = en
 type = PO
 
@@ -361,9 +331,9 @@ source_file = twitter/lang/C/messages.po
 source_lang = en
 type = PO
 
-[friendica.addon_uhremotestorage_messagespo]
-file_filter = uhremotestorage/lang/<lang>/messages.po
-source_file = uhremotestorage/lang/C/messages.po
+[friendica.addon_viewsrc_messagespo]
+file_filter = viewsrc/lang/<lang>/messages.po
+source_file = viewsrc/lang/C/messages.po
 source_lang = en
 type = PO
 
@@ -382,6 +352,12 @@ type = PO
 [friendica.addon_wppost_messagespo]
 file_filter = wppost/lang/<lang>/messages.po
 source_file = wppost/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_xmpp_messagespo]
+file_filter = xmpp/lang/<lang>/messages.po
+source_file = xmpp/lang/C/messages.po
 source_lang = en
 type = PO
 

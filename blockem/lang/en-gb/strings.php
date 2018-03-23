@@ -10,7 +10,7 @@ $a->strings["Hides user's content by collapsing posts. Also replaces their avata
 $a->strings["Comma separated profile URLS:"] = "Comma separated profile URLs:";
 $a->strings["Save Settings"] = "Save settings";
 $a->strings["BLOCKEM Settings saved."] = "Blockem settings saved.";
-$a->strings["Hidden content by %s - Click to open/close"] = "Hidden content by %s - Show/hide";
+$a->strings["Hidden content by %s - Click to open/close"] = "Hidden content by %s - Reveal/hide";
 $a->strings["Unblock Author"] = "Unblock author";
 $a->strings["Block Author"] = "Block author";
 $a->strings["blockem settings updated"] = "Blockem settings updated";

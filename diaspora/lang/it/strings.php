@@ -8,7 +8,7 @@ function string_plural_select_it($n){
 $a->strings["Post to Diaspora"] = "Invia a Diaspora";
 $a->strings["Can't login to your Diaspora account. Please check username and password and ensure you used the complete address (including http...)"] = "Non riesco ad autenticarmi con il tuo account Diaspora. Controlla il nome utente e la password e assicurati di aver usato l'indirizzo completo (compreso \"http\" o \"https\")";
 $a->strings["Diaspora Export"] = "Esporta Diaspora";
-$a->strings["Enable Diaspora Post Addon"] = "Abilita il addon di invio a Diaspora";
+$a->strings["Enable Diaspora Post Addon"] = "Abilita il componente aggiuntivo di invio a Diaspora";
 $a->strings["Diaspora username"] = "Nome utente Diaspora";
 $a->strings["Diaspora password"] = "Password Diaspora";
 $a->strings["Diaspora site URL"] = "Indirizzo sito Diaspora";

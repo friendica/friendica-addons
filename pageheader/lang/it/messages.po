@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014-2015
+# fabrixxm <fabrix.xm@gmail.com>, 2014-2015,2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2015-08-31 10:21+0000\n"
+"POT-Creation-Date: 2018-03-11 18:52+0100\n"
+"PO-Revision-Date: 2018-03-19 13:19+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -19,14 +19,24 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: pageheader.php:50
+#: pageheader.php:53
 msgid "\"pageheader\" Settings"
 msgstr "Impostazioni \"Intestazione pagina\""
 
-#: pageheader.php:55
-msgid "Submit"
-msgstr "Invia"
+#: pageheader.php:54
+msgid "Message"
+msgstr "Messaggio"
 
-#: pageheader.php:68
+#: pageheader.php:54
+msgid ""
+"Message to display on every page on this server (or put a pageheader.html "
+"file in your docroot)"
+msgstr "Il messaggio da mostrare su ogni pagina di questo server (puoi anche aggiungere un file pageheader.html nella root)"
+
+#: pageheader.php:55
+msgid "Save Settings"
+msgstr "Salva Impostazioni"
+
+#: pageheader.php:69
 msgid "pageheader Settings saved."
 msgstr "Impostazioni \"Intestazione pagina\" salvate."
