@@ -1,10 +1,12 @@
 <?php
+
 use Friendica\Core\Config;
 
-function twitter_sync_run($argv, $argc) {
+function twitter_sync_run($argv, $argc)
+{
 	global $a;
 
-	require_once("addon/twitter/twitter.php");
+	require_once 'addon/twitter/twitter.php';
 
 	if (function_exists('sys_getloadavg')) {
 		$load = sys_getloadavg();
@@ -27,4 +29,3 @@ function twitter_sync_run($argv, $argc) {
 		twitter_fetchhometimeline($a, $uid);
 	}
 }
-?>

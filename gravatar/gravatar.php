@@ -1,25 +1,28 @@
 <?php
 /**
  * Name: Gravatar Support
- * Description: If there is no avatar image for a new user or contact this plugin will look for one at Gravatar.
+ * Description: If there is no avatar image for a new user or contact this addon will look for one at Gravatar.
  * Version: 1.1
  * Author: Klaus Weidenbach <http://friendica.dszdw.net/profile/klaus>
  */
+use Friendica\Core\Addon;
+use Friendica\Core\Config;
+use Friendica\Core\L10n;
 
 /**
- * Installs the plugin hook
+ * Installs the addon hook
  */
 function gravatar_install() {
-	register_hook('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
+	Addon::registerHook('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
 
 	logger("registered gravatar in avatar_lookup hook");
 }
 
 /**
- * Removes the plugin hook
+ * Removes the addon hook
  */
 function gravatar_uninstall() {
-	unregister_hook('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
+	Addon::unregisterHook('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
 
 	logger("unregistered gravatar in avatar_lookup hook");
 }
@@ -54,7 +57,7 @@ function gravatar_lookup($a, &$b) {
 /**
  * Display admin settings for this addon
  */
-function gravatar_plugin_admin (&$a, &$o) {
+function gravatar_addon_admin (&$a, &$o) {
 	$t = get_markup_template( "admin.tpl", "addon/gravatar/" );
 
 	$default_avatar = get_config('gravatar', 'default_img');
@@ -67,14 +70,14 @@ function gravatar_plugin_admin (&$a, &$o) {
 		$rating = 'g'; // suitable for display on all websites with any audience type
 
 	// Available options for the select boxes
-	$default_avatars = array(
-		'mm' => t('generic profile image'),
-		'identicon' => t('random geometric pattern'),
-		'monsterid' => t('monster face'),
-		'wavatar' => t('computer generated face'),
-		'retro' => t('retro arcade style face'),
-	);
-	$ratings = array(
+	$default_avatars = [
+		'mm' => L10n::t('generic profile image'),
+		'identicon' => L10n::t('random geometric pattern'),
+		'monsterid' => L10n::t('monster face'),
+		'wavatar' => L10n::t('computer generated face'),
+		'retro' => L10n::t('retro arcade style face'),
+	];
+	$ratings = [
 		'g' => 'g',
 		'pg' => 'pg',
 		'r' => 'r',
@@ -86,28 +89,27 @@ function gravatar_plugin_admin (&$a, &$o) {
 		dbesc('libravatar')
 	);
 	if (count($r)) {
-		$o = '<h5>' .t('Information') .'</h5><p>' .t('Libravatar addon is installed, too. Please disable Libravatar addon or this Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar.') .'</p><br><br>';
+		$o = '<h5>' .L10n::t('Information') .'</h5><p>' .L10n::t('Libravatar addon is installed, too. Please disable Libravatar addon or this Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar.') .'</p><br><br>';
 	}
 
 	// output Gravatar settings
 	$o .= '<input type="hidden" name="form_security_token" value="' .get_form_security_token("gravatarsave") .'">';
-	$o .= replace_macros( $t, array(
-		'$submit' => t('Save Settings'),
-		'$default_avatar' => array('avatar', t('Default avatar image'), $default_avatar, t('Select default avatar image if none was found at Gravatar. See README'), $default_avatars),
-		'$rating' => array('rating', t('Rating of images'), $rating, t('Select the appropriate avatar rating for your site. See README'), $ratings),
-	));
+	$o .= replace_macros( $t, [
+		'$submit' => L10n::t('Save Settings'),
+		'$default_avatar' => ['avatar', L10n::t('Default avatar image'), $default_avatar, L10n::t('Select default avatar image if none was found at Gravatar. See README'), $default_avatars],
+		'$rating' => ['rating', L10n::t('Rating of images'), $rating, L10n::t('Select the appropriate avatar rating for your site. See README'), $ratings],
+	]);
 }
 
 /**
  * Save admin settings
  */
-function gravatar_plugin_admin_post (&$a) {
+function gravatar_addon_admin_post (&$a) {
 	check_form_security_token('gravatarsave');
 
 	$default_avatar = ((x($_POST, 'avatar')) ? notags(trim($_POST['avatar'])) : 'identicon');
 	$rating = ((x($_POST, 'rating')) ? notags(trim($_POST['rating'])) : 'g');
-	set_config('gravatar', 'default_img', $default_avatar);
-	set_config('gravatar', 'rating', $rating);
-	info( t('Gravatar settings updated.') .EOL);
+	Config::set('gravatar', 'default_img', $default_avatar);
+	Config::set('gravatar', 'rating', $rating);
+	info(L10n::t('Gravatar settings updated.') .EOL);
 }
-?>

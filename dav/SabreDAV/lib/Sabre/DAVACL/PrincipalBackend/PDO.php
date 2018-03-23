@@ -53,7 +53,7 @@ class Sabre_DAVACL_PrincipalBackend_PDO implements Sabre_DAVACL_IPrincipalBacken
         ),
 
         /**
-         * This property is actually used by the CardDAV plugin, where it gets
+         * This property is actually used by the CardDAV addon, where it gets
          * mapped to {http://calendarserver.orgi/ns/}me-card.
          *
          * The reason we don't straight-up use that property, is because

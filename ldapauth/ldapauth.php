@@ -51,17 +51,18 @@
  *
  * ...etc.
  */
+use Friendica\Core\Addon;
+use Friendica\Core\Config;
+use Friendica\Model\User;
 
-require_once('include/user.php');
-
-
-function ldapauth_install() {
-	register_hook('authenticate', 'addon/ldapauth/ldapauth.php', 'ldapauth_hook_authenticate');
+function ldapauth_install()
+{
+	Addon::registerHook('authenticate', 'addon/ldapauth/ldapauth.php', 'ldapauth_hook_authenticate');
 }
 
-
-function ldapauth_uninstall() {
-	unregister_hook('authenticate', 'addon/ldapauth/ldapauth.php', 'ldapauth_hook_authenticate');
+function ldapauth_uninstall()
+{
+	Addon::unregisterHook('authenticate', 'addon/ldapauth/ldapauth.php', 'ldapauth_hook_authenticate');
 }
 
 

@@ -5,18 +5,21 @@
  * Version: 0.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
+use Friendica\Core\Addon;
+use Friendica\Core\Config;
+use Friendica\Util\Network;
 
 function leistungsschutzrecht_install() {
-	register_hook('cron', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_cron');
-	register_hook('getsiteinfo', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
-	register_hook('page_info_data', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
+	Addon::registerHook('cron', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_cron');
+	Addon::registerHook('getsiteinfo', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
+	Addon::registerHook('page_info_data', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
 }
 
 
 function leistungsschutzrecht_uninstall() {
-	unregister_hook('cron', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_cron');
-	unregister_hook('getsiteinfo', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
-	unregister_hook('page_info_data', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
+	Addon::unregisterHook('cron', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_cron');
+	Addon::unregisterHook('getsiteinfo', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
+	Addon::unregisterHook('page_info_data', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
 }
 
 function leistungsschutzrecht_getsiteinfo($a, &$siteinfo) {
@@ -63,18 +66,17 @@ function leistungsschutzrecht_cuttext($text) {
 	return $text;
 }
 
-function leistungsschutzrecht_fetchsites() {
-	require_once("include/network.php");
-
+function leistungsschutzrecht_fetchsites()
+{
 	// This list works - but question is how current it is
 	$url = "http://leistungsschutzrecht-stoppen.d-64.org/blacklist.txt";
-	$sitelist = fetch_url($url);
+	$sitelist = Network::fetchUrl($url);
 	$siteurls = explode(',', $sitelist);
 
 	$whitelist = array('tagesschau.de', 'heute.de', 'wdr.de');
 
-	$sites = array();
-	foreach ($siteurls AS $site) {
+	$sites = [];
+	foreach ($siteurls as $site) {
 		if (!in_array($site, $whitelist)) {
 			$sites[$site] = $site;
 		}
@@ -87,7 +89,7 @@ function leistungsschutzrecht_fetchsites() {
 
 	$url = "http://www.vg-media.de/lizenzen/digitale-verlegerische-angebote/wahrnehmungsberechtigte-digitale-verlegerische-angebote.html";
 
-	$site = fetch_url($url);
+	$site = Network::fetchUrl($url);
 
 	$doc = new DOMDocument();
 	@$doc->loadHTML($site);

@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014
+# fabrixxm <fabrix.xm@gmail.com>, 2014,2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-09-10 10:24+0000\n"
+"PO-Revision-Date: 2018-03-19 13:21+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -28,8 +28,8 @@ msgid "Blogger Export"
 msgstr "Esporta Blogger"
 
 #: blogger.php:82
-msgid "Enable Blogger Post Plugin"
-msgstr "Abilita il plugin di invio a Blogger"
+msgid "Enable Blogger Post Addon"
+msgstr "Abilita il componente aggiuntivo di invio a Blogger"
 
 #: blogger.php:87
 msgid "Blogger username"

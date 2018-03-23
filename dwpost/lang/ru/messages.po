@@ -28,7 +28,7 @@ msgid "Dreamwidth Post Settings"
 msgstr "Настройки сообщений Dreamwidth"
 
 #: dwpost.php:72
-msgid "Enable dreamwidth Post Plugin"
+msgid "Enable dreamwidth Post Addon"
 msgstr "Включить плагин отправки сообщений в Dreamwidth"
 
 #: dwpost.php:77

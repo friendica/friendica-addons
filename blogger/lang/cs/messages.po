@@ -28,8 +28,8 @@ msgid "Blogger Export"
 msgstr "Blogger Export"
 
 #: blogger.php:82
-msgid "Enable Blogger Post Plugin"
-msgstr "Povolit Blogger Post Plugin"
+msgid "Enable Blogger Post Addon"
+msgstr "Povolit Blogger Post Addon"
 
 #: blogger.php:87
 msgid "Blogger username"

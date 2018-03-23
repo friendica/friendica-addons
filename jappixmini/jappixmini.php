@@ -61,19 +61,26 @@ GET /jappixmini/?role=%s&signed_address=%s&dfrn_id=%s
 Response:
 json({"status":"ok", "encrypted_address":"%s"})
 
-*/
+use Friendica\App;
+use Friendica\Core\Addon;
+use Friendica\Core\Config;
+use Friendica\Core\L10n;
+use Friendica\Core\PConfig;
+use Friendica\Model\User;
+use Friendica\Util\Network;
 
-function jappixmini_install() {
-register_hook('plugin_settings', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings');
-register_hook('plugin_settings_post', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings_post');
+function jappixmini_install()
+{
+	Addon::registerHook('addon_settings', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings');
+	Addon::registerHook('addon_settings_post', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings_post');
 
-register_hook('page_end', 'addon/jappixmini/jappixmini.php', 'jappixmini_script');
-register_hook('authenticate', 'addon/jappixmini/jappixmini.php', 'jappixmini_login');
+	Addon::registerHook('page_end', 'addon/jappixmini/jappixmini.php', 'jappixmini_script');
+	Addon::registerHook('authenticate', 'addon/jappixmini/jappixmini.php', 'jappixmini_login');
 
-register_hook('cron', 'addon/jappixmini/jappixmini.php', 'jappixmini_cron');
+	Addon::registerHook('cron', 'addon/jappixmini/jappixmini.php', 'jappixmini_cron');
 
-// Jappix source download as required by AGPL
-register_hook('about_hook', 'addon/jappixmini/jappixmini.php', 'jappixmini_download_source');
+	// Jappix source download as required by AGPL
+	Addon::registerHook('about_hook', 'addon/jappixmini/jappixmini.php', 'jappixmini_download_source');
 
 // set standard configuration
 $info_text = get_config("jappixmini", "infotext");
@@ -92,20 +99,21 @@ $addon_version = get_config("jappixmini", "version");
 if ($addon_version==="") set_config("jappixmini", "version", "1");
 }
 
+function jappixmini_uninstall()
+{
+	Addon::unregisterHook('addon_settings', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings_post');
 
-function jappixmini_uninstall() {
-unregister_hook('plugin_settings', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings');
-unregister_hook('plugin_settings_post', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings_post');
+	Addon::unregisterHook('page_end', 'addon/jappixmini/jappixmini.php', 'jappixmini_script');
+	Addon::unregisterHook('authenticate', 'addon/jappixmini/jappixmini.php', 'jappixmini_login');
 
-unregister_hook('page_end', 'addon/jappixmini/jappixmini.php', 'jappixmini_script');
-unregister_hook('authenticate', 'addon/jappixmini/jappixmini.php', 'jappixmini_login');
+	Addon::unregisterHook('cron', 'addon/jappixmini/jappixmini.php', 'jappixmini_cron');
 
-unregister_hook('cron', 'addon/jappixmini/jappixmini.php', 'jappixmini_cron');
-
-unregister_hook('about_hook', 'addon/jappixmini/jappixmini.php', 'jappixmini_download_source');
+	Addon::unregisterHook('about_hook', 'addon/jappixmini/jappixmini.php', 'jappixmini_download_source');
 }
 
-function jappixmini_plugin_admin(&$a, &$o) {
+function jappixmini_addon_admin(App $a, &$o)
+{
 	// display instructions and warnings on addon settings page for admin
 
 	if (!file_exists("addon/jappixmini.tgz")) {
@@ -147,7 +155,8 @@ function jappixmini_plugin_admin(&$a, &$o) {
 	$o .= '<input type="submit" name="jappixmini-admin-settings" value="OK" />';
 }
 
-function jappixmini_plugin_admin_post(&$a) {
+function jappixmini_addon_admin_post(App $a)
+{
 	// set info text
 	$submit = $_REQUEST['jappixmini-admin-settings'];
 	if ($submit) {
@@ -210,9 +219,11 @@ function jappixmini_init(&$a) {
 	} catch (Exception $e) {
 	}
 
-	// do not return an address if user deactivated plugin
-	$activated = get_pconfig($uid, 'jappixmini', 'activate');
-	if (!$activated) killme();
+	// do not return an address if user deactivated addon
+	$activated = PConfig::get($uid, 'jappixmini', 'activate');
+	if (!$activated) {
+		killme();
+	}
 
 	// return the requested Jabber address
 	try {
@@ -238,118 +249,128 @@ function jappixmini_init(&$a) {
 	}
 }
 
-function jappixmini_settings(&$a, &$s) {
-    // addon settings for a user
+function jappixmini_settings(App $a, &$s)
+{
+	// addon settings for a user
+	$activate = PConfig::get(local_user(), 'jappixmini', 'activate');
+	$activate = intval($activate) ? ' checked="checked"' : '';
+	$dontinsertchat = PConfig::get(local_user(), 'jappixmini', 'dontinsertchat');
+	$insertchat = !(intval($dontinsertchat) ? ' checked="checked"' : '');
 
-    $activate = get_pconfig(local_user(),'jappixmini','activate');
-    $activate = intval($activate) ? ' checked="checked"' : '';
-    $dontinsertchat = get_pconfig(local_user(),'jappixmini','dontinsertchat');
-    $insertchat = !(intval($dontinsertchat) ? ' checked="checked"' : '');
+	$defaultbosh = Config::get("jappixmini", "bosh_address");
 
-    $defaultbosh = get_config("jappixmini", "bosh_address");
+	if ($defaultbosh != "") {
+		PConfig::set(local_user(), 'jappixmini', 'bosh', $defaultbosh);
+	}
 
-    if ($defaultbosh != "")
-	set_pconfig(local_user(),'jappixmini','bosh', $defaultbosh);
+	$username = PConfig::get(local_user(), 'jappixmini', 'username');
+	$username = htmlentities($username);
+	$server = PConfig::get(local_user(), 'jappixmini', 'server');
+	$server = htmlentities($server);
+	$bosh = PConfig::get(local_user(), 'jappixmini', 'bosh');
+	$bosh = htmlentities($bosh);
+	$password = PConfig::get(local_user(), 'jappixmini', 'password');
+	$autosubscribe = PConfig::get(local_user(), 'jappixmini', 'autosubscribe');
+	$autosubscribe = intval($autosubscribe) ? ' checked="checked"' : '';
+	$autoapprove = PConfig::get(local_user(), 'jappixmini', 'autoapprove');
+	$autoapprove = intval($autoapprove) ? ' checked="checked"' : '';
+	$encrypt = intval(PConfig::get(local_user(), 'jappixmini', 'encrypt'));
+	$encrypt_checked = $encrypt ? ' checked="checked"' : '';
+	$encrypt_disabled = $encrypt ? '' : ' disabled="disabled"';
 
-    $username = get_pconfig(local_user(),'jappixmini','username');
-    $username = htmlentities($username);
-    $server = get_pconfig(local_user(),'jappixmini','server');
-    $server = htmlentities($server);
-    $bosh = get_pconfig(local_user(),'jappixmini','bosh');
-    $bosh = htmlentities($bosh);
-    $password = get_pconfig(local_user(),'jappixmini','password');
-    $autosubscribe = get_pconfig(local_user(),'jappixmini','autosubscribe');
-    $autosubscribe = intval($autosubscribe) ? ' checked="checked"' : '';
-    $autoapprove = get_pconfig(local_user(),'jappixmini','autoapprove');
-    $autoapprove = intval($autoapprove) ? ' checked="checked"' : '';
-    $encrypt = intval(get_pconfig(local_user(),'jappixmini','encrypt'));
-    $encrypt_checked = $encrypt ? ' checked="checked"' : '';
-    $encrypt_disabled = $encrypt ? '' : ' disabled="disabled"';
+	if ($server == "") {
+		$server = Config::get("jappixmini", "default_server");
+	}
 
-    if ($server == "")
-	$server = get_config("jappixmini", "default_server");
+	if (($username == "") && Config::get("jappixmini", "default_user")) {
+		$username = $a->user["nickname"];
+	}
 
-    if (($username == "") && get_config("jappixmini", "default_user"))
-	$username = $a->user["nickname"];
+	$info_text = Config::get("jappixmini", "infotext");
+	$info_text = htmlentities($info_text);
+	$info_text = str_replace("\n", "<br />", $info_text);
 
-    $info_text = get_config("jappixmini", "infotext");
-    $info_text = htmlentities($info_text);
-    $info_text = str_replace("\n", "<br />", $info_text);
+	// count contacts
+	$r = q("SELECT COUNT(1) as `cnt` FROM `pconfig` WHERE `uid`=%d AND `cat`='jappixmini' AND `k` LIKE 'id:%%'", local_user());
+	if (count($r)) {
+		$contact_cnt = $r[0]["cnt"];
+	} else {
+		$contact_cnt = 0;
+	}
 
-    // count contacts
-    $r = q("SELECT COUNT(1) as `cnt` FROM `pconfig` WHERE `uid`=%d AND `cat`='jappixmini' AND `k` LIKE 'id:%%'", local_user());
-    if (count($r)) $contact_cnt = $r[0]["cnt"];
-    else $contact_cnt = 0;
+	// count jabber addresses
+	$r = q("SELECT COUNT(1) as `cnt` FROM `pconfig` WHERE `uid`=%d AND `cat`='jappixmini' AND `k` LIKE 'id:%%' AND `v` LIKE '%%@%%'", local_user());
+	if (count($r)) {
+		$address_cnt = $r[0]["cnt"];
+	} else {
+		$address_cnt = 0;
+	}
 
-    // count jabber addresses
-    $r = q("SELECT COUNT(1) as `cnt` FROM `pconfig` WHERE `uid`=%d AND `cat`='jappixmini' AND `k` LIKE 'id:%%' AND `v` LIKE '%%@%%'", local_user());
-    if (count($r)) $address_cnt = $r[0]["cnt"];
-    else $address_cnt = 0;
+	if (!$activate) {
+		// load scripts if not yet activated so that password can be saved
+		$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;g=mini.xml"></script>' . "\r\n";
+		$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=presence.js~caps.js~name.js~roster.js"></script>' . "\r\n";
 
-    if (!$activate) {
-	// load scripts if not yet activated so that password can be saved
-        $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;g=mini.xml"></script>'."\r\n";
-        $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=presence.js~caps.js~name.js~roster.js"></script>'."\r\n";
+		$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/lib.js"></script>' . "\r\n";
+	}
 
-        $a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/jappixmini/lib.js"></script>'."\r\n";
-    }
+	$s .= '<span id="settings_jappixmini_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_jappixmini_expanded\'); openClose(\'settings_jappixmini_inflated\');">';
+	$s .= '<h3>' . L10n::t('Jappix Mini') . '</h3>';
+	$s .= '</span>';
+	$s .= '<div id="settings_jappixmini_expanded" class="settings-block" style="display: none;">';
+	$s .= '<span class="fakelink" onclick="openClose(\'settings_jappixmini_expanded\'); openClose(\'settings_jappixmini_inflated\');">';
+	$s .= '<h3>' . L10n::t('Jappix Mini') . '</h3>';
+	$s .= '</span>';
 
-    $s .= '<span id="settings_jappixmini_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_jappixmini_expanded\'); openClose(\'settings_jappixmini_inflated\');">';
-    $s .= '<h3>'.t('Jappix Mini').'</h3>';
-    $s .= '</span>';
-    $s .= '<div id="settings_jappixmini_expanded" class="settings-block" style="display: none;">';
-    $s .= '<span class="fakelink" onclick="openClose(\'settings_jappixmini_expanded\'); openClose(\'settings_jappixmini_inflated\');">';
-    $s .= '<h3>'.t('Jappix Mini').'</h3>';
-    $s .= '</span>';
-
-    $s .= '<label for="jappixmini-activate">'.t('Activate addon').'</label>';
-    $s .= ' <input id="jappixmini-activate" type="checkbox" name="jappixmini-activate" value="1"'.$activate.' />';
-    $s .= '<br />';
-    $s .= '<label for"jappixmini-dont-insertchat">'.t('Do <em>not</em> insert the Jappixmini Chat-Widget into the webinterface').'</label>';
-    $s .= '<input id="jappixmini-dont-insertchat" type="checkbox" name="jappixmini-dont-insertchat" value="1"'.$insertchat.' />';
-    $s .= '<br />';
-    $s .= '<label for="jappixmini-username">'.t('Jabber username').'</label>';
-    $s .= ' <input id="jappixmini-username" type="text" name="jappixmini-username" value="'.$username.'" />';
-    $s .= '<br />';
-    $s .= '<label for="jappixmini-server">'.t('Jabber server').'</label>';
-    $s .= ' <input id="jappixmini-server" type="text" name="jappixmini-server" value="'.$server.'" />';
-    $s .= '<br />';
-
-    if ($defaultbosh == "") {
-	$s .= '<label for="jappixmini-bosh">'.t('Jabber BOSH host').'</label>';
-	$s .= ' <input id="jappixmini-bosh" type="text" name="jappixmini-bosh" value="'.$bosh.'" />';
+	$s .= '<label for="jappixmini-activate">' . L10n::t('Activate addon') . '</label>';
+	$s .= ' <input id="jappixmini-activate" type="checkbox" name="jappixmini-activate" value="1"' . $activate . ' />';
 	$s .= '<br />';
-    }
+	$s .= '<label for"jappixmini-dont-insertchat">' . L10n::t('Do <em>not</em> insert the Jappixmini Chat-Widget into the webinterface') . '</label>';
+	$s .= '<input id="jappixmini-dont-insertchat" type="checkbox" name="jappixmini-dont-insertchat" value="1"' . $insertchat . ' />';
+	$s .= '<br />';
+	$s .= '<label for="jappixmini-username">' . L10n::t('Jabber username') . '</label>';
+	$s .= ' <input id="jappixmini-username" type="text" name="jappixmini-username" value="' . $username . '" />';
+	$s .= '<br />';
+	$s .= '<label for="jappixmini-server">' . L10n::t('Jabber server') . '</label>';
+	$s .= ' <input id="jappixmini-server" type="text" name="jappixmini-server" value="' . $server . '" />';
+	$s .= '<br />';
 
+	if ($defaultbosh == "") {
+		$s .= '<label for="jappixmini-bosh">' . L10n::t('Jabber BOSH host') . '</label>';
+		$s .= ' <input id="jappixmini-bosh" type="text" name="jappixmini-bosh" value="' . $bosh . '" />';
+		$s .= '<br />';
+	}
 
-    $s .= '<label for="jappixmini-password">'.t('Jabber password').'</label>';
-    $s .= ' <input type="hidden" id="jappixmini-password" name="jappixmini-encrypted-password" value="'.$password.'" />';
-    $s .= ' <input id="jappixmini-clear-password" type="password" value="" onchange="jappixmini_set_password();" />';
-    $s .= '<br />';
-    $onchange = "document.getElementById('jappixmini-friendica-password').disabled = !this.checked;jappixmini_set_password();";
-    $s .= '<label for="jappixmini-encrypt">'.t('Encrypt Jabber password with Friendica password (recommended)').'</label>';
-    $s .= ' <input id="jappixmini-encrypt" type="checkbox" name="jappixmini-encrypt" onchange="'.$onchange.'" value="1"'.$encrypt_checked.' />';
-    $s .= '<br />';
-    $s .= '<label for="jappixmini-friendica-password">'.t('Friendica password').'</label>';
-    $s .= ' <input id="jappixmini-friendica-password" name="jappixmini-friendica-password" type="password" onchange="jappixmini_set_password();" value=""'.$encrypt_disabled.' />';
-    $s .= '<br />';
-    $s .= '<label for="jappixmini-autoapprove">'.t('Approve subscription requests from Friendica contacts automatically').'</label>';
-    $s .= ' <input id="jappixmini-autoapprove" type="checkbox" name="jappixmini-autoapprove" value="1"'.$autoapprove.' />';
-    $s .= '<br />';
-    $s .= '<label for="jappixmini-autosubscribe">'.t('Subscribe to Friendica contacts automatically').'</label>';
-    $s .= ' <input id="jappixmini-autosubscribe" type="checkbox" name="jappixmini-autosubscribe" value="1"'.$autosubscribe.' />';
-    $s .= '<br />';
-    $s .= '<label for="jappixmini-purge">'.t('Purge internal list of jabber addresses of contacts').'</label>';
-    $s .= ' <input id="jappixmini-purge" type="checkbox" name="jappixmini-purge" value="1" />';
-    $s .= '<br />';
-    if ($info_text) $s .= '<br />Configuration help:<p style="margin-left:2em;">'.$info_text.'</p>';
-    $s .= '<br />Status:<p style="margin-left:2em;">Addon knows '.$address_cnt.' Jabber addresses of '.$contact_cnt.' Friendica contacts (takes some time, usually 10 minutes, to update).</p>';
-    $s .= '<input type="submit" name="jappixmini-submit" value="' . t('Save Settings') . '" />';
-    $s .= ' <input type="button" value="'.t('Add contact').'" onclick="jappixmini_addon_subscribe();" />';
+	$s .= '<label for="jappixmini-password">' . L10n::t('Jabber password') . '</label>';
+	$s .= ' <input type="hidden" id="jappixmini-password" name="jappixmini-encrypted-password" value="' . $password . '" />';
+	$s .= ' <input id="jappixmini-clear-password" type="password" value="" onchange="jappixmini_set_password();" />';
+	$s .= '<br />';
+	$onchange = "document.getElementById('jappixmini-friendica-password').disabled = !this.checked;jappixmini_set_password();";
+	$s .= '<label for="jappixmini-encrypt">' . L10n::t('Encrypt Jabber password with Friendica password (recommended)') . '</label>';
+	$s .= ' <input id="jappixmini-encrypt" type="checkbox" name="jappixmini-encrypt" onchange="' . $onchange . '" value="1"' . $encrypt_checked . ' />';
+	$s .= '<br />';
+	$s .= '<label for="jappixmini-friendica-password">' . L10n::t('Friendica password') . '</label>';
+	$s .= ' <input id="jappixmini-friendica-password" name="jappixmini-friendica-password" type="password" onchange="jappixmini_set_password();" value=""' . $encrypt_disabled . ' />';
+	$s .= '<br />';
+	$s .= '<label for="jappixmini-autoapprove">' . L10n::t('Approve subscription requests from Friendica contacts automatically') . '</label>';
+	$s .= ' <input id="jappixmini-autoapprove" type="checkbox" name="jappixmini-autoapprove" value="1"' . $autoapprove . ' />';
+	$s .= '<br />';
+	$s .= '<label for="jappixmini-autosubscribe">' . L10n::t('Subscribe to Friendica contacts automatically') . '</label>';
+	$s .= ' <input id="jappixmini-autosubscribe" type="checkbox" name="jappixmini-autosubscribe" value="1"' . $autosubscribe . ' />';
+	$s .= '<br />';
+	$s .= '<label for="jappixmini-purge">' . L10n::t('Purge internal list of jabber addresses of contacts') . '</label>';
+	$s .= ' <input id="jappixmini-purge" type="checkbox" name="jappixmini-purge" value="1" />';
+	$s .= '<br />';
+	if ($info_text) {
+		$s .= '<br />Configuration help:<p style="margin-left:2em;">' . $info_text . '</p>';
+	}
+	$s .= '<br />Status:<p style="margin-left:2em;">Addon knows ' . $address_cnt . ' Jabber addresses of ' . $contact_cnt . ' Friendica contacts (takes some time, usually 10 minutes, to update).</p>';
+	$s .= '<input type="submit" name="jappixmini-submit" value="' . L10n::t('Save Settings') . '" />';
+	$s .= ' <input type="button" value="' . L10n::t('Add contact') . '" onclick="jappixmini_addon_subscribe();" />';
 
-    $s .= '</div>';
+	$s .= '</div>';
 
-    $a->page['htmlhead'] .= "<script type=\"text/javascript\">
+	$a->page['htmlhead'] .= "<script type=\"text/javascript\">
         function jappixmini_set_password() {
             encrypt = document.getElementById('jappixmini-encrypt').checked;
             password = document.getElementById('jappixmini-password');
@@ -607,7 +628,7 @@ function jappixmini_cron(&$a, $d) {
 
 			try {
 				// send request
-				$answer_json = fetch_url($url);
+				$answer_json = Network::fetchUrl($url);
 
 				// parse answer
 				$answer = json_decode($answer_json);

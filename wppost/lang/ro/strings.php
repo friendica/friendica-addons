@@ -7,7 +7,7 @@ function string_plural_select_ro($n){
 ;
 $a->strings["Post to Wordpress"] = "Postați pe Wordpress";
 $a->strings["Wordpress Export"] = "Export pe Wordpress";
-$a->strings["Enable WordPress Post Plugin"] = "Activare Modul Postare pe Wordpress";
+$a->strings["Enable WordPress Post Addon"] = "Activare Modul Postare pe Wordpress";
 $a->strings["WordPress username"] = "Utilizator WordPress ";
 $a->strings["WordPress password"] = "Parolă WordPress ";
 $a->strings["WordPress API URL"] = "URL Cheie API WordPress";

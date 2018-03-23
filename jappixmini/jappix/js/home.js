@@ -288,7 +288,7 @@ function registerForm() {
 	return false;
 }
 
-// Plugin launcher
+// Addon launcher
 function launchHome() {
 	// Define the vars
 	var home = '#home ';
@@ -367,5 +367,5 @@ function launchHome() {
 	logThis('Welcome to Jappix! Happy coding in developer mode!');
 }
 
-// Launch this plugin!
+// Launch this addon!
 $(document).ready(launchHome);

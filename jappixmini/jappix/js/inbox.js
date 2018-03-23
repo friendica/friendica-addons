@@ -613,7 +613,7 @@ function handleInboxAttach(responseXML) {
 	$('#inbox .wait').hide();
 }
 
-// Plugin launcher
+// Addon launcher
 function launchInbox() {
 	// Define the pats
 	var inbox = '#inbox .';

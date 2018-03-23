@@ -9,7 +9,7 @@
  * Pre-requisite: Windows Phone mobile device (at least WP 7.0)
  *                Friendica mobile app on Windows Phone
  *
- * When plugin is installed, the system calls the plugin
+ * When addon is installed, the system calls the addon
  * name_install() function, located in 'addon/name/name.php',
  * where 'name' is the name of the addon.
  * If the addon is removed from the configuration list, the 
@@ -25,30 +25,30 @@
  *        count only unseen elements which are not type=activity (likes and dislikes not seen as new elements)
  */
 
+use Friendica\App;
+use Friendica\Content\Text\BBCode;
+use Friendica\Core\Addon;
+use Friendica\Core\L10n;
+use Friendica\Core\PConfig;
+use Friendica\Model\User;
 
-function windowsphonepush_install() {
-
-	/**
-	 * 
-	 * Our plugin will attach in three places.
-	 * The first is within cron - so the push notifications will be 
+function windowsphonepush_install()
+{
+	/* Our addon will attach in three places.
+	 * The first is within cron - so the push notifications will be
 	 * sent every 10 minutes (or whatever is set in crontab).
 	 *
 	 */
+	Addon::registerHook('cron', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_cron');
 
-	register_hook('cron', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_cron');
-
-	/**
-	 *
-	 * Then we'll attach into the plugin settings page, and also the 
+	/* Then we'll attach into the addon settings page, and also the
 	 * settings post hook so that we can create and update
-	 * user preferences. User shall be able to activate the plugin and 
+	 * user preferences. User shall be able to activate the addon and
 	 * define whether he allows pushing first characters of item text
 	 *
 	 */
-
-	register_hook('plugin_settings', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings');
-	register_hook('plugin_settings_post', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings_post');
+	Addon::registerHook('addon_settings', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings');
+	Addon::registerHook('addon_settings_post', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings_post');
 
 	logger("installed windowsphonepush");
 }
@@ -62,10 +62,9 @@ function windowsphonepush_uninstall() {
 	 * during install. Don't delete data in table `pconfig`.
 	 *
 	 */
-
-	unregister_hook('cron', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_cron');
-	unregister_hook('plugin_settings', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings');
-	unregister_hook('plugin_settings_post', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings_post');
+	Addon::unregisterHook('cron', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_cron');
+	Addon::unregisterHook('addon_settings', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings_post');
 
 	logger("removed windowsphonepush");
 }
@@ -95,13 +94,10 @@ function windowsphonepush_settings_post($a,$post) {
 
 	set_pconfig(local_user(),'windowsphonepush','senditemtext',intval($_POST['windowsphonepush-senditemtext']));
 
-	info( t('WindowsPhonePush settings updated.') . EOL);
+	info(L10n::t('WindowsPhonePush settings updated.') . EOL);
 }
 
-
-/**
- *
- * Called from the Plugin Setting form. 
+/* Called from the Addon Setting form.
  * Add our own settings info to the page.
  *
  */
@@ -124,20 +120,20 @@ function windowsphonepush_settings(&$a,&$s) {
 
 	/* Add some HTML to the existing form */
 	$s .= '<div class="settings-block">';
-	$s .= '<h3>' . t('WindowsPhonePush Settings') . '</h3>';
+	$s .= '<h3>' . L10n::t('WindowsPhonePush Settings') . '</h3>';
 
 	$s .= '<div id="windowsphonepush-enable-wrapper">';
-	$s .= '<label id="windowsphonepush-enable-label" for="windowsphonepush-enable-chk">' . t('Enable WindowsPhonePush Plugin') . '</label>';
+	$s .= '<label id="windowsphonepush-enable-label" for="windowsphonepush-enable-chk">' . L10n::t('Enable WindowsPhonePush Addon') . '</label>';
 	$s .= '<input id="windowsphonepush-enable-chk" type="checkbox" name="windowsphonepush" value="1" ' . $checked_enabled . '/>';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="windowsphonepush-senditemtext-wrapper">';
-	$s .= '<label id="windowsphonepush-senditemtext-label" for="windowsphonepush-senditemtext-chk">' . t('Push text of new item') . '</label>';
+	$s .= '<label id="windowsphonepush-senditemtext-label" for="windowsphonepush-senditemtext-chk">' . L10n::t('Push text of new item') . '</label>';
 	$s .= '<input id="windowsphonepush-senditemtext-chk" type="checkbox" name="windowsphonepush-senditemtext" value="1" ' . $checked_senditemtext . '/>';
 	$s .= '</div><div class="clear"></div>';
 
-	/* provide a submit button - enable und senditemtext can be changed by the user*/
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="windowsphonepush-submit" name="windowsphonepush-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div><div class="clear"></div>';
+	/* provide a submit button - enable und senditemtext can be changed by the user */
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="windowsphonepush-submit" name="windowsphonepush-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div><div class="clear"></div>';
 
 	/* provide further read-only information concerning the addon (useful for */
 	$s .= '<div id="windowsphonepush-device_url-wrapper">';
@@ -149,16 +145,13 @@ function windowsphonepush_settings(&$a,&$s) {
 
 }
 
-
-/**
- *
- * Cron function used to regularly check all users on the server with active windowsphonepushplugin and send
+/* Cron function used to regularly check all users on the server with active windowsphonepushaddon and send
  * notifications to the Microsoft servers and consequently to the Windows Phone device
  *
  */
-
-function windowsphonepush_cron() {
-	// retrieve all UID's for which the plugin windowsphonepush is enabled and loop through every user
+function windowsphonepush_cron()
+{
+	// retrieve all UID's for which the addon windowsphonepush is enabled and loop through every user
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'windowsphonepush' AND `k` = 'enable' AND `v` = 1");
 	if(count($r)) {
 		foreach($r as $rr) {
@@ -168,8 +161,8 @@ function windowsphonepush_cron() {
 
 			// pushing only possible if device_url (the URI on Microsoft server) is available or not "NA" (which will be sent 
 			// by app if user has switched the server setting in app - sending blank not possible as this would return an update error)
-			if ( ( $device_url == "" ) || ( $device_url == "NA" ) ) {
-				// no Device-URL for the user availabe, but plugin is enabled --> write info to Logger
+			if (( $device_url == "" ) || ( $device_url == "NA" )) {
+				// no Device-URL for the user availabe, but addon is enabled --> write info to Logger
 				logger("WARN: windowsphonepush is enable for user " . $rr['uid'] . ", but no Device-URL is specified for the user.");
 			} else {
 				// retrieve the number of unseen items and the id of the latest one (if there are more than 
@@ -228,10 +221,10 @@ function windowsphonepush_cron() {
 						$body = $item[0]['body'];
 						if (substr($body, 0, 4) == "[url") 
 							$body = "URL/Image ...";
-						else {
-							require_once('include/bbcode.php');
+						} else {
 							require_once("include/html2plain.php");
-							$body = bbcode($body, false, false, 2, true);
+
+							$body = BBCode::convert($body, false, 2, true);
 							$body = html2plain($body, 0);
 							$body = ((strlen($body) > 137) ? substr($body, 0, 137) . "..." : $body);
 						}
@@ -425,9 +418,9 @@ function windowsphonepush_updatesettings(&$a) {
 		return "Not Authenticated";
 	}
 
-	// no updating if user hasn't enabled the plugin
-	$enable = get_pconfig(local_user(), 'windowsphonepush', 'enable');
-	if(! $enable) {
+	// no updating if user hasn't enabled the addon
+	$enable = PConfig::get(local_user(), 'windowsphonepush', 'enable');
+	if (!$enable) {
 		return "Plug-in not enabled";
 	}
 
@@ -467,9 +460,9 @@ function windowsphonepush_updatecounterunseen() {
 		return "Not Authenticated";
 	}
 
-	// no updating if user hasn't enabled the plugin
-	$enable = get_pconfig(local_user(), 'windowsphonepush', 'enable');
-	if(! $enable) {
+	// no updating if user hasn't enabled the addon
+	$enable = PConfig::get(local_user(), 'windowsphonepush', 'enable');
+	if (!$enable) {
 		return "Plug-in not enabled";
 	}
 
@@ -509,8 +502,9 @@ function windowsphonepush_login() {
 	    die('This api requires login');
 	}
 
-	require_once('include/security.php');
-	authenticate_success($record); $_SESSION["allow_api"] = true;
-	call_hooks('logged_in', $a->user);
+	require_once 'include/security.php';
+	authenticate_success($record);
+	$_SESSION["allow_api"] = true;
+	Addon::callHooks('logged_in', $a->user);
 }
 

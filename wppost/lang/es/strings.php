@@ -7,7 +7,7 @@ function string_plural_select_es($n){
 ;
 $a->strings["Post to Wordpress"] = "Publicar en Wordpress";
 $a->strings["Wordpress Export"] = "Exportar a Wordpress";
-$a->strings["Enable WordPress Post Plugin"] = "Habilitar Plugin de publicación de WordPress";
+$a->strings["Enable WordPress Post Addon"] = "Habilitar Addon de publicación de WordPress";
 $a->strings["WordPress username"] = "Nombre de usuario de WordPress";
 $a->strings["WordPress password"] = "Contraseña de WordPress";
 $a->strings["WordPress API URL"] = "URL de API de WordPress";

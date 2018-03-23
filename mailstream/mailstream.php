@@ -6,12 +6,20 @@
  * Author: Matthew Exon <http://mat.exon.name>
  */
 
+use Friendica\Content\Text\BBCode;
+use Friendica\Core\Addon;
+use Friendica\Core\Config;
+use Friendica\Core\L10n;
+use Friendica\Core\PConfig;
+use Friendica\Database\DBM;
+use Friendica\Util\Network;
+
 function mailstream_install() {
-	register_hook('plugin_settings', 'addon/mailstream/mailstream.php', 'mailstream_plugin_settings');
-	register_hook('plugin_settings_post', 'addon/mailstream/mailstream.php', 'mailstream_plugin_settings_post');
-	register_hook('post_local_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
-	register_hook('post_remote_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
-	register_hook('cron', 'addon/mailstream/mailstream.php', 'mailstream_cron');
+	Addon::registerHook('addon_settings', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings');
+	Addon::registerHook('addon_settings_post', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings_post');
+	Addon::registerHook('post_local_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
+	Addon::registerHook('post_remote_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
+	Addon::registerHook('cron', 'addon/mailstream/mailstream.php', 'mailstream_cron');
 
 	if (get_config('mailstream', 'dbversion') == '0.1') {
 		q('ALTER TABLE `mailstream_item` DROP INDEX `uid`');
@@ -48,33 +56,33 @@ function mailstream_install() {
 }
 
 function mailstream_uninstall() {
-	unregister_hook('plugin_settings', 'addon/mailstream/mailstream.php', 'mailstream_plugin_settings');
-	unregister_hook('plugin_settings_post', 'addon/mailstream/mailstream.php', 'mailstream_plugin_settings_post');
-	unregister_hook('post_local', 'addon/mailstream/mailstream.php', 'mailstream_post_local_hook');
-	unregister_hook('post_remote', 'addon/mailstream/mailstream.php', 'mailstream_post_remote_hook');
-	unregister_hook('post_local_end', 'addon/mailstream/mailstream.php', 'mailstream_post_local_hook');
-	unregister_hook('post_remote_end', 'addon/mailstream/mailstream.php', 'mailstream_post_remote_hook');
-	unregister_hook('post_local_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
-	unregister_hook('post_remote_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
-	unregister_hook('cron', 'addon/mailstream/mailstream.php', 'mailstream_cron');
-	unregister_hook('incoming_mail', 'addon/mailstream/mailstream.php', 'mailstream_incoming_mail');
+	Addon::unregisterHook('addon_settings', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings_post');
+	Addon::unregisterHook('post_local', 'addon/mailstream/mailstream.php', 'mailstream_post_local_hook');
+	Addon::unregisterHook('post_remote', 'addon/mailstream/mailstream.php', 'mailstream_post_remote_hook');
+	Addon::unregisterHook('post_local_end', 'addon/mailstream/mailstream.php', 'mailstream_post_local_hook');
+	Addon::unregisterHook('post_remote_end', 'addon/mailstream/mailstream.php', 'mailstream_post_remote_hook');
+	Addon::unregisterHook('post_local_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
+	Addon::unregisterHook('post_remote_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
+	Addon::unregisterHook('cron', 'addon/mailstream/mailstream.php', 'mailstream_cron');
+	Addon::unregisterHook('incoming_mail', 'addon/mailstream/mailstream.php', 'mailstream_incoming_mail');
 }
 
 function mailstream_module() {}
 
-function mailstream_plugin_admin(&$a,&$o) {
-	$frommail = get_config('mailstream', 'frommail');
+function mailstream_addon_admin(&$a,&$o) {
+	$frommail = Config::get('mailstream', 'frommail');
 	$template = get_markup_template('admin.tpl', 'addon/mailstream/');
-	$config = array('frommail',
-			t('From Address'),
+	$config = ['frommail',
+			L10n::t('From Address'),
 			$frommail,
-			t('Email address that stream items will appear to be from.'));
-	$o .= replace_macros($template, array(
+			L10n::t('Email address that stream items will appear to be from.')];
+	$o .= replace_macros($template, [
 				 '$frommail' => $config,
-				 '$submit' => t('Save Settings')));
+				 '$submit' => L10n::t('Save Settings')]);
 }
 
-function mailstream_plugin_admin_post ($a) {
+function mailstream_addon_admin_post ($a) {
 	if (x($_POST, 'frommail')) {
 		set_config('mailstream', 'frommail', $_POST['frommail']);
 	}
@@ -149,8 +157,8 @@ function mailstream_do_images($a, &$item, &$attachments) {
 	foreach (array_merge($matches1[3], $matches2[1]) as $url) {
 		$redirects;
 		$cookiejar = tempnam(get_temppath(), 'cookiejar-mailstream-');
-		$attachments[$url] = array(
-			'data' => fetch_url($url, true, $redirects, 0, Null, $cookiejar),
+		$attachments[$url] = [
+			'data' => Network::fetchUrl($url, true, $redirects, 0, null, $cookiejar),
 			'guid' => hash("crc32", $url),
 			'filename' => basename($url),
 			'type' => $a->get_curl_content_type());
@@ -174,7 +182,7 @@ function mailstream_sender($item) {
 }
 
 function mailstream_decode_subject($subject) {
-	$html = bbcode($subject);
+	$html = BBCode::convert($subject);
 	if (!$html) {
 		return $subject;
 	}
@@ -212,7 +220,7 @@ function mailstream_subject($item) {
 			break;
 		}
 		if ($r[0]['title']) {
-			return t('Re:') . ' ' . mailstream_decode_subject($r[0]['title']);
+			return L10n::t('Re:') . ' ' . mailstream_decode_subject($r[0]['title']);
 		}
 		$parent = $r[0]['thr-parent'];
 	}
@@ -220,10 +228,10 @@ function mailstream_subject($item) {
 		intval($item['contact-id']), intval($item['uid']));
 	$contact = $r[0];
 	if ($contact['network'] === 'dfrn') {
-		return t("Friendica post");
+		return L10n::t("Friendica post");
 	}
 	if ($contact['network'] === 'dspr') {
-		return t("Diaspora post");
+		return L10n::t("Diaspora post");
 	}
 	if ($contact['network'] === 'face') {
 		$text = mailstream_decode_subject($item['body']);
@@ -233,12 +241,12 @@ function mailstream_subject($item) {
 		return preg_replace('/\\s+/', ' ', $subject);
 	}
 	if ($contact['network'] === 'feed') {
-		return t("Feed item");
+		return L10n::t("Feed item");
 	}
 	if ($contact['network'] === 'mail') {
-		return t("Email");
+		return L10n::t("Email");
 	}
-	return t("Friendica Item");
+	return L10n::t("Friendica Item");
 }
 
 function mailstream_send($a, $message_id, $item, $user) {
@@ -249,8 +257,8 @@ function mailstream_send($a, $message_id, $item, $user) {
 		return;
 	}
 	require_once(dirname(__file__).'/phpmailer/class.phpmailer.php');
-	require_once('include/bbcode.php');
-	$attachments = array();
+
+	$attachments = [];
 	mailstream_do_images($a, $item, $attachments);
 	$frommail = get_config('mailstream', 'frommail');
 	if ($frommail == "") {
@@ -262,7 +270,7 @@ function mailstream_send($a, $message_id, $item, $user) {
 	}
 	$mail = new PHPmailer;
 	try {
-		$mail->XMailer = 'Friendica Mailstream Plugin';
+		$mail->XMailer = 'Friendica Mailstream Addon';
 		$mail->SetFrom($frommail, mailstream_sender($item));
 		$mail->AddAddress($address, $user['username']);
 		$mail->MessageID = $message_id;
@@ -279,12 +287,12 @@ function mailstream_send($a, $message_id, $item, $user) {
 		$mail->IsHTML(true);
 		$mail->CharSet = 'utf-8';
 		$template = get_markup_template('mail.tpl', 'addon/mailstream/');
-		$item['body'] = bbcode($item['body']);
+		$item['body'] = BBCode::convert($item['body']);
 		$item['url'] = $a->get_baseurl() . '/display/' . $user['nickname'] . '/' . $item['id'];
-		$mail->Body = replace_macros($template, array(
-						 '$upstream' => t('Upstream'),
-						 '$local' => t('Local'),
-						 '$item' => $item));
+		$mail->Body = replace_macros($template, [
+						 '$upstream' => L10n::t('Upstream'),
+						 '$local' => L10n::t('Local'),
+						 '$item' => $item]);
 		mailstream_html_wrap($mail->Body);
 		if (!$mail->Send()) {
 			throw new Exception($mail->ErrorInfo);
@@ -342,37 +350,37 @@ function mailstream_cron($a, $b) {
 	mailstream_tidy();
 }
 
-function mailstream_plugin_settings(&$a,&$s) {
-	$enabled = get_pconfig(local_user(), 'mailstream', 'enabled');
-	$address = get_pconfig(local_user(), 'mailstream', 'address');
-	$nolikes = get_pconfig(local_user(), 'mailstream', 'nolikes');
-	$attachimg= get_pconfig(local_user(), 'mailstream', 'attachimg');
+function mailstream_addon_settings(&$a,&$s) {
+	$enabled = PConfig::get(local_user(), 'mailstream', 'enabled');
+	$address = PConfig::get(local_user(), 'mailstream', 'address');
+	$nolikes = PConfig::get(local_user(), 'mailstream', 'nolikes');
+	$attachimg= PConfig::get(local_user(), 'mailstream', 'attachimg');
 	$template = get_markup_template('settings.tpl', 'addon/mailstream/');
 	$s .= replace_macros($template, array(
 				 '$enabled' => array(
 					'mailstream_enabled',
-					t('Enabled'),
-					$enabled),
-				 '$address' => array(
+					L10n::t('Enabled'),
+					$enabled],
+				 '$address' => [
 					'mailstream_address',
-					t('Email Address'),
+					L10n::t('Email Address'),
 					$address,
-					t("Leave blank to use your account email address")),
-				 '$nolikes' => array(
+					L10n::t("Leave blank to use your account email address")],
+				 '$nolikes' => [
 					'mailstream_nolikes',
-					t('Exclude Likes'),
+					L10n::t('Exclude Likes'),
 					$nolikes,
-					t("Check this to omit mailing \"Like\" notifications")),
-				 '$attachimg' => array(
+					L10n::t("Check this to omit mailing \"Like\" notifications")],
+				 '$attachimg' => [
 					'mailstream_attachimg',
-					t('Attach Images'),
+					L10n::t('Attach Images'),
 					$attachimg,
-					t("Download images in posts and attach them to the email.  Useful for reading email while offline.")),
-				 '$title' => t('Mail Stream Settings'),
-				 '$submit' => t('Save Settings')));
+					L10n::t("Download images in posts and attach them to the email.  Useful for reading email while offline.")],
+				 '$title' => L10n::t('Mail Stream Settings'),
+				 '$submit' => L10n::t('Save Settings')]);
 }
 
-function mailstream_plugin_settings_post($a,$post) {
+function mailstream_addon_settings_post($a,$post) {
 	if ($_POST['mailstream_address'] != "") {
 		set_pconfig(local_user(), 'mailstream', 'address', $_POST['mailstream_address']);
 	}

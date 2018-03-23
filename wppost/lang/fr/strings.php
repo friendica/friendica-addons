@@ -2,7 +2,7 @@
 
 $a->strings["Post to Wordpress"] = "Poster sur WordPress";
 $a->strings["WordPress Post Settings"] = "Réglages WordPress";
-$a->strings["Enable WordPress Post Plugin"] = "Activer l'extension WordPress";
+$a->strings["Enable WordPress Post Addon"] = "Activer l'extension WordPress";
 $a->strings["WordPress username"] = "Utilisateur WordPress";
 $a->strings["WordPress password"] = "Mot de passe WordPress";
 $a->strings["WordPress API URL"] = "URL de l'API WordPress";

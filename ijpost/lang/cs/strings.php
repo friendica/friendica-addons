@@ -7,7 +7,7 @@ function string_plural_select_cs($n){
 ;
 $a->strings["Post to Insanejournal"] = "Odeslat na Insanejournal";
 $a->strings["InsaneJournal Post Settings"] = "Nastavení příspěvků pro InsaneJournal";
-$a->strings["Enable InsaneJournal Post Plugin"] = "Povolit Insanejournal plugin";
+$a->strings["Enable InsaneJournal Post Addon"] = "Povolit Insanejournal addon";
 $a->strings["InsaneJournal username"] = "Insanejournal uživatelské jméno";
 $a->strings["InsaneJournal password"] = "Insanejournal heslo";
 $a->strings["Post to InsaneJournal by default"] = "Defaultně zasílat  příspěvky na InsaneJournal";

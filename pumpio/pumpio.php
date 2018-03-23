@@ -5,35 +5,49 @@
  * Version: 0.2
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  */
-require('addon/pumpio/oauth/http.php');
-require('addon/pumpio/oauth/oauth_client.php');
-require_once('include/enotify.php');
-require_once('include/socgraph.php');
-require_once("include/Photo.php");
-require_once("mod/share.php");
+
+use Friendica\Content\Text\BBCode;
+use Friendica\Core\Addon;
+use Friendica\Core\Config;
+use Friendica\Core\L10n;
+use Friendica\Core\PConfig;
+use Friendica\Core\Worker;
+use Friendica\Model\Contact;
+use Friendica\Model\GContact;
+use Friendica\Model\Group;
+use Friendica\Model\Item;
+use Friendica\Model\Queue;
+use Friendica\Model\User;
+use Friendica\Util\DateTimeFormat;
+use Friendica\Util\Network;
+
+require 'addon/pumpio/oauth/http.php';
+require 'addon/pumpio/oauth/oauth_client.php';
+require_once 'include/enotify.php';
+require_once "mod/share.php";
 
 define('PUMPIO_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
 function pumpio_install() {
-	register_hook('post_local',           'addon/pumpio/pumpio.php', 'pumpio_post_local');
-	register_hook('notifier_normal',      'addon/pumpio/pumpio.php', 'pumpio_send');
-	register_hook('jot_networks',         'addon/pumpio/pumpio.php', 'pumpio_jot_nets');
-	register_hook('connector_settings',      'addon/pumpio/pumpio.php', 'pumpio_settings');
-	register_hook('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
-	register_hook('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
-	register_hook('queue_predeliver', 'addon/pumpio/pumpio.php', 'pumpio_queue_hook');
-	register_hook('check_item_notification','addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
+	Addon::registerHook('post_local',           'addon/pumpio/pumpio.php', 'pumpio_post_local');
+	Addon::registerHook('notifier_normal',      'addon/pumpio/pumpio.php', 'pumpio_send');
+	Addon::registerHook('jot_networks',         'addon/pumpio/pumpio.php', 'pumpio_jot_nets');
+	Addon::registerHook('connector_settings',      'addon/pumpio/pumpio.php', 'pumpio_settings');
+	Addon::registerHook('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
+	Addon::registerHook('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
+	Addon::registerHook('queue_predeliver', 'addon/pumpio/pumpio.php', 'pumpio_queue_hook');
+	Addon::registerHook('check_item_notification','addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
 }
 
 function pumpio_uninstall() {
-	unregister_hook('post_local',       'addon/pumpio/pumpio.php', 'pumpio_post_local');
-	unregister_hook('notifier_normal',  'addon/pumpio/pumpio.php', 'pumpio_send');
-	unregister_hook('jot_networks',     'addon/pumpio/pumpio.php', 'pumpio_jot_nets');
-	unregister_hook('connector_settings',      'addon/pumpio/pumpio.php', 'pumpio_settings');
-	unregister_hook('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
-	unregister_hook('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
-	unregister_hook('queue_predeliver', 'addon/pumpio/pumpio.php', 'pumpio_queue_hook');
-	unregister_hook('check_item_notification','addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
+	Addon::unregisterHook('post_local',       'addon/pumpio/pumpio.php', 'pumpio_post_local');
+	Addon::unregisterHook('notifier_normal',  'addon/pumpio/pumpio.php', 'pumpio_send');
+	Addon::unregisterHook('jot_networks',     'addon/pumpio/pumpio.php', 'pumpio_jot_nets');
+	Addon::unregisterHook('connector_settings',      'addon/pumpio/pumpio.php', 'pumpio_settings');
+	Addon::unregisterHook('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
+	Addon::unregisterHook('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
+	Addon::unregisterHook('queue_predeliver', 'addon/pumpio/pumpio.php', 'pumpio_queue_hook');
+	Addon::unregisterHook('check_item_notification','addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
 }
 
 function pumpio_module() {}
@@ -41,7 +55,7 @@ function pumpio_module() {}
 function pumpio_content(&$a) {
 
 	if(! local_user()) {
-		notice( t('Permission denied.') . EOL);
+		notice(L10n::t('Permission denied.') . EOL);
 		return '';
 	}
 
@@ -137,7 +151,7 @@ function pumpio_connect(&$a) {
 	if (($consumer_key == "") || ($consumer_secret == "")) {
 		logger("pumpio_connect: ".sprintf("Unable to register the client at the pump.io server '%s'.", $hostname));
 
-		$o .= sprintf(t("Unable to register the client at the pump.io server '%s'."), $hostname);
+		$o .= L10n::t("Unable to register the client at the pump.io server '%s'.", $hostname);
 		return($o);
 	}
 
@@ -147,7 +161,7 @@ function pumpio_connect(&$a) {
 	// Let's begin.  First we need a Request Token.  The request token is required to send the user
 	// to pumpio's login page.
 
-	// Create a new instance of the TumblrOAuth library.  For this step, all we need to give the library is our
+	// Create a new instance of the oauth_client_class library.  For this step, all we need to give the library is our
 	// Consumer Key and Consumer Secret
 	$client = new oauth_client_class;
 	$client->debug = 1;
@@ -177,8 +191,8 @@ function pumpio_connect(&$a) {
 
 	if($success) {
 		logger("pumpio_connect: authenticated");
-		$o .= t("You are now authenticated to pumpio.");
-		$o .= '<br /><a href="'.$a->get_baseurl().'/settings/connectors">'.t("return to the connector page").'</a>';
+		$o .= L10n::t("You are now authenticated to pumpio.");
+		$o .= '<br /><a href="'.$a->get_baseurl().'/settings/connectors">'.L10n::t("return to the connector page").'</a>';
 	} else {
 		logger("pumpio_connect: could not connect");
 		$o = 'Could not connect to pumpio. Refresh the page or try again later.';
@@ -196,7 +210,7 @@ function pumpio_jot_nets(&$a,&$b) {
 		$pumpio_defpost = get_pconfig(local_user(),'pumpio','post_by_default');
 		$selected = ((intval($pumpio_defpost) == 1) ? ' checked="checked" ' : '');
 		$b .= '<div class="profile-jot-net"><input type="checkbox" name="pumpio_enable"' . $selected . ' value="1" /> '
-			. t('Post to pumpio') . '</div>';
+			. L10n::t('Post to pumpio') . '</div>';
 	}
 }
 
@@ -234,20 +248,20 @@ function pumpio_settings(&$a,&$s) {
 	/* Add some HTML to the existing form */
 
 	$s .= '<span id="settings_pumpio_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_pumpio_expanded\'); openClose(\'settings_pumpio_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/pumpio.png" /><h3 class="connector">'. t('Pump.io Import/Export/Mirror').'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/pumpio.png" /><h3 class="connector">'. L10n::t('Pump.io Import/Export/Mirror').'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_pumpio_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_pumpio_expanded\'); openClose(\'settings_pumpio_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/pumpio.png" /><h3 class="connector">'. t('Pump.io Import/Export/Mirror').'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/pumpio.png" /><h3 class="connector">'. L10n::t('Pump.io Import/Export/Mirror').'</h3>';
 	$s .= '</span>';
 
 	$s .= '<div id="pumpio-username-wrapper">';
-	$s .= '<label id="pumpio-username-label" for="pumpio-username">'.t('pump.io username (without the servername)').'</label>';
+	$s .= '<label id="pumpio-username-label" for="pumpio-username">'.L10n::t('pump.io username (without the servername)').'</label>';
 	$s .= '<input id="pumpio-username" type="text" name="pumpio_user" value="'.$username.'" />';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="pumpio-servername-wrapper">';
-	$s .= '<label id="pumpio-servername-label" for="pumpio-servername">'.t('pump.io servername (without "http://" or "https://" )').'</label>';
+	$s .= '<label id="pumpio-servername-label" for="pumpio-servername">'.L10n::t('pump.io servername (without "http://" or "https://" )').'</label>';
 	$s .= '<input id="pumpio-servername" type="text" name="pumpio_host" value="'.$servername.'" />';
 	$s .= '</div><div class="clear"></div>';
 
@@ -259,36 +273,36 @@ function pumpio_settings(&$a,&$s) {
 		$s .= '<div id="pumpio-password-wrapper">';
 		if (($oauth_token == "") || ($oauth_token_secret == "")) {
 			$s .= '<div id="pumpio-authenticate-wrapper">';
-			$s .= '<a href="'.$a->get_baseurl().'/pumpio/connect">'.t("Authenticate your pump.io connection").'</a>';
+			$s .= '<a href="'.$a->get_baseurl().'/pumpio/connect">'.L10n::t("Authenticate your pump.io connection").'</a>';
 			$s .= '</div><div class="clear"></div>';
 		} else {
 			$s .= '<div id="pumpio-import-wrapper">';
-			$s .= '<label id="pumpio-import-label" for="pumpio-import">' . t('Import the remote timeline') . '</label>';
+			$s .= '<label id="pumpio-import-label" for="pumpio-import">' . L10n::t('Import the remote timeline') . '</label>';
 			$s .= '<input id="pumpio-import" type="checkbox" name="pumpio_import" value="1" ' . $import_checked . '/>';
 			$s .= '</div><div class="clear"></div>';
 
 			$s .= '<div id="pumpio-enable-wrapper">';
-			$s .= '<label id="pumpio-enable-label" for="pumpio-checkbox">' . t('Enable pump.io Post Plugin') . '</label>';
+			$s .= '<label id="pumpio-enable-label" for="pumpio-checkbox">' . L10n::t('Enable pump.io Post Addon') . '</label>';
 			$s .= '<input id="pumpio-checkbox" type="checkbox" name="pumpio" value="1" ' . $checked . '/>';
 			$s .= '</div><div class="clear"></div>';
 
 			$s .= '<div id="pumpio-bydefault-wrapper">';
-			$s .= '<label id="pumpio-bydefault-label" for="pumpio-bydefault">' . t('Post to pump.io by default') . '</label>';
+			$s .= '<label id="pumpio-bydefault-label" for="pumpio-bydefault">' . L10n::t('Post to pump.io by default') . '</label>';
 			$s .= '<input id="pumpio-bydefault" type="checkbox" name="pumpio_bydefault" value="1" ' . $def_checked . '/>';
 			$s .= '</div><div class="clear"></div>';
 
 			$s .= '<div id="pumpio-public-wrapper">';
-			$s .= '<label id="pumpio-public-label" for="pumpio-public">' . t('Should posts be public?') . '</label>';
+			$s .= '<label id="pumpio-public-label" for="pumpio-public">' . L10n::t('Should posts be public?') . '</label>';
 			$s .= '<input id="pumpio-public" type="checkbox" name="pumpio_public" value="1" ' . $public_checked . '/>';
 			$s .= '</div><div class="clear"></div>';
 
 			$s .= '<div id="pumpio-mirror-wrapper">';
-			$s .= '<label id="pumpio-mirror-label" for="pumpio-mirror">' . t('Mirror all public posts') . '</label>';
+			$s .= '<label id="pumpio-mirror-label" for="pumpio-mirror">' . L10n::t('Mirror all public posts') . '</label>';
 			$s .= '<input id="pumpio-mirror" type="checkbox" name="pumpio_mirror" value="1" ' . $mirror_checked . '/>';
 			$s .= '</div><div class="clear"></div>';
 
 			$s .= '<div id="pumpio-delete-wrapper">';
-			$s .= '<label id="pumpio-delete-label" for="pumpio-delete">' . t('Check to delete this preset') . '</label>';
+			$s .= '<label id="pumpio-delete-label" for="pumpio-delete">' . L10n::t('Check to delete this preset') . '</label>';
 			$s .= '<input id="pumpio-delete" type="checkbox" name="pumpio_delete" value="1" />';
 			$s .= '</div><div class="clear"></div>';
 		}
@@ -298,7 +312,7 @@ function pumpio_settings(&$a,&$s) {
 
 	/* provide a submit button */
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="pumpio-submit" name="pumpio-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="pumpio-submit" name="pumpio-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 }
 
 
@@ -449,12 +463,9 @@ function pumpio_send(&$a,&$b) {
 	$public = get_pconfig($b['uid'], "pumpio", "public");
 
 	if($oauth_token && $oauth_token_secret) {
-
-		require_once('include/bbcode.php');
-
 		$title = trim($b['title']);
 
-		$content = bbcode($b['body'], false, false, 4);
+		$content = BBCode::convert($b['body'], false, 4);
 
 		$params = array();
 
@@ -522,10 +533,7 @@ function pumpio_send(&$a,&$b) {
 			logger('pumpio_send '.$username.': success '.$post_id);
 			if($post_id && $iscomment) {
 				logger('pumpio_send '.$username.': Update extid '.$post_id." for post id ".$b['id']);
-				q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d",
-					dbesc($post_id),
-					intval($b['id'])
-				);
+				Item::update(['extid' => $post_id], ['id' => $b['id']]);
 			}
 		} else {
 			logger('pumpio_send '.$username.': '.$url.' general error: ' . print_r($user,true));
@@ -534,12 +542,11 @@ function pumpio_send(&$a,&$b) {
 			if (count($r))
 				$a->contact = $r[0]["id"];
 
-			$s = serialize(array('url' => $url, 'item' => $b['id'], 'post' => $params));
-			require_once('include/queue_fn.php');
-			add_to_queue($a->contact,NETWORK_PUMPIO,$s);
-			notice(t('Pump.io post failed. Queued for retry.').EOL);
-		}
+			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $params]);
 
+			Queue::add($a->contact, NETWORK_PUMPIO, $s);
+			notice(L10n::t('Pump.io post failed. Queued for retry.').EOL);
+		}
 	}
 }
 
@@ -611,10 +618,10 @@ function pumpio_action(&$a, $uid, $uri, $action, $content = "") {
 		if (count($r))
 			$a->contact = $r[0]["id"];
 
-		$s = serialize(array('url' => $url, 'item' => $orig_post["id"], 'post' => $params));
-		require_once('include/queue_fn.php');
-		add_to_queue($a->contact,NETWORK_PUMPIO,$s);
-		notice(t('Pump.io like failed. Queued for retry.').EOL);
+		$s = serialize(['url' => $url, 'item' => $orig_post["id"], 'post' => $params]);
+
+		Queue::add($a->contact, NETWORK_PUMPIO, $s);
+		notice(L10n::t('Pump.io like failed. Queued for retry.').EOL);
 	}
 }
 
@@ -652,7 +659,7 @@ function pumpio_sync(&$a) {
 	if ($abandon_days < 1)
 		$abandon_days = 0;
 
-	$abandon_limit = date("Y-m-d H:i:s", time() - $abandon_days * 86400);
+	$abandon_limit = date(DateTimeFormat::MYSQL, time() - $abandon_days * 86400);
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'pumpio' AND `k` = 'import' AND `v` = '1' ORDER BY RAND() ");
 	if(count($r)) {
@@ -704,7 +711,7 @@ function pumpio_fetchtimeline(&$a, $uid) {
 	//  get the application name for the pump.io app
 	//  1st try personal config, then system config and fallback to the
 	//  hostname of the node if neither one is set.
-	$application_name  = get_pconfig( $uid, 'pumpio', 'application_name');
+	$application_name  = PConfig::get($uid, 'pumpio', 'application_name');
 	if ($application_name == "")
 		$application_name  = get_config('pumpio', 'application_name');
 	if ($application_name == "")
@@ -851,13 +858,7 @@ function pumpio_dounlike(&$a, $uid, $self, $post, $own_id) {
 			$contactid = $orig_post['contact-id'];
 	}
 
-	$r = q("UPDATE `item` SET `deleted` = 1, `unseen` = 1, `changed` = '%s' WHERE `verb` = '%s' AND `uid` = %d AND `contact-id` = %d AND `thr-parent` = '%s'",
-		dbesc(datetime_convert()),
-		dbesc(ACTIVITY_LIKE),
-		intval($uid),
-		intval($contactid),
-		dbesc($orig_post['uri'])
-	);
+	Item::delete(['verb' => ACTIVITY_LIKE, 'uid' => $uid, 'contact-id' => $contactid, 'thr-parent' => $orig_post['uri']]);
 
 	if(count($r))
 		logger("pumpio_dounlike: unliked existing like. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
@@ -948,16 +949,16 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 
 	$author  = '[url=' . $likedata['author-link'] . ']' . $likedata['author-name'] . '[/url]';
 	$objauthor =  '[url=' . $orig_post['author-link'] . ']' . $orig_post['author-name'] . '[/url]';
-	$post_type = t('status');
+	$post_type = L10n::t('status');
 	$plink = '[url=' . $orig_post['plink'] . ']' . $post_type . '[/url]';
 	$likedata['object-type'] = ACTIVITY_OBJ_NOTE;
 
-	$likedata['body'] = sprintf( t('%1$s likes %2$s\'s %3$s'), $author, $objauthor, $plink);
+	$likedata['body'] = L10n::t('%1$s likes %2$s\'s %3$s', $author, $objauthor, $plink);
 
 	$likedata['object'] = '<object><type>' . ACTIVITY_OBJ_NOTE . '</type><local>1</local>' .
 		'<id>' . $orig_post['uri'] . '</id><link>' . xmlify('<link rel="alternate" type="text/html" href="' . xmlify($orig_post['plink']) . '" />') . '</link><title>' . $orig_post['title'] . '</title><content>' . $orig_post['body'] . '</content></object>';
 
-	$ret = item_store($likedata);
+	$ret = Item::insert($likedata);
 
 	logger("pumpio_dolike: ".$ret." User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
 }
@@ -983,7 +984,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false) {
 					`location`, `about`, `writable`, `blocked`, `readonly`, `pending` )
 				VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', %d, 0, 0, 0)",
 			intval($uid),
-			dbesc(datetime_convert()),
+			dbesc(DateTimeFormat::utcNow()),
 			dbesc($contact->url),
 			dbesc(normalise_link($contact->url)),
 			dbesc(str_replace("acct:", "", $contact->id)),
@@ -1049,7 +1050,7 @@ function pumpio_dodelete(&$a, $uid, $self, $post, $own_id) {
 		);
 
 	if (count($r))
-		return drop_item($r[0]["id"], $false);
+		return Item::deleteById($r[0]["id"]);
 
 	$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
 				dbesc($post->object->id),
@@ -1057,7 +1058,7 @@ function pumpio_dodelete(&$a, $uid, $self, $post, $own_id) {
 		);
 
 	if (count($r))
-		return drop_item($r[0]["id"], $false);
+		return Item::deleteById($r[0]["id"]);
 }
 
 function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcompletion = true) {
@@ -1200,11 +1201,11 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 	if ($post->object->displayName != "")
 		$postarray['title'] = $post->object->displayName;
 
-	$postarray['created'] = datetime_convert('UTC','UTC',$post->published);
+	$postarray['created'] = DateTimeFormat::utc($post->published);
 	if (isset($post->updated))
-		$postarray['edited'] = datetime_convert('UTC','UTC',$post->updated);
+		$postarray['edited'] = DateTimeFormat::utc($post->updated);
 	elseif (isset($post->received))
-		$postarray['edited'] = datetime_convert('UTC','UTC',$post->received);
+		$postarray['edited'] = DateTimeFormat::utc($post->received);
 	else
 		$postarray['edited'] = $postarray['created'];
 
@@ -1219,7 +1220,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 
 			$postarray['body'] = share_header($share_author, $post->object->author->url,
 							$post->object->author->image->url, "",
-							datetime_convert('UTC','UTC',$post->object->created),
+							DateTimeFormat::utc($post->object->created),
 							$post->links->self->href).
 						$postarray['body']."[/share]";
 
@@ -1227,7 +1228,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 			$postarray['body'] = "[share author='".$share_author.
 					"' profile='".$post->object->author->url.
 					"' avatar='".$post->object->author->image->url.
-					"' posted='".datetime_convert('UTC','UTC',$post->object->created).
+					"' posted='".DateTimeFormat::convert($post->object->created, 'UTC', 'UTC', ).
 					"' link='".$post->links->self->href."']".$postarray['body']."[/share]";
 			*/
 		} else {
@@ -1241,17 +1242,13 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 	if (trim($postarray['body']) == "")
 		return false;
 
-	$top_item = item_store($postarray);
+	$top_item = Item::insert($postarray);
 	$postarray["id"] = $top_item;
 
 	if (($top_item == 0) && ($post->verb == "update")) {
-		$r = q("UPDATE `item` SET `title` = '%s', `body` = '%s' , `changed` = '%s' WHERE `uri` = '%s' AND `uid` = %d",
-			dbesc($postarray["title"]),
-			dbesc($postarray["body"]),
-			dbesc($postarray["edited"]),
-			dbesc($postarray["uri"]),
-			intval($uid)
-			);
+		$fields = ['title' => $postarray["title"], 'body' => $postarray["body"], 'changed' => $postarray["edited"]];
+		$condition = ['uri' => $postarray["uri"], 'uid' => $uid];
+		Item::update($fields, $condition);
 	}
 
 	if ($post->object->objectType == "comment") {
@@ -1297,7 +1294,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 						'to_email'     => $user[0]['email'],
 						'uid'          => $user[0]['uid'],
 						'item'         => $postarray,
-						'link'         => $a->get_baseurl().'/display/'.urlencode(get_item_guid($top_item)),
+						'link'         => $a->get_baseurl().'/display/'.urlencode(Item::getGuidById($top_item)),
 						'source_name'  => $postarray['author-name'],
 						'source_link'  => $postarray['author-link'],
 						'source_photo' => $postarray['author-avatar'],
@@ -1426,8 +1423,6 @@ function pumpio_queue_hook(&$a,&$b) {
 	if(! count($qi))
 		return;
 
-	require_once('include/queue_fn.php');
-
 	foreach($qi as $x) {
 		if($x['network'] !== NETWORK_PUMPIO)
 			continue;
@@ -1482,12 +1477,9 @@ function pumpio_queue_hook(&$a,&$b) {
 				logger('pumpio_queue: send '.$username.': success '.$post_id);
 				if($post_id && $iscomment) {
 					logger('pumpio_send '.$username.': Update extid '.$post_id." for post id ".$z['item']);
-					q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d",
-						dbesc($post_id),
-						intval($z['item'])
-					);
+					Item::update(['extid' => $post_id], ['id' => $z['item']]);
 				}
-				remove_queue_item($x['id']);
+				Queue::removeItem($x['id']);
 			} else
 				logger('pumpio_queue: send '.$username.': '.$url.' general error: ' . print_r($user,true));
 		} else
@@ -1495,7 +1487,7 @@ function pumpio_queue_hook(&$a,&$b) {
 
 		if (!$success) {
 			logger('pumpio_queue: delayed');
-			update_queue_time($x['id']);
+			Queue::updateTime($x['id']);
 		}
 	}
 }
@@ -1693,7 +1685,7 @@ function pumpio_fetchallcomments(&$a, $uid, $id) {
 
 
 function pumpio_reachable($url) {
-	$data = z_fetch_url($url, false, $redirects, array('timeout'=>10));
+	$data = Network::curl($url, false, $redirects, ['timeout'=>10]);
 	return(intval($data['return_code']) != 0);
 }
 

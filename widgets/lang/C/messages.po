@@ -49,7 +49,7 @@ msgid "Widgets available"
 msgstr ""
 
 #: widgets.php:124
-msgid "Plugin Settings"
+msgid "Addon Settings"
 msgstr ""
 
 #: widget_friendheader.php:40

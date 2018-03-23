@@ -8,13 +8,14 @@
  * 
  * 
  */
+use Friendica\Core\Addon;
 
 function smiley_pack_fr_install() {
-	register_hook('smilie', 'addon/smiley_pack_fr/smiley_pack_fr.php', 'smiley_pack_fr_smilies');
+	Addon::registerHook('smilie', 'addon/smiley_pack_fr/smiley_pack_fr.php', 'smiley_pack_fr_smilies');
 }
 
 function smiley_pack_fr_uninstall() {
-	unregister_hook('smilie', 'addon/smiley_pack_fr/smiley_pack_fr.php', 'smiley_pack_fr_smilies');
+	Addon::unregisterHook('smilie', 'addon/smiley_pack_fr/smiley_pack_fr.php', 'smiley_pack_fr_smilies');
 }
 
  

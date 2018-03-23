@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: Random place
- * Description: Sample Friendica plugin/addon. Set a random place when posting.
+ * Description: Sample Friendica addon. Set a random place when posting.
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * 
@@ -11,36 +11,38 @@
  * Addons are registered with the system through the admin
  * panel.
  *
- * When registration is detected, the system calls the plugin
+ * When registration is detected, the system calls the addon
  * name_install() function, located in 'addon/name/name.php',
  * where 'name' is the name of the addon.
  * If the addon is removed from the configuration list, the 
  * system will call the name_uninstall() function.
  *
  */
-
+use Friendica\Core\Addon;
+use Friendica\Core\L10n;
+use Friendica\Core\PConfig;
 
 function randplace_install() {
 
 	/**
-	 * 
-	 * Our demo plugin will attach in three places.
+	 *
+	 * Our demo addon will attach in three places.
 	 * The first is just prior to storing a local post.
 	 *
 	 */
 
-	register_hook('post_local', 'addon/randplace/randplace.php', 'randplace_post_hook');
+	Addon::registerHook('post_local', 'addon/randplace/randplace.php', 'randplace_post_hook');
 
 	/**
 	 *
-	 * Then we'll attach into the plugin settings page, and also the 
+	 * Then we'll attach into the addon settings page, and also the
 	 * settings post hook so that we can create and update
 	 * user preferences.
 	 *
 	 */
 
-	register_hook('plugin_settings', 'addon/randplace/randplace.php', 'randplace_settings');
-	register_hook('plugin_settings_post', 'addon/randplace/randplace.php', 'randplace_settings_post');
+	Addon::registerHook('addon_settings', 'addon/randplace/randplace.php', 'randplace_settings');
+	Addon::registerHook('addon_settings_post', 'addon/randplace/randplace.php', 'randplace_settings_post');
 
 	logger("installed randplace");
 }
@@ -56,9 +58,9 @@ function randplace_uninstall() {
 	 *
 	 */
 
-	unregister_hook('post_local',    'addon/randplace/randplace.php', 'randplace_post_hook');
-	unregister_hook('plugin_settings', 'addon/randplace/randplace.php', 'randplace_settings');
-	unregister_hook('plugin_settings_post', 'addon/randplace/randplace.php', 'randplace_settings_post');
+	Addon::unregisterHook('post_local',    'addon/randplace/randplace.php', 'randplace_post_hook');
+	Addon::unregisterHook('addon_settings', 'addon/randplace/randplace.php', 'randplace_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/randplace/randplace.php', 'randplace_settings_post');
 
 
 	logger("removed randplace");
@@ -73,7 +75,7 @@ function randplace_post_hook($a, &$item) {
 	 * An item was posted on the local system.
 	 * We are going to look for specific items:
 	 *      - A status post by a profile owner
-	 *      - The profile owner must have allowed our plugin
+	 *      - The profile owner must have allowed our addon
 	 *
 	 */
 
@@ -141,7 +143,7 @@ function randplace_settings_post($a,$post) {
 
 /**
  *
- * Called from the Plugin Setting form. 
+ * Called from the Addon Setting form.
  * Add our own settings info to the page.
  *
  */
@@ -166,14 +168,14 @@ function randplace_settings(&$a,&$s) {
 	/* Add some HTML to the existing form */
 
 	$s .= '<div class="settings-block">';
-	$s .= '<h3>' . t('Randplace Settings') . '</h3>';
+	$s .= '<h3>' . L10n::t('Randplace Settings') . '</h3>';
 	$s .= '<div id="randplace-enable-wrapper">';
-	$s .= '<label id="randplace-enable-label" for="randplace-checkbox">' . t('Enable Randplace Plugin') . '</label>';
+	$s .= '<label id="randplace-enable-label" for="randplace-checkbox">' . L10n::t('Enable Randplace Addon') . '</label>';
 	$s .= '<input id="randplace-checkbox" type="checkbox" name="randplace" value="1" ' . $checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
 	/* provide a submit button */
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="randplace-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="randplace-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 
 }

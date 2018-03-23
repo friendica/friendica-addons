@@ -4,9 +4,10 @@
 
 To install all addons using git, cd into your top level Friendica directory and
 
-git clone https://github.com/friendica/friendica-addons.git addon
+	git clone https://github.com/friendica/friendica-addons.git addon
+	util/composer.phar install -d addon
 
-This will clone the entire repository in a directory called addon.  They can now be activated in the plugins section of your admin panel.
+This will clone the entire repository in a directory called addon. They can now be activated in the addons section of your admin panel.
 
 ********************
 * Install Manually *
@@ -15,4 +16,4 @@ This will clone the entire repository in a directory called addon.  They can now
 1. Download the archive (Download ZIP button) containing the addons.
 2. Unzip the contents of the archive to your harddrive.
 3. Upload the extracted directory and all it's contents to /path/to/friendica/addon.  You will need to create the addon directory if this is the first addon you have installed.
-4. Activate the addon in the plugins section of your admin panel.
+4. Activate the addon in the addons section of your admin panel.

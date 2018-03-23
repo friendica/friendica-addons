@@ -34,8 +34,8 @@ msgid ""
 msgstr "Permite limpiar las notificaciones de comentario de email en Gmail y anonimizar la línea del tema."
 
 #: gnot.php:82
-msgid "Enable this plugin/addon?"
-msgstr "¿Habilitar este plugin/addon?"
+msgid "Enable this addon?"
+msgstr "¿Habilitar este addon?"
 
 #: gnot.php:88
 msgid "Submit"

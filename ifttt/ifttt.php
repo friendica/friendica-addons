@@ -5,18 +5,26 @@
  * Version: 0.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
+require_once 'mod/item.php';
+require_once 'include/items.php';
+require_once 'include/text.php';
 
-require_once("mod/item.php");
-require_once("include/items.php");
+use Friendica\App;
+use Friendica\Core\Addon;
+use Friendica\Core\L10n;
+use Friendica\Core\PConfig;
+use Friendica\Database\DBM;
 
-function ifttt_install() {
-	register_hook('connector_settings',     'addon/ifttt/ifttt.php', 'ifttt_settings');
-	register_hook('connector_settings_post','addon/ifttt/ifttt.php', 'ifttt_settings_post');
+function ifttt_install()
+{
+	Addon::registerHook('connector_settings', 'addon/ifttt/ifttt.php', 'ifttt_settings');
+	Addon::registerHook('connector_settings_post', 'addon/ifttt/ifttt.php', 'ifttt_settings_post');
 }
 
-function ifttt_uninstall() {
-	unregister_hook('connector_settings',   'addon/ifttt/ifttt.php', 'ifttt_settings');
-	unregister_hook('connector_settings_post', 'addon/ifttt/ifttt.php', 'ifttt_settings_post');
+function ifttt_uninstall()
+{
+	Addon::unregisterHook('connector_settings', 'addon/ifttt/ifttt.php', 'ifttt_settings');
+	Addon::unregisterHook('connector_settings_post', 'addon/ifttt/ifttt.php', 'ifttt_settings_post');
 }
 
 function ifttt_module() {
@@ -38,37 +46,36 @@ function ifttt_settings(&$a,&$s) {
 	}
 
 	$s .= '<span id="settings_ifttt_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_ifttt_expanded\'); openClose(\'settings_ifttt_inflated\');">';
-        $s .= '<img class="connector" src="addon/ifttt/ifttt.png" /><h3 class="connector">'. t('IFTTT Mirror').'</h3>';
-        $s .= '</span>';
-        $s .= '<div id="settings_ifttt_expanded" class="settings-block" style="display: none;">';
-        $s .= '<span class="fakelink" onclick="openClose(\'settings_ifttt_expanded\'); openClose(\'settings_ifttt_inflated\');">';
-        $s .= '<img class="connector" src="addon/ifttt/ifttt.png" /><h3 class="connector">'. t('IFTTT Mirror').'</h3>';
-        $s .= '</span>';
+	$s .= '<img class="connector" src="addon/ifttt/ifttt.png" /><h3 class="connector">' . L10n::t('IFTTT Mirror') . '</h3>';
+	$s .= '</span>';
+	$s .= '<div id="settings_ifttt_expanded" class="settings-block" style="display: none;">';
+	$s .= '<span class="fakelink" onclick="openClose(\'settings_ifttt_expanded\'); openClose(\'settings_ifttt_inflated\');">';
+	$s .= '<img class="connector" src="addon/ifttt/ifttt.png" /><h3 class="connector">' . L10n::t('IFTTT Mirror') . '</h3>';
+	$s .= '</span>';
 
-        $s .= '<div id="ifttt-configuration-wrapper">';
-	$s .= '<p>'.t("Create an account at <a href='http://www.ifttt.com'>IFTTT</a>. Create three Facebook recipes that are connected with <a href='https://ifttt.com/maker'>Maker</a> (In the form 'if Facebook then Maker') with the following parameters:").'</p>';
+	$s .= '<div id="ifttt-configuration-wrapper">';
+	$s .= '<p>' . L10n::t('Create an account at <a href="http://www.ifttt.com">IFTTT</a>. Create three Facebook recipes that are connected with <a href="https://ifttt.com/maker">Maker</a> (In the form "if Facebook then Maker") with the following parameters:') . '</p>';
 	$s .= '<h4>URL</h4>';
 	$s .= '<p>' . $a->get_baseurl() . '/ifttt/' . $a->user['nickname'] . '</p>';
 	$s .= '<h4>Method</h4>';
 	$s .= '<p>POST</p>';
 	$s .= '<h4>Content Type</h4>';
 	$s .= '<p>application/x-www-form-urlencoded</p>';
-	$s .= '<h4>'.t("Body for 'new status message'").'</h4>';
-	$s .= '<p><code>'.htmlentities('key='.$key.'&type=status&msg=<<<{{Message}}>>>&date=<<<{{UpdatedAt}}>>>&url=<<<{{PageUrl}}>>>').'</code></p>';
-	$s .= '<h4>'.t("Body for 'new photo upload'").'</h4>';
-	$s .= '<p><code>'.htmlentities('key='.$key.'&type=photo&link=<<<{{Link}}>>>&image=<<<{{ImageSource}}>>>&msg=<<<{{Caption}}>>>&date=<<<{{CreatedAt}}>>>&url=<<<{{PageUrl}}>>>').'</code></p>';
-	$s .= '<h4>'.t("Body for 'new link post'").'</h4>';
-	$s .= '<p><code>'.htmlentities('key='.$key.'&type=link&link=<<<{{Link}}>>>&title=<<<{{Title}}>>>&msg=<<<{{Message}}>>>&description=<<<{{Description}}>>>&date=<<<{{CreatedAt}}>>>&url=<<<{{PageUrl}}>>>').'</code></p>';
-        $s .= '</div><div class="clear"></div>';
+	$s .= '<h4>' . L10n::t('Body for "new status message"') . '</h4>';
+	$s .= '<p><code>' . htmlentities('key=' . $key . '&type=status&msg=<<<{{Message}}>>>&date=<<<{{UpdatedAt}}>>>&url=<<<{{PageUrl}}>>>') . '</code></p>';
+	$s .= '<h4>' . L10n::t('Body for "new photo upload"') . '</h4>';
+	$s .= '<p><code>' . htmlentities('key=' . $key . '&type=photo&link=<<<{{Link}}>>>&image=<<<{{ImageSource}}>>>&msg=<<<{{Caption}}>>>&date=<<<{{CreatedAt}}>>>&url=<<<{{PageUrl}}>>>') . '</code></p>';
+	$s .= '<h4>' . L10n::t('Body for "new link post"') . '</h4>';
+	$s .= '<p><code>' . htmlentities('key=' . $key . '&type=link&link=<<<{{Link}}>>>&title=<<<{{Title}}>>>&msg=<<<{{Message}}>>>&description=<<<{{Description}}>>>&date=<<<{{CreatedAt}}>>>&url=<<<{{PageUrl}}>>>') . '</code></p>';
+	$s .= '</div><div class="clear"></div>';
 
-        $s .= '<div id="ifttt-rekey-wrapper">';
-        $s .= '<label id="ifttt-rekey-label" for="ifttt-checkbox">' . t('Generate new key') . '</label>';
-        $s .= '<input id="ifttt-checkbox" type="checkbox" name="ifttt-rekey" value="1" />';
-        $s .= '</div><div class="clear"></div>';
+	$s .= '<div id="ifttt-rekey-wrapper">';
+	$s .= '<label id="ifttt-rekey-label" for="ifttt-checkbox">' . L10n::t('Generate new key') . '</label>';
+	$s .= '<input id="ifttt-checkbox" type="checkbox" name="ifttt-rekey" value="1" />';
+	$s .= '</div><div class="clear"></div>';
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="ifttt-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
-        $s .= '</div>';
-
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="ifttt-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
+	$s .= '</div>';
 }
 
 function ifttt_settings_post(&$a,&$b) {

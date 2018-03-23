@@ -7,23 +7,29 @@
  * Author: Michael Vogel <heluecht@pirati.ca>
  */
 
-require_once("addon/diaspora/Diaspora_Connection.php");
+require_once 'addon/diaspora/Diaspora_Connection.php';
+
+use Friendica\Core\Addon;
+use Friendica\Core\L10n;
+use Friendica\Core\PConfig;
+use Friendica\Database\DBM;
+use Friendica\Model\Queue;
 
 function diaspora_install() {
-	register_hook('post_local',           'addon/diaspora/diaspora.php', 'diaspora_post_local');
-	register_hook('notifier_normal',      'addon/diaspora/diaspora.php', 'diaspora_send');
-	register_hook('jot_networks',         'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
-	register_hook('connector_settings',      'addon/diaspora/diaspora.php', 'diaspora_settings');
-	register_hook('connector_settings_post', 'addon/diaspora/diaspora.php', 'diaspora_settings_post');
-	register_hook('queue_predeliver', 'addon/diaspora/diaspora.php', 'diaspora_queue_hook');
+	Addon::registerHook('post_local',           'addon/diaspora/diaspora.php', 'diaspora_post_local');
+	Addon::registerHook('notifier_normal',      'addon/diaspora/diaspora.php', 'diaspora_send');
+	Addon::registerHook('jot_networks',         'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
+	Addon::registerHook('connector_settings',      'addon/diaspora/diaspora.php', 'diaspora_settings');
+	Addon::registerHook('connector_settings_post', 'addon/diaspora/diaspora.php', 'diaspora_settings_post');
+	Addon::registerHook('queue_predeliver', 'addon/diaspora/diaspora.php', 'diaspora_queue_hook');
 }
 function diaspora_uninstall() {
-	unregister_hook('post_local',       'addon/diaspora/diaspora.php', 'diaspora_post_local');
-	unregister_hook('notifier_normal',  'addon/diaspora/diaspora.php', 'diaspora_send');
-	unregister_hook('jot_networks',     'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
-	unregister_hook('connector_settings',      'addon/diaspora/diaspora.php', 'diaspora_settings');
-	unregister_hook('connector_settings_post', 'addon/diaspora/diaspora.php', 'diaspora_settings_post');
-	unregister_hook('queue_predeliver', 'addon/diaspora/diaspora.php', 'diaspora_queue_hook');
+	Addon::unregisterHook('post_local',       'addon/diaspora/diaspora.php', 'diaspora_post_local');
+	Addon::unregisterHook('notifier_normal',  'addon/diaspora/diaspora.php', 'diaspora_send');
+	Addon::unregisterHook('jot_networks',     'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
+	Addon::unregisterHook('connector_settings',      'addon/diaspora/diaspora.php', 'diaspora_settings');
+	Addon::unregisterHook('connector_settings_post', 'addon/diaspora/diaspora.php', 'diaspora_settings_post');
+	Addon::unregisterHook('queue_predeliver', 'addon/diaspora/diaspora.php', 'diaspora_queue_hook');
 }
 
 
@@ -36,7 +42,7 @@ function diaspora_jot_nets(&$a,&$b) {
         $diaspora_defpost = get_pconfig(local_user(),'diaspora','post_by_default');
         $selected = ((intval($diaspora_defpost) == 1) ? ' checked="checked" ' : '');
         $b .= '<div class="profile-jot-net"><input type="checkbox" name="diaspora_enable"' . $selected . ' value="1" /> '
-            . t('Post to Diaspora') . '</div>';
+            . L10n::t('Post to Diaspora') . '</div>';
     }
 }
 
@@ -48,8 +54,6 @@ function diaspora_queue_hook(&$a,&$b) {
 	);
 	if(! count($qi))
 		return;
-
-	require_once('include/queue_fn.php');
 
 	foreach($qi as $x) {
 		if($x['network'] !== NETWORK_DIASPORA2)
@@ -90,20 +94,21 @@ function diaspora_queue_hook(&$a,&$b) {
 				$conn->provider = $hostname;
 				$conn->postStatusMessage($post, $aspect);
 
-                                logger('diaspora_queue: send '.$userdata['uid'].' success', LOGGER_DEBUG);
+				logger('diaspora_queue: send '.$userdata['uid'].' success', LOGGER_DEBUG);
 
-                                $success = true;
+				$success = true;
 
-                                remove_queue_item($x['id']);
+				Queue::removeItem($x['id']);
 			} catch (Exception $e) {
 				logger("diaspora_queue: Send ".$userdata['uid']." failed: ".$e->getMessage(), LOGGER_DEBUG);
 			}
-		} else
+		} else {
 			logger('diaspora_queue: send '.$userdata['uid'].' missing username or password', LOGGER_DEBUG);
+		}
 
 		if (!$success) {
 			logger('diaspora_queue: delayed');
-			update_queue_time($x['id']);
+			Queue::updateTime($x['id']);
 		}
 	}
 }
@@ -134,10 +139,10 @@ function diaspora_settings(&$a,&$s) {
 	$status = "";
 
 	$r = q("SELECT `addr` FROM `contact` WHERE `self` AND `uid` = %d", intval(local_user()));
-	if (dbm::is_result($r)) {
-		$status = sprintf(t("Please remember: You can always be reached from Diaspora with your Friendica handle %s. "), $r[0]['addr']);
-		$status .= t('This connector is only meant if you still want to use your old Diaspora account for some time. ');
-		$status .= sprintf(t('However, it is preferred that you tell your Diaspora contacts the new handle %s instead.'), $r[0]['addr']);
+	if (DBM::is_result($r)) {
+		$status = L10n::t("Please remember: You can always be reached from Diaspora with your Friendica handle %s. ", $r[0]['addr']);
+		$status .= L10n::t('This connector is only meant if you still want to use your old Diaspora account for some time. ');
+		$status .= L10n::t('However, it is preferred that you tell your Diaspora contacts the new handle %s instead.', $r[0]['addr']);
 	}
 
 	$aspects = false;
@@ -147,18 +152,18 @@ function diaspora_settings(&$a,&$s) {
 		$conn->logIn();
 		$aspects = $conn->getAspects();
 		if (!$aspects) {
-			$status = t("Can't login to your Diaspora account. Please check handle (in the format user@domain.tld) and password.");
+			$status = L10n::t("Can't login to your Diaspora account. Please check handle (in the format user@domain.tld) and password.");
 		}
 	}
 
 	/* Add some HTML to the existing form */
 
 	$s .= '<span id="settings_diaspora_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_diaspora_expanded\'); openClose(\'settings_diaspora_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/diaspora-logo.png" /><h3 class="connector">'. t('Diaspora Export').'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/diaspora-logo.png" /><h3 class="connector">'. L10n::t('Diaspora Export').'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_diaspora_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_diaspora_expanded\'); openClose(\'settings_diaspora_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/diaspora-logo.png" /><h3 class="connector">'. t('Diaspora Export').'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/diaspora-logo.png" /><h3 class="connector">'. L10n::t('Diaspora Export').'</h3>';
 	$s .= '</span>';
 
 	if ($status) {
@@ -168,32 +173,32 @@ function diaspora_settings(&$a,&$s) {
 	}
 
 	$s .= '<div id="diaspora-enable-wrapper">';
-	$s .= '<label id="diaspora-enable-label" for="diaspora-checkbox">' . t('Enable Diaspora Post Plugin') . '</label>';
+	$s .= '<label id="diaspora-enable-label" for="diaspora-checkbox">' . L10n::t('Enable Diaspora Post Addon') . '</label>';
 	$s .= '<input id="diaspora-checkbox" type="checkbox" name="diaspora" value="1" ' . $checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="diaspora-username-wrapper">';
-	$s .= '<label id="diaspora-username-label" for="diaspora-username">' . t('Diaspora handle') . '</label>';
+	$s .= '<label id="diaspora-username-label" for="diaspora-username">' . L10n::t('Diaspora handle') . '</label>';
 	$s .= '<input id="diaspora-username" type="text" name="handle" value="' . $handle . '" />';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="diaspora-password-wrapper">';
-	$s .= '<label id="diaspora-password-label" for="diaspora-password">' . t('Diaspora password') . '</label>';
+	$s .= '<label id="diaspora-password-label" for="diaspora-password">' . L10n::t('Diaspora password') . '</label>';
 	$s .= '<input id="diaspora-password" type="password" name="password" value="' . $password . '" />';
 	$s .= '</div><div class="clear"></div>';
 
 	if ($aspects) {
 		$single_aspect =  new stdClass();
 		$single_aspect->id = 'all_aspects';
-		$single_aspect->name = t('All aspects');
+		$single_aspect->name = L10n::t('All aspects');
 		$aspects[] = $single_aspect;
 
 		$single_aspect =  new stdClass();
 		$single_aspect->id = 'public';
-		$single_aspect->name = t('Public');
+		$single_aspect->name = L10n::t('Public');
 		$aspects[] = $single_aspect;
 
-		$s .= '<label id="diaspora-aspect-label" for="diaspora-aspect">' . t('Post to aspect:') . '</label>';
+		$s .= '<label id="diaspora-aspect-label" for="diaspora-aspect">' . L10n::t('Post to aspect:') . '</label>';
 		$s .= '<select name="aspect" id="diaspora-aspect">';
 		foreach($aspects as $single_aspect) {
 			if ($single_aspect->id == $aspect)
@@ -207,13 +212,13 @@ function diaspora_settings(&$a,&$s) {
 	}
 
 	$s .= '<div id="diaspora-bydefault-wrapper">';
-	$s .= '<label id="diaspora-bydefault-label" for="diaspora-bydefault">' . t('Post to Diaspora by default') . '</label>';
+	$s .= '<label id="diaspora-bydefault-label" for="diaspora-bydefault">' . L10n::t('Post to Diaspora by default') . '</label>';
 	$s .= '<input id="diaspora-bydefault" type="checkbox" name="diaspora_bydefault" value="1" ' . $def_checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
 	/* provide a submit button */
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="diaspora-submit" name="diaspora-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="diaspora-submit" name="diaspora-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 
 }
 
@@ -323,7 +328,7 @@ function diaspora_send(&$a,&$b) {
                 } while ($oldbody != $body);
 
 		// convert to markdown
-		$body = bb2diaspora($body, false, true);
+		$body = bb2diaspora($body);
 
 		// Adding the title
 		if(strlen($title))
@@ -351,10 +356,10 @@ function diaspora_send(&$a,&$b) {
 			if (count($r))
 				$a->contact = $r[0]["id"];
 
-			$s = serialize(array('url' => $url, 'item' => $b['id'], 'post' => $body));
-			require_once('include/queue_fn.php');
-			add_to_queue($a->contact,NETWORK_DIASPORA2,$s);
-			notice(t('Diaspora post failed. Queued for retry.').EOL);
+			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $body]);
+
+			Queue::add($a->contact, NETWORK_DIASPORA2, $s);
+			notice(L10n::t('Diaspora post failed. Queued for retry.').EOL);
 		}
 	}
 }

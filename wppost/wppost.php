@@ -1,31 +1,35 @@
 <?php
-
 /**
  * Name: WordPress Post Connector
  * Description: Post to WordPress (or anything else which uses blogger XMLRPC API)
  * Version: 1.1
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
+use Friendica\Content\Text\BBCode;
+use Friendica\Core\Addon;
+use Friendica\Core\L10n;
+use Friendica\Core\PConfig;
+use Friendica\Util\Network;
 
 function wppost_install() {
-    register_hook('post_local',           'addon/wppost/wppost.php', 'wppost_post_local');
-    register_hook('notifier_normal',      'addon/wppost/wppost.php', 'wppost_send');
-    register_hook('jot_networks',         'addon/wppost/wppost.php', 'wppost_jot_nets');
-    register_hook('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
-    register_hook('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
+    Addon::registerHook('post_local',           'addon/wppost/wppost.php', 'wppost_post_local');
+    Addon::registerHook('notifier_normal',      'addon/wppost/wppost.php', 'wppost_send');
+    Addon::registerHook('jot_networks',         'addon/wppost/wppost.php', 'wppost_jot_nets');
+    Addon::registerHook('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
+    Addon::registerHook('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
 
 }
 function wppost_uninstall() {
-    unregister_hook('post_local',       'addon/wppost/wppost.php', 'wppost_post_local');
-    unregister_hook('notifier_normal',  'addon/wppost/wppost.php', 'wppost_send');
-    unregister_hook('jot_networks',     'addon/wppost/wppost.php', 'wppost_jot_nets');
-    unregister_hook('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
-    unregister_hook('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
+    Addon::unregisterHook('post_local',       'addon/wppost/wppost.php', 'wppost_post_local');
+    Addon::unregisterHook('notifier_normal',  'addon/wppost/wppost.php', 'wppost_send');
+    Addon::unregisterHook('jot_networks',     'addon/wppost/wppost.php', 'wppost_jot_nets');
+    Addon::unregisterHook('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
+    Addon::unregisterHook('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
 
 	// obsolete - remove
-    unregister_hook('post_local_end',   'addon/wppost/wppost.php', 'wppost_send');
-    unregister_hook('plugin_settings',  'addon/wppost/wppost.php', 'wppost_settings');
-    unregister_hook('plugin_settings_post',  'addon/wppost/wppost.php', 'wppost_settings_post');
+    Addon::unregisterHook('post_local_end',   'addon/wppost/wppost.php', 'wppost_send');
+    Addon::unregisterHook('addon_settings',  'addon/wppost/wppost.php', 'wppost_settings');
+    Addon::unregisterHook('addon_settings_post',  'addon/wppost/wppost.php', 'wppost_settings_post');
 
 }
 
@@ -39,7 +43,7 @@ function wppost_jot_nets(&$a,&$b) {
         $wp_defpost = get_pconfig(local_user(),'wppost','post_by_default');
         $selected = ((intval($wp_defpost) == 1) ? ' checked="checked" ' : '');
         $b .= '<div class="profile-jot-net"><input type="checkbox" name="wppost_enable" ' . $selected . ' value="1" /> '
-            . t('Post to Wordpress') . '</div>';
+            . L10n::t('Post to Wordpress') . '</div>';
     }
 }
 
@@ -77,54 +81,54 @@ function wppost_settings(&$a,&$s) {
     /* Add some HTML to the existing form */
 
     $s .= '<span id="settings_wppost_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_wppost_expanded\'); openClose(\'settings_wppost_inflated\');">';
-    $s .= '<img class="connector'.$css.'" src="images/wordpress.png" /><h3 class="connector">'. t('Wordpress Export').'</h3>';
+    $s .= '<img class="connector'.$css.'" src="images/wordpress.png" /><h3 class="connector">'. L10n::t('Wordpress Export').'</h3>';
     $s .= '</span>';
     $s .= '<div id="settings_wppost_expanded" class="settings-block" style="display: none;">';
     $s .= '<span class="fakelink" onclick="openClose(\'settings_wppost_expanded\'); openClose(\'settings_wppost_inflated\');">';
-    $s .= '<img class="connector'.$css.'" src="images/wordpress.png" /><h3 class="connector">'. t('Wordpress Export').'</h3>';
+    $s .= '<img class="connector'.$css.'" src="images/wordpress.png" /><h3 class="connector">'. L10n::t('Wordpress Export').'</h3>';
     $s .= '</span>';
     $s .= '<div id="wppost-enable-wrapper">';
-    $s .= '<label id="wppost-enable-label" for="wppost-checkbox">' . t('Enable WordPress Post Plugin') . '</label>';
+    $s .= '<label id="wppost-enable-label" for="wppost-checkbox">' . L10n::t('Enable WordPress Post Addon') . '</label>';
     $s .= '<input id="wppost-checkbox" type="checkbox" name="wppost" value="1" ' . $checked . '/>';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="wppost-username-wrapper">';
-    $s .= '<label id="wppost-username-label" for="wppost-username">' . t('WordPress username') . '</label>';
+    $s .= '<label id="wppost-username-label" for="wppost-username">' . L10n::t('WordPress username') . '</label>';
     $s .= '<input id="wppost-username" type="text" name="wp_username" value="' . $wp_username . '" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="wppost-password-wrapper">';
-    $s .= '<label id="wppost-password-label" for="wppost-password">' . t('WordPress password') . '</label>';
+    $s .= '<label id="wppost-password-label" for="wppost-password">' . L10n::t('WordPress password') . '</label>';
     $s .= '<input id="wppost-password" type="password" name="wp_password" value="' . $wp_password . '" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="wppost-blog-wrapper">';
-    $s .= '<label id="wppost-blog-label" for="wppost-blog">' . t('WordPress API URL') . '</label>';
+    $s .= '<label id="wppost-blog-label" for="wppost-blog">' . L10n::t('WordPress API URL') . '</label>';
     $s .= '<input id="wppost-blog" type="text" name="wp_blog" value="' . $wp_blog . '" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="wppost-bydefault-wrapper">';
-    $s .= '<label id="wppost-bydefault-label" for="wppost-bydefault">' . t('Post to WordPress by default') . '</label>';
+    $s .= '<label id="wppost-bydefault-label" for="wppost-bydefault">' . L10n::t('Post to WordPress by default') . '</label>';
     $s .= '<input id="wppost-bydefault" type="checkbox" name="wp_bydefault" value="1" ' . $def_checked . '/>';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="wppost-backlink-wrapper">';
-    $s .= '<label id="wppost-backlink-label" for="wppost-backlink">' . t('Provide a backlink to the Friendica post') . '</label>';
+    $s .= '<label id="wppost-backlink-label" for="wppost-backlink">' . L10n::t('Provide a backlink to the Friendica post') . '</label>';
     $s .= '<input id="wppost-backlink" type="checkbox" name="wp_backlink" value="1" ' . $back_checked . '/>';
     $s .= '</div><div class="clear"></div>';
     $s .= '<div id="wppost-backlinktext-wrapper">';
-    $s .= '<label id="wppost-backlinktext-label" for="wp_backlink_text">' . t('Text for the backlink, e.g. Read the original post and comment stream on Friendica.') . '</label>';
+    $s .= '<label id="wppost-backlinktext-label" for="wp_backlink_text">' . L10n::t('Text for the backlink, e.g. Read the original post and comment stream on Friendica.') . '</label>';
     $s .= '<input id="wppost-backlinktext" type="text" name="wp_backlink_text" value="'. $wp_backlink_text.'" ' . $wp_backlink_text . '/>';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="wppost-shortcheck-wrapper">';
-    $s .= '<label id="wppost-shortcheck-label" for="wppost-shortcheck">' . t("Don't post messages that are too short") . '</label>';
+    $s .= '<label id="wppost-shortcheck-label" for="wppost-shortcheck">' . L10n::t("Don't post messages that are too short") . '</label>';
     $s .= '<input id="wppost-shortcheck" type="checkbox" name="wp_shortcheck" value="1" '.$shortcheck_checked.'/>';
     $s .= '</div><div class="clear"></div>';
 
     /* provide a submit button */
 
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="wppost-submit" name="wppost-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="wppost-submit" name="wppost-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 
 }
 
@@ -141,7 +145,7 @@ function wppost_settings_post(&$a,&$b) {
 		set_pconfig(local_user(),'wppost','backlink',trim($_POST['wp_backlink']));
 		set_pconfig(local_user(),'wppost','shortcheck',trim($_POST['wp_shortcheck']));
 		$wp_backlink_text = notags(trim($_POST['wp_backlink_text']));
-		$wp_backlink_text = bbcode($wp_backlink_text, false, false, 8);
+		$wp_backlink_text = BBCode::convert($wp_backlink_text, false, 8);
 		$wp_backlink_text = html2plain($wp_backlink_text, 0, true);
 		set_pconfig(local_user(),'wppost','wp_backlink_text', $wp_backlink_text);
 
@@ -204,21 +208,18 @@ function wppost_send(&$a,&$b) {
 	$wp_blog = get_pconfig($b['uid'],'wppost','wp_blog');
 	$wp_backlink_text = get_pconfig($b['uid'],'wppost','wp_backlink_text');
 	if ($wp_backlink_text == '') {
-		$wp_backlink_text = t('Read the orig­i­nal post and com­ment stream on Friendica');
+		$wp_backlink_text = L10n::t('Read the orig­i­nal post and com­ment stream on Friendica');
 	}
 
-	if($wp_username && $wp_password && $wp_blog) {
-
-		require_once('include/bbcode.php');
-		require_once('include/html2plain.php');
-		require_once('include/plaintext.php');
+	if ($wp_username && $wp_password && $wp_blog) {
+		require_once 'include/html2plain.php';
 
 		$wptitle = trim($b['title']);
 
-		if (intval(get_pconfig($b['uid'],'wppost','shortcheck'))) {
+		if (intval(PConfig::get($b['uid'], 'wppost', 'shortcheck'))) {
 			// Checking, if its a post that is worth a blog post
 			$postentry = false;
-			$siteinfo = get_attached_data($b["body"]);
+			$siteinfo = BBCode::getAttachedData($b["body"]);
 
 			// Is it a link to an aricle, a video or a photo?
 			if (isset($siteinfo["type"])) {
@@ -245,7 +246,7 @@ function wppost_send(&$a,&$b) {
 		// If the title is empty then try to guess
 		if ($wptitle == '') {
 			// Fetch information about the post
-			$siteinfo = get_attached_data($b["body"]);
+			$siteinfo = BBCode::getAttachedData($b["body"]);
 			if (isset($siteinfo["title"])) {
 				$wptitle = $siteinfo["title"];
 			}
@@ -255,7 +256,7 @@ function wppost_send(&$a,&$b) {
 				// Remove the share element before fetching the first line
 				$title = trim(preg_replace("/\[share.*?\](.*?)\[\/share\]/ism","\n$1\n",$b['body']));
 
-				$title = html2plain(bbcode($title, false, false), 0, true)."\n";
+				$title = html2plain(BBCode::convert($title, false), 0, true)."\n";
 				$pos = strpos($title, "\n");
 				$trailer = "";
 				if (($pos == 0) || ($pos > 100)) {
@@ -267,8 +268,8 @@ function wppost_send(&$a,&$b) {
 			}
 		}
 
-		$title = '<title>' . (($wptitle) ? $wptitle : t('Post from Friendica')) . '</title>';
-		$post = bbcode($b['body'], false, false, 4);
+		$title = '<title>' . (($wptitle) ? $wptitle : L10n::t('Post from Friendica')) . '</title>';
+		$post = BBCode::convert($b['body'], false, 4);
 
 		// If a link goes to youtube then remove the stuff around it. Wordpress detects youtube links and embeds it
 		$post = preg_replace('/<a.*?href="(https?:\/\/www.youtube.com\/.*?)".*?>(.*?)<\/a>/ism',"\n$1\n",$post);
@@ -303,10 +304,9 @@ EOT;
 
 		logger('wppost: data: ' . $xml, LOGGER_DATA);
 
-		if($wp_blog !== 'test') {
-			$x = post_url($wp_blog,$xml);
+		if ($wp_blog !== 'test') {
+			$x = Network::post($wp_blog, $xml);
 		}
 		logger('posted to wordpress: ' . (($x) ? $x : ''), LOGGER_DEBUG);
-
 	}
 }

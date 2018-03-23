@@ -9,24 +9,32 @@
 
 define('FROMGPLUS_DEFAULT_POLL_INTERVAL', 30); // given in minutes
 
-require_once('mod/share.php');
-require_once('mod/parse_url.php');
-require_once('include/text.php');
+use Friendica\Core\Addon;
+use Friendica\Core\Config;
+use Friendica\Core\L10n;
+use Friendica\Core\PConfig;
+use Friendica\Object\Image;
+use Friendica\Util\DateTimeFormat;
+use Friendica\Util\Network;
+
+require_once 'mod/share.php';
+require_once 'mod/parse_url.php';
+require_once 'include/text.php';
 
 function fromgplus_install() {
-	register_hook('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
-	register_hook('connector_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
-	register_hook('cron', 'addon/fromgplus/fromgplus.php', 'fromgplus_cron');
+	Addon::registerHook('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
+	Addon::registerHook('connector_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
+	Addon::registerHook('cron', 'addon/fromgplus/fromgplus.php', 'fromgplus_cron');
 }
 
 function fromgplus_uninstall() {
-	unregister_hook('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
-	unregister_hook('connector_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
-	unregister_hook('cron', 'addon/fromgplus/fromgplus.php', 'fromgplus_cron');
+	Addon::unregisterHook('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
+	Addon::unregisterHook('connector_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
+	Addon::unregisterHook('cron', 'addon/fromgplus/fromgplus.php', 'fromgplus_cron');
 
 	// Old hooks
-	unregister_hook('plugin_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
-	unregister_hook('plugin_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
 }
 
 function fromgplus_addon_settings(&$a,&$s) {
@@ -44,27 +52,27 @@ function fromgplus_addon_settings(&$a,&$s) {
 	$account = get_pconfig(local_user(),'fromgplus','account');
 
 	$s .= '<span id="settings_fromgplus_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_fromgplus_expanded\'); openClose(\'settings_fromgplus_inflated\');">';
-	$s .= '<img class="connector" src="images/googleplus.png" /><h3 class="connector">'. t('Google+ Mirror').'</h3>';
+	$s .= '<img class="connector" src="images/googleplus.png" /><h3 class="connector">'. L10n::t('Google+ Mirror').'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_fromgplus_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_fromgplus_expanded\'); openClose(\'settings_fromgplus_inflated\');">';
-	$s .= '<img class="connector" src="images/googleplus.png" /><h3 class="connector">'. t('Google+ Mirror').'</h3>';
+	$s .= '<img class="connector" src="images/googleplus.png" /><h3 class="connector">'. L10n::t('Google+ Mirror').'</h3>';
 	$s .= '</span>';
 
 	$s .= '<div id="fromgplus-wrapper">';
 
-	$s .= '<label id="fromgplus-enable-label" for="fromgplus-enable">'.t('Enable Google+ Import').'</label>';
+	$s .= '<label id="fromgplus-enable-label" for="fromgplus-enable">'.L10n::t('Enable Google+ Import').'</label>';
 	$s .= '<input id="fromgplus-enable" type="checkbox" name="fromgplus-enable" value="1"'.$enable_checked.' />';
 	$s .= '<div class="clear"></div>';
-	$s .= '<label id="fromgplus-label" for="fromgplus-account">'.t('Google Account ID').' </label>';
+	$s .= '<label id="fromgplus-label" for="fromgplus-account">'.L10n::t('Google Account ID').' </label>';
 	$s .= '<input id="fromgplus-account" type="text" name="fromgplus-account" value="'.$account.'" />';
 	$s .= '</div><div class="clear"></div>';
-	$s .= '<label id="fromgplus-keywords-label" for="fromgplus-keywords">'.t('Add keywords to post').'</label>';
+	$s .= '<label id="fromgplus-keywords-label" for="fromgplus-keywords">'.L10n::t('Add keywords to post').'</label>';
 	$s .= '<input id="fromgplus-keywords" type="checkbox" name="fromgplus-keywords" value="1"'.$keywords_checked.' />';
 	$s .= '<div class="clear"></div>';
 
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="fromgplus-submit" name="fromgplus-submit"
-class="settings-submit" value="' . t('Save Settings') . '" /></div>';
+class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
 	$s .= '</div>';
 
 	return;
@@ -85,23 +93,25 @@ function fromgplus_addon_settings_post(&$a,&$b) {
 		if (!$enable)
 			del_pconfig(local_user(),'fromgplus','lastdate');
 
-		info( t('Google+ Import Settings saved.') . EOL);
+		info(L10n::t('Google+ Import Settings saved.') . EOL);
 	}
 }
 
-function fromgplus_plugin_admin(&$a, &$o){
-        $t = get_markup_template("admin.tpl", "addon/fromgplus/");
+function fromgplus_addon_admin(&$a, &$o)
+{
+	$t = get_markup_template("admin.tpl", "addon/fromgplus/");
 
-        $o = replace_macros($t, array(
-                '$submit' => t('Save Settings'),
-                '$key' => array('key', t('Key'), trim(get_config('fromgplus', 'key')), t('')),
-        ));
+	$o = replace_macros($t, [
+			'$submit' => L10n::t('Save Settings'),
+			'$key' => ['key', L10n::t('Key'), trim(Config::get('fromgplus', 'key')), L10n::t('')],
+	]);
 }
 
-function fromgplus_plugin_admin_post(&$a){
-        $key = ((x($_POST,'key')) ? trim($_POST['key']) : '');
-        set_config('fromgplus','key',$key);
-        info( t('Settings updated.'). EOL );
+function fromgplus_addon_admin_post(&$a)
+{
+	$key = ((x($_POST, 'key')) ? trim($_POST['key']) : '');
+	Config::set('fromgplus', 'key', $key);
+	info(L10n::t('Settings updated.'). EOL);
 }
 
 function fromgplus_cron($a,$b) {
@@ -305,9 +315,7 @@ function fromgplus_cleantext($text) {
 }
 
 function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
-	require_once("include/Photo.php");
-	require_once("include/items.php");
-	require_once("include/network.php");
+	require_once 'include/items.php';
 
 	$post = "";
 	$quote = "";
@@ -318,13 +326,13 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 		switch($attachment->objectType) {
 			case "video":
 				$pagedata["type"] = "video";
-				$pagedata["url"] = original_url($attachment->url);
+				$pagedata["url"] = Network::finalUrl($attachment->url);
 				$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
 				break;
 
 			case "article":
 				$pagedata["type"] = "link";
-				$pagedata["url"] = original_url($attachment->url);
+				$pagedata["url"] = Network::finalUrl($attachment->url);
 				$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
 
 				$images = fromgplus_cleanupgoogleproxy($attachment->fullImage, $attachment->image);
@@ -373,7 +381,7 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 				break;
 
 			case "photo-album":
-				$pagedata["url"] = original_url($attachment->url);
+				$pagedata["url"] = Network::finalUrl($attachment->url);
 				$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
 				$post .= "\n\n[bookmark=".$pagedata["url"]."]".$pagedata["title"]."[/bookmark]\n";
 
@@ -394,7 +402,7 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 
 			case "album":
 				$pagedata["type"] = "link";
-				$pagedata["url"] = original_url($attachment->url);
+				$pagedata["url"] = Network::finalUrl($attachment->url);
 				$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
 
 				$thumb = $attachment->thumbnails[0];
@@ -407,7 +415,7 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 				break;
 
 			case "audio":
-				$pagedata["url"] = original_url($attachment->url);
+				$pagedata["url"] = Network::finalUrl($attachment->url);
 				$pagedata["title"] = fromgplus_html2bbcode($attachment->displayName);
 				$post .= "\n\n[bookmark=".$pagedata["url"]."]".$pagedata["title"]."[/bookmark]\n";
 				break;
@@ -432,7 +440,7 @@ function fromgplus_fetch($a, $uid) {
 	$account = get_pconfig($uid,'fromgplus','account');
 	$key = get_config('fromgplus','key');
 
-	$result = fetch_url("https://www.googleapis.com/plus/v1/people/".$account."/activities/public?alt=json&pp=1&key=".$key."&maxResults=".$maxfetch);
+	$result = Network::fetchUrl("https://www.googleapis.com/plus/v1/people/".$account."/activities/public?alt=json&pp=1&key=".$key."&maxResults=".$maxfetch);
 	//$result = file_get_contents("google.txt");
 	//file_put_contents("google.txt", $result);
 
@@ -510,12 +518,12 @@ function fromgplus_fetch($a, $uid) {
 						if (function_exists("share_header"))
 							$post .= share_header($item->object->actor->displayName, $item->object->actor->url,
 										$item->object->actor->image->url, "",
-										datetime_convert('UTC','UTC',$item->object->published),$item->object->url);
+										DateTimeFormat::utc($item->object->published),$item->object->url);
 						else
 							$post .= "[share author='".str_replace("'", "&#039;",$item->object->actor->displayName).
 									"' profile='".$item->object->actor->url.
 									"' avatar='".$item->object->actor->image->url.
-									"' posted='".datetime_convert('UTC','UTC',$item->object->published).
+									"' posted='".DateTimeFormat::utc($item->object->published).
 									"' link='".$item->object->url."']";
 
 						$post .= fromgplus_html2bbcode($item->object->content);

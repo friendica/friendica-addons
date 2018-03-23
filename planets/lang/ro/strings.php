@@ -6,5 +6,5 @@ function string_plural_select_ro($n){
 }}
 ;
 $a->strings["Planets Settings"] = "Configurări Planets";
-$a->strings["Enable Planets Plugin"] = "Activare Modul Planets";
+$a->strings["Enable Planets Addon"] = "Activare Modul Planets";
 $a->strings["Submit"] = "Trimite";

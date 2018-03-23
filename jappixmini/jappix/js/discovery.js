@@ -148,7 +148,7 @@ function cleanDiscovery() {
 	$('#discovery .wait, #discovery .disco-category').hide();
 }
 
-// Plugin launcher
+// Addon launcher
 function launchDiscovery() {
 	// Click event
 	$('#discovery .bottom .finish').click(closeDiscovery);

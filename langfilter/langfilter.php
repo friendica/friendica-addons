@@ -7,21 +7,28 @@
  * License: MIT
  */
 
-require_once('library/langdet/Text/LanguageDetect.php');
+use Friendica\App;
+use Friendica\Core\Addon;
+use Friendica\Core\L10n;
+use Friendica\Core\PConfig;
 
 /* Define the hooks we want to use
  * that is, we have settings, we need to save the settings and we want
  * to modify the content of a posting when friendica prepares it.
  */
-function langfilter_install() {
-	register_hook('prepare_body',         'addon/langfilter/langfilter.php', 'langfilter_prepare_body', 10);
-	register_hook('plugin_settings',      'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
-	register_hook('plugin_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
+
+function langfilter_install()
+{
+	Addon::registerHook('prepare_body', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body', 10);
+	Addon::registerHook('addon_settings', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
+	Addon::registerHook('addon_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
 }
-function langfilter_uninstall() {
-	unregister_hook('prepare_body',         'addon/langfilter/langfilter.php', 'langfilter_prepare_body');
-	unregister_hook('plugin_settings',      'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
-	unregister_hook('plugin_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
+
+function langfilter_uninstall()
+{
+	Addon::unregisterHook('prepare_body', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body');
+	Addon::unregisterHook('addon_settings', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
 }
 
 /* The settings
@@ -40,16 +47,16 @@ function langfilter_addon_settings(&$a,&$s) {
 	if(! $languages)
 		$languages = 'en,de,fr,it,es';
 
-	$t = get_markup_template("settings.tpl", "addon/langfilter/" );
-	$s .= replace_macros ($t, array(
-	    '$title' => t("Language Filter"),
-	    '$intro' => t ('This addon tries to identify the language of a postings. If it does not match any language spoken by you (see below) the posting will be collapsed. Remember detecting the language is not perfect, especially with short postings.'),
-	    '$enabled' => array('langfilter_enable', t('Use the language filter'), $enable_checked, ''),
-	    '$languages' => array('langfilter_languages', t('I speak'), $languages, t('List of abbreviations (iso2 codes) for languages you speak, comma separated. For example "de,it".') ),
-	    '$minconfidence' => array('langfilter_minconfidence', t('Minimum confidence in language detection'), $minconfidence, t('Minimum confidence in language detection being correct, from 0 to 100. Posts will not be filtered when the confidence of language detection is below this percent value.') ),
-	    '$minlength' => array('langfilter_minlength', t('Minimum length of message body'), $minlength, t('Minimum length of message body for language filter to be used. Posts shorter than this number of characters will not be filtered.') ),
-	    '$submit' => t('Save Settings'),
-	));
+	$t = get_markup_template("settings.tpl", "addon/langfilter/");
+	$s .= replace_macros($t, [
+		'$title'         => L10n::t("Language Filter"),
+		'$intro'         => L10n::t('This addon tries to identify the language of a postings. If it does not match any language spoken by you (see below) the posting will be collapsed. Remember detecting the language is not perfect, especially with short postings.'),
+		'$enabled'       => ['langfilter_enable', L10n::t('Use the language filter'), $enable_checked, ''],
+		'$languages'     => ['langfilter_languages', L10n::t('I speak'), $languages, L10n::t('List of abbreviations (iso2 codes) for languages you speak, comma separated. For example "de,it".')],
+		'$minconfidence' => ['langfilter_minconfidence', L10n::t('Minimum confidence in language detection'), $minconfidence, L10n::t('Minimum confidence in language detection being correct, from 0 to 100. Posts will not be filtered when the confidence of language detection is below this percent value.')],
+		'$minlength'     => ['langfilter_minlength', L10n::t('Minimum length of message body'), $minlength, L10n::t('Minimum length of message body for language filter to be used. Posts shorter than this number of characters will not be filtered.')],
+		'$submit'        => L10n::t('Save Settings'),
+	]);
 
 	return;
 }
@@ -62,23 +69,30 @@ function langfilter_addon_settings_post(&$a,&$b) {
 	if(! local_user())
 		return;
 
-	if($_POST['langfilter-settings-submit']) {
-		set_pconfig(local_user(),'langfilter','languages',trim($_POST['langfilter_languages']));
-		$enable = ((x($_POST,'langfilter_enable')) ? intval($_POST['langfilter_enable']) : 0);
-		$disable = 1-$enable;
-		set_pconfig(local_user(),'langfilter','disable', $disable);
-		$minconfidence = 0+$_POST['langfilter_minconfidence'];
-		if ( ! $minconfidence ) $minconfidence = 0;
-		else if ( $minconfidence < 0 ) $minconfidence = 0;
-		else if ( $minconfidence > 100 ) $minconfidence = 100;
-		set_pconfig(local_user(),'langfilter','minconfidence', $minconfidence/100.0);
+	if ($_POST['langfilter-settings-submit']) {
+		PConfig::set(local_user(), 'langfilter', 'languages', trim($_POST['langfilter_languages']));
+		$enable = ((x($_POST, 'langfilter_enable')) ? intval($_POST['langfilter_enable']) : 0);
+		$disable = 1 - $enable;
+		PConfig::set(local_user(), 'langfilter', 'disable', $disable);
+		$minconfidence = 0 + $_POST['langfilter_minconfidence'];
+		if (!$minconfidence) {
+			$minconfidence = 0;
+		} elseif ($minconfidence < 0) {
+			$minconfidence = 0;
+		} elseif ($minconfidence > 100) {
+			$minconfidence = 100;
+		}
+		PConfig::set(local_user(), 'langfilter', 'minconfidence', $minconfidence / 100.0);
 
-		$minlength = 0+$_POST['langfilter_minlength'];
-		if ( ! $minlength ) $minlength = 32;
-		else if ( $minlength < 0 ) $minlength = 32;
-		set_pconfig(local_user(),'langfilter','minlength', $minlength);
+		$minlength = 0 + $_POST['langfilter_minlength'];
+		if (!$minlength) {
+			$minlength = 32;
+		} elseif ($minlengt8h < 0) {
+			$minlength = 32;
+		}
+		PConfig::set(local_user(), 'langfilter', 'minlength', $minlength);
 
-		info( t('Language Filter Settings saved.') . EOL);
+		info(L10n::t('Language Filter Settings saved.') . EOL);
 	}
 }
 /* Actually filter postings by their language
@@ -131,9 +145,9 @@ function langfilter_prepare_body(&$a,&$b) {
     if ( ! $iso2 ) return;
     $spoken = in_array($iso2, $spoken_languages);
 
-    if( ! $spoken ) {
-        $rnd = random_string(8);
-        $b['html'] = '<div id="langfilter-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'langfilter-' . $rnd . '\'); >' . sprintf( t('unspoken language %s - Click to open/close'),$lang ) . '</div><div id="langfilter-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
-    }
+	if (!$spoken) {
+		$rnd = random_string(8);
+		$b['html'] = '<div id="langfilter-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'langfilter-' . $rnd . '\'); >' . L10n::t('unspoken language %s - Click to open/close', $lang) . '</div><div id="langfilter-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
+	}
 }
 ?>

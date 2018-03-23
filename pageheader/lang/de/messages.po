@@ -4,30 +4,41 @@
 # 
 # 
 # Translators:
-# Abrax <webmaster@a-zwenkau.de>, 2014
-# bavatar <tobias.diekershoff@gmx.net>, 2014
+# Andreas H., 2014
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2014-10-15 12:32+0000\n"
-"Last-Translator: Abrax <webmaster@a-zwenkau.de>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"POT-Creation-Date: 2018-03-11 18:52+0100\n"
+"PO-Revision-Date: 2018-03-16 07:42+0000\n"
+"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: pageheader.php:50
+#: pageheader.php:53
 msgid "\"pageheader\" Settings"
 msgstr "\"pageheader\"-Einstellungen"
 
-#: pageheader.php:55
-msgid "Submit"
-msgstr "Senden"
+#: pageheader.php:54
+msgid "Message"
+msgstr "Mitteilung"
 
-#: pageheader.php:68
+#: pageheader.php:54
+msgid ""
+"Message to display on every page on this server (or put a pageheader.html "
+"file in your docroot)"
+msgstr "Die Mitteilung, die auf jeder Seite dieses Knotens angezeigt werden soll (alternativ kann die Datei pageheader.html im Stammverzeichnis der Friendica Installation angelegt werden)."
+
+#: pageheader.php:55
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: pageheader.php:69
 msgid "pageheader Settings saved."
 msgstr "pageheader-Einstellungen gespeichert."

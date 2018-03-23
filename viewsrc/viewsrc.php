@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * Name: viewsrc
  * Description: Add "View Source" link to item context
@@ -8,16 +6,18 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * 
  */
+use Friendica\Core\Addon;
+use Friendica\Core\L10n;
 
 function viewsrc_install() {
-	register_hook('item_photo_menu', 'addon/viewsrc/viewsrc.php', 'viewsrc_item_photo_menu');
-	register_hook('page_end', 'addon/viewsrc/viewsrc.php', 'viewsrc_page_end');
+	Addon::registerHook('item_photo_menu', 'addon/viewsrc/viewsrc.php', 'viewsrc_item_photo_menu');
+	Addon::registerHook('page_end', 'addon/viewsrc/viewsrc.php', 'viewsrc_page_end');
 }
 
 
 function viewsrc_uninstall() {
-	unregister_hook('item_photo_menu', 'addon/viewsrc/viewsrc.php', 'viewsrc_item_photo_menu');
-	unregister_hook('page_end', 'addon/viewsrc/viewsrc.php', 'viewsrc_page_end');
+	Addon::unregisterHook('item_photo_menu', 'addon/viewsrc/viewsrc.php', 'viewsrc_item_photo_menu');
+	Addon::unregisterHook('page_end', 'addon/viewsrc/viewsrc.php', 'viewsrc_page_end');
 
 }
 
@@ -33,27 +33,29 @@ function viewsrc_page_end(&$a, &$o){
 EOS;
 }
 
-function viewsrc_item_photo_menu(&$a,&$b) {
-	if(!local_user())
+function viewsrc_item_photo_menu(&$a, &$b)
+{
+	if (!local_user()) {
 		return;
+	}
 
 	if (local_user() != $b['item']['uid']) {
 		$r = q("SELECT `id` FROM `item` WHERE `uid` = %d AND `guid` = '%s'",
 				intval(local_user()), dbesc($b['item']['guid']));
 
-		if (!$r)
+		if (!$r) {
 			return;
+		}
 
 		$item_id = $r[0]['id'];
-
-	} else
+	} else {
 		$item_id = $b['item']['id'];
+	}
 
-	$b['menu'] = array_merge( array( t('View Source') => $a->get_baseurl() . '/viewsrc/'. $item_id), $b['menu']);
+	$b['menu'] = array_merge([L10n::t('View Source') => $a->get_baseurl() . '/viewsrc/'. $item_id], $b['menu']);
 
 	//if((! local_user()) || (local_user() != $b['item']['uid']))
 	//	return;
 
-	//$b['menu'] = array_merge( array( t('View Source') => $a->get_baseurl() . '/viewsrc/'. $b['item']['id']), $b['menu']);
-
+	//$b['menu'] = array_merge(array(L10n::t('View Source') => $a->get_baseurl() . '/viewsrc/'. $b['item']['id']), $b['menu']);
 }

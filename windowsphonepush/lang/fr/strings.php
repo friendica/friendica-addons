@@ -7,6 +7,6 @@ function string_plural_select_fr($n){
 ;
 $a->strings["WindowsPhonePush settings updated."] = "Paramètres WindowsPhonePush mis à jour";
 $a->strings["WindowsPhonePush Settings"] = "Paramètres WindowsPhonePush";
-$a->strings["Enable WindowsPhonePush Plugin"] = "Activer le greffon WindowsPhonePush";
+$a->strings["Enable WindowsPhonePush Addon"] = "Activer le greffon WindowsPhonePush";
 $a->strings["Push text of new item"] = "Pousse le texte du nouvel élément";
 $a->strings["Save Settings"] = "Sauvegarde des paramètres";

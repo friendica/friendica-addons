@@ -1,5 +1,8 @@
 <?php
 
+use Friendica\Core\L10n;
+use Friendica\Util\DateTimeFormat;
+
 /**
  * @param wdcal_local $localization
  * @param string $baseurl
@@ -27,7 +30,7 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $calendar_id, $uri)
 		$vObject   = dav_get_current_user_calendarobject($server, $calendar, $obj_uri["uri"], DAV_ACL_WRITE);
 		$component = dav_get_eventComponent($vObject);
 
-		if ($component == null) return t('Could not open component for editing');
+		if ($component == null) return L10n::t('Could not open component for editing');
 
 		/** @var Sabre\VObject\Property\DateTime $dtstart  */
 		$dtstart = $component->__get("DTSTART");
@@ -137,13 +140,13 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $calendar_id, $uri)
 
 	$postto = $baseurl . "/dav/wdcal/" . ($uri == 0 ? "new/" : $calendar_id . "/" . $uri . "/edit/");
 
-	$out = "<a href='" . $baseurl . "/dav/wdcal/'>" . t("Go back to the calendar") . "</a><br><br>";
+	$out = "<a href='" . $baseurl . "/dav/wdcal/'>" . L10n::t("Go back to the calendar") . "</a><br><br>";
 	$out .= "<form method='POST' action='$postto'>
 		<input type='hidden' name='form_security_token' value='" . get_form_security_token('caledit') . "'>\n";
 
-	$out .= "<h2>" . t("Event data") . "</h2>";
+	$out .= "<h2>" . L10n::t("Event data") . "</h2>";
 
-	$out .= "<label for='calendar' class='block'>" . t("Calendar") . ":</label><select id='calendar' name='calendar' size='1'>";
+	$out .= "<label for='calendar' class='block'>" . L10n::t("Calendar") . ":</label><select id='calendar' name='calendar' size='1'>";
 	$found   = false;
 	$cal_col = "aaaaaa";
 	foreach ($calendars as $cal) {
@@ -160,47 +163,47 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $calendar_id, $uri)
 	$out .= "</select>";
 	$out .= "&nbsp; &nbsp; <label class='plain'><input type='checkbox' name='color_override' id='color_override' ";
 	if (!is_null($event["Color"])) $out .= "checked";
-	$out .= "> " . t("Special color") . ":</label>";
+	$out .= "> " . L10n::t("Special color") . ":</label>";
 	$out .= "<span id='cal_color_holder' ";
 	if (is_null($event["Color"])) $out .= "style='display: none;'";
 	$out .= "><input name='color' id='cal_color' value='" . (is_null($event["Color"]) ? "#" . $cal_col : escape_tags($event["Color"])) . "'></span>";
 	$out .= "<br>\n";
 
-	$out .= "<label class='block' for='cal_summary'>" . t("Subject") . ":</label>
+	$out .= "<label class='block' for='cal_summary'>" . L10n::t("Subject") . ":</label>
 		<input name='summary' id='cal_summary' value=\"" . escape_tags($event["Summary"]) . "\"><br>\n";
 	$out .= "<label class='block' for='cal_allday'>Is All-Day event:</label><input type='checkbox' name='allday' id='cal_allday' " . ($event["IsAllDayEvent"] ? "checked" : "") . "><br>\n";
 
-	$out .= "<label class='block' for='cal_start_date'>" . t("Starts") . ":</label>";
+	$out .= "<label class='block' for='cal_start_date'>" . L10n::t("Starts") . ":</label>";
 	$out .= "<input name='start_date' value='" . $localization->dateformat_datepicker_php($event["StartTime"]) . "' id='cal_start_date'>";
 	$out .= "<input name='start_time' value='" . date("H:i", $event["StartTime"]) . "' id='cal_start_time'>";
 	$out .= "<br>\n";
 
-	$out .= "<label class='block' for='cal_end_date'>" . t("Ends") . ":</label>";
+	$out .= "<label class='block' for='cal_end_date'>" . L10n::t("Ends") . ":</label>";
 	$out .= "<input name='end_date' value='" . $localization->dateformat_datepicker_php($event["EndTime"]) . "' id='cal_end_date'>";
 	$out .= "<input name='end_time' value='" . date("H:i", $event["EndTime"]) . "' id='cal_end_time'>";
 	$out .= "<br>\n";
 
-	$out .= "<label class='block' for='cal_location'>" . t("Location") . ":</label><input name='location' id='cal_location' value=\"" . escape_tags($event["Location"]) . "\"><br>\n";
+	$out .= "<label class='block' for='cal_location'>" . L10n::t("Location") . ":</label><input name='location' id='cal_location' value=\"" . escape_tags($event["Location"]) . "\"><br>\n";
 
-	$out .= "<label class='block' for='event-desc-textarea'>" . t("Description") . ":</label> <textarea id='event-desc-textarea' name='wdcal_desc' style='vertical-align: top; width: 400px; height: 100px;'>" . escape_tags($event["Description"]) . "</textarea>";
+	$out .= "<label class='block' for='event-desc-textarea'>" . L10n::t("Description") . ":</label> <textarea id='event-desc-textarea' name='wdcal_desc' style='vertical-align: top; width: 400px; height: 100px;'>" . escape_tags($event["Description"]) . "</textarea>";
 	$out .= "<br style='clear: both;'>";
 
-	$out .= "<h2>" . t("Recurrence") . "</h2>";
+	$out .= "<h2>" . L10n::t("Recurrence") . "</h2>";
 
-	$out .= "<label class='block' for='rec_frequency'>" . t("Frequency") . ":</label> <select id='rec_frequency' name='rec_frequency' size='1'>";
-	$out .= "<option value=''>" . t("None") . "</option>\n";
+	$out .= "<label class='block' for='rec_frequency'>" . L10n::t("Frequency") . ":</label> <select id='rec_frequency' name='rec_frequency' size='1'>";
+	$out .= "<option value=''>" . L10n::t("None") . "</option>\n";
 	$out .= "<option value='daily' ";
 	if ($recurrence && $recurrence->frequency == "daily") $out .= "selected";
-	$out .= ">" . t("Daily") . "</option>\n";
+	$out .= ">" . L10n::t("Daily") . "</option>\n";
 	$out .= "<option value='weekly' ";
 	if ($recurrence && $recurrence->frequency == "weekly") $out .= "selected";
-	$out .= ">" . t("Weekly") . "</option>\n";
+	$out .= ">" . L10n::t("Weekly") . "</option>\n";
 	$out .= "<option value='monthly' ";
 	if ($recurrence && $recurrence->frequency == "monthly") $out .= "selected";
-	$out .= ">" . t("Monthly") . "</option>\n";
+	$out .= ">" . L10n::t("Monthly") . "</option>\n";
 	$out .= "<option value='yearly' ";
 	if ($recurrence && $recurrence->frequency == "yearly") $out .= "selected";
-	$out .= ">" . t("Yearly") . "</option>\n";
+	$out .= ">" . L10n::t("Yearly") . "</option>\n";
 	$out .= "</select><br>\n";
 	$out .= "<div id='rec_details'>";
 
@@ -211,15 +214,15 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $calendar_id, $uri)
 		$select .= ">$i</option>\n";
 	}
 	$select .= "</select>";
-	$time = "<span class='rec_daily'>" . t("days") . "</span>";
-	$time .= "<span class='rec_weekly'>" . t("weeks") . "</span>";
-	$time .= "<span class='rec_monthly'>" . t("months") . "</span>";
-	$time .= "<span class='rec_yearly'>" . t("years") . "</span>";
-	$out .= "<label class='block'>" . t("Interval") . ":</label> " . str_replace(array("%select%", "%time%"), array($select, $time), t("All %select% %time%")) . "<br>";
+	$time = "<span class='rec_daily'>" . L10n::t("days") . "</span>";
+	$time .= "<span class='rec_weekly'>" . L10n::t("weeks") . "</span>";
+	$time .= "<span class='rec_monthly'>" . L10n::t("months") . "</span>";
+	$time .= "<span class='rec_yearly'>" . L10n::t("years") . "</span>";
+	$out .= "<label class='block'>" . L10n::t("Interval") . ":</label> " . str_replace(array("%select%", "%time%"), array($select, $time), L10n::t("All %select% %time%")) . "<br>";
 
 
 	$out .= "<div class='rec_daily'>";
-	$out .= "<label class='block'>" . t("Days") . ":</label>";
+	$out .= "<label class='block'>" . L10n::t("Days") . ":</label>";
 	if ($recurrence && $recurrence->byDay) {
 		$byday = $recurrence->byDay;
 	} else {
@@ -228,36 +231,36 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $calendar_id, $uri)
 	if ($localization->getFirstDayOfWeek() == 0) {
 		$out .= "<label class='plain'><input class='rec_daily_byday' type='checkbox' name='rec_daily_byday[]' value='SU' ";
 		if (in_array("SU", $byday)) $out .= "checked";
-		$out .= ">" . t("Sunday") . "</label> &nbsp; ";
+		$out .= ">" . L10n::t("Sunday") . "</label> &nbsp; ";
 	}
 	$out .= "<label class='plain'><input class='rec_daily_byday' type='checkbox' name='rec_daily_byday[]' value='MO' ";
 	if (in_array("MO", $byday)) $out .= "checked";
-	$out .= ">" . t("Monday") . "</label> &nbsp; ";
+	$out .= ">" . L10n::t("Monday") . "</label> &nbsp; ";
 	$out .= "<label class='plain'><input class='rec_daily_byday' type='checkbox' name='rec_daily_byday[]' value='TU' ";
 	if (in_array("TU", $byday)) $out .= "checked";
-	$out .= ">" . t("Tuesday") . "</label> &nbsp; ";
+	$out .= ">" . L10n::t("Tuesday") . "</label> &nbsp; ";
 	$out .= "<label class='plain'><input class='rec_daily_byday' type='checkbox' name='rec_daily_byday[]' value='WE' ";
 	if (in_array("WE", $byday)) $out .= "checked";
-	$out .= ">" . t("Wednesday") . "</label> &nbsp; ";
+	$out .= ">" . L10n::t("Wednesday") . "</label> &nbsp; ";
 	$out .= "<label class='plain'><input class='rec_daily_byday' type='checkbox' name='rec_daily_byday[]' value='TH' ";
 	if (in_array("TH", $byday)) $out .= "checked";
-	$out .= ">" . t("Thursday") . "</label> &nbsp; ";
+	$out .= ">" . L10n::t("Thursday") . "</label> &nbsp; ";
 	$out .= "<label class='plain'><input class='rec_daily_byday' type='checkbox' name='rec_daily_byday[]' value='FR' ";
 	if (in_array("FR", $byday)) $out .= "checked";
-	$out .= ">" . t("Friday") . "</label> &nbsp; ";
+	$out .= ">" . L10n::t("Friday") . "</label> &nbsp; ";
 	$out .= "<label class='plain'><input class='rec_daily_byday' type='checkbox' name='rec_daily_byday[]' value='SA' ";
 	if (in_array("SA", $byday)) $out .= "checked";
-	$out .= ">" . t("Saturday") . "</label> &nbsp; ";
+	$out .= ">" . L10n::t("Saturday") . "</label> &nbsp; ";
 	if ($localization->getFirstDayOfWeek() != 0) {
 		$out .= "<label class='plain'><input class='rec_daily_byday' type='checkbox' name='rec_daily_byday[]' value='SU' ";
 		if (in_array("SU", $byday)) $out .= "checked";
-		$out .= ">" . t("Sunday") . "</label> &nbsp; ";
+		$out .= ">" . L10n::t("Sunday") . "</label> &nbsp; ";
 	}
 	$out .= "</div>";
 
 
 	$out .= "<div class='rec_weekly'>";
-	$out .= "<label class='block'>" . t("Days") . ":</label>";
+	$out .= "<label class='block'>" . L10n::t("Days") . ":</label>";
 	if ($recurrence && $recurrence->byDay) {
 		$byday = $recurrence->byDay;
 	} else {
@@ -267,34 +270,34 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $calendar_id, $uri)
 	if ($localization->getFirstDayOfWeek() == 0) {
 		$out .= "<label class='plain'><input class='rec_weekly_byday' type='checkbox' name='rec_weekly_byday[]' value='SU' ";
 		if (in_array("SU", $byday)) $out .= "checked";
-		$out .= ">" . t("Sunday") . "</label> &nbsp; ";
+		$out .= ">" . L10n::t("Sunday") . "</label> &nbsp; ";
 	}
 	$out .= "<label class='plain'><input class='rec_weekly_byday' type='checkbox' name='rec_weekly_byday[]' value='MO' ";
 	if (in_array("MO", $byday)) $out .= "checked";
-	$out .= ">" . t("Monday") . "</label> &nbsp; ";
+	$out .= ">" . L10n::t("Monday") . "</label> &nbsp; ";
 	$out .= "<label class='plain'><input class='rec_weekly_byday' type='checkbox' name='rec_weekly_byday[]' value='TU' ";
 	if (in_array("TU", $byday)) $out .= "checked";
-	$out .= ">" . t("Tuesday") . "</label> &nbsp; ";
+	$out .= ">" . L10n::t("Tuesday") . "</label> &nbsp; ";
 	$out .= "<label class='plain'><input class='rec_weekly_byday' type='checkbox' name='rec_weekly_byday[]' value='WE' ";
 	if (in_array("WE", $byday)) $out .= "checked";
-	$out .= ">" . t("Wednesday") . "</label> &nbsp; ";
+	$out .= ">" . L10n::t("Wednesday") . "</label> &nbsp; ";
 	$out .= "<label class='plain'><input class='rec_weekly_byday' type='checkbox' name='rec_weekly_byday[]' value='TH' ";
 	if (in_array("TH", $byday)) $out .= "checked";
-	$out .= ">" . t("Thursday") . "</label> &nbsp; ";
+	$out .= ">" . L10n::t("Thursday") . "</label> &nbsp; ";
 	$out .= "<label class='plain'><input class='rec_weekly_byday' type='checkbox' name='rec_weekly_byday[]' value='FR' ";
 	if (in_array("FR", $byday)) $out .= "checked";
-	$out .= ">" . t("Friday") . "</label> &nbsp; ";
+	$out .= ">" . L10n::t("Friday") . "</label> &nbsp; ";
 	$out .= "<label class='plain'><input class='rec_weekly_byday' type='checkbox' name='rec_weekly_byday[]' value='SA' ";
 	if (in_array("SA", $byday)) $out .= "checked";
-	$out .= ">" . t("Saturday") . "</label> &nbsp; ";
+	$out .= ">" . L10n::t("Saturday") . "</label> &nbsp; ";
 	if ($localization->getFirstDayOfWeek() != 0) {
 		$out .= "<label class='plain'><input class='rec_weekly_byday' type='checkbox' name='rec_weekly_byday[]' value='SU' ";
 		if (in_array("SU", $byday)) $out .= "checked";
-		$out .= ">" . t("Sunday") . "</label> &nbsp; ";
+		$out .= ">" . L10n::t("Sunday") . "</label> &nbsp; ";
 	}
 	$out .= "<br>";
 
-	$out .= "<label class='block'>" . t("First day of week:") . "</label>";
+	$out .= "<label class='block'>" . L10n::t("First day of week:") . "</label>";
 	if ($recurrence && $recurrence->weekStart != "") $wkst = $recurrence->weekStart;
 	else {
 		if ($localization->getFirstDayOfWeek() == 0) $wkst = "SU";
@@ -302,10 +305,10 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $calendar_id, $uri)
 	}
 	$out .= "<label class='plain'><input type='radio' name='rec_weekly_wkst' value='SU' ";
 	if ($wkst == "SU") $out .= "checked";
-	$out .= ">" . t("Sunday") . "</label> &nbsp; ";
+	$out .= ">" . L10n::t("Sunday") . "</label> &nbsp; ";
 	$out .= "<label class='plain'><input type='radio' name='rec_weekly_wkst' value='MO' ";
 	if ($wkst == "MO") $out .= "checked";
-	$out .= ">" . t("Monday") . "</label><br>\n";
+	$out .= ">" . L10n::t("Monday") . "</label><br>\n";
 
 	$out .= "</div>";
 
@@ -347,20 +350,20 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $calendar_id, $uri)
 	}
 
 	$out .= "<div class='rec_monthly'>";
-	$out .= "<label class='block' for='rec_monthly_day'>" . t("Day of month") . ":</label>";
+	$out .= "<label class='block' for='rec_monthly_day'>" . L10n::t("Day of month") . ":</label>";
 	$out .= "<select id='rec_monthly_day' name='rec_monthly_day' size='1'>";
 	$out .= "<option value='bymonthday' ";
 	if ($monthly_rule == "bymonthday") $out .= "selected";
-	$out .= ">" . t("#num#th of each month") . "</option>\n";
+	$out .= ">" . L10n::t("#num#th of each month") . "</option>\n";
 	$out .= "<option value='bymonthday_neg' ";
 	if ($monthly_rule == "bymonthday_neg") $out .= "selected";
-	$out .= ">" . t("#num#th-last of each month") . "</option>\n";
+	$out .= ">" . L10n::t("#num#th-last of each month") . "</option>\n";
 	$out .= "<option value='byday' ";
 	if ($monthly_rule == "byday") $out .= "selected";
-	$out .= ">" . t("#num#th #wkday# of each month") . "</option>\n";
+	$out .= ">" . L10n::t("#num#th #wkday# of each month") . "</option>\n";
 	$out .= "<option value='byday_neg' ";
 	if ($monthly_rule == "byday_neg") $out .= "selected";
-	$out .= ">" . t("#num#th-last #wkday# of each month") . "</option>\n";
+	$out .= ">" . L10n::t("#num#th-last #wkday# of each month") . "</option>\n";
 	$out .= "</select>";
 	$out .= "</div>\n";
 
@@ -369,21 +372,21 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $calendar_id, $uri)
 	}
 
 	$out .= "<div class='rec_yearly'>";
-	$out .= "<label class='block'>" . t("Month") . ":</label> <span class='rec_month_name'>#month#</span><br>\n";
-	$out .= "<label class='block' for='rec_yearly_day'>" . t("Day of month") . ":</label>";
+	$out .= "<label class='block'>" . L10n::t("Month") . ":</label> <span class='rec_month_name'>#month#</span><br>\n";
+	$out .= "<label class='block' for='rec_yearly_day'>" . L10n::t("Day of month") . ":</label>";
 	$out .= "<select id='rec_yearly_day' name='rec_yearly_day' size='1'>";
 	$out .= "<option value='bymonthday' ";
 	if ($monthly_rule == "bymonthday") $out .= "selected";
-	$out .= ">" . t("#num#th of the given month") . "</option>\n";
+	$out .= ">" . L10n::t("#num#th of the given month") . "</option>\n";
 	$out .= "<option value='bymonthday_neg' ";
 	if ($monthly_rule == "bymonthday_neg") $out .= "selected";
-	$out .= ">" . t("#num#th-last of the given month") . "</option>\n";
+	$out .= ">" . L10n::t("#num#th-last of the given month") . "</option>\n";
 	$out .= "<option value='byday' ";
 	if ($monthly_rule == "byday") $out .= "selected";
-	$out .= ">" . t("#num#th #wkday# of the given month") . "</option>\n";
+	$out .= ">" . L10n::t("#num#th #wkday# of the given month") . "</option>\n";
 	$out .= "<option value='byday_neg' ";
 	if ($monthly_rule == "byday_neg") $out .= "selected";
-	$out .= ">" . t("#num#th-last #wkday# of the given month") . "</option>\n";
+	$out .= ">" . L10n::t("#num#th-last #wkday# of the given month") . "</option>\n";
 	$out .= "</select>";
 	$out .= "</div>\n";
 
@@ -410,26 +413,26 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $calendar_id, $uri)
 		$rule_until_date  = time();
 		$rule_until_count = 1;
 	}
-	$out .= "<label class='block' for='rec_until_type'>" . t("Repeat until") . ":</label> ";
+	$out .= "<label class='block' for='rec_until_type'>" . L10n::t("Repeat until") . ":</label> ";
 	$out .= "<select name='rec_until_type' id='rec_until_type' size='1'>";
 	$out .= "<option value='infinite' ";
 	if ($rule_type == "infinite") $out .= "selected";
-	$out .= ">" . t("Infinite") . "</option>\n";
+	$out .= ">" . L10n::t("Infinite") . "</option>\n";
 	$out .= "<option value='date' ";
 	if ($rule_type == "date") $out .= "selected";
-	$out .= ">" . t("Until the following date") . ":</option>\n";
+	$out .= ">" . L10n::t("Until the following date") . ":</option>\n";
 	$out .= "<option value='count' ";
 	if ($rule_type == "count") $out .= "selected";
-	$out .= ">" . t("Number of times") . ":</option>\n";
+	$out .= ">" . L10n::t("Number of times") . ":</option>\n";
 	$out .= "</select>";
 
 	$out .= "<input name='rec_until_date' value='" . $localization->dateformat_datepicker_php($rule_until_date) . "' id='rec_until_date'>";
 	$out .= "<input name='rec_until_count' value='$rule_until_count' id='rec_until_count'><br>";
 
-	$out .= "<label class='block'>" . t("Exceptions") . ":</label><div class='rec_exceptions'>";
+	$out .= "<label class='block'>" . L10n::t("Exceptions") . ":</label><div class='rec_exceptions'>";
 	$out .= "<div class='rec_exceptions_none' ";
 	if (count($recurrentce_exdates) > 0) $out .= "style='display: none;'";
-	$out .= ">" . t("none") . "</div>";
+	$out .= ">" . L10n::t("none") . "</div>";
 	$out .= "<div class='rec_exceptions_holder' ";
 	if (count($recurrentce_exdates) == 0) $out .= "style='display: none;'";
 	$out .= ">";
@@ -446,7 +449,7 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $calendar_id, $uri)
 
 	$out .= "</div><br>";
 
-	$out .= "<h2>" . t("Notification") . "</h2>";
+	$out .= "<h2>" . L10n::t("Notification") . "</h2>";
 
 	if (!$notifications) $notifications = array();
 	$notifications["new"] = array(
@@ -463,33 +466,33 @@ function wdcal_getEditPage_str(&$localization, $baseurl, $calendar_id, $uri)
 
 		$out .= "<div class='noti_holder' ";
 		if (!is_numeric($index) && $index == "new") $out .= "style='display: none;' id='noti_new_row'";
-		$out .= "><label class='block' for='noti_type_" . $index . "'>" . t("Notify by") . ":</label>";
+		$out .= "><label class='block' for='noti_type_" . $index . "'>" . L10n::t("Notify by") . ":</label>";
 		$out .= "<select name='noti_type[$index]' size='1' id='noti_type_" . $index . "'>";
-		$out .= "<option value=''>- " . t("Remove") . " -</option>\n";
-		$out .= "<option value='email' "; if (!$unparsable && $noti["action"] == "email") $out .= "selected"; $out .= ">" . t("E-Mail") . "</option>\n";
-		$out .= "<option value='display' "; if (!$unparsable && $noti["action"] == "display") $out .= "selected"; $out .= ">" . t("On Friendica / Display") . "</option>\n";
-		//$out .= "<option value='other' "; if ($unparsable) $out .= "selected"; $out .= ">- " . t("other (leave it untouched)") . " -</option>\n"; // @TODO
+		$out .= "<option value=''>- " . L10n::t("Remove") . " -</option>\n";
+		$out .= "<option value='email' "; if (!$unparsable && $noti["action"] == "email") $out .= "selected"; $out .= ">" . L10n::t("E-Mail") . "</option>\n";
+		$out .= "<option value='display' "; if (!$unparsable && $noti["action"] == "display") $out .= "selected"; $out .= ">" . L10n::t("On Friendica / Display") . "</option>\n";
+		//$out .= "<option value='other' "; if ($unparsable) $out .= "selected"; $out .= ">- " . L10n::t("other (leave it untouched)") . " -</option>\n"; // @TODO
 		$out .= "</select><br>";
 
-		$out .= "<label class='block'>" . t("Time") . ":</label>";
+		$out .= "<label class='block'>" . L10n::t("Time") . ":</label>";
 		$out .= "<input name='noti_value[$index]' size='5' style='width: 5em;' value='" . $noti["trigger_value"] . "'>";
 
 		$out .= "<select name='noti_unit[$index]' size='1'>";
-		$out .= "<option value='H' "; if ($noti["trigger_unit"] == "hour") $out .= "selected"; $out .= ">" . t("Hours") . "</option>\n";
-		$out .= "<option value='M' "; if ($noti["trigger_unit"] == "minute") $out .= "selected"; $out .= ">" . t("Minutes") . "</option>\n";
-		$out .= "<option value='S' "; if ($noti["trigger_unit"] == "second") $out .= "selected"; $out .= ">" . t("Seconds") . "</option>\n";
-		$out .= "<option value='D' "; if ($noti["trigger_unit"] == "day") $out .= "selected"; $out .= ">" . t("Days") . "</option>\n";
-		$out .= "<option value='W' "; if ($noti["trigger_unit"] == "week") $out .= "selected"; $out .= ">" . t("Weeks") . "</option>\n";
+		$out .= "<option value='H' "; if ($noti["trigger_unit"] == "hour") $out .= "selected"; $out .= ">" . L10n::t("Hours") . "</option>\n";
+		$out .= "<option value='M' "; if ($noti["trigger_unit"] == "minute") $out .= "selected"; $out .= ">" . L10n::t("Minutes") . "</option>\n";
+		$out .= "<option value='S' "; if ($noti["trigger_unit"] == "second") $out .= "selected"; $out .= ">" . L10n::t("Seconds") . "</option>\n";
+		$out .= "<option value='D' "; if ($noti["trigger_unit"] == "day") $out .= "selected"; $out .= ">" . L10n::t("Days") . "</option>\n";
+		$out .= "<option value='W' "; if ($noti["trigger_unit"] == "week") $out .= "selected"; $out .= ">" . L10n::t("Weeks") . "</option>\n";
 		$out .= "</select>";
 
-		$out .= " <label class='plain'>" . t("before the") . " <select name='noti_ref[$index]' size='1'>";
-		$out .= "<option value='start' "; if ($noti["rel"] == "start") $out .= "selected"; $out .= ">" . t("start of the event") . "</option>\n";
-		$out .= "<option value='end' "; if ($noti["rel"] == "end") $out .= "selected"; $out .= ">" . t("end of the event") . "</option>\n";
+		$out .= " <label class='plain'>" . L10n::t("before the") . " <select name='noti_ref[$index]' size='1'>";
+		$out .= "<option value='start' "; if ($noti["rel"] == "start") $out .= "selected"; $out .= ">" . L10n::t("start of the event") . "</option>\n";
+		$out .= "<option value='end' "; if ($noti["rel"] == "end") $out .= "selected"; $out .= ">" . L10n::t("end of the event") . "</option>\n";
 		$out .= "</select></label>\n";
 
 		$out .= "</div>";
 	}
-	$out .= "<input type='hidden' name='new_alarm' id='new_alarm' value='0'><div id='new_alarm_adder'><a href='#'>" . t("Add a notification") . "</a></div>";
+	$out .= "<input type='hidden' name='new_alarm' id='new_alarm' value='0'><div id='new_alarm_adder'><a href='#'>" . L10n::t("Add a notification") . "</a></div>";
 
 	$out .= "<script>\$(function() {
 		wdcal_edit_init('" . $localization->dateformat_datepicker_js() . "', '${baseurl}/dav/');
@@ -518,9 +521,9 @@ function wdcal_set_component_date(&$component, &$localization)
 		$type     = Sabre\VObject\Property\DateTime::LOCALTZ;
 	}
 	$datetime_start = new Sabre\VObject\Property\DateTime("DTSTART");
-	$datetime_start->setDateTime(new DateTime(date("Y-m-d H:i:s", $ts_start)), $type);
+	$datetime_start->setDateTime(new DateTime(date(DateTimeFormat::MYSQL, $ts_start)), $type);
 	$datetime_end = new Sabre\VObject\Property\DateTime("DTEND");
-	$datetime_end->setDateTime(new DateTime(date("Y-m-d H:i:s", $ts_end)), $type);
+	$datetime_end->setDateTime(new DateTime(date(DateTimeFormat::MYSQL, $ts_end)), $type);
 
 	$component->__unset("DTSTART");
 	$component->__unset("DTEND");
@@ -596,7 +599,7 @@ function wdcal_set_component_recurrence(&$component, &$localization)
 			$date           = $localization->date_local2timestamp($_REQUEST["rec_until_date"]);
 			$part_until     = ";UNTIL=" . date("Ymd", $date);
 			$datetime_until = new Sabre\VObject\Property\DateTime("UNTIL");
-			$datetime_until->setDateTime(new DateTime(date("Y-m-d H:i:s", $date)), Sabre\VObject\Property\DateTime::DATE);
+			$datetime_until->setDateTime(new DateTime(date(DateTimeFormat::MYSQL, $date)), Sabre\VObject\Property\DateTime::DATE);
 			break;
 		case "count":
 			$part_until = ";COUNT=" . IntVal($_REQUEST["rec_until_count"]);
@@ -643,7 +646,7 @@ function wdcal_set_component_recurrence(&$component, &$localization)
 	if (isset($_REQUEST["rec_exceptions"])) {
 		$arr = array();
 		foreach ($_REQUEST["rec_exceptions"] as $except) {
-			$arr[] = new DateTime(date("Y-m-d H:i:s", $except));
+			$arr[] = new DateTime(date(DateTimeFormat::MYSQL, $except));
 		}
 		/** @var Sabre\VObject\Property\MultiDateTime $prop */
 		$prop = Sabre\VObject\Property::create("EXDATE");
@@ -684,7 +687,7 @@ function wdcal_set_component_alerts(&$component, &$localization, $summary, $dtst
 					"#date#", "#name",
 				), array(
 					$localization->date_timestamp2local($dtstart), $summary,
-				), t("The event #name# will start at #date"));
+				), L10n::t("The event #name# will start at #date"));
 
 				$alarm->add(new Sabre\VObject\Property("ACTION", "EMAIL"));
 				$alarm->add(new Sabre\VObject\Property("SUMMARY", $summary));
@@ -693,7 +696,7 @@ function wdcal_set_component_alerts(&$component, &$localization, $summary, $dtst
 				break;
 			case "display":
 				$alarm->add(new Sabre\VObject\Property("ACTION", "DISPLAY"));
-				$text = str_replace("#name#", $summary, t("#name# is about to begin."));
+				$text = str_replace("#name#", $summary, L10n::t("#name# is about to begin."));
 				$alarm->add(new Sabre\VObject\Property("DESCRIPTION", $text));
 				break;
 			default:
@@ -735,7 +738,7 @@ function wdcal_postEditPage($uri, $uid = 0, $timezone = "", $goaway_url = "")
 		$vObject   = dav_get_current_user_calendarobject($server, $calendar, $obj_uri, DAV_ACL_WRITE);
 		$component = dav_get_eventComponent($vObject);
 
-		if ($component == null) return array("ok" => false, "msg" => t('Could not open component for editing'));
+		if ($component == null) return array("ok" => false, "msg" => L10n::t('Could not open component for editing'));
 	} else {
 		$calendar  = dav_get_current_user_calendar_by_id($server, $_REQUEST["calendar"], DAV_ACL_WRITE);
 		$vObject   = dav_create_empty_vevent();
@@ -766,7 +769,7 @@ function wdcal_postEditPage($uri, $uid = 0, $timezone = "", $goaway_url = "")
 		$obj = $calendar->getChild($obj_uri);
 		$obj->put($data);
 	}
-	return array("ok" => false, "msg" => t("Saved"));
+	return array("ok" => false, "msg" => L10n::t("Saved"));
 }
 
 

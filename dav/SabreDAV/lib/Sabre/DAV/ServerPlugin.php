@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The baseclass for all server plugins.
+ * The baseclass for all server addons.
  *
  * Plugins can modify or extend the servers behaviour.
  *
@@ -14,7 +14,7 @@
 abstract class Sabre_DAV_ServerPlugin {
 
     /**
-     * This initializes the plugin.
+     * This initializes the addon.
      *
      * This function is called by Sabre_DAV_Server, after
      * addPlugin is called.
@@ -41,7 +41,7 @@ abstract class Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Use this method to tell the server this plugin defines additional
+     * Use this method to tell the server this addon defines additional
      * HTTP methods.
      *
      * This method is passed a uri. It should only return HTTP methods that are
@@ -57,9 +57,9 @@ abstract class Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Returns a plugin name.
+     * Returns a addon name.
      *
-     * Using this name other plugins will be able to access other plugins
+     * Using this name other addons will be able to access other addons
      * using Sabre_DAV_Server::getPlugin
      *
      * @return string
@@ -71,7 +71,7 @@ abstract class Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Returns a list of reports this plugin supports.
+     * Returns a list of reports this addon supports.
      *
      * This will be used in the {DAV:}supported-report-set property.
      * Note that you still need to subscribe to the 'report' event to actually

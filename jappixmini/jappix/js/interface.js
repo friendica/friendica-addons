@@ -376,11 +376,11 @@ function inputFocus() {
 		});
 }
 
-// Plugin launcher
+// Addon launcher
 function launchInterface() {
 	// Focus on the first visible input
 	$(window).focus(inputFocus);
 }
 
-// Launch this plugin!
+// Launch this addon!
 $(document).ready(launchInterface);

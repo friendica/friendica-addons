@@ -24,8 +24,8 @@ msgid "Krynn Settings"
 msgstr "Krynn Nastavení"
 
 #: krynn.php:152
-msgid "Enable Krynn Plugin"
-msgstr "Povolit Krynn plugin"
+msgid "Enable Krynn Addon"
+msgstr "Povolit Krynn addon"
 
 #: krynn.php:158
 msgid "Submit"

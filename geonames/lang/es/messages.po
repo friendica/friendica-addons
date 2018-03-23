@@ -28,8 +28,8 @@ msgid "Geonames Settings"
 msgstr "Ajustes de Geonombres"
 
 #: geonames.php:181
-msgid "Enable Geonames Plugin"
-msgstr "Habilitar Plugin de Geonombres"
+msgid "Enable Geonames Addon"
+msgstr "Habilitar Addon de Geonombres"
 
 #: geonames.php:187
 msgid "Submit"

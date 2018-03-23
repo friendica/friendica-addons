@@ -29,8 +29,8 @@ msgid "InsaneJournal Post Settings"
 msgstr "InsaneJournal Beitrags-Einstellungen"
 
 #: ijpost.php:72
-msgid "Enable InsaneJournal Post Plugin"
-msgstr "InsaneJournal Plugin aktivieren"
+msgid "Enable InsaneJournal Post Addon"
+msgstr "InsaneJournal Addon aktivieren"
 
 #: ijpost.php:77
 msgid "InsaneJournal username"

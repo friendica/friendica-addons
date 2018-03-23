@@ -34,7 +34,7 @@ msgid ""
 msgstr "Разрешить нитевание уведомлений о комментариях на Gmail и анонимизировать поле \"Тема\"."
 
 #: gnot.php:82
-msgid "Enable this plugin/addon?"
+msgid "Enable this addon?"
 msgstr "Включить этот плагин/аддон?"
 
 #: gnot.php:88

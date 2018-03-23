@@ -7,7 +7,7 @@ function string_plural_select_fr($n){
 ;
 $a->strings["Post to blogger"] = "Poster sur Blogger";
 $a->strings["Blogger Export"] = "";
-$a->strings["Enable Blogger Post Plugin"] = "Activer le connecteur Blogger";
+$a->strings["Enable Blogger Post Addon"] = "Activer le connecteur Blogger";
 $a->strings["Blogger username"] = "Nom d'utilisateur Blogger";
 $a->strings["Blogger password"] = "Mot de passe Blogger";
 $a->strings["Blogger API URL"] = "URL de l'API de Blogger";

@@ -1543,7 +1543,7 @@ function adaptRosterMini() {
 	jQuery('#jappix_mini div.jm_roster div.jm_buddies').css('max-height', height);
 }
 
-// Plugin launcher
+// Addon launcher
 function launchMini(autoconnect, show_pane, domain, user, password) {
 	// Save infos to reconnect
 	MINI_DOMAIN = domain;

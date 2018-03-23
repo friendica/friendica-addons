@@ -3,9 +3,9 @@
 use Sabre\VObject;
 
 /**
- * CalDAV plugin
+ * CalDAV addon
  *
- * This plugin provides functionality added by CalDAV (RFC 4791)
+ * This addon provides functionality added by CalDAV (RFC 4791)
  * It implements new reports, and the MKCALENDAR method.
  *
  * @package Sabre
@@ -67,7 +67,7 @@ class Sabre_CalDAV_Plugin extends Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Use this method to tell the server this plugin defines additional
+     * Use this method to tell the server this addon defines additional
      * HTTP methods.
      *
      * This method is passed a uri. It should only return HTTP methods that are
@@ -107,9 +107,9 @@ class Sabre_CalDAV_Plugin extends Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Returns a plugin name.
+     * Returns a addon name.
      *
-     * Using this name other plugins will be able to access other plugins
+     * Using this name other addons will be able to access other addons
      * using Sabre_DAV_Server::getPlugin
      *
      * @return string
@@ -121,7 +121,7 @@ class Sabre_CalDAV_Plugin extends Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Returns a list of reports this plugin supports.
+     * Returns a list of reports this addon supports.
      *
      * This will be used in the {DAV:}supported-report-set property.
      * Note that you still need to subscribe to the 'report' event to actually
@@ -147,7 +147,7 @@ class Sabre_CalDAV_Plugin extends Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Initializes the plugin
+     * Initializes the addon
      *
      * @param Sabre_DAV_Server $server
      * @return void
@@ -631,7 +631,7 @@ class Sabre_CalDAV_Plugin extends Sabre_DAV_ServerPlugin {
         $acl = $this->server->getPlugin('acl');
 
         if (!$acl) {
-            throw new Sabre_DAV_Exception('The ACL plugin must be loaded for free-busy queries to work');
+            throw new Sabre_DAV_Exception('The ACL addon must be loaded for free-busy queries to work');
         }
         $uri = $this->server->getRequestUri();
         $acl->checkPrivileges($uri,'{' . self::NS_CALDAV . '}read-free-busy');
@@ -665,7 +665,7 @@ class Sabre_CalDAV_Plugin extends Sabre_DAV_ServerPlugin {
     /**
      * This method is triggered before a file gets updated with new content.
      *
-     * This plugin uses this method to ensure that CalDAV objects receive
+     * This addon uses this method to ensure that CalDAV objects receive
      * valid calendar data.
      *
      * @param string $path
@@ -685,7 +685,7 @@ class Sabre_CalDAV_Plugin extends Sabre_DAV_ServerPlugin {
     /**
      * This method is triggered before a new file is created.
      *
-     * This plugin uses this method to ensure that newly created calendar
+     * This addon uses this method to ensure that newly created calendar
      * objects contain valid calendar data.
      *
      * @param string $path
@@ -1014,7 +1014,7 @@ class Sabre_CalDAV_Plugin extends Sabre_DAV_ServerPlugin {
 
     /**
      * This method allows us to intercept the 'mkcalendar' sabreAction. This
-     * action enables the user to create new calendars from the browser plugin.
+     * action enables the user to create new calendars from the browser addon.
      *
      * @param string $uri
      * @param string $action

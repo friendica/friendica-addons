@@ -1,26 +1,29 @@
 <?php
-
 /**
  * Name: Libertree Post Connector
  * Description: Post to libertree accounts
  * Version: 1.0
  * Author: Tony Baldwin <https://free-haven.org/u/tony>
  */
+use Friendica\Core\Addon;
+use Friendica\Core\L10n;
+use Friendica\Core\PConfig;
+use Friendica\Util\Network;
 
 function libertree_install() {
-    register_hook('post_local',           'addon/libertree/libertree.php', 'libertree_post_local');
-    register_hook('notifier_normal',      'addon/libertree/libertree.php', 'libertree_send');
-    register_hook('jot_networks',         'addon/libertree/libertree.php', 'libertree_jot_nets');
-    register_hook('connector_settings',      'addon/libertree/libertree.php', 'libertree_settings');
-    register_hook('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
+    Addon::registerHook('post_local',           'addon/libertree/libertree.php', 'libertree_post_local');
+    Addon::registerHook('notifier_normal',      'addon/libertree/libertree.php', 'libertree_send');
+    Addon::registerHook('jot_networks',         'addon/libertree/libertree.php', 'libertree_jot_nets');
+    Addon::registerHook('connector_settings',      'addon/libertree/libertree.php', 'libertree_settings');
+    Addon::registerHook('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
 
 }
 function libertree_uninstall() {
-    unregister_hook('post_local',       'addon/libertree/libertree.php', 'libertree_post_local');
-    unregister_hook('notifier_normal',  'addon/libertree/libertree.php', 'libertree_send');
-    unregister_hook('jot_networks',     'addon/libertree/libertree.php', 'libertree_jot_nets');
-    unregister_hook('connector_settings',      'addon/libertree/libertree.php', 'libertree_settings');
-    unregister_hook('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
+    Addon::unregisterHook('post_local',       'addon/libertree/libertree.php', 'libertree_post_local');
+    Addon::unregisterHook('notifier_normal',  'addon/libertree/libertree.php', 'libertree_send');
+    Addon::unregisterHook('jot_networks',     'addon/libertree/libertree.php', 'libertree_jot_nets');
+    Addon::unregisterHook('connector_settings',      'addon/libertree/libertree.php', 'libertree_settings');
+    Addon::unregisterHook('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
 }
 
 
@@ -33,7 +36,7 @@ function libertree_jot_nets(&$a,&$b) {
         $ltree_defpost = get_pconfig(local_user(),'libertree','post_by_default');
         $selected = ((intval($ltree_defpost) == 1) ? ' checked="checked" ' : '');
         $b .= '<div class="profile-jot-net"><input type="checkbox" name="libertree_enable"' . $selected . ' value="1" /> '
-            . t('Post to libertree') . '</div>';
+            . L10n::t('Post to libertree') . '</div>';
     }
 }
 
@@ -64,36 +67,36 @@ function libertree_settings(&$a,&$s) {
     /* Add some HTML to the existing form */
 
     $s .= '<span id="settings_libertree_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_libertree_expanded\'); openClose(\'settings_libertree_inflated\');">';
-    $s .= '<img class="connector'.$css.'" src="images/libertree.png" /><h3 class="connector">'. t('libertree Export').'</h3>';
+    $s .= '<img class="connector'.$css.'" src="images/libertree.png" /><h3 class="connector">'. L10n::t('libertree Export').'</h3>';
     $s .= '</span>';
     $s .= '<div id="settings_libertree_expanded" class="settings-block" style="display: none;">';
     $s .= '<span class="fakelink" onclick="openClose(\'settings_libertree_expanded\'); openClose(\'settings_libertree_inflated\');">';
-    $s .= '<img class="connector'.$css.'" src="images/libertree.png" /><h3 class="connector">'. t('libertree Export').'</h3>';
+    $s .= '<img class="connector'.$css.'" src="images/libertree.png" /><h3 class="connector">'. L10n::t('libertree Export').'</h3>';
     $s .= '</span>';
 
     $s .= '<div id="libertree-enable-wrapper">';
-    $s .= '<label id="libertree-enable-label" for="libertree-checkbox">' . t('Enable Libertree Post Plugin') . '</label>';
+    $s .= '<label id="libertree-enable-label" for="libertree-checkbox">' . L10n::t('Enable Libertree Post Addon') . '</label>';
     $s .= '<input id="libertree-checkbox" type="checkbox" name="libertree" value="1" ' . $checked . '/>';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="libertree-api_token-wrapper">';
-    $s .= '<label id="libertree-api_token-label" for="libertree-api_token">' . t('Libertree API token') . '</label>';
+    $s .= '<label id="libertree-api_token-label" for="libertree-api_token">' . L10n::t('Libertree API token') . '</label>';
     $s .= '<input id="libertree-api_token" type="text" name="libertree_api_token" value="' . $ltree_api_token . '" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="libertree-url-wrapper">';
-    $s .= '<label id="libertree-url-label" for="libertree-url">' . t('Libertree site URL') . '</label>';
+    $s .= '<label id="libertree-url-label" for="libertree-url">' . L10n::t('Libertree site URL') . '</label>';
     $s .= '<input id="libertree-url" type="text" name="libertree_url" value="' . $ltree_url . '" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="libertree-bydefault-wrapper">';
-    $s .= '<label id="libertree-bydefault-label" for="libertree-bydefault">' . t('Post to Libertree by default') . '</label>';
+    $s .= '<label id="libertree-bydefault-label" for="libertree-bydefault">' . L10n::t('Post to Libertree by default') . '</label>';
     $s .= '<input id="libertree-bydefault" type="checkbox" name="libertree_bydefault" value="1" ' . $def_checked . '/>';
     $s .= '</div><div class="clear"></div>';
 
     /* provide a submit button */
 
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="libertree-submit" name="libertree-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="libertree-submit" name="libertree-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 
 }
 
@@ -205,7 +208,7 @@ function libertree_send(&$a,&$b) {
                 } while ($oldbody != $body);
 
 		// convert to markdown
-		$body = bb2diaspora($body, false, false);
+		$body = bb2diaspora($body, false);
 
 		// Adding the title
 		if(strlen($title))
@@ -218,9 +221,7 @@ function libertree_send(&$a,&$b) {
 		//	'token' => $ltree_api_token
 		);
 
-		$result = post_url($ltree_blog,$params);
+		$result = Network::post($ltree_blog, $params);
 		logger('libertree: ' . $result);
-
 	}
 }
-

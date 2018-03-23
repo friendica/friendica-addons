@@ -28,8 +28,8 @@ msgid "WindowsPhonePush Settings"
 msgstr "Configurare  WindowsPhonePush"
 
 #: windowsphonepush.php:117
-msgid "Enable WindowsPhonePush Plugin"
-msgstr "Activare Plugin WindowsPhonePush"
+msgid "Enable WindowsPhonePush Addon"
+msgstr "Activare Addon WindowsPhonePush"
 
 #: windowsphonepush.php:122
 msgid "Push text of new item"

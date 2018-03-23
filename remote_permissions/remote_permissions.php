@@ -6,18 +6,21 @@
  * Author: Zach <https://f.shmuz.in/profile/techcity>
  * 
  */
-
+use Friendica\Core\Addon;
+use Friendica\Core\Config;
+use Friendica\Core\L10n;
+use Friendica\Core\PConfig;
 
 function remote_permissions_install() {
-	register_hook('lockview_content', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_content');
-	register_hook('plugin_settings', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings');
-	register_hook('plugin_settings_post', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings_post');
+	Addon::registerHook('lockview_content', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_content');
+	Addon::registerHook('addon_settings', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings');
+	Addon::registerHook('addon_settings_post', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings_post');
 }
 
 function remote_permissions_uninstall() {
-	unregister_hook('lockview_content', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_content');
-	unregister_hook('plugin_settings', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings');
-	unregister_hook('plugin_settings_post', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings_post');
+	Addon::unregisterHook('lockview_content', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_content');
+	Addon::unregisterHook('addon_settings', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings_post');
 }
 
 function remote_permissions_settings(&$a,&$o) {
@@ -41,12 +44,12 @@ function remote_permissions_settings(&$a,&$o) {
 
 //	$t = file_get_contents("addon/remote_permissions/settings.tpl" );
 	$t = get_markup_template("settings.tpl", "addon/remote_permissions/" );
-	$o .= replace_macros($t, array(
-		'$remote_perms_title' => t('Remote Permissions Settings'),
-		'$remote_perms_label' => t('Allow recipients of your private posts to see the other recipients of the posts'),
+	$o .= replace_macros($t, [
+		'$remote_perms_title' => L10n::t('Remote Permissions Settings'),
+		'$remote_perms_label' => L10n::t('Allow recipients of your private posts to see the other recipients of the posts'),
 		'$checked' => (($remote_perms == 1) ? 'checked="checked"' : ''),
-		'$submit' => t('Save Settings')
-	));
+		'$submit' => L10n::t('Save Settings')
+	]);
 
 }
 
@@ -54,8 +57,8 @@ function remote_permissions_settings_post($a,$post) {
 	if(! local_user() || (! x($_POST,'remote-perms-submit')))
 		return;
 
-	set_pconfig(local_user(),'remote_perms','show',intval($_POST['remote-perms']));
-	info( t('Remote Permissions settings updated.') . EOL);
+	PConfig::set(local_user(),'remote_perms','show',intval($_POST['remote-perms']));
+	info(L10n::t('Remote Permissions settings updated.') . EOL);
 }
 
 function remote_permissions_content($a, $item_copy) {
@@ -121,9 +124,9 @@ function remote_permissions_content($a, $item_copy) {
 			$deny_users = expand_acl($item['deny_cid']);
 			$deny_groups = expand_acl($item['deny_gid']);
 
-			$o = t('Visible to:') . '<br />';
-			$allow = array();
-			$deny = array();
+			$o = L10n::t('Visible to:') . '<br />';
+			$allow = [];
+			$deny = [];
 
 			if(count($allowed_groups)) {
 				$r = q("SELECT DISTINCT `contact-id` FROM group_member WHERE gid IN ( %s )",
@@ -175,7 +178,7 @@ function remote_permissions_content($a, $item_copy) {
 			if(! $r)
 				return;
 
-			$o = t('Visible to') . ' (' . t('may only be a partial list') . '):<br />';
+			$o = L10n::t('Visible to') . ' (' . L10n::t('may only be a partial list') . '):<br />';
 
 			foreach($r as $rr)
 				$allow_names[] = $rr['username'];
@@ -190,18 +193,17 @@ function remote_permissions_content($a, $item_copy) {
 	return;
 }
 
-function remote_permissions_plugin_admin(&$a, &$o){
+function remote_permissions_addon_admin(&$a, &$o){
 	$t = get_markup_template( "admin.tpl", "addon/remote_permissions/" );
-	$o = replace_macros($t, array(
-		'$submit' => t('Save Settings'),
-		'$global' => array('remotepermschoice', t('Global'), 1, t('The posts of every user on this server show the post recipients'),  get_config('remote_perms', 'global') == 1),
-		'$individual' => array('remotepermschoice', t('Individual'), 2, t('Each user chooses whether his/her posts show the post recipients'),  get_config('remote_perms', 'global') == 0)
-	));
+	$o = replace_macros($t, [
+		'$submit' => L10n::t('Save Settings'),
+		'$global' => ['remotepermschoice', L10n::t('Global'), 1, L10n::t('The posts of every user on this server show the post recipients'),  Config::get('remote_perms', 'global') == 1],
+		'$individual' => ['remotepermschoice', L10n::t('Individual'), 2, L10n::t('Each user chooses whether his/her posts show the post recipients'),  Config::get('remote_perms', 'global') == 0]
+	]);
 }
 
-function remote_permissions_plugin_admin_post(&$a){
+function remote_permissions_addon_admin_post(&$a){
 	$choice	=	((x($_POST,'remotepermschoice'))		? notags(trim($_POST['remotepermschoice']))	: '');
-	set_config('remote_perms','global',($choice == 1 ? 1 : 0));
-	info( t('Settings updated.'). EOL );
+	Config::set('remote_perms','global',($choice == 1 ? 1 : 0));
+	info(L10n::t('Settings updated.'). EOL);
 }
-

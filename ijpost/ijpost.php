@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: Insanejournal Post Connector
  * Description: Post to Insanejournal
@@ -9,20 +8,27 @@
  * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
 
+use Friendica\Content\Text\BBCode;
+use Friendica\Core\Addon;
+use Friendica\Core\L10n;
+use Friendica\Core\PConfig;
+use Friendica\Util\DateTimeFormat;
+use Friendica\Util\Network;
+
 function ijpost_install() {
-    register_hook('post_local',           'addon/ijpost/ijpost.php', 'ijpost_post_local');
-    register_hook('notifier_normal',      'addon/ijpost/ijpost.php', 'ijpost_send');
-    register_hook('jot_networks',         'addon/ijpost/ijpost.php', 'ijpost_jot_nets');
-    register_hook('connector_settings',      'addon/ijpost/ijpost.php', 'ijpost_settings');
-    register_hook('connector_settings_post', 'addon/ijpost/ijpost.php', 'ijpost_settings_post');
+    Addon::registerHook('post_local',           'addon/ijpost/ijpost.php', 'ijpost_post_local');
+    Addon::registerHook('notifier_normal',      'addon/ijpost/ijpost.php', 'ijpost_send');
+    Addon::registerHook('jot_networks',         'addon/ijpost/ijpost.php', 'ijpost_jot_nets');
+    Addon::registerHook('connector_settings',      'addon/ijpost/ijpost.php', 'ijpost_settings');
+    Addon::registerHook('connector_settings_post', 'addon/ijpost/ijpost.php', 'ijpost_settings_post');
 
 }
 function ijpost_uninstall() {
-    unregister_hook('post_local',       'addon/ijpost/ijpost.php', 'ijpost_post_local');
-    unregister_hook('notifier_normal',  'addon/ijpost/ijpost.php', 'ijpost_send');
-    unregister_hook('jot_networks',     'addon/ijpost/ijpost.php', 'ijpost_jot_nets');
-    unregister_hook('connector_settings',      'addon/ijpost/ijpost.php', 'ijpost_settings');
-    unregister_hook('connector_settings_post', 'addon/ijpost/ijpost.php', 'ijpost_settings_post');
+    Addon::unregisterHook('post_local',       'addon/ijpost/ijpost.php', 'ijpost_post_local');
+    Addon::unregisterHook('notifier_normal',  'addon/ijpost/ijpost.php', 'ijpost_send');
+    Addon::unregisterHook('jot_networks',     'addon/ijpost/ijpost.php', 'ijpost_jot_nets');
+    Addon::unregisterHook('connector_settings',      'addon/ijpost/ijpost.php', 'ijpost_settings');
+    Addon::unregisterHook('connector_settings_post', 'addon/ijpost/ijpost.php', 'ijpost_settings_post');
 
 }
 
@@ -36,7 +42,7 @@ function ijpost_jot_nets(&$a,&$b) {
         $ij_defpost = get_pconfig(local_user(),'ijpost','post_by_default');
         $selected = ((intval($ij_defpost) == 1) ? ' checked="checked" ' : '');
         $b .= '<div class="profile-jot-net"><input type="checkbox" name="ijpost_enable" ' . $selected . ' value="1" /> '
-            . t('Post to Insanejournal') . '</div>';
+            . L10n::t('Post to Insanejournal') . '</div>';
     }
 }
 
@@ -66,36 +72,36 @@ function ijpost_settings(&$a,&$s) {
 
     /* Add some HTML to the existing form */
     $s .= '<span id="settings_ijpost_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_ijpost_expanded\'); openClose(\'settings_ijpost_inflated\');">';
-    $s .= '<img class="connector" src="images/insanejournal.gif" /><h3 class="connector">'. t("InsaneJournal Export").'</h3>';
+    $s .= '<img class="connector" src="images/insanejournal.gif" /><h3 class="connector">'. L10n::t("InsaneJournal Export").'</h3>';
     $s .= '</span>';
     $s .= '<div id="settings_ijpost_expanded" class="settings-block" style="display: none;">';
     $s .= '<span class="fakelink" onclick="openClose(\'settings_ijpost_expanded\'); openClose(\'settings_ijpost_inflated\');">';
-    $s .= '<img class="connector" src="images/insanejournal.gif" /><h3 class="connector">'. t("InsaneJournal Export").'</h3>';
+    $s .= '<img class="connector" src="images/insanejournal.gif" /><h3 class="connector">'. L10n::t("InsaneJournal Export").'</h3>';
     $s .= '</span>';
 
     $s .= '<div id="ijpost-enable-wrapper">';
-    $s .= '<label id="ijpost-enable-label" for="ijpost-checkbox">' . t('Enable InsaneJournal Post Plugin') . '</label>';
+    $s .= '<label id="ijpost-enable-label" for="ijpost-checkbox">' . L10n::t('Enable InsaneJournal Post Addon') . '</label>';
     $s .= '<input id="ijpost-checkbox" type="checkbox" name="ijpost" value="1" ' . $checked . '/>';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="ijpost-username-wrapper">';
-    $s .= '<label id="ijpost-username-label" for="ijpost-username">' . t('InsaneJournal username') . '</label>';
+    $s .= '<label id="ijpost-username-label" for="ijpost-username">' . L10n::t('InsaneJournal username') . '</label>';
     $s .= '<input id="ijpost-username" type="text" name="ij_username" value="' . $ij_username . '" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="ijpost-password-wrapper">';
-    $s .= '<label id="ijpost-password-label" for="ijpost-password">' . t('InsaneJournal password') . '</label>';
+    $s .= '<label id="ijpost-password-label" for="ijpost-password">' . L10n::t('InsaneJournal password') . '</label>';
     $s .= '<input id="ijpost-password" type="password" name="ij_password" value="' . $ij_password . '" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="ijpost-bydefault-wrapper">';
-    $s .= '<label id="ijpost-bydefault-label" for="ijpost-bydefault">' . t('Post to InsaneJournal by default') . '</label>';
+    $s .= '<label id="ijpost-bydefault-label" for="ijpost-bydefault">' . L10n::t('Post to InsaneJournal by default') . '</label>';
     $s .= '<input id="ijpost-bydefault" type="checkbox" name="ij_bydefault" value="1" ' . $def_checked . '/>';
     $s .= '</div><div class="clear"></div>';
 
     /* provide a submit button */
 
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="ijpost-submit" name="ijpost-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="ijpost-submit" name="ijpost-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 
 }
 
@@ -172,16 +178,12 @@ function ijpost_send(&$a,&$b) {
 	$ij_blog = 'http://www.insanejournal.com/interface/xmlrpc';
 
 	if($ij_username && $ij_password && $ij_blog) {
-
-		require_once('include/bbcode.php');
-		require_once('include/datetime.php');
-
 		$title = $b['title'];
-		$post = bbcode($b['body']);
+		$post = BBCode::convert($b['body']);
 		$post = xmlify($post);
 		$tags = ijpost_get_tags($b['tag']);
 
-		$date = datetime_convert('UTC',$tz,$b['created'],'Y-m-d H:i:s');
+		$date = DateTimeFormat::convert($b['created'], $tz);
 		$year = intval(substr($date,0,4));
 		$mon  = intval(substr($date,5,2));
 		$day  = intval(substr($date,8,2));
@@ -217,8 +219,9 @@ EOT;
 
 		logger('ijpost: data: ' . $xml, LOGGER_DATA);
 
-		if($ij_blog !== 'test')
-			$x = post_url($ij_blog,$xml,array("Content-Type: text/xml"));
+		if($ij_blog !== 'test') {
+			$x = Network::post($ij_blog, $xml, ["Content-Type: text/xml"]);
+		}
 		logger('posted to insanejournal: ' . ($x) ? $x : '', LOGGER_DEBUG);
 
 	}

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This plugin provides Authentication for a WebDAV server.
+ * This addon provides Authentication for a WebDAV server.
  *
  * It relies on a Backend object, which provides user information.
  *
@@ -52,7 +52,7 @@ class Sabre_DAV_Auth_Plugin extends Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Initializes the plugin. This function is automatically called by the server
+     * Initializes the addon. This function is automatically called by the server
      *
      * @param Sabre_DAV_Server $server
      * @return void
@@ -65,9 +65,9 @@ class Sabre_DAV_Auth_Plugin extends Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Returns a plugin name.
+     * Returns a addon name.
      *
-     * Using this name other plugins will be able to access other plugins
+     * Using this name other addons will be able to access other addons
      * using Sabre_DAV_Server::getPlugin
      *
      * @return string

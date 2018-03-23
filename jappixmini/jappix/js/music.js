@@ -244,7 +244,7 @@ function addMusic(id, title, artist, source, duration, uri, mime, type) {
 	return false;
 }
 
-// Plugin launcher
+// Addon launcher
 function launchMusic() {
 	// When music search string submitted
 	$('.music-content input').keyup(function(e) {

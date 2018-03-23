@@ -1,4 +1,4 @@
-Impressum Plugin for Friendica
+Impressum Addon for Friendica
 ==============================
 
 * Author: Tobias Diekershoff
@@ -7,7 +7,7 @@ Impressum Plugin for Friendica
 
 About
 -----
-This plugin adds an Impressum (contact) block to the /friendica page with 
+This addon adds an Impressum (contact) block to the /friendica page with 
 informations about the page operator/owner and how to contact you in case of
 any questions.
 
@@ -16,7 +16,7 @@ normal friendica postings..
 
 Configuration
 -------------
-Simply fill in the fields in the impressium settings page in the plugins 
+Simply fill in the fields in the impressium settings page in the addons 
 area of your admin panel. For email adresses the "@" symbol will be obfuscated
 in the source of the page to make in harder for harvesting tools.
 

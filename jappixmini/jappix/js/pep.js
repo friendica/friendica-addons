@@ -652,7 +652,7 @@ function displayAllPEP(xid) {
 	displayPEP(xid, 'geoloc');
 }
 
-// Plugin launcher
+// Addon launcher
 function launchPEP() {
 	// Apply empty values to the PEP database
 	setDB('mood-value', 1, '');

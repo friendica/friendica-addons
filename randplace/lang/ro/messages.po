@@ -23,7 +23,7 @@ msgid "Randplace Settings"
 msgstr "Configurări Randplace"
 
 #: randplace.php:171
-msgid "Enable Randplace Plugin"
+msgid "Enable Randplace Addon"
 msgstr "Activare Modul Randplace"
 
 #: randplace.php:177

@@ -13,7 +13,7 @@ Last revision: 06/05/11
 
 // Creates the talkpage events
 function eventsTalkPage() {
-	// Launch all associated plugins
+	// Launch all associated addons
 	launchMicroblog();
 	launchRoster();
 	launchPresence();

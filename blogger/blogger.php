@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: Blogger Post Connector
  * Description: Post to Blogger (or anything else which uses blogger XMLRPC API)
@@ -7,47 +6,57 @@
  * 
  */
 
-function blogger_install() {
-    register_hook('post_local',           'addon/blogger/blogger.php', 'blogger_post_local');
-    register_hook('notifier_normal',      'addon/blogger/blogger.php', 'blogger_send');
-    register_hook('jot_networks',         'addon/blogger/blogger.php', 'blogger_jot_nets');
-    register_hook('connector_settings',      'addon/blogger/blogger.php', 'blogger_settings');
-    register_hook('connector_settings_post', 'addon/blogger/blogger.php', 'blogger_settings_post');
+use Friendica\Content\Text\BBCode;
+use Friendica\Core\Addon;
+use Friendica\Core\L10n;
+use Friendica\Core\PConfig;
+use Friendica\Util\Network;
 
+function blogger_install()
+{
+	Addon::registerHook('post_local',           'addon/blogger/blogger.php', 'blogger_post_local');
+	Addon::registerHook('notifier_normal',      'addon/blogger/blogger.php', 'blogger_send');
+	Addon::registerHook('jot_networks',         'addon/blogger/blogger.php', 'blogger_jot_nets');
+	Addon::registerHook('connector_settings',      'addon/blogger/blogger.php', 'blogger_settings');
+	Addon::registerHook('connector_settings_post', 'addon/blogger/blogger.php', 'blogger_settings_post');
 }
-function blogger_uninstall() {
-    unregister_hook('post_local',       'addon/blogger/blogger.php', 'blogger_post_local');
-    unregister_hook('notifier_normal',  'addon/blogger/blogger.php', 'blogger_send');
-    unregister_hook('jot_networks',     'addon/blogger/blogger.php', 'blogger_jot_nets');
-    unregister_hook('connector_settings',      'addon/blogger/blogger.php', 'blogger_settings');
-    unregister_hook('connector_settings_post', 'addon/blogger/blogger.php', 'blogger_settings_post');
+
+function blogger_uninstall()
+{
+	Addon::unregisterHook('post_local',       'addon/blogger/blogger.php', 'blogger_post_local');
+	Addon::unregisterHook('notifier_normal',  'addon/blogger/blogger.php', 'blogger_send');
+	Addon::unregisterHook('jot_networks',     'addon/blogger/blogger.php', 'blogger_jot_nets');
+	Addon::unregisterHook('connector_settings',      'addon/blogger/blogger.php', 'blogger_settings');
+	Addon::unregisterHook('connector_settings_post', 'addon/blogger/blogger.php', 'blogger_settings_post');
 
 	// obsolete - remove
-    unregister_hook('post_local_end',   'addon/blogger/blogger.php', 'blogger_send');
-    unregister_hook('plugin_settings',  'addon/blogger/blogger.php', 'blogger_settings');
-    unregister_hook('plugin_settings_post',  'addon/blogger/blogger.php', 'blogger_settings_post');
-
+	Addon::unregisterHook('post_local_end',   'addon/blogger/blogger.php', 'blogger_send');
+	Addon::unregisterHook('addon_settings',  'addon/blogger/blogger.php', 'blogger_settings');
+	Addon::unregisterHook('addon_settings_post',  'addon/blogger/blogger.php', 'blogger_settings_post');
 }
 
 
-function blogger_jot_nets(&$a,&$b) {
-    if(! local_user())
-        return;
+function blogger_jot_nets(&$a, &$b)
+{
+	if (!local_user()) {
+		return;
+	}
 
-    $bl_post = get_pconfig(local_user(),'blogger','post');
-    if(intval($bl_post) == 1) {
-        $bl_defpost = get_pconfig(local_user(),'blogger','post_by_default');
-        $selected = ((intval($bl_defpost) == 1) ? ' checked="checked" ' : '');
-        $b .= '<div class="profile-jot-net"><input type="checkbox" name="blogger_enable" ' . $selected . ' value="1" /> '
-            . t('Post to blogger') . '</div>';
-    }
+	$bl_post = PConfig::get(local_user(), 'blogger', 'post');
+	if (intval($bl_post) == 1) {
+		$bl_defpost = PConfig::get(local_user(), 'blogger', 'post_by_default');
+		$selected = ((intval($bl_defpost) == 1) ? ' checked="checked" ' : '');
+		$b .= '<div class="profile-jot-net"><input type="checkbox" name="blogger_enable" ' . $selected . ' value="1" /> '
+		. L10n::t('Post to blogger') . '</div>';
+	}
 }
 
 
-function blogger_settings(&$a,&$s) {
-
-    if(! local_user())
-        return;
+function blogger_settings(&$a, &$s)
+{
+	if (! local_user()) {
+		return;
+	}
 
     /* Add our stylesheet to the page so we can make our settings look nice */
 
@@ -55,11 +64,11 @@ function blogger_settings(&$a,&$s) {
 
     /* Get the current state of our config variables */
 
-    $enabled = get_pconfig(local_user(),'blogger','post');
-    $checked = (($enabled) ? ' checked="checked" ' : '');
-    $css = (($enabled) ? '' : '-disabled');
+	$enabled = PConfig::get(local_user(), 'blogger', 'post');
+	$checked = (($enabled) ? ' checked="checked" ' : '');
+	$css = (($enabled) ? '' : '-disabled');
 
-    $def_enabled = get_pconfig(local_user(),'blogger','post_by_default');
+	$def_enabled = PConfig::get(local_user(), 'blogger', 'post_by_default');
 
     $def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
@@ -67,65 +76,59 @@ function blogger_settings(&$a,&$s) {
 	$bl_password = get_pconfig(local_user(), 'blogger', 'bl_password');
 	$bl_blog = get_pconfig(local_user(), 'blogger', 'bl_blog');
 
+	/* Add some HTML to the existing form */
+	$s .= '<span id="settings_blogger_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_blogger_expanded\'); openClose(\'settings_blogger_inflated\');">';
+	$s .= '<img class="connector'.$css.'" src="images/blogger.png" /><h3 class="connector">'. L10n::t('Blogger Export').'</h3>';
+	$s .= '</span>';
+	$s .= '<div id="settings_blogger_expanded" class="settings-block" style="display: none;">';
+	$s .= '<span class="fakelink" onclick="openClose(\'settings_blogger_expanded\'); openClose(\'settings_blogger_inflated\');">';
+	$s .= '<img class="connector'.$css.'" src="images/blogger.png" /><h3 class="connector">'. L10n::t('Blogger Export').'</h3>';
+	$s .= '</span>';
 
-    /* Add some HTML to the existing form */
+	$s .= '<div id="blogger-enable-wrapper">';
+	$s .= '<label id="blogger-enable-label" for="blogger-checkbox">' . L10n::t('Enable Blogger Post Addon') . '</label>';
+	$s .= '<input id="blogger-checkbox" type="checkbox" name="blogger" value="1" ' . $checked . '/>';
+	$s .= '</div><div class="clear"></div>';
 
-    $s .= '<span id="settings_blogger_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_blogger_expanded\'); openClose(\'settings_blogger_inflated\');">';
-    $s .= '<img class="connector'.$css.'" src="images/blogger.png" /><h3 class="connector">'. t('Blogger Export').'</h3>';
-    $s .= '</span>';
-    $s .= '<div id="settings_blogger_expanded" class="settings-block" style="display: none;">';
-    $s .= '<span class="fakelink" onclick="openClose(\'settings_blogger_expanded\'); openClose(\'settings_blogger_inflated\');">';
-    $s .= '<img class="connector'.$css.'" src="images/blogger.png" /><h3 class="connector">'. t('Blogger Export').'</h3>';
-    $s .= '</span>';
+	$s .= '<div id="blogger-username-wrapper">';
+	$s .= '<label id="blogger-username-label" for="blogger-username">' . L10n::t('Blogger username') . '</label>';
+	$s .= '<input id="blogger-username" type="text" name="bl_username" value="' . $bl_username . '" />';
+	$s .= '</div><div class="clear"></div>';
 
-    $s .= '<div id="blogger-enable-wrapper">';
-    $s .= '<label id="blogger-enable-label" for="blogger-checkbox">' . t('Enable Blogger Post Plugin') . '</label>';
-    $s .= '<input id="blogger-checkbox" type="checkbox" name="blogger" value="1" ' . $checked . '/>';
-    $s .= '</div><div class="clear"></div>';
+	$s .= '<div id="blogger-password-wrapper">';
+	$s .= '<label id="blogger-password-label" for="blogger-password">' . L10n::t('Blogger password') . '</label>';
+	$s .= '<input id="blogger-password" type="password" name="bl_password" value="' . $bl_password . '" />';
+	$s .= '</div><div class="clear"></div>';
 
-    $s .= '<div id="blogger-username-wrapper">';
-    $s .= '<label id="blogger-username-label" for="blogger-username">' . t('Blogger username') . '</label>';
-    $s .= '<input id="blogger-username" type="text" name="bl_username" value="' . $bl_username . '" />';
-    $s .= '</div><div class="clear"></div>';
+	$s .= '<div id="blogger-blog-wrapper">';
+	$s .= '<label id="blogger-blog-label" for="blogger-blog">' . L10n::t('Blogger API URL') . '</label>';
+	$s .= '<input id="blogger-blog" type="text" name="bl_blog" value="' . $bl_blog . '" />';
+	$s .= '</div><div class="clear"></div>';
 
-    $s .= '<div id="blogger-password-wrapper">';
-    $s .= '<label id="blogger-password-label" for="blogger-password">' . t('Blogger password') . '</label>';
-    $s .= '<input id="blogger-password" type="password" name="bl_password" value="' . $bl_password . '" />';
-    $s .= '</div><div class="clear"></div>';
+	$s .= '<div id="blogger-bydefault-wrapper">';
+	$s .= '<label id="blogger-bydefault-label" for="blogger-bydefault">' . L10n::t('Post to Blogger by default') . '</label>';
+	$s .= '<input id="blogger-bydefault" type="checkbox" name="bl_bydefault" value="1" ' . $def_checked . '/>';
+	$s .= '</div><div class="clear"></div>';
 
-    $s .= '<div id="blogger-blog-wrapper">';
-    $s .= '<label id="blogger-blog-label" for="blogger-blog">' . t('Blogger API URL') . '</label>';
-    $s .= '<input id="blogger-blog" type="text" name="bl_blog" value="' . $bl_blog . '" />';
-    $s .= '</div><div class="clear"></div>';
-
-    $s .= '<div id="blogger-bydefault-wrapper">';
-    $s .= '<label id="blogger-bydefault-label" for="blogger-bydefault">' . t('Post to Blogger by default') . '</label>';
-    $s .= '<input id="blogger-bydefault" type="checkbox" name="bl_bydefault" value="1" ' . $def_checked . '/>';
-    $s .= '</div><div class="clear"></div>';
-
-    /* provide a submit button */
-
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="blogger-submit" name="blogger-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
-
+	/* provide a submit button */
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="blogger-submit" name="blogger-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 }
 
 
-function blogger_settings_post(&$a,&$b) {
-
-	if(x($_POST,'blogger-submit')) {
-
-		set_pconfig(local_user(),'blogger','post',intval($_POST['blogger']));
-		set_pconfig(local_user(),'blogger','post_by_default',intval($_POST['bl_bydefault']));
-		set_pconfig(local_user(),'blogger','bl_username',trim($_POST['bl_username']));
-		set_pconfig(local_user(),'blogger','bl_password',trim($_POST['bl_password']));
-		set_pconfig(local_user(),'blogger','bl_blog',trim($_POST['bl_blog']));
-
+function blogger_settings_post(&$a, &$b)
+{
+	if (x($_POST, 'blogger-submit')) {
+		PConfig::set(local_user(), 'blogger', 'post', intval($_POST['blogger']));
+		PConfig::set(local_user(), 'blogger', 'post_by_default', intval($_POST['bl_bydefault']));
+		PConfig::set(local_user(), 'blogger', 'bl_username', trim($_POST['bl_username']));
+		PConfig::set(local_user(), 'blogger', 'bl_password', trim($_POST['bl_password']));
+		PConfig::set(local_user(), 'blogger', 'bl_blog', trim($_POST['bl_blog']));
 	}
 
 }
 
-function blogger_post_local(&$a,&$b) {
-
+function blogger_post_local(&$a, &$b)
+{
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
 	if($b['edit'])
@@ -137,11 +140,11 @@ function blogger_post_local(&$a,&$b) {
 	if($b['private'] || $b['parent'])
 		return;
 
-    $bl_post   = intval(get_pconfig(local_user(),'blogger','post'));
+	$bl_post   = intval(PConfig::get(local_user(), 'blogger', 'post'));
 
-	$bl_enable = (($bl_post && x($_REQUEST,'blogger_enable')) ? intval($_REQUEST['blogger_enable']) : 0);
+	$bl_enable = (($bl_post && x($_REQUEST, 'blogger_enable')) ? intval($_REQUEST['blogger_enable']) : 0);
 
-	if($b['api_source'] && intval(get_pconfig(local_user(),'blogger','post_by_default')))
+	if ($b['api_source'] && intval(PConfig::get(local_user(), 'blogger', 'post_by_default'))) {
 		$bl_enable = 1;
 
     if(! $bl_enable)
@@ -155,28 +158,24 @@ function blogger_post_local(&$a,&$b) {
 
 
 
-function blogger_send(&$a,&$b) {
+function blogger_send(&$a, &$b)
+{
+	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
+		return;
+	}
 
-    if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
-        return;
-
-    if(! strstr($b['postopts'],'blogger'))
-        return;
-
-    if($b['parent'] != $b['id'])
-        return;
+	if (! strstr($b['postopts'], 'blogger')) {
+		return;
+	}
 
 
-	$bl_username = xmlify(get_pconfig($b['uid'],'blogger','bl_username'));
-	$bl_password = xmlify(get_pconfig($b['uid'],'blogger','bl_password'));
-	$bl_blog = get_pconfig($b['uid'],'blogger','bl_blog');
+	$bl_username = xmlify(PConfig::get($b['uid'], 'blogger', 'bl_username'));
+	$bl_password = xmlify(PConfig::get($b['uid'], 'blogger', 'bl_password'));
+	$bl_blog = PConfig::get($b['uid'], 'blogger', 'bl_blog');
 
-	if($bl_username && $bl_password && $bl_blog) {
-
-		require_once('include/bbcode.php');
-
-		$title = '<title>' . (($b['title']) ? $b['title'] : t('Post from Friendica')) . '</title>';
-		$post = $title . bbcode($b['body']);
+	if ($bl_username && $bl_password && $bl_blog) {
+		$title = '<title>' . (($b['title']) ? $b['title'] : L10n::t('Post from Friendica')) . '</title>';
+		$post = $title . BBCode::convert($b['body']);
 		$post = xmlify($post);
 
 		$xml = <<< EOT
@@ -197,10 +196,11 @@ EOT;
 
 		logger('blogger: data: ' . $xml, LOGGER_DATA);
 
-		if($bl_blog !== 'test')
-			$x = post_url($bl_blog,$xml);
+		if ($bl_blog !== 'test') {
+			$x = Network::post($bl_blog, $xml);
+		}
+
 		logger('posted to blogger: ' . (($x) ? $x : ''), LOGGER_DEBUG);
 
 	}
 }
-

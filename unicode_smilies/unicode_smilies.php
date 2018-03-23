@@ -5,15 +5,15 @@
  * Version: 1.0
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  */
-
-require_once 'include/Smilies.php';
+use Friendica\Core\Addon;
+use Friendica\Content\Smilies;
 
 function unicode_smilies_install() {
-	register_hook('smilie', 'addon/unicode_smilies/unicode_smilies.php', 'unicode_smilies_smilies');
+	Addon::registerHook('smilie', 'addon/unicode_smilies/unicode_smilies.php', 'unicode_smilies_smilies');
 }
 
 function unicode_smilies_uninstall() {
-	unregister_hook('smilie', 'addon/unicode_smilies/unicode_smilies.php', 'unicode_smilies_smilies');
+	Addon::unregisterHook('smilie', 'addon/unicode_smilies/unicode_smilies.php', 'unicode_smilies_smilies');
 }
 
 function unicode_smilies_smilies(&$a,&$b) {

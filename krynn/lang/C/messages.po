@@ -22,7 +22,7 @@ msgid "Krynn Settings"
 msgstr ""
 
 #: krynn.php:152
-msgid "Enable Krynn Plugin"
+msgid "Enable Krynn Addon"
 msgstr ""
 
 #: krynn.php:158

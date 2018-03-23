@@ -2,7 +2,7 @@
 
 $a->strings["Post to blogger"] = "Enviament a blogger";
 $a->strings["Blogger Post Settings"] = "Ajustos d'enviament a blogger";
-$a->strings["Enable Blogger Post Plugin"] = "Habilita el Plugin d'Enviaments a Blogger";
+$a->strings["Enable Blogger Post Addon"] = "Habilita el Addon d'Enviaments a Blogger";
 $a->strings["Blogger username"] = "Nom d'usuari a blogger";
 $a->strings["Blogger password"] = "Contrasenya a blogger";
 $a->strings["Blogger API URL"] = "Blogger API URL";

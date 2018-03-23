@@ -17,7 +17,7 @@
 	* Changed: The Sabre_VObject library now spawned into it's own project!
 	* New feature: Support for caldav notifications!
 	* Changed: Responsibility for dealing with the calendar-query is now
-	  moved from the CalDAV plugin to the CalDAV backends. This allows for
+	  moved from the CalDAV addon to the CalDAV backends. This allows for
 	  heavy optimizations.
 	* Changed: The CalDAV PDO backend is now a lot faster for common
 	  calendar queries.
@@ -27,7 +27,7 @@
 	  receiving "text/x-vcard; charset=utf-8" for a contenttype.
 	* Added: Sabre_DAV_Client now throws more specific exceptions in cases
 	  where we already has an exception class.
-	* Added: Sabre_DAV_PartialUpdate. This plugin allows you to use the
+	* Added: Sabre_DAV_PartialUpdate. This addon allows you to use the
 	  PATCH method to update parts of a file.
 	* Added: Tons of timezone name mappings for Microsoft Exchange.
 	* Added: Support for an 'exception' event.
@@ -69,13 +69,13 @@
 	* Fixed: Issue 112: Stronger validation of iCalendar objects. Now making
 	  sure every iCalendar object only contains 1 component, and disallowing
 	  vcards, forcing every component to have a UID.
-	* Fixed: Basic validation for vcards in the CardDAV plugin.
+	* Fixed: Basic validation for vcards in the CardDAV addon.
 	* Fixed: Issue 213: Workaround for an Evolution bug, that prevented it
 	  from updating events.
 	* Fixed: Issue 211: A time-limit query on a non-relative alarm trigger in
 	  a recurring event could result in an endless loop.
 	* Fixed: All uri fields are now a maximum of 200 characters. The Bynari
-	  outlook plugin used much longer strings so this should improve
+	  outlook addon used much longer strings so this should improve
 	  compatibility.
 	* Fixed: Added a workaround for a bug in KDE 4.8.2 contact syncing. See
 	  https://bugs.kde.org/show_bug.cgi?id=300047
@@ -109,7 +109,7 @@
 	  COUNT= parameter in the RRULE property.
 	* Added: Support for time-range filters on VALARM components.
 	* Fixed: Correctly filtering all-day events.
-	* Fixed: Sending back correct mimetypes from the browser plugin (thanks
+	* Fixed: Sending back correct mimetypes from the browser addon (thanks
 	  Jürgen).
 	* Fixed: Issue 195: Sabre_CardDAV pear package had an incorrect dependency.
 	* Fixed: Calendardata would be destroyed when performing a MOVE request.
@@ -134,8 +134,8 @@
 	* BC Break: Default Principals PDO backend now needs a new field in the
 	  'principals' table. See the website for details.
 	* Added: Ability to create new calendars and addressbooks from within the
-	  browser plugin.
-	* Added: Browser plugin: icons for various nodes.
+	  browser addon.
+	* Added: Browser addon: icons for various nodes.
 	* Added: Support for FREEBUSY reports!
 	* Added: Support for creating principals with admin-level privileges.
 	* Added: Possibility to let server send out invitation emails on behalf of
@@ -143,11 +143,11 @@
 	* Changed: beforeCreateFile event now passes data argument by reference.
 	* Changed: The 'propertyMap' property from Sabre_VObject_Reader, must now
 	  be specified in Sabre_VObject_Property::$classMap.
-	* Added: Ability for plugins to tell the ACL plugin which principal
-	  plugins are searchable.
+	* Added: Ability for addons to tell the ACL addon which principal
+	  addons are searchable.
 	* Added: [DAVACL] Per-node overriding of supported privileges. This allows
 	  for custom privileges where needed.
-	* Added: [DAVACL] Public 'principalSearch' method on the DAVACL plugin,
+	* Added: [DAVACL] Public 'principalSearch' method on the DAVACL addon,
 	  which allows for easy searching for principals, based on their
 	  properties.
 	* Added: Sabre_VObject_Component::getComponents() to return a list of only
@@ -231,8 +231,8 @@
 	* Fixed: VObject properties are now always encoded before components.
 	* Fixed: Sabre_DAVACL had issues with multiple levels of privilege
 	  aggregration.
-	* Changed: Added 'GuessContentType' plugin to fileserver.php example.
-	* Fixed: The Browser plugin will now trigger the correct events when
+	* Changed: Added 'GuessContentType' addon to fileserver.php example.
+	* Fixed: The Browser addon will now trigger the correct events when
 	  creating files.
 	* Fixed: The ICSExportPlugin now considers ACL's.
 	* Added: Made it optional to supply carddata from an Addressbook backend
@@ -251,7 +251,7 @@
 	  files to be locked at the same time.
 
 1.5.4-stable (2011-10-28)
-	* Fixed: GuessContentType plugin now supports mixed case file extensions.
+	* Fixed: GuessContentType addon now supports mixed case file extensions.
 	* Fixed: DATE-TIME encoding was wrong in VObject. (we used 'DATETIME').
 	* Changed: Sending back HTTP 204 after a PUT request on an existing resource
 	  instead of HTTP 200. This should fix Evolution CardDAV client
@@ -283,7 +283,7 @@
 	* Fixed: Issue 140: Not returning 201 Created if an event cancelled the
 	  creation of a file.
 	* Fixed: Issue 150: Faster URLUtil::encodePath() implementation.
-	* Fixed: Issue 144: Browser plugin could interfere with
+	* Fixed: Issue 144: Browser addon could interfere with
 	  TemporaryFileFilterPlugin if it was loaded first.
 	* Added: It's not possible to specify more 'alternate uris' in principal
 	  backends.
@@ -314,7 +314,7 @@
 	* Added: Clark-notation parser to XML utility.
 	* Added: unset() support to VObject components.
 	* Fixed: Refactored CalDAV property fetching to be faster and simpler.
-	* Added: Central string-matcher for CalDAV and CardDAV plugins.
+	* Added: Central string-matcher for CalDAV and CardDAV addons.
 	* Added: i;unicode-casemap support
 	* Fixed: VObject bug: wouldn't parse parameters if they weren't specified
 	  in uppercase.
@@ -322,7 +322,7 @@
 	* Fixed: VObject bug: Parameters with no value are now correctly parsed.
 	* Changed: If calendars don't specify which components they allow, 'all'
 	  components are assumed (e.g.: VEVENT, VTODO, VJOURNAL).
-	* Changed: Browser plugin now uses POST variable 'sabreAction' instead of
+	* Changed: Browser addon now uses POST variable 'sabreAction' instead of
 	  'action' to reduce the chance of collisions.
 
 1.4.4-stable (2011-07-07)
@@ -388,7 +388,7 @@
 	* Added: Ability to automatically generate full .ics feeds off calendars.
 	  To use: Add the Sabre_CalDAV_ICSExportPlugin, and add ?export to your
 	  calendar url.
-	* Added: Plugins can now specify a pluginname, for easy access using
+	* Added: Plugins can now specify a addonname, for easy access using
 	  Sabre_DAV_Server::getPlugin().
 	* Added: beforeGetProperties event.
 	* Added: updateProperties event.
@@ -428,7 +428,7 @@
 	  break, so if you implement Sabre_DAV_ICollection directly, add the method.
 	* Changed: Almost all HTTP method implementations now take a uri argument,
 	  including events. This allows for internal rerouting of certain calls.
-	  If you have custom plugins, make sure they use this argument. If they
+	  If you have custom addons, make sure they use this argument. If they
 	  don't, they will likely still work, but it might get in the way of
 	  future changes.
 	* Changed: All getETag methods MUST now surround the etag with
@@ -441,7 +441,7 @@
 	  instead.
 	* Removed: Sabre_DAV_IDirectory interface, use Sabre_DAV_ICollection
 	  instead.
-	* Added: Browser plugin now uses {DAV:}displayname if this property is
+	* Added: Browser addon now uses {DAV:}displayname if this property is
 	  available.
 	* Added: Cache layer in the ObjectTree.
 	* Added: Tree classes now have a delete and getChildren method.
@@ -488,7 +488,7 @@
 	* Updated: Small improvements to example files.
 
 1.2.0 (2010-05-24)
-	* Fixed: Browser plugin now displays international characters.
+	* Fixed: Browser addon now displays international characters.
 	* Changed: More properties in CalDAV classes are now protected instead of
 	  private.
 
@@ -530,7 +530,7 @@
 	* Update: Complete rewrite of property updating. Now easier to use and
 	  atomic.
 	* Fixed: Issue 16, automatically adding trailing / to baseUri.
-	* Added: text/plain is used for .txt files in GuessContentType plugin.
+	* Added: text/plain is used for .txt files in GuessContentType addon.
 	* Added: support for principal-property-search and
 	  principal-search-property-set reports.
 	* Added: Issue 31: Hiding exception information by default. Can be turned
@@ -603,10 +603,10 @@
 	  this.
 	* Added: PDO authentication backend.
 	* Added: Example sql for auth, caldav, locks for sqlite.
-	* Added: Sabre_DAV_Browser_GuessContentType plugin
-	* Changed: Authentication plugin refactored, making it possible to
+	* Added: Sabre_DAV_Browser_GuessContentType addon
+	* Changed: Authentication addon refactored, making it possible to
 	  implement non-digest authentication.
-	* Fixed: Better error display in browser plugin.
+	* Fixed: Better error display in browser addon.
 	* Added: Support for {DAV:}supported-report-set
 	* Added: XML utility class with helper functions for the WebDAV protocol.
 	* Added: Tons of unittests
@@ -706,15 +706,15 @@
 	  Before, execution would be stopped by anything loosely evaluating to
 	  false.
 	* Changed: the getPropertiesForPath method now takes a different set of
-	  arguments, and returns a different response. This allows plugin
+	  arguments, and returns a different response. This allows addon
 	  developers to return statuses for properties other than 200 and 404. The
 	  hrefs are now also always calculated relative to the baseUri, and not
 	  the uri of the request.
 	* Changed: generatePropFindResponse is renamed to generateMultiStatus, and
 	  now takes a list of properties similar to the response of
 	  getPropertiesForPath. This was also needed to improve flexibility for
-	  plugin development.
-	* Changed: Auth plugins are no longer included. They were not yet stable
+	  addon development.
+	* Changed: Auth addons are no longer included. They were not yet stable
 	  quality, so they will probably be reintroduced in a later version.
 	* Changed: PROPPATCH also used generateMultiStatus now.
 	* Removed: unknownProperties event. This is replaced by the
@@ -732,7 +732,7 @@
 	* Fixed: Copy and Move could fail in the root directory. This is now
 	  fixed.
 	* Added: Plugins can now be retrieved by their classname. This is useful
-	  for inter-plugin communication.
+	  for inter-addon communication.
 	* Added: The Auth backend can now return usernames and user-id's.
 	* Added: The Auth backend got a getUsers method
 	* Added: Sabre_DAV_FSExt_Directory now returns quota info
@@ -741,7 +741,7 @@
 	* Fixed: UNLOCK bug. Unlock didn't work at all
 
 0.12-beta (2009-09-10)
-	* Updated: Browser plugin now shows multiple {DAV:}resourcetype values
+	* Updated: Browser addon now shows multiple {DAV:}resourcetype values
 	  if available.
 	* Added: Experimental PDO backend for Locks Manager
 	* Fixed: Sending Content-Length: 0 for every empty response. This
@@ -766,7 +766,7 @@
 	* Added: Ability to choose to use auth-int, auth or both for HTTP Digest
 	  authentication. (Issue 11)
 	* Changed: Made more methods in Sabre_DAV_Server public.
-	* Fixed: TemporaryFileFilter plugin now intercepts HTTP LOCK requests
+	* Fixed: TemporaryFileFilter addon now intercepts HTTP LOCK requests
 	  to non-existent files. (Issue 12)
 	* Added: Central list of defined xml namespace prefixes. This can reduce
 	  Bandwidth and legibility for xml bodies with user-defined namespaces.
@@ -779,8 +779,8 @@
 	  and IDirectory objects. If you created your own Tree objects,
 	  this will most likely break in this release.
 	* Changed: Moved all the Locking logic from the Tree and Server classes
-	  into a separate plugin.
-	* Changed: TemporaryFileFilter is now a plugin.
+	  into a separate addon.
+	* Changed: TemporaryFileFilter is now a addon.
 	* Added: Comes with an autoloader script. This can be used instead of
 	  the includer script, and is preferred by some people.
 	* Added: AWS Authentication class.
@@ -790,7 +790,7 @@
 	  priority. This is for example needed to ensure that the Authentication
 	  Plugin is used before any other Plugin.
 	* Added: 22 new tests.
-	* Added: Users-manager plugin for .htdigest files. Experimental and
+	* Added: Users-manager addon for .htdigest files. Experimental and
 	  subject to change.
 	* Added: RFC 2324 HTTP 418 status code
 	* Fixed: Exclusive locks could in some cases be picked up as shared locks
@@ -801,7 +801,7 @@
 	* Changed: Renamed all exceptions! This is a compatibility break. Every
 	  Exception now follows Sabre_DAV_Exception_FileNotFound convention
 	  instead of Sabre_DAV_FileNotFoundException.
-	* Added: Browser plugin now allows uploading and creating directories
+	* Added: Browser addon now allows uploading and creating directories
 	  straight from the browser.
 	* Added: 12 more unittests
 	* Fixed: Locking bug, which became prevalent on Windows Vista.
@@ -815,14 +815,14 @@
 	* Added: support for {DAV:}supportedlock.
 	* Added: support for {DAV:}lockdiscovery.
 	* Added: 6 new tests.
-	* Added: New plugin system.
-	* Added: Simple HTML directory plugin, for browser access.
+	* Added: New addon system.
+	* Added: Simple HTML directory addon, for browser access.
 	* Added: Server class now sends back standard pre-condition error xml
 	bodies. This was new since RFC4918.
 	* Added: Sabre_DAV_Tree_Aggregrate, which can 'host' multiple Tree objects
 	into one.
 	* Added: simple basis for HTTP REPORT method. This method is not used yet,
-	but can be used by plugins to add reports.
+	but can be used by addons to add reports.
 	* Changed: ->getSize is only called for files, no longer for collections.
 	r303
 	* Changed: Sabre_DAV_FilterTree is now Sabre_DAV_Tree_Filter

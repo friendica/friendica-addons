@@ -473,7 +473,7 @@ function loadFavorites() {
 	$('#favorites .fedit-head-select').html(favorites_popup);
 }
 
-// Plugin launcher
+// Addon launcher
 function launchFavorites() {
 	var path = '#favorites .';
 	

@@ -5,19 +5,20 @@
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
-
+use Friendica\Core\Addon;
+use Friendica\Core\L10n;
 
 function tictac_install() {
-	register_hook('app_menu', 'addon/tictac/tictac.php', 'tictac_app_menu');
+	Addon::registerHook('app_menu', 'addon/tictac/tictac.php', 'tictac_app_menu');
 }
 
 function tictac_uninstall() {
-	unregister_hook('app_menu', 'addon/tictac/tictac.php', 'tictac_app_menu');
+	Addon::unregisterHook('app_menu', 'addon/tictac/tictac.php', 'tictac_app_menu');
 
 }
 
 function tictac_app_menu($a,&$b) {
-	$b['app_menu'][] = '<div class="app-title"><a href="tictac">' . t('Three Dimensional Tic-Tac-Toe') . '</a></div>'; 
+	$b['app_menu'][] = '<div class="app-title"><a href="tictac">' . L10n::t('Three Dimensional Tic-Tac-Toe') . '</a></div>';
 }
 
 
@@ -50,17 +51,17 @@ function tictac_content(&$a) {
    $dimen = 3;
   }
 
-  $o .=  '<h3>' . t('3D Tic-Tac-Toe') . '</h3><br />';
+  $o .=  '<h3>' . L10n::t('3D Tic-Tac-Toe') . '</h3><br />';
 
   $t = new tictac($dimen,$handicap,$mefirst,$yours,$mine);
   $o .= $t->play();
 
-  $o .=  '<a href="tictac">' . t('New game') . '</a><br />';
-  $o .=  '<a href="tictac/1">' . t('New game with handicap') . '</a><br />';
-  $o .=  '<p>' . t('Three dimensional tic-tac-toe is just like the traditional game except that it is played on multiple levels simultaneously. ');
-  $o .= t('In this case there are three levels. You win by getting three in a row on any level, as well as up, down, and diagonally across the different levels.');
-  $o .= '</p><p>'; 
-  $o .= t('The handicap game disables the center position on the middle level because the player claiming this square often has an unfair advantage.');
+  $o .=  '<a href="tictac">' . L10n::t('New game') . '</a><br />';
+  $o .=  '<a href="tictac/1">' . L10n::t('New game with handicap') . '</a><br />';
+  $o .=  '<p>' . L10n::t('Three dimensional tic-tac-toe is just like the traditional game except that it is played on multiple levels simultaneously. ');
+  $o .= L10n::t('In this case there are three levels. You win by getting three in a row on any level, as well as up, down, and diagonally across the different levels.');
+  $o .= '</p><p>';
+  $o .= L10n::t('The handicap game disables the center position on the middle level because the player claiming this square often has an unfair advantage.');
   $o .= '</p>';
 
   return $o;
@@ -179,24 +180,24 @@ class tictac {
 
      if($this->first_move) {
        if(rand(0,1) == 1) {
-         $o .=  '<div class="error-message">' . t('You go first...') . '</div><br />';
+         $o .=  '<div class="error-message">' . L10n::t('You go first...') . '</div><br />';
          $this->mefirst = 0;
          $o .= $this->draw_board();
          return $o;
        }
-       $o .=  '<div class="error-message">' . t('I\'m going first this time...') . ' </div><br />';
+       $o .=  '<div class="error-message">' . L10n::t('I\'m going first this time...') . ' </div><br />';
        $this->mefirst = 1;
 
      }
 
      if($this->check_youwin()) {
-       $o .=  '<div class="error-message">' . t('You won!') . '</div><br />';
+       $o .=  '<div class="error-message">' . L10n::t('You won!') . '</div><br />';
        $o .= $this->draw_board();
        return $o;
      }
 
      if($this->fullboard())
-       $o .=  '<div class="error-message">' . t('"Cat" game!') . '</div><br />';
+       $o .=  '<div class="error-message">' . L10n::t('"Cat" game!') . '</div><br />';
 
      $move = $this->winning_move();
      if(strlen($move)) {
@@ -219,9 +220,9 @@ class tictac {
      }
 
      if($this->check_iwon())
-       $o .=  '<div class="error-message">' . t('I won!') . '</div><br />';
+       $o .=  '<div class="error-message">' . L10n::t('I won!') . '</div><br />';
      if($this->fullboard())
-       $o .=  '<div class="error-message">' . t('"Cat" game!') . '</div><br />';
+       $o .=  '<div class="error-message">' . L10n::t('"Cat" game!') . '</div><br />';
      $o .= $this->draw_board();
 	return $o;
   }

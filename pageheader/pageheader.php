@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * Name: Page Header
  * Description: Inserts a page header
@@ -9,22 +7,25 @@
  *         Hauke Altmann <https://snarl.de/profile/tugelblend>
  * 
  */
+use Friendica\Core\Addon;
+use Friendica\Core\Config;
+use Friendica\Core\L10n;
 
 function pageheader_install() {
-    register_hook('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
-	register_hook('plugin_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
-	register_hook('plugin_settings_post', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings_post');
+    Addon::registerHook('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
+	Addon::registerHook('addon_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
+	Addon::registerHook('addon_settings_post', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings_post');
 
 }
 
 
 function pageheader_uninstall() {
-    unregister_hook('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
-	unregister_hook('plugin_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
-	unregister_hook('plugin_settings_post', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings_post');
+    Addon::unregisterHook('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
+	Addon::unregisterHook('addon_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings_post');
 
 	// hook moved, uninstall the old one if still there. 
-    unregister_hook('page_header', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
+    Addon::unregisterHook('page_header', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
 
 }
 
@@ -47,14 +48,12 @@ function pageheader_addon_settings(&$a,&$s) {
 	if(! $words)
 		$words = '';
 
-    $s .= '<div class="settings-block">';
-    $s .= '<h3>' . t('"pageheader" Settings') . '</h3>';
-    $s .= '<div id="pageheader-wrapper">';
-    $s .= '<label id="pageheader-label" for="pageheader-words">' . t('Message to display on every page on this server (or put a pageheader.html file in your docroot)') . ' </label>';
-    $s .= '<textarea id="pageheader-words" type="text" name="pageheader-words">' . $words . '</textarea>';
-    $s .= '</div><div class="clear"></div>';
-
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="pageheader-submit" name="pageheader-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+	$t = get_markup_template("settings.tpl", "addon/pageheader/");
+	$s .= replace_macros($t, [
+					'$title' => L10n::t('"pageheader" Settings'),
+					'$phwords' => ['pageheader-words', L10n::t('Message'), $words, L10n::t('Message to display on every page on this server (or put a pageheader.html file in your docroot)')],
+					'$submit' => L10n::t('Save Settings')
+	]);
 
 	return;
 
@@ -66,8 +65,8 @@ function pageheader_addon_settings_post(&$a,&$b) {
 		return;
 
 	if($_POST['pageheader-submit']) {
-		set_config('pageheader','text',trim(strip_tags($_POST['pageheader-words'])));
-		info( t('pageheader Settings saved.') . EOL);
+		Config::set('pageheader','text',trim(strip_tags($_POST['pageheader-words'])));
+		info(L10n::t('pageheader Settings saved.') . EOL);
 	}
 }
 

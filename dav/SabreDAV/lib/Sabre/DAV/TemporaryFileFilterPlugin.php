@@ -45,7 +45,7 @@ class Sabre_DAV_TemporaryFileFilterPlugin extends Sabre_DAV_ServerPlugin {
     );
 
     /**
-     * This is the directory where this plugin
+     * This is the directory where this addon
      * will store it's files.
      *
      * @var string
@@ -60,7 +60,7 @@ class Sabre_DAV_TemporaryFileFilterPlugin extends Sabre_DAV_ServerPlugin {
     private $server;
 
     /**
-     * Creates the plugin.
+     * Creates the addon.
      *
      * Make sure you specify a directory for your files. If you don't, we
      * will use PHP's directory for session-storage instead, and you might
@@ -77,9 +77,9 @@ class Sabre_DAV_TemporaryFileFilterPlugin extends Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Initialize the plugin
+     * Initialize the addon
      *
-     * This is called automatically be the Server class after this plugin is
+     * This is called automatically be the Server class after this addon is
      * added with Sabre_DAV_Server::addPlugin()
      *
      * @param Sabre_DAV_Server $server

@@ -534,7 +534,7 @@ function loadOptions() {
 		$('#integratemedias').attr('checked', true);
 }
 
-// Plugin launcher
+// Addon launcher
 function launchOptions() {
 	// Click events
 	$('#options .tab a').click(function() {

@@ -7,17 +7,20 @@
  *         based upon NSFW from Mike Macgirvin <http://macgirvin.com/profile/mike>
  *
  */
+use Friendica\Core\Addon;
+use Friendica\Core\L10n;
+use Friendica\Core\PConfig;
 
 function showmore_install() {
-	register_hook('prepare_body', 'addon/showmore/showmore.php', 'showmore_prepare_body');
-	register_hook('plugin_settings', 'addon/showmore/showmore.php', 'showmore_addon_settings');
-	register_hook('plugin_settings_post', 'addon/showmore/showmore.php', 'showmore_addon_settings_post');
+	Addon::registerHook('prepare_body', 'addon/showmore/showmore.php', 'showmore_prepare_body');
+	Addon::registerHook('addon_settings', 'addon/showmore/showmore.php', 'showmore_addon_settings');
+	Addon::registerHook('addon_settings_post', 'addon/showmore/showmore.php', 'showmore_addon_settings_post');
 }
 
 function showmore_uninstall() {
-	unregister_hook('prepare_body', 'addon/showmore/showmore.php', 'showmore_prepare_body');
-	unregister_hook('plugin_settings', 'addon/showmore/showmore.php', 'showmore_addon_settings');
-	unregister_hook('plugin_settings_post', 'addon/showmore/showmore.php', 'showmore_addon_settings_post');
+	Addon::unregisterHook('prepare_body', 'addon/showmore/showmore.php', 'showmore_prepare_body');
+	Addon::unregisterHook('addon_settings', 'addon/showmore/showmore.php', 'showmore_addon_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/showmore/showmore.php', 'showmore_addon_settings_post');
 }
 
 function showmore_addon_settings(&$a,&$s) {
@@ -35,24 +38,24 @@ function showmore_addon_settings(&$a,&$s) {
 		$chars = '1100';
 
 	$s .= '<span id="settings_showmore_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_showmore_expanded\'); openClose(\'settings_showmore_inflated\');">';
-	$s .= '<h3>' . t('"Show more" Settings').'</h3>';
+	$s .= '<h3>' . L10n::t('"Show more" Settings').'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_showmore_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_showmore_expanded\'); openClose(\'settings_showmore_inflated\');">';
-	$s .= '<h3>' . t('"Show more" Settings').'</h3>';
+	$s .= '<h3>' . L10n::t('"Show more" Settings').'</h3>';
 	$s .= '</span>';
 
 	$s .= '<div id="showmore-wrapper">';
 
-	$s .= '<label id="showmore-enable-label" for="showmore-enable">'.t('Enable Show More').'</label>';
+	$s .= '<label id="showmore-enable-label" for="showmore-enable">'.L10n::t('Enable Show More').'</label>';
 	$s .= '<input id="showmore-enable" type="checkbox" name="showmore-enable" value="1"'.$enable_checked.' />';
 	$s .= '<div class="clear"></div>';
-	$s .= '<label id="showmore-label" for="showmore-chars">'.t('Cutting posts after how much characters').' </label>';
+	$s .= '<label id="showmore-label" for="showmore-chars">'.L10n::t('Cutting posts after how much characters').' </label>';
 	$s .= '<input id="showmore-words" type="text" name="showmore-chars" value="'.$chars.'" />';
 	$s .= '</div><div class="clear"></div>';
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="showmore-submit" name="showmore-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
-//	$s .= '<div class="showmore-desc">' . t('Use /expression/ to provide regular expressions') . '</div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="showmore-submit" name="showmore-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
+//	$s .= '<div class="showmore-desc">' . L10n::t('Use /expression/ to provide regular expressions') . '</div>';
 	$s .= '</div>';
 
 	return;
@@ -67,8 +70,8 @@ function showmore_addon_settings_post(&$a,&$b) {
 		set_pconfig(local_user(),'showmore','chars',trim($_POST['showmore-chars']));
 		$enable = ((x($_POST,'showmore-enable')) ? intval($_POST['showmore-enable']) : 0);
 		$disable = 1-$enable;
-		set_pconfig(local_user(),'showmore','disable', $disable);
-		info( t('Show More Settings saved.') . EOL);
+		PConfig::set(local_user(),'showmore','disable', $disable);
+		info(L10n::t('Show More Settings saved.') . EOL);
 	}
 }
 
@@ -122,7 +125,7 @@ function showmore_prepare_body(&$a,&$b) {
 	if($found) {
 		$rnd = random_string(8);
 		$b['html'] = '<span id="showmore-teaser-'.$rnd.'" class="showmore-teaser" style="display: block;">'.$shortened." ".
-				'<span id="showmore-wrap-'.$rnd.'" style="white-space:nowrap;" class="showmore-wrap fakelink" onclick="openClose(\'showmore-'.$rnd.'\'); openClose(\'showmore-teaser-'.$rnd.'\');" >'.sprintf(t('show more')).'</span></span>'.
+				'<span id="showmore-wrap-'.$rnd.'" style="white-space:nowrap;" class="showmore-wrap fakelink" onclick="openClose(\'showmore-'.$rnd.'\'); openClose(\'showmore-teaser-'.$rnd.'\');" >'.L10n::t('show more').'</span></span>'.
 				'<div id="showmore-'.$rnd.'" class="showmore-content" style="display: none;">'.$b['html'].'</div>';
 	}
 }

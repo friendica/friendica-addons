@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Name: JS Uploader
  * Description: JavaScript photo/image uploader. Uses Valum 'qq' Uploader.
@@ -15,21 +14,23 @@
  * Module Author: Chris Case
  *
  */
-
+use Friendica\Core\Addon;
+use Friendica\Core\Config;
+use Friendica\Core\L10n;
 
 function js_upload_install() {
-	register_hook('photo_upload_form', 'addon/js_upload/js_upload.php', 'js_upload_form');
-	register_hook('photo_post_init',   'addon/js_upload/js_upload.php', 'js_upload_post_init');
-	register_hook('photo_post_file',   'addon/js_upload/js_upload.php', 'js_upload_post_file');
-	register_hook('photo_post_end',    'addon/js_upload/js_upload.php', 'js_upload_post_end');
+	Addon::registerHook('photo_upload_form', 'addon/js_upload/js_upload.php', 'js_upload_form');
+	Addon::registerHook('photo_post_init',   'addon/js_upload/js_upload.php', 'js_upload_post_init');
+	Addon::registerHook('photo_post_file',   'addon/js_upload/js_upload.php', 'js_upload_post_file');
+	Addon::registerHook('photo_post_end',    'addon/js_upload/js_upload.php', 'js_upload_post_end');
 }
 
 
 function js_upload_uninstall() {
-	unregister_hook('photo_upload_form', 'addon/js_upload/js_upload.php', 'js_upload_form');
-	unregister_hook('photo_post_init',   'addon/js_upload/js_upload.php', 'js_upload_post_init');
-	unregister_hook('photo_post_file',   'addon/js_upload/js_upload.php', 'js_upload_post_file');
-	unregister_hook('photo_post_end',    'addon/js_upload/js_upload.php', 'js_upload_post_end');
+	Addon::unregisterHook('photo_upload_form', 'addon/js_upload/js_upload.php', 'js_upload_form');
+	Addon::unregisterHook('photo_post_init',   'addon/js_upload/js_upload.php', 'js_upload_post_init');
+	Addon::unregisterHook('photo_post_file',   'addon/js_upload/js_upload.php', 'js_upload_post_file');
+	Addon::unregisterHook('photo_post_end',    'addon/js_upload/js_upload.php', 'js_upload_post_end');
 }
 
 
@@ -39,11 +40,11 @@ function js_upload_form(&$a,&$b) {
 
 	$b['addon_text'] .= '<link href="' . $a->get_baseurl() . '/addon/js_upload/file-uploader/client/fileuploader.css" rel="stylesheet" type="text/css">';
 	$b['addon_text'] .= '<script src="' . $a->get_baseurl() . '/addon/js_upload/file-uploader/client/fileuploader.js" type="text/javascript"></script>';
-   
-	$upload_msg = t('Upload a file');
-	$drop_msg = t('Drop files here to upload');
-	$cancel = t('Cancel');
-	$failed = t('Failed');
+
+	$upload_msg = L10n::t('Upload a file');
+	$drop_msg = L10n::t('Drop files here to upload');
+	$cancel = L10n::t('Cancel');
+	$failed = L10n::t('Failed');
 
 	$maximagesize = intval(get_config('system','maximagesize'));
 
@@ -300,25 +301,25 @@ class qqFileUploader {
     function handleUpload(){
         
         if (!$this->file){
-            return array('error' => t('No files were uploaded.'));
+            return ['error' => L10n::t('No files were uploaded.')];
         }
         
         $size = $this->file->getSize();
         
         if ($size == 0) {
-            return array('error' => t('Uploaded file is empty'));
+            return ['error' => L10n::t('Uploaded file is empty')];
         }
         
 //        if ($size > $this->sizeLimit) {
 
-//            return array('error' => t('Uploaded file is too large'));
+//            return array('error' => L10n::t('Uploaded file is too large'));
 //        }
         
 
 		$maximagesize = get_config('system','maximagesize');
 
 		if(($maximagesize) && ($size > $maximagesize)) {
-			return array('error' => t('Image exceeds size limit of ') . $maximagesize );
+			return ['error' => L10n::t('Image exceeds size limit of ') . $maximagesize ];
 
 		}
 
@@ -329,7 +330,7 @@ class qqFileUploader {
 
         if($this->allowedExtensions && !in_array(strtolower($ext), $this->allowedExtensions)){
             $these = implode(', ', $this->allowedExtensions);
-            return array('error' => t('File has an invalid extension, it should be one of ') . $these . '.');
+            return ['error' => L10n::t('File has an invalid extension, it should be one of ') . $these . '.'];
         }
         
         if ($this->file->save()){
@@ -339,9 +340,9 @@ class qqFileUploader {
 				'filename' => $filename . '.' . $ext
 			);
         } else {
-            return array(
-				'error'=> t('Upload was cancelled, or server error encountered'),
-				'path' => $this->file->getPath(), 
+            return [
+				'error'=> L10n::t('Upload was cancelled, or server error encountered'),
+				'path' => $this->file->getPath(),
 				'filename' => $filename . '.' . $ext
 			);
         }

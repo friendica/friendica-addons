@@ -1,5 +1,7 @@
 <?php
 
+use Friendica\Core\L10n;
+
 class Sabre_CardDAV_Backend_Std extends Sabre_CardDAV_Backend_Common
 {
 
@@ -43,7 +45,7 @@ class Sabre_CardDAV_Backend_Std extends Sabre_CardDAV_Backend_Common
 	 */
 	public static function getBackendTypeName()
 	{
-		return t("Private Addressbooks");
+		return L10n::t("Private Addressbooks");
 	}
 
 	/**

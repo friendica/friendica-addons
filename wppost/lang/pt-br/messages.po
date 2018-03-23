@@ -28,7 +28,7 @@ msgid "WordPress Post Settings"
 msgstr "Configurações de publicação no WordPress"
 
 #: wppost.php:78
-msgid "Enable WordPress Post Plugin"
+msgid "Enable WordPress Post Addon"
 msgstr "Habilitar plug-in para publicar no WordPress"
 
 #: wppost.php:83

@@ -2,10 +2,10 @@ Public Server
 =============
 
 
-Public Server is a Friendica plugin which implements automatic account & post expiration so that a site may be used as a public
+Public Server is a Friendica addon which implements automatic account & post expiration so that a site may be used as a public
 test bed with reduced data retention. 
 
-This is a modified version of the testdrive plugin, DO NOT ACTIVATE AT THE SAME TIME AS THE TESTDRIVE PLUGIN.
+This is a modified version of the testdrive addon, DO NOT ACTIVATE AT THE SAME TIME AS THE TESTDRIVE ADDON.
 
     //When an account is created on the site, it is given a hard expiration date of 
     $a->config['public_server']['expiredays'] = 30;
@@ -19,7 +19,7 @@ This is a modified version of the testdrive plugin, DO NOT ACTIVATE AT THE SAME 
     $a->config['public_server']['flagposts'] = 90;
     $a->config['public_server']['flagpostsexpire'] = 146;
 
-Set these in your .htconfig.php file. By default nothing is defined in case the plugin is activated accidentally. 
+Set these in your .htconfig.php file. By default nothing is defined in case the addon is activated accidentally. 
 They can be ommitted or set to 0 to disable each option.
 The default values are those used by friendica.eu, change these as desired.
 

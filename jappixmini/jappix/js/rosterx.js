@@ -166,7 +166,7 @@ function saveRosterX() {
 	closeRosterX();
 }
 
-// Plugin launcher
+// Addon launcher
 function launchRosterX() {
 	// Click events
 	$('#rosterx .bottom .finish').click(function() {

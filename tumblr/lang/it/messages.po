@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014-2015
+# fabrixxm <fabrix.xm@gmail.com>, 2014-2015,2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2015-08-31 10:28+0000\n"
+"PO-Revision-Date: 2018-03-19 13:25+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -44,8 +44,8 @@ msgid "(Re-)Authenticate your tumblr page"
 msgstr "(Ri)Autenticati con la tua pagina Tumblr"
 
 #: tumblr.php:192
-msgid "Enable Tumblr Post Plugin"
-msgstr "Abilita Plugin Tumblr"
+msgid "Enable Tumblr Post Addon"
+msgstr "Abilita componente aggiuntivo di invio a Tumblr"
 
 #: tumblr.php:197
 msgid "Post to Tumblr by default"

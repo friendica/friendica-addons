@@ -1,7 +1,7 @@
 <?php
 
-
-
+use Friendica\Core\L10n;
+use Friendica\Util\DateTimeFormat;
 
 /**
  * @param mixed $obj
@@ -89,7 +89,7 @@ function wdcal_print_feed($base_path = "")
 			$cs = wdcal_print_feed_getCal($server, DAV_ACL_WRITE);
 			if ($cs == null) {
 				echo wdcal_jsonp_encode(array('IsSuccess' => false,
-											  'Msg'       => t('No access')));
+											  'Msg'       => L10n::t('No access')));
 				killme();
 			}
 			try {
@@ -101,9 +101,9 @@ function wdcal_print_feed($base_path = "")
 				else $type = Sabre\VObject\Property\DateTime::LOCALTZ;
 
 				$datetime_start = new Sabre\VObject\Property\DateTime("DTSTART");
-				$datetime_start->setDateTime(new DateTime(date("Y-m-d H:i:s", IntVal($_REQUEST["CalendarStartTime"]))), $type);
+				$datetime_start->setDateTime(new DateTime(date(DateTimeFormat::MYSQL, IntVal($_REQUEST["CalendarStartTime"]))), $type);
 				$datetime_end = new Sabre\VObject\Property\DateTime("DTEND");
-				$datetime_end->setDateTime(new DateTime(date("Y-m-d H:i:s", IntVal($_REQUEST["CalendarEndTime"]))), $type);
+				$datetime_end->setDateTime(new DateTime(date(DateTimeFormat::MYSQL, IntVal($_REQUEST["CalendarEndTime"]))), $type);
 
 				$component->add($datetime_start);
 				$component->add($datetime_end);
@@ -163,7 +163,7 @@ function wdcal_print_feed($base_path = "")
 			$r = q("SELECT `calendarobject_id`, `calendar_id` FROM %s%sjqcalendar WHERE `id`=%d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($_REQUEST["jq_id"]));
 			if (count($r) != 1) {
 				echo wdcal_jsonp_encode(array('IsSuccess' => false,
-											  'Msg'       => t('No access')));
+											  'Msg'       => L10n::t('No access')));
 				killme();
 			}
 			try {
@@ -175,7 +175,7 @@ function wdcal_print_feed($base_path = "")
 
 				if (!$component) {
 					echo wdcal_jsonp_encode(array('IsSuccess' => false,
-												  'Msg'       => t('No access')));
+												  'Msg'       => L10n::t('No access')));
 					killme();
 				}
 
@@ -183,9 +183,9 @@ function wdcal_print_feed($base_path = "")
 				else $type = Sabre\VObject\Property\DateTime::LOCALTZ;
 
 				$datetime_start = new Sabre\VObject\Property\DateTime("DTSTART");
-				$datetime_start->setDateTime(new DateTime(date("Y-m-d H:i:s", IntVal($_REQUEST["CalendarStartTime"]))), $type);
+				$datetime_start->setDateTime(new DateTime(date(DateTimeFormat::MYSQL, IntVal($_REQUEST["CalendarStartTime"]))), $type);
 				$datetime_end = new Sabre\VObject\Property\DateTime("DTEND");
-				$datetime_end->setDateTime(new DateTime(date("Y-m-d H:i:s", IntVal($_REQUEST["CalendarEndTime"]))), $type);
+				$datetime_end->setDateTime(new DateTime(date(DateTimeFormat::MYSQL, IntVal($_REQUEST["CalendarEndTime"]))), $type);
 
 				$component->__unset("DTSTART");
 				$component->__unset("DTEND");
@@ -203,7 +203,7 @@ function wdcal_print_feed($base_path = "")
 				);
 			} catch (Exception $e) {
 				echo wdcal_jsonp_encode(array('IsSuccess' => false,
-											  'Msg'       => t('No access')));
+											  'Msg'       => L10n::t('No access')));
 				killme();
 			}
 			break;
@@ -211,7 +211,7 @@ function wdcal_print_feed($base_path = "")
 			$r = q("SELECT `calendarobject_id`, `calendar_id` FROM %s%sjqcalendar WHERE `id`=%d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($_REQUEST["jq_id"]));
 			if (count($r) != 1) {
 				echo wdcal_jsonp_encode(array('IsSuccess' => false,
-											  'Msg'       => t('No access')));
+											  'Msg'       => L10n::t('No access')));
 				killme();
 			}
 			try {
@@ -226,7 +226,7 @@ function wdcal_print_feed($base_path = "")
 				);
 			} catch (Exception $e) {
 				echo wdcal_jsonp_encode(array('IsSuccess' => false,
-											  'Msg'       => t('No access')));
+											  'Msg'       => L10n::t('No access')));
 				killme();
 			}
 

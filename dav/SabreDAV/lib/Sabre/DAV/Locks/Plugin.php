@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Locking plugin
+ * Locking addon
  *
- * This plugin provides locking support to a WebDAV server.
+ * This addon provides locking support to a WebDAV server.
  * The easiest way to get started, is by hooking it up as such:
  *
  * $lockBackend = new Sabre_DAV_Locks_Backend_File('./mylockdb');
@@ -44,7 +44,7 @@ class Sabre_DAV_Locks_Plugin extends Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Initializes the plugin
+     * Initializes the addon
      *
      * This method is automatically called by the Server class after addPlugin.
      *
@@ -61,9 +61,9 @@ class Sabre_DAV_Locks_Plugin extends Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Returns a plugin name.
+     * Returns a addon name.
      *
-     * Using this name other plugins will be able to access other plugins
+     * Using this name other addons will be able to access other addons
      * using Sabre_DAV_Server::getPlugin
      *
      * @return string
@@ -78,7 +78,7 @@ class Sabre_DAV_Locks_Plugin extends Sabre_DAV_ServerPlugin {
      * This method is called by the Server if the user used an HTTP method
      * the server didn't recognize.
      *
-     * This plugin intercepts the LOCK and UNLOCK methods.
+     * This addon intercepts the LOCK and UNLOCK methods.
      *
      * @param string $method
      * @param string $uri
@@ -134,7 +134,7 @@ class Sabre_DAV_Locks_Plugin extends Sabre_DAV_ServerPlugin {
      * This method is called before the logic for any HTTP method is
      * handled.
      *
-     * This plugin uses that feature to intercept access to locked resources.
+     * This addon uses that feature to intercept access to locked resources.
      *
      * @param string $method
      * @param string $uri
@@ -179,7 +179,7 @@ class Sabre_DAV_Locks_Plugin extends Sabre_DAV_ServerPlugin {
     }
 
     /**
-     * Use this method to tell the server this plugin defines additional
+     * Use this method to tell the server this addon defines additional
      * HTTP methods.
      *
      * This method is passed a uri. It should only return HTTP methods that are

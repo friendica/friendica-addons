@@ -4,57 +4,56 @@
 # 
 # 
 # Translators:
-# Abrax <webmaster@a-zwenkau.de>, 2014
-# bavatar <tobias.diekershoff@gmx.net>, 2014
+# Andreas H., 2014
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2014-10-15 12:32+0000\n"
-"Last-Translator: Abrax <webmaster@a-zwenkau.de>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"POT-Creation-Date: 2018-03-15 17:54+0700\n"
+"PO-Revision-Date: 2018-03-16 19:59+0000\n"
+"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: nsfw.php:78
-msgid "Not Safe For Work (General Purpose Content Filter) settings"
-msgstr "Not Safe for Work (Filter für ungewollte Inhalte) Einstellungen:"
+#: nsfw.php:77 nsfw.php:81
+msgid "Content Filter (NSFW and more)"
+msgstr "Inhaltsfilter (NSFW und mehr)"
 
-#: nsfw.php:80
+#: nsfw.php:85
 msgid ""
-"This plugin looks in posts for the words/text you specify below, and "
-"collapses any content containing those keywords so it is not displayed at "
-"inappropriate times, such as sexual innuendo that may be improper in a work "
-"setting. It is polite and recommended to tag any content containing nudity "
-"with #NSFW.  This filter can also match any other word/text you specify, and"
-" can thereby be used as a general purpose content filter."
-msgstr "Dieses Plugin sucht in Beiträgen nach Wörtern oder Textbauteilen die du weiter unten eingibst, findet es diese Bausteine, dann wird der entsprechende Beitrag zusammengefaltet dargestellt. Auf diese Weise wird verhindert, dass Inhalte, wie z.B. sexuelle Anspielungen, in unpassenden Momenten angezeigt werden. Du solltest den #NSFW Tag für Beiträge verwenden von denen du ausgehen kannst, dass andere sie anstößig finden könnten. Su kannst beliebige Wörter in der Filterliste angeben und ihn so als allgemeinen Filter verwenden."
+"This addon searches for specified words/text in posts and collapses them. It"
+" can be used to filter content tagged with for instance #NSFW that may be "
+"deemed inappropriate at certain times or places, such as being at work. It "
+"is also useful for hiding irrelevant or annoying content from direct view."
+msgstr "Dieses Addon sucht nach von dir definierten Wörtern bzw. Texten in Beiträgen und kollabiert diese wenn die Wörter gefunden werden. Damit können z.B. Inhalte gefiltert werden, die mit #NSFW (nicht für die Arbeit geeignet) gekennzeichnet sind. Außerdem ist es nützlich um irrelevante oder lästige Inhalte zu verbergen."
 
-#: nsfw.php:81
+#: nsfw.php:86
 msgid "Enable Content filter"
 msgstr "Aktiviere den Inhaltsfilter"
 
-#: nsfw.php:84
+#: nsfw.php:89
 msgid "Comma separated list of keywords to hide"
 msgstr "Durch Kommata getrennte Liste von Schlüsselwörtern die verborgen werden sollen"
 
-#: nsfw.php:88
-msgid "Submit"
-msgstr "Senden"
+#: nsfw.php:93
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
 
-#: nsfw.php:89
+#: nsfw.php:94
 msgid "Use /expression/ to provide regular expressions"
 msgstr "Verwende /expression/ um Reguläre Ausdrücke zu verwenden"
 
-#: nsfw.php:105
+#: nsfw.php:109
 msgid "NSFW Settings saved."
 msgstr "NSFW-Einstellungen gespeichert"
 
-#: nsfw.php:157
+#: nsfw.php:167
 #, php-format
 msgid "%s - Click to open/close"
 msgstr "%s – Zum Öffnen/Schließen klicken"

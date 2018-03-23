@@ -4,15 +4,15 @@
  * Description: Disable images in group edit menu
  * Version: 1.0
  * Author: Thomas Willingham <https://kakste.com/profile/beardyunixer>
- * 
- *
  */
-
+use Friendica\Core\Addon;
+use Friendica\Core\L10n;
+use Friendica\Core\PConfig;
 
 function group_text_install() {
 
-	register_hook('plugin_settings', 'addon/group_text/group_text.php', 'group_text_settings');
-	register_hook('plugin_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
+	Addon::registerHook('addon_settings', 'addon/group_text/group_text.php', 'group_text_settings');
+	Addon::registerHook('addon_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
 
 	logger("installed group_text");
 }
@@ -20,8 +20,8 @@ function group_text_install() {
 
 function group_text_uninstall() {
 
-	unregister_hook('plugin_settings', 'addon/group_text/group_text.php', 'group_text_settings');
-	unregister_hook('plugin_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
+	Addon::unregisterHook('addon_settings', 'addon/group_text/group_text.php', 'group_text_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
 
 
 	logger("removed group_text");
@@ -43,13 +43,13 @@ function group_text_settings_post($a,$post) {
 		return;
 	set_pconfig(local_user(),'system','groupedit_image_limit',intval($_POST['group_text']));
 
-	info( t('Group Text settings updated.') . EOL);
+	info(L10n::t('Group Text settings updated.') . EOL);
 }
 
 
 /**
  *
- * Called from the Plugin Setting form. 
+ * Called from the Addon Setting form. 
  * Add our own settings info to the page.
  *
  */
@@ -73,14 +73,14 @@ function group_text_settings(&$a,&$s) {
 	/* Add some HTML to the existing form */
 
 	$s .= '<div class="settings-block">';
-	$s .= '<h3>' . t('Group Text') . '</h3>';
+	$s .= '<h3>' . L10n::t('Group Text') . '</h3>';
 	$s .= '<div id="group_text-enable-wrapper">';
-	$s .= '<label id="group_text-enable-label" for="group_text-checkbox">' . t('Use a text only (non-image) group selector in the "group edit" menu') . '</label>';
+	$s .= '<label id="group_text-enable-label" for="group_text-checkbox">' . L10n::t('Use a text only (non-image) group selector in the "group edit" menu') . '</label>';
 	$s .= '<input id="group_text-checkbox" type="checkbox" name="group_text" value="1" ' . $checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
 	/* provide a submit button */
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="group_text-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="group_text-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 
 }

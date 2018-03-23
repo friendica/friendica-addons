@@ -1,5 +1,6 @@
 <?php
 
+use Friendica\Util\DateTimeFormat;
 
 define("DAV_ACL_READ", "{DAV:}read");
 define("DAV_ACL_WRITE", "{DAV:}write");
@@ -150,7 +151,7 @@ function vcard_source_compile($vcardsource)
  */
 function wdcal_php2MySqlTime($phpDate)
 {
-	return date("Y-m-d H:i:s", $phpDate);
+	return date(DateTimeFormat::MYSQL, $phpDate);
 }
 
 /**
@@ -159,7 +160,7 @@ function wdcal_php2MySqlTime($phpDate)
  */
 function wdcal_mySql2PhpTime($sqlDate)
 {
-	$ts = DateTime::createFromFormat("Y-m-d H:i:s", $sqlDate);
+	$ts = DateTime::createFromFormat(DateTimeFormat::MYSQL, $sqlDate);
 	return $ts->format("U");
 }
 

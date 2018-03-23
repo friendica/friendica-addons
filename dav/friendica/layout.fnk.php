@@ -1,5 +1,8 @@
 <?php
 
+use Friendica\Core\Config;
+use Friendica\Core\L10n;
+use Friendica\Core\PConfig;
 
 /**
  *
@@ -96,7 +99,7 @@ function wdcal_import_user_ics($calendar_id) {
 				if (!isset($imported[$uid])) $imported[$uid] = "";
 				$imported[$uid] .= $c->serialize();
 			} catch (Exception $e) {
-				notice(t("Something went wrong when trying to import the file. Sorry. Maybe some events were imported anyway."));
+				notice(L10n::t("Something went wrong when trying to import the file. Sorry. Maybe some events were imported anyway."));
 			}
 
 			if (isset($_REQUEST["overwrite"])) {
@@ -128,28 +131,28 @@ function wdcal_import_user_ics($calendar_id) {
 				$calendar->createFile("import-" . $i . ".ics", $str);
 				$i++;
 			} catch (Exception $e) {
-				notice(t("Something went wrong when trying to import the file. Sorry."));
+				notice(L10n::t("Something went wrong when trying to import the file. Sorry."));
 			}
 
-			$o = t("The ICS-File has been imported.");
+			$o = L10n::t("The ICS-File has been imported.");
 		} catch (Exception $e) {
-			notice(t("Something went wrong when trying to import the file. Sorry. Maybe some events were imported anyway."));
+			notice(L10n::t("Something went wrong when trying to import the file. Sorry. Maybe some events were imported anyway."));
 		} else {
-			notice(t("No file was uploaded."));
+			notice(L10n::t("No file was uploaded."));
 		}
 	}
 
 
-	$o .= "<a href='" . $a->get_baseurl() . "/dav/wdcal/'>" . t("Go back to the calendar") . "</a><br><br>";
+	$o .= "<a href='" . $a->get_baseurl() . "/dav/wdcal/'>" . L10n::t("Go back to the calendar") . "</a><br><br>";
 
 	$num = q("SELECT COUNT(*) num FROM %s%scalendarobjects WHERE `calendar_id` = %d", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $calendar_id);
 
-	$o .= "<h2>" . t("Import a ICS-file") . "</h2>";
+	$o .= "<h2>" . L10n::t("Import a ICS-file") . "</h2>";
 	$o .= '<form method="POST" action="' . $a->get_baseurl() . '/dav/wdcal/' . $calendar_id . '/ics-import/" enctype="multipart/form-data">';
 	$o .= "<input type='hidden' name='form_security_token' value='" . get_form_security_token('icsimport') . "'>\n";
-	$o .= "<label for='ics_file'>" . t("ICS-File") . "</label><input type='file' name='ics_file' id='ics_file'><br>\n";
-	if ($num[0]["num"] > 0) $o .= "<label for='overwrite'>" . str_replace("#num#", $num[0]["num"], t("Overwrite all #num# existing events")) . "</label> <input name='overwrite' id='overwrite' type='checkbox'><br>\n";
-	$o .= "<input type='submit' name='save' value='" . t("Upload") . "'>";
+	$o .= "<label for='ics_file'>" . L10n::t("ICS-File") . "</label><input type='file' name='ics_file' id='ics_file'><br>\n";
+	if ($num[0]["num"] > 0) $o .= "<label for='overwrite'>" . str_replace("#num#", $num[0]["num"], L10n::t("Overwrite all #num# existing events")) . "</label> <input name='overwrite' id='overwrite' type='checkbox'><br>\n";
+	$o .= "<input type='submit' name='save' value='" . L10n::t("Upload") . "'>";
 	$o .= '</form>';
 
 	return $o;
@@ -222,14 +225,14 @@ function wdcal_printCalendar($calendars, $calendars_selected, $data_feed_url, $v
 
 		$x .= '<div class="ctoolbar">
 		<div class="fbutton faddbtn" style="float: right;">
-			<div><a href="' . $a->get_baseurl() . '/dav/settings/"><span>' . t("Settings") . ' / ' . t("Help") . '</span></a></div>
+			<div><a href="' . $a->get_baseurl() . '/dav/settings/"><span>' . L10n::t("Settings") . ' / ' . L10n::t("Help") . '</span></a></div>
 		</div>
 		<div class="fbutton addcal">
-			<div><a href="' . $a->get_baseurl() . '/dav/wdcal/new/" class="addcal">' . t("New event") . '</a></div>
+			<div><a href="' . $a->get_baseurl() . '/dav/wdcal/new/" class="addcal">' . L10n::t("New event") . '</a></div>
 		</div>
 		<div class="btnseparator"></div>
 		<div class="fbutton showtodaybtn">
-			<div><span class="showtoday">' . t("Today") . '</span></div>
+			<div><span class="showtoday">' . L10n::t("Today") . '</span></div>
 		</div>
 		<div class="btnseparator"></div>
 
@@ -238,37 +241,37 @@ function wdcal_printCalendar($calendars, $calendars_selected, $data_feed_url, $v
 
 		if ($view == "day") $x .= 'fcurrent';
 
-		$x .= '">' . t("Day") . '</span></div>
+		$x .= '">' . L10n::t("Day") . '</span></div>
 		</div>
 		<div class="fbutton showweekbtn ';
 
 		if ($view == "week") $x .= "fcurrent";
 
 		$x .= '">
-			<div><span title="Week" class="showweekview">' . t("Week") . '</span></div>
+			<div><span title="Week" class="showweekview">' . L10n::t("Week") . '</span></div>
 		</div>
 		<div class="showmonthbtn fbutton ';
 
 		if ($view == "month") $x .= 'fcurrent';
 
 		$x .= '">
-			<div><span title="Month" class="showmonthview">' . t("Month") . '</span></div>
+			<div><span title="Month" class="showmonthview">' . L10n::t("Month") . '</span></div>
 
 		</div>
 		<div class="btnseparator"></div>
 		<div class="fbutton showreflashbtn">
-			<div><span class="showdayflash">' . t("Reload") . '</span></div>
+			<div><span class="showdayflash">' . L10n::t("Reload") . '</span></div>
 		</div>
 		<div class="btnseparator"></div>
-		<div title="' . t("Previous") . '"  class="fbutton sfprevbtn">
+		<div title="' . L10n::t("Previous") . '"  class="fbutton sfprevbtn">
 			<span class="fprev"></span>
 		</div>
-		<div title="' . t("Next") . '" class="fbutton sfnextbtn">
+		<div title="' . L10n::t("Next") . '" class="fbutton sfnextbtn">
 			<span class="fnext"></span>
 		</div>
 		<div class="fshowdatep fbutton" style="white-space: nowrap; position: relative;">
 			<input name="txtshow" class="hdtxtshow" style="position: absolute; bottom: 0; left: 0; width: 0; height: 0; border: 0; padding: 0; margin: 0;">
-			<span class="txtdatetimeshow">' . t("Date") . '</span>
+			<span class="txtdatetimeshow">' . L10n::t("Date") . '</span>
 		</div>
 		<div style="float: right;">
 			<div class="clear"></div>
@@ -310,8 +313,8 @@ function wdcal_getDetailPage($calendar_id, $calendarobject_id)
 
 		$details = $obj;
 	} catch (Exception $e) {
-		info(t("Error") . ": " . $e);
-		goaway($a->get_baseurl() . "/dav/wdcal/");
+		info(L10n::t("Error") . ": " . $e);
+		goaway('dav/wdcal/');
 	}
 
 	return print_r($details, true);
@@ -351,14 +354,14 @@ function wdcal_getSettingsPage(&$a)
 {
 
 	if (!local_user()) {
-		notice(t('Permission denied.') . EOL);
+		notice(L10n::t('Permission denied.') . EOL);
 		return '';
 	}
 
 	if (isset($_REQUEST["save"])) {
 		check_form_security_token_redirectOnErr('/dav/settings/', 'calprop');
-		set_pconfig($a->user["uid"], "dav", "dateformat", $_REQUEST["wdcal_date_format"]);
-		info(t('The new values have been saved.'));
+		PConfig::set($a->user["uid"], "dav", "dateformat", $_REQUEST["wdcal_date_format"]);
+		info(L10n::t('The new values have been saved.'));
 	}
 
 	if (isset($_REQUEST["save_cals"])) {
@@ -377,7 +380,7 @@ function wdcal_getSettingsPage(&$a)
 			if ($change_sql != "") {
 				q("UPDATE %s%scalendars SET `ctag` = `ctag` + 1 $change_sql WHERE `id` = %d AND `namespace_id` = %d AND `namespace_id` = %d",
 					CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $cal["id"], CALDAV_NAMESPACE_PRIVATE, IntVal($a->user["uid"]));
-				info(t('The calendar has been updated.'));
+				info(L10n::t('The calendar has been updated.'));
 			}
 		}
 
@@ -390,7 +393,7 @@ function wdcal_getSettingsPage(&$a)
 				CALDAV_SQL_DB, CALDAV_SQL_PREFIX, CALDAV_NAMESPACE_PRIVATE, IntVal($a->user["uid"]), $neworder, dbesc(strtolower(substr($_REQUEST["color"]["new"], 1))),
 				dbesc($_REQUEST["name"]["new"]), dbesc($a->timezone), dbesc($_REQUEST["uri"]["new"])
 			);
-			info(t('The new calendar has been created.'));
+			info(L10n::t('The new calendar has been created.'));
 		}
 	}
 
@@ -414,20 +417,20 @@ function wdcal_getSettingsPage(&$a)
 		q("DELETE FROM %s%scalendars WHERE `id` = %s", CALDAV_SQL_DB, CALDAV_SQL_PREFIX, IntVal($_REQUEST["remove_cal"]));
 		q("UPDATE %s%scalendars SET `ctag` = `ctag` + 1 WHERE `id` = " . CALDAV_SQL_DB, CALDAV_SQL_PREFIX, $newcal[0]["id"]);
 
-		info(t('The calendar has been deleted.'));
+		info(L10n::t('The calendar has been deleted.'));
 	}
 
 	$o = "";
 
-	$o .= "<a href='" . $a->get_baseurl() . "/dav/wdcal/'>" . t("Go back to the calendar") . "</a><br><br>";
+	$o .= "<a href='" . $a->get_baseurl() . "/dav/wdcal/'>" . L10n::t("Go back to the calendar") . "</a><br><br>";
 
-	$o .= '<h3>' . t('Calendar Settings') . '</h3>';
+	$o .= '<h3>' . L10n::t('Calendar Settings') . '</h3>';
 
 	$current_format = wdcal_local::getInstanceByUser($a->user["uid"]);
 	$o .= '<form method="POST" action="' . $a->get_baseurl() . '/dav/settings/">';
 	$o .= "<input type='hidden' name='form_security_token' value='" . get_form_security_token('calprop') . "'>\n";
 
-	$o .= '<label for="wdcal_date_format">' . t('Date format') . ':</label><select name="wdcal_date_format" id="wdcal_date_format" size="1">';
+	$o .= '<label for="wdcal_date_format">' . L10n::t('Date format') . ':</label><select name="wdcal_date_format" id="wdcal_date_format" size="1">';
 	$classes = wdcal_local::getInstanceClasses();
 	foreach ($classes as $c) {
 		$o .= '<option value="' . $c::getID() . '" ';
@@ -436,13 +439,13 @@ function wdcal_getSettingsPage(&$a)
 	}
 	$o .= '</select><br>';
 
-	$o .= '<label for="wdcal_time_zone">' . t('Time zone') . ':</label><input id="wdcal_time_zone" value="' . $a->timezone . '" disabled><br>';
+	$o .= '<label for="wdcal_time_zone">' . L10n::t('Time zone') . ':</label><input id="wdcal_time_zone" value="' . $a->timezone . '" disabled><br>';
 
-	$o .= '<input type="submit" name="save" value="' . t('Save') . '">';
+	$o .= '<input type="submit" name="save" value="' . L10n::t('Save') . '">';
 	$o .= '</form>';
 
 
-	$o .= '<br><br><h3>' . t('Calendars') . '</h3>';
+	$o .= '<br><br><h3>' . L10n::t('Calendars') . '</h3>';
 	$o .= '<form method="POST" action="' . $a->get_baseurl() . '/dav/settings/">';
 	$o .= "<input type='hidden' name='form_security_token' value='" . get_form_security_token('calprop') . "'>\n";
 	$o .= "<table><tr><th>Type</th><th>Color</th><th>Name</th><th>URI (for CalDAV)</th><th>ICS</th></tr>";
@@ -484,8 +487,8 @@ function wdcal_getSettingsPage(&$a)
 	$o .= "</tr>\n";
 
 	$o .= "</table>";
-	$o .= "<div style='text-align: center;'>[<a href='#' class='calendar_add_caller'>" . t("Create a new calendar") . "</a>]</div>";
-	$o .= '<input type="submit" name="save_cals" value="' . t('Save') . '">';
+	$o .= "<div style='text-align: center;'>[<a href='#' class='calendar_add_caller'>" . L10n::t("Create a new calendar") . "</a>]</div>";
+	$o .= '<input type="submit" name="save_cals" value="' . L10n::t('Save') . '">';
 	$o .= '</form>';
 	$baseurl = $a->get_baseurl();
 	$o .= "<script>\$(function() {
@@ -493,22 +496,22 @@ function wdcal_getSettingsPage(&$a)
 	});</script>";
 
 
-	$o .= "<br><h3>" . t("Limitations") . "</h3>";
+	$o .= "<br><h3>" . L10n::t("Limitations") . "</h3>";
 
 	$o .= "- The native friendica events are embedded as read-only, half-transparent in the calendar.<br>";
 
-	$o .= "<br><h3>" . t("Warning") . "</h3>";
+	$o .= "<br><h3>" . L10n::t("Warning") . "</h3>";
 
-	$o .= "This plugin still is in a very early stage of development. Expect major bugs!<br>";
+	$o .= "This addon still is in a very early stage of development. Expect major bugs!<br>";
 
-	$o .= "<br><h3>" . t("Synchronization (iPhone, Thunderbird Lightning, Android, ...)") . "</h3>";
+	$o .= "<br><h3>" . L10n::t("Synchronization (iPhone, Thunderbird Lightning, Android, ...)") . "</h3>";
 
-	$o .= 'This plugin enables synchronization of your dates and contacts with CalDAV- and CardDAV-enabled programs or devices.<br>
+	$o .= 'This addon enables synchronization of your dates and contacts with CalDAV- and CardDAV-enabled programs or devices.<br>
 		As an example, the instructions how to set up two-way synchronization with an iPhone/iPodTouch are provided below.<br>
 		Unfortunately, Android does not have native support for CalDAV or CardDAV, so an app has to be installed.<br>
-		On desktops, the Lightning-extension to Mozilla Thunderbird should be able to use this plugin as a backend.<br><br>';
+		On desktops, the Lightning-extension to Mozilla Thunderbird should be able to use this addon as a backend.<br><br>';
 
-	$o .= '<h4>' . t('Synchronizing this calendar with the iPhone') . '</h4>';
+	$o .= '<h4>' . L10n::t('Synchronizing this calendar with the iPhone') . '</h4>';
 
 	$o .= "<ul>
 	<li>Go to the settings</li>
@@ -519,7 +522,7 @@ function wdcal_getSettingsPage(&$a)
 	<li><b>Server:</b> " . $a->get_baseurl() . "/dav/ / <b>Username/Password:</b> <em>the same as your friendica-login</em></li>
 	</ul>";
 
-	$o .= '<h4>' . t('Synchronizing your Friendica-Contacts with the iPhone') . '</h4>';
+	$o .= '<h4>' . L10n::t('Synchronizing your Friendica-Contacts with the iPhone') . '</h4>';
 
 	$o .= "<ul>
 	<li>Go to the settings</li>

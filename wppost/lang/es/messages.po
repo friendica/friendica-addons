@@ -28,8 +28,8 @@ msgid "Wordpress Export"
 msgstr "Exportar a Wordpress"
 
 #: wppost.php:87
-msgid "Enable WordPress Post Plugin"
-msgstr "Habilitar Plugin de publicación de WordPress"
+msgid "Enable WordPress Post Addon"
+msgstr "Habilitar Addon de publicación de WordPress"
 
 #: wppost.php:92
 msgid "WordPress username"

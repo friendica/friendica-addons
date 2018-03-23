@@ -78,7 +78,7 @@ function serverAdHoc(server) {
 	dataForm(server, 'command', '', '', 'adhoc');
 }
 
-// Plugin launcher
+// Addon launcher
 function launchAdHoc() {
 	// Click event
 	$('#adhoc .bottom .finish').click(closeAdHoc);

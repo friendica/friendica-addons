@@ -1,4 +1,4 @@
-# Gravatar Plugin
+# Gravatar Addon
 by [Klaus Weidenbach](http://friendica.dszdw.net/profile/klaus)
 
 This addon allows you to look up an avatar image for new users and contacts at [Gravatar](http://www.gravatar.com). This will be used if there have not been found any other avatar images yet for example through OpenID.

@@ -41,3 +41,8 @@ aside #likes { margin: 0px; padding: 0px; list-style: none; }
 
 aside #div_id_remember { overflow: auto;	width: 100%; padding-top:120px;}
 #login_openid input { width: 160px; }
+
+/* frio fix */
+body.mod-home .navbar.navbar-fixed-top ul.nav.navbar-nav #nav-login {
+	display: block;
+}

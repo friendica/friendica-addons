@@ -9,12 +9,12 @@
  * About
  * =====
  *
- * This plugin will allow you to enter a date/time period during which
+ * This addon will allow you to enter a date/time period during which
  * all your ~friendica visitors from the web will be redirected to a page
  * you can configure in the admin panel as well.
  *
  * Calls to the API and the communication with other ~friendica nodes is
- * not effected from this plugin.
+ * not effected from this addon.
  *
  * If you enter a period the current date would be affected none of the
  * currently logged in users will be effected as well. But if they log
@@ -49,13 +49,16 @@
  * THE SOFTWARE.
  */
 
+use Friendica\Core\Config;
+use Friendica\Core\Addon;
+use Friendica\Core\L10n;
 
 function blackout_install() {
-    register_hook('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');
+    Addon::registerHook('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');
 }
 
 function blackout_uninstall() {
-    unregister_hook('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');
+    Addon::unregisterHook('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');
 }
 function blackout_redirect ($a, $b) {
     // if we have a logged in user, don't throw her out
@@ -86,20 +89,20 @@ function blackout_redirect ($a, $b) {
     }
 }
 
-function blackout_plugin_admin(&$a, &$o) {
-    $mystart = get_config('blackout','begindate');
+function blackout_addon_admin(&$a, &$o) {
+    $mystart = Config::get('blackout','begindate');
     if (! is_string($mystart)) { $mystart = "YYYY-MM-DD:hhmm"; }
     $myend   = get_config('blackout','enddate');
     if (! is_string($myend)) { $myend = "YYYY-MM-DD:hhmm"; }
     $myurl   = get_config('blackout','url');
     if (! is_string($myurl)) { $myurl = "http://www.example.com"; }
     $t = get_markup_template( "admin.tpl", "addon/blackout/" );
- 
-   $o = replace_macros($t, array(
-        '$submit' => t('Save Settings'),
-        '$rurl' => array("rurl", "Redirect URL", $myurl, "all your visitors from the web will be redirected to this URL"),
-        '$startdate' => array("startdate", "Begin of the Blackout<br />(YYYY-MM-DD hh:mm)", $mystart, "format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute"),
-        '$enddate' => array("enddate", "End of the Blackout<br />(YYYY-MM-DD hh:mm)", $myend, ""),
+
+   $o = replace_macros($t, [
+        '$submit' => L10n::t('Save Settings'),
+        '$rurl' => ["rurl", "Redirect URL", $myurl, "all your visitors from the web will be redirected to this URL"],
+        '$startdate' => ["startdate", "Begin of the Blackout<br />(YYYY-MM-DD hh:mm)", $mystart, "format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute"],
+        '$enddate' => ["enddate", "End of the Blackout<br />(YYYY-MM-DD hh:mm)", $myend, ""],
 
     ));
     $date1 = DateTime::createFromFormat('Y-m-d G:i', $mystart);
@@ -110,7 +113,7 @@ function blackout_plugin_admin(&$a, &$o) {
         $o = '<p>Please double check that the current settings for the blackout. Begin will be <strong>'.$mystart.'</strong> and it will end <strong>'.$myend.'</strong>.</p>' . $o;
     }
 }
-function blackout_plugin_admin_post (&$a) {
+function blackout_addon_admin_post (&$a) {
     $begindate = trim($_POST['startdate']);
     $enddate = trim($_POST['enddate']);
     $url = trim($_POST['rurl']);

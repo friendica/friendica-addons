@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 
 #: gnot.php:82
-msgid "Enable this plugin/addon?"
+msgid "Enable this addon?"
 msgstr ""
 
 #: gnot.php:88

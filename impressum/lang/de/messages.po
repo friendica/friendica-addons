@@ -41,7 +41,7 @@ msgid ""
 "The impressum addon needs to be configured!<br />Please add at least the "
 "<tt>owner</tt> variable to your config file. For other variables please "
 "refer to the README file of the addon."
-msgstr "Das Impressums-Plugin muss noch konfiguriert werden.<br />Bitte gebe mindestens den <tt>Betreiber</tt> in der Konfiguration an. Alle weiteren Parameter werden in der README-Datei des Addons erläutert."
+msgstr "Das Impressums-Addon muss noch konfiguriert werden.<br />Bitte gebe mindestens den <tt>Betreiber</tt> in der Konfiguration an. Alle weiteren Parameter werden in der README-Datei des Addons erläutert."
 
 #: impressum.php:78
 msgid "Settings updated."

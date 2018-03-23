@@ -5,22 +5,30 @@
  * Version: 0.2
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  */
-require('addon/buffer/bufferapp.php');
+require 'addon/buffer/bufferapp.php';
+
+use Friendica\App;
+use Friendica\Content\Text\BBCode;
+use Friendica\Content\Text\Plaintext;
+use Friendica\Core\Addon;
+use Friendica\Core\Config;
+use Friendica\Core\L10n;
+use Friendica\Core\PConfig;
 
 function buffer_install() {
-	register_hook('post_local',           'addon/buffer/buffer.php', 'buffer_post_local');
-	register_hook('notifier_normal',      'addon/buffer/buffer.php', 'buffer_send');
-	register_hook('jot_networks',         'addon/buffer/buffer.php', 'buffer_jot_nets');
-	register_hook('connector_settings',      'addon/buffer/buffer.php', 'buffer_settings');
-	register_hook('connector_settings_post', 'addon/buffer/buffer.php', 'buffer_settings_post');
+	Addon::registerHook('post_local',           'addon/buffer/buffer.php', 'buffer_post_local');
+	Addon::registerHook('notifier_normal',      'addon/buffer/buffer.php', 'buffer_send');
+	Addon::registerHook('jot_networks',         'addon/buffer/buffer.php', 'buffer_jot_nets');
+	Addon::registerHook('connector_settings',      'addon/buffer/buffer.php', 'buffer_settings');
+	Addon::registerHook('connector_settings_post', 'addon/buffer/buffer.php', 'buffer_settings_post');
 }
 
 function buffer_uninstall() {
-	unregister_hook('post_local',       'addon/buffer/buffer.php', 'buffer_post_local');
-	unregister_hook('notifier_normal',  'addon/buffer/buffer.php', 'buffer_send');
-	unregister_hook('jot_networks',     'addon/buffer/buffer.php', 'buffer_jot_nets');
-	unregister_hook('connector_settings',      'addon/buffer/buffer.php', 'buffer_settings');
-	unregister_hook('connector_settings_post', 'addon/buffer/buffer.php', 'buffer_settings_post');
+	Addon::unregisterHook('post_local',       'addon/buffer/buffer.php', 'buffer_post_local');
+	Addon::unregisterHook('notifier_normal',  'addon/buffer/buffer.php', 'buffer_send');
+	Addon::unregisterHook('jot_networks',     'addon/buffer/buffer.php', 'buffer_jot_nets');
+	Addon::unregisterHook('connector_settings',      'addon/buffer/buffer.php', 'buffer_settings');
+	Addon::unregisterHook('connector_settings_post', 'addon/buffer/buffer.php', 'buffer_settings_post');
 }
 
 function buffer_module() {}
@@ -28,7 +36,7 @@ function buffer_module() {}
 function buffer_content(&$a) {
 
 	if(! local_user()) {
-		notice( t('Permission denied.') . EOL);
+		notice(L10n::t('Permission denied.') . EOL);
 		return '';
 	}
 
@@ -50,28 +58,30 @@ function buffer_content(&$a) {
 	return $o;
 }
 
-function buffer_plugin_admin(&$a, &$o){
-	$t = get_markup_template( "admin.tpl", "addon/buffer/" );
+function buffer_addon_admin(&$a, &$o)
+{
+	$t = get_markup_template("admin.tpl", "addon/buffer/");
 
-	$o = replace_macros($t, array(
-		'$submit' => t('Save Settings'),
-								// name, label, value, help, [extra values]
-		'$client_id' => array('client_id', t('Client ID'),  get_config('buffer', 'client_id' ), ''),
-		'$client_secret' => array('client_secret', t('Client Secret'),  get_config('buffer', 'client_secret' ), ''),
-	));
+	$o = replace_macros($t, [
+		'$submit' => L10n::t('Save Settings'),
+		// name, label, value, help, [extra values]
+		'$client_id' => ['client_id', L10n::t('Client ID'), Config::get('buffer', 'client_id'), ''],
+		'$client_secret' => ['client_secret', L10n::t('Client Secret'), Config::get('buffer', 'client_secret'), ''],
+	]);
 }
-function buffer_plugin_admin_post(&$a){
-        $client_id     =       ((x($_POST,'client_id'))              ? notags(trim($_POST['client_id']))   : '');
-        $client_secret =       ((x($_POST,'client_secret'))   ? notags(trim($_POST['client_secret'])): '');
-        set_config('buffer','client_id',$client_id);
-        set_config('buffer','client_secret',$client_secret);
-        info( t('Settings updated.'). EOL );
+function buffer_addon_admin_post(&$a)
+{
+	$client_id     =       ((x($_POST, 'client_id'))              ? notags(trim($_POST['client_id']))   : '');
+	$client_secret =       ((x($_POST, 'client_secret'))   ? notags(trim($_POST['client_secret'])): '');
+	Config::set('buffer', 'client_id', $client_id);
+	Config::set('buffer', 'client_secret', $client_secret);
+	info(L10n::t('Settings updated.'). EOL);
 }
 
 function buffer_connect(&$a) {
 
 	if (isset($_REQUEST["error"])) {
-		$o = t('Error when registering buffer connection:')." ".$_REQUEST["error"];
+		$o = L10n::t('Error when registering buffer connection:')." ".$_REQUEST["error"];
 		return $o;
 	}
 	// Start a session.  This is necessary to hold on to  a few keys the callback script will also need
@@ -90,9 +100,9 @@ function buffer_connect(&$a) {
 		$o .= '<a href="' . $buffer->get_login_url() . '">Connect to Buffer!</a>';
 	} else {
 		logger("buffer_connect: authenticated");
-		$o .= t("You are now authenticated to buffer. ");
-		$o .= '<br /><a href="'.$a->get_baseurl().'/settings/connectors">'.t("return to the connector page").'</a>';
-		set_pconfig(local_user(), 'buffer','access_token', $buffer->access_token);
+		$o .= L10n::t("You are now authenticated to buffer. ");
+		$o .= '<br /><a href="'.$a->get_baseurl().'/settings/connectors">'.L10n::t("return to the connector page").'</a>';
+		PConfig::set(local_user(), 'buffer','access_token', $buffer->access_token);
 	}
 
 	return($o);
@@ -107,7 +117,7 @@ function buffer_jot_nets(&$a,&$b) {
 		$buffer_defpost = get_pconfig(local_user(),'buffer','post_by_default');
 		$selected = ((intval($buffer_defpost) == 1) ? ' checked="checked" ' : '');
 		$b .= '<div class="profile-jot-net"><input type="checkbox" name="buffer_enable"' . $selected . ' value="1" /> '
-		    . t('Post to Buffer') . '</div>';
+		    . L10n::t('Post to Buffer') . '</div>';
 	}
 }
 
@@ -132,11 +142,11 @@ function buffer_settings(&$a,&$s) {
 	/* Add some HTML to the existing form */
 
 	$s .= '<span id="settings_buffer_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_buffer_expanded\'); openClose(\'settings_buffer_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/buffer.png" /><h3 class="connector">'. t('Buffer Export').'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/buffer.png" /><h3 class="connector">'. L10n::t('Buffer Export').'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_buffer_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_buffer_expanded\'); openClose(\'settings_buffer_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/buffer.png" /><h3 class="connector">'. t('Buffer Export').'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/buffer.png" /><h3 class="connector">'. L10n::t('Buffer Export').'</h3>';
 	$s .= '</span>';
 
 	$client_id = get_config("buffer", "client_id");
@@ -146,21 +156,21 @@ function buffer_settings(&$a,&$s) {
 	$s .= '<div id="buffer-password-wrapper">';
 	if ($access_token == "") {
 		$s .= '<div id="buffer-authenticate-wrapper">';
-		$s .= '<a href="'.$a->get_baseurl().'/buffer/connect">'.t("Authenticate your Buffer connection").'</a>';
+		$s .= '<a href="'.$a->get_baseurl().'/buffer/connect">'.L10n::t("Authenticate your Buffer connection").'</a>';
 		$s .= '</div><div class="clear"></div>';
 	} else {
 		$s .= '<div id="buffer-enable-wrapper">';
-		$s .= '<label id="buffer-enable-label" for="buffer-checkbox">' . t('Enable Buffer Post Plugin') . '</label>';
+		$s .= '<label id="buffer-enable-label" for="buffer-checkbox">' . L10n::t('Enable Buffer Post Addon') . '</label>';
 		$s .= '<input id="buffer-checkbox" type="checkbox" name="buffer" value="1" ' . $checked . '/>';
 		$s .= '</div><div class="clear"></div>';
 
 		$s .= '<div id="buffer-bydefault-wrapper">';
-		$s .= '<label id="buffer-bydefault-label" for="buffer-bydefault">' . t('Post to Buffer by default') . '</label>';
+		$s .= '<label id="buffer-bydefault-label" for="buffer-bydefault">' . L10n::t('Post to Buffer by default') . '</label>';
 		$s .= '<input id="buffer-bydefault" type="checkbox" name="buffer_bydefault" value="1" ' . $def_checked . '/>';
 		$s .= '</div><div class="clear"></div>';
 
 		$s .= '<div id="buffer-delete-wrapper">';
-		$s .= '<label id="buffer-delete-label" for="buffer-delete">' . t('Check to delete this preset') . '</label>';
+		$s .= '<label id="buffer-delete-label" for="buffer-delete">' . L10n::t('Check to delete this preset') . '</label>';
 		$s .= '<input id="buffer-delete" type="checkbox" name="buffer_delete" value="1" />';
 		$s .= '</div><div class="clear"></div>';
 
@@ -169,7 +179,7 @@ function buffer_settings(&$a,&$s) {
 		$profiles = $buffer->go('/profiles');
 		if (is_array($profiles)) {
 			$s .= '<div id="buffer-accounts-wrapper">';
-			$s .= t("Posts are going to all accounts that are enabled by default:");
+			$s .= L10n::t("Posts are going to all accounts that are enabled by default:");
 			$s .= "<ul>";
 			foreach ($profiles as $profile) {
 				if (!$profile->default)
@@ -189,7 +199,7 @@ function buffer_settings(&$a,&$s) {
 
 	/* provide a submit button */
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="buffer-submit" name="buffer-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="buffer-submit" name="buffer-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 
 }
 
@@ -252,11 +262,8 @@ function buffer_send(&$a,&$b) {
 	$client_secret = get_config("buffer", "client_secret");
 	$access_token = get_pconfig($b['uid'], "buffer","access_token");
 
-	if($access_token) {
+	if ($access_token) {
 		$buffer = new BufferApp($client_id, $client_secret, $callback_url, $access_token);
-
-		require_once("include/plaintext.php");
-		require_once("include/network.php");
 
 		$profiles = $buffer->go('/profiles');
 		if (is_array($profiles)) {
@@ -321,7 +328,7 @@ function buffer_send(&$a,&$b) {
 					$item["body"] = preg_replace("(\[s\](.*?)\[\/s\])ism",'-$1-',$item["body"]);
 				}
 
-				$post = plaintext($a, $item, $limit, $includedlinks, $htmlmode);
+				$post = BBCode::toPlaintext($item, $limit, $includedlinks, $htmlmode);
 				logger("buffer_send: converted message ".$b["id"]." result: ".print_r($post, true), LOGGER_DEBUG);
 
 				// The image proxy is used as a sanitizer. Buffer seems to be really picky about pictures
@@ -334,11 +341,11 @@ function buffer_send(&$a,&$b) {
 
 				//if ($includedlinks) {
 				//	if (isset($post["url"]))
-				//		$post["url"] = short_link($post["url"]);
+				//		$post["url"] = Network::shortenUrl($post["url"]);
 				//	if (isset($post["image"]))
-				//		$post["image"] = short_link($post["image"]);
+				//		$post["image"] = Network::shortenUrl($post["image"]);
 				//	if (isset($post["preview"]))
-				//		$post["preview"] = short_link($post["preview"]);
+				//		$post["preview"] = Network::shortenUrl($post["preview"]);
 				//}
 
 				// Seems like a bug to me
@@ -347,8 +354,8 @@ function buffer_send(&$a,&$b) {
 				if (($profile->service == "twitter") && isset($post["url"]) && ($post["type"] != "photo"))
 					$post["text"] .= " ".$post["url"];
 				elseif (($profile->service == "appdotnet") && isset($post["url"]) && isset($post["title"]) && ($post["type"] != "photo")) {
-					$post["title"] = shortenmsg($post["title"], 90);
-					$post["text"] = shortenmsg($post["text"], $limit - (24 + strlen($post["title"])));
+					$post["title"] = Plaintext::shorten($post["title"], 90);
+					$post["text"] = Plaintext::shorten($post["text"], $limit - (24 + strlen($post["title"])));
 					$post["text"] .= "\n[".$post["title"]."](".$post["url"].")";
 				} elseif (($profile->service == "appdotnet") && isset($post["url"]) && ($post["type"] != "photo"))
 					$post["text"] .= " ".$post["url"];

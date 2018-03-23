@@ -645,7 +645,7 @@ function enableFormPrivacy(rank) {
 	$('#privacy .privacy-' + rank + ' input, #privacy .privacy-' + rank + ' select').removeAttr('disabled');
 }
 
-// Plugin launcher
+// Addon launcher
 function launchPrivacy() {
 	// Click events
 	$('#privacy .bottom .finish').click(closePrivacy);

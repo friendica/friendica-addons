@@ -2,7 +2,7 @@
 
 $a->strings["Post to Wordpress"] = "Сообщение для Wordpress";
 $a->strings["WordPress Post Settings"] = "Настройки сообщений для Wordpress";
-$a->strings["Enable WordPress Post Plugin"] = "Включить WordPress  плагин сообщений";
+$a->strings["Enable WordPress Post Addon"] = "Включить WordPress  плагин сообщений";
 $a->strings["WordPress username"] = "WordPress Имя пользователя";
 $a->strings["WordPress password"] = "WordPress паролъ";
 $a->strings["WordPress API URL"] = "WordPress API URL";

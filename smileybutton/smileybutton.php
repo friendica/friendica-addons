@@ -5,19 +5,19 @@
  * Version: 0.2
  * Author: Johannes Schwab <https://friendica.jschwab.org/profile/ddorian>
  */
-
+use Friendica\Core\Addon;
 
 function smileybutton_install() {
-	//Register hooks 
-	register_hook('jot_tool', 'addon/smileybutton/smileybutton.php', 'show_button');
- 
+	//Register hooks
+	Addon::registerHook('jot_tool', 'addon/smileybutton/smileybutton.php', 'show_button');
+
 	logger("installed smileybutton");
 }
 
 
 function smileybutton_uninstall() {
 	//Delet registered hooks
-	unregister_hook('jot_tool',    'addon/smileybutton/smileybutton.php', 'show_button');	
+	Addon::unregisterHook('jot_tool',    'addon/smileybutton/smileybutton.php', 'show_button');
 
 	logger("removed smileybutton");
 }
@@ -95,8 +95,8 @@ function show_button($a, &$b) {
 	);
 	
 	// Call hooks to get aditional smileies from other addons
-	$params = array('texts' => $texts, 'icons' => $icons, 'string' => ""); //changed
-	call_hooks('smilie', $params);
+	$params = ['texts' => $texts, 'icons' => $icons, 'string' => ""]; //changed
+	Addon::callHooks('smilie', $params);
 
 	//Generate html for smiley list
 	$s = "<table class=\"smiley-preview\"><tr>\n\t";

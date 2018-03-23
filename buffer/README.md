@@ -5,4 +5,4 @@ Please register an app at [http://bufferapp.com/developers/api](http://bufferapp
 Please use (your server address)/buffer/connect as Callback URL.
 
 After the registration please enter the values for "Client ID" and "Client Secret" in the 
-[administration](admin/plugins/buffer).
+[administration](admin/addons/buffer).

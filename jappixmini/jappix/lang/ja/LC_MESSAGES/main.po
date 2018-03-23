@@ -1038,7 +1038,7 @@ msgstr "サブフォルダを書き込む権限が必要です。%1sに権限を
 msgid "The folder is writable, you can continue!"
 msgstr "フォルダは書き込み可能です。続けてください。"
 
-msgid "Jappix offers you the possibility to manage your configuration, install new plugins or search for updates. That's why you must create an administrator account to access the manager."
+msgid "Jappix offers you the possibility to manage your configuration, install new addons or search for updates. That's why you must create an administrator account to access the manager."
 msgstr "Jappixは、設定ファイル、新しいプラグイン、アップデートを提供できます。管理者権限でのアクセスが必要です。"
 
 msgid "When Jappix will be installed, just click on the manager link on the home page to access it."

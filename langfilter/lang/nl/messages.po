@@ -1,0 +1,70 @@
+# ADDON langfilter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica langfilter addon package.
+# 
+# 
+# Translators:
+# Karel Vandecandelaere <karel@dasrakel.eu>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-09-22 15:18+0200\n"
+"PO-Revision-Date: 2018-03-20 13:46+0000\n"
+"Last-Translator: Karel Vandecandelaere <karel@dasrakel.eu>\n"
+"Language-Team: Dutch (http://www.transifex.com/Friendica/friendica/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: langfilter.php:44
+msgid "Language Filter"
+msgstr "Taalfilter"
+
+#: langfilter.php:45
+msgid ""
+"This addon tries to identify the language of a postings. If it does not "
+"match any language spoken by you (see below) the posting will be collapsed. "
+"Remember detecting the language is not perfect, especially with short "
+"postings."
+msgstr "Deze addon probeert de taal van berichten automatisch te bepalen. Als het niet overeenkomt met een taal die jij spreekt (zie verder) zal het bericht worden verborgen. Onthoudt hierbij wel dat taaldetectie niet perfect is, vooral bij korte berichten."
+
+#: langfilter.php:46
+msgid "Use the language filter"
+msgstr "Gebruik de taalfilter"
+
+#: langfilter.php:47
+msgid "I speak"
+msgstr "Ik spreek"
+
+#: langfilter.php:47
+msgid ""
+"List of abbreviations (iso2 codes) for languages you speak, comma separated."
+" For example \"de,it\"."
+msgstr "Lijst van afkortingen (ISO2 codes) voor talen die jij spreekt, door komma's gescheiden. Bijvoorbeeld \"de,it\"."
+
+#: langfilter.php:48
+msgid "Minimum confidence in language detection"
+msgstr ""
+
+#: langfilter.php:48
+msgid ""
+"Minimum confidence in language detection being correct, from 0 to 100. Posts"
+" will not be filtered when the confidence of language detection is below "
+"this percent value."
+msgstr ""
+
+#: langfilter.php:49
+msgid "Save Settings"
+msgstr "Instellingen opslaan"
+
+#: langfilter.php:73
+msgid "Language Filter Settings saved."
+msgstr "Taalfilter-instellingen bijgewerkt."
+
+#: langfilter.php:123
+#, php-format
+msgid "unspoken language %s - Click to open/close"
+msgstr "niet gesproken taal %s - Klik om open/dicht te klappen"

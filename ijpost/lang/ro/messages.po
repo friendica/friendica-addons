@@ -28,7 +28,7 @@ msgid "InsaneJournal Post Settings"
 msgstr "Configurări Postări Insaneournal"
 
 #: ijpost.php:72
-msgid "Enable InsaneJournal Post Plugin"
+msgid "Enable InsaneJournal Post Addon"
 msgstr "Activare Modul Postare InsaneJournal"
 
 #: ijpost.php:77

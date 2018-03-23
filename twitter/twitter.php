@@ -2,11 +2,12 @@
 /**
  * Name: Twitter Connector
  * Description: Bidirectional (posting, relaying and reading) connector for Twitter.
- * Version: 1.0.4
+ * Version: 1.1.0
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
+ * Maintainer: Hypolite Petovan <https://friendica.mrpetovan.com/profile/hypolite>
  *
- * Copyright (c) 2011-2013 Tobias Diekershoff, Michael Vogel
+ * Copyright (c) 2011-2013 Tobias Diekershoff, Michael Vogel, Hypolite Petovan
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,8 +33,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-
-/*   Twitter Plugin for Friendica
+/*   Twitter Addon for Friendica
  *
  *   Author: Tobias Diekershoff
  *           tobias.diekershoff@gmx.net
@@ -41,7 +41,7 @@
  *   License:3-clause BSD license
  *
  *   Configuration:
- *     To use this plugin you need a OAuth Consumer key pair (key & secret)
+ *     To use this addon you need a OAuth Consumer key pair (key & secret)
  *     you can get it from Twitter at https://twitter.com/apps
  *
  *     Register your Friendica site as "Client" application with "Read & Write" access
@@ -53,53 +53,76 @@
  *     $a->config['twitter']['consumerkey'] = 'your consumer_key here';
  *     $a->config['twitter']['consumersecret'] = 'your consumer_secret here';
  *
- *     To activate the plugin itself add it to the $a->config['system']['addon']
+ *     To activate the addon itself add it to the $a->config['system']['addon']
  *     setting. After this, your user can configure their Twitter account settings
- *     from "Settings -> Plugin Settings".
+ *     from "Settings -> Addon Settings".
  *
- *     Requirements: PHP5, curl [Slinky library]
+ *     Requirements: PHP5, curl
  */
 
-require_once('include/enotify.php');
-require_once("include/socgraph.php");
+use Abraham\TwitterOAuth\TwitterOAuth;
+use Friendica\App;
+use Friendica\Content\OEmbed;
+use Friendica\Content\Text\BBCode;
+use Friendica\Content\Text\Plaintext;
+use Friendica\Core\Addon;
+use Friendica\Core\Config;
+use Friendica\Core\L10n;
+use Friendica\Core\PConfig;
+use Friendica\Core\Worker;
+use Friendica\Model\GContact;
+use Friendica\Model\Group;
+use Friendica\Model\Item;
+use Friendica\Model\Photo;
+use Friendica\Model\Queue;
+use Friendica\Model\User;
+use Friendica\Object\Image;
+use Friendica\Util\DateTimeFormat;
+use Friendica\Util\Network;
+
+require_once 'boot.php';
+require_once 'include/dba.php';
+require_once 'include/enotify.php';
+require_once 'include/text.php';
+
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 define('TWITTER_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
 function twitter_install() {
 	//  we need some hooks, for the configuration and for sending tweets
-	register_hook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings');
-	register_hook('connector_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
-	register_hook('post_local', 'addon/twitter/twitter.php', 'twitter_post_local');
-	register_hook('notifier_normal', 'addon/twitter/twitter.php', 'twitter_post_hook');
-	register_hook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
-	register_hook('cron', 'addon/twitter/twitter.php', 'twitter_cron');
-	register_hook('queue_predeliver', 'addon/twitter/twitter.php', 'twitter_queue_hook');
-	register_hook('follow', 'addon/twitter/twitter.php', 'twitter_follow');
-	register_hook('expire', 'addon/twitter/twitter.php', 'twitter_expire');
-	register_hook('prepare_body', 'addon/twitter/twitter.php', 'twitter_prepare_body');
-	register_hook('check_item_notification','addon/twitter/twitter.php', 'twitter_check_item_notification');
+	Addon::registerHook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings');
+	Addon::registerHook('connector_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
+	Addon::registerHook('post_local', 'addon/twitter/twitter.php', 'twitter_post_local');
+	Addon::registerHook('notifier_normal', 'addon/twitter/twitter.php', 'twitter_post_hook');
+	Addon::registerHook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
+	Addon::registerHook('cron', 'addon/twitter/twitter.php', 'twitter_cron');
+	Addon::registerHook('queue_predeliver', 'addon/twitter/twitter.php', 'twitter_queue_hook');
+	Addon::registerHook('follow', 'addon/twitter/twitter.php', 'twitter_follow');
+	Addon::registerHook('expire', 'addon/twitter/twitter.php', 'twitter_expire');
+	Addon::registerHook('prepare_body', 'addon/twitter/twitter.php', 'twitter_prepare_body');
+	Addon::registerHook('check_item_notification', 'addon/twitter/twitter.php', 'twitter_check_item_notification');
 	logger("installed twitter");
 }
 
-
-function twitter_uninstall() {
-	unregister_hook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings');
-	unregister_hook('connector_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
-	unregister_hook('post_local', 'addon/twitter/twitter.php', 'twitter_post_local');
-	unregister_hook('notifier_normal', 'addon/twitter/twitter.php', 'twitter_post_hook');
-	unregister_hook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
-	unregister_hook('cron', 'addon/twitter/twitter.php', 'twitter_cron');
-	unregister_hook('queue_predeliver', 'addon/twitter/twitter.php', 'twitter_queue_hook');
-	unregister_hook('follow', 'addon/twitter/twitter.php', 'twitter_follow');
-	unregister_hook('expire', 'addon/twitter/twitter.php', 'twitter_expire');
-	unregister_hook('prepare_body', 'addon/twitter/twitter.php', 'twitter_prepare_body');
-	unregister_hook('check_item_notification','addon/twitter/twitter.php', 'twitter_check_item_notification');
+function twitter_uninstall()
+{
+	Addon::unregisterHook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings');
+	Addon::unregisterHook('connector_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
+	Addon::unregisterHook('post_local', 'addon/twitter/twitter.php', 'twitter_post_local');
+	Addon::unregisterHook('notifier_normal', 'addon/twitter/twitter.php', 'twitter_post_hook');
+	Addon::unregisterHook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
+	Addon::unregisterHook('cron', 'addon/twitter/twitter.php', 'twitter_cron');
+	Addon::unregisterHook('queue_predeliver', 'addon/twitter/twitter.php', 'twitter_queue_hook');
+	Addon::unregisterHook('follow', 'addon/twitter/twitter.php', 'twitter_follow');
+	Addon::unregisterHook('expire', 'addon/twitter/twitter.php', 'twitter_expire');
+	Addon::unregisterHook('prepare_body', 'addon/twitter/twitter.php', 'twitter_prepare_body');
+	Addon::unregisterHook('check_item_notification', 'addon/twitter/twitter.php', 'twitter_check_item_notification');
 
 	// old setting - remove only
-	unregister_hook('post_local_end', 'addon/twitter/twitter.php', 'twitter_post_hook');
-	unregister_hook('plugin_settings', 'addon/twitter/twitter.php', 'twitter_settings');
-	unregister_hook('plugin_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
-
+	Addon::unregisterHook('post_local_end', 'addon/twitter/twitter.php', 'twitter_post_hook');
+	Addon::unregisterHook('addon_settings', 'addon/twitter/twitter.php', 'twitter_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
 }
 
 function twitter_check_item_notification($a, &$notification_data) {
@@ -127,21 +150,19 @@ function twitter_follow($a, &$contact) {
 
 	$uid = $a->user["uid"];
 
-	$ckey    = get_config('twitter', 'consumerkey');
-	$csecret = get_config('twitter', 'consumersecret');
-	$otoken  = get_pconfig($uid, 'twitter', 'oauthtoken');
-	$osecret = get_pconfig($uid, 'twitter', 'oauthsecret');
+	$ckey = Config::get('twitter', 'consumerkey');
+	$csecret = Config::get('twitter', 'consumersecret');
+	$otoken = PConfig::get($uid, 'twitter', 'oauthtoken');
+	$osecret = PConfig::get($uid, 'twitter', 'oauthsecret');
 
-	require_once("addon/twitter/codebird.php");
+	// If the addon is not configured (general or for this user) quit here
+	if (empty($ckey) || empty($csecret) || empty($otoken) || empty($osecret)) {
+		$contact = false;
+		return;
+	}
 
-	$cb = \Codebird\Codebird::getInstance();
-	$cb->setConsumerKey($ckey, $csecret);
-	$cb->setToken($otoken, $osecret);
-
-	$parameters = array();
-	$parameters["screen_name"] = $nickname;
-
-	$user = $cb->friendships_create($parameters);
+	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
+	$connection->post('friendships/create', ['screen_name' => $nickname]);
 
 	twitter_fetchuser($a, $uid, $nickname);
 
@@ -162,7 +183,7 @@ function twitter_jot_nets(&$a,&$b) {
 		$tw_defpost = get_pconfig(local_user(),'twitter','post_by_default');
 		$selected = ((intval($tw_defpost) == 1) ? ' checked="checked" ' : '');
 		$b .= '<div class="profile-jot-net"><input type="checkbox" name="twitter_enable"' . $selected . ' value="1" /> '
-			. t('Post to Twitter') . '</div>';
+			. L10n::t('Post to Twitter') . '</div>';
 	}
 }
 
@@ -170,11 +191,11 @@ function twitter_settings_post ($a,$post) {
 	if(! local_user())
 		return;
 	// don't check twitter settings if twitter submit button is not clicked
-	if (!x($_POST,'twitter-submit'))
+	if (empty($_POST['twitter-disconnect']) && empty($_POST['twitter-submit'])) {
 		return;
 
-	if (isset($_POST['twitter-disconnect'])) {
-		/***
+	if (!empty($_POST['twitter-disconnect'])) {
+		/*		 * *
 		 * if the twitter-disconnect checkbox is set, clear the OAuth key/secret pair
 		 * from the user configuration
 		 */
@@ -190,37 +211,46 @@ function twitter_settings_post ($a,$post) {
 		del_pconfig(local_user(), 'twitter', 'create_user');
 		del_pconfig(local_user(), 'twitter', 'own_id');
 	} else {
-	if (isset($_POST['twitter-pin'])) {
-		//  if the user supplied us with a PIN from Twitter, let the magic of OAuth happen
-		logger('got a Twitter PIN');
-		require_once('library/twitteroauth.php');
-		$ckey    = get_config('twitter', 'consumerkey');
-		$csecret = get_config('twitter', 'consumersecret');
-		//  the token and secret for which the PIN was generated were hidden in the settings
-		//  form as token and token2, we need a new connection to Twitter using these token
-		//  and secret to request a Access Token with the PIN
-		$connection = new TwitterOAuth($ckey, $csecret, $_POST['twitter-token'], $_POST['twitter-token2']);
-		$token   = $connection->getAccessToken( $_POST['twitter-pin'] );
-		//  ok, now that we have the Access Token, save them in the user config
-		set_pconfig(local_user(),'twitter', 'oauthtoken',  $token['oauth_token']);
-		set_pconfig(local_user(),'twitter', 'oauthsecret', $token['oauth_token_secret']);
-		set_pconfig(local_user(),'twitter', 'post', 1);
-		//  reload the Addon Settings page, if we don't do it see Bug #42
-		goaway($a->get_baseurl().'/settings/connectors');
-	} else {
-		//  if no PIN is supplied in the POST variables, the user has changed the setting
-		//  to post a tweet for every new __public__ posting to the wall
-		set_pconfig(local_user(),'twitter','post',intval($_POST['twitter-enable']));
-		set_pconfig(local_user(),'twitter','post_by_default',intval($_POST['twitter-default']));
-		set_pconfig(local_user(), 'twitter', 'mirror_posts', intval($_POST['twitter-mirror']));
-		set_pconfig(local_user(), 'twitter', 'import', intval($_POST['twitter-import']));
-		set_pconfig(local_user(), 'twitter', 'create_user', intval($_POST['twitter-create_user']));
+		if (isset($_POST['twitter-pin'])) {
+			//  if the user supplied us with a PIN from Twitter, let the magic of OAuth happen
+			logger('got a Twitter PIN');
+			$ckey    = Config::get('twitter', 'consumerkey');
+			$csecret = Config::get('twitter', 'consumersecret');
+			//  the token and secret for which the PIN was generated were hidden in the settings
+			//  form as token and token2, we need a new connection to Twitter using these token
+			//  and secret to request a Access Token with the PIN
+			try {
+				if (empty($_POST['twitter-pin'])) {
+					throw new Exception(L10n::t('You submitted an empty PIN, please Sign In with Twitter again to get a new one.'));
+				}
 
-		if (!intval($_POST['twitter-mirror']))
-			del_pconfig(local_user(),'twitter','lastid');
+				$connection = new TwitterOAuth($ckey, $csecret, $_POST['twitter-token'], $_POST['twitter-token2']);
+				$token = $connection->oauth("oauth/access_token", ["oauth_verifier" => $_POST['twitter-pin']]);
+				//  ok, now that we have the Access Token, save them in the user config
+				PConfig::set(local_user(), 'twitter', 'oauthtoken', $token['oauth_token']);
+				PConfig::set(local_user(), 'twitter', 'oauthsecret', $token['oauth_token_secret']);
+				PConfig::set(local_user(), 'twitter', 'post', 1);
+			} catch(Exception $e) {
+				info($e->getMessage());
+			}
+			//  reload the Addon Settings page, if we don't do it see Bug #42
+			goaway('settings/connectors');
+		} else {
+			//  if no PIN is supplied in the POST variables, the user has changed the setting
+			//  to post a tweet for every new __public__ posting to the wall
+			PConfig::set(local_user(), 'twitter', 'post', intval($_POST['twitter-enable']));
+			PConfig::set(local_user(), 'twitter', 'post_by_default', intval($_POST['twitter-default']));
+			PConfig::set(local_user(), 'twitter', 'mirror_posts', intval($_POST['twitter-mirror']));
+			PConfig::set(local_user(), 'twitter', 'import', intval($_POST['twitter-import']));
+			PConfig::set(local_user(), 'twitter', 'create_user', intval($_POST['twitter-create_user']));
 
-		info(t('Twitter settings updated.') . EOL);
-	}}
+			if (!intval($_POST['twitter-mirror'])) {
+				PConfig::delete(local_user(), 'twitter', 'lastid');
+			}
+
+			info(L10n::t('Twitter settings updated.') . EOL);
+		}
+	}
 }
 function twitter_settings(&$a,&$s) {
 	if(! local_user())
@@ -231,71 +261,58 @@ function twitter_settings(&$a,&$s) {
 	 * 2) If no OAuthtoken & stuff is present, generate button to get some
 	 * 3) Checkbox for "Send public notices (140 chars only)
 	 */
-	$ckey    = get_config('twitter', 'consumerkey' );
-	$csecret = get_config('twitter', 'consumersecret' );
-	$otoken  = get_pconfig(local_user(), 'twitter', 'oauthtoken'  );
-	$osecret = get_pconfig(local_user(), 'twitter', 'oauthsecret' );
-	$enabled = get_pconfig(local_user(), 'twitter', 'post');
-	$checked = (($enabled) ? ' checked="checked" ' : '');
-	$defenabled = get_pconfig(local_user(),'twitter','post_by_default');
-	$defchecked = (($defenabled) ? ' checked="checked" ' : '');
-	$mirrorenabled = get_pconfig(local_user(),'twitter','mirror_posts');
-	$mirrorchecked = (($mirrorenabled) ? ' checked="checked" ' : '');
-	$importenabled = get_pconfig(local_user(),'twitter','import');
-	$importchecked = (($importenabled) ? ' checked="checked" ' : '');
-	$create_userenabled = get_pconfig(local_user(),'twitter','create_user');
-	$create_userchecked = (($create_userenabled) ? ' checked="checked" ' : '');
+	$ckey    = Config::get('twitter', 'consumerkey');
+	$csecret = Config::get('twitter', 'consumersecret');
+	$otoken  = PConfig::get(local_user(), 'twitter', 'oauthtoken');
+	$osecret = PConfig::get(local_user(), 'twitter', 'oauthsecret');
+
+	$enabled            = intval(PConfig::get(local_user(), 'twitter', 'post'));
+	$defenabled         = intval(PConfig::get(local_user(), 'twitter', 'post_by_default'));
+	$mirrorenabled      = intval(PConfig::get(local_user(), 'twitter', 'mirror_posts'));
+	$importenabled      = intval(PConfig::get(local_user(), 'twitter', 'import'));
+	$create_userenabled = intval(PConfig::get(local_user(), 'twitter', 'create_user'));
 
 	$css = (($enabled) ? '' : '-disabled');
 
 	$s .= '<span id="settings_twitter_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_twitter_expanded\'); openClose(\'settings_twitter_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/twitter.png" /><h3 class="connector">'. t('Twitter Import/Export/Mirror').'</h3>';
+	$s .= '<img class="connector' . $css . '" src="images/twitter.png" /><h3 class="connector">' . L10n::t('Twitter Import/Export/Mirror') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_twitter_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_twitter_expanded\'); openClose(\'settings_twitter_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/twitter.png" /><h3 class="connector">'. t('Twitter Import/Export/Mirror').'</h3>';
+	$s .= '<img class="connector' . $css . '" src="images/twitter.png" /><h3 class="connector">' . L10n::t('Twitter Import/Export/Mirror') . '</h3>';
 	$s .= '</span>';
 
-	if ( (!$ckey) && (!$csecret) ) {
-		/***
-		 * no global consumer keys
+	if ((!$ckey) && (!$csecret)) {
+		/* no global consumer keys
 		 * display warning and skip personal config
 		 */
-		$s .= '<p>'. t('No consumer key pair for Twitter found. Please contact your site administrator.') .'</p>';
+		$s .= '<p>' . L10n::t('No consumer key pair for Twitter found. Please contact your site administrator.') . '</p>';
 	} else {
-		/***
-		 * ok we have a consumer key pair now look into the OAuth stuff
-		 */
-		if ( (!$otoken) && (!$osecret) ) {
-			/***
-			 * the user has not yet connected the account to twitter...
+		// ok we have a consumer key pair now look into the OAuth stuff
+		if ((!$otoken) && (!$osecret)) {
+			/* the user has not yet connected the account to twitter...
 			 * get a temporary OAuth key/secret pair and display a button with
 			 * which the user can request a PIN to connect the account to a
 			 * account at Twitter.
 			 */
-			require_once('library/twitteroauth.php');
 			$connection = new TwitterOAuth($ckey, $csecret);
-			$request_token = $connection->getRequestToken();
-			$token = $request_token['oauth_token'];
-			/***
-			 *  make some nice form
-			 */
-			$s .= '<p>'. t('At this Friendica instance the Twitter plugin was enabled but you have not yet connected your account to your Twitter account. To do so click the button below to get a PIN from Twitter which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to Twitter.') .'</p>';
-			$s .= '<a href="'.$connection->getAuthorizeURL($token).'" target="_twitter"><img src="addon/twitter/lighter.png" alt="'.t('Log in with Twitter').'"></a>';
+			$result = $connection->oauth('oauth/request_token', ['oauth_callback' => 'oob']);
+
+			$s .= '<p>' . L10n::t('At this Friendica instance the Twitter addon was enabled but you have not yet connected your account to your Twitter account. To do so click the button below to get a PIN from Twitter which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to Twitter.') . '</p>';
+			$s .= '<a href="' . $connection->url('oauth/authorize', ['oauth_token' => $result['oauth_token']]) . '" target="_twitter"><img src="addon/twitter/lighter.png" alt="' . L10n::t('Log in with Twitter') . '"></a>';
 			$s .= '<div id="twitter-pin-wrapper">';
-			$s .= '<label id="twitter-pin-label" for="twitter-pin">'. t('Copy the PIN from Twitter here') .'</label>';
+			$s .= '<label id="twitter-pin-label" for="twitter-pin">' . L10n::t('Copy the PIN from Twitter here') . '</label>';
 			$s .= '<input id="twitter-pin" type="text" name="twitter-pin" />';
-			$s .= '<input id="twitter-token" type="hidden" name="twitter-token" value="'.$token.'" />';
-			$s .= '<input id="twitter-token2" type="hidden" name="twitter-token2" value="'.$request_token['oauth_token_secret'].'" />';
-	    $s .= '</div><div class="clear"></div>';
-	    $s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
+			$s .= '<input id="twitter-token" type="hidden" name="twitter-token" value="' . $result['oauth_token'] . '" />';
+			$s .= '<input id="twitter-token2" type="hidden" name="twitter-token2" value="' . $result['oauth_token_secret'] . '" />';
+			$s .= '</div><div class="clear"></div>';
+			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
 		} else {
 			/***
 			 *  we have an OAuth key / secret pair for the user
 			 *  so let's give a chance to disable the postings to Twitter
 			 */
-			require_once('library/twitteroauth.php');
-			$connection = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
+			$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 			$details = $connection->get('account/verify_credentials');
 			$s .= '<div id="twitter-info" ><img id="twitter-avatar" src="'.$details->profile_image_url.'" /><p id="twitter-info-block">'. t('Currently connected to: ') .'<a href="https://twitter.com/'.$details->screen_name.'" target="_twitter">'.$details->screen_name.'</a><br /><em>'.$details->description.'</em></p></div>';
 			$s .= '<p>'. t('If enabled all your <strong>public</strong> postings can be posted to the associated Twitter account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.') .'</p>';
@@ -310,24 +327,43 @@ function twitter_settings(&$a,&$s) {
 			$s .= '<input id="twitter-default" type="checkbox" name="twitter-default" value="1" ' . $defchecked . '/>';
 			$s .= '<div class="clear"></div>';
 
-			$s .= '<label id="twitter-mirror-label" for="twitter-mirror">'.t('Mirror all posts from twitter that are no replies').'</label>';
-			$s .= '<input id="twitter-mirror" type="checkbox" name="twitter-mirror" value="1" '. $mirrorchecked . '/>';
+			$field_checkbox = get_markup_template('field_checkbox.tpl');
+
+			$s .= '<div id="twitter-info" >
+				<p>' . L10n::t('Currently connected to: ') . '<a href="https://twitter.com/' . $details->screen_name . '" target="_twitter">' . $details->screen_name . '</a>
+					<button type="submit" name="twitter-disconnect" value="1">' . L10n::t('Disconnect') . '</button>
+				</p>
+				<p id="twitter-info-block">
+					<a href="https://twitter.com/' . $details->screen_name . '" target="_twitter"><img id="twitter-avatar" src="' . $details->profile_image_url . '" /></a>
+					<em>' . $details->description . '</em>
+				</p>
+			</div>';
 			$s .= '<div class="clear"></div>';
 			$s .= '</div>';
 
-			$s .= '<label id="twitter-import-label" for="twitter-import">'.t('Import the remote timeline').'</label>';
-			$s .= '<input id="twitter-import" type="checkbox" name="twitter-import" value="1" '. $importchecked . '/>';
-			$s .= '<div class="clear"></div>';
+			$s .= replace_macros($field_checkbox, [
+				'$field' => ['twitter-enable', L10n::t('Allow posting to Twitter'), $enabled, L10n::t('If enabled all your <strong>public</strong> postings can be posted to the associated Twitter account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.')]
+			]);
+			if ($a->user['hidewall']) {
+				$s .= '<p>' . L10n::t('<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to Twitter will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted.') . '</p>';
+			}
+			$s .= replace_macros($field_checkbox, [
+				'$field' => ['twitter-default', L10n::t('Send public postings to Twitter by default'), $defenabled, '']
+			]);
+			$s .= replace_macros($field_checkbox, [
+				'$field' => ['twitter-mirror', L10n::t('Mirror all posts from twitter that are no replies'), $mirrorenabled, '']
+			]);
+			$s .= replace_macros($field_checkbox, [
+				'$field' => ['twitter-import', L10n::t('Import the remote timeline'), $importenabled, '']
+			]);
+			$s .= replace_macros($field_checkbox, [
+				'$field' => ['twitter-create_user', L10n::t('Automatically create contacts'), $create_userenabled, '']
+			]);
 
 			$s .= '<label id="twitter-create_user-label" for="twitter-create_user">'.t('Automatically create contacts').'</label>';
 			$s .= '<input id="twitter-create_user" type="checkbox" name="twitter-create_user" value="1" '. $create_userchecked . '/>';
 			$s .= '<div class="clear"></div>';
-
-			$s .= '<div id="twitter-disconnect-wrapper">';
-			$s .= '<label id="twitter-disconnect-label" for="twitter-disconnect">'. t('Clear OAuth configuration') .'</label>';
-			$s .= '<input id="twitter-disconnect" type="checkbox" name="twitter-disconnect" value="1" />';
-			$s .= '</div><div class="clear"></div>';
-			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . t('Save Settings') . '" /></div>';
+			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
 		}
 	}
 	$s .= '</div><div class="clear"></div>';
@@ -365,16 +401,7 @@ function twitter_post_local(&$a, &$b) {
 
 function twitter_action($a, $uid, $pid, $action) {
 
-	$ckey    = get_config('twitter', 'consumerkey');
-	$csecret = get_config('twitter', 'consumersecret');
-	$otoken  = get_pconfig($uid, 'twitter', 'oauthtoken');
-	$osecret = get_pconfig($uid, 'twitter', 'oauthsecret');
-
-	require_once("addon/twitter/codebird.php");
-
-	$cb = \Codebird\Codebird::getInstance();
-	$cb->setConsumerKey($ckey, $csecret);
-	$cb->setToken($otoken, $osecret);
+	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
 	$post = array('id' => $pid);
 
@@ -382,37 +409,35 @@ function twitter_action($a, $uid, $pid, $action) {
 
 	switch ($action) {
 		case "delete":
-			// To-Do: $result = $cb->statuses_destroy($post);
+			// To-Do: $result = $connection->post('statuses/destroy', $post);
 			break;
 		case "like":
-			$result = $cb->favorites_create($post);
+			$result = $connection->post('favorites/create', $post);
 			break;
 		case "unlike":
-			$result = $cb->favorites_destroy($post);
+			$result = $connection->post('favorites/destroy', $post);
 			break;
 	}
 	logger("twitter_action '".$action."' send, result: " . print_r($result, true), LOGGER_DEBUG);
 }
 
-function twitter_post_hook(&$a,&$b) {
-
-	/**
-	 * Post to Twitter
-	 */
-
-	require_once("include/network.php");
-
-	if (!get_pconfig($b["uid"],'twitter','import')) {
-		if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
-			return;
+function twitter_post_hook(App $a, &$b)
+{
+	// Post to Twitter
+	if (!PConfig::get($b["uid"], 'twitter', 'import')
+		&& ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))) {
+		return;
 	}
 
 	if($b['parent'] != $b['id']) {
 		logger("twitter_post_hook: parameter ".print_r($b, true), LOGGER_DATA);
 
 		// Looking if its a reply to a twitter post
-		if ((substr($b["parent-uri"], 0, 9) != "twitter::") && (substr($b["extid"], 0, 9) != "twitter::") && (substr($b["thr-parent"], 0, 9) != "twitter::")) {
-			logger("twitter_post_hook: no twitter post ".$b["parent"]);
+		if ((substr($b["parent-uri"], 0, 9) != "twitter::")
+			&& (substr($b["extid"], 0, 9) != "twitter::")
+			&& (substr($b["thr-parent"], 0, 9) != "twitter::"))
+		{
+			logger("twitter_post_hook: no twitter post " . $b["parent"]);
 			return;
 		}
 
@@ -448,12 +473,14 @@ function twitter_post_hook(&$a,&$b) {
 	if (($b['verb'] == ACTIVITY_POST) && $b['deleted'])
 		twitter_action($a, $b["uid"], substr($orig_post["uri"], 9), "delete");
 
-	if($b['verb'] == ACTIVITY_LIKE) {
-		logger("twitter_post_hook: parameter 2 ".substr($b["thr-parent"], 9), LOGGER_DEBUG);
-		if ($b['deleted'])
+	if ($b['verb'] == ACTIVITY_LIKE) {
+		logger("twitter_post_hook: parameter 2 " . substr($b["thr-parent"], 9), LOGGER_DEBUG);
+		if ($b['deleted']) {
 			twitter_action($a, $b["uid"], substr($b["thr-parent"], 9), "unlike");
-		else
+		} else {
 			twitter_action($a, $b["uid"], substr($b["thr-parent"], 9), "like");
+		}
+
 		return;
 	}
 
@@ -484,17 +511,15 @@ function twitter_post_hook(&$a,&$b) {
 		if (twitter_is_retweet($a, $b['uid'], $b['body']))
 			return;
 
-		require_once('library/twitteroauth.php');
-		require_once('include/bbcode.php');
-		$tweet = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
+		$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
-		$max_char = 140;
-		require_once("include/plaintext.php");
-		$msgarr = plaintext($a, $b, $max_char, true, 8);
+		$max_char = 280;
+		$msgarr = BBCode::toPlaintext($b, $max_char, true, 8);
 		$msg = $msgarr["text"];
 
-		if (($msg == "") && isset($msgarr["title"]))
-			$msg = shortenmsg($msgarr["title"], $max_char - 50);
+		if (($msg == "") && isset($msgarr["title"])) {
+			$msg = Plaintext::shorten($msgarr["title"], $max_char - 50);
+		}
 
 		$image = "";
 
@@ -505,29 +530,16 @@ function twitter_post_hook(&$a,&$b) {
 			$image = $msgarr["image"];
 
 		// and now tweet it :-)
-		if(strlen($msg) && ($image != "")) {
-			$img_str = fetch_url($image);
+		if (strlen($msg) && ($image != "")) {
+			$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
+			$media = $connection->upload('media/upload', ['media' => $image]);
 
-			$tempfile = tempnam(get_temppath(), "cache");
-			file_put_contents($tempfile, $img_str);
-
-			// Twitter had changed something so that the old library doesn't work anymore
-			// so we are using a new library for twitter
-			// To-Do:
-			// Switching completely to this library with all functions
-			require_once("addon/twitter/codebird.php");
-
-			$cb = \Codebird\Codebird::getInstance();
-			$cb->setConsumerKey($ckey, $csecret);
-			$cb->setToken($otoken, $osecret);
-
-			$post = array('status' => $msg, 'media[]' => $tempfile);
+			$post = ['status' => $msg, 'media_ids' => $media->media_id_string];
 
 			if ($iscomment)
 				$post["in_reply_to_status_id"] = substr($orig_post["uri"], 9);
 
-			$result = $cb->statuses_updateWithMedia($post);
-			unlink($tempfile);
+			$result = $connection->post('statuses/update', $post);
 
 			logger('twitter_post_with_media send, result: ' . print_r($result, true), LOGGER_DEBUG);
 
@@ -541,23 +553,32 @@ function twitter_post_hook(&$a,&$b) {
 				$msg .= " ".$image;
 				$image = "";
 			} elseif ($iscomment) {
-				logger('twitter_post: Update extid '.$result->id_str." for post id ".$b['id']);
-				q("UPDATE `item` SET `extid` = '%s', `body` = '%s' WHERE `id` = %d",
-					dbesc("twitter::".$result->id_str),
-					dbesc($result->text),
-					intval($b['id'])
-				);
+				logger('twitter_post: Update extid ' . $result->id_str . " for post id " . $b['id']);
+				Item::update(['extid' => "twitter::" . $result->id_str, 'body' => $result->text], ['id' => $b['id']]);
 			}
 		}
 
-		if(strlen($msg) && ($image == "")) {
+		if (strlen($msg) && ($image == "")) {
+// -----------------
+			$max_char = 280;
+			$msgarr = BBCode::toPlaintext($b, $max_char, true, 8);
+			$msg = $msgarr["text"];
+
+			if (($msg == "") && isset($msgarr["title"])) {
+				$msg = Plaintext::shorten($msgarr["title"], $max_char - 50);
+			}
+
+			if (isset($msgarr["url"])) {
+				$msg .= "\n" . $msgarr["url"];
+			}
+// -----------------
 			$url = 'statuses/update';
 			$post = array('status' => $msg);
 
 			if ($iscomment)
 				$post["in_reply_to_status_id"] = substr($orig_post["uri"], 9);
 
-			$result = $tweet->post($url, $post);
+			$result = $connection->post($url, $post);
 			logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
 
 			if ($result->source)
@@ -570,45 +591,39 @@ function twitter_post_hook(&$a,&$b) {
 				if (count($r))
 					$a->contact = $r[0]["id"];
 
-				$s = serialize(array('url' => $url, 'item' => $b['id'], 'post' => $post));
-				require_once('include/queue_fn.php');
-				add_to_queue($a->contact,NETWORK_TWITTER,$s);
-				notice(t('Twitter post failed. Queued for retry.').EOL);
+				$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $post]);
+
+				Queue::add($a->contact, NETWORK_TWITTER, $s);
+				notice(L10n::t('Twitter post failed. Queued for retry.') . EOL);
 			} elseif ($iscomment) {
-				logger('twitter_post: Update extid '.$result->id_str." for post id ".$b['id']);
-				q("UPDATE `item` SET `extid` = '%s' WHERE `id` = %d",
-					dbesc("twitter::".$result->id_str),
-					intval($b['id'])
-				);
-				//q("UPDATE `item` SET `extid` = '%s', `body` = '%s' WHERE `id` = %d",
-				//	dbesc("twitter::".$result->id_str),
-				//	dbesc($result->text),
-				//	intval($b['id'])
-				//);
+				logger('twitter_post: Update extid ' . $result->id_str . " for post id " . $b['id']);
+				Item::update(['extid' => "twitter::" . $result->id_str], ['id' => $b['id']]);
 			}
 		}
 	}
 }
 
-function twitter_plugin_admin_post(&$a){
-	$consumerkey	=	((x($_POST,'consumerkey'))		? notags(trim($_POST['consumerkey']))	: '');
-	$consumersecret	=	((x($_POST,'consumersecret'))	? notags(trim($_POST['consumersecret'])): '');
-	$applicationname = ((x($_POST, 'applicationname')) ? notags(trim($_POST['applicationname'])):'');
-	set_config('twitter','consumerkey',$consumerkey);
-	set_config('twitter','consumersecret',$consumersecret);
-	//set_config('twitter','application_name',$applicationname);
-	info( t('Settings updated.'). EOL );
+function twitter_addon_admin_post(App $a)
+{
+	$consumerkey    = x($_POST, 'consumerkey')    ? notags(trim($_POST['consumerkey']))    : '';
+	$consumersecret = x($_POST, 'consumersecret') ? notags(trim($_POST['consumersecret'])) : '';
+	Config::set('twitter', 'consumerkey', $consumerkey);
+	Config::set('twitter', 'consumersecret', $consumersecret);
+	info(L10n::t('Settings updated.') . EOL);
 }
 function twitter_plugin_admin(&$a, &$o){
 	$t = get_markup_template( "admin.tpl", "addon/twitter/" );
 
-	$o = replace_macros($t, array(
-		'$submit' => t('Save Settings'),
-								// name, label, value, help, [extra values]
-		'$consumerkey' => array('consumerkey', t('Consumer key'),  get_config('twitter', 'consumerkey' ), ''),
-		'$consumersecret' => array('consumersecret', t('Consumer secret'),  get_config('twitter', 'consumersecret' ), ''),
-		//'$applicationname' => array('applicationname', t('Name of the Twitter Application'), get_config('twitter','application_name'),t('Set this to the exact name you gave the app on twitter.com/apps to avoid mirroring postings from ~friendica back to ~friendica'))
-	));
+function twitter_addon_admin(App $a, &$o)
+{
+	$t = get_markup_template("admin.tpl", "addon/twitter/");
+
+	$o = replace_macros($t, [
+		'$submit' => L10n::t('Save Settings'),
+		// name, label, value, help, [extra values]
+		'$consumerkey' => ['consumerkey', L10n::t('Consumer key'), Config::get('twitter', 'consumerkey'), ''],
+		'$consumersecret' => ['consumersecret', L10n::t('Consumer secret'), Config::get('twitter', 'consumersecret'), ''],
+	]);
 }
 
 function twitter_cron($a,$b) {
@@ -635,11 +650,12 @@ function twitter_cron($a,$b) {
 		}
 	}
 
-	$abandon_days = intval(get_config('system','account_abandon_days'));
-	if ($abandon_days < 1)
+	$abandon_days = intval(Config::get('system', 'account_abandon_days'));
+	if ($abandon_days < 1) {
 		$abandon_days = 0;
+	}
 
-	$abandon_limit = date("Y-m-d H:i:s", time() - $abandon_days * 86400);
+	$abandon_limit = date(DateTimeFormat::MYSQL, time() - $abandon_days * 86400);
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'import' AND `v` = '1'");
 	if(count($r)) {
@@ -699,10 +715,10 @@ function twitter_expire($a,$b) {
 	logger('twitter_expire: expire_start');
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'import' AND `v` = '1' ORDER BY RAND()");
-	if(count($r)) {
-		foreach($r as $rr) {
-			logger('twitter_expire: user '.$rr['uid']);
-			item_expire($rr['uid'], $days, NETWORK_TWITTER, true);
+	if (count($r)) {
+		foreach ($r as $rr) {
+			logger('twitter_expire: user ' . $rr['uid']);
+			Item::expire($rr['uid'], $days, NETWORK_TWITTER, true);
 		}
 	}
 
@@ -714,8 +730,7 @@ function twitter_prepare_body(&$a,&$b) {
 		return;
 
 	if ($b["preview"]) {
-		$max_char = 140;
-		require_once("include/plaintext.php");
+		$max_char = 280;
 		$item = $b["item"];
 		$item["plink"] = $a->get_baseurl()."/display/".$a->user["nickname"]."/".$item["parent"];
 
@@ -734,8 +749,7 @@ function twitter_prepare_body(&$a,&$b) {
 				$item["body"] = $nickname." ".$item["body"];
 		}
 
-
-		$msgarr = plaintext($a, $item, $max_char, true, 8);
+		$msgarr = BBCode::toPlaintext($item, $max_char, true, 8);
 		$msg = $msgarr["text"];
 
 		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo"))
@@ -770,8 +784,14 @@ function twitter_do_mirrorpost($a, $uid, $post) {
 		// We don't support nested shares, so we mustn't show quotes as shares on retweets
 		$item = twitter_createpost($a, $uid, $post->retweeted_status, array('id' => 0), false, false, true);
 
-		$datarray['body'] = "\n".share_header($item['author-name'], $item['author-link'], $item['author-avatar'], "",
-					$item['created'], $item['plink']);
+		$datarray['body'] = "\n" . share_header(
+			$item['author-name'],
+			$item['author-link'],
+			$item['author-avatar'],
+			"",
+			$item['created'],
+			$item['plink']
+		);
 
 		$datarray['body'] .= $item['body'].'[/share]';
 	} else {
@@ -812,8 +832,7 @@ function twitter_fetchtimeline($a, $uid) {
 	require_once('include/items.php');
 	require_once('mod/share.php');
 
-	require_once('library/twitteroauth.php');
-	$connection = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
+	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
 	$parameters = array("exclude_replies" => true, "trim_user" => false, "contributor_details" => true, "include_rts" => true, "tweet_mode" => "extended");
 
@@ -863,10 +882,8 @@ function twitter_queue_hook(&$a,&$b) {
 	if(! count($qi))
 		return;
 
-	require_once('include/queue_fn.php');
-
-	foreach($qi as $x) {
-		if($x['network'] !== NETWORK_TWITTER)
+	foreach ($qi as $x) {
+		if ($x['network'] !== NETWORK_TWITTER) {
 			continue;
 
 		logger('twitter_queue: run');
@@ -893,14 +910,8 @@ function twitter_queue_hook(&$a,&$b) {
 
 			$z = unserialize($x['content']);
 
-			require_once("addon/twitter/codebird.php");
-
-			$cb = \Codebird\Codebird::getInstance();
-			$cb->setConsumerKey($ckey, $csecret);
-			$cb->setToken($otoken, $osecret);
-
-			if ($z['url'] == "statuses/update")
-				$result = $cb->statuses_update($z['post']);
+			$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
+			$result = $connection->post($z['url'], $z['post']);
 
 			logger('twitter_queue: post result: ' . print_r($result, true), LOGGER_DEBUG);
 
@@ -908,14 +919,14 @@ function twitter_queue_hook(&$a,&$b) {
 				logger('twitter_queue: Send to Twitter failed: "' . print_r($result->errors, true) . '"');
 			else {
 				$success = true;
-				remove_queue_item($x['id']);
+				Queue::removeItem($x['id']);
 			}
 		} else
 			logger("twitter_queue: Error getting tokens for user ".$user['uid']);
 
 		if (!$success) {
 			logger('twitter_queue: delayed');
-			update_queue_time($x['id']);
+			Queue::updateTime($x['id']);
 		}
 	}
 }
@@ -946,7 +957,8 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 			"addr" => $contact->screen_name."@twitter.com", "generation" => 2));
 
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
-		intval($uid), dbesc("twitter::".$contact->id_str));
+		intval($uid),
+		dbesc("twitter::" . $contact->id_str));
 
 	if(!count($r) && !$create_user)
 		return(0);
@@ -963,9 +975,9 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 					`location`, `about`, `writable`, `blocked`, `readonly`, `pending`)
 					VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', %d, 0, 0, 0)",
 			intval($uid),
-			dbesc(datetime_convert()),
-			dbesc("https://twitter.com/".$contact->screen_name),
-			dbesc(normalise_link("https://twitter.com/".$contact->screen_name)),
+			dbesc(DateTimeFormat::utcNow()),
+			dbesc("https://twitter.com/" . $contact->screen_name),
+			dbesc(normalise_link("https://twitter.com/" . $contact->screen_name)),
 			dbesc($contact->screen_name."@twitter.com"),
 			dbesc("twitter::".$contact->id_str),
 			dbesc(''),
@@ -1015,17 +1027,16 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 				dbesc($photos[0]),
 				dbesc($photos[1]),
 				dbesc($photos[2]),
-				dbesc(datetime_convert()),
-				dbesc(datetime_convert()),
-				dbesc(datetime_convert()),
+				dbesc(DateTimeFormat::utcNow()),
+				dbesc(DateTimeFormat::utcNow()),
+				dbesc(DateTimeFormat::utcNow()),
 				intval($contact_id)
 			);
 		}
 	} else {
 		// update profile photos once every two weeks as we have no notification of when they change.
-
-		//$update_photo = (($r[0]['avatar-date'] < datetime_convert('','','now -2 days')) ? true : false);
-		$update_photo = ($r[0]['avatar-date'] < datetime_convert('','','now -12 hours'));
+		//$update_photo = (($r[0]['avatar-date'] < DateTimeFormat::convert('now -2 days', '', '', )) ? true : false);
+		$update_photo = ($r[0]['avatar-date'] < DateTimeFormat::utc('now -12 hours'));
 
 		// check that we have all the photos, this has been known to fail on occasion
 
@@ -1055,9 +1066,9 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 					dbesc($photos[0]),
 					dbesc($photos[1]),
 					dbesc($photos[2]),
-					dbesc(datetime_convert()),
-					dbesc(datetime_convert()),
-					dbesc(datetime_convert()),
+					dbesc(DateTimeFormat::utcNow()),
+					dbesc(DateTimeFormat::utcNow()),
+					dbesc(DateTimeFormat::utcNow()),
 					dbesc("https://twitter.com/".$contact->screen_name),
 					dbesc(normalise_link("https://twitter.com/".$contact->screen_name)),
 					dbesc($contact->screen_name."@twitter.com"),
@@ -1074,17 +1085,12 @@ function twitter_fetch_contact($uid, $contact, $create_user) {
 	return($r[0]["id"]);
 }
 
-function twitter_fetchuser($a, $uid, $screen_name = "", $user_id = "") {
-	$ckey    = get_config('twitter', 'consumerkey');
-	$csecret = get_config('twitter', 'consumersecret');
-	$otoken  = get_pconfig($uid, 'twitter', 'oauthtoken');
-	$osecret = get_pconfig($uid, 'twitter', 'oauthsecret');
-
-	require_once("addon/twitter/codebird.php");
-
-	$cb = \Codebird\Codebird::getInstance();
-	$cb->setConsumerKey($ckey, $csecret);
-	$cb->setToken($otoken, $osecret);
+function twitter_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
+{
+	$ckey = Config::get('twitter', 'consumerkey');
+	$csecret = Config::get('twitter', 'consumersecret');
+	$otoken = PConfig::get($uid, 'twitter', 'oauthtoken');
+	$osecret = PConfig::get($uid, 'twitter', 'oauthsecret');
 
 	$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 		intval($uid));
@@ -1103,7 +1109,8 @@ function twitter_fetchuser($a, $uid, $screen_name = "", $user_id = "") {
 		$parameters["user_id"] = $user_id;
 
 	// Fetching user data
-	$user = $cb->users_show($parameters);
+	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
+	$user = $connection->get('users/show', $parameters);
 
 	if (!is_object($user))
 		return;
@@ -1113,13 +1120,23 @@ function twitter_fetchuser($a, $uid, $screen_name = "", $user_id = "") {
 	return $contact_id;
 }
 
-function twitter_expand_entities($a, $body, $item, $no_tags = false, $picture) {
-	require_once("include/oembed.php");
-	require_once("include/network.php");
-
-	$tags = "";
-
+function twitter_expand_entities(App $a, $body, $item, $picture)
+{
 	$plain = $body;
+
+	$tags_arr = [];
+
+	foreach ($item->entities->hashtags AS $hashtag) {
+		$url = "#[url=" . $a->get_baseurl() . "/search?tag=" . rawurlencode($hashtag->text) . "]" . $hashtag->text . "[/url]";
+		$tags_arr["#" . $hashtag->text] = $url;
+		$body = str_replace("#" . $hashtag->text, $url, $body);
+	}
+
+	foreach ($item->entities->user_mentions AS $mention) {
+		$url = "@[url=https://twitter.com/" . rawurlencode($mention->screen_name) . "]" . $mention->screen_name . "[/url]";
+		$tags_arr["@" . $mention->screen_name] = $url;
+		$body = str_replace("@" . $mention->screen_name, $url, $body);
+	}
 
 	if (isset($item->entities->urls)) {
 		$type = "";
@@ -1127,13 +1144,11 @@ function twitter_expand_entities($a, $body, $item, $no_tags = false, $picture) {
 		$footerlink = "";
 		$footer = "";
 
-		foreach ($item->entities->urls AS $url) {
-
+		foreach ($item->entities->urls as $url) {
 			$plain = str_replace($url->url, '', $plain);
 
 			if ($url->url && $url->expanded_url && $url->display_url) {
-
-				$expanded_url = original_url($url->expanded_url);
+				$expanded_url = Network::finalUrl($url->expanded_url);
 
 				$oembed_data = oembed_fetch_url($expanded_url);
 
@@ -1159,12 +1174,10 @@ function twitter_expand_entities($a, $body, $item, $no_tags = false, $picture) {
 							"[url=".$expanded_url."][img]".$oembed_data->url."[/img][/url]",
 							$body);
 					//$dontincludemedia = true;
-				} elseif ($oembed_data->type != "link")
-					$body = str_replace($url->url,
-							"[url=".$expanded_url."]".$expanded_url."[/url]",
-							$body);
-				else {
-					$img_str = fetch_url($expanded_url, true, $redirects, 4);
+				} elseif ($oembed_data->type != "link") {
+					$body = str_replace($url->url, "[url=" . $expanded_url . "]" . $expanded_url . "[/url]", $body);
+				} else {
+					$img_str = Network::fetchUrl($expanded_url, true, $redirects, 4);
 
 					$tempfile = tempnam(get_temppath(), "cache");
 					file_put_contents($tempfile, $img_str);
@@ -1202,65 +1215,50 @@ function twitter_expand_entities($a, $body, $item, $no_tags = false, $picture) {
 			$body .= "\n\n[img]".$picture."[/img]\n";
 		elseif (($footer == "") && ($picture == ""))
 			$body = add_page_info_to_body($body);
-
-		if ($no_tags)
-			return array("body" => $body, "tags" => "", "plain" => $plain);
-
-		$tags_arr = array();
-
-		foreach ($item->entities->hashtags AS $hashtag) {
-			$url = "#[url=".$a->get_baseurl()."/search?tag=".rawurlencode($hashtag->text)."]".$hashtag->text."[/url]";
-			$tags_arr["#".$hashtag->text] = $url;
-			$body = str_replace("#".$hashtag->text, $url, $body);
 		}
+	}
 
-		foreach ($item->entities->user_mentions AS $mention) {
-			$url = "@[url=https://twitter.com/".rawurlencode($mention->screen_name)."]".$mention->screen_name."[/url]";
-			$tags_arr["@".$mention->screen_name] = $url;
-			$body = str_replace("@".$mention->screen_name, $url, $body);
-		}
+	// it seems as if the entities aren't always covering all mentions. So the rest will be checked here
+	$tags = get_tags($body);
 
-		// it seems as if the entities aren't always covering all mentions. So the rest will be checked here
-		$tags = get_tags($body);
+	if (count($tags)) {
+		foreach ($tags as $tag) {
+			if (strstr(trim($tag), " ")) {
+				continue;
+			}
 
-		if(count($tags)) {
-			foreach($tags as $tag) {
-				if (strstr(trim($tag), " "))
+			if (strpos($tag, '#') === 0) {
+				if (strpos($tag, '[url=')) {
 					continue;
 
-				if(strpos($tag,'#') === 0) {
-					if(strpos($tag,'[url='))
-						continue;
-
-					// don't link tags that are already embedded in links
-
-					if(preg_match('/\[(.*?)' . preg_quote($tag,'/') . '(.*?)\]/',$body))
-						continue;
-					if(preg_match('/\[(.*?)\]\((.*?)' . preg_quote($tag,'/') . '(.*?)\)/',$body))
-						continue;
-
-					$basetag = str_replace('_',' ',substr($tag,1));
-					$url = '#[url='.$a->get_baseurl().'/search?tag='.rawurlencode($basetag).']'.$basetag.'[/url]';
-					$body = str_replace($tag,$url,$body);
-					$tags_arr["#".$basetag] = $url;
+				// don't link tags that are already embedded in links
+				if (preg_match('/\[(.*?)' . preg_quote($tag, '/') . '(.*?)\]/', $body)) {
 					continue;
-				} elseif(strpos($tag,'@') === 0) {
-					if(strpos($tag,'[url='))
-						continue;
-
-					$basetag = substr($tag,1);
-					$url = '@[url=https://twitter.com/'.rawurlencode($basetag).']'.$basetag.'[/url]';
-					$body = str_replace($tag,$url,$body);
-					$tags_arr["@".$basetag] = $url;
 				}
+				if (preg_match('/\[(.*?)\]\((.*?)' . preg_quote($tag, '/') . '(.*?)\)/', $body)) {
+					continue;
+				}
+
+				$basetag = str_replace('_', ' ', substr($tag, 1));
+				$url = '#[url=' . $a->get_baseurl() . '/search?tag=' . rawurlencode($basetag) . ']' . $basetag . '[/url]';
+				$body = str_replace($tag, $url, $body);
+				$tags_arr["#" . $basetag] = $url;
+			} elseif (strpos($tag, '@') === 0) {
+				if (strpos($tag, '[url=')) {
+					continue;
+				}
+
+				$basetag = substr($tag, 1);
+				$url = '@[url=https://twitter.com/' . rawurlencode($basetag) . ']' . $basetag . '[/url]';
+				$body = str_replace($tag, $url, $body);
+				$tags_arr["@" . $basetag] = $url;
 			}
 		}
-
-
-		$tags = implode($tags_arr, ",");
-
 	}
-	return array("body" => $body, "tags" => $tags, "plain" => $plain);
+
+	$tags = implode($tags_arr, ",");
+
+	return ["body" => $body, "tags" => $tags, "plain" => $plain];
 }
 
 /**
@@ -1269,7 +1267,7 @@ function twitter_expand_entities($a, $body, $item, $no_tags = false, $picture) {
  * @param object $post Twitter object with the post
  * @param array $postarray Array of the item that is about to be posted
  *
- * @return $picture string Returns a a single picture string if it isn't a media post
+ * @return $picture string Image URL or empty string
  */
 function twitter_media_entities($post, &$postarray) {
 
@@ -1339,9 +1337,9 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 
 	// Don't import our own comments
 	$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
-			dbesc($postarray['uri']),
-			intval($uid)
-		);
+		dbesc($postarray['uri']),
+		intval($uid)
+	);
 
 	if (count($r)) {
 		logger("Item with extid ".$postarray['uri']." found.", LOGGER_DEBUG);
@@ -1355,9 +1353,9 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 		$parent = "twitter::".$post->in_reply_to_status_id_str;
 
 		$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
-				dbesc($parent),
-				intval($uid)
-			);
+			dbesc($parent),
+			intval($uid)
+		);
 		if (count($r)) {
 			$postarray['thr-parent'] = $r[0]["uri"];
 			$postarray['parent-uri'] = $r[0]["parent-uri"];
@@ -1365,9 +1363,9 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 			$postarray['object-type'] = ACTIVITY_OBJ_COMMENT;
 		} else {
 			$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
-					dbesc($parent),
-					intval($uid)
-				);
+				dbesc($parent),
+				intval($uid)
+			);
 			if (count($r)) {
 				$postarray['thr-parent'] = $r[0]['uri'];
 				$postarray['parent-uri'] = $r[0]['parent-uri'];
@@ -1448,11 +1446,11 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 	// Search for media links
 	$picture = twitter_media_entities($post, $postarray);
 
-	$converted = twitter_expand_entities($a, $postarray['body'], $post, false, $picture);
+	$converted = twitter_expand_entities($a, $postarray['body'], $post, $picture);
 	$postarray['body'] = $converted["body"];
 	$postarray['tag'] = $converted["tags"];
-	$postarray['created'] = datetime_convert('UTC','UTC',$post->created_at);
-	$postarray['edited'] = datetime_convert('UTC','UTC',$post->created_at);
+	$postarray['created'] = DateTimeFormat::utc($post->created_at);
+	$postarray['edited'] = DateTimeFormat::utc($post->created_at);
 
 	$statustext = $converted["plain"];
 
@@ -1487,8 +1485,14 @@ function twitter_createpost($a, $uid, $post, $self, $create_user, $only_existing
 
 		$postarray['body'] = $statustext;
 
-		$postarray['body'] .= "\n".share_header($quoted['author-name'], $quoted['author-link'], $quoted['author-avatar'], "",
-							$quoted['created'], $quoted['plink']);
+		$postarray['body'] .= "\n" . share_header(
+			$quoted['author-name'],
+			$quoted['author-link'],
+			$quoted['author-avatar'],
+			"",
+			$quoted['created'],
+			$quoted['plink']
+		);
 
 		$postarray['body'] .= $quoted['body'].'[/share]';
 	}
@@ -1501,8 +1505,8 @@ function twitter_checknotification($a, $uid, $own_id, $top_item, $postarray) {
 	// this whole function doesn't seem to work. Needs complete check
 
 	$user = q("SELECT * FROM `contact` WHERE `uid` = %d AND `self` LIMIT 1",
-			intval($uid)
-		);
+		intval($uid)
+	);
 
 	if(!count($user))
 		return;
@@ -1512,9 +1516,9 @@ function twitter_checknotification($a, $uid, $own_id, $top_item, $postarray) {
 		return;
 
 	$own_user = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
-			intval($uid),
-			dbesc("twitter::".$own_id)
-		);
+		intval($uid),
+		dbesc("twitter::".$own_id)
+	);
 
 	if(!count($own_user))
 		return;
@@ -1524,11 +1528,9 @@ function twitter_checknotification($a, $uid, $own_id, $top_item, $postarray) {
 		return;
 
 	$myconv = q("SELECT `author-link`, `author-avatar`, `parent` FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `parent` != 0 AND `deleted` = 0",
-			dbesc($postarray['parent-uri']),
-			intval($uid)
-			);
-
-	if(count($myconv)) {
+		dbesc($postarray['parent-uri']),
+		intval($uid)
+	);
 
 		foreach($myconv as $conv) {
 			// now if we find a match, it means we're in this conversation
@@ -1543,14 +1545,14 @@ function twitter_checknotification($a, $uid, $own_id, $top_item, $postarray) {
 			notification(array(
 				'type'         => NOTIFY_COMMENT,
 				'notify_flags' => $user[0]['notify-flags'],
-				'language'     => $user[0]['language'],
-				'to_name'      => $user[0]['username'],
-				'to_email'     => $user[0]['email'],
-				'uid'          => $user[0]['uid'],
-				'item'         => $postarray,
-				'link'         => $a->get_baseurl().'/display/'.urlencode(get_item_guid($top_item)),
-				'source_name'  => $postarray['author-name'],
-				'source_link'  => $postarray['author-link'],
+				'language' => $user[0]['language'],
+				'to_name' => $user[0]['username'],
+				'to_email' => $user[0]['email'],
+				'uid' => $user[0]['uid'],
+				'item' => $postarray,
+				'link' => $a->get_baseurl() . '/display/' . urlencode(Item::getGuidById($top_item)),
+				'source_name' => $postarray['author-name'],
+				'source_link' => $postarray['author-link'],
 				'source_photo' => $postarray['author-avatar'],
 				'verb'         => ACTIVITY_POST,
 				'otype'        => 'item',
@@ -1579,9 +1581,9 @@ function twitter_fetchparentposts($a, $uid, $post, $connection, $self, $own_id) 
 		}
 
 		$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
-				dbesc("twitter::".$post->id_str),
-				intval($uid)
-			);
+			dbesc("twitter::".$post->id_str),
+			intval($uid)
+		);
 
 		if (count($r))
 			break;
@@ -1597,10 +1599,11 @@ function twitter_fetchparentposts($a, $uid, $post, $connection, $self, $own_id) 
 		foreach ($posts as $post) {
 			$postarray = twitter_createpost($a, $uid, $post, $self, false, false, false);
 
-			if (trim($postarray['body']) == "")
+			if (trim($postarray['body']) == "") {
 				continue;
+			}
 
-			$item = item_store($postarray);
+			$item = Item::insert($postarray);
 			$postarray["id"] = $item;
 
 			logger('twitter_fetchparentpost: User '.$self["nick"].' posted parent timeline item '.$item);
@@ -1626,8 +1629,7 @@ function twitter_fetchhometimeline($a, $uid) {
 	if ($application_name == "")
 		$application_name = $a->get_hostname();
 
-	require_once('library/twitteroauth.php');
-	require_once('include/items.php');
+	require_once 'include/items.php';
 
 	$connection = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
 
@@ -1712,7 +1714,7 @@ function twitter_fetchhometimeline($a, $uid) {
 			if (trim($postarray['body']) == "")
 				continue;
 
-			$item = item_store($postarray);
+			$item = Item::insert($postarray);
 			$postarray["id"] = $item;
 
 			logger('twitter_fetchhometimeline: User '.$self["nick"].' posted home timeline item '.$item);
@@ -1759,7 +1761,7 @@ function twitter_fetchhometimeline($a, $uid) {
 			if (trim($postarray['body']) == "")
 				continue;
 
-			$item = item_store($postarray);
+			$item = Item::insert($postarray);
 			$postarray["id"] = $item;
 
 			if ($item && function_exists("check_item_notification"))
@@ -1779,8 +1781,9 @@ function twitter_fetchhometimeline($a, $uid) {
 					$item = $r[0]['id'];
 					$parent_id = $r[0]['parent'];
 				}
-			} else
+			} else {
 				$parent_id = $postarray['parent'];
+			}
 
 			if (($item != 0) && !function_exists("check_item_notification")) {
 				require_once('include/enotify.php');
@@ -1792,7 +1795,7 @@ function twitter_fetchhometimeline($a, $uid) {
 					'to_email'     => $u[0]['email'],
 					'uid'          => $u[0]['uid'],
 					'item'         => $postarray,
-					'link'         => $a->get_baseurl().'/display/'.urlencode(get_item_guid($item)),
+					'link'         => $a->get_baseurl() . '/display/' . urlencode(Item::getGuidById($item)),
 					'source_name'  => $postarray['author-name'],
 					'source_link'  => $postarray['author-link'],
 					'source_photo' => $postarray['author-avatar'],
@@ -1818,9 +1821,7 @@ function twitter_fetch_own_contact($a, $uid) {
 	$contact_id = 0;
 
 	if ($own_id == "") {
-		require_once('library/twitteroauth.php');
-
-		$connection = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
+		$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
 		// Fetching user data
 		$user = $connection->get('account/verify_credentials');
@@ -1879,10 +1880,8 @@ function twitter_is_retweet($a, $uid, $body) {
 	$otoken  = get_pconfig($uid, 'twitter', 'oauthtoken');
 	$osecret = get_pconfig($uid, 'twitter', 'oauthsecret');
 
-	require_once('library/twitteroauth.php');
-	$connection = new TwitterOAuth($ckey,$csecret,$otoken,$osecret);
-
-	$result = $connection->post('statuses/retweet/'.$id);
+	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
+	$result = $connection->post('statuses/retweet/' . $id);
 
 	logger('twitter_is_retweet: result '.print_r($result, true), LOGGER_DEBUG);
 

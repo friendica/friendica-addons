@@ -60,7 +60,7 @@ class Sabre_DAV_Server {
     public $httpRequest;
 
     /**
-     * The list of plugins
+     * The list of addons
      *
      * @var array
      */
@@ -324,7 +324,7 @@ class Sabre_DAV_Server {
     }
 
     /**
-     * Adds a plugin to the server
+     * Adds a addon to the server
      *
      * For more information, console the documentation of Sabre_DAV_ServerPlugin
      *
@@ -339,9 +339,9 @@ class Sabre_DAV_Server {
     }
 
     /**
-     * Returns an initialized plugin by it's name.
+     * Returns an initialized addon by it's name.
      *
-     * This function returns null if the plugin was not found.
+     * This function returns null if the addon was not found.
      *
      * @param string $name
      * @return Sabre_DAV_ServerPlugin
@@ -361,7 +361,7 @@ class Sabre_DAV_Server {
     }
 
     /**
-     * Returns all plugins
+     * Returns all addons
      *
      * @return array
      */
@@ -379,7 +379,7 @@ class Sabre_DAV_Server {
      * It is possible to control the order of the callbacks through the
      * priority argument.
      *
-     * This is for example used to make sure that the authentication plugin
+     * This is for example used to make sure that the authentication addon
      * is triggered before anything else. If it's not needed to change this
      * number, it is recommended to ommit.
      *
@@ -1050,7 +1050,7 @@ class Sabre_DAV_Server {
             $methods[] = 'MKCOL';
         }
 
-        // We're also checking if any of the plugins register any new methods
+        // We're also checking if any of the addons register any new methods
         foreach($this->plugins as $plugin) $methods = array_merge($methods, $plugin->getHTTPMethods($uri));
         array_unique($methods);
 
@@ -1464,7 +1464,7 @@ class Sabre_DAV_Server {
      *
      * Currently this is done by HTTP PUT and HTTP LOCK (in the Locks_Plugin).
      * It was important to get this done through a centralized function,
-     * allowing plugins to intercept this using the beforeCreateFile event.
+     * allowing addons to intercept this using the beforeCreateFile event.
      *
      * This method will return true if the file was actually created
      *
@@ -1654,7 +1654,7 @@ class Sabre_DAV_Server {
         }
 
         if (!$hasError) {
-            // Allowing plugins to take care of property updating
+            // Allowing addons to take care of property updating
             $hasError = !$this->broadcastEvent('updateProperties',array(
                 &$remainingProperties,
                 &$result,
