@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Name: NSFW
  * Description: Collapse posts with inappropriate content
@@ -16,7 +17,6 @@ function nsfw_install()
 	Addon::registerHook('addon_settings', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings');
 	Addon::registerHook('addon_settings_post', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings_post');
 }
-
 
 function nsfw_uninstall()
 {
@@ -39,7 +39,7 @@ function nsfw_extract_photos($body)
 
 	$cnt = 0;
 
-	while($img_end !== false) {
+	while ($img_end !== false) {
 		$img_end += $img_start;
 		$new_body = $new_body . substr($body, 0, $img_start);
 
@@ -48,7 +48,6 @@ function nsfw_extract_photos($body)
 
 		$img_start = strpos($body, 'src="data:');
 		$img_end = (($img_start !== false) ? strpos(substr($body, $img_start), '>') : false);
-
 	}
 
 	if (!$cnt) {
@@ -87,7 +86,7 @@ function nsfw_addon_settings(&$a, &$s)
 	$s .= '<input id="nsfw-enable" type="checkbox" name="nsfw-enable" value="1"' . $enable_checked . ' />';
 	$s .= '<div class="clear"></div>';
 	$s .= '<label id="nsfw-label" for="nsfw-words">' . L10n::t('Comma separated list of keywords to hide') . ' </label>';
-	$s .= '<textarea id="nsfw-words" type="text" name="nsfw-words">' . $words .'</textarea>';
+	$s .= '<textarea id="nsfw-words" type="text" name="nsfw-words">' . $words . '</textarea>';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="nsfw-submit" name="nsfw-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
@@ -103,14 +102,14 @@ function nsfw_addon_settings_post(&$a, &$b)
 
 	if ($_POST['nsfw-submit']) {
 		PConfig::set(local_user(), 'nsfw', 'words', trim($_POST['nsfw-words']));
-		$enable = (x($_POST,'nsfw-enable') ? intval($_POST['nsfw-enable']) : 0);
-		$disable = 1-$enable;
+		$enable = (x($_POST, 'nsfw-enable') ? intval($_POST['nsfw-enable']) : 0);
+		$disable = 1 - $enable;
 		PConfig::set(local_user(), 'nsfw', 'disable', $disable);
 		info(L10n::t('NSFW Settings saved.') . EOL);
 	}
 }
 
-function nsfw_prepare_body(&$a, &$b)
+function nsfw_prepare_body(Friendica\App $a, &$b)
 {
 	// Don't do the check when there is a content warning
 	if (!empty($b['item']['content-warning'])) {
@@ -125,17 +124,18 @@ function nsfw_prepare_body(&$a, &$b)
 	if (local_user()) {
 		$words = PConfig::get(local_user(), 'nsfw', 'words');
 	}
+
 	if ($words) {
-		$arr = explode(',', $words);
+		$word_list = explode(',', $words);
 	} else {
-		$arr = ['nsfw'];
+		$word_list = ['nsfw'];
 	}
 
 	$found = false;
-	if (count($arr)) {
+	if (count($word_list)) {
 		$body = $b['item']['title'] . "\n" . nsfw_extract_photos($b['html']);
 
-		foreach ($arr as $word) {
+		foreach ($word_list as $word) {
 			$word = trim($word);
 			if (!strlen($word)) {
 				continue;
@@ -164,6 +164,8 @@ function nsfw_prepare_body(&$a, &$b)
 
 	if ($found) {
 		$rnd = random_string(8);
-		$b['html'] = '<div id="nsfw-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'nsfw-' . $rnd . '\'); >' . L10n::t('%s - Click to open/close', $word) . '</div><div id="nsfw-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
+		$b['html'] = '<div id="nsfw-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'nsfw-' . $rnd . '\'); >' .
+			L10n::t('%s - Click to open/close',	$word) .
+			'</div><div id="nsfw-' . $rnd . '" style="display: none; " >' .	$b['html'] . '</div>';
 	}
 }
