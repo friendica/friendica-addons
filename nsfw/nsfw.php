@@ -140,24 +140,21 @@ function nsfw_prepare_body(Friendica\App $a, &$b)
 			if (!strlen($word)) {
 				continue;
 			}
-			if (strpos($word,'/') === 0) {
-				if (preg_match($word, $body)) {
-					$found = true;
+
+			switch ($word[0]) {
+				case '/'; // Regular expression
+					$found = preg_match($word, $body);
 					break;
-				}
-			} else {
-				if (stristr($body, $word)) {
-					$found = true;
+				case '#': // Hashtag-only search
+					$found = nsfw_find_word_in_item_tags($b['item']['hashtags'], substr($word, 1));
 					break;
-				}
-				if (is_array($b['item']['tags']) && count($b['item']['tags'])) {
-					foreach ($b['item']['tags'] as $t) {
-						if (stristr($t, '>' . $word . '<')) {
-							$found = true;
-							break;
-						}
-					}
-				}
+				default:
+					$found = stripos($body, $word) !== false || nsfw_find_word_in_item_tags($b['item']['tags'], $word);
+					break;
+			}
+
+			if ($found) {
+				break;
 			}
 		}
 	}
@@ -168,4 +165,17 @@ function nsfw_prepare_body(Friendica\App $a, &$b)
 			L10n::t('%s - Click to open/close',	$word) .
 			'</div><div id="nsfw-' . $rnd . '" style="display: none; " >' .	$b['html'] . '</div>';
 	}
+}
+
+function nsfw_find_word_in_item_tags($item_tags, $word)
+{
+	if (is_array($item_tags)) {
+		foreach ($item_tags as $tag) {
+			if (stripos($tag, '>' . $word . '<') !== false) {
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
