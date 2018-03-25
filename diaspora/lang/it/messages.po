@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014
+# fabrixxm <fabrix.xm@gmail.com>, 2014,2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-09-10 11:57+0000\n"
+"PO-Revision-Date: 2018-03-19 13:21+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -35,7 +35,7 @@ msgstr "Esporta Diaspora"
 
 #: diaspora.php:163
 msgid "Enable Diaspora Post Addon"
-msgstr "Abilita il addon di invio a Diaspora"
+msgstr "Abilita il componente aggiuntivo di invio a Diaspora"
 
 #: diaspora.php:168
 msgid "Diaspora username"

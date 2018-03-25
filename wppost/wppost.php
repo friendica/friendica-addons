@@ -5,7 +5,9 @@
  * Version: 1.1
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
+
 use Friendica\Content\Text\BBCode;
+use Friendica\Content\Text\HTML;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -146,7 +148,7 @@ function wppost_settings_post(&$a,&$b) {
 		PConfig::set(local_user(),'wppost','shortcheck',trim($_POST['wp_shortcheck']));
 		$wp_backlink_text = notags(trim($_POST['wp_backlink_text']));
 		$wp_backlink_text = BBCode::convert($wp_backlink_text, false, 8);
-		$wp_backlink_text = html2plain($wp_backlink_text, 0, true);
+		$wp_backlink_text = HTML::toPlaintext($wp_backlink_text, 0, true);
 		PConfig::set(local_user(),'wppost','wp_backlink_text', $wp_backlink_text);
 
 	}
@@ -221,8 +223,6 @@ function wppost_send(&$a,&$b) {
 	}
 
 	if ($wp_username && $wp_password && $wp_blog) {
-		require_once 'include/html2plain.php';
-
 		$wptitle = trim($b['title']);
 
 		if (intval(PConfig::get($b['uid'], 'wppost', 'shortcheck'))) {
@@ -265,7 +265,7 @@ function wppost_send(&$a,&$b) {
 				// Remove the share element before fetching the first line
 				$title = trim(preg_replace("/\[share.*?\](.*?)\[\/share\]/ism","\n$1\n",$b['body']));
 
-				$title = html2plain(BBCode::convert($title, false), 0, true)."\n";
+				$title = HTML::toPlaintext(BBCode::convert($title, false), 0, true)."\n";
 				$pos = strpos($title, "\n");
 				$trailer = "";
 				if (($pos == 0) || ($pos > 100)) {

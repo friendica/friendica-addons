@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014
+# fabrixxm <fabrix.xm@gmail.com>, 2014,2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2014-10-22 07:54+0000\n"
+"PO-Revision-Date: 2018-03-19 13:21+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -21,15 +21,15 @@ msgstr ""
 
 #: dwpost.php:39
 msgid "Post to Dreamwidth"
-msgstr "Posta su Dreamwidth"
+msgstr "Invia a Dreamwidth"
 
 #: dwpost.php:70
 msgid "Dreamwidth Post Settings"
-msgstr "Impostazioni di invio a Dreamwidth"
+msgstr "Impostazioni Invio a Dreeamwidth"
 
 #: dwpost.php:72
 msgid "Enable dreamwidth Post Addon"
-msgstr "Abilita il addon di invio a Dreamwidth"
+msgstr "Abilita il componente aggiuntivo di invio a Dreamwidth"
 
 #: dwpost.php:77
 msgid "dreamwidth username"
@@ -45,4 +45,4 @@ msgstr "Invia sempre a Dreamwidth"
 
 #: dwpost.php:93
 msgid "Submit"
-msgstr "Invia"
+msgstr "Salva"

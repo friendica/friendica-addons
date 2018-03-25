@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-02-09 13:00+0100\n"
-"PO-Revision-Date: 2018-02-17 11:24+0000\n"
+"PO-Revision-Date: 2018-03-15 14:10+0000\n"
 "Last-Translator: Andy H3 <andy@hubup.pro>\n"
 "Language-Team: English (United Kingdom) (http://www.transifex.com/Friendica/friendica/language/en_GB/)\n"
 "MIME-Version: 1.0\n"
@@ -44,7 +44,7 @@ msgstr "Blockem settings saved."
 #: blockem.php:140
 #, php-format
 msgid "Hidden content by %s - Click to open/close"
-msgstr "Hidden content by %s - Show/hide"
+msgstr "Hidden content by %s - Reveal/hide"
 
 #: blockem.php:193
 msgid "Unblock Author"

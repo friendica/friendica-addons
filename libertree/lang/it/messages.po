@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014-2015
+# fabrixxm <fabrix.xm@gmail.com>, 2014-2015,2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2015-08-31 10:18+0000\n"
+"PO-Revision-Date: 2018-03-19 13:22+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,7 @@ msgstr "Impostazioni di invio a Libertree"
 
 #: libertree.php:69
 msgid "Enable Libertree Post Addon"
-msgstr "Abilita iladdondi invio a Libertree"
+msgstr "Abilita il componente aggiuntivo di invio a Libertree"
 
 #: libertree.php:74
 msgid "Libertree API token"

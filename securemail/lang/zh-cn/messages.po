@@ -1,0 +1,55 @@
+# ADDON securemail
+# Copyright (C)
+# This file is distributed under the same license as the Friendica securemail addon package.
+# 
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-11 21:14+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: 朱陈锬 <tangenters@outlook.com>, 2018\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/Friendica/teams/12172/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: securemail.php:53
+msgid "\"Secure Mail\" Settings"
+msgstr "“加密邮件”设置"
+
+#: securemail.php:54
+msgid "Save Settings"
+msgstr "保存设置"
+
+#: securemail.php:55 securemail.php:76
+msgid "Save and send test"
+msgstr "保存并发送测试"
+
+#: securemail.php:56
+msgid "Enable Secure Mail"
+msgstr "启用加密邮件"
+
+#: securemail.php:57
+msgid "Public key"
+msgstr "公钥"
+
+#: securemail.php:57
+msgid "Your public PGP key, ascii armored format"
+msgstr "您的 PGP 公钥，使用 ASCII 码格式"
+
+#: securemail.php:74
+msgid "Secure Mail Settings saved."
+msgstr "加密邮件设置已保存。"
+
+#: securemail.php:111
+msgid "Test email sent"
+msgstr "测试邮件发送"
+
+#: securemail.php:113
+msgid "There was an error sending the test email"
+msgstr "发送测试电子邮件时发生错误"
