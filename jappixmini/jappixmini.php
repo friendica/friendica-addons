@@ -86,7 +86,7 @@ function jappixmini_install()
 	// set standard configuration
 	$info_text = Config::get("jappixmini", "infotext");
 	if (!$info_text)
-		set_confConfig::setig("jappixmini", "infotext", "To get the chat working, you need to know a BOSH host which works with your Jabber account. " .
+		Config::set("jappixmini", "infotext", "To get the chat working, you need to know a BOSH host which works with your Jabber account. " .
 			"An example of a BOSH server that works for all accounts is https://bind.jappix.com/, but keep " .
 			"in mind that the BOSH server can read along all chat messages. If you know that your Jabber " .
 			"server also provides an own BOSH server, it is much better to use this one!"
