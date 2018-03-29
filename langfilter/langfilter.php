@@ -55,11 +55,11 @@ function langfilter_addon_settings(App $a, &$s)
 	$t = get_markup_template("settings.tpl", "addon/langfilter/");
 	$s .= replace_macros($t, [
 		'$title'         => L10n::t("Language Filter"),
-		'$intro'         => L10n::t('This addon tries to identify the language posts are writen in. If it does not match any language specifed below, posts will be hidden by collapsing them. (Note: detecting languages is not perfect, especially for short texts.)'),
+		'$intro'         => L10n::t('This addon tries to identify the language posts are writen in. If it does not match any language specifed below, posts will be hidden by collapsing them.'),
 		'$enabled'       => ['langfilter_enable', L10n::t('Use the language filter'), $enable_checked, ''],
 		'$languages'     => ['langfilter_languages', L10n::t('Able to read'), $languages, L10n::t('List of abbreviations (iso2 codes) for languages you speak, comma separated. For example "de,it".')],
 		'$minconfidence' => ['langfilter_minconfidence', L10n::t('Minimum confidence in language detection'), $minconfidence, L10n::t('Minimum confidence in language detection being correct, from 0 to 100. Posts will not be filtered when the confidence of language detection is below this percent value.')],
-		'$minlength'     => ['langfilter_minlength', L10n::t('Minimum length of message body'), $minlength, L10n::t('Minimum length of message body for language filter to be used. Posts shorter than this number of characters will not be filtered.')],
+		'$minlength'     => ['langfilter_minlength', L10n::t('Minimum length of message body'), $minlength, L10n::t('Minimum number of characters in message body for filter to be used. Posts shorter than this will not be filtered. Note: Language detection is unreliable for short content (<200 characters).')],
 		'$submit'        => L10n::t('Save Settings'),
 	]);
 

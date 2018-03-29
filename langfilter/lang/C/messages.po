@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-29 18:54+0700\n"
+"POT-Creation-Date: 2018-03-29 22:43+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,7 +25,7 @@ msgstr ""
 msgid ""
 "This addon tries to identify the language posts are writen in. If it does "
 "not match any language specifed below, posts will be hidden by collapsing "
-"them. (Note: detecting languages is not perfect, especially for short texts.)"
+"them."
 msgstr ""
 
 #: langfilter.php:59
@@ -59,8 +59,9 @@ msgstr ""
 
 #: langfilter.php:62
 msgid ""
-"Minimum length of message body for language filter to be used. Posts shorter "
-"than this number of characters will not be filtered."
+"Minimum number of characters in message body for filter to be used. Posts "
+"shorter than this will not be filtered. Note: Language detection is "
+"unreliable for short content (<200 characters)."
 msgstr ""
 
 #: langfilter.php:63
