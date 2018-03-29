@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-22 15:18+0200\n"
+"POT-Creation-Date: 2018-03-29 18:54+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,52 +17,61 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: langfilter.php:44
+#: langfilter.php:57
 msgid "Language Filter"
 msgstr ""
 
-#: langfilter.php:45
+#: langfilter.php:58
 msgid ""
-"This addon tries to identify the language of a postings. If it does not "
-"match any language spoken by you (see below) the posting will be collapsed. "
-"Remember detecting the language is not perfect, especially with short "
-"postings."
+"This addon tries to identify the language posts are writen in. If it does "
+"not match any language specifed below, posts will be hidden by collapsing "
+"them. (Note: detecting languages is not perfect, especially for short texts.)"
 msgstr ""
 
-#: langfilter.php:46
+#: langfilter.php:59
 msgid "Use the language filter"
 msgstr ""
 
-#: langfilter.php:47
-msgid "I speak"
+#: langfilter.php:60
+msgid "Able to read"
 msgstr ""
 
-#: langfilter.php:47
+#: langfilter.php:60
 msgid ""
 "List of abbreviations (iso2 codes) for languages you speak, comma separated. "
 "For example \"de,it\"."
 msgstr ""
 
-#: langfilter.php:48
+#: langfilter.php:61
 msgid "Minimum confidence in language detection"
 msgstr ""
 
-#: langfilter.php:48
+#: langfilter.php:61
 msgid ""
 "Minimum confidence in language detection being correct, from 0 to 100. Posts "
 "will not be filtered when the confidence of language detection is below this "
 "percent value."
 msgstr ""
 
-#: langfilter.php:49
+#: langfilter.php:62
+msgid "Minimum length of message body"
+msgstr ""
+
+#: langfilter.php:62
+msgid ""
+"Minimum length of message body for language filter to be used. Posts shorter "
+"than this number of characters will not be filtered."
+msgstr ""
+
+#: langfilter.php:63
 msgid "Save Settings"
 msgstr ""
 
-#: langfilter.php:73
+#: langfilter.php:104
 msgid "Language Filter Settings saved."
 msgstr ""
 
-#: langfilter.php:123
+#: langfilter.php:181
 #, php-format
-msgid "unspoken language %s - Click to open/close"
+msgid "Hidden content in %s - Click to open/close"
 msgstr ""
