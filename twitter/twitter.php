@@ -528,6 +528,9 @@ function twitter_post_hook(App $a, &$b)
 
 		$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
+		// Set the timeout for upload to 15 seconds
+		$connection->setTimeouts(10, 15);
+
 		$max_char = 280;
 		$msgarr = BBCode::toPlaintext($b, $max_char, true, 8);
 		$msg = $msgarr["text"];
@@ -549,7 +552,14 @@ function twitter_post_hook(App $a, &$b)
 		// and now tweet it :-)
 		if (strlen($msg) && ($image != "")) {
 			try {
-				$media = $connection->upload('media/upload', ['media' => $image]);
+				$img_str = Network::fetchUrl($image);
+
+				$tempfile = tempnam(get_temppath(), 'cache');
+				file_put_contents($tempfile, $img_str);
+
+				$media = $connection->upload('media/upload', ['media' => $tempfile]);
+
+				unlink($tempfile);
 
 				$post = ['status' => $msg, 'media_ids' => $media->media_id_string];
 
