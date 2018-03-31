@@ -548,32 +548,39 @@ function twitter_post_hook(App $a, &$b)
 
 		// and now tweet it :-)
 		if (strlen($msg) && ($image != "")) {
-			$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
-			$media = $connection->upload('media/upload', ['media' => $image]);
+			try {
+				$media = $connection->upload('media/upload', ['media' => $image]);
 
-			$post = ['status' => $msg, 'media_ids' => $media->media_id_string];
+				$post = ['status' => $msg, 'media_ids' => $media->media_id_string];
 
-			if ($iscomment) {
-				$post["in_reply_to_status_id"] = substr($orig_post["uri"], 9);
-			}
+				if ($iscomment) {
+					$post["in_reply_to_status_id"] = substr($orig_post["uri"], 9);
+				}
 
-			$result = $connection->post('statuses/update', $post);
+				$result = $connection->post('statuses/update', $post);
 
-			logger('twitter_post_with_media send, result: ' . print_r($result, true), LOGGER_DEBUG);
+				logger('twitter_post_with_media send, result: ' . print_r($result, true), LOGGER_DEBUG);
 
-			if ($result->source) {
-				Config::set("twitter", "application_name", strip_tags($result->source));
-			}
+				if ($result->source) {
+					Config::set("twitter", "application_name", strip_tags($result->source));
+				}
 
-			if ($result->errors || $result->error) {
-				logger('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
+				if ($result->errors || $result->error) {
+					logger('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
+
+					// Workaround: Remove the picture link so that the post can be reposted without it
+					$msg .= " " . $image;
+					$image = "";
+				} elseif ($iscomment) {
+					logger('twitter_post: Update extid ' . $result->id_str . " for post id " . $b['id']);
+					Item::update(['extid' => "twitter::" . $result->id_str, 'body' => $result->text], ['id' => $b['id']]);
+				}
+			} catch (Exception $e) {
+				logger('Exception when trying to send to Twitter: ' . $e->getMessage());
 
 				// Workaround: Remove the picture link so that the post can be reposted without it
 				$msg .= " " . $image;
 				$image = "";
-			} elseif ($iscomment) {
-				logger('twitter_post: Update extid ' . $result->id_str . " for post id " . $b['id']);
-				Item::update(['extid' => "twitter::" . $result->id_str, 'body' => $result->text], ['id' => $b['id']]);
 			}
 		}
 
