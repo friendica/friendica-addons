@@ -1,0 +1,55 @@
+# ADDON ifttt
+# Copyright (C)
+# This file is distributed under the same license as the Friendica ifttt addon package.
+# 
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-11-27 09:30+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018\n"
+"Language-Team: Polish (https://www.transifex.com/Friendica/teams/12172/pl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: ifttt.php:53 ifttt.php:57
+msgid "IFTTT Mirror"
+msgstr "Lustro IFTTT"
+
+#: ifttt.php:61
+msgid ""
+"Create an account at <a href=\"http://www.ifttt.com\">IFTTT</a>. Create "
+"three Facebook recipes that are connected with <a "
+"href=\"https://ifttt.com/maker\">Maker</a> (In the form \"if Facebook then "
+"Maker\") with the following parameters:"
+msgstr ""
+"Utwórz konto na <a href=\"http://www.ifttt.com\">IFTTT</a>. Utwórz trzy "
+"przepisy na Facebooku, które są powiązane z <a "
+"href=\"https://ifttt.com/maker\">Maker</a> (W formie \"jeśli Facebook "
+"następnie Maker\") z następujących parametrów:"
+
+#: ifttt.php:68
+msgid "Body for \"new status message\""
+msgstr "Treść dla 'nowego statusu wiadomości'"
+
+#: ifttt.php:70
+msgid "Body for \"new photo upload\""
+msgstr "Treść dla 'nowego przesyłania zdjęć'"
+
+#: ifttt.php:72
+msgid "Body for \"new link post\""
+msgstr "Treść dla 'nowego łącza postu'"
+
+#: ifttt.php:77
+msgid "Generate new key"
+msgstr "Wygeneruj nowy klucz"
+
+#: ifttt.php:81
+msgid "Save Settings"
+msgstr "Zapisz ustawienia"

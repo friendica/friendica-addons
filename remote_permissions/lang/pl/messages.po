@@ -1,0 +1,70 @@
+# ADDON remote_permissions
+# Copyright (C)
+# This file is distributed under the same license as the Friendica remote_permissions addon package.
+# 
+# 
+# Translators:
+# Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-03-31 20:21+0000\n"
+"Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
+"Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: remote_permissions.php:45
+msgid "Remote Permissions Settings"
+msgstr "Ustawienia uprawnień zdalnych"
+
+#: remote_permissions.php:46
+msgid ""
+"Allow recipients of your private posts to see the other recipients of the "
+"posts"
+msgstr "Zezwalaj odbiorcom prywatnych wpisów na wyświetlanie innych adresatów postów"
+
+#: remote_permissions.php:48 remote_permissions.php:196
+msgid "Submit"
+msgstr "Wyślij"
+
+#: remote_permissions.php:58
+msgid "Remote Permissions settings updated."
+msgstr "Zaktualizowano ustawienia uprawnień zdalnych."
+
+#: remote_permissions.php:124
+msgid "Visible to:"
+msgstr "Widoczny dla:"
+
+#: remote_permissions.php:178
+msgid "Visible to"
+msgstr "Widoczny dla"
+
+#: remote_permissions.php:178
+msgid "may only be a partial list"
+msgstr "mogą być tylko częściowe listy"
+
+#: remote_permissions.php:197
+msgid "Global"
+msgstr "Ogólnoświatowy"
+
+#: remote_permissions.php:197
+msgid "The posts of every user on this server show the post recipients"
+msgstr "Wpisy każdego użytkownika na tym serwerze pokazują odbiorców wiadomości"
+
+#: remote_permissions.php:198
+msgid "Individual"
+msgstr "Indywidualny"
+
+#: remote_permissions.php:198
+msgid "Each user chooses whether his/her posts show the post recipients"
+msgstr "Każdy użytkownik wybiera, czy jego/jej posty pokazują odbiorców postów"
+
+#: remote_permissions.php:205
+msgid "Settings updated."
+msgstr "Zaktualizowano ustawienia."

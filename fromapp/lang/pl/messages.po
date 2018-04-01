@@ -1,0 +1,41 @@
+# ADDON fromapp
+# Copyright (C)
+# This file is distributed under the same license as the Friendica fromapp addon package.
+# 
+# 
+# Translators:
+# Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-03-30 17:50+0000\n"
+"Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
+"Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: fromapp.php:38
+msgid "Fromapp settings updated."
+msgstr "Zaktualizowano ustawienia Fromapp."
+
+#: fromapp.php:64
+msgid "FromApp Settings"
+msgstr "Ustawienia FromApp"
+
+#: fromapp.php:66
+msgid ""
+"The application name you would like to show your posts originating from."
+msgstr "Nazwa aplikacji, z której chcesz wyświetlać swoje posty."
+
+#: fromapp.php:70
+msgid "Use this application name even if another application was used."
+msgstr "Użyj tej nazwy aplikacji, nawet jeśli użyto innej aplikacji."
+
+#: fromapp.php:77
+msgid "Submit"
+msgstr "Zatwierdź"

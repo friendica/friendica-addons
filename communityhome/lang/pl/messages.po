@@ -1,0 +1,74 @@
+# ADDON communityhome
+# Copyright (C)
+# This file is distributed under the same license as the Friendica communityhome addon package.
+# 
+# 
+# Translators:
+# Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-03-30 17:40+0000\n"
+"Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
+"Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: communityhome.php:28 communityhome.php:34
+msgid "Login"
+msgstr "Zaloguj się"
+
+#: communityhome.php:29
+msgid "OpenID"
+msgstr "OpenID"
+
+#: communityhome.php:39
+msgid "Latest users"
+msgstr "Najnowszy użytkownik"
+
+#: communityhome.php:84
+msgid "Most active users"
+msgstr "Najbardziej aktywni użytkownicy"
+
+#: communityhome.php:102
+msgid "Latest photos"
+msgstr "Najnowsze Zdjęcia"
+
+#: communityhome.php:115
+msgid "Contact Photos"
+msgstr "Zdjęcia kontaktu"
+
+#: communityhome.php:116
+msgid "Profile Photos"
+msgstr "Zdjęcie profilowe"
+
+#: communityhome.php:141
+msgid "Latest likes"
+msgstr "Najnowsze polubienia"
+
+#: communityhome.php:163
+msgid "event"
+msgstr "zdarzenie"
+
+#: communityhome.php:166 communityhome.php:175
+msgid "status"
+msgstr "status"
+
+#: communityhome.php:171
+msgid "photo"
+msgstr "zdjęcie"
+
+#: communityhome.php:180
+#, php-format
+msgid "%1$s likes %2$s's %3$s"
+msgstr "%1$slubi %2$s %3$s "
+
+#: communityhome.php:189
+#, php-format
+msgid "Welcome to %s"
+msgstr "Witamy w %s"

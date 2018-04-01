@@ -1,0 +1,64 @@
+# ADDON piwik
+# Copyright (C)
+# This file is distributed under the same license as the Friendica piwik addon package.
+# 
+# 
+# Translators:
+# Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-07-26 12:49+0200\n"
+"PO-Revision-Date: 2018-03-31 20:06+0000\n"
+"Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
+"Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: piwik.php:79
+msgid ""
+"This website is tracked using the <a href='http://www.piwik.org'>Piwik</a> "
+"analytics tool."
+msgstr "Ta strona internetowa jest śledzona za pomocą narzędzia analitycznego <a href='http://www.piwik.org'>Piwik</a>."
+
+#: piwik.php:82
+#, php-format
+msgid ""
+"If you do not want that your visits are logged in this way you <a "
+"href='%s'>can set a cookie to prevent Piwik from tracking further visits of "
+"the site</a> (opt-out)."
+msgstr "Jeśli nie chcesz, aby Twoje wizyty były rejestrowane w ten sposób, <a href='%s'>możesz ustawić plik cookie, aby uniemożliwić Piwik śledzenie dalszych odwiedzin witryny</a> (rezygnacja)."
+
+#: piwik.php:89
+msgid "Save Settings"
+msgstr "Zapisz ustawienia"
+
+#: piwik.php:90
+msgid "Piwik Base URL"
+msgstr "Podstawowy adres URL Piwik"
+
+#: piwik.php:90
+msgid ""
+"Absolute path to your Piwik installation. (without protocol (http/s), with "
+"trailing slash)"
+msgstr "Bezwzględna ścieżka do Twojej instalacji Piwik. (bez protokołu (http/s), z ukośnikiem)"
+
+#: piwik.php:91
+msgid "Site ID"
+msgstr "Identyfikator ID witryny"
+
+#: piwik.php:92
+msgid "Show opt-out cookie link?"
+msgstr "Pokaż łącze opt-out cookie?"
+
+#: piwik.php:93
+msgid "Asynchronous tracking"
+msgstr "Śledzenie asynchroniczne"
+
+#: piwik.php:105
+msgid "Settings updated."
+msgstr "Ustawienia zaktualizowane."

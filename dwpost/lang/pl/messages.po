@@ -1,0 +1,48 @@
+# ADDON dwpost
+# Copyright (C)
+# This file is distributed under the same license as the Friendica dwpost addon package.
+# 
+# 
+# Translators:
+# Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-03-31 19:42+0000\n"
+"Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
+"Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: dwpost.php:39
+msgid "Post to Dreamwidth"
+msgstr "Opublikuj w Dreamwidth"
+
+#: dwpost.php:70
+msgid "Dreamwidth Post Settings"
+msgstr "Ustawienia postów w Dreamwerze"
+
+#: dwpost.php:72
+msgid "Enable dreamwidth Post Addon"
+msgstr "Włącz dodatek dreamwidth Post"
+
+#: dwpost.php:77
+msgid "dreamwidth username"
+msgstr "dreamwidth nazwa użytkownika"
+
+#: dwpost.php:82
+msgid "dreamwidth password"
+msgstr "hasło dreamwidth"
+
+#: dwpost.php:87
+msgid "Post to dreamwidth by default"
+msgstr "Opublikuj domyślnie w serwisie dreamwidth"
+
+#: dwpost.php:93
+msgid "Submit"
+msgstr "Wyślij"

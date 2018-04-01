@@ -1,0 +1,48 @@
+# ADDON ijpost
+# Copyright (C)
+# This file is distributed under the same license as the Friendica ijpost addon package.
+# 
+# 
+# Translators:
+# Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-03-31 19:43+0000\n"
+"Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
+"Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: ijpost.php:39
+msgid "Post to Insanejournal"
+msgstr "Opublikuj w Insanejournal"
+
+#: ijpost.php:70
+msgid "InsaneJournal Post Settings"
+msgstr "InsaneJournal Ustawienia Post"
+
+#: ijpost.php:72
+msgid "Enable InsaneJournal Post Addon"
+msgstr "Włącz dodatek InsaneJournal"
+
+#: ijpost.php:77
+msgid "InsaneJournal username"
+msgstr "InsaneJournal nazwa użytkownika"
+
+#: ijpost.php:82
+msgid "InsaneJournal password"
+msgstr "Hasło InsaneJournal"
+
+#: ijpost.php:87
+msgid "Post to InsaneJournal by default"
+msgstr "Wyślij domyślnie do InsaneJournal"
+
+#: ijpost.php:93
+msgid "Submit"
+msgstr "Wyślij"

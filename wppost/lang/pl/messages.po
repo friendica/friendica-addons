@@ -1,0 +1,74 @@
+# ADDON wppost
+# Copyright (C)
+# This file is distributed under the same license as the Friendica wppost addon package.
+# 
+# 
+# Translators:
+# Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-01-24 21:06+0100\n"
+"PO-Revision-Date: 2018-03-31 20:26+0000\n"
+"Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
+"Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: wppost.php:42
+msgid "Post to Wordpress"
+msgstr "Opublikuj w Wordpress"
+
+#: wppost.php:80 wppost.php:84
+msgid "Wordpress Export"
+msgstr "Eksport do Wordpress"
+
+#: wppost.php:87
+msgid "Enable WordPress Post Addon"
+msgstr "Włącz dodatek Dodaj post do WordPress"
+
+#: wppost.php:92
+msgid "WordPress username"
+msgstr "Nazwa użytkownika WordPress"
+
+#: wppost.php:97
+msgid "WordPress password"
+msgstr "Hasło WordPress"
+
+#: wppost.php:102
+msgid "WordPress API URL"
+msgstr "WordPress API URL"
+
+#: wppost.php:107
+msgid "Post to WordPress by default"
+msgstr "Wyślij do WordPress domyślnie"
+
+#: wppost.php:112
+msgid "Provide a backlink to the Friendica post"
+msgstr "Podaj zwrotny link do posta Friendica"
+
+#: wppost.php:116
+msgid ""
+"Text for the backlink, e.g. Read the original post and comment stream on "
+"Friendica."
+msgstr "Tekst linku zwrotnego, np. Przeczytaj oryginalny post i strumień komentarzy na stronie Friendica."
+
+#: wppost.php:121
+msgid "Don't post messages that are too short"
+msgstr "Nie publikuj zbyt krótkich wiadomości"
+
+#: wppost.php:127
+msgid "Save Settings"
+msgstr "Zapisz ustawienia"
+
+#: wppost.php:206
+msgid "Read the orig­i­nal post and com­ment stream on Friendica"
+msgstr "Przeczytaj oryginalny post i strumień komentarzy na stronie Friendica"
+
+#: wppost.php:269
+msgid "Post from Friendica"
+msgstr "Post z Friendica"

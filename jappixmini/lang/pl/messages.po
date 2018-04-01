@@ -1,0 +1,77 @@
+# ADDON jappixmini
+# Copyright (C)
+# This file is distributed under the same license as the Friendica jappixmini addon package.
+# 
+# 
+# Translators:
+# Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-04-01 15:59+0000\n"
+"Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
+"Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: jappixmini.php:266
+msgid "Jappix Mini addon settings"
+msgstr "Ustawienia dodatku Jappix Mini"
+
+#: jappixmini.php:268
+msgid "Activate addon"
+msgstr "Aktywuj dodatek"
+
+#: jappixmini.php:271
+msgid ""
+"Do <em>not</em> insert the Jappixmini Chat-Widget into the webinterface"
+msgstr "<em>Nie</em> wstawiaj widżetu czatu Jappixmini do interfejsu WWW"
+
+#: jappixmini.php:274
+msgid "Jabber username"
+msgstr "Jabber nazwa użytkownika"
+
+#: jappixmini.php:277
+msgid "Jabber server"
+msgstr "Serwer Jabber"
+
+#: jappixmini.php:281
+msgid "Jabber BOSH host"
+msgstr "Host Jabber BOSH"
+
+#: jappixmini.php:285
+msgid "Jabber password"
+msgstr "Hasło Jabber"
+
+#: jappixmini.php:290
+msgid "Encrypt Jabber password with Friendica password (recommended)"
+msgstr "Szyfrowanie hasła Jabbera za pomocą hasła Friendica (zalecane)"
+
+#: jappixmini.php:293
+msgid "Friendica password"
+msgstr "Hasło Friendica"
+
+#: jappixmini.php:296
+msgid "Approve subscription requests from Friendica contacts automatically"
+msgstr "Automatycznie zatwierdzaj prośby o subskrypcję od kontaktów z Friendica"
+
+#: jappixmini.php:299
+msgid "Subscribe to Friendica contacts automatically"
+msgstr "Subskrybuj kontakty z Friendica automatycznie"
+
+#: jappixmini.php:302
+msgid "Purge internal list of jabber addresses of contacts"
+msgstr "Usuń wewnętrzną listę adresów Jabber z kontaktów"
+
+#: jappixmini.php:307
+msgid "Submit"
+msgstr "Wyślij"
+
+#: jappixmini.php:308
+msgid "Add contact"
+msgstr "Dodaj kontakt"
