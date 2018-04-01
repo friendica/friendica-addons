@@ -3,7 +3,7 @@
  * Name: rendertime
  * Description: Shows the time that was needed to render the current page
  * Version: 0.1
- * Author: Michael Vvogel <http://pirati.ca/profile/heluecht>
+ * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  *
  */
 use Friendica\Core\Addon;
