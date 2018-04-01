@@ -11,6 +11,6 @@ $a->strings["Enable Blogger Post Addon"] = "Włącz dodatek Blogger";
 $a->strings["Blogger username"] = "Nazwa użytkownika Bloggera";
 $a->strings["Blogger password"] = "Hasło Bloggera";
 $a->strings["Blogger API URL"] = "Adres URL interfejsu API Blogger";
-$a->strings["Post to Blogger by default"] = "";
+$a->strings["Post to Blogger by default"] = "Opublikuj domyślnie na Blogger";
 $a->strings["Save Settings"] = "Zapisz ustawienia";
 $a->strings["Post from Friendica"] = "Post od Friendica";

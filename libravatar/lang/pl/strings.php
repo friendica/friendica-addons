@@ -19,4 +19,4 @@ $a->strings["Gravatar addon is installed. Please disable the Gravatar addon.<br>
 $a->strings["Submit"] = "Wyślij";
 $a->strings["Default avatar image"] = "Domyślny obraz awatara";
 $a->strings["Select default avatar image if none was found. See README"] = "Wybierz domyślny obraz awatara, jeśli nie został znaleziony. Zobacz README";
-$a->strings["Libravatar settings updated."] = "";
+$a->strings["Libravatar settings updated."] = "Zaktualizowano ustawienia Libravatar.";

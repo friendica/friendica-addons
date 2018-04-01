@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-25 17:17+0200\n"
-"PO-Revision-Date: 2018-03-31 20:43+0000\n"
+"PO-Revision-Date: 2018-04-01 14:35+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -29,15 +29,15 @@ msgstr "Obecna pogoda"
 
 #: curweather.php:118
 msgid "Relative Humidity"
-msgstr ""
+msgstr "Względna wilgotność"
 
 #: curweather.php:119
 msgid "Pressure"
-msgstr ""
+msgstr "Ciśnienie"
 
 #: curweather.php:120
 msgid "Wind"
-msgstr ""
+msgstr "Wiatr"
 
 #: curweather.php:121
 msgid "Last Updated"
@@ -77,7 +77,7 @@ msgstr "Ustawienia"
 
 #: curweather.php:174
 msgid "Enter either the name of your location or the zip code."
-msgstr ""
+msgstr "Wprowadź nazwę swojej lokalizacji lub kod pocztowy."
 
 #: curweather.php:175
 msgid "Your Location"
@@ -87,7 +87,7 @@ msgstr "Twoja lokalizacja"
 msgid ""
 "Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or "
 "<em>14476,DE</em>."
-msgstr ""
+msgstr "Identyfikator Twojej lokalizacji (nazwa lub kod pocztowy), np. <em>Berlin, DE</em> lub <em>14476, DE</em>."
 
 #: curweather.php:176
 msgid "Units"
@@ -95,7 +95,7 @@ msgstr "Jednostka"
 
 #: curweather.php:176
 msgid "select if the temperature should be displayed in &deg;C or &deg;F"
-msgstr ""
+msgstr "wybierz, czy temperatura powinna być wyświetlana w &deg;C lub &deg;F"
 
 #: curweather.php:177
 msgid "Show weather data"
@@ -103,17 +103,17 @@ msgstr "Pokaż dane pogodowe"
 
 #: curweather.php:190
 msgid "Curweather settings saved."
-msgstr ""
+msgstr "Ustawienia Curweather zostały zapisane."
 
 #: curweather.php:201
 msgid "Caching Interval"
-msgstr ""
+msgstr "Interwał buforowania"
 
 #: curweather.php:201
 msgid ""
 "For how long should the weather data be cached? Choose according your "
 "OpenWeatherMap account type."
-msgstr ""
+msgstr "Od jak dawna powinny być buforowane dane pogodowe? Wybierz zgodnie z typem konta OpenWeatherMap."
 
 #: curweather.php:201
 msgid "no cache"
@@ -125,8 +125,8 @@ msgstr "minut"
 
 #: curweather.php:202
 msgid "Your APPID"
-msgstr ""
+msgstr "Twój APPID"
 
 #: curweather.php:202
 msgid "Your API key provided by OpenWeatherMap"
-msgstr ""
+msgstr "Twój klucz API dostarczony przez OpenWeatherMap"
