@@ -1,0 +1,76 @@
+# ADDON buffer
+# Copyright (C)
+# This file is distributed under the same license as the Friendica buffer addon package.
+# 
+# 
+# Translators:
+# Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2018-03-31 17:10+0000\n"
+"Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
+"Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: buffer.php:31
+msgid "Permission denied."
+msgstr "Odmowa uprawnień."
+
+#: buffer.php:57 buffer.php:185
+msgid "Save Settings"
+msgstr "Zapisz ustawienia"
+
+#: buffer.php:59
+msgid "Client ID"
+msgstr "Identyfikator ID klienta"
+
+#: buffer.php:60
+msgid "Client Secret"
+msgstr " Tajny klucz klienta"
+
+#: buffer.php:67
+msgid "Error when registering buffer connection:"
+msgstr "Błąd podczas rejestrowania połączenia z buforem:"
+
+#: buffer.php:86
+msgid "You are now authenticated to buffer. "
+msgstr "Jesteś teraz uwierzytelniony w buforze."
+
+#: buffer.php:87
+msgid "return to the connector page"
+msgstr "powrót do strony połączenia"
+
+#: buffer.php:103
+msgid "Post to Buffer"
+msgstr "Opublikuj w buforze"
+
+#: buffer.php:128 buffer.php:132
+msgid "Buffer Export"
+msgstr "Eksportuj Bufor"
+
+#: buffer.php:142
+msgid "Authenticate your Buffer connection"
+msgstr "Uwierzytelnij swoje połączenie z buforem"
+
+#: buffer.php:146
+msgid "Enable Buffer Post Addon"
+msgstr "Włącz dodatek bufora pocztowego"
+
+#: buffer.php:151
+msgid "Post to Buffer by default"
+msgstr "Wyślij domyślnie post do bufora"
+
+#: buffer.php:156
+msgid "Check to delete this preset"
+msgstr "Zaznacz, aby usunąć to ustawienie wstępne"
+
+#: buffer.php:165
+msgid "Posts are going to all accounts that are enabled by default:"
+msgstr "Wpisy są wysyłane na wszystkie konta, które są domyślnie włączone:"
