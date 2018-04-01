@@ -1,0 +1,64 @@
+# ADDON tumblr
+# Copyright (C)
+# This file is distributed under the same license as the Friendica tumblr addon package.
+# 
+# 
+# Translators:
+# Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-03-31 20:13+0000\n"
+"Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
+"Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: tumblr.php:34
+msgid "Permission denied."
+msgstr "Odmowa dostępu."
+
+#: tumblr.php:144
+msgid "You are now authenticated to tumblr."
+msgstr "Jesteś teraz uwierzytelniony na tumblr."
+
+#: tumblr.php:145
+msgid "return to the connector page"
+msgstr "powrót do strony łącza"
+
+#: tumblr.php:158
+msgid "Post to Tumblr"
+msgstr "Opublikuj w Tumblr"
+
+#: tumblr.php:185
+msgid "Tumblr Post Settings"
+msgstr "Ustawienia Postów Tumblr"
+
+#: tumblr.php:188
+msgid "(Re-)Authenticate your tumblr page"
+msgstr "(Re-) Uwierzytelnij swoją stronę tumblr"
+
+#: tumblr.php:192
+msgid "Enable Tumblr Post Addon"
+msgstr "Włącz dodatek Tumblr"
+
+#: tumblr.php:197
+msgid "Post to Tumblr by default"
+msgstr "Wyślij domyślnie do Tumblr"
+
+#: tumblr.php:217
+msgid "Post to page:"
+msgstr "Opublikuj na stronie:"
+
+#: tumblr.php:228
+msgid "You are not authenticated to tumblr"
+msgstr "Nie jesteś uwierzytelniony w tumblr"
+
+#: tumblr.php:233
+msgid "Submit"
+msgstr "Wyślij"
