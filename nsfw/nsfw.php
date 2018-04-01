@@ -13,13 +13,14 @@ use Friendica\Core\PConfig;
 
 function nsfw_install()
 {
-	Addon::registerHook('prepare_body', 'addon/nsfw/nsfw.php', 'nsfw_prepare_body', 10);
+	Addon::registerHook('content_filter', 'addon/nsfw/nsfw.php', 'nsfw_content_filter', 10);
 	Addon::registerHook('addon_settings', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings');
 	Addon::registerHook('addon_settings_post', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings_post');
 }
 
 function nsfw_uninstall()
 {
+	Addon::unregisterHook('content_filter', 'addon/nsfw/nsfw.php', 'nsfw_content_filter');
 	Addon::unregisterHook('prepare_body', 'addon/nsfw/nsfw.php', 'nsfw_prepare_body');
 	Addon::unregisterHook('addon_settings', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings');
 	Addon::unregisterHook('addon_settings_post', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings_post');
@@ -109,13 +110,8 @@ function nsfw_addon_settings_post(&$a, &$b)
 	}
 }
 
-function nsfw_prepare_body(Friendica\App $a, &$b)
+function nsfw_content_filter(\Friendica\App $a, &$hook_data)
 {
-	// Don't do the check when there is a content warning
-	if (!empty($b['item']['content-warning'])) {
-		return;
-	}
-
 	$words = null;
 	if (PConfig::get(local_user(), 'nsfw', 'disable')) {
 		return;
@@ -133,7 +129,7 @@ function nsfw_prepare_body(Friendica\App $a, &$b)
 
 	$found = false;
 	if (count($word_list)) {
-		$body = $b['item']['title'] . "\n" . nsfw_extract_photos($b['html']);
+		$body = $hook_data['item']['title'] . "\n" . nsfw_extract_photos($hook_data['item']['body']);
 
 		foreach ($word_list as $word) {
 			$word = trim($word);
@@ -141,15 +137,17 @@ function nsfw_prepare_body(Friendica\App $a, &$b)
 				continue;
 			}
 
+			$tag_search = false;
 			switch ($word[0]) {
 				case '/'; // Regular expression
 					$found = preg_match($word, $body);
 					break;
 				case '#': // Hashtag-only search
-					$found = nsfw_find_word_in_item_tags($b['item']['hashtags'], substr($word, 1));
+					$tag_search = true;
+					$found = nsfw_find_word_in_item_tags($hook_data['item']['hashtags'], substr($word, 1));
 					break;
 				default:
-					$found = stripos($body, $word) !== false || nsfw_find_word_in_item_tags($b['item']['tags'], $word);
+					$found = stripos($body, $word) !== false || nsfw_find_word_in_item_tags($hook_data['item']['tags'], $word);
 					break;
 			}
 
@@ -160,10 +158,11 @@ function nsfw_prepare_body(Friendica\App $a, &$b)
 	}
 
 	if ($found) {
-		$rnd = random_string(8);
-		$b['html'] = '<div id="nsfw-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'nsfw-' . $rnd . '\'); >' .
-			L10n::t('%s - Click to open/close',	$word) .
-			'</div><div id="nsfw-' . $rnd . '" style="display: none; " >' .	$b['html'] . '</div>';
+		if ($tag_search) {
+			$hook_data['filter_reasons'][] = L10n::t('Filtered tag: %s', $word);
+		} else {
+			$hook_data['filter_reasons'][] = L10n::t('Filtered word: %s', $word);
+		}
 	}
 }
 
