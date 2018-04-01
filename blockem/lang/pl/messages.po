@@ -1,0 +1,59 @@
+# ADDON blockem
+# Copyright (C)
+# This file is distributed under the same license as the Friendica blockem addon package.
+# 
+# 
+# Translators:
+# Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-02-09 13:00+0100\n"
+"PO-Revision-Date: 2018-03-31 20:03+0000\n"
+"Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
+"Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: blockem.php:51 blockem.php:55
+msgid "\"Blockem\""
+msgstr ""
+
+#: blockem.php:59
+msgid ""
+"Hides user's content by collapsing posts. Also replaces their avatar with "
+"generic image."
+msgstr "Ukrywa zawartość użytkownika, zwijając posty. Zastępuje również awatar wygenerowanym obrazem."
+
+#: blockem.php:60
+msgid "Comma separated profile URLS:"
+msgstr "Rozdzielone przecinkami adresy URL profilu:"
+
+#: blockem.php:64
+msgid "Save Settings"
+msgstr "Zapisz ustawienia"
+
+#: blockem.php:77
+msgid "BLOCKEM Settings saved."
+msgstr "BLOCKEM Ustawienia zapisane."
+
+#: blockem.php:140
+#, php-format
+msgid "Hidden content by %s - Click to open/close"
+msgstr "Ukryta zawartość przez %s - Kliknij, aby otworzyć/zamknąć"
+
+#: blockem.php:193
+msgid "Unblock Author"
+msgstr "Odblokuj autora"
+
+#: blockem.php:195
+msgid "Block Author"
+msgstr "Zablokuj autora"
+
+#: blockem.php:227
+msgid "blockem settings updated"
+msgstr "ustawienia blockem zostały zaktualizowane"
