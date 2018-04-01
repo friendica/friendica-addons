@@ -1,0 +1,56 @@
+# ADDON js_upload
+# Copyright (C)
+# This file is distributed under the same license as the Friendica js_upload addon package.
+# 
+# 
+# Translators:
+# Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-03-30 17:58+0000\n"
+"Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
+"Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: js_upload.php:43
+msgid "Upload a file"
+msgstr "Prześlij plik"
+
+#: js_upload.php:44
+msgid "Drop files here to upload"
+msgstr "Upuść pliki tutaj, aby przesłać"
+
+#: js_upload.php:45
+msgid "Cancel"
+msgstr "Anuluj"
+
+#: js_upload.php:46
+msgid "Failed"
+msgstr "Nie powiodło się"
+
+#: js_upload.php:303
+msgid "No files were uploaded."
+msgstr "Żadne pliki nie zostały przesłane."
+
+#: js_upload.php:309
+msgid "Uploaded file is empty"
+msgstr "Przesłany plik jest pusty"
+
+#: js_upload.php:321
+msgid "Image exceeds size limit of "
+msgstr "Obraz przekracza limit rozmiaru wynoszący"
+
+#: js_upload.php:332
+msgid "File has an invalid extension, it should be one of "
+msgstr "Plik ma nieprawidłowe rozszerzenie, powinno być jednym z nich"
+
+#: js_upload.php:343
+msgid "Upload was cancelled, or server error encountered"
+msgstr "Przesyłanie zostało anulowane lub wystąpił błąd serwera"
