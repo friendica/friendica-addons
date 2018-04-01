@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-15 17:54+0700\n"
+"POT-Creation-Date: 2018-04-01 11:11-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,7 +49,12 @@ msgstr ""
 msgid "NSFW Settings saved."
 msgstr ""
 
-#: nsfw.php:167
+#: nsfw.php:162
 #, php-format
-msgid "%s - Click to open/close"
+msgid "Filtered tag: %s"
+msgstr ""
+
+#: nsfw.php:164
+#, php-format
+msgid "Filtered word: %s"
 msgstr ""
