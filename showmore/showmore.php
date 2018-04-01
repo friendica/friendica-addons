@@ -107,26 +107,32 @@ function get_body_length($body) {
 	return strlen($string);
 }
 
-function showmore_prepare_body(&$a,&$b) {
-
-	$words = null;
-	if(PConfig::get(local_user(),'showmore','disable'))
+function showmore_prepare_body(\Friendica\App $a, &$hook_data)
+{
+	// No combination with content filters
+	if (!empty($hook_data['filter_reasons'])) {
 		return;
-
-	$chars = (int)PConfig::get(local_user(),'showmore','chars');
-	if(!$chars)
-		$chars = 1100;
-
-	if (get_body_length($b['html']) > $chars) {
-		$found = true;
-		$shortened = trim(showmore_cutitem($b['html'], $chars))."...";
 	}
 
-	if($found) {
+	if (PConfig::get(local_user(), 'showmore', 'disable')) {
+		return;
+	}
+
+	$chars = (int) PConfig::get(local_user(), 'showmore', 'chars');
+	if (!$chars) {
+		$chars = 1100;
+	}
+
+	if (get_body_length($hook_data['html']) > $chars) {
+		$found = true;
+		$shortened = trim(showmore_cutitem($hook_data['html'], $chars)) . "...";
+	}
+
+	if ($found) {
 		$rnd = random_string(8);
-		$b['html'] = '<span id="showmore-teaser-'.$rnd.'" class="showmore-teaser" style="display: block;">'.$shortened." ".
-				'<span id="showmore-wrap-'.$rnd.'" style="white-space:nowrap;" class="showmore-wrap fakelink" onclick="openClose(\'showmore-'.$rnd.'\'); openClose(\'showmore-teaser-'.$rnd.'\');" >'.L10n::t('show more').'</span></span>'.
-				'<div id="showmore-'.$rnd.'" class="showmore-content" style="display: none;">'.$b['html'].'</div>';
+		$hook_data['html'] = '<span id="showmore-teaser-' . $rnd . '" class="showmore-teaser" style="display: block;">' . $shortened . " " .
+			'<span id="showmore-wrap-' . $rnd . '" style="white-space:nowrap;" class="showmore-wrap fakelink" onclick="openClose(\'showmore-' . $rnd . '\'); openClose(\'showmore-teaser-' . $rnd . '\');" >' . L10n::t('show more') . '</span></span>' .
+			'<div id="showmore-' . $rnd . '" class="showmore-content" style="display: none;">' . $hook_data['html'] . '</div>';
 	}
 }
 
