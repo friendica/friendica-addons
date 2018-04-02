@@ -528,8 +528,8 @@ function twitter_post_hook(App $a, &$b)
 
 		$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
-		// Set the timeout for upload to 15 seconds
-		$connection->setTimeouts(10, 15);
+		// Set the timeout for upload to 30 seconds
+		$connection->setTimeouts(10, 30);
 
 		$max_char = 280;
 		$msgarr = BBCode::toPlaintext($b, $max_char, true, 8);
@@ -543,6 +543,9 @@ function twitter_post_hook(App $a, &$b)
 
 		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {
 			$msg .= "\n" . $msgarr["url"];
+			$url_added = true;
+		} else {
+			$url_added = false;
 		}
 
 		if (isset($msgarr["image"]) && ($msgarr["type"] != "video")) {
@@ -572,7 +575,11 @@ function twitter_post_hook(App $a, &$b)
 				logger('Exception when trying to send to Twitter: ' . $e->getMessage());
 
 				// Workaround: Remove the picture link so that the post can be reposted without it
-				$msg .= " " . $image;
+				// When there is another url already added, a second url would be superfluous.
+				if (!$url_added) {
+					$msg .= "\n" . $image;
+				}
+
 				$image = "";
 			}
 		}
