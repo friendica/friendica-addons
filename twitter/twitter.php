@@ -528,8 +528,8 @@ function twitter_post_hook(App $a, &$b)
 
 		$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
-		// Set the timeout for upload to 15 seconds
-		$connection->setTimeouts(10, 15);
+		// Set the timeout for upload to 30 seconds
+		$connection->setTimeouts(10, 30);
 
 		$max_char = 280;
 		$msgarr = BBCode::toPlaintext($b, $max_char, true, 8);
@@ -543,14 +543,23 @@ function twitter_post_hook(App $a, &$b)
 
 		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {
 			$msg .= "\n" . $msgarr["url"];
+			$url_added = true;
+		} else {
+			$url_added = false;
 		}
 
 		if (isset($msgarr["image"]) && ($msgarr["type"] != "video")) {
 			$image = $msgarr["image"];
 		}
 
+		if (empty($msg)) {
+			return;
+		}
+
 		// and now tweet it :-)
-		if (strlen($msg) && ($image != "")) {
+		$post = [];
+
+		if (!empty($image)) {
 			try {
 				$img_str = Network::fetchUrl($image);
 
@@ -561,83 +570,49 @@ function twitter_post_hook(App $a, &$b)
 
 				unlink($tempfile);
 
-				$post = ['status' => $msg, 'media_ids' => $media->media_id_string];
-
-				if ($iscomment) {
-					$post["in_reply_to_status_id"] = substr($orig_post["uri"], 9);
-				}
-
-				$result = $connection->post('statuses/update', $post);
-
-				logger('twitter_post_with_media send, result: ' . print_r($result, true), LOGGER_DEBUG);
-
-				if ($result->source) {
-					Config::set("twitter", "application_name", strip_tags($result->source));
-				}
-
-				if ($result->errors || $result->error) {
-					logger('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
-
-					// Workaround: Remove the picture link so that the post can be reposted without it
-					$msg .= " " . $image;
-					$image = "";
-				} elseif ($iscomment) {
-					logger('twitter_post: Update extid ' . $result->id_str . " for post id " . $b['id']);
-					Item::update(['extid' => "twitter::" . $result->id_str, 'body' => $result->text], ['id' => $b['id']]);
-				}
+				$post['media_ids'] = $media->media_id_string;
 			} catch (Exception $e) {
 				logger('Exception when trying to send to Twitter: ' . $e->getMessage());
 
 				// Workaround: Remove the picture link so that the post can be reposted without it
-				$msg .= " " . $image;
+				// When there is another url already added, a second url would be superfluous.
+				if (!$url_added) {
+					$msg .= "\n" . $image;
+				}
+
 				$image = "";
 			}
 		}
 
-		if (strlen($msg) && ($image == "")) {
-// -----------------
-			$max_char = 280;
-			$msgarr = BBCode::toPlaintext($b, $max_char, true, 8);
-			$msg = $msgarr["text"];
+		$post['status'] = $msg;
 
-			if (($msg == "") && isset($msgarr["title"])) {
-				$msg = Plaintext::shorten($msgarr["title"], $max_char - 50);
+		if ($iscomment) {
+			$post["in_reply_to_status_id"] = substr($orig_post["uri"], 9);
+		}
+
+		$url = 'statuses/update';
+		$result = $connection->post($url, $post);
+		logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
+
+		if ($result->source) {
+			Config::set("twitter", "application_name", strip_tags($result->source));
+		}
+
+		if ($result->errors) {
+			logger('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
+
+			$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", intval($b['uid']));
+			if (count($r)) {
+				$a->contact = $r[0]["id"];
 			}
 
-			if (isset($msgarr["url"])) {
-				$msg .= "\n" . $msgarr["url"];
-			}
-// -----------------
-			$url = 'statuses/update';
-			$post = ['status' => $msg, 'weighted_character_count' => 'true'];
+			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $post]);
 
-			if ($iscomment) {
-				$post["in_reply_to_status_id"] = substr($orig_post["uri"], 9);
-			}
-
-			$result = $connection->post($url, $post);
-			logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
-
-			if ($result->source) {
-				Config::set("twitter", "application_name", strip_tags($result->source));
-			}
-
-			if ($result->errors) {
-				logger('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
-
-				$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", intval($b['uid']));
-				if (count($r)) {
-					$a->contact = $r[0]["id"];
-				}
-
-				$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $post]);
-
-				Queue::add($a->contact, NETWORK_TWITTER, $s);
-				notice(L10n::t('Twitter post failed. Queued for retry.') . EOL);
-			} elseif ($iscomment) {
-				logger('twitter_post: Update extid ' . $result->id_str . " for post id " . $b['id']);
-				Item::update(['extid' => "twitter::" . $result->id_str], ['id' => $b['id']]);
-			}
+			Queue::add($a->contact, NETWORK_TWITTER, $s);
+			notice(L10n::t('Twitter post failed. Queued for retry.') . EOL);
+		} elseif ($iscomment) {
+			logger('twitter_post: Update extid ' . $result->id_str . " for post id " . $b['id']);
+			Item::update(['extid' => "twitter::" . $result->id_str], ['id' => $b['id']]);
 		}
 	}
 }
