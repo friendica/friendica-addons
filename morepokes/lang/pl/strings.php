@@ -7,7 +7,7 @@ function string_plural_select_pl($n){
 ;
 $a->strings["bitchslap"] = "";
 $a->strings["bitchslapped"] = "";
-$a->strings["shag"] = "";
+$a->strings["shag"] = "czupryna";
 $a->strings["shagged"] = "";
 $a->strings["do something obscenely biological to"] = "zrobić coś nieprzyzwoicie biologicznego";
 $a->strings["did something obscenely biological to"] = "zrobił coś nieprzyzwoicie biologicznego";
