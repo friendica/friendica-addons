@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-02-09 13:00+0100\n"
-"PO-Revision-Date: 2018-03-31 20:03+0000\n"
+"PO-Revision-Date: 2018-04-02 15:26+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: blockem.php:51 blockem.php:55
 msgid "\"Blockem\""
-msgstr ""
+msgstr "\"Blockem\""
 
 #: blockem.php:59
 msgid ""
