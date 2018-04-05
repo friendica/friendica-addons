@@ -19,14 +19,14 @@ use Friendica\Core\PConfig;
 
 function langfilter_install()
 {
-	Addon::registerHook('content_filter', 'addon/langfilter/langfilter.php', 'langfilter_content_filter', 10);
+	Addon::registerHook('prepare_body_content_filter', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body_content_filter', 10);
 	Addon::registerHook('addon_settings', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
 	Addon::registerHook('addon_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
 }
 
 function langfilter_uninstall()
 {
-	Addon::unregisterHook('content_filter', 'addon/langfilter/langfilter.php', 'langfilter_content_filter');
+	Addon::unregisterHook('prepare_body_content_filter', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body_content_filter');
 	Addon::unregisterHook('prepare_body', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body');
 	Addon::unregisterHook('addon_settings', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
 	Addon::unregisterHook('addon_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
@@ -115,7 +115,7 @@ function langfilter_addon_settings_post(App $a, &$b)
  *     expand it again.
  */
 
-function langfilter_content_filter(App $a, &$hook_data)
+function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 {
 	$logged_user = local_user();
 	if (!$logged_user) {

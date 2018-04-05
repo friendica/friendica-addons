@@ -13,14 +13,14 @@ use Friendica\Core\PConfig;
 
 function nsfw_install()
 {
-	Addon::registerHook('content_filter', 'addon/nsfw/nsfw.php', 'nsfw_content_filter', 10);
+	Addon::registerHook('prepare_body_content_filter', 'addon/nsfw/nsfw.php', 'nsfw_prepare_body_content_filter', 10);
 	Addon::registerHook('addon_settings', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings');
 	Addon::registerHook('addon_settings_post', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings_post');
 }
 
 function nsfw_uninstall()
 {
-	Addon::unregisterHook('content_filter', 'addon/nsfw/nsfw.php', 'nsfw_content_filter');
+	Addon::unregisterHook('prepare_body_content_filter', 'addon/nsfw/nsfw.php', 'nsfw_prepare_body_content_filter');
 	Addon::unregisterHook('prepare_body', 'addon/nsfw/nsfw.php', 'nsfw_prepare_body');
 	Addon::unregisterHook('addon_settings', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings');
 	Addon::unregisterHook('addon_settings_post', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings_post');
@@ -110,7 +110,7 @@ function nsfw_addon_settings_post(&$a, &$b)
 	}
 }
 
-function nsfw_content_filter(\Friendica\App $a, &$hook_data)
+function nsfw_prepare_body_content_filter(\Friendica\App $a, &$hook_data)
 {
 	$words = null;
 	if (PConfig::get(local_user(), 'nsfw', 'disable')) {

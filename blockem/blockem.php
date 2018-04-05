@@ -12,7 +12,7 @@ use Friendica\Core\PConfig;
 
 function blockem_install()
 {
-	Addon::registerHook('content_filter', 'addon/blockem/blockem.php', 'blockem_content_filter');
+	Addon::registerHook('prepare_body_content_filter', 'addon/blockem/blockem.php', 'blockem_prepare_body_content_filter');
 	Addon::registerHook('display_item', 'addon/blockem/blockem.php', 'blockem_display_item');
 	Addon::registerHook('addon_settings', 'addon/blockem/blockem.php', 'blockem_addon_settings');
 	Addon::registerHook('addon_settings_post', 'addon/blockem/blockem.php', 'blockem_addon_settings_post');
@@ -23,7 +23,7 @@ function blockem_install()
 
 function blockem_uninstall()
 {
-	Addon::unregisterHook('content_filter', 'addon/blockem/blockem.php', 'blockem_content_filter');
+	Addon::unregisterHook('prepare_body_content_filter', 'addon/blockem/blockem.php', 'blockem_prepare_body_content_filter');
 	Addon::unregisterHook('prepare_body', 'addon/blockem/blockem.php', 'blockem_prepare_body');
 	Addon::unregisterHook('display_item', 'addon/blockem/blockem.php', 'blockem_display_item');
 	Addon::unregisterHook('addon_settings', 'addon/blockem/blockem.php', 'blockem_addon_settings');
@@ -107,7 +107,7 @@ function blockem_enotify_store(&$a,&$b) {
 	}
 }
 
-function blockem_content_filter(\Friendica\App $a, &$hook_data)
+function blockem_prepare_body_content_filter(\Friendica\App $a, &$hook_data)
 {
 	if (!local_user()) {
 		return;
