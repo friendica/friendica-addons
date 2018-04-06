@@ -1,0 +1,59 @@
+# ADDON blockem
+# Copyright (C)
+# This file is distributed under the same license as the Friendica blockem addon package.
+# 
+# 
+# Translators:
+# Kris, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-02-09 13:00+0100\n"
+"PO-Revision-Date: 2018-04-03 17:45+0000\n"
+"Last-Translator: Kris\n"
+"Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fi_FI\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: blockem.php:51 blockem.php:55
+msgid "\"Blockem\""
+msgstr "\"Blockem\""
+
+#: blockem.php:59
+msgid ""
+"Hides user's content by collapsing posts. Also replaces their avatar with "
+"generic image."
+msgstr ""
+
+#: blockem.php:60
+msgid "Comma separated profile URLS:"
+msgstr ""
+
+#: blockem.php:64
+msgid "Save Settings"
+msgstr "Tallenna asetukset"
+
+#: blockem.php:77
+msgid "BLOCKEM Settings saved."
+msgstr ""
+
+#: blockem.php:140
+#, php-format
+msgid "Hidden content by %s - Click to open/close"
+msgstr ""
+
+#: blockem.php:193
+msgid "Unblock Author"
+msgstr ""
+
+#: blockem.php:195
+msgid "Block Author"
+msgstr ""
+
+#: blockem.php:227
+msgid "blockem settings updated"
+msgstr ""
