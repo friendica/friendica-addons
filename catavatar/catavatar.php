@@ -5,6 +5,7 @@
  * Version: 1.1
  * Author: Fabio <https://kirgroup.com/profile/fabrixxm>
  */
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -42,7 +43,7 @@ function catavatar_uninstall()
 /**
  * Cat avatar user settings page
  */
-function catavatar_addon_settings(&$a, &$s)
+function catavatar_addon_settings(App $a, &$s)
 {
 	if (!local_user()) {
 		return;
@@ -64,7 +65,7 @@ function catavatar_addon_settings(&$a, &$s)
 /**
  * Cat avatar user settings POST handle
  */
-function catavatar_addon_settings_post(&$a, &$s)
+function catavatar_addon_settings_post(App $a, &$s)
 {
 	if (!local_user()) {
 		return;
@@ -88,7 +89,7 @@ function catavatar_addon_settings_post(&$a, &$s)
 	}
 
 
-	if (!empty($_POST['catavatar-usecat'})) {
+	if (!empty($_POST['catavatar-usecat'])) {
 		$url = $a->get_baseurl() . '/catavatar/' . local_user();
 
 		// set the catavatar url as avatar url in contact and default profile
@@ -152,7 +153,7 @@ function catavatar_addon_settings_post(&$a, &$s)
  * @param $a array
  * @param &$b array
  */
-function catavatar_lookup($a, &$b)
+function catavatar_lookup(App $a, &$b)
 {
 	$user = dba::selectFirst('user', ['uid'], ['email' => $b['email']]);
 	$url = $a->get_baseurl() . '/catavatar/' . $user['uid'];
@@ -176,9 +177,8 @@ function catavatar_module(){}
  *
  * @throws NotFoundException
  *
- * @TODO: support sizes
  */
-function catavatar_content($a)
+function catavatar_content(App $a)
 {
 	if ($a->argc < 2 || $a->argc > 3) {
 		throw new NotFoundException(); // this should be catched on index and show default "not found" page.
@@ -220,7 +220,7 @@ function catavatar_content($a)
 		header('Expires: '. gmdate('D, d M Y H:i:s \G\M\T', time() + 86400));
 		header('Content-Type: image/jpg');
 		readfile($cachefile);
-		killme();
+		exit();
 	}
 
 	// ...Or start generation
@@ -239,7 +239,7 @@ function catavatar_content($a)
 
 	ob_end_flush();
 
-	killme();
+	exit();
 }
 
 
@@ -304,7 +304,9 @@ function build_cat($seed='', $size=0){
 	}
 
 	// restore random seed
-	if($seed) srand();
+	if ($seed) {
+		srand();
+	}
 
 	header('Pragma: public');
 	header('Cache-Control: max-age=86400');
