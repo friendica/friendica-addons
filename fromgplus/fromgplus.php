@@ -103,7 +103,7 @@ function fromgplus_addon_admin(&$a, &$o)
 
 	$o = replace_macros($t, [
 			'$submit' => L10n::t('Save Settings'),
-			'$key' => ['key', L10n::t('Key'), trim(Config::get('fromgplus', 'key')), L10n::t('')],
+			'$key' => ['key', L10n::t('Key'), trim(Config::get('fromgplus', 'key')), ''],
 	]);
 }
 

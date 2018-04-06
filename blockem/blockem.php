@@ -12,7 +12,7 @@ use Friendica\Core\PConfig;
 
 function blockem_install()
 {
-	Addon::registerHook('prepare_body', 'addon/blockem/blockem.php', 'blockem_prepare_body');
+	Addon::registerHook('prepare_body_content_filter', 'addon/blockem/blockem.php', 'blockem_prepare_body_content_filter');
 	Addon::registerHook('display_item', 'addon/blockem/blockem.php', 'blockem_display_item');
 	Addon::registerHook('addon_settings', 'addon/blockem/blockem.php', 'blockem_addon_settings');
 	Addon::registerHook('addon_settings_post', 'addon/blockem/blockem.php', 'blockem_addon_settings_post');
@@ -23,6 +23,7 @@ function blockem_install()
 
 function blockem_uninstall()
 {
+	Addon::unregisterHook('prepare_body_content_filter', 'addon/blockem/blockem.php', 'blockem_prepare_body_content_filter');
 	Addon::unregisterHook('prepare_body', 'addon/blockem/blockem.php', 'blockem_prepare_body');
 	Addon::unregisterHook('display_item', 'addon/blockem/blockem.php', 'blockem_display_item');
 	Addon::unregisterHook('addon_settings', 'addon/blockem/blockem.php', 'blockem_addon_settings');
@@ -106,38 +107,33 @@ function blockem_enotify_store(&$a,&$b) {
 	}
 }
 
-function blockem_prepare_body(&$a,&$b) {
-
-	if(! local_user())
+function blockem_prepare_body_content_filter(\Friendica\App $a, &$hook_data)
+{
+	if (!local_user()) {
 		return;
+	}
 
-	$words = null;
-	if(local_user()) {
-		$words = PConfig::get(local_user(),'blockem','words');
+	$profiles_string = null;
+	if (local_user()) {
+		$profiles_string = PConfig::get(local_user(), 'blockem', 'words');
 	}
-	if($words) {
-		$arr = explode(',',$words);
-	}
-	else {
+
+	if ($profiles_string) {
+		$profiles_array = explode(',', $profiles_string);
+	} else {
 		return;
 	}
 
 	$found = false;
-	if(count($arr)) {
-		foreach($arr as $word) {
-			if(! strlen(trim($word))) {
-				continue;
-			}
-
-			if(link_compare($b['item']['author-link'],$word)) {
-				$found = true;
-				break;
-			}
+	foreach ($profiles_array as $word) {
+		if (link_compare($hook_data['item']['author-link'], trim($word))) {
+			$found = true;
+			break;
 		}
 	}
-	if($found) {
-		$rnd = random_string(8);
-		$b['html'] = '<div id="blockem-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'blockem-' . $rnd . '\'); >' . L10n::t('Hidden content by %s - Click to open/close', $word) . '</div><div id="blockem-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
+
+	if ($found) {
+		$hook_data['filter_reasons'][] = L10n::t('Filtered user: %s', $hook_data['item']['author-name']);
 	}
 }
 

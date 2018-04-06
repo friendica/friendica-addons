@@ -19,13 +19,14 @@ use Friendica\Core\PConfig;
 
 function langfilter_install()
 {
-	Addon::registerHook('prepare_body', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body', 10);
+	Addon::registerHook('prepare_body_content_filter', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body_content_filter', 10);
 	Addon::registerHook('addon_settings', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
 	Addon::registerHook('addon_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
 }
 
 function langfilter_uninstall()
 {
+	Addon::unregisterHook('prepare_body_content_filter', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body_content_filter');
 	Addon::unregisterHook('prepare_body', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body');
 	Addon::unregisterHook('addon_settings', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
 	Addon::unregisterHook('addon_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
@@ -114,7 +115,7 @@ function langfilter_addon_settings_post(App $a, &$b)
  *     expand it again.
  */
 
-function langfilter_prepare_body(App $a, &$b)
+function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 {
 	$logged_user = local_user();
 	if (!$logged_user) {
@@ -124,7 +125,7 @@ function langfilter_prepare_body(App $a, &$b)
 	// Never filter own messages
 	// TODO: find a better way to extract this
 	$logged_user_profile = $a->get_baseurl() . '/profile/' . $a->user['nickname'];
-	if ($logged_user_profile == $b['item']['author-link']) {
+	if ($logged_user_profile == $hook_data['item']['author-link']) {
 		return;
 	}
 
@@ -138,24 +139,26 @@ function langfilter_prepare_body(App $a, &$b)
 	if (!$minlen) {
 		$minlen = 32;
 	}
-	if (strlen($b['item']['body']) < $minlen) {
+	if (strlen($hook_data['item']['body']) < $minlen) {
 		return;
 	}
 
-	$spoken_config = PConfig::get(local_user(), 'langfilter', 'languages');
+	$read_languages_string = PConfig::get(local_user(), 'langfilter', 'languages');
 	$minconfidence = PConfig::get(local_user(), 'langfilter', 'minconfidence');
 
 	// Don't filter if no spoken languages are configured
-	if (!$spoken_config)
+	if (!$read_languages_string) {
 		return;
-	$spoken_languages = explode(',', $spoken_config);
+	}
+	$read_languages_array = explode(',', $read_languages_string);
 
 	// Extract the language of the post
-	$opts = $b['item']['postopts'];
+	$opts = $hook_data['item']['postopts'];
 	if (!$opts) {
 		// no options associated to post
 		return;
 	}
+
 	if (!preg_match('/\blang=([^;]*);([^:]*)/', $opts, $matches)) {
 		// no lang options associated to post
 		return;
@@ -174,10 +177,8 @@ function langfilter_prepare_body(App $a, &$b)
 	if (!$iso2) {
 		return;
 	}
-	$spoken = in_array($iso2, $spoken_languages);
 
-	if (!$spoken) {
-		$rnd = random_string(8);
-		$b['html'] = '<div id="langfilter-wrap-' . $rnd . '" class="fakelink" onclick=openClose(\'langfilter-' . $rnd . '\'); >' . L10n::t('Hidden content in %s - Click to open/close', $lang) . '</div><div id="langfilter-' . $rnd . '" style="display: none; " >' . $b['html'] . '</div>';
+	if (!in_array($iso2, $read_languages_array)) {
+		$hook_data['filter_reasons'][] = L10n::t('Filtered language: %s', ucfirst($lang));
 	}
 }
