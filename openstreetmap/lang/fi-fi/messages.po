@@ -1,0 +1,46 @@
+# ADDON openstreetmap
+# Copyright (C)
+# This file is distributed under the same license as the Friendica openstreetmap addon package.
+# 
+# 
+# Translators:
+# Kris, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-04-03 18:57+0000\n"
+"Last-Translator: Kris\n"
+"Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fi_FI\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: openstreetmap.php:94
+msgid "Submit"
+msgstr "Lähetä"
+
+#: openstreetmap.php:95
+msgid "Tile Server URL"
+msgstr ""
+
+#: openstreetmap.php:95
+msgid ""
+"A list of <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" "
+"target=\"_blank\">public tile servers</a>"
+msgstr ""
+
+#: openstreetmap.php:96
+msgid "Default zoom"
+msgstr ""
+
+#: openstreetmap.php:96
+msgid "The default zoom level. (1:world, 18:highest)"
+msgstr ""
+
+#: openstreetmap.php:104
+msgid "Settings updated."
+msgstr "Asetukset päivitetty"
