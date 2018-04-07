@@ -16,4 +16,4 @@ $a->strings["Minimum length of message body"] = "Mindestlänge des Nachrichtente
 $a->strings["Minimum number of characters in message body for filter to be used. Posts shorter than this will not be filtered. Note: Language detection is unreliable for short content (<200 characters)."] = "Mindestanzahl von Zeichen im Nachrichtentext die vom Filter benutz werden soll. Beiträge die kürzer sind werden nicht gefiltert. Hinweis: Die Spracherkennung ist bei kurze Inhalte (<200 Zeichen) nicht zuverlässig.";
 $a->strings["Save Settings"] = "Einstellungen speichern";
 $a->strings["Language Filter Settings saved."] = "Sprachfilter Einstellungen gespeichert.";
-$a->strings["Hidden content in %s - Click to open/close"] = "Versteckter Inhalt in %s - Klicken zum Öffnen / Schließen";
+$a->strings["Filtered language: %s"] = "Gefilterte Sprache:  %s";

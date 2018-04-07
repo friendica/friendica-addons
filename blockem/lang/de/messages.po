@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-09 13:00+0100\n"
-"PO-Revision-Date: 2018-02-10 17:32+0000\n"
+"POT-Creation-Date: 2018-04-01 11:11-0400\n"
+"PO-Revision-Date: 2018-04-07 05:27+0000\n"
 "Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
 "Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -20,41 +20,41 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: blockem.php:51 blockem.php:55
+#: blockem.php:52 blockem.php:56
 msgid "\"Blockem\""
 msgstr "\"Blockem\""
 
-#: blockem.php:59
+#: blockem.php:60
 msgid ""
 "Hides user's content by collapsing posts. Also replaces their avatar with "
 "generic image."
 msgstr "Verbirgt Inhalte von Kontakten durch kollabieren der Beiträge. Des weiteren wird das Profilbild durch einen generischen Avatar ersetzt."
 
-#: blockem.php:60
+#: blockem.php:61
 msgid "Comma separated profile URLS:"
 msgstr "Komma separierte Liste von Profil URLs"
 
-#: blockem.php:64
+#: blockem.php:65
 msgid "Save Settings"
 msgstr "Einstellungen speichern"
 
-#: blockem.php:77
+#: blockem.php:78
 msgid "BLOCKEM Settings saved."
 msgstr "BLOCKEM-Einstellungen gesichert."
 
-#: blockem.php:140
+#: blockem.php:136
 #, php-format
-msgid "Hidden content by %s - Click to open/close"
-msgstr "Verborgene Inhalte von %s - Zum Öffnen/Schließen klicken"
+msgid "Filtered user: %s"
+msgstr "Gefilterte Person: %s"
 
-#: blockem.php:193
+#: blockem.php:189
 msgid "Unblock Author"
 msgstr "Autor freischalten"
 
-#: blockem.php:195
+#: blockem.php:191
 msgid "Block Author"
 msgstr "Autor blockieren"
 
-#: blockem.php:227
+#: blockem.php:223
 msgid "blockem settings updated"
 msgstr "blockem Einstellungen aktualisiert"
