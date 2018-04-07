@@ -12,4 +12,5 @@ $a->strings["Comma separated list of keywords to hide"] = "Durch Kommata getrenn
 $a->strings["Save Settings"] = "Einstellungen speichern";
 $a->strings["Use /expression/ to provide regular expressions"] = "Verwende /expression/ um Reguläre Ausdrücke zu verwenden";
 $a->strings["NSFW Settings saved."] = "NSFW-Einstellungen gespeichert";
-$a->strings["%s - Click to open/close"] = "%s – Zum Öffnen/Schließen klicken";
+$a->strings["Filtered tag: %s"] = "Gefiltertes Schlagwort: %s";
+$a->strings["Filtered word: %s"] = "Gefilterter Begriff: %s";
