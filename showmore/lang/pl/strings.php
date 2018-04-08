@@ -8,6 +8,6 @@ function string_plural_select_pl($n){
 $a->strings["\"Show more\" Settings"] = "\"Pokaż więcej\" ustawień";
 $a->strings["Enable Show More"] = "Włącz Pokaż więcej";
 $a->strings["Cutting posts after how much characters"] = "Cięcie słupków po ilości znaków";
-$a->strings["Submit"] = "Wyślij";
+$a->strings["Save Settings"] = "Zapisz ustawienia";
 $a->strings["Show More Settings saved."] = "Pokaż więcej zapisanych ustawień.";
 $a->strings["show more"] = "Pokaż więcej";
