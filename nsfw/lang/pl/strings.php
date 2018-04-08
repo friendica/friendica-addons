@@ -12,4 +12,5 @@ $a->strings["Comma separated list of keywords to hide"] = "Rozdzielana przecinka
 $a->strings["Save Settings"] = "Zapisz ustawienia";
 $a->strings["Use /expression/ to provide regular expressions"] = "Użyj /wyrażenia/, aby zapewnić wyrażenia regularne";
 $a->strings["NSFW Settings saved."] = "Ustawienia NSFW zostały zapisane.";
-$a->strings["%s - Click to open/close"] = "%s - Kliknij, aby otworzyć/zamknąć";
+$a->strings["Filtered tag: %s"] = "Filtrowane tagów: %s";
+$a->strings["Filtered word: %s"] = "Filtrowane słowo: %s";
