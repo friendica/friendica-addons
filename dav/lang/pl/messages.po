@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-03-31 20:38+0000\n"
+"PO-Revision-Date: 2018-04-07 16:53+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -433,35 +433,35 @@ msgstr "Dzień miesiąca"
 
 #: common/wdcal_edit.inc.php:354
 msgid "#num#th of each month"
-msgstr ""
+msgstr "#num#th każdego miesiąca"
 
 #: common/wdcal_edit.inc.php:357
 msgid "#num#th-last of each month"
-msgstr ""
+msgstr "#num#th-last każdego miesiąca"
 
 #: common/wdcal_edit.inc.php:360
 msgid "#num#th #wkday# of each month"
-msgstr ""
+msgstr "#num#th #wkday# każdego miesiąca"
 
 #: common/wdcal_edit.inc.php:363
 msgid "#num#th-last #wkday# of each month"
-msgstr ""
+msgstr "#num#th-last #wkday# każdego miesiąca"
 
 #: common/wdcal_edit.inc.php:377
 msgid "#num#th of the given month"
-msgstr ""
+msgstr "#num#th danego miesiąca"
 
 #: common/wdcal_edit.inc.php:380
 msgid "#num#th-last of the given month"
-msgstr ""
+msgstr "#num#th-last danego miesiąca"
 
 #: common/wdcal_edit.inc.php:383
 msgid "#num#th #wkday# of the given month"
-msgstr ""
+msgstr "#num#th #wkday# danego miesiąca"
 
 #: common/wdcal_edit.inc.php:386
 msgid "#num#th-last #wkday# of the given month"
-msgstr ""
+msgstr "#num#th-last #wkday# danego miesiąca"
 
 #: common/wdcal_edit.inc.php:413
 msgid "Repeat until"
