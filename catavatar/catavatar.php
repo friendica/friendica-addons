@@ -50,7 +50,7 @@ function catavatar_addon_settings(App $a, &$s)
 	}
 
 	$t = get_markup_template('settings.tpl', 'addon/catavatar/');
-	$s = replace_macros ($t, [
+	$s .= replace_macros ($t, [
 		'$postpost' => !empty($_POST['catavatar-morecat']) || !empty($_POST['catavatar-emailcat']),
 		'$uncache' => time(),
 		'$uid' => local_user(),
