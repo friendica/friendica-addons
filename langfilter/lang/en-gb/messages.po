@@ -1,0 +1,80 @@
+# ADDON langfilter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica langfilter addon package.
+# 
+# 
+# Translators:
+# Kris, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-01 11:11-0400\n"
+"PO-Revision-Date: 2018-04-08 19:50+0000\n"
+"Last-Translator: Kris\n"
+"Language-Team: English (United Kingdom) (http://www.transifex.com/Friendica/friendica/language/en_GB/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: langfilter.php:58
+msgid "Language Filter"
+msgstr "Language Filter"
+
+#: langfilter.php:59
+msgid ""
+"This addon tries to identify the language posts are writen in. If it does "
+"not match any language specifed below, posts will be hidden by collapsing "
+"them."
+msgstr "This addon tries to identify the language that posts are written in. If posts don't match any of the languages specifed below, those posts will be hidden by collapsing them."
+
+#: langfilter.php:60
+msgid "Use the language filter"
+msgstr "Use the Language Filter"
+
+#: langfilter.php:61
+msgid "Able to read"
+msgstr "Language selection"
+
+#: langfilter.php:61
+msgid ""
+"List of abbreviations (iso2 codes) for languages you speak, comma separated."
+" For example \"de,it\"."
+msgstr "List of abbreviations (ISO two-letter language codes) for languages you wish to view, separated by commas. For example, German and Italian would be \"de,it\"."
+
+#: langfilter.php:62
+msgid "Minimum confidence in language detection"
+msgstr "Minimum confidence in language detection"
+
+#: langfilter.php:62
+msgid ""
+"Minimum confidence in language detection being correct, from 0 to 100. Posts"
+" will not be filtered when the confidence of language detection is below "
+"this percent value."
+msgstr "The minimum confidence in language detection being correct, from 0 to 100. Posts will only be filtered if their confidence value is higher than this percentage."
+
+#: langfilter.php:63
+msgid "Minimum length of message body"
+msgstr "Minimum length of message body"
+
+#: langfilter.php:63
+msgid ""
+"Minimum number of characters in message body for filter to be used. Posts "
+"shorter than this will not be filtered. Note: Language detection is "
+"unreliable for short content (<200 characters)."
+msgstr "The minimum number of characters a message has to contain for it to activate the filter. Posts shorter than this will not be filtered. Please note that language detection is unreliable for short content (for example for posts of less than 200 characters)."
+
+#: langfilter.php:64
+msgid "Save Settings"
+msgstr "Save Settings"
+
+#: langfilter.php:105
+msgid "Language Filter Settings saved."
+msgstr "Language Filter settings saved."
+
+#: langfilter.php:182
+#, php-format
+msgid "Filtered language: %s"
+msgstr "Filtered language: %s"
