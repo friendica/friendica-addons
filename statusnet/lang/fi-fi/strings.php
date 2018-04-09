@@ -5,7 +5,7 @@ function string_plural_select_fi_fi($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["Post to GNU Social"] = "";
+$a->strings["Post to GNU Social"] = "Lähetä GNU Socialiin";
 $a->strings["Please contact your site administrator.<br />The provided API URL is not valid."] = "";
 $a->strings["We could not contact the GNU Social API with the Path you entered."] = "";
 $a->strings["GNU Social settings updated."] = "GNU Social -asetukset päivitetty.";

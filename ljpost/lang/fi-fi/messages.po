@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-03 18:50+0000\n"
+"PO-Revision-Date: 2018-04-08 16:06+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -21,15 +22,15 @@ msgstr ""
 
 #: ljpost.php:39
 msgid "Post to LiveJournal"
-msgstr ""
+msgstr "Lähetä LiveJournaliin"
 
 #: ljpost.php:70
 msgid "LiveJournal Post Settings"
-msgstr ""
+msgstr "LiveJournal -viestin asetukset"
 
 #: ljpost.php:72
 msgid "Enable LiveJournal Post Addon"
-msgstr ""
+msgstr "Ota LiveJournal -viestilisäosa käyttöön"
 
 #: ljpost.php:77
 msgid "LiveJournal username"
@@ -41,7 +42,7 @@ msgstr "LiveJournal -salasana"
 
 #: ljpost.php:87
 msgid "Post to LiveJournal by default"
-msgstr ""
+msgstr "Lähetä LiveJournaliin oletuksena"
 
 #: ljpost.php:93
 msgid "Submit"

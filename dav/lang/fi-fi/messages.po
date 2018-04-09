@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-03 18:33+0000\n"
+"PO-Revision-Date: 2018-04-08 15:38+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -21,51 +22,51 @@ msgstr ""
 
 #: friendica/dav_caldav_backend_virtual_friendica.inc.php:36
 msgid "Friendica-Native events"
-msgstr ""
+msgstr "Friendica -tapahtumat"
 
 #: friendica/dav_carddav_backend_virtual_friendica.inc.php:36
 #: friendica/dav_carddav_backend_virtual_friendica.inc.php:59
 msgid "Friendica-Contacts"
-msgstr ""
+msgstr "Friendica -kontaktit"
 
 #: friendica/dav_carddav_backend_virtual_friendica.inc.php:60
 msgid "Your Friendica-Contacts"
-msgstr ""
+msgstr "Sinun Friendica -kontaktit"
 
 #: friendica/layout.fnk.php:99 friendica/layout.fnk.php:136
 msgid ""
 "Something went wrong when trying to import the file. Sorry. Maybe some "
 "events were imported anyway."
-msgstr ""
+msgstr "Jotain meni pieleen, kun tiedostoa yritettiin tuoda. Jotkin tapahtumat saatettiin tuoda joka tapauksessa."
 
 #: friendica/layout.fnk.php:131
 msgid "Something went wrong when trying to import the file. Sorry."
-msgstr ""
+msgstr "Jotain meni pieleen, kun tiedostoa yritettiin tuoda."
 
 #: friendica/layout.fnk.php:134
 msgid "The ICS-File has been imported."
-msgstr ""
+msgstr "ICS -tiedosto tuotiin."
 
 #: friendica/layout.fnk.php:138
 msgid "No file was uploaded."
-msgstr ""
+msgstr "Tiedostoa ei lähetetty."
 
 #: friendica/layout.fnk.php:143 friendica/layout.fnk.php:422
 #: common/wdcal_edit.inc.php:140
 msgid "Go back to the calendar"
-msgstr ""
+msgstr "Palaa kalenteriin"
 
 #: friendica/layout.fnk.php:147
 msgid "Import a ICS-file"
-msgstr ""
+msgstr "Tuo ICS -tiedosto"
 
 #: friendica/layout.fnk.php:150
 msgid "ICS-File"
-msgstr ""
+msgstr "ICS -tiedosto"
 
 #: friendica/layout.fnk.php:151
 msgid "Overwrite all #num# existing events"
-msgstr ""
+msgstr "Ylikirjoita kaikki olemassaolevat tapahtumat (#num#)"
 
 #: friendica/layout.fnk.php:152
 msgid "Upload"
@@ -77,11 +78,11 @@ msgstr "Asetukset"
 
 #: friendica/layout.fnk.php:225
 msgid "Help"
-msgstr ""
+msgstr "Ohje"
 
 #: friendica/layout.fnk.php:228
 msgid "New event"
-msgstr ""
+msgstr "Uusi tapahtuma"
 
 #: friendica/layout.fnk.php:232
 msgid "Today"
@@ -101,7 +102,7 @@ msgstr "Kuukausi"
 
 #: friendica/layout.fnk.php:260
 msgid "Reload"
-msgstr ""
+msgstr "Lataa uudelleen"
 
 #: friendica/layout.fnk.php:263
 msgid "Previous"
@@ -121,23 +122,23 @@ msgstr "Virhe"
 
 #: friendica/layout.fnk.php:354
 msgid "Permission denied."
-msgstr ""
+msgstr "Lupa kielletty."
 
 #: friendica/layout.fnk.php:361
 msgid "The new values have been saved."
-msgstr ""
+msgstr "Uudet arvot on tallennettu."
 
 #: friendica/layout.fnk.php:380
 msgid "The calendar has been updated."
-msgstr ""
+msgstr "Kalenteri on päivitetty."
 
 #: friendica/layout.fnk.php:393
 msgid "The new calendar has been created."
-msgstr ""
+msgstr "Uusi kalenteri on luotu."
 
 #: friendica/layout.fnk.php:417
 msgid "The calendar has been deleted."
-msgstr ""
+msgstr "Kalenteri poistettu"
 
 #: friendica/layout.fnk.php:424
 msgid "Calendar Settings"
@@ -145,11 +146,11 @@ msgstr "Kalenterin asetukset"
 
 #: friendica/layout.fnk.php:430
 msgid "Date format"
-msgstr ""
+msgstr "Päivämäärämuoto"
 
 #: friendica/layout.fnk.php:439
 msgid "Time zone"
-msgstr ""
+msgstr "Aikavyöhyke"
 
 #: friendica/layout.fnk.php:441 friendica/layout.fnk.php:488
 msgid "Save"
@@ -173,22 +174,22 @@ msgstr "Varoitus"
 
 #: friendica/layout.fnk.php:504
 msgid "Synchronization (iPhone, Thunderbird Lightning, Android, ...)"
-msgstr ""
+msgstr "Synkronointi (iPhone, Thunderbird Lightning, Android,...)"
 
 #: friendica/layout.fnk.php:511
 msgid "Synchronizing this calendar with the iPhone"
-msgstr ""
+msgstr "Synkronoidaan kalenteri iPhonen kanssa"
 
 #: friendica/layout.fnk.php:522
 msgid "Synchronizing your Friendica-Contacts with the iPhone"
-msgstr ""
+msgstr "Synkronoidaan Friendica-kontaktisi iPhonen kanssa"
 
 #: friendica/main.php:202
 msgid ""
 "The current version of this addon has not been set up correctly. Please "
 "contact the system administrator of your installation of friendica to fix "
 "this."
-msgstr ""
+msgstr "Nykyinen versio lisäosasta on väärin määritelty. Ota yhteyttä Friendica -asennuksesi järjestelmänvalvojaan korjataksesi vian."
 
 #: friendica/main.php:239 common/wdcal_edit.inc.php:146
 msgid "Calendar"
@@ -196,7 +197,7 @@ msgstr "Kalenteri"
 
 #: friendica/main.php:242
 msgid "Extended calendar with CalDAV-support"
-msgstr ""
+msgstr "Laajennettu kalenteri CalDAV-tuella"
 
 #: friendica/main.php:279 friendica/main.php:280
 msgid "noreply"
@@ -204,31 +205,31 @@ msgstr "noreply"
 
 #: friendica/main.php:282
 msgid "Notification: "
-msgstr ""
+msgstr "Ilmoitus:"
 
 #: friendica/main.php:309
 msgid "The database tables have been installed."
-msgstr ""
+msgstr "Tietokantataulut on asennettu."
 
 #: friendica/main.php:310
 msgid "An error occurred during the installation."
-msgstr ""
+msgstr "Asennuksen aikana tapahtui virhe."
 
 #: friendica/main.php:316
 msgid "The database tables have been updated."
-msgstr ""
+msgstr "Tietokantataulut on päivitetty."
 
 #: friendica/main.php:317
 msgid "An error occurred during the update."
-msgstr ""
+msgstr "Päivityksen aikana tapahtui virhe."
 
 #: friendica/main.php:333
 msgid "No system-wide settings yet."
-msgstr ""
+msgstr "Järjestelmänlaajuisia asetuksia ei vielä ole."
 
 #: friendica/main.php:336
 msgid "Database status"
-msgstr ""
+msgstr "Tietokannan tila"
 
 #: friendica/main.php:339
 msgid "Installed"
@@ -236,7 +237,7 @@ msgstr "Asennettu"
 
 #: friendica/main.php:343
 msgid "Upgrade needed"
-msgstr ""
+msgstr "Tarvitaan päivitys"
 
 #: friendica/main.php:343
 msgid ""
@@ -245,23 +246,23 @@ msgid ""
 "database structure, it's always safe to have a backup. Below, you can have a"
 " look at the database-queries that will be made when pressing the "
 "'update'-button."
-msgstr ""
+msgstr "Varmuuskopioi kaikki tiedot (taulut, jotka alkavat dav_*) ennen jatkamista. Vaikka kaikkien kalenterin tapahtumien <i>pitäisi</i> muuntua uuteen tietokantarakenteeseen, on aina hyvä olla varmuuskopio. Alla voit tarkastella tietokantakyselyitä, jotka tehdään, kun painat 'päivitä'-painiketta."
 
 #: friendica/main.php:343
 msgid "Upgrade"
-msgstr ""
+msgstr "Päivitys"
 
 #: friendica/main.php:346
 msgid "Not installed"
-msgstr ""
+msgstr "Ei asennettu"
 
 #: friendica/main.php:346
 msgid "Install"
-msgstr ""
+msgstr "Asenna"
 
 #: friendica/main.php:350
 msgid "Unknown"
-msgstr ""
+msgstr "Tuntematon"
 
 #: friendica/main.php:350
 msgid ""
@@ -269,51 +270,51 @@ msgid ""
 " sorry. Please go to the database backend, back up the data, and delete all "
 "tables beginning with 'dav_' manually. Afterwards, this installation routine"
 " should be able to reinitialize the tables automatically."
-msgstr ""
+msgstr "Jotain meni todella pieleen. Tilasta ei kyetä toipumaan automaattisesti. Siirry tietokannan hallintaan, varmuuskopioi tiedot ja poista käsipelillä kaikki taulut, jotka alkavat 'dav_'. Tämän jälkeen asennuksen pitäisi alustaa taulut uudelleen automaattisesti."
 
 #: friendica/main.php:355
 msgid "Troubleshooting"
-msgstr ""
+msgstr "Ongelmien kartoittaminen"
 
 #: friendica/main.php:356
 msgid "Manual creation of the database tables:"
-msgstr ""
+msgstr "Tietokantataulujen luominen käsipelillä:"
 
 #: friendica/main.php:357
 msgid "Show SQL-statements"
-msgstr ""
+msgstr "Näytä SQL-lausekkeet"
 
 #: friendica/calendar.friendica.fnk.php:206
 msgid "Private Calendar"
-msgstr ""
+msgstr "Yksityinen kalenteri"
 
 #: friendica/calendar.friendica.fnk.php:207
 msgid "Friendica Events: Mine"
-msgstr ""
+msgstr "Friendican tapahtumia: Omat"
 
 #: friendica/calendar.friendica.fnk.php:208
 msgid "Friendica Events: Contacts"
-msgstr ""
+msgstr "Friendican tapahtumia: Kontaktit"
 
 #: friendica/calendar.friendica.fnk.php:248
 msgid "Private Addresses"
-msgstr ""
+msgstr "Yksityiset osoitteet"
 
 #: friendica/calendar.friendica.fnk.php:249
 msgid "Friendica Contacts"
-msgstr ""
+msgstr "Friendica -kontaktit"
 
 #: common/wdcal_edit.inc.php:30 common/wdcal_edit.inc.php:738
 msgid "Could not open component for editing"
-msgstr ""
+msgstr "Komponenttia ei voitu avata muokattavaksi"
 
 #: common/wdcal_edit.inc.php:144
 msgid "Event data"
-msgstr ""
+msgstr "Tapahtuman tiedot"
 
 #: common/wdcal_edit.inc.php:163
 msgid "Special color"
-msgstr ""
+msgstr "Erikoisväri"
 
 #: common/wdcal_edit.inc.php:169
 msgid "Subject"
@@ -333,64 +334,64 @@ msgstr "Paikka"
 
 #: common/wdcal_edit.inc.php:185
 msgid "Description"
-msgstr ""
+msgstr "Kuvaus"
 
 #: common/wdcal_edit.inc.php:188
 msgid "Recurrence"
-msgstr ""
+msgstr "Toistuvuus"
 
 #: common/wdcal_edit.inc.php:190
 msgid "Frequency"
-msgstr ""
+msgstr "Toistuvuus"
 
 #: common/wdcal_edit.inc.php:191
 msgid "None"
-msgstr ""
+msgstr "Ei mitään"
 
 #: common/wdcal_edit.inc.php:194
 msgid "Daily"
-msgstr ""
+msgstr "Päivittäin"
 
 #: common/wdcal_edit.inc.php:197
 msgid "Weekly"
-msgstr ""
+msgstr "Viikottain"
 
 #: common/wdcal_edit.inc.php:200
 msgid "Monthly"
-msgstr ""
+msgstr "Kuukausittain"
 
 #: common/wdcal_edit.inc.php:203
 msgid "Yearly"
-msgstr ""
+msgstr "Vuosittain"
 
 #: common/wdcal_edit.inc.php:214
 msgid "days"
-msgstr ""
+msgstr "päivää"
 
 #: common/wdcal_edit.inc.php:215
 msgid "weeks"
-msgstr ""
+msgstr "viikkoa"
 
 #: common/wdcal_edit.inc.php:216
 msgid "months"
-msgstr ""
+msgstr "kuukautta"
 
 #: common/wdcal_edit.inc.php:217
 msgid "years"
-msgstr ""
+msgstr "vuotta"
 
 #: common/wdcal_edit.inc.php:218
 msgid "Interval"
-msgstr ""
+msgstr "Aikaväli"
 
 #: common/wdcal_edit.inc.php:218
 msgid "All %select% %time%"
-msgstr ""
+msgstr "Kaikki %select% %time%"
 
 #: common/wdcal_edit.inc.php:222 common/wdcal_edit.inc.php:260
 #: common/wdcal_edit.inc.php:481
 msgid "Days"
-msgstr ""
+msgstr "Päivää"
 
 #: common/wdcal_edit.inc.php:231 common/wdcal_edit.inc.php:254
 #: common/wdcal_edit.inc.php:270 common/wdcal_edit.inc.php:293
@@ -425,79 +426,79 @@ msgstr "Lauantai"
 
 #: common/wdcal_edit.inc.php:297
 msgid "First day of week:"
-msgstr ""
+msgstr "Viikon ensimmäinen päivä:"
 
 #: common/wdcal_edit.inc.php:350 common/wdcal_edit.inc.php:373
 msgid "Day of month"
-msgstr ""
+msgstr "Kuukauden päivä"
 
 #: common/wdcal_edit.inc.php:354
 msgid "#num#th of each month"
-msgstr ""
+msgstr "joka kuun #num#th"
 
 #: common/wdcal_edit.inc.php:357
 msgid "#num#th-last of each month"
-msgstr ""
+msgstr "joka kuun #num#th-last"
 
 #: common/wdcal_edit.inc.php:360
 msgid "#num#th #wkday# of each month"
-msgstr ""
+msgstr "joka kuun #num#th #wkday#"
 
 #: common/wdcal_edit.inc.php:363
 msgid "#num#th-last #wkday# of each month"
-msgstr ""
+msgstr "joka kuun #num#th-last #wkday#"
 
 #: common/wdcal_edit.inc.php:377
 msgid "#num#th of the given month"
-msgstr ""
+msgstr "annetun kuun #num#th"
 
 #: common/wdcal_edit.inc.php:380
 msgid "#num#th-last of the given month"
-msgstr ""
+msgstr "annetun kuun #num#th-last"
 
 #: common/wdcal_edit.inc.php:383
 msgid "#num#th #wkday# of the given month"
-msgstr ""
+msgstr "annetun kuun #num#th #wkday#"
 
 #: common/wdcal_edit.inc.php:386
 msgid "#num#th-last #wkday# of the given month"
-msgstr ""
+msgstr "annetun kuun #num#th-last #wkday#"
 
 #: common/wdcal_edit.inc.php:413
 msgid "Repeat until"
-msgstr ""
+msgstr "Toisto päättyy"
 
 #: common/wdcal_edit.inc.php:417
 msgid "Infinite"
-msgstr ""
+msgstr "Loputon"
 
 #: common/wdcal_edit.inc.php:420
 msgid "Until the following date"
-msgstr ""
+msgstr "Seuraavaan pvm asti"
 
 #: common/wdcal_edit.inc.php:423
 msgid "Number of times"
-msgstr ""
+msgstr "Toistojen määrä"
 
 #: common/wdcal_edit.inc.php:429
 msgid "Exceptions"
-msgstr ""
+msgstr "Poikkeukset"
 
 #: common/wdcal_edit.inc.php:432
 msgid "none"
-msgstr ""
+msgstr "ei mitään"
 
 #: common/wdcal_edit.inc.php:449
 msgid "Notification"
-msgstr ""
+msgstr "Ilmoitus"
 
 #: common/wdcal_edit.inc.php:466
 msgid "Notify by"
-msgstr ""
+msgstr "Ilmoita käyttäen"
 
 #: common/wdcal_edit.inc.php:468
 msgid "Remove"
-msgstr ""
+msgstr "Poista"
 
 #: common/wdcal_edit.inc.php:469
 msgid "E-Mail"
@@ -505,74 +506,74 @@ msgstr "Sähköposti"
 
 #: common/wdcal_edit.inc.php:470
 msgid "On Friendica / Display"
-msgstr ""
+msgstr "Friendicassa"
 
 #: common/wdcal_edit.inc.php:474
 msgid "Time"
-msgstr ""
+msgstr "Aika"
 
 #: common/wdcal_edit.inc.php:478
 msgid "Hours"
-msgstr ""
+msgstr "Tuntia"
 
 #: common/wdcal_edit.inc.php:479
 msgid "Minutes"
-msgstr ""
+msgstr "Minuuttia"
 
 #: common/wdcal_edit.inc.php:480
 msgid "Seconds"
-msgstr ""
+msgstr "Sekuntia"
 
 #: common/wdcal_edit.inc.php:482
 msgid "Weeks"
-msgstr ""
+msgstr "Viikkoa"
 
 #: common/wdcal_edit.inc.php:485
 msgid "before the"
-msgstr ""
+msgstr "ennen"
 
 #: common/wdcal_edit.inc.php:486
 msgid "start of the event"
-msgstr ""
+msgstr "tapahtuman alkua"
 
 #: common/wdcal_edit.inc.php:487
 msgid "end of the event"
-msgstr ""
+msgstr "tapahtuman loppua"
 
 #: common/wdcal_edit.inc.php:492
 msgid "Add a notification"
-msgstr ""
+msgstr "Lisää ilmoitus"
 
 #: common/wdcal_edit.inc.php:687
 msgid "The event #name# will start at #date"
-msgstr ""
+msgstr "Tapahtuma #name# alkaa #date"
 
 #: common/wdcal_edit.inc.php:696
 msgid "#name# is about to begin."
-msgstr ""
+msgstr "#name# on alkamassa."
 
 #: common/wdcal_edit.inc.php:769
 msgid "Saved"
-msgstr ""
+msgstr "Tallennettu"
 
 #: common/wdcal_configuration.php:148
 msgid "U.S. Time Format (mm/dd/YYYY)"
-msgstr ""
+msgstr "Yhdysvaltalainen aikamuoto (kk/pp/VVVV)"
 
 #: common/wdcal_configuration.php:243
 msgid "German Time Format (dd.mm.YYYY)"
-msgstr ""
+msgstr "Saksalainen aikamuoto (pp.kk.VVVV)"
 
 #: common/dav_caldav_backend_private.inc.php:39
 msgid "Private Events"
-msgstr ""
+msgstr "Yksityiset tapahtumat"
 
 #: common/wdcal_backend.inc.php:92 common/wdcal_backend.inc.php:166
 #: common/wdcal_backend.inc.php:178 common/wdcal_backend.inc.php:206
 #: common/wdcal_backend.inc.php:214 common/wdcal_backend.inc.php:229
 msgid "No access"
-msgstr ""
+msgstr "Ei käyttöoikeutta"
 
 #: common/dav_carddav_backend_private.inc.php:46
 msgid "Private Addressbooks"
-msgstr ""
+msgstr "Yksityiset osoitekirjat"

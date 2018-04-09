@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-01 14:12+0200\n"
-"PO-Revision-Date: 2018-04-03 18:54+0000\n"
+"PO-Revision-Date: 2018-04-08 16:09+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -21,11 +22,11 @@ msgstr ""
 
 #: newmemberwidget.php:21
 msgid "New Member"
-msgstr ""
+msgstr "Uusi jäsen"
 
 #: newmemberwidget.php:22
 msgid "Tips for New Members"
-msgstr ""
+msgstr "Vinkkejä uusille käyttäjille"
 
 #: newmemberwidget.php:24
 msgid "Global Support Forum"

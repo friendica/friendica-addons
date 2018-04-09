@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2018-04-03 18:34+0000\n"
+"PO-Revision-Date: 2018-04-08 15:41+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +22,7 @@ msgstr ""
 
 #: diaspora.php:37
 msgid "Post to Diaspora"
-msgstr ""
+msgstr "Lähetä Diasporaan"
 
 #: diaspora.php:142
 msgid ""
@@ -35,7 +36,7 @@ msgstr ""
 
 #: diaspora.php:163
 msgid "Enable Diaspora Post Addon"
-msgstr ""
+msgstr "Ota Diaspora-viestilisäosa käyttöön"
 
 #: diaspora.php:168
 msgid "Diaspora username"
@@ -51,7 +52,7 @@ msgstr "Diaspora -sivuston URL-osoite"
 
 #: diaspora.php:183
 msgid "Post to Diaspora by default"
-msgstr ""
+msgstr "Lähetä Diasporaan oletuksena"
 
 #: diaspora.php:189
 msgid "Save Settings"

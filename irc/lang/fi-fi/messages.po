@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-08 13:17+0200\n"
-"PO-Revision-Date: 2018-04-03 18:47+0000\n"
+"PO-Revision-Date: 2018-04-08 15:56+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -46,7 +47,7 @@ msgstr ""
 
 #: irc.php:41 irc.php:138
 msgid "Popular Channels (comma separated)"
-msgstr ""
+msgstr "Suositut kanavat (pilkuilla eroteltu luettelo)"
 
 #: irc.php:41 irc.php:138
 msgid ""
@@ -64,4 +65,4 @@ msgstr "IRC-tsättihuone"
 
 #: irc.php:90
 msgid "Popular Channels"
-msgstr ""
+msgstr "Suositut kanavat"

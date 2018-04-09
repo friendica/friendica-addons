@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-11 19:13+0100\n"
-"PO-Revision-Date: 2018-04-03 18:52+0000\n"
+"PO-Revision-Date: 2018-04-08 16:08+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -29,7 +30,7 @@ msgstr ""
 
 #: mailstream.php:82 mailstream.php:380
 msgid "Save Settings"
-msgstr ""
+msgstr "Tallenna asetukset"
 
 #: mailstream.php:223
 msgid "Re:"
@@ -53,7 +54,7 @@ msgstr "Sähköposti"
 
 #: mailstream.php:249
 msgid "Friendica Item"
-msgstr ""
+msgstr "Friendica -kohde"
 
 #: mailstream.php:293
 msgid "Upstream"
@@ -61,11 +62,11 @@ msgstr ""
 
 #: mailstream.php:294
 msgid "Local"
-msgstr ""
+msgstr "Paikallinen"
 
 #: mailstream.php:362
 msgid "Enabled"
-msgstr ""
+msgstr "Käytössä"
 
 #: mailstream.php:366
 msgid "Email Address"
@@ -95,4 +96,4 @@ msgstr ""
 
 #: mailstream.php:379
 msgid "Mail Stream Settings"
-msgstr ""
+msgstr "Mail Stream -asetukset"

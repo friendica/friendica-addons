@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-03 18:26+0000\n"
+"PO-Revision-Date: 2018-04-08 15:09+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -45,7 +46,7 @@ msgstr ""
 
 #: communityhome.php:116
 msgid "Profile Photos"
-msgstr ""
+msgstr "Profiilikuvat"
 
 #: communityhome.php:141
 msgid "Latest likes"
@@ -57,7 +58,7 @@ msgstr "tapahtuma"
 
 #: communityhome.php:166 communityhome.php:175
 msgid "status"
-msgstr ""
+msgstr "tila"
 
 #: communityhome.php:171
 msgid "photo"
@@ -71,4 +72,4 @@ msgstr ""
 #: communityhome.php:189
 #, php-format
 msgid "Welcome to %s"
-msgstr ""
+msgstr "Tervetuloa %s"

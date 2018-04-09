@@ -1,0 +1,62 @@
+# ADDON diaspora
+# Copyright (C)
+# This file is distributed under the same license as the Friendica diaspora addon package.
+# 
+# 
+# Translators:
+# Andy H3 <andy@hubup.pro>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2018-03-22 08:36+0000\n"
+"Last-Translator: Andy H3 <andy@hubup.pro>\n"
+"Language-Team: English (United Kingdom) (http://www.transifex.com/Friendica/friendica/language/en_GB/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: diaspora.php:37
+msgid "Post to Diaspora"
+msgstr "Post to Diaspora"
+
+#: diaspora.php:142
+msgid ""
+"Can't login to your Diaspora account. Please check username and password and"
+" ensure you used the complete address (including http...)"
+msgstr "Can't login to your Diaspora account. Please check username and password and ensure you used the complete address (including http...)"
+
+#: diaspora.php:149 diaspora.php:153
+msgid "Diaspora Export"
+msgstr "Diaspora Export"
+
+#: diaspora.php:163
+msgid "Enable Diaspora Post Addon"
+msgstr "Enable Diaspora export"
+
+#: diaspora.php:168
+msgid "Diaspora username"
+msgstr "Diaspora username"
+
+#: diaspora.php:173
+msgid "Diaspora password"
+msgstr "Diaspora password"
+
+#: diaspora.php:178
+msgid "Diaspora site URL"
+msgstr "Diaspora site URL"
+
+#: diaspora.php:183
+msgid "Post to Diaspora by default"
+msgstr "Post to Diaspora by default"
+
+#: diaspora.php:189
+msgid "Save Settings"
+msgstr "Save settings"
+
+#: diaspora.php:324
+msgid "Diaspora post failed. Queued for retry."
+msgstr "Diaspora post failed. Queued for retry."

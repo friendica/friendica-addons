@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-03 18:39+0000\n"
+"PO-Revision-Date: 2018-04-08 15:51+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -21,11 +22,11 @@ msgstr ""
 
 #: group_text.php:46
 msgid "Group Text settings updated."
-msgstr ""
+msgstr "Group Text -asetukset päivitetty."
 
 #: group_text.php:76
 msgid "Group Text"
-msgstr ""
+msgstr "Group Text"
 
 #: group_text.php:78
 msgid "Use a text only (non-image) group selector in the \"group edit\" menu"

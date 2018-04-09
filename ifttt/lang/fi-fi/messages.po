@@ -44,7 +44,7 @@ msgstr ""
 
 #: ifttt.php:77
 msgid "Generate new key"
-msgstr ""
+msgstr "Luo uusi avain"
 
 #: ifttt.php:81
 msgid "Save Settings"

@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-26 12:49+0200\n"
-"PO-Revision-Date: 2018-04-03 18:59+0000\n"
+"PO-Revision-Date: 2018-04-08 16:11+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -35,7 +36,7 @@ msgstr ""
 
 #: piwik.php:89
 msgid "Save Settings"
-msgstr "Tallenna asetukset."
+msgstr "Tallenna asetukset"
 
 #: piwik.php:90
 msgid "Piwik Base URL"

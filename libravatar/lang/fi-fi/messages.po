@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-03 18:49+0000\n"
+"PO-Revision-Date: 2018-04-08 16:05+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -25,15 +26,15 @@ msgstr ""
 
 #: libravatar.php:73
 msgid "generic profile image"
-msgstr ""
+msgstr "Yleinen profiilikuva"
 
 #: libravatar.php:74
 msgid "random geometric pattern"
-msgstr ""
+msgstr "satunnainen geometrinen kuvio"
 
 #: libravatar.php:75
 msgid "monster face"
-msgstr ""
+msgstr "hirviö"
 
 #: libravatar.php:76
 msgid "computer generated face"
@@ -58,7 +59,7 @@ msgstr ""
 
 #: libravatar.php:93
 msgid "Information"
-msgstr ""
+msgstr "Tietoja"
 
 #: libravatar.php:93
 msgid ""
@@ -81,4 +82,4 @@ msgstr ""
 
 #: libravatar.php:112
 msgid "Libravatar settings updated."
-msgstr ""
+msgstr "Libravatar -asetukset päivitetty"

@@ -7,6 +7,6 @@ function string_plural_select_fi_fi($n){
 ;
 $a->strings["WindowsPhonePush settings updated."] = "WindowsPhonePush -asetuket päivitetty.";
 $a->strings["WindowsPhonePush Settings"] = "WindowsPhonePush -asetukset";
-$a->strings["Enable WindowsPhonePush Addon"] = "";
+$a->strings["Enable WindowsPhonePush Addon"] = "Ota WindowsPhonePush -lisäosa käyttöön";
 $a->strings["Push text of new item"] = "";
 $a->strings["Save Settings"] = "Tallenna asetukset";

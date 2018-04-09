@@ -7,9 +7,9 @@ function string_plural_select_fi_fi($n){
 ;
 $a->strings["Google+ Mirror"] = "";
 $a->strings["Enable Google+ Import"] = "";
-$a->strings["Google Account ID"] = "";
+$a->strings["Google Account ID"] = "Google -tilin tunnus";
 $a->strings["Add keywords to post"] = "";
 $a->strings["Save Settings"] = "Tallenna asetukset";
 $a->strings["Google+ Import Settings saved."] = "";
 $a->strings["Key"] = "Avain";
-$a->strings["Settings updated."] = "";
+$a->strings["Settings updated."] = "Asetukset päivitetty.";

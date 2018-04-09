@@ -5,10 +5,10 @@ function string_plural_select_fi_fi($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["Remote Permissions Settings"] = "";
+$a->strings["Remote Permissions Settings"] = "Remote Permissions -asetukset";
 $a->strings["Allow recipients of your private posts to see the other recipients of the posts"] = "";
 $a->strings["Submit"] = "Lähetä";
-$a->strings["Remote Permissions settings updated."] = "";
+$a->strings["Remote Permissions settings updated."] = "Remote Pemissions -asetukset päivitetty.";
 $a->strings["Visible to:"] = "";
 $a->strings["Visible to"] = "";
 $a->strings["may only be a partial list"] = "";

@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-01-24 21:06+0100\n"
-"PO-Revision-Date: 2018-04-03 19:14+0000\n"
+"PO-Revision-Date: 2018-04-08 16:28+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +22,7 @@ msgstr ""
 
 #: wppost.php:42
 msgid "Post to Wordpress"
-msgstr ""
+msgstr "Lähetä Wordpressiin"
 
 #: wppost.php:80 wppost.php:84
 msgid "Wordpress Export"
@@ -29,23 +30,23 @@ msgstr ""
 
 #: wppost.php:87
 msgid "Enable WordPress Post Addon"
-msgstr ""
+msgstr "Ota WordPress -viestilisäosa käyttöön"
 
 #: wppost.php:92
 msgid "WordPress username"
-msgstr ""
+msgstr "WordPress -käyttäjätunnus"
 
 #: wppost.php:97
 msgid "WordPress password"
-msgstr ""
+msgstr "WordPress -salasana"
 
 #: wppost.php:102
 msgid "WordPress API URL"
-msgstr ""
+msgstr "WordPress API URL-osoite"
 
 #: wppost.php:107
 msgid "Post to WordPress by default"
-msgstr ""
+msgstr "Lähetä WordPressiin oletuksena"
 
 #: wppost.php:112
 msgid "Provide a backlink to the Friendica post"
@@ -71,4 +72,4 @@ msgstr ""
 
 #: wppost.php:269
 msgid "Post from Friendica"
-msgstr ""
+msgstr "Lähetä Friendicasta"

@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-03 18:48+0000\n"
+"PO-Revision-Date: 2018-04-08 15:57+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -21,11 +22,11 @@ msgstr ""
 
 #: jappixmini.php:266
 msgid "Jappix Mini addon settings"
-msgstr ""
+msgstr "Jappix Mini -lisäosan asetukset"
 
 #: jappixmini.php:268
 msgid "Activate addon"
-msgstr ""
+msgstr "Ota lisäosa käyttöön"
 
 #: jappixmini.php:271
 msgid ""
@@ -42,7 +43,7 @@ msgstr "Jabber -palvelin"
 
 #: jappixmini.php:281
 msgid "Jabber BOSH host"
-msgstr ""
+msgstr "Jabber BOSH-palvelin"
 
 #: jappixmini.php:285
 msgid "Jabber password"
@@ -74,4 +75,4 @@ msgstr "Lähetä"
 
 #: jappixmini.php:308
 msgid "Add contact"
-msgstr ""
+msgstr "Lisää kontakti"

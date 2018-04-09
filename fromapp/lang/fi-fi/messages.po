@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-03 18:36+0000\n"
+"PO-Revision-Date: 2018-04-08 15:44+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -21,11 +22,11 @@ msgstr ""
 
 #: fromapp.php:38
 msgid "Fromapp settings updated."
-msgstr ""
+msgstr "FromApp -asetukset päivitettiin."
 
 #: fromapp.php:64
 msgid "FromApp Settings"
-msgstr ""
+msgstr "FromApp -asetukset"
 
 #: fromapp.php:66
 msgid ""

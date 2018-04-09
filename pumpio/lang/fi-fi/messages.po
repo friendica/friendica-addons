@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2018-04-03 19:01+0000\n"
+"PO-Revision-Date: 2018-04-08 16:15+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +22,7 @@ msgstr ""
 
 #: pumpio.php:38
 msgid "Permission denied."
-msgstr ""
+msgstr "Lupa kielletty."
 
 #: pumpio.php:124
 #, php-format
@@ -38,7 +39,7 @@ msgstr ""
 
 #: pumpio.php:183
 msgid "Post to pumpio"
-msgstr ""
+msgstr "Lähetä pump.ioon"
 
 #: pumpio.php:221 pumpio.php:225
 msgid "Pump.io Import/Export/Mirror"
@@ -62,11 +63,11 @@ msgstr ""
 
 #: pumpio.php:255
 msgid "Enable pump.io Post Addon"
-msgstr ""
+msgstr "Ota pump.io -viestilisäosa käyttöön"
 
 #: pumpio.php:260
 msgid "Post to pump.io by default"
-msgstr ""
+msgstr "Lähetä pump.iohon oletuksena"
 
 #: pumpio.php:265
 msgid "Should posts be public?"
@@ -94,7 +95,7 @@ msgstr ""
 
 #: pumpio.php:875
 msgid "status"
-msgstr ""
+msgstr "tila"
 
 #: pumpio.php:879
 #, php-format

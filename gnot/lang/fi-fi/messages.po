@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-03 18:38+0000\n"
+"PO-Revision-Date: 2018-04-08 15:48+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +22,7 @@ msgstr ""
 
 #: gnot.php:48
 msgid "Gnot settings updated."
-msgstr ""
+msgstr "Gnot -asetukset päivitetty."
 
 #: gnot.php:79
 msgid "Gnot Settings"
@@ -35,7 +36,7 @@ msgstr ""
 
 #: gnot.php:82
 msgid "Enable this addon?"
-msgstr ""
+msgstr "Ota tämä lisäosa käyttöön?"
 
 #: gnot.php:88
 msgid "Submit"

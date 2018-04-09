@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-03 18:56+0000\n"
+"PO-Revision-Date: 2018-04-08 16:10+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -21,11 +22,11 @@ msgstr ""
 
 #: notimeline.php:32
 msgid "No Timeline settings updated."
-msgstr ""
+msgstr "No Timeline -asetukset päivitetty"
 
 #: notimeline.php:56
 msgid "No Timeline Settings"
-msgstr ""
+msgstr "No Timeline -asetukset"
 
 #: notimeline.php:58
 msgid "Disable Archive selector on profile wall"

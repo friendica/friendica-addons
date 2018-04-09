@@ -6,5 +6,5 @@ function string_plural_select_fi_fi($n){
 }}
 ;
 $a->strings["Planets Settings"] = "Planets -asetukset";
-$a->strings["Enable Planets Addon"] = "";
+$a->strings["Enable Planets Addon"] = "Ota Planets -lisäosa käyttöön";
 $a->strings["Submit"] = "Lähetä";

@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-03 18:35+0000\n"
+"PO-Revision-Date: 2018-04-08 15:41+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -21,15 +22,15 @@ msgstr ""
 
 #: dwpost.php:39
 msgid "Post to Dreamwidth"
-msgstr ""
+msgstr "Lähetä Dreamwidthiin"
 
 #: dwpost.php:70
 msgid "Dreamwidth Post Settings"
-msgstr ""
+msgstr "Dreamwidth -viestin asetukset"
 
 #: dwpost.php:72
 msgid "Enable dreamwidth Post Addon"
-msgstr ""
+msgstr "Ota Dreamwidth-viestilisäosa käyttöön"
 
 #: dwpost.php:77
 msgid "dreamwidth username"
@@ -41,7 +42,7 @@ msgstr "dreamwidth -salasana"
 
 #: dwpost.php:87
 msgid "Post to dreamwidth by default"
-msgstr ""
+msgstr "Lähetä Dreamwidthiin oletuksena"
 
 #: dwpost.php:93
 msgid "Submit"

@@ -5,7 +5,7 @@ function string_plural_select_fi_fi($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["Post to Twitter"] = "";
+$a->strings["Post to Twitter"] = "Lähetä Twitteriin";
 $a->strings["You submitted an empty PIN, please Sign In with Twitter again to get a new one."] = "";
 $a->strings["Twitter settings updated."] = "Twitter -asetukset päivitetty.";
 $a->strings["Twitter Import/Export/Mirror"] = "";

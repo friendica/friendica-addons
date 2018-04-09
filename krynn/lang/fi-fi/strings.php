@@ -6,5 +6,5 @@ function string_plural_select_fi_fi($n){
 }}
 ;
 $a->strings["Krynn Settings"] = "Krynn -asetukset";
-$a->strings["Enable Krynn Addon"] = "";
+$a->strings["Enable Krynn Addon"] = "Ota Krynn -lisäosa käyttöön";
 $a->strings["Submit"] = "Lähetä";
