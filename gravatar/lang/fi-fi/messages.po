@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-03 18:38+0000\n"
+"PO-Revision-Date: 2018-04-08 15:50+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -21,15 +22,15 @@ msgstr ""
 
 #: gravatar.php:71
 msgid "generic profile image"
-msgstr ""
+msgstr "Yleinen profiilikuva"
 
 #: gravatar.php:72
 msgid "random geometric pattern"
-msgstr ""
+msgstr "satunnainen geometrinen kuvio"
 
 #: gravatar.php:73
 msgid "monster face"
-msgstr ""
+msgstr "hirviö"
 
 #: gravatar.php:74
 msgid "computer generated face"
@@ -41,7 +42,7 @@ msgstr ""
 
 #: gravatar.php:89
 msgid "Information"
-msgstr ""
+msgstr "Tietoja"
 
 #: gravatar.php:89
 msgid ""
@@ -72,4 +73,4 @@ msgstr ""
 
 #: gravatar.php:111
 msgid "Gravatar settings updated."
-msgstr ""
+msgstr "Gravatar -asetukset päivitetty."

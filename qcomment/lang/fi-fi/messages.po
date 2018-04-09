@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-03 19:01+0000\n"
+"PO-Revision-Date: 2018-04-08 16:16+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -33,7 +34,7 @@ msgstr "lol"
 
 #: qcomment.php:54
 msgid "Quick Comment Settings"
-msgstr ""
+msgstr "Quick Comment -asetukset"
 
 #: qcomment.php:56
 msgid ""
@@ -43,7 +44,7 @@ msgstr ""
 
 #: qcomment.php:57
 msgid "Enter quick comments, one per line"
-msgstr ""
+msgstr "Syötä kommentit, yksi riviä kohden:"
 
 #: qcomment.php:61
 msgid "Submit"

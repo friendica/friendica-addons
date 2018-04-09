@@ -5,7 +5,7 @@ function string_plural_select_fi_fi($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["WebRTC Videochat"] = "";
+$a->strings["WebRTC Videochat"] = "WebRTC videokeskustelu";
 $a->strings["Save Settings"] = "Tallenna asetukset";
 $a->strings["WebRTC Base URL"] = "";
 $a->strings["Page your users will create a WebRTC chat room on. For example you could use https://live.mayfirst.org ."] = "";

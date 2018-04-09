@@ -5,8 +5,8 @@ function string_plural_select_fi_fi($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["New Member"] = "";
-$a->strings["Tips for New Members"] = "";
+$a->strings["New Member"] = "Uusi jäsen";
+$a->strings["Tips for New Members"] = "Vinkkejä uusille käyttäjille";
 $a->strings["Global Support Forum"] = "";
 $a->strings["Local Support Forum"] = "";
 $a->strings["Save Settings"] = "Tallenna asetukset";

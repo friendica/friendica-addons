@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-03 11:53+0000\n"
+"PO-Revision-Date: 2018-04-08 15:59+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +22,7 @@ msgstr ""
 
 #: js_upload.php:43
 msgid "Upload a file"
-msgstr ""
+msgstr "Lähetä tiedosto"
 
 #: js_upload.php:44
 msgid "Drop files here to upload"
@@ -41,11 +42,11 @@ msgstr ""
 
 #: js_upload.php:309
 msgid "Uploaded file is empty"
-msgstr ""
+msgstr "Lähetetty tiedosto on tyhjä"
 
 #: js_upload.php:321
 msgid "Image exceeds size limit of "
-msgstr ""
+msgstr "Kuva ylittää kokorajoituksen "
 
 #: js_upload.php:332
 msgid "File has an invalid extension, it should be one of "

@@ -10,5 +10,5 @@ $a->strings["Create an account at <a href=\"http://www.ifttt.com\">IFTTT</a>. Cr
 $a->strings["Body for \"new status message\""] = "";
 $a->strings["Body for \"new photo upload\""] = "";
 $a->strings["Body for \"new link post\""] = "";
-$a->strings["Generate new key"] = "";
+$a->strings["Generate new key"] = "Luo uusi avain";
 $a->strings["Save Settings"] = "Tallenna asetukset";

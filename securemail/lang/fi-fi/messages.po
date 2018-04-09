@@ -20,7 +20,7 @@ msgstr ""
 
 #: securemail.php:53
 msgid "\"Secure Mail\" Settings"
-msgstr ""
+msgstr "Secure Mail -asetukset"
 
 #: securemail.php:54
 msgid "Save Settings"
@@ -28,11 +28,11 @@ msgstr "Tallenna asetukset"
 
 #: securemail.php:55 securemail.php:76
 msgid "Save and send test"
-msgstr ""
+msgstr "Tallenna ja lähetä koeviesti"
 
 #: securemail.php:56
 msgid "Enable Secure Mail"
-msgstr ""
+msgstr "Ota Secure Mail käyttöön"
 
 #: securemail.php:57
 msgid "Public key"
@@ -44,11 +44,11 @@ msgstr ""
 
 #: securemail.php:74
 msgid "Secure Mail Settings saved."
-msgstr ""
+msgstr "Secure Mail -asetukset tallennettu."
 
 #: securemail.php:111
 msgid "Test email sent"
-msgstr ""
+msgstr "Koeviesti lähetetty"
 
 #: securemail.php:113
 msgid "There was an error sending the test email"

@@ -5,7 +5,7 @@ function string_plural_select_fi_fi($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["Permission denied."] = "";
+$a->strings["Permission denied."] = "Lupa kielletty.";
 $a->strings["Save Settings"] = "Tallenna asetukset";
 $a->strings["Client ID"] = "";
 $a->strings["Client Secret"] = "";

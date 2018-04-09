@@ -10,7 +10,7 @@ $a->strings["Hides user's content by collapsing posts. Also replaces their avata
 $a->strings["Comma separated profile URLS:"] = "";
 $a->strings["Save Settings"] = "Tallenna asetukset";
 $a->strings["BLOCKEM Settings saved."] = "";
-$a->strings["Hidden content by %s - Click to open/close"] = "";
+$a->strings["Filtered user: %s"] = "";
 $a->strings["Unblock Author"] = "";
 $a->strings["Block Author"] = "";
-$a->strings["blockem settings updated"] = "";
+$a->strings["blockem settings updated"] = "blockem -asetukset päivitetty";

@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-03 18:40+0000\n"
+"PO-Revision-Date: 2018-04-08 15:53+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -21,15 +22,15 @@ msgstr ""
 
 #: ijpost.php:39
 msgid "Post to Insanejournal"
-msgstr ""
+msgstr "Lähetä InsaneJournaliin"
 
 #: ijpost.php:70
 msgid "InsaneJournal Post Settings"
-msgstr ""
+msgstr "InsaneJournal -viestin asetukset"
 
 #: ijpost.php:72
 msgid "Enable InsaneJournal Post Addon"
-msgstr ""
+msgstr "Ota InsaneJournal -viestilisäosa käyttöön"
 
 #: ijpost.php:77
 msgid "InsaneJournal username"
@@ -41,7 +42,7 @@ msgstr "InsaneJournal -salasana"
 
 #: ijpost.php:87
 msgid "Post to InsaneJournal by default"
-msgstr ""
+msgstr "Lähetä InsaneJournaliin oletuksena"
 
 #: ijpost.php:93
 msgid "Submit"

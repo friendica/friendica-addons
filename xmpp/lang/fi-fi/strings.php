@@ -5,9 +5,9 @@ function string_plural_select_fi_fi($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["XMPP settings updated."] = "";
-$a->strings["XMPP-Chat (Jabber)"] = "";
-$a->strings["Enable Webchat"] = "";
+$a->strings["XMPP settings updated."] = "XMPP-asetukset päivitetty";
+$a->strings["XMPP-Chat (Jabber)"] = "XMPP-Chat (Jabber)";
+$a->strings["Enable Webchat"] = "Ota Webchat käyttöön";
 $a->strings["Individual Credentials"] = "";
 $a->strings["Jabber BOSH host"] = "";
 $a->strings["Save Settings"] = "Tallenna asetukset";

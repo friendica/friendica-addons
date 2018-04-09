@@ -6,11 +6,11 @@ function string_plural_select_fi_fi($n){
 }}
 ;
 $a->strings["Error fetching weather data.\\nError was: "] = "";
-$a->strings["Current Weather"] = "";
-$a->strings["Relative Humidity"] = "";
-$a->strings["Pressure"] = "";
+$a->strings["Current Weather"] = "Nykyinen sää";
+$a->strings["Relative Humidity"] = "Suhteellinen kosteus";
+$a->strings["Pressure"] = "Ilmanpaine";
 $a->strings["Wind"] = "Tuuli";
-$a->strings["Last Updated"] = "";
+$a->strings["Last Updated"] = "Viimeksi päivitetty";
 $a->strings["Data by"] = "";
 $a->strings["Show on map"] = "Näytä kartalla";
 $a->strings["There was a problem accessing the weather data. But have a look"] = "";
@@ -22,9 +22,9 @@ $a->strings["Settings"] = "Asetukset";
 $a->strings["Enter either the name of your location or the zip code."] = "";
 $a->strings["Your Location"] = "Sijaintisi";
 $a->strings["Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or <em>14476,DE</em>."] = "";
-$a->strings["Units"] = "";
+$a->strings["Units"] = "Yksiköt";
 $a->strings["select if the temperature should be displayed in &deg;C or &deg;F"] = "";
-$a->strings["Show weather data"] = "";
+$a->strings["Show weather data"] = "Näytä säätiedot";
 $a->strings["Curweather settings saved."] = "";
 $a->strings["Caching Interval"] = "";
 $a->strings["For how long should the weather data be cached? Choose according your OpenWeatherMap account type."] = "";

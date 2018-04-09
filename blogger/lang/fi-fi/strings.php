@@ -5,7 +5,7 @@ function string_plural_select_fi_fi($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["Post to blogger"] = "";
+$a->strings["Post to blogger"] = "Julkaise Bloggerissa";
 $a->strings["Blogger Export"] = "";
 $a->strings["Enable Blogger Post Addon"] = "";
 $a->strings["Blogger username"] = "Blogger -käyttäjätunnus";

@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-03 18:49+0000\n"
+"PO-Revision-Date: 2018-04-08 16:04+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -21,15 +22,15 @@ msgstr ""
 
 #: libertree.php:36
 msgid "Post to libertree"
-msgstr ""
+msgstr "Lähetä Libertreehin"
 
 #: libertree.php:67
 msgid "libertree Post Settings"
-msgstr ""
+msgstr "Libertree -viestin asetukset"
 
 #: libertree.php:69
 msgid "Enable Libertree Post Addon"
-msgstr ""
+msgstr "Ota Libertree -viestilisäosa käyttöön"
 
 #: libertree.php:74
 msgid "Libertree API token"
@@ -41,7 +42,7 @@ msgstr "Libertree -sivuston URL-osoite"
 
 #: libertree.php:84
 msgid "Post to Libertree by default"
-msgstr ""
+msgstr "Lähetä Libertreehin oletuksena"
 
 #: libertree.php:90
 msgid "Submit"

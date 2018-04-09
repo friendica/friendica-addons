@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-09 13:00+0100\n"
-"PO-Revision-Date: 2018-04-03 17:45+0000\n"
+"POT-Creation-Date: 2018-04-01 11:11-0400\n"
+"PO-Revision-Date: 2018-04-08 15:06+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -19,41 +20,41 @@ msgstr ""
 "Language: fi_FI\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: blockem.php:51 blockem.php:55
+#: blockem.php:52 blockem.php:56
 msgid "\"Blockem\""
 msgstr "\"Blockem\""
 
-#: blockem.php:59
+#: blockem.php:60
 msgid ""
 "Hides user's content by collapsing posts. Also replaces their avatar with "
 "generic image."
 msgstr ""
 
-#: blockem.php:60
+#: blockem.php:61
 msgid "Comma separated profile URLS:"
 msgstr ""
 
-#: blockem.php:64
+#: blockem.php:65
 msgid "Save Settings"
 msgstr "Tallenna asetukset"
 
-#: blockem.php:77
+#: blockem.php:78
 msgid "BLOCKEM Settings saved."
 msgstr ""
 
-#: blockem.php:140
+#: blockem.php:136
 #, php-format
-msgid "Hidden content by %s - Click to open/close"
+msgid "Filtered user: %s"
 msgstr ""
 
-#: blockem.php:193
+#: blockem.php:189
 msgid "Unblock Author"
 msgstr ""
 
-#: blockem.php:195
+#: blockem.php:191
 msgid "Block Author"
 msgstr ""
 
-#: blockem.php:227
+#: blockem.php:223
 msgid "blockem settings updated"
-msgstr ""
+msgstr "blockem -asetukset päivitetty"

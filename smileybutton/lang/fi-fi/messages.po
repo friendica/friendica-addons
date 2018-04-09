@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2018-04-03 19:04+0000\n"
+"PO-Revision-Date: 2018-04-08 16:21+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +22,7 @@ msgstr ""
 
 #: smileybutton.php:269
 msgid "Smileybutton settings"
-msgstr ""
+msgstr "Smileybutton -asetukset"
 
 #: smileybutton.php:272
 msgid "You can hide the button and show the smilies directly."

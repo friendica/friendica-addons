@@ -5,7 +5,7 @@ function string_plural_select_fi_fi($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["Impressum"] = "";
+$a->strings["Impressum"] = "Impressum";
 $a->strings["Site Owner"] = "Sivuston omistaja";
 $a->strings["Email Address"] = "Sähköpostiosoite";
 $a->strings["Postal Address"] = "Postiosoite";
@@ -13,7 +13,7 @@ $a->strings["The impressum addon needs to be configured!<br />Please add at leas
 $a->strings["Settings updated."] = "Asetukset tallennettu";
 $a->strings["Submit"] = "Lähetä";
 $a->strings["The page operators name."] = "";
-$a->strings["Site Owners Profile"] = "";
+$a->strings["Site Owners Profile"] = "Sivuston omistajan profiili";
 $a->strings["Profile address of the operator."] = "";
 $a->strings["How to contact the operator via snail mail. You can use BBCode here."] = "";
 $a->strings["Notes"] = "Muistiinpanot";

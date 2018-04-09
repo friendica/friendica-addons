@@ -5,13 +5,14 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-04-01 11:11-0400\n"
-"PO-Revision-Date: 2018-04-06 05:09+0000\n"
-"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
+"PO-Revision-Date: 2018-04-08 16:02+0000\n"
+"Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,7 +22,7 @@ msgstr ""
 
 #: langfilter.php:58
 msgid "Language Filter"
-msgstr ""
+msgstr "Kielisuodatin"
 
 #: langfilter.php:59
 msgid ""
@@ -32,7 +33,7 @@ msgstr ""
 
 #: langfilter.php:60
 msgid "Use the language filter"
-msgstr ""
+msgstr "Ota kielisuodatin käyttöön"
 
 #: langfilter.php:61
 msgid "Able to read"
@@ -72,9 +73,9 @@ msgstr "Tallenna asetukset"
 
 #: langfilter.php:105
 msgid "Language Filter Settings saved."
-msgstr ""
+msgstr "Kielisuodatinasetukset tallennettu"
 
 #: langfilter.php:182
 #, php-format
 msgid "Filtered language: %s"
-msgstr ""
+msgstr "Suodatettu kieli: %s"

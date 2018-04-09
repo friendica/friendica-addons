@@ -5,13 +5,13 @@ function string_plural_select_fi_fi($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["Forum Directory"] = "";
-$a->strings["Public access denied."] = "";
-$a->strings["Global Directory"] = "";
+$a->strings["Forum Directory"] = "Foorumihakemisto";
+$a->strings["Public access denied."] = "Julkinen käyttö estetty.";
+$a->strings["Global Directory"] = "Maailmanlaajuinen hakemisto";
 $a->strings["Find on this site"] = "";
 $a->strings["Finding: "] = "";
 $a->strings["Site Directory"] = "";
-$a->strings["Find"] = "";
+$a->strings["Find"] = "Etsi";
 $a->strings["Age: "] = "Ikä:";
 $a->strings["Gender: "] = "Sukupuoli:";
 $a->strings["Location:"] = "Sijainti:";
