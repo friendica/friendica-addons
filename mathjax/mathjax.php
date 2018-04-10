@@ -2,10 +2,11 @@
 /**
  * Name: MathJax
  * Description: Addon for Friendika to include MathJax (LaTeX math syntax)
- * Version: 1.0
- * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
+ * Version: 1.1
+ * Author: Tobias Diekershoff <https://social.diekershoff.de/profile/tobias>
  * License: 3-clause BSD license
  */
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -25,7 +26,6 @@ function mathjax_uninstall() {
 function mathjax_settings_post ($a, $post) {
     if (! local_user())
         return;
-    // don't check statusnet settings if statusnet submit button is not clicked
     if (!x($_POST,'mathjax-submit'))
         return;
     PConfig::set(local_user(),'mathjax','use',intval($_POST['mathjax_use']));
@@ -57,30 +57,32 @@ function mathjax_page_header($a, &$b) {
     //  if the visitor of the page is not a local_user, use MathJax
     //  otherwise check the users settings.
     $url = Config::get ('mathjax','baseurl');
-	if(! $url)
-		$url = 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+		if(! $url) {
+			$url = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML';
+		}
     if (! local_user()) {
-        $b .= '<script type="text/javascript" src="'.$url.'"></script>';
+        $b .= '<script type="text/javascript" src="'.$url.'" async></script>';
     } else {
         $use = PConfig::get(local_user(),'mathjax','use');
         if ($use) {
-            $b .= '<script type="text/javascript" src="'.$url.'"></script>';
+            $b .= '<script type="text/javascript" src="'.$url.'" async></script>';
         }
     }
 }
 function mathjax_addon_admin_post (&$a) {
-    $baseurl = ((x($_POST, 'baseurl')) ? trim($_POST['baseurl']) : 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML');
+    $baseurl = ((x($_POST, 'mjbaseurl')) ? trim($_POST['mjbaseurl']) : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML');
     Config::set('mathjax','baseurl',$baseurl);
     info(L10n::t('Settings updated.'). EOL);
 }
-function mathjax_addon_admin (&$a, &$o) {
+function mathjax_addon_admin (App $a, &$o) {
 	$t = get_markup_template( "admin.tpl", "addon/mathjax/" );
+
 	if (Config::get('mathjax','baseurl','') == '') {
-		Config::set('mathjax','baseurl','http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML');
+		Config::set('mathjax','baseurl','https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML');
 	}
 
 	$o = replace_macros( $t, [
 		'$submit' => L10n::t('Save Settings'),
-		'$baseurl' => ['baseurl', L10n::t('MathJax Base URL'), Config::get('mathjax','baseurl' ), L10n::t('The URL for the javascript file that should be included to use MathJax. Can be either the MathJax CDN or another installation of MathJax.')],
+		'$mjbaseurl' => ['mjbaseurl', L10n::t('MathJax Base URL'), Config::get('mathjax','baseurl' ), L10n::t('The URL for the javascript file that should be included to use MathJax. Can be either the MathJax CDN or another installation of MathJax.'), 'required']
 	]);
 }
