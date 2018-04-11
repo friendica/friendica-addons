@@ -7,9 +7,9 @@ function string_plural_select_fi_fi($n){
 ;
 $a->strings["\"Blockem\""] = "\"Blockem\"";
 $a->strings["Hides user's content by collapsing posts. Also replaces their avatar with generic image."] = "";
-$a->strings["Comma separated profile URLS:"] = "";
+$a->strings["Comma separated profile URLS:"] = "Profiilien URL-osoitteet pilkulla erotettuina:";
 $a->strings["Save Settings"] = "Tallenna asetukset";
-$a->strings["BLOCKEM Settings saved."] = "";
+$a->strings["BLOCKEM Settings saved."] = "Blockem -asetukset tallennettu";
 $a->strings["Filtered user: %s"] = "";
 $a->strings["Unblock Author"] = "";
 $a->strings["Block Author"] = "";

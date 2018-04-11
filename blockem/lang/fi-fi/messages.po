@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-04-01 11:11-0400\n"
-"PO-Revision-Date: 2018-04-08 15:06+0000\n"
+"PO-Revision-Date: 2018-04-10 18:41+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -32,7 +32,7 @@ msgstr ""
 
 #: blockem.php:61
 msgid "Comma separated profile URLS:"
-msgstr ""
+msgstr "Profiilien URL-osoitteet pilkulla erotettuina:"
 
 #: blockem.php:65
 msgid "Save Settings"
@@ -40,7 +40,7 @@ msgstr "Tallenna asetukset"
 
 #: blockem.php:78
 msgid "BLOCKEM Settings saved."
-msgstr ""
+msgstr "Blockem -asetukset tallennettu"
 
 #: blockem.php:136
 #, php-format
