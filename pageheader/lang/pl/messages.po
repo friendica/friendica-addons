@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-11 18:52+0100\n"
-"PO-Revision-Date: 2018-03-31 17:27+0000\n"
+"PO-Revision-Date: 2018-04-10 16:56+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: pageheader.php:53
 msgid "\"pageheader\" Settings"
-msgstr "\"pageheader\" Ustawienia"
+msgstr "Ustawienia \"nagłówek strony\""
 
 #: pageheader.php:54
 msgid "Message"
@@ -31,7 +31,7 @@ msgstr "Wiadomość"
 msgid ""
 "Message to display on every page on this server (or put a pageheader.html "
 "file in your docroot)"
-msgstr "Wiadomość do wyświetlenia na każdej stronie tego serwera (lub umieść plik pageheader.html w swoim dokumencie roboczym)"
+msgstr "Komunikat wyświetlany na każdej stronie, na tym serwerze (lub umieść plik pageheader.html w swoim dokumencie roboczym)"
 
 #: pageheader.php:55
 msgid "Save Settings"
@@ -39,4 +39,4 @@ msgstr "Zapisz ustawienia"
 
 #: pageheader.php:69
 msgid "pageheader Settings saved."
-msgstr "pageheader Ustawienia zapisane."
+msgstr "nagłówek strony Ustawienia zapisane."

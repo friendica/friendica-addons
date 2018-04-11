@@ -6,6 +6,6 @@ function string_plural_select_pl($n){
 }}
 ;
 $a->strings["Startpage Settings"] = "Ustawienia strony startowej";
-$a->strings["Home page to load after login  - leave blank for profile wall"] = "Strona główna do załadowania po zalogowaniu - pozostaw puste pole dla ściany profilowej";
+$a->strings["Home page to load after login  - leave blank for profile wall"] = "Strona główna do załadowania po zalogowaniu - pozostaw puste pole dla strony profilowej";
 $a->strings["Examples: &quot;network&quot; or &quot;notifications/system&quot;"] = "Przykłady: &quot;sieć&quot; lub &quot;powiadomienia/system&quot;";
 $a->strings["Submit"] = "Wyślij";
