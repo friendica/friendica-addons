@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2018-04-08 15:07+0000\n"
+"PO-Revision-Date: 2018-04-10 18:44+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -62,7 +62,7 @@ msgstr ""
 
 #: buffer.php:146
 msgid "Enable Buffer Post Addon"
-msgstr ""
+msgstr "Ota Buffer-viestilisäosa käyttöön"
 
 #: buffer.php:151
 msgid "Post to Buffer by default"

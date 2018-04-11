@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2018-04-08 15:06+0000\n"
+"PO-Revision-Date: 2018-04-10 18:43+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgstr ""
 
 #: blogger.php:82
 msgid "Enable Blogger Post Addon"
-msgstr ""
+msgstr "Ota Blogger-viestilisäosa käyttöön"
 
 #: blogger.php:87
 msgid "Blogger username"
@@ -42,7 +42,7 @@ msgstr "Blogger -salasana"
 
 #: blogger.php:97
 msgid "Blogger API URL"
-msgstr ""
+msgstr "Blogger API URL-osoite"
 
 #: blogger.php:102
 msgid "Post to Blogger by default"

@@ -32,11 +32,11 @@ msgstr ""
 
 #: catavatar.php:61
 msgid "Cat Avatar Settings"
-msgstr ""
+msgstr "Cat Avatar -asetukset"
 
 #: catavatar.php:103 catavatar.php:112 catavatar.php:121
 msgid "There was an error, the cat ran away."
-msgstr ""
+msgstr "Tapahtui virhe, kissa juoksi karkuun."
 
 #: catavatar.php:134
 msgid "Meow!"

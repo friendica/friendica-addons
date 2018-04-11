@@ -8,6 +8,6 @@ function string_plural_select_fi_fi($n){
 $a->strings["Use Cat as Avatar"] = "";
 $a->strings["More Random Cat!"] = "";
 $a->strings["Reset to email Cat"] = "";
-$a->strings["Cat Avatar Settings"] = "";
-$a->strings["There was an error, the cat ran away."] = "";
+$a->strings["Cat Avatar Settings"] = "Cat Avatar -asetukset";
+$a->strings["There was an error, the cat ran away."] = "Tapahtui virhe, kissa juoksi karkuun.";
 $a->strings["Meow!"] = "Miau!";
