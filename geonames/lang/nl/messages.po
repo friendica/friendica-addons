@@ -1,0 +1,36 @@
+# ADDON geonames
+# Copyright (C)
+# This file is distributed under the same license as the Friendica geonames addon package.
+# 
+# 
+# Translators:
+# Karel <karel@dasrakel.eu>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-04-12 07:45+0000\n"
+"Last-Translator: Karel <karel@dasrakel.eu>\n"
+"Language-Team: Dutch (http://www.transifex.com/Friendica/friendica/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: geonames.php:143
+msgid "Geonames settings updated."
+msgstr "Geonames instellingen bijgewerkt."
+
+#: geonames.php:179
+msgid "Geonames Settings"
+msgstr ""
+
+#: geonames.php:181
+msgid "Enable Geonames Addon"
+msgstr ""
+
+#: geonames.php:187
+msgid "Submit"
+msgstr ""
