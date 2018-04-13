@@ -85,7 +85,7 @@ function catavatar_addon_settings_post(App $a, &$s)
 	);
 	$seed = PConfig::get(local_user(), 'catavatar', 'seed', md5(trim(strtolower($user['email']))));
 	$imageurl = preg_replace('/[^A-Za-z0-9\._-]/', '', $seed);
-	$imageurl = substr($imageurl,0,35).'';
+	$imageurl = substr($imageurl, 0, 35) . '';
 	$cachefile = get_cachefile($imageurl);
 	if ($cachefile != "" && file_exists($cachefile)) {
 		unlink($cachefile);
@@ -121,7 +121,7 @@ function catavatar_addon_settings_post(App $a, &$s)
 
 		// Update global directory in background
 		$url = $a->get_baseurl() . '/profile/' . $a->user['nickname'];
-		if ($url && strlen(Config::get('system','directory'))) {
+		if ($url && strlen(Config::get('system', 'directory'))) {
 			Worker::add(PRIORITY_LOW, 'Directory', $url);
 		}
 
@@ -205,7 +205,7 @@ function catavatar_content(App $a)
 	// from cat-avatar-generator.php
 	$imageurl = $seed . "-" . $size;
 	$imageurl = preg_replace('/[^A-Za-z0-9\._-]/', '', $imageurl);
-	$imageurl = substr($imageurl,0,35) . '';
+	$imageurl = substr($imageurl, 0, 35) . '';
 	$cachefile = get_cachefile($imageurl);
 	$cachetime = 604800; # 1 week (1 day = 86400)
 
@@ -213,7 +213,7 @@ function catavatar_content(App $a)
 	if ($cachefile != "" && file_exists($cachefile) && (time() - $cachetime) < filemtime($cachefile)) {
 		header('Pragma: public');
 		header('Cache-Control: max-age=86400');
-		header('Expires: '. gmdate('D, d M Y H:i:s \G\M\T', time() + 86400));
+		header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 86400));
 		header('Content-Type: image/jpg');
 		readfile($cachefile);
 		exit();
@@ -256,34 +256,34 @@ function build_cat($seed = '', $size = 0)
 {
 	// init random seed
 	if ($seed) {
-		srand(hexdec(substr(md5($seed),0,6)));
+		srand(hexdec(substr(md5($seed), 0, 6)));
 	}
 
 	// throw the dice for body parts
 	$parts = array(
-		'body' => rand(1,15),
-		'fur' => rand(1,10),
-		'eyes' => rand(1,15),
-		'mouth' => rand(1,10),
-		'accessorie' => rand(1,20)
+		'body' => rand(1, 15),
+		'fur' => rand(1, 10),
+		'eyes' => rand(1, 15),
+		'mouth' => rand(1, 10),
+		'accessorie' => rand(1, 20)
 	);
 
 	// create backgound
 	$cat = @imagecreatetruecolor(CATAVATAR_SIZE, CATAVATAR_SIZE)
 		or die("GD image create failed");
 	$white = imagecolorallocate($cat, 255, 255, 255);
-	imagefill($cat,0,0,$white);
+	imagefill($cat, 0, 0, $white);
 
 	// add parts
 	foreach ($parts as $part => $num){
-		$file = dirname(__FILE__).'/avatars/'.$part.'_'.$num.'.png';
+		$file = dirname(__FILE__) . '/avatars/' . $part . '_' . $num . '.png';
 
 		$im = @imagecreatefrompng($file);
 		if (!$im) {
-			die('Failed to load '.$file);
+			die('Failed to load ' . $file);
 		}
 		imageSaveAlpha($im, true);
-		imagecopy($cat,$im,0,0,0,0,CATAVATAR_SIZE,CATAVATAR_SIZE);
+		imagecopy($cat, $im, 0, 0, 0, 0, CATAVATAR_SIZE, CATAVATAR_SIZE);
 		imagedestroy($im);
 	}
 
@@ -316,7 +316,7 @@ function build_cat($seed = '', $size = 0)
 
 	header('Pragma: public');
 	header('Cache-Control: max-age=86400');
-	header('Expires: '. gmdate('D, d M Y H:i:s \G\M\T', time() + 86400));
+	header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 86400));
 	header('Content-Type: image/jpg');
 	imagejpeg($cat, NULL, 90);
 	imagedestroy($cat);
