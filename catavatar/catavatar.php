@@ -252,10 +252,12 @@ function catavatar_content(App $a)
  *
 **/
 
-function build_cat($seed='', $size=0){
-
+function build_cat($seed = '', $size = 0)
+{
 	// init random seed
-	if($seed) srand( hexdec(substr(md5($seed),0,6)) );
+	if ($seed) {
+		srand(hexdec(substr(md5($seed),0,6)));
+	}
 
 	// throw the dice for body parts
 	$parts = array(
@@ -273,11 +275,13 @@ function build_cat($seed='', $size=0){
 	imagefill($cat,0,0,$white);
 
 	// add parts
-	foreach($parts as $part => $num){
+	foreach ($parts as $part => $num){
 		$file = dirname(__FILE__).'/avatars/'.$part.'_'.$num.'.png';
 
 		$im = @imagecreatefrompng($file);
-		if(!$im) die('Failed to load '.$file);
+		if (!$im) {
+			die('Failed to load '.$file);
+		}
 		imageSaveAlpha($im, true);
 		imagecopy($cat,$im,0,0,0,0,CATAVATAR_SIZE,CATAVATAR_SIZE);
 		imagedestroy($im);
@@ -285,10 +289,16 @@ function build_cat($seed='', $size=0){
 
 	// scale image
 	if ($size > 3 && $size < 7) {
-		switch($size) {
-			case 4: $size = 175; break;
-			case 5: $size = 80; break;
-			case 6: $size = 48; break;
+		switch ($size) {
+			case 4:
+				$size = 175;
+				break;
+			case 5:
+				$size = 80;
+				break;
+			case 6:
+				$size = 48;
+				break;
 		}
 
 		$dest = imagecreatetruecolor($size, $size);
@@ -311,5 +321,3 @@ function build_cat($seed='', $size=0){
 	imagejpeg($cat, NULL, 90);
 	imagedestroy($cat);
 }
-
-
