@@ -13,6 +13,9 @@ use Friendica\Core\Worker;
 use Friendica\Core\PConfig;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Network\HTTPException\NotFoundException;
+use Friendica\Model\Contact;
+use Friendica\Model\Photo;
+use Friendica\Database\DBM;
 
 define("CATAVATAR_SIZE", 256);
 
@@ -82,7 +85,7 @@ function catavatar_addon_settings_post(App $a, &$s)
 	);
 	$seed = PConfig::get(local_user(), 'catavatar', 'seed', md5(trim(strtolower($user['email']))));
 	$imageurl = preg_replace('/[^A-Za-z0-9\._-]/', '', $seed);
-	$imageurl = substr($imageurl,0,35).'';
+	$imageurl = substr($imageurl, 0, 35) . '';
 	$cachefile = get_cachefile($imageurl);
 	if ($cachefile != "" && file_exists($cachefile)) {
 		unlink($cachefile);
@@ -90,42 +93,35 @@ function catavatar_addon_settings_post(App $a, &$s)
 
 
 	if (!empty($_POST['catavatar-usecat'])) {
-		$url = $a->get_baseurl() . '/catavatar/' . local_user();
+		$url = $a->get_baseurl() . '/catavatar/' . local_user() . '?ts=' . time();
 
-		// set the catavatar url as avatar url in contact and default profile
-		// and set profile to 0 to current photo
-		// I'm not sure it's the correct way to do this...
-		$r = dba::update('contact',
-			['photo' => $url . '/4', 'thumb' => $url . '/5', 'micro' => $url . '/6', 'avatar-date' => DateTimeFormat::utcNow()],
-			['uid' => local_user(), 'self' => 1]
-		);
-		if ($r===false) {
+		$self = dba::selectFirst('contact', ['id'], ['uid' => local_user(), 'self' => true]);
+		if (!DBM::is_result($self)) {
+			notice(L10n::t("The cat hadn't found itself."));
+			return;
+		}
+
+		Photo::importProfilePhoto($url, local_user(), $self['id']);
+
+		$condition = ['uid' => local_user(), 'contact-id' => $self['id']];
+		$photo = dba::selectFirst('photo', ['resource-id'], $condition);
+		if (!DBM::is_result($photo)) {
 			notice(L10n::t('There was an error, the cat ran away.'));
 			return;
 		}
 
-		$r = dba::update('profile',
-			['photo' => $url . '/4', 'thumb' => $url . '/5'],
-			['uid' => local_user(), 'is-default' => 1]
-		);
-		if ($r===false) {
-			notice(L10n::t('There was an error, the cat ran away.'));
-			return;
-		}
+		dba::update('photo', ['profile' => false], ['profile' => true, 'uid' => local_user()]);
 
-		$r = dba::update('photo',
-			['profile' => 0],
-			['uid' => local_user(), 'profile' => 1]
-		);
-		if ($r === false) {
-			notice(L10n::t('There was an error, the cat ran away.'));
-			return;
-		}
+		$fields = ['profile' => true, 'album' => L10n::t('Profile Photos'), 'contact-id' => 0];
+		dba::update('photo', $fields, ['uid' => local_user(), 'resource-id' => $photo['resource-id']]);
 
+		Photo::importProfilePhoto($url, local_user(), $self['id']);
+
+		Contact::updateSelfFromUserID(local_user(), true);
 
 		// Update global directory in background
 		$url = $a->get_baseurl() . '/profile/' . $a->user['nickname'];
-		if ($url && strlen(Config::get('system','directory'))) {
+		if ($url && strlen(Config::get('system', 'directory'))) {
 			Worker::add(PRIORITY_LOW, 'Directory', $url);
 		}
 
@@ -204,12 +200,12 @@ function catavatar_content(App $a)
 		throw new NotFoundException();
 	}
 
-	$seed = PConfig::get(local_user(), "catavatar", "seed", md5(trim(strtolower($user['email']))));
+	$seed = PConfig::get($uid, "catavatar", "seed", md5(trim(strtolower($user['email']))));
 
 	// from cat-avatar-generator.php
 	$imageurl = $seed . "-" . $size;
 	$imageurl = preg_replace('/[^A-Za-z0-9\._-]/', '', $imageurl);
-	$imageurl = substr($imageurl,0,35) . '';
+	$imageurl = substr($imageurl, 0, 35) . '';
 	$cachefile = get_cachefile($imageurl);
 	$cachetime = 604800; # 1 week (1 day = 86400)
 
@@ -217,7 +213,7 @@ function catavatar_content(App $a)
 	if ($cachefile != "" && file_exists($cachefile) && (time() - $cachetime) < filemtime($cachefile)) {
 		header('Pragma: public');
 		header('Cache-Control: max-age=86400');
-		header('Expires: '. gmdate('D, d M Y H:i:s \G\M\T', time() + 86400));
+		header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 86400));
 		header('Content-Type: image/jpg');
 		readfile($cachefile);
 		exit();
@@ -256,43 +252,53 @@ function catavatar_content(App $a)
  *
 **/
 
-function build_cat($seed='', $size=0){
-
+function build_cat($seed = '', $size = 0)
+{
 	// init random seed
-	if($seed) srand( hexdec(substr(md5($seed),0,6)) );
+	if ($seed) {
+		srand(hexdec(substr(md5($seed), 0, 6)));
+	}
 
 	// throw the dice for body parts
 	$parts = array(
-		'body' => rand(1,15),
-		'fur' => rand(1,10),
-		'eyes' => rand(1,15),
-		'mouth' => rand(1,10),
-		'accessorie' => rand(1,20)
+		'body' => rand(1, 15),
+		'fur' => rand(1, 10),
+		'eyes' => rand(1, 15),
+		'mouth' => rand(1, 10),
+		'accessorie' => rand(1, 20)
 	);
 
 	// create backgound
 	$cat = @imagecreatetruecolor(CATAVATAR_SIZE, CATAVATAR_SIZE)
 		or die("GD image create failed");
 	$white = imagecolorallocate($cat, 255, 255, 255);
-	imagefill($cat,0,0,$white);
+	imagefill($cat, 0, 0, $white);
 
 	// add parts
-	foreach($parts as $part => $num){
-		$file = dirname(__FILE__).'/avatars/'.$part.'_'.$num.'.png';
+	foreach ($parts as $part => $num){
+		$file = dirname(__FILE__) . '/avatars/' . $part . '_' . $num . '.png';
 
 		$im = @imagecreatefrompng($file);
-		if(!$im) die('Failed to load '.$file);
+		if (!$im) {
+			die('Failed to load ' . $file);
+		}
 		imageSaveAlpha($im, true);
-		imagecopy($cat,$im,0,0,0,0,CATAVATAR_SIZE,CATAVATAR_SIZE);
+		imagecopy($cat, $im, 0, 0, 0, 0, CATAVATAR_SIZE, CATAVATAR_SIZE);
 		imagedestroy($im);
 	}
 
 	// scale image
 	if ($size > 3 && $size < 7) {
-		switch($size) {
-			case 4: $size = 175; break;
-			case 5: $size = 80; break;
-			case 6: $size = 48; break;
+		switch ($size) {
+			case 4:
+				$size = 175;
+				break;
+			case 5:
+				$size = 80;
+				break;
+			case 6:
+				$size = 48;
+				break;
 		}
 
 		$dest = imagecreatetruecolor($size, $size);
@@ -310,10 +316,8 @@ function build_cat($seed='', $size=0){
 
 	header('Pragma: public');
 	header('Cache-Control: max-age=86400');
-	header('Expires: '. gmdate('D, d M Y H:i:s \G\M\T', time() + 86400));
+	header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 86400));
 	header('Content-Type: image/jpg');
 	imagejpeg($cat, NULL, 90);
 	imagedestroy($cat);
 }
-
-
