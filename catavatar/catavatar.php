@@ -93,7 +93,7 @@ function catavatar_addon_settings_post(App $a, &$s)
 
 
 	if (!empty($_POST['catavatar-usecat'])) {
-		$url = $a->get_baseurl() . '/catavatar/' . local_user();
+		$url = $a->get_baseurl() . '/catavatar/' . local_user() . '?ts=' . time();
 
 		$self = dba::selectFirst('contact', ['id'], ['uid' => local_user(), 'self' => true]);
 		if (!DBM::is_result($self)) {
@@ -200,7 +200,7 @@ function catavatar_content(App $a)
 		throw new NotFoundException();
 	}
 
-	$seed = PConfig::get(local_user(), "catavatar", "seed", md5(trim(strtolower($user['email']))));
+	$seed = PConfig::get($uid, "catavatar", "seed", md5(trim(strtolower($user['email']))));
 
 	// from cat-avatar-generator.php
 	$imageurl = $seed . "-" . $size;
