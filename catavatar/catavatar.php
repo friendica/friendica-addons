@@ -13,6 +13,9 @@ use Friendica\Core\Worker;
 use Friendica\Core\PConfig;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Network\HTTPException\NotFoundException;
+use Friendica\Model\Contact;
+use Friendica\Model\Photo;
+use Friendica\Database\DBM;
 
 define("CATAVATAR_SIZE", 256);
 
@@ -92,36 +95,29 @@ function catavatar_addon_settings_post(App $a, &$s)
 	if (!empty($_POST['catavatar-usecat'])) {
 		$url = $a->get_baseurl() . '/catavatar/' . local_user();
 
-		// set the catavatar url as avatar url in contact and default profile
-		// and set profile to 0 to current photo
-		// I'm not sure it's the correct way to do this...
-		$r = dba::update('contact',
-			['photo' => $url . '/4', 'thumb' => $url . '/5', 'micro' => $url . '/6', 'avatar-date' => DateTimeFormat::utcNow()],
-			['uid' => local_user(), 'self' => 1]
-		);
-		if ($r===false) {
+		$self = dba::selectFirst('contact', ['id'], ['uid' => local_user(), 'self' => true]);
+		if (!DBM::is_result($self)) {
+			notice(L10n::t("The cat hadn't found itself."));
+			return;
+		}
+
+		Photo::importProfilePhoto($url, local_user(), $self['id']);
+
+		$condition = ['uid' => local_user(), 'contact-id' => $self['id']];
+		$photo = dba::selectFirst('photo', ['resource-id'], $condition);
+		if (!DBM::is_result($photo)) {
 			notice(L10n::t('There was an error, the cat ran away.'));
 			return;
 		}
 
-		$r = dba::update('profile',
-			['photo' => $url . '/4', 'thumb' => $url . '/5'],
-			['uid' => local_user(), 'is-default' => 1]
-		);
-		if ($r===false) {
-			notice(L10n::t('There was an error, the cat ran away.'));
-			return;
-		}
+		dba::update('photo', ['profile' => false], ['profile' => true, 'uid' => local_user()]);
 
-		$r = dba::update('photo',
-			['profile' => 0],
-			['uid' => local_user(), 'profile' => 1]
-		);
-		if ($r === false) {
-			notice(L10n::t('There was an error, the cat ran away.'));
-			return;
-		}
+		$fields = ['profile' => true, 'album' => L10n::t('Profile Photos'), 'contact-id' => 0];
+		dba::update('photo', $fields, ['uid' => local_user(), 'resource-id' => $photo['resource-id']]);
 
+		Photo::importProfilePhoto($url, local_user(), $self['id']);
+
+		Contact::updateSelfFromUserID(local_user(), true);
 
 		// Update global directory in background
 		$url = $a->get_baseurl() . '/profile/' . $a->user['nickname'];
