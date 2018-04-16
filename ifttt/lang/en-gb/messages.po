@@ -1,0 +1,51 @@
+# ADDON ifttt
+# Copyright (C)
+# This file is distributed under the same license as the Friendica ifttt addon package.
+# 
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-11-27 09:30+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kris, 2018\n"
+"Language-Team: English (United Kingdom) (https://www.transifex.com/Friendica/teams/12172/en_GB/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ifttt.php:53 ifttt.php:57
+msgid "IFTTT Mirror"
+msgstr "IFTTT Mirror"
+
+#: ifttt.php:61
+msgid ""
+"Create an account at <a href=\"http://www.ifttt.com\">IFTTT</a>. Create "
+"three Facebook recipes that are connected with <a "
+"href=\"https://ifttt.com/maker\">Maker</a> (In the form \"if Facebook then "
+"Maker\") with the following parameters:"
+msgstr ""
+
+#: ifttt.php:68
+msgid "Body for \"new status message\""
+msgstr ""
+
+#: ifttt.php:70
+msgid "Body for \"new photo upload\""
+msgstr ""
+
+#: ifttt.php:72
+msgid "Body for \"new link post\""
+msgstr ""
+
+#: ifttt.php:77
+msgid "Generate new key"
+msgstr "Generate new key"
+
+#: ifttt.php:81
+msgid "Save Settings"
+msgstr "Save settings"
