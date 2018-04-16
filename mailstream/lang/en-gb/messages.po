@@ -1,0 +1,98 @@
+# ADDON mailstream
+# Copyright (C)
+# This file is distributed under the same license as the Friendica mailstream addon package.
+# 
+# 
+# Translators:
+# Kris, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-03-11 19:13+0100\n"
+"PO-Revision-Date: 2018-04-13 17:46+0000\n"
+"Last-Translator: Kris\n"
+"Language-Team: English (United Kingdom) (http://www.transifex.com/Friendica/friendica/language/en_GB/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: mailstream.php:77
+msgid "From Address"
+msgstr "From address"
+
+#: mailstream.php:79
+msgid "Email address that stream items will appear to be from."
+msgstr "Email address that stream items will appear to be from."
+
+#: mailstream.php:82 mailstream.php:380
+msgid "Save Settings"
+msgstr "Save settings"
+
+#: mailstream.php:223
+msgid "Re:"
+msgstr "Re:"
+
+#: mailstream.php:231
+msgid "Friendica post"
+msgstr "Friendica post"
+
+#: mailstream.php:234
+msgid "Diaspora post"
+msgstr "Diaspora post"
+
+#: mailstream.php:244
+msgid "Feed item"
+msgstr "Feed item"
+
+#: mailstream.php:247
+msgid "Email"
+msgstr "Email"
+
+#: mailstream.php:249
+msgid "Friendica Item"
+msgstr "Friendica Item"
+
+#: mailstream.php:293
+msgid "Upstream"
+msgstr "Upstream"
+
+#: mailstream.php:294
+msgid "Local"
+msgstr "Local"
+
+#: mailstream.php:362
+msgid "Enabled"
+msgstr "Enabled"
+
+#: mailstream.php:366
+msgid "Email Address"
+msgstr "Email address"
+
+#: mailstream.php:368
+msgid "Leave blank to use your account email address"
+msgstr "Leave blank if you want to use your account email address"
+
+#: mailstream.php:371
+msgid "Exclude Likes"
+msgstr "Exclude likes"
+
+#: mailstream.php:373
+msgid "Check this to omit mailing \"Like\" notifications"
+msgstr "Tick this to omit mailing \"Like\" notifications"
+
+#: mailstream.php:376
+msgid "Attach Images"
+msgstr "Attach images"
+
+#: mailstream.php:378
+msgid ""
+"Download images in posts and attach them to the email.  Useful for reading "
+"email while offline."
+msgstr "Download images in posts and attach them to the email. Useful for reading email while offline."
+
+#: mailstream.php:379
+msgid "Mail Stream Settings"
+msgstr "Mail Stream settings"
