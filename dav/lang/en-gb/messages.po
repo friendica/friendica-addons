@@ -1,0 +1,578 @@
+# ADDON dav
+# Copyright (C)
+# This file is distributed under the same license as the Friendica dav addon package.
+# 
+# 
+# Translators:
+# Kris, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-04-13 17:41+0000\n"
+"Last-Translator: Kris\n"
+"Language-Team: English (United Kingdom) (http://www.transifex.com/Friendica/friendica/language/en_GB/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: friendica/dav_caldav_backend_virtual_friendica.inc.php:36
+msgid "Friendica-Native events"
+msgstr "Friendica-native events"
+
+#: friendica/dav_carddav_backend_virtual_friendica.inc.php:36
+#: friendica/dav_carddav_backend_virtual_friendica.inc.php:59
+msgid "Friendica-Contacts"
+msgstr "Friendica contacts"
+
+#: friendica/dav_carddav_backend_virtual_friendica.inc.php:60
+msgid "Your Friendica-Contacts"
+msgstr "Your Friendica contacts"
+
+#: friendica/layout.fnk.php:99 friendica/layout.fnk.php:136
+msgid ""
+"Something went wrong when trying to import the file. Sorry. Maybe some "
+"events were imported anyway."
+msgstr "Something went wrong when trying to import the file. Some events may have been imported anyway."
+
+#: friendica/layout.fnk.php:131
+msgid "Something went wrong when trying to import the file. Sorry."
+msgstr "Something went wrong when trying to import the file."
+
+#: friendica/layout.fnk.php:134
+msgid "The ICS-File has been imported."
+msgstr "The ICS file has been imported."
+
+#: friendica/layout.fnk.php:138
+msgid "No file was uploaded."
+msgstr "No file was uploaded."
+
+#: friendica/layout.fnk.php:143 friendica/layout.fnk.php:422
+#: common/wdcal_edit.inc.php:140
+msgid "Go back to the calendar"
+msgstr "Go back to the calendar"
+
+#: friendica/layout.fnk.php:147
+msgid "Import a ICS-file"
+msgstr "Import an ICS file"
+
+#: friendica/layout.fnk.php:150
+msgid "ICS-File"
+msgstr "ICS file"
+
+#: friendica/layout.fnk.php:151
+msgid "Overwrite all #num# existing events"
+msgstr "Overwrite all #num# existing events"
+
+#: friendica/layout.fnk.php:152
+msgid "Upload"
+msgstr "Upload"
+
+#: friendica/layout.fnk.php:225
+msgid "Settings"
+msgstr "Settings"
+
+#: friendica/layout.fnk.php:225
+msgid "Help"
+msgstr "Help"
+
+#: friendica/layout.fnk.php:228
+msgid "New event"
+msgstr "New event"
+
+#: friendica/layout.fnk.php:232
+msgid "Today"
+msgstr "Today"
+
+#: friendica/layout.fnk.php:241
+msgid "Day"
+msgstr "Day"
+
+#: friendica/layout.fnk.php:248
+msgid "Week"
+msgstr "Week"
+
+#: friendica/layout.fnk.php:255 common/wdcal_edit.inc.php:372
+msgid "Month"
+msgstr "Month"
+
+#: friendica/layout.fnk.php:260
+msgid "Reload"
+msgstr "Reload"
+
+#: friendica/layout.fnk.php:263
+msgid "Previous"
+msgstr "Previous"
+
+#: friendica/layout.fnk.php:266
+msgid "Next"
+msgstr "Next"
+
+#: friendica/layout.fnk.php:271
+msgid "Date"
+msgstr "Date"
+
+#: friendica/layout.fnk.php:313
+msgid "Error"
+msgstr "Error"
+
+#: friendica/layout.fnk.php:354
+msgid "Permission denied."
+msgstr "Permission denied."
+
+#: friendica/layout.fnk.php:361
+msgid "The new values have been saved."
+msgstr "The new values have been saved."
+
+#: friendica/layout.fnk.php:380
+msgid "The calendar has been updated."
+msgstr "The calendar has been updated."
+
+#: friendica/layout.fnk.php:393
+msgid "The new calendar has been created."
+msgstr "The new calendar has been created."
+
+#: friendica/layout.fnk.php:417
+msgid "The calendar has been deleted."
+msgstr "The calendar has been deleted."
+
+#: friendica/layout.fnk.php:424
+msgid "Calendar Settings"
+msgstr "Calendar settings"
+
+#: friendica/layout.fnk.php:430
+msgid "Date format"
+msgstr "Date format"
+
+#: friendica/layout.fnk.php:439
+msgid "Time zone"
+msgstr "Time zone"
+
+#: friendica/layout.fnk.php:441 friendica/layout.fnk.php:488
+msgid "Save"
+msgstr "Save"
+
+#: friendica/layout.fnk.php:445
+msgid "Calendars"
+msgstr "Calendars"
+
+#: friendica/layout.fnk.php:487
+msgid "Create a new calendar"
+msgstr "Create a new calendar"
+
+#: friendica/layout.fnk.php:496
+msgid "Limitations"
+msgstr "Limitations"
+
+#: friendica/layout.fnk.php:500
+msgid "Warning"
+msgstr "Warning"
+
+#: friendica/layout.fnk.php:504
+msgid "Synchronization (iPhone, Thunderbird Lightning, Android, ...)"
+msgstr "Synchronisation (iPhone, Thunderbird Lightning, Android etc.)"
+
+#: friendica/layout.fnk.php:511
+msgid "Synchronizing this calendar with the iPhone"
+msgstr "Synchronising this calendar with an iPhone"
+
+#: friendica/layout.fnk.php:522
+msgid "Synchronizing your Friendica-Contacts with the iPhone"
+msgstr "Synchronising your Friendica contacts with an iPhone"
+
+#: friendica/main.php:202
+msgid ""
+"The current version of this addon has not been set up correctly. Please "
+"contact the system administrator of your installation of friendica to fix "
+"this."
+msgstr "The current version of this addon has not been set up correctly. Please contact the administrator of your Friendica site to ask them to fix this."
+
+#: friendica/main.php:239 common/wdcal_edit.inc.php:146
+msgid "Calendar"
+msgstr "Calendar"
+
+#: friendica/main.php:242
+msgid "Extended calendar with CalDAV-support"
+msgstr "Extended calendar with CalDAV support"
+
+#: friendica/main.php:279 friendica/main.php:280
+msgid "noreply"
+msgstr "noreply"
+
+#: friendica/main.php:282
+msgid "Notification: "
+msgstr "Notification: "
+
+#: friendica/main.php:309
+msgid "The database tables have been installed."
+msgstr "The database tables have been installed."
+
+#: friendica/main.php:310
+msgid "An error occurred during the installation."
+msgstr "An error occurred during the installation."
+
+#: friendica/main.php:316
+msgid "The database tables have been updated."
+msgstr "The database tables have been updated."
+
+#: friendica/main.php:317
+msgid "An error occurred during the update."
+msgstr "An error occurred during the update."
+
+#: friendica/main.php:333
+msgid "No system-wide settings yet."
+msgstr "No system-wide settings yet."
+
+#: friendica/main.php:336
+msgid "Database status"
+msgstr "Database status"
+
+#: friendica/main.php:339
+msgid "Installed"
+msgstr "Installed"
+
+#: friendica/main.php:343
+msgid "Upgrade needed"
+msgstr "Upgrade needed"
+
+#: friendica/main.php:343
+msgid ""
+"Please back up all calendar data (the tables beginning with dav_*) before "
+"proceeding. While all calendar events <i>should</i> be converted to the new "
+"database structure, it's always safe to have a backup. Below, you can have a"
+" look at the database-queries that will be made when pressing the "
+"'update'-button."
+msgstr "Please back up all calendar data (tables beginning with dav_*) before proceeding. While all calendar events <i>should</i> be converted to the new database structure, it's recommended that you make a backup just to be on the safe side. You can see the database queries that will be made during the update below."
+
+#: friendica/main.php:343
+msgid "Upgrade"
+msgstr "Upgrade"
+
+#: friendica/main.php:346
+msgid "Not installed"
+msgstr "Not installed"
+
+#: friendica/main.php:346
+msgid "Install"
+msgstr "Install"
+
+#: friendica/main.php:350
+msgid "Unknown"
+msgstr "Unknown"
+
+#: friendica/main.php:350
+msgid ""
+"Something really went wrong. I cannot recover from this state automatically,"
+" sorry. Please go to the database backend, back up the data, and delete all "
+"tables beginning with 'dav_' manually. Afterwards, this installation routine"
+" should be able to reinitialize the tables automatically."
+msgstr "Something has gone wrong. It is impossible to recover from this state automatically. Please go to the database backend, back up the data, and manually delete all tables beginning with 'dav_'. When you have done this, the installation routine should be able to reinitialise the tables automatically."
+
+#: friendica/main.php:355
+msgid "Troubleshooting"
+msgstr "Troubleshooting"
+
+#: friendica/main.php:356
+msgid "Manual creation of the database tables:"
+msgstr "Manual creation of database tables:"
+
+#: friendica/main.php:357
+msgid "Show SQL-statements"
+msgstr "Show SQL statements"
+
+#: friendica/calendar.friendica.fnk.php:206
+msgid "Private Calendar"
+msgstr "Private calendar"
+
+#: friendica/calendar.friendica.fnk.php:207
+msgid "Friendica Events: Mine"
+msgstr "Friendica events: My events"
+
+#: friendica/calendar.friendica.fnk.php:208
+msgid "Friendica Events: Contacts"
+msgstr "Friendica events: Contacts' events"
+
+#: friendica/calendar.friendica.fnk.php:248
+msgid "Private Addresses"
+msgstr "Private addresses"
+
+#: friendica/calendar.friendica.fnk.php:249
+msgid "Friendica Contacts"
+msgstr "Friendica contacts"
+
+#: common/wdcal_edit.inc.php:30 common/wdcal_edit.inc.php:738
+msgid "Could not open component for editing"
+msgstr "Could not open component for editing"
+
+#: common/wdcal_edit.inc.php:144
+msgid "Event data"
+msgstr "Event data"
+
+#: common/wdcal_edit.inc.php:163
+msgid "Special color"
+msgstr "Special colour"
+
+#: common/wdcal_edit.inc.php:169
+msgid "Subject"
+msgstr "Subject"
+
+#: common/wdcal_edit.inc.php:173
+msgid "Starts"
+msgstr "Starts"
+
+#: common/wdcal_edit.inc.php:178
+msgid "Ends"
+msgstr "Ends"
+
+#: common/wdcal_edit.inc.php:183
+msgid "Location"
+msgstr "Location"
+
+#: common/wdcal_edit.inc.php:185
+msgid "Description"
+msgstr "Description"
+
+#: common/wdcal_edit.inc.php:188
+msgid "Recurrence"
+msgstr "Recurrence"
+
+#: common/wdcal_edit.inc.php:190
+msgid "Frequency"
+msgstr "Frequency"
+
+#: common/wdcal_edit.inc.php:191
+msgid "None"
+msgstr "None"
+
+#: common/wdcal_edit.inc.php:194
+msgid "Daily"
+msgstr "Daily"
+
+#: common/wdcal_edit.inc.php:197
+msgid "Weekly"
+msgstr "Weekly"
+
+#: common/wdcal_edit.inc.php:200
+msgid "Monthly"
+msgstr "Monthly"
+
+#: common/wdcal_edit.inc.php:203
+msgid "Yearly"
+msgstr "Yearly"
+
+#: common/wdcal_edit.inc.php:214
+msgid "days"
+msgstr "days"
+
+#: common/wdcal_edit.inc.php:215
+msgid "weeks"
+msgstr "weeks"
+
+#: common/wdcal_edit.inc.php:216
+msgid "months"
+msgstr "months"
+
+#: common/wdcal_edit.inc.php:217
+msgid "years"
+msgstr "years"
+
+#: common/wdcal_edit.inc.php:218
+msgid "Interval"
+msgstr "Interval"
+
+#: common/wdcal_edit.inc.php:218
+msgid "All %select% %time%"
+msgstr ""
+
+#: common/wdcal_edit.inc.php:222 common/wdcal_edit.inc.php:260
+#: common/wdcal_edit.inc.php:481
+msgid "Days"
+msgstr "Days"
+
+#: common/wdcal_edit.inc.php:231 common/wdcal_edit.inc.php:254
+#: common/wdcal_edit.inc.php:270 common/wdcal_edit.inc.php:293
+#: common/wdcal_edit.inc.php:305
+msgid "Sunday"
+msgstr "Sunday"
+
+#: common/wdcal_edit.inc.php:235 common/wdcal_edit.inc.php:274
+#: common/wdcal_edit.inc.php:308
+msgid "Monday"
+msgstr "Monday"
+
+#: common/wdcal_edit.inc.php:238 common/wdcal_edit.inc.php:277
+msgid "Tuesday"
+msgstr "Tuesday"
+
+#: common/wdcal_edit.inc.php:241 common/wdcal_edit.inc.php:280
+msgid "Wednesday"
+msgstr "Wednesday"
+
+#: common/wdcal_edit.inc.php:244 common/wdcal_edit.inc.php:283
+msgid "Thursday"
+msgstr "Thursday"
+
+#: common/wdcal_edit.inc.php:247 common/wdcal_edit.inc.php:286
+msgid "Friday"
+msgstr "Friday"
+
+#: common/wdcal_edit.inc.php:250 common/wdcal_edit.inc.php:289
+msgid "Saturday"
+msgstr "Saturday"
+
+#: common/wdcal_edit.inc.php:297
+msgid "First day of week:"
+msgstr "First day of the week:"
+
+#: common/wdcal_edit.inc.php:350 common/wdcal_edit.inc.php:373
+msgid "Day of month"
+msgstr ""
+
+#: common/wdcal_edit.inc.php:354
+msgid "#num#th of each month"
+msgstr ""
+
+#: common/wdcal_edit.inc.php:357
+msgid "#num#th-last of each month"
+msgstr ""
+
+#: common/wdcal_edit.inc.php:360
+msgid "#num#th #wkday# of each month"
+msgstr ""
+
+#: common/wdcal_edit.inc.php:363
+msgid "#num#th-last #wkday# of each month"
+msgstr ""
+
+#: common/wdcal_edit.inc.php:377
+msgid "#num#th of the given month"
+msgstr ""
+
+#: common/wdcal_edit.inc.php:380
+msgid "#num#th-last of the given month"
+msgstr ""
+
+#: common/wdcal_edit.inc.php:383
+msgid "#num#th #wkday# of the given month"
+msgstr ""
+
+#: common/wdcal_edit.inc.php:386
+msgid "#num#th-last #wkday# of the given month"
+msgstr ""
+
+#: common/wdcal_edit.inc.php:413
+msgid "Repeat until"
+msgstr "Repeat until"
+
+#: common/wdcal_edit.inc.php:417
+msgid "Infinite"
+msgstr "Indefinite"
+
+#: common/wdcal_edit.inc.php:420
+msgid "Until the following date"
+msgstr "Until the following date"
+
+#: common/wdcal_edit.inc.php:423
+msgid "Number of times"
+msgstr "Number of times"
+
+#: common/wdcal_edit.inc.php:429
+msgid "Exceptions"
+msgstr "Exceptions"
+
+#: common/wdcal_edit.inc.php:432
+msgid "none"
+msgstr "none"
+
+#: common/wdcal_edit.inc.php:449
+msgid "Notification"
+msgstr "Notification"
+
+#: common/wdcal_edit.inc.php:466
+msgid "Notify by"
+msgstr "Notify by"
+
+#: common/wdcal_edit.inc.php:468
+msgid "Remove"
+msgstr "Remove"
+
+#: common/wdcal_edit.inc.php:469
+msgid "E-Mail"
+msgstr "Email"
+
+#: common/wdcal_edit.inc.php:470
+msgid "On Friendica / Display"
+msgstr "On Friendica / Display"
+
+#: common/wdcal_edit.inc.php:474
+msgid "Time"
+msgstr "Time"
+
+#: common/wdcal_edit.inc.php:478
+msgid "Hours"
+msgstr "Hours"
+
+#: common/wdcal_edit.inc.php:479
+msgid "Minutes"
+msgstr "Minutes"
+
+#: common/wdcal_edit.inc.php:480
+msgid "Seconds"
+msgstr "Seconds"
+
+#: common/wdcal_edit.inc.php:482
+msgid "Weeks"
+msgstr "Weeks"
+
+#: common/wdcal_edit.inc.php:485
+msgid "before the"
+msgstr "before the"
+
+#: common/wdcal_edit.inc.php:486
+msgid "start of the event"
+msgstr "start of the event"
+
+#: common/wdcal_edit.inc.php:487
+msgid "end of the event"
+msgstr "end of the event"
+
+#: common/wdcal_edit.inc.php:492
+msgid "Add a notification"
+msgstr "Add a notification"
+
+#: common/wdcal_edit.inc.php:687
+msgid "The event #name# will start at #date"
+msgstr "The event #name# will start at #date"
+
+#: common/wdcal_edit.inc.php:696
+msgid "#name# is about to begin."
+msgstr "#name# is about to begin."
+
+#: common/wdcal_edit.inc.php:769
+msgid "Saved"
+msgstr "Saved"
+
+#: common/wdcal_configuration.php:148
+msgid "U.S. Time Format (mm/dd/YYYY)"
+msgstr "US time format (mm/dd/YYYY)"
+
+#: common/wdcal_configuration.php:243
+msgid "German Time Format (dd.mm.YYYY)"
+msgstr "UK time format (dd/mm/YYYY)"
+
+#: common/dav_caldav_backend_private.inc.php:39
+msgid "Private Events"
+msgstr "Private events"
+
+#: common/wdcal_backend.inc.php:92 common/wdcal_backend.inc.php:166
+#: common/wdcal_backend.inc.php:178 common/wdcal_backend.inc.php:206
+#: common/wdcal_backend.inc.php:214 common/wdcal_backend.inc.php:229
+msgid "No access"
+msgstr "No access"
+
+#: common/dav_carddav_backend_private.inc.php:46
+msgid "Private Addressbooks"
+msgstr "Private address books"
