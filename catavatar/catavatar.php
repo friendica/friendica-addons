@@ -75,22 +75,11 @@ function catavatar_addon_settings_post(App $a, &$s)
 	}
 
 	// delete the current cached cat avatar
-	$user = dba::selectFirst('user', ['email'],
-		[
-			'uid' => $uid,
-			'blocked' => 0,
-			'account_expired' => 0,
-			'account_removed' => 0,
-		]
-	);
-	$seed = PConfig::get(local_user(), 'catavatar', 'seed', md5(trim(strtolower($user['email']))));
-	$imageurl = preg_replace('/[^A-Za-z0-9\._-]/', '', $seed);
-	$imageurl = substr($imageurl, 0, 35) . '';
-	$cachefile = get_cachefile($imageurl);
-	if ($cachefile != "" && file_exists($cachefile)) {
-		unlink($cachefile);
-	}
+	$condition = ['uid' => local_user(), 'blocked' => false,
+			'account_expired' => false, 'account_removed' => false];
+	$user = dba::selectFirst('user', ['email'], $condition);
 
+	$seed = PConfig::get(local_user(), 'catavatar', 'seed', md5(trim(strtolower($user['email']))));
 
 	if (!empty($_POST['catavatar-usecat'])) {
 		$url = $a->get_baseurl() . '/catavatar/' . local_user() . '?ts=' . time();
@@ -131,8 +120,6 @@ function catavatar_addon_settings_post(App $a, &$s)
 		return;
 	}
 
-
-
 	if (!empty($_POST['catavatar-morecat'])) {
 		PConfig::set(local_user(), 'catavatar', 'seed', time());
 	}
@@ -141,7 +128,6 @@ function catavatar_addon_settings_post(App $a, &$s)
 		PConfig::delete(local_user(), 'catavatar', 'seed');
 	}
 }
-
 
 /**
  * Returns the URL to the cat avatar
@@ -164,9 +150,7 @@ function catavatar_lookup(App $a, &$b)
 	$b['success'] = true;
 }
 
-
-function catavatar_module(){}
-
+function catavatar_module() {}
 
 /**
  * Returns image for user id
@@ -187,14 +171,9 @@ function catavatar_content(App $a)
 		$size = intval($a->argv[2]);
 	}
 
-	$user = dba::selectFirst('user', ['email'],
-		[
-			'uid' => $uid,
-			'blocked' => 0,
-			'account_expired' => 0,
-			'account_removed' => 0,
-		]
-	);
+	$condition = ['uid' => $uid, 'blocked' => false,
+			'account_expired' => false, 'account_removed' => false];
+	$user = dba::selectFirst('user', ['email'], $condition);
 
 	if ($user === false) {
 		throw new NotFoundException();
@@ -202,36 +181,11 @@ function catavatar_content(App $a)
 
 	$seed = PConfig::get($uid, "catavatar", "seed", md5(trim(strtolower($user['email']))));
 
-	// from cat-avatar-generator.php
-	$imageurl = $seed . "-" . $size;
-	$imageurl = preg_replace('/[^A-Za-z0-9\._-]/', '', $imageurl);
-	$imageurl = substr($imageurl, 0, 35) . '';
-	$cachefile = get_cachefile($imageurl);
-	$cachetime = 604800; # 1 week (1 day = 86400)
-
-	// Serve from the cache if it is younger than $cachetime
-	if ($cachefile != "" && file_exists($cachefile) && (time() - $cachetime) < filemtime($cachefile)) {
-		header('Pragma: public');
-		header('Cache-Control: max-age=86400');
-		header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + 86400));
-		header('Content-Type: image/jpg');
-		readfile($cachefile);
-		exit();
-	}
-
 	// ...Or start generation
 	ob_start();
 
 	// render the picture:
 	build_cat($seed, $size);
-
-	// Save/cache the output to a file
-	if ($cachefile != "") {
-		$savedfile = fopen($cachefile, 'w+'); # w+ to be at start of the file, write mode, and attempt to create if not existing.
-		fwrite($savedfile, ob_get_contents());
-		fclose($savedfile);
-		chmod($cachefile, 0755);
-	}
 
 	ob_end_flush();
 
@@ -275,7 +229,7 @@ function build_cat($seed = '', $size = 0)
 	imagefill($cat, 0, 0, $white);
 
 	// add parts
-	foreach ($parts as $part => $num){
+	foreach ($parts as $part => $num) {
 		$file = dirname(__FILE__) . '/avatars/' . $part . '_' . $num . '.png';
 
 		$im = @imagecreatefrompng($file);
