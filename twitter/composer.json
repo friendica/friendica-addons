@@ -24,5 +24,8 @@
         "abraham/twitteroauth": "^0.7.4"
     },
     "license": "3-clause BSD license",
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+	"config": {
+		"autoloader-suffix": "TwitterAddon"
+	}
 }
