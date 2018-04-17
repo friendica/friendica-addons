@@ -17,7 +17,7 @@
 }
 </style>
 
-<a href="advancedcontentfilter">🔙 Back to Advenced Content Filter Settings</a>
+<a href="advancedcontentfilter">🔙 Back to Advanced Content Filter Settings</a>
 
 # Advanced Content Filter Help
 
