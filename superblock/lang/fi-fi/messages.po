@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-04-21 08:45+0200\n"
-"PO-Revision-Date: 2018-04-03 19:09+0000\n"
+"PO-Revision-Date: 2018-04-16 16:00+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +26,7 @@ msgstr "\"Superblock\""
 
 #: superblock.php:60
 msgid "Comma separated profile URLS to block"
-msgstr ""
+msgstr "Estettävien profiilien URL-osoitteet pilkulla erotettuina"
 
 #: superblock.php:64
 msgid "Save Settings"
@@ -33,11 +34,11 @@ msgstr "Tallenna asetukset"
 
 #: superblock.php:76
 msgid "SUPERBLOCK Settings saved."
-msgstr ""
+msgstr "Superblock -asetukset tallennettu."
 
 #: superblock.php:148
 msgid "Block Completely"
-msgstr ""
+msgstr "Estä kokonaan"
 
 #: superblock.php:168
 msgid "superblock settings updated"

@@ -5,9 +5,9 @@ function string_plural_select_fi_fi($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["Send email to all members"] = "";
-$a->strings["%s Administrator"] = "";
-$a->strings["%1\$s, %2\$s Administrator"] = "";
+$a->strings["Send email to all members"] = "Lähetä sähköposti kaikille jäsenille";
+$a->strings["%s Administrator"] = "%s-ylläpitäjä";
+$a->strings["%1\$s, %2\$s Administrator"] = "%1\$s, %2\$s-ylläpitäjä";
 $a->strings["No recipients found."] = "";
 $a->strings["Emails sent"] = "Sähköpostit lähetetty";
 $a->strings["Send email to all members of this Friendica instance."] = "";

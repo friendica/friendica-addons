@@ -5,7 +5,7 @@ function string_plural_select_fi_fi($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["Google+ Mirror"] = "";
+$a->strings["Google+ Mirror"] = "Google+ peilaus";
 $a->strings["Enable Google+ Import"] = "";
 $a->strings["Google Account ID"] = "Google -tilin tunnus";
 $a->strings["Add keywords to post"] = "";

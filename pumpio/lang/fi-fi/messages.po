@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2018-04-08 16:15+0000\n"
+"PO-Revision-Date: 2018-04-16 16:07+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -47,11 +47,11 @@ msgstr ""
 
 #: pumpio.php:229
 msgid "pump.io username (without the servername)"
-msgstr ""
+msgstr "pump.io käyttäjätunnus (ilman palvelinnimeä)"
 
 #: pumpio.php:234
 msgid "pump.io servername (without \"http://\" or \"https://\" )"
-msgstr ""
+msgstr "pump.io palvelinnimi (ilman \"http://\" tai \"https://\" )"
 
 #: pumpio.php:246
 msgid "Authenticate your pump.io connection"

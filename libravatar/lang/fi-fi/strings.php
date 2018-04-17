@@ -9,8 +9,8 @@ $a->strings["Could NOT install Libravatar successfully.<br>It requires PHP >= 5.
 $a->strings["generic profile image"] = "Yleinen profiilikuva";
 $a->strings["random geometric pattern"] = "satunnainen geometrinen kuvio";
 $a->strings["monster face"] = "hirviö";
-$a->strings["computer generated face"] = "";
-$a->strings["retro arcade style face"] = "";
+$a->strings["computer generated face"] = "tietokoneella tuotettut kasvot";
+$a->strings["retro arcade style face"] = "retro-videopeli kasvot";
 $a->strings["Warning"] = "Varoitus";
 $a->strings["Your PHP version %s is lower than the required PHP >= 5.3."] = "";
 $a->strings["This addon is not functional on your server."] = "";

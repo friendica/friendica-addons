@@ -7,10 +7,10 @@ function string_plural_select_fi_fi($n){
 ;
 $a->strings["Upload a file"] = "Lähetä tiedosto";
 $a->strings["Drop files here to upload"] = "";
-$a->strings["Cancel"] = "";
+$a->strings["Cancel"] = "Peruuta";
 $a->strings["Failed"] = "Epäonnistui";
-$a->strings["No files were uploaded."] = "";
+$a->strings["No files were uploaded."] = "Tiedostoja ei lähetetty.";
 $a->strings["Uploaded file is empty"] = "Lähetetty tiedosto on tyhjä";
 $a->strings["Image exceeds size limit of "] = "Kuva ylittää kokorajoituksen ";
 $a->strings["File has an invalid extension, it should be one of "] = "";
-$a->strings["Upload was cancelled, or server error encountered"] = "";
+$a->strings["Upload was cancelled, or server error encountered"] = "Lataus peruutettu, tai palvelimessa tapahtui virhe.";
