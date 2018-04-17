@@ -17,7 +17,7 @@
 }
 </style>
 
-<a href="advancedcontentfilter">🔙 Back to Addon Settings</a>
+<a href="advancedcontentfilter">🔙 Back to Advenced Content Filter Settings</a>
 
 # Advanced Content Filter Help
 
