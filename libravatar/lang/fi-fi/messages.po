@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-08 16:05+0000\n"
+"PO-Revision-Date: 2018-04-16 16:19+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -38,11 +38,11 @@ msgstr "hirviö"
 
 #: libravatar.php:76
 msgid "computer generated face"
-msgstr ""
+msgstr "tietokoneella tuotettut kasvot"
 
 #: libravatar.php:77
 msgid "retro arcade style face"
-msgstr ""
+msgstr "retro-videopeli kasvot"
 
 #: libravatar.php:82
 msgid "Warning"

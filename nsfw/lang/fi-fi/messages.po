@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-15 17:54+0700\n"
-"PO-Revision-Date: 2018-04-03 18:56+0000\n"
+"POT-Creation-Date: 2018-04-01 11:11-0400\n"
+"PO-Revision-Date: 2018-04-16 16:12+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +22,7 @@ msgstr ""
 
 #: nsfw.php:77 nsfw.php:81
 msgid "Content Filter (NSFW and more)"
-msgstr ""
+msgstr "Sisällönsuodatin (NSFW yms.)"
 
 #: nsfw.php:85
 msgid ""
@@ -33,7 +34,7 @@ msgstr ""
 
 #: nsfw.php:86
 msgid "Enable Content filter"
-msgstr ""
+msgstr "Ota sisällönsuodatin käyttöön"
 
 #: nsfw.php:89
 msgid "Comma separated list of keywords to hide"
@@ -49,9 +50,14 @@ msgstr ""
 
 #: nsfw.php:109
 msgid "NSFW Settings saved."
+msgstr "NSFW-asetukset tallennettu."
+
+#: nsfw.php:162
+#, php-format
+msgid "Filtered tag: %s"
 msgstr ""
 
-#: nsfw.php:167
+#: nsfw.php:164
 #, php-format
-msgid "%s - Click to open/close"
+msgid "Filtered word: %s"
 msgstr ""

@@ -6,8 +6,8 @@ function string_plural_select_fi_fi($n){
 }}
 ;
 $a->strings["\"Superblock\""] = "\"Superblock\"";
-$a->strings["Comma separated profile URLS to block"] = "";
+$a->strings["Comma separated profile URLS to block"] = "Estettävien profiilien URL-osoitteet pilkulla erotettuina";
 $a->strings["Save Settings"] = "Tallenna asetukset";
-$a->strings["SUPERBLOCK Settings saved."] = "";
-$a->strings["Block Completely"] = "";
+$a->strings["SUPERBLOCK Settings saved."] = "Superblock -asetukset tallennettu.";
+$a->strings["Block Completely"] = "Estä kokonaan";
 $a->strings["superblock settings updated"] = "superblock -asetukset päivitetty";

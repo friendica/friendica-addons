@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-08 15:59+0000\n"
+"PO-Revision-Date: 2018-04-16 16:21+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgstr ""
 
 #: js_upload.php:45
 msgid "Cancel"
-msgstr ""
+msgstr "Peruuta"
 
 #: js_upload.php:46
 msgid "Failed"
@@ -38,7 +38,7 @@ msgstr "Epäonnistui"
 
 #: js_upload.php:303
 msgid "No files were uploaded."
-msgstr ""
+msgstr "Tiedostoja ei lähetetty."
 
 #: js_upload.php:309
 msgid "Uploaded file is empty"
@@ -54,4 +54,4 @@ msgstr ""
 
 #: js_upload.php:343
 msgid "Upload was cancelled, or server error encountered"
-msgstr ""
+msgstr "Lataus peruutettu, tai palvelimessa tapahtui virhe."

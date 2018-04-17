@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-11 19:13+0100\n"
-"PO-Revision-Date: 2018-04-08 16:08+0000\n"
+"PO-Revision-Date: 2018-04-16 16:17+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgstr "Tallenna asetukset"
 
 #: mailstream.php:223
 msgid "Re:"
-msgstr ""
+msgstr "Koskien"
 
 #: mailstream.php:231
 msgid "Friendica post"

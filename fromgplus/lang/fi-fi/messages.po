@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-04-01 11:14-0400\n"
-"PO-Revision-Date: 2018-04-08 15:47+0000\n"
+"PO-Revision-Date: 2018-04-16 16:24+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 
 #: fromgplus.php:55 fromgplus.php:59
 msgid "Google+ Mirror"
-msgstr ""
+msgstr "Google+ peilaus"
 
 #: fromgplus.php:64
 msgid "Enable Google+ Import"

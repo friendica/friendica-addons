@@ -20,17 +20,17 @@ msgstr ""
 
 #: notifyall.php:26
 msgid "Send email to all members"
-msgstr ""
+msgstr "Lähetä sähköposti kaikille jäsenille"
 
 #: notifyall.php:42
 #, php-format
 msgid "%s Administrator"
-msgstr ""
+msgstr "%s-ylläpitäjä"
 
 #: notifyall.php:44
 #, php-format
 msgid "%1$s, %2$s Administrator"
-msgstr ""
+msgstr "%1$s, %2$s-ylläpitäjä"
 
 #: notifyall.php:60
 msgid "No recipients found."

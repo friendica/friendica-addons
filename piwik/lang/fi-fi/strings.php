@@ -12,5 +12,5 @@ $a->strings["Piwik Base URL"] = "";
 $a->strings["Absolute path to your Piwik installation. (without protocol (http/s), with trailing slash)"] = "";
 $a->strings["Site ID"] = "";
 $a->strings["Show opt-out cookie link?"] = "";
-$a->strings["Asynchronous tracking"] = "";
+$a->strings["Asynchronous tracking"] = "Asynkroninen seuranta";
 $a->strings["Settings updated."] = "Asetukset päivitetty.";

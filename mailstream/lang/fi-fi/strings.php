@@ -8,7 +8,7 @@ function string_plural_select_fi_fi($n){
 $a->strings["From Address"] = "";
 $a->strings["Email address that stream items will appear to be from."] = "";
 $a->strings["Save Settings"] = "Tallenna asetukset";
-$a->strings["Re:"] = "";
+$a->strings["Re:"] = "Koskien";
 $a->strings["Friendica post"] = "Friendica -julkaisu";
 $a->strings["Diaspora post"] = "Diaspora -julkaisu";
 $a->strings["Feed item"] = "";

@@ -7,5 +7,5 @@ function string_plural_select_fi_fi($n){
 ;
 $a->strings["Smileybutton settings"] = "Smileybutton -asetukset";
 $a->strings["You can hide the button and show the smilies directly."] = "";
-$a->strings["Hide the button"] = "";
+$a->strings["Hide the button"] = "Piilota nappi";
 $a->strings["Save Settings"] = "Tallenna asetukset";
