@@ -416,5 +416,5 @@ function advancedcontentfilter_get_variables_guid(ServerRequestInterface $reques
 		$return[str_replace('-', '_', $key)] = $value;
 	}
 
-	return str_replace('\\\'', '\'', var_export($return, true));
+	return json_encode(['variables' => str_replace('\\\'', '\'', var_export($return, true))]);
 }

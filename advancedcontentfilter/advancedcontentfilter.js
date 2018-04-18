@@ -1,4 +1,16 @@
-Vue.http.headers.common['X-CSRF-Token'] = document.querySelector('#csrf').getAttribute('value');
+$.ajaxSetup({headers: {'X-CSRF-Token': document.querySelector('#csrf').getAttribute('value')}});
+
+$.extend({
+	ajaxJSON: function(method, url, data) {
+		return $.ajax({
+			type: method.toUpperCase(),
+			url: url,
+			data: JSON.stringify(data),
+			contentType: 'application/json; charset=utf-8',
+			dataType: 'json'
+		});
+	}
+});
 
 new Vue({
 	el: '#rules',
@@ -23,10 +35,6 @@ new Vue({
 		}
 	},
 
-	//created: function () {
-	//	this.fetchRules();
-	//},
-
 	methods: {
 		resetForm: function() {
 			this.rule = {id: '', name: '', expression: '', created: ''};
@@ -34,24 +42,17 @@ new Vue({
 			this.editedIndex = null;
 		},
 
-		//fetchRules: function () {
-		//	this.$http.get('/advancedcontentfilter/api/rules')
-		//	.then(function (response) {
-		//		this.rules = response.body;
-		//	}, function (err) {
-		//		console.log(err);
-		//	});
-		//},
-
 		addRule: function () {
 			if (this.rule.name.trim()) {
 				this.errorMessage = '';
-				this.$http.post('/advancedcontentfilter/api/rules', this.rule)
-				.then(function (res) {
-					this.rules.push(res.body.rule);
-					this.resetForm();
-				}, function (err) {
-					this.errorMessage = err.body.message;
+
+				var self = this;
+				$.ajaxJSON('post', '/advancedcontentfilter/api/rules', this.rule)
+				.then(function (responseJSON) {
+					self.rules.push(responseJSON.rule);
+					self.resetForm();
+				}, function (response) {
+					self.errorMessage = response.responseJSON.message;
 				});
 			}
 		},
@@ -64,47 +65,55 @@ new Vue({
 
 		saveRule: function (rule) {
 			this.errorMessage = '';
-			this.$http.put('/advancedcontentfilter/api/rules/' + rule.id, rule)
-			.then(function (res) {
-				this.rules[this.editedIndex] = rule;
-				this.resetForm();
-			}, function (err) {
-				this.errorMessage = err.body.message;
+
+			var self = this;
+			$.ajaxJSON('put', '/advancedcontentfilter/api/rules/' + rule.id, rule)
+			.then(function () {
+				self.rules[self.editedIndex] = rule;
+				self.resetForm();
+			}, function (response) {
+				self.errorMessage = response.responseJSON.message;
 			});
 		},
 
 		toggleActive: function (rule) {
-			this.$http.put('/advancedcontentfilter/api/rules/' + rule.id, {'active': Math.abs(parseInt(rule.active) - 1)})
-			.then(function (res) {
-				this.rules[this.rules.indexOf(rule)].active = Math.abs(parseInt(rule.active) - 1);
-			}, function (err) {
-				console.log(err);
+			var previousValue = this.rules[this.rules.indexOf(rule)].active;
+			var newValue = Math.abs(parseInt(rule.active) - 1);
+
+			this.rules[this.rules.indexOf(rule)].active = newValue;
+
+			var self = this;
+			$.ajaxJSON('put', '/advancedcontentfilter/api/rules/' + rule.id, {'active': newValue})
+			.fail(function (response) {
+				self.rules[self.rules.indexOf(rule)].active = previousValue;
+				console.log(response.responseJSON.message);
 			});
 		},
 
 		deleteRule: function (rule) {
 			if (confirm('Are you sure you want to delete this rule?')) {
-				this.$http.delete('/advancedcontentfilter/api/rules/' + rule.id)
-				.then(function (res) {
-					this.rules.splice(this.rules.indexOf(rule), 1);
-				}, function (err) {
-					console.log(err);
+				var self = this;
+				$.ajaxJSON('delete', '/advancedcontentfilter/api/rules/' + rule.id)
+				.then(function () {
+					self.rules.splice(self.rules.indexOf(rule), 1);
+				}, function (response) {
+					console.log(response.responseJSON.message);
 				});
 			}
 		},
 
 		showVariables: function () {
-			var guid = '';
-
 			var urlParts = this.itemUrl.split('/');
+			var guid = urlParts[urlParts.length - 1];
 
-			guid = urlParts[urlParts.length - 1];
+			this.itemJson = '';
 
-			this.$http.get('/advancedcontentfilter/api/variables/' + guid)
-			.then(function (response) {
-				this.itemJson = response.bodyText;
-			}, function (err) {
-				console.log(err);
+			var self = this;
+			$.ajaxJSON('get', '/advancedcontentfilter/api/variables/' + guid)
+			.then(function (responseJSON) {
+				self.itemJson = responseJSON.variables;
+			}, function (response) {
+				self.itemJson = response.responseJSON.message;
 			});
 
 			return false;

@@ -85,7 +85,7 @@
 				<button type="submit" class="btn btn-primary">Show Variables</button>
 			</fieldset>
 		</form>
-		<pre>
+		<pre v-cloak>
 {{ itemJson }}
 		</pre>
 	</div>
@@ -93,7 +93,6 @@
 	<script> var existingRules = {{$rules}};</script>
 
 	<!-- JS -->
-	<script src="{{$baseurl}}/addon/advancedcontentfilter/vendor/asset/vue/dist/vue.min.js"></script>
-	<script src="{{$baseurl}}/addon/advancedcontentfilter/vendor/asset/vue-resource/dist/vue-resource.min.js"></script>
+	<script src="{{$baseurl}}/view/asset/vue/dist/vue.min.js"></script>
 	<script src="{{$baseurl}}/addon/advancedcontentfilter/advancedcontentfilter.js"></script>
 </div>
