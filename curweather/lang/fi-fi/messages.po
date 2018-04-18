@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-25 17:17+0200\n"
-"PO-Revision-Date: 2018-04-08 15:13+0000\n"
+"PO-Revision-Date: 2018-04-17 19:26+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr ""
 
 #: curweather.php:111 curweather.php:172
 msgid "Current Weather"
-msgstr "Nykyinen sää"
+msgstr "Sää"
 
 #: curweather.php:118
 msgid "Relative Humidity"
@@ -54,15 +54,15 @@ msgstr "Näytä kartalla"
 
 #: curweather.php:128
 msgid "There was a problem accessing the weather data. But have a look"
-msgstr ""
+msgstr "Säätietohaussa tapahtui virhe. Voit kuitenkin katsoa"
 
 #: curweather.php:130
 msgid "at OpenWeatherMap"
-msgstr ""
+msgstr "OpenWeatherMappiä"
 
 #: curweather.php:146
 msgid "Current Weather settings updated."
-msgstr ""
+msgstr "Sääasetukset päivitetty."
 
 #: curweather.php:161
 msgid "No APPID found, please contact your admin to obtain one."
@@ -78,7 +78,7 @@ msgstr "Asetukset"
 
 #: curweather.php:174
 msgid "Enter either the name of your location or the zip code."
-msgstr ""
+msgstr "Syötä sijaintisi nimi tai postinumero."
 
 #: curweather.php:175
 msgid "Your Location"
@@ -122,7 +122,7 @@ msgstr ""
 
 #: curweather.php:201
 msgid "minutes"
-msgstr ""
+msgstr "minuuttia"
 
 #: curweather.php:202
 msgid "Your APPID"
@@ -130,4 +130,4 @@ msgstr ""
 
 #: curweather.php:202
 msgid "Your API key provided by OpenWeatherMap"
-msgstr ""
+msgstr "API-avain OpenWeatherMapiltä"

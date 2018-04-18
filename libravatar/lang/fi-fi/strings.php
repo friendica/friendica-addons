@@ -12,7 +12,7 @@ $a->strings["monster face"] = "hirviö";
 $a->strings["computer generated face"] = "tietokoneella tuotettut kasvot";
 $a->strings["retro arcade style face"] = "retro-videopeli kasvot";
 $a->strings["Warning"] = "Varoitus";
-$a->strings["Your PHP version %s is lower than the required PHP >= 5.3."] = "";
+$a->strings["Your PHP version %s is lower than the required PHP >= 5.3."] = "PHP-versiosi on %s. Friendica vaatii PHP >= 5.3.";
 $a->strings["This addon is not functional on your server."] = "";
 $a->strings["Information"] = "Tietoja";
 $a->strings["Gravatar addon is installed. Please disable the Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar."] = "";

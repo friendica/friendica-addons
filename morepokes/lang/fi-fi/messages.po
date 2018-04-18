@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-16 16:15+0000\n"
+"PO-Revision-Date: 2018-04-17 22:25+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -29,11 +29,11 @@ msgstr ""
 
 #: morepokes.php:20
 msgid "shag"
-msgstr ""
+msgstr "pane"
 
 #: morepokes.php:20
 msgid "shagged"
-msgstr ""
+msgstr "pani"
 
 #: morepokes.php:21
 msgid "do something obscenely biological to"
@@ -69,11 +69,11 @@ msgstr "patentoi"
 
 #: morepokes.php:25
 msgid "stroke beard"
-msgstr ""
+msgstr "silitä partaa"
 
 #: morepokes.php:25
 msgid "stroked their beard at"
-msgstr ""
+msgstr "silitti partaa"
 
 #: morepokes.php:26
 msgid ""
@@ -96,11 +96,11 @@ msgstr "halasi"
 
 #: morepokes.php:28
 msgid "kiss"
-msgstr ""
+msgstr "suutele"
 
 #: morepokes.php:28
 msgid "kissed"
-msgstr ""
+msgstr "pussasi"
 
 #: morepokes.php:29
 msgid "raise eyebrows at"
@@ -128,11 +128,11 @@ msgstr "kehui"
 
 #: morepokes.php:32
 msgid "be dubious of"
-msgstr ""
+msgstr "epäile"
 
 #: morepokes.php:32
 msgid "was dubious of"
-msgstr ""
+msgstr "epäili"
 
 #: morepokes.php:33
 msgid "eat"

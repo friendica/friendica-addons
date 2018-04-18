@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-02-08 07:07+0100\n"
-"PO-Revision-Date: 2018-04-08 16:24+0000\n"
+"PO-Revision-Date: 2018-04-17 20:04+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -55,7 +55,7 @@ msgstr ""
 
 #: twitter.php:315
 msgid "Log in with Twitter"
-msgstr ""
+msgstr "Kirjaudu sisään Twitterillä"
 
 #: twitter.php:317
 msgid "Copy the PIN from Twitter here"
@@ -71,11 +71,11 @@ msgstr ""
 
 #: twitter.php:335
 msgid "Disconnect"
-msgstr ""
+msgstr "Katkaise yhteys"
 
 #: twitter.php:345
 msgid "Allow posting to Twitter"
-msgstr ""
+msgstr "Salli julkaisu Twitteriin"
 
 #: twitter.php:345
 msgid ""
@@ -106,7 +106,7 @@ msgstr ""
 
 #: twitter.php:360
 msgid "Automatically create contacts"
-msgstr ""
+msgstr "Luo kontaktit automaattisesti"
 
 #: twitter.php:619
 msgid "Twitter post failed. Queued for retry."

@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2018-04-08 15:41+0000\n"
+"PO-Revision-Date: 2018-04-17 19:28+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -32,7 +32,7 @@ msgstr ""
 
 #: diaspora.php:149 diaspora.php:153
 msgid "Diaspora Export"
-msgstr ""
+msgstr "Diaspora Export"
 
 #: diaspora.php:163
 msgid "Enable Diaspora Post Addon"

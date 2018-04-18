@@ -10,4 +10,4 @@ $a->strings["Enable Show More"] = "Ota Show More käyttöön";
 $a->strings["Cutting posts after how much characters"] = "";
 $a->strings["Save Settings"] = "Tallenna asetukset";
 $a->strings["Show More Settings saved."] = "Show More -asetukset tallennettu";
-$a->strings["show more"] = "";
+$a->strings["show more"] = "näytä lisää";
