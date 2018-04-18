@@ -1,61 +1,5 @@
 [
     {
-        "name": "bower-asset/vue",
-        "version": "v2.5.16",
-        "version_normalized": "2.5.16.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/vuejs/vue.git",
-            "reference": "25342194016dc3bcc81cb3e8e229b0fb7ba1d1d6"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/vuejs/vue/zipball/25342194016dc3bcc81cb3e8e229b0fb7ba1d1d6",
-            "reference": "25342194016dc3bcc81cb3e8e229b0fb7ba1d1d6",
-            "shasum": ""
-        },
-        "type": "bower-asset-library",
-        "installation-source": "dist"
-    },
-    {
-        "name": "bower-asset/vue-resource",
-        "version": "1.5.0",
-        "version_normalized": "1.5.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/pagekit/vue-resource.git",
-            "reference": "9a34f881f56f64b923572541d1753cb6cdd63d40"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/pagekit/vue-resource/zipball/9a34f881f56f64b923572541d1753cb6cdd63d40",
-            "reference": "9a34f881f56f64b923572541d1753cb6cdd63d40",
-            "shasum": ""
-        },
-        "time": "2018-03-03T07:42:38+00:00",
-        "type": "bower-asset-library",
-        "extra": {
-            "bower-asset-main": "dist/vue-resource.js",
-            "bower-asset-ignore": [
-                ".*",
-                "build",
-                "docs",
-                "package.json"
-            ]
-        },
-        "installation-source": "dist",
-        "license": [
-            "MIT"
-        ],
-        "description": "The HTTP client for Vue.js",
-        "keywords": [
-            "ajax",
-            "http",
-            "vue",
-            "xhr"
-        ]
-    },
-    {
         "name": "container-interop/container-interop",
         "version": "1.2.0",
         "version_normalized": "1.2.0.0",
@@ -87,67 +31,6 @@
         ],
         "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
         "homepage": "https://github.com/container-interop/container-interop"
-    },
-    {
-        "name": "fxp/composer-asset-plugin",
-        "version": "v1.4.2",
-        "version_normalized": "1.4.2.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/fxpio/composer-asset-plugin.git",
-            "reference": "61352d99940d2b2392a5d2db83b8c0ef5faf222a"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/fxpio/composer-asset-plugin/zipball/61352d99940d2b2392a5d2db83b8c0ef5faf222a",
-            "reference": "61352d99940d2b2392a5d2db83b8c0ef5faf222a",
-            "shasum": ""
-        },
-        "require": {
-            "composer-plugin-api": "^1.0",
-            "php": ">=5.3.3"
-        },
-        "require-dev": {
-            "composer/composer": "^1.4.0"
-        },
-        "time": "2017-10-20T06:53:56+00:00",
-        "type": "composer-plugin",
-        "extra": {
-            "class": "Fxp\\Composer\\AssetPlugin\\FxpAssetPlugin",
-            "branch-alias": {
-                "dev-master": "1.4-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Fxp\\Composer\\AssetPlugin\\": ""
-            },
-            "exclude-from-classmap": [
-                "/Tests/"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "François Pluchino",
-                "email": "francois.pluchino@gmail.com"
-            }
-        ],
-        "description": "NPM/Bower Dependency Manager for Composer",
-        "homepage": "https://github.com/fxpio/composer-asset-plugin",
-        "keywords": [
-            "asset",
-            "bower",
-            "composer",
-            "dependency manager",
-            "nodejs",
-            "npm",
-            "package"
-        ]
     },
     {
         "name": "nikic/fast-route",
