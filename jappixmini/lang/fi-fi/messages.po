@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-08 15:57+0000\n"
+"PO-Revision-Date: 2018-04-17 19:41+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -51,7 +51,7 @@ msgstr "Jabber -salasana"
 
 #: jappixmini.php:290
 msgid "Encrypt Jabber password with Friendica password (recommended)"
-msgstr ""
+msgstr "Salaa Jabber -salasana Friendica -salasanalla (suositeltava)"
 
 #: jappixmini.php:293
 msgid "Friendica password"

@@ -52,4 +52,4 @@ msgstr "Koeviesti lähetetty"
 
 #: securemail.php:113
 msgid "There was an error sending the test email"
-msgstr ""
+msgstr "Testisähköpostin lähetyksessä tapahtui virhe"

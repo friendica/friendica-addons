@@ -13,4 +13,4 @@ $a->strings["Public key"] = "Julkinen avain";
 $a->strings["Your public PGP key, ascii armored format"] = "";
 $a->strings["Secure Mail Settings saved."] = "Secure Mail -asetukset tallennettu.";
 $a->strings["Test email sent"] = "Koeviesti lähetetty";
-$a->strings["There was an error sending the test email"] = "";
+$a->strings["There was an error sending the test email"] = "Testisähköpostin lähetyksessä tapahtui virhe";

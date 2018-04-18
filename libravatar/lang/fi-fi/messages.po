@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-16 16:19+0000\n"
+"PO-Revision-Date: 2018-04-17 19:47+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -51,7 +51,7 @@ msgstr "Varoitus"
 #: libravatar.php:83
 #, php-format
 msgid "Your PHP version %s is lower than the required PHP >= 5.3."
-msgstr ""
+msgstr "PHP-versiosi on %s. Friendica vaatii PHP >= 5.3."
 
 #: libravatar.php:84
 msgid "This addon is not functional on your server."

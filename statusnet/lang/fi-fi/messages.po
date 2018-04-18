@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-27 07:21+0200\n"
-"PO-Revision-Date: 2018-04-16 16:01+0000\n"
+"PO-Revision-Date: 2018-04-17 19:59+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -132,7 +132,7 @@ msgstr ""
 
 #: statusnet.php:385
 msgid "Allow posting to GNU Social"
-msgstr ""
+msgstr "Salli julkaisut GNU socialiin"
 
 #: statusnet.php:388
 msgid "Send public postings to GNU Social by default"

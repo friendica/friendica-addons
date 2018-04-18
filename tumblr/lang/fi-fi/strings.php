@@ -13,6 +13,6 @@ $a->strings["Tumblr Post Settings"] = "Tumblr -viestin asetukset";
 $a->strings["(Re-)Authenticate your tumblr page"] = "";
 $a->strings["Enable Tumblr Post Addon"] = "Ota Tumblr -viestilisäosa käyttöön";
 $a->strings["Post to Tumblr by default"] = "Lähetä Tumblriin oletuksena";
-$a->strings["Post to page:"] = "";
+$a->strings["Post to page:"] = "Julkaise sivulle:";
 $a->strings["You are not authenticated to tumblr"] = "";
 $a->strings["Submit"] = "Lähetä";

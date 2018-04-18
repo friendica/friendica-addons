@@ -5,7 +5,7 @@ function string_plural_select_fi_fi($n){
 	return ($n != 1);;
 }}
 ;
-$a->strings["From Address"] = "";
+$a->strings["From Address"] = "Lähettäjä";
 $a->strings["Email address that stream items will appear to be from."] = "";
 $a->strings["Save Settings"] = "Tallenna asetukset";
 $a->strings["Re:"] = "Koskien";

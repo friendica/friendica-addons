@@ -7,7 +7,7 @@ function string_plural_select_fi_fi($n){
 ;
 $a->strings["Post to Diaspora"] = "Lähetä Diasporaan";
 $a->strings["Can't login to your Diaspora account. Please check username and password and ensure you used the complete address (including http...)"] = "";
-$a->strings["Diaspora Export"] = "";
+$a->strings["Diaspora Export"] = "Diaspora Export";
 $a->strings["Enable Diaspora Post Addon"] = "Ota Diaspora-viestilisäosa käyttöön";
 $a->strings["Diaspora username"] = "Diaspora -käyttäjätunnus";
 $a->strings["Diaspora password"] = "Diaspora -salasana";

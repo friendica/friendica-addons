@@ -8,8 +8,8 @@ function string_plural_select_fi_fi($n){
 $a->strings["Login"] = "Kirjaudu";
 $a->strings["OpenID"] = "OpenID";
 $a->strings["Latest users"] = "";
-$a->strings["Most active users"] = "";
-$a->strings["Latest photos"] = "";
+$a->strings["Most active users"] = "Aktiivisimmat käyttäjät";
+$a->strings["Latest photos"] = "Viimeisimmät kuvat";
 $a->strings["Contact Photos"] = "";
 $a->strings["Profile Photos"] = "Profiilikuvat";
 $a->strings["Latest likes"] = "Viimeisimmät tykkäykset";
