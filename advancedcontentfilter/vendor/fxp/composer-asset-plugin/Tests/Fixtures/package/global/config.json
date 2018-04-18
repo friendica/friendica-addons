@@ -1,8 +1,0 @@
-{
-    "config": {
-        "fxp-asset": {
-            "global-composer-foo": 90,
-            "global-config-foo": 23
-        }
-    }
-}
