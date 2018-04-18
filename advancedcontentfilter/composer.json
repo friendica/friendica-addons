@@ -20,12 +20,6 @@
 	"config": {
 		"optimize-autoloader": true,
 		"autoloader-suffix": "AdvancedContentFilterAddon",
-		"preferred-install": "dist",
-		"fxp-asset": {
-			"installer-paths": {
-				"npm-asset-library": "vendor/asset",
-				"bower-asset-library": "vendor/asset"
-			}
-		}
+		"preferred-install": "dist"
 	}
 }
