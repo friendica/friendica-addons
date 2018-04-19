@@ -134,47 +134,47 @@ You can also retrieve the variables of a specific post by pasting its URL below 
 </thead>
 <tbody>
 	<tr>
-		<th>author-id</th>
+		<th>author_id</th>
 		<td>number</td>
 		<td>6</td>
 	</tr>
 	<tr>
-		<th>author-link</th>
+		<th>author_link</th>
 		<td>string</td>
 		<td>https://friendica.mrpetovan.com/profile/hypolite</td>
 	</tr>
 	<tr>
-		<th>author-name</th>
+		<th>author_name</th>
 		<td>string</td>
 		<td>Hypolite Petovan</td>
 	</tr>
 	<tr>
-		<th>author-avatar</th>
+		<th>author_avatar</th>
 		<td>string</td>
 		<td>https://friendica.mrpetovan.com/photo/41084997915a94a8c83cc39708500207-5.png</td>
 	</tr>
 	<tr>
-		<th>owner-id</th>
+		<th>owner_id</th>
 		<td>number</td>
 		<td>6</td>
 	</tr>
 	<tr>
-		<th>owner-link</th>
+		<th>owner_link</th>
 		<td>string</td>
 		<td>https://friendica.mrpetovan.com/profile/hypolite</td>
 	</tr>
 	<tr>
-		<th>owner-name</th>
+		<th>owner_name</th>
 		<td>string</td>
 		<td>Hypolite Petovan</td>
 	</tr>
 	<tr>
-		<th>owner-avatar</th>
+		<th>owner_avatar</th>
 		<td>string</td>
 		<td>https://friendica.mrpetovan.com/photo/41084997915a94a8c83cc39708500207-5.png</td>
 	</tr>
 	<tr>
-		<th>contact-id</th>
+		<th>contact_id</th>
 		<td>number</td>
 		<td>1</td>
 	</tr>
@@ -199,17 +199,17 @@ You can also retrieve the variables of a specific post by pasting its URL below 
 		<td>urn:X-dfrn:friendica.mrpetovan.com:1:twit:978740198937907200</td>
 	</tr>
 	<tr>
-		<th>thr-parent</th>
+		<th>thr_parent</th>
 		<td>string</td>
 		<td>urn:X-dfrn:friendica.mrpetovan.com:1:twit:978740198937907200</td>
 	</tr>
 	<tr>
-		<th>parent-uri</th>
+		<th>parent_uri</th>
 		<td>string</td>
 		<td>urn:X-dfrn:friendica.mrpetovan.com:1:twit:978740198937907200</td>
 	</tr>
 	<tr>
-		<th>content-warning</th>
+		<th>content_warning</th>
 		<td>string</td>
 		<td></td>
 	</tr>
@@ -239,7 +239,7 @@ You can also retrieve the variables of a specific post by pasting its URL below 
 		<td>http://activitystrea.ms/schema/1.0/post</td>
 	</tr>
 	<tr>
-		<th>object-type</th>
+		<th>object_type</th>
 		<td>string</td>
 		<td>http://activitystrea.ms/schema/1.0/bookmark</td>
 	</tr>
@@ -290,7 +290,7 @@ You can also retrieve the variables of a specific post by pasting its URL below 
 		<td></td>
 	</tr>
 	<tr>
-		<th>event-id</th>
+		<th>event_id</th>
 		<td>number</td>
 		<td>null
 	<tr>
@@ -314,12 +314,12 @@ You can also retrieve the variables of a specific post by pasting its URL below 
 		<td></td>
 	</tr>
 	<tr>
-		<th>rendered-hash</th>
+		<th>rendered_hash</th>
 		<td>string</td>
 		<td>b70abdea8b362dc5dcf63e1b2836ad89</td>
 	</tr>
 	<tr>
-		<th>rendered-html</th>
+		<th>rendered_html</th>
 		<td>string</td>
 		<td>
 			Over-compensation #&lt;a href="https://friendica.mrpetovan.com/search?tag=Street" class="tag" title="Street"&gt;Street&lt;/a&gt; #&lt;a href="https://friendica.mrpetovan.com/search?tag=Night" class="tag" title="Night"&gt;Night&lt;/a&gt; #&lt;a href="https://friendica.mrpetovan.com/search?tag=CarLights" class="tag" title="CarLights"&gt;CarLights&lt;/a&gt; #&lt;a href="https://friendica.mrpetovan.com/search?tag=Jeep" class="tag" title="Jeep"&gt;Jeep&lt;/a&gt; #&lt;a href="https://friendica.mrpetovan.com/search?tag=NoPeople" class="tag" title="NoPeople"&gt;NoPeople&lt;/a&gt; #&lt;a href="https://friendica.mrpetovan.com/search?tag=Close" class="tag" title="Close"&gt;Close&lt;/a&gt;-up &lt;div class="type-link"&gt;&lt;a href="https://www.eyeem.com/p/120800309" target="_blank"&gt;&lt;img src="https://friendica.mrpetovan.com/proxy/bb/aHR0cHM6Ly9jZG4uZXllZW0uY29tL3RodW1iL2IyZjAxOTczOGNiZWVmMDZlMmY4Yzk1MTdjNjI4NmE4YWRjZDNhMDAtMTUyMjE4NDgyMDY0MS82NDAvNDgw" alt="" title="Over-compensation Street Night Car Lights Jeep No | EyeEm" class="attachment-image"&gt;&lt;/a&gt;&lt;br&gt;&lt;h4&gt;&lt;a href="https://www.eyeem.com/p/120800309"&gt;Over-compensation Street Night Car Lights Jeep No | EyeEm&lt;/a&gt;&lt;/h4&gt;&lt;blockquote&gt;Photo by @&lt;a href="https://twitter.com/MrPetovan" class="userinfo mention" title="MrPetovan"&gt;MrPetovan&lt;/a&gt;&lt;/blockquote&gt;&lt;sup&gt;&lt;a href="https://www.eyeem.com/p/120800309"&gt;www.eyeem.com&lt;/a&gt;&lt;/sup&gt;&lt;/div&gt;
@@ -361,12 +361,12 @@ You can also retrieve the variables of a specific post by pasting its URL below 
 		<td>dfrn</td>
 	</tr>
 	<tr>
-		<th>author-thumb</th>
+		<th>author_thumb</th>
 		<td>string</td>
 		<td>https://friendica.mrpetovan.com/photo/0cb3d7231eb751139d7d309c7c686c49-5.png?ts=1522941604</td>
 	</tr>
 	<tr>
-		<th>owner-thumb</th>
+		<th>owner_thumb</th>
 		<td>string</td>
 		<td>https://friendica.mrpetovan.com/photo/0cb3d7231eb751139d7d309c7c686c49-5.png?ts=1522941604</td>
 	</tr>
@@ -406,57 +406,57 @@ You can also retrieve the variables of a specific post by pasting its URL below 
 		<td></td>
 	</tr>
 	<tr>
-		<th>event-created</th>
+		<th>event_created</th>
 		<td>date</td>
 		<td>null</td>
 	</tr>
 	<tr>
-		<th>event-edited</th>
+		<th>event_edited</th>
 		<td>date</td>
 		<td>null</td>
 	</tr>
 	<tr>
-		<th>event-start</th>
+		<th>event_start</th>
 		<td>date</td>
 		<td>null</td>
 	</tr>
 	<tr>
-		<th>event-finish</th>
+		<th>event_finish</th>
 		<td>date</td>
 		<td>null</td>
 	</tr>
 	<tr>
-		<th>event-summary</th>
+		<th>event_summary</th>
 		<td>string</td>
 		<td>null</td>
 	</tr>
 	<tr>
-		<th>event-desc</th>
+		<th>event_desc</th>
 		<td>string</td>
 		<td>null</td>
 	</tr>
 	<tr>
-		<th>event-location</th>
+		<th>event_location</th>
 		<td>string</td>
 		<td>null</td>
 	</tr>
 	<tr>
-		<th>event-type</th>
+		<th>event_type</th>
 		<td>string</td>
 		<td>null</td>
 	</tr>
 	<tr>
-		<th>event-nofinish</th>
+		<th>event_nofinish</th>
 		<td>string</td>
 		<td>null</td>
 	</tr>
 	<tr>
-		<th>event-adjust</th>
+		<th>event_adjust</th>
 		<td>boolean</td>
 		<td>null</td>
 	</tr>
 	<tr>
-		<th>event-ignore</th>
+		<th>event_ignore</th>
 		<td>boolean</td>
 		<td>null</td>
 	</tr>
