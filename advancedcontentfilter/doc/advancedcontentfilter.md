@@ -45,9 +45,9 @@ A post will be collapsed if at least one rule matches, but all matching rule nam
 - **booleans** - `true` and `false`.
 - **null** - `null`.
 
-A backslash (``\``) must be escaped by 4 backslashes (``\\\\``) in a string and 8 backslashes (``\\\\\\\\``) in a regex::
+A backslash (``\``) must be escaped by 2 backslashes (``\\``) in a string and 4 backslashes (``\\\\``) in a regex::
 
-`"a\\\\b" matches "/^a\\\\\\\\b$/"`
+`"a\\b" matches "/^a\\\\b$/"`
 
 Control characters (e.g. ``\n``) in expressions are replaced with whitespace. To avoid this, escape the sequence with a single backslash (e.g.  ``\\n``).
 
