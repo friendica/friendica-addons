@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-03-30 17:40+0000\n"
+"PO-Revision-Date: 2018-04-18 20:16+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,7 @@ msgstr "OpenID"
 
 #: communityhome.php:39
 msgid "Latest users"
-msgstr "Najnowszy użytkownik"
+msgstr "Ostatni użytkownicy"
 
 #: communityhome.php:84
 msgid "Most active users"

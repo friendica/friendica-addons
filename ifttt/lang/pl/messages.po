@@ -36,15 +36,15 @@ msgstr ""
 
 #: ifttt.php:68
 msgid "Body for \"new status message\""
-msgstr "Treść dla 'nowego statusu wiadomości'"
+msgstr "Treść dla \"nowy status wiadomości\""
 
 #: ifttt.php:70
 msgid "Body for \"new photo upload\""
-msgstr "Treść dla 'nowego przesyłania zdjęć'"
+msgstr "Treść dla \"nowe przesyłanie zdjęć\""
 
 #: ifttt.php:72
 msgid "Body for \"new link post\""
-msgstr "Treść dla 'nowego łącza postu'"
+msgstr "Treść dla \"nowe łącza postu\""
 
 #: ifttt.php:77
 msgid "Generate new key"

@@ -18,5 +18,5 @@ $a->strings["Location:"] = "Lokalizacja";
 $a->strings["Gender:"] = "Płeć:";
 $a->strings["Status:"] = "Status";
 $a->strings["Homepage:"] = "Strona główna:";
-$a->strings["About:"] = "O:";
+$a->strings["About:"] = "O sobie:";
 $a->strings["No entries (some entries may be hidden)."] = "Brak wpisów (niektóre wpisy mogą być ukryte).";

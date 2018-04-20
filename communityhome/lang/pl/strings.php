@@ -7,7 +7,7 @@ function string_plural_select_pl($n){
 ;
 $a->strings["Login"] = "Zaloguj się";
 $a->strings["OpenID"] = "OpenID";
-$a->strings["Latest users"] = "Najnowszy użytkownik";
+$a->strings["Latest users"] = "Ostatni użytkownicy";
 $a->strings["Most active users"] = "Najbardziej aktywni użytkownicy";
 $a->strings["Latest photos"] = "Najnowsze Zdjęcia";
 $a->strings["Contact Photos"] = "Zdjęcia kontaktu";

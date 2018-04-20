@@ -7,8 +7,8 @@ function string_plural_select_pl($n){
 ;
 $a->strings["IFTTT Mirror"] = "Lustro IFTTT";
 $a->strings["Create an account at <a href=\"http://www.ifttt.com\">IFTTT</a>. Create three Facebook recipes that are connected with <a href=\"https://ifttt.com/maker\">Maker</a> (In the form \"if Facebook then Maker\") with the following parameters:"] = "Utwórz konto na <a href=\"http://www.ifttt.com\">IFTTT</a>. Utwórz trzy przepisy na Facebooku, które są powiązane z <a href=\"https://ifttt.com/maker\">Maker</a> (W formie \"jeśli Facebook następnie Maker\") z następujących parametrów:";
-$a->strings["Body for \"new status message\""] = "Treść dla 'nowego statusu wiadomości'";
-$a->strings["Body for \"new photo upload\""] = "Treść dla 'nowego przesyłania zdjęć'";
-$a->strings["Body for \"new link post\""] = "Treść dla 'nowego łącza postu'";
+$a->strings["Body for \"new status message\""] = "Treść dla \"nowy status wiadomości\"";
+$a->strings["Body for \"new photo upload\""] = "Treść dla \"nowe przesyłanie zdjęć\"";
+$a->strings["Body for \"new link post\""] = "Treść dla \"nowe łącza postu\"";
 $a->strings["Generate new key"] = "Wygeneruj nowy klucz";
 $a->strings["Save Settings"] = "Zapisz ustawienia";
