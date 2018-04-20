@@ -10,7 +10,7 @@ $a->strings["Hides user's content by collapsing posts. Also replaces their avata
 $a->strings["Comma separated profile URLS:"] = "Profiilien URL-osoitteet pilkulla erotettuina:";
 $a->strings["Save Settings"] = "Tallenna asetukset";
 $a->strings["BLOCKEM Settings saved."] = "Blockem -asetukset tallennettu";
-$a->strings["Filtered user: %s"] = "";
-$a->strings["Unblock Author"] = "";
-$a->strings["Block Author"] = "";
+$a->strings["Filtered user: %s"] = "Suodatettu käyttäjä: %s";
+$a->strings["Unblock Author"] = "Poista kirjoittaja estolistalta";
+$a->strings["Block Author"] = "Lisää kirjoittaja estolistalle";
 $a->strings["blockem settings updated"] = "blockem -asetukset päivitetty";

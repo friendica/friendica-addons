@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-03-31 17:14+0000\n"
+"PO-Revision-Date: 2018-04-18 20:38+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,7 @@ msgstr "ogólny obraz profilu"
 
 #: gravatar.php:72
 msgid "random geometric pattern"
-msgstr "przypadkowy wzór geometryczny"
+msgstr "losowy wzór geometryczny"
 
 #: gravatar.php:73
 msgid "monster face"
@@ -33,7 +33,7 @@ msgstr "twarz potwora"
 
 #: gravatar.php:74
 msgid "computer generated face"
-msgstr "wygenerowane komputerowo twarz"
+msgstr "wygenerowana komputerowo twarz"
 
 #: gravatar.php:75
 msgid "retro arcade style face"
@@ -64,7 +64,7 @@ msgstr "Wybierz domyślny obraz awatara, jeśli nie znaleziono go w Gravatar. Zo
 
 #: gravatar.php:97
 msgid "Rating of images"
-msgstr "Ocena obrazów"
+msgstr "Ocena zdjęć"
 
 #: gravatar.php:97
 msgid "Select the appropriate avatar rating for your site. See README"

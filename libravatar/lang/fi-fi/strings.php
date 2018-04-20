@@ -17,6 +17,6 @@ $a->strings["This addon is not functional on your server."] = "";
 $a->strings["Information"] = "Tietoja";
 $a->strings["Gravatar addon is installed. Please disable the Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar."] = "";
 $a->strings["Submit"] = "Lähetä";
-$a->strings["Default avatar image"] = "";
+$a->strings["Default avatar image"] = "Avatarin oletuskuva";
 $a->strings["Select default avatar image if none was found. See README"] = "";
 $a->strings["Libravatar settings updated."] = "Libravatar -asetukset päivitetty";

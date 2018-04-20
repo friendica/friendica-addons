@@ -7,10 +7,10 @@ function string_plural_select_fi_fi($n){
 ;
 $a->strings["Login"] = "Kirjaudu";
 $a->strings["OpenID"] = "OpenID";
-$a->strings["Latest users"] = "";
+$a->strings["Latest users"] = "Viimeisimmät käyttäjät";
 $a->strings["Most active users"] = "Aktiivisimmat käyttäjät";
 $a->strings["Latest photos"] = "Viimeisimmät kuvat";
-$a->strings["Contact Photos"] = "";
+$a->strings["Contact Photos"] = "Kontaktikuvat";
 $a->strings["Profile Photos"] = "Profiilikuvat";
 $a->strings["Latest likes"] = "Viimeisimmät tykkäykset";
 $a->strings["event"] = "tapahtuma";

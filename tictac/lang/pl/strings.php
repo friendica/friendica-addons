@@ -5,7 +5,7 @@ function string_plural_select_pl($n){
 	return ($n==1 ? 0 : ($n%10>=2 && $n%10<=4) && ($n%100<12 || $n%100>14) ? 1 : $n!=1 && ($n%10>=0 && $n%10<=1) || ($n%10>=5 && $n%10<=9) || ($n%100>=12 && $n%100<=14) ? 2 : 3);;
 }}
 ;
-$a->strings["Three Dimensional Tic-Tac-Toe"] = "Trójwymiarowy Kółko i krzyżyk";
+$a->strings["Three Dimensional Tic-Tac-Toe"] = "Trójwymiarowe Kółko i Krzyżyk";
 $a->strings["3D Tic-Tac-Toe"] = "3D Kółko i krzyżyk";
 $a->strings["New game"] = "Nowa gra";
 $a->strings["New game with handicap"] = "Nowa gra z handicapem";

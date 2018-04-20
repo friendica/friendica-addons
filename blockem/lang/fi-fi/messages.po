@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-04-01 11:11-0400\n"
-"PO-Revision-Date: 2018-04-10 18:41+0000\n"
+"PO-Revision-Date: 2018-04-18 14:44+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -45,15 +45,15 @@ msgstr "Blockem -asetukset tallennettu"
 #: blockem.php:136
 #, php-format
 msgid "Filtered user: %s"
-msgstr ""
+msgstr "Suodatettu käyttäjä: %s"
 
 #: blockem.php:189
 msgid "Unblock Author"
-msgstr ""
+msgstr "Poista kirjoittaja estolistalta"
 
 #: blockem.php:191
 msgid "Block Author"
-msgstr ""
+msgstr "Lisää kirjoittaja estolistalle"
 
 #: blockem.php:223
 msgid "blockem settings updated"

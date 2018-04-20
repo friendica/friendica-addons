@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2018-04-17 19:19+0000\n"
+"PO-Revision-Date: 2018-04-18 14:49+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -38,11 +38,11 @@ msgstr ""
 
 #: buffer.php:67
 msgid "Error when registering buffer connection:"
-msgstr ""
+msgstr "Virhe Buffer-yhteyden rekisteröimisessä:"
 
 #: buffer.php:86
 msgid "You are now authenticated to buffer. "
-msgstr ""
+msgstr "Buffer-yhteydesi on todennettu."
 
 #: buffer.php:87
 msgid "return to the connector page"
@@ -58,7 +58,7 @@ msgstr "Buffer Export"
 
 #: buffer.php:142
 msgid "Authenticate your Buffer connection"
-msgstr ""
+msgstr "Todenna Buffer-yhteydesi"
 
 #: buffer.php:146
 msgid "Enable Buffer Post Addon"

@@ -6,15 +6,15 @@ function string_plural_select_pl($n){
 }}
 ;
 $a->strings["generic profile image"] = "ogólny obraz profilu";
-$a->strings["random geometric pattern"] = "przypadkowy wzór geometryczny";
+$a->strings["random geometric pattern"] = "losowy wzór geometryczny";
 $a->strings["monster face"] = "twarz potwora";
-$a->strings["computer generated face"] = "wygenerowane komputerowo twarz";
+$a->strings["computer generated face"] = "wygenerowana komputerowo twarz";
 $a->strings["retro arcade style face"] = "twarz w stylu retro arcade";
 $a->strings["Information"] = "Informacje";
 $a->strings["Libravatar addon is installed, too. Please disable Libravatar addon or this Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar."] = "Zainstalowany jest także dodatek Libravatar. Wyłącz dodatek Libravatar lub ten dodatek Gravatar.<br> Dodatek Libravatar powróci do Gravatar, jeśli w Libravatar nie zostanie znaleziony żaden przedmiot.";
 $a->strings["Submit"] = "Zatwierdź";
 $a->strings["Default avatar image"] = "Domyślny obraz awatara";
 $a->strings["Select default avatar image if none was found at Gravatar. See README"] = "Wybierz domyślny obraz awatara, jeśli nie znaleziono go w Gravatar. Zobacz README";
-$a->strings["Rating of images"] = "Ocena obrazów";
+$a->strings["Rating of images"] = "Ocena zdjęć";
 $a->strings["Select the appropriate avatar rating for your site. See README"] = "Wybierz odpowiednią ocenę awataru dla swojej witryny. Zobacz README";
 $a->strings["Gravatar settings updated."] = "Zaktualizowano ustawienia Gravatar.";

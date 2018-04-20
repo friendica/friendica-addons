@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-06 18:26+0200\n"
+"POT-Creation-Date: 2018-04-13 09:35+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018\n"
 "Language-Team: Polish (https://www.transifex.com/Friendica/teams/12172/pl/)\n"
@@ -18,26 +18,34 @@ msgstr ""
 "Language: pl\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
-#: catavatar.php:57
+#: catavatar.php:60
 msgid "Use Cat as Avatar"
 msgstr "Użyj kota jako awatara"
 
-#: catavatar.php:58
+#: catavatar.php:61
 msgid "More Random Cat!"
 msgstr "Więcej losowych kotów!"
 
-#: catavatar.php:59
+#: catavatar.php:62
 msgid "Reset to email Cat"
 msgstr "Resetuj na e-mail Kot"
 
-#: catavatar.php:61
+#: catavatar.php:64
 msgid "Cat Avatar Settings"
-msgstr "Kot Avatar ustawienia"
+msgstr "Ustawienia Cat Avatar"
 
-#: catavatar.php:103 catavatar.php:112 catavatar.php:121
+#: catavatar.php:100
+msgid "The cat hadn't found itself."
+msgstr "Kot się nie znalazł."
+
+#: catavatar.php:109
 msgid "There was an error, the cat ran away."
 msgstr "Wystąpił błąd, kot uciekł."
 
-#: catavatar.php:134
+#: catavatar.php:115
+msgid "Profile Photos"
+msgstr "Zdjęcie profilowe"
+
+#: catavatar.php:130
 msgid "Meow!"
 msgstr "Miau!"
