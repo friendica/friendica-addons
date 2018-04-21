@@ -8,12 +8,12 @@
 require 'addon/buffer/bufferapp.php';
 
 use Friendica\App;
-use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Model\Item;
 
 function buffer_install() {
 	Addon::registerHook('post_local',           'addon/buffer/buffer.php', 'buffer_post_local');
@@ -338,7 +338,7 @@ function buffer_send(App $a, &$b)
 					$item["body"] = preg_replace("(\[s\](.*?)\[\/s\])ism",'-$1-',$item["body"]);
 				}
 
-				$post = BBCode::toPlaintext($item, $limit, $includedlinks, $htmlmode);
+				$post = Item::getPlaintextPost($item, $limit, $includedlinks, $htmlmode);
 				logger("buffer_send: converted message ".$b["id"]." result: ".print_r($post, true), LOGGER_DEBUG);
 
 				// The image proxy is used as a sanitizer. Buffer seems to be really picky about pictures

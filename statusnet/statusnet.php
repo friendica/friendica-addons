@@ -550,7 +550,7 @@ function statusnet_post_hook(App $a, &$b)
 		PConfig::set($b['uid'], 'statusnet', 'max_char', $max_char);
 
 		$tempfile = "";
-		$msgarr = BBCode::toPlaintext($b, $max_char, true, 7);
+		$msgarr = Item::getPlaintextPost($b, $max_char, true, 7);
 		$msg = $msgarr["text"];
 
 		if (($msg == "") && isset($msgarr["title"]))
@@ -709,7 +709,7 @@ function statusnet_prepare_body(App $a, &$b)
 			}
 		}
 
-		$msgarr = BBCode::toPlaintext($item, $max_char, true, 7);
+		$msgarr = Item::getPlaintextPost($item, $max_char, true, 7);
 		$msg = $msgarr["text"];
 
 		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {
