@@ -20,7 +20,7 @@ msgstr ""
 
 #: xmpp.php:38
 msgid "XMPP settings updated."
-msgstr "aktualizowano ustawienia XMPP."
+msgstr "zaktualizowano ustawienia XMPP."
 
 #: xmpp.php:63 xmpp.php:67
 msgid "XMPP-Chat (Jabber)"
