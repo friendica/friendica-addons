@@ -134,12 +134,15 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 		return;
 	}
 
+	$naked_body = Text\BBCode::toPlaintext($hook_data['item']['body'], false);
+
 	// Don't filter if body lenght is below minimum
-	$minlen = PConfig::get(local_user(), 'langfilter', 'minlength');
+	$minlen = PConfig::get(local_user(), 'langfilter', 'minlength', 32);
 	if (!$minlen) {
 		$minlen = 32;
 	}
-	if (strlen($hook_data['item']['body']) < $minlen) {
+
+	if (strlen($naked_body) < $minlen) {
 		return;
 	}
 
