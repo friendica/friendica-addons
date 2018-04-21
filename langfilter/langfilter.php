@@ -8,6 +8,7 @@
  */
 
 use Friendica\App;
+use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -134,7 +135,7 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 		return;
 	}
 
-	$naked_body = Text\BBCode::toPlaintext($hook_data['item']['body'], false);
+	$naked_body = BBCode::toPlaintext($hook_data['item']['body'], false);
 
 	// Don't filter if body lenght is below minimum
 	$minlen = PConfig::get(local_user(), 'langfilter', 'minlength', 32);
