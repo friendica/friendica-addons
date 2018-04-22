@@ -63,7 +63,6 @@
 use Abraham\TwitterOAuth\TwitterOAuth;
 use Friendica\App;
 use Friendica\Content\OEmbed;
-use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -73,6 +72,7 @@ use Friendica\Core\Worker;
 use Friendica\Model\GContact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
+use Friendica\Model\ItemContent;
 use Friendica\Model\Photo;
 use Friendica\Model\Queue;
 use Friendica\Model\User;
@@ -532,7 +532,7 @@ function twitter_post_hook(App $a, &$b)
 		$connection->setTimeouts(10, 30);
 
 		$max_char = 280;
-		$msgarr = BBCode::toPlaintext($b, $max_char, true, 8);
+		$msgarr = ItemContent::getPlaintextPost($b, $max_char, true, 8);
 		$msg = $msgarr["text"];
 
 		if (($msg == "") && isset($msgarr["title"])) {
@@ -766,7 +766,7 @@ function twitter_prepare_body(App $a, &$b)
 			}
 		}
 
-		$msgarr = BBCode::toPlaintext($item, $max_char, true, 8);
+		$msgarr = ItemContent::getPlaintextPost($item, $max_char, true, 8);
 		$msg = $msgarr["text"];
 
 		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {

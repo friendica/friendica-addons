@@ -41,7 +41,6 @@ require_once 'include/enotify.php';
 use CodebirdSN\CodebirdSN;
 use Friendica\App;
 use Friendica\Content\OEmbed;
-use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
 use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Addon;
@@ -51,6 +50,7 @@ use Friendica\Core\PConfig;
 use Friendica\Model\GContact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
+use Friendica\Model\ItemContent;
 use Friendica\Model\Photo;
 use Friendica\Model\User;
 use Friendica\Util\DateTimeFormat;
@@ -550,7 +550,7 @@ function statusnet_post_hook(App $a, &$b)
 		PConfig::set($b['uid'], 'statusnet', 'max_char', $max_char);
 
 		$tempfile = "";
-		$msgarr = BBCode::toPlaintext($b, $max_char, true, 7);
+		$msgarr = ItemContent::getPlaintextPost($b, $max_char, true, 7);
 		$msg = $msgarr["text"];
 
 		if (($msg == "") && isset($msgarr["title"]))
@@ -709,7 +709,7 @@ function statusnet_prepare_body(App $a, &$b)
 			}
 		}
 
-		$msgarr = BBCode::toPlaintext($item, $max_char, true, 7);
+		$msgarr = ItemContent::getPlaintextPost($item, $max_char, true, 7);
 		$msg = $msgarr["text"];
 
 		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {
