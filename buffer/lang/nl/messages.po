@@ -1,0 +1,77 @@
+# ADDON buffer
+# Copyright (C)
+# This file is distributed under the same license as the Friendica buffer addon package.
+# 
+# 
+# Translators:
+# AgnesElisa <agneselisa@disroot.org>, 2018
+# Jeroen De Meerleer <me@jeroened.be>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2018-04-20 17:34+0000\n"
+"Last-Translator: Jeroen De Meerleer <me@jeroened.be>\n"
+"Language-Team: Dutch (http://www.transifex.com/Friendica/friendica/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: buffer.php:31
+msgid "Permission denied."
+msgstr "Toegang geweigerd."
+
+#: buffer.php:57 buffer.php:185
+msgid "Save Settings"
+msgstr "Instellingen opslaan"
+
+#: buffer.php:59
+msgid "Client ID"
+msgstr "Cliënt ID"
+
+#: buffer.php:60
+msgid "Client Secret"
+msgstr "Cliënt geheim"
+
+#: buffer.php:67
+msgid "Error when registering buffer connection:"
+msgstr "Fout bij het registreren van de buffer verbinding:"
+
+#: buffer.php:86
+msgid "You are now authenticated to buffer. "
+msgstr "Je bent nu aangemeld bij Buffer"
+
+#: buffer.php:87
+msgid "return to the connector page"
+msgstr "ga terug naar de verbindingspagina"
+
+#: buffer.php:103
+msgid "Post to Buffer"
+msgstr "Plaats bericht op Buffer"
+
+#: buffer.php:128 buffer.php:132
+msgid "Buffer Export"
+msgstr "Buffer Exporteren"
+
+#: buffer.php:142
+msgid "Authenticate your Buffer connection"
+msgstr "Verbinding met Buffer goedkeuren"
+
+#: buffer.php:146
+msgid "Enable Buffer Post Addon"
+msgstr "Buffer Post Addon inschakelen"
+
+#: buffer.php:151
+msgid "Post to Buffer by default"
+msgstr "Plaatsen op Buffer als standaard instellen"
+
+#: buffer.php:156
+msgid "Check to delete this preset"
+msgstr ""
+
+#: buffer.php:165
+msgid "Posts are going to all accounts that are enabled by default:"
+msgstr ""
