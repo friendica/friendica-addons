@@ -8,7 +8,7 @@ function string_plural_select_pl($n){
 $a->strings["Use Cat as Avatar"] = "Użyj kota jako awatara";
 $a->strings["More Random Cat!"] = "Więcej losowych kotów!";
 $a->strings["Reset to email Cat"] = "Resetuj na e-mail Kot";
-$a->strings["Cat Avatar Settings"] = "Ustawienia Cat Avatar";
+$a->strings["Cat Avatar Settings"] = "Ustawienia Kot Avatar";
 $a->strings["The cat hadn't found itself."] = "Kot się nie znalazł.";
 $a->strings["There was an error, the cat ran away."] = "Wystąpił błąd, kot uciekł.";
 $a->strings["Profile Photos"] = "Zdjęcie profilowe";

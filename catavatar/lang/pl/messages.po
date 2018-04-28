@@ -32,7 +32,7 @@ msgstr "Resetuj na e-mail Kot"
 
 #: catavatar.php:64
 msgid "Cat Avatar Settings"
-msgstr "Ustawienia Cat Avatar"
+msgstr "Ustawienia Kot Avatar"
 
 #: catavatar.php:100
 msgid "The cat hadn't found itself."
