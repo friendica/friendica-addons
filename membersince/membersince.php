@@ -21,9 +21,9 @@ function membersince_uninstall()
 	Addon::unregisterHook('profile_advanced', 'addon/membersince/membersince.php', 'membersince_display');
 }
 
-function membersince_display(&$a, &$b)
+function membersince_display(Friendica\App $a, &$b)
 {
-	if (current_theme() == 'frio') {
+	if ($a->getCurrentTheme() == 'frio') {
 		// Works in Frio.
 		$doc = new DOMDocument();
 		$doc->loadHTML(mb_convert_encoding($b, 'HTML-ENTITIES', 'UTF-8'));

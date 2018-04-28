@@ -24,10 +24,10 @@ function smileybutton_uninstall() {
 
 
 
-function show_button($a, &$b) {
+function show_button(Friendica\App $a, &$b) {
 	// Disable if theme is quattro
 	// TODO add style for quattro
-	if (current_theme() == 'quattro')
+	if ($a->getCurrentTheme() == 'quattro')
 		return;
 
 	// Disable for mobile because most mobiles have a smiley key for ther own
@@ -112,7 +112,7 @@ function show_button($a, &$b) {
 	$s .= "\t</tr></table>";
 
 	//Add css to header
-	$css_file = 'addon/smileybutton/view/'.current_theme().'.css';
+	$css_file = 'addon/smileybutton/view/' . $a->getCurrentTheme() . '.css';
 	if (! file_exists($css_file))
 		$css_file = 'addon/smileybutton/view/default.css';
 	$css_url = $a->get_baseurl().'/'.$css_file;
@@ -121,7 +121,7 @@ function show_button($a, &$b) {
 
 
 	//Get the correct image for the theme
-	$image = 'addon/smileybutton/view/'.current_theme().'.png';
+	$image = 'addon/smileybutton/view/' . $a->getCurrentTheme() . '.png';
 	if (! file_exists($image))
 		$image = 'addon/smileybutton/view/default.png';
 	$image_url = $a->get_baseurl().'/'.$image;
