@@ -118,21 +118,23 @@ function advancedcontentfilter_prepare_body_content_filter(App $a, &$hook_data)
 		));
 	}
 
-	foreach($rules as $rule) {
-		try {
-			$serializedParsedExpression = new ExpressionLanguage\SerializedParsedExpression(
-				$rule['expression'],
-				$rule['serialized']
-			);
+	if ($rules) {
+		foreach($rules as $rule) {
+			try {
+				$serializedParsedExpression = new ExpressionLanguage\SerializedParsedExpression(
+					$rule['expression'],
+					$rule['serialized']
+				);
 
-			$found = (bool) $expressionLanguage->evaluate($serializedParsedExpression, $vars);
-		} catch (Exception $e) {
-			$found = false;
-		}
+				$found = (bool) $expressionLanguage->evaluate($serializedParsedExpression, $vars);
+			} catch (Exception $e) {
+				$found = false;
+			}
 
-		if ($found) {
-			$hook_data['filter_reasons'][] = L10n::t('Filtered by rule: %s', $rule['name']);
-			break;
+			if ($found) {
+				$hook_data['filter_reasons'][] = L10n::t('Filtered by rule: %s', $rule['name']);
+				break;
+			}
 		}
 	}
 }
