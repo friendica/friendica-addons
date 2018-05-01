@@ -48,7 +48,7 @@
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-		{{if current_theme() == 'frio'}}
+		{{if $current_theme == 'frio'}}
 						<button type="button" class="close" data-dismiss="modal" aria-label="{{$close}}" @click="showModal = false"><span aria-hidden="true">&times;</span></button>
 		{{/if}}
 						<h3 v-if="rule.id">{{$edit_the_rule}} "{{ rule.name }}"</h3>
