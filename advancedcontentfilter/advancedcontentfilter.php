@@ -201,6 +201,7 @@ function advancedcontentfilter_content(App $a)
 	} else {
 		$t = get_markup_template('settings.tpl', 'addon/advancedcontentfilter/');
 		return replace_macros($t, [
+			'$current_theme' => $a->getCurrentTheme(),
 			'$backtosettings' => L10n::t('Back to Addon Settings'),
 			'$title' => L10n::t('Advanced Content Filter'),
 			'$add_a_rule' => L10n::t('Add a Rule'),
