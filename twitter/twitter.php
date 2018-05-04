@@ -79,6 +79,7 @@ use Friendica\Model\User;
 use Friendica\Object\Image;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
+use Friendica\Database\DBM;
 
 require_once 'boot.php';
 require_once 'include/dba.php';
@@ -1633,6 +1634,11 @@ function twitter_fetchparentposts(App $a, $uid, $post, $connection, $self, $own_
 			}
 
 			$item = Item::insert($postarray);
+
+			if ($notify) {
+				$item = $notify;
+			}
+
 			$postarray["id"] = $item;
 
 			logger('twitter_fetchparentpost: User ' . $self["nick"] . ' posted parent timeline item ' . $item);
@@ -1748,7 +1754,16 @@ function twitter_fetchhometimeline(App $a, $uid)
 				continue;
 			}
 
-			$item = Item::insert($postarray);
+			$notify = false;
+
+			if ($postarray['uri'] == $postarray['parent-uri']) {
+				$contact = dba::selectFirst('contact', [], ['id' => $postarray['contact-id'], 'self' => false]);
+				if (DBM::is_result($contact)) {
+					$notify = Item::isRemoteSelf($contact, $postarray);
+				}
+			}
+
+			$item = Item::insert($postarray, false, $notify);
 			$postarray["id"] = $item;
 
 			logger('twitter_fetchhometimeline: User ' . $self["nick"] . ' posted home timeline item ' . $item);
