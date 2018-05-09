@@ -70,6 +70,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
 use Friendica\Model\GContact;
+use Friendica\Model\Contact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
@@ -175,7 +176,7 @@ function twitter_follow(App $a, &$contact)
 		FROM `contact` WHERE `uid` = %d AND `nick` = '%s'",
 				intval($uid),
 				dbesc($nickname));
-	if (count($r)) {
+	if (DBM::is_result($r)) {
 		$contact["contact"] = $r[0];
 	}
 }
@@ -448,7 +449,7 @@ function twitter_post_hook(App $a, &$b)
 			dbesc($b["thr-parent"]),
 			intval($b["uid"]));
 
-		if (!count($r)) {
+		if (!DBM::is_result($r)) {
 			logger("twitter_post_hook: no parent found " . $b["thr-parent"]);
 			return;
 		} else {
@@ -603,7 +604,7 @@ function twitter_post_hook(App $a, &$b)
 			logger('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
 
 			$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", intval($b['uid']));
-			if (count($r)) {
+			if (DBM::is_result($r)) {
 				$a->contact = $r[0]["id"];
 			}
 
@@ -658,7 +659,7 @@ function twitter_cron(App $a, $b)
 	logger('twitter: cron_start');
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'mirror_posts' AND `v` = '1'");
-	if (count($r)) {
+	if (DBM::is_result($r)) {
 		foreach ($r as $rr) {
 			logger('twitter: fetching for user ' . $rr['uid']);
 			Worker::add(PRIORITY_MEDIUM, "addon/twitter/twitter_sync.php", 1, (int) $rr['uid']);
@@ -673,11 +674,11 @@ function twitter_cron(App $a, $b)
 	$abandon_limit = date(DateTimeFormat::MYSQL, time() - $abandon_days * 86400);
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'import' AND `v` = '1'");
-	if (count($r)) {
+	if (DBM::is_result($r)) {
 		foreach ($r as $rr) {
 			if ($abandon_days != 0) {
 				$user = q("SELECT `login_date` FROM `user` WHERE uid=%d AND `login_date` >= '%s'", $rr['uid'], $abandon_limit);
-				if (!count($user)) {
+				if (!DBM::is_result($user)) {
 					logger('abandoned account: timeline from user ' . $rr['uid'] . ' will not be imported');
 					continue;
 				}
@@ -730,7 +731,7 @@ function twitter_expire(App $a, $b)
 	logger('twitter_expire: expire_start');
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'import' AND `v` = '1' ORDER BY RAND()");
-	if (count($r)) {
+	if (DBM::is_result($r)) {
 		foreach ($r as $rr) {
 			logger('twitter_expire: user ' . $rr['uid']);
 			Item::expire($rr['uid'], $days, NETWORK_TWITTER, true);
@@ -755,7 +756,7 @@ function twitter_prepare_body(App $a, &$b)
 			dbesc($item["thr-parent"]),
 			intval(local_user()));
 
-		if (count($r)) {
+		if (DBM::is_result($r)) {
 			$orig_post = $r[0];
 
 			$nicknameplain = preg_replace("=https?://twitter.com/(.*)=ism", "$1", $orig_post["author-link"]);
@@ -904,7 +905,7 @@ function twitter_queue_hook(App $a, &$b)
 	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
 		dbesc(NETWORK_TWITTER)
 	);
-	if (!count($qi)) {
+	if (!DBM::is_result($qi)) {
 		return;
 	}
 
@@ -919,7 +920,7 @@ function twitter_queue_hook(App $a, &$b)
 			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
 			intval($x['cid'])
 		);
-		if (!count($r)) {
+		if (!DBM::is_result($r)) {
 			continue;
 		}
 
@@ -971,136 +972,85 @@ function twitter_fix_avatar($avatar)
 	return $new_avatar;
 }
 
-function twitter_fetch_contact($uid, $contact, $create_user)
+function twitter_fetch_contact($uid, $data, $create_user)
 {
-	if ($contact->id_str == "") {
+	if ($data->id_str == "") {
 		return -1;
 	}
 
-	$avatar = twitter_fix_avatar($contact->profile_image_url_https);
+	$avatar = twitter_fix_avatar($data->profile_image_url_https);
+	$url = "https://twitter.com/" . $data->screen_name;
+	$addr = $data->screen_name . "@twitter.com";
 
-	GContact::update(["url" => "https://twitter.com/" . $contact->screen_name,
-		"network" => NETWORK_TWITTER, "photo" => $avatar, "hide" => true,
-		"name" => $contact->name, "nick" => $contact->screen_name,
-		"location" => $contact->location, "about" => $contact->description,
-		"addr" => $contact->screen_name . "@twitter.com", "generation" => 2]);
+	GContact::update(["url" => $url, "network" => NETWORK_TWITTER,
+		"photo" => $avatar, "hide" => true,
+		"name" => $data->name, "nick" => $data->screen_name,
+		"location" => $data->location, "about" => $data->description,
+		"addr" => $addr, "generation" => 2]);
 
-	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
-		intval($uid),
-		dbesc("twitter::" . $contact->id_str));
+	$fields = ['url' => $url, 'network' => NETWORK_TWITTER,
+		'name' => $data->name, 'nick' => $data->screen_name, 'addr' => $addr,
+                'location' => $data->location, 'about' => $data->description];
 
-	if (!count($r) && !$create_user) {
+	$cid = Contact::getIdForURL($url, 0, true, $fields);
+	if (!empty($cid)) {
+		dba::update('contact', $fields, ['id' => $cid]);
+		Contact::updateAvatar($avatar, 0, $cid);
+	}
+
+	$contact = dba::selectFirst('contact', [], ['uid' => $uid, 'alias' => "twitter::" . $data->id_str]);
+	if (!DBM::is_result($contact) && !$create_user) {
 		return 0;
 	}
 
-	if (count($r) && ($r[0]["readonly"] || $r[0]["blocked"])) {
-		logger("twitter_fetch_contact: Contact '" . $r[0]["nick"] . "' is blocked or readonly.", LOGGER_DEBUG);
-		return -1;
-	}
-
-	if (!count($r)) {
+	if (!DBM::is_result($contact)) {
 		// create contact record
-		q("INSERT INTO `contact` (`uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
-					`name`, `nick`, `photo`, `network`, `rel`, `priority`,
-					`location`, `about`, `writable`, `blocked`, `readonly`, `pending`)
-					VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', %d, 0, 0, 0)",
-			intval($uid),
-			dbesc(DateTimeFormat::utcNow()),
-			dbesc("https://twitter.com/" . $contact->screen_name),
-			dbesc(normalise_link("https://twitter.com/" . $contact->screen_name)),
-			dbesc($contact->screen_name."@twitter.com"),
-			dbesc("twitter::" . $contact->id_str),
-			dbesc(''),
-			dbesc("twitter::" . $contact->id_str),
-			dbesc($contact->name),
-			dbesc($contact->screen_name),
-			dbesc($avatar),
-			dbesc(NETWORK_TWITTER),
-			intval(CONTACT_IS_FRIEND),
-			intval(1),
-			dbesc($contact->location),
-			dbesc($contact->description),
-			intval(1)
-		);
+		$fields['uid'] = $uid;
+		$fields['created'] = DateTimeFormat::utcNow();
+		$fields['nurl'] = normalise_link($url);
+		$fields['alias'] = 'twitter::' . $data->id_str;
+		$fields['poll'] = 'twitter::' . $data->id_str;
+		$fields['rel'] = CONTACT_IS_FRIEND;
+		$fields['priority'] = 1;
+		$fields['writable'] = true;
+		$fields['blocked'] = false;
+		$fields['readonly'] = false;
+		$fields['pending'] = false;
 
-		$r = q("SELECT * FROM `contact` WHERE `alias` = '%s' AND `uid` = %d LIMIT 1",
-			dbesc("twitter::".$contact->id_str),
-			intval($uid)
-		);
-
-		if (!count($r)) {
+		if (!dba::insert('contact', $fields)) {
 			return false;
 		}
 
-		$contact_id = $r[0]['id'];
+		$contact_id = dba::lastInsertId();
 
 		Group::addMember(User::getDefaultGroup($uid), $contact_id);
 
-		$photos = Photo::importProfilePhoto($avatar, $uid, $contact_id, true);
-
-		if ($photos) {
-			q("UPDATE `contact` SET `photo` = '%s',
-						`thumb` = '%s',
-						`micro` = '%s',
-						`name-date` = '%s',
-						`uri-date` = '%s',
-							`avatar-date` = '%s'
-					WHERE `id` = %d",
-				dbesc($photos[0]),
-				dbesc($photos[1]),
-				dbesc($photos[2]),
-				dbesc(DateTimeFormat::utcNow()),
-				dbesc(DateTimeFormat::utcNow()),
-				dbesc(DateTimeFormat::utcNow()),
-				intval($contact_id)
-			);
-		}
+		Contact::updateAvatar($avatar, $uid, $contact_id);
 	} else {
-		// update profile photos once every two weeks as we have no notification of when they change.
-		//$update_photo = (($r[0]['avatar-date'] < DateTimeFormat::convert('now -2 days', '', '', )) ? true : false);
-		$update_photo = ($r[0]['avatar-date'] < DateTimeFormat::utc('now -12 hours'));
+		if ($contact["readonly"] || $contact["blocked"]) {
+			logger("twitter_fetch_contact: Contact '" . $contact["nick"] . "' is blocked or readonly.", LOGGER_DEBUG);
+			return -1;
+		}
+
+		$contact_id = $contact['id'];
+
+		// update profile photos once every twelve hours as we have no notification of when they change.
+		$update_photo = ($contact['avatar-date'] < DateTimeFormat::utc('now -12 hours'));
 
 		// check that we have all the photos, this has been known to fail on occasion
-		if ((!$r[0]['photo']) || (!$r[0]['thumb']) || (!$r[0]['micro']) || ($update_photo)) {
-			logger("twitter_fetch_contact: Updating contact " . $contact->screen_name, LOGGER_DEBUG);
+		if (empty($contact['photo']) || empty($contact['thumb']) || empty($contact['micro']) || $update_photo) {
+			logger("twitter_fetch_contact: Updating contact " . $data->screen_name, LOGGER_DEBUG);
 
-			$photos = Photo::importProfilePhoto($avatar, $uid, $r[0]['id'], true);
+			Contact::updateAvatar($avatar, $uid, $contact['id']);
 
-			if ($photos) {
-				q("UPDATE `contact` SET `photo` = '%s',
-							`thumb` = '%s',
-							`micro` = '%s',
-							`name-date` = '%s',
-							`uri-date` = '%s',
-							`avatar-date` = '%s',
-							`url` = '%s',
-							`nurl` = '%s',
-							`addr` = '%s',
-							`name` = '%s',
-							`nick` = '%s',
-							`location` = '%s',
-							`about` = '%s'
-						WHERE `id` = %d",
-					dbesc($photos[0]),
-					dbesc($photos[1]),
-					dbesc($photos[2]),
-					dbesc(DateTimeFormat::utcNow()),
-					dbesc(DateTimeFormat::utcNow()),
-					dbesc(DateTimeFormat::utcNow()),
-					dbesc("https://twitter.com/".$contact->screen_name),
-					dbesc(normalise_link("https://twitter.com/".$contact->screen_name)),
-					dbesc($contact->screen_name."@twitter.com"),
-					dbesc($contact->name),
-					dbesc($contact->screen_name),
-					dbesc($contact->location),
-					dbesc($contact->description),
-					intval($r[0]['id'])
-				);
-			}
+			$fields['name-date'] = DateTimeFormat::utcNow();
+			$fields['uri-date'] = DateTimeFormat::utcNow();
+
+			dba::update('contact', $fields, ['id' => $contact['id']]);
 		}
 	}
 
-	return $r[0]["id"];
+	return $contact_id;
 }
 
 function twitter_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
@@ -1113,7 +1063,7 @@ function twitter_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 	$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 		intval($uid));
 
-	if (count($r)) {
+	if (DBM::is_result($r)) {
 		$self = $r[0];
 	} else {
 		return;
@@ -1366,7 +1316,7 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 		intval($uid)
 	);
 
-	if (count($r)) {
+	if (DBM::is_result($r)) {
 		logger("Item with extid " . $postarray['uri'] . " found.", LOGGER_DEBUG);
 		return [];
 	}
@@ -1380,7 +1330,7 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 			dbesc($parent),
 			intval($uid)
 		);
-		if (count($r)) {
+		if (DBM::is_result($r)) {
 			$postarray['thr-parent'] = $r[0]["uri"];
 			$postarray['parent-uri'] = $r[0]["parent-uri"];
 			$postarray['parent'] = $r[0]["parent"];
@@ -1390,7 +1340,7 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 				dbesc($parent),
 				intval($uid)
 			);
-			if (count($r)) {
+			if (DBM::is_result($r)) {
 				$postarray['thr-parent'] = $r[0]['uri'];
 				$postarray['parent-uri'] = $r[0]['parent-uri'];
 				$postarray['parent'] = $r[0]['parent'];
@@ -1409,7 +1359,7 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 			$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 				intval($uid));
 
-			if (count($r)) {
+			if (DBM::is_result($r)) {
 				$contactid = $r[0]["id"];
 
 				$postarray['owner-name']   = $r[0]["name"];
@@ -1531,7 +1481,7 @@ function twitter_checknotification(App $a, $uid, $own_id, $top_item, $postarray)
 		intval($uid)
 	);
 
-	if (!count($user)) {
+	if (!DBM::is_result($user)) {
 		return;
 	}
 
@@ -1545,7 +1495,7 @@ function twitter_checknotification(App $a, $uid, $own_id, $top_item, $postarray)
 		dbesc("twitter::".$own_id)
 	);
 
-	if (!count($own_user)) {
+	if (!DBM::is_result($own_user)) {
 		return;
 	}
 
@@ -1559,7 +1509,7 @@ function twitter_checknotification(App $a, $uid, $own_id, $top_item, $postarray)
 		intval($uid)
 	);
 
-	if (count($myconv)) {
+	if (DBM::is_result($myconv)) {
 		foreach ($myconv as $conv) {
 			// now if we find a match, it means we're in this conversation
 			if (!link_compare($conv['author-link'], $user[0]["url"]) && !link_compare($conv['author-link'], $own_user[0]["url"])) {
@@ -1614,7 +1564,7 @@ function twitter_fetchparentposts(App $a, $uid, $post, $connection, $self, $own_
 			intval($uid)
 		);
 
-		if (count($r)) {
+		if (DBM::is_result($r)) {
 			break;
 		}
 
@@ -1677,7 +1627,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 		intval($own_contact),
 		intval($uid));
 
-	if (count($r)) {
+	if (DBM::is_result($r)) {
 		$own_id = $r[0]["nick"];
 	} else {
 		logger("twitter_fetchhometimeline: Own twitter contact not found for user " . $uid, LOGGER_DEBUG);
@@ -1687,7 +1637,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 	$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 		intval($uid));
 
-	if (count($r)) {
+	if (DBM::is_result($r)) {
 		$self = $r[0];
 	} else {
 		logger("twitter_fetchhometimeline: Own contact not found for user " . $uid, LOGGER_DEBUG);
@@ -1696,7 +1646,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 
 	$u = q("SELECT * FROM user WHERE uid = %d LIMIT 1",
 		intval($uid));
-	if (!count($u)) {
+	if (!DBM::is_result($u)) {
 		logger("twitter_fetchhometimeline: Own user not found for user " . $uid, LOGGER_DEBUG);
 		return;
 	}
@@ -1833,7 +1783,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 					dbesc($postarray['uri']),
 					intval($uid)
 				);
-				if (count($r)) {
+				if (DBM::is_result($r)) {
 					$item = $r[0]['id'];
 					$parent_id = $r[0]['parent'];
 				}
@@ -1890,7 +1840,7 @@ function twitter_fetch_own_contact(App $a, $uid)
 		$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
 			intval($uid),
 			dbesc("twitter::" . $own_id));
-		if (count($r)) {
+		if (DBM::is_result($r)) {
 			$contact_id = $r[0]["id"];
 		} else {
 			PConfig::delete($uid, 'twitter', 'own_id');
