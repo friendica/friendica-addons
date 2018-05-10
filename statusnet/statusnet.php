@@ -94,7 +94,7 @@ function statusnet_check_item_notification(App $a, &$notification_data)
 	$notification_data["profiles"][] = PConfig::get($notification_data["uid"], 'statusnet', 'own_url');
 }
 
-function statusnet_jot_nets(App $a, &$b)
+function statusnet_jot_nets(App $a, array &$b)
 {
 	if (!local_user()) {
 		return;
@@ -385,7 +385,7 @@ function statusnet_settings(App $a, &$s)
 	$s .= '</div><div class="clear"></div>';
 }
 
-function statusnet_post_local(App $a, &$b)
+function statusnet_post_local(App $a, array &$b)
 {
 	if ($b['edit']) {
 		return;
@@ -440,7 +440,7 @@ function statusnet_action(App $a, $uid, $pid, $action)
 	logger("statusnet_action '" . $action . "' send, result: " . print_r($result, true), LOGGER_DEBUG);
 }
 
-function statusnet_post_hook(App $a, &$b)
+function statusnet_post_hook(App $a, array &$b)
 {
 	/**
 	 * Post to GNU Social
@@ -669,7 +669,7 @@ function statusnet_addon_admin(App $a, &$o)
 	]);
 }
 
-function statusnet_prepare_body(App $a, &$b)
+function statusnet_prepare_body(App $a, array &$b)
 {
 	if ($b["item"]["network"] != NETWORK_STATUSNET) {
 		return;

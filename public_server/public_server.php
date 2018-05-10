@@ -6,6 +6,7 @@
  * Author: Keith Fernie <http://friendika.me4.it/profile/keith>
  */
 
+use Friencia\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -118,7 +119,7 @@ function public_server_cron($a, $b)
 	logger("public_server: cron end");
 }
 
-function public_server_enotify(&$a, &$b)
+function public_server_enotify(App $a, array &$b)
 {
 	if (x($b, 'params') && $b['params']['type'] == NOTIFY_SYSTEM
 		&& x($b['params'], 'system_type') && $b['params']['system_type'] === 'public_server_expire') {

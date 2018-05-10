@@ -8,6 +8,8 @@
  * This is a template for how to extend the "smily" code.
  * 
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 
 function smilies_adult_install() {
@@ -20,7 +22,7 @@ function smilies_adult_uninstall() {
 
  
 
-function smilies_adult_smilies(&$a,&$b) {
+function smilies_adult_smilies(App $a, $b) {
 
 	$b['texts'][] = '(o)(o)';
 	$b['icons'][] = '<img class="smiley" src="' . $a->get_baseurl() . '/addon/smilies_adult/icons/tits.gif' . '" alt="' . '(o)(o)' . '" />';

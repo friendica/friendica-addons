@@ -8,6 +8,8 @@
  * Author: Klaus Weidenbach
  *
  */
+
+use Friencia\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
@@ -88,7 +90,7 @@ function openstreetmap_location($a, &$item)
 		$nomserver = OSM_NOM;
 	}
 
-	if ($item['coord'] != "") {
+	if (x($item, 'coord')) {
 		$coords = explode(' ', $item['coord']);
 		if (count($coords) > 1) {
 			$lat = urlencode(round($coords[0], 5));
@@ -105,7 +107,7 @@ function openstreetmap_location($a, &$item)
 		$target = $nomserver.'?q='.urlencode($item['location']);
 	}
 
-	if ($item['location'] != "") {
+	if (x($item, 'location')) {
 		$title = $item['location'];
 	} else {
 		$title = $item['coord'];
@@ -114,7 +116,7 @@ function openstreetmap_location($a, &$item)
 	$item['html'] = '<a target="map" title="'.$title.'" href= "'.$target.'">'.$title.'</a>';
 }
 
-function openstreetmap_get_coordinates($a, &$b)
+function openstreetmap_get_coordinates(App $a, array &$b)
 {
 	$nomserver = Config::get('openstreetmap', 'nomserver', OSM_NOM);
 
@@ -142,7 +144,7 @@ function openstreetmap_get_coordinates($a, &$b)
 	}
 }
 
-function openstreetmap_generate_named_map(&$a, &$b)
+function openstreetmap_generate_named_map(App $a, array &$b)
 {
 	openstreetmap_get_coordinates($a, $b);
 
@@ -151,7 +153,7 @@ function openstreetmap_generate_named_map(&$a, &$b)
 	}
 }
 
-function openstreetmap_generate_map(&$a, &$b)
+function openstreetmap_generate_map(App $a, array &$b)
 {
 	$tmsserver = Config::get('openstreetmap', 'tmsserver', OSM_TMS);
 

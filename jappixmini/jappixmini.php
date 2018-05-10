@@ -419,7 +419,7 @@ function jappixmini_settings(App $a, &$s)
     </script>";
 }
 
-function jappixmini_settings_post(App $a, &$b)
+function jappixmini_settings_post(App $a, array &$b)
 {
 	// save addon settings for a user
 	if (!local_user()) {
@@ -693,7 +693,7 @@ function jappixmini_cron(App $a, $d)
 	}
 }
 
-function jappixmini_download_source(App $a, &$b)
+function jappixmini_download_source(App $a, array &$b)
 {
 	// Jappix Mini source download link on About page
 	$b .= '<h1>Jappix Mini</h1>';

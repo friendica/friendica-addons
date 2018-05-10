@@ -6,6 +6,7 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
 
+use Friencia\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -64,7 +65,7 @@ function testdrive_cron($a,$b) {
 	$r = q("select * from user where account_expires_on < UTC_TIMESTAMP() + INTERVAL 5 DAY and
 		expire_notification_sent = '0000-00-00 00:00:00' ");
 
-	if(count($r)) {
+	if (DBM::is_result($r)) {
 		foreach($r as $rr) {
 			notification([
 				'uid' => $rr['uid'],
@@ -87,14 +88,15 @@ function testdrive_cron($a,$b) {
 	}
 
 	$r = q("select * from user where account_expired = 1 and account_expires_on < UTC_TIMESTAMP() - INTERVAL 5 DAY ");
-	if(count($r)) {
+
+	if (DBM::is_result($r)) {
 		foreach($r as $rr) {
 			User::remove($rr['uid']);
 		}
 	}
 }
 
-function testdrive_enotify(&$a, &$b) {
+function testdrive_enotify(App $a, array &$b) {
     if (x($b, 'params') && $b['params']['type'] == NOTIFY_SYSTEM
 		&& x($b['params'], 'system_type') && $b['params']['system_type'] === 'testdrive_expire') {
         $b['itemlink'] = $a->get_baseurl();

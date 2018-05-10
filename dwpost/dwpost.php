@@ -8,6 +8,7 @@
  * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
 
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
@@ -33,7 +34,7 @@ function dwpost_uninstall() {
 }
 
 
-function dwpost_jot_nets(&$a,&$b) {
+function dwpost_jot_nets(App $a, $b) {
     if(! local_user())
         return;
 
@@ -47,7 +48,7 @@ function dwpost_jot_nets(&$a,&$b) {
 }
 
 
-function dwpost_settings(&$a,&$s) {
+function dwpost_settings(App $a, $s) {
 
     if(! local_user())
         return;
@@ -107,7 +108,7 @@ function dwpost_settings(&$a,&$s) {
 }
 
 
-function dwpost_settings_post(&$a,&$b) {
+function dwpost_settings_post(App $a, $b) {
 
 	if(x($_POST,'dwpost-submit')) {
 
@@ -120,7 +121,7 @@ function dwpost_settings_post(&$a,&$b) {
 
 }
 
-function dwpost_post_local(&$a,&$b) {
+function dwpost_post_local(App $a, $b) {
 
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
@@ -151,7 +152,7 @@ function dwpost_post_local(&$a,&$b) {
 
 
 
-function dwpost_send(&$a,&$b) {
+function dwpost_send(App $a, $b) {
 
     if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
         return;

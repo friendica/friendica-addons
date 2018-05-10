@@ -6,6 +6,7 @@
  * Author: Matthew Exon <http://mat.exon.name>
  */
 
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -71,7 +72,7 @@ function mailstream_uninstall() {
 
 function mailstream_module() {}
 
-function mailstream_addon_admin(&$a,&$o) {
+function mailstream_addon_admin(App $a, &$o) {
 	$frommail = Config::get('mailstream', 'frommail');
 	$template = get_markup_template('admin.tpl', 'addon/mailstream/');
 	$config = ['frommail',
@@ -83,13 +84,13 @@ function mailstream_addon_admin(&$a,&$o) {
 				 '$submit' => L10n::t('Save Settings')]);
 }
 
-function mailstream_addon_admin_post ($a) {
+function mailstream_addon_admin_post (App $a) {
 	if (x($_POST, 'frommail')) {
 		Config::set('mailstream', 'frommail', $_POST['frommail']);
 	}
 }
 
-function mailstream_generate_id($a, $uri) {
+function mailstream_generate_id(App $a, $uri) {
 	// http://www.jwz.org/doc/mid.html
 	$host = $a->get_hostname();
 	$resource = hash('md5', $uri);
@@ -98,23 +99,17 @@ function mailstream_generate_id($a, $uri) {
 	return $message_id;
 }
 
-function mailstream_post_hook(&$a, &$item) {
+function mailstream_post_hook(App $a, array &$item) {
 	if (!PConfig::get($item['uid'], 'mailstream', 'enabled')) {
 		return;
 	}
-	if (!$item['uid']) {
+
+	if (!x($item, 'uid') || !x($item, 'contact-id') || !x($item, 'uri')) {
 		return;
 	}
-	if (!$item['contact-id']) {
+
+	if (PConfig::get($item['uid'], 'mailstream', 'nolikes') && $item['verb'] == ACTIVITY_LIKE) {
 		return;
-	}
-	if (!$item['uri']) {
-		return;
-	}
-	if (PConfig::get($item['uid'], 'mailstream', 'nolikes')) {
-		if ($item['verb'] == ACTIVITY_LIKE) {
-			return;
-		}
 	}
 
 	$message_id = mailstream_generate_id($a, $item['uri']);
@@ -122,32 +117,40 @@ function mailstream_post_hook(&$a, &$item) {
 		"VALUES (%d, '%s', '%s', '%s')", intval($item['uid']),
 		intval($item['contact-id']), dbesc($item['uri']), dbesc($message_id));
 	$r = q('SELECT * FROM `mailstream_item` WHERE `uid` = %d AND `contact-id` = %d AND `uri` = "%s"', intval($item['uid']), intval($item['contact-id']), dbesc($item['uri']));
-	if (count($r) != 1) {
+
+	if (!DBM::is_result($r)) {
 		logger('mailstream_post_remote_hook: Unexpected number of items returned from mailstream_item', LOGGER_NORMAL);
 		return;
 	}
+
 	$ms_item = $r[0];
+
 	logger('mailstream_post_remote_hook: created mailstream_item '
 		. $ms_item['id'] . ' for item ' . $item['uri'] . ' '
 		. $item['uid'] . ' ' . $item['contact-id'], LOGGER_DATA);
+
 	$user = mailstream_get_user($item['uid']);
+
 	if (!$user) {
 		logger('mailstream_post_remote_hook: no user ' . $item['uid'], LOGGER_NORMAL);
 		return;
 	}
+
 	mailstream_send($a, $ms_item['message-id'], $item, $user);
 }
 
 function mailstream_get_user($uid) {
 	$r = q('SELECT * FROM `user` WHERE `uid` = %d', intval($uid));
-	if (count($r) != 1) {
+
+	if (!DBM::is_result($r)) {
 		logger('mailstream_post_remote_hook: Unexpected number of users returned', LOGGER_NORMAL);
 		return;
 	}
+
 	return $r[0];
 }
 
-function mailstream_do_images($a, &$item, &$attachments) {
+function mailstream_do_images(App $a, array &$item, &$attachments) {
 	if (!PConfig::get($item['uid'], 'mailstream', 'attachimg')) {
 		return;
 	}
@@ -162,7 +165,9 @@ function mailstream_do_images($a, &$item, &$attachments) {
 			'data' => Network::fetchUrl($url, true, $redirects, 0, null, $cookiejar),
 			'guid' => hash("crc32", $url),
 			'filename' => basename($url),
-			'type' => $a->get_curl_content_type()];
+			'type' => $a->get_curl_content_type()
+		];
+
 		if (strlen($attachments[$url]['data'])) {
 			$item['body'] = str_replace($url, 'cid:' . $attachments[$url]['guid'], $item['body']);
 			continue;
@@ -171,43 +176,54 @@ function mailstream_do_images($a, &$item, &$attachments) {
 	return $attachments;
 }
 
-function mailstream_sender($item) {
+function mailstream_sender(array $item) {
 	$r = q('SELECT * FROM `contact` WHERE `id` = %d', $item['contact-id']);
+
 	if (DBM::is_result($r)) {
-		$contact = $r[0];
-		if ($contact['name'] != $item['author-name']) {
-			return $contact['name'] . ' - ' . $item['author-name'];
+		if ($r[0]['name'] != $item['author-name']) {
+			return $r[0]['name'] . ' - ' . $item['author-name'];
 		}
 	}
+
 	return $item['author-name'];
 }
 
 function mailstream_decode_subject($subject) {
 	$html = BBCode::convert($subject);
+
 	if (!$html) {
 		return $subject;
 	}
+
 	$notags = strip_tags($html);
+
 	if (!$notags) {
 		return $subject;
 	}
+
 	$noentity = html_entity_decode($notags);
+
 	if (!$noentity) {
 		return $notags;
 	}
+
 	$nocodes = preg_replace_callback("/(&#[0-9]+;)/", function($m) { return mb_convert_encoding($m[1], "UTF-8", "HTML-ENTITIES"); }, $noentity);
+
 	if (!$nocodes) {
 		return $noentity;
 	}
+
 	$trimmed = trim($nocodes);
+
 	if (!$trimmed) {
 		return $nocodes;
 	}
+
 	return $trimmed;
 }
 
-function mailstream_subject($item) {
-	if ($item['title']) {
+function mailstream_subject(array $item) {
+	if (x($item, 'title')) {
 		return mailstream_decode_subject($item['title']);
 	}
 	$parent = $item['thr-parent'];
@@ -250,8 +266,8 @@ function mailstream_subject($item) {
 	return L10n::t("Friendica Item");
 }
 
-function mailstream_send($a, $message_id, $item, $user) {
-	if (!$item['visible']) {
+function mailstream_send(App $a, $message_id, array $item, $user) {
+	if (!x($item, 'visible')) {
 		return;
 	}
 	if (!$message_id) {
@@ -350,7 +366,7 @@ function mailstream_cron($a, $b) {
 	mailstream_tidy();
 }
 
-function mailstream_addon_settings(&$a,&$s) {
+function mailstream_addon_settings(App $a, &$s) {
 	$enabled = PConfig::get(local_user(), 'mailstream', 'enabled');
 	$address = PConfig::get(local_user(), 'mailstream', 'address');
 	$nolikes = PConfig::get(local_user(), 'mailstream', 'nolikes');
@@ -380,37 +396,43 @@ function mailstream_addon_settings(&$a,&$s) {
 				 '$submit' => L10n::t('Save Settings')]);
 }
 
-function mailstream_addon_settings_post($a,$post) {
+function mailstream_addon_settings_post(App $a, $post) {
 	if ($_POST['mailstream_address'] != "") {
 		PConfig::set(local_user(), 'mailstream', 'address', $_POST['mailstream_address']);
-	}
-	else {
+	} else {
 		PConfig::delete(local_user(), 'mailstream', 'address');
 	}
+
 	if ($_POST['mailstream_nolikes']) {
 		PConfig::set(local_user(), 'mailstream', 'nolikes', $_POST['mailstream_enabled']);
-	}
-	else {
+	} else {
 		PConfig::delete(local_user(), 'mailstream', 'nolikes');
 	}
+
 	if ($_POST['mailstream_enabled']) {
 		PConfig::set(local_user(), 'mailstream', 'enabled', $_POST['mailstream_enabled']);
-	}
-	else {
+	} else {
 		PConfig::delete(local_user(), 'mailstream', 'enabled');
 	}
+
 	if ($_POST['mailstream_attachimg']) {
 		PConfig::set(local_user(), 'mailstream', 'attachimg', $_POST['mailstream_attachimg']);
-	}
-	else {
+	} else {
 		PConfig::delete(local_user(), 'mailstream', 'attachimg');
 	}
 }
 
 function mailstream_tidy() {
 	$r = q("SELECT id FROM mailstream_item WHERE completed IS NOT NULL AND completed < DATE_SUB(NOW(), INTERVAL 1 YEAR)");
+
+	if (!DBM::is_result($r)) {
+		logger('Cannot load records from mailstream_item or none are returned.', LOGGER_DEBUG);
+		return;
+	}
+
 	foreach ($r as $rr) {
 		q('DELETE FROM mailstream_item WHERE id = %d', intval($rr['id']));
 	}
+
 	logger('mailstream_tidy: deleted ' . count($r) . ' old items', LOGGER_DEBUG);
 }

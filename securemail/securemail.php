@@ -53,7 +53,7 @@ function securemail_uninstall() {
  *
  * @see App
  */
-function securemail_settings(App &$a, &$s){
+function securemail_settings(App $a, &$s){
     if (!local_user()) {
         return;
     }
@@ -82,7 +82,7 @@ function securemail_settings(App &$a, &$s){
  *
  * @see App
  */
-function securemail_settings_post(App &$a, array &$b){
+function securemail_settings_post(App $a, array &$b){
 
     if (!local_user()) {
         return;
@@ -147,7 +147,7 @@ function securemail_settings_post(App &$a, array &$b){
  *
  * @see App
  */
-function securemail_emailer_send_prepare(App &$a, array &$b) {
+function securemail_emailer_send_prepare(App $a, array &$b) {
     if (!x($b, 'uid')) {
         return;
     }

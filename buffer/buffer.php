@@ -244,7 +244,7 @@ function buffer_post_local(&$a,&$b) {
 	$b['postopts'] .= 'buffer';
 }
 
-function buffer_send(App $a, &$b)
+function buffer_send(App $a, array &$b)
 {
 	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;

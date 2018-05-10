@@ -9,6 +9,8 @@
  *
  *"My body was my sacrifice... for my magic. This damage is permanent." - Raistlin Majere
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -134,7 +136,7 @@ function krynn_settings_post($a,$post) {
 
 
 
-function krynn_settings(&$a,&$s) {
+function krynn_settings(App $a, $s) {
 
 	if(! local_user())
 		return;

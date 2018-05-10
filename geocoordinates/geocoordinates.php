@@ -26,26 +26,32 @@ function geocoordinates_uninstall()
 
 function geocoordinates_resolve_item(&$item)
 {
-	if((!$item["coord"]) || ($item["location"]))
+	if((!x($item, 'coord')) || (x($item, 'location')))
 		return;
 
 	$key = Config::get("geocoordinates", "api_key");
-	if ($key == "")
+
+	if ($key == "") {
 		return;
+	}
 
 	$language = Config::get("geocoordinates", "language");
-	if ($language == "")
+
+	if ($language == "") {
 		$language = "de";
+	}
 
 	$coords = explode(' ',$item["coord"]);
 
-	if (count($coords) < 2)
+	if (count($coords) < 2) {
 		return;
+	}
 
 	$coords[0] = round($coords[0], 5);
 	$coords[1] = round($coords[1], 5);
 
 	$result = Cache::get("geocoordinates:".$language.":".$coords[0]."-".$coords[1]);
+
 	if (!is_null($result)) {
 		$item["location"] = $result;
 		return;
@@ -53,7 +59,7 @@ function geocoordinates_resolve_item(&$item)
 
 	$s = Network::fetchUrl("https://api.opencagedata.com/geocode/v1/json?q=".$coords[0].",".$coords[1]."&key=".$key."&language=".$language);
 
-	if (!$s) {
+	if ($s === FALSE) {
 		logger("API could not be queried", LOGGER_DEBUG);
 		return;
 	}

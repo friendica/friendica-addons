@@ -6,6 +6,8 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  *
  */
+
+use Friencia\App;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Model\Item;
@@ -35,7 +37,7 @@ function viewsrc_page_end(&$a, &$o){
 EOS;
 }
 
-function viewsrc_item_photo_menu(&$a, &$b)
+function viewsrc_item_photo_menu(App $a, array &$b)
 {
 	if (!local_user()) {
 		return;

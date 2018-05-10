@@ -9,6 +9,7 @@
 
 require_once 'mod/proxy.php';
 
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -40,7 +41,7 @@ function obfuscate_email ($s) {
     $s = str_replace('.','(dot)',$s);
     return $s;
 }
-function impressum_footer($a, &$b) {
+function impressum_footer(App $a, array &$b) {
     $text = proxy_parse_html(BBCode::convert(Config::get('impressum','footer_text')));
     if (! $text == '') {
         $a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->get_baseurl().'/addon/impressum/impressum.css" media="all" />';

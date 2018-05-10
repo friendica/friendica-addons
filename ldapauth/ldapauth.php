@@ -53,6 +53,8 @@
  *
  * ...etc.
  */
+
+use Friencia\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Model\User;
@@ -69,12 +71,12 @@ function ldapauth_uninstall()
 	Addon::unregisterHook('authenticate', 'addon/ldapauth/ldapauth.php', 'ldapauth_hook_authenticate');
 }
 
-function ldapauth_load_config(\Friendica\App $a)
+function ldapauth_load_config(App $a)
 {
 	$a->loadConfigFile(__DIR__. '/config/ldapauth.ini.php');
 }
 
-function ldapauth_hook_authenticate($a, &$b)
+function ldapauth_hook_authenticate(App $a, array &$b)
 {
 	if (ldapauth_authenticate($b['username'], $b['password'])) {
 		$results = get_existing_account($b['username']);

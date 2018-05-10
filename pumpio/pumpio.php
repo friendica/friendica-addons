@@ -6,6 +6,7 @@
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  */
 
+use Friencia\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
 use Friendica\Core\Addon;
@@ -375,12 +376,11 @@ function pumpio_settings_post(&$a, &$b)
 	}
 }
 
-function pumpio_load_config(\Friendica\App $a)
 {
 	$a->loadConfigFile(__DIR__. '/config/pumpio.ini.php');
 }
 
-function pumpio_post_local(&$a, &$b)
+function pumpio_post_local(App $a, array &$b)
 {
 	if (!local_user() || (local_user() != $b['uid'])) {
 		return;

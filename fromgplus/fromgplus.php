@@ -9,6 +9,7 @@
 
 define('FROMGPLUS_DEFAULT_POLL_INTERVAL', 30); // given in minutes
 
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -38,7 +39,7 @@ function fromgplus_uninstall() {
 	Addon::unregisterHook('addon_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
 }
 
-function fromgplus_addon_settings(&$a,&$s) {
+function fromgplus_addon_settings(App $a, $s) {
 
 	if(! local_user())
 		return;
@@ -79,7 +80,7 @@ class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
 	return;
 }
 
-function fromgplus_addon_settings_post(&$a,&$b) {
+function fromgplus_addon_settings_post(App $a, $b) {
 
 	if(! local_user())
 		return;
@@ -213,11 +214,10 @@ function fromgplus_html2bbcode($html) {
 	$bbcode = str_ireplace(["<br>"], ["\n"], $bbcode);
 
 	$bbcode = trim(strip_tags($bbcode));
-	return($bbcode);
+	return $bbcode;
 }
 
-function fromgplus_parse_query($var)
- {
+function fromgplus_parse_query($var) {
 	/**
 	*  Use this function to parse out the query array element from
 	*  the output of parse_url().
@@ -246,38 +246,47 @@ function fromgplus_cleanupgoogleproxy($fullImage, $image) {
 	//$image = str_replace(array($preview, $preview2), array("/", "/"), $image->url);
 	$image = $image->url;
 
-       	$cleaned = [];
+	$cleaned = [];
 
 	$queryvar = fromgplus_parse_query($fullImage);
-	if ($queryvar['url'] != "")
-        	$cleaned["full"] = urldecode($queryvar['url']);
-	else
+
+	if ($queryvar['url'] != "") {
+		$cleaned["full"] = urldecode($queryvar['url']);
+	} else {
 		$cleaned["full"] = $fullImage;
-	if (@exif_imagetype($cleaned["full"]) == 0)
+	}
+
+	if (exif_imagetype($cleaned["full"]) == 0) {
 		$cleaned["full"] = "";
+	}
 
 	$queryvar = fromgplus_parse_query($image);
-	if ($queryvar['url'] != "")
-       		$cleaned["preview"] = urldecode($queryvar['url']);
-	else
+	if ($queryvar['url'] != "") {
+		$cleaned["preview"] = urldecode($queryvar['url']);
+	} else {
 		$cleaned["preview"] = $image;
-	if (@exif_imagetype($cleaned["preview"]) == 0)
+	}
+
+	if (exif_imagetype($cleaned["preview"]) == 0) {
 		$cleaned["preview"] = "";
+	}
 
 	if ($cleaned["full"] == "") {
 		$cleaned["full"] = $cleaned["preview"];
 		$cleaned["preview"] = "";
 	}
 
-	if ($cleaned["full"] != "")
+	if ($cleaned["full"] != "") {
 		$infoFull = Image::getInfoFromURL($cleaned["full"]);
-	else
+	} else {
 		$infoFull = ["0" => 0, "1" => 0];
+	}
 
-	if ($cleaned["preview"] != "")
+	if ($cleaned["preview"] != "") {
 		$infoPreview = Image::getInfoFromURL($cleaned["preview"]);
-	else
+	} else {
 		$infoFull = ["0" => 0, "1" => 0];
+	}
 
 	if (($infoPreview[0] >= $infoFull[0]) && ($infoPreview[1] >= $infoFull[1])) {
 		$temp = $cleaned["full"];
@@ -285,21 +294,22 @@ function fromgplus_cleanupgoogleproxy($fullImage, $image) {
 		$cleaned["preview"] = $temp;
 	}
 
-	if (($cleaned["full"] == $cleaned["preview"]) || (($infoPreview[0] == $infoFull[0]) && ($infoPreview[1] == $infoFull[1])))
+	if (($cleaned["full"] == $cleaned["preview"]) || (($infoPreview[0] == $infoFull[0]) && ($infoPreview[1] == $infoFull[1]))) {
 		$cleaned["preview"] = "";
+	}
 
-	if ($cleaned["full"] == "")
-		if (@exif_imagetype($fullImage) != 0)
-			$cleaned["full"] = $fullImage;
+	if ($cleaned["full"] == "" && exif_imagetype($fullImage) != 0) {
+		$cleaned["full"] = $fullImage;
+	}
 
-	if ($cleaned["full"] == "")
-		if (@exif_imagetype($image) != 0)
-			$cleaned["full"] = $image;
+	if ($cleaned["full"] == "" && exif_imagetype($image) != 0)
+		$cleaned["full"] = $image;
+	}
 
 	// Could be changed in the future to a link to the album
 	$cleaned["page"] = $cleaned["full"];
 
-	return($cleaned);
+	return $cleaned;
 }
 
 function fromgplus_cleantext($text) {
@@ -311,7 +321,7 @@ function fromgplus_cleantext($text) {
 	$text = html_entity_decode($text, ENT_QUOTES);
 	$text = trim($text);
 	$text = str_replace(["\n", "\r", " ", $trash], ["", "", "", ""], $text);
-	return($text);
+	return $text;
 }
 
 function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
@@ -427,10 +437,11 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 		}
 	}
 
-	if ($pagedata["type"] != "")
-		return(add_page_info_data($pagedata));
+	if ($pagedata["type"] != "") {
+		return add_page_info_data($pagedata);
+	}
 
-	return($post.$quote);
+	return ($post . $quote);
 }
 
 function fromgplus_fetch($a, $uid) {

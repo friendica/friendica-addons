@@ -6,6 +6,8 @@
 * Author: tony baldwin <https://free-haven.org/profile/tony>
 * Author: Tobias Diekershoff <https://f.diekershoff.de/u/tobias>
 */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -24,7 +26,7 @@ function irc_uninstall() {
 }
 
 
-function irc_addon_settings(&$a,&$s) {
+function irc_addon_settings(App $a, $s) {
 	if(! local_user())
 		return;
 
@@ -50,7 +52,7 @@ function irc_addon_settings(&$a,&$s) {
 
 }
 
-function irc_addon_settings_post(&$a,&$b) {
+function irc_addon_settings_post(App $a, $b) {
 	if(! local_user())
 		return;
 

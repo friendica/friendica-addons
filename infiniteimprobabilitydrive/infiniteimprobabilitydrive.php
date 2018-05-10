@@ -5,6 +5,8 @@
 * Version: 1.0
 * Author: Thomas Willingham <https://kakste.com/profile/beardyunixer>
 */
+
+use Friencia\App;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 
@@ -18,7 +20,7 @@ function infiniteimprobabilitydrive_uninstall()
 	Addon::unregisterHook('app_menu', 'addon/infiniteimprobabilitydrive/infiniteimprobabilitydrive.php', 'infiniteimprobabilitydrive_app_menu');
 }
 
-function infiniteimprobabilitydrive_app_menu($a, &$b)
+function infiniteimprobabilitydrive_app_menu(App $a, array &$b)
 {
 	$b['app_menu'][] = '<div class="app-title"><a href="infiniteimprobabilitydrive">' . L10n::t('Infinite Improbability Drive') . '</a></div>';
 }

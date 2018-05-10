@@ -6,6 +6,7 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
 
+use Friencia\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
 use Friendica\Core\Addon;
@@ -156,7 +157,7 @@ function wppost_settings_post(&$a,&$b) {
 
 }
 
-function wppost_post_local(&$a, &$b) {
+function wppost_post_local(App $a, array &$b) {
 
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 

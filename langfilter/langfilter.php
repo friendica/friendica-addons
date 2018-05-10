@@ -70,7 +70,7 @@ function langfilter_addon_settings(App $a, &$s)
  * 3rd save the settings to the DB for later usage
  */
 
-function langfilter_addon_settings_post(App $a, &$b)
+function langfilter_addon_settings_post(App $a, array &$b)
 {
 	if (!local_user()) {
 		return;
@@ -112,8 +112,7 @@ function langfilter_addon_settings_post(App $a, &$b)
  *     expand it again.
  */
 
-function langfilter_prepare_body_content_filter(App $a, &$hook_data)
-{
+function langfilter_prepare_body_content_filter(App $a, &$hook_data) {
 	$logged_user = local_user();
 	if (!$logged_user) {
 		return;
