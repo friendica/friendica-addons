@@ -26,8 +26,9 @@ function geocoordinates_uninstall()
 
 function geocoordinates_resolve_item(&$item)
 {
-	if((!x($item, 'coord')) || (x($item, 'location')))
+	if (!isset($item['coord']) || isset($item['location'])) {
 		return;
+	}
 
 	$key = Config::get("geocoordinates", "api_key");
 

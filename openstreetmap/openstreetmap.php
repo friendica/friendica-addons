@@ -90,7 +90,7 @@ function openstreetmap_location($a, &$item)
 		$nomserver = OSM_NOM;
 	}
 
-	if (x($item, 'coord')) {
+	if (isset($item['coord'])) {
 		$coords = explode(' ', $item['coord']);
 		if (count($coords) > 1) {
 			$lat = urlencode(round($coords[0], 5));
@@ -107,7 +107,7 @@ function openstreetmap_location($a, &$item)
 		$target = $nomserver.'?q='.urlencode($item['location']);
 	}
 
-	if (x($item, 'location')) {
+	if (isset($item['location'])) {
 		$title = $item['location'];
 	} else {
 		$title = $item['coord'];

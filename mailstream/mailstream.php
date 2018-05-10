@@ -104,7 +104,7 @@ function mailstream_post_hook(App $a, array &$item) {
 		return;
 	}
 
-	if (!x($item, 'uid') || !x($item, 'contact-id') || !x($item, 'uri')) {
+	if (!isset($item['uid']) || !isset($item['contact-id']) || !isset($item['uri'])) {
 		return;
 	}
 
@@ -223,9 +223,10 @@ function mailstream_decode_subject($subject) {
 }
 
 function mailstream_subject(array $item) {
-	if (x($item, 'title')) {
+	if (isset($item['title'])) {
 		return mailstream_decode_subject($item['title']);
 	}
+
 	$parent = $item['thr-parent'];
 	// Don't look more than 100 levels deep for a subject, in case of loops
 	for ($i = 0; ($i < 100) && $parent; $i++) {
@@ -267,13 +268,16 @@ function mailstream_subject(array $item) {
 }
 
 function mailstream_send(App $a, $message_id, array $item, $user) {
-	if (!x($item, 'visible')) {
+	if (!isset($item['visible'])) {
 		return;
 	}
+
 	if (!$message_id) {
 		return;
 	}
-	require_once(dirname(__file__).'/phpmailer/class.phpmailer.php');
+
+	// @TODO Isn't there a better way?
+	require_once dirname(__FILE__) . '/phpmailer/class.phpmailer.php';
 
 	$attachments = [];
 	mailstream_do_images($a, $item, $attachments);

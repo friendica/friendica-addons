@@ -32,13 +32,13 @@ function googlemaps_location(App $a, array &$item)
 		return;
 	}
 
-	if (x($item, 'coord')) {
+	if (isset($item['coord']) {
 		$target = "http://maps.google.com/?q=".urlencode($item['coord']);
 	} else {
 		$target = "http://maps.google.com/?q=".urlencode($item['location']);
 	}
 
-	if (x($item, 'location')) {
+	if (isset($item['location'])) {
 		$title = $item['location'];
 	} else {
 		$title = $item['coord'];
