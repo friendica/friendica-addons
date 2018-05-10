@@ -8,6 +8,7 @@
  * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
 
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
@@ -33,7 +34,7 @@ function ijpost_uninstall() {
 }
 
 
-function ijpost_jot_nets(&$a,&$b) {
+function ijpost_jot_nets(App $a, array &$b) {
     if(! local_user())
         return;
 
@@ -106,7 +107,7 @@ function ijpost_settings(&$a,&$s) {
 }
 
 
-function ijpost_settings_post(&$a,&$b) {
+function ijpost_settings_post(App $a, array &$b) {
 
 	if(x($_POST,'ijpost-submit')) {
 
@@ -119,7 +120,7 @@ function ijpost_settings_post(&$a,&$b) {
 
 }
 
-function ijpost_post_local(&$a,&$b) {
+function ijpost_post_local(App $a, array &$b) {
 
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
@@ -150,7 +151,7 @@ function ijpost_post_local(&$a,&$b) {
 
 
 
-function ijpost_send(&$a,&$b) {
+function ijpost_send(App $a, array &$b) {
 
     if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
         return;

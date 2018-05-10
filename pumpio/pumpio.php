@@ -212,9 +212,9 @@ function pumpio_connect(&$a)
 	return $o;
 }
 
-function pumpio_jot_nets(&$a, &$b)
+function pumpio_jot_nets(App $a, array &$b)
 {
-	if (!local_user()) {
+	if(! local_user())
 		return;
 	}
 
@@ -327,10 +327,10 @@ function pumpio_settings(&$a, &$s)
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="pumpio-submit" name="pumpio-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 }
 
-function pumpio_settings_post(&$a, &$b)
-{
-	if (x($_POST, 'pumpio-submit')) {
-		if (x($_POST, 'pumpio_delete')) {
+function pumpio_settings_post(App $a, array &$b) {
+
+	if (x($_POST,'pumpio-submit')) {
+		if (x($_POST,'pumpio_delete')) {
 			PConfig::set(local_user(), 'pumpio', 'consumer_key', '');
 			PConfig::set(local_user(), 'pumpio', 'consumer_secret', '');
 			PConfig::set(local_user(), 'pumpio', 'oauth_token', '');
@@ -405,7 +405,7 @@ function pumpio_post_local(App $a, array &$b)
 	$b['postopts'] .= 'pumpio';
 }
 
-function pumpio_send(&$a, &$b)
+function pumpio_send(App $a, array &$b)
 {
 	if (!PConfig::get($b["uid"], 'pumpio', 'import')) {
 		if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
@@ -1398,11 +1398,12 @@ function pumpio_getallusers(&$a, $uid)
 	}
 }
 
-function pumpio_queue_hook(&$a, &$b)
+function pumpio_queue_hook(App $a, array &$b)
 {
 	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
 		dbesc(NETWORK_PUMPIO)
 	);
+
 	if (!DBM::is_result($qi)) {
 		return;
 	}

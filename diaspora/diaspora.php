@@ -9,6 +9,7 @@
 
 require_once 'addon/diaspora/Diaspora_Connection.php';
 
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
@@ -35,7 +36,7 @@ function diaspora_uninstall() {
 }
 
 
-function diaspora_jot_nets(&$a,&$b) {
+function diaspora_jot_nets(App $a, array &$b) {
     if(! local_user())
         return;
 
@@ -48,7 +49,7 @@ function diaspora_jot_nets(&$a,&$b) {
     }
 }
 
-function diaspora_queue_hook(&$a,&$b) {
+function diaspora_queue_hook(App $a, array &$b) {
 	$hostname = $a->get_hostname();
 
 	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
@@ -225,7 +226,7 @@ function diaspora_settings(&$a,&$s) {
 }
 
 
-function diaspora_settings_post(&$a,&$b) {
+function diaspora_settings_post(App $a, array &$b) {
 
 	if(x($_POST,'diaspora-submit')) {
 
@@ -238,7 +239,7 @@ function diaspora_settings_post(&$a,&$b) {
 
 }
 
-function diaspora_post_local(&$a,&$b) {
+function diaspora_post_local(App $a, array &$b) {
 
 	if ($b['edit']) {
 		return;
@@ -274,7 +275,7 @@ function diaspora_post_local(&$a,&$b) {
 
 
 
-function diaspora_send(&$a,&$b) {
+function diaspora_send(App $a, array &$b) {
 	$hostname = $a->get_hostname();
 
 	logger('diaspora_send: invoked');

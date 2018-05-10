@@ -5,8 +5,9 @@
  * Version: 1.0
  * Author: Michael Vogel <ike@piratenpartei.de>
  *         based upon NSFW from Mike Macgirvin <http://macgirvin.com/profile/mike>
- *
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -61,7 +62,7 @@ function showmore_addon_settings(&$a,&$s) {
 	return;
 }
 
-function showmore_addon_settings_post(&$a,&$b) {
+function showmore_addon_settings_post(App $a, array &$b) {
 
 	if(! local_user())
 		return;

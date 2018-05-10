@@ -5,8 +5,9 @@
  * Version: 1.1
  * Author: tony baldwin <tony@free-haven.org>
  *         Hauke Altmann <https://snarl.de/profile/tugelblend>
- *
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -58,7 +59,7 @@ function pledgie_addon_settings(&$a,&$s) {
 	return;
 }
 
-function pledgie_addon_settings_post(&$a,&$b) {
+function pledgie_addon_settings_post(App $a, array &$b) {
 
 	if(! is_site_admin())
 		return;
@@ -70,7 +71,7 @@ function pledgie_addon_settings_post(&$a,&$b) {
 	}
 }
 
-function pledgie_active(&$a,&$b) {
+function pledgie_active(App $a, array &$b) {
 	$campaign = Config::get('pledgie-campaign','text');
 	$describe = Config::get('pledgie-describe','text');
 	$b .= '<div style="position: fixed; padding:5px; border-style:dotted; border-width:1px; background-color: white; line-height: 1; bottom: 5px; left: 20px; z-index: 1000; width: 150px; font-size: 12px;">';

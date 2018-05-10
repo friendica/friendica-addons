@@ -15,8 +15,9 @@
  * you wish to use them. On some themes they may be visible.
  * Wave the mouse around near the comment input box and the qcomments will show up. Click on any of
  * them to open the comment window fully and insert the qcomment. Then "Submit" will submit it.
- *
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -59,7 +60,7 @@ function qcomment_addon_settings(&$a, &$s)
 	return;
 }
 
-function qcomment_addon_settings_post(&$a,&$b) {
+function qcomment_addon_settings_post(App $a, array &$b) {
 
 	if(! local_user())
 		return;

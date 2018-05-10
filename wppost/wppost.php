@@ -38,7 +38,7 @@ function wppost_uninstall() {
 }
 
 
-function wppost_jot_nets(&$a,&$b) {
+function wppost_jot_nets(App $a, array &$b) {
     if(! local_user())
         return;
 
@@ -137,7 +137,7 @@ function wppost_settings(&$a,&$s) {
 }
 
 
-function wppost_settings_post(&$a,&$b) {
+function wppost_settings_post(App $a, array &$b) {
 
 	if(x($_POST,'wppost-submit')) {
 
@@ -195,7 +195,7 @@ function wppost_post_local(App $a, array &$b) {
 
 
 
-function wppost_send(&$a,&$b) {
+function wppost_send(App $a, array &$b) {
 
 	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;

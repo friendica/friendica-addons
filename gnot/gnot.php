@@ -4,9 +4,9 @@
  * Description: Thread email comment notifications on Gmail and anonymise them
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- * 
- *
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -92,7 +92,7 @@ function gnot_settings(&$a,&$s) {
 }
 
 
-function gnot_enotify_mail(&$a,&$b) {
+function gnot_enotify_mail(App $a, array &$b) {
 	if((! $b['uid']) || (! intval(PConfig::get($b['uid'], 'gnot','enable'))))
 		return;
 	if($b['type'] == NOTIFY_COMMENT)
