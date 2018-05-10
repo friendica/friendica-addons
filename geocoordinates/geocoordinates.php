@@ -5,6 +5,8 @@
  * Version: 0.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
@@ -24,7 +26,7 @@ function geocoordinates_uninstall()
 	Addon::unregisterHook('post_remote',    'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
 }
 
-function geocoordinates_resolve_item(&$item)
+function geocoordinates_resolve_item(array &$item)
 {
 	if (!isset($item['coord']) || isset($item['location'])) {
 		return;
@@ -85,12 +87,12 @@ function geocoordinates_resolve_item(&$item)
 		Cache::set("geocoordinates:".$language.":".$coords[0]."-".$coords[1], $item["location"]);
 }
 
-function geocoordinates_post_hook($a, &$item)
+function geocoordinates_post_hook(App $a, array &$item)
 {
 	geocoordinates_resolve_item($item);
 }
 
-function geocoordinates_addon_admin(&$a, &$o)
+function geocoordinates_addon_admin(App $a, &$o)
 {
 
 	$t = get_markup_template("admin.tpl", "addon/geocoordinates/");
@@ -102,7 +104,7 @@ function geocoordinates_addon_admin(&$a, &$o)
 	]);
 }
 
-function geocoordinates_addon_admin_post(&$a)
+function geocoordinates_addon_admin_post(App $a)
 {
 	$api_key  = ((x($_POST, 'api_key')) ? notags(trim($_POST['api_key']))   : '');
 	Config::set('geocoordinates', 'api_key', $api_key);
