@@ -76,14 +76,14 @@ class TwitterOAuth
 	/**
 	 * construct TwitterOAuth object
 	 */
-	function __construct($consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL)
+	function __construct($consumer_key, $consumer_secret, $oauth_token = null, $oauth_token_secret = null)
 	{
 		$this->sha1_method = new OAuthSignatureMethod_HMAC_SHA1();
 		$this->consumer = new OAuthConsumer($consumer_key, $consumer_secret);
 		if (!empty($oauth_token) && !empty($oauth_token_secret)) {
 			$this->token = new OAuthConsumer($oauth_token, $oauth_token_secret);
 		} else {
-			$this->token = NULL;
+			$this->token = null;
 		}
 	}
 
@@ -92,7 +92,7 @@ class TwitterOAuth
 	 *
 	 * @returns a key/value array containing oauth_token and oauth_token_secret
 	 */
-	function getRequestToken($oauth_callback = NULL)
+	function getRequestToken($oauth_callback = null)
 	{
 		$parameters = array();
 		if (!empty($oauth_callback)) {
@@ -224,7 +224,7 @@ class TwitterOAuth
 	 *
 	 * @return API results
 	 */
-	function http($url, $method, $postfields = NULL)
+	function http($url, $method, $postfields = null)
 	{
 		$this->http_info = array();
 		$ci = curl_init();

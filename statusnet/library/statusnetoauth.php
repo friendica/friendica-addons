@@ -38,7 +38,7 @@ class StatusNetOAuth extends TwitterOAuth
 		return $this->host . 'oauth/request_token';
 	}
 
-	function __construct($apipath, $consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL)
+	function __construct($apipath, $consumer_key, $consumer_secret, $oauth_token = null, $oauth_token_secret = null)
 	{
 		parent::__construct($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
 		$this->host = $apipath;
@@ -56,7 +56,7 @@ class StatusNetOAuth extends TwitterOAuth
 	 *
 	 * @return array|object API results
 	 */
-	function http($url, $method, $postfields = NULL)
+	function http($url, $method, $postfields = null)
 	{
 		$this->http_info = [];
 		$ci = curl_init();
