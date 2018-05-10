@@ -10,6 +10,7 @@ use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Database\DBM;
 use Friendica\Model\User;
 use Friendica\Util\DateTimeFormat;
 
