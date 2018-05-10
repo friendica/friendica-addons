@@ -24,7 +24,7 @@ function pledgie_uninstall() {
 	Addon::unregisterHook('addon_settings_post', 'addon/pledgie/pledgie.php', 'pledgie_addon_settings_post');
 }
 
-function pledgie_addon_settings(&$a,&$s) {
+function pledgie_addon_settings(App $a,&$s) {
 
 	if(! is_site_admin())
 		return;
@@ -71,7 +71,7 @@ function pledgie_addon_settings_post(App $a, array &$b) {
 	}
 }
 
-function pledgie_active(App $a, array &$b) {
+function pledgie_active(App $a, &$b) {
 	$campaign = Config::get('pledgie-campaign','text');
 	$describe = Config::get('pledgie-describe','text');
 	$b .= '<div style="position: fixed; padding:5px; border-style:dotted; border-width:1px; background-color: white; line-height: 1; bottom: 5px; left: 20px; z-index: 1000; width: 150px; font-size: 12px;">';

@@ -212,7 +212,7 @@ function pumpio_connect(&$a)
 	return $o;
 }
 
-function pumpio_jot_nets(App $a, array &$b)
+function pumpio_jot_nets(App $a, &$b)
 {
 	if(! local_user())
 		return;

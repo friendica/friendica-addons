@@ -36,7 +36,7 @@ function diaspora_uninstall() {
 }
 
 
-function diaspora_jot_nets(App $a, array &$b) {
+function diaspora_jot_nets(App $a, &$b) {
     if(! local_user())
         return;
 

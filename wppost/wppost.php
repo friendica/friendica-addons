@@ -38,7 +38,7 @@ function wppost_uninstall() {
 }
 
 
-function wppost_jot_nets(App $a, array &$b) {
+function wppost_jot_nets(App $a, &$b) {
     if(! local_user())
         return;
 
@@ -52,7 +52,7 @@ function wppost_jot_nets(App $a, array &$b) {
 }
 
 
-function wppost_settings(&$a,&$s) {
+function wppost_settings(App &$a,&$s) {
 
 	if(! local_user())
 		return;

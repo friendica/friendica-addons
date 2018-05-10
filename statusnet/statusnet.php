@@ -94,7 +94,7 @@ function statusnet_check_item_notification(App $a, &$notification_data)
 	$notification_data["profiles"][] = PConfig::get($notification_data["uid"], 'statusnet', 'own_url');
 }
 
-function statusnet_jot_nets(App $a, array &$b)
+function statusnet_jot_nets(App $a, &$b)
 {
 	if (!local_user()) {
 		return;

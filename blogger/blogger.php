@@ -37,8 +37,7 @@ function blogger_uninstall()
 }
 
 
-function blogger_jot_nets(App $a, array &$b)
-{
+function blogger_jot_nets(App $a, &$b) {
 	if (!local_user()) {
 		return;
 	}

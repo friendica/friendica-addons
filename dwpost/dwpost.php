@@ -34,12 +34,13 @@ function dwpost_uninstall() {
 }
 
 
-function dwpost_jot_nets(App $a, array &$b) {
-    if(! local_user())
+function dwpost_jot_nets(App $a, &$b) {
+    if (! local_user()) {
         return;
+    }
 
     $dw_post = PConfig::get(local_user(),'dwpost','post');
-    if(intval($dw_post) == 1) {
+    if (intval($dw_post) == 1) {
         $dw_defpost = PConfig::get(local_user(),'dwpost','post_by_default');
         $selected = ((intval($dw_defpost) == 1) ? ' checked="checked" ' : '');
         $b .= '<div class="profile-jot-net"><input type="checkbox" name="dwpost_enable" ' . $selected . ' value="1" /> '

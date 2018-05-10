@@ -693,7 +693,7 @@ function jappixmini_cron(App $a, $d)
 	}
 }
 
-function jappixmini_download_source(App $a, array &$b)
+function jappixmini_download_source(App $a, &$b)
 {
 	// Jappix Mini source download link on About page
 	$b .= '<h1>Jappix Mini</h1>';

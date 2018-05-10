@@ -31,7 +31,7 @@ function libertree_uninstall() {
 }
 
 
-function libertree_jot_nets(App $a, array &$b) {
+function libertree_jot_nets(App $a, &$b) {
     if(! local_user())
         return;
 
@@ -45,7 +45,7 @@ function libertree_jot_nets(App $a, array &$b) {
 }
 
 
-function libertree_settings(&$a,&$s) {
+function libertree_settings(App $a,&$s) {
 
     if(! local_user())
         return;

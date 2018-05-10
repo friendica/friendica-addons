@@ -34,7 +34,7 @@ function ljpost_uninstall() {
 }
 
 
-function ljpost_jot_nets(App $a, array &$b) {
+function ljpost_jot_nets(App $a, &$b) {
     if(! local_user())
         return;
 

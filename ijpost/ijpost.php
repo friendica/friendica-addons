@@ -34,7 +34,7 @@ function ijpost_uninstall() {
 }
 
 
-function ijpost_jot_nets(App $a, array &$b) {
+function ijpost_jot_nets(App $a, &$b) {
     if(! local_user())
         return;
 

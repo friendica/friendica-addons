@@ -172,7 +172,7 @@ function tumblr_callback($a) {
 	return $o;
 }
 
-function tumblr_jot_nets(App $a, array &$b) {
+function tumblr_jot_nets(App $a, &$b) {
 	if (! local_user()) {
 		return;
 	}

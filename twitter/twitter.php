@@ -190,7 +190,7 @@ function twitter_follow(App $a, &$contact)
 	}
 }
 
-function twitter_jot_nets(App $a, array &$b)
+function twitter_jot_nets(App $a, &$b)
 {
 	if (!local_user()) {
 		return;

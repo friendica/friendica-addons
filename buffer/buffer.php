@@ -109,7 +109,7 @@ function buffer_connect(&$a) {
 	return($o);
 }
 
-function buffer_jot_nets(App $a, array &$b) {
+function buffer_jot_nets(App $a, &$b) {
 	if(! local_user())
 		return;
 
@@ -122,7 +122,7 @@ function buffer_jot_nets(App $a, array &$b) {
 	}
 }
 
-function buffer_settings(&$a,&$s) {
+function buffer_settings(App $a, &$s) {
 
 	if(! local_user())
 		return;

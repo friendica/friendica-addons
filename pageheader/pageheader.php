@@ -72,7 +72,7 @@ function pageheader_addon_settings_post(App $a, array &$b) {
 	}
 }
 
-function pageheader_fetch($a,&$b) {
+function pageheader_fetch(App $a, &$b) {
 	
 	if(file_exists('pageheader.html')){
 		$s = file_get_contents('pageheader.html');
