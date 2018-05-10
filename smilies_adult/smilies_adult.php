@@ -22,7 +22,7 @@ function smilies_adult_uninstall() {
 
  
 
-function smilies_adult_smilies(App $a, $b) {
+function smilies_adult_smilies(App $a, array &$b) {
 
 	$b['texts'][] = '(o)(o)';
 	$b['icons'][] = '<img class="smiley" src="' . $a->get_baseurl() . '/addon/smilies_adult/icons/tits.gif' . '" alt="' . '(o)(o)' . '" />';

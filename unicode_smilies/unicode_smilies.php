@@ -18,7 +18,7 @@ function unicode_smilies_uninstall() {
 	Addon::unregisterHook('smilie', 'addon/unicode_smilies/unicode_smilies.php', 'unicode_smilies_smilies');
 }
 
-function unicode_smilies_smilies(App $a, $b) {
+function unicode_smilies_smilies(App $a, array &$b) {
 	Smilies::add($b, ':-)', '&#x1F600;');
 	Smilies::add($b, ':)', '&#x1F600;');
 	Smilies::add($b, ':-(', '&#x1F641;');

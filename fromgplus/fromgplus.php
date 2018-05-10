@@ -80,7 +80,7 @@ class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
 	return;
 }
 
-function fromgplus_addon_settings_post(App $a, $b) {
+function fromgplus_addon_settings_post(App $a, array &$b) {
 
 	if(! local_user())
 		return;

@@ -36,7 +36,7 @@ function js_upload_uninstall() {
 }
 
 
-function js_upload_form(App $a, $b) {
+function js_upload_form(App $a, array &$b) {
 
 	$b['default_upload'] = false;
 
@@ -136,7 +136,7 @@ EOT;
 
 }
 
-function js_upload_post_init(App $a, $b) {
+function js_upload_post_init(App $a, array &$b) {
 
 	// list of valid extensions, ex. array("jpeg", "xml", "bmp")
 
@@ -164,7 +164,7 @@ function js_upload_post_init(App $a, $b) {
 
 }
 
-function js_upload_post_file(App $a, $b) {
+function js_upload_post_file(App $a, array &$b) {
 
 	$result = $a->data['upload_result'];
 
@@ -175,7 +175,7 @@ function js_upload_post_file(App $a, $b) {
 }
 
 
-function js_upload_post_end(App $a, $b) {
+function js_upload_post_end(App $a, array &$b) {
 
 logger('upload_post_end');
 	if(x($a->data,'upload_jsonresponse')) {

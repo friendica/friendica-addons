@@ -658,7 +658,7 @@ function twitter_addon_admin(App $a, &$o)
 	]);
 }
 
-function twitter_cron(App $a, $b)
+function twitter_cron(App $a, array &$b)
 {
 	$last = Config::get('twitter', 'last_poll');
 
@@ -726,7 +726,7 @@ function twitter_cron(App $a, $b)
 	Config::set('twitter', 'last_poll', time());
 }
 
-function twitter_expire(App $a, $b)
+function twitter_expire(App $a, array &$b)
 {
 	$days = Config::get('twitter', 'expire');
 

@@ -172,7 +172,7 @@ function tumblr_callback($a) {
 	return $o;
 }
 
-function tumblr_jot_nets(App $a, $b) {
+function tumblr_jot_nets(App $a, array &$b) {
 	if (! local_user()) {
 		return;
 	}
@@ -270,7 +270,7 @@ function tumblr_settings(App $a, $s) {
 }
 
 
-function tumblr_settings_post(App $a, $b) {
+function tumblr_settings_post(App $a, array &$b) {
 
 	if(x($_POST,'tumblr-submit')) {
 
@@ -320,7 +320,7 @@ function tumblr_post_local(App $a, array &$b) {
 
 
 
-function tumblr_send(App $a, $b) {
+function tumblr_send(App $a, array &$b) {
 
 	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;

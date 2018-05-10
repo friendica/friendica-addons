@@ -34,7 +34,7 @@ function dwpost_uninstall() {
 }
 
 
-function dwpost_jot_nets(App $a, $b) {
+function dwpost_jot_nets(App $a, array &$b) {
     if(! local_user())
         return;
 
@@ -108,7 +108,7 @@ function dwpost_settings(App $a, $s) {
 }
 
 
-function dwpost_settings_post(App $a, $b) {
+function dwpost_settings_post(App $a, array &$b) {
 
 	if(x($_POST,'dwpost-submit')) {
 
@@ -121,7 +121,7 @@ function dwpost_settings_post(App $a, $b) {
 
 }
 
-function dwpost_post_local(App $a, $b) {
+function dwpost_post_local(App $a, array &$b) {
 
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
@@ -152,7 +152,7 @@ function dwpost_post_local(App $a, $b) {
 
 
 
-function dwpost_send(App $a, $b) {
+function dwpost_send(App $a, array &$b) {
 
     if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
         return;

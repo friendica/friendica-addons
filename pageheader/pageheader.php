@@ -61,7 +61,7 @@ function pageheader_addon_settings(App $a, $s) {
 
 }
 
-function pageheader_addon_settings_post(App $a, $b) {
+function pageheader_addon_settings_post(App $a, array &$b) {
 
 	if(! is_site_admin())
 		return;

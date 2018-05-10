@@ -52,7 +52,7 @@ function irc_addon_settings(App $a, $s) {
 
 }
 
-function irc_addon_settings_post(App $a, $b) {
+function irc_addon_settings_post(App $a, array &$b) {
 	if(! local_user())
 		return;
 
