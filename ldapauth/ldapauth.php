@@ -54,7 +54,7 @@
  * ...etc.
  */
 
-use Friencia\App;
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Model\User;

@@ -6,7 +6,7 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
 
-use Friencia\App;
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
 use Friendica\Core\Addon;

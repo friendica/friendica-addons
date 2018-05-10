@@ -6,7 +6,7 @@
  * Author: Johannes Schwab <https://friendica.jschwab.org/profile/ddorian>
  */
 
-use Friencia\App;
+use Friendica\App;
 use Friendica\Core\Addon;
 
 function smileybutton_install() {

@@ -6,7 +6,7 @@
  * Author: Thomas Willingham <https://beardyunixer.com/profile/beardyunixer>
  */
 
-use Friencia\App;
+use Friendica\App;
 use Friendica\Content\Nav;
 use Friendica\Content\Widget;
 use Friendica\Core\Addon;

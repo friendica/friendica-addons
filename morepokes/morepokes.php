@@ -7,7 +7,7 @@
  *
  */
 
-use Friencia\App;
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 

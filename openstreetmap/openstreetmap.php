@@ -9,7 +9,7 @@
  *
  */
 
-use Friencia\App;
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;

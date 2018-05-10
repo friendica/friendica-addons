@@ -6,7 +6,7 @@
  *
  */
 
-use Friencia\App;
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
