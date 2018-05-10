@@ -13,6 +13,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Database\DBM;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
 
@@ -163,11 +164,13 @@ function ljpost_send(App $a, array &$b) {
 
 	$tz = 'UTC';
 
-	$x = q("select timezone from user where uid = %d limit 1",
+	$x = q("SELECT `timezone` FROM `user` WHERE `uid` = %d LIMIT 1",
 		intval($b['uid'])
 	);
-	if($x && strlen($x[0]['timezone']))
+
+	if (DBM::is_result($x) && strlen($x[0]['timezone'])) {
 		$tz = $x[0]['timezone'];
+	}
 
 	$lj_username = xmlify(PConfig::get($b['uid'],'ljpost','lj_username'));
 	$lj_password = xmlify(PConfig::get($b['uid'],'ljpost','lj_password'));
@@ -176,10 +179,11 @@ function ljpost_send(App $a, array &$b) {
 //		$lj_journal = $lj_username;
 
 	$lj_blog = xmlify(PConfig::get($b['uid'],'ljpost','lj_blog'));
-	if(! strlen($lj_blog))
+	if (! strlen($lj_blog)) {
 		$lj_blog = xmlify('http://www.livejournal.com/interface/xmlrpc');
+	}
 
-	if($lj_username && $lj_password && $lj_blog) {
+	if ($lj_username && $lj_password && $lj_blog) {
 		$title = xmlify($b['title']);
 		$post = BBCode::convert($b['body']);
 		$post = xmlify($post);

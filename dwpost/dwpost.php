@@ -13,6 +13,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Database\DBM;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
 
@@ -170,17 +171,19 @@ function dwpost_send(App $a, array &$b) {
 
 	$tz = 'UTC';
 
-	$x = q("select timezone from user where uid = %d limit 1",
+	$x = q("SELECT `timezone` FROM `user` WHERE `uid`=%d LIMIT 1",
 		intval($b['uid'])
 	);
-	if($x && strlen($x[0]['timezone']))
+
+	if (DBM::is_result($x) && strlen($x[0]['timezone'])) {
 		$tz = $x[0]['timezone'];
+	}
 
 	$dw_username = PConfig::get($b['uid'],'dwpost','dw_username');
 	$dw_password = PConfig::get($b['uid'],'dwpost','dw_password');
 	$dw_blog = 'http://www.dreamwidth.org/interface/xmlrpc';
 
-	if($dw_username && $dw_password && $dw_blog) {
+	if ($dw_username && $dw_password && $dw_blog) {
 		$title = $b['title'];
 		$post = BBCode::convert($b['body']);
 		$post = xmlify($post);

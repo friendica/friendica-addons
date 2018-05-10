@@ -63,8 +63,8 @@ function testdrive_register_account($a,$b) {
 function testdrive_cron($a,$b) {
 	require_once('include/enotify.php');
 
-	$r = q("select * from user where account_expires_on < UTC_TIMESTAMP() + INTERVAL 5 DAY and
-		expire_notification_sent = '0000-00-00 00:00:00' ");
+	$r = q("SELECT * FROM `user` WHERE `account_expires_on` < UTC_TIMESTAMP() + INTERVAL 5 DAY AND
+		`expire_notification_sent` = '0000-00-00 00:00:00'");
 
 	if (DBM::is_result($r)) {
 		foreach($r as $rr) {
@@ -80,15 +80,14 @@ function testdrive_cron($a,$b) {
 				'source_photo' => $a->get_baseurl() . '/images/person-80.jpg',
 			]);
 
-			q("update user set expire_notification_sent = '%s' where uid = %d",
+			q("UPDATE `user` SET `expire_notification_sent`='%s' WHERE `uid`=%d",
 				dbesc(DateTimeFormat::utcNow()),
 				intval($rr['uid'])
 			);
-
 		}
 	}
 
-	$r = q("select * from user where account_expired = 1 and account_expires_on < UTC_TIMESTAMP() - INTERVAL 5 DAY ");
+	$r = q("SELECT * FROM `user` WHERE `account_expired`=1 AND `account_expires_on` < UTC_TIMESTAMP() - INTERVAL 5 DAY");
 
 	if (DBM::is_result($r)) {
 		foreach($r as $rr) {

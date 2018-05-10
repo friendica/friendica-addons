@@ -28,7 +28,7 @@ function geocoordinates_uninstall()
 
 function geocoordinates_resolve_item(array &$item)
 {
-	if (!isset($item['coord']) || isset($item['location'])) {
+	if (empty($item['coord']) || !empty($item['location'])) {
 		return;
 	}
 
@@ -38,7 +38,7 @@ function geocoordinates_resolve_item(array &$item)
 		return;
 	}
 
-	$language = Config::get("geocoordinates", "language");
+	$language = Config::get("geocoordinates", "language", "de");
 
 	if ($language == "") {
 		$language = "de";
@@ -62,7 +62,7 @@ function geocoordinates_resolve_item(array &$item)
 
 	$s = Network::fetchUrl("https://api.opencagedata.com/geocode/v1/json?q=".$coords[0].",".$coords[1]."&key=".$key."&language=".$language);
 
-	if ($s === FALSE) {
+	if ($s === FALSE || empty($s)) {
 		logger("API could not be queried", LOGGER_DEBUG);
 		return;
 	}
@@ -83,8 +83,9 @@ function geocoordinates_resolve_item(array &$item)
 
 	logger("Got location for coordinates ".$coords[0]."-".$coords[1].": ".$item["location"], LOGGER_DEBUG);
 
-	if ($item["location"] != "")
+	if ($item["location"] != "") {
 		Cache::set("geocoordinates:".$language.":".$coords[0]."-".$coords[1], $item["location"]);
+	}
 }
 
 function geocoordinates_post_hook(App $a, array &$item)
