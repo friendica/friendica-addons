@@ -139,7 +139,7 @@ function blockem_prepare_body_content_filter(App $a, array &$hook_data)
 	}
 }
 
-function blockem_display_item(App $a, array &$b) {
+function blockem_display_item(App $a, array &$b = NULL) {
 	if (strstr($b['output']['body'],'id="blockem-wrap-')) {
 		$b['output']['thumb'] = $a->get_baseurl() . "/images/person-80.jpg";
 	}
@@ -147,13 +147,16 @@ function blockem_display_item(App $a, array &$b) {
 
 function blockem_conversation_start(App $a, array &$b) {
 
-	if(! local_user())
+	if (! local_user()) {
 		return;
-
-	$words = PConfig::get(local_user(),'blockem','words');
-	if($words) {
-		$a->data['blockem'] = explode(',',$words);
 	}
+
+	$words = PConfig::get(local_user(), 'blockem', 'words');
+
+	if ($words) {
+		$a->data['blockem'] = explode(',', $words);
+	}
+
 	$a->page['htmlhead'] .= <<< EOT
 
 <script>
