@@ -730,7 +730,6 @@ function statusnet_cron(App $a)
 	}
 	logger('statusnet: cron_start');
 
-	/// @TODO Use PConfig::get() here maybe?
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'statusnet' AND `k` = 'mirror_posts' AND `v` = '1' ORDER BY RAND() ");
 
 	if (DBM::is_result($r)) {
@@ -747,7 +746,6 @@ function statusnet_cron(App $a)
 
 	$abandon_limit = date(DateTimeFormat::MYSQL, time() - $abandon_days * 86400);
 
-	/// @TODO Use PConfig::get() here maybe?
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'statusnet' AND `k` = 'import' AND `v` ORDER BY RAND()");
 
 	if (DBM::is_result($r)) {
