@@ -712,7 +712,7 @@ function statusnet_prepare_body(App $a, array &$b)
 	}
 }
 
-function statusnet_cron(App $a, array &$b)
+function statusnet_cron(App $a, array &$b = null)
 {
 	$last = Config::get('statusnet', 'last_poll');
 
@@ -730,7 +730,9 @@ function statusnet_cron(App $a, array &$b)
 	}
 	logger('statusnet: cron_start');
 
+	/// @TODO Use PConfig::get() here maybe?
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'statusnet' AND `k` = 'mirror_posts' AND `v` = '1' ORDER BY RAND() ");
+
 	if (DBM::is_result($r)) {
 		foreach ($r as $rr) {
 			logger('statusnet: fetching for user ' . $rr['uid']);
@@ -745,11 +747,14 @@ function statusnet_cron(App $a, array &$b)
 
 	$abandon_limit = date(DateTimeFormat::MYSQL, time() - $abandon_days * 86400);
 
+	/// @TODO Use PConfig::get() here maybe?
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'statusnet' AND `k` = 'import' AND `v` ORDER BY RAND()");
+
 	if (DBM::is_result($r)) {
 		foreach ($r as $rr) {
 			if ($abandon_days != 0) {
 				$user = q("SELECT `login_date` FROM `user` WHERE uid=%d AND `login_date` >= '%s'", $rr['uid'], $abandon_limit);
+
 				if (!DBM::is_result($user)) {
 					logger('abandoned account: timeline from user ' . $rr['uid'] . ' will not be imported');
 					continue;
