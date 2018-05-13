@@ -25,13 +25,13 @@ function notifyall_uninstall()
 
 function notifyall_module() {}
 
-function notifyall_addon_admin(App &$a, &$o) 
+function notifyall_addon_admin(App $a, &$o) 
 {
 	$o = '<div></div>&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . z_root() . '/notifyall">' . L10n::t('Send email to all members') . '</a></br/>';
 }
 
 
-function notifyall_post(App &$a) 
+function notifyall_post(App $a) 
 {
 	if(! is_site_admin())
 	{
