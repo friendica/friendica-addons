@@ -12,41 +12,53 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\L10n;
 use Friendica\Util\Emailer;
 
-function notifyall_install() {
+function notifyall_install() 
+{
 	logger("installed notifyall");
 }
 
-function notifyall_uninstall() {
+function notifyall_uninstall() 
+{
 	logger("removed notifyall");
 }
 
 function notifyall_module() {}
 
-function notifyall_addon_admin(&$a, &$o) {
-
+function notifyall_addon_admin(&$a, &$o) 
+{
 	$o = '<div></div>&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . z_root() . '/notifyall">' . L10n::t('Send email to all members') . '</a></br/>';
 }
 
 
-function notifyall_post(&$a) {
+function notifyall_post(&$a) 
+{
 	if(! is_site_admin())
+	{
 		return;
+	}
 
 	$text = trim($_REQUEST['text']);
+	
 	if(! $text)
+	{
 		return;
+	}
 
 	$sitename = $a->config['sitename'];
 
 	if (!x($a->config['admin_name']))
-		$sender_name = L10n::t('%s Administrator', $sitename);
-	else
-		$sender_name = L10n::t('%1$s, %2$s Administrator', $a->config['admin_name'], $sitename);
+	{
+		$sender_name = '"' . L10n::t('%s Administrator', $sitename) . '"';
+	}	else 	{
+		$sender_name = '"' . L10n::t('%1$s, %2$s Administrator', $a->config['admin_name'], $sitename) . '"';
+	}
 
 	if (! x($a->config['sender_email']))
+	{
 		$sender_email = 'noreply@' . $a->get_hostname();
-	else
+	} else {
 		$sender_email = $a->config['sender_email'];
+	}
 
 	$subject = $_REQUEST['subject'];
 
@@ -57,7 +69,8 @@ function notifyall_post(&$a) {
 
 	// if this is a test, send it only to the admin(s)
 	// admin_email might be a comma separated list, but we need "a@b','c@d','e@f
-	if (intval($_REQUEST['test'])) {
+	if (intval($_REQUEST['test'])) 
+	{
 		$email = $a->config['admin_email'];
 		$email = "'" . str_replace([" ",","], ["","','"], $email) . "'";
 	}
@@ -65,12 +78,14 @@ function notifyall_post(&$a) {
 
 	$recips = q("SELECT DISTINCT `email` FROM `user` WHERE `verified` AND NOT `account_removed` AND NOT `account_expired` $sql_extra");
 
-	if (! $recips) {
+	if (! $recips) 
+	{
 		notice(L10n::t('No recipients found.') . EOL);
 		return;
 	}
 
-	foreach ($recips as $recip) {
+	foreach ($recips as $recip) 
+	{
 		Emailer::send([
 			'fromName'             => $sender_name,
 			'fromEmail'            => $sender_email,
