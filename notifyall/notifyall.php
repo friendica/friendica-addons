@@ -46,7 +46,7 @@ function notifyall_post(&$a)
 
 	$sitename = $a->config['sitename'];
 
-	if (!x($a->config['admin_name']))
+	if (empty($a->config['admin_name']))
 	{
 		$sender_name = '"' . L10n::t('%s Administrator', $sitename) . '"';
 	}	else 	{
