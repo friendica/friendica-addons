@@ -6,6 +6,7 @@
  * Author: Tony Baldwin <https://free-haven.org/profile/tony>
  * Author: Michael Johnston
  * Author: Cat Gray <https://free-haven.org/profile/catness>
+ * @TODO A lot spaces here needs converted to tab
  */
 
 use Friendica\App;
@@ -25,6 +26,7 @@ function ijpost_install() {
     Addon::registerHook('connector_settings_post', 'addon/ijpost/ijpost.php', 'ijpost_settings_post');
 
 }
+
 function ijpost_uninstall() {
     Addon::unregisterHook('post_local',       'addon/ijpost/ijpost.php', 'ijpost_post_local');
     Addon::unregisterHook('notifier_normal',  'addon/ijpost/ijpost.php', 'ijpost_send');
@@ -33,7 +35,6 @@ function ijpost_uninstall() {
     Addon::unregisterHook('connector_settings_post', 'addon/ijpost/ijpost.php', 'ijpost_settings_post');
 
 }
-
 
 function ijpost_jot_nets(App $a, &$b) {
     if(! local_user())
@@ -122,7 +123,6 @@ function ijpost_settings_post(App $a, array &$b) {
 }
 
 function ijpost_post_local(App $a, array &$b) {
-
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
 	if($b['edit'])
@@ -173,12 +173,13 @@ function ijpost_send(App $a, array &$b) {
 		intval($b['uid'])
 	);
 
-	if (DBM::is_result($x) && strlen($x[0]['timezone'])) {
+	if (DBM::is_result($x) && !empty($x[0]['timezone'])) {
 		$tz = $x[0]['timezone'];
 	}
 
 	$ij_username = PConfig::get($b['uid'],'ijpost','ij_username');
 	$ij_password = PConfig::get($b['uid'],'ijpost','ij_password');
+
 	$ij_blog = 'http://www.insanejournal.com/interface/xmlrpc';
 
 	if ($ij_username && $ij_password && $ij_blog) {
@@ -226,6 +227,7 @@ EOT;
 		if($ij_blog !== 'test') {
 			$x = Network::post($ij_blog, $xml, ["Content-Type: text/xml"]);
 		}
+
 		logger('posted to insanejournal: ' . ($x) ? $x : '', LOGGER_DEBUG);
 
 	}
