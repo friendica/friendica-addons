@@ -11,6 +11,7 @@
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\L10n;
 use Friendica\Util\Emailer;
+use Friendica\App;
 
 function notifyall_install() 
 {
@@ -24,13 +25,13 @@ function notifyall_uninstall()
 
 function notifyall_module() {}
 
-function notifyall_addon_admin(&$a, &$o) 
+function notifyall_addon_admin(App &$a, &$o) 
 {
 	$o = '<div></div>&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . z_root() . '/notifyall">' . L10n::t('Send email to all members') . '</a></br/>';
 }
 
 
-function notifyall_post(&$a) 
+function notifyall_post(App &$a) 
 {
 	if(! is_site_admin())
 	{
