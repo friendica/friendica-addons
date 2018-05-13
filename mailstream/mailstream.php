@@ -223,7 +223,7 @@ function mailstream_decode_subject($subject) {
 }
 
 function mailstream_subject(array $item) {
-	if (isset($item['title'])) {
+	if (!empty($item['title'])) {
 		return mailstream_decode_subject($item['title']);
 	}
 
@@ -231,44 +231,60 @@ function mailstream_subject(array $item) {
 	// Don't look more than 100 levels deep for a subject, in case of loops
 	for ($i = 0; ($i < 100) && $parent; $i++) {
 		$parent_item = Item::selectFirst(['thr-parent', 'title'], ['uri' => $parent]);
+
 		if (!DBM::is_result($parent_item)) {
 			break;
 		}
+
 		if ($parent_item['thr-parent'] === $parent) {
 			break;
 		}
+
 		if ($parent_item['title']) {
 			return L10n::t('Re:') . ' ' . mailstream_decode_subject($parent_item['title']);
 		}
+
 		$parent = $parent_item['thr-parent'];
 	}
+
 	$r = q("SELECT * FROM `contact` WHERE `id` = %d AND `uid` = %d",
 		intval($item['contact-id']), intval($item['uid']));
+
+	/// @TODO If above statement fails, this will cause E_NOTICE-s
+	/// @TODO Also maybe directly use $r[0] instead of variable copy?
 	$contact = $r[0];
+
 	if ($contact['network'] === 'dfrn') {
 		return L10n::t("Friendica post");
 	}
+
 	if ($contact['network'] === 'dspr') {
 		return L10n::t("Diaspora post");
 	}
+
 	if ($contact['network'] === 'face') {
 		$text = mailstream_decode_subject($item['body']);
+
 		// For some reason these do show up in Facebook
 		$text = preg_replace('/\xA0$/', '', $text);
 		$subject = (strlen($text) > 150) ? (substr($text, 0, 140) . '...') : $text;
+
 		return preg_replace('/\\s+/', ' ', $subject);
 	}
+
 	if ($contact['network'] === 'feed') {
 		return L10n::t("Feed item");
 	}
+
 	if ($contact['network'] === 'mail') {
 		return L10n::t("Email");
 	}
+
 	return L10n::t("Friendica Item");
 }
 
 function mailstream_send(App $a, $message_id, array $item, $user) {
-	if (!isset($item['visible'])) {
+	if (empty($item['visible'])) {
 		return;
 	}
 
@@ -276,20 +292,25 @@ function mailstream_send(App $a, $message_id, array $item, $user) {
 		return;
 	}
 
-	// @TODO Isn't there a better way?
+	/// @TODO Isn't there a better way?
 	require_once dirname(__FILE__) . '/phpmailer/class.phpmailer.php';
 
 	$attachments = [];
 	mailstream_do_images($a, $item, $attachments);
 	$frommail = Config::get('mailstream', 'frommail');
+
 	if ($frommail == "") {
 		$frommail = 'friendica@localhost.local';
 	}
+
 	$address = PConfig::get($item['uid'], 'mailstream', 'address');
+
 	if (!$address) {
 		$address = $user['email'];
 	}
+
 	$mail = new PHPmailer;
+
 	try {
 		$mail->XMailer = 'Friendica Mailstream Addon';
 		$mail->SetFrom($frommail, mailstream_sender($item));
