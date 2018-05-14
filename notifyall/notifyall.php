@@ -11,42 +11,51 @@
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\L10n;
 use Friendica\Util\Emailer;
+use Friendica\App;
 
-function notifyall_install() {
+function notifyall_install() 
+{
 	logger("installed notifyall");
 }
 
-function notifyall_uninstall() {
+function notifyall_uninstall() 
+{
 	logger("removed notifyall");
 }
 
 function notifyall_module() {}
 
-function notifyall_addon_admin(&$a, &$o) {
-
+function notifyall_addon_admin(App $a, &$o) 
+{
 	$o = '<div></div>&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . z_root() . '/notifyall">' . L10n::t('Send email to all members') . '</a></br/>';
 }
 
 
-function notifyall_post(&$a) {
-	if(! is_site_admin())
+function notifyall_post(App $a) 
+{
+	if(!is_site_admin()) {
 		return;
+	}
 
 	$text = trim($_REQUEST['text']);
-	if(! $text)
+	
+	if(! $text) {
 		return;
+	}
 
 	$sitename = $a->config['sitename'];
 
-	if (!x($a->config['admin_name']))
-		$sender_name = L10n::t('%s Administrator', $sitename);
-	else
-		$sender_name = L10n::t('%1$s, %2$s Administrator', $a->config['admin_name'], $sitename);
+	if (empty($a->config['admin_name'])) {
+		$sender_name = '"' . L10n::t('%s Administrator', $sitename) . '"';
+	} else {
+		$sender_name = '"' . L10n::t('%1$s, %2$s Administrator', $a->config['admin_name'], $sitename) . '"';
+	}
 
-	if (! x($a->config['sender_email']))
+	if (! x($a->config['sender_email'])) {
 		$sender_email = 'noreply@' . $a->get_hostname();
-	else
+	} else {
 		$sender_email = $a->config['sender_email'];
+	}
 
 	$subject = $_REQUEST['subject'];
 
