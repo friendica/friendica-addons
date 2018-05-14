@@ -58,7 +58,7 @@ function geocoordinates_resolve_item(array &$item)
 
 	$s = Network::fetchUrl("https://api.opencagedata.com/geocode/v1/json?q=".$coords[0].",".$coords[1]."&key=".$key."&language=".$language);
 
-	if ($s === FALSE || empty($s)) {
+	if empty($s)) {
 		logger("API could not be queried", LOGGER_DEBUG);
 		return;
 	}
@@ -91,7 +91,6 @@ function geocoordinates_post_hook(App $a, array &$item)
 
 function geocoordinates_addon_admin(App $a, &$o)
 {
-
 	$t = get_markup_template("admin.tpl", "addon/geocoordinates/");
 
 	$o = replace_macros($t, [
