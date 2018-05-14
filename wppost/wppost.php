@@ -15,7 +15,8 @@ use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
 use Friendica\Util\Network;
 
-function wppost_install() {
+function wppost_install()
+{
     Addon::registerHook('post_local',           'addon/wppost/wppost.php', 'wppost_post_local');
     Addon::registerHook('notifier_normal',      'addon/wppost/wppost.php', 'wppost_send');
     Addon::registerHook('jot_networks',         'addon/wppost/wppost.php', 'wppost_jot_nets');
@@ -23,7 +24,9 @@ function wppost_install() {
     Addon::registerHook('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
 
 }
-function wppost_uninstall() {
+
+function wppost_uninstall()
+{
     Addon::unregisterHook('post_local',       'addon/wppost/wppost.php', 'wppost_post_local');
     Addon::unregisterHook('notifier_normal',  'addon/wppost/wppost.php', 'wppost_send');
     Addon::unregisterHook('jot_networks',     'addon/wppost/wppost.php', 'wppost_jot_nets');
@@ -38,11 +41,13 @@ function wppost_uninstall() {
 }
 
 
-function wppost_jot_nets(App $a, &$b) {
+function wppost_jot_nets(App $a, &$b)
+{
     if(! local_user())
         return;
 
     $wp_post = PConfig::get(local_user(),'wppost','post');
+
     if(intval($wp_post) == 1) {
         $wp_defpost = PConfig::get(local_user(),'wppost','post_by_default');
         $selected = ((intval($wp_defpost) == 1) ? ' checked="checked" ' : '');
@@ -52,7 +57,8 @@ function wppost_jot_nets(App $a, &$b) {
 }
 
 
-function wppost_settings(App &$a,&$s) {
+function wppost_settings(App &$a, &$s)
+{
 
 	if(! local_user())
 		return;
@@ -137,8 +143,8 @@ function wppost_settings(App &$a,&$s) {
 }
 
 
-function wppost_settings_post(App $a, array &$b) {
-
+function wppost_settings_post(App $a, array &$b)
+{
 	if(x($_POST,'wppost-submit')) {
 
 		PConfig::set(local_user(),'wppost','post',intval($_POST['wppost']));
@@ -157,8 +163,8 @@ function wppost_settings_post(App $a, array &$b) {
 
 }
 
-function wppost_post_local(App $a, array &$b) {
-
+function wppost_post_local(App $a, array &$b)
+{
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
 	if ($b['edit']) {
@@ -195,8 +201,8 @@ function wppost_post_local(App $a, array &$b) {
 
 
 
-function wppost_send(App $a, array &$b) {
-
+function wppost_send(App $a, array &$b)
+{
 	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
 	}

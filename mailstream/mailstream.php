@@ -292,7 +292,7 @@ function mailstream_send(App $a, $message_id, array $item, $user) {
 		return;
 	}
 
-	/// @TODO Isn't there a better way?
+	/// @TODO Maybe properly use Composer
 	require_once dirname(__FILE__) . '/phpmailer/class.phpmailer.php';
 
 	$attachments = [];
