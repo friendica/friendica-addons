@@ -168,7 +168,7 @@ function ljpost_send(App $a, array &$b) {
 		intval($b['uid'])
 	);
 
-	if (DBM::is_result($x) && strlen($x[0]['timezone'])) {
+	if (DBM::is_result($x) && !empty($x[0]['timezone'])) {
 		$tz = $x[0]['timezone'];
 	}
 
