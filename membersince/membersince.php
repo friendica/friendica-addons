@@ -17,11 +17,13 @@ function membersince_install()
 	Addon::registerHook('profile_advanced', 'addon/membersince/membersince.php', 'membersince_display');
 }
 
-function membersince_uninstall() {
+function membersince_uninstall()
+{
 	Addon::unregisterHook('profile_advanced', 'addon/membersince/membersince.php', 'membersince_display');
 }
 
-function membersince_display(App $a, array &$b) {
+function membersince_display(App $a, array &$b)
+{
 	if ($a->getCurrentTheme() == 'frio') {
 		// Works in Frio.
 		$doc = new DOMDocument();

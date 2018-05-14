@@ -90,15 +90,18 @@ function openstreetmap_location($a, &$item)
 		$nomserver = OSM_NOM;
 	}
 
-	if (isset($item['coord'])) {
+	if (!empty($item['coord'])) {
 		$coords = explode(' ', $item['coord']);
+
 		if (count($coords) > 1) {
 			$lat = urlencode(round($coords[0], 5));
 			$lon = urlencode(round($coords[1], 5));
 			$target = $tmsserver;
+
 			if ($marker > 0) {
 				$target .= '?mlat=' . $lat . '&mlon=' . $lon;
 			}
+
 			$target .= '#map='.intval($zoom).'/'.$lat.'/'.$lon;
 		}
 	}
@@ -107,7 +110,7 @@ function openstreetmap_location($a, &$item)
 		$target = $nomserver.'?q='.urlencode($item['location']);
 	}
 
-	if (isset($item['location'])) {
+	if (!empty($item['location'])) {
 		$title = $item['location'];
 	} else {
 		$title = $item['coord'];

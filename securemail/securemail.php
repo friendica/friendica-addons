@@ -25,7 +25,8 @@ require_once 'openpgp.php';
 require_once 'openpgp_crypt_symmetric.php';
 
 
-function securemail_install() {
+function securemail_install()
+{
     Addon::registerHook('addon_settings', 'addon/securemail/securemail.php', 'securemail_settings');
     Addon::registerHook('addon_settings_post', 'addon/securemail/securemail.php', 'securemail_settings_post');
 
@@ -53,7 +54,8 @@ function securemail_uninstall() {
  *
  * @see App
  */
-function securemail_settings(App $a, &$s){
+function securemail_settings(App $a, &$s)
+{
     if (!local_user()) {
         return;
     }
@@ -82,8 +84,8 @@ function securemail_settings(App $a, &$s){
  *
  * @see App
  */
-function securemail_settings_post(App $a, array &$b){
-
+function securemail_settings_post(App $a, array &$b)
+{
     if (!local_user()) {
         return;
     }
@@ -146,8 +148,10 @@ function securemail_settings_post(App $a, array &$b){
  * @param array $b hook data
  *
  * @see App
+ * @todo x() is deprecated, next PR
  */
-function securemail_emailer_send_prepare(App $a, array &$b) {
+function securemail_emailer_send_prepare(App $a, array &$b)
+{
     if (!x($b, 'uid')) {
         return;
     }
@@ -183,7 +187,7 @@ function securemail_emailer_send_prepare(App $a, array &$b) {
     $b['htmlVersion'] = null;
 }
 
-
+/// @TODO Old lost code? Next PR!
 /**
  * add addon composer autoloader maps to system autoloader
 
