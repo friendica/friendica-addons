@@ -33,7 +33,7 @@ function notifyall_addon_admin(App $a, &$o)
 
 function notifyall_post(App $a) 
 {
-	if(! is_site_admin())
+	if(!is_site_admin())
 	{
 		return;
 	}
@@ -50,7 +50,7 @@ function notifyall_post(App $a)
 	if (empty($a->config['admin_name']))
 	{
 		$sender_name = '"' . L10n::t('%s Administrator', $sitename) . '"';
-	}	else 	{
+	} else {
 		$sender_name = '"' . L10n::t('%1$s, %2$s Administrator', $a->config['admin_name'], $sitename) . '"';
 	}
 
