@@ -74,7 +74,7 @@ function notifyall_post(App $a)
 
 	$recips = q("SELECT DISTINCT `email` FROM `user` WHERE `verified` AND NOT `account_removed` AND NOT `account_expired` $sql_extra");
 
-	if (! $recips)  {
+	if (! $recips) {
 		notice(L10n::t('No recipients found.') . EOL);
 		return;
 	}
