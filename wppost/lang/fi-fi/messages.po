@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-01-24 21:06+0100\n"
-"PO-Revision-Date: 2018-04-08 16:28+0000\n"
+"PO-Revision-Date: 2018-05-12 13:12+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -22,11 +22,11 @@ msgstr ""
 
 #: wppost.php:42
 msgid "Post to Wordpress"
-msgstr "Lähetä Wordpressiin"
+msgstr "Lähetä WordPressiin"
 
 #: wppost.php:80 wppost.php:84
 msgid "Wordpress Export"
-msgstr ""
+msgstr "WordPress vienti"
 
 #: wppost.php:87
 msgid "Enable WordPress Post Addon"
@@ -50,17 +50,17 @@ msgstr "Lähetä WordPressiin oletuksena"
 
 #: wppost.php:112
 msgid "Provide a backlink to the Friendica post"
-msgstr ""
+msgstr "Lisää backlinkki alkuperäiseen Friendica -julkaisuun"
 
 #: wppost.php:116
 msgid ""
 "Text for the backlink, e.g. Read the original post and comment stream on "
 "Friendica."
-msgstr ""
+msgstr "Backlinkin teksti, esim. Katso alkuperäinen julkaisu ja kommentit Friendicassa."
 
 #: wppost.php:121
 msgid "Don't post messages that are too short"
-msgstr ""
+msgstr "Älä julkaise lyhyitä viestejä"
 
 #: wppost.php:127
 msgid "Save Settings"
@@ -68,7 +68,7 @@ msgstr "Tallenna asetukset"
 
 #: wppost.php:206
 msgid "Read the orig­i­nal post and com­ment stream on Friendica"
-msgstr ""
+msgstr "Katso alkuperäinen julkaisu ja kommentit Friendicassa"
 
 #: wppost.php:269
 msgid "Post from Friendica"

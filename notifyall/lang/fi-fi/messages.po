@@ -34,7 +34,7 @@ msgstr "%1$s, %2$s-ylläpitäjä"
 
 #: notifyall.php:60
 msgid "No recipients found."
-msgstr ""
+msgstr "Vastaanottajaa ei löytynyt."
 
 #: notifyall.php:78
 msgid "Emails sent"

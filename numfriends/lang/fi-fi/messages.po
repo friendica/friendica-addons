@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-03 18:57+0000\n"
+"PO-Revision-Date: 2018-05-12 13:36+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -29,7 +30,7 @@ msgstr "Numfriends -asetukset"
 
 #: numfriends.php:79
 msgid "How many contacts to display on profile sidebar"
-msgstr ""
+msgstr "Kuinka monta kontaktia näytetään profiilin sivupalkissa"
 
 #: numfriends.php:85
 msgid "Submit"

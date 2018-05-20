@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Kris, 2018
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-03 18:57+0000\n"
+"PO-Revision-Date: 2018-05-12 13:35+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -35,11 +36,11 @@ msgstr ""
 
 #: openstreetmap.php:96
 msgid "Default zoom"
-msgstr ""
+msgstr "Oletuszoomaus"
 
 #: openstreetmap.php:96
 msgid "The default zoom level. (1:world, 18:highest)"
-msgstr ""
+msgstr "Oletuszoomaustaso (1: kaukaisin, 18: läheisin)"
 
 #: openstreetmap.php:104
 msgid "Settings updated."

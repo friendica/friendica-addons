@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-17 19:41+0000\n"
+"PO-Revision-Date: 2018-05-12 12:59+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -59,7 +59,7 @@ msgstr "Friendica -salasana"
 
 #: jappixmini.php:296
 msgid "Approve subscription requests from Friendica contacts automatically"
-msgstr ""
+msgstr "Hyväksy automaattisesti tilauspyynnöt Friendica -kontakteilta"
 
 #: jappixmini.php:299
 msgid "Subscribe to Friendica contacts automatically"

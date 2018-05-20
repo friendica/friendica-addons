@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-02-08 07:07+0100\n"
-"PO-Revision-Date: 2018-04-17 20:04+0000\n"
+"PO-Revision-Date: 2018-05-12 13:21+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -36,13 +36,13 @@ msgstr "Twitter -asetukset päivitetty."
 
 #: twitter.php:291 twitter.php:295
 msgid "Twitter Import/Export/Mirror"
-msgstr ""
+msgstr "Twitter tuonti/vienti/peili"
 
 #: twitter.php:302
 msgid ""
 "No consumer key pair for Twitter found. Please contact your site "
 "administrator."
-msgstr ""
+msgstr "Twitter -kuluttajan avainparia ei löytynyt. Ota yhteyttä sivuston ylläpitäjään."
 
 #: twitter.php:314
 msgid ""
@@ -94,15 +94,15 @@ msgstr ""
 
 #: twitter.php:351
 msgid "Send public postings to Twitter by default"
-msgstr ""
+msgstr "Lähetä oletuksena kaikki julkiset julkaisut Twitteriin"
 
 #: twitter.php:354
 msgid "Mirror all posts from twitter that are no replies"
-msgstr ""
+msgstr "Peilaa kaikki julkaisut Twitteristä jotka eivät ole vastauksia"
 
 #: twitter.php:357
 msgid "Import the remote timeline"
-msgstr ""
+msgstr "Tuo etäaikajana"
 
 #: twitter.php:360
 msgid "Automatically create contacts"
@@ -110,7 +110,7 @@ msgstr "Luo kontaktit automaattisesti"
 
 #: twitter.php:619
 msgid "Twitter post failed. Queued for retry."
-msgstr ""
+msgstr "Twitter -julkaisu epäonnistui. Jonossa uudelleenyritykseen."
 
 #: twitter.php:634
 msgid "Settings updated."
@@ -118,8 +118,8 @@ msgstr "Asetukset päivitetty."
 
 #: twitter.php:644
 msgid "Consumer key"
-msgstr ""
+msgstr "Kuluttajan avain"
 
 #: twitter.php:645
 msgid "Consumer secret"
-msgstr ""
+msgstr "Kuluttajasalaisuus"

@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-04-01 11:14-0400\n"
-"PO-Revision-Date: 2018-04-16 16:24+0000\n"
+"PO-Revision-Date: 2018-05-12 12:52+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "Google+ peilaus"
 
 #: fromgplus.php:64
 msgid "Enable Google+ Import"
-msgstr ""
+msgstr "Ota Google+ tuonti käyttöön"
 
 #: fromgplus.php:67
 msgid "Google Account ID"
@@ -34,7 +34,7 @@ msgstr "Google -tilin tunnus"
 
 #: fromgplus.php:70
 msgid "Add keywords to post"
-msgstr ""
+msgstr "Lisää avainsanoja julkaisuun"
 
 #: fromgplus.php:75 fromgplus.php:105
 msgid "Save Settings"
@@ -42,7 +42,7 @@ msgstr "Tallenna asetukset"
 
 #: fromgplus.php:96
 msgid "Google+ Import Settings saved."
-msgstr ""
+msgstr "Google+ tuontiasetukset tallennettu."
 
 #: fromgplus.php:106
 msgid "Key"
