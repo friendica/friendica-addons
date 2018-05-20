@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2018-04-16 16:07+0000\n"
+"PO-Revision-Date: 2018-05-12 13:32+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -59,7 +59,7 @@ msgstr ""
 
 #: pumpio.php:250
 msgid "Import the remote timeline"
-msgstr ""
+msgstr "Tuo etäaikajana"
 
 #: pumpio.php:255
 msgid "Enable pump.io Post Addon"
@@ -75,7 +75,7 @@ msgstr ""
 
 #: pumpio.php:270
 msgid "Mirror all public posts"
-msgstr ""
+msgstr "Peilaa kaikki julkiset julkaisut"
 
 #: pumpio.php:275
 msgid "Check to delete this preset"
@@ -87,11 +87,11 @@ msgstr "Tallenna asetukset"
 
 #: pumpio.php:515
 msgid "Pump.io post failed. Queued for retry."
-msgstr ""
+msgstr "Pump.io -julkaisu epäonnistui. Jonossa uudelleenyritykseen."
 
 #: pumpio.php:587
 msgid "Pump.io like failed. Queued for retry."
-msgstr ""
+msgstr "Pump.io -tykkäys epäonnistui. Jonossa uudelleenyritykseen."
 
 #: pumpio.php:875
 msgid "status"
