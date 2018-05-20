@@ -2,6 +2,7 @@
 
 if(! function_exists("string_plural_select_fi_fi")) {
 function string_plural_select_fi_fi($n){
+	$n = intval($n);
 	return ($n != 1);;
 }}
 ;
@@ -12,5 +13,5 @@ $a->strings["Comma separated list of keywords to hide"] = "";
 $a->strings["Save Settings"] = "Tallenna asetukset";
 $a->strings["Use /expression/ to provide regular expressions"] = "";
 $a->strings["NSFW Settings saved."] = "NSFW-asetukset tallennettu.";
-$a->strings["Filtered tag: %s"] = "";
-$a->strings["Filtered word: %s"] = "";
+$a->strings["Filtered tag: %s"] = "Suodatettu tunniste: %s";
+$a->strings["Filtered word: %s"] = "Suodatettu sana: %s";

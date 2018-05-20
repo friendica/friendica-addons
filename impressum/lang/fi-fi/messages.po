@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-21 00:16+0000\n"
+"PO-Revision-Date: 2018-05-12 12:55+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -53,7 +53,7 @@ msgstr "Lähetä"
 
 #: impressum.php:84
 msgid "The page operators name."
-msgstr ""
+msgstr "Sivuston ylläpitäjän nimi."
 
 #: impressum.php:85
 msgid "Site Owners Profile"
@@ -61,7 +61,7 @@ msgstr "Sivuston omistajan profiili"
 
 #: impressum.php:85
 msgid "Profile address of the operator."
-msgstr ""
+msgstr "Ylläpitäjän profiiliosoite."
 
 #: impressum.php:86
 msgid "How to contact the operator via snail mail. You can use BBCode here."

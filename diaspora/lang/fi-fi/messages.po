@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2018-04-17 19:28+0000\n"
+"PO-Revision-Date: 2018-05-12 12:49+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -28,7 +28,7 @@ msgstr "Lähetä Diasporaan"
 msgid ""
 "Can't login to your Diaspora account. Please check username and password and"
 " ensure you used the complete address (including http...)"
-msgstr ""
+msgstr "Kirjautuminen Diasporaan epäonnistui. Tarkista että käyttäjätunnus ja salasana ovat oikein ja varmista että kirjoitit täydellisen osoitteen (mukaan lukien http...)."
 
 #: diaspora.php:149 diaspora.php:153
 msgid "Diaspora Export"
@@ -60,4 +60,4 @@ msgstr "Tallenna asetukset"
 
 #: diaspora.php:324
 msgid "Diaspora post failed. Queued for retry."
-msgstr ""
+msgstr "Diaspora -julkaisu epäonnistui. Jonossa uudelleenyritykseen."

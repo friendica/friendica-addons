@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-27 07:21+0200\n"
-"PO-Revision-Date: 2018-04-17 19:59+0000\n"
+"PO-Revision-Date: 2018-05-12 13:29+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -28,7 +28,7 @@ msgstr "Lähetä GNU Socialiin"
 msgid ""
 "Please contact your site administrator.<br />The provided API URL is not "
 "valid."
-msgstr ""
+msgstr "Ota yhteyttä sivuston ylläpitäjään.<br />API URL-osoite on virheellinen."
 
 #: statusnet.php:225
 msgid "We could not contact the GNU Social API with the Path you entered."
@@ -40,7 +40,7 @@ msgstr "GNU Social -asetukset päivitetty."
 
 #: statusnet.php:294 statusnet.php:298
 msgid "GNU Social Import/Export/Mirror"
-msgstr ""
+msgstr "GNU social tuonti/vienti/peili"
 
 #: statusnet.php:313
 msgid "Globally Available GNU Social OAuthKeys"
@@ -73,11 +73,11 @@ msgstr ""
 
 #: statusnet.php:325
 msgid "OAuth Consumer Key"
-msgstr ""
+msgstr "OAuth kuluttajan avain"
 
 #: statusnet.php:328
 msgid "OAuth Consumer Secret"
-msgstr ""
+msgstr "OAuth kuluttajasalaisuus"
 
 #: statusnet.php:331 statusnet.php:679 statusnet.php:691
 msgid "Base API Path (remember the trailing /)"
@@ -136,16 +136,16 @@ msgstr "Salli julkaisut GNU socialiin"
 
 #: statusnet.php:388
 msgid "Send public postings to GNU Social by default"
-msgstr ""
+msgstr "Lähetä oletuksena kaikki julkiset julkaisut GNU socialiin"
 
 #: statusnet.php:392
 msgid ""
 "Mirror all posts from GNU Social that are no replies or repeated messages"
-msgstr ""
+msgstr "Peilaa kaikki julkaisut GNU socialista jotka eivät ole vastauksia tai toistettuja viestejä"
 
 #: statusnet.php:398
 msgid "Import the remote timeline"
-msgstr ""
+msgstr "Tuo etäaikajana"
 
 #: statusnet.php:402
 msgid "Disabled"
@@ -153,7 +153,7 @@ msgstr "Poistettu käytöstä"
 
 #: statusnet.php:403
 msgid "Full Timeline"
-msgstr ""
+msgstr "Koko aikajana"
 
 #: statusnet.php:404
 msgid "Only Mentions"
@@ -169,8 +169,8 @@ msgstr "Sivuston nimi"
 
 #: statusnet.php:692
 msgid "Consumer Secret"
-msgstr ""
+msgstr "Kuluttajasalaisuus"
 
 #: statusnet.php:693
 msgid "Consumer Key"
-msgstr ""
+msgstr "Kuluttajan avain"

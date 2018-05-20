@@ -2,6 +2,7 @@
 
 if(! function_exists("string_plural_select_fi_fi")) {
 function string_plural_select_fi_fi($n){
+	$n = intval($n);
 	return ($n != 1);;
 }}
 ;
@@ -14,7 +15,7 @@ $a->strings["Jabber BOSH host"] = "Jabber BOSH-palvelin";
 $a->strings["Jabber password"] = "Jabber -salasana";
 $a->strings["Encrypt Jabber password with Friendica password (recommended)"] = "Salaa Jabber -salasana Friendica -salasanalla (suositeltava)";
 $a->strings["Friendica password"] = "Friendica -salasana";
-$a->strings["Approve subscription requests from Friendica contacts automatically"] = "";
+$a->strings["Approve subscription requests from Friendica contacts automatically"] = "Hyväksy automaattisesti tilauspyynnöt Friendica -kontakteilta";
 $a->strings["Subscribe to Friendica contacts automatically"] = "";
 $a->strings["Purge internal list of jabber addresses of contacts"] = "";
 $a->strings["Submit"] = "Lähetä";

@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2018-04-08 16:26+0000\n"
+"PO-Revision-Date: 2018-05-12 13:15+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -30,13 +30,13 @@ msgstr "Tallenna asetukset"
 
 #: webrtc.php:27
 msgid "WebRTC Base URL"
-msgstr ""
+msgstr "WebRTC perus-URL-osoite"
 
 #: webrtc.php:27
 msgid ""
 "Page your users will create a WebRTC chat room on. For example you could use"
 " https://live.mayfirst.org ."
-msgstr ""
+msgstr "Sivusto jolla käyttäjäsi luo WebRTC -chattihuoneen. Esim. https://live.mayfirst.org"
 
 #: webrtc.php:33
 msgid "Settings updated."
@@ -57,4 +57,4 @@ msgstr ""
 msgid ""
 "Please contact your friendica admin and send a reminder to configure the "
 "WebRTC addon."
-msgstr ""
+msgstr "Ota yhteyttä Friendica -ylläpitäjääsi ja pyydä heitä asentamaan WebRTC -lisäosan."

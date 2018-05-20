@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-08 15:43+0000\n"
+"PO-Revision-Date: 2018-05-12 12:50+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgstr "Maailmanlaajuinen hakemisto"
 
 #: forumdirectory.php:79
 msgid "Find on this site"
-msgstr ""
+msgstr "Sivustohaku"
 
 #: forumdirectory.php:81
 msgid "Finding: "
@@ -42,7 +42,7 @@ msgstr ""
 
 #: forumdirectory.php:82
 msgid "Site Directory"
-msgstr ""
+msgstr "Sivustoluettelo"
 
 #: forumdirectory.php:83
 msgid "Find"
@@ -66,7 +66,7 @@ msgstr "Sukupuoli:"
 
 #: forumdirectory.php:160
 msgid "Status:"
-msgstr ""
+msgstr "Tila:"
 
 #: forumdirectory.php:162
 msgid "Homepage:"
@@ -78,4 +78,4 @@ msgstr "Lisätietoja:"
 
 #: forumdirectory.php:201
 msgid "No entries (some entries may be hidden)."
-msgstr ""
+msgstr "Ei kohteita (jotkut kohteet saattaa olla piilotettuja)."

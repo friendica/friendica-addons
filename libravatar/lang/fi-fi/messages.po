@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-18 15:14+0000\n"
+"PO-Revision-Date: 2018-05-12 13:04+0000\n"
 "Last-Translator: Kris\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/Friendica/friendica/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 
 #: libravatar.php:14
 msgid "Could NOT install Libravatar successfully.<br>It requires PHP >= 5.3"
-msgstr ""
+msgstr "Libravataria ei voitu asentaa.<br>Vaatii PHP-version >=5.3"
 
 #: libravatar.php:73
 msgid "generic profile image"
@@ -55,7 +55,7 @@ msgstr "PHP-versiosi on %s. Friendica vaatii PHP >= 5.3."
 
 #: libravatar.php:84
 msgid "This addon is not functional on your server."
-msgstr ""
+msgstr "Tämä lisäosa ei toimi palvelimellasi."
 
 #: libravatar.php:93
 msgid "Information"
@@ -78,7 +78,7 @@ msgstr "Avatarin oletuskuva"
 
 #: libravatar.php:100
 msgid "Select default avatar image if none was found. See README"
-msgstr ""
+msgstr "Valitse oletusavatarikuva jos avatari puuttuu. Katso lisätietoja README:stä."
 
 #: libravatar.php:112
 msgid "Libravatar settings updated."
