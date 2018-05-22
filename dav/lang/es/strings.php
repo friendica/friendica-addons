@@ -2,6 +2,7 @@
 
 if(! function_exists("string_plural_select_es")) {
 function string_plural_select_es($n){
+	$n = intval($n);
 	return ($n != 1);;
 }}
 ;
@@ -45,7 +46,7 @@ $a->strings["Warning"] = "Advertencia";
 $a->strings["Synchronization (iPhone, Thunderbird Lightning, Android, ...)"] = "Sincronización (iPhone, Thunderbird Lightning, Android, ...)";
 $a->strings["Synchronizing this calendar with the iPhone"] = "Sincronizar este calendario con el iPhone";
 $a->strings["Synchronizing your Friendica-Contacts with the iPhone"] = "Sincronizar sus contactos de Friendica con el iPhone";
-$a->strings["The current version of this addon has not been set up correctly. Please contact the system administrator of your installation of friendica to fix this."] = "La versión actual de este addon no se ha instalado correctamente. Por favor contacte con el administrador del sistema de su instalación de Friendica para resolver esto.";
+$a->strings["The current version of this addon has not been set up correctly. Please contact the system administrator of your installation of friendica to fix this."] = "La versión actual de este complemento no se ha configurado correctamente. Por favor, póngase en contacto con el administrador del sistema de su instalación de Friendica para solucionar este problema..";
 $a->strings["Calendar"] = "Calendario";
 $a->strings["Extended calendar with CalDAV-support"] = "Estendido el calendario con soporte CalDAV";
 $a->strings["noreply"] = "no responder";

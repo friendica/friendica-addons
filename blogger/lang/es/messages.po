@@ -4,13 +4,14 @@
 # 
 # 
 # Translators:
+# Albert, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2016-10-10 20:33+0000\n"
-"Last-Translator: Athalbert\n"
+"PO-Revision-Date: 2018-05-21 14:27+0000\n"
+"Last-Translator: Albert\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,7 +29,7 @@ msgstr "Esportar Blogger"
 
 #: blogger.php:82
 msgid "Enable Blogger Post Addon"
-msgstr "Activar addon de entrada de Blogger"
+msgstr "Habilitar el complemento de publicación de Blogger"
 
 #: blogger.php:87
 msgid "Blogger username"

@@ -4,14 +4,15 @@
 # 
 # 
 # Translators:
+# Albert, 2018
 # Tupambae.org, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2016-04-18 19:27+0000\n"
-"Last-Translator: Tupambae.org\n"
+"POT-Creation-Date: 2018-04-01 11:11-0400\n"
+"PO-Revision-Date: 2018-05-21 14:27+0000\n"
+"Last-Translator: Albert\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,13 +20,19 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: blockem.php:53 blockem.php:57
+#: blockem.php:52 blockem.php:56
 msgid "\"Blockem\""
 msgstr "\"Bloquealos\""
 
+#: blockem.php:60
+msgid ""
+"Hides user's content by collapsing posts. Also replaces their avatar with "
+"generic image."
+msgstr "Oculta el contenido del usuario al colapsar las publicaciones. También reemplaza su avatar con una imagen genérica."
+
 #: blockem.php:61
-msgid "Comma separated profile URLS to block"
-msgstr "URLS separados por coma para bloquear."
+msgid "Comma separated profile URLS:"
+msgstr "URLs de perfil separadas por comas:"
 
 #: blockem.php:65
 msgid "Save Settings"
@@ -35,19 +42,19 @@ msgstr "Guardar configuración"
 msgid "BLOCKEM Settings saved."
 msgstr "Configuración de BLOQUEALOS guardado."
 
-#: blockem.php:142
+#: blockem.php:136
 #, php-format
-msgid "Blocked %s - Click to open/close"
-msgstr "%s bloqueado - click para abrir/cerrar"
+msgid "Filtered user: %s"
+msgstr "Usuario filtrado: %s"
 
-#: blockem.php:197
+#: blockem.php:189
 msgid "Unblock Author"
 msgstr "Desbloquear autor"
 
-#: blockem.php:199
+#: blockem.php:191
 msgid "Block Author"
 msgstr "Bloquear autor"
 
-#: blockem.php:231
+#: blockem.php:223
 msgid "blockem settings updated"
 msgstr "configuración de BLOQUEALOS actualizado"

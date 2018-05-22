@@ -4,13 +4,14 @@
 # 
 # 
 # Translators:
+# Albert, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2016-10-10 20:39+0000\n"
-"Last-Translator: Athalbert\n"
+"PO-Revision-Date: 2018-05-21 14:28+0000\n"
+"Last-Translator: Albert\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -60,7 +61,7 @@ msgstr "Autenticar su conexión de Buffer"
 
 #: buffer.php:146
 msgid "Enable Buffer Post Addon"
-msgstr "Active el addon de publicación de Buffer"
+msgstr "Habilitar el complemento de publicación de Buffer"
 
 #: buffer.php:151
 msgid "Post to Buffer by default"
