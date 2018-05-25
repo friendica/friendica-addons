@@ -1,0 +1,36 @@
+# ADDON geonames
+# Copyright (C)
+# This file is distributed under the same license as the Friendica geonames addon package.
+# 
+# 
+# Translators:
+# Sveinn í Felli <sv1@fellsnet.is>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-05-24 15:15+0000\n"
+"Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
+"Language-Team: Icelandic (http://www.transifex.com/Friendica/friendica/language/is/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: is\n"
+"Plural-Forms: nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);\n"
+
+#: geonames.php:143
+msgid "Geonames settings updated."
+msgstr ""
+
+#: geonames.php:179
+msgid "Geonames Settings"
+msgstr ""
+
+#: geonames.php:181
+msgid "Enable Geonames Addon"
+msgstr ""
+
+#: geonames.php:187
+msgid "Submit"
+msgstr "Senda inn"
