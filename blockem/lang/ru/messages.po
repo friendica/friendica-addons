@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# Stanislav N. <pztrn@pztrn.name>, 2017
+# Stanislav N. <pztrn@pztrn.name>, 2017-2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2017-04-08 17:01+0000\n"
+"POT-Creation-Date: 2018-04-01 11:11-0400\n"
+"PO-Revision-Date: 2018-05-25 00:00+0000\n"
 "Last-Translator: Stanislav N. <pztrn@pztrn.name>\n"
 "Language-Team: Russian (http://www.transifex.com/Friendica/friendica/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -19,13 +19,19 @@ msgstr ""
 "Language: ru\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: blockem.php:53 blockem.php:57
+#: blockem.php:52 blockem.php:56
 msgid "\"Blockem\""
 msgstr "\"Blockem\""
 
+#: blockem.php:60
+msgid ""
+"Hides user's content by collapsing posts. Also replaces their avatar with "
+"generic image."
+msgstr "Скрыть контент пользователя. Также заменяет его аватар изображением по-умолчанию."
+
 #: blockem.php:61
-msgid "Comma separated profile URLS to block"
-msgstr "Ссылки на профили, которые необходимо заблокировать, разделенные запятыми"
+msgid "Comma separated profile URLS:"
+msgstr "URL профилей, разделенные запятыми:"
 
 #: blockem.php:65
 msgid "Save Settings"
@@ -35,19 +41,19 @@ msgstr "Сохранить настройки"
 msgid "BLOCKEM Settings saved."
 msgstr "BLOCKEM Настройки сохранены."
 
-#: blockem.php:142
+#: blockem.php:136
 #, php-format
-msgid "Blocked %s - Click to open/close"
-msgstr "Заблокированные %s - Нажмите, чтобы открыть/закрыть"
+msgid "Filtered user: %s"
+msgstr "Отфильтрованный пользователь: %s"
 
-#: blockem.php:197
+#: blockem.php:189
 msgid "Unblock Author"
 msgstr "Разблокировать автора"
 
-#: blockem.php:199
+#: blockem.php:191
 msgid "Block Author"
 msgstr "Блокировать автора"
 
-#: blockem.php:231
+#: blockem.php:223
 msgid "blockem settings updated"
 msgstr "Настройки Blockem обновлены"

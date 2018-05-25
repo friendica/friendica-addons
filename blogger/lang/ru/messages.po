@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# Stanislav N. <pztrn@pztrn.name>, 2017
+# Stanislav N. <pztrn@pztrn.name>, 2017-2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2017-04-08 17:02+0000\n"
+"PO-Revision-Date: 2018-05-25 00:00+0000\n"
 "Last-Translator: Stanislav N. <pztrn@pztrn.name>\n"
 "Language-Team: Russian (http://www.transifex.com/Friendica/friendica/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,7 @@ msgstr "Экспорт в Blogger"
 
 #: blogger.php:82
 msgid "Enable Blogger Post Addon"
-msgstr "Включить плагин Blogger"
+msgstr "Включить аддон репоста в Blogger"
 
 #: blogger.php:87
 msgid "Blogger username"

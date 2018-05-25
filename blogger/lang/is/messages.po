@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# Sveinn í Felli <sv1@fellsnet.is>, 2016
+# Sveinn í Felli <sv1@fellsnet.is>, 2016,2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2016-07-25 09:15+0000\n"
+"PO-Revision-Date: 2018-05-24 09:45+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic (http://www.transifex.com/Friendica/friendica/language/is/)\n"
 "MIME-Version: 1.0\n"

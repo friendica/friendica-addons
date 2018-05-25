@@ -1,0 +1,62 @@
+# ADDON diaspora
+# Copyright (C)
+# This file is distributed under the same license as the Friendica diaspora addon package.
+# 
+# 
+# Translators:
+# Sveinn í Felli <sv1@fellsnet.is>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2018-05-24 15:20+0000\n"
+"Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
+"Language-Team: Icelandic (http://www.transifex.com/Friendica/friendica/language/is/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: is\n"
+"Plural-Forms: nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);\n"
+
+#: diaspora.php:37
+msgid "Post to Diaspora"
+msgstr "Senda færslu á Diaspora"
+
+#: diaspora.php:142
+msgid ""
+"Can't login to your Diaspora account. Please check username and password and"
+" ensure you used the complete address (including http...)"
+msgstr ""
+
+#: diaspora.php:149 diaspora.php:153
+msgid "Diaspora Export"
+msgstr "Diaspora útflutningur"
+
+#: diaspora.php:163
+msgid "Enable Diaspora Post Addon"
+msgstr "Virkja sendiviðbót fyrir Diaspora"
+
+#: diaspora.php:168
+msgid "Diaspora username"
+msgstr "Notandanafn á Diaspora"
+
+#: diaspora.php:173
+msgid "Diaspora password"
+msgstr "Lykilorð á Diaspora"
+
+#: diaspora.php:178
+msgid "Diaspora site URL"
+msgstr "Slóð á Diaspora-vefsvæði"
+
+#: diaspora.php:183
+msgid "Post to Diaspora by default"
+msgstr "Senda sjálfgefið færslur á Diaspora"
+
+#: diaspora.php:189
+msgid "Save Settings"
+msgstr "Vista stillingar"
+
+#: diaspora.php:324
+msgid "Diaspora post failed. Queued for retry."
+msgstr "Færsla Diaspora mistókst. Sett í biðröð til endurtekningar."

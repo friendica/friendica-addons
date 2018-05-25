@@ -1,0 +1,36 @@
+# ADDON startpage
+# Copyright (C)
+# This file is distributed under the same license as the Friendica startpage addon package.
+# 
+# 
+# Translators:
+# Sveinn í Felli <sv1@fellsnet.is>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-05-24 09:48+0000\n"
+"Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
+"Language-Team: Icelandic (http://www.transifex.com/Friendica/friendica/language/is/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: is\n"
+"Plural-Forms: nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);\n"
+
+#: startpage.php:83
+msgid "Startpage Settings"
+msgstr "Stillingar upphafssíðu"
+
+#: startpage.php:85
+msgid "Home page to load after login  - leave blank for profile wall"
+msgstr "Heimasíða sem á að hlaða inn eftir innskráningu - skilja eftir autt til að fá forsíðu notanda"
+
+#: startpage.php:88
+msgid "Examples: &quot;network&quot; or &quot;notifications/system&quot;"
+msgstr "Dæmi: &quot;netkerfi&quot; eða &quot;tilkynningar/kerfi&quot;"
+
+#: startpage.php:92
+msgid "Submit"
+msgstr "Senda inn"
