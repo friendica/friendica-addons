@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# Stanislav N. <pztrn@pztrn.name>, 2017
+# Stanislav N. <pztrn@pztrn.name>, 2017-2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2017-04-08 17:16+0000\n"
+"PO-Revision-Date: 2018-05-25 00:02+0000\n"
 "Last-Translator: Stanislav N. <pztrn@pztrn.name>\n"
 "Language-Team: Russian (http://www.transifex.com/Friendica/friendica/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,7 @@ msgstr "Настройки Geonames"
 
 #: geonames.php:181
 msgid "Enable Geonames Addon"
-msgstr "Включить плагин Geonames"
+msgstr "Включить аддон Geonames"
 
 #: geonames.php:187
 msgid "Submit"
