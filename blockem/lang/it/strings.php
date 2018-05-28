@@ -2,6 +2,7 @@
 
 if(! function_exists("string_plural_select_it")) {
 function string_plural_select_it($n){
+	$n = intval($n);
 	return ($n != 1);;
 }}
 ;
@@ -10,7 +11,7 @@ $a->strings["Hides user's content by collapsing posts. Also replaces their avata
 $a->strings["Comma separated profile URLS:"] = "URL profili separati da virgola:";
 $a->strings["Save Settings"] = "Salva Impostazioni";
 $a->strings["BLOCKEM Settings saved."] = "Impostazioni BLOCKEM salvate.";
-$a->strings["Hidden content by %s - Click to open/close"] = "Contenuto di %s nascosto - Clicca per aprire/chiudere";
+$a->strings["Filtered user: %s"] = "Utente filtrato: %s";
 $a->strings["Unblock Author"] = "Sblocca autore";
 $a->strings["Block Author"] = "Blocca autore";
 $a->strings["blockem settings updated"] = "Impostazioni 'blockem' aggiornate.";

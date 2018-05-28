@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-15 17:54+0700\n"
-"PO-Revision-Date: 2018-03-19 13:18+0000\n"
+"POT-Creation-Date: 2018-04-01 11:11-0400\n"
+"PO-Revision-Date: 2018-05-28 09:01+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -51,7 +51,12 @@ msgstr "Utilizza /espressione/ per inserire espressioni regolari"
 msgid "NSFW Settings saved."
 msgstr "Impostazioni NSFW salvate."
 
-#: nsfw.php:167
+#: nsfw.php:162
 #, php-format
-msgid "%s - Click to open/close"
-msgstr "%s - Clicca per aprire / chiudere"
+msgid "Filtered tag: %s"
+msgstr "Tag filtrato: %s"
+
+#: nsfw.php:164
+#, php-format
+msgid "Filtered word: %s"
+msgstr "Parola filtrata:  %s"
