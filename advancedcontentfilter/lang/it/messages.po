@@ -1,0 +1,173 @@
+# ADDON advancedcontentfilter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica advancedcontentfilter addon package.
+# 
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-17 04:04+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>, 2018\n"
+"Language-Team: Italian (https://www.transifex.com/Friendica/teams/12172/it/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: advancedcontentfilter.php:134
+#, php-format
+msgid "Filtered by rule: %s"
+msgstr "Filtrato dalla regola: %s"
+
+#: advancedcontentfilter.php:147 advancedcontentfilter.php:204
+msgid "Advanced Content Filter"
+msgstr "Filtro Avanzato Contenuti"
+
+#: advancedcontentfilter.php:203
+msgid "Back to Addon Settings"
+msgstr "Torna alle impostazioni del componente aggiuntivo"
+
+#: advancedcontentfilter.php:205
+msgid "Add a Rule"
+msgstr "Aggiungi una regola"
+
+#: advancedcontentfilter.php:206
+msgid "Help"
+msgstr "Aiuto"
+
+#: advancedcontentfilter.php:207
+msgid ""
+"Add and manage your personal content filter rules in this screen. Rules have"
+" a name and an arbitrary expression that will be matched against post data. "
+"For a complete reference of the available operations and variables, check "
+"the <a href=\"advancedcontentfilter/help\">help page</a>."
+msgstr ""
+"Aggiungi e gestisci le tue regole personali di filtro contenuti in questa "
+"schermata. Le regole hanno un nome e un'espressione arbitraria che sarà "
+"confrontata con i dati del messaggio. Per un elenco completo delle "
+"operazioni disponibili, controlla la <a "
+"href=\"advancedcontentfilter/help\">pagina di aiuto</a>."
+
+#: advancedcontentfilter.php:208
+msgid "Your rules"
+msgstr "Le tue regole"
+
+#: advancedcontentfilter.php:209
+msgid ""
+"You have no rules yet! Start adding one by clicking on the button above next"
+" to the title."
+msgstr ""
+"Non hai ancora nessuna regola! Aggiungine una cliccando sul bottone qui "
+"sopra a fianco al titolo."
+
+#: advancedcontentfilter.php:210
+msgid "Disabled"
+msgstr "Disabilitato"
+
+#: advancedcontentfilter.php:211
+msgid "Enabled"
+msgstr "Abilitato"
+
+#: advancedcontentfilter.php:212
+msgid "Disable this rule"
+msgstr "Diabilita questa regola"
+
+#: advancedcontentfilter.php:213
+msgid "Enable this rule"
+msgstr "Abilita questa regola"
+
+#: advancedcontentfilter.php:214
+msgid "Edit this rule"
+msgstr "Modifica questa regola"
+
+#: advancedcontentfilter.php:215
+msgid "Edit the rule"
+msgstr "Modifica la regola"
+
+#: advancedcontentfilter.php:216
+msgid "Save this rule"
+msgstr "Salva questa regola"
+
+#: advancedcontentfilter.php:217
+msgid "Delete this rule"
+msgstr "Elimina questa regola"
+
+#: advancedcontentfilter.php:218
+msgid "Rule"
+msgstr "Regola"
+
+#: advancedcontentfilter.php:219
+msgid "Close"
+msgstr "Chiudi"
+
+#: advancedcontentfilter.php:220
+msgid "Add new rule"
+msgstr "Aggiungi nuova regola"
+
+#: advancedcontentfilter.php:221
+msgid "Rule Name"
+msgstr "Nome Regola"
+
+#: advancedcontentfilter.php:222
+msgid "Rule Expression"
+msgstr "Espressione Regola"
+
+#: advancedcontentfilter.php:223
+msgid ""
+"<p>Examples:</p><ul><li><pre>author_link == "
+"'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>"
+msgstr ""
+"<p>Esempi:</p><ul><li><pre>author_link == "
+"'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>"
+
+#: advancedcontentfilter.php:224
+msgid "Cancel"
+msgstr "Annulla"
+
+#: advancedcontentfilter.php:290 advancedcontentfilter.php:301
+#: advancedcontentfilter.php:312 advancedcontentfilter.php:346
+#: advancedcontentfilter.php:375 advancedcontentfilter.php:396
+msgid "You must be logged in to use this method"
+msgstr "Devi essere autenticato per usare questo metodo"
+
+#: advancedcontentfilter.php:316 advancedcontentfilter.php:350
+#: advancedcontentfilter.php:379
+msgid "Invalid form security token, please refresh the page."
+msgstr "Token di sicurezza invalido, aggiorna la pagina."
+
+#: advancedcontentfilter.php:328
+msgid "The rule name and expression are required."
+msgstr "Il nome e l'espressione della regola sono richiesti."
+
+#: advancedcontentfilter.php:340
+msgid "Rule successfully added"
+msgstr "Regola aggiunta con successo"
+
+#: advancedcontentfilter.php:354 advancedcontentfilter.php:383
+msgid "Rule doesn't exist or doesn't belong to you."
+msgstr "La regola non esiste o non ti appartiene."
+
+#: advancedcontentfilter.php:369
+msgid "Rule successfully updated"
+msgstr "Regola aggiornata con successo"
+
+#: advancedcontentfilter.php:390
+msgid "Rule successfully deleted"
+msgstr "Regola eliminata con successo"
+
+#: advancedcontentfilter.php:400
+msgid "Missing argument: guid."
+msgstr "Argomento mancante: guid."
+
+#: advancedcontentfilter.php:406
+#, php-format
+msgid "Unknown post with guid: %s"
+msgstr "Messaggio con guid %s sconosciuto"
+
+#: src/middlewares.php:28
+msgid "Method not found"
+msgstr "Metodo non trovato"

@@ -2,6 +2,7 @@
 
 if(! function_exists("string_plural_select_it")) {
 function string_plural_select_it($n){
+	$n = intval($n);
 	return ($n != 1);;
 }}
 ;
@@ -12,4 +13,5 @@ $a->strings["Comma separated list of keywords to hide"] = "Elenco separato da vi
 $a->strings["Save Settings"] = "Salva Impostazioni";
 $a->strings["Use /expression/ to provide regular expressions"] = "Utilizza /espressione/ per inserire espressioni regolari";
 $a->strings["NSFW Settings saved."] = "Impostazioni NSFW salvate.";
-$a->strings["%s - Click to open/close"] = "%s - Clicca per aprire / chiudere";
+$a->strings["Filtered tag: %s"] = "Tag filtrato: %s";
+$a->strings["Filtered word: %s"] = "Parola filtrata:  %s";
