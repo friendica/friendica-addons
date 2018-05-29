@@ -1044,13 +1044,16 @@ function pumpio_dodelete(&$a, $uid, $self, $post, $own_id) {
 	// Two queries for speed issues
 	$condition = ['uri' => $post->object->id, 'uid' => $uid];
 	if (dba::exists('item', $condition)) {
-		return Item::delete($condition);
+		Item::delete($condition);
+		return true;
 	}
 
 	$condition = ['extid' => $post->object->id, 'uid' => $uid];
 	if (dba::exists('item', $condition)) {
-		return Item::delete($condition);
+		Item::delete($condition);
+		return true;
 	}
+	return false;
 }
 
 function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcompletion = true) {
