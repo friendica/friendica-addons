@@ -1042,21 +1042,15 @@ function pumpio_get_contact($uid, $contact, $no_insert = false) {
 function pumpio_dodelete(&$a, $uid, $self, $post, $own_id) {
 
 	// Two queries for speed issues
-	$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
-				dbesc($post->object->id),
-				intval($uid)
-		);
+	$condition = ['uri' => $post->object->id, 'uid' => $uid];
+	if (dba::exists('item', $condition)) {
+		return Item::delete($condition);
+	}
 
-	if (count($r))
-		return Item::deleteById($r[0]["id"]);
-
-	$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
-				dbesc($post->object->id),
-				intval($uid)
-		);
-
-	if (count($r))
-		return Item::deleteById($r[0]["id"]);
+	$condition = ['extid' => $post->object->id, 'uid' => $uid];
+	if (dba::exists('item', $condition)) {
+		return Item::delete($condition);
+	}
 }
 
 function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcompletion = true) {
