@@ -50,10 +50,6 @@ function langfilter_addon_settings(App $a, &$s)
 	$minconfidence  = PConfig::get(local_user(), 'langfilter', 'minconfidence') * 100;
 	$minlength      = PConfig::get(local_user(), 'langfilter', 'minlength');
 
-	if (!$languages) {
-		$languages = 'en,de,fr,it,es';
-	}
-
 	$t = get_markup_template("settings.tpl", "addon/langfilter/");
 	$s .= replace_macros($t, [
 		'$title'         => L10n::t("Language Filter"),
