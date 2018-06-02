@@ -2,6 +2,7 @@
 
 if(! function_exists("string_plural_select_de")) {
 function string_plural_select_de($n){
+	$n = intval($n);
 	return ($n != 1);;
 }}
 ;
@@ -23,6 +24,7 @@ $a->strings["Send public postings to Twitter by default"] = "Veröffentliche öf
 $a->strings["Mirror all posts from twitter that are no replies"] = "Spiegle alle Beiträge von Twitter die keine Antworten oder wiederholten Nachrichten sind";
 $a->strings["Import the remote timeline"] = "Importiere die entfernte Zeitleiste";
 $a->strings["Automatically create contacts"] = "Automatisch Kontakte anlegen";
+$a->strings["This will automatically create a contact in Friendica as soon as you receive a message from an existing contact via the Twitter network. If you do not enable this, you need to manually add those Twitter contacts in Friendica from whom you would like to see posts here. However if enabled, you cannot merely remove a twitter contact from the Friendica contact list, as it will recreate this contact when they post again."] = "Mit dieser Option wird automatisch ein Kontakt bei Friendica angelegt, wenn du eine Nachricht von einem bestehenden Kontakt auf Twitter erhältst. Ist die Option nicht aktiv, musst du manuell Kontakte für diejenigen deiner Twitter Kontakte anlegen deren Nachrichten du auf Friendica lesen möchtest.. Auf der anderen Seite kannst du, so diese Option aktiv ist, nicht einfach Twitter Kontakte aus deinen Kontakten bei Friendica entfernen, da diese bei der nächsten Gelegenheit neu erstellt werden.";
 $a->strings["Twitter post failed. Queued for retry."] = "Twitter post failed. Queued for retry.";
 $a->strings["Settings updated."] = "Einstellungen aktualisiert.";
 $a->strings["Consumer key"] = "Consumer Key";
