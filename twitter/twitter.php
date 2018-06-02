@@ -359,7 +359,7 @@ function twitter_settings(App $a, &$s)
 				'$field' => ['twitter-import', L10n::t('Import the remote timeline'), $importenabled, '']
 			]);
 			$s .= replace_macros($field_checkbox, [
-				'$field' => ['twitter-create_user', L10n::t('Automatically create contacts'), $create_userenabled, '']
+				'$field' => ['twitter-create_user', L10n::t('Automatically create contacts'), $create_userenabled, L10n::t('This will automatically create a contact in Friendica as soon as you receive a message from an existing contact via the Twitter network. If you do not enable this, you need to manually add those Twitter contacts in Friendica from whom you would like to see posts here. However if enabled, you cannot merely remove a twitter contact from the Friendica contact list, as it will recreate this contact when they post again.')]
 			]);
 
 			$s .= '<div class="clear"></div>';
