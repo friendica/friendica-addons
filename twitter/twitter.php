@@ -61,6 +61,7 @@
  */
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use Abraham\TwitterOAuth\TwitterOAuthException;
 use Friendica\App;
 use Friendica\Content\OEmbed;
 use Friendica\Content\Text\Plaintext;
@@ -244,6 +245,8 @@ function twitter_settings_post(App $a, $post)
 				PConfig::set(local_user(), 'twitter', 'post', 1);
 			} catch(Exception $e) {
 				info($e->getMessage());
+			} catch(TwitterOAuthException $e) {
+				info($e->getMessage());
 			}
 			//  reload the Addon Settings page, if we don't do it see Bug #42
 			goaway('settings/connectors');
@@ -311,59 +314,65 @@ function twitter_settings(App $a, &$s)
 			 * account at Twitter.
 			 */
 			$connection = new TwitterOAuth($ckey, $csecret);
-			$result = $connection->oauth('oauth/request_token', ['oauth_callback' => 'oob']);
-
-			$s .= '<p>' . L10n::t('At this Friendica instance the Twitter addon was enabled but you have not yet connected your account to your Twitter account. To do so click the button below to get a PIN from Twitter which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to Twitter.') . '</p>';
-			$s .= '<a href="' . $connection->url('oauth/authorize', ['oauth_token' => $result['oauth_token']]) . '" target="_twitter"><img src="addon/twitter/lighter.png" alt="' . L10n::t('Log in with Twitter') . '"></a>';
-			$s .= '<div id="twitter-pin-wrapper">';
-			$s .= '<label id="twitter-pin-label" for="twitter-pin">' . L10n::t('Copy the PIN from Twitter here') . '</label>';
-			$s .= '<input id="twitter-pin" type="text" name="twitter-pin" />';
-			$s .= '<input id="twitter-token" type="hidden" name="twitter-token" value="' . $result['oauth_token'] . '" />';
-			$s .= '<input id="twitter-token2" type="hidden" name="twitter-token2" value="' . $result['oauth_token_secret'] . '" />';
-			$s .= '</div><div class="clear"></div>';
-			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
+			try {
+				$result = $connection->oauth('oauth/request_token', ['oauth_callback' => 'oob']);
+				$s .= '<p>' . L10n::t('At this Friendica instance the Twitter addon was enabled but you have not yet connected your account to your Twitter account. To do so click the button below to get a PIN from Twitter which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to Twitter.') . '</p>';
+				$s .= '<a href="' . $connection->url('oauth/authorize', ['oauth_token' => $result['oauth_token']]) . '" target="_twitter"><img src="addon/twitter/lighter.png" alt="' . L10n::t('Log in with Twitter') . '"></a>';
+				$s .= '<div id="twitter-pin-wrapper">';
+				$s .= '<label id="twitter-pin-label" for="twitter-pin">' . L10n::t('Copy the PIN from Twitter here') . '</label>';
+				$s .= '<input id="twitter-pin" type="text" name="twitter-pin" />';
+				$s .= '<input id="twitter-token" type="hidden" name="twitter-token" value="' . $result['oauth_token'] . '" />';
+				$s .= '<input id="twitter-token2" type="hidden" name="twitter-token2" value="' . $result['oauth_token_secret'] . '" />';
+				$s .= '</div><div class="clear"></div>';
+				$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
+			} catch (TwitterOAuthException $e) {
+				$s .= '<p>' . L10n::t('An error occured: ') . $e->getMessage() . '</p>';
+			}
 		} else {
 			/*			 * *
 			 *  we have an OAuth key / secret pair for the user
 			 *  so let's give a chance to disable the postings to Twitter
 			 */
 			$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
-			$details = $connection->get('account/verify_credentials');
+			try {
+				$details = $connection->get('account/verify_credentials');
 
-			$field_checkbox = get_markup_template('field_checkbox.tpl');
+				$field_checkbox = get_markup_template('field_checkbox.tpl');
 
-			$s .= '<div id="twitter-info" >
-				<p>' . L10n::t('Currently connected to: ') . '<a href="https://twitter.com/' . $details->screen_name . '" target="_twitter">' . $details->screen_name . '</a>
-					<button type="submit" name="twitter-disconnect" value="1">' . L10n::t('Disconnect') . '</button>
-				</p>
-				<p id="twitter-info-block">
-					<a href="https://twitter.com/' . $details->screen_name . '" target="_twitter"><img id="twitter-avatar" src="' . $details->profile_image_url . '" /></a>
-					<em>' . $details->description . '</em>
-				</p>
-			</div>';
-			$s .= '<div class="clear"></div>';
+				$s .= '<div id="twitter-info" >
+					<p>' . L10n::t('Currently connected to: ') . '<a href="https://twitter.com/' . $details->screen_name . '" target="_twitter">' . $details->screen_name . '</a>
+						<button type="submit" name="twitter-disconnect" value="1">' . L10n::t('Disconnect') . '</button>
+					</p>
+					<p id="twitter-info-block">
+						<a href="https://twitter.com/' . $details->screen_name . '" target="_twitter"><img id="twitter-avatar" src="' . $details->profile_image_url . '" /></a>
+						<em>' . $details->description . '</em>
+					</p>
+				</div>';
+				$s .= '<div class="clear"></div>';
 
-			$s .= replace_macros($field_checkbox, [
-				'$field' => ['twitter-enable', L10n::t('Allow posting to Twitter'), $enabled, L10n::t('If enabled all your <strong>public</strong> postings can be posted to the associated Twitter account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.')]
-			]);
-			if ($a->user['hidewall']) {
-				$s .= '<p>' . L10n::t('<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to Twitter will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted.') . '</p>';
+				$s .= replace_macros($field_checkbox, [
+					'$field' => ['twitter-enable', L10n::t('Allow posting to Twitter'), $enabled, L10n::t('If enabled all your <strong>public</strong> postings can be posted to the associated Twitter account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.')]
+				]);
+				if ($a->user['hidewall']) {
+					$s .= '<p>' . L10n::t('<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to Twitter will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted.') . '</p>';
+				}
+				$s .= replace_macros($field_checkbox, [
+					'$field' => ['twitter-default', L10n::t('Send public postings to Twitter by default'), $defenabled, '']
+				]);
+				$s .= replace_macros($field_checkbox, [
+					'$field' => ['twitter-mirror', L10n::t('Mirror all posts from twitter that are no replies'), $mirrorenabled, '']
+				]);
+				$s .= replace_macros($field_checkbox, [
+					'$field' => ['twitter-import', L10n::t('Import the remote timeline'), $importenabled, '']
+				]);
+				$s .= replace_macros($field_checkbox, [
+					'$field' => ['twitter-create_user', L10n::t('Automatically create contacts'), $create_userenabled, L10n::t('This will automatically create a contact in Friendica as soon as you receive a message from an existing contact via the Twitter network. If you do not enable this, you need to manually add those Twitter contacts in Friendica from whom you would like to see posts here. However if enabled, you cannot merely remove a twitter contact from the Friendica contact list, as it will recreate this contact when they post again.')]
+				]);
+				$s .= '<div class="clear"></div>';
+				$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
+			} catch (TwitterOAuthException $e) {
+				$s .= '<p>' . L10n::t('An error occured: ') . $e->getMessage() . '</p>';
 			}
-			$s .= replace_macros($field_checkbox, [
-				'$field' => ['twitter-default', L10n::t('Send public postings to Twitter by default'), $defenabled, '']
-			]);
-			$s .= replace_macros($field_checkbox, [
-				'$field' => ['twitter-mirror', L10n::t('Mirror all posts from twitter that are no replies'), $mirrorenabled, '']
-			]);
-			$s .= replace_macros($field_checkbox, [
-				'$field' => ['twitter-import', L10n::t('Import the remote timeline'), $importenabled, '']
-			]);
-			$s .= replace_macros($field_checkbox, [
-				'$field' => ['twitter-create_user', L10n::t('Automatically create contacts'), $create_userenabled, L10n::t('This will automatically create a contact in Friendica as soon as you receive a message from an existing contact via the Twitter network. If you do not enable this, you need to manually add those Twitter contacts in Friendica from whom you would like to see posts here. However if enabled, you cannot merely remove a twitter contact from the Friendica contact list, as it will recreate this contact when they post again.')]
-			]);
-
-			$s .= '<div class="clear"></div>';
-			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
 		}
 	}
 	$s .= '</div><div class="clear"></div>';
@@ -866,7 +875,12 @@ function twitter_fetchtimeline(App $a, $uid)
 		$parameters["since_id"] = $lastid;
 	}
 
-	$items = $connection->get('statuses/user_timeline', $parameters);
+	try {
+		$items = $connection->get('statuses/user_timeline', $parameters);
+	} catch (TwitterOAuthException $e) {
+		logger('twitter_fetchtimeline: Error fetching timeline for user ' . $uid . ': ' . $e->getMessage());
+		return;
+	}
 
 	if (!is_array($items)) {
 		return;
@@ -1081,7 +1095,12 @@ function twitter_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 
 	// Fetching user data
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
-	$user = $connection->get('users/show', $parameters);
+	try {
+		$user = $connection->get('users/show', $parameters);
+	} catch (TwitterOAuthException $e) {
+		logger('twitter_fetchuser: Error fetching user ' . $uid . ': ' . $e->getMessage());
+		return;
+	}
 
 	if (!is_object($user)) {
 		return;
@@ -1552,7 +1571,12 @@ function twitter_fetchparentposts(App $a, $uid, $post, $connection, $self, $own_
 	while ($post->in_reply_to_status_id_str != "") {
 		$parameters = ["trim_user" => false, "tweet_mode" => "extended", "id" => $post->in_reply_to_status_id_str];
 
-		$post = $connection->get('statuses/show', $parameters);
+		try {
+			$post = $connection->get('statuses/show', $parameters);
+		} catch (TwitterOAuthException $e) {
+			logger('twitter_fetchparentposts: Error fetching for user ' . $uid . ' and post ' . $post->id_str . ': ' . $e->getMessage());
+			break;
+		}
 
 		if (!count($post)) {
 			logger("twitter_fetchparentposts: Can't fetch post " . $parameters->id, LOGGER_DEBUG);
@@ -1621,7 +1645,12 @@ function twitter_fetchhometimeline(App $a, $uid)
 
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
-	$own_contact = twitter_fetch_own_contact($a, $uid);
+	try {
+		$own_contact = twitter_fetch_own_contact($a, $uid);
+	} catch (TwitterOAuthException $e) {
+		logger('twitter_fetchhometimeline: Error fetching own contact for user ' . $uid . ': ' . $e->getMessage());
+		return;
+	}
 
 	$r = q("SELECT * FROM `contact` WHERE `id` = %d AND `uid` = %d LIMIT 1",
 		intval($own_contact),
@@ -1662,7 +1691,12 @@ function twitter_fetchhometimeline(App $a, $uid)
 		$parameters["since_id"] = $lastid;
 	}
 
-	$items = $connection->get('statuses/home_timeline', $parameters);
+	try {
+		$items = $connection->get('statuses/home_timeline', $parameters);
+	} catch (TwitterOAuthException $e) {
+		logger('twitter_fetchhometimeline: Error fetching home timeline: ' . $e->getMessage());
+		return;
+	}
 
 	if (!is_array($items)) {
 		logger("twitter_fetchhometimeline: Error fetching home timeline: " . print_r($items, true), LOGGER_DEBUG);
@@ -1734,7 +1768,12 @@ function twitter_fetchhometimeline(App $a, $uid)
 		$parameters["since_id"] = $lastid;
 	}
 
-	$items = $connection->get('statuses/mentions_timeline', $parameters);
+	try {
+		$items = $connection->get('statuses/mentions_timeline', $parameters);
+	} catch (TwitterOAuthException $e) {
+		logger('twitter_fetchhometimeline: Error fetching mentions: ' . $e->getMessage());
+		return;
+	}
 
 	if (!is_array($items)) {
 		logger("twitter_fetchhometimeline: Error fetching mentions: " . print_r($items, true), LOGGER_DEBUG);
@@ -1831,6 +1870,7 @@ function twitter_fetch_own_contact(App $a, $uid)
 		$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
 		// Fetching user data
+		// get() may throw TwitterOAuthException, but we will catch it later
 		$user = $connection->get('account/verify_credentials');
 
 		PConfig::set($uid, 'twitter', 'own_id', $user->id_str);
