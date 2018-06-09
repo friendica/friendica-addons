@@ -1,0 +1,53 @@
+# ADDON mathjax
+# Copyright (C)
+# This file is distributed under the same license as the Friendica mathjax addon package.
+# 
+# 
+# Translators:
+# Pascal <pascal.deklerck@gmail.com>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-06-06 18:34+0000\n"
+"Last-Translator: Pascal <pascal.deklerck@gmail.com>\n"
+"Language-Team: Dutch (http://www.transifex.com/Friendica/friendica/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: mathjax.php:36
+msgid "Settings"
+msgstr "Instellingen"
+
+#: mathjax.php:37
+msgid ""
+"The MathJax addon renders mathematical formulae written using the LaTeX "
+"syntax surrounded by the usual $$ or an eqnarray block in the postings of "
+"your wall,network tab and private mail."
+msgstr "De MathJax addon zorgt voor de opmaak van wiskundige formules die geschreven zijn met de LaTeX syntax, omgeven door de gebruikelijke $$ of een eqnarray blok in de berichten op je tijdlijn, netwerk tab en privé mail."
+
+#: mathjax.php:38
+msgid "Use the MathJax renderer"
+msgstr "Gebruik de MathJax opmaak"
+
+#: mathjax.php:42
+msgid "Submit"
+msgstr "Toepassen"
+
+#: mathjax.php:66
+msgid "Settings updated."
+msgstr "Instellingen aangepast."
+
+#: mathjax.php:75
+msgid "MathJax Base URL"
+msgstr "MathJax Basis URL"
+
+#: mathjax.php:75
+msgid ""
+"The URL for the javascript file that should be included to use MathJax. Can "
+"be either the MathJax CDN or another installation of MathJax."
+msgstr "De URL voor het javascript bestand nodig is om MathJax te gebruiken. Dit kan ofwel de MathJax CDN zijn of een andere installatie van MathJax."
