@@ -2,7 +2,8 @@
 
 if(! function_exists("string_plural_select_cs")) {
 function string_plural_select_cs($n){
-	return ($n==1) ? 0 : ($n>=2 && $n<=4) ? 1 : 2;;
+	$n = intval($n);
+	return ($n == 1 && $n % 1 == 0) ? 0 : ($n >= 2 && $n <= 4 && $n % 1 == 0) ? 1: ($n % 1 != 0 ) ? 2 : 3;;
 }}
 ;
 $a->strings["Permission denied."] = "Přístup odmítnut.";
@@ -15,7 +16,7 @@ $a->strings["return to the connector page"] = "návrat ke stránce konektor";
 $a->strings["Post to Buffer"] = "Příspěvek na Buffer";
 $a->strings["Buffer Export"] = "Buffer Export";
 $a->strings["Authenticate your Buffer connection"] = "Přihlásit ke spojení na Buffer";
-$a->strings["Enable Buffer Post Addon"] = "Povolit Buffer Post Addon";
+$a->strings["Enable Buffer Post Addon"] = "Povolit doplněk Buffer Post";
 $a->strings["Post to Buffer by default"] = "Defaultně zaslat na Buffer";
 $a->strings["Check to delete this preset"] = "Zaškrtnout pro smazání tohoto nastavení";
 $a->strings["Posts are going to all accounts that are enabled by default:"] = "Příspěvky jsou zasílány na všechny účty, které jsou defaultně povoleny:";
