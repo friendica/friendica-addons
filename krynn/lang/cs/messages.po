@@ -4,28 +4,28 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014-2015
+# Lorem Ipsum <aditoo@seznam.cz>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2015-02-11 19:37+0000\n"
-"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"PO-Revision-Date: 2018-06-09 09:57+0000\n"
+"Last-Translator: Lorem Ipsum <aditoo@seznam.cz>\n"
+"Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
 #: krynn.php:150
 msgid "Krynn Settings"
-msgstr "Krynn Nastavení"
+msgstr "Nastavení Krynn"
 
 #: krynn.php:152
 msgid "Enable Krynn Addon"
-msgstr "Povolit Krynn addon"
+msgstr "Povolit doplněk Krynn"
 
 #: krynn.php:158
 msgid "Submit"

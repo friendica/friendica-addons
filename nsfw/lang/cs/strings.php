@@ -2,14 +2,16 @@
 
 if(! function_exists("string_plural_select_cs")) {
 function string_plural_select_cs($n){
-	return ($n==1) ? 0 : ($n>=2 && $n<=4) ? 1 : 2;;
+	$n = intval($n);
+	return ($n == 1 && $n % 1 == 0) ? 0 : ($n >= 2 && $n <= 4 && $n % 1 == 0) ? 1: ($n % 1 != 0 ) ? 2 : 3;;
 }}
 ;
-$a->strings["Not Safe For Work (General Purpose Content Filter) settings"] = "Not Safe For Work (General Purpose Content Filter) nastavení";
-$a->strings["This addon looks in posts for the words/text you specify below, and collapses any content containing those keywords so it is not displayed at inappropriate times, such as sexual innuendo that may be improper in a work setting. It is polite and recommended to tag any content containing nudity with #NSFW.  This filter can also match any other word/text you specify, and can thereby be used as a general purpose content filter."] = "Tento addon hledá v příspěvcích slova zadáná níže a skryje jakýkoliv obsah, který tyto slova obsahuje v prostředích, kde to není vhodné. Je slušné a doporučené jakékoliv příspěvky s mahotou označit s #NSFW.  Tento filtr může také vyhledávat jakékoliv Vámi specifikované slovní spojení, takže může být využit jako obecný kontextový filtr.";
+$a->strings["Content Filter (NSFW and more)"] = "";
+$a->strings["This addon searches for specified words/text in posts and collapses them. It can be used to filter content tagged with for instance #NSFW that may be deemed inappropriate at certain times or places, such as being at work. It is also useful for hiding irrelevant or annoying content from direct view."] = "";
 $a->strings["Enable Content filter"] = "Povolit Kontextový filtr";
 $a->strings["Comma separated list of keywords to hide"] = "Čárkou oddělený seznam klíčových slov ke skrytí";
-$a->strings["Submit"] = "Odeslat";
+$a->strings["Save Settings"] = "Uložit nastavení";
 $a->strings["Use /expression/ to provide regular expressions"] = "Použít /výraz/ pro použití regulárních výrazů";
 $a->strings["NSFW Settings saved."] = "NSFW nastavení uloženo";
-$a->strings["%s - Click to open/close"] = "%s - Klikněte pro otevření/zavření";
+$a->strings["Filtered tag: %s"] = "Filtrovaná značka: %s";
+$a->strings["Filtered word: %s"] = "Filtrované slovo: %s";

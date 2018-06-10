@@ -5,6 +5,7 @@
 # 
 # Translators:
 # Andreas H., 2014
+# hoergen <hoergen@hoergen.org>, 2018
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018
 msgid ""
@@ -12,8 +13,8 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-04-01 11:11-0400\n"
-"PO-Revision-Date: 2018-04-07 05:33+0000\n"
-"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
+"PO-Revision-Date: 2018-06-09 09:27+0000\n"
+"Last-Translator: hoergen <hoergen@hoergen.org>\n"
 "Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,7 +32,7 @@ msgid ""
 " can be used to filter content tagged with for instance #NSFW that may be "
 "deemed inappropriate at certain times or places, such as being at work. It "
 "is also useful for hiding irrelevant or annoying content from direct view."
-msgstr "Dieses Addon sucht nach von dir definierten Wörtern bzw. Texten in Beiträgen und kollabiert diese wenn die Wörter gefunden werden. Damit können z.B. Inhalte gefiltert werden, die mit #NSFW (nicht für die Arbeit geeignet) gekennzeichnet sind. Außerdem ist es nützlich um irrelevante oder lästige Inhalte zu verbergen."
+msgstr "Dieses Addon sucht, nach den von dir definierten Wörtern bzw. Texten in Beiträgen und klappt bei einem Treffer den gesamten Beitrag zusammen. Damit können z.B. Inhalte gefiltert werden, die mit #NSFW (Not Safe for Work, für die Arbeit unangemessene Beiträge), gekennzeichnet sind. Des Weiteren können damit natürlich auch nicht gewünschte und lästige Beiträge verborgen werden."
 
 #: nsfw.php:86
 msgid "Enable Content filter"
