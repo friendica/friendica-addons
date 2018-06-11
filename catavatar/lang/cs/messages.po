@@ -28,7 +28,7 @@ msgstr "Další náhodné kočky!"
 
 #: catavatar.php:62
 msgid "Reset to email Cat"
-msgstr ""
+msgstr "Resetovat a e-mailovat kočku"
 
 #: catavatar.php:64
 msgid "Cat Avatar Settings"

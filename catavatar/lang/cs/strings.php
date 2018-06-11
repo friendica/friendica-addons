@@ -8,7 +8,7 @@ function string_plural_select_cs($n){
 ;
 $a->strings["Use Cat as Avatar"] = "Použít kočku jako avatar";
 $a->strings["More Random Cat!"] = "Další náhodné kočky!";
-$a->strings["Reset to email Cat"] = "";
+$a->strings["Reset to email Cat"] = "Resetovat a e-mailovat kočku";
 $a->strings["Cat Avatar Settings"] = "Nastavení Cat Avatar";
 $a->strings["The cat hadn't found itself."] = "Kočka se nenašla.";
 $a->strings["There was an error, the cat ran away."] = "Vyskytla se chyba, kočka utekla.";
