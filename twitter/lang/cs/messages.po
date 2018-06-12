@@ -1,18 +1,19 @@
-# ADDON nsfw
+# ADDON twitter
 # Copyright (C)
-# This file is distributed under the same license as the Friendica nsfw addon package.
+# This file is distributed under the same license as the Friendica twitter addon package.
 # 
 # 
 # Translators:
-# Lorem Ipsum <aditoo@seznam.cz>, 2018
-# michal_s <msupler@gmail.com>, 2014-2015
+# Aditoo, 2018
+# Aditoo, 2018
+# michal_s <msupler@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-01 11:11-0400\n"
-"PO-Revision-Date: 2018-06-09 10:08+0000\n"
-"Last-Translator: Lorem Ipsum <aditoo@seznam.cz>\n"
+"POT-Creation-Date: 2018-06-02 10:25+0700\n"
+"PO-Revision-Date: 2018-06-12 12:14+0000\n"
+"Last-Translator: Aditoo\n"
 "Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,44 +21,116 @@ msgstr ""
 "Language: cs\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
-#: nsfw.php:77 nsfw.php:81
-msgid "Content Filter (NSFW and more)"
-msgstr ""
+#: twitter.php:195
+msgid "Post to Twitter"
+msgstr "Poslat příspěvek na Twitter"
 
-#: nsfw.php:85
+#: twitter.php:236
 msgid ""
-"This addon searches for specified words/text in posts and collapses them. It"
-" can be used to filter content tagged with for instance #NSFW that may be "
-"deemed inappropriate at certain times or places, such as being at work. It "
-"is also useful for hiding irrelevant or annoying content from direct view."
+"You submitted an empty PIN, please Sign In with Twitter again to get a new "
+"one."
 msgstr ""
 
-#: nsfw.php:86
-msgid "Enable Content filter"
-msgstr "Povolit Kontextový filtr"
+#: twitter.php:263
+msgid "Twitter settings updated."
+msgstr "Nastavení Twitteru aktualizováno."
 
-#: nsfw.php:89
-msgid "Comma separated list of keywords to hide"
-msgstr "Čárkou oddělený seznam klíčových slov ke skrytí"
+#: twitter.php:293 twitter.php:297
+msgid "Twitter Import/Export/Mirror"
+msgstr "Import/Export/Zrcadlení Twitteru"
 
-#: nsfw.php:93
+#: twitter.php:304
+msgid ""
+"No consumer key pair for Twitter found. Please contact your site "
+"administrator."
+msgstr "Nenalezen žádný spotřebitelský páru klíčů pro Twitter. Obraťte se na administrátora webu."
+
+#: twitter.php:316
+msgid ""
+"At this Friendica instance the Twitter addon was enabled but you have not "
+"yet connected your account to your Twitter account. To do so click the "
+"button below to get a PIN from Twitter which you have to copy into the input"
+" box below and submit the form. Only your <strong>public</strong> posts will"
+" be posted to Twitter."
+msgstr ""
+
+#: twitter.php:317
+msgid "Log in with Twitter"
+msgstr "Přihlásit se s Twitter"
+
+#: twitter.php:319
+msgid "Copy the PIN from Twitter here"
+msgstr "Zkopírujte sem PIN z Twitteru"
+
+#: twitter.php:324 twitter.php:366 twitter.php:636
 msgid "Save Settings"
 msgstr "Uložit nastavení"
 
-#: nsfw.php:94
-msgid "Use /expression/ to provide regular expressions"
-msgstr "Použít /výraz/ pro použití regulárních výrazů"
+#: twitter.php:336
+msgid "Currently connected to: "
+msgstr "V současné době připojen k:"
 
-#: nsfw.php:109
-msgid "NSFW Settings saved."
-msgstr "NSFW nastavení uloženo"
+#: twitter.php:337
+msgid "Disconnect"
+msgstr "Odpojit"
 
-#: nsfw.php:162
-#, php-format
-msgid "Filtered tag: %s"
-msgstr "Filtrovaná značka: %s"
+#: twitter.php:347
+msgid "Allow posting to Twitter"
+msgstr "Povolit odesílání na Twitter"
 
-#: nsfw.php:164
-#, php-format
-msgid "Filtered word: %s"
-msgstr "Filtrované slovo: %s"
+#: twitter.php:347
+msgid ""
+"If enabled all your <strong>public</strong> postings can be posted to the "
+"associated Twitter account. You can choose to do so by default (here) or for"
+" every posting separately in the posting options when writing the entry."
+msgstr "Je-li povoleno, všechny Vaše <strong>veřejné</strong> příspěvky mohou být zaslány na související Twitter účet. Můžete si vybrat, zda-li toto bude výchozí nastavení (zde), nebo budete mít možnost si vybrat požadované chování při psaní každého příspěvku."
+
+#: twitter.php:350
+msgid ""
+"<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile "
+"details from unknown viewers?</em>) the link potentially included in public "
+"postings relayed to Twitter will lead the visitor to a blank page informing "
+"the visitor that the access to your profile has been restricted."
+msgstr ""
+
+#: twitter.php:353
+msgid "Send public postings to Twitter by default"
+msgstr "Defaultně zasílat veřejné komentáře na Twitter"
+
+#: twitter.php:356
+msgid "Mirror all posts from twitter that are no replies"
+msgstr ""
+
+#: twitter.php:359
+msgid "Import the remote timeline"
+msgstr ""
+
+#: twitter.php:362
+msgid "Automatically create contacts"
+msgstr "Automaticky vytvořit kontakty"
+
+#: twitter.php:362
+msgid ""
+"This will automatically create a contact in Friendica as soon as you receive"
+" a message from an existing contact via the Twitter network. If you do not "
+"enable this, you need to manually add those Twitter contacts in Friendica "
+"from whom you would like to see posts here. However if enabled, you cannot "
+"merely remove a twitter contact from the Friendica contact list, as it will "
+"recreate this contact when they post again."
+msgstr ""
+
+#: twitter.php:614
+msgid "Twitter post failed. Queued for retry."
+msgstr ""
+
+#: twitter.php:628
+msgid "Settings updated."
+msgstr "Nastavení aktualizováno."
+
+#: twitter.php:638
+msgid "Consumer key"
+msgstr "Consumer key"
+
+#: twitter.php:639
+msgid "Consumer secret"
+msgstr "Consumer secret"
