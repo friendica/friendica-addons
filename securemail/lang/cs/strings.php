@@ -8,10 +8,10 @@ function string_plural_select_cs($n){
 ;
 $a->strings["\"Secure Mail\" Settings"] = "Nastavení \"Secure Mail\"";
 $a->strings["Save Settings"] = "Uložit nastavení";
-$a->strings["Save and send test"] = "";
-$a->strings["Enable Secure Mail"] = "";
-$a->strings["Public key"] = "";
-$a->strings["Your public PGP key, ascii armored format"] = "";
-$a->strings["Secure Mail Settings saved."] = "";
-$a->strings["Test email sent"] = "";
-$a->strings["There was an error sending the test email"] = "";
+$a->strings["Save and send test"] = "Uložit a poslat test";
+$a->strings["Enable Secure Mail"] = "Povolit Secure Mail";
+$a->strings["Public key"] = "Veřejný klíč";
+$a->strings["Your public PGP key, ascii armored format"] = "Váš veřejný klíč PGP ve formátu ASCII Armor";
+$a->strings["Secure Mail Settings saved."] = "Nastavení Secure Mail uložena.";
+$a->strings["Test email sent"] = "Testovací e-mail odeslán";
+$a->strings["There was an error sending the test email"] = "Při odesílání testovacího e-mailu se vyskytla chyba";
