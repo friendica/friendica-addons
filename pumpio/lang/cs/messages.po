@@ -4,20 +4,21 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014
+# Aditoo, 2018
+# michal_s <msupler@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-07-28 18:19+0000\n"
-"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2018-06-11 19:43+0000\n"
+"Last-Translator: Aditoo\n"
+"Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
 #: pumpio.php:38
 msgid "Permission denied."
@@ -62,11 +63,11 @@ msgstr "Importovat vzdálenou časovou osu"
 
 #: pumpio.php:255
 msgid "Enable pump.io Post Addon"
-msgstr "Aktivovat pump.io Post Addon"
+msgstr "Povolit doplněk pumo.io Post"
 
 #: pumpio.php:260
 msgid "Post to pump.io by default"
-msgstr "Defaultní umístění na pump.oi "
+msgstr "Posílat příspěvky na pump.io automaticky"
 
 #: pumpio.php:265
 msgid "Should posts be public?"
@@ -94,9 +95,9 @@ msgstr "Zaslání příspěvku na Pump.io zřejmě selhalo. Příspěvek byl za�
 
 #: pumpio.php:875
 msgid "status"
-msgstr "Stav"
+msgstr "stav"
 
 #: pumpio.php:879
 #, php-format
 msgid "%1$s likes %2$s's %3$s"
-msgstr "Uživateli %1$s se líbí příspěvek %3$s uživatele %2$s"
+msgstr "%1$s se líbí %3$s %2$s"
