@@ -4,168 +4,173 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014
+# Aditoo, 2018
+# michal_s <msupler@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2014-07-28 18:15+0000\n"
-"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"POT-Creation-Date: 2015-07-27 07:21+0200\n"
+"PO-Revision-Date: 2018-06-11 14:49+0000\n"
+"Last-Translator: Aditoo\n"
+"Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
-#: statusnet.php:149
-msgid "Post to StatusNet"
-msgstr "Poslat příspěvek na StatusNet"
+#: statusnet.php:151
+msgid "Post to GNU Social"
+msgstr "Poslat na GNU social"
 
-#: statusnet.php:194
+#: statusnet.php:196
 msgid ""
 "Please contact your site administrator.<br />The provided API URL is not "
 "valid."
 msgstr "Obraťte se na administratora webu.<br />Poskytnutý odkaz na API není platný."
 
-#: statusnet.php:223
-msgid "We could not contact the StatusNet API with the Path you entered."
-msgstr "S cestou, kterou jste zadali, se nebylo možné spojit s API StatusNetu."
+#: statusnet.php:225
+msgid "We could not contact the GNU Social API with the Path you entered."
+msgstr "Nemohli jsme kontaktovat API GNU social pomocí cesty, kterou jste zadal/a."
 
-#: statusnet.php:257
-msgid "StatusNet settings updated."
-msgstr "Nastavení StatusNetu aktualizováno."
+#: statusnet.php:259
+msgid "GNU Social settings updated."
+msgstr "Nastavení pro GNU social aktualizována."
 
-#: statusnet.php:289 statusnet.php:293
-msgid "StatusNet Import/Export/Mirror"
-msgstr "StatusNet Import/Export/Zrcadlení"
+#: statusnet.php:294 statusnet.php:298
+msgid "GNU Social Import/Export/Mirror"
+msgstr ""
 
-#: statusnet.php:308
-msgid "Globally Available StatusNet OAuthKeys"
-msgstr "Globálně dostupné StatusNet OAuth klíče"
+#: statusnet.php:313
+msgid "Globally Available GNU Social OAuthKeys"
+msgstr ""
 
-#: statusnet.php:309
+#: statusnet.php:314
 msgid ""
-"There are preconfigured OAuth key pairs for some StatusNet servers "
-"available. If you are useing one of them, please use these credentials. If "
-"not feel free to connect to any other StatusNet instance (see below)."
-msgstr "Jsou dostupné přednastavené OAuth páry klíčů pro některé servery StatusNetu. Pokud používáte některý z nich, použijte toto přihlášení. Pokud ne, neváhejte se připojit k jiné instanci StatusNet (viz níže)."
+"There are preconfigured OAuth key pairs for some GNU Social servers "
+"available. If you are using one of them, please use these credentials. If "
+"not feel free to connect to any other GNU Social instance (see below)."
+msgstr ""
 
-#: statusnet.php:315 statusnet.php:332 statusnet.php:359 statusnet.php:366
-#: statusnet.php:404 statusnet.php:673
+#: statusnet.php:320 statusnet.php:337 statusnet.php:364 statusnet.php:371
+#: statusnet.php:416 statusnet.php:699
 msgid "Save Settings"
-msgstr "Uložit Nastavení"
+msgstr "Uložit nastavení"
 
-#: statusnet.php:317
+#: statusnet.php:322
 msgid "Provide your own OAuth Credentials"
 msgstr "Uveďte své vlastní OAuth přihlašovací údaje"
 
-#: statusnet.php:318
+#: statusnet.php:323
 msgid ""
-"No consumer key pair for StatusNet found. Register your Friendica Account as"
-" an desktop client on your StatusNet account, copy the consumer key pair "
+"No consumer key pair for GNU Social found. Register your Friendica Account "
+"as an desktop client on your GNU Social account, copy the consumer key pair "
 "here and enter the API base root.<br />Before you register your own OAuth "
 "key pair ask the administrator if there is already a key pair for this "
-"Friendica installation at your favorited StatusNet installation."
-msgstr "Nenalezen žádný spotřebitelský páru klíčů pro StatusNet. Zaregistrujte si svůj účet Friendica jako desktopový klient ve Vašem účtu StatusNet, zkopírujte si sem spotřebitelský páru klíčů a vložte API base root.<br />Předtím, než si zaregistrujete Váš vlastní pár klíčů OAuth, zjistěte si od Friendica administrátora, zda-li již existuje pár klíčů pro tuto instalaci Friendica pro Vaši oblíbenou StatusNet instalaci."
+"Friendica installation at your favorited GNU Social installation."
+msgstr ""
 
-#: statusnet.php:320
+#: statusnet.php:325
 msgid "OAuth Consumer Key"
 msgstr "OAuth Consumer Key"
 
-#: statusnet.php:323
+#: statusnet.php:328
 msgid "OAuth Consumer Secret"
 msgstr "OAuth Consumer Secret"
 
-#: statusnet.php:326 statusnet.php:653 statusnet.php:665
+#: statusnet.php:331 statusnet.php:679 statusnet.php:691
 msgid "Base API Path (remember the trailing /)"
 msgstr "Cesta k Base API  (nezapomeňte na koncové /)"
 
-#: statusnet.php:329
-msgid "StatusNet application name"
-msgstr "StatusNet název aplikace"
-
-#: statusnet.php:351
+#: statusnet.php:356
 msgid ""
-"To connect to your StatusNet account click the button below to get a "
-"security code from StatusNet which you have to copy into the input box below"
-" and submit the form. Only your <strong>public</strong> posts will be posted"
-" to StatusNet."
-msgstr "Chcete-li připojit k vašemu účtu StatusNet klikněte na tlačítko níže, abyste dostati bezpečnostní kód ze StatusNetu, který musíte zkopírovat do vstupního pole níže a odelat formulář. Pouze Vaše <strong>veřejné</strong> příspěvky budou zveřejněny na StatusNetu."
+"To connect to your GNU Social account click the button below to get a "
+"security code from GNU Social which you have to copy into the input box "
+"below and submit the form. Only your <strong>public</strong> posts will be "
+"posted to GNU Social."
+msgstr ""
 
-#: statusnet.php:352
-msgid "Log in with StatusNet"
-msgstr "Přihlásit se s StatusNet"
+#: statusnet.php:357
+msgid "Log in with GNU Social"
+msgstr "Přihlásit se pomocí GNU social"
 
-#: statusnet.php:354
-msgid "Copy the security code from StatusNet here"
-msgstr "Zkopírujte sem bezpečnostní kód ze StatusNet"
+#: statusnet.php:359
+msgid "Copy the security code from GNU Social here"
+msgstr "Zde překopírujte váš bezpečnostní kód z GNU social"
 
-#: statusnet.php:360
+#: statusnet.php:365
 msgid "Cancel Connection Process"
 msgstr "Zrušit připojování"
 
-#: statusnet.php:362
-msgid "Current StatusNet API is"
-msgstr "Aktuální StatusNet API je"
+#: statusnet.php:367
+msgid "Current GNU Social API is"
+msgstr ""
 
-#: statusnet.php:363
-msgid "Cancel StatusNet Connection"
-msgstr "Zrušit StatusNet připojení"
+#: statusnet.php:368
+msgid "Cancel GNU Social Connection"
+msgstr "Zrušit spojení s GNU social"
 
-#: statusnet.php:374
+#: statusnet.php:379
 msgid "Currently connected to: "
-msgstr "V současné době připojen k:"
+msgstr "Aktuálně jste připojen/a k:"
 
-#: statusnet.php:375
+#: statusnet.php:380
 msgid ""
 "If enabled all your <strong>public</strong> postings can be posted to the "
-"associated StatusNet account. You can choose to do so by default (here) or "
+"associated GNU Social account. You can choose to do so by default (here) or "
 "for every posting separately in the posting options when writing the entry."
-msgstr "Je-li povoleno, všechny Vaše <strong>veřejné</strong> příspěvky mohou být zaslány na související StatusNet účet. Můžete si vybrat, zda-li toto bude výchozí nastavení (zde), nebo budete mít možnost si vybrat požadované chování při psaní každého příspěvku."
+msgstr ""
 
-#: statusnet.php:377
+#: statusnet.php:382
 msgid ""
 "<strong>Note</strong>: Due your privacy settings (<em>Hide your profile "
 "details from unknown viewers?</em>) the link potentially included in public "
-"postings relayed to StatusNet will lead the visitor to a blank page "
+"postings relayed to GNU Social will lead the visitor to a blank page "
 "informing the visitor that the access to your profile has been restricted."
-msgstr "<strong>Upozornění</strong>: Z důvodů Vašeho nastavení ochrany soukromí (<em> Skrýt Vaše profilové detaily před neznámými čtenáři?</em>) \nodkaz potenciálně zahrnutý ve Vašich veřejných příspěvcích poslaných do sítě StatusNet přesměruje návštěvníky na prázdnou stránku informující návštěvníky, že přístup k vašemu profilu je omezen."
+msgstr ""
 
-#: statusnet.php:380
-msgid "Allow posting to StatusNet"
-msgstr "Povolit zasílání příspěvků na StatusNet"
+#: statusnet.php:385
+msgid "Allow posting to GNU Social"
+msgstr "Povolit posílání příspěvků na GNU social"
 
-#: statusnet.php:383
-msgid "Send public postings to StatusNet by default"
-msgstr "Standardně poslílat veřejné příspěvky na StatusNet"
-
-#: statusnet.php:387
-msgid ""
-"Mirror all posts from statusnet that are no replies or repeated messages"
-msgstr "Zrcadlit všechny příspěvky ze statusnet, které nejsou odpověďmi nebo opakovanými zprávami"
+#: statusnet.php:388
+msgid "Send public postings to GNU Social by default"
+msgstr ""
 
 #: statusnet.php:392
-msgid "Import the remote timeline"
-msgstr "Importovat vzdálenou časovou osu"
+msgid ""
+"Mirror all posts from GNU Social that are no replies or repeated messages"
+msgstr ""
 
-#: statusnet.php:401
+#: statusnet.php:398
+msgid "Import the remote timeline"
+msgstr ""
+
+#: statusnet.php:402
+msgid "Disabled"
+msgstr "Zakázáno"
+
+#: statusnet.php:403
+msgid "Full Timeline"
+msgstr ""
+
+#: statusnet.php:404
+msgid "Only Mentions"
+msgstr ""
+
+#: statusnet.php:413
 msgid "Clear OAuth configuration"
 msgstr "Vymazat konfiguraci OAuth"
 
-#: statusnet.php:664
+#: statusnet.php:690
 msgid "Site name"
 msgstr "Název webu"
 
-#: statusnet.php:666
+#: statusnet.php:692
 msgid "Consumer Secret"
 msgstr "Consumer Secret"
 
-#: statusnet.php:667
+#: statusnet.php:693
 msgid "Consumer Key"
 msgstr "Consumer Key"
-
-#: statusnet.php:668
-msgid "Application name"
-msgstr "Název aplikace"
