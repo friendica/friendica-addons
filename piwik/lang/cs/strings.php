@@ -2,12 +2,13 @@
 
 if(! function_exists("string_plural_select_cs")) {
 function string_plural_select_cs($n){
-	return ($n==1) ? 0 : ($n>=2 && $n<=4) ? 1 : 2;;
+	$n = intval($n);
+	return ($n == 1 && $n % 1 == 0) ? 0 : ($n >= 2 && $n <= 4 && $n % 1 == 0) ? 1: ($n % 1 != 0 ) ? 2 : 3;;
 }}
 ;
 $a->strings["This website is tracked using the <a href='http://www.piwik.org'>Piwik</a> analytics tool."] = "Tato webová stránka je sledována pomocí nástroje pro analýzu <a href='http://www.piwik.org'>Piwik</a>.";
-$a->strings["If you do not want that your visits are logged this way you <a href='%s'>can set a cookie to prevent Piwik from tracking further visits of the site</a> (opt-out)."] = "Pokud si nepřejete, aby vaše návštěvy byly takto sledovány, <a href='%s'>můžete si nastavit cookie, které zastaví sledování dalších návštěv na tomto webu</a> (opt-out).";
-$a->strings["Submit"] = "Odeslat";
+$a->strings["If you do not want that your visits are logged in this way you <a href='%s'>can set a cookie to prevent Piwik from tracking further visits of the site</a> (opt-out)."] = "Pokut nechcete, aby byly vaše návštěvy takto sledovány, můžete si <a href='%s'>nastavit soubor cookie, která zabrání Piwik, aby sledovala Vaše další návštěvy na stránce</a> (tzv. opt-out)";
+$a->strings["Save Settings"] = "Uložit nastavení";
 $a->strings["Piwik Base URL"] = "Piwik Base adresa URL";
 $a->strings["Absolute path to your Piwik installation. (without protocol (http/s), with trailing slash)"] = "Absolutní cesta k Vaší instalaci Piwik. (bez protokolu (http/s), s koncovým lomítkem)";
 $a->strings["Site ID"] = "ID webu";
