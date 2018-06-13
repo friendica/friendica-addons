@@ -16,12 +16,8 @@ function mathjax_install() {
     Addon::registerHook('page_header', 'addon/mathjax/mathjax.php', 'mathjax_page_header');
     Addon::registerHook('addon_settings', 'addon/mathjax/mathjax.php', 'mathjax_settings');
     Addon::registerHook('addon_settings_post', 'addon/mathjax/mathjax.php', 'mathjax_settings_post');
-    Addon::registerHook('template_vars','addon/mathjax/mathjax.php', 'mathjax_template_vars');
+    Addon::registerHook('template_vars', 'addon/mathjax/mathjax.php', 'mathjax_template_vars');
     logger('installed js_math addon');
-}
-
-function mathjax_template_vars($a, &$arr) {
-    $arr['vars']['addon_hooks'][] = "mathjax";
 }
 
 function mathjax_uninstall() {
@@ -30,6 +26,11 @@ function mathjax_uninstall() {
     Addon::unregisterHook('addon_settings_post', 'addon/mathjax/mathjax.php', 'mathjax_settings_post');
     Addon::unregisterHook('template_vars','addon/mathjax/mathjax.php', 'mathjax_template_vars');
 }
+
+function mathjax_template_vars($a, &$arr) {
+    $arr['vars']['addon_hooks'][] = "mathjax";
+}
+
 function mathjax_settings_post ($a, $post) {
     if (! local_user())
         return;
