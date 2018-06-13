@@ -27,7 +27,12 @@ function mathjax_uninstall() {
     Addon::unregisterHook('template_vars', 'addon/mathjax/mathjax.php', 'mathjax_template_vars');
 }
 
-function mathjax_template_vars($a, &$arr) {
+function mathjax_template_vars($a, &$arr)
+{
+    if (!array_key_exists('addon_hooks',$arr['vars']))
+    {
+	$arr['vars']['addon_hooks'] = array();
+    }
     $arr['vars']['addon_hooks'][] = "mathjax";
 }
 
