@@ -42,6 +42,7 @@ use Friendica\Network\HTTPException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\ExpressionLanguage;
+use Friendica\Model\Item;
 
 require_once 'boot.php';
 require_once 'include/conversation.php';
@@ -402,7 +403,9 @@ function advancedcontentfilter_get_variables_guid(ServerRequestInterface $reques
 		throw new HTTPException\BadRequestException(L10n::t('Missing argument: guid.'));
 	}
 
-	$item = dba::fetch_first(item_query() . " AND `item`.`guid` = ? AND (`item`.`uid` = ? OR `item`.`uid` = 0) ORDER BY `item`.`uid` DESC", $args['guid'], local_user());
+	$condition = ["`guid` = ? AND (`uid` = ? OR `uid` = 0)", $args['guid'], local_user()];
+	$params = ['order' => ['uid' => true]];
+	$item = Item::selectFirst(local_user(), [], $condition, $params);
 
 	if (!\Friendica\Database\DBM::is_result($item)) {
 		throw new HTTPException\NotFoundException(L10n::t('Unknown post with guid: %s', $args['guid']));
