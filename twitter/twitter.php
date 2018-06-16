@@ -1561,7 +1561,7 @@ function twitter_checknotification(App $a, $uid, $own_id, $top_item, $postarray)
 	}
 }
 
-function twitter_fetchparentposts(App $a, $uid, $post, $connection, $self, $own_id)
+function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection, $self, $own_id)
 {
 	logger("twitter_fetchparentposts: Fetching for user " . $uid . " and post " . $post->id_str, LOGGER_DEBUG);
 
