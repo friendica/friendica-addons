@@ -807,7 +807,7 @@ function twitter_do_mirrorpost(App $a, $uid, $post)
 	$datarray["api_source"] = true;
 	$datarray["profile_uid"] = $uid;
 	$datarray["extid"] = NETWORK_TWITTER;
-	$datarray['message_id'] = item_new_uri($a->get_hostname(), $uid, NETWORK_TWITTER . ":" . $post->id);
+	$datarray['message_id'] = Item::newURI($uid, NETWORK_TWITTER . ":" . $post->id);
 	$datarray['object'] = json_encode($post);
 	$datarray["title"] = "";
 

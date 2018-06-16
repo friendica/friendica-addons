@@ -16,6 +16,7 @@ use Friendica\Core\PConfig;
 use Friendica\Object\Image;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
+use Friendica\Model\Item;
 
 require_once 'mod/share.php';
 require_once 'mod/parse_url.php';
@@ -176,7 +177,7 @@ function fromgplus_post($a, $uid, $source, $body, $location, $coord, $id) {
 	$_REQUEST['extid'] = NETWORK_GPLUS;
 
 	if (isset($id)) {
-		$_REQUEST['message_id'] = item_new_uri($a->get_hostname(), $uid, NETWORK_GPLUS.':'.$id);
+		$_REQUEST['message_id'] = Item::newURI($uid, NETWORK_GPLUS.':'.$id);
 	}
 
 	// $_REQUEST['verb']
