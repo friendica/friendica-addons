@@ -1578,7 +1578,7 @@ function twitter_fetchparentposts(App $a, $uid, $post, $connection, $self, $own_
 			break;
 		}
 
-		if (!count($post)) {
+		if (empty($post)) {
 			logger("twitter_fetchparentposts: Can't fetch post " . $parameters->id, LOGGER_DEBUG);
 			break;
 		}
