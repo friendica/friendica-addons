@@ -75,7 +75,6 @@ use Friendica\Model\Contact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
-use Friendica\Model\Photo;
 use Friendica\Model\Queue;
 use Friendica\Model\User;
 use Friendica\Object\Image;
