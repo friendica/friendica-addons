@@ -336,7 +336,7 @@ function mailstream_cron($a, $b) {
 		if (!$ms_item_id['message-id'] || !strlen($ms_item_id['message-id'])) {
 			logger('mailstream_cron: Item ' . $ms_item_id['id'] . ' URI ' . $ms_item_id['uri'] . ' has no message-id', LOGGER_NORMAL);
 		}
-		$item = Item::selectFirst($ms_item_id['uid'], Item::DISPLAY_FIELDLIST, ['id' => $ms_item_id['id']]);
+		$item = Item::selectFirst([], ['id' => $ms_item_id['id']]);
 		$users = q("SELECT * FROM `user` WHERE `uid` = %d", intval($item['uid']));
 		$user = $users[0];
 		if ($user && $item) {

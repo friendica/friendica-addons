@@ -454,7 +454,7 @@ function twitter_post_hook(App $a, &$b)
 		}
 
 		$condition = ['uri' => $b["thr-parent"], 'uid' => $b["uid"]];
-		$orig_post = Item::selectFirst($b["uid"], [], $condition);
+		$orig_post = Item::selectFirst([], $condition);
 		if (!DBM::is_result($orig_post)) {
 			logger("twitter_post_hook: no parent found " . $b["thr-parent"]);
 			return;
@@ -758,7 +758,7 @@ function twitter_prepare_body(App $a, &$b)
 		$item["plink"] = $a->get_baseurl() . "/display/" . $a->user["nickname"] . "/" . $item["parent"];
 
 		$condition = ['uri' => $item["thr-parent"], 'uid' => local_user()];
-		$orig_post = Item::selectFirst(local_user(), ['author-link'], $condition);
+		$orig_post = Item::selectFirst(['author-link'], $condition);
 		if (DBM::is_result($orig_post)) {
 			$nicknameplain = preg_replace("=https?://twitter.com/(.*)=ism", "$1", $orig_post["author-link"]);
 			$nickname = "@[url=" . $orig_post["author-link"] . "]" . $nicknameplain . "[/url]";

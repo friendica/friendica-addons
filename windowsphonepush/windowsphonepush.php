@@ -197,7 +197,7 @@ function windowsphonepush_cron()
 					$senditemtext = PConfig::get($rr['uid'], 'windowsphonepush', 'senditemtext');
 					if ($senditemtext == 1) {
 						// load item with the max id
-						$item = Item::selectFirst(local_user(), ['author-name', 'body'], ['id' => $count[0]['max']]);
+						$item = Item::selectFirst(['author-name', 'body'], ['id' => $count[0]['max']]);
 
 						// as user allows to send the item, we want to show the sender of the item in the toast
 						// toasts are limited to one line, therefore place is limited - author shall be in

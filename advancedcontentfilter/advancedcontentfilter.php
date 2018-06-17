@@ -405,7 +405,7 @@ function advancedcontentfilter_get_variables_guid(ServerRequestInterface $reques
 
 	$condition = ["`guid` = ? AND (`uid` = ? OR `uid` = 0)", $args['guid'], local_user()];
 	$params = ['order' => ['uid' => true]];
-	$item = Item::selectFirst(local_user(), Item::DISPLAY_FIELDLIST, $condition, $params);
+	$item = Item::selectFirstForUser(local_user(), [], $condition, $params);
 
 	if (!\Friendica\Database\DBM::is_result($item)) {
 		throw new HTTPException\NotFoundException(L10n::t('Unknown post with guid: %s', $args['guid']));

@@ -462,7 +462,7 @@ function statusnet_post_hook(App $a, &$b)
 		}
 
 		$condition = ['uri' => $b["thr-parent"], 'uid' => $b["uid"]];
-		$orig_post = Item::selectFirst($b["uid"], ['author-link', 'uri'], $condition);
+		$orig_post = Item::selectFirst(['author-link', 'uri'], $condition);
 		if (!count($orig_post)) {
 			logger("statusnet_post_hook: no parent found " . $b["thr-parent"]);
 			return;
@@ -683,7 +683,7 @@ function statusnet_prepare_body(App $a, &$b)
 		$item["plink"] = $a->get_baseurl() . "/display/" . $a->user["nickname"] . "/" . $item["parent"];
 
 		$condition = ['uri' => $item["thr-parent"], 'uid' => local_user()];
-		$orig_post = Item::selectFirst(local_user(), ['author-link', 'uri'], $condition);
+		$orig_post = Item::selectFirst(['author-link', 'uri'], $condition);
 		if (count($orig_post)) {
 			$nick = preg_replace("=https?://(.*)/(.*)=ism", "$2", $orig_post["author-link"]);
 
