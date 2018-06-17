@@ -800,7 +800,7 @@ function twitter_do_mirrorpost(App $a, $uid, $post)
 	$datarray["profile_uid"] = $uid;
 	$datarray["extid"] = NETWORK_TWITTER;
 	$datarray['message_id'] = Item::newURI($uid, NETWORK_TWITTER . ":" . $post->id);
-	$datarray['object'] = json_encode($post);
+	// $datarray['object'] = json_encode($post); // Activate for debugging
 	$datarray["title"] = "";
 
 	if (is_object($post->retweeted_status)) {
@@ -1319,7 +1319,7 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 	$postarray['uid'] = $uid;
 	$postarray['wall'] = 0;
 	$postarray['uri'] = "twitter::" . $post->id_str;
-	$postarray['object'] = json_encode($post);
+	// $postarray['object'] = json_encode($post); // Activate for debugging
 
 	// Don't import our own comments
 	$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
