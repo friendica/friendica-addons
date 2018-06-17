@@ -461,20 +461,14 @@ function statusnet_post_hook(App $a, &$b)
 			return;
 		}
 
-		$r = q("SELECT `item`.`author-link`, `item`.`uri`, `contact`.`nick` AS contact_nick
-			FROM `item` INNER JOIN `contact` ON `contact`.`id` = `item`.`contact-id`
-			WHERE `item`.`uri` = '%s' AND `item`.`uid` = %d LIMIT 1", dbesc($b["thr-parent"]), intval($b["uid"]));
-
-		if (!count($r)) {
+		$condition = ['uri' => $b["thr-parent"], 'uid' => $b["uid"]];
+		$orig_post = Item::selectFirst($b["uid"], ['author-link', 'uri'], $condition);
+		if (!count($orig_post)) {
 			logger("statusnet_post_hook: no parent found " . $b["thr-parent"]);
 			return;
 		} else {
 			$iscomment = true;
-			$orig_post = $r[0];
 		}
-
-		//$nickname = "@[url=".$orig_post["author-link"]."]".$orig_post["contact_nick"]."[/url]";
-		//$nicknameplain = "@".$orig_post["contact_nick"];
 
 		$nick = preg_replace("=https?://(.*)/(.*)=ism", "$2", $orig_post["author-link"]);
 
@@ -688,17 +682,9 @@ function statusnet_prepare_body(App $a, &$b)
 		$item = $b["item"];
 		$item["plink"] = $a->get_baseurl() . "/display/" . $a->user["nickname"] . "/" . $item["parent"];
 
-		$r = q("SELECT `item`.`author-link`, `item`.`uri`, `contact`.`nick` AS contact_nick
-                        FROM `item` INNER JOIN `contact` ON `contact`.`id` = `item`.`contact-id`
-                        WHERE `item`.`uri` = '%s' AND `item`.`uid` = %d LIMIT 1",
-                        dbesc($item["thr-parent"]),
-                        intval(local_user()));
-
-		if (count($r)) {
-			$orig_post = $r[0];
-			//$nickname = "@[url=".$orig_post["author-link"]."]".$orig_post["contact_nick"]."[/url]";
-			//$nicknameplain = "@".$orig_post["contact_nick"];
-
+		$condition = ['uri' => $item["thr-parent"], 'uid' => local_user()];
+		$orig_post = Item::selectFirst(local_user(), ['author-link', 'uri'], $condition);
+		if (count($orig_post)) {
 			$nick = preg_replace("=https?://(.*)/(.*)=ism", "$2", $orig_post["author-link"]);
 
 			$nickname = "@[url=" . $orig_post["author-link"] . "]" . $nick . "[/url]";
@@ -1214,75 +1200,6 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 	return $postarray;
 }
 
-function statusnet_checknotification(App $a, $uid, $own_url, $top_item, $postarray)
-{
-	// This function necer worked and need cleanup
-	$user = q("SELECT * FROM `contact` WHERE `uid` = %d AND `self` LIMIT 1",
-			intval($uid)
-	);
-
-	if (!count($user)) {
-		return;
-	}
-
-	// Is it me?
-	if (link_compare($user[0]["url"], $postarray['author-link'])) {
-		return;
-	}
-
-	$own_user = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
-			intval($uid),
-			dbesc($own_url)
-	);
-
-	if (!count($own_user)) {
-		return;
-	}
-
-	// Is it me from GNU Social?
-	if (link_compare($own_user[0]["url"], $postarray['author-link'])) {
-		return;
-	}
-
-	$myconv = q("SELECT `author-link`, `author-avatar`, `parent` FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `parent` != 0 AND `deleted` = 0",
-			dbesc($postarray['parent-uri']),
-			intval($uid)
-	);
-
-	if (count($myconv)) {
-		foreach ($myconv as $conv) {
-			// now if we find a match, it means we're in this conversation
-			if (!link_compare($conv['author-link'], $user[0]["url"]) && !link_compare($conv['author-link'], $own_user[0]["url"])) {
-				continue;
-			}
-
-			require_once 'include/enotify.php';
-
-			$conv_parent = $conv['parent'];
-
-			notification([
-				'type' => NOTIFY_COMMENT,
-				'notify_flags' => $user[0]['notify-flags'],
-				'language' => $user[0]['language'],
-				'to_name' => $user[0]['username'],
-				'to_email' => $user[0]['email'],
-				'uid' => $user[0]['uid'],
-				'item' => $postarray,
-				'link' => $a->get_baseurl() . '/display/' . urlencode(Item::getGuidById($top_item)),
-				'source_name' => $postarray['author-name'],
-				'source_link' => $postarray['author-link'],
-				'source_photo' => $postarray['author-avatar'],
-				'verb' => ACTIVITY_POST,
-				'otype' => 'item',
-				'parent' => $conv_parent,
-			]);
-
-			// only send one notification
-			break;
-		}
-	}
-}
-
 function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 {
 	$conversations = [];
@@ -1395,10 +1312,6 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 					$postarray["id"] = $item;
 
 					logger('statusnet_fetchhometimeline: User ' . $self["nick"] . ' posted home timeline item ' . $item);
-
-					if ($item && !function_exists("check_item_notification")) {
-						statusnet_checknotification($a, $uid, $nick, $item, $postarray);
-					}
 				}
 			}
 		}
@@ -1447,42 +1360,8 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 				}
 
 				$item = Item::insert($postarray);
-				$postarray["id"] = $item;
 
 				logger('statusnet_fetchhometimeline: User ' . $self["nick"] . ' posted mention timeline item ' . $item);
-
-				if ($item && function_exists("check_item_notification")) {
-					check_item_notification($item, $uid, NOTIFY_TAGSELF);
-				}
-			}
-
-			$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
-				dbesc($postarray['uri']),
-				intval($uid)
-			);
-			if (count($r)) {
-				$item = $r[0]['id'];
-				$parent_id = $r[0]['parent'];
-			}
-
-			if (($item != 0) && !function_exists("check_item_notification")) {
-				require_once 'include/enotify.php';
-				notification([
-					'type'         => NOTIFY_TAGSELF,
-					'notify_flags' => $u[0]['notify-flags'],
-					'language'     => $u[0]['language'],
-					'to_name'      => $u[0]['username'],
-					'to_email'     => $u[0]['email'],
-					'uid'          => $u[0]['uid'],
-					'item'         => $postarray,
-					'link'         => $a->get_baseurl() . '/display/' . urlencode(Item::getGuidById($item)),
-					'source_name'  => $postarray['author-name'],
-					'source_link'  => $postarray['author-link'],
-					'source_photo' => $postarray['author-avatar'],
-					'verb'         => ACTIVITY_TAG,
-					'otype'        => 'item',
-					'parent'       => $parent_id,
-				]);
 			}
 		}
 	}
@@ -1518,10 +1397,6 @@ function statusnet_complete_conversation(App $a, $uid, $self, $create_user, $nic
 			$postarray["id"] = $item;
 
 			logger('statusnet_complete_conversation: User ' . $self["nick"] . ' posted home timeline item ' . $item);
-
-			if ($item && !function_exists("check_item_notification")) {
-				statusnet_checknotification($a, $uid, $nick, $item, $postarray);
-			}
 		}
 	}
 }

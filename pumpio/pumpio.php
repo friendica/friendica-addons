@@ -1217,14 +1217,6 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 							DateTimeFormat::utc($post->object->created),
 							$post->links->self->href).
 						$postarray['body']."[/share]";
-
-			/*
-			$postarray['body'] = "[share author='".$share_author.
-					"' profile='".$post->object->author->url.
-					"' avatar='".$post->object->author->image->url.
-					"' posted='".DateTimeFormat::convert($post->object->created, 'UTC', 'UTC', ).
-					"' link='".$post->links->self->href."']".$postarray['body']."[/share]";
-			*/
 		} else {
 			// Let shares look like wall-to-wall posts
 			$postarray['author-name'] = $post->object->author->displayName;
@@ -1249,59 +1241,6 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 
 		if ($threadcompletion)
 			pumpio_fetchallcomments($a, $uid, $postarray['parent-uri']);
-
-		$user = q("SELECT * FROM `user` WHERE `uid` = %d AND `account_expired` = 0 LIMIT 1",
-				intval($uid)
-			);
-
-		if(!count($user))
-			return $top_item;
-
-		$importer_url = $a->get_baseurl() . '/profile/' . $user[0]['nickname'];
-
-		if (link_compare($own_id, $postarray['author-link']))
-			return $top_item;
-
-		if (!function_exists("check_item_notification")) {
-			$myconv = q("SELECT `author-link`, `author-avatar`, `parent` FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `parent` != 0 AND `deleted` = 0",
-					dbesc($postarray['parent-uri']),
-					intval($uid)
-					);
-
-			if(count($myconv)) {
-
-				foreach($myconv as $conv) {
-					// now if we find a match, it means we're in this conversation
-
-					if(!link_compare($conv['author-link'],$importer_url) && !link_compare($conv['author-link'],$own_id))
-						continue;
-
-					require_once('include/enotify.php');
-
-					$conv_parent = $conv['parent'];
-
-					notification([
-						'type'         => NOTIFY_COMMENT,
-						'notify_flags' => $user[0]['notify-flags'],
-						'language'     => $user[0]['language'],
-						'to_name'      => $user[0]['username'],
-						'to_email'     => $user[0]['email'],
-						'uid'          => $user[0]['uid'],
-						'item'         => $postarray,
-						'link'         => $a->get_baseurl().'/display/'.urlencode(Item::getGuidById($top_item)),
-						'source_name'  => $postarray['author-name'],
-						'source_link'  => $postarray['author-link'],
-						'source_photo' => $postarray['author-avatar'],
-						'verb'         => ACTIVITY_POST,
-						'otype'        => 'item',
-						'parent'       => $conv_parent,
-						]);
-
-					// only send one notification
-					break;
-				}
-			}
-		}
 	}
 
 	return $top_item;

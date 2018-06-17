@@ -13,6 +13,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBM;
 use Friendica\Util\Network;
+use Friendica\Model\Item;
 
 function mailstream_install() {
 	Addon::registerHook('addon_settings', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings');
@@ -329,14 +330,13 @@ function mailstream_cron($a, $b) {
 	// send the email itself before cron jumps in.  Only if
 	// mailstream_post_remote_hook fails for some reason will this get
 	// used, and in that case it's worth holding off a bit anyway.
-	$ms_item_ids = q("SELECT `mailstream_item`.`message-id`, `mailstream_item`.`uri`, `item`.`id` FROM `mailstream_item` JOIN `item` ON (`mailstream_item`.`uid` = `item`.`uid` AND `mailstream_item`.`uri` = `item`.`uri` AND `mailstream_item`.`contact-id` = `item`.`contact-id`) WHERE `mailstream_item`.`completed` IS NULL AND `mailstream_item`.`created` < DATE_SUB(NOW(), INTERVAL 1 HOUR) AND `item`.`visible` = 1 ORDER BY `mailstream_item`.`created` LIMIT 100");
+	$ms_item_ids = q("SELECT `mailstream_item`.`message-id`, `mailstream_item`.`uri`, `mailstream_item`.`uid`, `item`.`id` FROM `mailstream_item` JOIN `item` ON (`mailstream_item`.`uid` = `item`.`uid` AND `mailstream_item`.`uri` = `item`.`uri` AND `mailstream_item`.`contact-id` = `item`.`contact-id`) WHERE `mailstream_item`.`completed` IS NULL AND `mailstream_item`.`created` < DATE_SUB(NOW(), INTERVAL 1 HOUR) AND `item`.`visible` = 1 ORDER BY `mailstream_item`.`created` LIMIT 100");
 	logger('mailstream_cron processing ' . count($ms_item_ids) . ' items', LOGGER_DEBUG);
 	foreach ($ms_item_ids as $ms_item_id) {
 		if (!$ms_item_id['message-id'] || !strlen($ms_item_id['message-id'])) {
 			logger('mailstream_cron: Item ' . $ms_item_id['id'] . ' URI ' . $ms_item_id['uri'] . ' has no message-id', LOGGER_NORMAL);
 		}
-		$items = q('SELECT * FROM `item` WHERE `id` = %d', $ms_item_id['id']);
-		$item = $items[0];
+		$item = Item::selectFirst($ms_item_id['uid'], Item::DISPLAY_FIELDLIST, ['id' => $ms_item_id['id']]);
 		$users = q("SELECT * FROM `user` WHERE `uid` = %d", intval($item['uid']));
 		$user = $users[0];
 		if ($user && $item) {
