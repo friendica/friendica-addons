@@ -33,6 +33,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Model\User;
+use Friendica\Model\Item;
 
 function windowsphonepush_install()
 {
@@ -196,19 +197,19 @@ function windowsphonepush_cron()
 					$senditemtext = PConfig::get($rr['uid'], 'windowsphonepush', 'senditemtext');
 					if ($senditemtext == 1) {
 						// load item with the max id
-						$item = q("SELECT `author-name` as author, `body` as body FROM `item` where `id` = %d", intval($count[0]['max']));
+						$item = Item::selectFirst(['author-name', 'body'], ['id' => $count[0]['max']]);
 
 						// as user allows to send the item, we want to show the sender of the item in the toast
 						// toasts are limited to one line, therefore place is limited - author shall be in
 						// max. 15 chars (incl. dots); author is displayed in bold font
-						$author = $item[0]['author'];
+						$author = $item['author-name'];
 						$author = ((strlen($author) > 12) ? substr($author, 0, 12) . "..." : $author);
 
 						// normally we show the body of the item, however if it is an url or an image we cannot
 						// show this in the toast (only test), therefore changing to an alternate text
 						// Otherwise BBcode-Tags will be eliminated and plain text cutted to 140 chars (incl. dots)
 						// BTW: information only possible in English
-						$body = $item[0]['body'];
+						$body = $item['body'];
 						if (substr($body, 0, 4) == "[url") {
 							$body = "URL/Image ...";
 						} else {

@@ -13,6 +13,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBM;
 use Friendica\Util\Network;
+use Friendica\Model\Item;
 
 function mailstream_install() {
 	Addon::registerHook('addon_settings', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings');
@@ -335,8 +336,7 @@ function mailstream_cron($a, $b) {
 		if (!$ms_item_id['message-id'] || !strlen($ms_item_id['message-id'])) {
 			logger('mailstream_cron: Item ' . $ms_item_id['id'] . ' URI ' . $ms_item_id['uri'] . ' has no message-id', LOGGER_NORMAL);
 		}
-		$items = q('SELECT * FROM `item` WHERE `id` = %d', $ms_item_id['id']);
-		$item = $items[0];
+		$item = Item::selectFirst([], ['id' => $ms_item_id['id']]);
 		$users = q("SELECT * FROM `user` WHERE `uid` = %d", intval($item['uid']));
 		$user = $users[0];
 		if ($user && $item) {

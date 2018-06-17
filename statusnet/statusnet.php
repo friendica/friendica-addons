@@ -55,6 +55,7 @@ use Friendica\Model\Photo;
 use Friendica\Model\User;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
+use Friendica\Database\DBM;
 
 function statusnet_install()
 {
@@ -461,20 +462,14 @@ function statusnet_post_hook(App $a, &$b)
 			return;
 		}
 
-		$r = q("SELECT `item`.`author-link`, `item`.`uri`, `contact`.`nick` AS contact_nick
-			FROM `item` INNER JOIN `contact` ON `contact`.`id` = `item`.`contact-id`
-			WHERE `item`.`uri` = '%s' AND `item`.`uid` = %d LIMIT 1", dbesc($b["thr-parent"]), intval($b["uid"]));
-
-		if (!count($r)) {
+		$condition = ['uri' => $b["thr-parent"], 'uid' => $b["uid"]];
+		$orig_post = Item::selectFirst(['author-link', 'uri'], $condition);
+		if (!DBM::is_result($orig_post)) {
 			logger("statusnet_post_hook: no parent found " . $b["thr-parent"]);
 			return;
 		} else {
 			$iscomment = true;
-			$orig_post = $r[0];
 		}
-
-		//$nickname = "@[url=".$orig_post["author-link"]."]".$orig_post["contact_nick"]."[/url]";
-		//$nicknameplain = "@".$orig_post["contact_nick"];
 
 		$nick = preg_replace("=https?://(.*)/(.*)=ism", "$2", $orig_post["author-link"]);
 
@@ -688,17 +683,9 @@ function statusnet_prepare_body(App $a, &$b)
 		$item = $b["item"];
 		$item["plink"] = $a->get_baseurl() . "/display/" . $a->user["nickname"] . "/" . $item["parent"];
 
-		$r = q("SELECT `item`.`author-link`, `item`.`uri`, `contact`.`nick` AS contact_nick
-                        FROM `item` INNER JOIN `contact` ON `contact`.`id` = `item`.`contact-id`
-                        WHERE `item`.`uri` = '%s' AND `item`.`uid` = %d LIMIT 1",
-                        dbesc($item["thr-parent"]),
-                        intval(local_user()));
-
-		if (count($r)) {
-			$orig_post = $r[0];
-			//$nickname = "@[url=".$orig_post["author-link"]."]".$orig_post["contact_nick"]."[/url]";
-			//$nicknameplain = "@".$orig_post["contact_nick"];
-
+		$condition = ['uri' => $item["thr-parent"], 'uid' => local_user()];
+		$orig_post = Item::selectFirst(['author-link', 'uri'], $condition);
+		if (DBM::is_result($orig_post)) {
 			$nick = preg_replace("=https?://(.*)/(.*)=ism", "$2", $orig_post["author-link"]);
 
 			$nickname = "@[url=" . $orig_post["author-link"] . "]" . $nick . "[/url]";
@@ -743,7 +730,7 @@ function statusnet_cron(App $a, $b)
 	logger('statusnet: cron_start');
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'statusnet' AND `k` = 'mirror_posts' AND `v` = '1' ORDER BY RAND() ");
-	if (count($r)) {
+	if (DBM::is_result($r)) {
 		foreach ($r as $rr) {
 			logger('statusnet: fetching for user ' . $rr['uid']);
 			statusnet_fetchtimeline($a, $rr['uid']);
@@ -758,11 +745,11 @@ function statusnet_cron(App $a, $b)
 	$abandon_limit = date(DateTimeFormat::MYSQL, time() - $abandon_days * 86400);
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'statusnet' AND `k` = 'import' AND `v` ORDER BY RAND()");
-	if (count($r)) {
+	if (DBM::is_result($r)) {
 		foreach ($r as $rr) {
 			if ($abandon_days != 0) {
 				$user = q("SELECT `login_date` FROM `user` WHERE uid=%d AND `login_date` >= '%s'", $rr['uid'], $abandon_limit);
-				if (!count($user)) {
+				if (!DBM::is_result($user)) {
 					logger('abandoned account: timeline from user ' . $rr['uid'] . ' will not be imported');
 					continue;
 				}
@@ -915,16 +902,16 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' AND `network` = '%s'LIMIT 1", intval($uid), dbesc(normalise_link($contact->statusnet_profile_url)), dbesc(NETWORK_STATUSNET));
 
-	if (!count($r) && !$create_user) {
+	if (!DBM::is_result($r) && !$create_user) {
 		return 0;
 	}
 
-	if (count($r) && ($r[0]["readonly"] || $r[0]["blocked"])) {
+	if (DBM::is_result($r) && ($r[0]["readonly"] || $r[0]["blocked"])) {
 		logger("statusnet_fetch_contact: Contact '" . $r[0]["nick"] . "' is blocked or readonly.", LOGGER_DEBUG);
 		return -1;
 	}
 
-	if (!count($r)) {
+	if (!DBM::is_result($r)) {
 		// create contact record
 		q("INSERT INTO `contact` ( `uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
 					`name`, `nick`, `photo`, `network`, `rel`, `priority`,
@@ -954,7 +941,7 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 			intval($uid),
 			dbesc(NETWORK_STATUSNET));
 
-		if (!count($r)) {
+		if (!DBM::is_result($r)) {
 			return false;
 		}
 
@@ -1038,7 +1025,7 @@ function statusnet_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 	$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 		intval($uid));
 
-	if (count($r)) {
+	if (DBM::is_result($r)) {
 		$self = $r[0];
 	} else {
 		return;
@@ -1093,7 +1080,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 			intval($uid)
 	);
 
-	if (count($r)) {
+	if (DBM::is_result($r)) {
 		return [];
 	}
 
@@ -1107,7 +1094,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 				dbesc($parent),
 				intval($uid)
 		);
-		if (count($r)) {
+		if (DBM::is_result($r)) {
 			$postarray['thr-parent'] = $r[0]["uri"];
 			$postarray['parent-uri'] = $r[0]["parent-uri"];
 			$postarray['parent'] = $r[0]["parent"];
@@ -1117,7 +1104,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 					dbesc($parent),
 					intval($uid)
 			);
-			if (count($r)) {
+			if (DBM::is_result($r)) {
 				$postarray['thr-parent'] = $r[0]['uri'];
 				$postarray['parent-uri'] = $r[0]['parent-uri'];
 				$postarray['parent'] = $r[0]['parent'];
@@ -1136,7 +1123,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 			$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 				intval($uid));
 
-			if (count($r)) {
+			if (DBM::is_result($r)) {
 				$contactid = $r[0]["id"];
 
 				$postarray['owner-name'] = $r[0]["name"];
@@ -1214,75 +1201,6 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 	return $postarray;
 }
 
-function statusnet_checknotification(App $a, $uid, $own_url, $top_item, $postarray)
-{
-	// This function necer worked and need cleanup
-	$user = q("SELECT * FROM `contact` WHERE `uid` = %d AND `self` LIMIT 1",
-			intval($uid)
-	);
-
-	if (!count($user)) {
-		return;
-	}
-
-	// Is it me?
-	if (link_compare($user[0]["url"], $postarray['author-link'])) {
-		return;
-	}
-
-	$own_user = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
-			intval($uid),
-			dbesc($own_url)
-	);
-
-	if (!count($own_user)) {
-		return;
-	}
-
-	// Is it me from GNU Social?
-	if (link_compare($own_user[0]["url"], $postarray['author-link'])) {
-		return;
-	}
-
-	$myconv = q("SELECT `author-link`, `author-avatar`, `parent` FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `parent` != 0 AND `deleted` = 0",
-			dbesc($postarray['parent-uri']),
-			intval($uid)
-	);
-
-	if (count($myconv)) {
-		foreach ($myconv as $conv) {
-			// now if we find a match, it means we're in this conversation
-			if (!link_compare($conv['author-link'], $user[0]["url"]) && !link_compare($conv['author-link'], $own_user[0]["url"])) {
-				continue;
-			}
-
-			require_once 'include/enotify.php';
-
-			$conv_parent = $conv['parent'];
-
-			notification([
-				'type' => NOTIFY_COMMENT,
-				'notify_flags' => $user[0]['notify-flags'],
-				'language' => $user[0]['language'],
-				'to_name' => $user[0]['username'],
-				'to_email' => $user[0]['email'],
-				'uid' => $user[0]['uid'],
-				'item' => $postarray,
-				'link' => $a->get_baseurl() . '/display/' . urlencode(Item::getGuidById($top_item)),
-				'source_name' => $postarray['author-name'],
-				'source_link' => $postarray['author-link'],
-				'source_photo' => $postarray['author-avatar'],
-				'verb' => ACTIVITY_POST,
-				'otype' => 'item',
-				'parent' => $conv_parent,
-			]);
-
-			// only send one notification
-			break;
-		}
-	}
-}
-
 function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 {
 	$conversations = [];
@@ -1309,7 +1227,7 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 		intval($own_contact),
 		intval($uid));
 
-	if (count($r)) {
+	if (DBM::is_result($r)) {
 		$nick = $r[0]["nick"];
 	} else {
 		logger("statusnet_fetchhometimeline: Own GNU Social contact not found for user " . $uid, LOGGER_DEBUG);
@@ -1319,7 +1237,7 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 	$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 		intval($uid));
 
-	if (count($r)) {
+	if (DBM::is_result($r)) {
 		$self = $r[0];
 	} else {
 		logger("statusnet_fetchhometimeline: Own contact not found for user " . $uid, LOGGER_DEBUG);
@@ -1328,7 +1246,7 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 
 	$u = q("SELECT * FROM user WHERE uid = %d LIMIT 1",
 		intval($uid));
-	if (!count($u)) {
+	if (!DBM::is_result($u)) {
 		logger("statusnet_fetchhometimeline: Own user not found for user " . $uid, LOGGER_DEBUG);
 		return;
 	}
@@ -1395,10 +1313,6 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 					$postarray["id"] = $item;
 
 					logger('statusnet_fetchhometimeline: User ' . $self["nick"] . ' posted home timeline item ' . $item);
-
-					if ($item && !function_exists("check_item_notification")) {
-						statusnet_checknotification($a, $uid, $nick, $item, $postarray);
-					}
 				}
 			}
 		}
@@ -1447,42 +1361,8 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 				}
 
 				$item = Item::insert($postarray);
-				$postarray["id"] = $item;
 
 				logger('statusnet_fetchhometimeline: User ' . $self["nick"] . ' posted mention timeline item ' . $item);
-
-				if ($item && function_exists("check_item_notification")) {
-					check_item_notification($item, $uid, NOTIFY_TAGSELF);
-				}
-			}
-
-			$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
-				dbesc($postarray['uri']),
-				intval($uid)
-			);
-			if (count($r)) {
-				$item = $r[0]['id'];
-				$parent_id = $r[0]['parent'];
-			}
-
-			if (($item != 0) && !function_exists("check_item_notification")) {
-				require_once 'include/enotify.php';
-				notification([
-					'type'         => NOTIFY_TAGSELF,
-					'notify_flags' => $u[0]['notify-flags'],
-					'language'     => $u[0]['language'],
-					'to_name'      => $u[0]['username'],
-					'to_email'     => $u[0]['email'],
-					'uid'          => $u[0]['uid'],
-					'item'         => $postarray,
-					'link'         => $a->get_baseurl() . '/display/' . urlencode(Item::getGuidById($item)),
-					'source_name'  => $postarray['author-name'],
-					'source_link'  => $postarray['author-link'],
-					'source_photo' => $postarray['author-avatar'],
-					'verb'         => ACTIVITY_TAG,
-					'otype'        => 'item',
-					'parent'       => $parent_id,
-				]);
 			}
 		}
 	}
@@ -1518,10 +1398,6 @@ function statusnet_complete_conversation(App $a, $uid, $self, $create_user, $nic
 			$postarray["id"] = $item;
 
 			logger('statusnet_complete_conversation: User ' . $self["nick"] . ' posted home timeline item ' . $item);
-
-			if ($item && !function_exists("check_item_notification")) {
-				statusnet_checknotification($a, $uid, $nick, $item, $postarray);
-			}
 		}
 	}
 }
@@ -1660,7 +1536,7 @@ function statusnet_fetch_own_contact(App $a, $uid)
 	} else {
 		$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
 			intval($uid), dbesc($own_url));
-		if (count($r)) {
+		if (DBM::is_result($r)) {
 			$contact_id = $r[0]["id"];
 		} else {
 			PConfig::delete($uid, 'statusnet', 'own_url');

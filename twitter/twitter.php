@@ -453,16 +453,13 @@ function twitter_post_hook(App $a, &$b)
 			return;
 		}
 
-		$r = q("SELECT * FROM item WHERE item.uri = '%s' AND item.uid = %d LIMIT 1",
-			dbesc($b["thr-parent"]),
-			intval($b["uid"]));
-
-		if (!DBM::is_result($r)) {
+		$condition = ['uri' => $b["thr-parent"], 'uid' => $b["uid"]];
+		$orig_post = Item::selectFirst([], $condition);
+		if (!DBM::is_result($orig_post)) {
 			logger("twitter_post_hook: no parent found " . $b["thr-parent"]);
 			return;
 		} else {
 			$iscomment = true;
-			$orig_post = $r[0];
 		}
 
 
@@ -760,13 +757,9 @@ function twitter_prepare_body(App $a, &$b)
 		$item = $b["item"];
 		$item["plink"] = $a->get_baseurl() . "/display/" . $a->user["nickname"] . "/" . $item["parent"];
 
-		$r = q("SELECT `author-link` FROM item WHERE item.uri = '%s' AND item.uid = %d LIMIT 1",
-			dbesc($item["thr-parent"]),
-			intval(local_user()));
-
-		if (DBM::is_result($r)) {
-			$orig_post = $r[0];
-
+		$condition = ['uri' => $item["thr-parent"], 'uid' => local_user()];
+		$orig_post = Item::selectFirst(['author-link'], $condition);
+		if (DBM::is_result($orig_post)) {
 			$nicknameplain = preg_replace("=https?://twitter.com/(.*)=ism", "$1", $orig_post["author-link"]);
 			$nickname = "@[url=" . $orig_post["author-link"] . "]" . $nicknameplain . "[/url]";
 			$nicknameplain = "@" . $nicknameplain;
@@ -807,7 +800,7 @@ function twitter_do_mirrorpost(App $a, $uid, $post)
 	$datarray["profile_uid"] = $uid;
 	$datarray["extid"] = NETWORK_TWITTER;
 	$datarray['message_id'] = Item::newURI($uid, NETWORK_TWITTER . ":" . $post->id);
-	$datarray['object'] = json_encode($post);
+	// $datarray['object'] = json_encode($post); // Activate for debugging
 	$datarray["title"] = "";
 
 	if (is_object($post->retweeted_status)) {
@@ -1326,7 +1319,7 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 	$postarray['uid'] = $uid;
 	$postarray['wall'] = 0;
 	$postarray['uri'] = "twitter::" . $post->id_str;
-	$postarray['object'] = json_encode($post);
+	// $postarray['object'] = json_encode($post); // Activate for debugging
 
 	// Don't import our own comments
 	$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
@@ -1492,75 +1485,6 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 	return $postarray;
 }
 
-function twitter_checknotification(App $a, $uid, $own_id, $top_item, $postarray)
-{
-	/// TODO: this whole function doesn't seem to work. Needs complete check
-	$user = q("SELECT * FROM `contact` WHERE `uid` = %d AND `self` LIMIT 1",
-		intval($uid)
-	);
-
-	if (!DBM::is_result($user)) {
-		return;
-	}
-
-	// Is it me?
-	if (link_compare($user[0]["url"], $postarray['author-link'])) {
-		return;
-	}
-
-	$own_user = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
-		intval($uid),
-		dbesc("twitter::".$own_id)
-	);
-
-	if (!DBM::is_result($own_user)) {
-		return;
-	}
-
-	// Is it me from twitter?
-	if (link_compare($own_user[0]["url"], $postarray['author-link'])) {
-		return;
-	}
-
-	$myconv = q("SELECT `author-link`, `author-avatar`, `parent` FROM `item` WHERE `parent-uri` = '%s' AND `uid` = %d AND `parent` != 0 AND `deleted` = 0",
-		dbesc($postarray['parent-uri']),
-		intval($uid)
-	);
-
-	if (DBM::is_result($myconv)) {
-		foreach ($myconv as $conv) {
-			// now if we find a match, it means we're in this conversation
-			if (!link_compare($conv['author-link'], $user[0]["url"]) && !link_compare($conv['author-link'], $own_user[0]["url"])) {
-				continue;
-			}
-
-			require_once 'include/enotify.php';
-
-			$conv_parent = $conv['parent'];
-
-			notification([
-				'type' => NOTIFY_COMMENT,
-				'notify_flags' => $user[0]['notify-flags'],
-				'language' => $user[0]['language'],
-				'to_name' => $user[0]['username'],
-				'to_email' => $user[0]['email'],
-				'uid' => $user[0]['uid'],
-				'item' => $postarray,
-				'link' => $a->get_baseurl() . '/display/' . urlencode(Item::getGuidById($top_item)),
-				'source_name' => $postarray['author-name'],
-				'source_link' => $postarray['author-link'],
-				'source_photo' => $postarray['author-avatar'],
-				'verb' => ACTIVITY_POST,
-				'otype' => 'item',
-				'parent' => $conv_parent,
-			]);
-
-			// only send one notification
-			break;
-		}
-	}
-}
-
 function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection, $self, $own_id)
 {
 	logger("twitter_fetchparentposts: Fetching for user " . $uid . " and post " . $post->id_str, LOGGER_DEBUG);
@@ -1615,10 +1539,6 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 			$postarray["id"] = $item;
 
 			logger('twitter_fetchparentpost: User ' . $self["nick"] . ' posted parent timeline item ' . $item);
-
-			if ($item && !function_exists("check_item_notification")) {
-				twitter_checknotification($a, $uid, $own_id, $item, $postarray);
-			}
 		}
 	}
 }
@@ -1750,10 +1670,6 @@ function twitter_fetchhometimeline(App $a, $uid)
 			$postarray["id"] = $item;
 
 			logger('twitter_fetchhometimeline: User ' . $self["nick"] . ' posted home timeline item ' . $item);
-
-			if ($item && !function_exists("check_item_notification")) {
-				twitter_checknotification($a, $uid, $own_id, $item, $postarray);
-			}
 		}
 	}
 	PConfig::set($uid, 'twitter', 'lasthometimelineid', $lastid);
@@ -1804,50 +1720,8 @@ function twitter_fetchhometimeline(App $a, $uid)
 			}
 
 			$item = Item::insert($postarray);
-			$postarray["id"] = $item;
-
-			if ($item && function_exists("check_item_notification")) {
-				check_item_notification($item, $uid, NOTIFY_TAGSELF);
-			}
-
-			if (!isset($postarray["parent"]) || ($postarray["parent"] == 0)) {
-				$postarray["parent"] = $item;
-			}
 
 			logger('twitter_fetchhometimeline: User ' . $self["nick"] . ' posted mention timeline item ' . $item);
-
-			if ($item == 0) {
-				$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
-					dbesc($postarray['uri']),
-					intval($uid)
-				);
-				if (DBM::is_result($r)) {
-					$item = $r[0]['id'];
-					$parent_id = $r[0]['parent'];
-				}
-			} else {
-				$parent_id = $postarray['parent'];
-			}
-
-			if (($item != 0) && !function_exists("check_item_notification")) {
-				require_once 'include/enotify.php';
-				notification([
-					'type'         => NOTIFY_TAGSELF,
-					'notify_flags' => $u[0]['notify-flags'],
-					'language'     => $u[0]['language'],
-					'to_name'      => $u[0]['username'],
-					'to_email'     => $u[0]['email'],
-					'uid'          => $u[0]['uid'],
-					'item'         => $postarray,
-					'link'         => $a->get_baseurl() . '/display/' . urlencode(Item::getGuidById($item)),
-					'source_name'  => $postarray['author-name'],
-					'source_link'  => $postarray['author-link'],
-					'source_photo' => $postarray['author-avatar'],
-					'verb'         => ACTIVITY_TAG,
-					'otype'        => 'item',
-					'parent'       => $parent_id
-				]);
-			}
 		}
 	}
 
