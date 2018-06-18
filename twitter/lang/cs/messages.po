@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-02 10:25+0700\n"
-"PO-Revision-Date: 2018-06-12 12:14+0000\n"
+"PO-Revision-Date: 2018-06-14 10:10+0000\n"
 "Last-Translator: Aditoo\n"
 "Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -29,11 +29,11 @@ msgstr "Poslat příspěvek na Twitter"
 msgid ""
 "You submitted an empty PIN, please Sign In with Twitter again to get a new "
 "one."
-msgstr ""
+msgstr "Vložil/a jste prázdný PIN kód, prosím přihlaste se opět na Twitter pro nový."
 
 #: twitter.php:263
 msgid "Twitter settings updated."
-msgstr "Nastavení Twitteru aktualizováno."
+msgstr "Nastavení pro Twitter aktualizována."
 
 #: twitter.php:293 twitter.php:297
 msgid "Twitter Import/Export/Mirror"
@@ -52,11 +52,11 @@ msgid ""
 "button below to get a PIN from Twitter which you have to copy into the input"
 " box below and submit the form. Only your <strong>public</strong> posts will"
 " be posted to Twitter."
-msgstr ""
+msgstr "Na této instanci Friendica byl doplněk pro Twitter povolen, ještě jste však nepřipojil/a Váš účet k Vašemu účtu na Twitteru. Pokud to chcete udělat, kliknutím na tlačítko níže získáte od Twitteru PIN kód, zkopírujte jej do pole níže a odešlete formulář. Pouze Vaše <strong>veřejné</strong> příspěvky budou odesílány na Twitter."
 
 #: twitter.php:317
 msgid "Log in with Twitter"
-msgstr "Přihlásit se s Twitter"
+msgstr "Přihlásit se přes Twitter"
 
 #: twitter.php:319
 msgid "Copy the PIN from Twitter here"
@@ -83,7 +83,7 @@ msgid ""
 "If enabled all your <strong>public</strong> postings can be posted to the "
 "associated Twitter account. You can choose to do so by default (here) or for"
 " every posting separately in the posting options when writing the entry."
-msgstr "Je-li povoleno, všechny Vaše <strong>veřejné</strong> příspěvky mohou být zaslány na související Twitter účet. Můžete si vybrat, zda-li toto bude výchozí nastavení (zde), nebo budete mít možnost si vybrat požadované chování při psaní každého příspěvku."
+msgstr "Je-li povoleno, všechny Vaše <strong>veřejné</strong> příspěvky mohou být zasílány na související účet na Twitteru. Můžete si vybrat, zda-li toto bude výchozí nastavení (zde), nebo budete mít možnost si vybrat požadované chování při psaní každého příspěvku."
 
 #: twitter.php:350
 msgid ""
@@ -91,7 +91,7 @@ msgid ""
 "details from unknown viewers?</em>) the link potentially included in public "
 "postings relayed to Twitter will lead the visitor to a blank page informing "
 "the visitor that the access to your profile has been restricted."
-msgstr ""
+msgstr "<strong>Poznámka</strong>: Kvůli vašim nastavením o soukromí (<em>Skrýt Vaše profilové detaily před neznámými návštěvníky?</em>), odkaz potenciálně obsažen ve veřejných příspěvcích přeposílaných na Twitter zavedou návštěvníky na prázdnou stránku informující návštěvníky, že přístup na Váš profil byl zakázán."
 
 #: twitter.php:353
 msgid "Send public postings to Twitter by default"
@@ -99,11 +99,11 @@ msgstr "Defaultně zasílat veřejné komentáře na Twitter"
 
 #: twitter.php:356
 msgid "Mirror all posts from twitter that are no replies"
-msgstr ""
+msgstr "Zrcadlit všechny příspěvky z Twitteru, které nejsou odpovědi."
 
 #: twitter.php:359
 msgid "Import the remote timeline"
-msgstr ""
+msgstr "Importovat vzdálenou časovou osu"
 
 #: twitter.php:362
 msgid "Automatically create contacts"
@@ -117,11 +117,11 @@ msgid ""
 "from whom you would like to see posts here. However if enabled, you cannot "
 "merely remove a twitter contact from the Friendica contact list, as it will "
 "recreate this contact when they post again."
-msgstr ""
+msgstr "Tato možnost automaticky vytvoří kontakt na Friendica, jakmile obdržíte zprávu od existujícího kontaktu přes síť Twitter. Pokud toto nezapnete, budete si muset tyto kontakty na Twitteru, od kterých chcete dostávat příspěvky, přidávat do Friendica manuálně. Pokud toto ovšem zapnete, nemůžete jednoduše odstranit kontakt na Twitteru ze seznamu kontaktů na Friendica, neboť tato možnost jej při každém novém příspěvku opět vytvoří."
 
 #: twitter.php:614
 msgid "Twitter post failed. Queued for retry."
-msgstr ""
+msgstr "Poslání příspěvku na Twitter selhalo. Příspěvek byl poslán do fronty pro zopakování."
 
 #: twitter.php:628
 msgid "Settings updated."
