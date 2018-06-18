@@ -2,18 +2,20 @@
 
 if(! function_exists("string_plural_select_cs")) {
 function string_plural_select_cs($n){
-	return ($n==1) ? 0 : ($n>=2 && $n<=4) ? 1 : 2;;
+	$n = intval($n);
+	return ($n == 1 && $n % 1 == 0) ? 0 : ($n >= 2 && $n <= 4 && $n % 1 == 0) ? 1: ($n % 1 != 0 ) ? 2 : 3;;
 }}
 ;
-$a->strings["Post to Wordpress"] = "Příspěvky do WordPress";
-$a->strings["Wordpress Export"] = "Wordpress Export";
-$a->strings["Enable WordPress Post Addon"] = "Povolit rozšíření na WordPress";
+$a->strings["Post to Wordpress"] = "Odesílat na WordPress";
+$a->strings["Wordpress Export"] = "Exportovat do WordPress";
+$a->strings["Enable WordPress Post Addon"] = "Povolit doplněk WordPress Post";
 $a->strings["WordPress username"] = "WordPress uživatelské jméno";
 $a->strings["WordPress password"] = "WordPress heslo";
 $a->strings["WordPress API URL"] = "URL adresa API WordPress";
 $a->strings["Post to WordPress by default"] = "standardně posílat příspěvky na WordPress";
-$a->strings["Provide a backlink to the Friendica post"] = "Poskytuje zpětný link na Friendica příspěvek";
-$a->strings["Don't post messages that are too short"] = "Neposílat zprávy, které jsou příliš krátké";
-$a->strings["Save Settings"] = "Uložit Nastavení";
+$a->strings["Provide a backlink to the Friendica post"] = "Poskytnout zpětný odkaz na příspěvek Friendica";
+$a->strings["Text for the backlink, e.g. Read the original post and comment stream on Friendica."] = "Text pro zpětné odkazy, např. \"Přečtěte si původní příspěvek a komentáře na Friendica\".";
+$a->strings["Don't post messages that are too short"] = "Neposílejte zprávy, které jsou příliš krátké";
+$a->strings["Save Settings"] = "Uložit nastavení";
+$a->strings["Read the orig­i­nal post and com­ment stream on Friendica"] = "Přečtěte si původní příspěvek a komentáře na Friendica";
 $a->strings["Post from Friendica"] = "Příspěvek z Friendica";
-$a->strings["Read the original post and comment stream on Friendica"] = "Přečíst si originální příspěvek a komentáře na Friendica";
