@@ -721,15 +721,11 @@ function twitter_expire(App $a, $b)
 		return;
 	}
 
-	if (method_exists('dba', 'delete')) {
-		$r = dba::select('item', ['id'], ['deleted' => true, 'network' => NETWORK_TWITTER]);
-		while ($row = dba::fetch($r)) {
-			dba::delete('item', ['id' => $row['id']]);
-		}
-		dba::close($r);
-	} else {
-		$r = q("DELETE FROM `item` WHERE `deleted` AND `network` = '%s'", dbesc(NETWORK_TWITTER));
+	$r = dba::select('item', ['id'], ['deleted' => true, 'network' => NETWORK_TWITTER]);
+	while ($row = dba::fetch($r)) {
+		dba::delete('item', ['id' => $row['id']]);
 	}
+	dba::close($r);
 
 	require_once "include/items.php";
 
@@ -1322,12 +1318,7 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 	// $postarray['object'] = json_encode($post); // Activate for debugging
 
 	// Don't import our own comments
-	$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
-		dbesc($postarray['uri']),
-		intval($uid)
-	);
-
-	if (DBM::is_result($r)) {
+	if (dba::exists('item', ['extid' => $postarray['uri'], 'uid' => $uid])) {
 		logger("Item with extid " . $postarray['uri'] . " found.", LOGGER_DEBUG);
 		return [];
 	}
@@ -1337,30 +1328,21 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 	if ($post->in_reply_to_status_id_str != "") {
 		$parent = "twitter::" . $post->in_reply_to_status_id_str;
 
-		$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
-			dbesc($parent),
-			intval($uid)
-		);
-		if (DBM::is_result($r)) {
-			$postarray['thr-parent'] = $r[0]["uri"];
-			$postarray['parent-uri'] = $r[0]["parent-uri"];
-			$postarray['parent'] = $r[0]["parent"];
+		$fields = ['uri', 'parent-uri', 'parent'];
+		$parent_item = Item::selectFirst($fields, ['uri' => $parent, 'uid' => $uid]);
+		if (!DBM::is_result($parent_item)) {
+			$parent_item = Item::selectFirst($fields, ['extid' => $parent, 'uid' => $uid]);
+		}
+
+		if (DBM::is_result($parent_item)) {
+			$postarray['thr-parent'] = $parent_item['uri'];
+			$postarray['parent-uri'] = $parent_item['parent-uri'];
+			$postarray['parent'] = $parent_item['parent'];
 			$postarray['object-type'] = ACTIVITY_OBJ_COMMENT;
 		} else {
-			$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
-				dbesc($parent),
-				intval($uid)
-			);
-			if (DBM::is_result($r)) {
-				$postarray['thr-parent'] = $r[0]['uri'];
-				$postarray['parent-uri'] = $r[0]['parent-uri'];
-				$postarray['parent'] = $r[0]['parent'];
-				$postarray['object-type'] = ACTIVITY_OBJ_COMMENT;
-			} else {
-				$postarray['thr-parent'] = $postarray['uri'];
-				$postarray['parent-uri'] = $postarray['uri'];
-				$postarray['object-type'] = ACTIVITY_OBJ_NOTE;
-			}
+			$postarray['thr-parent'] = $postarray['uri'];
+			$postarray['parent-uri'] = $postarray['uri'];
+			$postarray['object-type'] = ACTIVITY_OBJ_NOTE;
 		}
 
 		// Is it me?
@@ -1506,12 +1488,7 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 			break;
 		}
 
-		$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
-			dbesc("twitter::".$post->id_str),
-			intval($uid)
-		);
-
-		if (DBM::is_result($r)) {
+		if (dba::exists('item', ['uri' => 'twitter::' . $post->id_str, 'uid' => $uid])) {
 			break;
 		}
 

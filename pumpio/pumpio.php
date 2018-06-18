@@ -403,17 +403,14 @@ function pumpio_send(&$a,&$b) {
 
 	if($b['parent'] != $b['id']) {
 		// Looking if its a reply to a pumpio post
-		$r = q("SELECT item.* FROM item, contact WHERE item.id = %d AND item.uid = %d AND contact.id = `contact-id` AND contact.network='%s'LIMIT 1",
-			intval($b["parent"]),
-			intval($b["uid"]),
-			dbesc(NETWORK_PUMPIO));
+		$condition = ['id' => $b['parent'], 'network' => NETWORK_PUMPIO];
+		$orig_post = Item::selectFirst([], $condition);
 
-		if(!count($r)) {
+		if(!DBM::is_result($orig_post)) {
 			logger("pumpio_send: no pumpio post ".$b["parent"]);
 			return;
 		} else {
 			$iscomment = true;
-			$orig_post = $r[0];
 		}
 	} else {
 		$iscomment = false;
@@ -572,15 +569,11 @@ function pumpio_action(&$a, $uid, $uri, $action, $content = "") {
 	$hostname = PConfig::get($uid, 'pumpio','host');
 	$username = PConfig::get($uid, "pumpio", "user");
 
-	$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
-				dbesc($uri),
-				intval($uid)
-	);
+	$orig_post = Item::select([], ['uri' => $uri, 'uid' => $uid]);
 
-	if (!count($r))
+	if (!DBM::is_result($orig_post)) {
 		return;
-
-	$orig_post = $r[0];
+	}
 
 	if ($orig_post["extid"] && !strstr($orig_post["extid"], "/proxy/"))
 		$uri = $orig_post["extid"];
@@ -828,23 +821,12 @@ function pumpio_fetchtimeline(&$a, $uid) {
 function pumpio_dounlike(&$a, $uid, $self, $post, $own_id) {
 	// Searching for the unliked post
 	// Two queries for speed issues
-	$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
-				dbesc($post->object->id),
-				intval($uid)
-		);
-
-	if (count($r))
-		$orig_post = $r[0];
-	else {
-		$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
-					dbesc($post->object->id),
-					intval($uid)
-			);
-
-		if (!count($r))
+	$orig_post = Item::select([], ['uri' => $post->object->id, 'uid' => $uid]);
+	if (!DBM::is_result($r)) {
+		$orig_post = Item::select([], ['extid' => $post->object->id, 'uid' => $uid]);
+		if (!DBM::is_result($r)) {
 			return;
-		else
-			$orig_post = $r[0];
+		}
 	}
 
 	$contactid = 0;
@@ -882,25 +864,12 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 
 	// Searching for the liked post
 	// Two queries for speed issues
-	$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d AND `network` = '%s' LIMIT 1",
-				dbesc($post->object->id),
-				intval($uid),
-				dbesc(NETWORK_PUMPIO)
-		);
-
-	if (count($r))
-		$orig_post = $r[0];
-	else {
-		$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d AND `network` = '%s' LIMIT 1",
-					dbesc($post->object->id),
-					intval($uid),
-					dbesc(NETWORK_PUMPIO)
-			);
-
-		if (!count($r))
+	$orig_post = Item::select([], ['uri' => $post->object->id, 'uid' => $uid]);
+	if (!DBM::is_result($r)) {
+		$orig_post = Item::select([], ['extid' => $post->object->id, 'uid' => $uid]);
+		if (!DBM::is_result($r)) {
 			return;
-		else
-			$orig_post = $r[0];
+		}
 	}
 
 	// thread completion
@@ -927,14 +896,8 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 			$contactid = $orig_post['contact-id'];
 	}
 
-	$r = q("SELECT parent FROM `item` WHERE `verb` = '%s' AND `uid` = %d AND `contact-id` = %d AND `thr-parent` = '%s' LIMIT 1",
-		dbesc(ACTIVITY_LIKE),
-		intval($uid),
-		intval($contactid),
-		dbesc($orig_post['uri'])
-	);
-
-	if(count($r)) {
+	$condition = ['verb' => ACTIVITY_LIKE, 'uid' => $uid, 'contact-id' => $contactid, 'thr-parent' => $orig_post['uri']];
+	if (dba::exists('item', $condition)) {
 		logger("pumpio_dolike: found existing like. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
 		return;
 	}
@@ -1070,21 +1033,12 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 
 	if ($post->verb != "update") {
 		// Two queries for speed issues
-		$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
-					dbesc($post->object->id),
-					intval($uid)
-			);
-
-		if (count($r))
+		if (dba::exists('item', ['uri' => $post->object->id, 'uid' => $uid])) {
 			return false;
-
-		$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
-					dbesc($post->object->id),
-					intval($uid)
-			);
-
-		if (count($r))
+		}
+		if (dba::exists('item', ['extid' => $post->object->id, 'uid' => $uid])) {
 			return false;
+		}
 	}
 
 	// Only handle these three types
@@ -1525,15 +1479,13 @@ function pumpio_fetchallcomments(&$a, $uid, $id) {
 		intval($uid));
 
 	// Fetching the original post
-	$r = q("SELECT `extid` FROM `item` WHERE `uri` = '%s' AND `uid` = %d AND `extid` != '' LIMIT 1",
-			dbesc($id),
-			intval($uid)
-		);
-
-	if (!count($r))
+	$condition = ["`uri` = ? AND `uid` = ? AND `extid` != ''", $id, $uid];
+	$item = Item::selectFirst(['extid'], $condition);
+	if (!DBM::is_result($r)) {
 		return false;
+	}
 
-	$url = $r[0]["extid"];
+	$url = $item["extid"];
 
 	$client = new oauth_client_class;
 	$client->oauth_version = '1.0a';
@@ -1579,21 +1531,13 @@ function pumpio_fetchallcomments(&$a, $uid, $id) {
 			continue;
 
 		// Checking if the comment already exists - Two queries for speed issues
-		$r = q("SELECT extid FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
-				dbesc($item->id),
-				intval($uid)
-			);
-
-		if (count($r))
+		if (dba::exists('item', ['uri' => $item->id, 'uid' => $uid])) {
 			continue;
+		}
 
-		$r = q("SELECT extid FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
-				dbesc($item->id),
-				intval($uid)
-			);
-
-		if (count($r))
+		if (dba::exists('item', ['extid' => $item->id, 'uid' => $uid])) {
 			continue;
+		}
 
 		$post = new stdClass;
 		$post->verb = "post";
