@@ -5,13 +5,14 @@
 # 
 # Translators:
 # Aditoo, 2018
+# Aditoo, 2018
 # michal_s <msupler@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-27 07:21+0200\n"
-"PO-Revision-Date: 2018-06-11 14:49+0000\n"
+"PO-Revision-Date: 2018-06-14 14:47+0000\n"
 "Last-Translator: Aditoo\n"
 "Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -40,18 +41,18 @@ msgstr "Nastavení pro GNU social aktualizována."
 
 #: statusnet.php:294 statusnet.php:298
 msgid "GNU Social Import/Export/Mirror"
-msgstr ""
+msgstr "Import/export/zrcadlení GNU social"
 
 #: statusnet.php:313
 msgid "Globally Available GNU Social OAuthKeys"
-msgstr ""
+msgstr "Globálně dostupné OAuth klíče pro GNU"
 
 #: statusnet.php:314
 msgid ""
 "There are preconfigured OAuth key pairs for some GNU Social servers "
 "available. If you are using one of them, please use these credentials. If "
 "not feel free to connect to any other GNU Social instance (see below)."
-msgstr ""
+msgstr "Jsou dostupné předkonfigurované páry klíčů OAuth pro některé servery GNU social. Pokud některý z nich používáte, prosím používejte tyto kredenciály. Pokud ne, můžete se klidně připojit k jakékoliv jiné instanci GNU social (viz dole)."
 
 #: statusnet.php:320 statusnet.php:337 statusnet.php:364 statusnet.php:371
 #: statusnet.php:416 statusnet.php:699
@@ -69,7 +70,7 @@ msgid ""
 "here and enter the API base root.<br />Before you register your own OAuth "
 "key pair ask the administrator if there is already a key pair for this "
 "Friendica installation at your favorited GNU Social installation."
-msgstr ""
+msgstr "Nenalezen žádný pár klíčů pro GNU social. Registrujte svůj účet Friendica na Vašem účtu GNU social jako desktopový klient, zkopírujte sem pár klíčů consumer key a zadejte kořenovou složku API.<br />Dříve, než si zaregistrujete Váš vlastní pár klíčů, se zeptejte administrátora, jestli již na Vaší oblíbené instalaci GNU social existuje pár klíčů pro tuto instalaci Friendica."
 
 #: statusnet.php:325
 msgid "OAuth Consumer Key"
@@ -89,7 +90,7 @@ msgid ""
 "security code from GNU Social which you have to copy into the input box "
 "below and submit the form. Only your <strong>public</strong> posts will be "
 "posted to GNU Social."
-msgstr ""
+msgstr "Pro připojení k Vašemu účtu na GNU social klikněte na tlačítko níže. Obdržíte bezpečnostní kód od GNU social, ten musíte zkopírovat do vyplňovacího pole níže a odeslat formulář. Pouze Vaše <strong>veřejné</strong> příspěvky budou odesílány na GNU social."
 
 #: statusnet.php:357
 msgid "Log in with GNU Social"
@@ -105,7 +106,7 @@ msgstr "Zrušit připojování"
 
 #: statusnet.php:367
 msgid "Current GNU Social API is"
-msgstr ""
+msgstr "Aktuální API GNU social je:"
 
 #: statusnet.php:368
 msgid "Cancel GNU Social Connection"
@@ -120,7 +121,7 @@ msgid ""
 "If enabled all your <strong>public</strong> postings can be posted to the "
 "associated GNU Social account. You can choose to do so by default (here) or "
 "for every posting separately in the posting options when writing the entry."
-msgstr ""
+msgstr "Je-li povoleno, všechny Vaše <strong>veřejné</strong> příspěvky mohou být zasílány na související účet na GNU social. Můžete si vybrat, zda-li toto bude výchozí nastavení (zde), nebo budete mít možnost si vybrat požadované chování při psaní každého příspěvku."
 
 #: statusnet.php:382
 msgid ""
@@ -128,7 +129,7 @@ msgid ""
 "details from unknown viewers?</em>) the link potentially included in public "
 "postings relayed to GNU Social will lead the visitor to a blank page "
 "informing the visitor that the access to your profile has been restricted."
-msgstr ""
+msgstr "<strong>Poznámka</strong>: Kvůli vašim nastavením o soukromí (<em>Skrýt Vaše profilové detaily před neznámými návštěvníky?</em>), odkaz potenciálně obsažen ve veřejných příspěvcích přeposílaných na GNU social zavedou návštěvníky na prázdnou stránku informující návštěvníky, že přístup na Váš profil byl zakázán."
 
 #: statusnet.php:385
 msgid "Allow posting to GNU Social"
@@ -136,16 +137,16 @@ msgstr "Povolit posílání příspěvků na GNU social"
 
 #: statusnet.php:388
 msgid "Send public postings to GNU Social by default"
-msgstr ""
+msgstr "Ve výchozím stavu posílat veřejné příspěvky na GNU social"
 
 #: statusnet.php:392
 msgid ""
 "Mirror all posts from GNU Social that are no replies or repeated messages"
-msgstr ""
+msgstr "Zrcadlit všechny příspěvky z GNU social, které nejsou odpovědi nebo zopakované zprávy"
 
 #: statusnet.php:398
 msgid "Import the remote timeline"
-msgstr ""
+msgstr "Importovat vzdálenou časovou osu"
 
 #: statusnet.php:402
 msgid "Disabled"
@@ -153,11 +154,11 @@ msgstr "Zakázáno"
 
 #: statusnet.php:403
 msgid "Full Timeline"
-msgstr ""
+msgstr "Plná časová osa"
 
 #: statusnet.php:404
 msgid "Only Mentions"
-msgstr ""
+msgstr "Pouze zmínky"
 
 #: statusnet.php:413
 msgid "Clear OAuth configuration"

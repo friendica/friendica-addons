@@ -4,20 +4,21 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014
+# Aditoo, 2018
+# michal_s <msupler@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2014-07-28 18:21+0000\n"
-"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"PO-Revision-Date: 2018-06-14 15:38+0000\n"
+"Last-Translator: Aditoo\n"
+"Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
 #: morepokes.php:19
 msgid "bitchslap"
@@ -25,7 +26,7 @@ msgstr "dát facku"
 
 #: morepokes.php:19
 msgid "bitchslapped"
-msgstr "dostat facku"
+msgstr "dal facku"
 
 #: morepokes.php:20
 msgid "shag"
@@ -45,11 +46,11 @@ msgstr "udělal něco obscéně biologického uživateli"
 
 #: morepokes.php:22
 msgid "point out the poke feature to"
-msgstr "upozornit na poke funkci uživatele"
+msgstr "upozornit na funkci šťouchnutí"
 
 #: morepokes.php:22
 msgid "pointed out the poke feature to"
-msgstr "upozorněn na poke funkci "
+msgstr "upozornil na funkci šťouchnutí"
 
 #: morepokes.php:23
 msgid "declare undying love for"
@@ -65,7 +66,7 @@ msgstr "patentovat"
 
 #: morepokes.php:24
 msgid "patented"
-msgstr "patentován"
+msgstr "patentoval"
 
 #: morepokes.php:25
 msgid "stroke beard"
@@ -73,18 +74,18 @@ msgstr "pohladit plnovous"
 
 #: morepokes.php:25
 msgid "stroked their beard at"
-msgstr "pohladit něčí plnovous"
+msgstr "pohladil jeho/její plnovous na"
 
 #: morepokes.php:26
 msgid ""
 "bemoan the declining standards of modern secondary and tertiary education to"
-msgstr "stěžující si na klesající úroveň moderního sekundárního a terciárního vzdělávání u"
+msgstr "stěžovat si na klesající úroveň moderního sekundárního a terciárního vzdělávání u"
 
 #: morepokes.php:26
 msgid ""
 "bemoans the declining standards of modern secondary and tertiary education "
 "to"
-msgstr "stěžovat si na klesající úroveň moderního sekundárního a terciárního vzdělávání u"
+msgstr "si stěžoval na klesající úroveň moderního sekundárního a terciárního vzdělávání u"
 
 #: morepokes.php:27
 msgid "hug"
@@ -100,7 +101,7 @@ msgstr "políbit"
 
 #: morepokes.php:28
 msgid "kissed"
-msgstr "políben"
+msgstr "políbil"
 
 #: morepokes.php:29
 msgid "raise eyebrows at"
@@ -116,7 +117,7 @@ msgstr "urazit"
 
 #: morepokes.php:30
 msgid "insulted"
-msgstr "uražen"
+msgstr "urazil"
 
 #: morepokes.php:31
 msgid "praise"
@@ -124,7 +125,7 @@ msgstr "pochválit"
 
 #: morepokes.php:31
 msgid "praised"
-msgstr "pochválen"
+msgstr "pochválil"
 
 #: morepokes.php:32
 msgid "be dubious of"
@@ -132,7 +133,7 @@ msgstr "mít pochyby o"
 
 #: morepokes.php:32
 msgid "was dubious of"
-msgstr "má pochybnosti z"
+msgstr "měl pochyby o"
 
 #: morepokes.php:33
 msgid "eat"
@@ -140,7 +141,7 @@ msgstr "sníst"
 
 #: morepokes.php:33
 msgid "ate"
-msgstr "snězen"
+msgstr "snědl"
 
 #: morepokes.php:34
 msgid "giggle and fawn at"
@@ -148,7 +149,7 @@ msgstr "hihňat se"
 
 #: morepokes.php:34
 msgid "giggled and fawned at"
-msgstr "hihňá se"
+msgstr "se hihňal"
 
 #: morepokes.php:35
 msgid "doubt"
@@ -156,12 +157,12 @@ msgstr "pochybovat"
 
 #: morepokes.php:35
 msgid "doubted"
-msgstr "pochybující"
+msgstr "pochyboval"
 
 #: morepokes.php:36
 msgid "glare"
-msgstr "zabodáván pohledem"
+msgstr "zabodávát pohledem"
 
 #: morepokes.php:36
 msgid "glared at"
-msgstr "zabodávat pohledem "
+msgstr "zabodával pohledem "

@@ -4,65 +4,73 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014
+# Aditoo, 2018
+# Aditoo, 2018
+# michal_s <msupler@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2014-07-02 15:14+0000\n"
-"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"POT-Creation-Date: 2017-01-24 21:06+0100\n"
+"PO-Revision-Date: 2018-06-14 14:10+0000\n"
+"Last-Translator: Aditoo\n"
+"Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
 #: wppost.php:42
 msgid "Post to Wordpress"
-msgstr "Příspěvky do WordPress"
+msgstr "Odesílat na WordPress"
 
-#: wppost.php:79 wppost.php:83
+#: wppost.php:80 wppost.php:84
 msgid "Wordpress Export"
-msgstr "Wordpress Export"
+msgstr "Exportovat do WordPress"
 
-#: wppost.php:86
+#: wppost.php:87
 msgid "Enable WordPress Post Addon"
-msgstr "Povolit rozšíření na WordPress"
+msgstr "Povolit doplněk WordPress Post"
 
-#: wppost.php:91
+#: wppost.php:92
 msgid "WordPress username"
 msgstr "WordPress uživatelské jméno"
 
-#: wppost.php:96
+#: wppost.php:97
 msgid "WordPress password"
 msgstr "WordPress heslo"
 
-#: wppost.php:101
+#: wppost.php:102
 msgid "WordPress API URL"
 msgstr "URL adresa API WordPress"
 
-#: wppost.php:106
+#: wppost.php:107
 msgid "Post to WordPress by default"
 msgstr "standardně posílat příspěvky na WordPress"
 
-#: wppost.php:111
+#: wppost.php:112
 msgid "Provide a backlink to the Friendica post"
-msgstr "Poskytuje zpětný link na Friendica příspěvek"
+msgstr "Poskytnout zpětný odkaz na příspěvek Friendica"
 
 #: wppost.php:116
+msgid ""
+"Text for the backlink, e.g. Read the original post and comment stream on "
+"Friendica."
+msgstr "Text pro zpětné odkazy, např. \"Přečtěte si původní příspěvek a komentáře na Friendica\"."
+
+#: wppost.php:121
 msgid "Don't post messages that are too short"
-msgstr "Neposílat zprávy, které jsou příliš krátké"
+msgstr "Neposílejte zprávy, které jsou příliš krátké"
 
-#: wppost.php:122
+#: wppost.php:127
 msgid "Save Settings"
-msgstr "Uložit Nastavení"
+msgstr "Uložit nastavení"
 
-#: wppost.php:243
+#: wppost.php:206
+msgid "Read the orig­i­nal post and com­ment stream on Friendica"
+msgstr "Přečtěte si původní příspěvek a komentáře na Friendica"
+
+#: wppost.php:269
 msgid "Post from Friendica"
 msgstr "Příspěvek z Friendica"
-
-#: wppost.php:255
-msgid "Read the original post and comment stream on Friendica"
-msgstr "Přečíst si originální příspěvek a komentáře na Friendica"

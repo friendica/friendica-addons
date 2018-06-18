@@ -1,0 +1,23 @@
+# ADDON viewsrc
+# Copyright (C)
+# This file is distributed under the same license as the Friendica viewsrc addon package.
+# 
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: 朱陈锬 <tangenters@outlook.com>, 2018\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/Friendica/teams/12172/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: viewsrc.php:39
+msgid "View Source"
+msgstr "查看源码"

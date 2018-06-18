@@ -51,7 +51,7 @@ msgid ""
 "If enabled, users will automatically login to an ejabberd server that has to"
 " be installed on this machine with synchronized credentials via the "
 "\"auth_ejabberd.php\" script."
-msgstr ""
+msgstr "如果启用，用户将通过 “auth_ejabberd.php” 脚本使用同步证书自动登录到已在此设备上安装完成的 ejabberd 服务器。"
 
 #: xmpp.php:119
 msgid "Settings updated."
