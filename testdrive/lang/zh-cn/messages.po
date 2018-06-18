@@ -1,0 +1,41 @@
+# ADDON testdrive
+# Copyright (C)
+# This file is distributed under the same license as the Friendica testdrive addon package.
+# 
+# 
+# Translators:
+# 朱陈锬 <tangenters@outlook.com>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-08-23 17:30+0200\n"
+"PO-Revision-Date: 2018-06-16 09:13+0000\n"
+"Last-Translator: 朱陈锬 <tangenters@outlook.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/Friendica/friendica/language/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: testdrive.php:67
+msgid "Administrator"
+msgstr "管理员"
+
+#: testdrive.php:94
+#, php-format
+msgid "Your account on %s will expire in a few days."
+msgstr "您在 %s 的账户将在几天内过期。"
+
+#: testdrive.php:95
+msgid "Your Friendica test account is about to expire."
+msgstr "您的 Friendica 测试账户即将过期。"
+
+#: testdrive.php:96
+#, php-format
+msgid ""
+"Hi %1$s,\n"
+"\n"
+"Your test account on %2$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at %s/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at http://friendica.com."
+msgstr "嘿 %1$s，\n\n您在 %2$s 的测试账户将在五天内过期。我们希望您享受这次试用并以此机会为您的综合社交找到常驻的 Friendica 站点。公开可用站点罗列在 %s/siteinfo - 若要了解更多关于建立自己的 Friendica 服务站点的信息，请浏览 Friendica 项目的官方网站 http://friendica.com 。"
