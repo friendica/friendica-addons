@@ -4,50 +4,57 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014
+# Aditoo, 2018
+# michal_s <msupler@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-07-02 15:28+0000\n"
-"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"POT-Creation-Date: 2018-04-01 11:11-0400\n"
+"PO-Revision-Date: 2018-06-13 18:06+0000\n"
+"Last-Translator: Aditoo\n"
+"Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
-#: blockem.php:53 blockem.php:57
+#: blockem.php:52 blockem.php:56
 msgid "\"Blockem\""
 msgstr "\"Blockem\""
 
+#: blockem.php:60
+msgid ""
+"Hides user's content by collapsing posts. Also replaces their avatar with "
+"generic image."
+msgstr "Skrývá uživatelský obsah zabalením příspěvků. Navíc nahrazuje avatar generickým obrázkem."
+
 #: blockem.php:61
-msgid "Comma separated profile URLS to block"
-msgstr "Čárkou oddělené URL adresy profilů určených k ignorování"
+msgid "Comma separated profile URLS:"
+msgstr "URL adresy profilů, oddělené čárkami:"
 
 #: blockem.php:65
 msgid "Save Settings"
-msgstr "Uložit Nastavení"
+msgstr "Uložit nastavení"
 
 #: blockem.php:78
 msgid "BLOCKEM Settings saved."
-msgstr "BLOCKEM nastavení uloženo."
+msgstr "Nastavení BLOCKEM uložena."
 
-#: blockem.php:142
+#: blockem.php:136
 #, php-format
-msgid "Blocked %s - Click to open/close"
-msgstr "Blokován %s - Klikněte pro otevření/zavření"
+msgid "Filtered user: %s"
+msgstr "Filtrovaný uživatel: %s"
 
-#: blockem.php:197
+#: blockem.php:189
 msgid "Unblock Author"
 msgstr "Odblokovat autora"
 
-#: blockem.php:199
+#: blockem.php:191
 msgid "Block Author"
 msgstr "Zablokovat autora"
 
-#: blockem.php:231
+#: blockem.php:223
 msgid "blockem settings updated"
-msgstr "blockem nastavení aktualizováno"
+msgstr "nastavení blockem aktualizována"
