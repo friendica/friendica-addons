@@ -4,14 +4,15 @@
 # 
 # 
 # Translators:
-# Lorem Ipsum <aditoo@seznam.cz>, 2018
+# Aditoo, 2018
+# Aditoo, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-04-01 11:11-0400\n"
-"PO-Revision-Date: 2018-06-09 09:56+0000\n"
-"Last-Translator: Lorem Ipsum <aditoo@seznam.cz>\n"
+"PO-Revision-Date: 2018-06-14 14:15+0000\n"
+"Last-Translator: Aditoo\n"
 "Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,7 +29,7 @@ msgid ""
 "This addon tries to identify the language posts are writen in. If it does "
 "not match any language specifed below, posts will be hidden by collapsing "
 "them."
-msgstr ""
+msgstr "Tento doplněk zkouší identifikovat jazyk, ve kterém jsou napsány příspěvky. Pokud nelze přiřadit příspěvky k žádnému níže specifikovanému jazyku, příspěvky budou zabaleny."
 
 #: langfilter.php:60
 msgid "Use the language filter"
@@ -36,35 +37,35 @@ msgstr "Použít jazykový filtr"
 
 #: langfilter.php:61
 msgid "Able to read"
-msgstr ""
+msgstr "Lze číst"
 
 #: langfilter.php:61
 msgid ""
 "List of abbreviations (iso2 codes) for languages you speak, comma separated."
 " For example \"de,it\"."
-msgstr ""
+msgstr "Seznam zkratek (kódů ISO 2) pro jazyky, kterými mluvíte, oddělených čárkami. Příklad: \"cs,sk\"."
 
 #: langfilter.php:62
 msgid "Minimum confidence in language detection"
-msgstr ""
+msgstr "Minimální jistota v detekci jazyka"
 
 #: langfilter.php:62
 msgid ""
 "Minimum confidence in language detection being correct, from 0 to 100. Posts"
 " will not be filtered when the confidence of language detection is below "
 "this percent value."
-msgstr ""
+msgstr "Minimální jistota ve správnost detekce jazyka, od 0 do 100. Pokud jistota v detekci spadne pod tuto úroveň, nebudou příspěvky filtrovány."
 
 #: langfilter.php:63
 msgid "Minimum length of message body"
-msgstr ""
+msgstr "Minimální délka těla zprávy"
 
 #: langfilter.php:63
 msgid ""
 "Minimum number of characters in message body for filter to be used. Posts "
 "shorter than this will not be filtered. Note: Language detection is "
 "unreliable for short content (<200 characters)."
-msgstr ""
+msgstr "Minimální počet znaků v těle zprávy pro použití filtru. Kratší zprávy nebudou filtrovány. Poznámka: Detekce jazyka je nespolehlivá pro krátký obsah (<200 znaků)."
 
 #: langfilter.php:64
 msgid "Save Settings"
@@ -72,7 +73,7 @@ msgstr "Uložit nastavení"
 
 #: langfilter.php:105
 msgid "Language Filter Settings saved."
-msgstr ""
+msgstr "Nastavení Language Filter uložena."
 
 #: langfilter.php:182
 #, php-format
