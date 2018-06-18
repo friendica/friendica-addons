@@ -4,43 +4,41 @@
 # 
 # 
 # Translators:
-# Aditoo, 2018
-# Aditoo, 2018
-# michal_s <msupler@gmail.com>, 2014
+# R C <miqrogroove@gmail.com>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-04-21 08:45+0200\n"
-"PO-Revision-Date: 2018-06-13 17:58+0000\n"
-"Last-Translator: Aditoo\n"
-"Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
+"PO-Revision-Date: 2018-06-13 02:39+0000\n"
+"Last-Translator: R C <miqrogroove@gmail.com>\n"
+"Language-Team: English (United States) (http://www.transifex.com/Friendica/friendica/language/en_US/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: cs\n"
-"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
+"Language: en_US\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: superblock.php:53 superblock.php:57
 msgid "\"Superblock\""
-msgstr "\"Superblock\""
+msgstr ""
 
 #: superblock.php:60
 msgid "Comma separated profile URLS to block"
-msgstr "Čárkou oddělené URL adresy profilů určených k ignorování"
+msgstr "Comma-separated profile URLs to block"
 
 #: superblock.php:64
 msgid "Save Settings"
-msgstr "Uložit nastavení"
+msgstr ""
 
 #: superblock.php:76
 msgid "SUPERBLOCK Settings saved."
-msgstr "Nastavení SUPERBLOCK uložena"
+msgstr ""
 
 #: superblock.php:148
 msgid "Block Completely"
-msgstr "Zablokovat úplně"
+msgstr ""
 
 #: superblock.php:168
 msgid "superblock settings updated"
-msgstr "nastavvení superblock aktualizována"
+msgstr ""

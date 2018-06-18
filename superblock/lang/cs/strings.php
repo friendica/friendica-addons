@@ -2,12 +2,13 @@
 
 if(! function_exists("string_plural_select_cs")) {
 function string_plural_select_cs($n){
-	return ($n==1) ? 0 : ($n>=2 && $n<=4) ? 1 : 2;;
+	$n = intval($n);
+	return ($n == 1 && $n % 1 == 0) ? 0 : ($n >= 2 && $n <= 4 && $n % 1 == 0) ? 1: ($n % 1 != 0 ) ? 2 : 3;;
 }}
 ;
-$a->strings["\"Superblock\" Settings"] = "\"Superblock\" Nastavení";
+$a->strings["\"Superblock\""] = "\"Superblock\"";
 $a->strings["Comma separated profile URLS to block"] = "Čárkou oddělené URL adresy profilů určených k ignorování";
-$a->strings["Save Settings"] = "Uložit Nastavení";
-$a->strings["SUPERBLOCK Settings saved."] = "SUPERBLOCK nastavení uloženo.";
-$a->strings["Block Completely"] = "Kompletně blokovat ";
-$a->strings["superblock settings updated"] = "superblock nastavení aktualizováno.";
+$a->strings["Save Settings"] = "Uložit nastavení";
+$a->strings["SUPERBLOCK Settings saved."] = "Nastavení SUPERBLOCK uložena";
+$a->strings["Block Completely"] = "Zablokovat úplně";
+$a->strings["superblock settings updated"] = "nastavvení superblock aktualizována";
