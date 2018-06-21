@@ -1075,12 +1075,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 
 	$postarray['uri'] = $hostname . "::" . $content->id;
 
-	$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
-			dbesc($postarray['uri']),
-			intval($uid)
-	);
-
-	if (DBM::is_result($r)) {
+	if (dba::exists('item', ['extid' => $postarray['uri'], 'uid' => $uid])) {
 		return [];
 	}
 
@@ -1090,30 +1085,22 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 
 		$parent = $hostname . "::" . $content->in_reply_to_status_id;
 
-		$r = q("SELECT * FROM `item` WHERE `uri` = '%s' AND `uid` = %d LIMIT 1",
-				dbesc($parent),
-				intval($uid)
-		);
-		if (DBM::is_result($r)) {
-			$postarray['thr-parent'] = $r[0]["uri"];
-			$postarray['parent-uri'] = $r[0]["parent-uri"];
-			$postarray['parent'] = $r[0]["parent"];
+		$fields = ['uri', 'parent-uri', 'parent'];
+		$item = Item::selectFirst($fields, ['uri' => $parent, 'uid' => $uid]);
+
+		if (!DBM::is_result($item)) {
+			$item = Item::selectFirst($fields, ['extid' => $parent, 'uid' => $uid]);
+		}
+
+		if (DBM::is_result($item)) {
+			$postarray['thr-parent'] = $item['uri'];
+			$postarray['parent-uri'] = $item['parent-uri'];
+			$postarray['parent'] = $item['parent'];
 			$postarray['object-type'] = ACTIVITY_OBJ_COMMENT;
 		} else {
-			$r = q("SELECT * FROM `item` WHERE `extid` = '%s' AND `uid` = %d LIMIT 1",
-					dbesc($parent),
-					intval($uid)
-			);
-			if (DBM::is_result($r)) {
-				$postarray['thr-parent'] = $r[0]['uri'];
-				$postarray['parent-uri'] = $r[0]['parent-uri'];
-				$postarray['parent'] = $r[0]['parent'];
-				$postarray['object-type'] = ACTIVITY_OBJ_COMMENT;
-			} else {
-				$postarray['thr-parent'] = $postarray['uri'];
-				$postarray['parent-uri'] = $postarray['uri'];
-				$postarray['object-type'] = ACTIVITY_OBJ_NOTE;
-			}
+			$postarray['thr-parent'] = $postarray['uri'];
+			$postarray['parent-uri'] = $postarray['uri'];
+			$postarray['object-type'] = ACTIVITY_OBJ_NOTE;
 		}
 
 		// Is it me?
