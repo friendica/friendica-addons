@@ -8,6 +8,8 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\ModelItem;
+use Friendica\Database\DBM;
 
 function viewsrc_install() {
 	Addon::registerHook('item_photo_menu', 'addon/viewsrc/viewsrc.php', 'viewsrc_item_photo_menu');
@@ -40,14 +42,12 @@ function viewsrc_item_photo_menu(&$a, &$b)
 	}
 
 	if (local_user() != $b['item']['uid']) {
-		$r = q("SELECT `id` FROM `item` WHERE `uid` = %d AND `guid` = '%s'",
-				intval(local_user()), dbesc($b['item']['guid']));
-
-		if (!$r) {
+		$item = Item::selectFirstForUser(local_user(), ['id'], ['uid' => local_user(), 'guid' => $b['item']['guid']]);
+		if (!DBM::is_result($item)) {
 			return;
 		}
 
-		$item_id = $r[0]['id'];
+		$item_id = $item['id'];
 	} else {
 		$item_id = $b['item']['id'];
 	}

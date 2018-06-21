@@ -213,17 +213,17 @@ function mailstream_subject($item) {
 	$parent = $item['thr-parent'];
 	// Don't look more than 100 levels deep for a subject, in case of loops
 	for ($i = 0; ($i < 100) && $parent; $i++) {
-		$r = q("SELECT `thr-parent`, `title` FROM `item` WHERE `uri` = '%s'", dbesc($parent));
-		if (!DBM::is_result($r)) {
+		$parent_item = Item::selectFirst(['thr-parent', 'title'], ['uri' => $parent]);
+		if (!DBM::is_result($parent_item)) {
 			break;
 		}
-		if ($r[0]['thr-parent'] === $parent) {
+		if ($parent_item['thr-parent'] === $parent) {
 			break;
 		}
-		if ($r[0]['title']) {
-			return L10n::t('Re:') . ' ' . mailstream_decode_subject($r[0]['title']);
+		if ($parent_item['title']) {
+			return L10n::t('Re:') . ' ' . mailstream_decode_subject($parent_item['title']);
 		}
-		$parent = $r[0]['thr-parent'];
+		$parent = $parent_item['thr-parent'];
 	}
 	$r = q("SELECT * FROM `contact` WHERE `id` = %d AND `uid` = %d",
 		intval($item['contact-id']), intval($item['uid']));
