@@ -8,7 +8,7 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
-use Friendica\ModelItem;
+use Friendica\Model\Item;
 use Friendica\Database\DBM;
 
 function viewsrc_install() {
