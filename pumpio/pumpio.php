@@ -570,7 +570,7 @@ function pumpio_action(&$a, $uid, $uri, $action, $content = "") {
 	$hostname = PConfig::get($uid, 'pumpio','host');
 	$username = PConfig::get($uid, "pumpio", "user");
 
-	$orig_post = Item::select([], ['uri' => $uri, 'uid' => $uid]);
+	$orig_post = Item::selectFirst([], ['uri' => $uri, 'uid' => $uid]);
 
 	if (!DBM::is_result($orig_post)) {
 		return;
@@ -822,9 +822,9 @@ function pumpio_fetchtimeline(&$a, $uid) {
 function pumpio_dounlike(&$a, $uid, $self, $post, $own_id) {
 	// Searching for the unliked post
 	// Two queries for speed issues
-	$orig_post = Item::select([], ['uri' => $post->object->id, 'uid' => $uid]);
+	$orig_post = Item::selectFirst([], ['uri' => $post->object->id, 'uid' => $uid]);
 	if (!DBM::is_result($r)) {
-		$orig_post = Item::select([], ['extid' => $post->object->id, 'uid' => $uid]);
+		$orig_post = Item::selectFirst([], ['extid' => $post->object->id, 'uid' => $uid]);
 		if (!DBM::is_result($r)) {
 			return;
 		}
@@ -865,9 +865,9 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 
 	// Searching for the liked post
 	// Two queries for speed issues
-	$orig_post = Item::select([], ['uri' => $post->object->id, 'uid' => $uid]);
+	$orig_post = Item::selectFirst([], ['uri' => $post->object->id, 'uid' => $uid]);
 	if (!DBM::is_result($r)) {
-		$orig_post = Item::select([], ['extid' => $post->object->id, 'uid' => $uid]);
+		$orig_post = Item::selectFirst([], ['extid' => $post->object->id, 'uid' => $uid]);
 		if (!DBM::is_result($r)) {
 			return;
 		}
