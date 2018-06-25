@@ -8,8 +8,8 @@ function string_plural_select_cs($n){
 ;
 $a->strings["bitchslap"] = "dát facku";
 $a->strings["bitchslapped"] = "dal facku";
-$a->strings["shag"] = "";
-$a->strings["shagged"] = "";
+$a->strings["shag"] = "ošoustat";
+$a->strings["shagged"] = "ošoustal";
 $a->strings["do something obscenely biological to"] = "udělat něco obscéně biologického uživateli";
 $a->strings["did something obscenely biological to"] = "udělal něco obscéně biologického uživateli";
 $a->strings["point out the poke feature to"] = "upozornit na funkci šťouchnutí";
