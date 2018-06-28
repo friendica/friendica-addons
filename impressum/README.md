@@ -2,23 +2,17 @@ Impressum Addon for Friendica
 ==============================
 
 * Author: Tobias Diekershoff
-* License: [3-clause BSD](http://opensource.org/licenses/BSD-3-Clause) license
-  (see the LICENSE file in the addon directory)
+* License: [3-clause BSD](http://opensource.org/licenses/BSD-3-Clause) license (see the LICENSE file in the addon directory)
 
 About
 -----
-This addon adds an Impressum (contact) block to the /friendica page with
-informations about the page operator/owner and how to contact you in case of
-any questions.
+This addon adds an Impressum (contact) block to the /friendica page with informations about the page operator/owner and how to contact you in case of any questions.
 
-In the notes and postal fields you can use bbcode tags for formatting, like in
-normal friendica postings..
+In the notes and postal fields you can use bbcode tags for formatting, like in normal friendica postings..
 
 Configuration
 -------------
-Simply fill in the fields in the impressium settings page in the addons
-area of your admin panel. For email adresses the "@" symbol will be obfuscated
-in the source of the page to make in harder for harvesting tools.
+Simply fill in the fields in the impressium settings page in the addons area of your admin panel. For email adresses the "@" symbol will be obfuscated in the source of the page to make in harder for harvesting tools.
 
 Manual Configuration
 --------------------

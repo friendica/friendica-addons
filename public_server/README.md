@@ -2,8 +2,7 @@ Public Server
 =============
 
 
-Public Server is a Friendica addon which implements automatic account & post expiration so that a site may be used as a public
-test bed with reduced data retention.
+Public Server is a Friendica addon which implements automatic account & post expiration so that a site may be used as a public test bed with reduced data retention.
 
 This is a modified version of the testdrive addon, DO NOT ACTIVATE AT THE SAME TIME AS THE TESTDRIVE ADDON.
 
@@ -26,5 +25,5 @@ The default values are those used by friendica.eu, change these as desired.
 
 The expiration date is updated when the user logs in.
 
-An email warning will be sent out approximately five days before the expiration occurs. Five days later the account is removed completely.
-
+An email warning will be sent out approximately five days before the expiration occurs.
+Five days later the account is removed completely.
