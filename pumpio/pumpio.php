@@ -515,7 +515,7 @@ function pumpio_send(&$a, &$b)
 			}
 		 } else {
 			$inReplyTo = ["id" => $orig_post["uri"],
-					"objectType" => "note"];
+				"objectType" => "note"];
 
 			if (($orig_post["object-type"] != "") && (strstr($orig_post["object-type"], NAMESPACE_ACTIVITY_SCHEMA))) {
 				$inReplyTo["objectType"] = str_replace(NAMESPACE_ACTIVITY_SCHEMA, '', $orig_post["object-type"]);
