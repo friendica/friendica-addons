@@ -14,6 +14,7 @@ use Friendica\Util\DateTimeFormat;
 
 function testdrive_install() {
 
+	Addon::registerHook('load_config',      'addon/testdrive/testdrive.php', 'testdrive_load_config');
 	Addon::registerHook('register_account', 'addon/testdrive/testdrive.php', 'testdrive_register_account');
 	Addon::registerHook('cron', 'addon/testdrive/testdrive.php', 'testdrive_cron');
 	Addon::registerHook('enotify','addon/testdrive/testdrive.php', 'testdrive_enotify');
@@ -24,11 +25,17 @@ function testdrive_install() {
 
 function testdrive_uninstall() {
 
+	Addon::unregisterHook('load_config',      'addon/testdrive/testdrive.php', 'testdrive_load_config');
 	Addon::unregisterHook('register_account', 'addon/testdrive/testdrive.php', 'testdrive_register_account');
 	Addon::unregisterHook('cron', 'addon/testdrive/testdrive.php', 'testdrive_cron');
 	Addon::unregisterHook('enotify','addon/testdrive/testdrive.php', 'testdrive_enotify');
 	Addon::unregisterHook('globaldir_update','addon/testdrive/testdrive.php', 'testdrive_globaldir_update');
 
+}
+
+function testdrive_load_config(\Friendica\App $a)
+{
+	$a->loadConfigFile(__DIR__. '/config/testdrive.ini.php');
 }
 
 function testdrive_globaldir_update($a,&$b) {
