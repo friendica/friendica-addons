@@ -14,12 +14,7 @@ use Friendica\Core\L10n;
  */
 function libravatar_install()
 {
-	if (! version_compare(PHP_VERSION, '5.3.0', '>=')) {
-		info(L10n::t('Could NOT install Libravatar successfully.<br>It requires PHP >= 5.3') .EOL);
-		// avoid registering the hook
-		return false;
-	}
-
+	Addon::registerHook('load_config',   'addon/libravatar/libravatar.php', 'libravatar_load_config');
 	Addon::registerHook('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
 	logger("registered libravatar in avatar_lookup hook");
 }
@@ -29,8 +24,14 @@ function libravatar_install()
  */
 function libravatar_uninstall()
 {
+	Addon::unregisterHook('load_config',   'addon/libravatar/libravatar.php', 'libravatar_load_config');
 	Addon::unregisterHook('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
 	logger("unregistered libravatar in avatar_lookup hook");
+}
+
+function libravatar_load_config(\Friendica\App $a)
+{
+	$a->loadConfigFile(__DIR__. '/config/libravatar.ini.php');
 }
 
 /**
@@ -41,11 +42,11 @@ function libravatar_uninstall()
  */
 function libravatar_lookup($a, &$b)
 {
-	$default_avatar = Config::get('libravatar', 'default_img');
+	$default_avatar = Config::get('libravatar', 'default_avatar');
 
 	if (! $default_avatar) {
 		// if not set, look up if there was one from the gravatar addon
-		$default_avatar = Config::get('gravatar', 'default_img');
+		$default_avatar = Config::get('gravatar', 'default_avatar');
 		// setting default avatar if nothing configured
 		if (!$default_avatar) {
 			$default_avatar = 'identicon'; // default image will be a random pattern
@@ -69,7 +70,7 @@ function libravatar_addon_admin(&$a, &$o)
 {
 	$t = get_markup_template("admin.tpl", "addon/libravatar");
 
-	$default_avatar = Config::get('libravatar', 'default_img');
+	$default_avatar = Config::get('libravatar', 'default_avatar');
 
 	// set default values for first configuration
 	if (!$default_avatar) {
@@ -117,6 +118,6 @@ function libravatar_addon_admin_post(&$a)
 	check_form_security_token('libravatarrsave');
 
 	$default_avatar = ((x($_POST, 'avatar')) ? notags(trim($_POST['avatar'])) : 'identicon');
-	Config::set('libravatar', 'default_img', $default_avatar);
+	Config::set('libravatar', 'default_avatar', $default_avatar);
 	info(L10n::t('Libravatar settings updated.') .EOL);
 }
