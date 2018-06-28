@@ -14,6 +14,7 @@ use Friendica\Util\DateTimeFormat;
 
 function public_server_install()
 {
+	Addon::registerHook('load_config',      'addon/public_server/public_server.php', 'public_server_load_config');
 	Addon::registerHook('register_account', 'addon/public_server/public_server.php', 'public_server_register_account');
 	Addon::registerHook('cron', 'addon/public_server/public_server.php', 'public_server_cron');
 	Addon::registerHook('enotify', 'addon/public_server/public_server.php', 'public_server_enotify');
@@ -22,10 +23,16 @@ function public_server_install()
 
 function public_server_uninstall()
 {
+	Addon::unregisterHook('load_config',      'addon/public_server/public_server.php', 'public_server_load_config');
 	Addon::unregisterHook('register_account', 'addon/public_server/public_server.php', 'public_server_register_account');
 	Addon::unregisterHook('cron', 'addon/public_server/public_server.php', 'public_server_cron');
 	Addon::unregisterHook('enotify', 'addon/public_server/public_server.php', 'public_server_enotify');
 	Addon::unregisterHook('logged_in', 'addon/public_server/public_server.php', 'public_server_login');
+}
+
+function public_server_load_config(\Friendica\App $a)
+{
+	$a->loadConfigFile(__DIR__. '/config/public_server.ini.php');
 }
 
 function public_server_register_account($a, $b)
