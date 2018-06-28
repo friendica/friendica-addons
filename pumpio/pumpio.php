@@ -451,11 +451,11 @@ function pumpio_send(&$a, &$b)
 	}
 
 	if (($b['verb'] == ACTIVITY_POST) && ($b['created'] !== $b['edited']) && !$b['deleted']) {
-			pumpio_action($a, $b["uid"], $b["uri"], "update", $b["body"]);
+		pumpio_action($a, $b["uid"], $b["uri"], "update", $b["body"]);
 	}
 
 	if (($b['verb'] == ACTIVITY_POST) && $b['deleted']) {
-			pumpio_action($a, $b["uid"], $b["uri"], "delete");
+		pumpio_action($a, $b["uid"], $b["uri"], "delete");
 	}
 
 	if ($b['deleted'] || ($b['created'] !== $b['edited'])) {
@@ -491,8 +491,8 @@ function pumpio_send(&$a, &$b)
 
 		if (!$iscomment) {
 			$params["object"] = [
-						'objectType' => "note",
-						'content' => $content];
+				'objectType' => "note",
+				'content' => $content];
 
 			if ($title != "") {
 				$params["object"]["displayName"] = $title;
@@ -522,9 +522,9 @@ function pumpio_send(&$a, &$b)
 			}
 
 			$params["object"] = [
-						'objectType' => "comment",
-						'content' => $content,
-						'inReplyTo' => $inReplyTo];
+				'objectType' => "comment",
+				'content' => $content,
+				'inReplyTo' => $inReplyTo];
 
 			if ($title != "") {
 				$params["object"]["displayName"] = $title;
