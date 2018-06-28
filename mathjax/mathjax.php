@@ -13,6 +13,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 
 function mathjax_install() {
+	Addon::registerHook('load_config', 'addon/mathjax/mathjax.php', 'mathjax_load_config');
     Addon::registerHook('page_header', 'addon/mathjax/mathjax.php', 'mathjax_page_header');
     Addon::registerHook('addon_settings', 'addon/mathjax/mathjax.php', 'mathjax_settings');
     Addon::registerHook('addon_settings_post', 'addon/mathjax/mathjax.php', 'mathjax_settings_post');
@@ -21,10 +22,16 @@ function mathjax_install() {
 }
 
 function mathjax_uninstall() {
+	Addon::unregisterHook('load_config', 'addon/mathjax/mathjax.php', 'mathjax_load_config');
     Addon::unregisterHook('page_header', 'addon/mathjax/mathjax.php', 'mathjax_page_header');
     Addon::unregisterHook('addon_settings', 'addon/mathjax/mathjax.php', 'mathjax_settings');
     Addon::unregisterHook('addon_settings_post', 'addon/mathjax/mathjax.php', 'mathjax_settings_post');
     Addon::unregisterHook('template_vars', 'addon/mathjax/mathjax.php', 'mathjax_template_vars');
+}
+
+function mathjax_load_config(\Friendica\App $a)
+{
+	$a->loadConfigFile(__DIR__. '/config/mathjax.ini.php');
 }
 
 function mathjax_template_vars($a, &$arr)

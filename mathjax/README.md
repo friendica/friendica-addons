@@ -13,21 +13,23 @@ This addon for friendica includes the [MathJax][1] CDN to enable rendering of
 
 Configuration
 -------------
-All you need to do is provide friendica with the base URL of MathJax. This can
+All you need to do is provide Friendica with the base URL of MathJax. This can
 be either the URL of the CDN of MathJax or your own installation.
 
 In case you want to use the CDN you can try the following URL as a quick start
 
 	http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML
 
-In case you don't want or can use the admin panel of firneidca you can activate
-the addon by adding _mathjax_ to the 
+In case you don't want or can use the admin panel of Friendica you can activate
+the addon by adding _mathjax_ to the
 
-	$a->config['system']['addon']
+	[system]
+	addon = ...,mathjax
 
-list in your .htconfig.php file and then providing the base URL after that
+list in your config/local.ini.php file and then providing the base URL after that
 
-	 $a->config['mathjax']['baseurl'] = 'the URL to your MathJax installation';
+	[mathjax]
+	baseurl = [the URL to your MathJax installation];
 
 Usage
 =====
