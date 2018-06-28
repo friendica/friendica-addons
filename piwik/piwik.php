@@ -16,13 +16,14 @@
  *
  *   Configuration:
  *     Use the administration panel to configure the Piwik tracking addon, or
- *     in case you don't use this add the following lines to your .htconfig.php
+ *     in case you don't use this add the following lines to your config/local.ini.php
  *     file:
  *
- *     $a->config['piwik']['baseurl'] = 'www.example.com/piwik/';
- *     $a->config['piwik']['siteid'] = '1';
- *     $a->config['piwik']['optout'] = true;  // set to false to disable
- *     $a->config['piwik']['async'] = false;  // set to true to enable
+ *     [piwik]
+ *     baseurl = example.com/piwik/
+ *     sideid = 1
+ *     optout = true ;set to false to disable
+ *     async = false ;set to true to enable
  *
  *     Change the siteid to the ID that the Piwik tracker for your Friendica
  *     installation has. Alter the baseurl to fit your needs, don't care
@@ -34,15 +35,22 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 
 function piwik_install() {
+	Addon::registerHook('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
 	Addon::registerHook('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
 	logger("installed piwik addon");
 }
 
 function piwik_uninstall() {
+	Addon::unregisterHook('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
 	Addon::unregisterHook('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
 	logger("uninstalled piwik addon");
+}
+
+function piwik_load_config(\Friendica\App $a)
+{
+	$a->loadConfigFile(__DIR__. '/config/piwik.ini.php');
 }
 
 function piwik_analytics($a,&$b) {
@@ -55,12 +63,12 @@ function piwik_analytics($a,&$b) {
 	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/piwik/piwik.css' . '" media="all" />';
 
 	/*
-	 *   Get the configuration variables from the .htconfig file.
+	 *   Get the configuration variables from the config/local.ini.php file.
 	 */
-	$baseurl = Config::get('piwik','baseurl');
-	$siteid  = Config::get('piwik','siteid');
-	$optout  = Config::get('piwik','optout');
-	$async   = Config::get('piwik','async');
+	$baseurl = Config::get('piwik', 'baseurl');
+	$siteid  = Config::get('piwik', 'siteid');
+	$optout  = Config::get('piwik', 'optout');
+	$async   = Config::get('piwik', 'async');
 
 	/*
 	 *   Add the Piwik tracking code for the site.

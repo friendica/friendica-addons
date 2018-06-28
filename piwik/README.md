@@ -25,18 +25,20 @@ your ~friendica server and then enter the needed details on the config page
 for the addon.
 
 If you don't want to use the admin panel, you can configure the addon through
-the .htconfig file.
+the config/local.ini.php file.
 
-Open the .htconfig.php file and add "piwik" to the list of activated addons.
+Open the config/local.ini.php file and add "piwik" to the list of activated addons.
 
-    $a->config['system']['addon'] = "piwik, ..."
+    [system]
+	addon = ...,piwik
 
-You have to add 4 more configuration variables for the addon:
+You can change 4 more configuration variables for the addon:
 
-    $a->config['piwik']['baseurl'] = 'example.com/piwik/';
-    $a->config['piwik']['sideid'] = '1';
-    $a->config['piwik']['optout'] = true;
-    $a->config['piwik']['async'] = false;
+    [piwik]
+	baseurl = example.com/piwik/
+    sideid = 1
+    optout = true
+    async = false
 
 Configuration fields
 ---------------------
