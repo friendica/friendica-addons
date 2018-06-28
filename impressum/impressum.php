@@ -15,12 +15,14 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 
 function impressum_install() {
+	Addon::registerHook('load_config', 'addon/impressum/impressum.php', 'impressum_load_config');
     Addon::registerHook('about_hook', 'addon/impressum/impressum.php', 'impressum_show');
     Addon::registerHook('page_end', 'addon/impressum/impressum.php', 'impressum_footer');
     logger("installed impressum Addon");
 }
 
 function impressum_uninstall() {
+	Addon::unregisterHook('load_config', 'addon/impressum/impressum.php', 'impressum_load_config');
     Addon::unregisterHook('about_hook', 'addon/impressum/impressum.php', 'impressum_show');
     Addon::unregisterHook('page_end', 'addon/impressum/impressum.php', 'impressum_footer');
     logger("uninstalled impressum Addon");
@@ -46,6 +48,12 @@ function impressum_footer($a, &$b) {
         $b .= '<div id="impressum_footer">'.$text.'</div>';
     }
 }
+
+function impressum_load_config(\Friendica\App $a)
+{
+	$a->loadConfigFile(__DIR__. '/config/impressum.ini.php');
+}
+
 function impressum_show($a,&$b) {
     $b .= '<h3>'.L10n::t('Impressum').'</h3>';
     $owner = Config::get('impressum', 'owner');
