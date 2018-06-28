@@ -15,13 +15,14 @@ use Friendica\Core\L10n;
 use Friendica\Core\System;
 use Friendica\Util\Network;
 
-const OSM_TMS = 'http://www.openstreetmap.org';
-const OSM_NOM = 'http://nominatim.openstreetmap.org/search.php';
+const OSM_TMS = 'https://www.openstreetmap.org';
+const OSM_NOM = 'https://nominatim.openstreetmap.org/search.php';
 const OSM_ZOOM = 16;
 const OSM_MARKER = 0;
 
 function openstreetmap_install()
 {
+	Addon::registerHook('load_config',     'addon/openstreetmap/openstreetmap.php', 'openstreetmap_load_config');
 	Addon::registerHook('render_location', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_location');
 	Addon::registerHook('generate_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_map');
 	Addon::registerHook('generate_named_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_named_map');
@@ -33,6 +34,7 @@ function openstreetmap_install()
 
 function openstreetmap_uninstall()
 {
+	Addon::unregisterHook('load_config',     'addon/openstreetmap/openstreetmap.php', 'openstreetmap_load_config');
 	Addon::unregisterHook('render_location', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_location');
 	Addon::unregisterHook('generate_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_map');
 	Addon::unregisterHook('generate_named_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_named_map');
@@ -40,6 +42,11 @@ function openstreetmap_uninstall()
 	Addon::unregisterHook('page_header', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_alterheader');
 
 	logger("removed openstreetmap");
+}
+
+function openstreetmap_load_config(\Friendica\App $a)
+{
+	$a->loadConfigFile(__DIR__. '/config/openstreetmap.ini.php');
 }
 
 function openstreetmap_alterheader($a, &$navHtml)
