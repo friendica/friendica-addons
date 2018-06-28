@@ -1062,7 +1062,6 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 
 	$postarray = [];
 	$postarray['network'] = NETWORK_STATUSNET;
-	$postarray['gravity'] = 0;
 	$postarray['uid'] = $uid;
 	$postarray['wall'] = 0;
 

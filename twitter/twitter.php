@@ -1311,7 +1311,6 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 {
 	$postarray = [];
 	$postarray['network'] = NETWORK_TWITTER;
-	$postarray['gravity'] = 0;
 	$postarray['uid'] = $uid;
 	$postarray['wall'] = 0;
 	$postarray['uri'] = "twitter::" . $post->id_str;
