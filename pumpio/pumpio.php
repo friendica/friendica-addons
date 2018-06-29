@@ -30,7 +30,8 @@ require_once "mod/share.php";
 
 define('PUMPIO_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
-function pumpio_install() {
+function pumpio_install()
+{
 	Addon::registerHook('post_local',           'addon/pumpio/pumpio.php', 'pumpio_post_local');
 	Addon::registerHook('notifier_normal',      'addon/pumpio/pumpio.php', 'pumpio_send');
 	Addon::registerHook('jot_networks',         'addon/pumpio/pumpio.php', 'pumpio_jot_nets');
@@ -38,10 +39,11 @@ function pumpio_install() {
 	Addon::registerHook('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
 	Addon::registerHook('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
 	Addon::registerHook('queue_predeliver', 'addon/pumpio/pumpio.php', 'pumpio_queue_hook');
-	Addon::registerHook('check_item_notification','addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
+	Addon::registerHook('check_item_notification', 'addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
 }
 
-function pumpio_uninstall() {
+function pumpio_uninstall()
+{
 	Addon::unregisterHook('post_local',       'addon/pumpio/pumpio.php', 'pumpio_post_local');
 	Addon::unregisterHook('notifier_normal',  'addon/pumpio/pumpio.php', 'pumpio_send');
 	Addon::unregisterHook('jot_networks',     'addon/pumpio/pumpio.php', 'pumpio_jot_nets');
@@ -49,14 +51,14 @@ function pumpio_uninstall() {
 	Addon::unregisterHook('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
 	Addon::unregisterHook('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
 	Addon::unregisterHook('queue_predeliver', 'addon/pumpio/pumpio.php', 'pumpio_queue_hook');
-	Addon::unregisterHook('check_item_notification','addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
+	Addon::unregisterHook('check_item_notification', 'addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
 }
 
 function pumpio_module() {}
 
-function pumpio_content(&$a) {
-
-	if(! local_user()) {
+function pumpio_content(&$a)
+{
+	if (!local_user()) {
 		notice(L10n::t('Permission denied.') . EOL);
 		return '';
 	}
@@ -64,7 +66,7 @@ function pumpio_content(&$a) {
 	require_once("mod/settings.php");
 	settings_init($a);
 
-	if (isset($a->argv[1]))
+	if (isset($a->argv[1])) {
 		switch ($a->argv[1]) {
 			case "connect":
 				$o = pumpio_connect($a);
@@ -73,30 +75,31 @@ function pumpio_content(&$a) {
 				$o = print_r($a->argv, true);
 				break;
 		}
-	else
+	} else {
 		$o = pumpio_connect($a);
-
+	}
 	return $o;
 }
 
-function pumpio_check_item_notification($a, &$notification_data) {
-	$hostname = PConfig::get($notification_data["uid"], 'pumpio','host');
+function pumpio_check_item_notification($a, &$notification_data)
+{
+	$hostname = PConfig::get($notification_data["uid"], 'pumpio', 'host');
 	$username = PConfig::get($notification_data["uid"], "pumpio", "user");
 
-        $notification_data["profiles"][] = "https://".$hostname."/".$username;
+	$notification_data["profiles"][] = "https://".$hostname."/".$username;
 }
 
-
-function pumpio_registerclient(&$a, $host) {
-
+function pumpio_registerclient(&$a, $host)
+{
 	$url = "https://".$host."/api/client/register";
 
 	$params = [];
 
 	$application_name  = Config::get('pumpio', 'application_name');
 
-	if ($application_name == "")
+	if ($application_name == "") {
 		$application_name = $a->get_hostname();
+	}
 
 	$adminlist = explode(",", str_replace(" ", "", $a->config['admin_email']));
 
@@ -111,9 +114,9 @@ function pumpio_registerclient(&$a, $host) {
 
 	$ch = curl_init($url);
 	curl_setopt($ch, CURLOPT_HEADER, false);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_POST,1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS,$params);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 	curl_setopt($ch, CURLOPT_USERAGENT, "Friendica");
 
 	$s = curl_exec($ch);
@@ -122,30 +125,31 @@ function pumpio_registerclient(&$a, $host) {
 	if ($curl_info["http_code"] == "200") {
 		$values = json_decode($s);
 		logger("pumpio_registerclient: success ".print_r($values, true), LOGGER_DEBUG);
-		return($values);
+		return $values;
 	}
 	logger("pumpio_registerclient: failed: ".print_r($curl_info, true), LOGGER_DEBUG);
-	return(false);
+	return false;
 
 }
 
-function pumpio_connect(&$a) {
+function pumpio_connect(&$a)
+{
 	// Start a session.  This is necessary to hold on to  a few keys the callback script will also need
 	session_start();
 
 	// Define the needed keys
-	$consumer_key = PConfig::get(local_user(), 'pumpio','consumer_key');
-	$consumer_secret = PConfig::get(local_user(), 'pumpio','consumer_secret');
-	$hostname = PConfig::get(local_user(), 'pumpio','host');
+	$consumer_key = PConfig::get(local_user(), 'pumpio', 'consumer_key');
+	$consumer_secret = PConfig::get(local_user(), 'pumpio', 'consumer_secret');
+	$hostname = PConfig::get(local_user(), 'pumpio', 'host');
 
 	if ((($consumer_key == "") || ($consumer_secret == "")) && ($hostname != "")) {
 		logger("pumpio_connect: register client");
 		$clientdata = pumpio_registerclient($a, $hostname);
-		PConfig::set(local_user(), 'pumpio','consumer_key', $clientdata->client_id);
-		PConfig::set(local_user(), 'pumpio','consumer_secret', $clientdata->client_secret);
+		PConfig::set(local_user(), 'pumpio', 'consumer_key', $clientdata->client_id);
+		PConfig::set(local_user(), 'pumpio', 'consumer_secret', $clientdata->client_secret);
 
-		$consumer_key = PConfig::get(local_user(), 'pumpio','consumer_key');
-		$consumer_secret = PConfig::get(local_user(), 'pumpio','consumer_secret');
+		$consumer_key = PConfig::get(local_user(), 'pumpio', 'consumer_key');
+		$consumer_secret = PConfig::get(local_user(), 'pumpio', 'consumer_secret');
 
 		logger("pumpio_connect: ckey: ".$consumer_key." csecrect: ".$consumer_secret, LOGGER_DEBUG);
 	}
@@ -154,7 +158,7 @@ function pumpio_connect(&$a) {
 		logger("pumpio_connect: ".sprintf("Unable to register the client at the pump.io server '%s'.", $hostname));
 
 		$o .= L10n::t("Unable to register the client at the pump.io server '%s'.", $hostname);
-		return($o);
+		return $o;
 	}
 
 	// The callback URL is the script that gets called after the user authenticates with pumpio
@@ -188,10 +192,11 @@ function pumpio_connect(&$a) {
 		}
 		$success = $client->Finalize($success);
 	}
-	if($client->exit)
+	if ($client->exit)  {
 		$o = 'Could not connect to pumpio. Refresh the page or try again later.';
+	}
 
-	if($success) {
+	if ($success) {
 		logger("pumpio_connect: authenticated");
 		$o .= L10n::t("You are now authenticated to pumpio.");
 		$o .= '<br /><a href="'.$a->get_baseurl().'/settings/connectors">'.L10n::t("return to the connector page").'</a>';
@@ -200,27 +205,29 @@ function pumpio_connect(&$a) {
 		$o = 'Could not connect to pumpio. Refresh the page or try again later.';
 	}
 
-	return($o);
+	return $o;
 }
 
-function pumpio_jot_nets(&$a,&$b) {
-	if(! local_user())
+function pumpio_jot_nets(&$a, &$b)
+{
+	if (!local_user()) {
 		return;
+	}
 
-	$pumpio_post = PConfig::get(local_user(),'pumpio','post');
-	if(intval($pumpio_post) == 1) {
-		$pumpio_defpost = PConfig::get(local_user(),'pumpio','post_by_default');
+	$pumpio_post = PConfig::get(local_user(), 'pumpio', 'post');
+	if (intval($pumpio_post) == 1) {
+		$pumpio_defpost = PConfig::get(local_user(), 'pumpio', 'post_by_default');
 		$selected = ((intval($pumpio_defpost) == 1) ? ' checked="checked" ' : '');
 		$b .= '<div class="profile-jot-net"><input type="checkbox" name="pumpio_enable"' . $selected . ' value="1" /> '
 			. L10n::t('Post to pumpio') . '</div>';
 	}
 }
 
-
-function pumpio_settings(&$a,&$s) {
-
-	if(! local_user())
+function pumpio_settings(&$a, &$s)
+{
+	if (!local_user()) {
 		return;
+	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
@@ -228,20 +235,20 @@ function pumpio_settings(&$a,&$s) {
 
 	/* Get the current state of our config variables */
 
-	$import_enabled = PConfig::get(local_user(),'pumpio','import');
+	$import_enabled = PConfig::get(local_user(), 'pumpio', 'import');
 	$import_checked = (($import_enabled) ? ' checked="checked" ' : '');
 
-	$enabled = PConfig::get(local_user(),'pumpio','post');
+	$enabled = PConfig::get(local_user(), 'pumpio', 'post');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 	$css = (($enabled) ? '' : '-disabled');
 
-	$def_enabled = PConfig::get(local_user(),'pumpio','post_by_default');
+	$def_enabled = PConfig::get(local_user(), 'pumpio', 'post_by_default');
 	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
-	$public_enabled = PConfig::get(local_user(),'pumpio','public');
+	$public_enabled = PConfig::get(local_user(), 'pumpio', 'public');
 	$public_checked = (($public_enabled) ? ' checked="checked" ' : '');
 
-	$mirror_enabled = PConfig::get(local_user(),'pumpio','mirror');
+	$mirror_enabled = PConfig::get(local_user(), 'pumpio', 'mirror');
 	$mirror_checked = (($mirror_enabled) ? ' checked="checked" ' : '');
 
 	$servername = PConfig::get(local_user(), "pumpio", "host");
@@ -268,7 +275,6 @@ function pumpio_settings(&$a,&$s) {
 	$s .= '</div><div class="clear"></div>';
 
 	if (($username != '') && ($servername != '')) {
-
 		$oauth_token = PConfig::get(local_user(), "pumpio", "oauth_token");
 		$oauth_token_secret = PConfig::get(local_user(), "pumpio", "oauth_token_secret");
 
@@ -317,31 +323,31 @@ function pumpio_settings(&$a,&$s) {
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="pumpio-submit" name="pumpio-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 }
 
-
-function pumpio_settings_post(&$a,&$b) {
-
-	if(x($_POST,'pumpio-submit')) {
-		if(x($_POST,'pumpio_delete')) {
-			PConfig::set(local_user(),'pumpio','consumer_key','');
-			PConfig::set(local_user(),'pumpio','consumer_secret','');
-			PConfig::set(local_user(),'pumpio','oauth_token','');
-			PConfig::set(local_user(),'pumpio','oauth_token_secret','');
-			PConfig::set(local_user(),'pumpio','post',false);
-			PConfig::set(local_user(),'pumpio','import',false);
-			PConfig::set(local_user(),'pumpio','host','');
-			PConfig::set(local_user(),'pumpio','user','');
-			PConfig::set(local_user(),'pumpio','public',false);
-			PConfig::set(local_user(),'pumpio','mirror',false);
-			PConfig::set(local_user(),'pumpio','post_by_default',false);
-			PConfig::set(local_user(),'pumpio','lastdate', 0);
-			PConfig::set(local_user(),'pumpio','last_id', '');
+function pumpio_settings_post(&$a, &$b)
+{
+	if (x($_POST, 'pumpio-submit')) {
+		if (x($_POST, 'pumpio_delete')) {
+			PConfig::set(local_user(), 'pumpio', 'consumer_key', '');
+			PConfig::set(local_user(), 'pumpio', 'consumer_secret', '');
+			PConfig::set(local_user(), 'pumpio', 'oauth_token', '');
+			PConfig::set(local_user(), 'pumpio', 'oauth_token_secret', '');
+			PConfig::set(local_user(), 'pumpio', 'post', false);
+			PConfig::set(local_user(), 'pumpio', 'import', false);
+			PConfig::set(local_user(), 'pumpio', 'host', '');
+			PConfig::set(local_user(), 'pumpio', 'user', '');
+			PConfig::set(local_user(), 'pumpio', 'public', false);
+			PConfig::set(local_user(), 'pumpio', 'mirror', false);
+			PConfig::set(local_user(), 'pumpio', 'post_by_default', false);
+			PConfig::set(local_user(), 'pumpio', 'lastdate', 0);
+			PConfig::set(local_user(), 'pumpio', 'last_id', '');
 		} else {
 			// filtering the username if it is filled wrong
 			$user = $_POST['pumpio_user'];
 			if (strstr($user, "@")) {
 				$pos = strpos($user, "@");
-				if ($pos > 0)
+				if ($pos > 0) {
 					$user = substr($user, 0, $pos);
+				}
 			}
 
 			// Filtering the hostname if someone is entering it with "http"
@@ -349,31 +355,32 @@ function pumpio_settings_post(&$a,&$b) {
 			$host = trim($host);
 			$host = str_replace(["https://", "http://"], ["", ""], $host);
 
-			PConfig::set(local_user(),'pumpio','post',intval($_POST['pumpio']));
-			PConfig::set(local_user(),'pumpio','import',$_POST['pumpio_import']);
-			PConfig::set(local_user(),'pumpio','host',$host);
-			PConfig::set(local_user(),'pumpio','user',$user);
-			PConfig::set(local_user(),'pumpio','public',$_POST['pumpio_public']);
-			PConfig::set(local_user(),'pumpio','mirror',$_POST['pumpio_mirror']);
-			PConfig::set(local_user(),'pumpio','post_by_default',intval($_POST['pumpio_bydefault']));
+			PConfig::set(local_user(), 'pumpio', 'post',intval($_POST['pumpio']));
+			PConfig::set(local_user(), 'pumpio', 'import', $_POST['pumpio_import']);
+			PConfig::set(local_user(), 'pumpio', 'host', $host);
+			PConfig::set(local_user(), 'pumpio', 'user', $user);
+			PConfig::set(local_user(), 'pumpio', 'public', $_POST['pumpio_public']);
+			PConfig::set(local_user(), 'pumpio', 'mirror', $_POST['pumpio_mirror']);
+			PConfig::set(local_user(), 'pumpio', 'post_by_default',intval($_POST['pumpio_bydefault']));
 
-			if (!$_POST['pumpio_mirror'])
-				PConfig::delete(local_user(),'pumpio','lastdate');
+			if (!$_POST['pumpio_mirror']) {
+				PConfig::delete(local_user(), 'pumpio', 'lastdate');
+			}
 
 			//header("Location: ".$a->get_baseurl()."/pumpio/connect");
 		}
 	}
 }
 
-function pumpio_post_local(&$a, &$b) {
-
+function pumpio_post_local(&$a, &$b)
+{
 	if (!local_user() || (local_user() != $b['uid'])) {
 		return;
 	}
 
 	$pumpio_post   = intval(PConfig::get(local_user(), 'pumpio', 'post'));
 
-	$pumpio_enable = (($pumpio_post && x($_REQUEST,'pumpio_enable')) ? intval($_REQUEST['pumpio_enable']) : 0);
+	$pumpio_enable = (($pumpio_post && x($_REQUEST, 'pumpio_enable')) ? intval($_REQUEST['pumpio_enable']) : 0);
 
 	if ($b['api_source'] && intval(PConfig::get(local_user(), 'pumpio', 'post_by_default'))) {
 		$pumpio_enable = 1;
@@ -390,24 +397,22 @@ function pumpio_post_local(&$a, &$b) {
 	$b['postopts'] .= 'pumpio';
 }
 
-
-
-
-function pumpio_send(&$a,&$b) {
-
-	if (!PConfig::get($b["uid"],'pumpio','import')) {
-		if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
+function pumpio_send(&$a, &$b)
+{
+	if (!PConfig::get($b["uid"], 'pumpio', 'import')) {
+		if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 			return;
+		}
 	}
 
 	logger("pumpio_send: parameter ".print_r($b, true), LOGGER_DATA);
 
-	if($b['parent'] != $b['id']) {
+	if ($b['parent'] != $b['id']) {
 		// Looking if its a reply to a pumpio post
 		$condition = ['id' => $b['parent'], 'network' => NETWORK_PUMPIO];
 		$orig_post = Item::selectFirst([], $condition);
 
-		if(!DBM::is_result($orig_post)) {
+		if (!DBM::is_result($orig_post)) {
 			logger("pumpio_send: no pumpio post ".$b["parent"]);
 			return;
 		} else {
@@ -420,7 +425,7 @@ function pumpio_send(&$a,&$b) {
 
 		logger("pumpio_send: receiver ".print_r($receiver, true));
 
-		if (!count($receiver) && ($b['private'] || !strstr($b['postopts'],'pumpio'))) {
+		if (!count($receiver) && ($b['private'] || !strstr($b['postopts'], 'pumpio'))) {
 			return;
 		}
 
@@ -432,29 +437,35 @@ function pumpio_send(&$a,&$b) {
 		}
 	}
 
-	if($b['verb'] == ACTIVITY_LIKE) {
-		if ($b['deleted'])
+	if ($b['verb'] == ACTIVITY_LIKE) {
+		if ($b['deleted']) {
 			pumpio_action($a, $b["uid"], $b["thr-parent"], "unlike");
-		else
+		} else {
 			pumpio_action($a, $b["uid"], $b["thr-parent"], "like");
+		}
 		return;
 	}
 
-	if($b['verb'] == ACTIVITY_DISLIKE)
+	if ($b['verb'] == ACTIVITY_DISLIKE) {
 		return;
+	}
 
-	if (($b['verb'] == ACTIVITY_POST) && ($b['created'] !== $b['edited']) && !$b['deleted'])
-			pumpio_action($a, $b["uid"], $b["uri"], "update", $b["body"]);
+	if (($b['verb'] == ACTIVITY_POST) && ($b['created'] !== $b['edited']) && !$b['deleted']) {
+		pumpio_action($a, $b["uid"], $b["uri"], "update", $b["body"]);
+	}
 
-	if (($b['verb'] == ACTIVITY_POST) && $b['deleted'])
-			pumpio_action($a, $b["uid"], $b["uri"], "delete");
+	if (($b['verb'] == ACTIVITY_POST) && $b['deleted']) {
+		pumpio_action($a, $b["uid"], $b["uri"], "delete");
+	}
 
-	if($b['deleted'] || ($b['created'] !== $b['edited']))
+	if ($b['deleted'] || ($b['created'] !== $b['edited'])) {
 		return;
+	}
 
 	// if post comes from pump.io don't send it back
-	if($b['app'] == "pump.io")
+	if ($b['app'] == "pump.io") {
 		return;
+	}
 
 	// To-Do;
 	// Support for native shares
@@ -469,7 +480,7 @@ function pumpio_send(&$a,&$b) {
 	$user = PConfig::get($b['uid'], "pumpio", "user");
 	$public = PConfig::get($b['uid'], "pumpio", "public");
 
-	if($oauth_token && $oauth_token_secret) {
+	if ($oauth_token && $oauth_token_secret) {
 		$title = trim($b['title']);
 
 		$content = BBCode::convert($b['body'], false, 4);
@@ -480,38 +491,44 @@ function pumpio_send(&$a,&$b) {
 
 		if (!$iscomment) {
 			$params["object"] = [
-						'objectType' => "note",
-						'content' => $content];
+				'objectType' => "note",
+				'content' => $content];
 
-			if ($title != "")
+			if ($title != "") {
 				$params["object"]["displayName"] = $title;
+			}
 
-			if (count($receiver["to"]))
+			if (count($receiver["to"])) {
 				$params["to"] = $receiver["to"];
+			}
 
-			if (count($receiver["bto"]))
+			if (count($receiver["bto"])) {
 				$params["bto"] = $receiver["bto"];
+			}
 
-			if (count($receiver["cc"]))
+			if (count($receiver["cc"])) {
 				$params["cc"] = $receiver["cc"];
+			}
 
-			if (count($receiver["bcc"]))
+			if (count($receiver["bcc"])) {
 				$params["bcc"] = $receiver["bcc"];
-
+			}
 		 } else {
 			$inReplyTo = ["id" => $orig_post["uri"],
-					"objectType" => "note"];
+				"objectType" => "note"];
 
-			if (($orig_post["object-type"] != "") && (strstr($orig_post["object-type"], NAMESPACE_ACTIVITY_SCHEMA)))
+			if (($orig_post["object-type"] != "") && (strstr($orig_post["object-type"], NAMESPACE_ACTIVITY_SCHEMA))) {
 				$inReplyTo["objectType"] = str_replace(NAMESPACE_ACTIVITY_SCHEMA, '', $orig_post["object-type"]);
+			}
 
 			$params["object"] = [
-						'objectType' => "comment",
-						'content' => $content,
-						'inReplyTo' => $inReplyTo];
+				'objectType' => "comment",
+				'content' => $content,
+				'inReplyTo' => $inReplyTo];
 
-			if ($title != "")
+			if ($title != "") {
 				$params["object"]["displayName"] = $title;
+			}
 		}
 
 		$client = new oauth_client_class;
@@ -526,28 +543,30 @@ function pumpio_send(&$a,&$b) {
 		$username = $user.'@'.$host;
 		$url = 'https://'.$host.'/api/user/'.$user.'/feed';
 
-		if (pumpio_reachable($url))
+		if (pumpio_reachable($url)) {
 			$success = $client->CallAPI($url, 'POST', $params, ['FailOnAccessError'=>true, 'RequestContentType'=>'application/json'], $user);
-		else
+		} else {
 			$success = false;
+		}
 
-		if($success) {
-
-			if ($user->generator->displayName)
+		if ($success) {
+			if ($user->generator->displayName) {
 				PConfig::set($b["uid"], "pumpio", "application_name", $user->generator->displayName);
+			}
 
 			$post_id = $user->object->id;
 			logger('pumpio_send '.$username.': success '.$post_id);
-			if($post_id && $iscomment) {
+			if ($post_id && $iscomment) {
 				logger('pumpio_send '.$username.': Update extid '.$post_id." for post id ".$b['id']);
 				Item::update(['extid' => $post_id], ['id' => $b['id']]);
 			}
 		} else {
-			logger('pumpio_send '.$username.': '.$url.' general error: ' . print_r($user,true));
+			logger('pumpio_send '.$username.': '.$url.' general error: ' . print_r($user, true));
 
 			$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $b['uid']);
-			if (count($r))
+			if (DBM::is_result($r)) {
 				$a->contact = $r[0]["id"];
+			}
 
 			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $params]);
 
@@ -557,17 +576,18 @@ function pumpio_send(&$a,&$b) {
 	}
 }
 
-function pumpio_action(&$a, $uid, $uri, $action, $content = "") {
-
+function pumpio_action(&$a, $uid, $uri, $action, $content = "")
+{
 	// Don't do likes and other stuff if you don't import the timeline
-	if (!PConfig::get($uid,'pumpio','import'))
+	if (!PConfig::get($uid, 'pumpio', 'import')) {
 		return;
+	}
 
 	$ckey    = PConfig::get($uid, 'pumpio', 'consumer_key');
 	$csecret = PConfig::get($uid, 'pumpio', 'consumer_secret');
 	$otoken  = PConfig::get($uid, 'pumpio', 'oauth_token');
 	$osecret = PConfig::get($uid, 'pumpio', 'oauth_token_secret');
-	$hostname = PConfig::get($uid, 'pumpio','host');
+	$hostname = PConfig::get($uid, 'pumpio', 'host');
 	$username = PConfig::get($uid, "pumpio", "user");
 
 	$orig_post = Item::selectFirst([], ['uri' => $uri, 'uid' => $uid]);
@@ -576,19 +596,21 @@ function pumpio_action(&$a, $uid, $uri, $action, $content = "") {
 		return;
 	}
 
-	if ($orig_post["extid"] && !strstr($orig_post["extid"], "/proxy/"))
+	if ($orig_post["extid"] && !strstr($orig_post["extid"], "/proxy/")) {
 		$uri = $orig_post["extid"];
-	else
+	} else {
 		$uri = $orig_post["uri"];
+	}
 
-	if (($orig_post["object-type"] != "") && (strstr($orig_post["object-type"], NAMESPACE_ACTIVITY_SCHEMA)))
+	if (($orig_post["object-type"] != "") && (strstr($orig_post["object-type"], NAMESPACE_ACTIVITY_SCHEMA))) {
 		$objectType = str_replace(NAMESPACE_ACTIVITY_SCHEMA, '', $orig_post["object-type"]);
-	elseif (strstr($uri, "/api/comment/"))
+	} elseif (strstr($uri, "/api/comment/")) {
 		$objectType = "comment";
-	elseif (strstr($uri, "/api/note/"))
+	} elseif (strstr($uri, "/api/note/")) {
 		$objectType = "note";
-	elseif (strstr($uri, "/api/image/"))
+	} elseif (strstr($uri, "/api/image/")) {
 		$objectType = "image";
+	}
 
 	$params["verb"] = $action;
 	$params["object"] = ['id' => $uri,
@@ -607,19 +629,21 @@ function pumpio_action(&$a, $uid, $uri, $action, $content = "") {
 
 	$url = 'https://'.$hostname.'/api/user/'.$username.'/feed';
 
-	if (pumpio_reachable($url))
+	if (pumpio_reachable($url)) {
 		$success = $client->CallAPI($url, 'POST', $params, ['FailOnAccessError'=>true, 'RequestContentType'=>'application/json'], $user);
-	else
+	} else {
 		$success = false;
+	}
 
-	if($success)
+	if ($success) {
 		logger('pumpio_action '.$username.' '.$action.': success '.$uri);
-	else {
-		logger('pumpio_action '.$username.' '.$action.': general error: '.$uri.' '.print_r($user,true));
+	} else {
+		logger('pumpio_action '.$username.' '.$action.': general error: '.$uri.' '.print_r($user, true));
 
 		$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $b['uid']);
-		if (count($r))
+		if (DBM::is_result($r)) {
 			$a->contact = $r[0]["id"];
+		}
 
 		$s = serialize(['url' => $url, 'item' => $orig_post["id"], 'post' => $params]);
 
@@ -628,22 +652,22 @@ function pumpio_action(&$a, $uid, $uri, $action, $content = "") {
 	}
 }
 
-function pumpio_sync(&$a) {
+function pumpio_sync(&$a)
+{
 	$r = q("SELECT * FROM `addon` WHERE `installed` = 1 AND `name` = 'pumpio'",
 		$plugin);
 
-	if (!count($r))
+	if (!DBM::is_result($r)) {
 		return;
+	}
 
-	$last = Config::get('pumpio','last_poll');
+	$last = Config::get('pumpio', 'last_poll');
 
-	$poll_interval = intval(Config::get('pumpio','poll_interval'));
-	if(! $poll_interval)
-		$poll_interval = PUMPIO_DEFAULT_POLL_INTERVAL;
+	$poll_interval = intval(Config::get('pumpio', 'poll_interval', PUMPIO_DEFAULT_POLL_INTERVAL));
 
-	if($last) {
+	if ($last) {
 		$next = $last + ($poll_interval * 60);
-		if($next > time()) {
+		if ($next > time()) {
 			logger('pumpio: poll intervall not reached');
 			return;
 		}
@@ -651,25 +675,26 @@ function pumpio_sync(&$a) {
 	logger('pumpio: cron_start');
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'pumpio' AND `k` = 'mirror' AND `v` = '1' ORDER BY RAND() ");
-	if(count($r)) {
-		foreach($r as $rr) {
+	if (DBM::is_result($r)) {
+		foreach ($r as $rr) {
 			logger('pumpio: mirroring user '.$rr['uid']);
 			pumpio_fetchtimeline($a, $rr['uid']);
 		}
 	}
 
-	$abandon_days = intval(Config::get('system','account_abandon_days'));
-	if ($abandon_days < 1)
+	$abandon_days = intval(Config::get('system', 'account_abandon_days'));
+	if ($abandon_days < 1) {
 		$abandon_days = 0;
+	}
 
 	$abandon_limit = date(DateTimeFormat::MYSQL, time() - $abandon_days * 86400);
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'pumpio' AND `k` = 'import' AND `v` = '1' ORDER BY RAND() ");
-	if(count($r)) {
-		foreach($r as $rr) {
+	if (DBM::is_result($r)) {
+		foreach ($r as $rr) {
 			if ($abandon_days != 0) {
 				$user = q("SELECT `login_date` FROM `user` WHERE uid=%d AND `login_date` >= '%s'", $rr['uid'], $abandon_limit);
-				if (!count($user)) {
+				if (!DBM::is_result($user)) {
 					logger('abandoned account: timeline from user '.$rr['uid'].' will not be imported');
 					continue;
 				}
@@ -679,45 +704,50 @@ function pumpio_sync(&$a) {
 			pumpio_fetchinbox($a, $rr['uid']);
 
 			// check for new contacts once a day
-			$last_contact_check = PConfig::get($rr['uid'],'pumpio','contact_check');
-			if($last_contact_check)
+			$last_contact_check = PConfig::get($rr['uid'], 'pumpio', 'contact_check');
+			if ($last_contact_check) {
 				$next_contact_check = $last_contact_check + 86400;
-			else
+			} else {
 				$next_contact_check = 0;
+			}
 
-			if($next_contact_check <= time()) {
+			if ($next_contact_check <= time()) {
 				pumpio_getallusers($a, $rr["uid"]);
-				PConfig::set($rr['uid'],'pumpio','contact_check',time());
+				PConfig::set($rr['uid'], 'pumpio', 'contact_check', time());
 			}
 		}
 	}
 
 	logger('pumpio: cron_end');
 
-	Config::set('pumpio','last_poll', time());
+	Config::set('pumpio', 'last_poll', time());
 }
 
-function pumpio_cron(&$a,$b) {
+function pumpio_cron(&$a, $b)
+{
 	Worker::add(PRIORITY_MEDIUM,"addon/pumpio/pumpio_sync.php");
 }
 
-function pumpio_fetchtimeline(&$a, $uid) {
+function pumpio_fetchtimeline(&$a, $uid)
+{
 	$ckey    = PConfig::get($uid, 'pumpio', 'consumer_key');
 	$csecret = PConfig::get($uid, 'pumpio', 'consumer_secret');
 	$otoken  = PConfig::get($uid, 'pumpio', 'oauth_token');
 	$osecret = PConfig::get($uid, 'pumpio', 'oauth_token_secret');
 	$lastdate = PConfig::get($uid, 'pumpio', 'lastdate');
-	$hostname = PConfig::get($uid, 'pumpio','host');
+	$hostname = PConfig::get($uid, 'pumpio', 'host');
 	$username = PConfig::get($uid, "pumpio", "user");
 
 	//  get the application name for the pump.io app
 	//  1st try personal config, then system config and fallback to the
 	//  hostname of the node if neither one is set.
 	$application_name  = PConfig::get($uid, 'pumpio', 'application_name');
-	if ($application_name == "")
+	if ($application_name == "") {
 		$application_name  = Config::get('pumpio', 'application_name');
-	if ($application_name == "")
+	}
+	if ($application_name == "") {
 		$application_name = $a->get_hostname();
+	}
 
 	$first_time = ($lastdate == "");
 
@@ -737,10 +767,11 @@ function pumpio_fetchtimeline(&$a, $uid) {
 
 	$username = $user.'@'.$host;
 
-	if (pumpio_reachable($url))
+	if (pumpio_reachable($url)) {
 		$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError'=>true], $user);
-	else
+	} else {
 		$success = false;
+	}
 
 	if (!$success) {
 		logger('pumpio: error fetching posts for user '.$uid." ".$username." ".print_r($user, true));
@@ -754,27 +785,33 @@ function pumpio_fetchtimeline(&$a, $uid) {
 
 	if (count($posts)) {
 		foreach ($posts as $post) {
-			if ($post->published <= $initiallastdate)
+			if ($post->published <= $initiallastdate) {
 				continue;
+			}
 
-			if ($lastdate < $post->published)
+			if ($lastdate < $post->published) {
 				$lastdate = $post->published;
+			}
 
-			if ($first_time)
+			if ($first_time) {
 				continue;
+			}
 
 			$receiptians = [];
-			if (@is_array($post->cc))
+			if (@is_array($post->cc)) {
 				$receiptians = array_merge($receiptians, $post->cc);
+			}
 
-			if (@is_array($post->to))
+			if (@is_array($post->to)) {
 				$receiptians = array_merge($receiptians, $post->to);
+			}
 
 			$public = false;
-			foreach ($receiptians AS $receiver)
-				if (is_string($receiver->objectType))
-					if ($receiver->id == "http://activityschema.org/collection/public")
-						$public = true;
+			foreach ($receiptians AS $receiver) {
+				if (is_string($receiver->objectType) && ($receiver->id == "http://activityschema.org/collection/public")) {
+					$public = true;
+				}
+			}
 
 			if ($public && !stristr($post->generator->displayName, $application_name)) {
 				$_SESSION["authenticated"] = true;
@@ -790,19 +827,21 @@ function pumpio_fetchtimeline(&$a, $uid) {
 					$_REQUEST['message_id'] = NETWORK_PUMPIO.":".$post->object->id;
 				}
 
-				if ($post->object->displayName != "")
+				if ($post->object->displayName != "") {
 					$_REQUEST["title"] = HTML::toBBCode($post->object->displayName);
-				else
+				} else {
 					$_REQUEST["title"] = "";
+				}
 
 				$_REQUEST["body"] = HTML::toBBCode($post->object->content);
 
 				// To-Do: Picture has to be cached and stored locally
 				if ($post->object->fullImage->url != "") {
-					if ($post->object->fullImage->pump_io->proxyURL != "")
+					if ($post->object->fullImage->pump_io->proxyURL != "") {
 						$_REQUEST["body"] = "[url=".$post->object->fullImage->pump_io->proxyURL."][img]".$post->object->image->pump_io->proxyURL."[/img][/url]\n".$_REQUEST["body"];
-					else
+					} else {
 						$_REQUEST["body"] = "[url=".$post->object->fullImage->url."][img]".$post->object->image->url."[/img][/url]\n".$_REQUEST["body"];
+					}
 				}
 
 				logger('pumpio: posting for user '.$uid);
@@ -815,24 +854,26 @@ function pumpio_fetchtimeline(&$a, $uid) {
 		}
 	}
 
-	if ($lastdate != 0)
-		PConfig::set($uid,'pumpio','lastdate', $lastdate);
+	if ($lastdate != 0) {
+		PConfig::set($uid, 'pumpio', 'lastdate', $lastdate);
+	}
 }
 
-function pumpio_dounlike(&$a, $uid, $self, $post, $own_id) {
+function pumpio_dounlike(&$a, $uid, $self, $post, $own_id)
+{
 	// Searching for the unliked post
 	// Two queries for speed issues
 	$orig_post = Item::selectFirst([], ['uri' => $post->object->id, 'uid' => $uid]);
-	if (!DBM::is_result($r)) {
+	if (!DBM::is_result($orig_post)) {
 		$orig_post = Item::selectFirst([], ['extid' => $post->object->id, 'uid' => $uid]);
-		if (!DBM::is_result($r)) {
+		if (!DBM::is_result($orig_post)) {
 			return;
 		}
 	}
 
 	$contactid = 0;
 
-	if(link_compare($post->actor->url, $own_id)) {
+	if (link_compare($post->actor->url, $own_id)) {
 		$contactid = $self[0]['id'];
 	} else {
 		$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
@@ -840,22 +881,26 @@ function pumpio_dounlike(&$a, $uid, $self, $post, $own_id) {
 			intval($uid)
 		);
 
-		if(count($r))
+		if (DBM::is_result($r)) {
 			$contactid = $r[0]['id'];
+		}
 
-		if($contactid == 0)
+		if ($contactid == 0) {
 			$contactid = $orig_post['contact-id'];
+		}
 	}
 
 	Item::delete(['verb' => ACTIVITY_LIKE, 'uid' => $uid, 'contact-id' => $contactid, 'thr-parent' => $orig_post['uri']]);
 
-	if(count($r))
+	if (DBM::is_result($r)) {
 		logger("pumpio_dounlike: unliked existing like. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
-	else
+	} else {
 		logger("pumpio_dounlike: not found. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
+	}
 }
 
-function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = true) {
+function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = true)
+{
 	require_once('include/items.php');
 
 	if ($post->object->id == "") {
@@ -866,20 +911,21 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 	// Searching for the liked post
 	// Two queries for speed issues
 	$orig_post = Item::selectFirst([], ['uri' => $post->object->id, 'uid' => $uid]);
-	if (!DBM::is_result($r)) {
+	if (!DBM::is_result($orig_post)) {
 		$orig_post = Item::selectFirst([], ['extid' => $post->object->id, 'uid' => $uid]);
-		if (!DBM::is_result($r)) {
+		if (!DBM::is_result($orig_post)) {
 			return;
 		}
 	}
 
 	// thread completion
-	if ($threadcompletion)
+	if ($threadcompletion) {
 		pumpio_fetchallcomments($a, $uid, $post->object->id);
+	}
 
 	$contactid = 0;
 
-	if(link_compare($post->actor->url, $own_id)) {
+	if (link_compare($post->actor->url, $own_id)) {
 		$contactid = $self[0]['id'];
 		$post->actor->displayName = $self[0]['name'];
 		$post->actor->url = $self[0]['url'];
@@ -890,11 +936,13 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 			intval($uid)
 		);
 
-		if(count($r))
+		if (DBM::is_result($r)) {
 			$contactid = $r[0]['id'];
+		}
 
-		if($contactid == 0)
+		if ($contactid == 0) {
 			$contactid = $orig_post['contact-id'];
+		}
 	}
 
 	$condition = ['verb' => ACTIVITY_LIKE, 'uid' => $uid, 'contact-id' => $contactid, 'thr-parent' => $orig_post['uri']];
@@ -906,7 +954,7 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 	$likedata = [];
 	$likedata['parent'] = $orig_post['id'];
 	$likedata['verb'] = ACTIVITY_LIKE;
-	$likedata['gravity'] = 3;
+	$likedata['gravity'] = GRAVITY_ACTIVITY;
 	$likedata['uid'] = $uid;
 	$likedata['wall'] = 0;
 	$likedata['uri'] = Item::newURI($uid);
@@ -933,21 +981,22 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 	logger("pumpio_dolike: ".$ret." User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
 }
 
-function pumpio_get_contact($uid, $contact, $no_insert = false) {
-
+function pumpio_get_contact($uid, $contact, $no_insert = false)
+{
 	GContact::update(["url" => $contact->url, "network" => NETWORK_PUMPIO, "generation" => 2,
 			"photo" => $contact->image->url, "name" => $contact->displayName,  "hide" => true,
 			"nick" => $contact->preferredUsername, "location" => $contact->location->displayName,
 			"about" => $contact->summary, "addr" => str_replace("acct:", "", $contact->id)]);
 	$cid = Contact::getIdForURL($contact->url, $uid);
 
-	if ($no_insert)
-		return($cid);
+	if ($no_insert) {
+		return $cid;
+	}
 
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `nurl` = '%s' LIMIT 1",
 		intval($uid), dbesc(normalise_link($contact->url)));
 
-	if (!count($r)) {
+	if (!DBM::is_result($r)) {
 		// create contact record
 		q("INSERT INTO `contact` (`uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
 					`name`, `nick`, `photo`, `network`, `rel`, `priority`,
@@ -977,8 +1026,8 @@ function pumpio_get_contact($uid, $contact, $no_insert = false) {
 			intval($uid)
 			);
 
-		if (!count($r)) {
-			return(false);
+		if (!DBM::is_result($r)) {
+			return false;
 		}
 
 		$contact_id = $r[0]['id'];
@@ -1000,11 +1049,11 @@ function pumpio_get_contact($uid, $contact, $no_insert = false) {
 
 	Contact::updateAvatar($contact->image->url, $uid, $contact_id);
 
-	return($contact_id);
+	return $contact_id;
 }
 
-function pumpio_dodelete(&$a, $uid, $self, $post, $own_id) {
-
+function pumpio_dodelete(&$a, $uid, $self, $post, $own_id)
+{
 	// Two queries for speed issues
 	$condition = ['uri' => $post->object->id, 'uid' => $uid];
 	if (dba::exists('item', $condition)) {
@@ -1020,17 +1069,21 @@ function pumpio_dodelete(&$a, $uid, $self, $post, $own_id) {
 	return false;
 }
 
-function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcompletion = true) {
+function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcompletion = true)
+{
 	require_once('include/items.php');
 
-	if (($post->verb == "like") || ($post->verb == "favorite"))
+	if (($post->verb == "like") || ($post->verb == "favorite")) {
 		return pumpio_dolike($a, $uid, $self, $post, $own_id);
+	}
 
-	if (($post->verb == "unlike") || ($post->verb == "unfavorite"))
+	if (($post->verb == "unlike") || ($post->verb == "unfavorite")) {
 		return pumpio_dounlike($a, $uid, $self, $post, $own_id);
+	}
 
-	if ($post->verb == "delete")
+	if ($post->verb == "delete") {
 		return pumpio_dodelete($a, $uid, $self, $post, $own_id);
+	}
 
 	if ($post->verb != "update") {
 		// Two queries for speed issues
@@ -1043,24 +1096,27 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 	}
 
 	// Only handle these three types
-	if (!strstr("post|share|update", $post->verb))
+	if (!strstr("post|share|update", $post->verb)) {
 		return false;
+	}
 
 	$receiptians = [];
-	if (@is_array($post->cc))
+	if (@is_array($post->cc)) {
 		$receiptians = array_merge($receiptians, $post->cc);
+	}
 
-	if (@is_array($post->to))
+	if (@is_array($post->to)) {
 		$receiptians = array_merge($receiptians, $post->to);
+	}
 
-	foreach ($receiptians AS $receiver)
-		if (is_string($receiver->objectType))
-			if ($receiver->id == "http://activityschema.org/collection/public")
-				$public = true;
+	foreach ($receiptians AS $receiver) {
+		if (is_string($receiver->objectType) && ($receiver->id == "http://activityschema.org/collection/public")) {
+			$public = true;
+		}
+	}
 
 	$postarray = [];
-        $postarray['network'] = NETWORK_PUMPIO;
-	$postarray['gravity'] = 0;
+	$postarray['network'] = NETWORK_PUMPIO;
 	$postarray['uid'] = $uid;
 	$postarray['wall'] = 0;
 	$postarray['uri'] = $post->object->id;
@@ -1069,8 +1125,9 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 	if ($post->object->objectType != "comment") {
 		$contact_id = pumpio_get_contact($uid, $post->actor);
 
-		if (!$contact_id)
+		if (!$contact_id) {
 			$contact_id = $self[0]['id'];
+		}
 
 		$postarray['parent-uri'] = $post->object->id;
 
@@ -1093,18 +1150,19 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 				intval($uid)
 			);
 
-			if(count($r))
+			if (DBM::is_result($r)) {
 				$contact_id = $r[0]['id'];
-			else {
+			} else {
 				$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
 					dbesc(normalise_link($post->actor->url)),
 					intval($uid)
 				);
 
-				if(count($r))
+				if (DBM::is_result($r)) {
 					$contact_id = $r[0]['id'];
-				else
+				} else {
 					$contact_id = $self[0]['id'];
+				}
 			}
 		}
 
@@ -1128,8 +1186,9 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 		$postarray['parent-uri'] = $post->object->inReplyTo->id;
 	}
 
-	if ($post->object->pump_io->proxyURL)
+	if ($post->object->pump_io->proxyURL) {
 		$postarray['extid'] = $post->object->pump_io->proxyURL;
+	}
 
 	$postarray['contact-id'] = $contact_id;
 	$postarray['verb'] = ACTIVITY_POST;
@@ -1144,44 +1203,42 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 	$postarray['body'] = HTML::toBBCode($post->object->content);
 	$postarray['object'] = json_encode($post);
 
-	if ($post->object->fullImage->url != "")
+	if ($post->object->fullImage->url != "") {
 		$postarray["body"] = "[url=".$post->object->fullImage->url."][img]".$post->object->image->url."[/img][/url]\n".$postarray["body"];
-
-	if ($post->object->displayName != "")
-		$postarray['title'] = $post->object->displayName;
-
-	$postarray['created'] = DateTimeFormat::utc($post->published);
-	if (isset($post->updated))
-		$postarray['edited'] = DateTimeFormat::utc($post->updated);
-	elseif (isset($post->received))
-		$postarray['edited'] = DateTimeFormat::utc($post->received);
-	else
-		$postarray['edited'] = $postarray['created'];
-
-	if ($post->verb == "share") {
-		if (!intval(Config::get('system','wall-to-wall_share'))) {
-			if (isset($post->object->author->displayName) && ($post->object->author->displayName != ""))
-				$share_author = $post->object->author->displayName;
-			elseif (isset($post->object->author->preferredUsername) && ($post->object->author->preferredUsername != ""))
-				$share_author = $post->object->author->preferredUsername;
-			else
-				$share_author = $post->object->author->url;
-
-			$postarray['body'] = share_header($share_author, $post->object->author->url,
-							$post->object->author->image->url, "",
-							DateTimeFormat::utc($post->object->created),
-							$post->links->self->href).
-						$postarray['body']."[/share]";
-		} else {
-			// Let shares look like wall-to-wall posts
-			$postarray['author-name'] = $post->object->author->displayName;
-			$postarray['author-link'] = $post->object->author->url;
-			$postarray['author-avatar'] = $post->object->author->image->url;
-		}
 	}
 
-	if (trim($postarray['body']) == "")
+	if ($post->object->displayName != "") {
+		$postarray['title'] = $post->object->displayName;
+	}
+
+	$postarray['created'] = DateTimeFormat::utc($post->published);
+	if (isset($post->updated)) {
+		$postarray['edited'] = DateTimeFormat::utc($post->updated);
+	} elseif (isset($post->received)) {
+		$postarray['edited'] = DateTimeFormat::utc($post->received);
+	} else {
+		$postarray['edited'] = $postarray['created'];
+	}
+
+	if ($post->verb == "share") {
+		if (isset($post->object->author->displayName) && ($post->object->author->displayName != "")) {
+			$share_author = $post->object->author->displayName;
+		} elseif (isset($post->object->author->preferredUsername) && ($post->object->author->preferredUsername != "")) {
+			$share_author = $post->object->author->preferredUsername;
+		} else {
+			$share_author = $post->object->author->url;
+		}
+
+		$postarray['body'] = share_header($share_author, $post->object->author->url,
+						$post->object->author->image->url, "",
+						DateTimeFormat::utc($post->object->created),
+						$post->links->self->href).
+					$postarray['body']."[/share]";
+	}
+
+	if (trim($postarray['body']) == "") {
 		return false;
+	}
 
 	$top_item = Item::insert($postarray);
 	$postarray["id"] = $top_item;
@@ -1192,23 +1249,21 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 		Item::update($fields, $condition);
 	}
 
-	if ($post->object->objectType == "comment") {
-
-		if ($threadcompletion)
-			pumpio_fetchallcomments($a, $uid, $postarray['parent-uri']);
+	if (($post->object->objectType == "comment") && $threadcompletion) {
+		pumpio_fetchallcomments($a, $uid, $postarray['parent-uri']);
 	}
 
 	return $top_item;
 }
 
-function pumpio_fetchinbox(&$a, $uid) {
-
+function pumpio_fetchinbox(&$a, $uid)
+{
 	$ckey    = PConfig::get($uid, 'pumpio', 'consumer_key');
 	$csecret = PConfig::get($uid, 'pumpio', 'consumer_secret');
 	$otoken  = PConfig::get($uid, 'pumpio', 'oauth_token');
 	$osecret = PConfig::get($uid, 'pumpio', 'oauth_token_secret');
 	$lastdate = PConfig::get($uid, 'pumpio', 'lastdate');
-	$hostname = PConfig::get($uid, 'pumpio','host');
+	$hostname = PConfig::get($uid, 'pumpio', 'host');
 	$username = PConfig::get($uid, "pumpio", "user");
 
 	$own_id = "https://".$hostname."/".$username;
@@ -1234,40 +1289,45 @@ function pumpio_fetchinbox(&$a, $uid) {
 	$client->access_token = $otoken;
 	$client->access_token_secret = $osecret;
 
-	$last_id = PConfig::get($uid,'pumpio','last_id');
+	$last_id = PConfig::get($uid, 'pumpio', 'last_id');
 
 	$url = 'https://'.$hostname.'/api/user/'.$username.'/inbox';
 
-	if ($last_id != "")
+	if ($last_id != "") {
 		$url .= '?since='.urlencode($last_id);
-
-	if (pumpio_reachable($url))
-		$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError'=>true], $user);
-	else
-		$success = false;
-
-	if ($user->items) {
-	    $posts = array_reverse($user->items);
-
-	    if (count($posts))
-		    foreach ($posts as $post) {
-			    $last_id = $post->id;
-			    pumpio_dopost($a, $client, $uid, $self, $post, $own_id, true);
-		    }
 	}
 
-	foreach ($lastitems AS $item)
-		pumpio_fetchallcomments($a, $uid, $item["uri"]);
+	if (pumpio_reachable($url)) {
+		$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError'=>true], $user);
+	} else {
+		$success = false;
+	}
 
-	PConfig::set($uid,'pumpio','last_id', $last_id);
+	if ($user->items) {
+		$posts = array_reverse($user->items);
+
+		if (count($posts)) {
+			foreach ($posts as $post) {
+				$last_id = $post->id;
+				pumpio_dopost($a, $client, $uid, $self, $post, $own_id, true);
+			}
+		}
+	}
+
+	foreach ($lastitems AS $item) {
+		pumpio_fetchallcomments($a, $uid, $item["uri"]);
+	}
+
+	PConfig::set($uid, 'pumpio', 'last_id', $last_id);
 }
 
-function pumpio_getallusers(&$a, $uid) {
+function pumpio_getallusers(&$a, $uid)
+{
 	$ckey    = PConfig::get($uid, 'pumpio', 'consumer_key');
 	$csecret = PConfig::get($uid, 'pumpio', 'consumer_secret');
 	$otoken  = PConfig::get($uid, 'pumpio', 'oauth_token');
 	$osecret = PConfig::get($uid, 'pumpio', 'oauth_token_secret');
-	$hostname = PConfig::get($uid, 'pumpio','host');
+	$hostname = PConfig::get($uid, 'pumpio', 'host');
 	$username = PConfig::get($uid, "pumpio", "user");
 
 	$client = new oauth_client_class;
@@ -1282,18 +1342,20 @@ function pumpio_getallusers(&$a, $uid) {
 
 	$url = 'https://'.$hostname.'/api/user/'.$username.'/following';
 
-	if (pumpio_reachable($url))
+	if (pumpio_reachable($url)) {
 		$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError'=>true], $users);
-	else
+	} else {
 		$success = false;
+	}
 
 	if ($users->totalItems > count($users->items)) {
 		$url = 'https://'.$hostname.'/api/user/'.$username.'/following?count='.$users->totalItems;
 
-		if (pumpio_reachable($url))
+		if (pumpio_reachable($url)) {
 			$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError'=>true], $users);
-		else
+		} else {
 			$success = false;
+		}
 	}
 
 	if (is_array($users->items)) {
@@ -1303,17 +1365,19 @@ function pumpio_getallusers(&$a, $uid) {
 	}
 }
 
-function pumpio_queue_hook(&$a,&$b) {
-
+function pumpio_queue_hook(&$a, &$b)
+{
 	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
 		dbesc(NETWORK_PUMPIO)
 	);
-	if(! count($qi))
+	if (!DBM::is_result($qi)) {
 		return;
+	}
 
-	foreach($qi as $x) {
-		if($x['network'] !== NETWORK_PUMPIO)
+	foreach ($qi as $x) {
+		if ($x['network'] !== NETWORK_PUMPIO) {
 			continue;
+		}
 
 		logger('pumpio_queue: run');
 
@@ -1321,8 +1385,9 @@ function pumpio_queue_hook(&$a,&$b) {
 			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
 			intval($x['cid'])
 		);
-		if(! count($r))
+		if (!DBM::is_result($r)) {
 			continue;
+		}
 
 		$userdata = $r[0];
 
@@ -1355,23 +1420,26 @@ function pumpio_queue_hook(&$a,&$b) {
 			$client->client_id = $consumer_key;
 			$client->client_secret = $consumer_secret;
 
-			if (pumpio_reachable($z['url']))
+			if (pumpio_reachable($z['url'])) {
 				$success = $client->CallAPI($z['url'], 'POST', $z['post'], ['FailOnAccessError'=>true, 'RequestContentType'=>'application/json'], $user);
-			else
+			} else {
 				$success = false;
+			}
 
-			if($success) {
+			if ($success) {
 				$post_id = $user->object->id;
 				logger('pumpio_queue: send '.$username.': success '.$post_id);
-				if($post_id && $iscomment) {
+				if ($post_id && $iscomment) {
 					logger('pumpio_send '.$username.': Update extid '.$post_id." for post id ".$z['item']);
 					Item::update(['extid' => $post_id], ['id' => $z['item']]);
 				}
 				Queue::removeItem($x['id']);
-			} else
-				logger('pumpio_queue: send '.$username.': '.$url.' general error: ' . print_r($user,true));
-		} else
+			} else {
+				logger('pumpio_queue: send '.$username.': '.$url.' general error: ' . print_r($user, true));
+			}
+		} else {
 			logger("pumpio_queue: Error getting tokens for user ".$userdata['uid']);
+		}
 
 		if (!$success) {
 			logger('pumpio_queue: delayed');
@@ -1380,21 +1448,22 @@ function pumpio_queue_hook(&$a,&$b) {
 	}
 }
 
-function pumpio_getreceiver(&$a, $b) {
-
+function pumpio_getreceiver(&$a, $b)
+{
 	$receiver = [];
 
 	if (!$b["private"]) {
-
-		if(! strstr($b['postopts'],'pumpio'))
+		if (!strstr($b['postopts'], 'pumpio')) {
 			return $receiver;
+		}
 
 		$public = PConfig::get($b['uid'], "pumpio", "public");
 
-		if ($public)
+		if ($public) {
 			$receiver["to"][] = [
 						"objectType" => "collection",
 						"id" => "http://activityschema.org/collection/public"];
+		}
 	} else {
 		$cids = explode("><", $b["allow_cid"]);
 		$gids = explode("><", $b["allow_gid"]);
@@ -1408,7 +1477,7 @@ function pumpio_getreceiver(&$a, $b) {
 				dbesc(NETWORK_PUMPIO)
 				);
 
-			if (count($r)) {
+			if (DBM::is_result($r)) {
 				$receiver["bcc"][] = [
 							"displayName" => $r[0]["name"],
 							"objectType" => "person",
@@ -1436,12 +1505,12 @@ function pumpio_getreceiver(&$a, $b) {
 	}
 
 	if ($b["inform"] != "") {
-
 		$inform = explode(",", $b["inform"]);
 
 		foreach ($inform AS $cid) {
-			if (substr($cid, 0, 4) != "cid:")
+			if (substr($cid, 0, 4) != "cid:") {
 				continue;
+			}
 
 			$cid = str_replace("cid:", "", $cid);
 
@@ -1451,12 +1520,12 @@ function pumpio_getreceiver(&$a, $b) {
 				dbesc(NETWORK_PUMPIO)
 				);
 
-			if (count($r)) {
-					$receiver["to"][] = [
-								"displayName" => $r[0]["name"],
-								"objectType" => "person",
-								"preferredUsername" => $r[0]["nick"],
-								"url" => $r[0]["url"]];
+			if (DBM::is_result($r)) {
+				$receiver["to"][] = [
+					"displayName" => $r[0]["name"],
+					"objectType" => "person",
+					"preferredUsername" => $r[0]["nick"],
+					"url" => $r[0]["url"]];
 			}
 		}
 	}
@@ -1464,12 +1533,13 @@ function pumpio_getreceiver(&$a, $b) {
 	return $receiver;
 }
 
-function pumpio_fetchallcomments(&$a, $uid, $id) {
+function pumpio_fetchallcomments(&$a, $uid, $id)
+{
 	$ckey    = PConfig::get($uid, 'pumpio', 'consumer_key');
 	$csecret = PConfig::get($uid, 'pumpio', 'consumer_secret');
 	$otoken  = PConfig::get($uid, 'pumpio', 'oauth_token');
 	$osecret = PConfig::get($uid, 'pumpio', 'oauth_token_secret');
-	$hostname = PConfig::get($uid, 'pumpio','host');
+	$hostname = PConfig::get($uid, 'pumpio', 'host');
 	$username = PConfig::get($uid, "pumpio", "user");
 
 	logger("pumpio_fetchallcomments: completing comment for user ".$uid." post id ".$id);
@@ -1482,7 +1552,7 @@ function pumpio_fetchallcomments(&$a, $uid, $id) {
 	// Fetching the original post
 	$condition = ["`uri` = ? AND `uid` = ? AND `extid` != ''", $id, $uid];
 	$item = Item::selectFirst(['extid'], $condition);
-	if (!DBM::is_result($r)) {
+	if (!DBM::is_result($item)) {
 		return false;
 	}
 
@@ -1500,13 +1570,15 @@ function pumpio_fetchallcomments(&$a, $uid, $id) {
 
 	logger("pumpio_fetchallcomments: fetching comment for user ".$uid." url ".$url);
 
-	if (pumpio_reachable($url))
+	if (pumpio_reachable($url)) {
 		$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError'=>true], $item);
-	else
+	} else {
 		$success = false;
+	}
 
-	if (!$success)
+	if (!$success) {
 		return;
+	}
 
 	if ($item->likes->totalItems != 0) {
 		foreach ($item->likes->items AS $post) {
@@ -1524,12 +1596,14 @@ function pumpio_fetchallcomments(&$a, $uid, $id) {
 		}
 	}
 
-	if ($item->replies->totalItems == 0)
+	if ($item->replies->totalItems == 0) {
 		return;
+	}
 
 	foreach ($item->replies->items AS $item) {
-		if ($item->id == $id)
+		if ($item->id == $id) {
 			continue;
+		}
 
 		// Checking if the comment already exists - Two queries for speed issues
 		if (dba::exists('item', ['uri' => $item->id, 'uid' => $uid])) {
@@ -1560,10 +1634,10 @@ function pumpio_fetchallcomments(&$a, $uid, $id) {
 	}
 }
 
-
-function pumpio_reachable($url) {
+function pumpio_reachable($url)
+{
 	$data = Network::curl($url, false, $redirects, ['timeout'=>10]);
-	return(intval($data['return_code']) != 0);
+	return intval($data['return_code']) != 0;
 }
 
 /*
