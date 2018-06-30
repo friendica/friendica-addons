@@ -153,26 +153,39 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 	$read_languages_array = explode(',', $read_languages_string);
 
 	// Extract the language of the post
-	$opts = $hook_data['item']['postopts'];
-	if (!$opts) {
-		// no options associated to post
-		return;
-	}
+	if (!empty($hook_data['item']['language'])) {
+		$languages = json_decode($hook_data['item']['language'], true);
+		if (!is_array($languages)) {
+			return;
+		}
 
-	if (!preg_match('/\blang=([^;]*);([^:]*)/', $opts, $matches)) {
-		// no lang options associated to post
-		return;
-	}
+		foreach ($languages as $iso2 => $confidence) {
+			break;
+		}
 
-	$lang = $matches[1];
-	$confidence = $matches[2];
+		$lang = Text_LanguageDetect_ISO639::code2ToName($iso2);
+	} else {
+		$opts = $hook_data['item']['postopts'];
+		if (!$opts) {
+			// no options associated to post
+			return;
+		}
+
+		if (!preg_match('/\blang=([^;]*);([^:]*)/', $opts, $matches)) {
+			// no lang options associated to post
+			return;
+		}
+
+		$lang = $matches[1];
+		$confidence = $matches[2];
+
+		$iso2 = Text_LanguageDetect_ISO639::nameToCode2($lang);
+	}
 
 	// Do not filter if language detection confidence is too low
 	if ($minconfidence && $confidence < $minconfidence) {
 		return;
 	}
-
-	$iso2 = Text_LanguageDetect_ISO639::nameToCode2($lang);
 
 	if (!$iso2) {
 		return;
