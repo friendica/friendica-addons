@@ -29,7 +29,7 @@ function smileybutton_uninstall() {
 function show_button(App $a, &$b) {
 	// Disable if theme is quattro
 	// TODO add style for quattro
-	if ($a->getCurrentTheme() == 'quattro')
+	if ($a->getCurrentTheme() == 'quattro') {
 		return;
 	}
 

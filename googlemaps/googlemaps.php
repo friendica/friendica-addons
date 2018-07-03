@@ -27,12 +27,11 @@ function googlemaps_uninstall()
 
 function googlemaps_location(App $a, array &$item)
 {
-
 	if (! (strlen($item['location']) || strlen($item['coord']))) {
 		return;
 	}
 
-	if (isset($item['coord']) {
+	if (isset($item['coord'])) {
 		$target = "http://maps.google.com/?q=".urlencode($item['coord']);
 	} else {
 		$target = "http://maps.google.com/?q=".urlencode($item['location']);

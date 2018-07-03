@@ -40,7 +40,6 @@ function fromgplus_uninstall() {
 }
 
 function fromgplus_addon_settings(App $a, $s) {
-
 	if(! local_user())
 		return;
 
@@ -302,7 +301,7 @@ function fromgplus_cleanupgoogleproxy($fullImage, $image) {
 		$cleaned["full"] = $fullImage;
 	}
 
-	if ($cleaned["full"] == "" && exif_imagetype($image) != 0)
+	if ($cleaned["full"] == "" && exif_imagetype($image) != 0) {
 		$cleaned["full"] = $image;
 	}
 
