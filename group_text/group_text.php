@@ -58,7 +58,7 @@ function group_text_settings_post($a,$post) {
 
 
 
-function group_text_settings(App $a, $s) {
+function group_text_settings(App $a, &$s) {
 
 	if(! local_user())
 		return;

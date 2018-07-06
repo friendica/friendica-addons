@@ -136,7 +136,7 @@ function krynn_settings_post($a,$post) {
 
 
 
-function krynn_settings(App $a, $s) {
+function krynn_settings(App $a, &$s) {
 
 	if(! local_user())
 		return;

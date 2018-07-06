@@ -169,7 +169,7 @@ function ijpost_send(App $a, array &$b) {
 
 	$tz = 'UTC';
 
-	$x = q("SELECT `timezone` FROM `user` WHERE `uid`=%d LIMIT 1",
+	$x = q("SELECT `timezone` FROM `user` WHERE `uid` = %d LIMIT 1",
 		intval($b['uid'])
 	);
 

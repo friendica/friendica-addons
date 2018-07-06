@@ -50,7 +50,7 @@ function dwpost_jot_nets(App $a, &$b) {
 }
 
 
-function dwpost_settings(App $a, $s) {
+function dwpost_settings(App $a, &$s) {
 
     if(! local_user())
         return;
@@ -171,7 +171,7 @@ function dwpost_send(App $a, array &$b) {
 
 	$tz = 'UTC';
 
-	$x = q("SELECT `timezone` FROM `user` WHERE `uid`=%d LIMIT 1",
+	$x = q("SELECT `timezone` FROM `user` WHERE `uid` = %d LIMIT 1",
 		intval($b['uid'])
 	);
 

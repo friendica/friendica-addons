@@ -188,7 +188,7 @@ function tumblr_jot_nets(App $a, &$b) {
 }
 
 
-function tumblr_settings(App $a, $s) {
+function tumblr_settings(App $a, &$s) {
 
 	if (! local_user()) {
 		return;

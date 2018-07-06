@@ -712,7 +712,7 @@ function statusnet_prepare_body(App $a, array &$b)
 	}
 }
 
-function statusnet_cron(App $a, array &$b = null)
+function statusnet_cron(App $a)
 {
 	$last = Config::get('statusnet', 'last_poll');
 

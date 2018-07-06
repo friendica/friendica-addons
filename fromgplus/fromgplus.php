@@ -39,7 +39,7 @@ function fromgplus_uninstall() {
 	Addon::unregisterHook('addon_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
 }
 
-function fromgplus_addon_settings(App $a, $s) {
+function fromgplus_addon_settings(App $a, &$s) {
 	if(! local_user())
 		return;
 

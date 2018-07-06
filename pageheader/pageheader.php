@@ -35,7 +35,7 @@ function pageheader_uninstall() {
 
 
 
-function pageheader_addon_settings(App $a, $s) {
+function pageheader_addon_settings(App $a, &$s) {
 
 
 	if(! is_site_admin())

@@ -168,7 +168,7 @@ function geonames_addon_admin_post($a,$post) {
 
 
 
-function geonames_addon_admin(App $a, $s) {
+function geonames_addon_admin(App $a, &$s) {
 
 	if(! local_user())
 		return;

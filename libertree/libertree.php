@@ -45,7 +45,7 @@ function libertree_jot_nets(App $a, &$b) {
 }
 
 
-function libertree_settings(App $a,&$s) {
+function libertree_settings(App $a, &$s) {
 
     if(! local_user())
         return;

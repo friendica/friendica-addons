@@ -40,7 +40,7 @@ function geocoordinates_resolve_item(array &$item)
 
 	$language = Config::get("geocoordinates", "language", "de");
 
-	$coords = explode(' ',$item["coord"]);
+	$coords = explode(' ', $item["coord"]);
 
 	if (count($coords) < 2) {
 		return;

@@ -35,16 +35,17 @@ function testdrive_uninstall() {
 
 }
 
-function testdrive_load_config(\Friendica\App $a)
+function testdrive_load_config(App $a)
 {
 	$a->loadConfigFile(__DIR__. '/config/testdrive.ini.php');
 }
 
-function testdrive_globaldir_update($a,&$b) {
+function testdrive_globaldir_update(App $a, &$b)
+{
 	$b['url'] = '';
 }
 
-function testdrive_register_account($a,$b) {
+function testdrive_register_account(App $a, $b) {
 
 	$uid = $b;
 
@@ -60,7 +61,7 @@ function testdrive_register_account($a,$b) {
 };
 
 
-function testdrive_cron($a,$b) {
+function testdrive_cron(App $a) {
 	require_once('include/enotify.php');
 
 	$r = q("SELECT * FROM `user` WHERE `account_expires_on` < UTC_TIMESTAMP() + INTERVAL 5 DAY AND

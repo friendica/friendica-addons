@@ -26,7 +26,7 @@ function irc_uninstall() {
 }
 
 
-function irc_addon_settings(App $a, $s) {
+function irc_addon_settings(App $a, &$s) {
 	if(! local_user())
 		return;
 
