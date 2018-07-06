@@ -440,7 +440,7 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 		return add_page_info_data($pagedata);
 	}
 
-	return ($post . $quote);
+	return $post . $quote;
 }
 
 function fromgplus_fetch($a, $uid) {
