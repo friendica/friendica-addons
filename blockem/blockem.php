@@ -139,7 +139,7 @@ function blockem_prepare_body_content_filter(App $a, array &$hook_data)
 	}
 }
 
-function blockem_display_item(App $a, array &$b)
+function blockem_display_item(App $a, array &$b = null)
 {
 	if (strstr($b['output']['body'],'id="blockem-wrap-')) {
 		$b['output']['thumb'] = $a->get_baseurl() . "/images/person-80.jpg";
