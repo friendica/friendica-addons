@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-07-03 15:20+0000\n"
+"PO-Revision-Date: 2018-07-06 18:55+0000\n"
 "Last-Translator: Aditoo\n"
 "Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -38,11 +38,11 @@ msgstr "pomiloval/a"
 
 #: morepokes.php:21
 msgid "do something obscenely biological to"
-msgstr "udělat něco obscéně biologického uživateli"
+msgstr "udělat příjemci něco obscéně biologického"
 
 #: morepokes.php:21
 msgid "did something obscenely biological to"
-msgstr "udělal/a něco obscéně biologického uživateli"
+msgstr "udělal/a něco obscéně biologického"
 
 #: morepokes.php:22
 msgid "point out the poke feature to"
@@ -54,11 +54,11 @@ msgstr "upozornil/a na funkci šťouchnutí"
 
 #: morepokes.php:23
 msgid "declare undying love for"
-msgstr "vyjadřit nehynoucí lásku ke"
+msgstr "vyjadřit nehynoucí lásku"
 
 #: morepokes.php:23
 msgid "declared undying love for"
-msgstr "vyjadřil/a nehynoucí lásku ke"
+msgstr "vyjadřil/a nehynoucí lásku k uživateli"
 
 #: morepokes.php:24
 msgid "patent"
@@ -66,7 +66,7 @@ msgstr "patentovat"
 
 #: morepokes.php:24
 msgid "patented"
-msgstr "patentoval/a"
+msgstr "patentoval/a uživatele"
 
 #: morepokes.php:25
 msgid "stroke beard"
@@ -74,18 +74,18 @@ msgstr "pohladit plnovous"
 
 #: morepokes.php:25
 msgid "stroked their beard at"
-msgstr "pohladil/a jeho/její plnovous na"
+msgstr "pohladil/a plnovous"
 
 #: morepokes.php:26
 msgid ""
 "bemoan the declining standards of modern secondary and tertiary education to"
-msgstr "stěžovat si na klesající úroveň moderního sekundárního a terciárního vzdělávání u"
+msgstr "stěžovat si příjemci na klesající úroveň moderního sekundárního a terciárního vzdělávání"
 
 #: morepokes.php:26
 msgid ""
 "bemoans the declining standards of modern secondary and tertiary education "
 "to"
-msgstr "si stěžuje na klesající úroveň moderního sekundárního a terciárního vzdělávání u"
+msgstr "si stěžuje na klesající úroveň moderního sekundárního a terciárního vzdělávání"
 
 #: morepokes.php:27
 msgid "hug"
