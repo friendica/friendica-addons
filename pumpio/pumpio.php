@@ -957,6 +957,7 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 	$likedata['gravity'] = GRAVITY_ACTIVITY;
 	$likedata['uid'] = $uid;
 	$likedata['wall'] = 0;
+	$likedata['network'] = NETWORK_PUMPIO;
 	$likedata['uri'] = Item::newURI($uid);
 	$likedata['parent-uri'] = $orig_post["uri"];
 	$likedata['contact-id'] = $contactid;
