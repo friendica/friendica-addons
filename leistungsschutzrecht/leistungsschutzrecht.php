@@ -138,6 +138,10 @@ function leistungsschutzrecht_is_member_site($url) {
 	$cleanedurlpart = explode("%", $urldata["host"]);
 
 	$hostname = explode(".", $cleanedurlpart[0]);
+	if (empty($hostname)) {
+		return false;
+	}
+
 	$site = $hostname[sizeof($hostname) - 2].".".$hostname[sizeof($hostname) - 1];
 
 	return (isset($sites[$site]));
