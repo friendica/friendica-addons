@@ -1131,6 +1131,10 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 
 				$oembed_data = OEmbed::fetchURL($expanded_url);
 
+				if (empty($oembed_data)) {
+					continue;
+				}
+
 				// Quickfix: Workaround for URL with "[" and "]" in it
 				if (strpos($expanded_url, "[") || strpos($expanded_url, "]")) {
 					$expanded_url = $url->url;
