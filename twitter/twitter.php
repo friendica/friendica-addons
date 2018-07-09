@@ -1441,7 +1441,7 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 	if (!empty($post->retweeted_status)) {
 		$retweet = twitter_createpost($a, $uid, $post->retweeted_status, $self, false, false, $noquote);
 
-		//$retweet['object'] = $postarray['object'];
+		//$retweet['object'] = $postarray['object']; // Activate for debugging
 		$retweet['private'] = $postarray['private'];
 		$retweet['allow_cid'] = $postarray['allow_cid'];
 		$retweet['contact-id'] = $postarray['contact-id'];
