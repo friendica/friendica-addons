@@ -455,7 +455,7 @@ function fromgplus_fetch($a, $uid) {
 
 	$lastdate = 0;
 
-	if (!is_array($activities->items))
+	if (empty($activities->items))
 		return;
 
 	$reversed = array_reverse($activities->items);

@@ -1065,7 +1065,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 	$postarray['uid'] = $uid;
 	$postarray['wall'] = 0;
 
-	if (is_object($post->retweeted_status)) {
+	if (!empty($post->retweeted_status)) {
 		$content = $post->retweeted_status;
 		statusnet_fetch_contact($uid, $content->user, false);
 	} else {
@@ -1080,7 +1080,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 
 	$contactid = 0;
 
-	if ($content->in_reply_to_status_id != "") {
+	if (!empty($content->in_reply_to_status_id)) {
 
 		$parent = $hostname . "::" . $content->in_reply_to_status_id;
 
@@ -1166,19 +1166,19 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 	$postarray['created'] = DateTimeFormat::utc($content->created_at);
 	$postarray['edited'] = DateTimeFormat::utc($content->created_at);
 
-	if (is_string($content->place->name)) {
+	if (!empty($content->place->name)) {
 		$postarray["location"] = $content->place->name;
 	}
 
-	if (is_string($content->place->full_name)) {
+	if (!empty($content->place->full_name)) {
 		$postarray["location"] = $content->place->full_name;
 	}
 
-	if (is_array($content->geo->coordinates)) {
+	if (!empty($content->geo->coordinates)) {
 		$postarray["coord"] = $content->geo->coordinates[0] . " " . $content->geo->coordinates[1];
 	}
 
-	if (is_array($content->coordinates->coordinates)) {
+	if (!empty($content->coordinates->coordinates)) {
 		$postarray["coord"] = $content->coordinates->coordinates[1] . " " . $content->coordinates->coordinates[0];
 	}
 

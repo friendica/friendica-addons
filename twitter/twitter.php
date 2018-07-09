@@ -799,7 +799,7 @@ function twitter_do_mirrorpost(App $a, $uid, $post)
 	// $datarray['object'] = json_encode($post); // Activate for debugging
 	$datarray["title"] = "";
 
-	if (is_object($post->retweeted_status)) {
+	if (!empty($post->retweeted_status)) {
 		// We don't support nested shares, so we mustn't show quotes as shares on retweets
 		$item = twitter_createpost($a, $uid, $post->retweeted_status, ['id' => 0], false, false, true);
 
@@ -1254,7 +1254,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 function twitter_media_entities($post, &$postarray)
 {
 	// There are no media entities? So we quit.
-	if (!is_array($post->extended_entities->media)) {
+	if (empty($post->extended_entities->media)) {
 		return "";
 	}
 
@@ -1274,6 +1274,9 @@ function twitter_media_entities($post, &$postarray)
 	// This is a pure media post, first search for all media urls
 	$media = [];
 	foreach ($post->extended_entities->media AS $medium) {
+		if (!isset($media[$medium->url])) {
+			$media[$medium->url] = '';
+		}
 		switch ($medium->type) {
 			case 'photo':
 				$media[$medium->url] .= "\n[img]" . $medium->media_url_https . "[/img]";
@@ -1396,6 +1399,9 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 	if ($post->user->protected) {
 		$postarray['private'] = 1;
 		$postarray['allow_cid'] = '<' . $self['id'] . '>';
+	} else {
+		$postarray['private'] = 0;
+		$postarray['allow_cid'] = '';
 	}
 
 	if (is_string($post->full_text)) {
@@ -1420,22 +1426,22 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 
 	$statustext = $converted["plain"];
 
-	if (is_string($post->place->name)) {
+	if (!empty($post->place->name)) {
 		$postarray["location"] = $post->place->name;
 	}
-	if (is_string($post->place->full_name)) {
+	if (!empty($post->place->full_name)) {
 		$postarray["location"] = $post->place->full_name;
 	}
-	if (is_array($post->geo->coordinates)) {
+	if (!empty($post->geo->coordinates)) {
 		$postarray["coord"] = $post->geo->coordinates[0] . " " . $post->geo->coordinates[1];
 	}
-	if (is_array($post->coordinates->coordinates)) {
+	if (!empty($post->coordinates->coordinates)) {
 		$postarray["coord"] = $post->coordinates->coordinates[1] . " " . $post->coordinates->coordinates[0];
 	}
-	if (is_object($post->retweeted_status)) {
+	if (!empty($post->retweeted_status)) {
 		$retweet = twitter_createpost($a, $uid, $post->retweeted_status, $self, false, false, $noquote);
 
-		$retweet['object'] = $postarray['object'];
+		//$retweet['object'] = $postarray['object'];
 		$retweet['private'] = $postarray['private'];
 		$retweet['allow_cid'] = $postarray['allow_cid'];
 		$retweet['contact-id'] = $postarray['contact-id'];
@@ -1446,7 +1452,7 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 		$postarray = $retweet;
 	}
 
-	if (is_object($post->quoted_status) && !$noquote) {
+	if (!empty($post->quoted_status) && !$noquote) {
 		$quoted = twitter_createpost($a, $uid, $post->quoted_status, $self, false, false, true);
 
 		$postarray['body'] = $statustext;
@@ -1507,10 +1513,6 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 			}
 
 			$item = Item::insert($postarray);
-
-			if ($notify) {
-				$item = $notify;
-			}
 
 			$postarray["id"] = $item;
 
@@ -1629,7 +1631,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 
 			$postarray = twitter_createpost($a, $uid, $post, $self, $create_user, true, false);
 
-			if (trim($postarray['body']) == "") {
+			if (empty($postarray['body']) || trim($postarray['body']) == "") {
 				continue;
 			}
 
