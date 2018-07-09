@@ -1207,7 +1207,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 		$postarray["body"] = "[url=".$post->object->fullImage->url."][img]".$post->object->image->url."[/img][/url]\n".$postarray["body"];
 	}
 
-	if ($post->object->displayName != "") {
+	if (!empty($post->object->displayName)) {
 		$postarray['title'] = $post->object->displayName;
 	}
 
