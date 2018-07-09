@@ -494,23 +494,23 @@ function pumpio_send(&$a, &$b)
 				'objectType' => "note",
 				'content' => $content];
 
-			if ($title != "") {
+			if (!empty($title)) {
 				$params["object"]["displayName"] = $title;
 			}
 
-			if (count($receiver["to"])) {
+			if (!empty($receiver["to"])) {
 				$params["to"] = $receiver["to"];
 			}
 
-			if (count($receiver["bto"])) {
+			if (!empty($receiver["bto"])) {
 				$params["bto"] = $receiver["bto"];
 			}
 
-			if (count($receiver["cc"])) {
+			if (!empty($receiver["cc"])) {
 				$params["cc"] = $receiver["cc"];
 			}
 
-			if (count($receiver["bcc"])) {
+			if (!empty($receiver["bcc"])) {
 				$params["bcc"] = $receiver["bcc"];
 			}
 		 } else {
