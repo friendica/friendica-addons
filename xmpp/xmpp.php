@@ -131,7 +131,7 @@ function xmpp_converse(App $a)
 		return;
 	}
 
-	if ($_GET["mode"] == "minimal") {
+	if (defaults($_GET, "mode", '') == "minimal") {
 		return;
 	}
 

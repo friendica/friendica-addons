@@ -477,7 +477,7 @@ function jappixmini_script(App $a)
 		return;
 	}
 
-	if ($_GET["mode"] == "minimal") {
+	if (defaults($_GET, "mode", '') == "minimal") {
 		return;
 	}
 

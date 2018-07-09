@@ -94,7 +94,7 @@ function openstreetmap_location($a, &$item)
 		}
 	}
 
-	if ($target == "") {
+	if (empty($target)) {
 		$target = $nomserver.'?q='.urlencode($item['location']);
 	}
 

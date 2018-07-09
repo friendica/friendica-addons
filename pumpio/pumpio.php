@@ -654,8 +654,7 @@ function pumpio_action(&$a, $uid, $uri, $action, $content = "")
 
 function pumpio_sync(&$a)
 {
-	$r = q("SELECT * FROM `addon` WHERE `installed` = 1 AND `name` = 'pumpio'",
-		$plugin);
+	$r = q("SELECT * FROM `addon` WHERE `installed` = 1 AND `name` = 'pumpio'");
 
 	if (!DBM::is_result($r)) {
 		return;
@@ -765,7 +764,7 @@ function pumpio_fetchtimeline(&$a, $uid)
 
 	logger('pumpio: fetching for user '.$uid.' '.$url.' C:'.$client->client_id.' CS:'.$client->client_secret.' T:'.$client->access_token.' TS:'.$client->access_token_secret);
 
-	$username = $user.'@'.$host;
+	$useraddr = $username.'@'.$hostname;
 
 	if (pumpio_reachable($url)) {
 		$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError'=>true], $user);
@@ -774,7 +773,7 @@ function pumpio_fetchtimeline(&$a, $uid)
 	}
 
 	if (!$success) {
-		logger('pumpio: error fetching posts for user '.$uid." ".$username." ".print_r($user, true));
+		logger('pumpio: error fetching posts for user '.$uid." ".$useraddr." ".print_r($user, true));
 		return;
 	}
 
@@ -903,7 +902,7 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 {
 	require_once('include/items.php');
 
-	if ($post->object->id == "") {
+	if (empty($post->object->id)) {
 		logger('Got empty like: '.print_r($post, true), LOGGER_DEBUG);
 		return;
 	}
@@ -957,6 +956,7 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 	$likedata['gravity'] = GRAVITY_ACTIVITY;
 	$likedata['uid'] = $uid;
 	$likedata['wall'] = 0;
+	$likedata['network'] = NETWORK_PUMPIO;
 	$likedata['uri'] = Item::newURI($uid);
 	$likedata['parent-uri'] = $orig_post["uri"];
 	$likedata['contact-id'] = $contactid;
@@ -1186,7 +1186,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 		$postarray['parent-uri'] = $post->object->inReplyTo->id;
 	}
 
-	if ($post->object->pump_io->proxyURL) {
+	if (!empty($post->object->pump_io->proxyURL)) {
 		$postarray['extid'] = $post->object->pump_io->proxyURL;
 	}
 
@@ -1203,7 +1203,7 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 	$postarray['body'] = HTML::toBBCode($post->object->content);
 	$postarray['object'] = json_encode($post);
 
-	if ($post->object->fullImage->url != "") {
+	if (!empty($post->object->fullImage->url)) {
 		$postarray["body"] = "[url=".$post->object->fullImage->url."][img]".$post->object->image->url."[/img][/url]\n".$postarray["body"];
 	}
 
@@ -1587,9 +1587,9 @@ function pumpio_fetchallcomments(&$a, $uid, $id)
 			$like->object->id = $item->id;
 			$like->actor = new stdClass;
 			$like->actor->displayName = $item->displayName;
-			$like->actor->preferredUsername = $item->preferredUsername;
+			//$like->actor->preferredUsername = $item->preferredUsername;
+			//$like->actor->image = $item->image;
 			$like->actor->url = $item->url;
-			$like->actor->image = $item->image;
 			$like->generator = new stdClass;
 			$like->generator->displayName = "pumpio";
 			pumpio_dolike($a, $uid, $self, $post, $own_id, false);

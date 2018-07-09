@@ -138,6 +138,10 @@ function blockem_prepare_body_content_filter(\Friendica\App $a, &$hook_data)
 }
 
 function blockem_display_item(&$a,&$b) {
+	if (empty($b['output']['body'])) {
+		return;
+	}
+
 	if(strstr($b['output']['body'],'id="blockem-wrap-'))
 		$b['output']['thumb'] = $a->get_baseurl() . "/images/person-80.jpg";
 }
@@ -177,7 +181,7 @@ function blockem_item_photo_menu(&$a,&$b) {
 
 	$blocked = false;
 	$author = $b['item']['author-link'];
-	if(is_array($a->data['blockem'])) {
+	if(!empty($a->data['blockem'])) {
 		foreach($a->data['blockem'] as $bloke) {
 			if(link_compare($bloke,$author)) {
 				$blocked = true;
