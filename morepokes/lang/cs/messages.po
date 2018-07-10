@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-06-24 17:19+0000\n"
+"PO-Revision-Date: 2018-07-06 18:55+0000\n"
 "Last-Translator: Aditoo\n"
 "Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -26,23 +26,23 @@ msgstr "dát facku"
 
 #: morepokes.php:19
 msgid "bitchslapped"
-msgstr "dal facku"
+msgstr "dal/a facku"
 
 #: morepokes.php:20
 msgid "shag"
-msgstr "ošoustat"
+msgstr "pomilovat"
 
 #: morepokes.php:20
 msgid "shagged"
-msgstr "ošoustal"
+msgstr "pomiloval/a"
 
 #: morepokes.php:21
 msgid "do something obscenely biological to"
-msgstr "udělat něco obscéně biologického uživateli"
+msgstr "udělat příjemci něco obscéně biologického"
 
 #: morepokes.php:21
 msgid "did something obscenely biological to"
-msgstr "udělal něco obscéně biologického uživateli"
+msgstr "udělal/a něco obscéně biologického"
 
 #: morepokes.php:22
 msgid "point out the poke feature to"
@@ -50,15 +50,15 @@ msgstr "upozornit na funkci šťouchnutí"
 
 #: morepokes.php:22
 msgid "pointed out the poke feature to"
-msgstr "upozornil na funkci šťouchnutí"
+msgstr "upozornil/a na funkci šťouchnutí"
 
 #: morepokes.php:23
 msgid "declare undying love for"
-msgstr "vyjadřit nehynoucí lásku ke"
+msgstr "vyjadřit nehynoucí lásku"
 
 #: morepokes.php:23
 msgid "declared undying love for"
-msgstr "vyjadřil nehynoucí lásku ke"
+msgstr "vyjadřil/a nehynoucí lásku k uživateli"
 
 #: morepokes.php:24
 msgid "patent"
@@ -66,7 +66,7 @@ msgstr "patentovat"
 
 #: morepokes.php:24
 msgid "patented"
-msgstr "patentoval"
+msgstr "patentoval/a uživatele"
 
 #: morepokes.php:25
 msgid "stroke beard"
@@ -74,18 +74,18 @@ msgstr "pohladit plnovous"
 
 #: morepokes.php:25
 msgid "stroked their beard at"
-msgstr "pohladil jeho/její plnovous na"
+msgstr "pohladil/a plnovous"
 
 #: morepokes.php:26
 msgid ""
 "bemoan the declining standards of modern secondary and tertiary education to"
-msgstr "stěžovat si na klesající úroveň moderního sekundárního a terciárního vzdělávání u"
+msgstr "stěžovat si příjemci na klesající úroveň moderního sekundárního a terciárního vzdělávání"
 
 #: morepokes.php:26
 msgid ""
 "bemoans the declining standards of modern secondary and tertiary education "
 "to"
-msgstr "si stěžoval na klesající úroveň moderního sekundárního a terciárního vzdělávání u"
+msgstr "si stěžuje na klesající úroveň moderního sekundárního a terciárního vzdělávání"
 
 #: morepokes.php:27
 msgid "hug"
@@ -93,7 +93,7 @@ msgstr "obejmout"
 
 #: morepokes.php:27
 msgid "hugged"
-msgstr "obejmut "
+msgstr "obejmul/a"
 
 #: morepokes.php:28
 msgid "kiss"
@@ -101,7 +101,7 @@ msgstr "políbit"
 
 #: morepokes.php:28
 msgid "kissed"
-msgstr "políbil"
+msgstr "políbil/a"
 
 #: morepokes.php:29
 msgid "raise eyebrows at"
@@ -109,7 +109,7 @@ msgstr "zvednout obočí na"
 
 #: morepokes.php:29
 msgid "raised their eyebrows at"
-msgstr "zvednul obočí na"
+msgstr "zvedl/a obočí na"
 
 #: morepokes.php:30
 msgid "insult"
@@ -117,7 +117,7 @@ msgstr "urazit"
 
 #: morepokes.php:30
 msgid "insulted"
-msgstr "urazil"
+msgstr "urazil/a"
 
 #: morepokes.php:31
 msgid "praise"
@@ -125,7 +125,7 @@ msgstr "pochválit"
 
 #: morepokes.php:31
 msgid "praised"
-msgstr "pochválil"
+msgstr "pochválil/a"
 
 #: morepokes.php:32
 msgid "be dubious of"
@@ -133,7 +133,7 @@ msgstr "mít pochyby o"
 
 #: morepokes.php:32
 msgid "was dubious of"
-msgstr "měl pochyby o"
+msgstr "měl/a pochyby o"
 
 #: morepokes.php:33
 msgid "eat"
@@ -141,15 +141,15 @@ msgstr "sníst"
 
 #: morepokes.php:33
 msgid "ate"
-msgstr "snědl"
+msgstr "snědl/a"
 
 #: morepokes.php:34
 msgid "giggle and fawn at"
-msgstr "hihňat se"
+msgstr "hihňat se na"
 
 #: morepokes.php:34
 msgid "giggled and fawned at"
-msgstr "se hihňal"
+msgstr "se hihňal/a na"
 
 #: morepokes.php:35
 msgid "doubt"
@@ -157,7 +157,7 @@ msgstr "pochybovat"
 
 #: morepokes.php:35
 msgid "doubted"
-msgstr "pochyboval"
+msgstr "zapochyboval/a o"
 
 #: morepokes.php:36
 msgid "glare"
@@ -165,4 +165,4 @@ msgstr "zabodávát pohledem"
 
 #: morepokes.php:36
 msgid "glared at"
-msgstr "zabodával pohledem "
+msgstr "zabodával/a pohledem "
