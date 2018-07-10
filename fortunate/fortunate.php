@@ -4,6 +4,7 @@
  * Description: Add a random fortune cookie at the bottom of every pages. [Requires manual confguration.]
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
+ * Status: Unsupported
  */
 use Friendica\Core\Addon;
 use Friendica\Util\Network;
@@ -28,7 +29,7 @@ function fortunate_uninstall()
 
 function fortunate_fetch(&$a, &$b)
 {
-	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="' 
+	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'
 		. $a->get_baseurl() . '/addon/fortunate/fortunate.css' . '" media="all" />' . "\r\n";
 
 	if (FORTUNATE_SERVER != 'hostname.com') {
