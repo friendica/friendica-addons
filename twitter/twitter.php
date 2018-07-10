@@ -422,6 +422,7 @@ function twitter_action(App $a, $uid, $pid, $action)
 	switch ($action) {
 		case "delete":
 			// To-Do: $result = $connection->post('statuses/destroy', $post);
+			$result = [];
 			break;
 		case "like":
 			$result = $connection->post('favorites/create', $post);
@@ -429,6 +430,9 @@ function twitter_action(App $a, $uid, $pid, $action)
 		case "unlike":
 			$result = $connection->post('favorites/destroy', $post);
 			break;
+		default:
+			logger('Unhandled action ' . $action, LOGGER_DEBUG);
+			$result = [];
 	}
 	logger("twitter_action '" . $action . "' send, result: " . print_r($result, true), LOGGER_DEBUG);
 }
@@ -1508,11 +1512,11 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 
 	$posts = array_reverse($posts);
 
-	if (count($posts)) {
+	if (!empty($posts)) {
 		foreach ($posts as $post) {
 			$postarray = twitter_createpost($a, $uid, $post, $self, false, false, false);
 
-			if (trim($postarray['body']) == "") {
+			if (emptx($postarray['body'])) {
 				continue;
 			}
 

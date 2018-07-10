@@ -1168,7 +1168,11 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 
 		$reply = new stdClass;
 		$reply->verb = "note";
-		$reply->cc = $post->cc;
+
+		if (isset($post->cc)) {
+			$reply->cc = $post->cc;
+		}
+
 		$reply->to = $post->to;
 		$reply->object = new stdClass;
 		$reply->object->objectType = $post->object->inReplyTo->objectType;
