@@ -2,7 +2,7 @@
 use Friendica\Core\Config;
 
 function pumpio_sync_run(&$argv, &$argc) {
-	global $a;
+	$a = Friendica\BaseObject::getApp();
 
 	require_once("addon/pumpio/pumpio.php");
 

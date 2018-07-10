@@ -4,7 +4,7 @@ use Friendica\Core\Config;
 
 function twitter_sync_run($argv, $argc)
 {
-	global $a;
+	$a = Friendica\BaseObject::getApp();
 
 	require_once 'addon/twitter/twitter.php';
 
