@@ -1307,6 +1307,10 @@ function pumpio_fetchinbox(&$a, $uid)
 		$success = false;
 	}
 
+	if (!$success) {
+		return;
+	}
+
 	if ($user->items) {
 		$posts = array_reverse($user->items);
 

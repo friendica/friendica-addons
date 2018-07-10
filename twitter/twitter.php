@@ -1135,7 +1135,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 
 				$oembed_data = OEmbed::fetchURL($expanded_url);
 
-				if (empty($oembed_data)) {
+				if (empty($oembed_data) || empty($oembed_data->type)) {
 					continue;
 				}
 
@@ -1516,7 +1516,7 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 		foreach ($posts as $post) {
 			$postarray = twitter_createpost($a, $uid, $post, $self, false, false, false);
 
-			if (emptx($postarray['body'])) {
+			if (empty($postarray['body'])) {
 				continue;
 			}
 
