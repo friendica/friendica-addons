@@ -30,7 +30,7 @@ function rendertime_page_end(&$a, &$o) {
 	$ignored_modules = ["fbrowser"];
 	$ignored = in_array($a->module, $ignored_modules);
 
-	if (is_site_admin() && ($_GET["mode"] != "minimal") && !$a->is_mobile && !$a->is_tablet && !$ignored) {
+	if (is_site_admin() && (defaults($_GET, "mode", '') != "minimal") && !$a->is_mobile && !$a->is_tablet && !$ignored) {
 		$o = $o.'<div class="renderinfo">'. L10n::t("Database: %s/%s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: %s, Total: %s",
 			round($a->performance["database"] - $a->performance["database_write"], 3),
 			round($a->performance["database_write"], 3),

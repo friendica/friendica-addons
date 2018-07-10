@@ -126,6 +126,8 @@ function showmore_prepare_body(\Friendica\App $a, &$hook_data)
 	if (get_body_length($hook_data['html']) > $chars) {
 		$found = true;
 		$shortened = trim(showmore_cutitem($hook_data['html'], $chars)) . "...";
+	} else {
+		$found = false;
 	}
 
 	if ($found) {
