@@ -8,53 +8,54 @@
  * Author: Rabuzarus <https://friendica.kommune4.de/profile/rabuzarus> (Port to Friendica)
  */
 
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
+use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Util\Emailer;
-use Friendica\App;
 
-function notifyall_install() 
+function notifyall_install()
 {
 	logger("installed notifyall");
 }
 
-function notifyall_uninstall() 
+function notifyall_uninstall()
 {
 	logger("removed notifyall");
 }
 
 function notifyall_module() {}
 
-function notifyall_addon_admin(App $a, &$o) 
+function notifyall_addon_admin(App $a, &$o)
 {
 	$o = '<div></div>&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . z_root() . '/notifyall">' . L10n::t('Send email to all members') . '</a></br/>';
 }
 
 
-function notifyall_post(App $a) 
+function notifyall_post(App $a)
 {
 	if(!is_site_admin()) {
 		return;
 	}
 
 	$text = trim($_REQUEST['text']);
-	
+
 	if(! $text) {
 		return;
 	}
 
-	$sitename = $a->config['sitename'];
+	$sitename = Config::get('config', 'sitename');
 
-	if (empty($a->config['admin_name'])) {
+	if (empty(Config::get('config', 'admin_name'))) {
 		$sender_name = '"' . L10n::t('%s Administrator', $sitename) . '"';
 	} else {
-		$sender_name = '"' . L10n::t('%1$s, %2$s Administrator', $a->config['admin_name'], $sitename) . '"';
+		$sender_name = '"' . L10n::t('%1$s, %2$s Administrator', Config::get('config', 'admin_name'), $sitename) . '"';
 	}
 
-	if (! x($a->config['sender_email'])) {
+	if (! x(Config::get('config', 'sender_email'))) {
 		$sender_email = 'noreply@' . $a->get_hostname();
 	} else {
-		$sender_email = $a->config['sender_email'];
+		$sender_email = Config::get('config', 'sender_email');
 	}
 
 	$subject = $_REQUEST['subject'];
@@ -67,7 +68,7 @@ function notifyall_post(App $a)
 	// if this is a test, send it only to the admin(s)
 	// admin_email might be a comma separated list, but we need "a@b','c@d','e@f
 	if (intval($_REQUEST['test'])) {
-		$email = $a->config['admin_email'];
+		$email = Config::get('config', 'admin_email');
 		$email = "'" . str_replace([" ",","], ["","','"], $email) . "'";
 	}
 	$sql_extra = ((intval($_REQUEST['test'])) ? sprintf(" AND `email` in ( %s )", $email) : '');

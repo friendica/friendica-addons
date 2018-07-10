@@ -103,7 +103,7 @@ function pumpio_registerclient(&$a, $host)
 		$application_name = $a->get_hostname();
 	}
 
-	$adminlist = explode(",", str_replace(" ", "", $a->config['admin_email']));
+	$adminlist = explode(",", str_replace(" ", "", Config::get('config', 'admin_email')));
 
 	$params["type"] = "client_associate";
 	$params["contacts"] = $adminlist[0];

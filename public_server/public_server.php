@@ -124,7 +124,7 @@ function public_server_enotify(&$a, &$b)
 		$b['itemlink'] = $a->get_baseurl();
 		$b['epreamble'] = $b['preamble'] = L10n::t('Your account on %s will expire in a few days.', Config::get('system', 'sitename'));
 		$b['subject'] = L10n::t('Your Friendica account is about to expire.');
-		$b['body'] = L10n::t("Hi %1\$s,\n\nYour account on %2\$s will expire in less than five days. You may keep your account by logging in at least once every 30 days", $b['params']['to_name'], "[url=" . $app->config["system"]["url"] . "]" . $app->config["sitename"] . "[/url]");
+		$b['body'] = L10n::t("Hi %1\$s,\n\nYour account on %2\$s will expire in less than five days. You may keep your account by logging in at least once every 30 days", $b['params']['to_name'], "[url=" . Config::get('system', 'url') . "]" . Config::get('config', 'sitename') . "[/url]");
 	}
 }
 
