@@ -16,7 +16,7 @@
  *
  *   Configuration:
  *     Use the administration panel to configure the Piwik tracking addon, or
- *     in case you don't use this add the following lines to your config/local.ini.php
+ *     in case you don't use this add the following lines to your config/addon.ini.php
  *     file:
  *
  *     [piwik]
@@ -63,7 +63,7 @@ function piwik_analytics($a,&$b) {
 	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/piwik/piwik.css' . '" media="all" />';
 
 	/*
-	 *   Get the configuration variables from the config/local.ini.php file.
+	 *   Get the configuration variables from the config/addon.ini.php file.
 	 */
 	$baseurl = Config::get('piwik', 'baseurl');
 	$siteid  = Config::get('piwik', 'siteid');

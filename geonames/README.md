@@ -7,7 +7,7 @@ Use Geonames service to resolve nearest populated location for given latitude, l
 
 ## Installation
 
-Pre-requisite: Register a username at geonames.org and set in config/local.ini.php
+Pre-requisite: Register a username at geonames.org and set in config/addon.ini.php
 
     [geonames]
     username = your_username

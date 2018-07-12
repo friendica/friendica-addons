@@ -1,4 +1,4 @@
-To let the connector work properly you should define an application name in config/local.ini.php:
+To let the connector work properly you should define an application name in config/addon.ini.php:
 
 [pumpio]
 application_name = Name of you site

@@ -21,12 +21,12 @@ In case you want to use the CDN you can try the following URL as a quick start
 	http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML
 
 In case you don't want or can use the admin panel of Friendica you can activate
-the addon by adding _mathjax_ to the
+the addon by adding _mathjax_ to the list in your config/local.ini.php file
 
 	[system]
 	addon = ...,mathjax
 
-list in your config/local.ini.php file and then providing the base URL after that
+and then providing the base URL after that in the config/addon.ini.php file
 
 	[mathjax]
 	baseurl = [the URL to your MathJax installation];

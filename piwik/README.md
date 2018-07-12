@@ -27,7 +27,7 @@ Open the config/local.ini.php file and add "piwik" to the list of activated addo
     [system]
 	addon = ...,piwik
 
-You can change 4 more configuration variables for the addon:
+You can change 4 more configuration variables for the addon in the config/addon.ini.php file:
 
     [piwik]
 	baseurl = example.com/piwik/

@@ -48,7 +48,7 @@
  *     we do not need "Twitter as login". When you've registered the app you get the
  *     OAuth Consumer key and secret pair for your application/site.
  *
- *     Add this key pair to your global config/local.ini.php or use the admin panel.
+ *     Add this key pair to your global config/addon.ini.php or use the admin panel.
  *
  *     [twitter]
  *     consumerkey = your consumer_key here

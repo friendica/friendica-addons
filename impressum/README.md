@@ -16,7 +16,7 @@ Simply fill in the fields in the impressium settings page in the addons area of 
 
 Manual Configuration
 --------------------
-If you for any reason you prefer to use a configuration file instead, you can set the following variables in the config/local.ini.php file
+If you for any reason you prefer to use a configuration file instead, you can set the following variables in the config/addon.ini.php file
 
 	[impressum]
 	owner =           this is the Name of the Operator

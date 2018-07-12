@@ -16,7 +16,7 @@ After the registration please enter the values for "Consumer Key" and "Consumer 
 
 ## Alternative configuration
 
-Add your key pair to your global config/local.ini.php.
+Add your key pair to your global config/addon.ini.php.
 
     [twitter]
     consumerkey = your consumer_key here

@@ -31,7 +31,7 @@ Open the config/local.ini.php file and add "libravatar" to the list of activated
         [system]
 		addon = ...,libravatar
 
-You can add one configuration variables for the addon:
+You can add one configuration variables for the addon to the config/addon.ini.php file:
 
         [libravatar]
 		default_avatar = identicon

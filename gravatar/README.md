@@ -35,7 +35,7 @@ Open the config/local.ini.php file and add "gravatar" to the list of activated a
         [system]
 		addon = ...,gravatar
 
-You can add two configuration variables for the addon:
+You can add two configuration variables for the addon to the config/addon.ini.php file:
 
         [gravatar]
 		default_avatar = identicon

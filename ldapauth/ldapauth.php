@@ -26,7 +26,7 @@
  * Note when using with Windows Active Directory: you may need to set TLS_CACERT in your site
  * ldap.conf file to the signing cert for your LDAP server.
  *
- * The configuration options for this module may be set in the config/local.ini.php file
+ * The configuration options for this module may be set in the config/addon.ini.php file
  * e.g.:
  *
  * [ldapauth]

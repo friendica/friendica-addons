@@ -38,7 +38,7 @@ addons.
     [system]
 	addon = ...,openstreetmap
 
-You can change two configuration variables for the addon:
+You can change two configuration variables for the addon in the config/addon.ini.php file:
 
 	[openstreetmap]
 	tmsserver = https://www.openstreetmap.org

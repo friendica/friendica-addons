@@ -7,7 +7,7 @@
  *
  *
  * Pre-requisite: Register a username at geonames.org
- * and set in config/local.ini.php
+ * and set in config/addon.ini.php
  *
  * [geonames]
  * username = your_username

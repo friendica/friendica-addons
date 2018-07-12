@@ -9,7 +9,7 @@ When an account is created on the site, it is given a hard expiration date of
 	[testdrive]
 	expiredays = 30
 
-Set this in your config/local.ini.php file to allow a 30 day test drive period.
+Set this in your config/addon.ini.php file to allow a 30 day test drive period.
 By default no expiration period is defined in case the addon is activated accidentally.
 
 There is no opportunity to extend an expired account using this addon.

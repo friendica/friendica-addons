@@ -19,7 +19,7 @@ This is a modified version of the testdrive addon, DO NOT ACTIVATE AT THE SAME T
     flagposts = 90
     flagpostsexpire = 146
 
-Set these in your config/local.ini.php file. By default nothing is defined in case the addon is activated accidentally.
+Set these in your config/addon.ini.php file. By default nothing is defined in case the addon is activated accidentally.
 They can be ommitted or set to 0 to disable each option.
 The default values are those used by friendica.eu, change these as desired.
 
