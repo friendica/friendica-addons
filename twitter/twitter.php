@@ -605,11 +605,11 @@ function twitter_post_hook(App $a, &$b)
 		$result = $connection->post($url, $post);
 		logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
 
-		if ($result->source) {
+		if (!empty($result->source)) {
 			Config::set("twitter", "application_name", strip_tags($result->source));
 		}
 
-		if ($result->errors) {
+		if (!empty($result->errors)) {
 			logger('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
 
 			$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", intval($b['uid']));
@@ -725,9 +725,15 @@ function twitter_expire(App $a, $b)
 		return;
 	}
 
-	$r = dba::select('item', ['id'], ['deleted' => true, 'network' => NETWORK_TWITTER]);
+	$r = dba::select('item', ['id', 'iaid', 'icid'], ['deleted' => true, 'network' => NETWORK_TWITTER]);
 	while ($row = dba::fetch($r)) {
 		dba::delete('item', ['id' => $row['id']]);
+		if (!empty($row['iaid']) && !dba::exists('item', ['iaid' => $row['iaid']])) {
+			dba::delete('item-activity', ['id' => $row['iaid']]);
+		}
+		if (!empty($row['icid']) && !dba::exists('item', ['icid' => $row['icid']])) {
+			dba::delete('item-content', ['id' => $row['icid']]);
+		}
 	}
 	dba::close($r);
 
@@ -1772,12 +1778,12 @@ function twitter_is_retweet(App $a, $uid, $body)
 
 	$link = "";
 	preg_match("/link='(.*?)'/ism", $attributes, $matches);
-	if ($matches[1] != "") {
+	if (!empty($matches[1])) {
 		$link = $matches[1];
 	}
 
 	preg_match('/link="(.*?)"/ism', $attributes, $matches);
-	if ($matches[1] != "") {
+	if (!empty($matches[1])) {
 		$link = $matches[1];
 	}
 

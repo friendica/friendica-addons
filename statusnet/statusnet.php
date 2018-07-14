@@ -586,11 +586,11 @@ function statusnet_post_hook(App $a, &$b)
 			logger('statusnet_post send, result: ' . print_r($result, true) .
 				"\nmessage: " . $msg, LOGGER_DEBUG . "\nOriginal post: " . print_r($b, true) . "\nPost Data: " . print_r($postdata, true));
 
-			if ($result->source) {
+			if (!empty($result->source)) {
 				PConfig::set($b["uid"], "statusnet", "application_name", strip_tags($result->source));
 			}
 
-			if ($result->error) {
+			if (!empty($result->error)) {
 				logger('Send to GNU Social failed: "' . $result->error . '"');
 			} elseif ($iscomment) {
 				logger('statusnet_post: Update extid ' . $result->id . " for post id " . $b['id']);
@@ -819,7 +819,7 @@ function statusnet_fetchtimeline(App $a, $uid)
 				continue;
 			}
 
-			if (is_object($post->retweeted_status)) {
+			if (!empty($post->retweeted_status)) {
 				continue;
 			}
 
@@ -1554,12 +1554,12 @@ function statusnet_is_retweet(App $a, $uid, $body)
 
 	$link = "";
 	preg_match("/link='(.*?)'/ism", $attributes, $matches);
-	if ($matches[1] != "") {
+	if (!empty($matches[1])) {
 		$link = $matches[1];
 	}
 
 	preg_match('/link="(.*?)"/ism', $attributes, $matches);
-	if ($matches[1] != "") {
+	if (!empty($matches[1])) {
 		$link = $matches[1];
 	}
 
