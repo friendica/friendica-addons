@@ -142,6 +142,10 @@ function leistungsschutzrecht_is_member_site($url) {
 		return false;
 	}
 
+	if (count($hostname) <= 2) {
+		return false;
+	}
+
 	$site = $hostname[sizeof($hostname) - 2].".".$hostname[sizeof($hostname) - 1];
 
 	return (isset($sites[$site]));

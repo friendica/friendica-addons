@@ -412,7 +412,7 @@ function tumblr_send(&$a,&$b) {
 			$params['caption'] = '<h1>'.$title."</h1>".
 						"<p>".$params['caption']."</p>";
 
-		if (trim($params['caption']) == "")
+		if (empty($params['caption']))
 			$params['caption'] = BBCode::convert("[quote]" . $siteinfo["description"] . "[/quote]", false, 4);
 
 		$consumer_key = Config::get('tumblr','consumer_key');

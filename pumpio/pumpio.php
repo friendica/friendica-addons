@@ -1125,6 +1125,8 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 		$receiptians = array_merge($receiptians, $post->to);
 	}
 
+	$public = false;
+
 	foreach ($receiptians AS $receiver) {
 		if (is_string($receiver->objectType) && ($receiver->id == "http://activityschema.org/collection/public")) {
 			$public = true;
