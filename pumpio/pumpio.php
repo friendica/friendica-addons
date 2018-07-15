@@ -983,10 +983,24 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 
 function pumpio_get_contact($uid, $contact, $no_insert = false)
 {
-	GContact::update(["url" => $contact->url, "network" => NETWORK_PUMPIO, "generation" => 2,
-			"photo" => $contact->image->url, "name" => $contact->displayName,  "hide" => true,
-			"nick" => $contact->preferredUsername, "location" => $contact->location->displayName,
-			"about" => $contact->summary, "addr" => str_replace("acct:", "", $contact->id)]);
+	$gcontact = ["url" => $contact->url, "network" => NETWORK_PUMPIO, "generation" => 2,
+		"name" => $contact->displayName,  "hide" => true,
+		"nick" => $contact->preferredUsername,
+		"addr" => str_replace("acct:", "", $contact->id)];
+
+	if (!empty($contact->location->displayName)) {
+		$gcontact["location"] = $contact->location->displayName;
+	}
+
+	if (!empty($contact->summary)) {
+		$gcontact["about"] = $contact->summary;
+	}
+
+	if (!empty($contact->image->url)) {
+		$gcontact["photo"] = $contact->image->url;
+	}
+
+	GContact::update($gcontact);
 	$cid = Contact::getIdForURL($contact->url, $uid);
 
 	if ($no_insert) {
@@ -1047,7 +1061,9 @@ function pumpio_get_contact($uid, $contact, $no_insert = false)
 		*/
 	}
 
-	Contact::updateAvatar($contact->image->url, $uid, $contact_id);
+	if (!empty($contact->image->url)) {
+		Contact::updateAvatar($contact->image->url, $uid, $contact_id);
+	}
 
 	return $contact_id;
 }
@@ -1108,6 +1124,8 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 	if (@is_array($post->to)) {
 		$receiptians = array_merge($receiptians, $post->to);
 	}
+
+	$public = false;
 
 	foreach ($receiptians AS $receiver) {
 		if (is_string($receiver->objectType) && ($receiver->id == "http://activityschema.org/collection/public")) {

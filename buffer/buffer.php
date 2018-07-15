@@ -271,6 +271,7 @@ function buffer_send(App $a, &$b)
 	$client_id = Config::get("buffer", "client_id");
 	$client_secret = Config::get("buffer", "client_secret");
 	$access_token = PConfig::get($b['uid'], "buffer","access_token");
+	$callback_url = "";
 
 	if ($access_token) {
 		$buffer = new BufferApp($client_id, $client_secret, $callback_url, $access_token);
