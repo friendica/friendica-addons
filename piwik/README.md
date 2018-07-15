@@ -25,12 +25,12 @@ If you don't want to use the admin panel, you can configure the addon through th
 Open the config/local.ini.php file and add "piwik" to the list of activated addons.
 
     [system]
-	addon = ...,piwik
+    addon = ...,piwik
 
 You can change 4 more configuration variables for the addon in the config/addon.ini.php file:
 
     [piwik]
-	baseurl = example.com/piwik/
+    baseurl = example.com/piwik/
     sideid = 1
     optout = true
     async = false
