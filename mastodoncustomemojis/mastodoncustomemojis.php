@@ -62,7 +62,7 @@ function mastodoncustomemojis_get_custom_emojis_for_author($author_link)
 
 	$url_parts = parse_url($author_link);
 
-	$api_base_url = $url_parts['scheme'] . '://' . $url_parts['host'] . ($url_parts['port'] ? ':' . $url_parts['port'] : '');
+	$api_base_url = $url_parts['scheme'] . '://' . $url_parts['host'] . (isset($url_parts['port']) ? ':' . $url_parts['port'] : '');
 
 	$cache_key = 'mastodoncustomemojis:' . $api_base_url;
 
