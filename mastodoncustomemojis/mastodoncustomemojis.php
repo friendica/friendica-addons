@@ -5,9 +5,15 @@
  * Description: Replace emojis shortcodes in Mastodon posts with their originating server custom emojis images.
  * Version: 1.0
  * Author: Hypolite Petovan
+ * Author: Roland Haeder
  */
 
+use Friendica\App;
+use Friendica\Content\Smilies;
 use Friendica\Core\Addon;
+use Friendica\Core\Cache;
+use Friendica\Core\Protocol;
+use Friendica\Util\Network;
 
 function mastodoncustomemojis_install()
 {
@@ -29,7 +35,7 @@ function mastodoncustomemojis_uninstall()
 	Addon::unregisterHook('contacts_mod_init',  __FILE__, 'mastodoncustomemojis_css_hook');
 }
 
-function mastodoncustomemojis_css_hook(Friendica\App $a)
+function mastodoncustomemojis_css_hook(App $a)
 {
 	$a->page['htmlhead'] .= <<<HTML
 <!-- Style added by mastodoncustomemojis -->
@@ -44,16 +50,16 @@ function mastodoncustomemojis_css_hook(Friendica\App $a)
 HTML;
 }
 
-function mastodoncustomemojis_put_item_in_cache(Friendica\App $a, &$hook_data)
+function mastodoncustomemojis_put_item_in_cache(App $a, array &$hook_data)
 {
 	// Mastodon uses OStatus, skipping other network protocols
-	if ($hook_data['item']['network'] != Friendica\Core\Protocol::OSTATUS) {
+	if ($hook_data['item']['network'] != Protocol::OSTATUS) {
 		return;
 	}
 
 	$emojis = mastodoncustomemojis_get_custom_emojis_for_author($hook_data['item']['author-link']);
 
-	$hook_data["rendered-html"] = Friendica\Content\Smilies::replaceFromArray($hook_data["rendered-html"], $emojis);
+	$hook_data["rendered-html"] = Smilies::replaceFromArray($hook_data["rendered-html"], $emojis);
 }
 
 function mastodoncustomemojis_get_custom_emojis_for_author($author_link)
@@ -66,14 +72,14 @@ function mastodoncustomemojis_get_custom_emojis_for_author($author_link)
 
 	$cache_key = 'mastodoncustomemojis:' . $api_base_url;
 
-	$emojis = Friendica\Core\Cache::get($cache_key);
+	$emojis = Cache::get($cache_key);
 	if (empty($emojis)) {
 		// Reset the emojis array
 		$emojis = $return;
 
 		$api_url = $api_base_url . '/api/v1/custom_emojis';
 
-		$ret = Friendica\Util\Network::fetchUrlFull($api_url);
+		$ret = Network::fetchUrlFull($api_url);
 
 		if ($ret['success']) {
 			$emojis_array = json_decode($ret['body'], true);
@@ -86,7 +92,7 @@ function mastodoncustomemojis_get_custom_emojis_for_author($author_link)
 			}
 		}
 
-		Friendica\Core\Cache::set($cache_key, $emojis, Friendica\Core\Cache::WEEK);
+		Cache::set($cache_key, $emojis, Cache::WEEK);
 
 		$return = $emojis;
 	}
