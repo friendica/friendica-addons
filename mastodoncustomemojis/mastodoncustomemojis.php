@@ -12,6 +12,7 @@ use Friendica\App;
 use Friendica\Content\Smilies;
 use Friendica\Core\Addon;
 use Friendica\Core\Cache;
+use Friendica\Core\Config;
 use Friendica\Core\Protocol;
 use Friendica\Util\Network;
 
@@ -73,7 +74,7 @@ function mastodoncustomemojis_get_custom_emojis_for_author($author_link)
 	$cache_key = 'mastodoncustomemojis:' . $api_base_url;
 
 	$emojis = Cache::get($cache_key);
-	if (empty($emojis)) {
+	if (empty($emojis['texts']) || Config::get('system', 'ignore_cache')) {
 		// Reset the emojis array
 		$emojis = $return;
 
@@ -90,9 +91,13 @@ function mastodoncustomemojis_get_custom_emojis_for_author($author_link)
 					$emojis['icons'][] = '<img class="emoji mastodon" src="' . proxy_url($emoji['static_url']) . '" alt=":' . $emoji['shortcode'] . ':" title=":' . $emoji['shortcode'] . ':"/>';
 				}
 			}
+
+			$ttl = Cache::WEEK;
+		} else {
+			$ttl = Cache::HALF_HOUR;
 		}
 
-		Cache::set($cache_key, $emojis, Cache::WEEK);
+		Cache::set($cache_key, $emojis, $ttl);
 
 		$return = $emojis;
 	}
