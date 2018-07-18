@@ -7,7 +7,9 @@
  *    - who takes no responsibility for any additional content which may appear herein
  *
  */
+
 use Friendica\Core\Addon;
+use Friendica\Core\Config;
 
 function morechoice_install() {
 
@@ -28,17 +30,17 @@ function morechoice_uninstall() {
 
 }
 
-// We aren't going to bother translating these to other languages. 
+// We aren't going to bother translating these to other languages.
 
 function morechoice_gender_selector($a,&$b) {
-	if($a->config['system']['language'] == 'en') {
+	if(Config::get('system', 'language') == 'en') {
 		$b[] = 'Androgyne';
-		$b[] = 'Bear';	
-		$b[] = 'Bigender';	
+		$b[] = 'Bear';
+		$b[] = 'Bigender';
 		$b[] = 'Cross dresser';
 		$b[] = 'Drag queen';
 		$b[] = 'Eunuch';
-		$b[] = 'Faux queen';	
+		$b[] = 'Faux queen';
 		$b[] = 'Gender fluid';
 		$b[] = 'Kathoey';
 		$b[] = 'Lady';
@@ -59,7 +61,7 @@ function morechoice_gender_selector($a,&$b) {
 }
 
 function morechoice_sexpref_selector($a,&$b) {
-	if($a->config['system']['language'] == 'en') {
+	if(Config::get('system', 'language') == 'en') {
 		$b[] = 'Girls with big tits';
 		$b[] = 'Millionaires';
 		$b[] = 'Guys with big schlongs';
@@ -114,7 +116,7 @@ function morechoice_sexpref_selector($a,&$b) {
 }
 
 function morechoice_marital_selector($a,&$b) {
-	if($a->config['system']['language'] == 'en') {
+	if(Config::get('system', 'language') == 'en') {
 		$b[] = 'Married to my job';
 		$b[] = 'Polygamist';
 		$b[] = 'Half married';

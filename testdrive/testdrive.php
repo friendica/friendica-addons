@@ -14,6 +14,7 @@ use Friendica\Util\DateTimeFormat;
 
 function testdrive_install() {
 
+	Addon::registerHook('load_config',      'addon/testdrive/testdrive.php', 'testdrive_load_config');
 	Addon::registerHook('register_account', 'addon/testdrive/testdrive.php', 'testdrive_register_account');
 	Addon::registerHook('cron', 'addon/testdrive/testdrive.php', 'testdrive_cron');
 	Addon::registerHook('enotify','addon/testdrive/testdrive.php', 'testdrive_enotify');
@@ -24,11 +25,17 @@ function testdrive_install() {
 
 function testdrive_uninstall() {
 
+	Addon::unregisterHook('load_config',      'addon/testdrive/testdrive.php', 'testdrive_load_config');
 	Addon::unregisterHook('register_account', 'addon/testdrive/testdrive.php', 'testdrive_register_account');
 	Addon::unregisterHook('cron', 'addon/testdrive/testdrive.php', 'testdrive_cron');
 	Addon::unregisterHook('enotify','addon/testdrive/testdrive.php', 'testdrive_enotify');
 	Addon::unregisterHook('globaldir_update','addon/testdrive/testdrive.php', 'testdrive_globaldir_update');
 
+}
+
+function testdrive_load_config(\Friendica\App $a)
+{
+	$a->loadConfigFile(__DIR__. '/config/testdrive.ini.php');
 }
 
 function testdrive_globaldir_update($a,&$b) {
@@ -93,6 +100,6 @@ function testdrive_enotify(&$a, &$b) {
         $b['itemlink'] = $a->get_baseurl();
         $b['epreamble'] = $b['preamble'] = L10n::t('Your account on %s will expire in a few days.', Config::get('system', 'sitename'));
         $b['subject'] = L10n::t('Your Friendica test account is about to expire.');
-        $b['body'] = L10n::t("Hi %1\$s,\n\nYour test account on %2\$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at %s/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at http://friendica.com.", $b['params']['to_name'], "[url=".$app->config["system"]["url"]."]".$app->config["sitename"]."[/url]", get_server());
+        $b['body'] = L10n::t("Hi %1\$s,\n\nYour test account on %2\$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at %s/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at https://friendi.ca.", $b['params']['to_name'], "[url=".Config::get('system', 'url')."]".Config::get('config', 'sitename')."[/url]", get_server());
     }
 }

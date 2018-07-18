@@ -16,10 +16,10 @@ Support the OpenStreetMap community and share the load.
 
 ___ Configuration ___
 
-If you for any reason prefer to use a configuration file instead 
-of the admin panels, please refer to the Alternative Configuration below. 
+If you for any reason prefer to use a configuration file instead
+of the admin panels, please refer to the Alternative Configuration below.
 
-Activate the addon from your admin panel.  
+Activate the addon from your admin panel.
 
 You can now add a Tile Server and default zoom level in the addon settings
 page of your admin panel.
@@ -32,17 +32,19 @@ zoom level available.
 
 ___ Alternative Configuration ___
 
-Open the .htconfig.php file and add "openstreetmap" to the list of activated
+Open the config/local.ini.php file and add "openstreetmap" to the list of activated
 addons.
 
-    $a->config['system']['addon'] = "openstreetmap, ..."
+    [system]
+	addon = ...,openstreetmap
 
-You have to add two configuration variables for the addon:
+You can change two configuration variables for the addon in the config/addon.ini.php file:
 
-    $a->config['openstreetmap']['tmsserver'] = 'http://www.openstreetmap.org/';
-    $a->config['openstreetmap']['zoom'] = '18';
+	[openstreetmap]
+	tmsserver = https://www.openstreetmap.org
+    zoom = 18
 
 The *tmsserver* points to the tile server you want to use. Use the full URL,
-with protocol (http/s) and trailing slash. You can configure the default zoom 
-level on the map with *zoom*. 1 will show the whole world and 18 is the highest 
+with protocol (http/s) and trailing slash. You can configure the default zoom
+level on the map with *zoom*. 1 will show the whole world and 18 is the highest
 zoom level available.

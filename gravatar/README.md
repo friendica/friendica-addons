@@ -30,13 +30,15 @@ Gravatar lets users self-rate their images to be used at appropriate audiences. 
 See more information at [Gravatar][1].
 
 ## Alternative Configuration
-Open the .htconfig.php file and add "gravatar" to the list of activated addons:
+Open the config/local.ini.php file and add "gravatar" to the list of activated addons:
 
-        $a->config['system']['addon'] = "..., gravatar";
+        [system]
+		addon = ...,gravatar
 
-You can add two configuration variables for the addon:
+You can add two configuration variables for the addon to the config/addon.ini.php file:
 
-        $a->config['gravatar']['default_avatar'] = "identicon";
-        $a->config['gravatar']['rating'] = "g";
+        [gravatar]
+		default_avatar = identicon
+        rating = g
 
 [1]: http://www.gravatar.com/site/implement/images/ "See documentation at Gravatar for more information"

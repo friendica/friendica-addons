@@ -48,12 +48,13 @@
  *     we do not need "Twitter as login". When you've registered the app you get the
  *     OAuth Consumer key and secret pair for your application/site.
  *
- *     Add this key pair to your global .htconfig.php or use the admin panel.
+ *     Add this key pair to your global config/addon.ini.php or use the admin panel.
  *
- *     $a->config['twitter']['consumerkey'] = 'your consumer_key here';
- *     $a->config['twitter']['consumersecret'] = 'your consumer_secret here';
+ *     [twitter]
+ *     consumerkey = your consumer_key here
+ *     consumersecret = your consumer_secret here
  *
- *     To activate the addon itself add it to the $a->config['system']['addon']
+ *     To activate the addon itself add it to the [system] addon
  *     setting. After this, your user can configure their Twitter account settings
  *     from "Settings -> Addon Settings".
  *
@@ -94,6 +95,7 @@ define('TWITTER_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 function twitter_install()
 {
 	//  we need some hooks, for the configuration and for sending tweets
+	Addon::registerHook('load_config', 'addon/twitter/twitter.php', 'twitter_load_config');
 	Addon::registerHook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings');
 	Addon::registerHook('connector_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
 	Addon::registerHook('post_local', 'addon/twitter/twitter.php', 'twitter_post_local');
@@ -110,6 +112,7 @@ function twitter_install()
 
 function twitter_uninstall()
 {
+	Addon::unregisterHook('load_config', 'addon/twitter/twitter.php', 'twitter_load_config');
 	Addon::unregisterHook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings');
 	Addon::unregisterHook('connector_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
 	Addon::unregisterHook('post_local', 'addon/twitter/twitter.php', 'twitter_post_local');
@@ -126,6 +129,11 @@ function twitter_uninstall()
 	Addon::unregisterHook('post_local_end', 'addon/twitter/twitter.php', 'twitter_post_hook');
 	Addon::unregisterHook('addon_settings', 'addon/twitter/twitter.php', 'twitter_settings');
 	Addon::unregisterHook('addon_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
+}
+
+function twitter_load_config(App $a)
+{
+	$a->loadConfigFile(__DIR__. '/config/twitter.ini.php');
 }
 
 function twitter_check_item_notification(App $a, &$notification_data)

@@ -4,18 +4,20 @@
  * Description: Use Geonames service to resolve nearest populated location for given latitude, longitude
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
- * 
- * 
- * Pre-requisite: Register a username at geonames.org
- * and set in .htconfig.php
  *
- * $a->config['geonames']['username'] = 'your_username';
+ *
+ * Pre-requisite: Register a username at geonames.org
+ * and set in config/addon.ini.php
+ *
+ * [geonames]
+ * username = your_username
+ *
  * Also visit http://geonames.org/manageaccount and enable access to the free web services
  *
  * When addon is installed, the system calls the addon
  * name_install() function, located in 'addon/name/name.php',
  * where 'name' is the name of the addon.
- * If the addon is removed from the configuration list, the 
+ * If the addon is removed from the configuration list, the
  * system will call the name_uninstall() function.
  *
  */
@@ -28,8 +30,10 @@ use Friendica\Util\XML;
 
 function geonames_install() {
 
+	Addon::registerHook('load_config', 'addon/geonames/geonames.php', 'geonames_load_config');
+
 	/**
-	 * 
+	 *
 	 * Our addon will attach in three places.
 	 * The first is just prior to storing a local post.
 	 *
@@ -39,7 +43,7 @@ function geonames_install() {
 
 	/**
 	 *
-	 * Then we'll attach into the addon settings page, and also the 
+	 * Then we'll attach into the addon settings page, and also the
 	 * settings post hook so that we can create and update
 	 * user preferences.
 	 *
@@ -62,6 +66,7 @@ function geonames_uninstall() {
 	 *
 	 */
 
+	Addon::unregisterHook('load_config',   'addon/geonames/geonames.php', 'geonames_load_config');
 	Addon::unregisterHook('post_local',    'addon/geonames/geonames.php', 'geonames_post_hook');
 	Addon::unregisterHook('addon_settings', 'addon/geonames/geonames.php', 'geonames_addon_admin');
 	Addon::unregisterHook('addon_settings_post', 'addon/geonames/geonames.php', 'geonames_addon_admin_post');
@@ -70,7 +75,10 @@ function geonames_uninstall() {
 	logger("removed geonames");
 }
 
-
+function geonames_load_config(\Friendica\App $a)
+{
+	$a->loadConfigFile(__DIR__. '/config/geonames.ini.php');
+}
 
 function geonames_post_hook($a, &$item) {
 
@@ -151,7 +159,7 @@ function geonames_addon_admin_post($a,$post) {
 
 /**
  *
- * Called from the Addon Setting form. 
+ * Called from the Addon Setting form.
  * Add our own settings info to the page.
  *
  */

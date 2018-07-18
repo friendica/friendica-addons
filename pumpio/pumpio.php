@@ -32,6 +32,7 @@ define('PUMPIO_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
 function pumpio_install()
 {
+	Addon::registerHook('load_config',          'addon/pumpio/pumpio.php', 'pumpio_load_config');
 	Addon::registerHook('post_local',           'addon/pumpio/pumpio.php', 'pumpio_post_local');
 	Addon::registerHook('notifier_normal',      'addon/pumpio/pumpio.php', 'pumpio_send');
 	Addon::registerHook('jot_networks',         'addon/pumpio/pumpio.php', 'pumpio_jot_nets');
@@ -44,6 +45,7 @@ function pumpio_install()
 
 function pumpio_uninstall()
 {
+	Addon::unregisterHook('load_config',      'addon/pumpio/pumpio.php', 'pumpio_load_config');
 	Addon::unregisterHook('post_local',       'addon/pumpio/pumpio.php', 'pumpio_post_local');
 	Addon::unregisterHook('notifier_normal',  'addon/pumpio/pumpio.php', 'pumpio_send');
 	Addon::unregisterHook('jot_networks',     'addon/pumpio/pumpio.php', 'pumpio_jot_nets');
@@ -101,7 +103,7 @@ function pumpio_registerclient(&$a, $host)
 		$application_name = $a->get_hostname();
 	}
 
-	$adminlist = explode(",", str_replace(" ", "", $a->config['admin_email']));
+	$adminlist = explode(",", str_replace(" ", "", Config::get('config', 'admin_email')));
 
 	$params["type"] = "client_associate";
 	$params["contacts"] = $adminlist[0];
@@ -370,6 +372,11 @@ function pumpio_settings_post(&$a, &$b)
 			//header("Location: ".$a->get_baseurl()."/pumpio/connect");
 		}
 	}
+}
+
+function pumpio_load_config(\Friendica\App $a)
+{
+	$a->loadConfigFile(__DIR__. '/config/pumpio.ini.php');
 }
 
 function pumpio_post_local(&$a, &$b)

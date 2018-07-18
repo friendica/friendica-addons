@@ -8,6 +8,7 @@
 
 use Friendica\App;
 use Friendica\Core\Addon;
+use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Util\Emailer;
@@ -94,14 +95,14 @@ function securemail_settings_post(App &$a, array &$b){
         info(L10n::t('Secure Mail Settings saved.') . EOL);
 
         if ($_POST['securemail-submit'] == L10n::t('Save and send test')) {
-            $sitename = $a->config['sitename'];
+            $sitename = Config::get('config', 'sitename');
 
             $hostname = $a->get_hostname();
             if (strpos($hostname, ':')) {
                 $hostname = substr($hostname, 0, strpos($hostname, ':'));
             }
 
-            $sender_email = $a->config['sender_email'];
+            $sender_email = Config::get('config', 'sender_email');
             if (empty($sender_email)) {
                 $sender_email = 'noreply@' . $hostname;
             }

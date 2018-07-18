@@ -26,29 +26,30 @@
  * Note when using with Windows Active Directory: you may need to set TLS_CACERT in your site
  * ldap.conf file to the signing cert for your LDAP server.
  *
- * The configuration options for this module may be set in the .htconfig.php file
+ * The configuration options for this module may be set in the config/addon.ini.php file
  * e.g.:
  *
- * // ldap hostname server - required
- * $a->config['ldapauth']['ldap_server'] = 'host.example.com';
- * // dn to search users - required
- * $a->config['ldapauth']['ldap_searchdn'] = 'ou=users,dc=example,dc=com';
- * // attribute to find username - required
- * $a->config['ldapauth']['ldap_userattr'] = 'uid';
+ * [ldapauth]
+ * ; ldap hostname server - required
+ * ldap_server = host.example.com
+ * ; dn to search users - required
+ * ldap_searchdn = ou=users,dc=example,dc=com
+ * ; attribute to find username - required
+ * ldap_userattr = uid
  *
- * // admin dn - optional - only if ldap server dont have anonymous access
- * $a->config['ldapauth']['ldap_binddn'] = 'cn=admin,dc=example,dc=com';
- * // admin password - optional - only if ldap server dont have anonymous access
- * $a->config['ldapauth']['ldap_bindpw'] = 'password';
+ * ; admin dn - optional - only if ldap server dont have anonymous access
+ * ldap_binddn = cn=admin,dc=example,dc=com
+ * ; admin password - optional - only if ldap server dont have anonymous access
+ * ldap_bindpw = password
  *
- * // for create Friendica account if user exist in ldap
- * //     required an email and a simple (beautiful) nickname on user ldap object
- * //   active account creation - optional - default none
- * $a->config['ldapauth']['ldap_autocreateaccount'] = 'true';
- * //   attribute to get email - optional - default : 'mail'
- * $a->config['ldapauth']['ldap_autocreateaccount_emailattribute'] = 'mail';
- * //   attribute to get nickname - optional - default : 'givenName'
- * $a->config['ldapauth']['ldap_autocreateaccount_nameattribute'] = 'cn';
+ * ; for create Friendica account if user exist in ldap
+ * ;     required an email and a simple (beautiful) nickname on user ldap object
+ * ;   active account creation - optional - default none
+ * ldap_autocreateaccount = true
+ * ;   attribute to get email - optional - default : 'mail'
+ * ldap_autocreateaccount_emailattribute = mail
+ * ;   attribute to get nickname - optional - default : 'givenName'
+ * ldap_autocreateaccount_nameattribute = cn
  *
  * ...etc.
  */
@@ -58,12 +59,19 @@ use Friendica\Model\User;
 
 function ldapauth_install()
 {
+	Addon::registerHook('load_config',  'addon/ldapauth/ldapauth.php', 'ldapauth_load_config');
 	Addon::registerHook('authenticate', 'addon/ldapauth/ldapauth.php', 'ldapauth_hook_authenticate');
 }
 
 function ldapauth_uninstall()
 {
+	Addon::unregisterHook('load_config',  'addon/ldapauth/ldapauth.php', 'ldapauth_load_config');
 	Addon::unregisterHook('authenticate', 'addon/ldapauth/ldapauth.php', 'ldapauth_hook_authenticate');
+}
+
+function ldapauth_load_config(\Friendica\App $a)
+{
+	$a->loadConfigFile(__DIR__. '/config/ldapauth.ini.php');
 }
 
 function ldapauth_hook_authenticate($a, &$b)
