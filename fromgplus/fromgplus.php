@@ -169,7 +169,6 @@ function fromgplus_post($a, $uid, $source, $body, $location, $coord, $id) {
 	$_SESSION['uid'] = $uid;
 
 	unset($_REQUEST);
-	$_REQUEST['type'] = 'wall';
 	$_REQUEST['api_source'] = true;
 
 	$_REQUEST['profile_uid'] = $uid;
