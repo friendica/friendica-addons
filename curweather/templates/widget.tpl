@@ -1,6 +1,6 @@
 <div id="curweather-network" class="widget">
 	<div class="title tool">
-		<h4 title="{{$lastupdate}}">{{$title}}: {{$city}}</h4>
+		<h3 title="{{$lastupdate}}">{{$title}}: {{$city}}</h3>
 	</div>
 	<p>
 	<img src="{{$icon}}" title="{{$description}}">
