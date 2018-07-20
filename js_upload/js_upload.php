@@ -41,7 +41,7 @@ function js_upload_form(&$a,&$b) {
 	$b['addon_text'] .= '<link href="' . $a->get_baseurl() . '/addon/js_upload/file-uploader/client/fileuploader.css" rel="stylesheet" type="text/css">';
 	$b['addon_text'] .= '<script src="' . $a->get_baseurl() . '/addon/js_upload/file-uploader/client/fileuploader.js" type="text/javascript"></script>';
 
-	$upload_msg = L10n::t('Upload a file');
+	$upload_msg = L10n::t('Select files for upload');
 	$drop_msg = L10n::t('Drop files here to upload');
 	$cancel = L10n::t('Cancel');
 	$failed = L10n::t('Failed');
