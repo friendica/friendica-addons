@@ -32,8 +32,9 @@ use Friendica\Content\Text\HTML;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
-use Friendica\Model\User;
+use Friendica\Database\dba;
 use Friendica\Model\Item;
+use Friendica\Model\User;
 
 function windowsphonepush_install()
 {

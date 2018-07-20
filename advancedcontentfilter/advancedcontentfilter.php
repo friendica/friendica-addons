@@ -34,15 +34,22 @@
  */
 
 use Friendica\App;
+use Friendica\Content\Text\Markdown;
 use Friendica\Core\Addon;
+use Friendica\Core\Cache;
 use Friendica\Core\L10n;
 use Friendica\Core\System;
+use Friendica\Database\dba;
+use Friendica\Database\DBM;
 use Friendica\Database\DBStructure;
+use Friendica\Model\Item;
+use Friendica\Model\Term;
+use Friendica\Module\Login;
 use Friendica\Network\HTTPException;
+use Friendica\Util\DateTimeFormat;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\ExpressionLanguage;
-use Friendica\Model\Item;
 
 require_once 'boot.php';
 require_once 'include/conversation.php';
@@ -110,7 +117,7 @@ function advancedcontentfilter_prepare_body_content_filter(App $a, &$hook_data)
 		$vars[str_replace('-', '_', $key)] = $value;
 	}
 
-	$rules = Friendica\Core\Cache::get('rules_' . local_user());
+	$rules = Cache::get('rules_' . local_user());
 	if (!isset($rules)) {
 		$rules = dba::inArray(dba::select(
 			'advancedcontentfilter_rules',
@@ -179,7 +186,7 @@ function advancedcontentfilter_init(App $a)
 function advancedcontentfilter_content(App $a)
 {
 	if (!local_user()) {
-		return \Friendica\Module\Login::form('/' . implode('/', $a->argv));
+		return Login::form('/' . implode('/', $a->argv));
 	}
 
 	if ($a->argc > 0 && $a->argv[1] == 'help') {
@@ -194,7 +201,7 @@ function advancedcontentfilter_content(App $a)
 
 		$content = file_get_contents($help_path);
 
-		$html = \Friendica\Content\Text\Markdown::convert($content, false);
+		$html = Markdown::convert($content, false);
 
 		$html = str_replace('code>', 'key>', $html);
 
@@ -332,7 +339,7 @@ function advancedcontentfilter_post_rules(ServerRequestInterface $request)
 	}
 
 	$fields['uid'] = local_user();
-	$fields['created'] = \Friendica\Util\DateTimeFormat::utcNow();
+	$fields['created'] = DateTimeFormat::utcNow();
 
 	if (!dba::insert('advancedcontentfilter_rules', $fields)) {
 		throw new HTTPException\ServiceUnavaiableException(dba::errorMessage());
@@ -407,11 +414,11 @@ function advancedcontentfilter_get_variables_guid(ServerRequestInterface $reques
 	$params = ['order' => ['uid' => true]];
 	$item = Item::selectFirstForUser(local_user(), [], $condition, $params);
 
-	if (!\Friendica\Database\DBM::is_result($item)) {
+	if (!DBM::is_result($item)) {
 		throw new HTTPException\NotFoundException(L10n::t('Unknown post with guid: %s', $args['guid']));
 	}
 
-	$tags = \Friendica\Model\Term::populateTagsFromItem($item);
+	$tags = Term::populateTagsFromItem($item);
 
 	$item['tags'] = $tags['tags'];
 	$item['hashtags'] = $tags['hashtags'];

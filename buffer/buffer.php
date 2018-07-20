@@ -13,6 +13,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Database\dba;
 use Friendica\Model\ItemContent;
 
 function buffer_install() {
