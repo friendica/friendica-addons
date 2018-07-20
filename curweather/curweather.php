@@ -35,11 +35,12 @@ function getWeather( $loc, $units='metric', $lang='en', $appid='', $cachetime=0)
         $res = new SimpleXMLElement(Network::fetchUrl($url));
     } catch (Exception $e) {
         if (!$_SESSION['curweather_notice_shown']) {
-            info(L10n::t('Error fetching weather data.\nError was: '.$e->getMessage()));
+            info(L10n::t('Error fetching weather data. Error was: '.$e->getMessage()));
             $_SESSION['curweather_notice_shown'] = true;
         }
         return false;
     }
+    unset($_SESSION['curweather_notice_shown']);
     if ((string)$res->temperature['unit']==='metric') {
         $tunit = '°C';
         $wunit = 'm/s';
