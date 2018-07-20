@@ -13,7 +13,7 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
-use Friendica\Database\dba;
+use Friendica\Database\DBA;
 use Friendica\Database\DBM;
 use Friendica\Model\Contact;
 use Friendica\Model\GContact;
@@ -439,7 +439,7 @@ function pumpio_send(&$a, &$b)
 
 		// Dont't post if the post doesn't belong to us.
 		// This is a check for forum postings
-		$self = dba::selectFirst('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
+		$self = DBA::selectFirst('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
 		if ($b['contact-id'] != $self['id']) {
 			return;
 		}
@@ -952,7 +952,7 @@ function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = tru
 	}
 
 	$condition = ['verb' => ACTIVITY_LIKE, 'uid' => $uid, 'contact-id' => $contactid, 'thr-parent' => $orig_post['uri']];
-	if (dba::exists('item', $condition)) {
+	if (DBA::exists('item', $condition)) {
 		logger("pumpio_dolike: found existing like. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
 		return;
 	}
@@ -1079,13 +1079,13 @@ function pumpio_dodelete(&$a, $uid, $self, $post, $own_id)
 {
 	// Two queries for speed issues
 	$condition = ['uri' => $post->object->id, 'uid' => $uid];
-	if (dba::exists('item', $condition)) {
+	if (DBA::exists('item', $condition)) {
 		Item::delete($condition);
 		return true;
 	}
 
 	$condition = ['extid' => $post->object->id, 'uid' => $uid];
-	if (dba::exists('item', $condition)) {
+	if (DBA::exists('item', $condition)) {
 		Item::delete($condition);
 		return true;
 	}
@@ -1110,10 +1110,10 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 
 	if ($post->verb != "update") {
 		// Two queries for speed issues
-		if (dba::exists('item', ['uri' => $post->object->id, 'uid' => $uid])) {
+		if (DBA::exists('item', ['uri' => $post->object->id, 'uid' => $uid])) {
 			return false;
 		}
-		if (dba::exists('item', ['extid' => $post->object->id, 'uid' => $uid])) {
+		if (DBA::exists('item', ['extid' => $post->object->id, 'uid' => $uid])) {
 			return false;
 		}
 	}
@@ -1639,11 +1639,11 @@ function pumpio_fetchallcomments(&$a, $uid, $id)
 		}
 
 		// Checking if the comment already exists - Two queries for speed issues
-		if (dba::exists('item', ['uri' => $item->id, 'uid' => $uid])) {
+		if (DBA::exists('item', ['uri' => $item->id, 'uid' => $uid])) {
 			continue;
 		}
 
-		if (dba::exists('item', ['extid' => $item->id, 'uid' => $uid])) {
+		if (DBA::exists('item', ['extid' => $item->id, 'uid' => $uid])) {
 			continue;
 		}
 

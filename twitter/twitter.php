@@ -71,7 +71,7 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
-use Friendica\Database\dba;
+use Friendica\Database\DBA;
 use Friendica\Database\DBM;
 use Friendica\Model\Contact;
 use Friendica\Model\GContact;
@@ -495,7 +495,7 @@ function twitter_post_hook(App $a, &$b)
 
 		// Dont't post if the post doesn't belong to us.
 		// This is a check for forum postings
-		$self = dba::selectFirst('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
+		$self = DBA::selectFirst('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
 		if ($b['contact-id'] != $self['id']) {
 			return;
 		}
@@ -734,17 +734,17 @@ function twitter_expire(App $a, $b)
 		return;
 	}
 
-	$r = dba::select('item', ['id', 'iaid', 'icid'], ['deleted' => true, 'network' => NETWORK_TWITTER]);
-	while ($row = dba::fetch($r)) {
-		dba::delete('item', ['id' => $row['id']]);
-		if (!empty($row['iaid']) && !dba::exists('item', ['iaid' => $row['iaid']])) {
-			dba::delete('item-activity', ['id' => $row['iaid']]);
+	$r = DBA::select('item', ['id', 'iaid', 'icid'], ['deleted' => true, 'network' => NETWORK_TWITTER]);
+	while ($row = DBA::fetch($r)) {
+		DBA::delete('item', ['id' => $row['id']]);
+		if (!empty($row['iaid']) && !DBA::exists('item', ['iaid' => $row['iaid']])) {
+			DBA::delete('item-activity', ['id' => $row['iaid']]);
 		}
-		if (!empty($row['icid']) && !dba::exists('item', ['icid' => $row['icid']])) {
-			dba::delete('item-content', ['id' => $row['icid']]);
+		if (!empty($row['icid']) && !DBA::exists('item', ['icid' => $row['icid']])) {
+			DBA::delete('item-content', ['id' => $row['icid']]);
 		}
 	}
-	dba::close($r);
+	DBA::close($r);
 
 	require_once "include/items.php";
 
@@ -1014,11 +1014,11 @@ function twitter_fetch_contact($uid, $data, $create_user)
 
 	$cid = Contact::getIdForURL($url, 0, true, $fields);
 	if (!empty($cid)) {
-		dba::update('contact', $fields, ['id' => $cid]);
+		DBA::update('contact', $fields, ['id' => $cid]);
 		Contact::updateAvatar($avatar, 0, $cid);
 	}
 
-	$contact = dba::selectFirst('contact', [], ['uid' => $uid, 'alias' => "twitter::" . $data->id_str]);
+	$contact = DBA::selectFirst('contact', [], ['uid' => $uid, 'alias' => "twitter::" . $data->id_str]);
 	if (!DBM::is_result($contact) && !$create_user) {
 		return 0;
 	}
@@ -1037,11 +1037,11 @@ function twitter_fetch_contact($uid, $data, $create_user)
 		$fields['readonly'] = false;
 		$fields['pending'] = false;
 
-		if (!dba::insert('contact', $fields)) {
+		if (!DBA::insert('contact', $fields)) {
 			return false;
 		}
 
-		$contact_id = dba::lastInsertId();
+		$contact_id = DBA::lastInsertId();
 
 		Group::addMember(User::getDefaultGroup($uid), $contact_id);
 
@@ -1066,7 +1066,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 			$fields['name-date'] = DateTimeFormat::utcNow();
 			$fields['uri-date'] = DateTimeFormat::utcNow();
 
-			dba::update('contact', $fields, ['id' => $contact['id']]);
+			DBA::update('contact', $fields, ['id' => $contact['id']]);
 		}
 	}
 
@@ -1342,7 +1342,7 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 	// $postarray['object'] = json_encode($post); // Activate for debugging
 
 	// Don't import our own comments
-	if (dba::exists('item', ['extid' => $postarray['uri'], 'uid' => $uid])) {
+	if (DBA::exists('item', ['extid' => $postarray['uri'], 'uid' => $uid])) {
 		logger("Item with extid " . $postarray['uri'] . " found.", LOGGER_DEBUG);
 		return [];
 	}
@@ -1515,7 +1515,7 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 			break;
 		}
 
-		if (dba::exists('item', ['uri' => 'twitter::' . $post->id_str, 'uid' => $uid])) {
+		if (DBA::exists('item', ['uri' => 'twitter::' . $post->id_str, 'uid' => $uid])) {
 			break;
 		}
 
@@ -1660,7 +1660,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 			$notify = false;
 
 			if ($postarray['uri'] == $postarray['parent-uri']) {
-				$contact = dba::selectFirst('contact', [], ['id' => $postarray['contact-id'], 'self' => false]);
+				$contact = DBA::selectFirst('contact', [], ['id' => $postarray['contact-id'], 'self' => false]);
 				if (DBM::is_result($contact)) {
 					$notify = Item::isRemoteSelf($contact, $postarray);
 				}

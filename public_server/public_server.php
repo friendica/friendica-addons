@@ -9,7 +9,7 @@
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
-use Friendica\Database\dba;
+use Friendica\Database\DBA;
 use Friendica\Database\DBM;
 use Friendica\Util\DateTimeFormat;
 
@@ -47,7 +47,7 @@ function public_server_register_account($a, $b)
 	}
 
 	$fields = ['account_expires_on' => DateTimeFormat::utc('now +' . $days . ' days'), 'expire' => $days_posts];
-	dba::update('user', $fields, ['uid' => $uid]);
+	DBA::update('user', $fields, ['uid' => $uid]);
 }
 
 function public_server_cron($a, $b)
@@ -75,7 +75,7 @@ function public_server_cron($a, $b)
 			]);
 
 			$fields = ['expire_notification_sent' => DateTimeFormat::utcNow()];
-			dba::update('user', $fields, ['uid' => $rr['uid']]);
+			DBA::update('user', $fields, ['uid' => $rr['uid']]);
 		}
 	}
 
@@ -86,7 +86,7 @@ function public_server_cron($a, $b)
 		if (DBM::is_result($r)) {
 			foreach ($r as $rr) {
 				$fields = ['account_expires_on' => DateTimeFormat::utc('now +6 days')];
-				dba::update('user', $fields, ['uid' => $rr['uid']]);
+				DBA::update('user', $fields, ['uid' => $rr['uid']]);
 			}
 		}
 	}
@@ -98,7 +98,7 @@ function public_server_cron($a, $b)
 		if (DBM::is_result($r)) {
 			foreach ($r as $rr) {
 				$fields = ['account_expires_on' => DateTimeFormat::utc('now +6 days')];
-				dba::update('user', $fields, ['uid' => $rr['uid']]);
+				DBA::update('user', $fields, ['uid' => $rr['uid']]);
 			}
 		}
 	}
@@ -110,7 +110,7 @@ function public_server_cron($a, $b)
 			intval($flagposts), dbesc(NULL_DATE));
 		if (DBM::is_result($r)) {
 			foreach ($r as $rr) {
-				dba::update('user', ['expire' => $flagpostsexpire], ['uid' => $rr['uid']]);
+				DBA::update('user', ['expire' => $flagpostsexpire], ['uid' => $rr['uid']]);
 			}
 		}
 	}
@@ -138,7 +138,7 @@ function public_server_login($a, $b)
 
 	$fields = ['account_expires_on' => DateTimeFormat::utc('now +' . $days . ' days')];
 	$condition = ["`uid` = ? AND `account_expires_on` > ?", local_user(), NULL_DATE];
-	dba::update('user', $fields, $condition);
+	DBA::update('user', $fields, $condition);
 }
 
 function public_server_addon_admin_post(&$a)

@@ -12,7 +12,7 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
-use Friendica\Database\dba;
+use Friendica\Database\DBA;
 use Friendica\Database\DBM;
 use Friendica\Model\Contact;
 use Friendica\Model\Photo;
@@ -78,14 +78,14 @@ function catavatar_addon_settings_post(App $a, &$s)
 	// delete the current cached cat avatar
 	$condition = ['uid' => local_user(), 'blocked' => false,
 			'account_expired' => false, 'account_removed' => false];
-	$user = dba::selectFirst('user', ['email'], $condition);
+	$user = DBA::selectFirst('user', ['email'], $condition);
 
 	$seed = PConfig::get(local_user(), 'catavatar', 'seed', md5(trim(strtolower($user['email']))));
 
 	if (!empty($_POST['catavatar-usecat'])) {
 		$url = $a->get_baseurl() . '/catavatar/' . local_user() . '?ts=' . time();
 
-		$self = dba::selectFirst('contact', ['id'], ['uid' => local_user(), 'self' => true]);
+		$self = DBA::selectFirst('contact', ['id'], ['uid' => local_user(), 'self' => true]);
 		if (!DBM::is_result($self)) {
 			notice(L10n::t("The cat hadn't found itself."));
 			return;
@@ -94,16 +94,16 @@ function catavatar_addon_settings_post(App $a, &$s)
 		Photo::importProfilePhoto($url, local_user(), $self['id']);
 
 		$condition = ['uid' => local_user(), 'contact-id' => $self['id']];
-		$photo = dba::selectFirst('photo', ['resource-id'], $condition);
+		$photo = DBA::selectFirst('photo', ['resource-id'], $condition);
 		if (!DBM::is_result($photo)) {
 			notice(L10n::t('There was an error, the cat ran away.'));
 			return;
 		}
 
-		dba::update('photo', ['profile' => false], ['profile' => true, 'uid' => local_user()]);
+		DBA::update('photo', ['profile' => false], ['profile' => true, 'uid' => local_user()]);
 
 		$fields = ['profile' => true, 'album' => L10n::t('Profile Photos'), 'contact-id' => 0];
-		dba::update('photo', $fields, ['uid' => local_user(), 'resource-id' => $photo['resource-id']]);
+		DBA::update('photo', $fields, ['uid' => local_user(), 'resource-id' => $photo['resource-id']]);
 
 		Photo::importProfilePhoto($url, local_user(), $self['id']);
 
@@ -138,7 +138,7 @@ function catavatar_addon_settings_post(App $a, &$s)
  */
 function catavatar_lookup(App $a, &$b)
 {
-	$user = dba::selectFirst('user', ['uid'], ['email' => $b['email']]);
+	$user = DBA::selectFirst('user', ['uid'], ['email' => $b['email']]);
 	$url = $a->get_baseurl() . '/catavatar/' . $user['uid'];
 
 	switch($b['size']) {
@@ -174,7 +174,7 @@ function catavatar_content(App $a)
 
 	$condition = ['uid' => $uid, 'blocked' => false,
 			'account_expired' => false, 'account_removed' => false];
-	$user = dba::selectFirst('user', ['email'], $condition);
+	$user = DBA::selectFirst('user', ['email'], $condition);
 
 	if ($user === false) {
 		throw new NotFoundException();

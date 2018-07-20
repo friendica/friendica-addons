@@ -14,7 +14,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
-use Friendica\Database\dba;
+use Friendica\Database\DBA;
 
 function tumblr_install() {
 	Addon::registerHook('post_local',           'addon/tumblr/tumblr.php', 'tumblr_post_local');
@@ -332,7 +332,7 @@ function tumblr_send(&$a,&$b) {
 
 	// Dont't post if the post doesn't belong to us.
 	// This is a check for forum postings
-	$self = dba::selectFirst('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
+	$self = DBA::selectFirst('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
 	if ($b['contact-id'] != $self['id']) {
 		return;
 	}
