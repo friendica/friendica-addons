@@ -7,6 +7,8 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  *
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -95,7 +97,7 @@ function nsfw_addon_settings(&$a, &$s)
 	return;
 }
 
-function nsfw_addon_settings_post(&$a, &$b)
+function nsfw_addon_settings_post(App $a, array &$b)
 {
 	if (!local_user()) {
 		return;
@@ -110,9 +112,10 @@ function nsfw_addon_settings_post(&$a, &$b)
 	}
 }
 
-function nsfw_prepare_body_content_filter(\Friendica\App $a, &$hook_data)
+function nsfw_prepare_body_content_filter(App $a, &$hook_data)
 {
 	$words = null;
+
 	if (PConfig::get(local_user(), 'nsfw', 'disable')) {
 		return;
 	}
@@ -128,16 +131,19 @@ function nsfw_prepare_body_content_filter(\Friendica\App $a, &$hook_data)
 	}
 
 	$found = false;
+
 	if (count($word_list)) {
 		$body = $hook_data['item']['title'] . "\n" . nsfw_extract_photos($hook_data['item']['body']);
 
 		foreach ($word_list as $word) {
 			$word = trim($word);
+
 			if (!strlen($word)) {
 				continue;
 			}
 
 			$tag_search = false;
+
 			switch ($word[0]) {
 				case '/'; // Regular expression
 					$found = preg_match($word, $body);

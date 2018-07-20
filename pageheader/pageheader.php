@@ -7,6 +7,8 @@
  *         Hauke Altmann <https://snarl.de/profile/tugelblend>
  * 
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -33,7 +35,7 @@ function pageheader_uninstall() {
 
 
 
-function pageheader_addon_settings(&$a,&$s) {
+function pageheader_addon_settings(App $a, &$s) {
 
 
 	if(! is_site_admin())
@@ -59,7 +61,7 @@ function pageheader_addon_settings(&$a,&$s) {
 
 }
 
-function pageheader_addon_settings_post(&$a,&$b) {
+function pageheader_addon_settings_post(App $a, array &$b) {
 
 	if(! is_site_admin())
 		return;
@@ -70,7 +72,7 @@ function pageheader_addon_settings_post(&$a,&$b) {
 	}
 }
 
-function pageheader_fetch($a,&$b) {
+function pageheader_fetch(App $a, &$b) {
 	
 	if(file_exists('pageheader.html')){
 		$s = file_get_contents('pageheader.html');

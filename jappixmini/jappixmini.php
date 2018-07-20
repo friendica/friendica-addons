@@ -419,7 +419,7 @@ function jappixmini_settings(App $a, &$s)
     </script>";
 }
 
-function jappixmini_settings_post(App $a, &$b)
+function jappixmini_settings_post(App $a, array &$b)
 {
 	// save addon settings for a user
 	if (!local_user()) {

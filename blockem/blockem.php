@@ -6,6 +6,8 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  *
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -68,7 +70,7 @@ function blockem_addon_settings(&$a, &$s)
 
 }
 
-function blockem_addon_settings_post(&$a,&$b) {
+function blockem_addon_settings_post(App $a, array &$b) {
 
 	if(! local_user())
 		return;
@@ -79,7 +81,7 @@ function blockem_addon_settings_post(&$a,&$b) {
 	}
 }
 
-function blockem_enotify_store(&$a,&$b) {
+function blockem_enotify_store(App $a, array &$b) {
 
 	$words = PConfig::get($b['uid'],'blockem','words');
 	if($words) {
@@ -107,7 +109,7 @@ function blockem_enotify_store(&$a,&$b) {
 	}
 }
 
-function blockem_prepare_body_content_filter(\Friendica\App $a, &$hook_data)
+function blockem_prepare_body_content_filter(App $a, array &$hook_data)
 {
 	if (!local_user()) {
 		return;
@@ -137,24 +139,25 @@ function blockem_prepare_body_content_filter(\Friendica\App $a, &$hook_data)
 	}
 }
 
-function blockem_display_item(&$a,&$b) {
-	if (empty($b['output']['body'])) {
-		return;
-	}
-
-	if(strstr($b['output']['body'],'id="blockem-wrap-'))
+function blockem_display_item(App $a, array &$b)
+{
+	if (isset($b['output']) && strstr($b['output']['body'], 'id="blockem-wrap-')) {
 		$b['output']['thumb'] = $a->get_baseurl() . "/images/person-80.jpg";
+	}
 }
 
-function blockem_conversation_start(&$a,&$b) {
+function blockem_conversation_start(App $a, array &$b) {
 
-	if(! local_user())
+	if (! local_user()) {
 		return;
-
-	$words = PConfig::get(local_user(),'blockem','words');
-	if($words) {
-		$a->data['blockem'] = explode(',',$words);
 	}
+
+	$words = PConfig::get(local_user(), 'blockem', 'words');
+
+	if ($words) {
+		$a->data['blockem'] = explode(',', $words);
+	}
+
 	$a->page['htmlhead'] .= <<< EOT
 
 <script>
@@ -174,7 +177,7 @@ EOT;
 
 }
 
-function blockem_item_photo_menu(&$a,&$b) {
+function blockem_item_photo_menu(App $a, array &$b) {
 
 	if((! local_user()) || ($b['item']['self']))
 		return;

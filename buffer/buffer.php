@@ -109,7 +109,7 @@ function buffer_connect(&$a) {
 	return($o);
 }
 
-function buffer_jot_nets(&$a,&$b) {
+function buffer_jot_nets(App $a, &$b) {
 	if(! local_user())
 		return;
 
@@ -122,7 +122,7 @@ function buffer_jot_nets(&$a,&$b) {
 	}
 }
 
-function buffer_settings(&$a,&$s) {
+function buffer_settings(App $a, &$s) {
 
 	if(! local_user())
 		return;
@@ -205,7 +205,7 @@ function buffer_settings(&$a,&$s) {
 }
 
 
-function buffer_settings_post(&$a,&$b) {
+function buffer_settings_post(App $a, array &$b) {
 
 	if(x($_POST,'buffer-submit')) {
 		if(x($_POST,'buffer_delete')) {
@@ -219,7 +219,7 @@ function buffer_settings_post(&$a,&$b) {
 	}
 }
 
-function buffer_post_local(&$a,&$b) {
+function buffer_post_local(App $a, array &$b) {
 
 	if (!local_user() || (local_user() != $b['uid'])) {
 		return;
@@ -244,7 +244,7 @@ function buffer_post_local(&$a,&$b) {
 	$b['postopts'] .= 'buffer';
 }
 
-function buffer_send(App $a, &$b)
+function buffer_send(App $a, array &$b)
 {
 	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;

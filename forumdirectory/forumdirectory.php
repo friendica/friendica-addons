@@ -6,6 +6,7 @@
  * Author: Thomas Willingham <https://beardyunixer.com/profile/beardyunixer>
  */
 
+use Friendica\App;
 use Friendica\Content\Nav;
 use Friendica\Content\Widget;
 use Friendica\Core\Addon;
@@ -34,7 +35,7 @@ function forumdirectory_module()
 	return;
 }
 
-function forumdirectory_app_menu($a, &$b)
+function forumdirectory_app_menu(App $a, array &$b)
 {
 	$b['app_menu'][] = '<div class="app-title"><a href="forumdirectory">' . L10n::t('Forum Directory') . '</a></div>';
 }

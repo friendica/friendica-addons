@@ -6,12 +6,15 @@
  * Author: Tony Baldwin <https://free-haven.org/profile/tony>
  * Author: Michael Johnston
  * Author: Cat Gray <https://free-haven.org/profile/catness>
+ * @TODO A lot spaces here needs converted to tab
  */
 
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Database\DBM;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
 
@@ -23,6 +26,7 @@ function ijpost_install() {
     Addon::registerHook('connector_settings_post', 'addon/ijpost/ijpost.php', 'ijpost_settings_post');
 
 }
+
 function ijpost_uninstall() {
     Addon::unregisterHook('post_local',       'addon/ijpost/ijpost.php', 'ijpost_post_local');
     Addon::unregisterHook('notifier_normal',  'addon/ijpost/ijpost.php', 'ijpost_send');
@@ -32,8 +36,7 @@ function ijpost_uninstall() {
 
 }
 
-
-function ijpost_jot_nets(&$a,&$b) {
+function ijpost_jot_nets(App $a, &$b) {
     if(! local_user())
         return;
 
@@ -106,7 +109,7 @@ function ijpost_settings(&$a,&$s) {
 }
 
 
-function ijpost_settings_post(&$a,&$b) {
+function ijpost_settings_post(App $a, array &$b) {
 
 	if(x($_POST,'ijpost-submit')) {
 
@@ -119,8 +122,7 @@ function ijpost_settings_post(&$a,&$b) {
 
 }
 
-function ijpost_post_local(&$a,&$b) {
-
+function ijpost_post_local(App $a, array &$b) {
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
 	if($b['edit'])
@@ -150,7 +152,7 @@ function ijpost_post_local(&$a,&$b) {
 
 
 
-function ijpost_send(&$a,&$b) {
+function ijpost_send(App $a, array &$b) {
 
     if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
         return;
@@ -167,17 +169,20 @@ function ijpost_send(&$a,&$b) {
 
 	$tz = 'UTC';
 
-	$x = q("select timezone from user where uid = %d limit 1",
+	$x = q("SELECT `timezone` FROM `user` WHERE `uid` = %d LIMIT 1",
 		intval($b['uid'])
 	);
-	if($x && strlen($x[0]['timezone']))
+
+	if (DBM::is_result($x) && !empty($x[0]['timezone'])) {
 		$tz = $x[0]['timezone'];
+	}
 
 	$ij_username = PConfig::get($b['uid'],'ijpost','ij_username');
 	$ij_password = PConfig::get($b['uid'],'ijpost','ij_password');
+
 	$ij_blog = 'http://www.insanejournal.com/interface/xmlrpc';
 
-	if($ij_username && $ij_password && $ij_blog) {
+	if ($ij_username && $ij_password && $ij_blog) {
 		$title = $b['title'];
 		$post = BBCode::convert($b['body']);
 		$post = xmlify($post);
@@ -222,6 +227,7 @@ EOT;
 		if($ij_blog !== 'test') {
 			$x = Network::post($ij_blog, $xml, ["Content-Type: text/xml"]);
 		}
+
 		logger('posted to insanejournal: ' . ($x) ? $x : '', LOGGER_DEBUG);
 
 	}

@@ -5,6 +5,8 @@
  * Version: 0.2
  * Author: Johannes Schwab <https://friendica.jschwab.org/profile/ddorian>
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 
 function smileybutton_install() {
@@ -24,15 +26,17 @@ function smileybutton_uninstall() {
 
 
 
-function show_button(Friendica\App $a, &$b) {
+function show_button(App $a, &$b) {
 	// Disable if theme is quattro
 	// TODO add style for quattro
-	if ($a->getCurrentTheme() == 'quattro')
+	if ($a->getCurrentTheme() == 'quattro') {
 		return;
+	}
 
 	// Disable for mobile because most mobiles have a smiley key for ther own
-	if ($a->is_mobile || $a->is_tablet)
+	if ($a->is_mobile || $a->is_tablet) {
 		return;
+	}
 
 	/**
 	 *

@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * Name: superblock
  * Description: block people
@@ -8,6 +6,8 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  *
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -69,7 +69,7 @@ function superblock_addon_settings(&$a,&$s) {
 	return;
 }
 
-function superblock_addon_settings_post(&$a,&$b) {
+function superblock_addon_settings_post(App $a, array &$b) {
 
 	if(! local_user())
 		return;
@@ -80,7 +80,7 @@ function superblock_addon_settings_post(&$a,&$b) {
 	}
 }
 
-function superblock_enotify_store(&$a,&$b) {
+function superblock_enotify_store(App $a, array &$b) {
 
 	$words = PConfig::get($b['uid'],'system','blocked');
 	if($words) {
@@ -109,7 +109,7 @@ function superblock_enotify_store(&$a,&$b) {
 }
 
 
-function superblock_conversation_start(&$a,&$b) {
+function superblock_conversation_start(App $a, array &$b) {
 
 	if(! local_user())
 		return;
@@ -132,7 +132,7 @@ EOT;
 
 }
 
-function superblock_item_photo_menu(&$a,&$b) {
+function superblock_item_photo_menu(App $a, array &$b) {
 
 	if((! local_user()) || ($b['item']['self']))
 		return;

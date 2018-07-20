@@ -6,6 +6,7 @@
  * Author: Tobias Diekershoff <https://social.diekershoff.de/profile/tobias>
  * License: 3-clause BSD license
  */
+
 use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -73,7 +74,7 @@ function mathjax_settings (&$a, &$s) {
 /*  we need to add one JavaScript include command to the html output
  *  note that you have to check the jsmath/easy/load.js too.
  */
-function mathjax_page_header($a, &$b) {
+function mathjax_page_header(App $a, &$b) {
     //  if the visitor of the page is not a local_user, use MathJax
     //  otherwise check the users settings.
     $url = Config::get ('mathjax','baseurl');

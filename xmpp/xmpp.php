@@ -5,6 +5,7 @@
  * Version: 0.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
+
 use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;

@@ -14,6 +14,8 @@
  * Module Author: Chris Case
  *
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -34,7 +36,7 @@ function js_upload_uninstall() {
 }
 
 
-function js_upload_form(&$a,&$b) {
+function js_upload_form(App $a, array &$b) {
 
 	$b['default_upload'] = false;
 
@@ -134,7 +136,7 @@ EOT;
 
 }
 
-function js_upload_post_init(&$a,&$b) {
+function js_upload_post_init(App $a, array &$b) {
 
 	// list of valid extensions, ex. array("jpeg", "xml", "bmp")
 
@@ -162,7 +164,7 @@ function js_upload_post_init(&$a,&$b) {
 
 }
 
-function js_upload_post_file(&$a,&$b) {
+function js_upload_post_file(App $a, array &$b) {
 
 	$result = $a->data['upload_result'];
 
@@ -173,7 +175,7 @@ function js_upload_post_file(&$a,&$b) {
 }
 
 
-function js_upload_post_end(&$a,&$b) {
+function js_upload_post_end(App $a, array &$b) {
 
 logger('upload_post_end');
 	if(x($a->data,'upload_jsonresponse')) {

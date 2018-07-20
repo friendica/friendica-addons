@@ -5,6 +5,8 @@
  * Version: 1.0
  * Author: Thomas Willingham <https://kakste.com/profile/beardyunixer>
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -56,7 +58,7 @@ function group_text_settings_post($a,$post) {
 
 
 
-function group_text_settings(&$a,&$s) {
+function group_text_settings(App $a, &$s) {
 
 	if(! local_user())
 		return;

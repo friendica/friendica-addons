@@ -6,6 +6,7 @@
  * Author: Tony Baldwin <https://free-haven.org/u/tony>
  */
 
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
@@ -30,7 +31,7 @@ function libertree_uninstall() {
 }
 
 
-function libertree_jot_nets(&$a,&$b) {
+function libertree_jot_nets(App $a, &$b) {
     if(! local_user())
         return;
 
@@ -44,7 +45,7 @@ function libertree_jot_nets(&$a,&$b) {
 }
 
 
-function libertree_settings(&$a,&$s) {
+function libertree_settings(App $a, &$s) {
 
     if(! local_user())
         return;
@@ -104,7 +105,7 @@ function libertree_settings(&$a,&$s) {
 }
 
 
-function libertree_settings_post(&$a,&$b) {
+function libertree_settings_post(App $a, array &$b) {
 
 	if(x($_POST,'libertree-submit')) {
 
@@ -117,7 +118,7 @@ function libertree_settings_post(&$a,&$b) {
 
 }
 
-function libertree_post_local(&$a,&$b) {
+function libertree_post_local(App $a, array &$b) {
 
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
@@ -155,7 +156,7 @@ function libertree_post_local(&$a,&$b) {
 
 
 
-function libertree_send(&$a,&$b) {
+function libertree_send(App $a, array &$b) {
 
 	logger('libertree_send: invoked');
 

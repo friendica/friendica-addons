@@ -6,6 +6,8 @@
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  *
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 
@@ -23,20 +25,19 @@ function googlemaps_uninstall()
 	logger("removed googlemaps");
 }
 
-function googlemaps_location($a, &$item)
+function googlemaps_location(App $a, array &$item)
 {
-
-	if(! (strlen($item['location']) || strlen($item['coord']))) {
+	if (! (strlen($item['location']) || strlen($item['coord']))) {
 		return;
 	}
 
-	if ($item['coord'] != ""){ 
+	if (isset($item['coord'])) {
 		$target = "http://maps.google.com/?q=".urlencode($item['coord']);
 	} else {
 		$target = "http://maps.google.com/?q=".urlencode($item['location']);
 	}
 
-	if ($item['location'] != "") {
+	if (isset($item['location'])) {
 		$title = $item['location'];
 	} else {
 		$title = $item['coord'];

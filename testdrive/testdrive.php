@@ -6,9 +6,11 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
 
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Database\DBM;
 use Friendica\Model\User;
 use Friendica\Util\DateTimeFormat;
 
@@ -33,16 +35,17 @@ function testdrive_uninstall() {
 
 }
 
-function testdrive_load_config(\Friendica\App $a)
+function testdrive_load_config(App $a)
 {
 	$a->loadConfigFile(__DIR__. '/config/testdrive.ini.php');
 }
 
-function testdrive_globaldir_update($a,&$b) {
+function testdrive_globaldir_update(App $a, &$b)
+{
 	$b['url'] = '';
 }
 
-function testdrive_register_account($a,$b) {
+function testdrive_register_account(App $a, $b) {
 
 	$uid = $b;
 
@@ -58,13 +61,13 @@ function testdrive_register_account($a,$b) {
 };
 
 
-function testdrive_cron($a,$b) {
+function testdrive_cron(App $a) {
 	require_once('include/enotify.php');
 
-	$r = q("select * from user where account_expires_on < UTC_TIMESTAMP() + INTERVAL 5 DAY and
-		expire_notification_sent = '0000-00-00 00:00:00' ");
+	$r = q("SELECT * FROM `user` WHERE `account_expires_on` < UTC_TIMESTAMP() + INTERVAL 5 DAY AND
+		`expire_notification_sent` = '0000-00-00 00:00:00'");
 
-	if(count($r)) {
+	if (DBM::is_result($r)) {
 		foreach($r as $rr) {
 			notification([
 				'uid' => $rr['uid'],
@@ -78,23 +81,23 @@ function testdrive_cron($a,$b) {
 				'source_photo' => $a->get_baseurl() . '/images/person-80.jpg',
 			]);
 
-			q("update user set expire_notification_sent = '%s' where uid = %d",
+			q("UPDATE `user` SET `expire_notification_sent`='%s' WHERE `uid`=%d",
 				dbesc(DateTimeFormat::utcNow()),
 				intval($rr['uid'])
 			);
-
 		}
 	}
 
-	$r = q("select * from user where account_expired = 1 and account_expires_on < UTC_TIMESTAMP() - INTERVAL 5 DAY ");
-	if(count($r)) {
+	$r = q("SELECT * FROM `user` WHERE `account_expired`=1 AND `account_expires_on` < UTC_TIMESTAMP() - INTERVAL 5 DAY");
+
+	if (DBM::is_result($r)) {
 		foreach($r as $rr) {
 			User::remove($rr['uid']);
 		}
 	}
 }
 
-function testdrive_enotify(&$a, &$b) {
+function testdrive_enotify(App $a, array &$b) {
     if (x($b, 'params') && $b['params']['type'] == NOTIFY_SYSTEM
 		&& x($b['params'], 'system_type') && $b['params']['system_type'] === 'testdrive_expire') {
         $b['itemlink'] = $a->get_baseurl();

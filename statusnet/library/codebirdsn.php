@@ -317,7 +317,7 @@ class CodebirdSN
      *
      * @return string The OAuth authenticate URL
      */
-    public function oauth_authenticate($force_login = NULL, $screen_name = NULL)
+    public function oauth_authenticate($force_login = null, $screen_name = null)
     {
         if ($this->_oauth_token == null) {
             throw new \Exception('To get the authenticate URL, the OAuth token must be set.');
@@ -337,7 +337,7 @@ class CodebirdSN
      *
      * @return string The OAuth authorize URL
      */
-    public function oauth_authorize($force_login = NULL, $screen_name = NULL)
+    public function oauth_authorize($force_login = null, $screen_name = null)
     {
         if ($this->_oauth_token == null) {
             throw new \Exception('To get the authorize URL, the OAuth token must be set.');

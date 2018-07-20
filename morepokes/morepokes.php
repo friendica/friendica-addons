@@ -6,6 +6,8 @@
  * Author: Thomas Willingham <https://kakste.com/profile/beardyunixer>
  *
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 
@@ -19,7 +21,7 @@ function morepokes_uninstall()
 	  Addon::unregisterHook('poke_verbs', 'addon/morepokes/morepokes.php', 'morepokes_poke_verbs');
 }
 
-function morepokes_poke_verbs($a, &$b)
+function morepokes_poke_verbs(App $a, array &$b)
 {
 	$b['bitchslap'] = ['bitchslapped', L10n::t('bitchslap'), L10n::t('bitchslapped')];
 	$b['shag'] = ['shag', L10n::t('shag'), L10n::t('shagged')];

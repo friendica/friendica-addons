@@ -6,6 +6,7 @@
  *
  */
 
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
@@ -36,8 +37,7 @@ function blogger_uninstall()
 }
 
 
-function blogger_jot_nets(&$a, &$b)
-{
+function blogger_jot_nets(App $a, &$b) {
 	if (!local_user()) {
 		return;
 	}
@@ -115,7 +115,7 @@ function blogger_settings(&$a, &$s)
 }
 
 
-function blogger_settings_post(&$a, &$b)
+function blogger_settings_post(App $a, array &$b)
 {
 	if (x($_POST, 'blogger-submit')) {
 		PConfig::set(local_user(), 'blogger', 'post', intval($_POST['blogger']));
@@ -126,7 +126,7 @@ function blogger_settings_post(&$a, &$b)
 	}
 }
 
-function blogger_post_local(&$a, &$b)
+function blogger_post_local(App $a, array &$b)
 {
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
@@ -164,7 +164,7 @@ function blogger_post_local(&$a, &$b)
 
 
 
-function blogger_send(&$a, &$b)
+function blogger_send(App $a, array &$b)
 {
 	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;

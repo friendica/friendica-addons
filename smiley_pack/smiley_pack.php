@@ -7,6 +7,7 @@
  * All smileys from sites offering them as Public Domain
  */
 
+use Friendica\App;
 use Friendica\Core\Addon;
 
 function smiley_pack_install() {
@@ -19,7 +20,7 @@ function smiley_pack_uninstall() {
 
  
 
-function smiley_pack_smilies(&$a,&$b) {
+function smiley_pack_smilies(App $a, array &$b) {
 
 #Smileys are split into various directories by the intended range of emotions.  This is in case we get too big and need to modularise things.  We can then cut and paste the right lines, move the right directory, and just change the name of the addon to happy_smilies or whatever.
 

@@ -7,6 +7,7 @@
  * Status: Unsupported
  */
 
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Util\DateTimeFormat;
@@ -21,7 +22,7 @@ function membersince_uninstall()
 	Addon::unregisterHook('profile_advanced', 'addon/membersince/membersince.php', 'membersince_display');
 }
 
-function membersince_display(Friendica\App $a, &$b)
+function membersince_display(App $a, array &$b)
 {
 	if ($a->getCurrentTheme() == 'frio') {
 		// Works in Frio.

@@ -9,6 +9,7 @@
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'tumblroauth.php';
 
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -126,7 +127,7 @@ function tumblr_connect($a) {
 			// Give an error message
 			$o = 'Could not connect to Tumblr. Refresh the page or try again later.';
 	}
-	return($o);
+	return $o;
 }
 
 function tumblr_callback($a) {
@@ -168,15 +169,17 @@ function tumblr_callback($a) {
 
 	$o = L10n::t("You are now authenticated to tumblr.");
 	$o .= '<br /><a href="'.$a->get_baseurl().'/settings/connectors">'.L10n::t("return to the connector page").'</a>';
-	return($o);
+	return $o;
 }
 
-function tumblr_jot_nets(&$a,&$b) {
-	if(! local_user())
+function tumblr_jot_nets(App $a, &$b) {
+	if (! local_user()) {
 		return;
+	}
 
-	$tmbl_post = PConfig::get(local_user(),'tumblr','post');
-	if(intval($tmbl_post) == 1) {
+	$tmbl_post = PConfig::get(local_user(), 'tumblr', 'post');
+
+	if (intval($tmbl_post) == 1) {
 		$tmbl_defpost = PConfig::get(local_user(),'tumblr','post_by_default');
 		$selected = ((intval($tmbl_defpost) == 1) ? ' checked="checked" ' : '');
 		$b .= '<div class="profile-jot-net"><input type="checkbox" name="tumblr_enable"' . $selected . ' value="1" /> '
@@ -185,10 +188,11 @@ function tumblr_jot_nets(&$a,&$b) {
 }
 
 
-function tumblr_settings(&$a,&$s) {
+function tumblr_settings(App $a, &$s) {
 
-	if(! local_user())
+	if (! local_user()) {
 		return;
+	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
@@ -266,7 +270,7 @@ function tumblr_settings(&$a,&$s) {
 }
 
 
-function tumblr_settings_post(&$a,&$b) {
+function tumblr_settings_post(App $a, array &$b) {
 
 	if(x($_POST,'tumblr-submit')) {
 
@@ -278,7 +282,7 @@ function tumblr_settings_post(&$a,&$b) {
 
 }
 
-function tumblr_post_local(&$a, &$b) {
+function tumblr_post_local(App $a, array &$b) {
 
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
@@ -316,7 +320,7 @@ function tumblr_post_local(&$a, &$b) {
 
 
 
-function tumblr_send(&$a,&$b) {
+function tumblr_send(App $a, array &$b) {
 
 	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;

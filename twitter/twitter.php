@@ -386,7 +386,7 @@ function twitter_settings(App $a, &$s)
 	$s .= '</div><div class="clear"></div>';
 }
 
-function twitter_post_local(App $a, &$b)
+function twitter_post_local(App $a, array &$b)
 {
 	if ($b['edit']) {
 		return;
@@ -446,7 +446,7 @@ function twitter_action(App $a, $uid, $pid, $action)
 	logger("twitter_action '" . $action . "' send, result: " . print_r($result, true), LOGGER_DEBUG);
 }
 
-function twitter_post_hook(App $a, &$b)
+function twitter_post_hook(App $a, array &$b)
 {
 	// Post to Twitter
 	if (!PConfig::get($b["uid"], 'twitter', 'import')
@@ -658,7 +658,7 @@ function twitter_addon_admin(App $a, &$o)
 	]);
 }
 
-function twitter_cron(App $a, $b)
+function twitter_cron(App $a)
 {
 	$last = Config::get('twitter', 'last_poll');
 
@@ -726,7 +726,7 @@ function twitter_cron(App $a, $b)
 	Config::set('twitter', 'last_poll', time());
 }
 
-function twitter_expire(App $a, $b)
+function twitter_expire(App $a)
 {
 	$days = Config::get('twitter', 'expire');
 
@@ -761,7 +761,7 @@ function twitter_expire(App $a, $b)
 	logger('twitter_expire: expire_end');
 }
 
-function twitter_prepare_body(App $a, &$b)
+function twitter_prepare_body(App $a, array &$b)
 {
 	if ($b["item"]["network"] != NETWORK_TWITTER) {
 		return;
@@ -920,7 +920,7 @@ function twitter_fetchtimeline(App $a, $uid)
 	PConfig::set($uid, 'twitter', 'lastid', $lastid);
 }
 
-function twitter_queue_hook(App $a, &$b)
+function twitter_queue_hook(App $a, array &$b)
 {
 	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
 		dbesc(NETWORK_TWITTER)

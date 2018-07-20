@@ -6,6 +6,8 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * Status: Unsupported
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Util\Network;
 
@@ -27,7 +29,7 @@ function fortunate_uninstall()
 }
 
 
-function fortunate_fetch(&$a, &$b)
+function fortunate_fetch(App $a, &$b)
 {
 	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'
 		. $a->get_baseurl() . '/addon/fortunate/fortunate.css' . '" media="all" />' . "\r\n";

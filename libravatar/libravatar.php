@@ -5,6 +5,8 @@
  * Version: 1.1
  * Author: Klaus Weidenbach <http://friendica.dszdw.net/profile/klaus>
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -40,7 +42,7 @@ function libravatar_load_config(\Friendica\App $a)
  * @param $a array
  * @param &$b array
  */
-function libravatar_lookup($a, &$b)
+function libravatar_lookup(App $a, array &$b)
 {
 	$default_avatar = Config::get('libravatar', 'default_avatar');
 

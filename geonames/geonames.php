@@ -21,6 +21,8 @@
  * system will call the name_uninstall() function.
  *
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -166,7 +168,7 @@ function geonames_addon_admin_post($a,$post) {
 
 
 
-function geonames_addon_admin(&$a,&$s) {
+function geonames_addon_admin(App $a, &$s) {
 
 	if(! local_user())
 		return;

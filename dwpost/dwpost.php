@@ -8,10 +8,12 @@
  * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
 
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Database\DBM;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
 
@@ -33,12 +35,13 @@ function dwpost_uninstall() {
 }
 
 
-function dwpost_jot_nets(&$a,&$b) {
-    if(! local_user())
+function dwpost_jot_nets(App $a, &$b) {
+    if (! local_user()) {
         return;
+    }
 
     $dw_post = PConfig::get(local_user(),'dwpost','post');
-    if(intval($dw_post) == 1) {
+    if (intval($dw_post) == 1) {
         $dw_defpost = PConfig::get(local_user(),'dwpost','post_by_default');
         $selected = ((intval($dw_defpost) == 1) ? ' checked="checked" ' : '');
         $b .= '<div class="profile-jot-net"><input type="checkbox" name="dwpost_enable" ' . $selected . ' value="1" /> '
@@ -47,7 +50,7 @@ function dwpost_jot_nets(&$a,&$b) {
 }
 
 
-function dwpost_settings(&$a,&$s) {
+function dwpost_settings(App $a, &$s) {
 
     if(! local_user())
         return;
@@ -107,7 +110,7 @@ function dwpost_settings(&$a,&$s) {
 }
 
 
-function dwpost_settings_post(&$a,&$b) {
+function dwpost_settings_post(App $a, array &$b) {
 
 	if(x($_POST,'dwpost-submit')) {
 
@@ -120,7 +123,7 @@ function dwpost_settings_post(&$a,&$b) {
 
 }
 
-function dwpost_post_local(&$a,&$b) {
+function dwpost_post_local(App $a, array &$b) {
 
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
@@ -151,7 +154,7 @@ function dwpost_post_local(&$a,&$b) {
 
 
 
-function dwpost_send(&$a,&$b) {
+function dwpost_send(App $a, array &$b) {
 
     if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
         return;
@@ -168,17 +171,19 @@ function dwpost_send(&$a,&$b) {
 
 	$tz = 'UTC';
 
-	$x = q("select timezone from user where uid = %d limit 1",
+	$x = q("SELECT `timezone` FROM `user` WHERE `uid` = %d LIMIT 1",
 		intval($b['uid'])
 	);
-	if($x && strlen($x[0]['timezone']))
+
+	if (!empty($x[0]['timezone'])) {
 		$tz = $x[0]['timezone'];
+	}
 
 	$dw_username = PConfig::get($b['uid'],'dwpost','dw_username');
 	$dw_password = PConfig::get($b['uid'],'dwpost','dw_password');
 	$dw_blog = 'http://www.dreamwidth.org/interface/xmlrpc';
 
-	if($dw_username && $dw_password && $dw_blog) {
+	if ($dw_username && $dw_password && $dw_blog) {
 		$title = $b['title'];
 		$post = BBCode::convert($b['body']);
 		$post = xmlify($post);
