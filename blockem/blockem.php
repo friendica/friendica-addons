@@ -107,7 +107,8 @@ function blockem_enotify_store(App $a, array &$b)
 			}
 		}
 	}
-	if($found) {
+
+	if ($found) {
 		$b['abort'] = true;
 	}
 }
@@ -119,6 +120,7 @@ function blockem_prepare_body_content_filter(App $a, array &$hook_data)
 	}
 
 	$profiles_string = null;
+
 	if (local_user()) {
 		$profiles_string = PConfig::get(local_user(), 'blockem', 'words');
 	}
@@ -130,6 +132,7 @@ function blockem_prepare_body_content_filter(App $a, array &$hook_data)
 	}
 
 	$found = false;
+
 	foreach ($profiles_array as $word) {
 		if (link_compare($hook_data['item']['author-link'], trim($word))) {
 			$found = true;
@@ -144,7 +147,7 @@ function blockem_prepare_body_content_filter(App $a, array &$hook_data)
 
 function blockem_display_item(App $a, array &$b = null)
 {
-	if (isset($b['output']) && strstr($b['output']['body'], 'id="blockem-wrap-')) {
+	if (!empty($b['output']['body']) && strstr($b['output']['body'], 'id="blockem-wrap-')) {
 		$b['output']['thumb'] = $a->get_baseurl() . "/images/person-80.jpg";
 	}
 }
@@ -213,7 +216,7 @@ function blockem_init(App $a)
 		return;
 	}
 
-	$words = PConfig::get(local_user(),'blockem','words');
+	$words = PConfig::get(local_user(), 'blockem', 'words');
 
 	if (array_key_exists('block', $_GET) && $_GET['block']) {
 		if (strlen($words)) {
@@ -229,13 +232,13 @@ function blockem_init(App $a)
 
 		if (count($arr)) {
 			foreach ($arr as $x) {
-				if (! link_compare(trim($x),trim($_GET['unblock']))) {
+				if (!link_compare(trim($x), trim($_GET['unblock']))) {
 					$newarr[] = $x;
 				}
 			}
 		}
 
-		$words = implode(',',$newarr);
+		$words = implode(',', $newarr);
 	}
 
 	PConfig::set(local_user(), 'blockem', 'words', $words);
