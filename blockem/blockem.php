@@ -71,8 +71,8 @@ function blockem_addon_settings (App $a, &$s)
 
 }
 
-function blockem_addon_settings_post(App $a, array &$b) {
-
+function blockem_addon_settings_post(App $a, array &$b)
+{
 	if (! local_user()) {
 		return;
 	}
@@ -83,8 +83,8 @@ function blockem_addon_settings_post(App $a, array &$b) {
 	}
 }
 
-function blockem_enotify_store(App $a, array &$b) {
-
+function blockem_enotify_store(App $a, array &$b)
+{
 	$words = PConfig::get($b['uid'], 'blockem', 'words');
 
 	if ($words) {
