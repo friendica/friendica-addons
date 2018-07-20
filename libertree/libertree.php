@@ -10,7 +10,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
-use Friendica\Database\dba;
+use Friendica\Database\DBA;
 use Friendica\Util\Network;
 
 function libertree_install() {
@@ -173,7 +173,7 @@ function libertree_send(&$a,&$b) {
 
 	// Dont't post if the post doesn't belong to us.
 	// This is a check for forum postings
-	$self = dba::selectFirst('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
+	$self = DBA::selectFirst('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
 	if ($b['contact-id'] != $self['id']) {
 		return;
 	}

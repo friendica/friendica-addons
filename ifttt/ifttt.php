@@ -14,7 +14,7 @@ use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
-use Friendica\Database\dba;
+use Friendica\Database\DBA;
 use Friendica\Database\DBM;
 use Friendica\Model\Item;
 
@@ -101,7 +101,7 @@ function ifttt_post(App $a)
 
 	$nickname = $a->argv[1];
 
-	$user = dba::selectFirst('user', ['uid'], ['nickname' => $nickname]);
+	$user = DBA::selectFirst('user', ['uid'], ['nickname' => $nickname]);
 	if (!DBM::is_result($user)) {
 		logger('User ' . $nickname . ' not found.', LOGGER_DEBUG);
 		return;

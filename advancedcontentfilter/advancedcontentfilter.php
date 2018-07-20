@@ -39,7 +39,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\L10n;
 use Friendica\Core\System;
-use Friendica\Database\dba;
+use Friendica\Database\DBA;
 use Friendica\Database\DBM;
 use Friendica\Database\DBStructure;
 use Friendica\Model\Item;
@@ -119,7 +119,7 @@ function advancedcontentfilter_prepare_body_content_filter(App $a, &$hook_data)
 
 	$rules = Cache::get('rules_' . local_user());
 	if (!isset($rules)) {
-		$rules = dba::inArray(dba::select(
+		$rules = DBA::inArray(DBA::select(
 			'advancedcontentfilter_rules',
 			['name', 'expression', 'serialized'],
 			['uid' => local_user(), 'active' => true]
@@ -300,7 +300,7 @@ function advancedcontentfilter_get_rules()
 		throw new HTTPException\UnauthorizedException(L10n::t('You must be logged in to use this method'));
 	}
 
-	$rules = dba::inArray(dba::select('advancedcontentfilter_rules', [], ['uid' => local_user()]));
+	$rules = DBA::inArray(DBA::select('advancedcontentfilter_rules', [], ['uid' => local_user()]));
 
 	return json_encode($rules);
 }
@@ -311,7 +311,7 @@ function advancedcontentfilter_get_rules_id(ServerRequestInterface $request, Res
 		throw new HTTPException\UnauthorizedException(L10n::t('You must be logged in to use this method'));
 	}
 
-	$rule = dba::selectFirst('advancedcontentfilter_rules', [], ['id' => $args['id'], 'uid' => local_user()]);
+	$rule = DBA::selectFirst('advancedcontentfilter_rules', [], ['id' => $args['id'], 'uid' => local_user()]);
 
 	return json_encode($rule);
 }
@@ -341,11 +341,11 @@ function advancedcontentfilter_post_rules(ServerRequestInterface $request)
 	$fields['uid'] = local_user();
 	$fields['created'] = DateTimeFormat::utcNow();
 
-	if (!dba::insert('advancedcontentfilter_rules', $fields)) {
-		throw new HTTPException\ServiceUnavaiableException(dba::errorMessage());
+	if (!DBA::insert('advancedcontentfilter_rules', $fields)) {
+		throw new HTTPException\ServiceUnavaiableException(DBA::errorMessage());
 	}
 
-	$rule = dba::selectFirst('advancedcontentfilter_rules', [], ['id' => dba::lastInsertId()]);
+	$rule = DBA::selectFirst('advancedcontentfilter_rules', [], ['id' => DBA::lastInsertId()]);
 
 	return json_encode(['message' => L10n::t('Rule successfully added'), 'rule' => $rule]);
 }
@@ -360,7 +360,7 @@ function advancedcontentfilter_put_rules_id(ServerRequestInterface $request, Res
 		throw new HTTPException\BadRequestException(L10n::t('Invalid form security token, please refresh the page.'));
 	}
 
-	if (!dba::exists('advancedcontentfilter_rules', ['id' => $args['id'], 'uid' => local_user()])) {
+	if (!DBA::exists('advancedcontentfilter_rules', ['id' => $args['id'], 'uid' => local_user()])) {
 		throw new HTTPException\NotFoundException(L10n::t('Rule doesn\'t exist or doesn\'t belong to you.'));
 	}
 
@@ -372,8 +372,8 @@ function advancedcontentfilter_put_rules_id(ServerRequestInterface $request, Res
 		throw new HTTPException\BadRequestException($e->getMessage(), 0, $e);
 	}
 
-	if (!dba::update('advancedcontentfilter_rules', $fields, ['id' => $args['id']])) {
-		throw new HTTPException\ServiceUnavaiableException(dba::errorMessage());
+	if (!DBA::update('advancedcontentfilter_rules', $fields, ['id' => $args['id']])) {
+		throw new HTTPException\ServiceUnavaiableException(DBA::errorMessage());
 	}
 
 	return json_encode(['message' => L10n::t('Rule successfully updated')]);
@@ -389,12 +389,12 @@ function advancedcontentfilter_delete_rules_id(ServerRequestInterface $request, 
 		throw new HTTPException\BadRequestException(L10n::t('Invalid form security token, please refresh the page.'));
 	}
 
-	if (!dba::exists('advancedcontentfilter_rules', ['id' => $args['id'], 'uid' => local_user()])) {
+	if (!DBA::exists('advancedcontentfilter_rules', ['id' => $args['id'], 'uid' => local_user()])) {
 		throw new HTTPException\NotFoundException(L10n::t('Rule doesn\'t exist or doesn\'t belong to you.'));
 	}
 
-	if (!dba::delete('advancedcontentfilter_rules', ['id' => $args['id']])) {
-		throw new HTTPException\ServiceUnavaiableException(dba::errorMessage());
+	if (!DBA::delete('advancedcontentfilter_rules', ['id' => $args['id']])) {
+		throw new HTTPException\ServiceUnavaiableException(DBA::errorMessage());
 	}
 
 	return json_encode(['message' => L10n::t('Rule successfully deleted')]);

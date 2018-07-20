@@ -32,7 +32,7 @@ use Friendica\Content\Text\HTML;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
-use Friendica\Database\dba;
+use Friendica\Database\DBA;
 use Friendica\Model\Item;
 use Friendica\Model\User;
 
@@ -463,7 +463,7 @@ function windowsphonepush_login(App $a)
 	$user_id = User::authenticate($_SERVER['PHP_AUTH_USER'], trim($_SERVER['PHP_AUTH_PW']));
 
 	if ($user_id) {
-		$record = dba::selectFirst('user', [], ['uid' => $user_id]);
+		$record = DBA::selectFirst('user', [], ['uid' => $user_id]);
 	} else {
 		logger('API_login failure: ' . print_r($_SERVER, true), LOGGER_DEBUG);
 		header('WWW-Authenticate: Basic realm="Friendica"');
