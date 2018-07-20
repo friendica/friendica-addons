@@ -5,17 +5,18 @@
  * Version: 1.1
  * Author: Fabio <https://kirgroup.com/profile/fabrixxm>
  */
+
 use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
-use Friendica\Core\Worker;
 use Friendica\Core\PConfig;
-use Friendica\Util\DateTimeFormat;
-use Friendica\Network\HTTPException\NotFoundException;
+use Friendica\Core\Worker;
+use Friendica\Database\dba;
+use Friendica\Database\DBM;
 use Friendica\Model\Contact;
 use Friendica\Model\Photo;
-use Friendica\Database\DBM;
+use Friendica\Network\HTTPException\NotFoundException;
 
 define("CATAVATAR_SIZE", 256);
 

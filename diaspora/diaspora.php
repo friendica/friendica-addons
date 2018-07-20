@@ -13,6 +13,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Database\dba;
 use Friendica\Database\DBM;
 use Friendica\Model\Queue;
 

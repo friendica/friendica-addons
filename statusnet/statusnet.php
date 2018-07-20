@@ -47,6 +47,8 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Database\dba;
+use Friendica\Database\DBM;
 use Friendica\Model\GContact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
@@ -55,7 +57,6 @@ use Friendica\Model\Photo;
 use Friendica\Model\User;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
-use Friendica\Database\DBM;
 
 function statusnet_install()
 {
