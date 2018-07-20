@@ -810,7 +810,6 @@ function twitter_prepare_body(App $a, &$b)
  */
 function twitter_do_mirrorpost(App $a, $uid, $post)
 {
-	$datarray["type"] = "wall";
 	$datarray["api_source"] = true;
 	$datarray["profile_uid"] = $uid;
 	$datarray["extid"] = NETWORK_TWITTER;

@@ -172,7 +172,6 @@ function ifttt_message($uid, $item)
 	$_SESSION['uid'] = $uid;
 
 	unset($_REQUEST);
-	$_REQUEST['type'] = 'wall';
 	$_REQUEST['api_source'] = true;
 	$_REQUEST['profile_uid'] = $uid;
 	$_REQUEST['source'] = 'IFTTT';
