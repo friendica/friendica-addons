@@ -41,9 +41,8 @@ function blockem_addon_settings (App $a, &$s)
 		return;
 	}
 
-    /* Add our stylesheet to the page so we can make our settings look nice */
-    $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/blockem/blockem.css' . '" media="all" />' . "\r\n";
-
+	/* Add our stylesheet to the page so we can make our settings look nice */
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/blockem/blockem.css' . '" media="all" />' . "\r\n";
 
 	$words = PConfig::get(local_user(), 'blockem', 'words');
 
@@ -51,21 +50,21 @@ function blockem_addon_settings (App $a, &$s)
 		$words = '';
 	}
 
-    $s .= '<span id="settings_blockem_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_blockem_expanded\'); openClose(\'settings_blockem_inflated\');">';
-    $s .= '<h3>' . L10n::t('"Blockem"') . '</h3>';
-    $s .= '</span>';
-    $s .= '<div id="settings_blockem_expanded" class="settings-block" style="display: none;">';
-    $s .= '<span class="fakelink" onclick="openClose(\'settings_blockem_expanded\'); openClose(\'settings_blockem_inflated\');">';
-    $s .= '<h3>' . L10n::t('"Blockem"') . '</h3>';
-    $s .= '</span>';
+	$s .= '<span id="settings_blockem_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_blockem_expanded\'); openClose(\'settings_blockem_inflated\');">';
+	$s .= '<h3>' . L10n::t('"Blockem"') . '</h3>';
+	$s .= '</span>';
+	$s .= '<div id="settings_blockem_expanded" class="settings-block" style="display: none;">';
+	$s .= '<span class="fakelink" onclick="openClose(\'settings_blockem_expanded\'); openClose(\'settings_blockem_inflated\');">';
+	$s .= '<h3>' . L10n::t('"Blockem"') . '</h3>';
+	$s .= '</span>';
 
-    $s .= '<div id="blockem-wrapper">';
-    $s .= '<div id="blockem-desc">'. L10n::t("Hides user's content by collapsing posts. Also replaces their avatar with generic image.") . ' </div>';
-    $s .= '<label id="blockem-label" for="blockem-words">' . L10n::t('Comma separated profile URLS:') . ' </label>';
-    $s .= '<textarea id="blockem-words" type="text" name="blockem-words" >' . htmlspecialchars($words) . '</textarea>';
-    $s .= '</div><div class="clear"></div>';
+	$s .= '<div id="blockem-wrapper">';
+	$s .= '<div id="blockem-desc">'. L10n::t("Hides user's content by collapsing posts. Also replaces their avatar with generic image.") . ' </div>';
+	$s .= '<label id="blockem-label" for="blockem-words">' . L10n::t('Comma separated profile URLS:') . ' </label>';
+	$s .= '<textarea id="blockem-words" type="text" name="blockem-words" >' . htmlspecialchars($words) . '</textarea>';
+	$s .= '</div><div class="clear"></div>';
 
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="blockem-submit" name="blockem-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="blockem-submit" name="blockem-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 
 	return;
 
