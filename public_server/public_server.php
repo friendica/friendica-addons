@@ -57,7 +57,7 @@ function public_server_cron($a, $b)
 	$r = q("SELECT * FROM `user` WHERE `account_expires_on` < UTC_TIMESTAMP() + INTERVAL 5 DAY AND
 		`account_expires_on` > '%s' AND
 		`expire_notification_sent` <= '%s'",
-		dbesc(NULL_DATE), dbesc(NULL_DATE));
+		DBA::escape(NULL_DATE), DBA::escape(NULL_DATE));
 
 	if (DBA::isResult($r)) {
 		foreach ($r as $rr) {
@@ -81,7 +81,7 @@ function public_server_cron($a, $b)
 	$nologin = Config::get('public_server', 'nologin', false);
 	if ($nologin) {
 		$r = q("SELECT `uid` FROM `user` WHERE NOT `account_expired` AND `login_date` <= '%s' AND `register_date` < UTC_TIMESTAMP() - INTERVAL %d DAY AND `account_expires_on` <= '%s'",
-			dbesc(NULL_DATE), intval($nologin), dbesc(NULL_DATE));
+			DBA::escape(NULL_DATE), intval($nologin), DBA::escape(NULL_DATE));
 		if (DBA::isResult($r)) {
 			foreach ($r as $rr) {
 				$fields = ['account_expires_on' => DateTimeFormat::utc('now +6 days')];
@@ -93,7 +93,7 @@ function public_server_cron($a, $b)
 	$flagusers = Config::get('public_server', 'flagusers', false);
 	if ($flagusers) {
 		$r = q("SELECT `uid` FROM `user` WHERE NOT `account_expired` AND `login_date` < UTC_TIMESTAMP() - INTERVAL %d DAY AND `account_expires_on` <= '%s' AND `page-flags` = 0",
-			intval($flagusers), dbesc(NULL_DATE));
+			intval($flagusers), DBA::escape(NULL_DATE));
 		if (DBA::isResult($r)) {
 			foreach ($r as $rr) {
 				$fields = ['account_expires_on' => DateTimeFormat::utc('now +6 days')];
@@ -106,7 +106,7 @@ function public_server_cron($a, $b)
 	$flagpostsexpire = Config::get('public_server', 'flagpostsexpire');
 	if ($flagposts && $flagpostsexpire) {
 		$r = q("SELECT `uid` FROM `user` WHERE NOT `account_expired` AND `login_date` < UTC_TIMESTAMP() - INTERVAL %d DAY AND `account_expires_on` <= '%s' and `expire` = 0 AND `page-flags` = 0",
-			intval($flagposts), dbesc(NULL_DATE));
+			intval($flagposts), DBA::escape(NULL_DATE));
 		if (DBA::isResult($r)) {
 			foreach ($r as $rr) {
 				DBA::update('user', ['expire' => $flagpostsexpire], ['uid' => $rr['uid']]);

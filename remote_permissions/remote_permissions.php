@@ -6,10 +6,12 @@
  * Author: Zach <https://f.shmuz.in/profile/techcity>
  *
  */
+
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Database\DBA;
 
 function remote_permissions_install() {
 	Addon::registerHook('lockview_content', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_content');
@@ -84,7 +86,7 @@ function remote_permissions_content($a, $item_copy) {
 		// The contact lives here. Get his/her user info
 		$nick = $r[0]['nick'];
 		$r = q("SELECT uid FROM user WHERE nickname = '%s' LIMIT 1",
-		       dbesc($nick)
+		       DBA::escape($nick)
 		);
 		if(! $r)
 			return;
@@ -104,15 +106,15 @@ function remote_permissions_content($a, $item_copy) {
 		if($item_copy['uri'] === $item_copy['parent-uri']) {
 			// Lockview for a top-level post
 			$r = q("SELECT allow_cid, allow_gid, deny_cid, deny_gid FROM item WHERE uri = '%s' AND type = 'wall' LIMIT 1",
-				   dbesc($item_copy['uri'])
+				   DBA::escape($item_copy['uri'])
 			);
 		}
 		else {
 			// Lockview for a comment
 			$r = q("SELECT allow_cid, allow_gid, deny_cid, deny_gid FROM item WHERE uri = '%s'
 			        AND parent = ( SELECT id FROM item WHERE uri = '%s' AND type = 'wall' ) LIMIT 1",
-				   dbesc($item_copy['uri']),
-				   dbesc($item_copy['parent-uri'])
+				   DBA::escape($item_copy['uri']),
+				   DBA::escape($item_copy['parent-uri'])
 			);
 		}
 		if($r) {
@@ -130,7 +132,7 @@ function remote_permissions_content($a, $item_copy) {
 
 			if(count($allowed_groups)) {
 				$r = q("SELECT DISTINCT `contact-id` FROM group_member WHERE gid IN ( %s )",
-					dbesc(implode(', ', $allowed_groups))
+					DBA::escape(implode(', ', $allowed_groups))
 				);
 				foreach($r as $rr)
 					$allow[] = $rr['contact-id'];
@@ -139,7 +141,7 @@ function remote_permissions_content($a, $item_copy) {
 
 			if(count($deny_groups)) {
 				$r = q("SELECT DISTINCT `contact-id` FROM group_member WHERE gid IN ( %s )",
-					dbesc(implode(', ', $deny_groups))
+					DBA::escape(implode(', ', $deny_groups))
 				);
 				foreach($r as $rr)
 					$deny[] = $rr['contact-id'];
@@ -149,7 +151,7 @@ function remote_permissions_content($a, $item_copy) {
 			if($allow)
 			{
 				$r = q("SELECT name FROM contact WHERE id IN ( %s )",
-					   dbesc(implode(', ', array_diff($allow, $deny)))
+					   DBA::escape(implode(', ', array_diff($allow, $deny)))
 				);
 				foreach($r as $rr)
 					$allow_names[] = $rr['name'];
@@ -162,8 +164,8 @@ function remote_permissions_content($a, $item_copy) {
 			// will have different URIs than the original. We can match the GUID for
 			// those
 			$r = q("SELECT `uid` FROM item WHERE uri = '%s' OR guid = '%s'",
-				   dbesc($item_copy['uri']),
-			       dbesc($item_copy['guid'])
+				   DBA::escape($item_copy['uri']),
+			       DBA::escape($item_copy['guid'])
 			);
 			if(! $r)
 				return;
@@ -173,7 +175,7 @@ function remote_permissions_content($a, $item_copy) {
 				$allow[] = $rr['uid'];
 
 			$r = q("SELECT username FROM user WHERE uid IN ( %s )",
-				dbesc(implode(', ', $allow))
+				DBA::escape(implode(', ', $allow))
 			);
 			if(! $r)
 				return;

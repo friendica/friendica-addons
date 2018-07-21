@@ -100,7 +100,7 @@ function forumdirectory_content(&$a)
 	if (strlen($search)) {
 		$sql_extra = " AND MATCH (`profile`.`name`, `user`.`nickname`, `pdesc`, `locality`,`region`,`country-name`,"
 			. "`gender`,`marital`,`sexual`,`about`,`romance`,`work`,`education`,`pub_keywords`,`prv_keywords` )"
-			. " AGAINST ('" . dbesc($search) . "' IN BOOLEAN MODE) ";
+			. " AGAINST ('" . DBA::escape($search) . "' IN BOOLEAN MODE) ";
 	}
 
 	$publish = Config::get('system', 'publish_all') ? '' : " AND `publish` = 1 ";

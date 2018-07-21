@@ -142,7 +142,7 @@ function twitter_check_item_notification(App $a, &$notification_data)
 
 	$own_user = q("SELECT `url` FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
 			intval($notification_data["uid"]),
-			dbesc("twitter::".$own_id)
+			DBA::escape("twitter::".$own_id)
 	);
 
 	if ($own_user) {
@@ -183,7 +183,7 @@ function twitter_follow(App $a, &$contact)
 	$r = q("SELECT name,nick,url,addr,batch,notify,poll,request,confirm,poco,photo,priority,network,alias,pubkey
 		FROM `contact` WHERE `uid` = %d AND `nick` = '%s'",
 				intval($uid),
-				dbesc($nickname));
+				DBA::escape($nickname));
 	if (DBA::isResult($r)) {
 		$contact["contact"] = $r[0];
 	}
@@ -922,7 +922,7 @@ function twitter_fetchtimeline(App $a, $uid)
 function twitter_queue_hook(App $a, &$b)
 {
 	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
-		dbesc(NETWORK_TWITTER)
+		DBA::escape(NETWORK_TWITTER)
 	);
 	if (!DBA::isResult($qi)) {
 		return;
@@ -1751,7 +1751,7 @@ function twitter_fetch_own_contact(App $a, $uid)
 	} else {
 		$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
 			intval($uid),
-			dbesc("twitter::" . $own_id));
+			DBA::escape("twitter::" . $own_id));
 		if (DBA::isResult($r)) {
 			$contact_id = $r[0]["id"];
 		} else {

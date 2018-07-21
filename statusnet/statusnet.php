@@ -899,7 +899,7 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 		"location" => $contact->location, "about" => $contact->description,
 		"addr" => statusnet_address($contact), "generation" => 3]);
 
-	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' AND `network` = '%s'LIMIT 1", intval($uid), dbesc(normalise_link($contact->statusnet_profile_url)), dbesc(NETWORK_STATUSNET));
+	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' AND `network` = '%s'LIMIT 1", intval($uid), DBA::escape(normalise_link($contact->statusnet_profile_url)), DBA::escape(NETWORK_STATUSNET));
 
 	if (!DBA::isResult($r) && !$create_user) {
 		return 0;
@@ -917,28 +917,28 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 					`location`, `about`, `writable`, `blocked`, `readonly`, `pending` )
 					VALUES ( %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', %d, 0, 0, 0 ) ",
 			intval($uid),
-			dbesc(DateTimeFormat::utcNow()),
-			dbesc($contact->statusnet_profile_url),
-			dbesc(normalise_link($contact->statusnet_profile_url)),
-			dbesc(statusnet_address($contact)),
-			dbesc(normalise_link($contact->statusnet_profile_url)),
-			dbesc(''),
-			dbesc(''),
-			dbesc($contact->name),
-			dbesc($contact->screen_name),
-			dbesc($contact->profile_image_url),
-			dbesc(NETWORK_STATUSNET),
+			DBA::escape(DateTimeFormat::utcNow()),
+			DBA::escape($contact->statusnet_profile_url),
+			DBA::escape(normalise_link($contact->statusnet_profile_url)),
+			DBA::escape(statusnet_address($contact)),
+			DBA::escape(normalise_link($contact->statusnet_profile_url)),
+			DBA::escape(''),
+			DBA::escape(''),
+			DBA::escape($contact->name),
+			DBA::escape($contact->screen_name),
+			DBA::escape($contact->profile_image_url),
+			DBA::escape(NETWORK_STATUSNET),
 			intval(CONTACT_IS_FRIEND),
 			intval(1),
-			dbesc($contact->location),
-			dbesc($contact->description),
+			DBA::escape($contact->location),
+			DBA::escape($contact->description),
 			intval(1)
 		);
 
 		$r = q("SELECT * FROM `contact` WHERE `alias` = '%s' AND `uid` = %d AND `network` = '%s' LIMIT 1",
-			dbesc($contact->statusnet_profile_url),
+			DBA::escape($contact->statusnet_profile_url),
 			intval($uid),
-			dbesc(NETWORK_STATUSNET));
+			DBA::escape(NETWORK_STATUSNET));
 
 		if (!DBA::isResult($r)) {
 			return false;
@@ -955,10 +955,10 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 					`micro` = '%s',
 					`avatar-date` = '%s'
 				WHERE `id` = %d",
-			dbesc($photos[0]),
-			dbesc($photos[1]),
-			dbesc($photos[2]),
-			dbesc(DateTimeFormat::utcNow()),
+			DBA::escape($photos[0]),
+			DBA::escape($photos[1]),
+			DBA::escape($photos[2]),
+			DBA::escape(DateTimeFormat::utcNow()),
 			intval($contact_id)
 		);
 	} else {
@@ -986,19 +986,19 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 						`location` = '%s',
 						`about` = '%s'
 					WHERE `id` = %d",
-				dbesc($photos[0]),
-				dbesc($photos[1]),
-				dbesc($photos[2]),
-				dbesc(DateTimeFormat::utcNow()),
-				dbesc(DateTimeFormat::utcNow()),
-				dbesc(DateTimeFormat::utcNow()),
-				dbesc($contact->statusnet_profile_url),
-				dbesc(normalise_link($contact->statusnet_profile_url)),
-				dbesc(statusnet_address($contact)),
-				dbesc($contact->name),
-				dbesc($contact->screen_name),
-				dbesc($contact->location),
-				dbesc($contact->description),
+				DBA::escape($photos[0]),
+				DBA::escape($photos[1]),
+				DBA::escape($photos[2]),
+				DBA::escape(DateTimeFormat::utcNow()),
+				DBA::escape(DateTimeFormat::utcNow()),
+				DBA::escape(DateTimeFormat::utcNow()),
+				DBA::escape($contact->statusnet_profile_url),
+				DBA::escape(normalise_link($contact->statusnet_profile_url)),
+				DBA::escape(statusnet_address($contact)),
+				DBA::escape($contact->name),
+				DBA::escape($contact->screen_name),
+				DBA::escape($contact->location),
+				DBA::escape($contact->description),
 				intval($r[0]['id'])
 			);
 		}
@@ -1520,7 +1520,7 @@ function statusnet_fetch_own_contact(App $a, $uid)
 		$contact_id = statusnet_fetch_contact($uid, $user, true);
 	} else {
 		$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
-			intval($uid), dbesc($own_url));
+			intval($uid), DBA::escape($own_url));
 		if (DBA::isResult($r)) {
 			$contact_id = $r[0]["id"];
 		} else {

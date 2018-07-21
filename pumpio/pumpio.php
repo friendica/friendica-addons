@@ -883,7 +883,7 @@ function pumpio_dounlike(App $a, $uid, $self, $post, $own_id)
 		$contactid = $self[0]['id'];
 	} else {
 		$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
-			dbesc(normalise_link($post->actor->url)),
+			DBA::escape(normalise_link($post->actor->url)),
 			intval($uid)
 		);
 
@@ -938,7 +938,7 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 		$post->actor->image->url = $self[0]['photo'];
 	} else {
 		$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
-			dbesc(normalise_link($post->actor->url)),
+			DBA::escape(normalise_link($post->actor->url)),
 			intval($uid)
 		);
 
@@ -1015,7 +1015,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false)
 	}
 
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `nurl` = '%s' LIMIT 1",
-		intval($uid), dbesc(normalise_link($contact->url)));
+		intval($uid), DBA::escape(normalise_link($contact->url)));
 
 	if (!DBA::isResult($r)) {
 		// create contact record
@@ -1024,26 +1024,26 @@ function pumpio_get_contact($uid, $contact, $no_insert = false)
 					`location`, `about`, `writable`, `blocked`, `readonly`, `pending` )
 				VALUES (%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', %d, 0, 0, 0)",
 			intval($uid),
-			dbesc(DateTimeFormat::utcNow()),
-			dbesc($contact->url),
-			dbesc(normalise_link($contact->url)),
-			dbesc(str_replace("acct:", "", $contact->id)),
-			dbesc(''),
-			dbesc($contact->id), // What is it for?
-			dbesc('pump.io ' . $contact->id), // What is it for?
-			dbesc($contact->displayName),
-			dbesc($contact->preferredUsername),
-			dbesc($contact->image->url),
-			dbesc(NETWORK_PUMPIO),
+			DBA::escape(DateTimeFormat::utcNow()),
+			DBA::escape($contact->url),
+			DBA::escape(normalise_link($contact->url)),
+			DBA::escape(str_replace("acct:", "", $contact->id)),
+			DBA::escape(''),
+			DBA::escape($contact->id), // What is it for?
+			DBA::escape('pump.io ' . $contact->id), // What is it for?
+			DBA::escape($contact->displayName),
+			DBA::escape($contact->preferredUsername),
+			DBA::escape($contact->image->url),
+			DBA::escape(NETWORK_PUMPIO),
 			intval(CONTACT_IS_FRIEND),
 			intval(1),
-			dbesc($contact->location->displayName),
-			dbesc($contact->summary),
+			DBA::escape($contact->location->displayName),
+			DBA::escape($contact->summary),
 			intval(1)
 		);
 
 		$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d LIMIT 1",
-			dbesc(normalise_link($contact->url)),
+			DBA::escape(normalise_link($contact->url)),
 			intval($uid)
 			);
 
@@ -1171,7 +1171,7 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 		} elseif ($contact_id == 0) {
 			// Take an existing contact, the contact of the note or - as a fallback - the id of the user
 			$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
-				dbesc(normalise_link($post->actor->url)),
+				DBA::escape(normalise_link($post->actor->url)),
 				intval($uid)
 			);
 
@@ -1179,7 +1179,7 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 				$contact_id = $r[0]['id'];
 			} else {
 				$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
-					dbesc(normalise_link($post->actor->url)),
+					DBA::escape(normalise_link($post->actor->url)),
 					intval($uid)
 				);
 
@@ -1304,7 +1304,7 @@ function pumpio_fetchinbox(App $a, $uid)
 			INNER JOIN `item` ON `item`.`id` = `thread`.`iid`
 			WHERE `thread`.`network` = '%s' AND `thread`.`uid` = %d AND `item`.`extid` != ''
 			ORDER BY `thread`.`commented` DESC LIMIT 10",
-				dbesc(NETWORK_PUMPIO),
+				DBA::escape(NETWORK_PUMPIO),
 				intval($uid)
 			);
 
@@ -1401,7 +1401,7 @@ function pumpio_getallusers(App &$a, $uid)
 function pumpio_queue_hook(App $a, array &$b)
 {
 	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
-		dbesc(NETWORK_PUMPIO)
+		DBA::escape(NETWORK_PUMPIO)
 	);
 
 	if (!DBA::isResult($qi)) {
@@ -1508,7 +1508,7 @@ function pumpio_getreceiver(App $a, array $b)
 			$r = q("SELECT `name`, `nick`, `url` FROM `contact` WHERE `id` = %d AND `uid` = %d AND `network` = '%s' AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
 				intval($cid),
 				intval($b["uid"]),
-				dbesc(NETWORK_PUMPIO)
+				DBA::escape(NETWORK_PUMPIO)
 				);
 
 			if (DBA::isResult($r)) {
@@ -1526,7 +1526,7 @@ function pumpio_getreceiver(App $a, array $b)
 				"FROM `group_member`, `contact` WHERE `group_member`.`gid` = %d ".
 				"AND `contact`.`id` = `group_member`.`contact-id` AND `contact`.`network` = '%s'",
 					intval($gid),
-					dbesc(NETWORK_PUMPIO)
+					DBA::escape(NETWORK_PUMPIO)
 				);
 
 			foreach ($r AS $row)
@@ -1551,7 +1551,7 @@ function pumpio_getreceiver(App $a, array $b)
 			$r = q("SELECT `name`, `nick`, `url` FROM `contact` WHERE `id` = %d AND `uid` = %d AND `network` = '%s' AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
 				intval($cid),
 				intval($b["uid"]),
-				dbesc(NETWORK_PUMPIO)
+				DBA::escape(NETWORK_PUMPIO)
 				);
 
 			if (DBA::isResult($r)) {
