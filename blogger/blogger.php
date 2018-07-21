@@ -6,6 +6,7 @@
  *
  */
 
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
@@ -14,35 +15,35 @@ use Friendica\Util\Network;
 
 function blogger_install()
 {
-	Addon::registerHook('post_local',           'addon/blogger/blogger.php', 'blogger_post_local');
-	Addon::registerHook('notifier_normal',      'addon/blogger/blogger.php', 'blogger_send');
-	Addon::registerHook('jot_networks',         'addon/blogger/blogger.php', 'blogger_jot_nets');
+	Addon::registerHook('post_local',              'addon/blogger/blogger.php', 'blogger_post_local');
+	Addon::registerHook('notifier_normal',         'addon/blogger/blogger.php', 'blogger_send');
+	Addon::registerHook('jot_networks',            'addon/blogger/blogger.php', 'blogger_jot_nets');
 	Addon::registerHook('connector_settings',      'addon/blogger/blogger.php', 'blogger_settings');
 	Addon::registerHook('connector_settings_post', 'addon/blogger/blogger.php', 'blogger_settings_post');
 }
 
 function blogger_uninstall()
 {
-	Addon::unregisterHook('post_local',       'addon/blogger/blogger.php', 'blogger_post_local');
-	Addon::unregisterHook('notifier_normal',  'addon/blogger/blogger.php', 'blogger_send');
-	Addon::unregisterHook('jot_networks',     'addon/blogger/blogger.php', 'blogger_jot_nets');
+	Addon::unregisterHook('post_local',              'addon/blogger/blogger.php', 'blogger_post_local');
+	Addon::unregisterHook('notifier_normal',         'addon/blogger/blogger.php', 'blogger_send');
+	Addon::unregisterHook('jot_networks',            'addon/blogger/blogger.php', 'blogger_jot_nets');
 	Addon::unregisterHook('connector_settings',      'addon/blogger/blogger.php', 'blogger_settings');
 	Addon::unregisterHook('connector_settings_post', 'addon/blogger/blogger.php', 'blogger_settings_post');
 
 	// obsolete - remove
-	Addon::unregisterHook('post_local_end',   'addon/blogger/blogger.php', 'blogger_send');
-	Addon::unregisterHook('addon_settings',  'addon/blogger/blogger.php', 'blogger_settings');
-	Addon::unregisterHook('addon_settings_post',  'addon/blogger/blogger.php', 'blogger_settings_post');
+	Addon::unregisterHook('post_local_end',      'addon/blogger/blogger.php', 'blogger_send');
+	Addon::unregisterHook('addon_settings',      'addon/blogger/blogger.php', 'blogger_settings');
+	Addon::unregisterHook('addon_settings_post', 'addon/blogger/blogger.php', 'blogger_settings_post');
 }
 
 
-function blogger_jot_nets(&$a, &$b)
-{
+function blogger_jot_nets(App $a, &$b) {
 	if (!local_user()) {
 		return;
 	}
 
 	$bl_post = PConfig::get(local_user(), 'blogger', 'post');
+
 	if (intval($bl_post) == 1) {
 		$bl_defpost = PConfig::get(local_user(), 'blogger', 'post_by_default');
 		$selected = ((intval($bl_defpost) == 1) ? ' checked="checked" ' : '');
@@ -52,7 +53,7 @@ function blogger_jot_nets(&$a, &$b)
 }
 
 
-function blogger_settings(&$a, &$s)
+function blogger_settings(App $a, &$s)
 {
 	if (! local_user()) {
 		return;
@@ -115,18 +116,18 @@ function blogger_settings(&$a, &$s)
 }
 
 
-function blogger_settings_post(&$a, &$b)
+function blogger_settings_post(App $a, array &$b)
 {
-	if (x($_POST, 'blogger-submit')) {
-		PConfig::set(local_user(), 'blogger', 'post', intval($_POST['blogger']));
+	if (isset($_POST['blogger-submit'])) {
+		PConfig::set(local_user(), 'blogger', 'post',            intval($_POST['blogger']));
 		PConfig::set(local_user(), 'blogger', 'post_by_default', intval($_POST['bl_bydefault']));
-		PConfig::set(local_user(), 'blogger', 'bl_username', trim($_POST['bl_username']));
-		PConfig::set(local_user(), 'blogger', 'bl_password', trim($_POST['bl_password']));
-		PConfig::set(local_user(), 'blogger', 'bl_blog', trim($_POST['bl_blog']));
+		PConfig::set(local_user(), 'blogger', 'bl_username',     trim($_POST['bl_username']));
+		PConfig::set(local_user(), 'blogger', 'bl_password',     trim($_POST['bl_password']));
+		PConfig::set(local_user(), 'blogger', 'bl_blog',         trim($_POST['bl_blog']));
 	}
 }
 
-function blogger_post_local(&$a, &$b)
+function blogger_post_local(App $a, array &$b)
 {
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
@@ -158,13 +159,13 @@ function blogger_post_local(&$a, &$b)
 		$b['postopts'] .= ',';
 	}
 
-	 $b['postopts'] .= 'blogger';
+	$b['postopts'] .= 'blogger';
 }
 
 
 
 
-function blogger_send(&$a, &$b)
+function blogger_send(App $a, array &$b)
 {
 	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
