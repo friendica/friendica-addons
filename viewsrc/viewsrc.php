@@ -9,7 +9,7 @@
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Model\Item;
-use Friendica\Database\DBM;
+use Friendica\Database\DBA;
 
 function viewsrc_install() {
 	Addon::registerHook('item_photo_menu', 'addon/viewsrc/viewsrc.php', 'viewsrc_item_photo_menu');
@@ -43,7 +43,7 @@ function viewsrc_item_photo_menu(&$a, &$b)
 
 	if (local_user() != $b['item']['uid']) {
 		$item = Item::selectFirstForUser(local_user(), ['id'], ['uid' => local_user(), 'guid' => $b['item']['guid']]);
-		if (!DBM::is_result($item)) {
+		if (!DBA::is_result($item)) {
 			return;
 		}
 

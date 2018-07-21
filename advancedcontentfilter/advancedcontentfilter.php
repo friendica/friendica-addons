@@ -40,7 +40,6 @@ use Friendica\Core\Cache;
 use Friendica\Core\L10n;
 use Friendica\Core\System;
 use Friendica\Database\DBA;
-use Friendica\Database\DBM;
 use Friendica\Database\DBStructure;
 use Friendica\Model\Item;
 use Friendica\Model\Term;
@@ -414,7 +413,7 @@ function advancedcontentfilter_get_variables_guid(ServerRequestInterface $reques
 	$params = ['order' => ['uid' => true]];
 	$item = Item::selectFirstForUser(local_user(), [], $condition, $params);
 
-	if (!DBM::is_result($item)) {
+	if (!DBA::is_result($item)) {
 		throw new HTTPException\NotFoundException(L10n::t('Unknown post with guid: %s', $args['guid']));
 	}
 

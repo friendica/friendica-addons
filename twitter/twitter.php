@@ -72,7 +72,6 @@ use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
-use Friendica\Database\DBM;
 use Friendica\Model\Contact;
 use Friendica\Model\GContact;
 use Friendica\Model\Group;
@@ -185,7 +184,7 @@ function twitter_follow(App $a, &$contact)
 		FROM `contact` WHERE `uid` = %d AND `nick` = '%s'",
 				intval($uid),
 				dbesc($nickname));
-	if (DBM::is_result($r)) {
+	if (DBA::is_result($r)) {
 		$contact["contact"] = $r[0];
 	}
 }
@@ -468,7 +467,7 @@ function twitter_post_hook(App $a, &$b)
 
 		$condition = ['uri' => $b["thr-parent"], 'uid' => $b["uid"]];
 		$orig_post = Item::selectFirst([], $condition);
-		if (!DBM::is_result($orig_post)) {
+		if (!DBA::is_result($orig_post)) {
 			logger("twitter_post_hook: no parent found " . $b["thr-parent"]);
 			return;
 		} else {
@@ -622,7 +621,7 @@ function twitter_post_hook(App $a, &$b)
 			logger('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
 
 			$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", intval($b['uid']));
-			if (DBM::is_result($r)) {
+			if (DBA::is_result($r)) {
 				$a->contact = $r[0]["id"];
 			}
 
@@ -677,7 +676,7 @@ function twitter_cron(App $a, $b)
 	logger('twitter: cron_start');
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'mirror_posts' AND `v` = '1'");
-	if (DBM::is_result($r)) {
+	if (DBA::is_result($r)) {
 		foreach ($r as $rr) {
 			logger('twitter: fetching for user ' . $rr['uid']);
 			Worker::add(PRIORITY_MEDIUM, "addon/twitter/twitter_sync.php", 1, (int) $rr['uid']);
@@ -692,11 +691,11 @@ function twitter_cron(App $a, $b)
 	$abandon_limit = date(DateTimeFormat::MYSQL, time() - $abandon_days * 86400);
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'import' AND `v` = '1'");
-	if (DBM::is_result($r)) {
+	if (DBA::is_result($r)) {
 		foreach ($r as $rr) {
 			if ($abandon_days != 0) {
 				$user = q("SELECT `login_date` FROM `user` WHERE uid=%d AND `login_date` >= '%s'", $rr['uid'], $abandon_limit);
-				if (!DBM::is_result($user)) {
+				if (!DBA::is_result($user)) {
 					logger('abandoned account: timeline from user ' . $rr['uid'] . ' will not be imported');
 					continue;
 				}
@@ -751,7 +750,7 @@ function twitter_expire(App $a, $b)
 	logger('twitter_expire: expire_start');
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'import' AND `v` = '1' ORDER BY RAND()");
-	if (DBM::is_result($r)) {
+	if (DBA::is_result($r)) {
 		foreach ($r as $rr) {
 			logger('twitter_expire: user ' . $rr['uid']);
 			Item::expire($rr['uid'], $days, NETWORK_TWITTER, true);
@@ -774,7 +773,7 @@ function twitter_prepare_body(App $a, &$b)
 
 		$condition = ['uri' => $item["thr-parent"], 'uid' => local_user()];
 		$orig_post = Item::selectFirst(['author-link'], $condition);
-		if (DBM::is_result($orig_post)) {
+		if (DBA::is_result($orig_post)) {
 			$nicknameplain = preg_replace("=https?://twitter.com/(.*)=ism", "$1", $orig_post["author-link"]);
 			$nickname = "@[url=" . $orig_post["author-link"] . "]" . $nicknameplain . "[/url]";
 			$nicknameplain = "@" . $nicknameplain;
@@ -925,7 +924,7 @@ function twitter_queue_hook(App $a, &$b)
 	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
 		dbesc(NETWORK_TWITTER)
 	);
-	if (!DBM::is_result($qi)) {
+	if (!DBA::is_result($qi)) {
 		return;
 	}
 
@@ -940,7 +939,7 @@ function twitter_queue_hook(App $a, &$b)
 			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
 			intval($x['cid'])
 		);
-		if (!DBM::is_result($r)) {
+		if (!DBA::is_result($r)) {
 			continue;
 		}
 
@@ -1019,11 +1018,11 @@ function twitter_fetch_contact($uid, $data, $create_user)
 	}
 
 	$contact = DBA::selectFirst('contact', [], ['uid' => $uid, 'alias' => "twitter::" . $data->id_str]);
-	if (!DBM::is_result($contact) && !$create_user) {
+	if (!DBA::is_result($contact) && !$create_user) {
 		return 0;
 	}
 
-	if (!DBM::is_result($contact)) {
+	if (!DBA::is_result($contact)) {
 		// create contact record
 		$fields['uid'] = $uid;
 		$fields['created'] = DateTimeFormat::utcNow();
@@ -1083,7 +1082,7 @@ function twitter_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 	$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 		intval($uid));
 
-	if (DBM::is_result($r)) {
+	if (DBA::is_result($r)) {
 		$self = $r[0];
 	} else {
 		return;
@@ -1354,11 +1353,11 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 
 		$fields = ['uri', 'parent-uri', 'parent'];
 		$parent_item = Item::selectFirst($fields, ['uri' => $parent, 'uid' => $uid]);
-		if (!DBM::is_result($parent_item)) {
+		if (!DBA::is_result($parent_item)) {
 			$parent_item = Item::selectFirst($fields, ['extid' => $parent, 'uid' => $uid]);
 		}
 
-		if (DBM::is_result($parent_item)) {
+		if (DBA::is_result($parent_item)) {
 			$postarray['thr-parent'] = $parent_item['uri'];
 			$postarray['parent-uri'] = $parent_item['parent-uri'];
 			$postarray['parent'] = $parent_item['parent'];
@@ -1376,7 +1375,7 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 			$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 				intval($uid));
 
-			if (DBM::is_result($r)) {
+			if (DBA::is_result($r)) {
 				$contactid = $r[0]["id"];
 
 				$postarray['owner-name']   = $r[0]["name"];
@@ -1575,7 +1574,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 		intval($own_contact),
 		intval($uid));
 
-	if (DBM::is_result($r)) {
+	if (DBA::is_result($r)) {
 		$own_id = $r[0]["nick"];
 	} else {
 		logger("twitter_fetchhometimeline: Own twitter contact not found for user " . $uid, LOGGER_DEBUG);
@@ -1585,7 +1584,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 	$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 		intval($uid));
 
-	if (DBM::is_result($r)) {
+	if (DBA::is_result($r)) {
 		$self = $r[0];
 	} else {
 		logger("twitter_fetchhometimeline: Own contact not found for user " . $uid, LOGGER_DEBUG);
@@ -1594,7 +1593,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 
 	$u = q("SELECT * FROM user WHERE uid = %d LIMIT 1",
 		intval($uid));
-	if (!DBM::is_result($u)) {
+	if (!DBA::is_result($u)) {
 		logger("twitter_fetchhometimeline: Own user not found for user " . $uid, LOGGER_DEBUG);
 		return;
 	}
@@ -1661,7 +1660,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 
 			if ($postarray['uri'] == $postarray['parent-uri']) {
 				$contact = DBA::selectFirst('contact', [], ['id' => $postarray['contact-id'], 'self' => false]);
-				if (DBM::is_result($contact)) {
+				if (DBA::is_result($contact)) {
 					$notify = Item::isRemoteSelf($contact, $postarray);
 				}
 			}
@@ -1753,7 +1752,7 @@ function twitter_fetch_own_contact(App $a, $uid)
 		$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
 			intval($uid),
 			dbesc("twitter::" . $own_id));
-		if (DBM::is_result($r)) {
+		if (DBA::is_result($r)) {
 			$contact_id = $r[0]["id"];
 		} else {
 			PConfig::delete($uid, 'twitter', 'own_id');

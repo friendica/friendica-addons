@@ -14,7 +14,6 @@ use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
-use Friendica\Database\DBM;
 use Friendica\Model\Queue;
 
 function diaspora_install() {
@@ -141,7 +140,7 @@ function diaspora_settings(&$a,&$s) {
 	$status = "";
 
 	$r = q("SELECT `addr` FROM `contact` WHERE `self` AND `uid` = %d", intval(local_user()));
-	if (DBM::is_result($r)) {
+	if (DBA::is_result($r)) {
 		$status = L10n::t("Please remember: You can always be reached from Diaspora with your Friendica handle %s. ", $r[0]['addr']);
 		$status .= L10n::t('This connector is only meant if you still want to use your old Diaspora account for some time. ');
 		$status .= L10n::t('However, it is preferred that you tell your Diaspora contacts the new handle %s instead.', $r[0]['addr']);

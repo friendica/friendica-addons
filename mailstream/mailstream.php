@@ -11,7 +11,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
-use Friendica\Database\DBM;
+use Friendica\Database\DBA;
 use Friendica\Util\Network;
 use Friendica\Model\Item;
 
@@ -173,7 +173,7 @@ function mailstream_do_images($a, &$item, &$attachments) {
 
 function mailstream_sender($item) {
 	$r = q('SELECT * FROM `contact` WHERE `id` = %d', $item['contact-id']);
-	if (DBM::is_result($r)) {
+	if (DBA::is_result($r)) {
 		$contact = $r[0];
 		if ($contact['name'] != $item['author-name']) {
 			return $contact['name'] . ' - ' . $item['author-name'];
@@ -214,7 +214,7 @@ function mailstream_subject($item) {
 	// Don't look more than 100 levels deep for a subject, in case of loops
 	for ($i = 0; ($i < 100) && $parent; $i++) {
 		$parent_item = Item::selectFirst(['thr-parent', 'title'], ['uri' => $parent]);
-		if (!DBM::is_result($parent_item)) {
+		if (!DBA::is_result($parent_item)) {
 			break;
 		}
 		if ($parent_item['thr-parent'] === $parent) {

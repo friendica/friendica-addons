@@ -15,7 +15,6 @@ use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
-use Friendica\Database\DBM;
 use Friendica\Model\Contact;
 use Friendica\Model\GContact;
 use Friendica\Model\Group;
@@ -421,7 +420,7 @@ function pumpio_send(App $a, array &$b)
 		$condition = ['id' => $b['parent'], 'network' => NETWORK_PUMPIO];
 		$orig_post = Item::selectFirst([], $condition);
 
-		if (!DBM::is_result($orig_post)) {
+		if (!DBA::is_result($orig_post)) {
 			logger("pumpio_send: no pumpio post ".$b["parent"]);
 			return;
 		} else {
@@ -573,7 +572,7 @@ function pumpio_send(App $a, array &$b)
 			logger('pumpio_send '.$username.': '.$url.' general error: ' . print_r($user, true));
 
 			$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $b['uid']);
-			if (DBM::is_result($r)) {
+			if (DBA::is_result($r)) {
 				$a->contact = $r[0]["id"];
 			}
 
@@ -601,7 +600,7 @@ function pumpio_action(App $a, $uid, $uri, $action, $content = "")
 
 	$orig_post = Item::selectFirst([], ['uri' => $uri, 'uid' => $uid]);
 
-	if (!DBM::is_result($orig_post)) {
+	if (!DBA::is_result($orig_post)) {
 		return;
 	}
 
@@ -650,7 +649,7 @@ function pumpio_action(App $a, $uid, $uri, $action, $content = "")
 		logger('pumpio_action '.$username.' '.$action.': general error: '.$uri.' '.print_r($user, true));
 
 		$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $b['uid']);
-		if (DBM::is_result($r)) {
+		if (DBA::is_result($r)) {
 			$a->contact = $r[0]["id"];
 		}
 
@@ -665,7 +664,7 @@ function pumpio_sync(App $a)
 {
 	$r = q("SELECT * FROM `addon` WHERE `installed` = 1 AND `name` = 'pumpio'");
 
-	if (!DBM::is_result($r)) {
+	if (!DBA::is_result($r)) {
 		return;
 	}
 
@@ -683,7 +682,7 @@ function pumpio_sync(App $a)
 	logger('pumpio: cron_start');
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'pumpio' AND `k` = 'mirror' AND `v` = '1' ORDER BY RAND() ");
-	if (DBM::is_result($r)) {
+	if (DBA::is_result($r)) {
 		foreach ($r as $rr) {
 			logger('pumpio: mirroring user '.$rr['uid']);
 			pumpio_fetchtimeline($a, $rr['uid']);
@@ -698,11 +697,11 @@ function pumpio_sync(App $a)
 	$abandon_limit = date(DateTimeFormat::MYSQL, time() - $abandon_days * 86400);
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'pumpio' AND `k` = 'import' AND `v` = '1' ORDER BY RAND() ");
-	if (DBM::is_result($r)) {
+	if (DBA::is_result($r)) {
 		foreach ($r as $rr) {
 			if ($abandon_days != 0) {
 				$user = q("SELECT `login_date` FROM `user` WHERE uid=%d AND `login_date` >= '%s'", $rr['uid'], $abandon_limit);
-				if (!DBM::is_result($user)) {
+				if (!DBA::is_result($user)) {
 					logger('abandoned account: timeline from user '.$rr['uid'].' will not be imported');
 					continue;
 				}
@@ -871,9 +870,9 @@ function pumpio_dounlike(App $a, $uid, $self, $post, $own_id)
 	// Searching for the unliked post
 	// Two queries for speed issues
 	$orig_post = Item::selectFirst([], ['uri' => $post->object->id, 'uid' => $uid]);
-	if (!DBM::is_result($orig_post)) {
+	if (!DBA::is_result($orig_post)) {
 		$orig_post = Item::selectFirst([], ['extid' => $post->object->id, 'uid' => $uid]);
-		if (!DBM::is_result($orig_post)) {
+		if (!DBA::is_result($orig_post)) {
 			return;
 		}
 	}
@@ -888,7 +887,7 @@ function pumpio_dounlike(App $a, $uid, $self, $post, $own_id)
 			intval($uid)
 		);
 
-		if (DBM::is_result($r)) {
+		if (DBA::is_result($r)) {
 			$contactid = $r[0]['id'];
 		}
 
@@ -899,7 +898,7 @@ function pumpio_dounlike(App $a, $uid, $self, $post, $own_id)
 
 	Item::delete(['verb' => ACTIVITY_LIKE, 'uid' => $uid, 'contact-id' => $contactid, 'thr-parent' => $orig_post['uri']]);
 
-	if (DBM::is_result($r)) {
+	if (DBA::is_result($r)) {
 		logger("pumpio_dounlike: unliked existing like. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
 	} else {
 		logger("pumpio_dounlike: not found. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
@@ -918,9 +917,9 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 	// Searching for the liked post
 	// Two queries for speed issues
 	$orig_post = Item::selectFirst([], ['uri' => $post->object->id, 'uid' => $uid]);
-	if (!DBM::is_result($orig_post)) {
+	if (!DBA::is_result($orig_post)) {
 		$orig_post = Item::selectFirst([], ['extid' => $post->object->id, 'uid' => $uid]);
-		if (!DBM::is_result($orig_post)) {
+		if (!DBA::is_result($orig_post)) {
 			return;
 		}
 	}
@@ -943,7 +942,7 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 			intval($uid)
 		);
 
-		if (DBM::is_result($r)) {
+		if (DBA::is_result($r)) {
 			$contactid = $r[0]['id'];
 		}
 
@@ -1018,7 +1017,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false)
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `nurl` = '%s' LIMIT 1",
 		intval($uid), dbesc(normalise_link($contact->url)));
 
-	if (!DBM::is_result($r)) {
+	if (!DBA::is_result($r)) {
 		// create contact record
 		q("INSERT INTO `contact` (`uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
 					`name`, `nick`, `photo`, `network`, `rel`, `priority`,
@@ -1048,7 +1047,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false)
 			intval($uid)
 			);
 
-		if (!DBM::is_result($r)) {
+		if (!DBA::is_result($r)) {
 			return false;
 		}
 
@@ -1176,7 +1175,7 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 				intval($uid)
 			);
 
-			if (DBM::is_result($r)) {
+			if (DBA::is_result($r)) {
 				$contact_id = $r[0]['id'];
 			} else {
 				$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
@@ -1184,7 +1183,7 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 					intval($uid)
 				);
 
-				if (DBM::is_result($r)) {
+				if (DBA::is_result($r)) {
 					$contact_id = $r[0]['id'];
 				} else {
 					$contact_id = $self[0]['id'];
@@ -1405,7 +1404,7 @@ function pumpio_queue_hook(App $a, array &$b)
 		dbesc(NETWORK_PUMPIO)
 	);
 
-	if (!DBM::is_result($qi)) {
+	if (!DBA::is_result($qi)) {
 		return;
 	}
 
@@ -1420,7 +1419,7 @@ function pumpio_queue_hook(App $a, array &$b)
 			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
 			intval($x['cid'])
 		);
-		if (!DBM::is_result($r)) {
+		if (!DBA::is_result($r)) {
 			continue;
 		}
 
@@ -1512,7 +1511,7 @@ function pumpio_getreceiver(App $a, array $b)
 				dbesc(NETWORK_PUMPIO)
 				);
 
-			if (DBM::is_result($r)) {
+			if (DBA::is_result($r)) {
 				$receiver["bcc"][] = [
 							"displayName" => $r[0]["name"],
 							"objectType" => "person",
@@ -1555,7 +1554,7 @@ function pumpio_getreceiver(App $a, array $b)
 				dbesc(NETWORK_PUMPIO)
 				);
 
-			if (DBM::is_result($r)) {
+			if (DBA::is_result($r)) {
 				$receiver["to"][] = [
 					"displayName" => $r[0]["name"],
 					"objectType" => "person",
@@ -1587,7 +1586,7 @@ function pumpio_fetchallcomments(App $a, $uid, $id)
 	// Fetching the original post
 	$condition = ["`uri` = ? AND `uid` = ? AND `extid` != ''", $id, $uid];
 	$item = Item::selectFirst(['extid'], $condition);
-	if (!DBM::is_result($item)) {
+	if (!DBA::is_result($item)) {
 		return false;
 	}
 
