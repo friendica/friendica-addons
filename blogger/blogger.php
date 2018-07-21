@@ -37,7 +37,8 @@ function blogger_uninstall()
 }
 
 
-function blogger_jot_nets(App $a, &$b) {
+function blogger_jot_nets(App $a, &$b)
+{
 	if (!local_user()) {
 		return;
 	}
@@ -118,7 +119,7 @@ function blogger_settings(App $a, &$s)
 
 function blogger_settings_post(App $a, array &$b)
 {
-	if (isset($_POST['blogger-submit'])) {
+	if (!empty($_POST['blogger-submit'])) {
 		PConfig::set(local_user(), 'blogger', 'post',            intval($_POST['blogger']));
 		PConfig::set(local_user(), 'blogger', 'post_by_default', intval($_POST['bl_bydefault']));
 		PConfig::set(local_user(), 'blogger', 'bl_username',     trim($_POST['bl_username']));
@@ -161,9 +162,6 @@ function blogger_post_local(App $a, array &$b)
 
 	$b['postopts'] .= 'blogger';
 }
-
-
-
 
 function blogger_send(App $a, array &$b)
 {
