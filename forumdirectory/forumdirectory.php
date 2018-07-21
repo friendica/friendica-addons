@@ -107,7 +107,7 @@ function forumdirectory_content(&$a)
 
 	$r = q("SELECT COUNT(*) AS `total` FROM `profile` LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid`"
 		. " WHERE `is-default` = 1 $publish AND `user`.`blocked` = 0 AND `page-flags` = 2 $sql_extra ");
-	if (DBA::is_result($r)) {
+	if (DBA::isResult($r)) {
 		$a->set_pager_total($r[0]['total']);
 	}
 
@@ -120,7 +120,7 @@ function forumdirectory_content(&$a)
 		intval($a->pager['itemspage'])
 	);
 
-	if (DBA::is_result($r)) {
+	if (DBA::isResult($r)) {
 		if (in_array('small', $a->argv)) {
 			$photo = 'thumb';
 		} else {

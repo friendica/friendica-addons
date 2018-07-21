@@ -85,7 +85,7 @@ function catavatar_addon_settings_post(App $a, &$s)
 		$url = $a->get_baseurl() . '/catavatar/' . local_user() . '?ts=' . time();
 
 		$self = DBA::selectFirst('contact', ['id'], ['uid' => local_user(), 'self' => true]);
-		if (!DBA::is_result($self)) {
+		if (!DBA::isResult($self)) {
 			notice(L10n::t("The cat hadn't found itself."));
 			return;
 		}
@@ -94,7 +94,7 @@ function catavatar_addon_settings_post(App $a, &$s)
 
 		$condition = ['uid' => local_user(), 'contact-id' => $self['id']];
 		$photo = DBA::selectFirst('photo', ['resource-id'], $condition);
-		if (!DBA::is_result($photo)) {
+		if (!DBA::isResult($photo)) {
 			notice(L10n::t('There was an error, the cat ran away.'));
 			return;
 		}

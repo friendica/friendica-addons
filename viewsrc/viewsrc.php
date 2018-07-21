@@ -43,7 +43,7 @@ function viewsrc_item_photo_menu(&$a, &$b)
 
 	if (local_user() != $b['item']['uid']) {
 		$item = Item::selectFirstForUser(local_user(), ['id'], ['uid' => local_user(), 'guid' => $b['item']['guid']]);
-		if (!DBA::is_result($item)) {
+		if (!DBA::isResult($item)) {
 			return;
 		}
 

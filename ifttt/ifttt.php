@@ -101,7 +101,7 @@ function ifttt_post(App $a)
 	$nickname = $a->argv[1];
 
 	$user = DBA::selectFirst('user', ['uid'], ['nickname' => $nickname]);
-	if (!DBA::is_result($user)) {
+	if (!DBA::isResult($user)) {
 		logger('User ' . $nickname . ' not found.', LOGGER_DEBUG);
 		return;
 	}

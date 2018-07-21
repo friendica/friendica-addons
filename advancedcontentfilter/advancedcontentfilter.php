@@ -413,7 +413,7 @@ function advancedcontentfilter_get_variables_guid(ServerRequestInterface $reques
 	$params = ['order' => ['uid' => true]];
 	$item = Item::selectFirstForUser(local_user(), [], $condition, $params);
 
-	if (!DBA::is_result($item)) {
+	if (!DBA::isResult($item)) {
 		throw new HTTPException\NotFoundException(L10n::t('Unknown post with guid: %s', $args['guid']));
 	}
 
