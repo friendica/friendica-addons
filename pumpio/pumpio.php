@@ -60,7 +60,7 @@ function pumpio_uninstall()
 
 function pumpio_module() {}
 
-function pumpio_content(&$a)
+function pumpio_content(App $a)
 {
 	if (!local_user()) {
 		notice(L10n::t('Permission denied.') . EOL);
@@ -93,7 +93,7 @@ function pumpio_check_item_notification($a, &$notification_data)
 	$notification_data["profiles"][] = "https://".$hostname."/".$username;
 }
 
-function pumpio_registerclient(&$a, $host)
+function pumpio_registerclient(App $a, $host)
 {
 	$url = "https://".$host."/api/client/register";
 
@@ -136,7 +136,7 @@ function pumpio_registerclient(&$a, $host)
 
 }
 
-function pumpio_connect(&$a)
+function pumpio_connect(App $a)
 {
 	// Start a session.  This is necessary to hold on to  a few keys the callback script will also need
 	session_start();
@@ -228,7 +228,7 @@ function pumpio_jot_nets(App $a, &$b)
 	}
 }
 
-function pumpio_settings(&$a, &$s)
+function pumpio_settings(App $a, &$s)
 {
 	if (!local_user()) {
 		return;
@@ -585,7 +585,7 @@ function pumpio_send(App $a, array &$b)
 	}
 }
 
-function pumpio_action(&$a, $uid, $uri, $action, $content = "")
+function pumpio_action(App $a, $uid, $uri, $action, $content = "")
 {
 	// Don't do likes and other stuff if you don't import the timeline
 	if (!PConfig::get($uid, 'pumpio', 'import')) {
@@ -661,7 +661,7 @@ function pumpio_action(&$a, $uid, $uri, $action, $content = "")
 	}
 }
 
-function pumpio_sync(&$a)
+function pumpio_sync(App $a)
 {
 	$r = q("SELECT * FROM `addon` WHERE `installed` = 1 AND `name` = 'pumpio'");
 
@@ -731,12 +731,12 @@ function pumpio_sync(&$a)
 	Config::set('pumpio', 'last_poll', time());
 }
 
-function pumpio_cron(&$a, $b)
+function pumpio_cron(App $a, $b)
 {
 	Worker::add(PRIORITY_MEDIUM,"addon/pumpio/pumpio_sync.php");
 }
 
-function pumpio_fetchtimeline(&$a, $uid)
+function pumpio_fetchtimeline(App $a, $uid)
 {
 	$ckey    = PConfig::get($uid, 'pumpio', 'consumer_key');
 	$csecret = PConfig::get($uid, 'pumpio', 'consumer_secret');
@@ -866,7 +866,7 @@ function pumpio_fetchtimeline(&$a, $uid)
 	}
 }
 
-function pumpio_dounlike(&$a, $uid, $self, $post, $own_id)
+function pumpio_dounlike(App $a, $uid, $self, $post, $own_id)
 {
 	// Searching for the unliked post
 	// Two queries for speed issues
@@ -906,7 +906,7 @@ function pumpio_dounlike(&$a, $uid, $self, $post, $own_id)
 	}
 }
 
-function pumpio_dolike(&$a, $uid, $self, $post, $own_id, $threadcompletion = true)
+function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = true)
 {
 	require_once('include/items.php');
 
@@ -1076,7 +1076,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false)
 	return $contact_id;
 }
 
-function pumpio_dodelete(&$a, $uid, $self, $post, $own_id)
+function pumpio_dodelete(App $a, $uid, $self, $post, $own_id)
 {
 	// Two queries for speed issues
 	$condition = ['uri' => $post->object->id, 'uid' => $uid];
@@ -1093,7 +1093,7 @@ function pumpio_dodelete(&$a, $uid, $self, $post, $own_id)
 	return false;
 }
 
-function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcompletion = true)
+function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcompletion = true)
 {
 	require_once('include/items.php');
 
@@ -1483,7 +1483,7 @@ function pumpio_queue_hook(App $a, array &$b)
 	}
 }
 
-function pumpio_getreceiver(&$a, $b)
+function pumpio_getreceiver(App $a, array $b)
 {
 	$receiver = [];
 
@@ -1568,12 +1568,12 @@ function pumpio_getreceiver(&$a, $b)
 	return $receiver;
 }
 
-function pumpio_fetchallcomments(&$a, $uid, $id)
+function pumpio_fetchallcomments(App $a, $uid, $id)
 {
-	$ckey    = PConfig::get($uid, 'pumpio', 'consumer_key');
-	$csecret = PConfig::get($uid, 'pumpio', 'consumer_secret');
-	$otoken  = PConfig::get($uid, 'pumpio', 'oauth_token');
-	$osecret = PConfig::get($uid, 'pumpio', 'oauth_token_secret');
+	$ckey     = PConfig::get($uid, 'pumpio', 'consumer_key');
+	$csecret  = PConfig::get($uid, 'pumpio', 'consumer_secret');
+	$otoken   = PConfig::get($uid, 'pumpio', 'oauth_token');
+	$osecret  = PConfig::get($uid, 'pumpio', 'oauth_token_secret');
 	$hostname = PConfig::get($uid, 'pumpio', 'host');
 	$username = PConfig::get($uid, "pumpio", "user");
 
