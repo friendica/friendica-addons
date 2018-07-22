@@ -330,21 +330,21 @@ function pumpio_settings(&$a, &$s)
 
 function pumpio_settings_post(App $a, array &$b)
 {
-	if (x($_POST,'pumpio-submit')) {
-		if (x($_POST,'pumpio_delete')) {
-			PConfig::set(local_user(), 'pumpio', 'consumer_key', '');
-			PConfig::set(local_user(), 'pumpio', 'consumer_secret', '');
-			PConfig::set(local_user(), 'pumpio', 'oauth_token', '');
+	if (!empty($_POST['pumpio-submit'])) {
+		if (!empty($_POST['pumpio_delete'])) {
+			PConfig::set(local_user(), 'pumpio', 'consumer_key'      , '');
+			PConfig::set(local_user(), 'pumpio', 'consumer_secret'   , '');
+			PConfig::set(local_user(), 'pumpio', 'oauth_token'       , '');
 			PConfig::set(local_user(), 'pumpio', 'oauth_token_secret', '');
-			PConfig::set(local_user(), 'pumpio', 'post', false);
-			PConfig::set(local_user(), 'pumpio', 'import', false);
-			PConfig::set(local_user(), 'pumpio', 'host', '');
-			PConfig::set(local_user(), 'pumpio', 'user', '');
-			PConfig::set(local_user(), 'pumpio', 'public', false);
-			PConfig::set(local_user(), 'pumpio', 'mirror', false);
-			PConfig::set(local_user(), 'pumpio', 'post_by_default', false);
-			PConfig::set(local_user(), 'pumpio', 'lastdate', 0);
-			PConfig::set(local_user(), 'pumpio', 'last_id', '');
+			PConfig::set(local_user(), 'pumpio', 'post'              , false);
+			PConfig::set(local_user(), 'pumpio', 'import'            , false);
+			PConfig::set(local_user(), 'pumpio', 'host'              , '');
+			PConfig::set(local_user(), 'pumpio', 'user'              , '');
+			PConfig::set(local_user(), 'pumpio', 'public'            , false);
+			PConfig::set(local_user(), 'pumpio', 'mirror'            , false);
+			PConfig::set(local_user(), 'pumpio', 'post_by_default'   , false);
+			PConfig::set(local_user(), 'pumpio', 'lastdate'          , 0);
+			PConfig::set(local_user(), 'pumpio', 'last_id'           , '');
 		} else {
 			// filtering the username if it is filled wrong
 			$user = $_POST['pumpio_user'];
@@ -361,13 +361,13 @@ function pumpio_settings_post(App $a, array &$b)
 			$host = trim($host);
 			$host = str_replace(["https://", "http://"], ["", ""], $host);
 
-			PConfig::set(local_user(), 'pumpio', 'post',intval($_POST['pumpio']));
-			PConfig::set(local_user(), 'pumpio', 'import', $_POST['pumpio_import']);
-			PConfig::set(local_user(), 'pumpio', 'host', $host);
-			PConfig::set(local_user(), 'pumpio', 'user', $user);
-			PConfig::set(local_user(), 'pumpio', 'public', $_POST['pumpio_public']);
-			PConfig::set(local_user(), 'pumpio', 'mirror', $_POST['pumpio_mirror']);
-			PConfig::set(local_user(), 'pumpio', 'post_by_default',intval($_POST['pumpio_bydefault']));
+			PConfig::set(local_user(), 'pumpio', 'post'           , intval($_POST['pumpio']));
+			PConfig::set(local_user(), 'pumpio', 'import'         , $_POST['pumpio_import']);
+			PConfig::set(local_user(), 'pumpio', 'host'           , $host);
+			PConfig::set(local_user(), 'pumpio', 'user'           , $user);
+			PConfig::set(local_user(), 'pumpio', 'public'         , $_POST['pumpio_public']);
+			PConfig::set(local_user(), 'pumpio', 'mirror'         , $_POST['pumpio_mirror']);
+			PConfig::set(local_user(), 'pumpio', 'post_by_default', intval($_POST['pumpio_bydefault']));
 
 			if (!$_POST['pumpio_mirror']) {
 				PConfig::delete(local_user(), 'pumpio', 'lastdate');
@@ -391,7 +391,7 @@ function pumpio_post_local(App $a, array &$b)
 
 	$pumpio_post   = intval(PConfig::get(local_user(), 'pumpio', 'post'));
 
-	$pumpio_enable = (($pumpio_post && x($_REQUEST, 'pumpio_enable')) ? intval($_REQUEST['pumpio_enable']) : 0);
+	$pumpio_enable = (($pumpio_post && !empty($_REQUEST['pumpio_enable'])) ? intval($_REQUEST['pumpio_enable']) : 0);
 
 	if ($b['api_source'] && intval(PConfig::get(local_user(), 'pumpio', 'post_by_default'))) {
 		$pumpio_enable = 1;
@@ -1286,12 +1286,12 @@ function pumpio_dopost(&$a, $client, $uid, $self, $post, $own_id, $threadcomplet
 	return $top_item;
 }
 
-function pumpio_fetchinbox(&$a, $uid)
+function pumpio_fetchinbox(App $a, $uid)
 {
-	$ckey    = PConfig::get($uid, 'pumpio', 'consumer_key');
-	$csecret = PConfig::get($uid, 'pumpio', 'consumer_secret');
-	$otoken  = PConfig::get($uid, 'pumpio', 'oauth_token');
-	$osecret = PConfig::get($uid, 'pumpio', 'oauth_token_secret');
+	$ckey     = PConfig::get($uid, 'pumpio', 'consumer_key');
+	$csecret  = PConfig::get($uid, 'pumpio', 'consumer_secret');
+	$otoken   = PConfig::get($uid, 'pumpio', 'oauth_token');
+	$osecret  = PConfig::get($uid, 'pumpio', 'oauth_token_secret');
 	$lastdate = PConfig::get($uid, 'pumpio', 'lastdate');
 	$hostname = PConfig::get($uid, 'pumpio', 'host');
 	$username = PConfig::get($uid, "pumpio", "user");
@@ -1348,19 +1348,19 @@ function pumpio_fetchinbox(&$a, $uid)
 		}
 	}
 
-	foreach ($lastitems AS $item) {
+	foreach ($lastitems as $item) {
 		pumpio_fetchallcomments($a, $uid, $item["uri"]);
 	}
 
 	PConfig::set($uid, 'pumpio', 'last_id', $last_id);
 }
 
-function pumpio_getallusers(&$a, $uid)
+function pumpio_getallusers(App &$a, $uid)
 {
-	$ckey    = PConfig::get($uid, 'pumpio', 'consumer_key');
-	$csecret = PConfig::get($uid, 'pumpio', 'consumer_secret');
-	$otoken  = PConfig::get($uid, 'pumpio', 'oauth_token');
-	$osecret = PConfig::get($uid, 'pumpio', 'oauth_token_secret');
+	$ckey     = PConfig::get($uid, 'pumpio', 'consumer_key');
+	$csecret  = PConfig::get($uid, 'pumpio', 'consumer_secret');
+	$otoken   = PConfig::get($uid, 'pumpio', 'oauth_token');
+	$osecret  = PConfig::get($uid, 'pumpio', 'oauth_token_secret');
 	$hostname = PConfig::get($uid, 'pumpio', 'host');
 	$username = PConfig::get($uid, "pumpio", "user");
 
@@ -1377,7 +1377,7 @@ function pumpio_getallusers(&$a, $uid)
 	$url = 'https://'.$hostname.'/api/user/'.$username.'/following';
 
 	if (pumpio_reachable($url)) {
-		$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError'=>true], $users);
+		$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError' => true], $users);
 	} else {
 		$success = false;
 	}
@@ -1386,14 +1386,14 @@ function pumpio_getallusers(&$a, $uid)
 		$url = 'https://'.$hostname.'/api/user/'.$username.'/following?count='.$users->totalItems;
 
 		if (pumpio_reachable($url)) {
-			$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError'=>true], $users);
+			$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError' => true], $users);
 		} else {
 			$success = false;
 		}
 	}
 
 	if (is_array($users->items)) {
-		foreach ($users->items AS $user) {
+		foreach ($users->items as $user) {
 			pumpio_get_contact($uid, $user);
 		}
 	}
@@ -1428,10 +1428,10 @@ function pumpio_queue_hook(App $a, array &$b)
 
 		//logger('pumpio_queue: fetching userdata '.print_r($userdata, true));
 
-		$oauth_token = PConfig::get($userdata['uid'], "pumpio", "oauth_token");
+		$oauth_token        = PConfig::get($userdata['uid'], "pumpio", "oauth_token");
 		$oauth_token_secret = PConfig::get($userdata['uid'], "pumpio", "oauth_token_secret");
-		$consumer_key = PConfig::get($userdata['uid'], "pumpio","consumer_key");
-		$consumer_secret = PConfig::get($userdata['uid'], "pumpio","consumer_secret");
+		$consumer_key       = PConfig::get($userdata['uid'], "pumpio", "consumer_key");
+		$consumer_secret    = PConfig::get($userdata['uid'], "pumpio", "consumer_secret");
 
 		$host = PConfig::get($userdata['uid'], "pumpio", "host");
 		$user = PConfig::get($userdata['uid'], "pumpio", "user");
