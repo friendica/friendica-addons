@@ -6,6 +6,7 @@
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  */
 
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
 use Friendica\Core\Addon;
@@ -211,13 +212,14 @@ function pumpio_connect(&$a)
 	return $o;
 }
 
-function pumpio_jot_nets(&$a, &$b)
+function pumpio_jot_nets(App $a, &$b)
 {
-	if (!local_user()) {
+	if (! local_user()) {
 		return;
 	}
 
 	$pumpio_post = PConfig::get(local_user(), 'pumpio', 'post');
+
 	if (intval($pumpio_post) == 1) {
 		$pumpio_defpost = PConfig::get(local_user(), 'pumpio', 'post_by_default');
 		$selected = ((intval($pumpio_defpost) == 1) ? ' checked="checked" ' : '');
@@ -326,10 +328,10 @@ function pumpio_settings(&$a, &$s)
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="pumpio-submit" name="pumpio-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
 }
 
-function pumpio_settings_post(&$a, &$b)
+function pumpio_settings_post(App $a, array &$b)
 {
-	if (x($_POST, 'pumpio-submit')) {
-		if (x($_POST, 'pumpio_delete')) {
+	if (x($_POST,'pumpio-submit')) {
+		if (x($_POST,'pumpio_delete')) {
 			PConfig::set(local_user(), 'pumpio', 'consumer_key', '');
 			PConfig::set(local_user(), 'pumpio', 'consumer_secret', '');
 			PConfig::set(local_user(), 'pumpio', 'oauth_token', '');
@@ -348,6 +350,7 @@ function pumpio_settings_post(&$a, &$b)
 			$user = $_POST['pumpio_user'];
 			if (strstr($user, "@")) {
 				$pos = strpos($user, "@");
+
 				if ($pos > 0) {
 					$user = substr($user, 0, $pos);
 				}
@@ -375,12 +378,12 @@ function pumpio_settings_post(&$a, &$b)
 	}
 }
 
-function pumpio_load_config(\Friendica\App $a)
+function pumpio_load_config(App $a)
 {
 	$a->loadConfigFile(__DIR__. '/config/pumpio.ini.php');
 }
 
-function pumpio_post_local(&$a, &$b)
+function pumpio_post_local(App $a, array &$b)
 {
 	if (!local_user() || (local_user() != $b['uid'])) {
 		return;
@@ -405,12 +408,10 @@ function pumpio_post_local(&$a, &$b)
 	$b['postopts'] .= 'pumpio';
 }
 
-function pumpio_send(&$a, &$b)
+function pumpio_send(App $a, array &$b)
 {
-	if (!PConfig::get($b["uid"], 'pumpio', 'import')) {
-		if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
-			return;
-		}
+	if (!PConfig::get($b["uid"], 'pumpio', 'import') && ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))) {
+		return;
 	}
 
 	logger("pumpio_send: parameter ".print_r($b, true), LOGGER_DATA);
@@ -1398,11 +1399,12 @@ function pumpio_getallusers(&$a, $uid)
 	}
 }
 
-function pumpio_queue_hook(&$a, &$b)
+function pumpio_queue_hook(App $a, array &$b)
 {
 	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
 		dbesc(NETWORK_PUMPIO)
 	);
+
 	if (!DBM::is_result($qi)) {
 		return;
 	}
