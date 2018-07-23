@@ -6,9 +6,11 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
 
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Database\DBA;
 use Friendica\Model\User;
 use Friendica\Util\DateTimeFormat;
 
@@ -33,7 +35,7 @@ function testdrive_uninstall() {
 
 }
 
-function testdrive_load_config(\Friendica\App $a)
+function testdrive_load_config(App $a)
 {
 	$a->loadConfigFile(__DIR__. '/config/testdrive.ini.php');
 }
@@ -51,7 +53,7 @@ function testdrive_register_account($a,$b) {
 		return;
 
 	$r = q("UPDATE user set account_expires_on = '%s' where uid = %d",
-		dbesc(DateTimeFormat::convert('now +' . $days . ' days')),
+		DBA::escape(DateTimeFormat::convert('now +' . $days . ' days')),
 		intval($uid)
 	);
 
@@ -79,7 +81,7 @@ function testdrive_cron($a,$b) {
 			]);
 
 			q("update user set expire_notification_sent = '%s' where uid = %d",
-				dbesc(DateTimeFormat::utcNow()),
+				DBA::escape(DateTimeFormat::utcNow()),
 				intval($rr['uid'])
 			);
 

@@ -51,7 +51,7 @@ function diaspora_queue_hook(&$a,&$b) {
 	$hostname = $a->get_hostname();
 
 	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
-		dbesc(NETWORK_DIASPORA2)
+		DBA::escape(NETWORK_DIASPORA2)
 	);
 	if(! count($qi))
 		return;

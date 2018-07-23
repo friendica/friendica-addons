@@ -67,6 +67,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Database\DBA;
 use Friendica\Model\User;
 use Friendica\Util\Network;
 
@@ -195,7 +196,7 @@ function jappixmini_init()
 
 	$role = $_REQUEST["role"];
 	if ($role == "pub") {
-		$r = q("SELECT * FROM `contact` WHERE LENGTH(`pubkey`) AND `dfrn-id`='%s' LIMIT 1", dbesc($dfrn_id));
+		$r = q("SELECT * FROM `contact` WHERE LENGTH(`pubkey`) AND `dfrn-id`='%s' LIMIT 1", DBA::escape($dfrn_id));
 		if (!count($r)) {
 			killme();
 		}
@@ -204,7 +205,7 @@ function jappixmini_init()
 		$decrypt_func = openssl_public_decrypt;
 		$key = $r[0]["pubkey"];
 	} else if ($role == "prv") {
-		$r = q("SELECT * FROM `contact` WHERE LENGTH(`prvkey`) AND `issued-id`='%s' LIMIT 1", dbesc($dfrn_id));
+		$r = q("SELECT * FROM `contact` WHERE LENGTH(`prvkey`) AND `issued-id`='%s' LIMIT 1", DBA::escape($dfrn_id));
 		if (!count($r)) {
 			killme();
 		}
@@ -524,7 +525,7 @@ function jappixmini_script(App $a)
 		$key = $row['k'];
 		$pos = strpos($key, ":");
 		$dfrn_id = substr($key, $pos + 1);
-		$r = q("SELECT `name` FROM `contact` WHERE `uid`=$uid AND (`dfrn-id`='%s' OR `issued-id`='%s')", dbesc($dfrn_id), dbesc($dfrn_id));
+		$r = q("SELECT `name` FROM `contact` WHERE `uid`=$uid AND (`dfrn-id`='%s' OR `issued-id`='%s')", DBA::escape($dfrn_id), DBA::escape($dfrn_id));
 		if (count($r))
 			$name = $r[0]["name"];
 
@@ -593,7 +594,7 @@ function jappixmini_cron(App $a, $d)
 
 		// for each user, go through list of contacts
 		$contacts = q("SELECT * FROM `contact` WHERE `uid`=%d AND ((LENGTH(`dfrn-id`) AND LENGTH(`pubkey`)) OR (LENGTH(`issued-id`) AND LENGTH(`prvkey`))) AND `network` = '%s'",
-			intval($uid), dbesc(NETWORK_DFRN));
+			intval($uid), DBA::escape(NETWORK_DFRN));
 		foreach ($contacts as $contact_row) {
 			$request = $contact_row["request"];
 			if (!$request) {

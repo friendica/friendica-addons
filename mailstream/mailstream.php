@@ -120,8 +120,8 @@ function mailstream_post_hook(&$a, &$item) {
 	$message_id = mailstream_generate_id($a, $item['uri']);
 	q("INSERT INTO `mailstream_item` (`uid`, `contact-id`, `uri`, `message-id`) " .
 		"VALUES (%d, '%s', '%s', '%s')", intval($item['uid']),
-		intval($item['contact-id']), dbesc($item['uri']), dbesc($message_id));
-	$r = q('SELECT * FROM `mailstream_item` WHERE `uid` = %d AND `contact-id` = %d AND `uri` = "%s"', intval($item['uid']), intval($item['contact-id']), dbesc($item['uri']));
+		intval($item['contact-id']), DBA::escape($item['uri']), DBA::escape($message_id));
+	$r = q('SELECT * FROM `mailstream_item` WHERE `uid` = %d AND `contact-id` = %d AND `uri` = "%s"', intval($item['uid']), intval($item['contact-id']), DBA::escape($item['uri']));
 	if (count($r) != 1) {
 		logger('mailstream_post_remote_hook: Unexpected number of items returned from mailstream_item', LOGGER_NORMAL);
 		return;
@@ -307,7 +307,7 @@ function mailstream_send($a, $message_id, $item, $user) {
 	// In case of failure, still set the item to completed.  Otherwise
 	// we'll just try to send it over and over again and it'll fail
 	// every time.
-	q('UPDATE `mailstream_item` SET `completed` = now() WHERE `message-id` = "%s"', dbesc($message_id));
+	q('UPDATE `mailstream_item` SET `completed` = now() WHERE `message-id` = "%s"', DBA::escape($message_id));
 }
 
 /**

@@ -5,20 +5,22 @@
  * Version: 1.0
  * Author: Fabio Comuni <http://kirgroup.com/profile/fabrix/>
  */
+
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Database\DBA;
 
 function widgets_install() {
 	Addon::registerHook('addon_settings', 'addon/widgets/widgets.php', 'widgets_settings');
 	Addon::registerHook('addon_settings_post', 'addon/widgets/widgets.php', 'widgets_settings_post');
 	logger("installed widgets");
 }
+
 function widgets_uninstall() {
 	Addon::unregisterHook('addon_settings', 'addon/widgets/widgets.php', 'widgets_settings');
 	Addon::unregisterHook('addon_settings_post', 'addon/widgets/widgets.php', 'widgets_settings_post');
 }
-
 
 function widgets_settings_post(){
 	if(! local_user())
@@ -89,7 +91,7 @@ function widgets_content(&$a) {
 	}
 
 	$r = q("SELECT * FROM pconfig WHERE uid IN (SELECT uid FROM pconfig  WHERE v='%s')AND  cat='widgets'",
-			dbesc($_GET['k'])
+			DBA::escape($_GET['k'])
 		 );
 	if (!count($r)){
 		if($a->argv[2]=="cb"){header('HTTP/1.0 400 Bad Request'); killme();}

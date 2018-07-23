@@ -5,9 +5,12 @@
  * Version: 1.1
  * Author: Klaus Weidenbach <http://friendica.dszdw.net/profile/klaus>
  */
+
+use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Database\DBA;
 
 /**
  * Installs the addon hook
@@ -29,7 +32,7 @@ function libravatar_uninstall()
 	logger("unregistered libravatar in avatar_lookup hook");
 }
 
-function libravatar_load_config(\Friendica\App $a)
+function libravatar_load_config(App $a)
 {
 	$a->loadConfigFile(__DIR__. '/config/libravatar.ini.php');
 }
@@ -96,7 +99,7 @@ function libravatar_addon_admin(&$a, &$o)
 
 	// Libravatar falls back to gravatar, so show warning about gravatar addon if enabled
 	$r = q("SELECT * FROM `addon` WHERE `name` = '%s' and `installed` = 1",
-		dbesc('gravatar')
+		DBA::escape('gravatar')
 	);
 	if (count($r)) {
 		$o = '<h5>' .L10n::t('Information') .'</h5><p>' .L10n::t('Gravatar addon is installed. Please disable the Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar.') .'</p><br><br>';
