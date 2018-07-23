@@ -119,7 +119,7 @@ function advancedcontentfilter_prepare_body_content_filter(App $a, &$hook_data)
 
 	$rules = Cache::get('rules_' . local_user());
 	if (!isset($rules)) {
-		$rules = DBA::inArray(DBA::select(
+		$rules = DBA::toArray(DBA::select(
 			'advancedcontentfilter_rules',
 			['name', 'expression', 'serialized'],
 			['uid' => local_user(), 'active' => true]
@@ -300,7 +300,7 @@ function advancedcontentfilter_get_rules()
 		throw new HTTPException\UnauthorizedException(L10n::t('You must be logged in to use this method'));
 	}
 
-	$rules = DBA::inArray(DBA::select('advancedcontentfilter_rules', [], ['uid' => local_user()]));
+	$rules = DBA::toArray(DBA::select('advancedcontentfilter_rules', [], ['uid' => local_user()]));
 
 	return json_encode($rules);
 }
