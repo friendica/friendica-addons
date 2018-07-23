@@ -62,7 +62,7 @@ function diaspora_queue_hook(App $a, &$b) {
 		DBA::escape(NETWORK_DIASPORA2)
 	);
 
-	if (!DBM::is_result($qi)) {
+	if (!DBA:isResult($qi)) {
 		return;
 	}
 
@@ -78,20 +78,20 @@ function diaspora_queue_hook(App $a, &$b) {
 			intval($x['cid'])
 		);
 
-		if (!DBM::is_result($r)) {
+		if (!DBA:isResult($r)) {
 			continue;
 		}
 
 		$userdata = $r[0];
 
-		$handle = PConfig::get($userdata['uid'],'diaspora','handle');
-		$password = PConfig::get($userdata['uid'],'diaspora','password');
-		$aspect = PConfig::get($userdata['uid'],'diaspora','aspect');
+		$handle   = PConfig::get($userdata['uid'], 'diaspora', 'handle');
+		$password = PConfig::get($userdata['uid'], 'diaspora', 'password');
+		$aspect   = PConfig::get($userdata['uid'], 'diaspora', 'aspect');
 
 		$success = false;
 
 		if ($handle && $password) {
-                        logger('diaspora_queue: able to post for user '.$handle);
+			logger('diaspora_queue: able to post for user '.$handle);
 
 			$z = unserialize($x['content']);
 
