@@ -1,6 +1,7 @@
 <?php
 
 use Friendica\Core\L10n;
+use Friendica\Database\DBA;
 
 function like_widget_name() {
 	return "Shows likes";
