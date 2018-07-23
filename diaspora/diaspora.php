@@ -62,7 +62,7 @@ function diaspora_queue_hook(App $a, &$b) {
 		DBA::escape(NETWORK_DIASPORA2)
 	);
 
-	if (!DBA:isResult($qi)) {
+	if (!DBA::isResult($qi)) {
 		return;
 	}
 
@@ -78,7 +78,7 @@ function diaspora_queue_hook(App $a, &$b) {
 			intval($x['cid'])
 		);
 
-		if (!DBA:isResult($r)) {
+		if (!DBA::isResult($r)) {
 			continue;
 		}
 
