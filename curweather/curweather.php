@@ -175,8 +175,8 @@ function curweather_addon_settings_post(App $a, $post)
 	info(L10n::t('Current Weather settings updated.') . EOL);
 }
 
-function curweather_addon_settings(App $a, &$s) {
-
+function curweather_addon_settings(App $a, &$s)
+{
 	if (!local_user()) {
 		return;
 	}
