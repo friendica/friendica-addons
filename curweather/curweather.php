@@ -49,6 +49,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 			return $cached;
 		}
 	}
+
 	try {
 		$res = new SimpleXMLElement(Network::fetchUrl($url));
 	} catch (Exception $e) {
@@ -98,7 +99,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 
 function curweather_network_mod_init(App $a, &$b)
 {
-	if (! intval(PConfig::get(local_user(), 'curweather','curweather_enable'))) {
+	if (!intval(PConfig::get(local_user(), 'curweather', 'curweather_enable'))) {
 		return;
 	}
 
@@ -215,7 +216,7 @@ function curweather_addon_settings(App $a, &$s)
 // for accessing the API of openweathermap
 function curweather_addon_admin_post(App $a)
 {
-	if (! is_site_admin()) {
+	if (!is_site_admin()) {
 		return;
 	}
 
@@ -241,15 +242,15 @@ function curweather_addon_admin(App $a, &$o)
 	$o = replace_macros ($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$cachetime' => [
-			'cachetime', 
-			L10n::t('Caching Interval'), 
-			$cachetime, 
+			'cachetime',
+			L10n::t('Caching Interval'),
+			$cachetime,
 			L10n::t('For how long should the weather data be cached? Choose according your OpenWeatherMap account type.'), [
-				'0'=>L10n::t('no cache'), 
-				'300'=>'5 '.L10n::t('minutes'), 
-				'900'=>'15 '.L10n::t('minutes'), 
-				'1800'=>'30 '.L10n::t('minutes'), 
-				'3600'=>'60 '.L10n::t('minutes')
+				'0'    => L10n::t('no cache'),
+				'300'  => '5 '  . L10n::t('minutes'),
+				'900'  => '15 ' . L10n::t('minutes'),
+				'1800' => '30 ' . L10n::t('minutes'),
+				'3600' => '60 ' . L10n::t('minutes')
 			]
 		],
 		'$appid' => ['appid', L10n::t('Your APPID'), $appid, L10n::t('Your API key provided by OpenWeatherMap')]
