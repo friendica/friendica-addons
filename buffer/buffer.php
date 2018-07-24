@@ -16,7 +16,8 @@ use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
 use Friendica\Model\ItemContent;
 
-function buffer_install() {
+function buffer_install()
+{
 	Addon::registerHook('post_local',           'addon/buffer/buffer.php', 'buffer_post_local');
 	Addon::registerHook('notifier_normal',      'addon/buffer/buffer.php', 'buffer_send');
 	Addon::registerHook('jot_networks',         'addon/buffer/buffer.php', 'buffer_jot_nets');
@@ -24,42 +25,47 @@ function buffer_install() {
 	Addon::registerHook('connector_settings_post', 'addon/buffer/buffer.php', 'buffer_settings_post');
 }
 
-function buffer_uninstall() {
-	Addon::unregisterHook('post_local',       'addon/buffer/buffer.php', 'buffer_post_local');
-	Addon::unregisterHook('notifier_normal',  'addon/buffer/buffer.php', 'buffer_send');
-	Addon::unregisterHook('jot_networks',     'addon/buffer/buffer.php', 'buffer_jot_nets');
+function buffer_uninstall()
+{
+	Addon::unregisterHook('post_local',              'addon/buffer/buffer.php', 'buffer_post_local');
+	Addon::unregisterHook('notifier_normal',         'addon/buffer/buffer.php', 'buffer_send');
+	Addon::unregisterHook('jot_networks',            'addon/buffer/buffer.php', 'buffer_jot_nets');
 	Addon::unregisterHook('connector_settings',      'addon/buffer/buffer.php', 'buffer_settings');
 	Addon::unregisterHook('connector_settings_post', 'addon/buffer/buffer.php', 'buffer_settings_post');
 }
 
-function buffer_module() {}
+function buffer_module()
+{
+}
 
-function buffer_content(&$a) {
-
-	if(! local_user()) {
+function buffer_content(App $a)
+{
+	if (! local_user()) {
 		notice(L10n::t('Permission denied.') . EOL);
 		return '';
 	}
 
-	require_once("mod/settings.php");
+	require_once "mod/settings.php";
 	settings_init($a);
 
-	if (isset($a->argv[1]))
+	if (isset($a->argv[1])) {
 		switch ($a->argv[1]) {
 			case "connect":
 				$o = buffer_connect($a);
 				break;
+
 			default:
 				$o = print_r($a->argv, true);
 				break;
 		}
-	else
+	} else {
 		$o = buffer_connect($a);
+	}
 
 	return $o;
 }
 
-function buffer_addon_admin(&$a, &$o)
+function buffer_addon_admin(App $a, &$o)
 {
 	$t = get_markup_template("admin.tpl", "addon/buffer/");
 
@@ -70,21 +76,25 @@ function buffer_addon_admin(&$a, &$o)
 		'$client_secret' => ['client_secret', L10n::t('Client Secret'), Config::get('buffer', 'client_secret'), ''],
 	]);
 }
-function buffer_addon_admin_post(&$a)
+
+function buffer_addon_admin_post(App $a)
 {
-	$client_id     =       ((x($_POST, 'client_id'))              ? notags(trim($_POST['client_id']))   : '');
-	$client_secret =       ((x($_POST, 'client_secret'))   ? notags(trim($_POST['client_secret'])): '');
-	Config::set('buffer', 'client_id', $client_id);
+	$client_id     = ((!empty($_POST['client_id']))     ? notags(trim($_POST['client_id']))     : '');
+	$client_secret = ((!empty($_POST['client_secret'])) ? notags(trim($_POST['client_secret'])) : '');
+
+	Config::set('buffer', 'client_id'    , $client_id);
 	Config::set('buffer', 'client_secret', $client_secret);
+
 	info(L10n::t('Settings updated.'). EOL);
 }
 
-function buffer_connect(&$a) {
-
+function buffer_connect(App $a)
+{
 	if (isset($_REQUEST["error"])) {
 		$o = L10n::t('Error when registering buffer connection:')." ".$_REQUEST["error"];
 		return $o;
 	}
+
 	// Start a session.  This is necessary to hold on to  a few keys the callback script will also need
 	session_start();
 
@@ -102,30 +112,34 @@ function buffer_connect(&$a) {
 	} else {
 		logger("buffer_connect: authenticated");
 		$o .= L10n::t("You are now authenticated to buffer. ");
-		$o .= '<br /><a href="'.$a->get_baseurl().'/settings/connectors">'.L10n::t("return to the connector page").'</a>';
+		$o .= '<br /><a href="' . $a->get_baseurl() . '/settings/connectors">' . L10n::t("return to the connector page") . '</a>';
 		PConfig::set(local_user(), 'buffer','access_token', $buffer->access_token);
 	}
 
-	return($o);
+	return $o;
 }
 
-function buffer_jot_nets(&$a,&$b) {
-	if(! local_user())
+function buffer_jot_nets(App $a, &$b)
+{
+	if (!local_user()) {
 		return;
+	}
 
-	$buffer_post = PConfig::get(local_user(),'buffer','post');
-	if(intval($buffer_post) == 1) {
-		$buffer_defpost = PConfig::get(local_user(),'buffer','post_by_default');
+	$buffer_post = PConfig::get(local_user(), 'buffer', 'post');
+
+	if (intval($buffer_post) == 1) {
+		$buffer_defpost = PConfig::get(local_user(), 'buffer', 'post_by_default');
 		$selected = ((intval($buffer_defpost) == 1) ? ' checked="checked" ' : '');
 		$b .= '<div class="profile-jot-net"><input type="checkbox" name="buffer_enable"' . $selected . ' value="1" /> '
 		    . L10n::t('Post to Buffer') . '</div>';
 	}
 }
 
-function buffer_settings(&$a,&$s) {
-
-	if(! local_user())
+function buffer_settings(App $a, &$s)
+{
+	if (! local_user()) {
 		return;
+	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
@@ -155,6 +169,7 @@ function buffer_settings(&$a,&$s) {
 	$access_token = PConfig::get(local_user(), "buffer", "access_token");
 
 	$s .= '<div id="buffer-password-wrapper">';
+
 	if ($access_token == "") {
 		$s .= '<div id="buffer-authenticate-wrapper">';
 		$s .= '<a href="'.$a->get_baseurl().'/buffer/connect">'.L10n::t("Authenticate your Buffer connection").'</a>';
@@ -201,33 +216,32 @@ function buffer_settings(&$a,&$s) {
 	/* provide a submit button */
 
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="buffer-submit" name="buffer-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
-
 }
 
 
-function buffer_settings_post(&$a,&$b) {
-
-	if(x($_POST,'buffer-submit')) {
-		if(x($_POST,'buffer_delete')) {
-			PConfig::set(local_user(),'buffer','access_token','');
-			PConfig::set(local_user(),'buffer','post',false);
-			PConfig::set(local_user(),'buffer','post_by_default',false);
+function buffer_settings_post(App $a, array &$b)
+{
+	if (!empty($_POST['buffer-submit'])) {
+		if (!empty($_POST['buffer_delete'])) {
+			PConfig::set(local_user(), 'buffer', 'access_token'   , '');
+			PConfig::set(local_user(), 'buffer', 'post'           , false);
+			PConfig::set(local_user(), 'buffer', 'post_by_default', false);
 		} else {
-			PConfig::set(local_user(),'buffer','post',intval($_POST['buffer']));
-			PConfig::set(local_user(),'buffer','post_by_default',intval($_POST['buffer_bydefault']));
+			PConfig::set(local_user(), 'buffer', 'post'           , intval($_POST['buffer']));
+			PConfig::set(local_user(), 'buffer', 'post_by_default', intval($_POST['buffer_bydefault']));
 		}
 	}
 }
 
-function buffer_post_local(&$a,&$b) {
-
+function buffer_post_local(App $a, array &$b)
+{
 	if (!local_user() || (local_user() != $b['uid'])) {
 		return;
 	}
 
 	$buffer_post   = intval(PConfig::get(local_user(),'buffer','post'));
 
-	$buffer_enable = (($buffer_post && x($_REQUEST,'buffer_enable')) ? intval($_REQUEST['buffer_enable']) : 0);
+	$buffer_enable = (($buffer_post && !empty($_REQUEST['buffer_enable'])) ? intval($_REQUEST['buffer_enable']) : 0);
 
 	if ($b['api_source'] && intval(PConfig::get(local_user(),'buffer','post_by_default'))) {
 		$buffer_enable = 1;
@@ -244,17 +258,17 @@ function buffer_post_local(&$a,&$b) {
 	$b['postopts'] .= 'buffer';
 }
 
-function buffer_send(App $a, &$b)
+function buffer_send(App $a, array &$b)
 {
-	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
+	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
 	}
 
-	if(! strstr($b['postopts'],'buffer')) {
+	if (!strstr($b['postopts'],'buffer')) {
 		return;
 	}
 
-	if($b['parent'] != $b['id']) {
+	if ($b['parent'] != $b['id']) {
 		return;
 	}
 
@@ -295,6 +309,7 @@ function buffer_send(App $a, &$b)
 						$includedlinks = true;
 						$htmlmode = 6;
 						break;
+
 					case 'facebook':
 						$send = ($b["extid"] != NETWORK_FACEBOOK);
 						$limit = 0;
@@ -302,6 +317,7 @@ function buffer_send(App $a, &$b)
 						$includedlinks = false;
 						$htmlmode = 9;
 						break;
+
 					case 'google':
 						$send = ($b["extid"] != NETWORK_GPLUS);
 						$limit = 0;
@@ -309,6 +325,7 @@ function buffer_send(App $a, &$b)
 						$includedlinks = false;
 						$htmlmode = 9;
 						break;
+
 					case 'twitter':
 						$send = ($b["extid"] != NETWORK_TWITTER);
 						$limit = 280;
@@ -316,6 +333,7 @@ function buffer_send(App $a, &$b)
 						$includedlinks = true;
 						$htmlmode = 8;
 						break;
+
 					case 'linkedin':
 						$send = ($b["extid"] != NETWORK_LINKEDIN);
 						$limit = 700;
@@ -332,47 +350,42 @@ function buffer_send(App $a, &$b)
 
 				// Markup for Google+
 				if ($markup) {
-					if  ($item["title"] != "")
-						$item["title"] = "*".$item["title"]."*";
+					if ($item["title"] != "") {
+						$item["title"] = "*" . $item["title"] . "*";
+					}
 
-					$item["body"] = preg_replace("(\[b\](.*?)\[\/b\])ism",'*$1*',$item["body"]);
-					$item["body"] = preg_replace("(\[i\](.*?)\[\/i\])ism",'_$1_',$item["body"]);
-					$item["body"] = preg_replace("(\[s\](.*?)\[\/s\])ism",'-$1-',$item["body"]);
+					$item["body"] = preg_replace("(\[b\](.*?)\[\/b\])ism", '*$1*', $item["body"]);
+					$item["body"] = preg_replace("(\[i\](.*?)\[\/i\])ism", '_$1_', $item["body"]);
+					$item["body"] = preg_replace("(\[s\](.*?)\[\/s\])ism", '-$1-', $item["body"]);
 				}
 
 				$post = ItemContent::getPlaintextPost($item, $limit, $includedlinks, $htmlmode);
 				logger("buffer_send: converted message ".$b["id"]." result: ".print_r($post, true), LOGGER_DEBUG);
 
 				// The image proxy is used as a sanitizer. Buffer seems to be really picky about pictures
-				require_once("mod/proxy.php");
-				if (isset($post["image"]))
+				require_once "mod/proxy.php";
+
+				if (isset($post["image"])) {
 					$post["image"] = proxy_url($post["image"]);
+				}
 
-				if (isset($post["preview"]))
+				if (isset($post["preview"])) {
 					$post["preview"] = proxy_url($post["preview"]);
-
-				//if ($includedlinks) {
-				//	if (isset($post["url"]))
-				//		$post["url"] = Network::shortenUrl($post["url"]);
-				//	if (isset($post["image"]))
-				//		$post["image"] = Network::shortenUrl($post["image"]);
-				//	if (isset($post["preview"]))
-				//		$post["preview"] = Network::shortenUrl($post["preview"]);
-				//}
+				}
 
 				// Seems like a bug to me
 				// Buffer doesn't add links to Twitter and App.net (but pictures)
-				//if ($includedlinks && isset($post["url"]))
-				if (($profile->service == "twitter") && isset($post["url"]) && ($post["type"] != "photo"))
-					$post["text"] .= " ".$post["url"];
-				elseif (($profile->service == "appdotnet") && isset($post["url"]) && isset($post["title"]) && ($post["type"] != "photo")) {
+				if (($profile->service == "twitter") && isset($post["url"]) && ($post["type"] != "photo")) {
+					$post["text"] .= " " . $post["url"];
+				} elseif (($profile->service == "appdotnet") && isset($post["url"]) && isset($post["title"]) && ($post["type"] != "photo")) {
 					$post["title"] = Plaintext::shorten($post["title"], 90);
 					$post["text"] = Plaintext::shorten($post["text"], $limit - (24 + strlen($post["title"])));
-					$post["text"] .= "\n[".$post["title"]."](".$post["url"].")";
-				} elseif (($profile->service == "appdotnet") && isset($post["url"]) && ($post["type"] != "photo"))
-					$post["text"] .= " ".$post["url"];
-				elseif ($profile->service == "google")
+					$post["text"] .= "\n[" . $post["title"] . "](" . $post["url"] . ")";
+				} elseif (($profile->service == "appdotnet") && isset($post["url"]) && ($post["type"] != "photo")) {
+					$post["text"] .= " " . $post["url"];
+				} elseif ($profile->service == "google") {
 					$post["text"] .= html_entity_decode("&#x00A0;", ENT_QUOTES, 'UTF-8'); // Send a special blank to identify the post through the "fromgplus" addon
+				}
 
 				$message = [];
 				$message["text"] = $post["text"];
@@ -380,28 +393,34 @@ function buffer_send(App $a, &$b)
 				$message["shorten"] = false;
 				$message["now"] = true;
 
-				if (isset($post["title"]))
+				if (isset($post["title"])) {
 					$message["media[title]"] = $post["title"];
+				}
 
-				if (isset($post["description"]))
+				if (isset($post["description"])) {
 					$message["media[description]"] = $post["description"];
+				}
 
-				if (isset($post["url"]) && ($post["type"] != "photo"))
+				if (isset($post["url"]) && ($post["type"] != "photo")) {
 					$message["media[link]"] = $post["url"];
+				}
 
 				if (isset($post["image"])) {
 					$message["media[picture]"] = $post["image"];
-					if ($post["type"] == "photo")
+
+					if ($post["type"] == "photo") {
 						$message["media[thumbnail]"] = $post["image"];
+					}
 				}
 
-				if (isset($post["preview"]))
+				if (isset($post["preview"])) {
 					$message["media[thumbnail]"] = $post["preview"];
+				}
 
 				//print_r($message);
-				logger("buffer_send: data for message ".$b["id"].": ".print_r($message, true), LOGGER_DEBUG);
+				logger("buffer_send: data for message " . $b["id"] . ": " . print_r($message, true), LOGGER_DEBUG);
 				$ret = $buffer->go('/updates/create', $message);
-				logger("buffer_send: send message ".$b["id"]." result: ".print_r($ret, true), LOGGER_DEBUG);
+				logger("buffer_send: send message " . $b["id"] . " result: " . print_r($ret, true), LOGGER_DEBUG);
 			}
 		}
 	}
