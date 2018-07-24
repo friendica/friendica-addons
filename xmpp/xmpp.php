@@ -5,6 +5,7 @@
  * Version: 0.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
+
 use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -29,9 +30,10 @@ function xmpp_uninstall()
 
 function xmpp_addon_settings_post()
 {
-	if (!local_user() || (!x($_POST, 'xmpp-settings-submit'))) {
+	if (!local_user() || empty($_POST['xmpp-settings-submit'])) {
 		return;
 	}
+
 	PConfig::set(local_user(), 'xmpp', 'enabled', intval($_POST['xmpp_enabled']));
 	PConfig::set(local_user(), 'xmpp', 'individual', intval($_POST['xmpp_individual']));
 	PConfig::set(local_user(), 'xmpp', 'bosh_proxy', $_POST['xmpp_bosh_proxy']);
@@ -94,15 +96,15 @@ function xmpp_addon_settings(App $a, &$s)
 
 function xmpp_login()
 {
-	if (empty($_SESSION["allow_api"])) {
+	if (empty($_SESSION['allow_api'])) {
 		$password = random_string(16);
-		PConfig::set(local_user(), "xmpp", "password", $password);
+		PConfig::set(local_user(), 'xmpp', 'password', $password);
 	}
 }
 
 function xmpp_addon_admin(App $a, &$o)
 {
-	$t = get_markup_template("admin.tpl", "addon/xmpp/");
+	$t = get_markup_template('admin.tpl', 'addon/xmpp/');
 
 	$o = replace_macros($t, [
 		'$submit' => L10n::t('Save Settings'),
@@ -113,10 +115,12 @@ function xmpp_addon_admin(App $a, &$o)
 
 function xmpp_addon_admin_post()
 {
-	$bosh_proxy = ((x($_POST, 'bosh_proxy')) ? trim($_POST['bosh_proxy']) : '');
-	$central_userbase = ((x($_POST, 'central_userbase')) ? intval($_POST['central_userbase']) : false);
+	$bosh_proxy = ((!empty($_POST['bosh_proxy'])) ? trim($_POST['bosh_proxy']) : '');
+	$central_userbase = ((!empty($_POST['central_userbase'])) ? intval($_POST['central_userbase']) : false);
+
 	Config::set('xmpp', 'bosh_proxy', $bosh_proxy);
 	Config::set('xmpp', 'central_userbase', $central_userbase);
+
 	info(L10n::t('Settings updated.') . EOL);
 }
 
