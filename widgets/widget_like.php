@@ -1,6 +1,7 @@
 <?php
 
 use Friendica\Core\L10n;
+use Friendica\Database\DBA;
 
 function like_widget_name() {
 	return "Shows likes";
@@ -37,7 +38,7 @@ function like_widget_content(&$a, $conf){
 	// count likes
 	$r = q( $baseq . "AND `item`.`verb` = 'http://activitystrea.ms/schema/1.0/like'",
 			intval($conf['uid']),
-			dbesc($args[0])
+			DBA::escape($args[0])
 	);
 	$likes = $r[0]['c'];
 	$iid = $r[0]['id'];
@@ -45,7 +46,7 @@ function like_widget_content(&$a, $conf){
 	// count dislikes
 	$r = q( $baseq . "AND `item`.`verb` = 'http://purl.org/macgirvin/dfrn/1.0/dislike'",
 			intval($conf['uid']),
-			dbesc($args[0])
+			DBA::escape($args[0])
 	);
 	$dislikes = $r[0]['c'];
 

@@ -11,7 +11,7 @@ use Friendica\Content\Widget;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
-use Friendica\Database\DBM;
+use Friendica\Database\DBA;
 use Friendica\Model\Profile;
 use Friendica\Util\Temporal;
 
@@ -100,14 +100,14 @@ function forumdirectory_content(&$a)
 	if (strlen($search)) {
 		$sql_extra = " AND MATCH (`profile`.`name`, `user`.`nickname`, `pdesc`, `locality`,`region`,`country-name`,"
 			. "`gender`,`marital`,`sexual`,`about`,`romance`,`work`,`education`,`pub_keywords`,`prv_keywords` )"
-			. " AGAINST ('" . dbesc($search) . "' IN BOOLEAN MODE) ";
+			. " AGAINST ('" . DBA::escape($search) . "' IN BOOLEAN MODE) ";
 	}
 
 	$publish = Config::get('system', 'publish_all') ? '' : " AND `publish` = 1 ";
 
 	$r = q("SELECT COUNT(*) AS `total` FROM `profile` LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid`"
 		. " WHERE `is-default` = 1 $publish AND `user`.`blocked` = 0 AND `page-flags` = 2 $sql_extra ");
-	if (DBM::is_result($r)) {
+	if (DBA::isResult($r)) {
 		$a->set_pager_total($r[0]['total']);
 	}
 
@@ -120,7 +120,7 @@ function forumdirectory_content(&$a)
 		intval($a->pager['itemspage'])
 	);
 
-	if (DBM::is_result($r)) {
+	if (DBA::isResult($r)) {
 		if (in_array('small', $a->argv)) {
 			$photo = 'thumb';
 		} else {

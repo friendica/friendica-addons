@@ -11,7 +11,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
-use Friendica\Database\DBM;
+use Friendica\Database\DBA;
 use Friendica\Util\Network;
 use Friendica\Model\Item;
 
@@ -120,10 +120,10 @@ function mailstream_post_hook(&$a, &$item) {
 	$message_id = mailstream_generate_id($a, $item['uri']);
 	q("INSERT INTO `mailstream_item` (`uid`, `contact-id`, `uri`, `message-id`) " .
 		"VALUES (%d, '%s', '%s', '%s')", intval($item['uid']),
-		intval($item['contact-id']), dbesc($item['uri']), dbesc($message_id));
-	$r = q('SELECT * FROM `mailstream_item` WHERE `uid` = %d AND `contact-id` = %d AND `uri` = "%s"', intval($item['uid']), intval($item['contact-id']), dbesc($item['uri']));
+		intval($item['contact-id']), DBA::escape($item['uri']), DBA::escape($message_id));
+	$r = q('SELECT * FROM `mailstream_item` WHERE `uid` = %d AND `contact-id` = %d AND `uri` = "%s"', intval($item['uid']), intval($item['contact-id']), DBA::escape($item['uri']));
 	if (count($r) != 1) {
-		logger('mailstream_post_remote_hook: Unexpected number of items returned from mailstream_item', LOGGER_NORMAL);
+		logger('mailstream_post_remote_hook: Unexpected number of items returned from mailstream_item', LOGGER_INFO);
 		return;
 	}
 	$ms_item = $r[0];
@@ -132,7 +132,7 @@ function mailstream_post_hook(&$a, &$item) {
 		. $item['uid'] . ' ' . $item['contact-id'], LOGGER_DATA);
 	$user = mailstream_get_user($item['uid']);
 	if (!$user) {
-		logger('mailstream_post_remote_hook: no user ' . $item['uid'], LOGGER_NORMAL);
+		logger('mailstream_post_remote_hook: no user ' . $item['uid'], LOGGER_INFO);
 		return;
 	}
 	mailstream_send($a, $ms_item['message-id'], $item, $user);
@@ -141,7 +141,7 @@ function mailstream_post_hook(&$a, &$item) {
 function mailstream_get_user($uid) {
 	$r = q('SELECT * FROM `user` WHERE `uid` = %d', intval($uid));
 	if (count($r) != 1) {
-		logger('mailstream_post_remote_hook: Unexpected number of users returned', LOGGER_NORMAL);
+		logger('mailstream_post_remote_hook: Unexpected number of users returned', LOGGER_INFO);
 		return;
 	}
 	return $r[0];
@@ -173,7 +173,7 @@ function mailstream_do_images($a, &$item, &$attachments) {
 
 function mailstream_sender($item) {
 	$r = q('SELECT * FROM `contact` WHERE `id` = %d', $item['contact-id']);
-	if (DBM::is_result($r)) {
+	if (DBA::isResult($r)) {
 		$contact = $r[0];
 		if ($contact['name'] != $item['author-name']) {
 			return $contact['name'] . ' - ' . $item['author-name'];
@@ -214,7 +214,7 @@ function mailstream_subject($item) {
 	// Don't look more than 100 levels deep for a subject, in case of loops
 	for ($i = 0; ($i < 100) && $parent; $i++) {
 		$parent_item = Item::selectFirst(['thr-parent', 'title'], ['uri' => $parent]);
-		if (!DBM::is_result($parent_item)) {
+		if (!DBA::isResult($parent_item)) {
 			break;
 		}
 		if ($parent_item['thr-parent'] === $parent) {
@@ -300,14 +300,14 @@ function mailstream_send($a, $message_id, $item, $user) {
 		}
 		logger('mailstream_send sent message ' . $mail->MessageID . ' ' . $mail->Subject, LOGGER_DEBUG);
 	} catch (phpmailerException $e) {
-		logger('mailstream_send PHPMailer exception sending message ' . $message_id . ': ' . $e->errorMessage(), LOGGER_NORMAL);
+		logger('mailstream_send PHPMailer exception sending message ' . $message_id . ': ' . $e->errorMessage(), LOGGER_INFO);
 	} catch (Exception $e) {
-		logger('mailstream_send exception sending message ' . $message_id . ': ' . $e->getMessage(), LOGGER_NORMAL);
+		logger('mailstream_send exception sending message ' . $message_id . ': ' . $e->getMessage(), LOGGER_INFO);
 	}
 	// In case of failure, still set the item to completed.  Otherwise
 	// we'll just try to send it over and over again and it'll fail
 	// every time.
-	q('UPDATE `mailstream_item` SET `completed` = now() WHERE `message-id` = "%s"', dbesc($message_id));
+	q('UPDATE `mailstream_item` SET `completed` = now() WHERE `message-id` = "%s"', DBA::escape($message_id));
 }
 
 /**
@@ -334,7 +334,7 @@ function mailstream_cron($a, $b) {
 	logger('mailstream_cron processing ' . count($ms_item_ids) . ' items', LOGGER_DEBUG);
 	foreach ($ms_item_ids as $ms_item_id) {
 		if (!$ms_item_id['message-id'] || !strlen($ms_item_id['message-id'])) {
-			logger('mailstream_cron: Item ' . $ms_item_id['id'] . ' URI ' . $ms_item_id['uri'] . ' has no message-id', LOGGER_NORMAL);
+			logger('mailstream_cron: Item ' . $ms_item_id['id'] . ' URI ' . $ms_item_id['uri'] . ' has no message-id', LOGGER_INFO);
 		}
 		$item = Item::selectFirst([], ['id' => $ms_item_id['id']]);
 		$users = q("SELECT * FROM `user` WHERE `uid` = %d", intval($item['uid']));
@@ -343,7 +343,7 @@ function mailstream_cron($a, $b) {
 			mailstream_send($a, $ms_item_id['message-id'], $item, $user);
 		}
 		else {
-			logger('mailstream_cron: Unable to find item ' . $ms_item_id['id'], LOGGER_NORMAL);
+			logger('mailstream_cron: Unable to find item ' . $ms_item_id['id'], LOGGER_INFO);
 			q("UPDATE `mailstream_item` SET `completed` = now() WHERE `message-id` = %d", intval($ms_item['message-id']));
 		}
 	}

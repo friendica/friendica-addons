@@ -48,7 +48,6 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
-use Friendica\Database\DBM;
 use Friendica\Model\GContact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
@@ -465,7 +464,7 @@ function statusnet_post_hook(App $a, &$b)
 
 		$condition = ['uri' => $b["thr-parent"], 'uid' => $b["uid"]];
 		$orig_post = Item::selectFirst(['author-link', 'uri'], $condition);
-		if (!DBM::is_result($orig_post)) {
+		if (!DBA::isResult($orig_post)) {
 			logger("statusnet_post_hook: no parent found " . $b["thr-parent"]);
 			return;
 		} else {
@@ -686,7 +685,7 @@ function statusnet_prepare_body(App $a, &$b)
 
 		$condition = ['uri' => $item["thr-parent"], 'uid' => local_user()];
 		$orig_post = Item::selectFirst(['author-link', 'uri'], $condition);
-		if (DBM::is_result($orig_post)) {
+		if (DBA::isResult($orig_post)) {
 			$nick = preg_replace("=https?://(.*)/(.*)=ism", "$2", $orig_post["author-link"]);
 
 			$nickname = "@[url=" . $orig_post["author-link"] . "]" . $nick . "[/url]";
@@ -731,7 +730,7 @@ function statusnet_cron(App $a, $b)
 	logger('statusnet: cron_start');
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'statusnet' AND `k` = 'mirror_posts' AND `v` = '1' ORDER BY RAND() ");
-	if (DBM::is_result($r)) {
+	if (DBA::isResult($r)) {
 		foreach ($r as $rr) {
 			logger('statusnet: fetching for user ' . $rr['uid']);
 			statusnet_fetchtimeline($a, $rr['uid']);
@@ -746,11 +745,11 @@ function statusnet_cron(App $a, $b)
 	$abandon_limit = date(DateTimeFormat::MYSQL, time() - $abandon_days * 86400);
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'statusnet' AND `k` = 'import' AND `v` ORDER BY RAND()");
-	if (DBM::is_result($r)) {
+	if (DBA::isResult($r)) {
 		foreach ($r as $rr) {
 			if ($abandon_days != 0) {
 				$user = q("SELECT `login_date` FROM `user` WHERE uid=%d AND `login_date` >= '%s'", $rr['uid'], $abandon_limit);
-				if (!DBM::is_result($user)) {
+				if (!DBA::isResult($user)) {
 					logger('abandoned account: timeline from user ' . $rr['uid'] . ' will not be imported');
 					continue;
 				}
@@ -900,48 +899,48 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 		"location" => $contact->location, "about" => $contact->description,
 		"addr" => statusnet_address($contact), "generation" => 3]);
 
-	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' AND `network` = '%s'LIMIT 1", intval($uid), dbesc(normalise_link($contact->statusnet_profile_url)), dbesc(NETWORK_STATUSNET));
+	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' AND `network` = '%s'LIMIT 1", intval($uid), DBA::escape(normalise_link($contact->statusnet_profile_url)), DBA::escape(NETWORK_STATUSNET));
 
-	if (!DBM::is_result($r) && !$create_user) {
+	if (!DBA::isResult($r) && !$create_user) {
 		return 0;
 	}
 
-	if (DBM::is_result($r) && ($r[0]["readonly"] || $r[0]["blocked"])) {
+	if (DBA::isResult($r) && ($r[0]["readonly"] || $r[0]["blocked"])) {
 		logger("statusnet_fetch_contact: Contact '" . $r[0]["nick"] . "' is blocked or readonly.", LOGGER_DEBUG);
 		return -1;
 	}
 
-	if (!DBM::is_result($r)) {
+	if (!DBA::isResult($r)) {
 		// create contact record
 		q("INSERT INTO `contact` ( `uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
 					`name`, `nick`, `photo`, `network`, `rel`, `priority`,
 					`location`, `about`, `writable`, `blocked`, `readonly`, `pending` )
 					VALUES ( %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', %d, 0, 0, 0 ) ",
 			intval($uid),
-			dbesc(DateTimeFormat::utcNow()),
-			dbesc($contact->statusnet_profile_url),
-			dbesc(normalise_link($contact->statusnet_profile_url)),
-			dbesc(statusnet_address($contact)),
-			dbesc(normalise_link($contact->statusnet_profile_url)),
-			dbesc(''),
-			dbesc(''),
-			dbesc($contact->name),
-			dbesc($contact->screen_name),
-			dbesc($contact->profile_image_url),
-			dbesc(NETWORK_STATUSNET),
+			DBA::escape(DateTimeFormat::utcNow()),
+			DBA::escape($contact->statusnet_profile_url),
+			DBA::escape(normalise_link($contact->statusnet_profile_url)),
+			DBA::escape(statusnet_address($contact)),
+			DBA::escape(normalise_link($contact->statusnet_profile_url)),
+			DBA::escape(''),
+			DBA::escape(''),
+			DBA::escape($contact->name),
+			DBA::escape($contact->screen_name),
+			DBA::escape($contact->profile_image_url),
+			DBA::escape(NETWORK_STATUSNET),
 			intval(CONTACT_IS_FRIEND),
 			intval(1),
-			dbesc($contact->location),
-			dbesc($contact->description),
+			DBA::escape($contact->location),
+			DBA::escape($contact->description),
 			intval(1)
 		);
 
 		$r = q("SELECT * FROM `contact` WHERE `alias` = '%s' AND `uid` = %d AND `network` = '%s' LIMIT 1",
-			dbesc($contact->statusnet_profile_url),
+			DBA::escape($contact->statusnet_profile_url),
 			intval($uid),
-			dbesc(NETWORK_STATUSNET));
+			DBA::escape(NETWORK_STATUSNET));
 
-		if (!DBM::is_result($r)) {
+		if (!DBA::isResult($r)) {
 			return false;
 		}
 
@@ -956,10 +955,10 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 					`micro` = '%s',
 					`avatar-date` = '%s'
 				WHERE `id` = %d",
-			dbesc($photos[0]),
-			dbesc($photos[1]),
-			dbesc($photos[2]),
-			dbesc(DateTimeFormat::utcNow()),
+			DBA::escape($photos[0]),
+			DBA::escape($photos[1]),
+			DBA::escape($photos[2]),
+			DBA::escape(DateTimeFormat::utcNow()),
 			intval($contact_id)
 		);
 	} else {
@@ -987,19 +986,19 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 						`location` = '%s',
 						`about` = '%s'
 					WHERE `id` = %d",
-				dbesc($photos[0]),
-				dbesc($photos[1]),
-				dbesc($photos[2]),
-				dbesc(DateTimeFormat::utcNow()),
-				dbesc(DateTimeFormat::utcNow()),
-				dbesc(DateTimeFormat::utcNow()),
-				dbesc($contact->statusnet_profile_url),
-				dbesc(normalise_link($contact->statusnet_profile_url)),
-				dbesc(statusnet_address($contact)),
-				dbesc($contact->name),
-				dbesc($contact->screen_name),
-				dbesc($contact->location),
-				dbesc($contact->description),
+				DBA::escape($photos[0]),
+				DBA::escape($photos[1]),
+				DBA::escape($photos[2]),
+				DBA::escape(DateTimeFormat::utcNow()),
+				DBA::escape(DateTimeFormat::utcNow()),
+				DBA::escape(DateTimeFormat::utcNow()),
+				DBA::escape($contact->statusnet_profile_url),
+				DBA::escape(normalise_link($contact->statusnet_profile_url)),
+				DBA::escape(statusnet_address($contact)),
+				DBA::escape($contact->name),
+				DBA::escape($contact->screen_name),
+				DBA::escape($contact->location),
+				DBA::escape($contact->description),
 				intval($r[0]['id'])
 			);
 		}
@@ -1025,7 +1024,7 @@ function statusnet_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 	$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 		intval($uid));
 
-	if (DBM::is_result($r)) {
+	if (DBA::isResult($r)) {
 		$self = $r[0];
 	} else {
 		return;
@@ -1087,11 +1086,11 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 		$fields = ['uri', 'parent-uri', 'parent'];
 		$item = Item::selectFirst($fields, ['uri' => $parent, 'uid' => $uid]);
 
-		if (!DBM::is_result($item)) {
+		if (!DBA::isResult($item)) {
 			$item = Item::selectFirst($fields, ['extid' => $parent, 'uid' => $uid]);
 		}
 
-		if (DBM::is_result($item)) {
+		if (DBA::isResult($item)) {
 			$postarray['thr-parent'] = $item['uri'];
 			$postarray['parent-uri'] = $item['parent-uri'];
 			$postarray['parent'] = $item['parent'];
@@ -1109,7 +1108,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 			$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 				intval($uid));
 
-			if (DBM::is_result($r)) {
+			if (DBA::isResult($r)) {
 				$contactid = $r[0]["id"];
 
 				$postarray['owner-name'] = $r[0]["name"];
@@ -1213,7 +1212,7 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 		intval($own_contact),
 		intval($uid));
 
-	if (DBM::is_result($r)) {
+	if (DBA::isResult($r)) {
 		$nick = $r[0]["nick"];
 	} else {
 		logger("statusnet_fetchhometimeline: Own GNU Social contact not found for user " . $uid, LOGGER_DEBUG);
@@ -1223,7 +1222,7 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 	$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 		intval($uid));
 
-	if (DBM::is_result($r)) {
+	if (DBA::isResult($r)) {
 		$self = $r[0];
 	} else {
 		logger("statusnet_fetchhometimeline: Own contact not found for user " . $uid, LOGGER_DEBUG);
@@ -1232,7 +1231,7 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 
 	$u = q("SELECT * FROM user WHERE uid = %d LIMIT 1",
 		intval($uid));
-	if (!DBM::is_result($u)) {
+	if (!DBA::isResult($u)) {
 		logger("statusnet_fetchhometimeline: Own user not found for user " . $uid, LOGGER_DEBUG);
 		return;
 	}
@@ -1521,8 +1520,8 @@ function statusnet_fetch_own_contact(App $a, $uid)
 		$contact_id = statusnet_fetch_contact($uid, $user, true);
 	} else {
 		$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
-			intval($uid), dbesc($own_url));
-		if (DBM::is_result($r)) {
+			intval($uid), DBA::escape($own_url));
+		if (DBA::isResult($r)) {
 			$contact_id = $r[0]["id"];
 		} else {
 			PConfig::delete($uid, 'statusnet', 'own_url');

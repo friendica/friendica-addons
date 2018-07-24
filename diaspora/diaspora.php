@@ -9,57 +9,67 @@
 
 require_once 'addon/diaspora/Diaspora_Connection.php';
 
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
-use Friendica\Database\DBM;
 use Friendica\Model\Queue;
 
-function diaspora_install() {
-	Addon::registerHook('post_local',           'addon/diaspora/diaspora.php', 'diaspora_post_local');
-	Addon::registerHook('notifier_normal',      'addon/diaspora/diaspora.php', 'diaspora_send');
-	Addon::registerHook('jot_networks',         'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
+function diaspora_install()
+{
+	Addon::registerHook('post_local',              'addon/diaspora/diaspora.php', 'diaspora_post_local');
+	Addon::registerHook('notifier_normal',         'addon/diaspora/diaspora.php', 'diaspora_send');
+	Addon::registerHook('jot_networks',            'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
 	Addon::registerHook('connector_settings',      'addon/diaspora/diaspora.php', 'diaspora_settings');
 	Addon::registerHook('connector_settings_post', 'addon/diaspora/diaspora.php', 'diaspora_settings_post');
-	Addon::registerHook('queue_predeliver', 'addon/diaspora/diaspora.php', 'diaspora_queue_hook');
+	Addon::registerHook('queue_predeliver',        'addon/diaspora/diaspora.php', 'diaspora_queue_hook');
 }
-function diaspora_uninstall() {
-	Addon::unregisterHook('post_local',       'addon/diaspora/diaspora.php', 'diaspora_post_local');
-	Addon::unregisterHook('notifier_normal',  'addon/diaspora/diaspora.php', 'diaspora_send');
-	Addon::unregisterHook('jot_networks',     'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
+
+function diaspora_uninstall()
+{
+	Addon::unregisterHook('post_local',              'addon/diaspora/diaspora.php', 'diaspora_post_local');
+	Addon::unregisterHook('notifier_normal',         'addon/diaspora/diaspora.php', 'diaspora_send');
+	Addon::unregisterHook('jot_networks',            'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
 	Addon::unregisterHook('connector_settings',      'addon/diaspora/diaspora.php', 'diaspora_settings');
 	Addon::unregisterHook('connector_settings_post', 'addon/diaspora/diaspora.php', 'diaspora_settings_post');
-	Addon::unregisterHook('queue_predeliver', 'addon/diaspora/diaspora.php', 'diaspora_queue_hook');
+	Addon::unregisterHook('queue_predeliver',        'addon/diaspora/diaspora.php', 'diaspora_queue_hook');
 }
 
+function diaspora_jot_nets(App $a, &$b)
+{
+	if (!local_user()) {
+		return;
+	}
 
-function diaspora_jot_nets(&$a,&$b) {
-    if(! local_user())
-        return;
+	$diaspora_post = PConfig::get(local_user(), 'diaspora', 'post');
 
-    $diaspora_post = PConfig::get(local_user(),'diaspora','post');
-    if(intval($diaspora_post) == 1) {
-        $diaspora_defpost = PConfig::get(local_user(),'diaspora','post_by_default');
-        $selected = ((intval($diaspora_defpost) == 1) ? ' checked="checked" ' : '');
-        $b .= '<div class="profile-jot-net"><input type="checkbox" name="diaspora_enable"' . $selected . ' value="1" /> '
-            . L10n::t('Post to Diaspora') . '</div>';
-    }
+	if (intval($diaspora_post) == 1) {
+		$diaspora_defpost = PConfig::get(local_user(), 'diaspora', 'post_by_default');
+
+		$selected = ((intval($diaspora_defpost) == 1) ? ' checked="checked" ' : '');
+
+		$b .= '<div class="profile-jot-net"><input type="checkbox" name="diaspora_enable"' . $selected . ' value="1" /> '
+		. L10n::t('Post to Diaspora') . '</div>';
+	}
 }
 
-function diaspora_queue_hook(&$a,&$b) {
+function diaspora_queue_hook(App $a, &$b) {
 	$hostname = $a->get_hostname();
 
 	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
-		dbesc(NETWORK_DIASPORA2)
+		DBA::escape(NETWORK_DIASPORA2)
 	);
-	if(! count($qi))
-		return;
 
-	foreach($qi as $x) {
-		if($x['network'] !== NETWORK_DIASPORA2)
+	if (!DBA::isResult($qi)) {
+		return;
+	}
+
+	foreach ($qi as $x) {
+		if ($x['network'] !== NETWORK_DIASPORA2) {
 			continue;
+		}
 
 		logger('diaspora_queue: run');
 
@@ -67,19 +77,21 @@ function diaspora_queue_hook(&$a,&$b) {
 			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
 			intval($x['cid'])
 		);
-		if(! count($r))
+
+		if (!DBA::isResult($r)) {
 			continue;
+		}
 
 		$userdata = $r[0];
 
-		$handle = PConfig::get($userdata['uid'],'diaspora','handle');
-		$password = PConfig::get($userdata['uid'],'diaspora','password');
-		$aspect = PConfig::get($userdata['uid'],'diaspora','aspect');
+		$handle   = PConfig::get($userdata['uid'], 'diaspora', 'handle');
+		$password = PConfig::get($userdata['uid'], 'diaspora', 'password');
+		$aspect   = PConfig::get($userdata['uid'], 'diaspora', 'aspect');
 
 		$success = false;
 
 		if ($handle && $password) {
-                        logger('diaspora_queue: able to post for user '.$handle);
+			logger('diaspora_queue: able to post for user '.$handle);
 
 			$z = unserialize($x['content']);
 
@@ -115,10 +127,11 @@ function diaspora_queue_hook(&$a,&$b) {
 	}
 }
 
-function diaspora_settings(&$a,&$s) {
-
-	if(! local_user())
+function diaspora_settings(App $a, &$s)
+{
+	if (! local_user()) {
 		return;
+	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
@@ -141,7 +154,8 @@ function diaspora_settings(&$a,&$s) {
 	$status = "";
 
 	$r = q("SELECT `addr` FROM `contact` WHERE `self` AND `uid` = %d", intval(local_user()));
-	if (DBM::is_result($r)) {
+
+	if (DBA::isResult($r)) {
 		$status = L10n::t("Please remember: You can always be reached from Diaspora with your Friendica handle %s. ", $r[0]['addr']);
 		$status .= L10n::t('This connector is only meant if you still want to use your old Diaspora account for some time. ');
 		$status .= L10n::t('However, it is preferred that you tell your Diaspora contacts the new handle %s instead.', $r[0]['addr']);
@@ -153,6 +167,7 @@ function diaspora_settings(&$a,&$s) {
 		$conn = new Diaspora_Connection($handle, $password);
 		$conn->logIn();
 		$aspects = $conn->getAspects();
+
 		if (!$aspects) {
 			$status = L10n::t("Can't login to your Diaspora account. Please check handle (in the format user@domain.tld) and password.");
 		}
@@ -225,21 +240,19 @@ function diaspora_settings(&$a,&$s) {
 }
 
 
-function diaspora_settings_post(&$a,&$b) {
-
-	if(x($_POST,'diaspora-submit')) {
-
-		PConfig::set(local_user(),'diaspora','post',intval($_POST['diaspora']));
-		PConfig::set(local_user(),'diaspora','post_by_default',intval($_POST['diaspora_bydefault']));
-		PConfig::set(local_user(),'diaspora','handle',trim($_POST['handle']));
-		PConfig::set(local_user(),'diaspora','password',trim($_POST['password']));
-		PConfig::set(local_user(),'diaspora','aspect',trim($_POST['aspect']));
+function diaspora_settings_post(App $a, &$b)
+{
+	if (!empty($_POST['diaspora-submit'])) {
+		PConfig::set(local_user(),'diaspora', 'post'           , intval($_POST['diaspora']));
+		PConfig::set(local_user(),'diaspora', 'post_by_default', intval($_POST['diaspora_bydefault']));
+		PConfig::set(local_user(),'diaspora', 'handle'         , trim($_POST['handle']));
+		PConfig::set(local_user(),'diaspora', 'password'       , trim($_POST['password']));
+		PConfig::set(local_user(),'diaspora', 'aspect'         , trim($_POST['aspect']));
 	}
-
 }
 
-function diaspora_post_local(&$a,&$b) {
-
+function diaspora_post_local(App $a, array &$b)
+{
 	if ($b['edit']) {
 		return;
 	}
@@ -271,29 +284,28 @@ function diaspora_post_local(&$a,&$b) {
 	$b['postopts'] .= 'diaspora';
 }
 
-
-
-
-function diaspora_send(&$a,&$b) {
+function diaspora_send(App $a, array &$b)
+{
 	$hostname = $a->get_hostname();
 
 	logger('diaspora_send: invoked');
 
-	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
+	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
 	}
 
-	if(! strstr($b['postopts'],'diaspora')) {
+	if (!strstr($b['postopts'],'diaspora')) {
 		return;
 	}
 
-	if($b['parent'] != $b['id']) {
+	if ($b['parent'] != $b['id']) {
 		return;
 	}
 
 	// Dont't post if the post doesn't belong to us.
 	// This is a check for forum postings
 	$self = DBA::selectFirst('contact', ['id'], ['uid' => $b['uid'], 'self' => true]);
+
 	if ($b['contact-id'] != $self['id']) {
 		return;
 	}
@@ -311,13 +323,15 @@ function diaspora_send(&$a,&$b) {
 		$tags = '';
 		$x = preg_match_all('/\#\[(.*?)\](.*?)\[/',$b['tag'],$matches,PREG_SET_ORDER);
 
-		if($x) {
-			foreach($matches as $mtch) {
+		if ($x) {
+			foreach ($matches as $mtch) {
 				$tag_arr[] = $mtch[2];
 			}
 		}
-		if(count($tag_arr))
+
+		if (count($tag_arr)) {
 			$tags = implode(',',$tag_arr);
+		}
 
 		$title = $b['title'];
 		$body = $b['body'];
@@ -334,17 +348,18 @@ function diaspora_send(&$a,&$b) {
 		// remove multiple newlines
 		do {
 			$oldbody = $body;
-                        $body = str_replace("\n\n\n", "\n\n", $body);
-                } while ($oldbody != $body);
+			$body = str_replace("\n\n\n", "\n\n", $body);
+		} while ($oldbody != $body);
 
 		// convert to markdown
 		$body = BBCode::toMarkdown($body);
 
 		// Adding the title
-		if(strlen($title))
+		if (strlen($title)) {
 			$body = "## ".html_entity_decode($title)."\n\n".$body;
+		}
 
-		require_once("addon/diaspora/diasphp.php");
+		require_once "addon/diaspora/diasphp.php";
 
 		try {
 			logger('diaspora_send: prepare', LOGGER_DEBUG);

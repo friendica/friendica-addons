@@ -40,7 +40,6 @@ use Friendica\Core\Cache;
 use Friendica\Core\L10n;
 use Friendica\Core\System;
 use Friendica\Database\DBA;
-use Friendica\Database\DBM;
 use Friendica\Database\DBStructure;
 use Friendica\Model\Item;
 use Friendica\Model\Term;
@@ -119,7 +118,7 @@ function advancedcontentfilter_prepare_body_content_filter(App $a, &$hook_data)
 
 	$rules = Cache::get('rules_' . local_user());
 	if (!isset($rules)) {
-		$rules = DBA::inArray(DBA::select(
+		$rules = DBA::toArray(DBA::select(
 			'advancedcontentfilter_rules',
 			['name', 'expression', 'serialized'],
 			['uid' => local_user(), 'active' => true]
@@ -300,7 +299,7 @@ function advancedcontentfilter_get_rules()
 		throw new HTTPException\UnauthorizedException(L10n::t('You must be logged in to use this method'));
 	}
 
-	$rules = DBA::inArray(DBA::select('advancedcontentfilter_rules', [], ['uid' => local_user()]));
+	$rules = DBA::toArray(DBA::select('advancedcontentfilter_rules', [], ['uid' => local_user()]));
 
 	return json_encode($rules);
 }
@@ -414,7 +413,7 @@ function advancedcontentfilter_get_variables_guid(ServerRequestInterface $reques
 	$params = ['order' => ['uid' => true]];
 	$item = Item::selectFirstForUser(local_user(), [], $condition, $params);
 
-	if (!DBM::is_result($item)) {
+	if (!DBA::isResult($item)) {
 		throw new HTTPException\NotFoundException(L10n::t('Unknown post with guid: %s', $args['guid']));
 	}
 
