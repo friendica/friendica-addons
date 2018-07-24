@@ -1391,7 +1391,7 @@ function pumpio_getallusers(App &$a, $uid)
 		}
 	}
 
-	if (is_array($users->items)) {
+	if (!empty($users->items)) {
 		foreach ($users->items as $user) {
 			pumpio_get_contact($uid, $user);
 		}
