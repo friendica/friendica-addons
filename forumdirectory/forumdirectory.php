@@ -6,6 +6,7 @@
  * Author: Thomas Willingham <https://beardyunixer.com/profile/beardyunixer>
  */
 
+use Friendica\App;
 use Friendica\Content\Nav;
 use Friendica\Content\Widget;
 use Friendica\Core\Addon;
@@ -34,12 +35,12 @@ function forumdirectory_module()
 	return;
 }
 
-function forumdirectory_app_menu($a, &$b)
+function forumdirectory_app_menu(App $a, array &$b)
 {
 	$b['app_menu'][] = '<div class="app-title"><a href="forumdirectory">' . L10n::t('Forum Directory') . '</a></div>';
 }
 
-function forumdirectory_init(&$a)
+function forumdirectory_init(App $a)
 {
 	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="' . $a->get_baseurl() . '/addon/forumdirectory/forumdirectory.css" media="all" />';
 
@@ -52,14 +53,14 @@ function forumdirectory_init(&$a)
 	}
 }
 
-function forumdirectory_post(&$a)
+function forumdirectory_post(App $a)
 {
-	if (x($_POST, 'search')) {
+	if (!empty($_POST['search'])) {
 		$a->data['search'] = $_POST['search'];
 	}
 }
 
-function forumdirectory_content(&$a)
+function forumdirectory_content(App $a)
 {
 	if ((Config::get('system', 'block_public')) && (!local_user()) && (!remote_user())) {
 		notice(L10n::t('Public access denied.') . EOL);
@@ -69,10 +70,10 @@ function forumdirectory_content(&$a)
 	$o = '';
 	Nav::setSelected('directory');
 
-	if (x($a->data, 'search')) {
+	if (!empty($a->data['search'])) {
 		$search = notags(trim($a->data['search']));
 	} else {
-		$search = ((x($_GET, 'search')) ? notags(trim(rawurldecode($_GET['search']))) : '');
+		$search = ((!empty($_GET['search'])) ? notags(trim(rawurldecode($_GET['search']))) : '');
 	}
 
 	$tpl = get_markup_template('directory_header.tpl');
@@ -169,19 +170,19 @@ function forumdirectory_content(&$a)
 			$profile = $rr;
 
 			$location = '';
-			if (x($profile, 'address') == 1
-				|| x($profile, 'locality') == 1
-				|| x($profile, 'region') == 1
-				|| x($profile, 'postal-code') == 1
-				|| x($profile, 'country-name') == 1
+			if (!empty($profile['address']) == 1
+				|| !empty($profile['locality']) == 1
+				|| !empty($profile['region']) == 1
+				|| !empty($profile['postal-code']) == 1
+				|| !empty($profile['country-name']) == 1
 			) {
 				$location = L10n::t('Location:');
 			}
 
-			$gender   = x($profile, 'gender')   == 1 ? L10n::t('Gender:')   : false;
-			$marital  = x($profile, 'marital')  == 1 ? L10n::t('Status:')   : false;
-			$homepage = x($profile, 'homepage') == 1 ? L10n::t('Homepage:') : false;
-			$about    = x($profile, 'about')    == 1 ? L10n::t('About:')    : false;
+			$gender   = !empty($profile['gender'])   == 1 ? L10n::t('Gender:')   : false;
+			$marital  = !empty($profile['marital'])  == 1 ? L10n::t('Status:')   : false;
+			$homepage = !empty($profile['homepage']) == 1 ? L10n::t('Homepage:') : false;
+			$about    = !empty($profile['about'])    == 1 ? L10n::t('About:')    : false;
 
 			$tpl = get_markup_template('forumdirectory_item.tpl', 'addon/forumdirectory/');
 
