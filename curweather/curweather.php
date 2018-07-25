@@ -71,7 +71,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 		$wunit = 'mph';
 	}
 
-	if (trim((string) $res->weather['value']) == trim((string) $res->clouds['name']) ) {
+	if (trim((string) $res->weather['value']) == trim((string) $res->clouds['name'])) {
 		$desc = (string) $res->clouds['name'];
 	} else {
 		$desc = (string) $res->weather['value'] . ', ' . (string) $res->clouds['name'];
