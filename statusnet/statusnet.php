@@ -929,7 +929,7 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 			DBA::escape($contact->screen_name),
 			DBA::escape($contact->profile_image_url),
 			DBA::escape(NETWORK_STATUSNET),
-			intval(Contact::CONTACT_IS_FRIEND),
+			intval(Contact::FRIEND),
 			intval(1),
 			DBA::escape($contact->location),
 			DBA::escape($contact->description),

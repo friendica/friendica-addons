@@ -1035,7 +1035,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false)
 			DBA::escape($contact->preferredUsername),
 			DBA::escape($contact->image->url),
 			DBA::escape(NETWORK_PUMPIO),
-			intval(Contact::CONTACT_IS_FRIEND),
+			intval(Contact::FRIEND),
 			intval(1),
 			DBA::escape($contact->location->displayName),
 			DBA::escape($contact->summary),
