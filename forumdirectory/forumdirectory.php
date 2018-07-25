@@ -159,11 +159,11 @@ function forumdirectory_content(&$a)
 			}
 
 			switch ($rr['page-flags']) {
-				case PAGE_NORMAL   : $page_type = "Personal Profile"; break;
-				case PAGE_SOAPBOX  : $page_type = "Fan Page"        ; break;
-				case PAGE_COMMUNITY: $page_type = "Community Forum" ; break;
-				case PAGE_FREELOVE : $page_type = "Open Forum"      ; break;
-				case PAGE_PRVGROUP : $page_type = "Private Group"   ; break;
+				case Profile::PAGE_NORMAL   : $page_type = "Personal Profile"; break;
+				case Profile::PAGE_SOAPBOX  : $page_type = "Fan Page"        ; break;
+				case Profile::PAGE_COMMUNITY: $page_type = "Community Forum" ; break;
+				case Profile::PAGE_FREELOVE : $page_type = "Open Forum"      ; break;
+				case Profile::PAGE_PRVGROUP : $page_type = "Private Group"   ; break;
 			}
 
 			$profile = $rr;
