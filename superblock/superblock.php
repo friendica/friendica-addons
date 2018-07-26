@@ -139,7 +139,7 @@ function superblock_item_photo_menu(&$a,&$b) {
 
 	$blocked = false;
 	$author = $b['item']['author-link'];
-	if(is_array($a->data['superblock'])) {
+	if(!empty($a->data['superblock'])) {
 		foreach($a->data['superblock'] as $bloke) {
 			if(link_compare($bloke,$author)) {
 				$blocked = true;

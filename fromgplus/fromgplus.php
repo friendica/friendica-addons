@@ -363,11 +363,11 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 					}
 				}
 
-				if ($images["preview"] != "") {
+				if (!empty($images["preview"])) {
 					$post .= "\n[url=".$images["page"]."][img]".$images["preview"]."[/img][/url]\n";
 					$pagedata["images"][0]["src"] = $images["preview"];
 					$pagedata["url"] = $images["page"];
-				} elseif ($images["full"] != "") {
+				} elseif (!empty($images["full"])) {
 					$post .= "\n[img]".$images["full"]."[/img]\n";
 					$pagedata["images"][0]["src"] = $images["full"];
 

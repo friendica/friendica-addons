@@ -1620,7 +1620,9 @@ function pumpio_fetchallcomments(App $a, $uid, $id)
 			$like->object = new stdClass;
 			$like->object->id = $item->id;
 			$like->actor = new stdClass;
-			$like->actor->displayName = $item->displayName;
+			if (!empty($item->displayName)) {
+				$like->actor->displayName = $item->displayName;
+			}
 			//$like->actor->preferredUsername = $item->preferredUsername;
 			//$like->actor->image = $item->image;
 			$like->actor->url = $item->url;
