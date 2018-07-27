@@ -15,7 +15,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
 use Friendica\Model\ItemContent;
-use Friendica\Network\Proxy;
+use Friendica\Module\Proxy;
 
 function buffer_install()
 {

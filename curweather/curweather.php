@@ -17,7 +17,7 @@ use Friendica\Core\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
-use Friendica\Network\Proxy;
+use Friendica\Module\Proxy;
 use Friendica\Util\Network;
 
 function curweather_install()

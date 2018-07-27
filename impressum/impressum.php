@@ -11,7 +11,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
-use Friendica\Network\Proxy;
+use Friendica\Module\Proxy;
 
 function impressum_install() {
 	Addon::registerHook('load_config', 'addon/impressum/impressum.php', 'impressum_load_config');

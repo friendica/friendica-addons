@@ -14,7 +14,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\Protocol;
-use Friendica\Network\Proxy;
+use Friendica\Module\Proxy;
 use Friendica\Util\Network;
 
 function mastodoncustomemojis_install()
