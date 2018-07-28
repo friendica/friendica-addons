@@ -1029,7 +1029,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 		$fields['nurl'] = normalise_link($url);
 		$fields['alias'] = 'twitter::' . $data->id_str;
 		$fields['poll'] = 'twitter::' . $data->id_str;
-		$fields['rel'] = CONTACT_IS_FRIEND;
+		$fields['rel'] = Contact::FRIEND;
 		$fields['priority'] = 1;
 		$fields['writable'] = true;
 		$fields['blocked'] = false;

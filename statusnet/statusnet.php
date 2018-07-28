@@ -48,6 +48,7 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
+use Friendica\Model\Contact;
 use Friendica\Model\GContact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
@@ -928,7 +929,7 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 			DBA::escape($contact->screen_name),
 			DBA::escape($contact->profile_image_url),
 			DBA::escape(NETWORK_STATUSNET),
-			intval(CONTACT_IS_FRIEND),
+			intval(Contact::FRIEND),
 			intval(1),
 			DBA::escape($contact->location),
 			DBA::escape($contact->description),
