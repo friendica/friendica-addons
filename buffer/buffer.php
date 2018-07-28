@@ -15,7 +15,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
 use Friendica\Model\ItemContent;
-use Friendica\Module\Proxy;
+use Friendica\Util\ProxyUtils;
 
 function buffer_install()
 {
@@ -365,11 +365,11 @@ function buffer_send(App $a, array &$b)
 
 				// The image proxy is used as a sanitizer. Buffer seems to be really picky about pictures
 				if (isset($post["image"])) {
-					$post["image"] = Proxy::proxifyUrl($post["image"]);
+					$post["image"] = ProxyUtils::proxifyUrl($post["image"]);
 				}
 
 				if (isset($post["preview"])) {
-					$post["preview"] = Proxy::proxifyUrl($post["preview"]);
+					$post["preview"] = ProxyUtils::proxifyUrl($post["preview"]);
 				}
 
 				// Seems like a bug to me
