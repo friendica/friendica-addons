@@ -171,19 +171,19 @@ function forumdirectory_content(App $a)
 			$profile = $rr;
 
 			$location = '';
-			if (!empty($profile['address']) == 1
-				|| !empty($profile['locality']) == 1
-				|| !empty($profile['region']) == 1
-				|| !empty($profile['postal-code']) == 1
-				|| !empty($profile['country-name']) == 1
+			if (!empty($profile['address'])
+				|| !empty($profile['locality'])
+				|| !empty($profile['region'])
+				|| !empty($profile['postal-code'])
+				|| !empty($profile['country-name'])
 			) {
 				$location = L10n::t('Location:');
 			}
 
-			$gender   = !empty($profile['gender'])   == 1 ? L10n::t('Gender:')   : false;
-			$marital  = !empty($profile['marital'])  == 1 ? L10n::t('Status:')   : false;
-			$homepage = !empty($profile['homepage']) == 1 ? L10n::t('Homepage:') : false;
-			$about    = !empty($profile['about'])    == 1 ? L10n::t('About:')    : false;
+			$gender   = !empty($profile['gender'])   ? L10n::t('Gender:')   : false;
+			$marital  = !empty($profile['marital'])  ? L10n::t('Status:')   : false;
+			$homepage = !empty($profile['homepage']) ? L10n::t('Homepage:') : false;
+			$about    = !empty($profile['about'])    ? L10n::t('About:')    : false;
 
 			$tpl = get_markup_template('forumdirectory_item.tpl', 'addon/forumdirectory/');
 
