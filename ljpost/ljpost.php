@@ -131,7 +131,7 @@ function ljpost_post_local(&$a,&$b) {
 
 	$lj_enable = (($lj_post && x($_REQUEST,'ljpost_enable')) ? intval($_REQUEST['ljpost_enable']) : 0);
 
-	if($_REQUEST['api_source'] && intval(PConfig::get(local_user(),'ljpost','post_by_default')))
+	if($b['api_source'] && intval(PConfig::get(local_user(),'ljpost','post_by_default')))
 		$lj_enable = 1;
 
     if(! $lj_enable)
