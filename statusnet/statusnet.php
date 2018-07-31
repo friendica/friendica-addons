@@ -585,7 +585,7 @@ function statusnet_post_hook(App $a, &$b)
 			$result = $cb->statuses_update($postdata);
 			//$result = $dent->post('statuses/update', $postdata);
 			logger('statusnet_post send, result: ' . print_r($result, true) .
-				"\nmessage: " . $msg, LOGGER_DEBUG . "\nOriginal post: " . print_r($b, true) . "\nPost Data: " . print_r($postdata, true));
+				"\nmessage: " . $msg . "\nOriginal post: " . print_r($b, true) . "\nPost Data: " . print_r($postdata, true), LOGGER_DEBUG);
 
 			if (!empty($result->source)) {
 				PConfig::set($b["uid"], "statusnet", "application_name", strip_tags($result->source));

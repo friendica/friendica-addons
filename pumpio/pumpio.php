@@ -1229,6 +1229,7 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 	$postarray['author-avatar'] = $post->actor->image->url;
 	$postarray['plink'] = $post->object->url;
 	$postarray['app'] = $post->generator->displayName;
+	$postarray['title'] = '';
 	$postarray['body'] = HTML::toBBCode($post->object->content);
 	$postarray['object'] = json_encode($post);
 

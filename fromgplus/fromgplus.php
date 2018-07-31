@@ -229,7 +229,9 @@ function fromgplus_parse_query($var)
 
 	foreach($var as $val) {
 		$x          = explode('=', $val);
-		$arr[$x[0]] = $x[1];
+		if (count($x) > 1) {
+			$arr[$x[0]] = $x[1];
+		}
 	}
 	unset($val, $x, $var);
 	return $arr;
@@ -249,7 +251,7 @@ function fromgplus_cleanupgoogleproxy($fullImage, $image) {
        	$cleaned = [];
 
 	$queryvar = fromgplus_parse_query($fullImage);
-	if ($queryvar['url'] != "")
+	if (!empty($queryvar['url']))
         	$cleaned["full"] = urldecode($queryvar['url']);
 	else
 		$cleaned["full"] = $fullImage;
@@ -257,24 +259,24 @@ function fromgplus_cleanupgoogleproxy($fullImage, $image) {
 		$cleaned["full"] = "";
 
 	$queryvar = fromgplus_parse_query($image);
-	if ($queryvar['url'] != "")
+	if (!empty($queryvar['url']))
        		$cleaned["preview"] = urldecode($queryvar['url']);
 	else
 		$cleaned["preview"] = $image;
 	if (@exif_imagetype($cleaned["preview"]) == 0)
 		$cleaned["preview"] = "";
 
-	if ($cleaned["full"] == "") {
+	if (empty($cleaned["full"])) {
 		$cleaned["full"] = $cleaned["preview"];
 		$cleaned["preview"] = "";
 	}
 
-	if ($cleaned["full"] != "")
+	if (!empty($cleaned["full"]))
 		$infoFull = Image::getInfoFromURL($cleaned["full"]);
 	else
 		$infoFull = ["0" => 0, "1" => 0];
 
-	if ($cleaned["preview"] != "")
+	if (!empty($cleaned["preview"]))
 		$infoPreview = Image::getInfoFromURL($cleaned["preview"]);
 	else
 		$infoFull = ["0" => 0, "1" => 0];
