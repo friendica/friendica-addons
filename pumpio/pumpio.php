@@ -1469,7 +1469,7 @@ function pumpio_queue_hook(App $a, array &$b)
 				}
 				Queue::removeItem($x['id']);
 			} else {
-				logger('pumpio_queue: send '.$username.': '.$url.' general error: ' . print_r($user, true));
+				logger('pumpio_queue: send '.$username.': '.$z['url'].' general error: ' . print_r($user, true));
 			}
 		} else {
 			logger("pumpio_queue: Error getting tokens for user ".$userdata['uid']);
