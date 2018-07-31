@@ -70,6 +70,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Core\Protocol;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\Model\Contact;
@@ -521,7 +522,7 @@ function twitter_post_hook(App $a, array &$b)
 	}
 
 	// if post comes from twitter don't send it back
-	if ($b['extid'] == NETWORK_TWITTER) {
+	if ($b['extid'] == Protocol::TWITTER) {
 		return;
 	}
 
@@ -628,7 +629,7 @@ function twitter_post_hook(App $a, array &$b)
 
 			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $post]);
 
-			Queue::add($a->contact, NETWORK_TWITTER, $s);
+			Queue::add($a->contact, Protocol::TWITTER, $s);
 			notice(L10n::t('Twitter post failed. Queued for retry.') . EOL);
 		} elseif ($iscomment) {
 			logger('twitter_post: Update extid ' . $result->id_str . " for post id " . $b['id']);
@@ -734,7 +735,7 @@ function twitter_expire(App $a)
 		return;
 	}
 
-	$r = DBA::select('item', ['id', 'iaid', 'icid'], ['deleted' => true, 'network' => NETWORK_TWITTER]);
+	$r = DBA::select('item', ['id', 'iaid', 'icid'], ['deleted' => true, 'network' => Protocol::TWITTER]);
 	while ($row = DBA::fetch($r)) {
 		DBA::delete('item', ['id' => $row['id']]);
 		if (!empty($row['iaid']) && !DBA::exists('item', ['iaid' => $row['iaid']])) {
@@ -754,7 +755,7 @@ function twitter_expire(App $a)
 	if (DBA::isResult($r)) {
 		foreach ($r as $rr) {
 			logger('twitter_expire: user ' . $rr['uid']);
-			Item::expire($rr['uid'], $days, NETWORK_TWITTER, true);
+			Item::expire($rr['uid'], $days, Protocol::TWITTER, true);
 		}
 	}
 
@@ -763,7 +764,7 @@ function twitter_expire(App $a)
 
 function twitter_prepare_body(App $a, array &$b)
 {
-	if ($b["item"]["network"] != NETWORK_TWITTER) {
+	if ($b["item"]["network"] != Protocol::TWITTER) {
 		return;
 	}
 
@@ -812,8 +813,8 @@ function twitter_do_mirrorpost(App $a, $uid, $post)
 {
 	$datarray['api_source'] = true;
 	$datarray['profile_uid'] = $uid;
-	$datarray['extid'] = NETWORK_TWITTER;
-	$datarray['message_id'] = Item::newURI($uid, NETWORK_TWITTER . ':' . $post->id);
+	$datarray['extid'] = Protocol::TWITTER;
+	$datarray['message_id'] = Item::newURI($uid, Protocol::TWITTER . ':' . $post->id);
 	$datarray['protocol'] = Conversation::PARCEL_TWITTER;
 	$datarray['source'] = json_encode($post);
 	$datarray['title'] = '';
@@ -924,14 +925,14 @@ function twitter_fetchtimeline(App $a, $uid)
 function twitter_queue_hook(App $a)
 {
 	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
-		DBA::escape(NETWORK_TWITTER)
+		DBA::escape(Protocol::TWITTER)
 	);
 	if (!DBA::isResult($qi)) {
 		return;
 	}
 
 	foreach ($qi as $x) {
-		if ($x['network'] !== NETWORK_TWITTER) {
+		if ($x['network'] !== Protocol::TWITTER) {
 			continue;
 		}
 
@@ -1003,13 +1004,13 @@ function twitter_fetch_contact($uid, $data, $create_user)
 	$url = "https://twitter.com/" . $data->screen_name;
 	$addr = $data->screen_name . "@twitter.com";
 
-	GContact::update(["url" => $url, "network" => NETWORK_TWITTER,
+	GContact::update(["url" => $url, "network" => Protocol::TWITTER,
 		"photo" => $avatar, "hide" => true,
 		"name" => $data->name, "nick" => $data->screen_name,
 		"location" => $data->location, "about" => $data->description,
 		"addr" => $addr, "generation" => 2]);
 
-	$fields = ['url' => $url, 'network' => NETWORK_TWITTER,
+	$fields = ['url' => $url, 'network' => Protocol::TWITTER,
 		'name' => $data->name, 'nick' => $data->screen_name, 'addr' => $addr,
                 'location' => $data->location, 'about' => $data->description];
 
@@ -1343,7 +1344,7 @@ function twitter_media_entities($post, array &$postarray)
 function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $only_existing_contact, $noquote)
 {
 	$postarray = [];
-	$postarray['network'] = NETWORK_TWITTER;
+	$postarray['network'] = Protocol::TWITTER;
 	$postarray['uid'] = $uid;
 	$postarray['wall'] = 0;
 	$postarray['uri'] = "twitter::" . $post->id_str;

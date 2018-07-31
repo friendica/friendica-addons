@@ -14,6 +14,7 @@ use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
 use Friendica\Model\Item;
 
@@ -181,8 +182,8 @@ function ifttt_message($uid, $item)
 
 	if (strstr($item['url'], 'facebook.com')) {
 		$hash = hash('ripemd128', item['url']);
-		$_REQUEST['extid'] = NETWORK_FACEBOOK;
-		$_REQUEST['message_id'] = Item::newURI($uid, NETWORK_FACEBOOK . ':' . $hash);
+		$_REQUEST['extid'] = Protocol::FACEBOOK;
+		$_REQUEST['message_id'] = Item::newURI($uid, Protocol::FACEBOOK . ':' . $hash);
 	}
 
 	if ($item['type'] == 'link') {

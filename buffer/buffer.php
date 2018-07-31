@@ -13,6 +13,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
 use Friendica\Model\ItemContent;
 use Friendica\Util\Proxy as ProxyUtils;
@@ -307,7 +308,7 @@ function buffer_send(App $a, array &$b)
 
 				switch ($profile->service) {
 					case 'facebook':
-						$send = ($b["extid"] != NETWORK_FACEBOOK);
+						$send = ($b["extid"] != Protocol::FACEBOOK);
 						$limit = 0;
 						$markup = false;
 						$includedlinks = false;
@@ -315,7 +316,7 @@ function buffer_send(App $a, array &$b)
 						break;
 
 					case 'google':
-						$send = ($b["extid"] != NETWORK_GPLUS);
+						$send = ($b["extid"] != Protocol::GPLUS);
 						$limit = 0;
 						$markup = true;
 						$includedlinks = false;
@@ -323,7 +324,7 @@ function buffer_send(App $a, array &$b)
 						break;
 
 					case 'twitter':
-						$send = ($b["extid"] != NETWORK_TWITTER);
+						$send = ($b["extid"] != Protocol::TWITTER);
 						$limit = 280;
 						$markup = false;
 						$includedlinks = true;
@@ -331,7 +332,7 @@ function buffer_send(App $a, array &$b)
 						break;
 
 					case 'linkedin':
-						$send = ($b["extid"] != NETWORK_LINKEDIN);
+						$send = ($b["extid"] != Protocol::LINKEDIN);
 						$limit = 700;
 						$markup = false;
 						$includedlinks = true;

@@ -13,6 +13,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Core\Protocol;
 use Friendica\Object\Image;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
@@ -173,10 +174,10 @@ function fromgplus_post($a, $uid, $source, $body, $location, $coord, $id) {
 
 	$_REQUEST['profile_uid'] = $uid;
 	$_REQUEST['source'] = $source;
-	$_REQUEST['extid'] = NETWORK_GPLUS;
+	$_REQUEST['extid'] = Protocol::GPLUS;
 
 	if (isset($id)) {
-		$_REQUEST['message_id'] = Item::newURI($uid, NETWORK_GPLUS.':'.$id);
+		$_REQUEST['message_id'] = Item::newURI($uid, Protocol::GPLUS.':'.$id);
 	}
 
 	// $_REQUEST['verb']

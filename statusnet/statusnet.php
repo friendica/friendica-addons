@@ -47,6 +47,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
 use Friendica\Model\Contact;
 use Friendica\Model\GContact;
@@ -518,7 +519,7 @@ function statusnet_post_hook(App $a, &$b)
 	}
 
 	// if posts comes from GNU Social don't send it back
-	if ($b['extid'] == NETWORK_STATUSNET) {
+	if ($b['extid'] == Protocol::STATUSNET) {
 		return;
 	}
 
@@ -673,7 +674,7 @@ function statusnet_addon_admin(App $a, &$o)
 
 function statusnet_prepare_body(App $a, &$b)
 {
-	if ($b["item"]["network"] != NETWORK_STATUSNET) {
+	if ($b["item"]["network"] != Protocol::STATUSNET) {
 		return;
 	}
 
@@ -839,10 +840,10 @@ function statusnet_fetchtimeline(App $a, $uid)
 				$_REQUEST["profile_uid"] = $uid;
 				//$_REQUEST["source"] = "StatusNet";
 				$_REQUEST["source"] = $post->source;
-				$_REQUEST["extid"] = NETWORK_STATUSNET;
+				$_REQUEST["extid"] = Protocol::STATUSNET;
 
 				if (isset($post->id)) {
-					$_REQUEST['message_id'] = Item::newURI($uid, NETWORK_STATUSNET . ":" . $post->id);
+					$_REQUEST['message_id'] = Item::newURI($uid, Protocol::STATUSNET . ":" . $post->id);
 				}
 
 				//$_REQUEST["date"] = $post->created_at;
@@ -897,12 +898,12 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 	}
 
 	GContact::update(["url" => $contact->statusnet_profile_url,
-		"network" => NETWORK_STATUSNET, "photo" => $contact->profile_image_url,
+		"network" => Protocol::STATUSNET, "photo" => $contact->profile_image_url,
 		"name" => $contact->name, "nick" => $contact->screen_name,
 		"location" => $contact->location, "about" => $contact->description,
 		"addr" => statusnet_address($contact), "generation" => 3]);
 
-	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' AND `network` = '%s'LIMIT 1", intval($uid), DBA::escape(normalise_link($contact->statusnet_profile_url)), DBA::escape(NETWORK_STATUSNET));
+	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' AND `network` = '%s'LIMIT 1", intval($uid), DBA::escape(normalise_link($contact->statusnet_profile_url)), DBA::escape(Protocol::STATUSNET));
 
 	if (!DBA::isResult($r) && !$create_user) {
 		return 0;
@@ -930,7 +931,7 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 			DBA::escape($contact->name),
 			DBA::escape($contact->screen_name),
 			DBA::escape($contact->profile_image_url),
-			DBA::escape(NETWORK_STATUSNET),
+			DBA::escape(Protocol::STATUSNET),
 			intval(Contact::FRIEND),
 			intval(1),
 			DBA::escape($contact->location),
@@ -941,7 +942,7 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 		$r = q("SELECT * FROM `contact` WHERE `alias` = '%s' AND `uid` = %d AND `network` = '%s' LIMIT 1",
 			DBA::escape($contact->statusnet_profile_url),
 			intval($uid),
-			DBA::escape(NETWORK_STATUSNET));
+			DBA::escape(Protocol::STATUSNET));
 
 		if (!DBA::isResult($r)) {
 			return false;
@@ -1063,7 +1064,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 	$hostname = preg_replace("=https?://([\w\.]*)/.*=ism", "$1", $api);
 
 	$postarray = [];
-	$postarray['network'] = NETWORK_STATUSNET;
+	$postarray['network'] = Protocol::STATUSNET;
 	$postarray['uid'] = $uid;
 	$postarray['wall'] = 0;
 
