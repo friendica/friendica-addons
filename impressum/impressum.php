@@ -7,12 +7,11 @@
  * License: 3-clause BSD license
  */
 
-require_once 'mod/proxy.php';
-
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Util\Proxy as ProxyUtils;
 
 function impressum_install() {
 	Addon::registerHook('load_config', 'addon/impressum/impressum.php', 'impressum_load_config');
@@ -41,7 +40,8 @@ function obfuscate_email ($s) {
     return $s;
 }
 function impressum_footer($a, &$b) {
-    $text = proxy_parse_html(BBCode::convert(Config::get('impressum','footer_text')));
+    $text = ProxyUtils::proxifyHtml(BBCode::convert(Config::get('impressum','footer_text')));
+
     if (! $text == '') {
         $a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->get_baseurl().'/addon/impressum/impressum.css" media="all" />';
         $b .= '<div class="clear"></div>';
@@ -58,8 +58,8 @@ function impressum_show($a,&$b) {
     $b .= '<h3>'.L10n::t('Impressum').'</h3>';
     $owner = Config::get('impressum', 'owner');
     $owner_profile = Config::get('impressum','ownerprofile');
-    $postal = proxy_parse_html(BBCode::convert(Config::get('impressum', 'postal')));
-    $notes = proxy_parse_html(BBCode::convert(Config::get('impressum', 'notes')));
+    $postal = ProxyUtils::proxifyHtml(BBCode::convert(Config::get('impressum', 'postal')));
+    $notes = ProxyUtils::proxifyHtml(BBCode::convert(Config::get('impressum', 'notes')));
     $email = obfuscate_email( Config::get('impressum','email') );
     if (strlen($owner)) {
         if (strlen($owner_profile)) {

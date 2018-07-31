@@ -9,7 +9,6 @@
  *
  */
 
-require_once 'mod/proxy.php';
 require_once 'include/text.php';
 
 use Friendica\App;
@@ -19,6 +18,7 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Util\Network;
+use Friendica\Util\Proxy as ProxyUtils;
 
 function curweather_install()
 {
@@ -138,7 +138,7 @@ function curweather_network_mod_init(App $a, &$b)
 		$t = get_markup_template("widget.tpl", "addon/curweather/" );
 		$curweather = replace_macros ($t, [
 			'$title' => L10n::t("Current Weather"),
-			'$icon' => proxy_url('http://openweathermap.org/img/w/'.$res['icon'].'.png'),
+			'$icon' => ProxyUtils::proxifyUrl('http://openweathermap.org/img/w/'.$res['icon'].'.png'),
 			'$city' => $res['city'],
 			'$lon' => $res['lon'],
 			'$lat' => $res['lat'],
