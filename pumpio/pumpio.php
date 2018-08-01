@@ -778,6 +778,7 @@ function pumpio_fetchtimeline(App $a, $uid)
 		$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError'=>true], $user);
 	} else {
 		$success = false;
+		$user = [];
 	}
 
 	if (!$success) {

@@ -341,10 +341,13 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 				if ($images["full"] != "")
 					$pagedata["images"][0]["src"] = $images["full"];
 
-				$quote = trim(fromgplus_html2bbcode($attachment->content));
+				if (!empty($attachment->content)) {
+					$quote = trim(fromgplus_html2bbcode($attachment->content));
+				}
 
-				if ($quote != "")
+				if (!empty($quote)) {
 					$pagedata["text"] = $quote;
+				}
 
 				// Add Keywords to page link
 				$data = parseurl_getsiteinfo_cached($pagedata["url"], true);
