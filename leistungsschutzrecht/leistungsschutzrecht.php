@@ -23,14 +23,20 @@ function leistungsschutzrecht_uninstall() {
 }
 
 function leistungsschutzrecht_getsiteinfo($a, &$siteinfo) {
-	if (!isset($siteinfo["url"]))
+	if (!isset($siteinfo["url"])) {
 		return;
+	}
 
-	if (!leistungsschutzrecht_is_member_site($siteinfo["url"]))
+	if (!leistungsschutzrecht_is_member_site($siteinfo["url"])) {
 		return;
+	}
 
 	//$siteinfo["title"] = $siteinfo["url"];
-	$siteinfo["text"] = leistungsschutzrecht_cuttext($siteinfo["text"]);
+
+	if (!empty($siteinfo["text"])) {
+		$siteinfo["text"] = leistungsschutzrecht_cuttext($siteinfo["text"]);
+	}
+
 	unset($siteinfo["image"]);
 	unset($siteinfo["images"]);
 	unset($siteinfo["keywords"]);

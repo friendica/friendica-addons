@@ -970,7 +970,9 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 	$likedata['app'] = $post->generator->displayName;
 	$likedata['author-name'] = $post->actor->displayName;
 	$likedata['author-link'] = $post->actor->url;
-	$likedata['author-avatar'] = $post->actor->image->url;
+	if (!empty($post->actor->image)) {
+		$likedata['author-avatar'] = $post->actor->image->url;
+	}
 
 	$author  = '[url=' . $likedata['author-link'] . ']' . $likedata['author-name'] . '[/url]';
 	$objauthor =  '[url=' . $orig_post['author-link'] . ']' . $orig_post['author-name'] . '[/url]';
@@ -1223,10 +1225,12 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 	$postarray['verb'] = ACTIVITY_POST;
 	$postarray['owner-name'] = $post->actor->displayName;
 	$postarray['owner-link'] = $post->actor->url;
-	$postarray['owner-avatar'] = $post->actor->image->url;
-	$postarray['author-name'] = $post->actor->displayName;
-	$postarray['author-link'] = $post->actor->url;
-	$postarray['author-avatar'] = $post->actor->image->url;
+	$postarray['author-name'] = $postarray['owner-name'];
+	$postarray['author-link'] = $postarray['owner-link'];
+	if (!empty($post->actor->image)) {
+		$postarray['owner-avatar'] = $post->actor->image->url;
+		$postarray['author-avatar'] = $postarray['owner-avatar'];
+	}
 	$postarray['plink'] = $post->object->url;
 	$postarray['app'] = $post->generator->displayName;
 	$postarray['title'] = '';
