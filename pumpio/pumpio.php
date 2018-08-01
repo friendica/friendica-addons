@@ -1387,6 +1387,10 @@ function pumpio_getallusers(App &$a, $uid)
 		$success = false;
 	}
 
+	if (empty($users)) {
+		return;
+	}
+
 	if ($users->totalItems > count($users->items)) {
 		$url = 'https://'.$hostname.'/api/user/'.$username.'/following?count='.$users->totalItems;
 
