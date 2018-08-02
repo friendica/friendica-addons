@@ -1514,6 +1514,11 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 			break;
 		}
 
+		if (empty($post->id_str)) {
+			logger("twitter_fetchparentposts: This is not a post " . json_encode($post), LOGGER_DEBUG);
+			break;
+		}
+
 		if (DBA::exists('item', ['uri' => 'twitter::' . $post->id_str, 'uid' => $uid])) {
 			break;
 		}
