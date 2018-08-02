@@ -443,7 +443,7 @@ function tumblr_send(App $a, array &$b) {
 						"<p>".$params['caption']."</p>";
 		}
 
-		if (empty($params['caption'])) {
+		if (empty($params['caption']) && !empty($siteinfo["description"])) {
 			$params['caption'] = BBCode::convert("[quote]" . $siteinfo["description"] . "[/quote]", false, 4);
 		}
 

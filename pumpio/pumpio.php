@@ -778,6 +778,7 @@ function pumpio_fetchtimeline(App $a, $uid)
 		$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError'=>true], $user);
 	} else {
 		$success = false;
+		$user = [];
 	}
 
 	if (!$success) {
@@ -1384,6 +1385,10 @@ function pumpio_getallusers(App &$a, $uid)
 		$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError' => true], $users);
 	} else {
 		$success = false;
+	}
+
+	if (empty($users)) {
+		return;
 	}
 
 	if ($users->totalItems > count($users->items)) {
