@@ -1183,7 +1183,14 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 
 					$tempfile = tempnam(get_temppath(), "cache");
 					file_put_contents($tempfile, $img_str);
-					$mime = image_type_to_mime_type(exif_imagetype($tempfile));
+
+					// See http://php.net/manual/en/function.exif-imagetype.php#79283
+					if (filesize($tempfile) > 11) {
+						$mime = image_type_to_mime_type(exif_imagetype($tempfile));
+					} else {
+						$mime = false;
+					}
+
 					unlink($tempfile);
 
 					if (substr($mime, 0, 6) == "image/") {
