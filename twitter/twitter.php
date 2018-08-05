@@ -73,6 +73,7 @@ use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\Model\Contact;
+use Friendica\Model\Conversation;
 use Friendica\Model\GContact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
@@ -95,48 +96,48 @@ define('TWITTER_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 function twitter_install()
 {
 	//  we need some hooks, for the configuration and for sending tweets
-	Addon::registerHook('load_config', 'addon/twitter/twitter.php', 'twitter_load_config');
-	Addon::registerHook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings');
-	Addon::registerHook('connector_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
-	Addon::registerHook('post_local', 'addon/twitter/twitter.php', 'twitter_post_local');
-	Addon::registerHook('notifier_normal', 'addon/twitter/twitter.php', 'twitter_post_hook');
-	Addon::registerHook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
-	Addon::registerHook('cron', 'addon/twitter/twitter.php', 'twitter_cron');
-	Addon::registerHook('queue_predeliver', 'addon/twitter/twitter.php', 'twitter_queue_hook');
-	Addon::registerHook('follow', 'addon/twitter/twitter.php', 'twitter_follow');
-	Addon::registerHook('expire', 'addon/twitter/twitter.php', 'twitter_expire');
-	Addon::registerHook('prepare_body', 'addon/twitter/twitter.php', 'twitter_prepare_body');
-	Addon::registerHook('check_item_notification', 'addon/twitter/twitter.php', 'twitter_check_item_notification');
+	Addon::registerHook('load_config'            , __FILE__, 'twitter_load_config');
+	Addon::registerHook('connector_settings'     , __FILE__, 'twitter_settings');
+	Addon::registerHook('connector_settings_post', __FILE__, 'twitter_settings_post');
+	Addon::registerHook('post_local'             , __FILE__, 'twitter_post_local');
+	Addon::registerHook('notifier_normal'        , __FILE__, 'twitter_post_hook');
+	Addon::registerHook('jot_networks'           , __FILE__, 'twitter_jot_nets');
+	Addon::registerHook('cron'                   , __FILE__, 'twitter_cron');
+	Addon::registerHook('queue_predeliver'       , __FILE__, 'twitter_queue_hook');
+	Addon::registerHook('follow'                 , __FILE__, 'twitter_follow');
+	Addon::registerHook('expire'                 , __FILE__, 'twitter_expire');
+	Addon::registerHook('prepare_body'           , __FILE__, 'twitter_prepare_body');
+	Addon::registerHook('check_item_notification', __FILE__, 'twitter_check_item_notification');
 	logger("installed twitter");
 }
 
 function twitter_uninstall()
 {
-	Addon::unregisterHook('load_config', 'addon/twitter/twitter.php', 'twitter_load_config');
-	Addon::unregisterHook('connector_settings', 'addon/twitter/twitter.php', 'twitter_settings');
-	Addon::unregisterHook('connector_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
-	Addon::unregisterHook('post_local', 'addon/twitter/twitter.php', 'twitter_post_local');
-	Addon::unregisterHook('notifier_normal', 'addon/twitter/twitter.php', 'twitter_post_hook');
-	Addon::unregisterHook('jot_networks', 'addon/twitter/twitter.php', 'twitter_jot_nets');
-	Addon::unregisterHook('cron', 'addon/twitter/twitter.php', 'twitter_cron');
-	Addon::unregisterHook('queue_predeliver', 'addon/twitter/twitter.php', 'twitter_queue_hook');
-	Addon::unregisterHook('follow', 'addon/twitter/twitter.php', 'twitter_follow');
-	Addon::unregisterHook('expire', 'addon/twitter/twitter.php', 'twitter_expire');
-	Addon::unregisterHook('prepare_body', 'addon/twitter/twitter.php', 'twitter_prepare_body');
-	Addon::unregisterHook('check_item_notification', 'addon/twitter/twitter.php', 'twitter_check_item_notification');
+	Addon::unregisterHook('load_config'            , __FILE__, 'twitter_load_config');
+	Addon::unregisterHook('connector_settings'     , __FILE__, 'twitter_settings');
+	Addon::unregisterHook('connector_settings_post', __FILE__, 'twitter_settings_post');
+	Addon::unregisterHook('post_local'             , __FILE__, 'twitter_post_local');
+	Addon::unregisterHook('notifier_normal'        , __FILE__, 'twitter_post_hook');
+	Addon::unregisterHook('jot_networks'           , __FILE__, 'twitter_jot_nets');
+	Addon::unregisterHook('cron'                   , __FILE__, 'twitter_cron');
+	Addon::unregisterHook('queue_predeliver'       , __FILE__, 'twitter_queue_hook');
+	Addon::unregisterHook('follow'                 , __FILE__, 'twitter_follow');
+	Addon::unregisterHook('expire'                 , __FILE__, 'twitter_expire');
+	Addon::unregisterHook('prepare_body'           , __FILE__, 'twitter_prepare_body');
+	Addon::unregisterHook('check_item_notification', __FILE__, 'twitter_check_item_notification');
 
 	// old setting - remove only
-	Addon::unregisterHook('post_local_end', 'addon/twitter/twitter.php', 'twitter_post_hook');
-	Addon::unregisterHook('addon_settings', 'addon/twitter/twitter.php', 'twitter_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/twitter/twitter.php', 'twitter_settings_post');
+	Addon::unregisterHook('post_local_end'     , __FILE__, 'twitter_post_hook');
+	Addon::unregisterHook('addon_settings'     , __FILE__, 'twitter_settings');
+	Addon::unregisterHook('addon_settings_post', __FILE__, 'twitter_settings_post');
 }
 
 function twitter_load_config(App $a)
 {
-	$a->loadConfigFile(__DIR__. '/config/twitter.ini.php');
+	$a->loadConfigFile(__DIR__ . '/config/twitter.ini.php');
 }
 
-function twitter_check_item_notification(App $a, &$notification_data)
+function twitter_check_item_notification(App $a, array &$notification_data)
 {
 	$own_id = PConfig::get($notification_data["uid"], 'twitter', 'own_id');
 
@@ -150,7 +151,7 @@ function twitter_check_item_notification(App $a, &$notification_data)
 	}
 }
 
-function twitter_follow(App $a, &$contact)
+function twitter_follow(App $a, array &$contact)
 {
 	logger("twitter_follow: Check if contact is twitter contact. " . $contact["url"], LOGGER_DEBUG);
 
@@ -204,7 +205,7 @@ function twitter_jot_nets(App $a, &$b)
 	}
 }
 
-function twitter_settings_post(App $a, $post)
+function twitter_settings_post(App $a)
 {
 	if (!local_user()) {
 		return;
@@ -385,7 +386,7 @@ function twitter_settings(App $a, &$s)
 	$s .= '</div><div class="clear"></div>';
 }
 
-function twitter_post_local(App $a, &$b)
+function twitter_post_local(App $a, array &$b)
 {
 	if ($b['edit']) {
 		return;
@@ -445,7 +446,7 @@ function twitter_action(App $a, $uid, $pid, $action)
 	logger("twitter_action '" . $action . "' send, result: " . print_r($result, true), LOGGER_DEBUG);
 }
 
-function twitter_post_hook(App $a, &$b)
+function twitter_post_hook(App $a, array &$b)
 {
 	// Post to Twitter
 	if (!PConfig::get($b["uid"], 'twitter', 'import')
@@ -657,7 +658,7 @@ function twitter_addon_admin(App $a, &$o)
 	]);
 }
 
-function twitter_cron(App $a, $b)
+function twitter_cron(App $a)
 {
 	$last = Config::get('twitter', 'last_poll');
 
@@ -725,7 +726,7 @@ function twitter_cron(App $a, $b)
 	Config::set('twitter', 'last_poll', time());
 }
 
-function twitter_expire(App $a, $b)
+function twitter_expire(App $a)
 {
 	$days = Config::get('twitter', 'expire');
 
@@ -760,7 +761,7 @@ function twitter_expire(App $a, $b)
 	logger('twitter_expire: expire_end');
 }
 
-function twitter_prepare_body(App $a, &$b)
+function twitter_prepare_body(App $a, array &$b)
 {
 	if ($b["item"]["network"] != NETWORK_TWITTER) {
 		return;
@@ -809,12 +810,13 @@ function twitter_prepare_body(App $a, &$b)
  */
 function twitter_do_mirrorpost(App $a, $uid, $post)
 {
-	$datarray["api_source"] = true;
-	$datarray["profile_uid"] = $uid;
-	$datarray["extid"] = NETWORK_TWITTER;
-	$datarray['message_id'] = Item::newURI($uid, NETWORK_TWITTER . ":" . $post->id);
-	// $datarray['object'] = json_encode($post); // Activate for debugging
-	$datarray["title"] = "";
+	$datarray['api_source'] = true;
+	$datarray['profile_uid'] = $uid;
+	$datarray['extid'] = NETWORK_TWITTER;
+	$datarray['message_id'] = Item::newURI($uid, NETWORK_TWITTER . ':' . $post->id);
+	$datarray['protocol'] = Conversation::PARCEL_TWITTER;
+	$datarray['source'] = json_encode($post);
+	$datarray['title'] = '';
 
 	if (!empty($post->retweeted_status)) {
 		// We don't support nested shares, so we mustn't show quotes as shares on retweets
@@ -824,7 +826,7 @@ function twitter_do_mirrorpost(App $a, $uid, $post)
 			$item['author-name'],
 			$item['author-link'],
 			$item['author-avatar'],
-			"",
+			'',
 			$item['created'],
 			$item['plink']
 		);
@@ -836,15 +838,15 @@ function twitter_do_mirrorpost(App $a, $uid, $post)
 		$datarray['body'] = $item['body'];
 	}
 
-	$datarray["source"] = $item['app'];
-	$datarray["verb"] = $item['verb'];
+	$datarray['source'] = $item['app'];
+	$datarray['verb'] = $item['verb'];
 
-	if (isset($item["location"])) {
-		$datarray["location"] = $item["location"];
+	if (isset($item['location'])) {
+		$datarray['location'] = $item['location'];
 	}
 
-	if (isset($item["coord"])) {
-		$datarray["coord"] = $item["coord"];
+	if (isset($item['coord'])) {
+		$datarray['coord'] = $item['coord'];
 	}
 
 	return $datarray;
@@ -919,7 +921,7 @@ function twitter_fetchtimeline(App $a, $uid)
 	PConfig::set($uid, 'twitter', 'lastid', $lastid);
 }
 
-function twitter_queue_hook(App $a, &$b)
+function twitter_queue_hook(App $a)
 {
 	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
 		DBA::escape(NETWORK_TWITTER)
@@ -1272,7 +1274,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
  *
  * @return $picture string Image URL or empty string
  */
-function twitter_media_entities($post, &$postarray)
+function twitter_media_entities($post, array &$postarray)
 {
 	// There are no media entities? So we quit.
 	if (empty($post->extended_entities->media)) {
@@ -1331,14 +1333,15 @@ function twitter_media_entities($post, &$postarray)
 	return "";
 }
 
-function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_existing_contact, $noquote)
+function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $only_existing_contact, $noquote)
 {
 	$postarray = [];
 	$postarray['network'] = NETWORK_TWITTER;
 	$postarray['uid'] = $uid;
 	$postarray['wall'] = 0;
 	$postarray['uri'] = "twitter::" . $post->id_str;
-	// $postarray['object'] = json_encode($post); // Activate for debugging
+	$postarray['protocol'] = Conversation::PARCEL_TWITTER;
+	$postarray['source'] = json_encode($post);
 
 	// Don't import our own comments
 	if (DBA::exists('item', ['extid' => $postarray['uri'], 'uid' => $uid])) {
@@ -1462,7 +1465,7 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 	if (!empty($post->retweeted_status)) {
 		$retweet = twitter_createpost($a, $uid, $post->retweeted_status, $self, false, false, $noquote);
 
-		//$retweet['object'] = $postarray['object']; // Activate for debugging
+		$retweet['source'] = $postarray['source'];
 		$retweet['private'] = $postarray['private'];
 		$retweet['allow_cid'] = $postarray['allow_cid'];
 		$retweet['contact-id'] = $postarray['contact-id'];
@@ -1493,7 +1496,7 @@ function twitter_createpost(App $a, $uid, $post, $self, $create_user, $only_exis
 	return $postarray;
 }
 
-function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection, $self, $own_id)
+function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection, array $self)
 {
 	logger("twitter_fetchparentposts: Fetching for user " . $uid . " and post " . $post->id_str, LOGGER_DEBUG);
 
@@ -1652,7 +1655,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 			}
 
 			if ($post->in_reply_to_status_id_str != "") {
-				twitter_fetchparentposts($a, $uid, $post, $connection, $self, $own_id);
+				twitter_fetchparentposts($a, $uid, $post, $connection, $self);
 			}
 
 			$postarray = twitter_createpost($a, $uid, $post, $self, $create_user, true, false);
@@ -1714,7 +1717,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 			}
 
 			if ($post->in_reply_to_status_id_str != "") {
-				twitter_fetchparentposts($a, $uid, $post, $connection, $self, $own_id);
+				twitter_fetchparentposts($a, $uid, $post, $connection, $self);
 			}
 
 			$postarray = twitter_createpost($a, $uid, $post, $self, false, false, false);
