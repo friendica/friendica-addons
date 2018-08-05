@@ -213,7 +213,7 @@ function advancedcontentfilter_content(App $a)
 			'$title' => L10n::t('Advanced Content Filter'),
 			'$add_a_rule' => L10n::t('Add a Rule'),
 			'$help' => L10n::t('Help'),
-			'$advanced_content_filter_intro' => addslashes(L10n::t('Add and manage your personal content filter rules in this screen. Rules have a name and an arbitrary expression that will be matched against post data. For a complete reference of the available operations and variables, check the <a href="advancedcontentfilter/help">help page</a>.')),
+			'$advanced_content_filter_intro' => L10n::t('Add and manage your personal content filter rules in this screen. Rules have a name and an arbitrary expression that will be matched against post data. For a complete reference of the available operations and variables, check the <a href="advancedcontentfilter/help">help page</a>.'),
 			'$your_rules' => L10n::t('Your rules'),
 			'$no_rules' => L10n::t('You have no rules yet! Start adding one by clicking on the button above next to the title.'),
 			'$disabled' => L10n::t('Disabled'),
