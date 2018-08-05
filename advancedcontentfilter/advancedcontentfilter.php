@@ -170,7 +170,7 @@ function advancedcontentfilter_module() {}
 
 function advancedcontentfilter_init(App $a)
 {
-	if ($a->argv[1] == 'api') {
+	if ($a->argc > 1 && $a->argv[1] == 'api') {
 		$slim = new \Slim\App();
 
 		require __DIR__ . '/src/middlewares.php';
@@ -188,7 +188,7 @@ function advancedcontentfilter_content(App $a)
 		return Login::form('/' . implode('/', $a->argv));
 	}
 
-	if ($a->argc > 0 && $a->argv[1] == 'help') {
+	if ($a->argc > 1 && $a->argv[1] == 'help') {
 		$lang = $a->user['language'];
 
 		$default_dir = 'addon/advancedcontentfilter/doc/';
@@ -208,31 +208,31 @@ function advancedcontentfilter_content(App $a)
 	} else {
 		$t = get_markup_template('settings.tpl', 'addon/advancedcontentfilter/');
 		return replace_macros($t, [
+			'$messages' => [
+				'backtosettings'    => L10n::t('Back to Addon Settings'),
+				'title'             => L10n::t('Advanced Content Filter'),
+				'add_a_rule'        => L10n::t('Add a Rule'),
+				'help'              => L10n::t('Help'),
+				'intro'             => L10n::t('Add and manage your personal content filter rules in this screen. Rules have a name and an arbitrary expression that will be matched against post data. For a complete reference of the available operations and variables, check the help page.'),
+				'your_rules'        => L10n::t('Your rules'),
+				'no_rules'          => L10n::t('You have no rules yet! Start adding one by clicking on the button above next to the title.'),
+				'disabled'          => L10n::t('Disabled'),
+				'enabled'           => L10n::t('Enabled'),
+				'disable_this_rule' => L10n::t('Disable this rule'),
+				'enable_this_rule'  => L10n::t('Enable this rule'),
+				'edit_this_rule'    => L10n::t('Edit this rule'),
+				'edit_the_rule'     => L10n::t('Edit the rule'),
+				'save_this_rule'    => L10n::t('Save this rule'),
+				'delete_this_rule'  => L10n::t('Delete this rule'),
+				'rule'              => L10n::t('Rule'),
+				'close'             => L10n::t('Close'),
+				'addtitle'          => L10n::t('Add new rule'),
+				'rule_name'         => L10n::t('Rule Name'),
+				'rule_expression'   => L10n::t('Rule Expression'),
+				'cancel'            => L10n::t('Cancel'),
+			],
 			'$current_theme' => $a->getCurrentTheme(),
-			'$backtosettings' => L10n::t('Back to Addon Settings'),
-			'$title' => L10n::t('Advanced Content Filter'),
-			'$add_a_rule' => L10n::t('Add a Rule'),
-			'$help' => L10n::t('Help'),
-			'$advanced_content_filter_intro' => addslashes(L10n::t('Add and manage your personal content filter rules in this screen. Rules have a name and an arbitrary expression that will be matched against post data. For a complete reference of the available operations and variables, check the <a href="advancedcontentfilter/help">help page</a>.')),
-			'$your_rules' => L10n::t('Your rules'),
-			'$no_rules' => L10n::t('You have no rules yet! Start adding one by clicking on the button above next to the title.'),
-			'$disabled' => L10n::t('Disabled'),
-			'$enabled' => L10n::t('Enabled'),
-			'$disable_this_rule' => L10n::t('Disable this rule'),
-			'$enable_this_rule' => L10n::t('Enable this rule'),
-			'$edit_this_rule' => L10n::t('Edit this rule'),
-			'$edit_the_rule' => L10n::t('Edit the rule'),
-			'$save_this_rule' => L10n::t('Save this rule'),
-			'$delete_this_rule' => L10n::t('Delete this rule'),
-			'$rule' => L10n::t('Rule'),
-			'$close' => L10n::t('Close'),
-			'$addtitle' => L10n::t('Add new rule'),
-			'$rule_name' => L10n::t('Rule Name'),
-			'$rule_expression' => L10n::t('Rule Expression'),
-			'$examples' => L10n::t('<p>Examples:</p><ul><li><pre>author_link == \'https://friendica.mrpetovan.com/profile/hypolite\'</pre></li><li>tags</li></ul>'),
-			'$cancel' => L10n::t('Cancel'),
 			'$rules' => advancedcontentfilter_get_rules(),
-			'$baseurl' => System::baseUrl(true),
 			'$form_security_token' => get_form_security_token()
 		]);
 	}
