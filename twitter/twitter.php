@@ -73,6 +73,7 @@ use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\Model\Contact;
+use Friendica\Model\Conversation;
 use Friendica\Model\GContact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
@@ -809,11 +810,12 @@ function twitter_prepare_body(App $a, array &$b)
  */
 function twitter_do_mirrorpost(App $a, $uid, $post)
 {
-	// $datarray['object'] = json_encode($post); // Activate for debugging
 	$datarray['api_source'] = true;
 	$datarray['profile_uid'] = $uid;
 	$datarray['extid'] = NETWORK_TWITTER;
 	$datarray['message_id'] = Item::newURI($uid, NETWORK_TWITTER . ':' . $post->id);
+	$datarray['protocol'] = Conversation::PARCEL_TWITTER;
+	$datarray['source'] = json_encode($post);
 	$datarray['title'] = '';
 
 	if (!empty($post->retweeted_status)) {
@@ -1338,7 +1340,8 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 	$postarray['uid'] = $uid;
 	$postarray['wall'] = 0;
 	$postarray['uri'] = "twitter::" . $post->id_str;
-	// $postarray['object'] = json_encode($post); // Activate for debugging
+	$postarray['protocol'] = Conversation::PARCEL_TWITTER;
+	$postarray['source'] = json_encode($post);
 
 	// Don't import our own comments
 	if (DBA::exists('item', ['extid' => $postarray['uri'], 'uid' => $uid])) {
@@ -1462,7 +1465,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 	if (!empty($post->retweeted_status)) {
 		$retweet = twitter_createpost($a, $uid, $post->retweeted_status, $self, false, false, $noquote);
 
-		//$retweet['object'] = $postarray['object']; // Activate for debugging
+		$retweet['source'] = $postarray['source'];
 		$retweet['private'] = $postarray['private'];
 		$retweet['allow_cid'] = $postarray['allow_cid'];
 		$retweet['contact-id'] = $postarray['contact-id'];
