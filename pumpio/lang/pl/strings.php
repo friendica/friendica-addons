@@ -2,14 +2,15 @@
 
 if(! function_exists("string_plural_select_pl")) {
 function string_plural_select_pl($n){
+	$n = intval($n);
 	return ($n==1 ? 0 : ($n%10>=2 && $n%10<=4) && ($n%100<12 || $n%100>14) ? 1 : $n!=1 && ($n%10>=0 && $n%10<=1) || ($n%10>=5 && $n%10<=9) || ($n%100>=12 && $n%100<=14) ? 2 : 3);;
 }}
 ;
 $a->strings["Permission denied."] = "Odmowa dostępu.";
 $a->strings["Unable to register the client at the pump.io server '%s'."] = "Nie można zarejestrować klienta na serwerze pump.io '%s'.";
-$a->strings["You are now authenticated to pumpio."] = "Jesteś teraz uwierzytelniony w trybie pompowania.";
+$a->strings["You are now authenticated to pumpio."] = "Jesteś teraz uwierzytelniony w trybie pumpio.";
 $a->strings["return to the connector page"] = "powrót do strony łączenia";
-$a->strings["Post to pumpio"] = "Prześlij do pompio";
+$a->strings["Post to pumpio"] = "Prześlij do pumpio";
 $a->strings["Pump.io Import/Export/Mirror"] = "Pump.io Import/Export/Mirror";
 $a->strings["pump.io username (without the servername)"] = "nazwa użytkownika pump.io (bez nazwy serwera)";
 $a->strings["pump.io servername (without \"http://\" or \"https://\" )"] = "pump.io nazwa_serwera (bez \"http://\" lub \"https://\")";
