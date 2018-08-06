@@ -2,6 +2,7 @@
 
 if(! function_exists("string_plural_select_pl")) {
 function string_plural_select_pl($n){
+	$n = intval($n);
 	return ($n==1 ? 0 : ($n%10>=2 && $n%10<=4) && ($n%100<12 || $n%100>14) ? 1 : $n!=1 && ($n%10>=0 && $n%10<=1) || ($n%10>=5 && $n%10<=9) || ($n%100>=12 && $n%100<=14) ? 2 : 3);;
 }}
 ;
@@ -11,6 +12,6 @@ $a->strings["Save Settings"] = "Zapisz ustawienia";
 $a->strings["Piwik Base URL"] = "Podstawowy adres URL Piwik";
 $a->strings["Absolute path to your Piwik installation. (without protocol (http/s), with trailing slash)"] = "Bezwzględna ścieżka do Twojej instalacji Piwik. (bez protokołu (http/s), z ukośnikiem)";
 $a->strings["Site ID"] = "Identyfikator ID witryny";
-$a->strings["Show opt-out cookie link?"] = "Pokaż łącze opt-out cookie?";
+$a->strings["Show opt-out cookie link?"] = "Pokazać link do rezygnacji z plików cookie?";
 $a->strings["Asynchronous tracking"] = "Śledzenie asynchroniczne";
-$a->strings["Settings updated."] = "Ustawienia zaktualizowane.";
+$a->strings["Settings updated."] = "Zaktualizowano ustawienia.";
