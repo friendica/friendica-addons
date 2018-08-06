@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2018-04-01 14:29+0000\n"
+"PO-Revision-Date: 2018-08-04 10:57+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -33,11 +33,11 @@ msgstr "Włącz dodatek Blogger"
 
 #: blogger.php:87
 msgid "Blogger username"
-msgstr "Nazwa użytkownika Bloggera"
+msgstr "Nazwa użytkownika Blogger"
 
 #: blogger.php:92
 msgid "Blogger password"
-msgstr "Hasło Bloggera"
+msgstr "Hasło Blogger"
 
 #: blogger.php:97
 msgid "Blogger API URL"
