@@ -5,12 +5,13 @@
 # 
 # Translators:
 # Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018
+# Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2018-03-27 20:23+0000\n"
+"PO-Revision-Date: 2018-08-04 10:57+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -29,7 +30,7 @@ msgstr "Przekierowanie URL"
 
 #: blackout.php:100
 msgid "all your visitors from the web will be redirected to this URL"
-msgstr ""
+msgstr "wszyscy Twoi goście z internetu zostaną przekierowani na ten adres URL"
 
 #: blackout.php:101
 msgid "Begin of the Blackout"
@@ -39,11 +40,11 @@ msgstr "Rozpocznij Blackout"
 msgid ""
 "format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, "
 "<em>hh</em> hour and <em>mm</em> minute"
-msgstr ""
+msgstr "Format to <em>RRRR</em> rok, <em>MM</em> miesiąc, <em>DD</em> dzień, <em>hh</em>godzina i <em>mm</em> minuty"
 
 #: blackout.php:102
 msgid "End of the Blackout"
-msgstr ""
+msgstr "Koniec Blackout"
 
 #: blackout.php:108
 msgid ""
