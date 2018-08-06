@@ -81,7 +81,7 @@ msgstr "Włącz tę regułę"
 
 #: advancedcontentfilter.php:214
 msgid "Edit this rule"
-msgstr "dytuj tę regułę"
+msgstr "Edytuj tę regułę"
 
 #: advancedcontentfilter.php:215
 msgid "Edit the rule"

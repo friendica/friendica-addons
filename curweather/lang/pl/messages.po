@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-25 17:17+0200\n"
-"PO-Revision-Date: 2018-04-01 14:35+0000\n"
+"PO-Revision-Date: 2018-08-04 12:10+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -41,7 +41,7 @@ msgstr "Wiatr"
 
 #: curweather.php:121
 msgid "Last Updated"
-msgstr "Ostatnio zaktualizowany"
+msgstr "Ostatnio zaktualizowano"
 
 #: curweather.php:122
 msgid "Data by"
@@ -87,7 +87,7 @@ msgstr "Twoja lokalizacja"
 msgid ""
 "Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or "
 "<em>14476,DE</em>."
-msgstr "Identyfikator Twojej lokalizacji (nazwa lub kod pocztowy), np. <em>Berlin, DE</em> lub <em>14476, DE</em>."
+msgstr "Identyfikator Twojej lokalizacji (nazwa lub kod pocztowy), np. <em>Lublin, LU</em> lub <em>20001, LU</em>."
 
 #: curweather.php:176
 msgid "Units"
@@ -103,7 +103,7 @@ msgstr "Pokaż dane pogodowe"
 
 #: curweather.php:190
 msgid "Curweather settings saved."
-msgstr "Ustawienia Curweather zostały zapisane."
+msgstr "Ustawienia pogodowe zostały zapisane."
 
 #: curweather.php:201
 msgid "Caching Interval"

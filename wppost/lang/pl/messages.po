@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-01-24 21:06+0100\n"
-"PO-Revision-Date: 2018-03-31 20:26+0000\n"
+"PO-Revision-Date: 2018-08-04 11:18+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -45,7 +45,7 @@ msgstr "WordPress API URL"
 
 #: wppost.php:107
 msgid "Post to WordPress by default"
-msgstr "Wyślij do WordPress domyślnie"
+msgstr "Wyślij  domyślnie do WordPress"
 
 #: wppost.php:112
 msgid "Provide a backlink to the Friendica post"

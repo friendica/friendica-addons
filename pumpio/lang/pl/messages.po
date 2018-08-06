@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2018-04-01 14:51+0000\n"
+"PO-Revision-Date: 2018-08-05 15:43+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgstr "Nie można zarejestrować klienta na serwerze pump.io '%s'."
 
 #: pumpio.php:164
 msgid "You are now authenticated to pumpio."
-msgstr "Jesteś teraz uwierzytelniony w trybie pompowania."
+msgstr "Jesteś teraz uwierzytelniony w trybie pumpio."
 
 #: pumpio.php:165
 msgid "return to the connector page"
@@ -38,7 +38,7 @@ msgstr "powrót do strony łączenia"
 
 #: pumpio.php:183
 msgid "Post to pumpio"
-msgstr "Prześlij do pompio"
+msgstr "Prześlij do pumpio"
 
 #: pumpio.php:221 pumpio.php:225
 msgid "Pump.io Import/Export/Mirror"

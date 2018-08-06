@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2018-03-31 17:16+0000\n"
+"PO-Revision-Date: 2018-08-05 15:55+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: webrtc.php:20
 msgid "WebRTC Videochat"
-msgstr "WebRTC Videochat"
+msgstr "Videochat WebRTC"
 
 #: webrtc.php:26
 msgid "Save Settings"
@@ -29,7 +29,7 @@ msgstr "Zapisz ustawienia"
 
 #: webrtc.php:27
 msgid "WebRTC Base URL"
-msgstr "WebRTC Podstawowy URL"
+msgstr "Podstawowy adres URL WebRTC"
 
 #: webrtc.php:27
 msgid ""
@@ -39,7 +39,7 @@ msgstr "Strona Twoich użytkowników utworzą pokój czatu WebRTC. Na przykład 
 
 #: webrtc.php:33
 msgid "Settings updated."
-msgstr "Ustawienia zaktualizowane."
+msgstr "Zaktualizowano ustawienia."
 
 #: webrtc.php:47
 msgid "Video Chat"
@@ -50,7 +50,7 @@ msgid ""
 "WebRTC is a video and audio conferencing tool that works with Firefox "
 "(version 21 and above) and Chrome/Chromium (version 25 and above). Just "
 "create a new chat room and send the link to someone you want to chat with."
-msgstr "WebRTC to narzędzie do wideokonferencji, które działa z przeglądarką Firefox (wersja 21 i nowsze) oraz Chrome/Chromium (wersja 25 i nowsze). Po prostu utwórz nowy pokój czatu i wyślij link do kogoś, z kim chcesz porozmawiać."
+msgstr "WebRTC to narzędzie do wideokonferencji, które działa z przeglądarką Firefox (wersja 21 i nowsze) oraz Chrome/Chromium (wersja 25 i nowsze). Utwórz nowy pokój czatu i wyślij link do kogoś, z kim chcesz porozmawiać."
 
 #: webrtc.php:50
 msgid ""

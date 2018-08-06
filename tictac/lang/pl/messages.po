@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-20 21:10+0000\n"
+"PO-Revision-Date: 2018-08-05 15:52+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,7 @@ msgstr "Trójwymiarowe Kółko i Krzyżyk"
 
 #: tictac.php:53
 msgid "3D Tic-Tac-Toe"
-msgstr "3D Kółko i krzyżyk"
+msgstr "3D Kółko i Krzyżyk"
 
 #: tictac.php:58
 msgid "New game"

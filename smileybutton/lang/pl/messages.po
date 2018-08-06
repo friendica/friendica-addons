@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2018-03-31 19:19+0000\n"
+"PO-Revision-Date: 2018-08-04 10:17+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: smileybutton.php:269
 msgid "Smileybutton settings"
-msgstr "Ustawienia Smileybutton"
+msgstr "Ustawienia Przycisku Buźka"
 
 #: smileybutton.php:272
 msgid "You can hide the button and show the smilies directly."

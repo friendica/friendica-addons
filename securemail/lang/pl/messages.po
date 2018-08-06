@@ -44,7 +44,7 @@ msgstr "Twój publiczny klucz PGP, rekomendowany format ascii"
 
 #: securemail.php:74
 msgid "Secure Mail Settings saved."
-msgstr "Bezpieczne ustawienia poczty zostały zapisane."
+msgstr "Ustawienia bezpiecznej poczty zostały zapisane."
 
 #: securemail.php:111
 msgid "Test email sent"

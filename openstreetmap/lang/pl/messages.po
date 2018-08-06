@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-03-31 17:34+0000\n"
+"PO-Revision-Date: 2018-08-04 10:52+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -35,7 +35,7 @@ msgstr "Lista <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" target=\"_blank
 
 #: openstreetmap.php:96
 msgid "Default zoom"
-msgstr "Domyślny zoom"
+msgstr "Domyślne powiększenie"
 
 #: openstreetmap.php:96
 msgid "The default zoom level. (1:world, 18:highest)"
@@ -43,4 +43,4 @@ msgstr "Domyślny poziom powiększenia. (1:świat, 18:najwyższy)"
 
 #: openstreetmap.php:104
 msgid "Settings updated."
-msgstr "Ustawienia zaktualizowane."
+msgstr "Zaktualizowano ustawienia."

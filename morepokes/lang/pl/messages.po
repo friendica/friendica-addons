@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-02 15:21+0000\n"
+"PO-Revision-Date: 2018-08-05 15:36+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -21,19 +21,19 @@ msgstr ""
 
 #: morepokes.php:19
 msgid "bitchslap"
-msgstr ""
+msgstr "spoliczkować"
 
 #: morepokes.php:19
 msgid "bitchslapped"
-msgstr ""
+msgstr "spoliczkowanie"
 
 #: morepokes.php:20
 msgid "shag"
-msgstr "czupryna"
+msgstr "wścieka się"
 
 #: morepokes.php:20
 msgid "shagged"
-msgstr ""
+msgstr "wściekły"
 
 #: morepokes.php:21
 msgid "do something obscenely biological to"
@@ -45,15 +45,15 @@ msgstr "zrobił coś nieprzyzwoicie biologicznego"
 
 #: morepokes.php:22
 msgid "point out the poke feature to"
-msgstr "zwróć uwagę na funkcję poke"
+msgstr "wskaż funkcję szturchnąć"
 
 #: morepokes.php:22
 msgid "pointed out the poke feature to"
-msgstr "wskazał na funkcję poke do"
+msgstr "wskaż na funkcję zaczepić do"
 
 #: morepokes.php:23
 msgid "declare undying love for"
-msgstr "zadeklaruję dozgonną miłość do"
+msgstr "wyznaję dozgonną miłość do"
 
 #: morepokes.php:23
 msgid "declared undying love for"
@@ -69,11 +69,11 @@ msgstr "opatentowane"
 
 #: morepokes.php:25
 msgid "stroke beard"
-msgstr ""
+msgstr "pogłaskać brodę"
 
 #: morepokes.php:25
 msgid "stroked their beard at"
-msgstr ""
+msgstr "pogłaskał ich brody o"
 
 #: morepokes.php:26
 msgid ""
@@ -96,7 +96,7 @@ msgstr "objąć"
 
 #: morepokes.php:28
 msgid "kiss"
-msgstr "pocałunek"
+msgstr "całus"
 
 #: morepokes.php:28
 msgid "kissed"
@@ -128,7 +128,7 @@ msgstr "pochwalić"
 
 #: morepokes.php:32
 msgid "be dubious of"
-msgstr "być wątpliwe"
+msgstr "jest wątpliwe"
 
 #: morepokes.php:32
 msgid "was dubious of"
@@ -148,15 +148,15 @@ msgstr "chichotać i płakać"
 
 #: morepokes.php:34
 msgid "giggled and fawned at"
-msgstr ""
+msgstr "roześmiał się przymilająco"
 
 #: morepokes.php:35
 msgid "doubt"
-msgstr "wątpić"
+msgstr "wątpi"
 
 #: morepokes.php:35
 msgid "doubted"
-msgstr "powątpiewać"
+msgstr "powątpiewa"
 
 #: morepokes.php:36
 msgid "glare"
