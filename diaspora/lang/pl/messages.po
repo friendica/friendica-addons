@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2018-03-31 20:09+0000\n"
+"PO-Revision-Date: 2018-08-04 10:21+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -27,11 +27,11 @@ msgstr "Napisz do Diaspory"
 msgid ""
 "Can't login to your Diaspora account. Please check username and password and"
 " ensure you used the complete address (including http...)"
-msgstr "Nie można zalogować się na swoje konto Diaspora. Sprawdź nazwę użytkownika i hasło i upewnij się, że użyłeś pełnego adresu (w tym http ...)"
+msgstr "Nie możesz zalogować się na swoje konto Diaspora. Sprawdź nazwę użytkownika i hasło i upewnij się, że użyłeś pełnego adresu (w tym http ...)"
 
 #: diaspora.php:149 diaspora.php:153
 msgid "Diaspora Export"
-msgstr "Eksport do Diaspory"
+msgstr "Eksportuj do Diaspory"
 
 #: diaspora.php:163
 msgid "Enable Diaspora Post Addon"
@@ -59,4 +59,4 @@ msgstr "Zapisz ustawienia"
 
 #: diaspora.php:324
 msgid "Diaspora post failed. Queued for retry."
-msgstr "Post Diaspora nie powiódł się. W kolejce do ponowienia."
+msgstr "Post do Diaspora nie powiódł się. W kolejce do ponowienia."
