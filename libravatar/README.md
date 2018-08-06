@@ -1,9 +1,6 @@
 # Libravatar Addon
 by [Klaus Weidenbach](http://friendica.dszdw.net/profile/klaus)
 
-**Please note that [the Libravatar service will shut down on 2018-09-01:](https://blog.libravatar.org/posts/Libravatar.org_is_shutting_down_on_2018-09-01/).**
-You maybe want to switch to the catavatar or gravatar addon.
-
 This addon allows you to look up an avatar image for new users and contacts at [Libravatar](http://www.libravatar.com). It will be used if there have not been found any other avatar images yet for example through OpenID.
 
 Libravatar is a free and open replacement for Gravatar. It is a service where people can store an avatar image for their email-addresses. These avatar images can get looked up for example in comment functions, profile pages, etc. on other sites. There exists a central installation at [www.libravatar.com](http://www.libravatar.com), but you can also host it on your own server. If no avatar was found Libravatar will look up at Gravatar as a fallback.
