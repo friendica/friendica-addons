@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-27 07:21+0200\n"
-"PO-Revision-Date: 2018-04-01 14:57+0000\n"
+"PO-Revision-Date: 2018-08-04 12:18+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -36,7 +36,7 @@ msgstr "Nie mogliśmy skontaktować się z GNU Social API z wprowadzoną ścież
 
 #: statusnet.php:259
 msgid "GNU Social settings updated."
-msgstr "Ustawienia społeczności GNU zaktualizowane."
+msgstr "Zaktualizowano ustawienia społeczności GNU."
 
 #: statusnet.php:294 statusnet.php:298
 msgid "GNU Social Import/Export/Mirror"
@@ -97,7 +97,7 @@ msgstr "Zaloguj się za pomocą GNU Social"
 
 #: statusnet.php:359
 msgid "Copy the security code from GNU Social here"
-msgstr "Skopiuj kod bezpieczeństwa z GNU Social tutaj"
+msgstr "Skopiuj tutaj kod bezpieczeństwa z GNU Social"
 
 #: statusnet.php:365
 msgid "Cancel Connection Process"
@@ -120,7 +120,7 @@ msgid ""
 "If enabled all your <strong>public</strong> postings can be posted to the "
 "associated GNU Social account. You can choose to do so by default (here) or "
 "for every posting separately in the posting options when writing the entry."
-msgstr "Jeśli ta opcja jest włączona, wszystkie twoje <strong>publiczne</strong> ogłoszenia mogą zostać wysłane na powiązane konto społecznościowe GNU. Możesz to zrobić domyślnie (tutaj) lub dla każdego księgowania osobno w opcjach księgowania podczas pisania wpisu."
+msgstr "Jeśli ta opcja jest włączona, wszystkie twoje <strong>publiczne</strong> ogłoszenia mogą zostać wysłane na powiązane konto społecznościowe GNU. Możesz to zrobić domyślnie (tutaj) lub dla każdego komentarza osobno w opcjach komentarza podczas pisania wpisu."
 
 #: statusnet.php:382
 msgid ""
@@ -128,7 +128,7 @@ msgid ""
 "details from unknown viewers?</em>) the link potentially included in public "
 "postings relayed to GNU Social will lead the visitor to a blank page "
 "informing the visitor that the access to your profile has been restricted."
-msgstr "<strong>Uwaga</strong>: Ze względu na twoje ustawienia prywatności (<em>Ukryć dane swojego profilu od nieznanych widzów?</em>) Link potencjalnie zawarty w publicznych ogłoszeniach przekazywanych do GNU Social poprowadzi użytkownika do pustej strony informującej gościa, że ​​dostęp do twojego profilu został ograniczony."
+msgstr "<strong>Uwaga</strong>: Ze względu na ustawienia prywatności (<em>Ukryć szczegóły Twojego profilu, przed nieznanymi użytkownikami?</em>) link potencjalnie zawarty w publicznych komentarzach do Twitter doprowadzi użytkownika do pustej strony informowania odwiedzających, że dostęp do Twojego profilu został ograniczony."
 
 #: statusnet.php:385
 msgid "Allow posting to GNU Social"
@@ -145,7 +145,7 @@ msgstr "Odblokuj wszystkie posty z GNU Social, które nie są odpowiedziami lub 
 
 #: statusnet.php:398
 msgid "Import the remote timeline"
-msgstr "Zaimportuj zdalną oś czasu"
+msgstr "Zaimportuj na zdalnej oś czasu"
 
 #: statusnet.php:402
 msgid "Disabled"
