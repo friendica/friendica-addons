@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-02 10:25+0700\n"
-"PO-Revision-Date: 2018-06-07 20:39+0000\n"
+"PO-Revision-Date: 2018-08-04 11:52+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -31,7 +31,7 @@ msgstr "Przesłałeś pusty kod PIN, zaloguj się ponownie na Twitterze, aby otr
 
 #: twitter.php:263
 msgid "Twitter settings updated."
-msgstr "Zaktualizowano ustawienia Twittera."
+msgstr "Zaktualizowano ustawienia Twitter."
 
 #: twitter.php:293 twitter.php:297
 msgid "Twitter Import/Export/Mirror"
@@ -50,11 +50,11 @@ msgid ""
 "button below to get a PIN from Twitter which you have to copy into the input"
 " box below and submit the form. Only your <strong>public</strong> posts will"
 " be posted to Twitter."
-msgstr "W tej instancji Friendica dodatek do Twittera został włączony, ale jeszcze nie podłączyłeś swojego konta do konta na Twitterze. Aby to zrobić, kliknij przycisk poniżej, aby uzyskać numer PIN z Twittera, który musisz skopiować do poniższego pola wprowadzania i przesłać formularz. Tylko twoje <strong>publiczne</strong> posty będą publikowane na Twitterze."
+msgstr "W tej instancji Friendica dodatek do Twittera został włączony, ale jeszcze nie podłączyłeś swojego konta do konta na Twitterze. Aby to zrobić, kliknij przycisk poniżej, aby uzyskać numer PIN z Twittera, który musisz skopiować do poniższego pola wprowadzania i przesłać formularz. Tylko Twoje <strong>publiczne</strong> posty będą publikowane na Twitterze."
 
 #: twitter.php:317
 msgid "Log in with Twitter"
-msgstr "Zaloguj się przez Twittera"
+msgstr "Zaloguj się przez Twitter"
 
 #: twitter.php:319
 msgid "Copy the PIN from Twitter here"
@@ -81,7 +81,7 @@ msgid ""
 "If enabled all your <strong>public</strong> postings can be posted to the "
 "associated Twitter account. You can choose to do so by default (here) or for"
 " every posting separately in the posting options when writing the entry."
-msgstr "Jeśli ta opcja jest włączona, wszystkie twoje <strong>publiczne</strong> ogłoszenia mogą być wysyłane na powiązane konto Twitter. Możesz to zrobić domyślnie (tutaj) lub dla każdego księgowania osobno w opcjach księgowania podczas pisania wpisu."
+msgstr "Jeśli ta opcja jest włączona, wszystkie twoje <strong>publiczne</strong> ogłoszenia mogą być wysyłane na powiązane konto Twitter. Możesz to zrobić domyślnie (tutaj) lub dla każdego komentarza osobno w opcjach komentarza podczas pisania wpisu."
 
 #: twitter.php:350
 msgid ""
@@ -89,7 +89,7 @@ msgid ""
 "details from unknown viewers?</em>) the link potentially included in public "
 "postings relayed to Twitter will lead the visitor to a blank page informing "
 "the visitor that the access to your profile has been restricted."
-msgstr "<strong>Uwaga</strong>: Ze względu na ustawienia prywatności (<em>Ukryć szczegóły swojego profilu, od nieznanego widzom?</em>) link potencjalnie zawarty w publicznych komentarzach do Twitter doprowadzi użytkownika do pustej strony informowania odwiedzających, że dostęp do Twojego profilu został ograniczony."
+msgstr "<strong>Uwaga</strong>: Ze względu na ustawienia prywatności (<em>Ukryć szczegóły Twojego profilu, przed nieznanymi użytkownikami?</em>) link potencjalnie zawarty w publicznych komentarzach do Twitter doprowadzi użytkownika do pustej strony informowania odwiedzających, że dostęp do Twojego profilu został ograniczony."
 
 #: twitter.php:353
 msgid "Send public postings to Twitter by default"
