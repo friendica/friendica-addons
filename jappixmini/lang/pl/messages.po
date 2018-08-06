@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-01 15:59+0000\n"
+"PO-Revision-Date: 2018-08-04 11:37+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgstr "<em>Nie</em> wstawiaj widżetu czatu Jappixmini do interfejsu WWW"
 
 #: jappixmini.php:274
 msgid "Jabber username"
-msgstr "Jabber nazwa użytkownika"
+msgstr "Nazwa użytkownika Jabber"
 
 #: jappixmini.php:277
 msgid "Jabber server"
@@ -58,7 +58,7 @@ msgstr "Hasło Friendica"
 
 #: jappixmini.php:296
 msgid "Approve subscription requests from Friendica contacts automatically"
-msgstr "Automatycznie zatwierdzaj prośby o subskrypcję od kontaktów z Friendica"
+msgstr "Subskrybuj automatycznie kontakty z Friendica"
 
 #: jappixmini.php:299
 msgid "Subscribe to Friendica contacts automatically"
