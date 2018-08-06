@@ -1,10 +1,14 @@
 <?php
 
-$a->strings["\"Blockem\" Settings"] = "";
-$a->strings["Comma separated profile URLS to block"] = "";
-$a->strings["Submit"] = "Potwierdź";
-$a->strings["BLOCKEM Settings saved."] = "";
-$a->strings["Blocked %s - Click to open/close"] = "";
-$a->strings["Unblock Author"] = "Odblokuj autora";
-$a->strings["Block Author"] = "Zablokuj autora";
-$a->strings["blockem settings updated"] = "";
+if(! function_exists("string_plural_select_pl")) {
+function string_plural_select_pl($n){
+	$n = intval($n);
+	return ($n==1 ? 0 : ($n%10>=2 && $n%10<=4) && ($n%100<12 || $n%100>14) ? 1 : $n!=1 && ($n%10>=0 && $n%10<=1) || ($n%10>=5 && $n%10<=9) || ($n%100>=12 && $n%100<=14) ? 2 : 3);;
+}}
+;
+$a->strings["\"Superblock\""] = "\"Superblock\"";
+$a->strings["Comma separated profile URLS to block"] = "Oddzielone przecinkami adresy URL profilu do zablokowania";
+$a->strings["Save Settings"] = "Zapisz ustawienia";
+$a->strings["SUPERBLOCK Settings saved."] = "SUPERBLOCK Zapisano ustawienia.";
+$a->strings["Block Completely"] = "Całkowicie zablokuj";
+$a->strings["superblock settings updated"] = "zaktualizowano ustawienia superblock";
