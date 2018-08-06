@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-18 20:38+0000\n"
+"PO-Revision-Date: 2018-08-04 11:41+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -48,7 +48,7 @@ msgid ""
 "Libravatar addon is installed, too. Please disable Libravatar addon or this "
 "Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if "
 "nothing was found at Libravatar."
-msgstr "Zainstalowany jest także dodatek Libravatar. Wyłącz dodatek Libravatar lub ten dodatek Gravatar.<br> Dodatek Libravatar powróci do Gravatar, jeśli w Libravatar nie zostanie znaleziony żaden przedmiot."
+msgstr "Zainstalowany jest także dodatek Libravatar. Wyłącz dodatek Libravatar lub dodatek Gravatar.<br> Dodatek Libravatar powróci do Gravatar, jeśli w Libravatar nie zostanie znaleziony żaden przedmiot."
 
 #: gravatar.php:95
 msgid "Submit"
@@ -68,7 +68,7 @@ msgstr "Ocena zdjęć"
 
 #: gravatar.php:97
 msgid "Select the appropriate avatar rating for your site. See README"
-msgstr "Wybierz odpowiednią ocenę awataru dla swojej witryny. Zobacz README"
+msgstr "Wybierz odpowiednią ocenę awatara dla swojej witryny. Zobacz README"
 
 #: gravatar.php:111
 msgid "Gravatar settings updated."
