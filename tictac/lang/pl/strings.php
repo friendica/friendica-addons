@@ -2,11 +2,12 @@
 
 if(! function_exists("string_plural_select_pl")) {
 function string_plural_select_pl($n){
+	$n = intval($n);
 	return ($n==1 ? 0 : ($n%10>=2 && $n%10<=4) && ($n%100<12 || $n%100>14) ? 1 : $n!=1 && ($n%10>=0 && $n%10<=1) || ($n%10>=5 && $n%10<=9) || ($n%100>=12 && $n%100<=14) ? 2 : 3);;
 }}
 ;
 $a->strings["Three Dimensional Tic-Tac-Toe"] = "Trójwymiarowe Kółko i Krzyżyk";
-$a->strings["3D Tic-Tac-Toe"] = "3D Kółko i krzyżyk";
+$a->strings["3D Tic-Tac-Toe"] = "3D Kółko i Krzyżyk";
 $a->strings["New game"] = "Nowa gra";
 $a->strings["New game with handicap"] = "Nowa gra z handicapem";
 $a->strings["Three dimensional tic-tac-toe is just like the traditional game except that it is played on multiple levels simultaneously. "] = "Zasady gry w Trójwymiarowe Kółko i Krzyżyk są takie same jak w tradycyjnej grze, z tym wyjątkiem, że gra się na wielu poziomach jednocześnie.";
