@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-04-01 14:37+0000\n"
+"PO-Revision-Date: 2018-08-05 15:27+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: libravatar.php:14
 msgid "Could NOT install Libravatar successfully.<br>It requires PHP >= 5.3"
-msgstr "Nie można zainstalować Libravatar pomyślnie. <br>Wymaga PHP> = 5.3"
+msgstr "Nie można zainstalować dodatku Libravatar. <br>Wymaga PHP> = 5.3"
 
 #: libravatar.php:73
 msgid "generic profile image"
@@ -37,7 +37,7 @@ msgstr "twarz potwora"
 
 #: libravatar.php:76
 msgid "computer generated face"
-msgstr "wygenerowane komputerowo twarz"
+msgstr "twarz wygenerowana komputerowo"
 
 #: libravatar.php:77
 msgid "retro arcade style face"
@@ -50,7 +50,7 @@ msgstr "Ostrzeżenie"
 #: libravatar.php:83
 #, php-format
 msgid "Your PHP version %s is lower than the required PHP >= 5.3."
-msgstr "Twoja wersja PHP %s jest niższa niż wymagany PHP> = 5.3."
+msgstr "Twoja wersja PHP %s jest niższa niż wymagana PHP> = 5.3."
 
 #: libravatar.php:84
 msgid "This addon is not functional on your server."
@@ -69,7 +69,7 @@ msgstr "Dodatek Gravatar jest zainstalowany. Wyłącz dodatek Gravatar. Dodatek 
 
 #: libravatar.php:99
 msgid "Submit"
-msgstr "Wyślij"
+msgstr "Prześlij"
 
 #: libravatar.php:100
 msgid "Default avatar image"
