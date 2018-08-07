@@ -30,99 +30,91 @@ function morechoice_uninstall() {
 
 }
 
-// We aren't going to bother translating these to other languages.
-
 function morechoice_gender_selector($a,&$b) {
-	if(Config::get('system', 'language') == 'en') {
-		$b[] = 'Androgyne';
-		$b[] = 'Bear';
-		$b[] = 'Bigender';
-		$b[] = 'Cross dresser';
-		$b[] = 'Drag queen';
-		$b[] = 'Eunuch';
-		$b[] = 'Faux queen';
-		$b[] = 'Gender fluid';
-		$b[] = 'Kathoey';
-		$b[] = 'Lady';
-		$b[] = 'Lipstick lesbian';
-		$b[] = 'Metrosexual';
-		$b[] = 'Monk';
-		$b[] = 'Nun';
-		$b[] = 'Soft butch';
-		$b[] = 'Stone femme';
-		$b[] = 'Tomboy';
-		$b[] = 'Transman';
-		$b[] = 'Transwoman';
-		$b[] = 'Transvesti';
-		$b[] = 'Trigender';
-		$b[] = 'Can\'t remember';
-		$b[] = 'Hard to tell these days';
-	}
+	$b[] = L10n::t('Androgyne');
+	$b[] = L10n::t('Bear');
+	$b[] = L10n::t('Bigender');
+	$b[] = L10n::t('Cross dresser');
+	$b[] = L10n::t('Drag queen');
+	$b[] = L10n::t('Eunuch');
+	$b[] = L10n::t('Faux queen');
+	$b[] = L10n::t('Gender fluid');
+	$b[] = L10n::t('Kathoey');
+	$b[] = L10n::t('Lady');
+	$b[] = L10n::t('Lipstick lesbian');
+	$b[] = L10n::t('Metrosexual');
+	$b[] = L10n::t('Monk');
+	$b[] = L10n::t('Nun');
+	$b[] = L10n::t('Soft butch');
+	$b[] = L10n::t('Stone femme');
+	$b[] = L10n::t('Tomboy');
+	$b[] = L10n::t('Transman');
+	$b[] = L10n::t('Transwoman');
+	$b[] = L10n::t('Transvesti');
+	$b[] = L10n::t('Trigender');
+	$b[] = L10n::t('Can\'t remember');
+	$b[] = L10n::t('Hard to tell these days');
 }
 
 function morechoice_sexpref_selector($a,&$b) {
-	if(Config::get('system', 'language') == 'en') {
-		$b[] = 'Girls with big tits';
-		$b[] = 'Millionaires';
-		$b[] = 'Guys with big schlongs';
-		$b[] = 'Easy women';
-		$b[] = 'People with impaired mobility';
-		$b[] = 'Amputees';
-		$b[] = 'Statues, mannequins and immobility';
-		$b[] = 'Pain';
-		$b[] = 'Trans men';
-		$b[] = 'Older women';
-		$b[] = 'Asphyxiation';
-		$b[] = 'In public';
-		$b[] = 'In danger';
-		$b[] = 'Pretending to be male';
-		$b[] = 'Pretending to be female';
-		$b[] = 'Breats';
-		$b[] = 'Scat';
-		$b[] = 'Crying';
-		$b[] = 'Nappies/Diapers';
-		$b[] = 'Trees';
-		$b[] = 'Vomit';
-		$b[] = 'Murder';
-		$b[] = 'Fat people';
-		$b[] = 'Feet';
-		$b[] = 'Covered in insects';
-		$b[] = 'Turning a human being into furniture';
-		$b[] = 'Elderly people';
-		$b[] = 'Transgender people';
-		$b[] = 'Criminals';
-		$b[] = 'Stealing';
-		$b[] = 'Breast milk';
-		$b[] = 'Immersing genitals in liquids';
-		$b[] = 'Giants';
-		$b[] = 'Masochism';
-		$b[] = 'Cars';
-		$b[] = 'Menstruation';
-		$b[] = 'Mucus';
-		$b[] = 'Obscene language';
-		$b[] = 'Noses';
-		$b[] = 'Navels';
-		$b[] = 'Corpses';
-		$b[] = 'Smells';
-		$b[] = 'Buttocks';
-		$b[] = 'Nonliving objects';
-		$b[] = 'Sleeping people';
-		$b[] = 'Urination';
-		$b[] = 'Eating people';
-		$b[] = 'Being eaten';
-		$b[] = 'Animals';
-		$b[] = 'I\'d rather just have some chocolate';
-	}
+	$b[] = L10n::t('Girls with big tits');
+	$b[] = L10n::t('Millionaires');
+	$b[] = L10n::t('Guys with big schlongs');
+	$b[] = L10n::t('Easy women');
+	$b[] = L10n::t('People with impaired mobility');
+	$b[] = L10n::t('Amputees');
+	$b[] = L10n::t('Statues, mannequins and immobility');
+	$b[] = L10n::t('Pain');
+	$b[] = L10n::t('Trans men');
+	$b[] = L10n::t('Older women');
+	$b[] = L10n::t('Asphyxiation');
+	$b[] = L10n::t('In public');
+	$b[] = L10n::t('In danger');
+	$b[] = L10n::t('Pretending to be male');
+	$b[] = L10n::t('Pretending to be female');
+	$b[] = L10n::t('Breats');
+	$b[] = L10n::t('Scat');
+	$b[] = L10n::t('Crying');
+	$b[] = L10n::t('Nappies/Diapers');
+	$b[] = L10n::t('Trees');
+	$b[] = L10n::t('Vomit');
+	$b[] = L10n::t('Murder');
+	$b[] = L10n::t('Fat people');
+	$b[] = L10n::t('Feet');
+	$b[] = L10n::t('Covered in insects');
+	$b[] = L10n::t('Turning a human being into furniture');
+	$b[] = L10n::t('Elderly people');
+	$b[] = L10n::t('Transgender people');
+	$b[] = L10n::t('Criminals');
+	$b[] = L10n::t('Stealing');
+	$b[] = L10n::t('Breast milk');
+	$b[] = L10n::t('Immersing genitals in liquids');
+	$b[] = L10n::t('Giants');
+	$b[] = L10n::t('Masochism');
+	$b[] = L10n::t('Cars');
+	$b[] = L10n::t('Menstruation');
+	$b[] = L10n::t('Mucus');
+	$b[] = L10n::t('Obscene language');
+	$b[] = L10n::t('Noses');
+	$b[] = L10n::t('Navels');
+	$b[] = L10n::t('Corpses');
+	$b[] = L10n::t('Smells');
+	$b[] = L10n::t('Buttocks');
+	$b[] = L10n::t('Nonliving objects');
+	$b[] = L10n::t('Sleeping people');
+	$b[] = L10n::t('Urination');
+	$b[] = L10n::t('Eating people');
+	$b[] = L10n::t('Being eaten');
+	$b[] = L10n::t('Animals');
+	$b[] = L10n::t('I\'d rather just have some chocolate');
 }
 
 function morechoice_marital_selector($a,&$b) {
-	if(Config::get('system', 'language') == 'en') {
-		$b[] = 'Married to my job';
-		$b[] = 'Polygamist';
-		$b[] = 'Half married';
-		$b[] = 'Living in the past';
-		$b[] = 'Pretending to be over my ex';
-		$b[] = 'Hurt in the past';
-		$b[] = 'Wallowing in self-pity';
-	}
+	$b[] = L10n::t('Married to my job');
+	$b[] = L10n::t('Polygamist');
+	$b[] = L10n::t('Half married');
+	$b[] = L10n::t('Living in the past');
+	$b[] = L10n::t('Pretending to be over my ex');
+	$b[] = L10n::t('Hurt in the past');
+	$b[] = L10n::t('Wallowing in self-pity');
 }
