@@ -1499,7 +1499,7 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 
 	$posts = [];
 
-	while ($post->in_reply_to_status_id_str != "") {
+	while (!empty($post->in_reply_to_status_id_str)) {
 		$parameters = ["trim_user" => false, "tweet_mode" => "extended", "id" => $post->in_reply_to_status_id_str];
 
 		try {
