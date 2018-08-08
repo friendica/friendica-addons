@@ -1169,7 +1169,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 					//$dontincludemedia = true;
 					$type = $oembed_data->type;
 					$footerurl = $expanded_url;
-					$footerlink = "[url=" . $expanded_url . "]" . $expanded_url . "[/url]";
+					$footerlink = "[url=" . $expanded_url . "]" . $url->display_url . "[/url]";
 
 					$body = str_replace($url->url, $footerlink, $body);
 					//} elseif (($oembed_data->type == "photo") AND isset($oembed_data->url) AND !$dontincludemedia) {
@@ -1177,7 +1177,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 					$body = str_replace($url->url, "[url=" . $expanded_url . "][img]" . $oembed_data->url . "[/img][/url]", $body);
 					//$dontincludemedia = true;
 				} elseif ($oembed_data->type != "link") {
-					$body = str_replace($url->url, "[url=" . $expanded_url . "]" . $expanded_url . "[/url]", $body);
+					$body = str_replace($url->url, "[url=" . $expanded_url . "]" . $url->display_url . "[/url]", $body);
 				} else {
 					$img_str = Network::fetchUrl($expanded_url, true, $redirects, 4);
 
@@ -1200,7 +1200,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 					} else {
 						$type = $oembed_data->type;
 						$footerurl = $expanded_url;
-						$footerlink = "[url=" . $expanded_url . "]" . $expanded_url . "[/url]";
+						$footerlink = "[url=" . $expanded_url . "]" . $url->display_url . "[/url]";
 
 						$body = str_replace($url->url, $footerlink, $body);
 					}
