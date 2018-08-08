@@ -11,31 +11,32 @@ use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 
-function showmore_install() {
+function showmore_install()
+{
 	Addon::registerHook('prepare_body', 'addon/showmore/showmore.php', 'showmore_prepare_body');
 	Addon::registerHook('addon_settings', 'addon/showmore/showmore.php', 'showmore_addon_settings');
 	Addon::registerHook('addon_settings_post', 'addon/showmore/showmore.php', 'showmore_addon_settings_post');
 }
 
-function showmore_uninstall() {
+function showmore_uninstall()
+{
 	Addon::unregisterHook('prepare_body', 'addon/showmore/showmore.php', 'showmore_prepare_body');
 	Addon::unregisterHook('addon_settings', 'addon/showmore/showmore.php', 'showmore_addon_settings');
 	Addon::unregisterHook('addon_settings_post', 'addon/showmore/showmore.php', 'showmore_addon_settings_post');
 }
 
-function showmore_addon_settings(&$a,&$s) {
-
-	if(! local_user())
+function showmore_addon_settings(&$a, &$s)
+{
+	if (!local_user()) {
 		return;
+	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
 	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->get_baseurl().'/addon/showmore/showmore.css'.'" media="all"/>'."\r\n";
 
-	$enable_checked = (intval(PConfig::get(local_user(),'showmore','disable')) ? '' : ' checked="checked"');
-	$chars = PConfig::get(local_user(),'showmore','chars');
-	if(!$chars)
-		$chars = '1100';
+	$enable_checked = (intval(PConfig::get(local_user(), 'showmore', 'disable')) ? '' : ' checked="checked"');
+	$chars = PConfig::get(local_user(), 'showmore', 'chars', 1100);
 
 	$s .= '<span id="settings_showmore_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_showmore_expanded\'); openClose(\'settings_showmore_inflated\');">';
 	$s .= '<h3>' . L10n::t('"Show more" Settings').'</h3>';
@@ -61,25 +62,27 @@ function showmore_addon_settings(&$a,&$s) {
 	return;
 }
 
-function showmore_addon_settings_post(&$a,&$b) {
-
-	if(! local_user())
+function showmore_addon_settings_post(&$a, &$b)
+{
+	if (!local_user()) {
 		return;
+	}
 
-	if($_POST['showmore-submit']) {
-		PConfig::set(local_user(),'showmore','chars',trim($_POST['showmore-chars']));
-		$enable = ((x($_POST,'showmore-enable')) ? intval($_POST['showmore-enable']) : 0);
+	if (!empty($_POST['showmore-submit'])) {
+		PConfig::set(local_user(), 'showmore', 'chars', trim($_POST['showmore-chars']));
+		$enable = (x($_POST, 'showmore-enable') ? intval($_POST['showmore-enable']) : 0);
 		$disable = 1-$enable;
-		PConfig::set(local_user(),'showmore','disable', $disable);
+		PConfig::set(local_user(), 'showmore', 'disable', $disable);
 		info(L10n::t('Show More Settings saved.') . EOL);
 	}
 }
 
-function get_body_length($body) {
+function get_body_length($body)
+{
 	$string = trim($body);
 
 	// DomDocument doesn't like empty strings
-	if(! strlen($string)) {
+	if (!strlen($string)) {
 		return 0;
 	}
 
@@ -94,8 +97,8 @@ function get_body_length($body) {
 	 * So we just get any element with a style attribute, and check them with a regexp
 	 */
 	$xr = $xpath->query('//*[@style]');
-	foreach($xr as $node) {
-		if(preg_match('/.*display: *none *;.*/',$node->getAttribute('style'))) {
+	foreach ($xr as $node) {
+		if (preg_match('/.*display: *none *;.*/',$node->getAttribute('style'))) {
 			// Hidden, remove it from its parent
 			$node->parentNode->removeChild($node);
 		}
@@ -118,10 +121,7 @@ function showmore_prepare_body(\Friendica\App $a, &$hook_data)
 		return;
 	}
 
-	$chars = (int) PConfig::get(local_user(), 'showmore', 'chars');
-	if (!$chars) {
-		$chars = 1100;
-	}
+	$chars = (int) PConfig::get(local_user(), 'showmore', 'chars', 1100);
 
 	if (get_body_length($hook_data['html']) > $chars) {
 		$found = true;
@@ -138,7 +138,8 @@ function showmore_prepare_body(\Friendica\App $a, &$hook_data)
 	}
 }
 
-function showmore_cutitem($text, $limit) {
+function showmore_cutitem($text, $limit)
+{
 	$text = trim($text);
 
 	$text = mb_convert_encoding($text, 'HTML-ENTITIES', "UTF-8");
@@ -167,5 +168,5 @@ function showmore_cutitem($text, $limit) {
 	$text = $doc->saveHTML();
 	$text = str_replace(["<html><body>", "</body></html>", $doctype], ["", "", ""], $text);
 
-	return($text);
+	return $text;
 }

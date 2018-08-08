@@ -16,21 +16,21 @@ function startpage_install() {
 	Addon::registerHook('addon_settings_post', 'addon/startpage/startpage.php', 'startpage_settings_post');
 }
 
-
-function startpage_uninstall() {
+function startpage_uninstall()
+{
 	Addon::unregisterHook('home_init', 'addon/startpage/startpage.php', 'startpage_home_init');
 	Addon::unregisterHook('addon_settings', 'addon/startpage/startpage.php', 'startpage_settings');
 	Addon::unregisterHook('addon_settings_post', 'addon/startpage/startpage.php', 'startpage_settings_post');
 }
 
-
-
-function startpage_home_init($a, $b) {
-	if(! local_user())
+function startpage_home_init($a, $b)
+{
+	if (!local_user()) {
 		return;
+	}
 
-	$page = PConfig::get(local_user(),'startpage','startpage');
-	if(strlen($page)) {
+	$page = PConfig::get(local_user(), 'startpage', 'startpage');
+	if (strlen($page)) {
 		goaway($page);
 	}
 	return;
@@ -45,11 +45,15 @@ function startpage_home_init($a, $b) {
  *
  */
 
-function startpage_settings_post($a,$post) {
-	if(! local_user())
+function startpage_settings_post($a, $post)
+{
+	if (!local_user()) {
 		return;
-	if($_POST['startpage-submit'])
-		PConfig::set(local_user(),'startpage','startpage',strip_tags(trim($_POST['startpage'])));
+	}
+
+	if (!empty($_POST['startpage-submit'])) {
+		PConfig::set(local_user(), 'startpage', 'startpage', strip_tags(trim($_POST['startpage'])));
+	}
 }
 
 /**
@@ -58,10 +62,11 @@ function startpage_settings_post($a,$post) {
  * Add our own settings info to the page.
  *
  */
-function startpage_settings(&$a,&$s) {
-
-	if(! local_user())
+function startpage_settings(&$a, &$s)
+{
+	if (!local_user()) {
 		return;
+	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
@@ -69,8 +74,7 @@ function startpage_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$page = PConfig::get(local_user(),'startpage','startpage');
-
+	$page = PConfig::get(local_user(), 'startpage', 'startpage');
 
 	/* Add some HTML to the existing form */
 
@@ -90,5 +94,4 @@ function startpage_settings(&$a,&$s) {
 	/* provide a submit button */
 
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="startpage-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
-
 }
