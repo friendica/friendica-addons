@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * Name: superblock
  * Description: block people
@@ -12,34 +10,27 @@ use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 
-function superblock_install() {
-
+function superblock_install()
+{
 	Addon::registerHook('addon_settings', 'addon/superblock/superblock.php', 'superblock_addon_settings');
 	Addon::registerHook('addon_settings_post', 'addon/superblock/superblock.php', 'superblock_addon_settings_post');
 	Addon::registerHook('conversation_start', 'addon/superblock/superblock.php', 'superblock_conversation_start');
 	Addon::registerHook('item_photo_menu', 'addon/superblock/superblock.php', 'superblock_item_photo_menu');
 	Addon::registerHook('enotify_store', 'addon/superblock/superblock.php', 'superblock_enotify_store');
-
 }
 
-
-function superblock_uninstall() {
-
+function superblock_uninstall()
+{
 	Addon::unregisterHook('addon_settings', 'addon/superblock/superblock.php', 'superblock_addon_settings');
 	Addon::unregisterHook('addon_settings_post', 'addon/superblock/superblock.php', 'superblock_addon_settings_post');
 	Addon::unregisterHook('conversation_start', 'addon/superblock/superblock.php', 'superblock_conversation_start');
 	Addon::unregisterHook('item_photo_menu', 'addon/superblock/superblock.php', 'superblock_item_photo_menu');
 	Addon::unregisterHook('enotify_store', 'addon/superblock/superblock.php', 'superblock_enotify_store');
-
 }
 
-
-
-
-
-function superblock_addon_settings(&$a,&$s) {
-
-	if(! local_user()) {
+function superblock_addon_settings(&$a, &$s)
+{
+	if (!local_user()) {
 		return;
 	}
 
@@ -47,8 +38,8 @@ function superblock_addon_settings(&$a,&$s) {
 
 	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/superblock/superblock.css' . '" media="all" />' . "\r\n";
 
-	$words = PConfig::get(local_user(),'system','blocked');
-	if(! $words) {
+	$words = PConfig::get(local_user(), 'system', 'blocked');
+	if (!$words) {
 		$words = '';
 	}
 
@@ -69,54 +60,55 @@ function superblock_addon_settings(&$a,&$s) {
 	return;
 }
 
-function superblock_addon_settings_post(&$a,&$b) {
-
-	if(! local_user())
+function superblock_addon_settings_post(&$a, &$b)
+{
+	if (!local_user()) {
 		return;
+	}
 
-	if($_POST['superblock-submit']) {
-		PConfig::set(local_user(),'system','blocked',trim($_POST['superblock-words']));
+	if (!empty($_POST['superblock-submit'])) {
+		PConfig::set(local_user(), 'system', 'blocked',trim($_POST['superblock-words']));
 		info(L10n::t('SUPERBLOCK Settings saved.') . EOL);
 	}
 }
 
 function superblock_enotify_store(&$a,&$b) {
 
-	$words = PConfig::get($b['uid'],'system','blocked');
-	if($words) {
-		$arr = explode(',',$words);
-	}
-	else {
+	$words = PConfig::get($b['uid'], 'system', 'blocked');
+	if ($words) {
+		$arr = explode(',', $words);
+	} else {
 		return;
 	}
 
 	$found = false;
-	if(count($arr)) {
-		foreach($arr as $word) {
-			if(! strlen(trim($word))) {
+	if (count($arr)) {
+		foreach ($arr as $word) {
+			if (!strlen(trim($word))) {
 				continue;
 			}
 
-			if(link_compare($b['url'],$word)) {
+			if (link_compare($b['url'], $word)) {
 				$found = true;
 				break;
 			}
 		}
 	}
-	if($found) {
+	if ($found) {
 		$b['abort'] = true;
 	}
 }
 
 
-function superblock_conversation_start(&$a,&$b) {
-
-	if(! local_user())
+function superblock_conversation_start(&$a, &$b)
+{
+	if (!local_user()) {
 		return;
+	}
 
-	$words = PConfig::get(local_user(),'system','blocked');
-	if($words) {
-		$a->data['superblock'] = explode(',',$words);
+	$words = PConfig::get(local_user(), 'system', 'blocked');
+	if ($words) {
+		$a->data['superblock'] = explode(',', $words);
 	}
 	$a->page['htmlhead'] .= <<< EOT
 
@@ -132,16 +124,17 @@ EOT;
 
 }
 
-function superblock_item_photo_menu(&$a,&$b) {
-
-	if((! local_user()) || ($b['item']['self']))
+function superblock_item_photo_menu(&$a, &$b)
+{
+	if (!local_user() || $b['item']['self']) {
 		return;
+	}
 
 	$blocked = false;
 	$author = $b['item']['author-link'];
-	if(!empty($a->data['superblock'])) {
-		foreach($a->data['superblock'] as $bloke) {
-			if(link_compare($bloke,$author)) {
+	if (!empty($a->data['superblock'])) {
+		foreach ($a->data['superblock'] as $bloke) {
+			if (link_compare($bloke, $author)) {
 				$blocked = true;
 				break;
 			}
@@ -154,20 +147,21 @@ function superblock_item_photo_menu(&$a,&$b) {
 function superblock_module() {}
 
 
-function superblock_init(&$a) {
-
-	if(! local_user())
+function superblock_init(&$a)
+{
+	if (!local_user()) {
 		return;
+	}
 
-	$words = PConfig::get(local_user(),'system','blocked');
+	$words = PConfig::get(local_user(), 'system', 'blocked');
 
-	if(array_key_exists('block',$_GET) && $_GET['block']) {
-		if(strlen($words))
+	if (array_key_exists('block', $_GET) && $_GET['block']) {
+		if (strlen($words))
 			$words .= ',';
 		$words .= trim($_GET['block']);
 	}
 
-	PConfig::set(local_user(),'system','blocked',$words);
+	PConfig::set(local_user(), 'system', 'blocked', $words);
 	info(L10n::t('superblock settings updated') . EOL );
 	killme();
 }

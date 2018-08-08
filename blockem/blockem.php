@@ -37,7 +37,7 @@ function blockem_uninstall()
 
 function blockem_addon_settings (App $a, &$s)
 {
-	if (! local_user()) {
+	if (!local_user()) {
 		return;
 	}
 
@@ -46,7 +46,7 @@ function blockem_addon_settings (App $a, &$s)
 
 	$words = PConfig::get(local_user(), 'blockem', 'words');
 
-	if (! $words) {
+	if (!$words) {
 		$words = '';
 	}
 
@@ -72,11 +72,11 @@ function blockem_addon_settings (App $a, &$s)
 
 function blockem_addon_settings_post(App $a, array &$b)
 {
-	if (! local_user()) {
+	if (!local_user()) {
 		return;
 	}
 
-	if ($_POST['blockem-submit']) {
+	if (!empty($_POST['blockem-submit'])) {
 		PConfig::set(local_user(), 'blockem', 'words', trim($_POST['blockem-words']));
 		info(L10n::t('BLOCKEM Settings saved.') . EOL);
 	}
@@ -153,7 +153,7 @@ function blockem_display_item(App $a, array &$b = null)
 
 function blockem_conversation_start(App $a, array &$b)
 {
-	if (! local_user()) {
+	if (!local_user()) {
 		return;
 	}
 
@@ -183,7 +183,7 @@ EOT;
 
 function blockem_item_photo_menu(App $a, array &$b)
 {
-	if ((! local_user()) || ($b['item']['self'])) {
+	if (!local_user() || $b['item']['self']) {
 		return;
 	}
 
@@ -211,7 +211,7 @@ function blockem_module()
 
 function blockem_init(App $a)
 {
-	if (! local_user()) {
+	if (!local_user()) {
 		return;
 	}
 
@@ -241,6 +241,6 @@ function blockem_init(App $a)
 	}
 
 	PConfig::set(local_user(), 'blockem', 'words', $words);
-	info(L10n::t('blockem settings updated') . EOL );
+	info(L10n::t('blockem settings updated') . EOL);
 	killme();
 }
