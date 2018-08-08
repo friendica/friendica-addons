@@ -1,0 +1,339 @@
+# ADDON morechoice
+# Copyright (C)
+# This file is distributed under the same license as the Friendica morechoice addon package.
+# 
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-08-07 15:04+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Jeroen De Meerleer <me@jeroened.be>, 2018\n"
+"Language-Team: Dutch (https://www.transifex.com/Friendica/teams/12172/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: morechoice.php:34
+msgid "Androgyne"
+msgstr "Dubbel geslacht"
+
+#: morechoice.php:35
+msgid "Bear"
+msgstr "Beer"
+
+#: morechoice.php:36
+msgid "Bigender"
+msgstr "Dubbel"
+
+#: morechoice.php:37
+msgid "Cross dresser"
+msgstr "Gekleed als het ander"
+
+#: morechoice.php:38
+msgid "Drag queen"
+msgstr "Travestiet"
+
+#: morechoice.php:39
+msgid "Eunuch"
+msgstr "Castraat"
+
+#: morechoice.php:40
+msgid "Faux queen"
+msgstr "Fout"
+
+#: morechoice.php:41
+msgid "Gender fluid"
+msgstr ""
+
+#: morechoice.php:42
+msgid "Kathoey"
+msgstr "Tussen man en vrouw"
+
+#: morechoice.php:43
+msgid "Lady"
+msgstr "Trotse vrouw"
+
+#: morechoice.php:44
+msgid "Lipstick lesbian"
+msgstr "Lesbienne-vrouw"
+
+#: morechoice.php:45
+msgid "Metrosexual"
+msgstr "Metrosexueel"
+
+#: morechoice.php:46
+msgid "Monk"
+msgstr "Monnik"
+
+#: morechoice.php:47
+msgid "Nun"
+msgstr "Non"
+
+#: morechoice.php:48
+msgid "Soft butch"
+msgstr "Lesbienne-man"
+
+#: morechoice.php:49
+msgid "Stone femme"
+msgstr "Butch en femme"
+
+#: morechoice.php:50
+msgid "Tomboy"
+msgstr "Tomboy"
+
+#: morechoice.php:51
+msgid "Transman"
+msgstr "Transman"
+
+#: morechoice.php:52
+msgid "Transwoman"
+msgstr "Transvrouw"
+
+#: morechoice.php:53
+msgid "Transvesti"
+msgstr ""
+
+#: morechoice.php:54
+msgid "Trigender"
+msgstr "Drieslacht"
+
+#: morechoice.php:55
+msgid "Can't remember"
+msgstr "Kan ik mij niet meer herinneren"
+
+#: morechoice.php:56
+msgid "Hard to tell these days"
+msgstr "Moeilijk te zeggen vandaag"
+
+#: morechoice.php:60
+msgid "Girls with big tits"
+msgstr "Meisjes met grote tetten"
+
+#: morechoice.php:61
+msgid "Millionaires"
+msgstr "Veel geld"
+
+#: morechoice.php:62
+msgid "Guys with big schlongs"
+msgstr "Groot geschapen"
+
+#: morechoice.php:63
+msgid "Easy women"
+msgstr "Gemakkelijke vrouwen"
+
+#: morechoice.php:64
+msgid "People with impaired mobility"
+msgstr "Mensen met beperkte mobiliteit"
+
+#: morechoice.php:65
+msgid "Amputees"
+msgstr "Geamputeerden"
+
+#: morechoice.php:66
+msgid "Statues, mannequins and immobility"
+msgstr "Standbeelden"
+
+#: morechoice.php:67
+msgid "Pain"
+msgstr "Pijn"
+
+#: morechoice.php:68
+msgid "Trans men"
+msgstr "Transmannen"
+
+#: morechoice.php:69
+msgid "Older women"
+msgstr "Oude vrouwen"
+
+#: morechoice.php:70
+msgid "Asphyxiation"
+msgstr "Verstikking"
+
+#: morechoice.php:71
+msgid "In public"
+msgstr "Publiek"
+
+#: morechoice.php:72
+msgid "In danger"
+msgstr "In gevaar"
+
+#: morechoice.php:73
+msgid "Pretending to be male"
+msgstr "Net zoals mannen"
+
+#: morechoice.php:74
+msgid "Pretending to be female"
+msgstr "Net als vrouwen"
+
+#: morechoice.php:75
+msgid "Breats"
+msgstr "Sletten"
+
+#: morechoice.php:76
+msgid "Scat"
+msgstr "Schoften"
+
+#: morechoice.php:77
+msgid "Crying"
+msgstr "Huilen"
+
+#: morechoice.php:78
+msgid "Nappies/Diapers"
+msgstr "Luiers"
+
+#: morechoice.php:79
+msgid "Trees"
+msgstr "Bomen"
+
+#: morechoice.php:80
+msgid "Vomit"
+msgstr "Braken"
+
+#: morechoice.php:81
+msgid "Murder"
+msgstr "Moord"
+
+#: morechoice.php:82
+msgid "Fat people"
+msgstr "Dikke mensen"
+
+#: morechoice.php:83
+msgid "Feet"
+msgstr "Voeten"
+
+#: morechoice.php:84
+msgid "Covered in insects"
+msgstr "Omhuld in insecten"
+
+#: morechoice.php:85
+msgid "Turning a human being into furniture"
+msgstr "Mensen veranderen in meubilair"
+
+#: morechoice.php:86
+msgid "Elderly people"
+msgstr "Oudere mensen"
+
+#: morechoice.php:87
+msgid "Transgender people"
+msgstr "Transgenders"
+
+#: morechoice.php:88
+msgid "Criminals"
+msgstr "Misdadigers"
+
+#: morechoice.php:89
+msgid "Stealing"
+msgstr "Stelen"
+
+#: morechoice.php:90
+msgid "Breast milk"
+msgstr "Moedermelk"
+
+#: morechoice.php:91
+msgid "Immersing genitals in liquids"
+msgstr "Vloeistofpenetratie"
+
+#: morechoice.php:92
+msgid "Giants"
+msgstr "Reuzen"
+
+#: morechoice.php:93
+msgid "Masochism"
+msgstr "Zelfpijniging"
+
+#: morechoice.php:94
+msgid "Cars"
+msgstr "Auto's"
+
+#: morechoice.php:95
+msgid "Menstruation"
+msgstr "Menstruatie"
+
+#: morechoice.php:96
+msgid "Mucus"
+msgstr "Slijm"
+
+#: morechoice.php:97
+msgid "Obscene language"
+msgstr "Grove taal"
+
+#: morechoice.php:98
+msgid "Noses"
+msgstr "Neuzen"
+
+#: morechoice.php:99
+msgid "Navels"
+msgstr "Navels"
+
+#: morechoice.php:100
+msgid "Corpses"
+msgstr "Lijken"
+
+#: morechoice.php:101
+msgid "Smells"
+msgstr "Geurtjes"
+
+#: morechoice.php:102
+msgid "Buttocks"
+msgstr "Konten"
+
+#: morechoice.php:103
+msgid "Nonliving objects"
+msgstr "Niet-levende objecten"
+
+#: morechoice.php:104
+msgid "Sleeping people"
+msgstr "Slapende mensen"
+
+#: morechoice.php:105
+msgid "Urination"
+msgstr "Plasseks"
+
+#: morechoice.php:106
+msgid "Eating people"
+msgstr "Eten"
+
+#: morechoice.php:107
+msgid "Being eaten"
+msgstr "Gegeten worden"
+
+#: morechoice.php:108
+msgid "Animals"
+msgstr "Dieren"
+
+#: morechoice.php:109
+msgid "I'd rather just have some chocolate"
+msgstr "Geef mij gewoon wat chocolade"
+
+#: morechoice.php:113
+msgid "Married to my job"
+msgstr "Getrouwd met m'n job"
+
+#: morechoice.php:114
+msgid "Polygamist"
+msgstr "Polygamist"
+
+#: morechoice.php:115
+msgid "Half married"
+msgstr "Half getrouwd"
+
+#: morechoice.php:116
+msgid "Living in the past"
+msgstr "Leef in het verleden"
+
+#: morechoice.php:117
+msgid "Pretending to be over my ex"
+msgstr "Doen alsof ik m'n ex ben vergeten"
+
+#: morechoice.php:118
+msgid "Hurt in the past"
+msgstr "Gekwest in het verleden"
+
+#: morechoice.php:119
+msgid "Wallowing in self-pity"
+msgstr "Terugtrekken in zelfmedelijden"
