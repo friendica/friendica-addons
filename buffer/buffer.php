@@ -191,6 +191,9 @@ function buffer_settings(App $a, &$s)
 		$s .= '<input id="buffer-delete" type="checkbox" name="buffer_delete" value="1" />';
 		$s .= '</div><div class="clear"></div>';
 
+		// The callback URL is the script that gets called after the user authenticates with buffer
+		$callback_url = $a->get_baseurl() . '/buffer/connect';
+
 		$buffer = new BufferApp($client_id, $client_secret, $callback_url, $access_token);
 
 		$profiles = $buffer->go('/profiles');
@@ -303,14 +306,6 @@ function buffer_send(App $a, array &$b)
 				$send = false;
 
 				switch ($profile->service) {
-					case 'appdotnet':
-						$send = ($b["extid"] != NETWORK_APPNET);
-						$limit = 256;
-						$markup = false;
-						$includedlinks = true;
-						$htmlmode = 6;
-						break;
-
 					case 'facebook':
 						$send = ($b["extid"] != NETWORK_FACEBOOK);
 						$limit = 0;
@@ -373,14 +368,8 @@ function buffer_send(App $a, array &$b)
 				}
 
 				// Seems like a bug to me
-				// Buffer doesn't add links to Twitter and App.net (but pictures)
+				// Buffer doesn't add links to Twitter (but pictures)
 				if (($profile->service == "twitter") && isset($post["url"]) && ($post["type"] != "photo")) {
-					$post["text"] .= " " . $post["url"];
-				} elseif (($profile->service == "appdotnet") && isset($post["url"]) && isset($post["title"]) && ($post["type"] != "photo")) {
-					$post["title"] = Plaintext::shorten($post["title"], 90);
-					$post["text"] = Plaintext::shorten($post["text"], $limit - (24 + strlen($post["title"])));
-					$post["text"] .= "\n[" . $post["title"] . "](" . $post["url"] . ")";
-				} elseif (($profile->service == "appdotnet") && isset($post["url"]) && ($post["type"] != "photo")) {
 					$post["text"] .= " " . $post["url"];
 				} elseif ($profile->service == "google") {
 					$post["text"] .= html_entity_decode("&#x00A0;", ENT_QUOTES, 'UTF-8'); // Send a special blank to identify the post through the "fromgplus" addon
