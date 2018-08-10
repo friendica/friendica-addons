@@ -11,7 +11,7 @@ class Diasphp {
 		$this->token_regex = '/content="(.*?)" name="csrf-token/';
 
 		$this->pod = $pod;
-		$this->cookiejar = tempnam(sys_get_temp_dir(), 'cookies');
+		$this->cookiejar = tempnam(get_temppath(), 'cookies');
 	}
 
 	function __destruct() {
