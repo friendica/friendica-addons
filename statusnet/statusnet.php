@@ -91,7 +91,9 @@ function statusnet_uninstall()
 
 function statusnet_check_item_notification(App $a, &$notification_data)
 {
-	$notification_data["profiles"][] = PConfig::get($notification_data["uid"], 'statusnet', 'own_url');
+	if (PConfig::get($notification_data["uid"], 'statusnet', 'post')) {
+		$notification_data["profiles"][] = PConfig::get($notification_data["uid"], 'statusnet', 'own_url');
+	}
 }
 
 function statusnet_jot_nets(App $a, &$b)
@@ -134,7 +136,7 @@ function statusnet_settings_post(App $a, $post)
 		PConfig::delete(local_user(), 'statusnet', 'mirror_posts');
 		PConfig::delete(local_user(), 'statusnet', 'import');
 		PConfig::delete(local_user(), 'statusnet', 'create_user');
-		PConfig::delete(local_user(), 'statusnet', 'own_id');
+		PConfig::delete(local_user(), 'statusnet', 'own_url');
 	} else {
 		if (isset($_POST['statusnet-preconf-apiurl'])) {
 			/*			 * *
