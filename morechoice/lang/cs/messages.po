@@ -1,0 +1,339 @@
+# ADDON morechoice
+# Copyright (C)
+# This file is distributed under the same license as the Friendica morechoice addon package.
+# 
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-08-07 15:04+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Aditoo, 2018\n"
+"Language-Team: Czech (https://www.transifex.com/Friendica/teams/12172/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
+
+#: morechoice.php:34
+msgid "Androgyne"
+msgstr "Androgyn"
+
+#: morechoice.php:35
+msgid "Bear"
+msgstr "Medvěd"
+
+#: morechoice.php:36
+msgid "Bigender"
+msgstr "Bigender"
+
+#: morechoice.php:37
+msgid "Cross dresser"
+msgstr "Crossdresser"
+
+#: morechoice.php:38
+msgid "Drag queen"
+msgstr ""
+
+#: morechoice.php:39
+msgid "Eunuch"
+msgstr ""
+
+#: morechoice.php:40
+msgid "Faux queen"
+msgstr ""
+
+#: morechoice.php:41
+msgid "Gender fluid"
+msgstr ""
+
+#: morechoice.php:42
+msgid "Kathoey"
+msgstr ""
+
+#: morechoice.php:43
+msgid "Lady"
+msgstr ""
+
+#: morechoice.php:44
+msgid "Lipstick lesbian"
+msgstr ""
+
+#: morechoice.php:45
+msgid "Metrosexual"
+msgstr ""
+
+#: morechoice.php:46
+msgid "Monk"
+msgstr "Mnich"
+
+#: morechoice.php:47
+msgid "Nun"
+msgstr "Jeptiška"
+
+#: morechoice.php:48
+msgid "Soft butch"
+msgstr ""
+
+#: morechoice.php:49
+msgid "Stone femme"
+msgstr ""
+
+#: morechoice.php:50
+msgid "Tomboy"
+msgstr ""
+
+#: morechoice.php:51
+msgid "Transman"
+msgstr "Transmuž"
+
+#: morechoice.php:52
+msgid "Transwoman"
+msgstr "Transžena"
+
+#: morechoice.php:53
+msgid "Transvesti"
+msgstr "Transvestita"
+
+#: morechoice.php:54
+msgid "Trigender"
+msgstr ""
+
+#: morechoice.php:55
+msgid "Can't remember"
+msgstr "Nepamatuju si"
+
+#: morechoice.php:56
+msgid "Hard to tell these days"
+msgstr "Těžké říct touhle dobou"
+
+#: morechoice.php:60
+msgid "Girls with big tits"
+msgstr ""
+
+#: morechoice.php:61
+msgid "Millionaires"
+msgstr "Milionáři"
+
+#: morechoice.php:62
+msgid "Guys with big schlongs"
+msgstr ""
+
+#: morechoice.php:63
+msgid "Easy women"
+msgstr ""
+
+#: morechoice.php:64
+msgid "People with impaired mobility"
+msgstr ""
+
+#: morechoice.php:65
+msgid "Amputees"
+msgstr ""
+
+#: morechoice.php:66
+msgid "Statues, mannequins and immobility"
+msgstr ""
+
+#: morechoice.php:67
+msgid "Pain"
+msgstr ""
+
+#: morechoice.php:68
+msgid "Trans men"
+msgstr ""
+
+#: morechoice.php:69
+msgid "Older women"
+msgstr "Starší ženy"
+
+#: morechoice.php:70
+msgid "Asphyxiation"
+msgstr ""
+
+#: morechoice.php:71
+msgid "In public"
+msgstr "Na veřejnosti"
+
+#: morechoice.php:72
+msgid "In danger"
+msgstr "V nebezpečí"
+
+#: morechoice.php:73
+msgid "Pretending to be male"
+msgstr "Předstírám, že jsem muž"
+
+#: morechoice.php:74
+msgid "Pretending to be female"
+msgstr "Předstírám, že jsem žena"
+
+#: morechoice.php:75
+msgid "Breats"
+msgstr ""
+
+#: morechoice.php:76
+msgid "Scat"
+msgstr ""
+
+#: morechoice.php:77
+msgid "Crying"
+msgstr ""
+
+#: morechoice.php:78
+msgid "Nappies/Diapers"
+msgstr ""
+
+#: morechoice.php:79
+msgid "Trees"
+msgstr ""
+
+#: morechoice.php:80
+msgid "Vomit"
+msgstr ""
+
+#: morechoice.php:81
+msgid "Murder"
+msgstr ""
+
+#: morechoice.php:82
+msgid "Fat people"
+msgstr ""
+
+#: morechoice.php:83
+msgid "Feet"
+msgstr ""
+
+#: morechoice.php:84
+msgid "Covered in insects"
+msgstr ""
+
+#: morechoice.php:85
+msgid "Turning a human being into furniture"
+msgstr ""
+
+#: morechoice.php:86
+msgid "Elderly people"
+msgstr ""
+
+#: morechoice.php:87
+msgid "Transgender people"
+msgstr ""
+
+#: morechoice.php:88
+msgid "Criminals"
+msgstr ""
+
+#: morechoice.php:89
+msgid "Stealing"
+msgstr ""
+
+#: morechoice.php:90
+msgid "Breast milk"
+msgstr ""
+
+#: morechoice.php:91
+msgid "Immersing genitals in liquids"
+msgstr ""
+
+#: morechoice.php:92
+msgid "Giants"
+msgstr ""
+
+#: morechoice.php:93
+msgid "Masochism"
+msgstr ""
+
+#: morechoice.php:94
+msgid "Cars"
+msgstr ""
+
+#: morechoice.php:95
+msgid "Menstruation"
+msgstr ""
+
+#: morechoice.php:96
+msgid "Mucus"
+msgstr ""
+
+#: morechoice.php:97
+msgid "Obscene language"
+msgstr ""
+
+#: morechoice.php:98
+msgid "Noses"
+msgstr ""
+
+#: morechoice.php:99
+msgid "Navels"
+msgstr ""
+
+#: morechoice.php:100
+msgid "Corpses"
+msgstr ""
+
+#: morechoice.php:101
+msgid "Smells"
+msgstr ""
+
+#: morechoice.php:102
+msgid "Buttocks"
+msgstr ""
+
+#: morechoice.php:103
+msgid "Nonliving objects"
+msgstr ""
+
+#: morechoice.php:104
+msgid "Sleeping people"
+msgstr ""
+
+#: morechoice.php:105
+msgid "Urination"
+msgstr ""
+
+#: morechoice.php:106
+msgid "Eating people"
+msgstr ""
+
+#: morechoice.php:107
+msgid "Being eaten"
+msgstr ""
+
+#: morechoice.php:108
+msgid "Animals"
+msgstr ""
+
+#: morechoice.php:109
+msgid "I'd rather just have some chocolate"
+msgstr "Radši bych si prostě dal čokoládu"
+
+#: morechoice.php:113
+msgid "Married to my job"
+msgstr ""
+
+#: morechoice.php:114
+msgid "Polygamist"
+msgstr ""
+
+#: morechoice.php:115
+msgid "Half married"
+msgstr "Napůl ženatý/vdaná"
+
+#: morechoice.php:116
+msgid "Living in the past"
+msgstr "Žiju v minulosti"
+
+#: morechoice.php:117
+msgid "Pretending to be over my ex"
+msgstr ""
+
+#: morechoice.php:118
+msgid "Hurt in the past"
+msgstr ""
+
+#: morechoice.php:119
+msgid "Wallowing in self-pity"
+msgstr ""
