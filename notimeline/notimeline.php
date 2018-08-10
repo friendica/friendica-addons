@@ -4,6 +4,7 @@
  * Description: Disable "Archives" widget on profile page
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
+ * Status: Unsupported
  *
  */
 use Friendica\Core\Addon;
