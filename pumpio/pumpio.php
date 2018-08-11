@@ -360,18 +360,19 @@ function pumpio_settings_post(App $a, array &$b)
 			$host = trim($host);
 			$host = str_replace(["https://", "http://"], ["", ""], $host);
 
-			PConfig::set(local_user(), 'pumpio', 'post'           , intval($_POST['pumpio']));
-			PConfig::set(local_user(), 'pumpio', 'import'         , $_POST['pumpio_import']);
-			PConfig::set(local_user(), 'pumpio', 'host'           , $host);
-			PConfig::set(local_user(), 'pumpio', 'user'           , $user);
-			PConfig::set(local_user(), 'pumpio', 'public'         , $_POST['pumpio_public']);
-			PConfig::set(local_user(), 'pumpio', 'mirror'         , $_POST['pumpio_mirror']);
-			PConfig::set(local_user(), 'pumpio', 'post_by_default', intval($_POST['pumpio_bydefault']));
+			if (isset($_POST['pumpio'])) {
+				PConfig::set(local_user(), 'pumpio', 'post'           , intval($_POST['pumpio']));
+				PConfig::set(local_user(), 'pumpio', 'import'         , $_POST['pumpio_import']);
+				PConfig::set(local_user(), 'pumpio', 'host'           , $host);
+				PConfig::set(local_user(), 'pumpio', 'user'           , $user);
+				PConfig::set(local_user(), 'pumpio', 'public'         , $_POST['pumpio_public']);
+				PConfig::set(local_user(), 'pumpio', 'mirror'         , $_POST['pumpio_mirror']);
+				PConfig::set(local_user(), 'pumpio', 'post_by_default', intval($_POST['pumpio_bydefault']));
 
-			if (!$_POST['pumpio_mirror']) {
-				PConfig::delete(local_user(), 'pumpio', 'lastdate');
+				if (!$_POST['pumpio_mirror']) {
+					PConfig::delete(local_user(), 'pumpio', 'lastdate');
+				}
 			}
-
 			//header("Location: ".$a->get_baseurl()."/pumpio/connect");
 		}
 	}
