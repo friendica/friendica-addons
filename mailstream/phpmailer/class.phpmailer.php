@@ -2350,11 +2350,11 @@ class PHPMailer
                     throw new phpmailerException($this->lang('extension_missing') . 'openssl');
                 }
                 // @TODO would be nice to use php://temp streams here, but need to wrap for PHP < 5.1
-                $file = tempnam(sys_get_temp_dir(), 'mail');
+                $file = tempnam(get_temppath(), 'mail');
                 if (false === file_put_contents($file, $body)) {
                     throw new phpmailerException($this->lang('signing') . ' Could not write temp file');
                 }
-                $signed = tempnam(sys_get_temp_dir(), 'signed');
+                $signed = tempnam(get_temppath(), 'signed');
                 //Workaround for PHP bug https://bugs.php.net/bug.php?id=69197
                 if (empty($this->sign_extracerts_file)) {
                     $sign = @openssl_pkcs7_sign(

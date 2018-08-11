@@ -29,7 +29,7 @@ class Diaspora_Connection {
 			$this->setPassword($password);
 		}
 
-		$this->cookiejar = tempnam(sys_get_temp_dir(), 'cookies');
+		$this->cookiejar = tempnam(get_temppath(), 'cookies');
 		return $this;
 	}
 
