@@ -1219,6 +1219,11 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 		$postarray['parent-uri'] = $post->object->inReplyTo->id;
 	}
 
+	// When there is no content there is no need to continue
+	if (empty($post->object->content)) {
+		return false;
+	}
+
 	if (!empty($post->object->pump_io->proxyURL)) {
 		$postarray['extid'] = $post->object->pump_io->proxyURL;
 	}
