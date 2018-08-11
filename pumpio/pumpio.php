@@ -13,6 +13,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Core\Protocol;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\Model\Contact;
@@ -417,7 +418,7 @@ function pumpio_send(App $a, array &$b)
 
 	if ($b['parent'] != $b['id']) {
 		// Looking if its a reply to a pumpio post
-		$condition = ['id' => $b['parent'], 'network' => NETWORK_PUMPIO];
+		$condition = ['id' => $b['parent'], 'network' => Protocol::PUMPIO];
 		$orig_post = Item::selectFirst([], $condition);
 
 		if (!DBA::isResult($orig_post)) {
@@ -578,7 +579,7 @@ function pumpio_send(App $a, array &$b)
 
 			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $params]);
 
-			Queue::add($a->contact, NETWORK_PUMPIO, $s);
+			Queue::add($a->contact, Protocol::PUMPIO, $s);
 			notice(L10n::t('Pump.io post failed. Queued for retry.').EOL);
 		}
 	}
@@ -655,7 +656,7 @@ function pumpio_action(App $a, $uid, $uri, $action, $content = "")
 
 		$s = serialize(['url' => $url, 'item' => $orig_post["id"], 'post' => $params]);
 
-		Queue::add($a->contact, NETWORK_PUMPIO, $s);
+		Queue::add($a->contact, Protocol::PUMPIO, $s);
 		notice(L10n::t('Pump.io like failed. Queued for retry.').EOL);
 	}
 }
@@ -831,7 +832,7 @@ function pumpio_fetchtimeline(App $a, $uid)
 				$_REQUEST["source"] = "pump.io";
 
 				if (isset($post->object->id)) {
-					$_REQUEST['message_id'] = NETWORK_PUMPIO.":".$post->object->id;
+					$_REQUEST['message_id'] = Protocol::PUMPIO.":".$post->object->id;
 				}
 
 				if ($post->object->displayName != "") {
@@ -964,7 +965,7 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 	$likedata['gravity'] = GRAVITY_ACTIVITY;
 	$likedata['uid'] = $uid;
 	$likedata['wall'] = 0;
-	$likedata['network'] = NETWORK_PUMPIO;
+	$likedata['network'] = Protocol::PUMPIO;
 	$likedata['uri'] = Item::newURI($uid);
 	$likedata['parent-uri'] = $orig_post["uri"];
 	$likedata['contact-id'] = $contactid;
@@ -993,7 +994,7 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 
 function pumpio_get_contact($uid, $contact, $no_insert = false)
 {
-	$gcontact = ["url" => $contact->url, "network" => NETWORK_PUMPIO, "generation" => 2,
+	$gcontact = ["url" => $contact->url, "network" => Protocol::PUMPIO, "generation" => 2,
 		"name" => $contact->displayName,  "hide" => true,
 		"nick" => $contact->preferredUsername,
 		"addr" => str_replace("acct:", "", $contact->id)];
@@ -1037,7 +1038,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false)
 			DBA::escape($contact->displayName),
 			DBA::escape($contact->preferredUsername),
 			DBA::escape($contact->image->url),
-			DBA::escape(NETWORK_PUMPIO),
+			DBA::escape(Protocol::PUMPIO),
 			intval(Contact::FRIEND),
 			intval(1),
 			DBA::escape($contact->location->displayName),
@@ -1144,7 +1145,7 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 	}
 
 	$postarray = [];
-	$postarray['network'] = NETWORK_PUMPIO;
+	$postarray['network'] = Protocol::PUMPIO;
 	$postarray['uid'] = $uid;
 	$postarray['wall'] = 0;
 	$postarray['uri'] = $post->object->id;
@@ -1310,7 +1311,7 @@ function pumpio_fetchinbox(App $a, $uid)
 			INNER JOIN `item` ON `item`.`id` = `thread`.`iid`
 			WHERE `thread`.`network` = '%s' AND `thread`.`uid` = %d AND `item`.`extid` != ''
 			ORDER BY `thread`.`commented` DESC LIMIT 10",
-				DBA::escape(NETWORK_PUMPIO),
+				DBA::escape(Protocol::PUMPIO),
 				intval($uid)
 			);
 
@@ -1411,7 +1412,7 @@ function pumpio_getallusers(App &$a, $uid)
 function pumpio_queue_hook(App $a, array &$b)
 {
 	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
-		DBA::escape(NETWORK_PUMPIO)
+		DBA::escape(Protocol::PUMPIO)
 	);
 
 	if (!DBA::isResult($qi)) {
@@ -1419,7 +1420,7 @@ function pumpio_queue_hook(App $a, array &$b)
 	}
 
 	foreach ($qi as $x) {
-		if ($x['network'] !== NETWORK_PUMPIO) {
+		if ($x['network'] !== Protocol::PUMPIO) {
 			continue;
 		}
 
@@ -1518,7 +1519,7 @@ function pumpio_getreceiver(App $a, array $b)
 			$r = q("SELECT `name`, `nick`, `url` FROM `contact` WHERE `id` = %d AND `uid` = %d AND `network` = '%s' AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
 				intval($cid),
 				intval($b["uid"]),
-				DBA::escape(NETWORK_PUMPIO)
+				DBA::escape(Protocol::PUMPIO)
 				);
 
 			if (DBA::isResult($r)) {
@@ -1536,7 +1537,7 @@ function pumpio_getreceiver(App $a, array $b)
 				"FROM `group_member`, `contact` WHERE `group_member`.`gid` = %d ".
 				"AND `contact`.`id` = `group_member`.`contact-id` AND `contact`.`network` = '%s'",
 					intval($gid),
-					DBA::escape(NETWORK_PUMPIO)
+					DBA::escape(Protocol::PUMPIO)
 				);
 
 			foreach ($r AS $row)
@@ -1561,7 +1562,7 @@ function pumpio_getreceiver(App $a, array $b)
 			$r = q("SELECT `name`, `nick`, `url` FROM `contact` WHERE `id` = %d AND `uid` = %d AND `network` = '%s' AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
 				intval($cid),
 				intval($b["uid"]),
-				DBA::escape(NETWORK_PUMPIO)
+				DBA::escape(Protocol::PUMPIO)
 				);
 
 			if (DBA::isResult($r)) {

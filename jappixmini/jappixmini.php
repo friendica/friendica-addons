@@ -67,6 +67,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
 use Friendica\Model\User;
 use Friendica\Util\Network;
@@ -594,7 +595,7 @@ function jappixmini_cron(App $a, $d)
 
 		// for each user, go through list of contacts
 		$contacts = q("SELECT * FROM `contact` WHERE `uid`=%d AND ((LENGTH(`dfrn-id`) AND LENGTH(`pubkey`)) OR (LENGTH(`issued-id`) AND LENGTH(`prvkey`))) AND `network` = '%s'",
-			intval($uid), DBA::escape(NETWORK_DFRN));
+			intval($uid), DBA::escape(Protocol::DFRN));
 		foreach ($contacts as $contact_row) {
 			$request = $contact_row["request"];
 			if (!$request) {

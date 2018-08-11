@@ -14,6 +14,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
 use Friendica\Model\Queue;
 
@@ -59,7 +60,7 @@ function diaspora_queue_hook(App $a, &$b) {
 	$hostname = $a->get_hostname();
 
 	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
-		DBA::escape(NETWORK_DIASPORA2)
+		DBA::escape(Protocol::DIASPORA2)
 	);
 
 	if (!DBA::isResult($qi)) {
@@ -67,7 +68,7 @@ function diaspora_queue_hook(App $a, &$b) {
 	}
 
 	foreach ($qi as $x) {
-		if ($x['network'] !== NETWORK_DIASPORA2) {
+		if ($x['network'] !== Protocol::DIASPORA2) {
 			continue;
 		}
 
@@ -383,7 +384,7 @@ function diaspora_send(App $a, array &$b)
 
 			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $body]);
 
-			Queue::add($a->contact, NETWORK_DIASPORA2, $s);
+			Queue::add($a->contact, Protocol::DIASPORA2, $s);
 			notice(L10n::t('Diaspora post failed. Queued for retry.').EOL);
 		}
 	}
