@@ -1674,7 +1674,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 
 			$notify = false;
 
-			if ($postarray['uri'] == $postarray['parent-uri']) {
+			if (($postarray['uri'] == $postarray['parent-uri']) && ($postarray['author-link'] == $postarray['owner-link'])) {
 				$contact = DBA::selectFirst('contact', [], ['id' => $postarray['contact-id'], 'self' => false]);
 				if (DBA::isResult($contact)) {
 					$notify = Item::isRemoteSelf($contact, $postarray);
