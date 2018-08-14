@@ -280,7 +280,7 @@ function fromgplus_cleanupgoogleproxy($fullImage, $image) {
 	if (!empty($cleaned["preview"]))
 		$infoPreview = Image::getInfoFromURL($cleaned["preview"]);
 	else
-		$infoFull = ["0" => 0, "1" => 0];
+		$infoPreview = ["0" => 0, "1" => 0];
 
 	if (($infoPreview[0] >= $infoFull[0]) && ($infoPreview[1] >= $infoFull[1])) {
 		$temp = $cleaned["full"];
