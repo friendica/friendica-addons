@@ -40,7 +40,7 @@ msgstr ""
 
 #: morechoice.php:39
 msgid "Eunuch"
-msgstr ""
+msgstr "Eunuch"
 
 #: morechoice.php:40
 msgid "Faux queen"
@@ -128,7 +128,7 @@ msgstr ""
 
 #: morechoice.php:64
 msgid "People with impaired mobility"
-msgstr ""
+msgstr "Lidé s pohybovým postižením"
 
 #: morechoice.php:65
 msgid "Amputees"
@@ -140,7 +140,7 @@ msgstr ""
 
 #: morechoice.php:67
 msgid "Pain"
-msgstr ""
+msgstr "Bolest"
 
 #: morechoice.php:68
 msgid "Trans men"
@@ -180,7 +180,7 @@ msgstr ""
 
 #: morechoice.php:77
 msgid "Crying"
-msgstr ""
+msgstr "Pláču"
 
 #: morechoice.php:78
 msgid "Nappies/Diapers"
@@ -188,19 +188,19 @@ msgstr ""
 
 #: morechoice.php:79
 msgid "Trees"
-msgstr ""
+msgstr "Stromy"
 
 #: morechoice.php:80
 msgid "Vomit"
-msgstr ""
+msgstr "Zvracení"
 
 #: morechoice.php:81
 msgid "Murder"
-msgstr ""
+msgstr "Vražda"
 
 #: morechoice.php:82
 msgid "Fat people"
-msgstr ""
+msgstr "Tlustí lidé"
 
 #: morechoice.php:83
 msgid "Feet"
@@ -208,7 +208,7 @@ msgstr ""
 
 #: morechoice.php:84
 msgid "Covered in insects"
-msgstr ""
+msgstr "Pokryt/a hmyzem"
 
 #: morechoice.php:85
 msgid "Turning a human being into furniture"
@@ -216,7 +216,7 @@ msgstr ""
 
 #: morechoice.php:86
 msgid "Elderly people"
-msgstr ""
+msgstr "Postarší lidé"
 
 #: morechoice.php:87
 msgid "Transgender people"
@@ -224,7 +224,7 @@ msgstr ""
 
 #: morechoice.php:88
 msgid "Criminals"
-msgstr ""
+msgstr "Zločinci"
 
 #: morechoice.php:89
 msgid "Stealing"
@@ -240,15 +240,15 @@ msgstr ""
 
 #: morechoice.php:92
 msgid "Giants"
-msgstr ""
+msgstr "Obři"
 
 #: morechoice.php:93
 msgid "Masochism"
-msgstr ""
+msgstr "Masochismus"
 
 #: morechoice.php:94
 msgid "Cars"
-msgstr ""
+msgstr "Auto"
 
 #: morechoice.php:95
 msgid "Menstruation"
@@ -260,7 +260,7 @@ msgstr ""
 
 #: morechoice.php:97
 msgid "Obscene language"
-msgstr ""
+msgstr "Sprostý jazyk"
 
 #: morechoice.php:98
 msgid "Noses"
@@ -284,15 +284,15 @@ msgstr ""
 
 #: morechoice.php:103
 msgid "Nonliving objects"
-msgstr ""
+msgstr "Neživoucí předměty"
 
 #: morechoice.php:104
 msgid "Sleeping people"
-msgstr ""
+msgstr "Spící lidé"
 
 #: morechoice.php:105
 msgid "Urination"
-msgstr ""
+msgstr "Močení"
 
 #: morechoice.php:106
 msgid "Eating people"
@@ -304,7 +304,7 @@ msgstr ""
 
 #: morechoice.php:108
 msgid "Animals"
-msgstr ""
+msgstr "Zvířata"
 
 #: morechoice.php:109
 msgid "I'd rather just have some chocolate"
@@ -332,7 +332,7 @@ msgstr ""
 
 #: morechoice.php:118
 msgid "Hurt in the past"
-msgstr ""
+msgstr "Ublížen v minulosti"
 
 #: morechoice.php:119
 msgid "Wallowing in self-pity"
