@@ -1079,7 +1079,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 
 	$postarray['uri'] = $hostname . "::" . $content->id;
 
-	if (DBA::exists('item', ['extid' => $postarray['uri'], 'uid' => $uid])) {
+	if (Item::exists(['extid' => $postarray['uri'], 'uid' => $uid])) {
 		return [];
 	}
 
