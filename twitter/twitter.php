@@ -735,15 +735,9 @@ function twitter_expire(App $a)
 		return;
 	}
 
-	$r = DBA::select('item', ['id', 'iaid', 'icid'], ['deleted' => true, 'network' => Protocol::TWITTER]);
+	$r = Item::select(['id'], ['deleted' => true, 'network' => Protocol::TWITTER]);
 	while ($row = DBA::fetch($r)) {
 		DBA::delete('item', ['id' => $row['id']]);
-		if (!empty($row['iaid']) && !DBA::exists('item', ['iaid' => $row['iaid']])) {
-			DBA::delete('item-activity', ['id' => $row['iaid']]);
-		}
-		if (!empty($row['icid']) && !DBA::exists('item', ['icid' => $row['icid']])) {
-			DBA::delete('item-content', ['id' => $row['icid']]);
-		}
 	}
 	DBA::close($r);
 
@@ -1352,7 +1346,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 	$postarray['source'] = json_encode($post);
 
 	// Don't import our own comments
-	if (DBA::exists('item', ['extid' => $postarray['uri'], 'uid' => $uid])) {
+	if (Item::exists(['extid' => $postarray['uri'], 'uid' => $uid])) {
 		logger("Item with extid " . $postarray['uri'] . " found.", LOGGER_DEBUG);
 		return [];
 	}
@@ -1530,7 +1524,7 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 			break;
 		}
 
-		if (DBA::exists('item', ['uri' => 'twitter::' . $post->id_str, 'uid' => $uid])) {
+		if (Item::exists(['uri' => 'twitter::' . $post->id_str, 'uid' => $uid])) {
 			break;
 		}
 

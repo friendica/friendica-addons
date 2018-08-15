@@ -955,7 +955,7 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 	}
 
 	$condition = ['verb' => ACTIVITY_LIKE, 'uid' => $uid, 'contact-id' => $contactid, 'thr-parent' => $orig_post['uri']];
-	if (DBA::exists('item', $condition)) {
+	if (Item::exists($condition)) {
 		logger("pumpio_dolike: found existing like. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
 		return;
 	}
@@ -1084,13 +1084,13 @@ function pumpio_dodelete(App $a, $uid, $self, $post, $own_id)
 {
 	// Two queries for speed issues
 	$condition = ['uri' => $post->object->id, 'uid' => $uid];
-	if (DBA::exists('item', $condition)) {
+	if (Item::exists($condition)) {
 		Item::delete($condition);
 		return true;
 	}
 
 	$condition = ['extid' => $post->object->id, 'uid' => $uid];
-	if (DBA::exists('item', $condition)) {
+	if (Item::exists($condition)) {
 		Item::delete($condition);
 		return true;
 	}
@@ -1115,10 +1115,10 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 
 	if ($post->verb != "update") {
 		// Two queries for speed issues
-		if (DBA::exists('item', ['uri' => $post->object->id, 'uid' => $uid])) {
+		if (Item::exists(['uri' => $post->object->id, 'uid' => $uid])) {
 			return false;
 		}
-		if (DBA::exists('item', ['extid' => $post->object->id, 'uid' => $uid])) {
+		if (Item::exists(['extid' => $post->object->id, 'uid' => $uid])) {
 			return false;
 		}
 	}
@@ -1659,11 +1659,11 @@ function pumpio_fetchallcomments(App $a, $uid, $id)
 		}
 
 		// Checking if the comment already exists - Two queries for speed issues
-		if (DBA::exists('item', ['uri' => $item->id, 'uid' => $uid])) {
+		if (Item::exists(['uri' => $item->id, 'uid' => $uid])) {
 			continue;
 		}
 
-		if (DBA::exists('item', ['extid' => $item->id, 'uid' => $uid])) {
+		if (Item::exists(['extid' => $item->id, 'uid' => $uid])) {
 			continue;
 		}
 
