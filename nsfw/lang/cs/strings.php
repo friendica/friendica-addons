@@ -11,7 +11,7 @@ $a->strings["This addon searches for specified words/text in posts and collapses
 $a->strings["Enable Content filter"] = "Povolit filtr obsahu";
 $a->strings["Comma separated list of keywords to hide"] = "Čárkou oddělený seznam klíčových slov ke skrytí";
 $a->strings["Save Settings"] = "Uložit nastavení";
-$a->strings["Use /expression/ to provide regular expressions"] = "Použít /výraz/ pro použití regulárních výrazů";
+$a->strings["Use /expression/ to provide regular expressions"] = "Použijte /výraz/ pro použití regulárních výrazů";
 $a->strings["NSFW Settings saved."] = "Nastavení NSFW uloženo";
 $a->strings["Filtered tag: %s"] = "Filtrovaná značka: %s";
 $a->strings["Filtered word: %s"] = "Filtrované slovo: %s";

@@ -5,13 +5,14 @@
 # 
 # Translators:
 # Aditoo, 2018
+# Aditoo, 2018
 # michal_s <msupler@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-04-01 11:11-0400\n"
-"PO-Revision-Date: 2018-06-11 13:37+0000\n"
+"PO-Revision-Date: 2018-08-16 10:09+0000\n"
 "Last-Translator: Aditoo\n"
 "Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -46,7 +47,7 @@ msgstr "Uložit nastavení"
 
 #: nsfw.php:94
 msgid "Use /expression/ to provide regular expressions"
-msgstr "Použít /výraz/ pro použití regulárních výrazů"
+msgstr "Použijte /výraz/ pro použití regulárních výrazů"
 
 #: nsfw.php:109
 msgid "NSFW Settings saved."

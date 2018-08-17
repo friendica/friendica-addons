@@ -56,7 +56,7 @@ msgstr ""
 
 #: morechoice.php:43
 msgid "Lady"
-msgstr ""
+msgstr "Dáma"
 
 #: morechoice.php:44
 msgid "Lipstick lesbian"

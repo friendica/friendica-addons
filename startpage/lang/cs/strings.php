@@ -7,6 +7,6 @@ function string_plural_select_cs($n){
 }}
 ;
 $a->strings["Startpage Settings"] = "Nastavení startovní stránky";
-$a->strings["Home page to load after login  - leave blank for profile wall"] = "Domovslá stránka k načtení po přihlášení  - pro profilovou zeď ponechejte prázdné";
+$a->strings["Home page to load after login  - leave blank for profile wall"] = "Domovská stránka k načtení po přihlášení  - pro profilovou zeď ponechejte prázdné";
 $a->strings["Examples: &quot;network&quot; or &quot;notifications/system&quot;"] = "Příklady: &quot;network&quot; nebo &quot;notifications/system&quot;";
 $a->strings["Submit"] = "Odeslat";
