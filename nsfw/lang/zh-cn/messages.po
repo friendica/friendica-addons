@@ -1,0 +1,62 @@
+# ADDON nsfw
+# Copyright (C)
+# This file is distributed under the same license as the Friendica nsfw addon package.
+# 
+# 
+# Translators:
+# 朱陈锬 <tangenters@outlook.com>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-01 11:11-0400\n"
+"PO-Revision-Date: 2018-08-14 08:40+0000\n"
+"Last-Translator: 朱陈锬 <tangenters@outlook.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/Friendica/friendica/language/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: nsfw.php:77 nsfw.php:81
+msgid "Content Filter (NSFW and more)"
+msgstr "内容过滤 ( NSFW 及其他更多)"
+
+#: nsfw.php:85
+msgid ""
+"This addon searches for specified words/text in posts and collapses them. It"
+" can be used to filter content tagged with for instance #NSFW that may be "
+"deemed inappropriate at certain times or places, such as being at work. It "
+"is also useful for hiding irrelevant or annoying content from direct view."
+msgstr ""
+
+#: nsfw.php:86
+msgid "Enable Content filter"
+msgstr "启用内容过滤"
+
+#: nsfw.php:89
+msgid "Comma separated list of keywords to hide"
+msgstr "以逗号分隔需隐藏关键字列表"
+
+#: nsfw.php:93
+msgid "Save Settings"
+msgstr "保存设置"
+
+#: nsfw.php:94
+msgid "Use /expression/ to provide regular expressions"
+msgstr "使用 /expression/ 以提供正则表达式"
+
+#: nsfw.php:109
+msgid "NSFW Settings saved."
+msgstr "NSFW 设置已保存"
+
+#: nsfw.php:162
+#, php-format
+msgid "Filtered tag: %s"
+msgstr "已过滤标签：%s"
+
+#: nsfw.php:164
+#, php-format
+msgid "Filtered word: %s"
+msgstr "已过滤字词：%s"

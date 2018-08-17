@@ -1,0 +1,48 @@
+# ADDON libertree
+# Copyright (C)
+# This file is distributed under the same license as the Friendica libertree addon package.
+# 
+# 
+# Translators:
+# 朱陈锬 <tangenters@outlook.com>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-08-14 09:07+0000\n"
+"Last-Translator: 朱陈锬 <tangenters@outlook.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/Friendica/friendica/language/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: libertree.php:36
+msgid "Post to libertree"
+msgstr "发布到 libertree"
+
+#: libertree.php:67
+msgid "libertree Post Settings"
+msgstr "libertree 发布设置"
+
+#: libertree.php:69
+msgid "Enable Libertree Post Addon"
+msgstr "启用 Libertree 发布插件"
+
+#: libertree.php:74
+msgid "Libertree API token"
+msgstr "Libertree API 令牌"
+
+#: libertree.php:79
+msgid "Libertree site URL"
+msgstr "Libertree 站点 URL"
+
+#: libertree.php:84
+msgid "Post to Libertree by default"
+msgstr "默认发布到 Libertree"
+
+#: libertree.php:90
+msgid "Submit"
+msgstr "提交"
