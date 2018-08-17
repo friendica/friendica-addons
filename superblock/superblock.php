@@ -44,11 +44,11 @@ function superblock_addon_settings(&$a, &$s)
 	}
 
 	$s .= '<span id="settings_superblock_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_superblock_expanded\'); openClose(\'settings_superblock_inflated\');">';
-	$s .= '<h3>' . L10n::t('"Superblock"') . '</h3>';
+	$s .= '<h3>' . L10n::t('Superblock') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_superblock_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_superblock_expanded\'); openClose(\'settings_superblock_inflated\');">';
-	$s .= '<h3>' . L10n::t('"Superblock"') . '</h3>';
+	$s .= '<h3>' . L10n::t('Superblock') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="superblock-wrapper">';
 	$s .= '<label id="superblock-label" for="superblock-words">' . L10n::t('Comma separated profile URLS to block') . ' </label>';
