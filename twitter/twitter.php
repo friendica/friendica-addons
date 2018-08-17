@@ -1724,7 +1724,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 
 			$postarray = twitter_createpost($a, $uid, $post, $self, false, false, false);
 
-			if (trim($postarray['body']) == "") {
+			if (empty($postarray['body'])) {
 				continue;
 			}
 
