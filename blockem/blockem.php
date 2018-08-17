@@ -51,11 +51,11 @@ function blockem_addon_settings (App $a, &$s)
 	}
 
 	$s .= '<span id="settings_blockem_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_blockem_expanded\'); openClose(\'settings_blockem_inflated\');">';
-	$s .= '<h3>' . L10n::t('"Blockem"') . '</h3>';
+	$s .= '<h3>' . L10n::t('Blockem') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_blockem_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_blockem_expanded\'); openClose(\'settings_blockem_inflated\');">';
-	$s .= '<h3>' . L10n::t('"Blockem"') . '</h3>';
+	$s .= '<h3>' . L10n::t('Blockem') . '</h3>';
 	$s .= '</span>';
 
 	$s .= '<div id="blockem-wrapper">';
