@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-06-12 12:13+0000\n"
+"PO-Revision-Date: 2018-08-16 10:08+0000\n"
 "Last-Translator: Aditoo\n"
 "Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "Nastavení startovní stránky"
 
 #: startpage.php:85
 msgid "Home page to load after login  - leave blank for profile wall"
-msgstr "Domovslá stránka k načtení po přihlášení  - pro profilovou zeď ponechejte prázdné"
+msgstr "Domovská stránka k načtení po přihlášení  - pro profilovou zeď ponechejte prázdné"
 
 #: startpage.php:88
 msgid "Examples: &quot;network&quot; or &quot;notifications/system&quot;"

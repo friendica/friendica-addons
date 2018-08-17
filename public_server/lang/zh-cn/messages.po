@@ -1,0 +1,41 @@
+# ADDON public_server
+# Copyright (C)
+# This file is distributed under the same license as the Friendica public_server addon package.
+# 
+# 
+# Translators:
+# 朱陈锬 <tangenters@outlook.com>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-08-14 08:23+0000\n"
+"Last-Translator: 朱陈锬 <tangenters@outlook.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/Friendica/friendica/language/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: public_server.php:62
+msgid "Administrator"
+msgstr "管理员"
+
+#: public_server.php:126
+#, php-format
+msgid "Your account on %s will expire in a few days."
+msgstr "您在 %s 的帐号将在几天内到期。"
+
+#: public_server.php:127
+msgid "Your Friendica account is about to expire."
+msgstr "您的 Friendica 帐号即将到期。"
+
+#: public_server.php:128
+#, php-format
+msgid ""
+"Hi %1$s,\n"
+"\n"
+"Your account on %2$s will expire in less than five days. You may keep your account by logging in at least once every 30 days"
+msgstr "您好 %1$s，\n\n您在 %2$s 的帐号将在五天内到期。您可以通过每 30 天至少登录一次的方式保留您的帐号。"
