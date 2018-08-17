@@ -1441,7 +1441,7 @@ function statusnet_convertmsg(App $a, $body, $no_tags = false)
 
 				$tempfile = tempnam(get_temppath(), "cache");
 				file_put_contents($tempfile, $img_str);
-				$mime = image_type_to_mime_type(exif_imagetype($tempfile));
+				$mime = mime_content_type($tempfile);
 				unlink($tempfile);
 
 				if (substr($mime, 0, 6) == "image/") {

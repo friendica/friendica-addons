@@ -1203,7 +1203,10 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 			$reply->cc = $post->cc;
 		}
 
-		$reply->to = $post->to;
+		if (isset($post->to)) {
+			$reply->to = $post->to;
+		}
+
 		$reply->object = new stdClass;
 		$reply->object->objectType = $post->object->inReplyTo->objectType;
 		$reply->object->content = $post->object->inReplyTo->content;
@@ -1271,10 +1274,15 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 			$share_author = $post->object->author->url;
 		}
 
+		if (isset($post->object->created)) {
+			$created = DateTimeFormat::utc($post->object->created);
+		} else {
+			$created = '';
+		}
+
 		$postarray['body'] = share_header($share_author, $post->object->author->url,
 						$post->object->author->image->url, "",
-						DateTimeFormat::utc($post->object->created),
-						$post->links->self->href).
+						$created, $post->links->self->href).
 					$postarray['body']."[/share]";
 	}
 
