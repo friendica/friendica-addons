@@ -96,25 +96,31 @@ function createUploader() {
 		debug: true,
 		sizeLimit: $maximagesize,
 		onSubmit: function(id,filename) {
-			if (typeof acl!="undefined"){
+			var newalbumElm = document.getElementById('photos-upload-newalbum');
+			var albumElm = document.getElementById('photos-upload-album-select');
+
+			var newalbum = newalbumElm ? newalbumElm.value : "";
+			var album = albumElm ? albumElm.value : "";
+
+			if (typeof acl != "undefined"){
 				uploader.setParams( {
-					newalbum		:	document.getElementById('photos-upload-newalbum').value,
-					album			:	document.getElementById('photos-upload-album-select').value,
-					not_visible     :   document.getElementById('photos-upload-noshare').checked,
-					group_allow		:	acl.allow_gid.join(','),
-					contact_allow	:	acl.allow_cid.join(','),
-					group_deny		:	acl.deny_gid.join(','),
-					contact_deny	:	acl.deny_cid.join(',')
+					newalbum      : newalbum,
+					album         : album,
+					not_visible   : document.getElementById('photos-upload-noshare').checked,
+					group_allow   : acl.allow_gid.join(','),
+					contact_allow : acl.allow_cid.join(','),
+					group_deny    : acl.deny_gid.join(','),
+					contact_deny  : acl.deny_cid.join(',')
 				});
 			} else {
 				uploader.setParams( {
-					newalbum		:	document.getElementById('photos-upload-newalbum').value,
-					album			:	document.getElementById('photos-upload-album-select').value,
-					not_visible     :   document.getElementById('photos-upload-noshare').checked,
-					group_allow		:	getSelected(document.getElementById('group_allow')).join(','),
-					contact_allow	:	getSelected(document.getElementById('contact_allow')).join(','),
-					group_deny		:	getSelected(document.getElementById('group_deny')).join(','),
-					contact_deny	:	getSelected(document.getElementById('contact_deny')).join(',')
+					newalbum      : newalbum,
+					album         : album,
+					not_visible   : document.getElementById('photos-upload-noshare').checked,
+					group_allow   : getSelected(document.getElementById('group_allow')).join(','),
+					contact_allow : getSelected(document.getElementById('contact_allow')).join(','),
+					group_deny    : getSelected(document.getElementById('group_deny')).join(','),
+					contact_deny  : getSelected(document.getElementById('contact_deny')).join(',')
 				});
 			}
 		}
