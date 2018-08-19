@@ -1432,7 +1432,7 @@ function statusnet_convertmsg(App $a, $body, $no_tags = false)
 				$footerlink = "[url=" . $expanded_url . "]" . $expanded_url . "[/url]";
 
 				$body = str_replace($search, $footerlink, $body);
-			} elseif (($oembed_data->type == "photo") && isset($oembed_data->url) && !$dontincludemedia) {
+			} elseif (($oembed_data->type == "photo") && isset($oembed_data->url)) {
 				$body = str_replace($search, "[url=" . $expanded_url . "][img]" . $oembed_data->url . "[/img][/url]", $body);
 			} elseif ($oembed_data->type != "link") {
 				$body = str_replace($search, "[url=" . $expanded_url . "]" . $expanded_url . "[/url]", $body);
