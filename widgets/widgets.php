@@ -4,6 +4,7 @@
  * Description: Allow to embed info from friendica into another site
  * Version: 1.0
  * Author: Fabio Comuni <http://kirgroup.com/profile/fabrix/>
+ * Status: Unsupported
  */
 
 use Friendica\Core\Addon;
