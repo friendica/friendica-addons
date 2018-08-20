@@ -6,14 +6,14 @@
 # Translators:
 # Andreas H., 2018
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014-2015
-# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2017
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2017-2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-08-17 10:25+0200\n"
-"PO-Revision-Date: 2018-08-18 10:57+0000\n"
-"Last-Translator: Andreas H.\n"
+"PO-Revision-Date: 2018-08-20 14:24+0000\n"
+"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
 "Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,7 +31,7 @@ msgstr "Profil-URLs, die geblockt werden sollen (durch Kommas getrennt)"
 
 #: superblock.php:58
 msgid "Save Settings"
-msgstr "Einstellungen Speichern"
+msgstr "Einstellungen speichern"
 
 #: superblock.php:71
 msgid "SUPERBLOCK Settings saved."
