@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-21 08:45+0200\n"
-"PO-Revision-Date: 2018-08-05 15:51+0000\n"
+"POT-Creation-Date: 2018-08-17 10:25+0200\n"
+"PO-Revision-Date: 2018-08-20 13:45+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -19,26 +19,26 @@ msgstr ""
 "Language: pl\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
-#: superblock.php:53 superblock.php:57
-msgid "\"Superblock\""
-msgstr "\"Superblock\""
+#: superblock.php:47 superblock.php:51
+msgid "Superblock"
+msgstr "Superblock"
 
-#: superblock.php:60
+#: superblock.php:54
 msgid "Comma separated profile URLS to block"
 msgstr "Oddzielone przecinkami adresy URL profilu do zablokowania"
 
-#: superblock.php:64
+#: superblock.php:58
 msgid "Save Settings"
 msgstr "Zapisz ustawienia"
 
-#: superblock.php:76
+#: superblock.php:71
 msgid "SUPERBLOCK Settings saved."
 msgstr "SUPERBLOCK Zapisano ustawienia."
 
-#: superblock.php:148
+#: superblock.php:144
 msgid "Block Completely"
 msgstr "Całkowicie zablokuj"
 
-#: superblock.php:168
+#: superblock.php:165
 msgid "superblock settings updated"
 msgstr "zaktualizowano ustawienia superblock"
