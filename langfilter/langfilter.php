@@ -94,7 +94,7 @@ function langfilter_addon_settings_post(App $a, &$b)
 		$minlength = 0 + $_POST['langfilter_minlength'];
 		if (!$minlength) {
 			$minlength = 32;
-		} elseif ($minlengt8h < 0) {
+		} elseif ($minlength < 0) {
 			$minlength = 32;
 		}
 		PConfig::set(local_user(), 'langfilter', 'minlength', $minlength);
