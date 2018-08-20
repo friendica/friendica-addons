@@ -4,7 +4,7 @@
  * Description: Allow the recipients of private posts to see who else can see the post by clicking the lock icon
  * Version: 1.0
  * Author: Zach <https://f.shmuz.in/profile/techcity>
- *
+ * Status: Unsupported
  */
 
 use Friendica\Core\Addon;
