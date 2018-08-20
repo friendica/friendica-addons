@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-01 11:11-0400\n"
-"PO-Revision-Date: 2018-04-07 16:45+0000\n"
+"POT-Creation-Date: 2018-08-17 10:23+0200\n"
+"PO-Revision-Date: 2018-08-20 13:44+0000\n"
 "Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -19,41 +19,41 @@ msgstr ""
 "Language: pl\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
-#: blockem.php:52 blockem.php:56
-msgid "\"Blockem\""
-msgstr "\"Blockem\""
+#: blockem.php:54 blockem.php:58
+msgid "Blockem"
+msgstr "Zablokowanie"
 
-#: blockem.php:60
+#: blockem.php:62
 msgid ""
 "Hides user's content by collapsing posts. Also replaces their avatar with "
 "generic image."
 msgstr "Ukrywa zawartość użytkownika, zwijając posty. Zastępuje również awatar wygenerowanym obrazem."
 
-#: blockem.php:61
+#: blockem.php:63
 msgid "Comma separated profile URLS:"
 msgstr "Rozdzielone przecinkami adresy URL profilu:"
 
-#: blockem.php:65
+#: blockem.php:67
 msgid "Save Settings"
 msgstr "Zapisz ustawienia"
 
-#: blockem.php:78
+#: blockem.php:81
 msgid "BLOCKEM Settings saved."
 msgstr "BLOCKEM Ustawienia zapisane."
 
-#: blockem.php:136
+#: blockem.php:143
 #, php-format
 msgid "Filtered user: %s"
 msgstr "Użytkownik filtrowany: %s"
 
-#: blockem.php:189
+#: blockem.php:202
 msgid "Unblock Author"
 msgstr "Odblokuj autora"
 
-#: blockem.php:191
+#: blockem.php:204
 msgid "Block Author"
 msgstr "Zablokuj autora"
 
-#: blockem.php:223
+#: blockem.php:244
 msgid "blockem settings updated"
 msgstr "ustawienia blockem zostały zaktualizowane"
