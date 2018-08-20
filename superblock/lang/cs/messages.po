@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-21 08:45+0200\n"
-"PO-Revision-Date: 2018-06-13 17:58+0000\n"
+"POT-Creation-Date: 2018-08-17 10:25+0200\n"
+"PO-Revision-Date: 2018-08-18 12:27+0000\n"
 "Last-Translator: Aditoo\n"
 "Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -21,26 +21,26 @@ msgstr ""
 "Language: cs\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
-#: superblock.php:53 superblock.php:57
-msgid "\"Superblock\""
-msgstr "\"Superblock\""
+#: superblock.php:47 superblock.php:51
+msgid "Superblock"
+msgstr "Superblock"
 
-#: superblock.php:60
+#: superblock.php:54
 msgid "Comma separated profile URLS to block"
 msgstr "Čárkou oddělené URL adresy profilů určených k ignorování"
 
-#: superblock.php:64
+#: superblock.php:58
 msgid "Save Settings"
 msgstr "Uložit nastavení"
 
-#: superblock.php:76
+#: superblock.php:71
 msgid "SUPERBLOCK Settings saved."
 msgstr "Nastavení SUPERBLOCK uložena"
 
-#: superblock.php:148
+#: superblock.php:144
 msgid "Block Completely"
 msgstr "Zablokovat úplně"
 
-#: superblock.php:168
+#: superblock.php:165
 msgid "superblock settings updated"
-msgstr "nastavvení superblock aktualizována"
+msgstr "nastavení superblock aktualizována"

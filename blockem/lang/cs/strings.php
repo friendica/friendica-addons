@@ -6,7 +6,7 @@ function string_plural_select_cs($n){
 	return ($n == 1 && $n % 1 == 0) ? 0 : ($n >= 2 && $n <= 4 && $n % 1 == 0) ? 1: ($n % 1 != 0 ) ? 2 : 3;;
 }}
 ;
-$a->strings["\"Blockem\""] = "\"Blockem\"";
+$a->strings["Blockem"] = "Blockem";
 $a->strings["Hides user's content by collapsing posts. Also replaces their avatar with generic image."] = "Skrývá uživatelský obsah zabalením příspěvků. Navíc nahrazuje avatar generickým obrázkem.";
 $a->strings["Comma separated profile URLS:"] = "URL adresy profilů, oddělené čárkami:";
 $a->strings["Save Settings"] = "Uložit nastavení";
