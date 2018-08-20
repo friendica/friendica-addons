@@ -4,24 +4,26 @@
 # 
 # 
 # Translators:
-# bavatar <tobias.diekershoff@gmx.net>, 2014
+# Andreas H., 2018
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014-2015
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2014-10-02 14:37+0000\n"
-"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"POT-Creation-Date: 2018-08-17 10:25+0200\n"
+"PO-Revision-Date: 2018-08-18 10:57+0000\n"
+"Last-Translator: Andreas H.\n"
+"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: superblock.php:52
-msgid "\"Superblock\" Settings"
-msgstr "\"Superblock\" Einstellungen"
+#: superblock.php:47 superblock.php:51
+msgid "Superblock"
+msgstr "Superblock"
 
 #: superblock.php:54
 msgid "Comma separated profile URLS to block"
@@ -29,16 +31,16 @@ msgstr "Profil-URLs, die geblockt werden sollen (durch Kommas getrennt)"
 
 #: superblock.php:58
 msgid "Save Settings"
-msgstr "Einstellungen speichern"
+msgstr "Einstellungen Speichern"
 
 #: superblock.php:71
 msgid "SUPERBLOCK Settings saved."
-msgstr "SUPERBLOCK Einstellungen gespeichert"
+msgstr "Superblock Einstellungen gespeichert"
 
-#: superblock.php:143
+#: superblock.php:144
 msgid "Block Completely"
-msgstr "Komplett blockieren"
+msgstr "Vollständig blockieren"
 
-#: superblock.php:163
+#: superblock.php:165
 msgid "superblock settings updated"
-msgstr "Superblock Einstellungen wurden aktualisiert"
+msgstr "Superblock Einstellungen aktualisiert"

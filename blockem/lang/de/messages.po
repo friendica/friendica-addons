@@ -4,15 +4,16 @@
 # 
 # 
 # Translators:
+# Andreas H., 2018
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-01 11:11-0400\n"
-"PO-Revision-Date: 2018-04-07 05:27+0000\n"
-"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
+"POT-Creation-Date: 2018-08-17 10:23+0200\n"
+"PO-Revision-Date: 2018-08-18 10:59+0000\n"
+"Last-Translator: Andreas H.\n"
 "Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,41 +21,41 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: blockem.php:52 blockem.php:56
-msgid "\"Blockem\""
-msgstr "\"Blockem\""
+#: blockem.php:54 blockem.php:58
+msgid "Blockem"
+msgstr "Blockem"
 
-#: blockem.php:60
+#: blockem.php:62
 msgid ""
 "Hides user's content by collapsing posts. Also replaces their avatar with "
 "generic image."
 msgstr "Verbirgt Inhalte von Kontakten durch kollabieren der Beiträge. Des weiteren wird das Profilbild durch einen generischen Avatar ersetzt."
 
-#: blockem.php:61
+#: blockem.php:63
 msgid "Comma separated profile URLS:"
 msgstr "Komma separierte Liste von Profil URLs"
 
-#: blockem.php:65
+#: blockem.php:67
 msgid "Save Settings"
 msgstr "Einstellungen speichern"
 
-#: blockem.php:78
+#: blockem.php:81
 msgid "BLOCKEM Settings saved."
 msgstr "BLOCKEM-Einstellungen gesichert."
 
-#: blockem.php:136
+#: blockem.php:143
 #, php-format
 msgid "Filtered user: %s"
 msgstr "Gefilterte Person: %s"
 
-#: blockem.php:189
+#: blockem.php:202
 msgid "Unblock Author"
 msgstr "Autor freischalten"
 
-#: blockem.php:191
+#: blockem.php:204
 msgid "Block Author"
 msgstr "Autor blockieren"
 
-#: blockem.php:223
+#: blockem.php:244
 msgid "blockem settings updated"
 msgstr "blockem Einstellungen aktualisiert"
