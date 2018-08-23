@@ -66,41 +66,40 @@ function mastodoncustomemojis_put_item_in_cache(App $a, array &$hook_data)
 
 function mastodoncustomemojis_get_custom_emojis_for_author($author_link)
 {
-	$return = ['texts' => [], 'icons' => []];
-
 	$url_parts = parse_url($author_link);
 
 	$api_base_url = $url_parts['scheme'] . '://' . $url_parts['host'] . (isset($url_parts['port']) ? ':' . $url_parts['port'] : '');
 
 	$cache_key = 'mastodoncustomemojis:' . $api_base_url;
 
-	$emojis = Cache::get($cache_key);
-	if (empty($emojis['texts']) || Config::get('system', 'ignore_cache')) {
-		// Reset the emojis array
-		$emojis = $return;
+	$return = Cache::get($cache_key);
 
-		$api_url = $api_base_url . '/api/v1/custom_emojis';
+	if (empty($return) || Config::get('system', 'ignore_cache')) {
+		$return = mastodoncustomemojis_fetch_custom_emojis_for_url($api_base_url);
 
-		$ret = Network::fetchUrlFull($api_url);
+		Cache::set($cache_key, $return, empty($return['texts']) ? Cache::HALF_HOUR : Cache::WEEK);
+	}
 
-		if ($ret['success']) {
-			$emojis_array = json_decode($ret['body'], true);
+	return $return;
+}
 
-			if (is_array($emojis_array)) {
-				foreach ($emojis_array as $emoji) {
-					$emojis['texts'][] = ':' . $emoji['shortcode'] . ':';
-					$emojis['icons'][] = '<img class="emoji mastodon" src="' . ProxyUtils::proxifyUrl($emoji['static_url']) . '" alt=":' . $emoji['shortcode'] . ':" title=":' . $emoji['shortcode'] . ':"/>';
-				}
+function mastodoncustomemojis_fetch_custom_emojis_for_url($api_base_url)
+{
+	$return = ['texts' => [], 'icons' => []];
+
+	$api_url = $api_base_url . '/api/v1/custom_emojis';
+
+	$ret = Network::fetchUrlFull($api_url);
+
+	if ($ret['success']) {
+		$emojis_array = json_decode($ret['body'], true);
+
+		if (is_array($emojis_array) && count($emojis_array)) {
+			foreach ($emojis_array as $emoji) {
+				$return['texts'][] = ':' . $emoji['shortcode'] . ':';
+				$return['icons'][] = '<img class="emoji mastodon" src="' . ProxyUtils::proxifyUrl($emoji['static_url']) . '" alt=":' . $emoji['shortcode'] . ':" title=":' . $emoji['shortcode'] . ':"/>';
 			}
-
-			$ttl = Cache::WEEK;
-		} else {
-			$ttl = Cache::HALF_HOUR;
 		}
-
-		Cache::set($cache_key, $emojis, $ttl);
-
-		$return = $emojis;
 	}
 
 	return $return;
