@@ -133,7 +133,8 @@ function advancedcontentfilter_prepare_body_content_filter(App $a, &$hook_data)
 					$rule['serialized']
 				);
 
-				$found = (bool) $expressionLanguage->evaluate($serializedParsedExpression, $vars);
+				// The error suppression operator is used because of potentially broken user-supplied regular expressions
+				$found = (bool) @$expressionLanguage->evaluate($serializedParsedExpression, $vars);
 			} catch (Exception $e) {
 				$found = false;
 			}
