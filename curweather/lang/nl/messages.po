@@ -1,0 +1,132 @@
+# ADDON curweather
+# Copyright (C)
+# This file is distributed under the same license as the Friendica curweather addon package.
+# 
+# 
+# Translators:
+# Jeroen De Meerleer <me@jeroened.be>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-25 17:17+0200\n"
+"PO-Revision-Date: 2018-08-24 13:49+0000\n"
+"Last-Translator: Jeroen De Meerleer <me@jeroened.be>\n"
+"Language-Team: Dutch (http://www.transifex.com/Friendica/friendica/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: curweather.php:31
+msgid "Error fetching weather data.\\nError was: "
+msgstr "Fout bij het ophalen van de weer data:\\nFout was:"
+
+#: curweather.php:111 curweather.php:172
+msgid "Current Weather"
+msgstr "Het weer"
+
+#: curweather.php:118
+msgid "Relative Humidity"
+msgstr "Relatieve vochtigheid"
+
+#: curweather.php:119
+msgid "Pressure"
+msgstr "Luchtdruk"
+
+#: curweather.php:120
+msgid "Wind"
+msgstr "Wind"
+
+#: curweather.php:121
+msgid "Last Updated"
+msgstr "Laatste wijziging"
+
+#: curweather.php:122
+msgid "Data by"
+msgstr "Data afkomstig van"
+
+#: curweather.php:123
+msgid "Show on map"
+msgstr "Toon op kaart"
+
+#: curweather.php:128
+msgid "There was a problem accessing the weather data. But have a look"
+msgstr "Er was een probleem met het ophalen van de data. Bekijk het"
+
+#: curweather.php:130
+msgid "at OpenWeatherMap"
+msgstr "Op OpenWeatherMap"
+
+#: curweather.php:146
+msgid "Current Weather settings updated."
+msgstr "Huidige weerinstellingen opgeslagen"
+
+#: curweather.php:161
+msgid "No APPID found, please contact your admin to obtain one."
+msgstr "Geen APPID gevonden. Contacteer je node-admin om dit te verkrijgen"
+
+#: curweather.php:171 curweather.php:200
+msgid "Save Settings"
+msgstr "Instellingen opslaan"
+
+#: curweather.php:172
+msgid "Settings"
+msgstr "Instellingen"
+
+#: curweather.php:174
+msgid "Enter either the name of your location or the zip code."
+msgstr "Voor de naam of de postcode van je locatie in"
+
+#: curweather.php:175
+msgid "Your Location"
+msgstr "Uw locatie"
+
+#: curweather.php:175
+msgid ""
+"Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or "
+"<em>14476,DE</em>."
+msgstr "ID van je locatie (naam of postocde), vb. <em>Amsterdam, NL</em> of <em>2000,BE</em>"
+
+#: curweather.php:176
+msgid "Units"
+msgstr "Eenheden"
+
+#: curweather.php:176
+msgid "select if the temperature should be displayed in &deg;C or &deg;F"
+msgstr "Selecteer of de temperatuur in &deg;C of &deg;F moet weergegeven worden"
+
+#: curweather.php:177
+msgid "Show weather data"
+msgstr "Toon weer "
+
+#: curweather.php:190
+msgid "Curweather settings saved."
+msgstr "Curweather instellingen opgeslagen"
+
+#: curweather.php:201
+msgid "Caching Interval"
+msgstr "Caching interval"
+
+#: curweather.php:201
+msgid ""
+"For how long should the weather data be cached? Choose according your "
+"OpenWeatherMap account type."
+msgstr "Voor hoe lang moet de weer data opgeslagen worden? Kies dit volgens je OpenWeatherMap account type."
+
+#: curweather.php:201
+msgid "no cache"
+msgstr "Geen cache"
+
+#: curweather.php:201
+msgid "minutes"
+msgstr "Minuten"
+
+#: curweather.php:202
+msgid "Your APPID"
+msgstr "Uw APPID"
+
+#: curweather.php:202
+msgid "Your API key provided by OpenWeatherMap"
+msgstr "Je OpenWeatherMap API-Key"

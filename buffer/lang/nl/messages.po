@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2018-04-20 17:34+0000\n"
+"PO-Revision-Date: 2018-08-24 13:04+0000\n"
 "Last-Translator: Jeroen De Meerleer <me@jeroened.be>\n"
 "Language-Team: Dutch (http://www.transifex.com/Friendica/friendica/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -70,8 +70,8 @@ msgstr "Plaatsen op Buffer als standaard instellen"
 
 #: buffer.php:156
 msgid "Check to delete this preset"
-msgstr ""
+msgstr "Vink aan om deze vooraf ingestelde opties te verwijderen "
 
 #: buffer.php:165
 msgid "Posts are going to all accounts that are enabled by default:"
-msgstr ""
+msgstr "Berichten gaan naar alle accounts die als standaard zijn ingeschakeld: "

@@ -1,0 +1,64 @@
+# ADDON tumblr
+# Copyright (C)
+# This file is distributed under the same license as the Friendica tumblr addon package.
+# 
+# 
+# Translators:
+# Jeroen De Meerleer <me@jeroened.be>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-08-24 13:53+0000\n"
+"Last-Translator: Jeroen De Meerleer <me@jeroened.be>\n"
+"Language-Team: Dutch (http://www.transifex.com/Friendica/friendica/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: tumblr.php:34
+msgid "Permission denied."
+msgstr "Toegang geweigerd."
+
+#: tumblr.php:144
+msgid "You are now authenticated to tumblr."
+msgstr "Je bent nu aangemeld bij tumblr"
+
+#: tumblr.php:145
+msgid "return to the connector page"
+msgstr ""
+
+#: tumblr.php:158
+msgid "Post to Tumblr"
+msgstr ""
+
+#: tumblr.php:185
+msgid "Tumblr Post Settings"
+msgstr ""
+
+#: tumblr.php:188
+msgid "(Re-)Authenticate your tumblr page"
+msgstr ""
+
+#: tumblr.php:192
+msgid "Enable Tumblr Post Addon"
+msgstr "Tumblr Post Addon inschakelen"
+
+#: tumblr.php:197
+msgid "Post to Tumblr by default"
+msgstr "Plaatsen op Tumblr als standaard instellen "
+
+#: tumblr.php:217
+msgid "Post to page:"
+msgstr "Plaats op pagina:"
+
+#: tumblr.php:228
+msgid "You are not authenticated to tumblr"
+msgstr ""
+
+#: tumblr.php:233
+msgid "Submit"
+msgstr ""

@@ -1,0 +1,52 @@
+# ADDON fromgplus
+# Copyright (C)
+# This file is distributed under the same license as the Friendica fromgplus addon package.
+# 
+# 
+# Translators:
+# Jeroen De Meerleer <me@jeroened.be>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-01 11:14-0400\n"
+"PO-Revision-Date: 2018-08-24 13:51+0000\n"
+"Last-Translator: Jeroen De Meerleer <me@jeroened.be>\n"
+"Language-Team: Dutch (http://www.transifex.com/Friendica/friendica/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: fromgplus.php:55 fromgplus.php:59
+msgid "Google+ Mirror"
+msgstr "Google+ mirror"
+
+#: fromgplus.php:64
+msgid "Enable Google+ Import"
+msgstr "Google+ import inschakelen"
+
+#: fromgplus.php:67
+msgid "Google Account ID"
+msgstr "Google Account id"
+
+#: fromgplus.php:70
+msgid "Add keywords to post"
+msgstr "Voer sleutelwoorden toe aan je bericht"
+
+#: fromgplus.php:75 fromgplus.php:105
+msgid "Save Settings"
+msgstr "Instellingen opslaan"
+
+#: fromgplus.php:96
+msgid "Google+ Import Settings saved."
+msgstr "Google+ Import instellingen opgeslagen."
+
+#: fromgplus.php:106
+msgid "Key"
+msgstr "Key"
+
+#: fromgplus.php:114
+msgid "Settings updated."
+msgstr "Instellingen opgeslagen"

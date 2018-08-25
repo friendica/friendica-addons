@@ -1,0 +1,57 @@
+# ADDON notifyall
+# Copyright (C)
+# This file is distributed under the same license as the Friendica notifyall addon package.
+# 
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-08-14 16:41+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Jeroen De Meerleer <me@jeroened.be>, 2018\n"
+"Language-Team: Dutch (https://www.transifex.com/Friendica/teams/12172/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: notifyall.php:26
+msgid "Send email to all members"
+msgstr "Stuur e-mail naar alle leden"
+
+#: notifyall.php:42
+#, php-format
+msgid "%s Administrator"
+msgstr "%s Beheerder"
+
+#: notifyall.php:44
+#, php-format
+msgid "%1$s, %2$s Administrator"
+msgstr "%1$s%2$s Beheerder"
+
+#: notifyall.php:60
+msgid "No recipients found."
+msgstr ""
+
+#: notifyall.php:78
+msgid "Emails sent"
+msgstr ""
+
+#: notifyall.php:86
+msgid "Send email to all members of this Friendica instance."
+msgstr ""
+
+#: notifyall.php:91
+msgid "Message subject"
+msgstr ""
+
+#: notifyall.php:92
+msgid "Test mode (only send to administrator)"
+msgstr ""
+
+#: notifyall.php:93
+msgid "Submit"
+msgstr ""

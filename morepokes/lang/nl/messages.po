@@ -1,0 +1,167 @@
+# ADDON morepokes
+# Copyright (C)
+# This file is distributed under the same license as the Friendica morepokes addon package.
+# 
+# 
+# Translators:
+# Jeroen De Meerleer <me@jeroened.be>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-08-23 12:16+0000\n"
+"Last-Translator: Jeroen De Meerleer <me@jeroened.be>\n"
+"Language-Team: Dutch (http://www.transifex.com/Friendica/friendica/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: morepokes.php:19
+msgid "bitchslap"
+msgstr "Kaakslag"
+
+#: morepokes.php:19
+msgid "bitchslapped"
+msgstr "Sloeg op de kaak"
+
+#: morepokes.php:20
+msgid "shag"
+msgstr "Liefde bedrijven"
+
+#: morepokes.php:20
+msgid "shagged"
+msgstr "De liefde bedreven"
+
+#: morepokes.php:21
+msgid "do something obscenely biological to"
+msgstr "Doe iets biologisch obsceen"
+
+#: morepokes.php:21
+msgid "did something obscenely biological to"
+msgstr "Heeft iets biologisch obsceen gedaan"
+
+#: morepokes.php:22
+msgid "point out the poke feature to"
+msgstr "De functie porren uitleggen"
+
+#: morepokes.php:22
+msgid "pointed out the poke feature to"
+msgstr "Legde de functie porren uit aan"
+
+#: morepokes.php:23
+msgid "declare undying love for"
+msgstr "Eeuwige liefde verklaren"
+
+#: morepokes.php:23
+msgid "declared undying love for"
+msgstr "Verklaarde eeuwige liefde"
+
+#: morepokes.php:24
+msgid "patent"
+msgstr "Patenteren"
+
+#: morepokes.php:24
+msgid "patented"
+msgstr "Patenteerde"
+
+#: morepokes.php:25
+msgid "stroke beard"
+msgstr "Baard strijken"
+
+#: morepokes.php:25
+msgid "stroked their beard at"
+msgstr "Streek zijn baard naar"
+
+#: morepokes.php:26
+msgid ""
+"bemoan the declining standards of modern secondary and tertiary education to"
+msgstr "De dalende normen van het moderne secundaire en tertiaire onderwijs betreuren aan"
+
+#: morepokes.php:26
+msgid ""
+"bemoans the declining standards of modern secondary and tertiary education "
+"to"
+msgstr "betreurt de dalende normen van het moderne secundaire en tertiaire onderwijs aan"
+
+#: morepokes.php:27
+msgid "hug"
+msgstr "knuffel"
+
+#: morepokes.php:27
+msgid "hugged"
+msgstr "knuffelde"
+
+#: morepokes.php:28
+msgid "kiss"
+msgstr "kus"
+
+#: morepokes.php:28
+msgid "kissed"
+msgstr "kuste"
+
+#: morepokes.php:29
+msgid "raise eyebrows at"
+msgstr "Fronsen"
+
+#: morepokes.php:29
+msgid "raised their eyebrows at"
+msgstr "Fronsde naar"
+
+#: morepokes.php:30
+msgid "insult"
+msgstr "Beledigen"
+
+#: morepokes.php:30
+msgid "insulted"
+msgstr "Beledigde"
+
+#: morepokes.php:31
+msgid "praise"
+msgstr "Loven"
+
+#: morepokes.php:31
+msgid "praised"
+msgstr "Loofde"
+
+#: morepokes.php:32
+msgid "be dubious of"
+msgstr "Verdachten"
+
+#: morepokes.php:32
+msgid "was dubious of"
+msgstr "Verdachtte"
+
+#: morepokes.php:33
+msgid "eat"
+msgstr "Opeten"
+
+#: morepokes.php:33
+msgid "ate"
+msgstr "Eete op"
+
+#: morepokes.php:34
+msgid "giggle and fawn at"
+msgstr "Giechelen"
+
+#: morepokes.php:34
+msgid "giggled and fawned at"
+msgstr "Giechelde naar"
+
+#: morepokes.php:35
+msgid "doubt"
+msgstr "Twijfelen"
+
+#: morepokes.php:35
+msgid "doubted"
+msgstr "Twijfelde over"
+
+#: morepokes.php:36
+msgid "glare"
+msgstr "Schitteren"
+
+#: morepokes.php:36
+msgid "glared at"
+msgstr "Schitterde naar"

@@ -2,6 +2,7 @@
 
 if(! function_exists("string_plural_select_nl")) {
 function string_plural_select_nl($n){
+	$n = intval($n);
 	return ($n != 1);;
 }}
 ;
@@ -15,5 +16,5 @@ $a->strings["Minimum confidence in language detection being correct, from 0 to 1
 $a->strings["Minimum length of message body"] = "Minimum lengte van de berichttekst";
 $a->strings["Minimum number of characters in message body for filter to be used. Posts shorter than this will not be filtered. Note: Language detection is unreliable for short content (<200 characters)."] = "Minimum aantal letters en leestekens in de berichttekst nodig voor het filter om te werken. Kortere berichten worden niet gefilterd. NB: Taaldetectie is onbetrouwbaar voor korte berichten (<200 letters en leestekens).";
 $a->strings["Save Settings"] = "Instellingen opslaan";
-$a->strings["Language Filter Settings saved."] = "Taalfilter-instellingen bijgewerkt.";
+$a->strings["Language Filter Settings saved."] = "Taalfilter instellingen opgeslagen";
 $a->strings["Filtered language: %s"] = "Gefilterde taal: %s";

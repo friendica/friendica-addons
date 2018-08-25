@@ -1,0 +1,80 @@
+# ADDON forumdirectory
+# Copyright (C)
+# This file is distributed under the same license as the Friendica forumdirectory addon package.
+# 
+# 
+# Translators:
+# Jeroen De Meerleer <me@jeroened.be>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-08-24 13:21+0000\n"
+"Last-Translator: Jeroen De Meerleer <me@jeroened.be>\n"
+"Language-Team: Dutch (http://www.transifex.com/Friendica/friendica/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: forumdirectory.php:22
+msgid "Forum Directory"
+msgstr "Forum index"
+
+#: forumdirectory.php:53
+msgid "Public access denied."
+msgstr "Publieke toegang geweigerd"
+
+#: forumdirectory.php:71
+msgid "Global Directory"
+msgstr "Globaal overzicht"
+
+#: forumdirectory.php:79
+msgid "Find on this site"
+msgstr "Zoeken"
+
+#: forumdirectory.php:81
+msgid "Finding: "
+msgstr "Zoeken..."
+
+#: forumdirectory.php:82
+msgid "Site Directory"
+msgstr "Site overzicht"
+
+#: forumdirectory.php:83
+msgid "Find"
+msgstr "Zoek"
+
+#: forumdirectory.php:133
+msgid "Age: "
+msgstr "Leeftijd:"
+
+#: forumdirectory.php:136
+msgid "Gender: "
+msgstr "Geslacht:"
+
+#: forumdirectory.php:156
+msgid "Location:"
+msgstr "Woonplaats:"
+
+#: forumdirectory.php:158
+msgid "Gender:"
+msgstr "Geslacht:"
+
+#: forumdirectory.php:160
+msgid "Status:"
+msgstr "Status:"
+
+#: forumdirectory.php:162
+msgid "Homepage:"
+msgstr "Website:"
+
+#: forumdirectory.php:164
+msgid "About:"
+msgstr "Over:"
+
+#: forumdirectory.php:201
+msgid "No entries (some entries may be hidden)."
+msgstr "Geen berichten (sommige berichten kunnen verborgen zijn)."
