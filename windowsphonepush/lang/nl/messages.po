@@ -1,0 +1,40 @@
+# ADDON windowsphonepush
+# Copyright (C)
+# This file is distributed under the same license as the Friendica windowsphonepush addon package.
+# 
+# 
+# Translators:
+# Jeroen De Meerleer <me@jeroened.be>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-10-26 15:02+0100\n"
+"PO-Revision-Date: 2018-08-24 13:48+0000\n"
+"Last-Translator: Jeroen De Meerleer <me@jeroened.be>\n"
+"Language-Team: Dutch (http://www.transifex.com/Friendica/friendica/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: windowsphonepush.php:85
+msgid "WindowsPhonePush settings updated."
+msgstr "WindowsPhonePush instellingen opgeslagen"
+
+#: windowsphonepush.php:114
+msgid "WindowsPhonePush Settings"
+msgstr "WindowsPhonePush instellingen"
+
+#: windowsphonepush.php:117
+msgid "Enable WindowsPhonePush Addon"
+msgstr "WindowsPhonePush Addon inschakelen"
+
+#: windowsphonepush.php:122
+msgid "Push text of new item"
+msgstr ""
+
+#: windowsphonepush.php:127
+msgid "Save Settings"
+msgstr "Instellingen opslaan"

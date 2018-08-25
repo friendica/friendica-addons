@@ -1,0 +1,55 @@
+# ADDON securemail
+# Copyright (C)
+# This file is distributed under the same license as the Friendica securemail addon package.
+# 
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-11 21:14+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Jeroen De Meerleer <me@jeroened.be>, 2018\n"
+"Language-Team: Dutch (https://www.transifex.com/Friendica/teams/12172/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: securemail.php:53
+msgid "\"Secure Mail\" Settings"
+msgstr "\"Secure Mail\" instellingen"
+
+#: securemail.php:54
+msgid "Save Settings"
+msgstr "Instellingen opslaan"
+
+#: securemail.php:55 securemail.php:76
+msgid "Save and send test"
+msgstr ""
+
+#: securemail.php:56
+msgid "Enable Secure Mail"
+msgstr "Secure Mail inschakelen"
+
+#: securemail.php:57
+msgid "Public key"
+msgstr ""
+
+#: securemail.php:57
+msgid "Your public PGP key, ascii armored format"
+msgstr ""
+
+#: securemail.php:74
+msgid "Secure Mail Settings saved."
+msgstr "Secure Mail instellingen opgeslagen"
+
+#: securemail.php:111
+msgid "Test email sent"
+msgstr ""
+
+#: securemail.php:113
+msgid "There was an error sending the test email"
+msgstr ""

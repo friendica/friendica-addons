@@ -1,0 +1,98 @@
+# ADDON mailstream
+# Copyright (C)
+# This file is distributed under the same license as the Friendica mailstream addon package.
+# 
+# 
+# Translators:
+# Jeroen De Meerleer <me@jeroened.be>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-03-11 19:13+0100\n"
+"PO-Revision-Date: 2018-08-24 13:39+0000\n"
+"Last-Translator: Jeroen De Meerleer <me@jeroened.be>\n"
+"Language-Team: Dutch (http://www.transifex.com/Friendica/friendica/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: mailstream.php:77
+msgid "From Address"
+msgstr "Van Adres"
+
+#: mailstream.php:79
+msgid "Email address that stream items will appear to be from."
+msgstr "E-mail adres waarvan stream items komen "
+
+#: mailstream.php:82 mailstream.php:380
+msgid "Save Settings"
+msgstr "Instellingen opslaan"
+
+#: mailstream.php:223
+msgid "Re:"
+msgstr ""
+
+#: mailstream.php:231
+msgid "Friendica post"
+msgstr ""
+
+#: mailstream.php:234
+msgid "Diaspora post"
+msgstr ""
+
+#: mailstream.php:244
+msgid "Feed item"
+msgstr ""
+
+#: mailstream.php:247
+msgid "Email"
+msgstr ""
+
+#: mailstream.php:249
+msgid "Friendica Item"
+msgstr ""
+
+#: mailstream.php:293
+msgid "Upstream"
+msgstr ""
+
+#: mailstream.php:294
+msgid "Local"
+msgstr ""
+
+#: mailstream.php:362
+msgid "Enabled"
+msgstr "Ingeschakeld"
+
+#: mailstream.php:366
+msgid "Email Address"
+msgstr ""
+
+#: mailstream.php:368
+msgid "Leave blank to use your account email address"
+msgstr ""
+
+#: mailstream.php:371
+msgid "Exclude Likes"
+msgstr ""
+
+#: mailstream.php:373
+msgid "Check this to omit mailing \"Like\" notifications"
+msgstr ""
+
+#: mailstream.php:376
+msgid "Attach Images"
+msgstr ""
+
+#: mailstream.php:378
+msgid ""
+"Download images in posts and attach them to the email.  Useful for reading "
+"email while offline."
+msgstr ""
+
+#: mailstream.php:379
+msgid "Mail Stream Settings"
+msgstr ""

@@ -1,0 +1,36 @@
+# ADDON startpage
+# Copyright (C)
+# This file is distributed under the same license as the Friendica startpage addon package.
+# 
+# 
+# Translators:
+# Jeroen De Meerleer <me@jeroened.be>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-08-24 11:43+0000\n"
+"Last-Translator: Jeroen De Meerleer <me@jeroened.be>\n"
+"Language-Team: Dutch (http://www.transifex.com/Friendica/friendica/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: startpage.php:83
+msgid "Startpage Settings"
+msgstr "Startpagina instellingen"
+
+#: startpage.php:85
+msgid "Home page to load after login  - leave blank for profile wall"
+msgstr ""
+
+#: startpage.php:88
+msgid "Examples: &quot;network&quot; or &quot;notifications/system&quot;"
+msgstr ""
+
+#: startpage.php:92
+msgid "Submit"
+msgstr ""

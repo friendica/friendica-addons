@@ -1,0 +1,41 @@
+# ADDON fromapp
+# Copyright (C)
+# This file is distributed under the same license as the Friendica fromapp addon package.
+# 
+# 
+# Translators:
+# Jeroen De Meerleer <me@jeroened.be>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2018-08-24 13:48+0000\n"
+"Last-Translator: Jeroen De Meerleer <me@jeroened.be>\n"
+"Language-Team: Dutch (http://www.transifex.com/Friendica/friendica/language/nl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: fromapp.php:38
+msgid "Fromapp settings updated."
+msgstr "Fromapp instellingen opgeslagen"
+
+#: fromapp.php:64
+msgid "FromApp Settings"
+msgstr "FromApp instellingen"
+
+#: fromapp.php:66
+msgid ""
+"The application name you would like to show your posts originating from."
+msgstr "De applicatienaam die je wilt laten verschijnen bij je berichten"
+
+#: fromapp.php:70
+msgid "Use this application name even if another application was used."
+msgstr "Gebruik deze applicatienaam zelfs als een andere applicatie werd gebruikt"
+
+#: fromapp.php:77
+msgid "Submit"
+msgstr "Opslaan"
