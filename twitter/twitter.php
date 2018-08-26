@@ -817,6 +817,10 @@ function twitter_do_mirrorpost(App $a, $uid, $post)
 		// We don't support nested shares, so we mustn't show quotes as shares on retweets
 		$item = twitter_createpost($a, $uid, $post->retweeted_status, ['id' => 0], false, false, true);
 
+		if (empty($item['body'])) {
+			return [];
+		}
+
 		$datarray['body'] = "\n" . share_header(
 			$item['author-name'],
 			$item['author-link'],
@@ -829,6 +833,10 @@ function twitter_do_mirrorpost(App $a, $uid, $post)
 		$datarray['body'] .= $item['body'] . '[/share]';
 	} else {
 		$item = twitter_createpost($a, $uid, $post, ['id' => 0], false, false, false);
+
+		if (empty($item['body'])) {
+			return [];
+		}
 
 		$datarray['body'] = $item['body'];
 	}
@@ -906,6 +914,10 @@ function twitter_fetchtimeline(App $a, $uid)
 				$_SESSION["uid"] = $uid;
 
 				$_REQUEST = twitter_do_mirrorpost($a, $uid, $post);
+
+				if (empty($_REQUEST['body'])) {
+					continue;
+				}
 
 				logger('twitter: posting for user ' . $uid);
 
@@ -1467,6 +1479,10 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 	if (!empty($post->retweeted_status)) {
 		$retweet = twitter_createpost($a, $uid, $post->retweeted_status, $self, false, false, $noquote);
 
+		if (empty($retweet['body'])) {
+			return [];
+		}
+
 		$retweet['source'] = $postarray['source'];
 		$retweet['private'] = $postarray['private'];
 		$retweet['allow_cid'] = $postarray['allow_cid'];
@@ -1480,6 +1496,10 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 
 	if (!empty($post->quoted_status) && !$noquote) {
 		$quoted = twitter_createpost($a, $uid, $post->quoted_status, $self, false, false, true);
+
+		if (empty($quoted['body'])) {
+			return [];
+		}
 
 		$postarray['body'] = $statustext;
 
