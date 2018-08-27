@@ -136,7 +136,7 @@ msgstr ""
 
 #: morechoice.php:66
 msgid "Statues, mannequins and immobility"
-msgstr ""
+msgstr "Sochy, figuríny a nepohyblivost"
 
 #: morechoice.php:67
 msgid "Pain"
@@ -144,7 +144,7 @@ msgstr "Bolest"
 
 #: morechoice.php:68
 msgid "Trans men"
-msgstr ""
+msgstr "Transmuž"
 
 #: morechoice.php:69
 msgid "Older women"
@@ -204,7 +204,7 @@ msgstr "Tlustí lidé"
 
 #: morechoice.php:83
 msgid "Feet"
-msgstr ""
+msgstr "Nohy"
 
 #: morechoice.php:84
 msgid "Covered in insects"
@@ -220,7 +220,7 @@ msgstr "Postarší lidé"
 
 #: morechoice.php:87
 msgid "Transgender people"
-msgstr ""
+msgstr "Transgenderoví lidé"
 
 #: morechoice.php:88
 msgid "Criminals"
@@ -264,7 +264,7 @@ msgstr "Sprostý jazyk"
 
 #: morechoice.php:98
 msgid "Noses"
-msgstr ""
+msgstr "Nosy"
 
 #: morechoice.php:99
 msgid "Navels"
