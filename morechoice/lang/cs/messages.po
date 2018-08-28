@@ -112,7 +112,7 @@ msgstr "Těžké říct touhle dobou"
 
 #: morechoice.php:60
 msgid "Girls with big tits"
-msgstr ""
+msgstr "Holky s velkýma kozama"
 
 #: morechoice.php:61
 msgid "Millionaires"
@@ -120,11 +120,11 @@ msgstr "Milionáři"
 
 #: morechoice.php:62
 msgid "Guys with big schlongs"
-msgstr ""
+msgstr "Chlapi s velkýma ptákama"
 
 #: morechoice.php:63
 msgid "Easy women"
-msgstr ""
+msgstr "Lehké ženy"
 
 #: morechoice.php:64
 msgid "People with impaired mobility"
@@ -132,7 +132,7 @@ msgstr "Lidé s pohybovým postižením"
 
 #: morechoice.php:65
 msgid "Amputees"
-msgstr ""
+msgstr "Amputovaní"
 
 #: morechoice.php:66
 msgid "Statues, mannequins and immobility"
@@ -184,7 +184,7 @@ msgstr "Pláču"
 
 #: morechoice.php:78
 msgid "Nappies/Diapers"
-msgstr ""
+msgstr "Plenky"
 
 #: morechoice.php:79
 msgid "Trees"
@@ -252,7 +252,7 @@ msgstr "Auto"
 
 #: morechoice.php:95
 msgid "Menstruation"
-msgstr ""
+msgstr "Menstruace"
 
 #: morechoice.php:96
 msgid "Mucus"
@@ -268,7 +268,7 @@ msgstr "Nosy"
 
 #: morechoice.php:99
 msgid "Navels"
-msgstr ""
+msgstr "Pupky"
 
 #: morechoice.php:100
 msgid "Corpses"
@@ -276,7 +276,7 @@ msgstr ""
 
 #: morechoice.php:101
 msgid "Smells"
-msgstr ""
+msgstr "Pachy"
 
 #: morechoice.php:102
 msgid "Buttocks"
@@ -296,7 +296,7 @@ msgstr "Močení"
 
 #: morechoice.php:106
 msgid "Eating people"
-msgstr ""
+msgstr "Žeru lidi"
 
 #: morechoice.php:107
 msgid "Being eaten"
