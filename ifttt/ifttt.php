@@ -180,7 +180,7 @@ function ifttt_message($uid, $item)
 	//$_REQUEST['date'] = $item['date'];
 	//$_REQUEST['uri'] = $item['url'];
 
-	if (strstr($item['url'], 'facebook.com')) {
+	if (!empty($item['url']) && strstr($item['url'], 'facebook.com')) {
 		$hash = hash('ripemd128', $item['url']);
 		$_REQUEST['extid'] = Protocol::FACEBOOK;
 		$_REQUEST['message_id'] = Item::newURI($uid, Protocol::FACEBOOK . ':' . $hash);
