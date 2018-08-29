@@ -1002,7 +1002,7 @@ function twitter_fix_avatar($avatar)
 
 function twitter_fetch_contact($uid, $data, $create_user)
 {
-	if ($data->id_str == "") {
+	if (empty($data->id_str)) {
 		return -1;
 	}
 
