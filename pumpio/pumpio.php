@@ -139,7 +139,8 @@ function pumpio_registerclient(App $a, $host)
 function pumpio_connect(App $a)
 {
 	// Start a session.  This is necessary to hold on to  a few keys the callback script will also need
-	session_start();
+	// Currently disabled, since a session is already running
+	//session_start();
 
 	// Define the needed keys
 	$consumer_key = PConfig::get(local_user(), 'pumpio', 'consumer_key');
@@ -174,7 +175,7 @@ function pumpio_connect(App $a)
 	// Create a new instance of the oauth_client_class library.  For this step, all we need to give the library is our
 	// Consumer Key and Consumer Secret
 	$client = new oauth_client_class;
-	$client->debug = 1;
+	$client->debug = 0;
 	$client->server = '';
 	$client->oauth_version = '1.0a';
 	$client->request_token_url = 'https://'.$hostname.'/oauth/request_token';
@@ -202,7 +203,7 @@ function pumpio_connect(App $a)
 
 	if ($success) {
 		logger("pumpio_connect: authenticated");
-		$o .= L10n::t("You are now authenticated to pumpio.");
+		$o = L10n::t("You are now authenticated to pumpio.");
 		$o .= '<br /><a href="'.$a->get_baseurl().'/settings/connectors">'.L10n::t("return to the connector page").'</a>';
 	} else {
 		logger("pumpio_connect: could not connect");
@@ -361,20 +362,17 @@ function pumpio_settings_post(App $a, array &$b)
 			$host = trim($host);
 			$host = str_replace(["https://", "http://"], ["", ""], $host);
 
-			if (isset($_POST['pumpio'])) {
-				PConfig::set(local_user(), 'pumpio', 'post'           , intval($_POST['pumpio']));
-				PConfig::set(local_user(), 'pumpio', 'import'         , $_POST['pumpio_import']);
-				PConfig::set(local_user(), 'pumpio', 'host'           , $host);
-				PConfig::set(local_user(), 'pumpio', 'user'           , $user);
-				PConfig::set(local_user(), 'pumpio', 'public'         , $_POST['pumpio_public']);
-				PConfig::set(local_user(), 'pumpio', 'mirror'         , $_POST['pumpio_mirror']);
-				PConfig::set(local_user(), 'pumpio', 'post_by_default', intval($_POST['pumpio_bydefault']));
+			PConfig::set(local_user(), 'pumpio', 'post'           , defaults($_POST, 'pumpio', false));
+			PConfig::set(local_user(), 'pumpio', 'import'         , defaults($_POST, 'pumpio_import', false));
+			PConfig::set(local_user(), 'pumpio', 'host'           , $host);
+			PConfig::set(local_user(), 'pumpio', 'user'           , $user);
+			PConfig::set(local_user(), 'pumpio', 'public'         , defaults($_POST, 'pumpio_public', false));
+			PConfig::set(local_user(), 'pumpio', 'mirror'         , defaults($_POST, 'pumpio_mirror', false));
+			PConfig::set(local_user(), 'pumpio', 'post_by_default', defaults($_POST, 'pumpio_bydefault', false));
 
-				if (!$_POST['pumpio_mirror']) {
-					PConfig::delete(local_user(), 'pumpio', 'lastdate');
-				}
+			if (!empty($_POST['pumpio_mirror'])) {
+				PConfig::delete(local_user(), 'pumpio', 'lastdate');
 			}
-			//header("Location: ".$a->get_baseurl()."/pumpio/connect");
 		}
 	}
 }
