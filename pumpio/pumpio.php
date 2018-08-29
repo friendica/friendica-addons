@@ -138,10 +138,6 @@ function pumpio_registerclient(App $a, $host)
 
 function pumpio_connect(App $a)
 {
-	// Start a session.  This is necessary to hold on to  a few keys the callback script will also need
-	// Currently disabled, since a session is already running
-	//session_start();
-
 	// Define the needed keys
 	$consumer_key = PConfig::get(local_user(), 'pumpio', 'consumer_key');
 	$consumer_secret = PConfig::get(local_user(), 'pumpio', 'consumer_secret');
