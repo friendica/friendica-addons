@@ -77,7 +77,7 @@ function mastodoncustomemojis_get_custom_emojis_for_author($author_link)
 	if (empty($return) || Config::get('system', 'ignore_cache')) {
 		$return = mastodoncustomemojis_fetch_custom_emojis_for_url($api_base_url);
 
-		Cache::set($cache_key, $return, empty($return['texts']) ? Cache::HALF_HOUR : Cache::WEEK);
+		Cache::set($cache_key, $return, empty($return['texts']) ? Cache::QUARTER_HOUR : Cache::HOUR);
 	}
 
 	return $return;
