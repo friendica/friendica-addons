@@ -163,6 +163,10 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 			break;
 		}
 
+		if (empty($iso2)) {
+			return;
+		}
+
 		$lang = Text_LanguageDetect_ISO639::code2ToName($iso2);
 	} else {
 		$opts = $hook_data['item']['postopts'];
