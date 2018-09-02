@@ -106,8 +106,8 @@ function notifyall_content(&$a)
 
 	$o = replace_macros(get_markup_template('notifyall_form.tpl', 'addon/notifyall/'), [
 		'$title' => $title,
-		'$text' => htmlspecialchars($_REQUEST['text']),
-		'$subject' => ['subject',L10n::t('Message subject'),$_REQUEST['subject'],''],
+		'$text' => htmlspecialchars(defaults($_REQUEST, 'text', '')),
+		'$subject' => ['subject', L10n::t('Message subject'), defaults($_REQUEST, 'subject', ''),''],
 		'$test' => ['test',L10n::t('Test mode (only send to administrator)'), 0,''],
 		'$submit' => L10n::t('Submit')
 	]);
