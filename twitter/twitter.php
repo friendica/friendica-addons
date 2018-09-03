@@ -1678,7 +1678,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 			}
 
 			if (stristr($post->source, $application_name) && $post->user->screen_name == $own_id) {
-				logger("Skip previously send post", LOGGER_DEBUG);
+				logger("Skip previously sent post", LOGGER_DEBUG);
 				continue;
 			}
 
