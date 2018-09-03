@@ -888,15 +888,18 @@ function twitter_fetchtimeline(App $a, $uid)
 	try {
 		$items = $connection->get('statuses/user_timeline', $parameters);
 	} catch (TwitterOAuthException $e) {
-		logger('twitter_fetchtimeline: Error fetching timeline for user ' . $uid . ': ' . $e->getMessage());
+		logger('Error fetching timeline for user ' . $uid . ': ' . $e->getMessage());
 		return;
 	}
 
 	if (!is_array($items)) {
+		logger('No items for user ' . $uid, LOGGER_INFO);
 		return;
 	}
 
 	$posts = array_reverse($items);
+
+	logger('Starting from ID ' . $lastid . ' for user ' . $uid, LOGGER_DEBUG);
 
 	if (count($posts)) {
 		foreach ($posts as $post) {
@@ -913,19 +916,22 @@ function twitter_fetchtimeline(App $a, $uid)
 				$_SESSION["authenticated"] = true;
 				$_SESSION["uid"] = $uid;
 
+				logger('Preparing Twitter ID ' . $post->id_str . ' for user ' . $uid, LOGGER_DEBUG);
+
 				$_REQUEST = twitter_do_mirrorpost($a, $uid, $post);
 
 				if (empty($_REQUEST['body'])) {
 					continue;
 				}
 
-				logger('twitter: posting for user ' . $uid);
+				logger('Posting Twitter ID ' . $post->id_str . ' for user ' . $uid);
 
 				item_post($a);
 			}
 		}
 	}
 	PConfig::set($uid, 'twitter', 'lastid', $lastid);
+	logger('Last ID for user ' . $uid . ' is now ' . $lastid, LOGGER_DEBUG);
 }
 
 function twitter_queue_hook(App $a)
@@ -1581,7 +1587,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 	$create_user = PConfig::get($uid, 'twitter', 'create_user');
 	$mirror_posts = PConfig::get($uid, 'twitter', 'mirror_posts');
 
-	logger("twitter_fetchhometimeline: Fetching for user " . $uid, LOGGER_DEBUG);
+	logger("Fetching timeline for user " . $uid, LOGGER_DEBUG);
 
 	$application_name = Config::get('twitter', 'application_name');
 
@@ -1596,7 +1602,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 	try {
 		$own_contact = twitter_fetch_own_contact($a, $uid);
 	} catch (TwitterOAuthException $e) {
-		logger('twitter_fetchhometimeline: Error fetching own contact for user ' . $uid . ': ' . $e->getMessage());
+		logger('Error fetching own contact for user ' . $uid . ': ' . $e->getMessage());
 		return;
 	}
 
@@ -1607,7 +1613,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 	if (DBA::isResult($r)) {
 		$own_id = $r[0]["nick"];
 	} else {
-		logger("twitter_fetchhometimeline: Own twitter contact not found for user " . $uid, LOGGER_DEBUG);
+		logger("Own twitter contact not found for user " . $uid);
 		return;
 	}
 
@@ -1617,14 +1623,14 @@ function twitter_fetchhometimeline(App $a, $uid)
 	if (DBA::isResult($r)) {
 		$self = $r[0];
 	} else {
-		logger("twitter_fetchhometimeline: Own contact not found for user " . $uid, LOGGER_DEBUG);
+		logger("Own contact not found for user " . $uid);
 		return;
 	}
 
 	$u = q("SELECT * FROM user WHERE uid = %d LIMIT 1",
 		intval($uid));
 	if (!DBA::isResult($u)) {
-		logger("twitter_fetchhometimeline: Own user not found for user " . $uid, LOGGER_DEBUG);
+		logger("Own user not found for user " . $uid);
 		return;
 	}
 
@@ -1642,18 +1648,23 @@ function twitter_fetchhometimeline(App $a, $uid)
 	try {
 		$items = $connection->get('statuses/home_timeline', $parameters);
 	} catch (TwitterOAuthException $e) {
-		logger('twitter_fetchhometimeline: Error fetching home timeline: ' . $e->getMessage());
+		logger('Error fetching home timeline for user ' . $uid . ': ' . $e->getMessage());
 		return;
 	}
 
 	if (!is_array($items)) {
-		logger("twitter_fetchhometimeline: Error fetching home timeline: " . print_r($items, true), LOGGER_DEBUG);
+		logger('No array while fetching home timeline for user ' . $uid . ': ' . print_r($items, true));
+		return;
+	}
+
+	if (empty($items)) {
+		logger('No new timeline content for user ' . $uid, LOGGER_INFO);
 		return;
 	}
 
 	$posts = array_reverse($items);
 
-	logger("twitter_fetchhometimeline: Fetching timeline for user " . $uid . " " . sizeof($posts) . " items", LOGGER_DEBUG);
+	logger('Fetching timeline from ID ' . $lastid . ' for user ' . $uid . ' ' . sizeof($posts) . ' items', LOGGER_DEBUG);
 
 	if (count($posts)) {
 		foreach ($posts as $post) {
@@ -1667,12 +1678,12 @@ function twitter_fetchhometimeline(App $a, $uid)
 			}
 
 			if (stristr($post->source, $application_name) && $post->user->screen_name == $own_id) {
-				logger("twitter_fetchhometimeline: Skip previously sended post", LOGGER_DEBUG);
+				logger("Skip previously send post", LOGGER_DEBUG);
 				continue;
 			}
 
 			if ($mirror_posts && $post->user->screen_name == $own_id && $post->in_reply_to_status_id_str == "") {
-				logger("twitter_fetchhometimeline: Skip post that will be mirrored", LOGGER_DEBUG);
+				logger("Skip post that will be mirrored", LOGGER_DEBUG);
 				continue;
 			}
 
@@ -1680,9 +1691,12 @@ function twitter_fetchhometimeline(App $a, $uid)
 				twitter_fetchparentposts($a, $uid, $post, $connection, $self);
 			}
 
+			logger('Preparing post ' . $post->id_str . ' for user ' . $uid, LOGGER_DEBUG);
+
 			$postarray = twitter_createpost($a, $uid, $post, $self, $create_user, true, false);
 
 			if (empty($postarray['body']) || trim($postarray['body']) == "") {
+				logger('Empty body for post ' . $post->id_str . ' and user ' . $uid, LOGGER_DEBUG);
 				continue;
 			}
 
@@ -1698,10 +1712,12 @@ function twitter_fetchhometimeline(App $a, $uid)
 			$item = Item::insert($postarray, false, $notify);
 			$postarray["id"] = $item;
 
-			logger('twitter_fetchhometimeline: User ' . $self["nick"] . ' posted home timeline item ' . $item);
+			logger('User ' . uid . ' posted home timeline item ' . $item);
 		}
 	}
 	PConfig::set($uid, 'twitter', 'lasthometimelineid', $lastid);
+
+	logger('Last timeline ID for user ' . $uid . ' is now ' . $lastid, LOGGER_DEBUG);
 
 	// Fetching mentions
 	$lastid = PConfig::get($uid, 'twitter', 'lastmentionid');
@@ -1715,18 +1731,18 @@ function twitter_fetchhometimeline(App $a, $uid)
 	try {
 		$items = $connection->get('statuses/mentions_timeline', $parameters);
 	} catch (TwitterOAuthException $e) {
-		logger('twitter_fetchhometimeline: Error fetching mentions: ' . $e->getMessage());
+		logger('Error fetching mentions: ' . $e->getMessage());
 		return;
 	}
 
 	if (!is_array($items)) {
-		logger("twitter_fetchhometimeline: Error fetching mentions: " . print_r($items, true), LOGGER_DEBUG);
+		logger("Error fetching mentions: " . print_r($items, true), LOGGER_DEBUG);
 		return;
 	}
 
 	$posts = array_reverse($items);
 
-	logger("twitter_fetchhometimeline: Fetching mentions for user " . $uid . " " . sizeof($posts) . " items", LOGGER_DEBUG);
+	logger("Fetching mentions for user " . $uid . " " . sizeof($posts) . " items", LOGGER_DEBUG);
 
 	if (count($posts)) {
 		foreach ($posts as $post) {
@@ -1750,11 +1766,13 @@ function twitter_fetchhometimeline(App $a, $uid)
 
 			$item = Item::insert($postarray);
 
-			logger('twitter_fetchhometimeline: User ' . $self["nick"] . ' posted mention timeline item ' . $item);
+			logger('User ' . $uid . ' posted mention timeline item ' . $item);
 		}
 	}
 
 	PConfig::set($uid, 'twitter', 'lastmentionid', $lastid);
+
+	logger('Last mentions ID for user ' . $uid . ' is now ' . $lastid, LOGGER_DEBUG);
 }
 
 function twitter_fetch_own_contact(App $a, $uid)
