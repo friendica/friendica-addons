@@ -1712,7 +1712,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 			$item = Item::insert($postarray, false, $notify);
 			$postarray["id"] = $item;
 
-			logger('User ' . uid . ' posted home timeline item ' . $item);
+			logger('User ' . $uid . ' posted home timeline item ' . $item);
 		}
 	}
 	PConfig::set($uid, 'twitter', 'lasthometimelineid', $lastid);
