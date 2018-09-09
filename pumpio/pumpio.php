@@ -644,7 +644,7 @@ function pumpio_action(App $a, $uid, $uri, $action, $content = "")
 	} else {
 		logger('pumpio_action '.$username.' '.$action.': general error: '.$uri.' '.print_r($user, true));
 
-		$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $b['uid']);
+		$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $uid);
 		if (DBA::isResult($r)) {
 			$a->contact = $r[0]["id"];
 		}
