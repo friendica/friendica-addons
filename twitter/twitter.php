@@ -1159,6 +1159,13 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 			$plain = str_replace($url->url, '', $plain);
 
 			if ($url->url && $url->expanded_url && $url->display_url) {
+				// Quote tweet, we just remove the quoted tweet URL from the body, the share block will be added later.
+				if (isset($item->quoted_status_id_str)
+					&& substr($url->expanded_url, -strlen($item->quoted_status_id_str)) == $item->quoted_status_id_str ) {
+					$body = str_replace($url->url, '', $body);
+					continue;
+				}
+
 				$expanded_url = Network::finalUrl($url->expanded_url);
 
 				$oembed_data = OEmbed::fetchURL($expanded_url);
@@ -1221,24 +1228,27 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 			}
 		}
 
-		if ($footerurl != "") {
-			$footer = add_page_info($footerurl, false, $picture);
-		}
-
-		if (($footerlink != "") && (trim($footer) != "")) {
-			$removedlink = trim(str_replace($footerlink, "", $body));
-
-			if (($removedlink == "") || strstr($body, $removedlink)) {
-				$body = $removedlink;
+		// Footer will be taken care of with a share block in the case of a quote
+		if (empty($item->quoted_status)) {
+			if ($footerurl != "") {
+				$footer = add_page_info($footerurl, false, $picture);
 			}
 
-			$body .= $footer;
-		}
+			if (($footerlink != "") && (trim($footer) != "")) {
+				$removedlink = trim(str_replace($footerlink, "", $body));
 
-		if (($footer == "") && ($picture != "")) {
-			$body .= "\n\n[img]" . $picture . "[/img]\n";
-		} elseif (($footer == "") && ($picture == "")) {
-			$body = add_page_info_to_body($body);
+				if (($removedlink == "") || strstr($body, $removedlink)) {
+					$body = $removedlink;
+				}
+
+				$body .= $footer;
+			}
+
+			if (($footer == "") && ($picture != "")) {
+				$body .= "\n\n[img]" . $picture . "[/img]\n";
+			} elseif (($footer == "") && ($picture == "")) {
+				$body = add_page_info_to_body($body);
+			}
 		}
 	}
 
@@ -1448,7 +1458,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 		$postarray['allow_cid'] = '';
 	}
 
-	if (is_string($post->full_text)) {
+	if (!empty($post->full_text)) {
 		$postarray['body'] = $post->full_text;
 	} else {
 		$postarray['body'] = $post->text;
@@ -1506,8 +1516,6 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 		if (empty($quoted['body'])) {
 			return [];
 		}
-
-		$postarray['body'] = $statustext;
 
 		$postarray['body'] .= "\n" . share_header(
 			$quoted['author-name'],
