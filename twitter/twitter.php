@@ -1298,20 +1298,22 @@ function twitter_media_entities($post, array &$postarray)
 {
 	// There are no media entities? So we quit.
 	if (empty($post->extended_entities->media)) {
-		return "";
+		return '';
 	}
 
 	// When the post links to an external page, we only take one picture.
 	// We only do this when there is exactly one media.
 	if ((count($post->entities->urls) > 0) && (count($post->extended_entities->media) == 1)) {
-		$picture = "";
-		foreach ($post->extended_entities->media AS $medium) {
-			if (isset($medium->media_url_https)) {
+		$medium = $post->extended_entities->media[0];
+		$picture = '';
+		foreach ($post->entities->urls as $link) {
+			// Let's make sure the external link url matches the media url
+			if ($medium->url == $link->url && isset($medium->media_url_https)) {
 				$picture = $medium->media_url_https;
-				$postarray['body'] = str_replace($medium->url, "", $postarray['body']);
+				$postarray['body'] = str_replace($medium->url, '', $postarray['body']);
+				return $picture;
 			}
 		}
-		return $picture;
 	}
 
 	// This is a pure media post, first search for all media urls
@@ -1322,19 +1324,19 @@ function twitter_media_entities($post, array &$postarray)
 		}
 		switch ($medium->type) {
 			case 'photo':
-				$media[$medium->url] .= "\n[img]" . $medium->media_url_https . "[/img]";
+				$media[$medium->url] .= "\n[img]" . $medium->media_url_https . '[/img]';
 				$postarray['object-type'] = ACTIVITY_OBJ_IMAGE;
 				break;
 			case 'video':
 			case 'animated_gif':
-				$media[$medium->url] .= "\n[img]" . $medium->media_url_https . "[/img]";
+				$media[$medium->url] .= "\n[img]" . $medium->media_url_https . '[/img]';
 				$postarray['object-type'] = ACTIVITY_OBJ_VIDEO;
 				if (is_array($medium->video_info->variants)) {
 					$bitrate = 0;
 					// We take the video with the highest bitrate
 					foreach ($medium->video_info->variants AS $variant) {
-						if (($variant->content_type == "video/mp4") && ($variant->bitrate >= $bitrate)) {
-							$media[$medium->url] = "\n[video]" . $variant->url . "[/video]";
+						if (($variant->content_type == 'video/mp4') && ($variant->bitrate >= $bitrate)) {
+							$media[$medium->url] = "\n[video]" . $variant->url . '[/video]';
 							$bitrate = $variant->bitrate;
 						}
 					}
@@ -1350,7 +1352,8 @@ function twitter_media_entities($post, array &$postarray)
 	foreach ($media AS $key => $value) {
 		$postarray['body'] = str_replace($key, "\n" . $value . "\n", $postarray['body']);
 	}
-	return "";
+
+	return '';
 }
 
 function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $only_existing_contact, $noquote)
@@ -1617,20 +1620,9 @@ function twitter_fetchhometimeline(App $a, $uid)
 		return;
 	}
 
-	$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
-		intval($uid));
-
-	if (DBA::isResult($r)) {
-		$self = $r[0];
-	} else {
+	$self = User::getOwnerDataById($uid);
+	if ($self === false) {
 		logger("Own contact not found for user " . $uid);
-		return;
-	}
-
-	$u = q("SELECT * FROM user WHERE uid = %d LIMIT 1",
-		intval($uid));
-	if (!DBA::isResult($u)) {
-		logger("Own user not found for user " . $uid);
 		return;
 	}
 
