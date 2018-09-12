@@ -1138,22 +1138,22 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 	$tags_arr = [];
 
 	foreach ($item->entities->hashtags AS $hashtag) {
-		$url = "#[url=" . $a->get_baseurl() . "/search?tag=" . rawurlencode($hashtag->text) . "]" . $hashtag->text . "[/url]";
-		$tags_arr["#" . $hashtag->text] = $url;
-		$body = str_replace("#" . $hashtag->text, $url, $body);
+		$url = '#[url=' . $a->get_baseurl() . '/search?tag=' . rawurlencode($hashtag->text) . ']' . $hashtag->text . '[/url]';
+		$tags_arr['#' . $hashtag->text] = $url;
+		$body = str_replace('#' . $hashtag->text, $url, $body);
 	}
 
 	foreach ($item->entities->user_mentions AS $mention) {
-		$url = "@[url=https://twitter.com/" . rawurlencode($mention->screen_name) . "]" . $mention->screen_name . "[/url]";
-		$tags_arr["@" . $mention->screen_name] = $url;
-		$body = str_replace("@" . $mention->screen_name, $url, $body);
+		$url = '@[url=https://twitter.com/' . rawurlencode($mention->screen_name) . ']' . $mention->screen_name . '[/url]';
+		$tags_arr['@' . $mention->screen_name] = $url;
+		$body = str_replace('@' . $mention->screen_name, $url, $body);
 	}
 
 	if (isset($item->entities->urls)) {
-		$type = "";
-		$footerurl = "";
-		$footerlink = "";
-		$footer = "";
+		$type = '';
+		$footerurl = '';
+		$footerlink = '';
+		$footer = '';
 
 		foreach ($item->entities->urls as $url) {
 			$plain = str_replace($url->url, '', $plain);
@@ -1174,34 +1174,29 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 					continue;
 				}
 
-				// Quickfix: Workaround for URL with "[" and "]" in it
-				if (strpos($expanded_url, "[") || strpos($expanded_url, "]")) {
+				// Quickfix: Workaround for URL with '[' and ']' in it
+				if (strpos($expanded_url, '[') || strpos($expanded_url, ']')) {
 					$expanded_url = $url->url;
 				}
 
-				if ($type == "") {
+				if ($type == '') {
 					$type = $oembed_data->type;
 				}
 
-				if ($oembed_data->type == "video") {
-					//$body = str_replace($url->url,
-					//		"[video]".$expanded_url."[/video]", $body);
-					//$dontincludemedia = true;
+				if ($oembed_data->type == 'video') {
 					$type = $oembed_data->type;
 					$footerurl = $expanded_url;
-					$footerlink = "[url=" . $expanded_url . "]" . $url->display_url . "[/url]";
+					$footerlink = '[url=' . $expanded_url . ']' . $url->display_url . '[/url]';
 
 					$body = str_replace($url->url, $footerlink, $body);
-					//} elseif (($oembed_data->type == "photo") AND isset($oembed_data->url) AND !$dontincludemedia) {
-				} elseif (($oembed_data->type == "photo") && isset($oembed_data->url)) {
-					$body = str_replace($url->url, "[url=" . $expanded_url . "][img]" . $oembed_data->url . "[/img][/url]", $body);
-					//$dontincludemedia = true;
-				} elseif ($oembed_data->type != "link") {
-					$body = str_replace($url->url, "[url=" . $expanded_url . "]" . $url->display_url . "[/url]", $body);
+				} elseif (($oembed_data->type == 'photo') && isset($oembed_data->url)) {
+					$body = str_replace($url->url, '[url=' . $expanded_url . '][img]' . $oembed_data->url . '[/img][/url]', $body);
+				} elseif ($oembed_data->type != 'link') {
+					$body = str_replace($url->url, '[url=' . $expanded_url . ']' . $url->display_url . '[/url]', $body);
 				} else {
 					$img_str = Network::fetchUrl($expanded_url, true, $redirects, 4);
 
-					$tempfile = tempnam(get_temppath(), "cache");
+					$tempfile = tempnam(get_temppath(), 'cache');
 					file_put_contents($tempfile, $img_str);
 
 					// See http://php.net/manual/en/function.exif-imagetype.php#79283
@@ -1213,14 +1208,13 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 
 					unlink($tempfile);
 
-					if (substr($mime, 0, 6) == "image/") {
-						$type = "photo";
-						$body = str_replace($url->url, "[img]" . $expanded_url . "[/img]", $body);
-						//$dontincludemedia = true;
+					if (substr($mime, 0, 6) == 'image/') {
+						$type = 'photo';
+						$body = str_replace($url->url, '[img]' . $expanded_url . '[/img]', $body);
 					} else {
 						$type = $oembed_data->type;
 						$footerurl = $expanded_url;
-						$footerlink = "[url=" . $expanded_url . "]" . $url->display_url . "[/url]";
+						$footerlink = '[url=' . $expanded_url . ']' . $url->display_url . '[/url]';
 
 						$body = str_replace($url->url, $footerlink, $body);
 					}
@@ -1230,23 +1224,23 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 
 		// Footer will be taken care of with a share block in the case of a quote
 		if (empty($item->quoted_status)) {
-			if ($footerurl != "") {
+			if ($footerurl != '') {
 				$footer = add_page_info($footerurl, false, $picture);
 			}
 
-			if (($footerlink != "") && (trim($footer) != "")) {
-				$removedlink = trim(str_replace($footerlink, "", $body));
+			if (($footerlink != '') && (trim($footer) != '')) {
+				$removedlink = trim(str_replace($footerlink, '', $body));
 
-				if (($removedlink == "") || strstr($body, $removedlink)) {
+				if (($removedlink == '') || strstr($body, $removedlink)) {
 					$body = $removedlink;
 				}
 
 				$body .= $footer;
 			}
 
-			if (($footer == "") && ($picture != "")) {
+			if ($footer == '' && $picture != '') {
 				$body .= "\n\n[img]" . $picture . "[/img]\n";
-			} elseif (($footer == "") && ($picture == "")) {
+			} elseif ($footer == '' && $picture == '') {
 				$body = add_page_info_to_body($body);
 			}
 		}
@@ -1257,7 +1251,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 
 	if (count($tags)) {
 		foreach ($tags as $tag) {
-			if (strstr(trim($tag), " ")) {
+			if (strstr(trim($tag), ' ')) {
 				continue;
 			}
 
@@ -1277,7 +1271,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 				$basetag = str_replace('_', ' ', substr($tag, 1));
 				$url = '#[url=' . $a->get_baseurl() . '/search?tag=' . rawurlencode($basetag) . ']' . $basetag . '[/url]';
 				$body = str_replace($tag, $url, $body);
-				$tags_arr["#" . $basetag] = $url;
+				$tags_arr['#' . $basetag] = $url;
 			} elseif (strpos($tag, '@') === 0) {
 				if (strpos($tag, '[url=')) {
 					continue;
@@ -1286,14 +1280,14 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 				$basetag = substr($tag, 1);
 				$url = '@[url=https://twitter.com/' . rawurlencode($basetag) . ']' . $basetag . '[/url]';
 				$body = str_replace($tag, $url, $body);
-				$tags_arr["@" . $basetag] = $url;
+				$tags_arr['@' . $basetag] = $url;
 			}
 		}
 	}
 
-	$tags = implode($tags_arr, ",");
+	$tags = implode($tags_arr, ',');
 
-	return ["body" => $body, "tags" => $tags, "plain" => $plain];
+	return ['body' => $body, 'tags' => $tags, 'plain' => $plain];
 }
 
 /**
