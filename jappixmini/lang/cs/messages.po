@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-08-16 10:11+0000\n"
+"PO-Revision-Date: 2018-09-12 12:50+0000\n"
 "Last-Translator: Aditoo\n"
 "Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -36,7 +36,7 @@ msgstr "<em>Nevkládejte</em> Jappixmini Chat-Widget do webového rozhraní"
 
 #: jappixmini.php:274
 msgid "Jabber username"
-msgstr "Jabber uživatelské jméno"
+msgstr "Uživatelské jméno Jabber"
 
 #: jappixmini.php:277
 msgid "Jabber server"
@@ -48,11 +48,11 @@ msgstr "Jabber BOSH host"
 
 #: jappixmini.php:285
 msgid "Jabber password"
-msgstr "Jabber heslo"
+msgstr "Heslo Jabber"
 
 #: jappixmini.php:290
 msgid "Encrypt Jabber password with Friendica password (recommended)"
-msgstr "Zašifrovat Jabber heslo s heslem Friendica (doporučeno)"
+msgstr "Zašifrovat heslo Jabber heslem Friendica (doporučeno)"
 
 #: jappixmini.php:293
 msgid "Friendica password"
@@ -60,11 +60,11 @@ msgstr "Heslo Friendica"
 
 #: jappixmini.php:296
 msgid "Approve subscription requests from Friendica contacts automatically"
-msgstr "Automaticky schválit požadavek na členství od kontaktů Friendica."
+msgstr "Automaticky schválit požadavek o odběr od kontaktů Friendica."
 
 #: jappixmini.php:299
 msgid "Subscribe to Friendica contacts automatically"
-msgstr "Automaticky zaslat požadavek na členství kontaktům Friendica."
+msgstr "Automaticky odebírat od kontaktů Friendica."
 
 #: jappixmini.php:302
 msgid "Purge internal list of jabber addresses of contacts"
