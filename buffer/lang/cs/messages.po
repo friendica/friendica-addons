@@ -4,15 +4,16 @@
 # 
 # 
 # Translators:
-# Lorem Ipsum <aditoo@seznam.cz>, 2018
+# Aditoo, 2018
+# Aditoo, 2018
 # michal_s <msupler@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2018-06-09 09:15+0000\n"
-"Last-Translator: Lorem Ipsum <aditoo@seznam.cz>\n"
+"PO-Revision-Date: 2018-09-12 09:43+0000\n"
+"Last-Translator: Aditoo\n"
 "Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,19 +39,19 @@ msgstr "Client Secret"
 
 #: buffer.php:67
 msgid "Error when registering buffer connection:"
-msgstr "Chyba při registraci buffer spojená"
+msgstr "Chyba při registraci připojení na buffer:"
 
 #: buffer.php:86
 msgid "You are now authenticated to buffer. "
-msgstr "Nyní jste přihlášen k bufferu."
+msgstr "Nyní jste přihlášen/a na buffer."
 
 #: buffer.php:87
 msgid "return to the connector page"
-msgstr "návrat ke stránce konektor"
+msgstr "zpět ke stránce konektoru"
 
 #: buffer.php:103
 msgid "Post to Buffer"
-msgstr "Příspěvek na Buffer"
+msgstr "Posílat na Buffer"
 
 #: buffer.php:128 buffer.php:132
 msgid "Buffer Export"
@@ -58,7 +59,7 @@ msgstr "Buffer Export"
 
 #: buffer.php:142
 msgid "Authenticate your Buffer connection"
-msgstr "Přihlásit ke spojení na Buffer"
+msgstr "Autentikujte své připojení na Buffer"
 
 #: buffer.php:146
 msgid "Enable Buffer Post Addon"
@@ -66,12 +67,12 @@ msgstr "Povolit doplněk Buffer Post"
 
 #: buffer.php:151
 msgid "Post to Buffer by default"
-msgstr "Defaultně zaslat na Buffer"
+msgstr "Ve výchozím stavu posílat na Buffer"
 
 #: buffer.php:156
 msgid "Check to delete this preset"
-msgstr "Zaškrtnout pro smazání tohoto nastavení"
+msgstr "Zaškrtnutím smažete toto nastavení"
 
 #: buffer.php:165
 msgid "Posts are going to all accounts that are enabled by default:"
-msgstr "Příspěvky jsou zasílány na všechny účty, které jsou defaultně povoleny:"
+msgstr "Příspěvky budou posílány na všechny účty, které jsou ve výchozím stavu povoleny:"
