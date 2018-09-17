@@ -4,20 +4,21 @@
 # 
 # 
 # Translators:
-# Michal Šupler <msupler@gmail.com>, 2014-2015
+# Aditoo, 2018
+# michal_s <msupler@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2015-02-11 19:41+0000\n"
-"Last-Translator: Michal Šupler <msupler@gmail.com>\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/friendica/language/cs/)\n"
+"PO-Revision-Date: 2018-09-12 09:51+0000\n"
+"Last-Translator: Aditoo\n"
+"Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
 #: impressum.php:37
 msgid "Impressum"
@@ -25,7 +26,7 @@ msgstr "Impressum"
 
 #: impressum.php:50 impressum.php:52 impressum.php:84
 msgid "Site Owner"
-msgstr "Vlastník webu"
+msgstr "Majitel webu"
 
 #: impressum.php:50 impressum.php:88
 msgid "Email Address"
@@ -40,11 +41,11 @@ msgid ""
 "The impressum addon needs to be configured!<br />Please add at least the "
 "<tt>owner</tt> variable to your config file. For other variables please "
 "refer to the README file of the addon."
-msgstr "Doplněk Impressum musí být nakonfigurován!<br/>Prosím, přidejte alespoň proměnnou <tt>owner</tt> do konfiguračního souboru. Pro nastavení ostatních proměnných se seznamte s nápovědou v souboru README tohoto doplňku."
+msgstr "Doplněk Impressum musí být nakonfigurován!<br />Prosím, přidejte alespoň proměnnou <tt>owner</tt> do konfiguračního souboru. Pro nastavení ostatních proměnných se seznamte s nápovědou v souboru README tohoto doplňku."
 
 #: impressum.php:78
 msgid "Settings updated."
-msgstr "Nastavení aktualizováno."
+msgstr "Nastavení aktualizována."
 
 #: impressum.php:83
 msgid "Submit"
@@ -60,7 +61,7 @@ msgstr "Profil majitele webu"
 
 #: impressum.php:85
 msgid "Profile address of the operator."
-msgstr "Profilová addresa operátora."
+msgstr "Profilová adresa operátora."
 
 #: impressum.php:86
 msgid "How to contact the operator via snail mail. You can use BBCode here."
@@ -78,7 +79,7 @@ msgstr "Další poznámky, které jsou zobrazeny pod kontaktními informacemi. Z
 
 #: impressum.php:88
 msgid "How to contact the operator via email. (will be displayed obfuscated)"
-msgstr "Jak konktaktovat operátora přes mail. (bude zobrazen \"zmateně\")"
+msgstr "Jak konktaktovat operátora přes mail. (bude zobrazeno \"obfuskovaně\")"
 
 #: impressum.php:89
 msgid "Footer note"
