@@ -2,7 +2,7 @@
 /**
  * Name: MathJax
  * Description: Addon for Friendika to include MathJax (LaTeX math syntax)
- * Version: 2
+ * Version: 2.0
  * Author: Tobias Diekershoff <https://social.diekershoff.de/profile/tobias>
  * Author: Hypolite Petovan <https://friendica.mrpetovan.com/profile/hypolite>
  * License: 3-clause BSD license
