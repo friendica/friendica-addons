@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: MathJax
- * Description: Addon for Friendika to include MathJax (LaTeX math syntax)
+ * Description: Addon for Friendica to include MathJax (LaTeX math syntax)
  * Version: 2.0
  * Author: Tobias Diekershoff <https://social.diekershoff.de/profile/tobias>
  * Author: Hypolite Petovan <https://friendica.mrpetovan.com/profile/hypolite>
@@ -15,14 +15,14 @@ use Friendica\Core\PConfig;
 
 function mathjax_install()
 {
-	Addon::registerHook('page_end'           , __FILE__, 'mathjax_page_end');
+	Addon::registerHook('footer'             , __FILE__, 'mathjax_footer');
 	Addon::registerHook('addon_settings'     , __FILE__, 'mathjax_settings');
 	Addon::registerHook('addon_settings_post', __FILE__, 'mathjax_settings_post');
 }
 
 function mathjax_uninstall()
 {
-	Addon::unregisterHook('page_end'           , __FILE__, 'mathjax_page_end');
+	Addon::unregisterHook('footer'             , __FILE__, 'mathjax_footer');
 	Addon::unregisterHook('addon_settings'     , __FILE__, 'mathjax_settings');
 	Addon::unregisterHook('addon_settings_post', __FILE__, 'mathjax_settings_post');
 
@@ -69,23 +69,12 @@ function mathjax_settings(App $a, &$s)
 	$s .= '</div>';
 }
 
-/*  we need to add one JavaScript include command to the html output
- *  note that you have to check the jsmath/easy/load.js too.
- */
-function mathjax_page_end(App $a, &$b)
+function mathjax_footer(App $a, &$b)
 {
 	//  if the visitor of the page is not a local_user, use MathJax
 	//  otherwise check the users settings.
-	$url = $a->get_baseurl() . '/addon/mathjax/asset/MathJax.js?config=TeX-MML-AM_CHTML';
-
 	if (!local_user() || PConfig::get(local_user(), 'mathjax', 'use', false)) {
-		$b .= <<<HTML
-<script type="text/javascript" src="{$url}"></script>
-<script type="text/javascript">
-	document.addEventListener('postprocess_liveupdate', function () {
-		MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
-	});
-</script>
-HTML;
+		$a->registerFooterScript(__DIR__ . '/asset/MathJax.js?config=TeX-MML-AM_CHTML');
+		$a->registerFooterScript(__DIR__ . '/mathjax.js');
 	}
 }
