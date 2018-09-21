@@ -34,11 +34,7 @@ function mathjax_uninstall()
 
 function mathjax_settings_post($a)
 {
-	if (!local_user()) {
-		return;
-	}
-
-	if (empty($_POST['mathjax-submit'])) {
+	if (!local_user() || empty($_POST['mathjax-submit'])) {
 		return;
 	}
 
@@ -52,21 +48,14 @@ function mathjax_settings(App $a, &$s)
 	}
 
 	$use = PConfig::get(local_user(), 'mathjax', 'use', false);
-	$usetext = $use ? ' checked="checked" ' : '';
-	$s .= '<span id="settings_mathjax_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_mathjax_expanded\'); openClose(\'settings_mathjax_inflated\');">';
-	$s .= '<h3>MathJax ' . L10n::t('Settings') . '</h3>';
-	$s .= '</span>';
-	$s .= '<div id="settings_mathjax_expanded" class="settings-block" style="display: none;">';
-	$s .= '<span class="fakelink" onclick="openClose(\'settings_mathjax_expanded\'); openClose(\'settings_mathjax_inflated\');">';
-	$s .= '<h3>MathJax ' . L10n::t('Settings') . '</h3>';
-	$s .= '</span>';
-	$s .= '<p>' . L10n::t('The MathJax addon renders mathematical formulae written using the LaTeX syntax surrounded by the usual $$ or an eqnarray block in the postings of your wall,network tab and private mail.') . '</p>';
-	$s .= '<label id="mathjax_label" for="mathjax_use">' . L10n::t('Use the MathJax renderer') . '</label>';
-	$s .= '<input id="mathjax_use" type="checkbox" name="mathjax_use" value="1"' . $usetext . ' />';
-	$s .= '<div class="clear"></div>';
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="mathjax-submit" name="mathjax-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
-	$s .= '</div>';
+	$tpl = get_markup_template('settings.tpl', __DIR__);
+	$s .= replace_macros($tpl, [
+		'$title'        => 'MathJax',
+		'$description'  => L10n::t('The MathJax addon renders mathematical formulae written using the LaTeX syntax surrounded by the usual $$ or an eqnarray block in the postings of your wall,network tab and private mail.'),
+		'$mathjax_use'  => ['mathjax_use', L10n::t('Use the MathJax renderer'), $use, ''],
+		'$savesettings' => L10n::t('Save Settings'),
+	]);
 }
 
 function mathjax_footer(App $a, &$b)
