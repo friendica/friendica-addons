@@ -11,41 +11,29 @@ use Friendica\Core\Addon;
 
 function highlightjs_install()
 {
-	Addon::registerHook('page_end', __FILE__, 'highlightjs_page_end');
+	Addon::registerHook('head'  , __FILE__, 'highlightjs_head');
+	Addon::registerHook('footer', __FILE__, 'highlightjs_footer');
 }
 
 function highlightjs_uninstall()
 {
-	Addon::unregisterHook('page_end', __FILE__, 'highlightjs_page_end');
+	Addon::unregisterHook('head'  , __FILE__, 'highlightjs_head');
+	Addon::unregisterHook('footer', __FILE__, 'highlightjs_footer');
 }
 
-function highlightjs_page_end(App $a, &$b)
+function highlightjs_head(App $a, &$b)
 {
-	$basedir = $a->get_baseurl() . '/addon/highlightjs/asset';
-
 	if ($a->getCurrentTheme() == 'frio') {
 		$style = 'bootstrap';
 	} else {
 		$style = 'default';
 	}
 
-	$a->page['htmlhead'] .= <<< HTML
+	$a->registerStylesheet(__DIR__ . '/asset/styles/' . $style . '.css');
+}
 
-<link rel="stylesheet" href="{$basedir}/styles/{$style}.css">
-
-HTML;
-
-	$b .= <<< HTML
-
-<script type="text/javascript" src="{$basedir}/highlight.pack.js"></script>
-<script type="text/javascript">
-	hljs.initHighlightingOnLoad();
-
-	document.addEventListener('postprocess_liveupdate', function () {
-		var blocks = document.querySelectorAll('pre code:not(.hljs)');
-		Array.prototype.forEach.call(blocks, hljs.highlightBlock);
-	});
-</script>
-
-HTML;
+function highlightjs_footer(App $a, &$b)
+{
+	$a->registerFooterScript(__DIR__ . '/asset/highlight.pack.js');
+	$a->registerFooterScript(__DIR__ . '/highlightjs.js');
 }
