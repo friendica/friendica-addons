@@ -108,6 +108,7 @@ function morechoice_sexpref_selector($a,&$b) {
 	$b[] = L10n::t('Being eaten');
 	$b[] = L10n::t('Animals');
 	$b[] = L10n::t('I\'d rather just have some chocolate');
+	$b[] = L10n::t('Forcing girls to switch to Linux');
 }
 
 function morechoice_marital_selector($a,&$b) {
