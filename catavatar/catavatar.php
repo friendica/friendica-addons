@@ -171,7 +171,7 @@ function catavatar_content(App $a)
 		$size = intval($a->argv[2]);
 	}
 
-	$condition = ['uid' => $uid, 'blocked' => false,
+	$condition = ['uid' => $uid,
 			'account_expired' => false, 'account_removed' => false];
 	$user = DBA::selectFirst('user', ['email'], $condition);
 
