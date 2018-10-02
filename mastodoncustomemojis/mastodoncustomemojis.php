@@ -54,8 +54,8 @@ HTML;
 
 function mastodoncustomemojis_put_item_in_cache(App $a, array &$hook_data)
 {
-	// Mastodon uses OStatus, skipping other network protocols
-	if (empty($hook_data['item']['author-link']) || ($hook_data['item']['network'] != Protocol::OSTATUS)) {
+	// Mastodon uses OStatus and ActivityPub, skipping other network protocols
+	if (empty($hook_data['item']['author-link']) || !in_array($hook_data['item']['network'], [Protocol::OSTATUS, Protocol::ACTIVITYPUB])) {
 		return;
 	}
 
