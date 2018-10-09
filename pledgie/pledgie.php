@@ -30,7 +30,7 @@ function pledgie_addon_settings(&$a,&$s) {
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/pledgie/pledgie.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/pledgie/pledgie.css' . '" media="all" />' . "\r\n";
 
 	$campaign = Config::get('pledgie-campaign','text');
 	$describe = Config::get('pledgie-describe','text');

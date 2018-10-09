@@ -43,7 +43,7 @@ function forumdirectory_app_menu(App $a, array &$b)
 
 function forumdirectory_init(App $a)
 {
-	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="' . $a->get_baseurl() . '/addon/forumdirectory/forumdirectory.css" media="all" />';
+	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="' . $a->getBaseURL() . '/addon/forumdirectory/forumdirectory.css" media="all" />';
 
 	$a->set_pager_itemspage(60);
 
@@ -130,7 +130,7 @@ function forumdirectory_content(App $a)
 		}
 
 		foreach ($r as $rr) {
-			$profile_link = $a->get_baseurl() . '/profile/' . ((strlen($rr['nickname'])) ? $rr['nickname'] : $rr['profile_uid']);
+			$profile_link = $a->getBaseURL() . '/profile/' . ((strlen($rr['nickname'])) ? $rr['nickname'] : $rr['profile_uid']);
 
 			$pdesc = (($rr['pdesc']) ? $rr['pdesc'] . '<br />' : '');
 

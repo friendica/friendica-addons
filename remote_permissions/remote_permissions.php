@@ -36,7 +36,7 @@ function remote_permissions_settings(&$a,&$o) {
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/remote_permissions/settings.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/remote_permissions/settings.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variable */
 
@@ -78,7 +78,7 @@ function remote_permissions_content($a, $item_copy) {
 			return;
 
 		// Find out if the contact lives here
-		$baseurl = $a->get_baseurl();
+		$baseurl = $a->getBaseURL();
 		$baseurl = substr($baseurl, strpos($baseurl, '://') + 3);
 		if(strpos($r[0]['url'], $baseurl) === false)
 			return;

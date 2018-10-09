@@ -48,6 +48,6 @@ function friends_widget_content(&$a, $conf)
 
 	</style>";
 	$o .= _abs_url(contact_block());
-	$o .= "<a href='".$a->get_baseurl().'/profile/'.$a->profile['nickname']."'>". L10n::t('Connect on Friendica!') ."</a>";
+	$o .= "<a href='".$a->getBaseURL().'/profile/'.$a->profile['nickname']."'>". L10n::t('Connect on Friendica!') ."</a>";
 	return $o;
 }

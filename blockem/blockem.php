@@ -42,7 +42,7 @@ function blockem_addon_settings (App $a, &$s)
 	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/blockem/blockem.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/blockem/blockem.css' . '" media="all" />' . "\r\n";
 
 	$words = PConfig::get(local_user(), 'blockem', 'words');
 
@@ -147,7 +147,7 @@ function blockem_prepare_body_content_filter(App $a, array &$hook_data)
 function blockem_display_item(App $a, array &$b = null)
 {
 	if (!empty($b['output']['body']) && strstr($b['output']['body'], 'id="blockem-wrap-')) {
-		$b['output']['thumb'] = $a->get_baseurl() . "/images/person-80.jpg";
+		$b['output']['thumb'] = $a->getBaseURL() . "/images/person-80.jpg";
 	}
 }
 

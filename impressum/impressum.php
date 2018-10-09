@@ -43,7 +43,7 @@ function impressum_footer($a, &$b) {
     $text = ProxyUtils::proxifyHtml(BBCode::convert(Config::get('impressum','footer_text')));
 
     if (! $text == '') {
-        $a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->get_baseurl().'/addon/impressum/impressum.css" media="all" />';
+        $a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->getBaseURL().'/addon/impressum/impressum.css" media="all" />';
         $b .= '<div class="clear"></div>';
         $b .= '<div id="impressum_footer">'.$text.'</div>';
     }

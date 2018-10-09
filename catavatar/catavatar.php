@@ -82,7 +82,7 @@ function catavatar_addon_settings_post(App $a, &$s)
 	$seed = PConfig::get(local_user(), 'catavatar', 'seed', md5(trim(strtolower($user['email']))));
 
 	if (!empty($_POST['catavatar-usecat'])) {
-		$url = $a->get_baseurl() . '/catavatar/' . local_user() . '?ts=' . time();
+		$url = $a->getBaseURL() . '/catavatar/' . local_user() . '?ts=' . time();
 
 		$self = DBA::selectFirst('contact', ['id'], ['uid' => local_user(), 'self' => true]);
 		if (!DBA::isResult($self)) {
@@ -109,7 +109,7 @@ function catavatar_addon_settings_post(App $a, &$s)
 		Contact::updateSelfFromUserID(local_user(), true);
 
 		// Update global directory in background
-		$url = $a->get_baseurl() . '/profile/' . $a->user['nickname'];
+		$url = $a->getBaseURL() . '/profile/' . $a->user['nickname'];
 		if ($url && strlen(Config::get('system', 'directory'))) {
 			Worker::add(PRIORITY_LOW, 'Directory', $url);
 		}
@@ -138,7 +138,7 @@ function catavatar_addon_settings_post(App $a, &$s)
 function catavatar_lookup(App $a, &$b)
 {
 	$user = DBA::selectFirst('user', ['uid'], ['email' => $b['email']]);
-	$url = $a->get_baseurl() . '/catavatar/' . $user['uid'];
+	$url = $a->getBaseURL() . '/catavatar/' . $user['uid'];
 
 	switch($b['size']) {
 		case 175: $url .= "/4"; break;

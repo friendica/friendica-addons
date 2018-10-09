@@ -30,7 +30,7 @@ function irc_addon_settings(&$a,&$s) {
 
     /* Add our stylesheet to the page so we can make our settings look nice */
 
-//	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/irc/irc.css' . '" media="all" />' . "\r\n";
+//	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/irc/irc.css' . '" media="all" />' . "\r\n";
 
     /* setting popular channels, auto connect channels */
 	$sitechats = PConfig::get( local_user(), 'irc','sitechats'); /* popular channels */
@@ -74,7 +74,7 @@ function irc_module() {
 
 function irc_content(&$a) {
 
-	$baseurl = $a->get_baseurl() . '/addon/irc';
+	$baseurl = $a->getBaseURL() . '/addon/irc';
 	$o = '';
 
 	/* set the list of popular channels */
@@ -93,7 +93,7 @@ function irc_content(&$a) {
 
 	$a->page['aside'] .= '<div class="widget"><h3>' . L10n::t('Popular Channels') . '</h3><ul>';
 	foreach($chats as $chat) {
-		$a->page['aside'] .= '<li><a href="' . $a->get_baseurl() . '/irc?channels=' . $chat . '" >' . '#' . $chat . '</a></li>';
+		$a->page['aside'] .= '<li><a href="' . $a->getBaseURL() . '/irc?channels=' . $chat . '" >' . '#' . $chat . '</a></li>';
 	}
 	$a->page['aside'] .= '</ul></div>';
 

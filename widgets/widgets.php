@@ -60,7 +60,7 @@ function widgets_settings(&$a,&$o) {
 	$t = get_markup_template("settings.tpl", "addon/widgets/");
 	$o .= replace_macros($t, [
 		'$submit' => L10n::t('Generate new key'),
-		'$baseurl' => $a->get_baseurl(),
+		'$baseurl' => $a->getBaseURL(),
 		'$title' => "Widgets",
 		'$label' => L10n::t('Widgets key'),
 		'$key' => $key,
@@ -76,7 +76,7 @@ function widgets_module() {
 
 function _abs_url($s){
 	$a = get_app();
-	return preg_replace("|href=(['\"])([^h][^t][^t][^p])|", "href=\$1".$a->get_baseurl()."/\$2", $s);
+	return preg_replace("|href=(['\"])([^h][^t][^t][^p])|", "href=\$1".$a->getBaseURL()."/\$2", $s);
 }
 
 function _randomAlphaNum($length){
@@ -126,7 +126,7 @@ function widgets_content(&$a) {
 		if (isset($_GET['p']) && local_user()==$conf['uid'] ) {
 			$o .= "<style>.f9k_widget { float: left;border:1px solid black; }</style>";
 			$o .= "<h1>Preview Widget</h1>";
-			$o .= '<a href="'.$a->get_baseurl().'/settings/addon">'. L10n::t("Addon Settings") .'</a>';
+			$o .= '<a href="'.$a->getBaseURL().'/settings/addon">'. L10n::t("Addon Settings") .'</a>';
 
 			$o .=  "<h4>".call_user_func($a->argv[1].'_widget_name')."</h4>";
 			$o .=  call_user_func($a->argv[1].'_widget_help');
@@ -142,10 +142,10 @@ function widgets_content(&$a) {
 
 		$script = file_get_contents(dirname(__file__)."/widgets.js");
 		$o .= replace_macros($script, [
-			'$entrypoint' => $a->get_baseurl()."/widgets/".$a->argv[1]."/cb/",
+			'$entrypoint' => $a->getBaseURL()."/widgets/".$a->argv[1]."/cb/",
 			'$key' => $conf['key'],
 			'$widget_id' => 'f9a_'.$a->argv[1]."_"._randomAlphaNum(6),
-			'$loader' => $a->get_baseurl()."/images/rotator.gif",
+			'$loader' => $a->getBaseURL()."/images/rotator.gif",
 			'$args' => (isset($_GET['a'])?$_GET['a']:''),
 			'$width' => $widget_size[0],
 			'$height' => $widget_size[1],
@@ -163,7 +163,7 @@ function widgets_content(&$a) {
 			<h4>Copy and paste this code</h4>
 			<code>"
 
-			.htmlspecialchars('<script src="'.$a->get_baseurl().'/widgets/'.$a->argv[1].'?k='.$conf['key'])
+			.htmlspecialchars('<script src="'.$a->getBaseURL().'/widgets/'.$a->argv[1].'?k='.$conf['key'])
 			.$jsargs
 			.htmlspecialchars('"></script>')
 			."</code>";

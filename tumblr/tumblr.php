@@ -104,7 +104,7 @@ function tumblr_connect(App $a)
 
 	// The callback URL is the script that gets called after the user authenticates with tumblr
 	// In this example, it would be the included callback.php
-	$callback_url = $a->get_baseurl()."/tumblr/callback";
+	$callback_url = $a->getBaseURL()."/tumblr/callback";
 
 	// Let's begin.  First we need a Request Token.  The request token is required to send the user
 	// to Tumblr's login page.
@@ -183,7 +183,7 @@ function tumblr_callback(App $a)
 	PConfig::set(local_user(), "tumblr", "oauth_token_secret", $access_token['oauth_token_secret']);
 
 	$o = L10n::t("You are now authenticated to tumblr.");
-	$o .= '<br /><a href="'.$a->get_baseurl().'/settings/connectors">'.L10n::t("return to the connector page").'</a>';
+	$o .= '<br /><a href="'.$a->getBaseURL().'/settings/connectors">'.L10n::t("return to the connector page").'</a>';
 
 	return $o;
 }
@@ -212,7 +212,7 @@ function tumblr_settings(App $a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/tumblr/tumblr.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/tumblr/tumblr.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variables */
 
@@ -235,7 +235,7 @@ function tumblr_settings(App $a, &$s)
 	$s .= '</span>';
 
 	$s .= '<div id="tumblr-username-wrapper">';
-	$s .= '<a href="'.$a->get_baseurl().'/tumblr/connect">'.L10n::t("(Re-)Authenticate your tumblr page").'</a>';
+	$s .= '<a href="'.$a->getBaseURL().'/tumblr/connect">'.L10n::t("(Re-)Authenticate your tumblr page").'</a>';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="tumblr-enable-wrapper">';

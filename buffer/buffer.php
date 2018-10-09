@@ -105,7 +105,7 @@ function buffer_connect(App $a)
 	$client_secret = Config::get('buffer','client_secret');
 
 	// The callback URL is the script that gets called after the user authenticates with buffer
-	$callback_url = $a->get_baseurl()."/buffer/connect";
+	$callback_url = $a->getBaseURL()."/buffer/connect";
 
 	$buffer = new BufferApp($client_id, $client_secret, $callback_url);
 
@@ -114,7 +114,7 @@ function buffer_connect(App $a)
 	} else {
 		logger("buffer_connect: authenticated");
 		$o .= L10n::t("You are now authenticated to buffer. ");
-		$o .= '<br /><a href="' . $a->get_baseurl() . '/settings/connectors">' . L10n::t("return to the connector page") . '</a>';
+		$o .= '<br /><a href="' . $a->getBaseURL() . '/settings/connectors">' . L10n::t("return to the connector page") . '</a>';
 		PConfig::set(local_user(), 'buffer','access_token', $buffer->access_token);
 	}
 
@@ -145,7 +145,7 @@ function buffer_settings(App $a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/buffer/buffer.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/buffer/buffer.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variables */
 
@@ -174,7 +174,7 @@ function buffer_settings(App $a, &$s)
 
 	if ($access_token == "") {
 		$s .= '<div id="buffer-authenticate-wrapper">';
-		$s .= '<a href="'.$a->get_baseurl().'/buffer/connect">'.L10n::t("Authenticate your Buffer connection").'</a>';
+		$s .= '<a href="'.$a->getBaseURL().'/buffer/connect">'.L10n::t("Authenticate your Buffer connection").'</a>';
 		$s .= '</div><div class="clear"></div>';
 	} else {
 		$s .= '<div id="buffer-enable-wrapper">';
@@ -193,7 +193,7 @@ function buffer_settings(App $a, &$s)
 		$s .= '</div><div class="clear"></div>';
 
 		// The callback URL is the script that gets called after the user authenticates with buffer
-		$callback_url = $a->get_baseurl() . '/buffer/connect';
+		$callback_url = $a->getBaseURL() . '/buffer/connect';
 
 		$buffer = new BufferApp($client_id, $client_secret, $callback_url, $access_token);
 

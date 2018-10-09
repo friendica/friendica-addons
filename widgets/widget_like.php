@@ -64,7 +64,7 @@ function like_widget_content(&$a, $conf){
 		'$dislike'	=> $dislikes,
 		'$strdislike'=> L10n::tt("%d person doesn't like this", "%d people don't like this", $dislikes),
 
-		'$baseurl' => $a->get_baseurl(),
+		'$baseurl' => $a->getBaseURL(),
 	]);
 
 	return $o;
