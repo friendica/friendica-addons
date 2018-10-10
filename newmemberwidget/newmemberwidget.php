@@ -37,7 +37,7 @@ function newmemberwidget_network_mod_init ($a, $b)
 	}
 
 	if (Config::get('newmemberwidget','linklocalsupport', false)) {
-		$t .= '<a href="'.$a->get_baseurl().'/profile/'.Config::get('newmemberwidget','localsupport').'" target="_new">'.L10n::t('Local Support Forum').'</a><br />'.EOL;
+		$t .= '<a href="'.$a->getBaseURL().'/profile/'.Config::get('newmemberwidget','localsupport').'" target="_new">'.L10n::t('Local Support Forum').'</a><br />'.EOL;
 	}
 
 	$ft = Config::get('newmemberwidget','freetext', '');

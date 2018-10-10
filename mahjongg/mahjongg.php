@@ -26,7 +26,7 @@ function mahjongg_module() {}
 
 function mahjongg_content(&$a) {
 
-$baseurl = $a->get_baseurl() . '/addon/mahjongg';
+$baseurl = $a->getBaseURL() . '/addon/mahjongg';
 
 $o .= <<< EOT
 <br><br>

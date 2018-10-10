@@ -152,7 +152,7 @@ function mailstream_do_images($a, &$item, &$attachments) {
 		return;
 	}
 	$attachments = [];
-	$baseurl = $a->get_baseurl();
+	$baseurl = $a->getBaseURL();
 	preg_match_all("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/ism", $item["body"], $matches1);
 	preg_match_all("/\[img\](.*?)\[\/img\]/ism", $item["body"], $matches2);
 	foreach (array_merge($matches1[3], $matches2[1]) as $url) {
@@ -289,7 +289,7 @@ function mailstream_send($a, $message_id, $item, $user) {
 		$mail->CharSet = 'utf-8';
 		$template = get_markup_template('mail.tpl', 'addon/mailstream/');
 		$item['body'] = BBCode::convert($item['body']);
-		$item['url'] = $a->get_baseurl() . '/display/' . $user['nickname'] . '/' . $item['id'];
+		$item['url'] = $a->getBaseURL() . '/display/' . $user['nickname'] . '/' . $item['id'];
 		$mail->Body = replace_macros($template, [
 						 '$upstream' => L10n::t('Upstream'),
 						 '$local' => L10n::t('Local'),

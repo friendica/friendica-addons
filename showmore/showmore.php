@@ -33,7 +33,7 @@ function showmore_addon_settings(&$a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->get_baseurl().'/addon/showmore/showmore.css'.'" media="all"/>'."\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->getBaseURL().'/addon/showmore/showmore.css'.'" media="all"/>'."\r\n";
 
 	$enable_checked = (intval(PConfig::get(local_user(), 'showmore', 'disable')) ? '' : ' checked="checked"');
 	$chars = PConfig::get(local_user(), 'showmore', 'chars', 1100);

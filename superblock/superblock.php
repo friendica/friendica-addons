@@ -36,7 +36,7 @@ function superblock_addon_settings(&$a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/superblock/superblock.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/superblock/superblock.css' . '" media="all" />' . "\r\n";
 
 	$words = PConfig::get(local_user(), 'system', 'blocked');
 	if (!$words) {

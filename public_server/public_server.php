@@ -69,8 +69,8 @@ function public_server_cron($a, $b)
 				'to_name'      => $rr['username'],
 				'to_email'     => $rr['email'],
 				'source_name'  => L10n::t('Administrator'),
-				'source_link'  => $a->get_baseurl(),
-				'source_photo' => $a->get_baseurl() . '/images/person-80.jpg',
+				'source_link'  => $a->getBaseURL(),
+				'source_photo' => $a->getBaseURL() . '/images/person-80.jpg',
 			]);
 
 			$fields = ['expire_notification_sent' => DateTimeFormat::utcNow()];
@@ -121,7 +121,7 @@ function public_server_enotify(&$a, &$b)
 {
 	if (x($b, 'params') && $b['params']['type'] == NOTIFY_SYSTEM
 		&& x($b['params'], 'system_type') && $b['params']['system_type'] === 'public_server_expire') {
-		$b['itemlink'] = $a->get_baseurl();
+		$b['itemlink'] = $a->getBaseURL();
 		$b['epreamble'] = $b['preamble'] = L10n::t('Your account on %s will expire in a few days.', Config::get('system', 'sitename'));
 		$b['subject'] = L10n::t('Your Friendica account is about to expire.');
 		$b['body'] = L10n::t("Hi %1\$s,\n\nYour account on %2\$s will expire in less than five days. You may keep your account by logging in at least once every 30 days", $b['params']['to_name'], "[url=" . Config::get('system', 'url') . "]" . Config::get('config', 'sitename') . "[/url]");

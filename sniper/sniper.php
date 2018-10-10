@@ -29,7 +29,7 @@ function sniper_module() {}
 
 function sniper_content(&$a) {
 
-$baseurl = $a->get_baseurl() . '/addon/sniper';
+$baseurl = $a->getBaseURL() . '/addon/sniper';
 
 $o .= <<< EOT
 <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="620" height="480" id="hotshotsniper" align="middle">

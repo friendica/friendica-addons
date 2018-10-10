@@ -41,7 +41,7 @@ function pageheader_addon_settings(&$a,&$s) {
 
     /* Add our stylesheet to the page so we can make our settings look nice */
 
-    $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/pageheader/pageheader.css' . '" media="all" />' . "\r\n";
+    $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/pageheader/pageheader.css' . '" media="all" />' . "\r\n";
 
 
 	$words = Config::get('pageheader','text');
@@ -79,7 +79,7 @@ function pageheader_fetch($a,&$b) {
 	}
 
     $a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'
-        . $a->get_baseurl() . '/addon/pageheader/pageheader.css' . '" media="all" />' . "\r\n";
+        . $a->getBaseURL() . '/addon/pageheader/pageheader.css' . '" media="all" />' . "\r\n";
     
     if(! $s)
         $s = '';

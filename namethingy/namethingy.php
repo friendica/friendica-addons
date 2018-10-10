@@ -27,7 +27,7 @@ function namethingy_module() {}
 
 function namethingy_content(&$a) {
 
-$baseurl = $a->get_baseurl() . '/addon/namethingy';
+$baseurl = $a->getBaseURL() . '/addon/namethingy';
 
 $o .= <<< EOT
 <iframe src="http://namethingy.com" width="900" height="700" />
