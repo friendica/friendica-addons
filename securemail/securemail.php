@@ -97,7 +97,7 @@ function securemail_settings_post(App &$a, array &$b){
         if ($_POST['securemail-submit'] == L10n::t('Save and send test')) {
             $sitename = Config::get('config', 'sitename');
 
-            $hostname = $a->get_hostname();
+            $hostname = $a->getHostName();
             if (strpos($hostname, ':')) {
                 $hostname = substr($hostname, 0, strpos($hostname, ':'));
             }

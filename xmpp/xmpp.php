@@ -164,7 +164,7 @@ function xmpp_converse(App $a)
 			PConfig::set(local_user(), "xmpp", "password", $password);
 		}
 
-		$jid = $a->user["nickname"] . "@" . $a->get_hostname() . "/converse-" . random_string(5);
+		$jid = $a->user["nickname"] . "@" . $a->getHostName() . "/converse-" . random_string(5);
 
 		$auto_login = "auto_login: true,
 			authentication: 'login',

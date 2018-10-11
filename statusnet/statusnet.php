@@ -791,7 +791,7 @@ function statusnet_fetchtimeline(App $a, $uid)
 		$application_name = Config::get('statusnet', 'application_name');
 	}
 	if ($application_name == "") {
-		$application_name = $a->get_hostname();
+		$application_name = $a->getHostName();
 	}
 
 	$connection = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);

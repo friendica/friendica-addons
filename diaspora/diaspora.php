@@ -57,7 +57,7 @@ function diaspora_jot_nets(App $a, &$b)
 }
 
 function diaspora_queue_hook(App $a, &$b) {
-	$hostname = $a->get_hostname();
+	$hostname = $a->getHostName();
 
 	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
 		DBA::escape(Protocol::DIASPORA2)
@@ -287,7 +287,7 @@ function diaspora_post_local(App $a, array &$b)
 
 function diaspora_send(App $a, array &$b)
 {
-	$hostname = $a->get_hostname();
+	$hostname = $a->getHostName();
 
 	logger('diaspora_send: invoked');
 

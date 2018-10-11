@@ -181,7 +181,7 @@ function libertree_send(&$a,&$b) {
 	$ltree_api_token = PConfig::get($b['uid'],'libertree','libertree_api_token');
 	$ltree_url = PConfig::get($b['uid'],'libertree','libertree_url');
 	$ltree_blog = "$ltree_url/api/v1/posts/create/?token=$ltree_api_token";
-	$ltree_source = $a->get_hostname();
+	$ltree_source = $a->getHostName();
 
 	if ($b['app'] != "")
 		$ltree_source .= " (".$b['app'].")";

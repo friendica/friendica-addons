@@ -53,7 +53,7 @@ function notifyall_post(App $a)
 	}
 
 	if (! x(Config::get('config', 'sender_email'))) {
-		$sender_email = 'noreply@' . $a->get_hostname();
+		$sender_email = 'noreply@' . $a->getHostName();
 	} else {
 		$sender_email = Config::get('config', 'sender_email');
 	}
