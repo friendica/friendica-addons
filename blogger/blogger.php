@@ -205,7 +205,7 @@ EOT;
 		logger('blogger: data: ' . $xml, LOGGER_DATA);
 
 		if ($bl_blog !== 'test') {
-			$x = Network::post($bl_blog, $xml);
+			$x = Network::post($bl_blog, $xml)->getBody();
 		}
 
 		logger('posted to blogger: ' . (($x) ? $x : ''), LOGGER_DEBUG);

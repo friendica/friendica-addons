@@ -224,7 +224,7 @@ EOT;
 		logger('ijpost: data: ' . $xml, LOGGER_DATA);
 
 		if ($ij_blog !== 'test') {
-			$x = Network::post($ij_blog, $xml, ["Content-Type: text/xml"]);
+			$x = Network::post($ij_blog, $xml, ["Content-Type: text/xml"])->getBody();
 		}
 		logger('posted to insanejournal: ' . $x ? $x : '', LOGGER_DEBUG);
 	}

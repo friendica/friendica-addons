@@ -129,9 +129,9 @@ function openstreetmap_get_coordinates($a, &$b)
 	$j = Cache::get($cachekey);
 
 	if (is_null($j)) {
-		$x = Network::curl($nomserver . $args);
-		if ($x['success']) {
-			$j = json_decode($x['body'], true);
+		$curlResult = Network::curl($nomserver . $args);
+		if ($curlResult->isSuccess()) {
+			$j = json_decode($curlResult->getBody(), true);
 			Cache::set($cachekey, $j, CACHE_MONTH);
 		}
 	}
