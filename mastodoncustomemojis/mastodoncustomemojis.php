@@ -89,10 +89,10 @@ function mastodoncustomemojis_fetch_custom_emojis_for_url($api_base_url)
 
 	$api_url = $api_base_url . '/api/v1/custom_emojis';
 
-	$ret = Network::fetchUrlFull($api_url);
+	$fetchResult = Network::fetchUrlFull($api_url);
 
-	if ($ret['success']) {
-		$emojis_array = json_decode($ret['body'], true);
+	if ($fetchResult->isSuccess()) {
+		$emojis_array = json_decode($fetchResult->getBody(), true);
 
 		if (is_array($emojis_array) && count($emojis_array)) {
 			foreach ($emojis_array as $emoji) {

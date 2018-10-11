@@ -1691,8 +1691,7 @@ function pumpio_fetchallcomments(App $a, $uid, $id)
 
 function pumpio_reachable($url)
 {
-	$data = Network::curl($url, false, $redirects, ['timeout'=>10]);
-	return intval($data['return_code']) != 0;
+	return Network::curl($url, false, $redirects, ['timeout'=>10])->isSuccess();
 }
 
 /*
