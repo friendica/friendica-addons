@@ -52,7 +52,7 @@ function viewsrc_item_photo_menu(&$a, &$b)
 		$item_id = $b['item']['id'];
 	}
 
-	$b['menu'] = array_merge([L10n::t('View Source') => $a->get_baseurl() . '/viewsrc/'. $item_id], $b['menu']);
+	$b['menu'] = array_merge([L10n::t('View Source') => $a->getBaseurl() . '/viewsrc/'. $item_id], $b['menu']);
 
 	//if((! local_user()) || (local_user() != $b['item']['uid']))
 	//	return;
