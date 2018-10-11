@@ -91,7 +91,7 @@ function mailstream_addon_admin_post ($a) {
 
 function mailstream_generate_id($a, $uri) {
 	// http://www.jwz.org/doc/mid.html
-	$host = $a->get_hostname();
+	$host = $a->getHostName();
 	$resource = hash('md5', $uri);
 	$message_id = "<" . $resource . "@" . $host . ">";
 	logger('mailstream: Generated message ID ' . $message_id . ' for URI ' . $uri, LOGGER_DEBUG);

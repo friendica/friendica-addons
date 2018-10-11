@@ -102,7 +102,7 @@ function pumpio_registerclient(App $a, $host)
 	$application_name  = Config::get('pumpio', 'application_name');
 
 	if ($application_name == "") {
-		$application_name = $a->get_hostname();
+		$application_name = $a->getHostName();
 	}
 
 	$adminlist = explode(",", str_replace(" ", "", Config::get('config', 'admin_email')));
@@ -749,7 +749,7 @@ function pumpio_fetchtimeline(App $a, $uid)
 		$application_name  = Config::get('pumpio', 'application_name');
 	}
 	if ($application_name == "") {
-		$application_name = $a->get_hostname();
+		$application_name = $a->getHostName();
 	}
 
 	$first_time = ($lastdate == "");

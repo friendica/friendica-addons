@@ -866,7 +866,7 @@ function twitter_fetchtimeline(App $a, $uid)
 	$application_name = Config::get('twitter', 'application_name');
 
 	if ($application_name == "") {
-		$application_name = $a->get_hostname();
+		$application_name = $a->getHostName();
 	}
 
 	$has_picture = false;
@@ -1597,7 +1597,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 	$application_name = Config::get('twitter', 'application_name');
 
 	if ($application_name == "") {
-		$application_name = $a->get_hostname();
+		$application_name = $a->getHostName();
 	}
 
 	require_once 'include/items.php';
