@@ -96,8 +96,10 @@ function mastodoncustomemojis_fetch_custom_emojis_for_url($api_base_url)
 
 		if (is_array($emojis_array) && count($emojis_array)) {
 			foreach ($emojis_array as $emoji) {
-				$return['texts'][] = ':' . $emoji['shortcode'] . ':';
-				$return['icons'][] = '<img class="emoji mastodon" src="' . ProxyUtils::proxifyUrl($emoji['static_url']) . '" alt=":' . $emoji['shortcode'] . ':" title=":' . $emoji['shortcode'] . ':"/>';
+				if (!empty($emoji['shortcode']) && !empty($emoji['static_url'])) {
+					$return['texts'][] = ':' . $emoji['shortcode'] . ':';
+					$return['icons'][] = '<img class="emoji mastodon" src="' . ProxyUtils::proxifyUrl($emoji['static_url']) . '" alt=":' . $emoji['shortcode'] . ':" title=":' . $emoji['shortcode'] . ':"/>';
+				}
 			}
 		}
 	}
