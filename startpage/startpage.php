@@ -9,6 +9,7 @@
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Core\System;
 
 function startpage_install() {
 	Hook::register('home_init', 'addon/startpage/startpage.php', 'startpage_home_init');
@@ -31,7 +32,7 @@ function startpage_home_init($a, $b)
 
 	$page = PConfig::get(local_user(), 'startpage', 'startpage');
 	if (strlen($page)) {
-		$a->internalRedirect($page);
+        System::redirectTo($page);
 	}
 	return;
 }
