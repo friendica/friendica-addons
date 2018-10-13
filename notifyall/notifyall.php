@@ -28,7 +28,7 @@ function notifyall_module() {}
 
 function notifyall_addon_admin(App $a, &$o)
 {
-	$o = '<div></div>&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . z_root() . '/notifyall">' . L10n::t('Send email to all members') . '</a></br/>';
+	$o = '<div></div>&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . $a->getBaseURL() . '/notifyall">' . L10n::t('Send email to all members') . '</a></br/>';
 }
 
 
