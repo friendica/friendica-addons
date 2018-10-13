@@ -155,7 +155,7 @@ function openstreetmap_generate_map(&$a, &$b)
 {
 	$tmsserver = Config::get('openstreetmap', 'tmsserver', OSM_TMS);
 
-	if (strpos(z_root(), 'https:') !== false) {
+	if (strpos($a->getBaseURL(true), 'https:') !== false) {
 		$tmsserver = str_replace('http:','https:',$tmsserver);
 	}
 
