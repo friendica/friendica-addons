@@ -96,7 +96,7 @@ function notifyall_post(App $a)
 	}
 
 	notice(L10n::t('Emails sent'));
-    System::redirectTo('admin');
+	System::redirectTo('admin');
 }
 
 function notifyall_content(&$a)
