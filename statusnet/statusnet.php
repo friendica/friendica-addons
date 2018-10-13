@@ -1381,7 +1381,7 @@ function statusnet_complete_conversation(App $a, $uid, $self, $create_user, $nic
 		foreach ($posts as $post) {
 			$postarray = statusnet_createpost($a, $uid, $post, $self, false, false);
 
-			if (trim($postarray['body']) == "") {
+			if (empty($postarray['body'])) {
 				continue;
 			}
 
