@@ -591,7 +591,11 @@ function twitter_post_hook(App $a, array &$b)
 
 				unlink($tempfile);
 
-				$post['media_ids'] = $media->media_id_string;
+				if (isset($media->media_id_string)) {
+					$post['media_ids'] = $media->media_id_string;
+				} else {
+					throw new Exception('Failed upload of ' . $image);
+				}
 			} catch (Exception $e) {
 				logger('Exception when trying to send to Twitter: ' . $e->getMessage());
 
