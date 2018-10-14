@@ -495,8 +495,9 @@ function fromgplus_fetch($a, $uid) {
 				case "note":
 					$post = fromgplus_html2bbcode($item->object->content);
 
-					if (is_array($item->object->attachments))
+					if (!empty($item->object->attachments)) {
 						$post .= fromgplus_handleattachments($a, $uid, $item, $item->object->content, false);
+					}
 
 					$coord = "";
 					$location = "";
