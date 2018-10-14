@@ -495,8 +495,9 @@ function fromgplus_fetch($a, $uid) {
 				case "note":
 					$post = fromgplus_html2bbcode($item->object->content);
 
-					if (is_array($item->object->attachments))
+					if (!empty($item->object->attachments)) {
 						$post .= fromgplus_handleattachments($a, $uid, $item, $item->object->content, false);
+					}
 
 					$coord = "";
 					$location = "";
@@ -526,12 +527,12 @@ function fromgplus_fetch($a, $uid) {
 						if (function_exists("share_header"))
 							$post .= share_header($item->object->actor->displayName, $item->object->actor->url,
 										$item->object->actor->image->url, "",
-										DateTimeFormat::utc($item->object->published),$item->object->url);
+										DateTimeFormat::utc($item->published),$item->object->url);
 						else
 							$post .= "[share author='".str_replace("'", "&#039;",$item->object->actor->displayName).
 									"' profile='".$item->object->actor->url.
 									"' avatar='".$item->object->actor->image->url.
-									"' posted='".DateTimeFormat::utc($item->object->published).
+									"' posted='".DateTimeFormat::utc($item->published).
 									"' link='".$item->object->url."']";
 
 						$post .= fromgplus_html2bbcode($item->object->content);
