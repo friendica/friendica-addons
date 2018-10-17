@@ -45,6 +45,7 @@
 			'403' => 'Permission denied.',
 			'404' => 'Endpoint not found.',
 			'405' => 'Method not allowed.',
+			'504' => 'Gateway timeout server response timeout.',
 			'1000' => 'An unknown error occurred.',
 			'1001' => 'Access token required.',
 			'1002' => 'Not within application scope.',
