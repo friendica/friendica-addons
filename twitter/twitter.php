@@ -554,6 +554,14 @@ function twitter_post_hook(App $a, array &$b)
 
 		$max_char = 280;
 
+		// Handling non-native reshares
+		$b['body'] = Friendica\Content\Text\BBCode::convertShare(
+			$b['body'],
+			function (array $attributes, array $author_contact, $content) {
+				return twitter_convert_share($attributes, $author_contact, $content);
+			}
+		);
+
 		$b['body'] = twitter_update_mentions($b['body']);
 
 		$msgarr = ItemContent::getPlaintextPost($b, $max_char, true, 8);
@@ -1881,4 +1889,15 @@ function twitter_update_mentions($body)
 	);
 
 	return $return;
+}
+
+function twitter_convert_share(array $attributes, array $author_contact, $content)
+{
+	if ($author_contact['network'] == Protocol::TWITTER) {
+		$mention = '@' . $author_contact['nickname'];
+	} else {
+		$mention = Protocol::formatMention($attributes['profile'], $attributes['author']);
+	}
+
+	return 'RT ' . $mention . ': ' . $content;
 }
