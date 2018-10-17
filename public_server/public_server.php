@@ -11,6 +11,7 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Database\DBA;
 use Friendica\Util\DateTimeFormat;
+use Friendica\Util\Security;
 
 function public_server_install()
 {
@@ -142,7 +143,7 @@ function public_server_login($a, $b)
 
 function public_server_addon_admin_post(&$a)
 {
-	check_form_security_token_redirectOnErr('/admin/addons/publicserver', 'publicserver');
+	Security::check_form_security_token_redirectOnErr('/admin/addons/publicserver', 'publicserver');
 	$expiredays = (x($_POST, 'expiredays') ? notags(trim($_POST['expiredays'])) : '');
 	$expireposts = (x($_POST, 'expireposts') ? notags(trim($_POST['expireposts'])) : '');
 	$nologin = (x($_POST, 'nologin') ? notags(trim($_POST['nologin'])) : '');
@@ -160,7 +161,7 @@ function public_server_addon_admin_post(&$a)
 
 function public_server_addon_admin(&$a, &$o)
 {
-	$token = get_form_security_token("publicserver");
+	$token = Security::get_form_security_token("publicserver");
 	$t = get_markup_template("admin.tpl", "addon/public_server");
 	$o = replace_macros($t, [
 		'$submit' => L10n::t('Save Settings'),

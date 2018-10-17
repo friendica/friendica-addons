@@ -11,6 +11,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Database\DBA;
+use Friendica\Util\Security;
 
 /**
  * Installs the addon hook
@@ -103,7 +104,7 @@ function gravatar_addon_admin (&$a, &$o) {
 	}
 
 	// output Gravatar settings
-	$o .= '<input type="hidden" name="form_security_token" value="' .get_form_security_token("gravatarsave") .'">';
+	$o .= '<input type="hidden" name="form_security_token" value="' .Security::get_form_security_token("gravatarsave") .'">';
 	$o .= replace_macros( $t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$default_avatar' => ['avatar', L10n::t('Default avatar image'), $default_avatar, L10n::t('Select default avatar image if none was found at Gravatar. See README'), $default_avatars],
@@ -115,7 +116,7 @@ function gravatar_addon_admin (&$a, &$o) {
  * Save admin settings
  */
 function gravatar_addon_admin_post (&$a) {
-	check_form_security_token('gravatarsave');
+	Security::check_form_security_token('gravatarsave');
 
 	$default_avatar = ((x($_POST, 'avatar')) ? notags(trim($_POST['avatar'])) : 'identicon');
 	$rating = ((x($_POST, 'rating')) ? notags(trim($_POST['rating'])) : 'g');

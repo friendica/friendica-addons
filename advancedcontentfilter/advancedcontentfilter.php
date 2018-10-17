@@ -46,6 +46,7 @@ use Friendica\Model\Term;
 use Friendica\Module\Login;
 use Friendica\Network\HTTPException;
 use Friendica\Util\DateTimeFormat;
+use Friendica\Util\Security;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\ExpressionLanguage;
@@ -53,7 +54,6 @@ use Symfony\Component\ExpressionLanguage;
 require_once 'boot.php';
 require_once 'include/conversation.php';
 require_once 'include/dba.php';
-require_once 'include/security.php';
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
@@ -234,7 +234,7 @@ function advancedcontentfilter_content(App $a)
 			],
 			'$current_theme' => $a->getCurrentTheme(),
 			'$rules' => advancedcontentfilter_get_rules(),
-			'$form_security_token' => get_form_security_token()
+			'$form_security_token' => Security::get_form_security_token()
 		]);
 	}
 }
@@ -322,7 +322,7 @@ function advancedcontentfilter_post_rules(ServerRequestInterface $request)
 		throw new HTTPException\UnauthorizedException(L10n::t('You must be logged in to use this method'));
 	}
 
-	if (!check_form_security_token()) {
+	if (!Security::check_form_security_token()) {
 		throw new HTTPException\BadRequestException(L10n::t('Invalid form security token, please refresh the page.'));
 	}
 
@@ -356,7 +356,7 @@ function advancedcontentfilter_put_rules_id(ServerRequestInterface $request, Res
 		throw new HTTPException\UnauthorizedException(L10n::t('You must be logged in to use this method'));
 	}
 
-	if (!check_form_security_token()) {
+	if (!Security::check_form_security_token()) {
 		throw new HTTPException\BadRequestException(L10n::t('Invalid form security token, please refresh the page.'));
 	}
 
@@ -385,7 +385,7 @@ function advancedcontentfilter_delete_rules_id(ServerRequestInterface $request, 
 		throw new HTTPException\UnauthorizedException(L10n::t('You must be logged in to use this method'));
 	}
 
-	if (!check_form_security_token()) {
+	if (!Security::check_form_security_token()) {
 		throw new HTTPException\BadRequestException(L10n::t('Invalid form security token, please refresh the page.'));
 	}
 
