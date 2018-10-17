@@ -1891,7 +1891,7 @@ function twitter_update_mentions($body)
 	return $return;
 }
 
-function twitter_convert_share(array $attributes, array $author_contact, $content)
+function twitter_convert_share(array $attributes, array $author_contact, $content, $is_quote_share)
 {
 	if ($author_contact['network'] == Protocol::TWITTER) {
 		$mention = '@' . $author_contact['nickname'];
@@ -1899,5 +1899,5 @@ function twitter_convert_share(array $attributes, array $author_contact, $conten
 		$mention = Protocol::formatMention($attributes['profile'], $attributes['author']);
 	}
 
-	return 'RT ' . $mention . ': ' . $content;
+	return ($is_quote_share ? "\n\n" : '' ) . 'RT ' . $mention . ': ' . $content . "\n\n" . $attributes['link'];
 }
