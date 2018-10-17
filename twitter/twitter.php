@@ -553,6 +553,17 @@ function twitter_post_hook(App $a, array &$b)
 		$connection->setTimeouts(10, 30);
 
 		$max_char = 280;
+
+		// Handling non-native reshares
+		$b['body'] = Friendica\Content\Text\BBCode::convertShare(
+			$b['body'],
+			function (array $attributes, array $author_contact, $content) {
+				return twitter_convert_share($attributes, $author_contact, $content);
+			}
+		);
+
+		$b['body'] = twitter_update_mentions($b['body']);
+
 		$msgarr = ItemContent::getPlaintextPost($b, $max_char, true, 8);
 		$msg = $msgarr["text"];
 
@@ -1858,4 +1869,35 @@ function twitter_is_retweet(App $a, $uid, $body)
 	logger('twitter_is_retweet: result ' . print_r($result, true), LOGGER_DEBUG);
 
 	return !isset($result->errors);
+}
+
+function twitter_update_mentions($body)
+{
+	$URLSearchString = "^\[\]";
+	$return = preg_replace_callback(
+		"/@\[url\=([$URLSearchString]*)\](.*?)\[\/url\]/ism",
+		function ($matches) {
+			if (strpos($matches[1], 'twitter.com')) {
+				$return = '@' . substr($matches[1], strrpos($matches[1], '/') + 1);
+			} else {
+				$return = $matches[2] . ' (' . $matches[1] . ')';
+			}
+
+			return $return;
+		},
+		$body
+	);
+
+	return $return;
+}
+
+function twitter_convert_share(array $attributes, array $author_contact, $content, $is_quote_share)
+{
+	if ($author_contact['network'] == Protocol::TWITTER) {
+		$mention = '@' . $author_contact['nickname'];
+	} else {
+		$mention = Protocol::formatMention($attributes['profile'], $attributes['author']);
+	}
+
+	return ($is_quote_share ? "\n\n" : '' ) . 'RT ' . $mention . ': ' . $content . "\n\n" . $attributes['link'];
 }
