@@ -658,7 +658,7 @@ function statusnet_addon_admin(App $a, &$o)
 		}
 	}
 	/* empty form to add new site */
-	$id++;
+	$id = count($sitesform);
 	$sitesform[] = [
 		'sitename' => ["sitename[$id]", L10n::t("Site name"), "", ""],
 		'apiurl' => ["apiurl[$id]", "Api url", "", L10n::t("Base API Path \x28remember the trailing /\x29")],
