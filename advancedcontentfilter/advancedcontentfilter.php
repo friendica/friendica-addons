@@ -34,6 +34,7 @@
  */
 
 use Friendica\App;
+use Friendica\BaseModule;
 use Friendica\Content\Text\Markdown;
 use Friendica\Core\Addon;
 use Friendica\Core\Cache;
@@ -234,7 +235,7 @@ function advancedcontentfilter_content(App $a)
 			],
 			'$current_theme' => $a->getCurrentTheme(),
 			'$rules' => advancedcontentfilter_get_rules(),
-			'$form_security_token' => Security::get_form_security_token()
+			'$form_security_token' => BaseModule::getFormSecurityToken()
 		]);
 	}
 }
@@ -322,7 +323,7 @@ function advancedcontentfilter_post_rules(ServerRequestInterface $request)
 		throw new HTTPException\UnauthorizedException(L10n::t('You must be logged in to use this method'));
 	}
 
-	if (!Security::check_form_security_token()) {
+	if (!BaseModule::checkFormSecurityToken()) {
 		throw new HTTPException\BadRequestException(L10n::t('Invalid form security token, please refresh the page.'));
 	}
 
@@ -356,7 +357,7 @@ function advancedcontentfilter_put_rules_id(ServerRequestInterface $request, Res
 		throw new HTTPException\UnauthorizedException(L10n::t('You must be logged in to use this method'));
 	}
 
-	if (!Security::check_form_security_token()) {
+	if (!BaseModule::checkFormSecurityToken()) {
 		throw new HTTPException\BadRequestException(L10n::t('Invalid form security token, please refresh the page.'));
 	}
 
@@ -385,7 +386,7 @@ function advancedcontentfilter_delete_rules_id(ServerRequestInterface $request, 
 		throw new HTTPException\UnauthorizedException(L10n::t('You must be logged in to use this method'));
 	}
 
-	if (!Security::check_form_security_token()) {
+	if (!BaseModule::checkFormSecurityToken()) {
 		throw new HTTPException\BadRequestException(L10n::t('Invalid form security token, please refresh the page.'));
 	}
 

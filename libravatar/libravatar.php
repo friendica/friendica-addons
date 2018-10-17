@@ -7,6 +7,7 @@
  */
 
 use Friendica\App;
+use Friendica\BaseModule;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -107,7 +108,7 @@ function libravatar_addon_admin(&$a, &$o)
 	}
 
 	// output Libravatar settings
-	$o .= '<input type="hidden" name="form_security_token" value="' .Security::get_form_security_token("libravatarsave") .'">';
+	$o .= '<input type="hidden" name="form_security_token" value="' . BaseModule::getFormSecurityToken("libravatarsave") .'">';
 	$o .= replace_macros( $t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$default_avatar' => ['avatar', L10n::t('Default avatar image'), $default_avatar, L10n::t('Select default avatar image if none was found. See README'), $default_avatars],
@@ -119,7 +120,7 @@ function libravatar_addon_admin(&$a, &$o)
  */
 function libravatar_addon_admin_post(&$a)
 {
-	Security::check_form_security_token('libravatarrsave');
+	BaseModule::checkFormSecurityToken('libravatarrsave');
 
 	$default_avatar = ((x($_POST, 'avatar')) ? notags(trim($_POST['avatar'])) : 'identicon');
 	Config::set('libravatar', 'default_avatar', $default_avatar);

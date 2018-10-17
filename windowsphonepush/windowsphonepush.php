@@ -472,7 +472,7 @@ function windowsphonepush_login(App $a)
 		die('This api requires login');
 	}
 
-	Authentication::success($record);
+	Authentication::setAuthenticatedSessionForUser($record);
 	$_SESSION["allow_api"] = true;
 	Addon::callHooks('logged_in', $a->user);
 }
