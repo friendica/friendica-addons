@@ -1896,7 +1896,7 @@ function twitter_convert_share(array $attributes, array $author_contact, $conten
 	if ($author_contact['network'] == Protocol::TWITTER) {
 		$mention = '@' . $author_contact['nickname'];
 	} else {
-		$mention = Protocol::formatMention($attributes['profile'], $attributes['author']);
+		$mention = $author_contact['addr'];
 	}
 
 	return ($is_quote_share ? "\n\n" : '' ) . 'RT ' . $mention . ': ' . $content . "\n\n" . $attributes['link'];
