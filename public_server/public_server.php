@@ -6,11 +6,13 @@
  * Author: Keith Fernie <http://friendika.me4.it/profile/keith>
  */
 
+use Friendica\BaseModule;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Database\DBA;
 use Friendica\Util\DateTimeFormat;
+use Friendica\Util\Security;
 
 function public_server_install()
 {
@@ -142,7 +144,7 @@ function public_server_login($a, $b)
 
 function public_server_addon_admin_post(&$a)
 {
-	check_form_security_token_redirectOnErr('/admin/addons/publicserver', 'publicserver');
+	BaseModule::checkFormSecurityTokenRedirectOnError('/admin/addons/publicserver', 'publicserver');
 	$expiredays = (x($_POST, 'expiredays') ? notags(trim($_POST['expiredays'])) : '');
 	$expireposts = (x($_POST, 'expireposts') ? notags(trim($_POST['expireposts'])) : '');
 	$nologin = (x($_POST, 'nologin') ? notags(trim($_POST['nologin'])) : '');
@@ -160,7 +162,7 @@ function public_server_addon_admin_post(&$a)
 
 function public_server_addon_admin(&$a, &$o)
 {
-	$token = get_form_security_token("publicserver");
+	$token = BaseModule::getFormSecurityToken("publicserver");
 	$t = get_markup_template("admin.tpl", "addon/public_server");
 	$o = replace_macros($t, [
 		'$submit' => L10n::t('Save Settings'),
