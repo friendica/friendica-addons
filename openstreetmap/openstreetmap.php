@@ -132,7 +132,7 @@ function openstreetmap_get_coordinates($a, &$b)
 		$curlResult = Network::curl($nomserver . $args);
 		if ($curlResult->isSuccess()) {
 			$j = json_decode($curlResult->getBody(), true);
-			Cache::set($cachekey, $j, CACHE_MONTH);
+			Cache::set($cachekey, $j, Cache::MONTH);
 		}
 	}
 

@@ -92,7 +92,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 	];
 
 	PConfig::set(local_user(), 'curweather', 'last', $now->getTimestamp());
-	Cache::set('curweather'.md5($url), serialize($r), CACHE_HOUR);
+	Cache::set('curweather'.md5($url), serialize($r), Cache::HOUR);
 
 	return $r;
 }
