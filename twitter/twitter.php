@@ -557,8 +557,8 @@ function twitter_post_hook(App $a, array &$b)
 		// Handling non-native reshares
 		$b['body'] = Friendica\Content\Text\BBCode::convertShare(
 			$b['body'],
-			function (array $attributes, array $author_contact, $content) {
-				return twitter_convert_share($attributes, $author_contact, $content);
+			function (array $attributes, array $author_contact, $content, $is_quote_share) {
+				return twitter_convert_share($attributes, $author_contact, $content, $is_quote_share);
 			}
 		);
 
