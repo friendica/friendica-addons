@@ -141,7 +141,7 @@ function catavatar_lookup(App $a, &$b)
 	$url = $a->getBaseURL() . '/catavatar/' . $user['uid'];
 
 	switch($b['size']) {
-		case 175: $url .= "/4"; break;
+		case 300: $url .= "/4"; break;
 		case 80: $url .= "/5"; break;
 		case 47: $url .= "/6"; break;
 	}
@@ -245,7 +245,7 @@ function build_cat($seed = '', $size = 0)
 	if ($size > 3 && $size < 7) {
 		switch ($size) {
 			case 4:
-				$size = 175;
+				$size = 300;
 				break;
 			case 5:
 				$size = 80;
