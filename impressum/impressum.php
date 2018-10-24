@@ -31,7 +31,7 @@ function impressum_module() {
 }
 function impressum_content() {
     $a = get_app();
-    goaway('friendica/');
+    $a->internalRedirect('friendica/');
 }
 
 function obfuscate_email ($s) {

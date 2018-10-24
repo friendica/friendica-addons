@@ -160,7 +160,7 @@ function statusnet_settings_post(App $a, $post)
 					}
 				}
 			}
-			goaway('settings/connectors');
+			$a->internalRedirect('settings/connectors');
 		} else {
 			if (isset($_POST['statusnet-consumersecret'])) {
 				//  check if we can reach the API of the GNU Social server
@@ -188,7 +188,7 @@ function statusnet_settings_post(App $a, $post)
 						notice(L10n::t('We could not contact the GNU Social API with the Path you entered.') . EOL);
 					}
 				}
-				goaway('settings/connectors');
+				$a->internalRedirect('settings/connectors');
 			} else {
 				if (isset($_POST['statusnet-pin'])) {
 					//  if the user supplied us with a PIN from GNU Social, let the magic of OAuth happen
@@ -206,7 +206,7 @@ function statusnet_settings_post(App $a, $post)
 					PConfig::set(local_user(), 'statusnet', 'post', 1);
 					PConfig::set(local_user(), 'statusnet', 'post_taglinks', 1);
 					//  reload the Addon Settings page, if we don't do it see Bug #42
-					goaway('settings/connectors');
+					$a->internalRedirect('settings/connectors');
 				} else {
 					//  if no PIN is supplied in the POST variables, the user has changed the setting
 					//  to post a dent for every new __public__ posting to the wall
