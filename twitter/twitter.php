@@ -258,7 +258,7 @@ function twitter_settings_post(App $a)
 				info($e->getMessage());
 			}
 			//  reload the Addon Settings page, if we don't do it see Bug #42
-			goaway('settings/connectors');
+			$a->internalRedirect('settings/connectors');
 		} else {
 			//  if no PIN is supplied in the POST variables, the user has changed the setting
 			//  to post a tweet for every new __public__ posting to the wall

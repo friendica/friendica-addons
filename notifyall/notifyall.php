@@ -93,7 +93,7 @@ function notifyall_post(App $a)
 	}
 
 	notice(L10n::t('Emails sent'));
-	goaway('admin');
+	$a->internalRedirect('admin');
 }
 
 function notifyall_content(&$a)
