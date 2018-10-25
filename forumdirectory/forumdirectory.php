@@ -113,7 +113,7 @@ function forumdirectory_content(App $a)
 		$total = $r[0]['total'];
 	}
 
-	$pager = new Pager($a->query_string, $total, 60);
+	$pager = new Pager($a->query_string, 60);
 
 	$order = " ORDER BY `name` ASC ";
 
@@ -210,7 +210,7 @@ function forumdirectory_content(App $a)
 		}
 
 		$o .= "<div class=\"directory-end\" ></div>\r\n";
-		$o .= $pager->renderFull();
+		$o .= $pager->renderFull($total);
 	} else {
 		info(L10n::t("No entries \x28some entries may be hidden\x29.") . EOL);
 	}
