@@ -8,6 +8,7 @@
 
 use Friendica\App;
 use Friendica\Content\Nav;
+use Friendica\Content\Pager;
 use Friendica\Content\Widget;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -44,8 +45,6 @@ function forumdirectory_app_menu(App $a, array &$b)
 function forumdirectory_init(App $a)
 {
 	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="' . $a->getBaseURL() . '/addon/forumdirectory/forumdirectory.css" media="all" />';
-
-	$a->set_pager_itemspage(60);
 
 	if (local_user()) {
 		$a->page['aside'] .= Widget::findPeople();
@@ -107,19 +106,22 @@ function forumdirectory_content(App $a)
 
 	$publish = Config::get('system', 'publish_all') ? '' : " AND `publish` = 1 ";
 
+	$total = 0;
 	$r = q("SELECT COUNT(*) AS `total` FROM `profile` LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid`"
 		. " WHERE `is-default` = 1 $publish AND `user`.`blocked` = 0 AND `page-flags` = 2 $sql_extra ");
 	if (DBA::isResult($r)) {
-		$a->set_pager_total($r[0]['total']);
+		$total = $r[0]['total'];
 	}
+
+	$pager = new Pager($a->query_string, 60);
 
 	$order = " ORDER BY `name` ASC ";
 
 	$r = q("SELECT `profile`.*, `profile`.`uid` AS `profile_uid`, `user`.`nickname`, `user`.`timezone` , `user`.`page-flags`"
 		. " FROM `profile` LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid` WHERE `is-default` = 1 $publish"
 		. " AND `user`.`blocked` = 0 AND `page-flags` = 2 $sql_extra $order LIMIT %d , %d ",
-		intval($a->pager['start']),
-		intval($a->pager['itemspage'])
+		$pager->getStart(),
+		$pager->getItemsPerPage()
 	);
 
 	if (DBA::isResult($r)) {
@@ -208,7 +210,7 @@ function forumdirectory_content(App $a)
 		}
 
 		$o .= "<div class=\"directory-end\" ></div>\r\n";
-		$o .= paginate($a);
+		$o .= $pager->renderFull($total);
 	} else {
 		info(L10n::t("No entries \x28some entries may be hidden\x29.") . EOL);
 	}
