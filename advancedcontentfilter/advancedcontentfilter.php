@@ -39,7 +39,6 @@ use Friendica\Content\Text\Markdown;
 use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\L10n;
-use Friendica\Core\System;
 use Friendica\Database\DBA;
 use Friendica\Database\DBStructure;
 use Friendica\Model\Item;
@@ -47,7 +46,6 @@ use Friendica\Model\Term;
 use Friendica\Module\Login;
 use Friendica\Network\HTTPException;
 use Friendica\Util\DateTimeFormat;
-use Friendica\Util\Security;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\ExpressionLanguage;
@@ -91,7 +89,7 @@ function advancedcontentfilter_dbstructure_definition(App $a, &$database)
 			"expression" => ["type" => "mediumtext"  , "not null" => "1", "comment" => "Expression text"],
 			"serialized" => ["type" => "mediumtext"  , "not null" => "1", "comment" => "Serialized parsed expression"],
 			"active"     => ["type" => "boolean"     , "not null" => "1", "default" => "1", "comment" => "Whether the rule is active or not"],
-			"created"    => ["type" => "datetime"    , "not null" => "1", "default" => NULL_DATE, "comment" => "Creation date"],
+			"created"    => ["type" => "datetime"    , "not null" => "1", "default" => DBA::NULL_DATETIME, "comment" => "Creation date"],
 		],
 		"indexes" => [
 			"PRIMARY" => ["id"],

@@ -31,7 +31,7 @@ function startpage_home_init($a, $b)
 
 	$page = PConfig::get(local_user(), 'startpage', 'startpage');
 	if (strlen($page)) {
-		goaway($page);
+		$a->internalRedirect($page);
 	}
 	return;
 }
