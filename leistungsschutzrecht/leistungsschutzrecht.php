@@ -164,7 +164,7 @@ function leistungsschutzrecht_cron($a,$b) {
 	if($last) {
 		$next = $last + 86400;
 		if($next > time()) {
-			Text::logger('poll intervall not reached');
+			App::logger('poll intervall not reached');
 			return;
 		}
 	}

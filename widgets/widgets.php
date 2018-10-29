@@ -7,6 +7,7 @@
  * Status: Unsupported
  */
 
+use Friendica\App;
 use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
@@ -16,7 +17,7 @@ use Friendica\Database\DBA;
 function widgets_install() {
 	Addon::registerHook('addon_settings', 'addon/widgets/widgets.php', 'widgets_settings');
 	Addon::registerHook('addon_settings_post', 'addon/widgets/widgets.php', 'widgets_settings_post');
-	Text::logger("installed widgets");
+	App::logger("installed widgets");
 }
 
 function widgets_uninstall() {
@@ -59,7 +60,7 @@ function widgets_settings(&$a,&$o) {
 
 #	$t = file_get_contents( dirname(__file__). "/settings.tpl" );
 	$t = Text::getMarkupTemplate("settings.tpl", "addon/widgets/");
-	$o .= Text::replaceMacros($t, [
+	$o .= App::replaceMacros($t, [
 		'$submit' => L10n::t('Generate new key'),
 		'$baseurl' => $a->getBaseURL(),
 		'$title' => "Widgets",
@@ -142,7 +143,7 @@ function widgets_content(&$a) {
 		$widget_size = call_user_func($a->argv[1].'_widget_size');
 
 		$script = file_get_contents(dirname(__file__)."/widgets.js");
-		$o .= Text::replaceMacros($script, [
+		$o .= App::replaceMacros($script, [
 			'$entrypoint' => $a->getBaseURL()."/widgets/".$a->argv[1]."/cb/",
 			'$key' => $conf['key'],
 			'$widget_id' => 'f9a_'.$a->argv[1]."_"._randomAlphaNum(6),

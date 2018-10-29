@@ -18,7 +18,7 @@ function gnot_install() {
 	Addon::registerHook('addon_settings_post', 'addon/gnot/gnot.php', 'gnot_settings_post');
 	Addon::registerHook('enotify_mail', 'addon/gnot/gnot.php', 'gnot_enotify_mail');
 
-	Text::logger("installed gnot");
+	App::logger("installed gnot");
 }
 
 
@@ -29,7 +29,7 @@ function gnot_uninstall() {
 	Addon::unregisterHook('enotify_mail', 'addon/gnot/gnot.php', 'gnot_enotify_mail');
 
 
-	Text::logger("removed gnot");
+	App::logger("removed gnot");
 }
 
 

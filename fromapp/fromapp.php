@@ -16,7 +16,7 @@ function fromapp_install()
 	Addon::registerHook('post_local', 'addon/fromapp/fromapp.php', 'fromapp_post_hook');
 	Addon::registerHook('addon_settings', 'addon/fromapp/fromapp.php', 'fromapp_settings');
 	Addon::registerHook('addon_settings_post', 'addon/fromapp/fromapp.php', 'fromapp_settings_post');
-	Text::logger("installed fromapp");
+	App::logger("installed fromapp");
 }
 
 
@@ -25,7 +25,7 @@ function fromapp_uninstall()
 	Addon::unregisterHook('post_local', 'addon/fromapp/fromapp.php', 'fromapp_post_hook');
 	Addon::unregisterHook('addon_settings', 'addon/fromapp/fromapp.php', 'fromapp_settings');
 	Addon::unregisterHook('addon_settings_post', 'addon/fromapp/fromapp.php', 'fromapp_settings_post');
-	Text::logger("removed fromapp");
+	App::logger("removed fromapp");
 }
 
 function fromapp_settings_post($a, $post)

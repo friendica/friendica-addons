@@ -12,7 +12,7 @@ function smileybutton_install() {
 	//Register hooks
 	Addon::registerHook('jot_tool', 'addon/smileybutton/smileybutton.php', 'show_button');
 
-	Text::logger("installed smileybutton");
+	App::logger("installed smileybutton");
 }
 
 
@@ -20,7 +20,7 @@ function smileybutton_uninstall() {
 	//Delet registered hooks
 	Addon::unregisterHook('jot_tool',    'addon/smileybutton/smileybutton.php', 'show_button');
 
-	Text::logger("removed smileybutton");
+	App::logger("removed smileybutton");
 }
 
 

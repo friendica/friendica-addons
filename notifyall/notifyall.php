@@ -17,12 +17,12 @@ use Friendica\Util\Emailer;
 
 function notifyall_install()
 {
-	Text::logger("installed notifyall");
+	App::logger("installed notifyall");
 }
 
 function notifyall_uninstall()
 {
-	Text::logger("removed notifyall");
+	App::logger("removed notifyall");
 }
 
 function notifyall_module() {}
@@ -105,7 +105,7 @@ function notifyall_content(&$a)
 
 	$title = L10n::t('Send email to all members of this Friendica instance.');
 
-	$o = Text::replaceMacros(Text::getMarkupTemplate('notifyall_form.tpl', 'addon/notifyall/'), [
+	$o = App::replaceMacros(Text::getMarkupTemplate('notifyall_form.tpl', 'addon/notifyall/'), [
 		'$title' => $title,
 		'$text' => htmlspecialchars(defaults($_REQUEST, 'text', '')),
 		'$subject' => ['subject', L10n::t('Message subject'), defaults($_REQUEST, 'subject', ''),''],

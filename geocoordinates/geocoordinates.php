@@ -6,6 +6,7 @@
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
 
+use Friendica\App;
 use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\Cache;
@@ -56,25 +57,25 @@ function geocoordinates_resolve_item(&$item)
 	$s = Network::fetchUrl("https://api.opencagedata.com/geocode/v1/json?q=".$coords[0].",".$coords[1]."&key=".$key."&language=".$language);
 
 	if (!$s) {
-		Text::logger("API could not be queried", LOGGER_DEBUG);
+		App::logger("API could not be queried", LOGGER_DEBUG);
 		return;
 	}
 
 	$data = json_decode($s);
 
 	if ($data->status->code != "200") {
-		Text::logger("API returned error ".$data->status->code." ".$data->status->message, LOGGER_DEBUG);
+		App::logger("API returned error ".$data->status->code." ".$data->status->message, LOGGER_DEBUG);
 		return;
 	}
 
 	if (($data->total_results == 0) || (count($data->results) == 0)) {
-		Text::logger("No results found for coordinates ".$item["coord"], LOGGER_DEBUG);
+		App::logger("No results found for coordinates ".$item["coord"], LOGGER_DEBUG);
 		return;
 	}
 
 	$item["location"] = $data->results[0]->formatted;
 
-	Text::logger("Got location for coordinates ".$coords[0]."-".$coords[1].": ".$item["location"], LOGGER_DEBUG);
+	App::logger("Got location for coordinates ".$coords[0]."-".$coords[1].": ".$item["location"], LOGGER_DEBUG);
 
 	if ($item["location"] != "")
 		Cache::set("geocoordinates:".$language.":".$coords[0]."-".$coords[1], $item["location"]);
@@ -90,7 +91,7 @@ function geocoordinates_addon_admin(&$a, &$o)
 
 	$t = Text::getMarkupTemplate("admin.tpl", "addon/geocoordinates/");
 
-	$o = Text::replaceMacros($t, [
+	$o = App::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$api_key' => ['api_key', L10n::t('API Key'), Config::get('geocoordinates', 'api_key'), ''],
 		'$language' => ['language', L10n::t('Language code (IETF format)'), Config::get('geocoordinates', 'language'), ''],

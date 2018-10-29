@@ -30,6 +30,7 @@
  *     about http/https but beware to put the trailing / at the end of your
  *     setting.
  */
+use Friendica\App;
 use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -39,14 +40,14 @@ function piwik_install() {
 	Addon::registerHook('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
 	Addon::registerHook('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
-	Text::logger("installed piwik addon");
+	App::logger("installed piwik addon");
 }
 
 function piwik_uninstall() {
 	Addon::unregisterHook('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
 	Addon::unregisterHook('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
-	Text::logger("uninstalled piwik addon");
+	App::logger("uninstalled piwik addon");
 }
 
 function piwik_load_config(\Friendica\App $a)
@@ -97,7 +98,7 @@ function piwik_analytics($a,&$b) {
 }
 function piwik_addon_admin (&$a, &$o) {
 	$t = Text::getMarkupTemplate( "admin.tpl", "addon/piwik/" );
-	$o = Text::replaceMacros( $t, [
+	$o = App::replaceMacros( $t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$piwikbaseurl' => ['baseurl', L10n::t('Piwik Base URL'), Config::get('piwik','baseurl' ), L10n::t('Absolute path to your Piwik installation. (without protocol (http/s), with trailing slash)')],
 		'$siteid' => ['siteid', L10n::t('Site ID'), Config::get('piwik','siteid' ), ''],

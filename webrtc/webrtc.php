@@ -6,6 +6,7 @@
  * Author: Stephen Mahood <https://friends.mayfirst.org/profile/marxistvegan>
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  */
+use Friendica\App;
 use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -26,7 +27,7 @@ function webrtc_app_menu($a,&$b) {
 
 function webrtc_addon_admin (&$a, &$o) {
         $t = Text::getMarkupTemplate( "admin.tpl", "addon/webrtc/" );
-	$o = Text::replaceMacros( $t, [
+	$o = App::replaceMacros( $t, [
 	    '$submit' => L10n::t('Save Settings'),
 	    '$webrtcurl' => ['webrtcurl', L10n::t('WebRTC Base URL'), Config::get('webrtc','webrtcurl' ), L10n::t('Page your users will create a WebRTC chat room on. For example you could use https://live.mayfirst.org .')],
 	]);

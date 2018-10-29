@@ -135,7 +135,7 @@ function curweather_network_mod_init(App $a, &$b)
 
 	if ($ok) {
 		$t = Text::getMarkupTemplate("widget.tpl", "addon/curweather/" );
-		$curweather = Text::replaceMacros ($t, [
+		$curweather = App::replaceMacros ($t, [
 			'$title' => L10n::t("Current Weather"),
 			'$icon' => ProxyUtils::proxifyUrl('http://openweathermap.org/img/w/'.$res['icon'].'.png'),
 			'$city' => $res['city'],
@@ -152,7 +152,7 @@ function curweather_network_mod_init(App $a, &$b)
 		]);
 	} else {
 		$t = Text::getMarkupTemplate('widget-error.tpl', 'addon/curweather/');
-		$curweather = Text::replaceMacros( $t, [
+		$curweather = App::replaceMacros( $t, [
 			'$problem' => L10n::t('There was a problem accessing the weather data. But have a look'),
 			'$rpt' => $rpt,
 			'$atOWM' => L10n::t('at OpenWeatherMap')
@@ -198,7 +198,7 @@ function curweather_addon_settings(App $a, &$s)
 	// load template and replace the macros
 	$t = Text::getMarkupTemplate("settings.tpl", "addon/curweather/" );
 
-	$s = Text::replaceMacros ($t, [
+	$s = App::replaceMacros ($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$header' => L10n::t('Current Weather').' '.L10n::t('Settings'),
 		'$noappidtext' => $noappidtext,
@@ -238,7 +238,7 @@ function curweather_addon_admin(App $a, &$o)
 
 	$t = Text::getMarkupTemplate("admin.tpl", "addon/curweather/" );
 
-	$o = Text::replaceMacros ($t, [
+	$o = App::replaceMacros ($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$cachetime' => [
 			'cachetime',

@@ -54,7 +54,7 @@ function public_server_register_account($a, $b)
 
 function public_server_cron($a, $b)
 {
-	Text::logger("public_server: cron start");
+	App::logger("public_server: cron start");
 
 	require_once('include/enotify.php');
 	$r = q("SELECT * FROM `user` WHERE `account_expires_on` < UTC_TIMESTAMP() + INTERVAL 5 DAY AND
@@ -117,7 +117,7 @@ function public_server_cron($a, $b)
 		}
 	}
 
-	Text::logger("public_server: cron end");
+	App::logger("public_server: cron end");
 }
 
 function public_server_enotify(&$a, &$b)
@@ -165,7 +165,7 @@ function public_server_addon_admin(&$a, &$o)
 {
 	$token = BaseModule::getFormSecurityToken("publicserver");
 	$t = Text::getMarkupTemplate("admin.tpl", "addon/public_server");
-	$o = Text::replaceMacros($t, [
+	$o = App::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$form_security_token' => $token,
 		'$infotext' => L10n::t('Set any of these options to 0 to deactivate it.'),

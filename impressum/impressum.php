@@ -7,6 +7,7 @@
  * License: 3-clause BSD license
  */
 
+use Friendica\App;
 use Friendica\Content\Text;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
@@ -18,14 +19,14 @@ function impressum_install() {
 	Addon::registerHook('load_config', 'addon/impressum/impressum.php', 'impressum_load_config');
     Addon::registerHook('about_hook', 'addon/impressum/impressum.php', 'impressum_show');
     Addon::registerHook('page_end', 'addon/impressum/impressum.php', 'impressum_footer');
-    Text::logger("installed impressum Addon");
+    App::logger("installed impressum Addon");
 }
 
 function impressum_uninstall() {
 	Addon::unregisterHook('load_config', 'addon/impressum/impressum.php', 'impressum_load_config');
     Addon::unregisterHook('about_hook', 'addon/impressum/impressum.php', 'impressum_show');
     Addon::unregisterHook('page_end', 'addon/impressum/impressum.php', 'impressum_footer');
-    Text::logger("uninstalled impressum Addon");
+    App::logger("uninstalled impressum Addon");
 }
 
 function impressum_module() {
@@ -101,7 +102,7 @@ function impressum_addon_admin_post (&$a) {
 }
 function impressum_addon_admin (&$a, &$o) {
     $t = Text::getMarkupTemplate( "admin.tpl", "addon/impressum/" );
-    $o = Text::replaceMacros($t, [
+    $o = App::replaceMacros($t, [
         '$submit' => L10n::t('Save Settings'),
         '$owner' => ['owner', L10n::t('Site Owner'), Config::get('impressum','owner'), L10n::t('The page operators name.')],
         '$ownerprofile' => ['ownerprofile', L10n::t('Site Owners Profile'), Config::get('impressum','ownerprofile'), L10n::t('Profile address of the operator.')],

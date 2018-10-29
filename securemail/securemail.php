@@ -32,7 +32,7 @@ function securemail_install() {
 
     Addon::registerHook('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare');
 
-    Text::logger('installed securemail');
+    App::logger('installed securemail');
 }
 
 function securemail_uninstall() {
@@ -41,7 +41,7 @@ function securemail_uninstall() {
 
     Addon::unregisterHook('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare');
 
-    Text::logger('removed securemail');
+    App::logger('removed securemail');
 }
 
 /**
@@ -64,7 +64,7 @@ function securemail_settings(App &$a, &$s){
 
     $t = Text::getMarkupTemplate('admin.tpl', 'addon/securemail/');
 
-    $s .= Text::replaceMacros($t, [
+    $s .= App::replaceMacros($t, [
         '$title' => L10n::t('"Secure Mail" Settings'),
         '$submit' => L10n::t('Save Settings'),
         '$test' => L10n::t('Save and send test'), //NOTE: update also in 'post'

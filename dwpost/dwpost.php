@@ -226,13 +226,13 @@ function dwpost_send(App $a, array &$b)
 
 EOT;
 
-		Text::logger('dwpost: data: ' . $xml, LOGGER_DATA);
+		App::logger('dwpost: data: ' . $xml, LOGGER_DATA);
 
 		if ($dw_blog !== 'test') {
 			$x = Network::post($dw_blog, $xml, ["Content-Type: text/xml"])->getBody();
 		}
 
-		Text::logger('posted to dreamwidth: ' . ($x) ? $x : '', LOGGER_DEBUG);
+		App::logger('posted to dreamwidth: ' . ($x) ? $x : '', LOGGER_DEBUG);
 	}
 }
 

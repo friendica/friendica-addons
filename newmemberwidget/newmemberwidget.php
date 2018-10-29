@@ -6,6 +6,7 @@
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  ***/
 
+use Friendica\App;
 use Friendica\Content\Text;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
@@ -15,7 +16,7 @@ use Friendica\Core\L10n;
 function newmemberwidget_install()
 {
 	Addon::registerHook( 'network_mod_init', 'addon/newmemberwidget/newmemberwidget.php', 'newmemberwidget_network_mod_init');
-	Text::logger('newmemberwidget installed');
+	App::logger('newmemberwidget installed');
 }
 
 function newmemberwidget_uninstall()
@@ -65,7 +66,7 @@ function newmemberwidget_addon_admin_post(&$a)
 function newmemberwidget_addon_admin(&$a, &$o)
 {
 	$t = Text::getMarkupTemplate('admin.tpl', 'addon/newmemberwidget');
-	$o = Text::replaceMacros($t, [
+	$o = App::replaceMacros($t, [
 	'$submit' => L10n::t('Save Settings'),
 	'$freetext' => [ "freetext", L10n::t("Message"), Config::get("newmemberwidget", "freetext"), L10n::t("Your message for new members. You can use bbcode here.")],
 	'$linkglobalsupport' => [ "linkglobalsupport", L10n::t('Add a link to global support forum'), Config::get('newmemberwidget', 'linkglobalsupport'), L10n::t('Should a link to the global support forum be displayed?')." (<a href='https://forum.friendi.ca/profile/helpers'>@helpers</a>)"],

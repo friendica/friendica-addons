@@ -203,12 +203,12 @@ function blogger_send(App $a, array &$b)
 
 EOT;
 
-		Text::logger('blogger: data: ' . $xml, LOGGER_DATA);
+		App::logger('blogger: data: ' . $xml, LOGGER_DATA);
 
 		if ($bl_blog !== 'test') {
 			$x = Network::post($bl_blog, $xml)->getBody();
 		}
 
-		Text::logger('posted to blogger: ' . (($x) ? $x : ''), LOGGER_DEBUG);
+		App::logger('posted to blogger: ' . (($x) ? $x : ''), LOGGER_DEBUG);
 	}
 }

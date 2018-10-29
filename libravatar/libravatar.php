@@ -22,7 +22,7 @@ function libravatar_install()
 {
 	Addon::registerHook('load_config',   'addon/libravatar/libravatar.php', 'libravatar_load_config');
 	Addon::registerHook('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
-	Text::logger("registered libravatar in avatar_lookup hook");
+	App::logger("registered libravatar in avatar_lookup hook");
 }
 
 /**
@@ -32,7 +32,7 @@ function libravatar_uninstall()
 {
 	Addon::unregisterHook('load_config',   'addon/libravatar/libravatar.php', 'libravatar_load_config');
 	Addon::unregisterHook('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
-	Text::logger("unregistered libravatar in avatar_lookup hook");
+	App::logger("unregistered libravatar in avatar_lookup hook");
 }
 
 function libravatar_load_config(App $a)
@@ -110,7 +110,7 @@ function libravatar_addon_admin(&$a, &$o)
 
 	// output Libravatar settings
 	$o .= '<input type="hidden" name="form_security_token" value="' . BaseModule::getFormSecurityToken("libravatarsave") .'">';
-	$o .= Text::replaceMacros( $t, [
+	$o .= App::replaceMacros( $t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$default_avatar' => ['avatar', L10n::t('Default avatar image'), $default_avatar, L10n::t('Select default avatar image if none was found. See README'), $default_avatars],
 	]);

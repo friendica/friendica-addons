@@ -51,7 +51,7 @@ function mathjax_settings(App $a, &$s)
 	$use = PConfig::get(local_user(), 'mathjax', 'use', false);
 
 	$tpl = Text::getMarkupTemplate('settings.tpl', __DIR__);
-	$s .= Text::replaceMacros($tpl, [
+	$s .= App::replaceMacros($tpl, [
 		'$title'        => 'MathJax',
 		'$description'  => L10n::t('The MathJax addon renders mathematical formulae written using the LaTeX syntax surrounded by the usual $$ or an eqnarray block in the postings of your wall,network tab and private mail.'),
 		'$mathjax_use'  => ['mathjax_use', L10n::t('Use the MathJax renderer'), $use, ''],

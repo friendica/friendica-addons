@@ -52,7 +52,7 @@ function langfilter_addon_settings(App $a, &$s)
 	$minlength      = PConfig::get(local_user(), 'langfilter', 'minlength');
 
 	$t = Text::getMarkupTemplate("settings.tpl", "addon/langfilter/");
-	$s .= Text::replaceMacros($t, [
+	$s .= App::replaceMacros($t, [
 		'$title'         => L10n::t("Language Filter"),
 		'$intro'         => L10n::t('This addon tries to identify the language posts are writen in. If it does not match any language specifed below, posts will be hidden by collapsing them.'),
 		'$enabled'       => ['langfilter_enable', L10n::t('Use the language filter'), $enable_checked, ''],

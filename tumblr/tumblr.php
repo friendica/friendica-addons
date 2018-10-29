@@ -72,7 +72,7 @@ function tumblr_addon_admin(App $a, &$o)
 {
 	$t = Text::getMarkupTemplate( "admin.tpl", "addon/tumblr/" );
 
-	$o = Text::replaceMacros($t, [
+	$o = App::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		// name, label, value, help, [extra values]
 		'$consumer_key' => ['consumer_key', L10n::t('Consumer Key'),  Config::get('tumblr', 'consumer_key' ), ''],
@@ -459,11 +459,11 @@ function tumblr_send(App $a, array &$b) {
 
 		//print_r($params);
 		if ($ret_code == 201) {
-			Text::logger('tumblr_send: success');
+			App::logger('tumblr_send: success');
 		} elseif ($ret_code == 403) {
-			Text::logger('tumblr_send: authentication failure');
+			App::logger('tumblr_send: authentication failure');
 		} else {
-			Text::logger('tumblr_send: general error: ' . print_r($x,true));
+			App::logger('tumblr_send: general error: ' . print_r($x,true));
 		}
 	}
 }

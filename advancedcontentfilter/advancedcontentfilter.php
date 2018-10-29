@@ -208,7 +208,7 @@ function advancedcontentfilter_content(App $a)
 		return $html;
 	} else {
 		$t = Text::getMarkupTemplate('settings.tpl', 'addon/advancedcontentfilter/');
-		return Text::replaceMacros($t, [
+		return App::replaceMacros($t, [
 			'$messages' => [
 				'backtosettings'    => L10n::t('Back to Addon Settings'),
 				'title'             => L10n::t('Advanced Content Filter'),

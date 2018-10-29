@@ -158,7 +158,7 @@ function libertree_post_local(&$a,&$b) {
 
 function libertree_send(&$a,&$b) {
 
-	Text::logger('libertree_send: invoked');
+	App::logger('libertree_send: invoked');
 
 	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
@@ -233,6 +233,6 @@ function libertree_send(&$a,&$b) {
 		];
 
 		$result = Network::post($ltree_blog, $params)->getBody();
-		Text::logger('libertree: ' . $result);
+		App::logger('libertree: ' . $result);
 	}
 }

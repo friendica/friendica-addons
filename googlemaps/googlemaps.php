@@ -14,14 +14,14 @@ function googlemaps_install()
 {
 	Addon::registerHook('render_location', 'addon/googlemaps/googlemaps.php', 'googlemaps_location');
 
-	Text::logger("installed googlemaps");
+	App::logger("installed googlemaps");
 }
 
 function googlemaps_uninstall()
 {
 	Addon::unregisterHook('render_location', 'addon/googlemaps/googlemaps.php', 'googlemaps_location');
 
-	Text::logger("removed googlemaps");
+	App::logger("removed googlemaps");
 }
 
 function googlemaps_location($a, &$item)

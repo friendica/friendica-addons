@@ -22,7 +22,7 @@ function gravatar_install() {
 	Addon::registerHook('load_config',   'addon/gravatar/gravatar.php', 'gravatar_load_config');
 	Addon::registerHook('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
 
-	Text::logger("registered gravatar in avatar_lookup hook");
+	App::logger("registered gravatar in avatar_lookup hook");
 }
 
 /**
@@ -32,7 +32,7 @@ function gravatar_uninstall() {
 	Addon::unregisterHook('load_config',   'addon/gravatar/gravatar.php', 'gravatar_load_config');
 	Addon::unregisterHook('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
 
-	Text::logger("unregistered gravatar in avatar_lookup hook");
+	App::logger("unregistered gravatar in avatar_lookup hook");
 }
 
 function gravatar_load_config(App $a)
@@ -107,7 +107,7 @@ function gravatar_addon_admin (&$a, &$o) {
 
 	// output Gravatar settings
 	$o .= '<input type="hidden" name="form_security_token" value="' . BaseModule::getFormSecurityToken("gravatarsave") .'">';
-	$o .= Text::replaceMacros( $t, [
+	$o .= App::replaceMacros( $t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$default_avatar' => ['avatar', L10n::t('Default avatar image'), $default_avatar, L10n::t('Select default avatar image if none was found at Gravatar. See README'), $default_avatars],
 		'$rating' => ['rating', L10n::t('Rating of images'), $rating, L10n::t('Select the appropriate avatar rating for your site. See README'), $ratings],

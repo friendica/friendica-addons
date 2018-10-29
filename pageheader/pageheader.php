@@ -7,6 +7,7 @@
  *         Hauke Altmann <https://snarl.de/profile/tugelblend>
  * 
  */
+use Friendica\App;
 use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -50,7 +51,7 @@ function pageheader_addon_settings(&$a,&$s) {
 		$words = '';
 
 	$t = Text::getMarkupTemplate("settings.tpl", "addon/pageheader/");
-	$s .= Text::replaceMacros($t, [
+	$s .= App::replaceMacros($t, [
 					'$title' => L10n::t('"pageheader" Settings'),
 					'$phwords' => ['pageheader-words', L10n::t('Message'), $words, L10n::t('Message to display on every page on this server (or put a pageheader.html file in your docroot)')],
 					'$submit' => L10n::t('Save Settings')

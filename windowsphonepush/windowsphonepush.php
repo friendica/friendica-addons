@@ -54,7 +54,7 @@ function windowsphonepush_install()
 	Addon::registerHook('addon_settings', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings');
 	Addon::registerHook('addon_settings_post', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings_post');
 
-	Text::logger("installed windowsphonepush");
+	App::logger("installed windowsphonepush");
 }
 
 function windowsphonepush_uninstall()
@@ -66,7 +66,7 @@ function windowsphonepush_uninstall()
 	Addon::unregisterHook('addon_settings', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings');
 	Addon::unregisterHook('addon_settings_post', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings_post');
 
-	Text::logger("removed windowsphonepush");
+	App::logger("removed windowsphonepush");
 }
 
 /* declare the windowsphonepush function so that /windowsphonepush url requests will land here */
@@ -161,7 +161,7 @@ function windowsphonepush_cron()
 			// by app if user has switched the server setting in app - sending blank not possible as this would return an update error)
 			if (( $device_url == "" ) || ( $device_url == "NA" )) {
 				// no Device-URL for the user availabe, but addon is enabled --> write info to Logger
-				Text::logger("WARN: windowsphonepush is enable for user " . $rr['uid'] . ", but no Device-URL is specified for the user.");
+				App::logger("WARN: windowsphonepush is enable for user " . $rr['uid'] . ", but no Device-URL is specified for the user.");
 			} else {
 				// retrieve the number of unseen items and the id of the latest one (if there are more than
 				// one new entries since last poller run, only the latest one will be pushed)
@@ -178,11 +178,11 @@ function windowsphonepush_cron()
 						break;
 					case "QueueFull":
 						// maximum of 30 messages reached, server rejects any further push notification until device reconnects
-						Text::logger("INFO: Device-URL '" . $device_url . "' returns a QueueFull.");
+						App::logger("INFO: Device-URL '" . $device_url . "' returns a QueueFull.");
 						break;
 					case "Suppressed":
 						// notification received and dropped as something in app was not enabled
-						Text::logger("WARN. Device-URL '" . $device_url . "' returns a Suppressed. Unexpected error in Mobile App?");
+						App::logger("WARN. Device-URL '" . $device_url . "' returns a Suppressed. Unexpected error in Mobile App?");
 						break;
 					case "Dropped":
 						// mostly combines with Expired, in that case Device-URL will be deleted from pconfig (function send_push)
@@ -190,7 +190,7 @@ function windowsphonepush_cron()
 					default:
 						// error, mostly called by "" which means that the url (not "" which has been checked)
 						// didn't not received Microsoft Notification Server -> wrong url
-						Text::logger("ERROR: specified Device-URL '" . $device_url . "' didn't produced any response.");
+						App::logger("ERROR: specified Device-URL '" . $device_url . "' didn't produced any response.");
 				}
 
 				// additionally user receives the text of the newest item (function checks against last successfully pushed item)
@@ -307,7 +307,7 @@ function send_push($device_url, $headers, $msg)
 	$subscriptionStatus = get_header_value($output, 'X-SubscriptionStatus');
 	if ($subscriptionStatus == "Expired") {
 		PConfig::set(local_user(), 'windowsphonepush', 'device_url', "");
-		Text::logger("ERROR: the stored Device-URL " . $device_url . "returned an 'Expired' error, it has been deleted now.");
+		App::logger("ERROR: the stored Device-URL " . $device_url . "returned an 'Expired' error, it has been deleted now.");
 	}
 
 	// the notification status shall be returned to windowsphonepush_cron (will
@@ -408,7 +408,7 @@ function windowsphonepush_updatesettings()
 	// check if sent url is empty - don't save and send return code to app
 	$device_url = $_POST['deviceurl'];
 	if ($device_url == "") {
-		Text::logger("ERROR: no valid Device-URL specified - client transferred '" . $device_url . "'");
+		App::logger("ERROR: no valid Device-URL specified - client transferred '" . $device_url . "'");
 		return "No valid Device-URL specified";
 	}
 
@@ -423,13 +423,13 @@ function windowsphonepush_updatesettings()
 	if (count($r)) {
 		foreach ($r as $rr) {
 			PConfig::set($rr['uid'], 'windowsphonepush', 'device_url', '');
-			Text::logger("WARN: the sent URL was already registered with user '" . $rr['uid'] . "'. Deleted for this user as we expect to be correct now for user '" . local_user() . "'.");
+			App::logger("WARN: the sent URL was already registered with user '" . $rr['uid'] . "'. Deleted for this user as we expect to be correct now for user '" . local_user() . "'.");
 		}
 	}
 
 	PConfig::set(local_user(), 'windowsphonepush', 'device_url', $device_url);
 	// output the successfull update of the device URL to the logger for error analysis if necessary
-	Text::logger("INFO: Device-URL for user '" . local_user() . "' has been updated with '" . $device_url . "'");
+	App::logger("INFO: Device-URL for user '" . local_user() . "' has been updated with '" . $device_url . "'");
 	return "Device-URL updated successfully!";
 }
 
@@ -456,7 +456,7 @@ function windowsphonepush_updatecounterunseen()
 function windowsphonepush_login(App $a)
 {
 	if (!isset($_SERVER['PHP_AUTH_USER'])) {
-		Text::logger('API_login: ' . print_r($_SERVER, true), LOGGER_DEBUG);
+		App::logger('API_login: ' . print_r($_SERVER, true), LOGGER_DEBUG);
 		header('WWW-Authenticate: Basic realm="Friendica"');
 		header('HTTP/1.0 401 Unauthorized');
 		die('This api requires login');
@@ -467,7 +467,7 @@ function windowsphonepush_login(App $a)
 	if ($user_id) {
 		$record = DBA::selectFirst('user', [], ['uid' => $user_id]);
 	} else {
-		Text::logger('API_login failure: ' . print_r($_SERVER, true), LOGGER_DEBUG);
+		App::logger('API_login failure: ' . print_r($_SERVER, true), LOGGER_DEBUG);
 		header('WWW-Authenticate: Basic realm="Friendica"');
 		header('HTTP/1.0 401 Unauthorized');
 		die('This api requires login');

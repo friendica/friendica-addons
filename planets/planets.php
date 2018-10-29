@@ -33,7 +33,7 @@ function planets_install() {
 	Addon::registerHook('addon_settings', 'addon/planets/planets.php', 'planets_settings');
 	Addon::registerHook('addon_settings_post', 'addon/planets/planets.php', 'planets_settings_post');
 
-	Text::logger("installed planets");
+	App::logger("installed planets");
 }
 
 
@@ -52,7 +52,7 @@ function planets_uninstall() {
 	Addon::unregisterHook('addon_settings_post', 'addon/planets/planets.php', 'planets_settings_post');
 
 
-	Text::logger("removed planets");
+	App::logger("removed planets");
 }
 
 
@@ -68,7 +68,7 @@ function planets_post_hook($a, &$item) {
 	 *
 	 */
 
-	Text::logger('planets invoked');
+	App::logger('planets invoked');
 
 	if(! local_user())   /* non-zero if this is a logged in user of this system */
 		return;

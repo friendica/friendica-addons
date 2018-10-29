@@ -1,5 +1,6 @@
 <?php
 
+use Friendica\App;
 use Friendica\Content\Text;
 use Friendica\Core\L10n;
 use Friendica\Database\DBA;
@@ -58,7 +59,7 @@ function like_widget_content(&$a, $conf){
 
 #	$t = file_get_contents( dirname(__file__). "/widget_like.tpl" );
 	$t = Text::getMarkupTemplate("widget_like.tpl", "addon/widgets/");
-	$o .= Text::replaceMacros($t, [
+	$o .= App::replaceMacros($t, [
 		'$like'		=> $likes,
 		'$strlike'	=> L10n::tt("%d person likes this", "%d people like this", $likes),
 

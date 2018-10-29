@@ -160,7 +160,7 @@ function js_upload_post_init(&$a,&$b) {
 	$a->data['upload_jsonresponse'] =  htmlspecialchars(json_encode($result), ENT_NOQUOTES);
 
 	if(isset($result['error'])) {
-		Text::logger('mod/photos.php: photos_post(): error uploading photo: ' . $result['error'] , 'LOGGER_DEBUG');
+		App::logger('mod/photos.php: photos_post(): error uploading photo: ' . $result['error'] , 'LOGGER_DEBUG');
 		echo json_encode($result);
 		killme();
 	}
@@ -182,7 +182,7 @@ function js_upload_post_file(&$a,&$b) {
 
 function js_upload_post_end(&$a,&$b) {
 
-Text::logger('upload_post_end');
+App::logger('upload_post_end');
 	if(x($a->data,'upload_jsonresponse')) {
 		echo $a->data['upload_jsonresponse'];
 		killme();

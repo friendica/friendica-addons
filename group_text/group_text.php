@@ -15,7 +15,7 @@ function group_text_install() {
 	Addon::registerHook('addon_settings', 'addon/group_text/group_text.php', 'group_text_settings');
 	Addon::registerHook('addon_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
 
-	Text::logger("installed group_text");
+	App::logger("installed group_text");
 }
 
 
@@ -25,7 +25,7 @@ function group_text_uninstall() {
 	Addon::unregisterHook('addon_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
 
 
-	Text::logger("removed group_text");
+	App::logger("removed group_text");
 }
 
 

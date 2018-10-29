@@ -107,7 +107,7 @@ function xmpp_addon_admin(App $a, &$o)
 {
 	$t = Text::getMarkupTemplate('admin.tpl', 'addon/xmpp/');
 
-	$o = Text::replaceMacros($t, [
+	$o = App::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$bosh_proxy' => ['bosh_proxy', L10n::t('Jabber BOSH host'), Config::get('xmpp', 'bosh_proxy'), ''],
 		'$central_userbase' => ['central_userbase', L10n::t('Use central userbase'), Config::get('xmpp', 'central_userbase'), L10n::t('If enabled, users will automatically login to an ejabberd server that has to be installed on this machine with synchronized credentials via the "auth_ejabberd.php" script.')],

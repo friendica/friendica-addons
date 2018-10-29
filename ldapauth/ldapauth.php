@@ -100,28 +100,28 @@ function ldapauth_authenticate($username, $password)
 	$ldap_autocreateaccount_nameattribute  = Config::get('ldapauth', 'ldap_autocreateaccount_nameattribute');
 
 	if (!(strlen($password) && function_exists('ldap_connect') && strlen($ldap_server))) {
-		Text::logger("ldapauth: not configured or missing php-ldap module");
+		App::logger("ldapauth: not configured or missing php-ldap module");
 		return false;
 	}
 
 	$connect = @ldap_connect($ldap_server);
 
 	if ($connect === false) {
-		Text::logger("ldapauth: could not connect to $ldap_server");
+		App::logger("ldapauth: could not connect to $ldap_server");
 		return false;
 	}
 
 	@ldap_set_option($connect, LDAP_OPT_PROTOCOL_VERSION, 3);
 	@ldap_set_option($connect, LDAP_OPT_REFERRALS, 0);
 	if ((@ldap_bind($connect, $ldap_binddn, $ldap_bindpw)) === false) {
-		Text::logger("ldapauth: could not bind $ldap_server as $ldap_binddn");
+		App::logger("ldapauth: could not bind $ldap_server as $ldap_binddn");
 		return false;
 	}
 
 	$res = @ldap_search($connect, $ldap_searchdn, $ldap_userattr . '=' . $username);
 
 	if (!$res) {
-		Text::logger("ldapauth: $ldap_userattr=$username,$ldap_searchdn not found");
+		App::logger("ldapauth: $ldap_userattr=$username,$ldap_searchdn not found");
 		return false;
 	}
 
@@ -162,13 +162,13 @@ function ldapauth_authenticate($username, $password)
 		@ldap_close($connect);
 
 		if ($eno === 32) {
-			Text::logger("ldapauth: access control group Does Not Exist");
+			App::logger("ldapauth: access control group Does Not Exist");
 			return false;
 		} elseif ($eno === 16) {
-			Text::logger('ldapauth: membership attribute does not exist in access control group');
+			App::logger('ldapauth: membership attribute does not exist in access control group');
 			return false;
 		} else {
-			Text::logger('ldapauth: error: ' . $err);
+			App::logger('ldapauth: error: ' . $err);
 			return false;
 		}
 	} elseif ($r === false) {
@@ -190,12 +190,12 @@ function ldap_autocreateaccount($ldap_autocreateaccount, $username, $password, $
 
 				try {
 					User::create($arr);
-					Text::logger("ldapauth: account " . $username . " created");
+					App::logger("ldapauth: account " . $username . " created");
 				} catch (Exception $ex) {
-					Text::logger("ldapauth: account " . $username . " was not created ! : " . $ex->getMessage());
+					App::logger("ldapauth: account " . $username . " was not created ! : " . $ex->getMessage());
 				}
 			} else {
-				Text::logger("ldapauth: unable to create account, no email or nickname found");
+				App::logger("ldapauth: unable to create account, no email or nickname found");
 			}
 		}
 	}

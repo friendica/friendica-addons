@@ -29,7 +29,7 @@ function catavatar_install()
 	Addon::registerHook('addon_settings', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings');
 	Addon::registerHook('addon_settings_post', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings_post');
 
-	Text::logger('registered catavatar');
+	App::logger('registered catavatar');
 }
 
 /**
@@ -41,7 +41,7 @@ function catavatar_uninstall()
 	Addon::unregisterHook('addon_settings', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings');
 	Addon::unregisterHook('addon_settings_post', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings_post');
 
-	Text::logger('unregistered catavatar');
+	App::logger('unregistered catavatar');
 }
 
 /**
@@ -54,7 +54,7 @@ function catavatar_addon_settings(App $a, &$s)
 	}
 
 	$t = Text::getMarkupTemplate('settings.tpl', 'addon/catavatar/');
-	$s .= Text::replaceMacros ($t, [
+	$s .= App::replaceMacros ($t, [
 		'$postpost' => !empty($_POST['catavatar-morecat']) || !empty($_POST['catavatar-emailcat']),
 		'$uncache' => time(),
 		'$uid' => local_user(),

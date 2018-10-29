@@ -585,7 +585,7 @@ function jappixmini_cron(App $a, $d)
 
 	// go through list of users with jabber enabled
 	$users = q("SELECT `uid` FROM `pconfig` WHERE `cat`='jappixmini' AND (`k`='autosubscribe' OR `k`='autoapprove') AND `v`='1'");
-	Text::logger("jappixmini: Update list of contacts' jabber accounts for " . count($users) . " users.");
+	App::logger("jappixmini: Update list of contacts' jabber accounts for " . count($users) . " users.");
 
 	if (!count($users)) {
 		return;

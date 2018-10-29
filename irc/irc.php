@@ -7,6 +7,7 @@
 * Author: Tobias Diekershoff <https://f.diekershoff.de/u/tobias>
 */
 
+use Friendica\App;
 use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -39,7 +40,7 @@ function irc_addon_settings(&$a,&$s) {
 	$autochans = PConfig::get( local_user(), 'irc','autochans');  /* auto connect chans */
 
 	$t = Text::getMarkupTemplate( "settings.tpl", "addon/irc/" );
-	$s .= Text::replaceMacros($t, [
+	$s .= App::replaceMacros($t, [
 	    	'$header' => L10n::t('IRC Settings'),
 		'$info' => L10n::t('Here you can change the system wide settings for the channels to automatically join and access via the side bar. Note the changes you do here, only effect the channel selection if you are logged in.'),
 		'$submit' => L10n::t('Save Settings'),
@@ -138,7 +139,7 @@ function irc_addon_admin (&$a, &$o) {
 	$sitechats = Config::get('irc','sitechats'); /* popular channels */
 	$autochans = Config::get('irc','autochans');  /* auto connect chans */
 	$t = Text::getMarkupTemplate( "admin.tpl", "addon/irc/" );
-	$o = Text::replaceMacros($t, [
+	$o = App::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$autochans' => [ 'autochans', L10n::t('Channel(s) to auto connect (comma separated)'), $autochans, L10n::t('List of channels that shall automatically connected to when the app is launched.')],
 		'$sitechats' => [ 'sitechats', L10n::t('Popular Channels (comma separated)'), $sitechats, L10n::t('List of popular channels, will be displayed at the side and hotlinked for easy joining.') ]

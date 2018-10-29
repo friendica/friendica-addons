@@ -87,7 +87,7 @@ function forumdirectory_content(App $a)
 
 	$admin = '';
 
-	$o .= Text::replaceMacros($tpl, [
+	$o .= App::replaceMacros($tpl, [
 		'$search'    => $search,
 		'$globaldir' => $globaldir,
 		'$desc'      => L10n::t('Find on this site'),
@@ -189,7 +189,7 @@ function forumdirectory_content(App $a)
 
 			$tpl = Text::getMarkupTemplate('forumdirectory_item.tpl', 'addon/forumdirectory/');
 
-			$entry = Text::replaceMacros($tpl, [
+			$entry = App::replaceMacros($tpl, [
 				'$id'           => $rr['id'],
 				'$profile_link' => $profile_link,
 				'$photo'        => $rr[$photo],

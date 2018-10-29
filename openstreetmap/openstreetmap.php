@@ -9,6 +9,7 @@
  *
  */
 
+use Friendica\App;
 use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\Cache;
@@ -31,7 +32,7 @@ function openstreetmap_install()
 	Addon::registerHook('Map::getCoordinates', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_get_coordinates');
 	Addon::registerHook('page_header', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_alterheader');
 
-	Text::logger("installed openstreetmap");
+	App::logger("installed openstreetmap");
 }
 
 function openstreetmap_uninstall()
@@ -43,7 +44,7 @@ function openstreetmap_uninstall()
 	Addon::unregisterHook('Map::getCoordinates', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_get_coordinates');
 	Addon::unregisterHook('page_header', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_alterheader');
 
-	Text::logger("removed openstreetmap");
+	App::logger("removed openstreetmap");
 }
 
 function openstreetmap_load_config(\Friendica\App $a)
@@ -167,8 +168,8 @@ function openstreetmap_generate_map(&$a, &$b)
 	$lat = $b['lat']; // round($b['lat'], 5);
 	$lon = $b['lon']; // round($b['lon'], 5);
 
-	Text::logger('lat: ' . $lat, LOGGER_DATA);
-	Text::logger('lon: ' . $lon, LOGGER_DATA);
+	App::logger('lat: ' . $lat, LOGGER_DATA);
+	App::logger('lon: ' . $lon, LOGGER_DATA);
 
 	$cardlink = '<a href="' . $tmsserver;
 
@@ -186,7 +187,7 @@ function openstreetmap_generate_map(&$a, &$b)
 		$b['html'] .= '<br/>' . $cardlink;
 	}
 
-	Text::logger('generate_map: ' . $b['html'], LOGGER_DATA);
+	App::logger('generate_map: ' . $b['html'], LOGGER_DATA);
 }
 
 function openstreetmap_addon_admin(&$a, &$o)
@@ -202,7 +203,7 @@ function openstreetmap_addon_admin(&$a, &$o)
 		$nomserver = OSM_NOM;
 	}
 
-	$o = Text::replaceMacros($t, [
+	$o = App::replaceMacros($t, [
 			'$submit' => L10n::t('Submit'),
 			'$tmsserver' => ['tmsserver', L10n::t('Tile Server URL'), $tmsserver, L10n::t('A list of <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank">public tile servers</a>')],
 			'$nomserver' => ['nomserver', L10n::t('Nominatim (reverse geocoding) Server URL'), $nomserver, L10n::t('A list of <a href="http://wiki.openstreetmap.org/wiki/Nominatim" target="_blank">Nominatim servers</a>')],

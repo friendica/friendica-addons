@@ -15,7 +15,7 @@ function numfriends_install() {
 	Addon::registerHook('addon_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
 	Addon::registerHook('addon_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
 
-	Text::logger("installed numfriends");
+	App::logger("installed numfriends");
 }
 
 
@@ -25,7 +25,7 @@ function numfriends_uninstall() {
 	Addon::unregisterHook('addon_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
 
 
-	Text::logger("removed numfriends");
+	App::logger("removed numfriends");
 }
 
 /**

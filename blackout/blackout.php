@@ -49,6 +49,7 @@
  * THE SOFTWARE.
  */
 
+use Friendica\App;
 use Friendica\Content\Text;
 use Friendica\Core\Config;
 use Friendica\Core\Addon;
@@ -85,7 +86,7 @@ function blackout_redirect ($a, $b) {
            $date2 = 0;
     }
     if (( $date1 <= $now ) && ( $now <= $date2 )) {
-        Text::logger('redirecting user to blackout page');
+        App::logger('redirecting user to blackout page');
         System::externalRedirect($myurl);
     }
 }
@@ -99,7 +100,7 @@ function blackout_addon_admin(&$a, &$o) {
     if (! is_string($myurl)) { $myurl = "http://www.example.com"; }
     $t = Text::getMarkupTemplate( "admin.tpl", "addon/blackout/" );
 
-   $o = Text::replaceMacros($t, [
+   $o = App::replaceMacros($t, [
         '$submit' => L10n::t('Save Settings'),
         '$rurl' => ["rurl", "Redirect URL", $myurl, "all your visitors from the web will be redirected to this URL"],
         '$startdate' => ["startdate", "Begin of the Blackout<br />(YYYY-MM-DD hh:mm)", $mystart, "format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute"],

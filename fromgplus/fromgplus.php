@@ -9,6 +9,7 @@
 
 define('FROMGPLUS_DEFAULT_POLL_INTERVAL', 30); // given in minutes
 
+use Friendica\App;
 use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -103,7 +104,7 @@ function fromgplus_addon_admin(&$a, &$o)
 {
 	$t = Text::getMarkupTemplate("admin.tpl", "addon/fromgplus/");
 
-	$o = Text::replaceMacros($t, [
+	$o = App::replaceMacros($t, [
 			'$submit' => L10n::t('Save Settings'),
 			'$key' => ['key', L10n::t('Key'), trim(Config::get('fromgplus', 'key')), ''],
 	]);
@@ -126,25 +127,25 @@ function fromgplus_cron($a,$b) {
         if($last) {
                 $next = $last + ($poll_interval * 60);
                 if($next > time()) {
-			Text::logger('fromgplus: poll intervall not reached');
+			App::logger('fromgplus: poll intervall not reached');
                         return;
 		}
 	}
 
-        Text::logger('fromgplus: cron_start');
+        App::logger('fromgplus: cron_start');
 
         $r = q("SELECT * FROM `pconfig` WHERE `cat` = 'fromgplus' AND `k` = 'enable' AND `v` = '1' ORDER BY RAND() ");
         if(count($r)) {
                 foreach($r as $rr) {
 			$account = PConfig::get($rr['uid'],'fromgplus','account');
 			if ($account) {
-		        Text::logger('fromgplus: fetching for user '.$rr['uid']);
+		        App::logger('fromgplus: fetching for user '.$rr['uid']);
 				fromgplus_fetch($a, $rr['uid']);
 			}
 		}
 	}
 
-        Text::logger('fromgplus: cron_end');
+        App::logger('fromgplus: cron_end');
 
 	Config::set('fromgplus','last_poll', time());
 }
@@ -190,15 +191,15 @@ function fromgplus_post($a, $uid, $source, $body, $location, $coord, $id) {
 	$_REQUEST['coord'] = $coord;
 
 	if (($_REQUEST['title'] == "") && ($_REQUEST['body'] == "")) {
-	        Text::logger('fromgplus: empty post for user '.$uid." ".print_r($_REQUEST, true));
+	        App::logger('fromgplus: empty post for user '.$uid." ".print_r($_REQUEST, true));
 		return;
 	}
 
 	require_once('mod/item.php');
 	//print_r($_REQUEST);
-        Text::logger('fromgplus: posting for user '.$uid." ".print_r($_REQUEST, true));
+        App::logger('fromgplus: posting for user '.$uid." ".print_r($_REQUEST, true));
 	item_post($a);
-        Text::logger('fromgplus: done for user '.$uid);
+        App::logger('fromgplus: done for user '.$uid);
 }
 
 function fromgplus_html2bbcode($html) {
@@ -472,7 +473,7 @@ function fromgplus_fetch($a, $uid) {
 
 		// Don't publish items that are too young
 		if (strtotime($item->published) > (time() - 3*60)) {
-			Text::logger('fromgplus_fetch: item too new '.$item->published);
+			App::logger('fromgplus_fetch: item too new '.$item->published);
 			continue;
 		}
 

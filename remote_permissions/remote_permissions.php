@@ -7,6 +7,7 @@
  * Status: Unsupported
  */
 
+use Friendica\App;
 use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -47,7 +48,7 @@ function remote_permissions_settings(&$a,&$o) {
 
 //	$t = file_get_contents("addon/remote_permissions/settings.tpl" );
 	$t = Text::getMarkupTemplate("settings.tpl", "addon/remote_permissions/" );
-	$o .= Text::replaceMacros($t, [
+	$o .= App::replaceMacros($t, [
 		'$remote_perms_title' => L10n::t('Remote Permissions Settings'),
 		'$remote_perms_label' => L10n::t('Allow recipients of your private posts to see the other recipients of the posts'),
 		'$checked' => (($remote_perms == 1) ? 'checked="checked"' : ''),
@@ -198,7 +199,7 @@ function remote_permissions_content($a, $item_copy) {
 
 function remote_permissions_addon_admin(&$a, &$o){
 	$t = Text::getMarkupTemplate( "admin.tpl", "addon/remote_permissions/" );
-	$o = Text::replaceMacros($t, [
+	$o = App::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$global' => ['remotepermschoice', L10n::t('Global'), 1, L10n::t('The posts of every user on this server show the post recipients'),  Config::get('remote_perms', 'global') == 1],
 		'$individual' => ['remotepermschoice', L10n::t('Individual'), 2, L10n::t('Each user chooses whether his/her posts show the post recipients'),  Config::get('remote_perms', 'global') == 0]

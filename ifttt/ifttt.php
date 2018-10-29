@@ -103,16 +103,16 @@ function ifttt_post(App $a)
 
 	$user = DBA::selectFirst('user', ['uid'], ['nickname' => $nickname]);
 	if (!DBA::isResult($user)) {
-		Text::logger('User ' . $nickname . ' not found.', LOGGER_DEBUG);
+		App::logger('User ' . $nickname . ' not found.', LOGGER_DEBUG);
 		return;
 	}
 
 	$uid = $user['uid'];
 
-	Text::logger('Received a post for user ' . $uid . ' from ifttt ' . print_r($_REQUEST, true), LOGGER_DEBUG);
+	App::logger('Received a post for user ' . $uid . ' from ifttt ' . print_r($_REQUEST, true), LOGGER_DEBUG);
 
 	if (!isset($_REQUEST['key'])) {
-		Text::logger('No key found.');
+		App::logger('No key found.');
 		return;
 	}
 
@@ -120,7 +120,7 @@ function ifttt_post(App $a)
 
 	// Check the key
 	if ($key != PConfig::get($uid, 'ifttt', 'key')) {
-		Text::logger('Invalid key for user ' . $uid, LOGGER_DEBUG);
+		App::logger('Invalid key for user ' . $uid, LOGGER_DEBUG);
 		return;
 	}
 
@@ -131,7 +131,7 @@ function ifttt_post(App $a)
 	}
 
 	if (!in_array($item['type'], ['status', 'link', 'photo'])) {
-		Text::logger('Unknown item type ' . $item['type'], LOGGER_DEBUG);
+		App::logger('Unknown item type ' . $item['type'], LOGGER_DEBUG);
 		return;
 	}
 
