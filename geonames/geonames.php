@@ -24,6 +24,7 @@
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Util\Network;
 use Friendica\Util\XML;
@@ -52,7 +53,7 @@ function geonames_install() {
 	Addon::registerHook('addon_settings', 'addon/geonames/geonames.php', 'geonames_addon_admin');
 	Addon::registerHook('addon_settings_post', 'addon/geonames/geonames.php', 'geonames_addon_admin_post');
 
-	logger("installed geonames");
+	Logger::log("installed geonames");
 }
 
 
@@ -72,7 +73,7 @@ function geonames_uninstall() {
 	Addon::unregisterHook('addon_settings_post', 'addon/geonames/geonames.php', 'geonames_addon_admin_post');
 
 
-	logger("removed geonames");
+	Logger::log("removed geonames");
 }
 
 function geonames_load_config(\Friendica\App $a)
@@ -91,7 +92,7 @@ function geonames_post_hook($a, &$item) {
 	 *
 	 */
 
-	logger('geonames invoked');
+	Logger::log('geonames invoked');
 
 	if(! local_user())   /* non-zero if this is a logged in user of this system */
 		return;
@@ -132,7 +133,7 @@ function geonames_post_hook($a, &$item) {
 		$item['location'] = $xml->geoname->name . ', ' . $xml->geoname->countryName;
 
 
-//	logger('geonames : ' . print_r($xml,true), LOGGER_DATA);
+//	Logger::log('geonames : ' . print_r($xml,true), LOGGER_DATA);
 	return;
 }
 

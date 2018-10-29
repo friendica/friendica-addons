@@ -7,6 +7,7 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Logger;
 use Friendica\Util\Network;
 
 function leistungsschutzrecht_install() {
@@ -163,7 +164,7 @@ function leistungsschutzrecht_cron($a,$b) {
 	if($last) {
 		$next = $last + 86400;
 		if($next > time()) {
-			logger('poll intervall not reached');
+			Logger::log('poll intervall not reached');
 			return;
 		}
 	}

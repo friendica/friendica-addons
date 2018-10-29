@@ -7,6 +7,7 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 
 function numfriends_install() {
@@ -14,7 +15,7 @@ function numfriends_install() {
 	Addon::registerHook('addon_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
 	Addon::registerHook('addon_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
 
-	logger("installed numfriends");
+	Logger::log("installed numfriends");
 }
 
 
@@ -24,7 +25,7 @@ function numfriends_uninstall() {
 	Addon::unregisterHook('addon_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
 
 
-	logger("removed numfriends");
+	Logger::log("removed numfriends");
 }
 
 /**

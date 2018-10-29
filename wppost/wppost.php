@@ -10,6 +10,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
 use Friendica\Util\Network;
@@ -312,11 +313,11 @@ function wppost_send(&$a,&$b) {
 
 EOT;
 
-		logger('wppost: data: ' . $xml, LOGGER_DATA);
+		Logger::log('wppost: data: ' . $xml, LOGGER_DATA);
 
 		if ($wp_blog !== 'test') {
 			$x = Network::post($wp_blog, $xml)->getBody();
 		}
-		logger('posted to wordpress: ' . (($x) ? $x : ''), LOGGER_DEBUG);
+		Logger::log('posted to wordpress: ' . (($x) ? $x : ''), LOGGER_DEBUG);
 	}
 }

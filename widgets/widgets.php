@@ -9,13 +9,14 @@
 
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
 
 function widgets_install() {
 	Addon::registerHook('addon_settings', 'addon/widgets/widgets.php', 'widgets_settings');
 	Addon::registerHook('addon_settings_post', 'addon/widgets/widgets.php', 'widgets_settings_post');
-	logger("installed widgets");
+	Logger::log("installed widgets");
 }
 
 function widgets_uninstall() {

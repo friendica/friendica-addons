@@ -11,6 +11,7 @@ use Friendica\BaseModule;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Database\DBA;
 use Friendica\Util\Security;
 
@@ -21,7 +22,7 @@ function libravatar_install()
 {
 	Addon::registerHook('load_config',   'addon/libravatar/libravatar.php', 'libravatar_load_config');
 	Addon::registerHook('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
-	logger("registered libravatar in avatar_lookup hook");
+	Logger::log("registered libravatar in avatar_lookup hook");
 }
 
 /**
@@ -31,7 +32,7 @@ function libravatar_uninstall()
 {
 	Addon::unregisterHook('load_config',   'addon/libravatar/libravatar.php', 'libravatar_load_config');
 	Addon::unregisterHook('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
-	logger("unregistered libravatar in avatar_lookup hook");
+	Logger::log("unregistered libravatar in avatar_lookup hook");
 }
 
 function libravatar_load_config(App $a)

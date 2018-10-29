@@ -11,6 +11,7 @@ use Friendica\BaseModule;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Database\DBA;
 use Friendica\Util\Security;
 
@@ -21,7 +22,7 @@ function gravatar_install() {
 	Addon::registerHook('load_config',   'addon/gravatar/gravatar.php', 'gravatar_load_config');
 	Addon::registerHook('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
 
-	logger("registered gravatar in avatar_lookup hook");
+	Logger::log("registered gravatar in avatar_lookup hook");
 }
 
 /**
@@ -31,7 +32,7 @@ function gravatar_uninstall() {
 	Addon::unregisterHook('load_config',   'addon/gravatar/gravatar.php', 'gravatar_load_config');
 	Addon::unregisterHook('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
 
-	logger("unregistered gravatar in avatar_lookup hook");
+	Logger::log("unregistered gravatar in avatar_lookup hook");
 }
 
 function gravatar_load_config(App $a)

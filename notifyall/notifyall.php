@@ -12,16 +12,17 @@ use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Util\Emailer;
 
 function notifyall_install()
 {
-	logger("installed notifyall");
+	Logger::log("installed notifyall");
 }
 
 function notifyall_uninstall()
 {
-	logger("removed notifyall");
+	Logger::log("removed notifyall");
 }
 
 function notifyall_module() {}

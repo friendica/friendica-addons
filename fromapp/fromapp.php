@@ -8,6 +8,7 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 
 function fromapp_install()
@@ -15,7 +16,7 @@ function fromapp_install()
 	Addon::registerHook('post_local', 'addon/fromapp/fromapp.php', 'fromapp_post_hook');
 	Addon::registerHook('addon_settings', 'addon/fromapp/fromapp.php', 'fromapp_settings');
 	Addon::registerHook('addon_settings_post', 'addon/fromapp/fromapp.php', 'fromapp_settings_post');
-	logger("installed fromapp");
+	Logger::log("installed fromapp");
 }
 
 
@@ -24,7 +25,7 @@ function fromapp_uninstall()
 	Addon::unregisterHook('post_local', 'addon/fromapp/fromapp.php', 'fromapp_post_hook');
 	Addon::unregisterHook('addon_settings', 'addon/fromapp/fromapp.php', 'fromapp_settings');
 	Addon::unregisterHook('addon_settings_post', 'addon/fromapp/fromapp.php', 'fromapp_settings_post');
-	logger("removed fromapp");
+	Logger::log("removed fromapp");
 }
 
 function fromapp_settings_post($a, $post)

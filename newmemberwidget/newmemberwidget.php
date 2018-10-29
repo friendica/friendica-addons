@@ -10,11 +10,12 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 
 function newmemberwidget_install()
 {
 	Addon::registerHook( 'network_mod_init', 'addon/newmemberwidget/newmemberwidget.php', 'newmemberwidget_network_mod_init');
-	logger('newmemberwidget installed');
+	Logger::log('newmemberwidget installed');
 }
 
 function newmemberwidget_uninstall()

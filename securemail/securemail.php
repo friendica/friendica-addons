@@ -10,6 +10,7 @@ use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Util\Emailer;
 
@@ -31,7 +32,7 @@ function securemail_install() {
 
     Addon::registerHook('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare');
 
-    logger('installed securemail');
+    Logger::log('installed securemail');
 }
 
 function securemail_uninstall() {
@@ -40,7 +41,7 @@ function securemail_uninstall() {
 
     Addon::unregisterHook('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare');
 
-    logger('removed securemail');
+    Logger::log('removed securemail');
 }
 
 /**

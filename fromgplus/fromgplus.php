@@ -12,6 +12,7 @@ define('FROMGPLUS_DEFAULT_POLL_INTERVAL', 30); // given in minutes
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
 use Friendica\Object\Image;
@@ -126,25 +127,25 @@ function fromgplus_cron($a,$b) {
         if($last) {
                 $next = $last + ($poll_interval * 60);
                 if($next > time()) {
-			logger('fromgplus: poll intervall not reached');
+			Logger::log('fromgplus: poll intervall not reached');
                         return;
 		}
 	}
 
-        logger('fromgplus: cron_start');
+        Logger::log('fromgplus: cron_start');
 
         $r = q("SELECT * FROM `pconfig` WHERE `cat` = 'fromgplus' AND `k` = 'enable' AND `v` = '1' ORDER BY RAND() ");
         if(count($r)) {
                 foreach($r as $rr) {
 			$account = PConfig::get($rr['uid'],'fromgplus','account');
 			if ($account) {
-		        logger('fromgplus: fetching for user '.$rr['uid']);
+		        Logger::log('fromgplus: fetching for user '.$rr['uid']);
 				fromgplus_fetch($a, $rr['uid']);
 			}
 		}
 	}
 
-        logger('fromgplus: cron_end');
+        Logger::log('fromgplus: cron_end');
 
 	Config::set('fromgplus','last_poll', time());
 }
@@ -190,15 +191,15 @@ function fromgplus_post($a, $uid, $source, $body, $location, $coord, $id) {
 	$_REQUEST['coord'] = $coord;
 
 	if (($_REQUEST['title'] == "") && ($_REQUEST['body'] == "")) {
-	        logger('fromgplus: empty post for user '.$uid." ".print_r($_REQUEST, true));
+	        Logger::log('fromgplus: empty post for user '.$uid." ".print_r($_REQUEST, true));
 		return;
 	}
 
 	require_once('mod/item.php');
 	//print_r($_REQUEST);
-        logger('fromgplus: posting for user '.$uid." ".print_r($_REQUEST, true));
+        Logger::log('fromgplus: posting for user '.$uid." ".print_r($_REQUEST, true));
 	item_post($a);
-        logger('fromgplus: done for user '.$uid);
+        Logger::log('fromgplus: done for user '.$uid);
 }
 
 function fromgplus_html2bbcode($html) {
@@ -472,7 +473,7 @@ function fromgplus_fetch($a, $uid) {
 
 		// Don't publish items that are too young
 		if (strtotime($item->published) > (time() - 3*60)) {
-			logger('fromgplus_fetch: item too new '.$item->published);
+			Logger::log('fromgplus_fetch: item too new '.$item->published);
 			continue;
 		}
 

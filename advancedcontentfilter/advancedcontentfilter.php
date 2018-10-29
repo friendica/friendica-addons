@@ -39,6 +39,7 @@ use Friendica\Content\Text\Markdown;
 use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Database\DBA;
 use Friendica\Database\DBStructure;
 use Friendica\Model\Item;
@@ -64,7 +65,7 @@ function advancedcontentfilter_install()
 
 	DBStructure::update(false, true);
 
-	logger("installed advancedcontentfilter");
+	Logger::log("installed advancedcontentfilter");
 }
 
 function advancedcontentfilter_uninstall()
