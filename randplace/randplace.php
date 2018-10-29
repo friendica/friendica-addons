@@ -18,6 +18,7 @@
  * system will call the name_uninstall() function.
  *
  */
+use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -44,7 +45,7 @@ function randplace_install() {
 	Addon::registerHook('addon_settings', 'addon/randplace/randplace.php', 'randplace_settings');
 	Addon::registerHook('addon_settings_post', 'addon/randplace/randplace.php', 'randplace_settings_post');
 
-	logger("installed randplace");
+	Text::logger("installed randplace");
 }
 
 
@@ -63,7 +64,7 @@ function randplace_uninstall() {
 	Addon::unregisterHook('addon_settings_post', 'addon/randplace/randplace.php', 'randplace_settings_post');
 
 
-	logger("removed randplace");
+	Text::logger("removed randplace");
 }
 
 
@@ -79,7 +80,7 @@ function randplace_post_hook($a, &$item) {
 	 *
 	 */
 
-	logger('randplace invoked');
+	Text::logger('randplace invoked');
 
 	if(! local_user())   /* non-zero if this is a logged in user of this system */
 		return;

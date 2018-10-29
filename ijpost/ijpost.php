@@ -8,6 +8,7 @@
  * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
 
+use Friendica\Content\Text;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
@@ -184,7 +185,7 @@ function ijpost_send(&$a, &$b)
 	if ($ij_username && $ij_password && $ij_blog) {
 		$title = $b['title'];
 		$post = BBCode::convert($b['body']);
-		$post = xmlify($post);
+		$post = Text::xmlify($post);
 		$tags = ijpost_get_tags($b['tag']);
 
 		$date = DateTimeFormat::convert($b['created'], $tz);
@@ -221,12 +222,12 @@ function ijpost_send(&$a, &$b)
 
 EOT;
 
-		logger('ijpost: data: ' . $xml, LOGGER_DATA);
+		Text::logger('ijpost: data: ' . $xml, LOGGER_DATA);
 
 		if ($ij_blog !== 'test') {
 			$x = Network::post($ij_blog, $xml, ["Content-Type: text/xml"])->getBody();
 		}
-		logger('posted to insanejournal: ' . $x ? $x : '', LOGGER_DEBUG);
+		Text::logger('posted to insanejournal: ' . $x ? $x : '', LOGGER_DEBUG);
 	}
 }
 

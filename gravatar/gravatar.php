@@ -8,6 +8,7 @@
 
 use Friendica\App;
 use Friendica\BaseModule;
+use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -21,7 +22,7 @@ function gravatar_install() {
 	Addon::registerHook('load_config',   'addon/gravatar/gravatar.php', 'gravatar_load_config');
 	Addon::registerHook('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
 
-	logger("registered gravatar in avatar_lookup hook");
+	Text::logger("registered gravatar in avatar_lookup hook");
 }
 
 /**
@@ -31,7 +32,7 @@ function gravatar_uninstall() {
 	Addon::unregisterHook('load_config',   'addon/gravatar/gravatar.php', 'gravatar_load_config');
 	Addon::unregisterHook('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
 
-	logger("unregistered gravatar in avatar_lookup hook");
+	Text::logger("unregistered gravatar in avatar_lookup hook");
 }
 
 function gravatar_load_config(App $a)
@@ -70,7 +71,7 @@ function gravatar_lookup($a, &$b) {
  * Display admin settings for this addon
  */
 function gravatar_addon_admin (&$a, &$o) {
-	$t = get_markup_template( "admin.tpl", "addon/gravatar/" );
+	$t = Text::getMarkupTemplate( "admin.tpl", "addon/gravatar/" );
 
 	$default_avatar = Config::get('gravatar', 'default_avatar');
 	$rating = Config::get('gravatar', 'rating');
@@ -106,7 +107,7 @@ function gravatar_addon_admin (&$a, &$o) {
 
 	// output Gravatar settings
 	$o .= '<input type="hidden" name="form_security_token" value="' . BaseModule::getFormSecurityToken("gravatarsave") .'">';
-	$o .= replace_macros( $t, [
+	$o .= Text::replaceMacros( $t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$default_avatar' => ['avatar', L10n::t('Default avatar image'), $default_avatar, L10n::t('Select default avatar image if none was found at Gravatar. See README'), $default_avatars],
 		'$rating' => ['rating', L10n::t('Rating of images'), $rating, L10n::t('Select the appropriate avatar rating for your site. See README'), $ratings],
@@ -119,8 +120,8 @@ function gravatar_addon_admin (&$a, &$o) {
 function gravatar_addon_admin_post (&$a) {
 	BaseModule::checkFormSecurityToken('gravatarsave');
 
-	$default_avatar = ((x($_POST, 'avatar')) ? notags(trim($_POST['avatar'])) : 'identicon');
-	$rating = ((x($_POST, 'rating')) ? notags(trim($_POST['rating'])) : 'g');
+	$default_avatar = ((x($_POST, 'avatar')) ? Text::noTags(trim($_POST['avatar'])) : 'identicon');
+	$rating = ((x($_POST, 'rating')) ? Text::noTags(trim($_POST['rating'])) : 'g');
 	Config::set('gravatar', 'default_avatar', $default_avatar);
 	Config::set('gravatar', 'rating', $rating);
 	info(L10n::t('Gravatar settings updated.') .EOL);

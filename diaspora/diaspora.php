@@ -10,6 +10,7 @@
 require_once 'addon/diaspora/Diaspora_Connection.php';
 
 use Friendica\App;
+use Friendica\Content\Text;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
@@ -72,7 +73,7 @@ function diaspora_queue_hook(App $a, &$b) {
 			continue;
 		}
 
-		logger('diaspora_queue: run');
+		Text::logger('diaspora_queue: run');
 
 		$r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` on `contact`.`uid` = `user`.`uid`
 			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
@@ -92,37 +93,37 @@ function diaspora_queue_hook(App $a, &$b) {
 		$success = false;
 
 		if ($handle && $password) {
-			logger('diaspora_queue: able to post for user '.$handle);
+			Text::logger('diaspora_queue: able to post for user '.$handle);
 
 			$z = unserialize($x['content']);
 
 			$post = $z['post'];
 
-			logger('diaspora_queue: post: '.$post, LOGGER_DATA);
+			Text::logger('diaspora_queue: post: '.$post, LOGGER_DATA);
 
 			try {
-				logger('diaspora_queue: prepare', LOGGER_DEBUG);
+				Text::logger('diaspora_queue: prepare', LOGGER_DEBUG);
 				$conn = new Diaspora_Connection($handle, $password);
-				logger('diaspora_queue: try to log in '.$handle, LOGGER_DEBUG);
+				Text::logger('diaspora_queue: try to log in '.$handle, LOGGER_DEBUG);
 				$conn->logIn();
-				logger('diaspora_queue: try to send '.$body, LOGGER_DEBUG);
+				Text::logger('diaspora_queue: try to send '.$body, LOGGER_DEBUG);
 				$conn->provider = $hostname;
 				$conn->postStatusMessage($post, $aspect);
 
-				logger('diaspora_queue: send '.$userdata['uid'].' success', LOGGER_DEBUG);
+				Text::logger('diaspora_queue: send '.$userdata['uid'].' success', LOGGER_DEBUG);
 
 				$success = true;
 
 				Queue::removeItem($x['id']);
 			} catch (Exception $e) {
-				logger("diaspora_queue: Send ".$userdata['uid']." failed: ".$e->getMessage(), LOGGER_DEBUG);
+				Text::logger("diaspora_queue: Send ".$userdata['uid']." failed: ".$e->getMessage(), LOGGER_DEBUG);
 			}
 		} else {
-			logger('diaspora_queue: send '.$userdata['uid'].' missing username or password', LOGGER_DEBUG);
+			Text::logger('diaspora_queue: send '.$userdata['uid'].' missing username or password', LOGGER_DEBUG);
 		}
 
 		if (!$success) {
-			logger('diaspora_queue: delayed');
+			Text::logger('diaspora_queue: delayed');
 			Queue::updateTime($x['id']);
 		}
 	}
@@ -289,7 +290,7 @@ function diaspora_send(App $a, array &$b)
 {
 	$hostname = $a->getHostName();
 
-	logger('diaspora_send: invoked');
+	Text::logger('diaspora_send: invoked');
 
 	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
@@ -311,14 +312,14 @@ function diaspora_send(App $a, array &$b)
 		return;
 	}
 
-	logger('diaspora_send: prepare posting', LOGGER_DEBUG);
+	Text::logger('diaspora_send: prepare posting', LOGGER_DEBUG);
 
 	$handle = PConfig::get($b['uid'],'diaspora','handle');
 	$password = PConfig::get($b['uid'],'diaspora','password');
 	$aspect = PConfig::get($b['uid'],'diaspora','aspect');
 
 	if ($handle && $password) {
-		logger('diaspora_send: all values seem to be okay', LOGGER_DEBUG);
+		Text::logger('diaspora_send: all values seem to be okay', LOGGER_DEBUG);
 
 		$tag_arr = [];
 		$tags = '';
@@ -363,20 +364,20 @@ function diaspora_send(App $a, array &$b)
 		require_once "addon/diaspora/diasphp.php";
 
 		try {
-			logger('diaspora_send: prepare', LOGGER_DEBUG);
+			Text::logger('diaspora_send: prepare', LOGGER_DEBUG);
 			$conn = new Diaspora_Connection($handle, $password);
-			logger('diaspora_send: try to log in '.$handle, LOGGER_DEBUG);
+			Text::logger('diaspora_send: try to log in '.$handle, LOGGER_DEBUG);
 			$conn->logIn();
-			logger('diaspora_send: try to send '.$body, LOGGER_DEBUG);
+			Text::logger('diaspora_send: try to send '.$body, LOGGER_DEBUG);
 
 			$conn->provider = $hostname;
 			$conn->postStatusMessage($body, $aspect);
 
-			logger('diaspora_send: success');
+			Text::logger('diaspora_send: success');
 		} catch (Exception $e) {
-			logger("diaspora_send: Error submitting the post: " . $e->getMessage());
+			Text::logger("diaspora_send: Error submitting the post: " . $e->getMessage());
 
-			logger('diaspora_send: requeueing '.$b['uid'], LOGGER_DEBUG);
+			Text::logger('diaspora_send: requeueing '.$b['uid'], LOGGER_DEBUG);
 
 			$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $b['uid']);
 			if (count($r))

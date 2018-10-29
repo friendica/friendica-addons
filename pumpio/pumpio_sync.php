@@ -1,4 +1,5 @@
 <?php
+use Friendica\Content\Text;
 use Friendica\Core\Config;
 
 function pumpio_sync_run(&$argv, &$argc) {
@@ -9,7 +10,7 @@ function pumpio_sync_run(&$argv, &$argc) {
 	if (function_exists('sys_getloadavg')) {
 		$load = sys_getloadavg();
 		if (intval($load[0]) > Config::get('system', 'maxloadavg', 50)) {
-			logger('system: load ' . $load[0] . ' too high. Pumpio sync deferred to next scheduled run.');
+			Text::logger('system: load ' . $load[0] . ' too high. Pumpio sync deferred to next scheduled run.');
 			return;
 		}
 	}

@@ -5,6 +5,7 @@
  * Version: 1.0
  * Author: Thomas Willingham <https://kakste.com/profile/beardyunixer>
  */
+use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -14,7 +15,7 @@ function group_text_install() {
 	Addon::registerHook('addon_settings', 'addon/group_text/group_text.php', 'group_text_settings');
 	Addon::registerHook('addon_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
 
-	logger("installed group_text");
+	Text::logger("installed group_text");
 }
 
 
@@ -24,7 +25,7 @@ function group_text_uninstall() {
 	Addon::unregisterHook('addon_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
 
 
-	logger("removed group_text");
+	Text::logger("removed group_text");
 }
 
 

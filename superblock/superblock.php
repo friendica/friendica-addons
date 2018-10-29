@@ -6,6 +6,7 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  *
  */
+use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -88,7 +89,7 @@ function superblock_enotify_store(&$a,&$b) {
 				continue;
 			}
 
-			if (link_compare($b['url'], $word)) {
+			if (Text::linkCompare($b['url'], $word)) {
 				$found = true;
 				break;
 			}
@@ -134,7 +135,7 @@ function superblock_item_photo_menu(&$a, &$b)
 	$author = $b['item']['author-link'];
 	if (!empty($a->data['superblock'])) {
 		foreach ($a->data['superblock'] as $bloke) {
-			if (link_compare($bloke, $author)) {
+			if (Text::linkCompare($bloke, $author)) {
 				$blocked = true;
 				break;
 			}

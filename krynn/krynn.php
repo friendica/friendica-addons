@@ -9,6 +9,7 @@
  *
  *"My body was my sacrifice... for my magic. This damage is permanent." - Raistlin Majere
  */
+use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -35,7 +36,7 @@ function krynn_install() {
 	Addon::registerHook('addon_settings', 'addon/krynn/krynn.php', 'krynn_settings');
 	Addon::registerHook('addon_settings_post', 'addon/krynn/krynn.php', 'krynn_settings_post');
 
-	logger("installed krynn");
+	Text::logger("installed krynn");
 }
 
 
@@ -54,7 +55,7 @@ function krynn_uninstall() {
 	Addon::unregisterHook('addon_settings_post', 'addon/krynn/krynn.php', 'krynn_settings_post');
 
 
-	logger("removed krynn");
+	Text::logger("removed krynn");
 }
 
 
@@ -70,7 +71,7 @@ function krynn_post_hook($a, &$item) {
 	 *
 	 */
 
-	logger('krynn invoked');
+	Text::logger('krynn invoked');
 
 	if(! local_user())   /* non-zero if this is a logged in user of this system */
 		return;

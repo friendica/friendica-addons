@@ -7,6 +7,7 @@
  */
 
 use Friendica\App;
+use Frienidica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -28,7 +29,7 @@ function catavatar_install()
 	Addon::registerHook('addon_settings', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings');
 	Addon::registerHook('addon_settings_post', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings_post');
 
-	logger('registered catavatar');
+	Text::logger('registered catavatar');
 }
 
 /**
@@ -40,7 +41,7 @@ function catavatar_uninstall()
 	Addon::unregisterHook('addon_settings', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings');
 	Addon::unregisterHook('addon_settings_post', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings_post');
 
-	logger('unregistered catavatar');
+	Text::logger('unregistered catavatar');
 }
 
 /**
@@ -52,8 +53,8 @@ function catavatar_addon_settings(App $a, &$s)
 		return;
 	}
 
-	$t = get_markup_template('settings.tpl', 'addon/catavatar/');
-	$s .= replace_macros ($t, [
+	$t = Text::getMarkupTemplate('settings.tpl', 'addon/catavatar/');
+	$s .= Text::replaceMacros ($t, [
 		'$postpost' => !empty($_POST['catavatar-morecat']) || !empty($_POST['catavatar-emailcat']),
 		'$uncache' => time(),
 		'$uid' => local_user(),

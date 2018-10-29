@@ -9,6 +9,7 @@
 use Friendica\App;
 use Friendica\Content\Nav;
 use Friendica\Content\Pager;
+use Friendica\Content\Text;
 use Friendica\Content\Widget;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -71,12 +72,12 @@ function forumdirectory_content(App $a)
 	Nav::setSelected('directory');
 
 	if (!empty($a->data['search'])) {
-		$search = notags(trim($a->data['search']));
+		$search = Text::noTags(trim($a->data['search']));
 	} else {
-		$search = ((!empty($_GET['search'])) ? notags(trim(rawurldecode($_GET['search']))) : '');
+		$search = ((!empty($_GET['search'])) ? Text::noTags(trim(rawurldecode($_GET['search']))) : '');
 	}
 
-	$tpl = get_markup_template('directory_header.tpl');
+	$tpl = Text::getMarkupTemplate('directory_header.tpl');
 
 	$globaldir = '';
 	$gdirpath = Config::get('system', 'directory');
@@ -87,7 +88,7 @@ function forumdirectory_content(App $a)
 
 	$admin = '';
 
-	$o .= replace_macros($tpl, [
+	$o .= Text::replaceMacros($tpl, [
 		'$search'    => $search,
 		'$globaldir' => $globaldir,
 		'$desc'      => L10n::t('Find on this site'),
@@ -187,9 +188,9 @@ function forumdirectory_content(App $a)
 			$homepage = !empty($profile['homepage']) ? L10n::t('Homepage:') : false;
 			$about    = !empty($profile['about'])    ? L10n::t('About:')    : false;
 
-			$tpl = get_markup_template('forumdirectory_item.tpl', 'addon/forumdirectory/');
+			$tpl = Text::getMarkupTemplate('forumdirectory_item.tpl', 'addon/forumdirectory/');
 
-			$entry = replace_macros($tpl, [
+			$entry = Text::replaceMacros($tpl, [
 				'$id'           => $rr['id'],
 				'$profile_link' => $profile_link,
 				'$photo'        => $rr[$photo],

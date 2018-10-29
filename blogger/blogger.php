@@ -7,6 +7,7 @@
  */
 
 use Friendica\App;
+use Friendica\Content\Text;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
@@ -177,14 +178,14 @@ function blogger_send(App $a, array &$b)
 		return;
 	}
 
-	$bl_username = xmlify(PConfig::get($b['uid'], 'blogger', 'bl_username'));
-	$bl_password = xmlify(PConfig::get($b['uid'], 'blogger', 'bl_password'));
+	$bl_username = Text::xmlify(PConfig::get($b['uid'], 'blogger', 'bl_username'));
+	$bl_password = Text::xmlify(PConfig::get($b['uid'], 'blogger', 'bl_password'));
 	$bl_blog = PConfig::get($b['uid'], 'blogger', 'bl_blog');
 
 	if ($bl_username && $bl_password && $bl_blog) {
 		$title = '<title>' . (($b['title']) ? $b['title'] : L10n::t('Post from Friendica')) . '</title>';
 		$post = $title . BBCode::convert($b['body']);
-		$post = xmlify($post);
+		$post = Text::xmlify($post);
 
 		$xml = <<< EOT
 <?xml version=\"1.0\" encoding=\"utf-8\"?>
@@ -202,12 +203,12 @@ function blogger_send(App $a, array &$b)
 
 EOT;
 
-		logger('blogger: data: ' . $xml, LOGGER_DATA);
+		Text::logger('blogger: data: ' . $xml, LOGGER_DATA);
 
 		if ($bl_blog !== 'test') {
 			$x = Network::post($bl_blog, $xml)->getBody();
 		}
 
-		logger('posted to blogger: ' . (($x) ? $x : ''), LOGGER_DEBUG);
+		Text::logger('posted to blogger: ' . (($x) ? $x : ''), LOGGER_DEBUG);
 	}
 }

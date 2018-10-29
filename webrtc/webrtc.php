@@ -6,6 +6,7 @@
  * Author: Stephen Mahood <https://friends.mayfirst.org/profile/marxistvegan>
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  */
+use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -24,14 +25,14 @@ function webrtc_app_menu($a,&$b) {
 }
 
 function webrtc_addon_admin (&$a, &$o) {
-        $t = get_markup_template( "admin.tpl", "addon/webrtc/" );
-	$o = replace_macros( $t, [
+        $t = Text::getMarkupTemplate( "admin.tpl", "addon/webrtc/" );
+	$o = Text::replaceMacros( $t, [
 	    '$submit' => L10n::t('Save Settings'),
 	    '$webrtcurl' => ['webrtcurl', L10n::t('WebRTC Base URL'), Config::get('webrtc','webrtcurl' ), L10n::t('Page your users will create a WebRTC chat room on. For example you could use https://live.mayfirst.org .')],
 	]);
 }
 function webrtc_addon_admin_post (&$a) {
-        $url = ((x($_POST, 'webrtcurl')) ? notags(trim($_POST['webrtcurl'])) : '');
+        $url = ((x($_POST, 'webrtcurl')) ? Text::noTags(trim($_POST['webrtcurl'])) : '');
 	    Config::set('webrtc', 'webrtcurl', $url);
 	    info(L10n::t('Settings updated.'). EOL);
 }

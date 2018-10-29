@@ -8,6 +8,7 @@
 require 'addon/buffer/bufferapp.php';
 
 use Friendica\App;
+use Friendica\Content\Text;
 use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -69,9 +70,9 @@ function buffer_content(App $a)
 
 function buffer_addon_admin(App $a, &$o)
 {
-	$t = get_markup_template("admin.tpl", "addon/buffer/");
+	$t = Text::getMarkupTemplate("admin.tpl", "addon/buffer/");
 
-	$o = replace_macros($t, [
+	$o = Text::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		// name, label, value, help, [extra values]
 		'$client_id' => ['client_id', L10n::t('Client ID'), Config::get('buffer', 'client_id'), ''],
@@ -81,8 +82,8 @@ function buffer_addon_admin(App $a, &$o)
 
 function buffer_addon_admin_post(App $a)
 {
-	$client_id     = ((!empty($_POST['client_id']))     ? notags(trim($_POST['client_id']))     : '');
-	$client_secret = ((!empty($_POST['client_secret'])) ? notags(trim($_POST['client_secret'])) : '');
+	$client_id     = ((!empty($_POST['client_id']))     ? Text::noTags(trim($_POST['client_id']))     : '');
+	$client_secret = ((!empty($_POST['client_secret'])) ? Text::noTags(trim($_POST['client_secret'])) : '');
 
 	Config::set('buffer', 'client_id'    , $client_id);
 	Config::set('buffer', 'client_secret', $client_secret);
@@ -112,7 +113,7 @@ function buffer_connect(App $a)
 	if (!$buffer->ok) {
 		$o .= '<a href="' . $buffer->get_login_url() . '">Connect to Buffer!</a>';
 	} else {
-		logger("buffer_connect: authenticated");
+		Text::logger("buffer_connect: authenticated");
 		$o .= L10n::t("You are now authenticated to buffer. ");
 		$o .= '<br /><a href="' . $a->getBaseURL() . '/settings/connectors">' . L10n::t("return to the connector page") . '</a>';
 		PConfig::set(local_user(), 'buffer','access_token', $buffer->access_token);
@@ -298,7 +299,7 @@ function buffer_send(App $a, array &$b)
 
 		$profiles = $buffer->go('/profiles');
 		if (is_array($profiles)) {
-			logger("Will send these parameter ".print_r($b, true), LOGGER_DEBUG);
+			Text::logger("Will send these parameter ".print_r($b, true), LOGGER_DEBUG);
 
 			foreach ($profiles as $profile) {
 				if (!$profile->default)
@@ -357,7 +358,7 @@ function buffer_send(App $a, array &$b)
 				}
 
 				$post = ItemContent::getPlaintextPost($item, $limit, $includedlinks, $htmlmode);
-				logger("buffer_send: converted message ".$b["id"]." result: ".print_r($post, true), LOGGER_DEBUG);
+				Text::logger("buffer_send: converted message ".$b["id"]." result: ".print_r($post, true), LOGGER_DEBUG);
 
 				// The image proxy is used as a sanitizer. Buffer seems to be really picky about pictures
 				if (isset($post["image"])) {
@@ -407,9 +408,9 @@ function buffer_send(App $a, array &$b)
 				}
 
 				//print_r($message);
-				logger("buffer_send: data for message " . $b["id"] . ": " . print_r($message, true), LOGGER_DEBUG);
+				Text::logger("buffer_send: data for message " . $b["id"] . ": " . print_r($message, true), LOGGER_DEBUG);
 				$ret = $buffer->go('/updates/create', $message);
-				logger("buffer_send: send message " . $b["id"] . " result: " . print_r($ret, true), LOGGER_DEBUG);
+				Text::logger("buffer_send: send message " . $b["id"] . " result: " . print_r($ret, true), LOGGER_DEBUG);
 			}
 		}
 	}

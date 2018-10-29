@@ -8,6 +8,7 @@
  */
 
 use Friendica\App;
+use Friendica\Content\Text;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
@@ -50,8 +51,8 @@ function langfilter_addon_settings(App $a, &$s)
 	$minconfidence  = PConfig::get(local_user(), 'langfilter', 'minconfidence') * 100;
 	$minlength      = PConfig::get(local_user(), 'langfilter', 'minlength');
 
-	$t = get_markup_template("settings.tpl", "addon/langfilter/");
-	$s .= replace_macros($t, [
+	$t = Text::getMarkupTemplate("settings.tpl", "addon/langfilter/");
+	$s .= Text::replaceMacros($t, [
 		'$title'         => L10n::t("Language Filter"),
 		'$intro'         => L10n::t('This addon tries to identify the language posts are writen in. If it does not match any language specifed below, posts will be hidden by collapsing them.'),
 		'$enabled'       => ['langfilter_enable', L10n::t('Use the language filter'), $enable_checked, ''],

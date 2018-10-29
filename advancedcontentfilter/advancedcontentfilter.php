@@ -35,6 +35,7 @@
 
 use Friendica\App;
 use Friendica\BaseModule;
+use Friendica\Content\Text;
 use Friendica\Content\Text\Markdown;
 use Friendica\Core\Addon;
 use Friendica\Core\Cache;
@@ -206,8 +207,8 @@ function advancedcontentfilter_content(App $a)
 
 		return $html;
 	} else {
-		$t = get_markup_template('settings.tpl', 'addon/advancedcontentfilter/');
-		return replace_macros($t, [
+		$t = Text::getMarkupTemplate('settings.tpl', 'addon/advancedcontentfilter/');
+		return Text::replaceMacros($t, [
 			'$messages' => [
 				'backtosettings'    => L10n::t('Back to Addon Settings'),
 				'title'             => L10n::t('Advanced Content Filter'),

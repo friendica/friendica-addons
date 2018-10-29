@@ -5,6 +5,7 @@
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
+use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -14,7 +15,7 @@ function numfriends_install() {
 	Addon::registerHook('addon_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
 	Addon::registerHook('addon_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
 
-	logger("installed numfriends");
+	Text::logger("installed numfriends");
 }
 
 
@@ -24,7 +25,7 @@ function numfriends_uninstall() {
 	Addon::unregisterHook('addon_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
 
 
-	logger("removed numfriends");
+	Text::logger("removed numfriends");
 }
 
 /**

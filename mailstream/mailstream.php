@@ -6,6 +6,7 @@
  * Author: Matthew Exon <http://mat.exon.name>
  */
 
+use Friendica\Content\Text;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -73,12 +74,12 @@ function mailstream_module() {}
 
 function mailstream_addon_admin(&$a,&$o) {
 	$frommail = Config::get('mailstream', 'frommail');
-	$template = get_markup_template('admin.tpl', 'addon/mailstream/');
+	$template = Text::getMarkupTemplate('admin.tpl', 'addon/mailstream/');
 	$config = ['frommail',
 			L10n::t('From Address'),
 			$frommail,
 			L10n::t('Email address that stream items will appear to be from.')];
-	$o .= replace_macros($template, [
+	$o .= Text::replaceMacros($template, [
 				 '$frommail' => $config,
 				 '$submit' => L10n::t('Save Settings')]);
 }
@@ -94,7 +95,7 @@ function mailstream_generate_id($a, $uri) {
 	$host = $a->getHostName();
 	$resource = hash('md5', $uri);
 	$message_id = "<" . $resource . "@" . $host . ">";
-	logger('mailstream: Generated message ID ' . $message_id . ' for URI ' . $uri, LOGGER_DEBUG);
+	Text::logger('mailstream: Generated message ID ' . $message_id . ' for URI ' . $uri, LOGGER_DEBUG);
 	return $message_id;
 }
 
@@ -123,16 +124,16 @@ function mailstream_post_hook(&$a, &$item) {
 		intval($item['contact-id']), DBA::escape($item['uri']), DBA::escape($message_id));
 	$r = q('SELECT * FROM `mailstream_item` WHERE `uid` = %d AND `contact-id` = %d AND `uri` = "%s"', intval($item['uid']), intval($item['contact-id']), DBA::escape($item['uri']));
 	if (count($r) != 1) {
-		logger('mailstream_post_remote_hook: Unexpected number of items returned from mailstream_item', LOGGER_INFO);
+		Text::logger('mailstream_post_remote_hook: Unexpected number of items returned from mailstream_item', LOGGER_INFO);
 		return;
 	}
 	$ms_item = $r[0];
-	logger('mailstream_post_remote_hook: created mailstream_item '
+	Text::logger('mailstream_post_remote_hook: created mailstream_item '
 		. $ms_item['id'] . ' for item ' . $item['uri'] . ' '
 		. $item['uid'] . ' ' . $item['contact-id'], LOGGER_DATA);
 	$user = mailstream_get_user($item['uid']);
 	if (!$user) {
-		logger('mailstream_post_remote_hook: no user ' . $item['uid'], LOGGER_INFO);
+		Text::logger('mailstream_post_remote_hook: no user ' . $item['uid'], LOGGER_INFO);
 		return;
 	}
 	mailstream_send($a, $ms_item['message-id'], $item, $user);
@@ -141,7 +142,7 @@ function mailstream_post_hook(&$a, &$item) {
 function mailstream_get_user($uid) {
 	$r = q('SELECT * FROM `user` WHERE `uid` = %d', intval($uid));
 	if (count($r) != 1) {
-		logger('mailstream_post_remote_hook: Unexpected number of users returned', LOGGER_INFO);
+		Text::logger('mailstream_post_remote_hook: Unexpected number of users returned', LOGGER_INFO);
 		return;
 	}
 	return $r[0];
@@ -287,10 +288,10 @@ function mailstream_send($a, $message_id, $item, $user) {
 		}
 		$mail->IsHTML(true);
 		$mail->CharSet = 'utf-8';
-		$template = get_markup_template('mail.tpl', 'addon/mailstream/');
+		$template = Text::getMarkupTemplate('mail.tpl', 'addon/mailstream/');
 		$item['body'] = BBCode::convert($item['body']);
 		$item['url'] = $a->getBaseURL() . '/display/' . $user['nickname'] . '/' . $item['id'];
-		$mail->Body = replace_macros($template, [
+		$mail->Body = Text::replaceMacros($template, [
 						 '$upstream' => L10n::t('Upstream'),
 						 '$local' => L10n::t('Local'),
 						 '$item' => $item]);
@@ -298,11 +299,11 @@ function mailstream_send($a, $message_id, $item, $user) {
 		if (!$mail->Send()) {
 			throw new Exception($mail->ErrorInfo);
 		}
-		logger('mailstream_send sent message ' . $mail->MessageID . ' ' . $mail->Subject, LOGGER_DEBUG);
+		Text::logger('mailstream_send sent message ' . $mail->MessageID . ' ' . $mail->Subject, LOGGER_DEBUG);
 	} catch (phpmailerException $e) {
-		logger('mailstream_send PHPMailer exception sending message ' . $message_id . ': ' . $e->errorMessage(), LOGGER_INFO);
+		Text::logger('mailstream_send PHPMailer exception sending message ' . $message_id . ': ' . $e->errorMessage(), LOGGER_INFO);
 	} catch (Exception $e) {
-		logger('mailstream_send exception sending message ' . $message_id . ': ' . $e->getMessage(), LOGGER_INFO);
+		Text::logger('mailstream_send exception sending message ' . $message_id . ': ' . $e->getMessage(), LOGGER_INFO);
 	}
 	// In case of failure, still set the item to completed.  Otherwise
 	// we'll just try to send it over and over again and it'll fail
@@ -331,10 +332,10 @@ function mailstream_cron($a, $b) {
 	// mailstream_post_remote_hook fails for some reason will this get
 	// used, and in that case it's worth holding off a bit anyway.
 	$ms_item_ids = q("SELECT `mailstream_item`.`message-id`, `mailstream_item`.`uri`, `item`.`id` FROM `mailstream_item` JOIN `item` ON (`mailstream_item`.`uid` = `item`.`uid` AND `mailstream_item`.`uri` = `item`.`uri` AND `mailstream_item`.`contact-id` = `item`.`contact-id`) WHERE `mailstream_item`.`completed` IS NULL AND `mailstream_item`.`created` < DATE_SUB(NOW(), INTERVAL 1 HOUR) AND `item`.`visible` = 1 ORDER BY `mailstream_item`.`created` LIMIT 100");
-	logger('mailstream_cron processing ' . count($ms_item_ids) . ' items', LOGGER_DEBUG);
+	Text::logger('mailstream_cron processing ' . count($ms_item_ids) . ' items', LOGGER_DEBUG);
 	foreach ($ms_item_ids as $ms_item_id) {
 		if (!$ms_item_id['message-id'] || !strlen($ms_item_id['message-id'])) {
-			logger('mailstream_cron: Item ' . $ms_item_id['id'] . ' URI ' . $ms_item_id['uri'] . ' has no message-id', LOGGER_INFO);
+			Text::logger('mailstream_cron: Item ' . $ms_item_id['id'] . ' URI ' . $ms_item_id['uri'] . ' has no message-id', LOGGER_INFO);
 		}
 		$item = Item::selectFirst([], ['id' => $ms_item_id['id']]);
 		$users = q("SELECT * FROM `user` WHERE `uid` = %d", intval($item['uid']));
@@ -343,7 +344,7 @@ function mailstream_cron($a, $b) {
 			mailstream_send($a, $ms_item_id['message-id'], $item, $user);
 		}
 		else {
-			logger('mailstream_cron: Unable to find item ' . $ms_item_id['id'], LOGGER_INFO);
+			Text::logger('mailstream_cron: Unable to find item ' . $ms_item_id['id'], LOGGER_INFO);
 			q("UPDATE `mailstream_item` SET `completed` = now() WHERE `message-id` = %d", intval($ms_item['message-id']));
 		}
 	}
@@ -355,8 +356,8 @@ function mailstream_addon_settings(&$a,&$s) {
 	$address = PConfig::get(local_user(), 'mailstream', 'address');
 	$nolikes = PConfig::get(local_user(), 'mailstream', 'nolikes');
 	$attachimg= PConfig::get(local_user(), 'mailstream', 'attachimg');
-	$template = get_markup_template('settings.tpl', 'addon/mailstream/');
-	$s .= replace_macros($template, [
+	$template = Text::getMarkupTemplate('settings.tpl', 'addon/mailstream/');
+	$s .= Text::replaceMacros($template, [
 				 '$enabled' => [
 					'mailstream_enabled',
 					L10n::t('Enabled'),
@@ -412,5 +413,5 @@ function mailstream_tidy() {
 	foreach ($r as $rr) {
 		q('DELETE FROM mailstream_item WHERE id = %d', intval($rr['id']));
 	}
-	logger('mailstream_tidy: deleted ' . count($r) . ' old items', LOGGER_DEBUG);
+	Text::logger('mailstream_tidy: deleted ' . count($r) . ' old items', LOGGER_DEBUG);
 }

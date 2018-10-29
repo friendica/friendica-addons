@@ -7,6 +7,7 @@
  * Status: Unsupported
  */
 
+use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -45,8 +46,8 @@ function remote_permissions_settings(&$a,&$o) {
 	/* Add some HTML to the existing form */
 
 //	$t = file_get_contents("addon/remote_permissions/settings.tpl" );
-	$t = get_markup_template("settings.tpl", "addon/remote_permissions/" );
-	$o .= replace_macros($t, [
+	$t = Text::getMarkupTemplate("settings.tpl", "addon/remote_permissions/" );
+	$o .= Text::replaceMacros($t, [
 		'$remote_perms_title' => L10n::t('Remote Permissions Settings'),
 		'$remote_perms_label' => L10n::t('Allow recipients of your private posts to see the other recipients of the posts'),
 		'$checked' => (($remote_perms == 1) ? 'checked="checked"' : ''),
@@ -121,10 +122,10 @@ function remote_permissions_content($a, $item_copy) {
 
 			$item = $r[0];
 
-			$allowed_users = expand_acl($item['allow_cid']);
-			$allowed_groups = expand_acl($item['allow_gid']);
-			$deny_users = expand_acl($item['deny_cid']);
-			$deny_groups = expand_acl($item['deny_gid']);
+			$allowed_users = Text::expandAcl($item['allow_cid']);
+			$allowed_groups = Text::expandAcl($item['allow_gid']);
+			$deny_users = Text::expandAcl($item['deny_cid']);
+			$deny_groups = Text::expandAcl($item['deny_gid']);
 
 			$o = L10n::t('Visible to:') . '<br />';
 			$allow = [];
@@ -196,8 +197,8 @@ function remote_permissions_content($a, $item_copy) {
 }
 
 function remote_permissions_addon_admin(&$a, &$o){
-	$t = get_markup_template( "admin.tpl", "addon/remote_permissions/" );
-	$o = replace_macros($t, [
+	$t = Text::getMarkupTemplate( "admin.tpl", "addon/remote_permissions/" );
+	$o = Text::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$global' => ['remotepermschoice', L10n::t('Global'), 1, L10n::t('The posts of every user on this server show the post recipients'),  Config::get('remote_perms', 'global') == 1],
 		'$individual' => ['remotepermschoice', L10n::t('Individual'), 2, L10n::t('Each user chooses whether his/her posts show the post recipients'),  Config::get('remote_perms', 'global') == 0]
@@ -205,7 +206,7 @@ function remote_permissions_addon_admin(&$a, &$o){
 }
 
 function remote_permissions_addon_admin_post(&$a){
-	$choice	=	((x($_POST,'remotepermschoice'))		? notags(trim($_POST['remotepermschoice']))	: '');
+	$choice	=	((x($_POST,'remotepermschoice'))		? Text::noTags(trim($_POST['remotepermschoice']))	: '');
 	Config::set('remote_perms','global',($choice == 1 ? 1 : 0));
 	info(L10n::t('Settings updated.'). EOL);
 }

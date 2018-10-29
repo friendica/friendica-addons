@@ -10,6 +10,7 @@
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'tumblroauth.php';
 
 use Friendica\App;
+use Friendica\Content\Text;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -69,9 +70,9 @@ function tumblr_content(App $a)
 
 function tumblr_addon_admin(App $a, &$o)
 {
-	$t = get_markup_template( "admin.tpl", "addon/tumblr/" );
+	$t = Text::getMarkupTemplate( "admin.tpl", "addon/tumblr/" );
 
-	$o = replace_macros($t, [
+	$o = Text::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		// name, label, value, help, [extra values]
 		'$consumer_key' => ['consumer_key', L10n::t('Consumer Key'),  Config::get('tumblr', 'consumer_key' ), ''],
@@ -81,8 +82,8 @@ function tumblr_addon_admin(App $a, &$o)
 
 function tumblr_addon_admin_post(App $a)
 {
-	$consumer_key    =       ((!empty($_POST['consumer_key']))      ? notags(trim($_POST['consumer_key']))   : '');
-	$consumer_secret =       ((!empty($_POST['consumer_secret']))   ? notags(trim($_POST['consumer_secret'])): '');
+	$consumer_key    =       ((!empty($_POST['consumer_key']))      ? Text::noTags(trim($_POST['consumer_key']))   : '');
+	$consumer_secret =       ((!empty($_POST['consumer_secret']))   ? Text::noTags(trim($_POST['consumer_secret'])): '');
 
 	Config::set('tumblr', 'consumer_key',$consumer_key);
 	Config::set('tumblr', 'consumer_secret',$consumer_secret);
@@ -458,11 +459,11 @@ function tumblr_send(App $a, array &$b) {
 
 		//print_r($params);
 		if ($ret_code == 201) {
-			logger('tumblr_send: success');
+			Text::logger('tumblr_send: success');
 		} elseif ($ret_code == 403) {
-			logger('tumblr_send: authentication failure');
+			Text::logger('tumblr_send: authentication failure');
 		} else {
-			logger('tumblr_send: general error: ' . print_r($x,true));
+			Text::logger('tumblr_send: general error: ' . print_r($x,true));
 		}
 	}
 }

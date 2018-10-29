@@ -5,6 +5,7 @@
  * Version: 0.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
+use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Util\Network;
@@ -163,7 +164,7 @@ function leistungsschutzrecht_cron($a,$b) {
 	if($last) {
 		$next = $last + 86400;
 		if($next > time()) {
-			logger('poll intervall not reached');
+			Text::logger('poll intervall not reached');
 			return;
 		}
 	}

@@ -8,6 +8,7 @@
  * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
 
+use Friendica\Content\Text;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
@@ -168,20 +169,20 @@ function ljpost_send(&$a,&$b) {
 	if($x && strlen($x[0]['timezone']))
 		$tz = $x[0]['timezone'];
 
-	$lj_username = xmlify(PConfig::get($b['uid'],'ljpost','lj_username'));
-	$lj_password = xmlify(PConfig::get($b['uid'],'ljpost','lj_password'));
-	$lj_journal = xmlify(PConfig::get($b['uid'],'ljpost','lj_journal'));
+	$lj_username = Text::xmlify(PConfig::get($b['uid'],'ljpost','lj_username'));
+	$lj_password = Text::xmlify(PConfig::get($b['uid'],'ljpost','lj_password'));
+	$lj_journal = Text::xmlify(PConfig::get($b['uid'],'ljpost','lj_journal'));
 //	if(! $lj_journal)
 //		$lj_journal = $lj_username;
 
-	$lj_blog = xmlify(PConfig::get($b['uid'],'ljpost','lj_blog'));
+	$lj_blog = Text::xmlify(PConfig::get($b['uid'],'ljpost','lj_blog'));
 	if(! strlen($lj_blog))
-		$lj_blog = xmlify('http://www.livejournal.com/interface/xmlrpc');
+		$lj_blog = Text::xmlify('http://www.livejournal.com/interface/xmlrpc');
 
 	if($lj_username && $lj_password && $lj_blog) {
-		$title = xmlify($b['title']);
+		$title = Text::xmlify($b['title']);
 		$post = BBCode::convert($b['body']);
-		$post = xmlify($post);
+		$post = Text::xmlify($post);
 		$tags = ljpost_get_tags($b['tag']);
 
 		$date = DateTimeFormat::convert($b['created'], $tz);
@@ -231,12 +232,12 @@ function ljpost_send(&$a,&$b) {
 
 EOT;
 
-		logger('ljpost: data: ' . $xml, LOGGER_DATA);
+		Text::logger('ljpost: data: ' . $xml, LOGGER_DATA);
 
 		if ($lj_blog !== 'test') {
 			$x = Network::post($lj_blog, $xml, ["Content-Type: text/xml"])->getBody();
 		}
-		logger('posted to livejournal: ' . ($x) ? $x : '', LOGGER_DEBUG);
+		Text::logger('posted to livejournal: ' . ($x) ? $x : '', LOGGER_DEBUG);
 	}
 }
 

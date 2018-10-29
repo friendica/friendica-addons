@@ -12,6 +12,7 @@
 require_once 'include/text.php';
 
 use Friendica\App;
+use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
@@ -135,8 +136,8 @@ function curweather_network_mod_init(App $a, &$b)
 	}
 
 	if ($ok) {
-		$t = get_markup_template("widget.tpl", "addon/curweather/" );
-		$curweather = replace_macros ($t, [
+		$t = Text::getMarkupTemplate("widget.tpl", "addon/curweather/" );
+		$curweather = Text::replaceMacros ($t, [
 			'$title' => L10n::t("Current Weather"),
 			'$icon' => ProxyUtils::proxifyUrl('http://openweathermap.org/img/w/'.$res['icon'].'.png'),
 			'$city' => $res['city'],
@@ -152,8 +153,8 @@ function curweather_network_mod_init(App $a, &$b)
 			'$showonmap' => L10n::t('Show on map')
 		]);
 	} else {
-		$t = get_markup_template('widget-error.tpl', 'addon/curweather/');
-		$curweather = replace_macros( $t, [
+		$t = Text::getMarkupTemplate('widget-error.tpl', 'addon/curweather/');
+		$curweather = Text::replaceMacros( $t, [
 			'$problem' => L10n::t('There was a problem accessing the weather data. But have a look'),
 			'$rpt' => $rpt,
 			'$atOWM' => L10n::t('at OpenWeatherMap')
@@ -197,9 +198,9 @@ function curweather_addon_settings(App $a, &$s)
 	$enable_checked = (($enable) ? ' checked="checked" ' : '');
 	
 	// load template and replace the macros
-	$t = get_markup_template("settings.tpl", "addon/curweather/" );
+	$t = Text::getMarkupTemplate("settings.tpl", "addon/curweather/" );
 
-	$s = replace_macros ($t, [
+	$s = Text::replaceMacros ($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$header' => L10n::t('Current Weather').' '.L10n::t('Settings'),
 		'$noappidtext' => $noappidtext,
@@ -237,9 +238,9 @@ function curweather_addon_admin(App $a, &$o)
 	$appid = Config::get('curweather', 'appid');
 	$cachetime = Config::get('curweather', 'cachetime');
 
-	$t = get_markup_template("admin.tpl", "addon/curweather/" );
+	$t = Text::getMarkupTemplate("admin.tpl", "addon/curweather/" );
 
-	$o = replace_macros ($t, [
+	$o = Text::replaceMacros ($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$cachetime' => [
 			'cachetime',

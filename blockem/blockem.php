@@ -8,6 +8,7 @@
  */
 
 use Friendica\App;
+use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -100,7 +101,7 @@ function blockem_enotify_store(App $a, array &$b)
 				continue;
 			}
 
-			if (link_compare($b['url'], $word)) {
+			if (Text::linkCompare($b['url'], $word)) {
 				$found = true;
 				break;
 			}
@@ -133,7 +134,7 @@ function blockem_prepare_body_content_filter(App $a, array &$hook_data)
 	$found = false;
 
 	foreach ($profiles_array as $word) {
-		if (link_compare($hook_data['item']['author-link'], trim($word))) {
+		if (Text::linkCompare($hook_data['item']['author-link'], trim($word))) {
 			$found = true;
 			break;
 		}
@@ -192,7 +193,7 @@ function blockem_item_photo_menu(App $a, array &$b)
 
 	if (!empty($a->data['blockem'])) {
 		foreach($a->data['blockem'] as $bloke) {
-			if (link_compare($bloke,$author)) {
+			if (Text::linkCompare($bloke,$author)) {
 				$blocked = true;
 				break;
 			}
@@ -231,7 +232,7 @@ function blockem_init(App $a)
 
 		if (count($arr)) {
 			foreach ($arr as $x) {
-				if (!link_compare(trim($x), trim($_GET['unblock']))) {
+				if (!Text::linkCompare(trim($x), trim($_GET['unblock']))) {
 					$newarr[] = $x;
 				}
 			}

@@ -6,6 +6,7 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * Author: Tony Baldwin <https://free-haven.org/profile/tony>
  */
+use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -32,7 +33,7 @@ function planets_install() {
 	Addon::registerHook('addon_settings', 'addon/planets/planets.php', 'planets_settings');
 	Addon::registerHook('addon_settings_post', 'addon/planets/planets.php', 'planets_settings_post');
 
-	logger("installed planets");
+	Text::logger("installed planets");
 }
 
 
@@ -51,7 +52,7 @@ function planets_uninstall() {
 	Addon::unregisterHook('addon_settings_post', 'addon/planets/planets.php', 'planets_settings_post');
 
 
-	logger("removed planets");
+	Text::logger("removed planets");
 }
 
 
@@ -67,7 +68,7 @@ function planets_post_hook($a, &$item) {
 	 *
 	 */
 
-	logger('planets invoked');
+	Text::logger('planets invoked');
 
 	if(! local_user())   /* non-zero if this is a logged in user of this system */
 		return;

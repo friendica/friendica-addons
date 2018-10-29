@@ -7,6 +7,7 @@
  */
 
 use Friendica\App;
+use Friendica\Content\Text;
 use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
 use Friendica\Core\Addon;
@@ -114,7 +115,7 @@ function pumpio_registerclient(App $a, $host)
 	$params["logo_url"] = $a->getBaseURL()."/images/friendica-256.png";
 	$params["redirect_uris"] = $a->getBaseURL()."/pumpio/connect";
 
-	logger("pumpio_registerclient: ".$url." parameters ".print_r($params, true), LOGGER_DEBUG);
+	Text::logger("pumpio_registerclient: ".$url." parameters ".print_r($params, true), LOGGER_DEBUG);
 
 	$ch = curl_init($url);
 	curl_setopt($ch, CURLOPT_HEADER, false);
@@ -128,10 +129,10 @@ function pumpio_registerclient(App $a, $host)
 
 	if ($curl_info["http_code"] == "200") {
 		$values = json_decode($s);
-		logger("pumpio_registerclient: success ".print_r($values, true), LOGGER_DEBUG);
+		Text::logger("pumpio_registerclient: success ".print_r($values, true), LOGGER_DEBUG);
 		return $values;
 	}
-	logger("pumpio_registerclient: failed: ".print_r($curl_info, true), LOGGER_DEBUG);
+	Text::logger("pumpio_registerclient: failed: ".print_r($curl_info, true), LOGGER_DEBUG);
 	return false;
 
 }
@@ -144,7 +145,7 @@ function pumpio_connect(App $a)
 	$hostname = PConfig::get(local_user(), 'pumpio', 'host');
 
 	if ((($consumer_key == "") || ($consumer_secret == "")) && ($hostname != "")) {
-		logger("pumpio_connect: register client");
+		Text::logger("pumpio_connect: register client");
 		$clientdata = pumpio_registerclient($a, $hostname);
 		PConfig::set(local_user(), 'pumpio', 'consumer_key', $clientdata->client_id);
 		PConfig::set(local_user(), 'pumpio', 'consumer_secret', $clientdata->client_secret);
@@ -152,11 +153,11 @@ function pumpio_connect(App $a)
 		$consumer_key = PConfig::get(local_user(), 'pumpio', 'consumer_key');
 		$consumer_secret = PConfig::get(local_user(), 'pumpio', 'consumer_secret');
 
-		logger("pumpio_connect: ckey: ".$consumer_key." csecrect: ".$consumer_secret, LOGGER_DEBUG);
+		Text::logger("pumpio_connect: ckey: ".$consumer_key." csecrect: ".$consumer_secret, LOGGER_DEBUG);
 	}
 
 	if (($consumer_key == "") || ($consumer_secret == "")) {
-		logger("pumpio_connect: ".sprintf("Unable to register the client at the pump.io server '%s'.", $hostname));
+		Text::logger("pumpio_connect: ".sprintf("Unable to register the client at the pump.io server '%s'.", $hostname));
 
 		$o .= L10n::t("Unable to register the client at the pump.io server '%s'.", $hostname);
 		return $o;
@@ -186,7 +187,7 @@ function pumpio_connect(App $a)
 	if (($success = $client->Initialize())) {
 		if (($success = $client->Process())) {
 			if (strlen($client->access_token)) {
-				logger("pumpio_connect: otoken: ".$client->access_token." osecrect: ".$client->access_token_secret, LOGGER_DEBUG);
+				Text::logger("pumpio_connect: otoken: ".$client->access_token." osecrect: ".$client->access_token_secret, LOGGER_DEBUG);
 				PConfig::set(local_user(), "pumpio", "oauth_token", $client->access_token);
 				PConfig::set(local_user(), "pumpio", "oauth_token_secret", $client->access_token_secret);
 			}
@@ -198,11 +199,11 @@ function pumpio_connect(App $a)
 	}
 
 	if ($success) {
-		logger("pumpio_connect: authenticated");
+		Text::logger("pumpio_connect: authenticated");
 		$o = L10n::t("You are now authenticated to pumpio.");
 		$o .= '<br /><a href="'.$a->getBaseURL().'/settings/connectors">'.L10n::t("return to the connector page").'</a>';
 	} else {
-		logger("pumpio_connect: could not connect");
+		Text::logger("pumpio_connect: could not connect");
 		$o = 'Could not connect to pumpio. Refresh the page or try again later.';
 	}
 
@@ -409,7 +410,7 @@ function pumpio_send(App $a, array &$b)
 		return;
 	}
 
-	logger("pumpio_send: parameter ".print_r($b, true), LOGGER_DATA);
+	Text::logger("pumpio_send: parameter ".print_r($b, true), LOGGER_DATA);
 
 	if ($b['parent'] != $b['id']) {
 		// Looking if its a reply to a pumpio post
@@ -417,7 +418,7 @@ function pumpio_send(App $a, array &$b)
 		$orig_post = Item::selectFirst([], $condition);
 
 		if (!DBA::isResult($orig_post)) {
-			logger("pumpio_send: no pumpio post ".$b["parent"]);
+			Text::logger("pumpio_send: no pumpio post ".$b["parent"]);
 			return;
 		} else {
 			$iscomment = true;
@@ -427,7 +428,7 @@ function pumpio_send(App $a, array &$b)
 
 		$receiver = pumpio_getreceiver($a, $b);
 
-		logger("pumpio_send: receiver ".print_r($receiver, true));
+		Text::logger("pumpio_send: receiver ".print_r($receiver, true));
 
 		if (!count($receiver) && ($b['private'] || !strstr($b['postopts'], 'pumpio'))) {
 			return;
@@ -559,13 +560,13 @@ function pumpio_send(App $a, array &$b)
 			}
 
 			$post_id = $user->object->id;
-			logger('pumpio_send '.$username.': success '.$post_id);
+			Text::logger('pumpio_send '.$username.': success '.$post_id);
 			if ($post_id && $iscomment) {
-				logger('pumpio_send '.$username.': Update extid '.$post_id." for post id ".$b['id']);
+				Text::logger('pumpio_send '.$username.': Update extid '.$post_id." for post id ".$b['id']);
 				Item::update(['extid' => $post_id], ['id' => $b['id']]);
 			}
 		} else {
-			logger('pumpio_send '.$username.': '.$url.' general error: ' . print_r($user, true));
+			Text::logger('pumpio_send '.$username.': '.$url.' general error: ' . print_r($user, true));
 
 			$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $b['uid']);
 			if (DBA::isResult($r)) {
@@ -640,9 +641,9 @@ function pumpio_action(App $a, $uid, $uri, $action, $content = "")
 	}
 
 	if ($success) {
-		logger('pumpio_action '.$username.' '.$action.': success '.$uri);
+		Text::logger('pumpio_action '.$username.' '.$action.': success '.$uri);
 	} else {
-		logger('pumpio_action '.$username.' '.$action.': general error: '.$uri.' '.print_r($user, true));
+		Text::logger('pumpio_action '.$username.' '.$action.': general error: '.$uri.' '.print_r($user, true));
 
 		$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $uid);
 		if (DBA::isResult($r)) {
@@ -671,16 +672,16 @@ function pumpio_sync(App $a)
 	if ($last) {
 		$next = $last + ($poll_interval * 60);
 		if ($next > time()) {
-			logger('pumpio: poll intervall not reached');
+			Text::logger('pumpio: poll intervall not reached');
 			return;
 		}
 	}
-	logger('pumpio: cron_start');
+	Text::logger('pumpio: cron_start');
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'pumpio' AND `k` = 'mirror' AND `v` = '1' ORDER BY RAND() ");
 	if (DBA::isResult($r)) {
 		foreach ($r as $rr) {
-			logger('pumpio: mirroring user '.$rr['uid']);
+			Text::logger('pumpio: mirroring user '.$rr['uid']);
 			pumpio_fetchtimeline($a, $rr['uid']);
 		}
 	}
@@ -698,12 +699,12 @@ function pumpio_sync(App $a)
 			if ($abandon_days != 0) {
 				$user = q("SELECT `login_date` FROM `user` WHERE uid=%d AND `login_date` >= '%s'", $rr['uid'], $abandon_limit);
 				if (!DBA::isResult($user)) {
-					logger('abandoned account: timeline from user '.$rr['uid'].' will not be imported');
+					Text::logger('abandoned account: timeline from user '.$rr['uid'].' will not be imported');
 					continue;
 				}
 			}
 
-			logger('pumpio: importing timeline from user '.$rr['uid']);
+			Text::logger('pumpio: importing timeline from user '.$rr['uid']);
 			pumpio_fetchinbox($a, $rr['uid']);
 
 			// check for new contacts once a day
@@ -721,7 +722,7 @@ function pumpio_sync(App $a)
 		}
 	}
 
-	logger('pumpio: cron_end');
+	Text::logger('pumpio: cron_end');
 
 	Config::set('pumpio', 'last_poll', time());
 }
@@ -766,7 +767,7 @@ function pumpio_fetchtimeline(App $a, $uid)
 
 	$url = 'https://'.$hostname.'/api/user/'.$username.'/feed/major';
 
-	logger('pumpio: fetching for user '.$uid.' '.$url.' C:'.$client->client_id.' CS:'.$client->client_secret.' T:'.$client->access_token.' TS:'.$client->access_token_secret);
+	Text::logger('pumpio: fetching for user '.$uid.' '.$url.' C:'.$client->client_id.' CS:'.$client->client_secret.' T:'.$client->access_token.' TS:'.$client->access_token_secret);
 
 	$useraddr = $username.'@'.$hostname;
 
@@ -778,7 +779,7 @@ function pumpio_fetchtimeline(App $a, $uid)
 	}
 
 	if (!$success) {
-		logger('pumpio: error fetching posts for user '.$uid." ".$useraddr." ".print_r($user, true));
+		Text::logger('pumpio: error fetching posts for user '.$uid." ".$useraddr." ".print_r($user, true));
 		return;
 	}
 
@@ -847,12 +848,12 @@ function pumpio_fetchtimeline(App $a, $uid)
 					}
 				}
 
-				logger('pumpio: posting for user '.$uid);
+				Text::logger('pumpio: posting for user '.$uid);
 
 				require_once('mod/item.php');
 
 				item_post($a);
-				logger('pumpio: posting done - user '.$uid);
+				Text::logger('pumpio: posting done - user '.$uid);
 			}
 		}
 	}
@@ -876,11 +877,11 @@ function pumpio_dounlike(App $a, $uid, $self, $post, $own_id)
 
 	$contactid = 0;
 
-	if (link_compare($post->actor->url, $own_id)) {
+	if (Text::linkCompare($post->actor->url, $own_id)) {
 		$contactid = $self[0]['id'];
 	} else {
 		$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
-			DBA::escape(normalise_link($post->actor->url)),
+			DBA::escape(Text::normaliseLink($post->actor->url)),
 			intval($uid)
 		);
 
@@ -896,9 +897,9 @@ function pumpio_dounlike(App $a, $uid, $self, $post, $own_id)
 	Item::delete(['verb' => ACTIVITY_LIKE, 'uid' => $uid, 'contact-id' => $contactid, 'thr-parent' => $orig_post['uri']]);
 
 	if (DBA::isResult($r)) {
-		logger("pumpio_dounlike: unliked existing like. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
+		Text::logger("pumpio_dounlike: unliked existing like. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
 	} else {
-		logger("pumpio_dounlike: not found. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
+		Text::logger("pumpio_dounlike: not found. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
 	}
 }
 
@@ -907,7 +908,7 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 	require_once('include/items.php');
 
 	if (empty($post->object->id)) {
-		logger('Got empty like: '.print_r($post, true), LOGGER_DEBUG);
+		Text::logger('Got empty like: '.print_r($post, true), LOGGER_DEBUG);
 		return;
 	}
 
@@ -928,14 +929,14 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 
 	$contactid = 0;
 
-	if (link_compare($post->actor->url, $own_id)) {
+	if (Text::linkCompare($post->actor->url, $own_id)) {
 		$contactid = $self[0]['id'];
 		$post->actor->displayName = $self[0]['name'];
 		$post->actor->url = $self[0]['url'];
 		$post->actor->image->url = $self[0]['photo'];
 	} else {
 		$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
-			DBA::escape(normalise_link($post->actor->url)),
+			DBA::escape(Text::normaliseLink($post->actor->url)),
 			intval($uid)
 		);
 
@@ -950,7 +951,7 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 
 	$condition = ['verb' => ACTIVITY_LIKE, 'uid' => $uid, 'contact-id' => $contactid, 'thr-parent' => $orig_post['uri']];
 	if (Item::exists($condition)) {
-		logger("pumpio_dolike: found existing like. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
+		Text::logger("pumpio_dolike: found existing like. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
 		return;
 	}
 
@@ -980,11 +981,11 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 	$likedata['body'] = L10n::t('%1$s likes %2$s\'s %3$s', $author, $objauthor, $plink);
 
 	$likedata['object'] = '<object><type>' . ACTIVITY_OBJ_NOTE . '</type><local>1</local>' .
-		'<id>' . $orig_post['uri'] . '</id><link>' . xmlify('<link rel="alternate" type="text/html" href="' . xmlify($orig_post['plink']) . '" />') . '</link><title>' . $orig_post['title'] . '</title><content>' . $orig_post['body'] . '</content></object>';
+		'<id>' . $orig_post['uri'] . '</id><link>' . Text::xmlify('<link rel="alternate" type="text/html" href="' . Text::xmlify($orig_post['plink']) . '" />') . '</link><title>' . $orig_post['title'] . '</title><content>' . $orig_post['body'] . '</content></object>';
 
 	$ret = Item::insert($likedata);
 
-	logger("pumpio_dolike: ".$ret." User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
+	Text::logger("pumpio_dolike: ".$ret." User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
 }
 
 function pumpio_get_contact($uid, $contact, $no_insert = false)
@@ -1014,7 +1015,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false)
 	}
 
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `nurl` = '%s' LIMIT 1",
-		intval($uid), DBA::escape(normalise_link($contact->url)));
+		intval($uid), DBA::escape(Text::normaliseLink($contact->url)));
 
 	if (!DBA::isResult($r)) {
 		// create contact record
@@ -1025,7 +1026,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false)
 			intval($uid),
 			DBA::escape(DateTimeFormat::utcNow()),
 			DBA::escape($contact->url),
-			DBA::escape(normalise_link($contact->url)),
+			DBA::escape(Text::normaliseLink($contact->url)),
 			DBA::escape(str_replace("acct:", "", $contact->id)),
 			DBA::escape(''),
 			DBA::escape($contact->id), // What is it for?
@@ -1042,7 +1043,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false)
 		);
 
 		$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d LIMIT 1",
-			DBA::escape(normalise_link($contact->url)),
+			DBA::escape(Text::normaliseLink($contact->url)),
 			intval($uid)
 			);
 
@@ -1162,7 +1163,7 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 	} else {
 		$contact_id = pumpio_get_contact($uid, $post->actor, true);
 
-		if (link_compare($post->actor->url, $own_id)) {
+		if (Text::linkCompare($post->actor->url, $own_id)) {
 			$contact_id = $self[0]['id'];
 			$post->actor->displayName = $self[0]['name'];
 			$post->actor->url = $self[0]['url'];
@@ -1170,7 +1171,7 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 		} elseif ($contact_id == 0) {
 			// Take an existing contact, the contact of the note or - as a fallback - the id of the user
 			$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
-				DBA::escape(normalise_link($post->actor->url)),
+				DBA::escape(Text::normaliseLink($post->actor->url)),
 				intval($uid)
 			);
 
@@ -1178,7 +1179,7 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 				$contact_id = $r[0]['id'];
 			} else {
 				$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
-					DBA::escape(normalise_link($post->actor->url)),
+					DBA::escape(Text::normaliseLink($post->actor->url)),
 					intval($uid)
 				);
 
@@ -1432,7 +1433,7 @@ function pumpio_queue_hook(App $a, array &$b)
 			continue;
 		}
 
-		logger('pumpio_queue: run');
+		Text::logger('pumpio_queue: run');
 
 		$r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` ON `contact`.`uid` = `user`.`uid`
 			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
@@ -1444,7 +1445,7 @@ function pumpio_queue_hook(App $a, array &$b)
 
 		$userdata = $r[0];
 
-		//logger('pumpio_queue: fetching userdata '.print_r($userdata, true));
+		//Text::logger('pumpio_queue: fetching userdata '.print_r($userdata, true));
 
 		$oauth_token        = PConfig::get($userdata['uid'], "pumpio", "oauth_token");
 		$oauth_token_secret = PConfig::get($userdata['uid'], "pumpio", "oauth_token_secret");
@@ -1460,7 +1461,7 @@ function pumpio_queue_hook(App $a, array &$b)
 			$consumer_key && $consumer_secret) {
 			$username = $user.'@'.$host;
 
-			logger('pumpio_queue: able to post for user '.$username);
+			Text::logger('pumpio_queue: able to post for user '.$username);
 
 			$z = unserialize($x['content']);
 
@@ -1481,21 +1482,21 @@ function pumpio_queue_hook(App $a, array &$b)
 
 			if ($success) {
 				$post_id = $user->object->id;
-				logger('pumpio_queue: send '.$username.': success '.$post_id);
+				Text::logger('pumpio_queue: send '.$username.': success '.$post_id);
 				if ($post_id && $iscomment) {
-					logger('pumpio_send '.$username.': Update extid '.$post_id." for post id ".$z['item']);
+					Text::logger('pumpio_send '.$username.': Update extid '.$post_id." for post id ".$z['item']);
 					Item::update(['extid' => $post_id], ['id' => $z['item']]);
 				}
 				Queue::removeItem($x['id']);
 			} else {
-				logger('pumpio_queue: send '.$username.': '.$z['url'].' general error: ' . print_r($user, true));
+				Text::logger('pumpio_queue: send '.$username.': '.$z['url'].' general error: ' . print_r($user, true));
 			}
 		} else {
-			logger("pumpio_queue: Error getting tokens for user ".$userdata['uid']);
+			Text::logger("pumpio_queue: Error getting tokens for user ".$userdata['uid']);
 		}
 
 		if (!$success) {
-			logger('pumpio_queue: delayed');
+			Text::logger('pumpio_queue: delayed');
 			Queue::updateTime($x['id']);
 		}
 	}
@@ -1595,7 +1596,7 @@ function pumpio_fetchallcomments(App $a, $uid, $id)
 	$hostname = PConfig::get($uid, 'pumpio', 'host');
 	$username = PConfig::get($uid, "pumpio", "user");
 
-	logger("pumpio_fetchallcomments: completing comment for user ".$uid." post id ".$id);
+	Text::logger("pumpio_fetchallcomments: completing comment for user ".$uid." post id ".$id);
 
 	$own_id = "https://".$hostname."/".$username;
 
@@ -1621,7 +1622,7 @@ function pumpio_fetchallcomments(App $a, $uid, $id)
 	$client->access_token = $otoken;
 	$client->access_token_secret = $osecret;
 
-	logger("pumpio_fetchallcomments: fetching comment for user ".$uid." url ".$url);
+	Text::logger("pumpio_fetchallcomments: fetching comment for user ".$uid." url ".$url);
 
 	if (pumpio_reachable($url)) {
 		$success = $client->CallAPI($url, 'GET', [], ['FailOnAccessError'=>true], $item);
@@ -1684,7 +1685,7 @@ function pumpio_fetchallcomments(App $a, $uid, $id)
 
 		$post->object = $item;
 
-		logger("pumpio_fetchallcomments: posting comment ".$post->object->id." ".print_r($post, true));
+		Text::logger("pumpio_fetchallcomments: posting comment ".$post->object->id." ".print_r($post, true));
 		pumpio_dopost($a, $client, $uid, $self, $post, $own_id, false);
 	}
 }

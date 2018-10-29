@@ -6,6 +6,7 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
 
+use Friendica\Content\Text;
 use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
 use Friendica\Core\Addon;
@@ -147,7 +148,7 @@ function wppost_settings_post(&$a,&$b) {
 		PConfig::set(local_user(),'wppost','wp_blog',trim($_POST['wp_blog']));
 		PConfig::set(local_user(),'wppost','backlink',trim($_POST['wp_backlink']));
 		PConfig::set(local_user(),'wppost','shortcheck',trim($_POST['wp_shortcheck']));
-		$wp_backlink_text = notags(trim($_POST['wp_backlink_text']));
+		$wp_backlink_text = Text::noTags(trim($_POST['wp_backlink_text']));
 		$wp_backlink_text = BBCode::convert($wp_backlink_text, false, 8);
 		$wp_backlink_text = HTML::toPlaintext($wp_backlink_text, 0, true);
 		PConfig::set(local_user(),'wppost','wp_backlink_text', $wp_backlink_text);
@@ -215,8 +216,8 @@ function wppost_send(&$a,&$b) {
 		return;
 	}
 
-	$wp_username = xmlify(PConfig::get($b['uid'],'wppost','wp_username'));
-	$wp_password = xmlify(PConfig::get($b['uid'],'wppost','wp_password'));
+	$wp_username = Text::xmlify(PConfig::get($b['uid'],'wppost','wp_username'));
+	$wp_password = Text::xmlify(PConfig::get($b['uid'],'wppost','wp_password'));
 	$wp_blog = PConfig::get($b['uid'],'wppost','wp_blog');
 	$wp_backlink_text = PConfig::get($b['uid'],'wppost','wp_backlink_text');
 	if ($wp_backlink_text == '') {
@@ -293,7 +294,7 @@ function wppost_send(&$a,&$b) {
 				. $wp_backlink_text . '</a>' . EOL . EOL;
 		}
 
-		$post = xmlify($post);
+		$post = Text::xmlify($post);
 
 
 		$xml = <<< EOT
@@ -312,11 +313,11 @@ function wppost_send(&$a,&$b) {
 
 EOT;
 
-		logger('wppost: data: ' . $xml, LOGGER_DATA);
+		Text::logger('wppost: data: ' . $xml, LOGGER_DATA);
 
 		if ($wp_blog !== 'test') {
 			$x = Network::post($wp_blog, $xml)->getBody();
 		}
-		logger('posted to wordpress: ' . (($x) ? $x : ''), LOGGER_DEBUG);
+		Text::logger('posted to wordpress: ' . (($x) ? $x : ''), LOGGER_DEBUG);
 	}
 }

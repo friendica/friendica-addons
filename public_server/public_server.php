@@ -8,6 +8,7 @@
 
 use Friendica\App;
 use Friendica\BaseModule;
+use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -53,7 +54,7 @@ function public_server_register_account($a, $b)
 
 function public_server_cron($a, $b)
 {
-	logger("public_server: cron start");
+	Text::logger("public_server: cron start");
 
 	require_once('include/enotify.php');
 	$r = q("SELECT * FROM `user` WHERE `account_expires_on` < UTC_TIMESTAMP() + INTERVAL 5 DAY AND
@@ -116,7 +117,7 @@ function public_server_cron($a, $b)
 		}
 	}
 
-	logger("public_server: cron end");
+	Text::logger("public_server: cron end");
 }
 
 function public_server_enotify(&$a, &$b)
@@ -145,12 +146,12 @@ function public_server_login($a, $b)
 function public_server_addon_admin_post(&$a)
 {
 	BaseModule::checkFormSecurityTokenRedirectOnError('/admin/addons/publicserver', 'publicserver');
-	$expiredays = (x($_POST, 'expiredays') ? notags(trim($_POST['expiredays'])) : '');
-	$expireposts = (x($_POST, 'expireposts') ? notags(trim($_POST['expireposts'])) : '');
-	$nologin = (x($_POST, 'nologin') ? notags(trim($_POST['nologin'])) : '');
-	$flagusers = (x($_POST, 'flagusers') ? notags(trim($_POST['flagusers'])) : '');
-	$flagposts = (x($_POST, 'flagposts') ? notags(trim($_POST['flagposts'])) : '');
-	$flagpostsexpire = (x($_POST, 'flagpostsexpire') ? notags(trim($_POST['flagpostsexpire'])) : '');
+	$expiredays = (x($_POST, 'expiredays') ? Text::noTags(trim($_POST['expiredays'])) : '');
+	$expireposts = (x($_POST, 'expireposts') ? Text::noTags(trim($_POST['expireposts'])) : '');
+	$nologin = (x($_POST, 'nologin') ? Text::noTags(trim($_POST['nologin'])) : '');
+	$flagusers = (x($_POST, 'flagusers') ? Text::noTags(trim($_POST['flagusers'])) : '');
+	$flagposts = (x($_POST, 'flagposts') ? Text::noTags(trim($_POST['flagposts'])) : '');
+	$flagpostsexpire = (x($_POST, 'flagpostsexpire') ? Text::noTags(trim($_POST['flagpostsexpire'])) : '');
 	Config::set('public_server', 'expiredays', $expiredays);
 	Config::set('public_server', 'expireposts', $expireposts);
 	Config::set('public_server', 'nologin', $nologin);
@@ -163,8 +164,8 @@ function public_server_addon_admin_post(&$a)
 function public_server_addon_admin(&$a, &$o)
 {
 	$token = BaseModule::getFormSecurityToken("publicserver");
-	$t = get_markup_template("admin.tpl", "addon/public_server");
-	$o = replace_macros($t, [
+	$t = Text::getMarkupTemplate("admin.tpl", "addon/public_server");
+	$o = Text::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$form_security_token' => $token,
 		'$infotext' => L10n::t('Set any of these options to 0 to deactivate it.'),

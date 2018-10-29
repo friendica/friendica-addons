@@ -7,6 +7,7 @@
  * License: 3-clause BSD license
  */
 
+use Friendica\Content\Text;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -17,14 +18,14 @@ function impressum_install() {
 	Addon::registerHook('load_config', 'addon/impressum/impressum.php', 'impressum_load_config');
     Addon::registerHook('about_hook', 'addon/impressum/impressum.php', 'impressum_show');
     Addon::registerHook('page_end', 'addon/impressum/impressum.php', 'impressum_footer');
-    logger("installed impressum Addon");
+    Text::logger("installed impressum Addon");
 }
 
 function impressum_uninstall() {
 	Addon::unregisterHook('load_config', 'addon/impressum/impressum.php', 'impressum_load_config');
     Addon::unregisterHook('about_hook', 'addon/impressum/impressum.php', 'impressum_show');
     Addon::unregisterHook('page_end', 'addon/impressum/impressum.php', 'impressum_footer');
-    logger("uninstalled impressum Addon");
+    Text::logger("uninstalled impressum Addon");
 }
 
 function impressum_module() {
@@ -84,11 +85,11 @@ function impressum_show($a,&$b) {
 }
 
 function impressum_addon_admin_post (&$a) {
-    $owner = ((x($_POST, 'owner')) ? notags(trim($_POST['owner'])) : '');
-    $ownerprofile = ((x($_POST, 'ownerprofile')) ? notags(trim($_POST['ownerprofile'])) : '');
+    $owner = ((x($_POST, 'owner')) ? Text::noTags(trim($_POST['owner'])) : '');
+    $ownerprofile = ((x($_POST, 'ownerprofile')) ? Text::noTags(trim($_POST['ownerprofile'])) : '');
     $postal = ((x($_POST, 'postal')) ? (trim($_POST['postal'])) : '');
     $notes = ((x($_POST, 'notes')) ? (trim($_POST['notes'])) : '');
-    $email = ((x($_POST, 'email')) ? notags(trim($_POST['email'])) : '');
+    $email = ((x($_POST, 'email')) ? Text::noTags(trim($_POST['email'])) : '');
     $footer_text = ((x($_POST, 'footer_text')) ? (trim($_POST['footer_text'])) : '');
     Config::set('impressum','owner',strip_tags($owner));
     Config::set('impressum','ownerprofile',strip_tags($ownerprofile));
@@ -99,8 +100,8 @@ function impressum_addon_admin_post (&$a) {
     info(L10n::t('Settings updated.'). EOL );
 }
 function impressum_addon_admin (&$a, &$o) {
-    $t = get_markup_template( "admin.tpl", "addon/impressum/" );
-    $o = replace_macros($t, [
+    $t = Text::getMarkupTemplate( "admin.tpl", "addon/impressum/" );
+    $o = Text::replaceMacros($t, [
         '$submit' => L10n::t('Save Settings'),
         '$owner' => ['owner', L10n::t('Site Owner'), Config::get('impressum','owner'), L10n::t('The page operators name.')],
         '$ownerprofile' => ['ownerprofile', L10n::t('Site Owners Profile'), Config::get('impressum','ownerprofile'), L10n::t('Profile address of the operator.')],

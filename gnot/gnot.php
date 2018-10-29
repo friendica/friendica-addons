@@ -7,6 +7,7 @@
  * 
  *
  */
+use Friendica\Content\Text;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
@@ -17,7 +18,7 @@ function gnot_install() {
 	Addon::registerHook('addon_settings_post', 'addon/gnot/gnot.php', 'gnot_settings_post');
 	Addon::registerHook('enotify_mail', 'addon/gnot/gnot.php', 'gnot_enotify_mail');
 
-	logger("installed gnot");
+	Text::logger("installed gnot");
 }
 
 
@@ -28,7 +29,7 @@ function gnot_uninstall() {
 	Addon::unregisterHook('enotify_mail', 'addon/gnot/gnot.php', 'gnot_enotify_mail');
 
 
-	logger("removed gnot");
+	Text::logger("removed gnot");
 }
 
 

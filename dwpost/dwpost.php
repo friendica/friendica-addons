@@ -9,6 +9,7 @@
  */
 
 use Friendica\App;
+use Friendica\Content\Text;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
@@ -188,7 +189,7 @@ function dwpost_send(App $a, array &$b)
 	if ($dw_username && $dw_password && $dw_blog) {
 		$title = $b['title'];
 		$post = BBCode::convert($b['body']);
-		$post = xmlify($post);
+		$post = Text::xmlify($post);
 		$tags = dwpost_get_tags($b['tag']);
 
 		$date = DateTimeFormat::convert($b['created'], $tz);
@@ -225,13 +226,13 @@ function dwpost_send(App $a, array &$b)
 
 EOT;
 
-		logger('dwpost: data: ' . $xml, LOGGER_DATA);
+		Text::logger('dwpost: data: ' . $xml, LOGGER_DATA);
 
 		if ($dw_blog !== 'test') {
 			$x = Network::post($dw_blog, $xml, ["Content-Type: text/xml"])->getBody();
 		}
 
-		logger('posted to dreamwidth: ' . ($x) ? $x : '', LOGGER_DEBUG);
+		Text::logger('posted to dreamwidth: ' . ($x) ? $x : '', LOGGER_DEBUG);
 	}
 }
 
