@@ -8,7 +8,6 @@
  */
 require_once 'mod/item.php';
 require_once 'include/items.php';
-require_once 'include/text.php';
 
 use Friendica\App;
 use Friendica\Content\Text;

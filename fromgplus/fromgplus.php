@@ -22,7 +22,6 @@ use Friendica\Model\Item;
 
 require_once 'mod/share.php';
 require_once 'mod/parse_url.php';
-require_once 'include/text.php';
 
 function fromgplus_install() {
 	Addon::registerHook('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');

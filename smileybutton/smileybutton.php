@@ -37,7 +37,7 @@ function show_button(Friendica\App $a, &$b) {
 
 	/**
 	 *
- 	 * I have copied this from /include/text.php, removed doubles
+ 	 * I have copied this from src/Content/Text.php, removed doubles
 	 * and escaped them.
 	 *
 	 */

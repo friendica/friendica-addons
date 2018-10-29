@@ -21,7 +21,6 @@ use Friendica\Util\Temporal;
 
 require_once 'boot.php';
 require_once 'include/dba.php';
-require_once 'include/text.php';
 
 function forumdirectory_install()
 {

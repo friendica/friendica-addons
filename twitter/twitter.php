@@ -89,7 +89,6 @@ use Friendica\Util\Network;
 require_once 'boot.php';
 require_once 'include/dba.php';
 require_once 'include/enotify.php';
-require_once 'include/text.php';
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
