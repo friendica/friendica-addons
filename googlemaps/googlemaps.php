@@ -8,7 +8,7 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\Cache;
-use Friendica\Core\Logger
+use Friendica\Core\Logger;
 
 function googlemaps_install()
 {
