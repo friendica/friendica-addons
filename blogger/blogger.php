@@ -10,6 +10,7 @@ use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Util\Network;
 
@@ -202,12 +203,12 @@ function blogger_send(App $a, array &$b)
 
 EOT;
 
-		logger('blogger: data: ' . $xml, LOGGER_DATA);
+		Logger::log('blogger: data: ' . $xml, Logger::DATA);
 
 		if ($bl_blog !== 'test') {
 			$x = Network::post($bl_blog, $xml)->getBody();
 		}
 
-		logger('posted to blogger: ' . (($x) ? $x : ''), LOGGER_DEBUG);
+		Logger::log('posted to blogger: ' . (($x) ? $x : ''), Logger::DEBUG);
 	}
 }

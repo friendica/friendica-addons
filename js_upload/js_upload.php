@@ -17,6 +17,7 @@
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 
 function js_upload_install() {
 	Addon::registerHook('photo_upload_form', 'addon/js_upload/js_upload.php', 'js_upload_form');
@@ -159,7 +160,7 @@ function js_upload_post_init(&$a,&$b) {
 	$a->data['upload_jsonresponse'] =  htmlspecialchars(json_encode($result), ENT_NOQUOTES);
 
 	if(isset($result['error'])) {
-		logger('mod/photos.php: photos_post(): error uploading photo: ' . $result['error'] , 'LOGGER_DEBUG');
+		Logger::log('mod/photos.php: photos_post(): error uploading photo: ' . $result['error'] , Logger::DEBUG);
 		echo json_encode($result);
 		killme();
 	}
@@ -181,7 +182,7 @@ function js_upload_post_file(&$a,&$b) {
 
 function js_upload_post_end(&$a,&$b) {
 
-logger('upload_post_end');
+Logger::log('upload_post_end');
 	if(x($a->data,'upload_jsonresponse')) {
 		echo $a->data['upload_jsonresponse'];
 		killme();

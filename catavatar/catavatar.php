@@ -10,6 +10,7 @@ use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
@@ -28,7 +29,7 @@ function catavatar_install()
 	Addon::registerHook('addon_settings', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings');
 	Addon::registerHook('addon_settings_post', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings_post');
 
-	logger('registered catavatar');
+	Logger::log('registered catavatar');
 }
 
 /**
@@ -40,7 +41,7 @@ function catavatar_uninstall()
 	Addon::unregisterHook('addon_settings', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings');
 	Addon::unregisterHook('addon_settings_post', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings_post');
 
-	logger('unregistered catavatar');
+	Logger::log('unregistered catavatar');
 }
 
 /**

@@ -14,6 +14,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
 
@@ -458,11 +459,11 @@ function tumblr_send(App $a, array &$b) {
 
 		//print_r($params);
 		if ($ret_code == 201) {
-			logger('tumblr_send: success');
+			Logger::log('tumblr_send: success');
 		} elseif ($ret_code == 403) {
-			logger('tumblr_send: authentication failure');
+			Logger::log('tumblr_send: authentication failure');
 		} else {
-			logger('tumblr_send: general error: ' . print_r($x,true));
+			Logger::log('tumblr_send: general error: ' . print_r($x,true));
 		}
 	}
 }

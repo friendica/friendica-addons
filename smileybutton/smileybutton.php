@@ -6,12 +6,13 @@
  * Author: Johannes Schwab <https://friendica.jschwab.org/profile/ddorian>
  */
 use Friendica\Core\Addon;
+use Friendica\Core\Logger;
 
 function smileybutton_install() {
 	//Register hooks
 	Addon::registerHook('jot_tool', 'addon/smileybutton/smileybutton.php', 'show_button');
 
-	logger("installed smileybutton");
+	Logger::log("installed smileybutton");
 }
 
 
@@ -19,7 +20,7 @@ function smileybutton_uninstall() {
 	//Delet registered hooks
 	Addon::unregisterHook('jot_tool',    'addon/smileybutton/smileybutton.php', 'show_button');
 
-	logger("removed smileybutton");
+	Logger::log("removed smileybutton");
 }
 
 

@@ -8,19 +8,20 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\Cache;
+use Friendica\Core\Logger
 
 function googlemaps_install()
 {
 	Addon::registerHook('render_location', 'addon/googlemaps/googlemaps.php', 'googlemaps_location');
 
-	logger("installed googlemaps");
+	Logger::log("installed googlemaps");
 }
 
 function googlemaps_uninstall()
 {
 	Addon::unregisterHook('render_location', 'addon/googlemaps/googlemaps.php', 'googlemaps_location');
 
-	logger("removed googlemaps");
+	Logger::log("removed googlemaps");
 }
 
 function googlemaps_location($a, &$item)

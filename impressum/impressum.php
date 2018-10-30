@@ -11,20 +11,21 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Util\Proxy as ProxyUtils;
 
 function impressum_install() {
 	Addon::registerHook('load_config', 'addon/impressum/impressum.php', 'impressum_load_config');
     Addon::registerHook('about_hook', 'addon/impressum/impressum.php', 'impressum_show');
     Addon::registerHook('page_end', 'addon/impressum/impressum.php', 'impressum_footer');
-    logger("installed impressum Addon");
+    Logger::log("installed impressum Addon");
 }
 
 function impressum_uninstall() {
 	Addon::unregisterHook('load_config', 'addon/impressum/impressum.php', 'impressum_load_config');
     Addon::unregisterHook('about_hook', 'addon/impressum/impressum.php', 'impressum_show');
     Addon::unregisterHook('page_end', 'addon/impressum/impressum.php', 'impressum_footer');
-    logger("uninstalled impressum Addon");
+    Logger::log("uninstalled impressum Addon");
 }
 
 function impressum_module() {

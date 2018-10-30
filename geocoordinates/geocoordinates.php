@@ -9,6 +9,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Util\Network;
 
 function geocoordinates_install()
@@ -54,25 +55,25 @@ function geocoordinates_resolve_item(&$item)
 	$s = Network::fetchUrl("https://api.opencagedata.com/geocode/v1/json?q=".$coords[0].",".$coords[1]."&key=".$key."&language=".$language);
 
 	if (!$s) {
-		logger("API could not be queried", LOGGER_DEBUG);
+		Logger::log("API could not be queried", Logger::DEBUG);
 		return;
 	}
 
 	$data = json_decode($s);
 
 	if ($data->status->code != "200") {
-		logger("API returned error ".$data->status->code." ".$data->status->message, LOGGER_DEBUG);
+		Logger::log("API returned error ".$data->status->code." ".$data->status->message, Logger::DEBUG);
 		return;
 	}
 
 	if (($data->total_results == 0) || (count($data->results) == 0)) {
-		logger("No results found for coordinates ".$item["coord"], LOGGER_DEBUG);
+		Logger::log("No results found for coordinates ".$item["coord"], Logger::DEBUG);
 		return;
 	}
 
 	$item["location"] = $data->results[0]->formatted;
 
-	logger("Got location for coordinates ".$coords[0]."-".$coords[1].": ".$item["location"], LOGGER_DEBUG);
+	Logger::log("Got location for coordinates ".$coords[0]."-".$coords[1].": ".$item["location"], Logger::DEBUG);
 
 	if ($item["location"] != "")
 		Cache::set("geocoordinates:".$language.":".$coords[0]."-".$coords[1], $item["location"]);

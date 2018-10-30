@@ -52,6 +52,7 @@
 use Friendica\Core\Config;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 
 function blackout_install() {
     Addon::registerHook('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');
@@ -84,7 +85,7 @@ function blackout_redirect ($a, $b) {
            $date2 = 0;
     }
     if (( $date1 <= $now ) && ( $now <= $date2 )) {
-        logger('redirecting user to blackout page');
+        Logger::log('redirecting user to blackout page');
         System::externalRedirect($myurl);
     }
 }

@@ -33,19 +33,20 @@
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 
 function piwik_install() {
 	Addon::registerHook('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
 	Addon::registerHook('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
-	logger("installed piwik addon");
+	Logger::log("installed piwik addon");
 }
 
 function piwik_uninstall() {
 	Addon::unregisterHook('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
 	Addon::unregisterHook('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
-	logger("uninstalled piwik addon");
+	Logger::log("uninstalled piwik addon");
 }
 
 function piwik_load_config(\Friendica\App $a)
