@@ -232,12 +232,12 @@ function ljpost_send(&$a,&$b) {
 
 EOT;
 
-		Logger::log('ljpost: data: ' . $xml, LOGGER_DATA);
+		Logger::log('ljpost: data: ' . $xml, Logger::DATA);
 
 		if ($lj_blog !== 'test') {
 			$x = Network::post($lj_blog, $xml, ["Content-Type: text/xml"])->getBody();
 		}
-		Logger::log('posted to livejournal: ' . ($x) ? $x : '', LOGGER_DEBUG);
+		Logger::log('posted to livejournal: ' . ($x) ? $x : '', Logger::DEBUG);
 	}
 }
 

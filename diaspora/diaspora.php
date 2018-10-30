@@ -99,27 +99,27 @@ function diaspora_queue_hook(App $a, &$b) {
 
 			$post = $z['post'];
 
-			Logger::log('diaspora_queue: post: '.$post, LOGGER_DATA);
+			Logger::log('diaspora_queue: post: '.$post, Logger::DATA);
 
 			try {
-				Logger::log('diaspora_queue: prepare', LOGGER_DEBUG);
+				Logger::log('diaspora_queue: prepare', Logger::DEBUG);
 				$conn = new Diaspora_Connection($handle, $password);
-				Logger::log('diaspora_queue: try to log in '.$handle, LOGGER_DEBUG);
+				Logger::log('diaspora_queue: try to log in '.$handle, Logger::DEBUG);
 				$conn->logIn();
-				Logger::log('diaspora_queue: try to send '.$body, LOGGER_DEBUG);
+				Logger::log('diaspora_queue: try to send '.$body, Logger::DEBUG);
 				$conn->provider = $hostname;
 				$conn->postStatusMessage($post, $aspect);
 
-				Logger::log('diaspora_queue: send '.$userdata['uid'].' success', LOGGER_DEBUG);
+				Logger::log('diaspora_queue: send '.$userdata['uid'].' success', Logger::DEBUG);
 
 				$success = true;
 
 				Queue::removeItem($x['id']);
 			} catch (Exception $e) {
-				Logger::log("diaspora_queue: Send ".$userdata['uid']." failed: ".$e->getMessage(), LOGGER_DEBUG);
+				Logger::log("diaspora_queue: Send ".$userdata['uid']." failed: ".$e->getMessage(), Logger::DEBUG);
 			}
 		} else {
-			Logger::log('diaspora_queue: send '.$userdata['uid'].' missing username or password', LOGGER_DEBUG);
+			Logger::log('diaspora_queue: send '.$userdata['uid'].' missing username or password', Logger::DEBUG);
 		}
 
 		if (!$success) {
@@ -312,14 +312,14 @@ function diaspora_send(App $a, array &$b)
 		return;
 	}
 
-	Logger::log('diaspora_send: prepare posting', LOGGER_DEBUG);
+	Logger::log('diaspora_send: prepare posting', Logger::DEBUG);
 
 	$handle = PConfig::get($b['uid'],'diaspora','handle');
 	$password = PConfig::get($b['uid'],'diaspora','password');
 	$aspect = PConfig::get($b['uid'],'diaspora','aspect');
 
 	if ($handle && $password) {
-		Logger::log('diaspora_send: all values seem to be okay', LOGGER_DEBUG);
+		Logger::log('diaspora_send: all values seem to be okay', Logger::DEBUG);
 
 		$tag_arr = [];
 		$tags = '';
@@ -364,11 +364,11 @@ function diaspora_send(App $a, array &$b)
 		require_once "addon/diaspora/diasphp.php";
 
 		try {
-			Logger::log('diaspora_send: prepare', LOGGER_DEBUG);
+			Logger::log('diaspora_send: prepare', Logger::DEBUG);
 			$conn = new Diaspora_Connection($handle, $password);
-			Logger::log('diaspora_send: try to log in '.$handle, LOGGER_DEBUG);
+			Logger::log('diaspora_send: try to log in '.$handle, Logger::DEBUG);
 			$conn->logIn();
-			Logger::log('diaspora_send: try to send '.$body, LOGGER_DEBUG);
+			Logger::log('diaspora_send: try to send '.$body, Logger::DEBUG);
 
 			$conn->provider = $hostname;
 			$conn->postStatusMessage($body, $aspect);
@@ -377,7 +377,7 @@ function diaspora_send(App $a, array &$b)
 		} catch (Exception $e) {
 			Logger::log("diaspora_send: Error submitting the post: " . $e->getMessage());
 
-			Logger::log('diaspora_send: requeueing '.$b['uid'], LOGGER_DEBUG);
+			Logger::log('diaspora_send: requeueing '.$b['uid'], Logger::DEBUG);
 
 			$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $b['uid']);
 			if (count($r))

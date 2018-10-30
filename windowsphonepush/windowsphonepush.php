@@ -456,7 +456,7 @@ function windowsphonepush_updatecounterunseen()
 function windowsphonepush_login(App $a)
 {
 	if (!isset($_SERVER['PHP_AUTH_USER'])) {
-		Logger::log('API_login: ' . print_r($_SERVER, true), LOGGER_DEBUG);
+		Logger::log('API_login: ' . print_r($_SERVER, true), Logger::DEBUG);
 		header('WWW-Authenticate: Basic realm="Friendica"');
 		header('HTTP/1.0 401 Unauthorized');
 		die('This api requires login');
@@ -467,7 +467,7 @@ function windowsphonepush_login(App $a)
 	if ($user_id) {
 		$record = DBA::selectFirst('user', [], ['uid' => $user_id]);
 	} else {
-		Logger::log('API_login failure: ' . print_r($_SERVER, true), LOGGER_DEBUG);
+		Logger::log('API_login failure: ' . print_r($_SERVER, true), Logger::DEBUG);
 		header('WWW-Authenticate: Basic realm="Friendica"');
 		header('HTTP/1.0 401 Unauthorized');
 		die('This api requires login');

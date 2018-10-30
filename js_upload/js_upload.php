@@ -160,7 +160,7 @@ function js_upload_post_init(&$a,&$b) {
 	$a->data['upload_jsonresponse'] =  htmlspecialchars(json_encode($result), ENT_NOQUOTES);
 
 	if(isset($result['error'])) {
-		Logger::log('mod/photos.php: photos_post(): error uploading photo: ' . $result['error'] , 'LOGGER_DEBUG');
+		Logger::log('mod/photos.php: photos_post(): error uploading photo: ' . $result['error'] , Logger::DEBUG);
 		echo json_encode($result);
 		killme();
 	}

@@ -430,7 +430,7 @@ function statusnet_action(App $a, $uid, $pid, $action)
 
 	$connection = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
 
-	Logger::log("statusnet_action '" . $action . "' ID: " . $pid, LOGGER_DATA);
+	Logger::log("statusnet_action '" . $action . "' ID: " . $pid, Logger::DATA);
 
 	switch ($action) {
 		case "delete":
@@ -443,7 +443,7 @@ function statusnet_action(App $a, $uid, $pid, $action)
 			$result = $connection->post("favorites/destroy/" . $pid);
 			break;
 	}
-	Logger::log("statusnet_action '" . $action . "' send, result: " . print_r($result, true), LOGGER_DEBUG);
+	Logger::log("statusnet_action '" . $action . "' send, result: " . print_r($result, true), Logger::DEBUG);
 }
 
 function statusnet_post_hook(App $a, &$b)
@@ -460,7 +460,7 @@ function statusnet_post_hook(App $a, &$b)
 	$hostname = preg_replace("=https?://([\w\.]*)/.*=ism", "$1", $api);
 
 	if ($b['parent'] != $b['id']) {
-		Logger::log("statusnet_post_hook: parameter " . print_r($b, true), LOGGER_DATA);
+		Logger::log("statusnet_post_hook: parameter " . print_r($b, true), Logger::DATA);
 
 		// Looking if its a reply to a GNU Social post
 		$hostlength = strlen($hostname) + 2;
@@ -483,12 +483,12 @@ function statusnet_post_hook(App $a, &$b)
 		$nickname = "@[url=" . $orig_post["author-link"] . "]" . $nick . "[/url]";
 		$nicknameplain = "@" . $nick;
 
-		Logger::log("statusnet_post_hook: comparing " . $nickname . " and " . $nicknameplain . " with " . $b["body"], LOGGER_DEBUG);
+		Logger::log("statusnet_post_hook: comparing " . $nickname . " and " . $nicknameplain . " with " . $b["body"], Logger::DEBUG);
 		if ((strpos($b["body"], $nickname) === false) && (strpos($b["body"], $nicknameplain) === false)) {
 			$b["body"] = $nickname . " " . $b["body"];
 		}
 
-		Logger::log("statusnet_post_hook: parent found " . print_r($orig_post, true), LOGGER_DEBUG);
+		Logger::log("statusnet_post_hook: parent found " . print_r($orig_post, true), Logger::DEBUG);
 	} else {
 		$iscomment = false;
 
@@ -509,7 +509,7 @@ function statusnet_post_hook(App $a, &$b)
 	}
 
 	if ($b['verb'] == ACTIVITY_LIKE) {
-		Logger::log("statusnet_post_hook: parameter 2 " . substr($b["thr-parent"], $hostlength), LOGGER_DEBUG);
+		Logger::log("statusnet_post_hook: parameter 2 " . substr($b["thr-parent"], $hostlength), Logger::DEBUG);
 		if ($b['deleted'])
 			statusnet_action($a, $b["uid"], substr($b["thr-parent"], $hostlength), "unlike");
 		else
@@ -579,7 +579,7 @@ function statusnet_post_hook(App $a, &$b)
 		if (strlen($msg)) {
 			if ($iscomment) {
 				$postdata["in_reply_to_status_id"] = substr($orig_post["uri"], $hostlength);
-				Logger::log('statusnet_post send reply ' . print_r($postdata, true), LOGGER_DEBUG);
+				Logger::log('statusnet_post send reply ' . print_r($postdata, true), Logger::DEBUG);
 			}
 
 			// New code that is able to post pictures
@@ -591,7 +591,7 @@ function statusnet_post_hook(App $a, &$b)
 			$result = $cb->statuses_update($postdata);
 			//$result = $dent->post('statuses/update', $postdata);
 			Logger::log('statusnet_post send, result: ' . print_r($result, true) .
-				"\nmessage: " . $msg . "\nOriginal post: " . print_r($b, true) . "\nPost Data: " . print_r($postdata, true), LOGGER_DEBUG);
+				"\nmessage: " . $msg . "\nOriginal post: " . print_r($b, true) . "\nPost Data: " . print_r($postdata, true), Logger::DEBUG);
 
 			if (!empty($result->source)) {
 				PConfig::set($b["uid"], "statusnet", "application_name", strip_tags($result->source));
@@ -913,7 +913,7 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 	}
 
 	if (DBA::isResult($r) && ($r[0]["readonly"] || $r[0]["blocked"])) {
-		Logger::log("statusnet_fetch_contact: Contact '" . $r[0]["nick"] . "' is blocked or readonly.", LOGGER_DEBUG);
+		Logger::log("statusnet_fetch_contact: Contact '" . $r[0]["nick"] . "' is blocked or readonly.", Logger::DEBUG);
 		return -1;
 	}
 
@@ -975,7 +975,7 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 
 		// check that we have all the photos, this has been known to fail on occasion
 		if ((!$r[0]['photo']) || (!$r[0]['thumb']) || (!$r[0]['micro']) || ($update_photo)) {
-			Logger::log("statusnet_fetch_contact: Updating contact " . $contact->screen_name, LOGGER_DEBUG);
+			Logger::log("statusnet_fetch_contact: Updating contact " . $contact->screen_name, Logger::DEBUG);
 
 			$photos = Photo::importProfilePhoto($contact->profile_image_url, $uid, $r[0]['id']);
 
@@ -1061,7 +1061,7 @@ function statusnet_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 
 function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_existing_contact)
 {
-	Logger::log("statusnet_createpost: start", LOGGER_DEBUG);
+	Logger::log("statusnet_createpost: start", Logger::DEBUG);
 
 	$api = PConfig::get($uid, 'statusnet', 'baseapi');
 	$hostname = preg_replace("=https?://([\w\.]*)/.*=ism", "$1", $api);
@@ -1188,7 +1188,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 		$postarray["coord"] = $content->coordinates->coordinates[1] . " " . $content->coordinates->coordinates[0];
 	}
 
-	Logger::log("statusnet_createpost: end", LOGGER_DEBUG);
+	Logger::log("statusnet_createpost: end", Logger::DEBUG);
 
 	return $postarray;
 }
@@ -1207,7 +1207,7 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 	// "create_user" is deactivated, since currently you cannot add users manually by now
 	$create_user = true;
 
-	Logger::log("statusnet_fetchhometimeline: Fetching for user " . $uid, LOGGER_DEBUG);
+	Logger::log("statusnet_fetchhometimeline: Fetching for user " . $uid, Logger::DEBUG);
 
 	require_once 'include/items.php';
 
@@ -1222,7 +1222,7 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 	if (DBA::isResult($r)) {
 		$nick = $r[0]["nick"];
 	} else {
-		Logger::log("statusnet_fetchhometimeline: Own GNU Social contact not found for user " . $uid, LOGGER_DEBUG);
+		Logger::log("statusnet_fetchhometimeline: Own GNU Social contact not found for user " . $uid, Logger::DEBUG);
 		return;
 	}
 
@@ -1232,14 +1232,14 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 	if (DBA::isResult($r)) {
 		$self = $r[0];
 	} else {
-		Logger::log("statusnet_fetchhometimeline: Own contact not found for user " . $uid, LOGGER_DEBUG);
+		Logger::log("statusnet_fetchhometimeline: Own contact not found for user " . $uid, Logger::DEBUG);
 		return;
 	}
 
 	$u = q("SELECT * FROM user WHERE uid = %d LIMIT 1",
 		intval($uid));
 	if (!DBA::isResult($u)) {
-		Logger::log("statusnet_fetchhometimeline: Own user not found for user " . $uid, LOGGER_DEBUG);
+		Logger::log("statusnet_fetchhometimeline: Own user not found for user " . $uid, Logger::DEBUG);
 		return;
 	}
 
@@ -1270,13 +1270,13 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 				$errormsg = "Unknown error";
 			}
 
-			Logger::log("statusnet_fetchhometimeline: Error fetching home timeline: " . $errormsg, LOGGER_DEBUG);
+			Logger::log("statusnet_fetchhometimeline: Error fetching home timeline: " . $errormsg, Logger::DEBUG);
 			return;
 		}
 
 		$posts = array_reverse($items);
 
-		Logger::log("statusnet_fetchhometimeline: Fetching timeline for user " . $uid . " " . sizeof($posts) . " items", LOGGER_DEBUG);
+		Logger::log("statusnet_fetchhometimeline: Fetching timeline for user " . $uid . " " . sizeof($posts) . " items", Logger::DEBUG);
 
 		if (count($posts)) {
 			foreach ($posts as $post) {
@@ -1322,13 +1322,13 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 	$items = $connection->get('statuses/mentions_timeline', $parameters);
 
 	if (!is_array($items)) {
-		Logger::log("statusnet_fetchhometimeline: Error fetching mentions: " . print_r($items, true), LOGGER_DEBUG);
+		Logger::log("statusnet_fetchhometimeline: Error fetching mentions: " . print_r($items, true), Logger::DEBUG);
 		return;
 	}
 
 	$posts = array_reverse($items);
 
-	Logger::log("statusnet_fetchhometimeline: Fetching mentions for user " . $uid . " " . sizeof($posts) . " items", LOGGER_DEBUG);
+	Logger::log("statusnet_fetchhometimeline: Fetching mentions for user " . $uid . " " . sizeof($posts) . " items", Logger::DEBUG);
 
 	if (count($posts)) {
 		foreach ($posts as $post) {
@@ -1412,15 +1412,15 @@ function statusnet_convertmsg(App $a, $body, $no_tags = false)
 		foreach ($matches AS $match) {
 			$search = "[url=" . $match[1] . "]" . $match[2] . "[/url]";
 
-			Logger::log("statusnet_convertmsg: expanding url " . $match[1], LOGGER_DEBUG);
+			Logger::log("statusnet_convertmsg: expanding url " . $match[1], Logger::DEBUG);
 
 			$expanded_url = Network::finalUrl($match[1]);
 
-			Logger::log("statusnet_convertmsg: fetching data for " . $expanded_url, LOGGER_DEBUG);
+			Logger::log("statusnet_convertmsg: fetching data for " . $expanded_url, Logger::DEBUG);
 
 			$oembed_data = OEmbed::fetchURL($expanded_url, true);
 
-			Logger::log("statusnet_convertmsg: fetching data: done", LOGGER_DEBUG);
+			Logger::log("statusnet_convertmsg: fetching data: done", Logger::DEBUG);
 
 			if ($type == "") {
 				$type = $oembed_data->type;
@@ -1582,13 +1582,13 @@ function statusnet_is_retweet(App $a, $uid, $body)
 		return false;
 	}
 
-	Logger::log('statusnet_is_retweet: Retweeting id ' . $id . ' for user ' . $uid, LOGGER_DEBUG);
+	Logger::log('statusnet_is_retweet: Retweeting id ' . $id . ' for user ' . $uid, Logger::DEBUG);
 
 	$connection = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
 
 	$result = $connection->post('statuses/retweet/' . $id);
 
-	Logger::log('statusnet_is_retweet: result ' . print_r($result, true), LOGGER_DEBUG);
+	Logger::log('statusnet_is_retweet: result ' . print_r($result, true), Logger::DEBUG);
 
 	return isset($result->id);
 }

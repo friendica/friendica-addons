@@ -166,8 +166,8 @@ function openstreetmap_generate_map(&$a, &$b)
 	$lat = $b['lat']; // round($b['lat'], 5);
 	$lon = $b['lon']; // round($b['lon'], 5);
 
-	Logger::log('lat: ' . $lat, LOGGER_DATA);
-	Logger::log('lon: ' . $lon, LOGGER_DATA);
+	Logger::log('lat: ' . $lat, Logger::DATA);
+	Logger::log('lon: ' . $lon, Logger::DATA);
 
 	$cardlink = '<a href="' . $tmsserver;
 
@@ -185,7 +185,7 @@ function openstreetmap_generate_map(&$a, &$b)
 		$b['html'] .= '<br/>' . $cardlink;
 	}
 
-	Logger::log('generate_map: ' . $b['html'], LOGGER_DATA);
+	Logger::log('generate_map: ' . $b['html'], Logger::DATA);
 }
 
 function openstreetmap_addon_admin(&$a, &$o)

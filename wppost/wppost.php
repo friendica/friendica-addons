@@ -313,11 +313,11 @@ function wppost_send(&$a,&$b) {
 
 EOT;
 
-		Logger::log('wppost: data: ' . $xml, LOGGER_DATA);
+		Logger::log('wppost: data: ' . $xml, Logger::DATA);
 
 		if ($wp_blog !== 'test') {
 			$x = Network::post($wp_blog, $xml)->getBody();
 		}
-		Logger::log('posted to wordpress: ' . (($x) ? $x : ''), LOGGER_DEBUG);
+		Logger::log('posted to wordpress: ' . (($x) ? $x : ''), Logger::DEBUG);
 	}
 }

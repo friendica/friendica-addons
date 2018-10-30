@@ -115,7 +115,7 @@ function pumpio_registerclient(App $a, $host)
 	$params["logo_url"] = $a->getBaseURL()."/images/friendica-256.png";
 	$params["redirect_uris"] = $a->getBaseURL()."/pumpio/connect";
 
-	Logger::log("pumpio_registerclient: ".$url." parameters ".print_r($params, true), LOGGER_DEBUG);
+	Logger::log("pumpio_registerclient: ".$url." parameters ".print_r($params, true), Logger::DEBUG);
 
 	$ch = curl_init($url);
 	curl_setopt($ch, CURLOPT_HEADER, false);
@@ -129,10 +129,10 @@ function pumpio_registerclient(App $a, $host)
 
 	if ($curl_info["http_code"] == "200") {
 		$values = json_decode($s);
-		Logger::log("pumpio_registerclient: success ".print_r($values, true), LOGGER_DEBUG);
+		Logger::log("pumpio_registerclient: success ".print_r($values, true), Logger::DEBUG);
 		return $values;
 	}
-	Logger::log("pumpio_registerclient: failed: ".print_r($curl_info, true), LOGGER_DEBUG);
+	Logger::log("pumpio_registerclient: failed: ".print_r($curl_info, true), Logger::DEBUG);
 	return false;
 
 }
@@ -153,7 +153,7 @@ function pumpio_connect(App $a)
 		$consumer_key = PConfig::get(local_user(), 'pumpio', 'consumer_key');
 		$consumer_secret = PConfig::get(local_user(), 'pumpio', 'consumer_secret');
 
-		Logger::log("pumpio_connect: ckey: ".$consumer_key." csecrect: ".$consumer_secret, LOGGER_DEBUG);
+		Logger::log("pumpio_connect: ckey: ".$consumer_key." csecrect: ".$consumer_secret, Logger::DEBUG);
 	}
 
 	if (($consumer_key == "") || ($consumer_secret == "")) {
@@ -187,7 +187,7 @@ function pumpio_connect(App $a)
 	if (($success = $client->Initialize())) {
 		if (($success = $client->Process())) {
 			if (strlen($client->access_token)) {
-				Logger::log("pumpio_connect: otoken: ".$client->access_token." osecrect: ".$client->access_token_secret, LOGGER_DEBUG);
+				Logger::log("pumpio_connect: otoken: ".$client->access_token." osecrect: ".$client->access_token_secret, Logger::DEBUG);
 				PConfig::set(local_user(), "pumpio", "oauth_token", $client->access_token);
 				PConfig::set(local_user(), "pumpio", "oauth_token_secret", $client->access_token_secret);
 			}
@@ -410,7 +410,7 @@ function pumpio_send(App $a, array &$b)
 		return;
 	}
 
-	Logger::log("pumpio_send: parameter ".print_r($b, true), LOGGER_DATA);
+	Logger::log("pumpio_send: parameter ".print_r($b, true), Logger::DATA);
 
 	if ($b['parent'] != $b['id']) {
 		// Looking if its a reply to a pumpio post
@@ -908,7 +908,7 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 	require_once('include/items.php');
 
 	if (empty($post->object->id)) {
-		Logger::log('Got empty like: '.print_r($post, true), LOGGER_DEBUG);
+		Logger::log('Got empty like: '.print_r($post, true), Logger::DEBUG);
 		return;
 	}
 

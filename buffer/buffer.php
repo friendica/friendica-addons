@@ -299,7 +299,7 @@ function buffer_send(App $a, array &$b)
 
 		$profiles = $buffer->go('/profiles');
 		if (is_array($profiles)) {
-			Logger::log("Will send these parameter ".print_r($b, true), LOGGER_DEBUG);
+			Logger::log("Will send these parameter ".print_r($b, true), Logger::DEBUG);
 
 			foreach ($profiles as $profile) {
 				if (!$profile->default)
@@ -358,7 +358,7 @@ function buffer_send(App $a, array &$b)
 				}
 
 				$post = ItemContent::getPlaintextPost($item, $limit, $includedlinks, $htmlmode);
-				Logger::log("buffer_send: converted message ".$b["id"]." result: ".print_r($post, true), LOGGER_DEBUG);
+				Logger::log("buffer_send: converted message ".$b["id"]." result: ".print_r($post, true), Logger::DEBUG);
 
 				// The image proxy is used as a sanitizer. Buffer seems to be really picky about pictures
 				if (isset($post["image"])) {
@@ -408,9 +408,9 @@ function buffer_send(App $a, array &$b)
 				}
 
 				//print_r($message);
-				Logger::log("buffer_send: data for message " . $b["id"] . ": " . print_r($message, true), LOGGER_DEBUG);
+				Logger::log("buffer_send: data for message " . $b["id"] . ": " . print_r($message, true), Logger::DEBUG);
 				$ret = $buffer->go('/updates/create', $message);
-				Logger::log("buffer_send: send message " . $b["id"] . " result: " . print_r($ret, true), LOGGER_DEBUG);
+				Logger::log("buffer_send: send message " . $b["id"] . " result: " . print_r($ret, true), Logger::DEBUG);
 			}
 		}
 	}

@@ -222,12 +222,12 @@ function ijpost_send(&$a, &$b)
 
 EOT;
 
-		Logger::log('ijpost: data: ' . $xml, LOGGER_DATA);
+		Logger::log('ijpost: data: ' . $xml, Logger::DATA);
 
 		if ($ij_blog !== 'test') {
 			$x = Network::post($ij_blog, $xml, ["Content-Type: text/xml"])->getBody();
 		}
-		Logger::log('posted to insanejournal: ' . $x ? $x : '', LOGGER_DEBUG);
+		Logger::log('posted to insanejournal: ' . $x ? $x : '', Logger::DEBUG);
 	}
 }
 

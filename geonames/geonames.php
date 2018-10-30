@@ -133,7 +133,7 @@ function geonames_post_hook($a, &$item) {
 		$item['location'] = $xml->geoname->name . ', ' . $xml->geoname->countryName;
 
 
-//	Logger::log('geonames : ' . print_r($xml,true), LOGGER_DATA);
+//	Logger::log('geonames : ' . print_r($xml,true), Logger::DATA);
 	return;
 }
 
