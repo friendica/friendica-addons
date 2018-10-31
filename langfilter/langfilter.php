@@ -12,6 +12,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Core\Renderer;
 
 /* Define the hooks we want to use
  * that is, we have settings, we need to save the settings and we want
@@ -50,8 +51,8 @@ function langfilter_addon_settings(App $a, &$s)
 	$minconfidence  = PConfig::get(local_user(), 'langfilter', 'minconfidence') * 100;
 	$minlength      = PConfig::get(local_user(), 'langfilter', 'minlength');
 
-	$t = get_markup_template("settings.tpl", "addon/langfilter/");
-	$s .= replace_macros($t, [
+	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/langfilter/");
+	$s .= Renderer::replaceMacros($t, [
 		'$title'         => L10n::t("Language Filter"),
 		'$intro'         => L10n::t('This addon tries to identify the language posts are writen in. If it does not match any language specifed below, posts will be hidden by collapsing them.'),
 		'$enabled'       => ['langfilter_enable', L10n::t('Use the language filter'), $enable_checked, ''],

@@ -12,6 +12,7 @@ use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Core\Renderer;
 
 function mathjax_install()
 {
@@ -49,8 +50,8 @@ function mathjax_settings(App $a, &$s)
 
 	$use = PConfig::get(local_user(), 'mathjax', 'use', false);
 
-	$tpl = get_markup_template('settings.tpl', __DIR__);
-	$s .= replace_macros($tpl, [
+	$tpl = Renderer::getMarkupTemplate('settings.tpl', __DIR__);
+	$s .= Renderer::replaceMacros($tpl, [
 		'$title'        => 'MathJax',
 		'$description'  => L10n::t('The MathJax addon renders mathematical formulae written using the LaTeX syntax surrounded by the usual $$ or an eqnarray block in the postings of your wall,network tab and private mail.'),
 		'$mathjax_use'  => ['mathjax_use', L10n::t('Use the MathJax renderer'), $use, ''],

@@ -11,6 +11,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 
 function remote_permissions_install() {
@@ -45,8 +46,8 @@ function remote_permissions_settings(&$a,&$o) {
 	/* Add some HTML to the existing form */
 
 //	$t = file_get_contents("addon/remote_permissions/settings.tpl" );
-	$t = get_markup_template("settings.tpl", "addon/remote_permissions/" );
-	$o .= replace_macros($t, [
+	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/remote_permissions/" );
+	$o .= Renderer::replaceMacros($t, [
 		'$remote_perms_title' => L10n::t('Remote Permissions Settings'),
 		'$remote_perms_label' => L10n::t('Allow recipients of your private posts to see the other recipients of the posts'),
 		'$checked' => (($remote_perms == 1) ? 'checked="checked"' : ''),
@@ -196,8 +197,8 @@ function remote_permissions_content($a, $item_copy) {
 }
 
 function remote_permissions_addon_admin(&$a, &$o){
-	$t = get_markup_template( "admin.tpl", "addon/remote_permissions/" );
-	$o = replace_macros($t, [
+	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/remote_permissions/" );
+	$o = Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$global' => ['remotepermschoice', L10n::t('Global'), 1, L10n::t('The posts of every user on this server show the post recipients'),  Config::get('remote_perms', 'global') == 1],
 		'$individual' => ['remotepermschoice', L10n::t('Individual'), 2, L10n::t('Each user chooses whether his/her posts show the post recipients'),  Config::get('remote_perms', 'global') == 0]

@@ -53,6 +53,7 @@ use Friendica\Core\Config;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 
 function blackout_install() {
     Addon::registerHook('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');
@@ -97,9 +98,9 @@ function blackout_addon_admin(&$a, &$o) {
     if (! is_string($myend)) { $myend = "YYYY-MM-DD:hhmm"; }
     $myurl   = Config::get('blackout','url');
     if (! is_string($myurl)) { $myurl = "http://www.example.com"; }
-    $t = get_markup_template( "admin.tpl", "addon/blackout/" );
+    $t = Renderer::getMarkupTemplate( "admin.tpl", "addon/blackout/" );
 
-   $o = replace_macros($t, [
+   $o = Renderer::replaceMacros($t, [
         '$submit' => L10n::t('Save Settings'),
         '$rurl' => ["rurl", "Redirect URL", $myurl, "all your visitors from the web will be redirected to this URL"],
         '$startdate' => ["startdate", "Begin of the Blackout<br />(YYYY-MM-DD hh:mm)", $mystart, "format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute"],

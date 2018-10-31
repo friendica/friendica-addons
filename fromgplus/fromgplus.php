@@ -15,6 +15,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
+use Friendica\Core\Renderer;
 use Friendica\Object\Image;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
@@ -102,9 +103,9 @@ function fromgplus_addon_settings_post(&$a,&$b) {
 
 function fromgplus_addon_admin(&$a, &$o)
 {
-	$t = get_markup_template("admin.tpl", "addon/fromgplus/");
+	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/fromgplus/");
 
-	$o = replace_macros($t, [
+	$o = Renderer::replaceMacros($t, [
 			'$submit' => L10n::t('Save Settings'),
 			'$key' => ['key', L10n::t('Key'), trim(Config::get('fromgplus', 'key')), ''],
 	]);

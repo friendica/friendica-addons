@@ -1,6 +1,7 @@
 <?php
 
 use Friendica\Core\L10n;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 
 function like_widget_name() {
@@ -56,8 +57,8 @@ function like_widget_content(&$a, $conf){
 	$o = "";
 
 #	$t = file_get_contents( dirname(__file__). "/widget_like.tpl" );
-	$t = get_markup_template("widget_like.tpl", "addon/widgets/");
-	$o .= replace_macros($t, [
+	$t = Renderer::getMarkupTemplate("widget_like.tpl", "addon/widgets/");
+	$o .= Renderer::replaceMacros($t, [
 		'$like'		=> $likes,
 		'$strlike'	=> L10n::tt("%d person likes this", "%d people like this", $likes),
 

@@ -12,6 +12,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Util\Security;
 
@@ -71,7 +72,7 @@ function gravatar_lookup($a, &$b) {
  * Display admin settings for this addon
  */
 function gravatar_addon_admin (&$a, &$o) {
-	$t = get_markup_template( "admin.tpl", "addon/gravatar/" );
+	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/gravatar/" );
 
 	$default_avatar = Config::get('gravatar', 'default_avatar');
 	$rating = Config::get('gravatar', 'rating');
@@ -107,7 +108,7 @@ function gravatar_addon_admin (&$a, &$o) {
 
 	// output Gravatar settings
 	$o .= '<input type="hidden" name="form_security_token" value="' . BaseModule::getFormSecurityToken("gravatarsave") .'">';
-	$o .= replace_macros( $t, [
+	$o .= Renderer::replaceMacros( $t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$default_avatar' => ['avatar', L10n::t('Default avatar image'), $default_avatar, L10n::t('Select default avatar image if none was found at Gravatar. See README'), $default_avatars],
 		'$rating' => ['rating', L10n::t('Rating of images'), $rating, L10n::t('Select the appropriate avatar rating for your site. See README'), $ratings],

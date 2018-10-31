@@ -12,6 +12,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Util\Security;
 
@@ -74,7 +75,7 @@ function libravatar_lookup($a, &$b)
  */
 function libravatar_addon_admin(&$a, &$o)
 {
-	$t = get_markup_template("admin.tpl", "addon/libravatar");
+	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/libravatar");
 
 	$default_avatar = Config::get('libravatar', 'default_avatar');
 
@@ -110,7 +111,7 @@ function libravatar_addon_admin(&$a, &$o)
 
 	// output Libravatar settings
 	$o .= '<input type="hidden" name="form_security_token" value="' . BaseModule::getFormSecurityToken("libravatarsave") .'">';
-	$o .= replace_macros( $t, [
+	$o .= Renderer::replaceMacros( $t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$default_avatar' => ['avatar', L10n::t('Default avatar image'), $default_avatar, L10n::t('Select default avatar image if none was found. See README'), $default_avatars],
 	]);

@@ -13,6 +13,7 @@ use Friendica\Core\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 use Friendica\Core\System;
 use Friendica\Util\Network;
 
@@ -190,7 +191,7 @@ function openstreetmap_generate_map(&$a, &$b)
 
 function openstreetmap_addon_admin(&$a, &$o)
 {
-	$t = get_markup_template("admin.tpl", "addon/openstreetmap/");
+	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/openstreetmap/");
 	$tmsserver = Config::get('openstreetmap', 'tmsserver', OSM_TMS);
 	$nomserver = Config::get('openstreetmap', 'nomserver', OSM_NOM);
 	$zoom = Config::get('openstreetmap', 'zoom', OSM_ZOOM);
@@ -201,7 +202,7 @@ function openstreetmap_addon_admin(&$a, &$o)
 		$nomserver = OSM_NOM;
 	}
 
-	$o = replace_macros($t, [
+	$o = Renderer::replaceMacros($t, [
 			'$submit' => L10n::t('Submit'),
 			'$tmsserver' => ['tmsserver', L10n::t('Tile Server URL'), $tmsserver, L10n::t('A list of <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank">public tile servers</a>')],
 			'$nomserver' => ['nomserver', L10n::t('Nominatim (reverse geocoding) Server URL'), $nomserver, L10n::t('A list of <a href="http://wiki.openstreetmap.org/wiki/Nominatim" target="_blank">Nominatim servers</a>')],

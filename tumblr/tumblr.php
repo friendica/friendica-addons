@@ -16,6 +16,7 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 
 function tumblr_install()
@@ -70,9 +71,9 @@ function tumblr_content(App $a)
 
 function tumblr_addon_admin(App $a, &$o)
 {
-	$t = get_markup_template( "admin.tpl", "addon/tumblr/" );
+	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/tumblr/" );
 
-	$o = replace_macros($t, [
+	$o = Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		// name, label, value, help, [extra values]
 		'$consumer_key' => ['consumer_key', L10n::t('Consumer Key'),  Config::get('tumblr', 'consumer_key' ), ''],

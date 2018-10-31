@@ -12,6 +12,7 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
+use Friendica\Core\Renderer;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\Model\Contact;
@@ -53,8 +54,8 @@ function catavatar_addon_settings(App $a, &$s)
 		return;
 	}
 
-	$t = get_markup_template('settings.tpl', 'addon/catavatar/');
-	$s .= replace_macros ($t, [
+	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/catavatar/');
+	$s .= Renderer::replaceMacros($t, [
 		'$postpost' => !empty($_POST['catavatar-morecat']) || !empty($_POST['catavatar-emailcat']),
 		'$uncache' => time(),
 		'$uid' => local_user(),
