@@ -11,6 +11,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 
 function widgets_install() {
@@ -58,8 +59,8 @@ function widgets_settings(&$a,&$o) {
 
 
 #	$t = file_get_contents( dirname(__file__). "/settings.tpl" );
-	$t = get_markup_template("settings.tpl", "addon/widgets/");
-	$o .= replace_macros($t, [
+	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/widgets/");
+	$o .= Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Generate new key'),
 		'$baseurl' => $a->getBaseURL(),
 		'$title' => "Widgets",
@@ -142,7 +143,7 @@ function widgets_content(&$a) {
 		$widget_size = call_user_func($a->argv[1].'_widget_size');
 
 		$script = file_get_contents(dirname(__file__)."/widgets.js");
-		$o .= replace_macros($script, [
+		$o .= Renderer::replaceMacros($script, [
 			'$entrypoint' => $a->getBaseURL()."/widgets/".$a->argv[1]."/cb/",
 			'$key' => $conf['key'],
 			'$widget_id' => 'f9a_'.$a->argv[1]."_"._randomAlphaNum(6),

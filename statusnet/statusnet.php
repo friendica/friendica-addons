@@ -49,6 +49,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Model\Contact;
 use Friendica\Model\GContact;
@@ -668,8 +669,8 @@ function statusnet_addon_admin(App $a, &$o)
 		//'applicationname' => Array("applicationname[$id]", L10n::t("Application name"), "", ""),
 	];
 
-	$t = get_markup_template("admin.tpl", "addon/statusnet/");
-	$o = replace_macros($t, [
+	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/statusnet/");
+	$o = Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$sites' => $sitesform,
 	]);

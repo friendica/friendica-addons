@@ -72,6 +72,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
+use Friendica\Core\Renderer;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\Model\Contact;
@@ -347,7 +348,7 @@ function twitter_settings(App $a, &$s)
 			try {
 				$details = $connection->get('account/verify_credentials');
 
-				$field_checkbox = get_markup_template('field_checkbox.tpl');
+				$field_checkbox = Renderer::getMarkupTemplate('field_checkbox.tpl');
 
 				$s .= '<div id="twitter-info" >
 					<p>' . L10n::t('Currently connected to: ') . '<a href="https://twitter.com/' . $details->screen_name . '" target="_twitter">' . $details->screen_name . '</a>
@@ -360,22 +361,22 @@ function twitter_settings(App $a, &$s)
 				</div>';
 				$s .= '<div class="clear"></div>';
 
-				$s .= replace_macros($field_checkbox, [
+				$s .= Renderer::replaceMacros($field_checkbox, [
 					'$field' => ['twitter-enable', L10n::t('Allow posting to Twitter'), $enabled, L10n::t('If enabled all your <strong>public</strong> postings can be posted to the associated Twitter account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.')]
 				]);
 				if ($a->user['hidewall']) {
 					$s .= '<p>' . L10n::t('<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to Twitter will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted.') . '</p>';
 				}
-				$s .= replace_macros($field_checkbox, [
+				$s .= Renderer::replaceMacros($field_checkbox, [
 					'$field' => ['twitter-default', L10n::t('Send public postings to Twitter by default'), $defenabled, '']
 				]);
-				$s .= replace_macros($field_checkbox, [
+				$s .= Renderer::replaceMacros($field_checkbox, [
 					'$field' => ['twitter-mirror', L10n::t('Mirror all posts from twitter that are no replies'), $mirrorenabled, '']
 				]);
-				$s .= replace_macros($field_checkbox, [
+				$s .= Renderer::replaceMacros($field_checkbox, [
 					'$field' => ['twitter-import', L10n::t('Import the remote timeline'), $importenabled, '']
 				]);
-				$s .= replace_macros($field_checkbox, [
+				$s .= Renderer::replaceMacros($field_checkbox, [
 					'$field' => ['twitter-create_user', L10n::t('Automatically create contacts'), $create_userenabled, L10n::t('This will automatically create a contact in Friendica as soon as you receive a message from an existing contact via the Twitter network. If you do not enable this, you need to manually add those Twitter contacts in Friendica from whom you would like to see posts here. However if enabled, you cannot merely remove a twitter contact from the Friendica contact list, as it will recreate this contact when they post again.')]
 				]);
 				$s .= '<div class="clear"></div>';
@@ -665,9 +666,9 @@ function twitter_addon_admin_post(App $a)
 
 function twitter_addon_admin(App $a, &$o)
 {
-	$t = get_markup_template("admin.tpl", "addon/twitter/");
+	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/twitter/");
 
-	$o = replace_macros($t, [
+	$o = Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		// name, label, value, help, [extra values]
 		'$consumerkey' => ['consumerkey', L10n::t('Consumer key'), Config::get('twitter', 'consumerkey'), ''],

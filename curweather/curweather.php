@@ -17,6 +17,7 @@ use Friendica\Core\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Core\Renderer;
 use Friendica\Util\Network;
 use Friendica\Util\Proxy as ProxyUtils;
 
@@ -135,7 +136,7 @@ function curweather_network_mod_init(App $a, &$b)
 	}
 
 	if ($ok) {
-		$t = get_markup_template("widget.tpl", "addon/curweather/" );
+		$t = Renderer::getMarkupTemplate("widget.tpl", "addon/curweather/" );
 		$curweather = replace_macros ($t, [
 			'$title' => L10n::t("Current Weather"),
 			'$icon' => ProxyUtils::proxifyUrl('http://openweathermap.org/img/w/'.$res['icon'].'.png'),
@@ -152,8 +153,8 @@ function curweather_network_mod_init(App $a, &$b)
 			'$showonmap' => L10n::t('Show on map')
 		]);
 	} else {
-		$t = get_markup_template('widget-error.tpl', 'addon/curweather/');
-		$curweather = replace_macros( $t, [
+		$t = Renderer::getMarkupTemplate('widget-error.tpl', 'addon/curweather/');
+		$curweather = Renderer::replaceMacros( $t, [
 			'$problem' => L10n::t('There was a problem accessing the weather data. But have a look'),
 			'$rpt' => $rpt,
 			'$atOWM' => L10n::t('at OpenWeatherMap')
@@ -197,7 +198,7 @@ function curweather_addon_settings(App $a, &$s)
 	$enable_checked = (($enable) ? ' checked="checked" ' : '');
 	
 	// load template and replace the macros
-	$t = get_markup_template("settings.tpl", "addon/curweather/" );
+	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/curweather/" );
 
 	$s = replace_macros ($t, [
 		'$submit' => L10n::t('Save Settings'),
@@ -237,7 +238,7 @@ function curweather_addon_admin(App $a, &$o)
 	$appid = Config::get('curweather', 'appid');
 	$cachetime = Config::get('curweather', 'cachetime');
 
-	$t = get_markup_template("admin.tpl", "addon/curweather/" );
+	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/curweather/" );
 
 	$o = replace_macros ($t, [
 		'$submit' => L10n::t('Save Settings'),

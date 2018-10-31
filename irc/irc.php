@@ -10,6 +10,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Core\Renderer;
 
 function irc_install() {
 	Addon::registerHook('app_menu', 'addon/irc/irc.php', 'irc_app_menu');
@@ -36,8 +37,8 @@ function irc_addon_settings(&$a,&$s) {
 	$sitechats = PConfig::get( local_user(), 'irc','sitechats'); /* popular channels */
 	$autochans = PConfig::get( local_user(), 'irc','autochans');  /* auto connect chans */
 
-	$t = get_markup_template( "settings.tpl", "addon/irc/" );
-	$s .= replace_macros($t, [
+	$t = Renderer::getMarkupTemplate( "settings.tpl", "addon/irc/" );
+	$s .= Renderer::replaceMacros($t, [
 	    	'$header' => L10n::t('IRC Settings'),
 		'$info' => L10n::t('Here you can change the system wide settings for the channels to automatically join and access via the side bar. Note the changes you do here, only effect the channel selection if you are logged in.'),
 		'$submit' => L10n::t('Save Settings'),
@@ -135,8 +136,8 @@ function irc_addon_admin_post (&$a) {
 function irc_addon_admin (&$a, &$o) {
 	$sitechats = Config::get('irc','sitechats'); /* popular channels */
 	$autochans = Config::get('irc','autochans');  /* auto connect chans */
-	$t = get_markup_template( "admin.tpl", "addon/irc/" );
-	$o = replace_macros($t, [
+	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/irc/" );
+	$o = Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$autochans' => [ 'autochans', L10n::t('Channel(s) to auto connect (comma separated)'), $autochans, L10n::t('List of channels that shall automatically connected to when the app is launched.')],
 		'$sitechats' => [ 'sitechats', L10n::t('Popular Channels (comma separated)'), $sitechats, L10n::t('List of popular channels, will be displayed at the side and hotlinked for easy joining.') ]

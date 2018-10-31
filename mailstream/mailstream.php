@@ -12,6 +12,7 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Util\Network;
 use Friendica\Model\Item;
@@ -74,12 +75,12 @@ function mailstream_module() {}
 
 function mailstream_addon_admin(&$a,&$o) {
 	$frommail = Config::get('mailstream', 'frommail');
-	$template = get_markup_template('admin.tpl', 'addon/mailstream/');
+	$template = Renderer::getMarkupTemplate('admin.tpl', 'addon/mailstream/');
 	$config = ['frommail',
 			L10n::t('From Address'),
 			$frommail,
 			L10n::t('Email address that stream items will appear to be from.')];
-	$o .= replace_macros($template, [
+	$o .= Renderer::replaceMacros($template, [
 				 '$frommail' => $config,
 				 '$submit' => L10n::t('Save Settings')]);
 }
@@ -288,10 +289,10 @@ function mailstream_send($a, $message_id, $item, $user) {
 		}
 		$mail->IsHTML(true);
 		$mail->CharSet = 'utf-8';
-		$template = get_markup_template('mail.tpl', 'addon/mailstream/');
+		$template = Renderer::getMarkupTemplate('mail.tpl', 'addon/mailstream/');
 		$item['body'] = BBCode::convert($item['body']);
 		$item['url'] = $a->getBaseURL() . '/display/' . $user['nickname'] . '/' . $item['id'];
-		$mail->Body = replace_macros($template, [
+		$mail->Body = Renderer::replaceMacros($template, [
 						 '$upstream' => L10n::t('Upstream'),
 						 '$local' => L10n::t('Local'),
 						 '$item' => $item]);
@@ -356,8 +357,8 @@ function mailstream_addon_settings(&$a,&$s) {
 	$address = PConfig::get(local_user(), 'mailstream', 'address');
 	$nolikes = PConfig::get(local_user(), 'mailstream', 'nolikes');
 	$attachimg= PConfig::get(local_user(), 'mailstream', 'attachimg');
-	$template = get_markup_template('settings.tpl', 'addon/mailstream/');
-	$s .= replace_macros($template, [
+	$template = Renderer::getMarkupTemplate('settings.tpl', 'addon/mailstream/');
+	$s .= Renderer::replaceMacros($template, [
 				 '$enabled' => [
 					'mailstream_enabled',
 					L10n::t('Enabled'),

@@ -10,6 +10,7 @@ use Friendica\Core\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 use Friendica\Util\Network;
 
 function geocoordinates_install()
@@ -87,9 +88,9 @@ function geocoordinates_post_hook($a, &$item)
 function geocoordinates_addon_admin(&$a, &$o)
 {
 
-	$t = get_markup_template("admin.tpl", "addon/geocoordinates/");
+	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/geocoordinates/");
 
-	$o = replace_macros($t, [
+	$o = Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$api_key' => ['api_key', L10n::t('API Key'), Config::get('geocoordinates', 'api_key'), ''],
 		'$language' => ['language', L10n::t('Language code (IETF format)'), Config::get('geocoordinates', 'language'), ''],

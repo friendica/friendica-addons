@@ -12,6 +12,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 use Friendica\Util\Proxy as ProxyUtils;
 
 function impressum_install() {
@@ -100,8 +101,8 @@ function impressum_addon_admin_post (&$a) {
     info(L10n::t('Settings updated.'). EOL );
 }
 function impressum_addon_admin (&$a, &$o) {
-    $t = get_markup_template( "admin.tpl", "addon/impressum/" );
-    $o = replace_macros($t, [
+    $t = Renderer::getMarkupTemplate( "admin.tpl", "addon/impressum/" );
+    $o = Renderer::replaceMacros($t, [
         '$submit' => L10n::t('Save Settings'),
         '$owner' => ['owner', L10n::t('Site Owner'), Config::get('impressum','owner'), L10n::t('The page operators name.')],
         '$ownerprofile' => ['ownerprofile', L10n::t('Site Owners Profile'), Config::get('impressum','ownerprofile'), L10n::t('Profile address of the operator.')],

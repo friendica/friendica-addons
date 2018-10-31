@@ -15,6 +15,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Model\ItemContent;
 use Friendica\Util\Proxy as ProxyUtils;
@@ -70,9 +71,9 @@ function buffer_content(App $a)
 
 function buffer_addon_admin(App $a, &$o)
 {
-	$t = get_markup_template("admin.tpl", "addon/buffer/");
+	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/buffer/");
 
-	$o = replace_macros($t, [
+	$o = Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		// name, label, value, help, [extra values]
 		'$client_id' => ['client_id', L10n::t('Client ID'), Config::get('buffer', 'client_id'), ''],
