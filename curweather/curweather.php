@@ -137,7 +137,7 @@ function curweather_network_mod_init(App $a, &$b)
 
 	if ($ok) {
 		$t = Renderer::getMarkupTemplate("widget.tpl", "addon/curweather/" );
-		$curweather = replace_macros ($t, [
+		$curweather = Renderer::replaceMacros($t, [
 			'$title' => L10n::t("Current Weather"),
 			'$icon' => ProxyUtils::proxifyUrl('http://openweathermap.org/img/w/'.$res['icon'].'.png'),
 			'$city' => $res['city'],
@@ -200,7 +200,7 @@ function curweather_addon_settings(App $a, &$s)
 	// load template and replace the macros
 	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/curweather/" );
 
-	$s = replace_macros ($t, [
+	$s = Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$header' => L10n::t('Current Weather').' '.L10n::t('Settings'),
 		'$noappidtext' => $noappidtext,
@@ -240,7 +240,7 @@ function curweather_addon_admin(App $a, &$o)
 
 	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/curweather/" );
 
-	$o = replace_macros ($t, [
+	$o = Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$cachetime' => [
 			'cachetime',

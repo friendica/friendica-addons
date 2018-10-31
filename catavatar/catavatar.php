@@ -55,7 +55,7 @@ function catavatar_addon_settings(App $a, &$s)
 	}
 
 	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/catavatar/');
-	$s .= replace_macros ($t, [
+	$s .= Renderer::replaceMacros($t, [
 		'$postpost' => !empty($_POST['catavatar-morecat']) || !empty($_POST['catavatar-emailcat']),
 		'$uncache' => time(),
 		'$uid' => local_user(),
