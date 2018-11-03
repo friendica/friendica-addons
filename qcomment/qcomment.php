@@ -20,6 +20,7 @@
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Util\XML;
 
 function qcomment_install() {
 	Addon::registerHook('addon_settings', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings');
@@ -50,7 +51,7 @@ function qcomment_addon_settings(&$a, &$s)
 	$s .= '<div id="qcomment-wrapper">';
 	$s .= '<div id="qcomment-desc">' . L10n::t("Quick comments are found near comment boxes, sometimes hidden. Click them to provide simple replies.") . '</div>';
 	$s .= '<label id="qcomment-label" for="qcomment-words">' . L10n::t('Enter quick comments, one per line') . ' </label>';
-	$s .= '<textarea id="qcomment-words" type="text" name="qcomment-words" >' . htmlspecialchars(unxmlify($words)) . '</textarea>';
+	$s .= '<textarea id="qcomment-words" type="text" name="qcomment-words" >' . htmlspecialchars(XML::unxmlify($words)) . '</textarea>';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="qcomment-submit" name="qcomment-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
@@ -59,13 +60,14 @@ function qcomment_addon_settings(&$a, &$s)
 	return;
 }
 
-function qcomment_addon_settings_post(&$a,&$b) {
-
-	if(! local_user())
+function qcomment_addon_settings_post(&$a, &$b)
+{
+	if (! local_user()) {
 		return;
+	}
 
-	if($_POST['qcomment-submit']) {
-		PConfig::set(local_user(),'qcomment','words',xmlify($_POST['qcomment-words']));
+	if ($_POST['qcomment-submit']) {
+		PConfig::set(local_user(), 'qcomment', 'words', XML::xmlify($_POST['qcomment-words']));
 		info(L10n::t('Quick Comment settings saved.') . EOL);
 	}
 }

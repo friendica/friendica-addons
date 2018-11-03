@@ -14,6 +14,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
 use Friendica\Util\Network;
+use Friendica\Util\XML;
 
 function wppost_install() {
     Addon::registerHook('post_local',           'addon/wppost/wppost.php', 'wppost_post_local');
@@ -216,8 +217,8 @@ function wppost_send(&$a,&$b) {
 		return;
 	}
 
-	$wp_username = xmlify(PConfig::get($b['uid'],'wppost','wp_username'));
-	$wp_password = xmlify(PConfig::get($b['uid'],'wppost','wp_password'));
+	$wp_username = XML::(PConfig::get($b['uid'], 'wppost', 'wp_username'));
+	$wp_password = XML::xmlify(PConfig::get($b['uid'], 'wppost',' wp_password'));
 	$wp_blog = PConfig::get($b['uid'],'wppost','wp_blog');
 	$wp_backlink_text = PConfig::get($b['uid'],'wppost','wp_backlink_text');
 	if ($wp_backlink_text == '') {
@@ -294,7 +295,7 @@ function wppost_send(&$a,&$b) {
 				. $wp_backlink_text . '</a>' . EOL . EOL;
 		}
 
-		$post = xmlify($post);
+		$post = XML::xmlify($post);
 
 
 		$xml = <<< EOT
