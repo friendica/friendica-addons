@@ -186,7 +186,7 @@ function ijpost_send(&$a, &$b)
 	if ($ij_username && $ij_password && $ij_blog) {
 		$title = $b['title'];
 		$post = BBCode::convert($b['body']);
-		$post = XML::xmlify($post);
+		$post = XML::escape($post);
 		$tags = ijpost_get_tags($b['tag']);
 
 		$date = DateTimeFormat::convert($b['created'], $tz);

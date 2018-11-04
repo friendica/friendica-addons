@@ -170,20 +170,20 @@ function ljpost_send(&$a,&$b) {
 	if($x && strlen($x[0]['timezone']))
 		$tz = $x[0]['timezone'];
 
-	$lj_username = XML::xmlify(PConfig::get($b['uid'],'ljpost','lj_username'));
-	$lj_password = XML::xmlify(PConfig::get($b['uid'],'ljpost','lj_password'));
-	$lj_journal = XML::xmlify(PConfig::get($b['uid'],'ljpost','lj_journal'));
+	$lj_username = XML::escape(PConfig::get($b['uid'],'ljpost','lj_username'));
+	$lj_password = XML::escape(PConfig::get($b['uid'],'ljpost','lj_password'));
+	$lj_journal = XML::escape(PConfig::get($b['uid'],'ljpost','lj_journal'));
 //	if(! $lj_journal)
 //		$lj_journal = $lj_username;
 
-	$lj_blog = XML::xmlify(PConfig::get($b['uid'],'ljpost','lj_blog'));
+	$lj_blog = XML::escape(PConfig::get($b['uid'],'ljpost','lj_blog'));
 	if(! strlen($lj_blog))
-		$lj_blog = XML::xmlify('http://www.livejournal.com/interface/xmlrpc');
+		$lj_blog = XML::escape('http://www.livejournal.com/interface/xmlrpc');
 
 	if($lj_username && $lj_password && $lj_blog) {
-		$title = XML::xmlify($b['title']);
+		$title = XML::escape($b['title']);
 		$post = BBCode::convert($b['body']);
-		$post = XML::xmlify($post);
+		$post = XML::escape($post);
 		$tags = ljpost_get_tags($b['tag']);
 
 		$date = DateTimeFormat::convert($b['created'], $tz);

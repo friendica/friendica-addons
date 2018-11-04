@@ -218,7 +218,7 @@ function wppost_send(&$a,&$b) {
 	}
 
 	$wp_username = XML::(PConfig::get($b['uid'], 'wppost', 'wp_username'));
-	$wp_password = XML::xmlify(PConfig::get($b['uid'], 'wppost',' wp_password'));
+	$wp_password = XML::escape(PConfig::get($b['uid'], 'wppost',' wp_password'));
 	$wp_blog = PConfig::get($b['uid'],'wppost','wp_blog');
 	$wp_backlink_text = PConfig::get($b['uid'],'wppost','wp_backlink_text');
 	if ($wp_backlink_text == '') {
@@ -295,7 +295,7 @@ function wppost_send(&$a,&$b) {
 				. $wp_backlink_text . '</a>' . EOL . EOL;
 		}
 
-		$post = XML::xmlify($post);
+		$post = XML::escape($post);
 
 
 		$xml = <<< EOT

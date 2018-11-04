@@ -179,14 +179,14 @@ function blogger_send(App $a, array &$b)
 		return;
 	}
 
-	$bl_username = XML::xmlify(PConfig::get($b['uid'], 'blogger', 'bl_username'));
-	$bl_password = XML::xmlify(PConfig::get($b['uid'], 'blogger', 'bl_password'));
+	$bl_username = XML::escape(PConfig::get($b['uid'], 'blogger', 'bl_username'));
+	$bl_password = XML::escape(PConfig::get($b['uid'], 'blogger', 'bl_password'));
 	$bl_blog = PConfig::get($b['uid'], 'blogger', 'bl_blog');
 
 	if ($bl_username && $bl_password && $bl_blog) {
 		$title = '<title>' . (($b['title']) ? $b['title'] : L10n::t('Post from Friendica')) . '</title>';
 		$post = $title . BBCode::convert($b['body']);
-		$post = XML::xmlify($post);
+		$post = XML::escape($post);
 
 		$xml = <<< EOT
 <?xml version=\"1.0\" encoding=\"utf-8\"?>
