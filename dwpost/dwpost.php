@@ -17,7 +17,7 @@ use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
-use Friendica\Util\Strings;
+use Friendica\Util\XML;
 
 function dwpost_install()
 {
@@ -190,7 +190,7 @@ function dwpost_send(App $a, array &$b)
 	if ($dw_username && $dw_password && $dw_blog) {
 		$title = $b['title'];
 		$post = BBCode::convert($b['body']);
-		$post = Strings::escape($post);
+		$post = XML::escape($post);
 		$tags = dwpost_get_tags($b['tag']);
 
 		$date = DateTimeFormat::convert($b['created'], $tz);
