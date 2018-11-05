@@ -13,7 +13,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Util\Network;
-use Friendica\Util\XML;
+use Friendica\Util\Strings;
 
 function blogger_install()
 {
@@ -179,14 +179,14 @@ function blogger_send(App $a, array &$b)
 		return;
 	}
 
-	$bl_username = XML::escape(PConfig::get($b['uid'], 'blogger', 'bl_username'));
-	$bl_password = XML::escape(PConfig::get($b['uid'], 'blogger', 'bl_password'));
+	$bl_username = Strings::escape(PConfig::get($b['uid'], 'blogger', 'bl_username'));
+	$bl_password = Strings::escape(PConfig::get($b['uid'], 'blogger', 'bl_password'));
 	$bl_blog = PConfig::get($b['uid'], 'blogger', 'bl_blog');
 
 	if ($bl_username && $bl_password && $bl_blog) {
 		$title = '<title>' . (($b['title']) ? $b['title'] : L10n::t('Post from Friendica')) . '</title>';
 		$post = $title . BBCode::convert($b['body']);
-		$post = XML::escape($post);
+		$post = Strings::escape($post);
 
 		$xml = <<< EOT
 <?xml version=\"1.0\" encoding=\"utf-8\"?>

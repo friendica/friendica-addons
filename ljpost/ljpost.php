@@ -15,7 +15,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
-use Friendica\Util\XML;
+use Friendica\Util\Strings;
 
 function ljpost_install() {
     Addon::registerHook('post_local',           'addon/ljpost/ljpost.php', 'ljpost_post_local');
@@ -170,20 +170,20 @@ function ljpost_send(&$a,&$b) {
 	if($x && strlen($x[0]['timezone']))
 		$tz = $x[0]['timezone'];
 
-	$lj_username = XML::escape(PConfig::get($b['uid'],'ljpost','lj_username'));
-	$lj_password = XML::escape(PConfig::get($b['uid'],'ljpost','lj_password'));
-	$lj_journal = XML::escape(PConfig::get($b['uid'],'ljpost','lj_journal'));
+	$lj_username = Strings::escape(PConfig::get($b['uid'],'ljpost','lj_username'));
+	$lj_password = Strings::escape(PConfig::get($b['uid'],'ljpost','lj_password'));
+	$lj_journal = Strings::escape(PConfig::get($b['uid'],'ljpost','lj_journal'));
 //	if(! $lj_journal)
 //		$lj_journal = $lj_username;
 
-	$lj_blog = XML::escape(PConfig::get($b['uid'],'ljpost','lj_blog'));
+	$lj_blog = Strings::escape(PConfig::get($b['uid'],'ljpost','lj_blog'));
 	if(! strlen($lj_blog))
-		$lj_blog = XML::escape('http://www.livejournal.com/interface/xmlrpc');
+		$lj_blog = Strings::escape('http://www.livejournal.com/interface/xmlrpc');
 
 	if($lj_username && $lj_password && $lj_blog) {
-		$title = XML::escape($b['title']);
+		$title = Strings::escape($b['title']);
 		$post = BBCode::convert($b['body']);
-		$post = XML::escape($post);
+		$post = Strings::escape($post);
 		$tags = ljpost_get_tags($b['tag']);
 
 		$date = DateTimeFormat::convert($b['created'], $tz);
