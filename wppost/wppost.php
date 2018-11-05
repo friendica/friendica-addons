@@ -217,7 +217,7 @@ function wppost_send(&$a,&$b) {
 		return;
 	}
 
-	$wp_username = XML::(PConfig::get($b['uid'], 'wppost', 'wp_username'));
+	$wp_username = XML::escape(PConfig::get($b['uid'], 'wppost', 'wp_username'));
 	$wp_password = XML::escape(PConfig::get($b['uid'], 'wppost',' wp_password'));
 	$wp_blog = PConfig::get($b['uid'],'wppost','wp_blog');
 	$wp_backlink_text = PConfig::get($b['uid'],'wppost','wp_backlink_text');
