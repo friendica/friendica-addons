@@ -1,5 +1,6 @@
 <?php
 
+use Friendica\Content\Text\HTML;
 use Friendica\Core\L10n;
 
 function friends_widget_name()
@@ -47,7 +48,7 @@ function friends_widget_content(&$a, $conf)
 		.contact-block-div { display: block !important; float: left!important; width: 50px!important; height: 50px!important; margin: 2px!important;}
 
 	</style>";
-	$o .= _abs_url(contact_block());
+	$o .= _abs_url(HTML::contactBlock());
 	$o .= "<a href='".$a->getBaseURL().'/profile/'.$a->profile['nickname']."'>". L10n::t('Connect on Friendica!') ."</a>";
 	return $o;
 }
