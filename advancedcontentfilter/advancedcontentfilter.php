@@ -39,6 +39,8 @@ use Friendica\Content\Text\Markdown;
 use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Database\DBStructure;
 use Friendica\Model\Item;
@@ -64,7 +66,7 @@ function advancedcontentfilter_install()
 
 	DBStructure::update(false, true);
 
-	logger("installed advancedcontentfilter");
+	Logger::log("installed advancedcontentfilter");
 }
 
 function advancedcontentfilter_uninstall()
@@ -206,8 +208,8 @@ function advancedcontentfilter_content(App $a)
 
 		return $html;
 	} else {
-		$t = get_markup_template('settings.tpl', 'addon/advancedcontentfilter/');
-		return replace_macros($t, [
+		$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/advancedcontentfilter/');
+		return Renderer::replaceMacros($t, [
 			'$messages' => [
 				'backtosettings'    => L10n::t('Back to Addon Settings'),
 				'title'             => L10n::t('Advanced Content Filter'),

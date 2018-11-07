@@ -55,6 +55,7 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Logger;
 use Friendica\Model\User;
 
 function ldapauth_install()
@@ -99,28 +100,28 @@ function ldapauth_authenticate($username, $password)
 	$ldap_autocreateaccount_nameattribute  = Config::get('ldapauth', 'ldap_autocreateaccount_nameattribute');
 
 	if (!(strlen($password) && function_exists('ldap_connect') && strlen($ldap_server))) {
-		logger("ldapauth: not configured or missing php-ldap module");
+		Logger::log("ldapauth: not configured or missing php-ldap module");
 		return false;
 	}
 
 	$connect = @ldap_connect($ldap_server);
 
 	if ($connect === false) {
-		logger("ldapauth: could not connect to $ldap_server");
+		Logger::log("ldapauth: could not connect to $ldap_server");
 		return false;
 	}
 
 	@ldap_set_option($connect, LDAP_OPT_PROTOCOL_VERSION, 3);
 	@ldap_set_option($connect, LDAP_OPT_REFERRALS, 0);
 	if ((@ldap_bind($connect, $ldap_binddn, $ldap_bindpw)) === false) {
-		logger("ldapauth: could not bind $ldap_server as $ldap_binddn");
+		Logger::log("ldapauth: could not bind $ldap_server as $ldap_binddn");
 		return false;
 	}
 
 	$res = @ldap_search($connect, $ldap_searchdn, $ldap_userattr . '=' . $username);
 
 	if (!$res) {
-		logger("ldapauth: $ldap_userattr=$username,$ldap_searchdn not found");
+		Logger::log("ldapauth: $ldap_userattr=$username,$ldap_searchdn not found");
 		return false;
 	}
 
@@ -161,13 +162,13 @@ function ldapauth_authenticate($username, $password)
 		@ldap_close($connect);
 
 		if ($eno === 32) {
-			logger("ldapauth: access control group Does Not Exist");
+			Logger::log("ldapauth: access control group Does Not Exist");
 			return false;
 		} elseif ($eno === 16) {
-			logger('ldapauth: membership attribute does not exist in access control group');
+			Logger::log('ldapauth: membership attribute does not exist in access control group');
 			return false;
 		} else {
-			logger('ldapauth: error: ' . $err);
+			Logger::log('ldapauth: error: ' . $err);
 			return false;
 		}
 	} elseif ($r === false) {
@@ -189,12 +190,12 @@ function ldap_autocreateaccount($ldap_autocreateaccount, $username, $password, $
 
 				try {
 					User::create($arr);
-					logger("ldapauth: account " . $username . " created");
+					Logger::log("ldapauth: account " . $username . " created");
 				} catch (Exception $ex) {
-					logger("ldapauth: account " . $username . " was not created ! : " . $ex->getMessage());
+					Logger::log("ldapauth: account " . $username . " was not created ! : " . $ex->getMessage());
 				}
 			} else {
-				logger("ldapauth: unable to create account, no email or nickname found");
+				Logger::log("ldapauth: unable to create account, no email or nickname found");
 			}
 		}
 	}

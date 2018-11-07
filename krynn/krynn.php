@@ -11,6 +11,7 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 
 function krynn_install() {
@@ -35,7 +36,7 @@ function krynn_install() {
 	Addon::registerHook('addon_settings', 'addon/krynn/krynn.php', 'krynn_settings');
 	Addon::registerHook('addon_settings_post', 'addon/krynn/krynn.php', 'krynn_settings_post');
 
-	logger("installed krynn");
+	Logger::log("installed krynn");
 }
 
 
@@ -54,7 +55,7 @@ function krynn_uninstall() {
 	Addon::unregisterHook('addon_settings_post', 'addon/krynn/krynn.php', 'krynn_settings_post');
 
 
-	logger("removed krynn");
+	Logger::log("removed krynn");
 }
 
 
@@ -70,7 +71,7 @@ function krynn_post_hook($a, &$item) {
 	 *
 	 */
 
-	logger('krynn invoked');
+	Logger::log('krynn invoked');
 
 	if(! local_user())   /* non-zero if this is a logged in user of this system */
 		return;

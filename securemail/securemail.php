@@ -10,7 +10,9 @@ use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
+use Friendica\Core\Renderer;
 use Friendica\Util\Emailer;
 
 /* because the fraking openpgp-php is in composer, require libs in composer
@@ -31,7 +33,7 @@ function securemail_install() {
 
     Addon::registerHook('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare');
 
-    logger('installed securemail');
+    Logger::log('installed securemail');
 }
 
 function securemail_uninstall() {
@@ -40,7 +42,7 @@ function securemail_uninstall() {
 
     Addon::unregisterHook('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare');
 
-    logger('removed securemail');
+    Logger::log('removed securemail');
 }
 
 /**
@@ -61,9 +63,9 @@ function securemail_settings(App &$a, &$s){
     $enable = intval(PConfig::get(local_user(), 'securemail', 'enable'));
     $publickey = PConfig::get(local_user(), 'securemail', 'pkey');
 
-    $t = get_markup_template('admin.tpl', 'addon/securemail/');
+    $t = Renderer::getMarkupTemplate('admin.tpl', 'addon/securemail/');
 
-    $s .= replace_macros($t, [
+    $s .= Renderer::replaceMacros($t, [
         '$title' => L10n::t('"Secure Mail" Settings'),
         '$submit' => L10n::t('Save Settings'),
         '$test' => L10n::t('Save and send test'), //NOTE: update also in 'post'

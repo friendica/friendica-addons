@@ -10,9 +10,11 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
 use Friendica\Util\Network;
+use Friendica\Util\XML;
 
 function wppost_install() {
     Addon::registerHook('post_local',           'addon/wppost/wppost.php', 'wppost_post_local');
@@ -215,8 +217,8 @@ function wppost_send(&$a,&$b) {
 		return;
 	}
 
-	$wp_username = xmlify(PConfig::get($b['uid'],'wppost','wp_username'));
-	$wp_password = xmlify(PConfig::get($b['uid'],'wppost','wp_password'));
+	$wp_username = XML::escape(PConfig::get($b['uid'], 'wppost', 'wp_username'));
+	$wp_password = XML::escape(PConfig::get($b['uid'], 'wppost',' wp_password'));
 	$wp_blog = PConfig::get($b['uid'],'wppost','wp_blog');
 	$wp_backlink_text = PConfig::get($b['uid'],'wppost','wp_backlink_text');
 	if ($wp_backlink_text == '') {
@@ -293,7 +295,7 @@ function wppost_send(&$a,&$b) {
 				. $wp_backlink_text . '</a>' . EOL . EOL;
 		}
 
-		$post = xmlify($post);
+		$post = XML::escape($post);
 
 
 		$xml = <<< EOT
@@ -312,11 +314,11 @@ function wppost_send(&$a,&$b) {
 
 EOT;
 
-		logger('wppost: data: ' . $xml, LOGGER_DATA);
+		Logger::log('wppost: data: ' . $xml, Logger::DATA);
 
 		if ($wp_blog !== 'test') {
 			$x = Network::post($wp_blog, $xml)->getBody();
 		}
-		logger('posted to wordpress: ' . (($x) ? $x : ''), LOGGER_DEBUG);
+		Logger::log('posted to wordpress: ' . (($x) ? $x : ''), Logger::DEBUG);
 	}
 }

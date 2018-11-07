@@ -12,6 +12,8 @@ use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 use Friendica\Core\System;
 use Friendica\Util\Network;
 
@@ -29,7 +31,7 @@ function openstreetmap_install()
 	Addon::registerHook('Map::getCoordinates', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_get_coordinates');
 	Addon::registerHook('page_header', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_alterheader');
 
-	logger("installed openstreetmap");
+	Logger::log("installed openstreetmap");
 }
 
 function openstreetmap_uninstall()
@@ -41,7 +43,7 @@ function openstreetmap_uninstall()
 	Addon::unregisterHook('Map::getCoordinates', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_get_coordinates');
 	Addon::unregisterHook('page_header', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_alterheader');
 
-	logger("removed openstreetmap");
+	Logger::log("removed openstreetmap");
 }
 
 function openstreetmap_load_config(\Friendica\App $a)
@@ -165,8 +167,8 @@ function openstreetmap_generate_map(&$a, &$b)
 	$lat = $b['lat']; // round($b['lat'], 5);
 	$lon = $b['lon']; // round($b['lon'], 5);
 
-	logger('lat: ' . $lat, LOGGER_DATA);
-	logger('lon: ' . $lon, LOGGER_DATA);
+	Logger::log('lat: ' . $lat, Logger::DATA);
+	Logger::log('lon: ' . $lon, Logger::DATA);
 
 	$cardlink = '<a href="' . $tmsserver;
 
@@ -184,12 +186,12 @@ function openstreetmap_generate_map(&$a, &$b)
 		$b['html'] .= '<br/>' . $cardlink;
 	}
 
-	logger('generate_map: ' . $b['html'], LOGGER_DATA);
+	Logger::log('generate_map: ' . $b['html'], Logger::DATA);
 }
 
 function openstreetmap_addon_admin(&$a, &$o)
 {
-	$t = get_markup_template("admin.tpl", "addon/openstreetmap/");
+	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/openstreetmap/");
 	$tmsserver = Config::get('openstreetmap', 'tmsserver', OSM_TMS);
 	$nomserver = Config::get('openstreetmap', 'nomserver', OSM_NOM);
 	$zoom = Config::get('openstreetmap', 'zoom', OSM_ZOOM);
@@ -200,7 +202,7 @@ function openstreetmap_addon_admin(&$a, &$o)
 		$nomserver = OSM_NOM;
 	}
 
-	$o = replace_macros($t, [
+	$o = Renderer::replaceMacros($t, [
 			'$submit' => L10n::t('Submit'),
 			'$tmsserver' => ['tmsserver', L10n::t('Tile Server URL'), $tmsserver, L10n::t('A list of <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank">public tile servers</a>')],
 			'$nomserver' => ['nomserver', L10n::t('Nominatim (reverse geocoding) Server URL'), $nomserver, L10n::t('A list of <a href="http://wiki.openstreetmap.org/wiki/Nominatim" target="_blank">Nominatim servers</a>')],

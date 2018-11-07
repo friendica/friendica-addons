@@ -11,6 +11,8 @@ use Friendica\BaseModule;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Util\DateTimeFormat;
 
@@ -53,7 +55,7 @@ function public_server_register_account($a, $b)
 
 function public_server_cron($a, $b)
 {
-	logger("public_server: cron start");
+	Logger::log("public_server: cron start");
 
 	require_once('include/enotify.php');
 	$r = q("SELECT * FROM `user` WHERE `account_expires_on` < UTC_TIMESTAMP() + INTERVAL 5 DAY AND
@@ -116,7 +118,7 @@ function public_server_cron($a, $b)
 		}
 	}
 
-	logger("public_server: cron end");
+	Logger::log("public_server: cron end");
 }
 
 function public_server_enotify(&$a, &$b)
@@ -163,8 +165,8 @@ function public_server_addon_admin_post(&$a)
 function public_server_addon_admin(&$a, &$o)
 {
 	$token = BaseModule::getFormSecurityToken("publicserver");
-	$t = get_markup_template("admin.tpl", "addon/public_server");
-	$o = replace_macros($t, [
+	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/public_server");
+	$o = Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$form_security_token' => $token,
 		'$infotext' => L10n::t('Set any of these options to 0 to deactivate it.'),

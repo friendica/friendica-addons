@@ -11,9 +11,11 @@
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
+use Friendica\Util\XML;
 
 function ijpost_install()
 {
@@ -184,7 +186,7 @@ function ijpost_send(&$a, &$b)
 	if ($ij_username && $ij_password && $ij_blog) {
 		$title = $b['title'];
 		$post = BBCode::convert($b['body']);
-		$post = xmlify($post);
+		$post = XML::escape($post);
 		$tags = ijpost_get_tags($b['tag']);
 
 		$date = DateTimeFormat::convert($b['created'], $tz);
@@ -221,12 +223,12 @@ function ijpost_send(&$a, &$b)
 
 EOT;
 
-		logger('ijpost: data: ' . $xml, LOGGER_DATA);
+		Logger::log('ijpost: data: ' . $xml, Logger::DATA);
 
 		if ($ij_blog !== 'test') {
 			$x = Network::post($ij_blog, $xml, ["Content-Type: text/xml"])->getBody();
 		}
-		logger('posted to insanejournal: ' . $x ? $x : '', LOGGER_DEBUG);
+		Logger::log('posted to insanejournal: ' . $x ? $x : '', Logger::DEBUG);
 	}
 }
 

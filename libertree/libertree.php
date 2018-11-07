@@ -9,6 +9,7 @@
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
 use Friendica\Util\Network;
@@ -157,7 +158,7 @@ function libertree_post_local(&$a,&$b) {
 
 function libertree_send(&$a,&$b) {
 
-	logger('libertree_send: invoked');
+	Logger::log('libertree_send: invoked');
 
 	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
@@ -232,6 +233,6 @@ function libertree_send(&$a,&$b) {
 		];
 
 		$result = Network::post($ltree_blog, $params)->getBody();
-		logger('libertree: ' . $result);
+		Logger::log('libertree: ' . $result);
 	}
 }

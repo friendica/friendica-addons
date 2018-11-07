@@ -13,6 +13,7 @@ require_once 'include/text.php';
 use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
@@ -103,16 +104,16 @@ function ifttt_post(App $a)
 
 	$user = DBA::selectFirst('user', ['uid'], ['nickname' => $nickname]);
 	if (!DBA::isResult($user)) {
-		logger('User ' . $nickname . ' not found.', LOGGER_DEBUG);
+		Logger::log('User ' . $nickname . ' not found.', Logger::DEBUG);
 		return;
 	}
 
 	$uid = $user['uid'];
 
-	logger('Received a post for user ' . $uid . ' from ifttt ' . print_r($_REQUEST, true), LOGGER_DEBUG);
+	Logger::log('Received a post for user ' . $uid . ' from ifttt ' . print_r($_REQUEST, true), Logger::DEBUG);
 
 	if (!isset($_REQUEST['key'])) {
-		logger('No key found.');
+		Logger::log('No key found.');
 		return;
 	}
 
@@ -120,7 +121,7 @@ function ifttt_post(App $a)
 
 	// Check the key
 	if ($key != PConfig::get($uid, 'ifttt', 'key')) {
-		logger('Invalid key for user ' . $uid, LOGGER_DEBUG);
+		Logger::log('Invalid key for user ' . $uid, Logger::DEBUG);
 		return;
 	}
 
@@ -131,7 +132,7 @@ function ifttt_post(App $a)
 	}
 
 	if (!in_array($item['type'], ['status', 'link', 'photo'])) {
-		logger('Unknown item type ' . $item['type'], LOGGER_DEBUG);
+		Logger::log('Unknown item type ' . $item['type'], Logger::DEBUG);
 		return;
 	}
 

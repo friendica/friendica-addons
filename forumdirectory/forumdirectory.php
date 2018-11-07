@@ -13,6 +13,7 @@ use Friendica\Content\Widget;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Model\Contact;
 use Friendica\Model\Profile;
@@ -76,7 +77,7 @@ function forumdirectory_content(App $a)
 		$search = ((!empty($_GET['search'])) ? notags(trim(rawurldecode($_GET['search']))) : '');
 	}
 
-	$tpl = get_markup_template('directory_header.tpl');
+	$tpl = Renderer::getMarkupTemplate('directory_header.tpl');
 
 	$globaldir = '';
 	$gdirpath = Config::get('system', 'directory');
@@ -87,7 +88,7 @@ function forumdirectory_content(App $a)
 
 	$admin = '';
 
-	$o .= replace_macros($tpl, [
+	$o .= Renderer::replaceMacros($tpl, [
 		'$search'    => $search,
 		'$globaldir' => $globaldir,
 		'$desc'      => L10n::t('Find on this site'),
@@ -187,9 +188,9 @@ function forumdirectory_content(App $a)
 			$homepage = !empty($profile['homepage']) ? L10n::t('Homepage:') : false;
 			$about    = !empty($profile['about'])    ? L10n::t('About:')    : false;
 
-			$tpl = get_markup_template('forumdirectory_item.tpl', 'addon/forumdirectory/');
+			$tpl = Renderer::getMarkupTemplate('forumdirectory_item.tpl', 'addon/forumdirectory/');
 
-			$entry = replace_macros($tpl, [
+			$entry = Renderer::replaceMacros($tpl, [
 				'$id'           => $rr['id'],
 				'$profile_link' => $profile_link,
 				'$photo'        => $rr[$photo],

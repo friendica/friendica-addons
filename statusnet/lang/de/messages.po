@@ -4,16 +4,18 @@
 # 
 # 
 # Translators:
-# Abrax <webmaster@a-zwenkau.de>, 2014-2015
-# bavatar <tobias.diekershoff@gmx.net>, 2015
+# Andreas H., 2014-2015
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2015
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2016
+# Vinzenz Vietzke <vinz@vinzv.de>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-27 07:21+0200\n"
-"PO-Revision-Date: 2015-07-28 05:38+0000\n"
-"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"PO-Revision-Date: 2018-10-28 11:54+0000\n"
+"Last-Translator: Vinzenz Vietzke <vinz@vinzv.de>\n"
+"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,7 +24,7 @@ msgstr ""
 
 #: statusnet.php:151
 msgid "Post to GNU Social"
-msgstr "Poste nach GNU Social"
+msgstr "Auf GNU Social veröffentlichen"
 
 #: statusnet.php:196
 msgid ""
@@ -51,7 +53,7 @@ msgid ""
 "There are preconfigured OAuth key pairs for some GNU Social servers "
 "available. If you are using one of them, please use these credentials. If "
 "not feel free to connect to any other GNU Social instance (see below)."
-msgstr "Für einige GNU social Server sind voreingestellte OAuth Schlüsselpaare verfügbar. Solltest du einen dieser Server benutzen, dann verwende bitte diese Schlüssel. Falls nicht, stelle stattdessen eine Verbindung zu irgend einem anderen StatusNet Server her (siehe unten)."
+msgstr "Für einige GNU Social Server sind voreingestellte OAuth Schlüsselpaare verfügbar. Solltest du einen dieser Server benutzen, dann verwende bitte diese Schlüssel. Falls nicht, stelle stattdessen eine Verbindung zu irgendeinem anderen StatusNet Server her (siehe unten)."
 
 #: statusnet.php:320 statusnet.php:337 statusnet.php:364 statusnet.php:371
 #: statusnet.php:416 statusnet.php:699
@@ -69,7 +71,7 @@ msgid ""
 "here and enter the API base root.<br />Before you register your own OAuth "
 "key pair ask the administrator if there is already a key pair for this "
 "Friendica installation at your favorited GNU Social installation."
-msgstr "Kein Consumer-Schlüsselpaar für GNU social gefunden. Registriere deinen Friendica-Account als Desktop-Client, kopiere das Consumer-Schlüsselpaar hierher und gib die API-URL ein.<br />Bevor du dein eigenes Consumer-Schlüsselpaar registrierst, frage den Administrator dieses Friendica-Servers, ob schon ein Schlüsselpaar für diesen Friendica-Server auf diesem StatusNet-Server existiert."
+msgstr "Kein Consumer-Schlüsselpaar für GNU Social gefunden. Registriere deinen Friendica-Account als Desktop-Client bei deinem GNU Social Account, kopiere das Consumer-Schlüsselpaar hierher und gib die API-URL ein.<br />Bevor du dein eigenes Consumer-Schlüsselpaar registrierst, frage den Administrator dieses Friendica-Servers, ob schon ein Schlüsselpaar für diesen Friendica-Server auf diesem GNU Social-Server existiert."
 
 #: statusnet.php:325
 msgid "OAuth Consumer Key"
@@ -89,11 +91,11 @@ msgid ""
 "security code from GNU Social which you have to copy into the input box "
 "below and submit the form. Only your <strong>public</strong> posts will be "
 "posted to GNU Social."
-msgstr "Um dein Konto mit einem GNU social-Konto zu verknüpfen, klicke den Button an, um einen Sicherheitscode von GNU social zu erhalten, und kopiere diesen in das Eingabefeld weiter unten. Es werden ausschließlich deine <strong>öffentlichen</strong> Nachrichten an GNU social gesendet."
+msgstr "Um dein Konto mit einem GNU Social-Konto zu verknüpfen, klicke den Button an, um einen Sicherheitscode von GNU Social zu erhalten, und kopiere diesen in das Eingabefeld weiter unten. Es werden ausschließlich deine <strong>öffentlichen</strong> Nachrichten an GNU Social gesendet."
 
 #: statusnet.php:357
 msgid "Log in with GNU Social"
-msgstr "Bei GNU social anmelden"
+msgstr "Bei GNU Social anmelden"
 
 #: statusnet.php:359
 msgid "Copy the security code from GNU Social here"
@@ -105,11 +107,11 @@ msgstr "Verbindungsprozess abbrechen"
 
 #: statusnet.php:367
 msgid "Current GNU Social API is"
-msgstr "Derzeitige GNU social-API-URL lautet"
+msgstr "Derzeitige GNU Social-API-URL lautet"
 
 #: statusnet.php:368
 msgid "Cancel GNU Social Connection"
-msgstr "Verbindung zum GNU social Server abbrechen"
+msgstr "Verbindung zum GNU Social Server abbrechen"
 
 #: statusnet.php:379
 msgid "Currently connected to: "
@@ -120,7 +122,7 @@ msgid ""
 "If enabled all your <strong>public</strong> postings can be posted to the "
 "associated GNU Social account. You can choose to do so by default (here) or "
 "for every posting separately in the posting options when writing the entry."
-msgstr "Wenn aktiviert, können all deine <strong>öffentlichen</strong> Einträge auf dem verbundenen GNU social-Konto veröffentlicht werden. Du kannst das (hier) als Standardverhalten einstellen oder beim Schreiben eines Beitrags in den Beitragsoptionen festlegen."
+msgstr "Wenn aktiviert, können all deine <strong>öffentlichen</strong> Einträge auf dem verbundenen GNU Social-Konto veröffentlicht werden. Du kannst das (hier) als Standardverhalten einstellen oder beim Schreiben eines Beitrags in den Beitragsoptionen festlegen."
 
 #: statusnet.php:382
 msgid ""
@@ -128,20 +130,20 @@ msgid ""
 "details from unknown viewers?</em>) the link potentially included in public "
 "postings relayed to GNU Social will lead the visitor to a blank page "
 "informing the visitor that the access to your profile has been restricted."
-msgstr "<strong>Hinweis</strong>: Aufgrund deiner Privatsphären-Einstellungen (<em>Profil-Details vor unbekannten Betrachtern verbergen?</em>) wird der Link, der eventuell an deinen GNU social-Beitrag angehängt wird, um auf den Originalbeitrag zu verweisen, den Betrachter auf eine leere Seite führen, die ihn darüber informiert, dass der Zugriff eingeschränkt wurde."
+msgstr "<strong>Hinweis</strong>: Aufgrund deiner Privatsphären-Einstellungen (<em>Profil-Details vor unbekannten Betrachtern verbergen?</em>) wird der Link, der eventuell an deinen GNU Social-Beitrag angehängt wird, um auf den Originalbeitrag zu verweisen, den Betrachter auf eine leere Seite führen, die ihn darüber informiert, dass der Zugriff eingeschränkt wurde."
 
 #: statusnet.php:385
 msgid "Allow posting to GNU Social"
-msgstr "Veröffentlichung bei GNU social erlauben"
+msgstr "Veröffentlichung bei GNU Social erlauben"
 
 #: statusnet.php:388
 msgid "Send public postings to GNU Social by default"
-msgstr "Veröffentliche öffentliche Beiträge standardmäßig bei GNU social"
+msgstr "Veröffentliche öffentliche Beiträge standardmäßig bei GNU Social"
 
 #: statusnet.php:392
 msgid ""
 "Mirror all posts from GNU Social that are no replies or repeated messages"
-msgstr "Spiegle alle Beiträge von GNU social die keine Antworten oder wiederholten Nachrichten sind"
+msgstr "Spiegle alle Beiträge von GNU Social die keine Antworten oder wiederholten Nachrichten sind"
 
 #: statusnet.php:398
 msgid "Import the remote timeline"
