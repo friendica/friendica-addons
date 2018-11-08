@@ -6,6 +6,7 @@
  * Version: 1.0
  * Author: Hypolite Petovan
  * Author: Roland Haeder
+ * Status: Unsupported
  */
 
 use Friendica\App;
