@@ -35,6 +35,7 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Util\Strings;
 
 function piwik_install() {
 	Addon::registerHook('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
@@ -107,7 +108,7 @@ function piwik_addon_admin (&$a, &$o) {
 	]);
 }
 function piwik_addon_admin_post (&$a) {
-	$url = ((x($_POST, 'baseurl')) ? notags(trim($_POST['baseurl'])) : '');
+	$url = ((x($_POST, 'baseurl')) ? Strings::removeTags(trim($_POST['baseurl'])) : '');
 	$id = ((x($_POST, 'siteid')) ? trim($_POST['siteid']) : '');
 	$optout = ((x($_POST, 'optout')) ? trim($_POST['optout']) : '');
 	$async = ((x($_POST, 'async')) ? trim($_POST['async']) : '');

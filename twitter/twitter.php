@@ -86,6 +86,7 @@ use Friendica\Model\User;
 use Friendica\Object\Image;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
+use Friendica\Util\Strings;
 
 require_once 'boot.php';
 require_once 'include/dba.php';
@@ -657,8 +658,8 @@ function twitter_post_hook(App $a, array &$b)
 
 function twitter_addon_admin_post(App $a)
 {
-	$consumerkey    = x($_POST, 'consumerkey')    ? notags(trim($_POST['consumerkey']))    : '';
-	$consumersecret = x($_POST, 'consumersecret') ? notags(trim($_POST['consumersecret'])) : '';
+	$consumerkey    = x($_POST, 'consumerkey')    ? Strings::removeTags(trim($_POST['consumerkey']))    : '';
+	$consumersecret = x($_POST, 'consumersecret') ? Strings::removeTags(trim($_POST['consumersecret'])) : '';
 	Config::set('twitter', 'consumerkey', $consumerkey);
 	Config::set('twitter', 'consumersecret', $consumersecret);
 	info(L10n::t('Settings updated.') . EOL);
@@ -1058,7 +1059,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 		// create contact record
 		$fields['uid'] = $uid;
 		$fields['created'] = DateTimeFormat::utcNow();
-		$fields['nurl'] = normalise_link($url);
+		$fields['nurl'] = Strings::normaliseLink($url);
 		$fields['alias'] = 'twitter::' . $data->id_str;
 		$fields['poll'] = 'twitter::' . $data->id_str;
 		$fields['rel'] = Contact::FRIEND;
@@ -1264,7 +1265,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 	}
 
 	// it seems as if the entities aren't always covering all mentions. So the rest will be checked here
-	$tags = get_tags($body);
+	$tags = Strings::getTags($body);
 
 	if (count($tags)) {
 		foreach ($tags as $tag) {

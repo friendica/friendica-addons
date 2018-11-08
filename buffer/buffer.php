@@ -19,6 +19,7 @@ use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Model\ItemContent;
 use Friendica\Util\Proxy as ProxyUtils;
+use Friendica\Util\Strings;
 
 function buffer_install()
 {
@@ -83,8 +84,8 @@ function buffer_addon_admin(App $a, &$o)
 
 function buffer_addon_admin_post(App $a)
 {
-	$client_id     = ((!empty($_POST['client_id']))     ? notags(trim($_POST['client_id']))     : '');
-	$client_secret = ((!empty($_POST['client_secret'])) ? notags(trim($_POST['client_secret'])) : '');
+	$client_id     = ((!empty($_POST['client_id']))     ? Strings::removeTags(trim($_POST['client_id']))     : '');
+	$client_secret = ((!empty($_POST['client_secret'])) ? Strings::removeTags(trim($_POST['client_secret'])) : '');
 
 	Config::set('buffer', 'client_id'    , $client_id);
 	Config::set('buffer', 'client_secret', $client_secret);

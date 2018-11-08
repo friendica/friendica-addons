@@ -16,6 +16,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Core\System;
 use Friendica\Util\Network;
+use Friendica\Util\Strings;
 
 const OSM_TMS = 'https://www.openstreetmap.org';
 const OSM_NOM = 'https://nominatim.openstreetmap.org/search.php';
@@ -176,7 +177,7 @@ function openstreetmap_generate_map(&$a, &$b)
 		$cardlink .= '?mlat=' . $lat . '&mlon=' . $lon;
 	}
 
-	$cardlink .= '#map=' . $zoom . '/' . $lat . '/' . $lon . '">' . ($b['location'] ? escape_tags($b['location']) : L10n::t('View Larger')) . '</a>';
+	$cardlink .= '#map=' . $zoom . '/' . $lat . '/' . $lon . '">' . ($b['location'] ? Strings::escapeTags($b['location']) : L10n::t('View Larger')) . '</a>';
 	if (empty($b['mode'])) {
 		$b['html'] = '<iframe style="width:100%; height:300px; border:1px solid #ccc" src="' . $tmsserver .
 				'/export/embed.html?bbox=' . ($lon - 0.01) . '%2C' . ($lat - 0.01) . '%2C' . ($lon + 0.01) . '%2C' . ($lat + 0.01) .

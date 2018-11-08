@@ -14,6 +14,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
 use Friendica\Util\Network;
+use Friendica\Util\Strings;
 use Friendica\Util\XML;
 
 function wppost_install() {
@@ -149,7 +150,7 @@ function wppost_settings_post(&$a,&$b) {
 		PConfig::set(local_user(),'wppost','wp_blog',trim($_POST['wp_blog']));
 		PConfig::set(local_user(),'wppost','backlink',trim($_POST['wp_backlink']));
 		PConfig::set(local_user(),'wppost','shortcheck',trim($_POST['wp_shortcheck']));
-		$wp_backlink_text = notags(trim($_POST['wp_backlink_text']));
+		$wp_backlink_text = Strings::removeTags(trim($_POST['wp_backlink_text']));
 		$wp_backlink_text = BBCode::convert($wp_backlink_text, false, 8);
 		$wp_backlink_text = HTML::toPlaintext($wp_backlink_text, 0, true);
 		PConfig::set(local_user(),'wppost','wp_backlink_text', $wp_backlink_text);

@@ -12,6 +12,7 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
+use Friendica\Util\Strings;
 
 function xmpp_install()
 {
@@ -98,7 +99,7 @@ function xmpp_addon_settings(App $a, &$s)
 function xmpp_login()
 {
 	if (empty($_SESSION['allow_api'])) {
-		$password = random_string(16);
+		$password = Strings::getRandomHex(16);
 		PConfig::set(local_user(), 'xmpp', 'password', $password);
 	}
 }
@@ -161,11 +162,11 @@ function xmpp_converse(App $a)
 		$password = PConfig::get(local_user(), "xmpp", "password", '', true);
 
 		if ($password == "") {
-			$password = random_string(16);
+			$password = Strings::getRandomHex(16);
 			PConfig::set(local_user(), "xmpp", "password", $password);
 		}
 
-		$jid = $a->user["nickname"] . "@" . $a->getHostName() . "/converse-" . random_string(5);
+		$jid = $a->user["nickname"] . "@" . $a->getHostName() . "/converse-" . Strings::getRandomHex(5);
 
 		$auto_login = "auto_login: true,
 			authentication: 'login',

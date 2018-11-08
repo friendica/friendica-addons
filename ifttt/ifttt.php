@@ -18,6 +18,7 @@ use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
 use Friendica\Model\Item;
+use Friendica\Util\Strings;
 
 function ifttt_install()
 {
@@ -50,7 +51,7 @@ function ifttt_settings(App $a, &$s)
 	$key = PConfig::get(local_user(), 'ifttt', 'key');
 
 	if (!$key) {
-		$key = random_string(20);
+		$key = Strings::getRandomHex(20);
 		PConfig::set(local_user(), 'ifttt', 'key', $key);
 	}
 
