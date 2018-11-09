@@ -17,6 +17,7 @@ use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Model\Contact;
 use Friendica\Model\Profile;
+use Friendica\Util\Strings;
 use Friendica\Util\Temporal;
 
 require_once 'boot.php';
@@ -72,9 +73,9 @@ function forumdirectory_content(App $a)
 	Nav::setSelected('directory');
 
 	if (!empty($a->data['search'])) {
-		$search = notags(trim($a->data['search']));
+		$search = Strings::escapeTags(trim($a->data['search']));
 	} else {
-		$search = ((!empty($_GET['search'])) ? notags(trim(rawurldecode($_GET['search']))) : '');
+		$search = ((!empty($_GET['search'])) ? Strings::escapeTags(trim(rawurldecode($_GET['search']))) : '');
 	}
 
 	$tpl = Renderer::getMarkupTemplate('directory_header.tpl');

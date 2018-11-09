@@ -10,6 +10,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\Renderer;
+use Friendica\Util\Strings;
 
 function webrtc_install() {
         Addon::registerHook('app_menu', 'addon/webrtc/webrtc.php', 'webrtc_app_menu');
@@ -32,7 +33,7 @@ function webrtc_addon_admin (&$a, &$o) {
 	]);
 }
 function webrtc_addon_admin_post (&$a) {
-        $url = ((x($_POST, 'webrtcurl')) ? notags(trim($_POST['webrtcurl'])) : '');
+        $url = ((x($_POST, 'webrtcurl')) ? Strings::escapeTags(trim($_POST['webrtcurl'])) : '');
 	    Config::set('webrtc', 'webrtcurl', $url);
 	    info(L10n::t('Settings updated.'). EOL);
 }

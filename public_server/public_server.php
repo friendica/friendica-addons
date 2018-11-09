@@ -15,6 +15,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Util\DateTimeFormat;
+use Friendica\Util\Strings;
 
 function public_server_install()
 {
@@ -147,12 +148,12 @@ function public_server_login($a, $b)
 function public_server_addon_admin_post(&$a)
 {
 	BaseModule::checkFormSecurityTokenRedirectOnError('/admin/addons/publicserver', 'publicserver');
-	$expiredays = (x($_POST, 'expiredays') ? notags(trim($_POST['expiredays'])) : '');
-	$expireposts = (x($_POST, 'expireposts') ? notags(trim($_POST['expireposts'])) : '');
-	$nologin = (x($_POST, 'nologin') ? notags(trim($_POST['nologin'])) : '');
-	$flagusers = (x($_POST, 'flagusers') ? notags(trim($_POST['flagusers'])) : '');
-	$flagposts = (x($_POST, 'flagposts') ? notags(trim($_POST['flagposts'])) : '');
-	$flagpostsexpire = (x($_POST, 'flagpostsexpire') ? notags(trim($_POST['flagpostsexpire'])) : '');
+	$expiredays = (x($_POST, 'expiredays') ? Strings::escapeTags(trim($_POST['expiredays'])) : '');
+	$expireposts = (x($_POST, 'expireposts') ? Strings::escapeTags(trim($_POST['expireposts'])) : '');
+	$nologin = (x($_POST, 'nologin') ? Strings::escapeTags(trim($_POST['nologin'])) : '');
+	$flagusers = (x($_POST, 'flagusers') ? Strings::escapeTags(trim($_POST['flagusers'])) : '');
+	$flagposts = (x($_POST, 'flagposts') ? Strings::escapeTags(trim($_POST['flagposts'])) : '');
+	$flagpostsexpire = (x($_POST, 'flagpostsexpire') ? Strings::escapeTags(trim($_POST['flagpostsexpire'])) : '');
 	Config::set('public_server', 'expiredays', $expiredays);
 	Config::set('public_server', 'expireposts', $expireposts);
 	Config::set('public_server', 'nologin', $nologin);

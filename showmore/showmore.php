@@ -10,6 +10,7 @@
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Util\Strings;
 
 function showmore_install()
 {
@@ -131,7 +132,7 @@ function showmore_prepare_body(\Friendica\App $a, &$hook_data)
 	}
 
 	if ($found) {
-		$rnd = random_string(8);
+		$rnd = Strings::getRandomHex(8);
 		$hook_data['html'] = '<span id="showmore-teaser-' . $rnd . '" class="showmore-teaser" style="display: block;">' . $shortened . " " .
 			'<span id="showmore-wrap-' . $rnd . '" style="white-space:nowrap;" class="showmore-wrap fakelink" onclick="openClose(\'showmore-' . $rnd . '\'); openClose(\'showmore-teaser-' . $rnd . '\');" >' . L10n::t('show more') . '</span></span>' .
 			'<div id="showmore-' . $rnd . '" class="showmore-content" style="display: none;">' . $hook_data['html'] . '</div>';

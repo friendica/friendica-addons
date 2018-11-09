@@ -60,6 +60,7 @@ use Friendica\Model\Photo;
 use Friendica\Model\User;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
+use Friendica\Util\Strings;
 
 function statusnet_install()
 {
@@ -623,7 +624,7 @@ function statusnet_addon_admin_post(App $a)
 		}
 		$secret = trim($_POST['secret'][$id]);
 		$key = trim($_POST['key'][$id]);
-		//$applicationname = ((x($_POST, 'applicationname')) ? notags(trim($_POST['applicationname'][$id])):'');
+		//$applicationname = ((x($_POST, 'applicationname')) ? Strings::escapeTags(trim($_POST['applicationname'][$id])):'');
 		if ($sitename != "" &&
 			$apiurl != "" &&
 			$secret != "" &&
@@ -885,7 +886,7 @@ function statusnet_fetchtimeline(App $a, $uid)
 
 function statusnet_address($contact)
 {
-	$hostname = normalise_link($contact->statusnet_profile_url);
+	$hostname = Strings::normaliseLink($contact->statusnet_profile_url);
 	$nickname = $contact->screen_name;
 
 	$hostname = preg_replace("=https?://([\w\.]*)/.*=ism", "$1", $contact->statusnet_profile_url);
@@ -907,7 +908,7 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 		"location" => $contact->location, "about" => $contact->description,
 		"addr" => statusnet_address($contact), "generation" => 3]);
 
-	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' AND `network` = '%s'LIMIT 1", intval($uid), DBA::escape(normalise_link($contact->statusnet_profile_url)), DBA::escape(Protocol::STATUSNET));
+	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' AND `network` = '%s'LIMIT 1", intval($uid), DBA::escape(Strings::normaliseLink($contact->statusnet_profile_url)), DBA::escape(Protocol::STATUSNET));
 
 	if (!DBA::isResult($r) && !$create_user) {
 		return 0;
@@ -927,9 +928,9 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 			intval($uid),
 			DBA::escape(DateTimeFormat::utcNow()),
 			DBA::escape($contact->statusnet_profile_url),
-			DBA::escape(normalise_link($contact->statusnet_profile_url)),
+			DBA::escape(Strings::normaliseLink($contact->statusnet_profile_url)),
 			DBA::escape(statusnet_address($contact)),
-			DBA::escape(normalise_link($contact->statusnet_profile_url)),
+			DBA::escape(Strings::normaliseLink($contact->statusnet_profile_url)),
 			DBA::escape(''),
 			DBA::escape(''),
 			DBA::escape($contact->name),
@@ -1001,7 +1002,7 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 				DBA::escape(DateTimeFormat::utcNow()),
 				DBA::escape(DateTimeFormat::utcNow()),
 				DBA::escape($contact->statusnet_profile_url),
-				DBA::escape(normalise_link($contact->statusnet_profile_url)),
+				DBA::escape(Strings::normaliseLink($contact->statusnet_profile_url)),
 				DBA::escape(statusnet_address($contact)),
 				DBA::escape($contact->name),
 				DBA::escape($contact->screen_name),
@@ -1523,7 +1524,7 @@ function statusnet_fetch_own_contact(App $a, $uid)
 		// Fetching user data
 		$user = $connection->get('account/verify_credentials');
 
-		PConfig::set($uid, 'statusnet', 'own_url', normalise_link($user->statusnet_profile_url));
+		PConfig::set($uid, 'statusnet', 'own_url', Strings::normaliseLink($user->statusnet_profile_url));
 
 		$contact_id = statusnet_fetch_contact($uid, $user, true);
 	} else {

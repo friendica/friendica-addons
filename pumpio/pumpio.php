@@ -25,6 +25,7 @@ use Friendica\Model\Queue;
 use Friendica\Model\User;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
+use Friendica\Util\Strings;
 use Friendica\Util\XML;
 
 require 'addon/pumpio/oauth/http.php';
@@ -878,11 +879,11 @@ function pumpio_dounlike(App $a, $uid, $self, $post, $own_id)
 
 	$contactid = 0;
 
-	if (link_compare($post->actor->url, $own_id)) {
+	if (Strings::compareLink($post->actor->url, $own_id)) {
 		$contactid = $self[0]['id'];
 	} else {
 		$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
-			DBA::escape(normalise_link($post->actor->url)),
+			DBA::escape(Strings::normaliseLink($post->actor->url)),
 			intval($uid)
 		);
 
@@ -930,14 +931,14 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 
 	$contactid = 0;
 
-	if (link_compare($post->actor->url, $own_id)) {
+	if (Strings::compareLink($post->actor->url, $own_id)) {
 		$contactid = $self[0]['id'];
 		$post->actor->displayName = $self[0]['name'];
 		$post->actor->url = $self[0]['url'];
 		$post->actor->image->url = $self[0]['photo'];
 	} else {
 		$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
-			DBA::escape(normalise_link($post->actor->url)),
+			DBA::escape(Strings::normaliseLink($post->actor->url)),
 			intval($uid)
 		);
 
@@ -1016,7 +1017,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false)
 	}
 
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `nurl` = '%s' LIMIT 1",
-		intval($uid), DBA::escape(normalise_link($contact->url)));
+		intval($uid), DBA::escape(Strings::normaliseLink($contact->url)));
 
 	if (!DBA::isResult($r)) {
 		// create contact record
@@ -1027,7 +1028,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false)
 			intval($uid),
 			DBA::escape(DateTimeFormat::utcNow()),
 			DBA::escape($contact->url),
-			DBA::escape(normalise_link($contact->url)),
+			DBA::escape(Strings::normaliseLink($contact->url)),
 			DBA::escape(str_replace("acct:", "", $contact->id)),
 			DBA::escape(''),
 			DBA::escape($contact->id), // What is it for?
@@ -1044,7 +1045,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false)
 		);
 
 		$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d LIMIT 1",
-			DBA::escape(normalise_link($contact->url)),
+			DBA::escape(Strings::normaliseLink($contact->url)),
 			intval($uid)
 			);
 
@@ -1164,7 +1165,7 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 	} else {
 		$contact_id = pumpio_get_contact($uid, $post->actor, true);
 
-		if (link_compare($post->actor->url, $own_id)) {
+		if (Strings::compareLink($post->actor->url, $own_id)) {
 			$contact_id = $self[0]['id'];
 			$post->actor->displayName = $self[0]['name'];
 			$post->actor->url = $self[0]['url'];
@@ -1172,7 +1173,7 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 		} elseif ($contact_id == 0) {
 			// Take an existing contact, the contact of the note or - as a fallback - the id of the user
 			$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
-				DBA::escape(normalise_link($post->actor->url)),
+				DBA::escape(Strings::normaliseLink($post->actor->url)),
 				intval($uid)
 			);
 
@@ -1180,7 +1181,7 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 				$contact_id = $r[0]['id'];
 			} else {
 				$r = q("SELECT * FROM `contact` WHERE `nurl` = '%s' AND `uid` = %d AND `blocked` = 0 AND `readonly` = 0 LIMIT 1",
-					DBA::escape(normalise_link($post->actor->url)),
+					DBA::escape(Strings::normaliseLink($post->actor->url)),
 					intval($uid)
 				);
 
