@@ -108,7 +108,7 @@ function piwik_addon_admin (&$a, &$o) {
 	]);
 }
 function piwik_addon_admin_post (&$a) {
-	$url = ((x($_POST, 'baseurl')) ? Strings::removeTags(trim($_POST['baseurl'])) : '');
+	$url = ((x($_POST, 'baseurl')) ? Strings::escapeTags(trim($_POST['baseurl'])) : '');
 	$id = ((x($_POST, 'siteid')) ? trim($_POST['siteid']) : '');
 	$optout = ((x($_POST, 'optout')) ? trim($_POST['optout']) : '');
 	$async = ((x($_POST, 'async')) ? trim($_POST['async']) : '');

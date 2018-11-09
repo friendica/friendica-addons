@@ -73,9 +73,9 @@ function forumdirectory_content(App $a)
 	Nav::setSelected('directory');
 
 	if (!empty($a->data['search'])) {
-		$search = Strings::removeTags(trim($a->data['search']));
+		$search = Strings::escapeTags(trim($a->data['search']));
 	} else {
-		$search = ((!empty($_GET['search'])) ? Strings::removeTags(trim(rawurldecode($_GET['search']))) : '');
+		$search = ((!empty($_GET['search'])) ? Strings::escapeTags(trim(rawurldecode($_GET['search']))) : '');
 	}
 
 	$tpl = Renderer::getMarkupTemplate('directory_header.tpl');

@@ -624,7 +624,7 @@ function statusnet_addon_admin_post(App $a)
 		}
 		$secret = trim($_POST['secret'][$id]);
 		$key = trim($_POST['key'][$id]);
-		//$applicationname = ((x($_POST, 'applicationname')) ? Strings::removeTags(trim($_POST['applicationname'][$id])):'');
+		//$applicationname = ((x($_POST, 'applicationname')) ? Strings::escapeTags(trim($_POST['applicationname'][$id])):'');
 		if ($sitename != "" &&
 			$apiurl != "" &&
 			$secret != "" &&

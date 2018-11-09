@@ -658,8 +658,8 @@ function twitter_post_hook(App $a, array &$b)
 
 function twitter_addon_admin_post(App $a)
 {
-	$consumerkey    = x($_POST, 'consumerkey')    ? Strings::removeTags(trim($_POST['consumerkey']))    : '';
-	$consumersecret = x($_POST, 'consumersecret') ? Strings::removeTags(trim($_POST['consumersecret'])) : '';
+	$consumerkey    = x($_POST, 'consumerkey')    ? Strings::escapeTags(trim($_POST['consumerkey']))    : '';
+	$consumersecret = x($_POST, 'consumersecret') ? Strings::escapeTags(trim($_POST['consumersecret'])) : '';
 	Config::set('twitter', 'consumerkey', $consumerkey);
 	Config::set('twitter', 'consumersecret', $consumersecret);
 	info(L10n::t('Settings updated.') . EOL);

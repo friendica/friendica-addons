@@ -122,8 +122,8 @@ function gravatar_addon_admin (&$a, &$o) {
 function gravatar_addon_admin_post (&$a) {
 	BaseModule::checkFormSecurityToken('gravatarsave');
 
-	$default_avatar = ((x($_POST, 'avatar')) ? Strings::removeTags(trim($_POST['avatar'])) : 'identicon');
-	$rating = ((x($_POST, 'rating')) ? Strings::removeTags(trim($_POST['rating'])) : 'g');
+	$default_avatar = ((x($_POST, 'avatar')) ? Strings::escapeTags(trim($_POST['avatar'])) : 'identicon');
+	$rating = ((x($_POST, 'rating')) ? Strings::escapeTags(trim($_POST['rating'])) : 'g');
 	Config::set('gravatar', 'default_avatar', $default_avatar);
 	Config::set('gravatar', 'rating', $rating);
 	info(L10n::t('Gravatar settings updated.') .EOL);

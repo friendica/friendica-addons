@@ -55,7 +55,7 @@ function newmemberwidget_network_mod_init ($a, $b)
 function newmemberwidget_addon_admin_post(&$a)
 {
 	$ft = ((x($_POST, 'freetext')) ? trim($_POST['freetext']) : "");
-	$lsn = ((x($_POST, 'localsupportname')) ? Strings::removeTags(trim($_POST['localsupportname'])) : "");
+	$lsn = ((x($_POST, 'localsupportname')) ? Strings::escapeTags(trim($_POST['localsupportname'])) : "");
 	$gs = intval($_POST['linkglobalsupport']);
 	$ls = intval($_POST['linklocalsupport']);
 	Config::set('newmemberwidget', 'freetext',           trim($ft));
