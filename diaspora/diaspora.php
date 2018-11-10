@@ -21,6 +21,7 @@ use Friendica\Model\Queue;
 
 function diaspora_install()
 {
+	Addon::registerHook('hook_fork',               'addon/diaspora/diaspora.php', 'diaspora_hook_fork');
 	Addon::registerHook('post_local',              'addon/diaspora/diaspora.php', 'diaspora_post_local');
 	Addon::registerHook('notifier_normal',         'addon/diaspora/diaspora.php', 'diaspora_send');
 	Addon::registerHook('jot_networks',            'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
@@ -31,6 +32,7 @@ function diaspora_install()
 
 function diaspora_uninstall()
 {
+	Addon::unregisterHook('hook_fork',               'addon/diaspora/diaspora.php', 'diaspora_hook_fork');
 	Addon::unregisterHook('post_local',              'addon/diaspora/diaspora.php', 'diaspora_post_local');
 	Addon::unregisterHook('notifier_normal',         'addon/diaspora/diaspora.php', 'diaspora_send');
 	Addon::unregisterHook('jot_networks',            'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
@@ -250,6 +252,21 @@ function diaspora_settings_post(App $a, &$b)
 		PConfig::set(local_user(),'diaspora', 'handle'         , trim($_POST['handle']));
 		PConfig::set(local_user(),'diaspora', 'password'       , trim($_POST['password']));
 		PConfig::set(local_user(),'diaspora', 'aspect'         , trim($_POST['aspect']));
+	}
+}
+
+function diaspora_hook_fork(&$a, &$b)
+{
+	if ($b['name'] != 'notifier_normal') {
+		return;
+	}
+
+	$post = $b['data'];
+
+	if ($post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
+		!strstr($post['postopts'], 'diaspora') || ($post['parent'] != $post['id'])) {
+		$b['execute'] = false;
+		return;
 	}
 }
 

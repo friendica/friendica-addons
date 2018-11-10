@@ -68,6 +68,7 @@ function statusnet_install()
 	Addon::registerHook('connector_settings', 'addon/statusnet/statusnet.php', 'statusnet_settings');
 	Addon::registerHook('connector_settings_post', 'addon/statusnet/statusnet.php', 'statusnet_settings_post');
 	Addon::registerHook('notifier_normal', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
+	Addon::registerHook('hook_fork', 'addon/statusnet/statusnet.php', 'statusnet_hook_fork');
 	Addon::registerHook('post_local', 'addon/statusnet/statusnet.php', 'statusnet_post_local');
 	Addon::registerHook('jot_networks', 'addon/statusnet/statusnet.php', 'statusnet_jot_nets');
 	Addon::registerHook('cron', 'addon/statusnet/statusnet.php', 'statusnet_cron');
@@ -81,6 +82,7 @@ function statusnet_uninstall()
 	Addon::unregisterHook('connector_settings', 'addon/statusnet/statusnet.php', 'statusnet_settings');
 	Addon::unregisterHook('connector_settings_post', 'addon/statusnet/statusnet.php', 'statusnet_settings_post');
 	Addon::unregisterHook('notifier_normal', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
+	Addon::unregisterHook('hook_fork', 'addon/statusnet/statusnet.php', 'statusnet_hook_fork');
 	Addon::unregisterHook('post_local', 'addon/statusnet/statusnet.php', 'statusnet_post_local');
 	Addon::unregisterHook('jot_networks', 'addon/statusnet/statusnet.php', 'statusnet_jot_nets');
 	Addon::unregisterHook('cron', 'addon/statusnet/statusnet.php', 'statusnet_cron');
@@ -391,6 +393,47 @@ function statusnet_settings(App $a, &$s)
 		}
 	}
 	$s .= '</div><div class="clear"></div>';
+}
+
+function statusnet_hook_fork(App $a, array &$b)
+{
+	if ($b['name'] != 'notifier_normal') {
+		return;
+	}
+
+	$post = $b['data'];
+
+	// Deleting and editing is not supported by the addon
+	if ($post['deleted'] || ($post['created'] !== $post['edited'])) {
+		$b['execute'] = false;
+		return;
+	}
+
+	// if post comes from GNU Social don't send it back
+	if ($post['extid'] == Protocol::STATUSNET) {
+		$b['execute'] = false;
+		return;
+	}
+
+	if ($post['app'] == 'StatusNet') {
+		$b['execute'] = false;
+		return;
+	}
+
+	if (PConfig::get($post['uid'], 'statusnet', 'import')) {
+		// Don't fork if it isn't a reply to a GNU Social post
+		if (($post['parent'] != $post['id']) && !Item::exists(['id' => $post['parent'], 'network' => Protocol::STATUSNET])) {
+			Logger::log('No GNU Social parent found for item ' . $post['id']);
+			$b['execute'] = false;
+			return;
+		}
+	} else {
+		// Comments are never exported when we don't import the GNU Social timeline
+		if (!strstr($post['postopts'], 'statusnet') || ($post['parent'] != $post['id']) || $post['private']) {
+			$b['execute'] = false;
+			return;
+		}
+	}
 }
 
 function statusnet_post_local(App $a, &$b)

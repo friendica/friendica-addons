@@ -23,6 +23,7 @@ use Friendica\Util\Strings;
 
 function buffer_install()
 {
+	Addon::registerHook('hook_fork',            'addon/buffer/buffer.php', 'buffer_hook_fork');
 	Addon::registerHook('post_local',           'addon/buffer/buffer.php', 'buffer_post_local');
 	Addon::registerHook('notifier_normal',      'addon/buffer/buffer.php', 'buffer_send');
 	Addon::registerHook('jot_networks',         'addon/buffer/buffer.php', 'buffer_jot_nets');
@@ -32,6 +33,7 @@ function buffer_install()
 
 function buffer_uninstall()
 {
+	Addon::unregisterHook('hook_fork',               'addon/buffer/buffer.php', 'buffer_hook_fork');
 	Addon::unregisterHook('post_local',              'addon/buffer/buffer.php', 'buffer_post_local');
 	Addon::unregisterHook('notifier_normal',         'addon/buffer/buffer.php', 'buffer_send');
 	Addon::unregisterHook('jot_networks',            'addon/buffer/buffer.php', 'buffer_jot_nets');
@@ -264,6 +266,21 @@ function buffer_post_local(App $a, array &$b)
 	}
 
 	$b['postopts'] .= 'buffer';
+}
+
+function buffer_hook_fork(&$a, &$b)
+{
+	if ($b['name'] != 'notifier_normal') {
+		return;
+	}
+
+	$post = $b['data'];
+
+	if ($post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
+		!strstr($post['postopts'], 'buffer') || ($post['parent'] != $post['id'])) {
+		$b['execute'] = false;
+		return;
+	}
 }
 
 function buffer_send(App $a, array &$b)

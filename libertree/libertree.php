@@ -14,22 +14,25 @@ use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
 use Friendica\Util\Network;
 
-function libertree_install() {
-    Addon::registerHook('post_local',           'addon/libertree/libertree.php', 'libertree_post_local');
-    Addon::registerHook('notifier_normal',      'addon/libertree/libertree.php', 'libertree_send');
-    Addon::registerHook('jot_networks',         'addon/libertree/libertree.php', 'libertree_jot_nets');
-    Addon::registerHook('connector_settings',      'addon/libertree/libertree.php', 'libertree_settings');
-    Addon::registerHook('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
-
-}
-function libertree_uninstall() {
-    Addon::unregisterHook('post_local',       'addon/libertree/libertree.php', 'libertree_post_local');
-    Addon::unregisterHook('notifier_normal',  'addon/libertree/libertree.php', 'libertree_send');
-    Addon::unregisterHook('jot_networks',     'addon/libertree/libertree.php', 'libertree_jot_nets');
-    Addon::unregisterHook('connector_settings',      'addon/libertree/libertree.php', 'libertree_settings');
-    Addon::unregisterHook('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
+function libertree_install()
+{
+	Addon::registerHook('hook_fork',            'addon/libertree/libertree.php', 'libertree_hook_fork');
+	Addon::registerHook('post_local',           'addon/libertree/libertree.php', 'libertree_post_local');
+	Addon::registerHook('notifier_normal',      'addon/libertree/libertree.php', 'libertree_send');
+	Addon::registerHook('jot_networks',         'addon/libertree/libertree.php', 'libertree_jot_nets');
+	Addon::registerHook('connector_settings',      'addon/libertree/libertree.php', 'libertree_settings');
+	Addon::registerHook('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
 }
 
+function libertree_uninstall()
+{
+	Addon::unregisterHook('hook_fork',        'addon/libertree/libertree.php', 'libertree_hook_fork');
+	Addon::unregisterHook('post_local',       'addon/libertree/libertree.php', 'libertree_post_local');
+	Addon::unregisterHook('notifier_normal',  'addon/libertree/libertree.php', 'libertree_send');
+	Addon::unregisterHook('jot_networks',     'addon/libertree/libertree.php', 'libertree_jot_nets');
+	Addon::unregisterHook('connector_settings',      'addon/libertree/libertree.php', 'libertree_settings');
+	Addon::unregisterHook('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
+}
 
 function libertree_jot_nets(&$a,&$b) {
     if(! local_user())
@@ -116,6 +119,21 @@ function libertree_settings_post(&$a,&$b) {
 
 	}
 
+}
+
+function libertree_hook_fork(App &$a, array &$b)
+{
+	if ($b['name'] != 'notifier_normal') {
+		return;
+	}
+
+	$post = $b['data'];
+
+	if ($post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
+		!strstr($post['postopts'], 'libertree') || ($post['parent'] != $post['id'])) {
+		$b['execute'] = false;
+		return;
+	}
 }
 
 function libertree_post_local(&$a,&$b) {
