@@ -1804,6 +1804,9 @@ function twitter_fetch_own_contact(App $a, $uid)
 		// Fetching user data
 		// get() may throw TwitterOAuthException, but we will catch it later
 		$user = $connection->get('account/verify_credentials');
+		if (empty($user) || empty($user->id_str)) {
+			return false;
+		}
 
 		PConfig::set($uid, 'twitter', 'own_id', $user->id_str);
 
