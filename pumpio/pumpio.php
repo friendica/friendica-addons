@@ -38,6 +38,7 @@ define('PUMPIO_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 function pumpio_install()
 {
 	Addon::registerHook('load_config',          'addon/pumpio/pumpio.php', 'pumpio_load_config');
+	Addon::registerHook('hook_fork',            'addon/pumpio/pumpio.php', 'hook_fork');
 	Addon::registerHook('post_local',           'addon/pumpio/pumpio.php', 'pumpio_post_local');
 	Addon::registerHook('notifier_normal',      'addon/pumpio/pumpio.php', 'pumpio_send');
 	Addon::registerHook('jot_networks',         'addon/pumpio/pumpio.php', 'pumpio_jot_nets');
@@ -51,6 +52,7 @@ function pumpio_install()
 function pumpio_uninstall()
 {
 	Addon::unregisterHook('load_config',      'addon/pumpio/pumpio.php', 'pumpio_load_config');
+	Addon::unregisterHook('hook_fork',        'addon/pumpio/pumpio.php', 'pumpio_hook_fork');
 	Addon::unregisterHook('post_local',       'addon/pumpio/pumpio.php', 'pumpio_post_local');
 	Addon::unregisterHook('notifier_normal',  'addon/pumpio/pumpio.php', 'pumpio_send');
 	Addon::unregisterHook('jot_networks',     'addon/pumpio/pumpio.php', 'pumpio_jot_nets');
@@ -379,6 +381,42 @@ function pumpio_settings_post(App $a, array &$b)
 function pumpio_load_config(App $a)
 {
 	$a->loadConfigFile(__DIR__. '/config/pumpio.ini.php');
+}
+
+function pumpio_hook_fork(App $a, array &$b)
+{
+        if ($b['name'] != 'notifier_normal') {
+                return;
+        }
+
+        $post = $b['data'];
+
+        // Deleting and editing is not supported by the addon (deleting could, but isn't by now)
+        if ($post['deleted'] || ($post['created'] !== $post['edited'])) {
+                $b['execute'] = false;
+                return;
+        }
+
+        // if post comes from pump.io don't send it back
+	if ($post['app'] == "pump.io") {
+                $b['execute'] = false;
+                return;
+        }
+
+        if (PConfig::get($post['uid'], 'pumpio', 'import')) {
+                // Don't fork if it isn't a reply to a pump.io post
+                if (($post['parent'] != $post['id']) && !Item::exists(['id' => $post['parent'], 'network' => Protocol::PUMPIO])) {
+                        Logger::log('No pump.io parent found for item ' . $post['id']);
+                        $b['execute'] = false;
+                        return;
+                }
+        } else {
+                // Comments are never exported when we don't import the pumpio timeline
+                if (!strstr($post['postopts'], 'pumpio') || ($post['parent'] != $post['id']) || $post['private']) {
+                        $b['execute'] = false;
+                        return;
+                }
+        }
 }
 
 function pumpio_post_local(App $a, array &$b)

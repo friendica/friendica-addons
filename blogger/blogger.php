@@ -17,6 +17,7 @@ use Friendica\Util\XML;
 
 function blogger_install()
 {
+	Addon::registerHook('hook_fork',               'addon/blogger/blogger.php', 'blogger_hook_fork');
 	Addon::registerHook('post_local',              'addon/blogger/blogger.php', 'blogger_post_local');
 	Addon::registerHook('notifier_normal',         'addon/blogger/blogger.php', 'blogger_send');
 	Addon::registerHook('jot_networks',            'addon/blogger/blogger.php', 'blogger_jot_nets');
@@ -26,6 +27,7 @@ function blogger_install()
 
 function blogger_uninstall()
 {
+	Addon::unregisterHook('hook_fork',               'addon/blogger/blogger.php', 'blogger_hook_fork');
 	Addon::unregisterHook('post_local',              'addon/blogger/blogger.php', 'blogger_post_local');
 	Addon::unregisterHook('notifier_normal',         'addon/blogger/blogger.php', 'blogger_send');
 	Addon::unregisterHook('jot_networks',            'addon/blogger/blogger.php', 'blogger_jot_nets');
@@ -127,6 +129,21 @@ function blogger_settings_post(App $a, array &$b)
 		PConfig::set(local_user(), 'blogger', 'bl_username',     trim($_POST['bl_username']));
 		PConfig::set(local_user(), 'blogger', 'bl_password',     trim($_POST['bl_password']));
 		PConfig::set(local_user(), 'blogger', 'bl_blog',         trim($_POST['bl_blog']));
+	}
+}
+
+function blogger_hook_fork(App &$a, array &$b)
+{
+	if ($b['name'] != 'notifier_normal') {
+		return;
+	}
+
+	$post = $b['data'];
+
+	if ($post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
+		!strstr($post['postopts'], 'blogger') || ($post['parent'] != $post['id'])) {
+		$b['execute'] = false;
+		return;
 	}
 }
 

@@ -104,6 +104,7 @@ function twitter_install()
 	Addon::registerHook('load_config'            , __FILE__, 'twitter_load_config');
 	Addon::registerHook('connector_settings'     , __FILE__, 'twitter_settings');
 	Addon::registerHook('connector_settings_post', __FILE__, 'twitter_settings_post');
+	Addon::registerHook('hook_fork'              , __FILE__, 'twitter_hook_fork');
 	Addon::registerHook('post_local'             , __FILE__, 'twitter_post_local');
 	Addon::registerHook('notifier_normal'        , __FILE__, 'twitter_post_hook');
 	Addon::registerHook('jot_networks'           , __FILE__, 'twitter_jot_nets');
@@ -121,6 +122,7 @@ function twitter_uninstall()
 	Addon::unregisterHook('load_config'            , __FILE__, 'twitter_load_config');
 	Addon::unregisterHook('connector_settings'     , __FILE__, 'twitter_settings');
 	Addon::unregisterHook('connector_settings_post', __FILE__, 'twitter_settings_post');
+	Addon::unregisterHook('hook_fork'              , __FILE__, 'twitter_hook_fork');
 	Addon::unregisterHook('post_local'             , __FILE__, 'twitter_post_local');
 	Addon::unregisterHook('notifier_normal'        , __FILE__, 'twitter_post_hook');
 	Addon::unregisterHook('jot_networks'           , __FILE__, 'twitter_jot_nets');
@@ -389,6 +391,47 @@ function twitter_settings(App $a, &$s)
 		}
 	}
 	$s .= '</div><div class="clear"></div>';
+}
+
+function twitter_hook_fork(App $a, array &$b)
+{
+	if ($b['name'] != 'notifier_normal') {
+		return;
+	}
+
+	$post = $b['data'];
+
+	// Deleting and editing is not supported by the addon (deleting could, but isn't by now)
+	if ($post['deleted'] || ($post['created'] !== $post['edited'])) {
+		$b['execute'] = false;
+		return;
+	}
+
+	// if post comes from twitter don't send it back
+	if ($post['extid'] == Protocol::TWITTER) {
+		$b['execute'] = false;
+		return;
+	}
+
+	if ($post['app'] == 'Twitter') {
+		$b['execute'] = false;
+		return;
+	}
+
+	if (PConfig::get($post['uid'], 'twitter', 'import')) {
+		// Don't fork if it isn't a reply to a twitter post
+		if (($post['parent'] != $post['id']) && !Item::exists(['id' => $post['parent'], 'network' => Protocol::TWITTER])) {
+			Logger::log('No twitter parent found for item ' . $post['id']);
+			$b['execute'] = false;
+			return;
+		}
+	} else {
+		// Comments are never exported when we don't import the twitter timeline
+		if (!strstr($post['postopts'], 'twitter') || ($post['parent'] != $post['id']) || $post['private']) {
+			$b['execute'] = false;
+			return;
+		}
+        }
 }
 
 function twitter_post_local(App $a, array &$b)

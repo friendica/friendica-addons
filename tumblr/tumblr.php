@@ -22,6 +22,7 @@ use Friendica\Util\Strings;
 
 function tumblr_install()
 {
+	Addon::registerHook('hook_fork',               'addon/tumblr/tumblr.php', 'tumblr_hook_fork');
 	Addon::registerHook('post_local',              'addon/tumblr/tumblr.php', 'tumblr_post_local');
 	Addon::registerHook('notifier_normal',         'addon/tumblr/tumblr.php', 'tumblr_send');
 	Addon::registerHook('jot_networks',            'addon/tumblr/tumblr.php', 'tumblr_jot_nets');
@@ -31,6 +32,7 @@ function tumblr_install()
 
 function tumblr_uninstall()
 {
+	Addon::unregisterHook('hook_fork',               'addon/tumblr/tumblr.php', 'tumblr_hook_fork');
 	Addon::unregisterHook('post_local',              'addon/tumblr/tumblr.php', 'tumblr_post_local');
 	Addon::unregisterHook('notifier_normal',         'addon/tumblr/tumblr.php', 'tumblr_send');
 	Addon::unregisterHook('jot_networks',            'addon/tumblr/tumblr.php', 'tumblr_jot_nets');
@@ -296,6 +298,21 @@ function tumblr_settings_post(App $a, array &$b)
 		PConfig::set(local_user(), 'tumblr', 'post',            intval($_POST['tumblr']));
 		PConfig::set(local_user(), 'tumblr', 'page',            $_POST['tumblr_page']);
 		PConfig::set(local_user(), 'tumblr', 'post_by_default', intval($_POST['tumblr_bydefault']));
+	}
+}
+
+function tumblr_hook_fork(&$a, &$b)
+{
+	if ($b['name'] != 'notifier_normal') {
+		return;
+	}
+
+	$post = $b['data'];
+
+	if ($post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
+		!strstr($post['postopts'], 'tumblr') || ($post['parent'] != $post['id'])) {
+		$b['execute'] = false;
+		return;
 	}
 }
 

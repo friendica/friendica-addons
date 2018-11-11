@@ -6,6 +6,7 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
 
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
 use Friendica\Core\Addon;
@@ -17,40 +18,45 @@ use Friendica\Util\Network;
 use Friendica\Util\Strings;
 use Friendica\Util\XML;
 
-function wppost_install() {
-    Addon::registerHook('post_local',           'addon/wppost/wppost.php', 'wppost_post_local');
-    Addon::registerHook('notifier_normal',      'addon/wppost/wppost.php', 'wppost_send');
-    Addon::registerHook('jot_networks',         'addon/wppost/wppost.php', 'wppost_jot_nets');
-    Addon::registerHook('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
-    Addon::registerHook('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
-
+function wppost_install()
+{
+	Addon::registerHook('hook_fork',            'addon/wppost/wppost.php', 'wppost_hook_fork');
+	Addon::registerHook('post_local',           'addon/wppost/wppost.php', 'wppost_post_local');
+	Addon::registerHook('notifier_normal',      'addon/wppost/wppost.php', 'wppost_send');
+	Addon::registerHook('jot_networks',         'addon/wppost/wppost.php', 'wppost_jot_nets');
+	Addon::registerHook('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
+	Addon::registerHook('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
 }
-function wppost_uninstall() {
-    Addon::unregisterHook('post_local',       'addon/wppost/wppost.php', 'wppost_post_local');
-    Addon::unregisterHook('notifier_normal',  'addon/wppost/wppost.php', 'wppost_send');
-    Addon::unregisterHook('jot_networks',     'addon/wppost/wppost.php', 'wppost_jot_nets');
-    Addon::unregisterHook('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
-    Addon::unregisterHook('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
+
+function wppost_uninstall()
+{
+	Addon::unregisterHook('hook_fork',        'addon/wppost/wppost.php', 'wppost_hook_fork');
+	Addon::unregisterHook('post_local',       'addon/wppost/wppost.php', 'wppost_post_local');
+	Addon::unregisterHook('notifier_normal',  'addon/wppost/wppost.php', 'wppost_send');
+	Addon::unregisterHook('jot_networks',     'addon/wppost/wppost.php', 'wppost_jot_nets');
+	Addon::unregisterHook('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
+	Addon::unregisterHook('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
 
 	// obsolete - remove
-    Addon::unregisterHook('post_local_end',   'addon/wppost/wppost.php', 'wppost_send');
-    Addon::unregisterHook('addon_settings',  'addon/wppost/wppost.php', 'wppost_settings');
-    Addon::unregisterHook('addon_settings_post',  'addon/wppost/wppost.php', 'wppost_settings_post');
-
+	Addon::unregisterHook('post_local_end',   'addon/wppost/wppost.php', 'wppost_send');
+	Addon::unregisterHook('addon_settings',  'addon/wppost/wppost.php', 'wppost_settings');
+	Addon::unregisterHook('addon_settings_post',  'addon/wppost/wppost.php', 'wppost_settings_post');
 }
 
 
-function wppost_jot_nets(&$a,&$b) {
-    if(! local_user())
-        return;
+function wppost_jot_nets(&$a, &$b)
+{
+	if (!local_user()) {
+		return;
+	}
 
-    $wp_post = PConfig::get(local_user(),'wppost','post');
-    if(intval($wp_post) == 1) {
-        $wp_defpost = PConfig::get(local_user(),'wppost','post_by_default');
-        $selected = ((intval($wp_defpost) == 1) ? ' checked="checked" ' : '');
-        $b .= '<div class="profile-jot-net"><input type="checkbox" name="wppost_enable" ' . $selected . ' value="1" /> '
-            . L10n::t('Post to Wordpress') . '</div>';
-    }
+	$wp_post = PConfig::get(local_user(), 'wppost', 'post');
+	if (intval($wp_post) == 1) {
+		$wp_defpost = PConfig::get(local_user(),'wppost','post_by_default');
+		$selected = ((intval($wp_defpost) == 1) ? ' checked="checked" ' : '');
+		$b .= '<div class="profile-jot-net"><input type="checkbox" name="wppost_enable" ' . $selected . ' value="1" /> '
+			. L10n::t('Post to Wordpress') . '</div>';
+	}
 }
 
 
@@ -157,6 +163,21 @@ function wppost_settings_post(&$a,&$b) {
 
 	}
 
+}
+
+function wppost_hook_fork(&$a, &$b)
+{
+	if ($b['name'] != 'notifier_normal') {
+		return;
+	}
+
+	$post = $b['data'];
+
+	if ($post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
+		!strstr($post['postopts'], 'wppost') || ($post['parent'] != $post['id'])) {
+		$b['execute'] = false;
+		return;
+	}
 }
 
 function wppost_post_local(&$a, &$b) {
