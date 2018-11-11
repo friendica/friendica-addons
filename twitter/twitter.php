@@ -65,6 +65,7 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 use Abraham\TwitterOAuth\TwitterOAuthException;
 use Friendica\App;
 use Friendica\Content\OEmbed;
+use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
@@ -1265,7 +1266,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 	}
 
 	// it seems as if the entities aren't always covering all mentions. So the rest will be checked here
-	$tags = Strings::getTags($body);
+	$tags = BBCode::getTags($body);
 
 	if (count($tags)) {
 		foreach ($tags as $tag) {
