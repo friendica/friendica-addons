@@ -5,15 +5,16 @@
 # 
 # Translators:
 # Hypolite Petovan <hypolite@mrpetovan.com>, 2016
-# Nicola Spanti <translations@nicola-spanti.info>, 2015
+# Marie Olive <lacellule101@gmail.com>, 2018
+# RyDroid <inactive+RyDroid@transifex.com>, 2015
 # StefOfficiel <pichard.stephane@free.fr>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2016-09-24 03:03+0000\n"
-"Last-Translator: Hypolite Petovan <hypolite@mrpetovan.com>\n"
+"PO-Revision-Date: 2018-11-13 12:56+0000\n"
+"Last-Translator: Marie Olive <lacellule101@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/Friendica/friendica/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -63,7 +64,7 @@ msgstr "Authentifier votre connexion à Buffer"
 
 #: buffer.php:146
 msgid "Enable Buffer Post Addon"
-msgstr "Activer le connecteur Buffer"
+msgstr "Activer l'extension de publication Buffer"
 
 #: buffer.php:151
 msgid "Post to Buffer by default"

@@ -2,6 +2,7 @@
 
 if(! function_exists("string_plural_select_fr")) {
 function string_plural_select_fr($n){
+	$n = intval($n);
 	return ($n > 1);;
 }}
 ;
@@ -15,7 +16,7 @@ $a->strings["return to the connector page"] = "revenir à la page du connecteur"
 $a->strings["Post to Buffer"] = "Publier sur Buffer";
 $a->strings["Buffer Export"] = "Export Buffer";
 $a->strings["Authenticate your Buffer connection"] = "Authentifier votre connexion à Buffer";
-$a->strings["Enable Buffer Post Addon"] = "Activer le connecteur Buffer";
+$a->strings["Enable Buffer Post Addon"] = "Activer l'extension de publication Buffer";
 $a->strings["Post to Buffer by default"] = "Publier sur Buffer par défaut";
 $a->strings["Check to delete this preset"] = "Cocher pour supprimer ce préréglage";
 $a->strings["Posts are going to all accounts that are enabled by default:"] = "Les posts sont envoyés à tous les comptes activés par défault:";
