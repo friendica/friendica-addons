@@ -1534,7 +1534,7 @@ function statusnet_convertmsg(App $a, $body, $no_tags = false)
 			if ($mtch[1] == "#") {
 				// Replacing the hash tags that are directed to the GNU Social server with internal links
 				$snhash = "#[url=" . $mtch[2] . "]" . $mtch[3] . "[/url]";
-				$frdchash = '#[url=' . $a->getBaseURL() . '/search?tag=' . rawurlencode($mtch[3]) . ']' . $mtch[3] . '[/url]';
+				$frdchash = '#[url=' . $a->getBaseURL() . '/search?tag=' . $mtch[3] . ']' . $mtch[3] . '[/url]';
 				$body = str_replace($snhash, $frdchash, $body);
 
 				$str_tags .= $frdchash;
