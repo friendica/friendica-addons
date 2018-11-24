@@ -218,8 +218,8 @@ function wppost_post_local(&$a, &$b) {
 
 
 
-function wppost_send(&$a,&$b) {
-
+function wppost_send(&$a, &$b)
+{
 	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
 	}
@@ -240,7 +240,7 @@ function wppost_send(&$a,&$b) {
 	}
 
 	$wp_username = XML::escape(PConfig::get($b['uid'], 'wppost', 'wp_username'));
-	$wp_password = XML::escape(PConfig::get($b['uid'], 'wppost',' wp_password'));
+	$wp_password = XML::escape(PConfig::get($b['uid'], 'wppost', 'wp_password'));
 	$wp_blog = PConfig::get($b['uid'],'wppost','wp_blog');
 	$wp_backlink_text = PConfig::get($b['uid'],'wppost','wp_backlink_text');
 	if ($wp_backlink_text == '') {
