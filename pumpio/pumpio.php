@@ -380,7 +380,7 @@ function pumpio_settings_post(App $a, array &$b)
 
 function pumpio_load_config(App $a)
 {
-	$a->loadConfigFile(__DIR__. '/config/pumpio.ini.php');
+	$a->loadConfigFile(__DIR__ . '/config/pumpio.config.php');
 }
 
 function pumpio_hook_fork(App $a, array &$b)
