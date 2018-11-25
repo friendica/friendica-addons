@@ -26,7 +26,7 @@
  * Note when using with Windows Active Directory: you may need to set TLS_CACERT in your site
  * ldap.conf file to the signing cert for your LDAP server.
  *
- * The configuration options for this module may be set in the config/addon.ini.php file
+ * The configuration options for this module may be set in the config/addon.config.php file
  * e.g.:
  *
  * [ldapauth]
@@ -72,7 +72,7 @@ function ldapauth_uninstall()
 
 function ldapauth_load_config(\Friendica\App $a)
 {
-	$a->loadConfigFile(__DIR__. '/config/ldapauth.ini.php');
+	$a->loadConfigFile(__DIR__ . '/config/ldapauth.config.php');
 }
 
 function ldapauth_hook_authenticate($a, &$b)
