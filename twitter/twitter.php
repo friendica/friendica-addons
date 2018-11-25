@@ -48,13 +48,14 @@
  *     we do not need "Twitter as login". When you've registered the app you get the
  *     OAuth Consumer key and secret pair for your application/site.
  *
- *     Add this key pair to your global config/addon.ini.php or use the admin panel.
+ *     Add this key pair to your global config/addon.config.php or use the admin panel.
  *
- *     [twitter]
- *     consumerkey = your consumer_key here
- *     consumersecret = your consumer_secret here
+ *     	'twitter' => [
+ * 		    'consumerkey' => '',
+ *  		'consumersecret' => '',
+ *      ],
  *
- *     To activate the addon itself add it to the [system] addon
+ *     To activate the addon itself add it to the system.addon
  *     setting. After this, your user can configure their Twitter account settings
  *     from "Settings -> Addon Settings".
  *
@@ -141,7 +142,7 @@ function twitter_uninstall()
 
 function twitter_load_config(App $a)
 {
-	$a->loadConfigFile(__DIR__ . '/config/twitter.ini.php');
+	$a->loadConfigFile(__DIR__ . '/config/twitter.config.php');
 }
 
 function twitter_check_item_notification(App $a, array &$notification_data)
