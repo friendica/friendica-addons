@@ -49,7 +49,7 @@ function openstreetmap_uninstall()
 
 function openstreetmap_load_config(\Friendica\App $a)
 {
-	$a->loadConfigFile(__DIR__. '/config/openstreetmap.ini.php');
+	$a->loadConfigFile(__DIR__ . '/config/openstreetmap.config.php');
 }
 
 function openstreetmap_alterheader($a, &$navHtml)
