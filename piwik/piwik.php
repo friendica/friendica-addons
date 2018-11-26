@@ -16,7 +16,7 @@
  *
  *   Configuration:
  *     Use the administration panel to configure the Piwik tracking addon, or
- *     in case you don't use this add the following lines to your config/addon.ini.php
+ *     in case you don't use this add the following lines to your config/addon.config.php
  *     file:
  *
  *     [piwik]
@@ -53,7 +53,7 @@ function piwik_uninstall() {
 
 function piwik_load_config(\Friendica\App $a)
 {
-	$a->loadConfigFile(__DIR__. '/config/piwik.ini.php');
+	$a->loadConfigFile(__DIR__ . '/config/piwik.config.php');
 }
 
 function piwik_analytics($a,&$b) {
@@ -66,7 +66,7 @@ function piwik_analytics($a,&$b) {
 	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/piwik/piwik.css' . '" media="all" />';
 
 	/*
-	 *   Get the configuration variables from the config/addon.ini.php file.
+	 *   Get the configuration variables from the config/addon.config.php file.
 	 */
 	$baseurl = Config::get('piwik', 'baseurl');
 	$siteid  = Config::get('piwik', 'siteid');

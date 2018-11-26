@@ -39,7 +39,7 @@ function libravatar_uninstall()
 
 function libravatar_load_config(App $a)
 {
-	$a->loadConfigFile(__DIR__. '/config/libravatar.ini.php');
+	$a->loadConfigFile(__DIR__ . '/config/libravatar.config.php');
 }
 
 /**

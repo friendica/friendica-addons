@@ -20,20 +20,24 @@ Configuration
 
 The easiest way to configure this addon is by activating the admin panels of your ~friendica server and then enter the needed details on the config page for the addon.
 
-If you don't want to use the admin panel, you can configure the addon through the config/local.ini.php file.
+If you don't want to use the admin panel, you can configure the addon through the `config/local.config.php` file.
 
-Open the config/local.ini.php file and add "piwik" to the list of activated addons.
+Open the `config/local.config.php` file and add "piwik" to the list of activated addons.
 
-    [system]
-    addon = ...,piwik
+    'system' => [
+        ...
+        'addon' => '...,piwik'
+        ...
+    ]
 
-You can change 4 more configuration variables for the addon in the config/addon.ini.php file:
+You can change 4 more configuration variables for the addon in the `config/addon.config.php` file:
 
-    [piwik]
-    baseurl = example.com/piwik/
-    sideid = 1
-    optout = true
-    async = false
+	'piwik' => [
+        'baseurl' => 'example.com/piwik/',
+        'sideid' => 1,
+        'optout' => true,
+        'async' => false,
+    ],
 
 Configuration fields
 ---------------------

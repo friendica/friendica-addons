@@ -39,7 +39,7 @@ function gravatar_uninstall() {
 
 function gravatar_load_config(App $a)
 {
-	$a->loadConfigFile(__DIR__. '/config/gravatar.ini.php');
+	$a->loadConfigFile(__DIR__ . '/config/gravatar.config.php');
 }
 
 /**

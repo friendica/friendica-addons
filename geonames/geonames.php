@@ -7,7 +7,7 @@
  *
  *
  * Pre-requisite: Register a username at geonames.org
- * and set in config/addon.ini.php
+ * and set in config/addon.config.php
  *
  * [geonames]
  * username = your_username
@@ -78,7 +78,7 @@ function geonames_uninstall() {
 
 function geonames_load_config(\Friendica\App $a)
 {
-	$a->loadConfigFile(__DIR__. '/config/geonames.ini.php');
+	$a->loadConfigFile(__DIR__. '/config/geonames.config.php');
 }
 
 function geonames_post_hook($a, &$item) {

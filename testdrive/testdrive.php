@@ -37,7 +37,7 @@ function testdrive_uninstall() {
 
 function testdrive_load_config(App $a)
 {
-	$a->loadConfigFile(__DIR__. '/config/testdrive.ini.php');
+	$a->loadConfigFile(__DIR__ . '/config/testdrive.config.php');
 }
 
 function testdrive_globaldir_update($a,&$b) {

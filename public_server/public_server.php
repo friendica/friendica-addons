@@ -37,7 +37,7 @@ function public_server_uninstall()
 
 function public_server_load_config(App $a)
 {
-	$a->loadConfigFile(__DIR__. '/config/public_server.ini.php');
+	$a->loadConfigFile(__DIR__ . '/config/public_server.config.php');
 }
 
 function public_server_register_account($a, $b)

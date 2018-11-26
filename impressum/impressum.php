@@ -54,7 +54,7 @@ function impressum_footer($a, &$b) {
 
 function impressum_load_config(\Friendica\App $a)
 {
-	$a->loadConfigFile(__DIR__. '/config/impressum.ini.php');
+	$a->loadConfigFile(__DIR__ . '/config/impressum.config.php');
 }
 
 function impressum_show($a,&$b) {
