@@ -87,12 +87,12 @@ function impressum_show($a,&$b) {
 }
 
 function impressum_addon_admin_post (&$a) {
-    $owner = ((x($_POST, 'owner')) ? Strings::escapeTags(trim($_POST['owner'])) : '');
-    $ownerprofile = ((x($_POST, 'ownerprofile')) ? Strings::escapeTags(trim($_POST['ownerprofile'])) : '');
-    $postal = ((x($_POST, 'postal')) ? (trim($_POST['postal'])) : '');
-    $notes = ((x($_POST, 'notes')) ? (trim($_POST['notes'])) : '');
-    $email = ((x($_POST, 'email')) ? Strings::escapeTags(trim($_POST['email'])) : '');
-    $footer_text = ((x($_POST, 'footer_text')) ? (trim($_POST['footer_text'])) : '');
+    $owner = (!empty($_POST['owner']) ? Strings::escapeTags(trim($_POST['owner'])) : '');
+    $ownerprofile = (!empty($_POST['ownerprofile']) ? Strings::escapeTags(trim($_POST['ownerprofile'])) : '');
+    $postal = (!empty($_POST['postal']) ? (trim($_POST['postal'])) : '');
+    $notes = (!empty($_POST['notes']) ? (trim($_POST['notes'])) : '');
+    $email = (!empty($_POST['email']) ? Strings::escapeTags(trim($_POST['email'])) : '');
+    $footer_text = (!empty($_POST['footer_text']) ? (trim($_POST['footer_text'])) : '');
     Config::set('impressum','owner',strip_tags($owner));
     Config::set('impressum','ownerprofile',strip_tags($ownerprofile));
     Config::set('impressum','postal',strip_tags($postal));

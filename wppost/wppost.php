@@ -147,7 +147,7 @@ function wppost_settings(&$a,&$s) {
 
 function wppost_settings_post(&$a,&$b) {
 
-	if(x($_POST,'wppost-submit')) {
+	if(!empty($_POST['wppost-submit'])) {
 
 		PConfig::set(local_user(),'wppost','post',intval($_POST['wppost']));
 		PConfig::set(local_user(),'wppost','post_by_default',intval($_POST['wp_bydefault']));
@@ -198,7 +198,7 @@ function wppost_post_local(&$a, &$b) {
 
 	$wp_post   = intval(PConfig::get(local_user(),'wppost','post'));
 
-	$wp_enable = (($wp_post && x($_REQUEST,'wppost_enable')) ? intval($_REQUEST['wppost_enable']) : 0);
+	$wp_enable = (($wp_post && !empty($_REQUEST['wppost_enable'])) ? intval($_REQUEST['wppost_enable']) : 0);
 
 	if ($b['api_source'] && intval(PConfig::get(local_user(),'wppost','post_by_default'))) {
 		$wp_enable = 1;

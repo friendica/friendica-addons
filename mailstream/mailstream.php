@@ -86,7 +86,7 @@ function mailstream_addon_admin(&$a,&$o) {
 }
 
 function mailstream_addon_admin_post ($a) {
-	if (x($_POST, 'frommail')) {
+	if (!empty($_POST['frommail'])) {
 		Config::set('mailstream', 'frommail', $_POST['frommail']);
 	}
 }

@@ -97,8 +97,8 @@ function testdrive_cron($a,$b) {
 }
 
 function testdrive_enotify(&$a, &$b) {
-    if (x($b, 'params') && $b['params']['type'] == NOTIFY_SYSTEM
-		&& x($b['params'], 'system_type') && $b['params']['system_type'] === 'testdrive_expire') {
+    if (!empty($b['params']) && $b['params']['type'] == NOTIFY_SYSTEM
+		&& !empty($b['params']['system_type']) && $b['params']['system_type'] === 'testdrive_expire') {
         $b['itemlink'] = $a->getBaseURL();
         $b['epreamble'] = $b['preamble'] = L10n::t('Your account on %s will expire in a few days.', Config::get('system', 'sitename'));
         $b['subject'] = L10n::t('Your Friendica test account is about to expire.');

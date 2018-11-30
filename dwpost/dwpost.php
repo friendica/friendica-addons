@@ -137,7 +137,7 @@ function dwpost_post_local(App $a, array &$b)
 
 	$dw_post = intval(PConfig::get(local_user(),'dwpost','post'));
 
-	$dw_enable = (($dw_post && x($_REQUEST,'dwpost_enable')) ? intval($_REQUEST['dwpost_enable']) : 0);
+	$dw_enable = (($dw_post && !empty($_REQUEST['dwpost_enable'])) ? intval($_REQUEST['dwpost_enable']) : 0);
 
 	if ($b['api_source'] && intval(PConfig::get(local_user(),'dwpost','post_by_default'))) {
 		$dw_enable = 1;

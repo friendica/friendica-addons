@@ -25,7 +25,7 @@ function notimeline_uninstall()
 
 function notimeline_settings_post($a, $post)
 {
-	if (!local_user() || (!x($_POST, 'notimeline-submit'))) {
+	if (!local_user() || empty($_POST['notimeline-submit'])) {
 		return;
 	}
 

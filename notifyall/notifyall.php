@@ -54,7 +54,7 @@ function notifyall_post(App $a)
 		$sender_name = '"' . L10n::t('%1$s, %2$s Administrator', Config::get('config', 'admin_name'), $sitename) . '"';
 	}
 
-	if (! x(Config::get('config', 'sender_email'))) {
+	if (!Config::get('config', 'sender_email')) {
 		$sender_email = 'noreply@' . $a->getHostName();
 	} else {
 		$sender_email = Config::get('config', 'sender_email');

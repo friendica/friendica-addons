@@ -123,7 +123,7 @@ function statusnet_settings_post(App $a, $post)
 		return;
 	}
 	// don't check GNU Social settings if GNU Social submit button is not clicked
-	if (!x($_POST, 'statusnet-submit')) {
+	if (empty($_POST['statusnet-submit'])) {
 		return;
 	}
 
@@ -447,7 +447,7 @@ function statusnet_post_local(App $a, &$b)
 	}
 
 	$statusnet_post = PConfig::get(local_user(), 'statusnet', 'post');
-	$statusnet_enable = (($statusnet_post && x($_REQUEST, 'statusnet_enable')) ? intval($_REQUEST['statusnet_enable']) : 0);
+	$statusnet_enable = (($statusnet_post && !empty($_REQUEST['statusnet_enable'])) ? intval($_REQUEST['statusnet_enable']) : 0);
 
 	// if API is used, default to the chosen settings
 	if ($b['api_source'] && intval(PConfig::get(local_user(), 'statusnet', 'post_by_default'))) {
@@ -667,12 +667,12 @@ function statusnet_addon_admin_post(App $a)
 		}
 		$secret = trim($_POST['secret'][$id]);
 		$key = trim($_POST['key'][$id]);
-		//$applicationname = ((x($_POST, 'applicationname')) ? Strings::escapeTags(trim($_POST['applicationname'][$id])):'');
+		//$applicationname = (!empty($_POST['applicationname']) ? Strings::escapeTags(trim($_POST['applicationname'][$id])):'');
 		if ($sitename != "" &&
 			$apiurl != "" &&
 			$secret != "" &&
 			$key != "" &&
-			!x($_POST['delete'][$id])) {
+			empty($_POST['delete'][$id])) {
 
 			$sites[] = [
 				'sitename' => $sitename,

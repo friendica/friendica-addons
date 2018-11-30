@@ -183,7 +183,7 @@ function js_upload_post_file(&$a,&$b) {
 function js_upload_post_end(&$a,&$b) {
 
 Logger::log('upload_post_end');
-	if(x($a->data,'upload_jsonresponse')) {
+	if(!empty($a->data['upload_jsonresponse'])) {
 		echo $a->data['upload_jsonresponse'];
 		killme();
 	}

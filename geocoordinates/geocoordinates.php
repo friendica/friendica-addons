@@ -100,10 +100,10 @@ function geocoordinates_addon_admin(&$a, &$o)
 
 function geocoordinates_addon_admin_post(&$a)
 {
-	$api_key  = ((x($_POST, 'api_key')) ? Strings::escapeTags(trim($_POST['api_key']))   : '');
+	$api_key  = (!empty($_POST['api_key']) ? Strings::escapeTags(trim($_POST['api_key']))   : '');
 	Config::set('geocoordinates', 'api_key', $api_key);
 
-	$language  = ((x($_POST, 'language')) ? Strings::escapeTags(trim($_POST['language']))   : '');
+	$language  = (!empty($_POST['language']) ? Strings::escapeTags(trim($_POST['language']))   : '');
 	Config::set('geocoordinates', 'language', $language);
 	info(L10n::t('Settings updated.'). EOL);
 }

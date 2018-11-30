@@ -82,7 +82,7 @@ function windowsphonepush_module()
  */
 function windowsphonepush_settings_post($a, $post)
 {
-	if (!local_user() || (!x($_POST, 'windowsphonepush-submit'))) {
+	if (!local_user() || empty($_POST['windowsphonepush-submit'])) {
 		return;
 	}
 	$enable = intval($_POST['windowsphonepush']);

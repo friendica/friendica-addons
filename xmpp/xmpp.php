@@ -117,8 +117,8 @@ function xmpp_addon_admin(App $a, &$o)
 
 function xmpp_addon_admin_post()
 {
-	$bosh_proxy = ((!empty($_POST['bosh_proxy'])) ? trim($_POST['bosh_proxy']) : '');
-	$central_userbase = ((!empty($_POST['central_userbase'])) ? intval($_POST['central_userbase']) : false);
+	$bosh_proxy = (!empty($_POST['bosh_proxy']) ? trim($_POST['bosh_proxy']) : '');
+	$central_userbase = (!empty($_POST['central_userbase']) ? intval($_POST['central_userbase']) : false);
 
 	Config::set('xmpp', 'bosh_proxy', $bosh_proxy);
 	Config::set('xmpp', 'central_userbase', $central_userbase);

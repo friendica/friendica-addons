@@ -33,7 +33,7 @@ function webrtc_addon_admin (&$a, &$o) {
 	]);
 }
 function webrtc_addon_admin_post (&$a) {
-        $url = ((x($_POST, 'webrtcurl')) ? Strings::escapeTags(trim($_POST['webrtcurl'])) : '');
+        $url = (!empty($_POST['webrtcurl']) ? Strings::escapeTags(trim($_POST['webrtcurl'])) : '');
 	    Config::set('webrtc', 'webrtcurl', $url);
 	    info(L10n::t('Settings updated.'). EOL);
 }

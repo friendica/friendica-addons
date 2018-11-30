@@ -108,7 +108,7 @@ function ijpost_settings(&$a, &$s)
 
 function ijpost_settings_post(&$a, &$b)
 {
-	if (x($_POST, 'ijpost-submit')) {
+	if (!empty($_POST['ijpost-submit'])) {
 		PConfig::set(local_user(), 'ijpost', 'post', intval($_POST['ijpost']));
 		PConfig::set(local_user(), 'ijpost', 'post_by_default', intval($_POST['ij_bydefault']));
 		PConfig::set(local_user(), 'ijpost', 'ij_username', trim($_POST['ij_username']));
@@ -134,7 +134,7 @@ function ijpost_post_local(&$a, &$b)
 
 	$ij_post   = intval(PConfig::get(local_user(), 'ijpost', 'post'));
 
-	$ij_enable = (($ij_post && x($_REQUEST, 'ijpost_enable')) ? intval($_REQUEST['ijpost_enable']) : 0);
+	$ij_enable = (($ij_post && !empty($_REQUEST['ijpost_enable'])) ? intval($_REQUEST['ijpost_enable']) : 0);
 
 	if ($b['api_source'] && intval(PConfig::get(local_user(), 'ijpost', 'post_by_default'))) {
 		$ij_enable = 1;

@@ -30,7 +30,7 @@ function fromapp_uninstall()
 
 function fromapp_settings_post($a, $post)
 {
-	if (!local_user() || (! x($_POST, 'fromapp-submit'))) {
+	if (!local_user() || empty($_POST['fromapp-submit'])) {
 		return;
 	}
 

@@ -40,7 +40,7 @@ function group_text_uninstall() {
  */
 
 function group_text_settings_post($a,$post) {
-	if(! local_user() || (! x($_POST,'group_text-submit')))
+	if(! local_user() || empty($_POST['group_text-submit']))
 		return;
 	PConfig::set(local_user(),'system','groupedit_image_limit',intval($_POST['group_text']));
 

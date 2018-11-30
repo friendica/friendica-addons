@@ -111,7 +111,7 @@ function libertree_settings(&$a,&$s) {
 
 function libertree_settings_post(&$a,&$b) {
 
-	if(x($_POST,'libertree-submit')) {
+	if(!empty($_POST['libertree-submit'])) {
 
 		PConfig::set(local_user(),'libertree','post',intval($_POST['libertree']));
 		PConfig::set(local_user(),'libertree','post_by_default',intval($_POST['libertree_bydefault']));
@@ -155,7 +155,7 @@ function libertree_post_local(&$a,&$b) {
 
 	$ltree_post   = intval(PConfig::get(local_user(),'libertree','post'));
 
-	$ltree_enable = (($ltree_post && x($_REQUEST,'libertree_enable')) ? intval($_REQUEST['libertree_enable']) : 0);
+	$ltree_enable = (($ltree_post && !empty($_REQUEST['libertree_enable'])) ? intval($_REQUEST['libertree_enable']) : 0);
 
 	if ($b['api_source'] && intval(PConfig::get(local_user(),'libertree','post_by_default'))) {
 		$ltree_enable = 1;

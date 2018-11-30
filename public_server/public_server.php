@@ -124,8 +124,8 @@ function public_server_cron($a, $b)
 
 function public_server_enotify(&$a, &$b)
 {
-	if (x($b, 'params') && $b['params']['type'] == NOTIFY_SYSTEM
-		&& x($b['params'], 'system_type') && $b['params']['system_type'] === 'public_server_expire') {
+	if (!empty($b['params']) && $b['params']['type'] == NOTIFY_SYSTEM
+		&& !empty($b['params']['system_type']) && $b['params']['system_type'] === 'public_server_expire') {
 		$b['itemlink'] = $a->getBaseURL();
 		$b['epreamble'] = $b['preamble'] = L10n::t('Your account on %s will expire in a few days.', Config::get('system', 'sitename'));
 		$b['subject'] = L10n::t('Your Friendica account is about to expire.');
@@ -148,12 +148,12 @@ function public_server_login($a, $b)
 function public_server_addon_admin_post(&$a)
 {
 	BaseModule::checkFormSecurityTokenRedirectOnError('/admin/addons/publicserver', 'publicserver');
-	$expiredays = (x($_POST, 'expiredays') ? Strings::escapeTags(trim($_POST['expiredays'])) : '');
-	$expireposts = (x($_POST, 'expireposts') ? Strings::escapeTags(trim($_POST['expireposts'])) : '');
-	$nologin = (x($_POST, 'nologin') ? Strings::escapeTags(trim($_POST['nologin'])) : '');
-	$flagusers = (x($_POST, 'flagusers') ? Strings::escapeTags(trim($_POST['flagusers'])) : '');
-	$flagposts = (x($_POST, 'flagposts') ? Strings::escapeTags(trim($_POST['flagposts'])) : '');
-	$flagpostsexpire = (x($_POST, 'flagpostsexpire') ? Strings::escapeTags(trim($_POST['flagpostsexpire'])) : '');
+	$expiredays = (!empty($_POST['expiredays']) ? Strings::escapeTags(trim($_POST['expiredays'])) : '');
+	$expireposts = (!empty($_POST['expireposts']) ? Strings::escapeTags(trim($_POST['expireposts'])) : '');
+	$nologin = (!empty($_POST['nologin']) ? Strings::escapeTags(trim($_POST['nologin'])) : '');
+	$flagusers = (!empty($_POST['flagusers']) ? Strings::escapeTags(trim($_POST['flagusers'])) : '');
+	$flagposts = (!empty($_POST['flagposts']) ? Strings::escapeTags(trim($_POST['flagposts'])) : '');
+	$flagpostsexpire = (!empty($_POST['flagpostsexpire']) ? Strings::escapeTags(trim($_POST['flagpostsexpire'])) : '');
 	Config::set('public_server', 'expiredays', $expiredays);
 	Config::set('public_server', 'expireposts', $expireposts);
 	Config::set('public_server', 'nologin', $nologin);
