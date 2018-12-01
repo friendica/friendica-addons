@@ -1201,7 +1201,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 	$tags_arr = [];
 
 	foreach ($item->entities->hashtags AS $hashtag) {
-		$url = '#[url=' . $a->getBaseURL() . '/search?tag=' . rawurlencode($hashtag->text) . ']' . $hashtag->text . '[/url]';
+		$url = '#[url=' . $a->getBaseURL() . '/search?tag=' . $hashtag->text . ']' . $hashtag->text . '[/url]';
 		$tags_arr['#' . $hashtag->text] = $url;
 		$body = str_replace('#' . $hashtag->text, $url, $body);
 	}
@@ -1332,7 +1332,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 				}
 
 				$basetag = str_replace('_', ' ', substr($tag, 1));
-				$url = '#[url=' . $a->getBaseURL() . '/search?tag=' . rawurlencode($basetag) . ']' . $basetag . '[/url]';
+				$url = '#[url=' . $a->getBaseURL() . '/search?tag=' . $basetag . ']' . $basetag . '[/url]';
 				$body = str_replace($tag, $url, $body);
 				$tags_arr['#' . $basetag] = $url;
 			} elseif (strpos($tag, '@') === 0) {
