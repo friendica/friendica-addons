@@ -446,7 +446,7 @@ function twitter_post_local(App $a, array &$b)
 	}
 
 	$twitter_post = intval(PConfig::get(local_user(), 'twitter', 'post'));
-	$twitter_enable = (($twitter_post && x($_REQUEST, 'twitter_enable')) ? intval($_REQUEST['twitter_enable']) : 0);
+	$twitter_enable = (($twitter_post && !empty($_REQUEST['twitter_enable'])) ? intval($_REQUEST['twitter_enable']) : 0);
 
 	// if API is used, default to the chosen settings
 	if ($b['api_source'] && intval(PConfig::get(local_user(), 'twitter', 'post_by_default'))) {
@@ -703,8 +703,8 @@ function twitter_post_hook(App $a, array &$b)
 
 function twitter_addon_admin_post(App $a)
 {
-	$consumerkey    = x($_POST, 'consumerkey')    ? Strings::escapeTags(trim($_POST['consumerkey']))    : '';
-	$consumersecret = x($_POST, 'consumersecret') ? Strings::escapeTags(trim($_POST['consumersecret'])) : '';
+	$consumerkey    = !empty($_POST['consumerkey'])    ? Strings::escapeTags(trim($_POST['consumerkey']))    : '';
+	$consumersecret = !empty($_POST['consumersecret']) ? Strings::escapeTags(trim($_POST['consumersecret'])) : '';
 	Config::set('twitter', 'consumerkey', $consumerkey);
 	Config::set('twitter', 'consumersecret', $consumersecret);
 	info(L10n::t('Settings updated.') . EOL);

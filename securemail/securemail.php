@@ -92,7 +92,7 @@ function securemail_settings_post(App &$a, array &$b){
 
     if ($_POST['securemail-submit']) {
         PConfig::set(local_user(), 'securemail', 'pkey', trim($_POST['securemail-pkey']));
-        $enable = ((x($_POST, 'securemail-enable')) ? 1 : 0);
+        $enable = (!empty($_POST['securemail-enable']) ? 1 : 0);
         PConfig::set(local_user(), 'securemail', 'enable', $enable);
         info(L10n::t('Secure Mail Settings saved.') . EOL);
 
@@ -150,7 +150,7 @@ function securemail_settings_post(App &$a, array &$b){
  * @see App
  */
 function securemail_emailer_send_prepare(App &$a, array &$b) {
-    if (!x($b, 'uid')) {
+    if (empty($b['uid'])) {
         return;
     }
 
@@ -164,7 +164,7 @@ function securemail_emailer_send_prepare(App &$a, array &$b) {
     $public_key_ascii = PConfig::get($uid, 'securemail', 'pkey');
 
     preg_match('/-----BEGIN ([A-Za-z ]+)-----/', $public_key_ascii, $matches);
-    $marker = (empty($matches[1])) ? 'MESSAGE' : $matches[1];
+    $marker = empty($matches[1]) ? 'MESSAGE' : $matches[1];
     $public_key = OpenPGP::unarmor($public_key_ascii, $marker);
 
     $key = OpenPGP_Message::parse($public_key);

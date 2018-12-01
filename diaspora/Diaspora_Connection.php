@@ -136,7 +136,7 @@ class Diaspora_Connection {
 		} elseif (!empty($m[1])) {
 			$token = $m[1];
 		}
-		return (!empty($token)) ? $token : false;
+		return !empty($token) ? $token : false;
 	}
 
 	private function readJsonResponse($response) {
@@ -165,14 +165,14 @@ class Diaspora_Connection {
 		$this->doHttpRequest('/bookmarklet');
 		$m = [];
 		preg_match('/"aspects"\:(\[.+?\])/', $this->last_http_result->response, $m);
-		return (!empty($m[1])) ? json_decode($m[1]) : false;
+		return !empty($m[1]) ? json_decode($m[1]) : false;
 	}
 
 	public function getServices() {
 		$this->doHttpRequest('/bookmarklet');
 		$m = [];
 		preg_match('/"configured_services"\:(\[.+?\])/', $this->last_http_result->response, $m);
-		return (!empty($m[1])) ? json_decode($m[1]) : false;
+		return !empty($m[1]) ? json_decode($m[1]) : false;
 	}
 
 	public function getNotifications($notification_type = '', $show = '') {

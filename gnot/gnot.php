@@ -44,7 +44,7 @@ function gnot_uninstall() {
  */
 
 function gnot_settings_post($a,$post) {
-	if(! local_user() || (! x($_POST,'gnot-submit')))
+	if(! local_user() || empty($_POST['gnot-submit']))
 		return;
 
 	PConfig::set(local_user(),'gnot','enable',intval($_POST['gnot']));

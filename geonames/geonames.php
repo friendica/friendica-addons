@@ -150,7 +150,7 @@ function geonames_post_hook($a, &$item) {
  */
 
 function geonames_addon_admin_post($a,$post) {
-	if(! local_user() || (! x($_POST,'geonames-submit')))
+	if(! local_user() || empty($_POST['geonames-submit']))
 		return;
 	PConfig::set(local_user(),'geonames','enable',intval($_POST['geonames']));
 

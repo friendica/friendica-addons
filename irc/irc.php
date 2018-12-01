@@ -109,7 +109,7 @@ function irc_content(&$a) {
 	if($autochans)
 		$channels = $autochans;
 	else
-		$channels = ((x($_GET,'channels')) ? $_GET['channels'] : 'friendica');
+		$channels = defaults($_GET, 'channels', 'friendica');
 
 /* add the chatroom frame and some html */
   $o .= <<< EOT

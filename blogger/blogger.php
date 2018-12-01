@@ -165,7 +165,7 @@ function blogger_post_local(App $a, array &$b)
 
 	$bl_post   = intval(PConfig::get(local_user(), 'blogger', 'post'));
 
-	$bl_enable = (($bl_post && x($_REQUEST, 'blogger_enable')) ? intval($_REQUEST['blogger_enable']) : 0);
+	$bl_enable = (($bl_post && !empty($_REQUEST['blogger_enable'])) ? intval($_REQUEST['blogger_enable']) : 0);
 
 	if ($b['api_source'] && intval(PConfig::get(local_user(), 'blogger', 'post_by_default'))) {
 		$bl_enable = 1;

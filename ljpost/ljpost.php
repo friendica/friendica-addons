@@ -105,7 +105,7 @@ function ljpost_settings(&$a,&$s) {
 
 function ljpost_settings_post(&$a,&$b) {
 
-	if(x($_POST,'ljpost-submit')) {
+	if(!empty($_POST['ljpost-submit'])) {
 
 		PConfig::set(local_user(),'ljpost','post',intval($_POST['ljpost']));
 		PConfig::set(local_user(),'ljpost','post_by_default',intval($_POST['lj_bydefault']));
@@ -131,7 +131,7 @@ function ljpost_post_local(&$a,&$b) {
 
     $lj_post   = intval(PConfig::get(local_user(),'ljpost','post'));
 
-	$lj_enable = (($lj_post && x($_REQUEST,'ljpost_enable')) ? intval($_REQUEST['ljpost_enable']) : 0);
+	$lj_enable = (($lj_post && !empty($_REQUEST['ljpost_enable'])) ? intval($_REQUEST['ljpost_enable']) : 0);
 
 	if($b['api_source'] && intval(PConfig::get(local_user(),'ljpost','post_by_default')))
 		$lj_enable = 1;

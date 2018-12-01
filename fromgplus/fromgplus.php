@@ -89,9 +89,9 @@ function fromgplus_addon_settings_post(&$a,&$b) {
 
 	if (!empty($_POST['fromgplus-submit'])) {
 		PConfig::set(local_user(),'fromgplus','account',trim($_POST['fromgplus-account']));
-		$enable = (x($_POST,'fromgplus-enable') ? intval($_POST['fromgplus-enable']) : 0);
+		$enable = (!empty($_POST['fromgplus-enable']) ? intval($_POST['fromgplus-enable']) : 0);
 		PConfig::set(local_user(),'fromgplus','enable', $enable);
-		$keywords = (x($_POST, 'fromgplus-keywords') ? intval($_POST['fromgplus-keywords']) : 0);
+		$keywords = (!empty($_POST['fromgplus-keywords']) ? intval($_POST['fromgplus-keywords']) : 0);
 		PConfig::set(local_user(),'fromgplus', 'keywords', $keywords);
 
 		if (!$enable)
@@ -113,7 +113,7 @@ function fromgplus_addon_admin(&$a, &$o)
 
 function fromgplus_addon_admin_post(&$a)
 {
-	$key = ((x($_POST, 'key')) ? trim($_POST['key']) : '');
+	$key = (!empty($_POST['key']) ? trim($_POST['key']) : '');
 	Config::set('fromgplus', 'key', $key);
 	info(L10n::t('Settings updated.'). EOL);
 }

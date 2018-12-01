@@ -286,7 +286,7 @@ function diaspora_post_local(App $a, array &$b)
 
 	$diaspora_post   = intval(PConfig::get(local_user(),'diaspora','post'));
 
-	$diaspora_enable = (($diaspora_post && x($_REQUEST,'diaspora_enable')) ? intval($_REQUEST['diaspora_enable']) : 0);
+	$diaspora_enable = (($diaspora_post && !empty($_REQUEST['diaspora_enable'])) ? intval($_REQUEST['diaspora_enable']) : 0);
 
 	if ($b['api_source'] && intval(PConfig::get(local_user(),'diaspora','post_by_default'))) {
 		$diaspora_enable = 1;

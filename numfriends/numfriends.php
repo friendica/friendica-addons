@@ -37,7 +37,7 @@ function numfriends_uninstall() {
  *
  */
 function numfriends_settings_post($a,$post) {
-	if(! local_user() || (! x($_POST,'numfriends-submit')))
+	if(! local_user() || empty($_POST['numfriends-submit']))
 		return;
 
 	PConfig::set(local_user(),'system','display_friend_count',intval($_POST['numfriends']));

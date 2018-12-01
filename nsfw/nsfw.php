@@ -103,7 +103,7 @@ function nsfw_addon_settings_post(&$a, &$b)
 
 	if (!empty($_POST['nsfw-submit'])) {
 		PConfig::set(local_user(), 'nsfw', 'words', trim($_POST['nsfw-words']));
-		$enable = (x($_POST, 'nsfw-enable') ? intval($_POST['nsfw-enable']) : 0);
+		$enable = (!empty($_POST['nsfw-enable']) ? intval($_POST['nsfw-enable']) : 0);
 		$disable = 1 - $enable;
 		PConfig::set(local_user(), 'nsfw', 'disable', $disable);
 		info(L10n::t('NSFW Settings saved.') . EOL);

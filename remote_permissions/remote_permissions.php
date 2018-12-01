@@ -58,7 +58,7 @@ function remote_permissions_settings(&$a,&$o) {
 }
 
 function remote_permissions_settings_post($a,$post) {
-	if(! local_user() || (! x($_POST,'remote-perms-submit')))
+	if(! local_user() || empty($_POST['remote-perms-submit']))
 		return;
 
 	PConfig::set(local_user(),'remote_perms','show',intval($_POST['remote-perms']));
@@ -207,7 +207,7 @@ function remote_permissions_addon_admin(&$a, &$o){
 }
 
 function remote_permissions_addon_admin_post(&$a){
-	$choice	=	((x($_POST,'remotepermschoice'))		? Strings::escapeTags(trim($_POST['remotepermschoice']))	: '');
+	$choice	=	(!empty($_POST['remotepermschoice'])		? Strings::escapeTags(trim($_POST['remotepermschoice']))	: '');
 	Config::set('remote_perms','global',($choice == 1 ? 1 : 0));
 	info(L10n::t('Settings updated.'). EOL);
 }

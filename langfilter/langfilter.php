@@ -79,7 +79,7 @@ function langfilter_addon_settings_post(App $a, &$b)
 
 	if (!empty($_POST['langfilter-settings-submit'])) {
 		PConfig::set(local_user(), 'langfilter', 'languages', trim($_POST['langfilter_languages']));
-		$enable = (x($_POST, 'langfilter_enable') ? intval($_POST['langfilter_enable']) : 0);
+		$enable = (!empty($_POST['langfilter_enable']) ? intval($_POST['langfilter_enable']) : 0);
 		$disable = 1 - $enable;
 		PConfig::set(local_user(), 'langfilter', 'disable', $disable);
 		$minconfidence = 0 + $_POST['langfilter_minconfidence'];
