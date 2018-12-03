@@ -1392,7 +1392,7 @@ function pumpio_fetchinbox(App $a, $uid)
 		return;
 	}
 
-	if ($user->items) {
+	if (!empty($user->items)) {
 		$posts = array_reverse($user->items);
 
 		if (count($posts)) {
