@@ -6,7 +6,7 @@
 	<span class="fakelink" onclick="openClose('settings_mathjax_expanded'); openClose('settings_mathjax_inflated');">
 		<h3>{{$title}}</h3>
 	</span>
-	<p>{{$description}}</p>
+	<p>{{$description nofilter}}</p>
 	{{include file="field_checkbox.tpl" field=$mathjax_use}}
 	<div class="clear"></div>
 

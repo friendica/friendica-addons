@@ -36,7 +36,7 @@
 			</div>
 		</div>
 	  	<div class="forumdirectory-copy-wrapper" id="forumdirectory-copy-wrapper-{{$id}}" >
-			{{if $about}}<dl class="forumdirectory-copy"><dt class="forumdirectory-copy-label">{{$about}}</dt><dd class="forumdirectory-copy-data">{{$profile.about}}</dd></dl>{{/if}}
+			{{if $about}}<dl class="forumdirectory-copy"><dt class="forumdirectory-copy-label">{{$about}}</dt><dd class="forumdirectory-copy-data">{{$profile.about nofilter}}</dd></dl>{{/if}}
   		</div>
 	</div>
 </div>
