@@ -24,22 +24,24 @@ function leistungsschutzrecht_uninstall() {
 }
 
 function leistungsschutzrecht_getsiteinfo($a, &$siteinfo) {
-	if (!isset($siteinfo["url"])) {
+	if (!isset($siteinfo["url"]) || empty($siteinfo['type'])) {
 		return;
+	}
+
+	// Avoid any third party pictures, to avoid copyright issues
+	if (($siteinfo['type'] != 'photo') && Config::get('leistungsschutzrecht', 'suppress_photos', false)) {
+		unset($siteinfo["image"]);
+		unset($siteinfo["images"]);
 	}
 
 	if (!leistungsschutzrecht_is_member_site($siteinfo["url"])) {
 		return;
 	}
 
-	//$siteinfo["title"] = $siteinfo["url"];
-
 	if (!empty($siteinfo["text"])) {
 		$siteinfo["text"] = leistungsschutzrecht_cuttext($siteinfo["text"]);
 	}
 
-	unset($siteinfo["image"]);
-	unset($siteinfo["images"]);
 	unset($siteinfo["keywords"]);
 }
 
