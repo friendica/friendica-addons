@@ -7,10 +7,15 @@
  */
 
 use Friendica\App;
+use Friendica\BaseModule;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
+use Friendica\Util\Security;
+use Friendica\Util\Strings;
 
 /**
  * Installs the addon hook
@@ -19,7 +24,7 @@ function libravatar_install()
 {
 	Addon::registerHook('load_config',   'addon/libravatar/libravatar.php', 'libravatar_load_config');
 	Addon::registerHook('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
-	logger("registered libravatar in avatar_lookup hook");
+	Logger::log("registered libravatar in avatar_lookup hook");
 }
 
 /**
@@ -29,12 +34,12 @@ function libravatar_uninstall()
 {
 	Addon::unregisterHook('load_config',   'addon/libravatar/libravatar.php', 'libravatar_load_config');
 	Addon::unregisterHook('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
-	logger("unregistered libravatar in avatar_lookup hook");
+	Logger::log("unregistered libravatar in avatar_lookup hook");
 }
 
 function libravatar_load_config(App $a)
 {
-	$a->loadConfigFile(__DIR__. '/config/libravatar.ini.php');
+	$a->loadConfigFile(__DIR__ . '/config/libravatar.config.php');
 }
 
 /**
@@ -71,7 +76,7 @@ function libravatar_lookup($a, &$b)
  */
 function libravatar_addon_admin(&$a, &$o)
 {
-	$t = get_markup_template("admin.tpl", "addon/libravatar");
+	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/libravatar");
 
 	$default_avatar = Config::get('libravatar', 'default_avatar');
 
@@ -106,8 +111,8 @@ function libravatar_addon_admin(&$a, &$o)
 	}
 
 	// output Libravatar settings
-	$o .= '<input type="hidden" name="form_security_token" value="' .get_form_security_token("libravatarsave") .'">';
-	$o .= replace_macros( $t, [
+	$o .= '<input type="hidden" name="form_security_token" value="' . BaseModule::getFormSecurityToken("libravatarsave") .'">';
+	$o .= Renderer::replaceMacros( $t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$default_avatar' => ['avatar', L10n::t('Default avatar image'), $default_avatar, L10n::t('Select default avatar image if none was found. See README'), $default_avatars],
 	]);
@@ -118,9 +123,9 @@ function libravatar_addon_admin(&$a, &$o)
  */
 function libravatar_addon_admin_post(&$a)
 {
-	check_form_security_token('libravatarrsave');
+	BaseModule::checkFormSecurityToken('libravatarrsave');
 
-	$default_avatar = ((x($_POST, 'avatar')) ? notags(trim($_POST['avatar'])) : 'identicon');
+	$default_avatar = (!empty($_POST['avatar']) ? Strings::escapeTags(trim($_POST['avatar'])) : 'identicon');
 	Config::set('libravatar', 'default_avatar', $default_avatar);
 	info(L10n::t('Libravatar settings updated.') .EOL);
 }

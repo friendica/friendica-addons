@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2018-08-16 10:10+0000\n"
+"PO-Revision-Date: 2018-09-02 17:54+0000\n"
 "Last-Translator: Aditoo\n"
 "Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr ""
 
 #: diaspora.php:37
 msgid "Post to Diaspora"
-msgstr "Odeslat příspěvek na Diasporu"
+msgstr "Odeslat na Diasporu"
 
 #: diaspora.php:142
 msgid ""

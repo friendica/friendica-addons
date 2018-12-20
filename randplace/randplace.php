@@ -20,6 +20,7 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 
 function randplace_install() {
@@ -44,7 +45,7 @@ function randplace_install() {
 	Addon::registerHook('addon_settings', 'addon/randplace/randplace.php', 'randplace_settings');
 	Addon::registerHook('addon_settings_post', 'addon/randplace/randplace.php', 'randplace_settings_post');
 
-	logger("installed randplace");
+	Logger::log("installed randplace");
 }
 
 
@@ -63,7 +64,7 @@ function randplace_uninstall() {
 	Addon::unregisterHook('addon_settings_post', 'addon/randplace/randplace.php', 'randplace_settings_post');
 
 
-	logger("removed randplace");
+	Logger::log("removed randplace");
 }
 
 
@@ -79,7 +80,7 @@ function randplace_post_hook($a, &$item) {
 	 *
 	 */
 
-	logger('randplace invoked');
+	Logger::log('randplace invoked');
 
 	if(! local_user())   /* non-zero if this is a logged in user of this system */
 		return;
@@ -157,7 +158,7 @@ function randplace_settings(&$a,&$s) {
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/randplace/randplace.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/randplace/randplace.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variable */
 

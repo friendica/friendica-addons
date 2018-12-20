@@ -16,7 +16,7 @@
  *
  *   Configuration:
  *     Use the administration panel to configure the Piwik tracking addon, or
- *     in case you don't use this add the following lines to your config/addon.ini.php
+ *     in case you don't use this add the following lines to your config/addon.config.php
  *     file:
  *
  *     [piwik]
@@ -33,24 +33,27 @@
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
+use Friendica\Util\Strings;
 
 function piwik_install() {
 	Addon::registerHook('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
 	Addon::registerHook('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
-	logger("installed piwik addon");
+	Logger::log("installed piwik addon");
 }
 
 function piwik_uninstall() {
 	Addon::unregisterHook('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
 	Addon::unregisterHook('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
-	logger("uninstalled piwik addon");
+	Logger::log("uninstalled piwik addon");
 }
 
 function piwik_load_config(\Friendica\App $a)
 {
-	$a->loadConfigFile(__DIR__. '/config/piwik.ini.php');
+	$a->loadConfigFile(__DIR__ . '/config/piwik.config.php');
 }
 
 function piwik_analytics($a,&$b) {
@@ -60,10 +63,10 @@ function piwik_analytics($a,&$b) {
 	 *   associated CSS file. We just have to tell Friendica to get it
 	 *   into the page header.
 	 */
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/piwik/piwik.css' . '" media="all" />';
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/piwik/piwik.css' . '" media="all" />';
 
 	/*
-	 *   Get the configuration variables from the config/addon.ini.php file.
+	 *   Get the configuration variables from the config/addon.config.php file.
 	 */
 	$baseurl = Config::get('piwik', 'baseurl');
 	$siteid  = Config::get('piwik', 'siteid');
@@ -95,8 +98,8 @@ function piwik_analytics($a,&$b) {
 	}
 }
 function piwik_addon_admin (&$a, &$o) {
-	$t = get_markup_template( "admin.tpl", "addon/piwik/" );
-	$o = replace_macros( $t, [
+	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/piwik/" );
+	$o = Renderer::replaceMacros( $t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$piwikbaseurl' => ['baseurl', L10n::t('Piwik Base URL'), Config::get('piwik','baseurl' ), L10n::t('Absolute path to your Piwik installation. (without protocol (http/s), with trailing slash)')],
 		'$siteid' => ['siteid', L10n::t('Site ID'), Config::get('piwik','siteid' ), ''],
@@ -105,10 +108,10 @@ function piwik_addon_admin (&$a, &$o) {
 	]);
 }
 function piwik_addon_admin_post (&$a) {
-	$url = ((x($_POST, 'baseurl')) ? notags(trim($_POST['baseurl'])) : '');
-	$id = ((x($_POST, 'siteid')) ? trim($_POST['siteid']) : '');
-	$optout = ((x($_POST, 'optout')) ? trim($_POST['optout']) : '');
-	$async = ((x($_POST, 'async')) ? trim($_POST['async']) : '');
+	$url = (!empty($_POST['baseurl']) ? Strings::escapeTags(trim($_POST['baseurl'])) : '');
+	$id = (!empty($_POST['siteid']) ? trim($_POST['siteid']) : '');
+	$optout = (!empty($_POST['optout']) ? trim($_POST['optout']) : '');
+	$async = (!empty($_POST['async']) ? trim($_POST['async']) : '');
 	Config::set('piwik', 'baseurl', $url);
 	Config::set('piwik', 'siteid', $id);
 	Config::set('piwik', 'optout', $optout);

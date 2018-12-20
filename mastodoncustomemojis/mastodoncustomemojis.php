@@ -6,6 +6,7 @@
  * Version: 1.0
  * Author: Hypolite Petovan
  * Author: Roland Haeder
+ * Status: Unsupported
  */
 
 use Friendica\App;
@@ -54,8 +55,8 @@ HTML;
 
 function mastodoncustomemojis_put_item_in_cache(App $a, array &$hook_data)
 {
-	// Mastodon uses OStatus, skipping other network protocols
-	if (empty($hook_data['item']['author-link']) || ($hook_data['item']['network'] != Protocol::OSTATUS)) {
+	// Mastodon uses OStatus and ActivityPub, skipping other network protocols
+	if (empty($hook_data['item']['author-link']) || !in_array($hook_data['item']['network'], [Protocol::OSTATUS, Protocol::ACTIVITYPUB])) {
 		return;
 	}
 
@@ -77,7 +78,7 @@ function mastodoncustomemojis_get_custom_emojis_for_author($author_link)
 	if (empty($return) || Config::get('system', 'ignore_cache')) {
 		$return = mastodoncustomemojis_fetch_custom_emojis_for_url($api_base_url);
 
-		Cache::set($cache_key, $return, empty($return['texts']) ? Cache::HALF_HOUR : Cache::WEEK);
+		Cache::set($cache_key, $return, empty($return['texts']) ? Cache::QUARTER_HOUR : Cache::HOUR);
 	}
 
 	return $return;
@@ -89,15 +90,17 @@ function mastodoncustomemojis_fetch_custom_emojis_for_url($api_base_url)
 
 	$api_url = $api_base_url . '/api/v1/custom_emojis';
 
-	$ret = Network::fetchUrlFull($api_url);
+	$fetchResult = Network::fetchUrlFull($api_url);
 
-	if ($ret['success']) {
-		$emojis_array = json_decode($ret['body'], true);
+	if ($fetchResult->isSuccess()) {
+		$emojis_array = json_decode($fetchResult->getBody(), true);
 
 		if (is_array($emojis_array) && count($emojis_array)) {
 			foreach ($emojis_array as $emoji) {
-				$return['texts'][] = ':' . $emoji['shortcode'] . ':';
-				$return['icons'][] = '<img class="emoji mastodon" src="' . ProxyUtils::proxifyUrl($emoji['static_url']) . '" alt=":' . $emoji['shortcode'] . ':" title=":' . $emoji['shortcode'] . ':"/>';
+				if (!empty($emoji['shortcode']) && !empty($emoji['static_url'])) {
+					$return['texts'][] = ':' . $emoji['shortcode'] . ':';
+					$return['icons'][] = '<img class="emoji mastodon" src="' . ProxyUtils::proxifyUrl($emoji['static_url']) . '" alt=":' . $emoji['shortcode'] . ':" title=":' . $emoji['shortcode'] . ':"/>';
+				}
 			}
 		}
 	}

@@ -9,7 +9,10 @@ use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 use Friendica\Util\Network;
+use Friendica\Util\Strings;
 
 function geocoordinates_install()
 {
@@ -54,25 +57,25 @@ function geocoordinates_resolve_item(&$item)
 	$s = Network::fetchUrl("https://api.opencagedata.com/geocode/v1/json?q=".$coords[0].",".$coords[1]."&key=".$key."&language=".$language);
 
 	if (!$s) {
-		logger("API could not be queried", LOGGER_DEBUG);
+		Logger::log("API could not be queried", Logger::DEBUG);
 		return;
 	}
 
 	$data = json_decode($s);
 
 	if ($data->status->code != "200") {
-		logger("API returned error ".$data->status->code." ".$data->status->message, LOGGER_DEBUG);
+		Logger::log("API returned error ".$data->status->code." ".$data->status->message, Logger::DEBUG);
 		return;
 	}
 
 	if (($data->total_results == 0) || (count($data->results) == 0)) {
-		logger("No results found for coordinates ".$item["coord"], LOGGER_DEBUG);
+		Logger::log("No results found for coordinates ".$item["coord"], Logger::DEBUG);
 		return;
 	}
 
 	$item["location"] = $data->results[0]->formatted;
 
-	logger("Got location for coordinates ".$coords[0]."-".$coords[1].": ".$item["location"], LOGGER_DEBUG);
+	Logger::log("Got location for coordinates ".$coords[0]."-".$coords[1].": ".$item["location"], Logger::DEBUG);
 
 	if ($item["location"] != "")
 		Cache::set("geocoordinates:".$language.":".$coords[0]."-".$coords[1], $item["location"]);
@@ -86,9 +89,9 @@ function geocoordinates_post_hook($a, &$item)
 function geocoordinates_addon_admin(&$a, &$o)
 {
 
-	$t = get_markup_template("admin.tpl", "addon/geocoordinates/");
+	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/geocoordinates/");
 
-	$o = replace_macros($t, [
+	$o = Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$api_key' => ['api_key', L10n::t('API Key'), Config::get('geocoordinates', 'api_key'), ''],
 		'$language' => ['language', L10n::t('Language code (IETF format)'), Config::get('geocoordinates', 'language'), ''],
@@ -97,10 +100,10 @@ function geocoordinates_addon_admin(&$a, &$o)
 
 function geocoordinates_addon_admin_post(&$a)
 {
-	$api_key  = ((x($_POST, 'api_key')) ? notags(trim($_POST['api_key']))   : '');
+	$api_key  = (!empty($_POST['api_key']) ? Strings::escapeTags(trim($_POST['api_key']))   : '');
 	Config::set('geocoordinates', 'api_key', $api_key);
 
-	$language  = ((x($_POST, 'language')) ? notags(trim($_POST['language']))   : '');
+	$language  = (!empty($_POST['language']) ? Strings::escapeTags(trim($_POST['language']))   : '');
 	Config::set('geocoordinates', 'language', $language);
 	info(L10n::t('Settings updated.'). EOL);
 }

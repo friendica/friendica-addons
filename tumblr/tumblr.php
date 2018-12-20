@@ -14,11 +14,15 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
+use Friendica\Util\Strings;
 
 function tumblr_install()
 {
+	Addon::registerHook('hook_fork',               'addon/tumblr/tumblr.php', 'tumblr_hook_fork');
 	Addon::registerHook('post_local',              'addon/tumblr/tumblr.php', 'tumblr_post_local');
 	Addon::registerHook('notifier_normal',         'addon/tumblr/tumblr.php', 'tumblr_send');
 	Addon::registerHook('jot_networks',            'addon/tumblr/tumblr.php', 'tumblr_jot_nets');
@@ -28,6 +32,7 @@ function tumblr_install()
 
 function tumblr_uninstall()
 {
+	Addon::unregisterHook('hook_fork',               'addon/tumblr/tumblr.php', 'tumblr_hook_fork');
 	Addon::unregisterHook('post_local',              'addon/tumblr/tumblr.php', 'tumblr_post_local');
 	Addon::unregisterHook('notifier_normal',         'addon/tumblr/tumblr.php', 'tumblr_send');
 	Addon::unregisterHook('jot_networks',            'addon/tumblr/tumblr.php', 'tumblr_jot_nets');
@@ -69,9 +74,9 @@ function tumblr_content(App $a)
 
 function tumblr_addon_admin(App $a, &$o)
 {
-	$t = get_markup_template( "admin.tpl", "addon/tumblr/" );
+	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/tumblr/" );
 
-	$o = replace_macros($t, [
+	$o = Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		// name, label, value, help, [extra values]
 		'$consumer_key' => ['consumer_key', L10n::t('Consumer Key'),  Config::get('tumblr', 'consumer_key' ), ''],
@@ -81,8 +86,8 @@ function tumblr_addon_admin(App $a, &$o)
 
 function tumblr_addon_admin_post(App $a)
 {
-	$consumer_key    =       ((!empty($_POST['consumer_key']))      ? notags(trim($_POST['consumer_key']))   : '');
-	$consumer_secret =       ((!empty($_POST['consumer_secret']))   ? notags(trim($_POST['consumer_secret'])): '');
+	$consumer_key    =       (!empty($_POST['consumer_key'])      ? Strings::escapeTags(trim($_POST['consumer_key']))   : '');
+	$consumer_secret =       (!empty($_POST['consumer_secret'])   ? Strings::escapeTags(trim($_POST['consumer_secret'])): '');
 
 	Config::set('tumblr', 'consumer_key',$consumer_key);
 	Config::set('tumblr', 'consumer_secret',$consumer_secret);
@@ -104,7 +109,7 @@ function tumblr_connect(App $a)
 
 	// The callback URL is the script that gets called after the user authenticates with tumblr
 	// In this example, it would be the included callback.php
-	$callback_url = $a->get_baseurl()."/tumblr/callback";
+	$callback_url = $a->getBaseURL()."/tumblr/callback";
 
 	// Let's begin.  First we need a Request Token.  The request token is required to send the user
 	// to Tumblr's login page.
@@ -183,7 +188,7 @@ function tumblr_callback(App $a)
 	PConfig::set(local_user(), "tumblr", "oauth_token_secret", $access_token['oauth_token_secret']);
 
 	$o = L10n::t("You are now authenticated to tumblr.");
-	$o .= '<br /><a href="'.$a->get_baseurl().'/settings/connectors">'.L10n::t("return to the connector page").'</a>';
+	$o .= '<br /><a href="'.$a->getBaseURL().'/settings/connectors">'.L10n::t("return to the connector page").'</a>';
 
 	return $o;
 }
@@ -212,7 +217,7 @@ function tumblr_settings(App $a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/tumblr/tumblr.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/tumblr/tumblr.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variables */
 
@@ -235,7 +240,7 @@ function tumblr_settings(App $a, &$s)
 	$s .= '</span>';
 
 	$s .= '<div id="tumblr-username-wrapper">';
-	$s .= '<a href="'.$a->get_baseurl().'/tumblr/connect">'.L10n::t("(Re-)Authenticate your tumblr page").'</a>';
+	$s .= '<a href="'.$a->getBaseURL().'/tumblr/connect">'.L10n::t("(Re-)Authenticate your tumblr page").'</a>';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="tumblr-enable-wrapper">';
@@ -293,6 +298,21 @@ function tumblr_settings_post(App $a, array &$b)
 		PConfig::set(local_user(), 'tumblr', 'post',            intval($_POST['tumblr']));
 		PConfig::set(local_user(), 'tumblr', 'page',            $_POST['tumblr_page']);
 		PConfig::set(local_user(), 'tumblr', 'post_by_default', intval($_POST['tumblr_bydefault']));
+	}
+}
+
+function tumblr_hook_fork(&$a, &$b)
+{
+	if ($b['name'] != 'notifier_normal') {
+		return;
+	}
+
+	$post = $b['data'];
+
+	if ($post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
+		!strstr($post['postopts'], 'tumblr') || ($post['parent'] != $post['id'])) {
+		$b['execute'] = false;
+		return;
 	}
 }
 
@@ -458,11 +478,11 @@ function tumblr_send(App $a, array &$b) {
 
 		//print_r($params);
 		if ($ret_code == 201) {
-			logger('tumblr_send: success');
+			Logger::log('tumblr_send: success');
 		} elseif ($ret_code == 403) {
-			logger('tumblr_send: authentication failure');
+			Logger::log('tumblr_send: authentication failure');
 		} else {
-			logger('tumblr_send: general error: ' . print_r($x,true));
+			Logger::log('tumblr_send: general error: ' . print_r($x,true));
 		}
 	}
 }

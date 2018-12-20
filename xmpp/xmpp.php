@@ -11,6 +11,8 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Core\Renderer;
+use Friendica\Util\Strings;
 
 function xmpp_install()
 {
@@ -34,9 +36,9 @@ function xmpp_addon_settings_post()
 		return;
 	}
 
-	PConfig::set(local_user(), 'xmpp', 'enabled', intval($_POST['xmpp_enabled']));
-	PConfig::set(local_user(), 'xmpp', 'individual', intval($_POST['xmpp_individual']));
-	PConfig::set(local_user(), 'xmpp', 'bosh_proxy', $_POST['xmpp_bosh_proxy']);
+	PConfig::set(local_user(), 'xmpp', 'enabled', defaults($_POST, 'xmpp_enabled', false));
+	PConfig::set(local_user(), 'xmpp', 'individual', defaults($_POST, 'xmpp_individual', false));
+	PConfig::set(local_user(), 'xmpp', 'bosh_proxy', defaults($_POST, 'xmpp_bosh_proxy', ''));
 
 	info(L10n::t('XMPP settings updated.') . EOL);
 }
@@ -49,7 +51,7 @@ function xmpp_addon_settings(App $a, &$s)
 
 	/* Add our stylesheet to the xmpp so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/xmpp/xmpp.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/xmpp/xmpp.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variable */
 
@@ -97,16 +99,16 @@ function xmpp_addon_settings(App $a, &$s)
 function xmpp_login()
 {
 	if (empty($_SESSION['allow_api'])) {
-		$password = random_string(16);
+		$password = Strings::getRandomHex(16);
 		PConfig::set(local_user(), 'xmpp', 'password', $password);
 	}
 }
 
 function xmpp_addon_admin(App $a, &$o)
 {
-	$t = get_markup_template('admin.tpl', 'addon/xmpp/');
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/xmpp/');
 
-	$o = replace_macros($t, [
+	$o = Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$bosh_proxy' => ['bosh_proxy', L10n::t('Jabber BOSH host'), Config::get('xmpp', 'bosh_proxy'), ''],
 		'$central_userbase' => ['central_userbase', L10n::t('Use central userbase'), Config::get('xmpp', 'central_userbase'), L10n::t('If enabled, users will automatically login to an ejabberd server that has to be installed on this machine with synchronized credentials via the "auth_ejabberd.php" script.')],
@@ -115,8 +117,8 @@ function xmpp_addon_admin(App $a, &$o)
 
 function xmpp_addon_admin_post()
 {
-	$bosh_proxy = ((!empty($_POST['bosh_proxy'])) ? trim($_POST['bosh_proxy']) : '');
-	$central_userbase = ((!empty($_POST['central_userbase'])) ? intval($_POST['central_userbase']) : false);
+	$bosh_proxy = (!empty($_POST['bosh_proxy']) ? trim($_POST['bosh_proxy']) : '');
+	$central_userbase = (!empty($_POST['central_userbase']) ? intval($_POST['central_userbase']) : false);
 
 	Config::set('xmpp', 'bosh_proxy', $bosh_proxy);
 	Config::set('xmpp', 'central_userbase', $central_userbase);
@@ -160,11 +162,11 @@ function xmpp_converse(App $a)
 		$password = PConfig::get(local_user(), "xmpp", "password", '', true);
 
 		if ($password == "") {
-			$password = random_string(16);
+			$password = Strings::getRandomHex(16);
 			PConfig::set(local_user(), "xmpp", "password", $password);
 		}
 
-		$jid = $a->user["nickname"] . "@" . $a->get_hostname() . "/converse-" . random_string(5);
+		$jid = $a->user["nickname"] . "@" . $a->getHostName() . "/converse-" . Strings::getRandomHex(5);
 
 		$auto_login = "auto_login: true,
 			authentication: 'login',

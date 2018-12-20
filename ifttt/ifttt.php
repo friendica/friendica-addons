@@ -13,10 +13,12 @@ require_once 'include/text.php';
 use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
 use Friendica\Model\Item;
+use Friendica\Util\Strings;
 
 function ifttt_install()
 {
@@ -49,7 +51,7 @@ function ifttt_settings(App $a, &$s)
 	$key = PConfig::get(local_user(), 'ifttt', 'key');
 
 	if (!$key) {
-		$key = random_string(20);
+		$key = Strings::getRandomHex(20);
 		PConfig::set(local_user(), 'ifttt', 'key', $key);
 	}
 
@@ -64,7 +66,7 @@ function ifttt_settings(App $a, &$s)
 	$s .= '<div id="ifttt-configuration-wrapper">';
 	$s .= '<p>' . L10n::t('Create an account at <a href="http://www.ifttt.com">IFTTT</a>. Create three Facebook recipes that are connected with <a href="https://ifttt.com/maker">Maker</a> (In the form "if Facebook then Maker") with the following parameters:') . '</p>';
 	$s .= '<h4>URL</h4>';
-	$s .= '<p>' . $a->get_baseurl() . '/ifttt/' . $a->user['nickname'] . '</p>';
+	$s .= '<p>' . $a->getBaseURL() . '/ifttt/' . $a->user['nickname'] . '</p>';
 	$s .= '<h4>Method</h4>';
 	$s .= '<p>POST</p>';
 	$s .= '<h4>Content Type</h4>';
@@ -88,7 +90,7 @@ function ifttt_settings(App $a, &$s)
 
 function ifttt_settings_post()
 {
-	if (x($_POST, 'ifttt-submit') && isset($_POST['ifttt-rekey'])) {
+	if (!empty($_POST['ifttt-submit']) && isset($_POST['ifttt-rekey'])) {
 		PConfig::delete(local_user(), 'ifttt', 'key');
 	}
 }
@@ -103,16 +105,16 @@ function ifttt_post(App $a)
 
 	$user = DBA::selectFirst('user', ['uid'], ['nickname' => $nickname]);
 	if (!DBA::isResult($user)) {
-		logger('User ' . $nickname . ' not found.', LOGGER_DEBUG);
+		Logger::log('User ' . $nickname . ' not found.', Logger::DEBUG);
 		return;
 	}
 
 	$uid = $user['uid'];
 
-	logger('Received a post for user ' . $uid . ' from ifttt ' . print_r($_REQUEST, true), LOGGER_DEBUG);
+	Logger::log('Received a post for user ' . $uid . ' from ifttt ' . print_r($_REQUEST, true), Logger::DEBUG);
 
 	if (!isset($_REQUEST['key'])) {
-		logger('No key found.');
+		Logger::log('No key found.');
 		return;
 	}
 
@@ -120,7 +122,7 @@ function ifttt_post(App $a)
 
 	// Check the key
 	if ($key != PConfig::get($uid, 'ifttt', 'key')) {
-		logger('Invalid key for user ' . $uid, LOGGER_DEBUG);
+		Logger::log('Invalid key for user ' . $uid, Logger::DEBUG);
 		return;
 	}
 
@@ -131,7 +133,7 @@ function ifttt_post(App $a)
 	}
 
 	if (!in_array($item['type'], ['status', 'link', 'photo'])) {
-		logger('Unknown item type ' . $item['type'], LOGGER_DEBUG);
+		Logger::log('Unknown item type ' . $item['type'], Logger::DEBUG);
 		return;
 	}
 
@@ -180,7 +182,7 @@ function ifttt_message($uid, $item)
 	//$_REQUEST['date'] = $item['date'];
 	//$_REQUEST['uri'] = $item['url'];
 
-	if (strstr($item['url'], 'facebook.com')) {
+	if (!empty($item['url']) && strstr($item['url'], 'facebook.com')) {
 		$hash = hash('ripemd128', $item['url']);
 		$_REQUEST['extid'] = Protocol::FACEBOOK;
 		$_REQUEST['message_id'] = Item::newURI($uid, Protocol::FACEBOOK . ':' . $hash);

@@ -12,8 +12,10 @@ define('FROMGPLUS_DEFAULT_POLL_INTERVAL', 30); // given in minutes
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
+use Friendica\Core\Renderer;
 use Friendica\Object\Image;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
@@ -87,9 +89,9 @@ function fromgplus_addon_settings_post(&$a,&$b) {
 
 	if (!empty($_POST['fromgplus-submit'])) {
 		PConfig::set(local_user(),'fromgplus','account',trim($_POST['fromgplus-account']));
-		$enable = (x($_POST,'fromgplus-enable') ? intval($_POST['fromgplus-enable']) : 0);
+		$enable = (!empty($_POST['fromgplus-enable']) ? intval($_POST['fromgplus-enable']) : 0);
 		PConfig::set(local_user(),'fromgplus','enable', $enable);
-		$keywords = (x($_POST, 'fromgplus-keywords') ? intval($_POST['fromgplus-keywords']) : 0);
+		$keywords = (!empty($_POST['fromgplus-keywords']) ? intval($_POST['fromgplus-keywords']) : 0);
 		PConfig::set(local_user(),'fromgplus', 'keywords', $keywords);
 
 		if (!$enable)
@@ -101,9 +103,9 @@ function fromgplus_addon_settings_post(&$a,&$b) {
 
 function fromgplus_addon_admin(&$a, &$o)
 {
-	$t = get_markup_template("admin.tpl", "addon/fromgplus/");
+	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/fromgplus/");
 
-	$o = replace_macros($t, [
+	$o = Renderer::replaceMacros($t, [
 			'$submit' => L10n::t('Save Settings'),
 			'$key' => ['key', L10n::t('Key'), trim(Config::get('fromgplus', 'key')), ''],
 	]);
@@ -111,7 +113,7 @@ function fromgplus_addon_admin(&$a, &$o)
 
 function fromgplus_addon_admin_post(&$a)
 {
-	$key = ((x($_POST, 'key')) ? trim($_POST['key']) : '');
+	$key = (!empty($_POST['key']) ? trim($_POST['key']) : '');
 	Config::set('fromgplus', 'key', $key);
 	info(L10n::t('Settings updated.'). EOL);
 }
@@ -126,25 +128,25 @@ function fromgplus_cron($a,$b) {
         if($last) {
                 $next = $last + ($poll_interval * 60);
                 if($next > time()) {
-			logger('fromgplus: poll intervall not reached');
+			Logger::log('fromgplus: poll intervall not reached');
                         return;
 		}
 	}
 
-        logger('fromgplus: cron_start');
+        Logger::log('fromgplus: cron_start');
 
         $r = q("SELECT * FROM `pconfig` WHERE `cat` = 'fromgplus' AND `k` = 'enable' AND `v` = '1' ORDER BY RAND() ");
         if(count($r)) {
                 foreach($r as $rr) {
 			$account = PConfig::get($rr['uid'],'fromgplus','account');
 			if ($account) {
-		        logger('fromgplus: fetching for user '.$rr['uid']);
+		        Logger::log('fromgplus: fetching for user '.$rr['uid']);
 				fromgplus_fetch($a, $rr['uid']);
 			}
 		}
 	}
 
-        logger('fromgplus: cron_end');
+        Logger::log('fromgplus: cron_end');
 
 	Config::set('fromgplus','last_poll', time());
 }
@@ -190,15 +192,15 @@ function fromgplus_post($a, $uid, $source, $body, $location, $coord, $id) {
 	$_REQUEST['coord'] = $coord;
 
 	if (($_REQUEST['title'] == "") && ($_REQUEST['body'] == "")) {
-	        logger('fromgplus: empty post for user '.$uid." ".print_r($_REQUEST, true));
+	        Logger::log('fromgplus: empty post for user '.$uid." ".print_r($_REQUEST, true));
 		return;
 	}
 
 	require_once('mod/item.php');
 	//print_r($_REQUEST);
-        logger('fromgplus: posting for user '.$uid." ".print_r($_REQUEST, true));
+        Logger::log('fromgplus: posting for user '.$uid." ".print_r($_REQUEST, true));
 	item_post($a);
-        logger('fromgplus: done for user '.$uid);
+        Logger::log('fromgplus: done for user '.$uid);
 }
 
 function fromgplus_html2bbcode($html) {
@@ -472,7 +474,7 @@ function fromgplus_fetch($a, $uid) {
 
 		// Don't publish items that are too young
 		if (strtotime($item->published) > (time() - 3*60)) {
-			logger('fromgplus_fetch: item too new '.$item->published);
+			Logger::log('fromgplus_fetch: item too new '.$item->published);
 			continue;
 		}
 
@@ -495,8 +497,9 @@ function fromgplus_fetch($a, $uid) {
 				case "note":
 					$post = fromgplus_html2bbcode($item->object->content);
 
-					if (is_array($item->object->attachments))
+					if (!empty($item->object->attachments)) {
 						$post .= fromgplus_handleattachments($a, $uid, $item, $item->object->content, false);
+					}
 
 					$coord = "";
 					$location = "";
@@ -526,12 +529,12 @@ function fromgplus_fetch($a, $uid) {
 						if (function_exists("share_header"))
 							$post .= share_header($item->object->actor->displayName, $item->object->actor->url,
 										$item->object->actor->image->url, "",
-										DateTimeFormat::utc($item->object->published),$item->object->url);
+										DateTimeFormat::utc($item->published),$item->object->url);
 						else
 							$post .= "[share author='".str_replace("'", "&#039;",$item->object->actor->displayName).
 									"' profile='".$item->object->actor->url.
 									"' avatar='".$item->object->actor->image->url.
-									"' posted='".DateTimeFormat::utc($item->object->published).
+									"' posted='".DateTimeFormat::utc($item->published).
 									"' link='".$item->object->url."']";
 
 						$post .= fromgplus_html2bbcode($item->object->content);

@@ -11,7 +11,9 @@ use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
+use Friendica\Util\Strings;
 
 function remote_permissions_install() {
 	Addon::registerHook('lockview_content', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_content');
@@ -36,7 +38,7 @@ function remote_permissions_settings(&$a,&$o) {
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/remote_permissions/settings.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/remote_permissions/settings.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variable */
 
@@ -45,8 +47,8 @@ function remote_permissions_settings(&$a,&$o) {
 	/* Add some HTML to the existing form */
 
 //	$t = file_get_contents("addon/remote_permissions/settings.tpl" );
-	$t = get_markup_template("settings.tpl", "addon/remote_permissions/" );
-	$o .= replace_macros($t, [
+	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/remote_permissions/" );
+	$o .= Renderer::replaceMacros($t, [
 		'$remote_perms_title' => L10n::t('Remote Permissions Settings'),
 		'$remote_perms_label' => L10n::t('Allow recipients of your private posts to see the other recipients of the posts'),
 		'$checked' => (($remote_perms == 1) ? 'checked="checked"' : ''),
@@ -56,7 +58,7 @@ function remote_permissions_settings(&$a,&$o) {
 }
 
 function remote_permissions_settings_post($a,$post) {
-	if(! local_user() || (! x($_POST,'remote-perms-submit')))
+	if(! local_user() || empty($_POST['remote-perms-submit']))
 		return;
 
 	PConfig::set(local_user(),'remote_perms','show',intval($_POST['remote-perms']));
@@ -78,7 +80,7 @@ function remote_permissions_content($a, $item_copy) {
 			return;
 
 		// Find out if the contact lives here
-		$baseurl = $a->get_baseurl();
+		$baseurl = $a->getBaseURL();
 		$baseurl = substr($baseurl, strpos($baseurl, '://') + 3);
 		if(strpos($r[0]['url'], $baseurl) === false)
 			return;
@@ -196,8 +198,8 @@ function remote_permissions_content($a, $item_copy) {
 }
 
 function remote_permissions_addon_admin(&$a, &$o){
-	$t = get_markup_template( "admin.tpl", "addon/remote_permissions/" );
-	$o = replace_macros($t, [
+	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/remote_permissions/" );
+	$o = Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$global' => ['remotepermschoice', L10n::t('Global'), 1, L10n::t('The posts of every user on this server show the post recipients'),  Config::get('remote_perms', 'global') == 1],
 		'$individual' => ['remotepermschoice', L10n::t('Individual'), 2, L10n::t('Each user chooses whether his/her posts show the post recipients'),  Config::get('remote_perms', 'global') == 0]
@@ -205,7 +207,7 @@ function remote_permissions_addon_admin(&$a, &$o){
 }
 
 function remote_permissions_addon_admin_post(&$a){
-	$choice	=	((x($_POST,'remotepermschoice'))		? notags(trim($_POST['remotepermschoice']))	: '');
+	$choice	=	(!empty($_POST['remotepermschoice'])		? Strings::escapeTags(trim($_POST['remotepermschoice']))	: '');
 	Config::set('remote_perms','global',($choice == 1 ? 1 : 0));
 	info(L10n::t('Settings updated.'). EOL);
 }

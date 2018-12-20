@@ -12,8 +12,11 @@ use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 use Friendica\Core\System;
 use Friendica\Util\Network;
+use Friendica\Util\Strings;
 
 const OSM_TMS = 'https://www.openstreetmap.org';
 const OSM_NOM = 'https://nominatim.openstreetmap.org/search.php';
@@ -29,7 +32,7 @@ function openstreetmap_install()
 	Addon::registerHook('Map::getCoordinates', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_get_coordinates');
 	Addon::registerHook('page_header', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_alterheader');
 
-	logger("installed openstreetmap");
+	Logger::log("installed openstreetmap");
 }
 
 function openstreetmap_uninstall()
@@ -41,17 +44,17 @@ function openstreetmap_uninstall()
 	Addon::unregisterHook('Map::getCoordinates', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_get_coordinates');
 	Addon::unregisterHook('page_header', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_alterheader');
 
-	logger("removed openstreetmap");
+	Logger::log("removed openstreetmap");
 }
 
 function openstreetmap_load_config(\Friendica\App $a)
 {
-	$a->loadConfigFile(__DIR__. '/config/openstreetmap.ini.php');
+	$a->loadConfigFile(__DIR__ . '/config/openstreetmap.config.php');
 }
 
 function openstreetmap_alterheader($a, &$navHtml)
 {
-	$addScriptTag = '<script type="text/javascript" src="' . $a->get_baseurl() . '/addon/openstreetmap/openstreetmap.js"></script>' . "\r\n";
+	$addScriptTag = '<script type="text/javascript" src="' . $a->getBaseURL() . '/addon/openstreetmap/openstreetmap.js"></script>' . "\r\n";
 	$a->page['htmlhead'] .= $addScriptTag;
 }
 
@@ -129,10 +132,10 @@ function openstreetmap_get_coordinates($a, &$b)
 	$j = Cache::get($cachekey);
 
 	if (is_null($j)) {
-		$x = Network::curl($nomserver . $args);
-		if ($x['success']) {
-			$j = json_decode($x['body'], true);
-			Cache::set($cachekey, $j, CACHE_MONTH);
+		$curlResult = Network::curl($nomserver . $args);
+		if ($curlResult->isSuccess()) {
+			$j = json_decode($curlResult->getBody(), true);
+			Cache::set($cachekey, $j, Cache::MONTH);
 		}
 	}
 
@@ -155,7 +158,7 @@ function openstreetmap_generate_map(&$a, &$b)
 {
 	$tmsserver = Config::get('openstreetmap', 'tmsserver', OSM_TMS);
 
-	if (strpos(z_root(), 'https:') !== false) {
+	if (strpos($a->getBaseURL(true), 'https:') !== false) {
 		$tmsserver = str_replace('http:','https:',$tmsserver);
 	}
 
@@ -165,8 +168,8 @@ function openstreetmap_generate_map(&$a, &$b)
 	$lat = $b['lat']; // round($b['lat'], 5);
 	$lon = $b['lon']; // round($b['lon'], 5);
 
-	logger('lat: ' . $lat, LOGGER_DATA);
-	logger('lon: ' . $lon, LOGGER_DATA);
+	Logger::log('lat: ' . $lat, Logger::DATA);
+	Logger::log('lon: ' . $lon, Logger::DATA);
 
 	$cardlink = '<a href="' . $tmsserver;
 
@@ -174,7 +177,7 @@ function openstreetmap_generate_map(&$a, &$b)
 		$cardlink .= '?mlat=' . $lat . '&mlon=' . $lon;
 	}
 
-	$cardlink .= '#map=' . $zoom . '/' . $lat . '/' . $lon . '">' . ($b['location'] ? escape_tags($b['location']) : L10n::t('View Larger')) . '</a>';
+	$cardlink .= '#map=' . $zoom . '/' . $lat . '/' . $lon . '">' . ($b['location'] ? Strings::escapeHtml($b['location']) : L10n::t('View Larger')) . '</a>';
 	if (empty($b['mode'])) {
 		$b['html'] = '<iframe style="width:100%; height:300px; border:1px solid #ccc" src="' . $tmsserver .
 				'/export/embed.html?bbox=' . ($lon - 0.01) . '%2C' . ($lat - 0.01) . '%2C' . ($lon + 0.01) . '%2C' . ($lat + 0.01) .
@@ -184,12 +187,12 @@ function openstreetmap_generate_map(&$a, &$b)
 		$b['html'] .= '<br/>' . $cardlink;
 	}
 
-	logger('generate_map: ' . $b['html'], LOGGER_DATA);
+	Logger::log('generate_map: ' . $b['html'], Logger::DATA);
 }
 
 function openstreetmap_addon_admin(&$a, &$o)
 {
-	$t = get_markup_template("admin.tpl", "addon/openstreetmap/");
+	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/openstreetmap/");
 	$tmsserver = Config::get('openstreetmap', 'tmsserver', OSM_TMS);
 	$nomserver = Config::get('openstreetmap', 'nomserver', OSM_NOM);
 	$zoom = Config::get('openstreetmap', 'zoom', OSM_ZOOM);
@@ -200,7 +203,7 @@ function openstreetmap_addon_admin(&$a, &$o)
 		$nomserver = OSM_NOM;
 	}
 
-	$o = replace_macros($t, [
+	$o = Renderer::replaceMacros($t, [
 			'$submit' => L10n::t('Submit'),
 			'$tmsserver' => ['tmsserver', L10n::t('Tile Server URL'), $tmsserver, L10n::t('A list of <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank">public tile servers</a>')],
 			'$nomserver' => ['nomserver', L10n::t('Nominatim (reverse geocoding) Server URL'), $nomserver, L10n::t('A list of <a href="http://wiki.openstreetmap.org/wiki/Nominatim" target="_blank">Nominatim servers</a>')],

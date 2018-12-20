@@ -64,7 +64,7 @@ msgstr ""
 
 #: morechoice.php:45
 msgid "Metrosexual"
-msgstr ""
+msgstr "Metrosexuál"
 
 #: morechoice.php:46
 msgid "Monk"
@@ -112,7 +112,7 @@ msgstr "Těžké říct touhle dobou"
 
 #: morechoice.php:60
 msgid "Girls with big tits"
-msgstr ""
+msgstr "Holky s velkýma kozama"
 
 #: morechoice.php:61
 msgid "Millionaires"
@@ -120,11 +120,11 @@ msgstr "Milionáři"
 
 #: morechoice.php:62
 msgid "Guys with big schlongs"
-msgstr ""
+msgstr "Chlapi s velkýma ptákama"
 
 #: morechoice.php:63
 msgid "Easy women"
-msgstr ""
+msgstr "Lehké ženy"
 
 #: morechoice.php:64
 msgid "People with impaired mobility"
@@ -132,7 +132,7 @@ msgstr "Lidé s pohybovým postižením"
 
 #: morechoice.php:65
 msgid "Amputees"
-msgstr ""
+msgstr "Amputovaní"
 
 #: morechoice.php:66
 msgid "Statues, mannequins and immobility"
@@ -144,7 +144,7 @@ msgstr "Bolest"
 
 #: morechoice.php:68
 msgid "Trans men"
-msgstr "Transmuž"
+msgstr "Transmuži"
 
 #: morechoice.php:69
 msgid "Older women"
@@ -164,11 +164,11 @@ msgstr "V nebezpečí"
 
 #: morechoice.php:73
 msgid "Pretending to be male"
-msgstr "Předstírám, že jsem muž"
+msgstr "Předstírají, že jsou muži"
 
 #: morechoice.php:74
 msgid "Pretending to be female"
-msgstr "Předstírám, že jsem žena"
+msgstr "Předstírají, že jsou ženy"
 
 #: morechoice.php:75
 msgid "Breats"
@@ -180,11 +180,11 @@ msgstr ""
 
 #: morechoice.php:77
 msgid "Crying"
-msgstr "Pláču"
+msgstr "Pláčí"
 
 #: morechoice.php:78
 msgid "Nappies/Diapers"
-msgstr ""
+msgstr "Plenky"
 
 #: morechoice.php:79
 msgid "Trees"
@@ -208,11 +208,11 @@ msgstr "Nohy"
 
 #: morechoice.php:84
 msgid "Covered in insects"
-msgstr "Pokryt/a hmyzem"
+msgstr "Pokryti hmyzem"
 
 #: morechoice.php:85
 msgid "Turning a human being into furniture"
-msgstr ""
+msgstr "Mění lidské bytosti v nábytek"
 
 #: morechoice.php:86
 msgid "Elderly people"
@@ -228,7 +228,7 @@ msgstr "Zločinci"
 
 #: morechoice.php:89
 msgid "Stealing"
-msgstr ""
+msgstr "Kradou"
 
 #: morechoice.php:90
 msgid "Breast milk"
@@ -252,7 +252,7 @@ msgstr "Auto"
 
 #: morechoice.php:95
 msgid "Menstruation"
-msgstr ""
+msgstr "Menstruace"
 
 #: morechoice.php:96
 msgid "Mucus"
@@ -268,15 +268,15 @@ msgstr "Nosy"
 
 #: morechoice.php:99
 msgid "Navels"
-msgstr ""
+msgstr "Pupky"
 
 #: morechoice.php:100
 msgid "Corpses"
-msgstr ""
+msgstr "Mrtvoly"
 
 #: morechoice.php:101
 msgid "Smells"
-msgstr ""
+msgstr "Pachy"
 
 #: morechoice.php:102
 msgid "Buttocks"
@@ -296,7 +296,7 @@ msgstr "Močení"
 
 #: morechoice.php:106
 msgid "Eating people"
-msgstr ""
+msgstr "Žerou lidi"
 
 #: morechoice.php:107
 msgid "Being eaten"
@@ -316,7 +316,7 @@ msgstr ""
 
 #: morechoice.php:114
 msgid "Polygamist"
-msgstr ""
+msgstr "Polygamist(k)a"
 
 #: morechoice.php:115
 msgid "Half married"

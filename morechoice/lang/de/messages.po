@@ -3,14 +3,18 @@
 # This file is distributed under the same license as the Friendica morechoice addon package.
 # 
 # 
+# Translators:
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018
+# Vinzenz Vietzke <vinz@vinzv.de>, 2018
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-08-07 15:04+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018\n"
+"PO-Revision-Date: 2018-08-07 18:18+0000\n"
+"Last-Translator: Vinzenz Vietzke <vinz@vinzv.de>, 2018\n"
 "Language-Team: German (https://www.transifex.com/Friendica/teams/12172/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -120,7 +124,7 @@ msgstr "Millionäre"
 
 #: morechoice.php:62
 msgid "Guys with big schlongs"
-msgstr ""
+msgstr "Typen mit großen Schwänzen"
 
 #: morechoice.php:63
 msgid "Easy women"
@@ -236,7 +240,7 @@ msgstr "Muttermilch"
 
 #: morechoice.php:91
 msgid "Immersing genitals in liquids"
-msgstr ""
+msgstr "Eintauchen von Genitalien in Flüssigkeiten"
 
 #: morechoice.php:92
 msgid "Giants"
@@ -292,11 +296,11 @@ msgstr "Schlafende Personen"
 
 #: morechoice.php:105
 msgid "Urination"
-msgstr ""
+msgstr "Urinieren"
 
 #: morechoice.php:106
 msgid "Eating people"
-msgstr ""
+msgstr "Essende Menschen"
 
 #: morechoice.php:107
 msgid "Being eaten"

@@ -9,6 +9,7 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 
 function gnot_install() {
@@ -17,7 +18,7 @@ function gnot_install() {
 	Addon::registerHook('addon_settings_post', 'addon/gnot/gnot.php', 'gnot_settings_post');
 	Addon::registerHook('enotify_mail', 'addon/gnot/gnot.php', 'gnot_enotify_mail');
 
-	logger("installed gnot");
+	Logger::log("installed gnot");
 }
 
 
@@ -28,7 +29,7 @@ function gnot_uninstall() {
 	Addon::unregisterHook('enotify_mail', 'addon/gnot/gnot.php', 'gnot_enotify_mail');
 
 
-	logger("removed gnot");
+	Logger::log("removed gnot");
 }
 
 
@@ -43,7 +44,7 @@ function gnot_uninstall() {
  */
 
 function gnot_settings_post($a,$post) {
-	if(! local_user() || (! x($_POST,'gnot-submit')))
+	if(! local_user() || empty($_POST['gnot-submit']))
 		return;
 
 	PConfig::set(local_user(),'gnot','enable',intval($_POST['gnot']));
@@ -67,7 +68,7 @@ function gnot_settings(&$a,&$s) {
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/gnot/gnot.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/gnot/gnot.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variable */
 

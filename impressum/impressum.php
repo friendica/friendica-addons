@@ -11,27 +11,30 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 use Friendica\Util\Proxy as ProxyUtils;
+use Friendica\Util\Strings;
 
 function impressum_install() {
 	Addon::registerHook('load_config', 'addon/impressum/impressum.php', 'impressum_load_config');
     Addon::registerHook('about_hook', 'addon/impressum/impressum.php', 'impressum_show');
     Addon::registerHook('page_end', 'addon/impressum/impressum.php', 'impressum_footer');
-    logger("installed impressum Addon");
+    Logger::log("installed impressum Addon");
 }
 
 function impressum_uninstall() {
 	Addon::unregisterHook('load_config', 'addon/impressum/impressum.php', 'impressum_load_config');
     Addon::unregisterHook('about_hook', 'addon/impressum/impressum.php', 'impressum_show');
     Addon::unregisterHook('page_end', 'addon/impressum/impressum.php', 'impressum_footer');
-    logger("uninstalled impressum Addon");
+    Logger::log("uninstalled impressum Addon");
 }
 
 function impressum_module() {
 }
 function impressum_content() {
     $a = get_app();
-    goaway('friendica/');
+    $a->internalRedirect('friendica/');
 }
 
 function obfuscate_email ($s) {
@@ -43,7 +46,7 @@ function impressum_footer($a, &$b) {
     $text = ProxyUtils::proxifyHtml(BBCode::convert(Config::get('impressum','footer_text')));
 
     if (! $text == '') {
-        $a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->get_baseurl().'/addon/impressum/impressum.css" media="all" />';
+        $a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->getBaseURL().'/addon/impressum/impressum.css" media="all" />';
         $b .= '<div class="clear"></div>';
         $b .= '<div id="impressum_footer">'.$text.'</div>';
     }
@@ -51,7 +54,7 @@ function impressum_footer($a, &$b) {
 
 function impressum_load_config(\Friendica\App $a)
 {
-	$a->loadConfigFile(__DIR__. '/config/impressum.ini.php');
+	$a->loadConfigFile(__DIR__ . '/config/impressum.config.php');
 }
 
 function impressum_show($a,&$b) {
@@ -84,12 +87,12 @@ function impressum_show($a,&$b) {
 }
 
 function impressum_addon_admin_post (&$a) {
-    $owner = ((x($_POST, 'owner')) ? notags(trim($_POST['owner'])) : '');
-    $ownerprofile = ((x($_POST, 'ownerprofile')) ? notags(trim($_POST['ownerprofile'])) : '');
-    $postal = ((x($_POST, 'postal')) ? (trim($_POST['postal'])) : '');
-    $notes = ((x($_POST, 'notes')) ? (trim($_POST['notes'])) : '');
-    $email = ((x($_POST, 'email')) ? notags(trim($_POST['email'])) : '');
-    $footer_text = ((x($_POST, 'footer_text')) ? (trim($_POST['footer_text'])) : '');
+    $owner = (!empty($_POST['owner']) ? Strings::escapeTags(trim($_POST['owner'])) : '');
+    $ownerprofile = (!empty($_POST['ownerprofile']) ? Strings::escapeTags(trim($_POST['ownerprofile'])) : '');
+    $postal = (!empty($_POST['postal']) ? (trim($_POST['postal'])) : '');
+    $notes = (!empty($_POST['notes']) ? (trim($_POST['notes'])) : '');
+    $email = (!empty($_POST['email']) ? Strings::escapeTags(trim($_POST['email'])) : '');
+    $footer_text = (!empty($_POST['footer_text']) ? (trim($_POST['footer_text'])) : '');
     Config::set('impressum','owner',strip_tags($owner));
     Config::set('impressum','ownerprofile',strip_tags($ownerprofile));
     Config::set('impressum','postal',strip_tags($postal));
@@ -99,8 +102,8 @@ function impressum_addon_admin_post (&$a) {
     info(L10n::t('Settings updated.'). EOL );
 }
 function impressum_addon_admin (&$a, &$o) {
-    $t = get_markup_template( "admin.tpl", "addon/impressum/" );
-    $o = replace_macros($t, [
+    $t = Renderer::getMarkupTemplate( "admin.tpl", "addon/impressum/" );
+    $o = Renderer::replaceMacros($t, [
         '$submit' => L10n::t('Save Settings'),
         '$owner' => ['owner', L10n::t('Site Owner'), Config::get('impressum','owner'), L10n::t('The page operators name.')],
         '$ownerprofile' => ['ownerprofile', L10n::t('Site Owners Profile'), Config::get('impressum','ownerprofile'), L10n::t('Profile address of the operator.')],

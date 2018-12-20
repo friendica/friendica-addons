@@ -13,6 +13,7 @@ use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
@@ -20,6 +21,7 @@ use Friendica\Model\Queue;
 
 function diaspora_install()
 {
+	Addon::registerHook('hook_fork',               'addon/diaspora/diaspora.php', 'diaspora_hook_fork');
 	Addon::registerHook('post_local',              'addon/diaspora/diaspora.php', 'diaspora_post_local');
 	Addon::registerHook('notifier_normal',         'addon/diaspora/diaspora.php', 'diaspora_send');
 	Addon::registerHook('jot_networks',            'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
@@ -30,6 +32,7 @@ function diaspora_install()
 
 function diaspora_uninstall()
 {
+	Addon::unregisterHook('hook_fork',               'addon/diaspora/diaspora.php', 'diaspora_hook_fork');
 	Addon::unregisterHook('post_local',              'addon/diaspora/diaspora.php', 'diaspora_post_local');
 	Addon::unregisterHook('notifier_normal',         'addon/diaspora/diaspora.php', 'diaspora_send');
 	Addon::unregisterHook('jot_networks',            'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
@@ -57,7 +60,7 @@ function diaspora_jot_nets(App $a, &$b)
 }
 
 function diaspora_queue_hook(App $a, &$b) {
-	$hostname = $a->get_hostname();
+	$hostname = $a->getHostName();
 
 	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
 		DBA::escape(Protocol::DIASPORA2)
@@ -72,7 +75,7 @@ function diaspora_queue_hook(App $a, &$b) {
 			continue;
 		}
 
-		logger('diaspora_queue: run');
+		Logger::log('diaspora_queue: run');
 
 		$r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` on `contact`.`uid` = `user`.`uid`
 			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
@@ -92,37 +95,37 @@ function diaspora_queue_hook(App $a, &$b) {
 		$success = false;
 
 		if ($handle && $password) {
-			logger('diaspora_queue: able to post for user '.$handle);
+			Logger::log('diaspora_queue: able to post for user '.$handle);
 
 			$z = unserialize($x['content']);
 
 			$post = $z['post'];
 
-			logger('diaspora_queue: post: '.$post, LOGGER_DATA);
+			Logger::log('diaspora_queue: post: '.$post, Logger::DATA);
 
 			try {
-				logger('diaspora_queue: prepare', LOGGER_DEBUG);
+				Logger::log('diaspora_queue: prepare', Logger::DEBUG);
 				$conn = new Diaspora_Connection($handle, $password);
-				logger('diaspora_queue: try to log in '.$handle, LOGGER_DEBUG);
+				Logger::log('diaspora_queue: try to log in '.$handle, Logger::DEBUG);
 				$conn->logIn();
-				logger('diaspora_queue: try to send '.$body, LOGGER_DEBUG);
+				Logger::log('diaspora_queue: try to send '.$body, Logger::DEBUG);
 				$conn->provider = $hostname;
 				$conn->postStatusMessage($post, $aspect);
 
-				logger('diaspora_queue: send '.$userdata['uid'].' success', LOGGER_DEBUG);
+				Logger::log('diaspora_queue: send '.$userdata['uid'].' success', Logger::DEBUG);
 
 				$success = true;
 
 				Queue::removeItem($x['id']);
 			} catch (Exception $e) {
-				logger("diaspora_queue: Send ".$userdata['uid']." failed: ".$e->getMessage(), LOGGER_DEBUG);
+				Logger::log("diaspora_queue: Send ".$userdata['uid']." failed: ".$e->getMessage(), Logger::DEBUG);
 			}
 		} else {
-			logger('diaspora_queue: send '.$userdata['uid'].' missing username or password', LOGGER_DEBUG);
+			Logger::log('diaspora_queue: send '.$userdata['uid'].' missing username or password', Logger::DEBUG);
 		}
 
 		if (!$success) {
-			logger('diaspora_queue: delayed');
+			Logger::log('diaspora_queue: delayed');
 			Queue::updateTime($x['id']);
 		}
 	}
@@ -136,7 +139,7 @@ function diaspora_settings(App $a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/diaspora/diaspora.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/diaspora/diaspora.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variables */
 
@@ -252,6 +255,21 @@ function diaspora_settings_post(App $a, &$b)
 	}
 }
 
+function diaspora_hook_fork(&$a, &$b)
+{
+	if ($b['name'] != 'notifier_normal') {
+		return;
+	}
+
+	$post = $b['data'];
+
+	if ($post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
+		!strstr($post['postopts'], 'diaspora') || ($post['parent'] != $post['id'])) {
+		$b['execute'] = false;
+		return;
+	}
+}
+
 function diaspora_post_local(App $a, array &$b)
 {
 	if ($b['edit']) {
@@ -268,7 +286,7 @@ function diaspora_post_local(App $a, array &$b)
 
 	$diaspora_post   = intval(PConfig::get(local_user(),'diaspora','post'));
 
-	$diaspora_enable = (($diaspora_post && x($_REQUEST,'diaspora_enable')) ? intval($_REQUEST['diaspora_enable']) : 0);
+	$diaspora_enable = (($diaspora_post && !empty($_REQUEST['diaspora_enable'])) ? intval($_REQUEST['diaspora_enable']) : 0);
 
 	if ($b['api_source'] && intval(PConfig::get(local_user(),'diaspora','post_by_default'))) {
 		$diaspora_enable = 1;
@@ -287,9 +305,9 @@ function diaspora_post_local(App $a, array &$b)
 
 function diaspora_send(App $a, array &$b)
 {
-	$hostname = $a->get_hostname();
+	$hostname = $a->getHostName();
 
-	logger('diaspora_send: invoked');
+	Logger::log('diaspora_send: invoked');
 
 	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
@@ -311,14 +329,14 @@ function diaspora_send(App $a, array &$b)
 		return;
 	}
 
-	logger('diaspora_send: prepare posting', LOGGER_DEBUG);
+	Logger::log('diaspora_send: prepare posting', Logger::DEBUG);
 
 	$handle = PConfig::get($b['uid'],'diaspora','handle');
 	$password = PConfig::get($b['uid'],'diaspora','password');
 	$aspect = PConfig::get($b['uid'],'diaspora','aspect');
 
 	if ($handle && $password) {
-		logger('diaspora_send: all values seem to be okay', LOGGER_DEBUG);
+		Logger::log('diaspora_send: all values seem to be okay', Logger::DEBUG);
 
 		$tag_arr = [];
 		$tags = '';
@@ -363,20 +381,20 @@ function diaspora_send(App $a, array &$b)
 		require_once "addon/diaspora/diasphp.php";
 
 		try {
-			logger('diaspora_send: prepare', LOGGER_DEBUG);
+			Logger::log('diaspora_send: prepare', Logger::DEBUG);
 			$conn = new Diaspora_Connection($handle, $password);
-			logger('diaspora_send: try to log in '.$handle, LOGGER_DEBUG);
+			Logger::log('diaspora_send: try to log in '.$handle, Logger::DEBUG);
 			$conn->logIn();
-			logger('diaspora_send: try to send '.$body, LOGGER_DEBUG);
+			Logger::log('diaspora_send: try to send '.$body, Logger::DEBUG);
 
 			$conn->provider = $hostname;
 			$conn->postStatusMessage($body, $aspect);
 
-			logger('diaspora_send: success');
+			Logger::log('diaspora_send: success');
 		} catch (Exception $e) {
-			logger("diaspora_send: Error submitting the post: " . $e->getMessage());
+			Logger::log("diaspora_send: Error submitting the post: " . $e->getMessage());
 
-			logger('diaspora_send: requeueing '.$b['uid'], LOGGER_DEBUG);
+			Logger::log('diaspora_send: requeueing '.$b['uid'], Logger::DEBUG);
 
 			$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $b['uid']);
 			if (count($r))

@@ -9,6 +9,7 @@
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Util\Strings;
 
 function superblock_install()
 {
@@ -36,7 +37,7 @@ function superblock_addon_settings(&$a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/superblock/superblock.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/superblock/superblock.css' . '" media="all" />' . "\r\n";
 
 	$words = PConfig::get(local_user(), 'system', 'blocked');
 	if (!$words) {
@@ -88,7 +89,7 @@ function superblock_enotify_store(&$a,&$b) {
 				continue;
 			}
 
-			if (link_compare($b['url'], $word)) {
+			if (Strings::compareLink($b['url'], $word)) {
 				$found = true;
 				break;
 			}
@@ -134,7 +135,7 @@ function superblock_item_photo_menu(&$a, &$b)
 	$author = $b['item']['author-link'];
 	if (!empty($a->data['superblock'])) {
 		foreach ($a->data['superblock'] as $bloke) {
-			if (link_compare($bloke, $author)) {
+			if (Strings::compareLink($bloke, $author)) {
 				$blocked = true;
 				break;
 			}

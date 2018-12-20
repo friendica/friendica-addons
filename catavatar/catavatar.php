@@ -10,7 +10,9 @@ use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
+use Friendica\Core\Renderer;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\Model\Contact;
@@ -28,7 +30,7 @@ function catavatar_install()
 	Addon::registerHook('addon_settings', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings');
 	Addon::registerHook('addon_settings_post', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings_post');
 
-	logger('registered catavatar');
+	Logger::log('registered catavatar');
 }
 
 /**
@@ -40,7 +42,7 @@ function catavatar_uninstall()
 	Addon::unregisterHook('addon_settings', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings');
 	Addon::unregisterHook('addon_settings_post', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings_post');
 
-	logger('unregistered catavatar');
+	Logger::log('unregistered catavatar');
 }
 
 /**
@@ -52,8 +54,8 @@ function catavatar_addon_settings(App $a, &$s)
 		return;
 	}
 
-	$t = get_markup_template('settings.tpl', 'addon/catavatar/');
-	$s .= replace_macros ($t, [
+	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/catavatar/');
+	$s .= Renderer::replaceMacros($t, [
 		'$postpost' => !empty($_POST['catavatar-morecat']) || !empty($_POST['catavatar-emailcat']),
 		'$uncache' => time(),
 		'$uid' => local_user(),
@@ -82,7 +84,7 @@ function catavatar_addon_settings_post(App $a, &$s)
 	$seed = PConfig::get(local_user(), 'catavatar', 'seed', md5(trim(strtolower($user['email']))));
 
 	if (!empty($_POST['catavatar-usecat'])) {
-		$url = $a->get_baseurl() . '/catavatar/' . local_user() . '?ts=' . time();
+		$url = $a->getBaseURL() . '/catavatar/' . local_user() . '?ts=' . time();
 
 		$self = DBA::selectFirst('contact', ['id'], ['uid' => local_user(), 'self' => true]);
 		if (!DBA::isResult($self)) {
@@ -109,7 +111,7 @@ function catavatar_addon_settings_post(App $a, &$s)
 		Contact::updateSelfFromUserID(local_user(), true);
 
 		// Update global directory in background
-		$url = $a->get_baseurl() . '/profile/' . $a->user['nickname'];
+		$url = $a->getBaseURL() . '/profile/' . $a->user['nickname'];
 		if ($url && strlen(Config::get('system', 'directory'))) {
 			Worker::add(PRIORITY_LOW, 'Directory', $url);
 		}
@@ -138,10 +140,10 @@ function catavatar_addon_settings_post(App $a, &$s)
 function catavatar_lookup(App $a, &$b)
 {
 	$user = DBA::selectFirst('user', ['uid'], ['email' => $b['email']]);
-	$url = $a->get_baseurl() . '/catavatar/' . $user['uid'];
+	$url = $a->getBaseURL() . '/catavatar/' . $user['uid'];
 
 	switch($b['size']) {
-		case 175: $url .= "/4"; break;
+		case 300: $url .= "/4"; break;
 		case 80: $url .= "/5"; break;
 		case 47: $url .= "/6"; break;
 	}
@@ -171,7 +173,7 @@ function catavatar_content(App $a)
 		$size = intval($a->argv[2]);
 	}
 
-	$condition = ['uid' => $uid, 'blocked' => false,
+	$condition = ['uid' => $uid,
 			'account_expired' => false, 'account_removed' => false];
 	$user = DBA::selectFirst('user', ['email'], $condition);
 
@@ -245,7 +247,7 @@ function build_cat($seed = '', $size = 0)
 	if ($size > 3 && $size < 7) {
 		switch ($size) {
 			case 4:
-				$size = 175;
+				$size = 300;
 				break;
 			case 5:
 				$size = 80;

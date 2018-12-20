@@ -17,6 +17,7 @@ use Friendica\Core\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Core\Renderer;
 use Friendica\Util\Network;
 use Friendica\Util\Proxy as ProxyUtils;
 
@@ -92,7 +93,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 	];
 
 	PConfig::set(local_user(), 'curweather', 'last', $now->getTimestamp());
-	Cache::set('curweather'.md5($url), serialize($r), CACHE_HOUR);
+	Cache::set('curweather'.md5($url), serialize($r), Cache::HOUR);
 
 	return $r;
 }
@@ -103,7 +104,7 @@ function curweather_network_mod_init(App $a, &$b)
 		return;
 	}
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/curweather/curweather.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/curweather/curweather.css' . '" media="all" />' . "\r\n";
 
 	// $rpt value is needed for location
 	// $lang will be taken from the browser session to honour user settings
@@ -117,7 +118,7 @@ function curweather_network_mod_init(App $a, &$b)
 	$rpt = PConfig::get(local_user(), 'curweather', 'curweather_loc');
 
 	// Set the language to the browsers language or default and use metric units
-	$lang = (!empty($_SESSION['language']) ? $_SESSION['language'] : Config::get('system', 'language'));
+	$lang = defaults($_SESSION, 'language', Config::get('system', 'language'));
 	$units = PConfig::get( local_user(), 'curweather', 'curweather_units');
 	$appid = Config::get('curweather', 'appid');
 	$cachetime = intval(Config::get('curweather', 'cachetime'));
@@ -135,8 +136,8 @@ function curweather_network_mod_init(App $a, &$b)
 	}
 
 	if ($ok) {
-		$t = get_markup_template("widget.tpl", "addon/curweather/" );
-		$curweather = replace_macros ($t, [
+		$t = Renderer::getMarkupTemplate("widget.tpl", "addon/curweather/" );
+		$curweather = Renderer::replaceMacros($t, [
 			'$title' => L10n::t("Current Weather"),
 			'$icon' => ProxyUtils::proxifyUrl('http://openweathermap.org/img/w/'.$res['icon'].'.png'),
 			'$city' => $res['city'],
@@ -152,8 +153,8 @@ function curweather_network_mod_init(App $a, &$b)
 			'$showonmap' => L10n::t('Show on map')
 		]);
 	} else {
-		$t = get_markup_template('widget-error.tpl', 'addon/curweather/');
-		$curweather = replace_macros( $t, [
+		$t = Renderer::getMarkupTemplate('widget-error.tpl', 'addon/curweather/');
+		$curweather = Renderer::replaceMacros( $t, [
 			'$problem' => L10n::t('There was a problem accessing the weather data. But have a look'),
 			'$rpt' => $rpt,
 			'$atOWM' => L10n::t('at OpenWeatherMap')
@@ -197,9 +198,9 @@ function curweather_addon_settings(App $a, &$s)
 	$enable_checked = (($enable) ? ' checked="checked" ' : '');
 	
 	// load template and replace the macros
-	$t = get_markup_template("settings.tpl", "addon/curweather/" );
+	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/curweather/" );
 
-	$s = replace_macros ($t, [
+	$s = Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$header' => L10n::t('Current Weather').' '.L10n::t('Settings'),
 		'$noappidtext' => $noappidtext,
@@ -237,9 +238,9 @@ function curweather_addon_admin(App $a, &$o)
 	$appid = Config::get('curweather', 'appid');
 	$cachetime = Config::get('curweather', 'cachetime');
 
-	$t = get_markup_template("admin.tpl", "addon/curweather/" );
+	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/curweather/" );
 
-	$o = replace_macros ($t, [
+	$o = Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		'$cachetime' => [
 			'cachetime',

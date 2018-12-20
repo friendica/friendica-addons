@@ -30,7 +30,7 @@ function fortunate_uninstall()
 function fortunate_fetch(&$a, &$b)
 {
 	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'
-		. $a->get_baseurl() . '/addon/fortunate/fortunate.css' . '" media="all" />' . "\r\n";
+		. $a->getBaseURL() . '/addon/fortunate/fortunate.css' . '" media="all" />' . "\r\n";
 
 	if (FORTUNATE_SERVER != 'hostname.com') {
 		$s = Network::fetchUrl('http://' . FORTUNATE_SERVER . '/cookie.php?numlines=2&equal=1&rand=' . mt_rand());

@@ -9,6 +9,8 @@
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Renderer;
+use Friendica\Util\Strings;
 
 function webrtc_install() {
         Addon::registerHook('app_menu', 'addon/webrtc/webrtc.php', 'webrtc_app_menu');
@@ -24,14 +26,14 @@ function webrtc_app_menu($a,&$b) {
 }
 
 function webrtc_addon_admin (&$a, &$o) {
-        $t = get_markup_template( "admin.tpl", "addon/webrtc/" );
-	$o = replace_macros( $t, [
+        $t = Renderer::getMarkupTemplate( "admin.tpl", "addon/webrtc/" );
+	$o = Renderer::replaceMacros( $t, [
 	    '$submit' => L10n::t('Save Settings'),
 	    '$webrtcurl' => ['webrtcurl', L10n::t('WebRTC Base URL'), Config::get('webrtc','webrtcurl' ), L10n::t('Page your users will create a WebRTC chat room on. For example you could use https://live.mayfirst.org .')],
 	]);
 }
 function webrtc_addon_admin_post (&$a) {
-        $url = ((x($_POST, 'webrtcurl')) ? notags(trim($_POST['webrtcurl'])) : '');
+        $url = (!empty($_POST['webrtcurl']) ? Strings::escapeTags(trim($_POST['webrtcurl'])) : '');
 	    Config::set('webrtc', 'webrtcurl', $url);
 	    info(L10n::t('Settings updated.'). EOL);
 }

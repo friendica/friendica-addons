@@ -10,11 +10,14 @@ use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Util\Network;
+use Friendica\Util\XML;
 
 function blogger_install()
 {
+	Addon::registerHook('hook_fork',               'addon/blogger/blogger.php', 'blogger_hook_fork');
 	Addon::registerHook('post_local',              'addon/blogger/blogger.php', 'blogger_post_local');
 	Addon::registerHook('notifier_normal',         'addon/blogger/blogger.php', 'blogger_send');
 	Addon::registerHook('jot_networks',            'addon/blogger/blogger.php', 'blogger_jot_nets');
@@ -24,6 +27,7 @@ function blogger_install()
 
 function blogger_uninstall()
 {
+	Addon::unregisterHook('hook_fork',               'addon/blogger/blogger.php', 'blogger_hook_fork');
 	Addon::unregisterHook('post_local',              'addon/blogger/blogger.php', 'blogger_post_local');
 	Addon::unregisterHook('notifier_normal',         'addon/blogger/blogger.php', 'blogger_send');
 	Addon::unregisterHook('jot_networks',            'addon/blogger/blogger.php', 'blogger_jot_nets');
@@ -62,7 +66,7 @@ function blogger_settings(App $a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/blogger/blogger.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/blogger/blogger.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variables */
 
@@ -120,11 +124,26 @@ function blogger_settings(App $a, &$s)
 function blogger_settings_post(App $a, array &$b)
 {
 	if (!empty($_POST['blogger-submit'])) {
-		PConfig::set(local_user(), 'blogger', 'post',            intval($_POST['blogger']));
-		PConfig::set(local_user(), 'blogger', 'post_by_default', intval($_POST['bl_bydefault']));
+		PConfig::set(local_user(), 'blogger', 'post',            defaults($_POST, 'blogger', false));
+		PConfig::set(local_user(), 'blogger', 'post_by_default', defaults($_POST, 'bl_bydefault', false));
 		PConfig::set(local_user(), 'blogger', 'bl_username',     trim($_POST['bl_username']));
 		PConfig::set(local_user(), 'blogger', 'bl_password',     trim($_POST['bl_password']));
 		PConfig::set(local_user(), 'blogger', 'bl_blog',         trim($_POST['bl_blog']));
+	}
+}
+
+function blogger_hook_fork(App &$a, array &$b)
+{
+	if ($b['name'] != 'notifier_normal') {
+		return;
+	}
+
+	$post = $b['data'];
+
+	if ($post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
+		!strstr($post['postopts'], 'blogger') || ($post['parent'] != $post['id'])) {
+		$b['execute'] = false;
+		return;
 	}
 }
 
@@ -146,7 +165,7 @@ function blogger_post_local(App $a, array &$b)
 
 	$bl_post   = intval(PConfig::get(local_user(), 'blogger', 'post'));
 
-	$bl_enable = (($bl_post && x($_REQUEST, 'blogger_enable')) ? intval($_REQUEST['blogger_enable']) : 0);
+	$bl_enable = (($bl_post && !empty($_REQUEST['blogger_enable'])) ? intval($_REQUEST['blogger_enable']) : 0);
 
 	if ($b['api_source'] && intval(PConfig::get(local_user(), 'blogger', 'post_by_default'))) {
 		$bl_enable = 1;
@@ -177,14 +196,14 @@ function blogger_send(App $a, array &$b)
 		return;
 	}
 
-	$bl_username = xmlify(PConfig::get($b['uid'], 'blogger', 'bl_username'));
-	$bl_password = xmlify(PConfig::get($b['uid'], 'blogger', 'bl_password'));
+	$bl_username = XML::escape(PConfig::get($b['uid'], 'blogger', 'bl_username'));
+	$bl_password = XML::escape(PConfig::get($b['uid'], 'blogger', 'bl_password'));
 	$bl_blog = PConfig::get($b['uid'], 'blogger', 'bl_blog');
 
 	if ($bl_username && $bl_password && $bl_blog) {
 		$title = '<title>' . (($b['title']) ? $b['title'] : L10n::t('Post from Friendica')) . '</title>';
 		$post = $title . BBCode::convert($b['body']);
-		$post = xmlify($post);
+		$post = XML::escape($post);
 
 		$xml = <<< EOT
 <?xml version=\"1.0\" encoding=\"utf-8\"?>
@@ -202,12 +221,12 @@ function blogger_send(App $a, array &$b)
 
 EOT;
 
-		logger('blogger: data: ' . $xml, LOGGER_DATA);
+		Logger::log('blogger: data: ' . $xml, Logger::DATA);
 
 		if ($bl_blog !== 'test') {
-			$x = Network::post($bl_blog, $xml);
+			$x = Network::post($bl_blog, $xml)->getBody();
 		}
 
-		logger('posted to blogger: ' . (($x) ? $x : ''), LOGGER_DEBUG);
+		Logger::log('posted to blogger: ' . (($x) ? $x : ''), Logger::DEBUG);
 	}
 }

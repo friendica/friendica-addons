@@ -12,10 +12,12 @@ use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
+use Friendica\Util\XML;
 
 function dwpost_install()
 {
@@ -60,7 +62,7 @@ function dwpost_settings(App $a, &$s)
 	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/dwpost/dwpost.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/dwpost/dwpost.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variables */
 	$enabled = PConfig::get(local_user(), 'dwpost', 'post');
@@ -135,7 +137,7 @@ function dwpost_post_local(App $a, array &$b)
 
 	$dw_post = intval(PConfig::get(local_user(),'dwpost','post'));
 
-	$dw_enable = (($dw_post && x($_REQUEST,'dwpost_enable')) ? intval($_REQUEST['dwpost_enable']) : 0);
+	$dw_enable = (($dw_post && !empty($_REQUEST['dwpost_enable'])) ? intval($_REQUEST['dwpost_enable']) : 0);
 
 	if ($b['api_source'] && intval(PConfig::get(local_user(),'dwpost','post_by_default'))) {
 		$dw_enable = 1;
@@ -188,7 +190,7 @@ function dwpost_send(App $a, array &$b)
 	if ($dw_username && $dw_password && $dw_blog) {
 		$title = $b['title'];
 		$post = BBCode::convert($b['body']);
-		$post = xmlify($post);
+		$post = XML::escape($post);
 		$tags = dwpost_get_tags($b['tag']);
 
 		$date = DateTimeFormat::convert($b['created'], $tz);
@@ -225,13 +227,13 @@ function dwpost_send(App $a, array &$b)
 
 EOT;
 
-		logger('dwpost: data: ' . $xml, LOGGER_DATA);
+		Logger::log('dwpost: data: ' . $xml, Logger::DATA);
 
 		if ($dw_blog !== 'test') {
-			$x = Network::post($dw_blog, $xml, ["Content-Type: text/xml"]);
+			$x = Network::post($dw_blog, $xml, ["Content-Type: text/xml"])->getBody();
 		}
 
-		logger('posted to dreamwidth: ' . ($x) ? $x : '', LOGGER_DEBUG);
+		Logger::log('posted to dreamwidth: ' . ($x) ? $x : '', Logger::DEBUG);
 	}
 }
 

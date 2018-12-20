@@ -6,29 +6,34 @@
  * Author: Tony Baldwin <https://free-haven.org/u/tony>
  */
 
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
 use Friendica\Util\Network;
 
-function libertree_install() {
-    Addon::registerHook('post_local',           'addon/libertree/libertree.php', 'libertree_post_local');
-    Addon::registerHook('notifier_normal',      'addon/libertree/libertree.php', 'libertree_send');
-    Addon::registerHook('jot_networks',         'addon/libertree/libertree.php', 'libertree_jot_nets');
-    Addon::registerHook('connector_settings',      'addon/libertree/libertree.php', 'libertree_settings');
-    Addon::registerHook('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
-
-}
-function libertree_uninstall() {
-    Addon::unregisterHook('post_local',       'addon/libertree/libertree.php', 'libertree_post_local');
-    Addon::unregisterHook('notifier_normal',  'addon/libertree/libertree.php', 'libertree_send');
-    Addon::unregisterHook('jot_networks',     'addon/libertree/libertree.php', 'libertree_jot_nets');
-    Addon::unregisterHook('connector_settings',      'addon/libertree/libertree.php', 'libertree_settings');
-    Addon::unregisterHook('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
+function libertree_install()
+{
+	Addon::registerHook('hook_fork',            'addon/libertree/libertree.php', 'libertree_hook_fork');
+	Addon::registerHook('post_local',           'addon/libertree/libertree.php', 'libertree_post_local');
+	Addon::registerHook('notifier_normal',      'addon/libertree/libertree.php', 'libertree_send');
+	Addon::registerHook('jot_networks',         'addon/libertree/libertree.php', 'libertree_jot_nets');
+	Addon::registerHook('connector_settings',      'addon/libertree/libertree.php', 'libertree_settings');
+	Addon::registerHook('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
 }
 
+function libertree_uninstall()
+{
+	Addon::unregisterHook('hook_fork',        'addon/libertree/libertree.php', 'libertree_hook_fork');
+	Addon::unregisterHook('post_local',       'addon/libertree/libertree.php', 'libertree_post_local');
+	Addon::unregisterHook('notifier_normal',  'addon/libertree/libertree.php', 'libertree_send');
+	Addon::unregisterHook('jot_networks',     'addon/libertree/libertree.php', 'libertree_jot_nets');
+	Addon::unregisterHook('connector_settings',      'addon/libertree/libertree.php', 'libertree_settings');
+	Addon::unregisterHook('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
+}
 
 function libertree_jot_nets(&$a,&$b) {
     if(! local_user())
@@ -51,7 +56,7 @@ function libertree_settings(&$a,&$s) {
 
     /* Add our stylesheet to the page so we can make our settings look nice */
 
-    $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/libertree/libertree.css' . '" media="all" />' . "\r\n";
+    $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/libertree/libertree.css' . '" media="all" />' . "\r\n";
 
     /* Get the current state of our config variables */
 
@@ -106,7 +111,7 @@ function libertree_settings(&$a,&$s) {
 
 function libertree_settings_post(&$a,&$b) {
 
-	if(x($_POST,'libertree-submit')) {
+	if(!empty($_POST['libertree-submit'])) {
 
 		PConfig::set(local_user(),'libertree','post',intval($_POST['libertree']));
 		PConfig::set(local_user(),'libertree','post_by_default',intval($_POST['libertree_bydefault']));
@@ -115,6 +120,21 @@ function libertree_settings_post(&$a,&$b) {
 
 	}
 
+}
+
+function libertree_hook_fork(App &$a, array &$b)
+{
+	if ($b['name'] != 'notifier_normal') {
+		return;
+	}
+
+	$post = $b['data'];
+
+	if ($post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
+		!strstr($post['postopts'], 'libertree') || ($post['parent'] != $post['id'])) {
+		$b['execute'] = false;
+		return;
+	}
 }
 
 function libertree_post_local(&$a,&$b) {
@@ -135,7 +155,7 @@ function libertree_post_local(&$a,&$b) {
 
 	$ltree_post   = intval(PConfig::get(local_user(),'libertree','post'));
 
-	$ltree_enable = (($ltree_post && x($_REQUEST,'libertree_enable')) ? intval($_REQUEST['libertree_enable']) : 0);
+	$ltree_enable = (($ltree_post && !empty($_REQUEST['libertree_enable'])) ? intval($_REQUEST['libertree_enable']) : 0);
 
 	if ($b['api_source'] && intval(PConfig::get(local_user(),'libertree','post_by_default'))) {
 		$ltree_enable = 1;
@@ -157,7 +177,7 @@ function libertree_post_local(&$a,&$b) {
 
 function libertree_send(&$a,&$b) {
 
-	logger('libertree_send: invoked');
+	Logger::log('libertree_send: invoked');
 
 	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
@@ -181,7 +201,7 @@ function libertree_send(&$a,&$b) {
 	$ltree_api_token = PConfig::get($b['uid'],'libertree','libertree_api_token');
 	$ltree_url = PConfig::get($b['uid'],'libertree','libertree_url');
 	$ltree_blog = "$ltree_url/api/v1/posts/create/?token=$ltree_api_token";
-	$ltree_source = $a->get_hostname();
+	$ltree_source = $a->getHostName();
 
 	if ($b['app'] != "")
 		$ltree_source .= " (".$b['app'].")";
@@ -231,7 +251,7 @@ function libertree_send(&$a,&$b) {
 		//	'token' => $ltree_api_token
 		];
 
-		$result = Network::post($ltree_blog, $params);
-		logger('libertree: ' . $result);
+		$result = Network::post($ltree_blog, $params)->getBody();
+		Logger::log('libertree: ' . $result);
 	}
 }

@@ -34,11 +34,13 @@
  */
 
 use Friendica\App;
+use Friendica\BaseModule;
 use Friendica\Content\Text\Markdown;
 use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\L10n;
-use Friendica\Core\System;
+use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Database\DBStructure;
 use Friendica\Model\Item;
@@ -53,7 +55,6 @@ use Symfony\Component\ExpressionLanguage;
 require_once 'boot.php';
 require_once 'include/conversation.php';
 require_once 'include/dba.php';
-require_once 'include/security.php';
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
@@ -65,7 +66,7 @@ function advancedcontentfilter_install()
 
 	DBStructure::update(false, true);
 
-	logger("installed advancedcontentfilter");
+	Logger::log("installed advancedcontentfilter");
 }
 
 function advancedcontentfilter_uninstall()
@@ -90,7 +91,7 @@ function advancedcontentfilter_dbstructure_definition(App $a, &$database)
 			"expression" => ["type" => "mediumtext"  , "not null" => "1", "comment" => "Expression text"],
 			"serialized" => ["type" => "mediumtext"  , "not null" => "1", "comment" => "Serialized parsed expression"],
 			"active"     => ["type" => "boolean"     , "not null" => "1", "default" => "1", "comment" => "Whether the rule is active or not"],
-			"created"    => ["type" => "datetime"    , "not null" => "1", "default" => NULL_DATE, "comment" => "Creation date"],
+			"created"    => ["type" => "datetime"    , "not null" => "1", "default" => DBA::NULL_DATETIME, "comment" => "Creation date"],
 		],
 		"indexes" => [
 			"PRIMARY" => ["id"],
@@ -207,8 +208,8 @@ function advancedcontentfilter_content(App $a)
 
 		return $html;
 	} else {
-		$t = get_markup_template('settings.tpl', 'addon/advancedcontentfilter/');
-		return replace_macros($t, [
+		$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/advancedcontentfilter/');
+		return Renderer::replaceMacros($t, [
 			'$messages' => [
 				'backtosettings'    => L10n::t('Back to Addon Settings'),
 				'title'             => L10n::t('Advanced Content Filter'),
@@ -234,7 +235,7 @@ function advancedcontentfilter_content(App $a)
 			],
 			'$current_theme' => $a->getCurrentTheme(),
 			'$rules' => advancedcontentfilter_get_rules(),
-			'$form_security_token' => get_form_security_token()
+			'$form_security_token' => BaseModule::getFormSecurityToken()
 		]);
 	}
 }
@@ -322,7 +323,7 @@ function advancedcontentfilter_post_rules(ServerRequestInterface $request)
 		throw new HTTPException\UnauthorizedException(L10n::t('You must be logged in to use this method'));
 	}
 
-	if (!check_form_security_token()) {
+	if (!BaseModule::checkFormSecurityToken()) {
 		throw new HTTPException\BadRequestException(L10n::t('Invalid form security token, please refresh the page.'));
 	}
 
@@ -356,7 +357,7 @@ function advancedcontentfilter_put_rules_id(ServerRequestInterface $request, Res
 		throw new HTTPException\UnauthorizedException(L10n::t('You must be logged in to use this method'));
 	}
 
-	if (!check_form_security_token()) {
+	if (!BaseModule::checkFormSecurityToken()) {
 		throw new HTTPException\BadRequestException(L10n::t('Invalid form security token, please refresh the page.'));
 	}
 
@@ -385,7 +386,7 @@ function advancedcontentfilter_delete_rules_id(ServerRequestInterface $request, 
 		throw new HTTPException\UnauthorizedException(L10n::t('You must be logged in to use this method'));
 	}
 
-	if (!check_form_security_token()) {
+	if (!BaseModule::checkFormSecurityToken()) {
 		throw new HTTPException\BadRequestException(L10n::t('Invalid form security token, please refresh the page.'));
 	}
 

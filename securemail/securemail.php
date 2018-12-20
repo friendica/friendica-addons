@@ -10,7 +10,9 @@ use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
+use Friendica\Core\Renderer;
 use Friendica\Util\Emailer;
 
 /* because the fraking openpgp-php is in composer, require libs in composer
@@ -31,7 +33,7 @@ function securemail_install() {
 
     Addon::registerHook('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare');
 
-    logger('installed securemail');
+    Logger::log('installed securemail');
 }
 
 function securemail_uninstall() {
@@ -40,7 +42,7 @@ function securemail_uninstall() {
 
     Addon::unregisterHook('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare');
 
-    logger('removed securemail');
+    Logger::log('removed securemail');
 }
 
 /**
@@ -61,9 +63,9 @@ function securemail_settings(App &$a, &$s){
     $enable = intval(PConfig::get(local_user(), 'securemail', 'enable'));
     $publickey = PConfig::get(local_user(), 'securemail', 'pkey');
 
-    $t = get_markup_template('admin.tpl', 'addon/securemail/');
+    $t = Renderer::getMarkupTemplate('admin.tpl', 'addon/securemail/');
 
-    $s .= replace_macros($t, [
+    $s .= Renderer::replaceMacros($t, [
         '$title' => L10n::t('"Secure Mail" Settings'),
         '$submit' => L10n::t('Save Settings'),
         '$test' => L10n::t('Save and send test'), //NOTE: update also in 'post'
@@ -90,14 +92,14 @@ function securemail_settings_post(App &$a, array &$b){
 
     if ($_POST['securemail-submit']) {
         PConfig::set(local_user(), 'securemail', 'pkey', trim($_POST['securemail-pkey']));
-        $enable = ((x($_POST, 'securemail-enable')) ? 1 : 0);
+        $enable = (!empty($_POST['securemail-enable']) ? 1 : 0);
         PConfig::set(local_user(), 'securemail', 'enable', $enable);
         info(L10n::t('Secure Mail Settings saved.') . EOL);
 
         if ($_POST['securemail-submit'] == L10n::t('Save and send test')) {
             $sitename = Config::get('config', 'sitename');
 
-            $hostname = $a->get_hostname();
+            $hostname = $a->getHostName();
             if (strpos($hostname, ':')) {
                 $hostname = substr($hostname, 0, strpos($hostname, ':'));
             }
@@ -148,7 +150,7 @@ function securemail_settings_post(App &$a, array &$b){
  * @see App
  */
 function securemail_emailer_send_prepare(App &$a, array &$b) {
-    if (!x($b, 'uid')) {
+    if (empty($b['uid'])) {
         return;
     }
 
@@ -162,7 +164,7 @@ function securemail_emailer_send_prepare(App &$a, array &$b) {
     $public_key_ascii = PConfig::get($uid, 'securemail', 'pkey');
 
     preg_match('/-----BEGIN ([A-Za-z ]+)-----/', $public_key_ascii, $matches);
-    $marker = (empty($matches[1])) ? 'MESSAGE' : $matches[1];
+    $marker = empty($matches[1]) ? 'MESSAGE' : $matches[1];
     $public_key = OpenPGP::unarmor($public_key_ascii, $marker);
 
     $key = OpenPGP_Message::parse($public_key);

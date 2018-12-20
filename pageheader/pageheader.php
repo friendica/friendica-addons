@@ -10,6 +10,7 @@
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Renderer;
 
 function pageheader_install() {
     Addon::registerHook('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
@@ -41,15 +42,15 @@ function pageheader_addon_settings(&$a,&$s) {
 
     /* Add our stylesheet to the page so we can make our settings look nice */
 
-    $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/pageheader/pageheader.css' . '" media="all" />' . "\r\n";
+    $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/pageheader/pageheader.css' . '" media="all" />' . "\r\n";
 
 
 	$words = Config::get('pageheader','text');
 	if(! $words)
 		$words = '';
 
-	$t = get_markup_template("settings.tpl", "addon/pageheader/");
-	$s .= replace_macros($t, [
+	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/pageheader/");
+	$s .= Renderer::replaceMacros($t, [
 					'$title' => L10n::t('"pageheader" Settings'),
 					'$phwords' => ['pageheader-words', L10n::t('Message'), $words, L10n::t('Message to display on every page on this server (or put a pageheader.html file in your docroot)')],
 					'$submit' => L10n::t('Save Settings')
@@ -79,7 +80,7 @@ function pageheader_fetch($a,&$b) {
 	}
 
     $a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'
-        . $a->get_baseurl() . '/addon/pageheader/pageheader.css' . '" media="all" />' . "\r\n";
+        . $a->getBaseURL() . '/addon/pageheader/pageheader.css' . '" media="all" />' . "\r\n";
     
     if(! $s)
         $s = '';

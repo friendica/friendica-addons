@@ -48,13 +48,14 @@
  *     we do not need "Twitter as login". When you've registered the app you get the
  *     OAuth Consumer key and secret pair for your application/site.
  *
- *     Add this key pair to your global config/addon.ini.php or use the admin panel.
+ *     Add this key pair to your global config/addon.config.php or use the admin panel.
  *
- *     [twitter]
- *     consumerkey = your consumer_key here
- *     consumersecret = your consumer_secret here
+ *     	'twitter' => [
+ * 		    'consumerkey' => '',
+ *  		'consumersecret' => '',
+ *      ],
  *
- *     To activate the addon itself add it to the [system] addon
+ *     To activate the addon itself add it to the system.addon
  *     setting. After this, your user can configure their Twitter account settings
  *     from "Settings -> Addon Settings".
  *
@@ -65,12 +66,15 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 use Abraham\TwitterOAuth\TwitterOAuthException;
 use Friendica\App;
 use Friendica\Content\OEmbed;
+use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
+use Friendica\Core\Renderer;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\Model\Contact;
@@ -84,6 +88,7 @@ use Friendica\Model\User;
 use Friendica\Object\Image;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
+use Friendica\Util\Strings;
 
 require_once 'boot.php';
 require_once 'include/dba.php';
@@ -100,6 +105,7 @@ function twitter_install()
 	Addon::registerHook('load_config'            , __FILE__, 'twitter_load_config');
 	Addon::registerHook('connector_settings'     , __FILE__, 'twitter_settings');
 	Addon::registerHook('connector_settings_post', __FILE__, 'twitter_settings_post');
+	Addon::registerHook('hook_fork'              , __FILE__, 'twitter_hook_fork');
 	Addon::registerHook('post_local'             , __FILE__, 'twitter_post_local');
 	Addon::registerHook('notifier_normal'        , __FILE__, 'twitter_post_hook');
 	Addon::registerHook('jot_networks'           , __FILE__, 'twitter_jot_nets');
@@ -109,7 +115,7 @@ function twitter_install()
 	Addon::registerHook('expire'                 , __FILE__, 'twitter_expire');
 	Addon::registerHook('prepare_body'           , __FILE__, 'twitter_prepare_body');
 	Addon::registerHook('check_item_notification', __FILE__, 'twitter_check_item_notification');
-	logger("installed twitter");
+	Logger::log("installed twitter");
 }
 
 function twitter_uninstall()
@@ -117,6 +123,7 @@ function twitter_uninstall()
 	Addon::unregisterHook('load_config'            , __FILE__, 'twitter_load_config');
 	Addon::unregisterHook('connector_settings'     , __FILE__, 'twitter_settings');
 	Addon::unregisterHook('connector_settings_post', __FILE__, 'twitter_settings_post');
+	Addon::unregisterHook('hook_fork'              , __FILE__, 'twitter_hook_fork');
 	Addon::unregisterHook('post_local'             , __FILE__, 'twitter_post_local');
 	Addon::unregisterHook('notifier_normal'        , __FILE__, 'twitter_post_hook');
 	Addon::unregisterHook('jot_networks'           , __FILE__, 'twitter_jot_nets');
@@ -135,7 +142,7 @@ function twitter_uninstall()
 
 function twitter_load_config(App $a)
 {
-	$a->loadConfigFile(__DIR__ . '/config/twitter.ini.php');
+	$a->loadConfigFile(__DIR__ . '/config/twitter.config.php');
 }
 
 function twitter_check_item_notification(App $a, array &$notification_data)
@@ -154,7 +161,7 @@ function twitter_check_item_notification(App $a, array &$notification_data)
 
 function twitter_follow(App $a, array &$contact)
 {
-	logger("twitter_follow: Check if contact is twitter contact. " . $contact["url"], LOGGER_DEBUG);
+	Logger::log("twitter_follow: Check if contact is twitter contact. " . $contact["url"], Logger::DEBUG);
 
 	if (!strstr($contact["url"], "://twitter.com") && !strstr($contact["url"], "@twitter.com")) {
 		return;
@@ -235,7 +242,7 @@ function twitter_settings_post(App $a)
 	} else {
 		if (isset($_POST['twitter-pin'])) {
 			//  if the user supplied us with a PIN from Twitter, let the magic of OAuth happen
-			logger('got a Twitter PIN');
+			Logger::log('got a Twitter PIN');
 			$ckey    = Config::get('twitter', 'consumerkey');
 			$csecret = Config::get('twitter', 'consumersecret');
 			//  the token and secret for which the PIN was generated were hidden in the settings
@@ -258,7 +265,7 @@ function twitter_settings_post(App $a)
 				info($e->getMessage());
 			}
 			//  reload the Addon Settings page, if we don't do it see Bug #42
-			goaway('settings/connectors');
+			$a->internalRedirect('settings/connectors');
 		} else {
 			//  if no PIN is supplied in the POST variables, the user has changed the setting
 			//  to post a tweet for every new __public__ posting to the wall
@@ -282,7 +289,7 @@ function twitter_settings(App $a, &$s)
 	if (!local_user()) {
 		return;
 	}
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/twitter/twitter.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/twitter/twitter.css' . '" media="all" />' . "\r\n";
 	/*	 * *
 	 * 1) Check that we have global consumer key & secret
 	 * 2) If no OAuthtoken & stuff is present, generate button to get some
@@ -346,7 +353,7 @@ function twitter_settings(App $a, &$s)
 			try {
 				$details = $connection->get('account/verify_credentials');
 
-				$field_checkbox = get_markup_template('field_checkbox.tpl');
+				$field_checkbox = Renderer::getMarkupTemplate('field_checkbox.tpl');
 
 				$s .= '<div id="twitter-info" >
 					<p>' . L10n::t('Currently connected to: ') . '<a href="https://twitter.com/' . $details->screen_name . '" target="_twitter">' . $details->screen_name . '</a>
@@ -359,22 +366,22 @@ function twitter_settings(App $a, &$s)
 				</div>';
 				$s .= '<div class="clear"></div>';
 
-				$s .= replace_macros($field_checkbox, [
+				$s .= Renderer::replaceMacros($field_checkbox, [
 					'$field' => ['twitter-enable', L10n::t('Allow posting to Twitter'), $enabled, L10n::t('If enabled all your <strong>public</strong> postings can be posted to the associated Twitter account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.')]
 				]);
 				if ($a->user['hidewall']) {
 					$s .= '<p>' . L10n::t('<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to Twitter will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted.') . '</p>';
 				}
-				$s .= replace_macros($field_checkbox, [
+				$s .= Renderer::replaceMacros($field_checkbox, [
 					'$field' => ['twitter-default', L10n::t('Send public postings to Twitter by default'), $defenabled, '']
 				]);
-				$s .= replace_macros($field_checkbox, [
+				$s .= Renderer::replaceMacros($field_checkbox, [
 					'$field' => ['twitter-mirror', L10n::t('Mirror all posts from twitter that are no replies'), $mirrorenabled, '']
 				]);
-				$s .= replace_macros($field_checkbox, [
+				$s .= Renderer::replaceMacros($field_checkbox, [
 					'$field' => ['twitter-import', L10n::t('Import the remote timeline'), $importenabled, '']
 				]);
-				$s .= replace_macros($field_checkbox, [
+				$s .= Renderer::replaceMacros($field_checkbox, [
 					'$field' => ['twitter-create_user', L10n::t('Automatically create contacts'), $create_userenabled, L10n::t('This will automatically create a contact in Friendica as soon as you receive a message from an existing contact via the Twitter network. If you do not enable this, you need to manually add those Twitter contacts in Friendica from whom you would like to see posts here. However if enabled, you cannot merely remove a twitter contact from the Friendica contact list, as it will recreate this contact when they post again.')]
 				]);
 				$s .= '<div class="clear"></div>';
@@ -385,6 +392,47 @@ function twitter_settings(App $a, &$s)
 		}
 	}
 	$s .= '</div><div class="clear"></div>';
+}
+
+function twitter_hook_fork(App $a, array &$b)
+{
+	if ($b['name'] != 'notifier_normal') {
+		return;
+	}
+
+	$post = $b['data'];
+
+	// Deleting and editing is not supported by the addon (deleting could, but isn't by now)
+	if ($post['deleted'] || ($post['created'] !== $post['edited'])) {
+		$b['execute'] = false;
+		return;
+	}
+
+	// if post comes from twitter don't send it back
+	if ($post['extid'] == Protocol::TWITTER) {
+		$b['execute'] = false;
+		return;
+	}
+
+	if ($post['app'] == 'Twitter') {
+		$b['execute'] = false;
+		return;
+	}
+
+	if (PConfig::get($post['uid'], 'twitter', 'import')) {
+		// Don't fork if it isn't a reply to a twitter post
+		if (($post['parent'] != $post['id']) && !Item::exists(['id' => $post['parent'], 'network' => Protocol::TWITTER])) {
+			Logger::log('No twitter parent found for item ' . $post['id']);
+			$b['execute'] = false;
+			return;
+		}
+	} else {
+		// Comments are never exported when we don't import the twitter timeline
+		if (!strstr($post['postopts'], 'twitter') || ($post['parent'] != $post['id']) || $post['private']) {
+			$b['execute'] = false;
+			return;
+		}
+        }
 }
 
 function twitter_post_local(App $a, array &$b)
@@ -398,7 +446,7 @@ function twitter_post_local(App $a, array &$b)
 	}
 
 	$twitter_post = intval(PConfig::get(local_user(), 'twitter', 'post'));
-	$twitter_enable = (($twitter_post && x($_REQUEST, 'twitter_enable')) ? intval($_REQUEST['twitter_enable']) : 0);
+	$twitter_enable = (($twitter_post && !empty($_REQUEST['twitter_enable'])) ? intval($_REQUEST['twitter_enable']) : 0);
 
 	// if API is used, default to the chosen settings
 	if ($b['api_source'] && intval(PConfig::get(local_user(), 'twitter', 'post_by_default'))) {
@@ -427,7 +475,7 @@ function twitter_action(App $a, $uid, $pid, $action)
 
 	$post = ['id' => $pid];
 
-	logger("twitter_action '" . $action . "' ID: " . $pid . " data: " . print_r($post, true), LOGGER_DATA);
+	Logger::log("twitter_action '" . $action . "' ID: " . $pid . " data: " . print_r($post, true), Logger::DATA);
 
 	switch ($action) {
 		case "delete":
@@ -441,10 +489,10 @@ function twitter_action(App $a, $uid, $pid, $action)
 			$result = $connection->post('favorites/destroy', $post);
 			break;
 		default:
-			logger('Unhandled action ' . $action, LOGGER_DEBUG);
+			Logger::log('Unhandled action ' . $action, Logger::DEBUG);
 			$result = [];
 	}
-	logger("twitter_action '" . $action . "' send, result: " . print_r($result, true), LOGGER_DEBUG);
+	Logger::log("twitter_action '" . $action . "' send, result: " . print_r($result, true), Logger::DEBUG);
 }
 
 function twitter_post_hook(App $a, array &$b)
@@ -456,21 +504,21 @@ function twitter_post_hook(App $a, array &$b)
 	}
 
 	if ($b['parent'] != $b['id']) {
-		logger("twitter_post_hook: parameter " . print_r($b, true), LOGGER_DATA);
+		Logger::log("twitter_post_hook: parameter " . print_r($b, true), Logger::DATA);
 
 		// Looking if its a reply to a twitter post
 		if ((substr($b["parent-uri"], 0, 9) != "twitter::")
 			&& (substr($b["extid"], 0, 9) != "twitter::")
 			&& (substr($b["thr-parent"], 0, 9) != "twitter::"))
 		{
-			logger("twitter_post_hook: no twitter post " . $b["parent"]);
+			Logger::log("twitter_post_hook: no twitter post " . $b["parent"]);
 			return;
 		}
 
 		$condition = ['uri' => $b["thr-parent"], 'uid' => $b["uid"]];
 		$orig_post = Item::selectFirst([], $condition);
 		if (!DBA::isResult($orig_post)) {
-			logger("twitter_post_hook: no parent found " . $b["thr-parent"]);
+			Logger::log("twitter_post_hook: no parent found " . $b["thr-parent"]);
 			return;
 		} else {
 			$iscomment = true;
@@ -481,12 +529,12 @@ function twitter_post_hook(App $a, array &$b)
 		$nickname = "@[url=" . $orig_post["author-link"] . "]" . $nicknameplain . "[/url]";
 		$nicknameplain = "@" . $nicknameplain;
 
-		logger("twitter_post_hook: comparing " . $nickname . " and " . $nicknameplain . " with " . $b["body"], LOGGER_DEBUG);
+		Logger::log("twitter_post_hook: comparing " . $nickname . " and " . $nicknameplain . " with " . $b["body"], Logger::DEBUG);
 		if ((strpos($b["body"], $nickname) === false) && (strpos($b["body"], $nicknameplain) === false)) {
 			$b["body"] = $nickname . " " . $b["body"];
 		}
 
-		logger("twitter_post_hook: parent found " . print_r($orig_post, true), LOGGER_DATA);
+		Logger::log("twitter_post_hook: parent found " . print_r($orig_post, true), Logger::DATA);
 	} else {
 		$iscomment = false;
 
@@ -507,7 +555,7 @@ function twitter_post_hook(App $a, array &$b)
 	}
 
 	if ($b['verb'] == ACTIVITY_LIKE) {
-		logger("twitter_post_hook: parameter 2 " . substr($b["thr-parent"], 9), LOGGER_DEBUG);
+		Logger::log("twitter_post_hook: parameter 2 " . substr($b["thr-parent"], 9), Logger::DEBUG);
 		if ($b['deleted']) {
 			twitter_action($a, $b["uid"], substr($b["thr-parent"], 9), "unlike");
 		} else {
@@ -530,7 +578,7 @@ function twitter_post_hook(App $a, array &$b)
 		return;
 	}
 
-	logger('twitter post invoked');
+	Logger::log('twitter post invoked');
 
 	PConfig::load($b['uid'], 'twitter');
 
@@ -540,7 +588,7 @@ function twitter_post_hook(App $a, array &$b)
 	$osecret = PConfig::get($b['uid'], 'twitter', 'oauthsecret');
 
 	if ($ckey && $csecret && $otoken && $osecret) {
-		logger('twitter: we have customer key and oauth stuff, going to send.', LOGGER_DEBUG);
+		Logger::log('twitter: we have customer key and oauth stuff, going to send.', Logger::DEBUG);
 
 		// If it's a repeated message from twitter then do a native retweet and exit
 		if (twitter_is_retweet($a, $b['uid'], $b['body'])) {
@@ -553,6 +601,17 @@ function twitter_post_hook(App $a, array &$b)
 		$connection->setTimeouts(10, 30);
 
 		$max_char = 280;
+
+		// Handling non-native reshares
+		$b['body'] = Friendica\Content\Text\BBCode::convertShare(
+			$b['body'],
+			function (array $attributes, array $author_contact, $content, $is_quote_share) {
+				return twitter_convert_share($attributes, $author_contact, $content, $is_quote_share);
+			}
+		);
+
+		$b['body'] = twitter_update_mentions($b['body']);
+
 		$msgarr = ItemContent::getPlaintextPost($b, $max_char, true, 8);
 		$msg = $msgarr["text"];
 
@@ -591,9 +650,13 @@ function twitter_post_hook(App $a, array &$b)
 
 				unlink($tempfile);
 
-				$post['media_ids'] = $media->media_id_string;
+				if (isset($media->media_id_string)) {
+					$post['media_ids'] = $media->media_id_string;
+				} else {
+					throw new Exception('Failed upload of ' . $image);
+				}
 			} catch (Exception $e) {
-				logger('Exception when trying to send to Twitter: ' . $e->getMessage());
+				Logger::log('Exception when trying to send to Twitter: ' . $e->getMessage());
 
 				// Workaround: Remove the picture link so that the post can be reposted without it
 				// When there is another url already added, a second url would be superfluous.
@@ -613,14 +676,14 @@ function twitter_post_hook(App $a, array &$b)
 
 		$url = 'statuses/update';
 		$result = $connection->post($url, $post);
-		logger('twitter_post send, result: ' . print_r($result, true), LOGGER_DEBUG);
+		Logger::log('twitter_post send, result: ' . print_r($result, true), Logger::DEBUG);
 
 		if (!empty($result->source)) {
 			Config::set("twitter", "application_name", strip_tags($result->source));
 		}
 
 		if (!empty($result->errors)) {
-			logger('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
+			Logger::log('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
 
 			$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", intval($b['uid']));
 			if (DBA::isResult($r)) {
@@ -632,7 +695,7 @@ function twitter_post_hook(App $a, array &$b)
 			Queue::add($a->contact, Protocol::TWITTER, $s);
 			notice(L10n::t('Twitter post failed. Queued for retry.') . EOL);
 		} elseif ($iscomment) {
-			logger('twitter_post: Update extid ' . $result->id_str . " for post id " . $b['id']);
+			Logger::log('twitter_post: Update extid ' . $result->id_str . " for post id " . $b['id']);
 			Item::update(['extid' => "twitter::" . $result->id_str], ['id' => $b['id']]);
 		}
 	}
@@ -640,8 +703,8 @@ function twitter_post_hook(App $a, array &$b)
 
 function twitter_addon_admin_post(App $a)
 {
-	$consumerkey    = x($_POST, 'consumerkey')    ? notags(trim($_POST['consumerkey']))    : '';
-	$consumersecret = x($_POST, 'consumersecret') ? notags(trim($_POST['consumersecret'])) : '';
+	$consumerkey    = !empty($_POST['consumerkey'])    ? Strings::escapeTags(trim($_POST['consumerkey']))    : '';
+	$consumersecret = !empty($_POST['consumersecret']) ? Strings::escapeTags(trim($_POST['consumersecret'])) : '';
 	Config::set('twitter', 'consumerkey', $consumerkey);
 	Config::set('twitter', 'consumersecret', $consumersecret);
 	info(L10n::t('Settings updated.') . EOL);
@@ -649,9 +712,9 @@ function twitter_addon_admin_post(App $a)
 
 function twitter_addon_admin(App $a, &$o)
 {
-	$t = get_markup_template("admin.tpl", "addon/twitter/");
+	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/twitter/");
 
-	$o = replace_macros($t, [
+	$o = Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		// name, label, value, help, [extra values]
 		'$consumerkey' => ['consumerkey', L10n::t('Consumer key'), Config::get('twitter', 'consumerkey'), ''],
@@ -671,16 +734,16 @@ function twitter_cron(App $a)
 	if ($last) {
 		$next = $last + ($poll_interval * 60);
 		if ($next > time()) {
-			logger('twitter: poll intervall not reached');
+			Logger::log('twitter: poll intervall not reached');
 			return;
 		}
 	}
-	logger('twitter: cron_start');
+	Logger::log('twitter: cron_start');
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'mirror_posts' AND `v` = '1'");
 	if (DBA::isResult($r)) {
 		foreach ($r as $rr) {
-			logger('twitter: fetching for user ' . $rr['uid']);
+			Logger::log('twitter: fetching for user ' . $rr['uid']);
 			Worker::add(PRIORITY_MEDIUM, "addon/twitter/twitter_sync.php", 1, (int) $rr['uid']);
 		}
 	}
@@ -698,12 +761,12 @@ function twitter_cron(App $a)
 			if ($abandon_days != 0) {
 				$user = q("SELECT `login_date` FROM `user` WHERE uid=%d AND `login_date` >= '%s'", $rr['uid'], $abandon_limit);
 				if (!DBA::isResult($user)) {
-					logger('abandoned account: timeline from user ' . $rr['uid'] . ' will not be imported');
+					Logger::log('abandoned account: timeline from user ' . $rr['uid'] . ' will not be imported');
 					continue;
 				}
 			}
 
-			logger('twitter: importing timeline from user ' . $rr['uid']);
+			Logger::log('twitter: importing timeline from user ' . $rr['uid']);
 			Worker::add(PRIORITY_MEDIUM, "addon/twitter/twitter_sync.php", 2, (int) $rr['uid']);
 			/*
 			  // To-Do
@@ -722,7 +785,7 @@ function twitter_cron(App $a)
 		}
 	}
 
-	logger('twitter: cron_end');
+	Logger::log('twitter: cron_end');
 
 	Config::set('twitter', 'last_poll', time());
 }
@@ -743,17 +806,17 @@ function twitter_expire(App $a)
 
 	require_once "include/items.php";
 
-	logger('twitter_expire: expire_start');
+	Logger::log('twitter_expire: expire_start');
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'import' AND `v` = '1' ORDER BY RAND()");
 	if (DBA::isResult($r)) {
 		foreach ($r as $rr) {
-			logger('twitter_expire: user ' . $rr['uid']);
+			Logger::log('twitter_expire: user ' . $rr['uid']);
 			Item::expire($rr['uid'], $days, Protocol::TWITTER, true);
 		}
 	}
 
-	logger('twitter_expire: expire_end');
+	Logger::log('twitter_expire: expire_end');
 }
 
 function twitter_prepare_body(App $a, array &$b)
@@ -765,7 +828,7 @@ function twitter_prepare_body(App $a, array &$b)
 	if ($b["preview"]) {
 		$max_char = 280;
 		$item = $b["item"];
-		$item["plink"] = $a->get_baseurl() . "/display/" . $a->user["nickname"] . "/" . $item["parent"];
+		$item["plink"] = $a->getBaseURL() . "/display/" . $a->user["nickname"] . "/" . $item["parent"];
 
 		$condition = ['uri' => $item["thr-parent"], 'uid' => local_user()];
 		$orig_post = Item::selectFirst(['author-link'], $condition);
@@ -866,7 +929,7 @@ function twitter_fetchtimeline(App $a, $uid)
 	$application_name = Config::get('twitter', 'application_name');
 
 	if ($application_name == "") {
-		$application_name = $a->get_hostname();
+		$application_name = $a->getHostName();
 	}
 
 	$has_picture = false;
@@ -888,15 +951,18 @@ function twitter_fetchtimeline(App $a, $uid)
 	try {
 		$items = $connection->get('statuses/user_timeline', $parameters);
 	} catch (TwitterOAuthException $e) {
-		logger('twitter_fetchtimeline: Error fetching timeline for user ' . $uid . ': ' . $e->getMessage());
+		Logger::log('Error fetching timeline for user ' . $uid . ': ' . $e->getMessage());
 		return;
 	}
 
 	if (!is_array($items)) {
+		Logger::log('No items for user ' . $uid, Logger::INFO);
 		return;
 	}
 
 	$posts = array_reverse($items);
+
+	Logger::log('Starting from ID ' . $lastid . ' for user ' . $uid, Logger::DEBUG);
 
 	if (count($posts)) {
 		foreach ($posts as $post) {
@@ -913,19 +979,22 @@ function twitter_fetchtimeline(App $a, $uid)
 				$_SESSION["authenticated"] = true;
 				$_SESSION["uid"] = $uid;
 
+				Logger::log('Preparing Twitter ID ' . $post->id_str . ' for user ' . $uid, Logger::DEBUG);
+
 				$_REQUEST = twitter_do_mirrorpost($a, $uid, $post);
 
 				if (empty($_REQUEST['body'])) {
 					continue;
 				}
 
-				logger('twitter: posting for user ' . $uid);
+				Logger::log('Posting Twitter ID ' . $post->id_str . ' for user ' . $uid);
 
 				item_post($a);
 			}
 		}
 	}
 	PConfig::set($uid, 'twitter', 'lastid', $lastid);
+	Logger::log('Last ID for user ' . $uid . ' is now ' . $lastid, Logger::DEBUG);
 }
 
 function twitter_queue_hook(App $a)
@@ -942,7 +1011,7 @@ function twitter_queue_hook(App $a)
 			continue;
 		}
 
-		logger('twitter_queue: run');
+		Logger::log('twitter_queue: run');
 
 		$r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` on `contact`.`uid` = `user`.`uid`
 			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
@@ -962,27 +1031,27 @@ function twitter_queue_hook(App $a)
 		$success = false;
 
 		if ($ckey && $csecret && $otoken && $osecret) {
-			logger('twitter_queue: able to post');
+			Logger::log('twitter_queue: able to post');
 
 			$z = unserialize($x['content']);
 
 			$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 			$result = $connection->post($z['url'], $z['post']);
 
-			logger('twitter_queue: post result: ' . print_r($result, true), LOGGER_DEBUG);
+			Logger::log('twitter_queue: post result: ' . print_r($result, true), Logger::DEBUG);
 
 			if ($result->errors) {
-				logger('twitter_queue: Send to Twitter failed: "' . print_r($result->errors, true) . '"');
+				Logger::log('twitter_queue: Send to Twitter failed: "' . print_r($result->errors, true) . '"');
 			} else {
 				$success = true;
 				Queue::removeItem($x['id']);
 			}
 		} else {
-			logger("twitter_queue: Error getting tokens for user " . $user['uid']);
+			Logger::log("twitter_queue: Error getting tokens for user " . $user['uid']);
 		}
 
 		if (!$success) {
-			logger('twitter_queue: delayed');
+			Logger::log('twitter_queue: delayed');
 			Queue::updateTime($x['id']);
 		}
 	}
@@ -1002,7 +1071,7 @@ function twitter_fix_avatar($avatar)
 
 function twitter_fetch_contact($uid, $data, $create_user)
 {
-	if ($data->id_str == "") {
+	if (empty($data->id_str)) {
 		return -1;
 	}
 
@@ -1035,7 +1104,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 		// create contact record
 		$fields['uid'] = $uid;
 		$fields['created'] = DateTimeFormat::utcNow();
-		$fields['nurl'] = normalise_link($url);
+		$fields['nurl'] = Strings::normaliseLink($url);
 		$fields['alias'] = 'twitter::' . $data->id_str;
 		$fields['poll'] = 'twitter::' . $data->id_str;
 		$fields['rel'] = Contact::FRIEND;
@@ -1056,7 +1125,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 		Contact::updateAvatar($avatar, $uid, $contact_id);
 	} else {
 		if ($contact["readonly"] || $contact["blocked"]) {
-			logger("twitter_fetch_contact: Contact '" . $contact["nick"] . "' is blocked or readonly.", LOGGER_DEBUG);
+			Logger::log("twitter_fetch_contact: Contact '" . $contact["nick"] . "' is blocked or readonly.", Logger::DEBUG);
 			return -1;
 		}
 
@@ -1067,7 +1136,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 
 		// check that we have all the photos, this has been known to fail on occasion
 		if (empty($contact['photo']) || empty($contact['thumb']) || empty($contact['micro']) || $update_photo) {
-			logger("twitter_fetch_contact: Updating contact " . $data->screen_name, LOGGER_DEBUG);
+			Logger::log("twitter_fetch_contact: Updating contact " . $data->screen_name, Logger::DEBUG);
 
 			Contact::updateAvatar($avatar, $uid, $contact['id']);
 
@@ -1112,7 +1181,7 @@ function twitter_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 	try {
 		$user = $connection->get('users/show', $parameters);
 	} catch (TwitterOAuthException $e) {
-		logger('twitter_fetchuser: Error fetching user ' . $uid . ': ' . $e->getMessage());
+		Logger::log('twitter_fetchuser: Error fetching user ' . $uid . ': ' . $e->getMessage());
 		return;
 	}
 
@@ -1132,27 +1201,34 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 	$tags_arr = [];
 
 	foreach ($item->entities->hashtags AS $hashtag) {
-		$url = "#[url=" . $a->get_baseurl() . "/search?tag=" . rawurlencode($hashtag->text) . "]" . $hashtag->text . "[/url]";
-		$tags_arr["#" . $hashtag->text] = $url;
-		$body = str_replace("#" . $hashtag->text, $url, $body);
+		$url = '#[url=' . $a->getBaseURL() . '/search?tag=' . $hashtag->text . ']' . $hashtag->text . '[/url]';
+		$tags_arr['#' . $hashtag->text] = $url;
+		$body = str_replace('#' . $hashtag->text, $url, $body);
 	}
 
 	foreach ($item->entities->user_mentions AS $mention) {
-		$url = "@[url=https://twitter.com/" . rawurlencode($mention->screen_name) . "]" . $mention->screen_name . "[/url]";
-		$tags_arr["@" . $mention->screen_name] = $url;
-		$body = str_replace("@" . $mention->screen_name, $url, $body);
+		$url = '@[url=https://twitter.com/' . rawurlencode($mention->screen_name) . ']' . $mention->screen_name . '[/url]';
+		$tags_arr['@' . $mention->screen_name] = $url;
+		$body = str_replace('@' . $mention->screen_name, $url, $body);
 	}
 
 	if (isset($item->entities->urls)) {
-		$type = "";
-		$footerurl = "";
-		$footerlink = "";
-		$footer = "";
+		$type = '';
+		$footerurl = '';
+		$footerlink = '';
+		$footer = '';
 
 		foreach ($item->entities->urls as $url) {
 			$plain = str_replace($url->url, '', $plain);
 
 			if ($url->url && $url->expanded_url && $url->display_url) {
+				// Quote tweet, we just remove the quoted tweet URL from the body, the share block will be added later.
+				if (isset($item->quoted_status_id_str)
+					&& substr($url->expanded_url, -strlen($item->quoted_status_id_str)) == $item->quoted_status_id_str ) {
+					$body = str_replace($url->url, '', $body);
+					continue;
+				}
+
 				$expanded_url = Network::finalUrl($url->expanded_url);
 
 				$oembed_data = OEmbed::fetchURL($expanded_url);
@@ -1161,34 +1237,29 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 					continue;
 				}
 
-				// Quickfix: Workaround for URL with "[" and "]" in it
-				if (strpos($expanded_url, "[") || strpos($expanded_url, "]")) {
+				// Quickfix: Workaround for URL with '[' and ']' in it
+				if (strpos($expanded_url, '[') || strpos($expanded_url, ']')) {
 					$expanded_url = $url->url;
 				}
 
-				if ($type == "") {
+				if ($type == '') {
 					$type = $oembed_data->type;
 				}
 
-				if ($oembed_data->type == "video") {
-					//$body = str_replace($url->url,
-					//		"[video]".$expanded_url."[/video]", $body);
-					//$dontincludemedia = true;
+				if ($oembed_data->type == 'video') {
 					$type = $oembed_data->type;
 					$footerurl = $expanded_url;
-					$footerlink = "[url=" . $expanded_url . "]" . $url->display_url . "[/url]";
+					$footerlink = '[url=' . $expanded_url . ']' . $url->display_url . '[/url]';
 
 					$body = str_replace($url->url, $footerlink, $body);
-					//} elseif (($oembed_data->type == "photo") AND isset($oembed_data->url) AND !$dontincludemedia) {
-				} elseif (($oembed_data->type == "photo") && isset($oembed_data->url)) {
-					$body = str_replace($url->url, "[url=" . $expanded_url . "][img]" . $oembed_data->url . "[/img][/url]", $body);
-					//$dontincludemedia = true;
-				} elseif ($oembed_data->type != "link") {
-					$body = str_replace($url->url, "[url=" . $expanded_url . "]" . $url->display_url . "[/url]", $body);
+				} elseif (($oembed_data->type == 'photo') && isset($oembed_data->url)) {
+					$body = str_replace($url->url, '[url=' . $expanded_url . '][img]' . $oembed_data->url . '[/img][/url]', $body);
+				} elseif ($oembed_data->type != 'link') {
+					$body = str_replace($url->url, '[url=' . $expanded_url . ']' . $url->display_url . '[/url]', $body);
 				} else {
 					$img_str = Network::fetchUrl($expanded_url, true, $redirects, 4);
 
-					$tempfile = tempnam(get_temppath(), "cache");
+					$tempfile = tempnam(get_temppath(), 'cache');
 					file_put_contents($tempfile, $img_str);
 
 					// See http://php.net/manual/en/function.exif-imagetype.php#79283
@@ -1200,14 +1271,13 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 
 					unlink($tempfile);
 
-					if (substr($mime, 0, 6) == "image/") {
-						$type = "photo";
-						$body = str_replace($url->url, "[img]" . $expanded_url . "[/img]", $body);
-						//$dontincludemedia = true;
+					if (substr($mime, 0, 6) == 'image/') {
+						$type = 'photo';
+						$body = str_replace($url->url, '[img]' . $expanded_url . '[/img]', $body);
 					} else {
 						$type = $oembed_data->type;
 						$footerurl = $expanded_url;
-						$footerlink = "[url=" . $expanded_url . "]" . $url->display_url . "[/url]";
+						$footerlink = '[url=' . $expanded_url . ']' . $url->display_url . '[/url]';
 
 						$body = str_replace($url->url, $footerlink, $body);
 					}
@@ -1215,33 +1285,36 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 			}
 		}
 
-		if ($footerurl != "") {
-			$footer = add_page_info($footerurl, false, $picture);
-		}
-
-		if (($footerlink != "") && (trim($footer) != "")) {
-			$removedlink = trim(str_replace($footerlink, "", $body));
-
-			if (($removedlink == "") || strstr($body, $removedlink)) {
-				$body = $removedlink;
+		// Footer will be taken care of with a share block in the case of a quote
+		if (empty($item->quoted_status)) {
+			if ($footerurl != '') {
+				$footer = add_page_info($footerurl, false, $picture);
 			}
 
-			$body .= $footer;
-		}
+			if (($footerlink != '') && (trim($footer) != '')) {
+				$removedlink = trim(str_replace($footerlink, '', $body));
 
-		if (($footer == "") && ($picture != "")) {
-			$body .= "\n\n[img]" . $picture . "[/img]\n";
-		} elseif (($footer == "") && ($picture == "")) {
-			$body = add_page_info_to_body($body);
+				if (($removedlink == '') || strstr($body, $removedlink)) {
+					$body = $removedlink;
+				}
+
+				$body .= $footer;
+			}
+
+			if ($footer == '' && $picture != '') {
+				$body .= "\n\n[img]" . $picture . "[/img]\n";
+			} elseif ($footer == '' && $picture == '') {
+				$body = add_page_info_to_body($body);
+			}
 		}
 	}
 
 	// it seems as if the entities aren't always covering all mentions. So the rest will be checked here
-	$tags = get_tags($body);
+	$tags = BBCode::getTags($body);
 
 	if (count($tags)) {
 		foreach ($tags as $tag) {
-			if (strstr(trim($tag), " ")) {
+			if (strstr(trim($tag), ' ')) {
 				continue;
 			}
 
@@ -1259,9 +1332,9 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 				}
 
 				$basetag = str_replace('_', ' ', substr($tag, 1));
-				$url = '#[url=' . $a->get_baseurl() . '/search?tag=' . rawurlencode($basetag) . ']' . $basetag . '[/url]';
+				$url = '#[url=' . $a->getBaseURL() . '/search?tag=' . $basetag . ']' . $basetag . '[/url]';
 				$body = str_replace($tag, $url, $body);
-				$tags_arr["#" . $basetag] = $url;
+				$tags_arr['#' . $basetag] = $url;
 			} elseif (strpos($tag, '@') === 0) {
 				if (strpos($tag, '[url=')) {
 					continue;
@@ -1270,14 +1343,14 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 				$basetag = substr($tag, 1);
 				$url = '@[url=https://twitter.com/' . rawurlencode($basetag) . ']' . $basetag . '[/url]';
 				$body = str_replace($tag, $url, $body);
-				$tags_arr["@" . $basetag] = $url;
+				$tags_arr['@' . $basetag] = $url;
 			}
 		}
 	}
 
-	$tags = implode($tags_arr, ",");
+	$tags = implode($tags_arr, ',');
 
-	return ["body" => $body, "tags" => $tags, "plain" => $plain];
+	return ['body' => $body, 'tags' => $tags, 'plain' => $plain];
 }
 
 /**
@@ -1292,20 +1365,22 @@ function twitter_media_entities($post, array &$postarray)
 {
 	// There are no media entities? So we quit.
 	if (empty($post->extended_entities->media)) {
-		return "";
+		return '';
 	}
 
 	// When the post links to an external page, we only take one picture.
 	// We only do this when there is exactly one media.
 	if ((count($post->entities->urls) > 0) && (count($post->extended_entities->media) == 1)) {
-		$picture = "";
-		foreach ($post->extended_entities->media AS $medium) {
-			if (isset($medium->media_url_https)) {
+		$medium = $post->extended_entities->media[0];
+		$picture = '';
+		foreach ($post->entities->urls as $link) {
+			// Let's make sure the external link url matches the media url
+			if ($medium->url == $link->url && isset($medium->media_url_https)) {
 				$picture = $medium->media_url_https;
-				$postarray['body'] = str_replace($medium->url, "", $postarray['body']);
+				$postarray['body'] = str_replace($medium->url, '', $postarray['body']);
+				return $picture;
 			}
 		}
-		return $picture;
 	}
 
 	// This is a pure media post, first search for all media urls
@@ -1316,19 +1391,19 @@ function twitter_media_entities($post, array &$postarray)
 		}
 		switch ($medium->type) {
 			case 'photo':
-				$media[$medium->url] .= "\n[img]" . $medium->media_url_https . "[/img]";
+				$media[$medium->url] .= "\n[img]" . $medium->media_url_https . '[/img]';
 				$postarray['object-type'] = ACTIVITY_OBJ_IMAGE;
 				break;
 			case 'video':
 			case 'animated_gif':
-				$media[$medium->url] .= "\n[img]" . $medium->media_url_https . "[/img]";
+				$media[$medium->url] .= "\n[img]" . $medium->media_url_https . '[/img]';
 				$postarray['object-type'] = ACTIVITY_OBJ_VIDEO;
 				if (is_array($medium->video_info->variants)) {
 					$bitrate = 0;
 					// We take the video with the highest bitrate
 					foreach ($medium->video_info->variants AS $variant) {
-						if (($variant->content_type == "video/mp4") && ($variant->bitrate >= $bitrate)) {
-							$media[$medium->url] = "\n[video]" . $variant->url . "[/video]";
+						if (($variant->content_type == 'video/mp4') && ($variant->bitrate >= $bitrate)) {
+							$media[$medium->url] = "\n[video]" . $variant->url . '[/video]';
 							$bitrate = $variant->bitrate;
 						}
 					}
@@ -1344,7 +1419,8 @@ function twitter_media_entities($post, array &$postarray)
 	foreach ($media AS $key => $value) {
 		$postarray['body'] = str_replace($key, "\n" . $value . "\n", $postarray['body']);
 	}
-	return "";
+
+	return '';
 }
 
 function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $only_existing_contact, $noquote)
@@ -1359,7 +1435,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 
 	// Don't import our own comments
 	if (Item::exists(['extid' => $postarray['uri'], 'uid' => $uid])) {
-		logger("Item with extid " . $postarray['uri'] . " found.", LOGGER_DEBUG);
+		Logger::log("Item with extid " . $postarray['uri'] . " found.", Logger::DEBUG);
 		return [];
 	}
 
@@ -1399,7 +1475,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 				$postarray['owner-link']   = $r[0]["url"];
 				$postarray['owner-avatar'] = $r[0]["photo"];
 			} else {
-				logger("No self contact for user " . $uid, LOGGER_DEBUG);
+				Logger::log("No self contact for user " . $uid, Logger::DEBUG);
 				return [];
 			}
 		}
@@ -1421,7 +1497,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 	if (($contactid == 0) && !$only_existing_contact) {
 		$contactid = $self['id'];
 	} elseif ($contactid <= 0) {
-		logger("Contact ID is zero or less than zero.", LOGGER_DEBUG);
+		Logger::log("Contact ID is zero or less than zero.", Logger::DEBUG);
 		return [];
 	}
 
@@ -1442,7 +1518,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 		$postarray['allow_cid'] = '';
 	}
 
-	if (is_string($post->full_text)) {
+	if (!empty($post->full_text)) {
 		$postarray['body'] = $post->full_text;
 	} else {
 		$postarray['body'] = $post->text;
@@ -1501,8 +1577,6 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 			return [];
 		}
 
-		$postarray['body'] = $statustext;
-
 		$postarray['body'] .= "\n" . share_header(
 			$quoted['author-name'],
 			$quoted['author-link'],
@@ -1520,7 +1594,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 
 function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection, array $self)
 {
-	logger("twitter_fetchparentposts: Fetching for user " . $uid . " and post " . $post->id_str, LOGGER_DEBUG);
+	Logger::log("twitter_fetchparentposts: Fetching for user " . $uid . " and post " . $post->id_str, Logger::DEBUG);
 
 	$posts = [];
 
@@ -1530,17 +1604,17 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 		try {
 			$post = $connection->get('statuses/show', $parameters);
 		} catch (TwitterOAuthException $e) {
-			logger('twitter_fetchparentposts: Error fetching for user ' . $uid . ' and post ' . $post->id_str . ': ' . $e->getMessage());
+			Logger::log('twitter_fetchparentposts: Error fetching for user ' . $uid . ' and post ' . $post->id_str . ': ' . $e->getMessage());
 			break;
 		}
 
 		if (empty($post)) {
-			logger("twitter_fetchparentposts: Can't fetch post " . $parameters->id, LOGGER_DEBUG);
+			Logger::log("twitter_fetchparentposts: Can't fetch post " . $parameters->id, Logger::DEBUG);
 			break;
 		}
 
 		if (empty($post->id_str)) {
-			logger("twitter_fetchparentposts: This is not a post " . json_encode($post), LOGGER_DEBUG);
+			Logger::log("twitter_fetchparentposts: This is not a post " . json_encode($post), Logger::DEBUG);
 			break;
 		}
 
@@ -1551,7 +1625,7 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 		$posts[] = $post;
 	}
 
-	logger("twitter_fetchparentposts: Fetching " . count($posts) . " parents", LOGGER_DEBUG);
+	Logger::log("twitter_fetchparentposts: Fetching " . count($posts) . " parents", Logger::DEBUG);
 
 	$posts = array_reverse($posts);
 
@@ -1567,7 +1641,7 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 
 			$postarray["id"] = $item;
 
-			logger('twitter_fetchparentpost: User ' . $self["nick"] . ' posted parent timeline item ' . $item);
+			Logger::log('twitter_fetchparentpost: User ' . $self["nick"] . ' posted parent timeline item ' . $item);
 		}
 	}
 }
@@ -1581,12 +1655,12 @@ function twitter_fetchhometimeline(App $a, $uid)
 	$create_user = PConfig::get($uid, 'twitter', 'create_user');
 	$mirror_posts = PConfig::get($uid, 'twitter', 'mirror_posts');
 
-	logger("twitter_fetchhometimeline: Fetching for user " . $uid, LOGGER_DEBUG);
+	Logger::log("Fetching timeline for user " . $uid, Logger::DEBUG);
 
 	$application_name = Config::get('twitter', 'application_name');
 
 	if ($application_name == "") {
-		$application_name = $a->get_hostname();
+		$application_name = $a->getHostName();
 	}
 
 	require_once 'include/items.php';
@@ -1596,7 +1670,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 	try {
 		$own_contact = twitter_fetch_own_contact($a, $uid);
 	} catch (TwitterOAuthException $e) {
-		logger('twitter_fetchhometimeline: Error fetching own contact for user ' . $uid . ': ' . $e->getMessage());
+		Logger::log('Error fetching own contact for user ' . $uid . ': ' . $e->getMessage());
 		return;
 	}
 
@@ -1607,24 +1681,13 @@ function twitter_fetchhometimeline(App $a, $uid)
 	if (DBA::isResult($r)) {
 		$own_id = $r[0]["nick"];
 	} else {
-		logger("twitter_fetchhometimeline: Own twitter contact not found for user " . $uid, LOGGER_DEBUG);
+		Logger::log("Own twitter contact not found for user " . $uid);
 		return;
 	}
 
-	$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
-		intval($uid));
-
-	if (DBA::isResult($r)) {
-		$self = $r[0];
-	} else {
-		logger("twitter_fetchhometimeline: Own contact not found for user " . $uid, LOGGER_DEBUG);
-		return;
-	}
-
-	$u = q("SELECT * FROM user WHERE uid = %d LIMIT 1",
-		intval($uid));
-	if (!DBA::isResult($u)) {
-		logger("twitter_fetchhometimeline: Own user not found for user " . $uid, LOGGER_DEBUG);
+	$self = User::getOwnerDataById($uid);
+	if ($self === false) {
+		Logger::log("Own contact not found for user " . $uid);
 		return;
 	}
 
@@ -1642,18 +1705,23 @@ function twitter_fetchhometimeline(App $a, $uid)
 	try {
 		$items = $connection->get('statuses/home_timeline', $parameters);
 	} catch (TwitterOAuthException $e) {
-		logger('twitter_fetchhometimeline: Error fetching home timeline: ' . $e->getMessage());
+		Logger::log('Error fetching home timeline for user ' . $uid . ': ' . $e->getMessage());
 		return;
 	}
 
 	if (!is_array($items)) {
-		logger("twitter_fetchhometimeline: Error fetching home timeline: " . print_r($items, true), LOGGER_DEBUG);
+		Logger::log('No array while fetching home timeline for user ' . $uid . ': ' . print_r($items, true));
+		return;
+	}
+
+	if (empty($items)) {
+		Logger::log('No new timeline content for user ' . $uid, Logger::INFO);
 		return;
 	}
 
 	$posts = array_reverse($items);
 
-	logger("twitter_fetchhometimeline: Fetching timeline for user " . $uid . " " . sizeof($posts) . " items", LOGGER_DEBUG);
+	Logger::log('Fetching timeline from ID ' . $lastid . ' for user ' . $uid . ' ' . sizeof($posts) . ' items', Logger::DEBUG);
 
 	if (count($posts)) {
 		foreach ($posts as $post) {
@@ -1667,12 +1735,12 @@ function twitter_fetchhometimeline(App $a, $uid)
 			}
 
 			if (stristr($post->source, $application_name) && $post->user->screen_name == $own_id) {
-				logger("twitter_fetchhometimeline: Skip previously sended post", LOGGER_DEBUG);
+				Logger::log("Skip previously sent post", Logger::DEBUG);
 				continue;
 			}
 
 			if ($mirror_posts && $post->user->screen_name == $own_id && $post->in_reply_to_status_id_str == "") {
-				logger("twitter_fetchhometimeline: Skip post that will be mirrored", LOGGER_DEBUG);
+				Logger::log("Skip post that will be mirrored", Logger::DEBUG);
 				continue;
 			}
 
@@ -1680,9 +1748,12 @@ function twitter_fetchhometimeline(App $a, $uid)
 				twitter_fetchparentposts($a, $uid, $post, $connection, $self);
 			}
 
+			Logger::log('Preparing post ' . $post->id_str . ' for user ' . $uid, Logger::DEBUG);
+
 			$postarray = twitter_createpost($a, $uid, $post, $self, $create_user, true, false);
 
 			if (empty($postarray['body']) || trim($postarray['body']) == "") {
+				Logger::log('Empty body for post ' . $post->id_str . ' and user ' . $uid, Logger::DEBUG);
 				continue;
 			}
 
@@ -1698,10 +1769,12 @@ function twitter_fetchhometimeline(App $a, $uid)
 			$item = Item::insert($postarray, false, $notify);
 			$postarray["id"] = $item;
 
-			logger('twitter_fetchhometimeline: User ' . $self["nick"] . ' posted home timeline item ' . $item);
+			Logger::log('User ' . $uid . ' posted home timeline item ' . $item);
 		}
 	}
 	PConfig::set($uid, 'twitter', 'lasthometimelineid', $lastid);
+
+	Logger::log('Last timeline ID for user ' . $uid . ' is now ' . $lastid, Logger::DEBUG);
 
 	// Fetching mentions
 	$lastid = PConfig::get($uid, 'twitter', 'lastmentionid');
@@ -1715,18 +1788,18 @@ function twitter_fetchhometimeline(App $a, $uid)
 	try {
 		$items = $connection->get('statuses/mentions_timeline', $parameters);
 	} catch (TwitterOAuthException $e) {
-		logger('twitter_fetchhometimeline: Error fetching mentions: ' . $e->getMessage());
+		Logger::log('Error fetching mentions: ' . $e->getMessage());
 		return;
 	}
 
 	if (!is_array($items)) {
-		logger("twitter_fetchhometimeline: Error fetching mentions: " . print_r($items, true), LOGGER_DEBUG);
+		Logger::log("Error fetching mentions: " . print_r($items, true), Logger::DEBUG);
 		return;
 	}
 
 	$posts = array_reverse($items);
 
-	logger("twitter_fetchhometimeline: Fetching mentions for user " . $uid . " " . sizeof($posts) . " items", LOGGER_DEBUG);
+	Logger::log("Fetching mentions for user " . $uid . " " . sizeof($posts) . " items", Logger::DEBUG);
 
 	if (count($posts)) {
 		foreach ($posts as $post) {
@@ -1750,11 +1823,13 @@ function twitter_fetchhometimeline(App $a, $uid)
 
 			$item = Item::insert($postarray);
 
-			logger('twitter_fetchhometimeline: User ' . $self["nick"] . ' posted mention timeline item ' . $item);
+			Logger::log('User ' . $uid . ' posted mention timeline item ' . $item);
 		}
 	}
 
 	PConfig::set($uid, 'twitter', 'lastmentionid', $lastid);
+
+	Logger::log('Last mentions ID for user ' . $uid . ' is now ' . $lastid, Logger::DEBUG);
 }
 
 function twitter_fetch_own_contact(App $a, $uid)
@@ -1774,6 +1849,9 @@ function twitter_fetch_own_contact(App $a, $uid)
 		// Fetching user data
 		// get() may throw TwitterOAuthException, but we will catch it later
 		$user = $connection->get('account/verify_credentials');
+		if (empty($user) || empty($user->id_str)) {
+			return false;
+		}
 
 		PConfig::set($uid, 'twitter', 'own_id', $user->id_str);
 
@@ -1829,7 +1907,7 @@ function twitter_is_retweet(App $a, $uid, $body)
 		return false;
 	}
 
-	logger('twitter_is_retweet: Retweeting id ' . $id . ' for user ' . $uid, LOGGER_DEBUG);
+	Logger::log('twitter_is_retweet: Retweeting id ' . $id . ' for user ' . $uid, Logger::DEBUG);
 
 	$ckey    = Config::get('twitter', 'consumerkey');
 	$csecret = Config::get('twitter', 'consumersecret');
@@ -1839,7 +1917,38 @@ function twitter_is_retweet(App $a, $uid, $body)
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 	$result = $connection->post('statuses/retweet/' . $id);
 
-	logger('twitter_is_retweet: result ' . print_r($result, true), LOGGER_DEBUG);
+	Logger::log('twitter_is_retweet: result ' . print_r($result, true), Logger::DEBUG);
 
 	return !isset($result->errors);
+}
+
+function twitter_update_mentions($body)
+{
+	$URLSearchString = "^\[\]";
+	$return = preg_replace_callback(
+		"/@\[url\=([$URLSearchString]*)\](.*?)\[\/url\]/ism",
+		function ($matches) {
+			if (strpos($matches[1], 'twitter.com')) {
+				$return = '@' . substr($matches[1], strrpos($matches[1], '/') + 1);
+			} else {
+				$return = $matches[2] . ' (' . $matches[1] . ')';
+			}
+
+			return $return;
+		},
+		$body
+	);
+
+	return $return;
+}
+
+function twitter_convert_share(array $attributes, array $author_contact, $content, $is_quote_share)
+{
+	if ($author_contact['network'] == Protocol::TWITTER) {
+		$mention = '@' . $author_contact['nickname'];
+	} else {
+		$mention = $author_contact['addr'];
+	}
+
+	return ($is_quote_share ? "\n\n" : '' ) . 'RT ' . $mention . ': ' . $content . "\n\n" . $attributes['link'];
 }

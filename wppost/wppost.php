@@ -6,48 +6,57 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
 
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
 use Friendica\Util\Network;
+use Friendica\Util\Strings;
+use Friendica\Util\XML;
 
-function wppost_install() {
-    Addon::registerHook('post_local',           'addon/wppost/wppost.php', 'wppost_post_local');
-    Addon::registerHook('notifier_normal',      'addon/wppost/wppost.php', 'wppost_send');
-    Addon::registerHook('jot_networks',         'addon/wppost/wppost.php', 'wppost_jot_nets');
-    Addon::registerHook('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
-    Addon::registerHook('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
-
+function wppost_install()
+{
+	Addon::registerHook('hook_fork',            'addon/wppost/wppost.php', 'wppost_hook_fork');
+	Addon::registerHook('post_local',           'addon/wppost/wppost.php', 'wppost_post_local');
+	Addon::registerHook('notifier_normal',      'addon/wppost/wppost.php', 'wppost_send');
+	Addon::registerHook('jot_networks',         'addon/wppost/wppost.php', 'wppost_jot_nets');
+	Addon::registerHook('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
+	Addon::registerHook('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
 }
-function wppost_uninstall() {
-    Addon::unregisterHook('post_local',       'addon/wppost/wppost.php', 'wppost_post_local');
-    Addon::unregisterHook('notifier_normal',  'addon/wppost/wppost.php', 'wppost_send');
-    Addon::unregisterHook('jot_networks',     'addon/wppost/wppost.php', 'wppost_jot_nets');
-    Addon::unregisterHook('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
-    Addon::unregisterHook('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
+
+function wppost_uninstall()
+{
+	Addon::unregisterHook('hook_fork',        'addon/wppost/wppost.php', 'wppost_hook_fork');
+	Addon::unregisterHook('post_local',       'addon/wppost/wppost.php', 'wppost_post_local');
+	Addon::unregisterHook('notifier_normal',  'addon/wppost/wppost.php', 'wppost_send');
+	Addon::unregisterHook('jot_networks',     'addon/wppost/wppost.php', 'wppost_jot_nets');
+	Addon::unregisterHook('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
+	Addon::unregisterHook('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
 
 	// obsolete - remove
-    Addon::unregisterHook('post_local_end',   'addon/wppost/wppost.php', 'wppost_send');
-    Addon::unregisterHook('addon_settings',  'addon/wppost/wppost.php', 'wppost_settings');
-    Addon::unregisterHook('addon_settings_post',  'addon/wppost/wppost.php', 'wppost_settings_post');
-
+	Addon::unregisterHook('post_local_end',   'addon/wppost/wppost.php', 'wppost_send');
+	Addon::unregisterHook('addon_settings',  'addon/wppost/wppost.php', 'wppost_settings');
+	Addon::unregisterHook('addon_settings_post',  'addon/wppost/wppost.php', 'wppost_settings_post');
 }
 
 
-function wppost_jot_nets(&$a,&$b) {
-    if(! local_user())
-        return;
+function wppost_jot_nets(&$a, &$b)
+{
+	if (!local_user()) {
+		return;
+	}
 
-    $wp_post = PConfig::get(local_user(),'wppost','post');
-    if(intval($wp_post) == 1) {
-        $wp_defpost = PConfig::get(local_user(),'wppost','post_by_default');
-        $selected = ((intval($wp_defpost) == 1) ? ' checked="checked" ' : '');
-        $b .= '<div class="profile-jot-net"><input type="checkbox" name="wppost_enable" ' . $selected . ' value="1" /> '
-            . L10n::t('Post to Wordpress') . '</div>';
-    }
+	$wp_post = PConfig::get(local_user(), 'wppost', 'post');
+	if (intval($wp_post) == 1) {
+		$wp_defpost = PConfig::get(local_user(),'wppost','post_by_default');
+		$selected = ((intval($wp_defpost) == 1) ? ' checked="checked" ' : '');
+		$b .= '<div class="profile-jot-net"><input type="checkbox" name="wppost_enable" ' . $selected . ' value="1" /> '
+			. L10n::t('Post to Wordpress') . '</div>';
+	}
 }
 
 
@@ -58,7 +67,7 @@ function wppost_settings(&$a,&$s) {
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/wppost/wppost.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/wppost/wppost.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variables */
 
@@ -138,7 +147,7 @@ function wppost_settings(&$a,&$s) {
 
 function wppost_settings_post(&$a,&$b) {
 
-	if(x($_POST,'wppost-submit')) {
+	if(!empty($_POST['wppost-submit'])) {
 
 		PConfig::set(local_user(),'wppost','post',intval($_POST['wppost']));
 		PConfig::set(local_user(),'wppost','post_by_default',intval($_POST['wp_bydefault']));
@@ -147,13 +156,28 @@ function wppost_settings_post(&$a,&$b) {
 		PConfig::set(local_user(),'wppost','wp_blog',trim($_POST['wp_blog']));
 		PConfig::set(local_user(),'wppost','backlink',trim($_POST['wp_backlink']));
 		PConfig::set(local_user(),'wppost','shortcheck',trim($_POST['wp_shortcheck']));
-		$wp_backlink_text = notags(trim($_POST['wp_backlink_text']));
+		$wp_backlink_text = Strings::escapeTags(trim($_POST['wp_backlink_text']));
 		$wp_backlink_text = BBCode::convert($wp_backlink_text, false, 8);
 		$wp_backlink_text = HTML::toPlaintext($wp_backlink_text, 0, true);
 		PConfig::set(local_user(),'wppost','wp_backlink_text', $wp_backlink_text);
 
 	}
 
+}
+
+function wppost_hook_fork(&$a, &$b)
+{
+	if ($b['name'] != 'notifier_normal') {
+		return;
+	}
+
+	$post = $b['data'];
+
+	if ($post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
+		!strstr($post['postopts'], 'wppost') || ($post['parent'] != $post['id'])) {
+		$b['execute'] = false;
+		return;
+	}
 }
 
 function wppost_post_local(&$a, &$b) {
@@ -174,7 +198,7 @@ function wppost_post_local(&$a, &$b) {
 
 	$wp_post   = intval(PConfig::get(local_user(),'wppost','post'));
 
-	$wp_enable = (($wp_post && x($_REQUEST,'wppost_enable')) ? intval($_REQUEST['wppost_enable']) : 0);
+	$wp_enable = (($wp_post && !empty($_REQUEST['wppost_enable'])) ? intval($_REQUEST['wppost_enable']) : 0);
 
 	if ($b['api_source'] && intval(PConfig::get(local_user(),'wppost','post_by_default'))) {
 		$wp_enable = 1;
@@ -194,8 +218,8 @@ function wppost_post_local(&$a, &$b) {
 
 
 
-function wppost_send(&$a,&$b) {
-
+function wppost_send(&$a, &$b)
+{
 	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
 	}
@@ -215,8 +239,8 @@ function wppost_send(&$a,&$b) {
 		return;
 	}
 
-	$wp_username = xmlify(PConfig::get($b['uid'],'wppost','wp_username'));
-	$wp_password = xmlify(PConfig::get($b['uid'],'wppost','wp_password'));
+	$wp_username = XML::escape(PConfig::get($b['uid'], 'wppost', 'wp_username'));
+	$wp_password = XML::escape(PConfig::get($b['uid'], 'wppost', 'wp_password'));
 	$wp_blog = PConfig::get($b['uid'],'wppost','wp_blog');
 	$wp_backlink_text = PConfig::get($b['uid'],'wppost','wp_backlink_text');
 	if ($wp_backlink_text == '') {
@@ -293,7 +317,7 @@ function wppost_send(&$a,&$b) {
 				. $wp_backlink_text . '</a>' . EOL . EOL;
 		}
 
-		$post = xmlify($post);
+		$post = XML::escape($post);
 
 
 		$xml = <<< EOT
@@ -312,11 +336,11 @@ function wppost_send(&$a,&$b) {
 
 EOT;
 
-		logger('wppost: data: ' . $xml, LOGGER_DATA);
+		Logger::log('wppost: data: ' . $xml, Logger::DATA);
 
 		if ($wp_blog !== 'test') {
-			$x = Network::post($wp_blog, $xml);
+			$x = Network::post($wp_blog, $xml)->getBody();
 		}
-		logger('posted to wordpress: ' . (($x) ? $x : ''), LOGGER_DEBUG);
+		Logger::log('posted to wordpress: ' . (($x) ? $x : ''), Logger::DEBUG);
 	}
 }

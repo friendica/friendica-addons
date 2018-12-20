@@ -7,7 +7,7 @@
  *
  *
  * Pre-requisite: Register a username at geonames.org
- * and set in config/addon.ini.php
+ * and set in config/addon.config.php
  *
  * [geonames]
  * username = your_username
@@ -24,6 +24,7 @@
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Util\Network;
 use Friendica\Util\XML;
@@ -52,7 +53,7 @@ function geonames_install() {
 	Addon::registerHook('addon_settings', 'addon/geonames/geonames.php', 'geonames_addon_admin');
 	Addon::registerHook('addon_settings_post', 'addon/geonames/geonames.php', 'geonames_addon_admin_post');
 
-	logger("installed geonames");
+	Logger::log("installed geonames");
 }
 
 
@@ -72,12 +73,12 @@ function geonames_uninstall() {
 	Addon::unregisterHook('addon_settings_post', 'addon/geonames/geonames.php', 'geonames_addon_admin_post');
 
 
-	logger("removed geonames");
+	Logger::log("removed geonames");
 }
 
 function geonames_load_config(\Friendica\App $a)
 {
-	$a->loadConfigFile(__DIR__. '/config/geonames.ini.php');
+	$a->loadConfigFile(__DIR__. '/config/geonames.config.php');
 }
 
 function geonames_post_hook($a, &$item) {
@@ -91,7 +92,7 @@ function geonames_post_hook($a, &$item) {
 	 *
 	 */
 
-	logger('geonames invoked');
+	Logger::log('geonames invoked');
 
 	if(! local_user())   /* non-zero if this is a logged in user of this system */
 		return;
@@ -132,7 +133,7 @@ function geonames_post_hook($a, &$item) {
 		$item['location'] = $xml->geoname->name . ', ' . $xml->geoname->countryName;
 
 
-//	logger('geonames : ' . print_r($xml,true), LOGGER_DATA);
+//	Logger::log('geonames : ' . print_r($xml,true), Logger::DATA);
 	return;
 }
 
@@ -149,7 +150,7 @@ function geonames_post_hook($a, &$item) {
  */
 
 function geonames_addon_admin_post($a,$post) {
-	if(! local_user() || (! x($_POST,'geonames-submit')))
+	if(! local_user() || empty($_POST['geonames-submit']))
 		return;
 	PConfig::set(local_user(),'geonames','enable',intval($_POST['geonames']));
 
@@ -178,7 +179,7 @@ function geonames_addon_admin(&$a,&$s) {
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/geonames/geonames.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/geonames/geonames.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variable */
 

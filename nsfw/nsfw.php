@@ -65,7 +65,7 @@ function nsfw_addon_settings(&$a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/nsfw/nsfw.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/nsfw/nsfw.css' . '" media="all" />' . "\r\n";
 
 	$enable_checked = (intval(PConfig::get(local_user(), 'nsfw', 'disable')) ? '' : ' checked="checked" ');
 	$words = PConfig::get(local_user(), 'nsfw', 'words');
@@ -103,7 +103,7 @@ function nsfw_addon_settings_post(&$a, &$b)
 
 	if (!empty($_POST['nsfw-submit'])) {
 		PConfig::set(local_user(), 'nsfw', 'words', trim($_POST['nsfw-words']));
-		$enable = (x($_POST, 'nsfw-enable') ? intval($_POST['nsfw-enable']) : 0);
+		$enable = (!empty($_POST['nsfw-enable']) ? intval($_POST['nsfw-enable']) : 0);
 		$disable = 1 - $enable;
 		PConfig::set(local_user(), 'nsfw', 'disable', $disable);
 		info(L10n::t('NSFW Settings saved.') . EOL);

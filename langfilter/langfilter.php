@@ -12,6 +12,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Core\Renderer;
 
 /* Define the hooks we want to use
  * that is, we have settings, we need to save the settings and we want
@@ -50,8 +51,8 @@ function langfilter_addon_settings(App $a, &$s)
 	$minconfidence  = PConfig::get(local_user(), 'langfilter', 'minconfidence') * 100;
 	$minlength      = PConfig::get(local_user(), 'langfilter', 'minlength');
 
-	$t = get_markup_template("settings.tpl", "addon/langfilter/");
-	$s .= replace_macros($t, [
+	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/langfilter/");
+	$s .= Renderer::replaceMacros($t, [
 		'$title'         => L10n::t("Language Filter"),
 		'$intro'         => L10n::t('This addon tries to identify the language posts are writen in. If it does not match any language specifed below, posts will be hidden by collapsing them.'),
 		'$enabled'       => ['langfilter_enable', L10n::t('Use the language filter'), $enable_checked, ''],
@@ -78,7 +79,7 @@ function langfilter_addon_settings_post(App $a, &$b)
 
 	if (!empty($_POST['langfilter-settings-submit'])) {
 		PConfig::set(local_user(), 'langfilter', 'languages', trim($_POST['langfilter_languages']));
-		$enable = (x($_POST, 'langfilter_enable') ? intval($_POST['langfilter_enable']) : 0);
+		$enable = (!empty($_POST['langfilter_enable']) ? intval($_POST['langfilter_enable']) : 0);
 		$disable = 1 - $enable;
 		PConfig::set(local_user(), 'langfilter', 'disable', $disable);
 		$minconfidence = 0 + $_POST['langfilter_minconfidence'];
@@ -121,7 +122,7 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 
 	// Never filter own messages
 	// TODO: find a better way to extract this
-	$logged_user_profile = $a->get_baseurl() . '/profile/' . $a->user['nickname'];
+	$logged_user_profile = $a->getBaseURL() . '/profile/' . $a->user['nickname'];
 	if ($logged_user_profile == $hook_data['item']['author-link']) {
 		return;
 	}
@@ -161,6 +162,10 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 
 		foreach ($languages as $iso2 => $confidence) {
 			break;
+		}
+
+		if (empty($iso2)) {
+			return;
 		}
 
 		$lang = Text_LanguageDetect_ISO639::code2ToName($iso2);

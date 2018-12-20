@@ -11,6 +11,7 @@ use Friendica\App;
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Util\Strings;
 
 function blockem_install()
 {
@@ -42,7 +43,7 @@ function blockem_addon_settings (App $a, &$s)
 	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/blockem/blockem.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/blockem/blockem.css' . '" media="all" />' . "\r\n";
 
 	$words = PConfig::get(local_user(), 'blockem', 'words');
 
@@ -100,7 +101,7 @@ function blockem_enotify_store(App $a, array &$b)
 				continue;
 			}
 
-			if (link_compare($b['url'], $word)) {
+			if (Strings::compareLink($b['url'], $word)) {
 				$found = true;
 				break;
 			}
@@ -133,7 +134,7 @@ function blockem_prepare_body_content_filter(App $a, array &$hook_data)
 	$found = false;
 
 	foreach ($profiles_array as $word) {
-		if (link_compare($hook_data['item']['author-link'], trim($word))) {
+		if (Strings::compareLink($hook_data['item']['author-link'], trim($word))) {
 			$found = true;
 			break;
 		}
@@ -147,7 +148,7 @@ function blockem_prepare_body_content_filter(App $a, array &$hook_data)
 function blockem_display_item(App $a, array &$b = null)
 {
 	if (!empty($b['output']['body']) && strstr($b['output']['body'], 'id="blockem-wrap-')) {
-		$b['output']['thumb'] = $a->get_baseurl() . "/images/person-80.jpg";
+		$b['output']['thumb'] = $a->getBaseURL() . "/images/person-80.jpg";
 	}
 }
 
@@ -192,7 +193,7 @@ function blockem_item_photo_menu(App $a, array &$b)
 
 	if (!empty($a->data['blockem'])) {
 		foreach($a->data['blockem'] as $bloke) {
-			if (link_compare($bloke,$author)) {
+			if (Strings::compareLink($bloke,$author)) {
 				$blocked = true;
 				break;
 			}
@@ -231,7 +232,7 @@ function blockem_init(App $a)
 
 		if (count($arr)) {
 			foreach ($arr as $x) {
-				if (!link_compare(trim($x), trim($_GET['unblock']))) {
+				if (!Strings::compareLink(trim($x), trim($_GET['unblock']))) {
 					$newarr[] = $x;
 				}
 			}

@@ -12,14 +12,18 @@ use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Model\ItemContent;
 use Friendica\Util\Proxy as ProxyUtils;
+use Friendica\Util\Strings;
 
 function buffer_install()
 {
+	Addon::registerHook('hook_fork',            'addon/buffer/buffer.php', 'buffer_hook_fork');
 	Addon::registerHook('post_local',           'addon/buffer/buffer.php', 'buffer_post_local');
 	Addon::registerHook('notifier_normal',      'addon/buffer/buffer.php', 'buffer_send');
 	Addon::registerHook('jot_networks',         'addon/buffer/buffer.php', 'buffer_jot_nets');
@@ -29,6 +33,7 @@ function buffer_install()
 
 function buffer_uninstall()
 {
+	Addon::unregisterHook('hook_fork',               'addon/buffer/buffer.php', 'buffer_hook_fork');
 	Addon::unregisterHook('post_local',              'addon/buffer/buffer.php', 'buffer_post_local');
 	Addon::unregisterHook('notifier_normal',         'addon/buffer/buffer.php', 'buffer_send');
 	Addon::unregisterHook('jot_networks',            'addon/buffer/buffer.php', 'buffer_jot_nets');
@@ -69,9 +74,9 @@ function buffer_content(App $a)
 
 function buffer_addon_admin(App $a, &$o)
 {
-	$t = get_markup_template("admin.tpl", "addon/buffer/");
+	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/buffer/");
 
-	$o = replace_macros($t, [
+	$o = Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
 		// name, label, value, help, [extra values]
 		'$client_id' => ['client_id', L10n::t('Client ID'), Config::get('buffer', 'client_id'), ''],
@@ -81,8 +86,8 @@ function buffer_addon_admin(App $a, &$o)
 
 function buffer_addon_admin_post(App $a)
 {
-	$client_id     = ((!empty($_POST['client_id']))     ? notags(trim($_POST['client_id']))     : '');
-	$client_secret = ((!empty($_POST['client_secret'])) ? notags(trim($_POST['client_secret'])) : '');
+	$client_id     = (!empty($_POST['client_id'])     ? Strings::escapeTags(trim($_POST['client_id']))     : '');
+	$client_secret = (!empty($_POST['client_secret']) ? Strings::escapeTags(trim($_POST['client_secret'])) : '');
 
 	Config::set('buffer', 'client_id'    , $client_id);
 	Config::set('buffer', 'client_secret', $client_secret);
@@ -105,16 +110,16 @@ function buffer_connect(App $a)
 	$client_secret = Config::get('buffer','client_secret');
 
 	// The callback URL is the script that gets called after the user authenticates with buffer
-	$callback_url = $a->get_baseurl()."/buffer/connect";
+	$callback_url = $a->getBaseURL()."/buffer/connect";
 
 	$buffer = new BufferApp($client_id, $client_secret, $callback_url);
 
 	if (!$buffer->ok) {
 		$o .= '<a href="' . $buffer->get_login_url() . '">Connect to Buffer!</a>';
 	} else {
-		logger("buffer_connect: authenticated");
+		Logger::log("buffer_connect: authenticated");
 		$o .= L10n::t("You are now authenticated to buffer. ");
-		$o .= '<br /><a href="' . $a->get_baseurl() . '/settings/connectors">' . L10n::t("return to the connector page") . '</a>';
+		$o .= '<br /><a href="' . $a->getBaseURL() . '/settings/connectors">' . L10n::t("return to the connector page") . '</a>';
 		PConfig::set(local_user(), 'buffer','access_token', $buffer->access_token);
 	}
 
@@ -145,7 +150,7 @@ function buffer_settings(App $a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/buffer/buffer.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/buffer/buffer.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variables */
 
@@ -174,7 +179,7 @@ function buffer_settings(App $a, &$s)
 
 	if ($access_token == "") {
 		$s .= '<div id="buffer-authenticate-wrapper">';
-		$s .= '<a href="'.$a->get_baseurl().'/buffer/connect">'.L10n::t("Authenticate your Buffer connection").'</a>';
+		$s .= '<a href="'.$a->getBaseURL().'/buffer/connect">'.L10n::t("Authenticate your Buffer connection").'</a>';
 		$s .= '</div><div class="clear"></div>';
 	} else {
 		$s .= '<div id="buffer-enable-wrapper">';
@@ -193,7 +198,7 @@ function buffer_settings(App $a, &$s)
 		$s .= '</div><div class="clear"></div>';
 
 		// The callback URL is the script that gets called after the user authenticates with buffer
-		$callback_url = $a->get_baseurl() . '/buffer/connect';
+		$callback_url = $a->getBaseURL() . '/buffer/connect';
 
 		$buffer = new BufferApp($client_id, $client_secret, $callback_url, $access_token);
 
@@ -263,6 +268,21 @@ function buffer_post_local(App $a, array &$b)
 	$b['postopts'] .= 'buffer';
 }
 
+function buffer_hook_fork(&$a, &$b)
+{
+	if ($b['name'] != 'notifier_normal') {
+		return;
+	}
+
+	$post = $b['data'];
+
+	if ($post['deleted'] || $post['private'] || ($post['created'] !== $post['edited']) ||
+		!strstr($post['postopts'], 'buffer') || ($post['parent'] != $post['id'])) {
+		$b['execute'] = false;
+		return;
+	}
+}
+
 function buffer_send(App $a, array &$b)
 {
 	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
@@ -298,7 +318,7 @@ function buffer_send(App $a, array &$b)
 
 		$profiles = $buffer->go('/profiles');
 		if (is_array($profiles)) {
-			logger("Will send these parameter ".print_r($b, true), LOGGER_DEBUG);
+			Logger::log("Will send these parameter ".print_r($b, true), Logger::DEBUG);
 
 			foreach ($profiles as $profile) {
 				if (!$profile->default)
@@ -357,7 +377,7 @@ function buffer_send(App $a, array &$b)
 				}
 
 				$post = ItemContent::getPlaintextPost($item, $limit, $includedlinks, $htmlmode);
-				logger("buffer_send: converted message ".$b["id"]." result: ".print_r($post, true), LOGGER_DEBUG);
+				Logger::log("buffer_send: converted message ".$b["id"]." result: ".print_r($post, true), Logger::DEBUG);
 
 				// The image proxy is used as a sanitizer. Buffer seems to be really picky about pictures
 				if (isset($post["image"])) {
@@ -407,9 +427,9 @@ function buffer_send(App $a, array &$b)
 				}
 
 				//print_r($message);
-				logger("buffer_send: data for message " . $b["id"] . ": " . print_r($message, true), LOGGER_DEBUG);
+				Logger::log("buffer_send: data for message " . $b["id"] . ": " . print_r($message, true), Logger::DEBUG);
 				$ret = $buffer->go('/updates/create', $message);
-				logger("buffer_send: send message " . $b["id"] . " result: " . print_r($ret, true), LOGGER_DEBUG);
+				Logger::log("buffer_send: send message " . $b["id"] . " result: " . print_r($ret, true), Logger::DEBUG);
 			}
 		}
 	}

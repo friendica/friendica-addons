@@ -7,6 +7,7 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 
 function group_text_install() {
@@ -14,7 +15,7 @@ function group_text_install() {
 	Addon::registerHook('addon_settings', 'addon/group_text/group_text.php', 'group_text_settings');
 	Addon::registerHook('addon_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
 
-	logger("installed group_text");
+	Logger::log("installed group_text");
 }
 
 
@@ -24,7 +25,7 @@ function group_text_uninstall() {
 	Addon::unregisterHook('addon_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
 
 
-	logger("removed group_text");
+	Logger::log("removed group_text");
 }
 
 
@@ -39,7 +40,7 @@ function group_text_uninstall() {
  */
 
 function group_text_settings_post($a,$post) {
-	if(! local_user() || (! x($_POST,'group_text-submit')))
+	if(! local_user() || empty($_POST['group_text-submit']))
 		return;
 	PConfig::set(local_user(),'system','groupedit_image_limit',intval($_POST['group_text']));
 
@@ -63,7 +64,7 @@ function group_text_settings(&$a,&$s) {
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/group_text/group_text.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/group_text/group_text.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variable */
 

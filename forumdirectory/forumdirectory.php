@@ -8,13 +8,16 @@
 
 use Friendica\App;
 use Friendica\Content\Nav;
+use Friendica\Content\Pager;
 use Friendica\Content\Widget;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Model\Contact;
 use Friendica\Model\Profile;
+use Friendica\Util\Strings;
 use Friendica\Util\Temporal;
 
 require_once 'boot.php';
@@ -43,9 +46,7 @@ function forumdirectory_app_menu(App $a, array &$b)
 
 function forumdirectory_init(App $a)
 {
-	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="' . $a->get_baseurl() . '/addon/forumdirectory/forumdirectory.css" media="all" />';
-
-	$a->set_pager_itemspage(60);
+	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="' . $a->getBaseURL() . '/addon/forumdirectory/forumdirectory.css" media="all" />';
 
 	if (local_user()) {
 		$a->page['aside'] .= Widget::findPeople();
@@ -72,12 +73,12 @@ function forumdirectory_content(App $a)
 	Nav::setSelected('directory');
 
 	if (!empty($a->data['search'])) {
-		$search = notags(trim($a->data['search']));
+		$search = Strings::escapeTags(trim($a->data['search']));
 	} else {
-		$search = ((!empty($_GET['search'])) ? notags(trim(rawurldecode($_GET['search']))) : '');
+		$search = (!empty($_GET['search']) ? Strings::escapeTags(trim(rawurldecode($_GET['search']))) : '');
 	}
 
-	$tpl = get_markup_template('directory_header.tpl');
+	$tpl = Renderer::getMarkupTemplate('directory_header.tpl');
 
 	$globaldir = '';
 	$gdirpath = Config::get('system', 'directory');
@@ -88,7 +89,7 @@ function forumdirectory_content(App $a)
 
 	$admin = '';
 
-	$o .= replace_macros($tpl, [
+	$o .= Renderer::replaceMacros($tpl, [
 		'$search'    => $search,
 		'$globaldir' => $globaldir,
 		'$desc'      => L10n::t('Find on this site'),
@@ -107,19 +108,22 @@ function forumdirectory_content(App $a)
 
 	$publish = Config::get('system', 'publish_all') ? '' : " AND `publish` = 1 ";
 
+	$total = 0;
 	$r = q("SELECT COUNT(*) AS `total` FROM `profile` LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid`"
 		. " WHERE `is-default` = 1 $publish AND `user`.`blocked` = 0 AND `page-flags` = 2 $sql_extra ");
 	if (DBA::isResult($r)) {
-		$a->set_pager_total($r[0]['total']);
+		$total = $r[0]['total'];
 	}
+
+	$pager = new Pager($a->query_string, 60);
 
 	$order = " ORDER BY `name` ASC ";
 
 	$r = q("SELECT `profile`.*, `profile`.`uid` AS `profile_uid`, `user`.`nickname`, `user`.`timezone` , `user`.`page-flags`"
 		. " FROM `profile` LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid` WHERE `is-default` = 1 $publish"
 		. " AND `user`.`blocked` = 0 AND `page-flags` = 2 $sql_extra $order LIMIT %d , %d ",
-		intval($a->pager['start']),
-		intval($a->pager['itemspage'])
+		$pager->getStart(),
+		$pager->getItemsPerPage()
 	);
 
 	if (DBA::isResult($r)) {
@@ -130,7 +134,7 @@ function forumdirectory_content(App $a)
 		}
 
 		foreach ($r as $rr) {
-			$profile_link = $a->get_baseurl() . '/profile/' . ((strlen($rr['nickname'])) ? $rr['nickname'] : $rr['profile_uid']);
+			$profile_link = $a->getBaseURL() . '/profile/' . ((strlen($rr['nickname'])) ? $rr['nickname'] : $rr['profile_uid']);
 
 			$pdesc = (($rr['pdesc']) ? $rr['pdesc'] . '<br />' : '');
 
@@ -185,9 +189,9 @@ function forumdirectory_content(App $a)
 			$homepage = !empty($profile['homepage']) ? L10n::t('Homepage:') : false;
 			$about    = !empty($profile['about'])    ? L10n::t('About:')    : false;
 
-			$tpl = get_markup_template('forumdirectory_item.tpl', 'addon/forumdirectory/');
+			$tpl = Renderer::getMarkupTemplate('forumdirectory_item.tpl', 'addon/forumdirectory/');
 
-			$entry = replace_macros($tpl, [
+			$entry = Renderer::replaceMacros($tpl, [
 				'$id'           => $rr['id'],
 				'$profile_link' => $profile_link,
 				'$photo'        => $rr[$photo],
@@ -208,7 +212,7 @@ function forumdirectory_content(App $a)
 		}
 
 		$o .= "<div class=\"directory-end\" ></div>\r\n";
-		$o .= paginate($a);
+		$o .= $pager->renderFull($total);
 	} else {
 		info(L10n::t("No entries \x28some entries may be hidden\x29.") . EOL);
 	}

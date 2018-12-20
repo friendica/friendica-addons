@@ -7,6 +7,7 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 
 function numfriends_install() {
@@ -14,7 +15,7 @@ function numfriends_install() {
 	Addon::registerHook('addon_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
 	Addon::registerHook('addon_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
 
-	logger("installed numfriends");
+	Logger::log("installed numfriends");
 }
 
 
@@ -24,7 +25,7 @@ function numfriends_uninstall() {
 	Addon::unregisterHook('addon_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
 
 
-	logger("removed numfriends");
+	Logger::log("removed numfriends");
 }
 
 /**
@@ -36,7 +37,7 @@ function numfriends_uninstall() {
  *
  */
 function numfriends_settings_post($a,$post) {
-	if(! local_user() || (! x($_POST,'numfriends-submit')))
+	if(! local_user() || empty($_POST['numfriends-submit']))
 		return;
 
 	PConfig::set(local_user(),'system','display_friend_count',intval($_POST['numfriends']));
@@ -58,7 +59,7 @@ function numfriends_settings(&$a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/numfriends/numfriends.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/numfriends/numfriends.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variable */
 

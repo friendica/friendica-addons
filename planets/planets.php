@@ -8,6 +8,7 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 
 function planets_install() {
@@ -32,7 +33,7 @@ function planets_install() {
 	Addon::registerHook('addon_settings', 'addon/planets/planets.php', 'planets_settings');
 	Addon::registerHook('addon_settings_post', 'addon/planets/planets.php', 'planets_settings_post');
 
-	logger("installed planets");
+	Logger::log("installed planets");
 }
 
 
@@ -51,7 +52,7 @@ function planets_uninstall() {
 	Addon::unregisterHook('addon_settings_post', 'addon/planets/planets.php', 'planets_settings_post');
 
 
-	logger("removed planets");
+	Logger::log("removed planets");
 }
 
 
@@ -67,7 +68,7 @@ function planets_post_hook($a, &$item) {
 	 *
 	 */
 
-	logger('planets invoked');
+	Logger::log('planets invoked');
 
 	if(! local_user())   /* non-zero if this is a logged in user of this system */
 		return;
@@ -138,7 +139,7 @@ function planets_settings(&$a,&$s) {
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->get_baseurl() . '/addon/planets/planets.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/planets/planets.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variable */
 

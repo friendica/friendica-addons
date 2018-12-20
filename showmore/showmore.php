@@ -10,6 +10,7 @@
 use Friendica\Core\Addon;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\Util\Strings;
 
 function showmore_install()
 {
@@ -33,7 +34,7 @@ function showmore_addon_settings(&$a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->get_baseurl().'/addon/showmore/showmore.css'.'" media="all"/>'."\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->getBaseURL().'/addon/showmore/showmore.css'.'" media="all"/>'."\r\n";
 
 	$enable_checked = (intval(PConfig::get(local_user(), 'showmore', 'disable')) ? '' : ' checked="checked"');
 	$chars = PConfig::get(local_user(), 'showmore', 'chars', 1100);
@@ -70,7 +71,7 @@ function showmore_addon_settings_post(&$a, &$b)
 
 	if (!empty($_POST['showmore-submit'])) {
 		PConfig::set(local_user(), 'showmore', 'chars', trim($_POST['showmore-chars']));
-		$enable = (x($_POST, 'showmore-enable') ? intval($_POST['showmore-enable']) : 0);
+		$enable = (!empty($_POST['showmore-enable']) ? intval($_POST['showmore-enable']) : 0);
 		$disable = 1-$enable;
 		PConfig::set(local_user(), 'showmore', 'disable', $disable);
 		info(L10n::t('Show More Settings saved.') . EOL);
@@ -131,7 +132,7 @@ function showmore_prepare_body(\Friendica\App $a, &$hook_data)
 	}
 
 	if ($found) {
-		$rnd = random_string(8);
+		$rnd = Strings::getRandomHex(8);
 		$hook_data['html'] = '<span id="showmore-teaser-' . $rnd . '" class="showmore-teaser" style="display: block;">' . $shortened . " " .
 			'<span id="showmore-wrap-' . $rnd . '" style="white-space:nowrap;" class="showmore-wrap fakelink" onclick="openClose(\'showmore-' . $rnd . '\'); openClose(\'showmore-teaser-' . $rnd . '\');" >' . L10n::t('show more') . '</span></span>' .
 			'<div id="showmore-' . $rnd . '" class="showmore-content" style="display: none;">' . $hook_data['html'] . '</div>';

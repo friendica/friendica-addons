@@ -12,23 +12,25 @@ use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 use Friendica\Util\Emailer;
 
 function notifyall_install()
 {
-	logger("installed notifyall");
+	Logger::log("installed notifyall");
 }
 
 function notifyall_uninstall()
 {
-	logger("removed notifyall");
+	Logger::log("removed notifyall");
 }
 
 function notifyall_module() {}
 
 function notifyall_addon_admin(App $a, &$o)
 {
-	$o = '<div></div>&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . z_root() . '/notifyall">' . L10n::t('Send email to all members') . '</a></br/>';
+	$o = '<div></div>&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . $a->getBaseURL() . '/notifyall">' . L10n::t('Send email to all members') . '</a></br/>';
 }
 
 
@@ -52,8 +54,8 @@ function notifyall_post(App $a)
 		$sender_name = '"' . L10n::t('%1$s, %2$s Administrator', Config::get('config', 'admin_name'), $sitename) . '"';
 	}
 
-	if (! x(Config::get('config', 'sender_email'))) {
-		$sender_email = 'noreply@' . $a->get_hostname();
+	if (!Config::get('config', 'sender_email')) {
+		$sender_email = 'noreply@' . $a->getHostName();
 	} else {
 		$sender_email = Config::get('config', 'sender_email');
 	}
@@ -93,7 +95,7 @@ function notifyall_post(App $a)
 	}
 
 	notice(L10n::t('Emails sent'));
-	goaway('admin');
+	$a->internalRedirect('admin');
 }
 
 function notifyall_content(&$a)
@@ -104,10 +106,10 @@ function notifyall_content(&$a)
 
 	$title = L10n::t('Send email to all members of this Friendica instance.');
 
-	$o = replace_macros(get_markup_template('notifyall_form.tpl', 'addon/notifyall/'), [
+	$o = Renderer::replaceMacros(Renderer::getMarkupTemplate('notifyall_form.tpl', 'addon/notifyall/'), [
 		'$title' => $title,
-		'$text' => htmlspecialchars($_REQUEST['text']),
-		'$subject' => ['subject',L10n::t('Message subject'),$_REQUEST['subject'],''],
+		'$text' => htmlspecialchars(defaults($_REQUEST, 'text', '')),
+		'$subject' => ['subject', L10n::t('Message subject'), defaults($_REQUEST, 'subject', ''),''],
 		'$test' => ['test',L10n::t('Test mode (only send to administrator)'), 0,''],
 		'$submit' => L10n::t('Submit')
 	]);
