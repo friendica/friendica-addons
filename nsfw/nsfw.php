@@ -7,23 +7,23 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  *
  */
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 
 function nsfw_install()
 {
-	Addon::registerHook('prepare_body_content_filter', 'addon/nsfw/nsfw.php', 'nsfw_prepare_body_content_filter', 10);
-	Addon::registerHook('addon_settings', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings');
-	Addon::registerHook('addon_settings_post', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings_post');
+	Hook::register('prepare_body_content_filter', 'addon/nsfw/nsfw.php', 'nsfw_prepare_body_content_filter', 10);
+	Hook::register('addon_settings', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings');
+	Hook::register('addon_settings_post', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings_post');
 }
 
 function nsfw_uninstall()
 {
-	Addon::unregisterHook('prepare_body_content_filter', 'addon/nsfw/nsfw.php', 'nsfw_prepare_body_content_filter');
-	Addon::unregisterHook('prepare_body', 'addon/nsfw/nsfw.php', 'nsfw_prepare_body');
-	Addon::unregisterHook('addon_settings', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings_post');
+	Hook::unregister('prepare_body_content_filter', 'addon/nsfw/nsfw.php', 'nsfw_prepare_body_content_filter');
+	Hook::unregister('prepare_body', 'addon/nsfw/nsfw.php', 'nsfw_prepare_body');
+	Hook::unregister('addon_settings', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings');
+	Hook::unregister('addon_settings_post', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings_post');
 }
 
 // This function isn't perfect and isn't trying to preserve the html structure - it's just a

@@ -7,17 +7,17 @@
  */
 
 use Friendica\App;
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 
 function buglink_install()
 {
-	Addon::registerHook('page_end', 'addon/buglink/buglink.php', 'buglink_active');
+	Hook::register('page_end', 'addon/buglink/buglink.php', 'buglink_active');
 }
 
 function buglink_uninstall()
 {
-	Addon::unregisterHook('page_end', 'addon/buglink/buglink.php', 'buglink_active');
+	Hook::unregister('page_end', 'addon/buglink/buglink.php', 'buglink_active');
 }
 
 function buglink_active(App $a, &$b)

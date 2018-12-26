@@ -6,25 +6,25 @@
  * Author: Commander Zot
  *
  */
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 
 function fromapp_install()
 {
-	Addon::registerHook('post_local', 'addon/fromapp/fromapp.php', 'fromapp_post_hook');
-	Addon::registerHook('addon_settings', 'addon/fromapp/fromapp.php', 'fromapp_settings');
-	Addon::registerHook('addon_settings_post', 'addon/fromapp/fromapp.php', 'fromapp_settings_post');
+	Hook::register('post_local', 'addon/fromapp/fromapp.php', 'fromapp_post_hook');
+	Hook::register('addon_settings', 'addon/fromapp/fromapp.php', 'fromapp_settings');
+	Hook::register('addon_settings_post', 'addon/fromapp/fromapp.php', 'fromapp_settings_post');
 	Logger::log("installed fromapp");
 }
 
 
 function fromapp_uninstall()
 {
-	Addon::unregisterHook('post_local', 'addon/fromapp/fromapp.php', 'fromapp_post_hook');
-	Addon::unregisterHook('addon_settings', 'addon/fromapp/fromapp.php', 'fromapp_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/fromapp/fromapp.php', 'fromapp_settings_post');
+	Hook::unregister('post_local', 'addon/fromapp/fromapp.php', 'fromapp_post_hook');
+	Hook::unregister('addon_settings', 'addon/fromapp/fromapp.php', 'fromapp_settings');
+	Hook::unregister('addon_settings_post', 'addon/fromapp/fromapp.php', 'fromapp_settings_post');
 	Logger::log("removed fromapp");
 }
 

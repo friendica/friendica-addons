@@ -6,27 +6,27 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  *
  */
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Util\Strings;
 
 function superblock_install()
 {
-	Addon::registerHook('addon_settings', 'addon/superblock/superblock.php', 'superblock_addon_settings');
-	Addon::registerHook('addon_settings_post', 'addon/superblock/superblock.php', 'superblock_addon_settings_post');
-	Addon::registerHook('conversation_start', 'addon/superblock/superblock.php', 'superblock_conversation_start');
-	Addon::registerHook('item_photo_menu', 'addon/superblock/superblock.php', 'superblock_item_photo_menu');
-	Addon::registerHook('enotify_store', 'addon/superblock/superblock.php', 'superblock_enotify_store');
+	Hook::register('addon_settings', 'addon/superblock/superblock.php', 'superblock_addon_settings');
+	Hook::register('addon_settings_post', 'addon/superblock/superblock.php', 'superblock_addon_settings_post');
+	Hook::register('conversation_start', 'addon/superblock/superblock.php', 'superblock_conversation_start');
+	Hook::register('item_photo_menu', 'addon/superblock/superblock.php', 'superblock_item_photo_menu');
+	Hook::register('enotify_store', 'addon/superblock/superblock.php', 'superblock_enotify_store');
 }
 
 function superblock_uninstall()
 {
-	Addon::unregisterHook('addon_settings', 'addon/superblock/superblock.php', 'superblock_addon_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/superblock/superblock.php', 'superblock_addon_settings_post');
-	Addon::unregisterHook('conversation_start', 'addon/superblock/superblock.php', 'superblock_conversation_start');
-	Addon::unregisterHook('item_photo_menu', 'addon/superblock/superblock.php', 'superblock_item_photo_menu');
-	Addon::unregisterHook('enotify_store', 'addon/superblock/superblock.php', 'superblock_enotify_store');
+	Hook::unregister('addon_settings', 'addon/superblock/superblock.php', 'superblock_addon_settings');
+	Hook::unregister('addon_settings_post', 'addon/superblock/superblock.php', 'superblock_addon_settings_post');
+	Hook::unregister('conversation_start', 'addon/superblock/superblock.php', 'superblock_conversation_start');
+	Hook::unregister('item_photo_menu', 'addon/superblock/superblock.php', 'superblock_item_photo_menu');
+	Hook::unregister('enotify_store', 'addon/superblock/superblock.php', 'superblock_enotify_store');
 }
 
 function superblock_addon_settings(&$a, &$s)

@@ -9,28 +9,28 @@
  */
 
 use Friendica\App;
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 
 function mathjax_install()
 {
-	Addon::registerHook('footer'             , __FILE__, 'mathjax_footer');
-	Addon::registerHook('addon_settings'     , __FILE__, 'mathjax_settings');
-	Addon::registerHook('addon_settings_post', __FILE__, 'mathjax_settings_post');
+	Hook::register('footer'             , __FILE__, 'mathjax_footer');
+	Hook::register('addon_settings'     , __FILE__, 'mathjax_settings');
+	Hook::register('addon_settings_post', __FILE__, 'mathjax_settings_post');
 }
 
 function mathjax_uninstall()
 {
-	Addon::unregisterHook('footer'             , __FILE__, 'mathjax_footer');
-	Addon::unregisterHook('addon_settings'     , __FILE__, 'mathjax_settings');
-	Addon::unregisterHook('addon_settings_post', __FILE__, 'mathjax_settings_post');
+	Hook::unregister('footer'             , __FILE__, 'mathjax_footer');
+	Hook::unregister('addon_settings'     , __FILE__, 'mathjax_settings');
+	Hook::unregister('addon_settings_post', __FILE__, 'mathjax_settings_post');
 
 	// Legacy hooks
-	Addon::unregisterHook('load_config'        , __FILE__, 'mathjax_load_config');
-	Addon::unregisterHook('page_header'        , __FILE__, 'mathjax_page_header');
-	Addon::unregisterHook('template_vars'      , __FILE__, 'mathjax_template_vars');
+	Hook::unregister('load_config'        , __FILE__, 'mathjax_load_config');
+	Hook::unregister('page_header'        , __FILE__, 'mathjax_page_header');
+	Hook::unregister('template_vars'      , __FILE__, 'mathjax_template_vars');
 }
 
 function mathjax_settings_post($a)

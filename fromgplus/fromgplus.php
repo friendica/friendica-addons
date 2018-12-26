@@ -9,8 +9,8 @@
 
 define('FROMGPLUS_DEFAULT_POLL_INTERVAL', 30); // given in minutes
 
-use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
@@ -26,19 +26,19 @@ require_once 'mod/parse_url.php';
 require_once 'include/text.php';
 
 function fromgplus_install() {
-	Addon::registerHook('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
-	Addon::registerHook('connector_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
-	Addon::registerHook('cron', 'addon/fromgplus/fromgplus.php', 'fromgplus_cron');
+	Hook::register('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
+	Hook::register('connector_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
+	Hook::register('cron', 'addon/fromgplus/fromgplus.php', 'fromgplus_cron');
 }
 
 function fromgplus_uninstall() {
-	Addon::unregisterHook('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
-	Addon::unregisterHook('connector_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
-	Addon::unregisterHook('cron', 'addon/fromgplus/fromgplus.php', 'fromgplus_cron');
+	Hook::unregister('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
+	Hook::unregister('connector_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
+	Hook::unregister('cron', 'addon/fromgplus/fromgplus.php', 'fromgplus_cron');
 
 	// Old hooks
-	Addon::unregisterHook('addon_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
+	Hook::unregister('addon_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
+	Hook::unregister('addon_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
 }
 
 function fromgplus_addon_settings(&$a,&$s) {

@@ -10,6 +10,7 @@ use Friendica\App;
 use Friendica\BaseModule;
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
@@ -19,20 +20,20 @@ use Friendica\Util\Strings;
 
 function public_server_install()
 {
-	Addon::registerHook('load_config',      'addon/public_server/public_server.php', 'public_server_load_config');
-	Addon::registerHook('register_account', 'addon/public_server/public_server.php', 'public_server_register_account');
-	Addon::registerHook('cron', 'addon/public_server/public_server.php', 'public_server_cron');
-	Addon::registerHook('enotify', 'addon/public_server/public_server.php', 'public_server_enotify');
-	Addon::registerHook('logged_in', 'addon/public_server/public_server.php', 'public_server_login');
+	Hook::register('load_config',      'addon/public_server/public_server.php', 'public_server_load_config');
+	Hook::register('register_account', 'addon/public_server/public_server.php', 'public_server_register_account');
+	Hook::register('cron', 'addon/public_server/public_server.php', 'public_server_cron');
+	Hook::register('enotify', 'addon/public_server/public_server.php', 'public_server_enotify');
+	Hook::register('logged_in', 'addon/public_server/public_server.php', 'public_server_login');
 }
 
 function public_server_uninstall()
 {
-	Addon::unregisterHook('load_config',      'addon/public_server/public_server.php', 'public_server_load_config');
-	Addon::unregisterHook('register_account', 'addon/public_server/public_server.php', 'public_server_register_account');
-	Addon::unregisterHook('cron', 'addon/public_server/public_server.php', 'public_server_cron');
-	Addon::unregisterHook('enotify', 'addon/public_server/public_server.php', 'public_server_enotify');
-	Addon::unregisterHook('logged_in', 'addon/public_server/public_server.php', 'public_server_login');
+	Hook::unregister('load_config',      'addon/public_server/public_server.php', 'public_server_load_config');
+	Hook::unregister('register_account', 'addon/public_server/public_server.php', 'public_server_register_account');
+	Hook::unregister('cron', 'addon/public_server/public_server.php', 'public_server_cron');
+	Hook::unregister('enotify', 'addon/public_server/public_server.php', 'public_server_enotify');
+	Hook::unregister('logged_in', 'addon/public_server/public_server.php', 'public_server_login');
 }
 
 function public_server_load_config(App $a)

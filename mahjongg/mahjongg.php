@@ -6,14 +6,14 @@
  * Version: 1.0
  * Author: Holger Froese
  */
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 
 function mahjongg_install() {
-    Addon::registerHook('app_menu', 'addon/mahjongg/mahjongg.php', 'mahjongg_app_menu');
+    Hook::register('app_menu', 'addon/mahjongg/mahjongg.php', 'mahjongg_app_menu');
 }
 
 function mahjongg_uninstall() {
-    Addon::unregisterHook('app_menu', 'addon/mahjongg/mahjongg.php', 'mahjongg_app_menu');
+    Hook::unregister('app_menu', 'addon/mahjongg/mahjongg.php', 'mahjongg_app_menu');
 
 }
 

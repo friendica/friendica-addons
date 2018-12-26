@@ -8,9 +8,8 @@
 require 'addon/buffer/bufferapp.php';
 
 use Friendica\App;
-use Friendica\Content\Text\Plaintext;
-use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
@@ -23,22 +22,22 @@ use Friendica\Util\Strings;
 
 function buffer_install()
 {
-	Addon::registerHook('hook_fork',            'addon/buffer/buffer.php', 'buffer_hook_fork');
-	Addon::registerHook('post_local',           'addon/buffer/buffer.php', 'buffer_post_local');
-	Addon::registerHook('notifier_normal',      'addon/buffer/buffer.php', 'buffer_send');
-	Addon::registerHook('jot_networks',         'addon/buffer/buffer.php', 'buffer_jot_nets');
-	Addon::registerHook('connector_settings',      'addon/buffer/buffer.php', 'buffer_settings');
-	Addon::registerHook('connector_settings_post', 'addon/buffer/buffer.php', 'buffer_settings_post');
+	Hook::register('hook_fork',            'addon/buffer/buffer.php', 'buffer_hook_fork');
+	Hook::register('post_local',           'addon/buffer/buffer.php', 'buffer_post_local');
+	Hook::register('notifier_normal',      'addon/buffer/buffer.php', 'buffer_send');
+	Hook::register('jot_networks',         'addon/buffer/buffer.php', 'buffer_jot_nets');
+	Hook::register('connector_settings',      'addon/buffer/buffer.php', 'buffer_settings');
+	Hook::register('connector_settings_post', 'addon/buffer/buffer.php', 'buffer_settings_post');
 }
 
 function buffer_uninstall()
 {
-	Addon::unregisterHook('hook_fork',               'addon/buffer/buffer.php', 'buffer_hook_fork');
-	Addon::unregisterHook('post_local',              'addon/buffer/buffer.php', 'buffer_post_local');
-	Addon::unregisterHook('notifier_normal',         'addon/buffer/buffer.php', 'buffer_send');
-	Addon::unregisterHook('jot_networks',            'addon/buffer/buffer.php', 'buffer_jot_nets');
-	Addon::unregisterHook('connector_settings',      'addon/buffer/buffer.php', 'buffer_settings');
-	Addon::unregisterHook('connector_settings_post', 'addon/buffer/buffer.php', 'buffer_settings_post');
+	Hook::unregister('hook_fork',               'addon/buffer/buffer.php', 'buffer_hook_fork');
+	Hook::unregister('post_local',              'addon/buffer/buffer.php', 'buffer_post_local');
+	Hook::unregister('notifier_normal',         'addon/buffer/buffer.php', 'buffer_send');
+	Hook::unregister('jot_networks',            'addon/buffer/buffer.php', 'buffer_jot_nets');
+	Hook::unregister('connector_settings',      'addon/buffer/buffer.php', 'buffer_settings');
+	Hook::unregister('connector_settings_post', 'addon/buffer/buffer.php', 'buffer_settings_post');
 }
 
 function buffer_module()

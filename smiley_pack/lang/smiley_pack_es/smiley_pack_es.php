@@ -6,14 +6,14 @@
  * Author: Thomas Willingham (based on Mike Macgirvin's Adult Smile template) 
  * All smileys from sites offering them as Public Domain
  */
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 
 function smiley_pack_es_install() {
-	Addon::registerHook('smilie', 'addon/smiley_pack_es/smiley_pack_es.php', 'smiley_pack_smilies_es');
+	Hook::register('smilie', 'addon/smiley_pack_es/smiley_pack_es.php', 'smiley_pack_smilies_es');
 }
 
 function smiley_pack_es_uninstall() {
-	Addon::unregisterHook('smilie', 'addon/smiley_pack_es/smiley_pack_es.php', 'smiley_pack_smilies');
+	Hook::unregister('smilie', 'addon/smiley_pack_es/smiley_pack_es.php', 'smiley_pack_smilies');
 }
 
  

@@ -36,8 +36,8 @@
 use Friendica\App;
 use Friendica\BaseModule;
 use Friendica\Content\Text\Markdown;
-use Friendica\Core\Addon;
 use Friendica\Core\Cache;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
@@ -60,9 +60,9 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'a
 
 function advancedcontentfilter_install()
 {
-	Addon::registerHook('dbstructure_definition'     , __FILE__, 'advancedcontentfilter_dbstructure_definition');
-	Addon::registerHook('prepare_body_content_filter', __FILE__, 'advancedcontentfilter_prepare_body_content_filter');
-	Addon::registerHook('addon_settings'             , __FILE__, 'advancedcontentfilter_addon_settings');
+	Hook::register('dbstructure_definition'     , __FILE__, 'advancedcontentfilter_dbstructure_definition');
+	Hook::register('prepare_body_content_filter', __FILE__, 'advancedcontentfilter_prepare_body_content_filter');
+	Hook::register('addon_settings'             , __FILE__, 'advancedcontentfilter_addon_settings');
 
 	DBStructure::update(false, true);
 
@@ -71,9 +71,9 @@ function advancedcontentfilter_install()
 
 function advancedcontentfilter_uninstall()
 {
-	Addon::unregisterHook('dbstructure_definition'     , __FILE__, 'advancedcontentfilter_dbstructure_definition');
-	Addon::unregisterHook('prepare_body_content_filter', __FILE__, 'advancedcontentfilter_prepare_body_content_filter');
-	Addon::unregisterHook('addon_settings'             , __FILE__, 'advancedcontentfilter_addon_settings');
+	Hook::unregister('dbstructure_definition'     , __FILE__, 'advancedcontentfilter_dbstructure_definition');
+	Hook::unregister('prepare_body_content_filter', __FILE__, 'advancedcontentfilter_prepare_body_content_filter');
+	Hook::unregister('addon_settings'             , __FILE__, 'advancedcontentfilter_addon_settings');
 }
 
 /*

@@ -7,8 +7,8 @@
  */
 
 use Friendica\App;
-use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Database\DBA;
 use Friendica\Model\User;
@@ -16,22 +16,22 @@ use Friendica\Util\DateTimeFormat;
 
 function testdrive_install() {
 
-	Addon::registerHook('load_config',      'addon/testdrive/testdrive.php', 'testdrive_load_config');
-	Addon::registerHook('register_account', 'addon/testdrive/testdrive.php', 'testdrive_register_account');
-	Addon::registerHook('cron', 'addon/testdrive/testdrive.php', 'testdrive_cron');
-	Addon::registerHook('enotify','addon/testdrive/testdrive.php', 'testdrive_enotify');
-	Addon::registerHook('globaldir_update','addon/testdrive/testdrive.php', 'testdrive_globaldir_update');
+	Hook::register('load_config',      'addon/testdrive/testdrive.php', 'testdrive_load_config');
+	Hook::register('register_account', 'addon/testdrive/testdrive.php', 'testdrive_register_account');
+	Hook::register('cron', 'addon/testdrive/testdrive.php', 'testdrive_cron');
+	Hook::register('enotify','addon/testdrive/testdrive.php', 'testdrive_enotify');
+	Hook::register('globaldir_update','addon/testdrive/testdrive.php', 'testdrive_globaldir_update');
 
 }
 
 
 function testdrive_uninstall() {
 
-	Addon::unregisterHook('load_config',      'addon/testdrive/testdrive.php', 'testdrive_load_config');
-	Addon::unregisterHook('register_account', 'addon/testdrive/testdrive.php', 'testdrive_register_account');
-	Addon::unregisterHook('cron', 'addon/testdrive/testdrive.php', 'testdrive_cron');
-	Addon::unregisterHook('enotify','addon/testdrive/testdrive.php', 'testdrive_enotify');
-	Addon::unregisterHook('globaldir_update','addon/testdrive/testdrive.php', 'testdrive_globaldir_update');
+	Hook::unregister('load_config',      'addon/testdrive/testdrive.php', 'testdrive_load_config');
+	Hook::unregister('register_account', 'addon/testdrive/testdrive.php', 'testdrive_register_account');
+	Hook::unregister('cron', 'addon/testdrive/testdrive.php', 'testdrive_cron');
+	Hook::unregister('enotify','addon/testdrive/testdrive.php', 'testdrive_enotify');
+	Hook::unregister('globaldir_update','addon/testdrive/testdrive.php', 'testdrive_globaldir_update');
 
 }
 

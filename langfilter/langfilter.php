@@ -9,7 +9,7 @@
 
 use Friendica\App;
 use Friendica\Content\Text\BBCode;
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
@@ -21,17 +21,17 @@ use Friendica\Core\Renderer;
 
 function langfilter_install()
 {
-	Addon::registerHook('prepare_body_content_filter', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body_content_filter', 10);
-	Addon::registerHook('addon_settings', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
-	Addon::registerHook('addon_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
+	Hook::register('prepare_body_content_filter', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body_content_filter', 10);
+	Hook::register('addon_settings', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
+	Hook::register('addon_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
 }
 
 function langfilter_uninstall()
 {
-	Addon::unregisterHook('prepare_body_content_filter', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body_content_filter');
-	Addon::unregisterHook('prepare_body', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body');
-	Addon::unregisterHook('addon_settings', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
+	Hook::unregister('prepare_body_content_filter', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body_content_filter');
+	Hook::unregister('prepare_body', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body');
+	Hook::unregister('addon_settings', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
+	Hook::unregister('addon_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
 }
 
 /* The settings

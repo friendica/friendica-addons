@@ -5,13 +5,12 @@
  * Version: 0.2
  * Author: Johannes Schwab <https://friendica.jschwab.org/profile/ddorian>
  */
-use Friendica\Core\Addon;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 
 function smileybutton_install() {
 	//Register hooks
-	Addon::registerHook('jot_tool', 'addon/smileybutton/smileybutton.php', 'show_button');
+	Hook::register('jot_tool', 'addon/smileybutton/smileybutton.php', 'show_button');
 
 	Logger::log("installed smileybutton");
 }
@@ -19,7 +18,7 @@ function smileybutton_install() {
 
 function smileybutton_uninstall() {
 	//Delet registered hooks
-	Addon::unregisterHook('jot_tool',    'addon/smileybutton/smileybutton.php', 'show_button');
+	Hook::unregister('jot_tool',    'addon/smileybutton/smileybutton.php', 'show_button');
 
 	Logger::log("removed smileybutton");
 }

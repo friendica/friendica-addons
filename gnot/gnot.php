@@ -7,16 +7,16 @@
  * 
  *
  */
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 
 function gnot_install() {
 
-	Addon::registerHook('addon_settings', 'addon/gnot/gnot.php', 'gnot_settings');
-	Addon::registerHook('addon_settings_post', 'addon/gnot/gnot.php', 'gnot_settings_post');
-	Addon::registerHook('enotify_mail', 'addon/gnot/gnot.php', 'gnot_enotify_mail');
+	Hook::register('addon_settings', 'addon/gnot/gnot.php', 'gnot_settings');
+	Hook::register('addon_settings_post', 'addon/gnot/gnot.php', 'gnot_settings_post');
+	Hook::register('enotify_mail', 'addon/gnot/gnot.php', 'gnot_enotify_mail');
 
 	Logger::log("installed gnot");
 }
@@ -24,9 +24,9 @@ function gnot_install() {
 
 function gnot_uninstall() {
 
-	Addon::unregisterHook('addon_settings', 'addon/gnot/gnot.php', 'gnot_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/gnot/gnot.php', 'gnot_settings_post');
-	Addon::unregisterHook('enotify_mail', 'addon/gnot/gnot.php', 'gnot_enotify_mail');
+	Hook::unregister('addon_settings', 'addon/gnot/gnot.php', 'gnot_settings');
+	Hook::unregister('addon_settings_post', 'addon/gnot/gnot.php', 'gnot_settings_post');
+	Hook::unregister('enotify_mail', 'addon/gnot/gnot.php', 'gnot_enotify_mail');
 
 
 	Logger::log("removed gnot");

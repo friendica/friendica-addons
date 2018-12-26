@@ -6,7 +6,7 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * Author: Tony Baldwin <https://free-haven.org/profile/tony>
  */
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
@@ -20,7 +20,7 @@ function planets_install() {
 	 *
 	 */
 
-	Addon::registerHook('post_local', 'addon/planets/planets.php', 'planets_post_hook');
+	Hook::register('post_local', 'addon/planets/planets.php', 'planets_post_hook');
 
 	/**
 	 *
@@ -30,8 +30,8 @@ function planets_install() {
 	 *
 	 */
 
-	Addon::registerHook('addon_settings', 'addon/planets/planets.php', 'planets_settings');
-	Addon::registerHook('addon_settings_post', 'addon/planets/planets.php', 'planets_settings_post');
+	Hook::register('addon_settings', 'addon/planets/planets.php', 'planets_settings');
+	Hook::register('addon_settings_post', 'addon/planets/planets.php', 'planets_settings_post');
 
 	Logger::log("installed planets");
 }
@@ -47,9 +47,9 @@ function planets_uninstall() {
 	 *
 	 */
 
-	Addon::unregisterHook('post_local',    'addon/planets/planets.php', 'planets_post_hook');
-	Addon::unregisterHook('addon_settings', 'addon/planets/planets.php', 'planets_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/planets/planets.php', 'planets_settings_post');
+	Hook::unregister('post_local',    'addon/planets/planets.php', 'planets_post_hook');
+	Hook::unregister('addon_settings', 'addon/planets/planets.php', 'planets_settings');
+	Hook::unregister('addon_settings_post', 'addon/planets/planets.php', 'planets_settings_post');
 
 
 	Logger::log("removed planets");

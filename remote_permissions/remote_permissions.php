@@ -7,8 +7,8 @@
  * Status: Unsupported
  */
 
-use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
@@ -16,15 +16,15 @@ use Friendica\Database\DBA;
 use Friendica\Util\Strings;
 
 function remote_permissions_install() {
-	Addon::registerHook('lockview_content', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_content');
-	Addon::registerHook('addon_settings', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings');
-	Addon::registerHook('addon_settings_post', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings_post');
+	Hook::register('lockview_content', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_content');
+	Hook::register('addon_settings', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings');
+	Hook::register('addon_settings_post', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings_post');
 }
 
 function remote_permissions_uninstall() {
-	Addon::unregisterHook('lockview_content', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_content');
-	Addon::unregisterHook('addon_settings', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings_post');
+	Hook::unregister('lockview_content', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_content');
+	Hook::unregister('addon_settings', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings');
+	Hook::unregister('addon_settings_post', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings_post');
 }
 
 function remote_permissions_settings(&$a,&$o) {

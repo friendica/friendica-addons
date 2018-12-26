@@ -12,9 +12,9 @@
 require_once 'include/text.php';
 
 use Friendica\App;
-use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
@@ -23,16 +23,16 @@ use Friendica\Util\Proxy as ProxyUtils;
 
 function curweather_install()
 {
-	Addon::registerHook('network_mod_init'   , 'addon/curweather/curweather.php', 'curweather_network_mod_init');
-	Addon::registerHook('addon_settings'     , 'addon/curweather/curweather.php', 'curweather_addon_settings');
-	Addon::registerHook('addon_settings_post', 'addon/curweather/curweather.php', 'curweather_addon_settings_post');
+	Hook::register('network_mod_init'   , 'addon/curweather/curweather.php', 'curweather_network_mod_init');
+	Hook::register('addon_settings'     , 'addon/curweather/curweather.php', 'curweather_addon_settings');
+	Hook::register('addon_settings_post', 'addon/curweather/curweather.php', 'curweather_addon_settings_post');
 }
 
 function curweather_uninstall()
 {
-	Addon::unregisterHook('network_mod_init'   , 'addon/curweather/curweather.php', 'curweather_network_mod_init');
-	Addon::unregisterHook('addon_settings'     , 'addon/curweather/curweather.php', 'curweather_addon_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/curweather/curweather.php', 'curweather_addon_settings_post');
+	Hook::unregister('network_mod_init'   , 'addon/curweather/curweather.php', 'curweather_network_mod_init');
+	Hook::unregister('addon_settings'     , 'addon/curweather/curweather.php', 'curweather_addon_settings');
+	Hook::unregister('addon_settings_post', 'addon/curweather/curweather.php', 'curweather_addon_settings_post');
 }
 
 //  get the weather data from OpenWeatherMap

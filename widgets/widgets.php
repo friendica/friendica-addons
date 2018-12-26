@@ -7,7 +7,7 @@
  * Status: Unsupported
  */
 
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
@@ -15,14 +15,14 @@ use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 
 function widgets_install() {
-	Addon::registerHook('addon_settings', 'addon/widgets/widgets.php', 'widgets_settings');
-	Addon::registerHook('addon_settings_post', 'addon/widgets/widgets.php', 'widgets_settings_post');
+	Hook::register('addon_settings', 'addon/widgets/widgets.php', 'widgets_settings');
+	Hook::register('addon_settings_post', 'addon/widgets/widgets.php', 'widgets_settings_post');
 	Logger::log("installed widgets");
 }
 
 function widgets_uninstall() {
-	Addon::unregisterHook('addon_settings', 'addon/widgets/widgets.php', 'widgets_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/widgets/widgets.php', 'widgets_settings_post');
+	Hook::unregister('addon_settings', 'addon/widgets/widgets.php', 'widgets_settings');
+	Hook::unregister('addon_settings_post', 'addon/widgets/widgets.php', 'widgets_settings_post');
 }
 
 function widgets_settings_post(){

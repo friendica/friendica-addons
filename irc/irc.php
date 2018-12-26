@@ -6,21 +6,21 @@
 * Author: tony baldwin <https://free-haven.org/profile/tony>
 * Author: Tobias Diekershoff <https://f.diekershoff.de/u/tobias>
 */
-use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 
 function irc_install() {
-	Addon::registerHook('app_menu', 'addon/irc/irc.php', 'irc_app_menu');
-	Addon::registerHook('addon_settings', 'addon/irc/irc.php', 'irc_addon_settings');
-	Addon::registerHook('addon_settings_post', 'addon/irc/irc.php', 'irc_addon_settings_post');
+	Hook::register('app_menu', 'addon/irc/irc.php', 'irc_app_menu');
+	Hook::register('addon_settings', 'addon/irc/irc.php', 'irc_addon_settings');
+	Hook::register('addon_settings_post', 'addon/irc/irc.php', 'irc_addon_settings_post');
 }
 
 function irc_uninstall() {
-	Addon::unregisterHook('app_menu', 'addon/irc/irc.php', 'irc_app_menu');
-	Addon::unregisterHook('addon_settings', 'addon/irc/irc.php', 'irc_addon_settings');
+	Hook::unregister('app_menu', 'addon/irc/irc.php', 'irc_app_menu');
+	Hook::unregister('addon_settings', 'addon/irc/irc.php', 'irc_addon_settings');
 
 }
 

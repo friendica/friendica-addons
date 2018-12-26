@@ -6,17 +6,17 @@
  * Author: Thomas Willingham <https://kakste.com/profile/beardyunixer>
  *
  */
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 
 function morepokes_install()
 {
-	  Addon::registerHook('poke_verbs', 'addon/morepokes/morepokes.php', 'morepokes_poke_verbs');
+	  Hook::register('poke_verbs', 'addon/morepokes/morepokes.php', 'morepokes_poke_verbs');
 }
 
 function morepokes_uninstall()
 {
-	  Addon::unregisterHook('poke_verbs', 'addon/morepokes/morepokes.php', 'morepokes_poke_verbs');
+	  Hook::unregister('poke_verbs', 'addon/morepokes/morepokes.php', 'morepokes_poke_verbs');
 }
 
 function morepokes_poke_verbs($a, &$b)

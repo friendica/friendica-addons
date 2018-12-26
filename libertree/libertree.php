@@ -8,7 +8,7 @@
 
 use Friendica\App;
 use Friendica\Content\Text\BBCode;
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
@@ -17,22 +17,22 @@ use Friendica\Util\Network;
 
 function libertree_install()
 {
-	Addon::registerHook('hook_fork',            'addon/libertree/libertree.php', 'libertree_hook_fork');
-	Addon::registerHook('post_local',           'addon/libertree/libertree.php', 'libertree_post_local');
-	Addon::registerHook('notifier_normal',      'addon/libertree/libertree.php', 'libertree_send');
-	Addon::registerHook('jot_networks',         'addon/libertree/libertree.php', 'libertree_jot_nets');
-	Addon::registerHook('connector_settings',      'addon/libertree/libertree.php', 'libertree_settings');
-	Addon::registerHook('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
+	Hook::register('hook_fork',            'addon/libertree/libertree.php', 'libertree_hook_fork');
+	Hook::register('post_local',           'addon/libertree/libertree.php', 'libertree_post_local');
+	Hook::register('notifier_normal',      'addon/libertree/libertree.php', 'libertree_send');
+	Hook::register('jot_networks',         'addon/libertree/libertree.php', 'libertree_jot_nets');
+	Hook::register('connector_settings',      'addon/libertree/libertree.php', 'libertree_settings');
+	Hook::register('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
 }
 
 function libertree_uninstall()
 {
-	Addon::unregisterHook('hook_fork',        'addon/libertree/libertree.php', 'libertree_hook_fork');
-	Addon::unregisterHook('post_local',       'addon/libertree/libertree.php', 'libertree_post_local');
-	Addon::unregisterHook('notifier_normal',  'addon/libertree/libertree.php', 'libertree_send');
-	Addon::unregisterHook('jot_networks',     'addon/libertree/libertree.php', 'libertree_jot_nets');
-	Addon::unregisterHook('connector_settings',      'addon/libertree/libertree.php', 'libertree_settings');
-	Addon::unregisterHook('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
+	Hook::unregister('hook_fork',        'addon/libertree/libertree.php', 'libertree_hook_fork');
+	Hook::unregister('post_local',       'addon/libertree/libertree.php', 'libertree_post_local');
+	Hook::unregister('notifier_normal',  'addon/libertree/libertree.php', 'libertree_send');
+	Hook::unregister('jot_networks',     'addon/libertree/libertree.php', 'libertree_jot_nets');
+	Hook::unregister('connector_settings',      'addon/libertree/libertree.php', 'libertree_settings');
+	Hook::unregister('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
 }
 
 function libertree_jot_nets(&$a,&$b) {
