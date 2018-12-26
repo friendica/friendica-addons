@@ -666,7 +666,7 @@ function jappixmini_cron(App $a, $d)
 
 				// parse answer
 				$answer = json_decode($answer_json);
-				if ($answer->status != "ok") {
+				if (empty($answer->status) || ($answer->status != "ok")) {
 					throw new Exception();
 				}
 
