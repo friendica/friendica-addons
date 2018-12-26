@@ -90,11 +90,6 @@ use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
 use Friendica\Util\Strings;
 
-require_once 'boot.php';
-require_once 'include/dba.php';
-require_once 'include/enotify.php';
-require_once 'include/text.php';
-
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 define('TWITTER_DEFAULT_POLL_INTERVAL', 5); // given in minutes
@@ -804,8 +799,6 @@ function twitter_expire(App $a)
 	}
 	DBA::close($r);
 
-	require_once "include/items.php";
-
 	Logger::log('twitter_expire: expire_start');
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'import' AND `v` = '1' ORDER BY RAND()");
@@ -935,7 +928,6 @@ function twitter_fetchtimeline(App $a, $uid)
 	$has_picture = false;
 
 	require_once 'mod/item.php';
-	require_once 'include/items.php';
 	require_once 'mod/share.php';
 
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
@@ -1662,8 +1654,6 @@ function twitter_fetchhometimeline(App $a, $uid)
 	if ($application_name == "") {
 		$application_name = $a->getHostName();
 	}
-
-	require_once 'include/items.php';
 
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 

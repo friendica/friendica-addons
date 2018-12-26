@@ -58,7 +58,6 @@ function public_server_cron($a, $b)
 {
 	Logger::log("public_server: cron start");
 
-	require_once('include/enotify.php');
 	$r = q("SELECT * FROM `user` WHERE `account_expires_on` < UTC_TIMESTAMP() + INTERVAL 5 DAY AND
 		`account_expires_on` > '%s' AND
 		`expire_notification_sent` <= '%s'",

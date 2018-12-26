@@ -52,8 +52,6 @@ function like_widget_content(&$a, $conf){
 	$dislikes = $r[0]['c'];
 
 
-	require_once("include/conversation.php");
-
 	$o = "";
 
 #	$t = file_get_contents( dirname(__file__). "/widget_like.tpl" );

@@ -61,8 +61,6 @@ function testdrive_register_account($a,$b) {
 
 
 function testdrive_cron($a,$b) {
-	require_once('include/enotify.php');
-
 	$r = q("select * from user where account_expires_on < UTC_TIMESTAMP() + INTERVAL 5 DAY and
 		expire_notification_sent = '0000-00-00 00:00:00' ");
 

@@ -20,10 +20,6 @@ use Friendica\Model\Profile;
 use Friendica\Util\Strings;
 use Friendica\Util\Temporal;
 
-require_once 'boot.php';
-require_once 'include/dba.php';
-require_once 'include/text.php';
-
 function forumdirectory_install()
 {
 	Addon::registerHook('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
