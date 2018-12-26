@@ -243,5 +243,5 @@ function blockem_init(App $a)
 
 	PConfig::set(local_user(), 'blockem', 'words', $words);
 	info(L10n::t('blockem settings updated') . EOL);
-	killme();
+	exit();
 }

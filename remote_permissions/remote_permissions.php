@@ -191,7 +191,7 @@ function remote_permissions_content($a, $item_copy) {
 		// Sort the names alphabetically, case-insensitive
 		natcasesort($allow_names);
 		echo $o . implode(', ', $allow_names);
-		killme();
+		exit();
 	}
 
 	return;

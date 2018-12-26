@@ -164,5 +164,5 @@ function superblock_init(&$a)
 
 	PConfig::set(local_user(), 'system', 'blocked', $words);
 	info(L10n::t('superblock settings updated') . EOL );
-	killme();
+	exit();
 }

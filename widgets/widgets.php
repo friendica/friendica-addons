@@ -89,7 +89,7 @@ function _randomAlphaNum($length){
 function widgets_content(&$a) {
 
 	if (!isset($_GET['k'])) {
-		if($a->argv[2]=="cb"){header('HTTP/1.0 400 Bad Request'); killme();}
+		if($a->argv[2]=="cb"){header('HTTP/1.0 400 Bad Request'); exit();}
 		return;
 	}
 
@@ -97,7 +97,7 @@ function widgets_content(&$a) {
 			DBA::escape($_GET['k'])
 		 );
 	if (!count($r)){
-		if($a->argv[2]=="cb"){header('HTTP/1.0 400 Bad Request'); killme();}
+		if($a->argv[2]=="cb"){header('HTTP/1.0 400 Bad Request'); exit();}
 		return;
 	}
 	$conf = [];
@@ -110,7 +110,7 @@ function widgets_content(&$a) {
 	if (file_exists($widgetfile)){
 		require_once($widgetfile);
 	} else {
-		if($a->argv[2]=="cb"){header('HTTP/1.0 400 Bad Request'); killme();}
+		if($a->argv[2]=="cb"){header('HTTP/1.0 400 Bad Request'); exit();}
 		return;
 	}
 
@@ -176,5 +176,5 @@ function widgets_content(&$a) {
 	}
 
 	echo $o;
-	killme();
+	exit();
 }

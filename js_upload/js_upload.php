@@ -162,7 +162,7 @@ function js_upload_post_init(&$a,&$b) {
 	if(isset($result['error'])) {
 		Logger::log('mod/photos.php: photos_post(): error uploading photo: ' . $result['error'] , Logger::DEBUG);
 		echo json_encode($result);
-		killme();
+		exit();
 	}
 
 	$a->data['upload_result'] = $result;
@@ -185,7 +185,7 @@ function js_upload_post_end(&$a,&$b) {
 Logger::log('upload_post_end');
 	if(!empty($a->data['upload_jsonresponse'])) {
 		echo $a->data['upload_jsonresponse'];
-		killme();
+		exit();
 	}
 
 }

@@ -338,19 +338,19 @@ function windowsphonepush_content(App $a)
 		switch ($path2) {
 			case "show_settings":
 				windowsphonepush_showsettings($a);
-				killme();
+				exit();
 				break;
 			case "update_settings":
 				$ret = windowsphonepush_updatesettings($a);
 				header("Content-Type: application/json; charset=utf-8");
 				echo json_encode(['status' => $ret]);
-				killme();
+				exit();
 				break;
 			case "update_counterunseen":
 				$ret = windowsphonepush_updatecounterunseen();
 				header("Content-Type: application/json; charset=utf-8");
 				echo json_encode(['status' => $ret]);
-				killme();
+				exit();
 				break;
 			default:
 				echo "Fehler";

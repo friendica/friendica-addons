@@ -193,14 +193,14 @@ function jappixmini_init()
 	// of local users
 	$dfrn_id = $_REQUEST["dfrn_id"];
 	if (!$dfrn_id) {
-		killme();
+		exit();
 	}
 
 	$role = $_REQUEST["role"];
 	if ($role == "pub") {
 		$r = q("SELECT * FROM `contact` WHERE LENGTH(`pubkey`) AND `dfrn-id`='%s' LIMIT 1", DBA::escape($dfrn_id));
 		if (!count($r)) {
-			killme();
+			exit();
 		}
 
 		$encrypt_func = openssl_public_encrypt;
@@ -209,14 +209,14 @@ function jappixmini_init()
 	} else if ($role == "prv") {
 		$r = q("SELECT * FROM `contact` WHERE LENGTH(`prvkey`) AND `issued-id`='%s' LIMIT 1", DBA::escape($dfrn_id));
 		if (!count($r)) {
-			killme();
+			exit();
 		}
 
 		$encrypt_func = openssl_private_encrypt;
 		$decrypt_func = openssl_private_decrypt;
 		$key = $r[0]["prvkey"];
 	} else {
-		killme();
+		exit();
 	}
 
 	$uid = $r[0]["uid"];
@@ -238,7 +238,7 @@ function jappixmini_init()
 	// do not return an address if user deactivated addon
 	$activated = PConfig::get($uid, 'jappixmini', 'activate');
 	if (!$activated) {
-		killme();
+		exit();
 	}
 
 	// return the requested Jabber address
@@ -259,9 +259,9 @@ function jappixmini_init()
 
 		$answer_json = json_encode($answer);
 		echo $answer_json;
-		killme();
+		exit();
 	} catch (Exception $e) {
-		killme();
+		exit();
 	}
 }
 
