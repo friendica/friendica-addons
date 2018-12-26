@@ -31,6 +31,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
 use Friendica\Core\Addon;
 use Friendica\Core\Authentication;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
@@ -475,5 +476,5 @@ function windowsphonepush_login(App $a)
 
 	Authentication::setAuthenticatedSessionForUser($record);
 	$_SESSION["allow_api"] = true;
-	Addon::callHooks('logged_in', $a->user);
+	Hook::callAll('logged_in', $a->user);
 }

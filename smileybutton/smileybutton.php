@@ -6,6 +6,7 @@
  * Author: Johannes Schwab <https://friendica.jschwab.org/profile/ddorian>
  */
 use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 
 function smileybutton_install() {
@@ -97,7 +98,7 @@ function show_button(Friendica\App $a, &$b) {
 
 	// Call hooks to get aditional smileies from other addons
 	$params = ['texts' => $texts, 'icons' => $icons, 'string' => ""]; //changed
-	Addon::callHooks('smilie', $params);
+	Hook::callAll('smilie', $params);
 
 	//Generate html for smiley list
 	$s = "<table class=\"smiley-preview\"><tr>\n\t";
