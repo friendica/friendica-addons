@@ -23,8 +23,6 @@ use Friendica\Model\Item;
 
 require_once 'mod/share.php';
 require_once 'mod/parse_url.php';
-require_once 'include/text.php';
-
 function fromgplus_install() {
 	Addon::registerHook('connector_settings', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings');
 	Addon::registerHook('connector_settings_post', 'addon/fromgplus/fromgplus.php', 'fromgplus_addon_settings_post');
@@ -320,8 +318,6 @@ function fromgplus_cleantext($text) {
 }
 
 function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
-	require_once 'include/items.php';
-
 	$post = "";
 	$quote = "";
 	$pagedata = [];

@@ -36,8 +36,6 @@
 define('STATUSNET_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'statusnetoauth.php';
-require_once 'include/enotify.php';
-
 use CodebirdSN\CodebirdSN;
 use Friendica\App;
 use Friendica\Content\OEmbed;
@@ -827,8 +825,6 @@ function statusnet_fetchtimeline(App $a, $uid)
 	$lastid  = PConfig::get($uid, 'statusnet', 'lastid');
 
 	require_once 'mod/item.php';
-	require_once 'include/items.php';
-
 	//  get the application name for the SN app
 	//  1st try personal config, then system config and fallback to the
 	//  hostname of the node if neither one is set.
@@ -1254,8 +1250,6 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 
 	Logger::log("statusnet_fetchhometimeline: Fetching for user " . $uid, Logger::DEBUG);
 
-	require_once 'include/items.php';
-
 	$connection = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
 
 	$own_contact = statusnet_fetch_own_contact($a, $uid);
@@ -1441,8 +1435,6 @@ function statusnet_complete_conversation(App $a, $uid, $self, $create_user, $nic
 
 function statusnet_convertmsg(App $a, $body, $no_tags = false)
 {
-	require_once "include/items.php";
-
 	$body = preg_replace("=\[url\=https?://([0-9]*).([0-9]*).([0-9]*).([0-9]*)/([0-9]*)\](.*?)\[\/url\]=ism", "$1.$2.$3.$4/$5", $body);
 
 	$URLSearchString = "^\[\]";
