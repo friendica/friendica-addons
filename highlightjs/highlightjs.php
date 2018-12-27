@@ -7,18 +7,18 @@
  */
 
 use Friendica\App;
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 
 function highlightjs_install()
 {
-	Addon::registerHook('head'  , __FILE__, 'highlightjs_head');
-	Addon::registerHook('footer', __FILE__, 'highlightjs_footer');
+	Hook::register('head'  , __FILE__, 'highlightjs_head');
+	Hook::register('footer', __FILE__, 'highlightjs_footer');
 }
 
 function highlightjs_uninstall()
 {
-	Addon::unregisterHook('head'  , __FILE__, 'highlightjs_head');
-	Addon::unregisterHook('footer', __FILE__, 'highlightjs_footer');
+	Hook::unregister('head'  , __FILE__, 'highlightjs_head');
+	Hook::unregister('footer', __FILE__, 'highlightjs_footer');
 }
 
 function highlightjs_head(App $a, &$b)

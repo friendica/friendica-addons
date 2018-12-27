@@ -11,31 +11,31 @@
 
 use Friendica\App;
 use Friendica\Content\Smilies;
-use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\Protocol;
 use Friendica\Util\Network;
 use Friendica\Util\Proxy as ProxyUtils;
 
 function mastodoncustomemojis_install()
 {
-	Addon::registerHook('put_item_in_cache',  __FILE__, 'mastodoncustomemojis_put_item_in_cache');
-	Addon::registerHook('network_mod_init',   __FILE__, 'mastodoncustomemojis_css_hook');
-	Addon::registerHook('display_mod_init',   __FILE__, 'mastodoncustomemojis_css_hook');
-	Addon::registerHook('search_mod_init',    __FILE__, 'mastodoncustomemojis_css_hook');
-	Addon::registerHook('community_mod_init', __FILE__, 'mastodoncustomemojis_css_hook');
-	Addon::registerHook('contacts_mod_init',  __FILE__, 'mastodoncustomemojis_css_hook');
+	Hook::register('put_item_in_cache',  __FILE__, 'mastodoncustomemojis_put_item_in_cache');
+	Hook::register('network_mod_init',   __FILE__, 'mastodoncustomemojis_css_hook');
+	Hook::register('display_mod_init',   __FILE__, 'mastodoncustomemojis_css_hook');
+	Hook::register('search_mod_init',    __FILE__, 'mastodoncustomemojis_css_hook');
+	Hook::register('community_mod_init', __FILE__, 'mastodoncustomemojis_css_hook');
+	Hook::register('contacts_mod_init',  __FILE__, 'mastodoncustomemojis_css_hook');
 }
 
 function mastodoncustomemojis_uninstall()
 {
-	Addon::unregisterHook('put_item_in_cache',  __FILE__, 'mastodoncustomemojis_put_item_in_cache');
-	Addon::unregisterHook('network_mod_init',   __FILE__, 'mastodoncustomemojis_css_hook');
-	Addon::unregisterHook('display_mod_init',   __FILE__, 'mastodoncustomemojis_css_hook');
-	Addon::unregisterHook('search_mod_init',    __FILE__, 'mastodoncustomemojis_css_hook');
-	Addon::unregisterHook('community_mod_init', __FILE__, 'mastodoncustomemojis_css_hook');
-	Addon::unregisterHook('contacts_mod_init',  __FILE__, 'mastodoncustomemojis_css_hook');
+	Hook::unregister('put_item_in_cache',  __FILE__, 'mastodoncustomemojis_put_item_in_cache');
+	Hook::unregister('network_mod_init',   __FILE__, 'mastodoncustomemojis_css_hook');
+	Hook::unregister('display_mod_init',   __FILE__, 'mastodoncustomemojis_css_hook');
+	Hook::unregister('search_mod_init',    __FILE__, 'mastodoncustomemojis_css_hook');
+	Hook::unregister('community_mod_init', __FILE__, 'mastodoncustomemojis_css_hook');
+	Hook::unregister('contacts_mod_init',  __FILE__, 'mastodoncustomemojis_css_hook');
 }
 
 function mastodoncustomemojis_css_hook(App $a)

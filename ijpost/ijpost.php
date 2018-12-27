@@ -9,7 +9,7 @@
  */
 
 use Friendica\Content\Text\BBCode;
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
@@ -19,20 +19,20 @@ use Friendica\Util\XML;
 
 function ijpost_install()
 {
-	Addon::registerHook('post_local',           'addon/ijpost/ijpost.php', 'ijpost_post_local');
-	Addon::registerHook('notifier_normal',      'addon/ijpost/ijpost.php', 'ijpost_send');
-	Addon::registerHook('jot_networks',         'addon/ijpost/ijpost.php', 'ijpost_jot_nets');
-	Addon::registerHook('connector_settings',      'addon/ijpost/ijpost.php', 'ijpost_settings');
-	Addon::registerHook('connector_settings_post', 'addon/ijpost/ijpost.php', 'ijpost_settings_post');
+	Hook::register('post_local',           'addon/ijpost/ijpost.php', 'ijpost_post_local');
+	Hook::register('notifier_normal',      'addon/ijpost/ijpost.php', 'ijpost_send');
+	Hook::register('jot_networks',         'addon/ijpost/ijpost.php', 'ijpost_jot_nets');
+	Hook::register('connector_settings',      'addon/ijpost/ijpost.php', 'ijpost_settings');
+	Hook::register('connector_settings_post', 'addon/ijpost/ijpost.php', 'ijpost_settings_post');
 }
 
 function ijpost_uninstall()
 {
-	Addon::unregisterHook('post_local',       'addon/ijpost/ijpost.php', 'ijpost_post_local');
-	Addon::unregisterHook('notifier_normal',  'addon/ijpost/ijpost.php', 'ijpost_send');
-	Addon::unregisterHook('jot_networks',     'addon/ijpost/ijpost.php', 'ijpost_jot_nets');
-	Addon::unregisterHook('connector_settings',      'addon/ijpost/ijpost.php', 'ijpost_settings');
-	Addon::unregisterHook('connector_settings_post', 'addon/ijpost/ijpost.php', 'ijpost_settings_post');
+	Hook::unregister('post_local',       'addon/ijpost/ijpost.php', 'ijpost_post_local');
+	Hook::unregister('notifier_normal',  'addon/ijpost/ijpost.php', 'ijpost_send');
+	Hook::unregister('jot_networks',     'addon/ijpost/ijpost.php', 'ijpost_jot_nets');
+	Hook::unregister('connector_settings',      'addon/ijpost/ijpost.php', 'ijpost_settings');
+	Hook::unregister('connector_settings_post', 'addon/ijpost/ijpost.php', 'ijpost_settings_post');
 }
 
 function ijpost_jot_nets(&$a, &$b)

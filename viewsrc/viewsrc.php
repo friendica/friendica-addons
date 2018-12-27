@@ -6,20 +6,20 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  *
  */
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Model\Item;
 use Friendica\Database\DBA;
 
 function viewsrc_install() {
-	Addon::registerHook('item_photo_menu', 'addon/viewsrc/viewsrc.php', 'viewsrc_item_photo_menu');
-	Addon::registerHook('page_end', 'addon/viewsrc/viewsrc.php', 'viewsrc_page_end');
+	Hook::register('item_photo_menu', 'addon/viewsrc/viewsrc.php', 'viewsrc_item_photo_menu');
+	Hook::register('page_end', 'addon/viewsrc/viewsrc.php', 'viewsrc_page_end');
 }
 
 
 function viewsrc_uninstall() {
-	Addon::unregisterHook('item_photo_menu', 'addon/viewsrc/viewsrc.php', 'viewsrc_item_photo_menu');
-	Addon::unregisterHook('page_end', 'addon/viewsrc/viewsrc.php', 'viewsrc_page_end');
+	Hook::unregister('item_photo_menu', 'addon/viewsrc/viewsrc.php', 'viewsrc_item_photo_menu');
+	Hook::unregister('page_end', 'addon/viewsrc/viewsrc.php', 'viewsrc_page_end');
 
 }
 

@@ -9,7 +9,7 @@
  */
 
 use Friendica\Content\Text\BBCode;
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
@@ -18,19 +18,19 @@ use Friendica\Util\Network;
 use Friendica\Util\XML;
 
 function ljpost_install() {
-    Addon::registerHook('post_local',           'addon/ljpost/ljpost.php', 'ljpost_post_local');
-    Addon::registerHook('notifier_normal',      'addon/ljpost/ljpost.php', 'ljpost_send');
-    Addon::registerHook('jot_networks',         'addon/ljpost/ljpost.php', 'ljpost_jot_nets');
-    Addon::registerHook('connector_settings',      'addon/ljpost/ljpost.php', 'ljpost_settings');
-    Addon::registerHook('connector_settings_post', 'addon/ljpost/ljpost.php', 'ljpost_settings_post');
+    Hook::register('post_local',           'addon/ljpost/ljpost.php', 'ljpost_post_local');
+    Hook::register('notifier_normal',      'addon/ljpost/ljpost.php', 'ljpost_send');
+    Hook::register('jot_networks',         'addon/ljpost/ljpost.php', 'ljpost_jot_nets');
+    Hook::register('connector_settings',      'addon/ljpost/ljpost.php', 'ljpost_settings');
+    Hook::register('connector_settings_post', 'addon/ljpost/ljpost.php', 'ljpost_settings_post');
 
 }
 function ljpost_uninstall() {
-    Addon::unregisterHook('post_local',       'addon/ljpost/ljpost.php', 'ljpost_post_local');
-    Addon::unregisterHook('notifier_normal',  'addon/ljpost/ljpost.php', 'ljpost_send');
-    Addon::unregisterHook('jot_networks',     'addon/ljpost/ljpost.php', 'ljpost_jot_nets');
-    Addon::unregisterHook('connector_settings',      'addon/ljpost/ljpost.php', 'ljpost_settings');
-    Addon::unregisterHook('connector_settings_post', 'addon/ljpost/ljpost.php', 'ljpost_settings_post');
+    Hook::unregister('post_local',       'addon/ljpost/ljpost.php', 'ljpost_post_local');
+    Hook::unregister('notifier_normal',  'addon/ljpost/ljpost.php', 'ljpost_send');
+    Hook::unregister('jot_networks',     'addon/ljpost/ljpost.php', 'ljpost_jot_nets');
+    Hook::unregister('connector_settings',      'addon/ljpost/ljpost.php', 'ljpost_settings');
+    Hook::unregister('connector_settings_post', 'addon/ljpost/ljpost.php', 'ljpost_settings_post');
 
 }
 

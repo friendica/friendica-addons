@@ -7,8 +7,8 @@
  */
 
 use Friendica\App;
-use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
@@ -26,9 +26,9 @@ define("CATAVATAR_SIZE", 256);
  */
 function catavatar_install()
 {
-	Addon::registerHook('avatar_lookup', 'addon/catavatar/catavatar.php', 'catavatar_lookup');
-	Addon::registerHook('addon_settings', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings');
-	Addon::registerHook('addon_settings_post', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings_post');
+	Hook::register('avatar_lookup', 'addon/catavatar/catavatar.php', 'catavatar_lookup');
+	Hook::register('addon_settings', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings');
+	Hook::register('addon_settings_post', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings_post');
 
 	Logger::log('registered catavatar');
 }
@@ -38,9 +38,9 @@ function catavatar_install()
  */
 function catavatar_uninstall()
 {
-	Addon::unregisterHook('avatar_lookup', 'addon/catavatar/catavatar.php', 'catavatar_lookup');
-	Addon::unregisterHook('addon_settings', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings_post');
+	Hook::unregister('avatar_lookup', 'addon/catavatar/catavatar.php', 'catavatar_lookup');
+	Hook::unregister('addon_settings', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings');
+	Hook::unregister('addon_settings_post', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings_post');
 
 	Logger::log('unregistered catavatar');
 }

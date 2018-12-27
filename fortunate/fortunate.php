@@ -6,7 +6,7 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * Status: Unsupported
  */
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Util\Network;
 
 // IMPORTANT: SET THIS to your fortunate server
@@ -15,7 +15,7 @@ define('FORTUNATE_SERVER', 'hostname.com');
 
 function fortunate_install()
 {
-	Addon::registerHook('page_end', 'addon/fortunate/fortunate.php', 'fortunate_fetch');
+	Hook::register('page_end', 'addon/fortunate/fortunate.php', 'fortunate_fetch');
 	if (FORTUNATE_SERVER == 'hostname.com' && is_site_admin()) {
 		notice('Fortunate addon requires configuration. See README');
 	}
@@ -23,7 +23,7 @@ function fortunate_install()
 
 function fortunate_uninstall()
 {
-	Addon::unregisterHook('page_end', 'addon/fortunate/fortunate.php', 'fortunate_fetch');
+	Hook::unregister('page_end', 'addon/fortunate/fortunate.php', 'fortunate_fetch');
 }
 
 

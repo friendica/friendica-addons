@@ -30,23 +30,23 @@
  *     about http/https but beware to put the trailing / at the end of your
  *     setting.
  */
-use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Util\Strings;
 
 function piwik_install() {
-	Addon::registerHook('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
-	Addon::registerHook('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
+	Hook::register('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
+	Hook::register('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
 	Logger::log("installed piwik addon");
 }
 
 function piwik_uninstall() {
-	Addon::unregisterHook('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
-	Addon::unregisterHook('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
+	Hook::unregister('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
+	Hook::unregister('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
 	Logger::log("uninstalled piwik addon");
 }

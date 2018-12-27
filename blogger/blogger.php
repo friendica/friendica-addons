@@ -8,7 +8,7 @@
 
 use Friendica\App;
 use Friendica\Content\Text\BBCode;
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
@@ -17,27 +17,27 @@ use Friendica\Util\XML;
 
 function blogger_install()
 {
-	Addon::registerHook('hook_fork',               'addon/blogger/blogger.php', 'blogger_hook_fork');
-	Addon::registerHook('post_local',              'addon/blogger/blogger.php', 'blogger_post_local');
-	Addon::registerHook('notifier_normal',         'addon/blogger/blogger.php', 'blogger_send');
-	Addon::registerHook('jot_networks',            'addon/blogger/blogger.php', 'blogger_jot_nets');
-	Addon::registerHook('connector_settings',      'addon/blogger/blogger.php', 'blogger_settings');
-	Addon::registerHook('connector_settings_post', 'addon/blogger/blogger.php', 'blogger_settings_post');
+	Hook::register('hook_fork',               'addon/blogger/blogger.php', 'blogger_hook_fork');
+	Hook::register('post_local',              'addon/blogger/blogger.php', 'blogger_post_local');
+	Hook::register('notifier_normal',         'addon/blogger/blogger.php', 'blogger_send');
+	Hook::register('jot_networks',            'addon/blogger/blogger.php', 'blogger_jot_nets');
+	Hook::register('connector_settings',      'addon/blogger/blogger.php', 'blogger_settings');
+	Hook::register('connector_settings_post', 'addon/blogger/blogger.php', 'blogger_settings_post');
 }
 
 function blogger_uninstall()
 {
-	Addon::unregisterHook('hook_fork',               'addon/blogger/blogger.php', 'blogger_hook_fork');
-	Addon::unregisterHook('post_local',              'addon/blogger/blogger.php', 'blogger_post_local');
-	Addon::unregisterHook('notifier_normal',         'addon/blogger/blogger.php', 'blogger_send');
-	Addon::unregisterHook('jot_networks',            'addon/blogger/blogger.php', 'blogger_jot_nets');
-	Addon::unregisterHook('connector_settings',      'addon/blogger/blogger.php', 'blogger_settings');
-	Addon::unregisterHook('connector_settings_post', 'addon/blogger/blogger.php', 'blogger_settings_post');
+	Hook::unregister('hook_fork',               'addon/blogger/blogger.php', 'blogger_hook_fork');
+	Hook::unregister('post_local',              'addon/blogger/blogger.php', 'blogger_post_local');
+	Hook::unregister('notifier_normal',         'addon/blogger/blogger.php', 'blogger_send');
+	Hook::unregister('jot_networks',            'addon/blogger/blogger.php', 'blogger_jot_nets');
+	Hook::unregister('connector_settings',      'addon/blogger/blogger.php', 'blogger_settings');
+	Hook::unregister('connector_settings_post', 'addon/blogger/blogger.php', 'blogger_settings_post');
 
 	// obsolete - remove
-	Addon::unregisterHook('post_local_end',      'addon/blogger/blogger.php', 'blogger_send');
-	Addon::unregisterHook('addon_settings',      'addon/blogger/blogger.php', 'blogger_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/blogger/blogger.php', 'blogger_settings_post');
+	Hook::unregister('post_local_end',      'addon/blogger/blogger.php', 'blogger_send');
+	Hook::unregister('addon_settings',      'addon/blogger/blogger.php', 'blogger_settings');
+	Hook::unregister('addon_settings_post', 'addon/blogger/blogger.php', 'blogger_settings_post');
 }
 
 

@@ -7,14 +7,14 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * Status: Unsupported
  */
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 
 function namethingy_install() {
-    Addon::registerHook('app_menu', 'addon/namethingy/namethingy.php', 'namethingy_app_menu');
+    Hook::register('app_menu', 'addon/namethingy/namethingy.php', 'namethingy_app_menu');
 }
 
 function namethingy_uninstall() {
-    Addon::unregisterHook('app_menu', 'addon/namethingy/namethingy.php', 'namethingy_app_menu');
+    Hook::unregister('app_menu', 'addon/namethingy/namethingy.php', 'namethingy_app_menu');
 
 }
 

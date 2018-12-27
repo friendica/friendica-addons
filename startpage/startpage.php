@@ -6,21 +6,21 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  *
  */
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 
 function startpage_install() {
-	Addon::registerHook('home_init', 'addon/startpage/startpage.php', 'startpage_home_init');
-	Addon::registerHook('addon_settings', 'addon/startpage/startpage.php', 'startpage_settings');
-	Addon::registerHook('addon_settings_post', 'addon/startpage/startpage.php', 'startpage_settings_post');
+	Hook::register('home_init', 'addon/startpage/startpage.php', 'startpage_home_init');
+	Hook::register('addon_settings', 'addon/startpage/startpage.php', 'startpage_settings');
+	Hook::register('addon_settings_post', 'addon/startpage/startpage.php', 'startpage_settings_post');
 }
 
 function startpage_uninstall()
 {
-	Addon::unregisterHook('home_init', 'addon/startpage/startpage.php', 'startpage_home_init');
-	Addon::unregisterHook('addon_settings', 'addon/startpage/startpage.php', 'startpage_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/startpage/startpage.php', 'startpage_settings_post');
+	Hook::unregister('home_init', 'addon/startpage/startpage.php', 'startpage_home_init');
+	Hook::unregister('addon_settings', 'addon/startpage/startpage.php', 'startpage_settings');
+	Hook::unregister('addon_settings_post', 'addon/startpage/startpage.php', 'startpage_settings_post');
 }
 
 function startpage_home_init($a, $b)

@@ -8,26 +8,25 @@
  *
  */
 
-use Friendica\Core\Addon;
-use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 
 function morechoice_install() {
 
-	Addon::registerHook('gender_selector', 'addon/morechoice/morechoice.php', 'morechoice_gender_selector');
-	Addon::registerHook('sexpref_selector', 'addon/morechoice/morechoice.php', 'morechoice_sexpref_selector');
-	Addon::registerHook('marital_selector', 'addon/morechoice/morechoice.php', 'morechoice_marital_selector');
+	Hook::register('gender_selector', 'addon/morechoice/morechoice.php', 'morechoice_gender_selector');
+	Hook::register('sexpref_selector', 'addon/morechoice/morechoice.php', 'morechoice_sexpref_selector');
+	Hook::register('marital_selector', 'addon/morechoice/morechoice.php', 'morechoice_marital_selector');
 }
 
 
 function morechoice_uninstall() {
 
-	Addon::unregisterHook('gender_selector', 'addon/morechoice/morechoice.php', 'morechoice_gender_selector');
-	Addon::unregisterHook('sexpref_selector', 'addon/morechoice/morechoice.php', 'morechoice_sexpref_selector');
-	Addon::unregisterHook('marital_selector', 'addon/morechoice/morechoice.php', 'morechoice_marital_selector');
+	Hook::unregister('gender_selector', 'addon/morechoice/morechoice.php', 'morechoice_gender_selector');
+	Hook::unregister('sexpref_selector', 'addon/morechoice/morechoice.php', 'morechoice_sexpref_selector');
+	Hook::unregister('marital_selector', 'addon/morechoice/morechoice.php', 'morechoice_marital_selector');
 
 // We need to leave this here for a while, because we now have a situation where people can end up with an orphaned hook.
-	Addon::unregisterHook('poke_verbs', 'addon/morechoice/morechoice.php', 'morechoice_poke_verbs');
+	Hook::unregister('poke_verbs', 'addon/morechoice/morechoice.php', 'morechoice_poke_verbs');
 
 }
 

@@ -9,24 +9,25 @@
  */
 use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Renderer;
 
 function pageheader_install() {
-    Addon::registerHook('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
-	Addon::registerHook('addon_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
-	Addon::registerHook('addon_settings_post', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings_post');
+    Hook::register('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
+	Hook::register('addon_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
+	Hook::register('addon_settings_post', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings_post');
 
 }
 
 
 function pageheader_uninstall() {
-    Addon::unregisterHook('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
-	Addon::unregisterHook('addon_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings_post');
+    Hook::unregister('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
+	Hook::unregister('addon_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
+	Hook::unregister('addon_settings_post', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings_post');
 
 	// hook moved, uninstall the old one if still there. 
-    Addon::unregisterHook('page_header', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
+    Hook::unregister('page_header', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
 
 }
 

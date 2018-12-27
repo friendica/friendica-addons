@@ -63,8 +63,8 @@
  */
 
 use Friendica\App;
-use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
@@ -75,16 +75,16 @@ use Friendica\Util\Network;
 
 function jappixmini_install()
 {
-	Addon::registerHook('addon_settings', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings');
-	Addon::registerHook('addon_settings_post', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings_post');
+	Hook::register('addon_settings', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings');
+	Hook::register('addon_settings_post', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings_post');
 
-	Addon::registerHook('page_end', 'addon/jappixmini/jappixmini.php', 'jappixmini_script');
-	Addon::registerHook('authenticate', 'addon/jappixmini/jappixmini.php', 'jappixmini_login');
+	Hook::register('page_end', 'addon/jappixmini/jappixmini.php', 'jappixmini_script');
+	Hook::register('authenticate', 'addon/jappixmini/jappixmini.php', 'jappixmini_login');
 
-	Addon::registerHook('cron', 'addon/jappixmini/jappixmini.php', 'jappixmini_cron');
+	Hook::register('cron', 'addon/jappixmini/jappixmini.php', 'jappixmini_cron');
 
 	// Jappix source download as required by AGPL
-	Addon::registerHook('about_hook', 'addon/jappixmini/jappixmini.php', 'jappixmini_download_source');
+	Hook::register('about_hook', 'addon/jappixmini/jappixmini.php', 'jappixmini_download_source');
 
 	// set standard configuration
 	$info_text = Config::get("jappixmini", "infotext");
@@ -109,15 +109,15 @@ function jappixmini_install()
 
 function jappixmini_uninstall()
 {
-	Addon::unregisterHook('addon_settings', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings_post');
+	Hook::unregister('addon_settings', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings');
+	Hook::unregister('addon_settings_post', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings_post');
 
-	Addon::unregisterHook('page_end', 'addon/jappixmini/jappixmini.php', 'jappixmini_script');
-	Addon::unregisterHook('authenticate', 'addon/jappixmini/jappixmini.php', 'jappixmini_login');
+	Hook::unregister('page_end', 'addon/jappixmini/jappixmini.php', 'jappixmini_script');
+	Hook::unregister('authenticate', 'addon/jappixmini/jappixmini.php', 'jappixmini_login');
 
-	Addon::unregisterHook('cron', 'addon/jappixmini/jappixmini.php', 'jappixmini_cron');
+	Hook::unregister('cron', 'addon/jappixmini/jappixmini.php', 'jappixmini_cron');
 
-	Addon::unregisterHook('about_hook', 'addon/jappixmini/jappixmini.php', 'jappixmini_download_source');
+	Hook::unregister('about_hook', 'addon/jappixmini/jappixmini.php', 'jappixmini_download_source');
 }
 
 function jappixmini_addon_admin(App $a, &$o)
@@ -193,14 +193,14 @@ function jappixmini_init()
 	// of local users
 	$dfrn_id = $_REQUEST["dfrn_id"];
 	if (!$dfrn_id) {
-		killme();
+		exit();
 	}
 
 	$role = $_REQUEST["role"];
 	if ($role == "pub") {
 		$r = q("SELECT * FROM `contact` WHERE LENGTH(`pubkey`) AND `dfrn-id`='%s' LIMIT 1", DBA::escape($dfrn_id));
 		if (!count($r)) {
-			killme();
+			exit();
 		}
 
 		$encrypt_func = openssl_public_encrypt;
@@ -209,14 +209,14 @@ function jappixmini_init()
 	} else if ($role == "prv") {
 		$r = q("SELECT * FROM `contact` WHERE LENGTH(`prvkey`) AND `issued-id`='%s' LIMIT 1", DBA::escape($dfrn_id));
 		if (!count($r)) {
-			killme();
+			exit();
 		}
 
 		$encrypt_func = openssl_private_encrypt;
 		$decrypt_func = openssl_private_decrypt;
 		$key = $r[0]["prvkey"];
 	} else {
-		killme();
+		exit();
 	}
 
 	$uid = $r[0]["uid"];
@@ -238,7 +238,7 @@ function jappixmini_init()
 	// do not return an address if user deactivated addon
 	$activated = PConfig::get($uid, 'jappixmini', 'activate');
 	if (!$activated) {
-		killme();
+		exit();
 	}
 
 	// return the requested Jabber address
@@ -259,9 +259,9 @@ function jappixmini_init()
 
 		$answer_json = json_encode($answer);
 		echo $answer_json;
-		killme();
+		exit();
 	} catch (Exception $e) {
-		killme();
+		exit();
 	}
 }
 

@@ -7,8 +7,8 @@
  */
 
 use Friendica\App;
-use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
@@ -28,19 +28,19 @@ require_once 'openpgp_crypt_symmetric.php';
 
 
 function securemail_install() {
-    Addon::registerHook('addon_settings', 'addon/securemail/securemail.php', 'securemail_settings');
-    Addon::registerHook('addon_settings_post', 'addon/securemail/securemail.php', 'securemail_settings_post');
+    Hook::register('addon_settings', 'addon/securemail/securemail.php', 'securemail_settings');
+    Hook::register('addon_settings_post', 'addon/securemail/securemail.php', 'securemail_settings_post');
 
-    Addon::registerHook('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare');
+    Hook::register('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare');
 
     Logger::log('installed securemail');
 }
 
 function securemail_uninstall() {
-    Addon::unregisterHook('addon_settings', 'addon/securemail/securemail.php', 'securemail_settings');
-    Addon::unregisterHook('addon_settings_post', 'addon/securemail/securemail.php', 'securemail_settings_post');
+    Hook::unregister('addon_settings', 'addon/securemail/securemail.php', 'securemail_settings');
+    Hook::unregister('addon_settings_post', 'addon/securemail/securemail.php', 'securemail_settings_post');
 
-    Addon::unregisterHook('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare');
+    Hook::unregister('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare');
 
     Logger::log('removed securemail');
 }

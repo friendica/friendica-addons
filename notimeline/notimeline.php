@@ -7,20 +7,20 @@
  * Status: Unsupported
  *
  */
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 
 function notimeline_install()
 {
-	Addon::registerHook('addon_settings', 'addon/notimeline/notimeline.php', 'notimeline_settings');
-	Addon::registerHook('addon_settings_post', 'addon/notimeline/notimeline.php', 'notimeline_settings_post');
+	Hook::register('addon_settings', 'addon/notimeline/notimeline.php', 'notimeline_settings');
+	Hook::register('addon_settings_post', 'addon/notimeline/notimeline.php', 'notimeline_settings_post');
 }
 
 function notimeline_uninstall()
 {
-	Addon::unregisterHook('addon_settings', 'addon/notimeline/notimeline.php', 'notimeline_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/notimeline/notimeline.php', 'notimeline_settings_post');
+	Hook::unregister('addon_settings', 'addon/notimeline/notimeline.php', 'notimeline_settings');
+	Hook::unregister('addon_settings_post', 'addon/notimeline/notimeline.php', 'notimeline_settings_post');
 }
 
 function notimeline_settings_post($a, $post)

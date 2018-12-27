@@ -9,14 +9,14 @@
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 
 function sniper_install() {
-    Addon::registerHook('app_menu', 'addon/sniper/sniper.php', 'sniper_app_menu');
+    Hook::register('app_menu', 'addon/sniper/sniper.php', 'sniper_app_menu');
 }
 
 function sniper_uninstall() {
-    Addon::unregisterHook('app_menu', 'addon/sniper/sniper.php', 'sniper_app_menu');
+    Hook::unregister('app_menu', 'addon/sniper/sniper.php', 'sniper_app_menu');
 
 }
 

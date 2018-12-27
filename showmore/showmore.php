@@ -7,23 +7,23 @@
  *         based upon NSFW from Mike Macgirvin <http://macgirvin.com/profile/mike>
  *
  */
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Util\Strings;
 
 function showmore_install()
 {
-	Addon::registerHook('prepare_body', 'addon/showmore/showmore.php', 'showmore_prepare_body');
-	Addon::registerHook('addon_settings', 'addon/showmore/showmore.php', 'showmore_addon_settings');
-	Addon::registerHook('addon_settings_post', 'addon/showmore/showmore.php', 'showmore_addon_settings_post');
+	Hook::register('prepare_body', 'addon/showmore/showmore.php', 'showmore_prepare_body');
+	Hook::register('addon_settings', 'addon/showmore/showmore.php', 'showmore_addon_settings');
+	Hook::register('addon_settings_post', 'addon/showmore/showmore.php', 'showmore_addon_settings_post');
 }
 
 function showmore_uninstall()
 {
-	Addon::unregisterHook('prepare_body', 'addon/showmore/showmore.php', 'showmore_prepare_body');
-	Addon::unregisterHook('addon_settings', 'addon/showmore/showmore.php', 'showmore_addon_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/showmore/showmore.php', 'showmore_addon_settings_post');
+	Hook::unregister('prepare_body', 'addon/showmore/showmore.php', 'showmore_prepare_body');
+	Hook::unregister('addon_settings', 'addon/showmore/showmore.php', 'showmore_addon_settings');
+	Hook::unregister('addon_settings_post', 'addon/showmore/showmore.php', 'showmore_addon_settings_post');
 }
 
 function showmore_addon_settings(&$a, &$s)

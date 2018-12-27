@@ -17,20 +17,20 @@
  * them to open the comment window fully and insert the qcomment. Then "Submit" will submit it.
  *
  */
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Util\XML;
 
 function qcomment_install() {
-	Addon::registerHook('addon_settings', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings');
-	Addon::registerHook('addon_settings_post', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings_post');
+	Hook::register('addon_settings', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings');
+	Hook::register('addon_settings_post', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings_post');
 
 }
 
 function qcomment_uninstall() {
-	Addon::unregisterHook('addon_settings', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings_post');
+	Hook::unregister('addon_settings', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings');
+	Hook::unregister('addon_settings_post', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings_post');
 
 }
 

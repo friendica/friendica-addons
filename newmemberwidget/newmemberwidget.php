@@ -7,8 +7,8 @@
  ***/
 
 use Friendica\Content\Text\BBCode;
-use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
@@ -16,13 +16,13 @@ use Friendica\Util\Strings;
 
 function newmemberwidget_install()
 {
-	Addon::registerHook( 'network_mod_init', 'addon/newmemberwidget/newmemberwidget.php', 'newmemberwidget_network_mod_init');
+	Hook::register( 'network_mod_init', 'addon/newmemberwidget/newmemberwidget.php', 'newmemberwidget_network_mod_init');
 	Logger::log('newmemberwidget installed');
 }
 
 function newmemberwidget_uninstall()
 {
-	Addon::unregisterHook( 'network_mod_init', 'addon/newmemberwidget/newmemberwidget.php', 'newmemberwidget_network_mod_init');
+	Hook::unregister( 'network_mod_init', 'addon/newmemberwidget/newmemberwidget.php', 'newmemberwidget_network_mod_init');
 }
 
 function newmemberwidget_network_mod_init ($a, $b)

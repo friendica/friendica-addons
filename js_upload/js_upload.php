@@ -14,24 +14,24 @@
  * Module Author: Chris Case
  *
  */
-use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 
 function js_upload_install() {
-	Addon::registerHook('photo_upload_form', 'addon/js_upload/js_upload.php', 'js_upload_form');
-	Addon::registerHook('photo_post_init',   'addon/js_upload/js_upload.php', 'js_upload_post_init');
-	Addon::registerHook('photo_post_file',   'addon/js_upload/js_upload.php', 'js_upload_post_file');
-	Addon::registerHook('photo_post_end',    'addon/js_upload/js_upload.php', 'js_upload_post_end');
+	Hook::register('photo_upload_form', 'addon/js_upload/js_upload.php', 'js_upload_form');
+	Hook::register('photo_post_init',   'addon/js_upload/js_upload.php', 'js_upload_post_init');
+	Hook::register('photo_post_file',   'addon/js_upload/js_upload.php', 'js_upload_post_file');
+	Hook::register('photo_post_end',    'addon/js_upload/js_upload.php', 'js_upload_post_end');
 }
 
 
 function js_upload_uninstall() {
-	Addon::unregisterHook('photo_upload_form', 'addon/js_upload/js_upload.php', 'js_upload_form');
-	Addon::unregisterHook('photo_post_init',   'addon/js_upload/js_upload.php', 'js_upload_post_init');
-	Addon::unregisterHook('photo_post_file',   'addon/js_upload/js_upload.php', 'js_upload_post_file');
-	Addon::unregisterHook('photo_post_end',    'addon/js_upload/js_upload.php', 'js_upload_post_end');
+	Hook::unregister('photo_upload_form', 'addon/js_upload/js_upload.php', 'js_upload_form');
+	Hook::unregister('photo_post_init',   'addon/js_upload/js_upload.php', 'js_upload_post_init');
+	Hook::unregister('photo_post_file',   'addon/js_upload/js_upload.php', 'js_upload_post_file');
+	Hook::unregister('photo_post_end',    'addon/js_upload/js_upload.php', 'js_upload_post_end');
 }
 
 
@@ -162,7 +162,7 @@ function js_upload_post_init(&$a,&$b) {
 	if(isset($result['error'])) {
 		Logger::log('mod/photos.php: photos_post(): error uploading photo: ' . $result['error'] , Logger::DEBUG);
 		echo json_encode($result);
-		killme();
+		exit();
 	}
 
 	$a->data['upload_result'] = $result;
@@ -185,7 +185,7 @@ function js_upload_post_end(&$a,&$b) {
 Logger::log('upload_post_end');
 	if(!empty($a->data['upload_jsonresponse'])) {
 		echo $a->data['upload_jsonresponse'];
-		killme();
+		exit();
 	}
 
 }

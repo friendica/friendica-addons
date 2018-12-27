@@ -10,8 +10,8 @@ use Friendica\App;
 use Friendica\Content\Nav;
 use Friendica\Content\Pager;
 use Friendica\Content\Widget;
-use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
@@ -26,12 +26,12 @@ require_once 'include/text.php';
 
 function forumdirectory_install()
 {
-	Addon::registerHook('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
+	Hook::register('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
 }
 
 function forumdirectory_uninstall()
 {
-	Addon::unregisterHook('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
+	Hook::unregister('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
 }
 
 function forumdirectory_module()

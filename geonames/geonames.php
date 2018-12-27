@@ -21,8 +21,8 @@
  * system will call the name_uninstall() function.
  *
  */
-use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
@@ -31,7 +31,7 @@ use Friendica\Util\XML;
 
 function geonames_install() {
 
-	Addon::registerHook('load_config', 'addon/geonames/geonames.php', 'geonames_load_config');
+	Hook::register('load_config', 'addon/geonames/geonames.php', 'geonames_load_config');
 
 	/**
 	 *
@@ -40,7 +40,7 @@ function geonames_install() {
 	 *
 	 */
 
-	Addon::registerHook('post_local', 'addon/geonames/geonames.php', 'geonames_post_hook');
+	Hook::register('post_local', 'addon/geonames/geonames.php', 'geonames_post_hook');
 
 	/**
 	 *
@@ -50,8 +50,8 @@ function geonames_install() {
 	 *
 	 */
 
-	Addon::registerHook('addon_settings', 'addon/geonames/geonames.php', 'geonames_addon_admin');
-	Addon::registerHook('addon_settings_post', 'addon/geonames/geonames.php', 'geonames_addon_admin_post');
+	Hook::register('addon_settings', 'addon/geonames/geonames.php', 'geonames_addon_admin');
+	Hook::register('addon_settings_post', 'addon/geonames/geonames.php', 'geonames_addon_admin_post');
 
 	Logger::log("installed geonames");
 }
@@ -67,10 +67,10 @@ function geonames_uninstall() {
 	 *
 	 */
 
-	Addon::unregisterHook('load_config',   'addon/geonames/geonames.php', 'geonames_load_config');
-	Addon::unregisterHook('post_local',    'addon/geonames/geonames.php', 'geonames_post_hook');
-	Addon::unregisterHook('addon_settings', 'addon/geonames/geonames.php', 'geonames_addon_admin');
-	Addon::unregisterHook('addon_settings_post', 'addon/geonames/geonames.php', 'geonames_addon_admin_post');
+	Hook::unregister('load_config',   'addon/geonames/geonames.php', 'geonames_load_config');
+	Hook::unregister('post_local',    'addon/geonames/geonames.php', 'geonames_post_hook');
+	Hook::unregister('addon_settings', 'addon/geonames/geonames.php', 'geonames_addon_admin');
+	Hook::unregister('addon_settings_post', 'addon/geonames/geonames.php', 'geonames_addon_admin_post');
 
 
 	Logger::log("removed geonames");

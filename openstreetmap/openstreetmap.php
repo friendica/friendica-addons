@@ -8,9 +8,9 @@
  * Author: Klaus Weidenbach
  *
  */
-use Friendica\Core\Addon;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
@@ -25,24 +25,24 @@ const OSM_MARKER = 0;
 
 function openstreetmap_install()
 {
-	Addon::registerHook('load_config',     'addon/openstreetmap/openstreetmap.php', 'openstreetmap_load_config');
-	Addon::registerHook('render_location', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_location');
-	Addon::registerHook('generate_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_map');
-	Addon::registerHook('generate_named_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_named_map');
-	Addon::registerHook('Map::getCoordinates', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_get_coordinates');
-	Addon::registerHook('page_header', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_alterheader');
+	Hook::register('load_config',     'addon/openstreetmap/openstreetmap.php', 'openstreetmap_load_config');
+	Hook::register('render_location', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_location');
+	Hook::register('generate_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_map');
+	Hook::register('generate_named_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_named_map');
+	Hook::register('Map::getCoordinates', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_get_coordinates');
+	Hook::register('page_header', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_alterheader');
 
 	Logger::log("installed openstreetmap");
 }
 
 function openstreetmap_uninstall()
 {
-	Addon::unregisterHook('load_config',     'addon/openstreetmap/openstreetmap.php', 'openstreetmap_load_config');
-	Addon::unregisterHook('render_location', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_location');
-	Addon::unregisterHook('generate_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_map');
-	Addon::unregisterHook('generate_named_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_named_map');
-	Addon::unregisterHook('Map::getCoordinates', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_get_coordinates');
-	Addon::unregisterHook('page_header', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_alterheader');
+	Hook::unregister('load_config',     'addon/openstreetmap/openstreetmap.php', 'openstreetmap_load_config');
+	Hook::unregister('render_location', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_location');
+	Hook::unregister('generate_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_map');
+	Hook::unregister('generate_named_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_named_map');
+	Hook::unregister('Map::getCoordinates', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_get_coordinates');
+	Hook::unregister('page_header', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_alterheader');
 
 	Logger::log("removed openstreetmap");
 }

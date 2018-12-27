@@ -9,8 +9,8 @@
 use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
-use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
@@ -37,30 +37,30 @@ define('PUMPIO_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
 function pumpio_install()
 {
-	Addon::registerHook('load_config',          'addon/pumpio/pumpio.php', 'pumpio_load_config');
-	Addon::registerHook('hook_fork',            'addon/pumpio/pumpio.php', 'hook_fork');
-	Addon::registerHook('post_local',           'addon/pumpio/pumpio.php', 'pumpio_post_local');
-	Addon::registerHook('notifier_normal',      'addon/pumpio/pumpio.php', 'pumpio_send');
-	Addon::registerHook('jot_networks',         'addon/pumpio/pumpio.php', 'pumpio_jot_nets');
-	Addon::registerHook('connector_settings',      'addon/pumpio/pumpio.php', 'pumpio_settings');
-	Addon::registerHook('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
-	Addon::registerHook('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
-	Addon::registerHook('queue_predeliver', 'addon/pumpio/pumpio.php', 'pumpio_queue_hook');
-	Addon::registerHook('check_item_notification', 'addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
+	Hook::register('load_config',          'addon/pumpio/pumpio.php', 'pumpio_load_config');
+	Hook::register('hook_fork',            'addon/pumpio/pumpio.php', 'hook_fork');
+	Hook::register('post_local',           'addon/pumpio/pumpio.php', 'pumpio_post_local');
+	Hook::register('notifier_normal',      'addon/pumpio/pumpio.php', 'pumpio_send');
+	Hook::register('jot_networks',         'addon/pumpio/pumpio.php', 'pumpio_jot_nets');
+	Hook::register('connector_settings',      'addon/pumpio/pumpio.php', 'pumpio_settings');
+	Hook::register('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
+	Hook::register('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
+	Hook::register('queue_predeliver', 'addon/pumpio/pumpio.php', 'pumpio_queue_hook');
+	Hook::register('check_item_notification', 'addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
 }
 
 function pumpio_uninstall()
 {
-	Addon::unregisterHook('load_config',      'addon/pumpio/pumpio.php', 'pumpio_load_config');
-	Addon::unregisterHook('hook_fork',        'addon/pumpio/pumpio.php', 'pumpio_hook_fork');
-	Addon::unregisterHook('post_local',       'addon/pumpio/pumpio.php', 'pumpio_post_local');
-	Addon::unregisterHook('notifier_normal',  'addon/pumpio/pumpio.php', 'pumpio_send');
-	Addon::unregisterHook('jot_networks',     'addon/pumpio/pumpio.php', 'pumpio_jot_nets');
-	Addon::unregisterHook('connector_settings',      'addon/pumpio/pumpio.php', 'pumpio_settings');
-	Addon::unregisterHook('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
-	Addon::unregisterHook('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
-	Addon::unregisterHook('queue_predeliver', 'addon/pumpio/pumpio.php', 'pumpio_queue_hook');
-	Addon::unregisterHook('check_item_notification', 'addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
+	Hook::unregister('load_config',      'addon/pumpio/pumpio.php', 'pumpio_load_config');
+	Hook::unregister('hook_fork',        'addon/pumpio/pumpio.php', 'pumpio_hook_fork');
+	Hook::unregister('post_local',       'addon/pumpio/pumpio.php', 'pumpio_post_local');
+	Hook::unregister('notifier_normal',  'addon/pumpio/pumpio.php', 'pumpio_send');
+	Hook::unregister('jot_networks',     'addon/pumpio/pumpio.php', 'pumpio_jot_nets');
+	Hook::unregister('connector_settings',      'addon/pumpio/pumpio.php', 'pumpio_settings');
+	Hook::unregister('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
+	Hook::unregister('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
+	Hook::unregister('queue_predeliver', 'addon/pumpio/pumpio.php', 'pumpio_queue_hook');
+	Hook::unregister('check_item_notification', 'addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
 }
 
 function pumpio_module() {}

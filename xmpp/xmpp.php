@@ -7,8 +7,8 @@
  */
 
 use Friendica\App;
-use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
@@ -16,18 +16,18 @@ use Friendica\Util\Strings;
 
 function xmpp_install()
 {
-	Addon::registerHook('addon_settings', 'addon/xmpp/xmpp.php', 'xmpp_addon_settings');
-	Addon::registerHook('addon_settings_post', 'addon/xmpp/xmpp.php', 'xmpp_addon_settings_post');
-	Addon::registerHook('page_end', 'addon/xmpp/xmpp.php', 'xmpp_script');
-	Addon::registerHook('logged_in', 'addon/xmpp/xmpp.php', 'xmpp_login');
+	Hook::register('addon_settings', 'addon/xmpp/xmpp.php', 'xmpp_addon_settings');
+	Hook::register('addon_settings_post', 'addon/xmpp/xmpp.php', 'xmpp_addon_settings_post');
+	Hook::register('page_end', 'addon/xmpp/xmpp.php', 'xmpp_script');
+	Hook::register('logged_in', 'addon/xmpp/xmpp.php', 'xmpp_login');
 }
 
 function xmpp_uninstall()
 {
-	Addon::unregisterHook('addon_settings', 'addon/xmpp/xmpp.php', 'xmpp_addon_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/xmpp/xmpp.php', 'xmpp_addon_settings_post');
-	Addon::unregisterHook('page_end', 'addon/xmpp/xmpp.php', 'xmpp_script');
-	Addon::unregisterHook('logged_in', 'addon/xmpp/xmpp.php', 'xmpp_login');
+	Hook::unregister('addon_settings', 'addon/xmpp/xmpp.php', 'xmpp_addon_settings');
+	Hook::unregister('addon_settings_post', 'addon/xmpp/xmpp.php', 'xmpp_addon_settings_post');
+	Hook::unregister('page_end', 'addon/xmpp/xmpp.php', 'xmpp_script');
+	Hook::unregister('logged_in', 'addon/xmpp/xmpp.php', 'xmpp_login');
 }
 
 function xmpp_addon_settings_post()

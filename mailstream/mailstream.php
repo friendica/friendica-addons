@@ -7,8 +7,8 @@
  */
 
 use Friendica\Content\Text\BBCode;
-use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
@@ -18,11 +18,11 @@ use Friendica\Util\Network;
 use Friendica\Model\Item;
 
 function mailstream_install() {
-	Addon::registerHook('addon_settings', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings');
-	Addon::registerHook('addon_settings_post', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings_post');
-	Addon::registerHook('post_local_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
-	Addon::registerHook('post_remote_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
-	Addon::registerHook('cron', 'addon/mailstream/mailstream.php', 'mailstream_cron');
+	Hook::register('addon_settings', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings');
+	Hook::register('addon_settings_post', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings_post');
+	Hook::register('post_local_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
+	Hook::register('post_remote_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
+	Hook::register('cron', 'addon/mailstream/mailstream.php', 'mailstream_cron');
 
 	if (Config::get('mailstream', 'dbversion') == '0.1') {
 		q('ALTER TABLE `mailstream_item` DROP INDEX `uid`');
@@ -59,16 +59,16 @@ function mailstream_install() {
 }
 
 function mailstream_uninstall() {
-	Addon::unregisterHook('addon_settings', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings_post');
-	Addon::unregisterHook('post_local', 'addon/mailstream/mailstream.php', 'mailstream_post_local_hook');
-	Addon::unregisterHook('post_remote', 'addon/mailstream/mailstream.php', 'mailstream_post_remote_hook');
-	Addon::unregisterHook('post_local_end', 'addon/mailstream/mailstream.php', 'mailstream_post_local_hook');
-	Addon::unregisterHook('post_remote_end', 'addon/mailstream/mailstream.php', 'mailstream_post_remote_hook');
-	Addon::unregisterHook('post_local_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
-	Addon::unregisterHook('post_remote_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
-	Addon::unregisterHook('cron', 'addon/mailstream/mailstream.php', 'mailstream_cron');
-	Addon::unregisterHook('incoming_mail', 'addon/mailstream/mailstream.php', 'mailstream_incoming_mail');
+	Hook::unregister('addon_settings', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings');
+	Hook::unregister('addon_settings_post', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings_post');
+	Hook::unregister('post_local', 'addon/mailstream/mailstream.php', 'mailstream_post_local_hook');
+	Hook::unregister('post_remote', 'addon/mailstream/mailstream.php', 'mailstream_post_remote_hook');
+	Hook::unregister('post_local_end', 'addon/mailstream/mailstream.php', 'mailstream_post_local_hook');
+	Hook::unregister('post_remote_end', 'addon/mailstream/mailstream.php', 'mailstream_post_remote_hook');
+	Hook::unregister('post_local_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
+	Hook::unregister('post_remote_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
+	Hook::unregister('cron', 'addon/mailstream/mailstream.php', 'mailstream_cron');
+	Hook::unregister('incoming_mail', 'addon/mailstream/mailstream.php', 'mailstream_incoming_mail');
 }
 
 function mailstream_module() {}

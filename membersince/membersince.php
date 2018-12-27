@@ -7,18 +7,18 @@
  * Status: Unsupported
  */
 
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Util\DateTimeFormat;
 
 function membersince_install()
 {
-	Addon::registerHook('profile_advanced', 'addon/membersince/membersince.php', 'membersince_display');
+	Hook::register('profile_advanced', 'addon/membersince/membersince.php', 'membersince_display');
 }
 
 function membersince_uninstall()
 {
-	Addon::unregisterHook('profile_advanced', 'addon/membersince/membersince.php', 'membersince_display');
+	Hook::unregister('profile_advanced', 'addon/membersince/membersince.php', 'membersince_display');
 }
 
 function membersince_display(Friendica\App $a, &$b)

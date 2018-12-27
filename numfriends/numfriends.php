@@ -5,15 +5,15 @@
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 
 function numfriends_install() {
 
-	Addon::registerHook('addon_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
-	Addon::registerHook('addon_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
+	Hook::register('addon_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
+	Hook::register('addon_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
 
 	Logger::log("installed numfriends");
 }
@@ -21,8 +21,8 @@ function numfriends_install() {
 
 function numfriends_uninstall() {
 
-	Addon::unregisterHook('addon_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
-	Addon::unregisterHook('addon_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
+	Hook::unregister('addon_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
+	Hook::unregister('addon_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
 
 
 	Logger::log("removed numfriends");

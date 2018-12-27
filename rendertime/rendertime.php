@@ -6,18 +6,18 @@
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  *
  */
-use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 
 function rendertime_install() {
-	Addon::registerHook('page_end', 'addon/rendertime/rendertime.php', 'rendertime_page_end');
+	Hook::register('page_end', 'addon/rendertime/rendertime.php', 'rendertime_page_end');
 }
 
 
 function rendertime_uninstall() {
-	Addon::unregisterHook('init_1', 'addon/rendertime/rendertime.php', 'rendertime_init_1');
-	Addon::unregisterHook('page_end', 'addon/rendertime/rendertime.php', 'rendertime_page_end');
+	Hook::unregister('init_1', 'addon/rendertime/rendertime.php', 'rendertime_init_1');
+	Hook::unregister('page_end', 'addon/rendertime/rendertime.php', 'rendertime_page_end');
 }
 
 function rendertime_init_1(&$a) {

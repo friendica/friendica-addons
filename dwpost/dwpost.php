@@ -10,7 +10,7 @@
 
 use Friendica\App;
 use Friendica\Content\Text\BBCode;
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
@@ -21,20 +21,20 @@ use Friendica\Util\XML;
 
 function dwpost_install()
 {
-	Addon::registerHook('post_local',              'addon/dwpost/dwpost.php', 'dwpost_post_local');
-	Addon::registerHook('notifier_normal',         'addon/dwpost/dwpost.php', 'dwpost_send');
-	Addon::registerHook('jot_networks',            'addon/dwpost/dwpost.php', 'dwpost_jot_nets');
-	Addon::registerHook('connector_settings',      'addon/dwpost/dwpost.php', 'dwpost_settings');
-	Addon::registerHook('connector_settings_post', 'addon/dwpost/dwpost.php', 'dwpost_settings_post');
+	Hook::register('post_local',              'addon/dwpost/dwpost.php', 'dwpost_post_local');
+	Hook::register('notifier_normal',         'addon/dwpost/dwpost.php', 'dwpost_send');
+	Hook::register('jot_networks',            'addon/dwpost/dwpost.php', 'dwpost_jot_nets');
+	Hook::register('connector_settings',      'addon/dwpost/dwpost.php', 'dwpost_settings');
+	Hook::register('connector_settings_post', 'addon/dwpost/dwpost.php', 'dwpost_settings_post');
 }
 
 function dwpost_uninstall()
 {
-	Addon::unregisterHook('post_local',              'addon/dwpost/dwpost.php', 'dwpost_post_local');
-	Addon::unregisterHook('notifier_normal',         'addon/dwpost/dwpost.php', 'dwpost_send');
-	Addon::unregisterHook('jot_networks',            'addon/dwpost/dwpost.php', 'dwpost_jot_nets');
-	Addon::unregisterHook('connector_settings',      'addon/dwpost/dwpost.php', 'dwpost_settings');
-	Addon::unregisterHook('connector_settings_post', 'addon/dwpost/dwpost.php', 'dwpost_settings_post');
+	Hook::unregister('post_local',              'addon/dwpost/dwpost.php', 'dwpost_post_local');
+	Hook::unregister('notifier_normal',         'addon/dwpost/dwpost.php', 'dwpost_send');
+	Hook::unregister('jot_networks',            'addon/dwpost/dwpost.php', 'dwpost_jot_nets');
+	Hook::unregister('connector_settings',      'addon/dwpost/dwpost.php', 'dwpost_settings');
+	Hook::unregister('connector_settings_post', 'addon/dwpost/dwpost.php', 'dwpost_settings_post');
 }
 
 function dwpost_jot_nets(App $a, &$b)
