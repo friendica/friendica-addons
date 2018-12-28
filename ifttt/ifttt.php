@@ -168,7 +168,7 @@ function ifttt_post(App $a)
 
 function ifttt_message($uid, $item)
 {
-	$a = get_app();
+	$a = \get_app();
 
 	$_SESSION['authenticated'] = true;
 	$_SESSION['uid'] = $uid;
