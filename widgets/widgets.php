@@ -77,7 +77,7 @@ function widgets_module() {
 }
 
 function _abs_url($s){
-	$a = get_app();
+	$a = \get_app();
 	return preg_replace("|href=(['\"])([^h][^t][^t][^p])|", "href=\$1".$a->getBaseURL()."/\$2", $s);
 }
 

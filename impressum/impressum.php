@@ -33,7 +33,7 @@ function impressum_uninstall() {
 function impressum_module() {
 }
 function impressum_content() {
-    $a = get_app();
+    $a = \get_app();
     $a->internalRedirect('friendica/');
 }
 
