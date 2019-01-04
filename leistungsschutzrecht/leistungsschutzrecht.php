@@ -29,7 +29,7 @@ function leistungsschutzrecht_getsiteinfo($a, &$siteinfo) {
 	}
 
 	// Avoid any third party pictures, to avoid copyright issues
-	if (($siteinfo['type'] != 'photo') && Config::get('leistungsschutzrecht', 'suppress_photos', false)) {
+	if (!in_array($siteinfo['type'], ['photo', 'video']) && Config::get('leistungsschutzrecht', 'suppress_photos', false)) {
 		unset($siteinfo["image"]);
 		unset($siteinfo["images"]);
 	}
