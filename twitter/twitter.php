@@ -1469,6 +1469,8 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 				intval($uid));
 
 			if (DBA::isResult($r)) {
+				$postarray['wall'] = 1;
+
 				$contactid = $r[0]["id"];
 
 				$postarray['owner-name']   = $r[0]["name"];
