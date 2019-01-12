@@ -1221,9 +1221,11 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 					continue;
 				}
 
-				$expanded_url = Network::finalUrl($url->expanded_url);
+				$expanded_url = $url->expanded_url;
 
-				$oembed_data = OEmbed::fetchURL($expanded_url);
+				$final_url = Network::finalUrl($url->expanded_url);
+
+				$oembed_data = OEmbed::fetchURL($final_url);
 
 				if (empty($oembed_data) || empty($oembed_data->type)) {
 					continue;
@@ -1249,7 +1251,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 				} elseif ($oembed_data->type != 'link') {
 					$body = str_replace($url->url, '[url=' . $expanded_url . ']' . $url->display_url . '[/url]', $body);
 				} else {
-					$img_str = Network::fetchUrl($expanded_url, true, $redirects, 4);
+					$img_str = Network::fetchUrl($final_url, true, $redirects, 4);
 
 					$tempfile = tempnam(get_temppath(), 'cache');
 					file_put_contents($tempfile, $img_str);
@@ -1265,7 +1267,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 
 					if (substr($mime, 0, 6) == 'image/') {
 						$type = 'photo';
-						$body = str_replace($url->url, '[img]' . $expanded_url . '[/img]', $body);
+						$body = str_replace($url->url, '[img]' . $final_url . '[/img]', $body);
 					} else {
 						$type = $oembed_data->type;
 						$footerurl = $expanded_url;
