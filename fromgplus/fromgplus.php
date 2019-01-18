@@ -4,7 +4,7 @@
  * Description: Imports posts from a Google+ account and repeats them
  * Version: 0.1
  * Author: Michael Vogel <ike@piratenpartei.de>
- *
+ * Status: unsupported
  */
 
 define('FROMGPLUS_DEFAULT_POLL_INTERVAL', 30); // given in minutes
