@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: Buffer Post Connector
- * Description: Post to Buffer (Facebook, Google+, LinkedIn, Twitter)
+ * Description: Post to Buffer (Facebook Pages, LinkedIn, Twitter)
  * Version: 0.2
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  */
