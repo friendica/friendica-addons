@@ -1,0 +1,23 @@
+#cookienotice-label {
+    float: left;
+    width: 300px;
+    margin-top: 10px;
+}
+
+#cookienotice-text {
+    float: left;
+    margin-top: 10px;
+    width: 400px;
+    height: 150px;
+}
+
+#cookienotice-submit {
+    margin-top: 15px;
+}
+
+.cookienotice {
+    text-align: center;
+    width: 100%;
+    margin-top: 25px;
+    font-size: 20px;
+}
