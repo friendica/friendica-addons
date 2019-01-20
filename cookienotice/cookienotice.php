@@ -7,32 +7,55 @@
  * Author: Peter Liebetrau <https://socivitas/profile/peerteer>
  * 
  */
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
 
+/**
+ * cookienotice_install
+ * registers hooks
+ * 
+ * @return void
+ */
 function cookienotice_install()
 {
 	$file = 'addon/cookienotice/cookienotice.php';
-	Addon::registerHook('page_content_top', $file, 'cookienotice_page_content_top');
-	Addon::registerHook('page_end', $file, 'cookienotice_page_end');
-	Addon::registerHook('addon_settings', $file, 'cookienotice_addon_settings');
-	Addon::registerHook('addon_settings_post', $file, 'cookienotice_addon_settings_post');
+	Hook::register('page_content_top', $file, 'cookienotice_page_content_top');
+	Hook::register('page_end', $file, 'cookienotice_page_end');
+	Hook::register('addon_settings', $file, 'cookienotice_addon_settings');
+	Hook::register('addon_settings_post', $file, 'cookienotice_addon_settings_post');
 }
 
+/**
+ * cookienotice_uninstall
+ * unregisters hooks
+ * 
+ * @return void
+*/
 function cookienotice_uninstall()
 {
 	$file = 'addon/cookienotice/cookienotice.php';
-	Addon::unregisterHook('page_content_top', $file, 'cookienotice_page_content_top');
-	Addon::unregisterHook('page_end', $file, 'cookienotice_page_end');
-	Addon::unregisterHook('addon_settings', $file, 'cookienotice_addon_settings');
-	Addon::unregisterHook('addon_settings_post', $file, 'cookienotice_addon_settings_post');
+	Hook::unregister('page_content_top', $file, 'cookienotice_page_content_top');
+	Hook::unregister('page_end', $file, 'cookienotice_page_end');
+	Hook::unregister('addon_settings', $file, 'cookienotice_addon_settings');
+	Hook::unregister('addon_settings_post', $file, 'cookienotice_addon_settings_post');
 }
 
-function cookienotice_addon_settings(&$a, &$s)
+/**
+ * cookienotice_addon_settings
+ * addon_settings hook
+ * creates the admins config panel
+ * 
+ * @param \Friendica\App $a
+ * @param string $s The existing config panel html so far
+ * 
+ * @return void
+ */
+function cookienotice_addon_settings(\Friendica\App $a, &$s)
 {
-	if (!is_site_admin())
+	if (!is_site_admin()) {
 		return;
+	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
@@ -50,20 +73,31 @@ function cookienotice_addon_settings(&$a, &$s)
 
 	$t = get_markup_template("settings.tpl", "addon/cookienotice/");
 	$s .= replace_macros($t, [
-		'$title'	   => L10n::t('"cookienotice" Settings'),
+		'$title' => L10n::t('"cookienotice" Settings'),
 		'$description' => L10n::t('<b>Configure your cookie usage notice.</b> It should just be a notice, saying that the website uses cookies. It is shown as long as a user didnt confirm clicking the OK button.'),
-		'$text'		=> ['cookienotice-text', L10n::t('Cookie Usage Notice'), $text, L10n::t('The cookie usage notice')],
-		'$oktext'	  => ['cookienotice-oktext', L10n::t('OK Button Text'), $oktext, L10n::t('The OK Button text')],
-		'$submit'	  => L10n::t('Save Settings')
+		'$text' => ['cookienotice-text', L10n::t('Cookie Usage Notice'), $text, L10n::t('The cookie usage notice')],
+		'$oktext' => ['cookienotice-oktext', L10n::t('OK Button Text'), $oktext, L10n::t('The OK Button text')],
+		'$submit' => L10n::t('Save Settings')
 	]);
 
 	return;
 }
 
-function cookienotice_addon_settings_post(&$a, &$b)
+/**
+ * cookienotice_addon_settings_post
+ * addon_settings_post hook
+ * handles the post request from the admin panel
+ * 
+ * @param \Friendica\App $a
+ * @param string $b
+ * 
+ * @return void
+ */
+function cookienotice_addon_settings_post(\Friendica\App $a, &$b)
 {
-	if (!is_site_admin())
+	if (!is_site_admin()) {
 		return;
+	}
 
 	if ($_POST['cookienotice-submit']) {
 		Config::set('cookienotice', 'text', trim(strip_tags($_POST['cookienotice-text'])));
@@ -73,33 +107,41 @@ function cookienotice_addon_settings_post(&$a, &$b)
 }
 
 /**
- * adds the link and script to the page head
+ * cookienotice_page_content_top
+ * page_content_top hook
+ * adds css and scripts to the <head> section of the html
  * 
- * @param App $a
- * @param string $b - The page html before page_content_top
+ * @param \Friendica\App $a
+ * @param string $b unnused - the header html incl. nav
+ * 
+ * @return void
  */
-function cookienotice_page_content_top($a, &$b)
+function cookienotice_page_content_top(\Friendica\App $a, &$b)
 {
-	$head				= file_get_contents(__DIR__ . '/templates/head.tpl');
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="/addon/cookienotice/cookienotice.css" media="all" />' . "\r\n";
+	$head = file_get_contents(__DIR__ . '/templates/head.tpl');
 	$a->page['htmlhead'] .= $head;
 }
 
 /**
- * adds the html to page end
- * page_end hook function
+ * cookienotice_page_end
+ * page_end hook
+ * ads our cookienotice box to the end of the html
  * 
- * @param App $a
- * @param string $b - The page html
+ * @param \Friendica\App $a
+ * @param string $b the page html
+ * 
+ * @return void
  */
-function cookienotice_page_end($a, &$b)
+function cookienotice_page_end(\Friendica\App $a, &$b)
 {
-	$text   = (string) Config::get('cookienotice', 'text');
-	$oktext = (string) Config::get('cookienotice', 'oktext');
+	$text = (string) Config::get('cookienotice', 'text', L10n::t('This website uses cookies to recognize revisiting and logged in users. You accept the usage of these cookies by continue browsing this website.'));
+	$oktext = (string) Config::get('cookienotice', 'oktext', L10n::t('OK'));
 
 	$page_end_tpl = get_markup_template("cookienotice.tpl", "addon/cookienotice/");
 
 	$page_end = replace_macros($page_end_tpl, [
-		'$text'   => $text,
+		'$text' => $text,
 		'$oktext' => $oktext,
 	]);
 

@@ -1,3 +1,4 @@
+/* Admin css */
 #cookienotice-label {
 	float: left;
 	width: 300px;
@@ -21,3 +22,28 @@
 	margin-top: 25px;
 	font-size: 20px;
 }
+
+/* Frontend css */
+#cookienotice-box {
+	display: none;
+	position: fixed;
+	z-index: 10000;
+	bottom: 0px;
+	left: 0;
+	width: 100%;
+	background-color: #101010;
+	color: #f0f0f0;
+	padding: 2em 1em;
+	text-align: center;
+}
+#cookienotice-box p {
+	max-width: 100%;
+}
+#cookienotice-ok-button {
+	border: 1px solid darkgoldenrod;
+	background-color: gold;
+	color: #101010;
+	min-width: 80px;
+	padding: .5em .1em;
+}
+
