@@ -2,11 +2,12 @@
 
 if(! function_exists("string_plural_select_fr")) {
 function string_plural_select_fr($n){
+	$n = intval($n);
 	return ($n > 1);;
 }}
 ;
 $a->strings["Save Settings"] = "Sauvegarder les paramètres";
-$a->strings["Redirect URL"] = "Adresse de redirection";
+$a->strings["Redirect URL"] = "Adresse URL de redirection";
 $a->strings["all your visitors from the web will be redirected to this URL"] = "Tous vos visiteurs venant du web seront redirigés vers cette URL.";
 $a->strings["Begin of the Blackout"] = "Début du blackout";
 $a->strings["format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute"] = "Le format est <em>YYYY</em> année, <em>MM</em> mois, <em>DD</em> jour, <em>hh</em> heure and <em>mm</em> minute";

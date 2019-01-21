@@ -7,9 +7,6 @@
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
 require_once 'mod/item.php';
-require_once 'include/items.php';
-require_once 'include/text.php';
-
 use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
@@ -168,7 +165,7 @@ function ifttt_post(App $a)
 
 function ifttt_message($uid, $item)
 {
-	$a = get_app();
+	$a = \get_app();
 
 	$_SESSION['authenticated'] = true;
 	$_SESSION['uid'] = $uid;

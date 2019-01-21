@@ -9,8 +9,6 @@
  *
  */
 
-require_once 'include/text.php';
-
 use Friendica\App;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;

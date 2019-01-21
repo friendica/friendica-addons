@@ -203,8 +203,8 @@ function jappixmini_init()
 			exit();
 		}
 
-		$encrypt_func = openssl_public_encrypt;
-		$decrypt_func = openssl_public_decrypt;
+		$encrypt_func = 'openssl_public_encrypt';
+		$decrypt_func = 'openssl_public_decrypt';
 		$key = $r[0]["pubkey"];
 	} else if ($role == "prv") {
 		$r = q("SELECT * FROM `contact` WHERE LENGTH(`prvkey`) AND `issued-id`='%s' LIMIT 1", DBA::escape($dfrn_id));
@@ -212,8 +212,8 @@ function jappixmini_init()
 			exit();
 		}
 
-		$encrypt_func = openssl_private_encrypt;
-		$decrypt_func = openssl_private_decrypt;
+		$encrypt_func = 'openssl_private_encrypt';
+		$decrypt_func = 'openssl_private_decrypt';
 		$key = $r[0]["prvkey"];
 	} else {
 		exit();
@@ -606,14 +606,14 @@ function jappixmini_cron(App $a, $d)
 			$dfrn_id = $contact_row["dfrn-id"];
 			if ($dfrn_id) {
 				$key = $contact_row["pubkey"];
-				$encrypt_func = openssl_public_encrypt;
-				$decrypt_func = openssl_public_decrypt;
+				$encrypt_func = 'openssl_public_encrypt';
+				$decrypt_func = 'openssl_public_decrypt';
 				$role = "prv";
 			} else {
 				$dfrn_id = $contact_row["issued-id"];
 				$key = $contact_row["prvkey"];
-				$encrypt_func = openssl_private_encrypt;
-				$decrypt_func = openssl_private_decrypt;
+				$encrypt_func = 'openssl_private_encrypt';
+				$decrypt_func = 'openssl_private_decrypt';
 				$role = "pub";
 			}
 
@@ -666,7 +666,7 @@ function jappixmini_cron(App $a, $d)
 
 				// parse answer
 				$answer = json_decode($answer_json);
-				if ($answer->status != "ok") {
+				if (empty($answer->status) || ($answer->status != "ok")) {
 					throw new Exception();
 				}
 

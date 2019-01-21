@@ -52,10 +52,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\ExpressionLanguage;
 
-require_once 'boot.php';
-require_once 'include/conversation.php';
-require_once 'include/dba.php';
-
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 function advancedcontentfilter_install()

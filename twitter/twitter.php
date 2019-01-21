@@ -90,11 +90,6 @@ use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
 use Friendica\Util\Strings;
 
-require_once 'boot.php';
-require_once 'include/dba.php';
-require_once 'include/enotify.php';
-require_once 'include/text.php';
-
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 define('TWITTER_DEFAULT_POLL_INTERVAL', 5); // given in minutes
@@ -804,8 +799,6 @@ function twitter_expire(App $a)
 	}
 	DBA::close($r);
 
-	require_once "include/items.php";
-
 	Logger::log('twitter_expire: expire_start');
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'import' AND `v` = '1' ORDER BY RAND()");
@@ -935,7 +928,6 @@ function twitter_fetchtimeline(App $a, $uid)
 	$has_picture = false;
 
 	require_once 'mod/item.php';
-	require_once 'include/items.php';
 	require_once 'mod/share.php';
 
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
@@ -1229,9 +1221,11 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 					continue;
 				}
 
-				$expanded_url = Network::finalUrl($url->expanded_url);
+				$expanded_url = $url->expanded_url;
 
-				$oembed_data = OEmbed::fetchURL($expanded_url);
+				$final_url = Network::finalUrl($url->expanded_url);
+
+				$oembed_data = OEmbed::fetchURL($final_url);
 
 				if (empty($oembed_data) || empty($oembed_data->type)) {
 					continue;
@@ -1257,7 +1251,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 				} elseif ($oembed_data->type != 'link') {
 					$body = str_replace($url->url, '[url=' . $expanded_url . ']' . $url->display_url . '[/url]', $body);
 				} else {
-					$img_str = Network::fetchUrl($expanded_url, true, $redirects, 4);
+					$img_str = Network::fetchUrl($final_url, true, $redirects, 4);
 
 					$tempfile = tempnam(get_temppath(), 'cache');
 					file_put_contents($tempfile, $img_str);
@@ -1273,7 +1267,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 
 					if (substr($mime, 0, 6) == 'image/') {
 						$type = 'photo';
-						$body = str_replace($url->url, '[img]' . $expanded_url . '[/img]', $body);
+						$body = str_replace($url->url, '[img]' . $final_url . '[/img]', $body);
 					} else {
 						$type = $oembed_data->type;
 						$footerurl = $expanded_url;
@@ -1662,8 +1656,6 @@ function twitter_fetchhometimeline(App $a, $uid)
 	if ($application_name == "") {
 		$application_name = $a->getHostName();
 	}
-
-	require_once 'include/items.php';
 
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
