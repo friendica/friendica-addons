@@ -7,6 +7,7 @@
  * Author: Peter Liebetrau <https://socivitas/profile/peerteer>
  * 
  */
+use Friendica\Core\Addon;
 use Friendica\Core\Hook;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
