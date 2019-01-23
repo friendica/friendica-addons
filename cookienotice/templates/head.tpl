@@ -1,1 +1,0 @@
-<script type="text/javascript" src="/addon/cookienotice/cookienotice.js"></script>

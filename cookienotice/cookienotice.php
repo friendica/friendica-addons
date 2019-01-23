@@ -10,6 +10,7 @@
 use Friendica\Core\Hook;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
+use Friendica\Core\Renderer;
 
 /**
  * cookienotice_install
@@ -58,9 +59,8 @@ function cookienotice_addon_settings(\Friendica\App $a, &$s)
 	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
-
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="/addon/cookienotice/cookienotice.css" media="all" />' . "\r\n";
-
+    $stylesheetPath = 'addon/cookienotice/cookienotice.css';
+    $a->registerStylesheet($stylesheetPath);
 
 	$text = Config::get('cookienotice', 'text');
 	if (!$text) {
@@ -71,8 +71,8 @@ function cookienotice_addon_settings(\Friendica\App $a, &$s)
 		$oktext = '';
 	}
 
-	$t = get_markup_template("settings.tpl", "addon/cookienotice/");
-	$s .= replace_macros($t, [
+	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/cookienotice/");
+	$s .= Renderer::replaceMacros($t, [
 		'$title' => L10n::t('"cookienotice" Settings'),
 		'$description' => L10n::t('<b>Configure your cookie usage notice.</b> It should just be a notice, saying that the website uses cookies. It is shown as long as a user didnt confirm clicking the OK button.'),
 		'$text' => ['cookienotice-text', L10n::t('Cookie Usage Notice'), $text, L10n::t('The cookie usage notice')],
@@ -118,9 +118,11 @@ function cookienotice_addon_settings_post(\Friendica\App $a, &$b)
  */
 function cookienotice_page_content_top(\Friendica\App $a, &$b)
 {
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="/addon/cookienotice/cookienotice.css" media="all" />' . "\r\n";
-	$head = file_get_contents(__DIR__ . '/templates/head.tpl');
-	$a->page['htmlhead'] .= $head;
+    $stylesheetPath = 'addon/cookienotice/cookienotice.css';
+    $footerscriptPath = 'addon/cookienotice/cookienotice.js';
+
+    $a->registerStylesheet($stylesheetPath);
+    $a->registerFooterScript($footerscriptPath);
 }
 
 /**
@@ -138,9 +140,9 @@ function cookienotice_page_end(\Friendica\App $a, &$b)
 	$text = (string) Config::get('cookienotice', 'text', L10n::t('This website uses cookies to recognize revisiting and logged in users. You accept the usage of these cookies by continue browsing this website.'));
 	$oktext = (string) Config::get('cookienotice', 'oktext', L10n::t('OK'));
 
-	$page_end_tpl = get_markup_template("cookienotice.tpl", "addon/cookienotice/");
+	$page_end_tpl = Renderer::getMarkupTemplate("cookienotice.tpl", "addon/cookienotice/");
 
-	$page_end = replace_macros($page_end_tpl, [
+	$page_end = Renderer::replaceMacros($page_end_tpl, [
 		'$text' => $text,
 		'$oktext' => $oktext,
 	]);
