@@ -7,7 +7,6 @@
  * Author: Peter Liebetrau <https://socivitas/profile/peerteer>
  * 
  */
-use Friendica\Core\Addon;
 use Friendica\Core\Hook;
 use Friendica\Core\Config;
 use Friendica\Core\L10n;
@@ -60,17 +59,11 @@ function cookienotice_addon_settings(\Friendica\App $a, &$s)
 	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
-    $stylesheetPath = 'addon/cookienotice/cookienotice.css';
-    $a->registerStylesheet($stylesheetPath);
+	$stylesheetPath = 'addon/cookienotice/cookienotice.css';
+	$a->registerStylesheet($stylesheetPath);
 
-	$text = Config::get('cookienotice', 'text');
-	if (!$text) {
-		$text = '';
-	}
-	$oktext = Config::get('cookienotice', 'oktext');
-	if (!$oktext) {
-		$oktext = '';
-	}
+	$text = Config::get('cookienotice', 'text', L10n::t('This website uses cookies. If you continue browsing this website, you agree to the usage of cookies.'));
+	$oktext = Config::get('cookienotice', 'oktext', L10n::t('OK'));
 
 	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/cookienotice/");
 	$s .= Renderer::replaceMacros($t, [
