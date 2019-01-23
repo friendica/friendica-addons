@@ -5,7 +5,6 @@ window.addEventListener("load", function () {
 	if (cookie == "") {
 		document.getElementById('cookienotice-box').style.display = 'block';
 		document.getElementById('cookienotice-ok-button').onclick = function () {
-			console.log('clicked');
 			setCookie(cookiename, 1, 365);
 			document.getElementById('cookienotice-box').style.display = 'none';
 		};

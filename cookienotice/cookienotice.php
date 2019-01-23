@@ -20,11 +20,10 @@ use Friendica\Core\Renderer;
  */
 function cookienotice_install()
 {
-	$file = 'addon/cookienotice/cookienotice.php';
-	Hook::register('page_content_top', $file, 'cookienotice_page_content_top');
-	Hook::register('page_end', $file, 'cookienotice_page_end');
-	Hook::register('addon_settings', $file, 'cookienotice_addon_settings');
-	Hook::register('addon_settings_post', $file, 'cookienotice_addon_settings_post');
+	Hook::register('page_content_top', __FILE__, 'cookienotice_page_content_top');
+	Hook::register('page_end', __FILE__, 'cookienotice_page_end');
+	Hook::register('addon_settings', __FILE__, 'cookienotice_addon_settings');
+	Hook::register('addon_settings_post', __FILE__, 'cookienotice_addon_settings_post');
 }
 
 /**
@@ -35,11 +34,10 @@ function cookienotice_install()
 */
 function cookienotice_uninstall()
 {
-	$file = 'addon/cookienotice/cookienotice.php';
-	Hook::unregister('page_content_top', $file, 'cookienotice_page_content_top');
-	Hook::unregister('page_end', $file, 'cookienotice_page_end');
-	Hook::unregister('addon_settings', $file, 'cookienotice_addon_settings');
-	Hook::unregister('addon_settings_post', $file, 'cookienotice_addon_settings_post');
+	Hook::unregister('page_content_top', __FILE__, 'cookienotice_page_content_top');
+	Hook::unregister('page_end', __FILE__, 'cookienotice_page_end');
+	Hook::unregister('addon_settings', __FILE__, 'cookienotice_addon_settings');
+	Hook::unregister('addon_settings_post', __FILE__, 'cookienotice_addon_settings_post');
 }
 
 /**
