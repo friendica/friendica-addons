@@ -18,7 +18,7 @@ report/
 #ignore OSX .DS_Store files
 .DS_Store
 
-/nbproject/private/
+/nbproject/
 
 #ignore smarty cache
 /view/smarty3/compiled/
