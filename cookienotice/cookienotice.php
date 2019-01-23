@@ -112,11 +112,11 @@ function cookienotice_addon_settings_post(\Friendica\App $a, &$b)
  */
 function cookienotice_page_content_top(\Friendica\App $a, &$b)
 {
-    $stylesheetPath = 'addon/cookienotice/cookienotice.css';
-    $footerscriptPath = 'addon/cookienotice/cookienotice.js';
+	$stylesheetPath = 'addon/cookienotice/cookienotice.css';
+	$footerscriptPath = 'addon/cookienotice/cookienotice.js';
 
-    $a->registerStylesheet($stylesheetPath);
-    $a->registerFooterScript($footerscriptPath);
+	$a->registerStylesheet($stylesheetPath);
+	$a->registerFooterScript($footerscriptPath);
 }
 
 /**
