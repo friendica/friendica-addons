@@ -11,8 +11,8 @@ $a->strings["This addon tries to identify the language posts are writen in. If i
 $a->strings["Use the language filter"] = "Usar el filtro de idioma";
 $a->strings["Able to read"] = "Capaz de leer";
 $a->strings["List of abbreviations (iso2 codes) for languages you speak, comma separated. For example \"de,it\"."] = "Lista de abreviaciones (códigos iso2) para los idiomas que habla, separadas por comas. Por ejemplo \"de,it\".";
-$a->strings["Minimum confidence in language detection"] = "Mínima confianza en la detección de idioma";
-$a->strings["Minimum confidence in language detection being correct, from 0 to 100. Posts will not be filtered when the confidence of language detection is below this percent value."] = "Mínima confianza en que la detección de idioma sea correcta, de 0 a 100. Las entradas no se filtrarán cuando la confianza de la detección del idioma es inferior a su valor de porcentaje.";
+$a->strings["Minimum confidence in language detection"] = "Confianza mínima en la detección de idioma";
+$a->strings["Minimum confidence in language detection being correct, from 0 to 100. Posts will not be filtered when the confidence of language detection is below this percent value."] = "Confianza mínima en que la detección de idioma sea correcta, de 0 a 100. Las entradas no se filtrarán cuando la confianza de la detección del idioma es inferior a su valor de porcentaje.";
 $a->strings["Minimum length of message body"] = "Longitud mínima del cuerpo del mensaje";
 $a->strings["Minimum number of characters in message body for filter to be used. Posts shorter than this will not be filtered. Note: Language detection is unreliable for short content (<200 characters)."] = "Número mínimo de caracteres en el cuerpo del mensaje para que se use el filtro. Las publicaciones más cortas que esto no serán filtradas. Nota: La detección de idioma no es fiable para contenido corto (<200 caracteres).";
 $a->strings["Save Settings"] = "Guardar Ajustes";
