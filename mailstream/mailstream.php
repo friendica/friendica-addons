@@ -154,17 +154,19 @@ function mailstream_do_images($a, &$item, &$attachments) {
 		return;
 	}
 	$attachments = [];
-	$baseurl = $a->getBaseURL();
 	preg_match_all("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/ism", $item["body"], $matches1);
 	preg_match_all("/\[img\](.*?)\[\/img\]/ism", $item["body"], $matches2);
 	foreach (array_merge($matches1[3], $matches2[1]) as $url) {
-		$redirects;
+		$redirects = 0;
 		$cookiejar = tempnam(get_temppath(), 'cookiejar-mailstream-');
+		$curlResult = Network::fetchUrlFull($url, true, $redirects, 0, null, $cookiejar);
 		$attachments[$url] = [
-			'data' => Network::fetchUrl($url, true, $redirects, 0, null, $cookiejar),
+			'data' => $curlResult->getBody(),
 			'guid' => hash("crc32", $url),
 			'filename' => basename($url),
-			'type' => $a->get_curl_content_type()];
+			'type' => $curlResult->getContentType()
+		];
+
 		if (strlen($attachments[$url]['data'])) {
 			$item['body'] = str_replace($url, 'cid:' . $attachments[$url]['guid'], $item['body']);
 			continue;
