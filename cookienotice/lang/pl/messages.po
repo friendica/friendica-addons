@@ -1,0 +1,57 @@
+# ADDON cookienotice
+# Copyright (C)
+# This file is distributed under the same license as the Friendica cookienotice addon package.
+# 
+# 
+# Translators:
+# Waldemar Stoczkowski, 2019
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-01-20 14:51+0100\n"
+"PO-Revision-Date: 2019-01-23 16:01+0000\n"
+"Last-Translator: Waldemar Stoczkowski, 2019\n"
+"Language-Team: Polish (https://www.transifex.com/Friendica/teams/12172/pl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: cookienotice.php:53
+msgid "\"cookienotice\" Settings"
+msgstr ""
+
+#: cookienotice.php:54
+msgid ""
+"<b>Configure your cookie usage notice.</b> It should just be a notice, "
+"saying that the website uses cookies. It is shown as long as a user didnt "
+"confirm clicking the OK button."
+msgstr ""
+
+#: cookienotice.php:55
+msgid "Cookie Usage Notice"
+msgstr ""
+
+#: cookienotice.php:55
+msgid "The cookie usage notice"
+msgstr ""
+
+#: cookienotice.php:56
+msgid "OK Button Text"
+msgstr "Tekst przycisku OK"
+
+#: cookienotice.php:56
+msgid "The OK Button text"
+msgstr ""
+
+#: cookienotice.php:57
+msgid "Save Settings"
+msgstr ""
+
+#: cookienotice.php:72
+msgid "cookienotice Settings saved."
+msgstr ""
