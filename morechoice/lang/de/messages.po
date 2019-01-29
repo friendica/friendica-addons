@@ -6,6 +6,7 @@
 # Translators:
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018
 # Vinzenz Vietzke <vinz@vinzv.de>, 2018
+# Copiis Praeesse <richard@zsemberi.de>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -14,7 +15,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-08-07 15:04+0200\n"
 "PO-Revision-Date: 2018-08-07 18:18+0000\n"
-"Last-Translator: Vinzenz Vietzke <vinz@vinzv.de>, 2018\n"
+"Last-Translator: Copiis Praeesse <richard@zsemberi.de>, 2019\n"
 "Language-Team: German (https://www.transifex.com/Friendica/teams/12172/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -80,11 +81,11 @@ msgstr "Nonne"
 
 #: morechoice.php:48
 msgid "Soft butch"
-msgstr ""
+msgstr "zarter Butch"
 
 #: morechoice.php:49
 msgid "Stone femme"
-msgstr ""
+msgstr "steinerne Femme"
 
 #: morechoice.php:50
 msgid "Tomboy"
