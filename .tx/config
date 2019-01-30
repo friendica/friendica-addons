@@ -1,6 +1,12 @@
 [main]
 host = https://www.transifex.com
 
+[friendica.addon_advancedcontentfilter_messagespo]
+file_filter = advancedcontentfilter/lang/<lang>/messages.po
+source_file = advancedcontentfilter/lang/C/messages.po
+source_lang = en
+type = PO
+
 [friendica.addon_blackout_messagespo]
 file_filter = blackout/lang/<lang>/messages.po
 source_file = blackout/lang/C/messages.po
@@ -31,21 +37,21 @@ source_file = buglink/lang/C/messages.po
 source_lang = en
 type = PO
 
-[friendica.addon_communityhome_messagespo]
-file_filter = communityhome/lang/<lang>/messages.po
-source_file = communityhome/lang/C/messages.po
+[friendica.addon_catavatar_messagespo]
+file_filter = catavatar/lang/<lang>/messages.po
+source_file = catavatar/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_cookienotice_messagespo]
+file_filter = cookienotice/lang/<lang>/messages.po
+source_file = cookienotice/lang/C/messages.po
 source_lang = en
 type = PO
 
 [friendica.addon_curweather_messagespo]
 file_filter = curweather/lang/<lang>/messages.po
 source_file = curweather/lang/C/messages.po
-source_lang = en
-type = PO
-
-[friendica.addon_dav_messagespo]
-file_filter = dav/lang/<lang>/messages.po
-source_file = dav/lang/C/messages.po
 source_lang = en
 type = PO
 
@@ -100,6 +106,12 @@ type = PO
 [friendica.addon_group_text_messagespo]
 file_filter = group_text/lang/<lang>/messages.po
 source_file = group_text/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_ifttt_messagespo]
+file_filter = ifttt/lang/<lang>/messages.po
+source_file = ifttt/lang/C/messages.po
 source_lang = en
 type = PO
 
@@ -172,6 +184,24 @@ type = PO
 [friendica.addon_mailstream_messagespo]
 file_filter = mailstream/lang/<lang>/messages.po
 source_file = mailstream/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_mathjax_messagespo]
+file_filter = mathjax/lang/<lang>/messages.po
+source_file = mathjax/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_membersince_messagespo]
+file_filter = membersince/lang/<lang>/messages.po
+source_file = membersince/lang/C/messages.po
+source_lang = en
+type = PO
+
+[friendica.addon_morechoice_messagespo]
+file_filter = morechoice/lang/<lang>/messages.po
+source_file = morechoice/lang/C/messages.po
 source_lang = en
 type = PO
 
@@ -343,6 +373,12 @@ source_file = webrtc/lang/C/messages.po
 source_lang = en
 type = PO
 
+[friendica.addon_widgets_messagespo]
+file_filter = widgets/lang/<lang>/messages.po
+source_file = widgets/lang/C/messages.po
+source_lang = en
+type = PO
+
 [friendica.addon_windowsphonepush_messagespo]
 file_filter = windowsphonepush/lang/<lang>/messages.po
 source_file = windowsphonepush/lang/C/messages.po
@@ -361,8 +397,3 @@ source_file = xmpp/lang/C/messages.po
 source_lang = en
 type = PO
 
-[friendica.addon_yourls_messagespo]
-file_filter = yourls/lang/<lang>/messages.po
-source_file = yourls/lang/C/messages.po
-source_lang = en
-type = PO
