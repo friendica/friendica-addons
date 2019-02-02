@@ -15,8 +15,8 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
-use Friendica\Model\Contact;
 use Friendica\Model\Profile;
+use Friendica\Model\User;
 use Friendica\Util\Strings;
 use Friendica\Util\Temporal;
 
@@ -161,11 +161,11 @@ function forumdirectory_content(App $a)
 			}
 
 			switch ($rr['page-flags']) {
-				case Contact::PAGE_NORMAL   : $page_type = "Personal Profile"; break;
-				case Contact::PAGE_SOAPBOX  : $page_type = "Fan Page"        ; break;
-				case Contact::PAGE_COMMUNITY: $page_type = "Community Forum" ; break;
-				case Contact::PAGE_FREELOVE : $page_type = "Open Forum"      ; break;
-				case Contact::PAGE_PRVGROUP : $page_type = "Private Group"   ; break;
+				case User::PAGE_FLAGS_NORMAL   : $page_type = "Personal Profile"; break;
+				case User::PAGE_FLAGS_SOAPBOX  : $page_type = "Fan Page"        ; break;
+				case User::PAGE_FLAGS_COMMUNITY: $page_type = "Community Forum" ; break;
+				case User::PAGE_FLAGS_FREELOVE : $page_type = "Open Forum"      ; break;
+				case User::PAGE_FLAGS_PRVGROUP : $page_type = "Private Group"   ; break;
 			}
 
 			$profile = $rr;
