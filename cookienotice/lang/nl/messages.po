@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-20 14:51+0100\n"
+"POT-Creation-Date: 2019-01-30 10:48+0100\n"
 "PO-Revision-Date: 2019-01-23 16:01+0000\n"
 "Last-Translator: Rik 4 <rikviergever@hotmail.com>, 2019\n"
 "Language-Team: Dutch (https://www.transifex.com/Friendica/teams/12172/nl/)\n"
@@ -21,37 +21,53 @@ msgstr ""
 "Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: cookienotice.php:53
+#: cookienotice.php:63
+msgid ""
+"This website uses cookies. If you continue browsing this website, you agree "
+"to the usage of cookies."
+msgstr ""
+
+#: cookienotice.php:64 cookienotice.php:133
+msgid "OK"
+msgstr ""
+
+#: cookienotice.php:68
 msgid "\"cookienotice\" Settings"
 msgstr ""
 
-#: cookienotice.php:54
+#: cookienotice.php:69
 msgid ""
 "<b>Configure your cookie usage notice.</b> It should just be a notice, "
 "saying that the website uses cookies. It is shown as long as a user didnt "
 "confirm clicking the OK button."
 msgstr ""
 
-#: cookienotice.php:55
+#: cookienotice.php:70
 msgid "Cookie Usage Notice"
 msgstr ""
 
-#: cookienotice.php:55
+#: cookienotice.php:70
 msgid "The cookie usage notice"
 msgstr ""
 
-#: cookienotice.php:56
+#: cookienotice.php:71
 msgid "OK Button Text"
 msgstr "OK knop tekst"
 
-#: cookienotice.php:56
+#: cookienotice.php:71
 msgid "The OK Button text"
 msgstr ""
 
-#: cookienotice.php:57
+#: cookienotice.php:72
 msgid "Save Settings"
 msgstr ""
 
-#: cookienotice.php:72
+#: cookienotice.php:97
 msgid "cookienotice Settings saved."
+msgstr ""
+
+#: cookienotice.php:132
+msgid ""
+"This website uses cookies to recognize revisiting and logged in users. You "
+"accept the usage of these cookies by continue browsing this website."
 msgstr ""
