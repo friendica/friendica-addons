@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-20 14:51+0100\n"
+"POT-Creation-Date: 2019-01-30 10:48+0100\n"
 "PO-Revision-Date: 2019-01-23 16:01+0000\n"
 "Last-Translator: Aditoo, 2019\n"
 "Language-Team: Czech (https://www.transifex.com/Friendica/teams/12172/cs/)\n"
@@ -21,37 +21,61 @@ msgstr ""
 "Language: cs\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
-#: cookienotice.php:53
-msgid "\"cookienotice\" Settings"
-msgstr "Nastavení „cokienotice“"
+#: cookienotice.php:63
+msgid ""
+"This website uses cookies. If you continue browsing this website, you agree "
+"to the usage of cookies."
+msgstr ""
+"Tato stránka používá cookies. Pokud budete pokračovat v používání této "
+"stránky, souhlasíte s používáním cookies."
 
-#: cookienotice.php:54
+#: cookienotice.php:64 cookienotice.php:133
+msgid "OK"
+msgstr "OK"
+
+#: cookienotice.php:68
+msgid "\"cookienotice\" Settings"
+msgstr "Nastavení „cookienotice“"
+
+#: cookienotice.php:69
 msgid ""
 "<b>Configure your cookie usage notice.</b> It should just be a notice, "
 "saying that the website uses cookies. It is shown as long as a user didnt "
 "confirm clicking the OK button."
 msgstr ""
+"<b>Nastavte si vaše oznámení o používání cookies.</b> Mělo by to být pouze "
+"oznámení říkající, že stránka používá cookies. Zobrazí se, dokud uživatel "
+"neklikne na tlačítko OK."
 
-#: cookienotice.php:55
+#: cookienotice.php:70
 msgid "Cookie Usage Notice"
-msgstr ""
+msgstr "Oznámení o používání cookies"
 
-#: cookienotice.php:55
+#: cookienotice.php:70
 msgid "The cookie usage notice"
-msgstr ""
+msgstr "Oznámení o používání cookies"
 
-#: cookienotice.php:56
+#: cookienotice.php:71
 msgid "OK Button Text"
 msgstr "Text tlačítka OK"
 
-#: cookienotice.php:56
+#: cookienotice.php:71
 msgid "The OK Button text"
 msgstr "Text tlačítka OK"
 
-#: cookienotice.php:57
-msgid "Save Settings"
-msgstr ""
-
 #: cookienotice.php:72
+msgid "Save Settings"
+msgstr "Uložit nastavení"
+
+#: cookienotice.php:97
 msgid "cookienotice Settings saved."
-msgstr "Nastavení cookienotice uložena. "
+msgstr "Nastavení cookienotice uložena."
+
+#: cookienotice.php:132
+msgid ""
+"This website uses cookies to recognize revisiting and logged in users. You "
+"accept the usage of these cookies by continue browsing this website."
+msgstr ""
+"Tato stránka používá cookies pro rozpoznávání znovu navštěvujících a "
+"přihlášených uživatelů. Pokud budete pokračovat v používání této stránky, "
+"souhlasíte s používáním cookies."
