@@ -58,13 +58,13 @@ require_once 'include/dba.php';
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
-function advancedcontentfilter_install()
+function advancedcontentfilter_install(App $a)
 {
 	Hook::register('dbstructure_definition'     , __FILE__, 'advancedcontentfilter_dbstructure_definition');
 	Hook::register('prepare_body_content_filter', __FILE__, 'advancedcontentfilter_prepare_body_content_filter');
 	Hook::register('addon_settings'             , __FILE__, 'advancedcontentfilter_addon_settings');
 
-	DBStructure::update(false, true);
+	DBStructure::update($a->getBasePath(), false, true);
 
 	Logger::log("installed advancedcontentfilter");
 }
