@@ -140,9 +140,9 @@ function twitter_uninstall()
 	Hook::unregister('addon_settings_post', __FILE__, 'twitter_settings_post');
 }
 
-function twitter_load_config(App $a)
+function twitter_load_config(App $a, Config\ConfigCacheLoader $loader)
 {
-	$a->loadConfigFile(__DIR__ . '/config/twitter.config.php');
+	$a->getConfig()->loadConfigArray($loader->loadConfigFile('twitter'));
 }
 
 function twitter_check_item_notification(App $a, array &$notification_data)

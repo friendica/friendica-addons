@@ -21,6 +21,7 @@
  * system will call the name_uninstall() function.
  *
  */
+
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
@@ -76,9 +77,9 @@ function geonames_uninstall() {
 	Logger::log("removed geonames");
 }
 
-function geonames_load_config(\Friendica\App $a)
+function geonames_load_config(\Friendica\App $a, Config\ConfigCacheLoader $loader)
 {
-	$a->loadConfigFile(__DIR__. '/config/geonames.config.php');
+	$a->getConfig()->loadConfigArray($loader->loadConfigFile('geonames'));
 }
 
 function geonames_post_hook($a, &$item) {

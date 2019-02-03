@@ -8,13 +8,13 @@
  * Author: Klaus Weidenbach
  *
  */
+
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\Core\System;
 use Friendica\Util\Network;
 use Friendica\Util\Strings;
 
@@ -47,9 +47,9 @@ function openstreetmap_uninstall()
 	Logger::log("removed openstreetmap");
 }
 
-function openstreetmap_load_config(\Friendica\App $a)
+function openstreetmap_load_config(\Friendica\App $a, Config\ConfigCacheLoader $loader)
 {
-	$a->loadConfigFile(__DIR__ . '/config/openstreetmap.config.php');
+	$a->getConfig()->loadConfigArray($loader->loadConfigFile('openstreetmap'));
 }
 
 function openstreetmap_alterheader($a, &$navHtml)
