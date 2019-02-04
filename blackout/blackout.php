@@ -54,6 +54,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\System;
 
 function blackout_install() {
     Hook::register('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');

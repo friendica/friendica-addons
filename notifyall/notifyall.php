@@ -14,6 +14,7 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\System;
 use Friendica\Util\Emailer;
 
 function notifyall_install()
