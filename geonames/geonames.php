@@ -79,7 +79,7 @@ function geonames_uninstall() {
 
 function geonames_load_config(\Friendica\App $a, Config\ConfigCacheLoader $loader)
 {
-	$a->getConfig()->loadConfigArray($loader->loadConfigFile('geonames'));
+	$a->getConfig()->loadConfigArray($loader->loadConfigFile('geonames', true));
 }
 
 function geonames_post_hook($a, &$item) {

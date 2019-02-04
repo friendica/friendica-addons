@@ -142,7 +142,7 @@ function twitter_uninstall()
 
 function twitter_load_config(App $a, Config\ConfigCacheLoader $loader)
 {
-	$a->getConfig()->loadConfigArray($loader->loadConfigFile('twitter'));
+	$a->getConfig()->loadConfigArray($loader->loadConfigFile('twitter', true));
 }
 
 function twitter_check_item_notification(App $a, array &$notification_data)

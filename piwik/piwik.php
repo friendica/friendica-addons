@@ -54,7 +54,7 @@ function piwik_uninstall() {
 
 function piwik_load_config(\Friendica\App $a, Config\ConfigCacheLoader $loader)
 {
-	$a->getConfig()->loadConfigArray($loader->loadConfigFile('piwik'));
+	$a->getConfig()->loadConfigArray($loader->loadConfigFile('piwik', true));
 }
 
 function piwik_analytics($a,&$b) {

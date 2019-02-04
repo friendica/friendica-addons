@@ -38,7 +38,7 @@ function gravatar_uninstall() {
 
 function gravatar_load_config(App $a, Config\ConfigCacheLoader $loader)
 {
-	$a->getConfig()->loadConfigArray($loader->loadConfigFile('gravatar'));
+	$a->getConfig()->loadConfigArray($loader->loadConfigFile('gravatar', true));
 }
 
 /**

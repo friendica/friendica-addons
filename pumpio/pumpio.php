@@ -380,7 +380,7 @@ function pumpio_settings_post(App $a, array &$b)
 
 function pumpio_load_config(App $a, Config\ConfigCacheLoader $loader)
 {
-	$a->getConfig()->loadConfigArray($loader->loadConfigFile('pumpio'));
+	$a->getConfig()->loadConfigArray($loader->loadConfigFile('pumpio', true));
 }
 
 function pumpio_hook_fork(App $a, array &$b)

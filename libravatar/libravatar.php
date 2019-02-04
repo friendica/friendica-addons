@@ -38,7 +38,7 @@ function libravatar_uninstall()
 
 function libravatar_load_config(App $a, Config\ConfigCacheLoader $loader)
 {
-	$a->getConfig()->loadConfigArray($loader->loadConfigFile('libravatar'));
+	$a->getConfig()->loadConfigArray($loader->loadConfigFile('libravatar', true));
 }
 
 /**

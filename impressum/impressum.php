@@ -54,7 +54,7 @@ function impressum_footer($a, &$b) {
 
 function impressum_load_config(\Friendica\App $a, Config\ConfigCacheLoader $loader)
 {
-	$a->getConfig()->loadConfigArray($loader->loadConfigFile('impressum'));
+	$a->getConfig()->loadConfigArray($loader->loadConfigFile('impressum', true));
 }
 
 function impressum_show($a,&$b) {
