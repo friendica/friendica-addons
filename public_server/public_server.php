@@ -37,7 +37,7 @@ function public_server_uninstall()
 
 function public_server_load_config(App $a, Config\ConfigCacheLoader $loader)
 {
-	$a->getConfig()->loadConfigArray($loader->loadConfigFile('public_server', true));
+	$a->getConfig()->loadConfigArray($loader->loadAddonConfig('public_server'));
 }
 
 function public_server_register_account($a, $b)

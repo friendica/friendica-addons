@@ -73,7 +73,7 @@ function ldapauth_uninstall()
 
 function ldapauth_load_config(\Friendica\App $a, Config\ConfigCacheLoader $loader)
 {
-	$a->getConfig()->loadConfigArray($loader->loadConfigFile('ldapauth', true));
+	$a->getConfig()->loadConfigArray($loader->loadAddonConfig('ldapauth'));
 }
 
 function ldapauth_hook_authenticate($a, &$b)
