@@ -30,6 +30,7 @@
  *     about http/https but beware to put the trailing / at the end of your
  *     setting.
  */
+
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
@@ -51,9 +52,9 @@ function piwik_uninstall() {
 	Logger::log("uninstalled piwik addon");
 }
 
-function piwik_load_config(\Friendica\App $a)
+function piwik_load_config(\Friendica\App $a, Config\ConfigCacheLoader $loader)
 {
-	$a->loadConfigFile(__DIR__ . '/config/piwik.config.php');
+	$a->getConfig()->loadConfigArray($loader->loadAddonConfig('piwik'));
 }
 
 function piwik_analytics($a,&$b) {

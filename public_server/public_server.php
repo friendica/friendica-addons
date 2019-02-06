@@ -8,7 +8,6 @@
 
 use Friendica\App;
 use Friendica\BaseModule;
-use Friendica\Core\Addon;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
@@ -36,9 +35,9 @@ function public_server_uninstall()
 	Hook::unregister('logged_in', 'addon/public_server/public_server.php', 'public_server_login');
 }
 
-function public_server_load_config(App $a)
+function public_server_load_config(App $a, Config\ConfigCacheLoader $loader)
 {
-	$a->loadConfigFile(__DIR__ . '/config/public_server.config.php');
+	$a->getConfig()->loadConfigArray($loader->loadAddonConfig('public_server'));
 }
 
 function public_server_register_account($a, $b)

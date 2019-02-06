@@ -36,9 +36,9 @@ function gravatar_uninstall() {
 	Logger::log("unregistered gravatar in avatar_lookup hook");
 }
 
-function gravatar_load_config(App $a)
+function gravatar_load_config(App $a, Config\ConfigCacheLoader $loader)
 {
-	$a->loadConfigFile(__DIR__ . '/config/gravatar.config.php');
+	$a->getConfig()->loadConfigArray($loader->loadAddonConfig('gravatar'));
 }
 
 /**
