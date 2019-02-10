@@ -5,7 +5,7 @@
  * (RFC 4880).
  *
  * @package OpenPGP
- * @version 0.0.1
+ * @version 0.3.0
  * @author  Arto Bendiken <arto.bendiken@gmail.com>
  * @author  Stephen Paul Weber <singpolyma@singpolyma.net>
  * @see     http://github.com/bendiken/openpgp-php
@@ -1327,15 +1327,32 @@ class OpenPGP_PublicKeyPacket extends OpenPGP_Packet {
 
   function __construct($key=array(), $algorithm='RSA', $timestamp=NULL, $version=4) {
     parent::__construct();
-    $this->key = $key;
-    if(is_string($this->algorithm = $algorithm)) {
-      $this->algorithm = array_search($this->algorithm, self::$algorithms);
-    }
-    $this->timestamp = $timestamp ? $timestamp : time();
-    $this->version = $version;
 
-    if(count($this->key) > 0) {
-      $this->key_id = substr($this->fingerprint(), -8);
+    if($key instanceof OpenPGP_PublicKeyPacket) {
+      $this->algorithm = $key->algorithm;
+      $this->key = array();
+
+      // Restrict to only the fields we need
+      foreach (self::$key_fields[$this->algorithm] as $field) {
+        $this->key[$field] = $key->key[$field];
+      }
+
+      $this->key_id = $key->key_id;
+      $this->fingerprint = $key->fingerprint;
+      $this->timestamp = $key->timestamp;
+      $this->version = $key->version;
+      $this->v3_days_of_validity = $key->v3_days_of_validity;
+    } else {
+      $this->key = $key;
+      if(is_string($this->algorithm = $algorithm)) {
+        $this->algorithm = array_search($this->algorithm, self::$algorithms);
+      }
+      $this->timestamp = $timestamp ? $timestamp : time();
+      $this->version = $version;
+
+      if(count($this->key) > 0) {
+        $this->key_id = substr($this->fingerprint(), -8);
+      }
     }
   }
 
@@ -1685,9 +1702,18 @@ class OpenPGP_LiteralDataPacket extends OpenPGP_Packet {
     $this->timestamp = isset($opt['timestamp']) ? $opt['timestamp'] : time();
   }
 
-  function normalize() {
+  function normalize($clearsign=false) {
+    if($clearsign && ($this->format != 'u' && $this->format != 't')) {
+      $this->format = 'u'; // Clearsign must be text
+    }
+
     if($this->format == 'u' || $this->format == 't') { // Normalize line endings
       $this->data = str_replace("\n", "\r\n", str_replace("\r", "\n", str_replace("\r\n", "\n", $this->data)));
+    }
+
+    if($clearsign) {
+      // When clearsigning, do not sign over trailing whitespace
+      $this->data = preg_replace('/\s+\r/', "\r", $this->data);
     }
   }
 
