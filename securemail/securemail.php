@@ -15,16 +15,8 @@ use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 use Friendica\Util\Emailer;
 
-/* because the fraking openpgp-php is in composer, require libs in composer
- * and then don't use autoloader to load classes... */
-$path = __DIR__ . '/vendor/phpseclib/phpseclib/phpseclib/';
-set_include_path(get_include_path() . PATH_SEPARATOR . $path);
-/* so, we don't use the autoloader and include what we need */
-$path = __DIR__ . '/vendor/singpolyma/openpgp-php/lib';
-set_include_path(get_include_path() . PATH_SEPARATOR . $path);
+require_once 'vendor/autoload.php';
 
-require_once 'openpgp.php';
-require_once 'openpgp_crypt_symmetric.php';
 function securemail_install()
 {
 	Hook::register('addon_settings', 'addon/securemail/securemail.php', 'securemail_settings');
