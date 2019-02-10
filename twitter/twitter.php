@@ -75,7 +75,6 @@ use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
-use Friendica\Core\System;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\Model\Contact;
@@ -136,9 +135,9 @@ function twitter_uninstall()
 	Hook::unregister('addon_settings_post', __FILE__, 'twitter_settings_post');
 }
 
-function twitter_load_config(App $a, Config\ConfigCacheLoader $loader)
+function twitter_load_config(App $a, Config\Cache\ConfigCacheLoader $loader)
 {
-	$a->getConfig()->loadConfigArray($loader->loadAddonConfig('twitter'));
+	$a->getConfigCache()->load($loader->loadAddonConfig('twitter'));
 }
 
 function twitter_check_item_notification(App $a, array &$notification_data)

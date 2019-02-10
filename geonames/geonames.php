@@ -77,9 +77,9 @@ function geonames_uninstall() {
 	Logger::log("removed geonames");
 }
 
-function geonames_load_config(\Friendica\App $a, Config\ConfigCacheLoader $loader)
+function geonames_load_config(\Friendica\App $a, Config\Cache\ConfigCacheLoader $loader)
 {
-	$a->getConfig()->loadConfigArray($loader->loadAddonConfig('geonames'));
+	$a->getConfigCache()->load($loader->loadAddonConfig('geonames'));
 }
 
 function geonames_post_hook($a, &$item) {
