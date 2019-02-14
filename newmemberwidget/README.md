@@ -17,12 +17,12 @@ Testing it
 ----------
 You want to test it, but you don't want to create a new account? Take your fav
 text editor (yeah emacs will do as well) and edit the newmemberwidget.php file.
-In line 21 you will find a if clause, just add a ! infront of the
+In line 39 you will find a if clause, just add a ! infront of the
 
-	x(!_SESSION
+	empty($_SESSION['
 
-that will negate the requirement of being a new member, so don't forget the
-remove that ! again after testing ;-)
+right after the bracket following the if. That will negate the requirement of
+ being a new member, so don't forget the remove that ! again after testing ;-)
 
 Translations
 ------------
