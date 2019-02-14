@@ -7,7 +7,11 @@
  */
 
 // From http://phpseclib.sourceforge.net/
-require_once 'Crypt/RSA.php';
+use phpseclib\Crypt\RSA as Crypt_RSA;
+use phpseclib\Math\BigInteger as Math_BigInteger;
+
+define('CRYPT_RSA_ENCRYPTION_PKCS1', Crypt_RSA::ENCRYPTION_PKCS1);
+define('CRYPT_RSA_SIGNATURE_PKCS1', Crypt_RSA::SIGNATURE_PKCS1);
 
 require_once dirname(__FILE__).'/openpgp.php';
 @include_once dirname(__FILE__).'/openpgp_crypt_symmetric.php'; /* For encrypt/decrypt */
@@ -150,7 +154,7 @@ class OpenPGP_Crypt_RSA {
     if(!$sig) {
       $sig = new OpenPGP_SignaturePacket($packet, 'RSA', strtoupper($hash)); 
       $sig->signature_type = 0x13;
-      $sig->hashed_subpackets[] = new OpenPGP_SignaturePacket_KeyFlagsPacket(array(0x01, 0x02));
+      $sig->hashed_subpackets[] = new OpenPGP_SignaturePacket_KeyFlagsPacket(array(0x01 | 0x02));
       $sig->hashed_subpackets[] = new OpenPGP_SignaturePacket_IssuerPacket($keyid);
       $packet[] = $sig;
     }
@@ -241,8 +245,18 @@ class OpenPGP_Crypt_RSA {
     $rsa = self::crypt_rsa_key($mod, $exp);
 
     if($private) {
-      if($packet->key['p'] && $packet->key['q']) $rsa->primes = array($packet->key['p'], $packet->key['q']);
-      if($packet->key['u']) $rsa->coefficients = array($packet->key['u']);
+        /**
+         * @see https://github.com/phpseclib/phpseclib/issues/1113
+         * Primes and coefficients now use BigIntegers.
+         **/
+        //set the primes
+        if($packet->key['p'] && $packet->key['q'])
+            $rsa->primes = array(
+                1 => new Math_BigInteger($packet->key['p'], 256),
+                2 => new Math_BigInteger($packet->key['q'], 256)
+            );
+        // set the coefficients
+        if($packet->key['u']) $rsa->coefficients = array(2 => new Math_BigInteger($packet->key['u'], 256));
     }
 
     return $rsa;

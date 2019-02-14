@@ -1,0 +1,21 @@
+{
+    "name": "friendica-addons/securemail",
+    "description": "Send notification mail encrypted with user-defined public GPG key.",
+    "type": "friendica-addon",
+    "authors": [
+        {
+            "name": "Fabio Comuni",
+            "homepage": "https://kirgroup.com/profile/fabrixxm",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "phpseclib/phpseclib": "^2.0",
+        "singpolyma/openpgp-php": "^0.3.0"
+    },
+    "license": "AGPL-3.0+",
+    "minimum-stability": "stable",
+    "config": {
+        "autoloader-suffix": "SecuremailAddon"
+    }
+}
