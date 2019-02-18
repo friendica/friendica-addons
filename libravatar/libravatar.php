@@ -36,9 +36,9 @@ function libravatar_uninstall()
 	Logger::log("unregistered libravatar in avatar_lookup hook");
 }
 
-function libravatar_load_config(App $a, Config\ConfigCacheLoader $loader)
+function libravatar_load_config(App $a, Config\Cache\ConfigCacheLoader $loader)
 {
-	$a->getConfig()->loadConfigArray($loader->loadAddonConfig('libravatar'));
+	$a->getConfigCache()->load($loader->loadAddonConfig('libravatar'));
 }
 
 /**

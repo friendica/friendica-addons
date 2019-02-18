@@ -35,9 +35,9 @@ function testdrive_uninstall() {
 
 }
 
-function testdrive_load_config(App $a, Config\ConfigCacheLoader $loader)
+function testdrive_load_config(App $a, Config\Cache\ConfigCacheLoader $loader)
 {
-	$a->getConfig()->loadConfigArray($loader->loadAddonConfig('testdrive'));
+	$a->getConfigCache()->load($loader->loadAddonConfig('testdrive'));
 }
 
 function testdrive_globaldir_update($a,&$b) {

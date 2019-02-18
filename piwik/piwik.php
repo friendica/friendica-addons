@@ -52,9 +52,9 @@ function piwik_uninstall() {
 	Logger::log("uninstalled piwik addon");
 }
 
-function piwik_load_config(\Friendica\App $a, Config\ConfigCacheLoader $loader)
+function piwik_load_config(\Friendica\App $a, Config\Cache\ConfigCacheLoader $loader)
 {
-	$a->getConfig()->loadConfigArray($loader->loadAddonConfig('piwik'));
+	$a->getConfigCache()->load($loader->loadAddonConfig('piwik'));
 }
 
 function piwik_analytics($a,&$b) {
