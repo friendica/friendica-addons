@@ -25,47 +25,53 @@ function rendertime_init_1(&$a) {
 
 function rendertime_page_end(&$a, &$o) {
 
-	$duration = microtime(true)-$a->performance["start"];
+	$duration = microtime(true)-$a->getProfiler()->get("start");
 
 	$ignored_modules = ["fbrowser"];
 	$ignored = in_array($a->module, $ignored_modules);
 
 	if (is_site_admin() && (defaults($_GET, "mode", '') != "minimal") && !$a->is_mobile && !$a->is_tablet && !$ignored) {
 		$o = $o.'<div class="renderinfo">'. L10n::t("Database: %s/%s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: %s, Total: %s",
-			round($a->performance["database"] - $a->performance["database_write"], 3),
-			round($a->performance["database_write"], 3),
-			round($a->performance["network"], 2),
-			round($a->performance["rendering"], 2),
-			round($a->performance["parser"], 2),
-			round($a->performance["file"], 2),
-			round($duration - $a->performance["database"]
-					- $a->performance["network"] - $a->performance["rendering"]
-					- $a->performance["parser"] - $a->performance["file"], 2),
+			round($a->getProfiler()->get("database") - $a->getProfiler()->get("database_write"), 3),
+			round($a->getProfiler()->get("database_write"), 3),
+			round($a->getProfiler()->get("network"), 2),
+			round($a->getProfiler()->get("rendering"), 2),
+			round($a->getProfiler()->get("parser"), 2),
+			round($a->getProfiler()->get("file"), 2),
+			round($duration - $a->getProfiler()->get("database")
+					- $a->getProfiler()->get("network") - $a->getProfiler()->get("rendering")
+					- $a->getProfiler()->get("parser") - $a->getProfiler()->get("file"), 2),
 			round($duration, 2)
-			//round($a->performance["markstart"], 3)
-			//round($a->performance["plugin"], 3)
+			//round($a->getProfiler()->get("markstart"), 3)
+			//round($a->getProfiler()->get("plugin"), 3)
 			)."</div>";
 
 		if (Config::get("rendertime", "callstack")) {
 			$o .= "<pre>";
 			$o .= "\nDatabase Read:\n";
-			foreach ($a->callstack["database"] AS $func => $time) {
+			foreach ($a->callstack["database"] as $func => $time) {
 				$time = round($time, 3);
-				if ($time > 0)
+
+				if ($time > 0) {
 					$o .= $func.": ".$time."\n";
+				}
 			}
 			$o .= "\nDatabase Write:\n";
-			foreach ($a->callstack["database_write"] AS $func => $time) {
+			foreach ($a->callstack["database_write"] as $func => $time) {
 				$time = round($time, 3);
-				if ($time > 0)
+
+				if ($time > 0) {
 					$o .= $func.": ".$time."\n";
+				}
 			}
 
 			$o .= "\nNetwork:\n";
-			foreach ($a->callstack["network"] AS $func => $time) {
+			foreach ($a->callstack["network"] as $func => $time) {
 				$time = round($time, 3);
-				if ($time > 0)
+
+				if ($time > 0) {
 					$o .= $func.": ".$time."\n";
+				}
 			}
 
 			$o .= "</pre>";
