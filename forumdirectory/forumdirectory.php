@@ -57,7 +57,6 @@ function forumdirectory_post(App $a)
 	if (!empty($_POST['search'])) {
 		$a->data['search'] = $_POST['search'];
 	}
-	Logger::log(print_r($_POST, true));
 }
 
 function forumdirectory_content(App $a)
