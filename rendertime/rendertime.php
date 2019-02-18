@@ -36,7 +36,7 @@ function rendertime_page_end(&$a, &$o) {
 			round($a->getProfiler()->get("database_write"), 3),
 			round($a->getProfiler()->get("network"), 2),
 			round($a->getProfiler()->get("rendering"), 2),
-			round($a->getProfiler()->get("parser") 2),
+			round($a->getProfiler()->get("parser"), 2),
 			round($a->getProfiler()->get("file"), 2),
 			round($duration - $a->getProfiler()->get("database")
 					- $a->getProfiler()->get("network") - $a->getProfiler()->get("rendering")
