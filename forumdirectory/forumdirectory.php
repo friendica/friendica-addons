@@ -2,7 +2,7 @@
 /**
  * Name: Forum Directory
  * Description: Add a directory of forums hosted on your server, with verbose descriptions.
- * Version: 1.0
+ * Version: 1.1
  * Author: Thomas Willingham <https://beardyunixer.com/profile/beardyunixer>
  */
 
@@ -13,12 +13,15 @@ use Friendica\Content\Widget;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
+use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Model\Profile;
 use Friendica\Model\User;
 use Friendica\Util\Strings;
 use Friendica\Util\Temporal;
+
+include_once 'mod/directory.php';
 
 function forumdirectory_install()
 {
@@ -42,8 +45,6 @@ function forumdirectory_app_menu(App $a, array &$b)
 
 function forumdirectory_init(App $a)
 {
-	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="' . $a->getBaseURL() . '/addon/forumdirectory/forumdirectory.css" media="all" />';
-
 	if (local_user()) {
 		$a->page['aside'] .= Widget::findPeople();
 	} else {
@@ -56,6 +57,7 @@ function forumdirectory_post(App $a)
 	if (!empty($_POST['search'])) {
 		$a->data['search'] = $_POST['search'];
 	}
+	Logger::log(print_r($_POST, true));
 }
 
 function forumdirectory_content(App $a)
@@ -66,6 +68,8 @@ function forumdirectory_content(App $a)
 	}
 
 	$o = '';
+	$entries = [];
+
 	Nav::setSelected('directory');
 
 	if (!empty($a->data['search'])) {
@@ -74,52 +78,55 @@ function forumdirectory_content(App $a)
 		$search = (!empty($_GET['search']) ? Strings::escapeTags(trim(rawurldecode($_GET['search']))) : '');
 	}
 
-	$tpl = Renderer::getMarkupTemplate('directory_header.tpl');
-
-	$globaldir = '';
-	$gdirpath = Config::get('system', 'directory');
-	if (strlen($gdirpath)) {
-		$globaldir = '<ul><li><div id="global-directory-link"><a href="'
-			. Profile::zrl($gdirpath, true) . '">' . L10n::t('Global Directory') . '</a></div></li></ul>';
+	$gdirpath = '';
+	$dirurl = Config::get('system', 'directory');
+	if (strlen($dirurl)) {
+		$gdirpath = Profile::zrl($dirurl, true);
 	}
-
-	$admin = '';
-
-	$o .= Renderer::replaceMacros($tpl, [
-		'$search'    => $search,
-		'$globaldir' => $globaldir,
-		'$desc'      => L10n::t('Find on this site'),
-		'$admin'     => $admin,
-		'$finding'   => (strlen($search) ? '<h4>' . L10n::t('Finding: ') . "'" . $search . "'" . '</h4>' : ""),
-		'$sitedir'   => L10n::t('Site Directory'),
-		'$submit'    => L10n::t('Find')
-	]);
 
 	$sql_extra = '';
 	if (strlen($search)) {
-		$sql_extra = " AND MATCH (`profile`.`name`, `user`.`nickname`, `pdesc`, `locality`,`region`,`country-name`,"
-			. "`gender`,`marital`,`sexual`,`about`,`romance`,`work`,`education`,`pub_keywords`,`prv_keywords` )"
-			. " AGAINST ('" . DBA::escape($search) . "' IN BOOLEAN MODE) ";
+		$search = DBA::escape($search);
+
+		$sql_extra = " AND ((`profile`.`name` LIKE '%$search%') OR
+				(`user`.`nickname` LIKE '%$search%') OR
+				(`profile`.`pdesc` LIKE '%$search%') OR
+				(`profile`.`locality` LIKE '%$search%') OR
+				(`profile`.`region` LIKE '%$search%') OR
+				(`profile`.`country-name` LIKE '%$search%') OR
+				(`profile`.`gender` LIKE '%$search%') OR
+				(`profile`.`marital` LIKE '%$search%') OR
+				(`profile`.`sexual` LIKE '%$search%') OR
+				(`profile`.`about` LIKE '%$search%') OR
+				(`profile`.`romance` LIKE '%$search%') OR
+				(`profile`.`work` LIKE '%$search%') OR
+				(`profile`.`education` LIKE '%$search%') OR
+				(`profile`.`pub_keywords` LIKE '%$search%') OR
+				(`profile`.`prv_keywords` LIKE '%$search%'))";
 	}
 
 	$publish = Config::get('system', 'publish_all') ? '' : " AND `publish` = 1 ";
 
 	$total = 0;
-	$r = q("SELECT COUNT(*) AS `total` FROM `profile` LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid`"
-		. " WHERE `is-default` = 1 $publish AND `user`.`blocked` = 0 AND `page-flags` = 2 $sql_extra ");
-	if (DBA::isResult($r)) {
-		$total = $r[0]['total'];
+	$cnt = DBA::fetchFirst("SELECT COUNT(*) AS `total` FROM `profile`
+				LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid`
+				WHERE `is-default` $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` `user`.`page-flags` = 2 $sql_extra");
+	if (DBA::isResult($cnt)) {
+		$total = $cnt['total'];
 	}
 
 	$pager = new Pager($a->query_string, 60);
 
 	$order = " ORDER BY `name` ASC ";
 
-	$r = q("SELECT `profile`.*, `profile`.`uid` AS `profile_uid`, `user`.`nickname`, `user`.`timezone` , `user`.`page-flags`"
-		. " FROM `profile` LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid` WHERE `is-default` = 1 $publish"
-		. " AND `user`.`blocked` = 0 AND `page-flags` = 2 $sql_extra $order LIMIT %d , %d ",
-		$pager->getStart(),
-		$pager->getItemsPerPage()
+	$limit = $pager->getStart()."," . $pager->getItemsPerPage();
+
+	$r = DBA::p("SELECT `profile`.*, `profile`.`uid` AS `profile_uid`, `user`.`nickname`, `user`.`timezone` , `user`.`page-flags`,
+			`contact`.`addr`, `contact`.`url` AS `profile_url` FROM `profile`
+			LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid`
+			LEFT JOIN `contact` ON `contact`.`uid` = `user`.`uid`
+			WHERE `is-default` $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` AND `user`.`page-flags` = 2 AND `contact`.`self`
+			$sql_extra $order LIMIT $limit"
 	);
 
 	if (DBA::isResult($r)) {
@@ -129,89 +136,28 @@ function forumdirectory_content(App $a)
 			$photo = 'photo';
 		}
 
-		foreach ($r as $rr) {
-			$profile_link = $a->getBaseURL() . '/profile/' . ((strlen($rr['nickname'])) ? $rr['nickname'] : $rr['profile_uid']);
-
-			$pdesc = (($rr['pdesc']) ? $rr['pdesc'] . '<br />' : '');
-
-			$details = '';
-			if (strlen($rr['locality'])) {
-				$details .= $rr['locality'];
-			}
-
-			if (strlen($rr['region'])) {
-				if (strlen($rr['locality'])) {
-					$details .= ', ';
-				}
-				$details .= $rr['region'];
-			}
-			if (strlen($rr['country-name'])) {
-				if (strlen($details)) {
-					$details .= ', ';
-				}
-				$details .= $rr['country-name'];
-			}
-
-			if (strlen($rr['dob']) && ($years = Temporal::getAgeByTimezone($rr['dob'], $rr['timezone'], '')) != 0) {
-				$details .= '<br />' . L10n::t('Age: ') . $years;
-			}
-
-			if (strlen($rr['gender'])) {
-				$details .= '<br />' . L10n::t('Gender: ') . $rr['gender'];
-			}
-
-			switch ($rr['page-flags']) {
-				case User::PAGE_FLAGS_NORMAL   : $page_type = "Personal Profile"; break;
-				case User::PAGE_FLAGS_SOAPBOX  : $page_type = "Fan Page"        ; break;
-				case User::PAGE_FLAGS_COMMUNITY: $page_type = "Community Forum" ; break;
-				case User::PAGE_FLAGS_FREELOVE : $page_type = "Open Forum"      ; break;
-				case User::PAGE_FLAGS_PRVGROUP : $page_type = "Private Group"   ; break;
-			}
-
-			$profile = $rr;
-
-			$location = '';
-			if (!empty($profile['address'])
-				|| !empty($profile['locality'])
-				|| !empty($profile['region'])
-				|| !empty($profile['postal-code'])
-				|| !empty($profile['country-name'])
-			) {
-				$location = L10n::t('Location:');
-			}
-
-			$gender   = !empty($profile['gender'])   ? L10n::t('Gender:')   : false;
-			$marital  = !empty($profile['marital'])  ? L10n::t('Status:')   : false;
-			$homepage = !empty($profile['homepage']) ? L10n::t('Homepage:') : false;
-			$about    = !empty($profile['about'])    ? L10n::t('About:')    : false;
-
-			$tpl = Renderer::getMarkupTemplate('forumdirectory_item.tpl', 'addon/forumdirectory/');
-
-			$entry = Renderer::replaceMacros($tpl, [
-				'$id'           => $rr['id'],
-				'$profile_link' => $profile_link,
-				'$photo'        => $rr[$photo],
-				'$alt_text'     => $rr['name'],
-				'$name'         => $rr['name'],
-				'$details'      => $pdesc . $details,
-				'$page_type'    => $page_type,
-				'$profile'      => $profile,
-				'$location'     => $location,
-				'$gender'       => $gender,
-				'$pdesc'        => $pdesc,
-				'$marital'      => $marital,
-				'$homepage'     => $homepage,
-				'$about'        => $about,
-			]);
-
-			$o .= $entry;
+		while ($rr = DBA::fetch($r)) {
+			$entries[] = format_directory_entry($rr, $photo);
 		}
-
-		$o .= "<div class=\"directory-end\" ></div>\r\n";
-		$o .= $pager->renderFull($total);
+		DBA::close($r);
 	} else {
 		info(L10n::t("No entries \x28some entries may be hidden\x29.") . EOL);
 	}
+
+	$tpl = Renderer::getMarkupTemplate('directory_header.tpl');
+	$o .= Renderer::replaceMacros($tpl, [
+		'$search'     => $search,
+		'$globaldir'  => L10n::t('Global Directory'),
+		'$gdirpath'   => $gdirpath,
+		'$desc'       => L10n::t('Find on this site'),
+		'$contacts'   => $entries,
+		'$finding'    => L10n::t('Results for:'),
+		'$findterm'   => (strlen($search) ? $search : ""),
+		'$title'      => L10n::t('Forum Directory'),
+		'$search_mod' => 'forumdirectory',
+		'$submit'     => L10n::t('Find'),
+		'$paginate'   => $pager->renderFull($total),
+	]);
 
 	return $o;
 }
