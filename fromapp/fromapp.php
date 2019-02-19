@@ -69,7 +69,7 @@ function fromapp_settings(&$a, &$s)
 	$s .= '<h3>' . L10n::t('FromApp Settings') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="fromapp-wrapper">';
-	$s .= '<label id="fromapp-label" for="fromapp-input">' . L10n::t('The application name you would like to show your posts originating from.') . '</label>';
+	$s .= '<label id="fromapp-label" for="fromapp-input">' . L10n::t('The application name you would like to show your posts originating from. Separate different app names with a comma. A random one will then be selected for every posting.') . '</label>';
 	$s .= '<input id="fromapp-input" type="text" name="fromapp-input" value="' . $fromapp . '" ' . '/>';
 	$s .= '<div class="clear"></div>';
 
