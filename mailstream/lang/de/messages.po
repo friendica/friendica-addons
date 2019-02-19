@@ -6,13 +6,14 @@
 # Translators:
 # Andreas H., 2014
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018
+# Ulf Rompe <transifex.com@rompe.org>, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-11 19:13+0100\n"
-"PO-Revision-Date: 2018-03-16 07:45+0000\n"
-"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
+"PO-Revision-Date: 2019-02-18 15:05+0000\n"
+"Last-Translator: Ulf Rompe <transifex.com@rompe.org>\n"
 "Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,11 +39,11 @@ msgstr "Re:"
 
 #: mailstream.php:231
 msgid "Friendica post"
-msgstr "Friendica Veröffentlichung"
+msgstr "Friendica-Veröffentlichung"
 
 #: mailstream.php:234
 msgid "Diaspora post"
-msgstr "Diaspora Veröffentlichung"
+msgstr "Diaspora-Veröffentlichung"
 
 #: mailstream.php:244
 msgid "Feed item"
@@ -54,7 +55,7 @@ msgstr "E-Mail"
 
 #: mailstream.php:249
 msgid "Friendica Item"
-msgstr "Friendica Artikel"
+msgstr "Friendica-Artikel"
 
 #: mailstream.php:293
 msgid "Upstream"
@@ -74,7 +75,7 @@ msgstr "E-Mail-Adresse"
 
 #: mailstream.php:368
 msgid "Leave blank to use your account email address"
-msgstr "Leer lassen für Deine Konto-E-Mail-Addresse"
+msgstr "Leer lassen für deine Konto-E-Mail-Addresse"
 
 #: mailstream.php:371
 msgid "Exclude Likes"
@@ -82,18 +83,18 @@ msgstr "Likes ignorieren"
 
 #: mailstream.php:373
 msgid "Check this to omit mailing \"Like\" notifications"
-msgstr "Diese Option verhindert das versenden von \"Like\"-Benachrichtigungen per E-Mail."
+msgstr "Diese Option verhindert das Versenden von \"Like\"-Benachrichtigungen per E-Mail."
 
 #: mailstream.php:376
 msgid "Attach Images"
-msgstr "Bolder anhängen"
+msgstr "Bilder anhängen"
 
 #: mailstream.php:378
 msgid ""
 "Download images in posts and attach them to the email.  Useful for reading "
 "email while offline."
-msgstr "Sollen Bilder die im Beitrag eingebettet sind als Dateianhang in den E-Mails mit verschickt werden?"
+msgstr "Sollen Bilder, die im Beitrag eingebettet sind, als Dateianhang in den E-Mails verschickt werden?"
 
 #: mailstream.php:379
 msgid "Mail Stream Settings"
-msgstr "Mail-Nachrichten Einstellungen"
+msgstr "Mail-Nachrichten-Einstellungen"

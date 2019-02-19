@@ -5,6 +5,7 @@
 # 
 # Translators:
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2019
+# Ulf Rompe <transifex.com@rompe.org>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -13,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-01-30 10:48+0100\n"
 "PO-Revision-Date: 2019-01-23 16:01+0000\n"
-"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2019\n"
+"Last-Translator: Ulf Rompe <transifex.com@rompe.org>, 2019\n"
 "Language-Team: German (https://www.transifex.com/Friendica/teams/12172/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -35,7 +36,7 @@ msgstr "OK"
 
 #: cookienotice.php:68
 msgid "\"cookienotice\" Settings"
-msgstr "\"cookienotice\" Einstellungen"
+msgstr "\"cookienotice\"-Einstellungen"
 
 #: cookienotice.php:69
 msgid ""
@@ -43,13 +44,13 @@ msgid ""
 "saying that the website uses cookies. It is shown as long as a user didnt "
 "confirm clicking the OK button."
 msgstr ""
-"<b>Konfiguriere deinen Cookie Nutzungshinweis.</b> Es sollte ein Hinweis "
-"sein, der sagt dass die Webseite Cookies benutzt. Er wird solange angezeigt,"
-" bis der User den Hinweis mit klicken des OK Buttons bestätigt."
+"<b>Konfiguriere deinen Cookie-Nutzungshinweis.</b> Es sollte ein Hinweis "
+"sein, der sagt, dass die Webseite Cookies benutzt. Er wird so lange "
+"angezeigt, bis der User den Hinweis durch Klicken des OK-Buttons bestätigt."
 
 #: cookienotice.php:70
 msgid "Cookie Usage Notice"
-msgstr "Cookie Nutzungshinweis"
+msgstr "Cookie-Nutzungshinweis"
 
 #: cookienotice.php:70
 msgid "The cookie usage notice"
@@ -57,11 +58,11 @@ msgstr "Der Hinweis zur Nutzung von Cookies"
 
 #: cookienotice.php:71
 msgid "OK Button Text"
-msgstr "OK Button Text"
+msgstr "OK-Button-Text"
 
 #: cookienotice.php:71
 msgid "The OK Button text"
-msgstr "Der für den Ok Button verwendete Text"
+msgstr "Der für den OK-Button verwendete Text"
 
 #: cookienotice.php:72
 msgid "Save Settings"
@@ -69,7 +70,7 @@ msgstr "Einstellungen speichern"
 
 #: cookienotice.php:97
 msgid "cookienotice Settings saved."
-msgstr "cookienotice Einstellungen wurden gespeichert"
+msgstr "cookienotice-Einstellungen wurden gespeichert"
 
 #: cookienotice.php:132
 msgid ""
@@ -78,4 +79,4 @@ msgid ""
 msgstr ""
 "Diese Webseite verwendet Cookies zur Erkennung von wiederkehrenden Besuchern"
 " und eingeloggten Nutzern. Durch die weitere Benutzung der Webseite "
-"akzeptieren sie die Verwendung der Cookies."
+"akzeptieren Sie die Verwendung der Cookies."
