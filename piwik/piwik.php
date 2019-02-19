@@ -1,7 +1,7 @@
 <?php
 /**
- * Name: Piwik Analytics
- * Description: Piwik Analytics Addon for Friendica
+ * Name: Matomo / Piwik Analytics
+ * Description: Matomo / Piwik Analytics Addon for Friendica
  * Version: 1.3
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  * Author: Klaus Weidenbach
