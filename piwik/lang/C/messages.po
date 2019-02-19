@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-26 12:49+0200\n"
+"POT-Creation-Date: 2019-02-19 10:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,46 +17,46 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: piwik.php:79
+#: piwik.php:94
 msgid ""
-"This website is tracked using the <a href='http://www.piwik.org'>Piwik</a> "
+"This website is tracked using the <a href='http://www.matomo.org'>Matomo</a> "
 "analytics tool."
 msgstr ""
 
-#: piwik.php:82
+#: piwik.php:97
 #, php-format
 msgid ""
 "If you do not want that your visits are logged in this way you <a "
-"href='%s'>can set a cookie to prevent Piwik from tracking further visits of "
-"the site</a> (opt-out)."
+"href='%s'>can set a cookie to prevent Matomo / Piwik from tracking further "
+"visits of the site</a> (opt-out)."
 msgstr ""
 
-#: piwik.php:89
+#: piwik.php:104
 msgid "Save Settings"
 msgstr ""
 
-#: piwik.php:90
-msgid "Piwik Base URL"
-msgstr ""
-
-#: piwik.php:90
-msgid ""
-"Absolute path to your Piwik installation. (without protocol (http/s), with "
-"trailing slash)"
-msgstr ""
-
-#: piwik.php:91
-msgid "Site ID"
-msgstr ""
-
-#: piwik.php:92
-msgid "Show opt-out cookie link?"
-msgstr ""
-
-#: piwik.php:93
-msgid "Asynchronous tracking"
+#: piwik.php:105
+msgid "Matomo (Piwik) Base URL"
 msgstr ""
 
 #: piwik.php:105
+msgid ""
+"Absolute path to your Matomo (Piwik) installation. (without protocol (http/"
+"s), with trailing slash)"
+msgstr ""
+
+#: piwik.php:106
+msgid "Site ID"
+msgstr ""
+
+#: piwik.php:107
+msgid "Show opt-out cookie link?"
+msgstr ""
+
+#: piwik.php:108
+msgid "Asynchronous tracking"
+msgstr ""
+
+#: piwik.php:120
 msgid "Settings updated."
 msgstr ""
