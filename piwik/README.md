@@ -1,14 +1,14 @@
-Piwik Addon
+Matomo / Piwik Addon
 ============
 
 by Tobias Diekershoff and Klaus Weidenbach
 
-This addon allows you to embed the code necessary for the FLOSS webanalytics tool Piwik into the Friendica pages.
+This addon allows you to embed the code necessary for the FLOSS webanalytics tool Matomo (formerly known as Piwik) into the Friendica pages.
 
 Requirements
 ------------
 
-To use this addon you need a [piwik](http://piwik.org/) installation.
+To use this addon you need a [Matomo](https://matomo.org/) installation.
 
 Where to find
 -------------
