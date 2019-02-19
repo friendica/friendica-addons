@@ -4,16 +4,17 @@
 # 
 # 
 # Translators:
-# Abrax <webmaster@a-zwenkau.de>, 2014-2015
-# bavatar <tobias.diekershoff@gmx.net>, 2014
+# Andreas H., 2014-2015
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
+# Ulf Rompe <transifex.com@rompe.org>, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-26 12:49+0200\n"
-"PO-Revision-Date: 2015-07-27 13:07+0000\n"
-"Last-Translator: Abrax <webmaster@a-zwenkau.de>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"PO-Revision-Date: 2019-02-18 14:07+0000\n"
+"Last-Translator: Ulf Rompe <transifex.com@rompe.org>\n"
+"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,7 +25,7 @@ msgstr ""
 msgid ""
 "This website is tracked using the <a href='http://www.piwik.org'>Piwik</a> "
 "analytics tool."
-msgstr "Diese Website benutzt <a href='http://www.piwik.org'>Piwik</a>, eine Open Source-Software zur statistischen Auswertung der Besucherzugriffe."
+msgstr "Diese Website benutzt <a href='http://www.piwik.org'>Piwik</a>, eine Open-Source-Software zur statistischen Auswertung der Besucherzugriffe."
 
 #: piwik.php:82
 #, php-format
@@ -32,7 +33,7 @@ msgid ""
 "If you do not want that your visits are logged in this way you <a "
 "href='%s'>can set a cookie to prevent Piwik from tracking further visits of "
 "the site</a> (opt-out)."
-msgstr "Wenn Du nicht willst, dass Deine Besuche auf diese Weise gespeichert werden, kannst Du <a href='%s'>ein Cookie setzen</a>. Dann wird Piwik Dich auf dieser Website nicht mehr verfolgen (opt-out)."
+msgstr "Wenn du nicht willst, dass Deine Besuche auf diese Weise gespeichert werden, kannst du <a href='%s'>ein Cookie setzen</a>. Dann wird Piwik dich auf dieser Website nicht mehr verfolgen (opt-out)."
 
 #: piwik.php:89
 msgid "Save Settings"
@@ -40,21 +41,21 @@ msgstr "Einstellungen speichern"
 
 #: piwik.php:90
 msgid "Piwik Base URL"
-msgstr "Piwik Basis URL"
+msgstr "Piwik-Basis-URL"
 
 #: piwik.php:90
 msgid ""
 "Absolute path to your Piwik installation. (without protocol (http/s), with "
 "trailing slash)"
-msgstr "Absoluter Pfad zu deiner Piwik Installation (ohne Protokoll (http/s) und mit abschließendem Schrägstrich)"
+msgstr "Absoluter Pfad zu deiner Piwik-Installation (ohne Protokoll (http/s) und mit abschließendem Schrägstrich)"
 
 #: piwik.php:91
 msgid "Site ID"
-msgstr "Seiten ID"
+msgstr "Seiten-ID"
 
 #: piwik.php:92
 msgid "Show opt-out cookie link?"
-msgstr "Link zum Setzen des Opt-Out Cookies anzeigen?"
+msgstr "Link zum Setzen des Opt-Out-Cookies anzeigen?"
 
 #: piwik.php:93
 msgid "Asynchronous tracking"
