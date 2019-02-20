@@ -54,8 +54,10 @@ function rendertime_page_end(&$a, &$o)
 			//round($profiler->get('plugin'), 3)
 			) . '</div>';
 
-		$o .= '<pre>';
-		$o .= $profiler->getRendertimeString();
-		$o .= '</pre>';
+		if ($profiler->isRendertime()) {
+			$o .= '<pre>';
+			$o .= $profiler->getRendertimeString();
+			$o .= '</pre>';
+		}
 	}
 }
