@@ -6,7 +6,7 @@
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  *
  */
-use Friendica\Core\Config;
+
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 
@@ -27,7 +27,7 @@ function rendertime_init_1(&$a) {
  * @param Friendica\App $a
  * @param string $o
  */
-function rendertime_page_end(&$a, &$o)
+function rendertime_page_end(Friendica\App &$a, &$o)
 {
 
 	$profiler = $a->getProfiler();
