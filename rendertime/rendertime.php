@@ -6,7 +6,7 @@
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  *
  */
-use Friendica\Core\Config;
+
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 
@@ -23,58 +23,41 @@ function rendertime_uninstall() {
 function rendertime_init_1(&$a) {
 }
 
-function rendertime_page_end(&$a, &$o) {
+/**
+ * @param Friendica\App $a
+ * @param string $o
+ */
+function rendertime_page_end(Friendica\App $a, &$o)
+{
 
-	$duration = microtime(true)-$a->getProfiler()->get("start");
+	$profiler = $a->getProfiler();
+
+	$duration = microtime(true) - $profiler->get('start');
 
 	$ignored_modules = ["fbrowser"];
 	$ignored = in_array($a->module, $ignored_modules);
 
 	if (is_site_admin() && (defaults($_GET, "mode", '') != "minimal") && !$a->is_mobile && !$a->is_tablet && !$ignored) {
-		$o = $o.'<div class="renderinfo">'. L10n::t("Database: %s/%s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: %s, Total: %s",
-			round($a->getProfiler()->get("database") - $a->getProfiler()->get("database_write"), 3),
-			round($a->getProfiler()->get("database_write"), 3),
-			round($a->getProfiler()->get("network"), 2),
-			round($a->getProfiler()->get("rendering"), 2),
-			round($a->getProfiler()->get("parser"), 2),
-			round($a->getProfiler()->get("file"), 2),
-			round($duration - $a->getProfiler()->get("database")
-					- $a->getProfiler()->get("network") - $a->getProfiler()->get("rendering")
-					- $a->getProfiler()->get("parser") - $a->getProfiler()->get("file"), 2),
-			round($duration, 2)
-			//round($a->getProfiler()->get("markstart"), 3)
-			//round($a->getProfiler()->get("plugin"), 3)
-			)."</div>";
 
-		if (Config::get("rendertime", "callstack")) {
-			$o .= "<pre>";
-			$o .= "\nDatabase Read:\n";
-			foreach ($a->callstack["database"] as $func => $time) {
-				$time = round($time, 3);
+		$o = $o . '<div class="renderinfo">' . L10n::t("Database: %s/%s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: %s, Total: %s",
+				round($profiler->get('database') - $profiler->get('database_write'), 3),
+				round($profiler->get('database_write'), 3),
+				round($profiler->get('network'), 2),
+				round($profiler->get('rendering'), 2),
+				round($profiler->get('parser'), 2),
+				round($profiler->get('file'), 2),
+				round($duration - $profiler->get('database')
+					- $profiler->get('network') - $profiler->get('rendering')
+					- $profiler->get('parser') - $profiler->get('file'), 2),
+				round($duration, 2)
+			//round($profiler->get('markstart'), 3)
+			//round($profiler->get('plugin'), 3)
+			) . '</div>';
 
-				if ($time > 0) {
-					$o .= $func.": ".$time."\n";
-				}
-			}
-			$o .= "\nDatabase Write:\n";
-			foreach ($a->callstack["database_write"] as $func => $time) {
-				$time = round($time, 3);
-
-				if ($time > 0) {
-					$o .= $func.": ".$time."\n";
-				}
-			}
-
-			$o .= "\nNetwork:\n";
-			foreach ($a->callstack["network"] as $func => $time) {
-				$time = round($time, 3);
-
-				if ($time > 0) {
-					$o .= $func.": ".$time."\n";
-				}
-			}
-
-			$o .= "</pre>";
+		if ($profiler->isRendertime()) {
+			$o .= '<pre>';
+			$o .= $profiler->getRendertimeString();
+			$o .= '</pre>';
 		}
 	}
 }
