@@ -27,7 +27,7 @@ function rendertime_init_1(&$a) {
  * @param Friendica\App $a
  * @param string $o
  */
-function rendertime_page_end(Friendica\App &$a, &$o)
+function rendertime_page_end(Friendica\App $a, &$o)
 {
 
 	$profiler = $a->getProfiler();
