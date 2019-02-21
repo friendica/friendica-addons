@@ -8,6 +8,6 @@ function string_plural_select_cs($n){
 ;
 $a->strings["Fromapp settings updated."] = "Nastavení FromApp aktualizována.";
 $a->strings["FromApp Settings"] = "Nastavení FromApp";
-$a->strings["The application name you would like to show your posts originating from."] = "Jméno aplikace, která má být zobrazena jako zdroj Vašich příspěvků.";
+$a->strings["The application name you would like to show your posts originating from. Separate different app names with a comma. A random one will then be selected for every posting."] = "Název aplikace, ze které píšete své příspěvky, kterou chcete zobrazovat. Oddělujte různé názvy aplikací čárkou. Pro každý příspěvek bude zvolena náhodná.";
 $a->strings["Use this application name even if another application was used."] = "Použít toto jméno aplikace, i když byla použita jiná aplikace";
-$a->strings["Submit"] = "Odeslat";
+$a->strings["Save Settings"] = "Uložit nastavení";

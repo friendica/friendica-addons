@@ -4,14 +4,14 @@
 # 
 # 
 # Translators:
-# Aditoo, 2018
+# Aditoo, 2018-2019
 # michal_s <msupler@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-09-11 19:01+0000\n"
+"POT-Creation-Date: 2019-02-19 16:42+0100\n"
+"PO-Revision-Date: 2019-02-20 19:17+0000\n"
 "Last-Translator: Aditoo\n"
 "Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -20,23 +20,25 @@ msgstr ""
 "Language: cs\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
-#: fromapp.php:38
+#: fromapp.php:40
 msgid "Fromapp settings updated."
 msgstr "Nastavení FromApp aktualizována."
 
-#: fromapp.php:64
+#: fromapp.php:65 fromapp.php:69
 msgid "FromApp Settings"
 msgstr "Nastavení FromApp"
 
-#: fromapp.php:66
+#: fromapp.php:72
 msgid ""
-"The application name you would like to show your posts originating from."
-msgstr "Jméno aplikace, která má být zobrazena jako zdroj Vašich příspěvků."
+"The application name you would like to show your posts originating from. "
+"Separate different app names with a comma. A random one will then be "
+"selected for every posting."
+msgstr "Název aplikace, ze které píšete své příspěvky, kterou chcete zobrazovat. Oddělujte různé názvy aplikací čárkou. Pro každý příspěvek bude zvolena náhodná."
 
-#: fromapp.php:70
+#: fromapp.php:76
 msgid "Use this application name even if another application was used."
 msgstr "Použít toto jméno aplikace, i když byla použita jiná aplikace"
 
-#: fromapp.php:77
-msgid "Submit"
-msgstr "Odeslat"
+#: fromapp.php:83
+msgid "Save Settings"
+msgstr "Uložit nastavení"
