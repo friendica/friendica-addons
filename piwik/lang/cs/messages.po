@@ -4,14 +4,14 @@
 # 
 # 
 # Translators:
-# Aditoo, 2018
+# Aditoo, 2018-2019
 # michal_s <msupler@gmail.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-26 12:49+0200\n"
-"PO-Revision-Date: 2018-06-11 19:40+0000\n"
+"POT-Creation-Date: 2019-02-19 10:42+0100\n"
+"PO-Revision-Date: 2019-02-20 19:23+0000\n"
 "Last-Translator: Aditoo\n"
 "Language-Team: Czech (http://www.transifex.com/Friendica/friendica/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -20,46 +20,46 @@ msgstr ""
 "Language: cs\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
-#: piwik.php:79
+#: piwik.php:94
 msgid ""
-"This website is tracked using the <a href='http://www.piwik.org'>Piwik</a> "
-"analytics tool."
-msgstr "Tato webová stránka je sledována pomocí nástroje pro analýzu <a href='http://www.piwik.org'>Piwik</a>."
+"This website is tracked using the <a href='http://www.matomo.org'>Matomo</a>"
+" analytics tool."
+msgstr "Tato webová stránka je sledována pomocí nástroje pro analýzu <a href='http://www.matomo.org'>Matomo</a>."
 
-#: piwik.php:82
+#: piwik.php:97
 #, php-format
 msgid ""
 "If you do not want that your visits are logged in this way you <a "
-"href='%s'>can set a cookie to prevent Piwik from tracking further visits of "
-"the site</a> (opt-out)."
-msgstr "Pokut nechcete, aby byly vaše návštěvy takto sledovány, můžete si <a href='%s'>nastavit soubor cookie, která zabrání Piwik, aby sledovala Vaše další návštěvy na stránce</a> (tzv. opt-out)"
+"href='%s'>can set a cookie to prevent Matomo / Piwik from tracking further "
+"visits of the site</a> (opt-out)."
+msgstr "Pokut nechcete, aby byly vaše návštěvy takto sledovány, můžete si <a href='%s'>nastavit soubor cookie, která zabrání službě  Matomo/Piwik, aby sledovala vaše další návštěvy na stránce</a> (tzv. opt-out)"
 
-#: piwik.php:89
+#: piwik.php:104
 msgid "Save Settings"
 msgstr "Uložit nastavení"
 
-#: piwik.php:90
-msgid "Piwik Base URL"
-msgstr "Piwik Base adresa URL"
+#: piwik.php:105
+msgid "Matomo (Piwik) Base URL"
+msgstr "Základní URL adresa Matomo (Piwik)"
 
-#: piwik.php:90
+#: piwik.php:105
 msgid ""
-"Absolute path to your Piwik installation. (without protocol (http/s), with "
-"trailing slash)"
-msgstr "Absolutní cesta k Vaší instalaci Piwik. (bez protokolu (http/s), s koncovým lomítkem)"
+"Absolute path to your Matomo (Piwik) installation. (without protocol "
+"(http/s), with trailing slash)"
+msgstr "Absolutní cesta k vaší instalaci Matomo (Piwik). (bez protokolu (http/s), s lomítkem na konci)"
 
-#: piwik.php:91
+#: piwik.php:106
 msgid "Site ID"
 msgstr "ID webu"
 
-#: piwik.php:92
+#: piwik.php:107
 msgid "Show opt-out cookie link?"
-msgstr "Zobrazit odkaz opt-out cookie?"
+msgstr "Zobrazit odkaz pro opt-out cookie?"
 
-#: piwik.php:93
+#: piwik.php:108
 msgid "Asynchronous tracking"
 msgstr "Asynchronní sledování"
 
-#: piwik.php:105
+#: piwik.php:120
 msgid "Settings updated."
 msgstr "Nastavení aktualizováno."
