@@ -4,39 +4,43 @@
 # 
 # 
 # Translators:
-# Abrax <webmaster@a-zwenkau.de>, 2014
-# bavatar <tobias.diekershoff@gmx.net>, 2014
+# Andreas H., 2014
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2019
+# Ulf Rompe <transifex.com@rompe.org>, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2014-10-15 12:28+0000\n"
-"Last-Translator: Abrax <webmaster@a-zwenkau.de>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"POT-Creation-Date: 2019-02-19 16:42+0100\n"
+"PO-Revision-Date: 2019-02-21 05:57+0000\n"
+"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: fromapp.php:38
+#: fromapp.php:40
 msgid "Fromapp settings updated."
-msgstr "Fromapp Einstellungen aktualisiert."
+msgstr "Fromapp-Einstellungen aktualisiert."
 
-#: fromapp.php:64
+#: fromapp.php:65 fromapp.php:69
 msgid "FromApp Settings"
-msgstr "FromApp Einstellungen"
+msgstr "FromApp-Einstellungen"
 
-#: fromapp.php:66
+#: fromapp.php:72
 msgid ""
-"The application name you would like to show your posts originating from."
-msgstr "Der Name der Applikation der als Quelle deiner Beiträge angezeigt werden soll."
+"The application name you would like to show your posts originating from. "
+"Separate different app names with a comma. A random one will then be "
+"selected for every posting."
+msgstr "Der Name der Applikation der als Quelle deiner Beiträge angezeigt werden soll. Unterschiedliche Namen können mit einem Komma von einander getrennt werden. Ist mehr als ein Name angegeben, wird für jeden Beitrag ein zufälliger Name aus der Liste ausgewählt."
 
-#: fromapp.php:70
+#: fromapp.php:76
 msgid "Use this application name even if another application was used."
-msgstr "Verwende diesen Namen selbst wenn eine andere Applikation verwendet wurde"
+msgstr "Verwende diesen Namen, selbst wenn eine andere Applikation verwendet wurde"
 
-#: fromapp.php:77
-msgid "Submit"
-msgstr "Senden"
+#: fromapp.php:83
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
