@@ -61,9 +61,9 @@ function pageheader_addon_settings(&$a,&$s) {
 
 }
 
-function pageheader_addon_settings_post(&$a,&$b) {
+function pageheader_addon_settings_post(&$a, &$b) {
 
-	if(! is_site_admin())
+	if(!is_site_admin())
 		return;
 
 	if(!empty($_POST['pageheader-submit'])) {
