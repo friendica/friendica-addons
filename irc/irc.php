@@ -6,6 +6,7 @@
 * Author: tony baldwin <https://free-haven.org/profile/tony>
 * Author: Tobias Diekershoff <https://f.diekershoff.de/u/tobias>
 */
+
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
@@ -51,13 +52,17 @@ function irc_addon_settings(&$a,&$s) {
 
 }
 
-function irc_addon_settings_post(&$a,&$b) {
-	if(! local_user())
+function irc_addon_settings_post(&$a, &$b) {
+	if(!local_user())
 		return;
 
-	if($_POST['irc-submit']) {
-		PConfig::set( local_user(), 'irc','autochans',trim($_POST['autochans']));
-		PConfig::set( local_user(), 'irc','sitechats',trim($_POST['sitechats']));
+	if(!empty($_POST['irc-submit'])) {
+		if (isset($_POST['autochans'])) {
+			PConfig::set(local_user(), 'irc', 'autochans', trim(($_POST['autochans'])));
+		}
+		if (isset($_POST['sitechats'])) {
+			PConfig::set(local_user(), 'irc', 'sitechats', trim($_POST['sitechats']));
+		}
 		/* upid pop-up thing */
 		info(L10n::t('IRC settings saved.') . EOL);
 	}

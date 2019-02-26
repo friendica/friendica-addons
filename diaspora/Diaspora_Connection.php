@@ -46,7 +46,11 @@ class Diaspora_Connection {
 	public function setDiasporaID($id) {
 		$parts = explode('@', $id);
 		$this->user = $parts[0];
-		$this->host = $parts[1];
+		if (count($parts) > 1) {
+			$this->host = $parts[1];
+		} else {
+			$this->host = '';
+		}
 	}
 
 	public function getDiasporaID() {
