@@ -56,11 +56,11 @@ function irc_addon_settings_post(&$a, &$b) {
 	if(!local_user())
 		return;
 
-	if(!empty($_POST['irc-submit']) &&  $_POST['irc-submit']) {
-		if (!isset($_POST['autochans'])) {
+	if(!empty($_POST['irc-submit'])) {
+		if (isset($_POST['autochans'])) {
 			PConfig::set(local_user(), 'irc', 'autochans', trim(($_POST['autochans'])));
 		}
-		if (!isset($_POST['sitechats'])) {
+		if (isset($_POST['sitechats'])) {
 			PConfig::set(local_user(), 'irc', 'sitechats', trim($_POST['sitechats']));
 		}
 		/* upid pop-up thing */

@@ -7,7 +7,7 @@
  *         Hauke Altmann <https://snarl.de/profile/tugelblend>
  * 
  */
-use Friendica\Core\Addon;
+
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
@@ -66,8 +66,10 @@ function pageheader_addon_settings_post(&$a,&$b) {
 	if(! is_site_admin())
 		return;
 
-	if($_POST['pageheader-submit']) {
-		Config::set('pageheader','text',trim(strip_tags($_POST['pageheader-words'])));
+	if(!empty($_POST['pageheader-submit'])) {
+		if (isset($_POST['pageheader-words'])) {
+			Config::set('pageheader', 'text', trim(strip_tags($_POST['pageheader-words'])));
+		}
 		info(L10n::t('pageheader Settings saved.') . EOL);
 	}
 }
