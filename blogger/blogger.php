@@ -3,7 +3,7 @@
  * Name: Blogger Post Connector
  * Description: Post to Blogger (or anything else which uses blogger XMLRPC API)
  * Version: 1.0
- *
+ * Status: Unsupported
  */
 
 use Friendica\App;
