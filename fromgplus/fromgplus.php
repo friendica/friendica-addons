@@ -362,9 +362,9 @@ function fromgplus_handleattachments($a, $uid, $item, $displaytext, $shared) {
 					$images = fromgplus_cleanupgoogleproxy($attachment->fullImage, $attachment->image);
 				} else {
 					if ($attachment->fullImage->url != "") {
-						$images = Photo::storePhoto($a, $uid, "", $attachment->fullImage->url);
+						$images = Photo::storeByData($uid, "", $attachment->fullImage->url);
 					} elseif ($attachment->image->url != "") {
-						$images = Photo::storePhoto($a, $uid, "", $attachment->image->url);
+						$images = Photo::storeByData($uid, "", $attachment->image->url);
 					}
 				}
 
