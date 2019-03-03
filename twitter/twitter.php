@@ -739,7 +739,7 @@ function twitter_cron(App $a)
 	if (DBA::isResult($r)) {
 		foreach ($r as $rr) {
 			Logger::log('twitter: fetching for user ' . $rr['uid']);
-			Worker::add(PRIORITY_MEDIUM, "addon/twitter/twitter_sync.php", 1, (int) $rr['uid']);
+			Worker::add(['priority' => PRIORITY_MEDIUM, 'force_priority' => true], "addon/twitter/twitter_sync.php", 1, (int) $rr['uid']);
 		}
 	}
 
@@ -762,7 +762,7 @@ function twitter_cron(App $a)
 			}
 
 			Logger::log('twitter: importing timeline from user ' . $rr['uid']);
-			Worker::add(PRIORITY_MEDIUM, "addon/twitter/twitter_sync.php", 2, (int) $rr['uid']);
+			Worker::add(['priority' => PRIORITY_MEDIUM, 'force_priority' => true], "addon/twitter/twitter_sync.php", 2, (int) $rr['uid']);
 			/*
 			  // To-Do
 			  // check for new contacts once a day
