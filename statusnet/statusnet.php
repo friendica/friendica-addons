@@ -938,7 +938,7 @@ function statusnet_address($contact)
 
 function statusnet_fetch_contact($uid, $contact, $create_user)
 {
-	if ($contact->statusnet_profile_url == "") {
+	if (empty($contact->statusnet_profile_url)) {
 		return -1;
 	}
 
@@ -1255,6 +1255,10 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 
 	$own_contact = statusnet_fetch_own_contact($a, $uid);
 
+	if (empty($own_contact)) {
+		return;
+	}
+
 	$r = q("SELECT * FROM `contact` WHERE `id` = %d AND `uid` = %d LIMIT 1",
 		intval($own_contact),
 		intval($uid));
@@ -1559,6 +1563,10 @@ function statusnet_fetch_own_contact(App $a, $uid)
 
 		// Fetching user data
 		$user = $connection->get('account/verify_credentials');
+
+		if (empty($user)) {
+			return false;
+		}
 
 		PConfig::set($uid, 'statusnet', 'own_url', Strings::normaliseLink($user->statusnet_profile_url));
 
