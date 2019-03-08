@@ -4,14 +4,14 @@
 # 
 # 
 # Translators:
-# Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018
+# Waldemar Stoczkowski, 2018-2019
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-03-30 17:50+0000\n"
-"Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
+"POT-Creation-Date: 2019-02-19 16:42+0100\n"
+"PO-Revision-Date: 2019-03-07 19:25+0000\n"
+"Last-Translator: Waldemar Stoczkowski\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,23 +19,25 @@ msgstr ""
 "Language: pl\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
-#: fromapp.php:38
+#: fromapp.php:40
 msgid "Fromapp settings updated."
 msgstr "Zaktualizowano ustawienia Fromapp."
 
-#: fromapp.php:64
+#: fromapp.php:65 fromapp.php:69
 msgid "FromApp Settings"
 msgstr "Ustawienia FromApp"
 
-#: fromapp.php:66
+#: fromapp.php:72
 msgid ""
-"The application name you would like to show your posts originating from."
-msgstr "Nazwa aplikacji, z której chcesz wyświetlać swoje posty."
+"The application name you would like to show your posts originating from. "
+"Separate different app names with a comma. A random one will then be "
+"selected for every posting."
+msgstr "Nazwa aplikacji, z której chcesz wyświetlać swoje posty. Oddziel różne nazwy aplikacji przecinkami. Zostanie losowo wybrana dla każdej lokalizacji."
 
-#: fromapp.php:70
+#: fromapp.php:76
 msgid "Use this application name even if another application was used."
 msgstr "Użyj tej nazwy aplikacji, nawet jeśli użyto innej aplikacji."
 
-#: fromapp.php:77
-msgid "Submit"
-msgstr "Zatwierdź"
+#: fromapp.php:83
+msgid "Save Settings"
+msgstr "Zapisz ustawienia"
