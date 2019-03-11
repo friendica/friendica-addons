@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# fabrixxm <fabrix.xm@gmail.com>, 2014-2015
+# fabrixxm <fabrix.xm@gmail.com>, 2014-2015,2019
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2017-09-20 06:07+0000\n"
+"POT-Creation-Date: 2019-02-19 16:42+0100\n"
+"PO-Revision-Date: 2019-03-11 14:21+0000\n"
 "Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -19,23 +19,25 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: fromapp.php:38
+#: fromapp.php:40
 msgid "Fromapp settings updated."
 msgstr "Impostazioni \"FromApp\" aggiornato."
 
-#: fromapp.php:64
+#: fromapp.php:65 fromapp.php:69
 msgid "FromApp Settings"
 msgstr "Imnpostazioni \"FromApp\""
 
-#: fromapp.php:66
+#: fromapp.php:72
 msgid ""
-"The application name you would like to show your posts originating from."
-msgstr "Il nome dell'applicazione che vuoi mostrare come sorgente dei tuoi messaggi."
+"The application name you would like to show your posts originating from. "
+"Separate different app names with a comma. A random one will then be "
+"selected for every posting."
+msgstr "Il nome applicazione che vuoi compaia come origine dei tuoi messaggi. Separa differenti nomi con una virgola. Di questi, un nome a caso verrà selezionato per ogni invio."
 
-#: fromapp.php:70
+#: fromapp.php:76
 msgid "Use this application name even if another application was used."
 msgstr "Usa questo nome anche se un'altra applicazione è stata effettivamente usata."
 
-#: fromapp.php:77
-msgid "Submit"
-msgstr "Invia"
+#: fromapp.php:83
+msgid "Save Settings"
+msgstr "Salva Impostazioni"
