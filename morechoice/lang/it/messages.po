@@ -1,0 +1,342 @@
+# ADDON morechoice
+# Copyright (C)
+# This file is distributed under the same license as the Friendica morechoice addon package.
+# 
+# 
+# Translators:
+# fabrixxm <fabrix.xm@gmail.com>, 2019
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-08-07 15:04+0200\n"
+"PO-Revision-Date: 2018-08-07 18:18+0000\n"
+"Last-Translator: fabrixxm <fabrix.xm@gmail.com>, 2019\n"
+"Language-Team: Italian (https://www.transifex.com/Friendica/teams/12172/it/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: morechoice.php:34
+msgid "Androgyne"
+msgstr "Androgino"
+
+#: morechoice.php:35
+msgid "Bear"
+msgstr "Orso"
+
+#: morechoice.php:36
+msgid "Bigender"
+msgstr "Bigender"
+
+#: morechoice.php:37
+msgid "Cross dresser"
+msgstr "Travestito"
+
+#: morechoice.php:38
+msgid "Drag queen"
+msgstr "Drag queen"
+
+#: morechoice.php:39
+msgid "Eunuch"
+msgstr "Eunico"
+
+#: morechoice.php:40
+msgid "Faux queen"
+msgstr "Faux queen"
+
+#: morechoice.php:41
+msgid "Gender fluid"
+msgstr "Gender fluid"
+
+#: morechoice.php:42
+msgid "Kathoey"
+msgstr "Kathoey"
+
+#: morechoice.php:43
+msgid "Lady"
+msgstr "Signora"
+
+#: morechoice.php:44
+msgid "Lipstick lesbian"
+msgstr "Lesbica Lipstick"
+
+#: morechoice.php:45
+msgid "Metrosexual"
+msgstr "Metrosessuale"
+
+#: morechoice.php:46
+msgid "Monk"
+msgstr "Monaco"
+
+#: morechoice.php:47
+msgid "Nun"
+msgstr "Suora"
+
+#: morechoice.php:48
+msgid "Soft butch"
+msgstr "Soft butch"
+
+#: morechoice.php:49
+msgid "Stone femme"
+msgstr "Stone femme"
+
+#: morechoice.php:50
+msgid "Tomboy"
+msgstr "Maschiaccio"
+
+#: morechoice.php:51
+msgid "Transman"
+msgstr "Uomo trans"
+
+#: morechoice.php:52
+msgid "Transwoman"
+msgstr "Donna trans"
+
+#: morechoice.php:53
+msgid "Transvesti"
+msgstr "Travestito"
+
+#: morechoice.php:54
+msgid "Trigender"
+msgstr "Trigenere"
+
+#: morechoice.php:55
+msgid "Can't remember"
+msgstr "Non ricordo"
+
+#: morechoice.php:56
+msgid "Hard to tell these days"
+msgstr "Difficile a dire di questi tempi"
+
+#: morechoice.php:60
+msgid "Girls with big tits"
+msgstr "Ragazze con le tette grosse"
+
+#: morechoice.php:61
+msgid "Millionaires"
+msgstr "Milionari"
+
+#: morechoice.php:62
+msgid "Guys with big schlongs"
+msgstr "Ragazzi con grossi salsicciotti"
+
+#: morechoice.php:63
+msgid "Easy women"
+msgstr "Donne facili"
+
+#: morechoice.php:64
+msgid "People with impaired mobility"
+msgstr "Persone con disabilità motorie"
+
+#: morechoice.php:65
+msgid "Amputees"
+msgstr "Amputati"
+
+#: morechoice.php:66
+msgid "Statues, mannequins and immobility"
+msgstr "Statue, manichini e immobilità"
+
+#: morechoice.php:67
+msgid "Pain"
+msgstr "Dolore"
+
+#: morechoice.php:68
+msgid "Trans men"
+msgstr "Uomini trans"
+
+#: morechoice.php:69
+msgid "Older women"
+msgstr "Donne anziane"
+
+#: morechoice.php:70
+msgid "Asphyxiation"
+msgstr "Asfissia"
+
+#: morechoice.php:71
+msgid "In public"
+msgstr "In pubblico"
+
+#: morechoice.php:72
+msgid "In danger"
+msgstr "In pericolo"
+
+#: morechoice.php:73
+msgid "Pretending to be male"
+msgstr "Fare finta di essere un uomo"
+
+#: morechoice.php:74
+msgid "Pretending to be female"
+msgstr "Fare finta di essere una donna"
+
+#: morechoice.php:75
+msgid "Breats"
+msgstr "Seni"
+
+#: morechoice.php:76
+msgid "Scat"
+msgstr "Scat"
+
+#: morechoice.php:77
+msgid "Crying"
+msgstr "Pianto"
+
+#: morechoice.php:78
+msgid "Nappies/Diapers"
+msgstr "Pannolini"
+
+#: morechoice.php:79
+msgid "Trees"
+msgstr "Alberi"
+
+#: morechoice.php:80
+msgid "Vomit"
+msgstr "Vomito"
+
+#: morechoice.php:81
+msgid "Murder"
+msgstr "Omicidio"
+
+#: morechoice.php:82
+msgid "Fat people"
+msgstr "Persone grasse"
+
+#: morechoice.php:83
+msgid "Feet"
+msgstr "Piedi"
+
+#: morechoice.php:84
+msgid "Covered in insects"
+msgstr "Ricoperto di insetti"
+
+#: morechoice.php:85
+msgid "Turning a human being into furniture"
+msgstr "Trasformare un essere umano in arredamento"
+
+#: morechoice.php:86
+msgid "Elderly people"
+msgstr "Persone anziane"
+
+#: morechoice.php:87
+msgid "Transgender people"
+msgstr "Perone transgender"
+
+#: morechoice.php:88
+msgid "Criminals"
+msgstr "Criminali"
+
+#: morechoice.php:89
+msgid "Stealing"
+msgstr "Rubare"
+
+#: morechoice.php:90
+msgid "Breast milk"
+msgstr "Latte materno"
+
+#: morechoice.php:91
+msgid "Immersing genitals in liquids"
+msgstr "Immergere i genitali in liquidi"
+
+#: morechoice.php:92
+msgid "Giants"
+msgstr "Giganti"
+
+#: morechoice.php:93
+msgid "Masochism"
+msgstr "Masochismo"
+
+#: morechoice.php:94
+msgid "Cars"
+msgstr "Macchine"
+
+#: morechoice.php:95
+msgid "Menstruation"
+msgstr "Mestruazioni"
+
+#: morechoice.php:96
+msgid "Mucus"
+msgstr "Muco"
+
+#: morechoice.php:97
+msgid "Obscene language"
+msgstr "Linguaggio osceno"
+
+#: morechoice.php:98
+msgid "Noses"
+msgstr "Nasi"
+
+#: morechoice.php:99
+msgid "Navels"
+msgstr "Ombelichi"
+
+#: morechoice.php:100
+msgid "Corpses"
+msgstr "Cadaveri"
+
+#: morechoice.php:101
+msgid "Smells"
+msgstr "Odori"
+
+#: morechoice.php:102
+msgid "Buttocks"
+msgstr "Natiche"
+
+#: morechoice.php:103
+msgid "Nonliving objects"
+msgstr "Oggetti inanimati"
+
+#: morechoice.php:104
+msgid "Sleeping people"
+msgstr "Persone addormentate"
+
+#: morechoice.php:105
+msgid "Urination"
+msgstr "Minzione"
+
+#: morechoice.php:106
+msgid "Eating people"
+msgstr "Mangiare persone"
+
+#: morechoice.php:107
+msgid "Being eaten"
+msgstr "Essere mangiato"
+
+#: morechoice.php:108
+msgid "Animals"
+msgstr "Animali"
+
+#: morechoice.php:109
+msgid "I'd rather just have some chocolate"
+msgstr "Preferisco del cioccolato"
+
+#: morechoice.php:113
+msgid "Married to my job"
+msgstr "Sposato al mio lavoro"
+
+#: morechoice.php:114
+msgid "Polygamist"
+msgstr "Poligamo"
+
+#: morechoice.php:115
+msgid "Half married"
+msgstr "Mezzo sposato"
+
+#: morechoice.php:116
+msgid "Living in the past"
+msgstr "Vivere nel passato"
+
+#: morechoice.php:117
+msgid "Pretending to be over my ex"
+msgstr "Fingere di non provare più nulla per l'ex"
+
+#: morechoice.php:118
+msgid "Hurt in the past"
+msgstr "Ferito in passato"
+
+#: morechoice.php:119
+msgid "Wallowing in self-pity"
+msgstr "Crogiolarsi nell'autocommiserazione"
