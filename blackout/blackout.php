@@ -1,10 +1,10 @@
 <?php
 /**
  * Name: blackout
- * Description: Blackout your ~friendica node during a given period, requires PHP >= 5.3
+ * Description: Blackout your ~friendica node during a given period
  * License: MIT
- * Version: 1.0
- * Author: Tobias Diekershoff <https://f.diekershoff.de/~tobias>
+ * Version: 1.1
+ * Author: Tobias Diekershoff <https://social.diekershoff.de/~tobias>
  *
  * About
  * =====
@@ -21,11 +21,6 @@
  * out they can't login again. That way you dear admin can double check
  * the entered time periode and fix typos without having to hack the
  * database directly.
- *
- * Requirements
- * ============
- *
- * THIS ADDON REQUIRES PHP VERSION 5.3 OR HIGHER.
  *
  * License
  * =======
@@ -57,70 +52,70 @@ use Friendica\Core\Renderer;
 use Friendica\Core\System;
 
 function blackout_install() {
-    Hook::register('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');
+	Hook::register('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');
 }
 
 function blackout_uninstall() {
-    Hook::unregister('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');
+	Hook::unregister('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');
 }
 function blackout_redirect ($a, $b) {
-    // if we have a logged in user, don't throw her out
-    if (local_user()) {
-        return true;
-    }
-
-	if (! (version_compare(PHP_VERSION, '5.3.0') >= 0))
+	// if we have a logged in user, don't throw her out
+	if (local_user()) {
 		return true;
+	}
 
-    // else...
-    $mystart = Config::get('blackout','begindate');
-    $myend   = Config::get('blackout','enddate');
-    $myurl   = Config::get('blackout','url');
-    $now = time();
-    $date1 = DateTime::createFromFormat('Y-m-d G:i', $mystart);
-    $date2 = DateTime::createFromFormat('Y-m-d G:i', $myend);
-    if ( $date1 && $date2 ) {
-        $date1 = DateTime::createFromFormat('Y-m-d G:i', $mystart)->format('U');
-        $date2 = DateTime::createFromFormat('Y-m-d G:i', $myend)->format('U');
-    } else {
-           $date1 = 0;
-           $date2 = 0;
-    }
-    if (( $date1 <= $now ) && ( $now <= $date2 )) {
-        Logger::log('redirecting user to blackout page');
-        System::externalRedirect($myurl);
-    }
+	// else...
+	$mystart = Config::get('blackout','begindate');
+	$myend   = Config::get('blackout','enddate');
+	$myurl   = Config::get('blackout','url');
+	$now = time();
+	$date1 = DateTime::createFromFormat('Y-m-d G:i', $mystart);
+	$date2 = DateTime::createFromFormat('Y-m-d G:i', $myend);
+	if ( $date1 && $date2 ) {
+		$date1 = DateTime::createFromFormat('Y-m-d G:i', $mystart)->format('U');
+		$date2 = DateTime::createFromFormat('Y-m-d G:i', $myend)->format('U');
+	} else {
+		   $date1 = 0;
+		   $date2 = 0;
+	}
+	if (( $date1 <= $now ) && ( $now <= $date2 )) {
+		Logger::log('redirecting user to blackout page');
+		System::externalRedirect($myurl);
+	}
 }
 
 function blackout_addon_admin(&$a, &$o) {
-    $mystart = Config::get('blackout','begindate');
-    if (! is_string($mystart)) { $mystart = "YYYY-MM-DD:hhmm"; }
-    $myend   = Config::get('blackout','enddate');
-    if (! is_string($myend)) { $myend = "YYYY-MM-DD:hhmm"; }
-    $myurl   = Config::get('blackout','url');
-    if (! is_string($myurl)) { $myurl = "http://www.example.com"; }
-    $t = Renderer::getMarkupTemplate( "admin.tpl", "addon/blackout/" );
+	$mystart = Config::get('blackout','begindate');
+	if (! is_string($mystart)) { $mystart = "YYYY-MM-DD hh:mm"; }
+	$myend   = Config::get('blackout','enddate');
+	if (! is_string($myend)) { $myend = "YYYY-MM-DD hh:mm"; }
+	$myurl   = Config::get('blackout','url');
+	if (! is_string($myurl)) { $myurl = "https://www.example.com"; }
+	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/blackout/" );
 
-   $o = Renderer::replaceMacros($t, [
-        '$submit' => L10n::t('Save Settings'),
-        '$rurl' => ["rurl", "Redirect URL", $myurl, "all your visitors from the web will be redirected to this URL"],
-        '$startdate' => ["startdate", "Begin of the Blackout<br />(YYYY-MM-DD hh:mm)", $mystart, "format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute"],
-        '$enddate' => ["enddate", "End of the Blackout<br />(YYYY-MM-DD hh:mm)", $myend, ""],
-
-    ]);
-    $date1 = DateTime::createFromFormat('Y-m-d G:i', $mystart);
-    $date2 = DateTime::createFromFormat('Y-m-d G:i', $myend);
-    if ($date2 < $date1) {
-        $o = "<div style='border: 2px solid #f00; bakckground: #b00; text-align: center; padding: 10px; margin: 30px;'>The end-date is prior to the start-date of the blackout, you should fix this.</div>" . $o;
-    } else {
-        $o = '<p>Please double check that the current settings for the blackout. Begin will be <strong>'.$mystart.'</strong> and it will end <strong>'.$myend.'</strong>.</p>' . $o;
-    }
+	$date1 = DateTime::createFromFormat('Y-m-d G:i', $mystart);
+	$date2 = DateTime::createFromFormat('Y-m-d G:i', $myend);
+	// a note for the admin
+	$adminnote = "";
+	if ($date2 < $date1) {
+		$adminnote = L10n::t("The end-date is prior to the start-date of the blackout, you should fix this");
+	} else {
+		$adminnote = L10n::t("Please double check that the current settings for the blackout. Begin will be <strong>%s</strong> and it will end <strong>%s</strong>.", $mystart, $myend);
+	}
+	$o = Renderer::replaceMacros($t, [
+		'$submit' => L10n::t('Save Settings'),
+		'$rurl' => ["rurl", L10n::t("Redirect URL"), $myurl, L10n::t("all your visitors from the web will be redirected to this URL"), "", "", "url"],
+		'$startdate' => ["startdate", L10n::t("Begin of the Blackout"), $mystart, L10n::t("Format is <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute.")],
+		'$enddate' => ["enddate", L10n::t("End of the Blackout"), $myend, ""],
+		'$adminnote' => $adminnote,
+		'$aboutredirect' => L10n::t("<strong>Note</strong>: The redirect will be active from the moment you press the submit button. Users currently logged in will <strong>not</strong> be thrown out but can't login again after logging out should the blackout is still in place."),
+	]);
 }
 function blackout_addon_admin_post (&$a) {
-    $begindate = trim($_POST['startdate']);
-    $enddate = trim($_POST['enddate']);
-    $url = trim($_POST['rurl']);
-    Config::set('blackout','begindate',$begindate);
-    Config::set('blackout','enddate',$enddate);
-    Config::set('blackout','url',$url);
+	$begindate = trim($_POST['startdate']);
+	$enddate = trim($_POST['enddate']);
+	$url = trim($_POST['rurl']);
+	Config::set('blackout','begindate',$begindate);
+	Config::set('blackout','enddate',$enddate);
+	Config::set('blackout','url',$url);
 }

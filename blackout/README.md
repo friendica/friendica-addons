@@ -2,7 +2,7 @@ blackout addon
 ==============
 * Description: Blackout your ~friendica node during a given period
 * License: [MIT](http://opensource.org/licenses/MIT)
-* Version: 1.0
+* Version: 1.1
 * Author: Tobias Diekershoff
 
 About
@@ -20,11 +20,6 @@ currently logged in users will be effected as well. But if they log
 out they can't login again. That way you dear admin can double check
 the entered time periode and fix typos without having to hack the
 database directly.
-
-Requirements
--------------
-
-**THIS ADDON REQUIRES PHP VERSION 5.3 OR HIGHER.**
 
 License
 -------
