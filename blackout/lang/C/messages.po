@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-12 14:46+0100\n"
+"POT-Creation-Date: 2019-03-12 14:53+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,11 +22,21 @@ msgid "Save Settings"
 msgstr ""
 
 #: blackout.php:106
+msgid "Redirect URL"
+msgstr ""
+
+#: blackout.php:106
 msgid "all your visitors from the web will be redirected to this URL"
 msgstr ""
 
 #: blackout.php:107
 msgid "Begin of the Blackout<br />(YYYY-MM-DD hh:mm)"
+msgstr ""
+
+#: blackout.php:107
+msgid ""
+"format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</"
+"em> hour and <em>mm</em> minute"
 msgstr ""
 
 #: blackout.php:108

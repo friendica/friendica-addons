@@ -103,8 +103,8 @@ function blackout_addon_admin(&$a, &$o) {
 
    $o = Renderer::replaceMacros($t, [
         '$submit' => L10n::t('Save Settings'),
-        '$rurl' => ["rurl", "Redirect URL", $myurl, L10n::t("all your visitors from the web will be redirected to this URL")],
-        '$startdate' => ["startdate", L10n::t("Begin of the Blackout<br />(YYYY-MM-DD hh:mm)"), $mystart, "format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute"],
+        '$rurl' => ["rurl", L10n::t("Redirect URL"), $myurl, L10n::t("all your visitors from the web will be redirected to this URL")],
+        '$startdate' => ["startdate", L10n::t("Begin of the Blackout<br />(YYYY-MM-DD hh:mm)"), $mystart, L10n::t("format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute")],
         '$enddate' => ["enddate", L10n::t("End of the Blackout<br />(YYYY-MM-DD hh:mm)"), $myend, ""],
 
     ]);
