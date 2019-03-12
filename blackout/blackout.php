@@ -103,17 +103,17 @@ function blackout_addon_admin(&$a, &$o) {
 
    $o = Renderer::replaceMacros($t, [
         '$submit' => L10n::t('Save Settings'),
-        '$rurl' => ["rurl", "Redirect URL", $myurl, "all your visitors from the web will be redirected to this URL"],
-        '$startdate' => ["startdate", "Begin of the Blackout<br />(YYYY-MM-DD hh:mm)", $mystart, "format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute"],
-        '$enddate' => ["enddate", "End of the Blackout<br />(YYYY-MM-DD hh:mm)", $myend, ""],
+        '$rurl' => ["rurl", "Redirect URL", $myurl, L10n::t("all your visitors from the web will be redirected to this URL")],
+        '$startdate' => ["startdate", L10n::t("Begin of the Blackout<br />(YYYY-MM-DD hh:mm)"), $mystart, "format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute"],
+        '$enddate' => ["enddate", L10n::t("End of the Blackout<br />(YYYY-MM-DD hh:mm)"), $myend, ""],
 
     ]);
     $date1 = DateTime::createFromFormat('Y-m-d G:i', $mystart);
     $date2 = DateTime::createFromFormat('Y-m-d G:i', $myend);
     if ($date2 < $date1) {
-        $o = "<div style='border: 2px solid #f00; bakckground: #b00; text-align: center; padding: 10px; margin: 30px;'>The end-date is prior to the start-date of the blackout, you should fix this.</div>" . $o;
+        $o = L10n::t("<div style='border: 2px solid #f00; bakckground: #b00; text-align: center; padding: 10px; margin: 30px;'>The end-date is prior to the start-date of the blackout, you should fix this.</div>") . $o;
     } else {
-        $o = '<p>Please double check that the current settings for the blackout. Begin will be <strong>'.$mystart.'</strong> and it will end <strong>'.$myend.'</strong>.</p>' . $o;
+        $o = L10n::t('<p>Please double check that the current settings for the blackout. Begin will be <strong>'.$mystart.'</strong> and it will end <strong>'.$myend.'</strong>.</p>') . $o;
     }
 }
 function blackout_addon_admin_post (&$a) {
