@@ -94,9 +94,9 @@ function blackout_redirect ($a, $b) {
 
 function blackout_addon_admin(&$a, &$o) {
     $mystart = Config::get('blackout','begindate');
-    if (! is_string($mystart)) { $mystart = "YYYY-MM-DD:hhmm"; }
+    if (! is_string($mystart)) { $mystart = "YYYY-MM-DD hh:mm"; }
     $myend   = Config::get('blackout','enddate');
-    if (! is_string($myend)) { $myend = "YYYY-MM-DD:hhmm"; }
+    if (! is_string($myend)) { $myend = "YYYY-MM-DD hh:mm"; }
     $myurl   = Config::get('blackout','url');
     if (! is_string($myurl)) { $myurl = "http://www.example.com"; }
     $t = Renderer::getMarkupTemplate( "admin.tpl", "addon/blackout/" );
