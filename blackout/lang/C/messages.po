@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"POT-Creation-Date: 2019-03-12 09:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,33 +17,48 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: blackout.php:99
+#: blackout.php:101
+msgid ""
+"The end-date is prior to the start-date of the blackout, you should fix this"
+msgstr ""
+
+#: blackout.php:103
+#, php-format
+msgid ""
+"Please double check that the current settings for the blackout. Begin will "
+"be <strong>%s</strong> and it will end <strong>%s</strong>."
+msgstr ""
+
+#: blackout.php:106
 msgid "Save Settings"
 msgstr ""
 
-#: blackout.php:100
+#: blackout.php:107
 msgid "Redirect URL"
 msgstr ""
 
-#: blackout.php:100
+#: blackout.php:107
 msgid "all your visitors from the web will be redirected to this URL"
 msgstr ""
 
-#: blackout.php:101
+#: blackout.php:108
 msgid "Begin of the Blackout"
-msgstr ""
-
-#: blackout.php:101
-msgid ""
-"format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</"
-"em> hour and <em>mm</em> minute"
-msgstr ""
-
-#: blackout.php:102
-msgid "End of the Blackout"
 msgstr ""
 
 #: blackout.php:108
 msgid ""
-"The end-date is prior to the start-date of the blackout, you should fix this."
+"Format is <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> year, <em>MM</em> month, "
+"<em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute."
+msgstr ""
+
+#: blackout.php:109
+msgid "End of the Blackout"
+msgstr ""
+
+#: blackout.php:111
+msgid ""
+"<strong>Note</strong>: The redirect will be active from the moment you press "
+"the submit button. Users currently logged in will <strong>not</strong> be "
+"thrown out but can't login again after logging out should the blackout is "
+"still in place."
 msgstr ""
