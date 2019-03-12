@@ -22,3 +22,5 @@ report/
 
 #ignore smarty cache
 /view/smarty3/compiled/
+
+\.idea/
