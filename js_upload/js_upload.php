@@ -62,38 +62,38 @@ function js_upload_form(&$a,&$b) {
 <script type="text/javascript">
 var uploader = null;
 function getSelected(opt) {
-            var selected = new Array();
-            var index = 0;
-            for (var intLoop = 0; intLoop < opt.length; intLoop++) {
-               if ((opt[intLoop].selected) ||
-                   (opt[intLoop].checked)) {
-                  index = selected.length;
-                  //selected[index] = new Object;
-                  selected[index] = opt[intLoop].value;
-                  //selected[index] = intLoop;
-               }
-            }
-            return selected;
-         }
+			var selected = new Array();
+			var index = 0;
+			for (var intLoop = 0; intLoop < opt.length; intLoop++) {
+			   if ((opt[intLoop].selected) ||
+				   (opt[intLoop].checked)) {
+				  index = selected.length;
+				  //selected[index] = new Object;
+				  selected[index] = opt[intLoop].value;
+				  //selected[index] = intLoop;
+			   }
+			}
+			return selected;
+		 }
 function createUploader() {
 	uploader = new qq.FileUploader({
 		element: document.getElementById('file-uploader-demo1'),
 		action: '{$b['post_url']}',
 
-        template: '<div class="qq-uploader">' +
-                '<div class="qq-upload-drop-area"><span>$drop_msg</span></div>' +
-                '<div class="qq-upload-button">$upload_msg</div>' +
-                '<ul class="qq-upload-list"></ul>' +
-             '</div>',
+		template: '<div class="qq-uploader">' +
+				'<div class="qq-upload-drop-area"><span>$drop_msg</span></div>' +
+				'<div class="qq-upload-button">$upload_msg</div>' +
+				'<ul class="qq-upload-list"></ul>' +
+			 '</div>',
 
-        // template for one item in file list
-        fileTemplate: '<li>' +
-                '<span class="qq-upload-file"></span>' +
-                '<span class="qq-upload-spinner"></span>' +
-                '<span class="qq-upload-size"></span>' +
-                '<a class="qq-upload-cancel" href="#">$cancel</a>' +
-                '<span class="qq-upload-failed-text">$failed</span>' +
-            '</li>',
+		// template for one item in file list
+		fileTemplate: '<li>' +
+				'<span class="qq-upload-file"></span>' +
+				'<span class="qq-upload-spinner"></span>' +
+				'<span class="qq-upload-size"></span>' +
+				'<a class="qq-upload-cancel" href="#">$cancel</a>' +
+				'<span class="qq-upload-failed-text">$failed</span>' +
+			'</li>',
 
 		debug: true,
 		sizeLimit: $maximagesize,
@@ -106,22 +106,22 @@ function createUploader() {
 
 			if (typeof acl != "undefined"){
 				uploader.setParams( {
-					newalbum      : newalbum,
-					album         : album,
+					newalbum	  : newalbum,
+					album		 : album,
 					not_visible   : document.getElementById('photos-upload-noshare').checked,
 					group_allow   : acl.allow_gid.join(','),
 					contact_allow : acl.allow_cid.join(','),
-					group_deny    : acl.deny_gid.join(','),
+					group_deny	: acl.deny_gid.join(','),
 					contact_deny  : acl.deny_cid.join(',')
 				});
 			} else {
 				uploader.setParams( {
-					newalbum      : newalbum,
-					album         : album,
+					newalbum	  : newalbum,
+					album		 : album,
 					not_visible   : document.getElementById('photos-upload-noshare').checked,
 					group_allow   : getSelected(document.getElementById('group_allow')).join(','),
 					contact_allow : getSelected(document.getElementById('contact_allow')).join(','),
-					group_deny    : getSelected(document.getElementById('group_deny')).join(','),
+					group_deny	: getSelected(document.getElementById('group_deny')).join(','),
 					contact_deny  : getSelected(document.getElementById('contact_deny')).join(',')
 				});
 			}
@@ -199,46 +199,46 @@ class qqUploadedFileXhr {
 
 	private $pathnm = '';
 
-    /**
-     * Save the file in the temp dir.
-     * @return boolean TRUE on success
-     */
-    function save() {
-        $input = fopen("php://input", "r");
+	/**
+	 * Save the file in the temp dir.
+	 * @return boolean TRUE on success
+	 */
+	function save() {
+		$input = fopen("php://input", "r");
 
 		$upload_dir = Config::get('system','tempdir');
 		if(! $upload_dir)
 			$upload_dir = sys_get_temp_dir();
 
-        $this->pathnm = tempnam($upload_dir,'frn');
+		$this->pathnm = tempnam($upload_dir,'frn');
 
 		$temp = fopen($this->pathnm,"w");
-        $realSize = stream_copy_to_stream($input, $temp);
+		$realSize = stream_copy_to_stream($input, $temp);
 
-        fclose($input);
+		fclose($input);
 		fclose($temp);
 
-        if ($realSize != $this->getSize()){
-            return false;
-        }
-        return true;
-    }
+		if ($realSize != $this->getSize()) {
+			return false;
+		}
+		return true;
+	}
 
 	function getPath() {
 		return $this->pathnm;
 	}
 
-    function getName() {
-        return $_GET['qqfile'];
-    }
+	function getName() {
+		return $_GET['qqfile'];
+	}
 
-    function getSize() {
-        if (isset($_SERVER["CONTENT_LENGTH"])){
-            return (int)$_SERVER["CONTENT_LENGTH"];
-        } else {
-            throw new Exception('Getting content length is not supported.');
-        }
-    }
+	function getSize() {
+		if (isset($_SERVER["CONTENT_LENGTH"])){
+			return (int)$_SERVER["CONTENT_LENGTH"];
+		} else {
+			throw new Exception('Getting content length is not supported.');
+		}
+	}
 }
 
 /**
@@ -248,80 +248,80 @@ class qqUploadedFileXhr {
 class qqUploadedFileForm {
 
 
-    /**
-     * Save the file to the specified path
-     * @return boolean TRUE on success
-     */
+	/**
+	 * Save the file to the specified path
+	 * @return boolean TRUE on success
+	 */
 
 
-    function save() {
-        return true;
-    }
+	function save() {
+		return true;
+	}
 
 	function getPath() {
 		return $_FILES['qqfile']['tmp_name'];
 	}
 
-    function getName() {
-        return $_FILES['qqfile']['name'];
-    }
-    function getSize() {
-        return $_FILES['qqfile']['size'];
-    }
+	function getName() {
+		return $_FILES['qqfile']['name'];
+	}
+	function getSize() {
+		return $_FILES['qqfile']['size'];
+	}
 }
 
 class qqFileUploader {
-    private $allowedExtensions = [];
-    private $sizeLimit = 10485760;
-    private $file;
+	private $allowedExtensions = [];
+	private $sizeLimit = 10485760;
+	private $file;
 
-    function __construct(array $allowedExtensions = [], $sizeLimit = 10485760){
-        $allowedExtensions = array_map("strtolower", $allowedExtensions);
+	function __construct(array $allowedExtensions = [], $sizeLimit = 10485760){
+		$allowedExtensions = array_map("strtolower", $allowedExtensions);
 
-        $this->allowedExtensions = $allowedExtensions;
-        $this->sizeLimit = $sizeLimit;
+		$this->allowedExtensions = $allowedExtensions;
+		$this->sizeLimit = $sizeLimit;
 
-        if (isset($_GET['qqfile'])) {
-            $this->file = new qqUploadedFileXhr();
-        } elseif (isset($_FILES['qqfile'])) {
-            $this->file = new qqUploadedFileForm();
-        } else {
-            $this->file = false;
-        }
+		if (isset($_GET['qqfile'])) {
+			$this->file = new qqUploadedFileXhr();
+		} elseif (isset($_FILES['qqfile'])) {
+			$this->file = new qqUploadedFileForm();
+		} else {
+			$this->file = false;
+		}
 
-    }
+	}
 
 
-    private function toBytes($str){
-        $val = trim($str);
-        $last = strtolower($str[strlen($str)-1]);
-        switch($last) {
-            case 'g': $val *= 1024;
-            case 'm': $val *= 1024;
-            case 'k': $val *= 1024;
-        }
-        return $val;
-    }
+	private function toBytes($str){
+		$val = trim($str);
+		$last = strtolower($str[strlen($str)-1]);
+		switch($last) {
+			case 'g': $val *= 1024;
+			case 'm': $val *= 1024;
+			case 'k': $val *= 1024;
+		}
+		return $val;
+	}
 
-    /**
-     * Returns array('success'=>true) or array('error'=>'error message')
-     */
-    function handleUpload(){
+	/**
+	 * Returns array('success'=>true) or array('error'=>'error message')
+	 */
+	function handleUpload(){
 
-        if (!$this->file){
-            return ['error' => L10n::t('No files were uploaded.')];
-        }
+		if (!$this->file){
+			return ['error' => L10n::t('No files were uploaded.')];
+		}
 
-        $size = $this->file->getSize();
+		$size = $this->file->getSize();
 
-        if ($size == 0) {
-            return ['error' => L10n::t('Uploaded file is empty')];
-        }
+		if ($size == 0) {
+			return ['error' => L10n::t('Uploaded file is empty')];
+		}
 
-//        if ($size > $this->sizeLimit) {
+//		if ($size > $this->sizeLimit) {
 
-//            return array('error' => L10n::t('Uploaded file is too large'));
-//        }
+//			return array('error' => L10n::t('Uploaded file is too large'));
+//		}
 
 
 		$maximagesize = Config::get('system','maximagesize');
@@ -331,32 +331,32 @@ class qqFileUploader {
 
 		}
 
-        $pathinfo = pathinfo($this->file->getName());
-        $filename = $pathinfo['filename'];
+		$pathinfo = pathinfo($this->file->getName());
+		$filename = $pathinfo['filename'];
 
-        if (!isset($pathinfo['extension'])) {
-        	Logger::warning('extension isn\'t set.', ['filename' => $filename]);
+		if (!isset($pathinfo['extension'])) {
+			Logger::warning('extension isn\'t set.', ['filename' => $filename]);
 		}
-        $ext = defaults($pathinfo, 'extension', '');
+		$ext = defaults($pathinfo, 'extension', '');
 
-        if($this->allowedExtensions && !in_array(strtolower($ext), $this->allowedExtensions)){
-            $these = implode(', ', $this->allowedExtensions);
-            return ['error' => L10n::t('File has an invalid extension, it should be one of ') . $these . '.'];
-        }
+		if($this->allowedExtensions && !in_array(strtolower($ext), $this->allowedExtensions)){
+			$these = implode(', ', $this->allowedExtensions);
+			return ['error' => L10n::t('File has an invalid extension, it should be one of ') . $these . '.'];
+		}
 
-        if ($this->file->save()){
-            return [
+		if ($this->file->save()){
+			return [
 				'success'=>true,
 				'path' => $this->file->getPath(),
 				'filename' => $filename . '.' . $ext
 			];
-        } else {
-            return [
+		} else {
+			return [
 				'error'=> L10n::t('Upload was cancelled, or server error encountered'),
 				'path' => $this->file->getPath(),
 				'filename' => $filename . '.' . $ext
 			];
-        }
+		}
 
-    }
+	}
 }
