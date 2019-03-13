@@ -65,13 +65,13 @@ function getSelected(opt) {
 			var selected = new Array();
 			var index = 0;
 			for (var intLoop = 0; intLoop < opt.length; intLoop++) {
-			   if ((opt[intLoop].selected) ||
-				   (opt[intLoop].checked)) {
-				  index = selected.length;
-				  //selected[index] = new Object;
-				  selected[index] = opt[intLoop].value;
-				  //selected[index] = intLoop;
-			   }
+				if ((opt[intLoop].selected) ||
+					(opt[intLoop].checked)) {
+					index = selected.length;
+					//selected[index] = new Object;
+					selected[index] = opt[intLoop].value;
+					//selected[index] = intLoop;
+				}
 			}
 			return selected;
 		 }
@@ -106,22 +106,22 @@ function createUploader() {
 
 			if (typeof acl != "undefined"){
 				uploader.setParams( {
-					newalbum	  : newalbum,
-					album		 : album,
+					newalbum      : newalbum,
+					album         : album,
 					not_visible   : document.getElementById('photos-upload-noshare').checked,
 					group_allow   : acl.allow_gid.join(','),
 					contact_allow : acl.allow_cid.join(','),
-					group_deny	: acl.deny_gid.join(','),
+					group_deny    : acl.deny_gid.join(','),
 					contact_deny  : acl.deny_cid.join(',')
 				});
 			} else {
 				uploader.setParams( {
-					newalbum	  : newalbum,
-					album		 : album,
+					newalbum      : newalbum,
+					album         : album,
 					not_visible   : document.getElementById('photos-upload-noshare').checked,
 					group_allow   : getSelected(document.getElementById('group_allow')).join(','),
 					contact_allow : getSelected(document.getElementById('contact_allow')).join(','),
-					group_deny	: getSelected(document.getElementById('group_deny')).join(','),
+					group_deny    : getSelected(document.getElementById('group_deny')).join(','),
 					contact_deny  : getSelected(document.getElementById('contact_deny')).join(',')
 				});
 			}
@@ -174,9 +174,9 @@ function js_upload_post_file(&$a,&$b) {
 
 	$result = $a->data['upload_result'];
 
-	$b['src']		= $result['path'];
-	$b['filename']	= $result['filename'];
-	$b['filesize']	= filesize($b['src']);
+	$b['src']       = $result['path'];
+	$b['filename']  = $result['filename'];
+	$b['filesize']  = filesize($b['src']);
 
 }
 
@@ -308,7 +308,7 @@ class qqFileUploader {
 	 */
 	function handleUpload(){
 
-		if (!$this->file){
+		if (!$this->file) {
 			return ['error' => L10n::t('No files were uploaded.')];
 		}
 
@@ -346,14 +346,14 @@ class qqFileUploader {
 
 		if ($this->file->save()){
 			return [
-				'success'=>true,
-				'path' => $this->file->getPath(),
+				'success'  => true,
+				'path'     => $this->file->getPath(),
 				'filename' => $filename . '.' . $ext
 			];
 		} else {
 			return [
-				'error'=> L10n::t('Upload was cancelled, or server error encountered'),
-				'path' => $this->file->getPath(),
+				'error'    => L10n::t('Upload was cancelled, or server error encountered'),
+				'path'     => $this->file->getPath(),
 				'filename' => $filename . '.' . $ext
 			];
 		}
