@@ -14,6 +14,7 @@
  * Module Author: Chris Case
  *
  */
+
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
@@ -333,7 +334,10 @@ class qqFileUploader {
         $pathinfo = pathinfo($this->file->getName());
         $filename = $pathinfo['filename'];
 
-        $ext = $pathinfo['extension'];
+        if (!isset($pathinfo['extension'])) {
+        	Logger::warning('extension isn\'t set.', ['filename' => $filename]);
+		}
+        $ext = defaults($pathinfo, 'extension', '');
 
         if($this->allowedExtensions && !in_array(strtolower($ext), $this->allowedExtensions)){
             $these = implode(', ', $this->allowedExtensions);
