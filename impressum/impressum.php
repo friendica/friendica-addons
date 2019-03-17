@@ -52,9 +52,9 @@ function impressum_footer($a, &$b) {
     }
 }
 
-function impressum_load_config(\Friendica\App $a, Config\Cache\ConfigCacheLoader $loader)
+function impressum_load_config(\Friendica\App $a, Config\Cache\ConfigCacheManager $configCacheManager)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('impressum'));
+	$a->getConfigCache()->load($configCacheManager->loadAddonConfig('impressum'));
 }
 
 function impressum_show($a,&$b) {

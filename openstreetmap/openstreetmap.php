@@ -47,9 +47,9 @@ function openstreetmap_uninstall()
 	Logger::log("removed openstreetmap");
 }
 
-function openstreetmap_load_config(\Friendica\App $a, Config\Cache\ConfigCacheLoader $loader)
+function openstreetmap_load_config(\Friendica\App $a, Config\Cache\ConfigCacheManager $configCacheManager)
 {
-	$a->getConfigCache()->load($loader->loadAddonConfig('openstreetmap'));
+	$a->getConfigCache()->load($configCacheManager->loadAddonConfig('openstreetmap'));
 }
 
 function openstreetmap_alterheader($a, &$navHtml)
