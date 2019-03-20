@@ -114,10 +114,10 @@ function buffer_connect(App $a)
 	$buffer = new BufferApp($client_id, $client_secret, $callback_url);
 
 	if (!$buffer->ok) {
-		$o .= '<a href="' . $buffer->get_login_url() . '">Connect to Buffer!</a>';
+		$o = '<a href="' . $buffer->get_login_url() . '">Connect to Buffer!</a>';
 	} else {
 		Logger::log("buffer_connect: authenticated");
-		$o .= L10n::t("You are now authenticated to buffer. ");
+		$o = L10n::t("You are now authenticated to buffer. ");
 		$o .= '<br /><a href="' . $a->getBaseURL() . '/settings/connectors">' . L10n::t("return to the connector page") . '</a>';
 		PConfig::set(local_user(), 'buffer','access_token', $buffer->access_token);
 	}
@@ -236,8 +236,8 @@ function buffer_settings_post(App $a, array &$b)
 			PConfig::set(local_user(), 'buffer', 'post'           , false);
 			PConfig::set(local_user(), 'buffer', 'post_by_default', false);
 		} else {
-			PConfig::set(local_user(), 'buffer', 'post'           , intval($_POST['buffer']));
-			PConfig::set(local_user(), 'buffer', 'post_by_default', intval($_POST['buffer_bydefault']));
+			PConfig::set(local_user(), 'buffer', 'post'           , intval(defaults($_POST, 'buffer', false)));
+			PConfig::set(local_user(), 'buffer', 'post_by_default', intval(defaults($_POST, 'buffer_bydefault', false)));
 		}
 	}
 }
