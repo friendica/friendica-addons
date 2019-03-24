@@ -14,6 +14,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
+use Friendica\Util\Config\ConfigFileLoader;
 use Friendica\Util\Strings;
 
 /**
@@ -36,7 +37,7 @@ function libravatar_uninstall()
 	Logger::log("unregistered libravatar in avatar_lookup hook");
 }
 
-function libravatar_load_config(App $a, Config\Cache\ConfigCacheLoader $loader)
+function libravatar_load_config(App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('libravatar'));
 }

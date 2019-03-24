@@ -58,6 +58,7 @@ use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Model\User;
+use Friendica\Util\Config\ConfigFileLoader;
 
 function ldapauth_install()
 {
@@ -71,7 +72,7 @@ function ldapauth_uninstall()
 	Hook::unregister('authenticate', 'addon/ldapauth/ldapauth.php', 'ldapauth_hook_authenticate');
 }
 
-function ldapauth_load_config(\Friendica\App $a, Config\Cache\ConfigCacheLoader $loader)
+function ldapauth_load_config(\Friendica\App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('ldapauth'));
 }

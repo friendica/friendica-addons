@@ -14,6 +14,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
+use Friendica\Util\Config\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Strings;
 
@@ -35,7 +36,7 @@ function public_server_uninstall()
 	Hook::unregister('logged_in', 'addon/public_server/public_server.php', 'public_server_login');
 }
 
-function public_server_load_config(App $a, Config\Cache\ConfigCacheLoader $loader)
+function public_server_load_config(App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('public_server'));
 }

@@ -23,6 +23,7 @@ use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\Queue;
 use Friendica\Model\User;
+use Friendica\Util\Config\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
 use Friendica\Util\Strings;
@@ -377,7 +378,7 @@ function pumpio_settings_post(App $a, array &$b)
 	}
 }
 
-function pumpio_load_config(App $a, Config\Cache\ConfigCacheLoader $loader)
+function pumpio_load_config(App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('pumpio'));
 }
