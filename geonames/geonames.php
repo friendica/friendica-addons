@@ -27,6 +27,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
+use Friendica\Util\Config\ConfigFileLoader;
 use Friendica\Util\Network;
 use Friendica\Util\XML;
 
@@ -77,7 +78,7 @@ function geonames_uninstall() {
 	Logger::log("removed geonames");
 }
 
-function geonames_load_config(\Friendica\App $a, Config\Cache\ConfigCacheLoader $loader)
+function geonames_load_config(\Friendica\App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('geonames'));
 }

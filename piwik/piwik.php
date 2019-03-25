@@ -36,6 +36,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Util\Config\ConfigFileLoader;
 use Friendica\Util\Strings;
 
 function piwik_install() {
@@ -52,7 +53,7 @@ function piwik_uninstall() {
 	Logger::log("uninstalled piwik addon");
 }
 
-function piwik_load_config(\Friendica\App $a, Config\Cache\ConfigCacheLoader $loader)
+function piwik_load_config(\Friendica\App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('piwik'));
 }

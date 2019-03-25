@@ -86,6 +86,7 @@ use Friendica\Model\ItemContent;
 use Friendica\Model\Queue;
 use Friendica\Model\User;
 use Friendica\Object\Image;
+use Friendica\Util\Config\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
 use Friendica\Util\Strings;
@@ -135,7 +136,7 @@ function twitter_uninstall()
 	Hook::unregister('addon_settings_post', __FILE__, 'twitter_settings_post');
 }
 
-function twitter_load_config(App $a, Config\Cache\ConfigCacheLoader $loader)
+function twitter_load_config(App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('twitter'));
 }
