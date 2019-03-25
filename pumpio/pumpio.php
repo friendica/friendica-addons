@@ -214,19 +214,21 @@ function pumpio_connect(App $a)
 	return $o;
 }
 
-function pumpio_jot_nets(App $a, &$b)
+function pumpio_jot_nets(App $a, array &$jotnets_fields)
 {
 	if (! local_user()) {
 		return;
 	}
 
-	$pumpio_post = PConfig::get(local_user(), 'pumpio', 'post');
-
-	if (intval($pumpio_post) == 1) {
-		$pumpio_defpost = PConfig::get(local_user(), 'pumpio', 'post_by_default');
-		$selected = ((intval($pumpio_defpost) == 1) ? ' checked="checked" ' : '');
-		$b .= '<div class="profile-jot-net"><input type="checkbox" name="pumpio_enable"' . $selected . ' value="1" /> '
-			. L10n::t('Post to pumpio') . '</div>';
+	if (PConfig::get(local_user(), 'pumpio', 'post')) {
+		$jotnets_fields[] = [
+			'type' => 'checkbox',
+			'field' => [
+				'pumpio_enable',
+				L10n::t('Post to pumpio'),
+				PConfig::get(local_user(), 'pumpio', 'post_by_default')
+			]
+		];
 	}
 }
 

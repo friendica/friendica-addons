@@ -41,21 +41,21 @@ function diaspora_uninstall()
 	Hook::unregister('queue_predeliver',        'addon/diaspora/diaspora.php', 'diaspora_queue_hook');
 }
 
-function diaspora_jot_nets(App $a, &$b)
+function diaspora_jot_nets(App $a, array &$jotnets_fields)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	$diaspora_post = PConfig::get(local_user(), 'diaspora', 'post');
-
-	if (intval($diaspora_post) == 1) {
-		$diaspora_defpost = PConfig::get(local_user(), 'diaspora', 'post_by_default');
-
-		$selected = ((intval($diaspora_defpost) == 1) ? ' checked="checked" ' : '');
-
-		$b .= '<div class="profile-jot-net"><input type="checkbox" name="diaspora_enable"' . $selected . ' value="1" /> '
-		. L10n::t('Post to Diaspora') . '</div>';
+	if (PConfig::get(local_user(), 'diaspora', 'post')) {
+		$jotnets_fields[] = [
+			'type' => 'checkbox',
+			'field' => [
+				'diaspora_enable',
+				L10n::t('Post to Diaspora'),
+				PConfig::get(local_user(), 'diaspora', 'post_by_default')
+			]
+		];
 	}
 }
 
