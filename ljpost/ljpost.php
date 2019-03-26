@@ -35,16 +35,21 @@ function ljpost_uninstall() {
 }
 
 
-function ljpost_jot_nets(&$a,&$b) {
-    if(! local_user())
+function ljpost_jot_nets(\Friendica\App &$a, array &$jotnets_fields)
+{
+    if(! local_user()) {
         return;
+    }
 
-    $lj_post = PConfig::get(local_user(),'ljpost','post');
-    if(intval($lj_post) == 1) {
-        $lj_defpost = PConfig::get(local_user(),'ljpost','post_by_default');
-        $selected = ((intval($lj_defpost) == 1) ? ' checked="checked" ' : '');
-        $b .= '<div class="profile-jot-net"><input type="checkbox" name="ljpost_enable" ' . $selected . ' value="1" /> '
-            . L10n::t('Post to LiveJournal') . '</div>';
+    if (PConfig::get(local_user(),'ljpost','post')) {
+	    $jotnets_fields[] = [
+		    'type' => 'checkbox',
+		    'field' => [
+			    'ljpost_enable',
+			    L10n::t('Post to LiveJournal'),
+			    PConfig::get(local_user(),'ljpost','post_by_default')
+		    ]
+	    ];
     }
 }
 

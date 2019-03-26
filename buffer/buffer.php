@@ -125,19 +125,21 @@ function buffer_connect(App $a)
 	return $o;
 }
 
-function buffer_jot_nets(App $a, &$b)
+function buffer_jot_nets(App $a, array &$jotnets_fields)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	$buffer_post = PConfig::get(local_user(), 'buffer', 'post');
-
-	if (intval($buffer_post) == 1) {
-		$buffer_defpost = PConfig::get(local_user(), 'buffer', 'post_by_default');
-		$selected = ((intval($buffer_defpost) == 1) ? ' checked="checked" ' : '');
-		$b .= '<div class="profile-jot-net"><input type="checkbox" name="buffer_enable"' . $selected . ' value="1" /> '
-		    . L10n::t('Post to Buffer') . '</div>';
+	if (PConfig::get(local_user(), 'buffer', 'post')) {
+		$jotnets_fields[] = [
+			'type' => 'checkbox',
+			'field' => [
+				'buffer_enable',
+				L10n::t('Post to Buffer'),
+				PConfig::get(local_user(), 'buffer', 'post_by_default')
+			]
+		];
 	}
 }
 

@@ -101,18 +101,21 @@ function statusnet_check_item_notification(App $a, &$notification_data)
 	}
 }
 
-function statusnet_jot_nets(App $a, &$b)
+function statusnet_jot_nets(App $a, array &$jotnets_fields)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	$statusnet_post = PConfig::get(local_user(), 'statusnet', 'post');
-	if (intval($statusnet_post) == 1) {
-		$statusnet_defpost = PConfig::get(local_user(), 'statusnet', 'post_by_default');
-		$selected = ((intval($statusnet_defpost) == 1) ? ' checked="checked" ' : '');
-		$b .= '<div class="profile-jot-net"><input type="checkbox" name="statusnet_enable"' . $selected . ' value="1" /> '
-			. L10n::t('Post to GNU Social') . '</div>';
+	if (PConfig::get(local_user(), 'statusnet', 'post')) {
+		$jotnets_fields[] = [
+			'type' => 'checkbox',
+			'field' => [
+				'statusnet_enable',
+				L10n::t('Post to GNU Social'),
+				PConfig::get(local_user(), 'statusnet', 'post_by_default')
+			]
+		];
 	}
 }
 

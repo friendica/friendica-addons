@@ -43,18 +43,21 @@ function wppost_uninstall()
 }
 
 
-function wppost_jot_nets(&$a, &$b)
+function wppost_jot_nets(\Friendica\App &$a, array &$jotnets_fields)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	$wp_post = PConfig::get(local_user(), 'wppost', 'post');
-	if (intval($wp_post) == 1) {
-		$wp_defpost = PConfig::get(local_user(),'wppost','post_by_default');
-		$selected = ((intval($wp_defpost) == 1) ? ' checked="checked" ' : '');
-		$b .= '<div class="profile-jot-net"><input type="checkbox" name="wppost_enable" ' . $selected . ' value="1" /> '
-			. L10n::t('Post to Wordpress') . '</div>';
+	if (PConfig::get(local_user(),'wppost','post')) {
+		$jotnets_fields[] = [
+			'type' => 'checkbox',
+			'field' => [
+				'wppost_enable',
+				L10n::t('Post to Wordpress'),
+				PConfig::get(local_user(),'wppost','post_by_default')
+			]
+		];
 	}
 }
 

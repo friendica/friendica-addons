@@ -35,17 +35,22 @@ function libertree_uninstall()
 	Hook::unregister('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
 }
 
-function libertree_jot_nets(&$a,&$b) {
-    if(! local_user())
+function libertree_jot_nets(App &$a, array &$jotnets_fields)
+{
+    if(! local_user()) {
         return;
-
-    $ltree_post = PConfig::get(local_user(),'libertree','post');
-    if(intval($ltree_post) == 1) {
-        $ltree_defpost = PConfig::get(local_user(),'libertree','post_by_default');
-        $selected = ((intval($ltree_defpost) == 1) ? ' checked="checked" ' : '');
-        $b .= '<div class="profile-jot-net"><input type="checkbox" name="libertree_enable"' . $selected . ' value="1" /> '
-            . L10n::t('Post to libertree') . '</div>';
     }
+
+	if (PConfig::get(local_user(), 'libertree', 'post')) {
+		$jotnets_fields[] = [
+			'type' => 'checkbox',
+			'field' => [
+				'libertree_enable',
+				L10n::t('Post to libertree'),
+				PConfig::get(local_user(), 'libertree', 'post_by_default')
+			]
+		];
+	}
 }
 
 

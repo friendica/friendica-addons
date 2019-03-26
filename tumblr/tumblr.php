@@ -193,19 +193,21 @@ function tumblr_callback(App $a)
 	return $o;
 }
 
-function tumblr_jot_nets(App $a, &$b)
+function tumblr_jot_nets(App $a, array &$jotnets_fields)
 {
 	if (! local_user()) {
 		return;
 	}
 
-	$tmbl_post = PConfig::get(local_user(), 'tumblr', 'post');
-
-	if (intval($tmbl_post) == 1) {
-		$tmbl_defpost = PConfig::get(local_user(), 'tumblr', 'post_by_default');
-		$selected = ((intval($tmbl_defpost) == 1) ? ' checked="checked" ' : '');
-		$b .= '<div class="profile-jot-net"><input type="checkbox" name="tumblr_enable"' . $selected . ' value="1" /> '
-			. L10n::t('Post to Tumblr') . '</div>';
+	if (PConfig::get(local_user(),'tumblr','post')) {
+		$jotnets_fields[] = [
+			'type' => 'checkbox',
+			'field' => [
+				'tumblr_enable',
+				L10n::t('Post to Tumblr'),
+				PConfig::get(local_user(),'tumblr','post_by_default')
+			]
+		];
 	}
 }
 

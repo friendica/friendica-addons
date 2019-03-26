@@ -35,18 +35,21 @@ function ijpost_uninstall()
 	Hook::unregister('connector_settings_post', 'addon/ijpost/ijpost.php', 'ijpost_settings_post');
 }
 
-function ijpost_jot_nets(&$a, &$b)
+function ijpost_jot_nets(\Friendica\App &$a, array &$jotnets_fields)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	$ij_post = PConfig::get(local_user(), 'ijpost', 'post');
-	if (intval($ij_post) == 1) {
-		$ij_defpost = PConfig::get(local_user(), 'ijpost', 'post_by_default');
-		$selected = ((intval($ij_defpost) == 1) ? ' checked="checked" ' : '');
-		$b .= '<div class="profile-jot-net"><input type="checkbox" name="ijpost_enable" ' . $selected . ' value="1" /> '
-			. L10n::t('Post to Insanejournal') . '</div>';
+	if (PConfig::get(local_user(), 'ijpost', 'post')) {
+		$jotnets_fields[] = [
+			'type' => 'checkbox',
+			'field' => [
+				'ijpost_enable',
+				L10n::t('Post to Insanejournal'),
+				PConfig::get(local_user(), 'ijpost', 'post_by_default')
+			]
+		];
 	}
 }
 

@@ -194,20 +194,24 @@ function twitter_follow(App $a, array &$contact)
 	}
 }
 
-function twitter_jot_nets(App $a, &$b)
+function twitter_jot_nets(App $a, array &$jotnets_fields)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	$tw_post = PConfig::get(local_user(), 'twitter', 'post');
-	if (intval($tw_post) == 1) {
-		$tw_defpost = PConfig::get(local_user(), 'twitter', 'post_by_default');
-		$selected = ((intval($tw_defpost) == 1) ? ' checked="checked" ' : '');
-		$b .= '<div class="profile-jot-net"><input type="checkbox" name="twitter_enable"' . $selected . ' value="1" /> '
-			. L10n::t('Post to Twitter') . '</div>';
+	if (PConfig::get(local_user(), 'twitter', 'post')) {
+		$jotnets_fields[] = [
+			'type' => 'checkbox',
+			'field' => [
+				'twitter_enable',
+				L10n::t('Post to Twitter'),
+				PConfig::get(local_user(), 'twitter', 'post_by_default')
+			]
+		];
 	}
 }
+
 
 function twitter_settings_post(App $a)
 {
