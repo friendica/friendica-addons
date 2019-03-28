@@ -1,9 +1,4 @@
 <?php
-
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 /**
  * Name: PHP Mailer SMTP
  * Description: Connects to a SMTP server based on the config
@@ -62,12 +57,10 @@ function phpmailer_emailer_send_prepare(App $a, array &$b)
 			$mail->Host = $a->config['system']['smtp_server'];
 			$mail->Port = $a->config['system']['smtp_port'];
 
-			/*
 			if (!empty($a->config['system']['smtp_secure']) && (bool)$a->config['system']['smtp_secure'] !== '') {
 				$mail->SMTPSecure = $a->config['system']['smtp_secure'];
 				$mail->Port = $a->config['system']['smtp_port_s'];
 			}
-			*/
 
 			if (!empty($a->config['system']['smtp_username']) && !empty($a->config['system']['smtp_password'])) {
 				$mail->SMTPAuth = true;
@@ -85,6 +78,10 @@ function phpmailer_emailer_send_prepare(App $a, array &$b)
 
 		// add text
 		$mail->AltBody = $b['textVersion'];
+
+		if (!empty($b['toEmail'])) {
+			$mail->addAddress($b['toEmail']);
+		}
 
 		// html version
 		if (!empty($b['htmlVersion'])) {
