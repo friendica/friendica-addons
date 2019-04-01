@@ -3,7 +3,7 @@
  * Name: PHP Mailer SMTP
  * Description: Connects to a SMTP server based on the config
  * Version: 0.1
- * Author: Marcus Mueller <http://mat.exon.name>
+ * Author: Marcus Mueller
  */
 
 use Friendica\App;
@@ -15,7 +15,7 @@ function phpmailer_install()
 {
 	Addon::registerHook(
 		'emailer_send_prepare',
-		'addon/phpmailer/phpmailer.php',
+		__FILE__,
 		'phpmailer_emailer_send_prepare'
 	);
 }
@@ -24,13 +24,9 @@ function phpmailer_uninstall()
 {
 	Addon::unregisterHook(
 		'emailer_send_prepare',
-		'addon/phpmailer/phpmailer.php',
+		__FILE__,
 		'phpmailer_emailer_send_prepare'
 	);
-}
-
-function phpmailer_module()
-{
 }
 
 /**
@@ -46,7 +42,7 @@ function phpmailer_emailer_send_prepare(App $a, array &$b)
 	// Passing `true` enables exceptions
 	$mail = new PHPMailer(true);
 	try {
-		if (!empty($a->config['system']['smtp']) && (bool)$a->config['system']['smtp'] === true) {
+        if (Config::get('phpmailer', 'smtp')) {
 			// Set mailer to use SMTP
 			$mail->isSMTP();
 			/*
@@ -54,22 +50,22 @@ function phpmailer_emailer_send_prepare(App $a, array &$b)
 			$mail->SMTPDebug = 2;
 			*/
 			// Specify main and backup SMTP servers
-			$mail->Host = $a->config['system']['smtp_server'];
-			$mail->Port = $a->config['system']['smtp_port'];
+			$mail->Host = Config::get('phpmailer', 'smtp_server');
+			$mail->Port = Config::get('phpmailer', 'smtp_port');
 
-			if (!empty($a->config['system']['smtp_secure']) && (bool)$a->config['system']['smtp_secure'] !== '') {
-				$mail->SMTPSecure = $a->config['system']['smtp_secure'];
-				$mail->Port = $a->config['system']['smtp_port_s'];
+			if (Config::get('system', 'smtp_secure') && Config::get('phpmailer', 'smtp_port_s')) {
+				$mail->SMTPSecure = Config::get('phpmailer', 'smtp_secure');
+				$mail->Port = Config::get('phpmailer', 'smtp_port_s');
 			}
 
-			if (!empty($a->config['system']['smtp_username']) && !empty($a->config['system']['smtp_password'])) {
+			if (Config::get('phpmailer', 'smtp_username') && Config::get('phpmailer', 'smtp_password')) {
 				$mail->SMTPAuth = true;
-				$mail->Username = $a->config['system']['smtp_username'];
-				$mail->Password = $a->config['system']['smtp_password'];
+				$mail->Username = Config::get('phpmailer', 'smtp_username');
+				$mail->Password = Config::get('phpmailer', 'smtp_password');
 			}
 
-			if (!empty($a->config['system']['smtp_from']) && !empty($a->config['system']['smtp_domain'])) {
-				$mail->setFrom($a->config['system']['smtp_from'], $a->config['sitename']);
+			if (Config::get('phpmailer', 'smtp_from')) {
+				$mail->setFrom(Config::get('phpmailer', 'smtp_from'), Config::get('sitename'));
 			}
 		}
 
