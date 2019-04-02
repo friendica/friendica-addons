@@ -42,7 +42,7 @@ function phpmailer_emailer_send_prepare(App $a, array &$b)
 	// Passing `true` enables exceptions
 	$mail = new PHPMailer(true);
 	try {
-        if (Config::get('phpmailer', 'smtp')) {
+		if (Config::get('phpmailer', 'smtp')) {
 			// Set mailer to use SMTP
 			$mail->isSMTP();
 			/*
