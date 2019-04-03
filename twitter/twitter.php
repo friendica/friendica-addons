@@ -1558,15 +1558,28 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 			return [];
 		}
 
-		$retweet['source'] = $postarray['source'];
-		$retweet['private'] = $postarray['private'];
-		$retweet['allow_cid'] = $postarray['allow_cid'];
-		$retweet['contact-id'] = $postarray['contact-id'];
-		$retweet['owner-name'] = $postarray['owner-name'];
-		$retweet['owner-link'] = $postarray['owner-link'];
-		$retweet['owner-avatar'] = $postarray['owner-avatar'];
+		if (!$noquote) {
+			// Store the original tweet
+			Item::insert($retweet);
 
-		$postarray = $retweet;
+			// CHange the other post into a reshare activity
+			$postarray['verb'] = ACTIVITY2_ANNOUNCE;
+			$postarray['gravity'] = GRAVITY_ACTIVITY;
+			$postarray['object-type'] = ACTIVITY_OBJ_NOTE;
+
+			$postarray['thr-parent'] = $retweet['uri'];
+			$postarray['parent-uri'] = $retweet['uri'];
+		} else {
+			$retweet['source'] = $postarray['source'];
+			$retweet['private'] = $postarray['private'];
+			$retweet['allow_cid'] = $postarray['allow_cid'];
+			$retweet['contact-id'] = $postarray['contact-id'];
+			$retweet['owner-name'] = $postarray['owner-name'];
+			$retweet['owner-link'] = $postarray['owner-link'];
+			$retweet['owner-avatar'] = $postarray['owner-avatar'];
+
+			$postarray = $retweet;
+		}
 	}
 
 	if (!empty($post->quoted_status) && !$noquote) {
