@@ -397,14 +397,7 @@ function diaspora_send(App $a, array &$b)
 
 			Logger::log('diaspora_send: requeueing '.$b['uid'], Logger::DEBUG);
 
-			$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $b['uid']);
-			if (count($r))
-				$a->contact = $r[0]["id"];
-
-			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $body]);
-
 			Worker::defer();
-			notice(L10n::t('Diaspora post failed. Deferred for retry.').EOL);
 		}
 	}
 }
