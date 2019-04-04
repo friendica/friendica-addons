@@ -617,8 +617,8 @@ function pumpio_send(App $a, array &$b)
 
 			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $params]);
 
-			Queue::add($a->contact, Protocol::PUMPIO, $s);
-			notice(L10n::t('Pump.io post failed. Queued for retry.').EOL);
+			Worker::defer();
+			notice(L10n::t('Pump.io post failed. Deferred for retry.').EOL);
 		}
 	}
 }
@@ -694,8 +694,8 @@ function pumpio_action(App $a, $uid, $uri, $action, $content = "")
 
 		$s = serialize(['url' => $url, 'item' => $orig_post["id"], 'post' => $params]);
 
-		Queue::add($a->contact, Protocol::PUMPIO, $s);
-		notice(L10n::t('Pump.io like failed. Queued for retry.').EOL);
+		Worker::defer();
+		notice(L10n::t('Pump.io like failed. Deferred for retry.').EOL);
 	}
 }
 

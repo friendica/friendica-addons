@@ -18,6 +18,7 @@ use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
 use Friendica\Model\Queue;
+use Friendica\Core\Worker;
 
 function diaspora_install()
 {
@@ -402,8 +403,8 @@ function diaspora_send(App $a, array &$b)
 
 			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $body]);
 
-			Queue::add($a->contact, Protocol::DIASPORA2, $s);
-			notice(L10n::t('Diaspora post failed. Queued for retry.').EOL);
+			Worker::defer();
+			notice(L10n::t('Diaspora post failed. Deferred for retry.').EOL);
 		}
 	}
 }
