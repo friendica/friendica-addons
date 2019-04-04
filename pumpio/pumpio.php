@@ -609,16 +609,7 @@ function pumpio_send(App $a, array &$b)
 			}
 		} else {
 			Logger::log('pumpio_send '.$username.': '.$url.' general error: ' . print_r($user, true));
-
-			$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $b['uid']);
-			if (DBA::isResult($r)) {
-				$a->contact = $r[0]["id"];
-			}
-
-			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $params]);
-
-			Queue::add($a->contact, Protocol::PUMPIO, $s);
-			notice(L10n::t('Pump.io post failed. Queued for retry.').EOL);
+			Worker::defer();
 		}
 	}
 }
@@ -686,16 +677,7 @@ function pumpio_action(App $a, $uid, $uri, $action, $content = "")
 		Logger::log('pumpio_action '.$username.' '.$action.': success '.$uri);
 	} else {
 		Logger::log('pumpio_action '.$username.' '.$action.': general error: '.$uri.' '.print_r($user, true));
-
-		$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $uid);
-		if (DBA::isResult($r)) {
-			$a->contact = $r[0]["id"];
-		}
-
-		$s = serialize(['url' => $url, 'item' => $orig_post["id"], 'post' => $params]);
-
-		Queue::add($a->contact, Protocol::PUMPIO, $s);
-		notice(L10n::t('Pump.io like failed. Queued for retry.').EOL);
+		Worker::defer();
 	}
 }
 

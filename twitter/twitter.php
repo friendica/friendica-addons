@@ -684,16 +684,7 @@ function twitter_post_hook(App $a, array &$b)
 
 		if (!empty($result->errors)) {
 			Logger::log('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
-
-			$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", intval($b['uid']));
-			if (DBA::isResult($r)) {
-				$a->contact = $r[0]["id"];
-			}
-
-			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $post]);
-
-			Queue::add($a->contact, Protocol::TWITTER, $s);
-			notice(L10n::t('Twitter post failed. Queued for retry.') . EOL);
+			Worker::defer();
 		} elseif ($iscomment) {
 			Logger::log('twitter_post: Update extid ' . $result->id_str . " for post id " . $b['id']);
 			Item::update(['extid' => "twitter::" . $result->id_str], ['id' => $b['id']]);
