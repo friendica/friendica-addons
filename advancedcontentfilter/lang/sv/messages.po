@@ -4,7 +4,7 @@
 # 
 # 
 # Translators:
-# Torbjörn Andersson <torbjorn.andersson@syte.se>, 2019
+# Bjoessi <torbjorn.andersson@syte.se>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -13,7 +13,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-04-17 04:04+0200\n"
 "PO-Revision-Date: 2018-05-24 06:41+0000\n"
-"Last-Translator: Torbjörn Andersson <torbjorn.andersson@syte.se>, 2019\n"
+"Last-Translator: Bjoessi <torbjorn.andersson@syte.se>, 2019\n"
 "Language-Team: Swedish (https://www.transifex.com/Friendica/teams/12172/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -24,7 +24,7 @@ msgstr ""
 #: advancedcontentfilter.php:134
 #, php-format
 msgid "Filtered by rule: %s"
-msgstr ""
+msgstr "Filtrerat efter regel: %s"
 
 #: advancedcontentfilter.php:147 advancedcontentfilter.php:204
 msgid "Advanced Content Filter"
@@ -139,37 +139,37 @@ msgstr "Du måste vara inloggad för att använda den här funktionen"
 #: advancedcontentfilter.php:316 advancedcontentfilter.php:350
 #: advancedcontentfilter.php:379
 msgid "Invalid form security token, please refresh the page."
-msgstr ""
+msgstr "Felaktigt säkerhetsformulärstecken, vänligen uppdatera sidan."
 
 #: advancedcontentfilter.php:328
 msgid "The rule name and expression are required."
-msgstr ""
+msgstr "Regelns namn och uttryck krävs."
 
 #: advancedcontentfilter.php:340
 msgid "Rule successfully added"
-msgstr ""
+msgstr "Regeln kunde läggas till"
 
 #: advancedcontentfilter.php:354 advancedcontentfilter.php:383
 msgid "Rule doesn't exist or doesn't belong to you."
-msgstr ""
+msgstr "Regeln finns inte eller tillhör inte dig."
 
 #: advancedcontentfilter.php:369
 msgid "Rule successfully updated"
-msgstr ""
+msgstr "Uppdatering av regel lyckades"
 
 #: advancedcontentfilter.php:390
 msgid "Rule successfully deleted"
-msgstr ""
+msgstr "Borttagning av regel lyckades"
 
 #: advancedcontentfilter.php:400
 msgid "Missing argument: guid."
-msgstr ""
+msgstr "Argument saknas: guid."
 
 #: advancedcontentfilter.php:406
 #, php-format
 msgid "Unknown post with guid: %s"
-msgstr ""
+msgstr "Okänt inlägg med guid: %s"
 
 #: src/middlewares.php:28
 msgid "Method not found"
-msgstr ""
+msgstr "Metod hittades inte"
