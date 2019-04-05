@@ -21,7 +21,6 @@ use Friendica\Model\Contact;
 use Friendica\Model\GContact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
-use Friendica\Model\Queue;
 use Friendica\Model\User;
 use Friendica\Util\Config\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
@@ -45,7 +44,6 @@ function pumpio_install()
 	Hook::register('connector_settings',      'addon/pumpio/pumpio.php', 'pumpio_settings');
 	Hook::register('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
 	Hook::register('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
-	Hook::register('queue_predeliver', 'addon/pumpio/pumpio.php', 'pumpio_queue_hook');
 	Hook::register('check_item_notification', 'addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
 }
 
@@ -59,7 +57,6 @@ function pumpio_uninstall()
 	Hook::unregister('connector_settings',      'addon/pumpio/pumpio.php', 'pumpio_settings');
 	Hook::unregister('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
 	Hook::unregister('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
-	Hook::unregister('queue_predeliver', 'addon/pumpio/pumpio.php', 'pumpio_queue_hook');
 	Hook::unregister('check_item_notification', 'addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
 }
 
@@ -1438,90 +1435,6 @@ function pumpio_getallusers(App &$a, $uid)
 	if (!empty($users->items)) {
 		foreach ($users->items as $user) {
 			pumpio_get_contact($uid, $user);
-		}
-	}
-}
-
-function pumpio_queue_hook(App $a, array &$b)
-{
-	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
-		DBA::escape(Protocol::PUMPIO)
-	);
-
-	if (!DBA::isResult($qi)) {
-		return;
-	}
-
-	foreach ($qi as $x) {
-		if ($x['network'] !== Protocol::PUMPIO) {
-			continue;
-		}
-
-		Logger::log('pumpio_queue: run');
-
-		$r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` ON `contact`.`uid` = `user`.`uid`
-			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
-			intval($x['cid'])
-		);
-		if (!DBA::isResult($r)) {
-			continue;
-		}
-
-		$userdata = $r[0];
-
-		//Logger::log('pumpio_queue: fetching userdata '.print_r($userdata, true));
-
-		$oauth_token        = PConfig::get($userdata['uid'], "pumpio", "oauth_token");
-		$oauth_token_secret = PConfig::get($userdata['uid'], "pumpio", "oauth_token_secret");
-		$consumer_key       = PConfig::get($userdata['uid'], "pumpio", "consumer_key");
-		$consumer_secret    = PConfig::get($userdata['uid'], "pumpio", "consumer_secret");
-
-		$host = PConfig::get($userdata['uid'], "pumpio", "host");
-		$user = PConfig::get($userdata['uid'], "pumpio", "user");
-
-		$success = false;
-
-		if ($oauth_token && $oauth_token_secret &&
-			$consumer_key && $consumer_secret) {
-			$username = $user.'@'.$host;
-
-			Logger::log('pumpio_queue: able to post for user '.$username);
-
-			$z = unserialize($x['content']);
-
-			$client = new oauth_client_class;
-			$client->oauth_version = '1.0a';
-			$client->url_parameters = false;
-			$client->authorization_header = true;
-			$client->access_token = $oauth_token;
-			$client->access_token_secret = $oauth_token_secret;
-			$client->client_id = $consumer_key;
-			$client->client_secret = $consumer_secret;
-
-			if (pumpio_reachable($z['url'])) {
-				$success = $client->CallAPI($z['url'], 'POST', $z['post'], ['FailOnAccessError'=>true, 'RequestContentType'=>'application/json'], $user);
-			} else {
-				$success = false;
-			}
-
-			if ($success) {
-				$post_id = $user->object->id;
-				Logger::log('pumpio_queue: send '.$username.': success '.$post_id);
-				if ($post_id && $iscomment) {
-					Logger::log('pumpio_send '.$username.': Update extid '.$post_id." for post id ".$z['item']);
-					Item::update(['extid' => $post_id], ['id' => $z['item']]);
-				}
-				Queue::removeItem($x['id']);
-			} else {
-				Logger::log('pumpio_queue: send '.$username.': '.$z['url'].' general error: ' . print_r($user, true));
-			}
-		} else {
-			Logger::log("pumpio_queue: Error getting tokens for user ".$userdata['uid']);
-		}
-
-		if (!$success) {
-			Logger::log('pumpio_queue: delayed');
-			Queue::updateTime($x['id']);
 		}
 	}
 }

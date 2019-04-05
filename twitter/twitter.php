@@ -83,7 +83,6 @@ use Friendica\Model\GContact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
-use Friendica\Model\Queue;
 use Friendica\Model\User;
 use Friendica\Object\Image;
 use Friendica\Util\Config\ConfigFileLoader;
@@ -106,7 +105,6 @@ function twitter_install()
 	Hook::register('notifier_normal'        , __FILE__, 'twitter_post_hook');
 	Hook::register('jot_networks'           , __FILE__, 'twitter_jot_nets');
 	Hook::register('cron'                   , __FILE__, 'twitter_cron');
-	Hook::register('queue_predeliver'       , __FILE__, 'twitter_queue_hook');
 	Hook::register('follow'                 , __FILE__, 'twitter_follow');
 	Hook::register('expire'                 , __FILE__, 'twitter_expire');
 	Hook::register('prepare_body'           , __FILE__, 'twitter_prepare_body');
@@ -124,7 +122,6 @@ function twitter_uninstall()
 	Hook::unregister('notifier_normal'        , __FILE__, 'twitter_post_hook');
 	Hook::unregister('jot_networks'           , __FILE__, 'twitter_jot_nets');
 	Hook::unregister('cron'                   , __FILE__, 'twitter_cron');
-	Hook::unregister('queue_predeliver'       , __FILE__, 'twitter_queue_hook');
 	Hook::unregister('follow'                 , __FILE__, 'twitter_follow');
 	Hook::unregister('expire'                 , __FILE__, 'twitter_expire');
 	Hook::unregister('prepare_body'           , __FILE__, 'twitter_prepare_body');
@@ -983,66 +980,6 @@ function twitter_fetchtimeline(App $a, $uid)
 	}
 	PConfig::set($uid, 'twitter', 'lastid', $lastid);
 	Logger::log('Last ID for user ' . $uid . ' is now ' . $lastid, Logger::DEBUG);
-}
-
-function twitter_queue_hook(App $a)
-{
-	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
-		DBA::escape(Protocol::TWITTER)
-	);
-	if (!DBA::isResult($qi)) {
-		return;
-	}
-
-	foreach ($qi as $x) {
-		if ($x['network'] !== Protocol::TWITTER) {
-			continue;
-		}
-
-		Logger::log('twitter_queue: run');
-
-		$r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` on `contact`.`uid` = `user`.`uid`
-			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
-			intval($x['cid'])
-		);
-		if (!DBA::isResult($r)) {
-			continue;
-		}
-
-		$user = $r[0];
-
-		$ckey    = Config::get('twitter', 'consumerkey');
-		$csecret = Config::get('twitter', 'consumersecret');
-		$otoken  = PConfig::get($user['uid'], 'twitter', 'oauthtoken');
-		$osecret = PConfig::get($user['uid'], 'twitter', 'oauthsecret');
-
-		$success = false;
-
-		if ($ckey && $csecret && $otoken && $osecret) {
-			Logger::log('twitter_queue: able to post');
-
-			$z = unserialize($x['content']);
-
-			$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
-			$result = $connection->post($z['url'], $z['post']);
-
-			Logger::log('twitter_queue: post result: ' . print_r($result, true), Logger::DEBUG);
-
-			if ($result->errors) {
-				Logger::log('twitter_queue: Send to Twitter failed: "' . print_r($result->errors, true) . '"');
-			} else {
-				$success = true;
-				Queue::removeItem($x['id']);
-			}
-		} else {
-			Logger::log("twitter_queue: Error getting tokens for user " . $user['uid']);
-		}
-
-		if (!$success) {
-			Logger::log('twitter_queue: delayed');
-			Queue::updateTime($x['id']);
-		}
-	}
 }
 
 function twitter_fix_avatar($avatar)
