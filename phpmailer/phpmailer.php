@@ -8,6 +8,7 @@
 
 use Friendica\App;
 use Friendica\Core\Addon;
+use Friendica\Core\Config;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
