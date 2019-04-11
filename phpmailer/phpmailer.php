@@ -66,7 +66,7 @@ function phpmailer_emailer_send_prepare(App $a, array &$b)
 			}
 
 			if (Config::get('phpmailer', 'smtp_from')) {
-				$mail->setFrom(Config::get('phpmailer', 'smtp_from'), Config::get('sitename'));
+				$mail->setFrom(Config::get('phpmailer', 'smtp_from'), Config::get('config', 'sitename'));
 			}
 		}
 
