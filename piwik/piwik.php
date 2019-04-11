@@ -36,26 +36,18 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\Util\Config\ConfigFileLoader;
 use Friendica\Util\Strings;
 
 function piwik_install() {
-	Hook::register('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
 	Hook::register('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
 	Logger::log("installed piwik addon");
 }
 
 function piwik_uninstall() {
-	Hook::unregister('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
 	Hook::unregister('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
 	Logger::log("uninstalled piwik addon");
-}
-
-function piwik_load_config(\Friendica\App $a, ConfigFileLoader $loader)
-{
-	$a->getConfigCache()->load($loader->loadAddonConfig('piwik'));
 }
 
 function piwik_analytics($a,&$b) {
