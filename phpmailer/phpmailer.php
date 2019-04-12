@@ -50,6 +50,9 @@ function phpmailer_emailer_send_prepare(App $a, array &$b)
 			// Enable verbose debug output
 			$mail->SMTPDebug = 2;
 			*/
+			// Setup encoding.
+			$mail->CharSet = 'UTF-8';
+			$mail->Encoding = 'base64';
 			// Specify main and backup SMTP servers
 			$mail->Host = Config::get('phpmailer', 'smtp_server');
 			$mail->Port = Config::get('phpmailer', 'smtp_port');
