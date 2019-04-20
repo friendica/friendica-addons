@@ -1,0 +1,24 @@
+{
+	"name": "friendica-addons/blockbot",
+	"description": "Blocking bots based on detecting bots/crawlers/spiders via the user agent and http_from header.",
+	"type": "friendica-addon",
+	"authors": [
+		{
+			"name": "Philipp Holzer",
+			"email": "admin@philipp.info",
+			"homepage": "https://friendica.philipp.info/profile/nupplaphil",
+			"role": "Developer"
+		}
+	],
+	"require": {
+		"php": ">=5.6.0",
+		"jaybizzle/crawler-detect": "1.*"
+	},
+	"license": "3-clause BSD license",
+	"minimum-stability": "stable",
+	"config": {
+		"optimize-autoloader": true,
+		"autoloader-suffix": "AdvancedContentFilterAddon",
+		"preferred-install": "dist"
+	}
+}
