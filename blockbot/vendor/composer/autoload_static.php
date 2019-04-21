@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitAdvancedContentFilterAddon
+class ComposerStaticInitBlockBotAddon
 {
     public static $prefixLengthsPsr4 = array (
         'J' => 
@@ -31,9 +31,9 @@ class ComposerStaticInitAdvancedContentFilterAddon
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitAdvancedContentFilterAddon::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitAdvancedContentFilterAddon::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitAdvancedContentFilterAddon::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitBlockBotAddon::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitBlockBotAddon::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitBlockBotAddon::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -18,7 +18,7 @@
 	"minimum-stability": "stable",
 	"config": {
 		"optimize-autoloader": true,
-		"autoloader-suffix": "AdvancedContentFilterAddon",
+		"autoloader-suffix": "BlockBotAddon",
 		"preferred-install": "dist"
 	}
 }

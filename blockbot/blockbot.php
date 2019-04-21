@@ -12,6 +12,8 @@ use Friendica\Core\Hook;
 use Friendica\Core\System;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+
 function blockbot_install() {
 	Hook::register('init_1', 'addon/blockbot/blockbot.php', 'blockbot_init_1');
 }
