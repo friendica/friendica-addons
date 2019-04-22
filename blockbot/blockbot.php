@@ -15,12 +15,12 @@ use Jaybizzle\CrawlerDetect\CrawlerDetect;
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 function blockbot_install() {
-	Hook::register('init_1', 'addon/blockbot/blockbot.php', 'blockbot_init_1');
+	Hook::register('init_1', __FILE__, 'blockbot_init_1');
 }
 
 
 function blockbot_uninstall() {
-	Hook::unregister('init_1', 'addon/blockbot/blockbot.php', 'blockbot_init_1');
+	Hook::unregister('init_1', __FILE__, 'blockbot_init_1');
 }
 
 function blockbot_init_1(App $a) {
