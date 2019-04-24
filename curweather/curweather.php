@@ -2,7 +2,7 @@
 /**
  * Name: Current Weather
  * Description: Shows current weather conditions for user's location on their network page.
- * Version: 1.1
+ * Version: 1.2
  * Author: Tony Baldwin <http://friendica.tonybaldwin.info/u/t0ny>
  * Author: Fabio Comuni <http://kirkgroup.com/u/fabrixxm>
  * Author: Tobias Diekershoff <https://f.diekershoff.de/u/tobias>
