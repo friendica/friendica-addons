@@ -62,7 +62,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 
 	unset($_SESSION['curweather_notice_shown']);
 
-	if ((string) $res->temperature['unit'] === 'metric') {
+	if (in_array((string) $res->temperature['unit'], ['celsius', 'metric'])) {
 		$tunit = '°C';
 		$wunit = 'm/s';
 	} else {
