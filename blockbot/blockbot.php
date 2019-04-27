@@ -36,7 +36,7 @@ function blockbot_init_1(App $a) {
 
 	// List of strings of reported false positives
 	$agents = ['Mastodon', 'hackney', 'Faraday', 'okhttp', 'UniversalFeedParser', 'PixelFedBot', 'python-requests',
-		'WordPress'];
+		'WordPress', 'http.rb'];
 	foreach ($agents as $agent) {
 		if (stristr($_SERVER['HTTP_USER_AGENT'], $agent)) {
 			// The agents had been reported to https://github.com/JayBizzle/Crawler-Detect/issues/
