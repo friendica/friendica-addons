@@ -48,7 +48,7 @@ function blockbot_init_1(App $a) {
 	// List of false positives' strings of known "good" agents we haven't reported (yet)
 	$agents = ['fediverse.network crawler', 'Active_Pods_CheckBot_3.0', 'Social-Relay/',
 		'curl', 'zgrab', 'Go-http-client', 'curb', 'github.com', 'reqwest', 'Feedly/',
-		'Python-urllib/'];
+		'Python-urllib/', 'Liferea/', 'aiohttp/', 'WordPress.com Reader'];
 
 	foreach ($agents as $agent) {
 		if (stristr($_SERVER['HTTP_USER_AGENT'], $agent)) {
@@ -62,7 +62,8 @@ function blockbot_init_1(App $a) {
 	$agents = ['SEMrushBot', 's~feedly-nikon3', 'Qwantify/Bleriot/', 'ltx71', 'Sogou web spider/',
 		'Diffbot/', 'Twitterbot/', 'YisouSpider/', 'evc-batch/', 'LivelapBot/', 'TrendsmapResolver/',
 		'PaperLiBot/', 'Nuzzel', 'um-LN/', 'Google Favicon', 'Datanyze', 'BLEXBot/', '360Spider',
-		'adscanner/', 'HeadlessChrome', 'wpif', 'startmebot/', 'Googlebot/'];
+		'adscanner/', 'HeadlessChrome', 'wpif', 'startmebot/', 'Googlebot/', 'Applebot/',
+		'facebookexternalhit/'];
 
 	foreach ($agents as $agent) {
 		if (stristr($_SERVER['HTTP_USER_AGENT'], $agent)) {
