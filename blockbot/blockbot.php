@@ -34,25 +34,16 @@ function blockbot_init_1(App $a) {
 		return;
 	}
 
-	// List of strings of reported false positives
-	$agents = ['hackney/', 'Faraday v', 'okhttp', 'UniversalFeedParser', 'PixelFedBot', 'python-requests',
-		'WordPress/', 'http.rb/'];
-	foreach ($agents as $agent) {
-		if (stristr($_SERVER['HTTP_USER_AGENT'], $agent)) {
-			// The agents had been reported to https://github.com/JayBizzle/Crawler-Detect/issues/
-			logger::notice('Reported false positive', $logdata);
-			return;
-		}
-	}
-
-	// List of false positives' strings of known "good" agents we haven't reported (yet)
+	// List of false positives' strings of known "good" agents.
 	$agents = ['fediverse.network crawler', 'Active_Pods_CheckBot_3.0', 'Social-Relay/',
 		'curl', 'zgrab', 'Go-http-client', 'curb', 'github.com', 'reqwest', 'Feedly/',
-		'Python-urllib/', 'Liferea/', 'aiohttp/', 'WordPress.com Reader'];
+		'Python-urllib/', 'Liferea/', 'aiohttp/', 'WordPress.com Reader', 'hackney/',
+		'Faraday v', 'okhttp', 'UniversalFeedParser', 'PixelFedBot', 'python-requests',
+		'WordPress/', 'http.rb/'];
 
 	foreach ($agents as $agent) {
 		if (stristr($_SERVER['HTTP_USER_AGENT'], $agent)) {
-			logger::notice('Unreported falsely detected agent', $logdata);
+			logger::notice('False positive', $logdata);
 			return;
 		}
 	}
