@@ -27,6 +27,10 @@ function blockbot_uninstall() {
 function blockbot_init_1(App $a) {
 	$crawlerDetect = new CrawlerDetect();
 
+	if (empty($_SERVER['HTTP_USER_AGENT'])) {
+		return;
+	}
+
 	$logdata = ['agent' => $_SERVER['HTTP_USER_AGENT'], 'uri' => $_SERVER['REQUEST_URI']];
 
 	if (!$crawlerDetect->isCrawler()) {
@@ -39,7 +43,7 @@ function blockbot_init_1(App $a) {
 		'curl', 'zgrab', 'Go-http-client', 'curb', 'github.com', 'reqwest', 'Feedly/',
 		'Python-urllib/', 'Liferea/', 'aiohttp/', 'WordPress.com Reader', 'hackney/',
 		'Faraday v', 'okhttp', 'UniversalFeedParser', 'PixelFedBot', 'python-requests',
-		'WordPress/', 'http.rb/'];
+		'WordPress/', 'http.rb/', 'Apache-HttpClient/', 'WordPress.com;'];
 
 	foreach ($agents as $agent) {
 		if (stristr($_SERVER['HTTP_USER_AGENT'], $agent)) {
@@ -58,10 +62,10 @@ function blockbot_init_1(App $a) {
 
 	foreach ($agents as $agent) {
 		if (stristr($_SERVER['HTTP_USER_AGENT'], $agent)) {
-			System::httpExit(403, 'Bots are not allowed');
+			System::httpExit(403, ['title' => 'Bots are not allowed']);
 		}
 	}
 
 	logger::info('Blocked bot', $logdata);
-	System::httpExit(403, 'Bots are not allowed');
+	System::httpExit(403, ['title' => 'Bots are not allowed']);
 }
