@@ -254,7 +254,7 @@ function mailstream_subject($item) {
 	return L10n::t("Friendica Item");
 }
 
-function mailstream_send($a, $message_id, $item, $user) {
+function mailstream_send(\Friendica\App $a, $message_id, $item, $user) {
 	if (!$item['visible']) {
 		return;
 	}
@@ -293,7 +293,7 @@ function mailstream_send($a, $message_id, $item, $user) {
 		$mail->CharSet = 'utf-8';
 		$template = Renderer::getMarkupTemplate('mail.tpl', 'addon/mailstream/');
 		$item['body'] = BBCode::convert($item['body']);
-		$item['url'] = $a->getBaseURL() . '/display/' . $user['nickname'] . '/' . $item['id'];
+		$item['url'] = $a->getBaseURL() . '/display/' . $item['guid'];
 		$mail->Body = Renderer::replaceMacros($template, [
 						 '$upstream' => L10n::t('Upstream'),
 						 '$local' => L10n::t('Local'),

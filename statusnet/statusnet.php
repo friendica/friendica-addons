@@ -735,7 +735,7 @@ function statusnet_prepare_body(App $a, &$b)
 		}
 
 		$item = $b["item"];
-		$item["plink"] = $a->getBaseURL() . "/display/" . $a->user["nickname"] . "/" . $item["parent"];
+		$item["plink"] = $a->getBaseURL() . "/display/" . $item["guid"];
 
 		$condition = ['uri' => $item["thr-parent"], 'uid' => local_user()];
 		$orig_post = Item::selectFirst(['author-link', 'uri'], $condition);
