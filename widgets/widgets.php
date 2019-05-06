@@ -62,7 +62,6 @@ function widgets_settings(&$a,&$o) {
 	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/widgets/");
 	$o .= Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Generate new key'),
-		'$baseurl' => $a->getBaseURL(),
 		'$title' => "Widgets",
 		'$label' => L10n::t('Widgets key'),
 		'$key' => $key,
