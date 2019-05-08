@@ -3,7 +3,7 @@ Geonames Addon
 
 Authors Mike Macgirvin.
 
-Use Geonames service to resolve nearest populated location for given latitude, longitude.
+Use [Geonames service](https://www.geonames.org) to resolve nearest populated location for given latitude, longitude.
 
 ## Installation
 
