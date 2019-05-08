@@ -1,7 +1,0 @@
-This addon requires a fortune server. You may use the DB supplied here to create one.
-
-gunzip the fortunate.sql.gz and import into your database.
-Copy cookie.php to the top level Friendica directory.
-Edit fortunate.php and change FORTUNATE_SERVER definition to your hostname. Change the http in that file to https if your server doesn't support http. 
-
-Many additional options are available if you examine cookie.php - a clever developer can provide a settings page to tailor this to one's liking. Also several languages are supported, and it would be convenient to set this to the current Friendica language if that is amongst those supported.  
