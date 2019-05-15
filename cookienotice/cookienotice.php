@@ -56,15 +56,13 @@ function cookienotice_addon_admin(App $a, &$s)
 
 /**
  * cookienotice_addon_admin_post
- * addon_settings_post hook
  * handles the post request from the admin panel
  *
  * @param App    $a
- * @param string $b
  *
  * @return void
  */
-function cookienotice_addon_admin_post(App $a, &$b)
+function cookienotice_addon_admin_post(App $a)
 {
 	if (!is_site_admin()) {
 		return;
@@ -73,7 +71,7 @@ function cookienotice_addon_admin_post(App $a, &$b)
 	if ($_POST['cookienotice-submit']) {
 		Config::set('cookienotice', 'text', trim(strip_tags($_POST['cookienotice-text'])));
 		Config::set('cookienotice', 'oktext', trim(strip_tags($_POST['cookienotice-oktext'])));
-		info(L10n::t('cookienotice Settings saved.') . EOL);
+		info(L10n::t('cookienotice Settings saved.'));
 	}
 }
 
