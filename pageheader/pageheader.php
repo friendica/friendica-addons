@@ -42,7 +42,7 @@ function pageheader_addon_admin(App &$a, &$s)
 	return;
 }
 
-function pageheader_addon_admin_post(App $a, &$b)
+function pageheader_addon_admin_post(App $a)
 {
 	if(!is_site_admin()) {
 		return;
@@ -52,7 +52,7 @@ function pageheader_addon_admin_post(App $a, &$b)
 		if (isset($_POST['pageheader-words'])) {
 			Config::set('pageheader', 'text', trim(strip_tags($_POST['pageheader-words'])));
 		}
-		info(L10n::t('pageheader Settings saved.') . EOL);
+		info(L10n::t('pageheader Settings saved.'));
 	}
 }
 
