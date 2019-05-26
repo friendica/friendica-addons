@@ -97,7 +97,7 @@ function phpmailer_emailer_send_prepare(App $a, array &$b)
 			}
 		}
 
-		$mail->send();
+		$b['sent'] = $mail->send();
 	} catch (Exception $e) {
 		$a->getLogger()->error('PHPMailer error', ['ErrorInfo' => $mail->ErrorInfo, 'code' => $e->getCode(), 'message' => $e->getMessage()]);
 	}
