@@ -2,32 +2,27 @@
 /**
  * Name: PHP Mailer SMTP
  * Description: Connects to a SMTP server based on the config
- * Version: 0.1
+ * Version: 0.2
  * Author: Marcus Mueller
+ * Maintainer: Hypolite Petovan <hypolite@friendica.mrpetovan.com>
  */
 
 use Friendica\App;
-use Friendica\Core\Addon;
 use Friendica\Core\Config;
+use Friendica\Core\Hook;
+use Friendica\Util\Config\ConfigFileLoader;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 function phpmailer_install()
 {
-	Addon::registerHook(
-		'emailer_send_prepare',
-		__FILE__,
-		'phpmailer_emailer_send_prepare'
-	);
+	Hook::register('load_config'         , __FILE__, 'phpmailer_load_config');
+	Hook::register('emailer_send_prepare', __FILE__, 'phpmailer_emailer_send_prepare');
 }
 
-function phpmailer_uninstall()
+function phpmailer_load_config(App $a, ConfigFileLoader $loader)
 {
-	Addon::unregisterHook(
-		'emailer_send_prepare',
-		__FILE__,
-		'phpmailer_emailer_send_prepare'
-	);
+	$a->getConfigCache()->load($loader->loadAddonConfig('phpmailer'));
 }
 
 /**
@@ -46,13 +41,11 @@ function phpmailer_emailer_send_prepare(App $a, array &$b)
 		if (Config::get('phpmailer', 'smtp')) {
 			// Set mailer to use SMTP
 			$mail->isSMTP();
-			/*
-			// Enable verbose debug output
-			$mail->SMTPDebug = 2;
-			*/
+
 			// Setup encoding.
 			$mail->CharSet = 'UTF-8';
 			$mail->Encoding = 'base64';
+
 			// Specify main and backup SMTP servers
 			$mail->Host = Config::get('phpmailer', 'smtp_server');
 			$mail->Port = Config::get('phpmailer', 'smtp_port');
@@ -69,15 +62,14 @@ function phpmailer_emailer_send_prepare(App $a, array &$b)
 			}
 
 			if (Config::get('phpmailer', 'smtp_from')) {
-				$mail->setFrom(Config::get('phpmailer', 'smtp_from'), Config::get('config', 'sitename'));
+				$mail->setFrom(Config::get('phpmailer', 'smtp_from'), $b['fromName']);
 			}
+		} else {
+			$mail->setFrom($b['fromEmail'], $b['fromName']);
 		}
 
 		// subject
 		$mail->Subject = $b['messageSubject'];
-
-		// add text
-		$mail->AltBody = $b['textVersion'];
 
 		if (!empty($b['toEmail'])) {
 			$mail->addAddress($b['toEmail']);
@@ -87,18 +79,26 @@ function phpmailer_emailer_send_prepare(App $a, array &$b)
 		if (!empty($b['htmlVersion'])) {
 			$mail->isHTML(true);
 			$mail->Body = $b['htmlVersion'];
+			$mail->AltBody = $b['textVersion'];
+		} else {
+			// add text
+			$mail->Body = $b['textVersion'];
 		}
 
-		/*
+		if (!empty($b['replyTo'])) {
+			$mail->addReplyTo($b['replyTo'], $b['fromName']);
+		}
+
 		// additional headers
 		if (!empty($b['additionalMailHeader'])) {
-			$mail->addCustomHeader($b['additionalMailHeader']);
+			foreach (explode("\n", $b['additionalMailHeader']) as $header_line) {
+				list($name, $value) = explode($header_line, ':', 1);
+				$mail->addCustomHeader(trim($name), trim($value));
+			}
 		}
-		*/
 
 		$mail->send();
 	} catch (Exception $e) {
-		echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
-		die();
+		$a->getLogger()->error('PHPMailer error', ['ErrorInfo' => $mail->ErrorInfo, 'code' => $e->getCode(), 'message' => $e->getMessage()]);
 	}
 }
