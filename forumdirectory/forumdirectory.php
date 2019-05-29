@@ -13,13 +13,10 @@ use Friendica\Content\Widget;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
-use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Model\Profile;
-use Friendica\Model\User;
 use Friendica\Util\Strings;
-use Friendica\Util\Temporal;
 
 include_once 'mod/directory.php';
 
@@ -136,7 +133,7 @@ function forumdirectory_content(App $a)
 		}
 
 		while ($rr = DBA::fetch($r)) {
-			$entries[] = format_directory_entry($rr, $photo);
+			$entries[] = Friendica\Module\Directory::formatEntry($rr, $photo);
 		}
 		DBA::close($r);
 	} else {
