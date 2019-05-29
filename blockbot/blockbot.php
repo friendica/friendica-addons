@@ -8,6 +8,7 @@
  */
 
 use Friendica\App;
+use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\System;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
@@ -25,13 +26,32 @@ function blockbot_uninstall() {
 }
 
 function blockbot_init_1(App $a) {
-	$crawlerDetect = new CrawlerDetect();
-
 	if (empty($_SERVER['HTTP_USER_AGENT'])) {
 		return;
 	}
 
 	$logdata = ['agent' => $_SERVER['HTTP_USER_AGENT'], 'uri' => $_SERVER['REQUEST_URI']];
+
+	// List of known crawlers. They are added here to avoid having them logged at the end of the function.
+	// This helps to detect false positives.
+	$agents = ['SEMrushBot', 's~feedly-nikon3', 'Qwantify/Bleriot/', 'ltx71', 'Sogou web spider/',
+		'Diffbot/', 'Twitterbot/', 'YisouSpider/', 'evc-batch/', 'LivelapBot/', 'TrendsmapResolver/',
+		'PaperLiBot/', 'Nuzzel', 'um-LN/', 'Google Favicon', 'Datanyze', 'BLEXBot/', '360Spider',
+		'adscanner/', 'HeadlessChrome', 'wpif', 'startmebot/', 'Googlebot/', 'Applebot/',
+		'facebookexternalhit/', 'GoogleImageProxy', 'bingbot/', 'heritrix/', 'ldspider'];
+
+	foreach ($agents as $agent) {
+		if (stristr($_SERVER['HTTP_USER_AGENT'], $agent)) {
+			System::httpExit(403, 'Bots are not allowed');
+		}
+	}
+
+	// This switch here is just meant for developers who want to add more bots to the list above
+	if (!Config::get('blockbot', 'training')) {
+		return;
+	}
+
+	$crawlerDetect = new CrawlerDetect();
 
 	if (!$crawlerDetect->isCrawler()) {
 		logger::debug('Good user agent detected', $logdata);
@@ -52,20 +72,6 @@ function blockbot_init_1(App $a) {
 		}
 	}
 
-	// List of known crawlers. They are added here to avoid having them logged at the end of the function.
-	// This helps to detect false positives.
-	$agents = ['SEMrushBot', 's~feedly-nikon3', 'Qwantify/Bleriot/', 'ltx71', 'Sogou web spider/',
-		'Diffbot/', 'Twitterbot/', 'YisouSpider/', 'evc-batch/', 'LivelapBot/', 'TrendsmapResolver/',
-		'PaperLiBot/', 'Nuzzel', 'um-LN/', 'Google Favicon', 'Datanyze', 'BLEXBot/', '360Spider',
-		'adscanner/', 'HeadlessChrome', 'wpif', 'startmebot/', 'Googlebot/', 'Applebot/',
-		'facebookexternalhit/', 'GoogleImageProxy', 'bingbot/', 'heritrix/', 'ldspider'];
-
-	foreach ($agents as $agent) {
-		if (stristr($_SERVER['HTTP_USER_AGENT'], $agent)) {
-			System::httpExit(403, ['title' => 'Bots are not allowed']);
-		}
-	}
-
 	logger::info('Blocked bot', $logdata);
-	System::httpExit(403, ['title' => 'Bots are not allowed']);
+	System::httpExit(403, 'Bots are not allowed');
 }
