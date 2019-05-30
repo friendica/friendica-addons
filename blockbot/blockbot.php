@@ -32,8 +32,7 @@ function blockbot_init_1(App $a) {
 
 	$logdata = ['agent' => $_SERVER['HTTP_USER_AGENT'], 'uri' => $_SERVER['REQUEST_URI']];
 
-	// List of known crawlers. They are added here to avoid having them logged at the end of the function.
-	// This helps to detect false positives.
+	// List of known crawlers.
 	$agents = ['SEMrushBot', 's~feedly-nikon3', 'Qwantify/Bleriot/', 'ltx71', 'Sogou web spider/',
 		'Diffbot/', 'Twitterbot/', 'YisouSpider/', 'evc-batch/', 'LivelapBot/', 'TrendsmapResolver/',
 		'PaperLiBot/', 'Nuzzel', 'um-LN/', 'Google Favicon', 'Datanyze', 'BLEXBot/', '360Spider',
@@ -47,7 +46,7 @@ function blockbot_init_1(App $a) {
 		}
 	}
 
-	// This switch here is just meant for developers who want to add more bots to the list above
+	// This switch here is only meant for developers who want to add more bots to the list above, it is not safe for production.
 	if (!Config::get('blockbot', 'training')) {
 		return;
 	}
