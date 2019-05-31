@@ -38,7 +38,8 @@ function blockbot_init_1(App $a) {
 		'PaperLiBot/', 'Nuzzel', 'um-LN/', 'Google Favicon', 'Datanyze', 'BLEXBot/', '360Spider',
 		'adscanner/', 'HeadlessChrome', 'wpif', 'startmebot/', 'Googlebot/', 'Applebot/',
 		'facebookexternalhit/', 'GoogleImageProxy', 'bingbot/', 'heritrix/', 'ldspider',
-		'AwarioRssBot/', 'Zabbix', 'TweetmemeBot/', 'dcrawl/', 'PhantomJS/', 'Googlebot-Image/'];
+		'AwarioRssBot/', 'Zabbix', 'TweetmemeBot/', 'dcrawl/', 'PhantomJS/', 'Googlebot-Image/',
+		'CrowdTanglebot/', 'Mediapartners-Google', 'Baiduspider/', 'datagnionbot'];
 
 	foreach ($agents as $agent) {
 		if (stristr($_SERVER['HTTP_USER_AGENT'], $agent)) {
