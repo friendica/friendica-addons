@@ -1483,7 +1483,7 @@ function statusnet_convertmsg(App $a, $body, $no_tags = false)
 			} elseif ($oembed_data->type != "link") {
 				$body = str_replace($search, "[url=" . $expanded_url . "]" . $expanded_url . "[/url]", $body);
 			} else {
-				$img_str = Network::fetchUrl($expanded_url, true, $redirects, 4);
+				$img_str = Network::fetchUrl($expanded_url, true, 4);
 
 				$tempfile = tempnam(get_temppath(), "cache");
 				file_put_contents($tempfile, $img_str);

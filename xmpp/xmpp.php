@@ -4,6 +4,7 @@
  * Description: Embedded XMPP (Jabber) client
  * Version: 0.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
+ * Status: Unsupported
  */
 
 use Friendica\App;
