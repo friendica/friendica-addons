@@ -1629,7 +1629,7 @@ function pumpio_fetchallcomments(App $a, $uid, $id)
 
 function pumpio_reachable($url)
 {
-	return Network::curl($url, false, $redirects, ['timeout'=>10])->isSuccess();
+	return Network::curl($url, false, ['timeout' => 10])->isSuccess();
 }
 
 /*
