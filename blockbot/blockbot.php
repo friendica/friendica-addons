@@ -44,7 +44,7 @@ function blockbot_init_1(App $a) {
 		'NetcraftSurveyAgent/', 'Dataprovider.com', 'SMTBot/', 'Nimbostratus-Bot/',
 		'DuckDuckGo-Favicons-Bot/', 'IndieWebCards/', 'proximic', 'netEstate NE Crawler',
 		'AhrefsBot/', 'YandexBot/', 'Exabot/', 'Mediumbot-MetaTagFetcher/',
-		'WhatsApp/', 'TelegramBot'];
+		'WhatsApp/', 'TelegramBot', 'SurdotlyBot/', 'BingPreview/', 'SabsimBot/'];
 
 	foreach ($agents as $agent) {
 		if (stristr($_SERVER['HTTP_USER_AGENT'], $agent)) {
