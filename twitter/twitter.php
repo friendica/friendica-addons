@@ -575,7 +575,7 @@ function twitter_post_hook(App $a, array &$b)
 		return;
 	}
 
-	Logger::log('twitter post invoked');
+	Logger::notice('twitter post invoked', ['id' => $b['id'], 'guid' => $b['guid']]);
 
 	PConfig::load($b['uid'], 'twitter');
 
@@ -610,6 +610,7 @@ function twitter_post_hook(App $a, array &$b)
 		$b['body'] = twitter_update_mentions($b['body']);
 
 		$msgarr = ItemContent::getPlaintextPost($b, $max_char, true, 8);
+		Logger::info('Got plaintext', $msgarr);
 		$msg = $msgarr["text"];
 
 		if (($msg == "") && isset($msgarr["title"])) {
