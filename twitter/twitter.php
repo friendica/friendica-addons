@@ -1549,7 +1549,7 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 		}
 
 		if (empty($post)) {
-			Logger::log("twitter_fetchparentposts: Can't fetch post " . $parameters->id, Logger::DEBUG);
+			Logger::log("twitter_fetchparentposts: Can't fetch post " . $parameters['id'], Logger::DEBUG);
 			break;
 		}
 
