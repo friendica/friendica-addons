@@ -1,0 +1,67 @@
+# ADDON blackout
+# Copyright (C)
+# This file is distributed under the same license as the Friendica blackout addon package.
+# 
+# 
+# Translators:
+# Andy H3 <andy@hubup.pro>, 2019
+# Kris, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-03-12 09:26+0100\n"
+"PO-Revision-Date: 2019-06-05 14:40+0000\n"
+"Last-Translator: Andy H3 <andy@hubup.pro>\n"
+"Language-Team: English (United Kingdom) (http://www.transifex.com/Friendica/friendica/language/en_GB/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: blackout.php:101
+msgid ""
+"The end-date is prior to the start-date of the blackout, you should fix this"
+msgstr "The end date is prior to the start date of the blackout, you should fix this"
+
+#: blackout.php:103
+#, php-format
+msgid ""
+"Please double check that the current settings for the blackout. Begin will "
+"be <strong>%s</strong> and it will end <strong>%s</strong>."
+msgstr "Please double check that the current settings for the blackout. Begin will be <strong>%s</strong> and it will end <strong>%s</strong>."
+
+#: blackout.php:106
+msgid "Save Settings"
+msgstr "Save Settings"
+
+#: blackout.php:107
+msgid "Redirect URL"
+msgstr "Redirect URL"
+
+#: blackout.php:107
+msgid "all your visitors from the web will be redirected to this URL"
+msgstr "Visitors from the web will be redirected to this URL"
+
+#: blackout.php:108
+msgid "Begin of the Blackout"
+msgstr "Blackout begins"
+
+#: blackout.php:108
+msgid ""
+"Format is <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> year, <em>MM</em> month, "
+"<em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute."
+msgstr "Format is <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute."
+
+#: blackout.php:109
+msgid "End of the Blackout"
+msgstr "Blackout ends"
+
+#: blackout.php:111
+msgid ""
+"<strong>Note</strong>: The redirect will be active from the moment you press"
+" the submit button. Users currently logged in will <strong>not</strong> be "
+"thrown out but can't login again after logging out should the blackout is "
+"still in place."
+msgstr "<strong>Note</strong>: The redirect will be active from the moment you press the submit button. Users currently logged in will <strong>not</strong> be affected but can't login again after logging out should the blackout is still in place."
