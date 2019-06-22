@@ -1,0 +1,82 @@
+# ADDON forumdirectory
+# Copyright (C)
+# This file is distributed under the same license as the Friendica forumdirectory addon package.
+# 
+# 
+# Translators:
+# Hypolite Petovan <hypolite@mrpetovan.com>, 2016
+# StefOfficiel <pichard.stephane@free.fr>, 2015
+# Valvin A <vincent-forum@valvin.fr>, 2019
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2019-05-27 19:17+0000\n"
+"Last-Translator: Valvin A <vincent-forum@valvin.fr>\n"
+"Language-Team: French (http://www.transifex.com/Friendica/friendica/language/fr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: forumdirectory.php:22
+msgid "Forum Directory"
+msgstr "Annuaire de Forums"
+
+#: forumdirectory.php:53
+msgid "Public access denied."
+msgstr "Accès public refusé."
+
+#: forumdirectory.php:71
+msgid "Global Directory"
+msgstr "Annuaire Global"
+
+#: forumdirectory.php:79
+msgid "Find on this site"
+msgstr "Trouver sur cette instance"
+
+#: forumdirectory.php:81
+msgid "Finding: "
+msgstr "Résultats:"
+
+#: forumdirectory.php:82
+msgid "Site Directory"
+msgstr "Annuaire de l'instance"
+
+#: forumdirectory.php:83
+msgid "Find"
+msgstr "Chercher"
+
+#: forumdirectory.php:133
+msgid "Age: "
+msgstr "Age:"
+
+#: forumdirectory.php:136
+msgid "Gender: "
+msgstr "Genre:"
+
+#: forumdirectory.php:156
+msgid "Location:"
+msgstr "Localisation:"
+
+#: forumdirectory.php:158
+msgid "Gender:"
+msgstr "Genre:"
+
+#: forumdirectory.php:160
+msgid "Status:"
+msgstr "Statut:"
+
+#: forumdirectory.php:162
+msgid "Homepage:"
+msgstr "Page d'accueil:"
+
+#: forumdirectory.php:164
+msgid "About:"
+msgstr "À-propos:"
+
+#: forumdirectory.php:201
+msgid "No entries (some entries may be hidden)."
+msgstr "Pas de résultats (certains résultats peuvent être cachés)."
