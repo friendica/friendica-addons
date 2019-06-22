@@ -4,61 +4,59 @@
 # 
 # 
 # Translators:
-# Damien Goutte-Gattat <damien+transifex@incenp.org>, 2015
-# Hypolite Petovan <hypolite@mrpetovan.com>, 2016
-# Valvin A <vincent-forum@valvin.fr>, 2019
-# Vladimir Núñez <lapoubelle111@gmail.com>, 2018
+# Andy H3 <andy@hubup.pro>, 2019
+# Kris, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-12 09:26+0100\n"
-"PO-Revision-Date: 2019-05-27 19:12+0000\n"
-"Last-Translator: Valvin A <vincent-forum@valvin.fr>\n"
-"Language-Team: French (http://www.transifex.com/Friendica/friendica/language/fr/)\n"
+"PO-Revision-Date: 2019-06-05 14:40+0000\n"
+"Last-Translator: Andy H3 <andy@hubup.pro>\n"
+"Language-Team: English (United Kingdom) (http://www.transifex.com/Friendica/friendica/language/en_GB/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: blackout.php:101
 msgid ""
 "The end-date is prior to the start-date of the blackout, you should fix this"
-msgstr "La date de fin est antérieure au début de l'extinction, vous devriez corriger cela."
+msgstr "The end date is prior to the start date of the blackout, you should fix this"
 
 #: blackout.php:103
 #, php-format
 msgid ""
 "Please double check that the current settings for the blackout. Begin will "
 "be <strong>%s</strong> and it will end <strong>%s</strong>."
-msgstr "Merci de vérifier que le paramétrage actuel pour l'extinction. Le début sera <strong>%s</strong> et se terminera <strong>%s</strong>"
+msgstr "Please double check that the current settings for the blackout. Begin will be <strong>%s</strong> and it will end <strong>%s</strong>."
 
 #: blackout.php:106
 msgid "Save Settings"
-msgstr "Sauvegarder les paramètres"
+msgstr "Save Settings"
 
 #: blackout.php:107
 msgid "Redirect URL"
-msgstr "Adresse URL de redirection"
+msgstr "Redirect URL"
 
 #: blackout.php:107
 msgid "all your visitors from the web will be redirected to this URL"
-msgstr "Tous vos visiteurs venant du web seront redirigés vers cette URL."
+msgstr "Visitors from the web will be redirected to this URL"
 
 #: blackout.php:108
 msgid "Begin of the Blackout"
-msgstr "Début de l'extinction"
+msgstr "Blackout begins"
 
 #: blackout.php:108
 msgid ""
 "Format is <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> year, <em>MM</em> month, "
 "<em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute."
-msgstr "Le format est <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> année, <em>MM</em>mois, <em>DD</em> jour, <em>hh</em>heure et <em>mm</em>minute."
+msgstr "Format is <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute."
 
 #: blackout.php:109
 msgid "End of the Blackout"
-msgstr "Fin de l'extinction"
+msgstr "Blackout ends"
 
 #: blackout.php:111
 msgid ""
@@ -66,4 +64,4 @@ msgid ""
 " the submit button. Users currently logged in will <strong>not</strong> be "
 "thrown out but can't login again after logging out should the blackout is "
 "still in place."
-msgstr "<strong>Note</strong>: La redirection sera active à partir du moment ou vous appuierez sur le bouton envoyer. Les utilisateurs identifiés ne seront <strong>pas</strong> déconnectés mais ne pourront pas se reconnecter après s'être déconnectés tant que l'extinction est en place."
+msgstr "<strong>Note</strong>: The redirect will be active from the moment you press the submit button. Users currently logged in will <strong>not</strong> be affected but can't login again after logging out should the blackout is still in place."

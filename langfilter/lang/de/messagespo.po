@@ -6,14 +6,16 @@
 # Translators:
 # Andreas H., 2018
 # Copiis Praeesse <richard@zsemberi.de>, 2018
+# Ralf Thees <ralf@herrthees.de>, 2019
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2015
+# Ulf Rompe <transifex.com@rompe.org>, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-04-01 11:11-0400\n"
-"PO-Revision-Date: 2018-04-06 07:54+0000\n"
-"Last-Translator: Andreas H.\n"
+"PO-Revision-Date: 2019-05-20 12:16+0000\n"
+"Last-Translator: Ralf Thees <ralf@herrthees.de>\n"
 "Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -30,7 +32,7 @@ msgid ""
 "This addon tries to identify the language posts are writen in. If it does "
 "not match any language specifed below, posts will be hidden by collapsing "
 "them."
-msgstr "Dieses Addon versucht zu identifizieren, in welche Sprachen Posts geschrieben werden. Wenn es nicht mit einer der unten angegebenen Sprachen übereinstimmt, werden Posts durch Zusammenklappen verborgen."
+msgstr "Dieses Addon versucht zu identifizieren, in welcher Sprache Posts geschrieben werden. Wenn sie nicht mit einer der unten angegebenen Sprachen übereinstimmt, werden Posts durch Zusammenklappen verborgen."
 
 #: langfilter.php:60
 msgid "Use the language filter"
@@ -44,7 +46,7 @@ msgstr "Lesbar"
 msgid ""
 "List of abbreviations (iso2 codes) for languages you speak, comma separated."
 " For example \"de,it\"."
-msgstr "Liste von Abkürzungen (ISO2 Codes) der Sprachen die du sprichst, getrennt durch Komma. Zum Beispiel: \"de,it\"."
+msgstr "Liste von Abkürzungen (ISO2-Codes) der Sprachen, die du sprichst, getrennt durch Komma. Zum Beispiel: \"de,it\"."
 
 #: langfilter.php:62
 msgid "Minimum confidence in language detection"
@@ -66,7 +68,7 @@ msgid ""
 "Minimum number of characters in message body for filter to be used. Posts "
 "shorter than this will not be filtered. Note: Language detection is "
 "unreliable for short content (<200 characters)."
-msgstr "Mindestanzahl von Zeichen im Nachrichtentext die vom Filter benutz werden soll. Beiträge die kürzer sind werden nicht gefiltert. Hinweis: Die Spracherkennung ist bei kurze Inhalte (<200 Zeichen) nicht zuverlässig."
+msgstr "Mindestanzahl von Zeichen im Nachrichtentext, die vom Filter benutzt werden soll. Kürzere Beiträge werden nicht gefiltert. Hinweis: Die Spracherkennung ist bei kurzen Inhalten (<200 Zeichen) nicht zuverlässig."
 
 #: langfilter.php:64
 msgid "Save Settings"
@@ -74,7 +76,7 @@ msgstr "Einstellungen speichern"
 
 #: langfilter.php:105
 msgid "Language Filter Settings saved."
-msgstr "Sprachfilter Einstellungen gespeichert."
+msgstr "Sprachfilter-Einstellungen gespeichert."
 
 #: langfilter.php:182
 #, php-format
