@@ -14,7 +14,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
-use Friendica\Util\Config\ConfigFileLoader;
+use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Strings;
 

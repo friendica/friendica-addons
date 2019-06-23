@@ -10,7 +10,7 @@
 use Friendica\App;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
-use Friendica\Util\Config\ConfigFileLoader;
+use Friendica\Util\ConfigFileLoader;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 

@@ -85,7 +85,7 @@ use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
 use Friendica\Model\User;
 use Friendica\Object\Image;
-use Friendica\Util\Config\ConfigFileLoader;
+use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
 use Friendica\Util\Strings;
