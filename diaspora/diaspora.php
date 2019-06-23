@@ -17,7 +17,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
-use Friendica\Model\Queue;
+use Friendica\Core\Worker;
 
 function diaspora_install()
 {
@@ -27,7 +27,6 @@ function diaspora_install()
 	Hook::register('jot_networks',            'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
 	Hook::register('connector_settings',      'addon/diaspora/diaspora.php', 'diaspora_settings');
 	Hook::register('connector_settings_post', 'addon/diaspora/diaspora.php', 'diaspora_settings_post');
-	Hook::register('queue_predeliver',        'addon/diaspora/diaspora.php', 'diaspora_queue_hook');
 }
 
 function diaspora_uninstall()
@@ -38,96 +37,23 @@ function diaspora_uninstall()
 	Hook::unregister('jot_networks',            'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
 	Hook::unregister('connector_settings',      'addon/diaspora/diaspora.php', 'diaspora_settings');
 	Hook::unregister('connector_settings_post', 'addon/diaspora/diaspora.php', 'diaspora_settings_post');
-	Hook::unregister('queue_predeliver',        'addon/diaspora/diaspora.php', 'diaspora_queue_hook');
 }
 
-function diaspora_jot_nets(App $a, &$b)
+function diaspora_jot_nets(App $a, array &$jotnets_fields)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	$diaspora_post = PConfig::get(local_user(), 'diaspora', 'post');
-
-	if (intval($diaspora_post) == 1) {
-		$diaspora_defpost = PConfig::get(local_user(), 'diaspora', 'post_by_default');
-
-		$selected = ((intval($diaspora_defpost) == 1) ? ' checked="checked" ' : '');
-
-		$b .= '<div class="profile-jot-net"><input type="checkbox" name="diaspora_enable"' . $selected . ' value="1" /> '
-		. L10n::t('Post to Diaspora') . '</div>';
-	}
-}
-
-function diaspora_queue_hook(App $a, &$b) {
-	$hostname = $a->getHostName();
-
-	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
-		DBA::escape(Protocol::DIASPORA2)
-	);
-
-	if (!DBA::isResult($qi)) {
-		return;
-	}
-
-	foreach ($qi as $x) {
-		if ($x['network'] !== Protocol::DIASPORA2) {
-			continue;
-		}
-
-		Logger::log('diaspora_queue: run');
-
-		$r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` on `contact`.`uid` = `user`.`uid`
-			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
-			intval($x['cid'])
-		);
-
-		if (!DBA::isResult($r)) {
-			continue;
-		}
-
-		$userdata = $r[0];
-
-		$handle   = PConfig::get($userdata['uid'], 'diaspora', 'handle');
-		$password = PConfig::get($userdata['uid'], 'diaspora', 'password');
-		$aspect   = PConfig::get($userdata['uid'], 'diaspora', 'aspect');
-
-		$success = false;
-
-		if ($handle && $password) {
-			Logger::log('diaspora_queue: able to post for user '.$handle);
-
-			$z = unserialize($x['content']);
-
-			$post = $z['post'];
-
-			Logger::log('diaspora_queue: post: '.$post, Logger::DATA);
-
-			try {
-				Logger::log('diaspora_queue: prepare', Logger::DEBUG);
-				$conn = new Diaspora_Connection($handle, $password);
-				Logger::log('diaspora_queue: try to log in '.$handle, Logger::DEBUG);
-				$conn->logIn();
-				Logger::log('diaspora_queue: try to send '.$body, Logger::DEBUG);
-				$conn->provider = $hostname;
-				$conn->postStatusMessage($post, $aspect);
-
-				Logger::log('diaspora_queue: send '.$userdata['uid'].' success', Logger::DEBUG);
-
-				$success = true;
-
-				Queue::removeItem($x['id']);
-			} catch (Exception $e) {
-				Logger::log("diaspora_queue: Send ".$userdata['uid']." failed: ".$e->getMessage(), Logger::DEBUG);
-			}
-		} else {
-			Logger::log('diaspora_queue: send '.$userdata['uid'].' missing username or password', Logger::DEBUG);
-		}
-
-		if (!$success) {
-			Logger::log('diaspora_queue: delayed');
-			Queue::updateTime($x['id']);
-		}
+	if (PConfig::get(local_user(), 'diaspora', 'post')) {
+		$jotnets_fields[] = [
+			'type' => 'checkbox',
+			'field' => [
+				'diaspora_enable',
+				L10n::t('Post to Diaspora'),
+				PConfig::get(local_user(), 'diaspora', 'post_by_default')
+			]
+		];
 	}
 }
 
@@ -396,14 +322,7 @@ function diaspora_send(App $a, array &$b)
 
 			Logger::log('diaspora_send: requeueing '.$b['uid'], Logger::DEBUG);
 
-			$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", $b['uid']);
-			if (count($r))
-				$a->contact = $r[0]["id"];
-
-			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $body]);
-
-			Queue::add($a->contact, Protocol::DIASPORA2, $s);
-			notice(L10n::t('Diaspora post failed. Queued for retry.').EOL);
+			Worker::defer();
 		}
 	}
 }

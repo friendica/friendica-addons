@@ -125,19 +125,21 @@ function buffer_connect(App $a)
 	return $o;
 }
 
-function buffer_jot_nets(App $a, &$b)
+function buffer_jot_nets(App $a, array &$jotnets_fields)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	$buffer_post = PConfig::get(local_user(), 'buffer', 'post');
-
-	if (intval($buffer_post) == 1) {
-		$buffer_defpost = PConfig::get(local_user(), 'buffer', 'post_by_default');
-		$selected = ((intval($buffer_defpost) == 1) ? ' checked="checked" ' : '');
-		$b .= '<div class="profile-jot-net"><input type="checkbox" name="buffer_enable"' . $selected . ' value="1" /> '
-		    . L10n::t('Post to Buffer') . '</div>';
+	if (PConfig::get(local_user(), 'buffer', 'post')) {
+		$jotnets_fields[] = [
+			'type' => 'checkbox',
+			'field' => [
+				'buffer_enable',
+				L10n::t('Post to Buffer'),
+				PConfig::get(local_user(), 'buffer', 'post_by_default')
+			]
+		];
 	}
 }
 
@@ -329,15 +331,6 @@ function buffer_send(App $a, array &$b)
 					case 'facebook':
 						$send = ($b["extid"] != Protocol::FACEBOOK);
 						$limit = 0;
-						$markup = false;
-						$includedlinks = false;
-						$htmlmode = 9;
-						break;
-
-					case 'google':
-						$send = ($b["extid"] != Protocol::GPLUS);
-						$limit = 0;
-						$markup = true;
 						$includedlinks = false;
 						$htmlmode = 9;
 						break;
@@ -345,7 +338,6 @@ function buffer_send(App $a, array &$b)
 					case 'twitter':
 						$send = ($b["extid"] != Protocol::TWITTER);
 						$limit = 280;
-						$markup = false;
 						$includedlinks = true;
 						$htmlmode = 8;
 						break;
@@ -353,7 +345,6 @@ function buffer_send(App $a, array &$b)
 					case 'linkedin':
 						$send = ($b["extid"] != Protocol::LINKEDIN);
 						$limit = 700;
-						$markup = false;
 						$includedlinks = true;
 						$htmlmode = 2;
 						break;
@@ -363,17 +354,6 @@ function buffer_send(App $a, array &$b)
 					continue;
 
 				$item = $b;
-
-				// Markup for Google+
-				if ($markup) {
-					if ($item["title"] != "") {
-						$item["title"] = "*" . $item["title"] . "*";
-					}
-
-					$item["body"] = preg_replace("(\[b\](.*?)\[\/b\])ism", '*$1*', $item["body"]);
-					$item["body"] = preg_replace("(\[i\](.*?)\[\/i\])ism", '_$1_', $item["body"]);
-					$item["body"] = preg_replace("(\[s\](.*?)\[\/s\])ism", '-$1-', $item["body"]);
-				}
 
 				$post = ItemContent::getPlaintextPost($item, $limit, $includedlinks, $htmlmode);
 				Logger::log("buffer_send: converted message ".$b["id"]." result: ".print_r($post, true), Logger::DEBUG);
@@ -391,8 +371,6 @@ function buffer_send(App $a, array &$b)
 				// Buffer doesn't add links to Twitter (but pictures)
 				if (($profile->service == "twitter") && isset($post["url"]) && ($post["type"] != "photo")) {
 					$post["text"] .= " " . $post["url"];
-				} elseif ($profile->service == "google") {
-					$post["text"] .= html_entity_decode("&#x00A0;", ENT_QUOTES, 'UTF-8'); // Send a special blank to identify the post through the "fromgplus" addon
 				}
 
 				$message = [];

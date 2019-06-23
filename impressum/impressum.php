@@ -13,6 +13,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Util\Config\ConfigFileLoader;
 use Friendica\Util\Proxy as ProxyUtils;
 use Friendica\Util\Strings;
 
@@ -52,7 +53,7 @@ function impressum_footer($a, &$b) {
     }
 }
 
-function impressum_load_config(\Friendica\App $a, Config\Cache\ConfigCacheLoader $loader)
+function impressum_load_config(\Friendica\App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('impressum'));
 }

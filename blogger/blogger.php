@@ -41,19 +41,21 @@ function blogger_uninstall()
 }
 
 
-function blogger_jot_nets(App $a, &$b)
+function blogger_jot_nets(App $a, array &$jotnets_fields)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	$bl_post = PConfig::get(local_user(), 'blogger', 'post');
-
-	if (intval($bl_post) == 1) {
-		$bl_defpost = PConfig::get(local_user(), 'blogger', 'post_by_default');
-		$selected = ((intval($bl_defpost) == 1) ? ' checked="checked" ' : '');
-		$b .= '<div class="profile-jot-net"><input type="checkbox" name="blogger_enable" ' . $selected . ' value="1" /> '
-		. L10n::t('Post to blogger') . '</div>';
+	if (PConfig::get(local_user(), 'blogger', 'post')) {
+		$jotnets_fields[] = [
+			'type' => 'checkbox',
+			'field' => [
+				'blogger_enable',
+				L10n::t('Post to blogger'),
+				PConfig::get(local_user(), 'blogger', 'post_by_default')
+			]
+		];
 	}
 }
 

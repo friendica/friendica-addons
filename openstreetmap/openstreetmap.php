@@ -15,6 +15,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Util\Config\ConfigFileLoader;
 use Friendica\Util\Network;
 use Friendica\Util\Strings;
 
@@ -47,7 +48,7 @@ function openstreetmap_uninstall()
 	Logger::log("removed openstreetmap");
 }
 
-function openstreetmap_load_config(\Friendica\App $a, Config\Cache\ConfigCacheLoader $loader)
+function openstreetmap_load_config(\Friendica\App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('openstreetmap'));
 }

@@ -49,7 +49,7 @@ msgstr ""
 
 #: cookienotice.php:70
 msgid "Cookie Usage Notice"
-msgstr "Cookie Usage Notice"
+msgstr "Cookie usage notice"
 
 #: cookienotice.php:70
 msgid "The cookie usage notice"
@@ -57,22 +57,24 @@ msgstr "The cookie usage notice"
 
 #: cookienotice.php:71
 msgid "OK Button Text"
-msgstr ""
+msgstr "OK button text"
 
 #: cookienotice.php:71
 msgid "The OK Button text"
-msgstr ""
+msgstr "OK button text"
 
 #: cookienotice.php:72
 msgid "Save Settings"
-msgstr ""
+msgstr "Save settings"
 
 #: cookienotice.php:97
 msgid "cookienotice Settings saved."
-msgstr ""
+msgstr "Cookie notice settings saved."
 
 #: cookienotice.php:132
 msgid ""
 "This website uses cookies to recognize revisiting and logged in users. You "
 "accept the usage of these cookies by continue browsing this website."
 msgstr ""
+"This website uses cookies to recognize revisiting and logged in users. You "
+"accept the usage of these cookies by continue browsing this website."

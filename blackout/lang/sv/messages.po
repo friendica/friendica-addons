@@ -6,13 +6,14 @@
 # Translators:
 # Jonatan Nyberg, 2017
 # Tim Stahel <transifex@swedneck.xyz>, 2018
+# Bjoessi <torbjorn.andersson@syte.se>, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2018-11-13 12:35+0000\n"
-"Last-Translator: Tim Stahel <transifex@swedneck.xyz>\n"
+"POT-Creation-Date: 2019-03-12 09:26+0100\n"
+"PO-Revision-Date: 2019-04-04 20:32+0000\n"
+"Last-Translator: Bjoessi <torbjorn.andersson@syte.se>\n"
 "Language-Team: Swedish (http://www.transifex.com/Friendica/friendica/language/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,34 +21,48 @@ msgstr ""
 "Language: sv\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: blackout.php:99
+#: blackout.php:101
+msgid ""
+"The end-date is prior to the start-date of the blackout, you should fix this"
+msgstr "Slutdatumet ligger före startdatumet för nedsläckningen, du bör rätta detta."
+
+#: blackout.php:103
+#, php-format
+msgid ""
+"Please double check that the current settings for the blackout. Begin will "
+"be <strong>%s</strong> and it will end <strong>%s</strong>."
+msgstr "Vänligen försäkra dig om att inställningarna för nedsläckningen är korrekt. Början <strong>%s</strong> och slut <strong>%s</strong>."
+
+#: blackout.php:106
 msgid "Save Settings"
 msgstr "Spara inställningar"
 
-#: blackout.php:100
+#: blackout.php:107
 msgid "Redirect URL"
 msgstr "Omdirigera URL"
 
-#: blackout.php:100
+#: blackout.php:107
 msgid "all your visitors from the web will be redirected to this URL"
 msgstr "alla dina besökare från webben kommer omdirigeras till denna URL"
 
-#: blackout.php:101
+#: blackout.php:108
 msgid "Begin of the Blackout"
-msgstr "Start av blackouten"
-
-#: blackout.php:101
-msgid ""
-"format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, "
-"<em>hh</em> hour and <em>mm</em> minute"
-msgstr "format är <em>ÅÅÅÅ</em> år, <em>MM</em> månad, <em>DD</em> dag, <em>hh</em> timma och <em>mm</em> minut"
-
-#: blackout.php:102
-msgid "End of the Blackout"
-msgstr "Slut av blackouten"
+msgstr "Start på nedsläckningen"
 
 #: blackout.php:108
 msgid ""
-"The end-date is prior to the start-date of the blackout, you should fix "
-"this."
-msgstr "Slutdatumet är före startdatumet för blackouten, du borde fixa detta."
+"Format is <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> year, <em>MM</em> month, "
+"<em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute."
+msgstr "Formatet är <tt>ÅÅÅÅ-MM-DD tt:mm</tt>; <em>ÅÅÅÅ</em> år, <em>MM</em> månad, <em>DD</em> dag, <em>tt</em> timme och <em>mm</em> minut."
+
+#: blackout.php:109
+msgid "End of the Blackout"
+msgstr "Slut på nedsläckningen"
+
+#: blackout.php:111
+msgid ""
+"<strong>Note</strong>: The redirect will be active from the moment you press"
+" the submit button. Users currently logged in will <strong>not</strong> be "
+"thrown out but can't login again after logging out should the blackout is "
+"still in place."
+msgstr "<strong>Observera</strong>: Hänvisningen kommer att träda i kraft när du trycker på skicka-knappen. Användare som just nu är inloggade kommer <strong>inte</strong> bli utkastade men kan inte logga in igen efter utloggning om nedsläckningen fortfarande är i kraft. "

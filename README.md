@@ -6,7 +6,7 @@ You can add these addons to the /addon directory of your Friendica installation 
 
 After uploading the addons to your server, you need to activate the desired addons in the Admin panel. Addons not activated have no effect on your node.
 
-You can find more addons in the [Friendica Addon listing](https://addons.friendo.ca) in cases the addon developers have choosen not to include them here.
+You can find more addons in the [Friendica Addon listing](https://addons.friendi.ca) in cases the addon developers have choosen not to include them here.
 
 ## Connectors
 

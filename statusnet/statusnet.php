@@ -101,18 +101,21 @@ function statusnet_check_item_notification(App $a, &$notification_data)
 	}
 }
 
-function statusnet_jot_nets(App $a, &$b)
+function statusnet_jot_nets(App $a, array &$jotnets_fields)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	$statusnet_post = PConfig::get(local_user(), 'statusnet', 'post');
-	if (intval($statusnet_post) == 1) {
-		$statusnet_defpost = PConfig::get(local_user(), 'statusnet', 'post_by_default');
-		$selected = ((intval($statusnet_defpost) == 1) ? ' checked="checked" ' : '');
-		$b .= '<div class="profile-jot-net"><input type="checkbox" name="statusnet_enable"' . $selected . ' value="1" /> '
-			. L10n::t('Post to GNU Social') . '</div>';
+	if (PConfig::get(local_user(), 'statusnet', 'post')) {
+		$jotnets_fields[] = [
+			'type' => 'checkbox',
+			'field' => [
+				'statusnet_enable',
+				L10n::t('Post to GNU Social'),
+				PConfig::get(local_user(), 'statusnet', 'post_by_default')
+			]
+		];
 	}
 }
 
@@ -732,7 +735,7 @@ function statusnet_prepare_body(App $a, &$b)
 		}
 
 		$item = $b["item"];
-		$item["plink"] = $a->getBaseURL() . "/display/" . $a->user["nickname"] . "/" . $item["parent"];
+		$item["plink"] = $a->getBaseURL() . "/display/" . $item["guid"];
 
 		$condition = ['uri' => $item["thr-parent"], 'uid' => local_user()];
 		$orig_post = Item::selectFirst(['author-link', 'uri'], $condition);
@@ -1480,7 +1483,7 @@ function statusnet_convertmsg(App $a, $body, $no_tags = false)
 			} elseif ($oembed_data->type != "link") {
 				$body = str_replace($search, "[url=" . $expanded_url . "]" . $expanded_url . "[/url]", $body);
 			} else {
-				$img_str = Network::fetchUrl($expanded_url, true, $redirects, 4);
+				$img_str = Network::fetchUrl($expanded_url, true, 4);
 
 				$tempfile = tempnam(get_temppath(), "cache");
 				file_put_contents($tempfile, $img_str);

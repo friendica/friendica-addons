@@ -157,9 +157,8 @@ function mailstream_do_images($a, &$item, &$attachments) {
 	preg_match_all("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/ism", $item["body"], $matches1);
 	preg_match_all("/\[img\](.*?)\[\/img\]/ism", $item["body"], $matches2);
 	foreach (array_merge($matches1[3], $matches2[1]) as $url) {
-		$redirects = 0;
 		$cookiejar = tempnam(get_temppath(), 'cookiejar-mailstream-');
-		$curlResult = Network::fetchUrlFull($url, true, $redirects, 0, null, $cookiejar);
+		$curlResult = Network::fetchUrlFull($url, true, 0, '', $cookiejar);
 		$attachments[$url] = [
 			'data' => $curlResult->getBody(),
 			'guid' => hash("crc32", $url),
@@ -254,7 +253,7 @@ function mailstream_subject($item) {
 	return L10n::t("Friendica Item");
 }
 
-function mailstream_send($a, $message_id, $item, $user) {
+function mailstream_send(\Friendica\App $a, $message_id, $item, $user) {
 	if (!$item['visible']) {
 		return;
 	}
@@ -293,7 +292,7 @@ function mailstream_send($a, $message_id, $item, $user) {
 		$mail->CharSet = 'utf-8';
 		$template = Renderer::getMarkupTemplate('mail.tpl', 'addon/mailstream/');
 		$item['body'] = BBCode::convert($item['body']);
-		$item['url'] = $a->getBaseURL() . '/display/' . $user['nickname'] . '/' . $item['id'];
+		$item['url'] = $a->getBaseURL() . '/display/' . $item['guid'];
 		$mail->Body = Renderer::replaceMacros($template, [
 						 '$upstream' => L10n::t('Upstream'),
 						 '$local' => L10n::t('Local'),

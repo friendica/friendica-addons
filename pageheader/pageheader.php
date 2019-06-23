@@ -8,85 +8,66 @@
  * 
  */
 
+use Friendica\App;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Renderer;
 
 function pageheader_install() {
-    Hook::register('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
-	Hook::register('addon_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
-	Hook::register('addon_settings_post', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings_post');
-
+    Hook::register('page_content_top', __FILE__, 'pageheader_fetch');
 }
 
-
-function pageheader_uninstall() {
-    Hook::unregister('page_content_top', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
-	Hook::unregister('addon_settings', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings');
-	Hook::unregister('addon_settings_post', 'addon/pageheader/pageheader.php', 'pageheader_addon_settings_post');
-
-	// hook moved, uninstall the old one if still there. 
-    Hook::unregister('page_header', 'addon/pageheader/pageheader.php', 'pageheader_fetch');
-
-}
-
-
-
-
-
-function pageheader_addon_settings(&$a,&$s) {
-
-
-	if(! is_site_admin())
+function pageheader_addon_admin(App &$a, &$s)
+{
+	if(! is_site_admin()) {
 		return;
+	}
 
     /* Add our stylesheet to the page so we can make our settings look nice */
-
-    $a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/pageheader/pageheader.css' . '" media="all" />' . "\r\n";
-
+	$stylesheetPath = __DIR__ . '/pageheader.css';
+	$a->registerStylesheet($stylesheetPath);
 
 	$words = Config::get('pageheader','text');
 	if(! $words)
 		$words = '';
 
-	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/pageheader/");
+	$t = Renderer::getMarkupTemplate('admin.tpl', __DIR__);
 	$s .= Renderer::replaceMacros($t, [
-					'$title' => L10n::t('"pageheader" Settings'),
-					'$phwords' => ['pageheader-words', L10n::t('Message'), $words, L10n::t('Message to display on every page on this server (or put a pageheader.html file in your docroot)')],
-					'$submit' => L10n::t('Save Settings')
+		'$title' => L10n::t('"pageheader" Settings'),
+		'$phwords' => ['pageheader-words', L10n::t('Message'), $words, L10n::t('Message to display on every page on this server (or put a pageheader.html file in your docroot)')],
+		'$submit' => L10n::t('Save Settings')
 	]);
 
 	return;
-
 }
 
-function pageheader_addon_settings_post(&$a, &$b) {
-
-	if(!is_site_admin())
+function pageheader_addon_admin_post(App $a)
+{
+	if(!is_site_admin()) {
 		return;
+	}
 
 	if(!empty($_POST['pageheader-submit'])) {
 		if (isset($_POST['pageheader-words'])) {
 			Config::set('pageheader', 'text', trim(strip_tags($_POST['pageheader-words'])));
 		}
-		info(L10n::t('pageheader Settings saved.') . EOL);
+		info(L10n::t('pageheader Settings saved.'));
 	}
 }
 
-function pageheader_fetch($a,&$b) {
-	
+function pageheader_fetch(App $a, &$b)
+{
 	if(file_exists('pageheader.html')){
 		$s = file_get_contents('pageheader.html');
 	} else {
 		$s = Config::get('pageheader', 'text');
 	}
 
-    $a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'
-        . $a->getBaseURL() . '/addon/pageheader/pageheader.css' . '" media="all" />' . "\r\n";
+	$stylesheetPath = __DIR__ .'/pageheader.css';
+	$a->registerStylesheet($stylesheetPath);
     
-    if(! $s)
-        $s = '';
-    if ($s != '')
+    if ($s) {
         $b .= '<div class="pageheader">' . $s . '</div>';
+    }
 }

@@ -83,9 +83,9 @@ use Friendica\Model\GContact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
-use Friendica\Model\Queue;
 use Friendica\Model\User;
 use Friendica\Object\Image;
+use Friendica\Util\Config\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
 use Friendica\Util\Strings;
@@ -105,7 +105,6 @@ function twitter_install()
 	Hook::register('notifier_normal'        , __FILE__, 'twitter_post_hook');
 	Hook::register('jot_networks'           , __FILE__, 'twitter_jot_nets');
 	Hook::register('cron'                   , __FILE__, 'twitter_cron');
-	Hook::register('queue_predeliver'       , __FILE__, 'twitter_queue_hook');
 	Hook::register('follow'                 , __FILE__, 'twitter_follow');
 	Hook::register('expire'                 , __FILE__, 'twitter_expire');
 	Hook::register('prepare_body'           , __FILE__, 'twitter_prepare_body');
@@ -123,7 +122,6 @@ function twitter_uninstall()
 	Hook::unregister('notifier_normal'        , __FILE__, 'twitter_post_hook');
 	Hook::unregister('jot_networks'           , __FILE__, 'twitter_jot_nets');
 	Hook::unregister('cron'                   , __FILE__, 'twitter_cron');
-	Hook::unregister('queue_predeliver'       , __FILE__, 'twitter_queue_hook');
 	Hook::unregister('follow'                 , __FILE__, 'twitter_follow');
 	Hook::unregister('expire'                 , __FILE__, 'twitter_expire');
 	Hook::unregister('prepare_body'           , __FILE__, 'twitter_prepare_body');
@@ -135,7 +133,7 @@ function twitter_uninstall()
 	Hook::unregister('addon_settings_post', __FILE__, 'twitter_settings_post');
 }
 
-function twitter_load_config(App $a, Config\Cache\ConfigCacheLoader $loader)
+function twitter_load_config(App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('twitter'));
 }
@@ -193,20 +191,24 @@ function twitter_follow(App $a, array &$contact)
 	}
 }
 
-function twitter_jot_nets(App $a, &$b)
+function twitter_jot_nets(App $a, array &$jotnets_fields)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	$tw_post = PConfig::get(local_user(), 'twitter', 'post');
-	if (intval($tw_post) == 1) {
-		$tw_defpost = PConfig::get(local_user(), 'twitter', 'post_by_default');
-		$selected = ((intval($tw_defpost) == 1) ? ' checked="checked" ' : '');
-		$b .= '<div class="profile-jot-net"><input type="checkbox" name="twitter_enable"' . $selected . ' value="1" /> '
-			. L10n::t('Post to Twitter') . '</div>';
+	if (PConfig::get(local_user(), 'twitter', 'post')) {
+		$jotnets_fields[] = [
+			'type' => 'checkbox',
+			'field' => [
+				'twitter_enable',
+				L10n::t('Post to Twitter'),
+				PConfig::get(local_user(), 'twitter', 'post_by_default')
+			]
+		];
 	}
 }
+
 
 function twitter_settings_post(App $a)
 {
@@ -679,16 +681,7 @@ function twitter_post_hook(App $a, array &$b)
 
 		if (!empty($result->errors)) {
 			Logger::log('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
-
-			$r = q("SELECT `id` FROM `contact` WHERE `uid` = %d AND `self`", intval($b['uid']));
-			if (DBA::isResult($r)) {
-				$a->contact = $r[0]["id"];
-			}
-
-			$s = serialize(['url' => $url, 'item' => $b['id'], 'post' => $post]);
-
-			Queue::add($a->contact, Protocol::TWITTER, $s);
-			notice(L10n::t('Twitter post failed. Queued for retry.') . EOL);
+			Worker::defer();
 		} elseif ($iscomment) {
 			Logger::log('twitter_post: Update extid ' . $result->id_str . " for post id " . $b['id']);
 			Item::update(['extid' => "twitter::" . $result->id_str], ['id' => $b['id']]);
@@ -821,7 +814,7 @@ function twitter_prepare_body(App $a, array &$b)
 	if ($b["preview"]) {
 		$max_char = 280;
 		$item = $b["item"];
-		$item["plink"] = $a->getBaseURL() . "/display/" . $a->user["nickname"] . "/" . $item["parent"];
+		$item["plink"] = $a->getBaseURL() . "/display/" . $item["guid"];
 
 		$condition = ['uri' => $item["thr-parent"], 'uid' => local_user()];
 		$orig_post = Item::selectFirst(['author-link'], $condition);
@@ -987,66 +980,6 @@ function twitter_fetchtimeline(App $a, $uid)
 	}
 	PConfig::set($uid, 'twitter', 'lastid', $lastid);
 	Logger::log('Last ID for user ' . $uid . ' is now ' . $lastid, Logger::DEBUG);
-}
-
-function twitter_queue_hook(App $a)
-{
-	$qi = q("SELECT * FROM `queue` WHERE `network` = '%s'",
-		DBA::escape(Protocol::TWITTER)
-	);
-	if (!DBA::isResult($qi)) {
-		return;
-	}
-
-	foreach ($qi as $x) {
-		if ($x['network'] !== Protocol::TWITTER) {
-			continue;
-		}
-
-		Logger::log('twitter_queue: run');
-
-		$r = q("SELECT `user`.* FROM `user` LEFT JOIN `contact` on `contact`.`uid` = `user`.`uid`
-			WHERE `contact`.`self` = 1 AND `contact`.`id` = %d LIMIT 1",
-			intval($x['cid'])
-		);
-		if (!DBA::isResult($r)) {
-			continue;
-		}
-
-		$user = $r[0];
-
-		$ckey    = Config::get('twitter', 'consumerkey');
-		$csecret = Config::get('twitter', 'consumersecret');
-		$otoken  = PConfig::get($user['uid'], 'twitter', 'oauthtoken');
-		$osecret = PConfig::get($user['uid'], 'twitter', 'oauthsecret');
-
-		$success = false;
-
-		if ($ckey && $csecret && $otoken && $osecret) {
-			Logger::log('twitter_queue: able to post');
-
-			$z = unserialize($x['content']);
-
-			$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
-			$result = $connection->post($z['url'], $z['post']);
-
-			Logger::log('twitter_queue: post result: ' . print_r($result, true), Logger::DEBUG);
-
-			if ($result->errors) {
-				Logger::log('twitter_queue: Send to Twitter failed: "' . print_r($result->errors, true) . '"');
-			} else {
-				$success = true;
-				Queue::removeItem($x['id']);
-			}
-		} else {
-			Logger::log("twitter_queue: Error getting tokens for user " . $user['uid']);
-		}
-
-		if (!$success) {
-			Logger::log('twitter_queue: delayed');
-			Queue::updateTime($x['id']);
-		}
-	}
 }
 
 function twitter_fix_avatar($avatar)
@@ -1251,7 +1184,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 				} elseif ($oembed_data->type != 'link') {
 					$body = str_replace($url->url, '[url=' . $expanded_url . ']' . $url->display_url . '[/url]', $body);
 				} else {
-					$img_str = Network::fetchUrl($final_url, true, $redirects, 4);
+					$img_str = Network::fetchUrl($final_url, true, 4);
 
 					$tempfile = tempnam(get_temppath(), 'cache');
 					file_put_contents($tempfile, $img_str);
@@ -1553,15 +1486,28 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 			return [];
 		}
 
-		$retweet['source'] = $postarray['source'];
-		$retweet['private'] = $postarray['private'];
-		$retweet['allow_cid'] = $postarray['allow_cid'];
-		$retweet['contact-id'] = $postarray['contact-id'];
-		$retweet['owner-name'] = $postarray['owner-name'];
-		$retweet['owner-link'] = $postarray['owner-link'];
-		$retweet['owner-avatar'] = $postarray['owner-avatar'];
+		if (!$noquote) {
+			// Store the original tweet
+			Item::insert($retweet);
 
-		$postarray = $retweet;
+			// CHange the other post into a reshare activity
+			$postarray['verb'] = ACTIVITY2_ANNOUNCE;
+			$postarray['gravity'] = GRAVITY_ACTIVITY;
+			$postarray['object-type'] = ACTIVITY_OBJ_NOTE;
+
+			$postarray['thr-parent'] = $retweet['uri'];
+			$postarray['parent-uri'] = $retweet['uri'];
+		} else {
+			$retweet['source'] = $postarray['source'];
+			$retweet['private'] = $postarray['private'];
+			$retweet['allow_cid'] = $postarray['allow_cid'];
+			$retweet['contact-id'] = $postarray['contact-id'];
+			$retweet['owner-name'] = $postarray['owner-name'];
+			$retweet['owner-link'] = $postarray['owner-link'];
+			$retweet['owner-avatar'] = $postarray['owner-avatar'];
+
+			$postarray = $retweet;
+		}
 	}
 
 	if (!empty($post->quoted_status) && !$noquote) {
@@ -1603,7 +1549,7 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 		}
 
 		if (empty($post)) {
-			Logger::log("twitter_fetchparentposts: Can't fetch post " . $parameters->id, Logger::DEBUG);
+			Logger::log("twitter_fetchparentposts: Can't fetch post " . $parameters['id'], Logger::DEBUG);
 			break;
 		}
 

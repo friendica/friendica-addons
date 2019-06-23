@@ -12,6 +12,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Database\DBA;
 use Friendica\Model\User;
+use Friendica\Util\Config\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 
 function testdrive_install() {
@@ -35,7 +36,7 @@ function testdrive_uninstall() {
 
 }
 
-function testdrive_load_config(App $a, Config\Cache\ConfigCacheLoader $loader)
+function testdrive_load_config(App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('testdrive'));
 }
