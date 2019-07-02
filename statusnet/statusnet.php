@@ -51,7 +51,6 @@ use Friendica\Core\Renderer;
 use Friendica\Core\System;
 use Friendica\Database\DBA;
 use Friendica\Model\Contact;
-use Friendica\Model\GContact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
@@ -944,12 +943,6 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 	if (empty($contact->statusnet_profile_url)) {
 		return -1;
 	}
-
-	GContact::update(["url" => $contact->statusnet_profile_url,
-		"network" => Protocol::STATUSNET, "photo" => $contact->profile_image_url,
-		"name" => $contact->name, "nick" => $contact->screen_name,
-		"location" => $contact->location, "about" => $contact->description,
-		"addr" => statusnet_address($contact), "generation" => 3]);
 
 	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' AND `network` = '%s'LIMIT 1", intval($uid), DBA::escape(Strings::normaliseLink($contact->statusnet_profile_url)), DBA::escape(Protocol::STATUSNET));
 
