@@ -18,7 +18,6 @@ use Friendica\Core\Protocol;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\Model\Contact;
-use Friendica\Model\GContact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\User;
@@ -1011,24 +1010,6 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 
 function pumpio_get_contact($uid, $contact, $no_insert = false)
 {
-	$gcontact = ["url" => $contact->url, "network" => Protocol::PUMPIO, "generation" => 2,
-		"name" => $contact->displayName,  "hide" => true,
-		"nick" => $contact->preferredUsername,
-		"addr" => str_replace("acct:", "", $contact->id)];
-
-	if (!empty($contact->location->displayName)) {
-		$gcontact["location"] = $contact->location->displayName;
-	}
-
-	if (!empty($contact->summary)) {
-		$gcontact["about"] = $contact->summary;
-	}
-
-	if (!empty($contact->image->url)) {
-		$gcontact["photo"] = $contact->image->url;
-	}
-
-	GContact::update($gcontact);
 	$cid = Contact::getIdForURL($contact->url, $uid);
 
 	if ($no_insert) {
