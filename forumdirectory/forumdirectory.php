@@ -18,8 +18,6 @@ use Friendica\Database\DBA;
 use Friendica\Model\Profile;
 use Friendica\Util\Strings;
 
-include_once 'mod/directory.php';
-
 function forumdirectory_install()
 {
 	Hook::register('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
