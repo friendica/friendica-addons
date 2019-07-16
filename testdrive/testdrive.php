@@ -12,7 +12,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Database\DBA;
 use Friendica\Model\User;
-use Friendica\Util\Config\ConfigFileLoader;
+use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 
 function testdrive_install() {
