@@ -33,14 +33,16 @@ function blockbot_addon_admin(&$a, &$o) {
 
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => L10n::t('Save Settings'),
-		'$training' => ['training', L10n::t('Training mode'), Config::get('blockbot', 'training'), "Activates the training mode. This is only meant for developing purposes. Don't activate this on a production machine."],
+		'$good_crawlers' => ['good_crawlers', L10n::t('Allow "good" crawlers'), Config::get('blockbot', 'good_crawlers'), "Don't block fediverse crawlers, relay servers and other bots with good purposes."],
 		'$block_gab' => ['block_gab', L10n::t('Block GabSocial'), Config::get('blockbot', 'block_gab'), 'Block the software GabSocial. This will block every access for that software. You can block dedicated gab instances in the blocklist settings in the admin section.'],
+		'$training' => ['training', L10n::t('Training mode'), Config::get('blockbot', 'training'), "Activates the training mode. This is only meant for developing purposes. Don't activate this on a production machine. This can cut communication with some systems."],
 	]);
 }
 
 function blockbot_addon_admin_post(&$a) {
-	Config::set('blockbot', 'training', $_POST['training'] ?? false);
+	Config::set('blockbot', 'good_crawlers', $_POST['good_crawlers'] ?? false);
 	Config::set('blockbot', 'block_gab', $_POST['block_gab'] ?? false);
+	Config::set('blockbot', 'training', $_POST['training'] ?? false);
 	info(L10n::t('Settings updated.'). EOL);
 }
 
@@ -50,6 +52,10 @@ function blockbot_init_1(App $a) {
 	}
 
 	$logdata = ['agent' => $_SERVER['HTTP_USER_AGENT'], 'uri' => $_SERVER['REQUEST_URI']];
+
+	// List of "good" crawlers
+	$good_agents = ['fediverse.space crawler', 'fediverse.network crawler', 'Active_Pods_CheckBot_3.0',
+			'Social-Relay/', 'Test Certificate Info', 'Uptimebot/'];
 
 	// List of known crawlers.
 	$agents = ['SemrushBot', 's~feedly-nikon3', 'Qwantify/Bleriot/', 'ltx71', 'Sogou web spider/',
@@ -69,6 +75,10 @@ function blockbot_init_1(App $a) {
 		'Scrapy/', 'github-camo', 'MJ12bot/', 'DotBot/', 'Pinterestbot/', 'Jooblebot/',
 		'Cliqzbot/', 'YaK/', 'Mediatoolkitbot', 'Snacktory', 'FunWebProducts', 'oBot/',
 		'7Siters/', 'KOCMOHABT', 'Google-SearchByImage'];
+
+	if (!Config::get('blockbot', 'good_crawlers')) {
+		$agents = array_merge($agents, $good_agents);
+	}
 
 	if (Config::get('blockbot', 'block_gab')) {
 		$agents[] = 'GabSocial/';
@@ -93,13 +103,16 @@ function blockbot_init_1(App $a) {
 	}
 
 	// List of false positives' strings of known "good" agents.
-	$agents = ['fediverse.network crawler', 'Active_Pods_CheckBot_3.0', 'Social-Relay/',
-		'curl', 'zgrab', 'Go-http-client', 'curb', 'github.com', 'reqwest', 'Feedly/',
+	$agents = ['curl', 'zgrab', 'Go-http-client', 'curb', 'github.com', 'reqwest', 'Feedly/',
 		'Python-urllib/', 'Liferea/', 'aiohttp/', 'WordPress.com Reader', 'hackney/',
 		'Faraday v', 'okhttp', 'UniversalFeedParser', 'PixelFedBot', 'python-requests',
 		'WordPress/', 'http.rb/', 'Apache-HttpClient/', 'WordPress.com;', 'Pleroma',
-		'Dispatch/', 'Ruby', 'Uptimebot/', 'Java/', 'libwww-perl/', 'Mastodon/',
-		'lua-resty-http/', 'Test Certificate Info'];
+		'Dispatch/', 'Ruby', 'Java/', 'libwww-perl/', 'Mastodon/',
+		'lua-resty-http/'];
+
+	if (Config::get('blockbot', 'good_crawlers')) {
+		$agents = array_merge($agents, $good_agents);
+	}
 
 	foreach ($agents as $agent) {
 		if (stristr($_SERVER['HTTP_USER_AGENT'], $agent)) {
