@@ -2,8 +2,9 @@
 /**
  * Name: blockbot
  * Description: Blocking bots based on detecting bots/crawlers/spiders via the user agent and http_from header.
- * Version: 0.1
+ * Version: 0.2
  * Author: Philipp Holzer <admin@philipp.info>
+ * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  *
  */
 
@@ -13,6 +14,8 @@ use Friendica\Core\Hook;
 use Friendica\Core\System;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
+use Friendica\Core\L10n;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
@@ -23,6 +26,22 @@ function blockbot_install() {
 
 function blockbot_uninstall() {
 	Hook::unregister('init_1', __FILE__, 'blockbot_init_1');
+}
+
+function blockbot_addon_admin(&$a, &$o) {
+	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/blockbot/");
+
+	$o = Renderer::replaceMacros($t, [
+		'$submit' => L10n::t('Save Settings'),
+		'$training' => ['training', L10n::t('Training mode'), Config::get('blockbot', 'training'), "Activates the training mode. This is only meant for developing purposes. Don't activate this on a production machine."],
+		'$block_gab' => ['block_gab', L10n::t('Block GabSocial'), Config::get('blockbot', 'block_gab'), 'Block the software GabSocial. This will block every access for that software. You can block dedicated gab instances in the blocklist settings in the admin section.'],
+	]);
+}
+
+function blockbot_addon_admin_post(&$a) {
+	Config::set('blockbot', 'training', $_POST['training'] ?? false);
+	Config::set('blockbot', 'block_gab', $_POST['block_gab'] ?? false);
+	info(L10n::t('Settings updated.'). EOL);
 }
 
 function blockbot_init_1(App $a) {
@@ -49,7 +68,11 @@ function blockbot_init_1(App $a) {
 		'ArchiveTeam ArchiveBot/', 'yacybot', 'https://developers.google.com/+/web/snippet/',
 		'Scrapy/', 'github-camo', 'MJ12bot/', 'DotBot/', 'Pinterestbot/', 'Jooblebot/',
 		'Cliqzbot/', 'YaK/', 'Mediatoolkitbot', 'Snacktory', 'FunWebProducts', 'oBot/',
-		'7Siters/'];
+		'7Siters/', 'KOCMOHABT', 'Google-SearchByImage'];
+
+	if (Config::get('blockbot', 'block_gab')) {
+		$agents[] = 'GabSocial/';
+	}
 
 	foreach ($agents as $agent) {
 		if (stristr($_SERVER['HTTP_USER_AGENT'], $agent)) {
