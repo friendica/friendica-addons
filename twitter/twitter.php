@@ -925,7 +925,7 @@ function twitter_fetchtimeline(App $a, $uid)
 
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
-	$parameters = ["exclude_replies" => true, "trim_user" => false, "contributor_details" => true, "include_rts" => true, "tweet_mode" => "extended"];
+	$parameters = ["exclude_replies" => true, "trim_user" => false, "contributor_details" => true, "include_rts" => true, "tweet_mode" => "extended", "include_ext_alt_text" => true];
 
 	$first_time = ($lastid == "");
 
@@ -1312,12 +1312,24 @@ function twitter_media_entities($post, array &$postarray)
 		}
 		switch ($medium->type) {
 			case 'photo':
-				$media[$medium->url] .= "\n[img]" . $medium->media_url_https . '[/img]';
+				if (!empty($medium->ext_alt_text)) {
+					Logger::info('Got text description', ['alt_text' => $medium->ext_alt_text]);
+					$media[$medium->url] .= "\n[img=" . $medium->media_url_https .']' . $medium->ext_alt_text . '[/img]';
+				} else {
+					$media[$medium->url] .= "\n[img]" . $medium->media_url_https . '[/img]';
+				}
+
 				$postarray['object-type'] = ACTIVITY_OBJ_IMAGE;
 				break;
 			case 'video':
 			case 'animated_gif':
-				$media[$medium->url] .= "\n[img]" . $medium->media_url_https . '[/img]';
+				if (!empty($medium->ext_alt_text)) {
+					Logger::info('Got text description', ['alt_text' => $medium->ext_alt_text]);
+					$media[$medium->url] .= "\n[img=" . $medium->media_url_https .']' . $medium->ext_alt_text . '[/img]';
+				} else {
+					$media[$medium->url] .= "\n[img]" . $medium->media_url_https . '[/img]';
+				}
+
 				$postarray['object-type'] = ACTIVITY_OBJ_VIDEO;
 				if (is_array($medium->video_info->variants)) {
 					$bitrate = 0;
@@ -1533,7 +1545,7 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 	$posts = [];
 
 	while (!empty($post->in_reply_to_status_id_str)) {
-		$parameters = ["trim_user" => false, "tweet_mode" => "extended", "id" => $post->in_reply_to_status_id_str];
+		$parameters = ["trim_user" => false, "tweet_mode" => "extended", "id" => $post->in_reply_to_status_id_str, "include_ext_alt_text" => true];
 
 		try {
 			$post = $connection->get('statuses/show', $parameters);
@@ -1623,7 +1635,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 		return;
 	}
 
-	$parameters = ["exclude_replies" => false, "trim_user" => false, "contributor_details" => true, "include_rts" => true, "tweet_mode" => "extended"];
+	$parameters = ["exclude_replies" => false, "trim_user" => false, "contributor_details" => true, "include_rts" => true, "tweet_mode" => "extended", "include_ext_alt_text" => true];
 	//$parameters["count"] = 200;
 	// Fetching timeline
 	$lastid = PConfig::get($uid, 'twitter', 'lasthometimelineid');
