@@ -30,6 +30,10 @@ class ComposerStaticInitTwitterAddon
 
     public static $classMap = array (
         'Codebird\\Codebird' => __DIR__ . '/..' . '/jublonet/codebird-php/src/codebird.php',
+        'Codebird\\CodebirdAuthException' => __DIR__ . '/..' . '/jublonet/codebird-php/src/codebird.php',
+        'Codebird\\CodebirdCredentialsException' => __DIR__ . '/..' . '/jublonet/codebird-php/src/codebird.php',
+        'Codebird\\CodebirdEndpointException' => __DIR__ . '/..' . '/jublonet/codebird-php/src/codebird.php',
+        'Codebird\\CodebirdMediaException' => __DIR__ . '/..' . '/jublonet/codebird-php/src/codebird.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

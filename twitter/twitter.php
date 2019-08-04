@@ -64,6 +64,7 @@
 
 use Abraham\TwitterOAuth\TwitterOAuth;
 use Abraham\TwitterOAuth\TwitterOAuthException;
+use Codebird\Codebird;
 use Friendica\App;
 use Friendica\Content\OEmbed;
 use Friendica\Content\Text\BBCode;
@@ -591,6 +592,10 @@ function twitter_post_hook(App $a, array &$b)
 			return;
 		}
 
+		Codebird::setConsumerKey($ckey, $csecret);
+		$cb = Codebird::getInstance();
+		$cb->setToken($otoken, $osecret);
+
 		$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
 		// Set the timeout for upload to 30 seconds
@@ -649,6 +654,7 @@ function twitter_post_hook(App $a, array &$b)
 
 				if (isset($media->media_id_string)) {
 					$post['media_ids'] = $media->media_id_string;
+					//$details = $cb->account_verifyCredentials();
 				} else {
 					throw new Exception('Failed upload of ' . $image);
 				}

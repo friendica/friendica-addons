@@ -179,17 +179,17 @@
     },
     {
         "name": "jublonet/codebird-php",
-        "version": "3.1.0",
-        "version_normalized": "3.1.0.0",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
         "source": {
             "type": "git",
             "url": "https://github.com/jublonet/codebird-php.git",
-            "reference": "100a8e8f1928a5738b4476f0caf83f2c2ba6da5b"
+            "reference": "df362d8ad629aad6c4c7dbf36a440e569ec41368"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/jublonet/codebird-php/zipball/100a8e8f1928a5738b4476f0caf83f2c2ba6da5b",
-            "reference": "100a8e8f1928a5738b4476f0caf83f2c2ba6da5b",
+            "url": "https://api.github.com/repos/jublonet/codebird-php/zipball/df362d8ad629aad6c4c7dbf36a440e569ec41368",
+            "reference": "df362d8ad629aad6c4c7dbf36a440e569ec41368",
             "shasum": ""
         },
         "require": {
@@ -200,13 +200,13 @@
             "php": ">=5.5.0"
         },
         "require-dev": {
-            "phpunit/phpunit": ">=3.7",
-            "satooshi/php-coveralls": ">=0.6",
+            "php-coveralls/php-coveralls": ">=0.6",
+            "phpunit/phpunit": ">=7.3",
             "squizlabs/php_codesniffer": "2.*"
         },
-        "time": "2016-02-15T18:38:55+00:00",
+        "time": "2018-08-16T00:07:08+00:00",
         "type": "library",
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "classmap": [
                 "src/"
@@ -230,7 +230,7 @@
                 "homepage": "http://mynetx.net/"
             }
         ],
-        "description": "Easy access to the Twitter REST API, Collections API, Streaming API, TON (Object Nest) API and Twitter Ads API — all from one PHP library.",
+        "description": "Easy access to the Twitter REST API, Direct Messages API, Account Activity API, TON (Object Nest) API and Twitter Ads API — all from one PHP library.",
         "homepage": "https://www.jublo.net/projects/codebird/php",
         "keywords": [
             "api",
