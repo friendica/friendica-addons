@@ -4,9 +4,13 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitd051a3fd38373f38066f9a7f62be4c25
+class ComposerStaticInitTwitterAddon
 {
     public static $prefixLengthsPsr4 = array (
+        'C' => 
+        array (
+            'Composer\\Installers\\' => 20,
+        ),
         'A' => 
         array (
             'Abraham\\TwitterOAuth\\' => 21,
@@ -14,17 +18,26 @@ class ComposerStaticInitd051a3fd38373f38066f9a7f62be4c25
     );
 
     public static $prefixDirsPsr4 = array (
+        'Composer\\Installers\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers',
+        ),
         'Abraham\\TwitterOAuth\\' => 
         array (
             0 => __DIR__ . '/..' . '/abraham/twitteroauth/src',
         ),
     );
 
+    public static $classMap = array (
+        'Codebird\\Codebird' => __DIR__ . '/..' . '/jublonet/codebird-php/src/codebird.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitd051a3fd38373f38066f9a7f62be4c25::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitd051a3fd38373f38066f9a7f62be4c25::$prefixDirsPsr4;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitTwitterAddon::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitTwitterAddon::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitTwitterAddon::$classMap;
 
         }, null, ClassLoader::class);
     }
