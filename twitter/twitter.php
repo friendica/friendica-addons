@@ -639,10 +639,9 @@ function twitter_post_hook(App $a, array &$b)
 
 		if (!empty($msgarr['images'])) {
 			try {
-				$post['media_ids'] = '';
-				$counter = 0;
+				$media_ids = [];
 				foreach ($msgarr['images'] as $image) {
-					if (++$counter > 4) {
+					if (count($media_ids) == 4) {
 						continue;
 					}
 
@@ -656,7 +655,7 @@ function twitter_post_hook(App $a, array &$b)
 					unlink($tempfile);
 
 					if (isset($media->media_id_string)) {
-						$post['media_ids'] .= $media->media_id_string . ',';
+						$media_ids[] = $media->media_id_string;
 
 						if (!empty($image['description'])) {
 							$data = ['media_id' => $media->media_id_string,
@@ -668,7 +667,7 @@ function twitter_post_hook(App $a, array &$b)
 						throw new Exception('Failed upload of ' . $image['url']);
 					}
 				}
-				$post['media_ids'] = rtrim($post['media_ids'], ',');
+				$post['media_ids'] = implode(',', $media_ids);
 				if (empty($post['media_ids'])) {
 					unset($post['media_ids']);
 				}
