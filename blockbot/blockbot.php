@@ -75,7 +75,7 @@ function blockbot_init_1(App $a) {
 		'Scrapy/', 'github-camo', 'MJ12bot/', 'DotBot/', 'Pinterestbot/', 'Jooblebot/',
 		'Cliqzbot/', 'YaK/', 'Mediatoolkitbot', 'Snacktory', 'FunWebProducts', 'oBot/',
 		'7Siters/', 'KOCMOHABT', 'Google-SearchByImage', 'FemtosearchBot/',
-		'HubSpot Crawler'];
+		'HubSpot Crawler', 'DomainStatsBot/', 'Re-re Studio'];
 
 	if (!Config::get('blockbot', 'good_crawlers')) {
 		$agents = array_merge($agents, $good_agents);
