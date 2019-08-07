@@ -1,0 +1,25 @@
+{
+  "name": "codebird-php",
+  "version": "3.1.0",
+  "homepage": "https://www.jublo.net/projects/codebird/php",
+  "authors": [
+    "Joshua Atkins <joshua.atkins@jublo.net>",
+    "J.M. <jm@jublo.net>"
+  ],
+  "description": "Easy access to the Twitter REST, Direct Messages, Account Activity, TON (Object Nest) and Twitter Ads API — all from one PHP library.",
+  "main": "src/codebird.php",
+  "moduleType": [],
+  "keywords": [
+    "Twitter",
+    "API",
+    "networking"
+  ],
+  "license": "GPL-3.0+",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

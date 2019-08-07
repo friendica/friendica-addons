@@ -64,6 +64,7 @@
 
 use Abraham\TwitterOAuth\TwitterOAuth;
 use Abraham\TwitterOAuth\TwitterOAuthException;
+use Codebird\Codebird;
 use Friendica\App;
 use Friendica\Content\OEmbed;
 use Friendica\Content\Text\BBCode;
@@ -591,6 +592,10 @@ function twitter_post_hook(App $a, array &$b)
 			return;
 		}
 
+		Codebird::setConsumerKey($ckey, $csecret);
+		$cb = Codebird::getInstance();
+		$cb->setToken($otoken, $osecret);
+
 		$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
 		// Set the timeout for upload to 30 seconds
@@ -616,17 +621,13 @@ function twitter_post_hook(App $a, array &$b)
 			$msg = Plaintext::shorten($msgarr["title"], $max_char - 50);
 		}
 
-		$image = "";
-
-		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {
+		if (($msgarr['url'] == $b['plink']) && !empty($msgarr['images']) && (count($msgarr['images']) <= 4)) {
+			$url_added = false;
+		} elseif (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {
 			$msg .= "\n" . $msgarr["url"];
 			$url_added = true;
 		} else {
 			$url_added = false;
-		}
-
-		if (isset($msgarr["image"]) && ($msgarr["type"] != "video")) {
-			$image = $msgarr["image"];
 		}
 
 		if (empty($msg)) {
@@ -636,32 +637,42 @@ function twitter_post_hook(App $a, array &$b)
 		// and now tweet it :-)
 		$post = [];
 
-		if (!empty($image)) {
+		if (!empty($msgarr['images'])) {
 			try {
-				$img_str = Network::fetchUrl($image);
+				$media_ids = [];
+				foreach ($msgarr['images'] as $image) {
+					if (count($media_ids) == 4) {
+						continue;
+					}
 
-				$tempfile = tempnam(get_temppath(), 'cache');
-				file_put_contents($tempfile, $img_str);
+					$img_str = Network::fetchUrl($image['url']);
 
-				$media = $connection->upload('media/upload', ['media' => $tempfile]);
+					$tempfile = tempnam(get_temppath(), 'cache');
+					file_put_contents($tempfile, $img_str);
 
-				unlink($tempfile);
+					$media = $connection->upload('media/upload', ['media' => $tempfile]);
 
-				if (isset($media->media_id_string)) {
-					$post['media_ids'] = $media->media_id_string;
-				} else {
-					throw new Exception('Failed upload of ' . $image);
+					unlink($tempfile);
+
+					if (isset($media->media_id_string)) {
+						$media_ids[] = $media->media_id_string;
+
+						if (!empty($image['description'])) {
+							$data = ['media_id' => $media->media_id_string,
+								'alt_text' => ['text' => substr($image['description'], 0, 420)]];
+							$ret = $cb->media_metadata_create($data);
+							Logger::info('Metadata create', ['data' => $data, 'return' => json_encode($ret)]);
+						}
+					} else {
+						throw new Exception('Failed upload of ' . $image['url']);
+					}
+				}
+				$post['media_ids'] = implode(',', $media_ids);
+				if (empty($post['media_ids'])) {
+					unset($post['media_ids']);
 				}
 			} catch (Exception $e) {
 				Logger::log('Exception when trying to send to Twitter: ' . $e->getMessage());
-
-				// Workaround: Remove the picture link so that the post can be reposted without it
-				// When there is another url already added, a second url would be superfluous.
-				if (!$url_added) {
-					$msg .= "\n" . $image;
-				}
-
-				$image = "";
 			}
 		}
 

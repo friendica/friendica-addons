@@ -4,4 +4,4 @@
 
 require_once __DIR__ . '/composer/autoload_real.php';
 
-return ComposerAutoloaderInitd051a3fd38373f38066f9a7f62be4c25::getLoader();
+return ComposerAutoloaderInitTwitterAddon::getLoader();
