@@ -1,0 +1,42 @@
+# ADDON blockbot
+# Copyright (C)
+# This file is distributed under the same license as the Friendica blockbot addon package.
+# 
+# 
+# Translators:
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2019
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-07 09:03+0200\n"
+"PO-Revision-Date: 2019-08-07 07:43+0000\n"
+"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2019\n"
+"Language-Team: German (https://www.transifex.com/Friendica/teams/12172/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: blockbot.php:35
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: blockbot.php:36
+msgid "Allow \"good\" crawlers"
+msgstr "\"Gute\" Crawler erlauben"
+
+#: blockbot.php:37
+msgid "Block GabSocial"
+msgstr "GabSocial Instanzen blockieren"
+
+#: blockbot.php:38
+msgid "Training mode"
+msgstr "Trainings Modus"
+
+#: blockbot.php:46
+msgid "Settings updated."
+msgstr "Einstellungen aktualisiert."
