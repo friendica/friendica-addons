@@ -5,7 +5,8 @@
 # 
 # Translators:
 # Marie Olive <lacellule101@gmail.com>, 2018
-# vladimir N <lapoubelle111@gmail.com>, 2018
+# Vladimir Núñez <lapoubelle111@gmail.com>, 2018
+# Phigger Phigger <automates@lepouete.fr>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -14,7 +15,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-04-17 04:04+0200\n"
 "PO-Revision-Date: 2018-05-24 06:41+0000\n"
-"Last-Translator: vladimir N <lapoubelle111@gmail.com>, 2018\n"
+"Last-Translator: Phigger Phigger <automates@lepouete.fr>, 2019\n"
 "Language-Team: French (https://www.transifex.com/Friendica/teams/12172/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -124,6 +125,8 @@ msgid ""
 "<p>Examples:</p><ul><li><pre>author_link == "
 "'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>"
 msgstr ""
+"<p>Exemples :</p><ul><li><pre>author_link == "
+"'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>"
 
 #: advancedcontentfilter.php:224
 msgid "Cancel"
@@ -167,7 +170,7 @@ msgstr "Argument manquant: "
 #: advancedcontentfilter.php:406
 #, php-format
 msgid "Unknown post with guid: %s"
-msgstr ""
+msgstr "Post inconnu avec guid : %s"
 
 #: src/middlewares.php:28
 msgid "Method not found"

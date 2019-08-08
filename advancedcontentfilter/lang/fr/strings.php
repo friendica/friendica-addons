@@ -27,7 +27,7 @@ $a->strings["Close"] = "Fermer";
 $a->strings["Add new rule"] = "Ajouter nouvelle règle";
 $a->strings["Rule Name"] = "Nommer règle";
 $a->strings["Rule Expression"] = "Expression de règle";
-$a->strings["<p>Examples:</p><ul><li><pre>author_link == 'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>"] = "";
+$a->strings["<p>Examples:</p><ul><li><pre>author_link == 'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>"] = "<p>Exemples :</p><ul><li><pre>author_link == 'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>";
 $a->strings["Cancel"] = "Annuler";
 $a->strings["You must be logged in to use this method"] = "Vous devez être connecté pour utiliser cette méthode";
 $a->strings["Invalid form security token, please refresh the page."] = "Formulaire token de sécurité invalide, rafraîchissez la page";
@@ -37,5 +37,5 @@ $a->strings["Rule doesn't exist or doesn't belong to you."] = "Cette règle n'ex
 $a->strings["Rule successfully updated"] = "Règle bien mise à jour";
 $a->strings["Rule successfully deleted"] = "Règle bien supprimée";
 $a->strings["Missing argument: guid."] = "Argument manquant: ";
-$a->strings["Unknown post with guid: %s"] = "";
+$a->strings["Unknown post with guid: %s"] = "Post inconnu avec guid : %s";
 $a->strings["Method not found"] = "Méthode non trouvée";
