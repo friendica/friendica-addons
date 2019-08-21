@@ -4,76 +4,74 @@
 # 
 # 
 # Translators:
-# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
-# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018
-# Ulf Rompe <transifex.com@rompe.org>, 2019
-# Vinzenz Vietzke <vinz@vinzv.de>, 2019
+# Hypolite Petovan <hypolite@mrpetovan.com>, 2019
+# Bjoessi <torbjorn.andersson@syte.se>, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2019-08-19 10:15+0000\n"
-"Last-Translator: Vinzenz Vietzke <vinz@vinzv.de>\n"
-"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
+"PO-Revision-Date: 2019-08-20 08:07+0000\n"
+"Last-Translator: Bjoessi <torbjorn.andersson@syte.se>\n"
+"Language-Team: Swedish (http://www.transifex.com/Friendica/friendica/language/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: de\n"
+"Language: sv\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: buffer.php:31
 msgid "Permission denied."
-msgstr "Zugriff verweigert."
+msgstr "Åtkomst nekad."
 
 #: buffer.php:57 buffer.php:185
 msgid "Save Settings"
-msgstr "Einstellungen speichern"
+msgstr "Spara inställningar"
 
 #: buffer.php:59
 msgid "Client ID"
-msgstr "Client ID"
+msgstr "Klient-ID"
 
 #: buffer.php:60
 msgid "Client Secret"
-msgstr "Client Secret"
+msgstr "Klient hemlig nyckel"
 
 #: buffer.php:67
 msgid "Error when registering buffer connection:"
-msgstr "Fehler beim Registrieren des Buffer-Connectors."
+msgstr "Fel vid anslutning till Buffer"
 
 #: buffer.php:86
 msgid "You are now authenticated to buffer. "
-msgstr "Du bist nun auf Buffer authentifiziert."
+msgstr "Du är nu autentiserad mot Buffer."
 
 #: buffer.php:87
 msgid "return to the connector page"
-msgstr "zurück zur Connector-Seite"
+msgstr "återgå till anslutningssida"
 
 #: buffer.php:103
 msgid "Post to Buffer"
-msgstr "Auf Buffer veröffentlichen"
+msgstr "Inlägg till Buffer"
 
 #: buffer.php:128 buffer.php:132
 msgid "Buffer Export"
-msgstr "Buffer Export"
+msgstr "Export till Buffer"
 
 #: buffer.php:142
 msgid "Authenticate your Buffer connection"
-msgstr "Authentifiziere deine Verbindung zu Buffer"
+msgstr "Validera din anslutning mot Buffer"
 
 #: buffer.php:146
 msgid "Enable Buffer Post Addon"
-msgstr "Buffer-Post-Addon aktivieren"
+msgstr "Aktivera tillägg för Buffer-inlägg"
 
 #: buffer.php:151
 msgid "Post to Buffer by default"
-msgstr "Standardmäßig auf Buffer veröffentlichen"
+msgstr "Lägg in på Buffer som standard"
 
 #: buffer.php:156
 msgid "Check to delete this preset"
-msgstr "Markieren, um diese Voreinstellung zu löschen"
+msgstr "Markera för att ta bort förinställning"
 
 #: buffer.php:165
 msgid "Posts are going to all accounts that are enabled by default:"
-msgstr "Beiträge werden an alle Accounts geschickt, die standardmäßig aktiviert sind."
+msgstr "Inlägg skickas som standard till alla konton som är aktiverade:"
