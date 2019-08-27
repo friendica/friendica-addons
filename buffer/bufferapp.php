@@ -42,6 +42,7 @@
 		public $errors = [
 			'invalid-endpoint' => 'The endpoint you supplied does not appear to be valid.',
 
+			'401' => 'Unauthorized.',
 			'403' => 'Permission denied.',
 			'404' => 'Endpoint not found.',
 			'405' => 'Method not allowed.',
