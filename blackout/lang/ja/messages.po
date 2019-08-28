@@ -1,0 +1,65 @@
+# ADDON blackout
+# Copyright (C)
+# This file is distributed under the same license as the Friendica blackout addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-03-12 09:26+0100\n"
+"PO-Revision-Date: 2019-08-28 10:18+0000\n"
+"Last-Translator: Ozero Dien <rgfx0020+misc@gmail.com>\n"
+"Language-Team: Japanese (http://www.transifex.com/Friendica/friendica/language/ja/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: blackout.php:101
+msgid ""
+"The end-date is prior to the start-date of the blackout, you should fix this"
+msgstr "終了日はブラックアウトの開始日より前です。これを修正する必要があります"
+
+#: blackout.php:103
+#, php-format
+msgid ""
+"Please double check that the current settings for the blackout. Begin will "
+"be <strong>%s</strong> and it will end <strong>%s</strong>."
+msgstr "ブラックアウトの現在の設定を再確認してください。開始は<strong> %s </strong>で、終了は<strong> %s </strong>です。"
+
+#: blackout.php:106
+msgid "Save Settings"
+msgstr "設定を保存する"
+
+#: blackout.php:107
+msgid "Redirect URL"
+msgstr "リダイレクト URL"
+
+#: blackout.php:107
+msgid "all your visitors from the web will be redirected to this URL"
+msgstr "Webからのすべての訪問者はこのURLにリダイレクトされます"
+
+#: blackout.php:108
+msgid "Begin of the Blackout"
+msgstr "ブラックアウトの始まり"
+
+#: blackout.php:108
+msgid ""
+"Format is <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> year, <em>MM</em> month, "
+"<em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute."
+msgstr "形式は<tt> YYYY-MM-DD hh：mm </tt>です。 <em> YYYY </em>年、<em> MM </em>月、<em> DD </em>日、<em> hh </em>時間と<em> mm </em>分。"
+
+#: blackout.php:109
+msgid "End of the Blackout"
+msgstr "ブラックアウトの終わり"
+
+#: blackout.php:111
+msgid ""
+"<strong>Note</strong>: The redirect will be active from the moment you press"
+" the submit button. Users currently logged in will <strong>not</strong> be "
+"thrown out but can't login again after logging out should the blackout is "
+"still in place."
+msgstr "<strong>備考</strong>：送信ボタンを押した時点からリダイレクトが有効になります。現在ログインしているユーザーは<strong>リダイレクトされません</strong>が、ブラックアウトが有効な間はログアウト後再度ログインできなくなります。"
