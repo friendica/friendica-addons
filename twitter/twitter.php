@@ -352,7 +352,10 @@ function twitter_settings(App $a, &$s)
 
 				$field_checkbox = Renderer::getMarkupTemplate('field_checkbox.tpl');
 
-				$s .= '<div id="twitter-info" >
+				if (property_exists($details, 'screen_name') &&
+				    property_exists($details, 'description') &&
+				    property_exists($details, 'profile_image_url')) {
+					$s .= '<div id="twitter-info" >
 					<p>' . L10n::t('Currently connected to: ') . '<a href="https://twitter.com/' . $details->screen_name . '" target="_twitter">' . $details->screen_name . '</a>
 						<button type="submit" name="twitter-disconnect" value="1">' . L10n::t('Disconnect') . '</button>
 					</p>
@@ -361,6 +364,12 @@ function twitter_settings(App $a, &$s)
 						<em>' . $details->description . '</em>
 					</p>
 				</div>';
+				} else {
+					$s .= '<div id="twitter-info" >
+					<p>Invalid Twitter info</p>
+				</div>';
+					Logger::info('Invalid twitter info (verify credentials).', ['auth' => TwitterOAuth::class]);
+				}
 				$s .= '<div class="clear"></div>';
 
 				$s .= Renderer::replaceMacros($field_checkbox, [
