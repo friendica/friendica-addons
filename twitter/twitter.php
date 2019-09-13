@@ -1162,7 +1162,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 
 			if ($url->url && $url->expanded_url && $url->display_url) {
 				// Quote tweet, we just remove the quoted tweet URL from the body, the share block will be added later.
-				if (isset($item->quoted_status_id_str)
+				if (!empty($item->quoted_status) && isset($item->quoted_status_id_str)
 					&& substr($url->expanded_url, -strlen($item->quoted_status_id_str)) == $item->quoted_status_id_str ) {
 					$body = str_replace($url->url, '', $body);
 					continue;
@@ -1539,20 +1539,21 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 	if (!empty($post->quoted_status) && !$noquote) {
 		$quoted = twitter_createpost($a, $uid, $post->quoted_status, $self, false, false, true);
 
-		if (empty($quoted['body'])) {
-			return [];
+		if (!empty($quoted['body'])) {
+			$postarray['body'] .= "\n" . share_header(
+				$quoted['author-name'],
+				$quoted['author-link'],
+				$quoted['author-avatar'],
+				"",
+				$quoted['created'],
+				$quoted['plink']
+			);
+
+			$postarray['body'] .= $quoted['body'] . '[/share]';
+		} else {
+			// Quoted post author is blocked/ignored, so we just provide the link to avoid removing quote context.
+			$postarray['body'] .= "\n\nhttps://twitter.com/" . $post->quoted_status->user->screen_name . "/status/" . $post->quoted_status->id_str;
 		}
-
-		$postarray['body'] .= "\n" . share_header(
-			$quoted['author-name'],
-			$quoted['author-link'],
-			$quoted['author-avatar'],
-			"",
-			$quoted['created'],
-			$quoted['plink']
-		);
-
-		$postarray['body'] .= $quoted['body'] . '[/share]';
 	}
 
 	return $postarray;
