@@ -1036,6 +1036,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 
 	$contact = DBA::selectFirst('contact', [], ['uid' => $uid, 'alias' => "twitter::" . $data->id_str]);
 	if (!DBA::isResult($contact) && !$create_user) {
+		Logger::info('User contact not found', ['uid' => $uid, 'twitter-id' => $data->id_str]);
 		return 0;
 	}
 
@@ -1598,7 +1599,7 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 
 	if (!empty($posts)) {
 		foreach ($posts as $post) {
-			$postarray = twitter_createpost($a, $uid, $post, $self, false, false, false);
+			$postarray = twitter_createpost($a, $uid, $post, $self, false, !PConfig::get($uid, 'twitter', 'create_user'), false);
 
 			if (empty($postarray['body'])) {
 				continue;
@@ -1780,7 +1781,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 				twitter_fetchparentposts($a, $uid, $post, $connection, $self);
 			}
 
-			$postarray = twitter_createpost($a, $uid, $post, $self, false, false, false);
+			$postarray = twitter_createpost($a, $uid, $post, $self, false, !$create_user, false);
 
 			if (empty($postarray['body'])) {
 				continue;
