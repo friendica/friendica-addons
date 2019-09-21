@@ -630,7 +630,7 @@ function twitter_post_hook(App $a, array &$b)
 			$msg = Plaintext::shorten($msgarr["title"], $max_char - 50);
 		}
 
-		if (($msgarr['url'] == $b['plink']) && !empty($msgarr['images']) && (count($msgarr['images']) <= 4)) {
+		if (!empty($msgarr['url']) && ($msgarr['url'] == $b['plink']) && !empty($msgarr['images']) && (count($msgarr['images']) <= 4)) {
 			$url_added = false;
 		} elseif (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {
 			$msg .= "\n" . $msgarr["url"];
