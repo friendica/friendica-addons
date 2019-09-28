@@ -102,19 +102,28 @@ function mailstream_generate_id($a, $uri) {
 
 function mailstream_post_hook(&$a, &$item) {
 	if (!PConfig::get($item['uid'], 'mailstream', 'enabled')) {
+		Logger::debug('mailstream: not enabled for item ' . $item['id']);
 		return;
 	}
 	if (!$item['uid']) {
+		Logger::debug('mailstream: no uid for item ' . $item['id']);
 		return;
 	}
 	if (!$item['contact-id']) {
+		Logger::debug('mailstream: no contact-id for item ' . $item['id']);
 		return;
 	}
 	if (!$item['uri']) {
+		Logger::debug('mailstream: no uri for item ' . $item['id']);
+		return;
+	}
+	if (!$item['plink']) {
+		Logger::debug('mailstream: no plink for item ' . $item['id']);
 		return;
 	}
 	if (PConfig::get($item['uid'], 'mailstream', 'nolikes')) {
 		if ($item['verb'] == ACTIVITY_LIKE) {
+			Logger::debug('mailstream: like item ' . $item['id']);
 			return;
 		}
 	}
