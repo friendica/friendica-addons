@@ -55,7 +55,7 @@ function blockbot_init_1(App $a) {
 
 	// List of "good" crawlers
 	$good_agents = ['fediverse.space crawler', 'fediverse.network crawler', 'Active_Pods_CheckBot_3.0',
-			'Social-Relay/', 'Test Certificate Info', 'Uptimebot/'];
+			'Social-Relay/', 'Test Certificate Info', 'Uptimebot/', 'GNUSocialBot'];
 
 	// List of known crawlers.
 	$agents = ['SemrushBot', 's~feedly-nikon3', 'Qwantify/Bleriot/', 'ltx71', 'Sogou web spider/',
@@ -74,7 +74,8 @@ function blockbot_init_1(App $a) {
 		'ArchiveTeam ArchiveBot/', 'yacybot', 'https://developers.google.com/+/web/snippet/',
 		'Scrapy/', 'github-camo', 'MJ12bot/', 'DotBot/', 'Pinterestbot/', 'Jooblebot/',
 		'Cliqzbot/', 'YaK/', 'Mediatoolkitbot', 'Snacktory', 'FunWebProducts', 'oBot/',
-		'7Siters/', 'KOCMOHABT', 'Google-SearchByImage'];
+		'7Siters/', 'KOCMOHABT', 'Google-SearchByImage', 'FemtosearchBot/',
+		'HubSpot Crawler', 'DomainStatsBot/', 'Re-re Studio'];
 
 	if (!Config::get('blockbot', 'good_crawlers')) {
 		$agents = array_merge($agents, $good_agents);

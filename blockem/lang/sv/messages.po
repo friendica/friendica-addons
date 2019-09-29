@@ -1,0 +1,59 @@
+# ADDON blockem
+# Copyright (C)
+# This file is distributed under the same license as the Friendica blockem addon package.
+# 
+# 
+# Translators:
+# Bjoessi <torbjorn.andersson@syte.se>, 2019
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-08-17 10:23+0200\n"
+"PO-Revision-Date: 2019-08-20 07:51+0000\n"
+"Last-Translator: Bjoessi <torbjorn.andersson@syte.se>\n"
+"Language-Team: Swedish (http://www.transifex.com/Friendica/friendica/language/sv/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sv\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: blockem.php:54 blockem.php:58
+msgid "Blockem"
+msgstr "BLOCKEM"
+
+#: blockem.php:62
+msgid ""
+"Hides user's content by collapsing posts. Also replaces their avatar with "
+"generic image."
+msgstr "Döljer användares inlägg genom sammanslagning nedåt. Användarens profilbild ersätts med en standardbild."
+
+#: blockem.php:63
+msgid "Comma separated profile URLS:"
+msgstr "Kommaseparerade profiladresser:"
+
+#: blockem.php:67
+msgid "Save Settings"
+msgstr "Spara inställningar"
+
+#: blockem.php:81
+msgid "BLOCKEM Settings saved."
+msgstr "BLOCKEM Inställningar sparade."
+
+#: blockem.php:143
+#, php-format
+msgid "Filtered user: %s"
+msgstr "Filtrerat på användare:%s"
+
+#: blockem.php:202
+msgid "Unblock Author"
+msgstr "Avblockera författare"
+
+#: blockem.php:204
+msgid "Block Author"
+msgstr "Blockera författare"
+
+#: blockem.php:244
+msgid "blockem settings updated"
+msgstr "BLOCKEM Inställningar uppdaterade"

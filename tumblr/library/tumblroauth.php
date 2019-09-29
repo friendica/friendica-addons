@@ -15,7 +15,7 @@ class TumblrOAuth {
   /* Contains the last API call. */
   public $url;
   /* Set up the API root URL. */
-  public $host = "http://api.tumblr.com/v2/";
+  public $host = "https://api.tumblr.com/v2/";
   /* Set timeout default. */
   public $timeout = 30;
   /* Set connect timeout. */
@@ -39,10 +39,10 @@ class TumblrOAuth {
   /**
    * Set API URLS
    */
-  function accessTokenURL()  { return 'http://www.tumblr.com/oauth/access_token'; }
-  function authenticateURL() { return 'http://www.tumblr.com/oauth/authorize'; }
-  function authorizeURL()    { return 'http://www.tumblr.com/oauth/authorize'; }
-  function requestTokenURL() { return 'http://www.tumblr.com/oauth/request_token'; }
+  function accessTokenURL()  { return 'https://www.tumblr.com/oauth/access_token'; }
+  function authenticateURL() { return 'https://www.tumblr.com/oauth/authorize'; }
+  function authorizeURL()    { return 'https://www.tumblr.com/oauth/authorize'; }
+  function requestTokenURL() { return 'https://www.tumblr.com/oauth/request_token'; }
 
   /**
    * Debug helpers

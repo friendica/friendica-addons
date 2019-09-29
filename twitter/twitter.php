@@ -352,7 +352,10 @@ function twitter_settings(App $a, &$s)
 
 				$field_checkbox = Renderer::getMarkupTemplate('field_checkbox.tpl');
 
-				$s .= '<div id="twitter-info" >
+				if (property_exists($details, 'screen_name') &&
+				    property_exists($details, 'description') &&
+				    property_exists($details, 'profile_image_url')) {
+					$s .= '<div id="twitter-info" >
 					<p>' . L10n::t('Currently connected to: ') . '<a href="https://twitter.com/' . $details->screen_name . '" target="_twitter">' . $details->screen_name . '</a>
 						<button type="submit" name="twitter-disconnect" value="1">' . L10n::t('Disconnect') . '</button>
 					</p>
@@ -361,6 +364,12 @@ function twitter_settings(App $a, &$s)
 						<em>' . $details->description . '</em>
 					</p>
 				</div>';
+				} else {
+					$s .= '<div id="twitter-info" >
+					<p>Invalid Twitter info</p>
+				</div>';
+					Logger::info('Invalid twitter info (verify credentials).', ['auth' => TwitterOAuth::class]);
+				}
 				$s .= '<div class="clear"></div>';
 
 				$s .= Renderer::replaceMacros($field_checkbox, [
@@ -621,7 +630,7 @@ function twitter_post_hook(App $a, array &$b)
 			$msg = Plaintext::shorten($msgarr["title"], $max_char - 50);
 		}
 
-		if (($msgarr['url'] == $b['plink']) && !empty($msgarr['images']) && (count($msgarr['images']) <= 4)) {
+		if (!empty($msgarr['url']) && ($msgarr['url'] == $b['plink']) && !empty($msgarr['images']) && (count($msgarr['images']) <= 4)) {
 			$url_added = false;
 		} elseif (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {
 			$msg .= "\n" . $msgarr["url"];
@@ -1027,6 +1036,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 
 	$contact = DBA::selectFirst('contact', [], ['uid' => $uid, 'alias' => "twitter::" . $data->id_str]);
 	if (!DBA::isResult($contact) && !$create_user) {
+		Logger::info('User contact not found', ['uid' => $uid, 'twitter-id' => $data->id_str]);
 		return 0;
 	}
 
@@ -1153,7 +1163,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 
 			if ($url->url && $url->expanded_url && $url->display_url) {
 				// Quote tweet, we just remove the quoted tweet URL from the body, the share block will be added later.
-				if (isset($item->quoted_status_id_str)
+				if (!empty($item->quoted_status) && isset($item->quoted_status_id_str)
 					&& substr($url->expanded_url, -strlen($item->quoted_status_id_str)) == $item->quoted_status_id_str ) {
 					$body = str_replace($url->url, '', $body);
 					continue;
@@ -1530,20 +1540,21 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 	if (!empty($post->quoted_status) && !$noquote) {
 		$quoted = twitter_createpost($a, $uid, $post->quoted_status, $self, false, false, true);
 
-		if (empty($quoted['body'])) {
-			return [];
+		if (!empty($quoted['body'])) {
+			$postarray['body'] .= "\n" . share_header(
+				$quoted['author-name'],
+				$quoted['author-link'],
+				$quoted['author-avatar'],
+				"",
+				$quoted['created'],
+				$quoted['plink']
+			);
+
+			$postarray['body'] .= $quoted['body'] . '[/share]';
+		} else {
+			// Quoted post author is blocked/ignored, so we just provide the link to avoid removing quote context.
+			$postarray['body'] .= "\n\nhttps://twitter.com/" . $post->quoted_status->user->screen_name . "/status/" . $post->quoted_status->id_str;
 		}
-
-		$postarray['body'] .= "\n" . share_header(
-			$quoted['author-name'],
-			$quoted['author-link'],
-			$quoted['author-avatar'],
-			"",
-			$quoted['created'],
-			$quoted['plink']
-		);
-
-		$postarray['body'] .= $quoted['body'] . '[/share]';
 	}
 
 	return $postarray;
@@ -1588,7 +1599,7 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 
 	if (!empty($posts)) {
 		foreach ($posts as $post) {
-			$postarray = twitter_createpost($a, $uid, $post, $self, false, false, false);
+			$postarray = twitter_createpost($a, $uid, $post, $self, false, !PConfig::get($uid, 'twitter', 'create_user'), false);
 
 			if (empty($postarray['body'])) {
 				continue;
@@ -1770,7 +1781,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 				twitter_fetchparentposts($a, $uid, $post, $connection, $self);
 			}
 
-			$postarray = twitter_createpost($a, $uid, $post, $self, false, false, false);
+			$postarray = twitter_createpost($a, $uid, $post, $self, false, !$create_user, false);
 
 			if (empty($postarray['body'])) {
 				continue;
@@ -1900,7 +1911,7 @@ function twitter_update_mentions($body)
 function twitter_convert_share(array $attributes, array $author_contact, $content, $is_quote_share)
 {
 	if ($author_contact['network'] == Protocol::TWITTER) {
-		$mention = '@' . $author_contact['nickname'];
+		$mention = '@' . $author_contact['nick'];
 	} else {
 		$mention = $author_contact['addr'];
 	}
