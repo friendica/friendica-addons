@@ -166,6 +166,9 @@ function mailstream_do_images($a, &$item, &$attachments) {
 	preg_match_all("/\[img\=([^\]]*)\]([^[]*)\[\/img\]/ism", $item["body"], $matches3);
 	foreach (array_merge($matches1[3], $matches2[1], $matches3[1]) as $url) {
 		$components = parse_url($url);
+		if (!$components) {
+			continue;
+		}
 		$cookiejar = tempnam(get_temppath(), 'cookiejar-mailstream-');
 		$curlResult = Network::fetchUrlFull($url, true, 0, '', $cookiejar);
 		$attachments[$url] = [
