@@ -163,7 +163,8 @@ function mailstream_do_images($a, &$item, &$attachments) {
 	$attachments = [];
 	preg_match_all("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/ism", $item["body"], $matches1);
 	preg_match_all("/\[img\](.*?)\[\/img\]/ism", $item["body"], $matches2);
-	foreach (array_merge($matches1[3], $matches2[1]) as $url) {
+	preg_match_all("/\[img\=([^\]]*)\]([^[]*)\[\/img\]/ism", $item["body"], $matches3);
+	foreach (array_merge($matches1[3], $matches2[1], $matches3[1]) as $url) {
 		$components = parse_url($url);
 		$cookiejar = tempnam(get_temppath(), 'cookiejar-mailstream-');
 		$curlResult = Network::fetchUrlFull($url, true, 0, '', $cookiejar);
