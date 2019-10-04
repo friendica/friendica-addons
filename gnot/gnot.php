@@ -78,8 +78,13 @@ function gnot_settings(&$a,&$s) {
 	
 	/* Add some HTML to the existing form */
 
-	$s .= '<div class="settings-block">';
+	$s .= '<span id="settings_gnot_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_gnot_expanded\'); openClose(\'settings_gnot_inflated\');">';
 	$s .= '<h3>' . L10n::t('Gnot Settings') . '</h3>';
+	$s .= '</span>';
+	$s .= '<div id="settings_gnot_expanded" class="settings-block" style="display: none;">';
+	$s .= '<span class="fakelink" onclick="openClose(\'settings_gnot_expanded\'); openClose(\'settings_gnot_inflated\');">';
+	$s .= '<h3>' . L10n::t('Gnot Settings') . '</h3>';
+	$s .= '</span>';
 	$s .= '<div id="gnot-wrapper">';
 	$s .= '<div id="gnot-desc">' . L10n::t("Allows threading of email comment notifications on Gmail and anonymising the subject line.") . '</div>';
 	$s .= '<label id="gnot-label" for="gnot">' . L10n::t('Enable this addon?') . '</label>';
