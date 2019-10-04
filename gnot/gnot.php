@@ -11,6 +11,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
+use Friendica\Core\Renderer;
 
 function gnot_install() {
 
@@ -76,20 +77,16 @@ function gnot_settings(&$a,&$s) {
 
 	$gnot_checked = (($gnot) ? ' checked="checked" ' : '' );
 	
+	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/gnot/');
 	/* Add some HTML to the existing form */
 
-	$s .= '<div class="settings-block">';
-	$s .= '<h3>' . L10n::t('Gnot Settings') . '</h3>';
-	$s .= '<div id="gnot-wrapper">';
-	$s .= '<div id="gnot-desc">' . L10n::t("Allows threading of email comment notifications on Gmail and anonymising the subject line.") . '</div>';
-	$s .= '<label id="gnot-label" for="gnot">' . L10n::t('Enable this addon?') . '</label>';
-	$s .= '<input id="gnot-input" type="checkbox" name="gnot" value="1"'.  $gnot_checked . '/>';
-	$s .= '</div><div class="clear"></div>';
-
-	/* provide a submit button */
-
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="gnot-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
-
+	$s .= Renderer::replaceMacros($t, [
+		'$title' => L10n::t('Gnot Settings') ,
+		'$submit' => L10n::t('Save Settings'),
+		'$enable' => L10n::t('Enable this addon?'),
+		'$enabled' => $gnot_checked,
+		'$text' => L10n::t("Allows threading of email comment notifications on Gmail and anonymising the subject line.") 
+	]);
 }
 
 
