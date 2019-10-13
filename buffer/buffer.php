@@ -238,8 +238,8 @@ function buffer_settings_post(App $a, array &$b)
 			PConfig::set(local_user(), 'buffer', 'post'           , false);
 			PConfig::set(local_user(), 'buffer', 'post_by_default', false);
 		} else {
-			PConfig::set(local_user(), 'buffer', 'post'           , intval(defaults($_POST, 'buffer', false)));
-			PConfig::set(local_user(), 'buffer', 'post_by_default', intval(defaults($_POST, 'buffer_bydefault', false)));
+			PConfig::set(local_user(), 'buffer', 'post'           , intval($_POST['buffer'] ?? false));
+			PConfig::set(local_user(), 'buffer', 'post_by_default', intval($_POST['buffer_bydefault'] ?? false));
 		}
 	}
 }

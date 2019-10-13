@@ -109,8 +109,8 @@ function notifyall_content(&$a)
 
 	$o = Renderer::replaceMacros(Renderer::getMarkupTemplate('notifyall_form.tpl', 'addon/notifyall/'), [
 		'$title' => $title,
-		'$text' => htmlspecialchars(defaults($_REQUEST, 'text', '')),
-		'$subject' => ['subject', L10n::t('Message subject'), defaults($_REQUEST, 'subject', ''),''],
+		'$text' => htmlspecialchars($_REQUEST['text'] ?? ''),
+		'$subject' => ['subject', L10n::t('Message subject'), $_REQUEST['subject'] ?? '',''],
 		'$test' => ['test',L10n::t('Test mode (only send to administrator)'), 0,''],
 		'$submit' => L10n::t('Submit')
 	]);

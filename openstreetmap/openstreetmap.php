@@ -215,10 +215,10 @@ function openstreetmap_addon_admin(&$a, &$o)
 
 function openstreetmap_addon_admin_post(&$a)
 {
-	$urltms = defaults($_POST, 'tmsserver', OSM_TMS);
-	$urlnom = defaults($_POST, 'nomserver', OSM_NOM);
-	$zoom = defaults($_POST, 'zoom', OSM_ZOOM);
-	$marker = defaults($_POST, 'marker', OSM_MARKER);
+	$urltms = ($_POST['tmsserver'] ?? '') ?: OSM_TMS;
+	$urlnom = ($_POST['nomserver'] ?? '') ?: OSM_NOM;
+	$zoom = ($_POST['zoom'] ?? '') ?: OSM_ZOOM;
+	$marker = ($_POST['marker'] ?? '') ?: OSM_MARKER;
 
 	Config::set('openstreetmap', 'tmsserver', $urltms);
 	Config::set('openstreetmap', 'nomserver', $urlnom);

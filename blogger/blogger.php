@@ -126,8 +126,8 @@ function blogger_settings(App $a, &$s)
 function blogger_settings_post(App $a, array &$b)
 {
 	if (!empty($_POST['blogger-submit'])) {
-		PConfig::set(local_user(), 'blogger', 'post',            defaults($_POST, 'blogger', false));
-		PConfig::set(local_user(), 'blogger', 'post_by_default', defaults($_POST, 'bl_bydefault', false));
+		PConfig::set(local_user(), 'blogger', 'post',            $_POST['blogger'] ?? false);
+		PConfig::set(local_user(), 'blogger', 'post_by_default', $_POST['bl_bydefault'] ?? false);
 		PConfig::set(local_user(), 'blogger', 'bl_username',     trim($_POST['bl_username']));
 		PConfig::set(local_user(), 'blogger', 'bl_password',     trim($_POST['bl_password']));
 		PConfig::set(local_user(), 'blogger', 'bl_blog',         trim($_POST['bl_blog']));
