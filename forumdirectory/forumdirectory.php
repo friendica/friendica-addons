@@ -42,8 +42,6 @@ function forumdirectory_init(App $a)
 {
 	if (local_user()) {
 		$a->page['aside'] .= Widget::findPeople();
-	} else {
-		unset($_SESSION['theme']);
 	}
 }
 
