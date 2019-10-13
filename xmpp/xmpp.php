@@ -184,7 +184,7 @@ function xmpp_converse(App $a)
 		return;
 	}
 
-	if (in_array($a->argv[0], ["manage", "logout"])) {
+	if (in_array($a->argv[0], ["delegation", "logout"])) {
 		$additional_commands = "converse.user.logout();\n";
 	} else {
 		$additional_commands = "";
