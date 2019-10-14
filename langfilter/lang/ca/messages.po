@@ -1,0 +1,81 @@
+# ADDON langfilter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica langfilter addon package.
+# 
+# 
+# Translators:
+# Joan Bar <friendica@tutanota.com>, 2019
+# Rafael Garau, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-01 11:11-0400\n"
+"PO-Revision-Date: 2019-10-13 22:16+0000\n"
+"Last-Translator: Joan Bar <friendica@tutanota.com>\n"
+"Language-Team: Catalan (http://www.transifex.com/Friendica/friendica/language/ca/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ca\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: langfilter.php:58
+msgid "Language Filter"
+msgstr "Filtre d'Idioma"
+
+#: langfilter.php:59
+msgid ""
+"This addon tries to identify the language posts are writen in. If it does "
+"not match any language specifed below, posts will be hidden by collapsing "
+"them."
+msgstr "Aquest complement tracta d’identificar les publicacions d’idioma en què s’escriuen. Si no coincideix amb cap idioma especificat a continuació, les publicacions s’ocultaran en col·lapsar-les."
+
+#: langfilter.php:60
+msgid "Use the language filter"
+msgstr "Emprar el filtre d'idioma"
+
+#: langfilter.php:61
+msgid "Able to read"
+msgstr "Capacitat de llegir"
+
+#: langfilter.php:61
+msgid ""
+"List of abbreviations (iso2 codes) for languages you speak, comma separated."
+" For example \"de,it\"."
+msgstr "llista d'abreviatures (ISO2 codes), separada per comes,  per idiomes que tú parles. Per exemple \"ca,es,de,it\"."
+
+#: langfilter.php:62
+msgid "Minimum confidence in language detection"
+msgstr "Precissió mínima en la detecció d'idioma"
+
+#: langfilter.php:62
+msgid ""
+"Minimum confidence in language detection being correct, from 0 to 100. Posts"
+" will not be filtered when the confidence of language detection is below "
+"this percent value."
+msgstr "Precissió mínima en la detecció d'idioma per ser correcta, de 0 a 100. Els misssatges no seràn filtrats mentre que la precissió en la detecció d'idioma estigui per sota d'aquest valor."
+
+#: langfilter.php:63
+msgid "Minimum length of message body"
+msgstr "Durada mínima del cos del missatge"
+
+#: langfilter.php:63
+msgid ""
+"Minimum number of characters in message body for filter to be used. Posts "
+"shorter than this will not be filtered. Note: Language detection is "
+"unreliable for short content (<200 characters)."
+msgstr "Nombre mínim de caràcters en el cos de missatges per utilitzar el filtre. Les publicacions inferiors a aquesta no es filtraran. Nota: la detecció del llenguatge no és fiable per a contingut curt (<200 caràcters)."
+
+#: langfilter.php:64
+msgid "Save Settings"
+msgstr "Desa la configuració"
+
+#: langfilter.php:105
+msgid "Language Filter Settings saved."
+msgstr "S'ha desat la configuració del filtre d'idioma"
+
+#: langfilter.php:182
+#, php-format
+msgid "Filtered language: %s"
+msgstr "%sIdioma filtrat"
