@@ -16,6 +16,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\Util\Network;
 use Friendica\Util\Proxy as ProxyUtils;
 
@@ -116,7 +117,7 @@ function curweather_network_mod_init(App $a, &$b)
 	$rpt = PConfig::get(local_user(), 'curweather', 'curweather_loc');
 
 	// Set the language to the browsers language or default and use metric units
-	$lang = defaults($_SESSION, 'language', Config::get('system', 'language'));
+	$lang = Session::get('language', Config::get('system', 'language'));
 	$units = PConfig::get( local_user(), 'curweather', 'curweather_units');
 	$appid = Config::get('curweather', 'appid');
 	$cachetime = intval(Config::get('curweather', 'cachetime'));

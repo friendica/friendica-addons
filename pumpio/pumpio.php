@@ -361,13 +361,13 @@ function pumpio_settings_post(App $a, array &$b)
 			$host = trim($host);
 			$host = str_replace(["https://", "http://"], ["", ""], $host);
 
-			PConfig::set(local_user(), 'pumpio', 'post'           , defaults($_POST, 'pumpio', false));
-			PConfig::set(local_user(), 'pumpio', 'import'         , defaults($_POST, 'pumpio_import', false));
+			PConfig::set(local_user(), 'pumpio', 'post'           , $_POST['pumpio'] ?? false);
+			PConfig::set(local_user(), 'pumpio', 'import'         , $_POST['pumpio_import'] ?? false);
 			PConfig::set(local_user(), 'pumpio', 'host'           , $host);
 			PConfig::set(local_user(), 'pumpio', 'user'           , $user);
-			PConfig::set(local_user(), 'pumpio', 'public'         , defaults($_POST, 'pumpio_public', false));
-			PConfig::set(local_user(), 'pumpio', 'mirror'         , defaults($_POST, 'pumpio_mirror', false));
-			PConfig::set(local_user(), 'pumpio', 'post_by_default', defaults($_POST, 'pumpio_bydefault', false));
+			PConfig::set(local_user(), 'pumpio', 'public'         , $_POST['pumpio_public'] ?? false);
+			PConfig::set(local_user(), 'pumpio', 'mirror'         , $_POST['pumpio_mirror'] ?? false);
+			PConfig::set(local_user(), 'pumpio', 'post_by_default', $_POST['pumpio_bydefault'] ?? false);
 
 			if (!empty($_POST['pumpio_mirror'])) {
 				PConfig::delete(local_user(), 'pumpio', 'lastdate');

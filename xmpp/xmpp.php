@@ -37,9 +37,9 @@ function xmpp_addon_settings_post()
 		return;
 	}
 
-	PConfig::set(local_user(), 'xmpp', 'enabled', defaults($_POST, 'xmpp_enabled', false));
-	PConfig::set(local_user(), 'xmpp', 'individual', defaults($_POST, 'xmpp_individual', false));
-	PConfig::set(local_user(), 'xmpp', 'bosh_proxy', defaults($_POST, 'xmpp_bosh_proxy', ''));
+	PConfig::set(local_user(), 'xmpp', 'enabled', $_POST['xmpp_enabled'] ?? false);
+	PConfig::set(local_user(), 'xmpp', 'individual', $_POST['xmpp_individual'] ?? false);
+	PConfig::set(local_user(), 'xmpp', 'bosh_proxy', $_POST['xmpp_bosh_proxy'] ?? '');
 
 	info(L10n::t('XMPP settings updated.') . EOL);
 }
@@ -138,7 +138,7 @@ function xmpp_converse(App $a)
 		return;
 	}
 
-	if (defaults($_GET, "mode", '') == "minimal") {
+	if (($_GET['mode'] ?? '') == 'minimal') {
 		return;
 	}
 
