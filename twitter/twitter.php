@@ -85,6 +85,7 @@ use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
 use Friendica\Model\User;
 use Friendica\Object\Image;
+use Friendica\Protocol\Activity;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
@@ -556,11 +557,11 @@ function twitter_post_hook(App $a, array &$b)
 		}
 	}
 
-	if (($b['verb'] == ACTIVITY_POST) && $b['deleted']) {
+	if (($b['verb'] == Activity::POST) && $b['deleted']) {
 		twitter_action($a, $b["uid"], substr($orig_post["uri"], 9), "delete");
 	}
 
-	if ($b['verb'] == ACTIVITY_LIKE) {
+	if ($b['verb'] == Activity::LIKE) {
 		Logger::log("twitter_post_hook: parameter 2 " . substr($b["thr-parent"], 9), Logger::DEBUG);
 		if ($b['deleted']) {
 			twitter_action($a, $b["uid"], substr($b["thr-parent"], 9), "unlike");
@@ -1340,7 +1341,7 @@ function twitter_media_entities($post, array &$postarray)
 					$media[$medium->url] .= "\n[img]" . $medium->media_url_https . '[/img]';
 				}
 
-				$postarray['object-type'] = ACTIVITY_OBJ_IMAGE;
+				$postarray['object-type'] = Activity::OBJ_IMAGE;
 				break;
 			case 'video':
 			case 'animated_gif':
@@ -1351,7 +1352,7 @@ function twitter_media_entities($post, array &$postarray)
 					$media[$medium->url] .= "\n[img]" . $medium->media_url_https . '[/img]';
 				}
 
-				$postarray['object-type'] = ACTIVITY_OBJ_VIDEO;
+				$postarray['object-type'] = Activity::OBJ_VIDEO;
 				if (is_array($medium->video_info->variants)) {
 					$bitrate = 0;
 					// We take the video with the highest bitrate
@@ -1408,11 +1409,11 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 			$postarray['thr-parent'] = $parent_item['uri'];
 			$postarray['parent-uri'] = $parent_item['parent-uri'];
 			$postarray['parent'] = $parent_item['parent'];
-			$postarray['object-type'] = ACTIVITY_OBJ_COMMENT;
+			$postarray['object-type'] = Activity::OBJ_COMMENT;
 		} else {
 			$postarray['thr-parent'] = $postarray['uri'];
 			$postarray['parent-uri'] = $postarray['uri'];
-			$postarray['object-type'] = ACTIVITY_OBJ_NOTE;
+			$postarray['object-type'] = Activity::OBJ_NOTE;
 		}
 
 		// Is it me?
@@ -1437,7 +1438,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 		$create_user = false;
 	} else {
 		$postarray['parent-uri'] = $postarray['uri'];
-		$postarray['object-type'] = ACTIVITY_OBJ_NOTE;
+		$postarray['object-type'] = Activity::OBJ_NOTE;
 	}
 
 	if ($contactid == 0) {
@@ -1457,7 +1458,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 
 	$postarray['contact-id'] = $contactid;
 
-	$postarray['verb'] = ACTIVITY_POST;
+	$postarray['verb'] = Activity::POST;
 	$postarray['author-name'] = $postarray['owner-name'];
 	$postarray['author-link'] = $postarray['owner-link'];
 	$postarray['author-avatar'] = $postarray['owner-avatar'];
@@ -1480,7 +1481,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 
 	// When the post contains links then use the correct object type
 	if (count($post->entities->urls) > 0) {
-		$postarray['object-type'] = ACTIVITY_OBJ_BOOKMARK;
+		$postarray['object-type'] = Activity::OBJ_BOOKMARK;
 	}
 
 	// Search for media links
@@ -1518,9 +1519,9 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 			Item::insert($retweet);
 
 			// CHange the other post into a reshare activity
-			$postarray['verb'] = ACTIVITY2_ANNOUNCE;
+			$postarray['verb'] = Activity::ANNOUNCE;
 			$postarray['gravity'] = GRAVITY_ACTIVITY;
-			$postarray['object-type'] = ACTIVITY_OBJ_NOTE;
+			$postarray['object-type'] = Activity::OBJ_NOTE;
 
 			$postarray['thr-parent'] = $retweet['uri'];
 			$postarray['parent-uri'] = $retweet['uri'];

@@ -56,6 +56,7 @@ use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
 use Friendica\Model\Photo;
 use Friendica\Model\User;
+use Friendica\Protocol\Activity;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
 use Friendica\Util\Strings;
@@ -550,11 +551,11 @@ function statusnet_post_hook(App $a, &$b)
 		}
 	}
 
-	if (($b['verb'] == ACTIVITY_POST) && $b['deleted']) {
+	if (($b['verb'] == Activity::POST) && $b['deleted']) {
 		statusnet_action($a, $b["uid"], substr($orig_post["uri"], $hostlength), "delete");
 	}
 
-	if ($b['verb'] == ACTIVITY_LIKE) {
+	if ($b['verb'] == Activity::LIKE) {
 		Logger::log("statusnet_post_hook: parameter 2 " . substr($b["thr-parent"], $hostlength), Logger::DEBUG);
 		if ($b['deleted'])
 			statusnet_action($a, $b["uid"], substr($b["thr-parent"], $hostlength), "unlike");
@@ -1139,11 +1140,11 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 			$postarray['thr-parent'] = $item['uri'];
 			$postarray['parent-uri'] = $item['parent-uri'];
 			$postarray['parent'] = $item['parent'];
-			$postarray['object-type'] = ACTIVITY_OBJ_COMMENT;
+			$postarray['object-type'] = Activity::OBJ_COMMENT;
 		} else {
 			$postarray['thr-parent'] = $postarray['uri'];
 			$postarray['parent-uri'] = $postarray['uri'];
-			$postarray['object-type'] = ACTIVITY_OBJ_NOTE;
+			$postarray['object-type'] = Activity::OBJ_NOTE;
 		}
 
 		// Is it me?
@@ -1167,7 +1168,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 		$create_user = false;
 	} else {
 		$postarray['parent-uri'] = $postarray['uri'];
-		$postarray['object-type'] = ACTIVITY_OBJ_NOTE;
+		$postarray['object-type'] = Activity::OBJ_NOTE;
 	}
 
 	if ($contactid == 0) {
@@ -1184,7 +1185,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 
 	$postarray['contact-id'] = $contactid;
 
-	$postarray['verb'] = ACTIVITY_POST;
+	$postarray['verb'] = Activity::POST;
 
 	$postarray['author-name'] = $content->user->name;
 	$postarray['author-link'] = $content->user->statusnet_profile_url;

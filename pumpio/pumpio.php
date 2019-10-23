@@ -21,6 +21,7 @@ use Friendica\Model\Contact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\User;
+use Friendica\Protocol\Activity;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
@@ -480,7 +481,7 @@ function pumpio_send(App $a, array &$b)
 		}
 	}
 
-	if ($b['verb'] == ACTIVITY_LIKE) {
+	if ($b['verb'] == Activity::LIKE) {
 		if ($b['deleted']) {
 			pumpio_action($a, $b["uid"], $b["thr-parent"], "unlike");
 		} else {
@@ -489,15 +490,15 @@ function pumpio_send(App $a, array &$b)
 		return;
 	}
 
-	if ($b['verb'] == ACTIVITY_DISLIKE) {
+	if ($b['verb'] == Activity::DISLIKE) {
 		return;
 	}
 
-	if (($b['verb'] == ACTIVITY_POST) && ($b['created'] !== $b['edited']) && !$b['deleted']) {
+	if (($b['verb'] == Activity::POST) && ($b['created'] !== $b['edited']) && !$b['deleted']) {
 		pumpio_action($a, $b["uid"], $b["uri"], "update", $b["body"]);
 	}
 
-	if (($b['verb'] == ACTIVITY_POST) && $b['deleted']) {
+	if (($b['verb'] == Activity::POST) && $b['deleted']) {
 		pumpio_action($a, $b["uid"], $b["uri"], "delete");
 	}
 
@@ -560,8 +561,8 @@ function pumpio_send(App $a, array &$b)
 			$inReplyTo = ["id" => $orig_post["uri"],
 				"objectType" => "note"];
 
-			if (($orig_post["object-type"] != "") && (strstr($orig_post["object-type"], NAMESPACE_ACTIVITY_SCHEMA))) {
-				$inReplyTo["objectType"] = str_replace(NAMESPACE_ACTIVITY_SCHEMA, '', $orig_post["object-type"]);
+			if (($orig_post["object-type"] != "") && (strstr($orig_post["object-type"], Activity\Namespaces::ACTIVITY_SCHEMA))) {
+				$inReplyTo["objectType"] = str_replace(Activity\Namespaces::ACTIVITY_SCHEMA, '', $orig_post["object-type"]);
 			}
 
 			$params["object"] = [
@@ -636,8 +637,8 @@ function pumpio_action(App $a, $uid, $uri, $action, $content = "")
 		$uri = $orig_post["uri"];
 	}
 
-	if (($orig_post["object-type"] != "") && (strstr($orig_post["object-type"], NAMESPACE_ACTIVITY_SCHEMA))) {
-		$objectType = str_replace(NAMESPACE_ACTIVITY_SCHEMA, '', $orig_post["object-type"]);
+	if (($orig_post["object-type"] != "") && (strstr($orig_post["object-type"], Activity\Namespaces::ACTIVITY_SCHEMA))) {
+		$objectType = str_replace(Activity\Namespaces::ACTIVITY_SCHEMA, '', $orig_post["object-type"]);
 	} elseif (strstr($uri, "/api/comment/")) {
 		$objectType = "comment";
 	} elseif (strstr($uri, "/api/note/")) {
@@ -914,7 +915,7 @@ function pumpio_dounlike(App $a, $uid, $self, $post, $own_id)
 		}
 	}
 
-	Item::delete(['verb' => ACTIVITY_LIKE, 'uid' => $uid, 'contact-id' => $contactid, 'thr-parent' => $orig_post['uri']]);
+	Item::delete(['verb' => Activity::LIKE, 'uid' => $uid, 'contact-id' => $contactid, 'thr-parent' => $orig_post['uri']]);
 
 	if (DBA::isResult($r)) {
 		Logger::log("pumpio_dounlike: unliked existing like. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
@@ -969,7 +970,7 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 		}
 	}
 
-	$condition = ['verb' => ACTIVITY_LIKE, 'uid' => $uid, 'contact-id' => $contactid, 'thr-parent' => $orig_post['uri']];
+	$condition = ['verb' => Activity::LIKE, 'uid' => $uid, 'contact-id' => $contactid, 'thr-parent' => $orig_post['uri']];
 	if (Item::exists($condition)) {
 		Logger::log("pumpio_dolike: found existing like. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
 		return;
@@ -977,7 +978,7 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 
 	$likedata = [];
 	$likedata['parent'] = $orig_post['id'];
-	$likedata['verb'] = ACTIVITY_LIKE;
+	$likedata['verb'] = Activity::LIKE;
 	$likedata['gravity'] = GRAVITY_ACTIVITY;
 	$likedata['uid'] = $uid;
 	$likedata['wall'] = 0;
@@ -996,11 +997,11 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 	$objauthor =  '[url=' . $orig_post['author-link'] . ']' . $orig_post['author-name'] . '[/url]';
 	$post_type = L10n::t('status');
 	$plink = '[url=' . $orig_post['plink'] . ']' . $post_type . '[/url]';
-	$likedata['object-type'] = ACTIVITY_OBJ_NOTE;
+	$likedata['object-type'] = Activity::OBJ_NOTE;
 
 	$likedata['body'] = L10n::t('%1$s likes %2$s\'s %3$s', $author, $objauthor, $plink);
 
-	$likedata['object'] = '<object><type>' . ACTIVITY_OBJ_NOTE . '</type><local>1</local>' .
+	$likedata['object'] = '<object><type>' . Activity::OBJ_NOTE . '</type><local>1</local>' .
 		'<id>' . $orig_post['uri'] . '</id><link>' . XML::escape('<link rel="alternate" type="text/html" href="' . XML::escape($orig_post['plink']) . '" />') . '</link><title>' . $orig_post['title'] . '</title><content>' . $orig_post['body'] . '</content></object>';
 
 	$ret = Item::insert($likedata);
@@ -1147,7 +1148,7 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 	$postarray['uid'] = $uid;
 	$postarray['wall'] = 0;
 	$postarray['uri'] = $post->object->id;
-	$postarray['object-type'] = NAMESPACE_ACTIVITY_SCHEMA.strtolower($post->object->objectType);
+	$postarray['object-type'] = Activity\Namespaces::ACTIVITY_SCHEMA.strtolower($post->object->objectType);
 
 	if ($post->object->objectType != "comment") {
 		$contact_id = pumpio_get_contact($uid, $post->actor);
@@ -1230,7 +1231,7 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 	}
 
 	$postarray['contact-id'] = $contact_id;
-	$postarray['verb'] = ACTIVITY_POST;
+	$postarray['verb'] = Activity::POST;
 	$postarray['owner-name'] = $post->actor->displayName;
 	$postarray['owner-link'] = $post->actor->url;
 	$postarray['author-name'] = $postarray['owner-name'];
