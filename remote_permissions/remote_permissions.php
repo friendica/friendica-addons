@@ -7,12 +7,14 @@
  * Status: Unsupported
  */
 
+use Friendica\BaseObject;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
+use Friendica\Util\ACLFormatter;
 use Friendica\Util\Strings;
 
 function remote_permissions_install() {
@@ -123,10 +125,13 @@ function remote_permissions_content($a, $item_copy) {
 
 			$item = $r[0];
 
-			$allowed_users = expand_acl($item['allow_cid']);
-			$allowed_groups = expand_acl($item['allow_gid']);
-			$deny_users = expand_acl($item['deny_cid']);
-			$deny_groups = expand_acl($item['deny_gid']);
+			/** @var ACLFormatter $aclFormatter */
+			$aclFormatter = BaseObject::getClass(ACLFormatter::class);
+
+			$allowed_users = $aclFormatter->expand($item['allow_cid']);
+			$allowed_groups = $aclFormatter->expand($item['allow_gid']);
+			$deny_users = $aclFormatter->expand($item['deny_cid']);
+			$deny_groups = $aclFormatter->expand($item['deny_gid']);
 
 			$o = L10n::t('Visible to:') . '<br />';
 			$allow = [];
