@@ -561,8 +561,8 @@ function pumpio_send(App $a, array &$b)
 			$inReplyTo = ["id" => $orig_post["uri"],
 				"objectType" => "note"];
 
-			if (($orig_post["object-type"] != "") && (strstr($orig_post["object-type"], Activity\Namespaces::ACTIVITY_SCHEMA))) {
-				$inReplyTo["objectType"] = str_replace(Activity\Namespaces::ACTIVITY_SCHEMA, '', $orig_post["object-type"]);
+			if (($orig_post["object-type"] != "") && (strstr($orig_post["object-type"], Activity\ANamespace::ACTIVITY_SCHEMA))) {
+				$inReplyTo["objectType"] = str_replace(Activity\ANamespace::ACTIVITY_SCHEMA, '', $orig_post["object-type"]);
 			}
 
 			$params["object"] = [
@@ -637,8 +637,8 @@ function pumpio_action(App $a, $uid, $uri, $action, $content = "")
 		$uri = $orig_post["uri"];
 	}
 
-	if (($orig_post["object-type"] != "") && (strstr($orig_post["object-type"], Activity\Namespaces::ACTIVITY_SCHEMA))) {
-		$objectType = str_replace(Activity\Namespaces::ACTIVITY_SCHEMA, '', $orig_post["object-type"]);
+	if (($orig_post["object-type"] != "") && (strstr($orig_post["object-type"], Activity\ANamespace::ACTIVITY_SCHEMA))) {
+		$objectType = str_replace(Activity\ANamespace::ACTIVITY_SCHEMA, '', $orig_post["object-type"]);
 	} elseif (strstr($uri, "/api/comment/")) {
 		$objectType = "comment";
 	} elseif (strstr($uri, "/api/note/")) {
@@ -1148,7 +1148,7 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 	$postarray['uid'] = $uid;
 	$postarray['wall'] = 0;
 	$postarray['uri'] = $post->object->id;
-	$postarray['object-type'] = Activity\Namespaces::ACTIVITY_SCHEMA.strtolower($post->object->objectType);
+	$postarray['object-type'] = Activity\ANamespace::ACTIVITY_SCHEMA . strtolower($post->object->objectType);
 
 	if ($post->object->objectType != "comment") {
 		$contact_id = pumpio_get_contact($uid, $post->actor);
