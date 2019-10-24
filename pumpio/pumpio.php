@@ -22,6 +22,7 @@ use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\User;
 use Friendica\Protocol\Activity;
+use Friendica\Protocol\ActivityNamespace;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
