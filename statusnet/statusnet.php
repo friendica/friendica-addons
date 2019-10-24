@@ -36,6 +36,7 @@
 define('STATUSNET_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'statusnetoauth.php';
+
 use CodebirdSN\CodebirdSN;
 use Friendica\App;
 use Friendica\Content\OEmbed;
@@ -48,7 +49,6 @@ use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
-use Friendica\Core\System;
 use Friendica\Database\DBA;
 use Friendica\Model\Contact;
 use Friendica\Model\Group;
@@ -56,6 +56,7 @@ use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
 use Friendica\Model\Photo;
 use Friendica\Model\User;
+use Friendica\Protocol\Activity;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
 use Friendica\Util\Strings;
@@ -550,11 +551,11 @@ function statusnet_post_hook(App $a, &$b)
 		}
 	}
 
-	if (($b['verb'] == ACTIVITY_POST) && $b['deleted']) {
+	if (($b['verb'] == Activity::POST) && $b['deleted']) {
 		statusnet_action($a, $b["uid"], substr($orig_post["uri"], $hostlength), "delete");
 	}
 
-	if ($b['verb'] == ACTIVITY_LIKE) {
+	if ($b['verb'] == Activity::LIKE) {
 		Logger::log("statusnet_post_hook: parameter 2 " . substr($b["thr-parent"], $hostlength), Logger::DEBUG);
 		if ($b['deleted'])
 			statusnet_action($a, $b["uid"], substr($b["thr-parent"], $hostlength), "unlike");
@@ -1139,11 +1140,11 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 			$postarray['thr-parent'] = $item['uri'];
 			$postarray['parent-uri'] = $item['parent-uri'];
 			$postarray['parent'] = $item['parent'];
-			$postarray['object-type'] = ACTIVITY_OBJ_COMMENT;
+			$postarray['object-type'] = Activity\ObjectType::COMMENT;
 		} else {
 			$postarray['thr-parent'] = $postarray['uri'];
 			$postarray['parent-uri'] = $postarray['uri'];
-			$postarray['object-type'] = ACTIVITY_OBJ_NOTE;
+			$postarray['object-type'] = Activity\ObjectType::NOTE;
 		}
 
 		// Is it me?
@@ -1167,7 +1168,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 		$create_user = false;
 	} else {
 		$postarray['parent-uri'] = $postarray['uri'];
-		$postarray['object-type'] = ACTIVITY_OBJ_NOTE;
+		$postarray['object-type'] = Activity\ObjectType::NOTE;
 	}
 
 	if ($contactid == 0) {
@@ -1184,7 +1185,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 
 	$postarray['contact-id'] = $contactid;
 
-	$postarray['verb'] = ACTIVITY_POST;
+	$postarray['verb'] = Activity::POST;
 
 	$postarray['author-name'] = $content->user->name;
 	$postarray['author-link'] = $content->user->statusnet_profile_url;

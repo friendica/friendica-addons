@@ -14,6 +14,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
+use Friendica\Protocol\Activity;
 use Friendica\Util\Network;
 use Friendica\Model\Item;
 
@@ -122,7 +123,7 @@ function mailstream_post_hook(&$a, &$item) {
 		return;
 	}
 	if (PConfig::get($item['uid'], 'mailstream', 'nolikes')) {
-		if ($item['verb'] == ACTIVITY_LIKE) {
+		if ($item['verb'] == Activity::LIKE) {
 			Logger::debug('mailstream: like item ' . $item['id']);
 			return;
 		}
