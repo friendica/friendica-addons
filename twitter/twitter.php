@@ -1341,7 +1341,7 @@ function twitter_media_entities($post, array &$postarray)
 					$media[$medium->url] .= "\n[img]" . $medium->media_url_https . '[/img]';
 				}
 
-				$postarray['object-type'] = Activity::OBJ_IMAGE;
+				$postarray['object-type'] = Activity\ObjectType::IMAGE;
 				break;
 			case 'video':
 			case 'animated_gif':
@@ -1352,7 +1352,7 @@ function twitter_media_entities($post, array &$postarray)
 					$media[$medium->url] .= "\n[img]" . $medium->media_url_https . '[/img]';
 				}
 
-				$postarray['object-type'] = Activity::OBJ_VIDEO;
+				$postarray['object-type'] = Activity\ObjectType::VIDEO;
 				if (is_array($medium->video_info->variants)) {
 					$bitrate = 0;
 					// We take the video with the highest bitrate
@@ -1409,11 +1409,11 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 			$postarray['thr-parent'] = $parent_item['uri'];
 			$postarray['parent-uri'] = $parent_item['parent-uri'];
 			$postarray['parent'] = $parent_item['parent'];
-			$postarray['object-type'] = Activity::OBJ_COMMENT;
+			$postarray['object-type'] = Activity\ObjectType::COMMENT;
 		} else {
 			$postarray['thr-parent'] = $postarray['uri'];
 			$postarray['parent-uri'] = $postarray['uri'];
-			$postarray['object-type'] = Activity::OBJ_NOTE;
+			$postarray['object-type'] = Activity\ObjectType::NOTE;
 		}
 
 		// Is it me?
@@ -1438,7 +1438,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 		$create_user = false;
 	} else {
 		$postarray['parent-uri'] = $postarray['uri'];
-		$postarray['object-type'] = Activity::OBJ_NOTE;
+		$postarray['object-type'] = Activity\ObjectType::NOTE;
 	}
 
 	if ($contactid == 0) {
@@ -1481,7 +1481,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 
 	// When the post contains links then use the correct object type
 	if (count($post->entities->urls) > 0) {
-		$postarray['object-type'] = Activity::OBJ_BOOKMARK;
+		$postarray['object-type'] = Activity\ObjectType::BOOKMARK;
 	}
 
 	// Search for media links
@@ -1521,7 +1521,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 			// CHange the other post into a reshare activity
 			$postarray['verb'] = Activity::ANNOUNCE;
 			$postarray['gravity'] = GRAVITY_ACTIVITY;
-			$postarray['object-type'] = Activity::OBJ_NOTE;
+			$postarray['object-type'] = Activity\ObjectType::NOTE;
 
 			$postarray['thr-parent'] = $retweet['uri'];
 			$postarray['parent-uri'] = $retweet['uri'];

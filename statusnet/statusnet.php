@@ -36,6 +36,7 @@
 define('STATUSNET_DEFAULT_POLL_INTERVAL', 5); // given in minutes
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'statusnetoauth.php';
+
 use CodebirdSN\CodebirdSN;
 use Friendica\App;
 use Friendica\Content\OEmbed;
@@ -48,7 +49,6 @@ use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
-use Friendica\Core\System;
 use Friendica\Database\DBA;
 use Friendica\Model\Contact;
 use Friendica\Model\Group;
@@ -1140,11 +1140,11 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 			$postarray['thr-parent'] = $item['uri'];
 			$postarray['parent-uri'] = $item['parent-uri'];
 			$postarray['parent'] = $item['parent'];
-			$postarray['object-type'] = Activity::OBJ_COMMENT;
+			$postarray['object-type'] = Activity\ObjectType::COMMENT;
 		} else {
 			$postarray['thr-parent'] = $postarray['uri'];
 			$postarray['parent-uri'] = $postarray['uri'];
-			$postarray['object-type'] = Activity::OBJ_NOTE;
+			$postarray['object-type'] = Activity\ObjectType::NOTE;
 		}
 
 		// Is it me?
@@ -1168,7 +1168,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 		$create_user = false;
 	} else {
 		$postarray['parent-uri'] = $postarray['uri'];
-		$postarray['object-type'] = Activity::OBJ_NOTE;
+		$postarray['object-type'] = Activity\ObjectType::NOTE;
 	}
 
 	if ($contactid == 0) {

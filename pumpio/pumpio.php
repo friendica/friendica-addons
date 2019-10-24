@@ -997,11 +997,11 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 	$objauthor =  '[url=' . $orig_post['author-link'] . ']' . $orig_post['author-name'] . '[/url]';
 	$post_type = L10n::t('status');
 	$plink = '[url=' . $orig_post['plink'] . ']' . $post_type . '[/url]';
-	$likedata['object-type'] = Activity::OBJ_NOTE;
+	$likedata['object-type'] = Activity\ObjectType::NOTE;
 
 	$likedata['body'] = L10n::t('%1$s likes %2$s\'s %3$s', $author, $objauthor, $plink);
 
-	$likedata['object'] = '<object><type>' . Activity::OBJ_NOTE . '</type><local>1</local>' .
+	$likedata['object'] = '<object><type>' . Activity\ObjectType::NOTE . '</type><local>1</local>' .
 		'<id>' . $orig_post['uri'] . '</id><link>' . XML::escape('<link rel="alternate" type="text/html" href="' . XML::escape($orig_post['plink']) . '" />') . '</link><title>' . $orig_post['title'] . '</title><content>' . $orig_post['body'] . '</content></object>';
 
 	$ret = Item::insert($likedata);
