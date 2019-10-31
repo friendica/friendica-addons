@@ -110,7 +110,7 @@ function twitter_install()
 	Hook::register('expire'                 , __FILE__, 'twitter_expire');
 	Hook::register('prepare_body'           , __FILE__, 'twitter_prepare_body');
 	Hook::register('check_item_notification', __FILE__, 'twitter_check_item_notification');
-	Logger::log("installed twitter");
+	Logger::info("installed twitter");
 }
 
 function twitter_uninstall()
@@ -155,7 +155,7 @@ function twitter_check_item_notification(App $a, array &$notification_data)
 
 function twitter_follow(App $a, array &$contact)
 {
-	Logger::log("twitter_follow: Check if contact is twitter contact. " . $contact["url"], Logger::DEBUG);
+	Logger::info('Check if contact is twitter contact', ['url' => $contact["url"]]);
 
 	if (!strstr($contact["url"], "://twitter.com") && !strstr($contact["url"], "@twitter.com")) {
 		return;
@@ -240,7 +240,7 @@ function twitter_settings_post(App $a)
 	} else {
 		if (isset($_POST['twitter-pin'])) {
 			//  if the user supplied us with a PIN from Twitter, let the magic of OAuth happen
-			Logger::log('got a Twitter PIN');
+			Logger::notice('got a Twitter PIN');
 			$ckey    = Config::get('twitter', 'consumerkey');
 			$csecret = Config::get('twitter', 'consumersecret');
 			//  the token and secret for which the PIN was generated were hidden in the settings
@@ -429,7 +429,7 @@ function twitter_hook_fork(App $a, array &$b)
 	if (PConfig::get($post['uid'], 'twitter', 'import')) {
 		// Don't fork if it isn't a reply to a twitter post
 		if (($post['parent'] != $post['id']) && !Item::exists(['id' => $post['parent'], 'network' => Protocol::TWITTER])) {
-			Logger::log('No twitter parent found for item ' . $post['id']);
+			Logger::notice('No twitter parent found', ['item' => $post['id']]);
 			$b['execute'] = false;
 			return;
 		}
@@ -624,7 +624,7 @@ function twitter_post_hook(App $a, array &$b)
 		$b['body'] = twitter_update_mentions($b['body']);
 
 		$msgarr = ItemContent::getPlaintextPost($b, $max_char, true, 8);
-		Logger::info('Got plaintext', $msgarr);
+		Logger::info('Got plaintext', ['id' => $b['id'], 'message' => $msgarr]);
 		$msg = $msgarr["text"];
 
 		if (($msg == "") && isset($msgarr["title"])) {
@@ -641,6 +641,7 @@ function twitter_post_hook(App $a, array &$b)
 		}
 
 		if (empty($msg)) {
+			Logger::info('Empty message', ['id' => $b['id']]);
 			return;
 		}
 
@@ -648,6 +649,7 @@ function twitter_post_hook(App $a, array &$b)
 		$post = [];
 
 		if (!empty($msgarr['images'])) {
+			Logger::info('Got images', ['id' => $b['id'], 'images' => $msgarr['images']]);
 			try {
 				$media_ids = [];
 				foreach ($msgarr['images'] as $image) {
@@ -660,6 +662,7 @@ function twitter_post_hook(App $a, array &$b)
 					$tempfile = tempnam(get_temppath(), 'cache');
 					file_put_contents($tempfile, $img_str);
 
+					Logger::info('Uploading', ['id' => $b['id'], 'image' => $image['url']]);
 					$media = $connection->upload('media/upload', ['media' => $tempfile]);
 
 					unlink($tempfile);
@@ -671,10 +674,10 @@ function twitter_post_hook(App $a, array &$b)
 							$data = ['media_id' => $media->media_id_string,
 								'alt_text' => ['text' => substr($image['description'], 0, 420)]];
 							$ret = $cb->media_metadata_create($data);
-							Logger::info('Metadata create', ['data' => $data, 'return' => json_encode($ret)]);
+							Logger::info('Metadata create', ['id' => $b['id'], 'data' => $data, 'return' => json_encode($ret)]);
 						}
 					} else {
-						throw new Exception('Failed upload of ' . $image['url']);
+						throw new Exception('Failed upload', ['id' => $b['id'], 'image' => $image['url']]);
 					}
 				}
 				$post['media_ids'] = implode(',', $media_ids);
@@ -682,7 +685,7 @@ function twitter_post_hook(App $a, array &$b)
 					unset($post['media_ids']);
 				}
 			} catch (Exception $e) {
-				Logger::log('Exception when trying to send to Twitter: ' . $e->getMessage());
+				Logger::info('Exception when trying to send to Twitter', ['id' => $b['id'], 'message' => $e->getMessage()]);
 			}
 		}
 
@@ -694,17 +697,17 @@ function twitter_post_hook(App $a, array &$b)
 
 		$url = 'statuses/update';
 		$result = $connection->post($url, $post);
-		Logger::log('twitter_post send, result: ' . print_r($result, true), Logger::DEBUG);
+		Logger::info('twitter_post send', ['id' => $b['id'], 'result' => $result]);
 
 		if (!empty($result->source)) {
 			Config::set("twitter", "application_name", strip_tags($result->source));
 		}
 
 		if (!empty($result->errors)) {
-			Logger::log('Send to Twitter failed: "' . print_r($result->errors, true) . '"');
+			Logger::info('Send to Twitter failed', ['id' => $b['id'], 'error' => $result->errors]);
 			Worker::defer();
 		} elseif ($iscomment) {
-			Logger::log('twitter_post: Update extid ' . $result->id_str . " for post id " . $b['id']);
+			Logger::info('Update extid', ['id' => $b['id'], 'extid' => $result->id_str]);
 			Item::update(['extid' => "twitter::" . $result->id_str], ['id' => $b['id']]);
 		}
 	}
@@ -743,16 +746,16 @@ function twitter_cron(App $a)
 	if ($last) {
 		$next = $last + ($poll_interval * 60);
 		if ($next > time()) {
-			Logger::log('twitter: poll intervall not reached');
+			Logger::notice('twitter: poll intervall not reached');
 			return;
 		}
 	}
-	Logger::log('twitter: cron_start');
+	Logger::notice('twitter: cron_start');
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'mirror_posts' AND `v` = '1'");
 	if (DBA::isResult($r)) {
 		foreach ($r as $rr) {
-			Logger::log('twitter: fetching for user ' . $rr['uid']);
+			Logger::notice('Fetching', ['user' => $rr['uid']]);
 			Worker::add(['priority' => PRIORITY_MEDIUM, 'force_priority' => true], "addon/twitter/twitter_sync.php", 1, (int) $rr['uid']);
 		}
 	}
@@ -770,12 +773,12 @@ function twitter_cron(App $a)
 			if ($abandon_days != 0) {
 				$user = q("SELECT `login_date` FROM `user` WHERE uid=%d AND `login_date` >= '%s'", $rr['uid'], $abandon_limit);
 				if (!DBA::isResult($user)) {
-					Logger::log('abandoned account: timeline from user ' . $rr['uid'] . ' will not be imported');
+					Logger::notice('abandoned account: timeline from user will not be imported', ['user' => $rr['uid']]);
 					continue;
 				}
 			}
 
-			Logger::log('twitter: importing timeline from user ' . $rr['uid']);
+			Logger::notice('importing timeline', ['user' => $rr['uid']]);
 			Worker::add(['priority' => PRIORITY_MEDIUM, 'force_priority' => true], "addon/twitter/twitter_sync.php", 2, (int) $rr['uid']);
 			/*
 			  // To-Do
@@ -794,7 +797,7 @@ function twitter_cron(App $a)
 		}
 	}
 
-	Logger::log('twitter: cron_end');
+	Logger::notice('twitter: cron_end');
 
 	Config::set('twitter', 'last_poll', time());
 }
@@ -813,17 +816,17 @@ function twitter_expire(App $a)
 	}
 	DBA::close($r);
 
-	Logger::log('twitter_expire: expire_start');
+	Logger::notice('twitter_expire: expire_start');
 
 	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'import' AND `v` = '1' ORDER BY RAND()");
 	if (DBA::isResult($r)) {
 		foreach ($r as $rr) {
-			Logger::log('twitter_expire: user ' . $rr['uid']);
+			Logger::notice('twitter_expire', ['user' => $rr['uid']]);
 			Item::expire($rr['uid'], $days, Protocol::TWITTER, true);
 		}
 	}
 
-	Logger::log('twitter_expire: expire_end');
+	Logger::notice('twitter_expire: expire_end');
 }
 
 function twitter_prepare_body(App $a, array &$b)
@@ -957,12 +960,12 @@ function twitter_fetchtimeline(App $a, $uid)
 	try {
 		$items = $connection->get('statuses/user_timeline', $parameters);
 	} catch (TwitterOAuthException $e) {
-		Logger::log('Error fetching timeline for user ' . $uid . ': ' . $e->getMessage());
+		Logger::notice('Error fetching timeline', ['user' => $uid, 'message' => $e->getMessage()]);
 		return;
 	}
 
 	if (!is_array($items)) {
-		Logger::log('No items for user ' . $uid, Logger::INFO);
+		Logger::notice('No items', ['user' => $uid]);
 		return;
 	}
 
