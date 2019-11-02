@@ -84,10 +84,10 @@ use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
 use Friendica\Model\User;
-use Friendica\Object\Image;
 use Friendica\Protocol\Activity;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
+use Friendica\Util\Images;
 use Friendica\Util\Network;
 use Friendica\Util\Strings;
 
@@ -1010,7 +1010,7 @@ function twitter_fix_avatar($avatar)
 {
 	$new_avatar = str_replace("_normal.", ".", $avatar);
 
-	$info = Image::getInfoFromURL($new_avatar);
+	$info = Images::getInfoFromURLCached($new_avatar);
 	if (!$info) {
 		$new_avatar = $avatar;
 	}
