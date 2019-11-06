@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2019-10-14 00:46+0000\n"
+"PO-Revision-Date: 2019-10-14 11:51+0000\n"
 "Last-Translator: Joan Bar <friendica@tutanota.com>\n"
 "Language-Team: Catalan (http://www.transifex.com/Friendica/friendica/language/ca/)\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: blogger.php:42
 msgid "Post to blogger"
-msgstr ""
+msgstr "Publicar a blogger"
 
 #: blogger.php:74 blogger.php:78
 msgid "Blogger Export"
@@ -29,7 +29,7 @@ msgstr "Exportació de Blogger"
 
 #: blogger.php:82
 msgid "Enable Blogger Post Addon"
-msgstr ""
+msgstr "Habilita Addon Post de Blogger"
 
 #: blogger.php:87
 msgid "Blogger username"
@@ -37,7 +37,7 @@ msgstr "Nom d'usuari de Blogger"
 
 #: blogger.php:92
 msgid "Blogger password"
-msgstr ""
+msgstr "Contrasenya de Blogger"
 
 #: blogger.php:97
 msgid "Blogger API URL"
