@@ -1,0 +1,89 @@
+# ADDON impressum
+# Copyright (C)
+# This file is distributed under the same license as the Friendica impressum addon package.
+# 
+# 
+# Translators:
+# Joan Bar <friendica@tutanota.com>, 2019
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2019-10-18 20:58+0000\n"
+"Last-Translator: Joan Bar <friendica@tutanota.com>\n"
+"Language-Team: Catalan (http://www.transifex.com/Friendica/friendica/language/ca/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ca\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: impressum.php:37
+msgid "Impressum"
+msgstr "empremta"
+
+#: impressum.php:50 impressum.php:52 impressum.php:84
+msgid "Site Owner"
+msgstr "Propietari del lloc"
+
+#: impressum.php:50 impressum.php:88
+msgid "Email Address"
+msgstr "Correu electrònic"
+
+#: impressum.php:55 impressum.php:86
+msgid "Postal Address"
+msgstr "Adreça postal"
+
+#: impressum.php:61
+msgid ""
+"The impressum addon needs to be configured!<br />Please add at least the "
+"<tt>owner</tt> variable to your config file. For other variables please "
+"refer to the README file of the addon."
+msgstr "Cal configurar l’addon impressum<br />Afegiu com a mínim la secció <tt>owner</tt> variable del fitxer de configuració. Per a altres variables, consulteu el fitxer README de l’adjunció."
+
+#: impressum.php:78
+msgid "Settings updated."
+msgstr "La configuració s'ha actualitzat."
+
+#: impressum.php:83
+msgid "Submit"
+msgstr "sotmetre's"
+
+#: impressum.php:84
+msgid "The page operators name."
+msgstr "El nom dels operadors de pàgina."
+
+#: impressum.php:85
+msgid "Site Owners Profile"
+msgstr "Perfil dels propietaris del lloc"
+
+#: impressum.php:85
+msgid "Profile address of the operator."
+msgstr "Adreça del perfil de l'operador."
+
+#: impressum.php:86
+msgid "How to contact the operator via snail mail. You can use BBCode here."
+msgstr "Com contactar amb l'operador mitjançant correu cargol. Podeu utilitzar BBCode aquí."
+
+#: impressum.php:87
+msgid "Notes"
+msgstr "nota"
+
+#: impressum.php:87
+msgid ""
+"Additional notes that are displayed beneath the contact information. You can"
+" use BBCode here."
+msgstr "Notes addicionals que es mostren a sota de la informació de contacte. Podeu utilitzar BBCode aquí."
+
+#: impressum.php:88
+msgid "How to contact the operator via email. (will be displayed obfuscated)"
+msgstr "Com contactar amb l'operador per correu electrònic. (es mostrarà ofuscat)"
+
+#: impressum.php:89
+msgid "Footer note"
+msgstr "Nota de peu de pàgina"
+
+#: impressum.php:89
+msgid "Text for the footer. You can use BBCode here."
+msgstr "Text for the footer. You can use BBCode here."
