@@ -1,0 +1,24 @@
+# ADDON infiniteimprobabilitydrive
+# Copyright (C)
+# This file is distributed under the same license as the Friendica infiniteimprobabilitydrive addon package.
+# 
+# 
+# Translators:
+# Joan Bar <friendica@tutanota.com>, 2019
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2019-10-18 21:00+0000\n"
+"Last-Translator: Joan Bar <friendica@tutanota.com>\n"
+"Language-Team: Catalan (http://www.transifex.com/Friendica/friendica/language/ca/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ca\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: infiniteimprobabilitydrive.php:19
+msgid "Infinite Improbability Drive"
+msgstr "Unitat de millora de la infinitat"
