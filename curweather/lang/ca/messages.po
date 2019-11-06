@@ -1,0 +1,132 @@
+# ADDON curweather
+# Copyright (C)
+# This file is distributed under the same license as the Friendica curweather addon package.
+# 
+# 
+# Translators:
+# Joan Bar <friendica@tutanota.com>, 2019
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-25 17:17+0200\n"
+"PO-Revision-Date: 2019-10-18 18:31+0000\n"
+"Last-Translator: Joan Bar <friendica@tutanota.com>\n"
+"Language-Team: Catalan (http://www.transifex.com/Friendica/friendica/language/ca/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ca\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: curweather.php:31
+msgid "Error fetching weather data.\\nError was: "
+msgstr "S'ha produït un error en recuperar les dades meteorològiques. \\\\ NEror ha estat:"
+
+#: curweather.php:111 curweather.php:172
+msgid "Current Weather"
+msgstr "Temps actual"
+
+#: curweather.php:118
+msgid "Relative Humidity"
+msgstr "Humitat relativa"
+
+#: curweather.php:119
+msgid "Pressure"
+msgstr "pressió"
+
+#: curweather.php:120
+msgid "Wind"
+msgstr "vent"
+
+#: curweather.php:121
+msgid "Last Updated"
+msgstr "Última actualització"
+
+#: curweather.php:122
+msgid "Data by"
+msgstr "Dades de"
+
+#: curweather.php:123
+msgid "Show on map"
+msgstr "Mostra al mapa"
+
+#: curweather.php:128
+msgid "There was a problem accessing the weather data. But have a look"
+msgstr "S'ha produït un problema en accedir a les dades meteorològiques. Però mireu-ho"
+
+#: curweather.php:130
+msgid "at OpenWeatherMap"
+msgstr "a OpenWeatherMap"
+
+#: curweather.php:146
+msgid "Current Weather settings updated."
+msgstr "S'ha actualitzat la configuració meteorològica actual."
+
+#: curweather.php:161
+msgid "No APPID found, please contact your admin to obtain one."
+msgstr "No s'ha trobat cap APPID. Poseu-vos en contacte amb l'administrador per obtenir-ne una."
+
+#: curweather.php:171 curweather.php:200
+msgid "Save Settings"
+msgstr "Desa la configuració"
+
+#: curweather.php:172
+msgid "Settings"
+msgstr "Configuració"
+
+#: curweather.php:174
+msgid "Enter either the name of your location or the zip code."
+msgstr "Introduïu el nom de la vostra ubicació o el codi postal."
+
+#: curweather.php:175
+msgid "Your Location"
+msgstr "La teva localització"
+
+#: curweather.php:175
+msgid ""
+"Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or "
+"<em>14476,DE</em>."
+msgstr "Identificador de la vostra ubicació (nom o codi postal), e.g. <em>Berlin,DE</em> or <em>14476,DE</em>."
+
+#: curweather.php:176
+msgid "Units"
+msgstr "unitat"
+
+#: curweather.php:176
+msgid "select if the temperature should be displayed in &deg;C or &deg;F"
+msgstr "seleccioneu si la temperatura ha de mostrar-se en ° C o ° F"
+
+#: curweather.php:177
+msgid "Show weather data"
+msgstr "Mostra dades meteorològiques"
+
+#: curweather.php:190
+msgid "Curweather settings saved."
+msgstr "S'han desat els paràmetres de Curweather."
+
+#: curweather.php:201
+msgid "Caching Interval"
+msgstr "Interval de cau"
+
+#: curweather.php:201
+msgid ""
+"For how long should the weather data be cached? Choose according your "
+"OpenWeatherMap account type."
+msgstr "Per quant temps s’han de mantenir en memòria cau les dades meteorològiques? Trieu segons el vostre tipus de compte OpenWeatherMap."
+
+#: curweather.php:201
+msgid "no cache"
+msgstr "no cau"
+
+#: curweather.php:201
+msgid "minutes"
+msgstr "minuts"
+
+#: curweather.php:202
+msgid "Your APPID"
+msgstr "La vostra APPID"
+
+#: curweather.php:202
+msgid "Your API key provided by OpenWeatherMap"
+msgstr "La vostra clau d’API proporcionada per OpenWeatherMap"
