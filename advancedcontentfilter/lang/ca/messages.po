@@ -1,0 +1,177 @@
+# ADDON advancedcontentfilter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica advancedcontentfilter addon package.
+# 
+# 
+# Translators:
+# Joan Bar <friendica@tutanota.com>, 2019
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-17 04:04+0200\n"
+"PO-Revision-Date: 2018-05-24 06:41+0000\n"
+"Last-Translator: Joan Bar <friendica@tutanota.com>, 2019\n"
+"Language-Team: Catalan (https://www.transifex.com/Friendica/teams/12172/ca/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ca\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: advancedcontentfilter.php:134
+#, php-format
+msgid "Filtered by rule: %s"
+msgstr "Filtrat per regla: %s"
+
+#: advancedcontentfilter.php:147 advancedcontentfilter.php:204
+msgid "Advanced Content Filter"
+msgstr "Contingut avançat Filtre"
+
+#: advancedcontentfilter.php:203
+msgid "Back to Addon Settings"
+msgstr "Torna Addon Configuració"
+
+#: advancedcontentfilter.php:205
+msgid "Add a Rule"
+msgstr "Afegiu una regla"
+
+#: advancedcontentfilter.php:206
+msgid "Help"
+msgstr "Ajuda"
+
+#: advancedcontentfilter.php:207
+msgid ""
+"Add and manage your personal content filter rules in this screen. Rules have"
+" a name and an arbitrary expression that will be matched against post data. "
+"For a complete reference of the available operations and variables, check "
+"the <a href=\"advancedcontentfilter/help\">help page</a>."
+msgstr ""
+"Afegiu i gestioneu les vostres regles de filtre de contingut personal en "
+"aquesta pantalla. Les regles tenen un nom i una expressió arbitrària que es "
+"combinen amb les dades de la publicació. Per obtenir una referència completa"
+" de les variables i operacions disponibles, comproveu el botó <a "
+"href=\"advancedcontentfilter/help\">pàgina d’ajuda</a>."
+
+#: advancedcontentfilter.php:208
+msgid "Your rules"
+msgstr "Les seves normes"
+
+#: advancedcontentfilter.php:209
+msgid ""
+"You have no rules yet! Start adding one by clicking on the button above next"
+" to the title."
+msgstr ""
+"Encara no teniu normes. Comenceu a afegir-ne un fent clic al botó situat al "
+"costat del títol."
+
+#: advancedcontentfilter.php:210
+msgid "Disabled"
+msgstr "Desactivat"
+
+#: advancedcontentfilter.php:211
+msgid "Enabled"
+msgstr "Permetre"
+
+#: advancedcontentfilter.php:212
+msgid "Disable this rule"
+msgstr "Desactiva aquesta regla"
+
+#: advancedcontentfilter.php:213
+msgid "Enable this rule"
+msgstr "Activa aquesta regla"
+
+#: advancedcontentfilter.php:214
+msgid "Edit this rule"
+msgstr "Edita aquesta regla"
+
+#: advancedcontentfilter.php:215
+msgid "Edit the rule"
+msgstr "Edita la regla"
+
+#: advancedcontentfilter.php:216
+msgid "Save this rule"
+msgstr "Deseu aquesta regla"
+
+#: advancedcontentfilter.php:217
+msgid "Delete this rule"
+msgstr "Suprimeix aquesta regla"
+
+#: advancedcontentfilter.php:218
+msgid "Rule"
+msgstr "Regla"
+
+#: advancedcontentfilter.php:219
+msgid "Close"
+msgstr "Tancar"
+
+#: advancedcontentfilter.php:220
+msgid "Add new rule"
+msgstr "Add nova regla"
+
+#: advancedcontentfilter.php:221
+msgid "Rule Name"
+msgstr "Nom de la regla"
+
+#: advancedcontentfilter.php:222
+msgid "Rule Expression"
+msgstr "Expressió de regla"
+
+#: advancedcontentfilter.php:223
+msgid ""
+"<p>Examples:</p><ul><li><pre>author_link == "
+"'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>"
+msgstr ""
+"<p>Exemples:</p><ul><li><pre>author_link == "
+"'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>"
+
+#: advancedcontentfilter.php:224
+msgid "Cancel"
+msgstr "cancel·lar"
+
+#: advancedcontentfilter.php:290 advancedcontentfilter.php:301
+#: advancedcontentfilter.php:312 advancedcontentfilter.php:346
+#: advancedcontentfilter.php:375 advancedcontentfilter.php:396
+msgid "You must be logged in to use this method"
+msgstr "Per utilitzar aquest mètode, heu d’iniciar sessió"
+
+#: advancedcontentfilter.php:316 advancedcontentfilter.php:350
+#: advancedcontentfilter.php:379
+msgid "Invalid form security token, please refresh the page."
+msgstr ""
+"El testimoni de seguretat del formulari no és vàlid. Actualitza la pàgina"
+
+#: advancedcontentfilter.php:328
+msgid "The rule name and expression are required."
+msgstr "El nom i l’expressió de la regla són obligatoris"
+
+#: advancedcontentfilter.php:340
+msgid "Rule successfully added"
+msgstr "La regla s'ha afegit correctament"
+
+#: advancedcontentfilter.php:354 advancedcontentfilter.php:383
+msgid "Rule doesn't exist or doesn't belong to you."
+msgstr "La regla no existeix o no us pertany."
+
+#: advancedcontentfilter.php:369
+msgid "Rule successfully updated"
+msgstr "La regla s'ha actualitzat correctament"
+
+#: advancedcontentfilter.php:390
+msgid "Rule successfully deleted"
+msgstr "S'ha suprimit la regla correctament"
+
+#: advancedcontentfilter.php:400
+msgid "Missing argument: guid."
+msgstr "Falta un argument: guia"
+
+#: advancedcontentfilter.php:406
+#, php-format
+msgid "Unknown post with guid: %s"
+msgstr "Publicació desconeguda amb guia: %s"
+
+#: src/middlewares.php:28
+msgid "Method not found"
+msgstr "Mètode no trobat"
