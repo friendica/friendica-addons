@@ -1,0 +1,66 @@
+# ADDON blackout
+# Copyright (C)
+# This file is distributed under the same license as the Friendica blackout addon package.
+# 
+# 
+# Translators:
+# Joan Bar <friendica@tutanota.com>, 2019
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-03-12 09:26+0100\n"
+"PO-Revision-Date: 2019-10-13 22:17+0000\n"
+"Last-Translator: Joan Bar <friendica@tutanota.com>\n"
+"Language-Team: Catalan (http://www.transifex.com/Friendica/friendica/language/ca/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ca\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: blackout.php:101
+msgid ""
+"The end-date is prior to the start-date of the blackout, you should fix this"
+msgstr "La data de finalització és anterior a la data d'inici de l'apagada, hauríeu d'arreglar-ho"
+
+#: blackout.php:103
+#, php-format
+msgid ""
+"Please double check that the current settings for the blackout. Begin will "
+"be <strong>%s</strong> and it will end <strong>%s</strong>."
+msgstr "Verifiqueu si la configuració actual per a l'apagat. Començarà serà <strong>%s</strong> i s’acabarà <strong>%s</strong>."
+
+#: blackout.php:106
+msgid "Save Settings"
+msgstr "Desa la configuració"
+
+#: blackout.php:107
+msgid "Redirect URL"
+msgstr "Redirigir URL"
+
+#: blackout.php:107
+msgid "all your visitors from the web will be redirected to this URL"
+msgstr "tots els visitants del web seran redirigits a aquest tema URL"
+
+#: blackout.php:108
+msgid "Begin of the Blackout"
+msgstr "Inici de l’apagada"
+
+#: blackout.php:108
+msgid ""
+"Format is <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> year, <em>MM</em> month, "
+"<em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute."
+msgstr "El format és <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> year, <em>MM</em> mes. <em>DD</em> day, <em>hh</em>hora i <em>mm</em> minut."
+
+#: blackout.php:109
+msgid "End of the Blackout"
+msgstr "Fi de l’apagada"
+
+#: blackout.php:111
+msgid ""
+"<strong>Note</strong>: The redirect will be active from the moment you press"
+" the submit button. Users currently logged in will <strong>not</strong> be "
+"thrown out but can't login again after logging out should the blackout is "
+"still in place."
+msgstr "<strong>Nota</strong>: La redirecció estarà activa des del moment en què premeu el botó d'enviament. Els usuaris actualment connectats ho faran <strong>no</strong> es llençarà però no es pot tornar a iniciar la sessió un cop s'hagi desactivat l'apagada."
