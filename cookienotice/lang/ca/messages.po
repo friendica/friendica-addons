@@ -1,0 +1,81 @@
+# ADDON cookienotice
+# Copyright (C)
+# This file is distributed under the same license as the Friendica cookienotice addon package.
+# 
+# 
+# Translators:
+# Joan Bar <friendica@tutanota.com>, 2019
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-01-30 10:48+0100\n"
+"PO-Revision-Date: 2019-01-23 16:01+0000\n"
+"Last-Translator: Joan Bar <friendica@tutanota.com>, 2019\n"
+"Language-Team: Catalan (https://www.transifex.com/Friendica/teams/12172/ca/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ca\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: cookienotice.php:63
+msgid ""
+"This website uses cookies. If you continue browsing this website, you agree "
+"to the usage of cookies."
+msgstr ""
+"Aquest lloc web utilitza cookies. Si continueu navegant per aquest lloc web,"
+" esteu d’acord amb l’ús de cookies."
+
+#: cookienotice.php:64 cookienotice.php:133
+msgid "OK"
+msgstr "D'acord"
+
+#: cookienotice.php:68
+msgid "\"cookienotice\" Settings"
+msgstr "Configuració 'cookienotice'"
+
+#: cookienotice.php:69
+msgid ""
+"<b>Configure your cookie usage notice.</b> It should just be a notice, "
+"saying that the website uses cookies. It is shown as long as a user didnt "
+"confirm clicking the OK button."
+msgstr ""
+"<b>Configureu l’avís d’ús de cookies.</b> Només hauria de ser un avís, dient"
+" que el lloc web utilitza cookies. Es mostra sempre que un usuari no "
+"confirmi el seu clic al botó D'acord"
+
+#: cookienotice.php:70
+msgid "Cookie Usage Notice"
+msgstr "Avís d’ús de cookies"
+
+#: cookienotice.php:70
+msgid "The cookie usage notice"
+msgstr "L’avís d’ús de cookies"
+
+#: cookienotice.php:71
+msgid "OK Button Text"
+msgstr "Text del botó d’acord"
+
+#: cookienotice.php:71
+msgid "The OK Button text"
+msgstr "Text del botó D'acord"
+
+#: cookienotice.php:72
+msgid "Save Settings"
+msgstr "Desa la configuració"
+
+#: cookienotice.php:97
+msgid "cookienotice Settings saved."
+msgstr "Cookienotice S'ha desat la configuració."
+
+#: cookienotice.php:132
+msgid ""
+"This website uses cookies to recognize revisiting and logged in users. You "
+"accept the usage of these cookies by continue browsing this website."
+msgstr ""
+"Aquest lloc web utilitza cookies per reconèixer la revisió i la sessió "
+"d’usuaris. Accepteu l’ús d’aquestes cookies continuant navegant per aquest "
+"lloc web."

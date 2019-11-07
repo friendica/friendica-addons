@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2019-10-14 00:41+0000\n"
+"PO-Revision-Date: 2019-10-14 18:57+0000\n"
 "Last-Translator: Joan Bar <friendica@tutanota.com>\n"
 "Language-Team: Catalan (http://www.transifex.com/Friendica/friendica/language/ca/)\n"
 "MIME-Version: 1.0\n"
@@ -21,35 +21,35 @@ msgstr ""
 
 #: buffer.php:31
 msgid "Permission denied."
-msgstr ""
+msgstr "Permís denegat."
 
 #: buffer.php:57 buffer.php:185
 msgid "Save Settings"
-msgstr ""
+msgstr "Desa la configuració"
 
 #: buffer.php:59
 msgid "Client ID"
-msgstr ""
+msgstr "Identificador de client"
 
 #: buffer.php:60
 msgid "Client Secret"
-msgstr ""
+msgstr "Secret del client"
 
 #: buffer.php:67
 msgid "Error when registering buffer connection:"
-msgstr ""
+msgstr "Error al registrar la connexió del buffer:"
 
 #: buffer.php:86
 msgid "You are now authenticated to buffer. "
-msgstr ""
+msgstr "Ara esteu autenticats com a buffer."
 
 #: buffer.php:87
 msgid "return to the connector page"
-msgstr ""
+msgstr "Torna a la pàgina del connector"
 
 #: buffer.php:103
 msgid "Post to Buffer"
-msgstr ""
+msgstr "Publica a Buffer"
 
 #: buffer.php:128 buffer.php:132
 msgid "Buffer Export"
@@ -57,20 +57,20 @@ msgstr "Exportació de buffer"
 
 #: buffer.php:142
 msgid "Authenticate your Buffer connection"
-msgstr ""
+msgstr "Autentiqueu la vostra connexió buffer"
 
 #: buffer.php:146
 msgid "Enable Buffer Post Addon"
-msgstr ""
+msgstr "Activa l’addició de missatges de buffer"
 
 #: buffer.php:151
 msgid "Post to Buffer by default"
-msgstr ""
+msgstr "Publica a Buffer de manera predeterminada"
 
 #: buffer.php:156
 msgid "Check to delete this preset"
-msgstr ""
+msgstr "Comproveu suprimir aquesta configuració"
 
 #: buffer.php:165
 msgid "Posts are going to all accounts that are enabled by default:"
-msgstr ""
+msgstr "Les publicacions aniran a tots els comptes que estan habilitats de manera predeterminada:"
