@@ -157,7 +157,7 @@ function ldapauth_authenticate($username, $password)
 		return true;
 	}
 
-	$r = @ldap_compare($connect, $ldap_group, 'member', $dn);
+	$r = @ldap_compare($connect, $ldap_group, 'member', $res);
 	if ($r === -1) {
 		$err = @ldap_error($connect);
 		$eno = @ldap_errno($connect);
