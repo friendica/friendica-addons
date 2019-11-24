@@ -339,7 +339,7 @@ function advancedcontentfilter_post_rules(ServerRequestInterface $request)
 	$fields['created'] = DateTimeFormat::utcNow();
 
 	if (!DBA::insert('advancedcontentfilter_rules', $fields)) {
-		throw new HTTPException\ServiceUnavaiableException(DBA::errorMessage());
+		throw new HTTPException\ServiceUnavailableException(DBA::errorMessage());
 	}
 
 	$rule = DBA::selectFirst('advancedcontentfilter_rules', [], ['id' => DBA::lastInsertId()]);
