@@ -14,9 +14,13 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
+use Friendica\Core\Protocol;
+use Friendica\Database\DBA;
+use Friendica\Model\Contact;
 use Friendica\Util\XML;
 use Friendica\Content\Text\Markdown;
 use Friendica\Util\Network;
+use Friendica\Util\Strings;
 Use Friendica\Util\DateTimeFormat;
 
 function discourse_install()
@@ -46,62 +50,81 @@ function discourse_addon_settings_post(App $a)
 function discourse_email_getmessage(App $a, &$message)
 {
 //	Logger::info('Got raw message', $message);
-	// Remove the title on comments, they don't serve any purpose there
-	if ($message['item']['parent-uri'] != $message['item']['uri']) {
-		unset($message['item']['title']);
-	}
 
-	if (preg_match('=topic/(.*)/(.*)@(.*)=', $message['item']['uri'], $matches)) {
+/*	if (preg_match('=topic/(.*)/(.*)@(.*)=', $message['item']['uri'], $matches)) {
 		Logger::info('Got post data', ['topic' => $matches[1], 'post' => $matches[2], 'host' => $matches[3]]);
 		if (discourse_fetch_post_from_api($message, $matches[2], $matches[3])) {
 			return;
 		}
 	}
-
+*/
 	// Search in the text part for the link to the discourse entry and the text body
 	// The text body is used as alternative, if the fetched HTML isn't working
 	if (!empty($message['text'])) {
-		discourse_get_text($message);
+		$message = discourse_get_text($message);
 	}
 
 	if (!empty($message['item']['plink'])) {
 		if (preg_match('=(http.*)/t/.*/(.*\d)/(.*\d)=', $message['item']['plink'], $matches)) {
-			if (discourse_fetch_topic_from_api($message, $matches[1], $matches[1], $matches[1])) {
+			if (discourse_fetch_topic_from_api($message, $matches[1], $matches[2], $matches[3])) {
 				return;
 			}
 		}
 	}
-
+	Logger::info('Stop');
+die('Test');
 	// Search in the HTML part for the discourse entry and the author profile
 	if (!empty($message['html'])) {
-		discourse_get_html($message);
+		$message = discourse_get_html($message);
+	}
+
+	// Remove the title on comments, they don't serve any purpose there
+	if ($message['item']['parent-uri'] != $message['item']['uri']) {
+		unset($message['item']['title']);
 	}
 }
 
-function discourse_fetch_topic_from_api(&$message, $host, $topic, $pid)
+function discourse_fetch_post($host, $topic, $pid)
 {
-	$url = $host . '/t/' . $topic . '/posts.json?posts_ids[]=' . $pid;
+	$url = $host . '/t/' . $topic . '/' . $pid . '.json';
 	$curlResult = Network::curl($url);
 	if (!$curlResult->isSuccess()) {
+		Logger::info('No success', ['url' => $url]);
 		return false;
 	}
+
 	$raw = $curlResult->getBody();
 	$data = json_decode($raw, true);
 	$posts = $data['post_stream']['posts'];
 	foreach($posts as $post) {
 		if ($post['post_number'] != $pid) {
+			// Test
+			discourse_get_user($post, $host);
 			continue;
 		}
 		Logger::info('Got post data from topic', $post);
-		discourse_process_post($message, $post);
-		return true;
+		return $post;
 	}
+
+	Logger::info('Post not found', ['host' => $host, 'topic' => $topic, 'pid' => $pid]);
 	return false;
+}
+
+function discourse_fetch_topic_from_api(&$message, $host, $topic, $pid)
+{
+	$post = discourse_fetch_post($host, $topic, $pid);
+	if (empty($post)) {
+		return false;
+	}
+
+	$message = discourse_process_post($message, $post, $host);
+	return true;
 }
 
 function discourse_fetch_post_from_api(&$message, $post, $host)
 {
-	$url = "https://" . $host . '/posts/' . $post . '.json';
+	$hostaddr = 'https://' . $host;
+	$url = $hostaddr . '/posts/' . $post . '.json';
 	$curlResult = Network::curl($url);
 	if (!$curlResult->isSuccess()) {
 		return false;
@@ -113,28 +136,84 @@ function discourse_fetch_post_from_api(&$message, $post, $host)
 		return false;
 	}
 
-	discourse_process_post($message, $data);
+	$message = discourse_process_post($message, $data, $hostaddr);
 
 	Logger::info('Got API data', $message);
 	return true;
 }
 
-function discourse_process_post(&$message, $post)
+function discourse_get_user($post, $hostaddr)
 {
-	if ($post['post_number'] == 1) {
-		// Thread information
+	$host = parse_url($hostaddr, PHP_URL_HOST);
+
+	$contact = [];
+	// display_username
+	// user_id
+	$contact['uid'] = 0;
+	$contact['network'] = Protocol::DISCOURSE;
+	$contact['name'] = $contact['nick'] = $post['username'];
+	if (!empty($post['name'])) {
+		$contact['name'] = $post['name'];
 	}
 
-	$nick = $post['username'];
-	$name = $post['name'];
-	// User information
+	$contact['about'] = $post['user_title'];
 
-	$message['html'] = $post['cooked'];
-	$message['text'] = $post['raw'];
-	$message['item']['created'] = DateTimeFormat::utc($post['created_at']);
+	if (parse_url($post['avatar_template'], PHP_URL_SCHEME)) {
+		$contact['photo'] = str_replace('{size}', '300', $post['avatar_template']);
+	} else {
+		$contact['photo'] = $hostaddr . str_replace('{size}', '300', $post['avatar_template']);
+	}
+
+	$contact['addr'] = $contact['nick'] . '@' . $host;
+	$contact['contact-type'] = Contact::TYPE_PERSON;
+	$contact['url'] = $hostaddr . '/u/' . $contact['nick'];
+	$contact['nurl'] = Strings::normaliseLink($contact['url']);
+	$contact['baseurl'] = $hostaddr;
+	Logger::info('Contact', $contact);
+	$contact['id'] = Contact::getIdForURL($contact['url'], 0, true, $contact);
+        if (!empty($contact['id'])) {
+		$avatar = $contact['photo'];
+		unset($contact['photo']);
+		DBA::update('contact', $contact, ['id' => $contact['id']]);
+		Contact::updateAvatar($avatar, 0, $contact['id']);
+		$contact['photo'] = $avatar;
+	}
+
+	return $contact;
 }
 
-function discourse_get_html(&$message)
+function discourse_process_post($message, $post, $hostaddr)
+{
+	$host = parse_url($hostaddr, PHP_URL_HOST);
+
+	$message['html'] = $post['cooked'];
+
+	$contact = discourse_get_user($post, $hostaddr);
+	$message['item']['author-id'] = $contact['id'];
+	$message['item']['author-link'] = $contact['url'];
+	$message['item']['author-name'] = $contact['name'];
+	$message['item']['author-avatar'] = $contact['photo'];
+	$message['item']['created'] = DateTimeFormat::utc($post['created_at']);
+	$message['item']['plink'] = $hostaddr . '/t/' . $post['topic_slug'] . '/' . $post['topic_id'] . '/' . $post['post_number'];
+
+	if ($post['post_number'] == 1) {
+		$message['item']['parent-uri'] = $message['item']['uri'] = 'topic/' . $post['topic_id'] . '@' . $host;
+		// To-Do: Thread information
+	} else {
+		$message['item']['uri'] = 'topic/' . $post['topic_id'] . '/' . $post['id'] . '@' . $host;
+		unset($message['item']['title']);
+		if (empty($post['reply_to_post_number']) || $post['reply_to_post_number'] == 1) {
+			$message['item']['parent-uri'] = 'topic/' . $post['topic_id'] . '@' . $host;
+		} else {
+			$reply = discourse_fetch_post($hostaddr, $post['topic_id'], $post['reply_to_post_number']);
+			$message['item']['parent-uri'] = 'topic/' . $post['topic_id'] . '/' . $reply['id'] . '@' . $host;
+		}
+	}
+
+	return $message;
+}
+
+function discourse_get_html($message)
 {
 	$doc = new DOMDocument();
 	$doc2 = new DOMDocument();
@@ -155,33 +234,38 @@ function discourse_get_html(&$message)
 	$profile = discourse_get_profile($xpath);
 	if (!empty($profile)) {
 		Logger::info('Found profile', $profile);
-/*
-		$message['item']['author-avatar'] = $contact['avatar'];
-		$message['item']['author-link'] = $profile['link'];
+		$message['item']['author-id'] = Contact::getIdForURL($profile['url'], 0, true, $profile);
+		$message['item']['author-link'] = $profile['url'];
 		$message['item']['author-name'] = $profile['name'];
-*/
+		$message['item']['author-avatar'] = $profile['photo'];
 	}
+
+	return $message;
 }
 
-function discourse_get_text(&$message)
+function discourse_get_text($message)
 {
 	$text = $message['text'];
 	$text = str_replace("\r", '', $text);
 	$pos = strpos($text, "\n---\n");
-	if ($pos > 0) {
-		$message['text'] = trim(substr($text, 0, $pos));
-		Logger::info('Found text body', ['text' => $message['text']]);
-
-		$message['text'] = Markdown::toBBCode($message['text']);
-
-		$text = substr($text, $pos);
-		if (preg_match('=\((http.*?)\)=', $text, $link)) {
-			$message['item']['plink'] = $link[1];
-			Logger::info('Found plink', ['plink' => $message['item']['plink']]);
-		}
-	} else {
+	if ($pos == 0) {
 		Logger::info('No separator found', ['text' => $text]);
+		return $message;
 	}
+
+	$message['text'] = trim(substr($text, 0, $pos));
+
+	Logger::info('Found text body', ['text' => $message['text']]);
+
+	$message['text'] = Markdown::toBBCode($message['text']);
+
+	$text = substr($text, $pos);
+	Logger::info('Found footer', ['text' => $text]);
+	if (preg_match('=\((http.*/t/.*/.*\d/.*\d)\)=', $text, $link)) {
+		$message['item']['plink'] = $link[1];
+		Logger::info('Found plink', ['plink' => $message['item']['plink']]);
+	}
+	return $message;
 }
 
 function discourse_get_profile($xpath)
@@ -197,7 +281,7 @@ function discourse_get_profile($xpath)
 		if (!empty($attr['src']) && !empty($attr['title'])
 			&& !empty($attr['width']) && !empty($attr['height'])
 			&& ($attr['width'] == $attr['height'])) {
-			$profile = ['avatar' => $attr['src'], 'name' => $attr['title']];
+			$profile = ['photo' => $attr['src'], 'name' => $attr['title']];
 			break;
 		}
 	}
@@ -210,7 +294,7 @@ function discourse_get_profile($xpath)
 				$attr[$attribute->name] = $attribute->value;
 			}
 			if (!empty($attr['href']) && (strpos($attr['href'], '/' . $profile['name']))) {
-				$profile['link'] = $attr['href'];
+				$profile['url'] = $attr['href'];
 				break;
 			}
 		}
