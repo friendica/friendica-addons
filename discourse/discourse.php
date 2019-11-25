@@ -14,6 +14,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
+use Friendica\Core\Renderer;
 use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
 use Friendica\Model\Contact;
@@ -25,9 +26,9 @@ Use Friendica\Util\DateTimeFormat;
 
 function discourse_install()
 {
-	Hook::register('email_getmessage',    __FILE__, 'discourse_email_getmessage');
-	Hook::register('addon_settings',      __FILE__, 'discourse_settings');
-	Hook::register('addon_settings_post', __FILE__, 'discourse_settings_post');
+	Hook::register('email_getmessage',        __FILE__, 'discourse_email_getmessage');
+	Hook::register('connector_settings',      __FILE__, 'discourse_settings');
+	Hook::register('connector_settings_post', __FILE__, 'discourse_settings_post');
 }
 
 function discourse_uninstall()
@@ -37,29 +38,64 @@ function discourse_uninstall()
 	Hook::unregister('connector_settings_post', __FILE__, 'discourse_settings_post');
 }
 
-function discourse_addon_settings(App $a, &$s)
+function discourse_settings(App $a, &$s)
 {
+	if (!local_user()) {
+		return;
+	}
+
+	$enabled = intval(PConfig::get(local_user(), 'discourse', 'enabled'));
+	$css = ($enabled ? '' : '-disabled');
+
+	$s .= '<span id="settings_discourse_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_discourse_expanded\'); openClose(\'settings_discourse_inflated\');">';
+	$s .= '<img class="connector' . $css . '" src="images/discourse.png" /><h3 class="connector">' . L10n::t('Discourse') . '</h3>';
+	$s .= '</span>';
+	$s .= '<div id="settings_discourse_expanded" class="settings-block" style="display: none;">';
+	$s .= '<span class="fakelink" onclick="openClose(\'settings_discourse_expanded\'); openClose(\'settings_discourse_inflated\');">';
+	$s .= '<img class="connector' . $css . '" src="images/discourse.png" /><h3 class="connector">' . L10n::t('Discourse') . '</h3>';
+	$s .= '</span>';
+
+	$field_checkbox = Renderer::getMarkupTemplate('field_checkbox.tpl');
+
+	$s .= Renderer::replaceMacros($field_checkbox, [
+		'$field' => ['enabled', L10n::t('Enable processing of Discourse mailing list mails'), $enabled, L10n::t('If enabled, incoming mails from Discourse will be improved so they look much better. To make it work, you have to configure the e-mail settings in Friendica. You also have to enable the mailing list mode in Discourse. Then you have to add the Discourse mail account as contact.')]
+	]);
+
+	$s .= '<div class="clear"></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="discourse-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
+	$s .= '</div>';
 }
 
-function discourse_addon_settings_post(App $a)
+function discourse_settings_post(App $a)
 {
+	if (!local_user() || empty($_POST['discourse-submit'])) {
+                return;
+        }
+
+	PConfig::set(local_user(), 'discourse', 'enabled', intval($_POST['enabled']));
 }
 
 function discourse_email_getmessage(App $a, &$message)
 {
-//	Logger::info('Got raw message', $message);
+	if (empty($message['item']['uid'])) {
+		return;
+	}
+
+	if (!PConfig::get($message['item']['uid'], 'discourse', 'enabled')) {
+		return;
+	}
 
 	// We do assume that all Discourse servers are running with SSL
 	if (preg_match('=topic/(.*\d)/(.*\d)@(.*)=', $message['item']['uri'], $matches) &&
 		discourse_fetch_post_from_api($message, $matches[2], $matches[3])) {
-		Logger::info('Fetched comment via API', ['host' => $matches[3], 'topic' => $matches[1], 'post' => $matches[2]]);
+		Logger::info('Fetched comment via API (message-id mode)', ['host' => $matches[3], 'topic' => $matches[1], 'post' => $matches[2]]);
 		return;
 	}
 
 	if (preg_match('=topic/(.*\d)@(.*)=', $message['item']['uri'], $matches) &&
 		discourse_fetch_topic_from_api($message, 'https://' . $matches[2], $matches[1], 1)) {
 		discourse_fetch_post_from_api($message, $matches[2], $matches[3]);
-		Logger::info('Fetched starting post via API', ['host' => $matches[2], 'topic' => $matches[1]]);
+		Logger::info('Fetched starting post via API (message-id mode)', ['host' => $matches[2], 'topic' => $matches[1]]);
 		return;
 	}
 
@@ -70,10 +106,11 @@ function discourse_email_getmessage(App $a, &$message)
 
 	if (empty($message['item']['plink']) || !preg_match('=(http.*)/t/.*/(.*\d)/(.*\d)=', $message['item']['plink'], $matches)) {
 		Logger::info('This is no Discourse post');
+		return;
 	}
 
 	if (discourse_fetch_topic_from_api($message, $matches[1], $matches[2], $matches[3])) {
-		Logger::info('Fetched post from via API', ['host' => $matches[1], 'topic' => $matches[2], 'id' => $matches[3]]);
+		Logger::info('Fetched post via API (plink mode)', ['host' => $matches[1], 'topic' => $matches[2], 'id' => $matches[3]]);
 		return;
 	}
 
