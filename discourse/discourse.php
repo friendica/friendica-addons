@@ -114,7 +114,7 @@ function discourse_email_getmessage(App $a, &$message)
 		return;
 	}
 
-	Logger::info('Fallback mode');
+	Logger::info('Fallback mode', ['plink' => $message['item']['plink']]);
 	// Search in the HTML part for the discourse entry and the author profile
 	if (!empty($message['html'])) {
 		$message = discourse_get_html($message);
