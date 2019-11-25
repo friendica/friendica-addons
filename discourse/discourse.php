@@ -25,18 +25,16 @@ Use Friendica\Util\DateTimeFormat;
 
 function discourse_install()
 {
-	Hook::register('email_getmessage',     __FILE__, 'discourse_email_getmessage');
-	Hook::register('email_getmessage_end', __FILE__, 'discourse_email_getmessage_end');
-	Hook::register('addon_settings',       __FILE__, 'discourse_addon_settings');
-	Hook::register('addon_settings_post',  __FILE__, 'discourse_addon_settings_post');
+	Hook::register('email_getmessage',    __FILE__, 'discourse_email_getmessage');
+	Hook::register('addon_settings',      __FILE__, 'discourse_settings');
+	Hook::register('addon_settings_post', __FILE__, 'discourse_settings_post');
 }
 
 function discourse_uninstall()
 {
-	Hook::unregister('email_getmessage',     __FILE__, 'discourse_email_getmessage');
-	Hook::unregister('email_getmessage_end', __FILE__, 'discourse_email_getmessage_end');
-	Hook::unregister('addon_settings',       __FILE__, 'discourse_addon_settings');
-	Hook::unregister('addon_settings_post',  __FILE__, 'discourse_addon_settings_post');
+	Hook::unregister('email_getmessage',        __FILE__, 'discourse_email_getmessage');
+	Hook::unregister('connector_settings',      __FILE__, 'discourse_settings');
+	Hook::unregister('connector_settings_post', __FILE__, 'discourse_settings_post');
 }
 
 function discourse_addon_settings(App $a, &$s)
@@ -51,28 +49,35 @@ function discourse_email_getmessage(App $a, &$message)
 {
 //	Logger::info('Got raw message', $message);
 
-/*	if (preg_match('=topic/(.*)/(.*)@(.*)=', $message['item']['uri'], $matches)) {
-		Logger::info('Got post data', ['topic' => $matches[1], 'post' => $matches[2], 'host' => $matches[3]]);
-		if (discourse_fetch_post_from_api($message, $matches[2], $matches[3])) {
-			return;
-		}
+	// We do assume that all Discourse servers are running with SSL
+	if (preg_match('=topic/(.*\d)/(.*\d)@(.*)=', $message['item']['uri'], $matches) &&
+		discourse_fetch_post_from_api($message, $matches[2], $matches[3])) {
+		Logger::info('Fetched comment via API', ['host' => $matches[3], 'topic' => $matches[1], 'post' => $matches[2]]);
+		return;
 	}
-*/
+
+	if (preg_match('=topic/(.*\d)@(.*)=', $message['item']['uri'], $matches) &&
+		discourse_fetch_topic_from_api($message, 'https://' . $matches[2], $matches[1], 1)) {
+		discourse_fetch_post_from_api($message, $matches[2], $matches[3]);
+		Logger::info('Fetched starting post via API', ['host' => $matches[2], 'topic' => $matches[1]]);
+		return;
+	}
+
 	// Search in the text part for the link to the discourse entry and the text body
-	// The text body is used as alternative, if the fetched HTML isn't working
 	if (!empty($message['text'])) {
 		$message = discourse_get_text($message);
 	}
 
-	if (!empty($message['item']['plink'])) {
-		if (preg_match('=(http.*)/t/.*/(.*\d)/(.*\d)=', $message['item']['plink'], $matches)) {
-			if (discourse_fetch_topic_from_api($message, $matches[1], $matches[2], $matches[3])) {
-				return;
-			}
-		}
+	if (empty($message['item']['plink']) || !preg_match('=(http.*)/t/.*/(.*\d)/(.*\d)=', $message['item']['plink'], $matches)) {
+		Logger::info('This is no Discourse post');
 	}
-	Logger::info('Stop');
-die('Test');
+
+	if (discourse_fetch_topic_from_api($message, $matches[1], $matches[2], $matches[3])) {
+		Logger::info('Fetched post from via API', ['host' => $matches[1], 'topic' => $matches[2], 'id' => $matches[3]]);
+		return;
+	}
+
+	Logger::info('Fallback mode');
 	// Search in the HTML part for the discourse entry and the author profile
 	if (!empty($message['html'])) {
 		$message = discourse_get_html($message);
@@ -98,8 +103,7 @@ function discourse_fetch_post($host, $topic, $pid)
 	$posts = $data['post_stream']['posts'];
 	foreach($posts as $post) {
 		if ($post['post_number'] != $pid) {
-			// Test
-			discourse_get_user($post, $host);
+			/// @todo Possibly fetch missing posts here
 			continue;
 		}
 		Logger::info('Got post data from topic', $post);
@@ -146,9 +150,11 @@ function discourse_get_user($post, $hostaddr)
 {
 	$host = parse_url($hostaddr, PHP_URL_HOST);
 
+	// Currently unused contact fields:
+	// - display_username
+	// - user_id
+
 	$contact = [];
-	// display_username
-	// user_id
 	$contact['uid'] = 0;
 	$contact['network'] = Protocol::DISCOURSE;
 	$contact['name'] = $contact['nick'] = $post['username'];
@@ -198,7 +204,7 @@ function discourse_process_post($message, $post, $hostaddr)
 
 	if ($post['post_number'] == 1) {
 		$message['item']['parent-uri'] = $message['item']['uri'] = 'topic/' . $post['topic_id'] . '@' . $host;
-		// To-Do: Thread information
+		/// @ToDo Fetch thread information
 	} else {
 		$message['item']['uri'] = 'topic/' . $post['topic_id'] . '/' . $post['id'] . '@' . $host;
 		unset($message['item']['title']);
@@ -224,7 +230,7 @@ function discourse_get_html($message)
 
 	$xpath = new DomXPath($doc);
 
-	// Fetch the first 'div' before the 'hr' -hopefully this fits for all systems
+	// Fetch the first 'div' before the 'hr' - hopefully this fits for all systems
 	$result = $xpath->query("//hr//preceding::div[1]");
 	$div = $doc2->importNode($result->item(0), true);
 	$doc2->appendChild($div);
@@ -232,7 +238,7 @@ function discourse_get_html($message)
 	Logger::info('Found html body', ['html' => $message['html']]);
 
 	$profile = discourse_get_profile($xpath);
-	if (!empty($profile)) {
+	if (!empty($profile['url'])) {
 		Logger::info('Found profile', $profile);
 		$message['item']['author-id'] = Contact::getIdForURL($profile['url'], 0, true, $profile);
 		$message['item']['author-link'] = $profile['url'];
@@ -300,9 +306,4 @@ function discourse_get_profile($xpath)
 		}
 	}
 	return $profile;
-}
-
-function discourse_email_getmessage_end(App $a, &$message)
-{
-//	Logger::info('Got converted message', $message);
 }
