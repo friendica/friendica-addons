@@ -7,8 +7,6 @@
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  *
  */
-//use DOMDocument;
-//use DOMXPath;
 use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
@@ -38,13 +36,6 @@ function discourse_install()
 	Hook::register('email_getmessage',        __FILE__, 'discourse_email_getmessage');
 	Hook::register('connector_settings',      __FILE__, 'discourse_settings');
 	Hook::register('connector_settings_post', __FILE__, 'discourse_settings_post');
-}
-
-function discourse_uninstall()
-{
-	Hook::unregister('email_getmessage',        __FILE__, 'discourse_email_getmessage');
-	Hook::unregister('connector_settings',      __FILE__, 'discourse_settings');
-	Hook::unregister('connector_settings_post', __FILE__, 'discourse_settings_post');
 }
 
 function discourse_settings(App $a, &$s)
@@ -249,6 +240,12 @@ function discourse_process_post($message, $post, $hostaddr)
 
 	if ($post['post_number'] == 1) {
 		$message['item']['parent-uri'] = $message['item']['uri'] = 'topic/' . $post['topic_id'] . '@' . $host;
+
+		// Remove the Discourse forum name from the subject
+		$pattern = '=\[.*\].*\s(\[.*\].*)=';
+		if (preg_match($pattern, $message['item']['title'])) {
+			$message['item']['title'] = preg_replace($pattern, '$1', $message['item']['title']);
+		}
 		/// @ToDo Fetch thread information
 	} else {
 		$message['item']['uri'] = 'topic/' . $post['topic_id'] . '/' . $post['id'] . '@' . $host;

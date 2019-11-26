@@ -16,7 +16,7 @@ The mailing list mode in Discourse knows two different options:
 2. Don't get your own posts. Then you will missing all your posts
    that you made directly on Discourse. Since you cannot create
    a new post via this connector (only comments are possible)
-   this is not a goog choice either.
+   this is not a good choice either.
 
 Known problems
 --------------
