@@ -24,6 +24,15 @@ use Friendica\Util\Network;
 use Friendica\Util\Strings;
 Use Friendica\Util\DateTimeFormat;
 
+/* Todo:
+ * - Obtaining API tokens to be able to read non public posts as well
+ * - Handling duplicates (possibly using some non visible marker)
+ * - Fetching missing posts
+ * - Fetch topic information
+ * - Support mail free mode when write tokens are available
+ * - Fix incomplete (relative) links (hosts are missing)
+*/
+
 function discourse_install()
 {
 	Hook::register('email_getmessage',        __FILE__, 'discourse_email_getmessage');
@@ -94,7 +103,6 @@ function discourse_email_getmessage(App $a, &$message)
 
 	if (preg_match('=topic/(.*\d)@(.*)=', $message['item']['uri'], $matches) &&
 		discourse_fetch_topic_from_api($message, 'https://' . $matches[2], $matches[1], 1)) {
-		discourse_fetch_post_from_api($message, $matches[2], $matches[3]);
 		Logger::info('Fetched starting post via API (message-id mode)', ['host' => $matches[2], 'topic' => $matches[1]]);
 		return;
 	}
