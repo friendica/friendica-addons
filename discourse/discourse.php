@@ -45,25 +45,14 @@ function discourse_settings(App $a, &$s)
 	}
 
 	$enabled = intval(PConfig::get(local_user(), 'discourse', 'enabled'));
-	$css = ($enabled ? '' : '-disabled');
 
-	$s .= '<span id="settings_discourse_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_discourse_expanded\'); openClose(\'settings_discourse_inflated\');">';
-	$s .= '<img class="connector' . $css . '" src="images/discourse.png" /><h3 class="connector">' . L10n::t('Discourse') . '</h3>';
-	$s .= '</span>';
-	$s .= '<div id="settings_discourse_expanded" class="settings-block" style="display: none;">';
-	$s .= '<span class="fakelink" onclick="openClose(\'settings_discourse_expanded\'); openClose(\'settings_discourse_inflated\');">';
-	$s .= '<img class="connector' . $css . '" src="images/discourse.png" /><h3 class="connector">' . L10n::t('Discourse') . '</h3>';
-	$s .= '</span>';
-
-	$field_checkbox = Renderer::getMarkupTemplate('field_checkbox.tpl');
-
-	$s .= Renderer::replaceMacros($field_checkbox, [
-		'$field' => ['enabled', L10n::t('Enable processing of Discourse mailing list mails'), $enabled, L10n::t('If enabled, incoming mails from Discourse will be improved so they look much better. To make it work, you have to configure the e-mail settings in Friendica. You also have to enable the mailing list mode in Discourse. Then you have to add the Discourse mail account as contact.')]
+	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/discourse/');
+	$s .= Renderer::replaceMacros($t, [
+		'$title'   => L10n::t('Discourse'),
+		'$css'     => ($enabled ? '' : '-disabled'),
+		'$enabled' => ['enabled', L10n::t('Enable processing of Discourse mailing list mails'), $enabled, L10n::t('If enabled, incoming mails from Discourse will be improved so they look much better. To make it work, you have to configure the e-mail settings in Friendica. You also have to enable the mailing list mode in Discourse. Then you have to add the Discourse mail account as contact.')],
+		'$submit'  => L10n::t('Save Settings'),
 	]);
-
-	$s .= '<div class="clear"></div>';
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="discourse-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
-	$s .= '</div>';
 }
 
 function discourse_settings_post(App $a)
