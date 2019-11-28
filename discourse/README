@@ -1,0 +1,28 @@
+Discourse connector
+===================
+
+The Discourse connectors detects incoming mails from Discourse and
+improves them by fetching the content and user data via API.
+
+Prerequisites
+-------------
+The user has to configure the mail interface so that the user's mails
+can be fetched via Friendica. Then the user has to activate the
+mailing list mode in Discourse.
+
+The mailing list mode in Discourse knows two different options:
+1. Get all posts - including your own. This will create duplicates
+   if you post via Friendica.
+2. Don't get your own posts. Then you will missing all your posts
+   that you made directly on Discourse. Since you cannot create
+   a new post via this connector (only comments are possible)
+   this is not a good choice either.
+
+Known problems
+--------------
+- You can't create starting posts
+- Either you don't get your own posts you made directly on Discourse
+  or you do get duplicates for every post you made via Friendica.
+- Non public categories are currently only working via some workaround
+  without the API, which most likely will cause some content problems.
+- links to Discourse profiles in the posts are invalid.
