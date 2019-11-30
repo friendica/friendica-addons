@@ -2,217 +2,110 @@
 /**
  * Name: JS Uploader
  * Description: JavaScript photo/image uploader. Uses Valum 'qq' Uploader.
- * Version: 1.0
+ * Version: 1.1
  * Author: Chris Case <http://friendika.openmindspace.org/profile/chris_case>
+ * Maintainer: Hypolite Petovan <https://friendica.mrpetovan.com/profile/hypolite>
  */
 
-/**
- *
- * JavaScript Photo/Image Uploader
- *
- * Uses Valum 'qq' Uploader.
- * Module Author: Chris Case
- *
- */
-
+use Friendica\App;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 
-function js_upload_install() {
-	Hook::register('photo_upload_form', 'addon/js_upload/js_upload.php', 'js_upload_form');
-	Hook::register('photo_post_init',   'addon/js_upload/js_upload.php', 'js_upload_post_init');
-	Hook::register('photo_post_file',   'addon/js_upload/js_upload.php', 'js_upload_post_file');
-	Hook::register('photo_post_end',    'addon/js_upload/js_upload.php', 'js_upload_post_end');
+function js_upload_install()
+{
+	Hook::register('photo_upload_form', __FILE__, 'js_upload_form');
+	Hook::register('photo_post_init', __FILE__, 'js_upload_post_init');
+	Hook::register('photo_post_file', __FILE__, 'js_upload_post_file');
+	Hook::register('photo_post_end', __FILE__, 'js_upload_post_end');
 }
 
-
-function js_upload_uninstall() {
-	Hook::unregister('photo_upload_form', 'addon/js_upload/js_upload.php', 'js_upload_form');
-	Hook::unregister('photo_post_init',   'addon/js_upload/js_upload.php', 'js_upload_post_init');
-	Hook::unregister('photo_post_file',   'addon/js_upload/js_upload.php', 'js_upload_post_file');
-	Hook::unregister('photo_post_end',    'addon/js_upload/js_upload.php', 'js_upload_post_end');
-}
-
-
-function js_upload_form(&$a,&$b) {
-
+function js_upload_form(App $a, array &$b)
+{
 	$b['default_upload'] = false;
 
-	$b['addon_text'] .= '<link href="' . $a->getBaseURL() . '/addon/js_upload/file-uploader/client/fileuploader.css" rel="stylesheet" type="text/css">';
-	$b['addon_text'] .= '<script src="' . $a->getBaseURL() . '/addon/js_upload/file-uploader/client/fileuploader.js" type="text/javascript"></script>';
+	$a->page->registerStylesheet('addon/js_upload/file-uploader/client/fileuploader.css');
+	$a->page->registerFooterScript('addon/js_upload/file-uploader/client/fileuploader.js');
 
-	$upload_msg = L10n::t('Select files for upload');
-	$drop_msg = L10n::t('Drop files here to upload');
-	$cancel = L10n::t('Cancel');
-	$failed = L10n::t('Failed');
-
-	$maximagesize = intval(Config::get('system','maximagesize'));
-
-	$b['addon_text'] .= <<< EOT
-
- <div id="file-uploader-demo1">
-  <noscript>
-   <p>Please enable JavaScript to use file uploader.</p>
-   <!-- or put a simple form for upload here -->
-  </noscript>
- </div>
-
-<script type="text/javascript">
-var uploader = null;
-function getSelected(opt) {
-			var selected = new Array();
-			var index = 0;
-			for (var intLoop = 0; intLoop < opt.length; intLoop++) {
-				if ((opt[intLoop].selected) ||
-					(opt[intLoop].checked)) {
-					index = selected.length;
-					//selected[index] = new Object;
-					selected[index] = opt[intLoop].value;
-					//selected[index] = intLoop;
-				}
-			}
-			return selected;
-		 }
-function createUploader() {
-	uploader = new qq.FileUploader({
-		element: document.getElementById('file-uploader-demo1'),
-		action: '{$b['post_url']}',
-
-		template: '<div class="qq-uploader">' +
-				'<div class="qq-upload-drop-area"><span>$drop_msg</span></div>' +
-				'<div class="qq-upload-button">$upload_msg</div>' +
-				'<ul class="qq-upload-list"></ul>' +
-			 '</div>',
-
-		// template for one item in file list
-		fileTemplate: '<li>' +
-				'<span class="qq-upload-file"></span>' +
-				'<span class="qq-upload-spinner"></span>' +
-				'<span class="qq-upload-size"></span>' +
-				'<a class="qq-upload-cancel" href="#">$cancel</a>' +
-				'<span class="qq-upload-failed-text">$failed</span>' +
-			'</li>',
-
-		debug: true,
-		sizeLimit: $maximagesize,
-		onSubmit: function(id,filename) {
-			var newalbumElm = document.getElementById('photos-upload-newalbum');
-			var albumElm = document.getElementById('photos-upload-album-select');
-
-			var newalbum = newalbumElm ? newalbumElm.value : "";
-			var album = albumElm ? albumElm.value : "";
-
-			if (typeof acl != "undefined"){
-				uploader.setParams( {
-					newalbum      : newalbum,
-					album         : album,
-					not_visible   : document.getElementById('photos-upload-noshare').checked,
-					group_allow   : acl.allow_gid.join(','),
-					contact_allow : acl.allow_cid.join(','),
-					group_deny    : acl.deny_gid.join(','),
-					contact_deny  : acl.deny_cid.join(',')
-				});
-			} else {
-				uploader.setParams( {
-					newalbum      : newalbum,
-					album         : album,
-					not_visible   : document.getElementById('photos-upload-noshare').checked,
-					group_allow   : getSelected(document.getElementById('group_allow')).join(','),
-					contact_allow : getSelected(document.getElementById('contact_allow')).join(','),
-					group_deny    : getSelected(document.getElementById('group_deny')).join(','),
-					contact_deny  : getSelected(document.getElementById('contact_deny')).join(',')
-				});
-			}
-		}
-	});
+	$tpl = Renderer::getMarkupTemplate('js_upload.tpl', 'addon/js_upload');
+	$b['addon_text'] .= Renderer::replaceMacros($tpl, [
+		'$upload_msg' => L10n::t('Select files for upload'),
+		'$drop_msg' => L10n::t('Drop files here to upload'),
+		'$cancel' => L10n::t('Cancel'),
+		'$failed' => L10n::t('Failed'),
+		'$post_url' => $b['post_url'],
+		'$maximagesize' => intval(Config::get('system', 'maximagesize')),
+	]);
 }
 
-
-// in your app create uploader as soon as the DOM is ready
-// don't wait for the window to load
-window.onload = createUploader;
-
-
-</script>
-
-EOT;
-
-
-}
-
-function js_upload_post_init(&$a,&$b) {
-
-	// list of valid extensions, ex. array("jpeg", "xml", "bmp")
-
-	$allowedExtensions = ["jpeg","gif","png","jpg"];
+function js_upload_post_init(App $a, &$b)
+{
+	// list of valid extensions
+	$allowedExtensions = ['jpeg', 'gif', 'png', 'jpg'];
 
 	// max file size in bytes
-
-	$sizeLimit = Config::get('system','maximagesize'); //6 * 1024 * 1024;
+	$sizeLimit = Config::get('system', 'maximagesize');
 
 	$uploader = new qqFileUploader($allowedExtensions, $sizeLimit);
 
 	$result = $uploader->handleUpload();
 
-
 	// to pass data through iframe you will need to encode all html tags
-	$a->data['upload_jsonresponse'] =  htmlspecialchars(json_encode($result), ENT_NOQUOTES);
+	$a->data['upload_jsonresponse'] = htmlspecialchars(json_encode($result), ENT_NOQUOTES);
 
-	if(isset($result['error'])) {
-		Logger::log('mod/photos.php: photos_post(): error uploading photo: ' . $result['error'] , Logger::DEBUG);
+	if (isset($result['error'])) {
+		Logger::log('mod/photos.php: photos_post(): error uploading photo: ' . $result['error'], Logger::DEBUG);
 		echo json_encode($result);
 		exit();
 	}
 
 	$a->data['upload_result'] = $result;
-
 }
 
-function js_upload_post_file(&$a,&$b) {
-
+function js_upload_post_file(App $a, &$b)
+{
 	$result = $a->data['upload_result'];
 
-	$b['src']       = $result['path'];
-	$b['filename']  = $result['filename'];
-	$b['filesize']  = filesize($b['src']);
+	$b['src'] = $result['path'];
+	$b['filename'] = $result['filename'];
+	$b['filesize'] = filesize($b['src']);
 
 }
 
-
-function js_upload_post_end(&$a,&$b) {
-
-Logger::log('upload_post_end');
-	if(!empty($a->data['upload_jsonresponse'])) {
+function js_upload_post_end(App $a, &$b)
+{
+	Logger::log('upload_post_end');
+	if (!empty($a->data['upload_jsonresponse'])) {
 		echo $a->data['upload_jsonresponse'];
 		exit();
 	}
-
 }
-
 
 /**
  * Handle file uploads via XMLHttpRequest
  */
-class qqUploadedFileXhr {
-
+class qqUploadedFileXhr
+{
 	private $pathnm = '';
 
 	/**
 	 * Save the file in the temp dir.
+	 *
 	 * @return boolean TRUE on success
 	 */
-	function save() {
-		$input = fopen("php://input", "r");
+	function save()
+	{
+		$input = fopen('php://input', 'r');
 
-		$upload_dir = Config::get('system','tempdir');
-		if(! $upload_dir)
+		$upload_dir = Config::get('system', 'tempdir');
+		if (!$upload_dir)
 			$upload_dir = sys_get_temp_dir();
 
-		$this->pathnm = tempnam($upload_dir,'frn');
+		$this->pathnm = tempnam($upload_dir, 'frn');
 
-		$temp = fopen($this->pathnm,"w");
+		$temp = fopen($this->pathnm, 'w');
 		$realSize = stream_copy_to_stream($input, $temp);
 
 		fclose($input);
@@ -224,17 +117,20 @@ class qqUploadedFileXhr {
 		return true;
 	}
 
-	function getPath() {
+	function getPath()
+	{
 		return $this->pathnm;
 	}
 
-	function getName() {
+	function getName()
+	{
 		return $_GET['qqfile'];
 	}
 
-	function getSize() {
-		if (isset($_SERVER["CONTENT_LENGTH"])){
-			return (int)$_SERVER["CONTENT_LENGTH"];
+	function getSize()
+	{
+		if (isset($_SERVER['CONTENT_LENGTH'])) {
+			return (int)$_SERVER['CONTENT_LENGTH'];
 		} else {
 			throw new Exception('Getting content length is not supported.');
 		}
@@ -244,39 +140,43 @@ class qqUploadedFileXhr {
 /**
  * Handle file uploads via regular form post (uses the $_FILES array)
  */
-
-class qqUploadedFileForm {
-
-
+class qqUploadedFileForm
+{
 	/**
 	 * Save the file to the specified path
+	 *
 	 * @return boolean TRUE on success
 	 */
-
-
-	function save() {
+	function save()
+	{
 		return true;
 	}
 
-	function getPath() {
+	function getPath()
+	{
 		return $_FILES['qqfile']['tmp_name'];
 	}
 
-	function getName() {
+	function getName()
+	{
 		return $_FILES['qqfile']['name'];
 	}
-	function getSize() {
+
+	function getSize()
+	{
 		return $_FILES['qqfile']['size'];
 	}
 }
 
-class qqFileUploader {
+class qqFileUploader
+{
 	private $allowedExtensions = [];
 	private $sizeLimit = 10485760;
 	private $file;
 
-	function __construct(array $allowedExtensions = [], $sizeLimit = 10485760){
-		$allowedExtensions = array_map("strtolower", $allowedExtensions);
+	function __construct(array $allowedExtensions = [], $sizeLimit = 10485760)
+	{
+		$allowedExtensions = array_map('strtolower', $allowedExtensions);
 
 		$this->allowedExtensions = $allowedExtensions;
 		$this->sizeLimit = $sizeLimit;
@@ -291,14 +191,17 @@ class qqFileUploader {
 
 	}
 
-
-	private function toBytes($str){
+	private function toBytes($str)
+	{
 		$val = trim($str);
-		$last = strtolower($str[strlen($str)-1]);
-		switch($last) {
-			case 'g': $val *= 1024;
-			case 'm': $val *= 1024;
-			case 'k': $val *= 1024;
+		$last = strtolower($str[strlen($str) - 1]);
+		switch ($last) {
+			case 'g':
+				$val *= 1024;
+			case 'm':
+				$val *= 1024;
+			case 'k':
+				$val *= 1024;
 		}
 		return $val;
 	}
@@ -306,8 +209,8 @@ class qqFileUploader {
 	/**
 	 * Returns array('success'=>true) or array('error'=>'error message')
 	 */
-	function handleUpload(){
-
+	function handleUpload()
+	{
 		if (!$this->file) {
 			return ['error' => L10n::t('No files were uploaded.')];
 		}
@@ -324,10 +227,10 @@ class qqFileUploader {
 //		}
 
 
-		$maximagesize = Config::get('system','maximagesize');
+		$maximagesize = Config::get('system', 'maximagesize');
 
-		if(($maximagesize) && ($size > $maximagesize)) {
-			return ['error' => L10n::t('Image exceeds size limit of ') . $maximagesize ];
+		if (($maximagesize) && ($size > $maximagesize)) {
+			return ['error' => L10n::t('Image exceeds size limit of ') . $maximagesize];
 
 		}
 
@@ -339,24 +242,23 @@ class qqFileUploader {
 		}
 		$ext = $pathinfo['extension'] ?? '';
 
-		if($this->allowedExtensions && !in_array(strtolower($ext), $this->allowedExtensions)){
+		if ($this->allowedExtensions && !in_array(strtolower($ext), $this->allowedExtensions)) {
 			$these = implode(', ', $this->allowedExtensions);
 			return ['error' => L10n::t('File has an invalid extension, it should be one of ') . $these . '.'];
 		}
 
-		if ($this->file->save()){
+		if ($this->file->save()) {
 			return [
-				'success'  => true,
-				'path'     => $this->file->getPath(),
+				'success' => true,
+				'path' => $this->file->getPath(),
 				'filename' => $filename . '.' . $ext
 			];
 		} else {
 			return [
-				'error'    => L10n::t('Upload was cancelled, or server error encountered'),
-				'path'     => $this->file->getPath(),
+				'error' => L10n::t('Upload was cancelled, or server error encountered'),
+				'path' => $this->file->getPath(),
 				'filename' => $filename . '.' . $ext
 			];
 		}
-
 	}
 }
