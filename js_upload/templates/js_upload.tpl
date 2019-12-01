@@ -34,14 +34,19 @@
 				let newalbumElm = document.getElementById('photos-upload-newalbum');
 				let albumElm = document.getElementById('photos-upload-album-select');
 
+				let contact_allow = document.querySelector('[name="contact_allow"]:not(:disabled)');
+				let group_allow = document.querySelector('[name="group_allow"]:not(:disabled)');
+				let contact_deny = document.querySelector('[name="contact_deny"]:not(:disabled)');
+				let group_deny = document.querySelector('[name="group_deny"]:not(:disabled)');
+
 				uploader.setParams({
 					newalbum      : newalbumElm ? newalbumElm.value : '',
 					album         : albumElm ? albumElm.value : '',
 					not_visible   : document.getElementById('photos-upload-noshare').checked,
-					contact_allow : document.querySelector('[name="contact_allow"]').value,
-					group_allow   : document.querySelector('[name="group_allow"]').value,
-					contact_deny  : document.querySelector('[name="contact_deny"]').value,
-					group_deny    : document.querySelector('[name="group_deny"]').value,
+					contact_allow : contact_allow ? contact_allow.value : '',
+					group_allow   : group_allow   ? group_allow.value   : '',
+					contact_deny  : contact_deny  ? contact_deny.value  : '',
+					group_deny    : group_deny    ? group_deny.value    : '',
 				});
 			}
 		});
