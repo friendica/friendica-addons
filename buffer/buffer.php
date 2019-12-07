@@ -4,6 +4,7 @@
  * Description: Post to Buffer (Facebook Pages, LinkedIn, Twitter)
  * Version: 0.2
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
+ * Status: Unsupported
  */
 require 'addon/buffer/bufferapp.php';
 
