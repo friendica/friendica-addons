@@ -30,7 +30,7 @@ use Friendica\App;
 use Friendica\BaseObject;
 use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
-use Friendica\Core\Authentication;
+use Friendica\App\Authentication;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
