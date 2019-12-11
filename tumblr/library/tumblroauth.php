@@ -76,7 +76,7 @@ class TumblrOAuth
 		$this->sha1_method = new OAuthSignatureMethod_HMAC_SHA1();
 		$this->consumer = new OAuthConsumer($consumer_key, $consumer_secret);
 		if (!empty($oauth_token) && !empty($oauth_token_secret)) {
-			$this->token = new OAuthConsumer($oauth_token, $oauth_token_secret);
+			$this->token = new OAuthToken($oauth_token, $oauth_token_secret);
 		} else {
 			$this->token = null;
 		}
@@ -97,7 +97,7 @@ class TumblrOAuth
 
 		$request = $this->oAuthRequest($this->requestTokenURL(), 'GET', $parameters);
 		$token = OAuthUtil::parse_parameters($request);
-		$this->token = new OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
+		$this->token = new OAuthToken($token['oauth_token'], $token['oauth_token_secret']);
 		return $token;
 	}
 
@@ -140,7 +140,7 @@ class TumblrOAuth
 
 		$request = $this->oAuthRequest($this->accessTokenURL(), 'GET', $parameters);
 		$token = OAuthUtil::parse_parameters($request);
-		$this->token = new OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
+		$this->token = new OAuthToken($token['oauth_token'], $token['oauth_token_secret']);
 
 		return $token;
 	}
@@ -164,7 +164,7 @@ class TumblrOAuth
 		$parameters['x_auth_mode'] = 'client_auth';
 		$request = $this->oAuthRequest($this->accessTokenURL(), 'POST', $parameters);
 		$token = OAuthUtil::parse_parameters($request);
-		$this->token = new OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
+		$this->token = new OAuthToken($token['oauth_token'], $token['oauth_token_secret']);
 
 		return $token;
 	}
@@ -246,7 +246,6 @@ class TumblrOAuth
 
 	/**
 	 * Make an HTTP request
-	 *
 	 *
 	 * @param string $url
 	 * @param string $method
