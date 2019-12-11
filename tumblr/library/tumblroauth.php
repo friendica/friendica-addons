@@ -11,10 +11,6 @@
  */
 class TumblrOAuth
 {
-	/* Contains the last HTTP status code returned. */
-	public $http_code;
-	/* Contains the last API call. */
-	public $url;
 	/* Set up the API root URL. */
 	public $host = "https://api.tumblr.com/v2/";
 	/* Set timeout default. */
@@ -23,17 +19,34 @@ class TumblrOAuth
 	public $connecttimeout = 30;
 	/* Verify SSL Cert. */
 	public $ssl_verifypeer = FALSE;
-	/* Respons format. */
+	/* Response format. */
 	public $format = 'json';
 	/* Decode returned json data. */
 	public $decode_json = TRUE;
-	/* Contains the last HTTP headers returned. */
-	public $http_info;
-	/* Set the useragnet. */
+	/* Set the useragent. */
 	public $useragent = 'TumblrOAuth v0.2.0-beta2';
-	/* Immediately retry the API call if the response was not successful. */
-	//public $retry = TRUE;
 
+	/* Contains the last HTTP status code returned. */
+	public $http_code;
+	/* Contains the last API call. */
+	public $url;
+	/**
+	 * Contains the last HTTP headers returned.
+	 * @var array
+	 */
+	public $http_header;
+	/**
+	 * Contains the last HTTP request info
+	 * @var string
+	 */
+	public $http_info;
+
+	/** @var OAuthToken */
+	private $token;
+	/** @var OAuthConsumer */
+	private $consumer;
+	/** @var OAuthSignatureMethod_HMAC_SHA1 */
+	private $sha1_method;
 
 	/**
 	 * Set API URLS
@@ -58,22 +71,6 @@ class TumblrOAuth
 		return 'https://www.tumblr.com/oauth/request_token';
 	}
 
-	/**
-	 * Debug helpers
-	 */
-	function lastStatusCode()
-	{
-		return $this->http_status;
-	}
-
-	function lastAPICall()
-	{
-		return $this->last_api_call;
-	}
-
-	/**
-	 * construct TumblrOAuth object
-	 */
 	function __construct($consumer_key, $consumer_secret, $oauth_token = null, $oauth_token_secret = null)
 	{
 		$this->sha1_method = new OAuthSignatureMethod_HMAC_SHA1();
@@ -85,15 +82,15 @@ class TumblrOAuth
 		}
 	}
 
-
 	/**
 	 * Get a request_token from Tumblr
 	 *
-	 * @returns a key/value array containing oauth_token and oauth_token_secret
+	 * @param callback $oauth_callback
+	 * @return array
 	 */
 	function getRequestToken($oauth_callback = null)
 	{
-		$parameters = array();
+		$parameters = [];
 		if (!empty($oauth_callback)) {
 			$parameters['oauth_callback'] = $oauth_callback;
 		}
@@ -107,7 +104,9 @@ class TumblrOAuth
 	/**
 	 * Get the authorize URL
 	 *
-	 * @returns a string
+	 * @param array $token
+	 * @param bool $sign_in_with_tumblr
+	 * @return string
 	 */
 	function getAuthorizeURL($token, $sign_in_with_tumblr = TRUE)
 	{
@@ -126,14 +125,15 @@ class TumblrOAuth
 	 * Exchange request token and secret for an access token and
 	 * secret, to sign API calls.
 	 *
-	 * @returns array("oauth_token" => "the-access-token",
+	 * @param bool $oauth_verifier
+	 * @return array ("oauth_token" => "the-access-token",
 	 *                "oauth_token_secret" => "the-access-secret",
 	 *                "user_id" => "9436992",
 	 *                "screen_name" => "abraham")
 	 */
 	function getAccessToken($oauth_verifier = FALSE)
 	{
-		$parameters = array();
+		$parameters = [];
 		if (!empty($oauth_verifier)) {
 			$parameters['oauth_verifier'] = $oauth_verifier;
 		}
@@ -148,7 +148,9 @@ class TumblrOAuth
 	/**
 	 * One time exchange of username and password for access token and secret.
 	 *
-	 * @returns array("oauth_token" => "the-access-token",
+	 * @param string $username
+	 * @param string $password
+	 * @return array ("oauth_token" => "the-access-token",
 	 *                "oauth_token_secret" => "the-access-secret",
 	 *                "user_id" => "9436992",
 	 *                "screen_name" => "abraham",
@@ -156,7 +158,7 @@ class TumblrOAuth
 	 */
 	function getXAuthToken($username, $password)
 	{
-		$parameters = array();
+		$parameters = [];
 		$parameters['x_auth_username'] = $username;
 		$parameters['x_auth_password'] = $password;
 		$parameters['x_auth_mode'] = 'client_auth';
@@ -169,8 +171,12 @@ class TumblrOAuth
 
 	/**
 	 * GET wrapper for oAuthRequest.
+	 *
+	 * @param string $url
+	 * @param array $parameters
+	 * @return mixed|string
 	 */
-	function get($url, $parameters = array())
+	function get($url, $parameters = [])
 	{
 		$response = $this->oAuthRequest($url, 'GET', $parameters);
 		if ($this->format === 'json' && $this->decode_json) {
@@ -182,8 +188,12 @@ class TumblrOAuth
 
 	/**
 	 * POST wrapper for oAuthRequest.
+	 *
+	 * @param string $url
+	 * @param array $parameters
+	 * @return mixed|string
 	 */
-	function post($url, $parameters = array())
+	function post($url, $parameters = [])
 	{
 		$response = $this->oAuthRequest($url, 'POST', $parameters);
 		if ($this->format === 'json' && $this->decode_json) {
@@ -195,8 +205,12 @@ class TumblrOAuth
 
 	/**
 	 * DELETE wrapper for oAuthReqeust.
+	 *
+	 * @param string $url
+	 * @param array $parameters
+	 * @return mixed|string
 	 */
-	function delete($url, $parameters = array())
+	function delete($url, $parameters = [])
 	{
 		$response = $this->oAuthRequest($url, 'DELETE', $parameters);
 		if ($this->format === 'json' && $this->decode_json) {
@@ -208,6 +222,11 @@ class TumblrOAuth
 
 	/**
 	 * Format and sign an OAuth / API request
+	 *
+	 * @param string $url
+	 * @param string $method
+	 * @param array $parameters
+	 * @return mixed|string
 	 */
 	function oAuthRequest($url, $method, $parameters)
 	{
@@ -228,11 +247,15 @@ class TumblrOAuth
 	/**
 	 * Make an HTTP request
 	 *
-	 * @return API results
+	 *
+	 * @param string $url
+	 * @param string $method
+	 * @param mixed  $postfields
+	 * @return string API results
 	 */
 	function http($url, $method, $postfields = null)
 	{
-		$this->http_info = array();
+		$this->http_info = [];
 		$ci = curl_init();
 		/* Curl settings */
 		curl_setopt($ci, CURLOPT_USERAGENT, $this->useragent);
@@ -270,6 +293,10 @@ class TumblrOAuth
 
 	/**
 	 * Get the header info to store.
+	 *
+	 * @param resource $ch
+	 * @param string $header
+	 * @return int
 	 */
 	function getHeader($ch, $header)
 	{
