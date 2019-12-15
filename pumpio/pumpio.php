@@ -17,6 +17,7 @@ use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
+use Friendica\DI;
 use Friendica\Model\Contact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
@@ -105,7 +106,7 @@ function pumpio_registerclient(App $a, $host)
 	$application_name  = Config::get('pumpio', 'application_name');
 
 	if ($application_name == "") {
-		$application_name = $a->getHostName();
+		$application_name = DI::baseUrl()->getHostname();
 	}
 
 	$adminlist = explode(",", str_replace(" ", "", Config::get('config', 'admin_email')));
@@ -772,7 +773,7 @@ function pumpio_fetchtimeline(App $a, $uid)
 		$application_name  = Config::get('pumpio', 'application_name');
 	}
 	if ($application_name == "") {
-		$application_name = $a->getHostName();
+		$application_name = DI::baseUrl()->getHostname();
 	}
 
 	$first_time = ($lastdate == "");

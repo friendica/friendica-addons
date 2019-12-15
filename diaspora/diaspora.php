@@ -18,6 +18,7 @@ use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
 use Friendica\Core\Worker;
+use Friendica\DI;
 
 function diaspora_install()
 {
@@ -231,7 +232,7 @@ function diaspora_post_local(App $a, array &$b)
 
 function diaspora_send(App $a, array &$b)
 {
-	$hostname = $a->getHostName();
+	$hostname = DI::baseUrl()->getHostname();
 
 	Logger::log('diaspora_send: invoked');
 
