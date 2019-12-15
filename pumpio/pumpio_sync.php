@@ -3,7 +3,7 @@ use Friendica\Core\Config;
 use Friendica\Core\Logger;
 
 function pumpio_sync_run(&$argv, &$argc) {
-	$a = Friendica\BaseObject::getApp();
+	$a = Friendica\DI::app();
 
 	require_once("addon/pumpio/pumpio.php");
 
