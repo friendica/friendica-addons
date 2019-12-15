@@ -78,6 +78,7 @@ use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
+use Friendica\DI;
 use Friendica\Model\Contact;
 use Friendica\Model\Conversation;
 use Friendica\Model\Group;
@@ -263,7 +264,7 @@ function twitter_settings_post(App $a)
 				info($e->getMessage());
 			}
 			//  reload the Addon Settings page, if we don't do it see Bug #42
-			$a->internalRedirect('settings/connectors');
+			DI::baseUrl()->redirect('settings/connectors');
 		} else {
 			//  if no PIN is supplied in the POST variables, the user has changed the setting
 			//  to post a tweet for every new __public__ posting to the wall
