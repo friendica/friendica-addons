@@ -9,6 +9,7 @@
 
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
+use Friendica\DI;
 
 function rendertime_install() {
 	Hook::register('page_end', 'addon/rendertime/rendertime.php', 'rendertime_page_end');
@@ -30,7 +31,7 @@ function rendertime_init_1(&$a) {
 function rendertime_page_end(Friendica\App $a, &$o)
 {
 
-	$profiler = $a->getProfiler();
+	$profiler = DI::profiler();
 
 	$duration = microtime(true) - $profiler->get('start');
 
