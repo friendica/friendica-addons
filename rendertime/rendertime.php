@@ -36,7 +36,7 @@ function rendertime_page_end(Friendica\App $a, &$o)
 	$duration = microtime(true) - $profiler->get('start');
 
 	$ignored_modules = ["fbrowser"];
-	$ignored = in_array($a->module, $ignored_modules);
+	$ignored = in_array(DI::module()->getName(), $ignored_modules);
 
 	if (is_site_admin() && (($_GET['mode'] ?? '') != 'minimal') && !DI::mode()->isMobile() && !DI::mode()->isMobile() && !$ignored) {
 
