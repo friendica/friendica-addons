@@ -151,7 +151,7 @@ function xmpp_converse(App $a)
 		return;
 	}
 
-	if (in_array($a->query_string, ["admin/federation/"])) {
+	if (in_array(DI::args()->getQueryString(), ["admin/federation/"])) {
 		return;
 	}
 
