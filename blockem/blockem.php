@@ -11,6 +11,7 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
+use Friendica\DI;
 use Friendica\Util\Strings;
 
 function blockem_install()
@@ -43,7 +44,7 @@ function blockem_addon_settings (App $a, &$s)
 	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/blockem/blockem.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/blockem/blockem.css' . '" media="all" />' . "\r\n";
 
 	$words = PConfig::get(local_user(), 'blockem', 'words');
 
@@ -148,7 +149,7 @@ function blockem_prepare_body_content_filter(App $a, array &$hook_data)
 function blockem_display_item(App $a, array &$b = null)
 {
 	if (!empty($b['output']['body']) && strstr($b['output']['body'], 'id="blockem-wrap-')) {
-		$b['output']['thumb'] = $a->getBaseURL() . "/images/person-80.jpg";
+		$b['output']['thumb'] = DI::baseUrl()->get() . "/images/person-80.jpg";
 	}
 }
 

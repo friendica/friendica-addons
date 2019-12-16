@@ -7,6 +7,7 @@
  */
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
+use Friendica\DI;
 
 function smileybutton_install() {
 	//Register hooks
@@ -70,29 +71,29 @@ function show_button(Friendica\App $a, &$b) {
 	];
 
 	$icons = [
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/smiley-heart.gif" alt="<3" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/smiley-brokenheart.gif" alt="</3" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/smiley-smile.gif" alt=":-)" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/smiley-wink.gif" alt=";-)" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/smiley-frown.gif" alt=":-(" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/smiley-tongue-out.gif" alt=":-P" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/smiley-kiss.gif" alt=":-X" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/smiley-laughing.gif" alt=":-D" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/smiley-surprised.gif" alt=":-O" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/smiley-thumbsup.gif" alt="\\o/" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/smiley-Oo.gif" alt="O_o" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/smiley-cry.gif" alt=":\'(" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/smiley-foot-in-mouth.gif" alt=":-!" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/smiley-undecided.gif" alt=":-/" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/smiley-embarassed.gif" alt=":-[" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/smiley-cool.gif" alt="8-)" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/beer_mug.gif" alt=":beer" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/coffee.gif" alt=":coffee" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/smiley-facepalm.gif" alt=":facepalm" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/like.gif" alt=":like" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/dislike.gif" alt=":dislike" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/friendica-16.png" alt="~friendica" />',
-		'<img class="smiley" src="' . $a->getBaseURL() . '/images/rhash-16.png" alt="red" />'
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/smiley-heart.gif" alt="<3" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/smiley-brokenheart.gif" alt="</3" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/smiley-smile.gif" alt=":-)" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/smiley-wink.gif" alt=";-)" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/smiley-frown.gif" alt=":-(" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/smiley-tongue-out.gif" alt=":-P" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/smiley-kiss.gif" alt=":-X" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/smiley-laughing.gif" alt=":-D" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/smiley-surprised.gif" alt=":-O" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/smiley-thumbsup.gif" alt="\\o/" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/smiley-Oo.gif" alt="O_o" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/smiley-cry.gif" alt=":\'(" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/smiley-foot-in-mouth.gif" alt=":-!" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/smiley-undecided.gif" alt=":-/" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/smiley-embarassed.gif" alt=":-[" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/smiley-cool.gif" alt="8-)" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/beer_mug.gif" alt=":beer" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/coffee.gif" alt=":coffee" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/smiley-facepalm.gif" alt=":facepalm" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/like.gif" alt=":like" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/dislike.gif" alt=":dislike" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/friendica-16.png" alt="~friendica" />',
+		'<img class="smiley" src="' . DI::baseUrl()->get() . '/images/rhash-16.png" alt="red" />'
 	];
 
 	// Call hooks to get aditional smileies from other addons
@@ -116,7 +117,7 @@ function show_button(Friendica\App $a, &$b) {
 	$css_file = 'addon/smileybutton/view/' . $a->getCurrentTheme() . '.css';
 	if (! file_exists($css_file))
 		$css_file = 'addon/smileybutton/view/default.css';
-	$css_url = $a->getBaseURL().'/'.$css_file;
+	$css_url = DI::baseUrl()->get().'/'.$css_file;
 
 	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$css_url.'" media="all" />'."\r\n";
 
@@ -125,7 +126,7 @@ function show_button(Friendica\App $a, &$b) {
 	$image = 'addon/smileybutton/view/' . $a->getCurrentTheme() . '.png';
 	if (! file_exists($image))
 		$image = 'addon/smileybutton/view/default.png';
-	$image_url = $a->getBaseURL().'/'.$image;
+	$image_url = DI::baseUrl()->get().'/'.$image;
 
 	//Add the hmtl and script to the page
 	$b = <<< EOT

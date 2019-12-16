@@ -115,8 +115,8 @@ function pumpio_registerclient(App $a, $host)
 	$params["contacts"] = $adminlist[0];
 	$params["application_type"] = "native";
 	$params["application_name"] = $application_name;
-	$params["logo_url"] = $a->getBaseURL()."/images/friendica-256.png";
-	$params["redirect_uris"] = $a->getBaseURL()."/pumpio/connect";
+	$params["logo_url"] = DI::baseUrl()->get()."/images/friendica-256.png";
+	$params["redirect_uris"] = DI::baseUrl()->get()."/pumpio/connect";
 
 	Logger::log("pumpio_registerclient: ".$url." parameters ".print_r($params, true), Logger::DEBUG);
 
@@ -167,7 +167,7 @@ function pumpio_connect(App $a)
 	}
 
 	// The callback URL is the script that gets called after the user authenticates with pumpio
-	$callback_url = $a->getBaseURL()."/pumpio/connect";
+	$callback_url = DI::baseUrl()->get()."/pumpio/connect";
 
 	// Let's begin.  First we need a Request Token.  The request token is required to send the user
 	// to pumpio's login page.
@@ -204,7 +204,7 @@ function pumpio_connect(App $a)
 	if ($success) {
 		Logger::log("pumpio_connect: authenticated");
 		$o = L10n::t("You are now authenticated to pumpio.");
-		$o .= '<br /><a href="'.$a->getBaseURL().'/settings/connectors">'.L10n::t("return to the connector page").'</a>';
+		$o .= '<br /><a href="'.DI::baseUrl()->get().'/settings/connectors">'.L10n::t("return to the connector page").'</a>';
 	} else {
 		Logger::log("pumpio_connect: could not connect");
 		$o = 'Could not connect to pumpio. Refresh the page or try again later.';
@@ -239,7 +239,7 @@ function pumpio_settings(App $a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/pumpio/pumpio.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/pumpio/pumpio.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variables */
 
@@ -289,7 +289,7 @@ function pumpio_settings(App $a, &$s)
 		$s .= '<div id="pumpio-password-wrapper">';
 		if (($oauth_token == "") || ($oauth_token_secret == "")) {
 			$s .= '<div id="pumpio-authenticate-wrapper">';
-			$s .= '<a href="'.$a->getBaseURL().'/pumpio/connect">'.L10n::t("Authenticate your pump.io connection").'</a>';
+			$s .= '<a href="'.DI::baseUrl()->get().'/pumpio/connect">'.L10n::t("Authenticate your pump.io connection").'</a>';
 			$s .= '</div><div class="clear"></div>';
 		} else {
 			$s .= '<div id="pumpio-import-wrapper">';

@@ -288,7 +288,7 @@ function twitter_settings(App $a, &$s)
 	if (!local_user()) {
 		return;
 	}
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/twitter/twitter.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/twitter/twitter.css' . '" media="all" />' . "\r\n";
 	/*	 * *
 	 * 1) Check that we have global consumer key & secret
 	 * 2) If no OAuthtoken & stuff is present, generate button to get some
@@ -839,7 +839,7 @@ function twitter_prepare_body(App $a, array &$b)
 	if ($b["preview"]) {
 		$max_char = 280;
 		$item = $b["item"];
-		$item["plink"] = $a->getBaseURL() . "/display/" . $item["guid"];
+		$item["plink"] = DI::baseUrl()->get() . "/display/" . $item["guid"];
 
 		$condition = ['uri' => $item["thr-parent"], 'uid' => local_user()];
 		$orig_post = Item::selectFirst(['author-link'], $condition);
@@ -1146,7 +1146,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 	$tags_arr = [];
 
 	foreach ($item->entities->hashtags AS $hashtag) {
-		$url = '#[url=' . $a->getBaseURL() . '/search?tag=' . $hashtag->text . ']' . $hashtag->text . '[/url]';
+		$url = '#[url=' . DI::baseUrl()->get() . '/search?tag=' . $hashtag->text . ']' . $hashtag->text . '[/url]';
 		$tags_arr['#' . $hashtag->text] = $url;
 		$body = str_replace('#' . $hashtag->text, $url, $body);
 	}
@@ -1279,7 +1279,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 				}
 
 				$basetag = str_replace('_', ' ', substr($tag, 1));
-				$url = '#[url=' . $a->getBaseURL() . '/search?tag=' . $basetag . ']' . $basetag . '[/url]';
+				$url = '#[url=' . DI::baseUrl()->get() . '/search?tag=' . $basetag . ']' . $basetag . '[/url]';
 				$body = str_replace($tag, $url, $body);
 				$tags_arr['#' . $basetag] = $url;
 			} elseif (strpos($tag, '@') === 0) {

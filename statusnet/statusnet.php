@@ -239,7 +239,7 @@ function statusnet_settings(App $a, &$s)
 	if (!local_user()) {
 		return;
 	}
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/statusnet/statusnet.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/statusnet/statusnet.css' . '" media="all" />' . "\r\n";
 	/*	 * *
 	 * 1) Check that we have a base api url and a consumer key & secret
 	 * 2) If no OAuthtoken & stuff is present, generate button to get some
@@ -736,7 +736,7 @@ function statusnet_prepare_body(App $a, &$b)
 		}
 
 		$item = $b["item"];
-		$item["plink"] = $a->getBaseURL() . "/display/" . $item["guid"];
+		$item["plink"] = DI::baseUrl()->get() . "/display/" . $item["guid"];
 
 		$condition = ['uri' => $item["thr-parent"], 'uid' => local_user()];
 		$orig_post = Item::selectFirst(['author-link', 'uri'], $condition);
@@ -1529,7 +1529,7 @@ function statusnet_convertmsg(App $a, $body, $no_tags = false)
 			if ($mtch[1] == "#") {
 				// Replacing the hash tags that are directed to the GNU Social server with internal links
 				$snhash = "#[url=" . $mtch[2] . "]" . $mtch[3] . "[/url]";
-				$frdchash = '#[url=' . $a->getBaseURL() . '/search?tag=' . $mtch[3] . ']' . $mtch[3] . '[/url]';
+				$frdchash = '#[url=' . DI::baseUrl()->get() . '/search?tag=' . $mtch[3] . ']' . $mtch[3] . '[/url]';
 				$body = str_replace($snhash, $frdchash, $body);
 
 				$str_tags .= $frdchash;

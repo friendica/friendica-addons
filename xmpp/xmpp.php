@@ -53,7 +53,7 @@ function xmpp_addon_settings(App $a, &$s)
 
 	/* Add our stylesheet to the xmpp so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/xmpp/xmpp.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/xmpp/xmpp.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variable */
 
