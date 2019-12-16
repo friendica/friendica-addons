@@ -13,6 +13,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
+use Friendica\DI;
 
 function mathjax_install()
 {
@@ -64,7 +65,7 @@ function mathjax_footer(App $a, &$b)
 	//  if the visitor of the page is not a local_user, use MathJax
 	//  otherwise check the users settings.
 	if (!local_user() || PConfig::get(local_user(), 'mathjax', 'use', false)) {
-		$a->registerFooterScript(__DIR__ . '/asset/MathJax.js?config=TeX-MML-AM_CHTML');
-		$a->registerFooterScript(__DIR__ . '/mathjax.js');
+		DI::page()->registerFooterScript(__DIR__ . '/asset/MathJax.js?config=TeX-MML-AM_CHTML');
+		DI::page()->registerFooterScript(__DIR__ . '/mathjax.js');
 	}
 }

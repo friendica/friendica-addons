@@ -8,6 +8,7 @@
 
 use Friendica\App;
 use Friendica\Core\Hook;
+use Friendica\DI;
 
 function highlightjs_install()
 {
@@ -29,11 +30,11 @@ function highlightjs_head(App $a, &$b)
 		$style = 'default';
 	}
 
-	$a->registerStylesheet(__DIR__ . '/asset/styles/' . $style . '.css');
+	DI::page()->registerStylesheet(__DIR__ . '/asset/styles/' . $style . '.css');
 }
 
 function highlightjs_footer(App $a, &$b)
 {
-	$a->registerFooterScript(__DIR__ . '/asset/highlight.pack.js');
-	$a->registerFooterScript(__DIR__ . '/highlightjs.js');
+	DI::page()->registerFooterScript(__DIR__ . '/asset/highlight.pack.js');
+	DI::page()->registerFooterScript(__DIR__ . '/highlightjs.js');
 }

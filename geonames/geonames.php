@@ -13,6 +13,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
+use Friendica\DI;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\Network;
 use Friendica\Util\XML;
@@ -136,7 +137,7 @@ function geonames_addon_settings(App $a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 	$stylesheetPath = __DIR__ . '/geonames.css';
-	$a->registerStylesheet($stylesheetPath);
+	DI::page()->registerStylesheet($stylesheetPath);
 
 	/* Get the current state of our config variable */
 	$enabled = intval(PConfig::get(local_user(), 'geonames', 'enable'));
