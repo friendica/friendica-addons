@@ -1,0 +1,36 @@
+# ADDON smileybutton
+# Copyright (C)
+# This file is distributed under the same license as the Friendica smileybutton addon package.
+# 
+# 
+# Translators:
+# Rain Hawk, 2019
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2019-11-30 14:52+0000\n"
+"Last-Translator: Rain Hawk\n"
+"Language-Team: Estonian (http://www.transifex.com/Friendica/friendica/language/et/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: et\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: smileybutton.php:269
+msgid "Smileybutton settings"
+msgstr "SmileyNupu sätted"
+
+#: smileybutton.php:272
+msgid "You can hide the button and show the smilies directly."
+msgstr "Saad peita nupu ja näidata smailisid otse"
+
+#: smileybutton.php:274
+msgid "Hide the button"
+msgstr "Peida nupp"
+
+#: smileybutton.php:281
+msgid "Save Settings"
+msgstr "Salvesta sätted"
