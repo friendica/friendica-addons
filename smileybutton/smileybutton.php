@@ -33,7 +33,7 @@ function show_button(Friendica\App $a, &$b) {
 		return;
 
 	// Disable for mobile because most mobiles have a smiley key for ther own
-	if ($a->is_mobile || $a->is_tablet)
+	if (DI::mode()->isMobile() || DI::mode()->isMobile())
 		return;
 
 	/**

@@ -143,7 +143,7 @@ function xmpp_converse(App $a)
 		return;
 	}
 
-	if ($a->is_mobile || $a->is_tablet) {
+	if (DI::mode()->isMobile() || DI::mode()->isMobile()) {
 		return;
 	}
 
