@@ -56,7 +56,7 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'a
 
 function advancedcontentfilter_install(App $a)
 {
-	Hook::register('dbstructure_definition'     , __FILE__, 'advancedcontentfilter_dbstructure_definition');
+	Hook::add('dbstructure_definition'     , __FILE__, 'advancedcontentfilter_dbstructure_definition');
 	Hook::register('prepare_body_content_filter', __FILE__, 'advancedcontentfilter_prepare_body_content_filter');
 	Hook::register('addon_settings'             , __FILE__, 'advancedcontentfilter_addon_settings');
 
@@ -67,7 +67,6 @@ function advancedcontentfilter_install(App $a)
 
 function advancedcontentfilter_uninstall()
 {
-	Hook::unregister('dbstructure_definition'     , __FILE__, 'advancedcontentfilter_dbstructure_definition');
 	Hook::unregister('prepare_body_content_filter', __FILE__, 'advancedcontentfilter_prepare_body_content_filter');
 	Hook::unregister('addon_settings'             , __FILE__, 'advancedcontentfilter_addon_settings');
 }
