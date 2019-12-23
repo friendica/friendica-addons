@@ -1,0 +1,44 @@
+# ADDON showmore
+# Copyright (C)
+# This file is distributed under the same license as the Friendica showmore addon package.
+# 
+# 
+# Translators:
+# Rain Hawk, 2019
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-01 11:11-0400\n"
+"PO-Revision-Date: 2019-12-22 00:47+0000\n"
+"Last-Translator: Rain Hawk\n"
+"Language-Team: Estonian (http://www.transifex.com/Friendica/friendica/language/et/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: et\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: showmore.php:41 showmore.php:45
+msgid "\"Show more\" Settings"
+msgstr "Näita rohkem sätteid"
+
+#: showmore.php:50
+msgid "Enable Show More"
+msgstr "Võimalda Näita Rohkem"
+
+#: showmore.php:53
+msgid "Cutting posts after how much characters"
+msgstr "Lõika postitus peale kuimitut karakterit"
+
+#: showmore.php:57
+msgid "Save Settings"
+msgstr "Salvesta sätted"
+
+#: showmore.php:74
+msgid "Show More Settings saved."
+msgstr "Näita Rohkem sätted salvesatud."
+
+#: showmore.php:134
+msgid "show more"
+msgstr "näita rohkem"
