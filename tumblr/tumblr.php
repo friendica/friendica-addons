@@ -247,11 +247,13 @@ function tumblr_settings(App $a, &$s)
 
 	$s .= '<div id="tumblr-enable-wrapper">';
 	$s .= '<label id="tumblr-enable-label" for="tumblr-checkbox">' . L10n::t('Enable Tumblr Post Addon') . '</label>';
+	$s .= '<input type="hidden" name="tumblr" value="0"/>';
 	$s .= '<input id="tumblr-checkbox" type="checkbox" name="tumblr" value="1" ' . $checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="tumblr-bydefault-wrapper">';
 	$s .= '<label id="tumblr-bydefault-label" for="tumblr-bydefault">' . L10n::t('Post to Tumblr by default') . '</label>';
+	$s .= '<input type="hidden" name="tumblr_bydefault" value="0"/>';
 	$s .= '<input id="tumblr-bydefault" type="checkbox" name="tumblr_bydefault" value="1" ' . $def_checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
