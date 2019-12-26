@@ -1,0 +1,35 @@
+# ADDON markdown
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica markdown addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-12-26 10:04+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: markdown.php:32
+msgid "Markdown"
+msgstr ""
+
+#: markdown.php:33
+msgid "Enable Markdown parsing"
+msgstr ""
+
+#: markdown.php:33
+msgid ""
+"If enabled, self created items will additionally be parsed via Markdown."
+msgstr ""
+
+#: markdown.php:34
+msgid "Save Settings"
+msgstr ""
