@@ -1,0 +1,5 @@
+Markdown
+========
+
+The Markdown addon parses user input for new items and comments via the Markdown parser.
+This enables users to use the Markdown syntax additionally to the BBCode syntax.
