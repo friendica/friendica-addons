@@ -1,0 +1,41 @@
+# ADDON markdown
+# Copyright (C)
+# This file is distributed under the same license as the Friendica markdown addon package.
+# 
+# 
+# Translators:
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2019
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-12-26 10:04+0000\n"
+"PO-Revision-Date: 2019-12-27 06:41+0000\n"
+"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2019\n"
+"Language-Team: German (https://www.transifex.com/Friendica/teams/12172/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: markdown.php:32
+msgid "Markdown"
+msgstr "Markdown"
+
+#: markdown.php:33
+msgid "Enable Markdown parsing"
+msgstr "Verwende Markdown Formatierung"
+
+#: markdown.php:33
+msgid ""
+"If enabled, self created items will additionally be parsed via Markdown."
+msgstr ""
+"Wenn diese Option aktiviert ist, werden alle deine neu erstellten Beiträge "
+"beim Senden zusätzlich zu BBCode auch Markdown Formatierungen angewandt."
+
+#: markdown.php:34
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
