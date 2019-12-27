@@ -34,7 +34,7 @@ msgid ""
 "If enabled, self created items will additionally be parsed via Markdown."
 msgstr ""
 "Wenn diese Option aktiviert ist, werden alle deine neu erstellten Beiträge "
-"beim Senden zusätzlich zum BBCode auch Markdown Formatierungen angewandt."
+"beim Senden zusätzlich zu BBCode auch Markdown Formatierungen angewandt."
 
 #: markdown.php:34
 msgid "Save Settings"
