@@ -53,21 +53,21 @@ function markdown_post_local_start(App $a, &$request) {
 	$elements = ['code', 'noparse', 'nobb', 'pre'];
 	foreach ($elements as $element) {
 		$request['body'] = preg_replace_callback("/\[" . $element . "\](.*?)\[\/" . $element . "\]/ism",
-					function ($match)  use ($element) {
-						return '[base64' . $element . ']' . base64_encode($match[1]) . '[/base64' . $element . ']';
-					},
-					$request['body']
-				);
+			function ($match)  use ($element) {
+				return '[base64' . $element . ']' . base64_encode($match[1]) . '[/base64' . $element . ']';
+			},
+			$request['body']
+		);
 	}
 
 	$request['body'] = Markdown::toBBCode($request['body']);
 
-	foreach ($elements as $element) {
+	foreach (array_reverse($elements) as $element) {
 		$request['body'] = preg_replace_callback("/\[base64" . $element . "\](.*?)\[\/base64" . $element . "\]/ism",
-					function ($match)  use ($element) {
-						return '[' . $element . ']' . base64_decode($match[1]) . '[/' . $element . ']';
-					},
-					$request['body']
-				);
+			function ($match)  use ($element) {
+				return '[' . $element . ']' . base64_decode($match[1]) . '[/' . $element . ']';
+			},
+			$request['body']
+		);
 	}
 }
