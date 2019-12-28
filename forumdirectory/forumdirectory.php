@@ -105,7 +105,7 @@ function forumdirectory_content(App $a)
 
 	$limit = $pager->getStart()."," . $pager->getItemsPerPage();
 
-	$r = DBA::p("SELECT `profile`.*, `profile`.`uid` AS `profile_uid`, `user`.`nickname`, `user`.`timezone` , `user`.`page-flags`,
+	$r = DBA::p("SELECT `profile`.*, `user`.`nickname`, `user`.`timezone` , `user`.`page-flags`,
 			`contact`.`addr`, `contact`.`url` AS `profile_url` FROM `profile`
 			LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid`
 			LEFT JOIN `contact` ON `contact`.`uid` = `user`.`uid`

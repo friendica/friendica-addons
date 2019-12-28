@@ -27,7 +27,7 @@ function friends_widget_size()
 
 function friends_widget_content(&$a, $conf)
 {
-	$r = q("SELECT `profile`.`uid` AS `profile_uid`, `profile`.* , `user`.* FROM `profile`
+	$r = q("SELECT `profile`.* , `user`.* FROM `profile`
 			LEFT JOIN `user` ON `profile`.`uid` = `user`.`uid`
 			WHERE `user`.`uid` = %s LIMIT 1",
 		intval($conf['uid'])
