@@ -50,7 +50,7 @@ function newmemberwidget_network_mod_init ($a, $b)
 	}
 
 	$t .= '</div><div class="clear"></div>';
-	$a->page['aside'] = $t . $a->page['aside'];
+	DI::page()['aside'] = $t . DI::page()['aside'];
 }
 
 function newmemberwidget_addon_admin_post(&$a)

@@ -60,7 +60,7 @@ function numfriends_settings(&$a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/numfriends/numfriends.css' . '" media="all" />' . "\r\n";
+	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/numfriends/numfriends.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variable */
 

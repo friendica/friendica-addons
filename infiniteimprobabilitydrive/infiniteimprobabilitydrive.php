@@ -36,7 +36,7 @@ function infiniteimprobabilitydrive_content(&$a)
 	$baseurl = DI::baseUrl()->get() . '/addon/infiniteimprobabilitydrive';
 	$o = '';
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.DI::baseUrl()->get().'/addon/infiniteimprobabilitydrive/infiniteimprobabilitydrive.css"/>';
+	DI::page()['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.DI::baseUrl()->get().'/addon/infiniteimprobabilitydrive/infiniteimprobabilitydrive.css"/>';
 
 
 	$baseurl = DI::baseUrl()->get();
