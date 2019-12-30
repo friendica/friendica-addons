@@ -239,7 +239,7 @@ function statusnet_settings(App $a, &$s)
 	if (!local_user()) {
 		return;
 	}
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/statusnet/statusnet.css' . '" media="all" />' . "\r\n";
+	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/statusnet/statusnet.css' . '" media="all" />' . "\r\n";
 	/*	 * *
 	 * 1) Check that we have a base api url and a consumer key & secret
 	 * 2) If no OAuthtoken & stuff is present, generate button to get some

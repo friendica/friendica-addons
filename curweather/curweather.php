@@ -104,7 +104,7 @@ function curweather_network_mod_init(App $a, &$b)
 		return;
 	}
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/curweather/curweather.css' . '" media="all" />' . "\r\n";
+	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/curweather/curweather.css' . '" media="all" />' . "\r\n";
 
 	// $rpt value is needed for location
 	// $lang will be taken from the browser session to honour user settings
@@ -161,7 +161,7 @@ function curweather_network_mod_init(App $a, &$b)
 		]);
 	}
 
-	$a->page['aside'] = $curweather . $a->page['aside'];
+	DI::page()['aside'] = $curweather . DI::page()['aside'];
 }
 
 function curweather_addon_settings_post(App $a, $post)

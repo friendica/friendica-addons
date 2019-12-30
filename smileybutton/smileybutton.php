@@ -119,7 +119,7 @@ function show_button(Friendica\App $a, &$b) {
 		$css_file = 'addon/smileybutton/view/default.css';
 	$css_url = DI::baseUrl()->get().'/'.$css_file;
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$css_url.'" media="all" />'."\r\n";
+	DI::page()['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$css_url.'" media="all" />'."\r\n";
 
 
 	//Get the correct image for the theme

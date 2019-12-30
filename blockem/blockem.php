@@ -44,7 +44,7 @@ function blockem_addon_settings (App $a, &$s)
 	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/blockem/blockem.css' . '" media="all" />' . "\r\n";
+	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/blockem/blockem.css' . '" media="all" />' . "\r\n";
 
 	$words = PConfig::get(local_user(), 'blockem', 'words');
 
@@ -165,7 +165,7 @@ function blockem_conversation_start(App $a, array &$b)
 		$a->data['blockem'] = explode(',', $words);
 	}
 
-	$a->page['htmlhead'] .= <<< EOT
+	DI::page()['htmlhead'] .= <<< EOT
 
 <script>
 function blockemBlock(author) {
