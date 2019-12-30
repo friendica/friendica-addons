@@ -325,10 +325,10 @@ function jappixmini_settings(App $a, &$s)
 
 	if (!$activate) {
 		// load scripts if not yet activated so that password can be saved
-		$a->page['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;g=mini.xml"></script>' . "\r\n";
-		$a->page['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=presence.js~caps.js~name.js~roster.js"></script>' . "\r\n";
+		DI::page()['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;g=mini.xml"></script>' . "\r\n";
+		DI::page()['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=presence.js~caps.js~name.js~roster.js"></script>' . "\r\n";
 
-		$a->page['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/lib.js"></script>' . "\r\n";
+		DI::page()['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/lib.js"></script>' . "\r\n";
 	}
 
 	$s .= '<span id="settings_jappixmini_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_jappixmini_expanded\'); openClose(\'settings_jappixmini_inflated\');">';
@@ -387,7 +387,7 @@ function jappixmini_settings(App $a, &$s)
 
 	$s .= '</div>';
 
-	$a->page['htmlhead'] .= "<script type=\"text/javascript\">
+	DI::page()['htmlhead'] .= "<script type=\"text/javascript\">
         function jappixmini_set_password() {
             encrypt = document.getElementById('jappixmini-encrypt').checked;
             password = document.getElementById('jappixmini-password');
@@ -491,10 +491,10 @@ function jappixmini_script(App $a)
 		return;
 	}
 
-	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;g=mini.xml"></script>' . "\r\n";
-	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=presence.js~caps.js~name.js~roster.js"></script>' . "\r\n";
+	DI::page()['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;g=mini.xml"></script>' . "\r\n";
+	DI::page()['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=presence.js~caps.js~name.js~roster.js"></script>' . "\r\n";
 
-	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/lib.js"></script>' . "\r\n";
+	DI::page()['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/lib.js"></script>' . "\r\n";
 
 	$username = PConfig::get(local_user(), 'jappixmini', 'username');
 	$username = str_replace("'", "\\'", $username);
@@ -557,7 +557,7 @@ function jappixmini_script(App $a)
 	}
 
 	// add javascript to start Jappix Mini
-	$a->page['htmlhead'] .= "<script type=\"text/javascript\">
+	DI::page()['htmlhead'] .= "<script type=\"text/javascript\">
         jQuery(document).ready(function() {
            jappixmini_addon_start('$server', '$username', '$proxy', '$bosh', $encrypt, '$password', $nickname, $contacts_json, '$contacts_hash', $autoapprove, $autosubscribe, $groupchats);
         });
@@ -570,10 +570,10 @@ function jappixmini_login(App $a, &$o)
 {
 	// create client secret on login to be able to encrypt jabber passwords
 	// for setDB and str_sha1, needed by jappixmini_addon_set_client_secret
-	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=datastore.js~jsjac.js"></script>' . "\r\n";
+	DI::page()['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=datastore.js~jsjac.js"></script>' . "\r\n";
 
 	// for jappixmini_addon_set_client_secret
-	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/lib.js"></script>' . "\r\n";
+	DI::page()['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/lib.js"></script>' . "\r\n";
 
 	// save hash of password
 	$o = str_replace("<form ", "<form onsubmit=\"jappixmini_addon_set_client_secret(this.elements['id_password'].value);return true;\" ", $o);

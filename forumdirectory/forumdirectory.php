@@ -42,7 +42,7 @@ function forumdirectory_app_menu(App $a, array &$b)
 function forumdirectory_init(App $a)
 {
 	if (local_user()) {
-		$a->page['aside'] .= Widget::findPeople();
+		DI::page()['aside'] .= Widget::findPeople();
 	}
 }
 

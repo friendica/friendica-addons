@@ -53,7 +53,7 @@ function xmpp_addon_settings(App $a, &$s)
 
 	/* Add our stylesheet to the xmpp so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/xmpp/xmpp.css' . '" media="all" />' . "\r\n";
+	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/xmpp/xmpp.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variable */
 
@@ -155,8 +155,8 @@ function xmpp_converse(App $a)
 		return;
 	}
 
-	$a->page['htmlhead'] .= '<link type="text/css" rel="stylesheet" media="screen" href="addon/xmpp/converse/css/converse.css" />' . "\n";
-	$a->page['htmlhead'] .= '<script src="addon/xmpp/converse/builds/converse.min.js"></script>' . "\n";
+	DI::page()['htmlhead'] .= '<link type="text/css" rel="stylesheet" media="screen" href="addon/xmpp/converse/css/converse.css" />' . "\n";
+	DI::page()['htmlhead'] .= '<script src="addon/xmpp/converse/builds/converse.min.js"></script>' . "\n";
 
 	if (Config::get("xmpp", "central_userbase") && !PConfig::get(local_user(), "xmpp", "individual")) {
 		$bosh_proxy = Config::get("xmpp", "bosh_proxy");
@@ -216,7 +216,7 @@ function xmpp_converse(App $a)
 					xhr_user_search: false
 				});\n";
 
-	$a->page['htmlhead'] .= "<script>
+	DI::page()['htmlhead'] .= "<script>
 					require(['converse'], function (converse) {
 						$initialize
 						converse.listen.on('ready', function (event) {
