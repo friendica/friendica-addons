@@ -107,7 +107,7 @@ function windowsphonepush_settings(&$a, &$s)
 	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/windowsphonepush/windowsphonepush.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/windowsphonepush/windowsphonepush.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variables */
 	$enabled = PConfig::get(local_user(), 'windowsphonepush', 'enable');

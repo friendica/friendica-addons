@@ -127,7 +127,7 @@ function widgets_content(&$a) {
 		if (isset($_GET['p']) && local_user()==$conf['uid'] ) {
 			$o .= "<style>.f9k_widget { float: left;border:1px solid black; }</style>";
 			$o .= "<h1>Preview Widget</h1>";
-			$o .= '<a href="'.$a->getBaseURL().'/settings/addon">'. L10n::t("Addon Settings") .'</a>';
+			$o .= '<a href="'.DI::baseUrl()->get().'/settings/addon">'. L10n::t("Addon Settings") .'</a>';
 
 			$o .=  "<h4>".call_user_func($a->argv[1].'_widget_name')."</h4>";
 			$o .=  call_user_func($a->argv[1].'_widget_help');
@@ -143,10 +143,10 @@ function widgets_content(&$a) {
 
 		$script = file_get_contents(dirname(__file__)."/widgets.js");
 		$o .= Renderer::replaceMacros($script, [
-			'$entrypoint' => $a->getBaseURL()."/widgets/".$a->argv[1]."/cb/",
+			'$entrypoint' => DI::baseUrl()->get()."/widgets/".$a->argv[1]."/cb/",
 			'$key' => $conf['key'],
 			'$widget_id' => 'f9a_'.$a->argv[1]."_"._randomAlphaNum(6),
-			'$loader' => $a->getBaseURL()."/images/rotator.gif",
+			'$loader' => DI::baseUrl()->get()."/images/rotator.gif",
 			'$args' => (isset($_GET['a'])?$_GET['a']:''),
 			'$width' => $widget_size[0],
 			'$height' => $widget_size[1],
@@ -164,7 +164,7 @@ function widgets_content(&$a) {
 			<h4>Copy and paste this code</h4>
 			<code>"
 
-			.htmlspecialchars('<script src="'.$a->getBaseURL().'/widgets/'.$a->argv[1].'?k='.$conf['key'])
+			.htmlspecialchars('<script src="'.DI::baseUrl()->get().'/widgets/'.$a->argv[1].'?k='.$conf['key'])
 			.$jsargs
 			.htmlspecialchars('"></script>')
 			."</code>";

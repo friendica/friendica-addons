@@ -11,6 +11,7 @@ use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Database\DBA;
+use Friendica\DI;
 use Friendica\Model\User;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
@@ -75,8 +76,8 @@ function testdrive_cron($a,$b) {
 				'to_name'      => $rr['username'],
 				'to_email'     => $rr['email'],
 				'source_name'  => L10n::t('Administrator'),
-				'source_link'  => $a->getBaseURL(),
-				'source_photo' => $a->getBaseURL() . '/images/person-80.jpg',
+				'source_link'  => DI::baseUrl()->get(),
+				'source_photo' => DI::baseUrl()->get() . '/images/person-80.jpg',
 			]);
 
 			q("update user set expire_notification_sent = '%s' where uid = %d",
@@ -98,7 +99,7 @@ function testdrive_cron($a,$b) {
 function testdrive_enotify(&$a, &$b) {
     if (!empty($b['params']) && $b['params']['type'] == NOTIFY_SYSTEM
 		&& !empty($b['params']['system_type']) && $b['params']['system_type'] === 'testdrive_expire') {
-        $b['itemlink'] = $a->getBaseURL();
+        $b['itemlink'] = DI::baseUrl()->get();
         $b['epreamble'] = $b['preamble'] = L10n::t('Your account on %s will expire in a few days.', Config::get('system', 'sitename'));
         $b['subject'] = L10n::t('Your Friendica test account is about to expire.');
         $b['body'] = L10n::t("Hi %1\$s,\n\nYour test account on %2\$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at %s/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at https://friendi.ca.", $b['params']['to_name'], "[url=".Config::get('system', 'url')."]".Config::get('config', 'sitename')."[/url]", get_server());

@@ -10,6 +10,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\System;
+use Friendica\DI;
 
 function startpage_install() {
 	Hook::register('home_init', 'addon/startpage/startpage.php', 'startpage_home_init');
@@ -32,7 +33,7 @@ function startpage_home_init($a, $b)
 
 	$page = PConfig::get(local_user(), 'startpage', 'startpage');
 	if (strlen($page)) {
-		$a->internalRedirect($page);
+		DI::baseUrl()->redirect($page);
 	}
 	return;
 }
@@ -71,7 +72,7 @@ function startpage_settings(&$a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/startpage/startpage.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/startpage/startpage.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variable */
 

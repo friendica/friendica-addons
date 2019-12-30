@@ -45,7 +45,7 @@ use Friendica\Database\DBA;
 use Friendica\Database\DBStructure;
 use Friendica\Model\Item;
 use Friendica\Model\Term;
-use Friendica\Module\Login;
+use Friendica\Module\Security\Login;
 use Friendica\Network\HTTPException;
 use Friendica\Util\DateTimeFormat;
 use Psr\Http\Message\ResponseInterface;
