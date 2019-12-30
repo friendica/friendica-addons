@@ -50,7 +50,8 @@ function markdown_post_local_start(App $a, &$request) {
 	}
 
 	// Elements that shouldn't be parsed
-	$elements = ['code', 'noparse', 'nobb', 'pre', 'share', 'url', 'img'];
+	$elements = ['code', 'noparse', 'nobb', 'pre', 'share', 'url', 'img', 'bookmark',
+		'audio', 'video', 'youtube', 'vimeo', 'attachment', 'iframe', 'map', 'mail'];
 	foreach ($elements as $element) {
 		$request['body'] = preg_replace_callback("/\[" . $element . "(.*?)\](.*?)\[\/" . $element . "\]/ism",
 			function ($match) use ($element) {
