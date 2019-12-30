@@ -78,6 +78,7 @@ use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
+use Friendica\DI;
 use Friendica\Model\Contact;
 use Friendica\Model\Conversation;
 use Friendica\Model\Group;
@@ -263,7 +264,7 @@ function twitter_settings_post(App $a)
 				info($e->getMessage());
 			}
 			//  reload the Addon Settings page, if we don't do it see Bug #42
-			$a->internalRedirect('settings/connectors');
+			DI::baseUrl()->redirect('settings/connectors');
 		} else {
 			//  if no PIN is supplied in the POST variables, the user has changed the setting
 			//  to post a tweet for every new __public__ posting to the wall
@@ -287,7 +288,7 @@ function twitter_settings(App $a, &$s)
 	if (!local_user()) {
 		return;
 	}
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/twitter/twitter.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/twitter/twitter.css' . '" media="all" />' . "\r\n";
 	/*	 * *
 	 * 1) Check that we have global consumer key & secret
 	 * 2) If no OAuthtoken & stuff is present, generate button to get some
@@ -838,7 +839,7 @@ function twitter_prepare_body(App $a, array &$b)
 	if ($b["preview"]) {
 		$max_char = 280;
 		$item = $b["item"];
-		$item["plink"] = $a->getBaseURL() . "/display/" . $item["guid"];
+		$item["plink"] = DI::baseUrl()->get() . "/display/" . $item["guid"];
 
 		$condition = ['uri' => $item["thr-parent"], 'uid' => local_user()];
 		$orig_post = Item::selectFirst(['author-link'], $condition);
@@ -939,7 +940,7 @@ function twitter_fetchtimeline(App $a, $uid)
 	$application_name = Config::get('twitter', 'application_name');
 
 	if ($application_name == "") {
-		$application_name = $a->getHostName();
+		$application_name = DI::baseUrl()->getHostname();
 	}
 
 	$has_picture = false;
@@ -1145,7 +1146,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 	$tags_arr = [];
 
 	foreach ($item->entities->hashtags AS $hashtag) {
-		$url = '#[url=' . $a->getBaseURL() . '/search?tag=' . $hashtag->text . ']' . $hashtag->text . '[/url]';
+		$url = '#[url=' . DI::baseUrl()->get() . '/search?tag=' . $hashtag->text . ']' . $hashtag->text . '[/url]';
 		$tags_arr['#' . $hashtag->text] = $url;
 		$body = str_replace('#' . $hashtag->text, $url, $body);
 	}
@@ -1278,7 +1279,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 				}
 
 				$basetag = str_replace('_', ' ', substr($tag, 1));
-				$url = '#[url=' . $a->getBaseURL() . '/search?tag=' . $basetag . ']' . $basetag . '[/url]';
+				$url = '#[url=' . DI::baseUrl()->get() . '/search?tag=' . $basetag . ']' . $basetag . '[/url]';
 				$body = str_replace($tag, $url, $body);
 				$tags_arr['#' . $basetag] = $url;
 			} elseif (strpos($tag, '@') === 0) {
@@ -1632,7 +1633,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 	$application_name = Config::get('twitter', 'application_name');
 
 	if ($application_name == "") {
-		$application_name = $a->getHostName();
+		$application_name = DI::baseUrl()->getHostname();
 	}
 
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);

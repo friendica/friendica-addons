@@ -13,6 +13,7 @@ use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Renderer;
+use Friendica\DI;
 
 function pageheader_install() {
     Hook::register('page_content_top', __FILE__, 'pageheader_fetch');
@@ -26,7 +27,7 @@ function pageheader_addon_admin(App &$a, &$s)
 
     /* Add our stylesheet to the page so we can make our settings look nice */
 	$stylesheetPath = __DIR__ . '/pageheader.css';
-	$a->registerStylesheet($stylesheetPath);
+	DI::page()->registerStylesheet($stylesheetPath);
 
 	$words = Config::get('pageheader','text');
 	if(! $words)
@@ -65,7 +66,7 @@ function pageheader_fetch(App $a, &$b)
 	}
 
 	$stylesheetPath = __DIR__ .'/pageheader.css';
-	$a->registerStylesheet($stylesheetPath);
+	DI::page()->registerStylesheet($stylesheetPath);
     
     if ($s) {
         $b .= '<div class="pageheader">' . $s . '</div>';

@@ -13,6 +13,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\DI;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\Proxy as ProxyUtils;
 use Friendica\Util\Strings;
@@ -34,8 +35,7 @@ function impressum_uninstall() {
 function impressum_module() {
 }
 function impressum_content() {
-    $a = \get_app();
-    $a->internalRedirect('friendica/');
+    DI::baseUrl()->redirect('friendica/');
 }
 
 function obfuscate_email ($s) {

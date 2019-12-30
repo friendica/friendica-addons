@@ -70,6 +70,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
+use Friendica\DI;
 use Friendica\Model\User;
 use Friendica\Util\Network;
 
@@ -324,10 +325,10 @@ function jappixmini_settings(App $a, &$s)
 
 	if (!$activate) {
 		// load scripts if not yet activated so that password can be saved
-		$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->getBaseURL() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;g=mini.xml"></script>' . "\r\n";
-		$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->getBaseURL() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=presence.js~caps.js~name.js~roster.js"></script>' . "\r\n";
+		$a->page['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;g=mini.xml"></script>' . "\r\n";
+		$a->page['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=presence.js~caps.js~name.js~roster.js"></script>' . "\r\n";
 
-		$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->getBaseURL() . '/addon/jappixmini/lib.js"></script>' . "\r\n";
+		$a->page['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/lib.js"></script>' . "\r\n";
 	}
 
 	$s .= '<span id="settings_jappixmini_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_jappixmini_expanded\'); openClose(\'settings_jappixmini_inflated\');">';
@@ -490,10 +491,10 @@ function jappixmini_script(App $a)
 		return;
 	}
 
-	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->getBaseURL() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;g=mini.xml"></script>' . "\r\n";
-	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->getBaseURL() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=presence.js~caps.js~name.js~roster.js"></script>' . "\r\n";
+	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;g=mini.xml"></script>' . "\r\n";
+	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=presence.js~caps.js~name.js~roster.js"></script>' . "\r\n";
 
-	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->getBaseURL() . '/addon/jappixmini/lib.js"></script>' . "\r\n";
+	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/lib.js"></script>' . "\r\n";
 
 	$username = PConfig::get(local_user(), 'jappixmini', 'username');
 	$username = str_replace("'", "\\'", $username);
@@ -514,7 +515,7 @@ function jappixmini_script(App $a)
 	// set proxy if necessary
 	$use_proxy = Config::get('jappixmini', 'bosh_proxy');
 	if ($use_proxy) {
-		$proxy = $a->getBaseURL() . '/addon/jappixmini/proxy.php';
+		$proxy = DI::baseUrl()->get() . '/addon/jappixmini/proxy.php';
 	} else {
 		$proxy = "";
 	}
@@ -569,10 +570,10 @@ function jappixmini_login(App $a, &$o)
 {
 	// create client secret on login to be able to encrypt jabber passwords
 	// for setDB and str_sha1, needed by jappixmini_addon_set_client_secret
-	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->getBaseURL() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=datastore.js~jsjac.js"></script>' . "\r\n";
+	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/jappix/php/get.php?t=js&amp;f=datastore.js~jsjac.js"></script>' . "\r\n";
 
 	// for jappixmini_addon_set_client_secret
-	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . $a->getBaseURL() . '/addon/jappixmini/lib.js"></script>' . "\r\n";
+	$a->page['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/lib.js"></script>' . "\r\n";
 
 	// save hash of password
 	$o = str_replace("<form ", "<form onsubmit=\"jappixmini_addon_set_client_secret(this.elements['id_password'].value);return true;\" ", $o);
@@ -700,6 +701,6 @@ function jappixmini_download_source(App $a, &$b)
 {
 	// Jappix Mini source download link on About page
 	$b .= '<h1>Jappix Mini</h1>';
-	$b .= '<p>This site uses the jappixmini addon, which includes Jappix Mini by the <a href="' . $a->getBaseURL() . '/addon/jappixmini/jappix/AUTHORS">Jappix authors</a> and is distributed under the terms of the <a href="' . $a->getBaseURL() . '/addon/jappixmini/jappix/COPYING">GNU Affero General Public License</a>.</p>';
-	$b .= '<p>You can download the <a href="' . $a->getBaseURL() . '/addon/jappixmini.tgz">source code of the addon</a>. The rest of Friendica is distributed under compatible licenses and can be retrieved from <a href="https://github.com/friendica/friendica">https://github.com/friendica/friendica</a> and <a href="https://github.com/friendica/friendica-addons">https://github.com/friendica/friendica-addons</a></p>';
+	$b .= '<p>This site uses the jappixmini addon, which includes Jappix Mini by the <a href="' . DI::baseUrl()->get() . '/addon/jappixmini/jappix/AUTHORS">Jappix authors</a> and is distributed under the terms of the <a href="' . DI::baseUrl()->get() . '/addon/jappixmini/jappix/COPYING">GNU Affero General Public License</a>.</p>';
+	$b .= '<p>You can download the <a href="' . DI::baseUrl()->get() . '/addon/jappixmini.tgz">source code of the addon</a>. The rest of Friendica is distributed under compatible licenses and can be retrieved from <a href="https://github.com/friendica/friendica">https://github.com/friendica/friendica</a> and <a href="https://github.com/friendica/friendica-addons">https://github.com/friendica/friendica-addons</a></p>';
 }

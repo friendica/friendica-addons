@@ -9,6 +9,7 @@
 
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
+use Friendica\DI;
 
 function rendertime_install() {
 	Hook::register('page_end', 'addon/rendertime/rendertime.php', 'rendertime_page_end');
@@ -30,14 +31,14 @@ function rendertime_init_1(&$a) {
 function rendertime_page_end(Friendica\App $a, &$o)
 {
 
-	$profiler = $a->getProfiler();
+	$profiler = DI::profiler();
 
 	$duration = microtime(true) - $profiler->get('start');
 
 	$ignored_modules = ["fbrowser"];
-	$ignored = in_array($a->module, $ignored_modules);
+	$ignored = in_array(DI::module()->getName(), $ignored_modules);
 
-	if (is_site_admin() && (($_GET['mode'] ?? '') != 'minimal') && !$a->is_mobile && !$a->is_tablet && !$ignored) {
+	if (is_site_admin() && (($_GET['mode'] ?? '') != 'minimal') && !DI::mode()->isMobile() && !DI::mode()->isMobile() && !$ignored) {
 
 		$o = $o . '<div class="renderinfo">' . L10n::t("Database: %s/%s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: %s, Total: %s",
 				round($profiler->get('database') - $profiler->get('database_write'), 3),

@@ -13,6 +13,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
+use Friendica\DI;
 use Friendica\Util\Strings;
 
 function xmpp_install()
@@ -52,7 +53,7 @@ function xmpp_addon_settings(App $a, &$s)
 
 	/* Add our stylesheet to the xmpp so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/xmpp/xmpp.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/xmpp/xmpp.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variable */
 
@@ -142,7 +143,7 @@ function xmpp_converse(App $a)
 		return;
 	}
 
-	if ($a->is_mobile || $a->is_tablet) {
+	if (DI::mode()->isMobile() || DI::mode()->isMobile()) {
 		return;
 	}
 
@@ -150,7 +151,7 @@ function xmpp_converse(App $a)
 		return;
 	}
 
-	if (in_array($a->query_string, ["admin/federation/"])) {
+	if (in_array(DI::args()->getQueryString(), ["admin/federation/"])) {
 		return;
 	}
 
@@ -167,7 +168,7 @@ function xmpp_converse(App $a)
 			PConfig::set(local_user(), "xmpp", "password", $password);
 		}
 
-		$jid = $a->user["nickname"] . "@" . $a->getHostName() . "/converse-" . Strings::getRandomHex(5);
+		$jid = $a->user["nickname"] . "@" . DI::baseUrl()->getHostname() . "/converse-" . Strings::getRandomHex(5);
 
 		$auto_login = "auto_login: true,
 			authentication: 'login',

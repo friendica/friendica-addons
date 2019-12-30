@@ -50,6 +50,7 @@ use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
+use Friendica\DI;
 use Friendica\Model\Contact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
@@ -167,7 +168,7 @@ function statusnet_settings_post(App $a, $post)
 					}
 				}
 			}
-			$a->internalRedirect('settings/connectors');
+			DI::baseUrl()->redirect('settings/connectors');
 		} else {
 			if (isset($_POST['statusnet-consumersecret'])) {
 				//  check if we can reach the API of the GNU Social server
@@ -195,7 +196,7 @@ function statusnet_settings_post(App $a, $post)
 						notice(L10n::t('We could not contact the GNU Social API with the Path you entered.') . EOL);
 					}
 				}
-				$a->internalRedirect('settings/connectors');
+				DI::baseUrl()->redirect('settings/connectors');
 			} else {
 				if (isset($_POST['statusnet-pin'])) {
 					//  if the user supplied us with a PIN from GNU Social, let the magic of OAuth happen
@@ -213,7 +214,7 @@ function statusnet_settings_post(App $a, $post)
 					PConfig::set(local_user(), 'statusnet', 'post', 1);
 					PConfig::set(local_user(), 'statusnet', 'post_taglinks', 1);
 					//  reload the Addon Settings page, if we don't do it see Bug #42
-					$a->internalRedirect('settings/connectors');
+					DI::baseUrl()->redirect('settings/connectors');
 				} else {
 					//  if no PIN is supplied in the POST variables, the user has changed the setting
 					//  to post a dent for every new __public__ posting to the wall
@@ -238,7 +239,7 @@ function statusnet_settings(App $a, &$s)
 	if (!local_user()) {
 		return;
 	}
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/statusnet/statusnet.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/statusnet/statusnet.css' . '" media="all" />' . "\r\n";
 	/*	 * *
 	 * 1) Check that we have a base api url and a consumer key & secret
 	 * 2) If no OAuthtoken & stuff is present, generate button to get some
@@ -735,7 +736,7 @@ function statusnet_prepare_body(App $a, &$b)
 		}
 
 		$item = $b["item"];
-		$item["plink"] = $a->getBaseURL() . "/display/" . $item["guid"];
+		$item["plink"] = DI::baseUrl()->get() . "/display/" . $item["guid"];
 
 		$condition = ['uri' => $item["thr-parent"], 'uid' => local_user()];
 		$orig_post = Item::selectFirst(['author-link', 'uri'], $condition);
@@ -837,7 +838,7 @@ function statusnet_fetchtimeline(App $a, $uid)
 		$application_name = Config::get('statusnet', 'application_name');
 	}
 	if ($application_name == "") {
-		$application_name = $a->getHostName();
+		$application_name = DI::baseUrl()->getHostname();
 	}
 
 	$connection = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
@@ -1528,7 +1529,7 @@ function statusnet_convertmsg(App $a, $body, $no_tags = false)
 			if ($mtch[1] == "#") {
 				// Replacing the hash tags that are directed to the GNU Social server with internal links
 				$snhash = "#[url=" . $mtch[2] . "]" . $mtch[3] . "[/url]";
-				$frdchash = '#[url=' . $a->getBaseURL() . '/search?tag=' . $mtch[3] . ']' . $mtch[3] . '[/url]';
+				$frdchash = '#[url=' . DI::baseUrl()->get() . '/search?tag=' . $mtch[3] . ']' . $mtch[3] . '[/url]';
 				$body = str_replace($snhash, $frdchash, $body);
 
 				$str_tags .= $frdchash;

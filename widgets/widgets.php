@@ -13,6 +13,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
+use Friendica\DI;
 
 function widgets_install() {
 	Hook::register('addon_settings', 'addon/widgets/widgets.php', 'widgets_settings');
@@ -76,8 +77,7 @@ function widgets_module() {
 }
 
 function _abs_url($s){
-	$a = \get_app();
-	return preg_replace("|href=(['\"])([^h][^t][^t][^p])|", "href=\$1".$a->getBaseURL()."/\$2", $s);
+	return preg_replace("|href=(['\"])([^h][^t][^t][^p])|", "href=\$1" . DI::baseUrl()->get() . "/\$2", $s);
 }
 
 function _randomAlphaNum($length){

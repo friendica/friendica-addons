@@ -15,6 +15,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
+use Friendica\DI;
 use Friendica\Model\Profile;
 use Friendica\Util\Strings;
 
@@ -107,7 +108,7 @@ function forumdirectory_content(App $a)
 		$total = $cnt['total'];
 	}
 
-	$pager = new Pager($a->query_string, 60);
+	$pager = new Pager(DI::args()->getQueryString(), 60);
 
 	$order = " ORDER BY `name` ASC ";
 

@@ -5,7 +5,7 @@ use Friendica\Core\Logger;
 
 function twitter_sync_run($argv, $argc)
 {
-	$a = Friendica\BaseObject::getApp();
+	$a = Friendica\DI::app();
 
 	require_once 'addon/twitter/twitter.php';
 

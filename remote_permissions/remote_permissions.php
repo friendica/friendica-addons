@@ -7,14 +7,13 @@
  * Status: Unsupported
  */
 
-use Friendica\BaseObject;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
-use Friendica\Util\ACLFormatter;
+use Friendica\DI;
 use Friendica\Util\Strings;
 
 function remote_permissions_install() {
@@ -125,8 +124,7 @@ function remote_permissions_content($a, $item_copy) {
 
 			$item = $r[0];
 
-			/** @var ACLFormatter $aclFormatter */
-			$aclFormatter = BaseObject::getClass(ACLFormatter::class);
+			$aclFormatter = DI::aclFormatter();
 
 			$allowed_users = $aclFormatter->expand($item['allow_cid']);
 			$allowed_groups = $aclFormatter->expand($item['allow_gid']);

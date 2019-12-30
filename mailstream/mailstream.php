@@ -14,6 +14,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
+use Friendica\DI;
 use Friendica\Protocol\Activity;
 use Friendica\Util\Network;
 use Friendica\Model\Item;
@@ -306,7 +307,7 @@ function mailstream_send(\Friendica\App $a, $message_id, $item, $user) {
 		$template = Renderer::getMarkupTemplate('mail.tpl', 'addon/mailstream/');
 		$mail->AltBody = BBCode::toPlaintext($item['body']);
 		$item['body'] = BBCode::convert($item['body']);
-		$item['url'] = $a->getBaseURL() . '/display/' . $item['guid'];
+		$item['url'] = DI::baseUrl()->get() . '/display/' . $item['guid'];
 		$mail->Body = Renderer::replaceMacros($template, [
 						 '$upstream' => L10n::t('Upstream'),
 						 '$local' => L10n::t('Local'),

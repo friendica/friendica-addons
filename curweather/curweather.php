@@ -17,6 +17,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 use Friendica\Core\Session;
+use Friendica\DI;
 use Friendica\Util\Network;
 use Friendica\Util\Proxy as ProxyUtils;
 
@@ -103,7 +104,7 @@ function curweather_network_mod_init(App $a, &$b)
 		return;
 	}
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/curweather/curweather.css' . '" media="all" />' . "\r\n";
+	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/curweather/curweather.css' . '" media="all" />' . "\r\n";
 
 	// $rpt value is needed for location
 	// $lang will be taken from the browser session to honour user settings
