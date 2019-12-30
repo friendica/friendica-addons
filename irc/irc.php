@@ -12,6 +12,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
+use Friendica\DI;
 
 function irc_install() {
 	Hook::register('app_menu', 'addon/irc/irc.php', 'irc_app_menu');
@@ -80,7 +81,7 @@ function irc_module() {
 
 function irc_content(&$a) {
 
-	$baseurl = $a->getBaseURL() . '/addon/irc';
+	$baseurl = DI::baseUrl()->get() . '/addon/irc';
 	$o = '';
 
 	/* set the list of popular channels */
@@ -99,7 +100,7 @@ function irc_content(&$a) {
 
 	$a->page['aside'] .= '<div class="widget"><h3>' . L10n::t('Popular Channels') . '</h3><ul>';
 	foreach($chats as $chat) {
-		$a->page['aside'] .= '<li><a href="' . $a->getBaseURL() . '/irc?channels=' . $chat . '" >' . '#' . $chat . '</a></li>';
+		$a->page['aside'] .= '<li><a href="' . DI::baseUrl()->get() . '/irc?channels=' . $chat . '" >' . '#' . $chat . '</a></li>';
 	}
 	$a->page['aside'] .= '</ul></div>';
 

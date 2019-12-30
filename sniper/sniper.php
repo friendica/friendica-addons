@@ -10,6 +10,7 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
 use Friendica\Core\Hook;
+use Friendica\DI;
 
 function sniper_install() {
     Hook::register('app_menu', 'addon/sniper/sniper.php', 'sniper_app_menu');
@@ -29,7 +30,7 @@ function sniper_module() {}
 
 function sniper_content(&$a) {
 
-$baseurl = $a->getBaseURL() . '/addon/sniper';
+$baseurl = DI::baseUrl()->get() . '/addon/sniper';
 
 $o .= <<< EOT
 <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="620" height="480" id="hotshotsniper" align="middle">

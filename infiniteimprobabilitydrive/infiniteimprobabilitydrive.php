@@ -7,6 +7,7 @@
 */
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
+use Friendica\DI;
 
 function infiniteimprobabilitydrive_install()
 {
@@ -32,13 +33,13 @@ function infiniteimprobabilitydrive_module()
 
 function infiniteimprobabilitydrive_content(&$a)
 {
-	$baseurl = $a->getBaseURL() . '/addon/infiniteimprobabilitydrive';
+	$baseurl = DI::baseUrl()->get() . '/addon/infiniteimprobabilitydrive';
 	$o = '';
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$a->getBaseURL().'/addon/infiniteimprobabilitydrive/infiniteimprobabilitydrive.css"/>';
+	$a->page['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.DI::baseUrl()->get().'/addon/infiniteimprobabilitydrive/infiniteimprobabilitydrive.css"/>';
 
 
-	$baseurl = $a->getBaseURL();
+	$baseurl = DI::baseUrl()->get();
 
 	$o .= <<< EOT
 
