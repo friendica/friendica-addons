@@ -25,7 +25,7 @@ function viewsrc_uninstall() {
 }
 
 function viewsrc_page_end(&$a, &$o){
-	$a->page['htmlhead'] .= <<< EOS
+	DI::page()['htmlhead'] .= <<< EOS
 	<script>
 		$(function(){
 			$('a[href*="/viewsrc/"]').each(function() {

@@ -6,6 +6,7 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
 use Friendica\Core\Hook;
+use Friendica\DI;
 
 function calc_install() {
 	Hook::register('app_menu', 'addon/calc/calc.php', 'calc_app_menu');
@@ -284,7 +285,7 @@ id.value = ""
 </script>
 
 EOT;
-$a->page['htmlhead'] .= $x;
+DI::page()['htmlhead'] .= $x;
 }
 
 function calc_content($app) {

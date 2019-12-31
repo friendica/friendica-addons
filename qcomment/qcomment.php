@@ -43,7 +43,7 @@ function qcomment_addon_settings(&$a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/qcomment/qcomment.css' . '" media="all" />' . "\r\n";
+	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/qcomment/qcomment.css' . '" media="all" />' . "\r\n";
 
 	$words = PConfig::get(local_user(), 'qcomment', 'words', L10n::t(':-)') . "\n" . L10n::t(':-(') . "\n" .  L10n::t('lol'));
 

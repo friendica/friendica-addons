@@ -57,7 +57,7 @@ function openstreetmap_load_config(\Friendica\App $a, ConfigFileLoader $loader)
 function openstreetmap_alterheader($a, &$navHtml)
 {
 	$addScriptTag = '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/openstreetmap/openstreetmap.js"></script>' . "\r\n";
-	$a->page['htmlhead'] .= $addScriptTag;
+	DI::page()['htmlhead'] .= $addScriptTag;
 }
 
 /**

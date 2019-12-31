@@ -38,7 +38,7 @@ function superblock_addon_settings(&$a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/superblock/superblock.css' . '" media="all" />' . "\r\n";
+	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/superblock/superblock.css' . '" media="all" />' . "\r\n";
 
 	$words = PConfig::get(local_user(), 'system', 'blocked');
 	if (!$words) {
@@ -112,7 +112,7 @@ function superblock_conversation_start(&$a, &$b)
 	if ($words) {
 		$a->data['superblock'] = explode(',', $words);
 	}
-	$a->page['htmlhead'] .= <<< EOT
+	DI::page()['htmlhead'] .= <<< EOT
 
 <script>
 function superblockBlock(author) {

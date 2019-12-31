@@ -39,7 +39,7 @@ function remote_permissions_settings(&$a,&$o) {
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	$a->page['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/remote_permissions/settings.css' . '" media="all" />' . "\r\n";
+	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/remote_permissions/settings.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variable */
 
