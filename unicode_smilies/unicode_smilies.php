@@ -1788,7 +1788,7 @@ Smilies::add($b, ':violin', '&#x1F3BB;');
     Smilies::add($b, ':argentina', '&#x1F1E6&#x1F1F7');
     Smilies::add($b, ':americansamoa', '&#x1F1E6&#x1F1F8');
     Smilies::add($b, ':austria', '&#x1F1E6&#x1F1F9');
-    Smilies::add($b, ':australia', '&#x1F1E6&#x1F1F9');
+    Smilies::add($b, ':australia', '&#x1F1E6&#x1F1FA');
     Smilies::add($b, ':aruba', '&#x1F1E6&#x1F1FC');
     Smilies::add($b, ':ålandislands', '&#x1F1E6&#x1F1FD');
     Smilies::add($b, ':azerbaijan', '&#x1F1E6&#x1F1FF');
