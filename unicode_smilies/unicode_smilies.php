@@ -425,9 +425,9 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':green heart', '&#x1F49A');
 		Smilies::add($b, ':blue heart', '&#x1F499');
 		Smilies::add($b, ':purple heart', '&#x1F49C');
-//  	Smilies::add($b, ':brown heart', '&#x1F90E');
-    	Smilies::add($b, ':black heart', '&#x1F5A4');
-//    	Smilies::add($b, ':white heart', '&#x1F90D');
+//  		Smilies::add($b, ':brown heart', '&#x1F90E');
+    		Smilies::add($b, ':black heart', '&#x1F5A4');
+//    		Smilies::add($b, ':white heart', '&#x1F90D');
 		Smilies::add($b, ':hundred points', '&#x1F4AF');
 		Smilies::add($b, ':anger symbol', '&#x1F4A2');
 		Smilies::add($b, ':collision', '&#x1F4A5');
@@ -489,13 +489,13 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':selfie', '&#x1F933');
 
 // body-parts
-    	Smilies::add($b, ':flexed biceps', '&#x1F4AA');
-//  	Smilies::add($b, ':mechanical arm', '&#x1F9BE');
-//  	Smilies::add($b, ':mechanical leg', '&#x1F9BF');
+    		Smilies::add($b, ':flexed biceps', '&#x1F4AA');
+//  		Smilies::add($b, ':mechanical arm', '&#x1F9BE');
+//  		Smilies::add($b, ':mechanical leg', '&#x1F9BF');
 		Smilies::add($b, ':leg', '&#x1F9B5');
 		Smilies::add($b, ':foot', '&#x1F9B6');
 		Smilies::add($b, ':ear', '&#x1F442');
-//  	Smilies::add($b, ':ear with hearing aid', '&#x1F9BB');
+//  		Smilies::add($b, ':ear with hearing aid', '&#x1F9BB');
 		Smilies::add($b, ':nose', '&#x1F443');
 		Smilies::add($b, ':brain', '&#x1F9E0');
 		Smilies::add($b, ':tooth', '&#x1F9B7');
@@ -552,9 +552,9 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':person raising hand', '&#x1F64B');
 		Smilies::add($b, ':man raising hand', '&#x1F64B&#x200D&#x2642&#xFE0F');
 		Smilies::add($b, ':woman raising hand', '&#x1F64B&#x200D&#x2640&#xFE0F');
-//  	Smilies::add($b, ':deaf person', '&#x1F9CF');
-//  	Smilies::add($b, ':deaf man', '&#x1F9CF&#x200D&#x2642&#xFE0F');
-//  	Smilies::add($b, ':deaf woman', '&#x1F9CF&#x200D&#x2640&#xFE0F');
+//  		Smilies::add($b, ':deaf person', '&#x1F9CF');
+//  		Smilies::add($b, ':deaf man', '&#x1F9CF&#x200D&#x2642&#xFE0F');
+//  		Smilies::add($b, ':deaf woman', '&#x1F9CF&#x200D&#x2640&#xFE0F');
 		Smilies::add($b, ':person bowing', '&#x1F647');
 		Smilies::add($b, ':man bowing', '&#x1F647&#x200D&#x2642&#xFE0F');
 		Smilies::add($b, ':woman bowing', '&#x1F647&#x200D&#x2640&#xFE0F');
@@ -628,10 +628,10 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':monkey face', '&#x1F435');
 		Smilies::add($b, ':monkey', '&#x1F412');
 		Smilies::add($b, ':gorilla', '&#x1F98D');
-//  	Smilies::add($b, ':orangutan', '&#x1F9A7');
+//  		Smilies::add($b, ':orangutan', '&#x1F9A7');
 		Smilies::add($b, ':dog face', '&#x1F436');
 		Smilies::add($b, ':dog', '&#x1F415');
-//  	Smilies::add($b, ':guide dog', '&#x1F9AE');
+//  		Smilies::add($b, ':guide dog', '&#x1F9AE');
 		Smilies::add($b, ':poodle', '&#x1F429');
 		Smilies::add($b, ':wolf', '&#x1F43A');
 		Smilies::add($b, ':fox', '&#x1F98A');
@@ -677,10 +677,10 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':bear', '&#x1F43B');
 		Smilies::add($b, ':koala', '&#x1F428');
 		Smilies::add($b, ':panda', '&#x1F43C');
-//  	Smilies::add($b, ':sloth', '&#x1F9A5');
-//  	Smilies::add($b, ':otter', '&#x1F9A6');
-//  	Smilies::add($b, ':skunk', '&#x1F9A8');
-//  	Smilies::add($b, ':kangaroo', '&#x1F998');
+//  		Smilies::add($b, ':sloth', '&#x1F9A5');
+//  		Smilies::add($b, ':otter', '&#x1F9A6');
+//  		Smilies::add($b, ':skunk', '&#x1F9A8');
+//  		Smilies::add($b, ':kangaroo', '&#x1F998');
 		Smilies::add($b, ':badger', '&#x1F9A1');
 		Smilies::add($b, ':paw prints', '&#x1F43E');
 
@@ -698,7 +698,7 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':duck', '&#x1F986');
 		Smilies::add($b, ':swan', '&#x1F9A2');
 		Smilies::add($b, ':owl', '&#x1F989');
-//  	Smilies::add($b, ':flamingo', '&#x1F9A9');
+//  		Smilies::add($b, ':flamingo', '&#x1F9A9');
 		Smilies::add($b, ':peacock', '&#x1F99A');
 		Smilies::add($b, ':parrot', '&#x1F99C');
     
@@ -796,8 +796,8 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':cucumber', '&#x1F952');
 		Smilies::add($b, ':leafy green', '&#x1F96C');
 		Smilies::add($b, ':broccoli', '&#x1F966');
-//  	Smilies::add($b, ':garlic', '&#x1F9C4');
-//  	Smilies::add($b, ':onion', '&#x1F9C5');
+//  		Smilies::add($b, ':garlic', '&#x1F9C4');
+//  		Smilies::add($b, ':onion', '&#x1F9C5');
 		Smilies::add($b, ':mushroom', '&#x1F344');
 		Smilies::add($b, ':peanuts', '&#x1F95C');
 		Smilies::add($b, ':chestnut', '&#x1F330');
@@ -809,7 +809,7 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':pretzel', '&#x1F968');
 		Smilies::add($b, ':bagel', '&#x1F96F');
 		Smilies::add($b, ':pancakes', '&#x1F95E');
-//  	Smilies::add($b, ':waffle', '&#x1F9C7');
+//  		Smilies::add($b, ':waffle', '&#x1F9C7');
 		Smilies::add($b, ':cheese wedge', '&#x1F9C0');
 		Smilies::add($b, ':meat on bone', '&#x1F356');
 		Smilies::add($b, ':poultry leg', '&#x1F357');
@@ -823,7 +823,7 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':taco', '&#x1F32E');
 		Smilies::add($b, ':burrito', '&#x1F32F');
 		Smilies::add($b, ':stuffed flatbread', '&#x1F959');
-//  	Smilies::add($b, ':falafel', '&#x1F9C6');
+//  		Smilies::add($b, ':falafel', '&#x1F9C6');
 		Smilies::add($b, ':egg', '&#x1F95A');
 		Smilies::add($b, ':cooking', '&#x1F373');
 		Smilies::add($b, ':shallow pan of food', '&#x1F958');
@@ -831,7 +831,7 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':bowl with spoon', '&#x1F963');
 		Smilies::add($b, ':green salad', '&#x1F957');
 		Smilies::add($b, ':popcorn', '&#x1F37F');
-//  	Smilies::add($b, ':butter', '&#x1F9C8');
+//  		Smilies::add($b, ':butter', '&#x1F9C8');
 		Smilies::add($b, ':salt', '&#x1F9C2');
 		Smilies::add($b, ':canned food', '&#x1F96B');
 
@@ -892,9 +892,9 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':clinking glasses', '&#x1F942');
 		Smilies::add($b, ':tumbler glass', '&#x1F943');
 		Smilies::add($b, ':cup with straw', '&#x1F964');
-//  	Smilies::add($b, ':beverage box', '&#x1F9C3');
-//  	Smilies::add($b, ':mate', '&#x1F9C9');
-//  	Smilies::add($b, ':ice', '&#x1F9CA');
+//  		Smilies::add($b, ':beverage box', '&#x1F9C3');
+//  		Smilies::add($b, ':mate', '&#x1F9C9');
+//  		Smilies::add($b, ':ice', '&#x1F9CA');
     
 // dishware
 		Smilies::add($b, ':chopsticks', '&#x1F962');
@@ -954,7 +954,7 @@ function unicode_smilies_smilies(&$a,&$b) {
 // place-religious
 		Smilies::add($b, ':church', '&#x26EA');
 		Smilies::add($b, ':mosque', '&#x1F54C');
-//  	Smilies::add($b, ':hindu temple', '&#x1F6D5');
+//  		Smilies::add($b, ':hindu temple', '&#x1F6D5');
 		Smilies::add($b, ':synagogue', '&#x1F54D');
 		Smilies::add($b, ':shinto shrine', '&#x26E9');
 		Smilies::add($b, ':kaaba', '&#x1F54B');
@@ -1009,9 +1009,9 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':racing car', '&#x1F3CE');
 		Smilies::add($b, ':motorcycle', '&#x1F3CD');
 		Smilies::add($b, ':motor scooter', '&#x1F6F5');
-//  	Smilies::add($b, ':manual wheelchair', '&#x1F9BD');
-//  	Smilies::add($b, ':motorized wheelchair', '&#x1F9BC');
-//  	Smilies::add($b, ':auto rickshaw', '&#x1F6FA');
+//  		Smilies::add($b, ':manual wheelchair', '&#x1F9BD');
+//  		Smilies::add($b, ':motorized wheelchair', '&#x1F9BC');
+//  		Smilies::add($b, ':auto rickshaw', '&#x1F6FA');
 		Smilies::add($b, ':bicycle', '&#x1F6B2');
 		Smilies::add($b, ':kick scooter', '&#x1F6F4');
 		Smilies::add($b, ':skateboard', '&#x1F6F9');
@@ -1041,7 +1041,7 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':small airplane', '&#x1F6E9');
 		Smilies::add($b, ':airplane departure', '&#x1F6EB');
 		Smilies::add($b, ':airplane arrival', '&#x1F6EC');
-//  	Smilies::add($b, ':parachute', '&#x1FA82');
+//  		Smilies::add($b, ':parachute', '&#x1FA82');
 		Smilies::add($b, ':seat', '&#x1F4BA');
 		Smilies::add($b, ':helicopter', '&#x1F681');
 		Smilies::add($b, ':suspension railway', '&#x1F69F');
@@ -1052,8 +1052,8 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':flying saucer', '&#x1F6F8');
     
 // hotel
-    	Smilies::add($b, ':bellhop bell', '&#x1F6CE');
-    	Smilies::add($b, ':luggage', '&#x1F9F3');
+    		Smilies::add($b, ':bellhop bell', '&#x1F6CE');
+    		Smilies::add($b, ':luggage', '&#x1F9F3');
     
 // time
 		Smilies::add($b, ':hourglass done', '&#x231B');
@@ -1105,7 +1105,7 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':sun', '&#x2600');
 		Smilies::add($b, ':full moon face', '&#x1F31D');
 		Smilies::add($b, ':sun with face', '&#x1F31E');
-//  	Smilies::add($b, ':ringed planet', '&#x1FA90');
+//  		Smilies::add($b, ':ringed planet', '&#x1FA90');
 		Smilies::add($b, ':star', '&#x2B50');
 		Smilies::add($b, ':glowing star', '&#x1F31F');
 		Smilies::add($b, ':shooting star', '&#x1F320');
@@ -1192,16 +1192,16 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':flag in hole', '&#x26F3');
 		Smilies::add($b, ':ice skate', '&#x26F8');
 		Smilies::add($b, ':fishing pole', '&#x1F3A3');
-//  	Smilies::add($b, ':diving mask', '&#x1F93F');
+//  		Smilies::add($b, ':diving mask', '&#x1F93F');
 		Smilies::add($b, ':running shirt', '&#x1F3BD');
 		Smilies::add($b, ':skis', '&#x1F3BF');
 		Smilies::add($b, ':sled', '&#x1F6F7');
 		Smilies::add($b, ':curling stone', '&#x1F94C');
     
 // game
-    	Smilies::add($b, ':direct hit', '&#x1F3AF');
-//  	Smilies::add($b, ':yo-yo', '&#x1FA80');
-//  	Smilies::add($b, ':kite', '&#x1FA81');
+    		Smilies::add($b, ':direct hit', '&#x1F3AF');
+//  		Smilies::add($b, ':yo-yo', '&#x1FA80');
+//  		Smilies::add($b, ':kite', '&#x1FA81');
 		Smilies::add($b, ':pool 8 ball', '&#x1F3B1');
 		Smilies::add($b, ':crystal ball', '&#x1F52E');
 		Smilies::add($b, ':nazar amulet', '&#x1F9FF');
@@ -1233,7 +1233,7 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':sunglasses', '&#x1F576');
 		Smilies::add($b, ':goggles', '&#x1F97D');
 		Smilies::add($b, ':lab coat', '&#x1F97C');
-//  	Smilies::add($b, ':safety vest', '&#x1F9BA');
+//  		Smilies::add($b, ':safety vest', '&#x1F9BA');
 		Smilies::add($b, ':necktie', '&#x1F454');
 		Smilies::add($b, ':t-shirt', '&#x1F455');
 		Smilies::add($b, ':jeans', '&#x1F456');
@@ -1243,10 +1243,10 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':socks', '&#x1F9E6');
 		Smilies::add($b, ':dress', '&#x1F457');
 		Smilies::add($b, ':kimono', '&#x1F458');
-//  	Smilies::add($b, ':sari', '&#x1F97B');
-//  	Smilies::add($b, ':one-piece swimsuit', '&#x1FA71');
-//  	Smilies::add($b, ':briefs', '&#x1FA72');
-//  	Smilies::add($b, ':shorts', '&#x1FA73');
+//  		Smilies::add($b, ':sari', '&#x1F97B');
+//  		Smilies::add($b, ':one-piece swimsuit', '&#x1FA71');
+//  		Smilies::add($b, ':briefs', '&#x1FA72');
+//  		Smilies::add($b, ':shorts', '&#x1FA73');
 		Smilies::add($b, ':bikini', '&#x1F459');
 		Smilies::add($b, ':woman’s clothes', '&#x1F45A');
 		Smilies::add($b, ':purse', '&#x1F45B');
@@ -1301,8 +1301,8 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':musical keyboard', '&#x1F3B9');
 		Smilies::add($b, ':trumpet', '&#x1F3BA');
 		Smilies::add($b, ':violin', '&#x1F3BB');
-//  	Smilies::add($b, ':banjo', '&#x1FA95');
-    	Smilies::add($b, ':drum', '&#x1F941');
+//  		Smilies::add($b, ':banjo', '&#x1FA95');
+    		Smilies::add($b, ':drum', '&#x1F941');
     
 // phone
 		Smilies::add($b, ':mobile phone', '&#x1F4F1');
@@ -1343,7 +1343,7 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':light bulb', '&#x1F4A1');
 		Smilies::add($b, ':flashlight', '&#x1F526');
 		Smilies::add($b, ':red paper lantern', '&#x1F3EE');
-//  	Smilies::add($b, ':diya lamp', '&#x1FA94');
+//  		Smilies::add($b, ':diya lamp', '&#x1FA94');
     
 // book-paper
 		Smilies::add($b, ':notebook with decorative cover', '&#x1F4D4');
@@ -1433,8 +1433,8 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':old key', '&#x1F5DD');
     
 // tool
-    	Smilies::add($b, ':hammer', '&#x1F528');
-//  	Smilies::add($b, ':axe', '&#x1FA93');
+    		Smilies::add($b, ':hammer', '&#x1F528');
+//  		Smilies::add($b, ':axe', '&#x1FA93');
 		Smilies::add($b, ':pick', '&#x26CF');
 		Smilies::add($b, ':hammer and pick', '&#x2692');
 		Smilies::add($b, ':hammer and wrench', '&#x1F6E0');
@@ -1448,7 +1448,7 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':gear', '&#x2699');
 		Smilies::add($b, ':clamp', '&#x1F5DC');
 		Smilies::add($b, ':balance scale', '&#x2696');
-//  	Smilies::add($b, ':white cane', '&#x1F9AF');
+//  		Smilies::add($b, ':white cane', '&#x1F9AF');
 		Smilies::add($b, ':link', '&#x1F517');
 		Smilies::add($b, ':chains', '&#x26D3');
 		Smilies::add($b, ':toolbox', '&#x1F9F0');
@@ -1464,20 +1464,20 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':satellite antenna', '&#x1F4E1');
 
 // medical
-    	Smilies::add($b, ':syringe', '&#x1F489');
-//    	Smilies::add($b, ':drop of blood', '&#x1FA78');
-    	Smilies::add($b, ':pill', '&#x1F48A');
-//  	Smilies::add($b, ':adhesive bandage', '&#x1FA79');
-//  	Smilies::add($b, ':stethoscope', '&#x1FA7A');
+    		Smilies::add($b, ':syringe', '&#x1F489');
+//    		Smilies::add($b, ':drop of blood', '&#x1FA78');
+    		Smilies::add($b, ':pill', '&#x1F48A');
+//  		Smilies::add($b, ':adhesive bandage', '&#x1FA79');
+//  		Smilies::add($b, ':stethoscope', '&#x1FA7A');
     
 // household
 		Smilies::add($b, ':door', '&#x1F6AA');
 		Smilies::add($b, ':bed', '&#x1F6CF');
 		Smilies::add($b, ':couch and lamp', '&#x1F6CB');
-//    	Smilies::add($b, ':chair', '&#x1FA91');
+//    		Smilies::add($b, ':chair', '&#x1FA91');
 		Smilies::add($b, ':toilet', '&#x1F6BD');
 		Smilies::add($b, ':shower', '&#x1F6BF');
-//  	Smilies::add($b, ':bathtub', '&#x1F6C1');
+//  		Smilies::add($b, ':bathtub', '&#x1F6C1');
 		Smilies::add($b, ':razor', '&#x1FA92');
 		Smilies::add($b, ':lotion bottle', '&#x1F9F4');
 		Smilies::add($b, ':safety pin', '&#x1F9F7');
@@ -1716,22 +1716,22 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':Japanese “no vacancy” button', '&#x1F235');
 
 // geometric
-    	Smilies::add($b, ':red circle', '&#x1F534');
-//  	Smilies::add($b, ':orange circle', '&#x1F7E0');
-//  	Smilies::add($b, ':yellow circle', '&#x1F7E1');
-//  	Smilies::add($b, ':green circle', '&#x1F7E2');
-    	Smilies::add($b, ':blue circle', '&#x1F535');
-//  	Smilies::add($b, ':purple circle', '&#x1F7E3');
-//  	Smilies::add($b, ':brown circle', '&#x1F7E4');
+    		Smilies::add($b, ':red circle', '&#x1F534');
+//  		Smilies::add($b, ':orange circle', '&#x1F7E0');
+//  		Smilies::add($b, ':yellow circle', '&#x1F7E1');
+//  		Smilies::add($b, ':green circle', '&#x1F7E2');
+    		Smilies::add($b, ':blue circle', '&#x1F535');
+//  		Smilies::add($b, ':purple circle', '&#x1F7E3');
+//  		Smilies::add($b, ':brown circle', '&#x1F7E4');
 		Smilies::add($b, ':black circle', '&#x26AB');
 		Smilies::add($b, ':white circle', '&#x26AA');
-//  	Smilies::add($b, ':red square', '&#x1F7E5');
-//  	Smilies::add($b, ':orange square', '&#x1F7E7');
-//  	Smilies::add($b, ':yellow square', '&#x1F7E8');
-//  	Smilies::add($b, ':green square', '&#x1F7E9');
-//  	Smilies::add($b, ':blue square', '&#x1F7E6');
-//  	Smilies::add($b, ':purple square', '&#x1F7EA');
-//  	Smilies::add($b, ':brown square', '&#x1F7EB');
+//  		Smilies::add($b, ':red square', '&#x1F7E5');
+//  		Smilies::add($b, ':orange square', '&#x1F7E7');
+//  		Smilies::add($b, ':yellow square', '&#x1F7E8');
+//  		Smilies::add($b, ':green square', '&#x1F7E9');
+//  		Smilies::add($b, ':blue square', '&#x1F7E6');
+//  		Smilies::add($b, ':purple square', '&#x1F7EA');
+//  		Smilies::add($b, ':brown square', '&#x1F7EB');
 		Smilies::add($b, ':black large square', '&#x2B1B');
 		Smilies::add($b, ':white large square', '&#x2B1C');
 		Smilies::add($b, ':black medium square', '&#x25FC');
@@ -1921,7 +1921,7 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':mauritania', '&#x1F1F2&#x1F1F7');
 		Smilies::add($b, ':montserrat', '&#x1F1F2&#x1F1F8');
 		Smilies::add($b, ':malta', '&#x1F1F2&#x1F1F9');
-//  	Smilies::add($b, ':mauritius', '&#x1F1F2 1F1FA');
+//  		Smilies::add($b, ':mauritius', '&#x1F1F2 1F1FA');
 		Smilies::add($b, ':maldives', '&#x1F1F2&#x1F1FB');
 		Smilies::add($b, ':malawi', '&#x1F1F2&#x1F1FC');
 		Smilies::add($b, ':mexico', '&#x1F1F2&#x1F1FD');
@@ -2022,8 +2022,8 @@ function unicode_smilies_smilies(&$a,&$b) {
 		Smilies::add($b, ':zimbabwe', '&#x1F1FF&#x1F1FC');
     
 // subdivision-flag
-//  	Smilies::add($b, 'scotland', '&#x1F3F4&#xE0067&#xE0062&#xE0073&#xE0063&#xE0074&#xE007F');
-    	Smilies::add($b, 'wales', '&#x1F3F4&#xE0067&#xE0077&#xE006C&#xE0073&#xE007F');
-    	Smilies::add($b, 'wales', '&#x1F3F4&#xE0067&#xE0062&#xE0077&#xE006C&#xE0073&#xE007F');
+//  		Smilies::add($b, 'scotland', '&#x1F3F4&#xE0067&#xE0062&#xE0073&#xE0063&#xE0074&#xE007F');
+    		Smilies::add($b, 'wales', '&#x1F3F4&#xE0067&#xE0077&#xE006C&#xE0073&#xE007F');
+    		Smilies::add($b, 'wales', '&#x1F3F4&#xE0067&#xE0062&#xE0077&#xE006C&#xE0073&#xE007F');
 
 }
