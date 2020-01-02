@@ -1,4 +1,4 @@
-	<?php
+<?php
 /*
  * Name: Unicode Smilies
  * Description: Smilies based on the unicode emojis - On Linux use https://github.com/eosrei/emojione-color-font to see them in color and http://www.unicode.org/emoji/charts/full-emoji-list.html
@@ -1921,7 +1921,7 @@ function unicode_smilies_smilies(&$a,&$b) {
 	Smilies::add($b, ':mauritania', '&#x1F1F2&#x1F1F7');
 	Smilies::add($b, ':montserrat', '&#x1F1F2&#x1F1F8');
 	Smilies::add($b, ':malta', '&#x1F1F2&#x1F1F9');
-//	Smilies::add($b, ':mauritius', '&#x1F1F2 1F1FA');
+	Smilies::add($b, ':mauritius', '&#x1F1F2&#x1F1FA');
 	Smilies::add($b, ':maldives', '&#x1F1F2&#x1F1FB');
 	Smilies::add($b, ':malawi', '&#x1F1F2&#x1F1FC');
 	Smilies::add($b, ':mexico', '&#x1F1F2&#x1F1FD');
@@ -2022,8 +2022,8 @@ function unicode_smilies_smilies(&$a,&$b) {
 	Smilies::add($b, ':zimbabwe', '&#x1F1FF&#x1F1FC');
 
 // subdivision-flag
-// 	Smilies::add($b, 'scotland', '&#x1F3F4&#xE0067&#xE0062&#xE0073&#xE0063&#xE0074&#xE007F');
-	Smilies::add($b, 'wales', '&#x1F3F4&#xE0067&#xE0077&#xE006C&#xE0073&#xE007F');
-	Smilies::add($b, 'wales', '&#x1F3F4&#xE0067&#xE0062&#xE0077&#xE006C&#xE0073&#xE007F');
+ 	Smilies::add($b, ':england', '&#x1F3F4&#xE0067&#xE0062&#xE0065&#xE006E&#xE0067&#xE007F');
+	Smilies::add($b, ':scotland', '&#x1F3F4&#xE0067&#xE0062&#xE0073&#xE0074&#xE007F');
+	Smilies::add($b, ':wales', '&#x1F3F4&#xE0067&#xE0062&#xE0077&#xE006C&#xE0073&#xE007F');
 
 	}
