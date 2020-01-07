@@ -2,7 +2,7 @@
 
 use Friendica\Content\Text\HTML;
 use Friendica\Core\L10n;
-use Friendica\DI;
+use Friendica\Registry\App;
 
 function friendheader_widget_name()
 {
@@ -48,7 +48,7 @@ function friendheader_widget_content(&$a, $conf)
 
 	</style>";
 	$o .= _abs_url(HTML::contactBlock());
-	$o .= "<a href='".DI::baseUrl()->get().'/profile/'.$a->profile['nickname']."' target=new>". L10n::t('Get added to this list!') ."</a>";
+	$o .= "<a href='" . App::baseUrl()->get() . '/profile/' . $a->profile['nickname'] . "' target=new>" . L10n::t('Get added to this list!') . "</a>";
 
 	return $o;
 }

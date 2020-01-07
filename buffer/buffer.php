@@ -17,8 +17,8 @@ use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
-use Friendica\DI;
 use Friendica\Model\ItemContent;
+use Friendica\Registry\App as A;
 use Friendica\Util\Proxy as ProxyUtils;
 use Friendica\Util\Strings;
 
@@ -111,7 +111,7 @@ function buffer_connect(App $a)
 	$client_secret = Config::get('buffer','client_secret');
 
 	// The callback URL is the script that gets called after the user authenticates with buffer
-	$callback_url = DI::baseUrl()->get()."/buffer/connect";
+	$callback_url = A::baseUrl()->get() . "/buffer/connect";
 
 	$buffer = new BufferApp($client_id, $client_secret, $callback_url);
 
@@ -120,7 +120,7 @@ function buffer_connect(App $a)
 	} else {
 		Logger::log("buffer_connect: authenticated");
 		$o = L10n::t("You are now authenticated to buffer. ");
-		$o .= '<br /><a href="' . DI::baseUrl()->get() . '/settings/connectors">' . L10n::t("return to the connector page") . '</a>';
+		$o .= '<br /><a href="' . A::baseUrl()->get() . '/settings/connectors">' . L10n::t("return to the connector page") . '</a>';
 		PConfig::set(local_user(), 'buffer','access_token', $buffer->access_token);
 	}
 
@@ -153,7 +153,7 @@ function buffer_settings(App $a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/buffer/buffer.css' . '" media="all" />' . "\r\n";
+	A::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . A::baseUrl()->get() . '/addon/buffer/buffer.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variables */
 
@@ -182,7 +182,7 @@ function buffer_settings(App $a, &$s)
 
 	if ($access_token == "") {
 		$s .= '<div id="buffer-authenticate-wrapper">';
-		$s .= '<a href="'.DI::baseUrl()->get().'/buffer/connect">'.L10n::t("Authenticate your Buffer connection").'</a>';
+		$s .= '<a href="' . A::baseUrl()->get() . '/buffer/connect">' . L10n::t("Authenticate your Buffer connection") . '</a>';
 		$s .= '</div><div class="clear"></div>';
 	} else {
 		$s .= '<div id="buffer-enable-wrapper">';
@@ -201,7 +201,7 @@ function buffer_settings(App $a, &$s)
 		$s .= '</div><div class="clear"></div>';
 
 		// The callback URL is the script that gets called after the user authenticates with buffer
-		$callback_url = DI::baseUrl()->get() . '/buffer/connect';
+		$callback_url = A::baseUrl()->get() . '/buffer/connect';
 
 		$buffer = new BufferApp($client_id, $client_secret, $callback_url, $access_token);
 

@@ -8,9 +8,9 @@
  */
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
-use Friendica\DI;
 use Friendica\Model\Item;
 use Friendica\Database\DBA;
+use Friendica\Registry\App;
 
 function viewsrc_install() {
 	Hook::register('item_photo_menu', 'addon/viewsrc/viewsrc.php', 'viewsrc_item_photo_menu');
@@ -25,7 +25,7 @@ function viewsrc_uninstall() {
 }
 
 function viewsrc_page_end(&$a, &$o){
-	DI::page()['htmlhead'] .= <<< EOS
+	App::page()['htmlhead'] .= <<< EOS
 	<script>
 		$(function(){
 			$('a[href*="/viewsrc/"]').each(function() {
@@ -53,7 +53,7 @@ function viewsrc_item_photo_menu(&$a, &$b)
 		$item_id = $b['item']['id'];
 	}
 
-	$b['menu'] = array_merge([L10n::t('View Source') => DI::baseUrl()->get() . '/viewsrc/'. $item_id], $b['menu']);
+	$b['menu'] = array_merge([L10n::t('View Source') => App::baseUrl()->get() . '/viewsrc/' . $item_id], $b['menu']);
 
 	//if((! local_user()) || (local_user() != $b['item']['uid']))
 	//	return;

@@ -20,7 +20,7 @@
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
-use Friendica\DI;
+use Friendica\Registry\App;
 use Friendica\Util\XML;
 
 function qcomment_install() {
@@ -43,7 +43,7 @@ function qcomment_addon_settings(&$a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/qcomment/qcomment.css' . '" media="all" />' . "\r\n";
+	App::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . App::baseUrl()->get() . '/addon/qcomment/qcomment.css' . '" media="all" />' . "\r\n";
 
 	$words = PConfig::get(local_user(), 'qcomment', 'words', L10n::t(':-)') . "\n" . L10n::t(':-(') . "\n" .  L10n::t('lol'));
 

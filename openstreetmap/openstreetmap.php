@@ -9,13 +9,13 @@
  *
  */
 
-use Friendica\DI;
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Registry\App;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\Network;
 use Friendica\Util\Strings;
@@ -56,8 +56,8 @@ function openstreetmap_load_config(\Friendica\App $a, ConfigFileLoader $loader)
 
 function openstreetmap_alterheader($a, &$navHtml)
 {
-	$addScriptTag = '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/openstreetmap/openstreetmap.js"></script>' . "\r\n";
-	DI::page()['htmlhead'] .= $addScriptTag;
+	$addScriptTag           = '<script type="text/javascript" src="' . App::baseUrl()->get() . '/addon/openstreetmap/openstreetmap.js"></script>' . "\r\n";
+	App::page()['htmlhead'] .= $addScriptTag;
 }
 
 /**
@@ -160,7 +160,7 @@ function openstreetmap_generate_map(&$a, &$b)
 {
 	$tmsserver = Config::get('openstreetmap', 'tmsserver', OSM_TMS);
 
-	if (strpos(DI::baseUrl()->get(true), 'https:') !== false) {
+	if (strpos(App::baseUrl()->get(true), 'https:') !== false) {
 		$tmsserver = str_replace('http:','https:',$tmsserver);
 	}
 

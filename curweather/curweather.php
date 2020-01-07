@@ -17,7 +17,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 use Friendica\Core\Session;
-use Friendica\DI;
+use Friendica\Registry\App as A;
 use Friendica\Util\Network;
 use Friendica\Util\Proxy as ProxyUtils;
 
@@ -104,7 +104,7 @@ function curweather_network_mod_init(App $a, &$b)
 		return;
 	}
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/curweather/curweather.css' . '" media="all" />' . "\r\n";
+	A::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . A::baseUrl()->get() . '/addon/curweather/curweather.css' . '" media="all" />' . "\r\n";
 
 	// $rpt value is needed for location
 	// $lang will be taken from the browser session to honour user settings
@@ -137,7 +137,7 @@ function curweather_network_mod_init(App $a, &$b)
 
 	if ($ok) {
 		$t = Renderer::getMarkupTemplate("widget.tpl", "addon/curweather/" );
-		$curweather = Renderer::replaceMacros($t, [
+		$curweather              = Renderer::replaceMacros($t, [
 			'$title' => L10n::t("Current Weather"),
 			'$icon' => ProxyUtils::proxifyUrl('http://openweathermap.org/img/w/'.$res['icon'].'.png'),
 			'$city' => $res['city'],
@@ -161,7 +161,7 @@ function curweather_network_mod_init(App $a, &$b)
 		]);
 	}
 
-	DI::page()['aside'] = $curweather . DI::page()['aside'];
+	A::page()['aside'] = $curweather . A::page()['aside'];
 }
 
 function curweather_addon_settings_post(App $a, $post)

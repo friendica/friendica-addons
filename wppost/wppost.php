@@ -13,7 +13,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
-use Friendica\DI;
+use Friendica\Registry\App;
 use Friendica\Util\Network;
 use Friendica\Util\Strings;
 use Friendica\Util\XML;
@@ -70,7 +70,7 @@ function wppost_settings(&$a,&$s) {
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/wppost/wppost.css' . '" media="all" />' . "\r\n";
+	App::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . App::baseUrl()->get() . '/addon/wppost/wppost.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variables */
 

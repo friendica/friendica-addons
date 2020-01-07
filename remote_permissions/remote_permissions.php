@@ -13,7 +13,8 @@ use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
-use Friendica\DI;
+use Friendica\Registry\App;
+use Friendica\Registry\Util;
 use Friendica\Util\Strings;
 
 function remote_permissions_install() {
@@ -39,7 +40,7 @@ function remote_permissions_settings(&$a,&$o) {
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/remote_permissions/settings.css' . '" media="all" />' . "\r\n";
+	App::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . App::baseUrl()->get() . '/addon/remote_permissions/settings.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variable */
 
@@ -81,7 +82,7 @@ function remote_permissions_content($a, $item_copy) {
 			return;
 
 		// Find out if the contact lives here
-		$baseurl = DI::baseUrl()->get();
+		$baseurl = App::baseUrl()->get();
 		$baseurl = substr($baseurl, strpos($baseurl, '://') + 3);
 		if(strpos($r[0]['url'], $baseurl) === false)
 			return;
@@ -124,7 +125,7 @@ function remote_permissions_content($a, $item_copy) {
 
 			$item = $r[0];
 
-			$aclFormatter = DI::aclFormatter();
+			$aclFormatter = Util::aclFormatter();
 
 			$allowed_users = $aclFormatter->expand($item['allow_cid']);
 			$allowed_groups = $aclFormatter->expand($item['allow_gid']);

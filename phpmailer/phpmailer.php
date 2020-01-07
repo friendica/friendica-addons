@@ -10,7 +10,7 @@
 use Friendica\App;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
-use Friendica\DI;
+use Friendica\Registry\Core;
 use Friendica\Util\ConfigFileLoader;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -100,6 +100,6 @@ function phpmailer_emailer_send_prepare(App $a, array &$b)
 
 		$b['sent'] = $mail->send();
 	} catch (Exception $e) {
-		DI::logger()->error('PHPMailer error', ['ErrorInfo' => $mail->ErrorInfo, 'code' => $e->getCode(), 'message' => $e->getMessage()]);
+		Core::logger()->error('PHPMailer error', ['ErrorInfo' => $mail->ErrorInfo, 'code' => $e->getCode(), 'message' => $e->getMessage()]);
 	}
 }

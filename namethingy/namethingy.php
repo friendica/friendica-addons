@@ -8,7 +8,7 @@
  * Status: Unsupported
  */
 use Friendica\Core\Hook;
-use Friendica\DI;
+use Friendica\Registry\App;
 
 function namethingy_install() {
     Hook::register('app_menu', 'addon/namethingy/namethingy.php', 'namethingy_app_menu');
@@ -28,7 +28,7 @@ function namethingy_module() {}
 
 function namethingy_content(&$a) {
 
-$baseurl = DI::baseUrl()->get() . '/addon/namethingy';
+$baseurl = App::baseUrl()->get() . '/addon/namethingy';
 
 $o .= <<< EOT
 <iframe src="http://namethingy.com" width="900" height="700" />

@@ -9,7 +9,7 @@
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
-use Friendica\DI;
+use Friendica\Registry\App;
 use Friendica\Util\Strings;
 
 function superblock_install()
@@ -38,7 +38,7 @@ function superblock_addon_settings(&$a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/superblock/superblock.css' . '" media="all" />' . "\r\n";
+	App::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . App::baseUrl()->get() . '/addon/superblock/superblock.css' . '" media="all" />' . "\r\n";
 
 	$words = PConfig::get(local_user(), 'system', 'blocked');
 	if (!$words) {
@@ -112,7 +112,7 @@ function superblock_conversation_start(&$a, &$b)
 	if ($words) {
 		$a->data['superblock'] = explode(',', $words);
 	}
-	DI::page()['htmlhead'] .= <<< EOT
+	App::page()['htmlhead'] .= <<< EOT
 
 <script>
 function superblockBlock(author) {

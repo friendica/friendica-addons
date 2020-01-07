@@ -2,7 +2,7 @@
 
 use Friendica\Content\Text\HTML;
 use Friendica\Core\L10n;
-use Friendica\DI;
+use Friendica\Registry\App;
 
 function friends_widget_name()
 {
@@ -50,6 +50,6 @@ function friends_widget_content(&$a, $conf)
 
 	</style>";
 	$o .= _abs_url(HTML::contactBlock());
-	$o .= "<a href='".DI::baseUrl()->get().'/profile/'.$a->profile['nickname']."'>". L10n::t('Connect on Friendica!') ."</a>";
+	$o .= "<a href='" . App::baseUrl()->get() . '/profile/' . $a->profile['nickname'] . "'>" . L10n::t('Connect on Friendica!') . "</a>";
 	return $o;
 }

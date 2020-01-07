@@ -10,7 +10,7 @@
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
-use Friendica\DI;
+use Friendica\Registry\App;
 use Friendica\Util\Strings;
 
 function showmore_install()
@@ -35,7 +35,7 @@ function showmore_addon_settings(&$a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.DI::baseUrl()->get().'/addon/showmore/showmore.css'.'" media="all"/>'."\r\n";
+	App::page()['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="' . App::baseUrl()->get() . '/addon/showmore/showmore.css' . '" media="all"/>' . "\r\n";
 
 	$enable_checked = (intval(PConfig::get(local_user(), 'showmore', 'disable')) ? '' : ' checked="checked"');
 	$chars = PConfig::get(local_user(), 'showmore', 'chars', 1100);

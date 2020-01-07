@@ -12,7 +12,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
-use Friendica\DI;
+use Friendica\Registry\App;
 
 function gnot_install() {
 
@@ -70,7 +70,7 @@ function gnot_settings(&$a,&$s) {
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/gnot/gnot.css' . '" media="all" />' . "\r\n";
+	App::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . App::baseUrl()->get() . '/addon/gnot/gnot.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variable */
 

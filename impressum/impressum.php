@@ -13,7 +13,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\DI;
+use Friendica\Registry\App;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\Proxy as ProxyUtils;
 use Friendica\Util\Strings;
@@ -35,7 +35,7 @@ function impressum_uninstall() {
 function impressum_module() {
 }
 function impressum_content() {
-    DI::baseUrl()->redirect('friendica/');
+    App::baseUrl()->redirect('friendica/');
 }
 
 function obfuscate_email ($s) {
@@ -47,8 +47,8 @@ function impressum_footer($a, &$b) {
     $text = ProxyUtils::proxifyHtml(BBCode::convert(Config::get('impressum','footer_text')));
 
     if (! $text == '') {
-        DI::page()['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.DI::baseUrl()->get().'/addon/impressum/impressum.css" media="all" />';
-        $b .= '<div class="clear"></div>';
+        App::page()['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="' . App::baseUrl()->get() . '/addon/impressum/impressum.css" media="all" />';
+        $b                      .= '<div class="clear"></div>';
         $b .= '<div id="impressum_footer">'.$text.'</div>';
     }
 }

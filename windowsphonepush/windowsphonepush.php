@@ -34,9 +34,10 @@ use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
-use Friendica\DI;
 use Friendica\Model\Item;
 use Friendica\Model\User;
+use Friendica\Registry\App as A;
+use Friendica\Registry\Core;
 
 function windowsphonepush_install()
 {
@@ -107,7 +108,7 @@ function windowsphonepush_settings(&$a, &$s)
 	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/windowsphonepush/windowsphonepush.css' . '" media="all" />' . "\r\n";
+	A::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . A::baseUrl()->get() . '/addon/windowsphonepush/windowsphonepush.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variables */
 	$enabled = PConfig::get(local_user(), 'windowsphonepush', 'enable');
@@ -473,7 +474,7 @@ function windowsphonepush_login(App $a)
 		die('This api requires login');
 	}
 
-	DI::auth()->setForUser($a, $record);
-	DI::session()->set('allow_api', true);
+	A::auth()->setForUser($a, $record);
+	Core::session()->set('allow_api', true);
 	Hook::callAll('logged_in', $a->user);
 }

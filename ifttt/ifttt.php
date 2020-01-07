@@ -14,8 +14,8 @@ use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
-use Friendica\DI;
 use Friendica\Model\Item;
+use Friendica\Registry\App as A;
 use Friendica\Util\Strings;
 
 function ifttt_install()
@@ -64,7 +64,7 @@ function ifttt_settings(App $a, &$s)
 	$s .= '<div id="ifttt-configuration-wrapper">';
 	$s .= '<p>' . L10n::t('Create an account at <a href="http://www.ifttt.com">IFTTT</a>. Create three Facebook recipes that are connected with <a href="https://ifttt.com/maker">Maker</a> (In the form "if Facebook then Maker") with the following parameters:') . '</p>';
 	$s .= '<h4>URL</h4>';
-	$s .= '<p>' . DI::baseUrl()->get() . '/ifttt/' . $a->user['nickname'] . '</p>';
+	$s .= '<p>' . A::baseUrl()->get() . '/ifttt/' . $a->user['nickname'] . '</p>';
 	$s .= '<h4>Method</h4>';
 	$s .= '<p>POST</p>';
 	$s .= '<h4>Content Type</h4>';
@@ -161,13 +161,11 @@ function ifttt_post(App $a)
 		$item['msg'] = substr($item['msg'], 3, -3);
 	}
 
-	ifttt_message($uid, $item);
+	ifttt_message($a, $uid, $item);
 }
 
-function ifttt_message($uid, $item)
+function ifttt_message(App $a, $uid, $item)
 {
-	$a = DI::app();
-
 	$_SESSION['authenticated'] = true;
 	$_SESSION['uid'] = $uid;
 

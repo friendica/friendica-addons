@@ -36,7 +36,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\DI;
+use Friendica\Registry\App;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\Strings;
 
@@ -66,7 +66,7 @@ function piwik_analytics($a,&$b) {
 	 *   associated CSS file. We just have to tell Friendica to get it
 	 *   into the page header.
 	 */
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/piwik/piwik.css' . '" media="all" />';
+	App::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . App::baseUrl()->get() . '/addon/piwik/piwik.css' . '" media="all" />';
 
 	/*
 	 *   Get the configuration variables from the config/addon.config.php file.

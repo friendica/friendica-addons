@@ -13,7 +13,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
-use Friendica\DI;
+use Friendica\Registry\App as A;
 use Friendica\Util\Strings;
 
 function xmpp_install()
@@ -53,7 +53,7 @@ function xmpp_addon_settings(App $a, &$s)
 
 	/* Add our stylesheet to the xmpp so we can make our settings look nice */
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/xmpp/xmpp.css' . '" media="all" />' . "\r\n";
+	A::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . A::baseUrl()->get() . '/addon/xmpp/xmpp.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variable */
 
@@ -143,7 +143,7 @@ function xmpp_converse(App $a)
 		return;
 	}
 
-	if (DI::mode()->isMobile() || DI::mode()->isMobile()) {
+	if (A::mode()->isMobile() || A::mode()->isMobile()) {
 		return;
 	}
 
@@ -151,12 +151,12 @@ function xmpp_converse(App $a)
 		return;
 	}
 
-	if (in_array(DI::args()->getQueryString(), ["admin/federation/"])) {
+	if (in_array(A::args()->getQueryString(), ["admin/federation/"])) {
 		return;
 	}
 
-	DI::page()['htmlhead'] .= '<link type="text/css" rel="stylesheet" media="screen" href="addon/xmpp/converse/css/converse.css" />' . "\n";
-	DI::page()['htmlhead'] .= '<script src="addon/xmpp/converse/builds/converse.min.js"></script>' . "\n";
+	A::page()['htmlhead'] .= '<link type="text/css" rel="stylesheet" media="screen" href="addon/xmpp/converse/css/converse.css" />' . "\n";
+	A::page()['htmlhead'] .= '<script src="addon/xmpp/converse/builds/converse.min.js"></script>' . "\n";
 
 	if (Config::get("xmpp", "central_userbase") && !PConfig::get(local_user(), "xmpp", "individual")) {
 		$bosh_proxy = Config::get("xmpp", "bosh_proxy");
@@ -168,7 +168,7 @@ function xmpp_converse(App $a)
 			PConfig::set(local_user(), "xmpp", "password", $password);
 		}
 
-		$jid = $a->user["nickname"] . "@" . DI::baseUrl()->getHostname() . "/converse-" . Strings::getRandomHex(5);
+		$jid = $a->user["nickname"] . "@" . A::baseUrl()->getHostname() . "/converse-" . Strings::getRandomHex(5);
 
 		$auto_login = "auto_login: true,
 			authentication: 'login',
@@ -216,7 +216,7 @@ function xmpp_converse(App $a)
 					xhr_user_search: false
 				});\n";
 
-	DI::page()['htmlhead'] .= "<script>
+	A::page()['htmlhead'] .= "<script>
 					require(['converse'], function (converse) {
 						$initialize
 						converse.listen.on('ready', function (event) {

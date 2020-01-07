@@ -14,8 +14,8 @@ use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
-use Friendica\DI;
 use Friendica\Protocol\Activity;
+use Friendica\Registry\App;
 use Friendica\Util\Network;
 use Friendica\Model\Item;
 
@@ -95,7 +95,7 @@ function mailstream_addon_admin_post ($a) {
 
 function mailstream_generate_id($a, $uri) {
 	// http://www.jwz.org/doc/mid.html
-	$host = DI::baseUrl()->getHostname();
+	$host = App::baseUrl()->getHostname();
 	$resource = hash('md5', $uri);
 	$message_id = "<" . $resource . "@" . $host . ">";
 	Logger::debug('mailstream: Generated message ID ' . $message_id . ' for URI ' . $uri);
@@ -307,7 +307,7 @@ function mailstream_send(\Friendica\App $a, $message_id, $item, $user) {
 		$template = Renderer::getMarkupTemplate('mail.tpl', 'addon/mailstream/');
 		$mail->AltBody = BBCode::toPlaintext($item['body']);
 		$item['body'] = BBCode::convert($item['body']);
-		$item['url'] = DI::baseUrl()->get() . '/display/' . $item['guid'];
+		$item['url'] = App::baseUrl()->get() . '/display/' . $item['guid'];
 		$mail->Body = Renderer::replaceMacros($template, [
 						 '$upstream' => L10n::t('Upstream'),
 						 '$local' => L10n::t('Local'),

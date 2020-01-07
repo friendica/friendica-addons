@@ -2,10 +2,11 @@
 
 use Friendica\Core\Config;
 use Friendica\Core\Logger;
+use Friendica\Registry\DI;
 
 function twitter_sync_run($argv, $argc)
 {
-	$a = Friendica\DI::app();
+	$a = DI::app();
 
 	require_once 'addon/twitter/twitter.php';
 

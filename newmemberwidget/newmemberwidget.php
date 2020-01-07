@@ -12,7 +12,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\DI;
+use Friendica\Registry\App;
 use Friendica\Util\Strings;
 
 function newmemberwidget_install()
@@ -41,7 +41,7 @@ function newmemberwidget_network_mod_init ($a, $b)
 	}
 
 	if (Config::get('newmemberwidget','linklocalsupport', false)) {
-		$t .= '<a href="'.DI::baseUrl()->get().'/profile/'.Config::get('newmemberwidget','localsupport').'" target="_new">'.L10n::t('Local Support Forum').'</a><br />'.EOL;
+		$t .= '<a href="' . App::baseUrl()->get() . '/profile/' . Config::get('newmemberwidget','localsupport') . '" target="_new">' . L10n::t('Local Support Forum') . '</a><br />' . EOL;
 	}
 
 	$ft = Config::get('newmemberwidget','freetext', '');
@@ -49,8 +49,8 @@ function newmemberwidget_network_mod_init ($a, $b)
 		$t .= '<p>'.BBCode::convert(trim($ft)).'</p>';
 	}
 
-	$t .= '</div><div class="clear"></div>';
-	DI::page()['aside'] = $t . DI::page()['aside'];
+	$t                   .= '</div><div class="clear"></div>';
+	App::page()['aside'] = $t . App::page()['aside'];
 }
 
 function newmemberwidget_addon_admin_post(&$a)

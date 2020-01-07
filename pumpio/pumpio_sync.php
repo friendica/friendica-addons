@@ -1,9 +1,10 @@
 <?php
 use Friendica\Core\Config;
 use Friendica\Core\Logger;
+use Friendica\Registry\DI;
 
 function pumpio_sync_run(&$argv, &$argc) {
-	$a = Friendica\DI::app();
+	$a = DI::app();
 
 	require_once("addon/pumpio/pumpio.php");
 
