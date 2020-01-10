@@ -36,13 +36,13 @@
 use Friendica\App;
 use Friendica\BaseModule;
 use Friendica\Content\Text\Markdown;
-use Friendica\Core\Cache;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Database\DBStructure;
+use Friendica\DI;
 use Friendica\Model\Item;
 use Friendica\Model\Term;
 use Friendica\Module\Security\Login;
@@ -114,13 +114,15 @@ function advancedcontentfilter_prepare_body_content_filter(App $a, &$hook_data)
 		$vars[str_replace('-', '_', $key)] = $value;
 	}
 
-	$rules = Cache::get('rules_' . local_user());
+	$rules = DI::cache()->get('rules_' . local_user());
 	if (!isset($rules)) {
 		$rules = DBA::toArray(DBA::select(
 			'advancedcontentfilter_rules',
 			['name', 'expression', 'serialized'],
 			['uid' => local_user(), 'active' => true]
 		));
+
+		DI::cache()->set('rules_' . local_user(), $rules);
 	}
 
 	if ($rules) {
