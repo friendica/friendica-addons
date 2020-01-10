@@ -10,7 +10,7 @@
  */
 
 use Friendica\App;
-use Friendica\Core\Cache;
+use Friendica\Core\Cache\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
@@ -18,6 +18,7 @@ use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 use Friendica\Core\Session;
 use Friendica\Registry\App as A;
+use Friendica\Registry\Core;
 use Friendica\Util\Network;
 use Friendica\Util\Proxy as ProxyUtils;
 
@@ -39,7 +40,7 @@ function curweather_uninstall()
 function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cachetime = 0)
 {
 	$url = "http://api.openweathermap.org/data/2.5/weather?q=" . $loc . "&appid=" . $appid . "&lang=" . $lang . "&units=" . $units . "&mode=xml";
-	$cached = Cache::get('curweather'.md5($url));
+	$cached = Core::cache()->get('curweather'.md5($url));
 	$now = new DateTime();
 
 	if (!is_null($cached)) {
@@ -93,7 +94,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 	];
 
 	PConfig::set(local_user(), 'curweather', 'last', $now->getTimestamp());
-	Cache::set('curweather'.md5($url), serialize($r), Cache::HOUR);
+	Core::cache()->set('curweather'.md5($url), serialize($r), Cache::HOUR);
 
 	return $r;
 }

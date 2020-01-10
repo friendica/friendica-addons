@@ -42,11 +42,11 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Database\DBStructure;
-use Friendica\DI;
 use Friendica\Model\Item;
 use Friendica\Model\Term;
 use Friendica\Module\Security\Login;
 use Friendica\Network\HTTPException;
+use Friendica\Registry\Core;
 use Friendica\Util\DateTimeFormat;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -114,7 +114,7 @@ function advancedcontentfilter_prepare_body_content_filter(App $a, &$hook_data)
 		$vars[str_replace('-', '_', $key)] = $value;
 	}
 
-	$rules = DI::cache()->get('rules_' . local_user());
+	$rules = Core::cache()->get('rules_' . local_user());
 	if (!isset($rules)) {
 		$rules = DBA::toArray(DBA::select(
 			'advancedcontentfilter_rules',
@@ -122,7 +122,7 @@ function advancedcontentfilter_prepare_body_content_filter(App $a, &$hook_data)
 			['uid' => local_user(), 'active' => true]
 		));
 
-		DI::cache()->set('rules_' . local_user(), $rules);
+		Core::cache()->set('rules_' . local_user(), $rules);
 	}
 
 	if ($rules) {

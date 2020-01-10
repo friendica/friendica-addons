@@ -9,13 +9,14 @@
  *
  */
 
-use Friendica\Core\Cache;
+use Friendica\Core\Cache\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Registry\App;
+use Friendica\Registry\Core;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\Network;
 use Friendica\Util\Strings;
@@ -131,13 +132,13 @@ function openstreetmap_get_coordinates($a, &$b)
 	$args = '?q=' . urlencode($b['location']) . '&format=json';
 
 	$cachekey = "openstreetmap:" . $b['location'];
-	$j = Cache::get($cachekey);
+	$j = Core::cache()->get($cachekey);
 
 	if (is_null($j)) {
 		$curlResult = Network::curl($nomserver . $args);
 		if ($curlResult->isSuccess()) {
 			$j = json_decode($curlResult->getBody(), true);
-			Cache::set($cachekey, $j, Cache::MONTH);
+			Core::cache()->set($cachekey, $j, Cache::MONTH);
 		}
 	}
 
