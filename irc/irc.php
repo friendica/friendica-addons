@@ -33,7 +33,7 @@ function irc_addon_settings(&$a,&$s) {
 
     /* Add our stylesheet to the page so we can make our settings look nice */
 
-//	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/irc/irc.css' . '" media="all" />' . "\r\n";
+//	A::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/irc/irc.css' . '" media="all" />' . "\r\n";
 
     /* setting popular channels, auto connect channels */
 	$sitechats = PConfig::get( local_user(), 'irc','sitechats'); /* popular channels */
