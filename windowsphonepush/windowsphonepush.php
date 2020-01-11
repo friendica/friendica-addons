@@ -474,7 +474,7 @@ function windowsphonepush_login(App $a)
 		die('This api requires login');
 	}
 
-	A::auth()->setForUser($a, $record);
+	AppR::auth()->setForUser($a, $record);
 	Core::session()->set('allow_api', true);
 	Hook::callAll('logged_in', $a->user);
 }
