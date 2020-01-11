@@ -8,7 +8,7 @@
 
 use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Registry\App as A;
+use Friendica\Registry\App as AppR;
 
 function highlightjs_install()
 {
@@ -30,11 +30,11 @@ function highlightjs_head(App $a, &$b)
 		$style = 'default';
 	}
 
-	A::page()->registerStylesheet(__DIR__ . '/asset/styles/' . $style . '.css');
+	AppR::page()->registerStylesheet(__DIR__ . '/asset/styles/' . $style . '.css');
 }
 
 function highlightjs_footer(App $a, &$b)
 {
-	A::page()->registerFooterScript(__DIR__ . '/asset/highlight.pack.js');
-	A::page()->registerFooterScript(__DIR__ . '/highlightjs.js');
+	AppR::page()->registerFooterScript(__DIR__ . '/asset/highlight.pack.js');
+	AppR::page()->registerFooterScript(__DIR__ . '/highlightjs.js');
 }

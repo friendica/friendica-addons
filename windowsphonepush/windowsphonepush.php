@@ -36,7 +36,7 @@ use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
 use Friendica\Model\Item;
 use Friendica\Model\User;
-use Friendica\Registry\App as A;
+use Friendica\Registry\App as AppR;
 use Friendica\Registry\Core;
 
 function windowsphonepush_install()
@@ -108,7 +108,7 @@ function windowsphonepush_settings(&$a, &$s)
 	}
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
-	A::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . A::baseUrl()->get() . '/addon/windowsphonepush/windowsphonepush.css' . '" media="all" />' . "\r\n";
+	AppR::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . AppR::baseUrl()->get() . '/addon/windowsphonepush/windowsphonepush.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variables */
 	$enabled = PConfig::get(local_user(), 'windowsphonepush', 'enable');

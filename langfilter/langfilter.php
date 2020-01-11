@@ -13,7 +13,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
-use Friendica\Registry\App as A;
+use Friendica\Registry\App as AppR;
 
 /* Define the hooks we want to use
  * that is, we have settings, we need to save the settings and we want
@@ -123,7 +123,7 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 
 	// Never filter own messages
 	// TODO: find a better way to extract this
-	$logged_user_profile = A::baseUrl()->get() . '/profile/' . $a->user['nickname'];
+	$logged_user_profile = AppR::baseUrl()->get() . '/profile/' . $a->user['nickname'];
 	if ($logged_user_profile == $hook_data['item']['author-link']) {
 		return;
 	}

@@ -13,7 +13,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\Registry\App as A;
+use Friendica\Registry\App as AppR;
 
 function js_upload_install()
 {
@@ -27,8 +27,8 @@ function js_upload_form(App $a, array &$b)
 {
 	$b['default_upload'] = false;
 
-	A::page()->registerStylesheet('addon/js_upload/file-uploader/client/fileuploader.css');
-	A::page()->registerFooterScript('addon/js_upload/file-uploader/client/fileuploader.js');
+	AppR::page()->registerStylesheet('addon/js_upload/file-uploader/client/fileuploader.css');
+	AppR::page()->registerFooterScript('addon/js_upload/file-uploader/client/fileuploader.js');
 
 	$tpl = Renderer::getMarkupTemplate('js_upload.tpl', 'addon/js_upload');
 	$b['addon_text'] .= Renderer::replaceMacros($tpl, [

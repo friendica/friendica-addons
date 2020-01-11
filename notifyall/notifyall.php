@@ -14,7 +14,7 @@ use Friendica\Core\Config;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\Registry\App as A;
+use Friendica\Registry\App as AppR;
 use Friendica\Util\Emailer;
 
 function notifyall_install()
@@ -31,7 +31,7 @@ function notifyall_module() {}
 
 function notifyall_addon_admin(App $a, &$o)
 {
-	$o = '<div></div>&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . A::baseUrl()->get() . '/notifyall">' . L10n::t('Send email to all members') . '</a></br/>';
+	$o = '<div></div>&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . AppR::baseUrl()->get() . '/notifyall">' . L10n::t('Send email to all members') . '</a></br/>';
 }
 
 
@@ -56,7 +56,7 @@ function notifyall_post(App $a)
 	}
 
 	if (!Config::get('config', 'sender_email')) {
-		$sender_email = 'noreply@' . A::baseUrl()->getHostname();
+		$sender_email = 'noreply@' . AppR::baseUrl()->getHostname();
 	} else {
 		$sender_email = Config::get('config', 'sender_email');
 	}
@@ -96,7 +96,7 @@ function notifyall_post(App $a)
 	}
 
 	notice(L10n::t('Emails sent'));
-	A::baseUrl()->redirect('admin');
+	AppR::baseUrl()->redirect('admin');
 }
 
 function notifyall_content(&$a)

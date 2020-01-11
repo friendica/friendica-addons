@@ -18,7 +18,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
-use Friendica\Registry\App as A;
+use Friendica\Registry\App as AppR;
 use Friendica\Util\Strings;
 
 function tumblr_install()
@@ -110,7 +110,7 @@ function tumblr_connect(App $a)
 
 	// The callback URL is the script that gets called after the user authenticates with tumblr
 	// In this example, it would be the included callback.php
-	$callback_url = A::baseUrl()->get() . "/tumblr/callback";
+	$callback_url = AppR::baseUrl()->get() . "/tumblr/callback";
 
 	// Let's begin.  First we need a Request Token.  The request token is required to send the user
 	// to Tumblr's login page.
@@ -189,7 +189,7 @@ function tumblr_callback(App $a)
 	PConfig::set(local_user(), "tumblr", "oauth_token_secret", $access_token['oauth_token_secret']);
 
 	$o = L10n::t("You are now authenticated to tumblr.");
-	$o .= '<br /><a href="' . A::baseUrl()->get() . '/settings/connectors">' . L10n::t("return to the connector page") . '</a>';
+	$o .= '<br /><a href="' . AppR::baseUrl()->get() . '/settings/connectors">' . L10n::t("return to the connector page") . '</a>';
 
 	return $o;
 }
@@ -220,7 +220,7 @@ function tumblr_settings(App $a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	A::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . A::baseUrl()->get() . '/addon/tumblr/tumblr.css' . '" media="all" />' . "\r\n";
+	AppR::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . AppR::baseUrl()->get() . '/addon/tumblr/tumblr.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variables */
 
@@ -243,7 +243,7 @@ function tumblr_settings(App $a, &$s)
 	$s .= '</span>';
 
 	$s .= '<div id="tumblr-username-wrapper">';
-	$s .= '<a href="' . A::baseUrl()->get() . '/tumblr/connect">' . L10n::t("(Re-)Authenticate your tumblr page") . '</a>';
+	$s .= '<a href="' . AppR::baseUrl()->get() . '/tumblr/connect">' . L10n::t("(Re-)Authenticate your tumblr page") . '</a>';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="tumblr-enable-wrapper">';

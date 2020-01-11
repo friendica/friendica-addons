@@ -17,7 +17,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
 use Friendica\Core\Worker;
-use Friendica\Registry\App as A;
+use Friendica\Registry\App as AppR;
 
 function diaspora_install()
 {
@@ -65,7 +65,7 @@ function diaspora_settings(App $a, &$s)
 
 	/* Add our stylesheet to the page so we can make our settings look nice */
 
-	A::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . A::baseUrl()->get() . '/addon/diaspora/diaspora.css' . '" media="all" />' . "\r\n";
+	AppR::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . AppR::baseUrl()->get() . '/addon/diaspora/diaspora.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variables */
 
@@ -231,7 +231,7 @@ function diaspora_post_local(App $a, array &$b)
 
 function diaspora_send(App $a, array &$b)
 {
-	$hostname = A::baseUrl()->getHostname();
+	$hostname = AppR::baseUrl()->getHostname();
 
 	Logger::log('diaspora_send: invoked');
 

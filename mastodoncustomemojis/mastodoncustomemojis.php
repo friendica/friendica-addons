@@ -15,7 +15,7 @@ use Friendica\Core\Cache\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Protocol;
-use Friendica\Registry\App as A;
+use Friendica\Registry\App as AppR;
 use Friendica\Registry\Core;
 use Friendica\Util\Network;
 use Friendica\Util\Proxy as ProxyUtils;
@@ -42,7 +42,7 @@ function mastodoncustomemojis_uninstall()
 
 function mastodoncustomemojis_css_hook(App $a)
 {
-	A::page()['htmlhead'] .= <<<HTML
+	AppR::page()['htmlhead'] .= <<<HTML
 <!-- Style added by mastodoncustomemojis -->
 <style type="text/css">
 	.emoji.mastodon {

@@ -12,7 +12,7 @@ use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Renderer;
-use Friendica\Registry\App as A;
+use Friendica\Registry\App as AppR;
 
 /**
  * cookienotice_install
@@ -91,8 +91,8 @@ function cookienotice_page_content_top(App $a, &$b)
 	$stylesheetPath = __DIR__ . '/cookienotice.css';
 	$footerscriptPath = __DIR__ . '/cookienotice.js';
 
-	A::page()->registerStylesheet($stylesheetPath);
-	A::page()->registerFooterScript($footerscriptPath);
+	AppR::page()->registerStylesheet($stylesheetPath);
+	AppR::page()->registerFooterScript($footerscriptPath);
 }
 
 /**

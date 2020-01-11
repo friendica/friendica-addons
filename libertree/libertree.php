@@ -13,7 +13,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
-use Friendica\Registry\App as A;
+use Friendica\Registry\App as AppR;
 use Friendica\Util\Network;
 
 function libertree_install()
@@ -62,7 +62,7 @@ function libertree_settings(&$a,&$s) {
 
     /* Add our stylesheet to the page so we can make our settings look nice */
 
-    A::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . A::baseUrl()->get() . '/addon/libertree/libertree.css' . '" media="all" />' . "\r\n";
+    AppR::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . AppR::baseUrl()->get() . '/addon/libertree/libertree.css' . '" media="all" />' . "\r\n";
 
     /* Get the current state of our config variables */
 
@@ -207,7 +207,7 @@ function libertree_send(&$a,&$b) {
 	$ltree_api_token = PConfig::get($b['uid'],'libertree','libertree_api_token');
 	$ltree_url = PConfig::get($b['uid'],'libertree','libertree_url');
 	$ltree_blog = "$ltree_url/api/v1/posts/create/?token=$ltree_api_token";
-	$ltree_source = A::baseUrl()->getHostname();
+	$ltree_source = AppR::baseUrl()->getHostname();
 
 	if ($b['app'] != "")
 		$ltree_source .= " (".$b['app'].")";

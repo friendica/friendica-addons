@@ -16,7 +16,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\Model\Profile;
-use Friendica\Registry\App as A;
+use Friendica\Registry\App as AppR;
 use Friendica\Util\Strings;
 
 function forumdirectory_install()
@@ -42,7 +42,7 @@ function forumdirectory_app_menu(App $a, array &$b)
 function forumdirectory_init(App $a)
 {
 	if (local_user()) {
-		A::page()['aside'] .= Widget::findPeople();
+		AppR::page()['aside'] .= Widget::findPeople();
 	}
 }
 
@@ -108,7 +108,7 @@ function forumdirectory_content(App $a)
 		$total = $cnt['total'];
 	}
 
-	$pager = new Pager(A::args()->getQueryString(), 60);
+	$pager = new Pager(AppR::args()->getQueryString(), 60);
 
 	$order = " ORDER BY `name` ASC ";
 

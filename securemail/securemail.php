@@ -13,7 +13,7 @@ use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
-use Friendica\Registry\App as A;
+use Friendica\Registry\App as AppR;
 use Friendica\Util\Emailer;
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -93,7 +93,7 @@ function securemail_settings_post(App &$a, array &$b)
 		if ($_POST['securemail-submit'] == L10n::t('Save and send test')) {
 			$sitename = Config::get('config', 'sitename');
 
-			$hostname = A::baseUrl()->getHostname();
+			$hostname = AppR::baseUrl()->getHostname();
 			if (strpos($hostname, ':')) {
 				$hostname = substr($hostname, 0, strpos($hostname, ':'));
 			}
