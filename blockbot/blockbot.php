@@ -12,10 +12,10 @@ use Friendica\App;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\System;
+use Friendica\DI;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\Core\L10n;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 

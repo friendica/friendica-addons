@@ -7,7 +7,6 @@
  *
  */
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\DI;
 
 function startpage_install() {

@@ -7,7 +7,6 @@
  * Author: Tony Baldwin <https://free-haven.org/profile/tony>
  */
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\DI;
 

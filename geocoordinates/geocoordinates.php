@@ -8,9 +8,9 @@
 use Friendica\Core\Cache;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\DI;
 use Friendica\Util\Network;
 use Friendica\Util\Strings;
 
@@ -105,5 +105,5 @@ function geocoordinates_addon_admin_post(&$a)
 
 	$language  = (!empty($_POST['language']) ? Strings::escapeTags(trim($_POST['language']))   : '');
 	Config::set('geocoordinates', 'language', $language);
-	info(DI::l10n()->t('Settings updated.'). EOL);
+	info(DI::l10n()->t('Settings updated.') . EOL);
 }

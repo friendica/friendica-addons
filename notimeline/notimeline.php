@@ -8,7 +8,6 @@
  *
  */
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\DI;
 
 function notimeline_install()

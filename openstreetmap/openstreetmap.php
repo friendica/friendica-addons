@@ -13,7 +13,6 @@ use Friendica\DI;
 use Friendica\Core\Cache\Duration;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Util\ConfigFileLoader;

@@ -37,7 +37,6 @@ use Friendica\App;
 use Friendica\BaseModule;
 use Friendica\Content\Text\Markdown;
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;

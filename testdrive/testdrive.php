@@ -9,7 +9,6 @@
 use Friendica\App;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\Core\Search;
 use Friendica\Database\DBA;
 use Friendica\DI;

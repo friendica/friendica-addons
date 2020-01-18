@@ -12,7 +12,6 @@ require_once 'addon/diaspora/Diaspora_Connection.php';
 use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Database\DBA;
 use Friendica\Core\Worker;

@@ -10,10 +10,10 @@ use Friendica\App;
 use Friendica\BaseModule;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
+use Friendica\DI;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\Strings;
 

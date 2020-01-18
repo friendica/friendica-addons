@@ -5,9 +5,8 @@
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
-use Friendica\Core\Addon;
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
+use Friendica\DI;
 
 function tictac_install() {
 	Hook::register('app_menu', 'addon/tictac/tictac.php', 'tictac_app_menu');

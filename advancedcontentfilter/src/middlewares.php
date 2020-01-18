@@ -1,5 +1,6 @@
 <?php
-use Friendica\Core\L10n;
+
+use Friendica\DI;
 
 $container = $slim->getContainer();
 

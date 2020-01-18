@@ -1,7 +1,6 @@
 <?php
 
 use Friendica\Content\Text\HTML;
-use Friendica\Core\L10n;
 use Friendica\DI;
 
 function friendheader_widget_name()

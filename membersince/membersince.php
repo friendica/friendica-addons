@@ -8,7 +8,7 @@
  */
 
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
+use Friendica\DI;
 use Friendica\Util\DateTimeFormat;
 
 function membersince_install()

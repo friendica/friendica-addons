@@ -8,7 +8,7 @@
 
 use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
+use Friendica\DI;
 
 function buglink_install()
 {

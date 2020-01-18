@@ -10,7 +10,6 @@
  *"My body was my sacrifice... for my magic. This damage is permanent." - Raistlin Majere
  */
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\DI;
 
