@@ -42,13 +42,13 @@ function ljpost_jot_nets(\Friendica\App &$a, array &$jotnets_fields)
         return;
     }
 
-    if (PConfig::get(local_user(),'ljpost','post')) {
+    if (DI::pConfig()->get(local_user(),'ljpost','post')) {
 	    $jotnets_fields[] = [
 		    'type' => 'checkbox',
 		    'field' => [
 			    'ljpost_enable',
 			    L10n::t('Post to LiveJournal'),
-			    PConfig::get(local_user(),'ljpost','post_by_default')
+			    DI::pConfig()->get(local_user(),'ljpost','post_by_default')
 		    ]
 	    ];
     }
@@ -66,16 +66,16 @@ function ljpost_settings(&$a,&$s) {
 
     /* Get the current state of our config variables */
 
-    $enabled = PConfig::get(local_user(),'ljpost','post');
+    $enabled = DI::pConfig()->get(local_user(),'ljpost','post');
 
     $checked = (($enabled) ? ' checked="checked" ' : '');
 
-    $def_enabled = PConfig::get(local_user(),'ljpost','post_by_default');
+    $def_enabled = DI::pConfig()->get(local_user(),'ljpost','post_by_default');
 
     $def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
-	$lj_username = PConfig::get(local_user(), 'ljpost', 'lj_username');
-	$lj_password = PConfig::get(local_user(), 'ljpost', 'lj_password');
+	$lj_username = DI::pConfig()->get(local_user(), 'ljpost', 'lj_username');
+	$lj_password = DI::pConfig()->get(local_user(), 'ljpost', 'lj_password');
 
 
     /* Add some HTML to the existing form */
@@ -135,11 +135,11 @@ function ljpost_post_local(&$a,&$b) {
 	if($b['private'] || $b['parent'])
 		return;
 
-    $lj_post   = intval(PConfig::get(local_user(),'ljpost','post'));
+    $lj_post   = intval(DI::pConfig()->get(local_user(),'ljpost','post'));
 
 	$lj_enable = (($lj_post && !empty($_REQUEST['ljpost_enable'])) ? intval($_REQUEST['ljpost_enable']) : 0);
 
-	if($b['api_source'] && intval(PConfig::get(local_user(),'ljpost','post_by_default')))
+	if($b['api_source'] && intval(DI::pConfig()->get(local_user(),'ljpost','post_by_default')))
 		$lj_enable = 1;
 
     if(! $lj_enable)
@@ -176,13 +176,13 @@ function ljpost_send(&$a,&$b) {
 	if($x && strlen($x[0]['timezone']))
 		$tz = $x[0]['timezone'];
 
-	$lj_username = XML::escape(PConfig::get($b['uid'],'ljpost','lj_username'));
-	$lj_password = XML::escape(PConfig::get($b['uid'],'ljpost','lj_password'));
-	$lj_journal = XML::escape(PConfig::get($b['uid'],'ljpost','lj_journal'));
+	$lj_username = XML::escape(DI::pConfig()->get($b['uid'],'ljpost','lj_username'));
+	$lj_password = XML::escape(DI::pConfig()->get($b['uid'],'ljpost','lj_password'));
+	$lj_journal = XML::escape(DI::pConfig()->get($b['uid'],'ljpost','lj_journal'));
 //	if(! $lj_journal)
 //		$lj_journal = $lj_username;
 
-	$lj_blog = XML::escape(PConfig::get($b['uid'],'ljpost','lj_blog'));
+	$lj_blog = XML::escape(DI::pConfig()->get($b['uid'],'ljpost','lj_blog'));
 	if(! strlen($lj_blog))
 		$lj_blog = XML::escape('http://www.livejournal.com/interface/xmlrpc');
 

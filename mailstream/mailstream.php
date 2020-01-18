@@ -103,7 +103,7 @@ function mailstream_generate_id($a, $uri) {
 }
 
 function mailstream_post_hook(&$a, &$item) {
-	if (!PConfig::get($item['uid'], 'mailstream', 'enabled')) {
+	if (!DI::pConfig()->get($item['uid'], 'mailstream', 'enabled')) {
 		Logger::debug('mailstream: not enabled for item ' . $item['id']);
 		return;
 	}
@@ -123,7 +123,7 @@ function mailstream_post_hook(&$a, &$item) {
 		Logger::debug('mailstream: no plink for item ' . $item['id']);
 		return;
 	}
-	if (PConfig::get($item['uid'], 'mailstream', 'nolikes')) {
+	if (DI::pConfig()->get($item['uid'], 'mailstream', 'nolikes')) {
 		if ($item['verb'] == Activity::LIKE) {
 			Logger::debug('mailstream: like item ' . $item['id']);
 			return;
@@ -159,7 +159,7 @@ function mailstream_get_user($uid) {
 }
 
 function mailstream_do_images($a, &$item, &$attachments) {
-	if (!PConfig::get($item['uid'], 'mailstream', 'attachimg')) {
+	if (!DI::pConfig()->get($item['uid'], 'mailstream', 'attachimg')) {
 		return;
 	}
 	$attachments = [];
@@ -282,7 +282,7 @@ function mailstream_send(\Friendica\App $a, $message_id, $item, $user) {
 	if ($frommail == "") {
 		$frommail = 'friendica@localhost.local';
 	}
-	$address = PConfig::get($item['uid'], 'mailstream', 'address');
+	$address = DI::pConfig()->get($item['uid'], 'mailstream', 'address');
 	if (!$address) {
 		$address = $user['email'];
 	}
@@ -369,10 +369,10 @@ function mailstream_cron($a, $b) {
 }
 
 function mailstream_addon_settings(&$a,&$s) {
-	$enabled = PConfig::get(local_user(), 'mailstream', 'enabled');
-	$address = PConfig::get(local_user(), 'mailstream', 'address');
-	$nolikes = PConfig::get(local_user(), 'mailstream', 'nolikes');
-	$attachimg= PConfig::get(local_user(), 'mailstream', 'attachimg');
+	$enabled = DI::pConfig()->get(local_user(), 'mailstream', 'enabled');
+	$address = DI::pConfig()->get(local_user(), 'mailstream', 'address');
+	$nolikes = DI::pConfig()->get(local_user(), 'mailstream', 'nolikes');
+	$attachimg= DI::pConfig()->get(local_user(), 'mailstream', 'attachimg');
 	$template = Renderer::getMarkupTemplate('settings.tpl', 'addon/mailstream/');
 	$s .= Renderer::replaceMacros($template, [
 				 '$enabled' => [

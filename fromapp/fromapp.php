@@ -53,9 +53,9 @@ function fromapp_settings(&$a, &$s)
 
 	/* Get the current state of our config variable */
 
-	$fromapp = PConfig::get(local_user(), 'fromapp', 'app', '');
+	$fromapp = DI::pConfig()->get(local_user(), 'fromapp', 'app', '');
 
-	$force = intval(PConfig::get(local_user(), 'fromapp', 'force'));
+	$force = intval(DI::pConfig()->get(local_user(), 'fromapp', 'force'));
 
 	$force_enabled = (($force) ? ' checked="checked" ' : '');
 
@@ -94,8 +94,8 @@ function fromapp_post_hook(&$a, &$item)
 		return;
 	}
 
-	$app = PConfig::get(local_user(), 'fromapp', 'app');
-	$force = intval(PConfig::get(local_user(), 'fromapp', 'force'));
+	$app = DI::pConfig()->get(local_user(), 'fromapp', 'app');
+	$force = intval(DI::pConfig()->get(local_user(), 'fromapp', 'force'));
 
 	if (is_null($app) || (! strlen($app))) {
 		return;

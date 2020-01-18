@@ -40,7 +40,7 @@ function widgets_settings(&$a,&$o) {
 		return;
 
 
-	$key = PConfig::get(local_user(), 'widgets', 'key' );
+	$key = DI::pConfig()->get(local_user(), 'widgets', 'key' );
 	if ($key=='') { $key = mt_rand(); PConfig::set(local_user(), 'widgets', 'key', $key); }
 
 	$widgets = [];

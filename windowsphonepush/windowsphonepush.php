@@ -110,13 +110,13 @@ function windowsphonepush_settings(&$a, &$s)
 	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/windowsphonepush/windowsphonepush.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variables */
-	$enabled = PConfig::get(local_user(), 'windowsphonepush', 'enable');
+	$enabled = DI::pConfig()->get(local_user(), 'windowsphonepush', 'enable');
 	$checked_enabled = (($enabled) ? ' checked="checked" ' : '');
 
-	$senditemtext = PConfig::get(local_user(), 'windowsphonepush', 'senditemtext');
+	$senditemtext = DI::pConfig()->get(local_user(), 'windowsphonepush', 'senditemtext');
 	$checked_senditemtext = (($senditemtext) ? ' checked="checked" ' : '');
 
-	$device_url = PConfig::get(local_user(), 'windowsphonepush', 'device_url');
+	$device_url = DI::pConfig()->get(local_user(), 'windowsphonepush', 'device_url');
 
 	/* Add some HTML to the existing form */
 	$s .= '<div class="settings-block">';
@@ -154,8 +154,8 @@ function windowsphonepush_cron()
 	if (count($r)) {
 		foreach ($r as $rr) {
 			// load stored information for the user-id of the current loop
-			$device_url = PConfig::get($rr['uid'], 'windowsphonepush', 'device_url');
-			$lastpushid = PConfig::get($rr['uid'], 'windowsphonepush', 'lastpushid');
+			$device_url = DI::pConfig()->get($rr['uid'], 'windowsphonepush', 'device_url');
+			$lastpushid = DI::pConfig()->get($rr['uid'], 'windowsphonepush', 'lastpushid');
 
 			// pushing only possible if device_url (the URI on Microsoft server) is available or not "NA" (which will be sent
 			// by app if user has switched the server setting in app - sending blank not possible as this would return an update error)
@@ -197,7 +197,7 @@ function windowsphonepush_cron()
 				if (intval($count[0]['max']) > intval($lastpushid)) {
 					// user can define if he wants to see the text of the item in the push notification
 					// this has been implemented as the device_url is not a https uri (not so secure)
-					$senditemtext = PConfig::get($rr['uid'], 'windowsphonepush', 'senditemtext');
+					$senditemtext = DI::pConfig()->get($rr['uid'], 'windowsphonepush', 'senditemtext');
 					if ($senditemtext == 1) {
 						// load item with the max id
 						$item = Item::selectFirst(['author-name', 'body'], ['id' => $count[0]['max']]);
@@ -365,11 +365,11 @@ function windowsphonepush_showsettings()
 		return;
 	}
 
-	$enable = PConfig::get(local_user(), 'windowsphonepush', 'enable');
-	$device_url = PConfig::get(local_user(), 'windowsphonepush', 'device_url');
-	$senditemtext = PConfig::get(local_user(), 'windowsphonepush', 'senditemtext');
-	$lastpushid = PConfig::get(local_user(), 'windowsphonepush', 'lastpushid');
-	$counterunseen = PConfig::get(local_user(), 'windowsphonepush', 'counterunseen');
+	$enable = DI::pConfig()->get(local_user(), 'windowsphonepush', 'enable');
+	$device_url = DI::pConfig()->get(local_user(), 'windowsphonepush', 'device_url');
+	$senditemtext = DI::pConfig()->get(local_user(), 'windowsphonepush', 'senditemtext');
+	$lastpushid = DI::pConfig()->get(local_user(), 'windowsphonepush', 'lastpushid');
+	$counterunseen = DI::pConfig()->get(local_user(), 'windowsphonepush', 'counterunseen');
 	$addonversion = "2.0";
 
 	if (!$device_url) {
@@ -400,7 +400,7 @@ function windowsphonepush_updatesettings()
 	}
 
 	// no updating if user hasn't enabled the addon
-	$enable = PConfig::get(local_user(), 'windowsphonepush', 'enable');
+	$enable = DI::pConfig()->get(local_user(), 'windowsphonepush', 'enable');
 	if (!$enable) {
 		return "Plug-in not enabled";
 	}
@@ -441,7 +441,7 @@ function windowsphonepush_updatecounterunseen()
 	}
 
 	// no updating if user hasn't enabled the addon
-	$enable = PConfig::get(local_user(), 'windowsphonepush', 'enable');
+	$enable = DI::pConfig()->get(local_user(), 'windowsphonepush', 'enable');
 	if (!$enable) {
 		return "Plug-in not enabled";
 	}

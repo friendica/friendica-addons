@@ -48,13 +48,13 @@ function blogger_jot_nets(App $a, array &$jotnets_fields)
 		return;
 	}
 
-	if (PConfig::get(local_user(), 'blogger', 'post')) {
+	if (DI::pConfig()->get(local_user(), 'blogger', 'post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'blogger_enable',
 				L10n::t('Post to blogger'),
-				PConfig::get(local_user(), 'blogger', 'post_by_default')
+				DI::pConfig()->get(local_user(), 'blogger', 'post_by_default')
 			]
 		];
 	}
@@ -73,17 +73,17 @@ function blogger_settings(App $a, &$s)
 
 	/* Get the current state of our config variables */
 
-	$enabled = PConfig::get(local_user(), 'blogger', 'post');
+	$enabled = DI::pConfig()->get(local_user(), 'blogger', 'post');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 	$css = (($enabled) ? '' : '-disabled');
 
-	$def_enabled = PConfig::get(local_user(), 'blogger', 'post_by_default');
+	$def_enabled = DI::pConfig()->get(local_user(), 'blogger', 'post_by_default');
 
 	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
-	$bl_username = PConfig::get(local_user(), 'blogger', 'bl_username');
-	$bl_password = PConfig::get(local_user(), 'blogger', 'bl_password');
-	$bl_blog = PConfig::get(local_user(), 'blogger', 'bl_blog');
+	$bl_username = DI::pConfig()->get(local_user(), 'blogger', 'bl_username');
+	$bl_password = DI::pConfig()->get(local_user(), 'blogger', 'bl_password');
+	$bl_blog = DI::pConfig()->get(local_user(), 'blogger', 'bl_blog');
 
 	/* Add some HTML to the existing form */
 	$s .= '<span id="settings_blogger_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_blogger_expanded\'); openClose(\'settings_blogger_inflated\');">';
@@ -166,11 +166,11 @@ function blogger_post_local(App $a, array &$b)
 		return;
 	}
 
-	$bl_post   = intval(PConfig::get(local_user(), 'blogger', 'post'));
+	$bl_post   = intval(DI::pConfig()->get(local_user(), 'blogger', 'post'));
 
 	$bl_enable = (($bl_post && !empty($_REQUEST['blogger_enable'])) ? intval($_REQUEST['blogger_enable']) : 0);
 
-	if ($b['api_source'] && intval(PConfig::get(local_user(), 'blogger', 'post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(), 'blogger', 'post_by_default'))) {
 		$bl_enable = 1;
 	}
 
@@ -199,9 +199,9 @@ function blogger_send(App $a, array &$b)
 		return;
 	}
 
-	$bl_username = XML::escape(PConfig::get($b['uid'], 'blogger', 'bl_username'));
-	$bl_password = XML::escape(PConfig::get($b['uid'], 'blogger', 'bl_password'));
-	$bl_blog = PConfig::get($b['uid'], 'blogger', 'bl_blog');
+	$bl_username = XML::escape(DI::pConfig()->get($b['uid'], 'blogger', 'bl_username'));
+	$bl_password = XML::escape(DI::pConfig()->get($b['uid'], 'blogger', 'bl_password'));
+	$bl_blog = DI::pConfig()->get($b['uid'], 'blogger', 'bl_blog');
 
 	if ($bl_username && $bl_password && $bl_blog) {
 		$title = '<title>' . (($b['title']) ? $b['title'] : L10n::t('Post from Friendica')) . '</title>';

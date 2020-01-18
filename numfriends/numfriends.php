@@ -64,7 +64,7 @@ function numfriends_settings(&$a, &$s)
 
 	/* Get the current state of our config variable */
 
-	$numfriends = PConfig::get(local_user(), 'system', 'display_friend_count', 24);
+	$numfriends = DI::pConfig()->get(local_user(), 'system', 'display_friend_count', 24);
 	
 	/* Add some HTML to the existing form */
 

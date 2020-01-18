@@ -82,7 +82,7 @@ function planets_post_hook($a, &$item) {
 
 	/* Retrieve our personal config setting */
 
-	$active = PConfig::get(local_user(), 'planets', 'enable');
+	$active = DI::pConfig()->get(local_user(), 'planets', 'enable');
 
 	if(! $active)
 		return;
@@ -144,7 +144,7 @@ function planets_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$enabled = PConfig::get(local_user(),'planets','enable');
+	$enabled = DI::pConfig()->get(local_user(),'planets','enable');
 
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 

@@ -36,8 +36,8 @@ function irc_addon_settings(&$a,&$s) {
 //	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/irc/irc.css' . '" media="all" />' . "\r\n";
 
     /* setting popular channels, auto connect channels */
-	$sitechats = PConfig::get( local_user(), 'irc','sitechats'); /* popular channels */
-	$autochans = PConfig::get( local_user(), 'irc','autochans');  /* auto connect chans */
+	$sitechats = DI::pConfig()->get( local_user(), 'irc','sitechats'); /* popular channels */
+	$autochans = DI::pConfig()->get( local_user(), 'irc','autochans');  /* auto connect chans */
 
 	$t = Renderer::getMarkupTemplate( "settings.tpl", "addon/irc/" );
 	$s .= Renderer::replaceMacros($t, [
@@ -86,7 +86,7 @@ function irc_content(&$a) {
 
 	/* set the list of popular channels */
 	if (local_user()) {
-	    $sitechats = PConfig::get( local_user(), 'irc', 'sitechats');
+	    $sitechats = DI::pConfig()->get( local_user(), 'irc', 'sitechats');
 	    if (!$sitechats)
 		$sitechats = Config::get('irc', 'sitechats');
 	} else {
@@ -106,7 +106,7 @@ function irc_content(&$a) {
 
         /* setting the channel(s) to auto connect */
 	if (local_user()) {
-	    $autochans = PConfig::get(local_user(), 'irc', 'autochans');
+	    $autochans = DI::pConfig()->get(local_user(), 'irc', 'autochans');
 	    if (!$autochans)
 		$autochans = Config::get('irc','autochans');
 	} else {

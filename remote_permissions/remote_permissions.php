@@ -43,7 +43,7 @@ function remote_permissions_settings(&$a,&$o) {
 
 	/* Get the current state of our config variable */
 
-	$remote_perms = PConfig::get(local_user(),'remote_perms','show');
+	$remote_perms = DI::pConfig()->get(local_user(),'remote_perms','show');
 
 	/* Add some HTML to the existing form */
 
@@ -94,7 +94,7 @@ function remote_permissions_content($a, $item_copy) {
 		if(! $r)
 			return;
 
-		if(PConfig::get($r[0]['uid'],'remote_perms','show') == 0)
+		if(DI::pConfig()->get($r[0]['uid'],'remote_perms','show') == 0)
 			return;
 	}
 

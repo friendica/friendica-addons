@@ -45,7 +45,7 @@ function qcomment_addon_settings(&$a, &$s)
 
 	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/qcomment/qcomment.css' . '" media="all" />' . "\r\n";
 
-	$words = PConfig::get(local_user(), 'qcomment', 'words', L10n::t(':-)') . "\n" . L10n::t(':-(') . "\n" .  L10n::t('lol'));
+	$words = DI::pConfig()->get(local_user(), 'qcomment', 'words', L10n::t(':-)') . "\n" . L10n::t(':-(') . "\n" .  L10n::t('lol'));
 
 	$s .= '<div class="settings-block">';
 	$s .= '<h3>' . L10n::t('Quick Comment Settings') . '</h3>';

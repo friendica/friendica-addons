@@ -74,7 +74,7 @@ function gnot_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$gnot = intval(PConfig::get(local_user(),'gnot','enable'));
+	$gnot = intval(DI::pConfig()->get(local_user(),'gnot','enable'));
 
 	$gnot_checked = (($gnot) ? ' checked="checked" ' : '' );
 	
@@ -92,7 +92,7 @@ function gnot_settings(&$a,&$s) {
 
 
 function gnot_enotify_mail(&$a,&$b) {
-	if((! $b['uid']) || (! intval(PConfig::get($b['uid'], 'gnot','enable'))))
+	if((! $b['uid']) || (! intval(DI::pConfig()->get($b['uid'], 'gnot','enable'))))
 		return;
 	if($b['type'] == NOTIFY_COMMENT)
 		$b['subject'] = L10n::t('[Friendica:Notify] Comment to conversation #%d', $b['parent']);

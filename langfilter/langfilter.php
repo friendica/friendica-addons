@@ -47,10 +47,10 @@ function langfilter_addon_settings(App $a, &$s)
 		return;
 	}
 
-	$enable_checked = (intval(PConfig::get(local_user(), 'langfilter', 'disable')) ? '' : ' checked="checked" ');
-	$languages      = PConfig::get(local_user(), 'langfilter', 'languages');
-	$minconfidence  = PConfig::get(local_user(), 'langfilter', 'minconfidence') * 100;
-	$minlength      = PConfig::get(local_user(), 'langfilter', 'minlength');
+	$enable_checked = (intval(DI::pConfig()->get(local_user(), 'langfilter', 'disable')) ? '' : ' checked="checked" ');
+	$languages      = DI::pConfig()->get(local_user(), 'langfilter', 'languages');
+	$minconfidence  = DI::pConfig()->get(local_user(), 'langfilter', 'minconfidence') * 100;
+	$minlength      = DI::pConfig()->get(local_user(), 'langfilter', 'minlength');
 
 	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/langfilter/");
 	$s .= Renderer::replaceMacros($t, [
@@ -129,14 +129,14 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 	}
 
 	// Don't filter if language filter is disabled
-	if (PConfig::get($logged_user, 'langfilter', 'disable')) {
+	if (DI::pConfig()->get($logged_user, 'langfilter', 'disable')) {
 		return;
 	}
 
 	$naked_body = BBCode::toPlaintext($hook_data['item']['body'], false);
 
 	// Don't filter if body lenght is below minimum
-	$minlen = PConfig::get(local_user(), 'langfilter', 'minlength', 32);
+	$minlen = DI::pConfig()->get(local_user(), 'langfilter', 'minlength', 32);
 	if (!$minlen) {
 		$minlen = 32;
 	}
@@ -145,8 +145,8 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 		return;
 	}
 
-	$read_languages_string = PConfig::get(local_user(), 'langfilter', 'languages');
-	$minconfidence = PConfig::get(local_user(), 'langfilter', 'minconfidence');
+	$read_languages_string = DI::pConfig()->get(local_user(), 'langfilter', 'languages');
+	$minconfidence = DI::pConfig()->get(local_user(), 'langfilter', 'minconfidence');
 
 	// Don't filter if no spoken languages are configured
 	if (!$read_languages_string) {

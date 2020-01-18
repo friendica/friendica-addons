@@ -49,7 +49,7 @@ function mathjax_settings(App $a, &$s)
 		return;
 	}
 
-	$use = PConfig::get(local_user(), 'mathjax', 'use', false);
+	$use = DI::pConfig()->get(local_user(), 'mathjax', 'use', false);
 
 	$tpl = Renderer::getMarkupTemplate('settings.tpl', __DIR__);
 	$s .= Renderer::replaceMacros($tpl, [
@@ -64,7 +64,7 @@ function mathjax_footer(App $a, &$b)
 {
 	//  if the visitor of the page is not a local_user, use MathJax
 	//  otherwise check the users settings.
-	if (!local_user() || PConfig::get(local_user(), 'mathjax', 'use', false)) {
+	if (!local_user() || DI::pConfig()->get(local_user(), 'mathjax', 'use', false)) {
 		DI::page()->registerFooterScript(__DIR__ . '/asset/MathJax.js?config=TeX-MML-AM_CHTML');
 		DI::page()->registerFooterScript(__DIR__ . '/mathjax.js');
 	}

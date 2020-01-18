@@ -94,7 +94,7 @@ function randplace_post_hook($a, &$item) {
 
 	/* Retrieve our personal config setting */
 
-	$active = PConfig::get(local_user(), 'randplace', 'enable');
+	$active = DI::pConfig()->get(local_user(), 'randplace', 'enable');
 
 	if(! $active)
 		return;
@@ -163,7 +163,7 @@ function randplace_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$enabled = PConfig::get(local_user(),'randplace','enable');
+	$enabled = DI::pConfig()->get(local_user(),'randplace','enable');
 
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 

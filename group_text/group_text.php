@@ -69,7 +69,7 @@ function group_text_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$enabled = PConfig::get(local_user(),'system','groupedit_image_limit');
+	$enabled = DI::pConfig()->get(local_user(),'system','groupedit_image_limit');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 
 	/* Add some HTML to the existing form */

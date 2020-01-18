@@ -42,13 +42,13 @@ function ijpost_jot_nets(\Friendica\App &$a, array &$jotnets_fields)
 		return;
 	}
 
-	if (PConfig::get(local_user(), 'ijpost', 'post')) {
+	if (DI::pConfig()->get(local_user(), 'ijpost', 'post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'ijpost_enable',
 				L10n::t('Post to Insanejournal'),
-				PConfig::get(local_user(), 'ijpost', 'post_by_default')
+				DI::pConfig()->get(local_user(), 'ijpost', 'post_by_default')
 			]
 		];
 	}
@@ -66,16 +66,16 @@ function ijpost_settings(&$a, &$s)
 
 	/* Get the current state of our config variables */
 
-	$enabled = PConfig::get(local_user(), 'ijpost', 'post');
+	$enabled = DI::pConfig()->get(local_user(), 'ijpost', 'post');
 
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 
-	$def_enabled = PConfig::get(local_user(), 'ijpost', 'post_by_default');
+	$def_enabled = DI::pConfig()->get(local_user(), 'ijpost', 'post_by_default');
 
 	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
-	$ij_username = PConfig::get(local_user(), 'ijpost', 'ij_username');
-	$ij_password = PConfig::get(local_user(), 'ijpost', 'ij_password');
+	$ij_username = DI::pConfig()->get(local_user(), 'ijpost', 'ij_username');
+	$ij_password = DI::pConfig()->get(local_user(), 'ijpost', 'ij_password');
 
 	/* Add some HTML to the existing form */
 	$s .= '<span id="settings_ijpost_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_ijpost_expanded\'); openClose(\'settings_ijpost_inflated\');">';
@@ -136,11 +136,11 @@ function ijpost_post_local(&$a, &$b)
 		return;
 	}
 
-	$ij_post   = intval(PConfig::get(local_user(), 'ijpost', 'post'));
+	$ij_post   = intval(DI::pConfig()->get(local_user(), 'ijpost', 'post'));
 
 	$ij_enable = (($ij_post && !empty($_REQUEST['ijpost_enable'])) ? intval($_REQUEST['ijpost_enable']) : 0);
 
-	if ($b['api_source'] && intval(PConfig::get(local_user(), 'ijpost', 'post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(), 'ijpost', 'post_by_default'))) {
 		$ij_enable = 1;
 	}
 
@@ -183,8 +183,8 @@ function ijpost_send(&$a, &$b)
 		$tz = $x[0]['timezone'];
 	}
 
-	$ij_username = PConfig::get($b['uid'], 'ijpost', 'ij_username');
-	$ij_password = PConfig::get($b['uid'], 'ijpost', 'ij_password');
+	$ij_username = DI::pConfig()->get($b['uid'], 'ijpost', 'ij_username');
+	$ij_password = DI::pConfig()->get($b['uid'], 'ijpost', 'ij_password');
 	$ij_blog = 'http://www.insanejournal.com/interface/xmlrpc';
 
 	if ($ij_username && $ij_password && $ij_blog) {

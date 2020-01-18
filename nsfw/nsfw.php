@@ -68,8 +68,8 @@ function nsfw_addon_settings(&$a, &$s)
 
 	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/nsfw/nsfw.css' . '" media="all" />' . "\r\n";
 
-	$enable_checked = (intval(PConfig::get(local_user(), 'nsfw', 'disable')) ? '' : ' checked="checked" ');
-	$words = PConfig::get(local_user(), 'nsfw', 'words');
+	$enable_checked = (intval(DI::pConfig()->get(local_user(), 'nsfw', 'disable')) ? '' : ' checked="checked" ');
+	$words = DI::pConfig()->get(local_user(), 'nsfw', 'words');
 	if (!$words) {
 		$words = 'nsfw,';
 	}
@@ -114,12 +114,12 @@ function nsfw_addon_settings_post(&$a, &$b)
 function nsfw_prepare_body_content_filter(\Friendica\App $a, &$hook_data)
 {
 	$words = null;
-	if (PConfig::get(local_user(), 'nsfw', 'disable')) {
+	if (DI::pConfig()->get(local_user(), 'nsfw', 'disable')) {
 		return;
 	}
 
 	if (local_user()) {
-		$words = PConfig::get(local_user(), 'nsfw', 'words');
+		$words = DI::pConfig()->get(local_user(), 'nsfw', 'words');
 	}
 
 	if ($words) {

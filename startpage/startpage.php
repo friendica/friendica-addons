@@ -31,7 +31,7 @@ function startpage_home_init($a, $b)
 		return;
 	}
 
-	$page = PConfig::get(local_user(), 'startpage', 'startpage');
+	$page = DI::pConfig()->get(local_user(), 'startpage', 'startpage');
 	if (strlen($page)) {
 		DI::baseUrl()->redirect($page);
 	}
@@ -76,7 +76,7 @@ function startpage_settings(&$a, &$s)
 
 	/* Get the current state of our config variable */
 
-	$page = PConfig::get(local_user(), 'startpage', 'startpage');
+	$page = DI::pConfig()->get(local_user(), 'startpage', 'startpage');
 
 	/* Add some HTML to the existing form */
 

@@ -46,7 +46,7 @@ function ifttt_settings(App $a, &$s)
 		return;
 	}
 
-	$key = PConfig::get(local_user(), 'ifttt', 'key');
+	$key = DI::pConfig()->get(local_user(), 'ifttt', 'key');
 
 	if (!$key) {
 		$key = Strings::getRandomHex(20);
@@ -119,7 +119,7 @@ function ifttt_post(App $a)
 	$key = $_REQUEST['key'];
 
 	// Check the key
-	if ($key != PConfig::get($uid, 'ifttt', 'key')) {
+	if ($key != DI::pConfig()->get($uid, 'ifttt', 'key')) {
 		Logger::log('Invalid key for user ' . $uid, Logger::DEBUG);
 		return;
 	}

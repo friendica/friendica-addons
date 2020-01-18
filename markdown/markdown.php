@@ -12,6 +12,7 @@ use Friendica\Content\Text\Markdown;
 use Friendica\Core\Renderer;
 use Friendica\Core\PConfig;
 use Friendica\Core\L10n;
+use Friendica\DI;
 
 function markdown_install() {
 	Hook::register('post_local_start',      __FILE__, 'markdown_post_local_start');
@@ -25,7 +26,7 @@ function markdown_addon_settings(App $a, &$s)
 		return;
 	}
 
-	$enabled = intval(PConfig::get(local_user(), 'markdown', 'enabled'));
+	$enabled = intval(DI::pConfig()->get(local_user(), 'markdown', 'enabled'));
 
 	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/markdown/');
 	$s .= Renderer::replaceMacros($t, [
@@ -45,7 +46,7 @@ function markdown_addon_settings_post(App $a, &$b)
 }
 
 function markdown_post_local_start(App $a, &$request) {
-	if (empty($request['body']) || !PConfig::get(local_user(), 'markdown', 'enabled')) {
+	if (empty($request['body']) || !DI::pConfig()->get(local_user(), 'markdown', 'enabled')) {
 		return;
 	}
 

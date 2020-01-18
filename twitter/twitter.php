@@ -142,7 +142,7 @@ function twitter_load_config(App $a, ConfigFileLoader $loader)
 
 function twitter_check_item_notification(App $a, array &$notification_data)
 {
-	$own_id = PConfig::get($notification_data["uid"], 'twitter', 'own_id');
+	$own_id = DI::pConfig()->get($notification_data["uid"], 'twitter', 'own_id');
 
 	$own_user = q("SELECT `url` FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
 			intval($notification_data["uid"]),
@@ -170,8 +170,8 @@ function twitter_follow(App $a, array &$contact)
 
 	$ckey = Config::get('twitter', 'consumerkey');
 	$csecret = Config::get('twitter', 'consumersecret');
-	$otoken = PConfig::get($uid, 'twitter', 'oauthtoken');
-	$osecret = PConfig::get($uid, 'twitter', 'oauthsecret');
+	$otoken = DI::pConfig()->get($uid, 'twitter', 'oauthtoken');
+	$osecret = DI::pConfig()->get($uid, 'twitter', 'oauthsecret');
 
 	// If the addon is not configured (general or for this user) quit here
 	if (empty($ckey) || empty($csecret) || empty($otoken) || empty($osecret)) {
@@ -199,13 +199,13 @@ function twitter_jot_nets(App $a, array &$jotnets_fields)
 		return;
 	}
 
-	if (PConfig::get(local_user(), 'twitter', 'post')) {
+	if (DI::pConfig()->get(local_user(), 'twitter', 'post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'twitter_enable',
 				L10n::t('Post to Twitter'),
-				PConfig::get(local_user(), 'twitter', 'post_by_default')
+				DI::pConfig()->get(local_user(), 'twitter', 'post_by_default')
 			]
 		];
 	}
@@ -296,14 +296,14 @@ function twitter_settings(App $a, &$s)
 	 */
 	$ckey    = Config::get('twitter', 'consumerkey');
 	$csecret = Config::get('twitter', 'consumersecret');
-	$otoken  = PConfig::get(local_user(), 'twitter', 'oauthtoken');
-	$osecret = PConfig::get(local_user(), 'twitter', 'oauthsecret');
+	$otoken  = DI::pConfig()->get(local_user(), 'twitter', 'oauthtoken');
+	$osecret = DI::pConfig()->get(local_user(), 'twitter', 'oauthsecret');
 
-	$enabled            = intval(PConfig::get(local_user(), 'twitter', 'post'));
-	$defenabled         = intval(PConfig::get(local_user(), 'twitter', 'post_by_default'));
-	$mirrorenabled      = intval(PConfig::get(local_user(), 'twitter', 'mirror_posts'));
-	$importenabled      = intval(PConfig::get(local_user(), 'twitter', 'import'));
-	$create_userenabled = intval(PConfig::get(local_user(), 'twitter', 'create_user'));
+	$enabled            = intval(DI::pConfig()->get(local_user(), 'twitter', 'post'));
+	$defenabled         = intval(DI::pConfig()->get(local_user(), 'twitter', 'post_by_default'));
+	$mirrorenabled      = intval(DI::pConfig()->get(local_user(), 'twitter', 'mirror_posts'));
+	$importenabled      = intval(DI::pConfig()->get(local_user(), 'twitter', 'import'));
+	$create_userenabled = intval(DI::pConfig()->get(local_user(), 'twitter', 'create_user'));
 
 	$css = (($enabled) ? '' : '-disabled');
 
@@ -427,7 +427,7 @@ function twitter_hook_fork(App $a, array &$b)
 		return;
 	}
 
-	if (PConfig::get($post['uid'], 'twitter', 'import')) {
+	if (DI::pConfig()->get($post['uid'], 'twitter', 'import')) {
 		// Don't fork if it isn't a reply to a twitter post
 		if (($post['parent'] != $post['id']) && !Item::exists(['id' => $post['parent'], 'network' => Protocol::TWITTER])) {
 			Logger::notice('No twitter parent found', ['item' => $post['id']]);
@@ -453,11 +453,11 @@ function twitter_post_local(App $a, array &$b)
 		return;
 	}
 
-	$twitter_post = intval(PConfig::get(local_user(), 'twitter', 'post'));
+	$twitter_post = intval(DI::pConfig()->get(local_user(), 'twitter', 'post'));
 	$twitter_enable = (($twitter_post && !empty($_REQUEST['twitter_enable'])) ? intval($_REQUEST['twitter_enable']) : 0);
 
 	// if API is used, default to the chosen settings
-	if ($b['api_source'] && intval(PConfig::get(local_user(), 'twitter', 'post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(), 'twitter', 'post_by_default'))) {
 		$twitter_enable = 1;
 	}
 
@@ -476,8 +476,8 @@ function twitter_action(App $a, $uid, $pid, $action)
 {
 	$ckey = Config::get('twitter', 'consumerkey');
 	$csecret = Config::get('twitter', 'consumersecret');
-	$otoken = PConfig::get($uid, 'twitter', 'oauthtoken');
-	$osecret = PConfig::get($uid, 'twitter', 'oauthsecret');
+	$otoken = DI::pConfig()->get($uid, 'twitter', 'oauthtoken');
+	$osecret = DI::pConfig()->get($uid, 'twitter', 'oauthsecret');
 
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
@@ -506,7 +506,7 @@ function twitter_action(App $a, $uid, $pid, $action)
 function twitter_post_hook(App $a, array &$b)
 {
 	// Post to Twitter
-	if (!PConfig::get($b["uid"], 'twitter', 'import')
+	if (!DI::pConfig()->get($b["uid"], 'twitter', 'import')
 		&& ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))) {
 		return;
 	}
@@ -592,8 +592,8 @@ function twitter_post_hook(App $a, array &$b)
 
 	$ckey    = Config::get('twitter', 'consumerkey');
 	$csecret = Config::get('twitter', 'consumersecret');
-	$otoken  = PConfig::get($b['uid'], 'twitter', 'oauthtoken');
-	$osecret = PConfig::get($b['uid'], 'twitter', 'oauthsecret');
+	$otoken  = DI::pConfig()->get($b['uid'], 'twitter', 'oauthtoken');
+	$osecret = DI::pConfig()->get($b['uid'], 'twitter', 'oauthsecret');
 
 	if ($ckey && $csecret && $otoken && $osecret) {
 		Logger::log('twitter: we have customer key and oauth stuff, going to send.', Logger::DEBUG);
@@ -784,7 +784,7 @@ function twitter_cron(App $a)
 			/*
 			  // To-Do
 			  // check for new contacts once a day
-			  $last_contact_check = PConfig::get($rr['uid'],'pumpio','contact_check');
+			  $last_contact_check = DI::pConfig()->get($rr['uid'],'pumpio','contact_check');
 			  if($last_contact_check)
 			  $next_contact_check = $last_contact_check + 86400;
 			  else
@@ -933,9 +933,9 @@ function twitter_fetchtimeline(App $a, $uid)
 {
 	$ckey    = Config::get('twitter', 'consumerkey');
 	$csecret = Config::get('twitter', 'consumersecret');
-	$otoken  = PConfig::get($uid, 'twitter', 'oauthtoken');
-	$osecret = PConfig::get($uid, 'twitter', 'oauthsecret');
-	$lastid  = PConfig::get($uid, 'twitter', 'lastid');
+	$otoken  = DI::pConfig()->get($uid, 'twitter', 'oauthtoken');
+	$osecret = DI::pConfig()->get($uid, 'twitter', 'oauthsecret');
+	$lastid  = DI::pConfig()->get($uid, 'twitter', 'lastid');
 
 	$application_name = Config::get('twitter', 'application_name');
 
@@ -1099,8 +1099,8 @@ function twitter_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 {
 	$ckey = Config::get('twitter', 'consumerkey');
 	$csecret = Config::get('twitter', 'consumersecret');
-	$otoken = PConfig::get($uid, 'twitter', 'oauthtoken');
-	$osecret = PConfig::get($uid, 'twitter', 'oauthsecret');
+	$otoken = DI::pConfig()->get($uid, 'twitter', 'oauthtoken');
+	$osecret = DI::pConfig()->get($uid, 'twitter', 'oauthsecret');
 
 	$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 		intval($uid));
@@ -1421,7 +1421,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 		}
 
 		// Is it me?
-		$own_id = PConfig::get($uid, 'twitter', 'own_id');
+		$own_id = DI::pConfig()->get($uid, 'twitter', 'own_id');
 
 		if ($post->user->id_str == $own_id) {
 			$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
@@ -1604,7 +1604,7 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 
 	if (!empty($posts)) {
 		foreach ($posts as $post) {
-			$postarray = twitter_createpost($a, $uid, $post, $self, false, !PConfig::get($uid, 'twitter', 'create_user'), false);
+			$postarray = twitter_createpost($a, $uid, $post, $self, false, !DI::pConfig()->get($uid, 'twitter', 'create_user'), false);
 
 			if (empty($postarray['body'])) {
 				continue;
@@ -1623,10 +1623,10 @@ function twitter_fetchhometimeline(App $a, $uid)
 {
 	$ckey    = Config::get('twitter', 'consumerkey');
 	$csecret = Config::get('twitter', 'consumersecret');
-	$otoken  = PConfig::get($uid, 'twitter', 'oauthtoken');
-	$osecret = PConfig::get($uid, 'twitter', 'oauthsecret');
-	$create_user = PConfig::get($uid, 'twitter', 'create_user');
-	$mirror_posts = PConfig::get($uid, 'twitter', 'mirror_posts');
+	$otoken  = DI::pConfig()->get($uid, 'twitter', 'oauthtoken');
+	$osecret = DI::pConfig()->get($uid, 'twitter', 'oauthsecret');
+	$create_user = DI::pConfig()->get($uid, 'twitter', 'create_user');
+	$mirror_posts = DI::pConfig()->get($uid, 'twitter', 'mirror_posts');
 
 	Logger::log("Fetching timeline for user " . $uid, Logger::DEBUG);
 
@@ -1665,7 +1665,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 	$parameters = ["exclude_replies" => false, "trim_user" => false, "contributor_details" => true, "include_rts" => true, "tweet_mode" => "extended", "include_ext_alt_text" => true];
 	//$parameters["count"] = 200;
 	// Fetching timeline
-	$lastid = PConfig::get($uid, 'twitter', 'lasthometimelineid');
+	$lastid = DI::pConfig()->get($uid, 'twitter', 'lasthometimelineid');
 
 	$first_time = ($lastid == "");
 
@@ -1748,7 +1748,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 	Logger::log('Last timeline ID for user ' . $uid . ' is now ' . $lastid, Logger::DEBUG);
 
 	// Fetching mentions
-	$lastid = PConfig::get($uid, 'twitter', 'lastmentionid');
+	$lastid = DI::pConfig()->get($uid, 'twitter', 'lastmentionid');
 
 	$first_time = ($lastid == "");
 
@@ -1807,10 +1807,10 @@ function twitter_fetch_own_contact(App $a, $uid)
 {
 	$ckey    = Config::get('twitter', 'consumerkey');
 	$csecret = Config::get('twitter', 'consumersecret');
-	$otoken  = PConfig::get($uid, 'twitter', 'oauthtoken');
-	$osecret = PConfig::get($uid, 'twitter', 'oauthsecret');
+	$otoken  = DI::pConfig()->get($uid, 'twitter', 'oauthtoken');
+	$osecret = DI::pConfig()->get($uid, 'twitter', 'oauthsecret');
 
-	$own_id = PConfig::get($uid, 'twitter', 'own_id');
+	$own_id = DI::pConfig()->get($uid, 'twitter', 'own_id');
 
 	$contact_id = 0;
 
@@ -1882,8 +1882,8 @@ function twitter_is_retweet(App $a, $uid, $body)
 
 	$ckey    = Config::get('twitter', 'consumerkey');
 	$csecret = Config::get('twitter', 'consumersecret');
-	$otoken  = PConfig::get($uid, 'twitter', 'oauthtoken');
-	$osecret = PConfig::get($uid, 'twitter', 'oauthsecret');
+	$otoken  = DI::pConfig()->get($uid, 'twitter', 'oauthtoken');
+	$osecret = DI::pConfig()->get($uid, 'twitter', 'oauthsecret');
 
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 	$result = $connection->post('statuses/retweet/' . $id);

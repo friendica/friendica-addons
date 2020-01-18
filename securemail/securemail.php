@@ -54,8 +54,8 @@ function securemail_settings(App &$a, &$s)
 		return;
 	}
 
-	$enable = intval(PConfig::get(local_user(), 'securemail', 'enable'));
-	$publickey = PConfig::get(local_user(), 'securemail', 'pkey');
+	$enable = intval(DI::pConfig()->get(local_user(), 'securemail', 'enable'));
+	$publickey = DI::pConfig()->get(local_user(), 'securemail', 'pkey');
 
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/securemail/');
 
@@ -151,12 +151,12 @@ function securemail_emailer_send_prepare(App &$a, array &$b)
 
 	$uid = $b['uid'];
 
-	$enable_checked = PConfig::get($uid, 'securemail', 'enable');
+	$enable_checked = DI::pConfig()->get($uid, 'securemail', 'enable');
 	if (!$enable_checked) {
 		return;
 	}
 
-	$public_key_ascii = PConfig::get($uid, 'securemail', 'pkey');
+	$public_key_ascii = DI::pConfig()->get($uid, 'securemail', 'pkey');
 
 	preg_match('/-----BEGIN ([A-Za-z ]+)-----/', $public_key_ascii, $matches);
 	$marker = empty($matches[1]) ? 'MESSAGE' : $matches[1];

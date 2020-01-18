@@ -133,13 +133,13 @@ function buffer_jot_nets(App $a, array &$jotnets_fields)
 		return;
 	}
 
-	if (PConfig::get(local_user(), 'buffer', 'post')) {
+	if (DI::pConfig()->get(local_user(), 'buffer', 'post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'buffer_enable',
 				L10n::t('Post to Buffer'),
-				PConfig::get(local_user(), 'buffer', 'post_by_default')
+				DI::pConfig()->get(local_user(), 'buffer', 'post_by_default')
 			]
 		];
 	}
@@ -157,11 +157,11 @@ function buffer_settings(App $a, &$s)
 
 	/* Get the current state of our config variables */
 
-	$enabled = PConfig::get(local_user(),'buffer','post');
+	$enabled = DI::pConfig()->get(local_user(),'buffer','post');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 	$css = (($enabled) ? '' : '-disabled');
 
-	$def_enabled = PConfig::get(local_user(),'buffer','post_by_default');
+	$def_enabled = DI::pConfig()->get(local_user(),'buffer','post_by_default');
 	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
 	/* Add some HTML to the existing form */
@@ -176,7 +176,7 @@ function buffer_settings(App $a, &$s)
 
 	$client_id = Config::get("buffer", "client_id");
 	$client_secret = Config::get("buffer", "client_secret");
-	$access_token = PConfig::get(local_user(), "buffer", "access_token");
+	$access_token = DI::pConfig()->get(local_user(), "buffer", "access_token");
 
 	$s .= '<div id="buffer-password-wrapper">';
 
@@ -252,11 +252,11 @@ function buffer_post_local(App $a, array &$b)
 		return;
 	}
 
-	$buffer_post   = intval(PConfig::get(local_user(),'buffer','post'));
+	$buffer_post   = intval(DI::pConfig()->get(local_user(),'buffer','post'));
 
 	$buffer_enable = (($buffer_post && !empty($_REQUEST['buffer_enable'])) ? intval($_REQUEST['buffer_enable']) : 0);
 
-	if ($b['api_source'] && intval(PConfig::get(local_user(),'buffer','post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(),'buffer','post_by_default'))) {
 		$buffer_enable = 1;
 	}
 
@@ -313,7 +313,7 @@ function buffer_send(App $a, array &$b)
 
 	$client_id = Config::get("buffer", "client_id");
 	$client_secret = Config::get("buffer", "client_secret");
-	$access_token = PConfig::get($b['uid'], "buffer","access_token");
+	$access_token = DI::pConfig()->get($b['uid'], "buffer","access_token");
 	$callback_url = "";
 
 	if ($access_token) {

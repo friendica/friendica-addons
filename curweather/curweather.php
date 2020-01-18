@@ -43,7 +43,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 	$now = new DateTime();
 
 	if (!is_null($cached)) {
-		$cdate = PConfig::get(local_user(), 'curweather', 'last');
+		$cdate = DI::pConfig()->get(local_user(), 'curweather', 'last');
 		$cached = unserialize($cached);
 
 		if ($cdate + $cachetime > $now->getTimestamp()) {
@@ -100,7 +100,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 
 function curweather_network_mod_init(App $a, &$b)
 {
-	if (!intval(PConfig::get(local_user(), 'curweather', 'curweather_enable'))) {
+	if (!intval(DI::pConfig()->get(local_user(), 'curweather', 'curweather_enable'))) {
 		return;
 	}
 
@@ -115,11 +115,11 @@ function curweather_network_mod_init(App $a, &$b)
 	// those parameters will be used to get: cloud status, temperature, preassure
 	// and relative humidity for display, also the relevent area of the map is
 	// linked from lat/log of the reply of OWMp
-	$rpt = PConfig::get(local_user(), 'curweather', 'curweather_loc');
+	$rpt = DI::pConfig()->get(local_user(), 'curweather', 'curweather_loc');
 
 	// Set the language to the browsers language or default and use metric units
 	$lang = Session::get('language', Config::get('system', 'language'));
-	$units = PConfig::get( local_user(), 'curweather', 'curweather_units');
+	$units = DI::pConfig()->get( local_user(), 'curweather', 'curweather_units');
 	$appid = Config::get('curweather', 'appid');
 	$cachetime = intval(Config::get('curweather', 'cachetime'));
 
@@ -184,8 +184,8 @@ function curweather_addon_settings(App $a, &$s)
 	}
 
 	/* Get the current state of our config variable */
-	$curweather_loc = PConfig::get(local_user(), 'curweather', 'curweather_loc');
-	$curweather_units = PConfig::get(local_user(), 'curweather', 'curweather_units');
+	$curweather_loc = DI::pConfig()->get(local_user(), 'curweather', 'curweather_loc');
+	$curweather_units = DI::pConfig()->get(local_user(), 'curweather', 'curweather_units');
 	$appid = Config::get('curweather', 'appid');
 
 	if ($appid == "") {
@@ -194,7 +194,7 @@ function curweather_addon_settings(App $a, &$s)
 		$noappidtext = '';
 	}
 
-	$enable = intval(PConfig::get(local_user(), 'curweather', 'curweather_enable'));
+	$enable = intval(DI::pConfig()->get(local_user(), 'curweather', 'curweather_enable'));
 	$enable_checked = (($enable) ? ' checked="checked" ' : '');
 	
 	// load template and replace the macros

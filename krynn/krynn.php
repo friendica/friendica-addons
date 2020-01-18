@@ -85,7 +85,7 @@ function krynn_post_hook($a, &$item) {
 
 	/* Retrieve our personal config setting */
 
-	$active = PConfig::get(local_user(), 'krynn', 'enable');
+	$active = DI::pConfig()->get(local_user(), 'krynn', 'enable');
 
 	if(! $active)
 		return;
@@ -147,7 +147,7 @@ function krynn_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$enabled = PConfig::get(local_user(),'krynn','enable');
+	$enabled = DI::pConfig()->get(local_user(),'krynn','enable');
 
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 

@@ -67,7 +67,7 @@ function geonames_post_hook(App $a, array &$item)
 	/* Retrieve our personal config setting */
 
 	$geo_account = Config::get('geonames', 'username');
-	$active = PConfig::get(local_user(), 'geonames', 'enable');
+	$active = DI::pConfig()->get(local_user(), 'geonames', 'enable');
 
 	if (!$geo_account || !$active) {
 		return;
@@ -140,7 +140,7 @@ function geonames_addon_settings(App $a, &$s)
 	DI::page()->registerStylesheet($stylesheetPath);
 
 	/* Get the current state of our config variable */
-	$enabled = intval(PConfig::get(local_user(), 'geonames', 'enable'));
+	$enabled = intval(DI::pConfig()->get(local_user(), 'geonames', 'enable'));
 
 	$t = Renderer::getMarkupTemplate('settings.tpl', __DIR__);
 	$s .= Renderer::replaceMacros($t, [

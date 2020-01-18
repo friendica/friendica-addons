@@ -37,8 +37,8 @@ function showmore_addon_settings(&$a, &$s)
 
 	DI::page()['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.DI::baseUrl()->get().'/addon/showmore/showmore.css'.'" media="all"/>'."\r\n";
 
-	$enable_checked = (intval(PConfig::get(local_user(), 'showmore', 'disable')) ? '' : ' checked="checked"');
-	$chars = PConfig::get(local_user(), 'showmore', 'chars', 1100);
+	$enable_checked = (intval(DI::pConfig()->get(local_user(), 'showmore', 'disable')) ? '' : ' checked="checked"');
+	$chars = DI::pConfig()->get(local_user(), 'showmore', 'chars', 1100);
 
 	$s .= '<span id="settings_showmore_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_showmore_expanded\'); openClose(\'settings_showmore_inflated\');">';
 	$s .= '<h3>' . L10n::t('"Show more" Settings').'</h3>';
@@ -119,11 +119,11 @@ function showmore_prepare_body(\Friendica\App $a, &$hook_data)
 		return;
 	}
 
-	if (PConfig::get(local_user(), 'showmore', 'disable')) {
+	if (DI::pConfig()->get(local_user(), 'showmore', 'disable')) {
 		return;
 	}
 
-	$chars = (int) PConfig::get(local_user(), 'showmore', 'chars', 1100);
+	$chars = (int) DI::pConfig()->get(local_user(), 'showmore', 'chars', 1100);
 
 	if (get_body_length($hook_data['html']) > $chars) {
 		$found = true;

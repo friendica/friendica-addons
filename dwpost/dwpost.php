@@ -44,13 +44,13 @@ function dwpost_jot_nets(App $a, array &$jotnets_fields)
 		return;
 	}
 
-	if (PConfig::get(local_user(), 'dwpost', 'post')) {
+	if (DI::pConfig()->get(local_user(), 'dwpost', 'post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'dwpost_enable',
 				L10n::t('Post to Dreamwidth'),
-				PConfig::get(local_user(), 'dwpost', 'post_by_default')
+				DI::pConfig()->get(local_user(), 'dwpost', 'post_by_default')
 			]
 		];
 	}
@@ -67,16 +67,16 @@ function dwpost_settings(App $a, &$s)
 	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/dwpost/dwpost.css' . '" media="all" />' . "\r\n";
 
 	/* Get the current state of our config variables */
-	$enabled = PConfig::get(local_user(), 'dwpost', 'post');
+	$enabled = DI::pConfig()->get(local_user(), 'dwpost', 'post');
 
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 
-	$def_enabled = PConfig::get(local_user(), 'dwpost', 'post_by_default');
+	$def_enabled = DI::pConfig()->get(local_user(), 'dwpost', 'post_by_default');
 
 	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
-	$dw_username = PConfig::get(local_user(), 'dwpost', 'dw_username');
-	$dw_password = PConfig::get(local_user(), 'dwpost', 'dw_password');
+	$dw_username = DI::pConfig()->get(local_user(), 'dwpost', 'dw_username');
+	$dw_password = DI::pConfig()->get(local_user(), 'dwpost', 'dw_password');
 
 	/* Add some HTML to the existing form */
 	$s .= '<span id="settings_dwpost_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_dwpost_expanded\'); openClose(\'settings_dwpost_inflated\');">';
@@ -137,11 +137,11 @@ function dwpost_post_local(App $a, array &$b)
 		return;
 	}
 
-	$dw_post = intval(PConfig::get(local_user(),'dwpost','post'));
+	$dw_post = intval(DI::pConfig()->get(local_user(),'dwpost','post'));
 
 	$dw_enable = (($dw_post && !empty($_REQUEST['dwpost_enable'])) ? intval($_REQUEST['dwpost_enable']) : 0);
 
-	if ($b['api_source'] && intval(PConfig::get(local_user(),'dwpost','post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(),'dwpost','post_by_default'))) {
 		$dw_enable = 1;
 	}
 
@@ -185,8 +185,8 @@ function dwpost_send(App $a, array &$b)
 		$tz = $x[0]['timezone'];
 	}
 
-	$dw_username = PConfig::get($b['uid'],'dwpost','dw_username');
-	$dw_password = PConfig::get($b['uid'],'dwpost','dw_password');
+	$dw_username = DI::pConfig()->get($b['uid'],'dwpost','dw_username');
+	$dw_password = DI::pConfig()->get($b['uid'],'dwpost','dw_password');
 	$dw_blog = 'http://www.dreamwidth.org/interface/xmlrpc';
 
 	if ($dw_username && $dw_password && $dw_blog) {
