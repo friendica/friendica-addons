@@ -11,7 +11,6 @@ use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
-use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Util\ConfigFileLoader;
@@ -67,7 +66,7 @@ function geonames_post_hook(App $a, array &$item)
 	/* Retrieve our personal config setting */
 
 	$geo_account = Config::get('geonames', 'username');
-	$active = PConfig::get(local_user(), 'geonames', 'enable');
+	$active = DI::pConfig()->get(local_user(), 'geonames', 'enable');
 
 	if (!$geo_account || !$active) {
 		return;
@@ -110,7 +109,7 @@ function geonames_addon_settings_post(App $a, array $post)
 		return;
 	}
 
-	PConfig::set(local_user(), 'geonames', 'enable', intval($_POST['geonames-enable']));
+	DI::pConfig()->set(local_user(), 'geonames', 'enable', intval($_POST['geonames-enable']));
 
 	info(L10n::t('Geonames settings updated.'));
 }
@@ -140,7 +139,7 @@ function geonames_addon_settings(App $a, &$s)
 	DI::page()->registerStylesheet($stylesheetPath);
 
 	/* Get the current state of our config variable */
-	$enabled = intval(PConfig::get(local_user(), 'geonames', 'enable'));
+	$enabled = intval(DI::pConfig()->get(local_user(), 'geonames', 'enable'));
 
 	$t = Renderer::getMarkupTemplate('settings.tpl', __DIR__);
 	$s .= Renderer::replaceMacros($t, [

@@ -9,7 +9,6 @@
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
-use Friendica\Core\PConfig;
 use Friendica\DI;
 
 function fromapp_install()
@@ -35,8 +34,8 @@ function fromapp_settings_post($a, $post)
 		return;
 	}
 
-	PConfig::set(local_user(), 'fromapp', 'app', $_POST['fromapp-input']);
-	PConfig::set(local_user(), 'fromapp', 'force', intval($_POST['fromapp-force']));
+	DI::pConfig()->set(local_user(), 'fromapp', 'app', $_POST['fromapp-input']);
+	DI::pConfig()->set(local_user(), 'fromapp', 'force', intval($_POST['fromapp-force']));
 
 	info(L10n::t('Fromapp settings updated.') . EOL);
 }
@@ -53,9 +52,9 @@ function fromapp_settings(&$a, &$s)
 
 	/* Get the current state of our config variable */
 
-	$fromapp = PConfig::get(local_user(), 'fromapp', 'app', '');
+	$fromapp = DI::pConfig()->get(local_user(), 'fromapp', 'app', '');
 
-	$force = intval(PConfig::get(local_user(), 'fromapp', 'force'));
+	$force = intval(DI::pConfig()->get(local_user(), 'fromapp', 'force'));
 
 	$force_enabled = (($force) ? ' checked="checked" ' : '');
 
@@ -94,8 +93,8 @@ function fromapp_post_hook(&$a, &$item)
 		return;
 	}
 
-	$app = PConfig::get(local_user(), 'fromapp', 'app');
-	$force = intval(PConfig::get(local_user(), 'fromapp', 'force'));
+	$app = DI::pConfig()->get(local_user(), 'fromapp', 'app');
+	$force = intval(DI::pConfig()->get(local_user(), 'fromapp', 'force'));
 
 	if (is_null($app) || (! strlen($app))) {
 		return;

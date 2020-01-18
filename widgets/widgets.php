@@ -10,7 +10,6 @@
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
-use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
@@ -30,7 +29,7 @@ function widgets_settings_post(){
 	if(! local_user())
 		return;
 	if (isset($_POST['widgets-submit'])){
-		PConfig::delete(local_user(), 'widgets', 'key');
+		DI::pConfig()->delete(local_user(), 'widgets', 'key');
 
 	}
 }
@@ -40,8 +39,8 @@ function widgets_settings(&$a,&$o) {
 		return;
 
 
-	$key = PConfig::get(local_user(), 'widgets', 'key' );
-	if ($key=='') { $key = mt_rand(); PConfig::set(local_user(), 'widgets', 'key', $key); }
+	$key = DI::pConfig()->get(local_user(), 'widgets', 'key' );
+	if ($key=='') { $key = mt_rand(); DI::pConfig()->set(local_user(), 'widgets', 'key', $key); }
 
 	$widgets = [];
 	$d = dir(dirname(__file__));

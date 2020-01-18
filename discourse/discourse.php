@@ -11,12 +11,11 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
-use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
+use Friendica\DI;
 use Friendica\Model\Contact;
-use Friendica\Util\XML;
 use Friendica\Content\Text\Markdown;
 use Friendica\Util\Network;
 use Friendica\Util\Strings;
@@ -44,7 +43,7 @@ function discourse_settings(App $a, &$s)
 		return;
 	}
 
-	$enabled = intval(PConfig::get(local_user(), 'discourse', 'enabled'));
+	$enabled = intval(DI::pConfig()->get(local_user(), 'discourse', 'enabled'));
 
 	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/discourse/');
 	$s .= Renderer::replaceMacros($t, [
@@ -60,7 +59,7 @@ function discourse_settings_post(App $a)
                 return;
         }
 
-	PConfig::set(local_user(), 'discourse', 'enabled', intval($_POST['enabled']));
+	DI::pConfig()->set(local_user(), 'discourse', 'enabled', intval($_POST['enabled']));
 }
 
 function discourse_email_getmessage(App $a, &$message)
@@ -69,7 +68,7 @@ function discourse_email_getmessage(App $a, &$message)
 		return;
 	}
 
-	if (!PConfig::get($message['item']['uid'], 'discourse', 'enabled')) {
+	if (!DI::pConfig()->get($message['item']['uid'], 'discourse', 'enabled')) {
 		return;
 	}
 

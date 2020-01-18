@@ -8,7 +8,6 @@
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
-use Friendica\Core\PConfig;
 use Friendica\DI;
 
 function numfriends_install() {
@@ -41,7 +40,7 @@ function numfriends_settings_post($a,$post) {
 	if(! local_user() || empty($_POST['numfriends-submit']))
 		return;
 
-	PConfig::set(local_user(),'system','display_friend_count',intval($_POST['numfriends']));
+	DI::pConfig()->set(local_user(),'system','display_friend_count',intval($_POST['numfriends']));
 	info( L10n::t('Numfriends settings updated.') . EOL);
 }
 
@@ -64,7 +63,7 @@ function numfriends_settings(&$a, &$s)
 
 	/* Get the current state of our config variable */
 
-	$numfriends = PConfig::get(local_user(), 'system', 'display_friend_count', 24);
+	$numfriends = DI::pConfig()->get(local_user(), 'system', 'display_friend_count', 24);
 	
 	/* Add some HTML to the existing form */
 

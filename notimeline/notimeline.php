@@ -9,7 +9,6 @@
  */
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
-use Friendica\Core\PConfig;
 use Friendica\DI;
 
 function notimeline_install()
@@ -30,7 +29,7 @@ function notimeline_settings_post($a, $post)
 		return;
 	}
 
-	PConfig::set(local_user(), 'system', 'no_wall_archive_widget', intval($_POST['notimeline']));
+	DI::pConfig()->set(local_user(), 'system', 'no_wall_archive_widget', intval($_POST['notimeline']));
 	info(L10n::t('No Timeline settings updated.') . EOL);
 }
 
@@ -46,7 +45,7 @@ function notimeline_settings(&$a, &$s)
 
 	/* Get the current state of our config variable */
 
-	$notimeline = PConfig::get(local_user(), 'system', 'no_wall_archive_widget', false);
+	$notimeline = DI::pConfig()->get(local_user(), 'system', 'no_wall_archive_widget', false);
 
 	$notimeline_checked = (($notimeline) ? ' checked="checked" ' : '');
 

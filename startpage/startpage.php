@@ -8,8 +8,6 @@
  */
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
-use Friendica\Core\PConfig;
-use Friendica\Core\System;
 use Friendica\DI;
 
 function startpage_install() {
@@ -31,7 +29,7 @@ function startpage_home_init($a, $b)
 		return;
 	}
 
-	$page = PConfig::get(local_user(), 'startpage', 'startpage');
+	$page = DI::pConfig()->get(local_user(), 'startpage', 'startpage');
 	if (strlen($page)) {
 		DI::baseUrl()->redirect($page);
 	}
@@ -54,7 +52,7 @@ function startpage_settings_post($a, $post)
 	}
 
 	if (!empty($_POST['startpage-submit'])) {
-		PConfig::set(local_user(), 'startpage', 'startpage', strip_tags(trim($_POST['startpage'])));
+		DI::pConfig()->set(local_user(), 'startpage', 'startpage', strip_tags(trim($_POST['startpage'])));
 	}
 }
 
@@ -76,7 +74,7 @@ function startpage_settings(&$a, &$s)
 
 	/* Get the current state of our config variable */
 
-	$page = PConfig::get(local_user(), 'startpage', 'startpage');
+	$page = DI::pConfig()->get(local_user(), 'startpage', 'startpage');
 
 	/* Add some HTML to the existing form */
 

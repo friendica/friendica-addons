@@ -21,7 +21,6 @@
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
-use Friendica\Core\PConfig;
 use Friendica\DI;
 
 function randplace_install() {
@@ -94,7 +93,7 @@ function randplace_post_hook($a, &$item) {
 
 	/* Retrieve our personal config setting */
 
-	$active = PConfig::get(local_user(), 'randplace', 'enable');
+	$active = DI::pConfig()->get(local_user(), 'randplace', 'enable');
 
 	if(! $active)
 		return;
@@ -139,7 +138,7 @@ function randplace_settings_post($a,$post) {
 	if(! local_user())
 		return;
 	if($_POST['randplace-submit'])
-		PConfig::set(local_user(),'randplace','enable',intval($_POST['randplace']));
+		DI::pConfig()->set(local_user(),'randplace','enable',intval($_POST['randplace']));
 }
 
 
@@ -163,7 +162,7 @@ function randplace_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$enabled = PConfig::get(local_user(),'randplace','enable');
+	$enabled = DI::pConfig()->get(local_user(),'randplace','enable');
 
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 

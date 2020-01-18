@@ -46,7 +46,6 @@ use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
-use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
@@ -97,8 +96,8 @@ function statusnet_uninstall()
 
 function statusnet_check_item_notification(App $a, &$notification_data)
 {
-	if (PConfig::get($notification_data["uid"], 'statusnet', 'post')) {
-		$notification_data["profiles"][] = PConfig::get($notification_data["uid"], 'statusnet', 'own_url');
+	if (DI::pConfig()->get($notification_data["uid"], 'statusnet', 'post')) {
+		$notification_data["profiles"][] = DI::pConfig()->get($notification_data["uid"], 'statusnet', 'own_url');
 	}
 }
 
@@ -108,13 +107,13 @@ function statusnet_jot_nets(App $a, array &$jotnets_fields)
 		return;
 	}
 
-	if (PConfig::get(local_user(), 'statusnet', 'post')) {
+	if (DI::pConfig()->get(local_user(), 'statusnet', 'post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'statusnet_enable',
 				L10n::t('Post to GNU Social'),
-				PConfig::get(local_user(), 'statusnet', 'post_by_default')
+				DI::pConfig()->get(local_user(), 'statusnet', 'post_by_default')
 			]
 		];
 	}
@@ -134,18 +133,18 @@ function statusnet_settings_post(App $a, $post)
 		/*		 * *
 		 * if the GNU Social-disconnect checkbox is set, clear the GNU Social configuration
 		 */
-		PConfig::delete(local_user(), 'statusnet', 'consumerkey');
-		PConfig::delete(local_user(), 'statusnet', 'consumersecret');
-		PConfig::delete(local_user(), 'statusnet', 'post');
-		PConfig::delete(local_user(), 'statusnet', 'post_by_default');
-		PConfig::delete(local_user(), 'statusnet', 'oauthtoken');
-		PConfig::delete(local_user(), 'statusnet', 'oauthsecret');
-		PConfig::delete(local_user(), 'statusnet', 'baseapi');
-		PConfig::delete(local_user(), 'statusnet', 'lastid');
-		PConfig::delete(local_user(), 'statusnet', 'mirror_posts');
-		PConfig::delete(local_user(), 'statusnet', 'import');
-		PConfig::delete(local_user(), 'statusnet', 'create_user');
-		PConfig::delete(local_user(), 'statusnet', 'own_url');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'consumerkey');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'consumersecret');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'post');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'post_by_default');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'oauthtoken');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'oauthsecret');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'baseapi');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'lastid');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'mirror_posts');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'import');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'create_user');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'own_url');
 	} else {
 		if (isset($_POST['statusnet-preconf-apiurl'])) {
 			/*			 * *
@@ -159,10 +158,10 @@ function statusnet_settings_post(App $a, $post)
 					$apibase = $asn['apiurl'];
 					$c = Network::fetchUrl($apibase . 'statusnet/version.xml');
 					if (strlen($c) > 0) {
-						PConfig::set(local_user(), 'statusnet', 'consumerkey', $asn['consumerkey']);
-						PConfig::set(local_user(), 'statusnet', 'consumersecret', $asn['consumersecret']);
-						PConfig::set(local_user(), 'statusnet', 'baseapi', $asn['apiurl']);
-						//PConfig::set(local_user(), 'statusnet', 'application_name', $asn['applicationname'] );
+						DI::pConfig()->set(local_user(), 'statusnet', 'consumerkey', $asn['consumerkey']);
+						DI::pConfig()->set(local_user(), 'statusnet', 'consumersecret', $asn['consumersecret']);
+						DI::pConfig()->set(local_user(), 'statusnet', 'baseapi', $asn['apiurl']);
+						//DI::pConfig()->set(local_user(), 'statusnet', 'application_name', $asn['applicationname'] );
 					} else {
 						notice(L10n::t('Please contact your site administrator.<br />The provided API URL is not valid.') . EOL . $asn['apiurl'] . EOL);
 					}
@@ -178,19 +177,19 @@ function statusnet_settings_post(App $a, $post)
 				$c = Network::fetchUrl($apibase . 'statusnet/version.xml');
 				if (strlen($c) > 0) {
 					//  ok the API path is correct, let's save the settings
-					PConfig::set(local_user(), 'statusnet', 'consumerkey', $_POST['statusnet-consumerkey']);
-					PConfig::set(local_user(), 'statusnet', 'consumersecret', $_POST['statusnet-consumersecret']);
-					PConfig::set(local_user(), 'statusnet', 'baseapi', $apibase);
-					//PConfig::set(local_user(), 'statusnet', 'application_name', $_POST['statusnet-applicationname'] );
+					DI::pConfig()->set(local_user(), 'statusnet', 'consumerkey', $_POST['statusnet-consumerkey']);
+					DI::pConfig()->set(local_user(), 'statusnet', 'consumersecret', $_POST['statusnet-consumersecret']);
+					DI::pConfig()->set(local_user(), 'statusnet', 'baseapi', $apibase);
+					//DI::pConfig()->set(local_user(), 'statusnet', 'application_name', $_POST['statusnet-applicationname'] );
 				} else {
 					//  the API path is not correct, maybe missing trailing / ?
 					$apibase = $apibase . '/';
 					$c = Network::fetchUrl($apibase . 'statusnet/version.xml');
 					if (strlen($c) > 0) {
 						//  ok the API path is now correct, let's save the settings
-						PConfig::set(local_user(), 'statusnet', 'consumerkey', $_POST['statusnet-consumerkey']);
-						PConfig::set(local_user(), 'statusnet', 'consumersecret', $_POST['statusnet-consumersecret']);
-						PConfig::set(local_user(), 'statusnet', 'baseapi', $apibase);
+						DI::pConfig()->set(local_user(), 'statusnet', 'consumerkey', $_POST['statusnet-consumerkey']);
+						DI::pConfig()->set(local_user(), 'statusnet', 'consumersecret', $_POST['statusnet-consumersecret']);
+						DI::pConfig()->set(local_user(), 'statusnet', 'baseapi', $apibase);
 					} else {
 						//  still not the correct API base, let's do noting
 						notice(L10n::t('We could not contact the GNU Social API with the Path you entered.') . EOL);
@@ -200,32 +199,32 @@ function statusnet_settings_post(App $a, $post)
 			} else {
 				if (isset($_POST['statusnet-pin'])) {
 					//  if the user supplied us with a PIN from GNU Social, let the magic of OAuth happen
-					$api = PConfig::get(local_user(), 'statusnet', 'baseapi');
-					$ckey = PConfig::get(local_user(), 'statusnet', 'consumerkey');
-					$csecret = PConfig::get(local_user(), 'statusnet', 'consumersecret');
+					$api = DI::pConfig()->get(local_user(), 'statusnet', 'baseapi');
+					$ckey = DI::pConfig()->get(local_user(), 'statusnet', 'consumerkey');
+					$csecret = DI::pConfig()->get(local_user(), 'statusnet', 'consumersecret');
 					//  the token and secret for which the PIN was generated were hidden in the settings
 					//  form as token and token2, we need a new connection to GNU Social using these token
 					//  and secret to request a Access Token with the PIN
 					$connection = new StatusNetOAuth($api, $ckey, $csecret, $_POST['statusnet-token'], $_POST['statusnet-token2']);
 					$token = $connection->getAccessToken($_POST['statusnet-pin']);
 					//  ok, now that we have the Access Token, save them in the user config
-					PConfig::set(local_user(), 'statusnet', 'oauthtoken', $token['oauth_token']);
-					PConfig::set(local_user(), 'statusnet', 'oauthsecret', $token['oauth_token_secret']);
-					PConfig::set(local_user(), 'statusnet', 'post', 1);
-					PConfig::set(local_user(), 'statusnet', 'post_taglinks', 1);
+					DI::pConfig()->set(local_user(), 'statusnet', 'oauthtoken', $token['oauth_token']);
+					DI::pConfig()->set(local_user(), 'statusnet', 'oauthsecret', $token['oauth_token_secret']);
+					DI::pConfig()->set(local_user(), 'statusnet', 'post', 1);
+					DI::pConfig()->set(local_user(), 'statusnet', 'post_taglinks', 1);
 					//  reload the Addon Settings page, if we don't do it see Bug #42
 					DI::baseUrl()->redirect('settings/connectors');
 				} else {
 					//  if no PIN is supplied in the POST variables, the user has changed the setting
 					//  to post a dent for every new __public__ posting to the wall
-					PConfig::set(local_user(), 'statusnet', 'post', intval($_POST['statusnet-enable']));
-					PConfig::set(local_user(), 'statusnet', 'post_by_default', intval($_POST['statusnet-default']));
-					PConfig::set(local_user(), 'statusnet', 'mirror_posts', intval($_POST['statusnet-mirror']));
-					PConfig::set(local_user(), 'statusnet', 'import', intval($_POST['statusnet-import']));
-					PConfig::set(local_user(), 'statusnet', 'create_user', intval($_POST['statusnet-create_user']));
+					DI::pConfig()->set(local_user(), 'statusnet', 'post', intval($_POST['statusnet-enable']));
+					DI::pConfig()->set(local_user(), 'statusnet', 'post_by_default', intval($_POST['statusnet-default']));
+					DI::pConfig()->set(local_user(), 'statusnet', 'mirror_posts', intval($_POST['statusnet-mirror']));
+					DI::pConfig()->set(local_user(), 'statusnet', 'import', intval($_POST['statusnet-import']));
+					DI::pConfig()->set(local_user(), 'statusnet', 'create_user', intval($_POST['statusnet-create_user']));
 
 					if (!intval($_POST['statusnet-mirror']))
-						PConfig::delete(local_user(), 'statusnet', 'lastid');
+						DI::pConfig()->delete(local_user(), 'statusnet', 'lastid');
 
 					info(L10n::t('GNU Social settings updated.') . EOL);
 				}
@@ -246,23 +245,23 @@ function statusnet_settings(App $a, &$s)
 	 *    allow the user to cancel the connection process at this step
 	 * 3) Checkbox for "Send public notices (respect size limitation)
 	 */
-	$api     = PConfig::get(local_user(), 'statusnet', 'baseapi');
-	$ckey    = PConfig::get(local_user(), 'statusnet', 'consumerkey');
-	$csecret = PConfig::get(local_user(), 'statusnet', 'consumersecret');
-	$otoken  = PConfig::get(local_user(), 'statusnet', 'oauthtoken');
-	$osecret = PConfig::get(local_user(), 'statusnet', 'oauthsecret');
-	$enabled = PConfig::get(local_user(), 'statusnet', 'post');
+	$api     = DI::pConfig()->get(local_user(), 'statusnet', 'baseapi');
+	$ckey    = DI::pConfig()->get(local_user(), 'statusnet', 'consumerkey');
+	$csecret = DI::pConfig()->get(local_user(), 'statusnet', 'consumersecret');
+	$otoken  = DI::pConfig()->get(local_user(), 'statusnet', 'oauthtoken');
+	$osecret = DI::pConfig()->get(local_user(), 'statusnet', 'oauthsecret');
+	$enabled = DI::pConfig()->get(local_user(), 'statusnet', 'post');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
-	$defenabled = PConfig::get(local_user(), 'statusnet', 'post_by_default');
+	$defenabled = DI::pConfig()->get(local_user(), 'statusnet', 'post_by_default');
 	$defchecked = (($defenabled) ? ' checked="checked" ' : '');
-	$mirrorenabled = PConfig::get(local_user(), 'statusnet', 'mirror_posts');
+	$mirrorenabled = DI::pConfig()->get(local_user(), 'statusnet', 'mirror_posts');
 	$mirrorchecked = (($mirrorenabled) ? ' checked="checked" ' : '');
-	$import = PConfig::get(local_user(), 'statusnet', 'import');
+	$import = DI::pConfig()->get(local_user(), 'statusnet', 'import');
 	$importselected = ["", "", ""];
 	$importselected[$import] = ' selected="selected"';
-	//$importenabled = PConfig::get(local_user(),'statusnet','import');
+	//$importenabled = DI::pConfig()->get(local_user(),'statusnet','import');
 	//$importchecked = (($importenabled) ? ' checked="checked" ' : '');
-	$create_userenabled = PConfig::get(local_user(), 'statusnet', 'create_user');
+	$create_userenabled = DI::pConfig()->get(local_user(), 'statusnet', 'create_user');
 	$create_userchecked = (($create_userenabled) ? ' checked="checked" ' : '');
 
 	$css = (($enabled) ? '' : '-disabled');
@@ -423,7 +422,7 @@ function statusnet_hook_fork(App $a, array &$b)
 		return;
 	}
 
-	if (PConfig::get($post['uid'], 'statusnet', 'import')) {
+	if (DI::pConfig()->get($post['uid'], 'statusnet', 'import')) {
 		// Don't fork if it isn't a reply to a GNU Social post
 		if (($post['parent'] != $post['id']) && !Item::exists(['id' => $post['parent'], 'network' => Protocol::STATUSNET])) {
 			Logger::log('No GNU Social parent found for item ' . $post['id']);
@@ -449,11 +448,11 @@ function statusnet_post_local(App $a, &$b)
 		return;
 	}
 
-	$statusnet_post = PConfig::get(local_user(), 'statusnet', 'post');
+	$statusnet_post = DI::pConfig()->get(local_user(), 'statusnet', 'post');
 	$statusnet_enable = (($statusnet_post && !empty($_REQUEST['statusnet_enable'])) ? intval($_REQUEST['statusnet_enable']) : 0);
 
 	// if API is used, default to the chosen settings
-	if ($b['api_source'] && intval(PConfig::get(local_user(), 'statusnet', 'post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(), 'statusnet', 'post_by_default'))) {
 		$statusnet_enable = 1;
 	}
 
@@ -470,11 +469,11 @@ function statusnet_post_local(App $a, &$b)
 
 function statusnet_action(App $a, $uid, $pid, $action)
 {
-	$api = PConfig::get($uid, 'statusnet', 'baseapi');
-	$ckey = PConfig::get($uid, 'statusnet', 'consumerkey');
-	$csecret = PConfig::get($uid, 'statusnet', 'consumersecret');
-	$otoken = PConfig::get($uid, 'statusnet', 'oauthtoken');
-	$osecret = PConfig::get($uid, 'statusnet', 'oauthsecret');
+	$api = DI::pConfig()->get($uid, 'statusnet', 'baseapi');
+	$ckey = DI::pConfig()->get($uid, 'statusnet', 'consumerkey');
+	$csecret = DI::pConfig()->get($uid, 'statusnet', 'consumersecret');
+	$otoken = DI::pConfig()->get($uid, 'statusnet', 'oauthtoken');
+	$osecret = DI::pConfig()->get($uid, 'statusnet', 'oauthsecret');
 
 	$connection = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
 
@@ -499,12 +498,12 @@ function statusnet_post_hook(App $a, &$b)
 	/**
 	 * Post to GNU Social
 	 */
-	if (!PConfig::get($b["uid"], 'statusnet', 'import')) {
+	if (!DI::pConfig()->get($b["uid"], 'statusnet', 'import')) {
 		if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
 			return;
 	}
 
-	$api = PConfig::get($b["uid"], 'statusnet', 'baseapi');
+	$api = DI::pConfig()->get($b["uid"], 'statusnet', 'baseapi');
 	$hostname = preg_replace("=https?://([\w\.]*)/.*=ism", "$1", $api);
 
 	if ($b['parent'] != $b['id']) {
@@ -580,13 +579,13 @@ function statusnet_post_hook(App $a, &$b)
 
 	Logger::log('GNU Socialpost invoked');
 
-	PConfig::load($b['uid'], 'statusnet');
+	DI::pConfig()->load($b['uid'], 'statusnet');
 
-	$api     = PConfig::get($b['uid'], 'statusnet', 'baseapi');
-	$ckey    = PConfig::get($b['uid'], 'statusnet', 'consumerkey');
-	$csecret = PConfig::get($b['uid'], 'statusnet', 'consumersecret');
-	$otoken  = PConfig::get($b['uid'], 'statusnet', 'oauthtoken');
-	$osecret = PConfig::get($b['uid'], 'statusnet', 'oauthsecret');
+	$api     = DI::pConfig()->get($b['uid'], 'statusnet', 'baseapi');
+	$ckey    = DI::pConfig()->get($b['uid'], 'statusnet', 'consumerkey');
+	$csecret = DI::pConfig()->get($b['uid'], 'statusnet', 'consumersecret');
+	$otoken  = DI::pConfig()->get($b['uid'], 'statusnet', 'oauthtoken');
+	$osecret = DI::pConfig()->get($b['uid'], 'statusnet', 'oauthsecret');
 
 	if ($ckey && $csecret && $otoken && $osecret) {
 		// If it's a repeated message from GNU Social then do a native retweet and exit
@@ -597,7 +596,7 @@ function statusnet_post_hook(App $a, &$b)
 		$dent = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
 		$max_char = $dent->get_maxlength(); // max. length for a dent
 
-		PConfig::set($b['uid'], 'statusnet', 'max_char', $max_char);
+		DI::pConfig()->set($b['uid'], 'statusnet', 'max_char', $max_char);
 
 		$tempfile = "";
 		$msgarr = ItemContent::getPlaintextPost($b, $max_char, true, 7);
@@ -642,7 +641,7 @@ function statusnet_post_hook(App $a, &$b)
 				"\nmessage: " . $msg . "\nOriginal post: " . print_r($b, true) . "\nPost Data: " . print_r($postdata, true), Logger::DEBUG);
 
 			if (!empty($result->source)) {
-				PConfig::set($b["uid"], "statusnet", "application_name", strip_tags($result->source));
+				DI::pConfig()->set($b["uid"], "statusnet", "application_name", strip_tags($result->source));
 			}
 
 			if (!empty($result->error)) {
@@ -730,7 +729,7 @@ function statusnet_prepare_body(App $a, &$b)
 	}
 
 	if ($b["preview"]) {
-		$max_char = PConfig::get(local_user(), 'statusnet', 'max_char');
+		$max_char = DI::pConfig()->get(local_user(), 'statusnet', 'max_char');
 		if (intval($max_char) == 0) {
 			$max_char = 140;
 		}
@@ -822,18 +821,18 @@ function statusnet_cron(App $a, $b)
 
 function statusnet_fetchtimeline(App $a, $uid)
 {
-	$ckey    = PConfig::get($uid, 'statusnet', 'consumerkey');
-	$csecret = PConfig::get($uid, 'statusnet', 'consumersecret');
-	$api     = PConfig::get($uid, 'statusnet', 'baseapi');
-	$otoken  = PConfig::get($uid, 'statusnet', 'oauthtoken');
-	$osecret = PConfig::get($uid, 'statusnet', 'oauthsecret');
-	$lastid  = PConfig::get($uid, 'statusnet', 'lastid');
+	$ckey    = DI::pConfig()->get($uid, 'statusnet', 'consumerkey');
+	$csecret = DI::pConfig()->get($uid, 'statusnet', 'consumersecret');
+	$api     = DI::pConfig()->get($uid, 'statusnet', 'baseapi');
+	$otoken  = DI::pConfig()->get($uid, 'statusnet', 'oauthtoken');
+	$osecret = DI::pConfig()->get($uid, 'statusnet', 'oauthsecret');
+	$lastid  = DI::pConfig()->get($uid, 'statusnet', 'lastid');
 
 	require_once 'mod/item.php';
 	//  get the application name for the SN app
 	//  1st try personal config, then system config and fallback to the
 	//  hostname of the node if neither one is set.
-	$application_name = PConfig::get($uid, 'statusnet', 'application_name');
+	$application_name = DI::pConfig()->get($uid, 'statusnet', 'application_name');
 	if ($application_name == "") {
 		$application_name = Config::get('statusnet', 'application_name');
 	}
@@ -925,7 +924,7 @@ function statusnet_fetchtimeline(App $a, $uid)
 			}
 		}
 	}
-	PConfig::set($uid, 'statusnet', 'lastid', $lastid);
+	DI::pConfig()->set($uid, 'statusnet', 'lastid', $lastid);
 }
 
 function statusnet_address($contact)
@@ -1056,11 +1055,11 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 
 function statusnet_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 {
-	$ckey    = PConfig::get($uid, 'statusnet', 'consumerkey');
-	$csecret = PConfig::get($uid, 'statusnet', 'consumersecret');
-	$api     = PConfig::get($uid, 'statusnet', 'baseapi');
-	$otoken  = PConfig::get($uid, 'statusnet', 'oauthtoken');
-	$osecret = PConfig::get($uid, 'statusnet', 'oauthsecret');
+	$ckey    = DI::pConfig()->get($uid, 'statusnet', 'consumerkey');
+	$csecret = DI::pConfig()->get($uid, 'statusnet', 'consumersecret');
+	$api     = DI::pConfig()->get($uid, 'statusnet', 'baseapi');
+	$otoken  = DI::pConfig()->get($uid, 'statusnet', 'oauthtoken');
+	$osecret = DI::pConfig()->get($uid, 'statusnet', 'oauthsecret');
 
 	require_once __DIR__ . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'codebirdsn.php';
 
@@ -1103,7 +1102,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 {
 	Logger::log("statusnet_createpost: start", Logger::DEBUG);
 
-	$api = PConfig::get($uid, 'statusnet', 'baseapi');
+	$api = DI::pConfig()->get($uid, 'statusnet', 'baseapi');
 	$hostname = preg_replace("=https?://([\w\.]*)/.*=ism", "$1", $api);
 
 	$postarray = [];
@@ -1149,7 +1148,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 		}
 
 		// Is it me?
-		$own_url = PConfig::get($uid, 'statusnet', 'own_url');
+		$own_url = DI::pConfig()->get($uid, 'statusnet', 'own_url');
 
 		if ($content->user->id == $own_url) {
 			$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
@@ -1193,7 +1192,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 	$postarray['author-avatar'] = $content->user->profile_image_url;
 
 	// To-Do: Maybe unreliable? Can the api be entered without trailing "/"?
-	$hostname = str_replace("/api/", "/notice/", PConfig::get($uid, 'statusnet', 'baseapi'));
+	$hostname = str_replace("/api/", "/notice/", DI::pConfig()->get($uid, 'statusnet', 'baseapi'));
 
 	$postarray['plink'] = $hostname . $content->id;
 	$postarray['app'] = strip_tags($content->source);
@@ -1237,12 +1236,12 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 {
 	$conversations = [];
 
-	$ckey    = PConfig::get($uid, 'statusnet', 'consumerkey');
-	$csecret = PConfig::get($uid, 'statusnet', 'consumersecret');
-	$api     = PConfig::get($uid, 'statusnet', 'baseapi');
-	$otoken  = PConfig::get($uid, 'statusnet', 'oauthtoken');
-	$osecret = PConfig::get($uid, 'statusnet', 'oauthsecret');
-	$create_user = PConfig::get($uid, 'statusnet', 'create_user');
+	$ckey    = DI::pConfig()->get($uid, 'statusnet', 'consumerkey');
+	$csecret = DI::pConfig()->get($uid, 'statusnet', 'consumersecret');
+	$api     = DI::pConfig()->get($uid, 'statusnet', 'baseapi');
+	$otoken  = DI::pConfig()->get($uid, 'statusnet', 'oauthtoken');
+	$osecret = DI::pConfig()->get($uid, 'statusnet', 'oauthsecret');
+	$create_user = DI::pConfig()->get($uid, 'statusnet', 'create_user');
 
 	// "create_user" is deactivated, since currently you cannot add users manually by now
 	$create_user = true;
@@ -1290,7 +1289,7 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 
 	if ($mode == 1) {
 		// Fetching timeline
-		$lastid = PConfig::get($uid, 'statusnet', 'lasthometimelineid');
+		$lastid = DI::pConfig()->get($uid, 'statusnet', 'lasthometimelineid');
 		//$lastid = 1;
 
 		$first_time = ($lastid == "");
@@ -1350,11 +1349,11 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 				}
 			}
 		}
-		PConfig::set($uid, 'statusnet', 'lasthometimelineid', $lastid);
+		DI::pConfig()->set($uid, 'statusnet', 'lasthometimelineid', $lastid);
 	}
 
 	// Fetching mentions
-	$lastid = PConfig::get($uid, 'statusnet', 'lastmentionid');
+	$lastid = DI::pConfig()->get($uid, 'statusnet', 'lastmentionid');
 	$first_time = ($lastid == "");
 
 	if ($lastid != "") {
@@ -1401,17 +1400,17 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 		}
 	}
 
-	PConfig::set($uid, 'statusnet', 'lastmentionid', $lastid);
+	DI::pConfig()->set($uid, 'statusnet', 'lastmentionid', $lastid);
 }
 
 function statusnet_complete_conversation(App $a, $uid, $self, $create_user, $nick, $conversation)
 {
-	$ckey    = PConfig::get($uid, 'statusnet', 'consumerkey');
-	$csecret = PConfig::get($uid, 'statusnet', 'consumersecret');
-	$api     = PConfig::get($uid, 'statusnet', 'baseapi');
-	$otoken  = PConfig::get($uid, 'statusnet', 'oauthtoken');
-	$osecret = PConfig::get($uid, 'statusnet', 'oauthsecret');
-	$own_url = PConfig::get($uid, 'statusnet', 'own_url');
+	$ckey    = DI::pConfig()->get($uid, 'statusnet', 'consumerkey');
+	$csecret = DI::pConfig()->get($uid, 'statusnet', 'consumersecret');
+	$api     = DI::pConfig()->get($uid, 'statusnet', 'baseapi');
+	$otoken  = DI::pConfig()->get($uid, 'statusnet', 'oauthtoken');
+	$osecret = DI::pConfig()->get($uid, 'statusnet', 'oauthsecret');
+	$own_url = DI::pConfig()->get($uid, 'statusnet', 'own_url');
 
 	$connection = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
 
@@ -1547,12 +1546,12 @@ function statusnet_convertmsg(App $a, $body, $no_tags = false)
 
 function statusnet_fetch_own_contact(App $a, $uid)
 {
-	$ckey    = PConfig::get($uid, 'statusnet', 'consumerkey');
-	$csecret = PConfig::get($uid, 'statusnet', 'consumersecret');
-	$api     = PConfig::get($uid, 'statusnet', 'baseapi');
-	$otoken  = PConfig::get($uid, 'statusnet', 'oauthtoken');
-	$osecret = PConfig::get($uid, 'statusnet', 'oauthsecret');
-	$own_url = PConfig::get($uid, 'statusnet', 'own_url');
+	$ckey    = DI::pConfig()->get($uid, 'statusnet', 'consumerkey');
+	$csecret = DI::pConfig()->get($uid, 'statusnet', 'consumersecret');
+	$api     = DI::pConfig()->get($uid, 'statusnet', 'baseapi');
+	$otoken  = DI::pConfig()->get($uid, 'statusnet', 'oauthtoken');
+	$osecret = DI::pConfig()->get($uid, 'statusnet', 'oauthsecret');
+	$own_url = DI::pConfig()->get($uid, 'statusnet', 'own_url');
 
 	$contact_id = 0;
 
@@ -1566,7 +1565,7 @@ function statusnet_fetch_own_contact(App $a, $uid)
 			return false;
 		}
 
-		PConfig::set($uid, 'statusnet', 'own_url', Strings::normaliseLink($user->statusnet_profile_url));
+		DI::pConfig()->set($uid, 'statusnet', 'own_url', Strings::normaliseLink($user->statusnet_profile_url));
 
 		$contact_id = statusnet_fetch_contact($uid, $user, true);
 	} else {
@@ -1575,7 +1574,7 @@ function statusnet_fetch_own_contact(App $a, $uid)
 		if (DBA::isResult($r)) {
 			$contact_id = $r[0]["id"];
 		} else {
-			PConfig::delete($uid, 'statusnet', 'own_url');
+			DI::pConfig()->delete($uid, 'statusnet', 'own_url');
 		}
 	}
 	return $contact_id;
@@ -1613,11 +1612,11 @@ function statusnet_is_retweet(App $a, $uid, $body)
 		$link = $matches[1];
 	}
 
-	$ckey    = PConfig::get($uid, 'statusnet', 'consumerkey');
-	$csecret = PConfig::get($uid, 'statusnet', 'consumersecret');
-	$api     = PConfig::get($uid, 'statusnet', 'baseapi');
-	$otoken  = PConfig::get($uid, 'statusnet', 'oauthtoken');
-	$osecret = PConfig::get($uid, 'statusnet', 'oauthsecret');
+	$ckey    = DI::pConfig()->get($uid, 'statusnet', 'consumerkey');
+	$csecret = DI::pConfig()->get($uid, 'statusnet', 'consumersecret');
+	$api     = DI::pConfig()->get($uid, 'statusnet', 'baseapi');
+	$otoken  = DI::pConfig()->get($uid, 'statusnet', 'oauthtoken');
+	$osecret = DI::pConfig()->get($uid, 'statusnet', 'oauthsecret');
 	$hostname = preg_replace("=https?://([\w\.]*)/.*=ism", "$1", $api);
 
 	$id = preg_replace("=https?://" . $hostname . "/notice/(.*)=ism", "$1", $link);

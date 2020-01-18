@@ -11,7 +11,6 @@ use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
-use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
@@ -63,7 +62,7 @@ function catavatar_addon_settings(App $a, &$s)
 		'$usecat' => L10n::t('Use Cat as Avatar'),
 		'$morecat' => L10n::t('More Random Cat!'),
 		'$emailcat' => L10n::t('Reset to email Cat'),
-		'$seed' => PConfig::get(local_user(), 'catavatar', 'seed', false),
+		'$seed' => DI::pConfig()->get(local_user(), 'catavatar', 'seed', false),
 		'$header' => L10n::t('Cat Avatar Settings'),
 	]);
 }
@@ -82,7 +81,7 @@ function catavatar_addon_settings_post(App $a, &$s)
 			'account_expired' => false, 'account_removed' => false];
 	$user = DBA::selectFirst('user', ['email'], $condition);
 
-	$seed = PConfig::get(local_user(), 'catavatar', 'seed', md5(trim(strtolower($user['email']))));
+	$seed = DI::pConfig()->get(local_user(), 'catavatar', 'seed', md5(trim(strtolower($user['email']))));
 
 	if (!empty($_POST['catavatar-usecat'])) {
 		$url = DI::baseUrl()->get() . '/catavatar/' . local_user() . '?ts=' . time();
@@ -124,11 +123,11 @@ function catavatar_addon_settings_post(App $a, &$s)
 	}
 
 	if (!empty($_POST['catavatar-morecat'])) {
-		PConfig::set(local_user(), 'catavatar', 'seed', time());
+		DI::pConfig()->set(local_user(), 'catavatar', 'seed', time());
 	}
 
 	if (!empty($_POST['catavatar-emailcat'])) {
-		PConfig::delete(local_user(), 'catavatar', 'seed');
+		DI::pConfig()->delete(local_user(), 'catavatar', 'seed');
 	}
 }
 
@@ -182,7 +181,7 @@ function catavatar_content(App $a)
 		throw new NotFoundException();
 	}
 
-	$seed = PConfig::get($uid, "catavatar", "seed", md5(trim(strtolower($user['email']))));
+	$seed = DI::pConfig()->get($uid, "catavatar", "seed", md5(trim(strtolower($user['email']))));
 
 	// ...Or start generation
 	ob_start();

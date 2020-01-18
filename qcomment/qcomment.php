@@ -19,7 +19,6 @@
  */
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
-use Friendica\Core\PConfig;
 use Friendica\DI;
 use Friendica\Util\XML;
 
@@ -45,7 +44,7 @@ function qcomment_addon_settings(&$a, &$s)
 
 	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/qcomment/qcomment.css' . '" media="all" />' . "\r\n";
 
-	$words = PConfig::get(local_user(), 'qcomment', 'words', L10n::t(':-)') . "\n" . L10n::t(':-(') . "\n" .  L10n::t('lol'));
+	$words = DI::pConfig()->get(local_user(), 'qcomment', 'words', L10n::t(':-)') . "\n" . L10n::t(':-(') . "\n" .  L10n::t('lol'));
 
 	$s .= '<div class="settings-block">';
 	$s .= '<h3>' . L10n::t('Quick Comment Settings') . '</h3>';
@@ -68,7 +67,7 @@ function qcomment_addon_settings_post(&$a, &$b)
 	}
 
 	if ($_POST['qcomment-submit']) {
-		PConfig::set(local_user(), 'qcomment', 'words', XML::escape($_POST['qcomment-words']));
+		DI::pConfig()->set(local_user(), 'qcomment', 'words', XML::escape($_POST['qcomment-words']));
 		info(L10n::t('Quick Comment settings saved.') . EOL);
 	}
 }

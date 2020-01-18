@@ -10,7 +10,6 @@
 use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
-use Friendica\Core\PConfig;
 use Friendica\DI;
 use Friendica\Util\Strings;
 
@@ -46,7 +45,7 @@ function blockem_addon_settings (App $a, &$s)
 	/* Add our stylesheet to the page so we can make our settings look nice */
 	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/blockem/blockem.css' . '" media="all" />' . "\r\n";
 
-	$words = PConfig::get(local_user(), 'blockem', 'words');
+	$words = DI::pConfig()->get(local_user(), 'blockem', 'words');
 
 	if (!$words) {
 		$words = '';
@@ -79,14 +78,14 @@ function blockem_addon_settings_post(App $a, array &$b)
 	}
 
 	if (!empty($_POST['blockem-submit'])) {
-		PConfig::set(local_user(), 'blockem', 'words', trim($_POST['blockem-words']));
+		DI::pConfig()->set(local_user(), 'blockem', 'words', trim($_POST['blockem-words']));
 		info(L10n::t('BLOCKEM Settings saved.') . EOL);
 	}
 }
 
 function blockem_enotify_store(App $a, array &$b)
 {
-	$words = PConfig::get($b['uid'], 'blockem', 'words');
+	$words = DI::pConfig()->get($b['uid'], 'blockem', 'words');
 
 	if ($words) {
 		$arr = explode(',', $words);
@@ -123,7 +122,7 @@ function blockem_prepare_body_content_filter(App $a, array &$hook_data)
 	$profiles_string = null;
 
 	if (local_user()) {
-		$profiles_string = PConfig::get(local_user(), 'blockem', 'words');
+		$profiles_string = DI::pConfig()->get(local_user(), 'blockem', 'words');
 	}
 
 	if ($profiles_string) {
@@ -159,7 +158,7 @@ function blockem_conversation_start(App $a, array &$b)
 		return;
 	}
 
-	$words = PConfig::get(local_user(), 'blockem', 'words');
+	$words = DI::pConfig()->get(local_user(), 'blockem', 'words');
 
 	if ($words) {
 		$a->data['blockem'] = explode(',', $words);
@@ -217,7 +216,7 @@ function blockem_init(App $a)
 		return;
 	}
 
-	$words = PConfig::get(local_user(), 'blockem', 'words');
+	$words = DI::pConfig()->get(local_user(), 'blockem', 'words');
 
 	if (array_key_exists('block', $_GET) && $_GET['block']) {
 		if (strlen($words)) {
@@ -242,7 +241,7 @@ function blockem_init(App $a)
 		$words = implode(',', $newarr);
 	}
 
-	PConfig::set(local_user(), 'blockem', 'words', $words);
+	DI::pConfig()->set(local_user(), 'blockem', 'words', $words);
 	info(L10n::t('blockem settings updated') . EOL);
 	exit();
 }

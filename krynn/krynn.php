@@ -12,7 +12,6 @@
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
-use Friendica\Core\PConfig;
 use Friendica\DI;
 
 function krynn_install() {
@@ -85,7 +84,7 @@ function krynn_post_hook($a, &$item) {
 
 	/* Retrieve our personal config setting */
 
-	$active = PConfig::get(local_user(), 'krynn', 'enable');
+	$active = DI::pConfig()->get(local_user(), 'krynn', 'enable');
 
 	if(! $active)
 		return;
@@ -123,7 +122,7 @@ function krynn_settings_post($a,$post) {
 	if(! local_user())
 		return;
 	if($_POST['krynn-submit'])
-		PConfig::set(local_user(),'krynn','enable',intval($_POST['krynn']));
+		DI::pConfig()->set(local_user(),'krynn','enable',intval($_POST['krynn']));
 }
 
 
@@ -147,7 +146,7 @@ function krynn_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$enabled = PConfig::get(local_user(),'krynn','enable');
+	$enabled = DI::pConfig()->get(local_user(),'krynn','enable');
 
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 

@@ -8,7 +8,6 @@
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
-use Friendica\Core\PConfig;
 use Friendica\DI;
 
 function group_text_install() {
@@ -43,7 +42,7 @@ function group_text_uninstall() {
 function group_text_settings_post($a,$post) {
 	if(! local_user() || empty($_POST['group_text-submit']))
 		return;
-	PConfig::set(local_user(),'system','groupedit_image_limit',intval($_POST['group_text']));
+	DI::pConfig()->set(local_user(),'system','groupedit_image_limit',intval($_POST['group_text']));
 
 	info(L10n::t('Group Text settings updated.') . EOL);
 }
@@ -69,7 +68,7 @@ function group_text_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$enabled = PConfig::get(local_user(),'system','groupedit_image_limit');
+	$enabled = DI::pConfig()->get(local_user(),'system','groupedit_image_limit');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 
 	/* Add some HTML to the existing form */

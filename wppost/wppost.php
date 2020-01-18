@@ -11,7 +11,6 @@ use Friendica\Content\Text\HTML;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
-use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Util\Network;
@@ -50,13 +49,13 @@ function wppost_jot_nets(\Friendica\App &$a, array &$jotnets_fields)
 		return;
 	}
 
-	if (PConfig::get(local_user(),'wppost','post')) {
+	if (DI::pConfig()->get(local_user(),'wppost','post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'wppost_enable',
 				L10n::t('Post to Wordpress'),
-				PConfig::get(local_user(),'wppost','post_by_default')
+				DI::pConfig()->get(local_user(),'wppost','post_by_default')
 			]
 		];
 	}
@@ -74,23 +73,23 @@ function wppost_settings(&$a,&$s) {
 
 	/* Get the current state of our config variables */
 
-	$enabled = PConfig::get(local_user(),'wppost','post');
+	$enabled = DI::pConfig()->get(local_user(),'wppost','post');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 
 	$css = (($enabled) ? '' : '-disabled');
 
-	$def_enabled = PConfig::get(local_user(),'wppost','post_by_default');
-	$back_enabled = PConfig::get(local_user(),'wppost','backlink');
-	$shortcheck_enabled = PConfig::get(local_user(),'wppost','shortcheck');
+	$def_enabled = DI::pConfig()->get(local_user(),'wppost','post_by_default');
+	$back_enabled = DI::pConfig()->get(local_user(),'wppost','backlink');
+	$shortcheck_enabled = DI::pConfig()->get(local_user(),'wppost','shortcheck');
 
 	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 	$back_checked = (($back_enabled) ? ' checked="checked" ' : '');
 	$shortcheck_checked = (($shortcheck_enabled) ? ' checked="checked" ' : '');
 
-	$wp_username = PConfig::get(local_user(), 'wppost', 'wp_username');
-	$wp_password = PConfig::get(local_user(), 'wppost', 'wp_password');
-	$wp_blog = PConfig::get(local_user(), 'wppost', 'wp_blog');
-	$wp_backlink_text = PConfig::get(local_user(), 'wppost', 'wp_backlink_text');
+	$wp_username = DI::pConfig()->get(local_user(), 'wppost', 'wp_username');
+	$wp_password = DI::pConfig()->get(local_user(), 'wppost', 'wp_password');
+	$wp_blog = DI::pConfig()->get(local_user(), 'wppost', 'wp_blog');
+	$wp_backlink_text = DI::pConfig()->get(local_user(), 'wppost', 'wp_backlink_text');
 
 
     /* Add some HTML to the existing form */
@@ -151,17 +150,17 @@ function wppost_settings(&$a,&$s) {
 function wppost_settings_post(&$a,&$b) {
 
 	if(!empty($_POST['wppost-submit'])) {
-		PConfig::set(local_user(),'wppost','post',intval($_POST['wppost']));
-		PConfig::set(local_user(),'wppost','post_by_default',intval($_POST['wp_bydefault'] ?? false));
-		PConfig::set(local_user(),'wppost','wp_username',trim($_POST['wp_username']));
-		PConfig::set(local_user(),'wppost','wp_password',trim($_POST['wp_password']));
-		PConfig::set(local_user(),'wppost','wp_blog',trim($_POST['wp_blog']));
-		PConfig::set(local_user(),'wppost','backlink',trim($_POST['wp_backlink'] ?? ''));
-		PConfig::set(local_user(),'wppost','shortcheck',trim($_POST['wp_shortcheck']));
+		DI::pConfig()->set(local_user(),'wppost','post',intval($_POST['wppost']));
+		DI::pConfig()->set(local_user(),'wppost','post_by_default',intval($_POST['wp_bydefault'] ?? false));
+		DI::pConfig()->set(local_user(),'wppost','wp_username',trim($_POST['wp_username']));
+		DI::pConfig()->set(local_user(),'wppost','wp_password',trim($_POST['wp_password']));
+		DI::pConfig()->set(local_user(),'wppost','wp_blog',trim($_POST['wp_blog']));
+		DI::pConfig()->set(local_user(),'wppost','backlink',trim($_POST['wp_backlink'] ?? ''));
+		DI::pConfig()->set(local_user(),'wppost','shortcheck',trim($_POST['wp_shortcheck']));
 		$wp_backlink_text = Strings::escapeTags(trim($_POST['wp_backlink_text']));
 		$wp_backlink_text = BBCode::convert($wp_backlink_text, false, 8);
 		$wp_backlink_text = HTML::toPlaintext($wp_backlink_text, 0, true);
-		PConfig::set(local_user(),'wppost','wp_backlink_text', $wp_backlink_text);
+		DI::pConfig()->set(local_user(),'wppost','wp_backlink_text', $wp_backlink_text);
 	}
 
 }
@@ -197,11 +196,11 @@ function wppost_post_local(&$a, &$b) {
 		return;
 	}
 
-	$wp_post   = intval(PConfig::get(local_user(),'wppost','post'));
+	$wp_post   = intval(DI::pConfig()->get(local_user(),'wppost','post'));
 
 	$wp_enable = (($wp_post && !empty($_REQUEST['wppost_enable'])) ? intval($_REQUEST['wppost_enable']) : 0);
 
-	if ($b['api_source'] && intval(PConfig::get(local_user(),'wppost','post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(),'wppost','post_by_default'))) {
 		$wp_enable = 1;
 	}
 
@@ -240,10 +239,10 @@ function wppost_send(&$a, &$b)
 		return;
 	}
 
-	$wp_username = XML::escape(PConfig::get($b['uid'], 'wppost', 'wp_username'));
-	$wp_password = XML::escape(PConfig::get($b['uid'], 'wppost', 'wp_password'));
-	$wp_blog = PConfig::get($b['uid'],'wppost','wp_blog');
-	$wp_backlink_text = PConfig::get($b['uid'],'wppost','wp_backlink_text');
+	$wp_username = XML::escape(DI::pConfig()->get($b['uid'], 'wppost', 'wp_username'));
+	$wp_password = XML::escape(DI::pConfig()->get($b['uid'], 'wppost', 'wp_password'));
+	$wp_blog = DI::pConfig()->get($b['uid'],'wppost','wp_blog');
+	$wp_backlink_text = DI::pConfig()->get($b['uid'],'wppost','wp_backlink_text');
 	if ($wp_backlink_text == '') {
 		$wp_backlink_text = L10n::t('Read the orig­i­nal post and com­ment stream on Friendica');
 	}
@@ -251,7 +250,7 @@ function wppost_send(&$a, &$b)
 	if ($wp_username && $wp_password && $wp_blog) {
 		$wptitle = trim($b['title']);
 
-		if (intval(PConfig::get($b['uid'], 'wppost', 'shortcheck'))) {
+		if (intval(DI::pConfig()->get($b['uid'], 'wppost', 'shortcheck'))) {
 			// Checking, if its a post that is worth a blog post
 			$postentry = false;
 			$siteinfo = BBCode::getAttachedData($b["body"]);
@@ -312,7 +311,7 @@ function wppost_send(&$a, &$b)
 
 		$post = $title.$post;
 
-		$wp_backlink = intval(PConfig::get($b['uid'],'wppost','backlink'));
+		$wp_backlink = intval(DI::pConfig()->get($b['uid'],'wppost','backlink'));
 		if($wp_backlink && $b['plink']) {
 			$post .= EOL . EOL . '<a href="' . $b['plink'] . '">'
 				. $wp_backlink_text . '</a>' . EOL . EOL;

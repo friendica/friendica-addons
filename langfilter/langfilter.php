@@ -11,7 +11,6 @@ use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
-use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
@@ -47,10 +46,10 @@ function langfilter_addon_settings(App $a, &$s)
 		return;
 	}
 
-	$enable_checked = (intval(PConfig::get(local_user(), 'langfilter', 'disable')) ? '' : ' checked="checked" ');
-	$languages      = PConfig::get(local_user(), 'langfilter', 'languages');
-	$minconfidence  = PConfig::get(local_user(), 'langfilter', 'minconfidence') * 100;
-	$minlength      = PConfig::get(local_user(), 'langfilter', 'minlength');
+	$enable_checked = (intval(DI::pConfig()->get(local_user(), 'langfilter', 'disable')) ? '' : ' checked="checked" ');
+	$languages      = DI::pConfig()->get(local_user(), 'langfilter', 'languages');
+	$minconfidence  = DI::pConfig()->get(local_user(), 'langfilter', 'minconfidence') * 100;
+	$minlength      = DI::pConfig()->get(local_user(), 'langfilter', 'minlength');
 
 	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/langfilter/");
 	$s .= Renderer::replaceMacros($t, [
@@ -79,10 +78,10 @@ function langfilter_addon_settings_post(App $a, &$b)
 	}
 
 	if (!empty($_POST['langfilter-settings-submit'])) {
-		PConfig::set(local_user(), 'langfilter', 'languages', trim($_POST['langfilter_languages']));
+		DI::pConfig()->set(local_user(), 'langfilter', 'languages', trim($_POST['langfilter_languages']));
 		$enable = (!empty($_POST['langfilter_enable']) ? intval($_POST['langfilter_enable']) : 0);
 		$disable = 1 - $enable;
-		PConfig::set(local_user(), 'langfilter', 'disable', $disable);
+		DI::pConfig()->set(local_user(), 'langfilter', 'disable', $disable);
 		$minconfidence = 0 + $_POST['langfilter_minconfidence'];
 		if (!$minconfidence) {
 			$minconfidence = 0;
@@ -91,7 +90,7 @@ function langfilter_addon_settings_post(App $a, &$b)
 		} elseif ($minconfidence > 100) {
 			$minconfidence = 100;
 		}
-		PConfig::set(local_user(), 'langfilter', 'minconfidence', $minconfidence / 100.0);
+		DI::pConfig()->set(local_user(), 'langfilter', 'minconfidence', $minconfidence / 100.0);
 
 		$minlength = 0 + $_POST['langfilter_minlength'];
 		if (!$minlength) {
@@ -99,7 +98,7 @@ function langfilter_addon_settings_post(App $a, &$b)
 		} elseif ($minlength < 0) {
 			$minlength = 32;
 		}
-		PConfig::set(local_user(), 'langfilter', 'minlength', $minlength);
+		DI::pConfig()->set(local_user(), 'langfilter', 'minlength', $minlength);
 
 		info(L10n::t('Language Filter Settings saved.') . EOL);
 	}
@@ -129,14 +128,14 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 	}
 
 	// Don't filter if language filter is disabled
-	if (PConfig::get($logged_user, 'langfilter', 'disable')) {
+	if (DI::pConfig()->get($logged_user, 'langfilter', 'disable')) {
 		return;
 	}
 
 	$naked_body = BBCode::toPlaintext($hook_data['item']['body'], false);
 
 	// Don't filter if body lenght is below minimum
-	$minlen = PConfig::get(local_user(), 'langfilter', 'minlength', 32);
+	$minlen = DI::pConfig()->get(local_user(), 'langfilter', 'minlength', 32);
 	if (!$minlen) {
 		$minlen = 32;
 	}
@@ -145,8 +144,8 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 		return;
 	}
 
-	$read_languages_string = PConfig::get(local_user(), 'langfilter', 'languages');
-	$minconfidence = PConfig::get(local_user(), 'langfilter', 'minconfidence');
+	$read_languages_string = DI::pConfig()->get(local_user(), 'langfilter', 'languages');
+	$minconfidence = DI::pConfig()->get(local_user(), 'langfilter', 'minconfidence');
 
 	// Don't filter if no spoken languages are configured
 	if (!$read_languages_string) {

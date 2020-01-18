@@ -8,7 +8,6 @@
  */
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
-use Friendica\Core\PConfig;
 use Friendica\DI;
 use Friendica\Util\Strings;
 
@@ -40,7 +39,7 @@ function superblock_addon_settings(&$a, &$s)
 
 	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/superblock/superblock.css' . '" media="all" />' . "\r\n";
 
-	$words = PConfig::get(local_user(), 'system', 'blocked');
+	$words = DI::pConfig()->get(local_user(), 'system', 'blocked');
 	if (!$words) {
 		$words = '';
 	}
@@ -69,14 +68,14 @@ function superblock_addon_settings_post(&$a, &$b)
 	}
 
 	if (!empty($_POST['superblock-submit'])) {
-		PConfig::set(local_user(), 'system', 'blocked',trim($_POST['superblock-words']));
+		DI::pConfig()->set(local_user(), 'system', 'blocked',trim($_POST['superblock-words']));
 		info(L10n::t('SUPERBLOCK Settings saved.') . EOL);
 	}
 }
 
 function superblock_enotify_store(&$a,&$b) {
 
-	$words = PConfig::get($b['uid'], 'system', 'blocked');
+	$words = DI::pConfig()->get($b['uid'], 'system', 'blocked');
 	if ($words) {
 		$arr = explode(',', $words);
 	} else {
@@ -108,7 +107,7 @@ function superblock_conversation_start(&$a, &$b)
 		return;
 	}
 
-	$words = PConfig::get(local_user(), 'system', 'blocked');
+	$words = DI::pConfig()->get(local_user(), 'system', 'blocked');
 	if ($words) {
 		$a->data['superblock'] = explode(',', $words);
 	}
@@ -155,7 +154,7 @@ function superblock_init(&$a)
 		return;
 	}
 
-	$words = PConfig::get(local_user(), 'system', 'blocked');
+	$words = DI::pConfig()->get(local_user(), 'system', 'blocked');
 
 	if (array_key_exists('block', $_GET) && $_GET['block']) {
 		if (strlen($words))
@@ -163,7 +162,7 @@ function superblock_init(&$a)
 		$words .= trim($_GET['block']);
 	}
 
-	PConfig::set(local_user(), 'system', 'blocked', $words);
+	DI::pConfig()->set(local_user(), 'system', 'blocked', $words);
 	info(L10n::t('superblock settings updated') . EOL );
 	exit();
 }

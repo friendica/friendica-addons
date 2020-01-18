@@ -11,7 +11,6 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
-use Friendica\Core\PConfig;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Util\Network;
@@ -42,13 +41,13 @@ function libertree_jot_nets(App &$a, array &$jotnets_fields)
         return;
     }
 
-	if (PConfig::get(local_user(), 'libertree', 'post')) {
+	if (DI::pConfig()->get(local_user(), 'libertree', 'post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'libertree_enable',
 				L10n::t('Post to libertree'),
-				PConfig::get(local_user(), 'libertree', 'post_by_default')
+				DI::pConfig()->get(local_user(), 'libertree', 'post_by_default')
 			]
 		];
 	}
@@ -66,16 +65,16 @@ function libertree_settings(&$a,&$s) {
 
     /* Get the current state of our config variables */
 
-    $enabled = PConfig::get(local_user(),'libertree','post');
+    $enabled = DI::pConfig()->get(local_user(),'libertree','post');
     $checked = (($enabled) ? ' checked="checked" ' : '');
     $css = (($enabled) ? '' : '-disabled');
 
-    $def_enabled = PConfig::get(local_user(),'libertree','post_by_default');
+    $def_enabled = DI::pConfig()->get(local_user(),'libertree','post_by_default');
 
     $def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
-    $ltree_api_token = PConfig::get(local_user(), 'libertree', 'libertree_api_token');
-    $ltree_url = PConfig::get(local_user(), 'libertree', 'libertree_url');
+    $ltree_api_token = DI::pConfig()->get(local_user(), 'libertree', 'libertree_api_token');
+    $ltree_url = DI::pConfig()->get(local_user(), 'libertree', 'libertree_url');
 
 
     /* Add some HTML to the existing form */
@@ -119,10 +118,10 @@ function libertree_settings_post(&$a,&$b) {
 
 	if(!empty($_POST['libertree-submit'])) {
 
-		PConfig::set(local_user(),'libertree','post',intval($_POST['libertree']));
-		PConfig::set(local_user(),'libertree','post_by_default',intval($_POST['libertree_bydefault']));
-		PConfig::set(local_user(),'libertree','libertree_api_token',trim($_POST['libertree_api_token']));
-		PConfig::set(local_user(),'libertree','libertree_url',trim($_POST['libertree_url']));
+		DI::pConfig()->set(local_user(),'libertree','post',intval($_POST['libertree']));
+		DI::pConfig()->set(local_user(),'libertree','post_by_default',intval($_POST['libertree_bydefault']));
+		DI::pConfig()->set(local_user(),'libertree','libertree_api_token',trim($_POST['libertree_api_token']));
+		DI::pConfig()->set(local_user(),'libertree','libertree_url',trim($_POST['libertree_url']));
 
 	}
 
@@ -159,11 +158,11 @@ function libertree_post_local(&$a,&$b) {
 		return;
 	}
 
-	$ltree_post   = intval(PConfig::get(local_user(),'libertree','post'));
+	$ltree_post   = intval(DI::pConfig()->get(local_user(),'libertree','post'));
 
 	$ltree_enable = (($ltree_post && !empty($_REQUEST['libertree_enable'])) ? intval($_REQUEST['libertree_enable']) : 0);
 
-	if ($b['api_source'] && intval(PConfig::get(local_user(),'libertree','post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(),'libertree','post_by_default'))) {
 		$ltree_enable = 1;
 	}
 
@@ -204,8 +203,8 @@ function libertree_send(&$a,&$b) {
 		return;
 	}
 
-	$ltree_api_token = PConfig::get($b['uid'],'libertree','libertree_api_token');
-	$ltree_url = PConfig::get($b['uid'],'libertree','libertree_url');
+	$ltree_api_token = DI::pConfig()->get($b['uid'],'libertree','libertree_api_token');
+	$ltree_url = DI::pConfig()->get($b['uid'],'libertree','libertree_url');
 	$ltree_blog = "$ltree_url/api/v1/posts/create/?token=$ltree_api_token";
 	$ltree_source = DI::baseUrl()->getHostname();
 

@@ -13,7 +13,6 @@ use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
-use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
@@ -91,8 +90,8 @@ function pumpio_content(App $a)
 
 function pumpio_check_item_notification($a, &$notification_data)
 {
-	$hostname = PConfig::get($notification_data["uid"], 'pumpio', 'host');
-	$username = PConfig::get($notification_data["uid"], "pumpio", "user");
+	$hostname = DI::pConfig()->get($notification_data["uid"], 'pumpio', 'host');
+	$username = DI::pConfig()->get($notification_data["uid"], "pumpio", "user");
 
 	$notification_data["profiles"][] = "https://".$hostname."/".$username;
 }
@@ -143,18 +142,18 @@ function pumpio_registerclient(App $a, $host)
 function pumpio_connect(App $a)
 {
 	// Define the needed keys
-	$consumer_key = PConfig::get(local_user(), 'pumpio', 'consumer_key');
-	$consumer_secret = PConfig::get(local_user(), 'pumpio', 'consumer_secret');
-	$hostname = PConfig::get(local_user(), 'pumpio', 'host');
+	$consumer_key = DI::pConfig()->get(local_user(), 'pumpio', 'consumer_key');
+	$consumer_secret = DI::pConfig()->get(local_user(), 'pumpio', 'consumer_secret');
+	$hostname = DI::pConfig()->get(local_user(), 'pumpio', 'host');
 
 	if ((($consumer_key == "") || ($consumer_secret == "")) && ($hostname != "")) {
 		Logger::log("pumpio_connect: register client");
 		$clientdata = pumpio_registerclient($a, $hostname);
-		PConfig::set(local_user(), 'pumpio', 'consumer_key', $clientdata->client_id);
-		PConfig::set(local_user(), 'pumpio', 'consumer_secret', $clientdata->client_secret);
+		DI::pConfig()->set(local_user(), 'pumpio', 'consumer_key', $clientdata->client_id);
+		DI::pConfig()->set(local_user(), 'pumpio', 'consumer_secret', $clientdata->client_secret);
 
-		$consumer_key = PConfig::get(local_user(), 'pumpio', 'consumer_key');
-		$consumer_secret = PConfig::get(local_user(), 'pumpio', 'consumer_secret');
+		$consumer_key = DI::pConfig()->get(local_user(), 'pumpio', 'consumer_key');
+		$consumer_secret = DI::pConfig()->get(local_user(), 'pumpio', 'consumer_secret');
 
 		Logger::log("pumpio_connect: ckey: ".$consumer_key." csecrect: ".$consumer_secret, Logger::DEBUG);
 	}
@@ -191,8 +190,8 @@ function pumpio_connect(App $a)
 		if (($success = $client->Process())) {
 			if (strlen($client->access_token)) {
 				Logger::log("pumpio_connect: otoken: ".$client->access_token." osecrect: ".$client->access_token_secret, Logger::DEBUG);
-				PConfig::set(local_user(), "pumpio", "oauth_token", $client->access_token);
-				PConfig::set(local_user(), "pumpio", "oauth_token_secret", $client->access_token_secret);
+				DI::pConfig()->set(local_user(), "pumpio", "oauth_token", $client->access_token);
+				DI::pConfig()->set(local_user(), "pumpio", "oauth_token_secret", $client->access_token_secret);
 			}
 		}
 		$success = $client->Finalize($success);
@@ -219,13 +218,13 @@ function pumpio_jot_nets(App $a, array &$jotnets_fields)
 		return;
 	}
 
-	if (PConfig::get(local_user(), 'pumpio', 'post')) {
+	if (DI::pConfig()->get(local_user(), 'pumpio', 'post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'pumpio_enable',
 				L10n::t('Post to pumpio'),
-				PConfig::get(local_user(), 'pumpio', 'post_by_default')
+				DI::pConfig()->get(local_user(), 'pumpio', 'post_by_default')
 			]
 		];
 	}
@@ -243,24 +242,24 @@ function pumpio_settings(App $a, &$s)
 
 	/* Get the current state of our config variables */
 
-	$import_enabled = PConfig::get(local_user(), 'pumpio', 'import');
+	$import_enabled = DI::pConfig()->get(local_user(), 'pumpio', 'import');
 	$import_checked = (($import_enabled) ? ' checked="checked" ' : '');
 
-	$enabled = PConfig::get(local_user(), 'pumpio', 'post');
+	$enabled = DI::pConfig()->get(local_user(), 'pumpio', 'post');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 	$css = (($enabled) ? '' : '-disabled');
 
-	$def_enabled = PConfig::get(local_user(), 'pumpio', 'post_by_default');
+	$def_enabled = DI::pConfig()->get(local_user(), 'pumpio', 'post_by_default');
 	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
-	$public_enabled = PConfig::get(local_user(), 'pumpio', 'public');
+	$public_enabled = DI::pConfig()->get(local_user(), 'pumpio', 'public');
 	$public_checked = (($public_enabled) ? ' checked="checked" ' : '');
 
-	$mirror_enabled = PConfig::get(local_user(), 'pumpio', 'mirror');
+	$mirror_enabled = DI::pConfig()->get(local_user(), 'pumpio', 'mirror');
 	$mirror_checked = (($mirror_enabled) ? ' checked="checked" ' : '');
 
-	$servername = PConfig::get(local_user(), "pumpio", "host");
-	$username = PConfig::get(local_user(), "pumpio", "user");
+	$servername = DI::pConfig()->get(local_user(), "pumpio", "host");
+	$username = DI::pConfig()->get(local_user(), "pumpio", "user");
 
 	/* Add some HTML to the existing form */
 
@@ -283,8 +282,8 @@ function pumpio_settings(App $a, &$s)
 	$s .= '</div><div class="clear"></div>';
 
 	if (($username != '') && ($servername != '')) {
-		$oauth_token = PConfig::get(local_user(), "pumpio", "oauth_token");
-		$oauth_token_secret = PConfig::get(local_user(), "pumpio", "oauth_token_secret");
+		$oauth_token = DI::pConfig()->get(local_user(), "pumpio", "oauth_token");
+		$oauth_token_secret = DI::pConfig()->get(local_user(), "pumpio", "oauth_token_secret");
 
 		$s .= '<div id="pumpio-password-wrapper">';
 		if (($oauth_token == "") || ($oauth_token_secret == "")) {
@@ -335,19 +334,19 @@ function pumpio_settings_post(App $a, array &$b)
 {
 	if (!empty($_POST['pumpio-submit'])) {
 		if (!empty($_POST['pumpio_delete'])) {
-			PConfig::set(local_user(), 'pumpio', 'consumer_key'      , '');
-			PConfig::set(local_user(), 'pumpio', 'consumer_secret'   , '');
-			PConfig::set(local_user(), 'pumpio', 'oauth_token'       , '');
-			PConfig::set(local_user(), 'pumpio', 'oauth_token_secret', '');
-			PConfig::set(local_user(), 'pumpio', 'post'              , false);
-			PConfig::set(local_user(), 'pumpio', 'import'            , false);
-			PConfig::set(local_user(), 'pumpio', 'host'              , '');
-			PConfig::set(local_user(), 'pumpio', 'user'              , '');
-			PConfig::set(local_user(), 'pumpio', 'public'            , false);
-			PConfig::set(local_user(), 'pumpio', 'mirror'            , false);
-			PConfig::set(local_user(), 'pumpio', 'post_by_default'   , false);
-			PConfig::set(local_user(), 'pumpio', 'lastdate'          , 0);
-			PConfig::set(local_user(), 'pumpio', 'last_id'           , '');
+			DI::pConfig()->set(local_user(), 'pumpio', 'consumer_key'      , '');
+			DI::pConfig()->set(local_user(), 'pumpio', 'consumer_secret'   , '');
+			DI::pConfig()->set(local_user(), 'pumpio', 'oauth_token'       , '');
+			DI::pConfig()->set(local_user(), 'pumpio', 'oauth_token_secret', '');
+			DI::pConfig()->set(local_user(), 'pumpio', 'post'              , false);
+			DI::pConfig()->set(local_user(), 'pumpio', 'import'            , false);
+			DI::pConfig()->set(local_user(), 'pumpio', 'host'              , '');
+			DI::pConfig()->set(local_user(), 'pumpio', 'user'              , '');
+			DI::pConfig()->set(local_user(), 'pumpio', 'public'            , false);
+			DI::pConfig()->set(local_user(), 'pumpio', 'mirror'            , false);
+			DI::pConfig()->set(local_user(), 'pumpio', 'post_by_default'   , false);
+			DI::pConfig()->set(local_user(), 'pumpio', 'lastdate'          , 0);
+			DI::pConfig()->set(local_user(), 'pumpio', 'last_id'           , '');
 		} else {
 			// filtering the username if it is filled wrong
 			$user = $_POST['pumpio_user'];
@@ -364,16 +363,16 @@ function pumpio_settings_post(App $a, array &$b)
 			$host = trim($host);
 			$host = str_replace(["https://", "http://"], ["", ""], $host);
 
-			PConfig::set(local_user(), 'pumpio', 'post'           , $_POST['pumpio'] ?? false);
-			PConfig::set(local_user(), 'pumpio', 'import'         , $_POST['pumpio_import'] ?? false);
-			PConfig::set(local_user(), 'pumpio', 'host'           , $host);
-			PConfig::set(local_user(), 'pumpio', 'user'           , $user);
-			PConfig::set(local_user(), 'pumpio', 'public'         , $_POST['pumpio_public'] ?? false);
-			PConfig::set(local_user(), 'pumpio', 'mirror'         , $_POST['pumpio_mirror'] ?? false);
-			PConfig::set(local_user(), 'pumpio', 'post_by_default', $_POST['pumpio_bydefault'] ?? false);
+			DI::pConfig()->set(local_user(), 'pumpio', 'post'           , $_POST['pumpio'] ?? false);
+			DI::pConfig()->set(local_user(), 'pumpio', 'import'         , $_POST['pumpio_import'] ?? false);
+			DI::pConfig()->set(local_user(), 'pumpio', 'host'           , $host);
+			DI::pConfig()->set(local_user(), 'pumpio', 'user'           , $user);
+			DI::pConfig()->set(local_user(), 'pumpio', 'public'         , $_POST['pumpio_public'] ?? false);
+			DI::pConfig()->set(local_user(), 'pumpio', 'mirror'         , $_POST['pumpio_mirror'] ?? false);
+			DI::pConfig()->set(local_user(), 'pumpio', 'post_by_default', $_POST['pumpio_bydefault'] ?? false);
 
 			if (!empty($_POST['pumpio_mirror'])) {
-				PConfig::delete(local_user(), 'pumpio', 'lastdate');
+				DI::pConfig()->delete(local_user(), 'pumpio', 'lastdate');
 			}
 		}
 	}
@@ -404,7 +403,7 @@ function pumpio_hook_fork(App $a, array &$b)
                 return;
         }
 
-        if (PConfig::get($post['uid'], 'pumpio', 'import')) {
+        if (DI::pConfig()->get($post['uid'], 'pumpio', 'import')) {
                 // Don't fork if it isn't a reply to a pump.io post
                 if (($post['parent'] != $post['id']) && !Item::exists(['id' => $post['parent'], 'network' => Protocol::PUMPIO])) {
                         Logger::log('No pump.io parent found for item ' . $post['id']);
@@ -426,11 +425,11 @@ function pumpio_post_local(App $a, array &$b)
 		return;
 	}
 
-	$pumpio_post   = intval(PConfig::get(local_user(), 'pumpio', 'post'));
+	$pumpio_post   = intval(DI::pConfig()->get(local_user(), 'pumpio', 'post'));
 
 	$pumpio_enable = (($pumpio_post && !empty($_REQUEST['pumpio_enable'])) ? intval($_REQUEST['pumpio_enable']) : 0);
 
-	if ($b['api_source'] && intval(PConfig::get(local_user(), 'pumpio', 'post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(), 'pumpio', 'post_by_default'))) {
 		$pumpio_enable = 1;
 	}
 
@@ -447,7 +446,7 @@ function pumpio_post_local(App $a, array &$b)
 
 function pumpio_send(App $a, array &$b)
 {
-	if (!PConfig::get($b["uid"], 'pumpio', 'import') && ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))) {
+	if (!DI::pConfig()->get($b["uid"], 'pumpio', 'import') && ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))) {
 		return;
 	}
 
@@ -517,14 +516,14 @@ function pumpio_send(App $a, array &$b)
 	// Support for native shares
 	// http://<hostname>/api/<type>/shares?id=<the-object-id>
 
-	$oauth_token = PConfig::get($b['uid'], "pumpio", "oauth_token");
-	$oauth_token_secret = PConfig::get($b['uid'], "pumpio", "oauth_token_secret");
-	$consumer_key = PConfig::get($b['uid'], "pumpio","consumer_key");
-	$consumer_secret = PConfig::get($b['uid'], "pumpio","consumer_secret");
+	$oauth_token = DI::pConfig()->get($b['uid'], "pumpio", "oauth_token");
+	$oauth_token_secret = DI::pConfig()->get($b['uid'], "pumpio", "oauth_token_secret");
+	$consumer_key = DI::pConfig()->get($b['uid'], "pumpio","consumer_key");
+	$consumer_secret = DI::pConfig()->get($b['uid'], "pumpio","consumer_secret");
 
-	$host = PConfig::get($b['uid'], "pumpio", "host");
-	$user = PConfig::get($b['uid'], "pumpio", "user");
-	$public = PConfig::get($b['uid'], "pumpio", "public");
+	$host = DI::pConfig()->get($b['uid'], "pumpio", "host");
+	$user = DI::pConfig()->get($b['uid'], "pumpio", "user");
+	$public = DI::pConfig()->get($b['uid'], "pumpio", "public");
 
 	if ($oauth_token && $oauth_token_secret) {
 		$title = trim($b['title']);
@@ -597,7 +596,7 @@ function pumpio_send(App $a, array &$b)
 
 		if ($success) {
 			if ($user->generator->displayName) {
-				PConfig::set($b["uid"], "pumpio", "application_name", $user->generator->displayName);
+				DI::pConfig()->set($b["uid"], "pumpio", "application_name", $user->generator->displayName);
 			}
 
 			$post_id = $user->object->id;
@@ -616,16 +615,16 @@ function pumpio_send(App $a, array &$b)
 function pumpio_action(App $a, $uid, $uri, $action, $content = "")
 {
 	// Don't do likes and other stuff if you don't import the timeline
-	if (!PConfig::get($uid, 'pumpio', 'import')) {
+	if (!DI::pConfig()->get($uid, 'pumpio', 'import')) {
 		return;
 	}
 
-	$ckey    = PConfig::get($uid, 'pumpio', 'consumer_key');
-	$csecret = PConfig::get($uid, 'pumpio', 'consumer_secret');
-	$otoken  = PConfig::get($uid, 'pumpio', 'oauth_token');
-	$osecret = PConfig::get($uid, 'pumpio', 'oauth_token_secret');
-	$hostname = PConfig::get($uid, 'pumpio', 'host');
-	$username = PConfig::get($uid, "pumpio", "user");
+	$ckey    = DI::pConfig()->get($uid, 'pumpio', 'consumer_key');
+	$csecret = DI::pConfig()->get($uid, 'pumpio', 'consumer_secret');
+	$otoken  = DI::pConfig()->get($uid, 'pumpio', 'oauth_token');
+	$osecret = DI::pConfig()->get($uid, 'pumpio', 'oauth_token_secret');
+	$hostname = DI::pConfig()->get($uid, 'pumpio', 'host');
+	$username = DI::pConfig()->get($uid, "pumpio", "user");
 
 	$orig_post = Item::selectFirst([], ['uri' => $uri, 'uid' => $uid]);
 
@@ -731,7 +730,7 @@ function pumpio_sync(App $a)
 			pumpio_fetchinbox($a, $rr['uid']);
 
 			// check for new contacts once a day
-			$last_contact_check = PConfig::get($rr['uid'], 'pumpio', 'contact_check');
+			$last_contact_check = DI::pConfig()->get($rr['uid'], 'pumpio', 'contact_check');
 			if ($last_contact_check) {
 				$next_contact_check = $last_contact_check + 86400;
 			} else {
@@ -740,7 +739,7 @@ function pumpio_sync(App $a)
 
 			if ($next_contact_check <= time()) {
 				pumpio_getallusers($a, $rr["uid"]);
-				PConfig::set($rr['uid'], 'pumpio', 'contact_check', time());
+				DI::pConfig()->set($rr['uid'], 'pumpio', 'contact_check', time());
 			}
 		}
 	}
@@ -757,18 +756,18 @@ function pumpio_cron(App $a, $b)
 
 function pumpio_fetchtimeline(App $a, $uid)
 {
-	$ckey    = PConfig::get($uid, 'pumpio', 'consumer_key');
-	$csecret = PConfig::get($uid, 'pumpio', 'consumer_secret');
-	$otoken  = PConfig::get($uid, 'pumpio', 'oauth_token');
-	$osecret = PConfig::get($uid, 'pumpio', 'oauth_token_secret');
-	$lastdate = PConfig::get($uid, 'pumpio', 'lastdate');
-	$hostname = PConfig::get($uid, 'pumpio', 'host');
-	$username = PConfig::get($uid, "pumpio", "user");
+	$ckey    = DI::pConfig()->get($uid, 'pumpio', 'consumer_key');
+	$csecret = DI::pConfig()->get($uid, 'pumpio', 'consumer_secret');
+	$otoken  = DI::pConfig()->get($uid, 'pumpio', 'oauth_token');
+	$osecret = DI::pConfig()->get($uid, 'pumpio', 'oauth_token_secret');
+	$lastdate = DI::pConfig()->get($uid, 'pumpio', 'lastdate');
+	$hostname = DI::pConfig()->get($uid, 'pumpio', 'host');
+	$username = DI::pConfig()->get($uid, "pumpio", "user");
 
 	//  get the application name for the pump.io app
 	//  1st try personal config, then system config and fallback to the
 	//  hostname of the node if neither one is set.
-	$application_name  = PConfig::get($uid, 'pumpio', 'application_name');
+	$application_name  = DI::pConfig()->get($uid, 'pumpio', 'application_name');
 	if ($application_name == "") {
 		$application_name  = Config::get('pumpio', 'application_name');
 	}
@@ -882,7 +881,7 @@ function pumpio_fetchtimeline(App $a, $uid)
 	}
 
 	if ($lastdate != 0) {
-		PConfig::set($uid, 'pumpio', 'lastdate', $lastdate);
+		DI::pConfig()->set($uid, 'pumpio', 'lastdate', $lastdate);
 	}
 }
 
@@ -1308,13 +1307,13 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 
 function pumpio_fetchinbox(App $a, $uid)
 {
-	$ckey     = PConfig::get($uid, 'pumpio', 'consumer_key');
-	$csecret  = PConfig::get($uid, 'pumpio', 'consumer_secret');
-	$otoken   = PConfig::get($uid, 'pumpio', 'oauth_token');
-	$osecret  = PConfig::get($uid, 'pumpio', 'oauth_token_secret');
-	$lastdate = PConfig::get($uid, 'pumpio', 'lastdate');
-	$hostname = PConfig::get($uid, 'pumpio', 'host');
-	$username = PConfig::get($uid, "pumpio", "user");
+	$ckey     = DI::pConfig()->get($uid, 'pumpio', 'consumer_key');
+	$csecret  = DI::pConfig()->get($uid, 'pumpio', 'consumer_secret');
+	$otoken   = DI::pConfig()->get($uid, 'pumpio', 'oauth_token');
+	$osecret  = DI::pConfig()->get($uid, 'pumpio', 'oauth_token_secret');
+	$lastdate = DI::pConfig()->get($uid, 'pumpio', 'lastdate');
+	$hostname = DI::pConfig()->get($uid, 'pumpio', 'host');
+	$username = DI::pConfig()->get($uid, "pumpio", "user");
 
 	$own_id = "https://".$hostname."/".$username;
 
@@ -1339,7 +1338,7 @@ function pumpio_fetchinbox(App $a, $uid)
 	$client->access_token = $otoken;
 	$client->access_token_secret = $osecret;
 
-	$last_id = PConfig::get($uid, 'pumpio', 'last_id');
+	$last_id = DI::pConfig()->get($uid, 'pumpio', 'last_id');
 
 	$url = 'https://'.$hostname.'/api/user/'.$username.'/inbox';
 
@@ -1372,17 +1371,17 @@ function pumpio_fetchinbox(App $a, $uid)
 		pumpio_fetchallcomments($a, $uid, $item["uri"]);
 	}
 
-	PConfig::set($uid, 'pumpio', 'last_id', $last_id);
+	DI::pConfig()->set($uid, 'pumpio', 'last_id', $last_id);
 }
 
 function pumpio_getallusers(App &$a, $uid)
 {
-	$ckey     = PConfig::get($uid, 'pumpio', 'consumer_key');
-	$csecret  = PConfig::get($uid, 'pumpio', 'consumer_secret');
-	$otoken   = PConfig::get($uid, 'pumpio', 'oauth_token');
-	$osecret  = PConfig::get($uid, 'pumpio', 'oauth_token_secret');
-	$hostname = PConfig::get($uid, 'pumpio', 'host');
-	$username = PConfig::get($uid, "pumpio", "user");
+	$ckey     = DI::pConfig()->get($uid, 'pumpio', 'consumer_key');
+	$csecret  = DI::pConfig()->get($uid, 'pumpio', 'consumer_secret');
+	$otoken   = DI::pConfig()->get($uid, 'pumpio', 'oauth_token');
+	$osecret  = DI::pConfig()->get($uid, 'pumpio', 'oauth_token_secret');
+	$hostname = DI::pConfig()->get($uid, 'pumpio', 'host');
+	$username = DI::pConfig()->get($uid, "pumpio", "user");
 
 	$client = new oauth_client_class;
 	$client->oauth_version = '1.0a';
@@ -1432,7 +1431,7 @@ function pumpio_getreceiver(App $a, array $b)
 			return $receiver;
 		}
 
-		$public = PConfig::get($b['uid'], "pumpio", "public");
+		$public = DI::pConfig()->get($b['uid'], "pumpio", "public");
 
 		if ($public) {
 			$receiver["to"][] = [
@@ -1510,12 +1509,12 @@ function pumpio_getreceiver(App $a, array $b)
 
 function pumpio_fetchallcomments(App $a, $uid, $id)
 {
-	$ckey     = PConfig::get($uid, 'pumpio', 'consumer_key');
-	$csecret  = PConfig::get($uid, 'pumpio', 'consumer_secret');
-	$otoken   = PConfig::get($uid, 'pumpio', 'oauth_token');
-	$osecret  = PConfig::get($uid, 'pumpio', 'oauth_token_secret');
-	$hostname = PConfig::get($uid, 'pumpio', 'host');
-	$username = PConfig::get($uid, "pumpio", "user");
+	$ckey     = DI::pConfig()->get($uid, 'pumpio', 'consumer_key');
+	$csecret  = DI::pConfig()->get($uid, 'pumpio', 'consumer_secret');
+	$otoken   = DI::pConfig()->get($uid, 'pumpio', 'oauth_token');
+	$osecret  = DI::pConfig()->get($uid, 'pumpio', 'oauth_token_secret');
+	$hostname = DI::pConfig()->get($uid, 'pumpio', 'host');
+	$username = DI::pConfig()->get($uid, "pumpio", "user");
 
 	Logger::log("pumpio_fetchallcomments: completing comment for user ".$uid." post id ".$id);
 

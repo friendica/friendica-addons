@@ -15,7 +15,6 @@ use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
-use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
@@ -185,8 +184,8 @@ function tumblr_callback(App $a)
 	}
 
 	// What's next?  Now that we have an Access Token and Secret, we can make an API call.
-	PConfig::set(local_user(), "tumblr", "oauth_token", $access_token['oauth_token']);
-	PConfig::set(local_user(), "tumblr", "oauth_token_secret", $access_token['oauth_token_secret']);
+	DI::pConfig()->set(local_user(), "tumblr", "oauth_token", $access_token['oauth_token']);
+	DI::pConfig()->set(local_user(), "tumblr", "oauth_token_secret", $access_token['oauth_token_secret']);
 
 	$o = L10n::t("You are now authenticated to tumblr.");
 	$o .= '<br /><a href="' . DI::baseUrl()->get() . '/settings/connectors">' . L10n::t("return to the connector page") . '</a>';
@@ -200,13 +199,13 @@ function tumblr_jot_nets(App $a, array &$jotnets_fields)
 		return;
 	}
 
-	if (PConfig::get(local_user(),'tumblr','post')) {
+	if (DI::pConfig()->get(local_user(),'tumblr','post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'tumblr_enable',
 				L10n::t('Post to Tumblr'),
-				PConfig::get(local_user(),'tumblr','post_by_default')
+				DI::pConfig()->get(local_user(),'tumblr','post_by_default')
 			]
 		];
 	}
@@ -224,11 +223,11 @@ function tumblr_settings(App $a, &$s)
 
 	/* Get the current state of our config variables */
 
-	$enabled = PConfig::get(local_user(), 'tumblr', 'post');
+	$enabled = DI::pConfig()->get(local_user(), 'tumblr', 'post');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 	$css = (($enabled) ? '' : '-disabled');
 
-	$def_enabled = PConfig::get(local_user(), 'tumblr', 'post_by_default');
+	$def_enabled = DI::pConfig()->get(local_user(), 'tumblr', 'post_by_default');
 
 	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
@@ -258,13 +257,13 @@ function tumblr_settings(App $a, &$s)
 	$s .= '<input id="tumblr-bydefault" type="checkbox" name="tumblr_bydefault" value="1" ' . $def_checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
-	$oauth_token = PConfig::get(local_user(), "tumblr", "oauth_token");
-	$oauth_token_secret = PConfig::get(local_user(), "tumblr", "oauth_token_secret");
+	$oauth_token = DI::pConfig()->get(local_user(), "tumblr", "oauth_token");
+	$oauth_token_secret = DI::pConfig()->get(local_user(), "tumblr", "oauth_token_secret");
 
 	$s .= '<div id="tumblr-page-wrapper">';
 
 	if (($oauth_token != "") && ($oauth_token_secret != "")) {
-		$page = PConfig::get(local_user(), 'tumblr', 'page');
+		$page = DI::pConfig()->get(local_user(), 'tumblr', 'page');
 		$consumer_key = Config::get('tumblr', 'consumer_key');
 		$consumer_secret = Config::get('tumblr', 'consumer_secret');
 
@@ -300,9 +299,9 @@ function tumblr_settings(App $a, &$s)
 function tumblr_settings_post(App $a, array &$b)
 {
 	if (!empty($_POST['tumblr-submit'])) {
-		PConfig::set(local_user(), 'tumblr', 'post',            intval($_POST['tumblr']));
-		PConfig::set(local_user(), 'tumblr', 'page',            $_POST['tumblr_page']);
-		PConfig::set(local_user(), 'tumblr', 'post_by_default', intval($_POST['tumblr_bydefault']));
+		DI::pConfig()->set(local_user(), 'tumblr', 'post',            intval($_POST['tumblr']));
+		DI::pConfig()->set(local_user(), 'tumblr', 'page',            $_POST['tumblr_page']);
+		DI::pConfig()->set(local_user(), 'tumblr', 'post_by_default', intval($_POST['tumblr_bydefault']));
 	}
 }
 
@@ -337,11 +336,11 @@ function tumblr_post_local(App $a, array &$b)
 		return;
 	}
 
-	$tmbl_post   = intval(PConfig::get(local_user(), 'tumblr', 'post'));
+	$tmbl_post   = intval(DI::pConfig()->get(local_user(), 'tumblr', 'post'));
 
 	$tmbl_enable = (($tmbl_post && !empty($_REQUEST['tumblr_enable'])) ? intval($_REQUEST['tumblr_enable']) : 0);
 
-	if ($b['api_source'] && intval(PConfig::get(local_user(), 'tumblr', 'post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(), 'tumblr', 'post_by_default'))) {
 		$tmbl_enable = 1;
 	}
 
@@ -380,9 +379,9 @@ function tumblr_send(App $a, array &$b) {
 		return;
 	}
 
-	$oauth_token = PConfig::get($b['uid'], "tumblr", "oauth_token");
-	$oauth_token_secret = PConfig::get($b['uid'], "tumblr", "oauth_token_secret");
-	$page = PConfig::get($b['uid'], "tumblr", "page");
+	$oauth_token = DI::pConfig()->get($b['uid'], "tumblr", "oauth_token");
+	$oauth_token_secret = DI::pConfig()->get($b['uid'], "tumblr", "oauth_token_secret");
+	$page = DI::pConfig()->get($b['uid'], "tumblr", "page");
 	$tmbl_blog = 'blog/' . $page . '/post';
 
 	if ($oauth_token && $oauth_token_secret && $tmbl_blog) {

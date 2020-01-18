@@ -9,7 +9,6 @@
  */
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
-use Friendica\Core\PConfig;
 use Friendica\DI;
 use Friendica\Util\Strings;
 
@@ -37,8 +36,8 @@ function showmore_addon_settings(&$a, &$s)
 
 	DI::page()['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.DI::baseUrl()->get().'/addon/showmore/showmore.css'.'" media="all"/>'."\r\n";
 
-	$enable_checked = (intval(PConfig::get(local_user(), 'showmore', 'disable')) ? '' : ' checked="checked"');
-	$chars = PConfig::get(local_user(), 'showmore', 'chars', 1100);
+	$enable_checked = (intval(DI::pConfig()->get(local_user(), 'showmore', 'disable')) ? '' : ' checked="checked"');
+	$chars = DI::pConfig()->get(local_user(), 'showmore', 'chars', 1100);
 
 	$s .= '<span id="settings_showmore_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_showmore_expanded\'); openClose(\'settings_showmore_inflated\');">';
 	$s .= '<h3>' . L10n::t('"Show more" Settings').'</h3>';
@@ -71,10 +70,10 @@ function showmore_addon_settings_post(&$a, &$b)
 	}
 
 	if (!empty($_POST['showmore-submit'])) {
-		PConfig::set(local_user(), 'showmore', 'chars', trim($_POST['showmore-chars']));
+		DI::pConfig()->set(local_user(), 'showmore', 'chars', trim($_POST['showmore-chars']));
 		$enable = (!empty($_POST['showmore-enable']) ? intval($_POST['showmore-enable']) : 0);
 		$disable = 1-$enable;
-		PConfig::set(local_user(), 'showmore', 'disable', $disable);
+		DI::pConfig()->set(local_user(), 'showmore', 'disable', $disable);
 		info(L10n::t('Show More Settings saved.') . EOL);
 	}
 }
@@ -119,11 +118,11 @@ function showmore_prepare_body(\Friendica\App $a, &$hook_data)
 		return;
 	}
 
-	if (PConfig::get(local_user(), 'showmore', 'disable')) {
+	if (DI::pConfig()->get(local_user(), 'showmore', 'disable')) {
 		return;
 	}
 
-	$chars = (int) PConfig::get(local_user(), 'showmore', 'chars', 1100);
+	$chars = (int) DI::pConfig()->get(local_user(), 'showmore', 'chars', 1100);
 
 	if (get_body_length($hook_data['html']) > $chars) {
 		$found = true;

@@ -9,7 +9,6 @@
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
-use Friendica\Core\PConfig;
 use Friendica\DI;
 
 function planets_install() {
@@ -82,7 +81,7 @@ function planets_post_hook($a, &$item) {
 
 	/* Retrieve our personal config setting */
 
-	$active = PConfig::get(local_user(), 'planets', 'enable');
+	$active = DI::pConfig()->get(local_user(), 'planets', 'enable');
 
 	if(! $active)
 		return;
@@ -120,7 +119,7 @@ function planets_settings_post($a,$post) {
 	if(! local_user())
 		return;
 	if($_POST['planets-submit'])
-		PConfig::set(local_user(),'planets','enable',intval($_POST['planets']));
+		DI::pConfig()->set(local_user(),'planets','enable',intval($_POST['planets']));
 }
 
 
@@ -144,7 +143,7 @@ function planets_settings(&$a,&$s) {
 
 	/* Get the current state of our config variable */
 
-	$enabled = PConfig::get(local_user(),'planets','enable');
+	$enabled = DI::pConfig()->get(local_user(),'planets','enable');
 
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 

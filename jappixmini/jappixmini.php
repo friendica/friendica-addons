@@ -67,7 +67,6 @@ use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
-use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
 use Friendica\DI;
@@ -231,21 +230,21 @@ function jappixmini_init()
 		$decrypt_func($signed_address, $trusted_address, $key);
 
 		$now = intval(time());
-		PConfig::set($uid, "jappixmini", "id:$dfrn_id", "$now:$trusted_address");
+		DI::pConfig()->set($uid, "jappixmini", "id:$dfrn_id", "$now:$trusted_address");
 	} catch (Exception $e) {
 
 	}
 
 	// do not return an address if user deactivated addon
-	$activated = PConfig::get($uid, 'jappixmini', 'activate');
+	$activated = DI::pConfig()->get($uid, 'jappixmini', 'activate');
 	if (!$activated) {
 		exit();
 	}
 
 	// return the requested Jabber address
 	try {
-		$username = PConfig::get($uid, 'jappixmini', 'username');
-		$server = PConfig::get($uid, 'jappixmini', 'server');
+		$username = DI::pConfig()->get($uid, 'jappixmini', 'username');
+		$server = DI::pConfig()->get($uid, 'jappixmini', 'server');
 		$address = "$username@$server";
 
 		$encrypted_address = "";
@@ -269,29 +268,29 @@ function jappixmini_init()
 function jappixmini_settings(App $a, &$s)
 {
 	// addon settings for a user
-	$activate = PConfig::get(local_user(), 'jappixmini', 'activate');
+	$activate = DI::pConfig()->get(local_user(), 'jappixmini', 'activate');
 	$activate = intval($activate) ? ' checked="checked"' : '';
-	$dontinsertchat = PConfig::get(local_user(), 'jappixmini', 'dontinsertchat');
+	$dontinsertchat = DI::pConfig()->get(local_user(), 'jappixmini', 'dontinsertchat');
 	$insertchat = !(intval($dontinsertchat) ? ' checked="checked"' : '');
 
 	$defaultbosh = Config::get("jappixmini", "bosh_address");
 
 	if ($defaultbosh != "") {
-		PConfig::set(local_user(), 'jappixmini', 'bosh', $defaultbosh);
+		DI::pConfig()->set(local_user(), 'jappixmini', 'bosh', $defaultbosh);
 	}
 
-	$username = PConfig::get(local_user(), 'jappixmini', 'username');
+	$username = DI::pConfig()->get(local_user(), 'jappixmini', 'username');
 	$username = htmlentities($username);
-	$server = PConfig::get(local_user(), 'jappixmini', 'server');
+	$server = DI::pConfig()->get(local_user(), 'jappixmini', 'server');
 	$server = htmlentities($server);
-	$bosh = PConfig::get(local_user(), 'jappixmini', 'bosh');
+	$bosh = DI::pConfig()->get(local_user(), 'jappixmini', 'bosh');
 	$bosh = htmlentities($bosh);
-	$password = PConfig::get(local_user(), 'jappixmini', 'password');
-	$autosubscribe = PConfig::get(local_user(), 'jappixmini', 'autosubscribe');
+	$password = DI::pConfig()->get(local_user(), 'jappixmini', 'password');
+	$autosubscribe = DI::pConfig()->get(local_user(), 'jappixmini', 'autosubscribe');
 	$autosubscribe = intval($autosubscribe) ? ' checked="checked"' : '';
-	$autoapprove = PConfig::get(local_user(), 'jappixmini', 'autoapprove');
+	$autoapprove = DI::pConfig()->get(local_user(), 'jappixmini', 'autoapprove');
 	$autoapprove = intval($autoapprove) ? ' checked="checked"' : '';
-	$encrypt = intval(PConfig::get(local_user(), 'jappixmini', 'encrypt'));
+	$encrypt = intval(DI::pConfig()->get(local_user(), 'jappixmini', 'encrypt'));
 	$encrypt_checked = $encrypt ? ' checked="checked"' : '';
 	$encrypt_disabled = $encrypt ? '' : ' disabled="disabled"';
 
@@ -445,26 +444,26 @@ function jappixmini_settings_post(App $a, &$b)
 		$purge = intval($b['jappixmini-purge']);
 
 		$username = trim($b['jappixmini-username']);
-		$old_username = PConfig::get($uid, 'jappixmini', 'username');
+		$old_username = DI::pConfig()->get($uid, 'jappixmini', 'username');
 		if ($username != $old_username) {
 			$purge = 1;
 		}
 
 		$server = trim($b['jappixmini-server']);
-		$old_server = PConfig::get($uid, 'jappixmini', 'server');
+		$old_server = DI::pConfig()->get($uid, 'jappixmini', 'server');
 		if ($server != $old_server) {
 			$purge = 1;
 		}
 
-		PConfig::set($uid, 'jappixmini', 'username'      , $username);
-		PConfig::set($uid, 'jappixmini', 'server'        , $server);
-		PConfig::set($uid, 'jappixmini', 'bosh'          , trim($b['jappixmini-bosh']));
-		PConfig::set($uid, 'jappixmini', 'password'      , trim($b['jappixmini-encrypted-password']));
-		PConfig::set($uid, 'jappixmini', 'autosubscribe' , intval($b['jappixmini-autosubscribe']));
-		PConfig::set($uid, 'jappixmini', 'autoapprove'   , intval($b['jappixmini-autoapprove']));
-		PConfig::set($uid, 'jappixmini', 'activate'      , intval($b['jappixmini-activate']));
-		PConfig::set($uid, 'jappixmini', 'dontinsertchat', intval($b['jappixmini-dont-insertchat']));
-		PConfig::set($uid, 'jappixmini', 'encrypt'       , $encrypt);
+		DI::pConfig()->set($uid, 'jappixmini', 'username'      , $username);
+		DI::pConfig()->set($uid, 'jappixmini', 'server'        , $server);
+		DI::pConfig()->set($uid, 'jappixmini', 'bosh'          , trim($b['jappixmini-bosh']));
+		DI::pConfig()->set($uid, 'jappixmini', 'password'      , trim($b['jappixmini-encrypted-password']));
+		DI::pConfig()->set($uid, 'jappixmini', 'autosubscribe' , intval($b['jappixmini-autosubscribe']));
+		DI::pConfig()->set($uid, 'jappixmini', 'autoapprove'   , intval($b['jappixmini-autoapprove']));
+		DI::pConfig()->set($uid, 'jappixmini', 'activate'      , intval($b['jappixmini-activate']));
+		DI::pConfig()->set($uid, 'jappixmini', 'dontinsertchat', intval($b['jappixmini-dont-insertchat']));
+		DI::pConfig()->set($uid, 'jappixmini', 'encrypt'       , $encrypt);
 		info('Jappix Mini settings saved.');
 
 		if ($purge) {
@@ -485,8 +484,8 @@ function jappixmini_script(App $a)
 		return;
 	}
 
-	$activate = PConfig::get(local_user(), 'jappixmini', 'activate');
-	$dontinsertchat = PConfig::get(local_user(), 'jappixmini', 'dontinsertchat');
+	$activate = DI::pConfig()->get(local_user(), 'jappixmini', 'activate');
+	$dontinsertchat = DI::pConfig()->get(local_user(), 'jappixmini', 'dontinsertchat');
 	if (!$activate || $dontinsertchat) {
 		return;
 	}
@@ -496,20 +495,20 @@ function jappixmini_script(App $a)
 
 	DI::page()['htmlhead'] .= '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/jappixmini/lib.js"></script>' . "\r\n";
 
-	$username = PConfig::get(local_user(), 'jappixmini', 'username');
+	$username = DI::pConfig()->get(local_user(), 'jappixmini', 'username');
 	$username = str_replace("'", "\\'", $username);
-	$server = PConfig::get(local_user(), 'jappixmini', 'server');
+	$server = DI::pConfig()->get(local_user(), 'jappixmini', 'server');
 	$server = str_replace("'", "\\'", $server);
-	$bosh = PConfig::get(local_user(), 'jappixmini', 'bosh');
+	$bosh = DI::pConfig()->get(local_user(), 'jappixmini', 'bosh');
 	$bosh = str_replace("'", "\\'", $bosh);
-	$encrypt = PConfig::get(local_user(), 'jappixmini', 'encrypt');
+	$encrypt = DI::pConfig()->get(local_user(), 'jappixmini', 'encrypt');
 	$encrypt = intval($encrypt);
-	$password = PConfig::get(local_user(), 'jappixmini', 'password');
+	$password = DI::pConfig()->get(local_user(), 'jappixmini', 'password');
 	$password = str_replace("'", "\\'", $password);
 
-	$autoapprove = PConfig::get(local_user(), 'jappixmini', 'autoapprove');
+	$autoapprove = DI::pConfig()->get(local_user(), 'jappixmini', 'autoapprove');
 	$autoapprove = intval($autoapprove);
-	$autosubscribe = PConfig::get(local_user(), 'jappixmini', 'autosubscribe');
+	$autosubscribe = DI::pConfig()->get(local_user(), 'jappixmini', 'autosubscribe');
 	$autosubscribe = intval($autosubscribe);
 
 	// set proxy if necessary
@@ -619,7 +618,7 @@ function jappixmini_cron(App $a, $d)
 			}
 
 			// check if jabber address already present
-			$present = PConfig::get($uid, "jappixmini", "id:" . $dfrn_id);
+			$present = DI::pConfig()->get($uid, "jappixmini", "id:" . $dfrn_id);
 			$now = intval(time());
 			if ($present) {
 				// $present has format "timestamp:jabber_address"
@@ -642,11 +641,11 @@ function jappixmini_cron(App $a, $d)
 			$base = substr($request, 0, $pos) . "/jappixmini?role=$role";
 
 			// construct own address
-			$username = PConfig::get($uid, 'jappixmini', 'username');
+			$username = DI::pConfig()->get($uid, 'jappixmini', 'username');
 			if (!$username) {
 				continue;
 			}
-			$server = PConfig::get($uid, 'jappixmini', 'server');
+			$server = DI::pConfig()->get($uid, 'jappixmini', 'server');
 			if (!$server) {
 				continue;
 			}
@@ -692,7 +691,7 @@ function jappixmini_cron(App $a, $d)
 			}
 
 			// save address
-			PConfig::set($uid, "jappixmini", "id:$dfrn_id", "$now:$decrypted_address");
+			DI::pConfig()->set($uid, "jappixmini", "id:$dfrn_id", "$now:$decrypted_address");
 		}
 	}
 }

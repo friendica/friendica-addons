@@ -11,7 +11,6 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
-use Friendica\Core\PConfig;
 use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
 use Friendica\DI;
@@ -46,11 +45,11 @@ function ifttt_settings(App $a, &$s)
 		return;
 	}
 
-	$key = PConfig::get(local_user(), 'ifttt', 'key');
+	$key = DI::pConfig()->get(local_user(), 'ifttt', 'key');
 
 	if (!$key) {
 		$key = Strings::getRandomHex(20);
-		PConfig::set(local_user(), 'ifttt', 'key', $key);
+		DI::pConfig()->set(local_user(), 'ifttt', 'key', $key);
 	}
 
 	$s .= '<span id="settings_ifttt_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_ifttt_expanded\'); openClose(\'settings_ifttt_inflated\');">';
@@ -89,7 +88,7 @@ function ifttt_settings(App $a, &$s)
 function ifttt_settings_post()
 {
 	if (!empty($_POST['ifttt-submit']) && isset($_POST['ifttt-rekey'])) {
-		PConfig::delete(local_user(), 'ifttt', 'key');
+		DI::pConfig()->delete(local_user(), 'ifttt', 'key');
 	}
 }
 
@@ -119,7 +118,7 @@ function ifttt_post(App $a)
 	$key = $_REQUEST['key'];
 
 	// Check the key
-	if ($key != PConfig::get($uid, 'ifttt', 'key')) {
+	if ($key != DI::pConfig()->get($uid, 'ifttt', 'key')) {
 		Logger::log('Invalid key for user ' . $uid, Logger::DEBUG);
 		return;
 	}

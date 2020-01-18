@@ -11,7 +11,6 @@ use Friendica\App;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
-use Friendica\Core\PConfig;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Util\Strings;
@@ -38,9 +37,9 @@ function xmpp_addon_settings_post()
 		return;
 	}
 
-	PConfig::set(local_user(), 'xmpp', 'enabled', $_POST['xmpp_enabled'] ?? false);
-	PConfig::set(local_user(), 'xmpp', 'individual', $_POST['xmpp_individual'] ?? false);
-	PConfig::set(local_user(), 'xmpp', 'bosh_proxy', $_POST['xmpp_bosh_proxy'] ?? '');
+	DI::pConfig()->set(local_user(), 'xmpp', 'enabled', $_POST['xmpp_enabled'] ?? false);
+	DI::pConfig()->set(local_user(), 'xmpp', 'individual', $_POST['xmpp_individual'] ?? false);
+	DI::pConfig()->set(local_user(), 'xmpp', 'bosh_proxy', $_POST['xmpp_bosh_proxy'] ?? '');
 
 	info(L10n::t('XMPP settings updated.') . EOL);
 }
@@ -57,13 +56,13 @@ function xmpp_addon_settings(App $a, &$s)
 
 	/* Get the current state of our config variable */
 
-	$enabled = intval(PConfig::get(local_user(), 'xmpp', 'enabled'));
+	$enabled = intval(DI::pConfig()->get(local_user(), 'xmpp', 'enabled'));
 	$enabled_checked = (($enabled) ? ' checked="checked" ' : '');
 
-	$individual = intval(PConfig::get(local_user(), 'xmpp', 'individual'));
+	$individual = intval(DI::pConfig()->get(local_user(), 'xmpp', 'individual'));
 	$individual_checked = (($individual) ? ' checked="checked" ' : '');
 
-	$bosh_proxy = PConfig::get(local_user(), "xmpp", "bosh_proxy");
+	$bosh_proxy = DI::pConfig()->get(local_user(), "xmpp", "bosh_proxy");
 
 	/* Add some HTML to the existing form */
 	$s .= '<span id="settings_xmpp_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_xmpp_expanded\'); openClose(\'settings_xmpp_inflated\');">';
@@ -85,7 +84,7 @@ function xmpp_addon_settings(App $a, &$s)
 		$s .= '<div class="clear"></div>';
 	}
 
-	if (!Config::get("xmpp", "central_userbase") || PConfig::get(local_user(), "xmpp", "individual")) {
+	if (!Config::get("xmpp", "central_userbase") || DI::pConfig()->get(local_user(), "xmpp", "individual")) {
 		$s .= '<label id="xmpp-bosh-proxy-label" for="xmpp-bosh-proxy">' . L10n::t('Jabber BOSH host') . '</label>';
 		$s .= ' <input id="xmpp-bosh-proxy" type="text" name="xmpp_bosh_proxy" value="' . $bosh_proxy . '" />';
 		$s .= '<div class="clear"></div>';
@@ -102,7 +101,7 @@ function xmpp_login()
 {
 	if (empty($_SESSION['allow_api'])) {
 		$password = Strings::getRandomHex(16);
-		PConfig::set(local_user(), 'xmpp', 'password', $password);
+		DI::pConfig()->set(local_user(), 'xmpp', 'password', $password);
 	}
 }
 
@@ -147,7 +146,7 @@ function xmpp_converse(App $a)
 		return;
 	}
 
-	if (!PConfig::get(local_user(), "xmpp", "enabled")) {
+	if (!DI::pConfig()->get(local_user(), "xmpp", "enabled")) {
 		return;
 	}
 
@@ -158,14 +157,14 @@ function xmpp_converse(App $a)
 	DI::page()['htmlhead'] .= '<link type="text/css" rel="stylesheet" media="screen" href="addon/xmpp/converse/css/converse.css" />' . "\n";
 	DI::page()['htmlhead'] .= '<script src="addon/xmpp/converse/builds/converse.min.js"></script>' . "\n";
 
-	if (Config::get("xmpp", "central_userbase") && !PConfig::get(local_user(), "xmpp", "individual")) {
+	if (Config::get("xmpp", "central_userbase") && !DI::pConfig()->get(local_user(), "xmpp", "individual")) {
 		$bosh_proxy = Config::get("xmpp", "bosh_proxy");
 
-		$password = PConfig::get(local_user(), "xmpp", "password", '', true);
+		$password = DI::pConfig()->get(local_user(), "xmpp", "password", '', true);
 
 		if ($password == "") {
 			$password = Strings::getRandomHex(16);
-			PConfig::set(local_user(), "xmpp", "password", $password);
+			DI::pConfig()->set(local_user(), "xmpp", "password", $password);
 		}
 
 		$jid = $a->user["nickname"] . "@" . DI::baseUrl()->getHostname() . "/converse-" . Strings::getRandomHex(5);
@@ -176,7 +175,7 @@ function xmpp_converse(App $a)
 			password: '$password',
 			allow_logout: false,";
 	} else {
-		$bosh_proxy = PConfig::get(local_user(), "xmpp", "bosh_proxy");
+		$bosh_proxy = DI::pConfig()->get(local_user(), "xmpp", "bosh_proxy");
 
 		$auto_login = "";
 	}

@@ -14,8 +14,6 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
-use Friendica\Core\PConfig;
-use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
 use Friendica\Core\Worker;
 use Friendica\DI;
@@ -46,13 +44,13 @@ function diaspora_jot_nets(App $a, array &$jotnets_fields)
 		return;
 	}
 
-	if (PConfig::get(local_user(), 'diaspora', 'post')) {
+	if (DI::pConfig()->get(local_user(), 'diaspora', 'post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'diaspora_enable',
 				L10n::t('Post to Diaspora'),
-				PConfig::get(local_user(), 'diaspora', 'post_by_default')
+				DI::pConfig()->get(local_user(), 'diaspora', 'post_by_default')
 			]
 		];
 	}
@@ -70,17 +68,17 @@ function diaspora_settings(App $a, &$s)
 
 	/* Get the current state of our config variables */
 
-	$enabled = PConfig::get(local_user(),'diaspora','post');
+	$enabled = DI::pConfig()->get(local_user(),'diaspora','post');
 	$checked = (($enabled) ? ' checked="checked" ' : '');
 	$css = (($enabled) ? '' : '-disabled');
 
-	$def_enabled = PConfig::get(local_user(),'diaspora','post_by_default');
+	$def_enabled = DI::pConfig()->get(local_user(),'diaspora','post_by_default');
 
 	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
-	$handle = PConfig::get(local_user(), 'diaspora', 'handle');
-	$password = PConfig::get(local_user(), 'diaspora', 'password');
-	$aspect = PConfig::get(local_user(),'diaspora','aspect');
+	$handle = DI::pConfig()->get(local_user(), 'diaspora', 'handle');
+	$password = DI::pConfig()->get(local_user(), 'diaspora', 'password');
+	$aspect = DI::pConfig()->get(local_user(),'diaspora','aspect');
 
 	$status = "";
 
@@ -174,11 +172,11 @@ function diaspora_settings(App $a, &$s)
 function diaspora_settings_post(App $a, &$b)
 {
 	if (!empty($_POST['diaspora-submit'])) {
-		PConfig::set(local_user(),'diaspora', 'post'           , intval($_POST['diaspora']));
-		PConfig::set(local_user(),'diaspora', 'post_by_default', intval($_POST['diaspora_bydefault']));
-		PConfig::set(local_user(),'diaspora', 'handle'         , trim($_POST['handle']));
-		PConfig::set(local_user(),'diaspora', 'password'       , trim($_POST['password']));
-		PConfig::set(local_user(),'diaspora', 'aspect'         , trim($_POST['aspect']));
+		DI::pConfig()->set(local_user(),'diaspora', 'post'           , intval($_POST['diaspora']));
+		DI::pConfig()->set(local_user(),'diaspora', 'post_by_default', intval($_POST['diaspora_bydefault']));
+		DI::pConfig()->set(local_user(),'diaspora', 'handle'         , trim($_POST['handle']));
+		DI::pConfig()->set(local_user(),'diaspora', 'password'       , trim($_POST['password']));
+		DI::pConfig()->set(local_user(),'diaspora', 'aspect'         , trim($_POST['aspect']));
 	}
 }
 
@@ -211,11 +209,11 @@ function diaspora_post_local(App $a, array &$b)
 		return;
 	}
 
-	$diaspora_post   = intval(PConfig::get(local_user(),'diaspora','post'));
+	$diaspora_post   = intval(DI::pConfig()->get(local_user(),'diaspora','post'));
 
 	$diaspora_enable = (($diaspora_post && !empty($_REQUEST['diaspora_enable'])) ? intval($_REQUEST['diaspora_enable']) : 0);
 
-	if ($b['api_source'] && intval(PConfig::get(local_user(),'diaspora','post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(),'diaspora','post_by_default'))) {
 		$diaspora_enable = 1;
 	}
 
@@ -258,9 +256,9 @@ function diaspora_send(App $a, array &$b)
 
 	Logger::log('diaspora_send: prepare posting', Logger::DEBUG);
 
-	$handle = PConfig::get($b['uid'],'diaspora','handle');
-	$password = PConfig::get($b['uid'],'diaspora','password');
-	$aspect = PConfig::get($b['uid'],'diaspora','aspect');
+	$handle = DI::pConfig()->get($b['uid'],'diaspora','handle');
+	$password = DI::pConfig()->get($b['uid'],'diaspora','password');
+	$aspect = DI::pConfig()->get($b['uid'],'diaspora','aspect');
 
 	if ($handle && $password) {
 		Logger::log('diaspora_send: all values seem to be okay', Logger::DEBUG);
