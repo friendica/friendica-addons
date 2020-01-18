@@ -153,23 +153,23 @@ function krynn_settings(&$a,&$s) {
 	/* Add some HTML to the existing form */
 
     $s .= '<span id="settings_krynn_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_krynn_expanded\'); openClose(\'settings_krynn_inflated\');">';
-	$s .= '<h3>' . L10n::t('Krynn') . '</h3>';
+	$s .= '<h3>' . DI::l10n()->t('Krynn') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_krynn_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_krynn_expanded\'); openClose(\'settings_krynn_inflated\');">';
-	$s .= '<h3>' . L10n::t('Krynn') . '</h3>';
+	$s .= '<h3>' . DI::l10n()->t('Krynn') . '</h3>';
 	$s .= '</span>';
 
 
     $s .= '<div class="settings-block">';
-	$s .= '<h3>' . L10n::t('Krynn Settings') . '</h3>';
+	$s .= '<h3>' . DI::l10n()->t('Krynn Settings') . '</h3>';
 	$s .= '<div id="krynn-enable-wrapper">';
-	$s .= '<label id="krynn-enable-label" for="krynn-checkbox">' . L10n::t('Enable Krynn Addon') . '</label>';
+	$s .= '<label id="krynn-enable-label" for="krynn-checkbox">' . DI::l10n()->t('Enable Krynn Addon') . '</label>';
 	$s .= '<input id="krynn-checkbox" type="checkbox" name="krynn" value="1" ' . $checked . '/>';
         $s .= '</div><div class="clear"></div></div>';
 	/* provide a submit button */
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="krynn-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="krynn-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div></div>';
 
 }
 

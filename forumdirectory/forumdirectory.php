@@ -36,7 +36,7 @@ function forumdirectory_module()
 
 function forumdirectory_app_menu(App $a, array &$b)
 {
-	$b['app_menu'][] = '<div class="app-title"><a href="forumdirectory">' . L10n::t('Forum Directory') . '</a></div>';
+	$b['app_menu'][] = '<div class="app-title"><a href="forumdirectory">' . DI::l10n()->t('Forum Directory') . '</a></div>';
 }
 
 function forumdirectory_init(App $a)
@@ -56,7 +56,7 @@ function forumdirectory_post(App $a)
 function forumdirectory_content(App $a)
 {
 	if ((Config::get('system', 'block_public')) && (!local_user()) && (!remote_user())) {
-		notice(L10n::t('Public access denied.') . EOL);
+		notice(DI::l10n()->t('Public access denied.') . EOL);
 		return;
 	}
 
@@ -134,21 +134,21 @@ function forumdirectory_content(App $a)
 		}
 		DBA::close($r);
 	} else {
-		info(L10n::t("No entries \x28some entries may be hidden\x29.") . EOL);
+		info(DI::l10n()->t("No entries \x28some entries may be hidden\x29.") . EOL);
 	}
 
 	$tpl = Renderer::getMarkupTemplate('directory_header.tpl');
 	$o .= Renderer::replaceMacros($tpl, [
 		'$search'     => $search,
-		'$globaldir'  => L10n::t('Global Directory'),
+		'$globaldir'  => DI::l10n()->t('Global Directory'),
 		'$gdirpath'   => $gdirpath,
-		'$desc'       => L10n::t('Find on this site'),
+		'$desc'       => DI::l10n()->t('Find on this site'),
 		'$contacts'   => $entries,
-		'$finding'    => L10n::t('Results for:'),
+		'$finding'    => DI::l10n()->t('Results for:'),
 		'$findterm'   => (strlen($search) ? $search : ""),
-		'$title'      => L10n::t('Forum Directory'),
+		'$title'      => DI::l10n()->t('Forum Directory'),
 		'$search_mod' => 'forumdirectory',
-		'$submit'     => L10n::t('Find'),
+		'$submit'     => DI::l10n()->t('Find'),
 		'$paginate'   => $pager->renderFull($total),
 	]);
 

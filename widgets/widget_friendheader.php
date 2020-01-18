@@ -48,7 +48,7 @@ function friendheader_widget_content(&$a, $conf)
 
 	</style>";
 	$o .= _abs_url(HTML::contactBlock());
-	$o .= "<a href='".DI::baseUrl()->get().'/profile/'.$a->profile['nickname']."' target=new>". L10n::t('Get added to this list!') ."</a>";
+	$o .= "<a href='".DI::baseUrl()->get().'/profile/'.$a->profile['nickname']."' target=new>". DI::l10n()->t('Get added to this list!') ."</a>";
 
 	return $o;
 }

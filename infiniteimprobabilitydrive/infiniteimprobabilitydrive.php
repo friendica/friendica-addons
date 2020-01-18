@@ -21,7 +21,7 @@ function infiniteimprobabilitydrive_uninstall()
 
 function infiniteimprobabilitydrive_app_menu($a, &$b)
 {
-	$b['app_menu'][] = '<div class="app-title"><a href="infiniteimprobabilitydrive">' . L10n::t('Infinite Improbability Drive') . '</a></div>';
+	$b['app_menu'][] = '<div class="app-title"><a href="infiniteimprobabilitydrive">' . DI::l10n()->t('Infinite Improbability Drive') . '</a></div>';
 }
 
 

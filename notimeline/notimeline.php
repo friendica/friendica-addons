@@ -30,7 +30,7 @@ function notimeline_settings_post($a, $post)
 	}
 
 	DI::pConfig()->set(local_user(), 'system', 'no_wall_archive_widget', intval($_POST['notimeline']));
-	info(L10n::t('No Timeline settings updated.') . EOL);
+	info(DI::l10n()->t('No Timeline settings updated.') . EOL);
 }
 
 function notimeline_settings(&$a, &$s)
@@ -53,13 +53,13 @@ function notimeline_settings(&$a, &$s)
 	/* Add some HTML to the existing form */
 
 	$s .= '<div class="settings-block">';
-	$s .= '<h3>' . L10n::t('No Timeline Settings') . '</h3>';
+	$s .= '<h3>' . DI::l10n()->t('No Timeline Settings') . '</h3>';
 	$s .= '<div id="notimeline-wrapper">';
-	$s .= '<label id="notimeline-label" for="notimeline-checkbox">' . L10n::t('Disable Archive selector on profile wall') . '</label>';
+	$s .= '<label id="notimeline-label" for="notimeline-checkbox">' . DI::l10n()->t('Disable Archive selector on profile wall') . '</label>';
 	$s .= '<input id="notimeline-checkbox" type="checkbox" name="notimeline" value="1" ' . $notimeline_checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
 	/* provide a submit button */
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="notimeline-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="notimeline-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div></div>';
 }

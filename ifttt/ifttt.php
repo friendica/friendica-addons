@@ -53,35 +53,35 @@ function ifttt_settings(App $a, &$s)
 	}
 
 	$s .= '<span id="settings_ifttt_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_ifttt_expanded\'); openClose(\'settings_ifttt_inflated\');">';
-	$s .= '<img class="connector" src="addon/ifttt/ifttt.png" /><h3 class="connector">' . L10n::t('IFTTT Mirror') . '</h3>';
+	$s .= '<img class="connector" src="addon/ifttt/ifttt.png" /><h3 class="connector">' . DI::l10n()->t('IFTTT Mirror') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_ifttt_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_ifttt_expanded\'); openClose(\'settings_ifttt_inflated\');">';
-	$s .= '<img class="connector" src="addon/ifttt/ifttt.png" /><h3 class="connector">' . L10n::t('IFTTT Mirror') . '</h3>';
+	$s .= '<img class="connector" src="addon/ifttt/ifttt.png" /><h3 class="connector">' . DI::l10n()->t('IFTTT Mirror') . '</h3>';
 	$s .= '</span>';
 
 	$s .= '<div id="ifttt-configuration-wrapper">';
-	$s .= '<p>' . L10n::t('Create an account at <a href="http://www.ifttt.com">IFTTT</a>. Create three Facebook recipes that are connected with <a href="https://ifttt.com/maker">Maker</a> (In the form "if Facebook then Maker") with the following parameters:') . '</p>';
+	$s .= '<p>' . DI::l10n()->t('Create an account at <a href="http://www.ifttt.com">IFTTT</a>. Create three Facebook recipes that are connected with <a href="https://ifttt.com/maker">Maker</a> (In the form "if Facebook then Maker") with the following parameters:') . '</p>';
 	$s .= '<h4>URL</h4>';
 	$s .= '<p>' . DI::baseUrl()->get() . '/ifttt/' . $a->user['nickname'] . '</p>';
 	$s .= '<h4>Method</h4>';
 	$s .= '<p>POST</p>';
 	$s .= '<h4>Content Type</h4>';
 	$s .= '<p>application/x-www-form-urlencoded</p>';
-	$s .= '<h4>' . L10n::t('Body for "new status message"') . '</h4>';
+	$s .= '<h4>' . DI::l10n()->t('Body for "new status message"') . '</h4>';
 	$s .= '<p><code>' . htmlentities('key=' . $key . '&type=status&msg=<<<{{Message}}>>>&date=<<<{{UpdatedAt}}>>>&url=<<<{{PageUrl}}>>>') . '</code></p>';
-	$s .= '<h4>' . L10n::t('Body for "new photo upload"') . '</h4>';
+	$s .= '<h4>' . DI::l10n()->t('Body for "new photo upload"') . '</h4>';
 	$s .= '<p><code>' . htmlentities('key=' . $key . '&type=photo&link=<<<{{Link}}>>>&image=<<<{{ImageSource}}>>>&msg=<<<{{Caption}}>>>&date=<<<{{CreatedAt}}>>>&url=<<<{{PageUrl}}>>>') . '</code></p>';
-	$s .= '<h4>' . L10n::t('Body for "new link post"') . '</h4>';
+	$s .= '<h4>' . DI::l10n()->t('Body for "new link post"') . '</h4>';
 	$s .= '<p><code>' . htmlentities('key=' . $key . '&type=link&link=<<<{{Link}}>>>&title=<<<{{Title}}>>>&msg=<<<{{Message}}>>>&description=<<<{{Description}}>>>&date=<<<{{CreatedAt}}>>>&url=<<<{{PageUrl}}>>>') . '</code></p>';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="ifttt-rekey-wrapper">';
-	$s .= '<label id="ifttt-rekey-label" for="ifttt-checkbox">' . L10n::t('Generate new key') . '</label>';
+	$s .= '<label id="ifttt-rekey-label" for="ifttt-checkbox">' . DI::l10n()->t('Generate new key') . '</label>';
 	$s .= '<input id="ifttt-checkbox" type="checkbox" name="ifttt-rekey" value="1" />';
 	$s .= '</div><div class="clear"></div>';
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="ifttt-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="ifttt-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div>';
 	$s .= '</div>';
 }
 

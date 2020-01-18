@@ -86,11 +86,11 @@ function gravatar_addon_admin (&$a, &$o) {
 
 	// Available options for the select boxes
 	$default_avatars = [
-		'mm' => L10n::t('generic profile image'),
-		'identicon' => L10n::t('random geometric pattern'),
-		'monsterid' => L10n::t('monster face'),
-		'wavatar' => L10n::t('computer generated face'),
-		'retro' => L10n::t('retro arcade style face'),
+		'mm' => DI::l10n()->t('generic profile image'),
+		'identicon' => DI::l10n()->t('random geometric pattern'),
+		'monsterid' => DI::l10n()->t('monster face'),
+		'wavatar' => DI::l10n()->t('computer generated face'),
+		'retro' => DI::l10n()->t('retro arcade style face'),
 	];
 	$ratings = [
 		'g' => 'g',
@@ -104,15 +104,15 @@ function gravatar_addon_admin (&$a, &$o) {
 		DBA::escape('libravatar')
 	);
 	if (count($r)) {
-		$o = '<h5>' .L10n::t('Information') .'</h5><p>' .L10n::t('Libravatar addon is installed, too. Please disable Libravatar addon or this Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar.') .'</p><br><br>';
+		$o = '<h5>' .DI::l10n()->t('Information') .'</h5><p>' .DI::l10n()->t('Libravatar addon is installed, too. Please disable Libravatar addon or this Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar.') .'</p><br><br>';
 	}
 
 	// output Gravatar settings
 	$o .= '<input type="hidden" name="form_security_token" value="' . BaseModule::getFormSecurityToken("gravatarsave") .'">';
 	$o .= Renderer::replaceMacros( $t, [
-		'$submit' => L10n::t('Save Settings'),
-		'$default_avatar' => ['avatar', L10n::t('Default avatar image'), $default_avatar, L10n::t('Select default avatar image if none was found at Gravatar. See README'), $default_avatars],
-		'$rating' => ['rating', L10n::t('Rating of images'), $rating, L10n::t('Select the appropriate avatar rating for your site. See README'), $ratings],
+		'$submit' => DI::l10n()->t('Save Settings'),
+		'$default_avatar' => ['avatar', DI::l10n()->t('Default avatar image'), $default_avatar, DI::l10n()->t('Select default avatar image if none was found at Gravatar. See README'), $default_avatars],
+		'$rating' => ['rating', DI::l10n()->t('Rating of images'), $rating, DI::l10n()->t('Select the appropriate avatar rating for your site. See README'), $ratings],
 	]);
 }
 
@@ -126,5 +126,5 @@ function gravatar_addon_admin_post (&$a) {
 	$rating = (!empty($_POST['rating']) ? Strings::escapeTags(trim($_POST['rating'])) : 'g');
 	Config::set('gravatar', 'default_avatar', $default_avatar);
 	Config::set('gravatar', 'rating', $rating);
-	info(L10n::t('Gravatar settings updated.') .EOL);
+	info(DI::l10n()->t('Gravatar settings updated.') .EOL);
 }

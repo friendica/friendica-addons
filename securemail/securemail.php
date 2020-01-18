@@ -59,11 +59,11 @@ function securemail_settings(App &$a, &$s)
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/securemail/');
 
 	$s .= Renderer::replaceMacros($t, [
-		'$title' => L10n::t('"Secure Mail" Settings'),
-		'$submit' => L10n::t('Save Settings'),
-		'$test' => L10n::t('Save and send test'), //NOTE: update also in 'post'
-		'$enable' => ['securemail-enable', L10n::t('Enable Secure Mail'), $enable, ''],
-		'$publickey' => ['securemail-pkey', L10n::t('Public key'), $publickey, L10n::t('Your public PGP key, ascii armored format'), 'rows="10"']
+		'$title' => DI::l10n()->t('"Secure Mail" Settings'),
+		'$submit' => DI::l10n()->t('Save Settings'),
+		'$test' => DI::l10n()->t('Save and send test'), //NOTE: update also in 'post'
+		'$enable' => ['securemail-enable', DI::l10n()->t('Enable Secure Mail'), $enable, ''],
+		'$publickey' => ['securemail-pkey', DI::l10n()->t('Public key'), $publickey, DI::l10n()->t('Your public PGP key, ascii armored format'), 'rows="10"']
 	]);
 }
 
@@ -87,9 +87,9 @@ function securemail_settings_post(App &$a, array &$b)
 		DI::pConfig()->set(local_user(), 'securemail', 'pkey', trim($_POST['securemail-pkey']));
 		$enable = (!empty($_POST['securemail-enable']) ? 1 : 0);
 		DI::pConfig()->set(local_user(), 'securemail', 'enable', $enable);
-		info(L10n::t('Secure Mail Settings saved.') . EOL);
+		info(DI::l10n()->t('Secure Mail Settings saved.') . EOL);
 
-		if ($_POST['securemail-submit'] == L10n::t('Save and send test')) {
+		if ($_POST['securemail-submit'] == DI::l10n()->t('Save and send test')) {
 			$sitename = Config::get('config', 'sitename');
 
 			$hostname = DI::baseUrl()->getHostname();
@@ -124,9 +124,9 @@ function securemail_settings_post(App &$a, array &$b)
 			DI::pConfig()->set(local_user(), 'securemail', 'enable', $enable);
 
 			if ($res) {
-				info(L10n::t('Test email sent') . EOL);
+				info(DI::l10n()->t('Test email sent') . EOL);
 			} else {
-				notice(L10n::t('There was an error sending the test email') . EOL);
+				notice(DI::l10n()->t('There was an error sending the test email') . EOL);
 			}
 		}
 	}

@@ -49,10 +49,10 @@ function remote_permissions_settings(&$a,&$o) {
 //	$t = file_get_contents("addon/remote_permissions/settings.tpl" );
 	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/remote_permissions/" );
 	$o .= Renderer::replaceMacros($t, [
-		'$remote_perms_title' => L10n::t('Remote Permissions Settings'),
-		'$remote_perms_label' => L10n::t('Allow recipients of your private posts to see the other recipients of the posts'),
+		'$remote_perms_title' => DI::l10n()->t('Remote Permissions Settings'),
+		'$remote_perms_label' => DI::l10n()->t('Allow recipients of your private posts to see the other recipients of the posts'),
 		'$checked' => (($remote_perms == 1) ? 'checked="checked"' : ''),
-		'$submit' => L10n::t('Save Settings')
+		'$submit' => DI::l10n()->t('Save Settings')
 	]);
 
 }
@@ -62,7 +62,7 @@ function remote_permissions_settings_post($a,$post) {
 		return;
 
 	DI::pConfig()->set(local_user(),'remote_perms','show',intval($_POST['remote-perms']));
-	info(L10n::t('Remote Permissions settings updated.') . EOL);
+	info(DI::l10n()->t('Remote Permissions settings updated.') . EOL);
 }
 
 function remote_permissions_content($a, $item_copy) {
@@ -130,7 +130,7 @@ function remote_permissions_content($a, $item_copy) {
 			$deny_users = $aclFormatter->expand($item['deny_cid']);
 			$deny_groups = $aclFormatter->expand($item['deny_gid']);
 
-			$o = L10n::t('Visible to:') . '<br />';
+			$o = DI::l10n()->t('Visible to:') . '<br />';
 			$allow = [];
 			$deny = [];
 
@@ -184,7 +184,7 @@ function remote_permissions_content($a, $item_copy) {
 			if(! $r)
 				return;
 
-			$o = L10n::t('Visible to') . ' (' . L10n::t('may only be a partial list') . '):<br />';
+			$o = DI::l10n()->t('Visible to') . ' (' . DI::l10n()->t('may only be a partial list') . '):<br />';
 
 			foreach($r as $rr)
 				$allow_names[] = $rr['username'];
@@ -202,14 +202,14 @@ function remote_permissions_content($a, $item_copy) {
 function remote_permissions_addon_admin(&$a, &$o){
 	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/remote_permissions/" );
 	$o = Renderer::replaceMacros($t, [
-		'$submit' => L10n::t('Save Settings'),
-		'$global' => ['remotepermschoice', L10n::t('Global'), 1, L10n::t('The posts of every user on this server show the post recipients'),  Config::get('remote_perms', 'global') == 1],
-		'$individual' => ['remotepermschoice', L10n::t('Individual'), 2, L10n::t('Each user chooses whether his/her posts show the post recipients'),  Config::get('remote_perms', 'global') == 0]
+		'$submit' => DI::l10n()->t('Save Settings'),
+		'$global' => ['remotepermschoice', DI::l10n()->t('Global'), 1, DI::l10n()->t('The posts of every user on this server show the post recipients'),  Config::get('remote_perms', 'global') == 1],
+		'$individual' => ['remotepermschoice', DI::l10n()->t('Individual'), 2, DI::l10n()->t('Each user chooses whether his/her posts show the post recipients'),  Config::get('remote_perms', 'global') == 0]
 	]);
 }
 
 function remote_permissions_addon_admin_post(&$a){
 	$choice	=	(!empty($_POST['remotepermschoice'])		? Strings::escapeTags(trim($_POST['remotepermschoice']))	: '');
 	Config::set('remote_perms','global',($choice == 1 ? 1 : 0));
-	info(L10n::t('Settings updated.'). EOL);
+	info(DI::l10n()->t('Settings updated.'). EOL);
 }

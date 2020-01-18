@@ -92,9 +92,9 @@ function geocoordinates_addon_admin(&$a, &$o)
 	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/geocoordinates/");
 
 	$o = Renderer::replaceMacros($t, [
-		'$submit' => L10n::t('Save Settings'),
-		'$api_key' => ['api_key', L10n::t('API Key'), Config::get('geocoordinates', 'api_key'), ''],
-		'$language' => ['language', L10n::t('Language code (IETF format)'), Config::get('geocoordinates', 'language'), ''],
+		'$submit' => DI::l10n()->t('Save Settings'),
+		'$api_key' => ['api_key', DI::l10n()->t('API Key'), Config::get('geocoordinates', 'api_key'), ''],
+		'$language' => ['language', DI::l10n()->t('Language code (IETF format)'), Config::get('geocoordinates', 'language'), ''],
 	]);
 }
 
@@ -105,5 +105,5 @@ function geocoordinates_addon_admin_post(&$a)
 
 	$language  = (!empty($_POST['language']) ? Strings::escapeTags(trim($_POST['language']))   : '');
 	Config::set('geocoordinates', 'language', $language);
-	info(L10n::t('Settings updated.'). EOL);
+	info(DI::l10n()->t('Settings updated.'). EOL);
 }

@@ -74,24 +74,24 @@ function nsfw_addon_settings(&$a, &$s)
 	}
 
 	$s .= '<span id="settings_nsfw_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_nsfw_expanded\'); openClose(\'settings_nsfw_inflated\');">';
-	$s .= '<h3>' . L10n::t('Content Filter (NSFW and more)') . '</h3>';
+	$s .= '<h3>' . DI::l10n()->t('Content Filter (NSFW and more)') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_nsfw_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_nsfw_expanded\'); openClose(\'settings_nsfw_inflated\');">';
-	$s .= '<h3>' . L10n::t('Content Filter (NSFW and more)') . '</h3>';
+	$s .= '<h3>' . DI::l10n()->t('Content Filter (NSFW and more)') . '</h3>';
 	$s .= '</span>';
 
 	$s .= '<div id="nsfw-wrapper">';
-	$s .= '<p>' . L10n::t('This addon searches for specified words/text in posts and collapses them. It can be used to filter content tagged with for instance #NSFW that may be deemed inappropriate at certain times or places, such as being at work. It is also useful for hiding irrelevant or annoying content from direct view.') . '</p>';
-	$s .= '<label id="nsfw-enable-label" for="nsfw-enable">' . L10n::t('Enable Content filter') . ' </label>';
+	$s .= '<p>' . DI::l10n()->t('This addon searches for specified words/text in posts and collapses them. It can be used to filter content tagged with for instance #NSFW that may be deemed inappropriate at certain times or places, such as being at work. It is also useful for hiding irrelevant or annoying content from direct view.') . '</p>';
+	$s .= '<label id="nsfw-enable-label" for="nsfw-enable">' . DI::l10n()->t('Enable Content filter') . ' </label>';
 	$s .= '<input id="nsfw-enable" type="checkbox" name="nsfw-enable" value="1"' . $enable_checked . ' />';
 	$s .= '<div class="clear"></div>';
-	$s .= '<label id="nsfw-label" for="nsfw-words">' . L10n::t('Comma separated list of keywords to hide') . ' </label>';
+	$s .= '<label id="nsfw-label" for="nsfw-words">' . DI::l10n()->t('Comma separated list of keywords to hide') . ' </label>';
 	$s .= '<textarea id="nsfw-words" type="text" name="nsfw-words">' . $words . '</textarea>';
 	$s .= '</div><div class="clear"></div>';
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="nsfw-submit" name="nsfw-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
-	$s .= '<div class="nsfw-desc">' . L10n::t('Use /expression/ to provide regular expressions') . '</div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="nsfw-submit" name="nsfw-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div>';
+	$s .= '<div class="nsfw-desc">' . DI::l10n()->t('Use /expression/ to provide regular expressions') . '</div></div>';
 	return;
 }
 
@@ -106,7 +106,7 @@ function nsfw_addon_settings_post(&$a, &$b)
 		$enable = (!empty($_POST['nsfw-enable']) ? intval($_POST['nsfw-enable']) : 0);
 		$disable = 1 - $enable;
 		DI::pConfig()->set(local_user(), 'nsfw', 'disable', $disable);
-		info(L10n::t('NSFW Settings saved.') . EOL);
+		info(DI::l10n()->t('NSFW Settings saved.') . EOL);
 	}
 }
 
@@ -159,9 +159,9 @@ function nsfw_prepare_body_content_filter(\Friendica\App $a, &$hook_data)
 
 	if ($found) {
 		if ($tag_search) {
-			$hook_data['filter_reasons'][] = L10n::t('Filtered tag: %s', $word);
+			$hook_data['filter_reasons'][] = DI::l10n()->t('Filtered tag: %s', $word);
 		} else {
-			$hook_data['filter_reasons'][] = L10n::t('Filtered word: %s', $word);
+			$hook_data['filter_reasons'][] = DI::l10n()->t('Filtered word: %s', $word);
 		}
 	}
 }

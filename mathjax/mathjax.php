@@ -53,9 +53,9 @@ function mathjax_settings(App $a, &$s)
 	$tpl = Renderer::getMarkupTemplate('settings.tpl', __DIR__);
 	$s .= Renderer::replaceMacros($tpl, [
 		'$title'        => 'MathJax',
-		'$description'  => L10n::t('The MathJax addon renders mathematical formulae written using the LaTeX syntax surrounded by the usual $$ or an eqnarray block in the postings of your wall,network tab and private mail.'),
-		'$mathjax_use'  => ['mathjax_use', L10n::t('Use the MathJax renderer'), $use, ''],
-		'$savesettings' => L10n::t('Save Settings'),
+		'$description'  => DI::l10n()->t('The MathJax addon renders mathematical formulae written using the LaTeX syntax surrounded by the usual $$ or an eqnarray block in the postings of your wall,network tab and private mail.'),
+		'$mathjax_use'  => ['mathjax_use', DI::l10n()->t('Use the MathJax renderer'), $use, ''],
+		'$savesettings' => DI::l10n()->t('Save Settings'),
 	]);
 }
 

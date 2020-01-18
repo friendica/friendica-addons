@@ -93,21 +93,21 @@ function piwik_analytics($a,&$b) {
 	 */
 	if ($optout) {
 		$b .= "<div id='piwik-optout-link'>";
-		$b .= L10n::t("This website is tracked using the <a href='http://www.matomo.org'>Matomo</a> analytics tool.");
+		$b .= DI::l10n()->t("This website is tracked using the <a href='http://www.matomo.org'>Matomo</a> analytics tool.");
 		$b .= " ";
 		$the_url =  "http://".$baseurl ."index.php?module=CoreAdminHome&action=optOut";
-		$b .= L10n::t("If you do not want that your visits are logged in this way you <a href='%s'>can set a cookie to prevent Matomo / Piwik from tracking further visits of the site</a> (opt-out).", $the_url);
+		$b .= DI::l10n()->t("If you do not want that your visits are logged in this way you <a href='%s'>can set a cookie to prevent Matomo / Piwik from tracking further visits of the site</a> (opt-out).", $the_url);
 		$b .= "</div>";
 	}
 }
 function piwik_addon_admin (&$a, &$o) {
 	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/piwik/" );
 	$o = Renderer::replaceMacros( $t, [
-		'$submit' => L10n::t('Save Settings'),
-		'$piwikbaseurl' => ['baseurl', L10n::t('Matomo (Piwik) Base URL'), Config::get('piwik','baseurl' ), L10n::t('Absolute path to your Matomo (Piwik) installation. (without protocol (http/s), with trailing slash)')],
-		'$siteid' => ['siteid', L10n::t('Site ID'), Config::get('piwik','siteid' ), ''],
-		'$optout' => ['optout', L10n::t('Show opt-out cookie link?'), Config::get('piwik','optout' ), ''],
-		'$async' => ['async', L10n::t('Asynchronous tracking'), Config::get('piwik','async' ), ''],
+		'$submit' => DI::l10n()->t('Save Settings'),
+		'$piwikbaseurl' => ['baseurl', DI::l10n()->t('Matomo (Piwik) Base URL'), Config::get('piwik','baseurl' ), DI::l10n()->t('Absolute path to your Matomo (Piwik) installation. (without protocol (http/s), with trailing slash)')],
+		'$siteid' => ['siteid', DI::l10n()->t('Site ID'), Config::get('piwik','siteid' ), ''],
+		'$optout' => ['optout', DI::l10n()->t('Show opt-out cookie link?'), Config::get('piwik','optout' ), ''],
+		'$async' => ['async', DI::l10n()->t('Asynchronous tracking'), Config::get('piwik','async' ), ''],
 	]);
 }
 function piwik_addon_admin_post (&$a) {
@@ -119,5 +119,5 @@ function piwik_addon_admin_post (&$a) {
 	Config::set('piwik', 'siteid', $id);
 	Config::set('piwik', 'optout', $optout);
 	Config::set('piwik', 'async', $async);
-	info(L10n::t('Settings updated.'). EOL);
+	info(DI::l10n()->t('Settings updated.'). EOL);
 }

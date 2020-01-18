@@ -40,11 +40,11 @@ function irc_addon_settings(&$a,&$s) {
 
 	$t = Renderer::getMarkupTemplate( "settings.tpl", "addon/irc/" );
 	$s .= Renderer::replaceMacros($t, [
-	    	'$header' => L10n::t('IRC Settings'),
-		'$info' => L10n::t('Here you can change the system wide settings for the channels to automatically join and access via the side bar. Note the changes you do here, only effect the channel selection if you are logged in.'),
-		'$submit' => L10n::t('Save Settings'),
-		'$autochans' => [ 'autochans', L10n::t('Channel(s) to auto connect (comma separated)'), $autochans, L10n::t('List of channels that shall automatically connected to when the app is launched.')],
-		'$sitechats' => [ 'sitechats', L10n::t('Popular Channels (comma separated)'), $sitechats, L10n::t('List of popular channels, will be displayed at the side and hotlinked for easy joining.') ]
+	    	'$header' => DI::l10n()->t('IRC Settings'),
+		'$info' => DI::l10n()->t('Here you can change the system wide settings for the channels to automatically join and access via the side bar. Note the changes you do here, only effect the channel selection if you are logged in.'),
+		'$submit' => DI::l10n()->t('Save Settings'),
+		'$autochans' => [ 'autochans', DI::l10n()->t('Channel(s) to auto connect (comma separated)'), $autochans, DI::l10n()->t('List of channels that shall automatically connected to when the app is launched.')],
+		'$sitechats' => [ 'sitechats', DI::l10n()->t('Popular Channels (comma separated)'), $sitechats, DI::l10n()->t('List of popular channels, will be displayed at the side and hotlinked for easy joining.') ]
 	]);
 
 
@@ -64,12 +64,12 @@ function irc_addon_settings_post(&$a, &$b) {
 			DI::pConfig()->set(local_user(), 'irc', 'sitechats', trim($_POST['sitechats']));
 		}
 		/* upid pop-up thing */
-		info(L10n::t('IRC settings saved.') . EOL);
+		info(DI::l10n()->t('IRC settings saved.') . EOL);
 	}
 }
 
 function irc_app_menu($a,&$b) {
-	$b['app_menu'][] = '<div class="app-title"><a href="irc">' . L10n::t('IRC Chatroom') . '</a></div>';
+	$b['app_menu'][] = '<div class="app-title"><a href="irc">' . DI::l10n()->t('IRC Chatroom') . '</a></div>';
 }
 
 
@@ -97,7 +97,7 @@ function irc_content(&$a) {
 		$chats = ['friendica','chat','chatback','hottub','ircbar','dateroom','debian'];
 
 
-	DI::page()['aside'] .= '<div class="widget"><h3>' . L10n::t('Popular Channels') . '</h3><ul>';
+	DI::page()['aside'] .= '<div class="widget"><h3>' . DI::l10n()->t('Popular Channels') . '</h3><ul>';
 	foreach($chats as $chat) {
 		DI::page()['aside'] .= '<li><a href="' . DI::baseUrl()->get() . '/irc?channels=' . $chat . '" >' . '#' . $chat . '</a></li>';
 	}
@@ -135,7 +135,7 @@ function irc_addon_admin_post (&$a) {
 		Config::set('irc','autochans',trim($_POST['autochans']));
 		Config::set('irc','sitechats',trim($_POST['sitechats']));
 		/* stupid pop-up thing */
-		info(L10n::t('IRC settings saved.') . EOL);
+		info(DI::l10n()->t('IRC settings saved.') . EOL);
 	}
 }
 function irc_addon_admin (&$a, &$o) {
@@ -143,8 +143,8 @@ function irc_addon_admin (&$a, &$o) {
 	$autochans = Config::get('irc','autochans');  /* auto connect chans */
 	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/irc/" );
 	$o = Renderer::replaceMacros($t, [
-		'$submit' => L10n::t('Save Settings'),
-		'$autochans' => [ 'autochans', L10n::t('Channel(s) to auto connect (comma separated)'), $autochans, L10n::t('List of channels that shall automatically connected to when the app is launched.')],
-		'$sitechats' => [ 'sitechats', L10n::t('Popular Channels (comma separated)'), $sitechats, L10n::t('List of popular channels, will be displayed at the side and hotlinked for easy joining.') ]
+		'$submit' => DI::l10n()->t('Save Settings'),
+		'$autochans' => [ 'autochans', DI::l10n()->t('Channel(s) to auto connect (comma separated)'), $autochans, DI::l10n()->t('List of channels that shall automatically connected to when the app is launched.')],
+		'$sitechats' => [ 'sitechats', DI::l10n()->t('Popular Channels (comma separated)'), $sitechats, DI::l10n()->t('List of popular channels, will be displayed at the side and hotlinked for easy joining.') ]
 	]);
 }

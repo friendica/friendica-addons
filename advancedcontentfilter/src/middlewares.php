@@ -26,6 +26,6 @@ $container['errorHandler'] = function () {
 $container['notFoundHandler'] = function () {
 	return function ()
 	{
-		throw new \Friendica\Network\HTTPException\NotFoundException(L10n::t('Method not found'));
+		throw new \Friendica\Network\HTTPException\NotFoundException(DI::l10n()->t('Method not found'));
 	};
 };

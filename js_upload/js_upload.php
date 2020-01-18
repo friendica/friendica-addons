@@ -32,10 +32,10 @@ function js_upload_form(App $a, array &$b)
 
 	$tpl = Renderer::getMarkupTemplate('js_upload.tpl', 'addon/js_upload');
 	$b['addon_text'] .= Renderer::replaceMacros($tpl, [
-		'$upload_msg' => L10n::t('Select files for upload'),
-		'$drop_msg' => L10n::t('Drop files here to upload'),
-		'$cancel' => L10n::t('Cancel'),
-		'$failed' => L10n::t('Failed'),
+		'$upload_msg' => DI::l10n()->t('Select files for upload'),
+		'$drop_msg' => DI::l10n()->t('Drop files here to upload'),
+		'$cancel' => DI::l10n()->t('Cancel'),
+		'$failed' => DI::l10n()->t('Failed'),
 		'$post_url' => $b['post_url'],
 		'$maximagesize' => intval(Config::get('system', 'maximagesize')),
 	]);
@@ -213,25 +213,25 @@ class qqFileUploader
 	function handleUpload()
 	{
 		if (!$this->file) {
-			return ['error' => L10n::t('No files were uploaded.')];
+			return ['error' => DI::l10n()->t('No files were uploaded.')];
 		}
 
 		$size = $this->file->getSize();
 
 		if ($size == 0) {
-			return ['error' => L10n::t('Uploaded file is empty')];
+			return ['error' => DI::l10n()->t('Uploaded file is empty')];
 		}
 
 //		if ($size > $this->sizeLimit) {
 
-//			return array('error' => L10n::t('Uploaded file is too large'));
+//			return array('error' => DI::l10n()->t('Uploaded file is too large'));
 //		}
 
 
 		$maximagesize = Config::get('system', 'maximagesize');
 
 		if (($maximagesize) && ($size > $maximagesize)) {
-			return ['error' => L10n::t('Image exceeds size limit of ') . $maximagesize];
+			return ['error' => DI::l10n()->t('Image exceeds size limit of ') . $maximagesize];
 
 		}
 
@@ -245,7 +245,7 @@ class qqFileUploader
 
 		if ($this->allowedExtensions && !in_array(strtolower($ext), $this->allowedExtensions)) {
 			$these = implode(', ', $this->allowedExtensions);
-			return ['error' => L10n::t('File has an invalid extension, it should be one of ') . $these . '.'];
+			return ['error' => DI::l10n()->t('File has an invalid extension, it should be one of ') . $these . '.'];
 		}
 
 		if ($this->file->save()) {
@@ -256,7 +256,7 @@ class qqFileUploader
 			];
 		} else {
 			return [
-				'error' => L10n::t('Upload was cancelled, or server error encountered'),
+				'error' => DI::l10n()->t('Upload was cancelled, or server error encountered'),
 				'path' => $this->file->getPath(),
 				'filename' => $filename . '.' . $ext
 			];

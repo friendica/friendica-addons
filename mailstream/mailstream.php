@@ -78,12 +78,12 @@ function mailstream_addon_admin(&$a,&$o) {
 	$frommail = Config::get('mailstream', 'frommail');
 	$template = Renderer::getMarkupTemplate('admin.tpl', 'addon/mailstream/');
 	$config = ['frommail',
-			L10n::t('From Address'),
+			DI::l10n()->t('From Address'),
 			$frommail,
-			L10n::t('Email address that stream items will appear to be from.')];
+			DI::l10n()->t('Email address that stream items will appear to be from.')];
 	$o .= Renderer::replaceMacros($template, [
 				 '$frommail' => $config,
-				 '$submit' => L10n::t('Save Settings')]);
+				 '$submit' => DI::l10n()->t('Save Settings')]);
 }
 
 function mailstream_addon_admin_post ($a) {
@@ -237,7 +237,7 @@ function mailstream_subject($item) {
 			break;
 		}
 		if ($parent_item['title']) {
-			return L10n::t('Re:') . ' ' . mailstream_decode_subject($parent_item['title']);
+			return DI::l10n()->t('Re:') . ' ' . mailstream_decode_subject($parent_item['title']);
 		}
 		$parent = $parent_item['thr-parent'];
 	}
@@ -245,10 +245,10 @@ function mailstream_subject($item) {
 		intval($item['contact-id']), intval($item['uid']));
 	$contact = $r[0];
 	if ($contact['network'] === 'dfrn') {
-		return L10n::t("Friendica post");
+		return DI::l10n()->t("Friendica post");
 	}
 	if ($contact['network'] === 'dspr') {
-		return L10n::t("Diaspora post");
+		return DI::l10n()->t("Diaspora post");
 	}
 	if ($contact['network'] === 'face') {
 		$text = mailstream_decode_subject($item['body']);
@@ -258,12 +258,12 @@ function mailstream_subject($item) {
 		return preg_replace('/\\s+/', ' ', $subject);
 	}
 	if ($contact['network'] === 'feed') {
-		return L10n::t("Feed item");
+		return DI::l10n()->t("Feed item");
 	}
 	if ($contact['network'] === 'mail') {
-		return L10n::t("Email");
+		return DI::l10n()->t("Email");
 	}
-	return L10n::t("Friendica Item");
+	return DI::l10n()->t("Friendica Item");
 }
 
 function mailstream_send(\Friendica\App $a, $message_id, $item, $user) {
@@ -308,8 +308,8 @@ function mailstream_send(\Friendica\App $a, $message_id, $item, $user) {
 		$item['body'] = BBCode::convert($item['body']);
 		$item['url'] = DI::baseUrl()->get() . '/display/' . $item['guid'];
 		$mail->Body = Renderer::replaceMacros($template, [
-						 '$upstream' => L10n::t('Upstream'),
-						 '$local' => L10n::t('Local'),
+						 '$upstream' => DI::l10n()->t('Upstream'),
+						 '$local' => DI::l10n()->t('Local'),
 						 '$item' => $item]);
 		mailstream_html_wrap($mail->Body);
 		if (!$mail->Send()) {
@@ -376,25 +376,25 @@ function mailstream_addon_settings(&$a,&$s) {
 	$s .= Renderer::replaceMacros($template, [
 				 '$enabled' => [
 					'mailstream_enabled',
-					L10n::t('Enabled'),
+					DI::l10n()->t('Enabled'),
 					$enabled],
 				 '$address' => [
 					'mailstream_address',
-					L10n::t('Email Address'),
+					DI::l10n()->t('Email Address'),
 					$address,
-					L10n::t("Leave blank to use your account email address")],
+					DI::l10n()->t("Leave blank to use your account email address")],
 				 '$nolikes' => [
 					'mailstream_nolikes',
-					L10n::t('Exclude Likes'),
+					DI::l10n()->t('Exclude Likes'),
 					$nolikes,
-					L10n::t("Check this to omit mailing \"Like\" notifications")],
+					DI::l10n()->t("Check this to omit mailing \"Like\" notifications")],
 				 '$attachimg' => [
 					'mailstream_attachimg',
-					L10n::t('Attach Images'),
+					DI::l10n()->t('Attach Images'),
 					$attachimg,
-					L10n::t("Download images in posts and attach them to the email.  Useful for reading email while offline.")],
-				 '$title' => L10n::t('Mail Stream Settings'),
-				 '$submit' => L10n::t('Save Settings')]);
+					DI::l10n()->t("Download images in posts and attach them to the email.  Useful for reading email while offline.")],
+				 '$title' => DI::l10n()->t('Mail Stream Settings'),
+				 '$submit' => DI::l10n()->t('Save Settings')]);
 }
 
 function mailstream_addon_settings_post($a,$post) {

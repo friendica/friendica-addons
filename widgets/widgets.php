@@ -61,11 +61,11 @@ function widgets_settings(&$a,&$o) {
 #	$t = file_get_contents( dirname(__file__). "/settings.tpl" );
 	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/widgets/");
 	$o .= Renderer::replaceMacros($t, [
-		'$submit' => L10n::t('Generate new key'),
+		'$submit' => DI::l10n()->t('Generate new key'),
 		'$title' => "Widgets",
-		'$label' => L10n::t('Widgets key'),
+		'$label' => DI::l10n()->t('Widgets key'),
 		'$key' => $key,
-		'$widgets_h' => L10n::t('Widgets available'),
+		'$widgets_h' => DI::l10n()->t('Widgets available'),
 		'$widgets' => $widgets,
 	]);
 
@@ -126,7 +126,7 @@ function widgets_content(&$a) {
 		if (isset($_GET['p']) && local_user()==$conf['uid'] ) {
 			$o .= "<style>.f9k_widget { float: left;border:1px solid black; }</style>";
 			$o .= "<h1>Preview Widget</h1>";
-			$o .= '<a href="'.DI::baseUrl()->get().'/settings/addon">'. L10n::t("Addon Settings") .'</a>';
+			$o .= '<a href="'.DI::baseUrl()->get().'/settings/addon">'. DI::l10n()->t("Addon Settings") .'</a>';
 
 			$o .=  "<h4>".call_user_func($a->argv[1].'_widget_name')."</h4>";
 			$o .=  call_user_func($a->argv[1].'_widget_help');

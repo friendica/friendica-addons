@@ -74,7 +74,7 @@ function public_server_cron($a, $b)
 				'language'     => $rr['language'],
 				'to_name'      => $rr['username'],
 				'to_email'     => $rr['email'],
-				'source_name'  => L10n::t('Administrator'),
+				'source_name'  => DI::l10n()->t('Administrator'),
 				'source_link'  => DI::baseUrl()->get(),
 				'source_photo' => DI::baseUrl()->get() . '/images/person-80.jpg',
 			]);
@@ -128,9 +128,9 @@ function public_server_enotify(&$a, &$b)
 	if (!empty($b['params']) && $b['params']['type'] == NOTIFY_SYSTEM
 		&& !empty($b['params']['system_type']) && $b['params']['system_type'] === 'public_server_expire') {
 		$b['itemlink'] = DI::baseUrl()->get();
-		$b['epreamble'] = $b['preamble'] = L10n::t('Your account on %s will expire in a few days.', Config::get('system', 'sitename'));
-		$b['subject'] = L10n::t('Your Friendica account is about to expire.');
-		$b['body'] = L10n::t("Hi %1\$s,\n\nYour account on %2\$s will expire in less than five days. You may keep your account by logging in at least once every 30 days", $b['params']['to_name'], "[url=" . Config::get('system', 'url') . "]" . Config::get('config', 'sitename') . "[/url]");
+		$b['epreamble'] = $b['preamble'] = DI::l10n()->t('Your account on %s will expire in a few days.', Config::get('system', 'sitename'));
+		$b['subject'] = DI::l10n()->t('Your Friendica account is about to expire.');
+		$b['body'] = DI::l10n()->t("Hi %1\$s,\n\nYour account on %2\$s will expire in less than five days. You may keep your account by logging in at least once every 30 days", $b['params']['to_name'], "[url=" . Config::get('system', 'url') . "]" . Config::get('config', 'sitename') . "[/url]");
 	}
 }
 
@@ -161,7 +161,7 @@ function public_server_addon_admin_post(&$a)
 	Config::set('public_server', 'flagusers', $flagusers);
 	Config::set('public_server', 'flagposts', $flagposts);
 	Config::set('public_server', 'flagpostsexpire', $flagpostsexpire);
-	info(L10n::t('Settings saved').EOL);
+	info(DI::l10n()->t('Settings saved').EOL);
 }
 
 function public_server_addon_admin(&$a, &$o)
@@ -169,9 +169,9 @@ function public_server_addon_admin(&$a, &$o)
 	$token = BaseModule::getFormSecurityToken("publicserver");
 	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/public_server");
 	$o = Renderer::replaceMacros($t, [
-		'$submit' => L10n::t('Save Settings'),
+		'$submit' => DI::l10n()->t('Save Settings'),
 		'$form_security_token' => $token,
-		'$infotext' => L10n::t('Set any of these options to 0 to deactivate it.'),
+		'$infotext' => DI::l10n()->t('Set any of these options to 0 to deactivate it.'),
 		'$expiredays' => ["expiredays","Expire Days", intval(Config::get('public_server', 'expiredays')), "When an account is created on the site, it is given a hard "],
 		'$expireposts' => ["expireposts", "Expire Posts", intval(Config::get('public_server', 'expireposts')), "Set the default days for posts to expire here"],
 		'$nologin' => ["nologin", "No Login", intval(Config::get('public_server', 'nologin')), "Remove users who have never logged in after nologin days "],

@@ -32,10 +32,10 @@ function blockbot_addon_admin(&$a, &$o) {
 	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/blockbot/");
 
 	$o = Renderer::replaceMacros($t, [
-		'$submit' => L10n::t('Save Settings'),
-		'$good_crawlers' => ['good_crawlers', L10n::t('Allow "good" crawlers'), Config::get('blockbot', 'good_crawlers'), "Don't block fediverse crawlers, relay servers and other bots with good purposes."],
-		'$block_gab' => ['block_gab', L10n::t('Block GabSocial'), Config::get('blockbot', 'block_gab'), 'Block the software GabSocial. This will block every access for that software. You can block dedicated gab instances in the blocklist settings in the admin section.'],
-		'$training' => ['training', L10n::t('Training mode'), Config::get('blockbot', 'training'), "Activates the training mode. This is only meant for developing purposes. Don't activate this on a production machine. This can cut communication with some systems."],
+		'$submit' => DI::l10n()->t('Save Settings'),
+		'$good_crawlers' => ['good_crawlers', DI::l10n()->t('Allow "good" crawlers'), Config::get('blockbot', 'good_crawlers'), "Don't block fediverse crawlers, relay servers and other bots with good purposes."],
+		'$block_gab' => ['block_gab', DI::l10n()->t('Block GabSocial'), Config::get('blockbot', 'block_gab'), 'Block the software GabSocial. This will block every access for that software. You can block dedicated gab instances in the blocklist settings in the admin section.'],
+		'$training' => ['training', DI::l10n()->t('Training mode'), Config::get('blockbot', 'training'), "Activates the training mode. This is only meant for developing purposes. Don't activate this on a production machine. This can cut communication with some systems."],
 	]);
 }
 
@@ -43,7 +43,7 @@ function blockbot_addon_admin_post(&$a) {
 	Config::set('blockbot', 'good_crawlers', $_POST['good_crawlers'] ?? false);
 	Config::set('blockbot', 'block_gab', $_POST['block_gab'] ?? false);
 	Config::set('blockbot', 'training', $_POST['training'] ?? false);
-	info(L10n::t('Settings updated.'). EOL);
+	info(DI::l10n()->t('Settings updated.'). EOL);
 }
 
 function blockbot_init_1(App $a) {

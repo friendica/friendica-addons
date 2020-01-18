@@ -87,18 +87,18 @@ function libravatar_addon_admin(&$a, &$o)
 
 	// Available options for the select boxes
 	$default_avatars = [
-		'mm' => L10n::t('generic profile image'),
-		'identicon' => L10n::t('random geometric pattern'),
-		'monsterid' => L10n::t('monster face'),
-		'wavatar' => L10n::t('computer generated face'),
-		'retro' => L10n::t('retro arcade style face'),
+		'mm' => DI::l10n()->t('generic profile image'),
+		'identicon' => DI::l10n()->t('random geometric pattern'),
+		'monsterid' => DI::l10n()->t('monster face'),
+		'wavatar' => DI::l10n()->t('computer generated face'),
+		'retro' => DI::l10n()->t('retro arcade style face'),
 	];
 
 	// Show warning if PHP version is too old
 	if (! version_compare(PHP_VERSION, '5.3.0', '>=')) {
-		$o = '<h5>' .L10n::t('Warning') .'</h5><p>';
-		$o .= L10n::t('Your PHP version %s is lower than the required PHP >= 5.3.', PHP_VERSION);
-		$o .= '<br>' .L10n::t('This addon is not functional on your server.') .'<p><br>';
+		$o = '<h5>' .DI::l10n()->t('Warning') .'</h5><p>';
+		$o .= DI::l10n()->t('Your PHP version %s is lower than the required PHP >= 5.3.', PHP_VERSION);
+		$o .= '<br>' .DI::l10n()->t('This addon is not functional on your server.') .'<p><br>';
 		return;
 	}
 
@@ -107,14 +107,14 @@ function libravatar_addon_admin(&$a, &$o)
 		DBA::escape('gravatar')
 	);
 	if (count($r)) {
-		$o = '<h5>' .L10n::t('Information') .'</h5><p>' .L10n::t('Gravatar addon is installed. Please disable the Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar.') .'</p><br><br>';
+		$o = '<h5>' .DI::l10n()->t('Information') .'</h5><p>' .DI::l10n()->t('Gravatar addon is installed. Please disable the Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar.') .'</p><br><br>';
 	}
 
 	// output Libravatar settings
 	$o .= '<input type="hidden" name="form_security_token" value="' . BaseModule::getFormSecurityToken("libravatarsave") .'">';
 	$o .= Renderer::replaceMacros( $t, [
-		'$submit' => L10n::t('Save Settings'),
-		'$default_avatar' => ['avatar', L10n::t('Default avatar image'), $default_avatar, L10n::t('Select default avatar image if none was found. See README'), $default_avatars],
+		'$submit' => DI::l10n()->t('Save Settings'),
+		'$default_avatar' => ['avatar', DI::l10n()->t('Default avatar image'), $default_avatar, DI::l10n()->t('Select default avatar image if none was found. See README'), $default_avatars],
 	]);
 }
 
@@ -127,5 +127,5 @@ function libravatar_addon_admin_post(&$a)
 
 	$default_avatar = (!empty($_POST['avatar']) ? Strings::escapeTags(trim($_POST['avatar'])) : 'identicon');
 	Config::set('libravatar', 'default_avatar', $default_avatar);
-	info(L10n::t('Libravatar settings updated.') .EOL);
+	info(DI::l10n()->t('Libravatar settings updated.') .EOL);
 }

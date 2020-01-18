@@ -44,17 +44,17 @@ function qcomment_addon_settings(&$a, &$s)
 
 	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/qcomment/qcomment.css' . '" media="all" />' . "\r\n";
 
-	$words = DI::pConfig()->get(local_user(), 'qcomment', 'words', L10n::t(':-)') . "\n" . L10n::t(':-(') . "\n" .  L10n::t('lol'));
+	$words = DI::pConfig()->get(local_user(), 'qcomment', 'words', DI::l10n()->t(':-)') . "\n" . DI::l10n()->t(':-(') . "\n" .  DI::l10n()->t('lol'));
 
 	$s .= '<div class="settings-block">';
-	$s .= '<h3>' . L10n::t('Quick Comment Settings') . '</h3>';
+	$s .= '<h3>' . DI::l10n()->t('Quick Comment Settings') . '</h3>';
 	$s .= '<div id="qcomment-wrapper">';
-	$s .= '<div id="qcomment-desc">' . L10n::t("Quick comments are found near comment boxes, sometimes hidden. Click them to provide simple replies.") . '</div>';
-	$s .= '<label id="qcomment-label" for="qcomment-words">' . L10n::t('Enter quick comments, one per line') . ' </label>';
+	$s .= '<div id="qcomment-desc">' . DI::l10n()->t("Quick comments are found near comment boxes, sometimes hidden. Click them to provide simple replies.") . '</div>';
+	$s .= '<label id="qcomment-label" for="qcomment-words">' . DI::l10n()->t('Enter quick comments, one per line') . ' </label>';
 	$s .= '<textarea id="qcomment-words" type="text" name="qcomment-words" >' . htmlspecialchars(XML::unescape($words)) . '</textarea>';
 	$s .= '</div><div class="clear"></div>';
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="qcomment-submit" name="qcomment-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="qcomment-submit" name="qcomment-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div>';
 	$s .= '</div>';
 
 	return;
@@ -68,6 +68,6 @@ function qcomment_addon_settings_post(&$a, &$b)
 
 	if ($_POST['qcomment-submit']) {
 		DI::pConfig()->set(local_user(), 'qcomment', 'words', XML::escape($_POST['qcomment-words']));
-		info(L10n::t('Quick Comment settings saved.') . EOL);
+		info(DI::l10n()->t('Quick Comment settings saved.') . EOL);
 	}
 }

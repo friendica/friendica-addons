@@ -203,7 +203,7 @@ function twitter_jot_nets(App $a, array &$jotnets_fields)
 			'type' => 'checkbox',
 			'field' => [
 				'twitter_enable',
-				L10n::t('Post to Twitter'),
+				DI::l10n()->t('Post to Twitter'),
 				DI::pConfig()->get(local_user(), 'twitter', 'post_by_default')
 			]
 		];
@@ -248,7 +248,7 @@ function twitter_settings_post(App $a)
 			//  and secret to request a Access Token with the PIN
 			try {
 				if (empty($_POST['twitter-pin'])) {
-					throw new Exception(L10n::t('You submitted an empty PIN, please Sign In with Twitter again to get a new one.'));
+					throw new Exception(DI::l10n()->t('You submitted an empty PIN, please Sign In with Twitter again to get a new one.'));
 				}
 
 				$connection = new TwitterOAuth($ckey, $csecret, $_POST['twitter-token'], $_POST['twitter-token2']);
@@ -277,7 +277,7 @@ function twitter_settings_post(App $a)
 				DI::pConfig()->delete(local_user(), 'twitter', 'lastid');
 			}
 
-			info(L10n::t('Twitter settings updated.') . EOL);
+			info(DI::l10n()->t('Twitter settings updated.') . EOL);
 		}
 	}
 }
@@ -307,18 +307,18 @@ function twitter_settings(App $a, &$s)
 	$css = (($enabled) ? '' : '-disabled');
 
 	$s .= '<span id="settings_twitter_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_twitter_expanded\'); openClose(\'settings_twitter_inflated\');">';
-	$s .= '<img class="connector' . $css . '" src="images/twitter.png" /><h3 class="connector">' . L10n::t('Twitter Import/Export/Mirror') . '</h3>';
+	$s .= '<img class="connector' . $css . '" src="images/twitter.png" /><h3 class="connector">' . DI::l10n()->t('Twitter Import/Export/Mirror') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_twitter_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_twitter_expanded\'); openClose(\'settings_twitter_inflated\');">';
-	$s .= '<img class="connector' . $css . '" src="images/twitter.png" /><h3 class="connector">' . L10n::t('Twitter Import/Export/Mirror') . '</h3>';
+	$s .= '<img class="connector' . $css . '" src="images/twitter.png" /><h3 class="connector">' . DI::l10n()->t('Twitter Import/Export/Mirror') . '</h3>';
 	$s .= '</span>';
 
 	if ((!$ckey) && (!$csecret)) {
 		/* no global consumer keys
 		 * display warning and skip personal config
 		 */
-		$s .= '<p>' . L10n::t('No consumer key pair for Twitter found. Please contact your site administrator.') . '</p>';
+		$s .= '<p>' . DI::l10n()->t('No consumer key pair for Twitter found. Please contact your site administrator.') . '</p>';
 	} else {
 		// ok we have a consumer key pair now look into the OAuth stuff
 		if ((!$otoken) && (!$osecret)) {
@@ -330,17 +330,17 @@ function twitter_settings(App $a, &$s)
 			$connection = new TwitterOAuth($ckey, $csecret);
 			try {
 				$result = $connection->oauth('oauth/request_token', ['oauth_callback' => 'oob']);
-				$s .= '<p>' . L10n::t('At this Friendica instance the Twitter addon was enabled but you have not yet connected your account to your Twitter account. To do so click the button below to get a PIN from Twitter which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to Twitter.') . '</p>';
-				$s .= '<a href="' . $connection->url('oauth/authorize', ['oauth_token' => $result['oauth_token']]) . '" target="_twitter"><img src="addon/twitter/lighter.png" alt="' . L10n::t('Log in with Twitter') . '"></a>';
+				$s .= '<p>' . DI::l10n()->t('At this Friendica instance the Twitter addon was enabled but you have not yet connected your account to your Twitter account. To do so click the button below to get a PIN from Twitter which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to Twitter.') . '</p>';
+				$s .= '<a href="' . $connection->url('oauth/authorize', ['oauth_token' => $result['oauth_token']]) . '" target="_twitter"><img src="addon/twitter/lighter.png" alt="' . DI::l10n()->t('Log in with Twitter') . '"></a>';
 				$s .= '<div id="twitter-pin-wrapper">';
-				$s .= '<label id="twitter-pin-label" for="twitter-pin">' . L10n::t('Copy the PIN from Twitter here') . '</label>';
+				$s .= '<label id="twitter-pin-label" for="twitter-pin">' . DI::l10n()->t('Copy the PIN from Twitter here') . '</label>';
 				$s .= '<input id="twitter-pin" type="text" name="twitter-pin" />';
 				$s .= '<input id="twitter-token" type="hidden" name="twitter-token" value="' . $result['oauth_token'] . '" />';
 				$s .= '<input id="twitter-token2" type="hidden" name="twitter-token2" value="' . $result['oauth_token_secret'] . '" />';
 				$s .= '</div><div class="clear"></div>';
-				$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
+				$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div>';
 			} catch (TwitterOAuthException $e) {
-				$s .= '<p>' . L10n::t('An error occured: ') . $e->getMessage() . '</p>';
+				$s .= '<p>' . DI::l10n()->t('An error occured: ') . $e->getMessage() . '</p>';
 			}
 		} else {
 			/*			 * *
@@ -357,8 +357,8 @@ function twitter_settings(App $a, &$s)
 				    property_exists($details, 'description') &&
 				    property_exists($details, 'profile_image_url')) {
 					$s .= '<div id="twitter-info" >
-					<p>' . L10n::t('Currently connected to: ') . '<a href="https://twitter.com/' . $details->screen_name . '" target="_twitter">' . $details->screen_name . '</a>
-						<button type="submit" name="twitter-disconnect" value="1">' . L10n::t('Disconnect') . '</button>
+					<p>' . DI::l10n()->t('Currently connected to: ') . '<a href="https://twitter.com/' . $details->screen_name . '" target="_twitter">' . $details->screen_name . '</a>
+						<button type="submit" name="twitter-disconnect" value="1">' . DI::l10n()->t('Disconnect') . '</button>
 					</p>
 					<p id="twitter-info-block">
 						<a href="https://twitter.com/' . $details->screen_name . '" target="_twitter"><img id="twitter-avatar" src="' . $details->profile_image_url . '" /></a>
@@ -374,27 +374,27 @@ function twitter_settings(App $a, &$s)
 				$s .= '<div class="clear"></div>';
 
 				$s .= Renderer::replaceMacros($field_checkbox, [
-					'$field' => ['twitter-enable', L10n::t('Allow posting to Twitter'), $enabled, L10n::t('If enabled all your <strong>public</strong> postings can be posted to the associated Twitter account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.')]
+					'$field' => ['twitter-enable', DI::l10n()->t('Allow posting to Twitter'), $enabled, DI::l10n()->t('If enabled all your <strong>public</strong> postings can be posted to the associated Twitter account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.')]
 				]);
 				if ($a->user['hidewall']) {
-					$s .= '<p>' . L10n::t('<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to Twitter will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted.') . '</p>';
+					$s .= '<p>' . DI::l10n()->t('<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to Twitter will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted.') . '</p>';
 				}
 				$s .= Renderer::replaceMacros($field_checkbox, [
-					'$field' => ['twitter-default', L10n::t('Send public postings to Twitter by default'), $defenabled, '']
+					'$field' => ['twitter-default', DI::l10n()->t('Send public postings to Twitter by default'), $defenabled, '']
 				]);
 				$s .= Renderer::replaceMacros($field_checkbox, [
-					'$field' => ['twitter-mirror', L10n::t('Mirror all posts from twitter that are no replies'), $mirrorenabled, '']
+					'$field' => ['twitter-mirror', DI::l10n()->t('Mirror all posts from twitter that are no replies'), $mirrorenabled, '']
 				]);
 				$s .= Renderer::replaceMacros($field_checkbox, [
-					'$field' => ['twitter-import', L10n::t('Import the remote timeline'), $importenabled, '']
+					'$field' => ['twitter-import', DI::l10n()->t('Import the remote timeline'), $importenabled, '']
 				]);
 				$s .= Renderer::replaceMacros($field_checkbox, [
-					'$field' => ['twitter-create_user', L10n::t('Automatically create contacts'), $create_userenabled, L10n::t('This will automatically create a contact in Friendica as soon as you receive a message from an existing contact via the Twitter network. If you do not enable this, you need to manually add those Twitter contacts in Friendica from whom you would like to see posts here. However if enabled, you cannot merely remove a twitter contact from the Friendica contact list, as it will recreate this contact when they post again.')]
+					'$field' => ['twitter-create_user', DI::l10n()->t('Automatically create contacts'), $create_userenabled, DI::l10n()->t('This will automatically create a contact in Friendica as soon as you receive a message from an existing contact via the Twitter network. If you do not enable this, you need to manually add those Twitter contacts in Friendica from whom you would like to see posts here. However if enabled, you cannot merely remove a twitter contact from the Friendica contact list, as it will recreate this contact when they post again.')]
 				]);
 				$s .= '<div class="clear"></div>';
-				$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
+				$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div>';
 			} catch (TwitterOAuthException $e) {
-				$s .= '<p>' . L10n::t('An error occured: ') . $e->getMessage() . '</p>';
+				$s .= '<p>' . DI::l10n()->t('An error occured: ') . $e->getMessage() . '</p>';
 			}
 		}
 	}
@@ -719,7 +719,7 @@ function twitter_addon_admin_post(App $a)
 	$consumersecret = !empty($_POST['consumersecret']) ? Strings::escapeTags(trim($_POST['consumersecret'])) : '';
 	Config::set('twitter', 'consumerkey', $consumerkey);
 	Config::set('twitter', 'consumersecret', $consumersecret);
-	info(L10n::t('Settings updated.') . EOL);
+	info(DI::l10n()->t('Settings updated.') . EOL);
 }
 
 function twitter_addon_admin(App $a, &$o)
@@ -727,10 +727,10 @@ function twitter_addon_admin(App $a, &$o)
 	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/twitter/");
 
 	$o = Renderer::replaceMacros($t, [
-		'$submit' => L10n::t('Save Settings'),
+		'$submit' => DI::l10n()->t('Save Settings'),
 		// name, label, value, help, [extra values]
-		'$consumerkey' => ['consumerkey', L10n::t('Consumer key'), Config::get('twitter', 'consumerkey'), ''],
-		'$consumersecret' => ['consumersecret', L10n::t('Consumer secret'), Config::get('twitter', 'consumersecret'), ''],
+		'$consumerkey' => ['consumerkey', DI::l10n()->t('Consumer key'), Config::get('twitter', 'consumerkey'), ''],
+		'$consumersecret' => ['consumersecret', DI::l10n()->t('Consumer secret'), Config::get('twitter', 'consumersecret'), ''],
 	]);
 }
 
