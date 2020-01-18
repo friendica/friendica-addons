@@ -79,9 +79,8 @@ function blockbot_init_1(App $a) {
 
 	if (!Config::get('blockbot', 'good_crawlers')) {
 		$agents = array_merge($agents, $good_agents);
-	}
-	else{
-		foreach($good_agents as $good_agent){
+	} else {
+		foreach ($good_agents as $good_agent) {
 			if (stristr($_SERVER['HTTP_USER_AGENT'], $good_agent)) {
 				return;
 			}
