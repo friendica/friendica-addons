@@ -7,10 +7,8 @@
  */
 use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\Content\Text\Markdown;
 use Friendica\Core\Renderer;
-use Friendica\Core\PConfig;
 use Friendica\Core\L10n;
 use Friendica\DI;
 

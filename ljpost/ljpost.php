@@ -12,7 +12,6 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
 use Friendica\Core\Logger;
-use Friendica\Core\PConfig;
 use Friendica\DI;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;

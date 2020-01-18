@@ -10,7 +10,6 @@
 use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
-use Friendica\Core\PConfig;
 use Friendica\DI;
 use Friendica\Util\Strings;
 
