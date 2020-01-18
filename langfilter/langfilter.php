@@ -79,10 +79,10 @@ function langfilter_addon_settings_post(App $a, &$b)
 	}
 
 	if (!empty($_POST['langfilter-settings-submit'])) {
-		PConfig::set(local_user(), 'langfilter', 'languages', trim($_POST['langfilter_languages']));
+		DI::pConfig()->set(local_user(), 'langfilter', 'languages', trim($_POST['langfilter_languages']));
 		$enable = (!empty($_POST['langfilter_enable']) ? intval($_POST['langfilter_enable']) : 0);
 		$disable = 1 - $enable;
-		PConfig::set(local_user(), 'langfilter', 'disable', $disable);
+		DI::pConfig()->set(local_user(), 'langfilter', 'disable', $disable);
 		$minconfidence = 0 + $_POST['langfilter_minconfidence'];
 		if (!$minconfidence) {
 			$minconfidence = 0;
@@ -91,7 +91,7 @@ function langfilter_addon_settings_post(App $a, &$b)
 		} elseif ($minconfidence > 100) {
 			$minconfidence = 100;
 		}
-		PConfig::set(local_user(), 'langfilter', 'minconfidence', $minconfidence / 100.0);
+		DI::pConfig()->set(local_user(), 'langfilter', 'minconfidence', $minconfidence / 100.0);
 
 		$minlength = 0 + $_POST['langfilter_minlength'];
 		if (!$minlength) {
@@ -99,7 +99,7 @@ function langfilter_addon_settings_post(App $a, &$b)
 		} elseif ($minlength < 0) {
 			$minlength = 32;
 		}
-		PConfig::set(local_user(), 'langfilter', 'minlength', $minlength);
+		DI::pConfig()->set(local_user(), 'langfilter', 'minlength', $minlength);
 
 		info(L10n::t('Language Filter Settings saved.') . EOL);
 	}

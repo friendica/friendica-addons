@@ -38,9 +38,9 @@ function xmpp_addon_settings_post()
 		return;
 	}
 
-	PConfig::set(local_user(), 'xmpp', 'enabled', $_POST['xmpp_enabled'] ?? false);
-	PConfig::set(local_user(), 'xmpp', 'individual', $_POST['xmpp_individual'] ?? false);
-	PConfig::set(local_user(), 'xmpp', 'bosh_proxy', $_POST['xmpp_bosh_proxy'] ?? '');
+	DI::pConfig()->set(local_user(), 'xmpp', 'enabled', $_POST['xmpp_enabled'] ?? false);
+	DI::pConfig()->set(local_user(), 'xmpp', 'individual', $_POST['xmpp_individual'] ?? false);
+	DI::pConfig()->set(local_user(), 'xmpp', 'bosh_proxy', $_POST['xmpp_bosh_proxy'] ?? '');
 
 	info(L10n::t('XMPP settings updated.') . EOL);
 }
@@ -102,7 +102,7 @@ function xmpp_login()
 {
 	if (empty($_SESSION['allow_api'])) {
 		$password = Strings::getRandomHex(16);
-		PConfig::set(local_user(), 'xmpp', 'password', $password);
+		DI::pConfig()->set(local_user(), 'xmpp', 'password', $password);
 	}
 }
 
@@ -165,7 +165,7 @@ function xmpp_converse(App $a)
 
 		if ($password == "") {
 			$password = Strings::getRandomHex(16);
-			PConfig::set(local_user(), "xmpp", "password", $password);
+			DI::pConfig()->set(local_user(), "xmpp", "password", $password);
 		}
 
 		$jid = $a->user["nickname"] . "@" . DI::baseUrl()->getHostname() . "/converse-" . Strings::getRandomHex(5);

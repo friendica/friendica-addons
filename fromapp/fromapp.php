@@ -35,8 +35,8 @@ function fromapp_settings_post($a, $post)
 		return;
 	}
 
-	PConfig::set(local_user(), 'fromapp', 'app', $_POST['fromapp-input']);
-	PConfig::set(local_user(), 'fromapp', 'force', intval($_POST['fromapp-force']));
+	DI::pConfig()->set(local_user(), 'fromapp', 'app', $_POST['fromapp-input']);
+	DI::pConfig()->set(local_user(), 'fromapp', 'force', intval($_POST['fromapp-force']));
 
 	info(L10n::t('Fromapp settings updated.') . EOL);
 }

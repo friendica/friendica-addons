@@ -113,10 +113,10 @@ function ijpost_settings(&$a, &$s)
 function ijpost_settings_post(&$a, &$b)
 {
 	if (!empty($_POST['ijpost-submit'])) {
-		PConfig::set(local_user(), 'ijpost', 'post', intval($_POST['ijpost']));
-		PConfig::set(local_user(), 'ijpost', 'post_by_default', intval($_POST['ij_bydefault']));
-		PConfig::set(local_user(), 'ijpost', 'ij_username', trim($_POST['ij_username']));
-		PConfig::set(local_user(), 'ijpost', 'ij_password', trim($_POST['ij_password']));
+		DI::pConfig()->set(local_user(), 'ijpost', 'post', intval($_POST['ijpost']));
+		DI::pConfig()->set(local_user(), 'ijpost', 'post_by_default', intval($_POST['ij_bydefault']));
+		DI::pConfig()->set(local_user(), 'ijpost', 'ij_username', trim($_POST['ij_username']));
+		DI::pConfig()->set(local_user(), 'ijpost', 'ij_password', trim($_POST['ij_password']));
 	}
 }
 

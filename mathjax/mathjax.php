@@ -40,7 +40,7 @@ function mathjax_settings_post($a)
 		return;
 	}
 
-	PConfig::set(local_user(), 'mathjax', 'use', intval($_POST['mathjax_use']));
+	DI::pConfig()->set(local_user(), 'mathjax', 'use', intval($_POST['mathjax_use']));
 }
 
 function mathjax_settings(App $a, &$s)

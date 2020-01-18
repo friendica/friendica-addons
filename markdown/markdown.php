@@ -42,7 +42,7 @@ function markdown_addon_settings_post(App $a, &$b)
 		return;
 	}
 
-	PConfig::set(local_user(), 'markdown', 'enabled', intval($_POST['enabled']));
+	DI::pConfig()->set(local_user(), 'markdown', 'enabled', intval($_POST['enabled']));
 }
 
 function markdown_post_local_start(App $a, &$request) {

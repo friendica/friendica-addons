@@ -85,9 +85,9 @@ function securemail_settings_post(App &$a, array &$b)
 	}
 
 	if ($_POST['securemail-submit']) {
-		PConfig::set(local_user(), 'securemail', 'pkey', trim($_POST['securemail-pkey']));
+		DI::pConfig()->set(local_user(), 'securemail', 'pkey', trim($_POST['securemail-pkey']));
 		$enable = (!empty($_POST['securemail-enable']) ? 1 : 0);
-		PConfig::set(local_user(), 'securemail', 'enable', $enable);
+		DI::pConfig()->set(local_user(), 'securemail', 'enable', $enable);
 		info(L10n::t('Secure Mail Settings saved.') . EOL);
 
 		if ($_POST['securemail-submit'] == L10n::t('Save and send test')) {
@@ -117,12 +117,12 @@ function securemail_settings_post(App &$a, array &$b)
 			];
 
 			// enable addon for test
-			PConfig::set(local_user(), 'securemail', 'enable', 1);
+			DI::pConfig()->set(local_user(), 'securemail', 'enable', 1);
 
 			$res = Emailer::send($params);
 
 			// revert to saved value
-			PConfig::set(local_user(), 'securemail', 'enable', $enable);
+			DI::pConfig()->set(local_user(), 'securemail', 'enable', $enable);
 
 			if ($res) {
 				info(L10n::t('Test email sent') . EOL);

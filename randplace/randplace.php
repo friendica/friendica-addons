@@ -139,7 +139,7 @@ function randplace_settings_post($a,$post) {
 	if(! local_user())
 		return;
 	if($_POST['randplace-submit'])
-		PConfig::set(local_user(),'randplace','enable',intval($_POST['randplace']));
+		DI::pConfig()->set(local_user(),'randplace','enable',intval($_POST['randplace']));
 }
 
 

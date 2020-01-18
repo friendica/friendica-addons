@@ -62,7 +62,7 @@ function remote_permissions_settings_post($a,$post) {
 	if(! local_user() || empty($_POST['remote-perms-submit']))
 		return;
 
-	PConfig::set(local_user(),'remote_perms','show',intval($_POST['remote-perms']));
+	DI::pConfig()->set(local_user(),'remote_perms','show',intval($_POST['remote-perms']));
 	info(L10n::t('Remote Permissions settings updated.') . EOL);
 }
 

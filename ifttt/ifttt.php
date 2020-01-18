@@ -50,7 +50,7 @@ function ifttt_settings(App $a, &$s)
 
 	if (!$key) {
 		$key = Strings::getRandomHex(20);
-		PConfig::set(local_user(), 'ifttt', 'key', $key);
+		DI::pConfig()->set(local_user(), 'ifttt', 'key', $key);
 	}
 
 	$s .= '<span id="settings_ifttt_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_ifttt_expanded\'); openClose(\'settings_ifttt_inflated\');">';

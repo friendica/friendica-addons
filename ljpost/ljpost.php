@@ -113,10 +113,10 @@ function ljpost_settings_post(&$a,&$b) {
 
 	if(!empty($_POST['ljpost-submit'])) {
 
-		PConfig::set(local_user(),'ljpost','post',intval($_POST['ljpost']));
-		PConfig::set(local_user(),'ljpost','post_by_default',intval($_POST['lj_bydefault']));
-		PConfig::set(local_user(),'ljpost','lj_username',trim($_POST['lj_username']));
-		PConfig::set(local_user(),'ljpost','lj_password',trim($_POST['lj_password']));
+		DI::pConfig()->set(local_user(),'ljpost','post',intval($_POST['ljpost']));
+		DI::pConfig()->set(local_user(),'ljpost','post_by_default',intval($_POST['lj_bydefault']));
+		DI::pConfig()->set(local_user(),'ljpost','lj_username',trim($_POST['lj_username']));
+		DI::pConfig()->set(local_user(),'ljpost','lj_password',trim($_POST['lj_password']));
 
 	}
 

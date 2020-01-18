@@ -43,7 +43,7 @@ function group_text_uninstall() {
 function group_text_settings_post($a,$post) {
 	if(! local_user() || empty($_POST['group_text-submit']))
 		return;
-	PConfig::set(local_user(),'system','groupedit_image_limit',intval($_POST['group_text']));
+	DI::pConfig()->set(local_user(),'system','groupedit_image_limit',intval($_POST['group_text']));
 
 	info(L10n::t('Group Text settings updated.') . EOL);
 }

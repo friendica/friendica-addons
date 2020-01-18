@@ -121,7 +121,7 @@ function buffer_connect(App $a)
 		Logger::log("buffer_connect: authenticated");
 		$o = L10n::t("You are now authenticated to buffer. ");
 		$o .= '<br /><a href="' . DI::baseUrl()->get() . '/settings/connectors">' . L10n::t("return to the connector page") . '</a>';
-		PConfig::set(local_user(), 'buffer','access_token', $buffer->access_token);
+		DI::pConfig()->set(local_user(), 'buffer','access_token', $buffer->access_token);
 	}
 
 	return $o;
@@ -236,12 +236,12 @@ function buffer_settings_post(App $a, array &$b)
 {
 	if (!empty($_POST['buffer-submit'])) {
 		if (!empty($_POST['buffer_delete'])) {
-			PConfig::set(local_user(), 'buffer', 'access_token'   , '');
-			PConfig::set(local_user(), 'buffer', 'post'           , false);
-			PConfig::set(local_user(), 'buffer', 'post_by_default', false);
+			DI::pConfig()->set(local_user(), 'buffer', 'access_token'   , '');
+			DI::pConfig()->set(local_user(), 'buffer', 'post'           , false);
+			DI::pConfig()->set(local_user(), 'buffer', 'post_by_default', false);
 		} else {
-			PConfig::set(local_user(), 'buffer', 'post'           , intval($_POST['buffer'] ?? false));
-			PConfig::set(local_user(), 'buffer', 'post_by_default', intval($_POST['buffer_bydefault'] ?? false));
+			DI::pConfig()->set(local_user(), 'buffer', 'post'           , intval($_POST['buffer'] ?? false));
+			DI::pConfig()->set(local_user(), 'buffer', 'post_by_default', intval($_POST['buffer_bydefault'] ?? false));
 		}
 	}
 }

@@ -41,7 +41,7 @@ function numfriends_settings_post($a,$post) {
 	if(! local_user() || empty($_POST['numfriends-submit']))
 		return;
 
-	PConfig::set(local_user(),'system','display_friend_count',intval($_POST['numfriends']));
+	DI::pConfig()->set(local_user(),'system','display_friend_count',intval($_POST['numfriends']));
 	info( L10n::t('Numfriends settings updated.') . EOL);
 }
 

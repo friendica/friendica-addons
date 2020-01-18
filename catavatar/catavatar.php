@@ -124,7 +124,7 @@ function catavatar_addon_settings_post(App $a, &$s)
 	}
 
 	if (!empty($_POST['catavatar-morecat'])) {
-		PConfig::set(local_user(), 'catavatar', 'seed', time());
+		DI::pConfig()->set(local_user(), 'catavatar', 'seed', time());
 	}
 
 	if (!empty($_POST['catavatar-emailcat'])) {

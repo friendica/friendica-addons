@@ -54,7 +54,7 @@ function startpage_settings_post($a, $post)
 	}
 
 	if (!empty($_POST['startpage-submit'])) {
-		PConfig::set(local_user(), 'startpage', 'startpage', strip_tags(trim($_POST['startpage'])));
+		DI::pConfig()->set(local_user(), 'startpage', 'startpage', strip_tags(trim($_POST['startpage'])));
 	}
 }
 

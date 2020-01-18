@@ -119,10 +119,10 @@ function libertree_settings_post(&$a,&$b) {
 
 	if(!empty($_POST['libertree-submit'])) {
 
-		PConfig::set(local_user(),'libertree','post',intval($_POST['libertree']));
-		PConfig::set(local_user(),'libertree','post_by_default',intval($_POST['libertree_bydefault']));
-		PConfig::set(local_user(),'libertree','libertree_api_token',trim($_POST['libertree_api_token']));
-		PConfig::set(local_user(),'libertree','libertree_url',trim($_POST['libertree_url']));
+		DI::pConfig()->set(local_user(),'libertree','post',intval($_POST['libertree']));
+		DI::pConfig()->set(local_user(),'libertree','post_by_default',intval($_POST['libertree_bydefault']));
+		DI::pConfig()->set(local_user(),'libertree','libertree_api_token',trim($_POST['libertree_api_token']));
+		DI::pConfig()->set(local_user(),'libertree','libertree_url',trim($_POST['libertree_url']));
 
 	}
 

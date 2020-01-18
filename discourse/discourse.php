@@ -61,7 +61,7 @@ function discourse_settings_post(App $a)
                 return;
         }
 
-	PConfig::set(local_user(), 'discourse', 'enabled', intval($_POST['enabled']));
+	DI::pConfig()->set(local_user(), 'discourse', 'enabled', intval($_POST['enabled']));
 }
 
 function discourse_email_getmessage(App $a, &$message)

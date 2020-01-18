@@ -79,7 +79,7 @@ function blockem_addon_settings_post(App $a, array &$b)
 	}
 
 	if (!empty($_POST['blockem-submit'])) {
-		PConfig::set(local_user(), 'blockem', 'words', trim($_POST['blockem-words']));
+		DI::pConfig()->set(local_user(), 'blockem', 'words', trim($_POST['blockem-words']));
 		info(L10n::t('BLOCKEM Settings saved.') . EOL);
 	}
 }
@@ -242,7 +242,7 @@ function blockem_init(App $a)
 		$words = implode(',', $newarr);
 	}
 
-	PConfig::set(local_user(), 'blockem', 'words', $words);
+	DI::pConfig()->set(local_user(), 'blockem', 'words', $words);
 	info(L10n::t('blockem settings updated') . EOL);
 	exit();
 }

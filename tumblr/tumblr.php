@@ -185,8 +185,8 @@ function tumblr_callback(App $a)
 	}
 
 	// What's next?  Now that we have an Access Token and Secret, we can make an API call.
-	PConfig::set(local_user(), "tumblr", "oauth_token", $access_token['oauth_token']);
-	PConfig::set(local_user(), "tumblr", "oauth_token_secret", $access_token['oauth_token_secret']);
+	DI::pConfig()->set(local_user(), "tumblr", "oauth_token", $access_token['oauth_token']);
+	DI::pConfig()->set(local_user(), "tumblr", "oauth_token_secret", $access_token['oauth_token_secret']);
 
 	$o = L10n::t("You are now authenticated to tumblr.");
 	$o .= '<br /><a href="' . DI::baseUrl()->get() . '/settings/connectors">' . L10n::t("return to the connector page") . '</a>';
@@ -300,9 +300,9 @@ function tumblr_settings(App $a, &$s)
 function tumblr_settings_post(App $a, array &$b)
 {
 	if (!empty($_POST['tumblr-submit'])) {
-		PConfig::set(local_user(), 'tumblr', 'post',            intval($_POST['tumblr']));
-		PConfig::set(local_user(), 'tumblr', 'page',            $_POST['tumblr_page']);
-		PConfig::set(local_user(), 'tumblr', 'post_by_default', intval($_POST['tumblr_bydefault']));
+		DI::pConfig()->set(local_user(), 'tumblr', 'post',            intval($_POST['tumblr']));
+		DI::pConfig()->set(local_user(), 'tumblr', 'page',            $_POST['tumblr_page']);
+		DI::pConfig()->set(local_user(), 'tumblr', 'post_by_default', intval($_POST['tumblr_bydefault']));
 	}
 }
 

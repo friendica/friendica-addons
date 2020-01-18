@@ -69,7 +69,7 @@ function superblock_addon_settings_post(&$a, &$b)
 	}
 
 	if (!empty($_POST['superblock-submit'])) {
-		PConfig::set(local_user(), 'system', 'blocked',trim($_POST['superblock-words']));
+		DI::pConfig()->set(local_user(), 'system', 'blocked',trim($_POST['superblock-words']));
 		info(L10n::t('SUPERBLOCK Settings saved.') . EOL);
 	}
 }
@@ -163,7 +163,7 @@ function superblock_init(&$a)
 		$words .= trim($_GET['block']);
 	}
 
-	PConfig::set(local_user(), 'system', 'blocked', $words);
+	DI::pConfig()->set(local_user(), 'system', 'blocked', $words);
 	info(L10n::t('superblock settings updated') . EOL );
 	exit();
 }

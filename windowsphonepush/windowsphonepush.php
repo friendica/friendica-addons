@@ -86,13 +86,13 @@ function windowsphonepush_settings_post($a, $post)
 		return;
 	}
 	$enable = intval($_POST['windowsphonepush']);
-	PConfig::set(local_user(), 'windowsphonepush', 'enable', $enable);
+	DI::pConfig()->set(local_user(), 'windowsphonepush', 'enable', $enable);
 
 	if ($enable) {
-		PConfig::set(local_user(), 'windowsphonepush', 'counterunseen', 0);
+		DI::pConfig()->set(local_user(), 'windowsphonepush', 'counterunseen', 0);
 	}
 
-	PConfig::set(local_user(), 'windowsphonepush', 'senditemtext', intval($_POST['windowsphonepush-senditemtext']));
+	DI::pConfig()->set(local_user(), 'windowsphonepush', 'senditemtext', intval($_POST['windowsphonepush-senditemtext']));
 
 	info(L10n::t('WindowsPhonePush settings updated.') . EOL);
 }
@@ -174,7 +174,7 @@ function windowsphonepush_cron()
 				switch (trim($res_tile)) {
 					case "Received":
 						// ok, count has been pushed, let's save it in personal settings
-						PConfig::set($rr['uid'], 'windowsphonepush', 'counterunseen', $count[0]['count']);
+						DI::pConfig()->set($rr['uid'], 'windowsphonepush', 'counterunseen', $count[0]['count']);
 						break;
 					case "QueueFull":
 						// maximum of 30 messages reached, server rejects any further push notification until device reconnects
@@ -232,7 +232,7 @@ function windowsphonepush_cron()
 					// further log information done on count pushing with send_tile (see above)
 					$res_toast = send_toast($device_url, $author, $body);
 					if (trim($res_toast) === 'Received') {
-						PConfig::set($rr['uid'], 'windowsphonepush', 'lastpushid', $count[0]['max']);
+						DI::pConfig()->set($rr['uid'], 'windowsphonepush', 'lastpushid', $count[0]['max']);
 					}
 				}
 			}
@@ -306,7 +306,7 @@ function send_push($device_url, $headers, $msg)
 	// and log this fact
 	$subscriptionStatus = get_header_value($output, 'X-SubscriptionStatus');
 	if ($subscriptionStatus == "Expired") {
-		PConfig::set(local_user(), 'windowsphonepush', 'device_url', "");
+		DI::pConfig()->set(local_user(), 'windowsphonepush', 'device_url', "");
 		Logger::log("ERROR: the stored Device-URL " . $device_url . "returned an 'Expired' error, it has been deleted now.");
 	}
 
@@ -422,12 +422,12 @@ function windowsphonepush_updatesettings()
 						`v` = '" . $device_url . "'");
 	if (count($r)) {
 		foreach ($r as $rr) {
-			PConfig::set($rr['uid'], 'windowsphonepush', 'device_url', '');
+			DI::pConfig()->set($rr['uid'], 'windowsphonepush', 'device_url', '');
 			Logger::log("WARN: the sent URL was already registered with user '" . $rr['uid'] . "'. Deleted for this user as we expect to be correct now for user '" . local_user() . "'.");
 		}
 	}
 
-	PConfig::set(local_user(), 'windowsphonepush', 'device_url', $device_url);
+	DI::pConfig()->set(local_user(), 'windowsphonepush', 'device_url', $device_url);
 	// output the successfull update of the device URL to the logger for error analysis if necessary
 	Logger::log("INFO: Device-URL for user '" . local_user() . "' has been updated with '" . $device_url . "'");
 	return "Device-URL updated successfully!";
@@ -446,7 +446,7 @@ function windowsphonepush_updatecounterunseen()
 		return "Plug-in not enabled";
 	}
 
-	PConfig::set(local_user(), 'windowsphonepush', 'counterunseen', 0);
+	DI::pConfig()->set(local_user(), 'windowsphonepush', 'counterunseen', 0);
 	return "Counter set to zero";
 }
 

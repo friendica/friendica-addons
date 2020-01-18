@@ -174,11 +174,11 @@ function diaspora_settings(App $a, &$s)
 function diaspora_settings_post(App $a, &$b)
 {
 	if (!empty($_POST['diaspora-submit'])) {
-		PConfig::set(local_user(),'diaspora', 'post'           , intval($_POST['diaspora']));
-		PConfig::set(local_user(),'diaspora', 'post_by_default', intval($_POST['diaspora_bydefault']));
-		PConfig::set(local_user(),'diaspora', 'handle'         , trim($_POST['handle']));
-		PConfig::set(local_user(),'diaspora', 'password'       , trim($_POST['password']));
-		PConfig::set(local_user(),'diaspora', 'aspect'         , trim($_POST['aspect']));
+		DI::pConfig()->set(local_user(),'diaspora', 'post'           , intval($_POST['diaspora']));
+		DI::pConfig()->set(local_user(),'diaspora', 'post_by_default', intval($_POST['diaspora_bydefault']));
+		DI::pConfig()->set(local_user(),'diaspora', 'handle'         , trim($_POST['handle']));
+		DI::pConfig()->set(local_user(),'diaspora', 'password'       , trim($_POST['password']));
+		DI::pConfig()->set(local_user(),'diaspora', 'aspect'         , trim($_POST['aspect']));
 	}
 }
 

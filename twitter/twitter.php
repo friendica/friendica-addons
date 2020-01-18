@@ -255,9 +255,9 @@ function twitter_settings_post(App $a)
 				$connection = new TwitterOAuth($ckey, $csecret, $_POST['twitter-token'], $_POST['twitter-token2']);
 				$token = $connection->oauth("oauth/access_token", ["oauth_verifier" => $_POST['twitter-pin']]);
 				//  ok, now that we have the Access Token, save them in the user config
-				PConfig::set(local_user(), 'twitter', 'oauthtoken', $token['oauth_token']);
-				PConfig::set(local_user(), 'twitter', 'oauthsecret', $token['oauth_token_secret']);
-				PConfig::set(local_user(), 'twitter', 'post', 1);
+				DI::pConfig()->set(local_user(), 'twitter', 'oauthtoken', $token['oauth_token']);
+				DI::pConfig()->set(local_user(), 'twitter', 'oauthsecret', $token['oauth_token_secret']);
+				DI::pConfig()->set(local_user(), 'twitter', 'post', 1);
 			} catch(Exception $e) {
 				info($e->getMessage());
 			} catch(TwitterOAuthException $e) {
@@ -268,11 +268,11 @@ function twitter_settings_post(App $a)
 		} else {
 			//  if no PIN is supplied in the POST variables, the user has changed the setting
 			//  to post a tweet for every new __public__ posting to the wall
-			PConfig::set(local_user(), 'twitter', 'post', intval($_POST['twitter-enable']));
-			PConfig::set(local_user(), 'twitter', 'post_by_default', intval($_POST['twitter-default']));
-			PConfig::set(local_user(), 'twitter', 'mirror_posts', intval($_POST['twitter-mirror']));
-			PConfig::set(local_user(), 'twitter', 'import', intval($_POST['twitter-import']));
-			PConfig::set(local_user(), 'twitter', 'create_user', intval($_POST['twitter-create_user']));
+			DI::pConfig()->set(local_user(), 'twitter', 'post', intval($_POST['twitter-enable']));
+			DI::pConfig()->set(local_user(), 'twitter', 'post_by_default', intval($_POST['twitter-default']));
+			DI::pConfig()->set(local_user(), 'twitter', 'mirror_posts', intval($_POST['twitter-mirror']));
+			DI::pConfig()->set(local_user(), 'twitter', 'import', intval($_POST['twitter-import']));
+			DI::pConfig()->set(local_user(), 'twitter', 'create_user', intval($_POST['twitter-create_user']));
 
 			if (!intval($_POST['twitter-mirror'])) {
 				PConfig::delete(local_user(), 'twitter', 'lastid');
@@ -792,7 +792,7 @@ function twitter_cron(App $a)
 
 			  if($next_contact_check <= time()) {
 			  pumpio_getallusers($a, $rr["uid"]);
-			  PConfig::set($rr['uid'],'pumpio','contact_check',time());
+			  DI::pConfig()->set($rr['uid'],'pumpio','contact_check',time());
 			  }
 			 */
 		}
@@ -978,7 +978,7 @@ function twitter_fetchtimeline(App $a, $uid)
 		foreach ($posts as $post) {
 			if ($post->id_str > $lastid) {
 				$lastid = $post->id_str;
-				PConfig::set($uid, 'twitter', 'lastid', $lastid);
+				DI::pConfig()->set($uid, 'twitter', 'lastid', $lastid);
 			}
 
 			if ($first_time) {
@@ -1003,7 +1003,7 @@ function twitter_fetchtimeline(App $a, $uid)
 			}
 		}
 	}
-	PConfig::set($uid, 'twitter', 'lastid', $lastid);
+	DI::pConfig()->set($uid, 'twitter', 'lastid', $lastid);
 	Logger::log('Last ID for user ' . $uid . ' is now ' . $lastid, Logger::DEBUG);
 }
 
@@ -1698,7 +1698,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 		foreach ($posts as $post) {
 			if ($post->id_str > $lastid) {
 				$lastid = $post->id_str;
-				PConfig::set($uid, 'twitter', 'lasthometimelineid', $lastid);
+				DI::pConfig()->set($uid, 'twitter', 'lasthometimelineid', $lastid);
 			}
 
 			if ($first_time) {
@@ -1743,7 +1743,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 			Logger::log('User ' . $uid . ' posted home timeline item ' . $item);
 		}
 	}
-	PConfig::set($uid, 'twitter', 'lasthometimelineid', $lastid);
+	DI::pConfig()->set($uid, 'twitter', 'lasthometimelineid', $lastid);
 
 	Logger::log('Last timeline ID for user ' . $uid . ' is now ' . $lastid, Logger::DEBUG);
 
@@ -1798,7 +1798,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 		}
 	}
 
-	PConfig::set($uid, 'twitter', 'lastmentionid', $lastid);
+	DI::pConfig()->set($uid, 'twitter', 'lastmentionid', $lastid);
 
 	Logger::log('Last mentions ID for user ' . $uid . ' is now ' . $lastid, Logger::DEBUG);
 }
@@ -1824,7 +1824,7 @@ function twitter_fetch_own_contact(App $a, $uid)
 			return false;
 		}
 
-		PConfig::set($uid, 'twitter', 'own_id', $user->id_str);
+		DI::pConfig()->set($uid, 'twitter', 'own_id', $user->id_str);
 
 		$contact_id = twitter_fetch_contact($uid, $user, true);
 	} else {

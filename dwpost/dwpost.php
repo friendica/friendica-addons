@@ -115,10 +115,10 @@ function dwpost_settings(App $a, &$s)
 function dwpost_settings_post(App $a, array &$b)
 {
 	if (!empty($_POST['dwpost-submit'])) {
-		PConfig::set(local_user(), 'dwpost', 'post',            intval($_POST['dwpost']));
-		PConfig::set(local_user(), 'dwpost', 'post_by_default', intval($_POST['dw_bydefault']));
-		PConfig::set(local_user(), 'dwpost', 'dw_username',     trim($_POST['dw_username']));
-		PConfig::set(local_user(), 'dwpost', 'dw_password',     trim($_POST['dw_password']));
+		DI::pConfig()->set(local_user(), 'dwpost', 'post',            intval($_POST['dwpost']));
+		DI::pConfig()->set(local_user(), 'dwpost', 'post_by_default', intval($_POST['dw_bydefault']));
+		DI::pConfig()->set(local_user(), 'dwpost', 'dw_username',     trim($_POST['dw_username']));
+		DI::pConfig()->set(local_user(), 'dwpost', 'dw_password',     trim($_POST['dw_password']));
 	}
 }
 

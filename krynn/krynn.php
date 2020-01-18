@@ -123,7 +123,7 @@ function krynn_settings_post($a,$post) {
 	if(! local_user())
 		return;
 	if($_POST['krynn-submit'])
-		PConfig::set(local_user(),'krynn','enable',intval($_POST['krynn']));
+		DI::pConfig()->set(local_user(),'krynn','enable',intval($_POST['krynn']));
 }
 
 

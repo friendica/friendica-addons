@@ -120,7 +120,7 @@ function planets_settings_post($a,$post) {
 	if(! local_user())
 		return;
 	if($_POST['planets-submit'])
-		PConfig::set(local_user(),'planets','enable',intval($_POST['planets']));
+		DI::pConfig()->set(local_user(),'planets','enable',intval($_POST['planets']));
 }
 
 

@@ -92,7 +92,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 		'icon'        => (string) $res->weather['icon'],
 	];
 
-	PConfig::set(local_user(), 'curweather', 'last', $now->getTimestamp());
+	DI::pConfig()->set(local_user(), 'curweather', 'last', $now->getTimestamp());
 	Cache::set('curweather'.md5($url), serialize($r), Cache::HOUR);
 
 	return $r;
@@ -170,9 +170,9 @@ function curweather_addon_settings_post(App $a, $post)
 		return;
 	}
 
-	PConfig::set(local_user(), 'curweather', 'curweather_loc'   , trim($_POST['curweather_loc']));
-	PConfig::set(local_user(), 'curweather', 'curweather_enable', intval($_POST['curweather_enable']));
-	PConfig::set(local_user(), 'curweather', 'curweather_units' , trim($_POST['curweather_units']));
+	DI::pConfig()->set(local_user(), 'curweather', 'curweather_loc'   , trim($_POST['curweather_loc']));
+	DI::pConfig()->set(local_user(), 'curweather', 'curweather_enable', intval($_POST['curweather_enable']));
+	DI::pConfig()->set(local_user(), 'curweather', 'curweather_units' , trim($_POST['curweather_units']));
 
 	info(L10n::t('Current Weather settings updated.') . EOL);
 }

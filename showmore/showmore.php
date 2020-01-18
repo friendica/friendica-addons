@@ -71,10 +71,10 @@ function showmore_addon_settings_post(&$a, &$b)
 	}
 
 	if (!empty($_POST['showmore-submit'])) {
-		PConfig::set(local_user(), 'showmore', 'chars', trim($_POST['showmore-chars']));
+		DI::pConfig()->set(local_user(), 'showmore', 'chars', trim($_POST['showmore-chars']));
 		$enable = (!empty($_POST['showmore-enable']) ? intval($_POST['showmore-enable']) : 0);
 		$disable = 1-$enable;
-		PConfig::set(local_user(), 'showmore', 'disable', $disable);
+		DI::pConfig()->set(local_user(), 'showmore', 'disable', $disable);
 		info(L10n::t('Show More Settings saved.') . EOL);
 	}
 }

@@ -30,7 +30,7 @@ function notimeline_settings_post($a, $post)
 		return;
 	}
 
-	PConfig::set(local_user(), 'system', 'no_wall_archive_widget', intval($_POST['notimeline']));
+	DI::pConfig()->set(local_user(), 'system', 'no_wall_archive_widget', intval($_POST['notimeline']));
 	info(L10n::t('No Timeline settings updated.') . EOL);
 }
 

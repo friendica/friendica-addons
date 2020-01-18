@@ -41,7 +41,7 @@ function widgets_settings(&$a,&$o) {
 
 
 	$key = DI::pConfig()->get(local_user(), 'widgets', 'key' );
-	if ($key=='') { $key = mt_rand(); PConfig::set(local_user(), 'widgets', 'key', $key); }
+	if ($key=='') { $key = mt_rand(); DI::pConfig()->set(local_user(), 'widgets', 'key', $key); }
 
 	$widgets = [];
 	$d = dir(dirname(__file__));

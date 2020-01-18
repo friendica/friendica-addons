@@ -49,7 +49,7 @@ function gnot_settings_post($a,$post) {
 	if(! local_user() || empty($_POST['gnot-submit']))
 		return;
 
-	PConfig::set(local_user(),'gnot','enable',intval($_POST['gnot']));
+	DI::pConfig()->set(local_user(),'gnot','enable',intval($_POST['gnot']));
 	info(L10n::t('Gnot settings updated.') . EOL);
 }
 
