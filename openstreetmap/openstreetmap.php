@@ -10,7 +10,7 @@
  */
 
 use Friendica\DI;
-use Friendica\Core\Cache\Cache;
+use Friendica\Core\Cache\Duration;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\L10n;
@@ -137,7 +137,7 @@ function openstreetmap_get_coordinates($a, &$b)
 		$curlResult = Network::curl($nomserver . $args);
 		if ($curlResult->isSuccess()) {
 			$j = json_decode($curlResult->getBody(), true);
-			DI::cache()->set($cachekey, $j, Cache::MONTH);
+			DI::cache()->set($cachekey, $j, Duration::MONTH);
 		}
 	}
 
