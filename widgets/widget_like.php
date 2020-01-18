@@ -3,6 +3,7 @@
 use Friendica\Core\L10n;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
+use Friendica\DI;
 
 function like_widget_name() {
 	return "Shows likes";
