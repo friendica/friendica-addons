@@ -134,18 +134,18 @@ function statusnet_settings_post(App $a, $post)
 		/*		 * *
 		 * if the GNU Social-disconnect checkbox is set, clear the GNU Social configuration
 		 */
-		PConfig::delete(local_user(), 'statusnet', 'consumerkey');
-		PConfig::delete(local_user(), 'statusnet', 'consumersecret');
-		PConfig::delete(local_user(), 'statusnet', 'post');
-		PConfig::delete(local_user(), 'statusnet', 'post_by_default');
-		PConfig::delete(local_user(), 'statusnet', 'oauthtoken');
-		PConfig::delete(local_user(), 'statusnet', 'oauthsecret');
-		PConfig::delete(local_user(), 'statusnet', 'baseapi');
-		PConfig::delete(local_user(), 'statusnet', 'lastid');
-		PConfig::delete(local_user(), 'statusnet', 'mirror_posts');
-		PConfig::delete(local_user(), 'statusnet', 'import');
-		PConfig::delete(local_user(), 'statusnet', 'create_user');
-		PConfig::delete(local_user(), 'statusnet', 'own_url');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'consumerkey');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'consumersecret');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'post');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'post_by_default');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'oauthtoken');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'oauthsecret');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'baseapi');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'lastid');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'mirror_posts');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'import');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'create_user');
+		DI::pConfig()->delete(local_user(), 'statusnet', 'own_url');
 	} else {
 		if (isset($_POST['statusnet-preconf-apiurl'])) {
 			/*			 * *
@@ -225,7 +225,7 @@ function statusnet_settings_post(App $a, $post)
 					DI::pConfig()->set(local_user(), 'statusnet', 'create_user', intval($_POST['statusnet-create_user']));
 
 					if (!intval($_POST['statusnet-mirror']))
-						PConfig::delete(local_user(), 'statusnet', 'lastid');
+						DI::pConfig()->delete(local_user(), 'statusnet', 'lastid');
 
 					info(L10n::t('GNU Social settings updated.') . EOL);
 				}
@@ -1575,7 +1575,7 @@ function statusnet_fetch_own_contact(App $a, $uid)
 		if (DBA::isResult($r)) {
 			$contact_id = $r[0]["id"];
 		} else {
-			PConfig::delete($uid, 'statusnet', 'own_url');
+			DI::pConfig()->delete($uid, 'statusnet', 'own_url');
 		}
 	}
 	return $contact_id;

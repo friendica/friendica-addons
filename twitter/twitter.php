@@ -227,17 +227,17 @@ function twitter_settings_post(App $a)
 		 * if the twitter-disconnect checkbox is set, clear the OAuth key/secret pair
 		 * from the user configuration
 		 */
-		PConfig::delete(local_user(), 'twitter', 'consumerkey');
-		PConfig::delete(local_user(), 'twitter', 'consumersecret');
-		PConfig::delete(local_user(), 'twitter', 'oauthtoken');
-		PConfig::delete(local_user(), 'twitter', 'oauthsecret');
-		PConfig::delete(local_user(), 'twitter', 'post');
-		PConfig::delete(local_user(), 'twitter', 'post_by_default');
-		PConfig::delete(local_user(), 'twitter', 'lastid');
-		PConfig::delete(local_user(), 'twitter', 'mirror_posts');
-		PConfig::delete(local_user(), 'twitter', 'import');
-		PConfig::delete(local_user(), 'twitter', 'create_user');
-		PConfig::delete(local_user(), 'twitter', 'own_id');
+		DI::pConfig()->delete(local_user(), 'twitter', 'consumerkey');
+		DI::pConfig()->delete(local_user(), 'twitter', 'consumersecret');
+		DI::pConfig()->delete(local_user(), 'twitter', 'oauthtoken');
+		DI::pConfig()->delete(local_user(), 'twitter', 'oauthsecret');
+		DI::pConfig()->delete(local_user(), 'twitter', 'post');
+		DI::pConfig()->delete(local_user(), 'twitter', 'post_by_default');
+		DI::pConfig()->delete(local_user(), 'twitter', 'lastid');
+		DI::pConfig()->delete(local_user(), 'twitter', 'mirror_posts');
+		DI::pConfig()->delete(local_user(), 'twitter', 'import');
+		DI::pConfig()->delete(local_user(), 'twitter', 'create_user');
+		DI::pConfig()->delete(local_user(), 'twitter', 'own_id');
 	} else {
 		if (isset($_POST['twitter-pin'])) {
 			//  if the user supplied us with a PIN from Twitter, let the magic of OAuth happen
@@ -275,7 +275,7 @@ function twitter_settings_post(App $a)
 			DI::pConfig()->set(local_user(), 'twitter', 'create_user', intval($_POST['twitter-create_user']));
 
 			if (!intval($_POST['twitter-mirror'])) {
-				PConfig::delete(local_user(), 'twitter', 'lastid');
+				DI::pConfig()->delete(local_user(), 'twitter', 'lastid');
 			}
 
 			info(L10n::t('Twitter settings updated.') . EOL);
@@ -1834,7 +1834,7 @@ function twitter_fetch_own_contact(App $a, $uid)
 		if (DBA::isResult($r)) {
 			$contact_id = $r[0]["id"];
 		} else {
-			PConfig::delete($uid, 'twitter', 'own_id');
+			DI::pConfig()->delete($uid, 'twitter', 'own_id');
 		}
 	}
 

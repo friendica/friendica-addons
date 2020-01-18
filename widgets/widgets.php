@@ -30,7 +30,7 @@ function widgets_settings_post(){
 	if(! local_user())
 		return;
 	if (isset($_POST['widgets-submit'])){
-		PConfig::delete(local_user(), 'widgets', 'key');
+		DI::pConfig()->delete(local_user(), 'widgets', 'key');
 
 	}
 }

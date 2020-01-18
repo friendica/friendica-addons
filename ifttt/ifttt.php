@@ -89,7 +89,7 @@ function ifttt_settings(App $a, &$s)
 function ifttt_settings_post()
 {
 	if (!empty($_POST['ifttt-submit']) && isset($_POST['ifttt-rekey'])) {
-		PConfig::delete(local_user(), 'ifttt', 'key');
+		DI::pConfig()->delete(local_user(), 'ifttt', 'key');
 	}
 }
 

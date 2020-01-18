@@ -128,7 +128,7 @@ function catavatar_addon_settings_post(App $a, &$s)
 	}
 
 	if (!empty($_POST['catavatar-emailcat'])) {
-		PConfig::delete(local_user(), 'catavatar', 'seed');
+		DI::pConfig()->delete(local_user(), 'catavatar', 'seed');
 	}
 }
 

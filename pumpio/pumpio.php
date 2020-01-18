@@ -373,7 +373,7 @@ function pumpio_settings_post(App $a, array &$b)
 			DI::pConfig()->set(local_user(), 'pumpio', 'post_by_default', $_POST['pumpio_bydefault'] ?? false);
 
 			if (!empty($_POST['pumpio_mirror'])) {
-				PConfig::delete(local_user(), 'pumpio', 'lastdate');
+				DI::pConfig()->delete(local_user(), 'pumpio', 'lastdate');
 			}
 		}
 	}

@@ -403,25 +403,25 @@ function mailstream_addon_settings_post($a,$post) {
 		DI::pConfig()->set(local_user(), 'mailstream', 'address', $_POST['mailstream_address']);
 	}
 	else {
-		PConfig::delete(local_user(), 'mailstream', 'address');
+		DI::pConfig()->delete(local_user(), 'mailstream', 'address');
 	}
 	if ($_POST['mailstream_nolikes']) {
 		DI::pConfig()->set(local_user(), 'mailstream', 'nolikes', $_POST['mailstream_enabled']);
 	}
 	else {
-		PConfig::delete(local_user(), 'mailstream', 'nolikes');
+		DI::pConfig()->delete(local_user(), 'mailstream', 'nolikes');
 	}
 	if ($_POST['mailstream_enabled']) {
 		DI::pConfig()->set(local_user(), 'mailstream', 'enabled', $_POST['mailstream_enabled']);
 	}
 	else {
-		PConfig::delete(local_user(), 'mailstream', 'enabled');
+		DI::pConfig()->delete(local_user(), 'mailstream', 'enabled');
 	}
 	if ($_POST['mailstream_attachimg']) {
 		DI::pConfig()->set(local_user(), 'mailstream', 'attachimg', $_POST['mailstream_attachimg']);
 	}
 	else {
-		PConfig::delete(local_user(), 'mailstream', 'attachimg');
+		DI::pConfig()->delete(local_user(), 'mailstream', 'attachimg');
 	}
 }
 
