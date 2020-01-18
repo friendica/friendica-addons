@@ -588,7 +588,7 @@ function twitter_post_hook(App $a, array &$b)
 
 	Logger::notice('twitter post invoked', ['id' => $b['id'], 'guid' => $b['guid']]);
 
-	PConfig::load($b['uid'], 'twitter');
+	DI::pConfig()->load($b['uid'], 'twitter');
 
 	$ckey    = Config::get('twitter', 'consumerkey');
 	$csecret = Config::get('twitter', 'consumersecret');
