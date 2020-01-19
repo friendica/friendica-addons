@@ -48,7 +48,7 @@ function geocoordinates_resolve_item(&$item)
 	$coords[0] = round($coords[0], 5);
 	$coords[1] = round($coords[1], 5);
 
-	$result = Cache::get("geocoordinates:".$language.":".$coords[0]."-".$coords[1]);
+	$result = DI::cache()->get("geocoordinates:".$language.":".$coords[0]."-".$coords[1]);
 	if (!is_null($result)) {
 		$item["location"] = $result;
 		return;
@@ -78,7 +78,7 @@ function geocoordinates_resolve_item(&$item)
 	Logger::log("Got location for coordinates ".$coords[0]."-".$coords[1].": ".$item["location"], Logger::DEBUG);
 
 	if ($item["location"] != "")
-		Cache::set("geocoordinates:".$language.":".$coords[0]."-".$coords[1], $item["location"]);
+		DI::cache()->set("geocoordinates:".$language.":".$coords[0]."-".$coords[1], $item["location"]);
 }
 
 function geocoordinates_post_hook($a, &$item)

@@ -372,7 +372,7 @@ function advancedcontentfilter_put_rules_id(ServerRequestInterface $request, Res
 	}
 
 	if (!DBA::update('advancedcontentfilter_rules', $fields, ['id' => $args['id']])) {
-		throw new HTTPException\ServiceUnavaiableException(DBA::errorMessage());
+		throw new HTTPException\ServiceUnavailableException(DBA::errorMessage());
 	}
 
 	return json_encode(['message' => DI::l10n()->t('Rule successfully updated')]);
@@ -393,7 +393,7 @@ function advancedcontentfilter_delete_rules_id(ServerRequestInterface $request, 
 	}
 
 	if (!DBA::delete('advancedcontentfilter_rules', ['id' => $args['id']])) {
-		throw new HTTPException\ServiceUnavaiableException(DBA::errorMessage());
+		throw new HTTPException\ServiceUnavailableException(DBA::errorMessage());
 	}
 
 	return json_encode(['message' => DI::l10n()->t('Rule successfully deleted')]);
