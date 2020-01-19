@@ -8,7 +8,6 @@
  */
 
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\DI;
 
 function rendertime_install() {
@@ -40,7 +39,7 @@ function rendertime_page_end(Friendica\App $a, &$o)
 
 	if (is_site_admin() && (($_GET['mode'] ?? '') != 'minimal') && !DI::mode()->isMobile() && !DI::mode()->isMobile() && !$ignored) {
 
-		$o = $o . '<div class="renderinfo">' . L10n::t("Database: %s/%s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: %s, Total: %s",
+		$o = $o . '<div class="renderinfo">' . DI::l10n()->t("Database: %s/%s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: %s, Total: %s",
 				round($profiler->get('database') - $profiler->get('database_write'), 3),
 				round($profiler->get('database_write'), 3),
 				round($profiler->get('network'), 2),

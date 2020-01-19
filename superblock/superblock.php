@@ -7,7 +7,6 @@
  *
  */
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\DI;
 use Friendica\Util\Strings;
 
@@ -45,18 +44,18 @@ function superblock_addon_settings(&$a, &$s)
 	}
 
 	$s .= '<span id="settings_superblock_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_superblock_expanded\'); openClose(\'settings_superblock_inflated\');">';
-	$s .= '<h3>' . L10n::t('Superblock') . '</h3>';
+	$s .= '<h3>' . DI::l10n()->t('Superblock') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_superblock_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_superblock_expanded\'); openClose(\'settings_superblock_inflated\');">';
-	$s .= '<h3>' . L10n::t('Superblock') . '</h3>';
+	$s .= '<h3>' . DI::l10n()->t('Superblock') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="superblock-wrapper">';
-	$s .= '<label id="superblock-label" for="superblock-words">' . L10n::t('Comma separated profile URLS to block') . ' </label>';
+	$s .= '<label id="superblock-label" for="superblock-words">' . DI::l10n()->t('Comma separated profile URLS to block') . ' </label>';
 	$s .= '<textarea id="superblock-words" type="text" name="superblock-words" >' . htmlspecialchars($words) . '</textarea>';
 	$s .= '</div><div class="clear"></div>';
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="superblock-submit" name="superblock-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="superblock-submit" name="superblock-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div></div>';
 
 	return;
 }
@@ -69,7 +68,7 @@ function superblock_addon_settings_post(&$a, &$b)
 
 	if (!empty($_POST['superblock-submit'])) {
 		DI::pConfig()->set(local_user(), 'system', 'blocked',trim($_POST['superblock-words']));
-		info(L10n::t('SUPERBLOCK Settings saved.') . EOL);
+		info(DI::l10n()->t('SUPERBLOCK Settings saved.') . EOL);
 	}
 }
 
@@ -142,7 +141,7 @@ function superblock_item_photo_menu(&$a, &$b)
 		}
 	}
 
-	$b['menu'][L10n::t('Block Completely')] = 'javascript:superblockBlock(\'' . $author . '\'); return false;';
+	$b['menu'][DI::l10n()->t('Block Completely')] = 'javascript:superblockBlock(\'' . $author . '\'); return false;';
 }
 
 function superblock_module() {}
@@ -163,6 +162,6 @@ function superblock_init(&$a)
 	}
 
 	DI::pConfig()->set(local_user(), 'system', 'blocked', $words);
-	info(L10n::t('superblock settings updated') . EOL );
+	info(DI::l10n()->t('superblock settings updated') . EOL );
 	exit();
 }

@@ -9,7 +9,6 @@
  */
 use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Core\Protocol;
@@ -47,9 +46,9 @@ function discourse_settings(App $a, &$s)
 
 	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/discourse/');
 	$s .= Renderer::replaceMacros($t, [
-		'$title'   => L10n::t('Discourse'),
-		'$enabled' => ['enabled', L10n::t('Enable processing of Discourse mailing list mails'), $enabled, L10n::t('If enabled, incoming mails from Discourse will be improved so they look much better. To make it work, you have to configure the e-mail settings in Friendica. You also have to enable the mailing list mode in Discourse. Then you have to add the Discourse mail account as contact.')],
-		'$submit'  => L10n::t('Save Settings'),
+		'$title'   => DI::l10n()->t('Discourse'),
+		'$enabled' => ['enabled', DI::l10n()->t('Enable processing of Discourse mailing list mails'), $enabled, DI::l10n()->t('If enabled, incoming mails from Discourse will be improved so they look much better. To make it work, you have to configure the e-mail settings in Friendica. You also have to enable the mailing list mode in Discourse. Then you have to add the Discourse mail account as contact.')],
+		'$submit'  => DI::l10n()->t('Save Settings'),
 	]);
 }
 

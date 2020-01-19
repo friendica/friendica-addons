@@ -8,7 +8,6 @@
  *
  */
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\DI;
 use Friendica\Util\Strings;
 
@@ -40,24 +39,24 @@ function showmore_addon_settings(&$a, &$s)
 	$chars = DI::pConfig()->get(local_user(), 'showmore', 'chars', 1100);
 
 	$s .= '<span id="settings_showmore_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_showmore_expanded\'); openClose(\'settings_showmore_inflated\');">';
-	$s .= '<h3>' . L10n::t('"Show more" Settings').'</h3>';
+	$s .= '<h3>' . DI::l10n()->t('"Show more" Settings').'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_showmore_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_showmore_expanded\'); openClose(\'settings_showmore_inflated\');">';
-	$s .= '<h3>' . L10n::t('"Show more" Settings').'</h3>';
+	$s .= '<h3>' . DI::l10n()->t('"Show more" Settings').'</h3>';
 	$s .= '</span>';
 
 	$s .= '<div id="showmore-wrapper">';
 
-	$s .= '<label id="showmore-enable-label" for="showmore-enable">'.L10n::t('Enable Show More').'</label>';
+	$s .= '<label id="showmore-enable-label" for="showmore-enable">'.DI::l10n()->t('Enable Show More').'</label>';
 	$s .= '<input id="showmore-enable" type="checkbox" name="showmore-enable" value="1"'.$enable_checked.' />';
 	$s .= '<div class="clear"></div>';
-	$s .= '<label id="showmore-label" for="showmore-chars">'.L10n::t('Cutting posts after how much characters').' </label>';
+	$s .= '<label id="showmore-label" for="showmore-chars">'.DI::l10n()->t('Cutting posts after how much characters').' </label>';
 	$s .= '<input id="showmore-words" type="text" name="showmore-chars" value="'.$chars.'" />';
 	$s .= '</div><div class="clear"></div>';
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="showmore-submit" name="showmore-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div>';
-//	$s .= '<div class="showmore-desc">' . L10n::t('Use /expression/ to provide regular expressions') . '</div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="showmore-submit" name="showmore-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div>';
+//	$s .= '<div class="showmore-desc">' . DI::l10n()->t('Use /expression/ to provide regular expressions') . '</div>';
 	$s .= '</div>';
 
 	return;
@@ -74,7 +73,7 @@ function showmore_addon_settings_post(&$a, &$b)
 		$enable = (!empty($_POST['showmore-enable']) ? intval($_POST['showmore-enable']) : 0);
 		$disable = 1-$enable;
 		DI::pConfig()->set(local_user(), 'showmore', 'disable', $disable);
-		info(L10n::t('Show More Settings saved.') . EOL);
+		info(DI::l10n()->t('Show More Settings saved.') . EOL);
 	}
 }
 
@@ -134,7 +133,7 @@ function showmore_prepare_body(\Friendica\App $a, &$hook_data)
 	if ($found) {
 		$rnd = Strings::getRandomHex(8);
 		$hook_data['html'] = '<span id="showmore-teaser-' . $rnd . '" class="showmore-teaser" style="display: block;">' . $shortened . " " .
-			'<span id="showmore-wrap-' . $rnd . '" style="white-space:nowrap;" class="showmore-wrap fakelink" onclick="openClose(\'showmore-' . $rnd . '\'); openClose(\'showmore-teaser-' . $rnd . '\');" >' . L10n::t('show more') . '</span></span>' .
+			'<span id="showmore-wrap-' . $rnd . '" style="white-space:nowrap;" class="showmore-wrap fakelink" onclick="openClose(\'showmore-' . $rnd . '\'); openClose(\'showmore-teaser-' . $rnd . '\');" >' . DI::l10n()->t('show more') . '</span></span>' .
 			'<div id="showmore-' . $rnd . '" class="showmore-content" style="display: none;">' . $hook_data['html'] . '</div>';
 	}
 }

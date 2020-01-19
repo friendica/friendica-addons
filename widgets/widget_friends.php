@@ -50,6 +50,6 @@ function friends_widget_content(&$a, $conf)
 
 	</style>";
 	$o .= _abs_url(HTML::contactBlock());
-	$o .= "<a href='".DI::baseUrl()->get().'/profile/'.$a->profile['nickname']."'>". L10n::t('Connect on Friendica!') ."</a>";
+	$o .= "<a href='".DI::baseUrl()->get().'/profile/'.$a->profile['nickname']."'>". DI::l10n()->t('Connect on Friendica!') ."</a>";
 	return $o;
 }

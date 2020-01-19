@@ -9,7 +9,6 @@
 
 use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\DI;
 use Friendica\Util\Strings;
 
@@ -52,20 +51,20 @@ function blockem_addon_settings (App $a, &$s)
 	}
 
 	$s .= '<span id="settings_blockem_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_blockem_expanded\'); openClose(\'settings_blockem_inflated\');">';
-	$s .= '<h3>' . L10n::t('Blockem') . '</h3>';
+	$s .= '<h3>' . DI::l10n()->t('Blockem') . '</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_blockem_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_blockem_expanded\'); openClose(\'settings_blockem_inflated\');">';
-	$s .= '<h3>' . L10n::t('Blockem') . '</h3>';
+	$s .= '<h3>' . DI::l10n()->t('Blockem') . '</h3>';
 	$s .= '</span>';
 
 	$s .= '<div id="blockem-wrapper">';
-	$s .= '<div id="blockem-desc">'. L10n::t("Hides user's content by collapsing posts. Also replaces their avatar with generic image.") . ' </div>';
-	$s .= '<label id="blockem-label" for="blockem-words">' . L10n::t('Comma separated profile URLS:') . ' </label>';
+	$s .= '<div id="blockem-desc">'. DI::l10n()->t("Hides user's content by collapsing posts. Also replaces their avatar with generic image.") . ' </div>';
+	$s .= '<label id="blockem-label" for="blockem-words">' . DI::l10n()->t('Comma separated profile URLS:') . ' </label>';
 	$s .= '<textarea id="blockem-words" type="text" name="blockem-words" >' . htmlspecialchars($words) . '</textarea>';
 	$s .= '</div><div class="clear"></div>';
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="blockem-submit" name="blockem-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="blockem-submit" name="blockem-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div></div>';
 
 	return;
 
@@ -79,7 +78,7 @@ function blockem_addon_settings_post(App $a, array &$b)
 
 	if (!empty($_POST['blockem-submit'])) {
 		DI::pConfig()->set(local_user(), 'blockem', 'words', trim($_POST['blockem-words']));
-		info(L10n::t('BLOCKEM Settings saved.') . EOL);
+		info(DI::l10n()->t('BLOCKEM Settings saved.') . EOL);
 	}
 }
 
@@ -141,7 +140,7 @@ function blockem_prepare_body_content_filter(App $a, array &$hook_data)
 	}
 
 	if ($found) {
-		$hook_data['filter_reasons'][] = L10n::t('Filtered user: %s', $hook_data['item']['author-name']);
+		$hook_data['filter_reasons'][] = DI::l10n()->t('Filtered user: %s', $hook_data['item']['author-name']);
 	}
 }
 
@@ -200,9 +199,9 @@ function blockem_item_photo_menu(App $a, array &$b)
 		}
 	}
 	if ($blocked) {
-		$b['menu'][L10n::t('Unblock Author')] = 'javascript:blockemUnblock(\'' . $author . '\');';
+		$b['menu'][DI::l10n()->t('Unblock Author')] = 'javascript:blockemUnblock(\'' . $author . '\');';
 	} else {
-		$b['menu'][L10n::t('Block Author')] = 'javascript:blockemBlock(\'' . $author . '\');';
+		$b['menu'][DI::l10n()->t('Block Author')] = 'javascript:blockemBlock(\'' . $author . '\');';
 	}
 }
 
@@ -242,6 +241,6 @@ function blockem_init(App $a)
 	}
 
 	DI::pConfig()->set(local_user(), 'blockem', 'words', $words);
-	info(L10n::t('blockem settings updated') . EOL);
+	info(DI::l10n()->t('blockem settings updated') . EOL);
 	exit();
 }

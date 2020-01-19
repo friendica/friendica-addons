@@ -9,7 +9,6 @@
 use Friendica\App;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Core\Worker;
@@ -59,11 +58,11 @@ function catavatar_addon_settings(App $a, &$s)
 		'$postpost' => !empty($_POST['catavatar-morecat']) || !empty($_POST['catavatar-emailcat']),
 		'$uncache' => time(),
 		'$uid' => local_user(),
-		'$usecat' => L10n::t('Use Cat as Avatar'),
-		'$morecat' => L10n::t('More Random Cat!'),
-		'$emailcat' => L10n::t('Reset to email Cat'),
+		'$usecat' => DI::l10n()->t('Use Cat as Avatar'),
+		'$morecat' => DI::l10n()->t('More Random Cat!'),
+		'$emailcat' => DI::l10n()->t('Reset to email Cat'),
 		'$seed' => DI::pConfig()->get(local_user(), 'catavatar', 'seed', false),
-		'$header' => L10n::t('Cat Avatar Settings'),
+		'$header' => DI::l10n()->t('Cat Avatar Settings'),
 	]);
 }
 
@@ -88,7 +87,7 @@ function catavatar_addon_settings_post(App $a, &$s)
 
 		$self = DBA::selectFirst('contact', ['id'], ['uid' => local_user(), 'self' => true]);
 		if (!DBA::isResult($self)) {
-			notice(L10n::t("The cat hadn't found itself."));
+			notice(DI::l10n()->t("The cat hadn't found itself."));
 			return;
 		}
 
@@ -97,13 +96,13 @@ function catavatar_addon_settings_post(App $a, &$s)
 		$condition = ['uid' => local_user(), 'contact-id' => $self['id']];
 		$photo = DBA::selectFirst('photo', ['resource-id'], $condition);
 		if (!DBA::isResult($photo)) {
-			notice(L10n::t('There was an error, the cat ran away.'));
+			notice(DI::l10n()->t('There was an error, the cat ran away.'));
 			return;
 		}
 
 		DBA::update('photo', ['profile' => false], ['profile' => true, 'uid' => local_user()]);
 
-		$fields = ['profile' => true, 'album' => L10n::t('Profile Photos'), 'contact-id' => 0];
+		$fields = ['profile' => true, 'album' => DI::l10n()->t('Profile Photos'), 'contact-id' => 0];
 		DBA::update('photo', $fields, ['uid' => local_user(), 'resource-id' => $photo['resource-id']]);
 
 		Photo::importProfilePhoto($url, local_user(), $self['id']);
@@ -118,7 +117,7 @@ function catavatar_addon_settings_post(App $a, &$s)
 
 		Worker::add(PRIORITY_LOW, 'ProfileUpdate', local_user());
 
-		info(L10n::t('Meow!'));
+		info(DI::l10n()->t('Meow!'));
 		return;
 	}
 

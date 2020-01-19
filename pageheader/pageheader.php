@@ -11,7 +11,6 @@
 use Friendica\App;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
@@ -35,9 +34,9 @@ function pageheader_addon_admin(App &$a, &$s)
 
 	$t = Renderer::getMarkupTemplate('admin.tpl', __DIR__);
 	$s .= Renderer::replaceMacros($t, [
-		'$title' => L10n::t('"pageheader" Settings'),
-		'$phwords' => ['pageheader-words', L10n::t('Message'), $words, L10n::t('Message to display on every page on this server (or put a pageheader.html file in your docroot)')],
-		'$submit' => L10n::t('Save Settings')
+		'$title' => DI::l10n()->t('"pageheader" Settings'),
+		'$phwords' => ['pageheader-words', DI::l10n()->t('Message'), $words, DI::l10n()->t('Message to display on every page on this server (or put a pageheader.html file in your docroot)')],
+		'$submit' => DI::l10n()->t('Save Settings')
 	]);
 
 	return;
@@ -53,7 +52,7 @@ function pageheader_addon_admin_post(App $a)
 		if (isset($_POST['pageheader-words'])) {
 			Config::set('pageheader', 'text', trim(strip_tags($_POST['pageheader-words'])));
 		}
-		info(L10n::t('pageheader Settings saved.'));
+		info(DI::l10n()->t('pageheader Settings saved.'));
 	}
 }
 

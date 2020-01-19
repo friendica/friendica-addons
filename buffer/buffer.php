@@ -11,7 +11,6 @@ require 'addon/buffer/bufferapp.php';
 use Friendica\App;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
@@ -48,7 +47,7 @@ function buffer_module()
 function buffer_content(App $a)
 {
 	if (! local_user()) {
-		notice(L10n::t('Permission denied.') . EOL);
+		notice(DI::l10n()->t('Permission denied.') . EOL);
 		return '';
 	}
 
@@ -77,10 +76,10 @@ function buffer_addon_admin(App $a, &$o)
 	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/buffer/");
 
 	$o = Renderer::replaceMacros($t, [
-		'$submit' => L10n::t('Save Settings'),
+		'$submit' => DI::l10n()->t('Save Settings'),
 		// name, label, value, help, [extra values]
-		'$client_id' => ['client_id', L10n::t('Client ID'), Config::get('buffer', 'client_id'), ''],
-		'$client_secret' => ['client_secret', L10n::t('Client Secret'), Config::get('buffer', 'client_secret'), ''],
+		'$client_id' => ['client_id', DI::l10n()->t('Client ID'), Config::get('buffer', 'client_id'), ''],
+		'$client_secret' => ['client_secret', DI::l10n()->t('Client Secret'), Config::get('buffer', 'client_secret'), ''],
 	]);
 }
 
@@ -92,13 +91,13 @@ function buffer_addon_admin_post(App $a)
 	Config::set('buffer', 'client_id'    , $client_id);
 	Config::set('buffer', 'client_secret', $client_secret);
 
-	info(L10n::t('Settings updated.'). EOL);
+	info(DI::l10n()->t('Settings updated.'). EOL);
 }
 
 function buffer_connect(App $a)
 {
 	if (isset($_REQUEST["error"])) {
-		$o = L10n::t('Error when registering buffer connection:')." ".$_REQUEST["error"];
+		$o = DI::l10n()->t('Error when registering buffer connection:')." ".$_REQUEST["error"];
 		return $o;
 	}
 
@@ -118,8 +117,8 @@ function buffer_connect(App $a)
 		$o = '<a href="' . $buffer->get_login_url() . '">Connect to Buffer!</a>';
 	} else {
 		Logger::log("buffer_connect: authenticated");
-		$o = L10n::t("You are now authenticated to buffer. ");
-		$o .= '<br /><a href="' . DI::baseUrl()->get() . '/settings/connectors">' . L10n::t("return to the connector page") . '</a>';
+		$o = DI::l10n()->t("You are now authenticated to buffer. ");
+		$o .= '<br /><a href="' . DI::baseUrl()->get() . '/settings/connectors">' . DI::l10n()->t("return to the connector page") . '</a>';
 		DI::pConfig()->set(local_user(), 'buffer','access_token', $buffer->access_token);
 	}
 
@@ -137,7 +136,7 @@ function buffer_jot_nets(App $a, array &$jotnets_fields)
 			'type' => 'checkbox',
 			'field' => [
 				'buffer_enable',
-				L10n::t('Post to Buffer'),
+				DI::l10n()->t('Post to Buffer'),
 				DI::pConfig()->get(local_user(), 'buffer', 'post_by_default')
 			]
 		];
@@ -166,11 +165,11 @@ function buffer_settings(App $a, &$s)
 	/* Add some HTML to the existing form */
 
 	$s .= '<span id="settings_buffer_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_buffer_expanded\'); openClose(\'settings_buffer_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/buffer.png" /><h3 class="connector">'. L10n::t('Buffer Export').'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/buffer.png" /><h3 class="connector">'. DI::l10n()->t('Buffer Export').'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_buffer_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_buffer_expanded\'); openClose(\'settings_buffer_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/buffer.png" /><h3 class="connector">'. L10n::t('Buffer Export').'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/buffer.png" /><h3 class="connector">'. DI::l10n()->t('Buffer Export').'</h3>';
 	$s .= '</span>';
 
 	$client_id = Config::get("buffer", "client_id");
@@ -181,21 +180,21 @@ function buffer_settings(App $a, &$s)
 
 	if ($access_token == "") {
 		$s .= '<div id="buffer-authenticate-wrapper">';
-		$s .= '<a href="'.DI::baseUrl()->get().'/buffer/connect">'.L10n::t("Authenticate your Buffer connection").'</a>';
+		$s .= '<a href="'.DI::baseUrl()->get().'/buffer/connect">'.DI::l10n()->t("Authenticate your Buffer connection").'</a>';
 		$s .= '</div><div class="clear"></div>';
 	} else {
 		$s .= '<div id="buffer-enable-wrapper">';
-		$s .= '<label id="buffer-enable-label" for="buffer-checkbox">' . L10n::t('Enable Buffer Post Addon') . '</label>';
+		$s .= '<label id="buffer-enable-label" for="buffer-checkbox">' . DI::l10n()->t('Enable Buffer Post Addon') . '</label>';
 		$s .= '<input id="buffer-checkbox" type="checkbox" name="buffer" value="1" ' . $checked . '/>';
 		$s .= '</div><div class="clear"></div>';
 
 		$s .= '<div id="buffer-bydefault-wrapper">';
-		$s .= '<label id="buffer-bydefault-label" for="buffer-bydefault">' . L10n::t('Post to Buffer by default') . '</label>';
+		$s .= '<label id="buffer-bydefault-label" for="buffer-bydefault">' . DI::l10n()->t('Post to Buffer by default') . '</label>';
 		$s .= '<input id="buffer-bydefault" type="checkbox" name="buffer_bydefault" value="1" ' . $def_checked . '/>';
 		$s .= '</div><div class="clear"></div>';
 
 		$s .= '<div id="buffer-delete-wrapper">';
-		$s .= '<label id="buffer-delete-label" for="buffer-delete">' . L10n::t('Check to delete this preset') . '</label>';
+		$s .= '<label id="buffer-delete-label" for="buffer-delete">' . DI::l10n()->t('Check to delete this preset') . '</label>';
 		$s .= '<input id="buffer-delete" type="checkbox" name="buffer_delete" value="1" />';
 		$s .= '</div><div class="clear"></div>';
 
@@ -207,7 +206,7 @@ function buffer_settings(App $a, &$s)
 		$profiles = $buffer->go('/profiles');
 		if (is_array($profiles)) {
 			$s .= '<div id="buffer-accounts-wrapper">';
-			$s .= L10n::t("Posts are going to all accounts that are enabled by default:");
+			$s .= DI::l10n()->t("Posts are going to all accounts that are enabled by default:");
 			$s .= "<ul>";
 			foreach ($profiles as $profile) {
 				if (!$profile->default)
@@ -227,7 +226,7 @@ function buffer_settings(App $a, &$s)
 
 	/* provide a submit button */
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="buffer-submit" name="buffer-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="buffer-submit" name="buffer-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div></div>';
 }
 
 

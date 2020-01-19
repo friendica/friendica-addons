@@ -10,7 +10,6 @@
 
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\DI;
 use Friendica\Util\DateTimeFormat;
@@ -46,7 +45,7 @@ function ljpost_jot_nets(\Friendica\App &$a, array &$jotnets_fields)
 		    'type' => 'checkbox',
 		    'field' => [
 			    'ljpost_enable',
-			    L10n::t('Post to LiveJournal'),
+			    DI::l10n()->t('Post to LiveJournal'),
 			    DI::pConfig()->get(local_user(),'ljpost','post_by_default')
 		    ]
 	    ];
@@ -80,30 +79,30 @@ function ljpost_settings(&$a,&$s) {
     /* Add some HTML to the existing form */
 
     $s .= '<div class="settings-block">';
-    $s .= '<h3>' . L10n::t('LiveJournal Post Settings') . '</h3>';
+    $s .= '<h3>' . DI::l10n()->t('LiveJournal Post Settings') . '</h3>';
     $s .= '<div id="ljpost-enable-wrapper">';
-    $s .= '<label id="ljpost-enable-label" for="ljpost-checkbox">' . L10n::t('Enable LiveJournal Post Addon') . '</label>';
+    $s .= '<label id="ljpost-enable-label" for="ljpost-checkbox">' . DI::l10n()->t('Enable LiveJournal Post Addon') . '</label>';
     $s .= '<input id="ljpost-checkbox" type="checkbox" name="ljpost" value="1" ' . $checked . '/>';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="ljpost-username-wrapper">';
-    $s .= '<label id="ljpost-username-label" for="ljpost-username">' . L10n::t('LiveJournal username') . '</label>';
+    $s .= '<label id="ljpost-username-label" for="ljpost-username">' . DI::l10n()->t('LiveJournal username') . '</label>';
     $s .= '<input id="ljpost-username" type="text" name="lj_username" value="' . $lj_username . '" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="ljpost-password-wrapper">';
-    $s .= '<label id="ljpost-password-label" for="ljpost-password">' . L10n::t('LiveJournal password') . '</label>';
+    $s .= '<label id="ljpost-password-label" for="ljpost-password">' . DI::l10n()->t('LiveJournal password') . '</label>';
     $s .= '<input id="ljpost-password" type="password" name="lj_password" value="' . $lj_password . '" />';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="ljpost-bydefault-wrapper">';
-    $s .= '<label id="ljpost-bydefault-label" for="ljpost-bydefault">' . L10n::t('Post to LiveJournal by default') . '</label>';
+    $s .= '<label id="ljpost-bydefault-label" for="ljpost-bydefault">' . DI::l10n()->t('Post to LiveJournal by default') . '</label>';
     $s .= '<input id="ljpost-bydefault" type="checkbox" name="lj_bydefault" value="1" ' . $def_checked . '/>';
     $s .= '</div><div class="clear"></div>';
 
     /* provide a submit button */
 
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="ljpost-submit" name="ljpost-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
+    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="ljpost-submit" name="ljpost-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div></div>';
 
 }
 

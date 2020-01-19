@@ -10,7 +10,6 @@
 
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\DI;
 use Friendica\Util\DateTimeFormat;
@@ -46,7 +45,7 @@ function ijpost_jot_nets(\Friendica\App &$a, array &$jotnets_fields)
 			'type' => 'checkbox',
 			'field' => [
 				'ijpost_enable',
-				L10n::t('Post to Insanejournal'),
+				DI::l10n()->t('Post to Insanejournal'),
 				DI::pConfig()->get(local_user(), 'ijpost', 'post_by_default')
 			]
 		];
@@ -78,35 +77,35 @@ function ijpost_settings(&$a, &$s)
 
 	/* Add some HTML to the existing form */
 	$s .= '<span id="settings_ijpost_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_ijpost_expanded\'); openClose(\'settings_ijpost_inflated\');">';
-	$s .= '<img class="connector" src="images/insanejournal.gif" /><h3 class="connector">'. L10n::t("InsaneJournal Export").'</h3>';
+	$s .= '<img class="connector" src="images/insanejournal.gif" /><h3 class="connector">'. DI::l10n()->t("InsaneJournal Export").'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_ijpost_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_ijpost_expanded\'); openClose(\'settings_ijpost_inflated\');">';
-	$s .= '<img class="connector" src="images/insanejournal.gif" /><h3 class="connector">'. L10n::t("InsaneJournal Export").'</h3>';
+	$s .= '<img class="connector" src="images/insanejournal.gif" /><h3 class="connector">'. DI::l10n()->t("InsaneJournal Export").'</h3>';
 	$s .= '</span>';
 
 	$s .= '<div id="ijpost-enable-wrapper">';
-	$s .= '<label id="ijpost-enable-label" for="ijpost-checkbox">' . L10n::t('Enable InsaneJournal Post Addon') . '</label>';
+	$s .= '<label id="ijpost-enable-label" for="ijpost-checkbox">' . DI::l10n()->t('Enable InsaneJournal Post Addon') . '</label>';
 	$s .= '<input id="ijpost-checkbox" type="checkbox" name="ijpost" value="1" ' . $checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="ijpost-username-wrapper">';
-	$s .= '<label id="ijpost-username-label" for="ijpost-username">' . L10n::t('InsaneJournal username') . '</label>';
+	$s .= '<label id="ijpost-username-label" for="ijpost-username">' . DI::l10n()->t('InsaneJournal username') . '</label>';
 	$s .= '<input id="ijpost-username" type="text" name="ij_username" value="' . $ij_username . '" />';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="ijpost-password-wrapper">';
-	$s .= '<label id="ijpost-password-label" for="ijpost-password">' . L10n::t('InsaneJournal password') . '</label>';
+	$s .= '<label id="ijpost-password-label" for="ijpost-password">' . DI::l10n()->t('InsaneJournal password') . '</label>';
 	$s .= '<input id="ijpost-password" type="password" name="ij_password" value="' . $ij_password . '" />';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="ijpost-bydefault-wrapper">';
-	$s .= '<label id="ijpost-bydefault-label" for="ijpost-bydefault">' . L10n::t('Post to InsaneJournal by default') . '</label>';
+	$s .= '<label id="ijpost-bydefault-label" for="ijpost-bydefault">' . DI::l10n()->t('Post to InsaneJournal by default') . '</label>';
 	$s .= '<input id="ijpost-bydefault" type="checkbox" name="ij_bydefault" value="1" ' . $def_checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
 	/* provide a submit button */
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="ijpost-submit" name="ijpost-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="ijpost-submit" name="ijpost-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div></div>';
 }
 
 function ijpost_settings_post(&$a, &$b)

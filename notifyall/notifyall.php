@@ -11,10 +11,8 @@
 use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Config;
-use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\Core\System;
 use Friendica\DI;
 use Friendica\Util\Emailer;
 
@@ -32,7 +30,7 @@ function notifyall_module() {}
 
 function notifyall_addon_admin(App $a, &$o)
 {
-	$o = '<div></div>&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . DI::baseUrl()->get() . '/notifyall">' . L10n::t('Send email to all members') . '</a></br/>';
+	$o = '<div></div>&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . DI::baseUrl()->get() . '/notifyall">' . DI::l10n()->t('Send email to all members') . '</a></br/>';
 }
 
 
@@ -51,9 +49,9 @@ function notifyall_post(App $a)
 	$sitename = Config::get('config', 'sitename');
 
 	if (empty(Config::get('config', 'admin_name'))) {
-		$sender_name = '"' . L10n::t('%s Administrator', $sitename) . '"';
+		$sender_name = '"' . DI::l10n()->t('%s Administrator', $sitename) . '"';
 	} else {
-		$sender_name = '"' . L10n::t('%1$s, %2$s Administrator', Config::get('config', 'admin_name'), $sitename) . '"';
+		$sender_name = '"' . DI::l10n()->t('%1$s, %2$s Administrator', Config::get('config', 'admin_name'), $sitename) . '"';
 	}
 
 	if (!Config::get('config', 'sender_email')) {
@@ -80,7 +78,7 @@ function notifyall_post(App $a)
 	$recips = q("SELECT DISTINCT `email` FROM `user` WHERE `verified` AND NOT `account_removed` AND NOT `account_expired` $sql_extra");
 
 	if (! $recips) {
-		notice(L10n::t('No recipients found.') . EOL);
+		notice(DI::l10n()->t('No recipients found.') . EOL);
 		return;
 	}
 
@@ -96,7 +94,7 @@ function notifyall_post(App $a)
 		]);
 	}
 
-	notice(L10n::t('Emails sent'));
+	notice(DI::l10n()->t('Emails sent'));
 	DI::baseUrl()->redirect('admin');
 }
 
@@ -106,14 +104,14 @@ function notifyall_content(&$a)
 		return;
 	}
 
-	$title = L10n::t('Send email to all members of this Friendica instance.');
+	$title = DI::l10n()->t('Send email to all members of this Friendica instance.');
 
 	$o = Renderer::replaceMacros(Renderer::getMarkupTemplate('notifyall_form.tpl', 'addon/notifyall/'), [
 		'$title' => $title,
 		'$text' => htmlspecialchars($_REQUEST['text'] ?? ''),
-		'$subject' => ['subject', L10n::t('Message subject'), $_REQUEST['subject'] ?? '',''],
-		'$test' => ['test',L10n::t('Test mode (only send to administrator)'), 0,''],
-		'$submit' => L10n::t('Submit')
+		'$subject' => ['subject', DI::l10n()->t('Message subject'), $_REQUEST['subject'] ?? '',''],
+		'$test' => ['test',DI::l10n()->t('Test mode (only send to administrator)'), 0,''],
+		'$submit' => DI::l10n()->t('Submit')
 	]);
 
 	return $o;

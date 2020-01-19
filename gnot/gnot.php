@@ -8,7 +8,6 @@
  *
  */
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
@@ -49,7 +48,7 @@ function gnot_settings_post($a,$post) {
 		return;
 
 	DI::pConfig()->set(local_user(),'gnot','enable',intval($_POST['gnot']));
-	info(L10n::t('Gnot settings updated.') . EOL);
+	info(DI::l10n()->t('Gnot settings updated.') . EOL);
 }
 
 
@@ -81,11 +80,11 @@ function gnot_settings(&$a,&$s) {
 	/* Add some HTML to the existing form */
 
 	$s .= Renderer::replaceMacros($t, [
-		'$title' => L10n::t('Gnot Settings') ,
-		'$submit' => L10n::t('Save Settings'),
-		'$enable' => L10n::t('Enable this addon?'),
+		'$title' => DI::l10n()->t('Gnot Settings') ,
+		'$submit' => DI::l10n()->t('Save Settings'),
+		'$enable' => DI::l10n()->t('Enable this addon?'),
 		'$enabled' => $gnot_checked,
-		'$text' => L10n::t("Allows threading of email comment notifications on Gmail and anonymising the subject line.") 
+		'$text' => DI::l10n()->t("Allows threading of email comment notifications on Gmail and anonymising the subject line.")
 	]);
 }
 
@@ -94,5 +93,5 @@ function gnot_enotify_mail(&$a,&$b) {
 	if((! $b['uid']) || (! intval(DI::pConfig()->get($b['uid'], 'gnot','enable'))))
 		return;
 	if($b['type'] == NOTIFY_COMMENT)
-		$b['subject'] = L10n::t('[Friendica:Notify] Comment to conversation #%d', $b['parent']);
+		$b['subject'] = DI::l10n()->t('[Friendica:Notify] Comment to conversation #%d', $b['parent']);
 }

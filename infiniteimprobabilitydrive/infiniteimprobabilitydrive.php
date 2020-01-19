@@ -6,7 +6,6 @@
 * Author: Thomas Willingham <https://kakste.com/profile/beardyunixer>
 */
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\DI;
 
 function infiniteimprobabilitydrive_install()
@@ -21,7 +20,7 @@ function infiniteimprobabilitydrive_uninstall()
 
 function infiniteimprobabilitydrive_app_menu($a, &$b)
 {
-	$b['app_menu'][] = '<div class="app-title"><a href="infiniteimprobabilitydrive">' . L10n::t('Infinite Improbability Drive') . '</a></div>';
+	$b['app_menu'][] = '<div class="app-title"><a href="infiniteimprobabilitydrive">' . DI::l10n()->t('Infinite Improbability Drive') . '</a></div>';
 }
 
 

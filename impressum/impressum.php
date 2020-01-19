@@ -10,7 +10,6 @@
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
@@ -59,7 +58,7 @@ function impressum_load_config(\Friendica\App $a, ConfigFileLoader $loader)
 }
 
 function impressum_show($a,&$b) {
-    $b .= '<h3>'.L10n::t('Impressum').'</h3>';
+    $b .= '<h3>'.DI::l10n()->t('Impressum').'</h3>';
     $owner = Config::get('impressum', 'owner');
     $owner_profile = Config::get('impressum','ownerprofile');
     $postal = ProxyUtils::proxifyHtml(BBCode::convert(Config::get('impressum', 'postal')));
@@ -72,18 +71,18 @@ function impressum_show($a,&$b) {
             $tmp = $owner;
         }
         if (strlen($email)) {
-            $b .= '<p><strong>'.L10n::t('Site Owner').'</strong>: '. $tmp .'<br /><strong>'.L10n::t('Email Address').'</strong>: '.$email.'</p>';
+            $b .= '<p><strong>'.DI::l10n()->t('Site Owner').'</strong>: '. $tmp .'<br /><strong>'.DI::l10n()->t('Email Address').'</strong>: '.$email.'</p>';
         } else {
-            $b .= '<p><strong>'.L10n::t('Site Owner').'</strong>: '. $tmp .'</p>';
+            $b .= '<p><strong>'.DI::l10n()->t('Site Owner').'</strong>: '. $tmp .'</p>';
         }
         if (strlen($postal)) {
-            $b .= '<p><strong>'.L10n::t('Postal Address').'</strong><br />'. $postal .'</p>';
+            $b .= '<p><strong>'.DI::l10n()->t('Postal Address').'</strong><br />'. $postal .'</p>';
         }
         if (strlen($notes)) {
             $b .= '<p>'.$notes.'</p>';
         }
     } else {
-        $b .= '<p>'.L10n::t('The impressum addon needs to be configured!<br />Please add at least the <tt>owner</tt> variable to your config file. For other variables please refer to the README file of the addon.').'</p>';
+        $b .= '<p>'.DI::l10n()->t('The impressum addon needs to be configured!<br />Please add at least the <tt>owner</tt> variable to your config file. For other variables please refer to the README file of the addon.').'</p>';
     }
 }
 
@@ -100,17 +99,17 @@ function impressum_addon_admin_post (&$a) {
     Config::set('impressum','email',strip_tags($email));
     Config::set('impressum','notes',strip_tags($notes));
     Config::set('impressum','footer_text',strip_tags($footer_text));
-    info(L10n::t('Settings updated.'). EOL );
+    info(DI::l10n()->t('Settings updated.'). EOL );
 }
 function impressum_addon_admin (&$a, &$o) {
     $t = Renderer::getMarkupTemplate( "admin.tpl", "addon/impressum/" );
     $o = Renderer::replaceMacros($t, [
-        '$submit' => L10n::t('Save Settings'),
-        '$owner' => ['owner', L10n::t('Site Owner'), Config::get('impressum','owner'), L10n::t('The page operators name.')],
-        '$ownerprofile' => ['ownerprofile', L10n::t('Site Owners Profile'), Config::get('impressum','ownerprofile'), L10n::t('Profile address of the operator.')],
-        '$postal' => ['postal', L10n::t('Postal Address'), Config::get('impressum','postal'), L10n::t('How to contact the operator via snail mail. You can use BBCode here.')],
-        '$notes' => ['notes', L10n::t('Notes'), Config::get('impressum','notes'), L10n::t('Additional notes that are displayed beneath the contact information. You can use BBCode here.')],
-        '$email' => ['email', L10n::t('Email Address'), Config::get('impressum','email'), L10n::t('How to contact the operator via email. (will be displayed obfuscated)')],
-        '$footer_text' => ['footer_text', L10n::t('Footer note'), Config::get('impressum','footer_text'), L10n::t('Text for the footer. You can use BBCode here.')],
+        '$submit' => DI::l10n()->t('Save Settings'),
+        '$owner' => ['owner', DI::l10n()->t('Site Owner'), Config::get('impressum','owner'), DI::l10n()->t('The page operators name.')],
+        '$ownerprofile' => ['ownerprofile', DI::l10n()->t('Site Owners Profile'), Config::get('impressum','ownerprofile'), DI::l10n()->t('Profile address of the operator.')],
+        '$postal' => ['postal', DI::l10n()->t('Postal Address'), Config::get('impressum','postal'), DI::l10n()->t('How to contact the operator via snail mail. You can use BBCode here.')],
+        '$notes' => ['notes', DI::l10n()->t('Notes'), Config::get('impressum','notes'), DI::l10n()->t('Additional notes that are displayed beneath the contact information. You can use BBCode here.')],
+        '$email' => ['email', DI::l10n()->t('Email Address'), Config::get('impressum','email'), DI::l10n()->t('How to contact the operator via email. (will be displayed obfuscated)')],
+        '$footer_text' => ['footer_text', DI::l10n()->t('Footer note'), Config::get('impressum','footer_text'), DI::l10n()->t('Text for the footer. You can use BBCode here.')],
     ]);
 }

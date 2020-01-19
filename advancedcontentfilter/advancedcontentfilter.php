@@ -37,7 +37,6 @@ use Friendica\App;
 use Friendica\BaseModule;
 use Friendica\Content\Text\Markdown;
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
@@ -140,7 +139,7 @@ function advancedcontentfilter_prepare_body_content_filter(App $a, &$hook_data)
 			}
 
 			if ($found) {
-				$hook_data['filter_reasons'][] = L10n::t('Filtered by rule: %s', $rule['name']);
+				$hook_data['filter_reasons'][] = DI::l10n()->t('Filtered by rule: %s', $rule['name']);
 				break;
 			}
 		}
@@ -154,7 +153,7 @@ function advancedcontentfilter_addon_settings(App $a, &$s)
 		return;
 	}
 
-	$advancedcontentfilter = L10n::t('Advanced Content Filter');
+	$advancedcontentfilter = DI::l10n()->t('Advanced Content Filter');
 
 	$s .= <<<HTML
 		<span class="settings-block fakelink" style="display: block;"><h3><a href="advancedcontentfilter">$advancedcontentfilter <i class="glyphicon glyphicon-share"></i></a></h3></span>
@@ -210,27 +209,27 @@ function advancedcontentfilter_content(App $a)
 		$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/advancedcontentfilter/');
 		return Renderer::replaceMacros($t, [
 			'$messages' => [
-				'backtosettings'    => L10n::t('Back to Addon Settings'),
-				'title'             => L10n::t('Advanced Content Filter'),
-				'add_a_rule'        => L10n::t('Add a Rule'),
-				'help'              => L10n::t('Help'),
-				'intro'             => L10n::t('Add and manage your personal content filter rules in this screen. Rules have a name and an arbitrary expression that will be matched against post data. For a complete reference of the available operations and variables, check the help page.'),
-				'your_rules'        => L10n::t('Your rules'),
-				'no_rules'          => L10n::t('You have no rules yet! Start adding one by clicking on the button above next to the title.'),
-				'disabled'          => L10n::t('Disabled'),
-				'enabled'           => L10n::t('Enabled'),
-				'disable_this_rule' => L10n::t('Disable this rule'),
-				'enable_this_rule'  => L10n::t('Enable this rule'),
-				'edit_this_rule'    => L10n::t('Edit this rule'),
-				'edit_the_rule'     => L10n::t('Edit the rule'),
-				'save_this_rule'    => L10n::t('Save this rule'),
-				'delete_this_rule'  => L10n::t('Delete this rule'),
-				'rule'              => L10n::t('Rule'),
-				'close'             => L10n::t('Close'),
-				'addtitle'          => L10n::t('Add new rule'),
-				'rule_name'         => L10n::t('Rule Name'),
-				'rule_expression'   => L10n::t('Rule Expression'),
-				'cancel'            => L10n::t('Cancel'),
+				'backtosettings'    => DI::l10n()->t('Back to Addon Settings'),
+				'title'             => DI::l10n()->t('Advanced Content Filter'),
+				'add_a_rule'        => DI::l10n()->t('Add a Rule'),
+				'help'              => DI::l10n()->t('Help'),
+				'intro'             => DI::l10n()->t('Add and manage your personal content filter rules in this screen. Rules have a name and an arbitrary expression that will be matched against post data. For a complete reference of the available operations and variables, check the help page.'),
+				'your_rules'        => DI::l10n()->t('Your rules'),
+				'no_rules'          => DI::l10n()->t('You have no rules yet! Start adding one by clicking on the button above next to the title.'),
+				'disabled'          => DI::l10n()->t('Disabled'),
+				'enabled'           => DI::l10n()->t('Enabled'),
+				'disable_this_rule' => DI::l10n()->t('Disable this rule'),
+				'enable_this_rule'  => DI::l10n()->t('Enable this rule'),
+				'edit_this_rule'    => DI::l10n()->t('Edit this rule'),
+				'edit_the_rule'     => DI::l10n()->t('Edit the rule'),
+				'save_this_rule'    => DI::l10n()->t('Save this rule'),
+				'delete_this_rule'  => DI::l10n()->t('Delete this rule'),
+				'rule'              => DI::l10n()->t('Rule'),
+				'close'             => DI::l10n()->t('Close'),
+				'addtitle'          => DI::l10n()->t('Add new rule'),
+				'rule_name'         => DI::l10n()->t('Rule Name'),
+				'rule_expression'   => DI::l10n()->t('Rule Expression'),
+				'cancel'            => DI::l10n()->t('Cancel'),
 			],
 			'$current_theme' => $a->getCurrentTheme(),
 			'$rules' => advancedcontentfilter_get_rules(),
@@ -297,7 +296,7 @@ function advancedcontentfilter_build_fields($data)
 function advancedcontentfilter_get_rules()
 {
 	if (!local_user()) {
-		throw new HTTPException\UnauthorizedException(L10n::t('You must be logged in to use this method'));
+		throw new HTTPException\UnauthorizedException(DI::l10n()->t('You must be logged in to use this method'));
 	}
 
 	$rules = DBA::toArray(DBA::select('advancedcontentfilter_rules', [], ['uid' => local_user()]));
@@ -308,7 +307,7 @@ function advancedcontentfilter_get_rules()
 function advancedcontentfilter_get_rules_id(ServerRequestInterface $request, ResponseInterface $response, $args)
 {
 	if (!local_user()) {
-		throw new HTTPException\UnauthorizedException(L10n::t('You must be logged in to use this method'));
+		throw new HTTPException\UnauthorizedException(DI::l10n()->t('You must be logged in to use this method'));
 	}
 
 	$rule = DBA::selectFirst('advancedcontentfilter_rules', [], ['id' => $args['id'], 'uid' => local_user()]);
@@ -319,11 +318,11 @@ function advancedcontentfilter_get_rules_id(ServerRequestInterface $request, Res
 function advancedcontentfilter_post_rules(ServerRequestInterface $request)
 {
 	if (!local_user()) {
-		throw new HTTPException\UnauthorizedException(L10n::t('You must be logged in to use this method'));
+		throw new HTTPException\UnauthorizedException(DI::l10n()->t('You must be logged in to use this method'));
 	}
 
 	if (!BaseModule::checkFormSecurityToken()) {
-		throw new HTTPException\BadRequestException(L10n::t('Invalid form security token, please refresh the page.'));
+		throw new HTTPException\BadRequestException(DI::l10n()->t('Invalid form security token, please refresh the page.'));
 	}
 
 	$data = json_decode($request->getBody(), true);
@@ -335,7 +334,7 @@ function advancedcontentfilter_post_rules(ServerRequestInterface $request)
 	}
 
 	if (empty($fields['name']) || empty($fields['expression'])) {
-		throw new HTTPException\BadRequestException(L10n::t('The rule name and expression are required.'));
+		throw new HTTPException\BadRequestException(DI::l10n()->t('The rule name and expression are required.'));
 	}
 
 	$fields['uid'] = local_user();
@@ -347,21 +346,21 @@ function advancedcontentfilter_post_rules(ServerRequestInterface $request)
 
 	$rule = DBA::selectFirst('advancedcontentfilter_rules', [], ['id' => DBA::lastInsertId()]);
 
-	return json_encode(['message' => L10n::t('Rule successfully added'), 'rule' => $rule]);
+	return json_encode(['message' => DI::l10n()->t('Rule successfully added'), 'rule' => $rule]);
 }
 
 function advancedcontentfilter_put_rules_id(ServerRequestInterface $request, ResponseInterface $response, $args)
 {
 	if (!local_user()) {
-		throw new HTTPException\UnauthorizedException(L10n::t('You must be logged in to use this method'));
+		throw new HTTPException\UnauthorizedException(DI::l10n()->t('You must be logged in to use this method'));
 	}
 
 	if (!BaseModule::checkFormSecurityToken()) {
-		throw new HTTPException\BadRequestException(L10n::t('Invalid form security token, please refresh the page.'));
+		throw new HTTPException\BadRequestException(DI::l10n()->t('Invalid form security token, please refresh the page.'));
 	}
 
 	if (!DBA::exists('advancedcontentfilter_rules', ['id' => $args['id'], 'uid' => local_user()])) {
-		throw new HTTPException\NotFoundException(L10n::t('Rule doesn\'t exist or doesn\'t belong to you.'));
+		throw new HTTPException\NotFoundException(DI::l10n()->t('Rule doesn\'t exist or doesn\'t belong to you.'));
 	}
 
 	$data = json_decode($request->getBody(), true);
@@ -373,41 +372,41 @@ function advancedcontentfilter_put_rules_id(ServerRequestInterface $request, Res
 	}
 
 	if (!DBA::update('advancedcontentfilter_rules', $fields, ['id' => $args['id']])) {
-		throw new HTTPException\ServiceUnavaiableException(DBA::errorMessage());
+		throw new HTTPException\ServiceUnavailableException(DBA::errorMessage());
 	}
 
-	return json_encode(['message' => L10n::t('Rule successfully updated')]);
+	return json_encode(['message' => DI::l10n()->t('Rule successfully updated')]);
 }
 
 function advancedcontentfilter_delete_rules_id(ServerRequestInterface $request, ResponseInterface $response, $args)
 {
 	if (!local_user()) {
-		throw new HTTPException\UnauthorizedException(L10n::t('You must be logged in to use this method'));
+		throw new HTTPException\UnauthorizedException(DI::l10n()->t('You must be logged in to use this method'));
 	}
 
 	if (!BaseModule::checkFormSecurityToken()) {
-		throw new HTTPException\BadRequestException(L10n::t('Invalid form security token, please refresh the page.'));
+		throw new HTTPException\BadRequestException(DI::l10n()->t('Invalid form security token, please refresh the page.'));
 	}
 
 	if (!DBA::exists('advancedcontentfilter_rules', ['id' => $args['id'], 'uid' => local_user()])) {
-		throw new HTTPException\NotFoundException(L10n::t('Rule doesn\'t exist or doesn\'t belong to you.'));
+		throw new HTTPException\NotFoundException(DI::l10n()->t('Rule doesn\'t exist or doesn\'t belong to you.'));
 	}
 
 	if (!DBA::delete('advancedcontentfilter_rules', ['id' => $args['id']])) {
-		throw new HTTPException\ServiceUnavaiableException(DBA::errorMessage());
+		throw new HTTPException\ServiceUnavailableException(DBA::errorMessage());
 	}
 
-	return json_encode(['message' => L10n::t('Rule successfully deleted')]);
+	return json_encode(['message' => DI::l10n()->t('Rule successfully deleted')]);
 }
 
 function advancedcontentfilter_get_variables_guid(ServerRequestInterface $request, ResponseInterface $response, $args)
 {
 	if (!local_user()) {
-		throw new HTTPException\UnauthorizedException(L10n::t('You must be logged in to use this method'));
+		throw new HTTPException\UnauthorizedException(DI::l10n()->t('You must be logged in to use this method'));
 	}
 
 	if (!isset($args['guid'])) {
-		throw new HTTPException\BadRequestException(L10n::t('Missing argument: guid.'));
+		throw new HTTPException\BadRequestException(DI::l10n()->t('Missing argument: guid.'));
 	}
 
 	$condition = ["`guid` = ? AND (`uid` = ? OR `uid` = 0)", $args['guid'], local_user()];
@@ -415,7 +414,7 @@ function advancedcontentfilter_get_variables_guid(ServerRequestInterface $reques
 	$item = Item::selectFirstForUser(local_user(), [], $condition, $params);
 
 	if (!DBA::isResult($item)) {
-		throw new HTTPException\NotFoundException(L10n::t('Unknown post with guid: %s', $args['guid']));
+		throw new HTTPException\NotFoundException(DI::l10n()->t('Unknown post with guid: %s', $args['guid']));
 	}
 
 	$tags = Term::populateTagsFromItem($item);

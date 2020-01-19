@@ -9,7 +9,6 @@
 use Friendica\App;
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
@@ -111,7 +110,7 @@ function geonames_addon_settings_post(App $a, array $post)
 
 	DI::pConfig()->set(local_user(), 'geonames', 'enable', intval($_POST['geonames-enable']));
 
-	info(L10n::t('Geonames settings updated.'));
+	info(DI::l10n()->t('Geonames settings updated.'));
 }
 
 /**
@@ -143,9 +142,9 @@ function geonames_addon_settings(App $a, &$s)
 
 	$t = Renderer::getMarkupTemplate('settings.tpl', __DIR__);
 	$s .= Renderer::replaceMacros($t, [
-		'$title' => L10n::t('Geonames Settings'),
-		'$description' => L10n::t('Replace numerical coordinates by the nearest populated location name in your posts.'),
-		'$enable' => ['geonames-enable', L10n::t('Enable Geonames Addon'), $enabled],
-		'$submit' => L10n::t('Save Settings')
+		'$title' => DI::l10n()->t('Geonames Settings'),
+		'$description' => DI::l10n()->t('Replace numerical coordinates by the nearest populated location name in your posts.'),
+		'$enable' => ['geonames-enable', DI::l10n()->t('Enable Geonames Addon'), $enabled],
+		'$submit' => DI::l10n()->t('Save Settings')
 	]);
 }

@@ -8,7 +8,7 @@
 
 use Friendica\App;
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
+use Friendica\DI;
 
 function buglink_install()
 {
@@ -22,5 +22,5 @@ function buglink_uninstall()
 
 function buglink_active(App $a, &$b)
 {
-	$b .= '<div id="buglink_wrapper" style="position: fixed; bottom: 5px; left: 5px;"><a href="https://github.com/friendica/friendica/issues" target="_blank" title="' . L10n::t('Report Bug') . '"><img src="addon/buglink/bug-x.gif" alt="' . L10n::t('Report Bug') . '" /></a></div>';
+	$b .= '<div id="buglink_wrapper" style="position: fixed; bottom: 5px; left: 5px;"><a href="https://github.com/friendica/friendica/issues" target="_blank" title="' . DI::l10n()->t('Report Bug') . '"><img src="addon/buglink/bug-x.gif" alt="' . DI::l10n()->t('Report Bug') . '" /></a></div>';
 }

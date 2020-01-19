@@ -9,7 +9,6 @@
 use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\DI;
 use Friendica\Util\Network;
@@ -52,7 +51,7 @@ function blogger_jot_nets(App $a, array &$jotnets_fields)
 			'type' => 'checkbox',
 			'field' => [
 				'blogger_enable',
-				L10n::t('Post to blogger'),
+				DI::l10n()->t('Post to blogger'),
 				DI::pConfig()->get(local_user(), 'blogger', 'post_by_default')
 			]
 		];
@@ -86,40 +85,40 @@ function blogger_settings(App $a, &$s)
 
 	/* Add some HTML to the existing form */
 	$s .= '<span id="settings_blogger_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_blogger_expanded\'); openClose(\'settings_blogger_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/blogger.png" /><h3 class="connector">'. L10n::t('Blogger Export').'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/blogger.png" /><h3 class="connector">'. DI::l10n()->t('Blogger Export').'</h3>';
 	$s .= '</span>';
 	$s .= '<div id="settings_blogger_expanded" class="settings-block" style="display: none;">';
 	$s .= '<span class="fakelink" onclick="openClose(\'settings_blogger_expanded\'); openClose(\'settings_blogger_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/blogger.png" /><h3 class="connector">'. L10n::t('Blogger Export').'</h3>';
+	$s .= '<img class="connector'.$css.'" src="images/blogger.png" /><h3 class="connector">'. DI::l10n()->t('Blogger Export').'</h3>';
 	$s .= '</span>';
 
 	$s .= '<div id="blogger-enable-wrapper">';
-	$s .= '<label id="blogger-enable-label" for="blogger-checkbox">' . L10n::t('Enable Blogger Post Addon') . '</label>';
+	$s .= '<label id="blogger-enable-label" for="blogger-checkbox">' . DI::l10n()->t('Enable Blogger Post Addon') . '</label>';
 	$s .= '<input id="blogger-checkbox" type="checkbox" name="blogger" value="1" ' . $checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="blogger-username-wrapper">';
-	$s .= '<label id="blogger-username-label" for="blogger-username">' . L10n::t('Blogger username') . '</label>';
+	$s .= '<label id="blogger-username-label" for="blogger-username">' . DI::l10n()->t('Blogger username') . '</label>';
 	$s .= '<input id="blogger-username" type="text" name="bl_username" value="' . $bl_username . '" />';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="blogger-password-wrapper">';
-	$s .= '<label id="blogger-password-label" for="blogger-password">' . L10n::t('Blogger password') . '</label>';
+	$s .= '<label id="blogger-password-label" for="blogger-password">' . DI::l10n()->t('Blogger password') . '</label>';
 	$s .= '<input id="blogger-password" type="password" name="bl_password" value="' . $bl_password . '" />';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="blogger-blog-wrapper">';
-	$s .= '<label id="blogger-blog-label" for="blogger-blog">' . L10n::t('Blogger API URL') . '</label>';
+	$s .= '<label id="blogger-blog-label" for="blogger-blog">' . DI::l10n()->t('Blogger API URL') . '</label>';
 	$s .= '<input id="blogger-blog" type="text" name="bl_blog" value="' . $bl_blog . '" />';
 	$s .= '</div><div class="clear"></div>';
 
 	$s .= '<div id="blogger-bydefault-wrapper">';
-	$s .= '<label id="blogger-bydefault-label" for="blogger-bydefault">' . L10n::t('Post to Blogger by default') . '</label>';
+	$s .= '<label id="blogger-bydefault-label" for="blogger-bydefault">' . DI::l10n()->t('Post to Blogger by default') . '</label>';
 	$s .= '<input id="blogger-bydefault" type="checkbox" name="bl_bydefault" value="1" ' . $def_checked . '/>';
 	$s .= '</div><div class="clear"></div>';
 
 	/* provide a submit button */
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="blogger-submit" name="blogger-submit" class="settings-submit" value="' . L10n::t('Save Settings') . '" /></div></div>';
+	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="blogger-submit" name="blogger-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div></div>';
 }
 
 
@@ -203,7 +202,7 @@ function blogger_send(App $a, array &$b)
 	$bl_blog = DI::pConfig()->get($b['uid'], 'blogger', 'bl_blog');
 
 	if ($bl_username && $bl_password && $bl_blog) {
-		$title = '<title>' . (($b['title']) ? $b['title'] : L10n::t('Post from Friendica')) . '</title>';
+		$title = '<title>' . (($b['title']) ? $b['title'] : DI::l10n()->t('Post from Friendica')) . '</title>';
 		$post = $title . BBCode::convert($b['body']);
 		$post = XML::escape($post);
 

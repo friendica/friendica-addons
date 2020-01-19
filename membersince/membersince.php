@@ -8,7 +8,7 @@
  */
 
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
+use Friendica\DI;
 use Friendica\Util\DateTimeFormat;
 
 function membersince_install()
@@ -39,7 +39,7 @@ function membersince_display(Friendica\App $a, &$b)
 		$hr->setAttribute('class','profile-separator');
 
 		// The label div.
-		$label = $doc->createElement('div', L10n::t('Member since:'));
+		$label = $doc->createElement('div', DI::l10n()->t('Member since:'));
 		$label->setAttribute('class', 'col-lg-4 col-md-4 col-sm-4 col-xs-12 profile-label-name text-muted');
 
 		// The div for the register date of the profile owner.
@@ -54,6 +54,6 @@ function membersince_display(Friendica\App $a, &$b)
 		$b = $doc->saveHTML();
 	} else {
 		// Works in Vier.
-		$b = preg_replace('/<\/dl>/', "</dl>\n\n\n<dl id=\"aprofile-membersince\" class=\"aprofile\">\n<dt>" . L10n::t('Member since:') . "</dt>\n<dd>" . DateTimeFormat::local($a->profile['register_date']) . "</dd>\n</dl>", $b, 1);
+		$b = preg_replace('/<\/dl>/', "</dl>\n\n\n<dl id=\"aprofile-membersince\" class=\"aprofile\">\n<dt>" . DI::l10n()->t('Member since:') . "</dt>\n<dd>" . DateTimeFormat::local($a->profile['register_date']) . "</dd>\n</dl>", $b, 1);
 	}
 }

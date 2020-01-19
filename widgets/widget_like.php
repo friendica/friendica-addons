@@ -3,6 +3,7 @@
 use Friendica\Core\L10n;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
+use Friendica\DI;
 
 function like_widget_name() {
 	return "Shows likes";
@@ -58,10 +59,10 @@ function like_widget_content(&$a, $conf){
 	$t = Renderer::getMarkupTemplate("widget_like.tpl", "addon/widgets/");
 	$o .= Renderer::replaceMacros($t, [
 		'$like'		=> $likes,
-		'$strlike'	=> L10n::tt("%d person likes this", "%d people like this", $likes),
+		'$strlike'	=> DI::l10n()->tt("%d person likes this", "%d people like this", $likes),
 
 		'$dislike'	=> $dislikes,
-		'$strdislike'=> L10n::tt("%d person doesn't like this", "%d people don't like this", $dislikes),
+		'$strdislike'=> DI::l10n()->tt("%d person doesn't like this", "%d people don't like this", $dislikes),
 	]);
 
 	return $o;

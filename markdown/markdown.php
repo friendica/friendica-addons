@@ -9,7 +9,6 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Content\Text\Markdown;
 use Friendica\Core\Renderer;
-use Friendica\Core\L10n;
 use Friendica\DI;
 
 function markdown_install() {
@@ -28,9 +27,9 @@ function markdown_addon_settings(App $a, &$s)
 
 	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/markdown/');
 	$s .= Renderer::replaceMacros($t, [
-		'$title'   => L10n::t('Markdown'),
-		'$enabled' => ['enabled', L10n::t('Enable Markdown parsing'), $enabled, L10n::t('If enabled, self created items will additionally be parsed via Markdown.')],
-		'$submit'  => L10n::t('Save Settings'),
+		'$title'   => DI::l10n()->t('Markdown'),
+		'$enabled' => ['enabled', DI::l10n()->t('Enable Markdown parsing'), $enabled, DI::l10n()->t('If enabled, self created items will additionally be parsed via Markdown.')],
+		'$submit'  => DI::l10n()->t('Save Settings'),
 	]);
 }
 
