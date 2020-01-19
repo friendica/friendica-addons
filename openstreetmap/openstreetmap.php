@@ -220,10 +220,10 @@ function openstreetmap_addon_admin_post(&$a)
 	$zoom = ($_POST['zoom'] ?? '') ?: OSM_ZOOM;
 	$marker = ($_POST['marker'] ?? '') ?: OSM_MARKER;
 
-	Config::set('openstreetmap', 'tmsserver', $urltms);
-	Config::set('openstreetmap', 'nomserver', $urlnom);
-	Config::set('openstreetmap', 'zoom', $zoom);
-	Config::set('openstreetmap', 'marker', $marker);
+	DI::config()->set('openstreetmap', 'tmsserver', $urltms);
+	DI::config()->set('openstreetmap', 'nomserver', $urlnom);
+	DI::config()->set('openstreetmap', 'zoom', $zoom);
+	DI::config()->set('openstreetmap', 'marker', $marker);
 
 	info(DI::l10n()->t('Settings updated.') . EOL);
 }

@@ -29,23 +29,23 @@ function mailstream_install() {
 		q('ALTER TABLE `mailstream_item` DROP INDEX `contact-id`');
 		q('ALTER TABLE `mailstream_item` DROP INDEX `plink`');
 		q('ALTER TABLE `mailstream_item` CHANGE `plink` `uri` char(255) NOT NULL');
-		Config::set('mailstream', 'dbversion', '0.2');
+		DI::config()->set('mailstream', 'dbversion', '0.2');
 	}
 	if (DI::config()->get('mailstream', 'dbversion') == '0.2') {
 		q('DELETE FROM `pconfig` WHERE `cat` = "mailstream" AND `k` = "delay"');
-		Config::set('mailstream', 'dbversion', '0.3');
+		DI::config()->set('mailstream', 'dbversion', '0.3');
 	}
 	if (DI::config()->get('mailstream', 'dbversion') == '0.3') {
 		q('ALTER TABLE `mailstream_item` CHANGE `created` `created` timestamp NOT NULL DEFAULT now()');
 		q('ALTER TABLE `mailstream_item` CHANGE `completed` `completed` timestamp NULL DEFAULT NULL');
-		Config::set('mailstream', 'dbversion', '0.4');
+		DI::config()->set('mailstream', 'dbversion', '0.4');
 	}
 	if (DI::config()->get('mailstream', 'dbversion') == '0.4') {
 		q('ALTER TABLE `mailstream_item` CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin');
-		Config::set('mailstream', 'dbversion', '0.5');
+		DI::config()->set('mailstream', 'dbversion', '0.5');
 	}
 	if (DI::config()->get('mailstream', 'dbversion') == '0.5') {
-		Config::set('mailstream', 'dbversion', '1.0');
+		DI::config()->set('mailstream', 'dbversion', '1.0');
 	}
 
 	if (DI::config()->get('retriever', 'dbversion') != '1.0') {
@@ -54,7 +54,7 @@ function mailstream_install() {
 		foreach ($arr as $a) {
 			$r = q($a);
 		}
-		Config::set('mailstream', 'dbversion', '1.0');
+		DI::config()->set('mailstream', 'dbversion', '1.0');
 	}
 }
 
@@ -87,7 +87,7 @@ function mailstream_addon_admin(&$a,&$o) {
 
 function mailstream_addon_admin_post ($a) {
 	if (!empty($_POST['frommail'])) {
-		Config::set('mailstream', 'frommail', $_POST['frommail']);
+		DI::config()->set('mailstream', 'frommail', $_POST['frommail']);
 	}
 }
 

@@ -154,12 +154,12 @@ function public_server_addon_admin_post(&$a)
 	$flagusers = (!empty($_POST['flagusers']) ? Strings::escapeTags(trim($_POST['flagusers'])) : '');
 	$flagposts = (!empty($_POST['flagposts']) ? Strings::escapeTags(trim($_POST['flagposts'])) : '');
 	$flagpostsexpire = (!empty($_POST['flagpostsexpire']) ? Strings::escapeTags(trim($_POST['flagpostsexpire'])) : '');
-	Config::set('public_server', 'expiredays', $expiredays);
-	Config::set('public_server', 'expireposts', $expireposts);
-	Config::set('public_server', 'nologin', $nologin);
-	Config::set('public_server', 'flagusers', $flagusers);
-	Config::set('public_server', 'flagposts', $flagposts);
-	Config::set('public_server', 'flagpostsexpire', $flagpostsexpire);
+	DI::config()->set('public_server', 'expiredays', $expiredays);
+	DI::config()->set('public_server', 'expireposts', $expireposts);
+	DI::config()->set('public_server', 'nologin', $nologin);
+	DI::config()->set('public_server', 'flagusers', $flagusers);
+	DI::config()->set('public_server', 'flagposts', $flagposts);
+	DI::config()->set('public_server', 'flagpostsexpire', $flagpostsexpire);
 	info(DI::l10n()->t('Settings saved').EOL);
 }
 

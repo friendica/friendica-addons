@@ -699,7 +699,7 @@ function twitter_post_hook(App $a, array &$b)
 		Logger::info('twitter_post send', ['id' => $b['id'], 'result' => $result]);
 
 		if (!empty($result->source)) {
-			Config::set("twitter", "application_name", strip_tags($result->source));
+			DI::config()->set("twitter", "application_name", strip_tags($result->source));
 		}
 
 		if (!empty($result->errors)) {
@@ -716,8 +716,8 @@ function twitter_addon_admin_post(App $a)
 {
 	$consumerkey    = !empty($_POST['consumerkey'])    ? Strings::escapeTags(trim($_POST['consumerkey']))    : '';
 	$consumersecret = !empty($_POST['consumersecret']) ? Strings::escapeTags(trim($_POST['consumersecret'])) : '';
-	Config::set('twitter', 'consumerkey', $consumerkey);
-	Config::set('twitter', 'consumersecret', $consumersecret);
+	DI::config()->set('twitter', 'consumerkey', $consumerkey);
+	DI::config()->set('twitter', 'consumersecret', $consumersecret);
 	info(DI::l10n()->t('Settings updated.') . EOL);
 }
 
@@ -798,7 +798,7 @@ function twitter_cron(App $a)
 
 	Logger::notice('twitter: cron_end');
 
-	Config::set('twitter', 'last_poll', time());
+	DI::config()->set('twitter', 'last_poll', time());
 }
 
 function twitter_expire(App $a)

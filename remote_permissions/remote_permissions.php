@@ -209,6 +209,6 @@ function remote_permissions_addon_admin(&$a, &$o){
 
 function remote_permissions_addon_admin_post(&$a){
 	$choice	=	(!empty($_POST['remotepermschoice'])		? Strings::escapeTags(trim($_POST['remotepermschoice']))	: '');
-	Config::set('remote_perms','global',($choice == 1 ? 1 : 0));
+	DI::config()->set('remote_perms','global',($choice == 1 ? 1 : 0));
 	info(DI::l10n()->t('Settings updated.'). EOL);
 }

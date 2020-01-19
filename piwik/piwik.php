@@ -114,9 +114,9 @@ function piwik_addon_admin_post (&$a) {
 	$id = (!empty($_POST['siteid']) ? trim($_POST['siteid']) : '');
 	$optout = (!empty($_POST['optout']) ? trim($_POST['optout']) : '');
 	$async = (!empty($_POST['async']) ? trim($_POST['async']) : '');
-	Config::set('piwik', 'baseurl', $url);
-	Config::set('piwik', 'siteid', $id);
-	Config::set('piwik', 'optout', $optout);
-	Config::set('piwik', 'async', $async);
+	DI::config()->set('piwik', 'baseurl', $url);
+	DI::config()->set('piwik', 'siteid', $id);
+	DI::config()->set('piwik', 'optout', $optout);
+	DI::config()->set('piwik', 'async', $async);
 	info(DI::l10n()->t('Settings updated.'). EOL);
 }

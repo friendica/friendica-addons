@@ -115,7 +115,7 @@ function blackout_addon_admin_post (&$a) {
 	$begindate = trim($_POST['startdate']);
 	$enddate = trim($_POST['enddate']);
 	$url = trim($_POST['rurl']);
-	Config::set('blackout','begindate',$begindate);
-	Config::set('blackout','enddate',$enddate);
-	Config::set('blackout','url',$url);
+	DI::config()->set('blackout','begindate',$begindate);
+	DI::config()->set('blackout','enddate',$enddate);
+	DI::config()->set('blackout','url',$url);
 }

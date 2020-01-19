@@ -126,7 +126,7 @@ function leistungsschutzrecht_fetchsites()
 */
 
 	if (sizeof($sites)) {
-		Config::set('leistungsschutzrecht','sites',$sites);
+		DI::config()->set('leistungsschutzrecht','sites',$sites);
 	}
 }
 
@@ -171,6 +171,6 @@ function leistungsschutzrecht_cron($a,$b) {
 		}
 	}
 	leistungsschutzrecht_fetchsites();
-	Config::set('leistungsschutzrecht','last_poll', time());
+	DI::config()->set('leistungsschutzrecht','last_poll', time());
 }
 ?>

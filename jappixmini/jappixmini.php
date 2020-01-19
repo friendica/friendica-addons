@@ -88,7 +88,7 @@ function jappixmini_install()
 	// set standard configuration
 	$info_text = DI::config()->get("jappixmini", "infotext");
 	if (!$info_text)
-		Config::set("jappixmini", "infotext", "To get the chat working, you need to know a BOSH host which works with your Jabber account. " .
+		DI::config()->set("jappixmini", "infotext", "To get the chat working, you need to know a BOSH host which works with your Jabber account. " .
 			"An example of a BOSH server that works for all accounts is https://bind.jappix.com/, but keep " .
 			"in mind that the BOSH server can read along all chat messages. If you know that your Jabber " .
 			"server also provides an own BOSH server, it is much better to use this one!"
@@ -96,13 +96,13 @@ function jappixmini_install()
 
 	$bosh_proxy = DI::config()->get("jappixmini", "bosh_proxy");
 	if ($bosh_proxy === "") {
-		Config::set("jappixmini", "bosh_proxy", "1");
+		DI::config()->set("jappixmini", "bosh_proxy", "1");
 	}
 
 	// set addon version so that safe updates are possible later
 	$addon_version = DI::config()->get("jappixmini", "version");
 	if ($addon_version === "") {
-		Config::set("jappixmini", "version", "1");
+		DI::config()->set("jappixmini", "version", "1");
 	}
 }
 
@@ -173,11 +173,11 @@ function jappixmini_addon_admin_post(App $a)
 		$default_user = intval($_REQUEST['jappixmini-defaultuser']);
 		$bosh_address = $_REQUEST['jappixmini-address'];
 		$default_server = $_REQUEST['jappixmini-server'];
-		Config::set("jappixmini", "infotext", $info_text);
-		Config::set("jappixmini", "bosh_proxy", $bosh_proxy);
-		Config::set("jappixmini", "bosh_address", $bosh_address);
-		Config::set("jappixmini", "default_server", $default_server);
-		Config::set("jappixmini", "default_user", $default_user);
+		DI::config()->set("jappixmini", "infotext", $info_text);
+		DI::config()->set("jappixmini", "bosh_proxy", $bosh_proxy);
+		DI::config()->set("jappixmini", "bosh_address", $bosh_address);
+		DI::config()->set("jappixmini", "default_server", $default_server);
+		DI::config()->set("jappixmini", "default_user", $default_user);
 	}
 }
 
@@ -580,7 +580,7 @@ function jappixmini_login(App $a, &$o)
 function jappixmini_cron(App $a, $d)
 {
 	// For autosubscribe/autoapprove, we need to maintain a list of jabber addresses of our contacts.
-	Config::set("jappixmini", "last_cron_execution", $d);
+	DI::config()->set("jappixmini", "last_cron_execution", $d);
 
 	// go through list of users with jabber enabled
 	$users = q("SELECT `uid` FROM `pconfig` WHERE `cat`='jappixmini' AND (`k`='autosubscribe' OR `k`='autoapprove') AND `v`='1'");

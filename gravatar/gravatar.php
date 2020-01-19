@@ -124,7 +124,7 @@ function gravatar_addon_admin_post (&$a) {
 
 	$default_avatar = (!empty($_POST['avatar']) ? Strings::escapeTags(trim($_POST['avatar'])) : 'identicon');
 	$rating = (!empty($_POST['rating']) ? Strings::escapeTags(trim($_POST['rating'])) : 'g');
-	Config::set('gravatar', 'default_avatar', $default_avatar);
-	Config::set('gravatar', 'rating', $rating);
+	DI::config()->set('gravatar', 'default_avatar', $default_avatar);
+	DI::config()->set('gravatar', 'rating', $rating);
 	info(DI::l10n()->t('Gravatar settings updated.') .EOL);
 }

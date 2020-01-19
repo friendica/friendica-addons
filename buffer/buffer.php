@@ -88,8 +88,8 @@ function buffer_addon_admin_post(App $a)
 	$client_id     = (!empty($_POST['client_id'])     ? Strings::escapeTags(trim($_POST['client_id']))     : '');
 	$client_secret = (!empty($_POST['client_secret']) ? Strings::escapeTags(trim($_POST['client_secret'])) : '');
 
-	Config::set('buffer', 'client_id'    , $client_id);
-	Config::set('buffer', 'client_secret', $client_secret);
+	DI::config()->set('buffer', 'client_id'    , $client_id);
+	DI::config()->set('buffer', 'client_secret', $client_secret);
 
 	info(DI::l10n()->t('Settings updated.'). EOL);
 }

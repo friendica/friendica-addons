@@ -88,8 +88,8 @@ function tumblr_addon_admin_post(App $a)
 	$consumer_key    =       (!empty($_POST['consumer_key'])      ? Strings::escapeTags(trim($_POST['consumer_key']))   : '');
 	$consumer_secret =       (!empty($_POST['consumer_secret'])   ? Strings::escapeTags(trim($_POST['consumer_secret'])): '');
 
-	Config::set('tumblr', 'consumer_key',$consumer_key);
-	Config::set('tumblr', 'consumer_secret',$consumer_secret);
+	DI::config()->set('tumblr', 'consumer_key',$consumer_key);
+	DI::config()->set('tumblr', 'consumer_secret',$consumer_secret);
 
 	info(DI::l10n()->t('Settings updated.'). EOL);
 }

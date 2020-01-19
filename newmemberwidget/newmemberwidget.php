@@ -58,10 +58,10 @@ function newmemberwidget_addon_admin_post(&$a)
 	$lsn = (!empty($_POST['localsupportname']) ? Strings::escapeTags(trim($_POST['localsupportname'])) : "");
 	$gs = intval($_POST['linkglobalsupport']);
 	$ls = intval($_POST['linklocalsupport']);
-	Config::set('newmemberwidget', 'freetext',           trim($ft));
-	Config::set('newmemberwidget', 'linkglobalsupport',  $gs);
-	Config::set('newmemberwidget', 'linklocalsupport',   $ls);
-	Config::set('newmemberwidget', 'localsupport',       trim($lsn));
+	DI::config()->set('newmemberwidget', 'freetext',           trim($ft));
+	DI::config()->set('newmemberwidget', 'linkglobalsupport',  $gs);
+	DI::config()->set('newmemberwidget', 'linklocalsupport',   $ls);
+	DI::config()->set('newmemberwidget', 'localsupport',       trim($lsn));
 }
 
 function newmemberwidget_addon_admin(&$a, &$o)

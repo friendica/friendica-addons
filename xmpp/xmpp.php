@@ -120,8 +120,8 @@ function xmpp_addon_admin_post()
 	$bosh_proxy = (!empty($_POST['bosh_proxy']) ? trim($_POST['bosh_proxy']) : '');
 	$central_userbase = (!empty($_POST['central_userbase']) ? intval($_POST['central_userbase']) : false);
 
-	Config::set('xmpp', 'bosh_proxy', $bosh_proxy);
-	Config::set('xmpp', 'central_userbase', $central_userbase);
+	DI::config()->set('xmpp', 'bosh_proxy', $bosh_proxy);
+	DI::config()->set('xmpp', 'central_userbase', $central_userbase);
 
 	info(DI::l10n()->t('Settings updated.') . EOL);
 }

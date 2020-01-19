@@ -220,8 +220,8 @@ function curweather_addon_admin_post(App $a)
 	}
 
 	if (!empty($_POST['curweather-submit'])) {
-		Config::set('curweather', 'appid',     trim($_POST['appid']));
-		Config::set('curweather', 'cachetime', trim($_POST['cachetime']));
+		DI::config()->set('curweather', 'appid',     trim($_POST['appid']));
+		DI::config()->set('curweather', 'cachetime', trim($_POST['cachetime']));
 
 		info(DI::l10n()->t('Curweather settings saved.' . PHP_EOL));
 	}

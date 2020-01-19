@@ -685,7 +685,7 @@ function statusnet_addon_admin_post(App $a)
 		}
 	}
 
-	$sites = Config::set('statusnet', 'sites', $sites);
+	$sites = DI::config()->set('statusnet', 'sites', $sites);
 }
 
 function statusnet_addon_admin(App $a, &$o)
@@ -815,7 +815,7 @@ function statusnet_cron(App $a, $b)
 
 	Logger::log('statusnet: cron_end');
 
-	Config::set('statusnet', 'last_poll', time());
+	DI::config()->set('statusnet', 'last_poll', time());
 }
 
 function statusnet_fetchtimeline(App $a, $uid)

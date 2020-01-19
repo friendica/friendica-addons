@@ -131,8 +131,8 @@ function irc_addon_admin_post (&$a) {
 		return;
 
 	if($_POST['irc-submit']) {
-		Config::set('irc','autochans',trim($_POST['autochans']));
-		Config::set('irc','sitechats',trim($_POST['sitechats']));
+		DI::config()->set('irc','autochans',trim($_POST['autochans']));
+		DI::config()->set('irc','sitechats',trim($_POST['sitechats']));
 		/* stupid pop-up thing */
 		info(DI::l10n()->t('IRC settings saved.') . EOL);
 	}

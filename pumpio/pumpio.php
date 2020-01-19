@@ -745,7 +745,7 @@ function pumpio_sync(App $a)
 
 	Logger::log('pumpio: cron_end');
 
-	Config::set('pumpio', 'last_poll', time());
+	DI::config()->set('pumpio', 'last_poll', time());
 }
 
 function pumpio_cron(App $a, $b)

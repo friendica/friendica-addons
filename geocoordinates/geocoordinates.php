@@ -101,9 +101,9 @@ function geocoordinates_addon_admin(&$a, &$o)
 function geocoordinates_addon_admin_post(&$a)
 {
 	$api_key  = (!empty($_POST['api_key']) ? Strings::escapeTags(trim($_POST['api_key']))   : '');
-	Config::set('geocoordinates', 'api_key', $api_key);
+	DI::config()->set('geocoordinates', 'api_key', $api_key);
 
 	$language  = (!empty($_POST['language']) ? Strings::escapeTags(trim($_POST['language']))   : '');
-	Config::set('geocoordinates', 'language', $language);
+	DI::config()->set('geocoordinates', 'language', $language);
 	info(DI::l10n()->t('Settings updated.') . EOL);
 }
