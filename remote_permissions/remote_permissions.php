@@ -31,7 +31,7 @@ function remote_permissions_settings(&$a,&$o) {
 	if(! local_user())
 		return;
 
-	$global = Config::get("remote_perms", "global");
+	$global = DI::config()->get("remote_perms", "global");
 	if($global == 1)
 		return;
 
@@ -69,7 +69,7 @@ function remote_permissions_content($a, $item_copy) {
 	if($item_copy['uid'] != local_user())
 		return;
 
-	if(Config::get('remote_perms','global') == 0) {
+	if(DI::config()->get('remote_perms','global') == 0) {
 		// Admin has set Individual choice. We need to find
 		// the original poster. First, get the contact's info
 		$r = q("SELECT nick, url FROM contact WHERE id = %d LIMIT 1",
@@ -202,8 +202,8 @@ function remote_permissions_addon_admin(&$a, &$o){
 	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/remote_permissions/" );
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
-		'$global' => ['remotepermschoice', DI::l10n()->t('Global'), 1, DI::l10n()->t('The posts of every user on this server show the post recipients'),  Config::get('remote_perms', 'global') == 1],
-		'$individual' => ['remotepermschoice', DI::l10n()->t('Individual'), 2, DI::l10n()->t('Each user chooses whether his/her posts show the post recipients'),  Config::get('remote_perms', 'global') == 0]
+		'$global' => ['remotepermschoice', DI::l10n()->t('Global'), 1, DI::l10n()->t('The posts of every user on this server show the post recipients'),  DI::config()->get('remote_perms', 'global') == 1],
+		'$individual' => ['remotepermschoice', DI::l10n()->t('Individual'), 2, DI::l10n()->t('Each user chooses whether his/her posts show the post recipients'),  DI::config()->get('remote_perms', 'global') == 0]
 	]);
 }
 

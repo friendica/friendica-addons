@@ -61,11 +61,11 @@ class StatusNetOAuth extends TwitterOAuth
 		$this->http_info = [];
 		$ci = curl_init();
 		/* Curl settings */
-		$prx = Config::get('system', 'proxy');
+		$prx = DI::config()->get('system', 'proxy');
 		if (strlen($prx)) {
 			curl_setopt($ci, CURLOPT_HTTPPROXYTUNNEL, 1);
 			curl_setopt($ci, CURLOPT_PROXY, $prx);
-			$prxusr = Config::get('system', 'proxyuser');
+			$prxusr = DI::config()->get('system', 'proxyuser');
 			if (strlen($prxusr)) {
 				curl_setopt($ci, CURLOPT_PROXYUSERPWD, $prxusr);
 			}

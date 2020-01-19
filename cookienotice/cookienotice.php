@@ -40,8 +40,8 @@ function cookienotice_addon_admin(App $a, &$s)
 		return;
 	}
 
-	$text = Config::get('cookienotice', 'text', DI::l10n()->t('This website uses cookies. If you continue browsing this website, you agree to the usage of cookies.'));
-	$oktext = Config::get('cookienotice', 'oktext', DI::l10n()->t('OK'));
+	$text = DI::config()->get('cookienotice', 'text', DI::l10n()->t('This website uses cookies. If you continue browsing this website, you agree to the usage of cookies.'));
+	$oktext = DI::config()->get('cookienotice', 'oktext', DI::l10n()->t('OK'));
 
 	$t = Renderer::getMarkupTemplate('admin.tpl', __DIR__);
 	$s .= Renderer::replaceMacros($t, [
@@ -106,8 +106,8 @@ function cookienotice_page_content_top(App $a, &$b)
  */
 function cookienotice_page_end(App $a, &$b)
 {
-	$text = (string)Config::get('cookienotice', 'text', DI::l10n()->t('This website uses cookies to recognize revisiting and logged in users. You accept the usage of these cookies by continue browsing this website.'));
-	$oktext = (string)Config::get('cookienotice', 'oktext', DI::l10n()->t('OK'));
+	$text = (string)DI::config()->get('cookienotice', 'text', DI::l10n()->t('This website uses cookies to recognize revisiting and logged in users. You accept the usage of these cookies by continue browsing this website.'));
+	$oktext = (string)DI::config()->get('cookienotice', 'oktext', DI::l10n()->t('OK'));
 
 	$page_end_tpl = Renderer::getMarkupTemplate('cookienotice.tpl', __DIR__);
 

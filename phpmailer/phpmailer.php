@@ -39,7 +39,7 @@ function phpmailer_emailer_send_prepare(App $a, array &$b)
 	// Passing `true` enables exceptions
 	$mail = new PHPMailer(true);
 	try {
-		if (Config::get('phpmailer', 'smtp')) {
+		if (DI::config()->get('phpmailer', 'smtp')) {
 			// Set mailer to use SMTP
 			$mail->isSMTP();
 
@@ -48,22 +48,22 @@ function phpmailer_emailer_send_prepare(App $a, array &$b)
 			$mail->Encoding = 'base64';
 
 			// Specify main and backup SMTP servers
-			$mail->Host = Config::get('phpmailer', 'smtp_server');
-			$mail->Port = Config::get('phpmailer', 'smtp_port');
+			$mail->Host = DI::config()->get('phpmailer', 'smtp_server');
+			$mail->Port = DI::config()->get('phpmailer', 'smtp_port');
 
-			if (Config::get('system', 'smtp_secure') && Config::get('phpmailer', 'smtp_port_s')) {
-				$mail->SMTPSecure = Config::get('phpmailer', 'smtp_secure');
-				$mail->Port = Config::get('phpmailer', 'smtp_port_s');
+			if (DI::config()->get('system', 'smtp_secure') && DI::config()->get('phpmailer', 'smtp_port_s')) {
+				$mail->SMTPSecure = DI::config()->get('phpmailer', 'smtp_secure');
+				$mail->Port = DI::config()->get('phpmailer', 'smtp_port_s');
 			}
 
-			if (Config::get('phpmailer', 'smtp_username') && Config::get('phpmailer', 'smtp_password')) {
+			if (DI::config()->get('phpmailer', 'smtp_username') && DI::config()->get('phpmailer', 'smtp_password')) {
 				$mail->SMTPAuth = true;
-				$mail->Username = Config::get('phpmailer', 'smtp_username');
-				$mail->Password = Config::get('phpmailer', 'smtp_password');
+				$mail->Username = DI::config()->get('phpmailer', 'smtp_username');
+				$mail->Password = DI::config()->get('phpmailer', 'smtp_password');
 			}
 
-			if (Config::get('phpmailer', 'smtp_from')) {
-				$mail->setFrom(Config::get('phpmailer', 'smtp_from'), $b['fromName']);
+			if (DI::config()->get('phpmailer', 'smtp_from')) {
+				$mail->setFrom(DI::config()->get('phpmailer', 'smtp_from'), $b['fromName']);
 			}
 		} else {
 			$mail->setFrom($b['fromEmail'], $b['fromName']);

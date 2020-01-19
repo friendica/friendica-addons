@@ -28,7 +28,7 @@ function pageheader_addon_admin(App &$a, &$s)
 	$stylesheetPath = __DIR__ . '/pageheader.css';
 	DI::page()->registerStylesheet($stylesheetPath);
 
-	$words = Config::get('pageheader','text');
+	$words = DI::config()->get('pageheader','text');
 	if(! $words)
 		$words = '';
 
@@ -61,7 +61,7 @@ function pageheader_fetch(App $a, &$b)
 	if(file_exists('pageheader.html')){
 		$s = file_get_contents('pageheader.html');
 	} else {
-		$s = Config::get('pageheader', 'text');
+		$s = DI::config()->get('pageheader', 'text');
 	}
 
 	$stylesheetPath = __DIR__ .'/pageheader.css';

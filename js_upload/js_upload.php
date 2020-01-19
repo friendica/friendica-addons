@@ -36,7 +36,7 @@ function js_upload_form(App $a, array &$b)
 		'$cancel' => DI::l10n()->t('Cancel'),
 		'$failed' => DI::l10n()->t('Failed'),
 		'$post_url' => $b['post_url'],
-		'$maximagesize' => intval(Config::get('system', 'maximagesize')),
+		'$maximagesize' => intval(DI::config()->get('system', 'maximagesize')),
 	]);
 }
 
@@ -46,7 +46,7 @@ function js_upload_post_init(App $a, &$b)
 	$allowedExtensions = ['jpeg', 'gif', 'png', 'jpg'];
 
 	// max file size in bytes
-	$sizeLimit = Config::get('system', 'maximagesize');
+	$sizeLimit = DI::config()->get('system', 'maximagesize');
 
 	$uploader = new qqFileUploader($allowedExtensions, $sizeLimit);
 
@@ -99,7 +99,7 @@ class qqUploadedFileXhr
 	{
 		$input = fopen('php://input', 'r');
 
-		$upload_dir = Config::get('system', 'tempdir');
+		$upload_dir = DI::config()->get('system', 'tempdir');
 		if (!$upload_dir)
 			$upload_dir = sys_get_temp_dir();
 
@@ -227,7 +227,7 @@ class qqFileUploader
 //		}
 
 
-		$maximagesize = Config::get('system', 'maximagesize');
+		$maximagesize = DI::config()->get('system', 'maximagesize');
 
 		if (($maximagesize) && ($size > $maximagesize)) {
 			return ['error' => DI::l10n()->t('Image exceeds size limit of ') . $maximagesize];

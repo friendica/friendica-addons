@@ -29,7 +29,7 @@ function leistungsschutzrecht_getsiteinfo($a, &$siteinfo) {
 	}
 
 	// Avoid any third party pictures, to avoid copyright issues
-	if (!in_array($siteinfo['type'], ['photo', 'video']) && Config::get('leistungsschutzrecht', 'suppress_photos', false)) {
+	if (!in_array($siteinfo['type'], ['photo', 'video']) && DI::config()->get('leistungsschutzrecht', 'suppress_photos', false)) {
 		unset($siteinfo["image"]);
 		unset($siteinfo["images"]);
 	}
@@ -131,7 +131,7 @@ function leistungsschutzrecht_fetchsites()
 }
 
 function leistungsschutzrecht_is_member_site($url) {
-	$sites = Config::get('leistungsschutzrecht','sites');
+	$sites = DI::config()->get('leistungsschutzrecht','sites');
 
 	if ($sites == "")
 		return(false);
@@ -161,7 +161,7 @@ function leistungsschutzrecht_is_member_site($url) {
 }
 
 function leistungsschutzrecht_cron($a,$b) {
-	$last = Config::get('leistungsschutzrecht','last_poll');
+	$last = DI::config()->get('leistungsschutzrecht','last_poll');
 
 	if($last) {
 		$next = $last + 86400;

@@ -70,10 +70,10 @@ function piwik_analytics($a,&$b) {
 	/*
 	 *   Get the configuration variables from the config/addon.config.php file.
 	 */
-	$baseurl = Config::get('piwik', 'baseurl');
-	$siteid  = Config::get('piwik', 'siteid');
-	$optout  = Config::get('piwik', 'optout');
-	$async   = Config::get('piwik', 'async');
+	$baseurl = DI::config()->get('piwik', 'baseurl');
+	$siteid  = DI::config()->get('piwik', 'siteid');
+	$optout  = DI::config()->get('piwik', 'optout');
+	$async   = DI::config()->get('piwik', 'async');
 
 	/*
 	 *   Add the Piwik tracking code for the site.
@@ -103,10 +103,10 @@ function piwik_addon_admin (&$a, &$o) {
 	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/piwik/" );
 	$o = Renderer::replaceMacros( $t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
-		'$piwikbaseurl' => ['baseurl', DI::l10n()->t('Matomo (Piwik) Base URL'), Config::get('piwik','baseurl' ), DI::l10n()->t('Absolute path to your Matomo (Piwik) installation. (without protocol (http/s), with trailing slash)')],
-		'$siteid' => ['siteid', DI::l10n()->t('Site ID'), Config::get('piwik','siteid' ), ''],
-		'$optout' => ['optout', DI::l10n()->t('Show opt-out cookie link?'), Config::get('piwik','optout' ), ''],
-		'$async' => ['async', DI::l10n()->t('Asynchronous tracking'), Config::get('piwik','async' ), ''],
+		'$piwikbaseurl' => ['baseurl', DI::l10n()->t('Matomo (Piwik) Base URL'), DI::config()->get('piwik','baseurl' ), DI::l10n()->t('Absolute path to your Matomo (Piwik) installation. (without protocol (http/s), with trailing slash)')],
+		'$siteid' => ['siteid', DI::l10n()->t('Site ID'), DI::config()->get('piwik','siteid' ), ''],
+		'$optout' => ['optout', DI::l10n()->t('Show opt-out cookie link?'), DI::config()->get('piwik','optout' ), ''],
+		'$async' => ['async', DI::l10n()->t('Asynchronous tracking'), DI::config()->get('piwik','async' ), ''],
 	]);
 }
 function piwik_addon_admin_post (&$a) {

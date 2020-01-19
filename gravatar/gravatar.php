@@ -49,8 +49,8 @@ function gravatar_load_config(App $a, ConfigFileLoader $loader)
  * @param &$b array
  */
 function gravatar_lookup($a, &$b) {
-	$default_avatar = Config::get('gravatar', 'default_avatar');
-	$rating = Config::get('gravatar', 'rating');
+	$default_avatar = DI::config()->get('gravatar', 'default_avatar');
+	$rating = DI::config()->get('gravatar', 'rating');
 
 	// setting default value if nothing configured
 	if(! $default_avatar)
@@ -75,8 +75,8 @@ function gravatar_lookup($a, &$b) {
 function gravatar_addon_admin (&$a, &$o) {
 	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/gravatar/" );
 
-	$default_avatar = Config::get('gravatar', 'default_avatar');
-	$rating = Config::get('gravatar', 'rating');
+	$default_avatar = DI::config()->get('gravatar', 'default_avatar');
+	$rating = DI::config()->get('gravatar', 'rating');
 
 	// set default values for first configuration
 	if(! $default_avatar)

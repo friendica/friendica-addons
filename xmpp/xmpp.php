@@ -77,13 +77,13 @@ function xmpp_addon_settings(App $a, &$s)
 	$s .= '<input id="xmpp-enabled" type="checkbox" name="xmpp_enabled" value="1" ' . $enabled_checked . '/>';
 	$s .= '<div class="clear"></div>';
 
-	if (Config::get("xmpp", "central_userbase")) {
+	if (DI::config()->get("xmpp", "central_userbase")) {
 		$s .= '<label id="xmpp-individual-label" for="xmpp-individual">' . DI::l10n()->t('Individual Credentials') . '</label>';
 		$s .= '<input id="xmpp-individual" type="checkbox" name="xmpp_individual" value="1" ' . $individual_checked . '/>';
 		$s .= '<div class="clear"></div>';
 	}
 
-	if (!Config::get("xmpp", "central_userbase") || DI::pConfig()->get(local_user(), "xmpp", "individual")) {
+	if (!DI::config()->get("xmpp", "central_userbase") || DI::pConfig()->get(local_user(), "xmpp", "individual")) {
 		$s .= '<label id="xmpp-bosh-proxy-label" for="xmpp-bosh-proxy">' . DI::l10n()->t('Jabber BOSH host') . '</label>';
 		$s .= ' <input id="xmpp-bosh-proxy" type="text" name="xmpp_bosh_proxy" value="' . $bosh_proxy . '" />';
 		$s .= '<div class="clear"></div>';
@@ -110,8 +110,8 @@ function xmpp_addon_admin(App $a, &$o)
 
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
-		'$bosh_proxy' => ['bosh_proxy', DI::l10n()->t('Jabber BOSH host'), Config::get('xmpp', 'bosh_proxy'), ''],
-		'$central_userbase' => ['central_userbase', DI::l10n()->t('Use central userbase'), Config::get('xmpp', 'central_userbase'), DI::l10n()->t('If enabled, users will automatically login to an ejabberd server that has to be installed on this machine with synchronized credentials via the "auth_ejabberd.php" script.')],
+		'$bosh_proxy' => ['bosh_proxy', DI::l10n()->t('Jabber BOSH host'), DI::config()->get('xmpp', 'bosh_proxy'), ''],
+		'$central_userbase' => ['central_userbase', DI::l10n()->t('Use central userbase'), DI::config()->get('xmpp', 'central_userbase'), DI::l10n()->t('If enabled, users will automatically login to an ejabberd server that has to be installed on this machine with synchronized credentials via the "auth_ejabberd.php" script.')],
 	]);
 }
 
@@ -156,8 +156,8 @@ function xmpp_converse(App $a)
 	DI::page()['htmlhead'] .= '<link type="text/css" rel="stylesheet" media="screen" href="addon/xmpp/converse/css/converse.css" />' . "\n";
 	DI::page()['htmlhead'] .= '<script src="addon/xmpp/converse/builds/converse.min.js"></script>' . "\n";
 
-	if (Config::get("xmpp", "central_userbase") && !DI::pConfig()->get(local_user(), "xmpp", "individual")) {
-		$bosh_proxy = Config::get("xmpp", "bosh_proxy");
+	if (DI::config()->get("xmpp", "central_userbase") && !DI::pConfig()->get(local_user(), "xmpp", "individual")) {
+		$bosh_proxy = DI::config()->get("xmpp", "bosh_proxy");
 
 		$password = DI::pConfig()->get(local_user(), "xmpp", "password", '', true);
 

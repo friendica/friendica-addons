@@ -33,9 +33,9 @@ function blockbot_addon_admin(&$a, &$o) {
 
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
-		'$good_crawlers' => ['good_crawlers', DI::l10n()->t('Allow "good" crawlers'), Config::get('blockbot', 'good_crawlers'), "Don't block fediverse crawlers, relay servers and other bots with good purposes."],
-		'$block_gab' => ['block_gab', DI::l10n()->t('Block GabSocial'), Config::get('blockbot', 'block_gab'), 'Block the software GabSocial. This will block every access for that software. You can block dedicated gab instances in the blocklist settings in the admin section.'],
-		'$training' => ['training', DI::l10n()->t('Training mode'), Config::get('blockbot', 'training'), "Activates the training mode. This is only meant for developing purposes. Don't activate this on a production machine. This can cut communication with some systems."],
+		'$good_crawlers' => ['good_crawlers', DI::l10n()->t('Allow "good" crawlers'), DI::config()->get('blockbot', 'good_crawlers'), "Don't block fediverse crawlers, relay servers and other bots with good purposes."],
+		'$block_gab' => ['block_gab', DI::l10n()->t('Block GabSocial'), DI::config()->get('blockbot', 'block_gab'), 'Block the software GabSocial. This will block every access for that software. You can block dedicated gab instances in the blocklist settings in the admin section.'],
+		'$training' => ['training', DI::l10n()->t('Training mode'), DI::config()->get('blockbot', 'training'), "Activates the training mode. This is only meant for developing purposes. Don't activate this on a production machine. This can cut communication with some systems."],
 	]);
 }
 
@@ -77,7 +77,7 @@ function blockbot_init_1(App $a) {
 		'7Siters/', 'KOCMOHABT', 'Google-SearchByImage', 'FemtosearchBot/',
 		'HubSpot Crawler', 'DomainStatsBot/', 'Re-re Studio'];
 
-	if (!Config::get('blockbot', 'good_crawlers')) {
+	if (!DI::config()->get('blockbot', 'good_crawlers')) {
 		$agents = array_merge($agents, $good_agents);
 	} else {
 		foreach ($good_agents as $good_agent) {
@@ -87,7 +87,7 @@ function blockbot_init_1(App $a) {
 		}
 	}
 
-	if (Config::get('blockbot', 'block_gab')) {
+	if (DI::config()->get('blockbot', 'block_gab')) {
 		$agents[] = 'GabSocial/';
 	}
 
@@ -98,7 +98,7 @@ function blockbot_init_1(App $a) {
 	}
 
 	// This switch here is only meant for developers who want to add more bots to the list above, it is not safe for production.
-	if (!Config::get('blockbot', 'training')) {
+	if (!DI::config()->get('blockbot', 'training')) {
 		return;
 	}
 
@@ -117,7 +117,7 @@ function blockbot_init_1(App $a) {
 		'Dispatch/', 'Ruby', 'Java/', 'libwww-perl/', 'Mastodon/',
 		'lua-resty-http/'];
 
-	if (Config::get('blockbot', 'good_crawlers')) {
+	if (DI::config()->get('blockbot', 'good_crawlers')) {
 		$agents = array_merge($agents, $good_agents);
 	}
 

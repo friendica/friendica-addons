@@ -64,7 +64,7 @@ function geonames_post_hook(App $a, array &$item)
 
 	/* Retrieve our personal config setting */
 
-	$geo_account = Config::get('geonames', 'username');
+	$geo_account = DI::config()->get('geonames', 'username');
 	$active = DI::pConfig()->get(local_user(), 'geonames', 'enable');
 
 	if (!$geo_account || !$active) {
@@ -127,7 +127,7 @@ function geonames_addon_settings(App $a, &$s)
 		return;
 	}
 
-	$geo_account = Config::get('geonames', 'username');
+	$geo_account = DI::config()->get('geonames', 'username');
 
 	if (!$geo_account) {
 		return;

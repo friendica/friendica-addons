@@ -43,7 +43,7 @@ function obfuscate_email ($s) {
     return $s;
 }
 function impressum_footer($a, &$b) {
-    $text = ProxyUtils::proxifyHtml(BBCode::convert(Config::get('impressum','footer_text')));
+    $text = ProxyUtils::proxifyHtml(BBCode::convert(DI::config()->get('impressum','footer_text')));
 
     if (! $text == '') {
         DI::page()['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.DI::baseUrl()->get().'/addon/impressum/impressum.css" media="all" />';
@@ -59,11 +59,11 @@ function impressum_load_config(\Friendica\App $a, ConfigFileLoader $loader)
 
 function impressum_show($a,&$b) {
     $b .= '<h3>'.DI::l10n()->t('Impressum').'</h3>';
-    $owner = Config::get('impressum', 'owner');
-    $owner_profile = Config::get('impressum','ownerprofile');
-    $postal = ProxyUtils::proxifyHtml(BBCode::convert(Config::get('impressum', 'postal')));
-    $notes = ProxyUtils::proxifyHtml(BBCode::convert(Config::get('impressum', 'notes')));
-    $email = obfuscate_email( Config::get('impressum','email') );
+    $owner = DI::config()->get('impressum', 'owner');
+    $owner_profile = DI::config()->get('impressum','ownerprofile');
+    $postal = ProxyUtils::proxifyHtml(BBCode::convert(DI::config()->get('impressum', 'postal')));
+    $notes = ProxyUtils::proxifyHtml(BBCode::convert(DI::config()->get('impressum', 'notes')));
+    $email = obfuscate_email( DI::config()->get('impressum','email') );
     if (strlen($owner)) {
         if (strlen($owner_profile)) {
             $tmp = '<a href="'.$owner_profile.'">'.$owner.'</a>';
@@ -105,11 +105,11 @@ function impressum_addon_admin (&$a, &$o) {
     $t = Renderer::getMarkupTemplate( "admin.tpl", "addon/impressum/" );
     $o = Renderer::replaceMacros($t, [
         '$submit' => DI::l10n()->t('Save Settings'),
-        '$owner' => ['owner', DI::l10n()->t('Site Owner'), Config::get('impressum','owner'), DI::l10n()->t('The page operators name.')],
-        '$ownerprofile' => ['ownerprofile', DI::l10n()->t('Site Owners Profile'), Config::get('impressum','ownerprofile'), DI::l10n()->t('Profile address of the operator.')],
-        '$postal' => ['postal', DI::l10n()->t('Postal Address'), Config::get('impressum','postal'), DI::l10n()->t('How to contact the operator via snail mail. You can use BBCode here.')],
-        '$notes' => ['notes', DI::l10n()->t('Notes'), Config::get('impressum','notes'), DI::l10n()->t('Additional notes that are displayed beneath the contact information. You can use BBCode here.')],
-        '$email' => ['email', DI::l10n()->t('Email Address'), Config::get('impressum','email'), DI::l10n()->t('How to contact the operator via email. (will be displayed obfuscated)')],
-        '$footer_text' => ['footer_text', DI::l10n()->t('Footer note'), Config::get('impressum','footer_text'), DI::l10n()->t('Text for the footer. You can use BBCode here.')],
+        '$owner' => ['owner', DI::l10n()->t('Site Owner'), DI::config()->get('impressum','owner'), DI::l10n()->t('The page operators name.')],
+        '$ownerprofile' => ['ownerprofile', DI::l10n()->t('Site Owners Profile'), DI::config()->get('impressum','ownerprofile'), DI::l10n()->t('Profile address of the operator.')],
+        '$postal' => ['postal', DI::l10n()->t('Postal Address'), DI::config()->get('impressum','postal'), DI::l10n()->t('How to contact the operator via snail mail. You can use BBCode here.')],
+        '$notes' => ['notes', DI::l10n()->t('Notes'), DI::config()->get('impressum','notes'), DI::l10n()->t('Additional notes that are displayed beneath the contact information. You can use BBCode here.')],
+        '$email' => ['email', DI::l10n()->t('Email Address'), DI::config()->get('impressum','email'), DI::l10n()->t('How to contact the operator via email. (will be displayed obfuscated)')],
+        '$footer_text' => ['footer_text', DI::l10n()->t('Footer note'), DI::config()->get('impressum','footer_text'), DI::l10n()->t('Text for the footer. You can use BBCode here.')],
     ]);
 }

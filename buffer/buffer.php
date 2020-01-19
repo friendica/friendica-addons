@@ -78,8 +78,8 @@ function buffer_addon_admin(App $a, &$o)
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
 		// name, label, value, help, [extra values]
-		'$client_id' => ['client_id', DI::l10n()->t('Client ID'), Config::get('buffer', 'client_id'), ''],
-		'$client_secret' => ['client_secret', DI::l10n()->t('Client Secret'), Config::get('buffer', 'client_secret'), ''],
+		'$client_id' => ['client_id', DI::l10n()->t('Client ID'), DI::config()->get('buffer', 'client_id'), ''],
+		'$client_secret' => ['client_secret', DI::l10n()->t('Client Secret'), DI::config()->get('buffer', 'client_secret'), ''],
 	]);
 }
 
@@ -105,8 +105,8 @@ function buffer_connect(App $a)
 	session_start();
 
 	// Define the needed keys
-	$client_id = Config::get('buffer','client_id');
-	$client_secret = Config::get('buffer','client_secret');
+	$client_id = DI::config()->get('buffer','client_id');
+	$client_secret = DI::config()->get('buffer','client_secret');
 
 	// The callback URL is the script that gets called after the user authenticates with buffer
 	$callback_url = DI::baseUrl()->get()."/buffer/connect";
@@ -172,8 +172,8 @@ function buffer_settings(App $a, &$s)
 	$s .= '<img class="connector'.$css.'" src="images/buffer.png" /><h3 class="connector">'. DI::l10n()->t('Buffer Export').'</h3>';
 	$s .= '</span>';
 
-	$client_id = Config::get("buffer", "client_id");
-	$client_secret = Config::get("buffer", "client_secret");
+	$client_id = DI::config()->get("buffer", "client_id");
+	$client_secret = DI::config()->get("buffer", "client_secret");
 	$access_token = DI::pConfig()->get(local_user(), "buffer", "access_token");
 
 	$s .= '<div id="buffer-password-wrapper">';
@@ -309,8 +309,8 @@ function buffer_send(App $a, array &$b)
 	//if($b['app'] == "Buffer")
 	//	return;
 
-	$client_id = Config::get("buffer", "client_id");
-	$client_secret = Config::get("buffer", "client_secret");
+	$client_id = DI::config()->get("buffer", "client_id");
+	$client_secret = DI::config()->get("buffer", "client_secret");
 	$access_token = DI::pConfig()->get($b['uid'], "buffer","access_token");
 	$callback_url = "";
 

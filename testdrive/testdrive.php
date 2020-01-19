@@ -50,7 +50,7 @@ function testdrive_register_account($a,$b) {
 
 	$uid = $b;
 
-	$days = Config::get('testdrive','expiredays');
+	$days = DI::config()->get('testdrive','expiredays');
 	if(! $days)
 		return;
 
@@ -100,8 +100,8 @@ function testdrive_enotify(&$a, &$b) {
     if (!empty($b['params']) && $b['params']['type'] == NOTIFY_SYSTEM
 		&& !empty($b['params']['system_type']) && $b['params']['system_type'] === 'testdrive_expire') {
         $b['itemlink'] = DI::baseUrl()->get();
-        $b['epreamble'] = $b['preamble'] = DI::l10n()->t('Your account on %s will expire in a few days.', Config::get('system', 'sitename'));
+        $b['epreamble'] = $b['preamble'] = DI::l10n()->t('Your account on %s will expire in a few days.', DI::config()->get('system', 'sitename'));
         $b['subject'] = DI::l10n()->t('Your Friendica test account is about to expire.');
-        $b['body'] = DI::l10n()->t("Hi %1\$s,\n\nYour test account on %2\$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at %s/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at https://friendi.ca.", $b['params']['to_name'], "[url=".Config::get('system', 'url')."]".Config::get('config', 'sitename')."[/url]", Search::getGlobalDirectory());
+        $b['body'] = DI::l10n()->t("Hi %1\$s,\n\nYour test account on %2\$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at %s/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at https://friendi.ca.", $b['params']['to_name'], "[url=".DI::config()->get('system', 'url')."]".DI::config()->get('config', 'sitename')."[/url]", Search::getGlobalDirectory());
     }
 }

@@ -111,7 +111,7 @@ function catavatar_addon_settings_post(App $a, &$s)
 
 		// Update global directory in background
 		$url = DI::baseUrl()->get() . '/profile/' . $a->user['nickname'];
-		if ($url && strlen(Config::get('system', 'directory'))) {
+		if ($url && strlen(DI::config()->get('system', 'directory'))) {
 			Worker::add(PRIORITY_LOW, 'Directory', $url);
 		}
 

@@ -86,9 +86,9 @@ function irc_content(&$a) {
 	if (local_user()) {
 	    $sitechats = DI::pConfig()->get( local_user(), 'irc', 'sitechats');
 	    if (!$sitechats)
-		$sitechats = Config::get('irc', 'sitechats');
+		$sitechats = DI::config()->get('irc', 'sitechats');
 	} else {
-	    $sitechats = Config::get('irc','sitechats');
+	    $sitechats = DI::config()->get('irc','sitechats');
 	}
 	if($sitechats)
 		$chats = explode(',',$sitechats);
@@ -106,9 +106,9 @@ function irc_content(&$a) {
 	if (local_user()) {
 	    $autochans = DI::pConfig()->get(local_user(), 'irc', 'autochans');
 	    if (!$autochans)
-		$autochans = Config::get('irc','autochans');
+		$autochans = DI::config()->get('irc','autochans');
 	} else {
-	    $autochans = Config::get('irc','autochans');
+	    $autochans = DI::config()->get('irc','autochans');
 	}
 	if($autochans)
 		$channels = $autochans;
@@ -138,8 +138,8 @@ function irc_addon_admin_post (&$a) {
 	}
 }
 function irc_addon_admin (&$a, &$o) {
-	$sitechats = Config::get('irc','sitechats'); /* popular channels */
-	$autochans = Config::get('irc','autochans');  /* auto connect chans */
+	$sitechats = DI::config()->get('irc','sitechats'); /* popular channels */
+	$autochans = DI::config()->get('irc','autochans');  /* auto connect chans */
 	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/irc/" );
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),

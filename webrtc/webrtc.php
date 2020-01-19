@@ -29,7 +29,7 @@ function webrtc_addon_admin (&$a, &$o) {
         $t = Renderer::getMarkupTemplate( "admin.tpl", "addon/webrtc/" );
 	$o = Renderer::replaceMacros( $t, [
 	    '$submit' => DI::l10n()->t('Save Settings'),
-	    '$webrtcurl' => ['webrtcurl', DI::l10n()->t('WebRTC Base URL'), Config::get('webrtc','webrtcurl' ), DI::l10n()->t('Page your users will create a WebRTC chat room on. For example you could use https://live.mayfirst.org .')],
+	    '$webrtcurl' => ['webrtcurl', DI::l10n()->t('WebRTC Base URL'), DI::config()->get('webrtc','webrtcurl' ), DI::l10n()->t('Page your users will create a WebRTC chat room on. For example you could use https://live.mayfirst.org .')],
 	]);
 }
 function webrtc_addon_admin_post (&$a) {
@@ -46,7 +46,7 @@ function webrtc_content(&$a) {
         $o = '';
 
         /* landingpage to create chatrooms */
-        $webrtcurl = Config::get('webrtc','webrtcurl');
+        $webrtcurl = DI::config()->get('webrtc','webrtcurl');
 
         /* embedd the landing page in an iframe */
         $o .= '<h2>'.DI::l10n()->t('Video Chat').'</h2>';

@@ -50,11 +50,11 @@ function libravatar_load_config(App $a, ConfigFileLoader $loader)
  */
 function libravatar_lookup($a, &$b)
 {
-	$default_avatar = Config::get('libravatar', 'default_avatar');
+	$default_avatar = DI::config()->get('libravatar', 'default_avatar');
 
 	if (! $default_avatar) {
 		// if not set, look up if there was one from the gravatar addon
-		$default_avatar = Config::get('gravatar', 'default_avatar');
+		$default_avatar = DI::config()->get('gravatar', 'default_avatar');
 		// setting default avatar if nothing configured
 		if (!$default_avatar) {
 			$default_avatar = 'identicon'; // default image will be a random pattern
@@ -78,7 +78,7 @@ function libravatar_addon_admin(&$a, &$o)
 {
 	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/libravatar");
 
-	$default_avatar = Config::get('libravatar', 'default_avatar');
+	$default_avatar = DI::config()->get('libravatar', 'default_avatar');
 
 	// set default values for first configuration
 	if (!$default_avatar) {

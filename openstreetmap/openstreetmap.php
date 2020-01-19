@@ -82,10 +82,10 @@ function openstreetmap_location($a, &$item)
 	 * ?mlat=lat&mlon=lon for markers.
 	 */
 
-	$tmsserver = Config::get('openstreetmap', 'tmsserver', OSM_TMS);
-	$nomserver = Config::get('openstreetmap', 'nomserver', OSM_NOM);
-	$zoom = Config::get('openstreetmap', 'zoom', OSM_ZOOM);
-	$marker = Config::get('openstreetmap', 'marker', OSM_MARKER);
+	$tmsserver = DI::config()->get('openstreetmap', 'tmsserver', OSM_TMS);
+	$nomserver = DI::config()->get('openstreetmap', 'nomserver', OSM_NOM);
+	$zoom = DI::config()->get('openstreetmap', 'zoom', OSM_ZOOM);
+	$marker = DI::config()->get('openstreetmap', 'marker', OSM_MARKER);
 
 	// This is needed since we stored an empty string in the config in previous versions
 	if (empty($nomserver)) {
@@ -120,7 +120,7 @@ function openstreetmap_location($a, &$item)
 
 function openstreetmap_get_coordinates($a, &$b)
 {
-	$nomserver = Config::get('openstreetmap', 'nomserver', OSM_NOM);
+	$nomserver = DI::config()->get('openstreetmap', 'nomserver', OSM_NOM);
 
 	// This is needed since we stored an empty string in the config in previous versions
 	if (empty($nomserver)) {
@@ -157,14 +157,14 @@ function openstreetmap_generate_named_map(&$a, &$b)
 
 function openstreetmap_generate_map(&$a, &$b)
 {
-	$tmsserver = Config::get('openstreetmap', 'tmsserver', OSM_TMS);
+	$tmsserver = DI::config()->get('openstreetmap', 'tmsserver', OSM_TMS);
 
 	if (strpos(DI::baseUrl()->get(true), 'https:') !== false) {
 		$tmsserver = str_replace('http:','https:',$tmsserver);
 	}
 
-	$zoom = Config::get('openstreetmap', 'zoom', OSM_ZOOM);
-	$marker = Config::get('openstreetmap', 'marker', OSM_MARKER);
+	$zoom = DI::config()->get('openstreetmap', 'zoom', OSM_ZOOM);
+	$marker = DI::config()->get('openstreetmap', 'marker', OSM_MARKER);
 
 	$lat = $b['lat']; // round($b['lat'], 5);
 	$lon = $b['lon']; // round($b['lon'], 5);
@@ -194,10 +194,10 @@ function openstreetmap_generate_map(&$a, &$b)
 function openstreetmap_addon_admin(&$a, &$o)
 {
 	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/openstreetmap/");
-	$tmsserver = Config::get('openstreetmap', 'tmsserver', OSM_TMS);
-	$nomserver = Config::get('openstreetmap', 'nomserver', OSM_NOM);
-	$zoom = Config::get('openstreetmap', 'zoom', OSM_ZOOM);
-	$marker = Config::get('openstreetmap', 'marker', OSM_MARKER);
+	$tmsserver = DI::config()->get('openstreetmap', 'tmsserver', OSM_TMS);
+	$nomserver = DI::config()->get('openstreetmap', 'nomserver', OSM_NOM);
+	$zoom = DI::config()->get('openstreetmap', 'zoom', OSM_ZOOM);
+	$marker = DI::config()->get('openstreetmap', 'marker', OSM_MARKER);
 
 	// This is needed since we stored an empty string in the config in previous versions
 	if (empty($nomserver)) {
