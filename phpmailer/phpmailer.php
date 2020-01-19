@@ -8,7 +8,6 @@
  */
 
 use Friendica\App;
-use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\DI;
 use Friendica\Util\ConfigFileLoader;

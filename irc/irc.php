@@ -7,7 +7,6 @@
 * Author: Tobias Diekershoff <https://f.diekershoff.de/u/tobias>
 */
 
-use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;

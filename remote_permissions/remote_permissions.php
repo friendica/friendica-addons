@@ -7,7 +7,6 @@
  * Status: Unsupported
  */
 
-use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;

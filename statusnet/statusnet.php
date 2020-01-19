@@ -42,7 +42,6 @@ use Friendica\App;
 use Friendica\Content\OEmbed;
 use Friendica\Content\Text\HTML;
 use Friendica\Content\Text\Plaintext;
-use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Protocol;

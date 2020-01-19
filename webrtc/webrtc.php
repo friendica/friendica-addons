@@ -6,7 +6,6 @@
  * Author: Stephen Mahood <https://friends.mayfirst.org/profile/marxistvegan>
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  */
-use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;

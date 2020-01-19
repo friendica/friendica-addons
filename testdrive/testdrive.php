@@ -7,7 +7,6 @@
  */
 
 use Friendica\App;
-use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Search;
 use Friendica\Database\DBA;

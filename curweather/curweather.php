@@ -11,7 +11,6 @@
 
 use Friendica\App;
 use Friendica\Core\Cache\Duration;
-use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\Core\Session;

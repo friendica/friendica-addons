@@ -10,7 +10,6 @@
 
 use Friendica\App;
 use Friendica\Content\Text\BBCode;
-use Friendica\Core\Config;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
