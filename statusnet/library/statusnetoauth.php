@@ -1,6 +1,7 @@
 <?php
 
 use Friendica\Core\Config;
+use Friendica\DI;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'twitteroauth.php';
 

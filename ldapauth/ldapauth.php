@@ -57,6 +57,7 @@
 use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
+use Friendica\DI;
 use Friendica\Model\User;
 use Friendica\Util\ConfigFileLoader;
 

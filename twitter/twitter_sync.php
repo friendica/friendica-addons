@@ -2,6 +2,7 @@
 
 use Friendica\Core\Config;
 use Friendica\Core\Logger;
+use Friendica\DI;
 
 function twitter_sync_run($argv, $argc)
 {
