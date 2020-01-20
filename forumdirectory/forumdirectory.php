@@ -10,7 +10,6 @@ use Friendica\App;
 use Friendica\Content\Nav;
 use Friendica\Content\Pager;
 use Friendica\Content\Widget;
-use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
@@ -54,7 +53,7 @@ function forumdirectory_post(App $a)
 
 function forumdirectory_content(App $a)
 {
-	if ((Config::get('system', 'block_public')) && (!local_user()) && (!remote_user())) {
+	if ((DI::config()->get('system', 'block_public')) && (!local_user()) && (!remote_user())) {
 		notice(DI::l10n()->t('Public access denied.') . EOL);
 		return;
 	}
@@ -71,7 +70,7 @@ function forumdirectory_content(App $a)
 	}
 
 	$gdirpath = '';
-	$dirurl = Config::get('system', 'directory');
+	$dirurl = DI::config()->get('system', 'directory');
 	if (strlen($dirurl)) {
 		$gdirpath = Profile::zrl($dirurl, true);
 	}
@@ -97,7 +96,7 @@ function forumdirectory_content(App $a)
 				(`profile`.`prv_keywords` LIKE '%$search%'))";
 	}
 
-	$publish = Config::get('system', 'publish_all') ? '' : " AND `publish` = 1 ";
+	$publish = DI::config()->get('system', 'publish_all') ? '' : " AND `publish` = 1 ";
 
 	$total = 0;
 	$cnt = DBA::fetchFirst("SELECT COUNT(*) AS `total` FROM `profile`

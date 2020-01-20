@@ -9,7 +9,6 @@
 use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
-use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Protocol;
@@ -101,13 +100,13 @@ function pumpio_registerclient(App $a, $host)
 
 	$params = [];
 
-	$application_name  = Config::get('pumpio', 'application_name');
+	$application_name  = DI::config()->get('pumpio', 'application_name');
 
 	if ($application_name == "") {
 		$application_name = DI::baseUrl()->getHostname();
 	}
 
-	$adminlist = explode(",", str_replace(" ", "", Config::get('config', 'admin_email')));
+	$adminlist = explode(",", str_replace(" ", "", DI::config()->get('config', 'admin_email')));
 
 	$params["type"] = "client_associate";
 	$params["contacts"] = $adminlist[0];
@@ -686,9 +685,9 @@ function pumpio_sync(App $a)
 		return;
 	}
 
-	$last = Config::get('pumpio', 'last_poll');
+	$last = DI::config()->get('pumpio', 'last_poll');
 
-	$poll_interval = intval(Config::get('pumpio', 'poll_interval', PUMPIO_DEFAULT_POLL_INTERVAL));
+	$poll_interval = intval(DI::config()->get('pumpio', 'poll_interval', PUMPIO_DEFAULT_POLL_INTERVAL));
 
 	if ($last) {
 		$next = $last + ($poll_interval * 60);
@@ -707,7 +706,7 @@ function pumpio_sync(App $a)
 		}
 	}
 
-	$abandon_days = intval(Config::get('system', 'account_abandon_days'));
+	$abandon_days = intval(DI::config()->get('system', 'account_abandon_days'));
 	if ($abandon_days < 1) {
 		$abandon_days = 0;
 	}
@@ -745,7 +744,7 @@ function pumpio_sync(App $a)
 
 	Logger::log('pumpio: cron_end');
 
-	Config::set('pumpio', 'last_poll', time());
+	DI::config()->set('pumpio', 'last_poll', time());
 }
 
 function pumpio_cron(App $a, $b)
@@ -768,7 +767,7 @@ function pumpio_fetchtimeline(App $a, $uid)
 	//  hostname of the node if neither one is set.
 	$application_name  = DI::pConfig()->get($uid, 'pumpio', 'application_name');
 	if ($application_name == "") {
-		$application_name  = Config::get('pumpio', 'application_name');
+		$application_name  = DI::config()->get('pumpio', 'application_name');
 	}
 	if ($application_name == "") {
 		$application_name = DI::baseUrl()->getHostname();

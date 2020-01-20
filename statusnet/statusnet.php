@@ -42,7 +42,6 @@ use Friendica\App;
 use Friendica\Content\OEmbed;
 use Friendica\Content\Text\HTML;
 use Friendica\Content\Text\Plaintext;
-use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Protocol;
@@ -151,7 +150,7 @@ function statusnet_settings_post(App $a, $post)
 			 * use them. All the data are available in the global config.
 			 * Check the API Url never the less and blame the admin if it's not working ^^
 			 */
-			$globalsn = Config::get('statusnet', 'sites');
+			$globalsn = DI::config()->get('statusnet', 'sites');
 			foreach ($globalsn as $asn) {
 				if ($asn['apiurl'] == $_POST['statusnet-preconf-apiurl']) {
 					$apibase = $asn['apiurl'];
@@ -277,7 +276,7 @@ function statusnet_settings(App $a, &$s)
 		/*		 * *
 		 * no consumer keys
 		 */
-		$globalsn = Config::get('statusnet', 'sites');
+		$globalsn = DI::config()->get('statusnet', 'sites');
 		/*		 * *
 		 * lets check if we have one or more globally configured GNU Social
 		 * server OAuth credentials in the configuration. If so offer them
@@ -685,12 +684,12 @@ function statusnet_addon_admin_post(App $a)
 		}
 	}
 
-	$sites = Config::set('statusnet', 'sites', $sites);
+	$sites = DI::config()->set('statusnet', 'sites', $sites);
 }
 
 function statusnet_addon_admin(App $a, &$o)
 {
-	$sites = Config::get('statusnet', 'sites');
+	$sites = DI::config()->get('statusnet', 'sites');
 	$sitesform = [];
 	if (is_array($sites)) {
 		foreach ($sites as $id => $s) {
@@ -766,9 +765,9 @@ function statusnet_prepare_body(App $a, &$b)
 
 function statusnet_cron(App $a, $b)
 {
-	$last = Config::get('statusnet', 'last_poll');
+	$last = DI::config()->get('statusnet', 'last_poll');
 
-	$poll_interval = intval(Config::get('statusnet', 'poll_interval'));
+	$poll_interval = intval(DI::config()->get('statusnet', 'poll_interval'));
 	if (!$poll_interval) {
 		$poll_interval = STATUSNET_DEFAULT_POLL_INTERVAL;
 	}
@@ -790,7 +789,7 @@ function statusnet_cron(App $a, $b)
 		}
 	}
 
-	$abandon_days = intval(Config::get('system', 'account_abandon_days'));
+	$abandon_days = intval(DI::config()->get('system', 'account_abandon_days'));
 	if ($abandon_days < 1) {
 		$abandon_days = 0;
 	}
@@ -815,7 +814,7 @@ function statusnet_cron(App $a, $b)
 
 	Logger::log('statusnet: cron_end');
 
-	Config::set('statusnet', 'last_poll', time());
+	DI::config()->set('statusnet', 'last_poll', time());
 }
 
 function statusnet_fetchtimeline(App $a, $uid)
@@ -833,7 +832,7 @@ function statusnet_fetchtimeline(App $a, $uid)
 	//  hostname of the node if neither one is set.
 	$application_name = DI::pConfig()->get($uid, 'statusnet', 'application_name');
 	if ($application_name == "") {
-		$application_name = Config::get('statusnet', 'application_name');
+		$application_name = DI::config()->get('statusnet', 'application_name');
 	}
 	if ($application_name == "") {
 		$application_name = DI::baseUrl()->getHostname();

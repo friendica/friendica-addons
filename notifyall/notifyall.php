@@ -10,7 +10,6 @@
 
 use Friendica\App;
 use Friendica\Content\Text\BBCode;
-use Friendica\Core\Config;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
@@ -46,18 +45,18 @@ function notifyall_post(App $a)
 		return;
 	}
 
-	$sitename = Config::get('config', 'sitename');
+	$sitename = DI::config()->get('config', 'sitename');
 
-	if (empty(Config::get('config', 'admin_name'))) {
+	if (empty(DI::config()->get('config', 'admin_name'))) {
 		$sender_name = '"' . DI::l10n()->t('%s Administrator', $sitename) . '"';
 	} else {
-		$sender_name = '"' . DI::l10n()->t('%1$s, %2$s Administrator', Config::get('config', 'admin_name'), $sitename) . '"';
+		$sender_name = '"' . DI::l10n()->t('%1$s, %2$s Administrator', DI::config()->get('config', 'admin_name'), $sitename) . '"';
 	}
 
-	if (!Config::get('config', 'sender_email')) {
+	if (!DI::config()->get('config', 'sender_email')) {
 		$sender_email = 'noreply@' . DI::baseUrl()->getHostname();
 	} else {
-		$sender_email = Config::get('config', 'sender_email');
+		$sender_email = DI::config()->get('config', 'sender_email');
 	}
 
 	$subject = $_REQUEST['subject'];
@@ -70,7 +69,7 @@ function notifyall_post(App $a)
 	// if this is a test, send it only to the admin(s)
 	// admin_email might be a comma separated list, but we need "a@b','c@d','e@f
 	if (intval($_REQUEST['test'])) {
-		$email = Config::get('config', 'admin_email');
+		$email = DI::config()->get('config', 'admin_email');
 		$email = "'" . str_replace([" ",","], ["","','"], $email) . "'";
 	}
 	$sql_extra = ((intval($_REQUEST['test'])) ? sprintf(" AND `email` in ( %s )", $email) : '');

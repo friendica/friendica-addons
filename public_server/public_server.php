@@ -8,7 +8,6 @@
 
 use Friendica\App;
 use Friendica\BaseModule;
-use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
@@ -45,8 +44,8 @@ function public_server_register_account($a, $b)
 {
 	$uid = $b;
 
-	$days = Config::get('public_server', 'expiredays');
-	$days_posts = Config::get('public_server', 'expireposts');
+	$days = DI::config()->get('public_server', 'expiredays');
+	$days_posts = DI::config()->get('public_server', 'expireposts');
 	if (!$days) {
 		return;
 	}
@@ -83,7 +82,7 @@ function public_server_cron($a, $b)
 		}
 	}
 
-	$nologin = Config::get('public_server', 'nologin', false);
+	$nologin = DI::config()->get('public_server', 'nologin', false);
 	if ($nologin) {
 		$r = q("SELECT `uid` FROM `user` WHERE NOT `account_expired` AND `login_date` <= '%s' AND `register_date` < UTC_TIMESTAMP() - INTERVAL %d DAY AND `account_expires_on` <= '%s'",
 			DBA::NULL_DATETIME, intval($nologin), DBA::NULL_DATETIME);
@@ -95,7 +94,7 @@ function public_server_cron($a, $b)
 		}
 	}
 
-	$flagusers = Config::get('public_server', 'flagusers', false);
+	$flagusers = DI::config()->get('public_server', 'flagusers', false);
 	if ($flagusers) {
 		$r = q("SELECT `uid` FROM `user` WHERE NOT `account_expired` AND `login_date` < UTC_TIMESTAMP() - INTERVAL %d DAY AND `account_expires_on` <= '%s' AND `page-flags` = 0",
 			intval($flagusers), DBA::NULL_DATETIME);
@@ -107,8 +106,8 @@ function public_server_cron($a, $b)
 		}
 	}
 
-	$flagposts = Config::get('public_server', 'flagposts');
-	$flagpostsexpire = Config::get('public_server', 'flagpostsexpire');
+	$flagposts = DI::config()->get('public_server', 'flagposts');
+	$flagpostsexpire = DI::config()->get('public_server', 'flagpostsexpire');
 	if ($flagposts && $flagpostsexpire) {
 		$r = q("SELECT `uid` FROM `user` WHERE NOT `account_expired` AND `login_date` < UTC_TIMESTAMP() - INTERVAL %d DAY AND `account_expires_on` <= '%s' and `expire` = 0 AND `page-flags` = 0",
 			intval($flagposts), DBA::NULL_DATETIME);
@@ -127,15 +126,15 @@ function public_server_enotify(&$a, &$b)
 	if (!empty($b['params']) && $b['params']['type'] == NOTIFY_SYSTEM
 		&& !empty($b['params']['system_type']) && $b['params']['system_type'] === 'public_server_expire') {
 		$b['itemlink'] = DI::baseUrl()->get();
-		$b['epreamble'] = $b['preamble'] = DI::l10n()->t('Your account on %s will expire in a few days.', Config::get('system', 'sitename'));
+		$b['epreamble'] = $b['preamble'] = DI::l10n()->t('Your account on %s will expire in a few days.', DI::config()->get('system', 'sitename'));
 		$b['subject'] = DI::l10n()->t('Your Friendica account is about to expire.');
-		$b['body'] = DI::l10n()->t("Hi %1\$s,\n\nYour account on %2\$s will expire in less than five days. You may keep your account by logging in at least once every 30 days", $b['params']['to_name'], "[url=" . Config::get('system', 'url') . "]" . Config::get('config', 'sitename') . "[/url]");
+		$b['body'] = DI::l10n()->t("Hi %1\$s,\n\nYour account on %2\$s will expire in less than five days. You may keep your account by logging in at least once every 30 days", $b['params']['to_name'], "[url=" . DI::config()->get('system', 'url') . "]" . DI::config()->get('config', 'sitename') . "[/url]");
 	}
 }
 
 function public_server_login($a, $b)
 {
-	$days = Config::get('public_server', 'expiredays');
+	$days = DI::config()->get('public_server', 'expiredays');
 	if (!$days) {
 		return;
 	}
@@ -154,12 +153,12 @@ function public_server_addon_admin_post(&$a)
 	$flagusers = (!empty($_POST['flagusers']) ? Strings::escapeTags(trim($_POST['flagusers'])) : '');
 	$flagposts = (!empty($_POST['flagposts']) ? Strings::escapeTags(trim($_POST['flagposts'])) : '');
 	$flagpostsexpire = (!empty($_POST['flagpostsexpire']) ? Strings::escapeTags(trim($_POST['flagpostsexpire'])) : '');
-	Config::set('public_server', 'expiredays', $expiredays);
-	Config::set('public_server', 'expireposts', $expireposts);
-	Config::set('public_server', 'nologin', $nologin);
-	Config::set('public_server', 'flagusers', $flagusers);
-	Config::set('public_server', 'flagposts', $flagposts);
-	Config::set('public_server', 'flagpostsexpire', $flagpostsexpire);
+	DI::config()->set('public_server', 'expiredays', $expiredays);
+	DI::config()->set('public_server', 'expireposts', $expireposts);
+	DI::config()->set('public_server', 'nologin', $nologin);
+	DI::config()->set('public_server', 'flagusers', $flagusers);
+	DI::config()->set('public_server', 'flagposts', $flagposts);
+	DI::config()->set('public_server', 'flagpostsexpire', $flagpostsexpire);
 	info(DI::l10n()->t('Settings saved').EOL);
 }
 
@@ -171,11 +170,11 @@ function public_server_addon_admin(&$a, &$o)
 		'$submit' => DI::l10n()->t('Save Settings'),
 		'$form_security_token' => $token,
 		'$infotext' => DI::l10n()->t('Set any of these options to 0 to deactivate it.'),
-		'$expiredays' => ["expiredays","Expire Days", intval(Config::get('public_server', 'expiredays')), "When an account is created on the site, it is given a hard "],
-		'$expireposts' => ["expireposts", "Expire Posts", intval(Config::get('public_server', 'expireposts')), "Set the default days for posts to expire here"],
-		'$nologin' => ["nologin", "No Login", intval(Config::get('public_server', 'nologin')), "Remove users who have never logged in after nologin days "],
-		'$flagusers' => ["flagusers", "Flag users", intval(Config::get('public_server', 'flagusers')), "Remove users who last logged in over flagusers days ago"],
-		'$flagposts' => ["flagposts", "Flag posts", intval(Config::get('public_server', 'flagposts')), "For users who last logged in over flagposts days ago set post expiry days to flagpostsexpire "],
-		'$flagpostsexpire' => ["flagpostsexpire", "Flag posts expire", intval(Config::get('public_server', 'flagpostsexpire'))],
+		'$expiredays' => ["expiredays","Expire Days", intval(DI::config()->get('public_server', 'expiredays')), "When an account is created on the site, it is given a hard "],
+		'$expireposts' => ["expireposts", "Expire Posts", intval(DI::config()->get('public_server', 'expireposts')), "Set the default days for posts to expire here"],
+		'$nologin' => ["nologin", "No Login", intval(DI::config()->get('public_server', 'nologin')), "Remove users who have never logged in after nologin days "],
+		'$flagusers' => ["flagusers", "Flag users", intval(DI::config()->get('public_server', 'flagusers')), "Remove users who last logged in over flagusers days ago"],
+		'$flagposts' => ["flagposts", "Flag posts", intval(DI::config()->get('public_server', 'flagposts')), "For users who last logged in over flagposts days ago set post expiry days to flagpostsexpire "],
+		'$flagpostsexpire' => ["flagpostsexpire", "Flag posts expire", intval(DI::config()->get('public_server', 'flagpostsexpire'))],
 	]);
 }

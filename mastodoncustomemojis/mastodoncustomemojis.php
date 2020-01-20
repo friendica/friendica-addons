@@ -12,7 +12,6 @@
 use Friendica\App;
 use Friendica\Content\Smilies;
 use Friendica\Core\Cache\Duration;
-use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Protocol;
 use Friendica\DI;
@@ -76,7 +75,7 @@ function mastodoncustomemojis_get_custom_emojis_for_author($author_link)
 
 	$return = DI::cache()->get($cache_key);
 
-	if (empty($return) || Config::get('system', 'ignore_cache')) {
+	if (empty($return) || DI::config()->get('system', 'ignore_cache')) {
 		$return = mastodoncustomemojis_fetch_custom_emojis_for_url($api_base_url);
 
 		DI::cache()->set($cache_key, $return, empty($return['texts']) ? Duration::QUARTER_HOUR : Duration::HOUR);

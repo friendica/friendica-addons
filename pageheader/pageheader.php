@@ -9,7 +9,6 @@
  */
 
 use Friendica\App;
-use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;
@@ -28,7 +27,7 @@ function pageheader_addon_admin(App &$a, &$s)
 	$stylesheetPath = __DIR__ . '/pageheader.css';
 	DI::page()->registerStylesheet($stylesheetPath);
 
-	$words = Config::get('pageheader','text');
+	$words = DI::config()->get('pageheader','text');
 	if(! $words)
 		$words = '';
 
@@ -50,7 +49,7 @@ function pageheader_addon_admin_post(App $a)
 
 	if(!empty($_POST['pageheader-submit'])) {
 		if (isset($_POST['pageheader-words'])) {
-			Config::set('pageheader', 'text', trim(strip_tags($_POST['pageheader-words'])));
+			DI::config()->set('pageheader', 'text', trim(strip_tags($_POST['pageheader-words'])));
 		}
 		info(DI::l10n()->t('pageheader Settings saved.'));
 	}
@@ -61,7 +60,7 @@ function pageheader_fetch(App $a, &$b)
 	if(file_exists('pageheader.html')){
 		$s = file_get_contents('pageheader.html');
 	} else {
-		$s = Config::get('pageheader', 'text');
+		$s = DI::config()->get('pageheader', 'text');
 	}
 
 	$stylesheetPath = __DIR__ .'/pageheader.css';

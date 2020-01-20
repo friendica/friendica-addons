@@ -54,9 +54,9 @@
  * ...etc.
  */
 
-use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
+use Friendica\DI;
 use Friendica\Model\User;
 use Friendica\Util\ConfigFileLoader;
 
@@ -91,15 +91,15 @@ function ldapauth_hook_authenticate($a, &$b)
 
 function ldapauth_authenticate($username, $password)
 {
-	$ldap_server   = Config::get('ldapauth', 'ldap_server');
-	$ldap_binddn   = Config::get('ldapauth', 'ldap_binddn');
-	$ldap_bindpw   = Config::get('ldapauth', 'ldap_bindpw');
-	$ldap_searchdn = Config::get('ldapauth', 'ldap_searchdn');
-	$ldap_userattr = Config::get('ldapauth', 'ldap_userattr');
-	$ldap_group    = Config::get('ldapauth', 'ldap_group');
-	$ldap_autocreateaccount = Config::get('ldapauth', 'ldap_autocreateaccount');
-	$ldap_autocreateaccount_emailattribute = Config::get('ldapauth', 'ldap_autocreateaccount_emailattribute');
-	$ldap_autocreateaccount_nameattribute  = Config::get('ldapauth', 'ldap_autocreateaccount_nameattribute');
+	$ldap_server   = DI::config()->get('ldapauth', 'ldap_server');
+	$ldap_binddn   = DI::config()->get('ldapauth', 'ldap_binddn');
+	$ldap_bindpw   = DI::config()->get('ldapauth', 'ldap_bindpw');
+	$ldap_searchdn = DI::config()->get('ldapauth', 'ldap_searchdn');
+	$ldap_userattr = DI::config()->get('ldapauth', 'ldap_userattr');
+	$ldap_group    = DI::config()->get('ldapauth', 'ldap_group');
+	$ldap_autocreateaccount = DI::config()->get('ldapauth', 'ldap_autocreateaccount');
+	$ldap_autocreateaccount_emailattribute = DI::config()->get('ldapauth', 'ldap_autocreateaccount_emailattribute');
+	$ldap_autocreateaccount_nameattribute  = DI::config()->get('ldapauth', 'ldap_autocreateaccount_nameattribute');
 
 	if (!(strlen($password) && function_exists('ldap_connect') && strlen($ldap_server))) {
 		Logger::log("ldapauth: not configured or missing php-ldap module");

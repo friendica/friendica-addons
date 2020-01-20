@@ -11,7 +11,6 @@
 
 use Friendica\App;
 use Friendica\Core\Cache\Duration;
-use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\Core\Session;
@@ -116,10 +115,10 @@ function curweather_network_mod_init(App $a, &$b)
 	$rpt = DI::pConfig()->get(local_user(), 'curweather', 'curweather_loc');
 
 	// Set the language to the browsers language or default and use metric units
-	$lang = Session::get('language', Config::get('system', 'language'));
+	$lang = Session::get('language', DI::config()->get('system', 'language'));
 	$units = DI::pConfig()->get( local_user(), 'curweather', 'curweather_units');
-	$appid = Config::get('curweather', 'appid');
-	$cachetime = intval(Config::get('curweather', 'cachetime'));
+	$appid = DI::config()->get('curweather', 'appid');
+	$cachetime = intval(DI::config()->get('curweather', 'cachetime'));
 
 	if ($units === "") {
 		$units = 'metric';
@@ -184,7 +183,7 @@ function curweather_addon_settings(App $a, &$s)
 	/* Get the current state of our config variable */
 	$curweather_loc = DI::pConfig()->get(local_user(), 'curweather', 'curweather_loc');
 	$curweather_units = DI::pConfig()->get(local_user(), 'curweather', 'curweather_units');
-	$appid = Config::get('curweather', 'appid');
+	$appid = DI::config()->get('curweather', 'appid');
 
 	if ($appid == "") {
 		$noappidtext = DI::l10n()->t('No APPID found, please contact your admin to obtain one.');
@@ -220,8 +219,8 @@ function curweather_addon_admin_post(App $a)
 	}
 
 	if (!empty($_POST['curweather-submit'])) {
-		Config::set('curweather', 'appid',     trim($_POST['appid']));
-		Config::set('curweather', 'cachetime', trim($_POST['cachetime']));
+		DI::config()->set('curweather', 'appid',     trim($_POST['appid']));
+		DI::config()->set('curweather', 'cachetime', trim($_POST['cachetime']));
 
 		info(DI::l10n()->t('Curweather settings saved.' . PHP_EOL));
 	}
@@ -233,8 +232,8 @@ function curweather_addon_admin(App $a, &$o)
 		return;
 	}
 
-	$appid = Config::get('curweather', 'appid');
-	$cachetime = Config::get('curweather', 'cachetime');
+	$appid = DI::config()->get('curweather', 'appid');
+	$cachetime = DI::config()->get('curweather', 'cachetime');
 
 	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/curweather/" );
 

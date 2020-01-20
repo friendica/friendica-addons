@@ -8,7 +8,6 @@
 
 use Friendica\App;
 use Friendica\BaseModule;
-use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
@@ -49,8 +48,8 @@ function gravatar_load_config(App $a, ConfigFileLoader $loader)
  * @param &$b array
  */
 function gravatar_lookup($a, &$b) {
-	$default_avatar = Config::get('gravatar', 'default_avatar');
-	$rating = Config::get('gravatar', 'rating');
+	$default_avatar = DI::config()->get('gravatar', 'default_avatar');
+	$rating = DI::config()->get('gravatar', 'rating');
 
 	// setting default value if nothing configured
 	if(! $default_avatar)
@@ -75,8 +74,8 @@ function gravatar_lookup($a, &$b) {
 function gravatar_addon_admin (&$a, &$o) {
 	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/gravatar/" );
 
-	$default_avatar = Config::get('gravatar', 'default_avatar');
-	$rating = Config::get('gravatar', 'rating');
+	$default_avatar = DI::config()->get('gravatar', 'default_avatar');
+	$rating = DI::config()->get('gravatar', 'rating');
 
 	// set default values for first configuration
 	if(! $default_avatar)
@@ -124,7 +123,7 @@ function gravatar_addon_admin_post (&$a) {
 
 	$default_avatar = (!empty($_POST['avatar']) ? Strings::escapeTags(trim($_POST['avatar'])) : 'identicon');
 	$rating = (!empty($_POST['rating']) ? Strings::escapeTags(trim($_POST['rating'])) : 'g');
-	Config::set('gravatar', 'default_avatar', $default_avatar);
-	Config::set('gravatar', 'rating', $rating);
+	DI::config()->set('gravatar', 'default_avatar', $default_avatar);
+	DI::config()->set('gravatar', 'rating', $rating);
 	info(DI::l10n()->t('Gravatar settings updated.') .EOL);
 }

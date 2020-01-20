@@ -8,7 +8,6 @@
 
 use Friendica\App;
 use Friendica\BaseModule;
-use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
@@ -50,11 +49,11 @@ function libravatar_load_config(App $a, ConfigFileLoader $loader)
  */
 function libravatar_lookup($a, &$b)
 {
-	$default_avatar = Config::get('libravatar', 'default_avatar');
+	$default_avatar = DI::config()->get('libravatar', 'default_avatar');
 
 	if (! $default_avatar) {
 		// if not set, look up if there was one from the gravatar addon
-		$default_avatar = Config::get('gravatar', 'default_avatar');
+		$default_avatar = DI::config()->get('gravatar', 'default_avatar');
 		// setting default avatar if nothing configured
 		if (!$default_avatar) {
 			$default_avatar = 'identicon'; // default image will be a random pattern
@@ -78,7 +77,7 @@ function libravatar_addon_admin(&$a, &$o)
 {
 	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/libravatar");
 
-	$default_avatar = Config::get('libravatar', 'default_avatar');
+	$default_avatar = DI::config()->get('libravatar', 'default_avatar');
 
 	// set default values for first configuration
 	if (!$default_avatar) {
@@ -126,6 +125,6 @@ function libravatar_addon_admin_post(&$a)
 	BaseModule::checkFormSecurityToken('libravatarrsave');
 
 	$default_avatar = (!empty($_POST['avatar']) ? Strings::escapeTags(trim($_POST['avatar'])) : 'identicon');
-	Config::set('libravatar', 'default_avatar', $default_avatar);
+	DI::config()->set('libravatar', 'default_avatar', $default_avatar);
 	info(DI::l10n()->t('Libravatar settings updated.') .EOL);
 }

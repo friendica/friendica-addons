@@ -11,7 +11,6 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . '
 
 use Friendica\App;
 use Friendica\Content\Text\BBCode;
-use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
@@ -78,8 +77,8 @@ function tumblr_addon_admin(App $a, &$o)
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
 		// name, label, value, help, [extra values]
-		'$consumer_key' => ['consumer_key', DI::l10n()->t('Consumer Key'),  Config::get('tumblr', 'consumer_key' ), ''],
-		'$consumer_secret' => ['consumer_secret', DI::l10n()->t('Consumer Secret'),  Config::get('tumblr', 'consumer_secret' ), ''],
+		'$consumer_key' => ['consumer_key', DI::l10n()->t('Consumer Key'),  DI::config()->get('tumblr', 'consumer_key' ), ''],
+		'$consumer_secret' => ['consumer_secret', DI::l10n()->t('Consumer Secret'),  DI::config()->get('tumblr', 'consumer_secret' ), ''],
 	]);
 }
 
@@ -88,8 +87,8 @@ function tumblr_addon_admin_post(App $a)
 	$consumer_key    =       (!empty($_POST['consumer_key'])      ? Strings::escapeTags(trim($_POST['consumer_key']))   : '');
 	$consumer_secret =       (!empty($_POST['consumer_secret'])   ? Strings::escapeTags(trim($_POST['consumer_secret'])): '');
 
-	Config::set('tumblr', 'consumer_key',$consumer_key);
-	Config::set('tumblr', 'consumer_secret',$consumer_secret);
+	DI::config()->set('tumblr', 'consumer_key',$consumer_key);
+	DI::config()->set('tumblr', 'consumer_secret',$consumer_secret);
 
 	info(DI::l10n()->t('Settings updated.'). EOL);
 }
@@ -103,8 +102,8 @@ function tumblr_connect(App $a)
 	//require_once('addon/tumblr/tumblroauth/tumblroauth.php');
 
 	// Define the needed keys
-	$consumer_key = Config::get('tumblr', 'consumer_key');
-	$consumer_secret = Config::get('tumblr', 'consumer_secret');
+	$consumer_key = DI::config()->get('tumblr', 'consumer_key');
+	$consumer_secret = DI::config()->get('tumblr', 'consumer_secret');
 
 	// The callback URL is the script that gets called after the user authenticates with tumblr
 	// In this example, it would be the included callback.php
@@ -156,8 +155,8 @@ function tumblr_callback(App $a)
 	//require_once('addon/tumblr/tumblroauth/tumblroauth.php');
 
 	// Define the needed keys
-	$consumer_key = Config::get('tumblr', 'consumer_key');
-	$consumer_secret = Config::get('tumblr', 'consumer_secret');
+	$consumer_key = DI::config()->get('tumblr', 'consumer_key');
+	$consumer_secret = DI::config()->get('tumblr', 'consumer_secret');
 
 	// Once the user approves your app at Tumblr, they are sent back to this script.
 	// This script is passed two parameters in the URL, oauth_token (our Request Token)
@@ -263,8 +262,8 @@ function tumblr_settings(App $a, &$s)
 
 	if (($oauth_token != "") && ($oauth_token_secret != "")) {
 		$page = DI::pConfig()->get(local_user(), 'tumblr', 'page');
-		$consumer_key = Config::get('tumblr', 'consumer_key');
-		$consumer_secret = Config::get('tumblr', 'consumer_secret');
+		$consumer_key = DI::config()->get('tumblr', 'consumer_key');
+		$consumer_secret = DI::config()->get('tumblr', 'consumer_secret');
 
 		$tum_oauth = new TumblrOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
 
@@ -470,8 +469,8 @@ function tumblr_send(App $a, array &$b) {
 			$params['caption'] = BBCode::convert("[quote]" . $siteinfo["description"] . "[/quote]", false, 4);
 		}
 
-		$consumer_key = Config::get('tumblr','consumer_key');
-		$consumer_secret = Config::get('tumblr','consumer_secret');
+		$consumer_key = DI::config()->get('tumblr','consumer_key');
+		$consumer_secret = DI::config()->get('tumblr','consumer_secret');
 
 		$tum_oauth = new TumblrOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
 

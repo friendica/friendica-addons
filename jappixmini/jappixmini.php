@@ -63,7 +63,6 @@
  */
 
 use Friendica\App;
-use Friendica\Core\Config;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Protocol;
@@ -86,23 +85,23 @@ function jappixmini_install()
 	Hook::register('about_hook', 'addon/jappixmini/jappixmini.php', 'jappixmini_download_source');
 
 	// set standard configuration
-	$info_text = Config::get("jappixmini", "infotext");
+	$info_text = DI::config()->get("jappixmini", "infotext");
 	if (!$info_text)
-		Config::set("jappixmini", "infotext", "To get the chat working, you need to know a BOSH host which works with your Jabber account. " .
+		DI::config()->set("jappixmini", "infotext", "To get the chat working, you need to know a BOSH host which works with your Jabber account. " .
 			"An example of a BOSH server that works for all accounts is https://bind.jappix.com/, but keep " .
 			"in mind that the BOSH server can read along all chat messages. If you know that your Jabber " .
 			"server also provides an own BOSH server, it is much better to use this one!"
 		);
 
-	$bosh_proxy = Config::get("jappixmini", "bosh_proxy");
+	$bosh_proxy = DI::config()->get("jappixmini", "bosh_proxy");
 	if ($bosh_proxy === "") {
-		Config::set("jappixmini", "bosh_proxy", "1");
+		DI::config()->set("jappixmini", "bosh_proxy", "1");
 	}
 
 	// set addon version so that safe updates are possible later
-	$addon_version = Config::get("jappixmini", "version");
+	$addon_version = DI::config()->get("jappixmini", "version");
 	if ($addon_version === "") {
-		Config::set("jappixmini", "version", "1");
+		DI::config()->set("jappixmini", "version", "1");
 	}
 }
 
@@ -127,35 +126,35 @@ function jappixmini_addon_admin(App $a, &$o)
 	}
 
 	// warn if cron job has not yet been executed
-	$cron_run = Config::get("jappixmini", "last_cron_execution");
+	$cron_run = DI::config()->get("jappixmini", "last_cron_execution");
 	if (!$cron_run) {
 		$o .= "<p><strong>Warning: The cron job has not yet been executed. If this message is still there after some time (usually 10 minutes), this means that autosubscribe and autoaccept will not work.</strong></p>";
 	}
 
 	// bosh proxy
-	$bosh_proxy = intval(Config::get("jappixmini", "bosh_proxy"));
+	$bosh_proxy = intval(DI::config()->get("jappixmini", "bosh_proxy"));
 	$bosh_proxy = intval($bosh_proxy) ? ' checked="checked"' : '';
 	$o .= '<label for="jappixmini-proxy">Activate BOSH proxy</label>';
 	$o .= ' <input id="jappixmini-proxy" type="checkbox" name="jappixmini-proxy" value="1"' . $bosh_proxy . ' /><br />';
 
 	// bosh address
-	$bosh_address = Config::get("jappixmini", "bosh_address");
+	$bosh_address = DI::config()->get("jappixmini", "bosh_address");
 	$o .= '<p><label for="jappixmini-address">Adress of the default BOSH proxy. If enabled it overrides the user settings:</label><br />';
 	$o .= '<input id="jappixmini-address" type="text" name="jappixmini-address" value="' . $bosh_address . '" /></p>';
 
 	// default server address
-	$default_server = Config::get("jappixmini", "default_server");
+	$default_server = DI::config()->get("jappixmini", "default_server");
 	$o .= '<p><label for="jappixmini-server">Adress of the default jabber server:</label><br />';
 	$o .= '<input id="jappixmini-server" type="text" name="jappixmini-server" value="' . $default_server . '" /></p>';
 
 	// default user name to friendica nickname
-	$default_user = intval(Config::get("jappixmini", "default_user"));
+	$default_user = intval(DI::config()->get("jappixmini", "default_user"));
 	$default_user = intval($default_user) ? ' checked="checked"' : '';
 	$o .= '<label for="jappixmini-user">Set the default username to the nickname:</label>';
 	$o .= ' <input id="jappixmini-user" type="checkbox" name="jappixmini-defaultuser" value="1"' . $default_user . ' /><br />';
 
 	// info text field
-	$info_text = Config::get("jappixmini", "infotext");
+	$info_text = DI::config()->get("jappixmini", "infotext");
 	$o .= '<p><label for="jappixmini-infotext">Info text to help users with configuration (important if you want to provide your own BOSH host!):</label><br />';
 	$o .= '<textarea id="jappixmini-infotext" name="jappixmini-infotext" rows="5" cols="50">' . htmlentities($info_text) . '</textarea></p>';
 
@@ -173,11 +172,11 @@ function jappixmini_addon_admin_post(App $a)
 		$default_user = intval($_REQUEST['jappixmini-defaultuser']);
 		$bosh_address = $_REQUEST['jappixmini-address'];
 		$default_server = $_REQUEST['jappixmini-server'];
-		Config::set("jappixmini", "infotext", $info_text);
-		Config::set("jappixmini", "bosh_proxy", $bosh_proxy);
-		Config::set("jappixmini", "bosh_address", $bosh_address);
-		Config::set("jappixmini", "default_server", $default_server);
-		Config::set("jappixmini", "default_user", $default_user);
+		DI::config()->set("jappixmini", "infotext", $info_text);
+		DI::config()->set("jappixmini", "bosh_proxy", $bosh_proxy);
+		DI::config()->set("jappixmini", "bosh_address", $bosh_address);
+		DI::config()->set("jappixmini", "default_server", $default_server);
+		DI::config()->set("jappixmini", "default_user", $default_user);
 	}
 }
 
@@ -272,7 +271,7 @@ function jappixmini_settings(App $a, &$s)
 	$dontinsertchat = DI::pConfig()->get(local_user(), 'jappixmini', 'dontinsertchat');
 	$insertchat = !(intval($dontinsertchat) ? ' checked="checked"' : '');
 
-	$defaultbosh = Config::get("jappixmini", "bosh_address");
+	$defaultbosh = DI::config()->get("jappixmini", "bosh_address");
 
 	if ($defaultbosh != "") {
 		DI::pConfig()->set(local_user(), 'jappixmini', 'bosh', $defaultbosh);
@@ -294,14 +293,14 @@ function jappixmini_settings(App $a, &$s)
 	$encrypt_disabled = $encrypt ? '' : ' disabled="disabled"';
 
 	if ($server == "") {
-		$server = Config::get("jappixmini", "default_server");
+		$server = DI::config()->get("jappixmini", "default_server");
 	}
 
-	if (($username == "") && Config::get("jappixmini", "default_user")) {
+	if (($username == "") && DI::config()->get("jappixmini", "default_user")) {
 		$username = $a->user["nickname"];
 	}
 
-	$info_text = Config::get("jappixmini", "infotext");
+	$info_text = DI::config()->get("jappixmini", "infotext");
 	$info_text = htmlentities($info_text);
 	$info_text = str_replace("\n", "<br />", $info_text);
 
@@ -511,7 +510,7 @@ function jappixmini_script(App $a)
 	$autosubscribe = intval($autosubscribe);
 
 	// set proxy if necessary
-	$use_proxy = Config::get('jappixmini', 'bosh_proxy');
+	$use_proxy = DI::config()->get('jappixmini', 'bosh_proxy');
 	if ($use_proxy) {
 		$proxy = DI::baseUrl()->get() . '/addon/jappixmini/proxy.php';
 	} else {
@@ -548,7 +547,7 @@ function jappixmini_script(App $a)
 	// get nickname
 	$r = q("SELECT `username` FROM `user` WHERE `uid`=$uid");
 	$nickname = json_encode($r[0]["username"]);
-	$groupchats = Config::get('jappixmini', 'groupchats');
+	$groupchats = DI::config()->get('jappixmini', 'groupchats');
 	//if $groupchats has no value jappix_addon_start will produce a syntax error
 	if (empty($groupchats)) {
 		$groupchats = "{}";
@@ -580,7 +579,7 @@ function jappixmini_login(App $a, &$o)
 function jappixmini_cron(App $a, $d)
 {
 	// For autosubscribe/autoapprove, we need to maintain a list of jabber addresses of our contacts.
-	Config::set("jappixmini", "last_cron_execution", $d);
+	DI::config()->set("jappixmini", "last_cron_execution", $d);
 
 	// go through list of users with jabber enabled
 	$users = q("SELECT `uid` FROM `pconfig` WHERE `cat`='jappixmini' AND (`k`='autosubscribe' OR `k`='autoapprove') AND `v`='1'");
