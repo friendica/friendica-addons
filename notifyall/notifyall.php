@@ -82,7 +82,7 @@ function notifyall_post(App $a)
 	}
 
 	foreach ($recips as $recip) {
-		Emailer::send([
+		DI::emailer()->send([
 			'fromName'             => $sender_name,
 			'fromEmail'            => $sender_email,
 			'replyTo'              => $sender_email,

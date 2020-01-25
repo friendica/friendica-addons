@@ -116,7 +116,7 @@ function securemail_settings_post(App &$a, array &$b)
 			// enable addon for test
 			DI::pConfig()->set(local_user(), 'securemail', 'enable', 1);
 
-			$res = Emailer::send($params);
+			$res = DI::emailer()->send($params);
 
 			// revert to saved value
 			DI::pConfig()->set(local_user(), 'securemail', 'enable', $enable);
