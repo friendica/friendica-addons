@@ -8,7 +8,7 @@
  * Author: Rabuzarus <https://friendica.kommune4.de/profile/rabuzarus> (Port to Friendica)
  */
 
-use Friendica\Addon\notifyall\NotifyAllEMail;
+use Friendica\Addon\notifyall\NotifyAllEmail;
 use Friendica\App;
 use Friendica\Database\DBA;
 use Friendica\Core\Logger;
@@ -60,7 +60,7 @@ function notifyall_post(App $a)
 		return;
 	}
 
-	$notifyEmail = new NotifyAllEMail(DI::l10n(), DI::config(), DI::baseUrl(), $text);
+	$notifyEmail = new NotifyAllEmail(DI::l10n(), DI::config(), DI::baseUrl(), $text);
 
 	foreach ($recipients as $recipient) {
 		DI::emailer()->send($notifyEmail->withRecipient($recipient['email']));

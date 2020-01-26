@@ -6,7 +6,7 @@
  * Author: Fabio Comuni <http://kirgroup.com/profile/fabrixxm>
  */
 
-use Friendica\Addon\securemail\SecureTestEMail;
+use Friendica\Addon\securemail\SecureTestEmail;
 use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
@@ -89,7 +89,7 @@ function securemail_settings_post(App &$a, array &$b)
 
 		if ($_POST['securemail-submit'] == DI::l10n()->t('Save and send test')) {
 
-			$res = DI::emailer()->send(new SecureTestEMail(DI::app(), DI::config(), DI::pConfig(), DI::baseUrl()));
+			$res = DI::emailer()->send(new SecureTestEmail(DI::app(), DI::config(), DI::pConfig(), DI::baseUrl()));
 
 			// revert to saved value
 			DI::pConfig()->set(local_user(), 'securemail', 'enable', $enable);

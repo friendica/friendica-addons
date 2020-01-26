@@ -6,12 +6,12 @@ use Friendica\App;
 use Friendica\App\BaseURL;
 use Friendica\Core\Config\IConfig;
 use Friendica\Core\PConfig\IPConfig;
-use Friendica\Object\EMail;
+use Friendica\Object\Email;
 
 /**
  * Class for creating a Test email for the securemail addon
  */
-class SecureTestEMail extends EMail
+class SecureTestEmail extends Email
 {
 	public function __construct(App $a, IConfig $config, IPConfig $pConfig, BaseURL $baseUrl)
 	{

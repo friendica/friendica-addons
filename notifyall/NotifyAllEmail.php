@@ -6,12 +6,12 @@ use Friendica\App\BaseURL;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Config\IConfig;
 use Friendica\Core\L10n;
-use Friendica\Object\EMail;
+use Friendica\Object\Email;
 
 /**
  * Class for creating a Notify-All EMail
  */
-class NotifyAllEMail extends EMail
+class NotifyAllEmail extends Email
 {
 	public function __construct(L10n $l10n, IConfig $config, BaseURL $baseUrl, string $text)
 	{
