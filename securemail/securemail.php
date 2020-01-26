@@ -103,20 +103,12 @@ function securemail_settings_post(App &$a, array &$b)
 			$subject = 'Friendica - Secure Mail - Test';
 			$message = 'This is a test message from your Friendica Secure Mail addon.';
 
-			$params = [
-				'uid' => local_user(),
-				'fromName' => $sitename,
-				'fromEmail' => $sender_email,
-				'toEmail' => $a->user['email'],
-				'messageSubject' => $subject,
-				'htmlVersion' => "<p>{$message}</p>",
-				'textVersion' => $message,
-			];
-
 			// enable addon for test
 			DI::pConfig()->set(local_user(), 'securemail', 'enable', 1);
 
-			$res = DI::emailer()->send($params);
+			$res = DI::emailer()->send($sitename, $sender_email, $sender_email,
+				$a->user['email'], $subject, "<p>{$message}</p>", $message,
+				'', local_user());
 
 			// revert to saved value
 			DI::pConfig()->set(local_user(), 'securemail', 'enable', $enable);

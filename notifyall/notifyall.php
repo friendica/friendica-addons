@@ -82,15 +82,7 @@ function notifyall_post(App $a)
 	}
 
 	foreach ($recips as $recip) {
-		DI::emailer()->send([
-			'fromName'             => $sender_name,
-			'fromEmail'            => $sender_email,
-			'replyTo'              => $sender_email,
-			'toEmail'              => $recip['email'],
-			'messageSubject'       => $subject,
-			'htmlVersion'          => $htmlversion,
-			'textVersion'          => $textversion
-		]);
+		DI::emailer()->send($sender_name, $sender_email, $sender_email, $recip['email'], $subject, $htmlversion, $textversion);
 	}
 
 	notice(DI::l10n()->t('Emails sent'));
