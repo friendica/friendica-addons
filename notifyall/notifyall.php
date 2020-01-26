@@ -8,12 +8,12 @@
  * Author: Rabuzarus <https://friendica.kommune4.de/profile/rabuzarus> (Port to Friendica)
  */
 
+use Friendica\Addon\notifyall\NotifyAllEMail;
 use Friendica\App;
-use Friendica\Content\Text\BBCode;
+use Friendica\Database\DBA;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
-use Friendica\Util\Emailer;
 
 function notifyall_install()
 {
@@ -45,27 +45,6 @@ function notifyall_post(App $a)
 		return;
 	}
 
-	$sitename = DI::config()->get('config', 'sitename');
-
-	if (empty(DI::config()->get('config', 'admin_name'))) {
-		$sender_name = '"' . DI::l10n()->t('%s Administrator', $sitename) . '"';
-	} else {
-		$sender_name = '"' . DI::l10n()->t('%1$s, %2$s Administrator', DI::config()->get('config', 'admin_name'), $sitename) . '"';
-	}
-
-	if (!DI::config()->get('config', 'sender_email')) {
-		$sender_email = 'noreply@' . DI::baseUrl()->getHostname();
-	} else {
-		$sender_email = DI::config()->get('config', 'sender_email');
-	}
-
-	$subject = $_REQUEST['subject'];
-
-
-	$textversion = strip_tags(html_entity_decode(BBCode::convert(stripslashes(str_replace(["\\r", "\\n"], ["", "\n"], $text))), ENT_QUOTES, 'UTF-8'));
-
-	$htmlversion = BBCode::convert(stripslashes(str_replace(["\\r", "\\n"], ["", "<br />\n"], $text)));
-
 	// if this is a test, send it only to the admin(s)
 	// admin_email might be a comma separated list, but we need "a@b','c@d','e@f
 	if (intval($_REQUEST['test'])) {
@@ -74,15 +53,17 @@ function notifyall_post(App $a)
 	}
 	$sql_extra = ((intval($_REQUEST['test'])) ? sprintf(" AND `email` in ( %s )", $email) : '');
 
-	$recips = q("SELECT DISTINCT `email` FROM `user` WHERE `verified` AND NOT `account_removed` AND NOT `account_expired` $sql_extra");
+	$recipients = DBA::p("SELECT DISTINCT `email` FROM `user` WHERE `verified` AND NOT `account_removed` AND NOT `account_expired` $sql_extra");
 
-	if (! $recips) {
+	if (! $recipients) {
 		notice(DI::l10n()->t('No recipients found.') . EOL);
 		return;
 	}
 
-	foreach ($recips as $recip) {
-		DI::emailer()->send($sender_name, $sender_email, $sender_email, $recip['email'], $subject, $htmlversion, $textversion);
+	$notifyEmail = new NotifyAllEMail(DI::l10n(), DI::config(), DI::baseUrl(), $text);
+
+	foreach ($recipients as $recipient) {
+		DI::emailer()->send($notifyEmail->withRecipient($recipient['email']));
 	}
 
 	notice(DI::l10n()->t('Emails sent'));
@@ -92,7 +73,7 @@ function notifyall_post(App $a)
 function notifyall_content(&$a)
 {
 	if (! is_site_admin()) {
-		return;
+		return '';
 	}
 
 	$title = DI::l10n()->t('Send email to all members of this Friendica instance.');
