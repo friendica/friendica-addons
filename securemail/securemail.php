@@ -6,12 +6,12 @@
  * Author: Fabio Comuni <http://kirgroup.com/profile/fabrixxm>
  */
 
+use Friendica\Addon\securemail\SecureTestEmail;
 use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
-use Friendica\Util\Emailer;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -88,35 +88,8 @@ function securemail_settings_post(App &$a, array &$b)
 		info(DI::l10n()->t('Secure Mail Settings saved.') . EOL);
 
 		if ($_POST['securemail-submit'] == DI::l10n()->t('Save and send test')) {
-			$sitename = DI::config()->get('config', 'sitename');
 
-			$hostname = DI::baseUrl()->getHostname();
-			if (strpos($hostname, ':')) {
-				$hostname = substr($hostname, 0, strpos($hostname, ':'));
-			}
-
-			$sender_email = DI::config()->get('config', 'sender_email');
-			if (empty($sender_email)) {
-				$sender_email = 'noreply@' . $hostname;
-			}
-
-			$subject = 'Friendica - Secure Mail - Test';
-			$message = 'This is a test message from your Friendica Secure Mail addon.';
-
-			$params = [
-				'uid' => local_user(),
-				'fromName' => $sitename,
-				'fromEmail' => $sender_email,
-				'toEmail' => $a->user['email'],
-				'messageSubject' => $subject,
-				'htmlVersion' => "<p>{$message}</p>",
-				'textVersion' => $message,
-			];
-
-			// enable addon for test
-			DI::pConfig()->set(local_user(), 'securemail', 'enable', 1);
-
-			$res = Emailer::send($params);
+			$res = DI::emailer()->send(new SecureTestEmail(DI::app(), DI::config(), DI::pConfig(), DI::baseUrl()));
 
 			// revert to saved value
 			DI::pConfig()->set(local_user(), 'securemail', 'enable', $enable);
