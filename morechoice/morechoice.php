@@ -5,7 +5,7 @@
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  *    - who takes no responsibility for any additional content which may appear herein
- *
+ * Status: Deprecated
  */
 
 use Friendica\Core\Hook;
