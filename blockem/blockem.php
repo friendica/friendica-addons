@@ -108,7 +108,8 @@ function blockem_enotify_store(App $a, array &$b)
 	}
 
 	if ($found) {
-		$b['abort'] = true;
+		// empty out the fields
+		$b = [];
 	}
 }
 

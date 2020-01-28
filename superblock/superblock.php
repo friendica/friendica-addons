@@ -95,7 +95,8 @@ function superblock_enotify_store(&$a,&$b) {
 		}
 	}
 	if ($found) {
-		$b['abort'] = true;
+		// Empty out the fields
+		$b = [];
 	}
 }
 
