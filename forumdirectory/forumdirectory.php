@@ -85,23 +85,16 @@ function forumdirectory_content(App $a)
 				(`profile`.`locality` LIKE '%$search%') OR
 				(`profile`.`region` LIKE '%$search%') OR
 				(`profile`.`country-name` LIKE '%$search%') OR
-				(`profile`.`gender` LIKE '%$search%') OR
-				(`profile`.`marital` LIKE '%$search%') OR
-				(`profile`.`sexual` LIKE '%$search%') OR
-				(`profile`.`about` LIKE '%$search%') OR
-				(`profile`.`romance` LIKE '%$search%') OR
-				(`profile`.`work` LIKE '%$search%') OR
-				(`profile`.`education` LIKE '%$search%') OR
 				(`profile`.`pub_keywords` LIKE '%$search%') OR
 				(`profile`.`prv_keywords` LIKE '%$search%'))";
 	}
 
-	$publish = DI::config()->get('system', 'publish_all') ? '' : " AND `publish` = 1 ";
+	$publish = DI::config()->get('system', 'publish_all') ? '' : "`publish` = 1";
 
 	$total = 0;
 	$cnt = DBA::fetchFirst("SELECT COUNT(*) AS `total` FROM `profile`
 				LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid`
-				WHERE `is-default` $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` `user`.`page-flags` = 2 $sql_extra");
+				WHERE $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` `user`.`page-flags` = 2 $sql_extra");
 	if (DBA::isResult($cnt)) {
 		$total = $cnt['total'];
 	}
@@ -116,7 +109,7 @@ function forumdirectory_content(App $a)
 			`contact`.`addr`, `contact`.`url` AS `profile_url` FROM `profile`
 			LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid`
 			LEFT JOIN `contact` ON `contact`.`uid` = `user`.`uid`
-			WHERE `is-default` $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` AND `user`.`page-flags` = 2 AND `contact`.`self`
+			WHERE $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` AND `user`.`page-flags` = 2 AND `contact`.`self`
 			$sql_extra $order LIMIT $limit"
 	);
 
