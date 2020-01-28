@@ -27,7 +27,7 @@ function friendheader_widget_content(&$a, $conf)
 {
 	$r = q("SELECT `profile`.`uid` AS `profile_uid`, `profile`.* , `user`.* FROM `profile`
 			LEFT JOIN `user` ON `profile`.`uid` = `user`.`uid`
-			WHERE `user`.`uid` = %s AND `profile`.`is-default` = 1 LIMIT 1",
+			WHERE `user`.`uid` = %s LIMIT 1",
 		intval($conf['uid'])
 	);
 	if (!count($r)) {
