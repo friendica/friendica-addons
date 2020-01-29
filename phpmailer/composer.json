@@ -10,7 +10,7 @@
   ],
   "require": {
 	"php": ">=7.0",
-    "phpmailer/phpmailer": "^6.1"
+	"phpmailer/phpmailer": "^6.1"
   },
   "license": "3-clause BSD license",
   "minimum-stability": "stable",
