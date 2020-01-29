@@ -12,6 +12,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
+use Friendica\Object\EMail\IEmail;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -109,17 +110,17 @@ function securemail_settings_post(App &$a, array &$b)
  * @link  https://github.com/friendica/friendica/blob/develop/doc/Addons.md#emailer_send_prepare 'emailer_send_prepare' hook
  *
  * @param App   $a App instance
- * @param array $b hook data
+ * @param IEmail $email Email
  *
  * @see   App
  */
-function securemail_emailer_send_prepare(App &$a, array &$b)
+function securemail_emailer_send_prepare(App &$a, IEmail &$email)
 {
-	if (empty($b['uid'])) {
+	if (empty($email->getRecipientUid())) {
 		return;
 	}
 
-	$uid = $b['uid'];
+	$uid = $email->getRecipientUid();
 
 	$enable_checked = DI::pConfig()->get($uid, 'securemail', 'enable');
 	if (!$enable_checked) {
@@ -134,18 +135,24 @@ function securemail_emailer_send_prepare(App &$a, array &$b)
 
 	$key = OpenPGP_Message::parse($public_key);
 
-	$data = new OpenPGP_LiteralDataPacket($b['textVersion'], [
+	$data = new OpenPGP_LiteralDataPacket($email->getMessage(true), [
 		'format' => 'u',
 		'filename' => 'encrypted.gpg'
 	]);
-	$encrypted = OpenPGP_Crypt_Symmetric::encrypt($key, new OpenPGP_Message([$data]));
-	$armored_encrypted = wordwrap(
-		OpenPGP::enarmor($encrypted->to_bytes(), 'PGP MESSAGE'),
-		64,
-		"\n",
-		true
-	);
+	try {
+		$encrypted = OpenPGP_Crypt_Symmetric::encrypt($key, new OpenPGP_Message([$data]));
+		$armored_encrypted = wordwrap(
+			OpenPGP::enarmor($encrypted->to_bytes(), 'PGP MESSAGE'),
+			64,
+			"\n",
+			true
+		);
 
-	$b['textVersion'] = $armored_encrypted;
-	$b['htmlVersion'] = null;
+		$email = Friendica\Object\EMail::createFromPrototype($email, [
+			'textVersion' => $armored_encrypted,
+			'htmlVersion' => null,
+		]);
+	} catch (Exception $e) {
+		DI::logger()->warning('Encryption failed.', ['email' => $email, 'exception' => $e]);
+	}
 }
