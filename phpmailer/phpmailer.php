@@ -10,9 +10,12 @@
 use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
+use Friendica\Object\EMail\IEmail;
 use Friendica\Util\ConfigFileLoader;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 function phpmailer_install()
 {
@@ -27,78 +30,76 @@ function phpmailer_load_config(App $a, ConfigFileLoader $loader)
 
 /**
  * @param App $a
- * @param array $b
+ * @param IEmail $email
  */
-function phpmailer_emailer_send_prepare(App $a, array &$b)
+function phpmailer_emailer_send_prepare(App $a, IEmail &$email)
 {
-	require_once __DIR__ . '/phpmailer/src/PHPMailer.php';
-	require_once __DIR__ . '/phpmailer/src/SMTP.php';
-	require_once __DIR__ . '/phpmailer/src/Exception.php';
-
 	// Passing `true` enables exceptions
-	$mail = new PHPMailer(true);
+	$mailer = new PHPMailer(true);
 	try {
 		if (DI::config()->get('phpmailer', 'smtp')) {
 			// Set mailer to use SMTP
-			$mail->isSMTP();
+			$mailer->isSMTP();
 
 			// Setup encoding.
-			$mail->CharSet = 'UTF-8';
-			$mail->Encoding = 'base64';
+			$mailer->CharSet  = 'UTF-8';
+			$mailer->Encoding = 'base64';
 
 			// Specify main and backup SMTP servers
-			$mail->Host = DI::config()->get('phpmailer', 'smtp_server');
-			$mail->Port = DI::config()->get('phpmailer', 'smtp_port');
+			$mailer->Host = DI::config()->get('phpmailer', 'smtp_server');
+			$mailer->Port = DI::config()->get('phpmailer', 'smtp_port');
 
 			if (DI::config()->get('system', 'smtp_secure') && DI::config()->get('phpmailer', 'smtp_port_s')) {
-				$mail->SMTPSecure = DI::config()->get('phpmailer', 'smtp_secure');
-				$mail->Port = DI::config()->get('phpmailer', 'smtp_port_s');
+				$mailer->SMTPSecure = DI::config()->get('phpmailer', 'smtp_secure');
+				$mailer->Port       = DI::config()->get('phpmailer', 'smtp_port_s');
 			}
 
 			if (DI::config()->get('phpmailer', 'smtp_username') && DI::config()->get('phpmailer', 'smtp_password')) {
-				$mail->SMTPAuth = true;
-				$mail->Username = DI::config()->get('phpmailer', 'smtp_username');
-				$mail->Password = DI::config()->get('phpmailer', 'smtp_password');
+				$mailer->SMTPAuth = true;
+				$mailer->Username = DI::config()->get('phpmailer', 'smtp_username');
+				$mailer->Password = DI::config()->get('phpmailer', 'smtp_password');
 			}
 
 			if (DI::config()->get('phpmailer', 'smtp_from')) {
-				$mail->setFrom(DI::config()->get('phpmailer', 'smtp_from'), $b['fromName']);
+				$mailer->setFrom(DI::config()->get('phpmailer', 'smtp_from'), $email->getFromName());
 			}
 		} else {
-			$mail->setFrom($b['fromEmail'], $b['fromName']);
+			$mailer->setFrom($email->getFromAddress(), $email->getFromName());
 		}
 
 		// subject
-		$mail->Subject = $b['messageSubject'];
+		$mailer->Subject = $email->getSubject();
 
-		if (!empty($b['toEmail'])) {
-			$mail->addAddress($b['toEmail']);
+		if (!empty($email->getToAddress())) {
+			$mailer->addAddress($email->getToAddress());
 		}
 
 		// html version
-		if (!empty($b['htmlVersion'])) {
-			$mail->isHTML(true);
-			$mail->Body = $b['htmlVersion'];
-			$mail->AltBody = $b['textVersion'];
+		if (!empty($email->getMessage())) {
+			$mailer->isHTML(true);
+			$mailer->Body    = $email->getMessage();
+			$mailer->AltBody = $email->getMessage(true);
 		} else {
 			// add text
-			$mail->Body = $b['textVersion'];
+			$mailer->Body = $email->getMessage(true);
 		}
 
-		if (!empty($b['replyTo'])) {
-			$mail->addReplyTo($b['replyTo'], $b['fromName']);
+		if (!empty($email->getReplyTo())) {
+			$mailer->addReplyTo($email->getReplyTo(), $email->getFromName());
 		}
 
 		// additional headers
-		if (!empty($b['additionalMailHeader'])) {
-			foreach (explode("\n", trim($b['additionalMailHeader'])) as $header_line) {
+		if (!empty($email->getAdditionalMailHeader())) {
+			foreach (explode("\n", trim($email->getAdditionalMailHeader())) as $header_line) {
 				list($name, $value) = explode(':', $header_line, 2);
-				$mail->addCustomHeader(trim($name), trim($value));
+				$mailer->addCustomHeader(trim($name), trim($value));
 			}
 		}
 
-		$b['sent'] = $mail->send();
+		if ($mailer->send()) {
+			$email = null;
+		}
 	} catch (Exception $e) {
-		DI::logger()->error('PHPMailer error', ['ErrorInfo' => $mail->ErrorInfo, 'code' => $e->getCode(), 'message' => $e->getMessage()]);
+		DI::logger()->error('PHPMailer error', ['email' => $email, 'ErrorInfo' => $mailer->ErrorInfo, 'exception' => $e]);
 	}
 }

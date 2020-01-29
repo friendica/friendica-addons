@@ -1,0 +1,22 @@
+{
+  "name": "friendica-addons/phpmailer",
+  "description": "Replaces the default `mail()` function by the `PHPMailer` library",
+  "type": "friendica-addon",
+  "authors": [
+	{
+	  "name": "Marcus Mueller",
+	  "role": "Developer"
+	}
+  ],
+  "require": {
+	"php": ">=7.0",
+    "phpmailer/phpmailer": "^6.1"
+  },
+  "license": "3-clause BSD license",
+  "minimum-stability": "stable",
+  "config": {
+	"optimize-autoloader": true,
+	"autoloader-suffix": "PhpMailerAddon",
+	"preferred-install": "dist"
+  }
+}
