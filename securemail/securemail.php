@@ -116,7 +116,7 @@ function securemail_settings_post(App &$a, array &$b)
  */
 function securemail_emailer_send_prepare(App &$a, IEmail &$email)
 {
-	DI::logger()->warning('start securemail', ['email' => $email]);
+	DI::logger()->debug('start securemail', ['email' => $email]);
 
 	if (empty($email->getRecipientUid())) {
 		return;
@@ -126,7 +126,7 @@ function securemail_emailer_send_prepare(App &$a, IEmail &$email)
 
 	$enable_checked = DI::pConfig()->get($uid, 'securemail', 'enable');
 	if (!$enable_checked) {
-		DI::logger()->warning('No check!!', ['email' => $email]);
+		DI::logger()->debug('No check', ['email' => $email]);
 		return;
 	}
 
@@ -136,16 +136,12 @@ function securemail_emailer_send_prepare(App &$a, IEmail &$email)
 	$marker = empty($matches[1]) ? 'MESSAGE' : $matches[1];
 	$public_key = OpenPGP::unarmor($public_key_ascii, $marker);
 
-	DI::logger()->warning('public key', ['public_key' => $public_key]);
-
 	$key = OpenPGP_Message::parse($public_key);
 
 	$data = new OpenPGP_LiteralDataPacket($email->getMessage(true), [
 		'format' => 'u',
 		'filename' => 'encrypted.gpg'
 	]);
-
-	DI::logger()->warning('data', ['data' => $data]);
 
 	try {
 		$encrypted = OpenPGP_Crypt_Symmetric::encrypt($key, new OpenPGP_Message([$data]));
@@ -158,7 +154,7 @@ function securemail_emailer_send_prepare(App &$a, IEmail &$email)
 
 		$email = $email->withMessage($armored_encrypted, null);
 
-		DI::logger()->warning('End securemail', ['email' => $email]);
+		DI::logger()->debug('End securemail', ['email' => $email]);
 
 	} catch (Exception $e) {
 		DI::logger()->warning('Encryption failed.', ['email' => $email, 'exception' => $e]);
