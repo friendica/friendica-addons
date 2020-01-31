@@ -124,6 +124,7 @@ function securemail_emailer_send_prepare(App &$a, IEmail &$email)
 
 	$enable_checked = DI::pConfig()->get($uid, 'securemail', 'enable');
 	if (!$enable_checked) {
+		DI::logger()->debug('No securemail enabled.');
 		return;
 	}
 
@@ -139,6 +140,7 @@ function securemail_emailer_send_prepare(App &$a, IEmail &$email)
 		'format' => 'u',
 		'filename' => 'encrypted.gpg'
 	]);
+
 	try {
 		$encrypted = OpenPGP_Crypt_Symmetric::encrypt($key, new OpenPGP_Message([$data]));
 		$armored_encrypted = wordwrap(
@@ -148,10 +150,8 @@ function securemail_emailer_send_prepare(App &$a, IEmail &$email)
 			true
 		);
 
-		$email = Friendica\Object\EMail::createFromPrototype($email, [
-			'textVersion' => $armored_encrypted,
-			'htmlVersion' => null,
-		]);
+		$email = $email->withMessage($armored_encrypted, null);
+
 	} catch (Exception $e) {
 		DI::logger()->warning('Encryption failed.', ['email' => $email, 'exception' => $e]);
 	}
