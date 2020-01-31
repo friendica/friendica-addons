@@ -116,8 +116,6 @@ function securemail_settings_post(App &$a, array &$b)
  */
 function securemail_emailer_send_prepare(App &$a, IEmail &$email)
 {
-	DI::logger()->debug('start securemail', ['email' => $email]);
-
 	if (empty($email->getRecipientUid())) {
 		return;
 	}
@@ -126,7 +124,7 @@ function securemail_emailer_send_prepare(App &$a, IEmail &$email)
 
 	$enable_checked = DI::pConfig()->get($uid, 'securemail', 'enable');
 	if (!$enable_checked) {
-		DI::logger()->debug('No check', ['email' => $email]);
+		DI::logger()->debug('No securemail enabled.');
 		return;
 	}
 
@@ -153,8 +151,6 @@ function securemail_emailer_send_prepare(App &$a, IEmail &$email)
 		);
 
 		$email = $email->withMessage($armored_encrypted, null);
-
-		DI::logger()->debug('End securemail', ['email' => $email]);
 
 	} catch (Exception $e) {
 		DI::logger()->warning('Encryption failed.', ['email' => $email, 'exception' => $e]);
