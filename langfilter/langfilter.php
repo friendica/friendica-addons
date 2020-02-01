@@ -45,10 +45,13 @@ function langfilter_addon_settings(App $a, &$s)
 		return;
 	}
 
-	$enable_checked = (intval(DI::pConfig()->get(local_user(), 'langfilter', 'disable')) ? '' : ' checked="checked" ');
+	$enabled = DI::pConfig()->get(local_user(), 'langfilter', 'enable',
+		!DI::pConfig()->get(local_user(), 'langfilter', 'disable'));
+
+	$enable_checked = $enabled ? ' checked="checked"' : '';
 	$languages      = DI::pConfig()->get(local_user(), 'langfilter', 'languages');
-	$minconfidence  = DI::pConfig()->get(local_user(), 'langfilter', 'minconfidence') * 100;
-	$minlength      = DI::pConfig()->get(local_user(), 'langfilter', 'minlength');
+	$minconfidence  = DI::pConfig()->get(local_user(), 'langfilter', 'minconfidence', 0) * 100;
+	$minlength      = DI::pConfig()->get(local_user(), 'langfilter', 'minlength'    , 32);
 
 	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/langfilter/");
 	$s .= Renderer::replaceMacros($t, [
@@ -77,29 +80,20 @@ function langfilter_addon_settings_post(App $a, &$b)
 	}
 
 	if (!empty($_POST['langfilter-settings-submit'])) {
-		DI::pConfig()->set(local_user(), 'langfilter', 'languages', trim($_POST['langfilter_languages']));
-		$enable = (!empty($_POST['langfilter_enable']) ? intval($_POST['langfilter_enable']) : 0);
-		$disable = 1 - $enable;
-		DI::pConfig()->set(local_user(), 'langfilter', 'disable', $disable);
-		$minconfidence = 0 + $_POST['langfilter_minconfidence'];
-		if (!$minconfidence) {
-			$minconfidence = 0;
-		} elseif ($minconfidence < 0) {
-			$minconfidence = 0;
-		} elseif ($minconfidence > 100) {
-			$minconfidence = 100;
-		}
-		DI::pConfig()->set(local_user(), 'langfilter', 'minconfidence', $minconfidence / 100.0);
-
-		$minlength = 0 + $_POST['langfilter_minlength'];
-		if (!$minlength) {
-			$minlength = 32;
-		} elseif ($minlength < 0) {
+		$enable        = intval($_POST['langfilter_enable'] ?? 0);
+		$languages     = trim($_POST['langfilter_languages'] ?? '');
+		$minconfidence = max(0, min(100, intval($_POST['langfilter_minconfidence'] ?? 0))) / 100;
+		$minlength     = intval($_POST['langfilter_minlength'] ?? 32);
+		if ($minlength <= 0) {
 			$minlength = 32;
 		}
-		DI::pConfig()->set(local_user(), 'langfilter', 'minlength', $minlength);
 
-		info(DI::l10n()->t('Language Filter Settings saved.') . EOL);
+		DI::pConfig()->set(local_user(), 'langfilter', 'enable'       , $enable);
+		DI::pConfig()->set(local_user(), 'langfilter', 'languages'    , $languages);
+		DI::pConfig()->set(local_user(), 'langfilter', 'minconfidence', $minconfidence);
+		DI::pConfig()->set(local_user(), 'langfilter', 'minlength'    , $minlength);
+
+		info(DI::l10n()->t('Language Filter Settings saved.'));
 	}
 }
 
@@ -127,7 +121,9 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 	}
 
 	// Don't filter if language filter is disabled
-	if (DI::pConfig()->get($logged_user, 'langfilter', 'disable')) {
+	if (!DI::pConfig()->get($logged_user, 'langfilter', 'enable',
+		!DI::pConfig()->get($logged_user, 'langfilter', 'disable'))
+	) {
 		return;
 	}
 
