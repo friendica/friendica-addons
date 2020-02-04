@@ -13,6 +13,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
+use Friendica\Model\Notify\Type;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Strings;
@@ -67,7 +68,7 @@ function public_server_cron($a, $b)
 		foreach ($r as $rr) {
 			notification([
 				'uid' => $rr['uid'],
-				'type' => NOTIFY_SYSTEM,
+				'type' => Type::SYSTEM,
 				'system_type' => 'public_server_expire',
 				'language'     => $rr['language'],
 				'to_name'      => $rr['username'],
@@ -123,7 +124,7 @@ function public_server_cron($a, $b)
 
 function public_server_enotify(&$a, &$b)
 {
-	if (!empty($b['params']) && $b['params']['type'] == NOTIFY_SYSTEM
+	if (!empty($b['params']) && $b['params']['type'] == Type::SYSTEM
 		&& !empty($b['params']['system_type']) && $b['params']['system_type'] === 'public_server_expire') {
 		$b['itemlink'] = DI::baseUrl()->get();
 		$b['epreamble'] = $b['preamble'] = DI::l10n()->t('Your account on %s will expire in a few days.', DI::config()->get('system', 'sitename'));
