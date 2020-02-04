@@ -11,6 +11,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
+use Friendica\Model\Notify\Type;
 
 function gnot_install() {
 
@@ -92,6 +93,6 @@ function gnot_settings(&$a,&$s) {
 function gnot_enotify_mail(&$a,&$b) {
 	if((! $b['uid']) || (! intval(DI::pConfig()->get($b['uid'], 'gnot','enable'))))
 		return;
-	if($b['type'] == NOTIFY_COMMENT)
+	if($b['type'] == Type::COMMENT)
 		$b['subject'] = DI::l10n()->t('[Friendica:Notify] Comment to conversation #%d', $b['parent']);
 }
