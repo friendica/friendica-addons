@@ -132,9 +132,9 @@ function showmore_prepare_body(\Friendica\App $a, &$hook_data)
 
 	if ($found) {
 		$rnd = Strings::getRandomHex(8);
-		$hook_data['html'] = '<span id="showmore-teaser-' . $rnd . '" class="showmore-teaser" style="display: block;">' . $shortened . " " .
+		$hook_data['html'] = '<span id="showmore-teaser-' . $rnd . '" class="showmore-teaser" style="display: block;" aria-hidden="true">' . $shortened . " " .
 			'<span id="showmore-wrap-' . $rnd . '" style="white-space:nowrap;" class="showmore-wrap fakelink" onclick="openClose(\'showmore-' . $rnd . '\'); openClose(\'showmore-teaser-' . $rnd . '\');" >' . DI::l10n()->t('show more') . '</span></span>' .
-			'<div id="showmore-' . $rnd . '" class="showmore-content" style="display: none;">' . $hook_data['html'] . '</div>';
+			'<div id="showmore-' . $rnd . '" class="showmore-content" style="display: none;" aria-hidden="false">' . $hook_data['html'] . '</div>';
 	}
 }
 
