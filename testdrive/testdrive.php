@@ -11,6 +11,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Search;
 use Friendica\Database\DBA;
 use Friendica\DI;
+use Friendica\Model\Notify\Type;
 use Friendica\Model\User;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
@@ -69,7 +70,7 @@ function testdrive_cron($a,$b) {
 		foreach($r as $rr) {
 			notification([
 				'uid' => $rr['uid'],
-				'type' => NOTIFY_SYSTEM,
+				'type' => Type::SYSTEM,
 				'system_type' => 'testdrive_expire',
 				'language'     => $rr['language'],
 				'to_name'      => $rr['username'],
@@ -96,7 +97,7 @@ function testdrive_cron($a,$b) {
 }
 
 function testdrive_enotify(&$a, &$b) {
-    if (!empty($b['params']) && $b['params']['type'] == NOTIFY_SYSTEM
+    if (!empty($b['params']) && $b['params']['type'] == Type::SYSTEM
 		&& !empty($b['params']['system_type']) && $b['params']['system_type'] === 'testdrive_expire') {
         $b['itemlink'] = DI::baseUrl()->get();
         $b['epreamble'] = $b['preamble'] = DI::l10n()->t('Your account on %s will expire in a few days.', DI::config()->get('system', 'sitename'));
