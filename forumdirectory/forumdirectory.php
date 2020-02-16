@@ -99,7 +99,7 @@ function forumdirectory_content(App $a)
 		$total = $cnt['total'];
 	}
 
-	$pager = new Pager(DI::args()->getQueryString(), 60);
+	$pager = new Pager(DI::l10n(), DI::args()->getQueryString(), 60);
 
 	$order = " ORDER BY `name` ASC ";
 
