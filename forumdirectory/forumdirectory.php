@@ -81,7 +81,7 @@ function forumdirectory_content(App $a)
 
 		$sql_extra = " AND ((`profile`.`name` LIKE '%$search%') OR
 				(`user`.`nickname` LIKE '%$search%') OR
-				(`profile`.`pdesc` LIKE '%$search%') OR
+				(`profile`.`about` LIKE '%$search%') OR
 				(`profile`.`locality` LIKE '%$search%') OR
 				(`profile`.`region` LIKE '%$search%') OR
 				(`profile`.`country-name` LIKE '%$search%') OR
