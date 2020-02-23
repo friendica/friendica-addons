@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: public_server
- * Description: Friendica addon with functions suitable for a public server.
+ * Description: Friendica addon with functions suitable for a public server. WARNING: This addon is currently not well maintained. It may produce unexpected results. Use with caution!
  * Version: 1.1
  * Author: Keith Fernie <http://friendika.me4.it/profile/keith>
  */
