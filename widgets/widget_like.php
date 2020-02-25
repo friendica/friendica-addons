@@ -43,14 +43,18 @@ function like_widget_content(&$a, $conf){
 			DBA::escape($args[0])
 	);
 	$likes = $r[0]['c'];
-	$iid = $r[0]['id'];
 
-	// count dislikes
-	$r = q( $baseq . "AND `item`.`verb` = 'http://purl.org/macgirvin/dfrn/1.0/dislike'",
-			intval($conf['uid']),
-			DBA::escape($args[0])
-	);
-	$dislikes = $r[0]['c'];
+	$dislikes = 0;
+	$strdislike = '';
+	if (!DI::pConfig()->get(local_user(), 'system', 'hide_dislike')) {
+		// count dislikes
+		$r = q( $baseq . "AND `item`.`verb` = 'http://purl.org/macgirvin/dfrn/1.0/dislike'",
+				intval($conf['uid']),
+				DBA::escape($args[0])
+		);
+		$dislikes = $r[0]['c'];
+		$strdislike = DI::l10n()->tt("%d person doesn't like this", "%d people don't like this", $dislikes);
+	}
 
 
 	$o = "";
@@ -62,7 +66,7 @@ function like_widget_content(&$a, $conf){
 		'$strlike'	=> DI::l10n()->tt("%d person likes this", "%d people like this", $likes),
 
 		'$dislike'	=> $dislikes,
-		'$strdislike'=> DI::l10n()->tt("%d person doesn't like this", "%d people don't like this", $dislikes),
+		'$strdislike'=> $strdislike,
 	]);
 
 	return $o;
