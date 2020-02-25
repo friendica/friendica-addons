@@ -322,7 +322,7 @@ You can also retrieve the variables of a specific post by pasting its URL below 
 		<th>rendered_html</th>
 		<td>string</td>
 		<td>
-			Over-compensation #&lt;a href="https://friendica.mrpetovan.com/search?tag=Street" class="tag" title="Street"&gt;Street&lt;/a&gt; #&lt;a href="https://friendica.mrpetovan.com/search?tag=Night" class="tag" title="Night"&gt;Night&lt;/a&gt; #&lt;a href="https://friendica.mrpetovan.com/search?tag=CarLights" class="tag" title="CarLights"&gt;CarLights&lt;/a&gt; #&lt;a href="https://friendica.mrpetovan.com/search?tag=Jeep" class="tag" title="Jeep"&gt;Jeep&lt;/a&gt; #&lt;a href="https://friendica.mrpetovan.com/search?tag=NoPeople" class="tag" title="NoPeople"&gt;NoPeople&lt;/a&gt; #&lt;a href="https://friendica.mrpetovan.com/search?tag=Close" class="tag" title="Close"&gt;Close&lt;/a&gt;-up &lt;div class="type-link"&gt;&lt;a href="https://www.eyeem.com/p/120800309" target="_blank"&gt;&lt;img src="https://friendica.mrpetovan.com/proxy/bb/aHR0cHM6Ly9jZG4uZXllZW0uY29tL3RodW1iL2IyZjAxOTczOGNiZWVmMDZlMmY4Yzk1MTdjNjI4NmE4YWRjZDNhMDAtMTUyMjE4NDgyMDY0MS82NDAvNDgw" alt="" title="Over-compensation Street Night Car Lights Jeep No | EyeEm" class="attachment-image"&gt;&lt;/a&gt;&lt;br&gt;&lt;h4&gt;&lt;a href="https://www.eyeem.com/p/120800309"&gt;Over-compensation Street Night Car Lights Jeep No | EyeEm&lt;/a&gt;&lt;/h4&gt;&lt;blockquote&gt;Photo by @&lt;a href="https://twitter.com/MrPetovan" class="userinfo mention" title="MrPetovan"&gt;MrPetovan&lt;/a&gt;&lt;/blockquote&gt;&lt;sup&gt;&lt;a href="https://www.eyeem.com/p/120800309"&gt;www.eyeem.com&lt;/a&gt;&lt;/sup&gt;&lt;/div&gt;
+			Over-compensation #&lt;a href="https://friendica.mrpetovan.com/search?tag=Street" class="tag" title="Street"&gt;Street&lt;/a&gt; #&lt;a href="https://friendica.mrpetovan.com/search?tag=Night" class="tag" title="Night"&gt;Night&lt;/a&gt; #&lt;a href="https://friendica.mrpetovan.com/search?tag=CarLights" class="tag" title="CarLights"&gt;CarLights&lt;/a&gt; #&lt;a href="https://friendica.mrpetovan.com/search?tag=Jeep" class="tag" title="Jeep"&gt;Jeep&lt;/a&gt; #&lt;a href="https://friendica.mrpetovan.com/search?tag=NoPeople" class="tag" title="NoPeople"&gt;NoPeople&lt;/a&gt; #&lt;a href="https://friendica.mrpetovan.com/search?tag=Close" class="tag" title="Close"&gt;Close&lt;/a&gt;-up &lt;div class="type-link"&gt;&lt;a href="https://www.eyeem.com/p/120800309" target="_blank" rel="noopener noreferrer"&gt;&lt;img src="https://friendica.mrpetovan.com/proxy/bb/aHR0cHM6Ly9jZG4uZXllZW0uY29tL3RodW1iL2IyZjAxOTczOGNiZWVmMDZlMmY4Yzk1MTdjNjI4NmE4YWRjZDNhMDAtMTUyMjE4NDgyMDY0MS82NDAvNDgw" alt="" title="Over-compensation Street Night Car Lights Jeep No | EyeEm" class="attachment-image"&gt;&lt;/a&gt;&lt;br&gt;&lt;h4&gt;&lt;a href="https://www.eyeem.com/p/120800309"&gt;Over-compensation Street Night Car Lights Jeep No | EyeEm&lt;/a&gt;&lt;/h4&gt;&lt;blockquote&gt;Photo by @&lt;a href="https://twitter.com/MrPetovan" class="userinfo mention" title="MrPetovan"&gt;MrPetovan&lt;/a&gt;&lt;/blockquote&gt;&lt;sup&gt;&lt;a href="https://www.eyeem.com/p/120800309"&gt;www.eyeem.com&lt;/a&gt;&lt;/sup&gt;&lt;/div&gt;
 		</td>
 	</tr>
 	<tr>
@@ -470,14 +470,14 @@ You can also retrieve the variables of a specific post by pasting its URL below 
 		<td>list</td>
 		<td>
 			<ol start="0">
-				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=Street" target="_blank"&gt;street&lt;/a&gt;</li>
-				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=Night" target="_blank"&gt;night&lt;/a&gt;</li>
-				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=CarLights" target="_blank"&gt;carlights&lt;/a&gt;</li>
-				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=Jeep" target="_blank"&gt;jeep&lt;/a&gt;</li>
-				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=NoPeople" target="_blank"&gt;nopeople&lt;/a&gt;</li>
-				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=Close" target="_blank"&gt;close&lt;/a&gt;</li>
-				<li>@&lt;a href="https://twitter.com/MrPetovan" target="_blank"&gt;mrpetovan&lt;/a&gt;</li>
-				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=Close-up" target="_blank"&gt;close-up&lt;/a&gt;</li>
+				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=Street" target="_blank" rel="noopener noreferrer"&gt;street&lt;/a&gt;</li>
+				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=Night" target="_blank" rel="noopener noreferrer"&gt;night&lt;/a&gt;</li>
+				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=CarLights" target="_blank" rel="noopener noreferrer"&gt;carlights&lt;/a&gt;</li>
+				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=Jeep" target="_blank" rel="noopener noreferrer"&gt;jeep&lt;/a&gt;</li>
+				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=NoPeople" target="_blank" rel="noopener noreferrer"&gt;nopeople&lt;/a&gt;</li>
+				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=Close" target="_blank" rel="noopener noreferrer"&gt;close&lt;/a&gt;</li>
+				<li>@&lt;a href="https://twitter.com/MrPetovan" target="_blank" rel="noopener noreferrer"&gt;mrpetovan&lt;/a&gt;</li>
+				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=Close-up" target="_blank" rel="noopener noreferrer"&gt;close-up&lt;/a&gt;</li>
 			</ol>
 		</td>
 	</tr>
@@ -486,13 +486,13 @@ You can also retrieve the variables of a specific post by pasting its URL below 
 		<td>list</td>
 		<td>
 			<ol start="0">
-				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=Street" target="_blank"&gt;street&lt;/a&gt;</li>
-				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=Night" target="_blank"&gt;night&lt;/a&gt;</li>
-				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=CarLights" target="_blank"&gt;carlights&lt;/a&gt;</li>
-				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=Jeep" target="_blank"&gt;jeep&lt;/a&gt;</li>
-				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=NoPeople" target="_blank"&gt;nopeople&lt;/a&gt;</li>
-				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=Close" target="_blank"&gt;close&lt;/a&gt;</li>
-				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=Close-up" target="_blank"&gt;close-up&lt;/a&gt;</li>
+				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=Street" target="_blank" rel="noopener noreferrer"&gt;street&lt;/a&gt;</li>
+				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=Night" target="_blank" rel="noopener noreferrer"&gt;night&lt;/a&gt;</li>
+				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=CarLights" target="_blank" rel="noopener noreferrer"&gt;carlights&lt;/a&gt;</li>
+				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=Jeep" target="_blank" rel="noopener noreferrer"&gt;jeep&lt;/a&gt;</li>
+				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=NoPeople" target="_blank" rel="noopener noreferrer"&gt;nopeople&lt;/a&gt;</li>
+				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=Close" target="_blank" rel="noopener noreferrer"&gt;close&lt;/a&gt;</li>
+				<li>#&lt;a href="https://friendica.mrpetovan.com/search?tag=Close-up" target="_blank" rel="noopener noreferrer"&gt;close-up&lt;/a&gt;</li>
 			</ol>
 		</td>
 	</tr>
@@ -501,7 +501,7 @@ You can also retrieve the variables of a specific post by pasting its URL below 
 		<td>string</td>
 		<td>
 			<ol start="0">
-				<li>@&lt;a href="https://twitter.com/MrPetovan" target="_blank"&gt;mrpetovan&lt;/a&gt;</li>
+				<li>@&lt;a href="https://twitter.com/MrPetovan" target="_blank" rel="noopener noreferrer"&gt;mrpetovan&lt;/a&gt;</li>
 			</ol>
 		</td>
 	</tr>

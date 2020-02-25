@@ -205,8 +205,8 @@ function openstreetmap_addon_admin(&$a, &$o)
 
 	$o = Renderer::replaceMacros($t, [
 			'$submit' => DI::l10n()->t('Submit'),
-			'$tmsserver' => ['tmsserver', DI::l10n()->t('Tile Server URL'), $tmsserver, DI::l10n()->t('A list of <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank">public tile servers</a>')],
-			'$nomserver' => ['nomserver', DI::l10n()->t('Nominatim (reverse geocoding) Server URL'), $nomserver, DI::l10n()->t('A list of <a href="http://wiki.openstreetmap.org/wiki/Nominatim" target="_blank">Nominatim servers</a>')],
+			'$tmsserver' => ['tmsserver', DI::l10n()->t('Tile Server URL'), $tmsserver, DI::l10n()->t('A list of <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank" rel="noopener noreferrer">public tile servers</a>')],
+			'$nomserver' => ['nomserver', DI::l10n()->t('Nominatim (reverse geocoding) Server URL'), $nomserver, DI::l10n()->t('A list of <a href="http://wiki.openstreetmap.org/wiki/Nominatim" target="_blank" rel="noopener noreferrer">Nominatim servers</a>')],
 			'$zoom' => ['zoom', DI::l10n()->t('Default zoom'), $zoom, DI::l10n()->t('The default zoom level. (1:world, 18:highest, also depends on tile server)')],
 			'$marker' => ['marker', DI::l10n()->t('Include marker on map'), $marker, DI::l10n()->t('Include a marker on the map.')],
 	]);
