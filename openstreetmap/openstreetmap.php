@@ -14,7 +14,6 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
-use Friendica\Network\HTTPRequest;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\Strings;
 
@@ -132,7 +131,7 @@ function openstreetmap_get_coordinates($a, &$b)
 	$j = DI::cache()->get($cachekey);
 
 	if (is_null($j)) {
-		$curlResult = HTTPRequest::curl($nomserver . $args);
+		$curlResult = DI::httpRequest()->curl($nomserver . $args);
 		if ($curlResult->isSuccess()) {
 			$j = json_decode($curlResult->getBody(), true);
 			DI::cache()->set($cachekey, $j, Duration::MONTH);

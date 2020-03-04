@@ -17,7 +17,6 @@ use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Contact;
-use Friendica\Network\HTTPRequest;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Strings;
 
@@ -115,7 +114,7 @@ function discourse_email_getmessage(App $a, &$message)
 function discourse_fetch_post($host, $topic, $pid)
 {
 	$url = $host . '/t/' . $topic . '/' . $pid . '.json';
-	$curlResult = HTTPRequest::curl($url);
+	$curlResult = DI::httpRequest()->curl($url);
 	if (!$curlResult->isSuccess()) {
 		Logger::info('No success', ['url' => $url]);
 		return false;
@@ -152,7 +151,7 @@ function discourse_fetch_post_from_api(&$message, $post, $host)
 {
 	$hostaddr = 'https://' . $host;
 	$url = $hostaddr . '/posts/' . $post . '.json';
-	$curlResult = HTTPRequest::curl($url);
+	$curlResult = DI::httpRequest()->curl($url);
 	if (!$curlResult->isSuccess()) {
 		return false;
 	}
