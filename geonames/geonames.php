@@ -11,6 +11,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
+use Friendica\Network\HTTPRequest;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\Network;
 use Friendica\Util\XML;
@@ -78,7 +79,7 @@ function geonames_post_hook(App $a, array &$item)
 
 	/* OK, we're allowed to do our stuff. */
 
-	$s = Network::fetchUrl('http://api.geonames.org/findNearbyPlaceName?lat=' . $coords[0] . '&lng=' . $coords[1] . '&username=' . $geo_account);
+	$s = HTTPRequest::fetchUrl('http://api.geonames.org/findNearbyPlaceName?lat=' . $coords[0] . '&lng=' . $coords[1] . '&username=' . $geo_account);
 
 	if (!$s) {
 		return;

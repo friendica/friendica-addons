@@ -19,6 +19,7 @@ use Friendica\Model\Contact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\User;
+use Friendica\Network\HTTPRequest;
 use Friendica\Protocol\Activity;
 use Friendica\Protocol\ActivityNamespace;
 use Friendica\Util\ConfigFileLoader;
@@ -1610,7 +1611,7 @@ function pumpio_fetchallcomments(App $a, $uid, $id)
 
 function pumpio_reachable($url)
 {
-	return Network::curl($url, false, ['timeout' => 10])->isSuccess();
+	return HTTPRequest::curl($url, false, ['timeout' => 10])->isSuccess();
 }
 
 /*

@@ -82,6 +82,7 @@ use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
 use Friendica\Model\User;
+use Friendica\Network\HTTPRequest;
 use Friendica\Protocol\Activity;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
@@ -655,7 +656,7 @@ function twitter_post_hook(App $a, array &$b)
 						continue;
 					}
 
-					$img_str = Network::fetchUrl($image['url']);
+					$img_str = HTTPRequest::fetchUrl($image['url']);
 
 					$tempfile = tempnam(get_temppath(), 'cache');
 					file_put_contents($tempfile, $img_str);
@@ -1201,7 +1202,7 @@ function twitter_expand_entities(App $a, $body, $item, $picture)
 				} elseif ($oembed_data->type != 'link') {
 					$body = str_replace($url->url, '[url=' . $expanded_url . ']' . $url->display_url . '[/url]', $body);
 				} else {
-					$img_str = Network::fetchUrl($final_url, true, 4);
+					$img_str = HTTPRequest::fetchUrl($final_url, true, 4);
 
 					$tempfile = tempnam(get_temppath(), 'cache');
 					file_put_contents($tempfile, $img_str);

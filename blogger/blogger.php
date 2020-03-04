@@ -11,6 +11,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\DI;
+use Friendica\Network\HTTPRequest;
 use Friendica\Util\Network;
 use Friendica\Util\XML;
 
@@ -225,7 +226,7 @@ EOT;
 		Logger::log('blogger: data: ' . $xml, Logger::DATA);
 
 		if ($bl_blog !== 'test') {
-			$x = Network::post($bl_blog, $xml)->getBody();
+			$x = HTTPRequest::post($bl_blog, $xml)->getBody();
 		}
 
 		Logger::log('posted to blogger: ' . (($x) ? $x : ''), Logger::DEBUG);

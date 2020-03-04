@@ -8,6 +8,7 @@
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\DI;
+use Friendica\Network\HTTPRequest;
 use Friendica\Util\Network;
 
 function leistungsschutzrecht_install() {
@@ -79,7 +80,7 @@ function leistungsschutzrecht_fetchsites()
 {
 	// This list works - but question is how current it is
 	$url = "http://leistungsschutzrecht-stoppen.d-64.org/blacklist.txt";
-	$sitelist = Network::fetchUrl($url);
+	$sitelist = HTTPRequest::fetchUrl($url);
 	$siteurls = explode(',', $sitelist);
 
 	$whitelist = ['tagesschau.de', 'heute.de', 'wdr.de'];
