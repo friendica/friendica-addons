@@ -12,8 +12,6 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Database\DBA;
 use Friendica\DI;
-use Friendica\Network\HTTPRequest;
-use Friendica\Util\Network;
 use Friendica\Util\Strings;
 use Friendica\Util\XML;
 
@@ -339,7 +337,7 @@ EOT;
 		Logger::log('wppost: data: ' . $xml, Logger::DATA);
 
 		if ($wp_blog !== 'test') {
-			$x = HTTPRequest::post($wp_blog, $xml)->getBody();
+			$x = DI::httpRequest()->post($wp_blog, $xml)->getBody();
 		}
 		Logger::log('posted to wordpress: ' . (($x) ? $x : ''), Logger::DEBUG);
 	}
