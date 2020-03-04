@@ -89,7 +89,6 @@ use Friendica\Protocol\Activity;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Images;
-use Friendica\Util\Network;
 use Friendica\Util\Strings;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
@@ -1297,7 +1296,7 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 
 			$expanded_url = $url->expanded_url;
 
-			$final_url = Network::finalUrl($url->expanded_url);
+			$final_url = HTTPRequest::finalUrl($url->expanded_url);
 
 			$oembed_data = OEmbed::fetchURL($final_url);
 

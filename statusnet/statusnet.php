@@ -57,7 +57,6 @@ use Friendica\Model\Photo;
 use Friendica\Model\User;
 use Friendica\Protocol\Activity;
 use Friendica\Util\DateTimeFormat;
-use Friendica\Util\Network;
 use Friendica\Util\Strings;
 
 function statusnet_install()
@@ -1450,7 +1449,7 @@ function statusnet_convertmsg(App $a, $body)
 
 			Logger::log("statusnet_convertmsg: expanding url " . $match[1], Logger::DEBUG);
 
-			$expanded_url = Network::finalUrl($match[1]);
+			$expanded_url = HTTPRequest::finalUrl($match[1]);
 
 			Logger::log("statusnet_convertmsg: fetching data for " . $expanded_url, Logger::DEBUG);
 
