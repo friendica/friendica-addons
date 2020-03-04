@@ -1296,7 +1296,7 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 
 			$expanded_url = $url->expanded_url;
 
-			$final_url = HTTPRequest::finalUrl($url->expanded_url);
+			$final_url = DI::httpRequest()->finalUrl($url->expanded_url);
 
 			$oembed_data = OEmbed::fetchURL($final_url);
 
