@@ -1609,7 +1609,7 @@ function pumpio_fetchallcomments(App $a, $uid, $id)
 
 function pumpio_reachable($url)
 {
-	return DI::httpRequest()->curl($url, false, ['timeout' => 10])->isSuccess();
+	return DI::httpRequest()->get($url, false, ['timeout' => 10])->isSuccess();
 }
 
 /*
