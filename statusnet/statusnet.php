@@ -1452,7 +1452,7 @@ function statusnet_convertmsg(App $a, $body, $no_tags = false)
 
 			Logger::log("statusnet_convertmsg: expanding url " . $match[1], Logger::DEBUG);
 
-			$expanded_url = HTTPRequest::finalUrl($match[1]);
+			$expanded_url = DI::httpRequest()->finalUrl($match[1]);
 
 			Logger::log("statusnet_convertmsg: fetching data for " . $expanded_url, Logger::DEBUG);
 
