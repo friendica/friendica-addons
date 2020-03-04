@@ -170,7 +170,7 @@ function mailstream_do_images($a, &$item, &$attachments) {
 			continue;
 		}
 		$cookiejar = tempnam(get_temppath(), 'cookiejar-mailstream-');
-		$curlResult = DI::httpRequest()->fetchUrlFull($url, true, 0, '', $cookiejar);
+		$curlResult = DI::httpRequest()->fetchFull($url, true, 0, '', $cookiejar);
 		$attachments[$url] = [
 			'data' => $curlResult->getBody(),
 			'guid' => hash("crc32", $url),

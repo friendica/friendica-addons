@@ -661,7 +661,7 @@ function jappixmini_cron(App $a, $d)
 
 			try {
 				// send request
-				$answer_json = DI::httpRequest()->fetchUrl($url);
+				$answer_json = DI::httpRequest()->fetch($url);
 
 				// parse answer
 				$answer = json_decode($answer_json);
