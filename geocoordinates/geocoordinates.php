@@ -5,11 +5,12 @@
  * Version: 0.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
+
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
-use Friendica\Util\Network;
+use Friendica\Network\HTTPRequest;
 use Friendica\Util\Strings;
 
 function geocoordinates_install()
@@ -52,7 +53,7 @@ function geocoordinates_resolve_item(&$item)
 		return;
 	}
 
-	$s = Network::fetchUrl("https://api.opencagedata.com/geocode/v1/json?q=".$coords[0].",".$coords[1]."&key=".$key."&language=".$language);
+	$s = HTTPRequest::fetchUrl("https://api.opencagedata.com/geocode/v1/json?q=" . $coords[0] . "," . $coords[1] . "&key=" . $key . "&language=" . $language);
 
 	if (!$s) {
 		Logger::log("API could not be queried", Logger::DEBUG);

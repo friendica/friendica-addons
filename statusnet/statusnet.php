@@ -55,6 +55,7 @@ use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
 use Friendica\Model\Photo;
 use Friendica\Model\User;
+use Friendica\Network\HTTPRequest;
 use Friendica\Protocol\Activity;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
@@ -155,7 +156,7 @@ function statusnet_settings_post(App $a, $post)
 			foreach ($globalsn as $asn) {
 				if ($asn['apiurl'] == $_POST['statusnet-preconf-apiurl']) {
 					$apibase = $asn['apiurl'];
-					$c = Network::fetchUrl($apibase . 'statusnet/version.xml');
+					$c = HTTPRequest::fetchUrl($apibase . 'statusnet/version.xml');
 					if (strlen($c) > 0) {
 						DI::pConfig()->set(local_user(), 'statusnet', 'consumerkey', $asn['consumerkey']);
 						DI::pConfig()->set(local_user(), 'statusnet', 'consumersecret', $asn['consumersecret']);
@@ -173,7 +174,7 @@ function statusnet_settings_post(App $a, $post)
 				//  we'll check the API Version for that, if we don't get one we'll try to fix the path but will
 				//  resign quickly after this one try to fix the path ;-)
 				$apibase = $_POST['statusnet-baseapi'];
-				$c = Network::fetchUrl($apibase . 'statusnet/version.xml');
+				$c = HTTPRequest::fetchUrl($apibase . 'statusnet/version.xml');
 				if (strlen($c) > 0) {
 					//  ok the API path is correct, let's save the settings
 					DI::pConfig()->set(local_user(), 'statusnet', 'consumerkey', $_POST['statusnet-consumerkey']);
@@ -183,7 +184,7 @@ function statusnet_settings_post(App $a, $post)
 				} else {
 					//  the API path is not correct, maybe missing trailing / ?
 					$apibase = $apibase . '/';
-					$c = Network::fetchUrl($apibase . 'statusnet/version.xml');
+					$c = HTTPRequest::fetchUrl($apibase . 'statusnet/version.xml');
 					if (strlen($c) > 0) {
 						//  ok the API path is now correct, let's save the settings
 						DI::pConfig()->set(local_user(), 'statusnet', 'consumerkey', $_POST['statusnet-consumerkey']);
@@ -613,7 +614,7 @@ function statusnet_post_hook(App $a, &$b)
 		}
 
 		if ($image != "") {
-			$img_str = Network::fetchUrl($image);
+			$img_str = HTTPRequest::fetchUrl($image);
 			$tempfile = tempnam(get_temppath(), "cache");
 			file_put_contents($tempfile, $img_str);
 			$postdata = ["status" => $msg, "media[]" => $tempfile];
@@ -1474,7 +1475,7 @@ function statusnet_convertmsg(App $a, $body)
 			} elseif ($oembed_data->type != "link") {
 				$body = str_replace($search, "[url=" . $expanded_url . "]" . $expanded_url . "[/url]", $body);
 			} else {
-				$img_str = Network::fetchUrl($expanded_url, true, 4);
+				$img_str = HTTPRequest::fetchUrl($expanded_url, true, 4);
 
 				$tempfile = tempnam(get_temppath(), "cache");
 				file_put_contents($tempfile, $img_str);

@@ -15,7 +15,7 @@ use Friendica\Core\Cache\Duration;
 use Friendica\Core\Hook;
 use Friendica\Core\Protocol;
 use Friendica\DI;
-use Friendica\Util\Network;
+use Friendica\Network\HTTPRequest;
 use Friendica\Util\Proxy as ProxyUtils;
 
 function mastodoncustomemojis_install()
@@ -90,7 +90,7 @@ function mastodoncustomemojis_fetch_custom_emojis_for_url($api_base_url)
 
 	$api_url = $api_base_url . '/api/v1/custom_emojis';
 
-	$fetchResult = Network::fetchUrlFull($api_url);
+	$fetchResult = HTTPRequest::fetchUrlFull($api_url);
 
 	if ($fetchResult->isSuccess()) {
 		$emojis_array = json_decode($fetchResult->getBody(), true);

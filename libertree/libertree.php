@@ -12,7 +12,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Database\DBA;
 use Friendica\DI;
-use Friendica\Util\Network;
+use Friendica\Network\HTTPRequest;
 
 function libertree_install()
 {
@@ -243,7 +243,7 @@ function libertree_send(&$a,&$b) {
 		//	'token' => $ltree_api_token
 		];
 
-		$result = Network::post($ltree_blog, $params)->getBody();
+		$result = HTTPRequest::post($ltree_blog, $params)->getBody();
 		Logger::log('libertree: ' . $result);
 	}
 }
