@@ -53,7 +53,7 @@ function geocoordinates_resolve_item(&$item)
 		return;
 	}
 
-	$s = HTTPRequest::fetchUrl("https://api.opencagedata.com/geocode/v1/json?q=" . $coords[0] . "," . $coords[1] . "&key=" . $key . "&language=" . $language);
+	$s = DI::httpRequest()->fetchUrl("https://api.opencagedata.com/geocode/v1/json?q=" . $coords[0] . "," . $coords[1] . "&key=" . $key . "&language=" . $language);
 
 	if (!$s) {
 		Logger::log("API could not be queried", Logger::DEBUG);

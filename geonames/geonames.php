@@ -79,7 +79,7 @@ function geonames_post_hook(App $a, array &$item)
 
 	/* OK, we're allowed to do our stuff. */
 
-	$s = HTTPRequest::fetchUrl('http://api.geonames.org/findNearbyPlaceName?lat=' . $coords[0] . '&lng=' . $coords[1] . '&username=' . $geo_account);
+	$s = DI::httpRequest()->fetchUrl('http://api.geonames.org/findNearbyPlaceName?lat=' . $coords[0] . '&lng=' . $coords[1] . '&username=' . $geo_account);
 
 	if (!$s) {
 		return;
