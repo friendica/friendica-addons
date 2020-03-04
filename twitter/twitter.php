@@ -673,7 +673,7 @@ function twitter_post_hook(App $a, array &$b)
 						continue;
 					}
 
-					$img_str = DI::httpRequest()->fetchUrl($image['url']);
+					$img_str = DI::httpRequest()->fetch($image['url']);
 
 					$tempfile = tempnam(get_temppath(), 'cache');
 					file_put_contents($tempfile, $img_str);
@@ -1317,7 +1317,7 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 			} elseif ($oembed_data->type != 'link') {
 				$replace = '[url=' . $expanded_url . ']' . $url->display_url . '[/url]';
 			} else {
-				$img_str = DI::httpRequest()->fetchUrl($final_url, true, 4);
+				$img_str = DI::httpRequest()->fetch($final_url, true, 4);
 
 				$tempfile = tempnam(get_temppath(), 'cache');
 				file_put_contents($tempfile, $img_str);

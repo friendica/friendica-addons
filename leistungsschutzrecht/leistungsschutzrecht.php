@@ -79,7 +79,7 @@ function leistungsschutzrecht_fetchsites()
 {
 	// This list works - but question is how current it is
 	$url = "http://leistungsschutzrecht-stoppen.d-64.org/blacklist.txt";
-	$sitelist = DI::httpRequest()->fetchUrl($url);
+	$sitelist = DI::httpRequest()->fetch($url);
 	$siteurls = explode(',', $sitelist);
 
 	$whitelist = ['tagesschau.de', 'heute.de', 'wdr.de'];
