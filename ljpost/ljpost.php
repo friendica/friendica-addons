@@ -13,7 +13,6 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\DI;
 use Friendica\Model\Tag;
-use Friendica\Network\HTTPRequest;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\XML;
 
@@ -241,7 +240,7 @@ EOT;
 		Logger::log('ljpost: data: ' . $xml, Logger::DATA);
 
 		if ($lj_blog !== 'test') {
-			$x = HTTPRequest::post($lj_blog, $xml, ["Content-Type: text/xml"])->getBody();
+			$x = DI::httpRequest()->post($lj_blog, $xml, ["Content-Type: text/xml"])->getBody();
 		}
 		Logger::log('posted to livejournal: ' . ($x) ? $x : '', Logger::DEBUG);
 	}
