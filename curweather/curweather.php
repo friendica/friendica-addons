@@ -15,7 +15,6 @@ use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\Core\Session;
 use Friendica\DI;
-use Friendica\Network\HTTPRequest;
 use Friendica\Util\Proxy as ProxyUtils;
 
 function curweather_install()
@@ -49,7 +48,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 	}
 
 	try {
-		$res = new SimpleXMLElement(HTTPRequest::fetchUrl($url));
+		$res = new SimpleXMLElement(DI::httpRequest()->fetchUrl($url));
 	} catch (Exception $e) {
 		if (empty($_SESSION['curweather_notice_shown'])) {
 			info(DI::l10n()->t('Error fetching weather data. Error was: '.$e->getMessage()));
