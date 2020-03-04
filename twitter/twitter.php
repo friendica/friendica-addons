@@ -82,12 +82,10 @@ use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
 use Friendica\Model\User;
-use Friendica\Network\HTTPRequest;
 use Friendica\Protocol\Activity;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Images;
-use Friendica\Util\Network;
 use Friendica\Util\Strings;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';

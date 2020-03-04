@@ -15,8 +15,6 @@ use Friendica\Core\Cache\Duration;
 use Friendica\Core\Hook;
 use Friendica\Core\Protocol;
 use Friendica\DI;
-use Friendica\Network\HTTPRequest;
-use Friendica\Util\Network;
 use Friendica\Util\Proxy as ProxyUtils;
 
 function mastodoncustomemojis_install()

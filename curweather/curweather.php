@@ -15,8 +15,6 @@ use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\Core\Session;
 use Friendica\DI;
-use Friendica\Network\HTTPRequest;
-use Friendica\Util\Network;
 use Friendica\Util\Proxy as ProxyUtils;
 
 function curweather_install()

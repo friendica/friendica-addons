@@ -54,10 +54,8 @@ use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
 use Friendica\Model\Photo;
 use Friendica\Model\User;
-use Friendica\Network\HTTPRequest;
 use Friendica\Protocol\Activity;
 use Friendica\Util\DateTimeFormat;
-use Friendica\Util\Network;
 use Friendica\Util\Strings;
 
 function statusnet_install()

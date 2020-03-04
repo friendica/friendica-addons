@@ -69,8 +69,6 @@ use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\User;
-use Friendica\Network\HTTPRequest;
-use Friendica\Util\Network;
 
 function jappixmini_install()
 {

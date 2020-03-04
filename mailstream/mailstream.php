@@ -12,9 +12,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
-use Friendica\Network\HTTPRequest;
 use Friendica\Protocol\Activity;
-use Friendica\Util\Network;
 use Friendica\Model\Item;
 
 function mailstream_install() {

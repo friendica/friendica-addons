@@ -11,9 +11,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
-use Friendica\Network\HTTPRequest;
 use Friendica\Util\ConfigFileLoader;
-use Friendica\Util\Network;
 use Friendica\Util\XML;
 
 function geonames_install()

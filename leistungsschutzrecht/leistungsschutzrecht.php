@@ -8,8 +8,6 @@
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\DI;
-use Friendica\Network\HTTPRequest;
-use Friendica\Util\Network;
 
 function leistungsschutzrecht_install() {
 	Hook::register('cron', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_cron');
