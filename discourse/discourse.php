@@ -7,19 +7,18 @@
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  *
  */
+
 use Friendica\App;
+use Friendica\Content\Text\Markdown;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
-use Friendica\Core\Renderer;
 use Friendica\Core\Protocol;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Contact;
-use Friendica\Content\Text\Markdown;
-use Friendica\Network\HTTPRequest;
-use Friendica\Util\Network;
+use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Strings;
-Use Friendica\Util\DateTimeFormat;
 
 /* Todo:
  * - Obtaining API tokens to be able to read non public posts as well
@@ -115,7 +114,7 @@ function discourse_email_getmessage(App $a, &$message)
 function discourse_fetch_post($host, $topic, $pid)
 {
 	$url = $host . '/t/' . $topic . '/' . $pid . '.json';
-	$curlResult = HTTPRequest::curl($url);
+	$curlResult = DI::httpRequest()->curl($url);
 	if (!$curlResult->isSuccess()) {
 		Logger::info('No success', ['url' => $url]);
 		return false;
@@ -152,7 +151,7 @@ function discourse_fetch_post_from_api(&$message, $post, $host)
 {
 	$hostaddr = 'https://' . $host;
 	$url = $hostaddr . '/posts/' . $post . '.json';
-	$curlResult = HTTPRequest::curl($url);
+	$curlResult = DI::httpRequest()->curl($url);
 	if (!$curlResult->isSuccess()) {
 		return false;
 	}
