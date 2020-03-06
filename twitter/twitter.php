@@ -1016,6 +1016,48 @@ function twitter_fix_avatar($avatar)
 	return $new_avatar;
 }
 
+function twitter_get_relation($uid, $target, $contact = [])
+{
+	if (isset($contact['rel'])) {
+		$relation = $contact['rel'];
+	} else {
+		$relation = 0;
+	}
+
+	$ckey = DI::config()->get('twitter', 'consumerkey');
+	$csecret = DI::config()->get('twitter', 'consumersecret');
+	$otoken = DI::pConfig()->get($uid, 'twitter', 'oauthtoken');
+	$osecret = DI::pConfig()->get($uid, 'twitter', 'oauthsecret');
+	$own_id = DI::pConfig()->get($uid, 'twitter', 'own_id');
+
+	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
+	$parameters = ['source_id' => $own_id, 'target_screen_name' => $target];
+
+	try {
+		$status = $connection->get('friendships/show', $parameters);
+	} catch (TwitterOAuthException $e) {
+		Logger::info('Error fetching friendship status', ['user' => $uid, 'target' => $target, 'message' => $e->getMessage()]);
+		return $relation;
+	}
+
+	$following = $status->relationship->source->following;
+	$followed = $status->relationship->source->followed_by;
+
+	if ($following && !$followed) {
+		$relation = Contact::SHARING;
+	} elseif (!$following && $followed) {
+		$relation = Contact::FOLLOWER;
+	} elseif ($following && $followed) {
+		$relation = Contact::FRIEND;
+	} elseif (!$following && !$followed) {
+		$relation = 0;
+	}
+
+	Logger::info('Fetched friendship relation', ['user' => $uid, 'target' => $target, 'relation' => $relation]);
+
+	return $relation;
+}
+
 function twitter_fetch_contact($uid, $data, $create_user)
 {
 	if (empty($data->id_str)) {
@@ -1027,10 +1069,18 @@ function twitter_fetch_contact($uid, $data, $create_user)
 	$addr = $data->screen_name . "@twitter.com";
 
 	$fields = ['url' => $url, 'network' => Protocol::TWITTER,
+		'alias' => 'twitter::' . $data->id_str,
 		'name' => $data->name, 'nick' => $data->screen_name, 'addr' => $addr,
                 'location' => $data->location, 'about' => $data->description];
 
-	$cid = Contact::getIdForURL($url, 0, true, $fields);
+	// Update the public contact
+	$pcontact = DBA::selectFirst('contact', ['id'], ['uid' => 0, 'alias' => "twitter::" . $data->id_str]);
+	if (DBA::isResult($pcontact)) {
+		$cid = $pcontact['id'];
+	} else {
+		$cid = Contact::getIdForURL($url, 0, true, $fields);
+	}
+
 	if (!empty($cid)) {
 		DBA::update('contact', $fields, ['id' => $cid]);
 		Contact::updateAvatar($avatar, 0, $cid);
@@ -1043,13 +1093,14 @@ function twitter_fetch_contact($uid, $data, $create_user)
 	}
 
 	if (!DBA::isResult($contact)) {
+		$relation = twitter_get_relation($uid, $data->screen_name);
+
 		// create contact record
 		$fields['uid'] = $uid;
 		$fields['created'] = DateTimeFormat::utcNow();
 		$fields['nurl'] = Strings::normaliseLink($url);
-		$fields['alias'] = 'twitter::' . $data->id_str;
 		$fields['poll'] = 'twitter::' . $data->id_str;
-		$fields['rel'] = Contact::FRIEND;
+		$fields['rel'] = $relation;
 		$fields['priority'] = 1;
 		$fields['writable'] = true;
 		$fields['blocked'] = false;
@@ -1072,20 +1123,34 @@ function twitter_fetch_contact($uid, $data, $create_user)
 		}
 
 		$contact_id = $contact['id'];
+		$update = false;
 
-		// update profile photos once every twelve hours as we have no notification of when they change.
-		$update_photo = ($contact['avatar-date'] < DateTimeFormat::utc('now -12 hours'));
+		// Update the contact relation once per day
+		if ($contact['updated'] < DateTimeFormat::utc('now -24 hours')) {
+			$fields['rel'] = twitter_get_relation($uid, $data->screen_name, $contact);
+			$update = true;
+		}
 
-		// check that we have all the photos, this has been known to fail on occasion
-		if (empty($contact['photo']) || empty($contact['thumb']) || empty($contact['micro']) || $update_photo) {
-			Logger::log("twitter_fetch_contact: Updating contact " . $data->screen_name, Logger::DEBUG);
+		Contact::updateAvatar($avatar, $uid, $contact['id']);
 
-			Contact::updateAvatar($avatar, $uid, $contact['id']);
+		if ($contact['name'] != $data->name) {
+			$fields['name-date'] = $fields['uri-date'] = DateTimeFormat::utcNow();
+			$update = true;
+		}
 
-			$fields['name-date'] = DateTimeFormat::utcNow();
+		if ($contact['nick'] != $data->screen_name) {
 			$fields['uri-date'] = DateTimeFormat::utcNow();
+			$update = true;
+		}
 
+		if (($contact['location'] != $data->location) || ($contact['about'] != $data->description)) {
+			$update = true;
+		}
+
+		if ($update) {
+			$fields['updated'] = DateTimeFormat::utcNow();
 			DBA::update('contact', $fields, ['id' => $contact['id']]);
+			Logger::info('Updated contact', ['id' => $contact['id'], 'nick' => $data->screen_name]);
 		}
 	}
 
