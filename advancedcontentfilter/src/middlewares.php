@@ -30,7 +30,7 @@ $container['errorHandler'] = function () {
 		$responseCode = 500;
 
 		if (is_a($exception, 'Friendica\Network\HTTPException')) {
-			$responseCode = $exception->httpcode;
+			$responseCode = $exception->getCode();
 		}
 
 		$errors['message'] = $exception->getMessage();

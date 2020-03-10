@@ -330,7 +330,7 @@ function advancedcontentfilter_post_rules(ServerRequestInterface $request)
 	try {
 		$fields = advancedcontentfilter_build_fields($data);
 	} catch (Exception $e) {
-		throw new HTTPException\BadRequestException($e->getMessage(), 0, $e);
+		throw new HTTPException\BadRequestException($e->getMessage(), $e);
 	}
 
 	if (empty($fields['name']) || empty($fields['expression'])) {
@@ -368,7 +368,7 @@ function advancedcontentfilter_put_rules_id(ServerRequestInterface $request, Res
 	try {
 		$fields = advancedcontentfilter_build_fields($data);
 	} catch (Exception $e) {
-		throw new HTTPException\BadRequestException($e->getMessage(), 0, $e);
+		throw new HTTPException\BadRequestException($e->getMessage(), $e);
 	}
 
 	if (!DBA::update('advancedcontentfilter_rules', $fields, ['id' => $args['id']])) {
