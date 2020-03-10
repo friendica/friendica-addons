@@ -808,8 +808,9 @@ function twitter_expire(App $a)
 		return;
 	}
 
-	$r = Item::select(['id'], ['deleted' => true, 'network' => Protocol::TWITTER]);
+	$r = Item::select(['id', 'guid'], ['deleted' => true, 'network' => Protocol::TWITTER]);
 	while ($row = DBA::fetch($r)) {
+		Logger::info('[twitter] Delete expired item', ['id' => $row['id'], 'guid' => $row['guid'], 'callstack' => \Friendica\Core\System::callstack()]);
 		DBA::delete('item', ['id' => $row['id']]);
 	}
 	DBA::close($r);
