@@ -914,7 +914,7 @@ function pumpio_dounlike(App $a, $uid, $self, $post, $own_id)
 		}
 	}
 
-	Item::delete(['verb' => Activity::LIKE, 'uid' => $uid, 'contact-id' => $contactid, 'thr-parent' => $orig_post['uri']]);
+	Item::markForDeletion(['verb' => Activity::LIKE, 'uid' => $uid, 'contact-id' => $contactid, 'thr-parent' => $orig_post['uri']]);
 
 	if (DBA::isResult($r)) {
 		Logger::log("pumpio_dounlike: unliked existing like. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
@@ -1082,13 +1082,13 @@ function pumpio_dodelete(App $a, $uid, $self, $post, $own_id)
 	// Two queries for speed issues
 	$condition = ['uri' => $post->object->id, 'uid' => $uid];
 	if (Item::exists($condition)) {
-		Item::delete($condition);
+		Item::markForDeletion($condition);
 		return true;
 	}
 
 	$condition = ['extid' => $post->object->id, 'uid' => $uid];
 	if (Item::exists($condition)) {
-		Item::delete($condition);
+		Item::markForDeletion($condition);
 		return true;
 	}
 	return false;
