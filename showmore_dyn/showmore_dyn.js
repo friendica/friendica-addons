@@ -46,6 +46,8 @@ function addHeightToggleHandler(id) {
 
         $(itemIdSel).wrap('<div id="' + wrapperId + '" class="wall-item-body-wrapper"></div>');
         $(wrapperIdSel).append('<div class="wall-item-body-toggle" data-item-id="' + itemId + '" id="' + toggleId + '" ><a href="javascript:void(0)" class="wall-item-body-toggle-text">Show more ...</a></div>');
+	$(itemIdSel).addClass("limitable");
+	$(itemIdSel).addClass("limit-height");
 
         $(toggleIdSel).show();
         $(toggleIdSel).click(function(el) {
@@ -60,7 +62,8 @@ function processHeightLimit(id) {
 
         if (!$(idSel).hasClass("limitable")) {
                 return false;
-        }
+	}
+        
 
         var itemId = $(idSel).data("item-id");
         var toggleSelector = "#wall-item-body-toggle-" + itemId;
