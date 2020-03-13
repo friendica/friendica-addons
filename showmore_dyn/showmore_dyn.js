@@ -1,81 +1,74 @@
 $(document).ready(function(){
-        handleNewWallItemBodies();
+	handleNewWallItemBodies();
 
-        var mutationObserver = new MutationObserver(function(mutations) {
-                handleNewWallItemBodies();
-        });
-        mutationObserver.observe($("#content")[0], { attributes: false, characterData: false, childList: true, subtree: true, attributeOldValue: false, characterDataOldValue: false });
+	document.addEventListener("postprocess_liveupdate", function() {
+		handleNewWallItemBodies();
+	});
 });
 
 function handleNewWallItemBodies() {
-        $('.wall-item-body:not(.showmore-done)').each(function(i, el) {
-                $(el).addClass('showmore-done');
-                if ($(el).has('button.content-filter-button').length > 0) {
-                        $(el).removeClass('limitable');
-                        return;
-                }
+	$('.wall-item-body:not(.showmore-done)').each(function() {
+		var $el = $(this);
+		$el.addClass('showmore-done');
+		if ($el.has('button.content-filter-button').length > 0) {
+			$el.removeClass('limitable');
+			return;
+		}
 
-                var itemId = $(el).attr('id');
-                addHeightToggleHandler(itemId);
-                var limited = processHeightLimit(itemId);
+		addHeightToggleHandler($el);
+		var limited = processHeightLimit($el);
 
-                if (!limited) {
-                        var mutationObserver = new MutationObserver(function(mutations) {
-                                var limited = processHeightLimit(itemId);
-                                if (limited) {
-                                        mutationObserver.disconnect()
-                                }
-                        });
-                        mutationObserver.observe(el, { attributes: true, characterData: true, childList: true, subtree: true, attributeOldValue: true, characterDataOldValue: true });
+		if (!limited) {
+			var mutationObserver = new MutationObserver(function(mutations) {
+				var limited = processHeightLimit($el);
+				if (limited) {
+					mutationObserver.disconnect()
+				}
+			});
+			mutationObserver.observe($el[0], { attributes: true, characterData: true, childList: true, subtree: true, attributeOldValue: true, characterDataOldValue: true });
 
-                        $(el).imagesLoaded().then(function(){
-                                processHeightLimit(itemId);
-                        });
-                }
-        });
+			$el.imagesLoaded().then(function(){
+				processHeightLimit($el);
+			});
+		}
+	});
 }
 
-function addHeightToggleHandler(id) {
-        var itemIdSel = "#" + id;
-        var itemId = parseInt(id.replace("wall-item-body-", ""));
-        $(itemIdSel).data("item-id", itemId);
-        var wrapperId = "wall-item-body-wrapper-" + itemId;
-        var wrapperIdSel = "#" + wrapperId;
-        var toggleId = "wall-item-body-toggle-" + itemId;
-        var toggleIdSel = "#" + toggleId;
+function addHeightToggleHandler($item) {
+	var itemId = parseInt($item.attr("id").replace("wall-item-body-", ""));
+	$item.data("item-id", itemId);
+	var wrapperId = "wall-item-body-wrapper-" + itemId;
+	var toggleId = "wall-item-body-toggle-" + itemId;
 
-        $(itemIdSel).wrap('<div id="' + wrapperId + '" class="wall-item-body-wrapper"></div>');
-        $(wrapperIdSel).append('<div class="wall-item-body-toggle" data-item-id="' + itemId + '" id="' + toggleId + '" ><a href="javascript:void(0)" class="wall-item-body-toggle-text">Show more ...</a></div>');
-	$(itemIdSel).addClass("limitable");
-	$(itemIdSel).addClass("limit-height");
+	$item.wrap('<div id="' + wrapperId + '" class="wall-item-body-wrapper"></div>');
+	$("#" + wrapperId).append('<div class="wall-item-body-toggle" data-item-id="' + itemId + '" id="' + toggleId + '" ><a href="javascript:void(0)" class="wall-item-body-toggle-text">Show more ...</a></div>');
+	$item.addClass("limitable limit-height");
 
-        $(toggleIdSel).show();
-        $(toggleIdSel).click(function(el) {
-                $(itemIdSel).toggleClass("limit-height");
-                $(this).hide();
-                $(itemIdSel).removeClass("limitable");
-        });
+	var $toggle = $("#" + toggleId);
+	$toggle.show();
+	$toggle.click(function(el) {
+		$item.toggleClass("limit-height");
+		$(this).hide();
+		$item.removeClass("limitable");
+	});
 }
 
-function processHeightLimit(id) {
-        var idSel = "#" + id;
-
-        if (!$(idSel).hasClass("limitable")) {
-                return false;
+function processHeightLimit($item) {
+	if (!$item.hasClass("limitable")) {
+		return false;
 	}
-        
 
-        var itemId = $(idSel).data("item-id");
-        var toggleSelector = "#wall-item-body-toggle-" + itemId;
-        if ($(idSel).height() < 250) {
-                $(idSel).removeClass("limit-height");
-                $(toggleSelector).hide();
-                return false;
-        } else {
-                $(idSel).addClass("limit-height");
-                $(toggleSelector).show();
-                return true;
-        }
+	var itemId = $item.data("item-id");
+	var $toggle = $("#wall-item-body-toggle-" + itemId);
+	if ($item.height() < 250) {
+		$item.removeClass("limit-height");
+		$toggle.hide();
+		return false;
+	} else {
+		$item.addClass("limit-height");
+		$toggle.show();
+		return true;
+	}
 }
 
 
