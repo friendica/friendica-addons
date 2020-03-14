@@ -1,0 +1,176 @@
+# ADDON advancedcontentfilter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica advancedcontentfilter addon package.
+# 
+# 
+# Translators:
+# Alexey Adamov <2077@tutanota.com>, 2019
+# Eugene Veresk <eugene.vereshchagin@gmail.com>, 2020
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-17 04:04+0200\n"
+"PO-Revision-Date: 2018-05-24 06:41+0000\n"
+"Last-Translator: Eugene Veresk <eugene.vereshchagin@gmail.com>, 2020\n"
+"Language-Team: Russian (https://www.transifex.com/Friendica/teams/12172/ru/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: advancedcontentfilter.php:134
+#, php-format
+msgid "Filtered by rule: %s"
+msgstr "Отфильтровано по правилу: %s"
+
+#: advancedcontentfilter.php:147 advancedcontentfilter.php:204
+msgid "Advanced Content Filter"
+msgstr "Расширенный фильтр содержимого"
+
+#: advancedcontentfilter.php:203
+msgid "Back to Addon Settings"
+msgstr "Вернуться к настройкам дополнений"
+
+#: advancedcontentfilter.php:205
+msgid "Add a Rule"
+msgstr "Добавить правило"
+
+#: advancedcontentfilter.php:206
+msgid "Help"
+msgstr "Помощь"
+
+#: advancedcontentfilter.php:207
+msgid ""
+"Add and manage your personal content filter rules in this screen. Rules have"
+" a name and an arbitrary expression that will be matched against post data. "
+"For a complete reference of the available operations and variables, check "
+"the <a href=\"advancedcontentfilter/help\">help page</a>."
+msgstr ""
+"Добавляйте и управляйте своими собственными фильтрами на этой странице. У "
+"правил есть имя и произвольное выражение, которое будет сопоставляться с "
+"данными поста. Для полной ссылки на доступные операции и переменные, "
+"посмотрите <a href=\"advancedcontentfilter/help\">страницу справки</a>."
+
+#: advancedcontentfilter.php:208
+msgid "Your rules"
+msgstr "Ваши правила"
+
+#: advancedcontentfilter.php:209
+msgid ""
+"You have no rules yet! Start adding one by clicking on the button above next"
+" to the title."
+msgstr ""
+"У Вас нет ни одного правила. Начните добавление первого с нажатия на кнопку "
+"выше, рядом с названием."
+
+#: advancedcontentfilter.php:210
+msgid "Disabled"
+msgstr "Отключено"
+
+#: advancedcontentfilter.php:211
+msgid "Enabled"
+msgstr "Включено"
+
+#: advancedcontentfilter.php:212
+msgid "Disable this rule"
+msgstr "Отключить это правило"
+
+#: advancedcontentfilter.php:213
+msgid "Enable this rule"
+msgstr "Включить это правило"
+
+#: advancedcontentfilter.php:214
+msgid "Edit this rule"
+msgstr "Изменить это правило"
+
+#: advancedcontentfilter.php:215
+msgid "Edit the rule"
+msgstr "Изменить правило"
+
+#: advancedcontentfilter.php:216
+msgid "Save this rule"
+msgstr "Сохранить это правило"
+
+#: advancedcontentfilter.php:217
+msgid "Delete this rule"
+msgstr "Удалить это правило"
+
+#: advancedcontentfilter.php:218
+msgid "Rule"
+msgstr "Правило"
+
+#: advancedcontentfilter.php:219
+msgid "Close"
+msgstr "Закрыть"
+
+#: advancedcontentfilter.php:220
+msgid "Add new rule"
+msgstr "Добавить новое правило"
+
+#: advancedcontentfilter.php:221
+msgid "Rule Name"
+msgstr "Название правила"
+
+#: advancedcontentfilter.php:222
+msgid "Rule Expression"
+msgstr "Содержание правила"
+
+#: advancedcontentfilter.php:223
+msgid ""
+"<p>Examples:</p><ul><li><pre>author_link == "
+"'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>"
+msgstr ""
+"<p>Примеры:</p><ul><li><pre>author_link == "
+"'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>"
+
+#: advancedcontentfilter.php:224
+msgid "Cancel"
+msgstr "Отмена"
+
+#: advancedcontentfilter.php:290 advancedcontentfilter.php:301
+#: advancedcontentfilter.php:312 advancedcontentfilter.php:346
+#: advancedcontentfilter.php:375 advancedcontentfilter.php:396
+msgid "You must be logged in to use this method"
+msgstr "Вы должны авторизоваться для использования этого метода"
+
+#: advancedcontentfilter.php:316 advancedcontentfilter.php:350
+#: advancedcontentfilter.php:379
+msgid "Invalid form security token, please refresh the page."
+msgstr "Неверный ключ, пожалуйста, перезагрузите страницу"
+
+#: advancedcontentfilter.php:328
+msgid "The rule name and expression are required."
+msgstr "Требуется ввести название и значение правила."
+
+#: advancedcontentfilter.php:340
+msgid "Rule successfully added"
+msgstr "Правило успешно добавлено"
+
+#: advancedcontentfilter.php:354 advancedcontentfilter.php:383
+msgid "Rule doesn't exist or doesn't belong to you."
+msgstr "Правило не найдено или доступ к нему закрыт"
+
+#: advancedcontentfilter.php:369
+msgid "Rule successfully updated"
+msgstr "Правило успешно обновлено"
+
+#: advancedcontentfilter.php:390
+msgid "Rule successfully deleted"
+msgstr "Правило успешно удалено"
+
+#: advancedcontentfilter.php:400
+msgid "Missing argument: guid."
+msgstr "Отсутствующий аргумент: guid."
+
+#: advancedcontentfilter.php:406
+#, php-format
+msgid "Unknown post with guid: %s"
+msgstr "Неизвестный пост в ID: %s"
+
+#: src/middlewares.php:28
+msgid "Method not found"
+msgstr "Метод не найден"
