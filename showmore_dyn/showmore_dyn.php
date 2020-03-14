@@ -48,15 +48,6 @@ function showmore_dyn_settings_post(){
 	if (isset($_POST['showmore_dyn-submit'])){
 		$limitHeight = $_POST['showmore_dyn_height'];
 		DI::pConfig()->set(local_user(), 'showmore_dyn', 'limitHeight', $limitHeight);
-
-/*
-		$str=file_get_contents('addon/showmore_dyn/showmore_dyn.css');
-		$str=preg_replace("/(max-height: )\d+(px;)/i", "max-height: " . $limitHeight . "px;" ,$str);
-		file_put_contents('addon/showmore_dyn/showmore_dyn.css', $str);
-
-		$str=file_get_contents('addon/showmore_dyn/showmore_dyn.js');
-                $str=preg_replace('/if \(\$item.height\(\) \< \d+\) \{/i', 'if ($item.height() < ' . $limitHeight . ') {' ,$str);
-		file_put_contents('addon/showmore_dyn/showmore_dyn2.js', $str);*/
         }
 }
 
