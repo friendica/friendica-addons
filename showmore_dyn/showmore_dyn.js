@@ -1,4 +1,8 @@
 $(document).ready(function(){
+	$("head").append('<style type="text/css"></style>');
+	var newStyleElement = $("head").children(':last');
+	newStyleElement.html('.limit-height{max-height: ' + postLimitHeight + 'px; overflow: hidden;}');
+
 	handleNewWallItemBodies();
 
 	document.addEventListener("postprocess_liveupdate", function() {
@@ -60,7 +64,7 @@ function processHeightLimit($item) {
 
 	var itemId = $item.data("item-id");
 	var $toggle = $("#wall-item-body-toggle-" + itemId);
-	if ($item.height() < 250) {
+	if ($item.height() < postLimitHeight) {
 		$item.removeClass("limit-height");
 		$toggle.hide();
 		return false;
