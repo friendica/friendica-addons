@@ -20,6 +20,14 @@
     left: 0;
     text-shadow: 0 0 5px #f6f6f6;
     font-weight: bold;
+
+  background: none!important;
+  border: none;
+  padding: 0!important;
+  cursor: pointer;
+}
+.wall-item-body-toggle-text:hover {
+         text-decoration:underline;
 }
 .wall-item-body {
     position: relative;
