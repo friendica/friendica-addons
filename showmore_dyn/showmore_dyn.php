@@ -71,5 +71,6 @@ function showmore_dyn_settings(&$a,&$o) {
 
 function showmore_dyn_script() {
 	$limitHeight = DI::pConfig()->get(local_user(), 'showmore_dyn', 'limitHeight' );
-	DI::page()['htmlhead'] .= '<script>var postLimitHeight = ' . intval($limitHeight) . ';</script>';
+	$showmore_dyn_showmore_linktext = DI::l10n()->t('Show more ...');
+	DI::page()['htmlhead'] .= '<script>var postLimitHeight = ' . intval($limitHeight) . '; var showmore_dyn_showmore_linktext = "' . $showmore_dyn_showmore_linktext . '"</script>';
 }
