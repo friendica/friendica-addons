@@ -1,7 +1,9 @@
+var nextBodyIdx = 0;
+
 $(document).ready(function(){
 	$("head").append('<style type="text/css"></style>');
 	var newStyleElement = $("head").children(':last');
-	newStyleElement.html('.limit-height{max-height: ' + postLimitHeight + 'px; overflow: hidden;}');
+	newStyleElement.html('.limit-height{max-height: ' + postLimitHeight + 'px; overflow: hidden; display:inline-block;}');
 
 	handleNewWallItemBodies();
 
@@ -19,6 +21,9 @@ function handleNewWallItemBodies() {
 			return;
 		}
 
+		if (!$el.attr("id")) {
+			$el.attr("id", nextBodyIdx++);
+		}
 		addHeightToggleHandler($el);
 		var limited = processHeightLimit($el);
 
