@@ -48,7 +48,7 @@ function showmore_dyn_settings_post()
 	}
 }
 
-function showmore_dyn_settings(&$a, &$o)
+function showmore_dyn_settings(App &$a, &$o)
 {
 	if(!local_user()) {
 		return;
