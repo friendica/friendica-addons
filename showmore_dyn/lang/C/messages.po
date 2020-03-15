@@ -1,0 +1,30 @@
+# ADDON showmore_dyn
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica showmore_dyn addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-03-15 15:54+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: showmore_dyn.php:62
+msgid "Save Settings"
+msgstr ""
+
+#: showmore_dyn.php:64
+msgid "Limit Height"
+msgstr ""
+
+#: showmore_dyn.php:73
+msgid "Show more ..."
+msgstr ""
