@@ -1,6 +1,6 @@
 var nextBodyIdx = 0;
 
-$(document).ready(function(){
+$(document).ready(function() {
 	$("head").append('<style type="text/css"></style>');
 	var newStyleElement = $("head").children(':last');
 	newStyleElement.html('.limit-height{max-height: ' + postLimitHeight + 'px; overflow: hidden; display:inline-block;}');
@@ -28,15 +28,22 @@ function handleNewWallItemBodies() {
 		var limited = processHeightLimit($el);
 
 		if (!limited) {
-			var mutationObserver = new MutationObserver(function(mutations) {
+			var mutationObserver = new MutationObserver(function() {
 				var limited = processHeightLimit($el);
 				if (limited) {
 					mutationObserver.disconnect()
 				}
 			});
-			mutationObserver.observe($el[0], { attributes: true, characterData: true, childList: true, subtree: true, attributeOldValue: true, characterDataOldValue: true });
+			mutationObserver.observe($el[0], {
+				attributes: true,
+				characterData: true,
+				childList: true,
+				subtree: true,
+				attributeOldValue: true,
+				characterDataOldValue: true
+			});
 
-			$el.imagesLoaded().then(function(){
+			$el.imagesLoaded().then(function() {
 				processHeightLimit($el);
 			});
 		}
@@ -79,5 +86,3 @@ function processHeightLimit($item) {
 		return true;
 	}
 }
-
-

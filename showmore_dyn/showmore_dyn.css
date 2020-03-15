@@ -1,7 +1,7 @@
 .wall-item-body-toggle {
 	width: 100%;
 	text-align: center;
-	background-image: linear-gradient(rgba(0,0,0,0), #f6f6f6);
+	background-image: linear-gradient(rgba(0, 0, 0, 0), #f6f6f6);
 	cursor: pointer;
 	height: 50px;
 	position: absolute;
@@ -11,6 +11,7 @@
 	left: 0;
 	display: none;
 }
+
 .wall-item-body-toggle-text {
 	width: 100%;
 	position: absolute;
@@ -20,22 +21,23 @@
 	left: 0;
 	text-shadow: 0 0 5px #f6f6f6;
 	font-weight: bold;
-	background: none!important;
+	background: none !important;
 	border: none;
-	padding: 0!important;
+	padding: 0 !important;
 	cursor: pointer;
 }
+
 .wall-item-body-toggle-text:hover {
-	text-decoration:underline;
+	text-decoration: underline;
 }
+
 .wall-item-body {
 	position: relative;
 	width: 100%;
 }
+
 .wall-item-body-wrapper {
 	position: relative;
 	width: 100%;
 	display: inline-block;
 }
-
-
