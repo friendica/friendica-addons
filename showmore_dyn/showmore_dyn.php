@@ -41,7 +41,7 @@ function showmore_dyn_settings_post()
 	}
 
 	if (isset($_POST['showmore_dyn-submit'])) {
-		$limitHeight = $_POST['showmore_dyn_height'];
+		$limitHeight = $_POST['limitHeight'];
 		if ($limitHeight && is_numeric($limitHeight)) {
 			DI::pConfig()->set(local_user(), 'showmore_dyn', 'limitHeight', $limitHeight);
 		}
@@ -62,7 +62,7 @@ function showmore_dyn_settings(App &$a, &$o)
 		'$submit' => DI::l10n()->t('Save Settings'),
 		'$title' => 'Showmore Dynamic',
 		'$label' => DI::l10n()->t('Limit Height'),
-		'$limitHeight' => $limitHeight,
+		'$limitHeight' => ['limitHeight', DI::l10n()->t('Limit Height'), $limitHeight, 'The maximal height of posts when collapsed', '', '', 'number'],
 	]);
 
 }
