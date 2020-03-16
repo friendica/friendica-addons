@@ -61,7 +61,6 @@ function showmore_dyn_settings(App &$a, &$o)
 	$o .= Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
 		'$title' => 'Showmore Dynamic',
-		'$label' => DI::l10n()->t('Limit Height'),
 		'$limitHeight' => ['limitHeight', DI::l10n()->t('Limit Height'), $limitHeight, 'The maximal height of posts when collapsed', '', '', 'number'],
 	]);
 
