@@ -1,9 +1,14 @@
 var nextBodyIdx = 0;
 
 $(document).ready(function() {
+	loc = window.location.pathname;
+	if (loc.startsWith('/display')) {
+		return;
+	}
+
 	$("head").append('<style type="text/css"></style>');
 	var newStyleElement = $("head").children(':last');
-	newStyleElement.html('.limit-height{max-height: ' + postLimitHeight + 'px; overflow: hidden; display:inline-block;}');
+	newStyleElement.html('.limit-height{max-height: ' + postLimitHeight + 'px; overflow: hidden; }');
 
 	handleNewWallItemBodies();
 
