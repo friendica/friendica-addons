@@ -1202,163 +1202,141 @@ function twitter_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 	return $contact_id;
 }
 
-function twitter_expand_entities(App $a, $body, $item, $picture)
+/**
+ * Replaces Twitter entities with Friendica-friendly links.
+ *
+ * The Twitter API gives indices for each entity, which allows for fine-grained replacement.
+ *
+ * First, we need to collect everything that needs to be replaced, what we will replace it with, and the start index.
+ * Then we sort the indices decreasingly, and we replace from the end of the body to the start in order for the next
+ * index to be correct even after the last replacement.
+ *
+ * @param string   $body
+ * @param stdClass $status
+ * @param string   $picture
+ * @return array
+ * @throws \Friendica\Network\HTTPException\InternalServerErrorException
+ */
+function twitter_expand_entities($body, stdClass $status, $picture)
 {
 	$plain = $body;
 
-	$tags_arr = [];
+	$tags = [];
 
-	foreach ($item->entities->hashtags AS $hashtag) {
-		$url = '#[url=' . DI::baseUrl()->get() . '/search?tag=' . $hashtag->text . ']' . $hashtag->text . '[/url]';
-		$tags_arr['#' . $hashtag->text] = $url;
-		$body = str_replace('#' . $hashtag->text, $url, $body);
+	$replacementList = [];
+
+	foreach ($status->entities->hashtags AS $hashtag) {
+		$replace = '#[url=' . DI::baseUrl()->get() . '/search?tag=' . $hashtag->text . ']' . $hashtag->text . '[/url]';
+		$tags['#' . $hashtag->text] = $replace;
+
+		$replacementList[$hashtag->indices[0]] = [
+			'replace' => $replace,
+			'length' => $hashtag->indices[1] - $hashtag->indices[0],
+		];
 	}
 
-	foreach ($item->entities->user_mentions AS $mention) {
-		$url = '@[url=https://twitter.com/' . rawurlencode($mention->screen_name) . ']' . $mention->screen_name . '[/url]';
-		$tags_arr['@' . $mention->screen_name] = $url;
-		$body = str_replace('@' . $mention->screen_name, $url, $body);
+	foreach ($status->entities->user_mentions AS $mention) {
+		$replace = '@[url=https://twitter.com/' . rawurlencode($mention->screen_name) . ']' . $mention->screen_name . '[/url]';
+		$tags['@' . $mention->screen_name] = $replace;
+
+		$replacementList[$mention->indices[0]] = [
+			'replace' => $replace,
+			'length' => $mention->indices[1] - $mention->indices[0],
+		];
 	}
 
-	if (isset($item->entities->urls)) {
-		$type = '';
-		$footerurl = '';
-		$footerlink = '';
-		$footer = '';
+	// This URL if set will be used to add an attachment at the bottom of the post
+	$attachmentUrl = '';
 
-		foreach ($item->entities->urls as $url) {
-			$plain = str_replace($url->url, '', $plain);
+	foreach ($status->entities->urls ?? [] as $url) {
+		$plain = str_replace($url->url, '', $plain);
 
-			if ($url->url && $url->expanded_url && $url->display_url) {
-				// Quote tweet, we just remove the quoted tweet URL from the body, the share block will be added later.
-				if (!empty($item->quoted_status) && isset($item->quoted_status_id_str)
-					&& substr($url->expanded_url, -strlen($item->quoted_status_id_str)) == $item->quoted_status_id_str ) {
-					$body = str_replace($url->url, '', $body);
-					continue;
-				}
+		if ($url->url && $url->expanded_url && $url->display_url) {
 
-				$expanded_url = $url->expanded_url;
-
-				$final_url = Network::finalUrl($url->expanded_url);
-
-				$oembed_data = OEmbed::fetchURL($final_url);
-
-				if (empty($oembed_data) || empty($oembed_data->type)) {
-					continue;
-				}
-
-				// Quickfix: Workaround for URL with '[' and ']' in it
-				if (strpos($expanded_url, '[') || strpos($expanded_url, ']')) {
-					$expanded_url = $url->url;
-				}
-
-				if ($type == '') {
-					$type = $oembed_data->type;
-				}
-
-				if ($oembed_data->type == 'video') {
-					$type = $oembed_data->type;
-					$footerurl = $expanded_url;
-					$footerlink = '[url=' . $expanded_url . ']' . $url->display_url . '[/url]';
-
-					$body = str_replace($url->url, $footerlink, $body);
-				} elseif (($oembed_data->type == 'photo') && isset($oembed_data->url)) {
-					$body = str_replace($url->url, '[url=' . $expanded_url . '][img]' . $oembed_data->url . '[/img][/url]', $body);
-				} elseif ($oembed_data->type != 'link') {
-					$body = str_replace($url->url, '[url=' . $expanded_url . ']' . $url->display_url . '[/url]', $body);
-				} else {
-					$img_str = Network::fetchUrl($final_url, true, 4);
-
-					$tempfile = tempnam(get_temppath(), 'cache');
-					file_put_contents($tempfile, $img_str);
-
-					// See http://php.net/manual/en/function.exif-imagetype.php#79283
-					if (filesize($tempfile) > 11) {
-						$mime = image_type_to_mime_type(exif_imagetype($tempfile));
-					} else {
-						$mime = false;
-					}
-
-					unlink($tempfile);
-
-					if (substr($mime, 0, 6) == 'image/') {
-						$type = 'photo';
-						$body = str_replace($url->url, '[img]' . $final_url . '[/img]', $body);
-					} else {
-						$type = $oembed_data->type;
-						$footerurl = $expanded_url;
-						$footerlink = '[url=' . $expanded_url . ']' . $url->display_url . '[/url]';
-
-						$body = str_replace($url->url, $footerlink, $body);
-					}
-				}
-			}
-		}
-
-		// Footer will be taken care of with a share block in the case of a quote
-		if (empty($item->quoted_status)) {
-			if ($footerurl != '') {
-				$footer = add_page_info($footerurl, false, $picture);
-			}
-
-			if (($footerlink != '') && (trim($footer) != '')) {
-				$removedlink = trim(str_replace($footerlink, '', $body));
-
-				if (($removedlink == '') || strstr($body, $removedlink)) {
-					$body = $removedlink;
-				}
-
-				$body .= $footer;
-			}
-
-			if ($footer == '' && $picture != '') {
-				$body .= "\n\n[img]" . $picture . "[/img]\n";
-			} elseif ($footer == '' && $picture == '') {
-				$body = add_page_info_to_body($body);
-			}
-		}
-	}
-
-	// it seems as if the entities aren't always covering all mentions. So the rest will be checked here
-	$tags = BBCode::getTags($body);
-
-	if (count($tags)) {
-		foreach ($tags as $tag) {
-			if (strstr(trim($tag), ' ')) {
+			// Quote tweet, we just remove the quoted tweet URL from the body, the share block will be added later.
+			if (!empty($status->quoted_status) && isset($status->quoted_status_id_str)
+				&& substr($url->expanded_url, -strlen($status->quoted_status_id_str)) == $status->quoted_status_id_str
+			) {
+				$replacementList[$url->indices[0]] = [
+					'replace' => '',
+					'length' => $url->indices[1] - $url->indices[0],
+				];
 				continue;
 			}
 
-			if (strpos($tag, '#') === 0) {
-				if (strpos($tag, '[url=')) {
-					continue;
-				}
+			$expanded_url = $url->expanded_url;
 
-				// don't link tags that are already embedded in links
-				if (preg_match('/\[(.*?)' . preg_quote($tag, '/') . '(.*?)\]/', $body)) {
-					continue;
-				}
-				if (preg_match('/\[(.*?)\]\((.*?)' . preg_quote($tag, '/') . '(.*?)\)/', $body)) {
-					continue;
-				}
+			$final_url = Network::finalUrl($url->expanded_url);
 
-				$basetag = str_replace('_', ' ', substr($tag, 1));
-				$url = '#[url=' . DI::baseUrl()->get() . '/search?tag=' . $basetag . ']' . $basetag . '[/url]';
-				$body = str_replace($tag, $url, $body);
-				$tags_arr['#' . $basetag] = $url;
-			} elseif (strpos($tag, '@') === 0) {
-				if (strpos($tag, '[url=')) {
-					continue;
-				}
+			$oembed_data = OEmbed::fetchURL($final_url);
 
-				$basetag = substr($tag, 1);
-				$url = '@[url=https://twitter.com/' . rawurlencode($basetag) . ']' . $basetag . '[/url]';
-				$body = str_replace($tag, $url, $body);
-				$tags_arr['@' . $basetag] = $url;
+			if (empty($oembed_data) || empty($oembed_data->type)) {
+				continue;
 			}
+
+			// Quickfix: Workaround for URL with '[' and ']' in it
+			if (strpos($expanded_url, '[') || strpos($expanded_url, ']')) {
+				$expanded_url = $url->url;
+			}
+
+			if ($oembed_data->type == 'video') {
+				$attachmentUrl = $expanded_url;
+				$replace = '';
+			} elseif (($oembed_data->type == 'photo') && isset($oembed_data->url)) {
+				$replace = '[url=' . $expanded_url . '][img]' . $oembed_data->url . '[/img][/url]';
+			} elseif ($oembed_data->type != 'link') {
+				$replace = '[url=' . $expanded_url . ']' . $url->display_url . '[/url]';
+			} else {
+				$img_str = Network::fetchUrl($final_url, true, 4);
+
+				$tempfile = tempnam(get_temppath(), 'cache');
+				file_put_contents($tempfile, $img_str);
+
+				// See http://php.net/manual/en/function.exif-imagetype.php#79283
+				if (filesize($tempfile) > 11) {
+					$mime = image_type_to_mime_type(exif_imagetype($tempfile));
+				} else {
+					$mime = false;
+				}
+
+				unlink($tempfile);
+
+				if (substr($mime, 0, 6) == 'image/') {
+					$replace = '[img]' . $final_url . '[/img]';
+				} else {
+					$attachmentUrl = $expanded_url;
+					$replace = '';
+				}
+			}
+
+			$replacementList[$url->indices[0]] = [
+				'replace' => $replace,
+				'length' => $url->indices[1] - $url->indices[0],
+			];
 		}
 	}
 
-	$tags = implode($tags_arr, ',');
+	krsort($replacementList);
+
+	foreach ($replacementList as $startIndex => $parameters) {
+		$body = Strings::substringReplace($body, $parameters['replace'], $startIndex, $parameters['length']);
+	}
+
+	// Footer will be taken care of with a share block in the case of a quote
+	if (empty($status->quoted_status)) {
+		$footer = '';
+		if ($attachmentUrl) {
+			$footer = add_page_info($attachmentUrl, false, $picture);
+		}
+
+		if (trim($footer)) {
+			$body .= $footer;
+		} elseif ($picture) {
+			$body .= "\n\n[img]" . $picture . "[/img]\n";
+		} else {
+			$body = add_page_info_to_body($body);
+		}
+	}
 
 	return ['body' => $body, 'tags' => $tags, 'plain' => $plain];
 }
@@ -1554,9 +1532,9 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 	// Search for media links
 	$picture = twitter_media_entities($post, $postarray);
 
-	$converted = twitter_expand_entities($a, $postarray['body'], $post, $picture);
-	$postarray['body'] = $converted["body"];
-	$postarray['tag'] = $converted["tags"];
+	$converted = twitter_expand_entities($postarray['body'], $post, $picture);
+	$postarray['body'] = $converted['body'];
+	$postarray['tag'] = implode($converted['tags'], ',');
 	$postarray['created'] = DateTimeFormat::utc($post->created_at);
 	$postarray['edited'] = DateTimeFormat::utc($post->created_at);
 
