@@ -1956,7 +1956,7 @@ function twitter_update_mentions($body)
 
 function twitter_convert_share(array $attributes, array $author_contact, $content, $is_quote_share)
 {
-	if (empty($contact)) {
+	if (empty($author_contact)) {
 		return $content . "\n\n" . $attributes['link'];
 	}
 
