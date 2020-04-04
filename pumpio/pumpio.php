@@ -672,7 +672,7 @@ function pumpio_action(App $a, $uid, $uri, $action, $content = "")
 	if ($success) {
 		Logger::log('pumpio_action '.$username.' '.$action.': success '.$uri);
 	} else {
-		Logger::log('pumpio_action '.$username.' '.$action.': general error: '.$uri.' '.print_r($user, true));
+		Logger::log('pumpio_action '.$username.' '.$action.': general error: '.$uri);
 		Worker::defer();
 	}
 }

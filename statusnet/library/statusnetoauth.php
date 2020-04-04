@@ -15,6 +15,9 @@ class StatusNetOAuth extends TwitterOAuth
 	function get_maxlength()
 	{
 		$config = $this->get($this->host . 'statusnet/config.json');
+		if (empty($config)) {
+			return 0;
+		}
 		return $config->site->textlimit;
 	}
 
