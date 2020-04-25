@@ -1429,6 +1429,19 @@ function twitter_media_entities($post, array &$postarray)
 	return '';
 }
 
+/**
+ * Undocumented function
+ *
+ * @param App $a
+ * @param integer $uid User ID
+ * @param object $post Incoming Twitter post
+ * @param array $self
+ * @param bool $create_user Should users be created?
+ * @param bool $only_existing_contact Only import existing contacts if set to "true"
+ * @param bool $noquote
+ * @param integer $uriid When set to empty, create a "uri-id", otherwise use the given one - escept when it is lower than 0
+ * @return array item array
+ */
 function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $only_existing_contact, $noquote, int $uriid = 0)
 {
 	$postarray = [];
