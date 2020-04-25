@@ -1439,7 +1439,7 @@ function twitter_media_entities($post, array &$postarray)
  * @param bool $create_user Should users be created?
  * @param bool $only_existing_contact Only import existing contacts if set to "true"
  * @param bool $noquote
- * @param integer $uriid When set to empty, create a "uri-id", otherwise use the given one - escept when it is lower than 0
+ * @param integer $uriid URI Id used to store tags. 0 = create a new one; -1 = don't store tags for this post.
  * @return array item array
  */
 function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $only_existing_contact, $noquote, int $uriid = 0)
