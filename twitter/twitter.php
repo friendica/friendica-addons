@@ -81,6 +81,9 @@ use Friendica\Model\Conversation;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
+use Friendica\Model\ItemURI;
+use Friendica\Model\Tag;
+use Friendica\Model\Term;
 use Friendica\Model\User;
 use Friendica\Protocol\Activity;
 use Friendica\Util\ConfigFileLoader;
@@ -887,7 +890,7 @@ function twitter_do_mirrorpost(App $a, $uid, $post)
 
 	if (!empty($post->retweeted_status)) {
 		// We don't support nested shares, so we mustn't show quotes as shares on retweets
-		$item = twitter_createpost($a, $uid, $post->retweeted_status, ['id' => 0], false, false, true);
+		$item = twitter_createpost($a, $uid, $post->retweeted_status, ['id' => 0], false, false, true, -1);
 
 		if (empty($item['body'])) {
 			return [];
@@ -904,7 +907,7 @@ function twitter_do_mirrorpost(App $a, $uid, $post)
 
 		$datarray['body'] .= $item['body'] . '[/share]';
 	} else {
-		$item = twitter_createpost($a, $uid, $post, ['id' => 0], false, false, false);
+		$item = twitter_createpost($a, $uid, $post, ['id' => 0], false, false, false, -1);
 
 		if (empty($item['body'])) {
 			return [];
@@ -1222,12 +1225,14 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 	$plain = $body;
 
 	$tags = [];
+	$taglist = [];
 
 	$replacementList = [];
 
 	foreach ($status->entities->hashtags AS $hashtag) {
 		$replace = '#[url=' . DI::baseUrl()->get() . '/search?tag=' . $hashtag->text . ']' . $hashtag->text . '[/url]';
 		$tags['#' . $hashtag->text] = $replace;
+		$taglist['#' . $hashtag->text] = ['#', $hashtag->text, ''];
 
 		$replacementList[$hashtag->indices[0]] = [
 			'replace' => $replace,
@@ -1238,6 +1243,7 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 	foreach ($status->entities->user_mentions AS $mention) {
 		$replace = '@[url=https://twitter.com/' . rawurlencode($mention->screen_name) . ']' . $mention->screen_name . '[/url]';
 		$tags['@' . $mention->screen_name] = $replace;
+		$taglist['@' . $mention->screen_name] = ['@', $mention->screen_name, 'https://twitter.com/' . rawurlencode($mention->screen_name)];
 
 		$replacementList[$mention->indices[0]] = [
 			'replace' => $replace,
@@ -1338,7 +1344,7 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 		}
 	}
 
-	return ['body' => $body, 'tags' => $tags, 'plain' => $plain];
+	return ['body' => $body, 'tags' => $tags, 'plain' => $plain, 'taglist' => $taglist];
 }
 
 /**
@@ -1423,7 +1429,20 @@ function twitter_media_entities($post, array &$postarray)
 	return '';
 }
 
-function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $only_existing_contact, $noquote)
+/**
+ * Undocumented function
+ *
+ * @param App $a
+ * @param integer $uid User ID
+ * @param object $post Incoming Twitter post
+ * @param array $self
+ * @param bool $create_user Should users be created?
+ * @param bool $only_existing_contact Only import existing contacts if set to "true"
+ * @param bool $noquote
+ * @param integer $uriid URI Id used to store tags. 0 = create a new one; -1 = don't store tags for this post.
+ * @return array item array
+ */
+function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $only_existing_contact, $noquote, int $uriid = 0)
 {
 	$postarray = [];
 	$postarray['network'] = Protocol::TWITTER;
@@ -1432,6 +1451,10 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 	$postarray['uri'] = "twitter::" . $post->id_str;
 	$postarray['protocol'] = Conversation::PARCEL_TWITTER;
 	$postarray['source'] = json_encode($post);
+
+	if (empty($uriid)) {
+		$uriid = $postarray['uri-id'] = ItemURI::insert(['uri' => $postarray['uri']]);
+	}
 
 	// Don't import our own comments
 	if (Item::exists(['extid' => $postarray['uri'], 'uid' => $uid])) {
@@ -1534,9 +1557,13 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 
 	$converted = twitter_expand_entities($postarray['body'], $post, $picture);
 	$postarray['body'] = $converted['body'];
-	$postarray['tag'] = implode($converted['tags'], ',');
+	$postarray['tag'] = implode(',', $converted['tags']);
 	$postarray['created'] = DateTimeFormat::utc($post->created_at);
 	$postarray['edited'] = DateTimeFormat::utc($post->created_at);
+
+	if ($uriid > 0) {
+		twitter_store_tags($uriid, $converted['taglist']);
+	}
 
 	$statustext = $converted["plain"];
 
@@ -1584,7 +1611,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 	}
 
 	if (!empty($post->quoted_status) && !$noquote) {
-		$quoted = twitter_createpost($a, $uid, $post->quoted_status, $self, false, false, true);
+		$quoted = twitter_createpost($a, $uid, $post->quoted_status, $self, false, false, true, $uriid);
 
 		if (!empty($quoted['body'])) {
 			$postarray['body'] .= "\n" . share_header(
@@ -1604,6 +1631,19 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 	}
 
 	return $postarray;
+}
+
+/**
+ * Store tags and mentions
+ *
+ * @param integer $uriid
+ * @param array $taglist
+ */
+function twitter_store_tags(int $uriid, array $taglist)
+{
+	foreach ($taglist as $tag) {
+		Tag::storeByHash($uriid, $tag[0], $tag[1], $tag[2]);
+	}
 }
 
 function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection, array $self)
@@ -1960,7 +2000,7 @@ function twitter_convert_share(array $attributes, array $author_contact, $conten
 		return $content . "\n\n" . $attributes['link'];
 	}
 
-	if ($author_contact['network'] == Protocol::TWITTER) {
+	if (!empty($author_contact['network']) && ($author_contact['network'] == Protocol::TWITTER)) {
 		$mention = '@' . $author_contact['nick'];
 	} else {
 		$mention = $author_contact['addr'];
