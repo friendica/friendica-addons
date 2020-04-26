@@ -139,7 +139,7 @@ function geonames_addon_settings(App $a, &$s)
 	/* Get the current state of our config variable */
 	$enabled = intval(DI::pConfig()->get(local_user(), 'geonames', 'enable'));
 
-	$t = Renderer::getMarkupTemplate('settings.tpl', __DIR__);
+	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/geonames/');
 	$s .= Renderer::replaceMacros($t, [
 		'$title' => DI::l10n()->t('Geonames Settings'),
 		'$description' => DI::l10n()->t('Replace numerical coordinates by the nearest populated location name in your posts.'),
