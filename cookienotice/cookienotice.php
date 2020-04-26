@@ -42,7 +42,7 @@ function cookienotice_addon_admin(App $a, &$s)
 	$text = DI::config()->get('cookienotice', 'text', DI::l10n()->t('This website uses cookies. If you continue browsing this website, you agree to the usage of cookies.'));
 	$oktext = DI::config()->get('cookienotice', 'oktext', DI::l10n()->t('OK'));
 
-	$t = Renderer::getMarkupTemplate('admin.tpl', __DIR__);
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/cookienotice/');
 	$s .= Renderer::replaceMacros($t, [
 		'$description' => DI::l10n()->t('<b>Configure your cookie usage notice.</b> It should just be a notice, saying that the website uses cookies. It is shown as long as a user didnt confirm clicking the OK button.'),
 		'$text' => ['cookienotice-text', DI::l10n()->t('Cookie Usage Notice'), $text],
@@ -108,7 +108,7 @@ function cookienotice_page_end(App $a, &$b)
 	$text = (string)DI::config()->get('cookienotice', 'text', DI::l10n()->t('This website uses cookies to recognize revisiting and logged in users. You accept the usage of these cookies by continue browsing this website.'));
 	$oktext = (string)DI::config()->get('cookienotice', 'oktext', DI::l10n()->t('OK'));
 
-	$page_end_tpl = Renderer::getMarkupTemplate('cookienotice.tpl', __DIR__);
+	$page_end_tpl = Renderer::getMarkupTemplate('cookienotice.tpl', 'addon/cookienotice/');
 
 	$page_end = Renderer::replaceMacros($page_end_tpl, [
 		'$text' => $text,

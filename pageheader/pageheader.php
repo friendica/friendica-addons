@@ -31,7 +31,7 @@ function pageheader_addon_admin(App &$a, &$s)
 	if(! $words)
 		$words = '';
 
-	$t = Renderer::getMarkupTemplate('admin.tpl', __DIR__);
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/pageheader');
 	$s .= Renderer::replaceMacros($t, [
 		'$title' => DI::l10n()->t('"pageheader" Settings'),
 		'$phwords' => ['pageheader-words', DI::l10n()->t('Message'), $words, DI::l10n()->t('Message to display on every page on this server (or put a pageheader.html file in your docroot)')],
