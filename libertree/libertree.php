@@ -211,18 +211,6 @@ function libertree_send(&$a,&$b) {
 		$ltree_source .= " (".$b['app'].")";
 
 	if($ltree_url && $ltree_api_token && $ltree_blog && $ltree_source) {
-		$tag_arr = [];
-		$tags = '';
-		$x = preg_match_all('/\#\[(.*?)\](.*?)\[/',$b['tag'],$matches,PREG_SET_ORDER);
-
-		if($x) {
-			foreach($matches as $mtch) {
-				$tag_arr[] = $mtch[2];
-			}
-		}
-		if(count($tag_arr))
-			$tags = implode(',',$tag_arr);
-
 		$title = $b['title'];
 		$body = $b['body'];
 		// Insert a newline before and after a quote

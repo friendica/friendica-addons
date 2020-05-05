@@ -262,20 +262,6 @@ function diaspora_send(App $a, array &$b)
 	if ($handle && $password) {
 		Logger::log('diaspora_send: all values seem to be okay', Logger::DEBUG);
 
-		$tag_arr = [];
-		$tags = '';
-		$x = preg_match_all('/\#\[(.*?)\](.*?)\[/',$b['tag'],$matches,PREG_SET_ORDER);
-
-		if ($x) {
-			foreach ($matches as $mtch) {
-				$tag_arr[] = $mtch[2];
-			}
-		}
-
-		if (count($tag_arr)) {
-			$tags = implode(',',$tag_arr);
-		}
-
 		$title = $b['title'];
 		$body = $b['body'];
 		// Insert a newline before and after a quote
