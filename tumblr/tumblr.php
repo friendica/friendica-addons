@@ -16,6 +16,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
+use Friendica\Model\Tag;
 use Friendica\Util\Strings;
 
 function tumblr_install()
@@ -383,14 +384,12 @@ function tumblr_send(App $a, array &$b) {
 	$tmbl_blog = 'blog/' . $page . '/post';
 
 	if ($oauth_token && $oauth_token_secret && $tmbl_blog) {
-		$tag_arr = [];
-		$tags = '';
-		preg_match_all('/\#\[(.*?)\](.*?)\[/', $b['tag'], $matches, PREG_SET_ORDER);
+		$tags = Tag::getByURIId($b['uri-id']);
 
-		if (!empty($matches)) {
-			foreach($matches as $mtch) {
-				$tag_arr[] = $mtch[2];
-			}
+		$tag_arr = [];
+
+		foreach($tags as $tag) {
+			$tag_arr[] = $tag['name'];
 		}
 
 		if (count($tag_arr)) {
