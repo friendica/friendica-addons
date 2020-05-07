@@ -13,6 +13,8 @@ use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\Database\DBA;
 use Friendica\Core\Worker;
 use Friendica\DI;
@@ -61,121 +63,83 @@ function diaspora_settings(App $a, &$s)
 		return;
 	}
 
-	/* Add our stylesheet to the page so we can make our settings look nice */
-
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/diaspora/diaspora.css' . '" media="all" />' . "\r\n";
-
 	/* Get the current state of our config variables */
 
 	$enabled = DI::pConfig()->get(local_user(),'diaspora','post');
-	$checked = (($enabled) ? ' checked="checked" ' : '');
-	$css = (($enabled) ? '' : '-disabled');
-
 	$def_enabled = DI::pConfig()->get(local_user(),'diaspora','post_by_default');
-
-	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
 
 	$handle = DI::pConfig()->get(local_user(), 'diaspora', 'handle');
 	$password = DI::pConfig()->get(local_user(), 'diaspora', 'password');
 	$aspect = DI::pConfig()->get(local_user(),'diaspora','aspect');
 
-	$status = "";
-
-	$r = q("SELECT `addr` FROM `contact` WHERE `self` AND `uid` = %d", intval(local_user()));
-
-	if (DBA::isResult($r)) {
-		$status = DI::l10n()->t("Please remember: You can always be reached from Diaspora with your Friendica handle %s. ", $r[0]['addr']);
-		$status .= DI::l10n()->t('This connector is only meant if you still want to use your old Diaspora account for some time. ');
-		$status .= DI::l10n()->t('However, it is preferred that you tell your Diaspora contacts the new handle %s instead.', $r[0]['addr']);
+	$info = '';
+	$error = '';
+	if (Session::get('my_address')) {
+		$info = DI::l10n()->t('Please remember: You can always be reached from Diaspora with your Friendica handle <strong>%s</strong>. ', Session::get('my_address'));
+		$info .= DI::l10n()->t('This connector is only meant if you still want to use your old Diaspora account for some time. ');
+		$info .= DI::l10n()->t('However, it is preferred that you tell your Diaspora contacts the new handle <strong>%s</strong> instead.', Session::get('my_address'));
 	}
 
-	$aspects = false;
-
+	$aspect_select = '';
 	if ($handle && $password) {
 		$conn = new Diaspora_Connection($handle, $password);
 		$conn->logIn();
-		$aspects = $conn->getAspects();
+		$rawAspects = $conn->getAspects();
+		if ($rawAspects) {
+			$availableAspects = [
+				'all_aspects' => DI::l10n()->t('All aspects'),
+				'public' => DI::l10n()->t('Public'),
+			];
+			foreach ($rawAspects as $rawAspect) {
+				$availableAspects[$rawAspect->id] = $rawAspect->name;
+			}
 
-		if (!$aspects) {
-			$status = DI::l10n()->t("Can't login to your Diaspora account. Please check handle (in the format user@domain.tld) and password.");
+			$aspect_select = ['aspect', DI::l10n()->t('Post to aspect:'), $aspect, '', $availableAspects];
+			$info = DI::l10n()->t('Connected with your Diaspora account <strong>%s</strong>', $handle);
+		} else {
+			$info = '';
+			$error = DI::l10n()->t("Can't login to your Diaspora account. Please check handle (in the format user@domain.tld) and password.");
 		}
 	}
 
-	/* Add some HTML to the existing form */
+	DI::page()->registerStylesheet('addon/diaspora/diaspora.css');
 
-	$s .= '<span id="settings_diaspora_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_diaspora_expanded\'); openClose(\'settings_diaspora_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/diaspora-logo.png" /><h3 class="connector">'. DI::l10n()->t('Diaspora Export').'</h3>';
-	$s .= '</span>';
-	$s .= '<div id="settings_diaspora_expanded" class="settings-block" style="display: none;">';
-	$s .= '<span class="fakelink" onclick="openClose(\'settings_diaspora_expanded\'); openClose(\'settings_diaspora_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/diaspora-logo.png" /><h3 class="connector">'. DI::l10n()->t('Diaspora Export').'</h3>';
-	$s .= '</span>';
-
-	if ($status) {
-		$s .= '<div id="diaspora-status-wrapper"><strong>';
-		$s .= $status;
-		$s .= '</strong></div><div class="clear"></div>';
-	}
-
-	$s .= '<div id="diaspora-enable-wrapper">';
-	$s .= '<label id="diaspora-enable-label" for="diaspora-checkbox">' . DI::l10n()->t('Enable Diaspora Post Addon') . '</label>';
-	$s .= '<input id="diaspora-checkbox" type="checkbox" name="diaspora" value="1" ' . $checked . '/>';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div id="diaspora-username-wrapper">';
-	$s .= '<label id="diaspora-username-label" for="diaspora-username">' . DI::l10n()->t('Diaspora handle') . '</label>';
-	$s .= '<input id="diaspora-username" type="text" name="handle" value="' . $handle . '" />';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div id="diaspora-password-wrapper">';
-	$s .= '<label id="diaspora-password-label" for="diaspora-password">' . DI::l10n()->t('Diaspora password') . '</label>';
-	$s .= '<input id="diaspora-password" type="password" name="password" value="' . $password . '" />';
-	$s .= '</div><div class="clear"></div>';
-
-	if ($aspects) {
-		$single_aspect =  new stdClass();
-		$single_aspect->id = 'all_aspects';
-		$single_aspect->name = DI::l10n()->t('All aspects');
-		$aspects[] = $single_aspect;
-
-		$single_aspect =  new stdClass();
-		$single_aspect->id = 'public';
-		$single_aspect->name = DI::l10n()->t('Public');
-		$aspects[] = $single_aspect;
-
-		$s .= '<label id="diaspora-aspect-label" for="diaspora-aspect">' . DI::l10n()->t('Post to aspect:') . '</label>';
-		$s .= '<select name="aspect" id="diaspora-aspect">';
-		foreach($aspects as $single_aspect) {
-			if ($single_aspect->id == $aspect)
-				$s .= "<option value='".$single_aspect->id."' selected>".$single_aspect->name."</option>";
-			else
-				$s .= "<option value='".$single_aspect->id."'>".$single_aspect->name."</option>";
-		}
-
-		$s .= "</select>";
-		$s .= '<div class="clear"></div>';
-	}
-
-	$s .= '<div id="diaspora-bydefault-wrapper">';
-	$s .= '<label id="diaspora-bydefault-label" for="diaspora-bydefault">' . DI::l10n()->t('Post to Diaspora by default') . '</label>';
-	$s .= '<input id="diaspora-bydefault" type="checkbox" name="diaspora_bydefault" value="1" ' . $def_checked . '/>';
-	$s .= '</div><div class="clear"></div>';
-
-	/* provide a submit button */
-
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="diaspora-submit" name="diaspora-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div></div>';
-
+	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/diaspora/');
+	$s .= Renderer::replaceMacros($t, [
+		'$header'           => DI::l10n()->t('Diaspora Export'),
+		'$info_header'      => DI::l10n()->t('Information'),
+		'$error_header'     => DI::l10n()->t('Error'),
+		'$submit'           => DI::l10n()->t('Save Settings'),
+		'$info'             => $info,
+		'$error'            => $error,
+		'$enabled'          => $enabled,
+		'$enabled_checkbox' => ['enabled', DI::l10n()->t('Enable Diaspora Post Addon'), $enabled],
+		'$handle'           => ['handle', DI::l10n()->t('Diaspora handle'), $handle, null, null, 'placeholder="user@domain.tld"'],
+		'$password'         => ['password', DI::l10n()->t('Diaspora password'), '', DI::l10n()->t('Privacy notice: Your Diaspora password will be stored unencrypted to authenticate you with your Diaspora pod. This means your Friendica node administrator can have access to it.')],
+		'$aspect_select'    => $aspect_select,
+		'$post_by_default'  => ['post_by_default', DI::l10n()->t('Post to Diaspora by default'), $def_enabled],
+	]);
 }
 
 
 function diaspora_settings_post(App $a, &$b)
 {
 	if (!empty($_POST['diaspora-submit'])) {
-		DI::pConfig()->set(local_user(),'diaspora', 'post'           , intval($_POST['diaspora']));
-		DI::pConfig()->set(local_user(),'diaspora', 'post_by_default', intval($_POST['diaspora_bydefault']));
-		DI::pConfig()->set(local_user(),'diaspora', 'handle'         , trim($_POST['handle']));
-		DI::pConfig()->set(local_user(),'diaspora', 'password'       , trim($_POST['password']));
-		DI::pConfig()->set(local_user(),'diaspora', 'aspect'         , trim($_POST['aspect']));
+		DI::pConfig()->set(local_user(),'diaspora', 'post'           , intval($_POST['enabled']));
+		if (intval($_POST['enabled'])) {
+			if (isset($_POST['handle'])) {
+				DI::pConfig()->set(local_user(),'diaspora', 'handle'         , trim($_POST['handle']));
+				DI::pConfig()->set(local_user(),'diaspora', 'password'       , trim($_POST['password']));
+			}
+			if (!empty($_POST['aspect'])) {
+				DI::pConfig()->set(local_user(),'diaspora', 'aspect'         , trim($_POST['aspect']));
+				DI::pConfig()->set(local_user(),'diaspora', 'post_by_default', intval($_POST['post_by_default']));
+			}
+			notice(DI::l10n()->t('Diaspora settings updated.'));
+		} else {
+			DI::pConfig()->delete(local_user(), 'diaspora', 'password');
+			notice(DI::l10n()->t('Diaspora connector disabled.'));
+		}
 	}
 }
 
