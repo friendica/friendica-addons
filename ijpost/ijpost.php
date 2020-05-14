@@ -12,6 +12,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\DI;
+use Friendica\Model\Tag;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
 use Friendica\Util\XML;
@@ -189,7 +190,7 @@ function ijpost_send(&$a, &$b)
 		$title = $b['title'];
 		$post = BBCode::convert($b['body']);
 		$post = XML::escape($post);
-		$tags = ijpost_get_tags($b['tag']);
+		$tags = Tag::getCSVByURIId($b['uri-id'], [Tag::HASHTAG]);
 
 		$date = DateTimeFormat::convert($b['created'], $tz);
 		$year = intval(substr($date,0,4));
@@ -232,11 +233,4 @@ EOT;
 		}
 		Logger::log('posted to insanejournal: ' . $x ? $x : '', Logger::DEBUG);
 	}
-}
-
-function ijpost_get_tags($post)
-{
-	preg_match_all("/\]([^\[#]+)\[/", $post, $matches);
-	$tags = implode(', ', $matches[1]);
-	return $tags;
 }

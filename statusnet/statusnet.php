@@ -1202,9 +1202,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 
 	$postarray['body'] = HTML::toBBCode($content->statusnet_html);
 
-	$converted = statusnet_convertmsg($a, $postarray['body'], false);
-	$postarray['body'] = $converted["body"];
-	$postarray['tag'] = $converted["tags"];
+	$postarray['body'] = statusnet_convertmsg($a, $postarray['body']);
 
 	$postarray['created'] = DateTimeFormat::utc($content->created_at);
 	$postarray['edited'] = DateTimeFormat::utc($content->created_at);
@@ -1433,7 +1431,7 @@ function statusnet_complete_conversation(App $a, $uid, $self, $create_user, $nic
 	}
 }
 
-function statusnet_convertmsg(App $a, $body, $no_tags = false)
+function statusnet_convertmsg(App $a, $body)
 {
 	$body = preg_replace("=\[url\=https?://([0-9]*).([0-9]*).([0-9]*).([0-9]*)/([0-9]*)\](.*?)\[\/url\]=ism", "$1.$2.$3.$4/$5", $body);
 
@@ -1510,36 +1508,7 @@ function statusnet_convertmsg(App $a, $body, $no_tags = false)
 		}
 	}
 
-	if ($no_tags) {
-		return ["body" => $body, "tags" => ""];
-	}
-
-	$str_tags = '';
-
-	$cnt = preg_match_all("/([!#@])\[url\=([$URLSearchString]*)\](.*?)\[\/url\]/ism", $body, $matches, PREG_SET_ORDER);
-	if ($cnt) {
-		foreach ($matches as $mtch) {
-			if (strlen($str_tags)) {
-				$str_tags .= ',';
-			}
-
-			if ($mtch[1] == "#") {
-				// Replacing the hash tags that are directed to the GNU Social server with internal links
-				$snhash = "#[url=" . $mtch[2] . "]" . $mtch[3] . "[/url]";
-				$frdchash = '#[url=' . DI::baseUrl()->get() . '/search?tag=' . $mtch[3] . ']' . $mtch[3] . '[/url]';
-				$body = str_replace($snhash, $frdchash, $body);
-
-				$str_tags .= $frdchash;
-			} else {
-				$str_tags .= "@[url=" . $mtch[2] . "]" . $mtch[3] . "[/url]";
-			}
-			// To-Do:
-			// There is a problem with links with to GNU Social groups, so these links are stored with "@" like friendica groups
-			//$str_tags .= $mtch[1]."[url=".$mtch[2]."]".$mtch[3]."[/url]";
-		}
-	}
-
-	return ["body" => $body, "tags" => $str_tags];
+	return $body;
 }
 
 function statusnet_fetch_own_contact(App $a, $uid)
