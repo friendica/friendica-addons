@@ -14,6 +14,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Database\DBA;
 use Friendica\DI;
+use Friendica\Model\Tag;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
 use Friendica\Util\XML;
@@ -191,7 +192,7 @@ function dwpost_send(App $a, array &$b)
 		$title = $b['title'];
 		$post = BBCode::convert($b['body']);
 		$post = XML::escape($post);
-		$tags = dwpost_get_tags($b['tag']);
+		$tags = Tag::getCSVByURIId($b['uri-id'], [Tag::HASHTAG]);
 
 		$date = DateTimeFormat::convert($b['created'], $tz);
 		$year = intval(substr($date,0,4));
@@ -235,13 +236,4 @@ EOT;
 
 		Logger::log('posted to dreamwidth: ' . ($x) ? $x : '', Logger::DEBUG);
 	}
-}
-
-function dwpost_get_tags($post)
-{
-	preg_match_all("/\]([^\[#]+)\[/", $post, $matches);
-
-	$tags = implode(', ', $matches[1]);
-
-	return $tags;
 }
