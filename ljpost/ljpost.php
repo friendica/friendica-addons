@@ -12,6 +12,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\DI;
+use Friendica\Model\Tag;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Network;
 use Friendica\Util\XML;
@@ -188,7 +189,7 @@ function ljpost_send(&$a,&$b) {
 		$title = XML::escape($b['title']);
 		$post = BBCode::convert($b['body']);
 		$post = XML::escape($post);
-		$tags = ljpost_get_tags($b['tag']);
+		$tags = Tag::getCSVByURIId($b['uri-id'], [Tag::HASHTAG]);
 
 		$date = DateTimeFormat::convert($b['created'], $tz);
 		$year = intval(substr($date,0,4));
@@ -244,11 +245,4 @@ EOT;
 		}
 		Logger::log('posted to livejournal: ' . ($x) ? $x : '', Logger::DEBUG);
 	}
-}
-
-function ljpost_get_tags($post)
-{
-	preg_match_all("/\]([^\[#]+)\[/",$post,$matches);
-	$tags = implode(', ',$matches[1]);
-	return $tags;
 }
