@@ -1224,14 +1224,12 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 {
 	$plain = $body;
 
-	$tags = [];
 	$taglist = [];
 
 	$replacementList = [];
 
 	foreach ($status->entities->hashtags AS $hashtag) {
 		$replace = '#[url=' . DI::baseUrl()->get() . '/search?tag=' . $hashtag->text . ']' . $hashtag->text . '[/url]';
-		$tags['#' . $hashtag->text] = $replace;
 		$taglist['#' . $hashtag->text] = ['#', $hashtag->text, ''];
 
 		$replacementList[$hashtag->indices[0]] = [
@@ -1242,7 +1240,6 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 
 	foreach ($status->entities->user_mentions AS $mention) {
 		$replace = '@[url=https://twitter.com/' . rawurlencode($mention->screen_name) . ']' . $mention->screen_name . '[/url]';
-		$tags['@' . $mention->screen_name] = $replace;
 		$taglist['@' . $mention->screen_name] = ['@', $mention->screen_name, 'https://twitter.com/' . rawurlencode($mention->screen_name)];
 
 		$replacementList[$mention->indices[0]] = [
@@ -1344,7 +1341,7 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 		}
 	}
 
-	return ['body' => $body, 'tags' => $tags, 'plain' => $plain, 'taglist' => $taglist];
+	return ['body' => $body, 'plain' => $plain, 'taglist' => $taglist];
 }
 
 /**
@@ -1557,7 +1554,6 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 
 	$converted = twitter_expand_entities($postarray['body'], $post, $picture);
 	$postarray['body'] = $converted['body'];
-	$postarray['tag'] = implode(',', $converted['tags']);
 	$postarray['created'] = DateTimeFormat::utc($post->created_at);
 	$postarray['edited'] = DateTimeFormat::utc($post->created_at);
 
