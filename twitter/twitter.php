@@ -1814,7 +1814,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 				}
 			}
 
-			$item = Item::insert($postarray, false, $notify);
+			$item = Item::insert($postarray, $notify);
 			$postarray["id"] = $item;
 
 			Logger::log('User ' . $uid . ' posted home timeline item ' . $item);
