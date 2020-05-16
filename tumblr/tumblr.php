@@ -424,7 +424,7 @@ function tumblr_send(App $a, array &$b) {
 		switch ($siteinfo["type"]) {
 			case "photo":
 				$params['type']    = "photo";
-				$params['caption'] = BBCode::convert($body, false, 4);
+				$params['caption'] = BBCode::convert($body, false, BBCode::CONNECTORS);
 
 				if (isset($siteinfo["url"])) {
 					$params['link'] = $siteinfo["url"];
@@ -437,25 +437,25 @@ function tumblr_send(App $a, array &$b) {
 				$params['type']        = "link";
 				$params['title']       = $title;
 				$params['url']         = $siteinfo["url"];
-				$params['description'] = BBCode::convert($body, false, 4);
+				$params['description'] = BBCode::convert($body, false, BBCode::CONNECTORS);
 				break;
 
 			case "audio":
 				$params['type']         = "audio";
 				$params['external_url'] = $siteinfo["url"];
-				$params['caption']      = BBCode::convert($body, false, 4);
+				$params['caption']      = BBCode::convert($body, false, BBCode::CONNECTORS);
 				break;
 
 			case "video":
 				$params['type']    = "video";
 				$params['embed']   = $siteinfo["url"];
-				$params['caption'] = BBCode::convert($body, false, 4);
+				$params['caption'] = BBCode::convert($body, false, BBCode::CONNECTORS);
 				break;
 
 			default:
 				$params['type']  = "text";
 				$params['title'] = $title;
-				$params['body']  = BBCode::convert($b['body'], false, 4);
+				$params['body']  = BBCode::convert($b['body'], false, BBCode::CONNECTORS);
 				break;
 		}
 
@@ -465,7 +465,7 @@ function tumblr_send(App $a, array &$b) {
 		}
 
 		if (empty($params['caption']) && !empty($siteinfo["description"])) {
-			$params['caption'] = BBCode::convert("[quote]" . $siteinfo["description"] . "[/quote]", false, 4);
+			$params['caption'] = BBCode::convert("[quote]" . $siteinfo["description"] . "[/quote]", false, BBCode::CONNECTORS);
 		}
 
 		$consumer_key = DI::config()->get('tumblr','consumer_key');

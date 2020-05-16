@@ -624,7 +624,7 @@ function twitter_post_hook(App $a, array &$b)
 
 		$b['body'] = twitter_update_mentions($b['body']);
 
-		$msgarr = ItemContent::getPlaintextPost($b, $max_char, true, 8);
+		$msgarr = ItemContent::getPlaintextPost($b, $max_char, true, BBCode::TWITTER);
 		Logger::info('Got plaintext', ['id' => $b['id'], 'message' => $msgarr]);
 		$msg = $msgarr["text"];
 
@@ -854,7 +854,7 @@ function twitter_prepare_body(App $a, array &$b)
 			}
 		}
 
-		$msgarr = ItemContent::getPlaintextPost($item, $max_char, true, 8);
+		$msgarr = ItemContent::getPlaintextPost($item, $max_char, true, BBCode::TWITTER);
 		$msg = $msgarr["text"];
 
 		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {
