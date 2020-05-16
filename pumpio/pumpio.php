@@ -526,7 +526,7 @@ function pumpio_send(App $a, array &$b)
 	if ($oauth_token && $oauth_token_secret) {
 		$title = trim($b['title']);
 
-		$content = BBCode::convert($b['body'], false, 4);
+		$content = BBCode::convert($b['body'], false, BBCode::CONNECTORS);
 
 		$params = [];
 

@@ -157,7 +157,7 @@ function wppost_settings_post(&$a,&$b) {
 		DI::pConfig()->set(local_user(),'wppost','backlink',trim($_POST['wp_backlink'] ?? ''));
 		DI::pConfig()->set(local_user(),'wppost','shortcheck',trim($_POST['wp_shortcheck']));
 		$wp_backlink_text = Strings::escapeTags(trim($_POST['wp_backlink_text']));
-		$wp_backlink_text = BBCode::convert($wp_backlink_text, false, 8);
+		$wp_backlink_text = BBCode::convert($wp_backlink_text, false, BBCode::BACKLINK);
 		$wp_backlink_text = HTML::toPlaintext($wp_backlink_text, 0, true);
 		DI::pConfig()->set(local_user(),'wppost','wp_backlink_text', $wp_backlink_text);
 	}
@@ -302,7 +302,7 @@ function wppost_send(&$a, &$b)
 		}
 
 		$title = '<title>' . (($wptitle) ? $wptitle : DI::l10n()->t('Post from Friendica')) . '</title>';
-		$post = BBCode::convert($b['body'], false, 4);
+		$post = BBCode::convert($b['body'], false, BBCode::CONNECTORS);
 
 		// If a link goes to youtube then remove the stuff around it. Wordpress detects youtube links and embeds it
 		$post = preg_replace('/<a.*?href="(https?:\/\/www.youtube.com\/.*?)".*?>(.*?)<\/a>/ism',"\n$1\n",$post);
