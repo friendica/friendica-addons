@@ -417,7 +417,7 @@ function advancedcontentfilter_get_variables_guid(ServerRequestInterface $reques
 		throw new HTTPException\NotFoundException(DI::l10n()->t('Unknown post with guid: %s', $args['guid']));
 	}
 
-	$tags = Tag::populateTagsFromItem($item);
+	$tags = Tag::populateFromItem($item);
 
 	$item['tags'] = $tags['tags'];
 	$item['hashtags'] = $tags['hashtags'];
