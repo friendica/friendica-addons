@@ -79,6 +79,7 @@ use Friendica\DI;
 use Friendica\Model\Contact;
 use Friendica\Model\Conversation;
 use Friendica\Model\Group;
+use Friendica\Model\GServer;
 use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
 use Friendica\Model\ItemURI;
@@ -1069,13 +1070,15 @@ function twitter_fetch_contact($uid, $data, $create_user)
 	}
 
 	$avatar = twitter_fix_avatar($data->profile_image_url_https);
-	$url = "https://twitter.com/" . $data->screen_name;
+	$baseurl = "https://twitter.com";
+	$url = $baseurl . "/" . $data->screen_name;
 	$addr = $data->screen_name . "@twitter.com";
 
 	$fields = ['url' => $url, 'network' => Protocol::TWITTER,
 		'alias' => 'twitter::' . $data->id_str,
+		'baseurl' => $baseurl, 'gsid' => GServer::getID($baseurl),
 		'name' => $data->name, 'nick' => $data->screen_name, 'addr' => $addr,
-                'location' => $data->location, 'about' => $data->description];
+		'location' => $data->location, 'about' => $data->description];
 
 	// Update the public contact
 	$pcontact = DBA::selectFirst('contact', ['id'], ['uid' => 0, 'alias' => "twitter::" . $data->id_str]);
