@@ -79,7 +79,6 @@ use Friendica\DI;
 use Friendica\Model\Contact;
 use Friendica\Model\Conversation;
 use Friendica\Model\Group;
-use Friendica\Model\GServer;
 use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
 use Friendica\Model\ItemURI;
@@ -112,29 +111,11 @@ function twitter_install()
 	Hook::register('expire'                 , __FILE__, 'twitter_expire');
 	Hook::register('prepare_body'           , __FILE__, 'twitter_prepare_body');
 	Hook::register('check_item_notification', __FILE__, 'twitter_check_item_notification');
+	Hook::register('probe_detect'           , __FILE__, 'twitter_probe_detect');
 	Logger::info("installed twitter");
 }
 
-function twitter_uninstall()
-{
-	Hook::unregister('load_config'            , __FILE__, 'twitter_load_config');
-	Hook::unregister('connector_settings'     , __FILE__, 'twitter_settings');
-	Hook::unregister('connector_settings_post', __FILE__, 'twitter_settings_post');
-	Hook::unregister('hook_fork'              , __FILE__, 'twitter_hook_fork');
-	Hook::unregister('post_local'             , __FILE__, 'twitter_post_local');
-	Hook::unregister('notifier_normal'        , __FILE__, 'twitter_post_hook');
-	Hook::unregister('jot_networks'           , __FILE__, 'twitter_jot_nets');
-	Hook::unregister('cron'                   , __FILE__, 'twitter_cron');
-	Hook::unregister('follow'                 , __FILE__, 'twitter_follow');
-	Hook::unregister('expire'                 , __FILE__, 'twitter_expire');
-	Hook::unregister('prepare_body'           , __FILE__, 'twitter_prepare_body');
-	Hook::unregister('check_item_notification', __FILE__, 'twitter_check_item_notification');
-
-	// old setting - remove only
-	Hook::unregister('post_local_end'     , __FILE__, 'twitter_post_hook');
-	Hook::unregister('addon_settings'     , __FILE__, 'twitter_settings');
-	Hook::unregister('addon_settings_post', __FILE__, 'twitter_settings_post');
-}
+// Hook functions
 
 function twitter_load_config(App $a, ConfigFileLoader $loader)
 {
@@ -183,14 +164,14 @@ function twitter_follow(App $a, array &$contact)
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 	$connection->post('friendships/create', ['screen_name' => $nickname]);
 
-	twitter_fetchuser($a, $uid, $nickname);
+	$user = twitter_fetchuser($nickname);
 
-	$r = q("SELECT name,nick,url,addr,batch,notify,poll,request,confirm,poco,photo,priority,network,alias,pubkey
-		FROM `contact` WHERE `uid` = %d AND `nick` = '%s'",
-				intval($uid),
-				DBA::escape($nickname));
-	if (DBA::isResult($r)) {
-		$contact["contact"] = $r[0];
+	$contact_id = twitter_fetch_contact($uid, $user, true);
+
+	$contact = Contact::getById($contact_id, ['name', 'nick', 'url', 'addr', 'batch', 'notify', 'poll', 'request', 'confirm', 'poco', 'photo', 'priority', 'network', 'alias', 'pubkey']);
+
+	if (DBA::isResult($contact)) {
+		$contact["contact"] = $contact;
 	}
 }
 
@@ -471,6 +452,33 @@ function twitter_post_local(App $a, array &$b)
 	}
 
 	$b['postopts'] .= 'twitter';
+}
+
+function twitter_probe_detect(App $a, array &$hookData)
+{
+	// Don't overwrite an existing result
+	if ($hookData['result']) {
+		return;
+	}
+
+	// Avoid a lookup for the wrong network
+	if (!in_array($hookData['network'], ['', Protocol::TWITTER])) {
+		return;
+	}
+
+	if (preg_match('=(.*)@twitter.com=i', $hookData['uri'], $matches)) {
+		$nick = $matches[1];
+	} elseif (preg_match('=https?://(?:mobile\.)?twitter.com/(.*)=i', $hookData['uri'], $matches)) {
+		$nick = $matches[1];
+	} else {
+		return;
+	}
+
+	$user = twitter_fetchuser($nick);
+
+	if ($user) {
+		$hookData['result'] = twitter_user_to_contact($user);
+	}
 }
 
 function twitter_action(App $a, $uid, $pid, $action)
@@ -1063,34 +1071,52 @@ function twitter_get_relation($uid, $target, $contact = [])
 	return $relation;
 }
 
-function twitter_fetch_contact($uid, $data, $create_user)
+function twitter_user_to_contact($data)
 {
 	if (empty($data->id_str)) {
 		return -1;
 	}
 
 	$avatar = twitter_fix_avatar($data->profile_image_url_https);
-	$baseurl = "https://twitter.com";
-	$url = $baseurl . "/" . $data->screen_name;
-	$addr = $data->screen_name . "@twitter.com";
+	$baseurl = 'https://twitter.com';
+	$url = $baseurl . '/' . $data->screen_name;
+	$addr = $data->screen_name . '@twitter.com';
 
-	$fields = ['url' => $url, 'network' => Protocol::TWITTER,
-		'alias' => 'twitter::' . $data->id_str,
-		'baseurl' => $baseurl, 'gsid' => GServer::getID($baseurl),
-		'name' => $data->name, 'nick' => $data->screen_name, 'addr' => $addr,
-		'location' => $data->location, 'about' => $data->description];
+	$fields = [
+		'url'      => $url,
+		'network'  => Protocol::TWITTER,
+		'alias'    => 'twitter::' . $data->id_str,
+		'baseurl'  => $baseurl,
+		'name'     => $data->name,
+		'nick'     => $data->screen_name,
+		'addr'     => $addr,
+		'location' => $data->location,
+		'about'    => $data->description,
+		'photo'    => $avatar,
+	];
+
+	return $fields;
+}
+
+function twitter_fetch_contact($uid, $data, $create_user)
+{
+	$fields = twitter_user_to_contact($data);
+
+	if (empty($fields)) {
+		return -1;
+	}
 
 	// Update the public contact
 	$pcontact = DBA::selectFirst('contact', ['id'], ['uid' => 0, 'alias' => "twitter::" . $data->id_str]);
 	if (DBA::isResult($pcontact)) {
 		$cid = $pcontact['id'];
 	} else {
-		$cid = Contact::getIdForURL($url, 0, true, $fields);
+		$cid = Contact::getIdForURL($fields['url'], 0, true, $fields);
 	}
 
 	if (!empty($cid)) {
 		DBA::update('contact', $fields, ['id' => $cid]);
-		Contact::updateAvatar($avatar, 0, $cid);
+		Contact::updateAvatar($fields['photo'], 0, $cid);
 	}
 
 	$contact = DBA::selectFirst('contact', [], ['uid' => $uid, 'alias' => "twitter::" . $data->id_str]);
@@ -1105,7 +1131,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 		// create contact record
 		$fields['uid'] = $uid;
 		$fields['created'] = DateTimeFormat::utcNow();
-		$fields['nurl'] = Strings::normaliseLink($url);
+		$fields['nurl'] = Strings::normaliseLink($fields['url']);
 		$fields['poll'] = 'twitter::' . $data->id_str;
 		$fields['rel'] = $relation;
 		$fields['priority'] = 1;
@@ -1122,7 +1148,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 
 		Group::addMember(User::getDefaultGroup($uid), $contact_id);
 
-		Contact::updateAvatar($avatar, $uid, $contact_id);
+		Contact::updateAvatar($fields['photo'], $uid, $contact_id);
 	} else {
 		if ($contact["readonly"] || $contact["blocked"]) {
 			Logger::log("twitter_fetch_contact: Contact '" . $contact["nick"] . "' is blocked or readonly.", Logger::DEBUG);
@@ -1138,7 +1164,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 			$update = true;
 		}
 
-		Contact::updateAvatar($avatar, $uid, $contact['id']);
+		Contact::updateAvatar($fields['photo'], $uid, $contact['id']);
 
 		if ($contact['name'] != $data->name) {
 			$fields['name-date'] = $fields['uri-date'] = DateTimeFormat::utcNow();
@@ -1164,48 +1190,31 @@ function twitter_fetch_contact($uid, $data, $create_user)
 	return $contact_id;
 }
 
-function twitter_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
+/**
+ * @param string $screen_name
+ * @return stdClass|null
+ * @throws Exception
+ */
+function twitter_fetchuser($screen_name)
 {
 	$ckey = DI::config()->get('twitter', 'consumerkey');
 	$csecret = DI::config()->get('twitter', 'consumersecret');
-	$otoken = DI::pConfig()->get($uid, 'twitter', 'oauthtoken');
-	$osecret = DI::pConfig()->get($uid, 'twitter', 'oauthsecret');
 
-	$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
-		intval($uid));
-
-	if (DBA::isResult($r)) {
-		$self = $r[0];
-	} else {
-		return;
-	}
-
-	$parameters = [];
-
-	if ($screen_name != "") {
-		$parameters["screen_name"] = $screen_name;
-	}
-
-	if ($user_id != "") {
-		$parameters["user_id"] = $user_id;
-	}
-
-	// Fetching user data
-	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 	try {
+		// Fetching user data
+		$connection = new TwitterOAuth($ckey, $csecret);
+		$parameters = ['screen_name' => $screen_name];
 		$user = $connection->get('users/show', $parameters);
 	} catch (TwitterOAuthException $e) {
-		Logger::log('twitter_fetchuser: Error fetching user ' . $uid . ': ' . $e->getMessage());
-		return;
+		Logger::log('twitter_fetchuser: Error fetching user ' . $screen_name . ': ' . $e->getMessage());
+		return null;
 	}
 
 	if (!is_object($user)) {
-		return;
+		return null;
 	}
 
-	$contact_id = twitter_fetch_contact($uid, $user, true);
-
-	return $contact_id;
+	return $user;
 }
 
 /**
