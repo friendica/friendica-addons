@@ -84,7 +84,6 @@ use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
 use Friendica\Model\ItemURI;
 use Friendica\Model\Tag;
-use Friendica\Model\Term;
 use Friendica\Model\User;
 use Friendica\Protocol\Activity;
 use Friendica\Util\ConfigFileLoader;
@@ -1609,23 +1608,27 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 		}
 	}
 
-	if (!empty($post->quoted_status) && !$noquote) {
-		$quoted = twitter_createpost($a, $uid, $post->quoted_status, $self, false, false, true, $uriid);
-
-		if (!empty($quoted['body'])) {
-			$postarray['body'] .= "\n" . share_header(
-				$quoted['author-name'],
-				$quoted['author-link'],
-				$quoted['author-avatar'],
-				"",
-				$quoted['created'],
-				$quoted['plink']
-			);
-
-			$postarray['body'] .= $quoted['body'] . '[/share]';
-		} else {
-			// Quoted post author is blocked/ignored, so we just provide the link to avoid removing quote context.
+	if (!empty($post->quoted_status)) {
+		if ($noquote) {
+			// To avoid recursive share blocks we just provide the link to avoid removing quote context.
 			$postarray['body'] .= "\n\nhttps://twitter.com/" . $post->quoted_status->user->screen_name . "/status/" . $post->quoted_status->id_str;
+		} else {
+			$quoted = twitter_createpost($a, $uid, $post->quoted_status, $self, false, false, true, $uriid);
+			if (!empty($quoted['body'])) {
+				$postarray['body'] .= "\n" . share_header(
+						$quoted['author-name'],
+						$quoted['author-link'],
+						$quoted['author-avatar'],
+						"",
+						$quoted['created'],
+						$quoted['plink']
+					);
+
+				$postarray['body'] .= $quoted['body'] . '[/share]';
+			} else {
+				// Quoted post author is blocked/ignored, so we just provide the link to avoid removing quote context.
+				$postarray['body'] .= "\n\nhttps://twitter.com/" . $post->quoted_status->user->screen_name . "/status/" . $post->quoted_status->id_str;
+			}
 		}
 	}
 
