@@ -1,0 +1,54 @@
+# ADDON qcomment
+# Copyright (C)
+# This file is distributed under the same license as the Friendica qcomment addon package.
+# 
+# 
+# Translators:
+# Alexander An <ravnina@gmail.com>, 2020
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2020-04-23 14:31+0000\n"
+"Last-Translator: Alexander An <ravnina@gmail.com>\n"
+"Language-Team: Russian (http://www.transifex.com/Friendica/friendica/language/ru/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: qcomment.php:51
+msgid ":-)"
+msgstr ":-)"
+
+#: qcomment.php:51
+msgid ":-("
+msgstr ":-("
+
+#: qcomment.php:51
+msgid "lol"
+msgstr "lol"
+
+#: qcomment.php:54
+msgid "Quick Comment Settings"
+msgstr "Настройки быстрых комментариев"
+
+#: qcomment.php:56
+msgid ""
+"Quick comments are found near comment boxes, sometimes hidden. Click them to"
+" provide simple replies."
+msgstr "Быстрые комментарии находятся рядом с полями комментариев, иногда они скрыты. Нажмите на них, чтобы использовать готовые ответы."
+
+#: qcomment.php:57
+msgid "Enter quick comments, one per line"
+msgstr "Введите быстрые комментарии, по одному на строку"
+
+#: qcomment.php:61
+msgid "Submit"
+msgstr "Добавить"
+
+#: qcomment.php:75
+msgid "Quick Comment settings saved."
+msgstr "Настройки сохранены."

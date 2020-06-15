@@ -1,0 +1,24 @@
+# ADDON buglink
+# Copyright (C)
+# This file is distributed under the same license as the Friendica buglink addon package.
+# 
+# 
+# Translators:
+# steve jobs <vicdorke@gmail.com>, 2020
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2020-06-10 12:31+0000\n"
+"Last-Translator: steve jobs <vicdorke@gmail.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/Friendica/friendica/language/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: buglink.php:15
+msgid "Report Bug"
+msgstr "报告错误"

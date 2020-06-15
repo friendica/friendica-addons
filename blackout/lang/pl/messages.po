@@ -4,14 +4,14 @@
 # 
 # 
 # Translators:
-# Waldemar Stoczkowski, 2018-2019
+# Waldemar Stoczkowski, 2018-2020
 # Waldemar Stoczkowski, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-12 09:26+0100\n"
-"PO-Revision-Date: 2019-03-14 19:55+0000\n"
+"PO-Revision-Date: 2020-04-09 11:01+0000\n"
 "Last-Translator: Waldemar Stoczkowski\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgstr "Data zakończenia jest przed datą rozpoczęcia, powinieneś to naprawi�
 msgid ""
 "Please double check that the current settings for the blackout. Begin will "
 "be <strong>%s</strong> and it will end <strong>%s</strong>."
-msgstr ""
+msgstr "Sprawdź dokładnie, czy aktualne ustawienia zaciemnienia. Rozpocznie się <strong>%s</strong> i zakończy się <strong>%s</strong>."
 
 #: blackout.php:106
 msgid "Save Settings"
@@ -52,7 +52,7 @@ msgstr "Rozpocznij Blackout"
 msgid ""
 "Format is <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> year, <em>MM</em> month, "
 "<em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute."
-msgstr ""
+msgstr "Format to <tt>RRRR-MM-DD gg:mm</tt>; <em>RRRR</em> rok, <em>MM</em> miesiąc, <em>DD</em> dzień, <em>gg</em> godzina i <em>mm</em> minuta."
 
 #: blackout.php:109
 msgid "End of the Blackout"
@@ -64,4 +64,4 @@ msgid ""
 " the submit button. Users currently logged in will <strong>not</strong> be "
 "thrown out but can't login again after logging out should the blackout is "
 "still in place."
-msgstr ""
+msgstr "<strong>Uwaga</strong>: Przekierowanie będzie aktywne od momentu naciśnięcia przycisku przesyłania. Użytkownicy aktualnie zalogowani <strong>nie</strong> zostaną wyrzuceni, ale nie będą mogli zalogować się ponownie po wylogowaniu, jeśli zaciemnienie będzie nadal obowiązywać."
