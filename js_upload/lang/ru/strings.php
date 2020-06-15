@@ -1,11 +1,17 @@
 <?php
 
+if(! function_exists("string_plural_select_ru")) {
+function string_plural_select_ru($n){
+	$n = intval($n);
+	return ($n%10==1 && $n%100!=11 ? 0 : $n%10>=2 && $n%10<=4 && ($n%100<12 || $n%100>14) ? 1 : $n%10==0 || ($n%10>=5 && $n%10<=9) || ($n%100>=11 && $n%100<=14)? 2 : 3);;
+}}
+;
 $a->strings["Upload a file"] = "Загрузить файл";
-$a->strings["Drop files here to upload"] = "Перетащите файлы сюда для загрузки";
+$a->strings["Drop files here to upload"] = "Перетащите сюда файлы для загрузки";
 $a->strings["Cancel"] = "Отмена";
 $a->strings["Failed"] = "Ошибка";
-$a->strings["No files were uploaded."] = "Нет загруженных файлов.";
-$a->strings["Uploaded file is empty"] = "Загруженный файл пустой";
-$a->strings["Image exceeds size limit of "] = "Размер фото превышает лимит ";
-$a->strings["File has an invalid extension, it should be one of "] = "Файл имеет недопустимое расширение, оно должно быть одним из следующих ";
-$a->strings["Upload was cancelled, or server error encountered"] = "Загрузка была отменена, или произошла ошибка сервера";
+$a->strings["No files were uploaded."] = "Файлы не были загружены.";
+$a->strings["Uploaded file is empty"] = "Загруженный файл пустой.";
+$a->strings["Image exceeds size limit of "] = "Изображение превышает ограничение в";
+$a->strings["File has an invalid extension, it should be one of "] = "У файла недопустимое расширение, оно должно быть";
+$a->strings["Upload was cancelled, or server error encountered"] = "Закачка отменена, либо возникла ошибка на сервере";
