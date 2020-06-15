@@ -1,0 +1,54 @@
+# ADDON catavatar
+# Copyright (C)
+# This file is distributed under the same license as the Friendica catavatar addon package.
+# 
+# 
+# Translators:
+# Alexander An <ravnina@gmail.com>, 2020
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-13 09:35+0000\n"
+"PO-Revision-Date: 2018-04-07 05:23+0000\n"
+"Last-Translator: Alexander An <ravnina@gmail.com>, 2020\n"
+"Language-Team: Russian (https://www.transifex.com/Friendica/teams/12172/ru/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: catavatar.php:60
+msgid "Use Cat as Avatar"
+msgstr "Поставить кота на аватар"
+
+#: catavatar.php:61
+msgid "More Random Cat!"
+msgstr "Сгенерировать ещё котов!"
+
+#: catavatar.php:62
+msgid "Reset to email Cat"
+msgstr "Сбросить на кота по-умолчанию"
+
+#: catavatar.php:64
+msgid "Cat Avatar Settings"
+msgstr "Настройки Cat Avatar"
+
+#: catavatar.php:100
+msgid "The cat hadn't found itself."
+msgstr "Кот не нашёл сам себя."
+
+#: catavatar.php:109
+msgid "There was an error, the cat ran away."
+msgstr "Возникла ошибка, кот убежал."
+
+#: catavatar.php:115
+msgid "Profile Photos"
+msgstr "Фото профиля"
+
+#: catavatar.php:130
+msgid "Meow!"
+msgstr "Мяу!"
