@@ -904,7 +904,7 @@ function twitter_do_mirrorpost(App $a, $uid, $post)
 			return [];
 		}
 
-		$datarray['body'] = "\n" . share_header(
+		$datarray['body'] = "\n" . BBCode::getShareOpeningTag(
 			$item['author-name'],
 			$item['author-link'],
 			$item['author-avatar'],
@@ -1627,7 +1627,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 		} else {
 			$quoted = twitter_createpost($a, $uid, $post->quoted_status, $self, false, false, true, $uriid);
 			if (!empty($quoted['body'])) {
-				$postarray['body'] .= "\n" . share_header(
+				$postarray['body'] .= "\n" . BBCode::getShareOpeningTag(
 						$quoted['author-name'],
 						$quoted['author-link'],
 						$quoted['author-avatar'],
