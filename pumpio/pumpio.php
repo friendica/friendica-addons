@@ -1277,7 +1277,7 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 			$created = '';
 		}
 
-		$postarray['body'] = share_header($share_author, $post->object->author->url,
+		$postarray['body'] = Friendica\Content\Text\BBCode::getShareOpeningTag($share_author, $post->object->author->url,
 						$post->object->author->image->url, "",
 						$created, $post->links->self->href).
 					$postarray['body']."[/share]";
