@@ -1079,10 +1079,14 @@ function twitter_get_relation($uid, $target, $contact = [])
 	return $relation;
 }
 
+/**
+ * @param $data
+ * @return array
+ */
 function twitter_user_to_contact($data)
 {
 	if (empty($data->id_str)) {
-		return -1;
+		return [];
 	}
 
 	$baseurl = 'https://twitter.com';
@@ -1924,7 +1928,7 @@ function twitter_fetch_own_contact(App $a, $uid)
 		// Fetching user data
 		// get() may throw TwitterOAuthException, but we will catch it later
 		$user = $connection->get('account/verify_credentials');
-		if (empty($user) || empty($user->id_str)) {
+		if (empty($user->id_str)) {
 			return false;
 		}
 
