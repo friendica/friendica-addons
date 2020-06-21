@@ -491,24 +491,25 @@ function twitter_action(App $a, $uid, $pid, $action)
 
 	$post = ['id' => $pid];
 
-	Logger::log("twitter_action '" . $action . "' ID: " . $pid . " data: " . print_r($post, true), Logger::DATA);
+	Logger::debug('before action', ['action' => $action, 'pid' => $pid, 'data' => $post]);
 
 	switch ($action) {
-		case "delete":
+		case 'delete':
 			// To-Do: $result = $connection->post('statuses/destroy', $post);
 			$result = [];
 			break;
-		case "like":
+		case 'like':
 			$result = $connection->post('favorites/create', $post);
 			break;
-		case "unlike":
+		case 'unlike':
 			$result = $connection->post('favorites/destroy', $post);
 			break;
 		default:
-			Logger::log('Unhandled action ' . $action, Logger::DEBUG);
+			Logger::warning('Unhandled action', ['action' => $action]);
 			$result = [];
 	}
-	Logger::log("twitter_action '" . $action . "' send, result: " . print_r($result, true), Logger::DEBUG);
+
+	Logger::info('after action', ['action' => $action, 'result' => $result]);
 }
 
 function twitter_post_hook(App $a, array &$b)
