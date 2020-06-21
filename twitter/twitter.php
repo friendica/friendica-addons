@@ -908,9 +908,8 @@ function twitter_do_mirrorpost(App $a, $uid, $post)
 			$item['author-name'],
 			$item['author-link'],
 			$item['author-avatar'],
-			'',
-			$item['created'],
-			$item['plink']
+			$item['plink'],
+			$item['created']
 		);
 
 		$datarray['body'] .= $item['body'] . '[/share]';
@@ -1631,9 +1630,8 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 						$quoted['author-name'],
 						$quoted['author-link'],
 						$quoted['author-avatar'],
-						"",
-						$quoted['created'],
-						$quoted['plink']
+						$quoted['plink'],
+						$quoted['created']
 					);
 
 				$postarray['body'] .= $quoted['body'] . '[/share]';
