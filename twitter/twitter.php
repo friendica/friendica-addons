@@ -491,24 +491,31 @@ function twitter_action(App $a, $uid, $pid, $action)
 
 	$post = ['id' => $pid];
 
-	Logger::log("twitter_action '" . $action . "' ID: " . $pid . " data: " . print_r($post, true), Logger::DATA);
+	Logger::debug('before action', ['action' => $action, 'pid' => $pid, 'data' => $post]);
 
 	switch ($action) {
-		case "delete":
+		case 'delete':
 			// To-Do: $result = $connection->post('statuses/destroy', $post);
 			$result = [];
 			break;
-		case "like":
+		case 'like':
 			$result = $connection->post('favorites/create', $post);
+			if ($connection->getLastHttpCode() != 200) {
+				Logger::error('Unable to create favorite', ['result' => $result]);
+			}
 			break;
-		case "unlike":
+		case 'unlike':
 			$result = $connection->post('favorites/destroy', $post);
+			if ($connection->getLastHttpCode() != 200) {
+				Logger::error('Unable to destroy favorite', ['result' => $result]);
+			}
 			break;
 		default:
-			Logger::log('Unhandled action ' . $action, Logger::DEBUG);
+			Logger::warning('Unhandled action', ['action' => $action]);
 			$result = [];
 	}
-	Logger::log("twitter_action '" . $action . "' send, result: " . print_r($result, true), Logger::DEBUG);
+
+	Logger::info('after action', ['action' => $action, 'result' => $result]);
 }
 
 function twitter_post_hook(App $a, array &$b)
@@ -1047,33 +1054,39 @@ function twitter_get_relation($uid, $target, $contact = [])
 
 	try {
 		$status = $connection->get('friendships/show', $parameters);
-	} catch (TwitterOAuthException $e) {
-		Logger::info('Error fetching friendship status', ['user' => $uid, 'target' => $target, 'message' => $e->getMessage()]);
-		return $relation;
+		if ($connection->getLastHttpCode() !== 200) {
+			throw new Exception($status->errors[0]->message ?? 'HTTP response code ' . $connection->getLastHttpCode(), $status->errors[0]->code ?? $connection->getLastHttpCode());
+		}
+
+		$following = $status->relationship->source->following;
+		$followed = $status->relationship->source->followed_by;
+
+		if ($following && !$followed) {
+			$relation = Contact::SHARING;
+		} elseif (!$following && $followed) {
+			$relation = Contact::FOLLOWER;
+		} elseif ($following && $followed) {
+			$relation = Contact::FRIEND;
+		} elseif (!$following && !$followed) {
+			$relation = 0;
+		}
+
+		Logger::info('Fetched friendship relation', ['user' => $uid, 'target' => $target, 'relation' => $relation]);
+	} catch (Throwable $e) {
+		Logger::error('Error fetching friendship status', ['user' => $uid, 'target' => $target, 'message' => $e->getMessage()]);
 	}
-
-	$following = $status->relationship->source->following;
-	$followed = $status->relationship->source->followed_by;
-
-	if ($following && !$followed) {
-		$relation = Contact::SHARING;
-	} elseif (!$following && $followed) {
-		$relation = Contact::FOLLOWER;
-	} elseif ($following && $followed) {
-		$relation = Contact::FRIEND;
-	} elseif (!$following && !$followed) {
-		$relation = 0;
-	}
-
-	Logger::info('Fetched friendship relation', ['user' => $uid, 'target' => $target, 'relation' => $relation]);
 
 	return $relation;
 }
 
+/**
+ * @param $data
+ * @return array
+ */
 function twitter_user_to_contact($data)
 {
 	if (empty($data->id_str)) {
-		return -1;
+		return [];
 	}
 
 	$baseurl = 'https://twitter.com';
@@ -1915,7 +1928,7 @@ function twitter_fetch_own_contact(App $a, $uid)
 		// Fetching user data
 		// get() may throw TwitterOAuthException, but we will catch it later
 		$user = $connection->get('account/verify_credentials');
-		if (empty($user) || empty($user->id_str)) {
+		if (empty($user->id_str)) {
 			return false;
 		}
 
