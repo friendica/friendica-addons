@@ -465,9 +465,9 @@ function twitter_probe_detect(App $a, array &$hookData)
 		return;
 	}
 
-	if (preg_match('=(.*)@twitter.com=i', $hookData['uri'], $matches)) {
+	if (preg_match('=([^@]+)@(?:mobile\.)?twitter\.com$=i', $hookData['uri'], $matches)) {
 		$nick = $matches[1];
-	} elseif (preg_match('=https?://(?:mobile\.)?twitter.com/(.*)=i', $hookData['uri'], $matches)) {
+	} elseif (preg_match('=^https?://(?:mobile\.)?twitter\.com/(.+)=i', $hookData['uri'], $matches)) {
 		$nick = $matches[1];
 	} else {
 		return;
