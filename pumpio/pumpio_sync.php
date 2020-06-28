@@ -2,7 +2,7 @@
 use Friendica\Core\Logger;
 use Friendica\DI;
 
-function pumpio_sync_run(&$argv, &$argc) {
+function pumpio_sync_run($argv, $argc) {
 	$a = Friendica\DI::app();
 
 	require_once("addon/pumpio/pumpio.php");
