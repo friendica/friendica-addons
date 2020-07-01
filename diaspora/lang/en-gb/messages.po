@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# Andy H3 <andy@hubup.pro>, 2018
+# Andy H3 <andy@hubup.pro>, 2018,2020
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2018-03-22 08:36+0000\n"
+"POT-Creation-Date: 2020-05-07 00:15-0400\n"
+"PO-Revision-Date: 2020-06-23 16:10+0000\n"
 "Last-Translator: Andy H3 <andy@hubup.pro>\n"
 "Language-Team: English (United Kingdom) (http://www.transifex.com/Friendica/friendica/language/en_GB/)\n"
 "MIME-Version: 1.0\n"
@@ -19,44 +19,96 @@ msgstr ""
 "Language: en_GB\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: diaspora.php:37
+#: diaspora.php:53
 msgid "Post to Diaspora"
 msgstr "Post to Diaspora"
 
-#: diaspora.php:142
+#: diaspora.php:78
+#, php-format
 msgid ""
-"Can't login to your Diaspora account. Please check username and password and"
-" ensure you used the complete address (including http...)"
-msgstr "Can't login to your Diaspora account. Please check username and password and ensure you used the complete address (including http...)"
+"Please remember: You can always be reached from Diaspora with your Friendica"
+" handle <strong>%s</strong>. "
+msgstr "Please remember: You can always be reached from Diaspora with your Friendica handle <strong>%s</strong>. "
 
-#: diaspora.php:149 diaspora.php:153
+#: diaspora.php:79
+msgid ""
+"This connector is only meant if you still want to use your old Diaspora "
+"account for some time. "
+msgstr "This connector is only meant if you still want to use your old Diaspora account for some time. "
+
+#: diaspora.php:80
+#, php-format
+msgid ""
+"However, it is preferred that you tell your Diaspora contacts the new handle"
+" <strong>%s</strong> instead."
+msgstr "It's preferrable that you tell your Diaspora contacts the new handle <strong>%s</strong> instead."
+
+#: diaspora.php:90
+msgid "All aspects"
+msgstr "All aspects"
+
+#: diaspora.php:91
+msgid "Public"
+msgstr "Public"
+
+#: diaspora.php:97
+msgid "Post to aspect:"
+msgstr "Post to aspect:"
+
+#: diaspora.php:98
+#, php-format
+msgid "Connected with your Diaspora account <strong>%s</strong>"
+msgstr "Connected with your Diaspora account <strong>%s</strong>"
+
+#: diaspora.php:101
+msgid ""
+"Can't login to your Diaspora account. Please check handle (in the format "
+"user@domain.tld) and password."
+msgstr "Can't login to your Diaspora account. Please check handle (in the format user@domain.tld) and password."
+
+#: diaspora.php:109
 msgid "Diaspora Export"
 msgstr "Diaspora Export"
 
-#: diaspora.php:163
-msgid "Enable Diaspora Post Addon"
-msgstr "Enable Diaspora export"
+#: diaspora.php:110
+msgid "Information"
+msgstr "Information"
 
-#: diaspora.php:168
-msgid "Diaspora username"
-msgstr "Diaspora username"
+#: diaspora.php:111
+msgid "Error"
+msgstr "Error"
 
-#: diaspora.php:173
-msgid "Diaspora password"
-msgstr "Diaspora password"
-
-#: diaspora.php:178
-msgid "Diaspora site URL"
-msgstr "Diaspora site URL"
-
-#: diaspora.php:183
-msgid "Post to Diaspora by default"
-msgstr "Post to Diaspora by default"
-
-#: diaspora.php:189
+#: diaspora.php:112
 msgid "Save Settings"
 msgstr "Save settings"
 
-#: diaspora.php:324
-msgid "Diaspora post failed. Queued for retry."
-msgstr "Diaspora post failed. Queued for retry."
+#: diaspora.php:116
+msgid "Enable Diaspora Post Addon"
+msgstr "Enable Diaspora export"
+
+#: diaspora.php:117
+msgid "Diaspora handle"
+msgstr "Diaspora handle"
+
+#: diaspora.php:118
+msgid "Diaspora password"
+msgstr "Diaspora password"
+
+#: diaspora.php:118
+msgid ""
+"Privacy notice: Your Diaspora password will be stored unencrypted to "
+"authenticate you with your Diaspora pod. This means your Friendica node "
+"administrator can have access to it."
+msgstr "Privacy notice: Your Diaspora password will be stored unencrypted to authenticate you with your Diaspora pod. This means your Friendica node administrator can have access to it."
+
+#: diaspora.php:120
+msgid "Post to Diaspora by default"
+msgstr "Post to Diaspora by default"
+
+#: diaspora.php:138
+msgid "Diaspora settings updated."
+msgstr "Diaspora settings updated."
+
+#: diaspora.php:141
+msgid "Diaspora connector disabled."
+msgstr "Diaspora connector disabled."
