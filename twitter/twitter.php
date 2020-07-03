@@ -693,7 +693,8 @@ function twitter_post_hook(App $a, array &$b)
 							Logger::info('Metadata create', ['id' => $b['id'], 'data' => $data, 'return' => json_encode($ret)]);
 						}
 					} else {
-						throw new Exception('Failed upload', ['id' => $b['id'], 'image' => $image['url']]);
+						Logger::error('Failed upload', ['id' => $b['id'], 'image' => $image['url']]);
+						throw new Exception('Failed upload of ' . $image['url']);
 					}
 				}
 				$post['media_ids'] = implode(',', $media_ids);
