@@ -1,0 +1,66 @@
+# ADDON blackout
+# Copyright (C)
+# This file is distributed under the same license as the Friendica blackout addon package.
+# 
+# 
+# Translators:
+# steve jobs <vicdorke@gmail.com>, 2020
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-03-12 09:26+0100\n"
+"PO-Revision-Date: 2020-07-06 19:48+0000\n"
+"Last-Translator: steve jobs <vicdorke@gmail.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/Friendica/friendica/language/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: blackout.php:101
+msgid ""
+"The end-date is prior to the start-date of the blackout, you should fix this"
+msgstr "结束日期早于开始日期，您应该修复此问题"
+
+#: blackout.php:103
+#, php-format
+msgid ""
+"Please double check that the current settings for the blackout. Begin will "
+"be <strong>%s</strong> and it will end <strong>%s</strong>."
+msgstr "请仔细检查一下当前的维护设置。将从<strong>%s</strong>开始结束于<strong>%s</strong>。"
+
+#: blackout.php:106
+msgid "Save Settings"
+msgstr "保存设置"
+
+#: blackout.php:107
+msgid "Redirect URL"
+msgstr "重定向URL"
+
+#: blackout.php:107
+msgid "all your visitors from the web will be redirected to this URL"
+msgstr "所有来自web的访问者都将重定向到此URL"
+
+#: blackout.php:108
+msgid "Begin of the Blackout"
+msgstr "开始维护"
+
+#: blackout.php:108
+msgid ""
+"Format is <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> year, <em>MM</em> month, "
+"<em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute."
+msgstr "格式为<tt>YYYY-MM-DD HH：MM</tt>；<em>YYYY年</em>、<em>MM月</em>、<em>DD日</em>、<em>HH</em>小时和<em>MM</em>分钟"
+
+#: blackout.php:109
+msgid "End of the Blackout"
+msgstr "结束维护"
+
+#: blackout.php:111
+msgid ""
+"<strong>Note</strong>: The redirect will be active from the moment you press"
+" the submit button. Users currently logged in will <strong>not</strong> be "
+"thrown out but can't login again after logging out should the blackout is "
+"still in place."
+msgstr "<strong>注意</strong>：从您按下提交按钮的那一刻起，重定向将处于活动状态。当前登录的用户<strong>不会</strong>被驱逐，但如果仍处于维护状态，则在注销后不能再次登录。"
