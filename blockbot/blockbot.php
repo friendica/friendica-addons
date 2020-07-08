@@ -76,7 +76,7 @@ function blockbot_init_1(App $a) {
 		'7Siters/', 'KOCMOHABT', 'Google-SearchByImage', 'FemtosearchBot/',
 		'HubSpot Crawler', 'DomainStatsBot/', 'Re-re Studio', 'AwarioSmartBot/',
 		'SummalyBot/', 'DNSResearchBot/', 'PetalBot;', 'Nmap Scripting Engine;',
-		'Google-Apps-Script; beanserver;', 'woorankreview/', 'Seekport Crawler;'];
+		'Google-Apps-Script; beanserver;', 'woorankreview/', 'Seekport Crawler;', 'AHC/'];
 
 	if (!DI::config()->get('blockbot', 'good_crawlers')) {
 		$agents = array_merge($agents, $good_agents);
@@ -116,7 +116,8 @@ function blockbot_init_1(App $a) {
 		'Faraday v', 'okhttp', 'UniversalFeedParser', 'PixelFedBot', 'python-requests',
 		'WordPress/', 'http.rb/', 'Apache-HttpClient/', 'WordPress.com;', 'Pleroma',
 		'Dispatch/', 'Ruby', 'Java/', 'libwww-perl/', 'Mastodon/',
-		'lua-resty-http/', 'Tiny Tiny RSS/', 'Wget/', 'PostmanRuntime/'];
+		'lua-resty-http/', 'Tiny Tiny RSS/', 'Wget/', 'PostmanRuntime/',
+		'W3C_Validator/', 'NetNewsWire'];
 
 	if (DI::config()->get('blockbot', 'good_crawlers')) {
 		$agents = array_merge($agents, $good_agents);
