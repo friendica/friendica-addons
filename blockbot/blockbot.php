@@ -76,7 +76,8 @@ function blockbot_init_1(App $a) {
 		'7Siters/', 'KOCMOHABT', 'Google-SearchByImage', 'FemtosearchBot/',
 		'HubSpot Crawler', 'DomainStatsBot/', 'Re-re Studio', 'AwarioSmartBot/',
 		'SummalyBot/', 'DNSResearchBot/', 'PetalBot;', 'Nmap Scripting Engine;',
-		'Google-Apps-Script; beanserver;', 'woorankreview/', 'Seekport Crawler;', 'AHC/'];
+		'Google-Apps-Script; beanserver;', 'woorankreview/', 'Seekport Crawler;', 'AHC/',
+		'SkypeUriPreview Preview/'];
 
 	if (!DI::config()->get('blockbot', 'good_crawlers')) {
 		$agents = array_merge($agents, $good_agents);
