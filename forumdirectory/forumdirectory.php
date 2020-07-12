@@ -15,6 +15,7 @@ use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Profile;
+use Friendica\Model\User;
 use Friendica\Util\Strings;
 
 function forumdirectory_install()
@@ -93,8 +94,9 @@ function forumdirectory_content(App $a)
 
 	$total = 0;
 	$cnt = DBA::fetchFirst("SELECT COUNT(*) AS `total` FROM `profile`
-				LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid`
-				WHERE $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` `user`.`page-flags` = 2 $sql_extra");
+				INNER JOIN `user` ON `user`.`uid` = `profile`.`uid`
+				WHERE $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` `user`.`page-flags` = ? $sql_extra",
+				User::PAGE_FLAGS_COMMUNITY);
 	if (DBA::isResult($cnt)) {
 		$total = $cnt['total'];
 	}
@@ -106,11 +108,11 @@ function forumdirectory_content(App $a)
 	$limit = $pager->getStart()."," . $pager->getItemsPerPage();
 
 	$r = DBA::p("SELECT `profile`.*, `user`.`nickname`, `user`.`timezone` , `user`.`page-flags`,
-			`contact`.`addr`, `contact`.`url` AS `profile_url` FROM `profile`
-			LEFT JOIN `user` ON `user`.`uid` = `profile`.`uid`
-			LEFT JOIN `contact` ON `contact`.`uid` = `user`.`uid`
-			WHERE $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` AND `user`.`page-flags` = 2 AND `contact`.`self`
-			$sql_extra $order LIMIT $limit"
+			`contact`.`addr`, `contact`.`url` FROM `profile`
+			INNER JOIN `user` ON `user`.`uid` = `profile`.`uid`
+			INNER JOIN `contact` ON `contact`.`uid` = `user`.`uid`
+			WHERE $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` AND `user`.`page-flags` = ? AND `contact`.`self`
+			$sql_extra $order LIMIT $limit", User::PAGE_FLAGS_COMMUNITY
 	);
 
 	if (DBA::isResult($r)) {
