@@ -67,6 +67,7 @@ use Abraham\TwitterOAuth\TwitterOAuthException;
 use Codebird\Codebird;
 use Friendica\App;
 use Friendica\Content\OEmbed;
+use Friendica\Content\PageInfo;
 use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Hook;
@@ -1356,7 +1357,7 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 	if (empty($status->quoted_status)) {
 		$footer = '';
 		if ($attachmentUrl) {
-			$footer = add_page_info($attachmentUrl, false, $picture);
+			$footer = "\n" . PageInfo::getFooterFromUrl($attachmentUrl, false, $picture);
 		}
 
 		if (trim($footer)) {
@@ -1364,7 +1365,7 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 		} elseif ($picture) {
 			$body .= "\n\n[img]" . $picture . "[/img]\n";
 		} else {
-			$body = add_page_info_to_body($body);
+			$body = PageInfo::appendToBody($body);
 		}
 	}
 

@@ -40,6 +40,7 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . '
 use CodebirdSN\CodebirdSN;
 use Friendica\App;
 use Friendica\Content\OEmbed;
+use Friendica\Content\PageInfo;
 use Friendica\Content\Text\HTML;
 use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Hook;
@@ -896,7 +897,7 @@ function statusnet_fetchtimeline(App $a, $uid)
 
 				$_REQUEST["title"] = "";
 
-				$_REQUEST["body"] = add_page_info_to_body($post->text, true);
+				$_REQUEST["body"] = PageInfo::appendToBody($post->text, true);
 				if (is_string($post->place->name)) {
 					$_REQUEST["location"] = $post->place->name;
 				}
@@ -1494,7 +1495,7 @@ function statusnet_convertmsg(App $a, $body)
 		}
 
 		if ($footerurl != "") {
-			$footer = add_page_info($footerurl);
+			$footer = "\n" . PageInfo::getFooterFromUrl($footerurl);
 		}
 
 		if (($footerlink != "") && (trim($footer) != "")) {

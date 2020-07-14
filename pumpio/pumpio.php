@@ -925,8 +925,6 @@ function pumpio_dounlike(App $a, $uid, $self, $post, $own_id)
 
 function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = true)
 {
-	require_once('include/items.php');
-
 	if (empty($post->object->id)) {
 		Logger::log('Got empty like: '.print_r($post, true), Logger::DEBUG);
 		return;
@@ -1096,8 +1094,6 @@ function pumpio_dodelete(App $a, $uid, $self, $post, $own_id)
 
 function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcompletion = true)
 {
-	require_once('include/items.php');
-
 	if (($post->verb == "like") || ($post->verb == "favorite")) {
 		return pumpio_dolike($a, $uid, $self, $post, $own_id);
 	}
