@@ -198,7 +198,7 @@ function discourse_get_user($post, $hostaddr)
 	$contact['nurl'] = Strings::normaliseLink($contact['url']);
 	$contact['baseurl'] = $hostaddr;
 	Logger::info('Contact', $contact);
-	$contact['id'] = Contact::getIdForURL($contact['url'], 0, true, $contact);
+	$contact['id'] = Contact::getIdForURL($contact['url'], 0, false, $contact);
         if (!empty($contact['id'])) {
 		$avatar = $contact['photo'];
 		unset($contact['photo']);
@@ -268,7 +268,7 @@ function discourse_get_html($message)
 	$profile = discourse_get_profile($xpath);
 	if (!empty($profile['url'])) {
 		Logger::info('Found profile', $profile);
-		$message['item']['author-id'] = Contact::getIdForURL($profile['url'], 0, true, $profile);
+		$message['item']['author-id'] = Contact::getIdForURL($profile['url'], 0, false, $profile);
 		$message['item']['author-link'] = $profile['url'];
 		$message['item']['author-name'] = $profile['name'];
 		$message['item']['author-avatar'] = $profile['photo'];

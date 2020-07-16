@@ -1127,7 +1127,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 	if (DBA::isResult($pcontact)) {
 		$cid = $pcontact['id'];
 	} else {
-		$cid = Contact::getIdForURL($fields['url'], 0, true, $fields);
+		$cid = Contact::getIdForURL($fields['url'], 0, false, $fields);
 	}
 
 	if (!empty($cid)) {
