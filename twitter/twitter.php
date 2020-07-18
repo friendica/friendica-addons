@@ -1365,11 +1365,11 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 		} elseif ($picture) {
 			$body .= "\n\n[img]" . $picture . "[/img]\n";
 		} else {
-			$body = PageInfo::appendToBody($body);
+			$body = PageInfo::searchAndAppendToBody($body);
 		}
 	}
 
-	return ['body' => $body, 'plain' => $plain, 'taglist' => $taglist];
+	return ['body' => $body, 'plain' => trim($plain), 'taglist' => $taglist];
 }
 
 /**
