@@ -52,7 +52,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 		$res = new SimpleXMLElement(Network::fetchUrl($url));
 	} catch (Exception $e) {
 		if (empty($_SESSION['curweather_notice_shown'])) {
-			notice(DI::l10n()->t('Error fetching weather data. Error was: '.$e->getMessage()));
+			notice(DI::l10n()->t('Error fetching weather data. Error was: ' . $e->getMessage()));
 			$_SESSION['curweather_notice_shown'] = true;
 		}
 
