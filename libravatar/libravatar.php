@@ -126,5 +126,4 @@ function libravatar_addon_admin_post(&$a)
 
 	$default_avatar = (!empty($_POST['avatar']) ? Strings::escapeTags(trim($_POST['avatar'])) : 'identicon');
 	DI::config()->set('libravatar', 'default_avatar', $default_avatar);
-	info(DI::l10n()->t('Libravatar settings updated.') .EOL);
 }

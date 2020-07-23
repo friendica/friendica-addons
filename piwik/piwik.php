@@ -117,5 +117,4 @@ function piwik_addon_admin_post (&$a) {
 	DI::config()->set('piwik', 'siteid', $id);
 	DI::config()->set('piwik', 'optout', $optout);
 	DI::config()->set('piwik', 'async', $async);
-	info(DI::l10n()->t('Settings updated.'). EOL);
 }

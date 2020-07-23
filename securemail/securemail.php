@@ -86,7 +86,6 @@ function securemail_settings_post(App &$a, array &$b)
 		DI::pConfig()->set(local_user(), 'securemail', 'pkey', trim($_POST['securemail-pkey']));
 		$enable = (!empty($_POST['securemail-enable']) ? 1 : 0);
 		DI::pConfig()->set(local_user(), 'securemail', 'enable', $enable);
-		info(DI::l10n()->t('Secure Mail Settings saved.') . EOL);
 
 		if ($_POST['securemail-submit'] == DI::l10n()->t('Save and send test')) {
 

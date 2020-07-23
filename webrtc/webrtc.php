@@ -34,7 +34,6 @@ function webrtc_addon_admin (&$a, &$o) {
 function webrtc_addon_admin_post (&$a) {
         $url = (!empty($_POST['webrtcurl']) ? Strings::escapeTags(trim($_POST['webrtcurl'])) : '');
 	    DI::config()->set('webrtc', 'webrtcurl', $url);
-	    info(DI::l10n()->t('Settings updated.'). EOL);
 }
 
 function webrtc_module() {

@@ -40,7 +40,6 @@ function numfriends_settings_post($a,$post) {
 		return;
 
 	DI::pConfig()->set(local_user(),'system','display_friend_count',intval($_POST['numfriends']));
-	info( DI::l10n()->t('Numfriends settings updated.') . EOL);
 }
 
 

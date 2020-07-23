@@ -91,8 +91,6 @@ function windowsphonepush_settings_post($a, $post)
 	}
 
 	DI::pConfig()->set(local_user(), 'windowsphonepush', 'senditemtext', intval($_POST['windowsphonepush-senditemtext']));
-
-	info(DI::l10n()->t('WindowsPhonePush settings updated.') . EOL);
 }
 
 /* Called from the Addon Setting form.

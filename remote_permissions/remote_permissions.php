@@ -60,7 +60,6 @@ function remote_permissions_settings_post($a,$post) {
 		return;
 
 	DI::pConfig()->set(local_user(),'remote_perms','show',intval($_POST['remote-perms']));
-	info(DI::l10n()->t('Remote Permissions settings updated.') . EOL);
 }
 
 function remote_permissions_content($a, $item_copy) {
@@ -209,5 +208,4 @@ function remote_permissions_addon_admin(&$a, &$o){
 function remote_permissions_addon_admin_post(&$a){
 	$choice	=	(!empty($_POST['remotepermschoice'])		? Strings::escapeTags(trim($_POST['remotepermschoice']))	: '');
 	DI::config()->set('remote_perms','global',($choice == 1 ? 1 : 0));
-	info(DI::l10n()->t('Settings updated.'). EOL);
 }

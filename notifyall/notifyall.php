@@ -66,7 +66,7 @@ function notifyall_post(App $a)
 		DI::emailer()->send($notifyEmail->withRecipient($recipient['email']));
 	}
 
-	notice(DI::l10n()->t('Emails sent'));
+	info(DI::l10n()->t('Emails sent'));
 	DI::baseUrl()->redirect('admin');
 }
 

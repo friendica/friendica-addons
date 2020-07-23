@@ -49,7 +49,6 @@ function gnot_settings_post($a,$post) {
 		return;
 
 	DI::pConfig()->set(local_user(),'gnot','enable',intval($_POST['gnot']));
-	info(DI::l10n()->t('Gnot settings updated.') . EOL);
 }
 
 

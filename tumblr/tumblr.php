@@ -90,8 +90,6 @@ function tumblr_addon_admin_post(App $a)
 
 	DI::config()->set('tumblr', 'consumer_key',$consumer_key);
 	DI::config()->set('tumblr', 'consumer_secret',$consumer_secret);
-
-	info(DI::l10n()->t('Settings updated.'). EOL);
 }
 
 function tumblr_connect(App $a)

@@ -135,10 +135,8 @@ function diaspora_settings_post(App $a, &$b)
 				DI::pConfig()->set(local_user(),'diaspora', 'aspect'         , trim($_POST['aspect']));
 				DI::pConfig()->set(local_user(),'diaspora', 'post_by_default', intval($_POST['post_by_default']));
 			}
-			notice(DI::l10n()->t('Diaspora settings updated.'));
 		} else {
 			DI::pConfig()->delete(local_user(), 'diaspora', 'password');
-			notice(DI::l10n()->t('Diaspora connector disabled.'));
 		}
 	}
 }

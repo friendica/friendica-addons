@@ -62,7 +62,6 @@ function irc_addon_settings_post(&$a, &$b) {
 			DI::pConfig()->set(local_user(), 'irc', 'sitechats', trim($_POST['sitechats']));
 		}
 		/* upid pop-up thing */
-		info(DI::l10n()->t('IRC settings saved.') . EOL);
 	}
 }
 
@@ -132,8 +131,6 @@ function irc_addon_admin_post (&$a) {
 	if($_POST['irc-submit']) {
 		DI::config()->set('irc','autochans',trim($_POST['autochans']));
 		DI::config()->set('irc','sitechats',trim($_POST['sitechats']));
-		/* stupid pop-up thing */
-		info(DI::l10n()->t('IRC settings saved.') . EOL);
 	}
 }
 function irc_addon_admin (&$a, &$o) {

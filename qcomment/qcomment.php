@@ -67,6 +67,5 @@ function qcomment_addon_settings_post(&$a, &$b)
 
 	if ($_POST['qcomment-submit']) {
 		DI::pConfig()->set(local_user(), 'qcomment', 'words', XML::escape($_POST['qcomment-words']));
-		info(DI::l10n()->t('Quick Comment settings saved.') . EOL);
 	}
 }

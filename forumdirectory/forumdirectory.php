@@ -127,7 +127,7 @@ function forumdirectory_content(App $a)
 		}
 		DBA::close($r);
 	} else {
-		info(DI::l10n()->t("No entries \x28some entries may be hidden\x29.") . EOL);
+		notice(DI::l10n()->t("No entries \x28some entries may be hidden\x29.") . EOL);
 	}
 
 	$tpl = Renderer::getMarkupTemplate('directory_header.tpl');

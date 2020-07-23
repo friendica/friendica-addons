@@ -52,7 +52,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 		$res = new SimpleXMLElement(Network::fetchUrl($url));
 	} catch (Exception $e) {
 		if (empty($_SESSION['curweather_notice_shown'])) {
-			info(DI::l10n()->t('Error fetching weather data. Error was: '.$e->getMessage()));
+			notice(DI::l10n()->t('Error fetching weather data. Error was: '.$e->getMessage()));
 			$_SESSION['curweather_notice_shown'] = true;
 		}
 
@@ -170,8 +170,6 @@ function curweather_addon_settings_post(App $a, $post)
 	DI::pConfig()->set(local_user(), 'curweather', 'curweather_loc'   , trim($_POST['curweather_loc']));
 	DI::pConfig()->set(local_user(), 'curweather', 'curweather_enable', intval($_POST['curweather_enable']));
 	DI::pConfig()->set(local_user(), 'curweather', 'curweather_units' , trim($_POST['curweather_units']));
-
-	info(DI::l10n()->t('Current Weather settings updated.') . EOL);
 }
 
 function curweather_addon_settings(App $a, &$s)
@@ -221,8 +219,6 @@ function curweather_addon_admin_post(App $a)
 	if (!empty($_POST['curweather-submit'])) {
 		DI::config()->set('curweather', 'appid',     trim($_POST['appid']));
 		DI::config()->set('curweather', 'cachetime', trim($_POST['cachetime']));
-
-		info(DI::l10n()->t('Curweather settings saved.' . PHP_EOL));
 	}
 }
 
