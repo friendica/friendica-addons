@@ -73,7 +73,6 @@ function showmore_addon_settings_post(&$a, &$b)
 		$enable = (!empty($_POST['showmore-enable']) ? intval($_POST['showmore-enable']) : 0);
 		$disable = 1-$enable;
 		DI::pConfig()->set(local_user(), 'showmore', 'disable', $disable);
-		info(DI::l10n()->t('Show More Settings saved.') . EOL);
 	}
 }
 

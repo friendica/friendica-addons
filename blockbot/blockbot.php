@@ -42,7 +42,6 @@ function blockbot_addon_admin_post(&$a) {
 	DI::config()->set('blockbot', 'good_crawlers', $_POST['good_crawlers'] ?? false);
 	DI::config()->set('blockbot', 'block_gab', $_POST['block_gab'] ?? false);
 	DI::config()->set('blockbot', 'training', $_POST['training'] ?? false);
-	info(DI::l10n()->t('Settings updated.'). EOL);
 }
 
 function blockbot_init_1(App $a) {

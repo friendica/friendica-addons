@@ -223,6 +223,4 @@ function openstreetmap_addon_admin_post(&$a)
 	DI::config()->set('openstreetmap', 'nomserver', $urlnom);
 	DI::config()->set('openstreetmap', 'zoom', $zoom);
 	DI::config()->set('openstreetmap', 'marker', $marker);
-
-	info(DI::l10n()->t('Settings updated.') . EOL);
 }

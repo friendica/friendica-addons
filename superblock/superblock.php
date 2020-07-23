@@ -68,7 +68,6 @@ function superblock_addon_settings_post(&$a, &$b)
 
 	if (!empty($_POST['superblock-submit'])) {
 		DI::pConfig()->set(local_user(), 'system', 'blocked',trim($_POST['superblock-words']));
-		info(DI::l10n()->t('SUPERBLOCK Settings saved.') . EOL);
 	}
 }
 
@@ -163,6 +162,5 @@ function superblock_init(&$a)
 	}
 
 	DI::pConfig()->set(local_user(), 'system', 'blocked', $words);
-	info(DI::l10n()->t('superblock settings updated') . EOL );
 	exit();
 }

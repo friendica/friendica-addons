@@ -108,8 +108,6 @@ function geonames_addon_settings_post(App $a, array $post)
 	}
 
 	DI::pConfig()->set(local_user(), 'geonames', 'enable', intval($_POST['geonames-enable']));
-
-	info(DI::l10n()->t('Geonames settings updated.'));
 }
 
 /**

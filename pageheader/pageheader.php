@@ -51,7 +51,6 @@ function pageheader_addon_admin_post(App $a)
 		if (isset($_POST['pageheader-words'])) {
 			DI::config()->set('pageheader', 'text', trim(strip_tags($_POST['pageheader-words'])));
 		}
-		info(DI::l10n()->t('pageheader Settings saved.'));
 	}
 }
 

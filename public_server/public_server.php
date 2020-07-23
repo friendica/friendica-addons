@@ -160,7 +160,6 @@ function public_server_addon_admin_post(&$a)
 	DI::config()->set('public_server', 'flagusers', $flagusers);
 	DI::config()->set('public_server', 'flagposts', $flagposts);
 	DI::config()->set('public_server', 'flagpostsexpire', $flagpostsexpire);
-	info(DI::l10n()->t('Settings saved').EOL);
 }
 
 function public_server_addon_admin(&$a, &$o)

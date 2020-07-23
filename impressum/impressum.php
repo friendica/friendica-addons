@@ -98,7 +98,6 @@ function impressum_addon_admin_post (&$a) {
     DI::config()->set('impressum','email',strip_tags($email));
     DI::config()->set('impressum','notes',strip_tags($notes));
     DI::config()->set('impressum','footer_text',strip_tags($footer_text));
-    info(DI::l10n()->t('Settings updated.'). EOL );
 }
 function impressum_addon_admin (&$a, &$o) {
     $t = Renderer::getMarkupTemplate( "admin.tpl", "addon/impressum/" );

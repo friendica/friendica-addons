@@ -89,8 +89,6 @@ function buffer_addon_admin_post(App $a)
 
 	DI::config()->set('buffer', 'client_id'    , $client_id);
 	DI::config()->set('buffer', 'client_secret', $client_secret);
-
-	info(DI::l10n()->t('Settings updated.'). EOL);
 }
 
 function buffer_connect(App $a)

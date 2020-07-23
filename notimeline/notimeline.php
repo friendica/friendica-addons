@@ -29,7 +29,6 @@ function notimeline_settings_post($a, $post)
 	}
 
 	DI::pConfig()->set(local_user(), 'system', 'no_wall_archive_widget', intval($_POST['notimeline']));
-	info(DI::l10n()->t('No Timeline settings updated.') . EOL);
 }
 
 function notimeline_settings(&$a, &$s)

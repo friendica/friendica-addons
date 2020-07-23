@@ -92,8 +92,6 @@ function langfilter_addon_settings_post(App $a, &$b)
 		DI::pConfig()->set(local_user(), 'langfilter', 'languages'    , $languages);
 		DI::pConfig()->set(local_user(), 'langfilter', 'minconfidence', $minconfidence);
 		DI::pConfig()->set(local_user(), 'langfilter', 'minlength'    , $minlength);
-
-		info(DI::l10n()->t('Language Filter Settings saved.'));
 	}
 }
 

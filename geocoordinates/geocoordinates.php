@@ -103,5 +103,4 @@ function geocoordinates_addon_admin_post(&$a)
 
 	$language  = (!empty($_POST['language']) ? Strings::escapeTags(trim($_POST['language']))   : '');
 	DI::config()->set('geocoordinates', 'language', $language);
-	info(DI::l10n()->t('Settings updated.') . EOL);
 }

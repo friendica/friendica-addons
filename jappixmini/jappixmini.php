@@ -434,7 +434,7 @@ function jappixmini_settings_post(App $a, &$b)
 			// check that Jabber password was encrypted with correct Friendica password
 			$friendica_password = trim($b['jappixmini-friendica-password']);
 			if (!User::authenticate((int) $uid, $friendica_password)) {
-				info("Wrong friendica password!");
+				notice("Wrong friendica password!");
 				return;
 			}
 		}
@@ -462,11 +462,9 @@ function jappixmini_settings_post(App $a, &$b)
 		DI::pConfig()->set($uid, 'jappixmini', 'activate'      , intval($b['jappixmini-activate']));
 		DI::pConfig()->set($uid, 'jappixmini', 'dontinsertchat', intval($b['jappixmini-dont-insertchat']));
 		DI::pConfig()->set($uid, 'jappixmini', 'encrypt'       , $encrypt);
-		info('Jappix Mini settings saved.');
 
 		if ($purge) {
 			q("DELETE FROM `pconfig` WHERE `uid`=$uid AND `cat`='jappixmini' AND `k` LIKE 'id:%%'");
-			info('List of addresses purged.');
 		}
 	}
 }

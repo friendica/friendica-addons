@@ -105,7 +105,6 @@ function nsfw_addon_settings_post(&$a, &$b)
 		$enable = (!empty($_POST['nsfw-enable']) ? intval($_POST['nsfw-enable']) : 0);
 		$disable = 1 - $enable;
 		DI::pConfig()->set(local_user(), 'nsfw', 'disable', $disable);
-		info(DI::l10n()->t('NSFW Settings saved.') . EOL);
 	}
 }
 

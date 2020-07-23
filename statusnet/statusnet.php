@@ -224,8 +224,6 @@ function statusnet_settings_post(App $a, $post)
 
 					if (!intval($_POST['statusnet-mirror']))
 						DI::pConfig()->delete(local_user(), 'statusnet', 'lastid');
-
-					info(DI::l10n()->t('GNU Social settings updated.') . EOL);
 				}
 			}
 		}

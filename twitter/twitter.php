@@ -241,9 +241,9 @@ function twitter_settings_post(App $a)
 				DI::pConfig()->set(local_user(), 'twitter', 'oauthsecret', $token['oauth_token_secret']);
 				DI::pConfig()->set(local_user(), 'twitter', 'post', 1);
 			} catch(Exception $e) {
-				info($e->getMessage());
+				notice($e->getMessage());
 			} catch(TwitterOAuthException $e) {
-				info($e->getMessage());
+				notice($e->getMessage());
 			}
 			//  reload the Addon Settings page, if we don't do it see Bug #42
 			DI::baseUrl()->redirect('settings/connectors');
@@ -259,8 +259,6 @@ function twitter_settings_post(App $a)
 			if (!intval($_POST['twitter-mirror'])) {
 				DI::pConfig()->delete(local_user(), 'twitter', 'lastid');
 			}
-
-			info(DI::l10n()->t('Twitter settings updated.') . EOL);
 		}
 	}
 }
@@ -737,7 +735,6 @@ function twitter_addon_admin_post(App $a)
 	$consumersecret = !empty($_POST['consumersecret']) ? Strings::escapeTags(trim($_POST['consumersecret'])) : '';
 	DI::config()->set('twitter', 'consumerkey', $consumerkey);
 	DI::config()->set('twitter', 'consumersecret', $consumersecret);
-	info(DI::l10n()->t('Settings updated.') . EOL);
 }
 
 function twitter_addon_admin(App $a, &$o)
