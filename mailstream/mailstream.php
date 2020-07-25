@@ -12,9 +12,8 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
-use Friendica\Protocol\Activity;
-use Friendica\Util\Network;
 use Friendica\Model\Item;
+use Friendica\Protocol\Activity;
 
 function mailstream_install() {
 	Hook::register('addon_settings', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings');
@@ -169,7 +168,7 @@ function mailstream_do_images($a, &$item, &$attachments) {
 			continue;
 		}
 		$cookiejar = tempnam(get_temppath(), 'cookiejar-mailstream-');
-		$curlResult = Network::fetchUrlFull($url, true, 0, '', $cookiejar);
+		$curlResult = DI::httpRequest()->fetchFull($url, true, 0, '', $cookiejar);
 		$attachments[$url] = [
 			'data' => $curlResult->getBody(),
 			'guid' => hash("crc32", $url),

@@ -14,7 +14,6 @@ use Friendica\Core\Logger;
 use Friendica\DI;
 use Friendica\Model\Tag;
 use Friendica\Util\DateTimeFormat;
-use Friendica\Util\Network;
 use Friendica\Util\XML;
 
 function ijpost_install()
@@ -229,7 +228,7 @@ EOT;
 		Logger::log('ijpost: data: ' . $xml, Logger::DATA);
 
 		if ($ij_blog !== 'test') {
-			$x = Network::post($ij_blog, $xml, ["Content-Type: text/xml"])->getBody();
+			$x = DI::httpRequest()->post($ij_blog, $xml, ["Content-Type: text/xml"])->getBody();
 		}
 		Logger::log('posted to insanejournal: ' . $x ? $x : '', Logger::DEBUG);
 	}

@@ -89,7 +89,6 @@ use Friendica\Protocol\Activity;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Images;
-use Friendica\Util\Network;
 use Friendica\Util\Strings;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
@@ -672,7 +671,7 @@ function twitter_post_hook(App $a, array &$b)
 						continue;
 					}
 
-					$img_str = Network::fetchUrl($image['url']);
+					$img_str = DI::httpRequest()->fetch($image['url']);
 
 					$tempfile = tempnam(get_temppath(), 'cache');
 					file_put_contents($tempfile, $img_str);
@@ -1294,7 +1293,7 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 
 			$expanded_url = $url->expanded_url;
 
-			$final_url = Network::finalUrl($url->expanded_url);
+			$final_url = DI::httpRequest()->finalUrl($url->expanded_url);
 
 			$oembed_data = OEmbed::fetchURL($final_url);
 
@@ -1315,7 +1314,7 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 			} elseif ($oembed_data->type != 'link') {
 				$replace = '[url=' . $expanded_url . ']' . $url->display_url . '[/url]';
 			} else {
-				$img_str = Network::fetchUrl($final_url, true, 4);
+				$img_str = DI::httpRequest()->fetch($final_url, true, 4);
 
 				$tempfile = tempnam(get_temppath(), 'cache');
 				file_put_contents($tempfile, $img_str);

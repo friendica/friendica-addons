@@ -16,7 +16,6 @@ use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Tag;
 use Friendica\Util\DateTimeFormat;
-use Friendica\Util\Network;
 use Friendica\Util\XML;
 
 function dwpost_install()
@@ -231,7 +230,7 @@ EOT;
 		Logger::log('dwpost: data: ' . $xml, Logger::DATA);
 
 		if ($dw_blog !== 'test') {
-			$x = Network::post($dw_blog, $xml, ["Content-Type: text/xml"])->getBody();
+			$x = DI::httpRequest()->post($dw_blog, $xml, ["Content-Type: text/xml"])->getBody();
 		}
 
 		Logger::log('posted to dreamwidth: ' . ($x) ? $x : '', Logger::DEBUG);
