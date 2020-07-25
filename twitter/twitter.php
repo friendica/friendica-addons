@@ -1128,7 +1128,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 
 	if (!empty($cid)) {
 		DBA::update('contact', $fields, ['id' => $cid]);
-		Contact::updateAvatar($avatar, 0, $cid);
+		Contact::updateAvatar($cid, $avatar);
 	}
 
 	$contact = DBA::selectFirst('contact', [], ['uid' => $uid, 'alias' => "twitter::" . $data->id_str]);
@@ -1160,7 +1160,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 
 		Group::addMember(User::getDefaultGroup($uid), $contact_id);
 
-		Contact::updateAvatar($avatar, $uid, $contact_id);
+		Contact::updateAvatar($contact_id, $avatar);
 	} else {
 		if ($contact["readonly"] || $contact["blocked"]) {
 			Logger::log("twitter_fetch_contact: Contact '" . $contact["nick"] . "' is blocked or readonly.", Logger::DEBUG);
@@ -1176,7 +1176,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 			$update = true;
 		}
 
-		Contact::updateAvatar($avatar, $uid, $contact['id']);
+		Contact::updateAvatar($contact['id'], $avatar);
 
 		if ($contact['name'] != $data->name) {
 			$fields['name-date'] = $fields['uri-date'] = DateTimeFormat::utcNow();

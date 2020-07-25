@@ -203,7 +203,7 @@ function discourse_get_user($post, $hostaddr)
 		$avatar = $contact['photo'];
 		unset($contact['photo']);
 		DBA::update('contact', $contact, ['id' => $contact['id']]);
-		Contact::updateAvatar($avatar, 0, $contact['id']);
+		Contact::updateAvatar($contact['id'], $avatar);
 		$contact['photo'] = $avatar;
 	}
 
