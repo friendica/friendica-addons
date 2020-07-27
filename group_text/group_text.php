@@ -17,18 +17,6 @@ function group_text_install() {
 	Logger::log("installed group_text");
 }
 
-
-function group_text_uninstall() {
-
-	Hook::unregister('addon_settings', 'addon/group_text/group_text.php', 'group_text_settings');
-	Hook::unregister('addon_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
-
-
-	Logger::log("removed group_text");
-}
-
-
-
 /**
  *
  * Callback from the settings post function.

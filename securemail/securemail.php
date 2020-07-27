@@ -26,16 +26,6 @@ function securemail_install()
 	Logger::log('installed securemail');
 }
 
-function securemail_uninstall()
-{
-	Hook::unregister('addon_settings', 'addon/securemail/securemail.php', 'securemail_settings');
-	Hook::unregister('addon_settings_post', 'addon/securemail/securemail.php', 'securemail_settings_post');
-
-	Hook::unregister('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare');
-
-	Logger::log('removed securemail');
-}
-
 /**
  * @brief Build user settings form
  *

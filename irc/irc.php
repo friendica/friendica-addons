@@ -17,13 +17,6 @@ function irc_install() {
 	Hook::register('addon_settings_post', 'addon/irc/irc.php', 'irc_addon_settings_post');
 }
 
-function irc_uninstall() {
-	Hook::unregister('app_menu', 'addon/irc/irc.php', 'irc_app_menu');
-	Hook::unregister('addon_settings', 'addon/irc/irc.php', 'irc_addon_settings');
-
-}
-
-
 function irc_addon_settings(&$a,&$s) {
 	if(! local_user())
 		return;

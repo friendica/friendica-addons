@@ -16,11 +16,6 @@ function sniper_install() {
     Hook::register('app_menu', 'addon/sniper/sniper.php', 'sniper_app_menu');
 }
 
-function sniper_uninstall() {
-    Hook::unregister('app_menu', 'addon/sniper/sniper.php', 'sniper_app_menu');
-
-}
-
 function sniper_app_menu($a,&$b) {
     $b['app_menu'][] = '<div class="app-title"><a href="sniper">Hot Shot Sniper</a></div>';
 }

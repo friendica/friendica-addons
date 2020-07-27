@@ -35,27 +35,6 @@ function planets_install() {
 	Logger::log("installed planets");
 }
 
-
-function planets_uninstall() {
-
-	/**
-	 *
-	 * uninstall unregisters any hooks created with register_hook
-	 * during install. It may also delete configuration settings
-	 * and any other cleanup.
-	 *
-	 */
-
-	Hook::unregister('post_local',    'addon/planets/planets.php', 'planets_post_hook');
-	Hook::unregister('addon_settings', 'addon/planets/planets.php', 'planets_settings');
-	Hook::unregister('addon_settings_post', 'addon/planets/planets.php', 'planets_settings_post');
-
-
-	Logger::log("removed planets");
-}
-
-
-
 function planets_post_hook($a, &$item) {
 
 	/**

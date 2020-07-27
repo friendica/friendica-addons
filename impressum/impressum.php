@@ -23,13 +23,6 @@ function impressum_install() {
     Logger::log("installed impressum Addon");
 }
 
-function impressum_uninstall() {
-	Hook::unregister('load_config', 'addon/impressum/impressum.php', 'impressum_load_config');
-    Hook::unregister('about_hook', 'addon/impressum/impressum.php', 'impressum_show');
-    Hook::unregister('page_end', 'addon/impressum/impressum.php', 'impressum_footer');
-    Logger::log("uninstalled impressum Addon");
-}
-
 function impressum_module() {
 }
 function impressum_content() {

@@ -19,15 +19,6 @@ function superblock_install()
 	Hook::register('enotify_store', 'addon/superblock/superblock.php', 'superblock_enotify_store');
 }
 
-function superblock_uninstall()
-{
-	Hook::unregister('addon_settings', 'addon/superblock/superblock.php', 'superblock_addon_settings');
-	Hook::unregister('addon_settings_post', 'addon/superblock/superblock.php', 'superblock_addon_settings_post');
-	Hook::unregister('conversation_start', 'addon/superblock/superblock.php', 'superblock_conversation_start');
-	Hook::unregister('item_photo_menu', 'addon/superblock/superblock.php', 'superblock_item_photo_menu');
-	Hook::unregister('enotify_store', 'addon/superblock/superblock.php', 'superblock_enotify_store');
-}
-
 function superblock_addon_settings(&$a, &$s)
 {
 	if (!local_user()) {

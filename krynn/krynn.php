@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: Dragonlance Krynn locales
- * Description: Set a random locale from the Dragonlance Realm of Krynn when posting. Based on the planets frindica addon by Mike Macgirvin and Tony Baldwin
+ * Description: Set a random locale from the Dragonlance Realm of Krynn when posting. Based on the planets friendica addon by Mike Macgirvin and Tony Baldwin
  * Version: 1.0
  * Planets Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * Planets Author: Tony Baldwin <https://free-haven.org/profile/tony>
@@ -38,27 +38,6 @@ function krynn_install() {
 	Logger::log("installed krynn");
 }
 
-
-function krynn_uninstall() {
-
-	/**
-	 *
-	 * uninstall unregisters any hooks created with register_hook
-	 * during install. It may also delete configuration settings
-	 * and any other cleanup.
-	 *
-	 */
-
-	Hook::unregister('post_local',    'addon/krynn/krynn.php', 'krynn_post_hook');
-	Hook::unregister('addon_settings', 'addon/krynn/krynn.php', 'krynn_settings');
-	Hook::unregister('addon_settings_post', 'addon/krynn/krynn.php', 'krynn_settings_post');
-
-
-	Logger::log("removed krynn");
-}
-
-
-
 function krynn_post_hook($a, &$item) {
 
 	/**
@@ -69,8 +48,6 @@ function krynn_post_hook($a, &$item) {
 	 *      - The profile owner must have allowed our addon
 	 *
 	 */
-
-	Logger::log('krynn invoked');
 
 	if(! local_user())   /* non-zero if this is a logged in user of this system */
 		return;

@@ -17,14 +17,6 @@ function nsfw_install()
 	Hook::register('addon_settings_post', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings_post');
 }
 
-function nsfw_uninstall()
-{
-	Hook::unregister('prepare_body_content_filter', 'addon/nsfw/nsfw.php', 'nsfw_prepare_body_content_filter');
-	Hook::unregister('prepare_body', 'addon/nsfw/nsfw.php', 'nsfw_prepare_body');
-	Hook::unregister('addon_settings', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings');
-	Hook::unregister('addon_settings_post', 'addon/nsfw/nsfw.php', 'nsfw_addon_settings_post');
-}
-
 // This function isn't perfect and isn't trying to preserve the html structure - it's just a
 // quick and dirty filter to pull out embedded photo blobs because 'nsfw' seems to come up
 // inside them quite often. We don't need anything fancy, just pull out the data blob so we can

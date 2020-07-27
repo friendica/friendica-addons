@@ -54,9 +54,6 @@ function blackout_install() {
 	Hook::register('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');
 }
 
-function blackout_uninstall() {
-	Hook::unregister('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');
-}
 function blackout_redirect ($a, $b) {
 	// if we have a logged in user, don't throw her out
 	if (local_user()) {

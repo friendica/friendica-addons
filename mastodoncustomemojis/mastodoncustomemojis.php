@@ -27,16 +27,6 @@ function mastodoncustomemojis_install()
 	Hook::register('contacts_mod_init',  __FILE__, 'mastodoncustomemojis_css_hook');
 }
 
-function mastodoncustomemojis_uninstall()
-{
-	Hook::unregister('put_item_in_cache',  __FILE__, 'mastodoncustomemojis_put_item_in_cache');
-	Hook::unregister('network_mod_init',   __FILE__, 'mastodoncustomemojis_css_hook');
-	Hook::unregister('display_mod_init',   __FILE__, 'mastodoncustomemojis_css_hook');
-	Hook::unregister('search_mod_init',    __FILE__, 'mastodoncustomemojis_css_hook');
-	Hook::unregister('community_mod_init', __FILE__, 'mastodoncustomemojis_css_hook');
-	Hook::unregister('contacts_mod_init',  __FILE__, 'mastodoncustomemojis_css_hook');
-}
-
 function mastodoncustomemojis_css_hook(App $a)
 {
 	DI::page()['htmlhead'] .= <<<HTML

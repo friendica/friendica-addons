@@ -74,24 +74,6 @@ function statusnet_install()
 	Logger::log("installed GNU Social");
 }
 
-function statusnet_uninstall()
-{
-	Hook::unregister('connector_settings', 'addon/statusnet/statusnet.php', 'statusnet_settings');
-	Hook::unregister('connector_settings_post', 'addon/statusnet/statusnet.php', 'statusnet_settings_post');
-	Hook::unregister('notifier_normal', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
-	Hook::unregister('hook_fork', 'addon/statusnet/statusnet.php', 'statusnet_hook_fork');
-	Hook::unregister('post_local', 'addon/statusnet/statusnet.php', 'statusnet_post_local');
-	Hook::unregister('jot_networks', 'addon/statusnet/statusnet.php', 'statusnet_jot_nets');
-	Hook::unregister('cron', 'addon/statusnet/statusnet.php', 'statusnet_cron');
-	Hook::unregister('prepare_body', 'addon/statusnet/statusnet.php', 'statusnet_prepare_body');
-	Hook::unregister('check_item_notification', 'addon/statusnet/statusnet.php', 'statusnet_check_item_notification');
-
-	// old setting - remove only
-	Hook::unregister('post_local_end', 'addon/statusnet/statusnet.php', 'statusnet_post_hook');
-	Hook::unregister('addon_settings', 'addon/statusnet/statusnet.php', 'statusnet_settings');
-	Hook::unregister('addon_settings_post', 'addon/statusnet/statusnet.php', 'statusnet_settings_post');
-}
-
 function statusnet_check_item_notification(App $a, &$notification_data)
 {
 	if (DI::pConfig()->get($notification_data["uid"], 'statusnet', 'post')) {

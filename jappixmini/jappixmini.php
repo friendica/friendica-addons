@@ -104,19 +104,6 @@ function jappixmini_install()
 	}
 }
 
-function jappixmini_uninstall()
-{
-	Hook::unregister('addon_settings', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings');
-	Hook::unregister('addon_settings_post', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings_post');
-
-	Hook::unregister('page_end', 'addon/jappixmini/jappixmini.php', 'jappixmini_script');
-	Hook::unregister('authenticate', 'addon/jappixmini/jappixmini.php', 'jappixmini_login');
-
-	Hook::unregister('cron', 'addon/jappixmini/jappixmini.php', 'jappixmini_cron');
-
-	Hook::unregister('about_hook', 'addon/jappixmini/jappixmini.php', 'jappixmini_download_source');
-}
-
 function jappixmini_addon_admin(App $a, &$o)
 {
 	// display instructions and warnings on addon settings page for admin

@@ -18,18 +18,6 @@ function morechoice_install() {
 	Hook::register('marital_selector', 'addon/morechoice/morechoice.php', 'morechoice_marital_selector');
 }
 
-
-function morechoice_uninstall() {
-
-	Hook::unregister('gender_selector', 'addon/morechoice/morechoice.php', 'morechoice_gender_selector');
-	Hook::unregister('sexpref_selector', 'addon/morechoice/morechoice.php', 'morechoice_sexpref_selector');
-	Hook::unregister('marital_selector', 'addon/morechoice/morechoice.php', 'morechoice_marital_selector');
-
-// We need to leave this here for a while, because we now have a situation where people can end up with an orphaned hook.
-	Hook::unregister('poke_verbs', 'addon/morechoice/morechoice.php', 'morechoice_poke_verbs');
-
-}
-
 function morechoice_gender_selector($a,&$b) {
 	$b['Androgyne'] = DI::l10n()->t('Androgyne');
 	$b['Bear'] = DI::l10n()->t('Bear');

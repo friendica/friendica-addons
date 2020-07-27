@@ -27,15 +27,6 @@ function dwpost_install()
 	Hook::register('connector_settings_post', 'addon/dwpost/dwpost.php', 'dwpost_settings_post');
 }
 
-function dwpost_uninstall()
-{
-	Hook::unregister('post_local',              'addon/dwpost/dwpost.php', 'dwpost_post_local');
-	Hook::unregister('notifier_normal',         'addon/dwpost/dwpost.php', 'dwpost_send');
-	Hook::unregister('jot_networks',            'addon/dwpost/dwpost.php', 'dwpost_jot_nets');
-	Hook::unregister('connector_settings',      'addon/dwpost/dwpost.php', 'dwpost_settings');
-	Hook::unregister('connector_settings_post', 'addon/dwpost/dwpost.php', 'dwpost_settings_post');
-}
-
 function dwpost_jot_nets(App $a, array &$jotnets_fields)
 {
 	if (!local_user()) {

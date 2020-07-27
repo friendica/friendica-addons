@@ -23,18 +23,6 @@ function blockem_install()
 	Hook::register('enotify_store'              , 'addon/blockem/blockem.php', 'blockem_enotify_store');
 }
 
-function blockem_uninstall()
-{
-	Hook::unregister('prepare_body_content_filter', 'addon/blockem/blockem.php', 'blockem_prepare_body_content_filter');
-	Hook::unregister('prepare_body'               , 'addon/blockem/blockem.php', 'blockem_prepare_body');
-	Hook::unregister('display_item'               , 'addon/blockem/blockem.php', 'blockem_display_item');
-	Hook::unregister('addon_settings'             , 'addon/blockem/blockem.php', 'blockem_addon_settings');
-	Hook::unregister('addon_settings_post'        , 'addon/blockem/blockem.php', 'blockem_addon_settings_post');
-	Hook::unregister('conversation_start'         , 'addon/blockem/blockem.php', 'blockem_conversation_start');
-	Hook::unregister('item_photo_menu'            , 'addon/blockem/blockem.php', 'blockem_item_photo_menu');
-	Hook::unregister('enotify_store'              , 'addon/blockem/blockem.php', 'blockem_enotify_store');
-}
-
 function blockem_addon_settings (App $a, &$s)
 {
 	if (!local_user()) {

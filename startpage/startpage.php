@@ -15,13 +15,6 @@ function startpage_install() {
 	Hook::register('addon_settings_post', 'addon/startpage/startpage.php', 'startpage_settings_post');
 }
 
-function startpage_uninstall()
-{
-	Hook::unregister('home_init', 'addon/startpage/startpage.php', 'startpage_home_init');
-	Hook::unregister('addon_settings', 'addon/startpage/startpage.php', 'startpage_settings');
-	Hook::unregister('addon_settings_post', 'addon/startpage/startpage.php', 'startpage_settings_post');
-}
-
 function startpage_home_init($a, $b)
 {
 	if (!local_user()) {

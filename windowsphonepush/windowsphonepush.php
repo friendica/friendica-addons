@@ -55,18 +55,6 @@ function windowsphonepush_install()
 	Logger::log("installed windowsphonepush");
 }
 
-function windowsphonepush_uninstall()
-{
-	/* uninstall unregisters any hooks created with register_hook
-	 * during install. Don't delete data in table `pconfig`.
-	 */
-	Hook::unregister('cron', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_cron');
-	Hook::unregister('addon_settings', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings');
-	Hook::unregister('addon_settings_post', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings_post');
-
-	Logger::log("removed windowsphonepush");
-}
-
 /* declare the windowsphonepush function so that /windowsphonepush url requests will land here */
 function windowsphonepush_module()
 {

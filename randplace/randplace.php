@@ -52,16 +52,11 @@ function randplace_uninstall() {
 
 	/**
 	 *
-	 * uninstall unregisters any hooks created with register_hook
-	 * during install. It may also delete configuration settings
-	 * and any other cleanup.
+	 * This function should undo anything that was done in name_install()
+	 *
+	 * Except hooks, they are all unregistered automatically and don't need to be unregistered manually.
 	 *
 	 */
-
-	Hook::unregister('post_local',    'addon/randplace/randplace.php', 'randplace_post_hook');
-	Hook::unregister('addon_settings', 'addon/randplace/randplace.php', 'randplace_settings');
-	Hook::unregister('addon_settings_post', 'addon/randplace/randplace.php', 'randplace_settings_post');
-
 
 	Logger::log("removed randplace");
 }

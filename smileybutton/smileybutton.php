@@ -16,16 +16,6 @@ function smileybutton_install() {
 	Logger::log("installed smileybutton");
 }
 
-
-function smileybutton_uninstall() {
-	//Delet registered hooks
-	Hook::unregister('jot_tool',    'addon/smileybutton/smileybutton.php', 'show_button');
-
-	Logger::log("removed smileybutton");
-}
-
-
-
 function show_button(Friendica\App $a, &$b) {
 	// Disable if theme is quattro
 	// TODO add style for quattro

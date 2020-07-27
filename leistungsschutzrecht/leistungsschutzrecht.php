@@ -16,13 +16,6 @@ function leistungsschutzrecht_install() {
 	Hook::register('page_info_data', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
 }
 
-
-function leistungsschutzrecht_uninstall() {
-	Hook::unregister('cron', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_cron');
-	Hook::unregister('getsiteinfo', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
-	Hook::unregister('page_info_data', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
-}
-
 function leistungsschutzrecht_getsiteinfo($a, &$siteinfo) {
 	if (!isset($siteinfo["url"]) || empty($siteinfo['type'])) {
 		return;

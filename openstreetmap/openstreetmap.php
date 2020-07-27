@@ -34,18 +34,6 @@ function openstreetmap_install()
 	Logger::log("installed openstreetmap");
 }
 
-function openstreetmap_uninstall()
-{
-	Hook::unregister('load_config',     'addon/openstreetmap/openstreetmap.php', 'openstreetmap_load_config');
-	Hook::unregister('render_location', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_location');
-	Hook::unregister('generate_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_map');
-	Hook::unregister('generate_named_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_named_map');
-	Hook::unregister('Map::getCoordinates', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_get_coordinates');
-	Hook::unregister('page_header', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_alterheader');
-
-	Logger::log("removed openstreetmap");
-}
-
 function openstreetmap_load_config(\Friendica\App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('openstreetmap'));
