@@ -27,12 +27,6 @@ function qcomment_install() {
 
 }
 
-function qcomment_uninstall() {
-	Hook::unregister('addon_settings', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings');
-	Hook::unregister('addon_settings_post', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings_post');
-
-}
-
 function qcomment_addon_settings(&$a, &$s)
 {
 	if (! local_user()) {

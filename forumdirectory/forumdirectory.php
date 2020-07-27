@@ -23,11 +23,6 @@ function forumdirectory_install()
 	Hook::register('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
 }
 
-function forumdirectory_uninstall()
-{
-	Hook::unregister('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
-}
-
 function forumdirectory_module()
 {
 	return;

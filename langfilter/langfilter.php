@@ -25,14 +25,6 @@ function langfilter_install()
 	Hook::register('addon_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
 }
 
-function langfilter_uninstall()
-{
-	Hook::unregister('prepare_body_content_filter', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body_content_filter');
-	Hook::unregister('prepare_body', 'addon/langfilter/langfilter.php', 'langfilter_prepare_body');
-	Hook::unregister('addon_settings', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings');
-	Hook::unregister('addon_settings_post', 'addon/langfilter/langfilter.php', 'langfilter_addon_settings_post');
-}
-
 /* The settings
  * 1st check if somebody logged in is calling
  * 2nd get the current settings

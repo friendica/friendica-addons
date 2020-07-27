@@ -11,10 +11,6 @@ function convert_install() {
 	Hook::register('app_menu', 'addon/convert/convert.php', 'convert_app_menu');
 }
 
-function convert_uninstall() {
-	Hook::unregister('app_menu', 'addon/convert/convert.php', 'convert_app_menu');
-}
-
 function convert_app_menu($a,&$b) {
 	$b['app_menu'][] = '<div class="app-title"><a href="convert">Units Conversion</a></div>';
 }

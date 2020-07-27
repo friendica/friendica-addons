@@ -20,18 +20,6 @@ function mathjax_install()
 	Hook::register('addon_settings_post', __FILE__, 'mathjax_settings_post');
 }
 
-function mathjax_uninstall()
-{
-	Hook::unregister('footer'             , __FILE__, 'mathjax_footer');
-	Hook::unregister('addon_settings'     , __FILE__, 'mathjax_settings');
-	Hook::unregister('addon_settings_post', __FILE__, 'mathjax_settings_post');
-
-	// Legacy hooks
-	Hook::unregister('load_config'        , __FILE__, 'mathjax_load_config');
-	Hook::unregister('page_header'        , __FILE__, 'mathjax_page_header');
-	Hook::unregister('template_vars'      , __FILE__, 'mathjax_template_vars');
-}
-
 function mathjax_settings_post($a)
 {
 	if (!local_user() || empty($_POST['mathjax-submit'])) {

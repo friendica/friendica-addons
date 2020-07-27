@@ -25,15 +25,6 @@ function ijpost_install()
 	Hook::register('connector_settings_post', 'addon/ijpost/ijpost.php', 'ijpost_settings_post');
 }
 
-function ijpost_uninstall()
-{
-	Hook::unregister('post_local',       'addon/ijpost/ijpost.php', 'ijpost_post_local');
-	Hook::unregister('notifier_normal',  'addon/ijpost/ijpost.php', 'ijpost_send');
-	Hook::unregister('jot_networks',     'addon/ijpost/ijpost.php', 'ijpost_jot_nets');
-	Hook::unregister('connector_settings',      'addon/ijpost/ijpost.php', 'ijpost_settings');
-	Hook::unregister('connector_settings_post', 'addon/ijpost/ijpost.php', 'ijpost_settings_post');
-}
-
 function ijpost_jot_nets(\Friendica\App &$a, array &$jotnets_fields)
 {
 	if (!local_user()) {

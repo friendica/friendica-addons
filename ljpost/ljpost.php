@@ -24,15 +24,6 @@ function ljpost_install() {
     Hook::register('connector_settings_post', 'addon/ljpost/ljpost.php', 'ljpost_settings_post');
 
 }
-function ljpost_uninstall() {
-    Hook::unregister('post_local',       'addon/ljpost/ljpost.php', 'ljpost_post_local');
-    Hook::unregister('notifier_normal',  'addon/ljpost/ljpost.php', 'ljpost_send');
-    Hook::unregister('jot_networks',     'addon/ljpost/ljpost.php', 'ljpost_jot_nets');
-    Hook::unregister('connector_settings',      'addon/ljpost/ljpost.php', 'ljpost_settings');
-    Hook::unregister('connector_settings_post', 'addon/ljpost/ljpost.php', 'ljpost_settings_post');
-
-}
-
 
 function ljpost_jot_nets(\Friendica\App &$a, array &$jotnets_fields)
 {

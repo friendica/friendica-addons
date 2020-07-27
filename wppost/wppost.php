@@ -25,22 +25,6 @@ function wppost_install()
 	Hook::register('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
 }
 
-function wppost_uninstall()
-{
-	Hook::unregister('hook_fork',        'addon/wppost/wppost.php', 'wppost_hook_fork');
-	Hook::unregister('post_local',       'addon/wppost/wppost.php', 'wppost_post_local');
-	Hook::unregister('notifier_normal',  'addon/wppost/wppost.php', 'wppost_send');
-	Hook::unregister('jot_networks',     'addon/wppost/wppost.php', 'wppost_jot_nets');
-	Hook::unregister('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
-	Hook::unregister('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
-
-	// obsolete - remove
-	Hook::unregister('post_local_end',   'addon/wppost/wppost.php', 'wppost_send');
-	Hook::unregister('addon_settings',  'addon/wppost/wppost.php', 'wppost_settings');
-	Hook::unregister('addon_settings_post',  'addon/wppost/wppost.php', 'wppost_settings_post');
-}
-
-
 function wppost_jot_nets(\Friendica\App &$a, array &$jotnets_fields)
 {
 	if (!local_user()) {

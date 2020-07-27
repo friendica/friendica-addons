@@ -45,19 +45,6 @@ function pumpio_install()
 	Hook::register('check_item_notification', 'addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
 }
 
-function pumpio_uninstall()
-{
-	Hook::unregister('load_config',      'addon/pumpio/pumpio.php', 'pumpio_load_config');
-	Hook::unregister('hook_fork',        'addon/pumpio/pumpio.php', 'pumpio_hook_fork');
-	Hook::unregister('post_local',       'addon/pumpio/pumpio.php', 'pumpio_post_local');
-	Hook::unregister('notifier_normal',  'addon/pumpio/pumpio.php', 'pumpio_send');
-	Hook::unregister('jot_networks',     'addon/pumpio/pumpio.php', 'pumpio_jot_nets');
-	Hook::unregister('connector_settings',      'addon/pumpio/pumpio.php', 'pumpio_settings');
-	Hook::unregister('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
-	Hook::unregister('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
-	Hook::unregister('check_item_notification', 'addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
-}
-
 function pumpio_module() {}
 
 function pumpio_content(App $a)

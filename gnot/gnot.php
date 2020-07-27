@@ -22,19 +22,6 @@ function gnot_install() {
 	Logger::log("installed gnot");
 }
 
-
-function gnot_uninstall() {
-
-	Hook::unregister('addon_settings', 'addon/gnot/gnot.php', 'gnot_settings');
-	Hook::unregister('addon_settings_post', 'addon/gnot/gnot.php', 'gnot_settings_post');
-	Hook::unregister('enotify_mail', 'addon/gnot/gnot.php', 'gnot_enotify_mail');
-
-
-	Logger::log("removed gnot");
-}
-
-
-
 /**
  *
  * Callback from the settings post function.

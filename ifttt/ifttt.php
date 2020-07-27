@@ -23,12 +23,6 @@ function ifttt_install()
 	Hook::register('connector_settings_post', 'addon/ifttt/ifttt.php', 'ifttt_settings_post');
 }
 
-function ifttt_uninstall()
-{
-	Hook::unregister('connector_settings', 'addon/ifttt/ifttt.php', 'ifttt_settings');
-	Hook::unregister('connector_settings_post', 'addon/ifttt/ifttt.php', 'ifttt_settings_post');
-}
-
 function ifttt_module()
 {
 

@@ -18,15 +18,6 @@ function fromapp_install()
 	Logger::log("installed fromapp");
 }
 
-
-function fromapp_uninstall()
-{
-	Hook::unregister('post_local', 'addon/fromapp/fromapp.php', 'fromapp_post_hook');
-	Hook::unregister('addon_settings', 'addon/fromapp/fromapp.php', 'fromapp_settings');
-	Hook::unregister('addon_settings_post', 'addon/fromapp/fromapp.php', 'fromapp_settings_post');
-	Logger::log("removed fromapp");
-}
-
 function fromapp_settings_post($a, $post)
 {
 	if (!local_user() || empty($_POST['fromapp-submit'])) {

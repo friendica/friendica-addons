@@ -20,11 +20,6 @@ function widgets_install() {
 	Logger::log("installed widgets");
 }
 
-function widgets_uninstall() {
-	Hook::unregister('addon_settings', 'addon/widgets/widgets.php', 'widgets_settings');
-	Hook::unregister('addon_settings_post', 'addon/widgets/widgets.php', 'widgets_settings_post');
-}
-
 function widgets_settings_post(){
 	if(! local_user())
 		return;

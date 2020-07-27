@@ -66,12 +66,6 @@ function ldapauth_install()
 	Hook::register('authenticate', 'addon/ldapauth/ldapauth.php', 'ldapauth_hook_authenticate');
 }
 
-function ldapauth_uninstall()
-{
-	Hook::unregister('load_config',  'addon/ldapauth/ldapauth.php', 'ldapauth_load_config');
-	Hook::unregister('authenticate', 'addon/ldapauth/ldapauth.php', 'ldapauth_hook_authenticate');
-}
-
 function ldapauth_load_config(\Friendica\App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('ldapauth'));

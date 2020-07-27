@@ -18,13 +18,6 @@ function showmore_install()
 	Hook::register('addon_settings_post', 'addon/showmore/showmore.php', 'showmore_addon_settings_post');
 }
 
-function showmore_uninstall()
-{
-	Hook::unregister('prepare_body', 'addon/showmore/showmore.php', 'showmore_prepare_body');
-	Hook::unregister('addon_settings', 'addon/showmore/showmore.php', 'showmore_addon_settings');
-	Hook::unregister('addon_settings_post', 'addon/showmore/showmore.php', 'showmore_addon_settings_post');
-}
-
 function showmore_addon_settings(&$a, &$s)
 {
 	if (!local_user()) {

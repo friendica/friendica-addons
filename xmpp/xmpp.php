@@ -21,14 +21,6 @@ function xmpp_install()
 	Hook::register('logged_in', 'addon/xmpp/xmpp.php', 'xmpp_login');
 }
 
-function xmpp_uninstall()
-{
-	Hook::unregister('addon_settings', 'addon/xmpp/xmpp.php', 'xmpp_addon_settings');
-	Hook::unregister('addon_settings_post', 'addon/xmpp/xmpp.php', 'xmpp_addon_settings_post');
-	Hook::unregister('page_end', 'addon/xmpp/xmpp.php', 'xmpp_script');
-	Hook::unregister('logged_in', 'addon/xmpp/xmpp.php', 'xmpp_login');
-}
-
 function xmpp_addon_settings_post()
 {
 	if (!local_user() || empty($_POST['xmpp-settings-submit'])) {

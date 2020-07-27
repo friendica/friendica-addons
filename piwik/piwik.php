@@ -45,13 +45,6 @@ function piwik_install() {
 	Logger::log("installed piwik addon");
 }
 
-function piwik_uninstall() {
-	Hook::unregister('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
-	Hook::unregister('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
-
-	Logger::log("uninstalled piwik addon");
-}
-
 function piwik_load_config(\Friendica\App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('piwik'));

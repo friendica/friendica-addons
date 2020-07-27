@@ -18,13 +18,6 @@ function geocoordinates_install()
 	Hook::register('post_remote', 'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
 }
 
-
-function geocoordinates_uninstall()
-{
-	Hook::unregister('post_local',    'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
-	Hook::unregister('post_remote',    'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
-}
-
 function geocoordinates_resolve_item(&$item)
 {
 	if((!$item["coord"]) || ($item["location"]))

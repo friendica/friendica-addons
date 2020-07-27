@@ -14,11 +14,6 @@ function namethingy_install() {
     Hook::register('app_menu', 'addon/namethingy/namethingy.php', 'namethingy_app_menu');
 }
 
-function namethingy_uninstall() {
-    Hook::unregister('app_menu', 'addon/namethingy/namethingy.php', 'namethingy_app_menu');
-
-}
-
 function namethingy_app_menu($a,&$b) {
     $b['app_menu'][] = '<div class="app-title"><a href="namethingy">NameThingy</a></div>';
 }

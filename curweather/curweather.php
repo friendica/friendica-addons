@@ -24,13 +24,6 @@ function curweather_install()
 	Hook::register('addon_settings_post', 'addon/curweather/curweather.php', 'curweather_addon_settings_post');
 }
 
-function curweather_uninstall()
-{
-	Hook::unregister('network_mod_init'   , 'addon/curweather/curweather.php', 'curweather_network_mod_init');
-	Hook::unregister('addon_settings'     , 'addon/curweather/curweather.php', 'curweather_addon_settings');
-	Hook::unregister('addon_settings_post', 'addon/curweather/curweather.php', 'curweather_addon_settings_post');
-}
-
 //  get the weather data from OpenWeatherMap
 function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cachetime = 0)
 {

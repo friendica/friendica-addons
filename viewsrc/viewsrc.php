@@ -16,13 +16,6 @@ function viewsrc_install() {
 	Hook::register('page_end', 'addon/viewsrc/viewsrc.php', 'viewsrc_page_end');
 }
 
-
-function viewsrc_uninstall() {
-	Hook::unregister('item_photo_menu', 'addon/viewsrc/viewsrc.php', 'viewsrc_item_photo_menu');
-	Hook::unregister('page_end', 'addon/viewsrc/viewsrc.php', 'viewsrc_page_end');
-
-}
-
 function viewsrc_page_end(&$a, &$o){
 	DI::page()['htmlhead'] .= <<< EOS
 	<script>

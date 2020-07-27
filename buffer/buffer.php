@@ -29,16 +29,6 @@ function buffer_install()
 	Hook::register('connector_settings_post', 'addon/buffer/buffer.php', 'buffer_settings_post');
 }
 
-function buffer_uninstall()
-{
-	Hook::unregister('hook_fork',               'addon/buffer/buffer.php', 'buffer_hook_fork');
-	Hook::unregister('post_local',              'addon/buffer/buffer.php', 'buffer_post_local');
-	Hook::unregister('notifier_normal',         'addon/buffer/buffer.php', 'buffer_send');
-	Hook::unregister('jot_networks',            'addon/buffer/buffer.php', 'buffer_jot_nets');
-	Hook::unregister('connector_settings',      'addon/buffer/buffer.php', 'buffer_settings');
-	Hook::unregister('connector_settings_post', 'addon/buffer/buffer.php', 'buffer_settings_post');
-}
-
 function buffer_module()
 {
 }

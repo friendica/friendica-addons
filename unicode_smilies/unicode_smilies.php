@@ -13,10 +13,6 @@ function unicode_smilies_install() {
 	Hook::register('smilie', 'addon/unicode_smilies/unicode_smilies.php', 'unicode_smilies_smilies');
 }
 
-function unicode_smilies_uninstall() {
-	Hook::unregister('smilie', 'addon/unicode_smilies/unicode_smilies.php', 'unicode_smilies_smilies');
-}
-
 function unicode_smilies_smilies(&$a,&$b) {
 	Smilies::add($b, ':-)', '&#x1F600;');
 	Smilies::add($b, ':)', '&#x1F600;');
