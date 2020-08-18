@@ -1,0 +1,74 @@
+# ADDON wppost
+# Copyright (C)
+# This file is distributed under the same license as the Friendica wppost addon package.
+# 
+# 
+# Translators:
+# steve jobs <vicdorke@gmail.com>, 2020
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-01-24 21:06+0100\n"
+"PO-Revision-Date: 2020-07-31 03:59+0000\n"
+"Last-Translator: steve jobs <vicdorke@gmail.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/Friendica/friendica/language/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: wppost.php:42
+msgid "Post to Wordpress"
+msgstr "发布到 Wordpress"
+
+#: wppost.php:80 wppost.php:84
+msgid "Wordpress Export"
+msgstr "导出WordPress"
+
+#: wppost.php:87
+msgid "Enable WordPress Post Addon"
+msgstr "启用 WordPress 文章插件"
+
+#: wppost.php:92
+msgid "WordPress username"
+msgstr "WordPress用户名"
+
+#: wppost.php:97
+msgid "WordPress password"
+msgstr "WordPress密码"
+
+#: wppost.php:102
+msgid "WordPress API URL"
+msgstr "WordPress API URL"
+
+#: wppost.php:107
+msgid "Post to WordPress by default"
+msgstr "默认发布到 WordPress"
+
+#: wppost.php:112
+msgid "Provide a backlink to the Friendica post"
+msgstr "提供 Friendica 发布的反向链接"
+
+#: wppost.php:116
+msgid ""
+"Text for the backlink, e.g. Read the original post and comment stream on "
+"Friendica."
+msgstr "反向链接的文本，例如阅读 Friendica 的原始文章和评论流。"
+
+#: wppost.php:121
+msgid "Don't post messages that are too short"
+msgstr "不要发太短的信息"
+
+#: wppost.php:127
+msgid "Save Settings"
+msgstr "保存设置"
+
+#: wppost.php:206
+msgid "Read the orig­i­nal post and com­ment stream on Friendica"
+msgstr "阅读原文并在 Friendica 上发表评论"
+
+#: wppost.php:269
+msgid "Post from Friendica"
+msgstr "来自Friendica的帖子"
