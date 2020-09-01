@@ -1,0 +1,60 @@
+# ADDON notifyall
+# Copyright (C)
+# This file is distributed under the same license as the Friendica notifyall addon package.
+# 
+# 
+# Translators:
+# Alexander An <ravnina@gmail.com>, 2020
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-08-14 16:41+0200\n"
+"PO-Revision-Date: 2016-08-14 19:29+0000\n"
+"Last-Translator: Alexander An <ravnina@gmail.com>, 2020\n"
+"Language-Team: Russian (https://www.transifex.com/Friendica/teams/12172/ru/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: notifyall.php:26
+msgid "Send email to all members"
+msgstr "Послать почту всем пользователям"
+
+#: notifyall.php:42
+#, php-format
+msgid "%s Administrator"
+msgstr "%s Администратор"
+
+#: notifyall.php:44
+#, php-format
+msgid "%1$s, %2$s Administrator"
+msgstr "%1$s, %2$s Администратор"
+
+#: notifyall.php:60
+msgid "No recipients found."
+msgstr "Получатели не найдены."
+
+#: notifyall.php:78
+msgid "Emails sent"
+msgstr "Сообщения высланы."
+
+#: notifyall.php:86
+msgid "Send email to all members of this Friendica instance."
+msgstr "Выслать почтовое сообщение всем пользователям этого узла Friendica."
+
+#: notifyall.php:91
+msgid "Message subject"
+msgstr "Тема сообщения"
+
+#: notifyall.php:92
+msgid "Test mode (only send to administrator)"
+msgstr "Пробный режим (отправить только администратору)"
+
+#: notifyall.php:93
+msgid "Submit"
+msgstr "Отправить"
