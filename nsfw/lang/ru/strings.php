@@ -1,10 +1,17 @@
 <?php
 
-$a->strings["Not Safe For Work (General Purpose Content Filter) settings"] = "";
-$a->strings["This addon looks in posts for the words/text you specify below, and collapses any content containing those keywords so it is not displayed at inappropriate times, such as sexual innuendo that may be improper in a work setting. It is polite and recommended to tag any content containing nudity with #NSFW.  This filter can also match any other word/text you specify, and can thereby be used as a general purpose content filter."] = "";
-$a->strings["Enable Content filter"] = "Включить фильтр содержимого";
-$a->strings["Comma separated list of keywords to hide"] = "ключевые слова, которые скрыть (список через запятую)";
-$a->strings["Submit"] = "Подтвердить";
-$a->strings["Use /expression/ to provide regular expressions"] = "";
-$a->strings["NSFW Settings saved."] = "NSFW Настройки сохранены.";
-$a->strings["%s - Click to open/close"] = "%s - Нажмите для открытия / закрытия";
+if(! function_exists("string_plural_select_ru")) {
+function string_plural_select_ru($n){
+	$n = intval($n);
+	return ($n%10==1 && $n%100!=11 ? 0 : $n%10>=2 && $n%10<=4 && ($n%100<12 || $n%100>14) ? 1 : $n%10==0 || ($n%10>=5 && $n%10<=9) || ($n%100>=11 && $n%100<=14)? 2 : 3);;
+}}
+;
+$a->strings["Content Filter (NSFW and more)"] = "Фильтр контента (NSFW и прочее)";
+$a->strings["This addon searches for specified words/text in posts and collapses them. It can be used to filter content tagged with for instance #NSFW that may be deemed inappropriate at certain times or places, such as being at work. It is also useful for hiding irrelevant or annoying content from direct view."] = "Это дополнение ищет указанные слова и выражения в записях и сворачивает запись, если найдёт. Это можно использовать для скрытия записей с тэгом #NSFW, просмотр которых может быть нежелателен в определённое время, например, на работе. Так же можно использовать для скрытия иного контента.";
+$a->strings["Enable Content filter"] = "Включить фильтр контента";
+$a->strings["Comma separated list of keywords to hide"] = "Ключевые слова для скрытия, через запятую";
+$a->strings["Save Settings"] = "Сохранить настройки";
+$a->strings["Use /expression/ to provide regular expressions"] = "Используйте формат /expression/ для регулярных выражений";
+$a->strings["NSFW Settings saved."] = "Настройки NSFW сохранены";
+$a->strings["Filtered tag: %s"] = "Скрыт тэг: %s";
+$a->strings["Filtered word: %s"] = "Скрыто слово: %s";
