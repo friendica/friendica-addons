@@ -90,7 +90,7 @@ function forumdirectory_content(App $a)
 	$total = 0;
 	$cnt = DBA::fetchFirst("SELECT COUNT(*) AS `total` FROM `profile`
 				INNER JOIN `user` ON `user`.`uid` = `profile`.`uid`
-				WHERE $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` `user`.`page-flags` = ? $sql_extra",
+				WHERE $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` AND `user`.`page-flags` = ? $sql_extra",
 				User::PAGE_FLAGS_COMMUNITY);
 	if (DBA::isResult($cnt)) {
 		$total = $cnt['total'];
