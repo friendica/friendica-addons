@@ -5,13 +5,14 @@
 # 
 # Translators:
 # fabrixxm <fabrix.xm@gmail.com>, 2014-2015,2019
+# Sylke Vicious <silkevicious@gmail.com>, 2020
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-02-19 10:42+0100\n"
-"PO-Revision-Date: 2019-03-11 14:19+0000\n"
-"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
+"PO-Revision-Date: 2020-09-17 11:39+0000\n"
+"Last-Translator: Sylke Vicious <silkevicious@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -53,7 +54,7 @@ msgstr "ID del sito"
 
 #: piwik.php:107
 msgid "Show opt-out cookie link?"
-msgstr "Mostra il link per il cookie opt-out?"
+msgstr "Mostra il collegamento per l'opt-out dei cookie?"
 
 #: piwik.php:108
 msgid "Asynchronous tracking"

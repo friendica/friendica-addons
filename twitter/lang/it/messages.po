@@ -5,13 +5,14 @@
 # 
 # Translators:
 # fabrixxm <fabrix.xm@gmail.com>, 2014-2015,2018
+# Sylke Vicious <silkevicious@gmail.com>, 2020
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-02 10:25+0700\n"
-"PO-Revision-Date: 2018-06-06 15:03+0000\n"
-"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
+"PO-Revision-Date: 2020-09-17 11:44+0000\n"
+"Last-Translator: Sylke Vicious <silkevicious@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -50,7 +51,7 @@ msgid ""
 "button below to get a PIN from Twitter which you have to copy into the input"
 " box below and submit the form. Only your <strong>public</strong> posts will"
 " be posted to Twitter."
-msgstr "Il componente aggiuntivo Twitter è abilitato ma non hai ancora collegato i tuoi account Friendica e Twitter. Per farlo, clicca il bottone qui sotto per ricevere un PIN da Twitter che dovrai copiare nel campo qui sotto. Solo i tuoi post <strong>pubblici</strong> saranno inviati a Twitter."
+msgstr "Il componente aggiuntivo Twitter è abilitato ma non hai ancora collegato i tuoi account Friendica e Twitter. Per farlo, clicca il bottone qui sotto per ricevere un PIN da Twitter che dovrai copiare nel campo qui sotto. Solo i tuoi messaggi <strong>pubblici</strong> saranno inviati a Twitter."
 
 #: twitter.php:317
 msgid "Log in with Twitter"
@@ -89,7 +90,7 @@ msgid ""
 "details from unknown viewers?</em>) the link potentially included in public "
 "postings relayed to Twitter will lead the visitor to a blank page informing "
 "the visitor that the access to your profile has been restricted."
-msgstr "<strong>Nota</strong>: A causa delle tue impostazioni di privacy(<em>Nascondi i dettagli del tuo profilo ai visitatori sconosciuti?</em>) il link potenzialmente incluso nei messaggi pubblici inviati a Twitter porterà i visitatori a una pagina bianca con una nota che li informa che l'accesso al tuo profilo è stato limitato."
+msgstr "<strong>Nota</strong>: A causa delle tue impostazioni di privacy(<em>Nascondi i dettagli del tuo profilo ai visitatori sconosciuti?</em>) il collegamento potenzialmente incluso nei messaggi pubblici inviati a Twitter porterà i visitatori a una pagina bianca con una nota che li informa che l'accesso al tuo profilo è stato limitato."
 
 #: twitter.php:353
 msgid "Send public postings to Twitter by default"
@@ -115,7 +116,7 @@ msgid ""
 "from whom you would like to see posts here. However if enabled, you cannot "
 "merely remove a twitter contact from the Friendica contact list, as it will "
 "recreate this contact when they post again."
-msgstr "Questo creerà automaticamente un contatto in Friendica appena ricevi un messaggio da un tuo contatto sulla rete Twitter. Se non abiliti questa opzione, dovrai aggiungere a mano in Friendica i contatti Twitter da cui vuoi ricevere i messaggi. Se abilitato, pero', non potrai semplicemente rimuovere un contatto Twitter dal tuo elenco contatti su Friendica, dato che questo sarà ricreato la prossima volta che invierà un messaggio."
+msgstr "Questo creerà automaticamente un contatto in Friendica appena ricevi un messaggio da un tuo contatto sulla rete Twitter. Se non abiliti questa opzione, dovrai aggiungere a mano in Friendica i contatti Twitter da cui vuoi ricevere i messaggi. Se abilitato, però, non potrai semplicemente rimuovere un contatto Twitter dal tuo elenco contatti su Friendica, dato che questo sarà ricreato la prossima volta che invierà un messaggio."
 
 #: twitter.php:614
 msgid "Twitter post failed. Queued for retry."
