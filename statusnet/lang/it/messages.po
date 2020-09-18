@@ -5,13 +5,14 @@
 # 
 # Translators:
 # fabrixxm <fabrix.xm@gmail.com>, 2014-2015
+# Sylke Vicious <silkevicious@gmail.com>, 2020
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-27 07:21+0200\n"
-"PO-Revision-Date: 2017-09-20 06:08+0000\n"
-"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
+"PO-Revision-Date: 2020-09-17 11:40+0000\n"
+"Last-Translator: Sylke Vicious <silkevicious@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -127,7 +128,7 @@ msgid ""
 "details from unknown viewers?</em>) the link potentially included in public "
 "postings relayed to GNU Social will lead the visitor to a blank page "
 "informing the visitor that the access to your profile has been restricted."
-msgstr "<strong>Nota</strong>: A causa delle tue impostazioni di privacy(<em>Nascondi i dettagli del tuo profilo ai visitatori sconosciuti?</em>) il link potenzialmente incluse nei messaggi pubblici inviati a GNU Social porterà i visitatori a una pagina bianca con una nota che li informa che l'accesso al tuo profilo è stato limitato."
+msgstr "<strong>Nota</strong>: A causa delle tue impostazioni di privacy(<em>Nascondi i dettagli del tuo profilo ai visitatori sconosciuti?</em>) il collegamento potenzialmente incluso nei messaggi pubblici inviati a GNU Social porterà i visitatori a una pagina bianca con una nota che li informa che l'accesso al tuo profilo è stato limitato."
 
 #: statusnet.php:385
 msgid "Allow posting to GNU Social"
