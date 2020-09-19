@@ -63,6 +63,9 @@ function superblock_addon_settings_post(&$a, &$b)
 }
 
 function superblock_enotify_store(&$a,&$b) {
+	if (empty($b['uid'])) {
+		return;
+	}
 
 	$words = DI::pConfig()->get($b['uid'], 'system', 'blocked');
 	if ($words) {
