@@ -91,11 +91,13 @@ function phpmailer_emailer_send_prepare(App $a, IEmail &$email)
 		// additional headers
 		if (!empty($email->getAdditionalMailHeader())) {
 			foreach ($email->getAdditionalMailHeader() as $name => $values) {
-				// Skip the "Message-ID" header because PHP-Mailer is using its own
+				// Set the "Message-ID" header for PHP-Mailer directly
 				if ($name == 'Message-Id') {
-					continue;
+					// implode all values to one entry, because there's only one value possible
+					$mailer->MessageID = trim(implode("", $values));
+				} else {
+					$mailer->addCustomHeader(trim($name), trim(implode("\n", $values)));
 				}
-				$mailer->addCustomHeader(trim($name), trim(implode("\n", $values)));
 			}
 		}
 
