@@ -17,16 +17,6 @@ function numfriends_install() {
 	Logger::log("installed numfriends");
 }
 
-
-function numfriends_uninstall() {
-
-	Hook::unregister('addon_settings', 'addon/numfriends/numfriends.php', 'numfriends_settings');
-	Hook::unregister('addon_settings_post', 'addon/numfriends/numfriends.php', 'numfriends_settings_post');
-
-
-	Logger::log("removed numfriends");
-}
-
 /**
  *
  * Callback from the settings post function.
@@ -40,7 +30,6 @@ function numfriends_settings_post($a,$post) {
 		return;
 
 	DI::pConfig()->set(local_user(),'system','display_friend_count',intval($_POST['numfriends']));
-	info( DI::l10n()->t('Numfriends settings updated.') . EOL);
 }
 
 

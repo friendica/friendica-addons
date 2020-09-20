@@ -65,13 +65,6 @@ function advancedcontentfilter_install(App $a)
 	Logger::log("installed advancedcontentfilter");
 }
 
-function advancedcontentfilter_uninstall()
-{
-	Hook::unregister('dbstructure_definition'     , __FILE__, 'advancedcontentfilter_dbstructure_definition');
-	Hook::unregister('prepare_body_content_filter', __FILE__, 'advancedcontentfilter_prepare_body_content_filter');
-	Hook::unregister('addon_settings'             , __FILE__, 'advancedcontentfilter_addon_settings');
-}
-
 /*
  * Hooks
  */

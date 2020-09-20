@@ -1,7 +1,7 @@
 <?php
 /**
  * Name: JS Uploader
- * Description: JavaScript photo/image uploader. Uses Valum 'qq' Uploader.
+ * Description: JavaScript photo/image uploader. Helpful for uploading multiple files at once. Uses Valum 'qq' Uploader.
  * Version: 1.1
  * Author: Chris Case <http://friendika.openmindspace.org/profile/chris_case>
  * Maintainer: Hypolite Petovan <https://friendica.mrpetovan.com/profile/hypolite>

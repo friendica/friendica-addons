@@ -29,16 +29,6 @@ function tumblr_install()
 	Hook::register('connector_settings_post', 'addon/tumblr/tumblr.php', 'tumblr_settings_post');
 }
 
-function tumblr_uninstall()
-{
-	Hook::unregister('hook_fork',               'addon/tumblr/tumblr.php', 'tumblr_hook_fork');
-	Hook::unregister('post_local',              'addon/tumblr/tumblr.php', 'tumblr_post_local');
-	Hook::unregister('notifier_normal',         'addon/tumblr/tumblr.php', 'tumblr_send');
-	Hook::unregister('jot_networks',            'addon/tumblr/tumblr.php', 'tumblr_jot_nets');
-	Hook::unregister('connector_settings',      'addon/tumblr/tumblr.php', 'tumblr_settings');
-	Hook::unregister('connector_settings_post', 'addon/tumblr/tumblr.php', 'tumblr_settings_post');
-}
-
 function tumblr_module()
 {
 }
@@ -90,8 +80,6 @@ function tumblr_addon_admin_post(App $a)
 
 	DI::config()->set('tumblr', 'consumer_key',$consumer_key);
 	DI::config()->set('tumblr', 'consumer_secret',$consumer_secret);
-
-	info(DI::l10n()->t('Settings updated.'). EOL);
 }
 
 function tumblr_connect(App $a)

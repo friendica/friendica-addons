@@ -29,16 +29,6 @@ function diaspora_install()
 	Hook::register('connector_settings_post', 'addon/diaspora/diaspora.php', 'diaspora_settings_post');
 }
 
-function diaspora_uninstall()
-{
-	Hook::unregister('hook_fork',               'addon/diaspora/diaspora.php', 'diaspora_hook_fork');
-	Hook::unregister('post_local',              'addon/diaspora/diaspora.php', 'diaspora_post_local');
-	Hook::unregister('notifier_normal',         'addon/diaspora/diaspora.php', 'diaspora_send');
-	Hook::unregister('jot_networks',            'addon/diaspora/diaspora.php', 'diaspora_jot_nets');
-	Hook::unregister('connector_settings',      'addon/diaspora/diaspora.php', 'diaspora_settings');
-	Hook::unregister('connector_settings_post', 'addon/diaspora/diaspora.php', 'diaspora_settings_post');
-}
-
 function diaspora_jot_nets(App $a, array &$jotnets_fields)
 {
 	if (!local_user()) {
@@ -135,10 +125,8 @@ function diaspora_settings_post(App $a, &$b)
 				DI::pConfig()->set(local_user(),'diaspora', 'aspect'         , trim($_POST['aspect']));
 				DI::pConfig()->set(local_user(),'diaspora', 'post_by_default', intval($_POST['post_by_default']));
 			}
-			notice(DI::l10n()->t('Diaspora settings updated.'));
 		} else {
 			DI::pConfig()->delete(local_user(), 'diaspora', 'password');
-			notice(DI::l10n()->t('Diaspora connector disabled.'));
 		}
 	}
 }

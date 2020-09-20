@@ -23,11 +23,6 @@ function forumdirectory_install()
 	Hook::register('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
 }
 
-function forumdirectory_uninstall()
-{
-	Hook::unregister('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
-}
-
 function forumdirectory_module()
 {
 	return;
@@ -95,7 +90,7 @@ function forumdirectory_content(App $a)
 	$total = 0;
 	$cnt = DBA::fetchFirst("SELECT COUNT(*) AS `total` FROM `profile`
 				INNER JOIN `user` ON `user`.`uid` = `profile`.`uid`
-				WHERE $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` `user`.`page-flags` = ? $sql_extra",
+				WHERE $publish AND NOT `user`.`blocked` AND NOT `user`.`account_removed` AND `user`.`page-flags` = ? $sql_extra",
 				User::PAGE_FLAGS_COMMUNITY);
 	if (DBA::isResult($cnt)) {
 		$total = $cnt['total'];
@@ -127,7 +122,7 @@ function forumdirectory_content(App $a)
 		}
 		DBA::close($r);
 	} else {
-		info(DI::l10n()->t("No entries \x28some entries may be hidden\x29.") . EOL);
+		notice(DI::l10n()->t("No entries \x28some entries may be hidden\x29."));
 	}
 
 	$tpl = Renderer::getMarkupTemplate('directory_header.tpl');

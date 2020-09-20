@@ -12,11 +12,6 @@ function calc_install() {
 	Hook::register('app_menu', 'addon/calc/calc.php', 'calc_app_menu');
 }
 
-function calc_uninstall() {
-	Hook::unregister('app_menu', 'addon/calc/calc.php', 'calc_app_menu');
-
-}
-
 function calc_app_menu($a,&$b) {
 	$b['app_menu'][] = '<div class="app-title"><a href="calc">Calculator</a></div>'; 
 }

@@ -19,11 +19,6 @@ function newmemberwidget_install()
 	Logger::log('newmemberwidget installed');
 }
 
-function newmemberwidget_uninstall()
-{
-	Hook::unregister( 'network_mod_init', 'addon/newmemberwidget/newmemberwidget.php', 'newmemberwidget_network_mod_init');
-}
-
 function newmemberwidget_network_mod_init ($a, $b)
 {
 	if (empty($_SESSION['new_member'])) {

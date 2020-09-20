@@ -18,13 +18,6 @@ function showmore_install()
 	Hook::register('addon_settings_post', 'addon/showmore/showmore.php', 'showmore_addon_settings_post');
 }
 
-function showmore_uninstall()
-{
-	Hook::unregister('prepare_body', 'addon/showmore/showmore.php', 'showmore_prepare_body');
-	Hook::unregister('addon_settings', 'addon/showmore/showmore.php', 'showmore_addon_settings');
-	Hook::unregister('addon_settings_post', 'addon/showmore/showmore.php', 'showmore_addon_settings_post');
-}
-
 function showmore_addon_settings(&$a, &$s)
 {
 	if (!local_user()) {
@@ -73,7 +66,6 @@ function showmore_addon_settings_post(&$a, &$b)
 		$enable = (!empty($_POST['showmore-enable']) ? intval($_POST['showmore-enable']) : 0);
 		$disable = 1-$enable;
 		DI::pConfig()->set(local_user(), 'showmore', 'disable', $disable);
-		info(DI::l10n()->t('Show More Settings saved.') . EOL);
 	}
 }
 

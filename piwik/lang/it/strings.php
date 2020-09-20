@@ -12,6 +12,6 @@ $a->strings["Save Settings"] = "Salva Impostazioni";
 $a->strings["Matomo (Piwik) Base URL"] = "Indirizzo di base di Matomo (Piwik)";
 $a->strings["Absolute path to your Matomo (Piwik) installation. (without protocol (http/s), with trailing slash)"] = "Percorso assoluto alla tua installazione di Matomo (Piwik) (senza il protocollo (http/https), con la barra alla fine)";
 $a->strings["Site ID"] = "ID del sito";
-$a->strings["Show opt-out cookie link?"] = "Mostra il link per il cookie opt-out?";
+$a->strings["Show opt-out cookie link?"] = "Mostra il collegamento per l'opt-out dei cookie?";
 $a->strings["Asynchronous tracking"] = "Tracciamento asincrono";
 $a->strings["Settings updated."] = "Impostazioni aggiornate.";

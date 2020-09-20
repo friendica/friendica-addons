@@ -15,7 +15,6 @@ use Friendica\Core\Cache\Duration;
 use Friendica\Core\Hook;
 use Friendica\Core\Protocol;
 use Friendica\DI;
-use Friendica\Util\Network;
 use Friendica\Util\Proxy as ProxyUtils;
 
 function mastodoncustomemojis_install()
@@ -26,16 +25,6 @@ function mastodoncustomemojis_install()
 	Hook::register('search_mod_init',    __FILE__, 'mastodoncustomemojis_css_hook');
 	Hook::register('community_mod_init', __FILE__, 'mastodoncustomemojis_css_hook');
 	Hook::register('contacts_mod_init',  __FILE__, 'mastodoncustomemojis_css_hook');
-}
-
-function mastodoncustomemojis_uninstall()
-{
-	Hook::unregister('put_item_in_cache',  __FILE__, 'mastodoncustomemojis_put_item_in_cache');
-	Hook::unregister('network_mod_init',   __FILE__, 'mastodoncustomemojis_css_hook');
-	Hook::unregister('display_mod_init',   __FILE__, 'mastodoncustomemojis_css_hook');
-	Hook::unregister('search_mod_init',    __FILE__, 'mastodoncustomemojis_css_hook');
-	Hook::unregister('community_mod_init', __FILE__, 'mastodoncustomemojis_css_hook');
-	Hook::unregister('contacts_mod_init',  __FILE__, 'mastodoncustomemojis_css_hook');
 }
 
 function mastodoncustomemojis_css_hook(App $a)
@@ -90,7 +79,7 @@ function mastodoncustomemojis_fetch_custom_emojis_for_url($api_base_url)
 
 	$api_url = $api_base_url . '/api/v1/custom_emojis';
 
-	$fetchResult = Network::fetchUrlFull($api_url);
+	$fetchResult = DI::httpRequest()->fetchFull($api_url);
 
 	if ($fetchResult->isSuccess()) {
 		$emojis_array = json_decode($fetchResult->getBody(), true);

@@ -15,11 +15,6 @@ function webrtc_install() {
         Hook::register('app_menu', 'addon/webrtc/webrtc.php', 'webrtc_app_menu');
 }
 
-function webrtc_uninstall() {
-        Hook::unregister('app_menu', 'addon/webrtc/webrtc.php', 'webrtc_app_menu');
-
-}
-
 function webrtc_app_menu($a,&$b) {
 	$b['app_menu'][] = '<div class="app-title"><a href="webrtc">' . DI::l10n()->t('WebRTC Videochat') . '</a></div>';
 }
@@ -34,7 +29,6 @@ function webrtc_addon_admin (&$a, &$o) {
 function webrtc_addon_admin_post (&$a) {
         $url = (!empty($_POST['webrtcurl']) ? Strings::escapeTags(trim($_POST['webrtcurl'])) : '');
 	    DI::config()->set('webrtc', 'webrtcurl', $url);
-	    info(DI::l10n()->t('Settings updated.'). EOL);
 }
 
 function webrtc_module() {

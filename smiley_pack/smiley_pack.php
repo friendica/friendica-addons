@@ -14,12 +14,6 @@ function smiley_pack_install() {
 	Hook::register('smilie', 'addon/smiley_pack/smiley_pack.php', 'smiley_pack_smilies');
 }
 
-function smiley_pack_uninstall() {
-	Hook::unregister('smilie', 'addon/smiley_pack/smiley_pack.php', 'smiley_pack_smilies');
-}
-
- 
-
 function smiley_pack_smilies(&$a,&$b) {
 
 #Smileys are split into various directories by the intended range of emotions.  This is in case we get too big and need to modularise things.  We can then cut and paste the right lines, move the right directory, and just change the name of the addon to happy_smilies or whatever.

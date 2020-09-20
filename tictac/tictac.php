@@ -12,11 +12,6 @@ function tictac_install() {
 	Hook::register('app_menu', 'addon/tictac/tictac.php', 'tictac_app_menu');
 }
 
-function tictac_uninstall() {
-	Hook::unregister('app_menu', 'addon/tictac/tictac.php', 'tictac_app_menu');
-
-}
-
 function tictac_app_menu($a,&$b) {
 	$b['app_menu'][] = '<div class="app-title"><a href="tictac">' . DI::l10n()->t('Three Dimensional Tic-Tac-Toe') . '</a></div>';
 }

@@ -12,7 +12,6 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Util\ConfigFileLoader;
-use Friendica\Util\Network;
 use Friendica\Util\XML;
 
 function geonames_install()
@@ -78,7 +77,7 @@ function geonames_post_hook(App $a, array &$item)
 
 	/* OK, we're allowed to do our stuff. */
 
-	$s = Network::fetchUrl('http://api.geonames.org/findNearbyPlaceName?lat=' . $coords[0] . '&lng=' . $coords[1] . '&username=' . $geo_account);
+	$s = DI::httpRequest()->fetch('http://api.geonames.org/findNearbyPlaceName?lat=' . $coords[0] . '&lng=' . $coords[1] . '&username=' . $geo_account);
 
 	if (!$s) {
 		return;
@@ -108,8 +107,6 @@ function geonames_addon_settings_post(App $a, array $post)
 	}
 
 	DI::pConfig()->set(local_user(), 'geonames', 'enable', intval($_POST['geonames-enable']));
-
-	info(DI::l10n()->t('Geonames settings updated.'));
 }
 
 /**

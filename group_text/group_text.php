@@ -17,18 +17,6 @@ function group_text_install() {
 	Logger::log("installed group_text");
 }
 
-
-function group_text_uninstall() {
-
-	Hook::unregister('addon_settings', 'addon/group_text/group_text.php', 'group_text_settings');
-	Hook::unregister('addon_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
-
-
-	Logger::log("removed group_text");
-}
-
-
-
 /**
  *
  * Callback from the settings post function.
@@ -42,8 +30,6 @@ function group_text_settings_post($a,$post) {
 	if(! local_user() || empty($_POST['group_text-submit']))
 		return;
 	DI::pConfig()->set(local_user(),'system','groupedit_image_limit',intval($_POST['group_text']));
-
-	info(DI::l10n()->t('Group Text settings updated.') . EOL);
 }
 
 

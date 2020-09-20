@@ -26,16 +26,6 @@ function securemail_install()
 	Logger::log('installed securemail');
 }
 
-function securemail_uninstall()
-{
-	Hook::unregister('addon_settings', 'addon/securemail/securemail.php', 'securemail_settings');
-	Hook::unregister('addon_settings_post', 'addon/securemail/securemail.php', 'securemail_settings_post');
-
-	Hook::unregister('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare');
-
-	Logger::log('removed securemail');
-}
-
 /**
  * @brief Build user settings form
  *
@@ -86,7 +76,6 @@ function securemail_settings_post(App &$a, array &$b)
 		DI::pConfig()->set(local_user(), 'securemail', 'pkey', trim($_POST['securemail-pkey']));
 		$enable = (!empty($_POST['securemail-enable']) ? 1 : 0);
 		DI::pConfig()->set(local_user(), 'securemail', 'enable', $enable);
-		info(DI::l10n()->t('Secure Mail Settings saved.') . EOL);
 
 		if ($_POST['securemail-submit'] == DI::l10n()->t('Save and send test')) {
 

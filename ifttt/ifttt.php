@@ -8,6 +8,7 @@
  */
 require_once 'mod/item.php';
 use Friendica\App;
+use Friendica\Content\PageInfo;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Protocol;
@@ -20,12 +21,6 @@ function ifttt_install()
 {
 	Hook::register('connector_settings', 'addon/ifttt/ifttt.php', 'ifttt_settings');
 	Hook::register('connector_settings_post', 'addon/ifttt/ifttt.php', 'ifttt_settings_post');
-}
-
-function ifttt_uninstall()
-{
-	Hook::unregister('connector_settings', 'addon/ifttt/ifttt.php', 'ifttt_settings');
-	Hook::unregister('connector_settings_post', 'addon/ifttt/ifttt.php', 'ifttt_settings_post');
 }
 
 function ifttt_module()
@@ -185,7 +180,7 @@ function ifttt_message($uid, $item)
 	}
 
 	if ($item['type'] == 'link') {
-		$data = query_page_info($item['link']);
+		$data = PageInfo::queryUrl($item['link']);
 
 		if (isset($item['title']) && (trim($item['title']) != '')) {
 			$data['title'] = $item['title'];
@@ -195,7 +190,7 @@ function ifttt_message($uid, $item)
 			$data['text'] = $item['description'];
 		}
 
-		$_REQUEST['body'] .= add_page_info_data($data);
+		$_REQUEST['body'] .= "\n" . PageInfo::getFooterFromData($data);
 	} elseif (($item['type'] == 'photo') && ($item['image'] != '')) {
 		$_REQUEST['body'] .= "\n\n[img]" . $item['image'] . "[/img]\n";
 	}

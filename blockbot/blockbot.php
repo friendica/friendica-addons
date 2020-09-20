@@ -22,11 +22,6 @@ function blockbot_install() {
 	Hook::register('init_1', __FILE__, 'blockbot_init_1');
 }
 
-
-function blockbot_uninstall() {
-	Hook::unregister('init_1', __FILE__, 'blockbot_init_1');
-}
-
 function blockbot_addon_admin(&$a, &$o) {
 	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/blockbot/");
 
@@ -42,7 +37,6 @@ function blockbot_addon_admin_post(&$a) {
 	DI::config()->set('blockbot', 'good_crawlers', $_POST['good_crawlers'] ?? false);
 	DI::config()->set('blockbot', 'block_gab', $_POST['block_gab'] ?? false);
 	DI::config()->set('blockbot', 'training', $_POST['training'] ?? false);
-	info(DI::l10n()->t('Settings updated.'). EOL);
 }
 
 function blockbot_init_1(App $a) {
@@ -54,7 +48,8 @@ function blockbot_init_1(App $a) {
 
 	// List of "good" crawlers
 	$good_agents = ['fediverse.space crawler', 'fediverse.network crawler', 'Active_Pods_CheckBot_3.0',
-			'Social-Relay/', 'Test Certificate Info', 'Uptimebot/', 'GNUSocialBot', 'UptimeRobot/'];
+		'Social-Relay/', 'Test Certificate Info', 'Uptimebot/', 'GNUSocialBot', 'UptimeRobot/',
+		'PTST/'];
 
 	// List of known crawlers.
 	$agents = ['SemrushBot', 's~feedly-nikon3', 'Qwantify/Bleriot/', 'ltx71', 'Sogou web spider/',

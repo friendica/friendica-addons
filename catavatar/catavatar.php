@@ -32,18 +32,6 @@ function catavatar_install()
 }
 
 /**
- * Removes the addon hook
- */
-function catavatar_uninstall()
-{
-	Hook::unregister('avatar_lookup', 'addon/catavatar/catavatar.php', 'catavatar_lookup');
-	Hook::unregister('addon_settings', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings');
-	Hook::unregister('addon_settings_post', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings_post');
-
-	Logger::log('unregistered catavatar');
-}
-
-/**
  * Cat avatar user settings page
  */
 function catavatar_addon_settings(App $a, &$s)

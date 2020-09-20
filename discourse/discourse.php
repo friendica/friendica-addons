@@ -7,18 +7,18 @@
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  *
  */
+
 use Friendica\App;
+use Friendica\Content\Text\Markdown;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
-use Friendica\Core\Renderer;
 use Friendica\Core\Protocol;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Contact;
-use Friendica\Content\Text\Markdown;
-use Friendica\Util\Network;
+use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Strings;
-Use Friendica\Util\DateTimeFormat;
 
 /* Todo:
  * - Obtaining API tokens to be able to read non public posts as well
@@ -114,7 +114,7 @@ function discourse_email_getmessage(App $a, &$message)
 function discourse_fetch_post($host, $topic, $pid)
 {
 	$url = $host . '/t/' . $topic . '/' . $pid . '.json';
-	$curlResult = Network::curl($url);
+	$curlResult = DI::httpRequest()->get($url);
 	if (!$curlResult->isSuccess()) {
 		Logger::info('No success', ['url' => $url]);
 		return false;
@@ -151,7 +151,7 @@ function discourse_fetch_post_from_api(&$message, $post, $host)
 {
 	$hostaddr = 'https://' . $host;
 	$url = $hostaddr . '/posts/' . $post . '.json';
-	$curlResult = Network::curl($url);
+	$curlResult = DI::httpRequest()->get($url);
 	if (!$curlResult->isSuccess()) {
 		return false;
 	}
@@ -198,12 +198,12 @@ function discourse_get_user($post, $hostaddr)
 	$contact['nurl'] = Strings::normaliseLink($contact['url']);
 	$contact['baseurl'] = $hostaddr;
 	Logger::info('Contact', $contact);
-	$contact['id'] = Contact::getIdForURL($contact['url'], 0, true, $contact);
+	$contact['id'] = Contact::getIdForURL($contact['url'], 0, false, $contact);
         if (!empty($contact['id'])) {
 		$avatar = $contact['photo'];
 		unset($contact['photo']);
 		DBA::update('contact', $contact, ['id' => $contact['id']]);
-		Contact::updateAvatar($avatar, 0, $contact['id']);
+		Contact::updateAvatar($contact['id'], $avatar);
 		$contact['photo'] = $avatar;
 	}
 
@@ -268,7 +268,7 @@ function discourse_get_html($message)
 	$profile = discourse_get_profile($xpath);
 	if (!empty($profile['url'])) {
 		Logger::info('Found profile', $profile);
-		$message['item']['author-id'] = Contact::getIdForURL($profile['url'], 0, true, $profile);
+		$message['item']['author-id'] = Contact::getIdForURL($profile['url'], 0, false, $profile);
 		$message['item']['author-link'] = $profile['url'];
 		$message['item']['author-name'] = $profile['name'];
 		$message['item']['author-avatar'] = $profile['photo'];

@@ -14,11 +14,6 @@ function morepokes_install()
 	  Hook::register('poke_verbs', 'addon/morepokes/morepokes.php', 'morepokes_poke_verbs');
 }
 
-function morepokes_uninstall()
-{
-	  Hook::unregister('poke_verbs', 'addon/morepokes/morepokes.php', 'morepokes_poke_verbs');
-}
-
 function morepokes_poke_verbs($a, &$b)
 {
 	$b['bitchslap'] = ['bitchslapped', DI::l10n()->t('bitchslap'), DI::l10n()->t('bitchslapped')];

@@ -2,6 +2,7 @@
 
 if(! function_exists("string_plural_select_it")) {
 function string_plural_select_it($n){
+	$n = intval($n);
 	return ($n != 1);;
 }}
 ;
@@ -26,7 +27,7 @@ $a->strings["Current GNU Social API is"] = "Le API GNU Social correnti sono";
 $a->strings["Cancel GNU Social Connection"] = "Annulla la connessione a GNU Social";
 $a->strings["Currently connected to: "] = "Al momento connesso con:";
 $a->strings["If enabled all your <strong>public</strong> postings can be posted to the associated GNU Social account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry."] = "Se abilitato tutti i tuoi messaggi <strong>pubblici</strong> possono essere inviati all'account GNU Social associato. Puoi scegliere di farlo sempre (qui) o ogni volta che invii, nelle impostazioni di privacy del messaggio.";
-$a->strings["<strong>Note</strong>: Due your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to GNU Social will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted."] = "<strong>Nota</strong>: A causa delle tue impostazioni di privacy(<em>Nascondi i dettagli del tuo profilo ai visitatori sconosciuti?</em>) il link potenzialmente incluse nei messaggi pubblici inviati a GNU Social porterà i visitatori a una pagina bianca con una nota che li informa che l'accesso al tuo profilo è stato limitato.";
+$a->strings["<strong>Note</strong>: Due your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to GNU Social will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted."] = "<strong>Nota</strong>: A causa delle tue impostazioni di privacy(<em>Nascondi i dettagli del tuo profilo ai visitatori sconosciuti?</em>) il collegamento potenzialmente incluso nei messaggi pubblici inviati a GNU Social porterà i visitatori a una pagina bianca con una nota che li informa che l'accesso al tuo profilo è stato limitato.";
 $a->strings["Allow posting to GNU Social"] = "Permetti l'invio a GNU Social";
 $a->strings["Send public postings to GNU Social by default"] = "Invia sempre i messaggi pubblici a GNU Social";
 $a->strings["Mirror all posts from GNU Social that are no replies or repeated messages"] = "Clona tutti i messaggi da GNU Social che non sono risposte o messaggi ripetuti";

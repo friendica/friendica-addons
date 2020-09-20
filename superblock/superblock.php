@@ -19,15 +19,6 @@ function superblock_install()
 	Hook::register('enotify_store', 'addon/superblock/superblock.php', 'superblock_enotify_store');
 }
 
-function superblock_uninstall()
-{
-	Hook::unregister('addon_settings', 'addon/superblock/superblock.php', 'superblock_addon_settings');
-	Hook::unregister('addon_settings_post', 'addon/superblock/superblock.php', 'superblock_addon_settings_post');
-	Hook::unregister('conversation_start', 'addon/superblock/superblock.php', 'superblock_conversation_start');
-	Hook::unregister('item_photo_menu', 'addon/superblock/superblock.php', 'superblock_item_photo_menu');
-	Hook::unregister('enotify_store', 'addon/superblock/superblock.php', 'superblock_enotify_store');
-}
-
 function superblock_addon_settings(&$a, &$s)
 {
 	if (!local_user()) {
@@ -68,11 +59,13 @@ function superblock_addon_settings_post(&$a, &$b)
 
 	if (!empty($_POST['superblock-submit'])) {
 		DI::pConfig()->set(local_user(), 'system', 'blocked',trim($_POST['superblock-words']));
-		info(DI::l10n()->t('SUPERBLOCK Settings saved.') . EOL);
 	}
 }
 
 function superblock_enotify_store(&$a,&$b) {
+	if (empty($b['uid'])) {
+		return;
+	}
 
 	$words = DI::pConfig()->get($b['uid'], 'system', 'blocked');
 	if ($words) {
@@ -163,6 +156,5 @@ function superblock_init(&$a)
 	}
 
 	DI::pConfig()->set(local_user(), 'system', 'blocked', $words);
-	info(DI::l10n()->t('superblock settings updated') . EOL );
 	exit();
 }

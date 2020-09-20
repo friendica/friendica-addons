@@ -11,7 +11,6 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\DI;
-use Friendica\Util\Network;
 use Friendica\Util\XML;
 
 function blogger_install()
@@ -23,22 +22,6 @@ function blogger_install()
 	Hook::register('connector_settings',      'addon/blogger/blogger.php', 'blogger_settings');
 	Hook::register('connector_settings_post', 'addon/blogger/blogger.php', 'blogger_settings_post');
 }
-
-function blogger_uninstall()
-{
-	Hook::unregister('hook_fork',               'addon/blogger/blogger.php', 'blogger_hook_fork');
-	Hook::unregister('post_local',              'addon/blogger/blogger.php', 'blogger_post_local');
-	Hook::unregister('notifier_normal',         'addon/blogger/blogger.php', 'blogger_send');
-	Hook::unregister('jot_networks',            'addon/blogger/blogger.php', 'blogger_jot_nets');
-	Hook::unregister('connector_settings',      'addon/blogger/blogger.php', 'blogger_settings');
-	Hook::unregister('connector_settings_post', 'addon/blogger/blogger.php', 'blogger_settings_post');
-
-	// obsolete - remove
-	Hook::unregister('post_local_end',      'addon/blogger/blogger.php', 'blogger_send');
-	Hook::unregister('addon_settings',      'addon/blogger/blogger.php', 'blogger_settings');
-	Hook::unregister('addon_settings_post', 'addon/blogger/blogger.php', 'blogger_settings_post');
-}
-
 
 function blogger_jot_nets(App $a, array &$jotnets_fields)
 {
@@ -225,7 +208,7 @@ EOT;
 		Logger::log('blogger: data: ' . $xml, Logger::DATA);
 
 		if ($bl_blog !== 'test') {
-			$x = Network::post($bl_blog, $xml)->getBody();
+			$x = DI::httpRequest()->post($bl_blog, $xml)->getBody();
 		}
 
 		Logger::log('posted to blogger: ' . (($x) ? $x : ''), Logger::DEBUG);

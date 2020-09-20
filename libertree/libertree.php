@@ -12,7 +12,6 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Database\DBA;
 use Friendica\DI;
-use Friendica\Util\Network;
 
 function libertree_install()
 {
@@ -22,16 +21,6 @@ function libertree_install()
 	Hook::register('jot_networks',         'addon/libertree/libertree.php', 'libertree_jot_nets');
 	Hook::register('connector_settings',      'addon/libertree/libertree.php', 'libertree_settings');
 	Hook::register('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
-}
-
-function libertree_uninstall()
-{
-	Hook::unregister('hook_fork',        'addon/libertree/libertree.php', 'libertree_hook_fork');
-	Hook::unregister('post_local',       'addon/libertree/libertree.php', 'libertree_post_local');
-	Hook::unregister('notifier_normal',  'addon/libertree/libertree.php', 'libertree_send');
-	Hook::unregister('jot_networks',     'addon/libertree/libertree.php', 'libertree_jot_nets');
-	Hook::unregister('connector_settings',      'addon/libertree/libertree.php', 'libertree_settings');
-	Hook::unregister('connector_settings_post', 'addon/libertree/libertree.php', 'libertree_settings_post');
 }
 
 function libertree_jot_nets(App &$a, array &$jotnets_fields)
@@ -243,7 +232,7 @@ function libertree_send(&$a,&$b) {
 		//	'token' => $ltree_api_token
 		];
 
-		$result = Network::post($ltree_blog, $params)->getBody();
+		$result = DI::httpRequest()->post($ltree_blog, $params)->getBody();
 		Logger::log('libertree: ' . $result);
 	}
 }

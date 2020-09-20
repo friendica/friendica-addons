@@ -9,13 +9,12 @@
  *
  */
 
-use Friendica\DI;
 use Friendica\Core\Cache\Duration;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\DI;
 use Friendica\Util\ConfigFileLoader;
-use Friendica\Util\Network;
 use Friendica\Util\Strings;
 
 const OSM_TMS = 'https://www.openstreetmap.org';
@@ -33,18 +32,6 @@ function openstreetmap_install()
 	Hook::register('page_header', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_alterheader');
 
 	Logger::log("installed openstreetmap");
-}
-
-function openstreetmap_uninstall()
-{
-	Hook::unregister('load_config',     'addon/openstreetmap/openstreetmap.php', 'openstreetmap_load_config');
-	Hook::unregister('render_location', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_location');
-	Hook::unregister('generate_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_map');
-	Hook::unregister('generate_named_map', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_generate_named_map');
-	Hook::unregister('Map::getCoordinates', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_get_coordinates');
-	Hook::unregister('page_header', 'addon/openstreetmap/openstreetmap.php', 'openstreetmap_alterheader');
-
-	Logger::log("removed openstreetmap");
 }
 
 function openstreetmap_load_config(\Friendica\App $a, ConfigFileLoader $loader)
@@ -132,7 +119,7 @@ function openstreetmap_get_coordinates($a, &$b)
 	$j = DI::cache()->get($cachekey);
 
 	if (is_null($j)) {
-		$curlResult = Network::curl($nomserver . $args);
+		$curlResult = DI::httpRequest()->get($nomserver . $args);
 		if ($curlResult->isSuccess()) {
 			$j = json_decode($curlResult->getBody(), true);
 			DI::cache()->set($cachekey, $j, Duration::MONTH);
@@ -223,6 +210,4 @@ function openstreetmap_addon_admin_post(&$a)
 	DI::config()->set('openstreetmap', 'nomserver', $urlnom);
 	DI::config()->set('openstreetmap', 'zoom', $zoom);
 	DI::config()->set('openstreetmap', 'marker', $marker);
-
-	info(DI::l10n()->t('Settings updated.') . EOL);
 }

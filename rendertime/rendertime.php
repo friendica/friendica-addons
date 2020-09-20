@@ -14,12 +14,6 @@ function rendertime_install() {
 	Hook::register('page_end', 'addon/rendertime/rendertime.php', 'rendertime_page_end');
 }
 
-
-function rendertime_uninstall() {
-	Hook::unregister('init_1', 'addon/rendertime/rendertime.php', 'rendertime_init_1');
-	Hook::unregister('page_end', 'addon/rendertime/rendertime.php', 'rendertime_page_end');
-}
-
 function rendertime_init_1(&$a) {
 }
 

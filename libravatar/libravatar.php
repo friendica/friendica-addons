@@ -26,16 +26,6 @@ function libravatar_install()
 	Logger::log("registered libravatar in avatar_lookup hook");
 }
 
-/**
- * Removes the addon hook
- */
-function libravatar_uninstall()
-{
-	Hook::unregister('load_config',   'addon/libravatar/libravatar.php', 'libravatar_load_config');
-	Hook::unregister('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
-	Logger::log("unregistered libravatar in avatar_lookup hook");
-}
-
 function libravatar_load_config(App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('libravatar'));
@@ -126,5 +116,4 @@ function libravatar_addon_admin_post(&$a)
 
 	$default_avatar = (!empty($_POST['avatar']) ? Strings::escapeTags(trim($_POST['avatar'])) : 'identicon');
 	DI::config()->set('libravatar', 'default_avatar', $default_avatar);
-	info(DI::l10n()->t('Libravatar settings updated.') .EOL);
 }

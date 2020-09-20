@@ -4,14 +4,15 @@
 # 
 # 
 # Translators:
+# Casper <casper@vrije-mens.org>, 2020
 # Jeroen De Meerleer <me@jeroened.be>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-04-01 11:11-0400\n"
-"PO-Revision-Date: 2018-08-24 13:43+0000\n"
-"Last-Translator: Jeroen De Meerleer <me@jeroened.be>\n"
+"PO-Revision-Date: 2020-09-04 21:08+0000\n"
+"Last-Translator: Casper <casper@vrije-mens.org>\n"
 "Language-Team: Dutch (http://www.transifex.com/Friendica/friendica/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -29,7 +30,7 @@ msgid ""
 " can be used to filter content tagged with for instance #NSFW that may be "
 "deemed inappropriate at certain times or places, such as being at work. It "
 "is also useful for hiding irrelevant or annoying content from direct view."
-msgstr ""
+msgstr "Deze add-on zoekt naar gespecificeerde woorden / tekst in berichten en vouwt ze samen. Het kan worden gebruikt om inhoud te filteren die is getagd met bijvoorbeeld #NSFW die op bepaalde tijden of plaatsen als ongepast kan worden beschouwd, zoals op het werk. Het is ook handig om irrelevante of irritante inhoud voor direct zicht te verbergen."
 
 #: nsfw.php:86
 msgid "Enable Content filter"

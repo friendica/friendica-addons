@@ -23,7 +23,6 @@ use Friendica\Protocol\Activity;
 use Friendica\Protocol\ActivityNamespace;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
-use Friendica\Util\Network;
 use Friendica\Util\Strings;
 use Friendica\Util\XML;
 
@@ -44,19 +43,6 @@ function pumpio_install()
 	Hook::register('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
 	Hook::register('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
 	Hook::register('check_item_notification', 'addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
-}
-
-function pumpio_uninstall()
-{
-	Hook::unregister('load_config',      'addon/pumpio/pumpio.php', 'pumpio_load_config');
-	Hook::unregister('hook_fork',        'addon/pumpio/pumpio.php', 'pumpio_hook_fork');
-	Hook::unregister('post_local',       'addon/pumpio/pumpio.php', 'pumpio_post_local');
-	Hook::unregister('notifier_normal',  'addon/pumpio/pumpio.php', 'pumpio_send');
-	Hook::unregister('jot_networks',     'addon/pumpio/pumpio.php', 'pumpio_jot_nets');
-	Hook::unregister('connector_settings',      'addon/pumpio/pumpio.php', 'pumpio_settings');
-	Hook::unregister('connector_settings_post', 'addon/pumpio/pumpio.php', 'pumpio_settings_post');
-	Hook::unregister('cron', 'addon/pumpio/pumpio.php', 'pumpio_cron');
-	Hook::unregister('check_item_notification', 'addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
 }
 
 function pumpio_module() {}
@@ -925,8 +911,6 @@ function pumpio_dounlike(App $a, $uid, $self, $post, $own_id)
 
 function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = true)
 {
-	require_once('include/items.php');
-
 	if (empty($post->object->id)) {
 		Logger::log('Got empty like: '.print_r($post, true), Logger::DEBUG);
 		return;
@@ -1071,7 +1055,7 @@ function pumpio_get_contact($uid, $contact, $no_insert = false)
 	}
 
 	if (!empty($contact->image->url)) {
-		Contact::updateAvatar($contact->image->url, $uid, $contact_id);
+		Contact::updateAvatar($contact_id, $contact->image->url);
 	}
 
 	return $contact_id;
@@ -1096,8 +1080,6 @@ function pumpio_dodelete(App $a, $uid, $self, $post, $own_id)
 
 function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcompletion = true)
 {
-	require_once('include/items.php');
-
 	if (($post->verb == "like") || ($post->verb == "favorite")) {
 		return pumpio_dolike($a, $uid, $self, $post, $own_id);
 	}
@@ -1609,7 +1591,7 @@ function pumpio_fetchallcomments(App $a, $uid, $id)
 
 function pumpio_reachable($url)
 {
-	return Network::curl($url, false, ['timeout' => 10])->isSuccess();
+	return DI::httpRequest()->get($url, false, ['timeout' => 10])->isSuccess();
 }
 
 /*

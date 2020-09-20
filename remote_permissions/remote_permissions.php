@@ -19,12 +19,6 @@ function remote_permissions_install() {
 	Hook::register('addon_settings_post', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings_post');
 }
 
-function remote_permissions_uninstall() {
-	Hook::unregister('lockview_content', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_content');
-	Hook::unregister('addon_settings', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings');
-	Hook::unregister('addon_settings_post', 'addon/remote_permissions/remote_permissions.php', 'remote_permissions_settings_post');
-}
-
 function remote_permissions_settings(&$a,&$o) {
 
 	if(! local_user())
@@ -60,7 +54,6 @@ function remote_permissions_settings_post($a,$post) {
 		return;
 
 	DI::pConfig()->set(local_user(),'remote_perms','show',intval($_POST['remote-perms']));
-	info(DI::l10n()->t('Remote Permissions settings updated.') . EOL);
 }
 
 function remote_permissions_content($a, $item_copy) {
@@ -209,5 +202,4 @@ function remote_permissions_addon_admin(&$a, &$o){
 function remote_permissions_addon_admin_post(&$a){
 	$choice	=	(!empty($_POST['remotepermschoice'])		? Strings::escapeTags(trim($_POST['remotepermschoice']))	: '');
 	DI::config()->set('remote_perms','global',($choice == 1 ? 1 : 0));
-	info(DI::l10n()->t('Settings updated.'). EOL);
 }

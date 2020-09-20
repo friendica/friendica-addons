@@ -16,12 +16,6 @@ function highlightjs_install()
 	Hook::register('footer', __FILE__, 'highlightjs_footer');
 }
 
-function highlightjs_uninstall()
-{
-	Hook::unregister('head'  , __FILE__, 'highlightjs_head');
-	Hook::unregister('footer', __FILE__, 'highlightjs_footer');
-}
-
 function highlightjs_head(App $a, &$b)
 {
 	if ($a->getCurrentTheme() == 'frio') {

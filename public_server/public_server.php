@@ -27,15 +27,6 @@ function public_server_install()
 	Hook::register('logged_in', 'addon/public_server/public_server.php', 'public_server_login');
 }
 
-function public_server_uninstall()
-{
-	Hook::unregister('load_config',      'addon/public_server/public_server.php', 'public_server_load_config');
-	Hook::unregister('register_account', 'addon/public_server/public_server.php', 'public_server_register_account');
-	Hook::unregister('cron', 'addon/public_server/public_server.php', 'public_server_cron');
-	Hook::unregister('enotify', 'addon/public_server/public_server.php', 'public_server_enotify');
-	Hook::unregister('logged_in', 'addon/public_server/public_server.php', 'public_server_login');
-}
-
 function public_server_load_config(App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('public_server'));
@@ -160,7 +151,6 @@ function public_server_addon_admin_post(&$a)
 	DI::config()->set('public_server', 'flagusers', $flagusers);
 	DI::config()->set('public_server', 'flagposts', $flagposts);
 	DI::config()->set('public_server', 'flagpostsexpire', $flagpostsexpire);
-	info(DI::l10n()->t('Settings saved').EOL);
 }
 
 function public_server_addon_admin(&$a, &$o)

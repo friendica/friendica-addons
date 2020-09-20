@@ -45,13 +45,6 @@ function piwik_install() {
 	Logger::log("installed piwik addon");
 }
 
-function piwik_uninstall() {
-	Hook::unregister('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
-	Hook::unregister('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
-
-	Logger::log("uninstalled piwik addon");
-}
-
 function piwik_load_config(\Friendica\App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('piwik'));
@@ -117,5 +110,4 @@ function piwik_addon_admin_post (&$a) {
 	DI::config()->set('piwik', 'siteid', $id);
 	DI::config()->set('piwik', 'optout', $optout);
 	DI::config()->set('piwik', 'async', $async);
-	info(DI::l10n()->t('Settings updated.'). EOL);
 }

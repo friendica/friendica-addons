@@ -16,13 +16,6 @@ function googlemaps_install()
 	Logger::log("installed googlemaps");
 }
 
-function googlemaps_uninstall()
-{
-	Hook::unregister('render_location', 'addon/googlemaps/googlemaps.php', 'googlemaps_location');
-
-	Logger::log("removed googlemaps");
-}
-
 function googlemaps_location($a, &$item)
 {
 

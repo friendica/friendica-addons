@@ -69,7 +69,6 @@ use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\User;
-use Friendica\Util\Network;
 
 function jappixmini_install()
 {
@@ -103,19 +102,6 @@ function jappixmini_install()
 	if ($addon_version === "") {
 		DI::config()->set("jappixmini", "version", "1");
 	}
-}
-
-function jappixmini_uninstall()
-{
-	Hook::unregister('addon_settings', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings');
-	Hook::unregister('addon_settings_post', 'addon/jappixmini/jappixmini.php', 'jappixmini_settings_post');
-
-	Hook::unregister('page_end', 'addon/jappixmini/jappixmini.php', 'jappixmini_script');
-	Hook::unregister('authenticate', 'addon/jappixmini/jappixmini.php', 'jappixmini_login');
-
-	Hook::unregister('cron', 'addon/jappixmini/jappixmini.php', 'jappixmini_cron');
-
-	Hook::unregister('about_hook', 'addon/jappixmini/jappixmini.php', 'jappixmini_download_source');
 }
 
 function jappixmini_addon_admin(App $a, &$o)
@@ -434,7 +420,7 @@ function jappixmini_settings_post(App $a, &$b)
 			// check that Jabber password was encrypted with correct Friendica password
 			$friendica_password = trim($b['jappixmini-friendica-password']);
 			if (!User::authenticate((int) $uid, $friendica_password)) {
-				info("Wrong friendica password!");
+				notice("Wrong friendica password!");
 				return;
 			}
 		}
@@ -462,11 +448,9 @@ function jappixmini_settings_post(App $a, &$b)
 		DI::pConfig()->set($uid, 'jappixmini', 'activate'      , intval($b['jappixmini-activate']));
 		DI::pConfig()->set($uid, 'jappixmini', 'dontinsertchat', intval($b['jappixmini-dont-insertchat']));
 		DI::pConfig()->set($uid, 'jappixmini', 'encrypt'       , $encrypt);
-		info('Jappix Mini settings saved.');
 
 		if ($purge) {
 			q("DELETE FROM `pconfig` WHERE `uid`=$uid AND `cat`='jappixmini' AND `k` LIKE 'id:%%'");
-			info('List of addresses purged.');
 		}
 	}
 }
@@ -660,7 +644,7 @@ function jappixmini_cron(App $a, $d)
 
 			try {
 				// send request
-				$answer_json = Network::fetchUrl($url);
+				$answer_json = DI::httpRequest()->fetch($url);
 
 				// parse answer
 				$answer = json_decode($answer_json);

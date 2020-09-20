@@ -21,14 +21,6 @@ function xmpp_install()
 	Hook::register('logged_in', 'addon/xmpp/xmpp.php', 'xmpp_login');
 }
 
-function xmpp_uninstall()
-{
-	Hook::unregister('addon_settings', 'addon/xmpp/xmpp.php', 'xmpp_addon_settings');
-	Hook::unregister('addon_settings_post', 'addon/xmpp/xmpp.php', 'xmpp_addon_settings_post');
-	Hook::unregister('page_end', 'addon/xmpp/xmpp.php', 'xmpp_script');
-	Hook::unregister('logged_in', 'addon/xmpp/xmpp.php', 'xmpp_login');
-}
-
 function xmpp_addon_settings_post()
 {
 	if (!local_user() || empty($_POST['xmpp-settings-submit'])) {
@@ -38,8 +30,6 @@ function xmpp_addon_settings_post()
 	DI::pConfig()->set(local_user(), 'xmpp', 'enabled', $_POST['xmpp_enabled'] ?? false);
 	DI::pConfig()->set(local_user(), 'xmpp', 'individual', $_POST['xmpp_individual'] ?? false);
 	DI::pConfig()->set(local_user(), 'xmpp', 'bosh_proxy', $_POST['xmpp_bosh_proxy'] ?? '');
-
-	info(DI::l10n()->t('XMPP settings updated.') . EOL);
 }
 
 function xmpp_addon_settings(App $a, &$s)
@@ -121,8 +111,6 @@ function xmpp_addon_admin_post()
 
 	DI::config()->set('xmpp', 'bosh_proxy', $bosh_proxy);
 	DI::config()->set('xmpp', 'central_userbase', $central_userbase);
-
-	info(DI::l10n()->t('Settings updated.') . EOL);
 }
 
 function xmpp_script(App $a)

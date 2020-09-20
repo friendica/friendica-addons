@@ -26,17 +26,6 @@ function testdrive_install() {
 
 }
 
-
-function testdrive_uninstall() {
-
-	Hook::unregister('load_config',      'addon/testdrive/testdrive.php', 'testdrive_load_config');
-	Hook::unregister('register_account', 'addon/testdrive/testdrive.php', 'testdrive_register_account');
-	Hook::unregister('cron', 'addon/testdrive/testdrive.php', 'testdrive_cron');
-	Hook::unregister('enotify','addon/testdrive/testdrive.php', 'testdrive_enotify');
-	Hook::unregister('globaldir_update','addon/testdrive/testdrive.php', 'testdrive_globaldir_update');
-
-}
-
 function testdrive_load_config(App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('testdrive'));

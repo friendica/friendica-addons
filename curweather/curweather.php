@@ -15,7 +15,6 @@ use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\Core\Session;
 use Friendica\DI;
-use Friendica\Util\Network;
 use Friendica\Util\Proxy as ProxyUtils;
 
 function curweather_install()
@@ -23,13 +22,6 @@ function curweather_install()
 	Hook::register('network_mod_init'   , 'addon/curweather/curweather.php', 'curweather_network_mod_init');
 	Hook::register('addon_settings'     , 'addon/curweather/curweather.php', 'curweather_addon_settings');
 	Hook::register('addon_settings_post', 'addon/curweather/curweather.php', 'curweather_addon_settings_post');
-}
-
-function curweather_uninstall()
-{
-	Hook::unregister('network_mod_init'   , 'addon/curweather/curweather.php', 'curweather_network_mod_init');
-	Hook::unregister('addon_settings'     , 'addon/curweather/curweather.php', 'curweather_addon_settings');
-	Hook::unregister('addon_settings_post', 'addon/curweather/curweather.php', 'curweather_addon_settings_post');
 }
 
 //  get the weather data from OpenWeatherMap
@@ -49,10 +41,10 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 	}
 
 	try {
-		$res = new SimpleXMLElement(Network::fetchUrl($url));
+		$res = new SimpleXMLElement(DI::httpRequest()->fetch($url));
 	} catch (Exception $e) {
 		if (empty($_SESSION['curweather_notice_shown'])) {
-			info(DI::l10n()->t('Error fetching weather data. Error was: '.$e->getMessage()));
+			notice(DI::l10n()->t('Error fetching weather data. Error was: ' . $e->getMessage()));
 			$_SESSION['curweather_notice_shown'] = true;
 		}
 
@@ -170,8 +162,6 @@ function curweather_addon_settings_post(App $a, $post)
 	DI::pConfig()->set(local_user(), 'curweather', 'curweather_loc'   , trim($_POST['curweather_loc']));
 	DI::pConfig()->set(local_user(), 'curweather', 'curweather_enable', intval($_POST['curweather_enable']));
 	DI::pConfig()->set(local_user(), 'curweather', 'curweather_units' , trim($_POST['curweather_units']));
-
-	info(DI::l10n()->t('Current Weather settings updated.') . EOL);
 }
 
 function curweather_addon_settings(App $a, &$s)
@@ -221,8 +211,6 @@ function curweather_addon_admin_post(App $a)
 	if (!empty($_POST['curweather-submit'])) {
 		DI::config()->set('curweather', 'appid',     trim($_POST['appid']));
 		DI::config()->set('curweather', 'cachetime', trim($_POST['cachetime']));
-
-		info(DI::l10n()->t('Curweather settings saved.' . PHP_EOL));
 	}
 }
 

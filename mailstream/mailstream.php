@@ -12,9 +12,8 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
-use Friendica\Protocol\Activity;
-use Friendica\Util\Network;
 use Friendica\Model\Item;
+use Friendica\Protocol\Activity;
 
 function mailstream_install() {
 	Hook::register('addon_settings', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings');
@@ -55,19 +54,6 @@ function mailstream_install() {
 		}
 		DI::config()->set('mailstream', 'dbversion', '1.0');
 	}
-}
-
-function mailstream_uninstall() {
-	Hook::unregister('addon_settings', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings');
-	Hook::unregister('addon_settings_post', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings_post');
-	Hook::unregister('post_local', 'addon/mailstream/mailstream.php', 'mailstream_post_local_hook');
-	Hook::unregister('post_remote', 'addon/mailstream/mailstream.php', 'mailstream_post_remote_hook');
-	Hook::unregister('post_local_end', 'addon/mailstream/mailstream.php', 'mailstream_post_local_hook');
-	Hook::unregister('post_remote_end', 'addon/mailstream/mailstream.php', 'mailstream_post_remote_hook');
-	Hook::unregister('post_local_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
-	Hook::unregister('post_remote_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
-	Hook::unregister('cron', 'addon/mailstream/mailstream.php', 'mailstream_cron');
-	Hook::unregister('incoming_mail', 'addon/mailstream/mailstream.php', 'mailstream_incoming_mail');
 }
 
 function mailstream_module() {}
@@ -169,7 +155,7 @@ function mailstream_do_images($a, &$item, &$attachments) {
 			continue;
 		}
 		$cookiejar = tempnam(get_temppath(), 'cookiejar-mailstream-');
-		$curlResult = Network::fetchUrlFull($url, true, 0, '', $cookiejar);
+		$curlResult = DI::httpRequest()->fetchFull($url, true, 0, '', $cookiejar);
 		$attachments[$url] = [
 			'data' => $curlResult->getBody(),
 			'guid' => hash("crc32", $url),

@@ -12,7 +12,6 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Database\DBA;
 use Friendica\DI;
-use Friendica\Util\Network;
 use Friendica\Util\Strings;
 use Friendica\Util\XML;
 
@@ -25,22 +24,6 @@ function wppost_install()
 	Hook::register('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
 	Hook::register('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
 }
-
-function wppost_uninstall()
-{
-	Hook::unregister('hook_fork',        'addon/wppost/wppost.php', 'wppost_hook_fork');
-	Hook::unregister('post_local',       'addon/wppost/wppost.php', 'wppost_post_local');
-	Hook::unregister('notifier_normal',  'addon/wppost/wppost.php', 'wppost_send');
-	Hook::unregister('jot_networks',     'addon/wppost/wppost.php', 'wppost_jot_nets');
-	Hook::unregister('connector_settings',      'addon/wppost/wppost.php', 'wppost_settings');
-	Hook::unregister('connector_settings_post', 'addon/wppost/wppost.php', 'wppost_settings_post');
-
-	// obsolete - remove
-	Hook::unregister('post_local_end',   'addon/wppost/wppost.php', 'wppost_send');
-	Hook::unregister('addon_settings',  'addon/wppost/wppost.php', 'wppost_settings');
-	Hook::unregister('addon_settings_post',  'addon/wppost/wppost.php', 'wppost_settings_post');
-}
-
 
 function wppost_jot_nets(\Friendica\App &$a, array &$jotnets_fields)
 {
@@ -338,7 +321,7 @@ EOT;
 		Logger::log('wppost: data: ' . $xml, Logger::DATA);
 
 		if ($wp_blog !== 'test') {
-			$x = Network::post($wp_blog, $xml)->getBody();
+			$x = DI::httpRequest()->post($wp_blog, $xml)->getBody();
 		}
 		Logger::log('posted to wordpress: ' . (($x) ? $x : ''), Logger::DEBUG);
 	}

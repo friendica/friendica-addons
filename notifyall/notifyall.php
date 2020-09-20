@@ -15,16 +15,6 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
-function notifyall_install()
-{
-	Logger::log("installed notifyall");
-}
-
-function notifyall_uninstall()
-{
-	Logger::log("removed notifyall");
-}
-
 function notifyall_module() {}
 
 function notifyall_addon_admin(App $a, &$o)
@@ -66,7 +56,7 @@ function notifyall_post(App $a)
 		DI::emailer()->send($notifyEmail->withRecipient($recipient['email']));
 	}
 
-	notice(DI::l10n()->t('Emails sent'));
+	info(DI::l10n()->t('Emails sent'));
 	DI::baseUrl()->redirect('admin');
 }
 

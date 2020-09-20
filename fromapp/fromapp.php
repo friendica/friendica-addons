@@ -18,15 +18,6 @@ function fromapp_install()
 	Logger::log("installed fromapp");
 }
 
-
-function fromapp_uninstall()
-{
-	Hook::unregister('post_local', 'addon/fromapp/fromapp.php', 'fromapp_post_hook');
-	Hook::unregister('addon_settings', 'addon/fromapp/fromapp.php', 'fromapp_settings');
-	Hook::unregister('addon_settings_post', 'addon/fromapp/fromapp.php', 'fromapp_settings_post');
-	Logger::log("removed fromapp");
-}
-
 function fromapp_settings_post($a, $post)
 {
 	if (!local_user() || empty($_POST['fromapp-submit'])) {
@@ -35,8 +26,6 @@ function fromapp_settings_post($a, $post)
 
 	DI::pConfig()->set(local_user(), 'fromapp', 'app', $_POST['fromapp-input']);
 	DI::pConfig()->set(local_user(), 'fromapp', 'force', intval($_POST['fromapp-force']));
-
-	info(DI::l10n()->t('Fromapp settings updated.') . EOL);
 }
 
 function fromapp_settings(&$a, &$s)

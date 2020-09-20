@@ -21,16 +21,16 @@ use Friendica\Core\Hook;
 use Friendica\DI;
 use Friendica\Util\XML;
 
-function qcomment_install() {
-	Hook::register('addon_settings', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings');
-	Hook::register('addon_settings_post', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings_post');
-
+function qcomment_install()
+{
+	Hook::register('addon_settings'     , __FILE__, 'qcomment_addon_settings');
+	Hook::register('addon_settings_post', __FILE__, 'qcomment_addon_settings_post');
+	Hook::register('footer'             , __FILE__, 'qcomment_footer');
 }
 
-function qcomment_uninstall() {
-	Hook::unregister('addon_settings', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings');
-	Hook::unregister('addon_settings_post', 'addon/qcomment/qcomment.php', 'qcomment_addon_settings_post');
-
+function qcomment_footer(\Friendica\App $a, &$b)
+{
+	DI::page()->registerFooterScript(__DIR__ . '/qcomment.js');
 }
 
 function qcomment_addon_settings(&$a, &$s)
@@ -39,24 +39,16 @@ function qcomment_addon_settings(&$a, &$s)
 		return;
 	}
 
-	/* Add our stylesheet to the page so we can make our settings look nice */
-
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/qcomment/qcomment.css' . '" media="all" />' . "\r\n";
-
 	$words = DI::pConfig()->get(local_user(), 'qcomment', 'words', DI::l10n()->t(':-)') . "\n" . DI::l10n()->t(':-(') . "\n" .  DI::l10n()->t('lol'));
 
-	$s .= '<div class="settings-block">';
-	$s .= '<h3>' . DI::l10n()->t('Quick Comment Settings') . '</h3>';
-	$s .= '<div id="qcomment-wrapper">';
-	$s .= '<div id="qcomment-desc">' . DI::l10n()->t("Quick comments are found near comment boxes, sometimes hidden. Click them to provide simple replies.") . '</div>';
-	$s .= '<label id="qcomment-label" for="qcomment-words">' . DI::l10n()->t('Enter quick comments, one per line') . ' </label>';
-	$s .= '<textarea id="qcomment-words" type="text" name="qcomment-words" >' . htmlspecialchars(XML::unescape($words)) . '</textarea>';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="qcomment-submit" name="qcomment-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div>';
-	$s .= '</div>';
-
-	return;
+	$t = \Friendica\Core\Renderer::getMarkupTemplate('settings.tpl', 'addon/qcomment/');
+	$s .= \Friendica\Core\Renderer::replaceMacros($t, [
+		'$postpost'    => isset($_POST['qcomment-words']),
+		'$header'      => DI::l10n()->t('Quick Comment Settings'),
+		'$description' => DI::l10n()->t("Quick comments are found near comment boxes, sometimes hidden. Click them to provide simple replies."),
+		'$save'        => DI::l10n()->t('Save Settings'),
+		'$words'       => ['qcomment-words', DI::l10n()->t('Enter quick comments, one per line'), $words, null, ' rows="10"'],
+	]);
 }
 
 function qcomment_addon_settings_post(&$a, &$b)
@@ -65,8 +57,7 @@ function qcomment_addon_settings_post(&$a, &$b)
 		return;
 	}
 
-	if ($_POST['qcomment-submit']) {
+	if (isset($_POST['qcomment-words'])) {
 		DI::pConfig()->set(local_user(), 'qcomment', 'words', XML::escape($_POST['qcomment-words']));
-		info(DI::l10n()->t('Quick Comment settings saved.') . EOL);
 	}
 }

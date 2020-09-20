@@ -26,16 +26,6 @@ function gravatar_install() {
 	Logger::log("registered gravatar in avatar_lookup hook");
 }
 
-/**
- * Removes the addon hook
- */
-function gravatar_uninstall() {
-	Hook::unregister('load_config',   'addon/gravatar/gravatar.php', 'gravatar_load_config');
-	Hook::unregister('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
-
-	Logger::log("unregistered gravatar in avatar_lookup hook");
-}
-
 function gravatar_load_config(App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('gravatar'));
@@ -125,5 +115,4 @@ function gravatar_addon_admin_post (&$a) {
 	$rating = (!empty($_POST['rating']) ? Strings::escapeTags(trim($_POST['rating'])) : 'g');
 	DI::config()->set('gravatar', 'default_avatar', $default_avatar);
 	DI::config()->set('gravatar', 'rating', $rating);
-	info(DI::l10n()->t('Gravatar settings updated.') .EOL);
 }

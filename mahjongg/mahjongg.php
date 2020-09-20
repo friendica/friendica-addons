@@ -12,11 +12,6 @@ function mahjongg_install() {
     Hook::register('app_menu', 'addon/mahjongg/mahjongg.php', 'mahjongg_app_menu');
 }
 
-function mahjongg_uninstall() {
-    Hook::unregister('app_menu', 'addon/mahjongg/mahjongg.php', 'mahjongg_app_menu');
-
-}
-
 function mahjongg_app_menu($a,&$b) {
     $b['app_menu'][] = '<div class="app-title"><a href="mahjongg">Mahjongg</a></div>';
 }

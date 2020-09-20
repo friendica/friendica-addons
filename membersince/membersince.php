@@ -16,11 +16,6 @@ function membersince_install()
 	Hook::register('profile_advanced', 'addon/membersince/membersince.php', 'membersince_display');
 }
 
-function membersince_uninstall()
-{
-	Hook::unregister('profile_advanced', 'addon/membersince/membersince.php', 'membersince_display');
-}
-
 function membersince_display(Friendica\App $a, &$b)
 {
 	if ($a->getCurrentTheme() == 'frio') {

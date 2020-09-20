@@ -70,7 +70,6 @@ function cookienotice_addon_admin_post(App $a)
 	if ($_POST['cookienotice-submit']) {
 		DI::config()->set('cookienotice', 'text', trim(strip_tags($_POST['cookienotice-text'])));
 		DI::config()->set('cookienotice', 'oktext', trim(strip_tags($_POST['cookienotice-oktext'])));
-		info(DI::l10n()->t('cookienotice Settings saved.'));
 	}
 }
 

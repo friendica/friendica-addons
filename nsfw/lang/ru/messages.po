@@ -1,0 +1,62 @@
+# ADDON nsfw
+# Copyright (C)
+# This file is distributed under the same license as the Friendica nsfw addon package.
+# 
+# 
+# Translators:
+# Alexander An <ravnina@gmail.com>, 2020
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-01 11:11-0400\n"
+"PO-Revision-Date: 2020-09-01 05:38+0000\n"
+"Last-Translator: Alexander An <ravnina@gmail.com>\n"
+"Language-Team: Russian (http://www.transifex.com/Friendica/friendica/language/ru/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: nsfw.php:77 nsfw.php:81
+msgid "Content Filter (NSFW and more)"
+msgstr "Фильтр контента (NSFW и прочее)"
+
+#: nsfw.php:85
+msgid ""
+"This addon searches for specified words/text in posts and collapses them. It"
+" can be used to filter content tagged with for instance #NSFW that may be "
+"deemed inappropriate at certain times or places, such as being at work. It "
+"is also useful for hiding irrelevant or annoying content from direct view."
+msgstr "Это дополнение ищет указанные слова и выражения в записях и сворачивает запись, если найдёт. Это можно использовать для скрытия записей с тэгом #NSFW, просмотр которых может быть нежелателен в определённое время, например, на работе. Так же можно использовать для скрытия иного контента."
+
+#: nsfw.php:86
+msgid "Enable Content filter"
+msgstr "Включить фильтр контента"
+
+#: nsfw.php:89
+msgid "Comma separated list of keywords to hide"
+msgstr "Ключевые слова для скрытия, через запятую"
+
+#: nsfw.php:93
+msgid "Save Settings"
+msgstr "Сохранить настройки"
+
+#: nsfw.php:94
+msgid "Use /expression/ to provide regular expressions"
+msgstr "Используйте формат /expression/ для регулярных выражений"
+
+#: nsfw.php:109
+msgid "NSFW Settings saved."
+msgstr "Настройки NSFW сохранены"
+
+#: nsfw.php:162
+#, php-format
+msgid "Filtered tag: %s"
+msgstr "Скрыт тэг: %s"
+
+#: nsfw.php:164
+#, php-format
+msgid "Filtered word: %s"
+msgstr "Скрыто слово: %s"

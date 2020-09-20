@@ -13,11 +13,6 @@ function infiniteimprobabilitydrive_install()
 	Hook::register('app_menu', 'addon/infiniteimprobabilitydrive/infiniteimprobabilitydrive.php', 'infiniteimprobabilitydrive_app_menu');
 }
 
-function infiniteimprobabilitydrive_uninstall()
-{
-	Hook::unregister('app_menu', 'addon/infiniteimprobabilitydrive/infiniteimprobabilitydrive.php', 'infiniteimprobabilitydrive_app_menu');
-}
-
 function infiniteimprobabilitydrive_app_menu($a, &$b)
 {
 	$b['app_menu'][] = '<div class="app-title"><a href="infiniteimprobabilitydrive">' . DI::l10n()->t('Infinite Improbability Drive') . '</a></div>';

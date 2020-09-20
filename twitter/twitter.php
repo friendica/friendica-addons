@@ -67,6 +67,7 @@ use Abraham\TwitterOAuth\TwitterOAuthException;
 use Codebird\Codebird;
 use Friendica\App;
 use Friendica\Content\OEmbed;
+use Friendica\Content\PageInfo;
 use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Hook;
@@ -88,7 +89,6 @@ use Friendica\Protocol\Activity;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Images;
-use Friendica\Util\Network;
 use Friendica\Util\Strings;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
@@ -240,9 +240,9 @@ function twitter_settings_post(App $a)
 				DI::pConfig()->set(local_user(), 'twitter', 'oauthsecret', $token['oauth_token_secret']);
 				DI::pConfig()->set(local_user(), 'twitter', 'post', 1);
 			} catch(Exception $e) {
-				info($e->getMessage());
+				notice($e->getMessage());
 			} catch(TwitterOAuthException $e) {
-				info($e->getMessage());
+				notice($e->getMessage());
 			}
 			//  reload the Addon Settings page, if we don't do it see Bug #42
 			DI::baseUrl()->redirect('settings/connectors');
@@ -258,8 +258,6 @@ function twitter_settings_post(App $a)
 			if (!intval($_POST['twitter-mirror'])) {
 				DI::pConfig()->delete(local_user(), 'twitter', 'lastid');
 			}
-
-			info(DI::l10n()->t('Twitter settings updated.') . EOL);
 		}
 	}
 }
@@ -673,7 +671,7 @@ function twitter_post_hook(App $a, array &$b)
 						continue;
 					}
 
-					$img_str = Network::fetchUrl($image['url']);
+					$img_str = DI::httpRequest()->fetch($image['url']);
 
 					$tempfile = tempnam(get_temppath(), 'cache');
 					file_put_contents($tempfile, $img_str);
@@ -736,7 +734,6 @@ function twitter_addon_admin_post(App $a)
 	$consumersecret = !empty($_POST['consumersecret']) ? Strings::escapeTags(trim($_POST['consumersecret'])) : '';
 	DI::config()->set('twitter', 'consumerkey', $consumerkey);
 	DI::config()->set('twitter', 'consumersecret', $consumersecret);
-	info(DI::l10n()->t('Settings updated.') . EOL);
 }
 
 function twitter_addon_admin(App $a, &$o)
@@ -1126,12 +1123,12 @@ function twitter_fetch_contact($uid, $data, $create_user)
 	if (DBA::isResult($pcontact)) {
 		$cid = $pcontact['id'];
 	} else {
-		$cid = Contact::getIdForURL($fields['url'], 0, true, $fields);
+		$cid = Contact::getIdForURL($fields['url'], 0, false, $fields);
 	}
 
 	if (!empty($cid)) {
 		DBA::update('contact', $fields, ['id' => $cid]);
-		Contact::updateAvatar($avatar, 0, $cid);
+		Contact::updateAvatar($cid, $avatar);
 	}
 
 	$contact = DBA::selectFirst('contact', [], ['uid' => $uid, 'alias' => "twitter::" . $data->id_str]);
@@ -1163,7 +1160,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 
 		Group::addMember(User::getDefaultGroup($uid), $contact_id);
 
-		Contact::updateAvatar($avatar, $uid, $contact_id);
+		Contact::updateAvatar($contact_id, $avatar);
 	} else {
 		if ($contact["readonly"] || $contact["blocked"]) {
 			Logger::log("twitter_fetch_contact: Contact '" . $contact["nick"] . "' is blocked or readonly.", Logger::DEBUG);
@@ -1179,7 +1176,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 			$update = true;
 		}
 
-		Contact::updateAvatar($avatar, $uid, $contact['id']);
+		Contact::updateAvatar($contact['id'], $avatar);
 
 		if ($contact['name'] != $data->name) {
 			$fields['name-date'] = $fields['uri-date'] = DateTimeFormat::utcNow();
@@ -1296,7 +1293,7 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 
 			$expanded_url = $url->expanded_url;
 
-			$final_url = Network::finalUrl($url->expanded_url);
+			$final_url = DI::httpRequest()->finalUrl($url->expanded_url);
 
 			$oembed_data = OEmbed::fetchURL($final_url);
 
@@ -1317,7 +1314,7 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 			} elseif ($oembed_data->type != 'link') {
 				$replace = '[url=' . $expanded_url . ']' . $url->display_url . '[/url]';
 			} else {
-				$img_str = Network::fetchUrl($final_url, true, 4);
+				$img_str = DI::httpRequest()->fetch($final_url, true, 4);
 
 				$tempfile = tempnam(get_temppath(), 'cache');
 				file_put_contents($tempfile, $img_str);
@@ -1356,7 +1353,7 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 	if (empty($status->quoted_status)) {
 		$footer = '';
 		if ($attachmentUrl) {
-			$footer = add_page_info($attachmentUrl, false, $picture);
+			$footer = "\n" . PageInfo::getFooterFromUrl($attachmentUrl, false, $picture);
 		}
 
 		if (trim($footer)) {
@@ -1364,11 +1361,11 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 		} elseif ($picture) {
 			$body .= "\n\n[img]" . $picture . "[/img]\n";
 		} else {
-			$body = add_page_info_to_body($body);
+			$body = PageInfo::searchAndAppendToBody($body);
 		}
 	}
 
-	return ['body' => $body, 'plain' => $plain, 'taglist' => $taglist];
+	return ['body' => $body, 'plain' => trim($plain), 'taglist' => $taglist];
 }
 
 /**

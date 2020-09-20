@@ -5,24 +5,17 @@
  * Version: 0.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
+
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
-use Friendica\Util\Network;
 use Friendica\Util\Strings;
 
 function geocoordinates_install()
 {
 	Hook::register('post_local', 'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
 	Hook::register('post_remote', 'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
-}
-
-
-function geocoordinates_uninstall()
-{
-	Hook::unregister('post_local',    'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
-	Hook::unregister('post_remote',    'addon/geocoordinates/geocoordinates.php', 'geocoordinates_post_hook');
 }
 
 function geocoordinates_resolve_item(&$item)
@@ -52,7 +45,7 @@ function geocoordinates_resolve_item(&$item)
 		return;
 	}
 
-	$s = Network::fetchUrl("https://api.opencagedata.com/geocode/v1/json?q=".$coords[0].",".$coords[1]."&key=".$key."&language=".$language);
+	$s = DI::httpRequest()->fetch("https://api.opencagedata.com/geocode/v1/json?q=" . $coords[0] . "," . $coords[1] . "&key=" . $key . "&language=" . $language);
 
 	if (!$s) {
 		Logger::log("API could not be queried", Logger::DEBUG);
@@ -103,5 +96,4 @@ function geocoordinates_addon_admin_post(&$a)
 
 	$language  = (!empty($_POST['language']) ? Strings::escapeTags(trim($_POST['language']))   : '');
 	DI::config()->set('geocoordinates', 'language', $language);
-	info(DI::l10n()->t('Settings updated.') . EOL);
 }

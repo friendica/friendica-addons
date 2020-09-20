@@ -15,12 +15,6 @@ function smilies_adult_install() {
 	Hook::register('smilie', 'addon/smilies_adult/smilies_adult.php', 'smilies_adult_smilies');
 }
 
-function smilies_adult_uninstall() {
-	Hook::unregister('smilie', 'addon/smilies_adult/smilies_adult.php', 'smilies_adult_smilies');
-}
-
- 
-
 function smilies_adult_smilies(&$a,&$b) {
 
 	$b['texts'][] = '(o)(o)';

@@ -17,13 +17,6 @@ function irc_install() {
 	Hook::register('addon_settings_post', 'addon/irc/irc.php', 'irc_addon_settings_post');
 }
 
-function irc_uninstall() {
-	Hook::unregister('app_menu', 'addon/irc/irc.php', 'irc_app_menu');
-	Hook::unregister('addon_settings', 'addon/irc/irc.php', 'irc_addon_settings');
-
-}
-
-
 function irc_addon_settings(&$a,&$s) {
 	if(! local_user())
 		return;
@@ -62,7 +55,6 @@ function irc_addon_settings_post(&$a, &$b) {
 			DI::pConfig()->set(local_user(), 'irc', 'sitechats', trim($_POST['sitechats']));
 		}
 		/* upid pop-up thing */
-		info(DI::l10n()->t('IRC settings saved.') . EOL);
 	}
 }
 
@@ -132,8 +124,6 @@ function irc_addon_admin_post (&$a) {
 	if($_POST['irc-submit']) {
 		DI::config()->set('irc','autochans',trim($_POST['autochans']));
 		DI::config()->set('irc','sitechats',trim($_POST['sitechats']));
-		/* stupid pop-up thing */
-		info(DI::l10n()->t('IRC settings saved.') . EOL);
 	}
 }
 function irc_addon_admin (&$a, &$o) {
