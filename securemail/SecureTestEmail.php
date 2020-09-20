@@ -54,6 +54,6 @@ class SecureTestEmail extends Email
 
 		parent::__construct($sitename, $sender_email, $sender_email, $a->user['email'],
 			$subject, "<p>{$message}</p>", $message,
-			'', local_user());
+			[], local_user());
 	}
 }
