@@ -92,7 +92,7 @@ function phpmailer_emailer_send_prepare(App $a, IEmail &$email)
 		if (!empty($email->getAdditionalMailHeader())) {
 			foreach ($email->getAdditionalMailHeader() as $name => $values) {
 				// Set the "Message-ID" header for PHP-Mailer directly
-				if ($name == 'Message-Id') {
+				if (strtolower($name) === 'message-id') {
 					// implode all values to one entry, because there's only one value possible
 					$mailer->MessageID = trim(implode("", $values));
 				} else {
