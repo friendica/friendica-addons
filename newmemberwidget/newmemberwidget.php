@@ -1,7 +1,7 @@
 <?php
 /***
  * Name: New Member Widget
- * Description: Adds a widget for new members into the sidebar of the network page. The widget will be displayed for the 1st 14days of a account existance and contains a link to the new member page and a free-form text the admin can define.
+ * Description: Adds a widget for new members into the sidebar of the network page. The widget will be displayed for the first 14 days of an account's existence and contains a link to the new member page and free-form text the admin can define.
  * Version: 1
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  ***/
