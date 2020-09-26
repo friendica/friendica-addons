@@ -36,16 +36,13 @@ A post will be collapsed if at least one rule matches, but all matching rule nam
 
 ## Examples
 
-
-
-## Expression Syntax
-
-1. To block specific domains  `body matches "/\\.spiegel\\.de/"`
+1. To block specific domains  `body matches "/\\.exmaple\\.com/"`
 2. To block everything that contains the words `body matches "/Guten Morgen/"
 3. To block every occurence of the word facebook with a space in front and after the word `body matches "//s facebook/s /"`
 4. To colapse every post that contains more than 1 image `body matches "/(?:(?:(?:\\[url(?:=.*)?\\])?\\[img(?:=.*)?\\].*\\[\\/img\\]\\s*(?:\\[\\/url\\])?)\\s*){2}/"`
 
 
+## Expression Syntax
 
 ### Supported Literals
 
