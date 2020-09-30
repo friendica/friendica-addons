@@ -10,7 +10,7 @@
 
 use Friendica\Security\OAuth1\OAuthConsumer;
 use Friendica\Security\OAuth1\OAuthRequest;
-use Friendica\Security\OAuth1\OAuthSignatureMethod_HMAC_SHA1;
+use Friendica\Security\OAuth1\Signature\OAuthSignatureMethod_HMAC_SHA1;
 use Friendica\Security\OAuth1\OAuthToken;
 use Friendica\Security\OAuth1\OAuthUtil;
 
@@ -53,7 +53,7 @@ class TwitterOAuth
 	private $token;
 	/** @var OAuthConsumer */
 	private $consumer;
-	/** @var OAuthSignatureMethod_HMAC_SHA1 */
+	/** @var \Friendica\Security\OAuth1\Signature\OAuthSignatureMethod_HMAC_SHA1 */
 	private $sha1_method;
 
 	/**
