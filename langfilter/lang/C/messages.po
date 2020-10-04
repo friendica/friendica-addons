@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-01 11:11-0400\n"
+"POT-Creation-Date: 2020-10-03 22:02-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,62 +17,58 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: langfilter.php:58
+#: langfilter.php:52
 msgid "Language Filter"
 msgstr ""
 
-#: langfilter.php:59
+#: langfilter.php:53
 msgid ""
 "This addon tries to identify the language posts are writen in. If it does "
 "not match any language specifed below, posts will be hidden by collapsing "
 "them."
 msgstr ""
 
-#: langfilter.php:60
+#: langfilter.php:54
 msgid "Use the language filter"
 msgstr ""
 
-#: langfilter.php:61
+#: langfilter.php:55
 msgid "Able to read"
 msgstr ""
 
-#: langfilter.php:61
+#: langfilter.php:55
 msgid ""
-"List of abbreviations (iso2 codes) for languages you speak, comma separated. "
-"For example \"de,it\"."
+"List of abbreviations (ISO 639-1 codes) for languages you speak, comma "
+"separated. For example \"de,it\"."
 msgstr ""
 
-#: langfilter.php:62
+#: langfilter.php:56
 msgid "Minimum confidence in language detection"
 msgstr ""
 
-#: langfilter.php:62
+#: langfilter.php:56
 msgid ""
 "Minimum confidence in language detection being correct, from 0 to 100. Posts "
 "will not be filtered when the confidence of language detection is below this "
 "percent value."
 msgstr ""
 
-#: langfilter.php:63
+#: langfilter.php:57
 msgid "Minimum length of message body"
 msgstr ""
 
-#: langfilter.php:63
+#: langfilter.php:57
 msgid ""
 "Minimum number of characters in message body for filter to be used. Posts "
 "shorter than this will not be filtered. Note: Language detection is "
 "unreliable for short content (<200 characters)."
 msgstr ""
 
-#: langfilter.php:64
+#: langfilter.php:58
 msgid "Save Settings"
 msgstr ""
 
-#: langfilter.php:105
-msgid "Language Filter Settings saved."
-msgstr ""
-
-#: langfilter.php:182
+#: langfilter.php:189
 #, php-format
 msgid "Filtered language: %s"
 msgstr ""

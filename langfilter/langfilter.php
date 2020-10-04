@@ -13,6 +13,8 @@ use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
+require __DIR__ . '/vendor/autoload.php';
+
 /* Define the hooks we want to use
  * that is, we have settings, we need to save the settings and we want
  * to modify the content of a posting when friendica prepares it.
@@ -50,7 +52,7 @@ function langfilter_addon_settings(App $a, &$s)
 		'$title'         => DI::l10n()->t("Language Filter"),
 		'$intro'         => DI::l10n()->t('This addon tries to identify the language posts are writen in. If it does not match any language specifed below, posts will be hidden by collapsing them.'),
 		'$enabled'       => ['langfilter_enable', DI::l10n()->t('Use the language filter'), $enable_checked, ''],
-		'$languages'     => ['langfilter_languages', DI::l10n()->t('Able to read'), $languages, DI::l10n()->t('List of abbreviations (iso2 codes) for languages you speak, comma separated. For example "de,it".')],
+		'$languages'     => ['langfilter_languages', DI::l10n()->t('Able to read'), $languages, DI::l10n()->t('List of abbreviations (ISO 639-1 codes) for languages you speak, comma separated. For example "de,it".')],
 		'$minconfidence' => ['langfilter_minconfidence', DI::l10n()->t('Minimum confidence in language detection'), $minconfidence, DI::l10n()->t('Minimum confidence in language detection being correct, from 0 to 100. Posts will not be filtered when the confidence of language detection is below this percent value.')],
 		'$minlength'     => ['langfilter_minlength', DI::l10n()->t('Minimum length of message body'), $minlength, DI::l10n()->t('Minimum number of characters in message body for filter to be used. Posts shorter than this will not be filtered. Note: Language detection is unreliable for short content (<200 characters).')],
 		'$submit'        => DI::l10n()->t('Save Settings'),
@@ -138,6 +140,8 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 	}
 	$read_languages_array = explode(',', $read_languages_string);
 
+	$iso639 = new Matriphe\ISO639\ISO639;
+
 	// Extract the language of the post
 	if (!empty($hook_data['item']['language'])) {
 		$languages = json_decode($hook_data['item']['language'], true);
@@ -153,7 +157,7 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 			return;
 		}
 
-		$lang = Text_LanguageDetect_ISO639::code2ToName($iso2);
+		$lang = $iso639->languageByCode1($iso2);
 	} else {
 		$opts = $hook_data['item']['postopts'];
 		if (!$opts) {
@@ -169,7 +173,7 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 		$lang = $matches[1];
 		$confidence = $matches[2];
 
-		$iso2 = Text_LanguageDetect_ISO639::nameToCode2($lang);
+		$iso2 = $iso639->code1ByLanguage($lang);
 	}
 
 	// Do not filter if language detection confidence is too low
