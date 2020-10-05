@@ -145,8 +145,7 @@ function pumpio_connect(App $a)
 	if (($consumer_key == "") || ($consumer_secret == "")) {
 		Logger::log("pumpio_connect: ".sprintf("Unable to register the client at the pump.io server '%s'.", $hostname));
 
-		$o .= DI::l10n()->t("Unable to register the client at the pump.io server '%s'.", $hostname);
-		return $o;
+		return DI::l10n()->t("Unable to register the client at the pump.io server '%s'.", $hostname);
 	}
 
 	// The callback URL is the script that gets called after the user authenticates with pumpio
@@ -1504,12 +1503,12 @@ function pumpio_fetchallcomments(App $a, $uid, $id)
 
 	// Fetching the original post
 	$condition = ["`uri` = ? AND `uid` = ? AND `extid` != ''", $id, $uid];
-	$item = Item::selectFirst(['extid'], $condition);
-	if (!DBA::isResult($item)) {
+	$original = Item::selectFirst(['extid'], $condition);
+	if (!DBA::isResult($original)) {
 		return false;
 	}
 
-	$url = $item["extid"];
+	$url = $original["extid"];
 
 	$client = new oauth_client_class;
 	$client->oauth_version = '1.0a';
