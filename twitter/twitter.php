@@ -348,7 +348,8 @@ function twitter_settings(App $a, &$s)
 				} else {
 					$s .= '<div id="twitter-info" >
 					<p>Invalid Twitter info</p>
-				</div>';
+					<button type="submit" name="twitter-disconnect" value="1">' . DI::l10n()->t('Disconnect') . '</button>
+					</div>';
 					Logger::info('Invalid twitter info (verify credentials).', ['auth' => TwitterOAuth::class]);
 				}
 				$s .= '<div class="clear"></div>';
