@@ -6,6 +6,10 @@ You can add these addons to the /addon directory of your Friendica installation 
 
 After uploading the addons to your server, you need to activate the desired addons in the Admin panel. Addons not activated have no effect on your node.
 
+## Issues
+
+Please report any issues you have with addons of Friendica from this repository in [the main issue tracker of the project](https://github.com/friendica/friendica/issues).
+
 ## Connectors
 
 Among these addons there are also the [connectors](https://github.com/friendica/friendica/blob/stable/doc/Connectors.md) for various other networks (e.g. Twitter, pump.io, Google+) that are needed for communication when the protocol is not supported by Friendica core (DFRN, OStatus and Diaspora).
