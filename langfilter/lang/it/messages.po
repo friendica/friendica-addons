@@ -6,13 +6,14 @@
 # Translators:
 # fabrixxm <fabrix.xm@gmail.com>, 2015,2018
 # Sandro Santilli <strk@kbt.io>, 2015
+# Sylke Vicious <silkevicious@gmail.com>, 2020
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-01 11:11-0400\n"
-"PO-Revision-Date: 2018-05-28 09:01+0000\n"
-"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
+"POT-Creation-Date: 2020-10-03 22:02-0400\n"
+"PO-Revision-Date: 2020-10-06 10:51+0000\n"
+"Last-Translator: Sylke Vicious <silkevicious@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,62 +21,58 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: langfilter.php:58
+#: langfilter.php:52
 msgid "Language Filter"
 msgstr "Filtro Lingua"
 
-#: langfilter.php:59
+#: langfilter.php:53
 msgid ""
 "This addon tries to identify the language posts are writen in. If it does "
 "not match any language specifed below, posts will be hidden by collapsing "
 "them."
 msgstr "Questo componente aggiuntivo prova ad identificare la lingua usata in un messaggio. Se questa non corrisponde a una delle lingue specificata qui sotto, il messaggio verrà collassato. "
 
-#: langfilter.php:60
+#: langfilter.php:54
 msgid "Use the language filter"
 msgstr "Usa il filtro lingua"
 
-#: langfilter.php:61
+#: langfilter.php:55
 msgid "Able to read"
 msgstr "In grado di leggere"
 
-#: langfilter.php:61
+#: langfilter.php:55
 msgid ""
-"List of abbreviations (iso2 codes) for languages you speak, comma separated."
-" For example \"de,it\"."
-msgstr "Lista di abbreviazioni (codici iso2) per le lingue che parli, separate da virgola. Per esempio \"it,de\""
+"List of abbreviations (ISO 639-1 codes) for languages you speak, comma "
+"separated. For example \"de,it\"."
+msgstr "Lista di abbreviazioni (codici ISO 639-1) per le lingue che parli, separate da virgola. Per esempio \"it,de\"."
 
-#: langfilter.php:62
+#: langfilter.php:56
 msgid "Minimum confidence in language detection"
 msgstr "Fiducia minima nel rilevamento della lingua"
 
-#: langfilter.php:62
+#: langfilter.php:56
 msgid ""
 "Minimum confidence in language detection being correct, from 0 to 100. Posts"
 " will not be filtered when the confidence of language detection is below "
 "this percent value."
-msgstr "Fiducia minima che il rilevamento della lingua sia corretto, da 0 a 100. I post non saranno filtrati quando la fiducia nel rilevamento della lingua è sotto questo valore percentuale."
+msgstr "Fiducia minima che il rilevamento della lingua sia corretto, da 0 a 100. I messaggi non saranno filtrati quando la fiducia nel rilevamento della lingua è sotto questo valore percentuale."
 
-#: langfilter.php:63
+#: langfilter.php:57
 msgid "Minimum length of message body"
 msgstr "Lunghezza minima del corpo del messaggio"
 
-#: langfilter.php:63
+#: langfilter.php:57
 msgid ""
 "Minimum number of characters in message body for filter to be used. Posts "
 "shorter than this will not be filtered. Note: Language detection is "
 "unreliable for short content (<200 characters)."
 msgstr "Numero di caratteri minimo perché il filtro venga usato. I messaggio più corti non saranno filtrati. Nota: la rilevazione della lingua non è affidabile con messaggi brevi (<200 caratteri)"
 
-#: langfilter.php:64
+#: langfilter.php:58
 msgid "Save Settings"
 msgstr "Salva Impostazioni"
 
-#: langfilter.php:105
-msgid "Language Filter Settings saved."
-msgstr "Impostazioni Filtro Lingua salvate."
-
-#: langfilter.php:182
+#: langfilter.php:189
 #, php-format
 msgid "Filtered language: %s"
 msgstr "Lingua filtrata: %s"
