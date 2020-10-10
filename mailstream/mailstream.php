@@ -160,7 +160,7 @@ function mailstream_do_images($a, &$item, &$attachments) {
 			'data' => $curlResult->getBody(),
 			'guid' => hash("crc32", $url),
 			'filename' => basename($components['path']),
-			'type' => $curlResult->getContentType()[0] ?? ''
+			'type' => $curlResult->getContentType()
 		];
 
 		if (strlen($attachments[$url]['data'])) {
