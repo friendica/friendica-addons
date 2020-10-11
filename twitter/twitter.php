@@ -587,6 +587,17 @@ function twitter_post_hook(App $a, array &$b)
 		return;
 	}
 
+	if ($b['verb'] == Activity::ANNOUNCE) {
+		Logger::info('Retweet', ['uid' => $b['uid'], 'id' => substr($b['thr-parent'], 9)]);
+		if ($b['deleted']) {
+			twitter_action($a, $b["uid"], substr($orig_post["extid"], 9), "delete");
+		} else {
+			twitter_retweet($b["uid"], substr($b["thr-parent"], 9));
+		}
+
+		return;
+	}
+
 	if ($b['deleted'] || ($b['created'] !== $b['edited'])) {
 		return;
 	}
@@ -1982,8 +1993,12 @@ function twitter_is_retweet(App $a, $uid, $body)
 	if ($id == $link) {
 		return false;
 	}
+	return twitter_retweet($uid, $id);
+}
 
-	Logger::log('twitter_is_retweet: Retweeting id ' . $id . ' for user ' . $uid, Logger::DEBUG);
+function twitter_retweet(int $uid, int $id, int $item_id = 0)
+{
+	Logger::info('Retweeting', ['user' => $uid, 'id' => $id]);
 
 	$ckey    = DI::config()->get('twitter', 'consumerkey');
 	$csecret = DI::config()->get('twitter', 'consumersecret');
@@ -1993,7 +2008,12 @@ function twitter_is_retweet(App $a, $uid, $body)
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 	$result = $connection->post('statuses/retweet/' . $id);
 
-	Logger::log('twitter_is_retweet: result ' . print_r($result, true), Logger::DEBUG);
+	Logger::info('Retweeted', ['user' => $uid, 'id' => $id, 'result' => $result]);
+
+	if (!empty($item_id) && !empty($result->id_str)) {
+		Logger::info('Update extid', ['id' => $item_id, 'extid' => $result->id_str]);
+		Item::update(['extid' => "twitter::" . $result->id_str], ['id' => $item_id]);
+	}
 
 	return !isset($result->errors);
 }
