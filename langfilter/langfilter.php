@@ -13,8 +13,6 @@ use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
-require __DIR__ . '/vendor/autoload.php';
-
 /* Define the hooks we want to use
  * that is, we have settings, we need to save the settings and we want
  * to modify the content of a posting when friendica prepares it.
