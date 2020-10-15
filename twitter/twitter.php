@@ -588,11 +588,11 @@ function twitter_post_hook(App $a, array &$b)
 	}
 
 	if ($b['verb'] == Activity::ANNOUNCE) {
-		Logger::info('Retweet', ['uid' => $b['uid'], 'id' => substr($b['thr-parent'], 9)]);
+		Logger::info('Retweet', ['uid' => $b['uid'], 'id' => substr($b['parent-uri'], 9)]);
 		if ($b['deleted']) {
 			twitter_action($a, $b["uid"], substr($orig_post["extid"], 9), "delete");
 		} else {
-			twitter_retweet($b["uid"], substr($b["thr-parent"], 9));
+			twitter_retweet($b['uid'], substr($b['parent-uri'], 9));
 		}
 
 		return;
