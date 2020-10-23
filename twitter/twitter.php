@@ -111,6 +111,7 @@ function twitter_install()
 	Hook::register('prepare_body'           , __FILE__, 'twitter_prepare_body');
 	Hook::register('check_item_notification', __FILE__, 'twitter_check_item_notification');
 	Hook::register('probe_detect'           , __FILE__, 'twitter_probe_detect');
+	Hook::register('parse_link'             , __FILE__, 'twitter_parse_link');
 	Logger::info("installed twitter");
 }
 
@@ -895,6 +896,80 @@ function twitter_prepare_body(App $a, array &$b)
 }
 
 /**
+ * Parse Twitter status URLs since Twitter removed OEmbed
+ *
+ * @param App   $a
+ * @param array $b Expected format:
+ *                 [
+ *                      'url' => [URL to parse],
+ *                      'format' => 'json'|'',
+ *                      'text' => Output parameter
+ *                 ]
+ * @throws \Friendica\Network\HTTPException\InternalServerErrorException
+ */
+function twitter_parse_link(App $a, array &$b)
+{
+	// Only handle Twitter status URLs
+	if (!preg_match('#^https?://(?:mobile\.|www\.)?twitter.com/[^/]+/status/(\d+).*#', $b['url'], $matches)) {
+		return;
+	}
+
+	$ckey = DI::config()->get('twitter', 'consumerkey');
+	$csecret = DI::config()->get('twitter', 'consumersecret');
+
+	if (empty($ckey) || empty($csecret)) {
+		return;
+	}
+
+	$connection = new TwitterOAuth($ckey, $csecret);
+
+	$parameters = ['trim_user' => false, 'tweet_mode' => 'extended', 'id' => $matches[1], 'include_ext_alt_text' => true];
+
+	$status = $connection->get('statuses/show', $parameters);
+
+	if (empty($status->id)) {
+		return;
+	}
+
+	$item = twitter_createpost($a, 0, $status, [], true, false, true);
+
+	if ($b['format'] == 'json') {
+		if (!empty($status->extended_entities->media[0]->media_url_https)) {
+			$images = [['src' => $status->extended_entities->media[0]->media_url_https]];
+		}
+
+		$b['text'] = [
+			'data' => [
+				'type' => 'link',
+				'url' => $item['plink'],
+				'title' => DI::l10n()->t('%s on Twitter', $status->user->name),
+				'text' => BBCode::toPlaintext($item['body'], false),
+				'images' => $images ?? [],
+			],
+			'contentType' => 'attachment',
+			'success' => true,
+		];
+	} else {
+		$b['text'] = BBCode::getShareOpeningTag(
+			$item['author-name'],
+			$item['author-link'],
+			$item['author-avatar'],
+			$item['plink'],
+			$item['created']
+		);
+		$b['text'] .= $item['body'] . '[/share]';
+	}
+}
+
+
+/*********************
+ *
+ * General functions
+ *
+ *********************/
+
+
+/**
  * @brief Build the item array for the mirrored post
  *
  * @param App $a Application class
@@ -1409,6 +1484,8 @@ function twitter_media_entities($post, array &$postarray)
 			}
 		}
 	}
+
+
 
 	// This is a pure media post, first search for all media urls
 	$media = [];
