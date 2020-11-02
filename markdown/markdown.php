@@ -47,26 +47,17 @@ function markdown_post_local_start(App $a, &$request) {
 		return;
 	}
 
-	// Elements that shouldn't be parsed
-	$elements = ['code', 'noparse', 'nobb', 'pre', 'share', 'url', 'img', 'bookmark',
-		'audio', 'video', 'youtube', 'vimeo', 'attachment', 'iframe', 'map', 'mail'];
-	foreach ($elements as $element) {
-		$request['body'] = preg_replace_callback("/\[" . $element . "(.*?)\](.*?)\[\/" . $element . "\]/ism",
-			function ($match) use ($element) {
-				return '[' . $element . '-b64' . base64_encode($match[1]) . ']' . base64_encode($match[2]) . '[/b64-' . $element . ']';
-			},
-			$request['body']
-		);
-	}
-
-	$request['body'] = Markdown::toBBCode($request['body']);
-
-	foreach (array_reverse($elements) as $element) {
-		$request['body'] = preg_replace_callback("/\[" . $element . "-b64(.*?)\](.*?)\[\/b64-" . $element . "\]/ism",
-			function ($match) use ($element) {
-				return '[' . $element . base64_decode($match[1]) . ']' . base64_decode($match[2]) . '[/' . $element . ']';
-			},
-			$request['body']
-		);
-	}
+	// Escape elements that shouldn't be parsed
+	$request['body'] = \Friendica\Content\Text\BBCode::performWithEscapedTags(
+		$request['body'],
+		['code', 'noparse', 'nobb', 'pre', 'share', 'url', 'img', 'bookmark',
+			'audio', 'video', 'youtube', 'vimeo', 'attachment', 'iframe', 'map', 'mail'],
+		function ($body) {
+			// Escape mentions which username can contain Markdown-like characters
+			// See https://github.com/friendica/friendica/issues/9486
+			return \Friendica\Util\Strings::performWithEscapedBlocks($body, '/[@!][^@\s]+@[^\s]+\w/', function ($text) {
+				return Markdown::toBBCode($text);
+			});
+		}
+	);
 }
