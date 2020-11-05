@@ -935,7 +935,11 @@ function twitter_parse_link(App $a, array &$b)
 
 	if ($b['format'] == 'json') {
 		if (!empty($status->extended_entities->media[0]->media_url_https)) {
-			$images = [['src' => $status->extended_entities->media[0]->media_url_https]];
+			$images = [[
+				'src'    => $status->extended_entities->media[0]->media_url_https,
+				'width'  => $status->extended_entities->media[0]->sizes->thumb->w,
+				'height' => $status->extended_entities->media[0]->sizes->thumb->h,
+			]];
 		}
 
 		$b['text'] = [
