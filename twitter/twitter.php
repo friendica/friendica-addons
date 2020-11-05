@@ -934,12 +934,15 @@ function twitter_parse_link(App $a, array &$b)
 	$item = twitter_createpost($a, 0, $status, [], true, false, true);
 
 	if ($b['format'] == 'json') {
-		if (!empty($status->extended_entities->media[0]->media_url_https)) {
-			$images = [[
-				'src'    => $status->extended_entities->media[0]->media_url_https,
-				'width'  => $status->extended_entities->media[0]->sizes->thumb->w,
-				'height' => $status->extended_entities->media[0]->sizes->thumb->h,
-			]];
+		$images = [];
+		foreach ($status->extended_entities->media ?? [] as $media) {
+			if (!empty($media->media_url_https)) {
+				$images[] = [
+					'src'    => $media->media_url_https,
+					'width'  => $media->sizes->thumb->w,
+					'height' => $media->sizes->thumb->h,
+				];
+			}
 		}
 
 		$b['text'] = [
@@ -948,7 +951,7 @@ function twitter_parse_link(App $a, array &$b)
 				'url' => $item['plink'],
 				'title' => DI::l10n()->t('%s on Twitter', $status->user->name),
 				'text' => BBCode::toPlaintext($item['body'], false),
-				'images' => $images ?? [],
+				'images' => $images,
 			],
 			'contentType' => 'attachment',
 			'success' => true,
