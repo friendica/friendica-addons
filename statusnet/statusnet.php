@@ -1104,24 +1104,15 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 	$contactid = 0;
 
 	if (!empty($content->in_reply_to_status_id)) {
+		$thr_parent = $hostname . "::" . $content->in_reply_to_status_id;
 
-		$parent = $hostname . "::" . $content->in_reply_to_status_id;
-
-		$fields = ['uri', 'parent-uri', 'parent'];
-		$item = Item::selectFirst($fields, ['uri' => $parent, 'uid' => $uid]);
-
-		if (!DBA::isResult($item)) {
-			$item = Item::selectFirst($fields, ['extid' => $parent, 'uid' => $uid]);
-		}
-
-		if (DBA::isResult($item)) {
-			$postarray['thr-parent'] = $item['uri'];
-			$postarray['parent-uri'] = $item['parent-uri'];
-			$postarray['parent'] = $item['parent'];
+		if (
+			Item::exists(['uri' => $thr_parent, 'uid' => $uid])
+			|| Item::exists(['extid' => $thr_parent, 'uid' => $uid])
+		) {
+			$postarray['thr-parent'] = $thr_parent;
 			$postarray['object-type'] = Activity\ObjectType::COMMENT;
 		} else {
-			$postarray['thr-parent'] = $postarray['uri'];
-			$postarray['parent-uri'] = $postarray['uri'];
 			$postarray['object-type'] = Activity\ObjectType::NOTE;
 		}
 
@@ -1145,7 +1136,6 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 		// Don't create accounts of people who just comment something
 		$create_user = false;
 	} else {
-		$postarray['parent-uri'] = $postarray['uri'];
 		$postarray['object-type'] = Activity\ObjectType::NOTE;
 	}
 
