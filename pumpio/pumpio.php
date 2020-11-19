@@ -966,7 +966,7 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 	$likedata['wall'] = 0;
 	$likedata['network'] = Protocol::PUMPIO;
 	$likedata['uri'] = Item::newURI($uid);
-	$likedata['parent-uri'] = $orig_post["uri"];
+	$likedata['thr-parent'] = $orig_post['uri'];
 	$likedata['contact-id'] = $contactid;
 	$likedata['app'] = $post->generator->displayName;
 	$likedata['author-name'] = $post->actor->displayName;
@@ -1137,7 +1137,7 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 			$contact_id = $self[0]['id'];
 		}
 
-		$postarray['parent-uri'] = $post->object->id;
+		$postarray['thr-parent'] = $post->object->id;
 
 		if (!$public) {
 			$postarray['private'] = 1;
@@ -1198,7 +1198,7 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 		$reply->url = $post->object->inReplyTo->url;
 		pumpio_dopost($a, $client, $uid, $self, $reply, $own_id, false);
 
-		$postarray['parent-uri'] = $post->object->inReplyTo->id;
+		$postarray['thr-parent'] = $post->object->inReplyTo->id;
 	}
 
 	// When there is no content there is no need to continue
@@ -1277,7 +1277,7 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 	}
 
 	if (($post->object->objectType == "comment") && $threadcompletion) {
-		pumpio_fetchallcomments($a, $uid, $postarray['parent-uri']);
+		pumpio_fetchallcomments($a, $uid, $postarray['thr-parent']);
 	}
 
 	return $top_item;

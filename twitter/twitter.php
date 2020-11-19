@@ -1582,22 +1582,15 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 	$contactid = 0;
 
 	if ($post->in_reply_to_status_id_str != "") {
-		$parent = "twitter::" . $post->in_reply_to_status_id_str;
+		$thr_parent = "twitter::" . $post->in_reply_to_status_id_str;
 
-		$fields = ['uri', 'parent-uri', 'parent'];
-		$parent_item = Item::selectFirst($fields, ['uri' => $parent, 'uid' => $uid]);
-		if (!DBA::isResult($parent_item)) {
-			$parent_item = Item::selectFirst($fields, ['extid' => $parent, 'uid' => $uid]);
-		}
-
-		if (DBA::isResult($parent_item)) {
-			$postarray['thr-parent'] = $parent_item['uri'];
-			$postarray['parent-uri'] = $parent_item['parent-uri'];
-			$postarray['parent'] = $parent_item['parent'];
+		if (
+			Item::exists(['uri' => $thr_parent, 'uid' => $uid])
+			|| Item::exists(['extid' => $thr_parent, 'uid' => $uid])
+		) {
+			$postarray['thr-parent'] = $thr_parent;
 			$postarray['object-type'] = Activity\ObjectType::COMMENT;
 		} else {
-			$postarray['thr-parent'] = $postarray['uri'];
-			$postarray['parent-uri'] = $postarray['uri'];
 			$postarray['object-type'] = Activity\ObjectType::NOTE;
 		}
 
@@ -1622,7 +1615,6 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 		// Don't create accounts of people who just comment something
 		$create_user = false;
 	} else {
-		$postarray['parent-uri'] = $postarray['uri'];
 		$postarray['object-type'] = Activity\ObjectType::NOTE;
 	}
 
@@ -1710,9 +1702,6 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 			$postarray['verb'] = Activity::ANNOUNCE;
 			$postarray['gravity'] = GRAVITY_ACTIVITY;
 			$postarray['object-type'] = Activity\ObjectType::NOTE;
-
-			$postarray['thr-parent'] = $retweet['uri'];
-			$postarray['parent-uri'] = $retweet['uri'];
 		} else {
 			$retweet['source'] = $postarray['source'];
 			$retweet['private'] = $postarray['private'];
@@ -1930,7 +1919,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 
 			$notify = false;
 
-			if (($postarray['uri'] == $postarray['parent-uri']) && ($postarray['author-link'] == $postarray['owner-link'])) {
+			if (($postarray['uri'] == $postarray['thr-parent']) && ($postarray['author-link'] == $postarray['owner-link'])) {
 				$contact = DBA::selectFirst('contact', [], ['id' => $postarray['contact-id'], 'self' => false]);
 				if (DBA::isResult($contact)) {
 					$notify = Item::isRemoteSelf($contact, $postarray);
