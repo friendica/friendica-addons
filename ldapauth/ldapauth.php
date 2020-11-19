@@ -56,6 +56,7 @@
 
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
+use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\User;
 use Friendica\Util\ConfigFileLoader;
@@ -73,14 +74,11 @@ function ldapauth_load_config(\Friendica\App $a, ConfigFileLoader $loader)
 
 function ldapauth_hook_authenticate($a, &$b)
 {
-	if (ldapauth_authenticate($b['username'], $b['password'])) {
-		$results = get_existing_account($b['username']);
-		if (!empty($results)) {
-			$b['user_record'] = $results[0];
-			$b['authenticated'] = 1;
-		}
+	$user = ldapauth_authenticate($b['username'], $b['password']);
+	if (!empty($user['uid'])) {
+		$b['user_record'] = User::getById($user['uid']);
+		$b['authenticated'] = 1;
 	}
-	return;
 }
 
 function ldapauth_authenticate($username, $password)
@@ -95,41 +93,44 @@ function ldapauth_authenticate($username, $password)
 	$ldap_autocreateaccount_emailattribute = DI::config()->get('ldapauth', 'ldap_autocreateaccount_emailattribute');
 	$ldap_autocreateaccount_nameattribute  = DI::config()->get('ldapauth', 'ldap_autocreateaccount_nameattribute');
 
-	if (!(strlen($password) && function_exists('ldap_connect') && strlen($ldap_server))) {
-		Logger::log("ldapauth: not configured or missing php-ldap module");
+	if (!extension_loaded('ldap') || !strlen($ldap_server)) {
+		Logger::error('Addon not configured or missing php-ldap extension', ['extension_loaded' => extension_loaded('ldap'), 'server' => $ldap_server]);
+		return false;
+	}
+
+	if (!strlen($password)) {
+		Logger::error('Empty password disallowed', ['provided_password_length' => strlen($password)]);
 		return false;
 	}
 
 	$connect = @ldap_connect($ldap_server);
-
 	if ($connect === false) {
-		Logger::log("ldapauth: could not connect to $ldap_server");
+		Logger::warning('Could not connect to LDAP server', ['server' => $ldap_server]);
 		return false;
 	}
 
 	@ldap_set_option($connect, LDAP_OPT_PROTOCOL_VERSION, 3);
 	@ldap_set_option($connect, LDAP_OPT_REFERRALS, 0);
 	if ((@ldap_bind($connect, $ldap_binddn, $ldap_bindpw)) === false) {
-		Logger::log("ldapauth: could not bind $ldap_server as $ldap_binddn");
+		Logger::warning('Could not bind to LDAP server', ['server' => $ldap_server, 'binddn' => $ldap_binddn, 'errno' => ldap_errno($connect), 'error' => ldap_error($connect)]);
 		return false;
 	}
 
 	$res = @ldap_search($connect, $ldap_searchdn, $ldap_userattr . '=' . $username);
-
 	if (!$res) {
-		Logger::log("ldapauth: $ldap_userattr=$username,$ldap_searchdn not found");
+		Logger::notice('LDAP user not found.', ['searchdn' => $ldap_searchdn, 'userattr' => $ldap_userattr, 'username' => $username, 'errno' => ldap_errno($connect), 'error' => ldap_error($connect)]);
 		return false;
 	}
 
 	$id = @ldap_first_entry($connect, $res);
-
 	if (!$id) {
+		Logger::notice('Could not retrieve first LDAP entry.', ['searchdn' => $ldap_searchdn, 'userattr' => $ldap_userattr, 'username' => $username, 'errno' => ldap_errno($connect), 'error' => ldap_error($connect)]);
 		return false;
 	}
 
 	$dn = @ldap_get_dn($connect, $id);
-
 	if (!@ldap_bind($connect, $dn, $password)) {
+		Logger::notice('Could not authenticate LDAP user with provided password', ['errno' => ldap_errno($connect), 'error' => ldap_error($connect)]);
 		return false;
 	}
 
@@ -147,57 +148,58 @@ function ldapauth_authenticate($username, $password)
 	}
 
 	if (!strlen($ldap_group)) {
-		ldap_autocreateaccount($ldap_autocreateaccount, $username, $password, $emailarray[0], $namearray[0]);
+		ldap_createaccount($ldap_autocreateaccount, $username, $password, $emailarray[0], $namearray[0]);
 		return true;
 	}
 
 	$r = @ldap_compare($connect, $ldap_group, 'member', $dn);
-	if ($r === -1) {
-		$err = @ldap_error($connect);
-		$eno = @ldap_errno($connect);
-		@ldap_close($connect);
-
-		if ($eno === 32) {
-			Logger::log("ldapauth: access control group Does Not Exist");
-			return false;
-		} elseif ($eno === 16) {
-			Logger::log('ldapauth: membership attribute does not exist in access control group');
-			return false;
+	if ($r !== true) {
+		$errno = @ldap_errno($connect);
+		if ($errno === 32) {
+			Logger::notice('LDAP Access Control Group does not exist', ['errno' => $errno, 'error' => ldap_error($connect)]);
+		} elseif ($errno === 16) {
+			Logger::notice('LDAP membership attribute does not exist in access control group', ['errno' => $errno, 'error' => ldap_error($connect)]);
 		} else {
-			Logger::log('ldapauth: error: ' . $err);
-			return false;
+			Logger::notice('Unexpected LDAP error', ['errno' => $errno, 'error' => ldap_error($connect)]);
 		}
-	} elseif ($r === false) {
+
 		@ldap_close($connect);
 		return false;
 	}
 
-	ldap_autocreateaccount($ldap_autocreateaccount, $username, $password, $emailarray[0], $namearray[0]);
-	return true;
-}
+	if ($ldap_autocreateaccount == "true" && !DBA::exists('user', ['nickname' => $username])) {
+		return ldap_createaccount($username, $password, $emailarray[0], $namearray[0]);
+	}
 
-function ldap_autocreateaccount($ldap_autocreateaccount, $username, $password, $email, $name)
-{
-	if ($ldap_autocreateaccount == "true") {
-		$results = get_existing_account($username);
-		if (empty($results)) {
-			if (strlen($email) > 0 && strlen($name) > 0) {
-				$arr = ['username' => $name, 'nickname' => $username, 'email' => $email, 'password' => $password, 'verified' => 1];
-
-				try {
-					User::create($arr);
-					Logger::log("ldapauth: account " . $username . " created");
-				} catch (Exception $ex) {
-					Logger::log("ldapauth: account " . $username . " was not created ! : " . $ex->getMessage());
-				}
-			} else {
-				Logger::log("ldapauth: unable to create account, no email or nickname found");
-			}
-		}
+	try {
+		$authentication = User::getAuthenticationInfo($username);
+		return User::getById($authentication['uid']);
+	} catch (Exception $e) {
+		Logger::notice('LDAP authentication error: ' . $e->getMessage());
+		return false;
 	}
 }
 
-function get_existing_account($username)
+function ldap_createaccount($username, $password, $email, $name)
 {
-	return q("SELECT * FROM `user` WHERE `nickname` = '%s' AND `blocked` = 0 AND `verified` = 1 LIMIT 1", $username);
+	if (!strlen($email) || !strlen($name)) {
+		Logger::notice('Could not create local user from LDAP data, no email or nickname provided');
+		return false;
+	}
+
+	try {
+		$user = User::create([
+			'username' => $name,
+			'nickname' => $username,
+			'email' => $email,
+			'password' => $password,
+			'verified' => 1
+		]);
+		Logger::info('Local user created from LDAP data', ['username' => $username, 'name' => $name]);
+		return $user;
+	} catch (Exception $ex) {
+		Logger::error('Could not create local user from LDAP data', ['username' => $username, 'exception' => $ex->getMessage()]);
+	}
+
+	return false;
 }
