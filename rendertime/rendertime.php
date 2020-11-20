@@ -50,7 +50,7 @@ function rendertime_page_end(Friendica\App $a, &$o)
 
 		if ($profiler->isRendertime()) {
 			$o .= '<pre>';
-			$o .= $profiler->getRendertimeString();
+			$o .= $profiler->getRendertimeString(DI::config()->get('rendertime', 'minimal_time', 0));
 			$o .= '</pre>';
 		}
 	}
