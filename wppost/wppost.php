@@ -44,7 +44,7 @@ function wppost_jot_nets(\Friendica\App &$a, array &$jotnets_fields)
 }
 
 
-function wppost_settings(&$a,&$s) {
+function wppost_settings(&$a, &$s) {
 
 	if(! local_user())
 		return;
@@ -84,8 +84,9 @@ function wppost_settings(&$a,&$s) {
     $s .= '<img class="connector'.$css.'" src="images/wordpress.png" /><h3 class="connector">'. DI::l10n()->t('Wordpress Export').'</h3>';
     $s .= '</span>';
     $s .= '<div id="wppost-enable-wrapper">';
-    $s .= '<label id="wppost-enable-label" for="wppost-checkbox">' . DI::l10n()->t('Enable WordPress Post Addon') . '</label>';
-    $s .= '<input id="wppost-checkbox" type="checkbox" name="wppost" value="1" ' . $checked . '/>';
+    $s .= '<label id="wppost-enable-label" for="wppost-enable">' . DI::l10n()->t('Enable WordPress Post Addon') . '</label>';
+	$s .= '<input type="hidden" name="wppost" value="0"/>';
+    $s .= '<input id="wppost-enable" type="checkbox" name="wppost" value="1" ' . $checked . '/>';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="wppost-username-wrapper">';
@@ -105,11 +106,13 @@ function wppost_settings(&$a,&$s) {
 
     $s .= '<div id="wppost-bydefault-wrapper">';
     $s .= '<label id="wppost-bydefault-label" for="wppost-bydefault">' . DI::l10n()->t('Post to WordPress by default') . '</label>';
+	$s .= '<input type="hidden" name="wp_bydefault" value="0"/>';
     $s .= '<input id="wppost-bydefault" type="checkbox" name="wp_bydefault" value="1" ' . $def_checked . '/>';
     $s .= '</div><div class="clear"></div>';
 
     $s .= '<div id="wppost-backlink-wrapper">';
     $s .= '<label id="wppost-backlink-label" for="wppost-backlink">' . DI::l10n()->t('Provide a backlink to the Friendica post') . '</label>';
+	$s .= '<input type="hidden" name="wp_backlink" value="0"/>';
     $s .= '<input id="wppost-backlink" type="checkbox" name="wp_backlink" value="1" ' . $back_checked . '/>';
     $s .= '</div><div class="clear"></div>';
     $s .= '<div id="wppost-backlinktext-wrapper">';
@@ -119,6 +122,7 @@ function wppost_settings(&$a,&$s) {
 
     $s .= '<div id="wppost-shortcheck-wrapper">';
     $s .= '<label id="wppost-shortcheck-label" for="wppost-shortcheck">' . DI::l10n()->t("Don't post messages that are too short") . '</label>';
+    $s .= '<input type="hidden" name="wp_shortcheck" value="0"/>';
     $s .= '<input id="wppost-shortcheck" type="checkbox" name="wp_shortcheck" value="1" '.$shortcheck_checked.'/>';
     $s .= '</div><div class="clear"></div>';
 
@@ -129,22 +133,20 @@ function wppost_settings(&$a,&$s) {
 }
 
 
-function wppost_settings_post(&$a,&$b) {
-
+function wppost_settings_post(&$a, &$b)
+{
 	if(!empty($_POST['wppost-submit'])) {
-		DI::pConfig()->set(local_user(),'wppost','post',intval($_POST['wppost']));
-		DI::pConfig()->set(local_user(),'wppost','post_by_default',intval($_POST['wp_bydefault'] ?? false));
-		DI::pConfig()->set(local_user(),'wppost','wp_username',trim($_POST['wp_username']));
-		DI::pConfig()->set(local_user(),'wppost','wp_password',trim($_POST['wp_password']));
-		DI::pConfig()->set(local_user(),'wppost','wp_blog',trim($_POST['wp_blog']));
-		DI::pConfig()->set(local_user(),'wppost','backlink',trim($_POST['wp_backlink'] ?? ''));
-		DI::pConfig()->set(local_user(),'wppost','shortcheck',trim($_POST['wp_shortcheck']));
-		$wp_backlink_text = Strings::escapeTags(trim($_POST['wp_backlink_text']));
-		$wp_backlink_text = BBCode::convert($wp_backlink_text, false, BBCode::BACKLINK);
+		DI::pConfig()->set(local_user(), 'wppost', 'post'           , intval($_POST['wppost']));
+		DI::pConfig()->set(local_user(), 'wppost', 'post_by_default', intval($_POST['wp_bydefault']));
+		DI::pConfig()->set(local_user(), 'wppost', 'wp_username'    ,   trim($_POST['wp_username']));
+		DI::pConfig()->set(local_user(), 'wppost', 'wp_password'    ,   trim($_POST['wp_password']));
+		DI::pConfig()->set(local_user(), 'wppost', 'wp_blog'        ,   trim($_POST['wp_blog']));
+		DI::pConfig()->set(local_user(), 'wppost', 'backlink'       , intval($_POST['wp_backlink']));
+		DI::pConfig()->set(local_user(), 'wppost', 'shortcheck'     , intval($_POST['wp_shortcheck']));
+		$wp_backlink_text = BBCode::convert(trim($_POST['wp_backlink_text']), false, BBCode::BACKLINK);
 		$wp_backlink_text = HTML::toPlaintext($wp_backlink_text, 0, true);
-		DI::pConfig()->set(local_user(),'wppost','wp_backlink_text', $wp_backlink_text);
+		DI::pConfig()->set(local_user(), 'wppost', 'wp_backlink_text', $wp_backlink_text);
 	}
-
 }
 
 function wppost_hook_fork(&$a, &$b)
@@ -178,11 +180,11 @@ function wppost_post_local(&$a, &$b) {
 		return;
 	}
 
-	$wp_post   = intval(DI::pConfig()->get(local_user(),'wppost','post'));
+	$wp_post   = intval(DI::pConfig()->get(local_user(), 'wppost', 'post'));
 
 	$wp_enable = (($wp_post && !empty($_REQUEST['wppost_enable'])) ? intval($_REQUEST['wppost_enable']) : 0);
 
-	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(),'wppost','post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(), 'wppost', 'post_by_default'))) {
 		$wp_enable = 1;
 	}
 
@@ -270,7 +272,7 @@ function wppost_send(&$a, &$b)
 			// If no bookmark is found then take the first line
 			if ($wptitle == '') {
 				// Remove the share element before fetching the first line
-				$title = trim(preg_replace("/\[share.*?\](.*?)\[\/share\]/ism","\n$1\n",$b['body']));
+				$title = trim(preg_replace("/\[share.*?\](.*?)\[\/share\]/ism", "\n$1\n", $b['body']));
 
 				$title = HTML::toPlaintext(BBCode::convert($title, false), 0, true)."\n";
 				$pos = strpos($title, "\n");
@@ -288,8 +290,8 @@ function wppost_send(&$a, &$b)
 		$post = BBCode::convert($b['body'], false, BBCode::CONNECTORS);
 
 		// If a link goes to youtube then remove the stuff around it. Wordpress detects youtube links and embeds it
-		$post = preg_replace('/<a.*?href="(https?:\/\/www.youtube.com\/.*?)".*?>(.*?)<\/a>/ism',"\n$1\n",$post);
-		$post = preg_replace('/<a.*?href="(https?:\/\/youtu.be\/.*?)".*?>(.*?)<\/a>/ism',"\n$1\n",$post);
+		$post = preg_replace('/<a.*?href="(https?:\/\/www.youtube.com\/.*?)".*?>(.*?)<\/a>/ism', "\n$1\n", $post);
+		$post = preg_replace('/<a.*?href="(https?:\/\/youtu.be\/.*?)".*?>(.*?)<\/a>/ism', "\n$1\n", $post);
 
 		$post = $title.$post;
 
