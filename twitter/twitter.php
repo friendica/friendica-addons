@@ -1584,11 +1584,13 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 	if ($post->in_reply_to_status_id_str != "") {
 		$thr_parent = "twitter::" . $post->in_reply_to_status_id_str;
 
-		if (
-			Item::exists(['uri' => $thr_parent, 'uid' => $uid])
-			|| Item::exists(['extid' => $thr_parent, 'uid' => $uid])
-		) {
-			$postarray['thr-parent'] = $thr_parent;
+		$item = Item::selectFirst(['uri'], ['uri' => $thr_parent, 'uid' => $uid]);
+		if (!DBA::isResult($item)) {
+			$item = Item::selectFirst(['uri'], ['extid' => $thr_parent, 'uid' => $uid]);
+		}
+
+		if (DBA::isResult($item)) {
+			$postarray['thr-parent'] = $item['uri'];
 			$postarray['object-type'] = Activity\ObjectType::COMMENT;
 		} else {
 			$postarray['object-type'] = Activity\ObjectType::NOTE;
@@ -1702,6 +1704,8 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 			$postarray['verb'] = Activity::ANNOUNCE;
 			$postarray['gravity'] = GRAVITY_ACTIVITY;
 			$postarray['object-type'] = Activity\ObjectType::NOTE;
+
+			$postarray['thr-parent'] = $retweet['uri'];
 		} else {
 			$retweet['source'] = $postarray['source'];
 			$retweet['private'] = $postarray['private'];

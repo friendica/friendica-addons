@@ -1106,11 +1106,13 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 	if (!empty($content->in_reply_to_status_id)) {
 		$thr_parent = $hostname . "::" . $content->in_reply_to_status_id;
 
-		if (
-			Item::exists(['uri' => $thr_parent, 'uid' => $uid])
-			|| Item::exists(['extid' => $thr_parent, 'uid' => $uid])
-		) {
-			$postarray['thr-parent'] = $thr_parent;
+		$item = Item::selectFirst(['uri'], ['uri' => $thr_parent, 'uid' => $uid]);
+		if (!DBA::isResult($item)) {
+			$item = Item::selectFirst(['uri'], ['extid' => $thr_parent, 'uid' => $uid]);
+		}
+
+		if (DBA::isResult($item)) {
+			$postarray['thr-parent'] = $item['uri'];
 			$postarray['object-type'] = Activity\ObjectType::COMMENT;
 		} else {
 			$postarray['object-type'] = Activity\ObjectType::NOTE;
