@@ -482,6 +482,10 @@ function twitter_probe_detect(App $a, array &$hookData)
 
 function twitter_action(App $a, $uid, $pid, $action)
 {
+	if (empty($pid)) {
+		return;
+	}
+
 	$ckey = DI::config()->get('twitter', 'consumerkey');
 	$csecret = DI::config()->get('twitter', 'consumersecret');
 	$otoken = DI::pConfig()->get($uid, 'twitter', 'oauthtoken');
@@ -518,6 +522,20 @@ function twitter_action(App $a, $uid, $pid, $action)
 	Logger::info('after action', ['action' => $action, 'result' => $result]);
 }
 
+function twitter_get_id(string $uri)
+{
+	if ((substr($uri, 0, 9) != 'twitter::') || (strlen($uri) <= 9)) {
+		return 0;
+	}
+
+	$id = substr($uri, 9);
+	if (!is_numeric($id)) {
+		return 0;
+	}
+
+	return (int)$id;
+}
+
 function twitter_post_hook(App $a, array &$b)
 {
 	// Post to Twitter
@@ -530,10 +548,9 @@ function twitter_post_hook(App $a, array &$b)
 		Logger::log("twitter_post_hook: parameter " . print_r($b, true), Logger::DATA);
 
 		// Looking if its a reply to a twitter post
-		if ((substr($b["parent-uri"], 0, 9) != "twitter::")
-			&& (substr($b["extid"], 0, 9) != "twitter::")
-			&& (substr($b["thr-parent"], 0, 9) != "twitter::"))
-		{
+		if (!twitter_get_id($b["parent-uri"]) &&
+			!twitter_get_id($b["extid"]) &&
+			!twitter_get_id($b["thr-parent"])) {
 			Logger::log("twitter_post_hook: no twitter post " . $b["parent"]);
 			return;
 		}
@@ -574,26 +591,26 @@ function twitter_post_hook(App $a, array &$b)
 	}
 
 	if (($b['verb'] == Activity::POST) && $b['deleted']) {
-		twitter_action($a, $b["uid"], substr($orig_post["uri"], 9), "delete");
+		twitter_action($a, $b["uid"], twitter_get_id($orig_post["uri"]), "delete");
 	}
 
 	if ($b['verb'] == Activity::LIKE) {
-		Logger::log("twitter_post_hook: parameter 2 " . substr($b["thr-parent"], 9), Logger::DEBUG);
+		Logger::log("twitter_post_hook: parameter 2 " . twitter_get_id($b["thr-parent"]), Logger::DEBUG);
 		if ($b['deleted']) {
-			twitter_action($a, $b["uid"], substr($b["thr-parent"], 9), "unlike");
+			twitter_action($a, $b["uid"], twitter_get_id($b["thr-parent"]), "unlike");
 		} else {
-			twitter_action($a, $b["uid"], substr($b["thr-parent"], 9), "like");
+			twitter_action($a, $b["uid"], twitter_get_id($b["thr-parent"]), "like");
 		}
 
 		return;
 	}
 
 	if ($b['verb'] == Activity::ANNOUNCE) {
-		Logger::info('Retweet', ['uid' => $b['uid'], 'id' => substr($b['thr-parent'], 9)]);
+		Logger::info('Retweet', ['uid' => $b['uid'], 'id' => twitter_get_id($b["thr-parent"])]);
 		if ($b['deleted']) {
-			twitter_action($a, $b["uid"], substr($orig_post["extid"], 9), "delete");
+			twitter_action($a, $b["uid"], twitter_get_id($orig_post["extid"]), "delete");
 		} else {
-			twitter_retweet($b["uid"], substr($b["thr-parent"], 9));
+			twitter_retweet($b["uid"], twitter_get_id($b["thr-parent"]));
 		}
 
 		return;
@@ -720,7 +737,7 @@ function twitter_post_hook(App $a, array &$b)
 		$post['status'] = $msg;
 
 		if ($iscomment) {
-			$post["in_reply_to_status_id"] = substr($orig_post["uri"], 9);
+			$post["in_reply_to_status_id"] = twitter_get_id($orig_post["uri"]);
 		}
 
 		$url = 'statuses/update';
