@@ -58,12 +58,9 @@ function testdrive_cron($a,$b) {
 	if(count($r)) {
 		foreach($r as $rr) {
 			notification([
-				'uid' => $rr['uid'],
 				'type' => Type::SYSTEM,
+				'uid' => $rr['uid'],
 				'system_type' => 'testdrive_expire',
-				'language'     => $rr['language'],
-				'to_name'      => $rr['username'],
-				'to_email'     => $rr['email'],
 				'source_name'  => DI::l10n()->t('Administrator'),
 				'source_link'  => DI::baseUrl()->get(),
 				'source_photo' => DI::baseUrl()->get() . '/images/person-80.jpg',
