@@ -37,13 +37,13 @@ function phpmailer_emailer_send_prepare(App $a, IEmail &$email)
 	// Passing `true` enables exceptions
 	$mailer = new PHPMailer(true);
 	try {
+		// Setup encoding.
+		$mailer->CharSet  = 'UTF-8';
+		$mailer->Encoding = 'base64';
+
 		if (DI::config()->get('phpmailer', 'smtp')) {
 			// Set mailer to use SMTP
 			$mailer->isSMTP();
-
-			// Setup encoding.
-			$mailer->CharSet  = 'UTF-8';
-			$mailer->Encoding = 'base64';
 
 			// Specify main and backup SMTP servers
 			$mailer->Host = DI::config()->get('phpmailer', 'smtp_server');
