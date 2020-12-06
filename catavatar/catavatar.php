@@ -126,12 +126,16 @@ function catavatar_addon_settings_post(App $a, &$s)
 function catavatar_lookup(App $a, &$b)
 {
 	$user = DBA::selectFirst('user', ['uid'], ['email' => $b['email']]);
-	$url = DI::baseUrl()->get() . '/catavatar/' . $user['uid'];
+	if (DBA::isResult($user)) {
+		$url = DI::baseUrl()->get() . '/catavatar/' . $user['uid'];
+	} else {
+		$url = DI::baseUrl()->get() . '/catavatar/' . md5(trim(strtolower($b['email'])));
+	}
 
 	switch($b['size']) {
 		case 300: $url .= "/4"; break;
 		case 80: $url .= "/5"; break;
-		case 47: $url .= "/6"; break;
+		case 48: $url .= "/6"; break;
 	}
 
 	$b['url'] = $url;
@@ -152,22 +156,27 @@ function catavatar_content(App $a)
 		throw new NotFoundException(); // this should be catched on index and show default "not found" page.
 	}
 
-	$uid = intval($a->argv[1]);
+	if (is_numeric($a->argv[1])) {
+		$uid = intval($a->argv[1]);
+		$condition = ['uid' => $uid,
+				'account_expired' => false, 'account_removed' => false];
+		$user = DBA::selectFirst('user', ['email'], $condition);
+
+		if ($user === false) {
+			throw new NotFoundException();
+		}
+
+		$seed = DI::pConfig()->get($uid, "catavatar", "seed", md5(trim(strtolower($user['email']))));
+	} elseif (!empty($a->argv[1])) {
+		$seed = $a->argv[1];
+	} else {
+		throw new NotFoundException();
+	}
 
 	$size = 0;
 	if ($a->argc == 3) {
 		$size = intval($a->argv[2]);
 	}
-
-	$condition = ['uid' => $uid,
-			'account_expired' => false, 'account_removed' => false];
-	$user = DBA::selectFirst('user', ['email'], $condition);
-
-	if ($user === false) {
-		throw new NotFoundException();
-	}
-
-	$seed = DI::pConfig()->get($uid, "catavatar", "seed", md5(trim(strtolower($user['email']))));
 
 	// ...Or start generation
 	ob_start();
@@ -179,8 +188,6 @@ function catavatar_content(App $a)
 
 	exit();
 }
-
-
 
 /**
  * ====================
