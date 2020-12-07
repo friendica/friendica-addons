@@ -7,11 +7,10 @@
  */
 
 use Friendica\App;
-use Friendica\BaseModule;
+use Friendica\Core\Addon;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\Strings;
@@ -23,7 +22,7 @@ function libravatar_install()
 {
 	Hook::register('load_config',   'addon/libravatar/libravatar.php', 'libravatar_load_config');
 	Hook::register('avatar_lookup', 'addon/libravatar/libravatar.php', 'libravatar_lookup');
-	Logger::log("registered libravatar in avatar_lookup hook");
+	Logger::notice("registered libravatar in avatar_lookup hook");
 }
 
 function libravatar_load_config(App $a, ConfigFileLoader $loader)
@@ -40,14 +39,9 @@ function libravatar_load_config(App $a, ConfigFileLoader $loader)
 function libravatar_lookup($a, &$b)
 {
 	$default_avatar = DI::config()->get('libravatar', 'default_avatar');
-
-	if (! $default_avatar) {
+	if (empty($default_avatar)) {
 		// if not set, look up if there was one from the gravatar addon
-		$default_avatar = DI::config()->get('gravatar', 'default_avatar');
-		// setting default avatar if nothing configured
-		if (!$default_avatar) {
-			$default_avatar = 'identicon'; // default image will be a random pattern
-		}
+		$default_avatar = DI::config()->get('gravatar', 'default_avatar', 'identicon');
 	}
 
 	require_once 'Services/Libravatar.php';
@@ -67,12 +61,7 @@ function libravatar_addon_admin(&$a, &$o)
 {
 	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/libravatar");
 
-	$default_avatar = DI::config()->get('libravatar', 'default_avatar');
-
-	// set default values for first configuration
-	if (!$default_avatar) {
-		$default_avatar = 'identicon'; // pseudo-random geometric pattern based on email hash
-	}
+	$default_avatar = DI::config()->get('libravatar', 'default_avatar', 'identicon');
 
 	// Available options for the select boxes
 	$default_avatars = [
@@ -81,26 +70,15 @@ function libravatar_addon_admin(&$a, &$o)
 		'monsterid' => DI::l10n()->t('monster face'),
 		'wavatar' => DI::l10n()->t('computer generated face'),
 		'retro' => DI::l10n()->t('retro arcade style face'),
+		'robohash' => DI::l10n()->t('roboter face'),
+		'pagan' => DI::l10n()->t('retro adventure game character'),
 	];
 
-	// Show warning if PHP version is too old
-	if (! version_compare(PHP_VERSION, '5.3.0', '>=')) {
-		$o = '<h5>' .DI::l10n()->t('Warning') .'</h5><p>';
-		$o .= DI::l10n()->t('Your PHP version %s is lower than the required PHP >= 5.3.', PHP_VERSION);
-		$o .= '<br>' .DI::l10n()->t('This addon is not functional on your server.') .'<p><br>';
-		return;
-	}
-
-	// Libravatar falls back to gravatar, so show warning about gravatar addon if enabled
-	$r = q("SELECT * FROM `addon` WHERE `name` = '%s' and `installed` = 1",
-		DBA::escape('gravatar')
-	);
-	if (count($r)) {
+	if (Addon::isEnabled('gravatar')) {
 		$o = '<h5>' .DI::l10n()->t('Information') .'</h5><p>' .DI::l10n()->t('Gravatar addon is installed. Please disable the Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar.') .'</p><br><br>';
 	}
 
 	// output Libravatar settings
-	$o .= '<input type="hidden" name="form_security_token" value="' . BaseModule::getFormSecurityToken("libravatarsave") .'">';
 	$o .= Renderer::replaceMacros( $t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
 		'$default_avatar' => ['avatar', DI::l10n()->t('Default avatar image'), $default_avatar, DI::l10n()->t('Select default avatar image if none was found. See README'), $default_avatars],
@@ -112,8 +90,6 @@ function libravatar_addon_admin(&$a, &$o)
  */
 function libravatar_addon_admin_post(&$a)
 {
-	BaseModule::checkFormSecurityToken('libravatarrsave');
-
 	$default_avatar = (!empty($_POST['avatar']) ? Strings::escapeTags(trim($_POST['avatar'])) : 'identicon');
 	DI::config()->set('libravatar', 'default_avatar', $default_avatar);
 }
