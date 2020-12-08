@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2020-12-08 07:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,66 +17,53 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: libravatar.php:14
-msgid "Could NOT install Libravatar successfully.<br>It requires PHP >= 5.3"
-msgstr ""
-
-#: libravatar.php:73
+#: libravatar.php:68
 msgid "generic profile image"
 msgstr ""
 
-#: libravatar.php:74
+#: libravatar.php:69
 msgid "random geometric pattern"
 msgstr ""
 
-#: libravatar.php:75
+#: libravatar.php:70
 msgid "monster face"
 msgstr ""
 
-#: libravatar.php:76
+#: libravatar.php:71
 msgid "computer generated face"
 msgstr ""
 
-#: libravatar.php:77
+#: libravatar.php:72
 msgid "retro arcade style face"
 msgstr ""
 
-#: libravatar.php:82
-msgid "Warning"
+#: libravatar.php:73
+msgid "roboter face"
 msgstr ""
 
-#: libravatar.php:83
-#, php-format
-msgid "Your PHP version %s is lower than the required PHP >= 5.3."
+#: libravatar.php:74
+msgid "retro adventure game character"
 msgstr ""
 
-#: libravatar.php:84
-msgid "This addon is not functional on your server."
-msgstr ""
-
-#: libravatar.php:93
+#: libravatar.php:78
 msgid "Information"
 msgstr ""
 
-#: libravatar.php:93
+#: libravatar.php:78
 msgid ""
 "Gravatar addon is installed. Please disable the Gravatar addon.<br>The "
 "Libravatar addon will fall back to Gravatar if nothing was found at "
 "Libravatar."
 msgstr ""
 
-#: libravatar.php:99
-msgid "Submit"
+#: libravatar.php:83
+msgid "Save Settings"
 msgstr ""
 
-#: libravatar.php:100
+#: libravatar.php:84
 msgid "Default avatar image"
 msgstr ""
 
-#: libravatar.php:100
+#: libravatar.php:84
 msgid "Select default avatar image if none was found. See README"
-msgstr ""
-
-#: libravatar.php:112
-msgid "Libravatar settings updated."
 msgstr ""

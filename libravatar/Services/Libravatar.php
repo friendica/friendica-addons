@@ -549,6 +549,8 @@ class Services_Libravatar
         case 'monsterid':
         case 'wavatar':
         case 'retro':
+        case 'robohash':
+        case 'pagan':
             break;
         default:
             $valid = filter_var($url, FILTER_VALIDATE_URL);
