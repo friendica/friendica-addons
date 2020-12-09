@@ -48,6 +48,17 @@ function rendertime_page_end(Friendica\App $a, &$o)
 			//round($profiler->get('plugin'), 3)
 			) . '</div>';
 
+			$total = microtime(true) - $profiler->get('start');
+			$rest = $total - ($profiler->get('ready') - $profiler->get('start')) - $profiler->get('init') - $profiler->get('content');
+			$o = $o . '<div class="renderinfo">' . DI::l10n()->t("Boot: %s, Class-Init: %s, Init: %s, Content: %s, Other: %s, Total: %s", 
+				round($profiler->get('ready') - $profiler->get('start'), 3),
+				round($profiler->get('classinit') - $profiler->get('start'), 3),
+				round($profiler->get('init'), 3),
+				round($profiler->get('content'), 3),
+				round($rest, 3),
+				round($total, 3)
+				) . '</div>';
+
 		if ($profiler->isRendertime()) {
 			$o .= '<pre>';
 			$o .= $profiler->getRendertimeString(DI::config()->get('rendertime', 'minimal_time', 0));
