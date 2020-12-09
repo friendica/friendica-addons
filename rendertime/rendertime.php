@@ -50,9 +50,10 @@ function rendertime_page_end(Friendica\App $a, &$o)
 
 			$total = microtime(true) - $profiler->get('start');
 			$rest = $total - ($profiler->get('ready') - $profiler->get('start')) - $profiler->get('init') - $profiler->get('content');
-			$o = $o . '<div class="renderinfo">' . DI::l10n()->t("Boot: %s, Class-Init: %s, Init: %s, Content: %s, Other: %s, Total: %s", 
-				round($profiler->get('ready') - $profiler->get('start'), 3),
+			$o = $o . '<div class="renderinfo">' . DI::l10n()->t("Class-Create: %s, Class-Init: %s, Boot: %s, Init: %s, Content: %s, Other: %s, Total: %s", 
+				round($profiler->get('classcreate') - $profiler->get('start'), 3),
 				round($profiler->get('classinit') - $profiler->get('start'), 3),
+				round($profiler->get('ready') - $profiler->get('classinit'), 3),
 				round($profiler->get('init'), 3),
 				round($profiler->get('content'), 3),
 				round($rest, 3),
