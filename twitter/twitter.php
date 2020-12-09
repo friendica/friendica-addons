@@ -1939,8 +1939,8 @@ function twitter_fetchhometimeline(App $a, $uid)
 
 			if (empty($postarray['thr-parent'])) {
 				$contact = DBA::selectFirst('contact', [], ['id' => $postarray['contact-id'], 'self' => false]);
-				if (DBA::isResult($contact)) {
-					$notify = Item::isRemoteSelf($contact, $postarray);
+				if (DBA::isResult($contact) && Item::isRemoteSelf($contact, $postarray)) {
+					$notify = PRIORITY_MEDIUM;
 				}
 			}
 
