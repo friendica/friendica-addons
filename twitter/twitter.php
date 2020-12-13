@@ -1005,6 +1005,7 @@ function twitter_parse_link(App $a, array &$b)
  */
 function twitter_do_mirrorpost(App $a, $uid, $post)
 {
+	$datarray['uid'] = $uid;
 	$datarray['extid'] = 'twitter::' . $post->id;
 	$datarray['title'] = '';
 
@@ -1064,6 +1065,14 @@ function twitter_fetchtimeline(App $a, $uid)
 	}
 
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
+
+	// Ensure to have the own contact
+	try {
+		twitter_fetch_own_contact($a, $uid);
+	} catch (TwitterOAuthException $e) {
+		Logger::warning('Error fetching own contact', ['uid' => $uid, 'message' => $e->getMessage()]);
+		return;
+	}
 
 	$parameters = ["exclude_replies" => true, "trim_user" => false, "contributor_details" => true, "include_rts" => true, "tweet_mode" => "extended", "include_ext_alt_text" => true];
 
@@ -1228,12 +1237,16 @@ function twitter_fetch_contact($uid, $data, $create_user)
 	if (!empty($cid)) {
 		DBA::update('contact', $fields, ['id' => $cid]);
 		Contact::updateAvatar($cid, $avatar);
+	} else {
+		Logger::warning('No contact found', ['fields' => $fields]);
 	}
 
 	$contact = DBA::selectFirst('contact', [], ['uid' => $uid, 'alias' => "twitter::" . $data->id_str]);
-	if (!DBA::isResult($contact) && !$create_user) {
+	if (!DBA::isResult($contact) && empty($cid)) {
 		Logger::warning('User contact not found', ['uid' => $uid, 'twitter-id' => $data->id_str]);
 		return 0;
+	} else {
+		return $cid;
 	}
 
 	if (!DBA::isResult($contact)) {
