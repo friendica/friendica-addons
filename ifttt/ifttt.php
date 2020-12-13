@@ -169,12 +169,6 @@ function ifttt_message($uid, $item)
 	//$post['date'] = $item['date'];
 	//$post['uri'] = $item['url'];
 
-	if (!empty($item['url']) && strstr($item['url'], 'facebook.com')) {
-		$hash = hash('ripemd128', $item['url']);
-		$post['extid'] = Protocol::FACEBOOK;
-		$post['message_id'] = Item::newURI($uid, Protocol::FACEBOOK . ':' . $hash);
-	}
-
 	if ($item['type'] == 'link') {
 		$link = $item['link'];
 		$data = PageInfo::queryUrl($item['link']);
@@ -196,6 +190,8 @@ function ifttt_message($uid, $item)
 	} else {
 		$link = hash('ripemd128', $item['msg']);
 	}
+
+	$post['extid'] = $link;
 
 	Post\Delayed::add($link, $post, PRIORITY_MEDIUM, true);
 }
