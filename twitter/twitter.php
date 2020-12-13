@@ -1245,7 +1245,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 	if (!DBA::isResult($contact) && empty($cid)) {
 		Logger::warning('User contact not found', ['uid' => $uid, 'twitter-id' => $data->id_str]);
 		return 0;
-	} else {
+	} elseif (!$create_user) {
 		return $cid;
 	}
 
