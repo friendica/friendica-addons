@@ -403,7 +403,7 @@ function twitter_hook_fork(App $a, array &$b)
 		return;
 	}
 
-	if ($post['app'] == 'Twitter') {
+	if (substr($post['app'], 0, 7) == 'Twitter') {
 		$b['execute'] = false;
 		return;
 	}
@@ -1006,7 +1006,7 @@ function twitter_do_mirrorpost(App $a, $uid, $post)
 {
 	$datarray['api_source'] = true;
 	$datarray['profile_uid'] = $uid;
-	$datarray['extid'] = Protocol::TWITTER . ':' . $post->id;
+	$datarray['extid'] = 'twitter::' . $post->id;
 	$datarray['protocol'] = Conversation::PARCEL_TWITTER;
 	$datarray['source'] = json_encode($post);
 	$datarray['title'] = '';
