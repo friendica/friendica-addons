@@ -6,7 +6,6 @@
  * Version: 0.1
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
-require_once 'mod/item.php';
 use Friendica\App;
 use Friendica\Content\PageInfo;
 use Friendica\Core\Hook;
@@ -15,6 +14,7 @@ use Friendica\Core\Protocol;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Item;
+use Friendica\Model\Post;
 use Friendica\Util\Strings;
 
 function ifttt_install()
@@ -161,25 +161,22 @@ function ifttt_message($uid, $item)
 {
 	$a = DI::app();
 
-	$_SESSION['authenticated'] = true;
-	$_SESSION['uid'] = $uid;
-
-	unset($_REQUEST);
-	$_REQUEST['api_source'] = true;
-	$_REQUEST['profile_uid'] = $uid;
-	$_REQUEST['source'] = 'IFTTT';
-	$_REQUEST['title'] = '';
-	$_REQUEST['body'] = $item['msg'];
-	//$_REQUEST['date'] = $item['date'];
-	//$_REQUEST['uri'] = $item['url'];
+	$post = [];
+	$post['uid'] = $uid;
+	$post['app'] = 'IFTTT';
+	$post['title'] = '';
+	$post['body'] = $item['msg'];
+	//$post['date'] = $item['date'];
+	//$post['uri'] = $item['url'];
 
 	if (!empty($item['url']) && strstr($item['url'], 'facebook.com')) {
 		$hash = hash('ripemd128', $item['url']);
-		$_REQUEST['extid'] = Protocol::FACEBOOK;
-		$_REQUEST['message_id'] = Item::newURI($uid, Protocol::FACEBOOK . ':' . $hash);
+		$post['extid'] = Protocol::FACEBOOK;
+		$post['message_id'] = Item::newURI($uid, Protocol::FACEBOOK . ':' . $hash);
 	}
 
 	if ($item['type'] == 'link') {
+		$link = $item['link'];
 		$data = PageInfo::queryUrl($item['link']);
 
 		if (isset($item['title']) && (trim($item['title']) != '')) {
@@ -190,10 +187,15 @@ function ifttt_message($uid, $item)
 			$data['text'] = $item['description'];
 		}
 
-		$_REQUEST['body'] .= "\n" . PageInfo::getFooterFromData($data);
+		$post['body'] .= "\n" . PageInfo::getFooterFromData($data);
 	} elseif (($item['type'] == 'photo') && ($item['image'] != '')) {
-		$_REQUEST['body'] .= "\n\n[img]" . $item['image'] . "[/img]\n";
+		$link = $item['image'];
+		$post['body'] .= "\n\n[img]" . $item['image'] . "[/img]\n";
+	} elseif (!empty($item['url'])) {
+		$link = $item['url'];
+	} else {
+		$link = hash('ripemd128', $item['msg']);
 	}
 
-	item_post($a);
+	Post\Delayed::add($link, $post, PRIORITY_MEDIUM, true);
 }

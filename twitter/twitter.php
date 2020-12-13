@@ -83,6 +83,7 @@ use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
 use Friendica\Model\ItemURI;
+use Friendica\Model\Post;
 use Friendica\Model\Tag;
 use Friendica\Model\User;
 use Friendica\Protocol\Activity;
@@ -1004,11 +1005,7 @@ function twitter_parse_link(App $a, array &$b)
  */
 function twitter_do_mirrorpost(App $a, $uid, $post)
 {
-	$datarray['api_source'] = true;
-	$datarray['profile_uid'] = $uid;
 	$datarray['extid'] = 'twitter::' . $post->id;
-	$datarray['protocol'] = Conversation::PARCEL_TWITTER;
-	$datarray['source'] = json_encode($post);
 	$datarray['title'] = '';
 
 	if (!empty($post->retweeted_status)) {
@@ -1038,7 +1035,7 @@ function twitter_do_mirrorpost(App $a, $uid, $post)
 		$datarray['body'] = $item['body'];
 	}
 
-	$datarray['source'] = $item['app'];
+	$datarray['app'] = $item['app'];
 	$datarray['verb'] = $item['verb'];
 
 	if (isset($item['location'])) {
@@ -1065,9 +1062,6 @@ function twitter_fetchtimeline(App $a, $uid)
 	if ($application_name == "") {
 		$application_name = DI::baseUrl()->getHostname();
 	}
-
-	require_once 'mod/item.php';
-	require_once 'mod/share.php';
 
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 
@@ -1107,20 +1101,17 @@ function twitter_fetchtimeline(App $a, $uid)
 			}
 
 			if (!stristr($post->source, $application_name)) {
-				$_SESSION["authenticated"] = true;
-				$_SESSION["uid"] = $uid;
-
 				Logger::info('Preparing mirror post', ['twitter-id' => $post->id_str, 'uid' => $uid]);
 
-				$_REQUEST = twitter_do_mirrorpost($a, $uid, $post);
+				$mirrorpost = twitter_do_mirrorpost($a, $uid, $post);
 
-				if (empty($_REQUEST['body'])) {
+				if (empty($mirrorpost['body'])) {
 					continue;
 				}
 
-				Logger::info('Posting mirror post ', ['twitter-id' => $post->id_str, 'uid' => $uid]);
+				Logger::info('Posting mirror post', ['twitter-id' => $post->id_str, 'uid' => $uid]);
 
-				item_post($a);
+				Post\Delayed::add($mirrorpost['extid'], $mirrorpost, PRIORITY_MEDIUM, true);
 			}
 		}
 	}
