@@ -83,6 +83,7 @@ use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
 use Friendica\Model\ItemURI;
+use Friendica\Model\Post;
 use Friendica\Model\Tag;
 use Friendica\Model\User;
 use Friendica\Protocol\Activity;
@@ -1004,11 +1005,8 @@ function twitter_parse_link(App $a, array &$b)
  */
 function twitter_do_mirrorpost(App $a, $uid, $post)
 {
-	$datarray['api_source'] = true;
-	$datarray['profile_uid'] = $uid;
+	$datarray['uid'] = $uid;
 	$datarray['extid'] = 'twitter::' . $post->id;
-	$datarray['protocol'] = Conversation::PARCEL_TWITTER;
-	$datarray['source'] = json_encode($post);
 	$datarray['title'] = '';
 
 	if (!empty($post->retweeted_status)) {
@@ -1038,7 +1036,7 @@ function twitter_do_mirrorpost(App $a, $uid, $post)
 		$datarray['body'] = $item['body'];
 	}
 
-	$datarray['source'] = $item['app'];
+	$datarray['app'] = $item['app'];
 	$datarray['verb'] = $item['verb'];
 
 	if (isset($item['location'])) {
@@ -1066,10 +1064,15 @@ function twitter_fetchtimeline(App $a, $uid)
 		$application_name = DI::baseUrl()->getHostname();
 	}
 
-	require_once 'mod/item.php';
-	require_once 'mod/share.php';
-
 	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
+
+	// Ensure to have the own contact
+	try {
+		twitter_fetch_own_contact($a, $uid);
+	} catch (TwitterOAuthException $e) {
+		Logger::warning('Error fetching own contact', ['uid' => $uid, 'message' => $e->getMessage()]);
+		return;
+	}
 
 	$parameters = ["exclude_replies" => true, "trim_user" => false, "contributor_details" => true, "include_rts" => true, "tweet_mode" => "extended", "include_ext_alt_text" => true];
 
@@ -1107,20 +1110,17 @@ function twitter_fetchtimeline(App $a, $uid)
 			}
 
 			if (!stristr($post->source, $application_name)) {
-				$_SESSION["authenticated"] = true;
-				$_SESSION["uid"] = $uid;
-
 				Logger::info('Preparing mirror post', ['twitter-id' => $post->id_str, 'uid' => $uid]);
 
-				$_REQUEST = twitter_do_mirrorpost($a, $uid, $post);
+				$mirrorpost = twitter_do_mirrorpost($a, $uid, $post);
 
-				if (empty($_REQUEST['body'])) {
+				if (empty($mirrorpost['body'])) {
 					continue;
 				}
 
-				Logger::info('Posting mirror post ', ['twitter-id' => $post->id_str, 'uid' => $uid]);
+				Logger::info('Posting mirror post', ['twitter-id' => $post->id_str, 'uid' => $uid]);
 
-				item_post($a);
+				Post\Delayed::add($mirrorpost['extid'], $mirrorpost, PRIORITY_MEDIUM, true);
 			}
 		}
 	}
@@ -1237,12 +1237,16 @@ function twitter_fetch_contact($uid, $data, $create_user)
 	if (!empty($cid)) {
 		DBA::update('contact', $fields, ['id' => $cid]);
 		Contact::updateAvatar($cid, $avatar);
+	} else {
+		Logger::warning('No contact found', ['fields' => $fields]);
 	}
 
 	$contact = DBA::selectFirst('contact', [], ['uid' => $uid, 'alias' => "twitter::" . $data->id_str]);
-	if (!DBA::isResult($contact) && !$create_user) {
+	if (!DBA::isResult($contact) && empty($cid)) {
 		Logger::warning('User contact not found', ['uid' => $uid, 'twitter-id' => $data->id_str]);
 		return 0;
+	} elseif (!$create_user) {
+		return $cid;
 	}
 
 	if (!DBA::isResult($contact)) {
