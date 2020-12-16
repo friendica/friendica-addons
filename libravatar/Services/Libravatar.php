@@ -413,10 +413,10 @@ class Services_Libravatar
 
         // Lets try get us some records based on the choice of subdomain
         // and the domain we had passed in.
-        $srv = dns_get_record($subdomain . $domain, DNS_SRV);
+        $srv = @dns_get_record($subdomain . $domain, DNS_SRV);
 
         // Did we get anything? No?
-        if (count($srv) == 0) {
+        if (empty($srv)) {
             // Then let's try Libravatar.org.
             return $fallback . 'libravatar.org';
         }
