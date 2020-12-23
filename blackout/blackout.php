@@ -94,17 +94,17 @@ function blackout_addon_admin(&$a, &$o) {
 	// a note for the admin
 	$adminnote = "";
 	if ($date2 < $date1) {
-		$adminnote = DI::l10n()->t("The end-date is prior to the start-date of the blackout, you should fix this");
+		$adminnote = DI::l10n()->t("The end-date is prior to the start-date of the blackout, you should fix this.");
 	} else {
-		$adminnote = DI::l10n()->t("Please double check that the current settings for the blackout. Begin will be <strong>%s</strong> and it will end <strong>%s</strong>.", $mystart, $myend);
+		$adminnote = DI::l10n()->t("Please double check the current settings for the blackout. It will begin on <strong>%s</strong> and end on <strong>%s</strong>.", $mystart, $myend);
 	}
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
-		'$rurl' => ["rurl", DI::l10n()->t("Redirect URL"), $myurl, DI::l10n()->t("all your visitors from the web will be redirected to this URL"), "", "", "url"],
+		'$rurl' => ["rurl", DI::l10n()->t("Redirect URL"), $myurl, DI::l10n()->t("All your visitors from the web will be redirected to this URL."), "", "", "url"],
 		'$startdate' => ["startdate", DI::l10n()->t("Begin of the Blackout"), $mystart, DI::l10n()->t("Format is <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute.")],
 		'$enddate' => ["enddate", DI::l10n()->t("End of the Blackout"), $myend, ""],
 		'$adminnote' => $adminnote,
-		'$aboutredirect' => DI::l10n()->t("<strong>Note</strong>: The redirect will be active from the moment you press the submit button. Users currently logged in will <strong>not</strong> be thrown out but can't login again after logging out should the blackout is still in place."),
+		'$aboutredirect' => DI::l10n()->t("<strong>Note</strong>: The redirect will be active from the moment you press the submit button. Users currently logged in will <strong>not</strong> be thrown out but can't login again after logging out while the blackout is still in place."),
 	]);
 }
 function blackout_addon_admin_post (&$a) {

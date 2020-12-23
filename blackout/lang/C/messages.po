@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-12 09:26+0100\n"
+"POT-Creation-Date: 2020-12-23 01:34-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,48 +17,48 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: blackout.php:101
+#: blackout.php:97
 msgid ""
-"The end-date is prior to the start-date of the blackout, you should fix this"
+"The end-date is prior to the start-date of the blackout, you should fix this."
 msgstr ""
 
-#: blackout.php:103
+#: blackout.php:99
 #, php-format
 msgid ""
-"Please double check that the current settings for the blackout. Begin will "
-"be <strong>%s</strong> and it will end <strong>%s</strong>."
+"Please double check the current settings for the blackout. It will begin on "
+"<strong>%s</strong> and end on <strong>%s</strong>."
 msgstr ""
 
-#: blackout.php:106
+#: blackout.php:102
 msgid "Save Settings"
 msgstr ""
 
-#: blackout.php:107
+#: blackout.php:103
 msgid "Redirect URL"
 msgstr ""
 
-#: blackout.php:107
-msgid "all your visitors from the web will be redirected to this URL"
+#: blackout.php:103
+msgid "All your visitors from the web will be redirected to this URL."
 msgstr ""
 
-#: blackout.php:108
+#: blackout.php:104
 msgid "Begin of the Blackout"
 msgstr ""
 
-#: blackout.php:108
+#: blackout.php:104
 msgid ""
 "Format is <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> year, <em>MM</em> month, "
 "<em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute."
 msgstr ""
 
-#: blackout.php:109
+#: blackout.php:105
 msgid "End of the Blackout"
 msgstr ""
 
-#: blackout.php:111
+#: blackout.php:107
 msgid ""
 "<strong>Note</strong>: The redirect will be active from the moment you press "
 "the submit button. Users currently logged in will <strong>not</strong> be "
-"thrown out but can't login again after logging out should the blackout is "
+"thrown out but can't login again after logging out while the blackout is "
 "still in place."
 msgstr ""
