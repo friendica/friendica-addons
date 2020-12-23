@@ -1,0 +1,43 @@
+# ADDON fromapp
+# Copyright (C)
+# This file is distributed under the same license as the Friendica fromapp addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-02-19 16:42+0100\n"
+"PO-Revision-Date: 2020-12-23 01:47+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: fromapp.php:40
+msgid "Fromapp settings updated."
+msgstr "A FromApp beállításai frissítve."
+
+#: fromapp.php:65 fromapp.php:69
+msgid "FromApp Settings"
+msgstr "FromApp-beállítások"
+
+#: fromapp.php:72
+msgid ""
+"The application name you would like to show your posts originating from. "
+"Separate different app names with a comma. A random one will then be "
+"selected for every posting."
+msgstr "Az alkalmazás neve, amelyet meg szeretne jeleníteni a bejegyzései származási helyeként. A különböző alkalmazásnevek vesszővel választhatók el. Ezután véletlenszerűen lesz kiválasztva az egyikük minden egyes beküldésnél."
+
+#: fromapp.php:76
+msgid "Use this application name even if another application was used."
+msgstr "Ezen alkalmazásnév használata akkor is, ha egy másik alkalmazás lett használva."
+
+#: fromapp.php:83
+msgid "Save Settings"
+msgstr "Beállítások mentése"

@@ -1,0 +1,176 @@
+# ADDON advancedcontentfilter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica advancedcontentfilter addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-17 04:04+0200\n"
+"PO-Revision-Date: 2018-05-24 06:41+0000\n"
+"Last-Translator: Balázs Úr, 2020\n"
+"Language-Team: Hungarian (https://www.transifex.com/Friendica/teams/12172/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: advancedcontentfilter.php:134
+#, php-format
+msgid "Filtered by rule: %s"
+msgstr "Szűrve a szabály alapján: %s"
+
+#: advancedcontentfilter.php:147 advancedcontentfilter.php:204
+msgid "Advanced Content Filter"
+msgstr "Speciális tartalomszűrő"
+
+#: advancedcontentfilter.php:203
+msgid "Back to Addon Settings"
+msgstr "Vissza a bővítménybeállításokhoz"
+
+#: advancedcontentfilter.php:205
+msgid "Add a Rule"
+msgstr "Szabály hozzáadása"
+
+#: advancedcontentfilter.php:206
+msgid "Help"
+msgstr "Súgó"
+
+#: advancedcontentfilter.php:207
+msgid ""
+"Add and manage your personal content filter rules in this screen. Rules have"
+" a name and an arbitrary expression that will be matched against post data. "
+"For a complete reference of the available operations and variables, check "
+"the <a href=\"advancedcontentfilter/help\">help page</a>."
+msgstr ""
+"Személyes tartalomszűrő szabályok hozzáadása és kezelése ezen a képernyőn. A"
+" szabályoknak van nevük és egy tetszőleges kifejezésük, amely illesztve lesz"
+" a bejegyzés adatára. Az elérhető műveletek és változók teljes "
+"hivatkozásáért nézze meg a <a "
+"href=\"advancedcontentfilter/help\">súgóoldalt</a>."
+
+#: advancedcontentfilter.php:208
+msgid "Your rules"
+msgstr "Az Ön szabályai"
+
+#: advancedcontentfilter.php:209
+msgid ""
+"You have no rules yet! Start adding one by clicking on the button above next"
+" to the title."
+msgstr ""
+"Még nincsenek szabályai! Kezdje meg egy szabály hozzáadását a cím mellett "
+"lévő fenti gombra kattintva."
+
+#: advancedcontentfilter.php:210
+msgid "Disabled"
+msgstr "Letiltva"
+
+#: advancedcontentfilter.php:211
+msgid "Enabled"
+msgstr "Engedélyezve"
+
+#: advancedcontentfilter.php:212
+msgid "Disable this rule"
+msgstr "A szabály letiltása"
+
+#: advancedcontentfilter.php:213
+msgid "Enable this rule"
+msgstr "A szabály engedélyezése"
+
+#: advancedcontentfilter.php:214
+msgid "Edit this rule"
+msgstr "A szabály szerkesztése"
+
+#: advancedcontentfilter.php:215
+msgid "Edit the rule"
+msgstr "A szabály szerkesztése"
+
+#: advancedcontentfilter.php:216
+msgid "Save this rule"
+msgstr "A szabály mentése"
+
+#: advancedcontentfilter.php:217
+msgid "Delete this rule"
+msgstr "A szabály törlése"
+
+#: advancedcontentfilter.php:218
+msgid "Rule"
+msgstr "Szabály"
+
+#: advancedcontentfilter.php:219
+msgid "Close"
+msgstr "Bezárás"
+
+#: advancedcontentfilter.php:220
+msgid "Add new rule"
+msgstr "Új szabály hozzáadása"
+
+#: advancedcontentfilter.php:221
+msgid "Rule Name"
+msgstr "Szabály neve"
+
+#: advancedcontentfilter.php:222
+msgid "Rule Expression"
+msgstr "Szabály kifejezése"
+
+#: advancedcontentfilter.php:223
+msgid ""
+"<p>Examples:</p><ul><li><pre>author_link == "
+"'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>"
+msgstr ""
+"<p>Példák:</p><ul><li><pre>author_link == "
+"'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>"
+
+#: advancedcontentfilter.php:224
+msgid "Cancel"
+msgstr "Mégse"
+
+#: advancedcontentfilter.php:290 advancedcontentfilter.php:301
+#: advancedcontentfilter.php:312 advancedcontentfilter.php:346
+#: advancedcontentfilter.php:375 advancedcontentfilter.php:396
+msgid "You must be logged in to use this method"
+msgstr "Bejelentkezve kell lennie a módszer használatához"
+
+#: advancedcontentfilter.php:316 advancedcontentfilter.php:350
+#: advancedcontentfilter.php:379
+msgid "Invalid form security token, please refresh the page."
+msgstr "Érvénytelen űrlap biztonsági token. Frissítse az oldalt."
+
+#: advancedcontentfilter.php:328
+msgid "The rule name and expression are required."
+msgstr "A szabály neve és kifejezése kötelező."
+
+#: advancedcontentfilter.php:340
+msgid "Rule successfully added"
+msgstr "A szabály sikeresen hozzáadva"
+
+#: advancedcontentfilter.php:354 advancedcontentfilter.php:383
+msgid "Rule doesn't exist or doesn't belong to you."
+msgstr "A szabály nem létezik vagy nem Önhöz tatozik."
+
+#: advancedcontentfilter.php:369
+msgid "Rule successfully updated"
+msgstr "A szabály sikeresen frissítve"
+
+#: advancedcontentfilter.php:390
+msgid "Rule successfully deleted"
+msgstr "A szabály sikeresen törölve"
+
+#: advancedcontentfilter.php:400
+msgid "Missing argument: guid."
+msgstr "Hiányzó argumentum: guid."
+
+#: advancedcontentfilter.php:406
+#, php-format
+msgid "Unknown post with guid: %s"
+msgstr "Ismeretlen bejegyzés a következő guid azonosítóval: %s"
+
+#: src/middlewares.php:28
+msgid "Method not found"
+msgstr "A módszer nem található"

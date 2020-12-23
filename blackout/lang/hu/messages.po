@@ -1,0 +1,66 @@
+# ADDON blackout
+# Copyright (C)
+# This file is distributed under the same license as the Friendica blackout addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-03-12 09:26+0100\n"
+"PO-Revision-Date: 2020-12-23 00:26+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: blackout.php:101
+msgid ""
+"The end-date is prior to the start-date of the blackout, you should fix this"
+msgstr "A befejezési dátum az áramszünet kezdési dátuma előtt van, ezt javítania kell."
+
+#: blackout.php:103
+#, php-format
+msgid ""
+"Please double check that the current settings for the blackout. Begin will "
+"be <strong>%s</strong> and it will end <strong>%s</strong>."
+msgstr "Ellenőrizze még egyszer az áramszünet jelenlegi beállításait. A kezdete <strong>%s</strong> és a vége <strong>%s</strong> lesz."
+
+#: blackout.php:106
+msgid "Save Settings"
+msgstr "Beállítások mentése"
+
+#: blackout.php:107
+msgid "Redirect URL"
+msgstr "Átirányítási URL"
+
+#: blackout.php:107
+msgid "all your visitors from the web will be redirected to this URL"
+msgstr "A webről érkező összes látogatója át lesz irányítva erre az URL-re."
+
+#: blackout.php:108
+msgid "Begin of the Blackout"
+msgstr "Az áramszünet kezdete"
+
+#: blackout.php:108
+msgid ""
+"Format is <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> year, <em>MM</em> month, "
+"<em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute."
+msgstr "A formátum <tt>ÉÉÉÉ-HH-NN óó:pp</tt>, ahol <em>ÉÉÉÉ</em> az év, <em>HH</em> a hónap, <em>NN</em> a nap, <em>óó</em> az óra és <em>pp</em> a perc."
+
+#: blackout.php:109
+msgid "End of the Blackout"
+msgstr "Az áramszünet vége"
+
+#: blackout.php:111
+msgid ""
+"<strong>Note</strong>: The redirect will be active from the moment you press"
+" the submit button. Users currently logged in will <strong>not</strong> be "
+"thrown out but can't login again after logging out should the blackout is "
+"still in place."
+msgstr "<strong>Megjegyzés</strong>: Az átirányítás attól a pillanattól kezdve lesz aktív, amikor megnyomja az elküldés gombot. A jelenleg bejelentkezett felhasználók <strong>nem</strong> lesznek kidobva, de nem tudnak újra bejelentkezni, miután kijelentkeztek és az áramszünet még hatályban van."

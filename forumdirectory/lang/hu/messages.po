@@ -1,0 +1,80 @@
+# ADDON forumdirectory
+# Copyright (C)
+# This file is distributed under the same license as the Friendica forumdirectory addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2020-12-23 01:41+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: forumdirectory.php:22
+msgid "Forum Directory"
+msgstr "Fórumkönyvtár"
+
+#: forumdirectory.php:53
+msgid "Public access denied."
+msgstr "Nyilvános hozzáférés megtagadva."
+
+#: forumdirectory.php:71
+msgid "Global Directory"
+msgstr "Globális könyvtár"
+
+#: forumdirectory.php:79
+msgid "Find on this site"
+msgstr "Keresés ezen az oldalon"
+
+#: forumdirectory.php:81
+msgid "Finding: "
+msgstr "Találat: "
+
+#: forumdirectory.php:82
+msgid "Site Directory"
+msgstr "Oldal könyvtára"
+
+#: forumdirectory.php:83
+msgid "Find"
+msgstr "Keresés"
+
+#: forumdirectory.php:133
+msgid "Age: "
+msgstr "Életkor: "
+
+#: forumdirectory.php:136
+msgid "Gender: "
+msgstr "Nem: "
+
+#: forumdirectory.php:156
+msgid "Location:"
+msgstr "Hely:"
+
+#: forumdirectory.php:158
+msgid "Gender:"
+msgstr "Nem:"
+
+#: forumdirectory.php:160
+msgid "Status:"
+msgstr "Állapot:"
+
+#: forumdirectory.php:162
+msgid "Homepage:"
+msgstr "Honlap:"
+
+#: forumdirectory.php:164
+msgid "About:"
+msgstr "Névjegy:"
+
+#: forumdirectory.php:201
+msgid "No entries (some entries may be hidden)."
+msgstr "Nincsenek bejegyzések (néhány bejegyzés rejtve lehet)."

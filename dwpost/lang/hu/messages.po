@@ -1,0 +1,48 @@
+# ADDON dwpost
+# Copyright (C)
+# This file is distributed under the same license as the Friendica dwpost addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"PO-Revision-Date: 2020-12-23 01:39+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: dwpost.php:39
+msgid "Post to Dreamwidth"
+msgstr "Beküldés a Dreamwidth-re"
+
+#: dwpost.php:70
+msgid "Dreamwidth Post Settings"
+msgstr "Dreamwidth-beküldés beállításai"
+
+#: dwpost.php:72
+msgid "Enable dreamwidth Post Addon"
+msgstr "A Dreamwidth-beküldő bővítmény engedélyezése"
+
+#: dwpost.php:77
+msgid "dreamwidth username"
+msgstr "Dreamwidth felhasználónév"
+
+#: dwpost.php:82
+msgid "dreamwidth password"
+msgstr "Dreamwidth jelszó"
+
+#: dwpost.php:87
+msgid "Post to dreamwidth by default"
+msgstr "Beküldés a Dreamwidth-re alapértelmezetten"
+
+#: dwpost.php:93
+msgid "Submit"
+msgstr "Elküldés"

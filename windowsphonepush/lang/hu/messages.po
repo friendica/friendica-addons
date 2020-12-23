@@ -1,0 +1,40 @@
+# ADDON windowsphonepush
+# Copyright (C)
+# This file is distributed under the same license as the Friendica windowsphonepush addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-10-26 15:02+0100\n"
+"PO-Revision-Date: 2020-12-13 02:04+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: windowsphonepush.php:85
+msgid "WindowsPhonePush settings updated."
+msgstr "A WindowsPhonePush beállításai frissítve."
+
+#: windowsphonepush.php:114
+msgid "WindowsPhonePush Settings"
+msgstr "WindowsPhonePush beállításai"
+
+#: windowsphonepush.php:117
+msgid "Enable WindowsPhonePush Addon"
+msgstr "A WindowsPhonePush kiegészítő engedélyezése"
+
+#: windowsphonepush.php:122
+msgid "Push text of new item"
+msgstr "Új elem szövegének felküldése"
+
+#: windowsphonepush.php:127
+msgid "Save Settings"
+msgstr "Beállítások mentése"
