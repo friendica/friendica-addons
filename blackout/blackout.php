@@ -96,7 +96,7 @@ function blackout_addon_admin(&$a, &$o) {
 	if ($date2 < $date1) {
 		$adminnote = DI::l10n()->t("The end-date is prior to the start-date of the blackout, you should fix this.");
 	} else {
-		$adminnote = DI::l10n()->t("Please double check the current settings for the blackout. Begin will be <strong>%s</strong> and it will end <strong>%s</strong>.", $mystart, $myend);
+		$adminnote = DI::l10n()->t("Please double check the current settings for the blackout. It will begin on <strong>%s</strong> and end on <strong>%s</strong>.", $mystart, $myend);
 	}
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
