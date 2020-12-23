@@ -1,0 +1,132 @@
+# ADDON curweather
+# Copyright (C)
+# This file is distributed under the same license as the Friendica curweather addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-25 17:17+0200\n"
+"PO-Revision-Date: 2020-12-23 01:22+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: curweather.php:31
+msgid "Error fetching weather data.\\nError was: "
+msgstr "Hiba az időjárási adatok lekérésekor.\\nA hiba ez volt: "
+
+#: curweather.php:111 curweather.php:172
+msgid "Current Weather"
+msgstr "Jelenlegi időjárás"
+
+#: curweather.php:118
+msgid "Relative Humidity"
+msgstr "Relatív páratartalom"
+
+#: curweather.php:119
+msgid "Pressure"
+msgstr "Légnyomás"
+
+#: curweather.php:120
+msgid "Wind"
+msgstr "Szél"
+
+#: curweather.php:121
+msgid "Last Updated"
+msgstr "Utoljára frissítve"
+
+#: curweather.php:122
+msgid "Data by"
+msgstr "Adatszolgáltató"
+
+#: curweather.php:123
+msgid "Show on map"
+msgstr "Megjelenítés térképen"
+
+#: curweather.php:128
+msgid "There was a problem accessing the weather data. But have a look"
+msgstr "Probléma történt az időjárási adatokhoz való hozzáféréskor. De nézzen körül itt:"
+
+#: curweather.php:130
+msgid "at OpenWeatherMap"
+msgstr "OpenWeatherMap"
+
+#: curweather.php:146
+msgid "Current Weather settings updated."
+msgstr "A jelenlegi időjárás beállításai frissítve."
+
+#: curweather.php:161
+msgid "No APPID found, please contact your admin to obtain one."
+msgstr "Nem található alkalmazásazonosító. Vegye fel a kapcsolatot az adminisztrátorral, hogy beszerezzen egyet."
+
+#: curweather.php:171 curweather.php:200
+msgid "Save Settings"
+msgstr "Beállítások mentése"
+
+#: curweather.php:172
+msgid "Settings"
+msgstr "Beállítások"
+
+#: curweather.php:174
+msgid "Enter either the name of your location or the zip code."
+msgstr "Adja meg a tartózkodási helyének a nevét vagy az irányítószámát."
+
+#: curweather.php:175
+msgid "Your Location"
+msgstr "Az Ön tartózkodási helye"
+
+#: curweather.php:175
+msgid ""
+"Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or "
+"<em>14476,DE</em>."
+msgstr "A tartózkodási helyének azonosítója (neve vagy irányítószáma), például <em>Budapest,HU</em> vagy <em>1234,HU</em>."
+
+#: curweather.php:176
+msgid "Units"
+msgstr "Mértékegységek"
+
+#: curweather.php:176
+msgid "select if the temperature should be displayed in &deg;C or &deg;F"
+msgstr "Annak kiválasztása, hogy a hőmérsékletet &deg;C vagy &deg;F fokban kell megjeleníteni."
+
+#: curweather.php:177
+msgid "Show weather data"
+msgstr "Időjárási adatok megjelenítése"
+
+#: curweather.php:190
+msgid "Curweather settings saved."
+msgstr "A jelenlegi időjárás beállításai elmentve."
+
+#: curweather.php:201
+msgid "Caching Interval"
+msgstr "Gyorsítótárazási időköz"
+
+#: curweather.php:201
+msgid ""
+"For how long should the weather data be cached? Choose according your "
+"OpenWeatherMap account type."
+msgstr "Mennyi ideig kell az időjárási adatokat gyorsítótárazni? Válasszon az OpenWeatherMap fióktípusa szerint."
+
+#: curweather.php:201
+msgid "no cache"
+msgstr "nincs gyorsítótár"
+
+#: curweather.php:201
+msgid "minutes"
+msgstr "perc"
+
+#: curweather.php:202
+msgid "Your APPID"
+msgstr "Az alkalmazásazonosítója"
+
+#: curweather.php:202
+msgid "Your API key provided by OpenWeatherMap"
+msgstr "Az OpenWeatherMap által biztosított API-kulcsa"
