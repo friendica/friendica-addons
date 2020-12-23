@@ -1,0 +1,76 @@
+# ADDON buffer
+# Copyright (C)
+# This file is distributed under the same license as the Friendica buffer addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"PO-Revision-Date: 2020-12-23 00:50+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: buffer.php:31
+msgid "Permission denied."
+msgstr "Hozzáférés megtagadva."
+
+#: buffer.php:57 buffer.php:185
+msgid "Save Settings"
+msgstr "Beállítások mentése"
+
+#: buffer.php:59
+msgid "Client ID"
+msgstr "Ügyfél-azonosító"
+
+#: buffer.php:60
+msgid "Client Secret"
+msgstr "Ügyféltitok"
+
+#: buffer.php:67
+msgid "Error when registering buffer connection:"
+msgstr "Hiba a Buffer-kapcsolat regisztrálásakor:"
+
+#: buffer.php:86
+msgid "You are now authenticated to buffer. "
+msgstr "Most már hitelesítve van a Bufferhez."
+
+#: buffer.php:87
+msgid "return to the connector page"
+msgstr "Visszatérés az összekötő oldalra"
+
+#: buffer.php:103
+msgid "Post to Buffer"
+msgstr "Beküldés a Bufferre"
+
+#: buffer.php:128 buffer.php:132
+msgid "Buffer Export"
+msgstr "Buffer exportálás"
+
+#: buffer.php:142
+msgid "Authenticate your Buffer connection"
+msgstr "A Buffer-kapcsolatának hitelesítése"
+
+#: buffer.php:146
+msgid "Enable Buffer Post Addon"
+msgstr "A Buffer-beküldő bővítmény engedélyezése"
+
+#: buffer.php:151
+msgid "Post to Buffer by default"
+msgstr "Beküldés a Bufferre alapértelmezetten"
+
+#: buffer.php:156
+msgid "Check to delete this preset"
+msgstr "Jelölje be az előbeállítás törléséhez"
+
+#: buffer.php:165
+msgid "Posts are going to all accounts that are enabled by default:"
+msgstr "A bejegyzések az összes olyan fiókba mennek, amelyek alapértelmezetten engedélyezve vannak:"
