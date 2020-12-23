@@ -8,13 +8,13 @@ function string_plural_select_it($n){
 ;
 $a->strings["Post to Twitter"] = "Invia a Twitter";
 $a->strings["You submitted an empty PIN, please Sign In with Twitter again to get a new one."] = "Hai inserito un PIN vuoto, autenticati con Twitter nuovamente per averne uno nuovo.";
-$a->strings["Twitter settings updated."] = "Impostazioni di Twitter aggiornate.";
 $a->strings["Twitter Import/Export/Mirror"] = "Importa/Esporta/Clona Twitter";
 $a->strings["No consumer key pair for Twitter found. Please contact your site administrator."] = "Nessuna coppia di chiavi per Twitter trovata. Contatta l'amministratore del sito.";
 $a->strings["At this Friendica instance the Twitter addon was enabled but you have not yet connected your account to your Twitter account. To do so click the button below to get a PIN from Twitter which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to Twitter."] = "Il componente aggiuntivo Twitter è abilitato ma non hai ancora collegato i tuoi account Friendica e Twitter. Per farlo, clicca il bottone qui sotto per ricevere un PIN da Twitter che dovrai copiare nel campo qui sotto. Solo i tuoi messaggi <strong>pubblici</strong> saranno inviati a Twitter.";
 $a->strings["Log in with Twitter"] = "Accedi con Twitter";
 $a->strings["Copy the PIN from Twitter here"] = "Copia il PIN da Twitter qui";
 $a->strings["Save Settings"] = "Salva Impostazioni";
+$a->strings["An error occured: "] = "Si è verificato un errore:";
 $a->strings["Currently connected to: "] = "Al momento connesso con:";
 $a->strings["Disconnect"] = "Disconnetti";
 $a->strings["Allow posting to Twitter"] = "Permetti l'invio a Twitter";
@@ -25,7 +25,6 @@ $a->strings["Mirror all posts from twitter that are no replies"] = "Clona tutti 
 $a->strings["Import the remote timeline"] = "Importa la timeline remota";
 $a->strings["Automatically create contacts"] = "Crea automaticamente i contatti";
 $a->strings["This will automatically create a contact in Friendica as soon as you receive a message from an existing contact via the Twitter network. If you do not enable this, you need to manually add those Twitter contacts in Friendica from whom you would like to see posts here. However if enabled, you cannot merely remove a twitter contact from the Friendica contact list, as it will recreate this contact when they post again."] = "Questo creerà automaticamente un contatto in Friendica appena ricevi un messaggio da un tuo contatto sulla rete Twitter. Se non abiliti questa opzione, dovrai aggiungere a mano in Friendica i contatti Twitter da cui vuoi ricevere i messaggi. Se abilitato, però, non potrai semplicemente rimuovere un contatto Twitter dal tuo elenco contatti su Friendica, dato che questo sarà ricreato la prossima volta che invierà un messaggio.";
-$a->strings["Twitter post failed. Queued for retry."] = "Invio a Twitter fallito. In coda per riprovare.";
-$a->strings["Settings updated."] = "Impostazioni aggiornate.";
 $a->strings["Consumer key"] = "Consumer key";
 $a->strings["Consumer secret"] = "Consumer secret";
+$a->strings["%s on Twitter"] = "%s su Twitter";
