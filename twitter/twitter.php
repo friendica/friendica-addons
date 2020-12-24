@@ -557,7 +557,7 @@ function twitter_post_hook(App $a, array &$b)
 		}
 
 		$condition = ['uri' => $b["thr-parent"], 'uid' => $b["uid"]];
-		$orig_post = Item::selectFirst([], $condition);
+		$orig_post = Item::selectFirst(['author-nick', 'author-network'], $condition);
 		if (!DBA::isResult($orig_post)) {
 			Logger::warning('No parent found', ['thr-parent' => $b["thr-parent"]]);
 			return;
@@ -565,14 +565,14 @@ function twitter_post_hook(App $a, array &$b)
 			$iscomment = true;
 		}
 
+		if ($orig_post['author-network'] == Protocol::TWITTER) {
+			$nickname = "@[url=" . $orig_post["author-link"] . "]" . $orig_post["author-nick"] . "[/url]";
+			$nicknameplain = "@" . $orig_post["author-nick"];
 
-		$nicknameplain = preg_replace("=https?://twitter.com/(.*)=ism", "$1", $orig_post["author-link"]);
-		$nickname = "@[url=" . $orig_post["author-link"] . "]" . $nicknameplain . "[/url]";
-		$nicknameplain = "@" . $nicknameplain;
-
-		Logger::info('Comparing', ['nickname' => $nickname, 'nicknameplain' => $nicknameplain, 'body' => $b["body"]]);
-		if ((strpos($b["body"], $nickname) === false) && (strpos($b["body"], $nicknameplain) === false)) {
-			$b["body"] = $nickname . " " . $b["body"];
+			Logger::info('Comparing', ['nickname' => $nickname, 'nicknameplain' => $nicknameplain, 'body' => $b["body"]]);
+			if ((strpos($b["body"], $nickname) === false) && (strpos($b["body"], $nicknameplain) === false)) {
+				$b["body"] = $nickname . " " . $b["body"];
+			}
 		}
 
 		Logger::debug('Parent found', ['parent' => $orig_post]);
