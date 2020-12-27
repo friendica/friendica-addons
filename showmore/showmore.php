@@ -81,8 +81,9 @@ function get_body_length($body)
 	// We need to get rid of hidden tags (display: none)
 
 	// Get rid of the warning. It would be better to have some valid html as input
-	$dom = @DomDocument::loadHTML($body);
-	$xpath = new DOMXPath($dom);
+	$doc = new DOMDocument();
+	@$doc->loadHTML($body);
+	$xpath = new DOMXPath($doc);
 
 	/*
 	 * Checking any possible syntax of the style attribute with xpath is impossible
@@ -96,7 +97,7 @@ function get_body_length($body)
 		}
 	}
 	// Now we can get the body of our HTML DomDocument, it contains only what is visible
-	$string = $dom->saveHTML();
+	$string = $doc->saveHTML();
 
 	$string = strip_tags($string);
 	return strlen($string);
