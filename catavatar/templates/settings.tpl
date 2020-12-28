@@ -9,7 +9,7 @@
 		<h3>{{$header}}</h3>
 	</span>
 	<img src="{{$basepath}}/catavatar/{{$uid}}?{{$uncache}}">
-	<p>Set default profile avatar or randomize the cat</p>
+	<p>{{$setrandomize}}</p>
 	<div class="settings-submit-wrapper" >
 		<input type="submit" name="catavatar-usecat" 
 			class="btn btn-primary settings-submit" value="{{$usecat}}" />
