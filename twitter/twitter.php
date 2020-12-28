@@ -559,7 +559,7 @@ function twitter_post_hook(App $a, array &$b)
 		}
 
 		$condition = ['uri' => $b["thr-parent"], 'uid' => $b["uid"]];
-		$thr_parent = Item::selectFirst(['uri', 'extid', 'author-nick', 'author-network'], $condition);
+		$thr_parent = Item::selectFirst(['uri', 'extid', 'author-link', 'author-nick', 'author-network'], $condition);
 		if (!DBA::isResult($thr_parent)) {
 			Logger::warning('No parent found', ['thr-parent' => $b["thr-parent"]]);
 			return;
