@@ -50,6 +50,7 @@ function catavatar_addon_settings(App $a, &$s)
 		'$emailcat' => DI::l10n()->t('Reset to email Cat'),
 		'$seed' => DI::pConfig()->get(local_user(), 'catavatar', 'seed', false),
 		'$header' => DI::l10n()->t('Cat Avatar Settings'),
+		'$setrandomize' => DI::l10n()->t('Set default profile avatar or randomize the cat.'),
 	]);
 }
 
