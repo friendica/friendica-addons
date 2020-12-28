@@ -545,6 +545,8 @@ function twitter_post_hook(App $a, array &$b)
 		return;
 	}
 
+	$thr_parent = null;
+
 	if ($b['parent'] != $b['id']) {
 		Logger::debug('Got comment', ['item' => $b]);
 
@@ -557,17 +559,15 @@ function twitter_post_hook(App $a, array &$b)
 		}
 
 		$condition = ['uri' => $b["thr-parent"], 'uid' => $b["uid"]];
-		$orig_post = Item::selectFirst(['author-nick', 'author-network'], $condition);
-		if (!DBA::isResult($orig_post)) {
+		$thr_parent = Item::selectFirst(['uri', 'extid', 'author-link', 'author-nick', 'author-network'], $condition);
+		if (!DBA::isResult($thr_parent)) {
 			Logger::warning('No parent found', ['thr-parent' => $b["thr-parent"]]);
 			return;
-		} else {
-			$iscomment = true;
 		}
 
-		if ($orig_post['author-network'] == Protocol::TWITTER) {
-			$nickname = "@[url=" . $orig_post["author-link"] . "]" . $orig_post["author-nick"] . "[/url]";
-			$nicknameplain = "@" . $orig_post["author-nick"];
+		if ($thr_parent['author-network'] == Protocol::TWITTER) {
+			$nickname = '@[url=' . $thr_parent['author-link'] . ']' . $thr_parent['author-nick'] . '[/url]';
+			$nicknameplain = '@' . $thr_parent['author-nick'];
 
 			Logger::info('Comparing', ['nickname' => $nickname, 'nicknameplain' => $nicknameplain, 'body' => $b["body"]]);
 			if ((strpos($b["body"], $nickname) === false) && (strpos($b["body"], $nicknameplain) === false)) {
@@ -575,10 +575,8 @@ function twitter_post_hook(App $a, array &$b)
 			}
 		}
 
-		Logger::debug('Parent found', ['parent' => $orig_post]);
+		Logger::debug('Parent found', ['parent' => $thr_parent]);
 	} else {
-		$iscomment = false;
-
 		if ($b['private'] || !strstr($b['postopts'], 'twitter')) {
 			return;
 		}
@@ -592,7 +590,7 @@ function twitter_post_hook(App $a, array &$b)
 	}
 
 	if (($b['verb'] == Activity::POST) && $b['deleted']) {
-		twitter_action($a, $b["uid"], twitter_get_id($orig_post["uri"]), "delete");
+		twitter_action($a, $b['uid'], twitter_get_id($thr_parent['uri']), 'delete');
 	}
 
 	if ($b['verb'] == Activity::LIKE) {
@@ -609,7 +607,7 @@ function twitter_post_hook(App $a, array &$b)
 	if ($b['verb'] == Activity::ANNOUNCE) {
 		Logger::info('Retweet', ['uid' => $b['uid'], 'id' => twitter_get_id($b["thr-parent"])]);
 		if ($b['deleted']) {
-			twitter_action($a, $b["uid"], twitter_get_id($orig_post["extid"]), "delete");
+			twitter_action($a, $b['uid'], twitter_get_id($thr_parent['extid']), 'delete');
 		} else {
 			twitter_retweet($b["uid"], twitter_get_id($b["thr-parent"]));
 		}
@@ -733,8 +731,8 @@ function twitter_post_hook(App $a, array &$b)
 
 		$post['status'] = $msg;
 
-		if ($iscomment) {
-			$post["in_reply_to_status_id"] = twitter_get_id($orig_post["uri"]);
+		if ($thr_parent) {
+			$post['in_reply_to_status_id'] = twitter_get_id($thr_parent['uri']);
 		}
 
 		$url = 'statuses/update';
@@ -748,7 +746,7 @@ function twitter_post_hook(App $a, array &$b)
 		if (!empty($result->errors)) {
 			Logger::error('Send to Twitter failed', ['id' => $b['id'], 'error' => $result->errors]);
 			Worker::defer();
-		} elseif ($iscomment) {
+		} elseif ($thr_parent) {
 			Logger::notice('Post send, updating extid', ['id' => $b['id'], 'extid' => $result->id_str]);
 			Item::update(['extid' => "twitter::" . $result->id_str], ['id' => $b['id']]);
 		}
