@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-13 09:35+0000\n"
+"POT-Creation-Date: 2020-12-29 00:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,34 +17,38 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: catavatar.php:60
+#: catavatar.php:48
 msgid "Use Cat as Avatar"
 msgstr ""
 
-#: catavatar.php:61
+#: catavatar.php:49
 msgid "More Random Cat!"
 msgstr ""
 
-#: catavatar.php:62
+#: catavatar.php:50
 msgid "Reset to email Cat"
 msgstr ""
 
-#: catavatar.php:64
+#: catavatar.php:52
 msgid "Cat Avatar Settings"
 msgstr ""
 
-#: catavatar.php:100
+#: catavatar.php:53
+msgid "Set default profile avatar or randomize the cat."
+msgstr ""
+
+#: catavatar.php:78
 msgid "The cat hadn't found itself."
 msgstr ""
 
-#: catavatar.php:109
+#: catavatar.php:87
 msgid "There was an error, the cat ran away."
 msgstr ""
 
-#: catavatar.php:115
+#: catavatar.php:93
 msgid "Profile Photos"
 msgstr ""
 
-#: catavatar.php:130
+#: catavatar.php:108
 msgid "Meow!"
 msgstr ""
