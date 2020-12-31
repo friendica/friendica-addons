@@ -6,15 +6,14 @@ $(document).ready(function() {
 		return;
 	}
 
-	$("head").append('<style type="text/css"></style>');
-	var newStyleElement = $("head").children(':last');
-	newStyleElement.html('.limit-height{max-height: ' + postLimitHeight + 'px; overflow: hidden; }');
-
-	handleNewWallItemBodies();
-
-	document.addEventListener("postprocess_liveupdate", function() {
+	if (postLimitHeight) {
+		$('head').append('<style type="text/css">.limit-height{max-height: ' + postLimitHeight + 'px; overflow: hidden; }</style>');
 		handleNewWallItemBodies();
-	});
+
+		document.addEventListener('postprocess_liveupdate', function() {
+			handleNewWallItemBodies();
+		});
+	}
 });
 
 function handleNewWallItemBodies() {

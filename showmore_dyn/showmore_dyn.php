@@ -41,10 +41,7 @@ function showmore_dyn_settings_post()
 	}
 
 	if (isset($_POST['showmore_dyn-submit'])) {
-		$limitHeight = $_POST['limitHeight'];
-		if ($limitHeight && is_numeric($limitHeight)) {
-			DI::pConfig()->set(local_user(), 'showmore_dyn', 'limitHeight', $limitHeight);
-		}
+		DI::pConfig()->set(local_user(), 'showmore_dyn', 'limitHeight', $_POST['limitHeight'] ?? 0);
 	}
 }
 
@@ -60,16 +57,16 @@ function showmore_dyn_settings(App &$a, &$o)
 	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/showmore_dyn/');
 	$o .= Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
-		'$title' => 'Showmore Dynamic',
-		'$limitHeight' => ['limitHeight', DI::l10n()->t('Limit Height'), $limitHeight, 'The maximal height of posts when collapsed', '', '', 'number'],
+		'$header' => DI::l10n()->t('Show More Dynamic'),
+		'$limitHeight' => ['limitHeight', DI::l10n()->t('Limit Height'), $limitHeight, DI::l10n()->t('The maximal pixel height of posts before the Show More link is added, 0 to disable'), '', '', 'number'],
 	]);
 
 }
 
 function showmore_dyn_script()
 {
-	$limitHeight = DI::pConfig()->get(local_user(), 'showmore_dyn', 'limitHeight', 250);
-	$showmore_dyn_showmore_linktext = DI::l10n()->t('Show more ...');
+	$limitHeight = intval(DI::pConfig()->get(local_user(), 'showmore_dyn', 'limitHeight', 250));
+	$showmore_dyn_showmore_linktext = DI::l10n()->t('Show more...');
 	DI::page()['htmlhead'] .= <<<EOT
 <script>
 	var postLimitHeight = $limitHeight;
