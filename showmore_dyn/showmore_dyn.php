@@ -57,8 +57,8 @@ function showmore_dyn_settings(App &$a, &$o)
 	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/showmore_dyn/');
 	$o .= Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
-		'$header' => 'Show More Dynamic',
-		'$limitHeight' => ['limitHeight', DI::l10n()->t('Limit Height'), $limitHeight, 'The maximal pixel height of posts, 0 to disable', '', '', 'number'],
+		'$header' => DI::l10n()->t('Show More Dynamic'),
+		'$limitHeight' => ['limitHeight', DI::l10n()->t('Limit Height'), $limitHeight, DI::l10n()->t('The maximal pixel height of posts before the Show More link is added, 0 to disable'), '', '', 'number'],
 	]);
 
 }
@@ -66,7 +66,7 @@ function showmore_dyn_settings(App &$a, &$o)
 function showmore_dyn_script()
 {
 	$limitHeight = intval(DI::pConfig()->get(local_user(), 'showmore_dyn', 'limitHeight', 250));
-	$showmore_dyn_showmore_linktext = DI::l10n()->t('Show more ...');
+	$showmore_dyn_showmore_linktext = DI::l10n()->t('Show more...');
 	DI::page()['htmlhead'] .= <<<EOT
 <script>
 	var postLimitHeight = $limitHeight;

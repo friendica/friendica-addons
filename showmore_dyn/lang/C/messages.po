@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-15 21:20+0100\n"
+"POT-Creation-Date: 2020-12-31 09:16-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,14 +17,24 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: showmore_dyn.php:62
+#: showmore_dyn.php:59
 msgid "Save Settings"
 msgstr ""
 
-#: showmore_dyn.php:64 showmore_dyn.php:65
+#: showmore_dyn.php:60
+msgid "Show More Dynamic"
+msgstr ""
+
+#: showmore_dyn.php:61
 msgid "Limit Height"
 msgstr ""
 
-#: showmore_dyn.php:73
-msgid "Show more ..."
+#: showmore_dyn.php:61
+msgid ""
+"The maximal pixel height of posts before the Show More link is added, 0 to "
+"disable"
+msgstr ""
+
+#: showmore_dyn.php:69
+msgid "Show more..."
 msgstr ""
