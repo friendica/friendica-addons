@@ -57,7 +57,7 @@ function showmore_dyn_settings(App &$a, &$o)
 	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/showmore_dyn/');
 	$o .= Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
-		'$title' => 'Showmore Dynamic',
+		'$header' => 'Show More Dynamic',
 		'$limitHeight' => ['limitHeight', DI::l10n()->t('Limit Height'), $limitHeight, 'The maximal pixel height of posts, 0 to disable', '', '', 'number'],
 	]);
 
