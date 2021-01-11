@@ -1584,6 +1584,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 	$postarray['uri'] = "twitter::" . $post->id_str;
 	$postarray['protocol'] = Conversation::PARCEL_TWITTER;
 	$postarray['source'] = json_encode($post);
+	$postarray['direction'] = Conversation::PULL;
 
 	if (empty($uriid)) {
 		$uriid = $postarray['uri-id'] = ItemURI::insert(['uri' => $postarray['uri']]);
@@ -1724,6 +1725,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 			$postarray['thr-parent'] = $retweet['uri'];
 		} else {
 			$retweet['source'] = $postarray['source'];
+			$retweet['direction'] = $postarray['direction'];
 			$retweet['private'] = $postarray['private'];
 			$retweet['allow_cid'] = $postarray['allow_cid'];
 			$retweet['contact-id'] = $postarray['contact-id'];
