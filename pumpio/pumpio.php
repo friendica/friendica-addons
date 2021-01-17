@@ -18,6 +18,7 @@ use Friendica\DI;
 use Friendica\Model\Contact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
+use Friendica\Model\Post;
 use Friendica\Model\User;
 use Friendica\Protocol\Activity;
 use Friendica\Protocol\ActivityNamespace;
@@ -438,7 +439,7 @@ function pumpio_send(App $a, array &$b)
 	if ($b['parent'] != $b['id']) {
 		// Looking if its a reply to a pumpio post
 		$condition = ['id' => $b['parent'], 'network' => Protocol::PUMPIO];
-		$orig_post = Item::selectFirst([], $condition);
+		$orig_post = Post::selectFirst([], $condition);
 
 		if (!DBA::isResult($orig_post)) {
 			Logger::log("pumpio_send: no pumpio post ".$b["parent"]);
@@ -609,7 +610,7 @@ function pumpio_action(App $a, $uid, $uri, $action, $content = "")
 	$hostname = DI::pConfig()->get($uid, 'pumpio', 'host');
 	$username = DI::pConfig()->get($uid, "pumpio", "user");
 
-	$orig_post = Item::selectFirst([], ['uri' => $uri, 'uid' => $uid]);
+	$orig_post = Post::selectFirst([], ['uri' => $uri, 'uid' => $uid]);
 
 	if (!DBA::isResult($orig_post)) {
 		return;
@@ -872,9 +873,9 @@ function pumpio_dounlike(App $a, $uid, $self, $post, $own_id)
 {
 	// Searching for the unliked post
 	// Two queries for speed issues
-	$orig_post = Item::selectFirst([], ['uri' => $post->object->id, 'uid' => $uid]);
+	$orig_post = Post::selectFirst([], ['uri' => $post->object->id, 'uid' => $uid]);
 	if (!DBA::isResult($orig_post)) {
-		$orig_post = Item::selectFirst([], ['extid' => $post->object->id, 'uid' => $uid]);
+		$orig_post = Post::selectFirst([], ['extid' => $post->object->id, 'uid' => $uid]);
 		if (!DBA::isResult($orig_post)) {
 			return;
 		}
@@ -917,9 +918,9 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 
 	// Searching for the liked post
 	// Two queries for speed issues
-	$orig_post = Item::selectFirst([], ['uri' => $post->object->id, 'uid' => $uid]);
+	$orig_post = Post::selectFirst([], ['uri' => $post->object->id, 'uid' => $uid]);
 	if (!DBA::isResult($orig_post)) {
-		$orig_post = Item::selectFirst([], ['extid' => $post->object->id, 'uid' => $uid]);
+		$orig_post = Post::selectFirst([], ['extid' => $post->object->id, 'uid' => $uid]);
 		if (!DBA::isResult($orig_post)) {
 			return;
 		}
@@ -1503,7 +1504,7 @@ function pumpio_fetchallcomments(App $a, $uid, $id)
 
 	// Fetching the original post
 	$condition = ["`uri` = ? AND `uid` = ? AND `extid` != ''", $id, $uid];
-	$original = Item::selectFirst(['extid'], $condition);
+	$original = Post::selectFirst(['extid'], $condition);
 	if (!DBA::isResult($original)) {
 		return false;
 	}

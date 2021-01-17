@@ -13,6 +13,7 @@ use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Item;
+use Friendica\Model\Post;
 use Friendica\Protocol\Activity;
 
 function mailstream_install() {
@@ -213,7 +214,7 @@ function mailstream_subject($item) {
 	$parent = $item['thr-parent'];
 	// Don't look more than 100 levels deep for a subject, in case of loops
 	for ($i = 0; ($i < 100) && $parent; $i++) {
-		$parent_item = Item::selectFirst(['thr-parent', 'title'], ['uri' => $parent]);
+		$parent_item = Post::selectFirst(['thr-parent', 'title'], ['uri' => $parent]);
 		if (!DBA::isResult($parent_item)) {
 			break;
 		}
@@ -337,7 +338,7 @@ function mailstream_cron($a, $b) {
 		if (!$ms_item_id['message-id'] || !strlen($ms_item_id['message-id'])) {
 			Logger::info('mailstream_cron: Item ' . $ms_item_id['id'] . ' URI ' . $ms_item_id['uri'] . ' has no message-id');
 		}
-		$item = Item::selectFirst([], ['id' => $ms_item_id['id']]);
+		$item = Post::selectFirst([], ['id' => $ms_item_id['id']]);
 		$users = q("SELECT * FROM `user` WHERE `uid` = %d", intval($item['uid']));
 		$user = $users[0];
 		if ($user && $item) {

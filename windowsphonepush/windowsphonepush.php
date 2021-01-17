@@ -34,6 +34,7 @@ use Friendica\Core\Logger;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Item;
+use Friendica\Model\Post;
 use Friendica\Model\User;
 
 function windowsphonepush_install()
@@ -184,7 +185,7 @@ function windowsphonepush_cron()
 					$senditemtext = DI::pConfig()->get($rr['uid'], 'windowsphonepush', 'senditemtext');
 					if ($senditemtext == 1) {
 						// load item with the max id
-						$item = Item::selectFirst(['author-name', 'body'], ['id' => $count[0]['max']]);
+						$item = Post::selectFirst(['author-name', 'body'], ['id' => $count[0]['max']]);
 
 						// as user allows to send the item, we want to show the sender of the item in the toast
 						// toasts are limited to one line, therefore place is limited - author shall be in

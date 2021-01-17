@@ -54,6 +54,7 @@ use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\ItemContent;
 use Friendica\Model\Photo;
+use Friendica\Model\Post;
 use Friendica\Model\User;
 use Friendica\Protocol\Activity;
 use Friendica\Util\DateTimeFormat;
@@ -495,7 +496,7 @@ function statusnet_post_hook(App $a, &$b)
 		}
 
 		$condition = ['uri' => $b["thr-parent"], 'uid' => $b["uid"]];
-		$orig_post = Item::selectFirst(['author-link', 'uri'], $condition);
+		$orig_post = Post::selectFirst(['author-link', 'uri'], $condition);
 		if (!DBA::isResult($orig_post)) {
 			Logger::log("statusnet_post_hook: no parent found " . $b["thr-parent"]);
 			return;
@@ -716,7 +717,7 @@ function statusnet_prepare_body(App $a, &$b)
 		$item["plink"] = DI::baseUrl()->get() . "/display/" . $item["guid"];
 
 		$condition = ['uri' => $item["thr-parent"], 'uid' => local_user()];
-		$orig_post = Item::selectFirst(['author-link', 'uri'], $condition);
+		$orig_post = Post::selectFirst(['author-link', 'uri'], $condition);
 		if (DBA::isResult($orig_post)) {
 			$nick = preg_replace("=https?://(.*)/(.*)=ism", "$2", $orig_post["author-link"]);
 
@@ -1106,9 +1107,9 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 	if (!empty($content->in_reply_to_status_id)) {
 		$thr_parent = $hostname . "::" . $content->in_reply_to_status_id;
 
-		$item = Item::selectFirst(['uri'], ['uri' => $thr_parent, 'uid' => $uid]);
+		$item = Post::selectFirst(['uri'], ['uri' => $thr_parent, 'uid' => $uid]);
 		if (!DBA::isResult($item)) {
-			$item = Item::selectFirst(['uri'], ['extid' => $thr_parent, 'uid' => $uid]);
+			$item = Post::selectFirst(['uri'], ['extid' => $thr_parent, 'uid' => $uid]);
 		}
 
 		if (DBA::isResult($item)) {

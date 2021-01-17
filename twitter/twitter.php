@@ -559,7 +559,7 @@ function twitter_post_hook(App $a, array &$b)
 		}
 
 		$condition = ['uri' => $b["thr-parent"], 'uid' => $b["uid"]];
-		$thr_parent = Item::selectFirst(['uri', 'extid', 'author-link', 'author-nick', 'author-network'], $condition);
+		$thr_parent = Post::selectFirst(['uri', 'extid', 'author-link', 'author-nick', 'author-network'], $condition);
 		if (!DBA::isResult($thr_parent)) {
 			Logger::warning('No parent found', ['thr-parent' => $b["thr-parent"]]);
 			return;
@@ -885,7 +885,7 @@ function twitter_prepare_body(App $a, array &$b)
 		$item["plink"] = DI::baseUrl()->get() . "/display/" . $item["guid"];
 
 		$condition = ['uri' => $item["thr-parent"], 'uid' => local_user()];
-		$orig_post = Item::selectFirst(['author-link'], $condition);
+		$orig_post = Post::selectFirst(['author-link'], $condition);
 		if (DBA::isResult($orig_post)) {
 			$nicknameplain = preg_replace("=https?://twitter.com/(.*)=ism", "$1", $orig_post["author-link"]);
 			$nickname = "@[url=" . $orig_post["author-link"] . "]" . $nicknameplain . "[/url]";
@@ -1601,9 +1601,9 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 	if ($post->in_reply_to_status_id_str != "") {
 		$thr_parent = "twitter::" . $post->in_reply_to_status_id_str;
 
-		$item = Item::selectFirst(['uri'], ['uri' => $thr_parent, 'uid' => $uid]);
+		$item = Post::selectFirst(['uri'], ['uri' => $thr_parent, 'uid' => $uid]);
 		if (!DBA::isResult($item)) {
-			$item = Item::selectFirst(['uri'], ['extid' => $thr_parent, 'uid' => $uid]);
+			$item = Post::selectFirst(['uri'], ['extid' => $thr_parent, 'uid' => $uid]);
 		}
 
 		if (DBA::isResult($item)) {
