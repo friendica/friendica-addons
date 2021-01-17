@@ -43,6 +43,7 @@ use Friendica\Database\DBA;
 use Friendica\Database\DBStructure;
 use Friendica\DI;
 use Friendica\Model\Item;
+use Friendica\Model\Post;
 use Friendica\Model\Tag;
 use Friendica\Module\Security\Login;
 use Friendica\Network\HTTPException;
@@ -404,7 +405,7 @@ function advancedcontentfilter_get_variables_guid(ServerRequestInterface $reques
 
 	$condition = ["`guid` = ? AND (`uid` = ? OR `uid` = 0)", $args['guid'], local_user()];
 	$params = ['order' => ['uid' => true]];
-	$item = Item::selectFirstForUser(local_user(), [], $condition, $params);
+	$item = Post::selectFirstForUser(local_user(), [], $condition, $params);
 
 	if (!DBA::isResult($item)) {
 		throw new HTTPException\NotFoundException(DI::l10n()->t('Unknown post with guid: %s', $args['guid']));

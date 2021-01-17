@@ -10,6 +10,7 @@ use Friendica\Core\Hook;
 use Friendica\DI;
 use Friendica\Model\Item;
 use Friendica\Database\DBA;
+use Friendica\Model\Post;
 
 function viewsrc_install() {
 	Hook::register('item_photo_menu', 'addon/viewsrc/viewsrc.php', 'viewsrc_item_photo_menu');
@@ -35,7 +36,7 @@ function viewsrc_item_photo_menu(&$a, &$b)
 	}
 
 	if (local_user() != $b['item']['uid']) {
-		$item = Item::selectFirstForUser(local_user(), ['id'], ['uid' => local_user(), 'guid' => $b['item']['guid']]);
+		$item = Post::selectFirstForUser(local_user(), ['id'], ['uid' => local_user(), 'guid' => $b['item']['guid']]);
 		if (!DBA::isResult($item)) {
 			return;
 		}
