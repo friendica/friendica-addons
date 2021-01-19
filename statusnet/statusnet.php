@@ -403,7 +403,7 @@ function statusnet_hook_fork(App $a, array &$b)
 
 	if (DI::pConfig()->get($post['uid'], 'statusnet', 'import')) {
 		// Don't fork if it isn't a reply to a GNU Social post
-		if (($post['parent'] != $post['id']) && !Item::exists(['id' => $post['parent'], 'network' => Protocol::STATUSNET])) {
+		if (($post['parent'] != $post['id']) && !Post::exists(['id' => $post['parent'], 'network' => Protocol::STATUSNET])) {
 			Logger::log('No GNU Social parent found for item ' . $post['id']);
 			$b['execute'] = false;
 			return;
@@ -1098,7 +1098,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 
 	$postarray['uri'] = $hostname . "::" . $content->id;
 
-	if (Item::exists(['extid' => $postarray['uri'], 'uid' => $uid])) {
+	if (Post::exists(['extid' => $postarray['uri'], 'uid' => $uid])) {
 		return [];
 	}
 

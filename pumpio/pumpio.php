@@ -389,7 +389,7 @@ function pumpio_hook_fork(App $a, array &$b)
 
         if (DI::pConfig()->get($post['uid'], 'pumpio', 'import')) {
                 // Don't fork if it isn't a reply to a pump.io post
-                if (($post['parent'] != $post['id']) && !Item::exists(['id' => $post['parent'], 'network' => Protocol::PUMPIO])) {
+                if (($post['parent'] != $post['id']) && !Post::exists(['id' => $post['parent'], 'network' => Protocol::PUMPIO])) {
                         Logger::log('No pump.io parent found for item ' . $post['id']);
                         $b['execute'] = false;
                         return;
@@ -954,7 +954,7 @@ function pumpio_dolike(App $a, $uid, $self, $post, $own_id, $threadcompletion = 
 	}
 
 	$condition = ['verb' => Activity::LIKE, 'uid' => $uid, 'contact-id' => $contactid, 'thr-parent' => $orig_post['uri']];
-	if (Item::exists($condition)) {
+	if (Post::exists($condition)) {
 		Logger::log("pumpio_dolike: found existing like. User ".$own_id." ".$uid." Contact: ".$contactid." Url ".$orig_post['uri']);
 		return;
 	}
@@ -1065,13 +1065,13 @@ function pumpio_dodelete(App $a, $uid, $self, $post, $own_id)
 {
 	// Two queries for speed issues
 	$condition = ['uri' => $post->object->id, 'uid' => $uid];
-	if (Item::exists($condition)) {
+	if (Post::exists($condition)) {
 		Item::markForDeletion($condition);
 		return true;
 	}
 
 	$condition = ['extid' => $post->object->id, 'uid' => $uid];
-	if (Item::exists($condition)) {
+	if (Post::exists($condition)) {
 		Item::markForDeletion($condition);
 		return true;
 	}
@@ -1094,10 +1094,10 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 
 	if ($post->verb != "update") {
 		// Two queries for speed issues
-		if (Item::exists(['uri' => $post->object->id, 'uid' => $uid])) {
+		if (Post::exists(['uri' => $post->object->id, 'uid' => $uid])) {
 			return false;
 		}
-		if (Item::exists(['extid' => $post->object->id, 'uid' => $uid])) {
+		if (Post::exists(['extid' => $post->object->id, 'uid' => $uid])) {
 			return false;
 		}
 	}
@@ -1561,11 +1561,11 @@ function pumpio_fetchallcomments(App $a, $uid, $id)
 		}
 
 		// Checking if the comment already exists - Two queries for speed issues
-		if (Item::exists(['uri' => $item->id, 'uid' => $uid])) {
+		if (Post::exists(['uri' => $item->id, 'uid' => $uid])) {
 			continue;
 		}
 
-		if (Item::exists(['extid' => $item->id, 'uid' => $uid])) {
+		if (Post::exists(['extid' => $item->id, 'uid' => $uid])) {
 			continue;
 		}
 

@@ -411,7 +411,7 @@ function twitter_hook_fork(App $a, array &$b)
 
 	if (DI::pConfig()->get($post['uid'], 'twitter', 'import')) {
 		// Don't fork if it isn't a reply to a twitter post
-		if (($post['parent'] != $post['id']) && !Item::exists(['id' => $post['parent'], 'network' => Protocol::TWITTER])) {
+		if (($post['parent'] != $post['id']) && !Post::exists(['id' => $post['parent'], 'network' => Protocol::TWITTER])) {
 			Logger::notice('No twitter parent found', ['item' => $post['id']]);
 			$b['execute'] = false;
 			return;
@@ -851,8 +851,8 @@ function twitter_expire(App $a)
 
 	Logger::notice('Start deleting expired posts');
 
-	$r = Item::select(['id', 'guid'], ['deleted' => true, 'network' => Protocol::TWITTER]);
-	while ($row = DBA::fetch($r)) {
+	$r = Post::select(['id', 'guid'], ['deleted' => true, 'network' => Protocol::TWITTER]);
+	while ($row = Post::fetch($r)) {
 		Logger::info('[twitter] Delete expired item', ['id' => $row['id'], 'guid' => $row['guid'], 'callstack' => \Friendica\Core\System::callstack()]);
 		DBA::delete('item', ['id' => $row['id']]);
 	}
@@ -1591,7 +1591,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 	}
 
 	// Don't import our own comments
-	if (Item::exists(['extid' => $postarray['uri'], 'uid' => $uid])) {
+	if (Post::exists(['extid' => $postarray['uri'], 'uid' => $uid])) {
 		Logger::info('Item found', ['extid' => $postarray['uri']]);
 		return [];
 	}
@@ -1802,7 +1802,7 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 			break;
 		}
 
-		if (Item::exists(['uri' => 'twitter::' . $post->id_str, 'uid' => $uid])) {
+		if (Post::exists(['uri' => 'twitter::' . $post->id_str, 'uid' => $uid])) {
 			break;
 		}
 
