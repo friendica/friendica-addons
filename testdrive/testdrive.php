@@ -11,7 +11,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Search;
 use Friendica\Database\DBA;
 use Friendica\DI;
-use Friendica\Model\Notify\Type;
+use Friendica\Model\Notification;
 use Friendica\Model\User;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
@@ -58,7 +58,7 @@ function testdrive_cron($a,$b) {
 	if(count($r)) {
 		foreach($r as $rr) {
 			notification([
-				'type' => Type::SYSTEM,
+				'type' => Notification/Type::SYSTEM,
 				'uid' => $rr['uid'],
 				'system_type' => 'testdrive_expire',
 				'source_name'  => DI::l10n()->t('Administrator'),
