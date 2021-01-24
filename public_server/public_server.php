@@ -13,7 +13,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
-use Friendica\Model\Notify\Type;
+use Friendica\Model\Notification;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Strings;
@@ -58,7 +58,7 @@ function public_server_cron($a, $b)
 	if (DBA::isResult($r)) {
 		foreach ($r as $rr) {
 			notification([
-				'type' => Type::SYSTEM,
+				'type' => Notification/Type::SYSTEM,
 				'uid' => $rr['uid'],
 				'system_type' => 'public_server_expire',
 				'source_name'  => DI::l10n()->t('Administrator'),
