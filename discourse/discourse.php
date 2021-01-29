@@ -106,7 +106,7 @@ function discourse_email_getmessage(App $a, &$message)
 	}
 
 	// Remove the title on comments, they don't serve any purpose there
-	if ($message['item']['parent-uri'] != $message['item']['uri']) {
+	if ($message['item']['thr-parent'] != $message['item']['uri']) {
 		unset($message['item']['title']);
 	}
 }
