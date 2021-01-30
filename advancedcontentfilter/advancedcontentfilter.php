@@ -61,7 +61,7 @@ function advancedcontentfilter_install(App $a)
 	Hook::register('addon_settings'             , __FILE__, 'advancedcontentfilter_addon_settings');
 
 	Hook::add('dbstructure_definition'          , __FILE__, 'advancedcontentfilter_dbstructure_definition');
-	DBStructure::update($a->getBasePath(), false, true);
+	DBStructure::performUpdate();
 
 	Logger::log("installed advancedcontentfilter");
 }
