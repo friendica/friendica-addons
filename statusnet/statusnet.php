@@ -52,7 +52,6 @@ use Friendica\DI;
 use Friendica\Model\Contact;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
-use Friendica\Model\ItemContent;
 use Friendica\Model\Photo;
 use Friendica\Model\Post;
 use Friendica\Model\User;
@@ -578,7 +577,7 @@ function statusnet_post_hook(App $a, &$b)
 		DI::pConfig()->set($b['uid'], 'statusnet', 'max_char', $max_char);
 
 		$tempfile = "";
-		$msgarr = ItemContent::getPlaintextPost($b, $max_char, true, 7);
+		$msgarr = Plaintext::getPost($b, $max_char, true, 7);
 		$msg = $msgarr["text"];
 
 		if (($msg == "") && isset($msgarr["title"]))
@@ -729,7 +728,7 @@ function statusnet_prepare_body(App $a, &$b)
 			}
 		}
 
-		$msgarr = ItemContent::getPlaintextPost($item, $max_char, true, 7);
+		$msgarr = Plaintext::getPost($item, $max_char, true, 7);
 		$msg = $msgarr["text"];
 
 		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {

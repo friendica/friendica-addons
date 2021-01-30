@@ -9,13 +9,13 @@
 require 'addon/buffer/bufferapp.php';
 
 use Friendica\App;
+use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
-use Friendica\Model\ItemContent;
 use Friendica\Util\Proxy as ProxyUtils;
 use Friendica\Util\Strings;
 
@@ -342,7 +342,7 @@ function buffer_send(App $a, array &$b)
 
 				$item = $b;
 
-				$post = ItemContent::getPlaintextPost($item, $limit, $includedlinks, $htmlmode);
+				$post = Plaintext::getPost($item, $limit, $includedlinks, $htmlmode);
 				Logger::log("buffer_send: converted message ".$b["id"]." result: ".print_r($post, true), Logger::DEBUG);
 
 				// The image proxy is used as a sanitizer. Buffer seems to be really picky about pictures
