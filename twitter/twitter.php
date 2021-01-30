@@ -81,7 +81,6 @@ use Friendica\Model\Contact;
 use Friendica\Model\Conversation;
 use Friendica\Model\Group;
 use Friendica\Model\Item;
-use Friendica\Model\ItemContent;
 use Friendica\Model\ItemURI;
 use Friendica\Model\Post;
 use Friendica\Model\Tag;
@@ -666,7 +665,7 @@ function twitter_post_hook(App $a, array &$b)
 
 		$b['body'] = twitter_update_mentions($b['body']);
 
-		$msgarr = ItemContent::getPlaintextPost($b, $max_char, true, BBCode::TWITTER);
+		$msgarr = Plaintext::getPost($b, $max_char, true, BBCode::TWITTER);
 		Logger::info('Got plaintext', ['id' => $b['id'], 'message' => $msgarr]);
 		$msg = $msgarr["text"];
 
@@ -896,7 +895,7 @@ function twitter_prepare_body(App $a, array &$b)
 			}
 		}
 
-		$msgarr = ItemContent::getPlaintextPost($item, $max_char, true, BBCode::TWITTER);
+		$msgarr = Plaintext::getPost($item, $max_char, true, BBCode::TWITTER);
 		$msg = $msgarr["text"];
 
 		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {
