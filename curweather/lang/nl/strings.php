@@ -3,7 +3,7 @@
 if(! function_exists("string_plural_select_nl")) {
 function string_plural_select_nl($n){
 	$n = intval($n);
-	return ($n != 1);;
+	return intval($n != 1);
 }}
 ;
 $a->strings["Error fetching weather data.\\nError was: "] = "Fout bij het ophalen van de weer data:\\nFout was:";

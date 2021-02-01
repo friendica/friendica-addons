@@ -3,7 +3,7 @@
 if(! function_exists("string_plural_select_nl")) {
 function string_plural_select_nl($n){
 	$n = intval($n);
-	return ($n != 1);;
+	return intval($n != 1);
 }}
 ;
 $a->strings["Post to Diaspora"] = "Plaatsen op Diaspora";
@@ -20,9 +20,6 @@ $a->strings["Information"] = "Informatie";
 $a->strings["Error"] = "Fout";
 $a->strings["Save Settings"] = "Instellingen opslaan";
 $a->strings["Enable Diaspora Post Addon"] = "Diaspora Post Addon inschakelen";
-$a->strings["Diaspora handle"] = "";
 $a->strings["Diaspora password"] = "Diaspora wachtwoord";
 $a->strings["Privacy notice: Your Diaspora password will be stored unencrypted to authenticate you with your Diaspora pod. This means your Friendica node administrator can have access to it."] = "Privacyverklaring: uw diaspora-wachtwoord wordt onversleuteld opgeslagen om u te authenticeren met uw diaspora-pod. Dit betekent dat uw Friendica-knooppuntbeheerder er toegang toe heeft.";
 $a->strings["Post to Diaspora by default"] = "Plaatsen op Diaspora als standaard instellen ";
-$a->strings["Diaspora settings updated."] = "";
-$a->strings["Diaspora connector disabled."] = "";

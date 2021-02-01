@@ -3,7 +3,7 @@
 if(! function_exists("string_plural_select_en_gb")) {
 function string_plural_select_en_gb($n){
 	$n = intval($n);
-	return ($n != 1);;
+	return intval($n != 1);
 }}
 ;
 $a->strings["This website is tracked using the <a href='http://www.matomo.org'>Matomo</a> analytics tool."] = "This website is tracking, using the <a href='http://www.matomo.org'>Matomo</a> analytics tool.";

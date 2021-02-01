@@ -3,11 +3,10 @@
 if(! function_exists("string_plural_select_fi_fi")) {
 function string_plural_select_fi_fi($n){
 	$n = intval($n);
-	return ($n != 1);;
+	return intval($n != 1);
 }}
 ;
 $a->strings["Upload a file"] = "Lähetä tiedosto";
-$a->strings["Drop files here to upload"] = "";
 $a->strings["Cancel"] = "Peruuta";
 $a->strings["Failed"] = "Epäonnistui";
 $a->strings["No files were uploaded."] = "Tiedostoja ei lähetetty.";

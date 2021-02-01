@@ -3,7 +3,7 @@
 if(! function_exists("string_plural_select_fi_fi")) {
 function string_plural_select_fi_fi($n){
 	$n = intval($n);
-	return ($n != 1);;
+	return intval($n != 1);
 }}
 ;
 $a->strings["Error fetching weather data.\\nError was: "] = "Säätietojen noutamisessa tapahtui virhe.\\nLisätietoja: ";
@@ -28,7 +28,6 @@ $a->strings["select if the temperature should be displayed in &deg;C or &deg;F"]
 $a->strings["Show weather data"] = "Näytä säätiedot";
 $a->strings["Curweather settings saved."] = "Curweather -asetukset tallennettu.";
 $a->strings["Caching Interval"] = "Välimuistin aikaväli";
-$a->strings["For how long should the weather data be cached? Choose according your OpenWeatherMap account type."] = "";
 $a->strings["no cache"] = "Ei välimuistia";
 $a->strings["minutes"] = "minuuttia";
 $a->strings["Your APPID"] = "Sinun APPID";

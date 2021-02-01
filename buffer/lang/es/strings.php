@@ -3,7 +3,7 @@
 if(! function_exists("string_plural_select_es")) {
 function string_plural_select_es($n){
 	$n = intval($n);
-	return ($n != 1);;
+	return intval($n != 1);
 }}
 ;
 $a->strings["Permission denied."] = "Permiso denegado";

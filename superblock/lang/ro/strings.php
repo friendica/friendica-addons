@@ -2,7 +2,8 @@
 
 if(! function_exists("string_plural_select_ro")) {
 function string_plural_select_ro($n){
-	return ($n==1?0:((($n%100>19)||(($n%100==0)&&($n!=0)))?2:1));;
+	$n = intval($n);
+	if ($n==1) { return 0; } else if ((($n%100>19)||(($n%100==0)&&($n!=0)))) { return 2; } else  { return 1; }
 }}
 ;
 $a->strings["\"Superblock\" Settings"] = "Configurări \"Superblock\"";

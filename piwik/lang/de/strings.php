@@ -3,7 +3,7 @@
 if(! function_exists("string_plural_select_de")) {
 function string_plural_select_de($n){
 	$n = intval($n);
-	return ($n != 1);;
+	return intval($n != 1);
 }}
 ;
 $a->strings["This website is tracked using the <a href='http://www.matomo.org'>Matomo</a> analytics tool."] = "Diese Website benutzt <a href='http://www.matomo.org'>Matomo</a>, eine Open Source-Software zur statistischen Auswertung der Besucherzugriffe.";

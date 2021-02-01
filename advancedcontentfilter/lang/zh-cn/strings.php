@@ -3,7 +3,7 @@
 if(! function_exists("string_plural_select_zh_cn")) {
 function string_plural_select_zh_cn($n){
 	$n = intval($n);
-	return 0;;
+	return intval(0);
 }}
 ;
 $a->strings["Filtered by rule: %s"] = "通过规则过滤：%s";
@@ -11,7 +11,6 @@ $a->strings["Advanced Content Filter"] = "高级内容过滤";
 $a->strings["Back to Addon Settings"] = "返回扩展设置";
 $a->strings["Add a Rule"] = "添加规则";
 $a->strings["Help"] = "帮助";
-$a->strings["Add and manage your personal content filter rules in this screen. Rules have a name and an arbitrary expression that will be matched against post data. For a complete reference of the available operations and variables, check the <a href=\"advancedcontentfilter/help\">help page</a>."] = "在此界面上添加和管理你的个人内容过滤规则。规则要有名称和能匹配帖子内容的任意表达式。完整可用的运算符和变量，请查看<a href=\"advancedcontentfilter/help\">帮助页面</a>。";
 $a->strings["Your rules"] = "你的规则";
 $a->strings["You have no rules yet! Start adding one by clicking on the button above next to the title."] = "你还没有规则！点击标题上方的按钮开始新增规则。";
 $a->strings["Disabled"] = "禁用";
@@ -27,7 +26,6 @@ $a->strings["Close"] = "关闭";
 $a->strings["Add new rule"] = "新增规则";
 $a->strings["Rule Name"] = "规则名";
 $a->strings["Rule Expression"] = "规则表达式";
-$a->strings["<p>Examples:</p><ul><li><pre>author_link == 'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>"] = "<p>例子：</p><ul><li><pre>author_link == 'https://friendica.mrpetovan.com/profile/hypolite</pre></li><li>tags</li></ul>";
 $a->strings["Cancel"] = "取消";
 $a->strings["You must be logged in to use this method"] = "使用此模式您必须先登录。";
 $a->strings["Invalid form security token, please refresh the page."] = "无效的安全令牌，请刷新页面。";

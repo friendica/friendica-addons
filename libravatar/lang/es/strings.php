@@ -2,7 +2,8 @@
 
 if(! function_exists("string_plural_select_es")) {
 function string_plural_select_es($n){
-	return ($n != 1);;
+	$n = intval($n);
+	return intval($n != 1);
 }}
 ;
 $a->strings["Could NOT install Libravatar successfully.<br>It requires PHP >= 5.3"] = "Podría NO instalar Libravatar con éxito.<br>Requiere PHP >= 5.3";

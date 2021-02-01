@@ -3,7 +3,7 @@
 if(! function_exists("string_plural_select_ja")) {
 function string_plural_select_ja($n){
 	$n = intval($n);
-	return 0;;
+	return intval(0);
 }}
 ;
 $a->strings["Post to Twitter"] = "Twitterに投稿";

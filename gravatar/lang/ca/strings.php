@@ -3,7 +3,7 @@
 if(! function_exists("string_plural_select_ca")) {
 function string_plural_select_ca($n){
 	$n = intval($n);
-	return ($n != 1);;
+	return intval($n != 1);
 }}
 ;
 $a->strings["generic profile image"] = "imatge de perfil genèrica";

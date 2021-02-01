@@ -3,7 +3,7 @@
 if(! function_exists("string_plural_select_ja")) {
 function string_plural_select_ja($n){
 	$n = intval($n);
-	return 0;;
+	return intval(0);
 }}
 ;
 $a->strings["The end-date is prior to the start-date of the blackout, you should fix this"] = "終了日はブラックアウトの開始日より前です。これを修正する必要があります";

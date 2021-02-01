@@ -2,7 +2,8 @@
 
 if(! function_exists("string_plural_select_zh_cn")) {
 function string_plural_select_zh_cn($n){
-	return 0;;
+	$n = intval($n);
+	return intval(0);
 }}
 ;
 $a->strings["\"Secure Mail\" Settings"] = "“加密邮件”设置";

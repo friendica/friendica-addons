@@ -3,7 +3,7 @@
 if(! function_exists("string_plural_select_pt_br")) {
 function string_plural_select_pt_br($n){
 	$n = intval($n);
-	return ($n > 1);;
+	return intval($n > 1);
 }}
 ;
 $a->strings["Language Filter"] = "Filtro de Idiomas";
