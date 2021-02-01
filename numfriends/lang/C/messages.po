@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,18 +17,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: numfriends.php:46
-msgid "Numfriends settings updated."
-msgstr ""
-
-#: numfriends.php:77
+#: numfriends.php:59
 msgid "Numfriends Settings"
 msgstr ""
 
-#: numfriends.php:79
+#: numfriends.php:61
 msgid "How many contacts to display on profile sidebar"
 msgstr ""
 
-#: numfriends.php:85
-msgid "Submit"
+#: numfriends.php:67
+msgid "Save Settings"
 msgstr ""

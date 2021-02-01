@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,28 +17,47 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: openstreetmap.php:94
+#: openstreetmap.php:167
+msgid "View Larger"
+msgstr ""
+
+#: openstreetmap.php:194
 msgid "Submit"
 msgstr ""
 
-#: openstreetmap.php:95
+#: openstreetmap.php:195
 msgid "Tile Server URL"
 msgstr ""
 
-#: openstreetmap.php:95
+#: openstreetmap.php:195
 msgid ""
 "A list of <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" target=\"_blank"
-"\">public tile servers</a>"
+"\" rel=\"noopener noreferrer\">public tile servers</a>"
 msgstr ""
 
-#: openstreetmap.php:96
+#: openstreetmap.php:196
+msgid "Nominatim (reverse geocoding) Server URL"
+msgstr ""
+
+#: openstreetmap.php:196
+msgid ""
+"A list of <a href=\"http://wiki.openstreetmap.org/wiki/Nominatim\" target="
+"\"_blank\" rel=\"noopener noreferrer\">Nominatim servers</a>"
+msgstr ""
+
+#: openstreetmap.php:197
 msgid "Default zoom"
 msgstr ""
 
-#: openstreetmap.php:96
-msgid "The default zoom level. (1:world, 18:highest)"
+#: openstreetmap.php:197
+msgid ""
+"The default zoom level. (1:world, 18:highest, also depends on tile server)"
 msgstr ""
 
-#: openstreetmap.php:104
-msgid "Settings updated."
+#: openstreetmap.php:198
+msgid "Include marker on map"
+msgstr ""
+
+#: openstreetmap.php:198
+msgid "Include a marker on the map."
 msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-14 16:41+0200\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,40 +17,40 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: notifyall.php:26
-msgid "Send email to all members"
-msgstr ""
-
-#: notifyall.php:42
+#: NotifyAllEmail.php:40
 #, php-format
 msgid "%s Administrator"
 msgstr ""
 
-#: notifyall.php:44
+#: NotifyAllEmail.php:42
 #, php-format
 msgid "%1$s, %2$s Administrator"
 msgstr ""
 
-#: notifyall.php:60
+#: notifyall.php:22
+msgid "Send email to all members"
+msgstr ""
+
+#: notifyall.php:49
 msgid "No recipients found."
 msgstr ""
 
-#: notifyall.php:78
+#: notifyall.php:59
 msgid "Emails sent"
 msgstr ""
 
-#: notifyall.php:86
+#: notifyall.php:69
 msgid "Send email to all members of this Friendica instance."
 msgstr ""
 
-#: notifyall.php:91
+#: notifyall.php:74
 msgid "Message subject"
 msgstr ""
 
-#: notifyall.php:92
+#: notifyall.php:75
 msgid "Test mode (only send to administrator)"
 msgstr ""
 
-#: notifyall.php:93
+#: notifyall.php:76
 msgid "Submit"
 msgstr ""

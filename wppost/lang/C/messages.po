@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-24 21:06+0100\n"
+"POT-Creation-Date: 2021-02-01 18:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: wppost.php:42
+#: wppost.php:39
 msgid "Post to Wordpress"
 msgstr ""
 
@@ -29,44 +29,44 @@ msgstr ""
 msgid "Enable WordPress Post Addon"
 msgstr ""
 
-#: wppost.php:92
+#: wppost.php:93
 msgid "WordPress username"
 msgstr ""
 
-#: wppost.php:97
+#: wppost.php:98
 msgid "WordPress password"
 msgstr ""
 
-#: wppost.php:102
+#: wppost.php:103
 msgid "WordPress API URL"
 msgstr ""
 
-#: wppost.php:107
+#: wppost.php:108
 msgid "Post to WordPress by default"
 msgstr ""
 
-#: wppost.php:112
+#: wppost.php:114
 msgid "Provide a backlink to the Friendica post"
 msgstr ""
 
-#: wppost.php:116
+#: wppost.php:119
 msgid ""
 "Text for the backlink, e.g. Read the original post and comment stream on "
 "Friendica."
 msgstr ""
 
-#: wppost.php:121
+#: wppost.php:124
 msgid "Don't post messages that are too short"
 msgstr ""
 
-#: wppost.php:127
+#: wppost.php:131
 msgid "Save Settings"
 msgstr ""
 
-#: wppost.php:206
+#: wppost.php:231
 msgid "Read the orig­i­nal post and com­ment stream on Friendica"
 msgstr ""
 
-#: wppost.php:269
+#: wppost.php:289
 msgid "Post from Friendica"
 msgstr ""

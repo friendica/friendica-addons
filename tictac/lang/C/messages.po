@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,56 +17,56 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: tictac.php:20
+#: tictac.php:16
 msgid "Three Dimensional Tic-Tac-Toe"
 msgstr ""
 
-#: tictac.php:53
+#: tictac.php:49
 msgid "3D Tic-Tac-Toe"
 msgstr ""
 
-#: tictac.php:58
+#: tictac.php:54
 msgid "New game"
 msgstr ""
 
-#: tictac.php:59
+#: tictac.php:55
 msgid "New game with handicap"
 msgstr ""
 
-#: tictac.php:60
+#: tictac.php:56
 msgid ""
 "Three dimensional tic-tac-toe is just like the traditional game except that "
 "it is played on multiple levels simultaneously. "
 msgstr ""
 
-#: tictac.php:61
+#: tictac.php:57
 msgid ""
 "In this case there are three levels. You win by getting three in a row on "
 "any level, as well as up, down, and diagonally across the different levels."
 msgstr ""
 
-#: tictac.php:63
+#: tictac.php:59
 msgid ""
 "The handicap game disables the center position on the middle level because "
 "the player claiming this square often has an unfair advantage."
 msgstr ""
 
-#: tictac.php:182
+#: tictac.php:178
 msgid "You go first..."
 msgstr ""
 
-#: tictac.php:187
+#: tictac.php:183
 msgid "I'm going first this time..."
 msgstr ""
 
-#: tictac.php:193
+#: tictac.php:189
 msgid "You won!"
 msgstr ""
 
-#: tictac.php:199 tictac.php:224
+#: tictac.php:195 tictac.php:220
 msgid "\"Cat\" game!"
 msgstr ""
 
-#: tictac.php:222
+#: tictac.php:218
 msgid "I won!"
 msgstr ""

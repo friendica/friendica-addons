@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,38 +17,38 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: blogger.php:42
+#: blogger.php:37
 msgid "Post to blogger"
 msgstr ""
 
-#: blogger.php:74 blogger.php:78
+#: blogger.php:71 blogger.php:75
 msgid "Blogger Export"
 msgstr ""
 
-#: blogger.php:82
+#: blogger.php:79
 msgid "Enable Blogger Post Addon"
 msgstr ""
 
-#: blogger.php:87
+#: blogger.php:84
 msgid "Blogger username"
 msgstr ""
 
-#: blogger.php:92
+#: blogger.php:89
 msgid "Blogger password"
 msgstr ""
 
-#: blogger.php:97
+#: blogger.php:94
 msgid "Blogger API URL"
 msgstr ""
 
-#: blogger.php:102
+#: blogger.php:99
 msgid "Post to Blogger by default"
 msgstr ""
 
-#: blogger.php:108
+#: blogger.php:104
 msgid "Save Settings"
 msgstr ""
 
-#: blogger.php:178
+#: blogger.php:188
 msgid "Post from Friendica"
 msgstr ""

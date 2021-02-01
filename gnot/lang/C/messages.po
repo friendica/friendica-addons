@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,29 +17,25 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gnot.php:48
-msgid "Gnot settings updated."
-msgstr ""
-
-#: gnot.php:79
+#: gnot.php:71
 msgid "Gnot Settings"
 msgstr ""
 
-#: gnot.php:81
+#: gnot.php:72
+msgid "Save Settings"
+msgstr ""
+
+#: gnot.php:73
+msgid "Enable this addon?"
+msgstr ""
+
+#: gnot.php:75
 msgid ""
 "Allows threading of email comment notifications on Gmail and anonymising the "
 "subject line."
 msgstr ""
 
-#: gnot.php:82
-msgid "Enable this addon?"
-msgstr ""
-
-#: gnot.php:88
-msgid "Submit"
-msgstr ""
-
-#: gnot.php:97
+#: gnot.php:84
 #, php-format
 msgid "[Friendica:Notify] Comment to conversation #%d"
 msgstr ""

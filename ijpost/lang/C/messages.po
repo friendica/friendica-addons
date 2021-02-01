@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,26 +21,26 @@ msgstr ""
 msgid "Post to Insanejournal"
 msgstr ""
 
-#: ijpost.php:70
-msgid "InsaneJournal Post Settings"
+#: ijpost.php:71 ijpost.php:75
+msgid "InsaneJournal Export"
 msgstr ""
 
-#: ijpost.php:72
+#: ijpost.php:79
 msgid "Enable InsaneJournal Post Addon"
 msgstr ""
 
-#: ijpost.php:77
+#: ijpost.php:84
 msgid "InsaneJournal username"
 msgstr ""
 
-#: ijpost.php:82
+#: ijpost.php:89
 msgid "InsaneJournal password"
 msgstr ""
 
-#: ijpost.php:87
+#: ijpost.php:94
 msgid "Post to InsaneJournal by default"
 msgstr ""
 
-#: ijpost.php:93
-msgid "Submit"
+#: ijpost.php:99
+msgid "Save Settings"
 msgstr ""

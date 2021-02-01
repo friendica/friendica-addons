@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: forumdirectory.php:22
+#: forumdirectory.php:33 forumdirectory.php:137
 msgid "Forum Directory"
 msgstr ""
 
@@ -25,54 +25,22 @@ msgstr ""
 msgid "Public access denied."
 msgstr ""
 
-#: forumdirectory.php:71
+#: forumdirectory.php:125
+msgid "No entries (some entries may be hidden)."
+msgstr ""
+
+#: forumdirectory.php:131
 msgid "Global Directory"
 msgstr ""
 
-#: forumdirectory.php:79
+#: forumdirectory.php:133
 msgid "Find on this site"
 msgstr ""
 
-#: forumdirectory.php:81
-msgid "Finding: "
+#: forumdirectory.php:135
+msgid "Results for:"
 msgstr ""
 
-#: forumdirectory.php:82
-msgid "Site Directory"
-msgstr ""
-
-#: forumdirectory.php:83
+#: forumdirectory.php:139
 msgid "Find"
-msgstr ""
-
-#: forumdirectory.php:133
-msgid "Age: "
-msgstr ""
-
-#: forumdirectory.php:136
-msgid "Gender: "
-msgstr ""
-
-#: forumdirectory.php:156
-msgid "Location:"
-msgstr ""
-
-#: forumdirectory.php:158
-msgid "Gender:"
-msgstr ""
-
-#: forumdirectory.php:160
-msgid "Status:"
-msgstr ""
-
-#: forumdirectory.php:162
-msgid "Homepage:"
-msgstr ""
-
-#: forumdirectory.php:164
-msgid "About:"
-msgstr ""
-
-#: forumdirectory.php:201
-msgid "No entries (some entries may be hidden)."
 msgstr ""

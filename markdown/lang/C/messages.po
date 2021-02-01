@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-26 10:04+0000\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,19 +17,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: markdown.php:32
+#: markdown.php:30
 msgid "Markdown"
 msgstr ""
 
-#: markdown.php:33
+#: markdown.php:31
 msgid "Enable Markdown parsing"
 msgstr ""
 
-#: markdown.php:33
+#: markdown.php:31
 msgid ""
 "If enabled, self created items will additionally be parsed via Markdown."
 msgstr ""
 
-#: markdown.php:34
+#: markdown.php:32
 msgid "Save Settings"
 msgstr ""

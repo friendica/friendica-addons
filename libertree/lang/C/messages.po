@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,30 +17,30 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: libertree.php:36
+#: libertree.php:37
 msgid "Post to libertree"
 msgstr ""
 
-#: libertree.php:67
-msgid "libertree Post Settings"
-msgstr ""
-
-#: libertree.php:69
-msgid "Enable Libertree Post Addon"
-msgstr ""
-
-#: libertree.php:74
-msgid "Libertree API token"
+#: libertree.php:71 libertree.php:75
+msgid "libertree Export"
 msgstr ""
 
 #: libertree.php:79
-msgid "Libertree site URL"
+msgid "Enable Libertree Post Addon"
 msgstr ""
 
 #: libertree.php:84
+msgid "Libertree API token"
+msgstr ""
+
+#: libertree.php:89
+msgid "Libertree site URL"
+msgstr ""
+
+#: libertree.php:94
 msgid "Post to Libertree by default"
 msgstr ""
 
-#: libertree.php:90
-msgid "Submit"
+#: libertree.php:100
+msgid "Save Settings"
 msgstr ""

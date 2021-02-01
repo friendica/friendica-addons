@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-23 17:30+0200\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,20 +17,20 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: testdrive.php:67
+#: testdrive.php:64
 msgid "Administrator"
 msgstr ""
 
-#: testdrive.php:94
+#: testdrive.php:89
 #, php-format
 msgid "Your account on %s will expire in a few days."
 msgstr ""
 
-#: testdrive.php:95
+#: testdrive.php:90
 msgid "Your Friendica test account is about to expire."
 msgstr ""
 
-#: testdrive.php:96
+#: testdrive.php:91
 #, php-format
 msgid ""
 "Hi %1$s,\n"
@@ -40,5 +40,5 @@ msgid ""
 "Friendica website for your integrated social communications. A list of "
 "public sites is available at %s/siteinfo - and for more information on "
 "setting up your own Friendica server please see the Friendica project "
-"website at http://friendica.com."
+"website at https://friendi.ca."
 msgstr ""
