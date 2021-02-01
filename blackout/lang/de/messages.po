@@ -5,13 +5,13 @@
 # 
 # Translators:
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
-# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2019
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2019,2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-12 09:26+0100\n"
-"PO-Revision-Date: 2019-03-13 05:20+0000\n"
+"POT-Creation-Date: 2020-12-23 01:34-0500\n"
+"PO-Revision-Date: 2021-02-01 06:25+0000\n"
 "Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
 "Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -20,48 +20,49 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: blackout.php:101
+#: blackout.php:97
 msgid ""
-"The end-date is prior to the start-date of the blackout, you should fix this"
-msgstr "Das End-Datum des Blackouts liegt vor dem Start-Datum. Du solltest das anpassen."
+"The end-date is prior to the start-date of the blackout, you should fix "
+"this."
+msgstr "Das Enddatum liegt vor dem Startdatum des Blackouts, du solltest dies korrigieren."
 
-#: blackout.php:103
+#: blackout.php:99
 #, php-format
 msgid ""
-"Please double check that the current settings for the blackout. Begin will "
-"be <strong>%s</strong> and it will end <strong>%s</strong>."
+"Please double check the current settings for the blackout. It will begin on "
+"<strong>%s</strong> and end on <strong>%s</strong>."
 msgstr "Bitte überprüfe die aktuellen Einstellungen für den Blackout. Start-Zeitpunkt ist <strong>%s</strong> und das Ende ist <strong>%s</strong>."
 
-#: blackout.php:106
+#: blackout.php:102
 msgid "Save Settings"
 msgstr "Einstellungen speichern"
 
-#: blackout.php:107
+#: blackout.php:103
 msgid "Redirect URL"
 msgstr "Umleitungs-URL"
 
-#: blackout.php:107
-msgid "all your visitors from the web will be redirected to this URL"
+#: blackout.php:103
+msgid "All your visitors from the web will be redirected to this URL."
 msgstr "Alle Besucher der Webseite werden zu dieser URL umgeleitet"
 
-#: blackout.php:108
+#: blackout.php:104
 msgid "Begin of the Blackout"
 msgstr "Beginn des Blackouts"
 
-#: blackout.php:108
+#: blackout.php:104
 msgid ""
 "Format is <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> year, <em>MM</em> month, "
 "<em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute."
 msgstr "Das Format ist <tt>YYYY-MM-DD hh:mm</tt>: <em>YYYY</em> das Jahr, <em>MM</em> der Monat, <em>DD</em> der Tag sowie <em>hh</em> Stunden und <em>mm</em> Minuten."
 
-#: blackout.php:109
+#: blackout.php:105
 msgid "End of the Blackout"
 msgstr "Ende des Blackouts"
 
-#: blackout.php:111
+#: blackout.php:107
 msgid ""
 "<strong>Note</strong>: The redirect will be active from the moment you press"
 " the submit button. Users currently logged in will <strong>not</strong> be "
-"thrown out but can't login again after logging out should the blackout is "
+"thrown out but can't login again after logging out while the blackout is "
 "still in place."
 msgstr "<strong>Hinweis</strong>: Die Umleitung ist von dem Moment aktiv, wenn du den \"Einstellungen speichern\" Button drückst. Derzeit angemeldete Nutzer werden <strong>nicht</strong> ausgeworfen werden, können sich aber nicht wieder anmelden, wenn sie sich während des Blackouts abmelden."

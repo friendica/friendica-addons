@@ -5,14 +5,15 @@
 # 
 # Translators:
 # Andy H3 <andy@hubup.pro>, 2018
-# R C <miqrogroove@gmail.com>, 2018
+# R C, 2018
+# Spencer Dub <southwest23@gmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-02 10:25+0700\n"
-"PO-Revision-Date: 2018-06-13 03:50+0000\n"
-"Last-Translator: R C <miqrogroove@gmail.com>\n"
+"POT-Creation-Date: 2020-10-23 02:00-0400\n"
+"PO-Revision-Date: 2021-01-14 00:51+0000\n"
+"Last-Translator: Spencer Dub <southwest23@gmail.com>\n"
 "Language-Team: English (United States) (http://www.transifex.com/Friendica/friendica/language/en_US/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,71 +21,71 @@ msgstr ""
 "Language: en_US\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: twitter.php:195
+#: twitter.php:189
 msgid "Post to Twitter"
 msgstr "Post to Twitter"
 
-#: twitter.php:236
+#: twitter.php:234
 msgid ""
 "You submitted an empty PIN, please Sign In with Twitter again to get a new "
 "one."
 msgstr "You submitted an empty PIN, please sign in with Twitter again to get a new PIN."
 
-#: twitter.php:263
-msgid "Twitter settings updated."
-msgstr "Twitter settings updated."
-
-#: twitter.php:293 twitter.php:297
+#: twitter.php:291 twitter.php:295
 msgid "Twitter Import/Export/Mirror"
 msgstr "Twitter Import/Export/Mirror"
 
-#: twitter.php:304
+#: twitter.php:302
 msgid ""
 "No consumer key pair for Twitter found. Please contact your site "
 "administrator."
 msgstr "No consumer key pair for Twitter found. Please contact your site administrator."
 
-#: twitter.php:316
+#: twitter.php:314
 msgid ""
 "At this Friendica instance the Twitter addon was enabled but you have not "
 "yet connected your account to your Twitter account. To do so click the "
 "button below to get a PIN from Twitter which you have to copy into the input"
 " box below and submit the form. Only your <strong>public</strong> posts will"
 " be posted to Twitter."
-msgstr "At this Friendica instance the Twitter addon was enabled, but you have not yet connected your account to your Twitter account. To do so click the button below to get a PIN from Twitter which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to Twitter."
+msgstr "This Friendica instance has enabled the Twitter addon, but you have not yet connected your Friendica account to your Twitter account. To do so, click the button below to get a PIN from Twitter. Copy the PIN into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to Twitter."
 
-#: twitter.php:317
+#: twitter.php:315
 msgid "Log in with Twitter"
 msgstr "Log in with Twitter"
 
-#: twitter.php:319
+#: twitter.php:317
 msgid "Copy the PIN from Twitter here"
 msgstr "Copy the PIN from Twitter here"
 
-#: twitter.php:324 twitter.php:366 twitter.php:636
+#: twitter.php:322 twitter.php:377 twitter.php:757
 msgid "Save Settings"
 msgstr "Save settings"
 
-#: twitter.php:336
+#: twitter.php:324 twitter.php:379
+msgid "An error occured: "
+msgstr "An error occurred: "
+
+#: twitter.php:341
 msgid "Currently connected to: "
 msgstr "Currently connected to: "
 
-#: twitter.php:337
+#: twitter.php:342 twitter.php:352
 msgid "Disconnect"
 msgstr "Disconnect"
 
-#: twitter.php:347
+#: twitter.php:359
 msgid "Allow posting to Twitter"
 msgstr "Allow posting to Twitter"
 
-#: twitter.php:347
+#: twitter.php:359
 msgid ""
 "If enabled all your <strong>public</strong> postings can be posted to the "
 "associated Twitter account. You can choose to do so by default (here) or for"
 " every posting separately in the posting options when writing the entry."
 msgstr "If enabled, all your <strong>public</strong> postings can be posted to the associated Twitter account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry."
 
-#: twitter.php:350
+#: twitter.php:362
 msgid ""
 "<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile "
 "details from unknown viewers?</em>) the link potentially included in public "
@@ -92,23 +93,23 @@ msgid ""
 "the visitor that the access to your profile has been restricted."
 msgstr "<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to Twitter will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted."
 
-#: twitter.php:353
+#: twitter.php:365
 msgid "Send public postings to Twitter by default"
 msgstr "Send public postings to Twitter by default"
 
-#: twitter.php:356
+#: twitter.php:368
 msgid "Mirror all posts from twitter that are no replies"
-msgstr "Mirror all posts from twitter that are no replies"
+msgstr "Mirror all posts from Twitter that are not replies"
 
-#: twitter.php:359
+#: twitter.php:371
 msgid "Import the remote timeline"
 msgstr "Import the remote timeline"
 
-#: twitter.php:362
+#: twitter.php:374
 msgid "Automatically create contacts"
 msgstr "Automatically create contacts"
 
-#: twitter.php:362
+#: twitter.php:374
 msgid ""
 "This will automatically create a contact in Friendica as soon as you receive"
 " a message from an existing contact via the Twitter network. If you do not "
@@ -116,20 +117,17 @@ msgid ""
 "from whom you would like to see posts here. However if enabled, you cannot "
 "merely remove a twitter contact from the Friendica contact list, as it will "
 "recreate this contact when they post again."
-msgstr ""
+msgstr "This will automatically create a contact in Friendica as soon as you receive a message from an existing contact via the Twitter network. If you do not enable this, you need to manually add those Twitter contacts in Friendica from whom you would like to see posts here. However if enabled, you cannot merely remove a Twitter contact from the Friendica contact list, as it will recreate this contact when they post again."
 
-#: twitter.php:614
-msgid "Twitter post failed. Queued for retry."
-msgstr "Twitter post failed. Queued for retry."
-
-#: twitter.php:628
-msgid "Settings updated."
-msgstr "Settings updated."
-
-#: twitter.php:638
+#: twitter.php:759
 msgid "Consumer key"
 msgstr "Consumer key"
 
-#: twitter.php:639
+#: twitter.php:760
 msgid "Consumer secret"
 msgstr "Consumer secret"
+
+#: twitter.php:945
+#, php-format
+msgid "%s on Twitter"
+msgstr "%s on Twitter"
