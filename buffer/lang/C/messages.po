@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,58 +17,58 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: buffer.php:31
+#: buffer.php:39
 msgid "Permission denied."
 msgstr ""
 
-#: buffer.php:57 buffer.php:185
+#: buffer.php:68 buffer.php:216
 msgid "Save Settings"
 msgstr ""
 
-#: buffer.php:59
+#: buffer.php:70
 msgid "Client ID"
 msgstr ""
 
-#: buffer.php:60
+#: buffer.php:71
 msgid "Client Secret"
 msgstr ""
 
-#: buffer.php:67
+#: buffer.php:87
 msgid "Error when registering buffer connection:"
 msgstr ""
 
-#: buffer.php:86
+#: buffer.php:107
 msgid "You are now authenticated to buffer. "
 msgstr ""
 
-#: buffer.php:87
+#: buffer.php:108
 msgid "return to the connector page"
 msgstr ""
 
-#: buffer.php:103
+#: buffer.php:126
 msgid "Post to Buffer"
 msgstr ""
 
-#: buffer.php:128 buffer.php:132
+#: buffer.php:155 buffer.php:159
 msgid "Buffer Export"
 msgstr ""
 
-#: buffer.php:142
+#: buffer.php:170
 msgid "Authenticate your Buffer connection"
 msgstr ""
 
-#: buffer.php:146
+#: buffer.php:174
 msgid "Enable Buffer Post Addon"
 msgstr ""
 
-#: buffer.php:151
+#: buffer.php:179
 msgid "Post to Buffer by default"
 msgstr ""
 
-#: buffer.php:156
+#: buffer.php:184
 msgid "Check to delete this preset"
 msgstr ""
 
-#: buffer.php:165
+#: buffer.php:196
 msgid "Posts are going to all accounts that are enabled by default:"
 msgstr ""

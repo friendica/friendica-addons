@@ -3,7 +3,7 @@
 if(! function_exists("string_plural_select_nl")) {
 function string_plural_select_nl($n){
 	$n = intval($n);
-	return ($n != 1);;
+	return intval($n != 1);
 }}
 ;
 $a->strings["Androgyne"] = "Dubbel geslacht";
@@ -13,7 +13,6 @@ $a->strings["Cross dresser"] = "Gekleed als het ander";
 $a->strings["Drag queen"] = "Travestiet";
 $a->strings["Eunuch"] = "Castraat";
 $a->strings["Faux queen"] = "Fout";
-$a->strings["Gender fluid"] = "";
 $a->strings["Kathoey"] = "Tussen man en vrouw";
 $a->strings["Lady"] = "Trotse vrouw";
 $a->strings["Lipstick lesbian"] = "Lesbienne-vrouw";
@@ -25,7 +24,6 @@ $a->strings["Stone femme"] = "Butch en femme";
 $a->strings["Tomboy"] = "Tomboy";
 $a->strings["Transman"] = "Transman";
 $a->strings["Transwoman"] = "Transvrouw";
-$a->strings["Transvesti"] = "";
 $a->strings["Trigender"] = "Drieslacht";
 $a->strings["Can't remember"] = "Kan ik mij niet meer herinneren";
 $a->strings["Hard to tell these days"] = "Moeilijk te zeggen vandaag";

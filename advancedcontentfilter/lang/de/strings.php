@@ -3,7 +3,7 @@
 if(! function_exists("string_plural_select_de")) {
 function string_plural_select_de($n){
 	$n = intval($n);
-	return ($n != 1);;
+	return intval($n != 1);
 }}
 ;
 $a->strings["Filtered by rule: %s"] = "Nach dieser Regel gefiltert: %s";
@@ -11,9 +11,7 @@ $a->strings["Advanced Content Filter"] = "Erweiterter Inhaltsfilter";
 $a->strings["Back to Addon Settings"] = "Zurück zu den Addon Einstellungen";
 $a->strings["Add a Rule"] = "Eine Regel hinzufügen";
 $a->strings["Help"] = "Hilfe";
-$a->strings["Add and manage your personal content filter rules in this screen. Rules have a name and an arbitrary expression that will be matched against post data. For a complete reference of the available operations and variables, check the <a href=\"advancedcontentfilter/help\">help page</a>."] = "Auf dieser Seite kannst du deine persönlichen Filterregeln verwalten. Regeln müssen einen Namen und einen frei wählbaren Ausdruck besitzen. Dieser Ausdruck wird mit den Daten der Beiträge abgeglichen und diese dann gegebenenfalls gefiltert. Für eine Übersicht der verfügbaren Operatoren für die Filter, wirf bitte einen Blick auf die <a href=\"advancedcontentfilter/help\">Hilfsseite</a> des Addons.";
 $a->strings["Your rules"] = "Deine Regeln";
-$a->strings["You have no rules yet! Start adding one by clicking on the button above next to the title."] = "Du hast bisher noch keine Regeln definiert. Um eine neue Regel zu erstellen, verwende bitte den Button neben dem Titel.";
 $a->strings["Disabled"] = "Deaktiviert";
 $a->strings["Enabled"] = "Aktiv";
 $a->strings["Disable this rule"] = "Diese Regel deaktivieren";
@@ -27,7 +25,6 @@ $a->strings["Close"] = "Schließen";
 $a->strings["Add new rule"] = "Neue Regel hinzufügen";
 $a->strings["Rule Name"] = "Name der Regel";
 $a->strings["Rule Expression"] = "Ausdruck der Regel";
-$a->strings["<p>Examples:</p><ul><li><pre>author_link == 'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>"] = "<p>Ein Beispiel:</p><ul><li><pre>author_link == 'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>";
 $a->strings["Cancel"] = "Abbrechen";
 $a->strings["You must be logged in to use this method"] = "Du musst angemeldet sein um diese Methode verwenden zu können ";
 $a->strings["Invalid form security token, please refresh the page."] = "Ungültiges Sciherheitstoken, bitte die Seite neu laden.";

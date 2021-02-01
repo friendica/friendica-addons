@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,14 +17,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: randplace.php:169
+#: randplace.php:166
 msgid "Randplace Settings"
 msgstr ""
 
-#: randplace.php:171
+#: randplace.php:168
 msgid "Enable Randplace Addon"
 msgstr ""
 
-#: randplace.php:177
-msgid "Submit"
+#: randplace.php:174
+msgid "Save Settings"
 msgstr ""

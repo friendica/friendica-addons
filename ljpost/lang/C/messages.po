@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,26 +21,26 @@ msgstr ""
 msgid "Post to LiveJournal"
 msgstr ""
 
-#: ljpost.php:70
+#: ljpost.php:73
 msgid "LiveJournal Post Settings"
 msgstr ""
 
-#: ljpost.php:72
+#: ljpost.php:75
 msgid "Enable LiveJournal Post Addon"
 msgstr ""
 
-#: ljpost.php:77
+#: ljpost.php:80
 msgid "LiveJournal username"
 msgstr ""
 
-#: ljpost.php:82
+#: ljpost.php:85
 msgid "LiveJournal password"
 msgstr ""
 
-#: ljpost.php:87
+#: ljpost.php:90
 msgid "Post to LiveJournal by default"
 msgstr ""
 
-#: ljpost.php:93
-msgid "Submit"
+#: ljpost.php:96
+msgid "Save Settings"
 msgstr ""

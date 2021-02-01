@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,58 +17,58 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: jappixmini.php:266
-msgid "Jappix Mini addon settings"
+#: jappixmini.php:318 jappixmini.php:322
+msgid "Jappix Mini"
 msgstr ""
 
-#: jappixmini.php:268
+#: jappixmini.php:325
 msgid "Activate addon"
 msgstr ""
 
-#: jappixmini.php:271
+#: jappixmini.php:328
 msgid "Do <em>not</em> insert the Jappixmini Chat-Widget into the webinterface"
 msgstr ""
 
-#: jappixmini.php:274
+#: jappixmini.php:331
 msgid "Jabber username"
 msgstr ""
 
-#: jappixmini.php:277
+#: jappixmini.php:334
 msgid "Jabber server"
 msgstr ""
 
-#: jappixmini.php:281
+#: jappixmini.php:339
 msgid "Jabber BOSH host"
 msgstr ""
 
-#: jappixmini.php:285
+#: jappixmini.php:344
 msgid "Jabber password"
 msgstr ""
 
-#: jappixmini.php:290
+#: jappixmini.php:349
 msgid "Encrypt Jabber password with Friendica password (recommended)"
 msgstr ""
 
-#: jappixmini.php:293
+#: jappixmini.php:352
 msgid "Friendica password"
 msgstr ""
 
-#: jappixmini.php:296
+#: jappixmini.php:355
 msgid "Approve subscription requests from Friendica contacts automatically"
 msgstr ""
 
-#: jappixmini.php:299
+#: jappixmini.php:358
 msgid "Subscribe to Friendica contacts automatically"
 msgstr ""
 
-#: jappixmini.php:302
+#: jappixmini.php:361
 msgid "Purge internal list of jabber addresses of contacts"
 msgstr ""
 
-#: jappixmini.php:307
-msgid "Submit"
+#: jappixmini.php:368
+msgid "Save Settings"
 msgstr ""
 
-#: jappixmini.php:308
+#: jappixmini.php:369
 msgid "Add contact"
 msgstr ""

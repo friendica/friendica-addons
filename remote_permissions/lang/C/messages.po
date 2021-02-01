@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,22 +17,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: remote_permissions.php:45
+#: remote_permissions.php:44
 msgid "Remote Permissions Settings"
 msgstr ""
 
-#: remote_permissions.php:46
+#: remote_permissions.php:45
 msgid ""
 "Allow recipients of your private posts to see the other recipients of the "
 "posts"
 msgstr ""
 
-#: remote_permissions.php:48 remote_permissions.php:196
-msgid "Submit"
-msgstr ""
-
-#: remote_permissions.php:58
-msgid "Remote Permissions settings updated."
+#: remote_permissions.php:47 remote_permissions.php:196
+msgid "Save Settings"
 msgstr ""
 
 #: remote_permissions.php:124
@@ -61,8 +57,4 @@ msgstr ""
 
 #: remote_permissions.php:198
 msgid "Each user chooses whether his/her posts show the post recipients"
-msgstr ""
-
-#: remote_permissions.php:205
-msgid "Settings updated."
 msgstr ""

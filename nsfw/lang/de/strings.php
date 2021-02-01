@@ -3,7 +3,7 @@
 if(! function_exists("string_plural_select_de")) {
 function string_plural_select_de($n){
 	$n = intval($n);
-	return ($n != 1);;
+	return intval($n != 1);
 }}
 ;
 $a->strings["Content Filter (NSFW and more)"] = "Inhaltsfilter (NSFW und mehr)";

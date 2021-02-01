@@ -3,7 +3,7 @@
 if(! function_exists("string_plural_select_ca")) {
 function string_plural_select_ca($n){
 	$n = intval($n);
-	return ($n != 1);;
+	return intval($n != 1);
 }}
 ;
 $a->strings["Gnot settings updated."] = "S'ha actualitzat la configuració de Gnot.";

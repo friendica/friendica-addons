@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-11 19:13+0100\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,80 +17,80 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: mailstream.php:77
+#: mailstream.php:66
 msgid "From Address"
 msgstr ""
 
-#: mailstream.php:79
+#: mailstream.php:68
 msgid "Email address that stream items will appear to be from."
 msgstr ""
 
-#: mailstream.php:82 mailstream.php:380
+#: mailstream.php:71 mailstream.php:382
 msgid "Save Settings"
 msgstr ""
 
-#: mailstream.php:223
+#: mailstream.php:225
 msgid "Re:"
 msgstr ""
 
-#: mailstream.php:231
+#: mailstream.php:233
 msgid "Friendica post"
 msgstr ""
 
-#: mailstream.php:234
+#: mailstream.php:236
 msgid "Diaspora post"
 msgstr ""
 
-#: mailstream.php:244
+#: mailstream.php:246
 msgid "Feed item"
 msgstr ""
 
-#: mailstream.php:247
+#: mailstream.php:249
 msgid "Email"
 msgstr ""
 
-#: mailstream.php:249
+#: mailstream.php:251
 msgid "Friendica Item"
 msgstr ""
 
-#: mailstream.php:293
+#: mailstream.php:296
 msgid "Upstream"
 msgstr ""
 
-#: mailstream.php:294
+#: mailstream.php:297
 msgid "Local"
 msgstr ""
 
-#: mailstream.php:362
+#: mailstream.php:364
 msgid "Enabled"
 msgstr ""
 
-#: mailstream.php:366
+#: mailstream.php:368
 msgid "Email Address"
 msgstr ""
 
-#: mailstream.php:368
+#: mailstream.php:370
 msgid "Leave blank to use your account email address"
 msgstr ""
 
-#: mailstream.php:371
+#: mailstream.php:373
 msgid "Exclude Likes"
 msgstr ""
 
-#: mailstream.php:373
+#: mailstream.php:375
 msgid "Check this to omit mailing \"Like\" notifications"
 msgstr ""
 
-#: mailstream.php:376
+#: mailstream.php:378
 msgid "Attach Images"
 msgstr ""
 
-#: mailstream.php:378
+#: mailstream.php:380
 msgid ""
 "Download images in posts and attach them to the email.  Useful for reading "
 "email while offline."
 msgstr ""
 
-#: mailstream.php:379
+#: mailstream.php:381
 msgid "Mail Stream Settings"
 msgstr ""

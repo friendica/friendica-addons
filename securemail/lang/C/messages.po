@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-11 21:14+0200\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,38 +17,34 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: securemail.php:53
+#: securemail.php:51
 msgid "\"Secure Mail\" Settings"
 msgstr ""
 
-#: securemail.php:54
+#: securemail.php:52
 msgid "Save Settings"
 msgstr ""
 
-#: securemail.php:55 securemail.php:76
+#: securemail.php:53 securemail.php:80
 msgid "Save and send test"
 msgstr ""
 
-#: securemail.php:56
+#: securemail.php:54
 msgid "Enable Secure Mail"
 msgstr ""
 
-#: securemail.php:57
+#: securemail.php:55
 msgid "Public key"
 msgstr ""
 
-#: securemail.php:57
+#: securemail.php:55
 msgid "Your public PGP key, ascii armored format"
 msgstr ""
 
-#: securemail.php:74
-msgid "Secure Mail Settings saved."
-msgstr ""
-
-#: securemail.php:111
+#: securemail.php:88
 msgid "Test email sent"
 msgstr ""
 
-#: securemail.php:113
+#: securemail.php:90
 msgid "There was an error sending the test email"
 msgstr ""

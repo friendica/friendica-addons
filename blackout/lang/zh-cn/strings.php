@@ -3,7 +3,7 @@
 if(! function_exists("string_plural_select_zh_cn")) {
 function string_plural_select_zh_cn($n){
 	$n = intval($n);
-	return 0;;
+	return intval(0);
 }}
 ;
 $a->strings["The end-date is prior to the start-date of the blackout, you should fix this"] = "结束日期早于开始日期，您应该修复此问题";

@@ -2,7 +2,8 @@
 
 if(! function_exists("string_plural_select_es")) {
 function string_plural_select_es($n){
-	return ($n != 1);;
+	$n = intval($n);
+	return intval($n != 1);
 }}
 ;
 $a->strings["This website is tracked using the <a href='http://www.piwik.org'>Piwik</a> analytics tool."] = "Esta página es rastreada usando la herramienta analítica <a href='http://www.piwik.org'>Piwik</a>.";

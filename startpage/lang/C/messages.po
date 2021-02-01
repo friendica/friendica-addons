@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,18 +17,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: startpage.php:83
-msgid "Startpage Settings"
+#: startpage.php:74 startpage.php:78
+msgid "Startpage"
 msgstr ""
 
-#: startpage.php:85
+#: startpage.php:81
 msgid "Home page to load after login  - leave blank for profile wall"
 msgstr ""
 
-#: startpage.php:88
+#: startpage.php:84
 msgid "Examples: &quot;network&quot; or &quot;notifications/system&quot;"
 msgstr ""
 
-#: startpage.php:92
-msgid "Submit"
+#: startpage.php:88
+msgid "Save Settings"
 msgstr ""

@@ -2,10 +2,10 @@
 
 if(! function_exists("string_plural_select_fi_fi")) {
 function string_plural_select_fi_fi($n){
-	return ($n != 1);;
+	$n = intval($n);
+	return intval($n != 1);
 }}
 ;
 $a->strings["Group Text settings updated."] = "Group Text -asetukset päivitetty.";
 $a->strings["Group Text"] = "Group Text";
-$a->strings["Use a text only (non-image) group selector in the \"group edit\" menu"] = "";
 $a->strings["Submit"] = "Lähetä";

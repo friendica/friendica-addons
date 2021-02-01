@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-23 02:00-0400\n"
+"POT-Creation-Date: 2021-02-01 18:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,7 +54,7 @@ msgstr ""
 msgid "Copy the PIN from Twitter here"
 msgstr ""
 
-#: twitter.php:322 twitter.php:377 twitter.php:757
+#: twitter.php:322 twitter.php:377 twitter.php:768
 msgid "Save Settings"
 msgstr ""
 
@@ -115,15 +115,15 @@ msgid ""
 "recreate this contact when they post again."
 msgstr ""
 
-#: twitter.php:759
+#: twitter.php:770
 msgid "Consumer key"
 msgstr ""
 
-#: twitter.php:760
+#: twitter.php:771
 msgid "Consumer secret"
 msgstr ""
 
-#: twitter.php:945
+#: twitter.php:967
 #, php-format
 msgid "%s on Twitter"
 msgstr ""

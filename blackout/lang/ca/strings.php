@@ -3,7 +3,7 @@
 if(! function_exists("string_plural_select_ca")) {
 function string_plural_select_ca($n){
 	$n = intval($n);
-	return ($n != 1);;
+	return intval($n != 1);
 }}
 ;
 $a->strings["The end-date is prior to the start-date of the blackout, you should fix this"] = "La data de finalització és anterior a la data d'inici de l'apagada, hauríeu d'arreglar-ho";

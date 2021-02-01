@@ -3,14 +3,13 @@
 if(! function_exists("string_plural_select_fi_fi")) {
 function string_plural_select_fi_fi($n){
 	$n = intval($n);
-	return ($n != 1);;
+	return intval($n != 1);
 }}
 ;
 $a->strings["Forum Directory"] = "Foorumihakemisto";
 $a->strings["Public access denied."] = "Julkinen käyttö estetty.";
 $a->strings["Global Directory"] = "Maailmanlaajuinen hakemisto";
 $a->strings["Find on this site"] = "Sivustohaku";
-$a->strings["Finding: "] = "";
 $a->strings["Site Directory"] = "Sivustoluettelo";
 $a->strings["Find"] = "Etsi";
 $a->strings["Age: "] = "Ikä:";

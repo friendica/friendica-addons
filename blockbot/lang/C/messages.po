@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-07 09:03+0200\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,22 +17,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: blockbot.php:35
+#: blockbot.php:29
 msgid "Save Settings"
 msgstr ""
 
-#: blockbot.php:36
+#: blockbot.php:30
 msgid "Allow \"good\" crawlers"
 msgstr ""
 
-#: blockbot.php:37
+#: blockbot.php:31
 msgid "Block GabSocial"
 msgstr ""
 
-#: blockbot.php:38
+#: blockbot.php:32
 msgid "Training mode"
-msgstr ""
-
-#: blockbot.php:46
-msgid "Settings updated."
 msgstr ""

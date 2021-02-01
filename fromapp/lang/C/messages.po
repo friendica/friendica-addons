@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-19 16:42+0100\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,25 +17,21 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: fromapp.php:40
-msgid "Fromapp settings updated."
-msgstr ""
-
-#: fromapp.php:65 fromapp.php:69
+#: fromapp.php:53 fromapp.php:57
 msgid "FromApp Settings"
 msgstr ""
 
-#: fromapp.php:72
+#: fromapp.php:60
 msgid ""
 "The application name you would like to show your posts originating from. "
 "Separate different app names with a comma. A random one will then be "
 "selected for every posting."
 msgstr ""
 
-#: fromapp.php:76
+#: fromapp.php:64
 msgid "Use this application name even if another application was used."
 msgstr ""
 
-#: fromapp.php:83
+#: fromapp.php:71
 msgid "Save Settings"
 msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,57 +17,53 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gravatar.php:71
+#: gravatar.php:78
 msgid "generic profile image"
 msgstr ""
 
-#: gravatar.php:72
+#: gravatar.php:79
 msgid "random geometric pattern"
 msgstr ""
 
-#: gravatar.php:73
+#: gravatar.php:80
 msgid "monster face"
 msgstr ""
 
-#: gravatar.php:74
+#: gravatar.php:81
 msgid "computer generated face"
 msgstr ""
 
-#: gravatar.php:75
+#: gravatar.php:82
 msgid "retro arcade style face"
 msgstr ""
 
-#: gravatar.php:89
+#: gravatar.php:96
 msgid "Information"
 msgstr ""
 
-#: gravatar.php:89
+#: gravatar.php:96
 msgid ""
 "Libravatar addon is installed, too. Please disable Libravatar addon or this "
 "Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if "
 "nothing was found at Libravatar."
 msgstr ""
 
-#: gravatar.php:95
-msgid "Submit"
+#: gravatar.php:102
+msgid "Save Settings"
 msgstr ""
 
-#: gravatar.php:96
+#: gravatar.php:103
 msgid "Default avatar image"
 msgstr ""
 
-#: gravatar.php:96
+#: gravatar.php:103
 msgid "Select default avatar image if none was found at Gravatar. See README"
 msgstr ""
 
-#: gravatar.php:97
+#: gravatar.php:104
 msgid "Rating of images"
 msgstr ""
 
-#: gravatar.php:97
+#: gravatar.php:104
 msgid "Select the appropriate avatar rating for your site. See README"
-msgstr ""
-
-#: gravatar.php:111
-msgid "Gravatar settings updated."
 msgstr ""

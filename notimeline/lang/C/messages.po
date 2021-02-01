@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,18 +17,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: notimeline.php:32
-msgid "No Timeline settings updated."
-msgstr ""
-
-#: notimeline.php:56
+#: notimeline.php:48
 msgid "No Timeline Settings"
 msgstr ""
 
-#: notimeline.php:58
+#: notimeline.php:50
 msgid "Disable Archive selector on profile wall"
 msgstr ""
 
-#: notimeline.php:64
-msgid "Submit"
+#: notimeline.php:56
+msgid "Save Settings"
 msgstr ""

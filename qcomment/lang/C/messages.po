@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,36 +17,32 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: qcomment.php:51
+#: qcomment.php:42
 msgid ":-)"
 msgstr ""
 
-#: qcomment.php:51
+#: qcomment.php:42
 msgid ":-("
 msgstr ""
 
-#: qcomment.php:51
+#: qcomment.php:42
 msgid "lol"
 msgstr ""
 
-#: qcomment.php:54
+#: qcomment.php:47
 msgid "Quick Comment Settings"
 msgstr ""
 
-#: qcomment.php:56
+#: qcomment.php:48
 msgid ""
 "Quick comments are found near comment boxes, sometimes hidden. Click them to "
 "provide simple replies."
 msgstr ""
 
-#: qcomment.php:57
+#: qcomment.php:49
+msgid "Save Settings"
+msgstr ""
+
+#: qcomment.php:50
 msgid "Enter quick comments, one per line"
-msgstr ""
-
-#: qcomment.php:61
-msgid "Submit"
-msgstr ""
-
-#: qcomment.php:75
-msgid "Quick Comment settings saved."
 msgstr ""

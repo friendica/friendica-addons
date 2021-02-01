@@ -3,7 +3,7 @@
 if(! function_exists("string_plural_select_zh_cn")) {
 function string_plural_select_zh_cn($n){
 	$n = intval($n);
-	return 0;;
+	return intval(0);
 }}
 ;
 $a->strings["This website uses cookies. If you continue browsing this website, you agree to the usage of cookies."] = "本网站将使用 cookies。如果您继续浏览本网站，即表示您同意使用 cookies。";

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,84 +17,76 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: pumpio.php:38
+#: pumpio.php:54
 msgid "Permission denied."
 msgstr ""
 
-#: pumpio.php:124
+#: pumpio.php:149
 #, php-format
 msgid "Unable to register the client at the pump.io server '%s'."
 msgstr ""
 
-#: pumpio.php:164
+#: pumpio.php:189
 msgid "You are now authenticated to pumpio."
 msgstr ""
 
-#: pumpio.php:165
+#: pumpio.php:190
 msgid "return to the connector page"
 msgstr ""
 
-#: pumpio.php:183
+#: pumpio.php:210
 msgid "Post to pumpio"
 msgstr ""
 
-#: pumpio.php:221 pumpio.php:225
+#: pumpio.php:251 pumpio.php:255
 msgid "Pump.io Import/Export/Mirror"
 msgstr ""
 
-#: pumpio.php:229
+#: pumpio.php:259
 msgid "pump.io username (without the servername)"
 msgstr ""
 
-#: pumpio.php:234
+#: pumpio.php:264
 msgid "pump.io servername (without \"http://\" or \"https://\" )"
 msgstr ""
 
-#: pumpio.php:246
+#: pumpio.php:275
 msgid "Authenticate your pump.io connection"
 msgstr ""
 
-#: pumpio.php:250
+#: pumpio.php:279
 msgid "Import the remote timeline"
 msgstr ""
 
-#: pumpio.php:255
+#: pumpio.php:284
 msgid "Enable pump.io Post Addon"
 msgstr ""
 
-#: pumpio.php:260
+#: pumpio.php:289
 msgid "Post to pump.io by default"
 msgstr ""
 
-#: pumpio.php:265
+#: pumpio.php:294
 msgid "Should posts be public?"
 msgstr ""
 
-#: pumpio.php:270
+#: pumpio.php:299
 msgid "Mirror all public posts"
 msgstr ""
 
-#: pumpio.php:275
+#: pumpio.php:304
 msgid "Check to delete this preset"
 msgstr ""
 
-#: pumpio.php:285
+#: pumpio.php:314
 msgid "Save Settings"
 msgstr ""
 
-#: pumpio.php:515
-msgid "Pump.io post failed. Queued for retry."
-msgstr ""
-
-#: pumpio.php:587
-msgid "Pump.io like failed. Queued for retry."
-msgstr ""
-
-#: pumpio.php:875
+#: pumpio.php:981
 msgid "status"
 msgstr ""
 
-#: pumpio.php:879
+#: pumpio.php:985
 #, php-format
 msgid "%1$s likes %2$s's %3$s"
 msgstr ""

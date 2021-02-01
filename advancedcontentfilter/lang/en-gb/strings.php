@@ -3,7 +3,7 @@
 if(! function_exists("string_plural_select_en_gb")) {
 function string_plural_select_en_gb($n){
 	$n = intval($n);
-	return ($n != 1);;
+	return intval($n != 1);
 }}
 ;
 $a->strings["Filtered by rule: %s"] = "Filtered by rule: %s";
@@ -11,9 +11,7 @@ $a->strings["Advanced Content Filter"] = "Advanced Content Filter";
 $a->strings["Back to Addon Settings"] = "Back to addon settings";
 $a->strings["Add a Rule"] = "Add a rule";
 $a->strings["Help"] = "Help";
-$a->strings["Add and manage your personal content filter rules in this screen. Rules have a name and an arbitrary expression that will be matched against post data. For a complete reference of the available operations and variables, check the <a href=\"advancedcontentfilter/help\">help page</a>."] = "Add and manage your personal content filter rules in this screen. Rules have a name and an arbitrary expression that will be matched against post data. For a complete reference of the available operations and variables, check the <a href=\"advancedcontentfilter/help\">help page</a>.";
 $a->strings["Your rules"] = "Your rules";
-$a->strings["You have no rules yet! Start adding one by clicking on the button above next to the title."] = "You have no rules yet! Start adding one by clicking on the button above next to the title.";
 $a->strings["Disabled"] = "Disabled";
 $a->strings["Enabled"] = "Enabled";
 $a->strings["Disable this rule"] = "Disable this rule";
@@ -27,7 +25,6 @@ $a->strings["Close"] = "Close";
 $a->strings["Add new rule"] = "Add new rule";
 $a->strings["Rule Name"] = "Rule name";
 $a->strings["Rule Expression"] = "Rule expression";
-$a->strings["<p>Examples:</p><ul><li><pre>author_link == 'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>"] = "<p>Examples:</p><ul><li><pre>author_link == 'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>";
 $a->strings["Cancel"] = "Cancel";
 $a->strings["You must be logged in to use this method"] = "You must be logged in to use this method";
 $a->strings["Invalid form security token, please refresh the page."] = "Invalid form security token, please refresh the page.";

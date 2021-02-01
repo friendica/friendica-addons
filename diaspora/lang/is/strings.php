@@ -3,11 +3,10 @@
 if(! function_exists("string_plural_select_is")) {
 function string_plural_select_is($n){
 	$n = intval($n);
-	return ($n % 10 != 1 || $n % 100 == 11);;
+	return intval($n % 10 != 1 || $n % 100 == 11);
 }}
 ;
 $a->strings["Post to Diaspora"] = "Senda færslu á Diaspora";
-$a->strings["Can't login to your Diaspora account. Please check username and password and ensure you used the complete address (including http...)"] = "";
 $a->strings["Diaspora Export"] = "Diaspora útflutningur";
 $a->strings["Enable Diaspora Post Addon"] = "Virkja sendiviðbót fyrir Diaspora";
 $a->strings["Diaspora username"] = "Notandanafn á Diaspora";
