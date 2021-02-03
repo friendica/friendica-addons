@@ -58,7 +58,7 @@ function public_server_cron($a, $b)
 	if (DBA::isResult($r)) {
 		foreach ($r as $rr) {
 			notification([
-				'type' => Notification/Type::SYSTEM,
+				'type' => Notification\Type::SYSTEM,
 				'uid' => $rr['uid'],
 				'system_type' => 'public_server_expire',
 				'source_name'  => DI::l10n()->t('Administrator'),
@@ -112,7 +112,7 @@ function public_server_cron($a, $b)
 
 function public_server_enotify(&$a, &$b)
 {
-	if (!empty($b['params']) && $b['params']['type'] == Type::SYSTEM
+	if (!empty($b['params']) && $b['params']['type'] == Notification\Type::SYSTEM
 		&& !empty($b['params']['system_type']) && $b['params']['system_type'] === 'public_server_expire') {
 		$b['itemlink'] = DI::baseUrl()->get();
 		$b['epreamble'] = $b['preamble'] = DI::l10n()->t('Your account on %s will expire in a few days.', DI::config()->get('system', 'sitename'));
