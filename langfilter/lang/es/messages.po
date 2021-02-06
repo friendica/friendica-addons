@@ -6,13 +6,14 @@
 # Translators:
 # Abraham Pérez Hernández <abrahamph@nauta.cu>, 2019
 # Albert, 2016,2018
+# Boris Daniel Martinez Millàn <borisdanielmartinezmillan@gmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-01 11:11-0400\n"
-"PO-Revision-Date: 2019-01-22 18:31+0000\n"
-"Last-Translator: Abraham Pérez Hernández <abrahamph@nauta.cu>\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-03 22:42+0000\n"
+"Last-Translator: Boris Daniel Martinez Millàn <borisdanielmartinezmillan@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,62 +21,58 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: langfilter.php:58
+#: langfilter.php:50
 msgid "Language Filter"
 msgstr "Filtro de Idioma"
 
-#: langfilter.php:59
+#: langfilter.php:51
 msgid ""
 "This addon tries to identify the language posts are writen in. If it does "
 "not match any language specifed below, posts will be hidden by collapsing "
 "them."
 msgstr "Este complemento intenta identificar en qué idioma se han escrito las publicaciones. Si no coincide con el idioma especificado a continuación, las publicaciones se ocultarán al contraerlas."
 
-#: langfilter.php:60
+#: langfilter.php:52
 msgid "Use the language filter"
 msgstr "Usar el filtro de idioma"
 
-#: langfilter.php:61
+#: langfilter.php:53
 msgid "Able to read"
 msgstr "Capaz de leer"
 
-#: langfilter.php:61
+#: langfilter.php:53
 msgid ""
-"List of abbreviations (iso2 codes) for languages you speak, comma separated."
-" For example \"de,it\"."
-msgstr "Lista de abreviaciones (códigos iso2) para los idiomas que habla, separadas por comas. Por ejemplo \"de,it\"."
+"List of abbreviations (ISO 639-1 codes) for languages you speak, comma "
+"separated. For example \"de,it\"."
+msgstr "Lista de abreviaciones (Codigo ISO 639-1) de los lenguajes que hablas, separados por comas.Un ejemplo: \"de,it\"."
 
-#: langfilter.php:62
+#: langfilter.php:54
 msgid "Minimum confidence in language detection"
 msgstr "Confianza mínima en la detección de idioma"
 
-#: langfilter.php:62
+#: langfilter.php:54
 msgid ""
 "Minimum confidence in language detection being correct, from 0 to 100. Posts"
 " will not be filtered when the confidence of language detection is below "
 "this percent value."
 msgstr "Confianza mínima en que la detección de idioma sea correcta, de 0 a 100. Las entradas no se filtrarán cuando la confianza de la detección del idioma es inferior a su valor de porcentaje."
 
-#: langfilter.php:63
+#: langfilter.php:55
 msgid "Minimum length of message body"
 msgstr "Longitud mínima del cuerpo del mensaje"
 
-#: langfilter.php:63
+#: langfilter.php:55
 msgid ""
 "Minimum number of characters in message body for filter to be used. Posts "
 "shorter than this will not be filtered. Note: Language detection is "
 "unreliable for short content (<200 characters)."
 msgstr "Número mínimo de caracteres en el cuerpo del mensaje para que se use el filtro. Las publicaciones más cortas que esto no serán filtradas. Nota: La detección de idioma no es fiable para contenido corto (<200 caracteres)."
 
-#: langfilter.php:64
+#: langfilter.php:56
 msgid "Save Settings"
 msgstr "Guardar Ajustes"
 
-#: langfilter.php:105
-msgid "Language Filter Settings saved."
-msgstr "Ajustes de Filtro de Idioma guardados."
-
-#: langfilter.php:182
+#: langfilter.php:187
 #, php-format
 msgid "Filtered language: %s"
 msgstr "Idioma filtrado: %s"
