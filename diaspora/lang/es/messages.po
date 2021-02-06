@@ -4,14 +4,15 @@
 # 
 # 
 # Translators:
+# Boris Daniel Martinez Millàn <borisdanielmartinezmillan@gmail.com>, 2021
 # Tupambae.org, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2016-04-18 19:36+0000\n"
-"Last-Translator: Tupambae.org\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-03 22:47+0000\n"
+"Last-Translator: Boris Daniel Martinez Millàn <borisdanielmartinezmillan@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,44 +20,88 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: diaspora.php:37
+#: diaspora.php:43
 msgid "Post to Diaspora"
 msgstr "Publicar hacia Diaspora*"
 
-#: diaspora.php:142
+#: diaspora.php:68
+#, php-format
 msgid ""
-"Can't login to your Diaspora account. Please check username and password and"
-" ensure you used the complete address (including http...)"
-msgstr "No se puede ingresar a tu cuenta de Diaspora*. Por favor verificar nombre de usuario, contraseña y asegura de usar la dirección completa, incluyendo https.. ."
+"Please remember: You can always be reached from Diaspora with your Friendica"
+" handle <strong>%s</strong>. "
+msgstr ""
 
-#: diaspora.php:149 diaspora.php:153
+#: diaspora.php:69
+msgid ""
+"This connector is only meant if you still want to use your old Diaspora "
+"account for some time. "
+msgstr ""
+
+#: diaspora.php:70
+#, php-format
+msgid ""
+"However, it is preferred that you tell your Diaspora contacts the new handle"
+" <strong>%s</strong> instead."
+msgstr ""
+
+#: diaspora.php:80
+msgid "All aspects"
+msgstr "Todos los aspectos"
+
+#: diaspora.php:81
+msgid "Public"
+msgstr "Publico"
+
+#: diaspora.php:87
+msgid "Post to aspect:"
+msgstr "Publicar para aspecto"
+
+#: diaspora.php:88
+#, php-format
+msgid "Connected with your Diaspora account <strong>%s</strong>"
+msgstr "Conectado con tu cuenta de Diaspora <strong>%s</strong>"
+
+#: diaspora.php:91
+msgid ""
+"Can't login to your Diaspora account. Please check handle (in the format "
+"user@domain.tld) and password."
+msgstr ""
+
+#: diaspora.php:99
 msgid "Diaspora Export"
 msgstr "Exportar a Diaspora*"
 
-#: diaspora.php:163
-msgid "Enable Diaspora Post Addon"
-msgstr "Habilitar publicar a traves de Diaspora* addon."
+#: diaspora.php:100
+msgid "Information"
+msgstr ""
 
-#: diaspora.php:168
-msgid "Diaspora username"
-msgstr "Nombre de usuario de Diaspora*."
+#: diaspora.php:101
+msgid "Error"
+msgstr ""
 
-#: diaspora.php:173
-msgid "Diaspora password"
-msgstr "Contraseña Diaspora*"
-
-#: diaspora.php:178
-msgid "Diaspora site URL"
-msgstr "URL sitio Diaspora*"
-
-#: diaspora.php:183
-msgid "Post to Diaspora by default"
-msgstr "Publicar hacia Diaspora* como estándar."
-
-#: diaspora.php:189
+#: diaspora.php:102
 msgid "Save Settings"
 msgstr "Guardar configuración"
 
-#: diaspora.php:324
-msgid "Diaspora post failed. Queued for retry."
-msgstr "La publicación hacia Diaspora* fallo, puesto en espera para nuevo intento."
+#: diaspora.php:106
+msgid "Enable Diaspora Post Addon"
+msgstr ""
+
+#: diaspora.php:107
+msgid "Diaspora handle"
+msgstr ""
+
+#: diaspora.php:108
+msgid "Diaspora password"
+msgstr "Contraseña Diaspora*"
+
+#: diaspora.php:108
+msgid ""
+"Privacy notice: Your Diaspora password will be stored unencrypted to "
+"authenticate you with your Diaspora pod. This means your Friendica node "
+"administrator can have access to it."
+msgstr ""
+
+#: diaspora.php:110
+msgid "Post to Diaspora by default"
+msgstr "Publicar hacia Diaspora* como estándar."
