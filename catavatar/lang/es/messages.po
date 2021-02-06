@@ -3,14 +3,18 @@
 # This file is distributed under the same license as the Friendica catavatar addon package.
 # 
 # 
+# Translators:
+# Albert, 2018
+# Boris Daniel Martinez Millàn <borisdanielmartinezmillan@gmail.com>, 2021
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-13 09:35+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Albert, 2018\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2018-04-07 05:23+0000\n"
+"Last-Translator: Boris Daniel Martinez Millàn <borisdanielmartinezmillan@gmail.com>, 2021\n"
 "Language-Team: Spanish (https://www.transifex.com/Friendica/teams/12172/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,34 +22,39 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: catavatar.php:60
+#: catavatar.php:48
 msgid "Use Cat as Avatar"
 msgstr "Usar Gato como Avatar"
 
-#: catavatar.php:61
+#: catavatar.php:49
 msgid "More Random Cat!"
 msgstr "¡Más gato al azar!"
 
-#: catavatar.php:62
+#: catavatar.php:50
 msgid "Reset to email Cat"
 msgstr "Restablecer a correo electrónico Gato"
 
-#: catavatar.php:64
+#: catavatar.php:52
 msgid "Cat Avatar Settings"
 msgstr "Ajustes de Avatar Gato"
 
-#: catavatar.php:100
+#: catavatar.php:53
+msgid "Set default profile avatar or randomize the cat."
+msgstr ""
+"Establezca su avatar de perfil o pondremos una foto de un gato al azar"
+
+#: catavatar.php:78
 msgid "The cat hadn't found itself."
 msgstr "El gato no se había encontrado."
 
-#: catavatar.php:109
+#: catavatar.php:87
 msgid "There was an error, the cat ran away."
 msgstr "Hubo un error, el gato se escapó."
 
-#: catavatar.php:115
+#: catavatar.php:93
 msgid "Profile Photos"
 msgstr "Fotos de perfil"
 
-#: catavatar.php:130
+#: catavatar.php:108
 msgid "Meow!"
 msgstr "¡Miau!"
