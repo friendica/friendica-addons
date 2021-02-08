@@ -7,28 +7,25 @@
 }
 
 .smiley_button > img {
-	height: 22px;
-	width: 22px;
-	position: relative;
-	left: -330px;
-	margin: 4px;
-	-moz-border-radius: 0px;
-	border-radius: 0px;
+	height: 14px;
+	width: 14px;
 }
 
 table.smiley-preview img.smiley {
 	max-height: 25px;
 	max-width: 25px;
-	cursor: pointer;
 }
 
 table.smiley-preview {
 	border: 1px solid #AAAAAA;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
-	margin: 5px;
 }
 
 table.smiley-preview td {
 	cursor: pointer;
+}
+
+#profile-smiley-wrapper > .btn-link {
+	position: relative;
+	display: block;
+	padding: 10px 15px;
 }
