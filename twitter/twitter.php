@@ -910,6 +910,24 @@ function twitter_prepare_body(App $a, array &$b)
 	}
 }
 
+function twitter_statuses_show(string $id, TwitterOAuth $twitterOAuth = null)
+{
+	if ($twitterOAuth === null) {
+		$ckey = DI::config()->get('twitter', 'consumerkey');
+		$csecret = DI::config()->get('twitter', 'consumersecret');
+
+		if (empty($ckey) || empty($csecret)) {
+			return new stdClass();
+		}
+
+		$twitterOAuth = new TwitterOAuth($ckey, $csecret);
+	}
+
+	$parameters = ['trim_user' => false, 'tweet_mode' => 'extended', 'id' => $id, 'include_ext_alt_text' => true];
+
+	return $twitterOAuth->get('statuses/show', $parameters);
+}
+
 /**
  * Parse Twitter status URLs since Twitter removed OEmbed
  *
@@ -929,18 +947,7 @@ function twitter_parse_link(App $a, array &$b)
 		return;
 	}
 
-	$ckey = DI::config()->get('twitter', 'consumerkey');
-	$csecret = DI::config()->get('twitter', 'consumersecret');
-
-	if (empty($ckey) || empty($csecret)) {
-		return;
-	}
-
-	$connection = new TwitterOAuth($ckey, $csecret);
-
-	$parameters = ['trim_user' => false, 'tweet_mode' => 'extended', 'id' => $matches[1], 'include_ext_alt_text' => true];
-
-	$status = $connection->get('statuses/show', $parameters);
+	$status = twitter_statuses_show($matches[1]);
 
 	if (empty($status->id)) {
 		return;
@@ -1782,17 +1789,15 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 	$posts = [];
 
 	while (!empty($post->in_reply_to_status_id_str)) {
-		$parameters = ["trim_user" => false, "tweet_mode" => "extended", "id" => $post->in_reply_to_status_id_str, "include_ext_alt_text" => true];
-
 		try {
-			$post = $connection->get('statuses/show', $parameters);
+			$post = twitter_statuses_show($post->in_reply_to_status_id_str, $connection);
 		} catch (TwitterOAuthException $e) {
 			Logger::warning('Error fetching parent post', ['uid' => $uid, 'post' => $post->id_str, 'message' => $e->getMessage()]);
 			break;
 		}
 
 		if (empty($post)) {
-			Logger::log("twitter_fetchparentposts: Can't fetch post " . $parameters['id'], Logger::DEBUG);
+			Logger::log("twitter_fetchparentposts: Can't fetch post " . $post->in_reply_to_status_id_str, Logger::DEBUG);
 			break;
 		}
 
