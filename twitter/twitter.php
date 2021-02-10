@@ -1388,7 +1388,6 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 		$plain = str_replace($url->url, '', $plain);
 
 		if ($url->url && $url->expanded_url && $url->display_url) {
-
 			// Quote tweet, we just remove the quoted tweet URL from the body, the share block will be added later.
 			if (!empty($status->quoted_status) && isset($status->quoted_status_id_str)
 				&& substr($url->expanded_url, -strlen($status->quoted_status_id_str)) == $status->quoted_status_id_str
@@ -1406,23 +1405,19 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 
 			$oembed_data = OEmbed::fetchURL($final_url);
 
-			if (empty($oembed_data) || empty($oembed_data->type)) {
-				continue;
-			}
+			$type = $oembed_data->type ?? '';
 
 			// Quickfix: Workaround for URL with '[' and ']' in it
 			if (strpos($expanded_url, '[') || strpos($expanded_url, ']')) {
 				$expanded_url = $url->url;
 			}
 
-			if ($oembed_data->type == 'video') {
+			if ($type === 'video') {
 				$attachmentUrl = $expanded_url;
 				$replace = '';
-			} elseif (($oembed_data->type == 'photo') && isset($oembed_data->url)) {
+			} elseif ($type === 'photo' && !empty($oembed_data->url)) {
 				$replace = '[url=' . $expanded_url . '][img]' . $oembed_data->url . '[/img][/url]';
-			} elseif ($oembed_data->type != 'link') {
-				$replace = '[url=' . $expanded_url . ']' . $url->display_url . '[/url]';
-			} else {
+			} elseif ($type === 'link') {
 				$img_str = DI::httpRequest()->fetch($final_url, 4);
 
 				$tempfile = tempnam(get_temppath(), 'cache');
@@ -1443,6 +1438,8 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 					$attachmentUrl = $expanded_url;
 					$replace = '';
 				}
+			} else {
+				$replace = '[url=' . $expanded_url . ']' . $url->display_url . '[/url]';
 			}
 
 			$replacementList[$url->indices[0]] = [
