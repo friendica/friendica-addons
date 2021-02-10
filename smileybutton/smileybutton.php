@@ -2,38 +2,34 @@
 /**
  * Name: Smileybutton
  * Description: Adds a smileybutton to the Inputbox
- * Version: 0.2
+ * Version: 1.0
  * Author: Johannes Schwab <https://friendica.jschwab.org/profile/ddorian>
+ * Maintainer: Hypolite Petovan <https://friendica.mrpetovan.com/profile/hypolite>
  */
+
 use Friendica\Core\Hook;
-use Friendica\Core\Logger;
 use Friendica\DI;
 
-function smileybutton_install() {
+function smileybutton_install()
+{
 	//Register hooks
-	Hook::register('jot_tool', 'addon/smileybutton/smileybutton.php', 'show_button');
-
-	Logger::log("installed smileybutton");
+	Hook::register('jot_tool', 'addon/smileybutton/smileybutton.php', 'smileybutton_jot_tool');
 }
 
-function show_button(Friendica\App $a, &$b) {
+function smileybutton_jot_tool(Friendica\App $a, &$b)
+{
 	// Disable if theme is quattro
 	// TODO add style for quattro
-	if ($a->getCurrentTheme() == 'quattro')
+	if ($a->getCurrentTheme() == 'quattro') {
 		return;
+	}
 
-	// Disable for mobile because most mobiles have a smiley key for ther own
-	if (DI::mode()->isMobile() || DI::mode()->isMobile())
+	// Disable for mobile because they have a smiley key of their own
+	if (DI::mode()->isMobile() || DI::mode()->isMobile()) {
 		return;
+	}
 
-	/**
-	 *
- 	 * I have copied this from /include/text.php, removed doubles
-	 * and escaped them.
-	 *
-	 */
-
-	$texts =  [
+	$texts = [
 		'&lt;3',
 		'&lt;/3',
 		':-)',
@@ -45,19 +41,18 @@ function show_button(Friendica\App $a, &$b) {
 		':-O',
 		'\\\\o/',
 		'O_o',
-		":\'(",
-		":-!",
-		":-/",
-		":-[",
-		"8-)",
+		':\'(',
+		':-!',
+		':-/',
+		':-[',
+		'8-)',
 		':beer',
 		':coffee',
 		':facepalm',
 		':like',
 		':dislike',
-                '~friendica',
-                'red#'
-
+		'~friendica',
+		'red#',
 	];
 
 	$icons = [
@@ -87,42 +82,41 @@ function show_button(Friendica\App $a, &$b) {
 	];
 
 	// Call hooks to get aditional smileies from other addons
-	$params = ['texts' => $texts, 'icons' => $icons, 'string' => ""]; //changed
+	$params = ['texts' => $texts, 'icons' => $icons, 'string' => '']; //changed
 	Hook::callAll('smilie', $params);
 
 	//Generate html for smiley list
-	$s = "<table class=\"smiley-preview\"><tr>\n\t";
-	for($x = 0; $x < count($params['texts']); $x ++) {
+	$s = '<table class="smiley-preview"><tr>';
+	for ($x = 0; $x < count($params['texts']); $x++) {
 		$icon = $params['icons'][$x];
-		$icon = str_replace('/>', 'onclick="smileybutton_addsmiley(\'' . $params['texts'][$x] . '\')"/>', $icon);
-		$icon = str_replace('class="smiley"', 'class="smiley_preview"', $icon);
-		$s .= "<td>" . $icon . "</td>";
-		if (($x+1) % (sqrt(count($params['texts']))+1) == 0) {
-			$s .= "</tr>\n\t<tr>";
+		$s .= '<td onclick="smileybutton_addsmiley(\'' . $params['texts'][$x] . '\')">' . $icon . '</td>';
+		if (($x + 1) % (sqrt(count($params['texts'])) + 1) == 0) {
+			$s .= '</tr><tr>';
 		}
 	}
-	$s .= "\t</tr></table>";
+	$s .= '</tr></table>';
 
 	//Add css to header
 	$css_file = 'addon/smileybutton/view/' . $a->getCurrentTheme() . '.css';
-	if (! file_exists($css_file))
+	if (!file_exists($css_file)) {
 		$css_file = 'addon/smileybutton/view/default.css';
-	$css_url = DI::baseUrl()->get().'/'.$css_file;
+	}
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.$css_url.'" media="all" />'."\r\n";
-
+	DI::page()->registerStylesheet($css_file);
 
 	//Get the correct image for the theme
 	$image = 'addon/smileybutton/view/' . $a->getCurrentTheme() . '.png';
-	if (! file_exists($image))
+	if (!file_exists($image)) {
 		$image = 'addon/smileybutton/view/default.png';
-	$image_url = DI::baseUrl()->get().'/'.$image;
+	}
+
+	$image_url = DI::baseUrl()->get() . '/' . $image;
 
 	//Add the hmtl and script to the page
 	$b = <<< EOT
-	<div id="profile-smiley-wrapper" style="display: block;" >
-		<img src="$image_url" class="smiley_button" onclick="toggle_smileybutton()" alt="smiley">
-		<div id="smileybutton" style="display:none;">
+	<div id="profile-smiley-wrapper">
+		<button type="button" class="btn btn-link smiley_button" onclick="toggle_smileybutton()"><img src="$image_url" alt="smiley"></button>
+		<div id="smileybutton">
 		$s
 		</div>
 	</div>
@@ -140,18 +134,11 @@ function show_button(Friendica\App $a, &$b) {
 		}
 
 		function smileybutton_addsmiley(text) {
-			if(plaintext == "none") {
-				var v = $("#profile-jot-text").val();
-				v = v + text;
-				$("#profile-jot-text").val(v);
-				$("#profile-jot-text").focus();
-			} else {
-				var v = tinymce.activeEditor.getContent();
-				v = v + text;
-				tinymce.activeEditor.setContent(v);
-				tinymce.activeEditor.focus();
-			}
+			var v = $("#profile-jot-text").val();
+			v = v + text;
+			$("#profile-jot-text").val(v).focus();
 		}
 	</script>
 EOT;
 }
+
