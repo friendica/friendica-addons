@@ -150,7 +150,7 @@ function windowsphonepush_cron()
 			} else {
 				// retrieve the number of unseen items and the id of the latest one (if there are more than
 				// one new entries since last poller run, only the latest one will be pushed)
-				$count = q("SELECT count(`id`) as count, max(`id`) as max FROM `item` WHERE `unseen` = 1 AND `type` <> 'activity' AND `uid` = %d", intval($rr['uid']));
+				$count = q("SELECT count(`id`) as count, max(`id`) as max FROM `post-view` WHERE `unseen` = 1 AND `type` <> 'activity' AND `uid` = %d", intval($rr['uid']));
 
 				// send number of unseen items to the device (the number will be displayed on Start screen until
 				// App will be started by user) - this update will be sent every 10 minutes to update the number to 0 if

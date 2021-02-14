@@ -1299,10 +1299,10 @@ function pumpio_fetchinbox(App $a, $uid)
 	$self = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
 		intval($uid));
 
-	$lastitems = q("SELECT `uri` FROM `thread`
-			INNER JOIN `item` ON `item`.`id` = `thread`.`iid`
-			WHERE `thread`.`network` = '%s' AND `thread`.`uid` = %d AND `item`.`extid` != ''
-			ORDER BY `thread`.`commented` DESC LIMIT 10",
+	$lastitems = q("SELECT `uri` FROM `post-thread-user`
+			INNER JOIN `post-view` ON `post-view`.`id` = `post-thread-user`.`iid`
+			WHERE `post-thread-user`.`network` = '%s' AND `post-thread-user`.`uid` = %d AND `post-view`.`extid` != ''
+			ORDER BY `post-thread-user`.`commented` DESC LIMIT 10",
 				DBA::escape(Protocol::PUMPIO),
 				intval($uid)
 			);

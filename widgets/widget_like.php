@@ -25,9 +25,9 @@ function like_widget_content(&$a, $conf){
 	$args = explode(",",$_GET['a']);
 
 
-	$baseq="SELECT COUNT(`item`.`id`) as `c`, `p`.`id`
-					FROM `item`,
-						(SELECT `i`.`id` FROM `item` as `i` WHERE
+	$baseq="SELECT COUNT(`post-view`.`id`) as `c`, `p`.`id`
+					FROM `post-view`,
+						(SELECT `i`.`id` FROM `post-view` as `i` WHERE
 							`i`.`visible` = 1 AND `i`.`deleted` = 0
 							AND (( `i`.`wall` = 1 AND `i`.`allow_cid` = ''
 									AND `i`.`allow_gid` = ''
@@ -35,10 +35,10 @@ function like_widget_content(&$a, $conf){
 									AND `i`.`deny_gid`  = '' )
 								  OR `i`.`uid` = %d )
 							AND `i`.`body` LIKE '%%%s%%' LIMIT 1) as `p`
-					WHERE `item`.`parent` = `p`.`id` ";
+					WHERE `post-view`.`parent` = `p`.`id` ";
 
 	// count likes
-	$r = q( $baseq . "AND `item`.`verb` = 'http://activitystrea.ms/schema/1.0/like'",
+	$r = q( $baseq . "AND `post-view`.`verb` = 'http://activitystrea.ms/schema/1.0/like'",
 			intval($conf['uid']),
 			DBA::escape($args[0])
 	);
@@ -48,7 +48,7 @@ function like_widget_content(&$a, $conf){
 	$strdislike = '';
 	if (!DI::pConfig()->get(local_user(), 'system', 'hide_dislike')) {
 		// count dislikes
-		$r = q( $baseq . "AND `item`.`verb` = 'http://purl.org/macgirvin/dfrn/1.0/dislike'",
+		$r = q( $baseq . "AND `post-view`.`verb` = 'http://purl.org/macgirvin/dfrn/1.0/dislike'",
 				intval($conf['uid']),
 				DBA::escape($args[0])
 		);
