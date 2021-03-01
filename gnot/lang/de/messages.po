@@ -4,45 +4,43 @@
 # 
 # 
 # Translators:
-# Abrax <webmaster@a-zwenkau.de>, 2014
-# bavatar <tobias.diekershoff@gmx.net>, 2014
+# Andreas H., 2014
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018,2021
+# Ulf Rompe <transifex.com@rompe.org>, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2014-10-15 12:29+0000\n"
-"Last-Translator: Abrax <webmaster@a-zwenkau.de>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-06 17:00+0000\n"
+"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: gnot.php:48
-msgid "Gnot settings updated."
-msgstr "Gnot Einstellungen aktualisiert."
-
-#: gnot.php:79
+#: gnot.php:71
 msgid "Gnot Settings"
-msgstr "Gnot Einstellungen"
+msgstr "Gnot-Einstellungen"
 
-#: gnot.php:81
-msgid ""
-"Allows threading of email comment notifications on Gmail and anonymising the"
-" subject line."
-msgstr "Erlaubt das Veröffentlichen von E-Mail Kommentar Benachrichtigungen bei Gmail mit anonymisiertem Betreff"
+#: gnot.php:72
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
 
-#: gnot.php:82
+#: gnot.php:73
 msgid "Enable this addon?"
 msgstr "Dieses Addon aktivieren?"
 
-#: gnot.php:88
-msgid "Submit"
-msgstr "Senden"
+#: gnot.php:75
+msgid ""
+"Allows threading of email comment notifications on Gmail and anonymising the"
+" subject line."
+msgstr "Erlaubt das Veröffentlichen von E-Mail-Kommentar-Benachrichtigungen bei Gmail mit anonymisiertem Betreff"
 
-#: gnot.php:97
+#: gnot.php:84
 #, php-format
 msgid "[Friendica:Notify] Comment to conversation #%d"
 msgstr "[Friendica-Benachrichtigung] Kommentar zum Beitrag #%d"
