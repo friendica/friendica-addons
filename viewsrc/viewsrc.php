@@ -8,9 +8,6 @@
  */
 use Friendica\Core\Hook;
 use Friendica\DI;
-use Friendica\Model\Item;
-use Friendica\Database\DBA;
-use Friendica\Model\Post;
 
 function viewsrc_install() {
 	Hook::register('item_photo_menu', 'addon/viewsrc/viewsrc.php', 'viewsrc_item_photo_menu');
@@ -35,21 +32,5 @@ function viewsrc_item_photo_menu(&$a, &$b)
 		return;
 	}
 
-	if (local_user() != $b['item']['uid']) {
-		$item = Post::selectFirstForUser(local_user(), ['id'], ['uid' => local_user(), 'guid' => $b['item']['guid']]);
-		if (!DBA::isResult($item)) {
-			return;
-		}
-
-		$item_id = $item['id'];
-	} else {
-		$item_id = $b['item']['id'];
-	}
-
-	$b['menu'] = array_merge([DI::l10n()->t('View Source') => DI::baseUrl()->get() . '/viewsrc/'. $item_id], $b['menu']);
-
-	//if((! local_user()) || (local_user() != $b['item']['uid']))
-	//	return;
-
-	//$b['menu'] = array_merge(array(DI::l10n()->t('View Source') => $a->getBaseURL() . '/viewsrc/'. $b['item']['id']), $b['menu']);
+	$b['menu'] = array_merge([DI::l10n()->t('View Source') => DI::baseUrl()->get() . '/viewsrc/'. $b['item']['uri-id']], $b['menu']);
 }
