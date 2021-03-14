@@ -1300,7 +1300,7 @@ function pumpio_fetchinbox(App $a, $uid)
 		intval($uid));
 
 	$lastitems = q("SELECT `uri` FROM `post-thread-user`
-			INNER JOIN `post-view` ON `post-view`.`id` = `post-thread-user`.`iid`
+			INNER JOIN `post-view` ON `post-view`.`id` = `post-thread-user`.`id`
 			WHERE `post-thread-user`.`network` = '%s' AND `post-thread-user`.`uid` = %d AND `post-view`.`extid` != ''
 			ORDER BY `post-thread-user`.`commented` DESC LIMIT 10",
 				DBA::escape(Protocol::PUMPIO),
