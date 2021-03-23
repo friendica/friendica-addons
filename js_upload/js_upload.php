@@ -12,6 +12,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
+use Friendica\Util\Strings;
 
 function js_upload_install()
 {
@@ -229,8 +230,7 @@ class qqFileUploader
 		$maximagesize = DI::config()->get('system', 'maximagesize');
 
 		if (($maximagesize) && ($size > $maximagesize)) {
-			return ['error' => DI::l10n()->t('Image exceeds size limit of ') . $maximagesize];
-
+			return ['error' => DI::l10n()->t('Image exceeds size limit of %s', Strings::formatBytes($maximagesize))];
 		}
 
 		$pathinfo = pathinfo($this->file->getName());
@@ -242,8 +242,7 @@ class qqFileUploader
 		$ext = $pathinfo['extension'] ?? '';
 
 		if ($this->allowedExtensions && !in_array(strtolower($ext), $this->allowedExtensions)) {
-			$these = implode(', ', $this->allowedExtensions);
-			return ['error' => DI::l10n()->t('File has an invalid extension, it should be one of ') . $these . '.'];
+			return ['error' => DI::l10n()->t('File has an invalid extension, it should be one of %s.', implode(', ', $this->allowedExtensions))];
 		}
 
 		if ($this->file->save()) {
