@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"POT-Creation-Date: 2021-03-23 23:53-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,38 +17,40 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: js_upload.php:33
+#: js_upload.php:34
 msgid "Select files for upload"
 msgstr ""
 
-#: js_upload.php:34
+#: js_upload.php:35
 msgid "Drop files here to upload"
 msgstr ""
 
-#: js_upload.php:35
+#: js_upload.php:36
 msgid "Cancel"
 msgstr ""
 
-#: js_upload.php:36
+#: js_upload.php:37
 msgid "Failed"
 msgstr ""
 
-#: js_upload.php:214
+#: js_upload.php:215
 msgid "No files were uploaded."
 msgstr ""
 
-#: js_upload.php:220
+#: js_upload.php:221
 msgid "Uploaded file is empty"
 msgstr ""
 
-#: js_upload.php:232
-msgid "Image exceeds size limit of "
+#: js_upload.php:233
+#, php-format
+msgid "Image exceeds size limit of %s"
 msgstr ""
 
-#: js_upload.php:246
-msgid "File has an invalid extension, it should be one of "
+#: js_upload.php:245
+#, php-format
+msgid "File has an invalid extension, it should be one of %s."
 msgstr ""
 
-#: js_upload.php:257
+#: js_upload.php:256
 msgid "Upload was cancelled, or server error encountered"
 msgstr ""
