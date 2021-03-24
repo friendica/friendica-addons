@@ -7,7 +7,7 @@ function string_plural_select_en_gb($n){
 }}
 ;
 $a->strings["Language Filter"] = "Language Filter";
-$a->strings["This addon tries to identify the language posts are writen in. If it does not match any language specifed below, posts will be hidden by collapsing them."] = "This addon tries to identify the language that posts are written in. If posts don't match any of the languages specifed below, those posts will be hidden by collapsing them.";
+$a->strings["This addon tries to identify the language posts are written in. If it does not match any language specified below, posts will be hidden by collapsing them."] = "This addon tries to identify the language that posts are written in. If posts don't match any of the languages specifed below, those posts will be hidden by collapsing them.";
 $a->strings["Use the language filter"] = "Use the Language Filter";
 $a->strings["Able to read"] = "Language selection";
 $a->strings["List of abbreviations (iso2 codes) for languages you speak, comma separated. For example \"de,it\"."] = "List of abbreviations (ISO two-letter language codes) for languages you wish to view, separated by commas. For example, German and Italian would be \"de,it\".";

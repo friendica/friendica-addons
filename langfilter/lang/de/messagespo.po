@@ -30,8 +30,8 @@ msgstr "Sprachfilter"
 
 #: langfilter.php:53
 msgid ""
-"This addon tries to identify the language posts are writen in. If it does "
-"not match any language specifed below, posts will be hidden by collapsing "
+"This addon tries to identify the language posts are written in. If it does "
+"not match any language specified below, posts will be hidden by collapsing "
 "them."
 msgstr "Dieses Addon versucht zu identifizieren, in welcher Sprache Posts geschrieben werden. Wenn sie nicht mit einer der unten angegebenen Sprachen übereinstimmt, werden Posts durch Zusammenklappen verborgen."
 

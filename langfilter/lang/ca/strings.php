@@ -7,7 +7,7 @@ function string_plural_select_ca($n){
 }}
 ;
 $a->strings["Language Filter"] = "Filtre d'Idioma";
-$a->strings["This addon tries to identify the language posts are writen in. If it does not match any language specifed below, posts will be hidden by collapsing them."] = "Aquest complement tracta d’identificar les publicacions d’idioma en què s’escriuen. Si no coincideix amb cap idioma especificat a continuació, les publicacions s’ocultaran en col·lapsar-les.";
+$a->strings["This addon tries to identify the language posts are written in. If it does not match any language specified below, posts will be hidden by collapsing them."] = "Aquest complement tracta d’identificar les publicacions d’idioma en què s’escriuen. Si no coincideix amb cap idioma especificat a continuació, les publicacions s’ocultaran en col·lapsar-les.";
 $a->strings["Use the language filter"] = "Emprar el filtre d'idioma";
 $a->strings["Able to read"] = "Capacitat de llegir";
 $a->strings["List of abbreviations (iso2 codes) for languages you speak, comma separated. For example \"de,it\"."] = "llista d'abreviatures (ISO2 codes), separada per comes,  per idiomes que tú parles. Per exemple \"ca,es,de,it\".";

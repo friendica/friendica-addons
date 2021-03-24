@@ -25,8 +25,8 @@ msgstr "Keelefilter"
 
 #: langfilter.php:59
 msgid ""
-"This addon tries to identify the language posts are writen in. If it does "
-"not match any language specifed below, posts will be hidden by collapsing "
+"This addon tries to identify the language posts are written in. If it does "
+"not match any language specified below, posts will be hidden by collapsing "
 "them."
 msgstr "See lisa üritab määrata keelt milles postitused on kirjutatud. Kui tule, ei sobi ühegi alloleva keelega, siis postitused peidetakse minimeerides nad. "
 

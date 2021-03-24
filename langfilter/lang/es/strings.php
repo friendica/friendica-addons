@@ -7,7 +7,7 @@ function string_plural_select_es($n){
 }}
 ;
 $a->strings["Language Filter"] = "Filtro de Idioma";
-$a->strings["This addon tries to identify the language posts are writen in. If it does not match any language specifed below, posts will be hidden by collapsing them."] = "Este complemento intenta identificar en qué idioma se han escrito las publicaciones. Si no coincide con el idioma especificado a continuación, las publicaciones se ocultarán al contraerlas.";
+$a->strings["This addon tries to identify the language posts are written in. If it does not match any language specified below, posts will be hidden by collapsing them."] = "Este complemento intenta identificar en qué idioma se han escrito las publicaciones. Si no coincide con el idioma especificado a continuación, las publicaciones se ocultarán al contraerlas.";
 $a->strings["Use the language filter"] = "Usar el filtro de idioma";
 $a->strings["Able to read"] = "Capaz de leer";
 $a->strings["List of abbreviations (ISO 639-1 codes) for languages you speak, comma separated. For example \"de,it\"."] = "Lista de abreviaciones (Codigo ISO 639-1) de los lenguajes que hablas, separados por comas.Un ejemplo: \"de,it\".";
