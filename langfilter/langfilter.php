@@ -48,7 +48,7 @@ function langfilter_addon_settings(App $a, &$s)
 	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/langfilter/");
 	$s .= Renderer::replaceMacros($t, [
 		'$title'         => DI::l10n()->t("Language Filter"),
-		'$intro'         => DI::l10n()->t('This addon tries to identify the language posts are writen in. If it does not match any language specifed below, posts will be hidden by collapsing them.'),
+		'$intro'         => DI::l10n()->t('This addon tries to identify the language posts are written in. If it does not match any language specified below, posts will be hidden by collapsing them.'),
 		'$enabled'       => ['langfilter_enable', DI::l10n()->t('Use the language filter'), $enable_checked, ''],
 		'$languages'     => ['langfilter_languages', DI::l10n()->t('Able to read'), $languages, DI::l10n()->t('List of abbreviations (ISO 639-1 codes) for languages you speak, comma separated. For example "de,it".')],
 		'$minconfidence' => ['langfilter_minconfidence', DI::l10n()->t('Minimum confidence in language detection'), $minconfidence, DI::l10n()->t('Minimum confidence in language detection being correct, from 0 to 100. Posts will not be filtered when the confidence of language detection is below this percent value.')],
