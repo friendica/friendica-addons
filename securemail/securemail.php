@@ -142,6 +142,6 @@ function securemail_emailer_send_prepare(App &$a, IEmail &$email)
 		$email = $email->withMessage($armored_encrypted, null);
 
 	} catch (Exception $e) {
-		DI::logger()->warning('Encryption failed.', ['email' => $email, 'exception' => $e]);
+		DI::logger()->warning('Encryption failed.', ['email' => $email, 'exception' => $e->__toString()]);
 	}
 }

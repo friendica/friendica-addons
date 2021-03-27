@@ -105,6 +105,6 @@ function phpmailer_emailer_send_prepare(App $a, IEmail &$email)
 			$email = null;
 		}
 	} catch (Exception $e) {
-		DI::logger()->error('PHPMailer error', ['email' => $email, 'ErrorInfo' => $mailer->ErrorInfo, 'exception' => $e]);
+		DI::logger()->error('PHPMailer error', ['email' => $email, 'ErrorInfo' => $mailer->ErrorInfo, 'exception' => $e->__toString()]);
 	}
 }
