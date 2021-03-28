@@ -5,13 +5,14 @@
 # 
 # Translators:
 # fabrixxm <fabrix.xm@gmail.com>, 2014-2015,2018
+# Sylke Vicious <silkevicious@gmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-03-19 13:22+0000\n"
-"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-16 12:59+0000\n"
+"Last-Translator: Sylke Vicious <silkevicious@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,18 +20,20 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: geonames.php:143
-msgid "Geonames settings updated."
-msgstr "Impostazioni di Geonames aggiornate."
-
-#: geonames.php:179
+#: geonames.php:141
 msgid "Geonames Settings"
 msgstr "Impostazioni Geonames"
 
-#: geonames.php:181
+#: geonames.php:142
+msgid ""
+"Replace numerical coordinates by the nearest populated location name in your"
+" posts."
+msgstr "Sostituisci le coordinate numeriche con il nome della località abitata più vicina nei tuoi messaggi."
+
+#: geonames.php:143
 msgid "Enable Geonames Addon"
 msgstr "Abilita componente aggiuntivo Geonames"
 
-#: geonames.php:187
-msgid "Submit"
-msgstr "Invia"
+#: geonames.php:144
+msgid "Save Settings"
+msgstr "Salva Impostazioni"
