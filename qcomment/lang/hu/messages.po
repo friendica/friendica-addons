@@ -1,0 +1,50 @@
+# ADDON qcomment
+# Copyright (C)
+# This file is distributed under the same license as the Friendica qcomment addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020-2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-25 23:50+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: qcomment.php:42
+msgid ":-)"
+msgstr ":-)"
+
+#: qcomment.php:42
+msgid ":-("
+msgstr ":-("
+
+#: qcomment.php:42
+msgid "lol"
+msgstr "lol"
+
+#: qcomment.php:47
+msgid "Quick Comment Settings"
+msgstr "Gyors hozzászólás beállításai"
+
+#: qcomment.php:48
+msgid ""
+"Quick comments are found near comment boxes, sometimes hidden. Click them to"
+" provide simple replies."
+msgstr "A gyors hozzászólások a hozzászólásmezők közelében találhatók, néha rejtetten. Kattintson rájuk egyszerű válaszok küldéséhez."
+
+#: qcomment.php:49
+msgid "Save Settings"
+msgstr "Beállítások mentése"
+
+#: qcomment.php:50
+msgid "Enter quick comments, one per line"
+msgstr "Adja meg a gyors hozzászólásokat, soronként egyet"
