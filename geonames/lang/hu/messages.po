@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# Balázs Úr, 2020
+# Balázs Úr, 2020-2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2020-12-23 01:51+0000\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-27 01:18+0000\n"
 "Last-Translator: Balázs Úr\n"
 "Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -19,18 +19,20 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: geonames.php:143
-msgid "Geonames settings updated."
-msgstr "A földrajzi nevek beállításai frissítve."
-
-#: geonames.php:179
+#: geonames.php:141
 msgid "Geonames Settings"
 msgstr "Földrajzi nevek beállításai"
 
-#: geonames.php:181
+#: geonames.php:142
+msgid ""
+"Replace numerical coordinates by the nearest populated location name in your"
+" posts."
+msgstr "Számokkal megadott koordináták cseréje a bejegyzéseiben a legközelebbi lakott hely nevére."
+
+#: geonames.php:143
 msgid "Enable Geonames Addon"
 msgstr "A földrajzi nevek bővítmény engedélyezése"
 
-#: geonames.php:187
-msgid "Submit"
-msgstr "Elküldés"
+#: geonames.php:144
+msgid "Save Settings"
+msgstr "Beállítások mentése"
