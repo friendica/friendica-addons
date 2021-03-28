@@ -5,13 +5,14 @@
 # 
 # Translators:
 # fabrixxm <fabrix.xm@gmail.com>, 2014-2015,2018
+# Sylke Vicious <silkevicious@gmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2018-03-19 13:25+0000\n"
-"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-16 12:57+0000\n"
+"Last-Translator: Sylke Vicious <silkevicious@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,14 +20,14 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: randplace.php:169
+#: randplace.php:166
 msgid "Randplace Settings"
 msgstr "Impostazioni \"Posizione casuale\""
 
-#: randplace.php:171
+#: randplace.php:168
 msgid "Enable Randplace Addon"
 msgstr "Abilita il componente aggiuntivo Posizione Casuale"
 
-#: randplace.php:177
-msgid "Submit"
-msgstr "Invia"
+#: randplace.php:174
+msgid "Save Settings"
+msgstr "Salva Impostazioni"
