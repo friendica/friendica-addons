@@ -1,0 +1,60 @@
+# ADDON piwik
+# Copyright (C)
+# This file is distributed under the same license as the Friendica piwik addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020-2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-25 23:20+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: piwik.php:87
+msgid ""
+"This website is tracked using the <a href='http://www.matomo.org'>Matomo</a>"
+" analytics tool."
+msgstr "Ez a weboldal a <a href='http://www.matomo.org'>Matomo</a> analitikai eszköz használatával van követve."
+
+#: piwik.php:90
+#, php-format
+msgid ""
+"If you do not want that your visits are logged in this way you <a "
+"href='%s'>can set a cookie to prevent Matomo / Piwik from tracking further "
+"visits of the site</a> (opt-out)."
+msgstr "Ha nem szeretné, hogy a látogatásai ilyen módon naplózva legyenek, akkor <a href='%s'>beállíthat egy sütit annak megakadályozásához, hogy a Matomo vagy a Piwik kövesse az oldal további meglátogatásait</a> (lemondás)."
+
+#: piwik.php:97
+msgid "Save Settings"
+msgstr "Beállítások mentése"
+
+#: piwik.php:98
+msgid "Matomo (Piwik) Base URL"
+msgstr "Matomo (Piwik) alap URL"
+
+#: piwik.php:98
+msgid ""
+"Absolute path to your Matomo (Piwik) installation. (without protocol "
+"(http/s), with trailing slash)"
+msgstr "Abszolút útvonal a Matomo (Piwik) telepítéséhez (http vagy https protokoll nélkül, de lezáró perjellel)."
+
+#: piwik.php:99
+msgid "Site ID"
+msgstr "Oldalazonosító"
+
+#: piwik.php:100
+msgid "Show opt-out cookie link?"
+msgstr "Megjeleníti a lemondó süti hivatkozását?"
+
+#: piwik.php:101
+msgid "Asynchronous tracking"
+msgstr "Aszinkron követés"
