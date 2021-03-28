@@ -1,0 +1,35 @@
+# ADDON mathjax
+# Copyright (C)
+# This file is distributed under the same license as the Friendica mathjax addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020-2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-24 00:57+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: mathjax.php:43
+msgid ""
+"The MathJax addon renders mathematical formulae written using the LaTeX "
+"syntax surrounded by the usual $$ or an eqnarray block in the postings of "
+"your wall,network tab and private mail."
+msgstr "A MathJax bővítmény a LaTeX szintaxis használatával írt matematikai képleteket jelenít meg, amelyeket a szokásos $$ vagy egy eqnarray blokk vesz körül a falán lévő bejegyzésekben, a hálózat lapon és a személyes levelekben."
+
+#: mathjax.php:44
+msgid "Use the MathJax renderer"
+msgstr "A MathJax megjelenítő használata"
+
+#: mathjax.php:45
+msgid "Save Settings"
+msgstr "Beállítások mentése"
