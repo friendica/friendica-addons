@@ -1,0 +1,49 @@
+# ADDON public_server
+# Copyright (C)
+# This file is distributed under the same license as the Friendica public_server addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020-2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-25 23:33+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: public_server.php:64
+msgid "Administrator"
+msgstr "Adminisztrátor"
+
+#: public_server.php:118
+#, php-format
+msgid "Your account on %s will expire in a few days."
+msgstr "A(z) %s oldalon lévő fiókja néhány napon belül le fog járni."
+
+#: public_server.php:119
+msgid "Your Friendica account is about to expire."
+msgstr "A Friendica-fiókja hamarosan lejár."
+
+#: public_server.php:120
+#, php-format
+msgid ""
+"Hi %1$s,\n"
+"\n"
+"Your account on %2$s will expire in less than five days. You may keep your account by logging in at least once every 30 days"
+msgstr "Kedves %1$s!\n\nA(z) %2$s oldalon lévő fiókja öt napon belül le fog járni. Megtarthatja a fiókját, ha legalább 30 naponta egyszer bejelentkezik."
+
+#: public_server.php:158
+msgid "Save Settings"
+msgstr "Beállítások mentése"
+
+#: public_server.php:160
+msgid "Set any of these options to 0 to deactivate it."
+msgstr "Állítsa ezen beállítások bármelyikét 0 értékre a kikapcsolásukhoz."
