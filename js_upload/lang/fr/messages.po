@@ -4,15 +4,16 @@
 # 
 # 
 # Translators:
+# bob lebonche <lebonche@tutanota.com>, 2021
 # ButterflyOfFire, 2020
 # StefOfficiel <pichard.stephane@free.fr>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2020-02-27 22:12+0000\n"
-"Last-Translator: ButterflyOfFire\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-22 09:18+0000\n"
+"Last-Translator: bob lebonche <lebonche@tutanota.com>\n"
 "Language-Team: French (http://www.transifex.com/Friendica/friendica/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,38 +21,38 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: js_upload.php:43
-msgid "Upload a file"
-msgstr "Téléverser un fichier"
+#: js_upload.php:33
+msgid "Select files for upload"
+msgstr "Sélectionner les fichiers à télécharger"
 
-#: js_upload.php:44
+#: js_upload.php:34
 msgid "Drop files here to upload"
 msgstr "Glisser les fichiers ici pour uploader"
 
-#: js_upload.php:45
+#: js_upload.php:35
 msgid "Cancel"
 msgstr "Annuler"
 
-#: js_upload.php:46
+#: js_upload.php:36
 msgid "Failed"
-msgstr ""
+msgstr "Echec"
 
-#: js_upload.php:303
+#: js_upload.php:214
 msgid "No files were uploaded."
-msgstr ""
+msgstr "Aucun fichier téléchargé"
 
-#: js_upload.php:309
+#: js_upload.php:220
 msgid "Uploaded file is empty"
-msgstr ""
+msgstr "Le fichier téléchargé est vide"
 
-#: js_upload.php:321
+#: js_upload.php:232
 msgid "Image exceeds size limit of "
-msgstr ""
+msgstr "L'image dépasse la taille limite de "
 
-#: js_upload.php:332
+#: js_upload.php:246
 msgid "File has an invalid extension, it should be one of "
-msgstr ""
+msgstr "Le fichier à une extension invalide, cela devrait être une de ces "
 
-#: js_upload.php:343
+#: js_upload.php:257
 msgid "Upload was cancelled, or server error encountered"
-msgstr ""
+msgstr "Le téléchargement a été annulé ou le server a rencontré une erreur"
