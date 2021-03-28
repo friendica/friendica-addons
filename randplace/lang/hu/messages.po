@@ -1,0 +1,32 @@
+# ADDON randplace
+# Copyright (C)
+# This file is distributed under the same license as the Friendica randplace addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020-2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-25 23:53+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: randplace.php:166
+msgid "Randplace Settings"
+msgstr "Véletlen hely beállításai"
+
+#: randplace.php:168
+msgid "Enable Randplace Addon"
+msgstr "A véletlen hely bővítmény engedélyezése"
+
+#: randplace.php:174
+msgid "Save Settings"
+msgstr "Beállítások mentése"
