@@ -1,0 +1,41 @@
+# ADDON fromapp
+# Copyright (C)
+# This file is distributed under the same license as the Friendica fromapp addon package.
+# 
+# 
+# Translators:
+# bob lebonche <lebonche@tutanota.com>, 2021
+# Hypolite Petovan <hypolite@mrpetovan.com>, 2016
+# StefOfficiel <pichard.stephane@free.fr>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-22 08:30+0000\n"
+"Last-Translator: bob lebonche <lebonche@tutanota.com>\n"
+"Language-Team: French (http://www.transifex.com/Friendica/friendica/language/fr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: fromapp.php:53 fromapp.php:57
+msgid "FromApp Settings"
+msgstr "Paramètres de FromApp"
+
+#: fromapp.php:60
+msgid ""
+"The application name you would like to show your posts originating from. "
+"Separate different app names with a comma. A random one will then be "
+"selected for every posting."
+msgstr "Nom de l'application d'origine de votre publication. Séparer les noms des différentes applications par une virgule. Une application sera seléctionnée aléatoirement pour chaque publication. "
+
+#: fromapp.php:64
+msgid "Use this application name even if another application was used."
+msgstr "Utilisez le nom de cette application même si une autre application a été utilisé."
+
+#: fromapp.php:71
+msgid "Save Settings"
+msgstr "Sauvegarder les paramètres."
