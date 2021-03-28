@@ -12,4 +12,4 @@ $a->strings["Enable LiveJournal Post Addon"] = "Abilita il componente aggiuntivo
 $a->strings["LiveJournal username"] = "Nome utente LiveJournal";
 $a->strings["LiveJournal password"] = "Password LiveJournal";
 $a->strings["Post to LiveJournal by default"] = "Invia sempre a LiveJournal";
-$a->strings["Submit"] = "Invia";
+$a->strings["Save Settings"] = "Salva Impostazioni";
