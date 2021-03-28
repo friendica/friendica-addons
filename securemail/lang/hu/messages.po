@@ -1,0 +1,54 @@
+# ADDON securemail
+# Copyright (C)
+# This file is distributed under the same license as the Friendica securemail addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2021
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2018-03-20 07:26+0000\n"
+"Last-Translator: Balázs Úr, 2021\n"
+"Language-Team: Hungarian (https://www.transifex.com/Friendica/teams/12172/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: securemail.php:51
+msgid "\"Secure Mail\" Settings"
+msgstr "Biztonságos levél beállításai"
+
+#: securemail.php:52
+msgid "Save Settings"
+msgstr "Beállítások mentése"
+
+#: securemail.php:53 securemail.php:80
+msgid "Save and send test"
+msgstr "Mentés és teszt küldése"
+
+#: securemail.php:54
+msgid "Enable Secure Mail"
+msgstr "Biztonságos levél engedélyezése"
+
+#: securemail.php:55
+msgid "Public key"
+msgstr "Nyilvános kulcs"
+
+#: securemail.php:55
+msgid "Your public PGP key, ascii armored format"
+msgstr "A nyilvános PGP kulcsa ASCII-védett formátumban"
+
+#: securemail.php:88
+msgid "Test email sent"
+msgstr "Tesztlevél elküldve"
+
+#: securemail.php:90
+msgid "There was an error sending the test email"
+msgstr "Hiba történt a tesztlevél küldésekor"
