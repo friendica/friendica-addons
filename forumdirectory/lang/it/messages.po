@@ -5,13 +5,14 @@
 # 
 # Translators:
 # fabrixxm <fabrix.xm@gmail.com>, 2014
+# Sylke Vicious <silkevicious@gmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2017-09-20 06:07+0000\n"
-"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-16 12:56+0000\n"
+"Last-Translator: Sylke Vicious <silkevicious@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,7 +20,7 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: forumdirectory.php:22
+#: forumdirectory.php:33 forumdirectory.php:137
 msgid "Forum Directory"
 msgstr "Elenco Forum"
 
@@ -27,54 +28,22 @@ msgstr "Elenco Forum"
 msgid "Public access denied."
 msgstr "Accesso negato."
 
-#: forumdirectory.php:71
+#: forumdirectory.php:125
+msgid "No entries (some entries may be hidden)."
+msgstr "Nessuna voce (qualche voce potrebbe essere nascosta)."
+
+#: forumdirectory.php:131
 msgid "Global Directory"
 msgstr "Elenco globale"
 
-#: forumdirectory.php:79
+#: forumdirectory.php:133
 msgid "Find on this site"
 msgstr "Cerca nel sito"
 
-#: forumdirectory.php:81
-msgid "Finding: "
-msgstr "Ricerca: "
+#: forumdirectory.php:135
+msgid "Results for:"
+msgstr "Risultati per:"
 
-#: forumdirectory.php:82
-msgid "Site Directory"
-msgstr "Elenco del sito"
-
-#: forumdirectory.php:83
+#: forumdirectory.php:139
 msgid "Find"
 msgstr "Trova"
-
-#: forumdirectory.php:133
-msgid "Age: "
-msgstr "Età : "
-
-#: forumdirectory.php:136
-msgid "Gender: "
-msgstr "Genere:"
-
-#: forumdirectory.php:156
-msgid "Location:"
-msgstr "Posizione:"
-
-#: forumdirectory.php:158
-msgid "Gender:"
-msgstr "Genere:"
-
-#: forumdirectory.php:160
-msgid "Status:"
-msgstr "Stato:"
-
-#: forumdirectory.php:162
-msgid "Homepage:"
-msgstr "Homepage:"
-
-#: forumdirectory.php:164
-msgid "About:"
-msgstr "Informazioni:"
-
-#: forumdirectory.php:201
-msgid "No entries (some entries may be hidden)."
-msgstr "Nessuna voce (qualche voce potrebbe essere nascosta)."
