@@ -1,0 +1,63 @@
+# ADDON irc
+# Copyright (C)
+# This file is distributed under the same license as the Friendica irc addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020-2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-13 20:42+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: irc.php:34
+msgid "IRC Settings"
+msgstr "IRC beállítások"
+
+#: irc.php:35
+msgid ""
+"Here you can change the system wide settings for the channels to "
+"automatically join and access via the side bar. Note the changes you do "
+"here, only effect the channel selection if you are logged in."
+msgstr "Itt változtathatja meg a csatornák rendszerszintű beállításait, hogy automatikusan csatlakozzon és hozzáférjen az oldalsávon keresztül. Ne feledje, hogy az itt elvégzett változtatások csak akkor vannak hatással a csatornakiválasztásra, ha be van jelentkezve."
+
+#: irc.php:36 irc.php:134
+msgid "Save Settings"
+msgstr "Beállítások mentése"
+
+#: irc.php:37 irc.php:135
+msgid "Channel(s) to auto connect (comma separated)"
+msgstr "Csatornák az automatikus kapcsolódáshoz (vesszővel elválasztva)"
+
+#: irc.php:37 irc.php:135
+msgid ""
+"List of channels that shall automatically connected to when the app is "
+"launched."
+msgstr "Csatornák listája, amelyekhez automatikusan lehet kapcsolódni, ha az alkalmazást elindították."
+
+#: irc.php:38 irc.php:136
+msgid "Popular Channels (comma separated)"
+msgstr "Népszerű csatornák (vesszővel elválasztva)"
+
+#: irc.php:38 irc.php:136
+msgid ""
+"List of popular channels, will be displayed at the side and hotlinked for "
+"easy joining."
+msgstr "Népszerű csatornák listája, amelyek oldalt lesznek megjelenítve, és gyors hivatkozás lesz rájuk az egyszerű csatlakozáshoz."
+
+#: irc.php:62
+msgid "IRC Chatroom"
+msgstr "IRC csevegőszoba"
+
+#: irc.php:90
+msgid "Popular Channels"
+msgstr "Népszerű csatornák"
