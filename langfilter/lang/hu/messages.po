@@ -1,0 +1,76 @@
+# ADDON langfilter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica langfilter addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020-2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-24 00:21+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: langfilter.php:50
+msgid "Language Filter"
+msgstr "Nyelvszűrő"
+
+#: langfilter.php:51
+msgid ""
+"This addon tries to identify the language posts are writen in. If it does "
+"not match any language specifed below, posts will be hidden by collapsing "
+"them."
+msgstr "Ez a bővítmény megpróbálja azonosítani, hogy a bejegyzéseket milyen nyelven írták. Ha nem egyezik egyetlen lent megadott nyelvvel sem, akkor a bejegyzések rejtettek lesznek azáltal, hogy össze lesznek csukva."
+
+#: langfilter.php:52
+msgid "Use the language filter"
+msgstr "A nyelvszűrő használata"
+
+#: langfilter.php:53
+msgid "Able to read"
+msgstr "Képes olvasni"
+
+#: langfilter.php:53
+msgid ""
+"List of abbreviations (ISO 639-1 codes) for languages you speak, comma "
+"separated. For example \"de,it\"."
+msgstr "Az Ön által beszélt nyelvek rövidítéseinek listája (ISO 639-1 kódok) vesszővel elválasztva. Például „de,it”."
+
+#: langfilter.php:54
+msgid "Minimum confidence in language detection"
+msgstr "Legkisebb megbízhatóság a nyelvfelismerésben"
+
+#: langfilter.php:54
+msgid ""
+"Minimum confidence in language detection being correct, from 0 to 100. Posts"
+" will not be filtered when the confidence of language detection is below "
+"this percent value."
+msgstr "A legkisebb megbízhatóság a helyesnek tűnő nyelvfelismerésben 0-tól 100-ig. A bejegyzések nem lesznek szűrve, ha a nyelvfelismerés megbízhatósága ezen százalékérték alatt van."
+
+#: langfilter.php:55
+msgid "Minimum length of message body"
+msgstr "Üzenettörzs legkisebb hossza"
+
+#: langfilter.php:55
+msgid ""
+"Minimum number of characters in message body for filter to be used. Posts "
+"shorter than this will not be filtered. Note: Language detection is "
+"unreliable for short content (<200 characters)."
+msgstr "Az üzenet törzsében lévő karakterek legkisebb száma a használandó szűrőnél. Az ennél rövidebb bejegyzések nem lesznek szűrve. Megjegyzés: a nyelvfelismerés megbízhatatlan a rövid tartalmaknál (200-nál kevesebb karakternél)."
+
+#: langfilter.php:56
+msgid "Save Settings"
+msgstr "Beállítások mentése"
+
+#: langfilter.php:187
+#, php-format
+msgid "Filtered language: %s"
+msgstr "Szűrt nyelv: %s"
