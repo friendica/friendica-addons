@@ -1,0 +1,55 @@
+# ADDON webrtc
+# Copyright (C)
+# This file is distributed under the same license as the Friendica webrtc addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020-2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:16+0100\n"
+"PO-Revision-Date: 2021-03-26 09:37+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: webrtc.php:19
+msgid "WebRTC Videochat"
+msgstr "WebRTC videocsevegés"
+
+#: webrtc.php:25
+msgid "Save Settings"
+msgstr "Beállítások mentése"
+
+#: webrtc.php:26
+msgid "WebRTC Base URL"
+msgstr "WebRTC alap URL"
+
+#: webrtc.php:26
+msgid ""
+"Page your users will create a WebRTC chat room on. For example you could use"
+" https://live.mayfirst.org ."
+msgstr "Egy oldal, ahol a felhasználók WebRTC csevegőszobát fognak létrehozni. Például használhatja a https://live.mayfirst.org oldalt."
+
+#: webrtc.php:45
+msgid "Video Chat"
+msgstr "Videocsevegés"
+
+#: webrtc.php:46
+msgid ""
+"WebRTC is a video and audio conferencing tool that works with Firefox "
+"(version 21 and above) and Chrome/Chromium (version 25 and above). Just "
+"create a new chat room and send the link to someone you want to chat with."
+msgstr "A WebRTC egy video- és hangkonferencia eszköz, amely Firefox (21-es verzió vagy újabb) és Chrome/Chromium (25-ös verzió vagy újabb) használatával működik. Egyszerűen hozzon létre új csevegőszobát, és küldje el valakinek a hivatkozást, akivel csevegni szeretne."
+
+#: webrtc.php:48
+msgid ""
+"Please contact your friendica admin and send a reminder to configure the "
+"WebRTC addon."
+msgstr "Vegye fel a kapcsolatot a Friendica adminisztrátorával, és küldjön neki emlékeztetőt, hogy állítsa be a WebRTC bővítményt."
