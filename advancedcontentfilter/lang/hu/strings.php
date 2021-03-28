@@ -6,6 +6,7 @@ function string_plural_select_hu($n){
 	return intval($n != 1);
 }}
 ;
+$a->strings["Method not found"] = "A módszer nem található";
 $a->strings["Filtered by rule: %s"] = "Szűrve a szabály alapján: %s";
 $a->strings["Advanced Content Filter"] = "Speciális tartalomszűrő";
 $a->strings["Back to Addon Settings"] = "Vissza a bővítménybeállításokhoz";
@@ -35,4 +36,3 @@ $a->strings["Rule successfully updated"] = "A szabály sikeresen frissítve";
 $a->strings["Rule successfully deleted"] = "A szabály sikeresen törölve";
 $a->strings["Missing argument: guid."] = "Hiányzó argumentum: guid.";
 $a->strings["Unknown post with guid: %s"] = "Ismeretlen bejegyzés a következő guid azonosítóval: %s";
-$a->strings["Method not found"] = "A módszer nem található";
