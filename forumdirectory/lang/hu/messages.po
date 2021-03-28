@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# Balázs Úr, 2020
+# Balázs Úr, 2020-2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2020-12-23 01:41+0000\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-27 01:14+0000\n"
 "Last-Translator: Balázs Úr\n"
 "Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: forumdirectory.php:22
+#: forumdirectory.php:33 forumdirectory.php:137
 msgid "Forum Directory"
 msgstr "Fórumkönyvtár"
 
@@ -27,54 +27,22 @@ msgstr "Fórumkönyvtár"
 msgid "Public access denied."
 msgstr "Nyilvános hozzáférés megtagadva."
 
-#: forumdirectory.php:71
+#: forumdirectory.php:125
+msgid "No entries (some entries may be hidden)."
+msgstr "Nincsenek bejegyzések (néhány bejegyzés rejtve lehet)."
+
+#: forumdirectory.php:131
 msgid "Global Directory"
 msgstr "Globális könyvtár"
 
-#: forumdirectory.php:79
+#: forumdirectory.php:133
 msgid "Find on this site"
 msgstr "Keresés ezen az oldalon"
 
-#: forumdirectory.php:81
-msgid "Finding: "
-msgstr "Találat: "
+#: forumdirectory.php:135
+msgid "Results for:"
+msgstr "Találatok ehhez:"
 
-#: forumdirectory.php:82
-msgid "Site Directory"
-msgstr "Oldal könyvtára"
-
-#: forumdirectory.php:83
+#: forumdirectory.php:139
 msgid "Find"
 msgstr "Keresés"
-
-#: forumdirectory.php:133
-msgid "Age: "
-msgstr "Életkor: "
-
-#: forumdirectory.php:136
-msgid "Gender: "
-msgstr "Nem: "
-
-#: forumdirectory.php:156
-msgid "Location:"
-msgstr "Hely:"
-
-#: forumdirectory.php:158
-msgid "Gender:"
-msgstr "Nem:"
-
-#: forumdirectory.php:160
-msgid "Status:"
-msgstr "Állapot:"
-
-#: forumdirectory.php:162
-msgid "Homepage:"
-msgstr "Honlap:"
-
-#: forumdirectory.php:164
-msgid "About:"
-msgstr "Névjegy:"
-
-#: forumdirectory.php:201
-msgid "No entries (some entries may be hidden)."
-msgstr "Nincsenek bejegyzések (néhány bejegyzés rejtve lehet)."
