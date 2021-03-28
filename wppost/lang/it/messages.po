@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-24 21:06+0100\n"
+"POT-Creation-Date: 2021-02-01 18:16+0100\n"
 "PO-Revision-Date: 2020-09-17 11:42+0000\n"
 "Last-Translator: Sylke Vicious <silkevicious@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: wppost.php:42
+#: wppost.php:39
 msgid "Post to Wordpress"
 msgstr "Invia a Wordpress"
 
@@ -32,44 +32,44 @@ msgstr "Esporta a Wordpress"
 msgid "Enable WordPress Post Addon"
 msgstr "Abilita il componente aggiuntivo di invio a Wordpress"
 
-#: wppost.php:92
+#: wppost.php:93
 msgid "WordPress username"
 msgstr "Nome utente Wordpress"
 
-#: wppost.php:97
+#: wppost.php:98
 msgid "WordPress password"
 msgstr "Password Wordpress"
 
-#: wppost.php:102
+#: wppost.php:103
 msgid "WordPress API URL"
 msgstr "Indirizzo API Wordpress"
 
-#: wppost.php:107
+#: wppost.php:108
 msgid "Post to WordPress by default"
 msgstr "Invia sempre a Wordpress"
 
-#: wppost.php:112
+#: wppost.php:114
 msgid "Provide a backlink to the Friendica post"
 msgstr "Inserisci un collegamento al messaggio originale su Friendica"
 
-#: wppost.php:116
+#: wppost.php:119
 msgid ""
 "Text for the backlink, e.g. Read the original post and comment stream on "
 "Friendica."
 msgstr "Testo per il collegamento al messaggio originale, p.e. Leggi il messaggio originale e i commenti su Friendica."
 
-#: wppost.php:121
+#: wppost.php:124
 msgid "Don't post messages that are too short"
 msgstr "Non inviare messaggi troppo corti"
 
-#: wppost.php:127
+#: wppost.php:131
 msgid "Save Settings"
 msgstr "Salva Impostazioni"
 
-#: wppost.php:206
+#: wppost.php:231
 msgid "Read the orig­i­nal post and com­ment stream on Friendica"
 msgstr "Leggi il messaggio originale e i commenti su Friendica"
 
-#: wppost.php:269
+#: wppost.php:289
 msgid "Post from Friendica"
 msgstr "Messaggio da Friendica"
