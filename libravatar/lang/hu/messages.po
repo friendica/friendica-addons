@@ -1,0 +1,71 @@
+# ADDON libravatar
+# Copyright (C)
+# This file is distributed under the same license as the Friendica libravatar addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020-2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-24 00:33+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: libravatar.php:68
+msgid "generic profile image"
+msgstr "Általános profilkép"
+
+#: libravatar.php:69
+msgid "random geometric pattern"
+msgstr "Véletlen geometriai minta"
+
+#: libravatar.php:70
+msgid "monster face"
+msgstr "Szörnyarc"
+
+#: libravatar.php:71
+msgid "computer generated face"
+msgstr "Számítógéppel előállított arc"
+
+#: libravatar.php:72
+msgid "retro arcade style face"
+msgstr "Retró árkádstílusú arc"
+
+#: libravatar.php:73
+msgid "roboter face"
+msgstr "Robotarc"
+
+#: libravatar.php:74
+msgid "retro adventure game character"
+msgstr "Retró kalandjáték-karakter"
+
+#: libravatar.php:78
+msgid "Information"
+msgstr "Információ"
+
+#: libravatar.php:78
+msgid ""
+"Gravatar addon is installed. Please disable the Gravatar addon.<br>The "
+"Libravatar addon will fall back to Gravatar if nothing was found at "
+"Libravatar."
+msgstr "A Gravatar bővítmény telepítve van. Tiltsa le a Gravatar bővítményt.<br>A Libravatar bővítmény vissza fog állni a Gravatarra, ha semmi sem található a Libravatarnál."
+
+#: libravatar.php:83
+msgid "Save Settings"
+msgstr "Beállítások mentése"
+
+#: libravatar.php:84
+msgid "Default avatar image"
+msgstr "Alapértelmezett profilkép"
+
+#: libravatar.php:84
+msgid "Select default avatar image if none was found. See README"
+msgstr "Az alapértelmezett profilkép kiválasztása, ha semmi sem található. Nézze meg a README információkat."
