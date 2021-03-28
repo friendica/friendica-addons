@@ -1,0 +1,32 @@
+# ADDON rendertime
+# Copyright (C)
+# This file is distributed under the same license as the Friendica rendertime addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020-2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-26 00:06+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: rendertime.php:36
+#, php-format
+msgid ""
+"Database: %s/%s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: "
+"%s, Total: %s"
+msgstr "Adatbázis: %s/%s, hálózat: %s, megjelenítés: %s, munkamenet: %s, lemezművelet: %s, egyéb: %s, összesen: %s"
+
+#: rendertime.php:53
+#, php-format
+msgid "Class-Init: %s, Boot: %s, Init: %s, Content: %s, Other: %s, Total: %s"
+msgstr "Osztály-előkészítés: %s, indítás: %s, előkészítés: %s, tartalom: %s, egyéb: %s, összesen: %s"
