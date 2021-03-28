@@ -1,0 +1,72 @@
+# ADDON tumblr
+# Copyright (C)
+# This file is distributed under the same license as the Friendica tumblr addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020-2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:16+0100\n"
+"PO-Revision-Date: 2021-03-27 00:38+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: tumblr.php:39
+msgid "Permission denied."
+msgstr "Engedély megtagadva."
+
+#: tumblr.php:69 tumblr.php:283
+msgid "Save Settings"
+msgstr "Beállítások mentése"
+
+#: tumblr.php:71
+msgid "Consumer Key"
+msgstr "Felhasználói kulcs"
+
+#: tumblr.php:72
+msgid "Consumer Secret"
+msgstr "Felhasználói titok"
+
+#: tumblr.php:177
+msgid "You are now authenticated to tumblr."
+msgstr "Most már hitelesítve van a Tumblr-hez."
+
+#: tumblr.php:178
+msgid "return to the connector page"
+msgstr "visszatérés a csatlakozó oldalára"
+
+#: tumblr.php:194
+msgid "Post to Tumblr"
+msgstr "Beküldése a Tumblr-re"
+
+#: tumblr.php:224 tumblr.php:228
+msgid "Tumblr Export"
+msgstr "Tumblr exportálás"
+
+#: tumblr.php:232
+msgid "(Re-)Authenticate your tumblr page"
+msgstr "A Tumblr-oldal (újra)hitelesítése"
+
+#: tumblr.php:236
+msgid "Enable Tumblr Post Addon"
+msgstr "A Tumblr-beküldő bővítmény engedélyezése"
+
+#: tumblr.php:242
+msgid "Post to Tumblr by default"
+msgstr "Beküldés a Tumblr-re alapértelmezetten"
+
+#: tumblr.php:263
+msgid "Post to page:"
+msgstr "Beküldés az oldalra:"
+
+#: tumblr.php:277
+msgid "You are not authenticated to tumblr"
+msgstr "Nincs hitelesítve van a Tumblr-hez"
