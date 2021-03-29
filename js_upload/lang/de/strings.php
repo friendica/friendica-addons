@@ -6,8 +6,8 @@ function string_plural_select_de($n){
 	return intval($n != 1);
 }}
 ;
-$a->strings["Upload a file"] = "Datei hochladen";
-$a->strings["Drop files here to upload"] = "Ziehe die Dateien hierher die du hochladen willst";
+$a->strings["Select files for upload"] = "Dateien für den Upload auswählen";
+$a->strings["Drop files here to upload"] = "Ziehe die Dateien hierher, die du hochladen willst";
 $a->strings["Cancel"] = "Abbrechen";
 $a->strings["Failed"] = "Fehlgeschlagen";
 $a->strings["No files were uploaded."] = "Keine Dateien hochgeladen.";

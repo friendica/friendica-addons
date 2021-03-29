@@ -1,33 +1,40 @@
-# ADDON Krynn
+# ADDON krynn
 # Copyright (C)
-# This file is distributed under the same license as the Friendica Krynn addon package.
+# This file is distributed under the same license as the Friendica krynn addon package.
 # 
 # 
 # Translators:
-# Abrax <webmaster@a-zwenkau.de>, 2014
-# bavatar <tobias.diekershoff@gmx.net>, 2014
+# Andreas H., 2014
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2015
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018,2021
+# Ulf Rompe <transifex.com@rompe.org>, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2014-10-15 12:32+0000\n"
-"Last-Translator: Abrax <webmaster@a-zwenkau.de>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-29 05:34+0000\n"
+"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: Krynn.php:150
+#: krynn.php:132 krynn.php:136
+msgid "Krynn"
+msgstr "Krynn"
+
+#: krynn.php:141
 msgid "Krynn Settings"
-msgstr "Planeten Einstellungen"
+msgstr "Krynn-Einstellungen"
 
-#: Krynn.php:152
+#: krynn.php:143
 msgid "Enable Krynn Addon"
-msgstr "Planeten-Addon aktivieren"
+msgstr "Krynn-Addon aktivieren"
 
-#: Krynn.php:158
-msgid "Submit"
-msgstr "Senden"
+#: krynn.php:148
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
