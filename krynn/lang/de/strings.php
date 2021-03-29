@@ -6,6 +6,7 @@ function string_plural_select_de($n){
 	return intval($n != 1);
 }}
 ;
-$a->strings["Krynn Settings"] = "Planeten Einstellungen";
-$a->strings["Enable Krynn Addon"] = "Planeten-Addon aktivieren";
-$a->strings["Submit"] = "Senden";
+$a->strings["Krynn"] = "Krynn";
+$a->strings["Krynn Settings"] = "Krynn-Einstellungen";
+$a->strings["Enable Krynn Addon"] = "Krynn-Addon aktivieren";
+$a->strings["Save Settings"] = "Einstellungen speichern";
