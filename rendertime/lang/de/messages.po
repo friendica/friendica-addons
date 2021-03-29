@@ -4,24 +4,30 @@
 # 
 # 
 # Translators:
-# bavatar <tobias.diekershoff@gmx.net>, 2014
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2014-10-02 14:36+0000\n"
-"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-29 05:47+0000\n"
+"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: rendertime.php:30
+#: rendertime.php:36
 #, php-format
 msgid ""
-"Performance: Database: %s, Network: %s, Rendering: %s, Parser: %s, I/O: %s, "
-"Other: %s, Total: %s"
-msgstr "Performance: Datenbank: %s, Netzwerk: %s, Rendering: %s, Parser: %s, I/O: %s, Anderes: %s, Gesamt: %s"
+"Database: %s/%s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: "
+"%s, Total: %s"
+msgstr "Datenbank: %s/%s, Netzwerk: %s, Darstellung: %s, Sitzung: %s, I/O: %s, Sonstiges: %s, Gesamt: %s"
+
+#: rendertime.php:53
+#, php-format
+msgid "Class-Init: %s, Boot: %s, Init: %s, Content: %s, Other: %s, Total: %s"
+msgstr "Class-Init: %s, Boot: %s, Init: %s, Inhalt: %s, Sonstiges: %s, Gesamt: %s"
