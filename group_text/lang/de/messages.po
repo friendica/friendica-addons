@@ -4,34 +4,32 @@
 # 
 # 
 # Translators:
-# Abrax <webmaster@a-zwenkau.de>, 2014
-# bavatar <tobias.diekershoff@gmx.net>, 2014
+# Andreas H., 2014
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2021
+# Ulf Rompe <transifex.com@rompe.org>, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2014-10-15 12:29+0000\n"
-"Last-Translator: Abrax <webmaster@a-zwenkau.de>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-29 05:25+0000\n"
+"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: group_text.php:46
-msgid "Group Text settings updated."
-msgstr "Gruppen Text Einstellungen aktualisiert"
-
-#: group_text.php:76
+#: group_text.php:62
 msgid "Group Text"
 msgstr "Gruppen als Text"
 
-#: group_text.php:78
+#: group_text.php:64
 msgid "Use a text only (non-image) group selector in the \"group edit\" menu"
 msgstr "Beim Bearbeiten von Gruppen Text statt Bilder anzeigen"
 
-#: group_text.php:84
-msgid "Submit"
-msgstr "Senden"
+#: group_text.php:70
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
