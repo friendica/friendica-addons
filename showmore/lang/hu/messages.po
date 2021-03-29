@@ -1,0 +1,40 @@
+# ADDON showmore
+# Copyright (C)
+# This file is distributed under the same license as the Friendica showmore addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020-2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-26 00:16+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: showmore.php:35 showmore.php:39
+msgid "\"Show more\" Settings"
+msgstr "„Több megjelenítése” beállításai"
+
+#: showmore.php:44
+msgid "Enable Show More"
+msgstr "Több megjelenítésének engedélyezése"
+
+#: showmore.php:47
+msgid "Cutting posts after how much characters"
+msgstr "Bejegyzések vágása ennyi karakter után"
+
+#: showmore.php:51
+msgid "Save Settings"
+msgstr "Beállítások mentése"
+
+#: showmore.php:129
+msgid "show more"
+msgstr "több megjelenítése"

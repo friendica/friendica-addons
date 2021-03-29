@@ -1,0 +1,48 @@
+# ADDON ljpost
+# Copyright (C)
+# This file is distributed under the same license as the Friendica ljpost addon package.
+# 
+# 
+# Translators:
+# Alexander An <ravnina@gmail.com>, 2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-03 17:45+0000\n"
+"Last-Translator: Alexander An <ravnina@gmail.com>\n"
+"Language-Team: Russian (http://www.transifex.com/Friendica/friendica/language/ru/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: ljpost.php:39
+msgid "Post to LiveJournal"
+msgstr "Отправить в LiveJournal"
+
+#: ljpost.php:73
+msgid "LiveJournal Post Settings"
+msgstr "Настройки отправки в LiveJournal"
+
+#: ljpost.php:75
+msgid "Enable LiveJournal Post Addon"
+msgstr "Включить отправку в LiveJournal"
+
+#: ljpost.php:80
+msgid "LiveJournal username"
+msgstr "Имя пользователя LiveJournal"
+
+#: ljpost.php:85
+msgid "LiveJournal password"
+msgstr "Пароль в LiveJournal"
+
+#: ljpost.php:90
+msgid "Post to LiveJournal by default"
+msgstr "Отправлять записи в LiveJournal по-умолчанию"
+
+#: ljpost.php:96
+msgid "Save Settings"
+msgstr "Сохранить настройки"

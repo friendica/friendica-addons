@@ -1,0 +1,48 @@
+# ADDON libertree
+# Copyright (C)
+# This file is distributed under the same license as the Friendica libertree addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020-2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-24 00:26+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: libertree.php:37
+msgid "Post to libertree"
+msgstr "Beküldés a Libertree-re"
+
+#: libertree.php:71 libertree.php:75
+msgid "libertree Export"
+msgstr "Libertree exportálás"
+
+#: libertree.php:79
+msgid "Enable Libertree Post Addon"
+msgstr "A Libertree-beküldő bővítmény engedélyezése"
+
+#: libertree.php:84
+msgid "Libertree API token"
+msgstr "Libertree API token"
+
+#: libertree.php:89
+msgid "Libertree site URL"
+msgstr "Libertree oldal URL"
+
+#: libertree.php:94
+msgid "Post to Libertree by default"
+msgstr "Beküldés a Libertree-re alapértelmezetten"
+
+#: libertree.php:100
+msgid "Save Settings"
+msgstr "Beállítások mentése"

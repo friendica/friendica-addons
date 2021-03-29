@@ -5,13 +5,14 @@
 # 
 # Translators:
 # fabrixxm <fabrix.xm@gmail.com>, 2014-2015
+# Sylke Vicious <silkevicious@gmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2017-09-20 06:08+0000\n"
-"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-16 12:57+0000\n"
+"Last-Translator: Sylke Vicious <silkevicious@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,71 +20,67 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: impressum.php:37
+#: impressum.php:53
 msgid "Impressum"
 msgstr "Colophon"
 
-#: impressum.php:50 impressum.php:52 impressum.php:84
+#: impressum.php:66 impressum.php:68 impressum.php:99
 msgid "Site Owner"
 msgstr "Proprietario del sito"
 
-#: impressum.php:50 impressum.php:88
+#: impressum.php:66 impressum.php:103
 msgid "Email Address"
 msgstr "Indirizzo email"
 
-#: impressum.php:55 impressum.php:86
+#: impressum.php:71 impressum.php:101
 msgid "Postal Address"
 msgstr "Indirizzo"
 
-#: impressum.php:61
+#: impressum.php:77
 msgid ""
 "The impressum addon needs to be configured!<br />Please add at least the "
 "<tt>owner</tt> variable to your config file. For other variables please "
 "refer to the README file of the addon."
 msgstr "Il plugin Colophon deve essere configurato!<br>Aggiungi almeno il Proprietario del sito."
 
-#: impressum.php:78
-msgid "Settings updated."
-msgstr "Impostazioni aggiornate."
+#: impressum.php:98
+msgid "Save Settings"
+msgstr "Salva Impostazioni"
 
-#: impressum.php:83
-msgid "Submit"
-msgstr "Invia"
-
-#: impressum.php:84
+#: impressum.php:99
 msgid "The page operators name."
 msgstr "Nome del gestore della pagina."
 
-#: impressum.php:85
+#: impressum.php:100
 msgid "Site Owners Profile"
 msgstr "Profilo del proprietario del sito"
 
-#: impressum.php:85
+#: impressum.php:100
 msgid "Profile address of the operator."
 msgstr "Indirizzo del profilo del gestore della pagina"
 
-#: impressum.php:86
+#: impressum.php:101
 msgid "How to contact the operator via snail mail. You can use BBCode here."
 msgstr "Come contattare il gestore via posta cartacea. Puoi usare BBCode."
 
-#: impressum.php:87
+#: impressum.php:102
 msgid "Notes"
 msgstr "Note"
 
-#: impressum.php:87
+#: impressum.php:102
 msgid ""
 "Additional notes that are displayed beneath the contact information. You can"
 " use BBCode here."
 msgstr "Note aggiuntive mostrate sotto le informazioni di contatto. Puoi usare BBCode."
 
-#: impressum.php:88
+#: impressum.php:103
 msgid "How to contact the operator via email. (will be displayed obfuscated)"
 msgstr "Come contattare l'operatore via email. (verrà mostrato offuscato)"
 
-#: impressum.php:89
+#: impressum.php:104
 msgid "Footer note"
 msgstr "Nota a piè di pagina"
 
-#: impressum.php:89
+#: impressum.php:104
 msgid "Text for the footer. You can use BBCode here."
 msgstr "Testo per il piè di pagina. Puoi usare BBCode."

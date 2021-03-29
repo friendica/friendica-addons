@@ -4,45 +4,46 @@
 # 
 # 
 # Translators:
-# Nicola Spanti <translations@nicola-spanti.info>, 2015
+# bob lebonche <lebonche@tutanota.com>, 2021
+# ea1cd8241cb389ffb6f92bc6891eff5d_dc12308 <70dced5587d47e18d88f9298024d96f8_93383>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2015-07-27 18:21+0000\n"
-"Last-Translator: Nicola Spanti <translations@nicola-spanti.info>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/friendica/language/fr/)\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-22 09:20+0000\n"
+"Last-Translator: bob lebonche <lebonche@tutanota.com>\n"
+"Language-Team: French (http://www.transifex.com/Friendica/friendica/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: libertree.php:36
+#: libertree.php:37
 msgid "Post to libertree"
 msgstr "Publier sur libertree"
 
-#: libertree.php:67
-msgid "libertree Post Settings"
-msgstr "Réglages des messages sur libertree"
+#: libertree.php:71 libertree.php:75
+msgid "libertree Export"
+msgstr "Export de Libertree"
 
-#: libertree.php:69
+#: libertree.php:79
 msgid "Enable Libertree Post Addon"
-msgstr "Activer leaddonde publication sur libertree"
+msgstr "Activer l'extension de publication Libertree"
 
-#: libertree.php:74
+#: libertree.php:84
 msgid "Libertree API token"
 msgstr "Clé de l'API libertree"
 
-#: libertree.php:79
+#: libertree.php:89
 msgid "Libertree site URL"
 msgstr "URL du site libertree"
 
-#: libertree.php:84
+#: libertree.php:94
 msgid "Post to Libertree by default"
 msgstr "Publier sur libertree par défaut"
 
-#: libertree.php:90
-msgid "Submit"
-msgstr "Envoyer"
+#: libertree.php:100
+msgid "Save Settings"
+msgstr "Sauvegarder les paramètres"

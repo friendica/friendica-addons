@@ -4,13 +4,13 @@
 # 
 # 
 # Translators:
-# Balázs Úr, 2020
+# Balázs Úr, 2020-2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2020-12-23 02:03+0000\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-27 01:22+0000\n"
 "Last-Translator: Balázs Úr\n"
 "Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -19,57 +19,53 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: gravatar.php:71
+#: gravatar.php:78
 msgid "generic profile image"
 msgstr "Általános profilkép"
 
-#: gravatar.php:72
+#: gravatar.php:79
 msgid "random geometric pattern"
 msgstr "Véletlen geometriai minta"
 
-#: gravatar.php:73
+#: gravatar.php:80
 msgid "monster face"
 msgstr "Szörnyarc"
 
-#: gravatar.php:74
+#: gravatar.php:81
 msgid "computer generated face"
 msgstr "Számítógéppel előállított arc"
 
-#: gravatar.php:75
+#: gravatar.php:82
 msgid "retro arcade style face"
 msgstr "Retró árkádstílusú arc"
 
-#: gravatar.php:89
+#: gravatar.php:96
 msgid "Information"
 msgstr "Információ"
 
-#: gravatar.php:89
+#: gravatar.php:96
 msgid ""
 "Libravatar addon is installed, too. Please disable Libravatar addon or this "
 "Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if "
 "nothing was found at Libravatar."
 msgstr "A Libravatar bővítmény is telepítve van. Tiltsa le a Libravatar bővítményt vagy ezt a Gravatar bővítményt.<br>A Libravatar bővítmény vissza fog állni a Gravatarra, ha semmi sem található a Libravatarnál."
 
-#: gravatar.php:95
-msgid "Submit"
-msgstr "Elküldés"
+#: gravatar.php:102
+msgid "Save Settings"
+msgstr "Beállítások mentése"
 
-#: gravatar.php:96
+#: gravatar.php:103
 msgid "Default avatar image"
 msgstr "Alapértelmezett profilkép"
 
-#: gravatar.php:96
+#: gravatar.php:103
 msgid "Select default avatar image if none was found at Gravatar. See README"
 msgstr "Az alapértelmezett profilkép kiválasztása, ha semmi sem található a Gravatarnál. Nézze meg a README információkat."
 
-#: gravatar.php:97
+#: gravatar.php:104
 msgid "Rating of images"
 msgstr "Képek értékelése"
 
-#: gravatar.php:97
+#: gravatar.php:104
 msgid "Select the appropriate avatar rating for your site. See README"
 msgstr "A megfelelő profilkép-értékelés kiválasztása az oldalához. Nézze meg a README információkat."
-
-#: gravatar.php:111
-msgid "Gravatar settings updated."
-msgstr "A Gravatar beállításai frissítve."

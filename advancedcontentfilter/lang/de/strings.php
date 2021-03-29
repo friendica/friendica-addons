@@ -6,6 +6,7 @@ function string_plural_select_de($n){
 	return intval($n != 1);
 }}
 ;
+$a->strings["Method not found"] = "Methode nicht gefunden";
 $a->strings["Filtered by rule: %s"] = "Nach dieser Regel gefiltert: %s";
 $a->strings["Advanced Content Filter"] = "Erweiterter Inhaltsfilter";
 $a->strings["Back to Addon Settings"] = "Zurück zu den Addon Einstellungen";
@@ -26,7 +27,7 @@ $a->strings["Add new rule"] = "Neue Regel hinzufügen";
 $a->strings["Rule Name"] = "Name der Regel";
 $a->strings["Rule Expression"] = "Ausdruck der Regel";
 $a->strings["Cancel"] = "Abbrechen";
-$a->strings["You must be logged in to use this method"] = "Du musst angemeldet sein um diese Methode verwenden zu können ";
+$a->strings["You must be logged in to use this method"] = "Du musst angemeldet sein, um diese Methode verwenden zu können ";
 $a->strings["Invalid form security token, please refresh the page."] = "Ungültiges Sciherheitstoken, bitte die Seite neu laden.";
 $a->strings["The rule name and expression are required."] = "Der Name der Regel und der Ausdruck sind erforderlich.";
 $a->strings["Rule successfully added"] = "Regel erfolgreich hinzugefügt.";
@@ -35,4 +36,3 @@ $a->strings["Rule successfully updated"] = "Regel wurde erfolgreich aktualisiert
 $a->strings["Rule successfully deleted"] = "Regel erfolgreich gelöscht.";
 $a->strings["Missing argument: guid."] = "Fehlendes Argument: guid.";
 $a->strings["Unknown post with guid: %s"] = "Unbekannter Beitrag mit der guid: %s";
-$a->strings["Method not found"] = "Methode nicht gefunden";

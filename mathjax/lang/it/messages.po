@@ -5,13 +5,14 @@
 # 
 # Translators:
 # fabrixxm <fabrix.xm@gmail.com>, 2014-2015
+# Sylke Vicious <silkevicious@gmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2015-08-31 10:19+0000\n"
-"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-16 12:51+0000\n"
+"Last-Translator: Sylke Vicious <silkevicious@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,35 +20,17 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: mathjax.php:36
-msgid "Settings"
-msgstr "Impostazioni"
-
-#: mathjax.php:37
+#: mathjax.php:43
 msgid ""
 "The MathJax addon renders mathematical formulae written using the LaTeX "
 "syntax surrounded by the usual $$ or an eqnarray block in the postings of "
 "your wall,network tab and private mail."
-msgstr "Iladdon\"MatJax\" renderizza formule matematiche scritta usando la sintassi LaTeX circondate dalle usuali $$ o un blocco eqnarray nei messaggi della tua bacheca, pagina Rete e messaggi privati."
+msgstr "Il plugin \"MatJax\" renderizza formule matematiche scritta usando la sintassi LaTeX circondate dalle usuali $$ o un blocco eqnarray nei messaggi della tua bacheca, pagina Rete e messaggi privati."
 
-#: mathjax.php:38
+#: mathjax.php:44
 msgid "Use the MathJax renderer"
 msgstr "Usa il render MathJax"
 
-#: mathjax.php:42
-msgid "Submit"
-msgstr "Invia"
-
-#: mathjax.php:66
-msgid "Settings updated."
-msgstr "Impostazioni aggiornate."
-
-#: mathjax.php:75
-msgid "MathJax Base URL"
-msgstr "Indirizzo di base di MathJax"
-
-#: mathjax.php:75
-msgid ""
-"The URL for the javascript file that should be included to use MathJax. Can "
-"be either the MathJax CDN or another installation of MathJax."
-msgstr "L'indirizzo per il file javascript che deve essere incluso per usare MathJax. Può essere sul CDN di MathJax o in un'altra installazione di MathJax."
+#: mathjax.php:45
+msgid "Save Settings"
+msgstr "Salva Impostazioni"

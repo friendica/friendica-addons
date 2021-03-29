@@ -1,0 +1,74 @@
+# ADDON wppost
+# Copyright (C)
+# This file is distributed under the same license as the Friendica wppost addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020-2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:16+0100\n"
+"PO-Revision-Date: 2021-03-28 00:53+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: wppost.php:39
+msgid "Post to Wordpress"
+msgstr "Beküldés a WordPressre"
+
+#: wppost.php:80 wppost.php:84
+msgid "Wordpress Export"
+msgstr "WordPress exportálás"
+
+#: wppost.php:87
+msgid "Enable WordPress Post Addon"
+msgstr "A WordPress-beküldő bővítmény engedélyezése"
+
+#: wppost.php:93
+msgid "WordPress username"
+msgstr "WordPress felhasználónév"
+
+#: wppost.php:98
+msgid "WordPress password"
+msgstr "WordPress jelszó"
+
+#: wppost.php:103
+msgid "WordPress API URL"
+msgstr "WordPress API URL"
+
+#: wppost.php:108
+msgid "Post to WordPress by default"
+msgstr "Beküldés a WordPressre alapértelmezetten"
+
+#: wppost.php:114
+msgid "Provide a backlink to the Friendica post"
+msgstr "Visszafelé mutató hivatkozás biztosítása a Friendica bejegyzésre"
+
+#: wppost.php:119
+msgid ""
+"Text for the backlink, e.g. Read the original post and comment stream on "
+"Friendica."
+msgstr "A visszafelé mutató hivatkozás szövege, például „Olvassa el az eredeti bejegyzést és a hozzászólásokat a Friendicán”."
+
+#: wppost.php:124
+msgid "Don't post messages that are too short"
+msgstr "Ne küldjön be olyan üzeneteket, amelyek túl rövidek"
+
+#: wppost.php:131
+msgid "Save Settings"
+msgstr "Beállítások mentése"
+
+#: wppost.php:231
+msgid "Read the orig­i­nal post and com­ment stream on Friendica"
+msgstr "Olvassa el az eredeti bejegyzést és a hozzászólásokat a Friendicán"
+
+#: wppost.php:289
+msgid "Post from Friendica"
+msgstr "Bejegyzés a Friendicáról"

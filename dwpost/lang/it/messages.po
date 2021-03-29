@@ -5,13 +5,13 @@
 # 
 # Translators:
 # fabrixxm <fabrix.xm@gmail.com>, 2014,2018
-# Sylke Vicious <silkevicious@gmail.com>, 2020
+# Sylke Vicious <silkevicious@gmail.com>, 2020-2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2020-09-15 11:15+0000\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-16 12:55+0000\n"
 "Last-Translator: Sylke Vicious <silkevicious@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -20,30 +20,30 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: dwpost.php:39
+#: dwpost.php:41
 msgid "Post to Dreamwidth"
 msgstr "Invia a Dreamwidth"
 
-#: dwpost.php:70
-msgid "Dreamwidth Post Settings"
-msgstr "Impostazioni Invio a Dreamwidth"
+#: dwpost.php:72 dwpost.php:76
+msgid "Dreamwidth Export"
+msgstr "Esporta Dreamwidth"
 
-#: dwpost.php:72
+#: dwpost.php:80
 msgid "Enable dreamwidth Post Addon"
 msgstr "Abilita il componente aggiuntivo di invio a Dreamwidth"
 
-#: dwpost.php:77
+#: dwpost.php:85
 msgid "dreamwidth username"
 msgstr "Nome utente Dreamwidth"
 
-#: dwpost.php:82
+#: dwpost.php:90
 msgid "dreamwidth password"
 msgstr "password Dreamwidth"
 
-#: dwpost.php:87
+#: dwpost.php:95
 msgid "Post to dreamwidth by default"
 msgstr "Invia sempre a Dreamwidth"
 
-#: dwpost.php:93
-msgid "Submit"
-msgstr "Salva"
+#: dwpost.php:100
+msgid "Save Settings"
+msgstr "Salva Impostazioni"

@@ -7,15 +7,16 @@
 # Marie Olive <lacellule101@gmail.com>, 2018
 # Vladimir Núñez <lapoubelle111@gmail.com>, 2018
 # Phigger Phigger <automates@lepouete.fr>, 2019
+# Wil Tur <wiltur@yargl.com>, 2021
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-17 04:04+0200\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: 2018-05-24 06:41+0000\n"
-"Last-Translator: Phigger Phigger <automates@lepouete.fr>, 2019\n"
+"Last-Translator: Wil Tur <wiltur@yargl.com>, 2021\n"
 "Language-Team: French (https://www.transifex.com/Friendica/teams/12172/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,44 +24,48 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: advancedcontentfilter.php:134
+#: src/middlewares.php:49
+msgid "Method not found"
+msgstr "Méthode non trouvée"
+
+#: advancedcontentfilter.php:136
 #, php-format
 msgid "Filtered by rule: %s"
 msgstr "Filtré par règle:%s"
 
-#: advancedcontentfilter.php:147 advancedcontentfilter.php:204
+#: advancedcontentfilter.php:150 advancedcontentfilter.php:207
 msgid "Advanced Content Filter"
 msgstr "Filtre avancé de contenu"
 
-#: advancedcontentfilter.php:203
+#: advancedcontentfilter.php:206
 msgid "Back to Addon Settings"
 msgstr "Retour aux paramètres de l'extension"
 
-#: advancedcontentfilter.php:205
+#: advancedcontentfilter.php:208
 msgid "Add a Rule"
 msgstr "Ajouter une règle"
 
-#: advancedcontentfilter.php:206
+#: advancedcontentfilter.php:209
 msgid "Help"
 msgstr "Aide"
 
-#: advancedcontentfilter.php:207
+#: advancedcontentfilter.php:210
 msgid ""
 "Add and manage your personal content filter rules in this screen. Rules have"
 " a name and an arbitrary expression that will be matched against post data. "
 "For a complete reference of the available operations and variables, check "
-"the <a href=\"advancedcontentfilter/help\">help page</a>."
+"the help page."
 msgstr ""
-"Dans cet écran, ajoutez et gérez votre règle personnelle de filtre de "
-"contenu. Les règles portent un nom et contiennent une expression arbitraire "
-"qui sera appliquée aux données du post. Pour une liste complète des "
-"opérations disponibles, voyez la page d'aide"
+"Cet écran permet d'ajouter et de gérer vos règles de filtrage de contenu "
+"personnelles. Les règles ont un nom et une expression arbitraire qui sera "
+"comparée aux données des messages. Pour une référence complète des "
+"opérations et variables disponibles, consultez la page d'aide."
 
-#: advancedcontentfilter.php:208
+#: advancedcontentfilter.php:211
 msgid "Your rules"
 msgstr "Vos règles"
 
-#: advancedcontentfilter.php:209
+#: advancedcontentfilter.php:212
 msgid ""
 "You have no rules yet! Start adding one by clicking on the button above next"
 " to the title."
@@ -68,110 +73,98 @@ msgstr ""
 "Vous n'avez encore aucune règle! Ajoutez-en une en cliquant le bouton au-"
 "dessus près du titre"
 
-#: advancedcontentfilter.php:210
+#: advancedcontentfilter.php:213
 msgid "Disabled"
 msgstr "Désactivé"
 
-#: advancedcontentfilter.php:211
+#: advancedcontentfilter.php:214
 msgid "Enabled"
 msgstr "Activé"
 
-#: advancedcontentfilter.php:212
+#: advancedcontentfilter.php:215
 msgid "Disable this rule"
 msgstr "Désactiver cette règle"
 
-#: advancedcontentfilter.php:213
+#: advancedcontentfilter.php:216
 msgid "Enable this rule"
 msgstr "Activer cette règle"
 
-#: advancedcontentfilter.php:214
+#: advancedcontentfilter.php:217
 msgid "Edit this rule"
 msgstr "Modifier cette règle"
 
-#: advancedcontentfilter.php:215
+#: advancedcontentfilter.php:218
 msgid "Edit the rule"
 msgstr "Modifier la règle"
 
-#: advancedcontentfilter.php:216
+#: advancedcontentfilter.php:219
 msgid "Save this rule"
 msgstr "Enregistrer cette règle"
 
-#: advancedcontentfilter.php:217
+#: advancedcontentfilter.php:220
 msgid "Delete this rule"
 msgstr "Supprimer cette règle"
 
-#: advancedcontentfilter.php:218
+#: advancedcontentfilter.php:221
 msgid "Rule"
 msgstr "Règle"
 
-#: advancedcontentfilter.php:219
+#: advancedcontentfilter.php:222
 msgid "Close"
 msgstr "Fermer"
 
-#: advancedcontentfilter.php:220
+#: advancedcontentfilter.php:223
 msgid "Add new rule"
 msgstr "Ajouter nouvelle règle"
 
-#: advancedcontentfilter.php:221
+#: advancedcontentfilter.php:224
 msgid "Rule Name"
 msgstr "Nommer règle"
 
-#: advancedcontentfilter.php:222
+#: advancedcontentfilter.php:225
 msgid "Rule Expression"
 msgstr "Expression de règle"
 
-#: advancedcontentfilter.php:223
-msgid ""
-"<p>Examples:</p><ul><li><pre>author_link == "
-"'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>"
-msgstr ""
-"<p>Exemples :</p><ul><li><pre>author_link == "
-"'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>"
-
-#: advancedcontentfilter.php:224
+#: advancedcontentfilter.php:226
 msgid "Cancel"
 msgstr "Annuler"
 
-#: advancedcontentfilter.php:290 advancedcontentfilter.php:301
-#: advancedcontentfilter.php:312 advancedcontentfilter.php:346
-#: advancedcontentfilter.php:375 advancedcontentfilter.php:396
+#: advancedcontentfilter.php:293 advancedcontentfilter.php:304
+#: advancedcontentfilter.php:315 advancedcontentfilter.php:349
+#: advancedcontentfilter.php:378 advancedcontentfilter.php:399
 msgid "You must be logged in to use this method"
 msgstr "Vous devez être connecté pour utiliser cette méthode"
 
-#: advancedcontentfilter.php:316 advancedcontentfilter.php:350
-#: advancedcontentfilter.php:379
+#: advancedcontentfilter.php:319 advancedcontentfilter.php:353
+#: advancedcontentfilter.php:382
 msgid "Invalid form security token, please refresh the page."
 msgstr "Formulaire token de sécurité invalide, rafraîchissez la page"
 
-#: advancedcontentfilter.php:328
+#: advancedcontentfilter.php:331
 msgid "The rule name and expression are required."
 msgstr "Le nom et l'expression de cette règle sont requis"
 
-#: advancedcontentfilter.php:340
+#: advancedcontentfilter.php:343
 msgid "Rule successfully added"
 msgstr "Règle bien ajoutée"
 
-#: advancedcontentfilter.php:354 advancedcontentfilter.php:383
+#: advancedcontentfilter.php:357 advancedcontentfilter.php:386
 msgid "Rule doesn't exist or doesn't belong to you."
 msgstr "Cette règle n'existe pas ou ne vous appartient pas"
 
-#: advancedcontentfilter.php:369
+#: advancedcontentfilter.php:372
 msgid "Rule successfully updated"
 msgstr "Règle bien mise à jour"
 
-#: advancedcontentfilter.php:390
+#: advancedcontentfilter.php:393
 msgid "Rule successfully deleted"
 msgstr "Règle bien supprimée"
 
-#: advancedcontentfilter.php:400
+#: advancedcontentfilter.php:403
 msgid "Missing argument: guid."
 msgstr "Argument manquant: "
 
-#: advancedcontentfilter.php:406
+#: advancedcontentfilter.php:411
 #, php-format
 msgid "Unknown post with guid: %s"
 msgstr "Post inconnu avec guid : %s"
-
-#: src/middlewares.php:28
-msgid "Method not found"
-msgstr "Méthode non trouvée"

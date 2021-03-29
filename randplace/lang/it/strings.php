@@ -8,4 +8,4 @@ function string_plural_select_it($n){
 ;
 $a->strings["Randplace Settings"] = "Impostazioni \"Posizione casuale\"";
 $a->strings["Enable Randplace Addon"] = "Abilita il componente aggiuntivo Posizione Casuale";
-$a->strings["Submit"] = "Invia";
+$a->strings["Save Settings"] = "Salva Impostazioni";

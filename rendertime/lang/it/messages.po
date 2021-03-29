@@ -5,13 +5,14 @@
 # 
 # Translators:
 # fabrixxm <fabrix.xm@gmail.com>, 2014
+# Sylke Vicious <silkevicious@gmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2017-09-20 06:08+0000\n"
-"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-16 13:01+0000\n"
+"Last-Translator: Sylke Vicious <silkevicious@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/Friendica/friendica/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,9 +20,14 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: rendertime.php:29
+#: rendertime.php:36
 #, php-format
 msgid ""
-"Performance: Database: %s, Network: %s, Rendering: %s, Parser: %s, I/O: %s, "
-"Other: %s, Total: %s"
-msgstr "Performance: Database: %s, Network: %s, Rendering: %s, Parser: %s, I/O: %s, Other: %s, Total: %s"
+"Database: %s/%s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: "
+"%s, Total: %s"
+msgstr "Database: %s/%s, Rete: %s, Rendering: %s, Sessione: %s, I/O: %s, Altro: %s, Totale: %s"
+
+#: rendertime.php:53
+#, php-format
+msgid "Class-Init: %s, Boot: %s, Init: %s, Content: %s, Other: %s, Total: %s"
+msgstr "Class-Init: %s, Boot: %s, Init: %s, Content: %s, Altro: %s, Totale: %s"

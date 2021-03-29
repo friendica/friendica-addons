@@ -6,6 +6,7 @@ function string_plural_select_fr($n){
 	return intval($n > 1);
 }}
 ;
+$a->strings["Method not found"] = "Méthode non trouvée";
 $a->strings["Filtered by rule: %s"] = "Filtré par règle:%s";
 $a->strings["Advanced Content Filter"] = "Filtre avancé de contenu";
 $a->strings["Back to Addon Settings"] = "Retour aux paramètres de l'extension";
@@ -35,4 +36,3 @@ $a->strings["Rule successfully updated"] = "Règle bien mise à jour";
 $a->strings["Rule successfully deleted"] = "Règle bien supprimée";
 $a->strings["Missing argument: guid."] = "Argument manquant: ";
 $a->strings["Unknown post with guid: %s"] = "Post inconnu avec guid : %s";
-$a->strings["Method not found"] = "Méthode non trouvée";

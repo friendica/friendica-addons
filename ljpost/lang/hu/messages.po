@@ -1,0 +1,48 @@
+# ADDON ljpost
+# Copyright (C)
+# This file is distributed under the same license as the Friendica ljpost addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020-2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-24 00:39+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ljpost.php:39
+msgid "Post to LiveJournal"
+msgstr "Beküldés a LiveJournalra"
+
+#: ljpost.php:73
+msgid "LiveJournal Post Settings"
+msgstr "LiveJournal-beküldés beállításai"
+
+#: ljpost.php:75
+msgid "Enable LiveJournal Post Addon"
+msgstr "A LiveJournal-beküldő bővítmény engedélyezése"
+
+#: ljpost.php:80
+msgid "LiveJournal username"
+msgstr "LiveJournal felhasználónév"
+
+#: ljpost.php:85
+msgid "LiveJournal password"
+msgstr "LiveJournal jelszó"
+
+#: ljpost.php:90
+msgid "Post to LiveJournal by default"
+msgstr "Beküldés a LiveJournalra alapértelmezetten"
+
+#: ljpost.php:96
+msgid "Save Settings"
+msgstr "Beállítások mentése"

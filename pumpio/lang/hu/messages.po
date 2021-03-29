@@ -1,0 +1,94 @@
+# ADDON pumpio
+# Copyright (C)
+# This file is distributed under the same license as the Friendica pumpio addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2020-2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-27 00:38+0000\n"
+"Last-Translator: Balázs Úr\n"
+"Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: pumpio.php:54
+msgid "Permission denied."
+msgstr "Engedély megtagadva."
+
+#: pumpio.php:149
+#, php-format
+msgid "Unable to register the client at the pump.io server '%s'."
+msgstr "Nem lehet regisztrálni a klienst a(z) „%s” pump.io kiszolgálón."
+
+#: pumpio.php:189
+msgid "You are now authenticated to pumpio."
+msgstr "Most már hitelesítve van a pump.io-hoz."
+
+#: pumpio.php:190
+msgid "return to the connector page"
+msgstr "visszatérés a csatlakozó oldalára"
+
+#: pumpio.php:210
+msgid "Post to pumpio"
+msgstr "Beküldése a pump.io-ra"
+
+#: pumpio.php:251 pumpio.php:255
+msgid "Pump.io Import/Export/Mirror"
+msgstr "Pump.io importálás, exportálás vagy tükrözés"
+
+#: pumpio.php:259
+msgid "pump.io username (without the servername)"
+msgstr "pump.io felhasználónév (a kiszolgálónév nélkül)"
+
+#: pumpio.php:264
+msgid "pump.io servername (without \"http://\" or \"https://\" )"
+msgstr "pump.io kiszolgálónév (a „http://” vagy „https://” nélkül)"
+
+#: pumpio.php:275
+msgid "Authenticate your pump.io connection"
+msgstr "A pump.io-kapcsolatának hitelesítése"
+
+#: pumpio.php:279
+msgid "Import the remote timeline"
+msgstr "A távoli idővonal importálása"
+
+#: pumpio.php:284
+msgid "Enable pump.io Post Addon"
+msgstr "A pump.io-beküldő bővítmény engedélyezése"
+
+#: pumpio.php:289
+msgid "Post to pump.io by default"
+msgstr "Beküldés a pump.io-ra alapértelmezetten"
+
+#: pumpio.php:294
+msgid "Should posts be public?"
+msgstr "Nyilvánosak legyenek a bejegyzések?"
+
+#: pumpio.php:299
+msgid "Mirror all public posts"
+msgstr "Összes nyilvános bejegyzés tükrözése"
+
+#: pumpio.php:304
+msgid "Check to delete this preset"
+msgstr "Jelölje be az előbeállítás törléséhez"
+
+#: pumpio.php:314
+msgid "Save Settings"
+msgstr "Beállítások mentése"
+
+#: pumpio.php:981
+msgid "status"
+msgstr "állapotát"
+
+#: pumpio.php:985
+#, php-format
+msgid "%1$s likes %2$s's %3$s"
+msgstr "%1$s kedveli %2$s %3$s"

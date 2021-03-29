@@ -7,9 +7,9 @@ function string_plural_select_de($n){
 }}
 ;
 $a->strings["Post to Dreamwidth"] = "In Dreamwidth veröffentlichen";
-$a->strings["Dreamwidth Post Settings"] = "Dreamwidth Veröffentlichungs-Einstellungen";
-$a->strings["Enable dreamwidth Post Addon"] = "Dreamwidth Post Addon aktivieren";
-$a->strings["dreamwidth username"] = "Dreamwidth Benutzername";
-$a->strings["dreamwidth password"] = "Dreamwidth Passwort";
+$a->strings["Dreamwidth Export"] = "Dreamwidth Export";
+$a->strings["Enable dreamwidth Post Addon"] = "Dreamwidth-Post-Addon aktivieren";
+$a->strings["dreamwidth username"] = "Dreamwidth-Benutzername";
+$a->strings["dreamwidth password"] = "Dreamwidth-Passwort";
 $a->strings["Post to dreamwidth by default"] = "Standardmäßig bei Dreamwidth veröffentlichen";
-$a->strings["Submit"] = "Senden";
+$a->strings["Save Settings"] = "Speichere Einstellungen";

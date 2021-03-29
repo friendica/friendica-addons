@@ -6,7 +6,7 @@ function string_plural_select_hu($n){
 	return intval($n != 1);
 }}
 ;
-$a->strings["Error fetching weather data.\\nError was: "] = "Hiba az időjárási adatok lekérésekor.\\nA hiba ez volt: ";
+$a->strings["Error fetching weather data. Error was: "] = "Hiba az időjárásadatok lekérésekor. A hiba ez volt: ";
 $a->strings["Current Weather"] = "Jelenlegi időjárás";
 $a->strings["Relative Humidity"] = "Relatív páratartalom";
 $a->strings["Pressure"] = "Légnyomás";
@@ -16,7 +16,6 @@ $a->strings["Data by"] = "Adatszolgáltató";
 $a->strings["Show on map"] = "Megjelenítés térképen";
 $a->strings["There was a problem accessing the weather data. But have a look"] = "Probléma történt az időjárási adatokhoz való hozzáféréskor. De nézzen körül itt:";
 $a->strings["at OpenWeatherMap"] = "OpenWeatherMap";
-$a->strings["Current Weather settings updated."] = "A jelenlegi időjárás beállításai frissítve.";
 $a->strings["No APPID found, please contact your admin to obtain one."] = "Nem található alkalmazásazonosító. Vegye fel a kapcsolatot az adminisztrátorral, hogy beszerezzen egyet.";
 $a->strings["Save Settings"] = "Beállítások mentése";
 $a->strings["Settings"] = "Beállítások";
@@ -26,7 +25,6 @@ $a->strings["Identifier of your location (name or zip code), e.g. <em>Berlin,DE<
 $a->strings["Units"] = "Mértékegységek";
 $a->strings["select if the temperature should be displayed in &deg;C or &deg;F"] = "Annak kiválasztása, hogy a hőmérsékletet &deg;C vagy &deg;F fokban kell megjeleníteni.";
 $a->strings["Show weather data"] = "Időjárási adatok megjelenítése";
-$a->strings["Curweather settings saved."] = "A jelenlegi időjárás beállításai elmentve.";
 $a->strings["Caching Interval"] = "Gyorsítótárazási időköz";
 $a->strings["For how long should the weather data be cached? Choose according your OpenWeatherMap account type."] = "Mennyi ideig kell az időjárási adatokat gyorsítótárazni? Válasszon az OpenWeatherMap fióktípusa szerint.";
 $a->strings["no cache"] = "nincs gyorsítótár";

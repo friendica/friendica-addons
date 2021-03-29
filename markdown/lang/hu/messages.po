@@ -1,0 +1,41 @@
+# ADDON markdown
+# Copyright (C)
+# This file is distributed under the same license as the Friendica markdown addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2021
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2019-12-27 06:41+0000\n"
+"Last-Translator: Balázs Úr, 2021\n"
+"Language-Team: Hungarian (https://www.transifex.com/Friendica/teams/12172/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: markdown.php:30
+msgid "Markdown"
+msgstr "Markdown"
+
+#: markdown.php:31
+msgid "Enable Markdown parsing"
+msgstr "Markdown-feldolgozás engedélyezése"
+
+#: markdown.php:31
+msgid ""
+"If enabled, self created items will additionally be parsed via Markdown."
+msgstr ""
+"Ha engedélyezve van, akkor az önmagukat létrehozó elemek is fel lesznek "
+"dolgozva Markdown használatával."
+
+#: markdown.php:32
+msgid "Save Settings"
+msgstr "Beállítások mentése"

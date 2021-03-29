@@ -1,0 +1,56 @@
+# ADDON xmpp
+# Copyright (C)
+# This file is distributed under the same license as the Friendica xmpp addon package.
+# 
+# 
+# Translators:
+# bob lebonche <lebonche@tutanota.com>, 2021
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:16+0100\n"
+"PO-Revision-Date: 2017-11-27 10:38+0000\n"
+"Last-Translator: bob lebonche <lebonche@tutanota.com>, 2021\n"
+"Language-Team: French (https://www.transifex.com/Friendica/teams/12172/fr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: xmpp.php:57 xmpp.php:61
+msgid "XMPP-Chat (Jabber)"
+msgstr "XMPP-Chat (Jabber)"
+
+#: xmpp.php:65
+msgid "Enable Webchat"
+msgstr "Activer le chat en ligne"
+
+#: xmpp.php:70
+msgid "Individual Credentials"
+msgstr "Identification individuelle"
+
+#: xmpp.php:76 xmpp.php:102
+msgid "Jabber BOSH host"
+msgstr "Hôte Jabber BOSH"
+
+#: xmpp.php:85 xmpp.php:101
+msgid "Save Settings"
+msgstr "Sauvegarder les paramètres"
+
+#: xmpp.php:103
+msgid "Use central userbase"
+msgstr "Utilisez la base de données centrale d'utilisateurs"
+
+#: xmpp.php:103
+msgid ""
+"If enabled, users will automatically login to an ejabberd server that has to"
+" be installed on this machine with synchronized credentials via the "
+"\"auth_ejabberd.php\" script."
+msgstr ""
+"Si activé, les utilisateurs vont automatiquement se connecter à un serveur "
+"ejabberd qui doit être installé sur cette machine avec une identification "
+"synchronisée via le script \"auth_ejabberd.php\"."
