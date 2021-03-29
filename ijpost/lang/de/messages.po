@@ -4,16 +4,18 @@
 # 
 # 
 # Translators:
-# Abrax <webmaster@a-zwenkau.de>, 2014
-# bavatar <tobias.diekershoff@gmx.net>, 2014
+# Andreas H., 2014
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018,2021
+# Ulf Rompe <transifex.com@rompe.org>, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2014-10-15 12:29+0000\n"
-"Last-Translator: Abrax <webmaster@a-zwenkau.de>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-03-29 05:28+0000\n"
+"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,26 +26,26 @@ msgstr ""
 msgid "Post to Insanejournal"
 msgstr "Auf InsaneJournal posten."
 
-#: ijpost.php:70
-msgid "InsaneJournal Post Settings"
-msgstr "InsaneJournal Beitrags-Einstellungen"
+#: ijpost.php:71 ijpost.php:75
+msgid "InsaneJournal Export"
+msgstr "InsaneJournal Export"
 
-#: ijpost.php:72
+#: ijpost.php:79
 msgid "Enable InsaneJournal Post Addon"
-msgstr "InsaneJournal Addon aktivieren"
+msgstr "InsaneJournal-Addon aktivieren"
 
-#: ijpost.php:77
+#: ijpost.php:84
 msgid "InsaneJournal username"
-msgstr "InsaneJournal Benutzername"
+msgstr "InsaneJournal-Benutzername"
 
-#: ijpost.php:82
+#: ijpost.php:89
 msgid "InsaneJournal password"
-msgstr "InsaneJournal Passwort"
+msgstr "InsaneJournal-Passwort"
 
-#: ijpost.php:87
+#: ijpost.php:94
 msgid "Post to InsaneJournal by default"
 msgstr "Standardmäßig auf InsaneJournal posten."
 
-#: ijpost.php:93
-msgid "Submit"
-msgstr "Senden"
+#: ijpost.php:99
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
