@@ -1,0 +1,65 @@
+# ADDON cookienotice
+# Copyright (C)
+# This file is distributed under the same license as the Friendica cookienotice addon package.
+# 
+# 
+# Translators:
+# Senex Petrovic <javierruizo@hotmail.com>, 2021
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2019-01-23 16:01+0000\n"
+"Last-Translator: Senex Petrovic <javierruizo@hotmail.com>, 2021\n"
+"Language-Team: Spanish (https://www.transifex.com/Friendica/teams/12172/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: cookienotice.php:42
+msgid ""
+"This website uses cookies. If you continue browsing this website, you agree "
+"to the usage of cookies."
+msgstr ""
+"Este sitio web utiliza cookies. Si continúa navegando en este sitio web, "
+"acepta el uso de cookies."
+
+#: cookienotice.php:43 cookienotice.php:108
+msgid "OK"
+msgstr "OK"
+
+#: cookienotice.php:47
+msgid ""
+"<b>Configure your cookie usage notice.</b> It should just be a notice, "
+"saying that the website uses cookies. It is shown as long as a user didnt "
+"confirm clicking the OK button."
+msgstr ""
+"<b>Configura tu nota deñ uso de cookies.</b> Debería ser solo un aviso, "
+"diciendo que el sitio web utiliza cookies. Se muestra siempre que el usuario"
+" no confirmó haciendo clic en el botón Aceptar."
+
+#: cookienotice.php:48
+msgid "Cookie Usage Notice"
+msgstr "Aviso de uso de cookies"
+
+#: cookienotice.php:49
+msgid "OK Button Text"
+msgstr "Texto del botón OK"
+
+#: cookienotice.php:50
+msgid "Save Settings"
+msgstr "Grabar Ajustes"
+
+#: cookienotice.php:107
+msgid ""
+"This website uses cookies to recognize revisiting and logged in users. You "
+"accept the usage of these cookies by continue browsing this website."
+msgstr ""
+"Este sitio web utiliza cookies para reconocer a los usuarios que visitan y "
+"que inician sesión. Acepta el uso de estas cookies al continuar navegando en"
+" este sitio web."
