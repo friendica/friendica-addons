@@ -6,7 +6,7 @@ function string_plural_select_es($n){
 	return intval($n != 1);
 }}
 ;
-$a->strings["Geonames settings updated."] = "Ajustes de geonombres actualizados.";
 $a->strings["Geonames Settings"] = "Ajustes de Geonombres";
-$a->strings["Enable Geonames Addon"] = "Habilitar Addon de Geonombres";
-$a->strings["Submit"] = "Enviar";
+$a->strings["Replace numerical coordinates by the nearest populated location name in your posts."] = "Reemplace las coordenadas numéricas por el nombre de la ubicación poblada más cercana en sus publicaciones.";
+$a->strings["Enable Geonames Addon"] = "Habilitar Plugin de Geonombres";
+$a->strings["Save Settings"] = "Guardar Ajustes";

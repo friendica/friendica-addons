@@ -4,14 +4,15 @@
 # 
 # 
 # Translators:
-# Alberto Díaz Tormo <albertodiaztormo@gmail.com>, 2016
+# Albert, 2016
+# Senex Petrovic <javierruizo@hotmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2016-10-12 15:10+0000\n"
-"Last-Translator: Alberto Díaz Tormo <albertodiaztormo@gmail.com>\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-04-01 10:04+0000\n"
+"Last-Translator: Senex Petrovic <javierruizo@hotmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,66 +20,53 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: libravatar.php:14
-msgid "Could NOT install Libravatar successfully.<br>It requires PHP >= 5.3"
-msgstr "Podría NO instalar Libravatar con éxito.<br>Requiere PHP >= 5.3"
-
-#: libravatar.php:73
+#: libravatar.php:68
 msgid "generic profile image"
 msgstr "Imagen de perfil genérica"
 
-#: libravatar.php:74
+#: libravatar.php:69
 msgid "random geometric pattern"
 msgstr "Estampado geométrico aleatorio"
 
-#: libravatar.php:75
+#: libravatar.php:70
 msgid "monster face"
 msgstr "cara de monstruo"
 
-#: libravatar.php:76
+#: libravatar.php:71
 msgid "computer generated face"
 msgstr "Cara generada por ordenador"
 
-#: libravatar.php:77
+#: libravatar.php:72
 msgid "retro arcade style face"
 msgstr "Cara de estilo retro"
 
-#: libravatar.php:82
-msgid "Warning"
-msgstr "Advertencia"
+#: libravatar.php:73
+msgid "roboter face"
+msgstr "Cara de Robot"
 
-#: libravatar.php:83
-#, php-format
-msgid "Your PHP version %s is lower than the required PHP >= 5.3."
-msgstr "Su versión PHP %s es inferior a la requerida PHP >= 5.3."
+#: libravatar.php:74
+msgid "retro adventure game character"
+msgstr "personaje de juego de aventuras retro"
 
-#: libravatar.php:84
-msgid "This addon is not functional on your server."
-msgstr "Este complemento no es funcional en su servidor"
-
-#: libravatar.php:93
+#: libravatar.php:78
 msgid "Information"
 msgstr "Información"
 
-#: libravatar.php:93
+#: libravatar.php:78
 msgid ""
 "Gravatar addon is installed. Please disable the Gravatar addon.<br>The "
 "Libravatar addon will fall back to Gravatar if nothing was found at "
 "Libravatar."
 msgstr "El complemento Gravatar se ha instalado. Por favor desactive el complemento Gravatar. <br>El complemento Libravatar quedará por detrás de Gravatar si no se encuentra nada en Libravatar."
 
-#: libravatar.php:99
-msgid "Submit"
-msgstr "Enviar"
+#: libravatar.php:83
+msgid "Save Settings"
+msgstr "Guardar Ajustes"
 
-#: libravatar.php:100
+#: libravatar.php:84
 msgid "Default avatar image"
 msgstr "Imagen de avatar por defecto"
 
-#: libravatar.php:100
+#: libravatar.php:84
 msgid "Select default avatar image if none was found. See README"
 msgstr "Selecione el avatar por defecto si no se encuentra ninguno. Vea README"
-
-#: libravatar.php:112
-msgid "Libravatar settings updated."
-msgstr "Ajustes de Libravatar actualizados"

@@ -5,13 +5,14 @@
 # 
 # Translators:
 # Albert, 2016
+# Senex Petrovic <javierruizo@hotmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2016-11-16 16:55+0000\n"
-"Last-Translator: Albert\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-04-01 10:01+0000\n"
+"Last-Translator: Senex Petrovic <javierruizo@hotmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,26 +24,26 @@ msgstr ""
 msgid "Post to Insanejournal"
 msgstr "Publicar en Insanejournal"
 
-#: ijpost.php:70
-msgid "InsaneJournal Post Settings"
-msgstr "Ajustes de Entrada de InsaneJournal"
+#: ijpost.php:71 ijpost.php:75
+msgid "InsaneJournal Export"
+msgstr "InsaneJournal Exportar"
 
-#: ijpost.php:72
+#: ijpost.php:79
 msgid "Enable InsaneJournal Post Addon"
-msgstr "Habilitar el Addon de Entrada InsaneJournal"
+msgstr "Habilitar el Plugin de Entrada InsaneJournal"
 
-#: ijpost.php:77
+#: ijpost.php:84
 msgid "InsaneJournal username"
 msgstr "Nombre de usuario InsaneJournal"
 
-#: ijpost.php:82
+#: ijpost.php:89
 msgid "InsaneJournal password"
 msgstr "Contraseña de InsaneJournal"
 
-#: ijpost.php:87
+#: ijpost.php:94
 msgid "Post to InsaneJournal by default"
 msgstr "Publicar en InsaneJournal por defecto"
 
-#: ijpost.php:93
-msgid "Submit"
-msgstr "Enviar"
+#: ijpost.php:99
+msgid "Save Settings"
+msgstr "Guardar Ajustes"

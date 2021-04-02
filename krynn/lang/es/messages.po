@@ -5,13 +5,14 @@
 # 
 # Translators:
 # Albert, 2016
+# Senex Petrovic <javierruizo@hotmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2016-11-19 11:42+0000\n"
-"Last-Translator: Albert\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-04-01 10:03+0000\n"
+"Last-Translator: Senex Petrovic <javierruizo@hotmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,14 +20,18 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: krynn.php:150
+#: krynn.php:132 krynn.php:136
+msgid "Krynn"
+msgstr "Krynn"
+
+#: krynn.php:141
 msgid "Krynn Settings"
 msgstr "Ajustes de Krynn"
 
-#: krynn.php:152
+#: krynn.php:143
 msgid "Enable Krynn Addon"
-msgstr "Habilitar Addon de Krynn"
+msgstr "Habilitar Plugin de Krynn"
 
-#: krynn.php:158
-msgid "Submit"
-msgstr "Enviar"
+#: krynn.php:148
+msgid "Save Settings"
+msgstr "Guardar Ajustes"

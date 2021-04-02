@@ -5,13 +5,14 @@
 # 
 # Translators:
 # Albert, 2016
+# Senex Petrovic <javierruizo@hotmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2016-11-16 16:38+0000\n"
-"Last-Translator: Albert\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-04-01 09:56+0000\n"
+"Last-Translator: Senex Petrovic <javierruizo@hotmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,29 +20,25 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: gnot.php:48
-msgid "Gnot settings updated."
-msgstr "Ajustes de Gnot actualizados."
-
-#: gnot.php:79
+#: gnot.php:71
 msgid "Gnot Settings"
 msgstr "Ajustes de Gnot"
 
-#: gnot.php:81
+#: gnot.php:72
+msgid "Save Settings"
+msgstr "Guardar Ajustes"
+
+#: gnot.php:73
+msgid "Enable this addon?"
+msgstr "¿Habilitar este plugin/addon?"
+
+#: gnot.php:75
 msgid ""
 "Allows threading of email comment notifications on Gmail and anonymising the"
 " subject line."
 msgstr "Permite limpiar las notificaciones de comentario de email en Gmail y anonimizar la línea del tema."
 
-#: gnot.php:82
-msgid "Enable this addon?"
-msgstr "¿Habilitar este addon?"
-
-#: gnot.php:88
-msgid "Submit"
-msgstr "Enviar"
-
-#: gnot.php:97
+#: gnot.php:84
 #, php-format
 msgid "[Friendica:Notify] Comment to conversation #%d"
 msgstr "[Friendica:Notify] Comentar en conversación #%d"

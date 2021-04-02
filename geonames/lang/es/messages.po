@@ -5,13 +5,14 @@
 # 
 # Translators:
 # Albert, 2016
+# Senex Petrovic <javierruizo@hotmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2016-11-16 16:35+0000\n"
-"Last-Translator: Albert\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-04-01 09:56+0000\n"
+"Last-Translator: Senex Petrovic <javierruizo@hotmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,18 +20,20 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: geonames.php:143
-msgid "Geonames settings updated."
-msgstr "Ajustes de geonombres actualizados."
-
-#: geonames.php:179
+#: geonames.php:141
 msgid "Geonames Settings"
 msgstr "Ajustes de Geonombres"
 
-#: geonames.php:181
-msgid "Enable Geonames Addon"
-msgstr "Habilitar Addon de Geonombres"
+#: geonames.php:142
+msgid ""
+"Replace numerical coordinates by the nearest populated location name in your"
+" posts."
+msgstr "Reemplace las coordenadas numéricas por el nombre de la ubicación poblada más cercana en sus publicaciones."
 
-#: geonames.php:187
-msgid "Submit"
-msgstr "Enviar"
+#: geonames.php:143
+msgid "Enable Geonames Addon"
+msgstr "Habilitar Plugin de Geonombres"
+
+#: geonames.php:144
+msgid "Save Settings"
+msgstr "Guardar Ajustes"

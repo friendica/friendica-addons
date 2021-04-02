@@ -5,13 +5,14 @@
 # 
 # Translators:
 # Albert, 2016
+# Senex Petrovic <javierruizo@hotmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2016-11-16 16:53+0000\n"
-"Last-Translator: Albert\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-04-01 09:56+0000\n"
+"Last-Translator: Senex Petrovic <javierruizo@hotmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,18 +20,14 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: group_text.php:46
-msgid "Group Text settings updated."
-msgstr "Ajustes de Grupo de Texto actualizados"
-
-#: group_text.php:76
+#: group_text.php:62
 msgid "Group Text"
 msgstr "Grupo de Texto"
 
-#: group_text.php:78
+#: group_text.php:64
 msgid "Use a text only (non-image) group selector in the \"group edit\" menu"
 msgstr "Utilice sólo el selector de grupo de texto (no imagen) en el menú \"edición de grupo\""
 
-#: group_text.php:84
-msgid "Submit"
-msgstr "Enviar"
+#: group_text.php:70
+msgid "Save Settings"
+msgstr "Guardar Ajustes"

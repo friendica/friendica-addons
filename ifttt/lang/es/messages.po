@@ -1,0 +1,58 @@
+# ADDON ifttt
+# Copyright (C)
+# This file is distributed under the same license as the Friendica ifttt addon package.
+# 
+# 
+# Translators:
+# Senex Petrovic <javierruizo@hotmail.com>, 2021
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2017-11-27 10:37+0000\n"
+"Last-Translator: Senex Petrovic <javierruizo@hotmail.com>, 2021\n"
+"Language-Team: Spanish (https://www.transifex.com/Friendica/teams/12172/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ifttt.php:50 ifttt.php:54
+msgid "IFTTT Mirror"
+msgstr "IFTTT Espejo"
+
+#: ifttt.php:58
+msgid ""
+"Create an account at <a href=\"http://www.ifttt.com\">IFTTT</a>. Create "
+"three Facebook recipes that are connected with <a "
+"href=\"https://ifttt.com/maker\">Maker</a> (In the form \"if Facebook then "
+"Maker\") with the following parameters:"
+msgstr ""
+"Crea una cuenta en <a href=\"http://www.ifttt.com\">IFTTT</a>. Crea tres "
+"recetas de Facebook que estén conectadas con <a "
+"href=\"https://ifttt.com/maker\">Fabricante</a> (En el formulario \"si "
+"Facebook, entonces Maker\") con los siguientes parámetros:"
+
+#: ifttt.php:65
+msgid "Body for \"new status message\""
+msgstr "Cuerpo de \"Nuevo mensaje de estatus\""
+
+#: ifttt.php:67
+msgid "Body for \"new photo upload\""
+msgstr "Cuerpo de \"nueva foto a subir\""
+
+#: ifttt.php:69
+msgid "Body for \"new link post\""
+msgstr "Cuerpo de \"Nuevo vinculo de artículo\""
+
+#: ifttt.php:74
+msgid "Generate new key"
+msgstr "Generar clave nueva"
+
+#: ifttt.php:78
+msgid "Save Settings"
+msgstr "Guardar ajustes"

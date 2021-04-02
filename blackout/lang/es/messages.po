@@ -4,14 +4,15 @@
 # 
 # 
 # Translators:
+# Senex Petrovic <javierruizo@hotmail.com>, 2021
 # Tupambae.org, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-22 13:18+0200\n"
-"PO-Revision-Date: 2016-04-18 19:20+0000\n"
-"Last-Translator: Tupambae.org\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-04-01 09:44+0000\n"
+"Last-Translator: Senex Petrovic <javierruizo@hotmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,34 +20,49 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: blackout.php:99
-msgid "Save Settings"
-msgstr "Guardar configuración"
-
-#: blackout.php:100
-msgid "Redirect URL"
-msgstr "Redirigir URL"
-
-#: blackout.php:100
-msgid "all your visitors from the web will be redirected to this URL"
-msgstr "todos los visitantes de la web serán redirigidos a esta dirección."
-
-#: blackout.php:101
-msgid "Begin of the Blackout"
-msgstr "Inicio del apagón."
-
-#: blackout.php:101
-msgid ""
-"format is <em>YYYY</em> year, <em>MM</em> month, <em>DD</em> day, "
-"<em>hh</em> hour and <em>mm</em> minute"
-msgstr "formato es <em>YYYY</em> año, <em>MM</em> mes, <em>DD</em> día, <em>hh</em> hora y <em>mm</em> minuto"
-
-#: blackout.php:102
-msgid "End of the Blackout"
-msgstr "Fin del apagón."
-
-#: blackout.php:108
+#: blackout.php:97
 msgid ""
 "The end-date is prior to the start-date of the blackout, you should fix "
 "this."
-msgstr "La fecha de final del apagón es antes de la fecha de inicio, deberías arreglar esto."
+msgstr "La fecha de finalización es anterior a la fecha de inicio del bloqueo, debe corregirlo."
+
+#: blackout.php:99
+#, php-format
+msgid ""
+"Please double check the current settings for the blackout. It will begin on "
+"<strong>%s</strong> and end on <strong>%s</strong>."
+msgstr "Verifique la configuración actual del bloqueo. Iniciará  <strong>%s</strong> finalizará <strong>%s</strong>."
+
+#: blackout.php:102
+msgid "Save Settings"
+msgstr "Guardar configuración"
+
+#: blackout.php:103
+msgid "Redirect URL"
+msgstr "Redirigir URL"
+
+#: blackout.php:103
+msgid "All your visitors from the web will be redirected to this URL."
+msgstr "Todos sus visitantes de la web serán redirigidos a esta URL."
+
+#: blackout.php:104
+msgid "Begin of the Blackout"
+msgstr "Inicio del apagón."
+
+#: blackout.php:104
+msgid ""
+"Format is <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> year, <em>MM</em> month, "
+"<em>DD</em> day, <em>hh</em> hour and <em>mm</em> minute."
+msgstr "Format is <tt>YYYY-MM-DD hh:mm</tt>; <em>YYYY</em> año, <em>MM</em> mes, <em>DD</em> dia, <em>hh</em> hora y <em>mm</em> minuto."
+
+#: blackout.php:105
+msgid "End of the Blackout"
+msgstr "Fin del apagón."
+
+#: blackout.php:107
+msgid ""
+"<strong>Note</strong>: The redirect will be active from the moment you press"
+" the submit button. Users currently logged in will <strong>not</strong> be "
+"thrown out but can't login again after logging out while the blackout is "
+"still in place."
+msgstr "<strong>Nota</strong>: La redirección estará activa desde el momento en que presione el botón Enviar. Los usuarios que hayan iniciado sesión actualmente  <strong>no</strong> serán expulsados, pero no podrán volver a iniciar sesión después de cerrar la sesión mientras el apagón continúe."

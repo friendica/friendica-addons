@@ -4,14 +4,15 @@
 # 
 # 
 # Translators:
-# Alberto Díaz Tormo <albertodiaztormo@gmail.com>, 2016
+# Albert, 2016
+# Senex Petrovic <javierruizo@hotmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2016-10-23 11:33+0000\n"
-"Last-Translator: Alberto Díaz Tormo <albertodiaztormo@gmail.com>\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-04-01 09:54+0000\n"
+"Last-Translator: Senex Petrovic <javierruizo@hotmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,30 +20,30 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: dwpost.php:39
+#: dwpost.php:41
 msgid "Post to Dreamwidth"
 msgstr "Publicar en Dreamwidth"
 
-#: dwpost.php:70
-msgid "Dreamwidth Post Settings"
-msgstr "Ajustes de publicación de Dreamwidth"
+#: dwpost.php:72 dwpost.php:76
+msgid "Dreamwidth Export"
+msgstr "Dreamwidth Exportar"
 
-#: dwpost.php:72
+#: dwpost.php:80
 msgid "Enable dreamwidth Post Addon"
-msgstr "Activar el addon de publicación dreamwidth"
+msgstr "Activar el módulo de publicación en Dreamwidth"
 
-#: dwpost.php:77
+#: dwpost.php:85
 msgid "dreamwidth username"
 msgstr "Nombre de usuario de dreamwidth"
 
-#: dwpost.php:82
+#: dwpost.php:90
 msgid "dreamwidth password"
 msgstr "Contraseña de dreamwidth"
 
-#: dwpost.php:87
+#: dwpost.php:95
 msgid "Post to dreamwidth by default"
 msgstr "Publicar en dreamwidth por defecto"
 
-#: dwpost.php:93
-msgid "Submit"
-msgstr "Enviar"
+#: dwpost.php:100
+msgid "Save Settings"
+msgstr "Guardar ajustes"
