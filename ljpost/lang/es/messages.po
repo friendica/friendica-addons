@@ -5,13 +5,14 @@
 # 
 # Translators:
 # Albert, 2016
+# Senex Petrovic <javierruizo@hotmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2016-11-17 20:17+0000\n"
-"Last-Translator: Albert\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-04-01 10:05+0000\n"
+"Last-Translator: Senex Petrovic <javierruizo@hotmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,26 +24,26 @@ msgstr ""
 msgid "Post to LiveJournal"
 msgstr "Publicar en LiveJournal"
 
-#: ljpost.php:70
+#: ljpost.php:73
 msgid "LiveJournal Post Settings"
 msgstr "Ajustes de publicación de LiveJournal"
 
-#: ljpost.php:72
+#: ljpost.php:75
 msgid "Enable LiveJournal Post Addon"
-msgstr "Habilitar Addon de publicción de LiveJournal"
+msgstr "Habilitar el Plugin de LiveJournal"
 
-#: ljpost.php:77
+#: ljpost.php:80
 msgid "LiveJournal username"
 msgstr "Nombre de usuario de LiveJournal"
 
-#: ljpost.php:82
+#: ljpost.php:85
 msgid "LiveJournal password"
 msgstr "Contraseña de LiveJournal"
 
-#: ljpost.php:87
+#: ljpost.php:90
 msgid "Post to LiveJournal by default"
 msgstr "Publicar en LiveJournal por defecto"
 
-#: ljpost.php:93
-msgid "Submit"
-msgstr "Enviar"
+#: ljpost.php:96
+msgid "Save Settings"
+msgstr "Guardar ajustes"
