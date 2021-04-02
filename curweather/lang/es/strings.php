@@ -6,7 +6,7 @@ function string_plural_select_es($n){
 	return intval($n != 1);
 }}
 ;
-$a->strings["Error fetching weather data.\\nError was: "] = "Error al traer información del clima.\\nError era: ";
+$a->strings["Error fetching weather data. Error was: "] = "Error al obtener datos meteorológicos. El error fue:";
 $a->strings["Current Weather"] = "Clima actual";
 $a->strings["Relative Humidity"] = "Humedad relativa";
 $a->strings["Pressure"] = "Presión";
@@ -16,7 +16,6 @@ $a->strings["Data by"] = "Información por";
 $a->strings["Show on map"] = "Mostrar en mapa";
 $a->strings["There was a problem accessing the weather data. But have a look"] = "Hubo un problema al acceder a la información del clima. Pero eche un vistazo";
 $a->strings["at OpenWeatherMap"] = "en OpenWeatherMap";
-$a->strings["Current Weather settings updated."] = "Ajustes de clima actual actualizados";
 $a->strings["No APPID found, please contact your admin to obtain one."] = "No se encontró APPID, por favor contacte con su administrador para obtener una.";
 $a->strings["Save Settings"] = "Guardar ajustes";
 $a->strings["Settings"] = "Ajustes";
@@ -26,7 +25,6 @@ $a->strings["Identifier of your location (name or zip code), e.g. <em>Berlin,DE<
 $a->strings["Units"] = "Unidades";
 $a->strings["select if the temperature should be displayed in &deg;C or &deg;F"] = "seleccionar si la temperatura debería ser mostrada en &deg;C o &deg;F";
 $a->strings["Show weather data"] = "Mostrar información de clima";
-$a->strings["Curweather settings saved."] = "Ajustes de clima guardados.";
 $a->strings["Caching Interval"] = "Obteniendo intervalo";
 $a->strings["For how long should the weather data be cached? Choose according your OpenWeatherMap account type."] = "¿Durante cuánto tiempo debería ser obtenida la información de clima? Eliga de acuerdo a su tipo de cuenta de OpenWeatherMap.";
 $a->strings["no cache"] = "sin almacenamiento";
