@@ -6,6 +6,7 @@ function string_plural_select_es($n){
 	return intval($n != 1);
 }}
 ;
+$a->strings["Krynn"] = "Krynn";
 $a->strings["Krynn Settings"] = "Ajustes de Krynn";
-$a->strings["Enable Krynn Addon"] = "Habilitar Addon de Krynn";
-$a->strings["Submit"] = "Enviar";
+$a->strings["Enable Krynn Addon"] = "Habilitar Plugin de Krynn";
+$a->strings["Save Settings"] = "Guardar Ajustes";
