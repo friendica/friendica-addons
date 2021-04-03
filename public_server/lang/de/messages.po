@@ -4,38 +4,47 @@
 # 
 # 
 # Translators:
-# bavatar <tobias.diekershoff@gmx.net>, 2014
+# Steffen K9, 2021
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2014-10-15 09:02+0000\n"
-"Last-Translator: fabrixxm <fabrix.xm@gmail.com>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-04-03 06:59+0000\n"
+"Last-Translator: Steffen K9\n"
+"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: public_server.php:62
+#: public_server.php:64
 msgid "Administrator"
 msgstr "Administrator"
 
-#: public_server.php:126
+#: public_server.php:118
 #, php-format
 msgid "Your account on %s will expire in a few days."
 msgstr "Dein Konto auf %s wird in ein paar Tagen verfallen."
 
-#: public_server.php:127
+#: public_server.php:119
 msgid "Your Friendica account is about to expire."
 msgstr "Dein Friendica-Konto wird in Kürze auslaufen."
 
-#: public_server.php:128
+#: public_server.php:120
 #, php-format
 msgid ""
 "Hi %1$s,\n"
 "\n"
 "Your account on %2$s will expire in less than five days. You may keep your account by logging in at least once every 30 days"
 msgstr "Hallo %1$s,\n\ndein Account auf %2$s wird in weniger als fünf Tagen auslaufen. Du kannst das verhindern, indem du dich mindestens einmal alle 30 Tage anmeldest."
+
+#: public_server.php:158
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: public_server.php:160
+msgid "Set any of these options to 0 to deactivate it."
+msgstr "Setze diese Einstellungen auf 0, um sie jeweils zu deaktivieren."
