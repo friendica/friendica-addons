@@ -7,7 +7,7 @@ function string_plural_select_sv($n){
 }}
 ;
 $a->strings["Language Filter"] = "Språkfilter";
-$a->strings["This addon tries to identify the language posts are writen in. If it does not match any language specifed below, posts will be hidden by collapsing them."] = "Detta tillägg försöker identifiera vilket språk inlägg är skrivna i. Om det inte matchar ett språk specifierat nedan så göms inlägg genom att kollapsa dem.";
+$a->strings["This addon tries to identify the language posts are written in. If it does not match any language specified below, posts will be hidden by collapsing them."] = "Detta tillägg försöker identifiera vilket språk inlägg är skrivna i. Om det inte matchar ett språk specifierat nedan så göms inlägg genom att kollapsa dem.";
 $a->strings["Use the language filter"] = "Använd språkfiltret";
 $a->strings["Able to read"] = "Kan läsa";
 $a->strings["List of abbreviations (iso2 codes) for languages you speak, comma separated. For example \"de,it\"."] = "Lista av förkortningar (iso2 koder) för spåk du pratar, separerade av kommatecken. Exempel: \"de, it\".";

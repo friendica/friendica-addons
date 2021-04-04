@@ -26,8 +26,8 @@ msgstr "Языковой фильтр"
 
 #: langfilter.php:53
 msgid ""
-"This addon tries to identify the language posts are writen in. If it does "
-"not match any language specifed below, posts will be hidden by collapsing "
+"This addon tries to identify the language posts are written in. If it does "
+"not match any language specified below, posts will be hidden by collapsing "
 "them."
 msgstr "Это дополнение пытается идентифицировать язык, на котором написаны посты. Если язык не соответствует ни одному, указанному ниже, то такие посты будут скрыты."
 

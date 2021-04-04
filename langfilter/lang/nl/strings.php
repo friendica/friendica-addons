@@ -7,7 +7,7 @@ function string_plural_select_nl($n){
 }}
 ;
 $a->strings["Language Filter"] = "Taalfilter";
-$a->strings["This addon tries to identify the language posts are writen in. If it does not match any language specifed below, posts will be hidden by collapsing them."] = "Deze addon probeert de taal van berichten automatisch te bepalen. Als de taal van het bericht niet overeenkomt met een taal die jij spreekt zal het bericht worden verborgen. ";
+$a->strings["This addon tries to identify the language posts are written in. If it does not match any language specified below, posts will be hidden by collapsing them."] = "Deze addon probeert de taal van berichten automatisch te bepalen. Als de taal van het bericht niet overeenkomt met een taal die jij spreekt zal het bericht worden verborgen. ";
 $a->strings["Use the language filter"] = "Gebruik de taalfilter";
 $a->strings["Able to read"] = "Kan lezen";
 $a->strings["List of abbreviations (iso2 codes) for languages you speak, comma separated. For example \"de,it\"."] = "Lijst van afkortingen (ISO2 codes) voor talen die jij spreekt, door komma's gescheiden. Bijvoorbeeld \"de,it\".";

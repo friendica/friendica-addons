@@ -7,7 +7,7 @@ function string_plural_select_et($n){
 }}
 ;
 $a->strings["Language Filter"] = "Keelefilter";
-$a->strings["This addon tries to identify the language posts are writen in. If it does not match any language specifed below, posts will be hidden by collapsing them."] = "See lisa üritab määrata keelt milles postitused on kirjutatud. Kui tule, ei sobi ühegi alloleva keelega, siis postitused peidetakse minimeerides nad. ";
+$a->strings["This addon tries to identify the language posts are written in. If it does not match any language specified below, posts will be hidden by collapsing them."] = "See lisa üritab määrata keelt milles postitused on kirjutatud. Kui tule, ei sobi ühegi alloleva keelega, siis postitused peidetakse minimeerides nad. ";
 $a->strings["Use the language filter"] = "Kasuta keelefiltrit";
 $a->strings["Able to read"] = "Suuteline lugema";
 $a->strings["List of abbreviations (iso2 codes) for languages you speak, comma separated. For example \"de,it\"."] = "Nimistu koodidest (iso2 koodid) keelte kohta mida räägite, komaga eraldatult. Näiteks \"de, it, et, fi\". ";

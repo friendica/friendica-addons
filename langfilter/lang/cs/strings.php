@@ -7,7 +7,7 @@ function string_plural_select_cs($n){
 }}
 ;
 $a->strings["Language Filter"] = "Jazykový filtr";
-$a->strings["This addon tries to identify the language posts are writen in. If it does not match any language specifed below, posts will be hidden by collapsing them."] = "Tento doplněk zkouší identifikovat jazyk, ve kterém jsou napsány příspěvky. Pokud nelze přiřadit příspěvky k žádnému níže specifikovanému jazyku, příspěvky budou zabaleny.";
+$a->strings["This addon tries to identify the language posts are written in. If it does not match any language specified below, posts will be hidden by collapsing them."] = "Tento doplněk zkouší identifikovat jazyk, ve kterém jsou napsány příspěvky. Pokud nelze přiřadit příspěvky k žádnému níže specifikovanému jazyku, příspěvky budou zabaleny.";
 $a->strings["Use the language filter"] = "Použít jazykový filtr";
 $a->strings["Able to read"] = "Lze číst";
 $a->strings["List of abbreviations (iso2 codes) for languages you speak, comma separated. For example \"de,it\"."] = "Seznam zkratek (kódů ISO 2) pro jazyky, kterými mluvíte, oddělených čárkami. Příklad: \"cs,sk\".";

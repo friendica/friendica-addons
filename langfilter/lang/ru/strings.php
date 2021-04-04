@@ -7,7 +7,7 @@ function string_plural_select_ru($n){
 }}
 ;
 $a->strings["Language Filter"] = "Языковой фильтр";
-$a->strings["This addon tries to identify the language posts are writen in. If it does not match any language specifed below, posts will be hidden by collapsing them."] = "Это дополнение пытается идентифицировать язык, на котором написаны посты. Если язык не соответствует ни одному, указанному ниже, то такие посты будут скрыты.";
+$a->strings["This addon tries to identify the language posts are written in. If it does not match any language specified below, posts will be hidden by collapsing them."] = "Это дополнение пытается идентифицировать язык, на котором написаны посты. Если язык не соответствует ни одному, указанному ниже, то такие посты будут скрыты.";
 $a->strings["Use the language filter"] = "Использовать языковой фильтр";
 $a->strings["Able to read"] = "Возможность читать";
 $a->strings["List of abbreviations (ISO 639-1 codes) for languages you speak, comma separated. For example \"de,it\"."] = "Список аббревиатур (кодов по ISO 639-1 ) для языков, на которых вы говорите. Например, \"ru,en\".";

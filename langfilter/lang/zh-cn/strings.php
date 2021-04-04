@@ -7,7 +7,7 @@ function string_plural_select_zh_cn($n){
 }}
 ;
 $a->strings["Language Filter"] = "语言过滤器";
-$a->strings["This addon tries to identify the language posts are writen in. If it does not match any language specifed below, posts will be hidden by collapsing them."] = "这个插件将尝试识别帖子所用的语言。如果不符合以下列出的语言，帖子将被折叠以隐藏。";
+$a->strings["This addon tries to identify the language posts are written in. If it does not match any language specified below, posts will be hidden by collapsing them."] = "这个插件将尝试识别帖子所用的语言。如果不符合以下列出的语言，帖子将被折叠以隐藏。";
 $a->strings["Use the language filter"] = "使用语言过滤器";
 $a->strings["Able to read"] = "想要显示的语言";
 $a->strings["List of abbreviations (iso2 codes) for languages you speak, comma separated. For example \"de,it\"."] = "您使用的语言缩写 (iso2 codes) 列表，逗号分隔。例如 \"zh,en\"。";
