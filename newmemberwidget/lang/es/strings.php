@@ -16,6 +16,6 @@ $a->strings["Your message for new members. You can use bbcode here."] = "Su mens
 $a->strings["Add a link to global support forum"] = "Añadir un enlace al foro de soporte global";
 $a->strings["Should a link to the global support forum be displayed?"] = "¿Debería mostrarse un enlace al foro de soporte global?";
 $a->strings["Add a link to the local support forum"] = "Añadir un enlace al foro de soporte local";
-$a->strings["If you have a local support forum and wand to have a link displayed in the widget, check this box."] = "Si tiene un foro de soporte local y quiere que se muestre un enlace en el widget, chequee esta casilla.";
+$a->strings["If you have a local support forum and want to have a link displayed in the widget, check this box."] = "Si tiene foro de soporte local y desea que se muestre un enlace en el widget, marque esta casilla.";
 $a->strings["Name of the local support group"] = "Nombre del grupo de soporte local";
 $a->strings["If you checked the above, specify the <em>nickname</em> of the local support group here (i.e. helpers)"] = "Si chequeó arriba, especifique el <em>apodo</em> del grupo de soporte local aquí (asistentes)";
