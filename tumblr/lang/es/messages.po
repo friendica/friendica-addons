@@ -4,14 +4,15 @@
 # 
 # 
 # Translators:
-# Alberto Díaz <albertodiaztormo@gmail.com>, 2016
+# Albert, 2016
+# Senex Petrovic <javierruizo@hotmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2016-10-12 15:15+0000\n"
-"Last-Translator: Alberto Díaz <albertodiaztormo@gmail.com>\n"
+"POT-Creation-Date: 2021-02-01 18:16+0100\n"
+"PO-Revision-Date: 2021-04-06 02:11+0000\n"
+"Last-Translator: Senex Petrovic <javierruizo@hotmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,46 +20,54 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: tumblr.php:34
+#: tumblr.php:39
 msgid "Permission denied."
 msgstr "Permiso denegado."
 
-#: tumblr.php:144
+#: tumblr.php:69 tumblr.php:283
+msgid "Save Settings"
+msgstr "Guardar ajustes"
+
+#: tumblr.php:71
+msgid "Consumer Key"
+msgstr "Consumer Key"
+
+#: tumblr.php:72
+msgid "Consumer Secret"
+msgstr "Consumer Secret"
+
+#: tumblr.php:177
 msgid "You are now authenticated to tumblr."
 msgstr "Está ahora autenticado en tumblr."
 
-#: tumblr.php:145
+#: tumblr.php:178
 msgid "return to the connector page"
 msgstr "Vuelva a la página del conector"
 
-#: tumblr.php:158
+#: tumblr.php:194
 msgid "Post to Tumblr"
 msgstr "Publicar en Tumblr"
 
-#: tumblr.php:185
-msgid "Tumblr Post Settings"
-msgstr "Ajustes de publicación de Tumblr"
+#: tumblr.php:224 tumblr.php:228
+msgid "Tumblr Export"
+msgstr "Exportar a Tumblr  "
 
-#: tumblr.php:188
+#: tumblr.php:232
 msgid "(Re-)Authenticate your tumblr page"
 msgstr "(Re-)autenticar su página de tumblr"
 
-#: tumblr.php:192
+#: tumblr.php:236
 msgid "Enable Tumblr Post Addon"
-msgstr "Habilite el addon Tumblr Post"
+msgstr "Habilitar el complemento de publicación de Tumblr"
 
-#: tumblr.php:197
+#: tumblr.php:242
 msgid "Post to Tumblr by default"
 msgstr "Publique en Tumblr por defecto"
 
-#: tumblr.php:217
+#: tumblr.php:263
 msgid "Post to page:"
 msgstr "Publicar en página:"
 
-#: tumblr.php:228
+#: tumblr.php:277
 msgid "You are not authenticated to tumblr"
 msgstr "No está autenticado en tumblr"
-
-#: tumblr.php:233
-msgid "Submit"
-msgstr "Enviar"
