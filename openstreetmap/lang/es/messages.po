@@ -4,14 +4,15 @@
 # 
 # 
 # Translators:
-# Alberto Díaz <albertodiaztormo@gmail.com>, 2016
+# Albert, 2016
+# Senex Petrovic <javierruizo@hotmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2016-10-12 15:01+0000\n"
-"Last-Translator: Alberto Díaz <albertodiaztormo@gmail.com>\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-04-06 01:53+0000\n"
+"Last-Translator: Senex Petrovic <javierruizo@hotmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,28 +20,47 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: openstreetmap.php:94
+#: openstreetmap.php:167
+msgid "View Larger"
+msgstr "Ver mas grande"
+
+#: openstreetmap.php:194
 msgid "Submit"
 msgstr "Enviar"
 
-#: openstreetmap.php:95
+#: openstreetmap.php:195
 msgid "Tile Server URL"
 msgstr "URL del mosaico de servidor"
 
-#: openstreetmap.php:95
+#: openstreetmap.php:195
 msgid ""
 "A list of <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" "
-"target=\"_blank\">public tile servers</a>"
-msgstr "Una lista de <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" target=\"_blank\">mosaico de servidores públicos</a>"
+"target=\"_blank\" rel=\"noopener noreferrer\">public tile servers</a>"
+msgstr "Una lista de <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" target=\"_blank\" rel=\"noopener noreferrer\">servidores de archivos públicos</a>"
 
-#: openstreetmap.php:96
+#: openstreetmap.php:196
+msgid "Nominatim (reverse geocoding) Server URL"
+msgstr "URL del servidor Nominatim (codificación geográfica inversa)"
+
+#: openstreetmap.php:196
+msgid ""
+"A list of <a href=\"http://wiki.openstreetmap.org/wiki/Nominatim\" "
+"target=\"_blank\" rel=\"noopener noreferrer\">Nominatim servers</a>"
+msgstr "Una lista de <a href=\"http://wiki.openstreetmap.org/wiki/Nominatim\" target=\"_blank\" rel=\"noopener noreferrer\">servidores Nominatim</a>"
+
+#: openstreetmap.php:197
 msgid "Default zoom"
 msgstr "Zoom por defecto"
 
-#: openstreetmap.php:96
-msgid "The default zoom level. (1:world, 18:highest)"
-msgstr "El nivel por defecto de zoom. (1:world, 18:highest)"
+#: openstreetmap.php:197
+msgid ""
+"The default zoom level. (1:world, 18:highest, also depends on tile server)"
+msgstr "El nivel de zoom predeterminado. (1: mundo, 18: más alto, también depende del servidor de mosaicos)"
 
-#: openstreetmap.php:104
-msgid "Settings updated."
-msgstr "Ajustes actualizados"
+#: openstreetmap.php:198
+msgid "Include marker on map"
+msgstr "Incluir marcador en el mapa"
+
+#: openstreetmap.php:198
+msgid "Include a marker on the map."
+msgstr "Incluir un marcador en el mapa."
