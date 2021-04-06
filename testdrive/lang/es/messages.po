@@ -5,13 +5,14 @@
 # 
 # Translators:
 # Albert, 2016
+# Senex Petrovic <javierruizo@hotmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-23 17:30+0200\n"
-"PO-Revision-Date: 2016-11-18 11:58+0000\n"
-"Last-Translator: Albert\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-04-06 02:10+0000\n"
+"Last-Translator: Senex Petrovic <javierruizo@hotmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,23 +20,23 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: testdrive.php:67
+#: testdrive.php:64
 msgid "Administrator"
 msgstr "Administrador"
 
-#: testdrive.php:94
+#: testdrive.php:89
 #, php-format
 msgid "Your account on %s will expire in a few days."
 msgstr "Su cuenta de %s expirará en unos días."
 
-#: testdrive.php:95
+#: testdrive.php:90
 msgid "Your Friendica test account is about to expire."
 msgstr "Su cuenta de prueba de Friendica está a punto de expirar."
 
-#: testdrive.php:96
+#: testdrive.php:91
 #, php-format
 msgid ""
 "Hi %1$s,\n"
 "\n"
-"Your test account on %2$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at %s/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at http://friendica.com."
-msgstr "Hola %1$s,\n\nSu cuenta de prueba de %2$s expirará en menos de cinco días. Esperamos que disfrute este drive de prueba y usar esta oportunidad para encontrar una página web permanente de Friendica para sus comunicaciones sociales integradas. Una lista de sitios públicos está disponible en %s/siteinfo - y para más información ajustando su servidor de Friendica por favor vea la página del proyecto de Friendica en http://friendica.com."
+"Your test account on %2$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at %s/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at https://friendi.ca."
+msgstr "Hi %1$s,\n\nTu cuenta de prueba en %2$s caducará en menos de cinco días. Esperamos que haya disfrutado de esta prueba y aproveche esta oportunidad para encontrar un sitio web permanente de Friendica para sus comunicaciones sociales integradas. Una lista de sitios públicos está disponible en%s/siteinfo - y para obtener más información sobre cómo configurar su propio servidor Friendica, consulte el sitio web del proyecto Friendica en https://friendi.ca."
