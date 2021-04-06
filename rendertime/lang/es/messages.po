@@ -5,13 +5,14 @@
 # 
 # Translators:
 # Albert, 2016
+# Senex Petrovic <javierruizo@hotmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2016-11-17 22:31+0000\n"
-"Last-Translator: Albert\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-04-06 02:05+0000\n"
+"Last-Translator: Senex Petrovic <javierruizo@hotmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,9 +20,14 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: rendertime.php:29
+#: rendertime.php:36
 #, php-format
 msgid ""
-"Performance: Database: %s, Network: %s, Rendering: %s, Parser: %s, I/O: %s, "
-"Other: %s, Total: %s"
-msgstr "Cumplimiento: Base de datos: %s, Red: %s, Renderizado: %s, Analizador: %s, I/O: %s, Otro: %s, Total: %s"
+"Database: %s/%s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: "
+"%s, Total: %s"
+msgstr "Base de Datos: %s/%s, Red: %s, Reproducción: %s, Sesión: %s, E/S: %s, Otros: %s, Total: %s"
+
+#: rendertime.php:53
+#, php-format
+msgid "Class-Init: %s, Boot: %s, Init: %s, Content: %s, Other: %s, Total: %s"
+msgstr "Clase de Inicio: %s, Arranque: %s, Inicio: %s, Contenido: %s, Otros: %s, Total: %s"

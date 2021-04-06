@@ -6,7 +6,6 @@ function string_plural_select_es($n){
 	return intval($n != 1);
 }}
 ;
-$a->strings["No Timeline settings updated."] = "Ningún ajuste de Línea de Tiempo actualizado";
 $a->strings["No Timeline Settings"] = "No hay ajustes de Línea de Tiempo";
 $a->strings["Disable Archive selector on profile wall"] = "Deshabilitar el selector Archivo en el muro de perfil";
-$a->strings["Submit"] = "Enviar";
+$a->strings["Save Settings"] = "Grabar ajustes";

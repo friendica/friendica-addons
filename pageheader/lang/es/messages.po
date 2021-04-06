@@ -5,13 +5,14 @@
 # 
 # Translators:
 # Albert, 2016
+# Senex Petrovic <javierruizo@hotmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2016-11-17 22:09+0000\n"
-"Last-Translator: Albert\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-04-06 01:57+0000\n"
+"Last-Translator: Senex Petrovic <javierruizo@hotmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,14 +20,20 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: pageheader.php:50
+#: pageheader.php:36
 msgid "\"pageheader\" Settings"
 msgstr "Ajustes de \"pageheader\""
 
-#: pageheader.php:55
-msgid "Submit"
-msgstr "Enviar"
+#: pageheader.php:37
+msgid "Message"
+msgstr "Mensaje"
 
-#: pageheader.php:68
-msgid "pageheader Settings saved."
-msgstr "Ajustes de pageheader actualizados."
+#: pageheader.php:37
+msgid ""
+"Message to display on every page on this server (or put a pageheader.html "
+"file in your docroot)"
+msgstr "Mensaje para mostrar en todas las páginas de este servidor (o poner un archivo pageheader.html en su docroot)"
+
+#: pageheader.php:38
+msgid "Save Settings"
+msgstr "Guardar ajustes"
