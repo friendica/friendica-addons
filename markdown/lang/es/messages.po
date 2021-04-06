@@ -1,0 +1,41 @@
+# ADDON markdown
+# Copyright (C)
+# This file is distributed under the same license as the Friendica markdown addon package.
+# 
+# 
+# Translators:
+# Senex Petrovic <javierruizo@hotmail.com>, 2021
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2019-12-27 06:41+0000\n"
+"Last-Translator: Senex Petrovic <javierruizo@hotmail.com>, 2021\n"
+"Language-Team: Spanish (https://www.transifex.com/Friendica/teams/12172/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: markdown.php:30
+msgid "Markdown"
+msgstr "Markdown"
+
+#: markdown.php:31
+msgid "Enable Markdown parsing"
+msgstr "Habilitar el análisis de Markdown"
+
+#: markdown.php:31
+msgid ""
+"If enabled, self created items will additionally be parsed via Markdown."
+msgstr ""
+"Si está habilitado, los elementos creados por usted mismo también se "
+"analizarán a través de Markdown."
+
+#: markdown.php:32
+msgid "Save Settings"
+msgstr "Guardar ajustes"
