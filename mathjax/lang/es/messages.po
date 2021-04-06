@@ -5,13 +5,14 @@
 # 
 # Translators:
 # Albert, 2016
+# Senex Petrovic <javierruizo@hotmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2016-11-17 22:06+0000\n"
-"Last-Translator: Albert\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-04-06 01:11+0000\n"
+"Last-Translator: Senex Petrovic <javierruizo@hotmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/Friendica/friendica/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,35 +20,17 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: mathjax.php:36
-msgid "Settings"
-msgstr "Ajustes"
-
-#: mathjax.php:37
+#: mathjax.php:43
 msgid ""
 "The MathJax addon renders mathematical formulae written using the LaTeX "
 "syntax surrounded by the usual $$ or an eqnarray block in the postings of "
 "your wall,network tab and private mail."
 msgstr "El addon MathJax renderiza las fórmulas matemáticos escritas usando la sintaxis LaTeX rodeada por el usual $$ o un bloque eqnarray en las publicaciones de su muro, etiqueta de red y mail privado."
 
-#: mathjax.php:38
+#: mathjax.php:44
 msgid "Use the MathJax renderer"
 msgstr "Usar el renderizador MathJax"
 
-#: mathjax.php:42
-msgid "Submit"
-msgstr "Enviar"
-
-#: mathjax.php:66
-msgid "Settings updated."
-msgstr "Ajustes actualizados."
-
-#: mathjax.php:75
-msgid "MathJax Base URL"
-msgstr "URL Base de MathJax"
-
-#: mathjax.php:75
-msgid ""
-"The URL for the javascript file that should be included to use MathJax. Can "
-"be either the MathJax CDN or another installation of MathJax."
-msgstr "La URL para el archivo javascript que debería ser incluído para usar MathJax. Puede ser el CDN de MathJax u otra instalación de MathJax."
+#: mathjax.php:45
+msgid "Save Settings"
+msgstr "Guardar ajustes"
