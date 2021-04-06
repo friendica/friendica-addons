@@ -6,6 +6,7 @@ function string_plural_select_de($n){
 	return intval($n != 1);
 }}
 ;
-$a->strings["Planets Settings"] = "Planeten Einstellungen";
+$a->strings["Planets"] = "Planeten";
+$a->strings["Planets Settings"] = "Planeten-Einstellungen";
 $a->strings["Enable Planets Addon"] = "Planeten-Addon aktivieren";
-$a->strings["Submit"] = "Senden";
+$a->strings["Save Settings"] = "Einstellungen speichern";
