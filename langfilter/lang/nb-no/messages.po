@@ -5,14 +5,16 @@
 # 
 # Translators:
 # Haakon Meland Eriksen <haakon.eriksen@far.no>, 2015
+# 9d7045af8ca83a89b1b4bf48a2c67786_a2524de <552015d9a2e1abe6fabe3394a3652575_905986>, 2020
 # Tino <knirchzwerg@web.de>, 2015
+# Tom Aurlund <info@aurlund.no>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-24 19:11+0200\n"
-"PO-Revision-Date: 2015-09-17 04:48+0000\n"
-"Last-Translator: Haakon Meland Eriksen <haakon.eriksen@far.no>\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-04-04 22:18+0000\n"
+"Last-Translator: Tom Aurlund <info@aurlund.no>\n"
 "Language-Team: Norwegian Bokmål (Norway) (http://www.transifex.com/Friendica/friendica/language/nb_NO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,41 +22,58 @@ msgstr ""
 "Language: nb_NO\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: langfilter.php:43
+#: langfilter.php:50
 msgid "Language Filter"
 msgstr "Språkfilter"
 
-#: langfilter.php:44
+#: langfilter.php:51
 msgid ""
-"This addon tries to identify the language of a postings. If it does not "
-"match any language spoken by you (see below) the posting will be collapsed. "
-"Remember detecting the language is not perfect, especially with short "
-"postings."
-msgstr "Dette tillegg prøver å identifisere innleggets språk. Hvis det ikke passer til noen språk du snakker (se under) inlegget vil bli skjult. Husk at språkidentifiseringen er ikke perfekt, særlig ved korte innlegg!"
+"This addon tries to identify the language posts are writen in. If it does "
+"not match any language specifed below, posts will be hidden by collapsing "
+"them."
+msgstr "Dette tillegget forsøker å identifisere hvilket språk poster er skrevet i. Hvis det ikke samsvarer med noen av språkene som er spesifisert nedenfor vil postene bli skjult ved at de blir kollapset."
 
-#: langfilter.php:45
+#: langfilter.php:52
 msgid "Use the language filter"
 msgstr "Bruk språkfilter"
 
-#: langfilter.php:46
-msgid "I speak"
-msgstr "Jeg kan"
+#: langfilter.php:53
+msgid "Able to read"
+msgstr "I stand til å lese"
 
-#: langfilter.php:46
+#: langfilter.php:53
 msgid ""
-"List of abbreviations for languages you speak, comma seperated. For excample"
-" \"de,it\"."
-msgstr "Liste med forkortelser for språk du kan, kommaseparert. For eksempel \"no, en\"."
+"List of abbreviations (ISO 639-1 codes) for languages you speak, comma "
+"separated. For example \"de,it\"."
+msgstr "Liste over forkortelser (ISO 639-1 koder) for språk du snakker, kommaseparert. For eksempel \"de,it\""
 
-#: langfilter.php:47
+#: langfilter.php:54
+msgid "Minimum confidence in language detection"
+msgstr "Minimum sikkerhet i språkdeteksjon."
+
+#: langfilter.php:54
+msgid ""
+"Minimum confidence in language detection being correct, from 0 to 100. Posts"
+" will not be filtered when the confidence of language detection is below "
+"this percent value."
+msgstr "Minimum sikkerhet for å gi korrekt språkdeteksjon, fra 0 til 100. Poster vil ikke bli filtrert hvis sikkerheten i språkdeteksjonen er lavere enn denne prosentverdien."
+
+#: langfilter.php:55
+msgid "Minimum length of message body"
+msgstr "MInimumslengde for meldingskropp."
+
+#: langfilter.php:55
+msgid ""
+"Minimum number of characters in message body for filter to be used. Posts "
+"shorter than this will not be filtered. Note: Language detection is "
+"unreliable for short content (<200 characters)."
+msgstr "Minimum antall tegn i meldingskropp for å kunne benytte filter. Poster som er kortere enn dette vil ikke bli filtrert. Bemerk: Språkoppdagelse er upålitelig for kort innhold (< 200 tegn)."
+
+#: langfilter.php:56
 msgid "Save Settings"
 msgstr "Lagre innstillinger"
 
-#: langfilter.php:66
-msgid "Language Filter Settings saved."
-msgstr "Språkfilter-innstillinger er lagret."
-
-#: langfilter.php:105
+#: langfilter.php:187
 #, php-format
-msgid "unspoken language %s - Click to open/close"
-msgstr "Uuttalt språk %s - klikk for å åpne/stenge"
+msgid "Filtered language: %s"
+msgstr "Filtrert språk: 1 %s"
