@@ -1462,6 +1462,8 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 		$body = Strings::substringReplace($body, $parameters['replace'], $startIndex, $parameters['length']);
 	}
 
+	$body = trim($body);
+
 	// Footer will be taken care of with a share block in the case of a quote
 	if (empty($status->quoted_status)) {
 		$footer = '';
@@ -1478,7 +1480,7 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 		}
 	}
 
-	return ['body' => $body, 'plain' => trim($plain), 'taglist' => $taglist];
+	return ['body' => trim($body), 'plain' => trim($plain), 'taglist' => $taglist];
 }
 
 /**
@@ -1529,8 +1531,10 @@ function twitter_media_entities($post, array &$postarray)
 				}
 
 				$postarray['object-type'] = Activity\ObjectType::IMAGE;
+				$postarray['post-type'] = Item::PT_IMAGE;
 				break;
 			case 'video':
+				$postarray['post-type'] = Item::PT_VIDEO;
 			case 'animated_gif':
 				if (!empty($medium->ext_alt_text)) {
 					Logger::info('Got text description', ['alt_text' => $medium->ext_alt_text]);
