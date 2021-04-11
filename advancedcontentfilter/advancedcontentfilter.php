@@ -90,6 +90,26 @@ function advancedcontentfilter_dbstructure_definition(App $a, &$database)
 	];
 }
 
+function advancedcontentfilter_get_filter_fields(array $item)
+{
+	$vars = [];
+
+	// Convert the language JSON text into a filterable format
+	if (!empty($item['language']) && ($languages = json_decode($item['language'], true))) {
+		foreach ($languages as $key => $value) {
+			$vars['language_' . strtolower($key)] = $value;
+		}
+	}
+
+	foreach ($item as $key => $value) {
+		$vars[str_replace('-', '_', $key)] = $value;
+	}
+
+	ksort($vars);
+
+	return $vars;
+}
+
 function advancedcontentfilter_prepare_body_content_filter(App $a, &$hook_data)
 {
 	static $expressionLanguage;
@@ -102,10 +122,7 @@ function advancedcontentfilter_prepare_body_content_filter(App $a, &$hook_data)
 		return;
 	}
 
-	$vars = [];
-	foreach ($hook_data['item'] as $key => $value) {
-		$vars[str_replace('-', '_', $key)] = $value;
-	}
+	$vars = advancedcontentfilter_get_filter_fields($hook_data['item']);
 
 	$rules = DI::cache()->get('rules_' . local_user());
 	if (!isset($rules)) {
@@ -417,10 +434,7 @@ function advancedcontentfilter_get_variables_guid(ServerRequestInterface $reques
 	$item['hashtags'] = $tags['hashtags'];
 	$item['mentions'] = $tags['mentions'];
 
-	$return = [];
-	foreach ($item as $key => $value) {
-		$return[str_replace('-', '_', $key)] = $value;
-	}
+	$return = advancedcontentfilter_get_filter_fields($item);
 
 	return json_encode(['variables' => str_replace('\\\'', '\'', var_export($return, true))]);
 }
