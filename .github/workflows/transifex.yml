@@ -18,7 +18,7 @@ jobs:
       - name: Checkout current Friendica Addons
         uses: actions/checkout@v2
         with:
-          path: 'addons'
+          path: 'addon'
 
       - name: Get changed files
         id: changes
@@ -26,7 +26,8 @@ jobs:
 
       - name: Run Xgettext for each changed addon
         run: |
-          find_result="$(${{ steps.changes.outputs.all }} | cut -d "/" -f1 | uniq)"
+          addon_files=(${{ steps.changes.outputs.all }})
+          find_result=$(printf "%s\n" "${addon_files[@]}" | sed '/^\./d' | cut -d "/" -f1 | uniq)
           for addon in $find_result
           do
             ./bin/run_xgettext.sh --addon $addon
@@ -36,7 +37,7 @@ jobs:
         run: |
           echo "::group::Check messages.po"
           # Skip all lines of the git diff starting with "@@" or comments or starting "POT-Creation-Date"
-          cd addons/
+          cd addon/
           if [[ $(git diff -U0 "**/messages.po" | awk '!/index|diff|\-\-\-|\+\+\+|@@|\-"POT-Creation-Date|\+"POT-Creation-Date|\+#|\-#/{print }' | wc -l) > 0 ]]; then
             echo "::error file=messages.po::messages.po is out of date"
             exit 1
