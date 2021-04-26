@@ -1388,9 +1388,6 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 		];
 	}
 
-	// This URL if set will be used to add an attachment at the bottom of the post
-	$attachmentUrl = '';
-
 	foreach ($status->entities->urls ?? [] as $url) {
 		$plain = str_replace($url->url, '', $plain);
 
@@ -1419,31 +1416,20 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 				$expanded_url = $url->url;
 			}
 
-			if ($type === 'video') {
-				$attachmentUrl = $expanded_url;
-				$replace = '';
-			} elseif ($type === 'photo' && !empty($oembed_data->url)) {
+			if ($type === 'photo' && !empty($oembed_data->url)) {
 				$replace = '[url=' . $expanded_url . '][img]' . $oembed_data->url . '[/img][/url]';
 			} elseif ($type === 'link') {
-				$img_str = DI::httpRequest()->fetch($final_url, 4);
-
-				$tempfile = tempnam(get_temppath(), 'cache');
-				file_put_contents($tempfile, $img_str);
-
-				// See http://php.net/manual/en/function.exif-imagetype.php#79283
-				if (filesize($tempfile) > 11) {
-					$mime = image_type_to_mime_type(exif_imagetype($tempfile));
+				$curlResult = DI::httpRequest()->head($final_url, ['timeout' => 4]);
+				if ($curlResult->isSuccess()) {
+					$mimetype = $curlResult->getHeader('Content-Type');
 				} else {
-					$mime = false;
+					$mimetype = '';
 				}
 
-				unlink($tempfile);
-
-				if (substr($mime, 0, 6) == 'image/') {
+				if (substr($mimetype, 0, 6) == 'image/') {
 					$replace = '[img]' . $final_url . '[/img]';
 				} else {
-					$attachmentUrl = $expanded_url;
-					$replace = '';
+					$replace = '[url=' . $expanded_url . ']' . $url->display_url . '[/url]';
 				}
 			} else {
 				$replace = '[url=' . $expanded_url . ']' . $url->display_url . '[/url]';
@@ -1466,21 +1452,83 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 
 	// Footer will be taken care of with a share block in the case of a quote
 	if (empty($status->quoted_status)) {
-		$footer = '';
-		if ($attachmentUrl) {
-			$footer = "\n" . PageInfo::getFooterFromUrl($attachmentUrl, false, $picture);
-		}
-
-		if (trim($footer)) {
-			$body .= $footer;
-		} elseif ($picture) {
+		if ($picture) {
 			$body .= "\n\n[img]" . $picture . "[/img]\n";
-		} else {
-			$body = PageInfo::searchAndAppendToBody($body);
 		}
 	}
 
 	return ['body' => trim($body), 'plain' => trim($plain), 'taglist' => $taglist];
+}
+
+/**
+ * Store entity attachments
+ *
+ * @param integer $uriid
+ * @param object $post Twitter object with the post
+ */
+function twitter_store_attachments(int $uriid, $post)
+{
+	if (!empty($post->extended_entities->media)) {
+		foreach ($post->extended_entities->media AS $medium) {
+			switch ($medium->type) {
+				case 'photo':
+					$attachment = ['uri-id' => $uriid, 'type' => Post\Media::IMAGE];
+
+					// Later store the large picture when we don't add them to the body anymore
+					//$attachment['url'] = $medium->media_url_https . '?name=large';
+					//$attachment['width'] = $medium->sizes->large->w;
+					//$attachment['height'] = $medium->sizes->large->h;
+
+					$attachment['url'] = $medium->media_url_https;
+					$attachment['width'] = $medium->sizes->medium->w;
+					$attachment['height'] = $medium->sizes->medium->h;
+
+					if ($medium->sizes->small->w != $attachment['width']) {
+						$attachment['preview'] = $medium->media_url_https . '?name=small';
+						$attachment['preview-width'] = $medium->sizes->small->w;
+						$attachment['preview-height'] = $medium->sizes->small->h;
+					}
+
+					$attachment['name'] = $medium->display_url ?? null;
+					$attachment['description'] = $medium->ext_alt_text ?? null;
+					Logger::debug('Photo attachment', ['attachment' => $attachment]);
+					Post\Media::insert($attachment);
+					break;
+				case 'video':
+				case 'animated_gif':
+					$attachment = ['uri-id' => $uriid, 'type' => Post\Media::VIDEO];
+					if (is_array($medium->video_info->variants)) {
+						$bitrate = 0;
+						// We take the video with the highest bitrate
+						foreach ($medium->video_info->variants AS $variant) {
+							if (($variant->content_type == 'video/mp4') && ($variant->bitrate >= $bitrate)) {
+								$attachment['url'] = $variant->url;
+								$bitrate = $variant->bitrate;
+							}
+						}
+					}
+
+					$attachment['name'] = $medium->display_url ?? null;
+					$attachment['preview'] = $medium->media_url_https . ':small';
+					$attachment['preview-width'] = $medium->sizes->small->w;
+					$attachment['preview-height'] = $medium->sizes->small->h;
+					$attachment['description'] = $medium->ext_alt_text ?? null;
+					Logger::debug('Video attachment', ['attachment' => $attachment]);
+					Post\Media::insert($attachment);
+					break;
+				default:
+					Logger::notice('Unknown media type', ['medium' => $medium]);
+			}
+		}
+	}
+
+	if (!empty($post->entities->urls)) {
+		foreach ($post->entities->urls as $url) {
+			$attachment = ['uri-id' => $uriid, 'type' => Post\Media::UNKNOWN, 'url' => $url->expanded_url, 'name' => $url->display_url];
+			Logger::debug('Attached link', ['attachment' => $attachment]);
+			Post\Media::insert($attachment);
+		}
+	}
 }
 
 /**
@@ -1697,9 +1745,8 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 
 	if ($uriid > 0) {
 		twitter_store_tags($uriid, $converted['taglist']);
+		twitter_store_attachments($uriid, $post);
 	}
-
-	$statustext = $converted["plain"];
 
 	if (!empty($post->place->name)) {
 		$postarray["location"] = $post->place->name;
@@ -1749,14 +1796,22 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 			// To avoid recursive share blocks we just provide the link to avoid removing quote context.
 			$postarray['body'] .= "\n\nhttps://twitter.com/" . $post->quoted_status->user->screen_name . "/status/" . $post->quoted_status->id_str;
 		} else {
-			$quoted = twitter_createpost($a, $uid, $post->quoted_status, $self, false, false, true, $uriid);
+			$quoted = twitter_createpost($a, 0, $post->quoted_status, $self, false, false, true);
 			if (!empty($quoted['body'])) {
+				Item::insert($quoted);
+				$post = Post::selectFirst(['guid', 'uri-id'], ['uri' => $quoted['uri'], 'uid' => 0]);
+				Logger::info('Stored quoted post', ['uid' => $uid, 'uri-id' => $uriid, 'post' => $post]);
+				//if (!empty($post['uri-id'])) {
+				//	Post\Media::copy($uriid, $post['uri-id']);
+				//}
+
 				$postarray['body'] .= "\n" . BBCode::getShareOpeningTag(
 						$quoted['author-name'],
 						$quoted['author-link'],
 						$quoted['author-avatar'],
 						$quoted['plink'],
-						$quoted['created']
+						$quoted['created'],
+						$post['guid'] ?? ''
 					);
 
 				$postarray['body'] .= $quoted['body'] . '[/share]';
@@ -1798,12 +1853,12 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 		}
 
 		if (empty($post)) {
-			Logger::log("twitter_fetchparentposts: Can't fetch post " . $post->in_reply_to_status_id_str, Logger::DEBUG);
+			Logger::info("twitter_fetchparentposts: Can't fetch post");
 			break;
 		}
 
 		if (empty($post->id_str)) {
-			Logger::log("twitter_fetchparentposts: This is not a post " . json_encode($post), Logger::DEBUG);
+			Logger::info("twitter_fetchparentposts: This is not a post", ['post' => $post]);
 			break;
 		}
 
