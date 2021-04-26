@@ -1801,9 +1801,6 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 				Item::insert($quoted);
 				$post = Post::selectFirst(['guid', 'uri-id'], ['uri' => $quoted['uri'], 'uid' => 0]);
 				Logger::info('Stored quoted post', ['uid' => $uid, 'uri-id' => $uriid, 'post' => $post]);
-				//if (!empty($post['uri-id'])) {
-				//	Post\Media::copy($uriid, $post['uri-id']);
-				//}
 
 				$postarray['body'] .= "\n" . BBCode::getShareOpeningTag(
 						$quoted['author-name'],
