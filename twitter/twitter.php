@@ -1474,7 +1474,7 @@ function twitter_store_attachments(int $uriid, $post)
 				case 'photo':
 					$attachment = ['uri-id' => $uriid, 'type' => Post\Media::IMAGE];
 
-					///  @todo In the future store the large picture.
+					// @todo In the future store the large picture.
 					// This can be done when we don't embed the pictures in the body anymore.
 					//$attachment['url'] = $medium->media_url_https . '?name=large';
 					//$attachment['width'] = $medium->sizes->large->w;
