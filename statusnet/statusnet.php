@@ -876,7 +876,7 @@ function statusnet_fetchtimeline(App $a, $uid)
 
 				$_REQUEST["title"] = "";
 
-				$_REQUEST["body"] = PageInfo::searchAndAppendToBody($post->text, true);
+				$_REQUEST["body"] = $post->text;
 				if (is_string($post->place->name)) {
 					$_REQUEST["location"] = $post->place->name;
 				}
