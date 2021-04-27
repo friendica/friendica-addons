@@ -228,6 +228,10 @@ function mailstream_subject($item) {
 	}
 	$r = q("SELECT * FROM `contact` WHERE `id` = %d AND `uid` = %d",
 		intval($item['contact-id']), intval($item['uid']));
+	if (!DBA::isResult($r)) {
+		Logger::error('mailstream_subject no contact for item id ' . $item['id'] . ' plink ' . $item['plink'] . ' contact id ' . $item['contact-id'] . ' uid ' . $item['uid']);
+		return DI::l10n()->t("Friendica post");
+	}
 	$contact = $r[0];
 	if ($contact['network'] === 'dfrn') {
 		return DI::l10n()->t("Friendica post");
@@ -290,7 +294,7 @@ function mailstream_send(\Friendica\App $a, $message_id, $item, $user) {
 		$mail->CharSet = 'utf-8';
 		$template = Renderer::getMarkupTemplate('mail.tpl', 'addon/mailstream/');
 		$mail->AltBody = BBCode::toPlaintext($item['body']);
-		$item['body'] = BBCode::convert($item['body']);
+		$item['body'] = BBCode::convert($item['body'], false, BBCode::CONNECTORS);
 		$item['url'] = DI::baseUrl()->get() . '/display/' . $item['guid'];
 		$mail->Body = Renderer::replaceMacros($template, [
 						 '$upstream' => DI::l10n()->t('Upstream'),
@@ -332,27 +336,51 @@ function mailstream_cron($a, $b) {
 	// send the email itself before cron jumps in.  Only if
 	// mailstream_post_remote_hook fails for some reason will this get
 	// used, and in that case it's worth holding off a bit anyway.
-	$ms_item_ids = q("SELECT `mailstream_item`.`message-id`, `mailstream_item`.`uri`, `post-view`.`id` FROM `mailstream_item` JOIN `post-view` ON (`mailstream_item`.`uid` = `post-view`.`uid` AND `mailstream_item`.`uri` = `post-view`.`uri` AND `mailstream_item`.`contact-id` = `post-view`.`contact-id`) WHERE `mailstream_item`.`completed` IS NULL AND `mailstream_item`.`created` < DATE_SUB(NOW(), INTERVAL 1 HOUR) AND `post-view`.`visible` = 1 ORDER BY `mailstream_item`.`created` LIMIT 100");
-	Logger::debug('mailstream_cron processing ' . count($ms_item_ids) . ' items');
-	foreach ($ms_item_ids as $ms_item_id) {
-		if (!$ms_item_id['message-id'] || !strlen($ms_item_id['message-id'])) {
-			Logger::info('mailstream_cron: Item ' . $ms_item_id['id'] . ' URI ' . $ms_item_id['uri'] . ' has no message-id');
-		}
-		$item = Post::selectFirst([], ['id' => $ms_item_id['id']]);
-		$users = q("SELECT * FROM `user` WHERE `uid` = %d", intval($item['uid']));
-		$user = $users[0];
-		if ($user && $item) {
-			mailstream_send($a, $ms_item_id['message-id'], $item, $user);
-		}
-		else {
-			Logger::info('mailstream_cron: Unable to find item ' . $ms_item_id['id']);
-			q("UPDATE `mailstream_item` SET `completed` = now() WHERE `message-id` = %d", intval($ms_item_id['message-id']));
+	$query = <<< EOT
+SELECT
+  `mailstream_item`.`message-id`,
+  `mailstream_item`.`uri`,
+  `post-user-view`.`id`
+FROM
+   `mailstream_item`
+  JOIN
+   `post-user-view`
+  ON (
+    `mailstream_item`.`uid` = `post-user-view`.`uid` AND
+    `mailstream_item`.`uri` = `post-user-view`.`uri` AND
+    `mailstream_item`.`contact-id` = `post-user-view`.`contact-id`
+  )
+WHERE
+  `mailstream_item`.`completed` IS NULL AND
+  `mailstream_item`.`created` < DATE_SUB(NOW(), INTERVAL 1 HOUR) AND
+  `post-user-view`.`visible` = 1
+ORDER BY `mailstream_item`.`created`
+LIMIT 100
+
+EOT;
+	$ms_item_ids = q($query);
+	if (DBA::isResult($ms_item_ids)) {
+		Logger::debug('mailstream_cron processing ' . count($ms_item_ids) . ' items');
+		foreach ($ms_item_ids as $ms_item_id) {
+			if (!$ms_item_id['message-id'] || !strlen($ms_item_id['message-id'])) {
+				Logger::info('mailstream_cron: Item ' . $ms_item_id['id'] . ' URI ' . $ms_item_id['uri'] . ' has no message-id');
+			}
+			$item = Post::selectFirst([], ['id' => $ms_item_id['id']]);
+			$users = q("SELECT * FROM `user` WHERE `uid` = %d", intval($item['uid']));
+			$user = $users[0];
+			if ($user && $item) {
+				mailstream_send($a, $ms_item_id['message-id'], $item, $user);
+			}
+			else {
+				Logger::info('mailstream_cron: Unable to find item ' . $ms_item_id['id']);
+				q("UPDATE `mailstream_item` SET `completed` = now() WHERE `message-id` = %d", intval($ms_item_id['message-id']));
+			}
 		}
 	}
 	mailstream_tidy();
 }
 
-function mailstream_addon_settings(&$a,&$s) {
+function mailstream_addon_settings(&$a, &$s) {
 	$enabled = DI::pConfig()->get(local_user(), 'mailstream', 'enabled');
 	$address = DI::pConfig()->get(local_user(), 'mailstream', 'address');
 	$nolikes = DI::pConfig()->get(local_user(), 'mailstream', 'nolikes');
