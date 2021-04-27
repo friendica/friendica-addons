@@ -25,19 +25,18 @@ function opmlexport_install()
 }
 
 
-    $stmt = DBA::p("SELECT *
-            FROM `contact`
-            WHERE `uid` = ?
-                AND `self` = 0
-                AND NOT `deleted`
-                AND NOT `archive` AND NOT `blocked` AND NOT `pending`
-                AND network = ?
-            ORDER BY `name` ASC",
-            [local_user(), "feed"]
-    );
-
 function opmlexport(App $a)
 {
+    $condition = [
+        'uid' => local_user(),
+        'self' => false,
+        'deleted' => false,
+        'archive' => false,
+        'blocked' => false,
+        'pending' => false,
+        'network' => Protocol::FEED
+    ];
+    $data = Contact::selectToArray([], $condition, ['order' => ['name']]);
 
     $xml = new \DOMDocument( '1.0', 'utf-8' );
     $opml = $xml->createElement('opml');
@@ -47,14 +46,13 @@ function opmlexport(App $a)
     $outline->setAttribute('title', $a->user['username'] . '\'s RSS/Atom contacts');
     $outline->setAttribute('text', $a->user['username'] . '\'s RSS/Atom contacts');
 
-    while ($c = DBA::fetch($stmt)) {
+    foreach($data as $c) {
         $entry = $xml->createElement('outline');
         $entry->setAttribute('title',  $c['name']);
         $entry->setAttribute('text',   $c['name']);
         $entry->setAttribute('xmlUrl', $c['url']);
         $outline->appendChild($entry);
     }
-    DBA::close($stmt);
 
     $body->appendChild($outline);
     $opml->appendChild($head);
