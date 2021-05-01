@@ -12,6 +12,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Database\DBA;
 use Friendica\DI;
+use Friendica\Model\Post;
 
 function libertree_install()
 {
@@ -190,6 +191,8 @@ function libertree_send(&$a,&$b) {
 	if ($b['contact-id'] != $self['id']) {
 		return;
 	}
+
+	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], $b['body']);
 
 	$ltree_api_token = DI::pConfig()->get($b['uid'],'libertree','libertree_api_token');
 	$ltree_url = DI::pConfig()->get($b['uid'],'libertree','libertree_url');

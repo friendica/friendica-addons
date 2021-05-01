@@ -18,6 +18,7 @@ use Friendica\Core\Session;
 use Friendica\Database\DBA;
 use Friendica\Core\Worker;
 use Friendica\DI;
+use Friendica\Model\Post;
 
 function diaspora_install()
 {
@@ -196,6 +197,8 @@ function diaspora_send(App $a, array &$b)
 	if ($b['parent'] != $b['id']) {
 		return;
 	}
+
+	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], $b['body']);
 
 	// Dont't post if the post doesn't belong to us.
 	// This is a check for forum postings

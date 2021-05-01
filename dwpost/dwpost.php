@@ -14,6 +14,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Database\DBA;
 use Friendica\DI;
+use Friendica\Model\Post;
 use Friendica\Model\Tag;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\XML;
@@ -158,6 +159,8 @@ function dwpost_send(App $a, array &$b)
 	if ($b['parent'] != $b['id']) {
 		return;
 	}
+
+	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], $b['body']);
 
 	/*
 	 * dreamwidth post in the LJ user's timezone.

@@ -481,6 +481,8 @@ function statusnet_post_hook(App $a, &$b)
 			return;
 	}
 
+	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], $b['body']);
+
 	$api = DI::pConfig()->get($b["uid"], 'statusnet', 'baseapi');
 	$hostname = preg_replace("=https?://([\w\.]*)/.*=ism", "$1", $api);
 
