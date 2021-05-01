@@ -66,8 +66,6 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 use Abraham\TwitterOAuth\TwitterOAuthException;
 use Codebird\Codebird;
 use Friendica\App;
-use Friendica\Content\OEmbed;
-use Friendica\Content\PageInfo;
 use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\Plaintext;
 use Friendica\Core\Hook;
@@ -543,6 +541,8 @@ function twitter_post_hook(App $a, array &$b)
 		&& ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))) {
 		return;
 	}
+
+	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], $b['body']);
 
 	$thr_parent = null;
 
@@ -1356,13 +1356,13 @@ function twitter_fetchuser($screen_name)
  *
  * @param string   $body
  * @param stdClass $status
- * @param string   $picture
  * @return array
  * @throws \Friendica\Network\HTTPException\InternalServerErrorException
  */
-function twitter_expand_entities($body, stdClass $status, $picture)
+function twitter_expand_entities($body, stdClass $status)
 {
 	$plain = $body;
+	$contains_urls = false;
 
 	$taglist = [];
 
@@ -1403,40 +1403,17 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 				continue;
 			}
 
+			$contains_urls = true;
+
 			$expanded_url = $url->expanded_url;
-
-			$final_url = DI::httpRequest()->finalUrl($url->expanded_url);
-
-			$oembed_data = OEmbed::fetchURL($final_url);
-
-			$type = $oembed_data->type ?? '';
 
 			// Quickfix: Workaround for URL with '[' and ']' in it
 			if (strpos($expanded_url, '[') || strpos($expanded_url, ']')) {
 				$expanded_url = $url->url;
 			}
 
-			if ($type === 'photo' && !empty($oembed_data->url)) {
-				$replace = '[url=' . $expanded_url . '][img]' . $oembed_data->url . '[/img][/url]';
-			} elseif ($type === 'link') {
-				$curlResult = DI::httpRequest()->head($final_url, ['timeout' => 4]);
-				if ($curlResult->isSuccess()) {
-					$mimetype = $curlResult->getHeader('Content-Type');
-				} else {
-					$mimetype = '';
-				}
-
-				if (substr($mimetype, 0, 6) == 'image/') {
-					$replace = '[img]' . $final_url . '[/img]';
-				} else {
-					$replace = '[url=' . $expanded_url . ']' . $url->display_url . '[/url]';
-				}
-			} else {
-				$replace = '[url=' . $expanded_url . ']' . $url->display_url . '[/url]';
-			}
-
 			$replacementList[$url->indices[0]] = [
-				'replace' => $replace,
+				'replace' => '[url=' . $expanded_url . ']' . $url->display_url . '[/url]',
 				'length' => $url->indices[1] - $url->indices[0],
 			];
 		}
@@ -1450,14 +1427,7 @@ function twitter_expand_entities($body, stdClass $status, $picture)
 
 	$body = trim($body);
 
-	// Footer will be taken care of with a share block in the case of a quote
-	if (empty($status->quoted_status)) {
-		if ($picture) {
-			$body .= "\n\n[img]" . $picture . "[/img]\n";
-		}
-	}
-
-	return ['body' => trim($body), 'plain' => trim($plain), 'taglist' => $taglist];
+	return ['body' => trim($body), 'plain' => trim($plain), 'taglist' => $taglist, 'urls' => $contains_urls];
 }
 
 /**
@@ -1474,15 +1444,9 @@ function twitter_store_attachments(int $uriid, $post)
 				case 'photo':
 					$attachment = ['uri-id' => $uriid, 'type' => Post\Media::IMAGE];
 
-					// @todo In the future store the large picture.
-					// This can be done when we don't embed the pictures in the body anymore.
-					//$attachment['url'] = $medium->media_url_https . '?name=large';
-					//$attachment['width'] = $medium->sizes->large->w;
-					//$attachment['height'] = $medium->sizes->large->h;
-
-					$attachment['url'] = $medium->media_url_https;
-					$attachment['width'] = $medium->sizes->medium->w;
-					$attachment['height'] = $medium->sizes->medium->h;
+					$attachment['url'] = $medium->media_url_https . '?name=large';
+					$attachment['width'] = $medium->sizes->large->w;
+					$attachment['height'] = $medium->sizes->large->h;
 
 					if ($medium->sizes->small->w != $attachment['width']) {
 						$attachment['preview'] = $medium->media_url_https . '?name=small';
@@ -1535,34 +1499,16 @@ function twitter_store_attachments(int $uriid, $post)
 /**
  * @brief Fetch media entities and add media links to the body
  *
- * @param object $post Twitter object with the post
- * @param array $postarray Array of the item that is about to be posted
- *
- * @return $picture string Image URL or empty string
+ * @param object  $post      Twitter object with the post
+ * @param array   $postarray Array of the item that is about to be posted
+ * @param integer $uriid URI Id used to store tags. -1 = don't store tags for this post.
  */
-function twitter_media_entities($post, array &$postarray)
+function twitter_media_entities($post, array &$postarray, int $uriid = -1)
 {
 	// There are no media entities? So we quit.
 	if (empty($post->extended_entities->media)) {
-		return '';
+		return;
 	}
-
-	// When the post links to an external page, we only take one picture.
-	// We only do this when there is exactly one media.
-	if ((count($post->entities->urls) > 0) && (count($post->extended_entities->media) == 1)) {
-		$medium = $post->extended_entities->media[0];
-		$picture = '';
-		foreach ($post->entities->urls as $link) {
-			// Let's make sure the external link url matches the media url
-			if ($medium->url == $link->url && isset($medium->media_url_https)) {
-				$picture = $medium->media_url_https;
-				$postarray['body'] = str_replace($medium->url, '', $postarray['body']);
-				return $picture;
-			}
-		}
-	}
-
-
 
 	// This is a pure media post, first search for all media urls
 	$media = [];
@@ -1583,7 +1529,9 @@ function twitter_media_entities($post, array &$postarray)
 				$postarray['post-type'] = Item::PT_IMAGE;
 				break;
 			case 'video':
-				$postarray['post-type'] = Item::PT_VIDEO;
+				// Currently deactivated, since this causes the video to be display before the content
+				// We have to figure out a better way for declaring the post type and the display style.
+				//$postarray['post-type'] = Item::PT_VIDEO;
 			case 'animated_gif':
 				if (!empty($medium->ext_alt_text)) {
 					Logger::info('Got text description', ['alt_text' => $medium->ext_alt_text]);
@@ -1604,18 +1552,20 @@ function twitter_media_entities($post, array &$postarray)
 					}
 				}
 				break;
-			// The following code will only be activated for test reasons
-			//default:
-			//	$postarray['body'] .= print_r($medium, true);
 		}
+	}
+
+	if ($uriid != -1) {
+		foreach ($media AS $key => $value) {
+			$postarray['body'] = str_replace($key, '', $postarray['body']);
+		}
+		return;
 	}
 
 	// Now we replace the media urls.
 	foreach ($media AS $key => $value) {
 		$postarray['body'] = str_replace($key, "\n" . $value . "\n", $postarray['body']);
 	}
-
-	return '';
 }
 
 /**
@@ -1737,9 +1687,15 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 	}
 
 	// Search for media links
-	$picture = twitter_media_entities($post, $postarray);
+	twitter_media_entities($post, $postarray, $uriid);
 
-	$converted = twitter_expand_entities($postarray['body'], $post, $picture);
+	$converted = twitter_expand_entities($postarray['body'], $post);
+
+	// When the post contains external links then images or videos are just "decorations".
+	if (!empty($converted['urls'])) {
+		$postarray['post-type'] = Item::PT_NOTE;
+	}
+
 	$postarray['body'] = $converted['body'];
 	$postarray['created'] = DateTimeFormat::utc($post->created_at);
 	$postarray['edited'] = DateTimeFormat::utc($post->created_at);

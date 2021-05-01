@@ -16,6 +16,7 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
+use Friendica\Model\Post;
 use Friendica\Model\Tag;
 use Friendica\Util\Strings;
 
@@ -365,6 +366,8 @@ function tumblr_send(App $a, array &$b) {
 	if ($b['contact-id'] != $self['id']) {
 		return;
 	}
+
+	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], $b['body']);
 
 	$oauth_token = DI::pConfig()->get($b['uid'], "tumblr", "oauth_token");
 	$oauth_token_secret = DI::pConfig()->get($b['uid'], "tumblr", "oauth_token_secret");

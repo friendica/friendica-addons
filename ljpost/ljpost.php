@@ -12,6 +12,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\DI;
+use Friendica\Model\Post;
 use Friendica\Model\Tag;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\XML;
@@ -152,6 +153,8 @@ function ljpost_send(&$a,&$b) {
 
     if($b['parent'] != $b['id'])
         return;
+
+	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], $b['body']);
 
 	// LiveJournal post in the LJ user's timezone.
 	// Hopefully the person's Friendica account

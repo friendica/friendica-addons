@@ -436,6 +436,8 @@ function pumpio_send(App $a, array &$b)
 
 	Logger::log("pumpio_send: parameter ".print_r($b, true), Logger::DATA);
 
+	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], $b['body']);
+
 	if ($b['parent'] != $b['id']) {
 		// Looking if its a reply to a pumpio post
 		$condition = ['id' => $b['parent'], 'network' => Protocol::PUMPIO];

@@ -12,7 +12,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Database\DBA;
 use Friendica\DI;
-use Friendica\Util\Strings;
+use Friendica\Model\Post;
 use Friendica\Util\XML;
 
 function wppost_install()
@@ -222,6 +222,8 @@ function wppost_send(&$a, &$b)
 	if ($b['contact-id'] != $self['id']) {
 		return;
 	}
+
+	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], $b['body']);
 
 	$wp_username = XML::escape(DI::pConfig()->get($b['uid'], 'wppost', 'wp_username'));
 	$wp_password = XML::escape(DI::pConfig()->get($b['uid'], 'wppost', 'wp_password'));
