@@ -19,7 +19,8 @@ use Friendica\Protocol\Activity;
 /**
  * Sets up the addon hooks and the database table
  */
-function mailstream_install() {
+function mailstream_install()
+{
 	Hook::register('addon_settings', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings');
 	Hook::register('addon_settings_post', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings_post');
 	Hook::register('post_local_end', 'addon/mailstream/mailstream.php', 'mailstream_post_hook');
@@ -63,7 +64,9 @@ function mailstream_install() {
 /**
  * This funciton indicates a module that can be wrapped in the LegacyModule class
  */
-function mailstream_module() {}
+function mailstream_module()
+{
+}
 
 /**
  * Adds an item in "addon features" in the admin menu of the site
@@ -71,7 +74,8 @@ function mailstream_module() {}
  * @param Friendica\App $a App object (unused)
  * @param string        $o HTML form data
  */
-function mailstream_addon_admin(&$a, &$o) {
+function mailstream_addon_admin(&$a, &$o)
+{
 	$frommail = DI::config()->get('mailstream', 'frommail');
 	$template = Renderer::getMarkupTemplate('admin.tpl', 'addon/mailstream/');
 	$config = ['frommail',
@@ -86,7 +90,8 @@ function mailstream_addon_admin(&$a, &$o) {
 /**
  * Process input from the "addon features" part of the admin menu
  */
-function mailstream_addon_admin_post() {
+function mailstream_addon_admin_post()
+{
 	if (!empty($_POST['frommail'])) {
 		DI::config()->set('mailstream', 'frommail', $_POST['frommail']);
 	}
@@ -100,7 +105,8 @@ function mailstream_addon_admin_post() {
  *
  * @return string the created message ID
  */
-function mailstream_generate_id($uri) {
+function mailstream_generate_id($uri)
+{
 	$host = DI::baseUrl()->getHostname();
 	$resource = hash('md5', $uri);
 	$message_id = "<" . $resource . "@" . $host . ">";
@@ -116,7 +122,8 @@ function mailstream_generate_id($uri) {
  * @param Friendica\App $a    App object (unused)
  * @param array         $item content of the item (may or may not already be stored in the item table)
  */
-function mailstream_post_hook(&$a, &$item) {
+function mailstream_post_hook(&$a, &$item)
+{
 	if (!DI::pConfig()->get($item['uid'], 'mailstream', 'enabled')) {
 		Logger::debug('mailstream: not enabled for item ' . $item['id']);
 		return;
@@ -145,16 +152,27 @@ function mailstream_post_hook(&$a, &$item) {
 	}
 
 	$message_id = mailstream_generate_id($item['uri']);
-	q("INSERT INTO `mailstream_item` (`uid`, `contact-id`, `uri`, `message-id`) " .
-		"VALUES (%d, '%s', '%s', '%s')", intval($item['uid']),
-		intval($item['contact-id']), DBA::escape($item['uri']), DBA::escape($message_id));
-	$r = q('SELECT * FROM `mailstream_item` WHERE `uid` = %d AND `contact-id` = %d AND `uri` = "%s"', intval($item['uid']), intval($item['contact-id']), DBA::escape($item['uri']));
+	q(
+		"INSERT INTO `mailstream_item` (`uid`, `contact-id`, `uri`, `message-id`) " .
+		"VALUES (%d, '%s', '%s', '%s')",
+		intval($item['uid']),
+		intval($item['contact-id']),
+		DBA::escape($item['uri']),
+		DBA::escape($message_id)
+	);
+	$r = q(
+		'SELECT * FROM `mailstream_item` WHERE `uid` = %d AND `contact-id` = %d AND `uri` = "%s"',
+		intval($item['uid']),
+		intval($item['contact-id']),
+		DBA::escape($item['uri'])
+	);
 	if (count($r) != 1) {
 		Logger::info('mailstream_post_remote_hook: Unexpected number of items returned from mailstream_item');
 		return;
 	}
 	$ms_item = $r[0];
-	Logger::debug('mailstream_post_remote_hook: created mailstream_item ' . $ms_item['id'] . ' for item ' . $item['uri'] . ' ' . $item['uid'] . ' ' . $item['contact-id']);
+	Logger::debug('mailstream_post_remote_hook: created mailstream_item ' . $ms_item['id'] .
+					  ' for item ' . $item['uri'] . ' ' . $item['uid'] . ' ' . $item['contact-id']);
 	$user = mailstream_get_user($item['uid']);
 	if (!$user) {
 		Logger::info('mailstream_post_remote_hook: no user ' . $item['uid']);
@@ -170,7 +188,8 @@ function mailstream_post_hook(&$a, &$item) {
  *
  * @return array results from the user table
  */
-function mailstream_get_user($uid) {
+function mailstream_get_user($uid)
+{
 	$r = q('SELECT * FROM `user` WHERE `uid` = %d', intval($uid));
 	if (count($r) != 1) {
 		Logger::info('mailstream_post_remote_hook: Unexpected number of users returned');
@@ -190,7 +209,8 @@ function mailstream_get_user($uid) {
  *
  * @return array new value of the attachments table (results are also stored in the reference parameter)
  */
-function mailstream_do_images(&$item, &$attachments) {
+function mailstream_do_images(&$item, &$attachments)
+{
 	if (!DI::pConfig()->get($item['uid'], 'mailstream', 'attachimg')) {
 		return;
 	}
@@ -227,7 +247,8 @@ function mailstream_do_images(&$item, &$attachments) {
  *
  * @return string sender suitable for use in the email
  */
-function mailstream_sender($item) {
+function mailstream_sender($item)
+{
 	$r = q('SELECT * FROM `contact` WHERE `id` = %d', $item['contact-id']);
 	if (DBA::isResult($r)) {
 		$contact = $r[0];
@@ -245,7 +266,8 @@ function mailstream_sender($item) {
  *
  * @return string plaintext subject line
  */
-function mailstream_decode_subject($subject) {
+function mailstream_decode_subject($subject)
+{
 	$html = BBCode::convert($subject);
 	if (!$html) {
 		return $subject;
@@ -258,7 +280,9 @@ function mailstream_decode_subject($subject) {
 	if (!$noentity) {
 		return $notags;
 	}
-	$nocodes = preg_replace_callback("/(&#[0-9]+;)/", function($m) { return mb_convert_encoding($m[1], "UTF-8", "HTML-ENTITIES"); }, $noentity);
+	$nocodes = preg_replace_callback("/(&#[0-9]+;)/", function ($m) {
+		return mb_convert_encoding($m[1], "UTF-8", "HTML-ENTITIES");
+	}, $noentity);
 	if (!$nocodes) {
 		return $noentity;
 	}
@@ -276,7 +300,8 @@ function mailstream_decode_subject($subject) {
  *
  * @return string subject line suitable for use in the email
  */
-function mailstream_subject($item) {
+function mailstream_subject($item)
+{
 	if ($item['title']) {
 		return mailstream_decode_subject($item['title']);
 	}
@@ -295,10 +320,16 @@ function mailstream_subject($item) {
 		}
 		$parent = $parent_item['thr-parent'];
 	}
-	$r = q("SELECT * FROM `contact` WHERE `id` = %d AND `uid` = %d",
-		intval($item['contact-id']), intval($item['uid']));
+	$r = q(
+		"SELECT * FROM `contact` WHERE `id` = %d AND `uid` = %d",
+		intval($item['contact-id']),
+		intval($item['uid'])
+	);
 	if (!DBA::isResult($r)) {
-		Logger::error('mailstream_subject no contact for item id ' . $item['id'] . ' plink ' . $item['plink'] . ' contact id ' . $item['contact-id'] . ' uid ' . $item['uid']);
+		Logger::error(
+			'mailstream_subject no contact for item',
+			['item id' => $item['id'], 'plink' => $item['plink'], 'contact id' => $item['contact-id'], 'uid' => $item['uid']]
+		);
 		return DI::l10n()->t("Friendica post");
 	}
 	$contact = $r[0];
@@ -331,7 +362,8 @@ function mailstream_subject($item) {
  * @param array  $item       content of the item
  * @param array  $user       results from the user table
  */
-function mailstream_send($message_id, $item, $user) {
+function mailstream_send($message_id, $item, $user)
+{
 	if (!$item['visible']) {
 		return;
 	}
@@ -364,7 +396,13 @@ function mailstream_send($message_id, $item, $user) {
 		$mail->addCustomHeader('X-Friendica-Mailstream-Plink: ' . $item['plink']);
 		$encoding = 'base64';
 		foreach ($attachments as $url => $image) {
-			$mail->AddStringEmbeddedImage($image['data'], $image['guid'], $image['filename'], $encoding, $image['type']);
+			$mail->AddStringEmbeddedImage(
+				$image['data'],
+				$image['guid'],
+				$image['filename'],
+				$encoding,
+				$image['type']
+			);
 		}
 		$mail->IsHTML(true);
 		$mail->CharSet = 'utf-8';
@@ -411,7 +449,8 @@ function mailstream_html_wrap(&$text)
 /**
  * Cron job for the mailstream plugin.  Sends delayed messages and cleans up old successful entries from the table.
  */
-function mailstream_cron() {
+function mailstream_cron()
+{
 	// Only process items older than an hour in cron.  This is because
 	// we want to give mailstream_post_remote_hook a fair chance to
 	// send the email itself before cron jumps in.  Only if
@@ -444,17 +483,20 @@ EOT;
 		Logger::debug('mailstream_cron processing ' . count($ms_item_ids) . ' items');
 		foreach ($ms_item_ids as $ms_item_id) {
 			if (!$ms_item_id['message-id'] || !strlen($ms_item_id['message-id'])) {
-				Logger::info('mailstream_cron: Item ' . $ms_item_id['id'] . ' URI ' . $ms_item_id['uri'] . ' has no message-id');
+				Logger::info('mailstream_cron: Item ' . $ms_item_id['id'] .
+											 ' URI ' . $ms_item_id['uri'] . ' has no message-id');
 			}
 			$item = Post::selectFirst([], ['id' => $ms_item_id['id']]);
 			$users = q("SELECT * FROM `user` WHERE `uid` = %d", intval($item['uid']));
 			$user = $users[0];
 			if ($user && $item) {
 				mailstream_send($ms_item_id['message-id'], $item, $user);
-			}
-			else {
+			} else {
 				Logger::info('mailstream_cron: Unable to find item ' . $ms_item_id['id']);
-				q("UPDATE `mailstream_item` SET `completed` = now() WHERE `message-id` = %d", intval($ms_item_id['message-id']));
+				q(
+					"UPDATE `mailstream_item` SET `completed` = now() WHERE `message-id` = %d",
+					intval($ms_item_id['message-id'])
+				);
 			}
 		}
 	}
@@ -467,7 +509,8 @@ EOT;
  * @param Friendica\App $a App object
  * @param string        $o HTML form data
  */
-function mailstream_addon_settings(&$a, &$s) {
+function mailstream_addon_settings(&$a, &$s)
+{
 	$enabled = DI::pConfig()->get(local_user(), 'mailstream', 'enabled');
 	$address = DI::pConfig()->get(local_user(), 'mailstream', 'address');
 	$nolikes = DI::pConfig()->get(local_user(), 'mailstream', 'nolikes');
@@ -492,7 +535,8 @@ function mailstream_addon_settings(&$a, &$s) {
 					'mailstream_attachimg',
 					DI::l10n()->t('Attach Images'),
 					$attachimg,
-					DI::l10n()->t("Download images in posts and attach them to the email.  Useful for reading email while offline.")],
+					DI::l10n()->t("Download images in posts and attach them to the email.  " .
+													  "Useful for reading email while offline.")],
 				 '$title' => DI::l10n()->t('Mail Stream Settings'),
 				 '$submit' => DI::l10n()->t('Save Settings')]);
 }
@@ -500,29 +544,26 @@ function mailstream_addon_settings(&$a, &$s) {
 /**
  * Process data submitted to user's mailstream features form
  */
-function mailstream_addon_settings_post() {
+function mailstream_addon_settings_post()
+{
 	if ($_POST['mailstream_address'] != "") {
 		DI::pConfig()->set(local_user(), 'mailstream', 'address', $_POST['mailstream_address']);
-	}
-	else {
+	} else {
 		DI::pConfig()->delete(local_user(), 'mailstream', 'address');
 	}
 	if ($_POST['mailstream_nolikes']) {
 		DI::pConfig()->set(local_user(), 'mailstream', 'nolikes', $_POST['mailstream_enabled']);
-	}
-	else {
+	} else {
 		DI::pConfig()->delete(local_user(), 'mailstream', 'nolikes');
 	}
 	if ($_POST['mailstream_enabled']) {
 		DI::pConfig()->set(local_user(), 'mailstream', 'enabled', $_POST['mailstream_enabled']);
-	}
-	else {
+	} else {
 		DI::pConfig()->delete(local_user(), 'mailstream', 'enabled');
 	}
 	if ($_POST['mailstream_attachimg']) {
 		DI::pConfig()->set(local_user(), 'mailstream', 'attachimg', $_POST['mailstream_attachimg']);
-	}
-	else {
+	} else {
 		DI::pConfig()->delete(local_user(), 'mailstream', 'attachimg');
 	}
 }
@@ -530,8 +571,19 @@ function mailstream_addon_settings_post() {
 /**
  * Deletes records from the mailstream_item table older than one year
  */
-function mailstream_tidy() {
-	$r = q("SELECT id FROM mailstream_item WHERE completed IS NOT NULL AND completed < DATE_SUB(NOW(), INTERVAL 1 YEAR)");
+function mailstream_tidy()
+{
+	$query = <<< EOT
+SELECT
+  id
+FROM
+  mailstream_item
+WHERE
+  completed IS NOT NULL AND
+  completed < DATE_SUB(NOW(), INTERVAL 1 YEAR)
+
+EOT;
+	$r = q($query);
 	foreach ($r as $rr) {
 		q('DELETE FROM mailstream_item WHERE id = %d', intval($rr['id']));
 	}
