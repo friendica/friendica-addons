@@ -16,6 +16,9 @@ use Friendica\Model\Item;
 use Friendica\Model\Post;
 use Friendica\Protocol\Activity;
 
+/**
+ * Sets up the addon hooks and the database table
+ */
 function mailstream_install() {
 	Hook::register('addon_settings', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings');
 	Hook::register('addon_settings_post', 'addon/mailstream/mailstream.php', 'mailstream_addon_settings_post');
@@ -57,9 +60,18 @@ function mailstream_install() {
 	}
 }
 
+/**
+ * This funciton indicates a module that can be wrapped in the LegacyModule class
+ */
 function mailstream_module() {}
 
-function mailstream_addon_admin(&$a,&$o) {
+/**
+ * Adds an item in "addon features" in the admin menu of the site
+ *
+ * @param Friendica\App $a App object (unused)
+ * @param string        $o HTML form data
+ */
+function mailstream_addon_admin(&$a, &$o) {
 	$frommail = DI::config()->get('mailstream', 'frommail');
 	$template = Renderer::getMarkupTemplate('admin.tpl', 'addon/mailstream/');
 	$config = ['frommail',
@@ -71,14 +83,27 @@ function mailstream_addon_admin(&$a,&$o) {
 				 '$submit' => DI::l10n()->t('Save Settings')]);
 }
 
+/**
+ * Process input from the "addon features" part of the admin menu
+ *
+ * @param Friendica\App $a App object (unused)
+ */
 function mailstream_addon_admin_post ($a) {
 	if (!empty($_POST['frommail'])) {
 		DI::config()->set('mailstream', 'frommail', $_POST['frommail']);
 	}
 }
 
+/**
+ * Creates a message ID for a post URI in accordance with RFC 1036
+ * See also http://www.jwz.org/doc/mid.html
+ *
+ * @param Friendica\App $a   App object (unused)
+ * @param string        $uri the URI to be converted to a message ID
+ *
+ * @return string the created message ID
+ */
 function mailstream_generate_id($a, $uri) {
-	// http://www.jwz.org/doc/mid.html
 	$host = DI::baseUrl()->getHostname();
 	$resource = hash('md5', $uri);
 	$message_id = "<" . $resource . "@" . $host . ">";
@@ -86,6 +111,14 @@ function mailstream_generate_id($a, $uri) {
 	return $message_id;
 }
 
+/**
+ * Called when either a local or remote post is created.  Creates a
+ * record in the mailstream_item table to track this email, and then
+ * immediately attempts to send it
+ *
+ * @param Friendica\App $a    App object (unused)
+ * @param array         $item results from the item table
+ */
 function mailstream_post_hook(&$a, &$item) {
 	if (!DI::pConfig()->get($item['uid'], 'mailstream', 'enabled')) {
 		Logger::debug('mailstream: not enabled for item ' . $item['id']);
@@ -133,6 +166,13 @@ function mailstream_post_hook(&$a, &$item) {
 	mailstream_send($a, $ms_item['message-id'], $item, $user);
 }
 
+/**
+ * Converts a user ID into a full user record from the corresponding database table
+ *
+ * @param int $uid ID of the user to query
+ *
+ * @return array results from the user table
+ */
 function mailstream_get_user($uid) {
 	$r = q('SELECT * FROM `user` WHERE `uid` = %d', intval($uid));
 	if (count($r) != 1) {
@@ -142,6 +182,18 @@ function mailstream_get_user($uid) {
 	return $r[0];
 }
 
+/**
+ * If the user has configured attaching images to emails as
+ * attachments, this function searches the post for such images,
+ * retrieves the image, and inserts the data and metadata into the
+ * supplied array
+ *
+ * @param Friendica\App $a           App object (unused)
+ * @param array         $item        results from the item table
+ * @param array         $attachments contains an array element for each attachment to add to the email
+ *
+ * @return array new value of the attachments table (results are also stored in the reference parameter)
+ */
 function mailstream_do_images($a, &$item, &$attachments) {
 	if (!DI::pConfig()->get($item['uid'], 'mailstream', 'attachimg')) {
 		return;
@@ -172,6 +224,13 @@ function mailstream_do_images($a, &$item, &$attachments) {
 	return $attachments;
 }
 
+/**
+ * Creates a sender to use in the email, either from the contact or the author of the item, or both
+ *
+ * @param array $item results from the item table
+ *
+ * @return string sender suitable for use in the email
+ */
 function mailstream_sender($item) {
 	$r = q('SELECT * FROM `contact` WHERE `id` = %d', $item['contact-id']);
 	if (DBA::isResult($r)) {
@@ -183,6 +242,13 @@ function mailstream_sender($item) {
 	return $item['author-name'];
 }
 
+/**
+ * Converts a bbcode-encoded subject line into a plaintext version suitable for the subject line of an email
+ *
+ * @param string $subject bbcode-encoded subject line
+ *
+ * @return string plaintext subject line
+ */
 function mailstream_decode_subject($subject) {
 	$html = BBCode::convert($subject);
 	if (!$html) {
@@ -207,6 +273,13 @@ function mailstream_decode_subject($subject) {
 	return $trimmed;
 }
 
+/**
+ * Creates a subject line to use in the email
+ *
+ * @param array $item results from the item table
+ *
+ * @return string subject line suitable for use in the email
+ */
 function mailstream_subject($item) {
 	if ($item['title']) {
 		return mailstream_decode_subject($item['title']);
@@ -255,6 +328,14 @@ function mailstream_subject($item) {
 	return DI::l10n()->t("Friendica Item");
 }
 
+/**
+ * Sends a message using PHPMailer
+ *
+ * @param Friendica\App $a          App object (unused)
+ * @param string        $message_id ID of the message (RFC 1036)
+ * @param array         $item       results from the item table
+ * @param array         $user       results from the user table
+ */
 function mailstream_send(\Friendica\App $a, $message_id, $item, $user) {
 	if (!$item['visible']) {
 		return;
@@ -320,6 +401,8 @@ function mailstream_send(\Friendica\App $a, $message_id, $item, $user) {
  * Email tends to break if you send excessively long lines.  To make
  * bbcode's output suitable for transmission, we try to break things
  * up so that lines are about 200 characters.
+ *
+ * @param string $text text to word wrap - modified in-place
  */
 function mailstream_html_wrap(&$text)
 {
@@ -330,6 +413,12 @@ function mailstream_html_wrap(&$text)
 	$text = implode($lines);
 }
 
+/**
+ * Cron job for the mailstream plugin.  Sends delayed messages and cleans up old successful entries from the table.
+ *
+ * @param Friendica\App $a App object
+ * @param null          $b legacy argument (unused)
+ */
 function mailstream_cron($a, $b) {
 	// Only process items older than an hour in cron.  This is because
 	// we want to give mailstream_post_remote_hook a fair chance to
@@ -380,6 +469,12 @@ EOT;
 	mailstream_tidy();
 }
 
+/**
+ * Form for configuring mailstream features for a user
+ *
+ * @param Friendica\App $a App object
+ * @param string        $o HTML form data
+ */
 function mailstream_addon_settings(&$a, &$s) {
 	$enabled = DI::pConfig()->get(local_user(), 'mailstream', 'enabled');
 	$address = DI::pConfig()->get(local_user(), 'mailstream', 'address');
@@ -410,7 +505,13 @@ function mailstream_addon_settings(&$a, &$s) {
 				 '$submit' => DI::l10n()->t('Save Settings')]);
 }
 
-function mailstream_addon_settings_post($a,$post) {
+/**
+ * Process data submitted to user's mailstream features form
+ *
+ * @param Friendica\App $a    App object
+ * @param array         $post posted results (unused)
+ */
+function mailstream_addon_settings_post($a, $post) {
 	if ($_POST['mailstream_address'] != "") {
 		DI::pConfig()->set(local_user(), 'mailstream', 'address', $_POST['mailstream_address']);
 	}
@@ -437,6 +538,9 @@ function mailstream_addon_settings_post($a,$post) {
 	}
 }
 
+/**
+ * Deletes records from the mailstream_item table older than one year
+ */
 function mailstream_tidy() {
 	$r = q("SELECT id FROM mailstream_item WHERE completed IS NOT NULL AND completed < DATE_SUB(NOW(), INTERVAL 1 YEAR)");
 	foreach ($r as $rr) {
