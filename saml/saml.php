@@ -63,10 +63,10 @@ function saml_metadata() {
 }
 
 function saml_install() {
-    Hook::register('login_hook', 'addon/saml/saml.php', 'saml_sso_initiate');
-    Hook::register('logging_out', 'addon/saml/saml.php', 'saml_slo_initiate');
-    Hook::register('head', 'addon/saml/saml.php', 'saml_head');
-    Hook::register('footer', 'addon/saml/saml.php', 'saml_footer');
+    Hook::register('login_hook', __FILE__, 'saml_sso_initiate');
+    Hook::register('logging_out', __FILE__, 'saml_slo_initiate');
+    Hook::register('head', __FILE__, 'saml_head');
+    Hook::register('footer', __FILE__, 'saml_footer');
 }
 
 function saml_head(&$a, &$b) {
