@@ -39,10 +39,6 @@ function saml_init($a)
 		case "slo":
 			saml_slo_reply();
 			break;
-		case "moo":
-			echo DI::baseUrl();
-			echo $_SERVER['REQUEST_URI'];
-			break;
 	}
 	exit();
 }
