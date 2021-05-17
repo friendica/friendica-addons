@@ -194,9 +194,9 @@ function saml_input($key, $label, $description) {
     return [
         '$' . $key => [
             $key,
-            DI::l10n()->t($label),
+            $label,
             DI::config()->get('saml', $key),
-            DI::l10n()->t($description),
+            $description,
         true, // all the fields are required
         ]
     ];
@@ -206,48 +206,48 @@ function saml_addon_admin (&$a, &$o) {
     $form = 
         saml_input(
             'settings_statement',
-            'Settings statement',
-            'A statement on the settings page explaining where the user should go to change their e-mail and password. BBCode allowed.'
+            DI::l10n()->t('Settings statement'),
+            DI::l10n()->t('A statement on the settings page explaining where the user should go to change their e-mail and password. BBCode allowed.')
         ) +
         saml_input(
             'idp_id',
-            'IdP ID',
-            'Identity provider (IdP) entity URI (e.g., https://example.com/auth/realms/user).'
+            DI::l10n()->t('IdP ID'),
+            DI::l10n()->t('Identity provider (IdP) entity URI (e.g., https://example.com/auth/realms/user).')
         ) +
         saml_input(
             'client_id',
-            'Client ID',
-            'Identifier assigned to client by the identity provider (IdP).'
+            DI::l10n()->t('Client ID'),
+            DI::l10n()->t('Identifier assigned to client by the identity provider (IdP).')
         ) +
         saml_input(
             'sso_url',
-            'IdP SSO URL',
-            'The URL for your identity provider\'s SSO endpoint.'
+            DI::l10n()->t('IdP SSO URL'),
+            DI::l10n()->t('The URL for your identity provider\'s SSO endpoint.')
         ) +
         saml_input(
             'slo_request_url',
-            'IdP SLO request URL',
-            'The URL for your identity provider\'s SLO request endpoint.'
+            DI::l10n()->t('IdP SLO request URL'),
+            DI::l10n()->t('The URL for your identity provider\'s SLO request endpoint.')
         ) +
         saml_input(
             'slo_response_url',
-            'IdP SLO response URL',
-            'The URL for your identity provider\'s SLO response endpoint.'
+            DI::l10n()->t('IdP SLO response URL'),
+            DI::l10n()->t('The URL for your identity provider\'s SLO response endpoint.')
         ) +
         saml_input(
             'sp_key',
-            'SP private key',
-            'The private key the addon should use to authenticate.'
+            DI::l10n()->t('SP private key'),
+            DI::l10n()->t('The private key the addon should use to authenticate.')
         ) +
         saml_input(
             'sp_cert',
-            'SP certificate',
-            'The certficate for the addon\'s private key.'
+            DI::l10n()->t('SP certificate'),
+            DI::l10n()->t('The certficate for the addon\'s private key.')
         ) +
         saml_input(
             'idp_cert',
-            'IdP certificate',
-            'The x509 certficate for your identity provider.'
+            DI::l10n()->t('IdP certificate'),
+            DI::l10n()->t('The x509 certficate for your identity provider.')
         ) +
         [
             '$submit'  => DI::l10n()->t('Save Settings'),
