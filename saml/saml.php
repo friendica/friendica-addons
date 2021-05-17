@@ -20,9 +20,12 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 define("PW_LEN", 32); // number of characters to use for random passwords
 
-function saml_module($a) {}
+function saml_module($a)
+{
+}
 
-function saml_init($a) {
+function saml_init($a)
+{
 	if ($a->argc < 2) return;
 
 	switch ($a->argv[1]) {
@@ -43,7 +46,8 @@ function saml_init($a) {
 	exit();
 }
 
-function saml_metadata() {
+function saml_metadata()
+{
 	try {
 		$settings = new \OneLogin\Saml2\Settings(saml_settings());
 		$metadata = $settings->getSPMetadata();
@@ -63,18 +67,21 @@ function saml_metadata() {
 	}
 }
 
-function saml_install() {
+function saml_install()
+{
 	Hook::register('login_hook', __FILE__, 'saml_sso_initiate');
 	Hook::register('logging_out', __FILE__, 'saml_slo_initiate');
 	Hook::register('head', __FILE__, 'saml_head');
 	Hook::register('footer', __FILE__, 'saml_footer');
 }
 
-function saml_head(&$a, &$b) {
+function saml_head(&$a, &$b)
+{
 	DI::page()->registerStylesheet(__DIR__ . '/saml.css');
 }
 
-function saml_footer(&$a, &$b) {
+function saml_footer(&$a, &$b)
+{
 	$fragment = addslashes(BBCode::convert(DI::config()->get('saml', 'settings_statement')));
 	$b .= <<<EOL
 <script>
@@ -84,7 +91,8 @@ if (target.length) { target.append("<p>$fragment</p>"); }
 EOL;
 }
 
-function saml_is_configured() {
+function saml_is_configured()
+{
 	return
 		DI::config()->get('saml', 'idp_id') &&
 		DI::config()->get('saml', 'client_id') &&
@@ -97,7 +105,8 @@ function saml_is_configured() {
 
 }
 
-function saml_sso_initiate(&$a, &$b) {
+function saml_sso_initiate(&$a, &$b)
+{
 	if (!saml_is_configured()) return;
 
 	$auth = new \OneLogin\Saml2\Auth(saml_settings());
@@ -109,7 +118,8 @@ function saml_sso_initiate(&$a, &$b) {
 	exit();
 }
 
-function saml_sso_reply($a) {
+function saml_sso_reply($a)
+{
 	$auth = new \OneLogin\Saml2\Auth(saml_settings());
 	$requestID = null;
 
@@ -159,7 +169,8 @@ function saml_sso_reply($a) {
 	}
 }
 
-function saml_slo_initiate(&$a, &$b) {
+function saml_slo_initiate(&$a, &$b)
+{
 	$auth = new \OneLogin\Saml2\Auth(saml_settings());
 
 	$sloBuiltUrl = $auth->logout();
@@ -170,7 +181,8 @@ function saml_slo_initiate(&$a, &$b) {
 	exit();
 }
 
-function saml_slo_reply() {
+function saml_slo_reply()
+{
 	$auth = new \OneLogin\Saml2\Auth(saml_settings());
 
 	if (isset($_SESSION) && isset($_SESSION['LogoutRequestID'])) {
@@ -190,7 +202,8 @@ function saml_slo_reply() {
 	}
 }
 
-function saml_input($key, $label, $description) {
+function saml_input($key, $label, $description)
+{
 	return [
 		'$' . $key => [
 			$key,
@@ -202,7 +215,8 @@ function saml_input($key, $label, $description) {
 	];
 }
 
-function saml_addon_admin (&$a, &$o) {
+function saml_addon_admin (&$a, &$o)
+{
 	$form = 
 		saml_input(
 			'settings_statement',
@@ -256,8 +270,10 @@ function saml_addon_admin (&$a, &$o) {
 	$o = Renderer::replaceMacros( $t, $form);
 }
 
-function saml_addon_admin_post (&$a) {
-	$safeset = function ($key) {
+function saml_addon_admin_post (&$a)
+{
+	$safeset = function ($key)
+	{
 		$val = (!empty($_POST[$key]) ? Strings::escapeTags(trim($_POST[$key])) : '');
 		DI::config()->set('saml', $key, $val);
 	};
@@ -274,7 +290,8 @@ function saml_addon_admin_post (&$a) {
 	DI::config()->set('saml', 'settings_statement', $_POST['settings_statement']);
 }
 
-function saml_create_user($username, $email, $name) {
+function saml_create_user($username, $email, $name)
+{
 	if (!strlen($email) || !strlen($name)) {
 		Logger::error('Could not create user: no email or username given.');
 		return false;
@@ -313,7 +330,8 @@ function saml_create_user($username, $email, $name) {
 	}
 }
 
-function saml_settings() {
+function saml_settings()
+{
 	return array(
 		// If 'strict' is True, then the PHP Toolkit will reject unsigned
 		// or unencrypted messages if it expects them to be signed or encrypted.
