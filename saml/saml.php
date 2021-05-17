@@ -218,7 +218,7 @@ function saml_input($key, $label, $description)
 			$label,
 			DI::config()->get('saml', $key),
 			$description,
-		true, // all the fields are required
+			true, // all the fields are required
 		]
 	];
 }
@@ -318,7 +318,7 @@ function saml_create_user($username, $email, $name)
 			'nickname' => $username,
 			'email'	=> $email,
 			'password' => base64_encode($bytes), // should be at least PW_LEN long
-		'verified' => true
+			'verified' => true
 		]);
 
 		return $user;
@@ -379,8 +379,8 @@ function saml_settings()
 				'serviceDescription' => 'SLO and SSO support for Friendica',
 				'requestedAttributes' => array(
 					array(
-					'uid' => '',
-					'isRequired' => false,
+						'uid' => '',
+						'isRequired' => false,
 					)
 				)
 			),
@@ -429,27 +429,27 @@ function saml_settings()
 				// message. OneLogin Toolkit supports the HTTP-Redirect binding
 				// only for this endpoint.
 				'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
-		   ),
-		   // Public x509 certificate of the IdP
-		   'x509cert' => DI::config()->get('saml', 'idp_cert'),
-	   ),
-	   'security' => array (
-		   'wantXMLValidation' => false,
+			),
+			// Public x509 certificate of the IdP
+			'x509cert' => DI::config()->get('saml', 'idp_cert'),
+		),
+		'security' => array (
+			'wantXMLValidation' => false,
 
-	   // Indicates whether the <samlp:AuthnRequest> messages sent by this SP
-	   // will be signed.  [Metadata of the SP will offer this info]
-	   'authnRequestsSigned' => true,
+			// Indicates whether the <samlp:AuthnRequest> messages sent by this SP
+			// will be signed.  [Metadata of the SP will offer this info]
+			'authnRequestsSigned' => true,
 
-	   // Indicates whether the <samlp:logoutRequest> messages sent by this SP
-	   // will be signed.
-	   'logoutRequestSigned' => true,
+			// Indicates whether the <samlp:logoutRequest> messages sent by this SP
+			// will be signed.
+			'logoutRequestSigned' => true,
 
-	   // Indicates whether the <samlp:logoutResponse> messages sent by this SP
-	   // will be signed.
-	   'logoutResponseSigned' => true,
+			// Indicates whether the <samlp:logoutResponse> messages sent by this SP
+			// will be signed.
+			'logoutResponseSigned' => true,
 
-	   // Sign the Metadata
-	   'signMetadata' => true,
-	   )
+			// Sign the Metadata
+			'signMetadata' => true,
+		)
 	);
 }
