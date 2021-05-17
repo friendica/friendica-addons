@@ -29,6 +29,11 @@ function saml_init($a)
 		return;
 	}
 
+	if (!saml_is_configured()) {
+		echo "Please configure the SAML add-on via the admin interface.";
+		return;
+	}
+
 	switch ($a->argv[1]) {
 		case "metadata.xml":
 			saml_metadata();
@@ -104,6 +109,7 @@ function saml_is_configured()
 function saml_sso_initiate(&$a, &$b)
 {
 	if (!saml_is_configured()) {
+		Logger::warning('SAML SSO tried to trigger, but the SAML addon is not configured yet!');
 		return;
 	}
 
@@ -168,6 +174,11 @@ function saml_sso_reply($a)
 
 function saml_slo_initiate(&$a, &$b)
 {
+	if (!saml_is_configured()) {
+		Logger::warning('SAML SLO tried to trigger, but the SAML addon is not configured yet!');
+		return;
+	}
+
 	$auth = new \OneLogin\Saml2\Auth(saml_settings());
 
 	$sloBuiltUrl = $auth->logout();
