@@ -218,7 +218,8 @@ function saml_addon_admin(&$a, &$o)
 		saml_input(
 			'settings_statement',
 			DI::l10n()->t('Settings statement'),
-			DI::l10n()->t('A statement on the settings page explaining where the user should go to change their e-mail and password. BBCode allowed.')
+			DI::l10n()->t('A statement on the settings page explaining where the user should go to change '
+					. 'their e-mail and password. BBCode allowed.')
 		) +
 		saml_input(
 			'idp_id',
