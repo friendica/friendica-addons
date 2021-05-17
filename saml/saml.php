@@ -25,7 +25,9 @@ function saml_module($a)
 
 function saml_init($a)
 {
-	if ($a->argc < 2) return;
+	if ($a->argc < 2) {
+		return;
+	}
 
 	switch ($a->argv[1]) {
 		case "metadata.xml":
@@ -37,10 +39,10 @@ function saml_init($a)
 		case "slo":
 			saml_slo_reply();
 			break;
-	case "moo":
-		echo DI::baseUrl();
-		echo $_SERVER['REQUEST_URI'];
-		break;
+		case "moo":
+			echo DI::baseUrl();
+			echo $_SERVER['REQUEST_URI'];
+			break;
 	}
 	exit();
 }
@@ -62,7 +64,7 @@ function saml_metadata()
 			);
 		}
 	} catch (Exception $e) {
-	Logger::error($e->getMessage());
+		Logger::error($e->getMessage());
 	}
 }
 
@@ -101,12 +103,13 @@ function saml_is_configured()
 		DI::config()->get('saml', 'sp_key') &&
 		DI::config()->get('saml', 'sp_cert') &&
 		DI::config()->get('saml', 'idp_cert');
-
 }
 
 function saml_sso_initiate(&$a, &$b)
 {
-	if (!saml_is_configured()) return;
+	if (!saml_is_configured()) {
+		return;
+	}
 
 	$auth = new \OneLogin\Saml2\Auth(saml_settings());
 	$ssoBuiltUrl = $auth->login(null, array(), false, false, true);
@@ -132,7 +135,7 @@ function saml_sso_reply($a)
 	$errors = $auth->getErrors();
 
 	if (!empty($errors)) {
-	echo "Errors encountered.";
+		echo "Errors encountered.";
 		Logger::error(implode(', ', $errors));
 		exit();
 	}
@@ -162,8 +165,7 @@ function saml_sso_reply($a)
 	}
 
 	if (isset($_POST['RelayState'])
-		&& \OneLogin\Saml2\Utils::getSelfURL() != $_POST['RelayState'])
-	{
+		&& \OneLogin\Saml2\Utils::getSelfURL() != $_POST['RelayState']) {
 		$auth->redirectTo($_POST['RelayState']);
 	}
 }
@@ -214,9 +216,9 @@ function saml_input($key, $label, $description)
 	];
 }
 
-function saml_addon_admin (&$a, &$o)
+function saml_addon_admin(&$a, &$o)
 {
-	$form = 
+	$form =
 		saml_input(
 			'settings_statement',
 			DI::l10n()->t('Settings statement'),
@@ -265,14 +267,13 @@ function saml_addon_admin (&$a, &$o)
 		[
 			'$submit'  => DI::l10n()->t('Save Settings'),
 		];
-	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/saml/" );
-	$o = Renderer::replaceMacros( $t, $form);
+	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/saml/");
+	$o = Renderer::replaceMacros($t, $form);
 }
 
-function saml_addon_admin_post (&$a)
+function saml_addon_admin_post(&$a)
 {
-	$safeset = function ($key)
-	{
+	$safeset = function ($key) {
 		$val = (!empty($_POST[$key]) ? Strings::escapeTags(trim($_POST[$key])) : '');
 		DI::config()->set('saml', $key, $val);
 	};
@@ -312,8 +313,7 @@ function saml_create_user($username, $email, $name)
 		'verified' => true
 		]);
 
-	return $user;
-
+		return $user;
 	} catch (Exception $e) {
 		Logger::error(
 			'Exception while creating user',
@@ -323,7 +323,8 @@ function saml_create_user($username, $email, $name)
 				'name'	  => $name,
 				'exception' => $e->getMessage(),
 				'trace'	 => $e->getTraceAsString()
-			]);
+			]
+		);
 
 		return false;
 	}
@@ -351,7 +352,7 @@ function saml_settings()
 		// Service Provider Data that we are deploying.
 		'sp' => array(
 			// Identifier of the SP entity  (must be a URI)
-			'entityId' => DI::config()->get('saml','client_id'),
+			'entityId' => DI::config()->get('saml', 'client_id'),
 			// Specifies info about where and how the <AuthnResponse> message MUST be
 			// returned to the requester, in this case our SP.
 			'assertionConsumerService' => array(
@@ -391,19 +392,19 @@ function saml_settings()
 			'NameIDFormat' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
 			// Usually x509cert and privateKey of the SP are provided by files placed at
 			// the certs folder. But we can also provide them with the following parameters
-			'x509cert' => DI::config()->get('saml','sp_cert'),
-			'privateKey' => DI::config()->get('saml','sp_key'),
+			'x509cert' => DI::config()->get('saml', 'sp_cert'),
+			'privateKey' => DI::config()->get('saml', 'sp_key'),
 		),
 
 		// Identity Provider Data that we want connected with our SP.
 		'idp' => array(
 			// Identifier of the IdP entity  (must be a URI)
-			'entityId' => DI::config()->get('saml','idp_id'),
+			'entityId' => DI::config()->get('saml', 'idp_id'),
 			// SSO endpoint info of the IdP. (Authentication Request protocol)
 			'singleSignOnService' => array(
 				// URL Target of the IdP where the Authentication Request Message
 				// will be sent.
-				'url' => DI::config()->get('saml','sso_url'),
+				'url' => DI::config()->get('saml', 'sso_url'),
 				// SAML protocol binding to be used when returning the <Response>
 				// message. OneLogin Toolkit supports the HTTP-Redirect binding
 				// only for this endpoint.
@@ -412,17 +413,17 @@ function saml_settings()
 			// SLO endpoint info of the IdP.
 			'singleLogoutService' => array(
 				// URL Location of the IdP where SLO Request will be sent.
-				'url' => DI::config()->get('saml','slo_request_url'),
+				'url' => DI::config()->get('saml', 'slo_request_url'),
 				// URL location of the IdP where SLO Response will be sent (ResponseLocation)
 				// if not set, url for the SLO Request will be used
-				'responseUrl' => DI::config()->get('saml','slo_response_url'),
+				'responseUrl' => DI::config()->get('saml', 'slo_response_url'),
 				// SAML protocol binding to be used when returning the <Response>
 				// message. OneLogin Toolkit supports the HTTP-Redirect binding
 				// only for this endpoint.
 				'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
 		   ),
 		   // Public x509 certificate of the IdP
-		   'x509cert' => DI::config()->get('saml','idp_cert'),
+		   'x509cert' => DI::config()->get('saml', 'idp_cert'),
 	   ),
 	   'security' => array (
 		   'wantXMLValidation' => false,
@@ -444,4 +445,3 @@ function saml_settings()
 	   )
 	);
 }
-?>
