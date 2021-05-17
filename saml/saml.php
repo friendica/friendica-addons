@@ -17,7 +17,7 @@ use Friendica\Util\Strings;
 
 require_once(__DIR__ . '/vendor/autoload.php');
 
-define("PW_LEN", 32); // number of characters to use for random passwords
+define('PW_LEN', 32); // number of characters to use for random passwords
 
 function saml_module($a)
 {
@@ -30,18 +30,18 @@ function saml_init($a)
 	}
 
 	if (!saml_is_configured()) {
-		echo "Please configure the SAML add-on via the admin interface.";
+		echo 'Please configure the SAML add-on via the admin interface.';
 		return;
 	}
 
 	switch ($a->argv[1]) {
-		case "metadata.xml":
+		case 'metadata.xml':
 			saml_metadata();
 			break;
-		case "sso":
+		case 'sso':
 			saml_sso_reply($a);
 			break;
-		case "slo":
+		case 'slo':
 			saml_slo_reply();
 			break;
 	}
@@ -137,13 +137,13 @@ function saml_sso_reply($a)
 	$errors = $auth->getErrors();
 
 	if (!empty($errors)) {
-		echo "Errors encountered.";
+		echo 'Errors encountered.';
 		Logger::error(implode(', ', $errors));
 		exit();
 	}
 
 	if (!$auth->isAuthenticated()) {
-		echo "Not authenticated";
+		echo 'Not authenticated';
 		exit();
 	}
 
@@ -275,7 +275,7 @@ function saml_addon_admin(&$a, &$o)
 		[
 			'$submit'  => DI::l10n()->t('Save Settings'),
 		];
-	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/saml/");
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/saml/');
 	$o = Renderer::replaceMacros($t, $form);
 }
 
@@ -355,7 +355,7 @@ function saml_settings()
 		// the BaseURL of the view that process the SAML Message.
 		// Ex http://sp.example.com/
 		//	http://example.com/sp/
-		'baseurl' => DI::baseUrl() . "/saml",
+		'baseurl' => DI::baseUrl() . '/saml',
 
 		// Service Provider Data that we are deploying.
 		'sp' => array(
@@ -365,7 +365,7 @@ function saml_settings()
 			// returned to the requester, in this case our SP.
 			'assertionConsumerService' => array(
 				// URL Location where the <Response> from the IdP will be returned
-				'url' => DI::baseUrl() . "/saml/sso",
+				'url' => DI::baseUrl() . '/saml/sso',
 				// SAML protocol binding to be used when returning the <Response>
 				// message. OneLogin Toolkit supports this endpoint for the
 				// HTTP-POST binding only.
@@ -374,13 +374,13 @@ function saml_settings()
 			// If you need to specify requested attributes, set a
 			// attributeConsumingService. nameFormat, attributeValue and
 			// friendlyName can be omitted
-			"attributeConsumingService"=> array(
-				"serviceName" => "Friendica SAML SSO and SLO Addon",
-				"serviceDescription" => "SLO and SSO support for Friendica",
-				"requestedAttributes" => array(
+			'attributeConsumingService'=> array(
+				'serviceName' => 'Friendica SAML SSO and SLO Addon',
+				'serviceDescription' => 'SLO and SSO support for Friendica',
+				'requestedAttributes' => array(
 					array(
-					"uid" => "",
-					"isRequired" => false,
+					'uid' => '',
+					'isRequired' => false,
 					)
 				)
 			),
@@ -388,7 +388,7 @@ function saml_settings()
 			// returned to the requester, in this case our SP.
 			'singleLogoutService' => array(
 				// URL Location where the <Response> from the IdP will be returned
-				'url' => DI::baseUrl() . "/saml/slo",
+				'url' => DI::baseUrl() . '/saml/slo',
 				// SAML protocol binding to be used when returning the <Response>
 				// message. OneLogin Toolkit supports the HTTP-Redirect binding
 				// only for this endpoint.
@@ -448,7 +448,7 @@ function saml_settings()
 	   // will be signed.
 	   'logoutResponseSigned' => true,
 
-	   /* Sign the Metadata */
+	   // Sign the Metadata
 	   'signMetadata' => true,
 	   )
 	);
