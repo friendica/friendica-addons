@@ -2,7 +2,7 @@
 /*
  * Name: SAML SSO and SLO
  * Description: replace login and registration with a SAML identity provider.
- * Version: 0.0
+ * Version: 1.0
  * Author: Ryan <https://friendica.verya.pe/profile/ryan>
  */
 use Friendica\Content\Text\BBCode;
