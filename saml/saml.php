@@ -114,7 +114,7 @@ function saml_sso_initiate(&$a, &$b)
 	}
 
 	$auth = new \OneLogin\Saml2\Auth(saml_settings());
-	$ssoBuiltUrl = $auth->login(null, array(), false, false, true);
+	$ssoBuiltUrl = $auth->login(null, [], false, false, true);
 	$_SESSION['AuthNRequestID'] = $auth->getLastRequestID();
 	header('Pragma: no-cache');
 	header('Cache-Control: no-cache, must-revalidate');
@@ -338,7 +338,7 @@ function saml_create_user($username, $email, $name)
 
 function saml_settings()
 {
-	return array(
+	return [
 		// If 'strict' is True, then the PHP Toolkit will reject unsigned
 		// or unencrypted messages if it expects them to be signed or encrypted.
 		// Also it will reject the messages if the SAML standard is not strictly
@@ -356,42 +356,42 @@ function saml_settings()
 		'baseurl' => DI::baseUrl() . '/saml',
 
 		// Service Provider Data that we are deploying.
-		'sp' => array(
+		'sp' => [
 			// Identifier of the SP entity  (must be a URI)
 			'entityId' => DI::config()->get('saml', 'client_id'),
 			// Specifies info about where and how the <AuthnResponse> message MUST be
 			// returned to the requester, in this case our SP.
-			'assertionConsumerService' => array(
+			'assertionConsumerService' => [
 				// URL Location where the <Response> from the IdP will be returned
 				'url' => DI::baseUrl() . '/saml/sso',
 				// SAML protocol binding to be used when returning the <Response>
 				// message. OneLogin Toolkit supports this endpoint for the
 				// HTTP-POST binding only.
 				'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
-			),
+			],
 			// If you need to specify requested attributes, set a
 			// attributeConsumingService. nameFormat, attributeValue and
 			// friendlyName can be omitted
-			'attributeConsumingService'=> array(
+			'attributeConsumingService'=> [
 				'serviceName' => 'Friendica SAML SSO and SLO Addon',
 				'serviceDescription' => 'SLO and SSO support for Friendica',
-				'requestedAttributes' => array(
-					array(
+				'requestedAttributes' => [
+					[
 						'uid' => '',
 						'isRequired' => false,
-					)
-				)
-			),
+					]
+				]
+			],
 			// Specifies info about where and how the <Logout Response> message MUST be
 			// returned to the requester, in this case our SP.
-			'singleLogoutService' => array(
+			'singleLogoutService' => [
 				// URL Location where the <Response> from the IdP will be returned
 				'url' => DI::baseUrl() . '/saml/slo',
 				// SAML protocol binding to be used when returning the <Response>
 				// message. OneLogin Toolkit supports the HTTP-Redirect binding
 				// only for this endpoint.
 				'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
-			),
+			],
 			// Specifies the constraints on the name identifier to be used to
 			// represent the requested subject.
 			// Take a look on lib/Saml2/Constants.php to see the NameIdFormat supported.
@@ -400,14 +400,14 @@ function saml_settings()
 			// the certs folder. But we can also provide them with the following parameters
 			'x509cert' => DI::config()->get('saml', 'sp_cert'),
 			'privateKey' => DI::config()->get('saml', 'sp_key'),
-		),
+		],
 
 		// Identity Provider Data that we want connected with our SP.
-		'idp' => array(
+		'idp' => [
 			// Identifier of the IdP entity  (must be a URI)
 			'entityId' => DI::config()->get('saml', 'idp_id'),
 			// SSO endpoint info of the IdP. (Authentication Request protocol)
-			'singleSignOnService' => array(
+			'singleSignOnService' => [
 				// URL Target of the IdP where the Authentication Request Message
 				// will be sent.
 				'url' => DI::config()->get('saml', 'sso_url'),
@@ -415,9 +415,9 @@ function saml_settings()
 				// message. OneLogin Toolkit supports the HTTP-Redirect binding
 				// only for this endpoint.
 				'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
-			),
+			],
 			// SLO endpoint info of the IdP.
-			'singleLogoutService' => array(
+			'singleLogoutService' => [
 				// URL Location of the IdP where SLO Request will be sent.
 				'url' => DI::config()->get('saml', 'slo_request_url'),
 				// URL location of the IdP where SLO Response will be sent (ResponseLocation)
@@ -427,11 +427,11 @@ function saml_settings()
 				// message. OneLogin Toolkit supports the HTTP-Redirect binding
 				// only for this endpoint.
 				'binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
-			),
+			],
 			// Public x509 certificate of the IdP
 			'x509cert' => DI::config()->get('saml', 'idp_cert'),
-		),
-		'security' => array (
+		],
+		'security' => [
 			'wantXMLValidation' => false,
 
 			// Indicates whether the <samlp:AuthnRequest> messages sent by this SP
@@ -448,6 +448,6 @@ function saml_settings()
 
 			// Sign the Metadata
 			'signMetadata' => true,
-		)
-	);
+		]
+	];
 }
