@@ -14,7 +14,6 @@ use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\User;
 use Friendica\Util\Strings;
-use OneLogin\Saml2\Auth;
 
 require_once(__DIR__ . '/vendor/autoload.php');
 
