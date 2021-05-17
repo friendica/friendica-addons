@@ -281,21 +281,19 @@ function saml_addon_admin(&$a, &$o)
 
 function saml_addon_admin_post(&$a)
 {
-	$safeset = function ($key) {
-		$val = (!empty($_POST[$key]) ? Strings::escapeTags(trim($_POST[$key])) : '');
+	$set = function ($key) {
+		$val = (!empty($_POST[$key]) ? trim($_POST[$key]) : '');
 		DI::config()->set('saml', $key, $val);
 	};
-	$safeset('idp_id');
-	$safeset('client_id');
-	$safeset('sso_url');
-	$safeset('slo_request_url');
-	$safeset('slo_response_url');
-	$safeset('sp_key');
-	$safeset('sp_cert');
-	$safeset('idp_cert');
-
-	// Not using safeset here since settings_statement is *meant* to include HTML tags.
-	DI::config()->set('saml', 'settings_statement', $_POST['settings_statement']);
+	$set('idp_id');
+	$set('client_id');
+	$set('sso_url');
+	$set('slo_request_url');
+	$set('slo_response_url');
+	$set('sp_key');
+	$set('sp_cert');
+	$set('idp_cert');
+	$set('settings_statement');
 }
 
 function saml_create_user($username, $email, $name)
