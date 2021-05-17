@@ -5,6 +5,7 @@
  * Version: 0.0
  * Author: Ryan <https://friendica.verya.pe/profile/ryan>
  */
+use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
@@ -74,11 +75,11 @@ function saml_head(&$a, &$b) {
 }
 
 function saml_footer(&$a, &$b) {
-    $fragment = addslashes(DI::config()->get('saml', 'settings_statement'));
+    $fragment = addslashes(BBCode::convert(DI::config()->get('saml', 'settings_statement')));
     $b .= <<<EOL
 <script>
 var target=$("#settings-nickname-desc");
-if (target.length) { target.append("$fragment"); }
+if (target.length) { target.append("<p>$fragment</p>"); }
 </script>
 EOL;
 }
@@ -206,7 +207,7 @@ function saml_addon_admin (&$a, &$o) {
         saml_input(
             'settings_statement',
             'Settings statement',
-            'A statement on the settings page explaining where the user should go to change their e-mail and password. HTML allowed.'
+            'A statement on the settings page explaining where the user should go to change their e-mail and password. BBCode allowed.'
         ) +
         saml_input(
             'idp_id',
