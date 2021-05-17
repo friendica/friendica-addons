@@ -123,6 +123,7 @@ function saml_sso_reply($a) {
 
     if (!empty($errors)) {
 	echo "Errors encountered.";
+        Logger::error(implode(', ', $errors));
         exit();
     }
 
