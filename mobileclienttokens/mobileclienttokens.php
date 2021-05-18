@@ -150,9 +150,6 @@ function mobileclienttokens_addon_settings(App $a, &$s)
 
 	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/mobileclienttokens/');
 	$s .= Renderer::replaceMacros($t, [
-		'$create' => DI::l10n()->t('Create'),
-		'$delete' => DI::l10n()->t('Delete'),
-		'$header' => DI::l10n()->t('Mobile Client Tokens'),
 		'$msg' => DI::session()->get('mobileclienttokens-msg', false),
 		'$newtoken' => DI::session()->get('mobileclienttokens-new', false),
 		'$newtokenid' => [
@@ -168,6 +165,17 @@ function mobileclienttokens_addon_settings(App $a, &$s)
 			empty($tokens) ? null : $tokens[0],
 			DI::l10n()->t('Pick an existing token to delete/revoke.'),
 			array_combine($tokens, $tokens)
+		],
+		'$text' => [
+			'create' => DI::l10n()->t('Create'),
+			'delete' => DI::l10n()->t('Delete'),
+			'header' => DI::l10n()->t('Mobile Client Tokens'),
+			'newtoken1' => DI::l10n()->t('New token created!'),
+			'newtoken2' => DI::l10n()->t('THIS IS THE ONLY TIME YOU WILL BE SHOWN THESE CREDENTIALS!'),
+			'newtoken3' => DI::l10n()->t('Write them down or enter them into your mobile client before navigating away!'),
+			'newtoken4' => DI::l10n()->t('Note: the spaces in the password are only for legibility! Leave them out when entering your password.'),
+			'password' => DI::l10n()->t('Password'),
+			'username' => DI::l10n()->t('Username'),
 		],
 		'$tokens' => empty($tokens) ? false : array_combine($tokens, $tokens),
 	]);
