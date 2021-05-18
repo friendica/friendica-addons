@@ -39,7 +39,7 @@ function mobileclienttokens_authenticate($a, &$b)
 	}
 	$usertoken = explode('/', $b['username'], 2);
 	$username = $usertoken[0];
-       	$tokenid = $usertoken[1];
+	$tokenid = $usertoken[1];
 
 	$condition = [
 		'nickname' => $username,
@@ -63,7 +63,7 @@ function mobileclienttokens_authenticate($a, &$b)
 	}
 }
 
-function mobileclienttokens_admin_input($key, $label, $description, $default=null)
+function mobileclienttokens_admin_input($key, $label, $description, $default = null)
 {
 	return [
 		'$' . $key => [
@@ -81,7 +81,8 @@ function mobileclienttokens_addon_admin(&$a, &$o)
 	if (DI::session()->get('mobileclienttokens_authed')) {
 		DI::session()->set(
 			'mobileclienttokens-msg',
-			DI::l10n()->t('The Mobile Client Tokens addon cannot be configured in sessions authenticated via the same.'));
+			DI::l10n()->t('The Mobile Client Tokens addon cannot be configured in sessions authenticated via the same.')
+		);
 	}
 
 	$form =
@@ -143,7 +144,8 @@ function mobileclienttokens_addon_settings(App $a, &$s)
 	if (DI::session()->get('mobileclienttokens_authed')) {
 		DI::session()->set(
 			'mobileclienttokens-msg',
-			DI::l10n()->t('Mobile client tokens cannot be added or removed in sessions authenticated via the same.'));
+			DI::l10n()->t('Mobile client tokens cannot be added or removed in sessions authenticated via the same.')
+		);
 	}
 
 	$tokens = mobileclienttokens_gettokens();
@@ -172,8 +174,12 @@ function mobileclienttokens_addon_settings(App $a, &$s)
 			'header' => DI::l10n()->t('Mobile Client Tokens'),
 			'newtoken1' => DI::l10n()->t('New token created!'),
 			'newtoken2' => DI::l10n()->t('THIS IS THE ONLY TIME YOU WILL BE SHOWN THESE CREDENTIALS!'),
-			'newtoken3' => DI::l10n()->t('Write them down or enter them into your mobile client before navigating away!'),
-			'newtoken4' => DI::l10n()->t('Note: the spaces in the password are only for legibility! Leave them out when entering your password.'),
+			'newtoken3' => DI::l10n()->t(
+				'Write them down or enter them into your mobile client before navigating away!'
+			),
+			'newtoken4' => DI::l10n()->t(
+				'Note: the spaces in the password are only for legibility! Leave them out when entering your password.'
+			),
 			'password' => DI::l10n()->t('Password'),
 			'username' => DI::l10n()->t('Username'),
 		],
@@ -192,12 +198,13 @@ function mobileclienttokens_addon_settings_post(App $a, &$s)
 
 	if (!empty($_POST['mobileclienttokens-create'])) {
 		mobileclienttokens_create($_POST['newtokenid']);
-	} else if (!empty($_POST['mobileclienttokens-delete'])) {
+	} elseif (!empty($_POST['mobileclienttokens-delete'])) {
 		mobileclienttokens_delete($_POST['deletetokenid']);
 	}
 }
 
-function mobileclienttokens_create($tokenid) {
+function mobileclienttokens_create($tokenid)
+{
 	if (empty(trim($tokenid))) {
 		DI::session()->set('mobileclienttokens-msg', DI::l10n()->t('Error: No token ID provided!'));
 		return;
@@ -249,7 +256,8 @@ function mobileclienttokens_create($tokenid) {
 	);
 }
 
-function mobileclienttokens_delete($tokenid) {
+function mobileclienttokens_delete($tokenid)
+{
 	$tokens = mobileclienttokens_gettokens();
 
 	if (empty($tokens)) {
@@ -267,7 +275,8 @@ function mobileclienttokens_delete($tokenid) {
 	DI::session()->set('mobileclienttokens-msg', DI::l10n()->t('Token successfully deleted!'));
 }
 
-function mobileclienttokens_gettokens() {
+function mobileclienttokens_gettokens()
+{
 	$tokens = explode('/', DI::pConfig()->get(
 		local_user(),
 		'mobileclienttokens',
@@ -277,7 +286,7 @@ function mobileclienttokens_gettokens() {
 
 	if (!$tokens) {
 		$tokens = [];
-	} else if (is_string($tokens)) {
+	} elseif (is_string($tokens)) {
 		$tokens = [$tokens];
 	}
 	return array_filter($tokens);
