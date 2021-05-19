@@ -4,13 +4,14 @@
 # 
 # 
 # Translators:
+# XMPPはいいぞ, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-02 10:25+0700\n"
-"PO-Revision-Date: 2019-08-28 10:37+0000\n"
-"Last-Translator: Ozero Dien <rgfx0020+misc@gmail.com>\n"
+"POT-Creation-Date: 2021-02-01 18:16+0100\n"
+"PO-Revision-Date: 2021-05-19 00:39+0000\n"
+"Last-Translator: XMPPはいいぞ\n"
 "Language-Team: Japanese (http://www.transifex.com/Friendica/friendica/language/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,31 +19,27 @@ msgstr ""
 "Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: twitter.php:195
+#: twitter.php:189
 msgid "Post to Twitter"
 msgstr "Twitterに投稿"
 
-#: twitter.php:236
+#: twitter.php:234
 msgid ""
 "You submitted an empty PIN, please Sign In with Twitter again to get a new "
 "one."
 msgstr "空のPINを送信しました。もう一度Twitterでサインインして新しいPINを取得してください。"
 
-#: twitter.php:263
-msgid "Twitter settings updated."
-msgstr "Twitter設定が更新されました。"
-
-#: twitter.php:293 twitter.php:297
+#: twitter.php:291 twitter.php:295
 msgid "Twitter Import/Export/Mirror"
 msgstr "Twitterインポート/エクスポート/ミラー"
 
-#: twitter.php:304
+#: twitter.php:302
 msgid ""
 "No consumer key pair for Twitter found. Please contact your site "
 "administrator."
 msgstr "Twitterのコンシューマキーペアが見つかりません。サイト管理者に連絡してください。"
 
-#: twitter.php:316
+#: twitter.php:314
 msgid ""
 "At this Friendica instance the Twitter addon was enabled but you have not "
 "yet connected your account to your Twitter account. To do so click the "
@@ -51,38 +48,42 @@ msgid ""
 " be posted to Twitter."
 msgstr "このFriendicaインスタンスでは、Twitterアドオンは有効になっていますが、アカウントをTwitterアカウントにまだ接続していません。これを行うには、下のボタンをクリックしてTwitterからPINを取得し、それを下の入力ボックスにコピーしてフォームを送信する必要があります。 <strong>一般公開</strong>投稿のみがTwitterに投稿されます。"
 
-#: twitter.php:317
+#: twitter.php:315
 msgid "Log in with Twitter"
 msgstr "Twitterでログイン"
 
-#: twitter.php:319
+#: twitter.php:317
 msgid "Copy the PIN from Twitter here"
 msgstr "ここからTwitterからPINをコピーします"
 
-#: twitter.php:324 twitter.php:366 twitter.php:636
+#: twitter.php:322 twitter.php:377 twitter.php:768
 msgid "Save Settings"
 msgstr "設定を保存する"
 
-#: twitter.php:336
+#: twitter.php:324 twitter.php:379
+msgid "An error occured: "
+msgstr "エラーが発生しました："
+
+#: twitter.php:341
 msgid "Currently connected to: "
 msgstr "現在接続中："
 
-#: twitter.php:337
+#: twitter.php:342 twitter.php:352
 msgid "Disconnect"
 msgstr "切断する"
 
-#: twitter.php:347
+#: twitter.php:359
 msgid "Allow posting to Twitter"
 msgstr "Twitterへの投稿を許可する"
 
-#: twitter.php:347
+#: twitter.php:359
 msgid ""
 "If enabled all your <strong>public</strong> postings can be posted to the "
 "associated Twitter account. You can choose to do so by default (here) or for"
 " every posting separately in the posting options when writing the entry."
 msgstr "有効にすると、すべての<strong>一般公開</strong>投稿を、関連づけたTwitterアカウントに投稿できます。デフォルト（ここ）で行うか、エントリを書き込む際に投稿オプションですべての投稿を個別に行うかを選択できます。"
 
-#: twitter.php:350
+#: twitter.php:362
 msgid ""
 "<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile "
 "details from unknown viewers?</em>) the link potentially included in public "
@@ -90,23 +91,23 @@ msgid ""
 "the visitor that the access to your profile has been restricted."
 msgstr "<strong>注</strong>：プライバシー設定（<em>未知の視聴者からプロフィールの詳細を非表示にしますか？</em>）により、Twitterに中継・公開される投稿内のリンクは、プロフィールへのアクセスが制限されている訪問者に対して空白ページを表示します。"
 
-#: twitter.php:353
+#: twitter.php:365
 msgid "Send public postings to Twitter by default"
 msgstr "デフォルトでTwitterに一般公開投稿を送信する"
 
-#: twitter.php:356
+#: twitter.php:368
 msgid "Mirror all posts from twitter that are no replies"
 msgstr "返信がないTwitterのすべての投稿をミラーリングする"
 
-#: twitter.php:359
+#: twitter.php:371
 msgid "Import the remote timeline"
 msgstr "リモートタイムラインをインポートする"
 
-#: twitter.php:362
+#: twitter.php:374
 msgid "Automatically create contacts"
 msgstr "連絡先を自動的に作成する"
 
-#: twitter.php:362
+#: twitter.php:374
 msgid ""
 "This will automatically create a contact in Friendica as soon as you receive"
 " a message from an existing contact via the Twitter network. If you do not "
@@ -116,18 +117,15 @@ msgid ""
 "recreate this contact when they post again."
 msgstr "これにより、Twitterネットワーク経由で既存の連絡先からメッセージを受信するとすぐに、Friendicaに連絡先が自動的に作成されます。これを有効にしない場合、ここで投稿を表示するFriendicaのTwitter連絡先を手動で追加する必要があります。ただし、有効にした場合、Twitterの連絡先をFriendicaの連絡先リストから単に削除することはできません。再送信するとこの連絡先が再作成されるためです。"
 
-#: twitter.php:614
-msgid "Twitter post failed. Queued for retry."
-msgstr "Twitterの投稿に失敗しました。再試行のためにキューに入れられました。"
-
-#: twitter.php:628
-msgid "Settings updated."
-msgstr "設定が更新されました。"
-
-#: twitter.php:638
+#: twitter.php:770
 msgid "Consumer key"
 msgstr "コンシューマ キー"
 
-#: twitter.php:639
+#: twitter.php:771
 msgid "Consumer secret"
 msgstr "コンシューマ シークレット"
+
+#: twitter.php:967
+#, php-format
+msgid "%s on Twitter"
+msgstr ""
