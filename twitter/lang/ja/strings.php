@@ -8,13 +8,13 @@ function string_plural_select_ja($n){
 ;
 $a->strings["Post to Twitter"] = "Twitterに投稿";
 $a->strings["You submitted an empty PIN, please Sign In with Twitter again to get a new one."] = "空のPINを送信しました。もう一度Twitterでサインインして新しいPINを取得してください。";
-$a->strings["Twitter settings updated."] = "Twitter設定が更新されました。";
 $a->strings["Twitter Import/Export/Mirror"] = "Twitterインポート/エクスポート/ミラー";
 $a->strings["No consumer key pair for Twitter found. Please contact your site administrator."] = "Twitterのコンシューマキーペアが見つかりません。サイト管理者に連絡してください。";
 $a->strings["At this Friendica instance the Twitter addon was enabled but you have not yet connected your account to your Twitter account. To do so click the button below to get a PIN from Twitter which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to Twitter."] = "このFriendicaインスタンスでは、Twitterアドオンは有効になっていますが、アカウントをTwitterアカウントにまだ接続していません。これを行うには、下のボタンをクリックしてTwitterからPINを取得し、それを下の入力ボックスにコピーしてフォームを送信する必要があります。 <strong>一般公開</strong>投稿のみがTwitterに投稿されます。";
 $a->strings["Log in with Twitter"] = "Twitterでログイン";
 $a->strings["Copy the PIN from Twitter here"] = "ここからTwitterからPINをコピーします";
 $a->strings["Save Settings"] = "設定を保存する";
+$a->strings["An error occured: "] = "エラーが発生しました：";
 $a->strings["Currently connected to: "] = "現在接続中：";
 $a->strings["Disconnect"] = "切断する";
 $a->strings["Allow posting to Twitter"] = "Twitterへの投稿を許可する";
@@ -25,7 +25,5 @@ $a->strings["Mirror all posts from twitter that are no replies"] = "返信がな
 $a->strings["Import the remote timeline"] = "リモートタイムラインをインポートする";
 $a->strings["Automatically create contacts"] = "連絡先を自動的に作成する";
 $a->strings["This will automatically create a contact in Friendica as soon as you receive a message from an existing contact via the Twitter network. If you do not enable this, you need to manually add those Twitter contacts in Friendica from whom you would like to see posts here. However if enabled, you cannot merely remove a twitter contact from the Friendica contact list, as it will recreate this contact when they post again."] = "これにより、Twitterネットワーク経由で既存の連絡先からメッセージを受信するとすぐに、Friendicaに連絡先が自動的に作成されます。これを有効にしない場合、ここで投稿を表示するFriendicaのTwitter連絡先を手動で追加する必要があります。ただし、有効にした場合、Twitterの連絡先をFriendicaの連絡先リストから単に削除することはできません。再送信するとこの連絡先が再作成されるためです。";
-$a->strings["Twitter post failed. Queued for retry."] = "Twitterの投稿に失敗しました。再試行のためにキューに入れられました。";
-$a->strings["Settings updated."] = "設定が更新されました。";
 $a->strings["Consumer key"] = "コンシューマ キー";
 $a->strings["Consumer secret"] = "コンシューマ シークレット";
