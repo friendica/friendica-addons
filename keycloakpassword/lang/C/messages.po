@@ -1,0 +1,51 @@
+# ADDON keycloakpassword
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica keycloakpassword addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-05-21 07:56+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: keycloakpassword.php:118
+msgid "Client ID"
+msgstr ""
+
+#: keycloakpassword.php:119
+msgid ""
+"The name of the OpenID Connect client you created for this addon in Keycloak."
+msgstr ""
+
+#: keycloakpassword.php:123
+msgid "Client secret"
+msgstr ""
+
+#: keycloakpassword.php:124
+msgid ""
+"The secret assigned to the OpenID Connect client you created for this addon "
+"in Keycloak."
+msgstr ""
+
+#: keycloakpassword.php:128
+msgid "OpenID Connect endpoint"
+msgstr ""
+
+#: keycloakpassword.php:130
+msgid ""
+"URL to the Keycloak endpoint for your client. (E.g., https://example.com/"
+"auth/realms/some-realm/protocol/openid-connect)"
+msgstr ""
+
+#: keycloakpassword.php:136
+msgid "Save Settings"
+msgstr ""
