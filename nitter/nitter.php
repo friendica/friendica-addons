@@ -28,16 +28,17 @@ use Friendica\Core\Addon;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
-function nitter_install() {
-    Addon::registerHook ('prepare_body', 'addon/nitter/nitter.php', 'nitter_render');
+function nitter_install()
+{
+	Addon::registerHook ('prepare_body', 'addon/nitter/nitter.php', 'nitter_render');
 }
 
 /* Handle the send data from the admin settings
  */
 function nitter_addon_admin_post(App $a)
 {
-    $nitterserver = trim($_POST['nitterserver']);
-    DI::config()->set('nitter', 'server', $nitterserver);
+	$nitterserver = trim($_POST['nitterserver']);
+	DI::config()->set('nitter', 'server', $nitterserver);
 }
 
 /* Hook into the admin settings to let the admin choose a
@@ -45,23 +46,24 @@ function nitter_addon_admin_post(App $a)
  */
 function nitter_addon_admin(App $a, &$o)
 {
-    $nitterserver = DI::config()->get('nitter', 'server');
-    $t = Renderer::getMarkupTemplate("admin.tpl", "addon/nitter/");
-    $o = Renderer::replaceMacros($t, [
-        '$settingdescription' => DI::l10n()->t('Which nitter server shall be used for the replacements in the post bodies? Use the URL with servername and protocol.  See %s for a list of available public Nitter servers.', "https://github.com/zedeus/nitter/wiki/Instances"),
-        '$nitterserver' => ["nitterserver", DI::l10n()->t('Nitter server'), $nitterserver, 'http://example.com'], 
-        '$submit' => DI::l10n()->t('Save Settings'),
-    ]);
+	$nitterserver = DI::config()->get('nitter', 'server');
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/nitter/');
+	$o = Renderer::replaceMacros($t, [
+		'$settingdescription' => DI::l10n()->t('Which nitter server shall be used for the replacements in the post bodies? Use the URL with servername and protocol.  See %s for a list of available public Nitter servers.', 'https://github.com/zedeus/nitter/wiki/Instances'),
+		'$nitterserver' => ['nitterserver', DI::l10n()->t('Nitter server'), $nitterserver, 'http://example.com'], 
+		'$submit' => DI::l10n()->t('Save Settings'),
+	]);
 }
 
 /*
  *  replace "twitter.com" with "nitter.net"
  */
-function nitter_render(&$a, &$o) {
-    // this needs to be a system setting
-    $nitter = DI::config()->get('nitter', 'server', 'https://nitter.net');
-    if (strstr($o['html'],'https://twitter.com')) {
-        $o['html'] = str_replace('https://twitter.com', $nitter, $o['html']);
-        $o['html'] .= '<hr><p>'.DI::l10n()->t('Links to Twitter in this posting were replaced by links to the Nitter instance at %s', $nitter).'</p>';
-    }
+function nitter_render(&$a, &$o)
+{
+	// this needs to be a system setting
+	$nitter = DI::config()->get('nitter', 'server', 'https://nitter.net');
+	if (strstr($o['html'], 'https://twitter.com')) {
+		$o['html'] = str_replace('https://twitter.com', $nitter, $o['html']);
+		$o['html'] .= '<hr><p>' . DI::l10n()->t('Links to Twitter in this posting were replaced by links to the Nitter instance at %s', $nitter) . '</p>';
+	}
 }
