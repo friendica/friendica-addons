@@ -1,0 +1,60 @@
+# ADDON keycloakpassword
+# Copyright (C)
+# This file is distributed under the same license as the Friendica keycloakpassword addon package.
+# 
+# 
+# Translators:
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2021
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-05-21 07:56+0200\n"
+"PO-Revision-Date: 2021-05-21 12:59+0000\n"
+"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2021\n"
+"Language-Team: German (https://www.transifex.com/Friendica/teams/12172/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: keycloakpassword.php:118
+msgid "Client ID"
+msgstr "ID des Clients"
+
+#: keycloakpassword.php:119
+msgid ""
+"The name of the OpenID Connect client you created for this addon in "
+"Keycloak."
+msgstr ""
+"Der Name des OpenID Clients den du für dieses Addon in Keycloak angelegt "
+"hast."
+
+#: keycloakpassword.php:123
+msgid "Client secret"
+msgstr "Client Geheimnis"
+
+#: keycloakpassword.php:124
+msgid ""
+"The secret assigned to the OpenID Connect client you created for this addon "
+"in Keycloak."
+msgstr "Das Geheimnis, das du in Keycloak für den Client hinterlegt hast."
+
+#: keycloakpassword.php:128
+msgid "OpenID Connect endpoint"
+msgstr "OpenID Verbindungsendpunkt"
+
+#: keycloakpassword.php:130
+msgid ""
+"URL to the Keycloak endpoint for your client. (E.g., "
+"https://example.com/auth/realms/some-realm/protocol/openid-connect)"
+msgstr ""
+"Die URL des Keycloak Entpunktes fpr deinen Client (z.B. "
+"https://example.com/auth/realms/some-realm/protocol/openid-connect)"
+
+#: keycloakpassword.php:136
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
