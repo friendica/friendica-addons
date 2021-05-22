@@ -19,21 +19,16 @@ steps:
   - name: clone friendica addon
     image: alpine/git
     commands:
-      - git clone $DRONE_REMOTE_URL addon
-      - git checkout $DRONE_COMMIT_REF
-  - name: Run default Xgettext
+      - git clone $DRONE_REPO_LINK addon
+      - cd addon/
+      - git checkout $DRONE_COMMIT_BRANCH
+      - git fetch origin $DRONE_COMMIT_REF
+      - git merge $DRONE_COMMIT_SHA
+  - name: Run Xgettext for addons
     image: friendicaci/transifex
     commands:
-      - export CHANGED_FILES=($(git diff --name-status ${DRONE_COMMIT_BEFORE}..${DRONE_COMMIT_AFTER} | grep ^A | cut -f2))
-      - export FIND_RESULT=$(printf "%s\n" "$CHANGED_FILES[@]" | sed '/^\./d' | cut -d "/" -f1 | uniq)
-      - for addon in $FIND_RESULT; do ./bin/run_xgettext.sh --addon $addon; done
+      - /xgettext-addon.sh
   - name: Check update necessary
-    image: alpine/git
+    image: friendicaci/transifex
     commands:
-      - cd addon/
-      - if [[ $(git diff -U0 "**/messages.po" | awk '!/index|diff|\-\-\-|\+\+\+|@@|\-"POT-Creation-Date|\+"POT-Creation-Date|\+#|\-#/{print }' | wc -l) > 0 ]]; then
-          echo "::error file=messages.po::messages.po is out of date"
-          exit 1
-        else
-          echo "Nothing to update"
-        fi
+      - /check-addons.sh
