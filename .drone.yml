@@ -50,7 +50,7 @@ steps:
     commands:
       - git clone https://github.com/friendica/friendica.git .
       - git checkout $DRONE_COMMIT_BRANCH
-  - name: clone friendica addon
+  - name: Clone friendica addon
     image: alpine/git
     commands:
       - git clone $DRONE_REPO_LINK addon
