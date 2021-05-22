@@ -78,6 +78,8 @@ function blackout_redirect ($a, $b) {
 		Logger::log('redirecting user to blackout page');
 		System::externalRedirect($myurl);
 	}
+
+	DI::l10n()->t('blub');
 }
 
 function blackout_addon_admin(&$a, &$o) {
