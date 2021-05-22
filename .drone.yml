@@ -45,7 +45,7 @@ trigger:
     - pull_request
 
 steps:
-  - name: clone friendica base
+  - name: Clone friendica base
     image: alpine/git
     commands:
       - git clone https://github.com/friendica/friendica.git .
