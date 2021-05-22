@@ -32,3 +32,40 @@ steps:
     image: friendicaci/transifex
     commands:
       - /check-addons.sh
+---
+kind: pipeline
+type: docker
+name: php-cs check
+
+clone:
+  disable: true
+
+trigger:
+  event:
+    - pull_request
+
+steps:
+  - name: clone friendica base
+    image: alpine/git
+    commands:
+      - git clone https://github.com/friendica/friendica.git .
+      - git checkout $DRONE_COMMIT_BRANCH
+  - name: clone friendica addon
+    image: alpine/git
+    commands:
+      - git clone $DRONE_REPO_LINK addon
+      - cd addon/
+      - git checkout $DRONE_COMMIT_BRANCH
+      - git fetch origin $DRONE_COMMIT_REF
+      - git merge $DRONE_COMMIT_SHA
+  - name: Install dependencies
+    image: composer
+    commands:
+      - ./bin/composer.phar run cs:install
+  - name: Run coding standards check
+    image: friendicaci/php-cs
+    commands:
+      - cd addon/
+      - export CHANGED_FILES="$(git diff --name-status ${DRONE_COMMIT_BEFORE}..${DRONE_COMMIT_AFTER} | grep ^A | cut -f2 | sed -e "s/^/addon\\//")"
+      - cd ../
+      - /check-php-cs.sh
