@@ -49,7 +49,7 @@ function blockbot_init_1(App $a) {
 	// List of "good" crawlers
 	$good_agents = ['fediverse.space crawler', 'fediverse.network crawler', 'Active_Pods_CheckBot_3.0',
 		'Social-Relay/', 'Test Certificate Info', 'Uptimebot/', 'GNUSocialBot', 'UptimeRobot/',
-		'PTST/'];
+		'PTST/', 'Zabbix'];
 
 	// List of known crawlers.
 	$agents = ['SemrushBot', 's~feedly-nikon3', 'Qwantify/Bleriot/', 'ltx71', 'Sogou web spider/',
@@ -57,7 +57,7 @@ function blockbot_init_1(App $a) {
 		'PaperLiBot/', 'Nuzzel', 'um-LN/', 'Google Favicon', 'Datanyze', 'BLEXBot/', '360Spider',
 		'adscanner/', 'HeadlessChrome', 'wpif', 'startmebot/', 'Googlebot/', 'Applebot/',
 		'facebookexternalhit/', 'GoogleImageProxy', 'bingbot/', 'heritrix/', 'ldspider',
-		'AwarioRssBot/', 'Zabbix', 'TweetmemeBot/', 'dcrawl/', 'PhantomJS/', 'Googlebot-Image/',
+		'AwarioRssBot/', 'TweetmemeBot/', 'dcrawl/', 'PhantomJS/', 'Googlebot-Image/',
 		'CrowdTanglebot/', 'Mediapartners-Google', 'Baiduspider/', 'datagnionbot',
 		'MegaIndex.ru/', 'SMUrlExpander', 'Hatena-Favicon/', 'Wappalyzer', 'FlipboardProxy/',
 		'NetcraftSurveyAgent/', 'Dataprovider.com', 'SMTBot/', 'Nimbostratus-Bot/',
