@@ -1668,10 +1668,10 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 	$postarray['app'] = strip_tags($post->source);
 
 	if ($post->user->protected) {
-		$postarray['private'] = 1;
+		$postarray['private'] = Item::PRIVATE;
 		$postarray['allow_cid'] = '<' . $self['id'] . '>';
 	} else {
-		$postarray['private'] = 0;
+		$postarray['private'] = Item::UNLISTED;
 		$postarray['allow_cid'] = '';
 	}
 
