@@ -4,38 +4,37 @@
 # 
 # 
 # Translators:
-# bavatar <tobias.diekershoff@gmx.net>, 2014-2015
+# Steffen K9, 2021
+# Till Mohr <tmtrfx@till-mohr.de>, 2021
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014-2015
+# Ulf Rompe <transifex.com@rompe.org>, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2015-07-27 05:19+0000\n"
-"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-05-23 19:46+0000\n"
+"Last-Translator: Till Mohr <tmtrfx@till-mohr.de>\n"
+"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: remote_permissions.php:45
+#: remote_permissions.php:44
 msgid "Remote Permissions Settings"
 msgstr "Entfernte Privatsphäreneinstellungen"
 
-#: remote_permissions.php:46
+#: remote_permissions.php:45
 msgid ""
 "Allow recipients of your private posts to see the other recipients of the "
 "posts"
-msgstr "Erlaube Empfängern von privaten Nachrichten zu sehen wer die anderen Empfänger sind"
+msgstr "Erlaube Empfängern deiner privaten Nachrichten, zu sehen, wer die anderen Empfänger sind"
 
-#: remote_permissions.php:48 remote_permissions.php:196
-msgid "Submit"
-msgstr "Senden"
-
-#: remote_permissions.php:58
-msgid "Remote Permissions settings updated."
-msgstr "Entfernte Privatsphäreneinstellungen aktualisiert."
+#: remote_permissions.php:47 remote_permissions.php:196
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
 
 #: remote_permissions.php:124
 msgid "Visible to:"
@@ -47,7 +46,7 @@ msgstr "Sichtbar für"
 
 #: remote_permissions.php:178
 msgid "may only be a partial list"
-msgstr "könnte nur ein Teil der Liste sein"
+msgstr "ist womöglich nur eine teilweise Liste"
 
 #: remote_permissions.php:197
 msgid "Global"
@@ -63,8 +62,4 @@ msgstr "Individuell"
 
 #: remote_permissions.php:198
 msgid "Each user chooses whether his/her posts show the post recipients"
-msgstr "Jede/r Nutzer/in kann wählen ob die Empfänger der Beiträge angezeigt werden sollen oder nicht"
-
-#: remote_permissions.php:205
-msgid "Settings updated."
-msgstr "Einstellungen aktualisiert."
+msgstr "Jede/r Nutzer/in kann wählen, ob die Empfänger der Beiträge angezeigt werden sollen oder nicht"
