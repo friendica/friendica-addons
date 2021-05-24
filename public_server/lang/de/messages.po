@@ -5,14 +5,15 @@
 # 
 # Translators:
 # Steffen K9, 2021
+# Till Mohr <tmtrfx@till-mohr.de>, 2021
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-01 18:15+0100\n"
-"PO-Revision-Date: 2021-04-03 06:59+0000\n"
-"Last-Translator: Steffen K9\n"
+"PO-Revision-Date: 2021-05-23 19:49+0000\n"
+"Last-Translator: Till Mohr <tmtrfx@till-mohr.de>\n"
 "Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -47,4 +48,4 @@ msgstr "Einstellungen speichern"
 
 #: public_server.php:160
 msgid "Set any of these options to 0 to deactivate it."
-msgstr "Setze diese Einstellungen auf 0, um sie jeweils zu deaktivieren."
+msgstr "Setze eine dieser Einstellungen auf 0, um sie zu deaktivieren."

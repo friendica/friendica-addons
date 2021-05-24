@@ -4,6 +4,7 @@
 # 
 # 
 # Translators:
+# Till Mohr <tmtrfx@till-mohr.de>, 2021
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014-2015
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018,2020
 # Ulf Rompe <transifex.com@rompe.org>, 2019
@@ -11,9 +12,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-23 02:00-0400\n"
-"PO-Revision-Date: 2020-10-25 18:54+0000\n"
-"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
+"POT-Creation-Date: 2021-02-01 18:16+0100\n"
+"PO-Revision-Date: 2021-05-23 19:40+0000\n"
+"Last-Translator: Till Mohr <tmtrfx@till-mohr.de>\n"
 "Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -56,9 +57,9 @@ msgstr "bei Twitter anmelden"
 
 #: twitter.php:317
 msgid "Copy the PIN from Twitter here"
-msgstr "Kopiere die Twitter-PIN hier her"
+msgstr "Kopiere die Twitter-PIN hierher"
 
-#: twitter.php:322 twitter.php:377 twitter.php:757
+#: twitter.php:322 twitter.php:377 twitter.php:768
 msgid "Save Settings"
 msgstr "Einstellungen speichern"
 
@@ -83,7 +84,7 @@ msgid ""
 "If enabled all your <strong>public</strong> postings can be posted to the "
 "associated Twitter account. You can choose to do so by default (here) or for"
 " every posting separately in the posting options when writing the entry."
-msgstr "Wenn aktiviert, können all deine <strong>öffentlichen</strong> Einträge auf dem verbundenen Twitter Konto veröffentlicht werden. Du kannst dies (hier) als Standardverhalten einstellen oder beim Schreiben eines Beitrags in den Beitragsoptionen festlegen."
+msgstr "Wenn aktiviert, können all deine <strong>öffentlichen</strong> Einträge auf dem verbundenen Twitter-Konto veröffentlicht werden. Du kannst dies (hier) als Standardverhalten einstellen oder beim Schreiben eines Beitrags in den Beitragsoptionen festlegen."
 
 #: twitter.php:362
 msgid ""
@@ -99,11 +100,11 @@ msgstr "Veröffentliche öffentliche Beiträge standardmäßig bei Twitter"
 
 #: twitter.php:368
 msgid "Mirror all posts from twitter that are no replies"
-msgstr "Spiegle alle Beiträge von Twitter, die keine Antworten oder wiederholten Nachrichten sind"
+msgstr "Spiegle alle Beiträge von Twitter, die keine Antworten sind"
 
 #: twitter.php:371
 msgid "Import the remote timeline"
-msgstr "Importiere die entfernte Zeitleiste"
+msgstr "Importiere die Remote-Zeitleiste"
 
 #: twitter.php:374
 msgid "Automatically create contacts"
@@ -117,17 +118,17 @@ msgid ""
 "from whom you would like to see posts here. However if enabled, you cannot "
 "merely remove a twitter contact from the Friendica contact list, as it will "
 "recreate this contact when they post again."
-msgstr "Mit dieser Option wird automatisch ein Kontakt bei Friendica angelegt, wenn du eine Nachricht von einem bestehenden Kontakt auf Twitter erhältst. Ist die Option nicht aktiv, musst du manuell Kontakte für diejenigen deiner Twitter Kontakte anlegen, deren Nachrichten du auf Friendica lesen möchtest.. Auf der anderen Seite kannst du, so diese Option aktiv ist, nicht einfach Twitter Kontakte aus deinen Kontakten bei Friendica entfernen, da diese bei der nächsten Gelegenheit neu erstellt werden."
+msgstr "Mit dieser Option wird automatisch ein Kontakt bei Friendica angelegt, wenn du eine Nachricht von einem bestehenden Kontakt auf Twitter erhältst. Ist die Option nicht aktiv, musst du manuell Kontakte für diejenigen deiner Twitter-Kontakte anlegen, deren Nachrichten du auf Friendica lesen möchtest. Doch falls aktiviert, lassen sich Twitter-Kontakte nicht einfach aus deinen Kontakten bei Friendica entfernen, da sie bei neuem Posting neu erstellt werden."
 
-#: twitter.php:759
+#: twitter.php:770
 msgid "Consumer key"
 msgstr "Consumer Key"
 
-#: twitter.php:760
+#: twitter.php:771
 msgid "Consumer secret"
 msgstr "Consumer Secret"
 
-#: twitter.php:945
+#: twitter.php:967
 #, php-format
 msgid "%s on Twitter"
 msgstr "%s auf Twitter"

@@ -5,6 +5,7 @@
 # 
 # Translators:
 # Andreas H., 2014-2015
+# Till Mohr <tmtrfx@till-mohr.de>, 2021
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2019
 # Ulf Rompe <transifex.com@rompe.org>, 2019
@@ -12,9 +13,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-19 10:42+0100\n"
-"PO-Revision-Date: 2019-02-21 06:03+0000\n"
-"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-05-23 19:52+0000\n"
+"Last-Translator: Till Mohr <tmtrfx@till-mohr.de>\n"
 "Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,13 +23,13 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: piwik.php:94
+#: piwik.php:87
 msgid ""
 "This website is tracked using the <a href='http://www.matomo.org'>Matomo</a>"
 " analytics tool."
-msgstr "Diese Website benutzt <a href='http://www.matomo.org'>Matomo</a>, eine Open Source-Software zur statistischen Auswertung der Besucherzugriffe."
+msgstr "Diese Website benutzt <a href='http://www.matomo.org'>Matomo</a>, eine Open-Source-Software zur statistischen Auswertung der Besucherzugriffe."
 
-#: piwik.php:97
+#: piwik.php:90
 #, php-format
 msgid ""
 "If you do not want that your visits are logged in this way you <a "
@@ -36,32 +37,28 @@ msgid ""
 "visits of the site</a> (opt-out)."
 msgstr "Wenn du nicht willst, dass Deine Besuche auf diese Weise gespeichert werden, kannst du <a href='%s'>ein Cookie setzen</a>. Dann wird Matomo / Piwik dich auf dieser Website nicht mehr verfolgen (opt-out)."
 
-#: piwik.php:104
+#: piwik.php:97
 msgid "Save Settings"
 msgstr "Einstellungen speichern"
 
-#: piwik.php:105
+#: piwik.php:98
 msgid "Matomo (Piwik) Base URL"
-msgstr "Matomo (Piwiki) Basis URL"
+msgstr "Matomo-Basis-URL (Piwik-Basis-URL)"
 
-#: piwik.php:105
+#: piwik.php:98
 msgid ""
 "Absolute path to your Matomo (Piwik) installation. (without protocol "
 "(http/s), with trailing slash)"
-msgstr "Absoluter Pfad zu deiner Matomo (Piwik)-Installation (ohne Protokoll (http/s) und mit abschließendem Schrägstrich)"
+msgstr "Absoluter Pfad zu deiner Matomo-/Piwik-Installation (ohne \"http://\" oder \"https://\"), mit abschließendem Schrägstrich"
 
-#: piwik.php:106
+#: piwik.php:99
 msgid "Site ID"
 msgstr "Seiten-ID"
 
-#: piwik.php:107
+#: piwik.php:100
 msgid "Show opt-out cookie link?"
 msgstr "Link zum Setzen des Opt-Out-Cookies anzeigen?"
 
-#: piwik.php:108
+#: piwik.php:101
 msgid "Asynchronous tracking"
 msgstr "Asynchrones Tracking"
-
-#: piwik.php:120
-msgid "Settings updated."
-msgstr "Einstellungen aktualisiert."
