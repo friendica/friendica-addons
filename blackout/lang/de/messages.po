@@ -4,15 +4,16 @@
 # 
 # 
 # Translators:
+# Till Mohr <tmtrfx@till-mohr.de>, 2021
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2019,2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-23 01:34-0500\n"
-"PO-Revision-Date: 2021-02-01 06:25+0000\n"
-"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-05-23 19:26+0000\n"
+"Last-Translator: Till Mohr <tmtrfx@till-mohr.de>\n"
 "Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -31,7 +32,7 @@ msgstr "Das Enddatum liegt vor dem Startdatum des Blackouts, du solltest dies ko
 msgid ""
 "Please double check the current settings for the blackout. It will begin on "
 "<strong>%s</strong> and end on <strong>%s</strong>."
-msgstr "Bitte überprüfe die aktuellen Einstellungen für den Blackout. Start-Zeitpunkt ist <strong>%s</strong> und das Ende ist <strong>%s</strong>."
+msgstr "Bitte überprüfe die aktuellen Einstellungen für den Blackout. Start-Zeitpunkt ist <strong>%s</strong>, und das Ende ist <strong>%s</strong>."
 
 #: blackout.php:102
 msgid "Save Settings"
@@ -65,4 +66,4 @@ msgid ""
 " the submit button. Users currently logged in will <strong>not</strong> be "
 "thrown out but can't login again after logging out while the blackout is "
 "still in place."
-msgstr "<strong>Hinweis</strong>: Die Umleitung ist von dem Moment aktiv, wenn du den \"Einstellungen speichern\" Button drückst. Derzeit angemeldete Nutzer werden <strong>nicht</strong> ausgeworfen werden, können sich aber nicht wieder anmelden, wenn sie sich während des Blackouts abmelden."
+msgstr "<strong>Hinweis</strong>: Die Umleitung ist von dem Moment an aktiv, wenn du den \"Einstellungen speichern\"-Button drückst. Derzeit angemeldete Nutzer werden <strong>nicht</strong> ausgeschlossen, können sich aber, nachdem sie sich während des Blackouts ausgeloggt haben, nicht mehr anmelden."
