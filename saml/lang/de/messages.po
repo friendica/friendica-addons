@@ -5,6 +5,7 @@
 # 
 # Translators:
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2021
+# Till Mohr <tmtrfx@till-mohr.de>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -13,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-05-18 07:23+0200\n"
 "PO-Revision-Date: 2021-05-18 11:39+0000\n"
-"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2021\n"
+"Last-Translator: Till Mohr <tmtrfx@till-mohr.de>, 2021\n"
 "Language-Team: German (https://www.transifex.com/Friendica/teams/12172/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -30,8 +31,8 @@ msgid ""
 "A statement on the settings page explaining where the user should go to "
 "change their e-mail and password. BBCode allowed."
 msgstr ""
-"Erörternde Anweisungen die auf der Einstellungsseite angezeigt werden und "
-"den Nutzern erklären wo sie ihre E-Mail Adressen und Passwörter ändern "
+"Erörternde Anweisungen, die auf der Einstellungsseite angezeigt werden und "
+"den Nutzern erklären, wo sie ihre E-Mail Adressen und Passwörter ändern "
 "sollen. BBCode wird unterstützt."
 
 #: saml.php:237
@@ -43,17 +44,17 @@ msgid ""
 "Identity provider (IdP) entity URI (e.g., "
 "https://example.com/auth/realms/user)."
 msgstr ""
-"Entitäten URL des Identitätsanbieter (IdP)  (z.B. "
+"Entitäten-URL des Identitätsanbieters (IdP)  (z.B. "
 "https://example.com/auth/realms/user)."
 
 #: saml.php:242
 msgid "Client ID"
-msgstr "Client ID"
+msgstr "Client-ID"
 
 #: saml.php:243
 msgid "Identifier assigned to client by the identity provider (IdP)."
 msgstr ""
-"Kennung des Clients, die vom Identitätsanbieter (IdP) zugewiesen wurde"
+"Kennung des Clients, die vom Identitätsanbieter (IdP) zugewiesen wurde."
 
 #: saml.php:247
 msgid "IdP SSO URL"
@@ -61,48 +62,48 @@ msgstr "IdP SSO URL"
 
 #: saml.php:248
 msgid "The URL for your identity provider's SSO endpoint."
-msgstr "Die URL des SSO Endpunktes deines Identitätenanbieters"
+msgstr "Die URL des SSO-Endpunktes deines Identitätenanbieters."
 
 #: saml.php:252
 msgid "IdP SLO request URL"
-msgstr "IdP SLO Anfrage URL"
+msgstr "IdP-SLO-Anfrage-URL"
 
 #: saml.php:253
 msgid "The URL for your identity provider's SLO request endpoint."
-msgstr "Die URL des SLO Anfrage Endpunktes deines Identitätenanbieters"
+msgstr "Die URL des SLO-Anfrage-Endpunktes deines Identitätenanbieters."
 
 #: saml.php:257
 msgid "IdP SLO response URL"
-msgstr "IdP SLO Antwort URL"
+msgstr "IdP-SLO-Antwort-URL"
 
 #: saml.php:258
 msgid "The URL for your identity provider's SLO response endpoint."
-msgstr "Die URL des SLO Antwort Endpunktes deines Identitätenanbieters"
+msgstr "Die URL des SLO-Antwort-Endpunktes deines Identitätenanbieters."
 
 #: saml.php:262
 msgid "SP private key"
-msgstr "SP privater Schlüssel"
+msgstr "Privater Schlüssel (SP)"
 
 #: saml.php:263
 msgid "The private key the addon should use to authenticate."
 msgstr ""
-"Der private Schlüssel den das Addon zur Authentifizierung verwenden soll"
+"Der private Schlüssel, den das Addon zur Authentifizierung verwenden soll."
 
 #: saml.php:267
 msgid "SP certificate"
-msgstr "SP Zertifikat"
+msgstr "SP-Zertifikat"
 
 #: saml.php:268
 msgid "The certficate for the addon's private key."
-msgstr "Das Zertifikat für den privaten Schlüssel des Addons"
+msgstr "Das Zertifikat für den privaten Schlüssel des Addons."
 
 #: saml.php:272
 msgid "IdP certificate"
-msgstr "IdP Zertifikat"
+msgstr "IdP-Zertifikat"
 
 #: saml.php:273
 msgid "The x509 certficate for your identity provider."
-msgstr "Das x509 Zertifikat deines Identitätanbieters"
+msgstr "Das x509-Zertifikat deines Identitätanbieters."
 
 #: saml.php:276
 msgid "Save Settings"
