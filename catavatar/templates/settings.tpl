@@ -11,14 +11,14 @@
 	<img src="{{$basepath}}/catavatar/{{$uid}}?{{$uncache}}">
 	<p>{{$setrandomize}}</p>
 	<div class="settings-submit-wrapper" >
-		<input type="submit" name="catavatar-usecat" 
-			class="btn btn-primary settings-submit" value="{{$usecat}}" />
+		<button type="submit" name="catavatar-usecat"
+				class="btn btn-primary settings-submit" value="{{$usecat}}">{{$usecat}}</button>
 		
 		<div class="btn-group" role="group" aria-label="...">
-			<input type="submit" name="catavatar-morecat" 
-				class="btn btn-default settings-submit" value="{{$morecat}}" />
-			<input type="submit" name="catavatar-emailcat" {{if !$seed}}disabled{{/if}}
-				class="btn btn-default settings-submit" value="{{$emailcat}}" />
+			<button type="submit" name="catavatar-morecat"
+					class="btn btn-default settings-submit" value="{{$morecat}}">{{$morecat}}</button>
+			<button type="submit" name="catavatar-emailcat" {{if !$seed}}disabled{{/if}}
+					class="btn btn-default settings-submit" value="{{$emailcat}}">{{$emailcat}}</button>
 		</div>
 	</div>
 </div>
