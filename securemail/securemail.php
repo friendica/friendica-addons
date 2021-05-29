@@ -19,9 +19,9 @@ require_once __DIR__ . '/vendor/autoload.php';
 function securemail_install()
 {
 	Hook::register('addon_settings', 'addon/securemail/securemail.php', 'securemail_settings');
-	Hook::register('addon_settings_post', 'addon/securemail/securemail.php', 'securemail_settings_post');
+	Hook::register('addon_settings_post', 'addon/securemail/securemail.php', 'securemail_settings_post', 10);
 
-	Hook::register('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare');
+	Hook::register('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare', 10);
 
 	Logger::log('installed securemail');
 }

@@ -20,7 +20,7 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'a
 function phpmailer_install()
 {
 	Hook::register('load_config'         , __FILE__, 'phpmailer_load_config');
-	Hook::register('emailer_send_prepare', __FILE__, 'phpmailer_emailer_send_prepare');
+	Hook::register('emailer_send_prepare', __FILE__, 'phpmailer_emailer_send_prepare', 5);
 }
 
 function phpmailer_load_config(App $a, ConfigFileLoader $loader)
