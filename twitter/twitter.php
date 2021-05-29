@@ -495,26 +495,30 @@ function twitter_action(App $a, $uid, $pid, $action)
 
 	Logger::debug('before action', ['action' => $action, 'pid' => $pid, 'data' => $post]);
 
-	switch ($action) {
-		case 'delete':
-			// To-Do: $result = $connection->post('statuses/destroy', $post);
-			$result = [];
-			break;
-		case 'like':
-			$result = $connection->post('favorites/create', $post);
-			if ($connection->getLastHttpCode() != 200) {
-				Logger::warning('Unable to create favorite', ['result' => $result]);
-			}
-			break;
-		case 'unlike':
-			$result = $connection->post('favorites/destroy', $post);
-			if ($connection->getLastHttpCode() != 200) {
-				Logger::warning('Unable to destroy favorite', ['result' => $result]);
-			}
-			break;
-		default:
-			Logger::warning('Unhandled action', ['action' => $action]);
-			$result = [];
+	try {
+		switch ($action) {
+			case 'delete':
+				// To-Do: $result = $connection->post('statuses/destroy', $post);
+				$result = [];
+				break;
+			case 'like':
+				$result = $connection->post('favorites/create', $post);
+				if ($connection->getLastHttpCode() != 200) {
+					Logger::warning('Unable to create favorite', ['result' => $result]);
+				}
+				break;
+			case 'unlike':
+				$result = $connection->post('favorites/destroy', $post);
+				if ($connection->getLastHttpCode() != 200) {
+					Logger::warning('Unable to destroy favorite', ['result' => $result]);
+				}
+				break;
+			default:
+				Logger::warning('Unhandled action', ['action' => $action]);
+				$result = [];
+		}
+	} catch (TwitterOAuthException $twitterOAuthException) {
+		Logger::warning('Unable to communicate with twitter', ['action' => $action, 'data' => $post, 'code' => $twitterOAuthException->getCode(), 'exception' => $twitterOAuthException]);
 	}
 
 	Logger::info('after action', ['action' => $action, 'result' => $result]);
