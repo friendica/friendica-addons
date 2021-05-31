@@ -164,7 +164,7 @@ function openstreetmap_generate_map(&$a, &$b)
 		$cardlink .= '?mlat=' . $lat . '&mlon=' . $lon;
 	}
 
-	$cardlink .= '#map=' . $zoom . '/' . $lat . '/' . $lon . '">' . ($b['location'] ? Strings::escapeHtml($b['location']) : DI::l10n()->t('View Larger')) . '</a>';
+	$cardlink .= '#map=' . $zoom . '/' . $lat . '/' . $lon . '">' . ($b['location'] ??0? Strings::escapeHtml($b['location']) : DI::l10n()->t('View Larger')) . '</a>';
 	if (empty($b['mode'])) {
 		$b['html'] = '<iframe style="width:100%; height:300px; border:1px solid #ccc" src="' . $tmsserver .
 				'/export/embed.html?bbox=' . ($lon - 0.01) . '%2C' . ($lat - 0.01) . '%2C' . ($lon + 0.01) . '%2C' . ($lat + 0.01) .
