@@ -716,10 +716,10 @@ function twitter_post_hook(App $a, array &$b)
 							$data = ['media_id' => $media->media_id_string,
 								'alt_text' => ['text' => substr($image['description'], 0, 420)]];
 							$ret = $cb->media_metadata_create($data);
-							Logger::info('Metadata create', ['id' => $b['id'], 'data' => $data, 'return' => json_encode($ret)]);
+							Logger::info('Metadata create', ['id' => $b['id'], 'data' => $data, 'return' => $ret]);
 						}
 					} else {
-						Logger::error('Failed upload', ['id' => $b['id'], 'image' => $image['url']]);
+						Logger::error('Failed upload', ['id' => $b['id'], 'image' => $image['url'], 'return' => $media]);
 						throw new Exception('Failed upload of ' . $image['url']);
 					}
 				}
