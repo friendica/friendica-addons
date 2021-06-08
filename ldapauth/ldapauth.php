@@ -134,41 +134,31 @@ function ldapauth_authenticate($username, $password)
 		return false;
 	}
 
-	$emailarray = [];
-	$namearray = [];
-	if ($ldap_autocreateaccount == "true") {
-		if (!strlen($ldap_autocreateaccount_emailattribute)) {
-			$ldap_autocreateaccount_emailattribute = "mail";
-		}
-		if (!strlen($ldap_autocreateaccount_nameattribute)) {
-			$ldap_autocreateaccount_nameattribute = "givenName";
-		}
-		$emailarray = @ldap_get_values($connect, $id, $ldap_autocreateaccount_emailattribute);
-		$namearray = @ldap_get_values($connect, $id, $ldap_autocreateaccount_nameattribute);
-	}
-
-	if (!strlen($ldap_group)) {
-		ldap_createaccount($ldap_autocreateaccount, $username, $password, $emailarray[0], $namearray[0]);
-		return true;
-	}
-
-	$r = @ldap_compare($connect, $ldap_group, 'member', $dn);
-	if ($r !== true) {
+	if (strlen($ldap_group) && @ldap_compare($connect, $ldap_group, 'member', $dn) !== true) {
 		$errno = @ldap_errno($connect);
 		if ($errno === 32) {
 			Logger::notice('LDAP Access Control Group does not exist', ['errno' => $errno, 'error' => ldap_error($connect)]);
 		} elseif ($errno === 16) {
 			Logger::notice('LDAP membership attribute does not exist in access control group', ['errno' => $errno, 'error' => ldap_error($connect)]);
 		} else {
-			Logger::notice('Unexpected LDAP error', ['errno' => $errno, 'error' => ldap_error($connect)]);
+			Logger::notice('LDAP user isn\'t part of the authorized group', ['dn' => $dn]);
 		}
 
 		@ldap_close($connect);
 		return false;
 	}
 
-	if ($ldap_autocreateaccount == "true" && !DBA::exists('user', ['nickname' => $username])) {
-		return ldap_createaccount($username, $password, $emailarray[0], $namearray[0]);
+	if ($ldap_autocreateaccount == 'true' && !DBA::exists('user', ['nickname' => $username])) {
+		if (!strlen($ldap_autocreateaccount_emailattribute)) {
+			$ldap_autocreateaccount_emailattribute = 'mail';
+		}
+		if (!strlen($ldap_autocreateaccount_nameattribute)) {
+			$ldap_autocreateaccount_nameattribute = 'givenName';
+		}
+		$email_values = @ldap_get_values($connect, $id, $ldap_autocreateaccount_emailattribute);
+		$name_values = @ldap_get_values($connect, $id, $ldap_autocreateaccount_nameattribute);
+
+		return ldap_createaccount($username, $password, $email_values[0] ?? '', $name_values[0] ?? '');
 	}
 
 	try {
@@ -191,7 +181,7 @@ function ldap_createaccount($username, $password, $email, $name)
 		$user = User::create([
 			'username' => $name,
 			'nickname' => $username,
-			'email' => $email,
+			'email'    => $email,
 			'password' => $password,
 			'verified' => 1
 		]);
