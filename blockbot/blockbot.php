@@ -114,7 +114,7 @@ function blockbot_init_1(App $a) {
 		'WordPress/', 'http.rb/', 'Apache-HttpClient/', 'WordPress.com;', 'Pleroma',
 		'Dispatch/', 'Ruby', 'Java/', 'libwww-perl/', 'Mastodon/', 'FeedlyApp/',
 		'lua-resty-http/', 'Tiny Tiny RSS/', 'Wget/', 'PostmanRuntime/',
-		'W3C_Validator/', 'NetNewsWire', 'FeedValidator/', 'theoldreader.com'];
+		'W3C_Validator/', 'NetNewsWire', 'FeedValidator/', 'theoldreader.com', 'axios/'];
 
 	if (DI::config()->get('blockbot', 'good_crawlers')) {
 		$agents = array_merge($agents, $good_agents);
