@@ -10,6 +10,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Item;
@@ -121,9 +122,10 @@ function mailstream_send_hook(&$a, $data)
 	}
 
 	if (!mailstream_send($data['message_id'], $item, $user)) {
-		$delayed = date(DateTimeFormat::utc('now + 1 hour'));
-		$data['tries'] += 1;
-		Hook::fork(['priority' => PRIORITY_LOW, 'delayed' => $delayed], 'mailstream_send_hook', $data);
+		Logger::debug('mailstream_send_hook send failed, will retry', $data);
+		if (!Worker::defer()) {
+			Logger::error('mailstream_send_hook failed and could not defer', $data);
+		}
 	}
 }
 
