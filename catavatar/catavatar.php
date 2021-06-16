@@ -15,6 +15,7 @@ use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Contact;
 use Friendica\Model\Photo;
+use Friendica\Model\Profile;
 use Friendica\Network\HTTPException\NotFoundException;
 
 define("CATAVATAR_SIZE", 256);
@@ -98,12 +99,7 @@ function catavatar_addon_settings_post(App $a, &$s)
 		Contact::updateSelfFromUserID(local_user(), true);
 
 		// Update global directory in background
-		$url = DI::baseUrl()->get() . '/profile/' . $a->user['nickname'];
-		if ($url && strlen(DI::config()->get('system', 'directory'))) {
-			Worker::add(PRIORITY_LOW, 'Directory', $url);
-		}
-
-		Worker::add(PRIORITY_LOW, 'ProfileUpdate', local_user());
+		Profile::publishUpdate(local_user());
 
 		info(DI::l10n()->t('Meow!'));
 		return;
