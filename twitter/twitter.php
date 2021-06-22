@@ -1217,6 +1217,7 @@ function twitter_user_to_contact($data)
 		'location' => $data->location,
 		'about'    => $data->description,
 		'photo'    => twitter_fix_avatar($data->profile_image_url_https),
+		'header'   => $data->profile_banner_url ?? $data->profile_background_image_url_https,
 	];
 
 	return $fields;
