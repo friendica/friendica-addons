@@ -1,0 +1,116 @@
+# ADDON saml
+# Copyright (C)
+# This file is distributed under the same license as the Friendica saml addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2021
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-05-18 07:23+0200\n"
+"PO-Revision-Date: 2021-05-18 11:39+0000\n"
+"Last-Translator: Balázs Úr, 2021\n"
+"Language-Team: Hungarian (https://www.transifex.com/Friendica/teams/12172/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: saml.php:231
+msgid "Settings statement"
+msgstr "Beállítások nyilatkozata"
+
+#: saml.php:232
+msgid ""
+"A statement on the settings page explaining where the user should go to "
+"change their e-mail and password. BBCode allowed."
+msgstr ""
+"Egy nyilatkozat a beállítások oldalon, amely elmagyarázza, hogy a "
+"felhasználónak hova kell mennie az e-mail-címének és a jelszavának "
+"megváltoztatásához. A BBCode engedélyezett."
+
+#: saml.php:237
+msgid "IdP ID"
+msgstr "IdP-azonosító"
+
+#: saml.php:238
+msgid ""
+"Identity provider (IdP) entity URI (e.g., "
+"https://example.com/auth/realms/user)."
+msgstr ""
+"Személyazonosság-szolgáltató (IdP) entitás URI-ja (például "
+"https://example.com/auth/realms/user)."
+
+#: saml.php:242
+msgid "Client ID"
+msgstr "Ügyfél-azonosító"
+
+#: saml.php:243
+msgid "Identifier assigned to client by the identity provider (IdP)."
+msgstr ""
+"A személyazonosság-szolgáltató (IdP) által az ügyfélhez rendelt azonosító."
+
+#: saml.php:247
+msgid "IdP SSO URL"
+msgstr "IdP SSO URL"
+
+#: saml.php:248
+msgid "The URL for your identity provider's SSO endpoint."
+msgstr ""
+"Az URL a személyazonosság-szolgáltatója egyszeri bejelentkezésének "
+"végpontjához."
+
+#: saml.php:252
+msgid "IdP SLO request URL"
+msgstr "IdP SLO kérés URL"
+
+#: saml.php:253
+msgid "The URL for your identity provider's SLO request endpoint."
+msgstr ""
+"Az URL a személyazonosság-szolgáltatója egyszeri kijelentkezési kérésének "
+"végpontjához."
+
+#: saml.php:257
+msgid "IdP SLO response URL"
+msgstr "IdP SLO válasz URL"
+
+#: saml.php:258
+msgid "The URL for your identity provider's SLO response endpoint."
+msgstr ""
+"Az URL a személyazonosság-szolgáltatója egyszeri kijelentkezési válaszának "
+"végpontjához."
+
+#: saml.php:262
+msgid "SP private key"
+msgstr "Szolgáltató személyes kulcsa"
+
+#: saml.php:263
+msgid "The private key the addon should use to authenticate."
+msgstr ""
+"Az a személyes kulcs, amelyet a bővítménynek a hitelesítéshez kell "
+"használnia."
+
+#: saml.php:267
+msgid "SP certificate"
+msgstr "Szolgáltató tanúsítványa"
+
+#: saml.php:268
+msgid "The certficate for the addon's private key."
+msgstr "A tanúsítvány a bővítmény személyes kulcsához."
+
+#: saml.php:272
+msgid "IdP certificate"
+msgstr "IdP tanúsítvány"
+
+#: saml.php:273
+msgid "The x509 certficate for your identity provider."
+msgstr "A személyazonosság-szolgáltatójának x509 tanúsítványa."
+
+#: saml.php:276
+msgid "Save Settings"
+msgstr "Beállítások mentése"
