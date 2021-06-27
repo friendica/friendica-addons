@@ -7,7 +7,7 @@ function string_plural_select_hu($n){
 }}
 ;
 $a->strings["Language Filter"] = "Nyelvszűrő";
-$a->strings["This addon tries to identify the language posts are writen in. If it does not match any language specifed below, posts will be hidden by collapsing them."] = "Ez a bővítmény megpróbálja azonosítani, hogy a bejegyzéseket milyen nyelven írták. Ha nem egyezik egyetlen lent megadott nyelvvel sem, akkor a bejegyzések rejtettek lesznek azáltal, hogy össze lesznek csukva.";
+$a->strings["This addon tries to identify the language posts are written in. If it does not match any language specified below, posts will be hidden by collapsing them."] = "Ez a bővítmény megpróbálja azonosítani, hogy a bejegyzéseket milyen nyelven írták. Ha nem egyezik egyetlen lent megadott nyelvvel sem, akkor a bejegyzések rejtettek lesznek azáltal, hogy össze lesznek csukva.";
 $a->strings["Use the language filter"] = "A nyelvszűrő használata";
 $a->strings["Able to read"] = "Képes olvasni";
 $a->strings["List of abbreviations (ISO 639-1 codes) for languages you speak, comma separated. For example \"de,it\"."] = "Az Ön által beszélt nyelvek rövidítéseinek listája (ISO 639-1 kódok) vesszővel elválasztva. Például „de,it”.";
