@@ -1,0 +1,50 @@
+# ADDON nitter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica nitter addon package.
+# 
+# 
+# Translators:
+# Balázs Úr, 2021
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-03-08 07:44+0100\n"
+"PO-Revision-Date: 2021-05-21 12:58+0000\n"
+"Last-Translator: Balázs Úr, 2021\n"
+"Language-Team: Hungarian (https://www.transifex.com/Friendica/teams/12172/hu/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: nitter.php:51
+#, php-format
+msgid ""
+"Which nitter server shall be used for the replacements in the post bodies? "
+"Use the URL with servername and protocol.  See %s for a list of available "
+"public Nitter servers."
+msgstr ""
+"Melyik Nitter-kiszolgálót kell használni a bejegyzések törzseiben történő "
+"cserékhez? Az URL-t kiszolgálónévvel és protokollal használja. Az elérhető "
+"nyilvános Nitter-kiszolgálók listájáért nézze meg a %s oldalt."
+
+#: nitter.php:52
+msgid "Nitter server"
+msgstr "Nitter-kiszolgáló"
+
+#: nitter.php:53
+msgid "Save Settings"
+msgstr "Beállítások mentése"
+
+#: nitter.php:65
+#, php-format
+msgid ""
+"Links to Twitter in this posting were replaced by links to the Nitter "
+"instance at %s"
+msgstr ""
+"Ebben a bejegyzésben a Twitterre mutató hivatkozások ki lettek cserélve a %s"
+" címen elérhető Nitter-példányra mutató hivatkozásokkal."
