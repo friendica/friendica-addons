@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
-"PO-Revision-Date: 2021-03-23 01:46+0000\n"
+"POT-Creation-Date: 2021-03-23 23:53-0400\n"
+"PO-Revision-Date: 2021-06-10 22:16+0000\n"
 "Last-Translator: Balázs Úr\n"
 "Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -19,38 +19,40 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: js_upload.php:33
+#: js_upload.php:34
 msgid "Select files for upload"
 msgstr "Fájlok kijelölése a feltöltéshez"
 
-#: js_upload.php:34
+#: js_upload.php:35
 msgid "Drop files here to upload"
 msgstr "Húzzon ide fájlokat a feltöltéshez"
 
-#: js_upload.php:35
+#: js_upload.php:36
 msgid "Cancel"
 msgstr "Mégse"
 
-#: js_upload.php:36
+#: js_upload.php:37
 msgid "Failed"
 msgstr "Sikertelen"
 
-#: js_upload.php:214
+#: js_upload.php:215
 msgid "No files were uploaded."
 msgstr "Nem lettek fájlok feltöltve."
 
-#: js_upload.php:220
+#: js_upload.php:221
 msgid "Uploaded file is empty"
 msgstr "A feltöltött fájl üres"
 
-#: js_upload.php:232
-msgid "Image exceeds size limit of "
-msgstr "A kép meghaladja a beállított méretkorlátot: "
+#: js_upload.php:233
+#, php-format
+msgid "Image exceeds size limit of %s"
+msgstr "A kép meghaladja a beállított %s méretkorlátot"
 
-#: js_upload.php:246
-msgid "File has an invalid extension, it should be one of "
-msgstr "A fájlnak érvénytelen kiterjesztése van, ezek egyikének kellene lennie: "
+#: js_upload.php:245
+#, php-format
+msgid "File has an invalid extension, it should be one of %s."
+msgstr "A fájl érvénytelen kiterjesztéssel rendelkezik, %s egyikének kell lennie."
 
-#: js_upload.php:257
+#: js_upload.php:256
 msgid "Upload was cancelled, or server error encountered"
 msgstr "A feltöltés meg lett szakítva vagy kiszolgálóhiba történt"
