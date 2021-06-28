@@ -52,7 +52,7 @@ function securemail_settings(App &$a, &$s)
 		'$submit' => DI::l10n()->t('Save Settings'),
 		'$test' => DI::l10n()->t('Save and send test'), //NOTE: update also in 'post'
 		'$enable' => ['securemail-enable', DI::l10n()->t('Enable Secure Mail'), $enable, ''],
-		'$publickey' => ['securemail-pkey', DI::l10n()->t('Public key'), $publickey, DI::l10n()->t('Your public PGP key, ascii armored format'), 'rows="10"']
+		'$publickey' => ['securemail-pkey', DI::l10n()->t('Public key'), $publickey, DI::l10n()->t('Your public PGP key, ascii armored format')]
 	]);
 }
 
