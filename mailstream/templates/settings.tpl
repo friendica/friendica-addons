@@ -5,9 +5,9 @@
 	<span class="fakelink" onclick="openClose('settings_mailstream_expanded'); openClose('settings_mailstream_inflated');">
 		<h3>{{$title}}</h3>
 	</span>
-{{include file="field_checkbox.tpl" field=$enabled}}
-{{include file="field_input.tpl" field=$address}}
-{{include file="field_checkbox.tpl" field=$nolikes}}
-{{include file="field_checkbox.tpl" field=$attachimg}}
-  <input type="submit" value="{{$submit}}">
+	{{include file="field_checkbox.tpl" field=$enabled}}
+	{{include file="field_input.tpl" field=$address}}
+	{{include file="field_checkbox.tpl" field=$nolikes}}
+	{{include file="field_checkbox.tpl" field=$attachimg}}
+	<input type="submit" name="mailstream-submit" value="{{$submit}}">
 </div>
