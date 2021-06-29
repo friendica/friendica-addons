@@ -8,8 +8,8 @@
     {{include file="field_textarea.tpl" field=$publickey}}
 
     <div class="form-group pull-right settings-submit-wrapper" >
-      <button type="submit" name="securemail-submit" class="btn btn-primary" value="{{$submit}}">{{$submit}}</button>
-      <button type="submit" name="securemail-submit" class="btn btn-default" value="{{$test}}">{{$test}}</button>
+      <button type="submit" name="securemail-submit" class="btn btn-primary" value="submit">{{$submit}}</button>
+      <button type="submit" name="securemail-submit" class="btn btn-default" value="test">{{$test}}</button>
     </div>
     <div class="clear"></div>
   </div>
