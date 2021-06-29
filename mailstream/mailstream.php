@@ -491,52 +491,62 @@ function mailstream_addon_settings(&$a, &$s)
 	$attachimg= DI::pConfig()->get(local_user(), 'mailstream', 'attachimg');
 	$template = Renderer::getMarkupTemplate('settings.tpl', 'addon/mailstream/');
 	$s .= Renderer::replaceMacros($template, [
-				 '$enabled' => [
-					'mailstream_enabled',
-					DI::l10n()->t('Enabled'),
-					$enabled],
-				 '$address' => [
-					'mailstream_address',
-					DI::l10n()->t('Email Address'),
-					$address,
-					DI::l10n()->t("Leave blank to use your account email address")],
-				 '$nolikes' => [
-					'mailstream_nolikes',
-					DI::l10n()->t('Exclude Likes'),
-					$nolikes,
-					DI::l10n()->t("Check this to omit mailing \"Like\" notifications")],
-				 '$attachimg' => [
-					'mailstream_attachimg',
-					DI::l10n()->t('Attach Images'),
-					$attachimg,
-					DI::l10n()->t("Download images in posts and attach them to the email.  " .
-													  "Useful for reading email while offline.")],
-				 '$title' => DI::l10n()->t('Mail Stream Settings'),
-				 '$submit' => DI::l10n()->t('Save Settings')]);
+		'$enabled' => [
+			'mailstream_enabled',
+			DI::l10n()->t('Enabled'),
+			$enabled
+		],
+		'$address' => [
+			'mailstream_address',
+			DI::l10n()->t('Email Address'),
+			$address,
+			DI::l10n()->t("Leave blank to use your account email address")
+		],
+		'$nolikes' => [
+			'mailstream_nolikes',
+			DI::l10n()->t('Exclude Likes'),
+			$nolikes,
+			DI::l10n()->t("Check this to omit mailing \"Like\" notifications")
+		],
+		'$attachimg' => [
+			'mailstream_attachimg',
+			DI::l10n()->t('Attach Images'),
+			$attachimg,
+			DI::l10n()->t("Download images in posts and attach them to the email.  " .
+				"Useful for reading email while offline.")
+		],
+		'$title' => DI::l10n()->t('Mail Stream Settings'),
+		'$submit' => DI::l10n()->t('Save Settings')]);
 }
 
 /**
  * Process data submitted to user's mailstream features form
+ * @param \Friendica\App $a
+ * @param array          $post POST data
  */
-function mailstream_addon_settings_post()
+function mailstream_addon_settings_post(\Friendica\App $a, array $post)
 {
-	if ($_POST['mailstream_address'] != "") {
-		DI::pConfig()->set(local_user(), 'mailstream', 'address', $_POST['mailstream_address']);
+	if (!local_user() || empty($post['mailstream-submit'])) {
+		return;
+	}
+
+	if ($post['mailstream_address'] != "") {
+		DI::pConfig()->set(local_user(), 'mailstream', 'address', $post['mailstream_address']);
 	} else {
 		DI::pConfig()->delete(local_user(), 'mailstream', 'address');
 	}
-	if ($_POST['mailstream_nolikes']) {
-		DI::pConfig()->set(local_user(), 'mailstream', 'nolikes', $_POST['mailstream_enabled']);
+	if ($post['mailstream_nolikes']) {
+		DI::pConfig()->set(local_user(), 'mailstream', 'nolikes', $post['mailstream_enabled']);
 	} else {
 		DI::pConfig()->delete(local_user(), 'mailstream', 'nolikes');
 	}
-	if ($_POST['mailstream_enabled']) {
-		DI::pConfig()->set(local_user(), 'mailstream', 'enabled', $_POST['mailstream_enabled']);
+	if ($post['mailstream_enabled']) {
+		DI::pConfig()->set(local_user(), 'mailstream', 'enabled', $post['mailstream_enabled']);
 	} else {
 		DI::pConfig()->delete(local_user(), 'mailstream', 'enabled');
 	}
-	if ($_POST['mailstream_attachimg']) {
-		DI::pConfig()->set(local_user(), 'mailstream', 'attachimg', $_POST['mailstream_attachimg']);
+	if ($post['mailstream_attachimg']) {
+		DI::pConfig()->set(local_user(), 'mailstream', 'attachimg', $post['mailstream_attachimg']);
 	} else {
 		DI::pConfig()->delete(local_user(), 'mailstream', 'attachimg');
 	}

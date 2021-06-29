@@ -64,13 +64,6 @@ function catavatar_addon_settings_post(App $a, &$s)
 		return;
 	}
 
-	// delete the current cached cat avatar
-	$condition = ['uid' => local_user(), 'blocked' => false,
-			'account_expired' => false, 'account_removed' => false];
-	$user = DBA::selectFirst('user', ['email'], $condition);
-
-	$seed = DI::pConfig()->get(local_user(), 'catavatar', 'seed', md5(trim(strtolower($user['email']))));
-
 	if (!empty($_POST['catavatar-usecat'])) {
 		$url = DI::baseUrl()->get() . '/catavatar/' . local_user() . '?ts=' . time();
 
