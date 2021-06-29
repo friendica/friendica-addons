@@ -1,26 +1,16 @@
-{{* We organize the settings in collapsable panel-groups *}}
-{{* this div should be in frio theme *}}
-<div class="panel-group panel-group-settings" id="securemail" role="tablist" aria-multiselectable="true">
-    {{* The password setting section *}}
-    <div class="panel">
-        <div class="section-subtitle-wrapper" role="tab" id="securemail-settings">
-            <h4>
-                <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#settings" href="#securemail-settings-collapse" aria-expanded="true" aria-controls="securemail-settings-collapse">
-                    {{$title}}
-                </a>
-            </h4>
-        </div>
-        <div id="securemail-settings-collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="securemail-settings">
-            <div class="section-content-tools-wrapper">
-                {{include file="field_checkbox.tpl" field=$enable}}
-                {{include file="field_textarea.tpl" field=$publickey}}
+<span id="settings_securemail_inflated" class="settings-block fakelink" style="display: block" onclick="openClose('settings_securemail_expanded'); openClose('settings_securemail_inflated');">
+  <h3>{{$title}}</h3>
+</span>
+<div id="settings_securemail_expanded" class="settings-block" style="display: none">
+  <span class="fakelink" onclick="openClose('settings_securemail_expanded'); openClose('settings_securemail_inflated');"><h3>{{$title}}</h3></span>
+  <div id="securemail-wrapper">
+    {{include file="field_checkbox.tpl" field=$enable}}
+    {{include file="field_textarea.tpl" field=$publickey}}
 
-                <div class="form-group pull-right settings-submit-wrapper" >
-                    <button type="submit" name="securemail-submit" class="btn btn-primary" value="{{$submit}}">{{$submit}}</button>
-                    <button type="submit" name="securemail-submit" class="btn btn-default" value="{{$test}}">{{$test}}</button>
-                </div>
-                <div class="clear"></div>
-            </div>
-        </div>
+    <div class="form-group pull-right settings-submit-wrapper" >
+      <button type="submit" name="securemail-submit" class="btn btn-primary" value="{{$submit}}">{{$submit}}</button>
+      <button type="submit" name="securemail-submit" class="btn btn-default" value="{{$test}}">{{$test}}</button>
     </div>
+    <div class="clear"></div>
+  </div>
 </div>
