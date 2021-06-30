@@ -77,7 +77,7 @@ function securemail_settings_post(App &$a, array &$b)
 		$enable = (!empty($_POST['securemail-enable']) ? 1 : 0);
 		DI::pConfig()->set(local_user(), 'securemail', 'enable', $enable);
 
-		if ($_POST['securemail-submit'] == DI::l10n()->t('Save and send test')) {
+		if ($_POST['securemail-submit'] == "test" {
 
 			$res = DI::emailer()->send(new SecureTestEmail(DI::app(), DI::config(), DI::pConfig(), DI::baseUrl()));
 
