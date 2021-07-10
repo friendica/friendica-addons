@@ -180,7 +180,7 @@ function ljpost_send(&$a,&$b) {
 
 	if($lj_username && $lj_password && $lj_blog) {
 		$title = XML::escape($b['title']);
-		$post = BBCode::convert($b['body']);
+		$post = BBCode::convertForUriId($b['uri-id'], $b['body'], BBCode::CONNECTORS);
 		$post = XML::escape($post);
 		$tags = Tag::getCSVByURIId($b['uri-id'], [Tag::HASHTAG]);
 

@@ -186,7 +186,7 @@ function blogger_send(App $a, array &$b)
 
 	if ($bl_username && $bl_password && $bl_blog) {
 		$title = '<title>' . (($b['title']) ? $b['title'] : DI::l10n()->t('Post from Friendica')) . '</title>';
-		$post = $title . BBCode::convert($b['body']);
+		$post = $title . BBCode::convertForUriId($b['uri-id'], $b['body'], BBCode::CONNECTORS);
 		$post = XML::escape($post);
 
 		$xml = <<< EOT

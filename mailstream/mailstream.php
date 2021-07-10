@@ -401,7 +401,7 @@ function mailstream_send($message_id, $item, $user)
 		$mail->CharSet = 'utf-8';
 		$template = Renderer::getMarkupTemplate('mail.tpl', 'addon/mailstream/');
 		$mail->AltBody = BBCode::toPlaintext($item['body']);
-		$item['body'] = BBCode::convert($item['body'], false, BBCode::CONNECTORS);
+		$item['body'] = BBCode::convertForUriId($item['uri-id'], $item['body'], BBCode::CONNECTORS);
 		$item['url'] = DI::baseUrl()->get() . '/display/' . $item['guid'];
 		$mail->Body = Renderer::replaceMacros($template, [
 						 '$upstream' => DI::l10n()->t('Upstream'),
