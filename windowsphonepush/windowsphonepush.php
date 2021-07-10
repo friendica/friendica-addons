@@ -185,7 +185,7 @@ function windowsphonepush_cron()
 					$senditemtext = DI::pConfig()->get($rr['uid'], 'windowsphonepush', 'senditemtext');
 					if ($senditemtext == 1) {
 						// load item with the max id
-						$item = Post::selectFirst(['author-name', 'body'], ['id' => $count[0]['max']]);
+						$item = Post::selectFirst(['author-name', 'body', 'uri-id'], ['id' => $count[0]['max']]);
 
 						// as user allows to send the item, we want to show the sender of the item in the toast
 						// toasts are limited to one line, therefore place is limited - author shall be in
@@ -201,7 +201,7 @@ function windowsphonepush_cron()
 						if (substr($body, 0, 4) == "[url") {
 							$body = "URL/Image ...";
 						} else {
-							$body = BBCode::convert($body, false, BBCode::API, true);
+							$body = BBCode::convertForUriId($item['uri-id'], $body, BBCode::API);
 							$body = HTML::toPlaintext($body, 0);
 							$body = ((strlen($body) > 137) ? substr($body, 0, 137) . "..." : $body);
 						}
