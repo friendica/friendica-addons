@@ -583,7 +583,7 @@ function statusnet_post_hook(App $a, &$b)
 		$msg = $msgarr["text"];
 
 		if (($msg == "") && isset($msgarr["title"]))
-			$msg = Plaintext::shorten($msgarr["title"], $max_char - 50);
+			$msg = Plaintext::shorten($msgarr["title"], $max_char - 50, $b['uid']);
 
 		$image = "";
 

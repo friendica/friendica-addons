@@ -674,7 +674,7 @@ function twitter_post_hook(App $a, array &$b)
 		$msg = $msgarr["text"];
 
 		if (($msg == "") && isset($msgarr["title"])) {
-			$msg = Plaintext::shorten($msgarr["title"], $max_char - 50);
+			$msg = Plaintext::shorten($msgarr["title"], $max_char - 50, $b['uid']);
 		}
 
 		// Add the link to the body if the type isn't a photo or there are more than 4 images in the post
