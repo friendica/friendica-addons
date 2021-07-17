@@ -117,7 +117,11 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 		return;
 	}
 
-	$naked_body = BBCode::toPlaintext($hook_data['item']['body'], false);
+	if (!empty($hook_data['item']['rendered-html'])) {
+		$naked_body = strip_tags($hook_data['item']['rendered-html']);
+	} else {
+		$naked_body = BBCode::toPlaintext($hook_data['item']['body'], false);
+	}
 
 	// Don't filter if body lenght is below minimum
 	$minlen = DI::pConfig()->get(local_user(), 'langfilter', 'minlength', 32);
