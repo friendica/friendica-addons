@@ -1,7 +1,9 @@
 <?php
 
 use Friendica\Content\Text\HTML;
+use Friendica\Content\Widget\ContactBlock;
 use Friendica\DI;
+use Friendica\Model\User;
 
 function friendheader_widget_name()
 {
@@ -25,16 +27,10 @@ function friendheader_widget_size()
 
 function friendheader_widget_content(&$a, $conf)
 {
-	$r = q("SELECT `profile`.* , `user`.* FROM `profile`
-			LEFT JOIN `user` ON `profile`.`uid` = `user`.`uid`
-			WHERE `user`.`uid` = %s LIMIT 1",
-		intval($conf['uid'])
-	);
-	if (!count($r)) {
+	$owner = User::getOwnerDataById($conf['uid']);
+	if (empty($owner)) {
 		return;
 	}
-
-	$a->profile = $r[0];
 
 	$o = "";
 	$o .= "<style>
@@ -46,8 +42,8 @@ function friendheader_widget_content(&$a, $conf)
 		.contact-block-div { display: block !important; float: left!important; width: 50px!important; height: 50px!important; margin: 2px!important;}
 
 	</style>";
-	$o .= _abs_url(HTML::contactBlock());
-	$o .= "<a href='".DI::baseUrl()->get().'/profile/'.$a->profile['nickname']."' target=new>". DI::l10n()->t('Get added to this list!') ."</a>";
+	$o .= _abs_url(ContactBlock::getHTML($owner));
+	$o .= "<a href='".DI::baseUrl()->get().'/profile/'.$owner['nickname']."' target=new>". DI::l10n()->t('Get added to this list!') ."</a>";
 
 	return $o;
 }

@@ -1,8 +1,8 @@
 <?php
 
-use Friendica\Content\Text\HTML;
-use Friendica\Core\L10n;
+use Friendica\Content\Widget\ContactBlock;
 use Friendica\DI;
+use Friendica\Model\User;
 
 function friends_widget_name()
 {
@@ -27,18 +27,11 @@ function friends_widget_size()
 
 function friends_widget_content(&$a, $conf)
 {
-	$r = q("SELECT `profile`.* , `user`.* FROM `profile`
-			LEFT JOIN `user` ON `profile`.`uid` = `user`.`uid`
-			WHERE `user`.`uid` = %s LIMIT 1",
-		intval($conf['uid'])
-	);
-
-	if (!count($r)) {
+	$owner = User::getOwnerDataById($conf['uid']);
+	if (empty($owner)) {
 		return;
 	}
 	
-	$a->profile = $r[0];
-
 	$o = "";
 	$o .= "<style>
 		body {font-size: 0.8em; margin: 0px; padding: 0px;}
@@ -49,7 +42,7 @@ function friends_widget_content(&$a, $conf)
 		.contact-block-div { display: block !important; float: left!important; width: 50px!important; height: 50px!important; margin: 2px!important;}
 
 	</style>";
-	$o .= _abs_url(HTML::contactBlock());
-	$o .= "<a href='".DI::baseUrl()->get().'/profile/'.$a->profile['nickname']."'>". DI::l10n()->t('Connect on Friendica!') ."</a>";
+	$o .= _abs_url(ContactBlock::getHTML($owner));
+	$o .= "<a href='".DI::baseUrl()->get().'/profile/'.$owner['nickname']."'>". DI::l10n()->t('Connect on Friendica!') ."</a>";
 	return $o;
 }
