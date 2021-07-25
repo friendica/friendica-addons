@@ -181,7 +181,7 @@ function advancedcontentfilter_module() {}
 
 function advancedcontentfilter_init(App $a)
 {
-	if ($a->argc > 1 && $a->argv[1] == 'api') {
+	if (DI::args()->getArgc() > 1 && DI::args()->getArgv()[1] == 'api') {
 		$slim = new \Slim\App();
 
 		require __DIR__ . '/src/middlewares.php';
@@ -196,10 +196,10 @@ function advancedcontentfilter_init(App $a)
 function advancedcontentfilter_content(App $a)
 {
 	if (!local_user()) {
-		return Login::form('/' . implode('/', $a->argv));
+		return Login::form('/' . implode('/', DI::args()->getArgv()));
 	}
 
-	if ($a->argc > 1 && $a->argv[1] == 'help') {
+	if (DI::args()->getArgc() > 1 && DI::args()->getArgv()[1] == 'help') {
 		$lang = $a->user['language'];
 
 		$default_dir = 'addon/advancedcontentfilter/doc/';

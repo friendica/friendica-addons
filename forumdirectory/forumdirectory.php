@@ -111,7 +111,7 @@ function forumdirectory_content(App $a)
 	);
 
 	if (DBA::isResult($r)) {
-		if (in_array('small', $a->argv)) {
+		if (in_array('small', DI::args()->getArgv())) {
 			$photo = 'thumb';
 		} else {
 			$photo = 'photo';

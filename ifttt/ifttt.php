@@ -88,11 +88,11 @@ function ifttt_settings_post()
 
 function ifttt_post(App $a)
 {
-	if ($a->argc != 2) {
+	if (DI::args()->getArgc() != 2) {
 		return;
 	}
 
-	$nickname = $a->argv[1];
+	$nickname = DI::args()->getArgv()[1];
 
 	$user = DBA::selectFirst('user', ['uid'], ['nickname' => $nickname]);
 	if (!DBA::isResult($user)) {

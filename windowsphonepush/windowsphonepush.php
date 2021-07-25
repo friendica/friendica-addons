@@ -317,8 +317,8 @@ function windowsphonepush_content(App $a)
 	// Login with the specified Network credentials (like in api.php)
 	windowsphonepush_login($a);
 
-	$path = $a->argv[0];
-	$path2 = $a->argv[1];
+	$path = DI::args()->getArgv()[0];
+	$path2 = DI::args()->getArgv()[1];
 	if ($path == "windowsphonepush") {
 		switch ($path2) {
 			case "show_settings":

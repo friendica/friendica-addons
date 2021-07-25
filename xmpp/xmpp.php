@@ -170,7 +170,7 @@ function xmpp_converse(App $a)
 		return;
 	}
 
-	if (in_array($a->argv[0], ["delegation", "logout"])) {
+	if (in_array(DI::args()->getArgv()[0], ["delegation", "logout"])) {
 		$additional_commands = "converse.user.logout();\n";
 	} else {
 		$additional_commands = "";
