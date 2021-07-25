@@ -18,6 +18,8 @@ use Friendica\Model\Profile;
 use Friendica\Model\User;
 use Friendica\Util\Strings;
 
+global $forumdirectory_search;
+
 function forumdirectory_install()
 {
 	Hook::register('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
@@ -42,13 +44,17 @@ function forumdirectory_init(App $a)
 
 function forumdirectory_post(App $a)
 {
+	global $forumdirectory_search;
+
 	if (!empty($_POST['search'])) {
-		$a->data['search'] = $_POST['search'];
+		$forumdirectory_search = $_POST['search'];
 	}
 }
 
 function forumdirectory_content(App $a)
 {
+	global $forumdirectory_search;
+
 	if ((DI::config()->get('system', 'block_public')) && (!local_user()) && (!remote_user())) {
 		notice(DI::l10n()->t('Public access denied.') . EOL);
 		return;
@@ -59,8 +65,8 @@ function forumdirectory_content(App $a)
 
 	Nav::setSelected('directory');
 
-	if (!empty($a->data['search'])) {
-		$search = Strings::escapeTags(trim($a->data['search']));
+	if (!empty($forumdirectory_search)) {
+		$search = Strings::escapeTags(trim($forumdirectory_search));
 	} else {
 		$search = (!empty($_GET['search']) ? Strings::escapeTags(trim(rawurldecode($_GET['search']))) : '');
 	}
