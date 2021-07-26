@@ -142,12 +142,12 @@ function catavatar_module() {}
  */
 function catavatar_content(App $a)
 {
-	if ($a->argc < 2 || $a->argc > 3) {
+	if (DI::args()->getArgc() < 2 || DI::args()->getArgc() > 3) {
 		throw new NotFoundException(); // this should be catched on index and show default "not found" page.
 	}
 
-	if (is_numeric($a->argv[1])) {
-		$uid = intval($a->argv[1]);
+	if (is_numeric(DI::args()->getArgv()[1])) {
+		$uid = intval(DI::args()->getArgv()[1]);
 		$condition = ['uid' => $uid,
 				'account_expired' => false, 'account_removed' => false];
 		$user = DBA::selectFirst('user', ['email'], $condition);
@@ -157,15 +157,15 @@ function catavatar_content(App $a)
 		}
 
 		$seed = DI::pConfig()->get($uid, "catavatar", "seed", md5(trim(strtolower($user['email']))));
-	} elseif (!empty($a->argv[1])) {
-		$seed = $a->argv[1];
+	} elseif (!empty(DI::args()->getArgv()[1])) {
+		$seed = DI::args()->getArgv()[1];
 	} else {
 		throw new NotFoundException();
 	}
 
 	$size = 0;
-	if ($a->argc == 3) {
-		$size = intval($a->argv[2]);
+	if (DI::args()->getArgc() == 3) {
+		$size = intval(DI::args()->getArgv()[2]);
 	}
 
 	// ...Or start generation

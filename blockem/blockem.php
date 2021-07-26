@@ -12,6 +12,8 @@ use Friendica\Core\Hook;
 use Friendica\DI;
 use Friendica\Util\Strings;
 
+global $blockem_words;
+
 function blockem_install()
 {
 	Hook::register('prepare_body_content_filter', 'addon/blockem/blockem.php', 'blockem_prepare_body_content_filter');
@@ -141,6 +143,8 @@ function blockem_display_item(App $a, array &$b = null)
 
 function blockem_conversation_start(App $a, array &$b)
 {
+	global $blockem_words;
+
 	if (!local_user()) {
 		return;
 	}
@@ -148,7 +152,7 @@ function blockem_conversation_start(App $a, array &$b)
 	$words = DI::pConfig()->get(local_user(), 'blockem', 'words');
 
 	if ($words) {
-		$a->data['blockem'] = explode(',', $words);
+		$blockem_words = explode(',', $words);
 	}
 
 	DI::page()['htmlhead'] .= <<< EOT
@@ -171,6 +175,8 @@ EOT;
 
 function blockem_item_photo_menu(App $a, array &$b)
 {
+	global $blockem_words;
+
 	if (!local_user() || $b['item']['self']) {
 		return;
 	}
@@ -178,8 +184,8 @@ function blockem_item_photo_menu(App $a, array &$b)
 	$blocked = false;
 	$author = $b['item']['author-link'];
 
-	if (!empty($a->data['blockem'])) {
-		foreach($a->data['blockem'] as $bloke) {
+	if (!empty($blockem_words)) {
+		foreach($blockem_words as $bloke) {
 			if (Strings::compareLink($bloke,$author)) {
 				$blocked = true;
 				break;

@@ -14,6 +14,9 @@ use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Util\Strings;
 
+global $js_upload_jsonresponse;
+global $js_upload_result;
+
 function js_upload_install()
 {
 	Hook::register('photo_upload_form', __FILE__, 'js_upload_form');
@@ -42,6 +45,8 @@ function js_upload_form(App $a, array &$b)
 
 function js_upload_post_init(App $a, &$b)
 {
+	global $js_upload_result, $js_upload_jsonresponse;
+
 	// list of valid extensions
 	$allowedExtensions = ['jpeg', 'gif', 'png', 'jpg'];
 
@@ -53,7 +58,7 @@ function js_upload_post_init(App $a, &$b)
 	$result = $uploader->handleUpload();
 
 	// to pass data through iframe you will need to encode all html tags
-	$a->data['upload_jsonresponse'] = htmlspecialchars(json_encode($result), ENT_NOQUOTES);
+	$js_upload_jsonresponse = htmlspecialchars(json_encode($result), ENT_NOQUOTES);
 
 	if (isset($result['error'])) {
 		Logger::log('mod/photos.php: photos_post(): error uploading photo: ' . $result['error'], Logger::DEBUG);
@@ -61,12 +66,14 @@ function js_upload_post_init(App $a, &$b)
 		exit();
 	}
 
-	$a->data['upload_result'] = $result;
+	$js_upload_result = $result;
 }
 
 function js_upload_post_file(App $a, &$b)
 {
-	$result = $a->data['upload_result'];
+	global $js_upload_result;
+
+	$result = $js_upload_result;
 
 	$b['src'] = $result['path'];
 	$b['filename'] = $result['filename'];
@@ -76,9 +83,11 @@ function js_upload_post_file(App $a, &$b)
 
 function js_upload_post_end(App $a, &$b)
 {
+	global $js_upload_jsonresponse;
+
 	Logger::log('upload_post_end');
-	if (!empty($a->data['upload_jsonresponse'])) {
-		echo $a->data['upload_jsonresponse'];
+	if (!empty($js_upload_jsonresponse)) {
+		echo $js_upload_jsonresponse;
 		exit();
 	}
 }

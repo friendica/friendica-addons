@@ -41,8 +41,8 @@ function tumblr_content(App $a)
 		return '';
 	}
 
-	if (isset($a->argv[1])) {
-		switch ($a->argv[1]) {
+	if (isset(DI::args()->getArgv()[1])) {
+		switch (DI::args()->getArgv()[1]) {
 			case "connect":
 				$o = tumblr_connect($a);
 				break;
@@ -52,7 +52,7 @@ function tumblr_content(App $a)
 				break;
 
 			default:
-				$o = print_r($a->argv, true);
+				$o = print_r(DI::args()->getArgv(), true);
 				break;
 		}
 	} else {

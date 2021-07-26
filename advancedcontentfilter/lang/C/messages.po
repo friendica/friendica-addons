@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"POT-Creation-Date: 2021-07-25 13:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,32 +17,28 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/middlewares.php:49
-msgid "Method not found"
-msgstr ""
-
-#: advancedcontentfilter.php:136
+#: advancedcontentfilter.php:153
 #, php-format
 msgid "Filtered by rule: %s"
 msgstr ""
 
-#: advancedcontentfilter.php:150 advancedcontentfilter.php:207
+#: advancedcontentfilter.php:167 advancedcontentfilter.php:224
 msgid "Advanced Content Filter"
 msgstr ""
 
-#: advancedcontentfilter.php:206
+#: advancedcontentfilter.php:223
 msgid "Back to Addon Settings"
 msgstr ""
 
-#: advancedcontentfilter.php:208
+#: advancedcontentfilter.php:225
 msgid "Add a Rule"
 msgstr ""
 
-#: advancedcontentfilter.php:209
+#: advancedcontentfilter.php:226
 msgid "Help"
 msgstr ""
 
-#: advancedcontentfilter.php:210
+#: advancedcontentfilter.php:227
 msgid ""
 "Add and manage your personal content filter rules in this screen. Rules have "
 "a name and an arbitrary expression that will be matched against post data. "
@@ -50,108 +46,112 @@ msgid ""
 "the help page."
 msgstr ""
 
-#: advancedcontentfilter.php:211
+#: advancedcontentfilter.php:228
 msgid "Your rules"
 msgstr ""
 
-#: advancedcontentfilter.php:212
+#: advancedcontentfilter.php:229
 msgid ""
 "You have no rules yet! Start adding one by clicking on the button above next "
 "to the title."
 msgstr ""
 
-#: advancedcontentfilter.php:213
+#: advancedcontentfilter.php:230
 msgid "Disabled"
 msgstr ""
 
-#: advancedcontentfilter.php:214
+#: advancedcontentfilter.php:231
 msgid "Enabled"
 msgstr ""
 
-#: advancedcontentfilter.php:215
+#: advancedcontentfilter.php:232
 msgid "Disable this rule"
 msgstr ""
 
-#: advancedcontentfilter.php:216
+#: advancedcontentfilter.php:233
 msgid "Enable this rule"
 msgstr ""
 
-#: advancedcontentfilter.php:217
+#: advancedcontentfilter.php:234
 msgid "Edit this rule"
 msgstr ""
 
-#: advancedcontentfilter.php:218
+#: advancedcontentfilter.php:235
 msgid "Edit the rule"
 msgstr ""
 
-#: advancedcontentfilter.php:219
+#: advancedcontentfilter.php:236
 msgid "Save this rule"
 msgstr ""
 
-#: advancedcontentfilter.php:220
+#: advancedcontentfilter.php:237
 msgid "Delete this rule"
 msgstr ""
 
-#: advancedcontentfilter.php:221
+#: advancedcontentfilter.php:238
 msgid "Rule"
 msgstr ""
 
-#: advancedcontentfilter.php:222
+#: advancedcontentfilter.php:239
 msgid "Close"
 msgstr ""
 
-#: advancedcontentfilter.php:223
+#: advancedcontentfilter.php:240
 msgid "Add new rule"
 msgstr ""
 
-#: advancedcontentfilter.php:224
+#: advancedcontentfilter.php:241
 msgid "Rule Name"
 msgstr ""
 
-#: advancedcontentfilter.php:225
+#: advancedcontentfilter.php:242
 msgid "Rule Expression"
 msgstr ""
 
-#: advancedcontentfilter.php:226
+#: advancedcontentfilter.php:243
 msgid "Cancel"
 msgstr ""
 
-#: advancedcontentfilter.php:293 advancedcontentfilter.php:304
-#: advancedcontentfilter.php:315 advancedcontentfilter.php:349
-#: advancedcontentfilter.php:378 advancedcontentfilter.php:399
+#: advancedcontentfilter.php:310 advancedcontentfilter.php:321
+#: advancedcontentfilter.php:332 advancedcontentfilter.php:366
+#: advancedcontentfilter.php:395 advancedcontentfilter.php:416
 msgid "You must be logged in to use this method"
 msgstr ""
 
-#: advancedcontentfilter.php:319 advancedcontentfilter.php:353
-#: advancedcontentfilter.php:382
+#: advancedcontentfilter.php:336 advancedcontentfilter.php:370
+#: advancedcontentfilter.php:399
 msgid "Invalid form security token, please refresh the page."
 msgstr ""
 
-#: advancedcontentfilter.php:331
+#: advancedcontentfilter.php:348
 msgid "The rule name and expression are required."
 msgstr ""
 
-#: advancedcontentfilter.php:343
+#: advancedcontentfilter.php:360
 msgid "Rule successfully added"
 msgstr ""
 
-#: advancedcontentfilter.php:357 advancedcontentfilter.php:386
+#: advancedcontentfilter.php:374 advancedcontentfilter.php:403
 msgid "Rule doesn't exist or doesn't belong to you."
 msgstr ""
 
-#: advancedcontentfilter.php:372
+#: advancedcontentfilter.php:389
 msgid "Rule successfully updated"
 msgstr ""
 
-#: advancedcontentfilter.php:393
+#: advancedcontentfilter.php:410
 msgid "Rule successfully deleted"
 msgstr ""
 
-#: advancedcontentfilter.php:403
+#: advancedcontentfilter.php:420
 msgid "Missing argument: guid."
 msgstr ""
 
-#: advancedcontentfilter.php:411
+#: advancedcontentfilter.php:428
 #, php-format
 msgid "Unknown post with guid: %s"
+msgstr ""
+
+#: src/middlewares.php:49
+msgid "Method not found"
 msgstr ""
