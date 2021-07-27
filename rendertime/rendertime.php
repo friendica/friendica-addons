@@ -38,11 +38,11 @@ function rendertime_page_end(Friendica\App $a, &$o)
 				round($profiler->get('database_write'), 3),
 				round($profiler->get('network'), 2),
 				round($profiler->get('rendering'), 2),
-				round($profiler->get('parser'), 2),
+				round($profiler->get('session'), 2),
 				round($profiler->get('file'), 2),
 				round($duration - $profiler->get('database')
 					- $profiler->get('network') - $profiler->get('rendering')
-					- $profiler->get('parser') - $profiler->get('file'), 2),
+					- $profiler->get('session') - $profiler->get('file'), 2),
 				round($duration, 2)
 			//round($profiler->get('markstart'), 3)
 			//round($profiler->get('plugin'), 3)
