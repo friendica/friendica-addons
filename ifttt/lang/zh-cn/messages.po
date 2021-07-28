@@ -4,16 +4,16 @@
 # 
 # 
 # Translators:
-# steve jobs <vicdorke@gmail.com>, 2020
+# Finn Dean <vicdorke@gmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-27 09:30+0100\n"
+"POT-Creation-Date: 2021-07-25 13:17+0000\n"
 "PO-Revision-Date: 2017-11-27 10:37+0000\n"
-"Last-Translator: steve jobs <vicdorke@gmail.com>, 2020\n"
+"Last-Translator: Finn Dean <vicdorke@gmail.com>, 2021\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/Friendica/teams/12172/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,37 +21,37 @@ msgstr ""
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ifttt.php:53 ifttt.php:57
+#: ifttt.php:50 ifttt.php:54
 msgid "IFTTT Mirror"
 msgstr "IFTTT 镜像"
 
-#: ifttt.php:61
+#: ifttt.php:58
 msgid ""
 "Create an account at <a href=\"http://www.ifttt.com\">IFTTT</a>. Create "
 "three Facebook recipes that are connected with <a "
 "href=\"https://ifttt.com/maker\">Maker</a> (In the form \"if Facebook then "
 "Maker\") with the following parameters:"
 msgstr ""
-"在<a href=\"http://www.ifttt.com\">IFTTT</a>创建一个帐户。创建三个与<a "
-"href=\"https://ifttt.com/maker\">Maker</a>(表格为“ if Facebook then Maker”)相关的 "
-"Facebook 菜谱，参数如下:"
+"在<a href=\"http://www.ifttt.com\">IFTTT</a>创建帐户。使用以下参数创建三个与<a "
+"href=\"https://ifttt.com/maker\">Maker</a>连接的Facebook回执(格式为\"If Facebook "
+"Then Maker\"):"
 
-#: ifttt.php:68
+#: ifttt.php:65
 msgid "Body for \"new status message\""
-msgstr ""
+msgstr "正文“新状态消息”"
 
-#: ifttt.php:70
+#: ifttt.php:67
 msgid "Body for \"new photo upload\""
-msgstr ""
+msgstr "正文“新照片上传”"
 
-#: ifttt.php:72
+#: ifttt.php:69
 msgid "Body for \"new link post\""
-msgstr ""
+msgstr "正文“新发布链接”"
 
-#: ifttt.php:77
+#: ifttt.php:74
 msgid "Generate new key"
 msgstr "生成新的密钥"
 
-#: ifttt.php:81
+#: ifttt.php:78
 msgid "Save Settings"
 msgstr "保存设置"
