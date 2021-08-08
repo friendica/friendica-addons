@@ -45,6 +45,7 @@ use Friendica\DI;
 use Friendica\Model\Item;
 use Friendica\Model\Post;
 use Friendica\Model\Tag;
+use Friendica\Model\User;
 use Friendica\Module\Security\Login;
 use Friendica\Network\HTTPException;
 use Friendica\Util\DateTimeFormat;
@@ -200,7 +201,9 @@ function advancedcontentfilter_content(App $a)
 	}
 
 	if (DI::args()->getArgc() > 1 && DI::args()->getArgv()[1] == 'help') {
-		$lang = $a->getUserValue('language');
+		$user = User::getById(local_user());
+
+		$lang = $user['language'];
 
 		$default_dir = 'addon/advancedcontentfilter/doc/';
 		$help_file = 'advancedcontentfilter.md';

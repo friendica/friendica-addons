@@ -16,6 +16,7 @@ use Friendica\Database\DBA;
 use Friendica\Core\Renderer;
 use Friendica\Core\Protocol;
 use Friendica\Model\Contact;
+use Friendica\Model\User;
 
 function opmlexport_install()
 {
@@ -37,14 +38,15 @@ function opmlexport(App $a)
 		'network' => Protocol::FEED
 	];
 	$data = Contact::selectToArray([], $condition, ['order' => ['name']]);
+	$user = User::getById(local_user());
 
 	$xml = new \DOMDocument( '1.0', 'utf-8' );
 	$opml = $xml->createElement('opml');
 	$head = $xml->createElement('head');
 	$body = $xml->createElement('body');
 	$outline = $xml->createElement('outline');
-	$outline->setAttribute('title', $a->getUserValue('username') . '\'s RSS/Atom contacts');
-	$outline->setAttribute('text', $a->getUserValue('username') . '\'s RSS/Atom contacts');
+	$outline->setAttribute('title', $user['username'] . '\'s RSS/Atom contacts');
+	$outline->setAttribute('text', $user['username'] . '\'s RSS/Atom contacts');
 
 	foreach($data as $c) {
 		$entry = $xml->createElement('outline');

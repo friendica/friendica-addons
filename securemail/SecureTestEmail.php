@@ -25,6 +25,7 @@ use Friendica\App;
 use Friendica\App\BaseURL;
 use Friendica\Core\Config\IConfig;
 use Friendica\Core\PConfig\IPConfig;
+use Friendica\Model\User;
 use Friendica\Object\Email;
 
 /**
@@ -46,13 +47,15 @@ class SecureTestEmail extends Email
 			$sender_email = 'noreply@' . $hostname;
 		}
 
+		$user = User::getById(local_user());
+
 		$subject = 'Friendica - Secure Mail - Test';
 		$message = 'This is a test message from your Friendica Secure Mail addon.';
 
 		// enable addon for test
 		$pConfig->set(local_user(), 'securemail', 'enable', 1);
 
-		parent::__construct($sitename, $sender_email, $sender_email, $a->getUserValue('email'),
+		parent::__construct($sitename, $sender_email, $sender_email, $user['email'],
 			$subject, "<p>{$message}</p>", $message,
 			[], local_user());
 	}

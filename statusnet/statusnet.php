@@ -216,6 +216,9 @@ function statusnet_settings(App $a, &$s)
 	if (!local_user()) {
 		return;
 	}
+
+	$user = User::getById(local_user());
+
 	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/statusnet/statusnet.css' . '" media="all" />' . "\r\n";
 	/*	 * *
 	 * 1) Check that we have a base api url and a consumer key & secret
@@ -334,7 +337,7 @@ function statusnet_settings(App $a, &$s)
 				$s .= '<div id="statusnet-info" ><img id="statusnet-avatar" src="' . $details->profile_image_url . '" /><p id="statusnet-info-block">' . DI::l10n()->t('Currently connected to: ') . '<a href="' . $details->statusnet_profile_url . '" target="_statusnet">' . $details->screen_name . '</a><br /><em>' . $details->description . '</em></p></div>';
 			}
 			$s .= '<p>' . DI::l10n()->t('If enabled all your <strong>public</strong> postings can be posted to the associated GNU Social account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.') . '</p>';
-			if ($a->getUserValue('hidewall')) {
+			if ($user['hidewall']) {
 				$s .= '<p>' . DI::l10n()->t('<strong>Note</strong>: Due your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to GNU Social will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted.') . '</p>';
 			}
 			$s .= '<div id="statusnet-enable-wrapper">';
