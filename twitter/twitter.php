@@ -1128,7 +1128,7 @@ function twitter_fetchtimeline(App $a, $uid)
 
 				Logger::info('Posting mirror post', ['twitter-id' => $post->id_str, 'uid' => $uid]);
 
-				Post\Delayed::add($mirrorpost['extid'], $mirrorpost, PRIORITY_MEDIUM, true);
+				Post\Delayed::add($mirrorpost['extid'], $mirrorpost, PRIORITY_MEDIUM, Post\Delayed::UNPREPARED);
 			}
 		}
 	}

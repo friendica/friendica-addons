@@ -191,5 +191,5 @@ function ifttt_message($uid, $item)
 		$link = hash('ripemd128', $item['msg']);
 	}
 
-	Post\Delayed::add($link, $post, PRIORITY_MEDIUM, true);
+	Post\Delayed::add($link, $post, PRIORITY_MEDIUM, Post\Delayed::UNPREPARED);
 }
