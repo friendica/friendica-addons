@@ -43,8 +43,8 @@ function opmlexport(App $a)
 	$head = $xml->createElement('head');
 	$body = $xml->createElement('body');
 	$outline = $xml->createElement('outline');
-	$outline->setAttribute('title', $a->user['username'] . '\'s RSS/Atom contacts');
-	$outline->setAttribute('text', $a->user['username'] . '\'s RSS/Atom contacts');
+	$outline->setAttribute('title', $a->getUserValue('username') . '\'s RSS/Atom contacts');
+	$outline->setAttribute('text', $a->getUserValue('username') . '\'s RSS/Atom contacts');
 
 	foreach($data as $c) {
 		$entry = $xml->createElement('outline');

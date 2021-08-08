@@ -57,7 +57,7 @@ function ifttt_settings(App $a, &$s)
 	$s .= '<div id="ifttt-configuration-wrapper">';
 	$s .= '<p>' . DI::l10n()->t('Create an account at <a href="http://www.ifttt.com">IFTTT</a>. Create three Facebook recipes that are connected with <a href="https://ifttt.com/maker">Maker</a> (In the form "if Facebook then Maker") with the following parameters:') . '</p>';
 	$s .= '<h4>URL</h4>';
-	$s .= '<p>' . DI::baseUrl()->get() . '/ifttt/' . $a->user['nickname'] . '</p>';
+	$s .= '<p>' . DI::baseUrl()->get() . '/ifttt/' . $a->getNickname() . '</p>';
 	$s .= '<h4>Method</h4>';
 	$s .= '<p>POST</p>';
 	$s .= '<h4>Content Type</h4>';

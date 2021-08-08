@@ -200,7 +200,7 @@ function advancedcontentfilter_content(App $a)
 	}
 
 	if (DI::args()->getArgc() > 1 && DI::args()->getArgv()[1] == 'help') {
-		$lang = $a->user['language'];
+		$lang = $a->getUserValue('language');
 
 		$default_dir = 'addon/advancedcontentfilter/doc/';
 		$help_file = 'advancedcontentfilter.md';

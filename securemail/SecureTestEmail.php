@@ -52,7 +52,7 @@ class SecureTestEmail extends Email
 		// enable addon for test
 		$pConfig->set(local_user(), 'securemail', 'enable', 1);
 
-		parent::__construct($sitename, $sender_email, $sender_email, $a->user['email'],
+		parent::__construct($sitename, $sender_email, $sender_email, $a->getUserValue('email'),
 			$subject, "<p>{$message}</p>", $message,
 			[], local_user());
 	}
