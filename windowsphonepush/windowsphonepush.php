@@ -460,5 +460,5 @@ function windowsphonepush_login(App $a)
 
 	DI::auth()->setForUser($a, $record);
 	DI::session()->set('allow_api', true);
-	Hook::callAll('logged_in', $a->user);
+	Hook::callAll('logged_in', $record);
 }

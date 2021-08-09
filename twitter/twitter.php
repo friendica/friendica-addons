@@ -146,7 +146,7 @@ function twitter_follow(App $a, array &$contact)
 	$nickname = preg_replace("=https?://twitter.com/(.*)=ism", "$1", $contact["url"]);
 	$nickname = str_replace("@twitter.com", "", $nickname);
 
-	$uid = $a->user["uid"];
+	$uid = $a->getLoggedInUserId();
 
 	$ckey = DI::config()->get('twitter', 'consumerkey');
 	$csecret = DI::config()->get('twitter', 'consumersecret');
@@ -266,6 +266,9 @@ function twitter_settings(App $a, &$s)
 	if (!local_user()) {
 		return;
 	}
+
+	$user = User::getById(local_user());
+
 	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/twitter/twitter.css' . '" media="all" />' . "\r\n";
 	/*	 * *
 	 * 1) Check that we have global consumer key & secret
@@ -356,7 +359,7 @@ function twitter_settings(App $a, &$s)
 				$s .= Renderer::replaceMacros($field_checkbox, [
 					'$field' => ['twitter-enable', DI::l10n()->t('Allow posting to Twitter'), $enabled, DI::l10n()->t('If enabled all your <strong>public</strong> postings can be posted to the associated Twitter account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.')]
 				]);
-				if ($a->user['hidewall']) {
+				if ($user['hidewall']) {
 					$s .= '<p>' . DI::l10n()->t('<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to Twitter will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted.') . '</p>';
 				}
 				$s .= Renderer::replaceMacros($field_checkbox, [
