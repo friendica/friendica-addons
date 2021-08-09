@@ -1,0 +1,63 @@
+# ADDON irc
+# Copyright (C)
+# This file is distributed under the same license as the Friendica irc addon package.
+# 
+# 
+# Translators:
+# XMPPはいいぞ, 2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-08-06 05:52+0000\n"
+"Last-Translator: XMPPはいいぞ\n"
+"Language-Team: Japanese (http://www.transifex.com/Friendica/friendica/language/ja/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: irc.php:34
+msgid "IRC Settings"
+msgstr "IRC設定"
+
+#: irc.php:35
+msgid ""
+"Here you can change the system wide settings for the channels to "
+"automatically join and access via the side bar. Note the changes you do "
+"here, only effect the channel selection if you are logged in."
+msgstr "ここでは、システム全体の設定を変更して、自動的にチャンネルに参加したり、サイドバーからアクセスしたりすることができます。なお、ここで行った変更は、ログインしている場合にのみチャンネルの選択に影響します。"
+
+#: irc.php:36 irc.php:134
+msgid "Save Settings"
+msgstr "設定を保存"
+
+#: irc.php:37 irc.php:135
+msgid "Channel(s) to auto connect (comma separated)"
+msgstr "自動接続するチャンネル（カンマで区切る）"
+
+#: irc.php:37 irc.php:135
+msgid ""
+"List of channels that shall automatically connected to when the app is "
+"launched."
+msgstr "アプリ起動時に自動接続されるチャンネルの一覧。"
+
+#: irc.php:38 irc.php:136
+msgid "Popular Channels (comma separated)"
+msgstr ""
+
+#: irc.php:38 irc.php:136
+msgid ""
+"List of popular channels, will be displayed at the side and hotlinked for "
+"easy joining."
+msgstr ""
+
+#: irc.php:62
+msgid "IRC Chatroom"
+msgstr ""
+
+#: irc.php:90
+msgid "Popular Channels"
+msgstr ""
