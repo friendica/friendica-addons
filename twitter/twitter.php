@@ -146,7 +146,7 @@ function twitter_follow(App $a, array &$contact)
 	$nickname = preg_replace("=https?://twitter.com/(.*)=ism", "$1", $contact["url"]);
 	$nickname = str_replace("@twitter.com", "", $nickname);
 
-	$uid = $a->getUserId();
+	$uid = $a->getLoggedInUserId();
 
 	$ckey = DI::config()->get('twitter', 'consumerkey');
 	$csecret = DI::config()->get('twitter', 'consumersecret');
