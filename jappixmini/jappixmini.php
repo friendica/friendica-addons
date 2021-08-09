@@ -283,7 +283,7 @@ function jappixmini_settings(App $a, &$s)
 	}
 
 	if (($username == "") && DI::config()->get("jappixmini", "default_user")) {
-		$username = $a->getNickname();
+		$username = $a->getUserNickname();
 	}
 
 	$info_text = DI::config()->get("jappixmini", "infotext");
