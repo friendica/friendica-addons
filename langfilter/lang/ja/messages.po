@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-01 18:15+0100\n"
-"PO-Revision-Date: 2021-08-06 05:49+0000\n"
+"PO-Revision-Date: 2021-08-12 08:04+0000\n"
 "Last-Translator: XMPPはいいぞ\n"
 "Language-Team: Japanese (http://www.transifex.com/Friendica/friendica/language/ja/)\n"
 "MIME-Version: 1.0\n"
@@ -36,7 +36,7 @@ msgstr "言語フィルタを使う"
 
 #: langfilter.php:53
 msgid "Able to read"
-msgstr "読めるもの"
+msgstr "読める言語"
 
 #: langfilter.php:53
 msgid ""
