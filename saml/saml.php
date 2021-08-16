@@ -25,7 +25,7 @@ function saml_module($a)
 
 function saml_init($a)
 {
-	if ($a->argc < 2) {
+	if (DI::args()->getArgc() < 2) {
 		return;
 	}
 
@@ -34,7 +34,7 @@ function saml_init($a)
 		return;
 	}
 
-	switch ($a->argv[1]) {
+	switch (DI::args()->get(1)) {
 		case 'metadata.xml':
 			saml_metadata();
 			break;

@@ -82,7 +82,7 @@ function _randomAlphaNum($length){
 function widgets_content(&$a) {
 
 	if (!isset($_GET['k'])) {
-		if($a->argv[2]=="cb"){header('HTTP/1.0 400 Bad Request'); exit();}
+		if(DI::args()->get(2)=="cb"){header('HTTP/1.0 400 Bad Request'); exit();}
 		return;
 	}
 
@@ -90,7 +90,7 @@ function widgets_content(&$a) {
 			DBA::escape($_GET['k'])
 		 );
 	if (!count($r)){
-		if($a->argv[2]=="cb"){header('HTTP/1.0 400 Bad Request'); exit();}
+		if(DI::args()->get(2)=="cb"){header('HTTP/1.0 400 Bad Request'); exit();}
 		return;
 	}
 	$conf = [];
@@ -99,11 +99,11 @@ function widgets_content(&$a) {
 
 	$o = "";
 
-	$widgetfile =dirname(__file__)."/widget_".$a->argv[1].".php";
+	$widgetfile =dirname(__file__)."/widget_".DI::args()->get(1).".php";
 	if (file_exists($widgetfile)){
 		require_once($widgetfile);
 	} else {
-		if($a->argv[2]=="cb"){header('HTTP/1.0 400 Bad Request'); exit();}
+		if(DI::args()->get(2)=="cb"){header('HTTP/1.0 400 Bad Request'); exit();}
 		return;
 	}
 
@@ -111,9 +111,9 @@ function widgets_content(&$a) {
 
 
 	//echo "<pre>"; var_dump($a->argv); die();
-	if ($a->argv[2]=="cb"){
+	if (DI::args()->get(2)=="cb"){
 		/*header('Access-Control-Allow-Origin: *');*/
-		$o .= call_user_func($a->argv[1].'_widget_content',$a, $conf);
+		$o .= call_user_func(DI::args()->get(1).'_widget_content',$a, $conf);
 
 	} else {
 
@@ -123,8 +123,8 @@ function widgets_content(&$a) {
 			$o .= "<h1>Preview Widget</h1>";
 			$o .= '<a href="'.DI::baseUrl()->get().'/settings/addon">'. DI::l10n()->t("Addon Settings") .'</a>';
 
-			$o .=  "<h4>".call_user_func($a->argv[1].'_widget_name')."</h4>";
-			$o .=  call_user_func($a->argv[1].'_widget_help');
+			$o .=  "<h4>".call_user_func(DI::args()->get(1).'_widget_name')."</h4>";
+			$o .=  call_user_func(DI::args()->get(1).'_widget_help');
 			$o .= "<br style='clear:left'/><br/>";
 			$o .= "<script>";
 		} else {
@@ -133,23 +133,23 @@ function widgets_content(&$a) {
 
 
 
-		$widget_size = call_user_func($a->argv[1].'_widget_size');
+		$widget_size = call_user_func(DI::args()->get(1).'_widget_size');
 
 		$script = file_get_contents(dirname(__file__)."/widgets.js");
 		$o .= Renderer::replaceMacros($script, [
-			'$entrypoint' => DI::baseUrl()->get()."/widgets/".$a->argv[1]."/cb/",
+			'$entrypoint' => DI::baseUrl()->get()."/widgets/".DI::args()->get(1)."/cb/",
 			'$key' => $conf['key'],
-			'$widget_id' => 'f9a_'.$a->argv[1]."_"._randomAlphaNum(6),
+			'$widget_id' => 'f9a_'.DI::args()->get(1)."_"._randomAlphaNum(6),
 			'$loader' => DI::baseUrl()->get()."/images/rotator.gif",
 			'$args' => (isset($_GET['a'])?$_GET['a']:''),
 			'$width' => $widget_size[0],
 			'$height' => $widget_size[1],
-			'$type' => $a->argv[1],
+			'$type' => DI::args()->get(1),
 		]);
 
 
 		if (isset($_GET['p'])) {
-			$wargs = call_user_func($a->argv[1].'_widget_args');
+			$wargs = call_user_func(DI::args()->get(1).'_widget_args');
 			$jsargs = implode("</em>,<em>", $wargs);
 			if ($jsargs!='') $jsargs = "&a=<em>".$jsargs."</em>";
 
@@ -158,7 +158,7 @@ function widgets_content(&$a) {
 			<h4>Copy and paste this code</h4>
 			<code>"
 
-			.htmlspecialchars('<script src="'.DI::baseUrl()->get().'/widgets/'.$a->argv[1].'?k='.$conf['key'])
+			.htmlspecialchars('<script src="'.DI::baseUrl()->get().'/widgets/'.DI::args()->get(1).'?k='.$conf['key'])
 			.$jsargs
 			.htmlspecialchars('"></script>')
 			."</code>";
