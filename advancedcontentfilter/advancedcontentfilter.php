@@ -282,6 +282,7 @@ function advancedcontentfilter_build_fields($data)
 			'event_created', 'event_edited', 'event_start', 'event_finish', 'event_summary',
 			'event_desc', 'event_location', 'event_type', 'event_nofinish', 'event_adjust', 'event_ignore',
 			'children', 'pagedrop', 'tags', 'hashtags', 'mentions',
+			'attachments',
 		];
 
 		$expressionLanguage = new ExpressionLanguage\ExpressionLanguage();
@@ -436,6 +437,10 @@ function advancedcontentfilter_get_variables_guid(ServerRequestInterface $reques
 	$item['tags'] = $tags['tags'];
 	$item['hashtags'] = $tags['hashtags'];
 	$item['mentions'] = $tags['mentions'];
+
+	$attachments = Post\Media::splitAttachments($item['uri-id'], $item['guid'] ?? '');
+
+	$item['attachments'] = $attachments;
 
 	$return = advancedcontentfilter_get_filter_fields($item);
 
