@@ -1,0 +1,46 @@
+# ADDON nitter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica nitter addon package.
+# 
+# 
+# Translators:
+# XMPPはいいぞ, 2021
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-03-08 07:44+0100\n"
+"PO-Revision-Date: 2021-05-21 12:58+0000\n"
+"Last-Translator: XMPPはいいぞ, 2021\n"
+"Language-Team: Japanese (https://www.transifex.com/Friendica/teams/12172/ja/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: nitter.php:51
+#, php-format
+msgid ""
+"Which nitter server shall be used for the replacements in the post bodies? "
+"Use the URL with servername and protocol.  See %s for a list of available "
+"public Nitter servers."
+msgstr ""
+"投稿本文の置換には、どのnitterサーバーを使用しますか？サーバー名とプロトコルを記載したURLを使用します。公開されているNitterサーバーの一覧は%sをご覧ください。"
+
+#: nitter.php:52
+msgid "Nitter server"
+msgstr "Nitterサーバー"
+
+#: nitter.php:53
+msgid "Save Settings"
+msgstr "設定を保存"
+
+#: nitter.php:65
+#, php-format
+msgid ""
+"Links to Twitter in this posting were replaced by links to the Nitter "
+"instance at %s"
+msgstr "この投稿のTwitterへのリンクは、%sのNitterインスタンスへのリンクに置換されました"
