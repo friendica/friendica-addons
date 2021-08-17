@@ -282,6 +282,7 @@ function advancedcontentfilter_build_fields($data)
 			'event_created', 'event_edited', 'event_start', 'event_finish', 'event_summary',
 			'event_desc', 'event_location', 'event_type', 'event_nofinish', 'event_adjust', 'event_ignore',
 			'children', 'pagedrop', 'tags', 'hashtags', 'mentions',
+			'attachments',
 		];
 
 		$expressionLanguage = new ExpressionLanguage\ExpressionLanguage();
@@ -360,6 +361,8 @@ function advancedcontentfilter_post_rules(ServerRequestInterface $request)
 
 	$rule = DBA::selectFirst('advancedcontentfilter_rules', [], ['id' => DBA::lastInsertId()]);
 
+	DI::cache()->delete('rules_' . local_user());
+
 	return json_encode(['message' => DI::l10n()->t('Rule successfully added'), 'rule' => $rule]);
 }
 
@@ -389,6 +392,8 @@ function advancedcontentfilter_put_rules_id(ServerRequestInterface $request, Res
 		throw new HTTPException\ServiceUnavailableException(DBA::errorMessage());
 	}
 
+	DI::cache()->delete('rules_' . local_user());
+
 	return json_encode(['message' => DI::l10n()->t('Rule successfully updated')]);
 }
 
@@ -409,6 +414,8 @@ function advancedcontentfilter_delete_rules_id(ServerRequestInterface $request, 
 	if (!DBA::delete('advancedcontentfilter_rules', ['id' => $args['id']])) {
 		throw new HTTPException\ServiceUnavailableException(DBA::errorMessage());
 	}
+
+	DI::cache()->delete('rules_' . local_user());
 
 	return json_encode(['message' => DI::l10n()->t('Rule successfully deleted')]);
 }
@@ -436,6 +443,10 @@ function advancedcontentfilter_get_variables_guid(ServerRequestInterface $reques
 	$item['tags'] = $tags['tags'];
 	$item['hashtags'] = $tags['hashtags'];
 	$item['mentions'] = $tags['mentions'];
+
+	$attachments = Post\Media::splitAttachments($item['uri-id'], $item['guid'] ?? '');
+
+	$item['attachments'] = $attachments;
 
 	$return = advancedcontentfilter_get_filter_fields($item);
 
