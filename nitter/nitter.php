@@ -37,10 +37,7 @@ function nitter_install()
  */
 function nitter_addon_admin_post(App $a)
 {
-	$nitterserver = trim($_POST['nitterserver']);
-	if ((substr($apiurl, -1) == '/')) {
-		$apiurl = substr($apiurl, 0, -1);
-	}
+	$nitterserver = rtrim(trim($_POST['nitterserver']),'/');
 	DI::config()->set('nitter', 'server', $nitterserver);
 }
 
