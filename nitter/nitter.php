@@ -37,7 +37,7 @@ function nitter_install()
  */
 function nitter_addon_admin_post(App $a)
 {
-	$nitterserver = trim($_POST['nitterserver']);
+	$nitterserver = rtrim(trim($_POST['nitterserver']),'/');
 	DI::config()->set('nitter', 'server', $nitterserver);
 }
 
@@ -61,9 +61,17 @@ function nitter_addon_admin(App $a, &$o)
 function nitter_render(&$a, &$o)
 {
 	// this needs to be a system setting
+	$replaced = false;
 	$nitter = DI::config()->get('nitter', 'server', 'https://nitter.net');
+	if (strstr($o['html'], 'https://mobile.twitter.com')) {
+		$o['html'] = str_replace('https://mobile.twitter.com', $nitter, $o['html']);
+		$replace = true;
+	}
 	if (strstr($o['html'], 'https://twitter.com')) {
 		$o['html'] = str_replace('https://twitter.com', $nitter, $o['html']);
+		$replace = true;
+	}
+	if ($replace) {
 		$o['html'] .= '<hr><p>' . DI::l10n()->t('Links to Twitter in this posting were replaced by links to the Nitter instance at %s', $nitter) . '</p>';
 	}
 }
