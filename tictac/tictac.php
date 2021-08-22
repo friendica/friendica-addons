@@ -30,16 +30,16 @@ function tictac_content(&$a) {
 	$o = '';
 
   if($_POST['move']) {
-    $handicap = $a->argv[1];
-    $mefirst = $a->argv[2];
-    $dimen = $a->argv[3];
-    $yours = $a->argv[4];
-    $mine  = $a->argv[5];
+    $handicap = DI::args()->get(1);
+    $mefirst = DI::args()->get(2);
+    $dimen = DI::args()->get(3);
+    $yours = DI::args()->get(4);
+    $mine  = DI::args()->get(5);
 
     $yours .= $_POST['move'];
   }
-  elseif($a->argc > 1) {
-    $handicap = $a->argv[1];
+  elseif(DI::args()->getArgc() > 1) {
+    $handicap = DI::args()->get(1);
     $dimen = 3;
   }
   else {
