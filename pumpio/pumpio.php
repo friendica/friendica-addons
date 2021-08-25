@@ -20,7 +20,7 @@ use Friendica\Model\Group;
 use Friendica\Model\Item;
 use Friendica\Model\Post;
 use Friendica\Model\User;
-use Friendica\Network\HTTPRequestOptions;
+use Friendica\Network\HTTPClientOptions;
 use Friendica\Protocol\Activity;
 use Friendica\Protocol\ActivityNamespace;
 use Friendica\Util\ConfigFileLoader;
@@ -1594,7 +1594,7 @@ function pumpio_fetchallcomments(App $a, $uid, $id)
 
 function pumpio_reachable($url)
 {
-	return DI::httpRequest()->get($url, [HTTPRequestOptions::TIMEOUT => 10])->isSuccess();
+	return DI::httpRequest()->get($url, [HTTPClientOptions::TIMEOUT => 10])->isSuccess();
 }
 
 /*
