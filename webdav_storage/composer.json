@@ -1,0 +1,22 @@
+{
+  "name": "friendica-addons/webdav_storage",
+  "description": "Adds the possibility to use WebDAV as a selectable storage backend",
+  "type": "friendica-addon",
+  "authors": [
+	{
+	  "name": "Philipp Holzer",
+	  "email": "admin@philipp.info",
+	  "homepage": "https://blog.philipp.info",
+	  "role": "Developer"
+	}
+  ],
+  "require": {
+	"php": ">=7.0"
+  },
+  "license": "3-clause BSD license",
+  "config": {
+	"optimize-autoloader": true,
+	"autoloader-suffix": "WebDavStorageAddon",
+	"preferred-install": "dist"
+  }
+}
