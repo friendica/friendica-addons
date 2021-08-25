@@ -234,7 +234,7 @@ EOT;
 		Logger::log('ljpost: data: ' . $xml, Logger::DATA);
 
 		if ($lj_blog !== 'test') {
-			$x = DI::httpRequest()->post($lj_blog, $xml, ['Content-Type' => 'text/xml'])->getBody();
+			$x = DI::httpClient()->post($lj_blog, $xml, ['Content-Type' => 'text/xml'])->getBody();
 		}
 		Logger::log('posted to livejournal: ' . ($x) ? $x : '', Logger::DEBUG);
 	}

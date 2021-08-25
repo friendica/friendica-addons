@@ -208,7 +208,7 @@ EOT;
 		Logger::log('blogger: data: ' . $xml, Logger::DATA);
 
 		if ($bl_blog !== 'test') {
-			$x = DI::httpRequest()->post($bl_blog, $xml)->getBody();
+			$x = DI::httpClient()->post($bl_blog, $xml)->getBody();
 		}
 
 		Logger::log('posted to blogger: ' . (($x) ? $x : ''), Logger::DEBUG);
