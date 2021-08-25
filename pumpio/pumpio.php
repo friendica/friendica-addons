@@ -1594,7 +1594,7 @@ function pumpio_fetchallcomments(App $a, $uid, $id)
 
 function pumpio_reachable($url)
 {
-	return DI::httpRequest()->get($url, [HTTPClientOptions::TIMEOUT => 10])->isSuccess();
+	return DI::httpClient()->get($url, [HTTPClientOptions::TIMEOUT => 10])->isSuccess();
 }
 
 /*

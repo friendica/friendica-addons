@@ -325,7 +325,7 @@ EOT;
 		Logger::log('wppost: data: ' . $xml, Logger::DATA);
 
 		if ($wp_blog !== 'test') {
-			$x = DI::httpRequest()->post($wp_blog, $xml)->getBody();
+			$x = DI::httpClient()->post($wp_blog, $xml)->getBody();
 		}
 		Logger::log('posted to wordpress: ' . (($x) ? $x : ''), Logger::DEBUG);
 	}

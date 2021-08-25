@@ -114,7 +114,7 @@ function discourse_email_getmessage(App $a, &$message)
 function discourse_fetch_post($host, $topic, $pid)
 {
 	$url = $host . '/t/' . $topic . '/' . $pid . '.json';
-	$curlResult = DI::httpRequest()->get($url);
+	$curlResult = DI::httpClient()->get($url);
 	if (!$curlResult->isSuccess()) {
 		Logger::info('No success', ['url' => $url]);
 		return false;
@@ -151,7 +151,7 @@ function discourse_fetch_post_from_api(&$message, $post, $host)
 {
 	$hostaddr = 'https://' . $host;
 	$url = $hostaddr . '/posts/' . $post . '.json';
-	$curlResult = DI::httpRequest()->get($url);
+	$curlResult = DI::httpClient()->get($url);
 	if (!$curlResult->isSuccess()) {
 		return false;
 	}

@@ -119,7 +119,7 @@ function openstreetmap_get_coordinates($a, &$b)
 	$j = DI::cache()->get($cachekey);
 
 	if (is_null($j)) {
-		$curlResult = DI::httpRequest()->get($nomserver . $args);
+		$curlResult = DI::httpClient()->get($nomserver . $args);
 		if ($curlResult->isSuccess()) {
 			$j = json_decode($curlResult->getBody(), true);
 			DI::cache()->set($cachekey, $j, Duration::MONTH);

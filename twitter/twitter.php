@@ -702,7 +702,7 @@ function twitter_post_hook(App $a, array &$b)
 						continue;
 					}
 
-					$img_str = DI::httpRequest()->fetch($image['url']);
+					$img_str = DI::httpClient()->fetch($image['url']);
 
 					$tempfile = tempnam(get_temppath(), 'cache');
 					file_put_contents($tempfile, $img_str);

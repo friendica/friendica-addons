@@ -43,7 +43,7 @@ function nominatim_resolve_item(&$item)
 		return;
 	}
 
-	$s = DI::httpRequest()->fetch('https://nominatim.openstreetmap.org/reverse?lat=' . $coords[0] . '&lon=' . $coords[1] . '&format=json&addressdetails=0&accept-language=' . $language);
+	$s = DI::httpClient()->fetch('https://nominatim.openstreetmap.org/reverse?lat=' . $coords[0] . '&lon=' . $coords[1] . '&format=json&addressdetails=0&accept-language=' . $language);
 	if (empty($s)) {
 		Logger::info('API could not be queried');
 		return;
