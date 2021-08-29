@@ -58,6 +58,7 @@ use Friendica\Model\User;
 use Friendica\Protocol\Activity;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Strings;
+use GuzzleHttp\Exception\TransferException;
 
 function statusnet_install()
 {
@@ -1426,7 +1427,12 @@ function statusnet_convertmsg(App $a, $body)
 
 			Logger::log("statusnet_convertmsg: expanding url " . $match[1], Logger::DEBUG);
 
-			$expanded_url = DI::httpClient()->finalUrl($match[1]);
+			try {
+				$expanded_url = DI::httpClient()->finalUrl($match[1]);
+			} catch (TransferException $exception) {
+				Logger::notice('statusnet_convertmsg: Couldn\'t get final URL.', ['url' => $match[2], 'exception' => $exception]);
+				$expanded_url = $match[2];
+			}
 
 			Logger::log("statusnet_convertmsg: fetching data for " . $expanded_url, Logger::DEBUG);
 
