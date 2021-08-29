@@ -1430,8 +1430,8 @@ function statusnet_convertmsg(App $a, $body)
 			try {
 				$expanded_url = DI::httpClient()->finalUrl($match[1]);
 			} catch (TransferException $exception) {
-				Logger::notice('statusnet_convertmsg: Couldn\'t get final URL.', ['url' => $match[2], 'exception' => $exception]);
-				$expanded_url = $match[2];
+				Logger::notice('statusnet_convertmsg: Couldn\'t get final URL.', ['url' => $match[1], 'exception' => $exception]);
+				$expanded_url = $match[1];
 			}
 
 			Logger::log("statusnet_convertmsg: fetching data for " . $expanded_url, Logger::DEBUG);
