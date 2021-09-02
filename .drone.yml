@@ -113,7 +113,7 @@ steps:
       - export ARTIFACTADDONS="$RELEASEADDON.tar.gz"
       - mkdir ./build
       - # Create artifact for friendica-addons
-      - tar \
+      - tar
         --exclude='./.tx'
         --exclude='./.git'
         --exclude='./.editorconfig'
