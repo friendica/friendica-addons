@@ -123,8 +123,12 @@ steps:
         --exclude='**/*/messages.po'
         -cvjf ./build/$ARTIFACT --transform "s,^addon,$RELEASE," addon/
       - # calculate SHA256 checksum
-      - sha256sum ./build/$ARTIFACT > ./build/$ARTIFACT.sha256
-      - ls -lh ./build
+      - cd ./build
+      - sha256sum "$ARTIFACT" > "$ARTIFACT.sha256"
+      - ls -lh
+      - # output the sha256 sum for checking purpose
+      - cat "$ARTIFACT.sha256"
+      - sha256sum "$ARTIFACT"
   - name: Upload artifacts
     image: alpine
     environment:
@@ -211,8 +215,12 @@ steps:
         --exclude='**/*/messages.po'
         -cvjf ./build/$ARTIFACT --transform "s,^addon,$RELEASE," addon/
       - # calculate SHA256 checksum
-      - sha256sum ./build/$ARTIFACT > ./build/$ARTIFACT.sha256
-      - ls -lh ./build
+      - cd ./build
+      - sha256sum "$ARTIFACT" > "$ARTIFACT.sha256"
+      - ls -lh
+      - # output the sha256 sum for checking purpose
+      - cat "$ARTIFACT.sha256"
+      - sha256sum "$ARTIFACT"
   - name: Upload artifacts
     image: alpine
     environment:
