@@ -114,13 +114,13 @@ steps:
       - mkdir ./build
       - # Create artifact for friendica-addons
       - tar \
-        --exclude='./.tx' \
-        --exclude='./.git' \
-        --exclude='./.editorconfig' \
-        --exclude='./.gitattributes' \
-        --exclude='./.gitignore' \
-        --exclude='./.drone.yml' \
-        --exclude='./**/*/messages.po' \
+        --exclude='./.tx'
+        --exclude='./.git'
+        --exclude='./.editorconfig'
+        --exclude='./.gitattributes'
+        --exclude='./.gitignore'
+        --exclude='./.drone.yml'
+        --exclude='./**/*/messages.po'
         -cvjf ./build/$ARTIFACTADDONS --transform "s,^addon,$RELEASEADDONS," addon/
       - # calculate SHA256 checksum
       - sha256sum ./build/$ARTIFACTADDONS > ./build/$ARTIFACTADDONS.sha256
