@@ -109,21 +109,21 @@ steps:
       - apt-get update
       - apt-get install bzip2
       - export VERSION="$(cat VERSION)"
-      - export RELEASEADDONS="friendica-addons-$VERSION"
-      - export ARTIFACTADDONS="$RELEASEADDON.tar.gz"
+      - export RELEASE="friendica-addons-$VERSION"
+      - export ARTIFACT="$RELEASE.tar.gz"
       - mkdir ./build
       - # Create artifact for friendica-addons
       - tar
-        --exclude='./.tx'
-        --exclude='./.git'
-        --exclude='./.editorconfig'
-        --exclude='./.gitattributes'
-        --exclude='./.gitignore'
-        --exclude='./.drone.yml'
-        --exclude='./**/*/messages.po'
-        -cvjf ./build/$ARTIFACTADDONS --transform "s,^addon,$RELEASEADDONS," addon/
+        --exclude='.tx'
+        --exclude='.git'
+        --exclude='.editorconfig'
+        --exclude='.gitattributes'
+        --exclude='.gitignore'
+        --exclude='.drone.yml'
+        --exclude='**/*/messages.po'
+        -cvjf ./build/$ARTIFACT --transform "s,^addon,$RELEASE," addon/
       - # calculate SHA256 checksum
-      - sha256sum ./build/$ARTIFACTADDONS > ./build/$ARTIFACTADDONS.sha256
+      - sha256sum ./build/$ARTIFACT > ./build/$ARTIFACT.sha256
       - ls -lh ./build
   - name: Upload artifacts
     image: alpine
