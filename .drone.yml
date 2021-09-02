@@ -74,14 +74,102 @@ kind: pipeline
 type: docker
 name: php-continous-package
 
-#trigger:
-#  repo:
-#    - friendica/friendica-addons
-#  branch:
-#    - develop
-#    - 20*-rc
-#  event:
-#    - push
+trigger:
+  repo:
+    - friendica/friendica-addons
+  branch:
+    - develop
+    - 20*-rc
+  event:
+    - push
+
+node:
+  node: releaser # This prevents executing this pipeline at other servers than drone.friendi.ca
+
+clone:
+  disable: true
+
+steps:
+  - name: Clone friendica base
+    image: alpine/git
+    commands:
+      - git clone https://github.com/friendica/friendica.git .
+      - git checkout $DRONE_COMMIT_BRANCH
+  - name: Clone friendica addon
+    image: alpine/git
+    commands:
+      - git clone $DRONE_REPO_LINK addon
+      - cd addon/
+      - git checkout $DRONE_COMMIT_BRANCH
+      - git fetch origin $DRONE_COMMIT_REF
+      - git merge $DRONE_COMMIT_SHA
+  - name: Create artifacts
+    image: debian
+    commands:
+      - apt-get update
+      - apt-get install bzip2
+      - export VERSION="$(cat VERSION)"
+      - export RELEASE="friendica-addons-$VERSION"
+      - export ARTIFACT="$RELEASE.tar.gz"
+      - mkdir ./build
+      - # Create artifact for friendica-addons
+      - tar
+        --exclude='.tx'
+        --exclude='.git'
+        --exclude='.editorconfig'
+        --exclude='.gitattributes'
+        --exclude='.gitignore'
+        --exclude='.drone.yml'
+        --exclude='**/*/messages.po'
+        -cvjf ./build/$ARTIFACT --transform "s,^addon,$RELEASE," addon/
+      - # calculate SHA256 checksum
+      - sha256sum ./build/$ARTIFACT > ./build/$ARTIFACT.sha256
+      - ls -lh ./build
+  - name: Upload artifacts
+    image: alpine
+    environment:
+      LFTP_HOST:
+        from_secret: sftp_host
+      LFTP_USER:
+        from_secret: sftp_user
+      LFTP_KEY:
+        from_secret: ssh_key
+      LFTP_PORT: "22"
+      LFTP_SOURCE: "build"
+      LFTP_TARGET: "/http"
+    commands:
+      - apk add lftp openssh openssl
+      - touch drone.key
+      - chmod 400 drone.key
+      - echo "$LFTP_KEY" | openssl base64 -A -d > drone.key
+      - lftp -c "
+        set net:timeout 5;
+        set net:max-retries 2;
+        set net:reconnect-interval-base 5;
+        set sftp:auto-confirm true;
+        set sftp:connect-program 'ssh -q -a -x -i drone.key';
+        connect sftp://$LFTP_USER:@$LFTP_HOST:$LFTP_PORT;
+        cd $LFTP_TARGET;
+        mput $LFTP_SOURCE/*;
+        "
+      - rm drone.key
+
+volumes:
+  - name: cache
+    host:
+      path: /tmp/drone-cache
+---
+kind: pipeline
+type: docker
+name: php-release-package
+
+trigger:
+  repo:
+    - friendica/friendica-addons
+  branch:
+    - stable
+  event:
+    - tag
 
 node:
   node: releaser # This prevents executing this pipeline at other servers than drone.friendi.ca
