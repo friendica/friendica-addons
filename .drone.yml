@@ -124,10 +124,10 @@ steps:
         -cvjf ./build/$ARTIFACT addon/
       - # calculate SHA256 checksum
       - cd ./build
-      - sha256sum "$ARTIFACT" > "$ARTIFACT.sha256"
+      - sha256sum "$ARTIFACT" > "$ARTIFACT.sum256"
       - ls -lh
       - # output the sha256 sum for checking purpose
-      - cat "$ARTIFACT.sha256"
+      - cat "$ARTIFACT.sum256"
       - sha256sum "$ARTIFACT"
   - name: Upload artifacts
     image: alpine
@@ -216,10 +216,10 @@ steps:
         -cvjf ./build/$ARTIFACT addon/
       - # calculate SHA256 checksum
       - cd ./build
-      - sha256sum "$ARTIFACT" > "$ARTIFACT.sha256"
+      - sha256sum "$ARTIFACT" > "$ARTIFACT.sum256"
       - ls -lh
       - # output the sha256 sum for checking purpose
-      - cat "$ARTIFACT.sha256"
+      - cat "$ARTIFACT.sum256"
       - sha256sum "$ARTIFACT"
   - name: Upload artifacts
     image: alpine
