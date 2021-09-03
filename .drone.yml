@@ -72,7 +72,7 @@ steps:
 ---
 kind: pipeline
 type: docker
-name: continous-deployment
+name: continuous-deployment
 
 trigger:
   repo:
