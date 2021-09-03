@@ -72,7 +72,7 @@ steps:
 ---
 kind: pipeline
 type: docker
-name: php-continous-package
+name: continous-deployment
 
 trigger:
   repo:
@@ -165,7 +165,7 @@ volumes:
 ---
 kind: pipeline
 type: docker
-name: php-release-package
+name: release-deployment
 
 trigger:
   repo:
