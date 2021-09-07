@@ -2,9 +2,13 @@
 
 namespace Friendica\Addon\webdav_storage\tests;
 
-use Friendica\Test\MockedTest;
+use Friendica\Addon\webdav_storage\src\WebDav;
+use Friendica\Core\Config\IConfig;
+use Friendica\DI;
+use Friendica\Model\Storage\IWritableStorage;
+use Friendica\Test\src\Model\Storage\StorageTest;
 
-class WebDavTest extends MockedTest
+class WebDavTest extends StorageTest
 {
 	public function dataMultiStatus()
 	{
@@ -94,5 +98,21 @@ EOF,
 		$xpath->registerNamespace('d', 'DAV');
 
 		self::assertCount($assertionCount, $xpath->query('//d:multistatus/d:response'));
+	}
+
+	protected function getInstance()
+	{
+		$config = \Mockery::mock(IConfig::class);
+		$config->shouldReceive('get')->with('webdav', 'username')->andReturn(getenv('WEBDAV_USERNAME'));
+		$config->shouldReceive('get')->with('webdav', 'password', '')->andReturn(getenv('WEBDAV_PASSWORD'));
+		$config->shouldReceive('get')->with('webdav', 'url')->andReturn(getenv('WEBDAV_URL'));
+		$config->shouldReceive('get')->with('webdav', 'auth_type', 'basic')->andReturn('basic');
+
+		return new WebDav(DI::l10n(), $config, DI::httpClient(), DI::logger());
+	}
+
+	protected function assertOption(IWritableStorage $storage)
+	{
+		self::assertCount(1, ['1']);
 	}
 }
