@@ -126,9 +126,21 @@ steps:
       - cd ./build
       - sha256sum "$ARTIFACT" > "$ARTIFACT.sum256"
       - ls -lh
-      - # output the sha256 sum for checking purpose
+      - # output the sha256 sum for checking
       - cat "$ARTIFACT.sum256"
       - sha256sum "$ARTIFACT"
+  - name: Sign artifacts
+    image: plugins/gpgsign
+    settings:
+      key:
+        from_secret: gpg_key
+      passphrase:
+        from_secret: gpg_password
+      files:
+        - build/*
+      exclude:
+        - build/*.sum256
+      detach_sign: true
   - name: Upload artifacts
     image: alpine
     environment:
@@ -218,9 +230,21 @@ steps:
       - cd ./build
       - sha256sum "$ARTIFACT" > "$ARTIFACT.sum256"
       - ls -lh
-      - # output the sha256 sum for checking purpose
+      - # output the sha256 sum for checking
       - cat "$ARTIFACT.sum256"
       - sha256sum "$ARTIFACT"
+  - name: Sign artifacts
+    image: plugins/gpgsign
+    settings:
+      key:
+        from_secret: gpg_key
+      passphrase:
+        from_secret: gpg_password
+      files:
+        - build/*
+      exclude:
+        - build/*.sum256
+      detach_sign: true
   - name: Upload artifacts
     image: alpine
     environment:
