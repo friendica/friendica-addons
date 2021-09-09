@@ -71,7 +71,7 @@ function nitter_render(&$a, &$o)
 		$o['html'] = str_replace('https://twitter.com', $nitter, $o['html']);
 		$replace = true;
 	}
-	if ($replace) {
+	if ($replaced) {
 		$o['html'] .= '<hr><p>' . DI::l10n()->t('Links to Twitter in this posting were replaced by links to the Nitter instance at %s', $nitter) . '</p>';
 	}
 }
