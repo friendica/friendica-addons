@@ -121,7 +121,7 @@ steps:
         --exclude='.gitignore'
         --exclude='.drone.yml'
         --exclude='**/*/messages.po'
-        -cvjf ./build/$ARTIFACT addon/
+        -cvzf ./build/$ARTIFACT addon/
       - # calculate SHA256 checksum
       - cd ./build
       - sha256sum "$ARTIFACT" > "$ARTIFACT.sum256"
@@ -225,7 +225,7 @@ steps:
         --exclude='.gitignore'
         --exclude='.drone.yml'
         --exclude='**/*/messages.po'
-        -cvjf ./build/$ARTIFACT addon/
+        -cvzf ./build/$ARTIFACT addon/
       - # calculate SHA256 checksum
       - cd ./build
       - sha256sum "$ARTIFACT" > "$ARTIFACT.sum256"
