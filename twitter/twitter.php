@@ -497,12 +497,12 @@ function twitter_action(App $a, $uid, $pid, $action)
 	$post = ['id' => $pid];
 
 	Logger::debug('before action', ['action' => $action, 'pid' => $pid, 'data' => $post]);
+	$result = [];
 
 	try {
 		switch ($action) {
 			case 'delete':
 				// To-Do: $result = $connection->post('statuses/destroy', $post);
-				$result = [];
 				break;
 			case 'like':
 				$result = $connection->post('favorites/create', $post);
@@ -518,7 +518,6 @@ function twitter_action(App $a, $uid, $pid, $action)
 				break;
 			default:
 				Logger::warning('Unhandled action', ['action' => $action]);
-				$result = [];
 		}
 	} catch (TwitterOAuthException $twitterOAuthException) {
 		Logger::warning('Unable to communicate with twitter', ['action' => $action, 'data' => $post, 'code' => $twitterOAuthException->getCode(), 'exception' => $twitterOAuthException]);
