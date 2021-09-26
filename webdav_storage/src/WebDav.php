@@ -308,7 +308,7 @@ class WebDav implements IWritableStorage
 	 */
 	public function saveOptions(array $data): array
 	{
-		$url      = $data['url'] ?? '';
+		$url      = $data['url']      ?? '';
 		$username = $data['username'] ?? '';
 		$password = $data['password'] ?? '';
 
