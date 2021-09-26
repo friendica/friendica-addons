@@ -177,15 +177,9 @@ function twitter_follow(App $a, array &$contact)
 function twitter_unfollow(App $a, array &$hook_data)
 {
 	$contact = $hook_data['contact'];
-	Logger::info('Check if contact is twitter contact', ['url' => $contact["url"]]);
-
-	if (!strstr($contact["url"], "://twitter.com") && !strstr($contact["url"], "@twitter.com")) {
+	if ($contact['netword'] !== Protocol::TWITTER) {
 		return;
 	}
-
-	// contact seems to be a twitter contact, so continue
-	$nickname = preg_replace("=https?://twitter.com/(.*)=ism", "$1", $contact["url"]);
-	$nickname = str_replace("@twitter.com", "", $nickname);
 
 	$uid = $a->getLoggedInUserId();
 
@@ -201,7 +195,8 @@ function twitter_unfollow(App $a, array &$hook_data)
 
 	try {
 		$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
-		$connection->post('friendships/destroy', ['screen_name' => $nickname]);
+		$result = $connection->post('friendships/destroy', ['screen_name' => $contact['nick']]);
+		Logger::info('[twitter] API call "friendship/destroy" successful', ['result' => $result]);
 	} catch(Exception $e) {
 		Logger::notice('[twitter] API call "friendships/destroy" failed', ['uid' => $uid, 'url' => $contact['url'], 'exception' => $e]);
 	}
