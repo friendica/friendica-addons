@@ -197,8 +197,10 @@ function twitter_unfollow(App $a, array &$hook_data)
 		$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 		$result = $connection->post('friendships/destroy', ['screen_name' => $contact['nick']]);
 		Logger::info('[twitter] API call "friendship/destroy" successful', ['result' => $result]);
+		$hook_data['result'] = true;
 	} catch(Exception $e) {
 		Logger::notice('[twitter] API call "friendships/destroy" failed', ['uid' => $uid, 'url' => $contact['url'], 'exception' => $e]);
+		$hook_data['result'] = false;
 	}
 }
 
