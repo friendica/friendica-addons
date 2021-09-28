@@ -680,7 +680,7 @@ function twitter_post_hook(App $a, array &$b)
 		}
 
 		// Add the link to the body if the type isn't a photo or there are more than 4 images in the post
-		if (!empty($msgarr['url']) && (($msgarr['type'] != 'photo') || empty($msgarr['images']) || (count($msgarr['images']) > 4))) {
+		if (!empty($msgarr['url']) && (strpos($msg, $msgarr['url']) === false) && (($msgarr['type'] != 'photo') || empty($msgarr['images']) || (count($msgarr['images']) > 4))) {
 			$msg .= "\n" . $msgarr['url'];
 		}
 
