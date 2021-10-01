@@ -2,7 +2,7 @@
 /*
  * Name: nitter
  * Description: Replaces links to twitter.com to a nitter server in all displays of postings on a node.
- * Version: 1.1
+ * Version: 2.0
  * Author: Tobias Diekershoff <tobias@social.diekershoff.de>
  *
  * Copyright (c) 2020 Tobias Diekershoff
