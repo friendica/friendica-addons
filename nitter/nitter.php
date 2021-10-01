@@ -72,6 +72,6 @@ function nitter_render(&$a, &$o)
 		$replaced = true;
 	}
 	if ($replaced) {
-		$o['html'] .= '<hr><p>' . DI::l10n()->t('Links to Twitter in this posting were replaced by links to the Nitter instance at %s', $nitter) . '</p>';
+		$o['html'] .= '<hr><p>' . DI::l10n()->t('In an attempt to protect your privacy, links to Twitter in this posting were replaced by links to the Nitter instance at %s', $nitter) . '</p>';
 	}
 }
