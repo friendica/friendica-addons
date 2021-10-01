@@ -30,7 +30,7 @@ use Friendica\DI;
 
 function nitter_install()
 {
-	Addon::registerHook ('prepare_body', 'addon/nitter/nitter.php', 'nitter_render');
+	Addon::registerHook ('prepare_body_final', 'addon/nitter/nitter.php', 'nitter_render');
 }
 
 /* Handle the send data from the admin settings
