@@ -107,6 +107,8 @@ function twitter_install()
 	Hook::register('support_follow'         , __FILE__, 'twitter_support_follow');
 	Hook::register('follow'                 , __FILE__, 'twitter_follow');
 	Hook::register('unfollow'               , __FILE__, 'twitter_unfollow');
+	Hook::register('block'                  , __FILE__, 'twitter_block');
+	Hook::register('unblock'                , __FILE__, 'twitter_unblock');
 	Hook::register('expire'                 , __FILE__, 'twitter_expire');
 	Hook::register('prepare_body'           , __FILE__, 'twitter_prepare_body');
 	Hook::register('check_item_notification', __FILE__, 'twitter_check_item_notification');
@@ -173,6 +175,16 @@ function twitter_follow(App $a, array &$contact)
 function twitter_unfollow(App $a, array &$hook_data)
 {
 	$hook_data['result'] = twitter_api_contact('friendship/destroy', $hook_data['contact'], $hook_data['uid']);
+}
+
+function twitter_block(App $a, array &$hook_data)
+{
+	$hook_data['result'] = twitter_api_contact('blocks/create', $hook_data['contact'], $hook_data['uid']);
+}
+
+function twitter_unblock(App $a, array &$hook_data)
+{
+	$hook_data['result'] = twitter_api_contact('blocks/destroy', $hook_data['contact'], $hook_data['uid']);
 }
 
 function twitter_api_contact(string $apiPath, array $contact, int $uid): ?bool
