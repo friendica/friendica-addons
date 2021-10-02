@@ -105,6 +105,7 @@ function twitter_install()
 	Hook::register('jot_networks'           , __FILE__, 'twitter_jot_nets');
 	Hook::register('cron'                   , __FILE__, 'twitter_cron');
 	Hook::register('follow'                 , __FILE__, 'twitter_follow');
+	Hook::register('unfollow'               , __FILE__, 'twitter_unfollow');
 	Hook::register('expire'                 , __FILE__, 'twitter_expire');
 	Hook::register('prepare_body'           , __FILE__, 'twitter_prepare_body');
 	Hook::register('check_item_notification', __FILE__, 'twitter_check_item_notification');
@@ -170,6 +171,36 @@ function twitter_follow(App $a, array &$contact)
 
 	if (DBA::isResult($contact)) {
 		$contact["contact"] = $contact;
+	}
+}
+
+function twitter_unfollow(App $a, array &$hook_data)
+{
+	$contact = $hook_data['contact'];
+	if ($contact['network'] !== Protocol::TWITTER) {
+		return;
+	}
+
+	$uid = $a->getLoggedInUserId();
+
+	$ckey    = DI::config()->get('twitter', 'consumerkey');
+	$csecret = DI::config()->get('twitter', 'consumersecret');
+	$otoken  = DI::pConfig()->get($uid, 'twitter', 'oauthtoken');
+	$osecret = DI::pConfig()->get($uid, 'twitter', 'oauthsecret');
+
+	// If the addon is not configured (general or for this user) quit here
+	if (empty($ckey) || empty($csecret) || empty($otoken) || empty($osecret)) {
+		return;
+	}
+
+	try {
+		$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
+		$result     = $connection->post('friendships/destroy', ['screen_name' => $contact['nick']]);
+		Logger::info('[twitter] API call "friendship/destroy" successful', ['result' => $result]);
+		$hook_data['result'] = true;
+	} catch (Exception $e) {
+		Logger::notice('[twitter] API call "friendships/destroy" failed', ['uid' => $uid, 'url' => $contact['url'], 'exception' => $e]);
+		$hook_data['result'] = false;
 	}
 }
 
