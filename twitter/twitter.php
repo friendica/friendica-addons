@@ -104,6 +104,7 @@ function twitter_install()
 	Hook::register('notifier_normal'        , __FILE__, 'twitter_post_hook');
 	Hook::register('jot_networks'           , __FILE__, 'twitter_jot_nets');
 	Hook::register('cron'                   , __FILE__, 'twitter_cron');
+	Hook::register('support_follow'         , __FILE__, 'twitter_support_follow');
 	Hook::register('follow'                 , __FILE__, 'twitter_follow');
 	Hook::register('unfollow'               , __FILE__, 'twitter_unfollow');
 	Hook::register('expire'                 , __FILE__, 'twitter_expire');
@@ -132,6 +133,13 @@ function twitter_check_item_notification(App $a, array &$notification_data)
 
 	if ($own_user) {
 		$notification_data["profiles"][] = $own_user[0]["url"];
+	}
+}
+
+function twitter_support_follow(App $a, array &$data)
+{
+	if ($data['protocol'] == Protocol::TWITTER) {
+		$data['result'] = true;
 	}
 }
 
