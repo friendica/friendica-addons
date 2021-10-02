@@ -157,19 +157,7 @@ function twitter_follow(App $a, array &$contact)
 
 	$uid = $a->getLoggedInUserId();
 
-	$ckey = DI::config()->get('twitter', 'consumerkey');
-	$csecret = DI::config()->get('twitter', 'consumersecret');
-	$otoken = DI::pConfig()->get($uid, 'twitter', 'oauthtoken');
-	$osecret = DI::pConfig()->get($uid, 'twitter', 'oauthsecret');
-
-	// If the addon is not configured (general or for this user) quit here
-	if (empty($ckey) || empty($csecret) || empty($otoken) || empty($osecret)) {
-		$contact = false;
-		return;
-	}
-
-	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
-	$connection->post('friendships/create', ['screen_name' => $nickname]);
+	twitter_api_contact('friendships/create', ['network' => Protocol::TWITTER, 'nick' => $nickname], $uid);
 
 	$user = twitter_fetchuser($nickname);
 
@@ -184,12 +172,14 @@ function twitter_follow(App $a, array &$contact)
 
 function twitter_unfollow(App $a, array &$hook_data)
 {
-	$contact = $hook_data['contact'];
-	if ($contact['network'] !== Protocol::TWITTER) {
-		return;
-	}
+	$hook_data['result'] = twitter_api_contact('friendship/destroy', $hook_data['contact'], $hook_data['uid']);
+}
 
-	$uid = $a->getLoggedInUserId();
+function twitter_api_contact(string $apiPath, array $contact, int $uid): ?bool
+{
+	if ($contact['network'] !== Protocol::TWITTER) {
+		return null;
+	}
 
 	$ckey    = DI::config()->get('twitter', 'consumerkey');
 	$csecret = DI::config()->get('twitter', 'consumersecret');
@@ -198,17 +188,17 @@ function twitter_unfollow(App $a, array &$hook_data)
 
 	// If the addon is not configured (general or for this user) quit here
 	if (empty($ckey) || empty($csecret) || empty($otoken) || empty($osecret)) {
-		return;
+		return null;
 	}
 
 	try {
 		$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
-		$result     = $connection->post('friendships/destroy', ['screen_name' => $contact['nick']]);
-		Logger::info('[twitter] API call "friendship/destroy" successful', ['result' => $result]);
-		$hook_data['result'] = true;
+		$result     = $connection->post($apiPath, ['screen_name' => $contact['nick']]);
+		Logger::info('[twitter] API call successful', ['apiPath' => $apiPath, 'result' => $result]);
+		return true;
 	} catch (Exception $e) {
-		Logger::notice('[twitter] API call "friendships/destroy" failed', ['uid' => $uid, 'url' => $contact['url'], 'exception' => $e]);
-		$hook_data['result'] = false;
+		Logger::notice('[twitter] API call failed', ['apiPath' => $apiPath, 'uid' => $uid, 'url' => $contact['url'], 'exception' => $e]);
+		return false;
 	}
 }
 
