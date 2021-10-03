@@ -135,7 +135,7 @@ function windowsphonepush_settings(&$a, &$s)
 function windowsphonepush_cron()
 {
 	// retrieve all UID's for which the addon windowsphonepush is enabled and loop through every user
-	$pconfigs = DBA::selectToArray('pconfig', ['cat' => 'windowsphonepush', 'k' => 'enable', 'v' => true]);
+	$pconfigs = DBA::selectToArray('pconfig', ['uid'], ['cat' => 'windowsphonepush', 'k' => 'enable', 'v' => true]);
 	foreach ($pconfigs as $rr) {
 		// load stored information for the user-id of the current loop
 		$device_url = DI::pConfig()->get($rr['uid'], 'windowsphonepush', 'device_url');
@@ -399,7 +399,7 @@ function windowsphonepush_updatesettings()
 	// the user on the Windows Phone device and that device url is no longer true for the other user, so we
 	// et the device_url for the OTHER user blank (should normally not occur as App should include User/server
 	// in url request to Microsoft Push Notification server)
-	$pconfigs = DBA::selectToArray('pconfig', ["`uid` != ? AND `cat` = ? AND `k` = ? AND `v` = ?", local_user(), 'windowsphonepush', 'device_url', $device_url]);
+	$pconfigs = DBA::selectToArray('pconfig', ['uid'], ["`uid` != ? AND `cat` = ? AND `k` = ? AND `v` = ?", local_user(), 'windowsphonepush', 'device_url', $device_url]);
 	foreach ($pconfigs as $rr) {
 		DI::pConfig()->set($rr['uid'], 'windowsphonepush', 'device_url', '');
 		Logger::notice("WARN: the sent URL was already registered with user '" . $rr['uid'] . "'. Deleted for this user as we expect to be correct now for user '" . local_user() . "'.");
