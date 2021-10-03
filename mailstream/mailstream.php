@@ -439,10 +439,9 @@ function mailstream_html_wrap(&$text)
  */
 function mailstream_convert_table_entries()
 {
-	$ms_item_ids = DBA::selectToArray('mailstream_item', ['message-id', 'uri', 'uid', 'contact-id'], ["`mailstream_item`.`completed` IS NULL"]);
-	if (DBA::isResult($ms_item_ids)) {
-		Logger::debug('mailstream_convert_table_entries processing ' . count($ms_item_ids) . ' items');
-		foreach ($ms_item_ids as $ms_item_id) {
+	$ms_item_ids = DBA::selectToArray('mailstream_item', [], ['message-id', 'uri', 'uid', 'contact-id'], ["`mailstream_item`.`completed` IS NULL"]);
+	Logger::debug('mailstream_convert_table_entries processing ' . count($ms_item_ids) . ' items');
+	foreach ($ms_item_ids as $ms_item_id) {
 			$send_hook_data = array('uid' => $ms_item_id['uid'],
 						'contact-id' => $ms_item_id['contact-id'],
 						'uri' => $ms_item_id['uri'],
@@ -454,8 +453,7 @@ function mailstream_convert_table_entries()
 								continue;
 			}
 			Logger::info('mailstream_convert_table_entries: convert item to workerqueue', $send_hook_data);
-			Hook::fork(PRIORITY_LOW, 'mailstream_send_hook', $send_hook_data);
-		}
+		Hook::fork(PRIORITY_LOW, 'mailstream_send_hook', $send_hook_data);
 	}
 	DBA::e('DROP TABLE `mailstream_item`');
 }
