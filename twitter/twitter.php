@@ -622,9 +622,14 @@ function twitter_post_hook(App $a, array &$b)
 		}
 	}
 
-	if (($b['verb'] == Activity::POST) && $b['deleted']) {
-		twitter_api_post('statuses/destroy', twitter_get_id($thr_parent['uri']), $b['uid']);
-	}
+	/**
+	 * @TODO This can't work at the moment:
+	 *  - Posts created on Friendica and mirrored to Twitter don't have a Twitter ID
+	 *  - Posts created on Twitter and mirrored on Friendica do not trigger the notifier hook this is part of.
+	 */
+	//if (($b['verb'] == Activity::POST) && $b['deleted']) {
+	//	twitter_api_post('statuses/destroy', twitter_get_id($thr_parent['uri']), $b['uid']);
+	//}
 
 	if ($b['verb'] == Activity::LIKE) {
 		Logger::info('Like', ['uid' => $b['uid'], 'id' => twitter_get_id($b["thr-parent"])]);
@@ -637,7 +642,11 @@ function twitter_post_hook(App $a, array &$b)
 	if ($b['verb'] == Activity::ANNOUNCE) {
 		Logger::info('Retweet', ['uid' => $b['uid'], 'id' => twitter_get_id($b["thr-parent"])]);
 		if ($b['deleted']) {
-			twitter_api_post('statuses/destroy', twitter_get_id($thr_parent['extid']), $b['uid']);
+			/**
+			 * @TODO This can't work at the moment:
+			 * - Twitter post reshare removal doesn't seem to trigger the notifier hook this is part of
+			 */
+			//twitter_api_post('statuses/destroy', twitter_get_id($thr_parent['extid']), $b['uid']);
 		} else {
 			twitter_retweet($b["uid"], twitter_get_id($b["thr-parent"]));
 		}
