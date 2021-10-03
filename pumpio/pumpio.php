@@ -720,9 +720,9 @@ function pumpio_sync(App $a)
 			}
 
 			if ($next_contact_check <= time()) {
-				pumpio_getallusers($a, $rr["uid"]);
-				DI::pConfig()->set($rr['uid'], 'pumpio', 'contact_check', time());
-			}
+			pumpio_getallusers($a, $rr["uid"]);
+			DI::pConfig()->set($rr['uid'], 'pumpio', 'contact_check', time());
+		}
 	}
 
 	Logger::notice('pumpio: cron_end');
