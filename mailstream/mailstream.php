@@ -13,6 +13,7 @@ use Friendica\Core\Renderer;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\DI;
+use Friendica\Model\Contact;
 use Friendica\Model\Item;
 use Friendica\Model\Post;
 use Friendica\Model\User;
@@ -229,9 +230,8 @@ function mailstream_do_images(&$item, &$attachments)
  */
 function mailstream_sender($item)
 {
-	$r = q('SELECT * FROM `contact` WHERE `id` = %d', $item['contact-id']);
-	if (DBA::isResult($r)) {
-		$contact = $r[0];
+	$contact = Contact::getById($item['contact-id']);
+	if (DBA::isResult($contact)) {
 		if ($contact['name'] != $item['author-name']) {
 			return $contact['name'] . ' - ' . $item['author-name'];
 		}
@@ -300,12 +300,8 @@ function mailstream_subject($item)
 		}
 		$parent = $parent_item['thr-parent'];
 	}
-	$r = q(
-		"SELECT * FROM `contact` WHERE `id` = %d AND `uid` = %d",
-		intval($item['contact-id']),
-		intval($item['uid'])
-	);
-	if (!DBA::isResult($r)) {
+	$contact = Contact::selectFirst([], ['id' => $item['contact-id'], 'uid' => $item['uid']]);
+	if (!DBA::isResult($contact)) {
 			Logger::error(
 				'mailstream_subject no contact for item',
 				['id' => $item['id'],
@@ -315,7 +311,6 @@ function mailstream_subject($item)
 			);
 		return DI::l10n()->t("Friendica post");
 	}
-	$contact = $r[0];
 	if ($contact['network'] === 'dfrn') {
 		return DI::l10n()->t("Friendica post");
 	}
@@ -444,19 +439,7 @@ function mailstream_html_wrap(&$text)
  */
 function mailstream_convert_table_entries()
 {
-	$query = <<< EOT
-SELECT
-  `message-id`,
-  `uri`,
-  `uid`,
-  `contact-id`
-FROM
-   `mailstream_item`
-WHERE
-  `mailstream_item`.`completed` IS NULL
-
-EOT;
-	$ms_item_ids = q($query);
+	$ms_item_ids = DBA::selectToArray('mailstream_item', ['message-id', 'uri', 'uid', 'contact-id'], ["`mailstream_item`.`completed` IS NULL"]);
 	if (DBA::isResult($ms_item_ids)) {
 		Logger::debug('mailstream_convert_table_entries processing ' . count($ms_item_ids) . ' items');
 		foreach ($ms_item_ids as $ms_item_id) {
@@ -474,7 +457,7 @@ EOT;
 			Hook::fork(PRIORITY_LOW, 'mailstream_send_hook', $send_hook_data);
 		}
 	}
-	q('DROP TABLE `mailstream_item`');
+	DBA::e('DROP TABLE `mailstream_item`');
 }
 
 /**

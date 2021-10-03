@@ -23,7 +23,7 @@ function gravatar_install() {
 	Hook::register('load_config',   'addon/gravatar/gravatar.php', 'gravatar_load_config');
 	Hook::register('avatar_lookup', 'addon/gravatar/gravatar.php', 'gravatar_lookup');
 
-	Logger::log("registered gravatar in avatar_lookup hook");
+	Logger::notice("registered gravatar in avatar_lookup hook");
 }
 
 function gravatar_load_config(App $a, ConfigFileLoader $loader)
@@ -89,10 +89,7 @@ function gravatar_addon_admin (&$a, &$o) {
 	];
 
 	// Check if Libravatar is enabled and show warning
-	$r = q("SELECT * FROM `addon` WHERE `name` = '%s' and `installed` = 1",
-		DBA::escape('libravatar')
-	);
-	if (count($r)) {
+	if (DBA::exists('addon', ['name' => 'libravatar', 'installed' => true])) {
 		$o = '<h5>' .DI::l10n()->t('Information') .'</h5><p>' .DI::l10n()->t('Libravatar addon is installed, too. Please disable Libravatar addon or this Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if nothing was found at Libravatar.') .'</p><br><br>';
 	}
 

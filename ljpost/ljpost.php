@@ -14,6 +14,7 @@ use Friendica\Core\Logger;
 use Friendica\DI;
 use Friendica\Model\Post;
 use Friendica\Model\Tag;
+use Friendica\Model\User;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\XML;
 
@@ -160,13 +161,8 @@ function ljpost_send(&$a,&$b) {
 	// Hopefully the person's Friendica account
 	// will be set to the same thing.
 
-	$tz = 'UTC';
-
-	$x = q("select timezone from user where uid = %d limit 1",
-		intval($b['uid'])
-	);
-	if($x && strlen($x[0]['timezone']))
-		$tz = $x[0]['timezone'];
+	$user = User::getById($b['uid']);
+	$tz = $user['timezone'] ?: 'UTC';
 
 	$lj_username = XML::escape(DI::pConfig()->get($b['uid'],'ljpost','lj_username'));
 	$lj_password = XML::escape(DI::pConfig()->get($b['uid'],'ljpost','lj_password'));
@@ -231,11 +227,11 @@ function ljpost_send(&$a,&$b) {
 
 EOT;
 
-		Logger::log('ljpost: data: ' . $xml, Logger::DATA);
+		Logger::debug('ljpost: data: ' . $xml);
 
 		if ($lj_blog !== 'test') {
 			$x = DI::httpClient()->post($lj_blog, $xml, ['Content-Type' => 'text/xml'])->getBody();
 		}
-		Logger::log('posted to livejournal: ' . ($x) ? $x : '', Logger::DEBUG);
+		Logger::info('posted to livejournal: ' . ($x) ? $x : '');
 	}
 }

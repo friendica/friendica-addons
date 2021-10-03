@@ -53,7 +53,7 @@ function windowsphonepush_install()
 	Hook::register('addon_settings', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings');
 	Hook::register('addon_settings_post', 'addon/windowsphonepush/windowsphonepush.php', 'windowsphonepush_settings_post');
 
-	Logger::log("installed windowsphonepush");
+	Logger::notice("installed windowsphonepush");
 }
 
 /* declare the windowsphonepush function so that /windowsphonepush url requests will land here */
@@ -135,90 +135,88 @@ function windowsphonepush_settings(&$a, &$s)
 function windowsphonepush_cron()
 {
 	// retrieve all UID's for which the addon windowsphonepush is enabled and loop through every user
-	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'windowsphonepush' AND `k` = 'enable' AND `v` = 1");
-	if (count($r)) {
-		foreach ($r as $rr) {
-			// load stored information for the user-id of the current loop
-			$device_url = DI::pConfig()->get($rr['uid'], 'windowsphonepush', 'device_url');
-			$lastpushid = DI::pConfig()->get($rr['uid'], 'windowsphonepush', 'lastpushid');
+	$pconfigs = DBA::selectToArray('pconfig', ['cat' => 'windowsphonepush', 'k' => 'enable', 'v' => true]);
+	foreach ($pconfigs as $rr) {
+		// load stored information for the user-id of the current loop
+		$device_url = DI::pConfig()->get($rr['uid'], 'windowsphonepush', 'device_url');
+		$lastpushid = DI::pConfig()->get($rr['uid'], 'windowsphonepush', 'lastpushid');
 
-			// pushing only possible if device_url (the URI on Microsoft server) is available or not "NA" (which will be sent
-			// by app if user has switched the server setting in app - sending blank not possible as this would return an update error)
-			if (( $device_url == "" ) || ( $device_url == "NA" )) {
-				// no Device-URL for the user availabe, but addon is enabled --> write info to Logger
-				Logger::log("WARN: windowsphonepush is enable for user " . $rr['uid'] . ", but no Device-URL is specified for the user.");
-			} else {
-				// retrieve the number of unseen items and the id of the latest one (if there are more than
-				// one new entries since last poller run, only the latest one will be pushed)
-				$count = q("SELECT count(`id`) as count, max(`id`) as max FROM `post-view` WHERE `unseen` = 1 AND `type` <> 'activity' AND `uid` = %d", intval($rr['uid']));
+		// pushing only possible if device_url (the URI on Microsoft server) is available or not "NA" (which will be sent
+		// by app if user has switched the server setting in app - sending blank not possible as this would return an update error)
+		if (( $device_url == "" ) || ( $device_url == "NA" )) {
+			// no Device-URL for the user availabe, but addon is enabled --> write info to Logger
+			Logger::notice("WARN: windowsphonepush is enable for user " . $rr['uid'] . ", but no Device-URL is specified for the user.");
+		} else {
+			// retrieve the number of unseen items and the id of the latest one (if there are more than
+			// one new entries since last poller run, only the latest one will be pushed)
+			$count = q("SELECT count(`id`) as count, max(`id`) as max FROM `post-view` WHERE `unseen` = 1 AND `type` <> 'activity' AND `uid` = %d", intval($rr['uid']));
 
-				// send number of unseen items to the device (the number will be displayed on Start screen until
-				// App will be started by user) - this update will be sent every 10 minutes to update the number to 0 if
-				// user has loaded the timeline through app or website
-				$res_tile = send_tile_update($device_url, "", $count[0]['count'], "");
-				switch (trim($res_tile)) {
-					case "Received":
-						// ok, count has been pushed, let's save it in personal settings
-						DI::pConfig()->set($rr['uid'], 'windowsphonepush', 'counterunseen', $count[0]['count']);
-						break;
-					case "QueueFull":
-						// maximum of 30 messages reached, server rejects any further push notification until device reconnects
-						Logger::log("INFO: Device-URL '" . $device_url . "' returns a QueueFull.");
-						break;
-					case "Suppressed":
-						// notification received and dropped as something in app was not enabled
-						Logger::log("WARN. Device-URL '" . $device_url . "' returns a Suppressed. Unexpected error in Mobile App?");
-						break;
-					case "Dropped":
-						// mostly combines with Expired, in that case Device-URL will be deleted from pconfig (function send_push)
-						break;
-					default:
-						// error, mostly called by "" which means that the url (not "" which has been checked)
-						// didn't not received Microsoft Notification Server -> wrong url
-						Logger::log("ERROR: specified Device-URL '" . $device_url . "' didn't produced any response.");
-				}
+			// send number of unseen items to the device (the number will be displayed on Start screen until
+			// App will be started by user) - this update will be sent every 10 minutes to update the number to 0 if
+			// user has loaded the timeline through app or website
+			$res_tile = send_tile_update($device_url, "", $count[0]['count'], "");
+			switch (trim($res_tile)) {
+				case "Received":
+					// ok, count has been pushed, let's save it in personal settings
+					DI::pConfig()->set($rr['uid'], 'windowsphonepush', 'counterunseen', $count[0]['count']);
+					break;
+				case "QueueFull":
+					// maximum of 30 messages reached, server rejects any further push notification until device reconnects
+					Logger::notice("INFO: Device-URL '" . $device_url . "' returns a QueueFull.");
+					break;
+				case "Suppressed":
+					// notification received and dropped as something in app was not enabled
+					Logger::notice("WARN. Device-URL '" . $device_url . "' returns a Suppressed. Unexpected error in Mobile App?");
+					break;
+				case "Dropped":
+					// mostly combines with Expired, in that case Device-URL will be deleted from pconfig (function send_push)
+					break;
+				default:
+					// error, mostly called by "" which means that the url (not "" which has been checked)
+					// didn't not received Microsoft Notification Server -> wrong url
+					Logger::notice("ERROR: specified Device-URL '" . $device_url . "' didn't produced any response.");
+			}
 
-				// additionally user receives the text of the newest item (function checks against last successfully pushed item)
-				if (intval($count[0]['max']) > intval($lastpushid)) {
-					// user can define if he wants to see the text of the item in the push notification
-					// this has been implemented as the device_url is not a https uri (not so secure)
-					$senditemtext = DI::pConfig()->get($rr['uid'], 'windowsphonepush', 'senditemtext');
-					if ($senditemtext == 1) {
-						// load item with the max id
-						$item = Post::selectFirst(['author-name', 'body', 'uri-id'], ['id' => $count[0]['max']]);
+			// additionally user receives the text of the newest item (function checks against last successfully pushed item)
+			if (intval($count[0]['max']) > intval($lastpushid)) {
+				// user can define if he wants to see the text of the item in the push notification
+				// this has been implemented as the device_url is not a https uri (not so secure)
+				$senditemtext = DI::pConfig()->get($rr['uid'], 'windowsphonepush', 'senditemtext');
+				if ($senditemtext == 1) {
+					// load item with the max id
+					$item = Post::selectFirst(['author-name', 'body', 'uri-id'], ['id' => $count[0]['max']]);
 
-						// as user allows to send the item, we want to show the sender of the item in the toast
-						// toasts are limited to one line, therefore place is limited - author shall be in
-						// max. 15 chars (incl. dots); author is displayed in bold font
-						$author = $item['author-name'];
-						$author = ((strlen($author) > 12) ? substr($author, 0, 12) . "..." : $author);
+					// as user allows to send the item, we want to show the sender of the item in the toast
+					// toasts are limited to one line, therefore place is limited - author shall be in
+					// max. 15 chars (incl. dots); author is displayed in bold font
+					$author = $item['author-name'];
+					$author = ((strlen($author) > 12) ? substr($author, 0, 12) . "..." : $author);
 
-						// normally we show the body of the item, however if it is an url or an image we cannot
-						// show this in the toast (only test), therefore changing to an alternate text
-						// Otherwise BBcode-Tags will be eliminated and plain text cutted to 140 chars (incl. dots)
-						// BTW: information only possible in English
-						$body = $item['body'];
-						if (substr($body, 0, 4) == "[url") {
-							$body = "URL/Image ...";
-						} else {
-							$body = BBCode::convertForUriId($item['uri-id'], $body, BBCode::API);
-							$body = HTML::toPlaintext($body, 0);
-							$body = ((strlen($body) > 137) ? substr($body, 0, 137) . "..." : $body);
-						}
+					// normally we show the body of the item, however if it is an url or an image we cannot
+					// show this in the toast (only test), therefore changing to an alternate text
+					// Otherwise BBcode-Tags will be eliminated and plain text cutted to 140 chars (incl. dots)
+					// BTW: information only possible in English
+					$body = $item['body'];
+					if (substr($body, 0, 4) == "[url") {
+						$body = "URL/Image ...";
 					} else {
-						// if user wishes higher privacy, we only display "Friendica - New timeline entry arrived"
-						$author = "Friendica";
-						$body = "New timeline entry arrived ...";
+						$body = BBCode::convertForUriId($item['uri-id'], $body, BBCode::API);
+						$body = HTML::toPlaintext($body, 0);
+						$body = ((strlen($body) > 137) ? substr($body, 0, 137) . "..." : $body);
 					}
-					// only if toast push notification returns the Notification status "Received" we will update th settings with the
-					// new indicator max-id is checked against (QueueFull, Suppressed, N/A, Dropped shall qualify to resend
-					// the push notification some minutes later (BTW: if resulting in Expired for subscription status the
-					// device_url will be deleted (no further try on this url, see send_push)
-					// further log information done on count pushing with send_tile (see above)
-					$res_toast = send_toast($device_url, $author, $body);
-					if (trim($res_toast) === 'Received') {
-						DI::pConfig()->set($rr['uid'], 'windowsphonepush', 'lastpushid', $count[0]['max']);
-					}
+				} else {
+					// if user wishes higher privacy, we only display "Friendica - New timeline entry arrived"
+					$author = "Friendica";
+					$body = "New timeline entry arrived ...";
+				}
+				// only if toast push notification returns the Notification status "Received" we will update th settings with the
+				// new indicator max-id is checked against (QueueFull, Suppressed, N/A, Dropped shall qualify to resend
+				// the push notification some minutes later (BTW: if resulting in Expired for subscription status the
+				// device_url will be deleted (no further try on this url, see send_push)
+				// further log information done on count pushing with send_tile (see above)
+				$res_toast = send_toast($device_url, $author, $body);
+				if (trim($res_toast) === 'Received') {
+					DI::pConfig()->set($rr['uid'], 'windowsphonepush', 'lastpushid', $count[0]['max']);
 				}
 			}
 		}
@@ -292,7 +290,7 @@ function send_push($device_url, $headers, $msg)
 	$subscriptionStatus = get_header_value($output, 'X-SubscriptionStatus');
 	if ($subscriptionStatus == "Expired") {
 		DI::pConfig()->set(local_user(), 'windowsphonepush', 'device_url', "");
-		Logger::log("ERROR: the stored Device-URL " . $device_url . "returned an 'Expired' error, it has been deleted now.");
+		Logger::notice("ERROR: the stored Device-URL " . $device_url . "returned an 'Expired' error, it has been deleted now.");
 	}
 
 	// the notification status shall be returned to windowsphonepush_cron (will
@@ -393,7 +391,7 @@ function windowsphonepush_updatesettings()
 	// check if sent url is empty - don't save and send return code to app
 	$device_url = $_POST['deviceurl'];
 	if ($device_url == "") {
-		Logger::log("ERROR: no valid Device-URL specified - client transferred '" . $device_url . "'");
+		Logger::notice("ERROR: no valid Device-URL specified - client transferred '" . $device_url . "'");
 		return "No valid Device-URL specified";
 	}
 
@@ -401,20 +399,15 @@ function windowsphonepush_updatesettings()
 	// the user on the Windows Phone device and that device url is no longer true for the other user, so we
 	// et the device_url for the OTHER user blank (should normally not occur as App should include User/server
 	// in url request to Microsoft Push Notification server)
-	$r = q("SELECT * FROM `pconfig` WHERE `uid` <> " . local_user() . " AND
-						`cat` = 'windowsphonepush' AND
-						`k` = 'device_url' AND
-						`v` = '" . $device_url . "'");
-	if (count($r)) {
-		foreach ($r as $rr) {
-			DI::pConfig()->set($rr['uid'], 'windowsphonepush', 'device_url', '');
-			Logger::log("WARN: the sent URL was already registered with user '" . $rr['uid'] . "'. Deleted for this user as we expect to be correct now for user '" . local_user() . "'.");
-		}
+	$pconfigs = DBA::selectToArray('pconfig', ["`uid` != ? AND `cat` = ? AND `k` = ? AND `v` = ?", local_user(), 'windowsphonepush', 'device_url', $device_url]);
+	foreach ($pconfigs as $rr) {
+		DI::pConfig()->set($rr['uid'], 'windowsphonepush', 'device_url', '');
+		Logger::notice("WARN: the sent URL was already registered with user '" . $rr['uid'] . "'. Deleted for this user as we expect to be correct now for user '" . local_user() . "'.");
 	}
 
 	DI::pConfig()->set(local_user(), 'windowsphonepush', 'device_url', $device_url);
 	// output the successfull update of the device URL to the logger for error analysis if necessary
-	Logger::log("INFO: Device-URL for user '" . local_user() . "' has been updated with '" . $device_url . "'");
+	Logger::notice("INFO: Device-URL for user '" . local_user() . "' has been updated with '" . $device_url . "'");
 	return "Device-URL updated successfully!";
 }
 
@@ -441,7 +434,7 @@ function windowsphonepush_updatecounterunseen()
 function windowsphonepush_login(App $a)
 {
 	if (!isset($_SERVER['PHP_AUTH_USER'])) {
-		Logger::log('API_login: ' . print_r($_SERVER, true), Logger::DEBUG);
+		Logger::info('API_login: ' . print_r($_SERVER, true));
 		header('WWW-Authenticate: Basic realm="Friendica"');
 		header('HTTP/1.0 401 Unauthorized');
 		die('This api requires login');
@@ -452,7 +445,7 @@ function windowsphonepush_login(App $a)
 	if ($user_id) {
 		$record = DBA::selectFirst('user', [], ['uid' => $user_id]);
 	} else {
-		Logger::log('API_login failure: ' . print_r($_SERVER, true), Logger::DEBUG);
+		Logger::info('API_login failure: ' . print_r($_SERVER, true));
 		header('WWW-Authenticate: Basic realm="Friendica"');
 		header('HTTP/1.0 401 Unauthorized');
 		die('This api requires login');
