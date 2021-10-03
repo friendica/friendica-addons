@@ -302,13 +302,13 @@ function mailstream_subject($item)
 	}
 	$contact = Contact::selectFirst([], ['id' => $item['contact-id'], 'uid' => $item['uid']]);
 	if (!DBA::isResult($contact)) {
-			Logger::error(
-				'mailstream_subject no contact for item',
-				['id' => $item['id'],
-				  'plink' => $item['plink'],
-				  'contact id' => $item['contact-id'],
-				'uid' => $item['uid']]
-			);
+		Logger::error(
+			'mailstream_subject no contact for item',
+			['id' => $item['id'],
+				'plink' => $item['plink'],
+				'contact id' => $item['contact-id'],
+			'uid' => $item['uid']]
+		);
 		return DI::l10n()->t("Friendica post");
 	}
 	if ($contact['network'] === 'dfrn') {
@@ -442,17 +442,17 @@ function mailstream_convert_table_entries()
 	$ms_item_ids = DBA::selectToArray('mailstream_item', [], ['message-id', 'uri', 'uid', 'contact-id'], ["`mailstream_item`.`completed` IS NULL"]);
 	Logger::debug('mailstream_convert_table_entries processing ' . count($ms_item_ids) . ' items');
 	foreach ($ms_item_ids as $ms_item_id) {
-			$send_hook_data = array('uid' => $ms_item_id['uid'],
-						'contact-id' => $ms_item_id['contact-id'],
-						'uri' => $ms_item_id['uri'],
-						'message_id' => $ms_item_id['message-id'],
-						'tries' => 0);
-			if (!$ms_item_id['message-id'] || !strlen($ms_item_id['message-id'])) {
-				Logger::info('mailstream_cron: Item ' .
-								$ms_item_id['id'] . ' URI ' . $ms_item_id['uri'] . ' has no message-id');
-								continue;
-			}
-			Logger::info('mailstream_convert_table_entries: convert item to workerqueue', $send_hook_data);
+		$send_hook_data = array('uid' => $ms_item_id['uid'],
+					'contact-id' => $ms_item_id['contact-id'],
+					'uri' => $ms_item_id['uri'],
+					'message_id' => $ms_item_id['message-id'],
+					'tries' => 0);
+		if (!$ms_item_id['message-id'] || !strlen($ms_item_id['message-id'])) {
+			Logger::info('mailstream_cron: Item ' .
+							$ms_item_id['id'] . ' URI ' . $ms_item_id['uri'] . ' has no message-id');
+							continue;
+		}
+		Logger::info('mailstream_convert_table_entries: convert item to workerqueue', $send_hook_data);
 		Hook::fork(PRIORITY_LOW, 'mailstream_send_hook', $send_hook_data);
 	}
 	DBA::e('DROP TABLE `mailstream_item`');
