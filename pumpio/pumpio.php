@@ -701,25 +701,25 @@ function pumpio_sync(App $a)
 
 	$pconfigs = DBA::selectToArray('pconfig', ['uid'], ['cat' => 'pumpio', 'k' => 'import', 'v' => '1']);
 	foreach ($pconfigs as $rr) {
-			if ($abandon_days != 0) {
-				if (DBA::exists('user', ["uid = ? AND `login_date` >= ?", $rr['uid'], $abandon_limit])) {
-					Logger::notice('abandoned account: timeline from user '.$rr['uid'].' will not be imported');
-					continue;
-				}
+		if ($abandon_days != 0) {
+			if (DBA::exists('user', ["uid = ? AND `login_date` >= ?", $rr['uid'], $abandon_limit])) {
+				Logger::notice('abandoned account: timeline from user '.$rr['uid'].' will not be imported');
+				continue;
 			}
+		}
 
-			Logger::notice('pumpio: importing timeline from user '.$rr['uid']);
-			pumpio_fetchinbox($a, $rr['uid']);
+		Logger::notice('pumpio: importing timeline from user '.$rr['uid']);
+		pumpio_fetchinbox($a, $rr['uid']);
 
-			// check for new contacts once a day
-			$last_contact_check = DI::pConfig()->get($rr['uid'], 'pumpio', 'contact_check');
-			if ($last_contact_check) {
-				$next_contact_check = $last_contact_check + 86400;
-			} else {
-				$next_contact_check = 0;
-			}
+		// check for new contacts once a day
+		$last_contact_check = DI::pConfig()->get($rr['uid'], 'pumpio', 'contact_check');
+		if ($last_contact_check) {
+			$next_contact_check = $last_contact_check + 86400;
+		} else {
+			$next_contact_check = 0;
+		}
 
-			if ($next_contact_check <= time()) {
+		if ($next_contact_check <= time()) {
 			pumpio_getallusers($a, $rr["uid"]);
 			DI::pConfig()->set($rr['uid'], 'pumpio', 'contact_check', time());
 		}
