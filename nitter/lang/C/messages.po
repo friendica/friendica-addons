@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-08 07:44+0100\n"
+"POT-Creation-Date: 2021-10-01 16:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: nitter.php:51
+#: nitter.php:52
 #, php-format
 msgid ""
 "Which nitter server shall be used for the replacements in the post bodies? "
@@ -25,17 +25,17 @@ msgid ""
 "public Nitter servers."
 msgstr ""
 
-#: nitter.php:52
+#: nitter.php:53
 msgid "Nitter server"
 msgstr ""
 
-#: nitter.php:53
+#: nitter.php:54
 msgid "Save Settings"
 msgstr ""
 
-#: nitter.php:65
+#: nitter.php:99
 #, php-format
 msgid ""
-"Links to Twitter in this posting were replaced by links to the Nitter "
-"instance at %s"
+"In an attempt to protect your privacy, links to Twitter in this posting were "
+"replaced by links to the Nitter instance at %s"
 msgstr ""

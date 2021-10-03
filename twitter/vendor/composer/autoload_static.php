@@ -10,6 +10,7 @@ class ComposerStaticInitTwitterAddon
         'C' => 
         array (
             'Composer\\Installers\\' => 20,
+            'Composer\\CaBundle\\' => 18,
         ),
         'A' => 
         array (
@@ -21,6 +22,10 @@ class ComposerStaticInitTwitterAddon
         'Composer\\Installers\\' => 
         array (
             0 => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers',
+        ),
+        'Composer\\CaBundle\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/composer/ca-bundle/src',
         ),
         'Abraham\\TwitterOAuth\\' => 
         array (

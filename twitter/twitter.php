@@ -104,7 +104,11 @@ function twitter_install()
 	Hook::register('notifier_normal'        , __FILE__, 'twitter_post_hook');
 	Hook::register('jot_networks'           , __FILE__, 'twitter_jot_nets');
 	Hook::register('cron'                   , __FILE__, 'twitter_cron');
+	Hook::register('support_follow'         , __FILE__, 'twitter_support_follow');
 	Hook::register('follow'                 , __FILE__, 'twitter_follow');
+	Hook::register('unfollow'               , __FILE__, 'twitter_unfollow');
+	Hook::register('block'                  , __FILE__, 'twitter_block');
+	Hook::register('unblock'                , __FILE__, 'twitter_unblock');
 	Hook::register('expire'                 , __FILE__, 'twitter_expire');
 	Hook::register('prepare_body'           , __FILE__, 'twitter_prepare_body');
 	Hook::register('check_item_notification', __FILE__, 'twitter_check_item_notification');
@@ -134,6 +138,13 @@ function twitter_check_item_notification(App $a, array &$notification_data)
 	}
 }
 
+function twitter_support_follow(App $a, array &$data)
+{
+	if ($data['protocol'] == Protocol::TWITTER) {
+		$data['result'] = true;
+	}
+}
+
 function twitter_follow(App $a, array &$contact)
 {
 	Logger::info('Check if contact is twitter contact', ['url' => $contact["url"]]);
@@ -148,19 +159,7 @@ function twitter_follow(App $a, array &$contact)
 
 	$uid = $a->getLoggedInUserId();
 
-	$ckey = DI::config()->get('twitter', 'consumerkey');
-	$csecret = DI::config()->get('twitter', 'consumersecret');
-	$otoken = DI::pConfig()->get($uid, 'twitter', 'oauthtoken');
-	$osecret = DI::pConfig()->get($uid, 'twitter', 'oauthsecret');
-
-	// If the addon is not configured (general or for this user) quit here
-	if (empty($ckey) || empty($csecret) || empty($otoken) || empty($osecret)) {
-		$contact = false;
-		return;
-	}
-
-	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
-	$connection->post('friendships/create', ['screen_name' => $nickname]);
+	twitter_api_contact('friendships/create', ['network' => Protocol::TWITTER, 'nick' => $nickname], $uid);
 
 	$user = twitter_fetchuser($nickname);
 
@@ -170,6 +169,48 @@ function twitter_follow(App $a, array &$contact)
 
 	if (DBA::isResult($contact)) {
 		$contact["contact"] = $contact;
+	}
+}
+
+function twitter_unfollow(App $a, array &$hook_data)
+{
+	$hook_data['result'] = twitter_api_contact('friendship/destroy', $hook_data['contact'], $hook_data['uid']);
+}
+
+function twitter_block(App $a, array &$hook_data)
+{
+	$hook_data['result'] = twitter_api_contact('blocks/create', $hook_data['contact'], $hook_data['uid']);
+}
+
+function twitter_unblock(App $a, array &$hook_data)
+{
+	$hook_data['result'] = twitter_api_contact('blocks/destroy', $hook_data['contact'], $hook_data['uid']);
+}
+
+function twitter_api_contact(string $apiPath, array $contact, int $uid): ?bool
+{
+	if ($contact['network'] !== Protocol::TWITTER) {
+		return null;
+	}
+
+	$ckey    = DI::config()->get('twitter', 'consumerkey');
+	$csecret = DI::config()->get('twitter', 'consumersecret');
+	$otoken  = DI::pConfig()->get($uid, 'twitter', 'oauthtoken');
+	$osecret = DI::pConfig()->get($uid, 'twitter', 'oauthsecret');
+
+	// If the addon is not configured (general or for this user) quit here
+	if (empty($ckey) || empty($csecret) || empty($otoken) || empty($osecret)) {
+		return null;
+	}
+
+	try {
+		$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
+		$result     = $connection->post($apiPath, ['screen_name' => $contact['nick']]);
+		Logger::info('[twitter] API call successful', ['apiPath' => $apiPath, 'result' => $result]);
+		return true;
+	} catch (Exception $e) {
+		Logger::notice('[twitter] API call failed', ['apiPath' => $apiPath, 'uid' => $uid, 'url' => $contact['url'], 'exception' => $e]);
+		return false;
 	}
 }
 
@@ -481,7 +522,7 @@ function twitter_probe_detect(App $a, array &$hookData)
 	}
 }
 
-function twitter_action(App $a, $uid, $pid, $action)
+function twitter_api_post(string $apiPath, string $pid, int $uid)
 {
 	if (empty($pid)) {
 		return;
@@ -496,34 +537,21 @@ function twitter_action(App $a, $uid, $pid, $action)
 
 	$post = ['id' => $pid];
 
-	Logger::debug('before action', ['action' => $action, 'pid' => $pid, 'data' => $post]);
-	$result = [];
+	Logger::debug('before action', ['action' => $apiPath, 'pid' => $pid, 'data' => $post]);
 
 	try {
-		switch ($action) {
-			case 'delete':
-				// To-Do: $result = $connection->post('statuses/destroy', $post);
-				break;
-			case 'like':
-				$result = $connection->post('favorites/create', $post);
-				if ($connection->getLastHttpCode() != 200) {
-					Logger::warning('Unable to create favorite', ['result' => $result]);
-				}
-				break;
-			case 'unlike':
-				$result = $connection->post('favorites/destroy', $post);
-				if ($connection->getLastHttpCode() != 200) {
-					Logger::warning('Unable to destroy favorite', ['result' => $result]);
-				}
-				break;
-			default:
-				Logger::warning('Unhandled action', ['action' => $action]);
+		$result = $connection->post($apiPath, $post);
+		if ($connection->getLastHttpCode() != 200) {
+			Logger::warning('[twitter] API call unsuccessful', ['apiPath' => $apiPath, 'post' => $post, 'result' => $result]);
 		}
 	} catch (TwitterOAuthException $twitterOAuthException) {
-		Logger::warning('Unable to communicate with twitter', ['action' => $action, 'data' => $post, 'code' => $twitterOAuthException->getCode(), 'exception' => $twitterOAuthException]);
+		Logger::warning('Unable to communicate with twitter', ['apiPath' => $apiPath, 'data' => $post, 'code' => $twitterOAuthException->getCode(), 'exception' => $twitterOAuthException]);
+		$result = false;
 	}
 
-	Logger::info('after action', ['action' => $action, 'result' => $result]);
+	Logger::info('after action', ['action' => $apiPath, 'result' => $result]);
+
+	return $result;
 }
 
 function twitter_get_id(string $uri)
@@ -594,17 +622,19 @@ function twitter_post_hook(App $a, array &$b)
 		}
 	}
 
-	if (($b['verb'] == Activity::POST) && $b['deleted']) {
-		twitter_action($a, $b['uid'], twitter_get_id($thr_parent['uri']), 'delete');
-	}
+	/**
+	 * @TODO This can't work at the moment:
+	 *  - Posts created on Friendica and mirrored to Twitter don't have a Twitter ID
+	 *  - Posts created on Twitter and mirrored on Friendica do not trigger the notifier hook this is part of.
+	 */
+	//if (($b['verb'] == Activity::POST) && $b['deleted']) {
+	//	twitter_api_post('statuses/destroy', twitter_get_id($thr_parent['uri']), $b['uid']);
+	//}
 
 	if ($b['verb'] == Activity::LIKE) {
 		Logger::info('Like', ['uid' => $b['uid'], 'id' => twitter_get_id($b["thr-parent"])]);
-		if ($b['deleted']) {
-			twitter_action($a, $b["uid"], twitter_get_id($b["thr-parent"]), "unlike");
-		} else {
-			twitter_action($a, $b["uid"], twitter_get_id($b["thr-parent"]), "like");
-		}
+
+		twitter_api_post($b['deleted'] ? 'favorite/destroy' : 'favorite/create', twitter_get_id($b["thr-parent"]), $b["uid"]);
 
 		return;
 	}
@@ -612,7 +642,11 @@ function twitter_post_hook(App $a, array &$b)
 	if ($b['verb'] == Activity::ANNOUNCE) {
 		Logger::info('Retweet', ['uid' => $b['uid'], 'id' => twitter_get_id($b["thr-parent"])]);
 		if ($b['deleted']) {
-			twitter_action($a, $b['uid'], twitter_get_id($thr_parent['extid']), 'delete');
+			/**
+			 * @TODO This can't work at the moment:
+			 * - Twitter post reshare removal doesn't seem to trigger the notifier hook this is part of
+			 */
+			//twitter_api_post('statuses/destroy', twitter_get_id($thr_parent['extid']), $b['uid']);
 		} else {
 			twitter_retweet($b["uid"], twitter_get_id($b["thr-parent"]));
 		}
@@ -740,8 +774,7 @@ function twitter_post_hook(App $a, array &$b)
 			$post['in_reply_to_status_id'] = twitter_get_id($thr_parent['uri']);
 		}
 
-		$url = 'statuses/update';
-		$result = $connection->post($url, $post);
+		$result = $connection->post('statuses/update', $post);
 		Logger::info('twitter_post send', ['id' => $b['id'], 'result' => $result]);
 
 		if (!empty($result->source)) {
@@ -2116,13 +2149,7 @@ function twitter_retweet(int $uid, int $id, int $item_id = 0)
 {
 	Logger::info('Retweeting', ['user' => $uid, 'id' => $id]);
 
-	$ckey    = DI::config()->get('twitter', 'consumerkey');
-	$csecret = DI::config()->get('twitter', 'consumersecret');
-	$otoken  = DI::pConfig()->get($uid, 'twitter', 'oauthtoken');
-	$osecret = DI::pConfig()->get($uid, 'twitter', 'oauthsecret');
-
-	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
-	$result = $connection->post('statuses/retweet/' . $id);
+	$result = twitter_api_post('statuses/retweet', $id, $uid);
 
 	Logger::info('Retweeted', ['user' => $uid, 'id' => $id, 'result' => $result]);
 

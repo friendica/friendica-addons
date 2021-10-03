@@ -21,6 +21,9 @@ Excerp from nitters about page.
 Changelog
 ---------
 
+* **Version 2.0**
+  * Changes the used hook by the addon, so that attached previews of postings get replaced as well.
+    This means the admins need to reload the addon
 * **Version 1.1**
   * Initial localization support with DE translation
   * Configurable nitter instance address from the admin panel

@@ -2,7 +2,7 @@
 /*
  * Name: nitter
  * Description: Replaces links to twitter.com to a nitter server in all displays of postings on a node.
- * Version: 1.1
+ * Version: 2.0
  * Author: Tobias Diekershoff <tobias@social.diekershoff.de>
  *
  * Copyright (c) 2020 Tobias Diekershoff
@@ -30,7 +30,7 @@ use Friendica\DI;
 
 function nitter_install()
 {
-	Addon::registerHook ('prepare_body', 'addon/nitter/nitter.php', 'nitter_render');
+	Addon::registerHook ('prepare_body_final', 'addon/nitter/nitter.php', 'nitter_render');
 }
 
 /* Handle the send data from the admin settings
@@ -72,6 +72,6 @@ function nitter_render(&$a, &$o)
 		$replaced = true;
 	}
 	if ($replaced) {
-		$o['html'] .= '<hr><p>' . DI::l10n()->t('Links to Twitter in this posting were replaced by links to the Nitter instance at %s', $nitter) . '</p>';
+		$o['html'] .= '<hr><p>' . DI::l10n()->t('In an attempt to protect your privacy, links to Twitter in this posting were replaced by links to the Nitter instance at %s', $nitter) . '</p>';
 	}
 }

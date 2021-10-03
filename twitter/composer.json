@@ -21,7 +21,7 @@
         }
     ],
     "require": {
-        "abraham/twitteroauth": "^0.7.4",
+        "abraham/twitteroauth": "2.0.0",
         "jublonet/codebird-php": "dev-master"
     },
     "license": "3-clause BSD license",
