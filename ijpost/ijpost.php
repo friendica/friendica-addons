@@ -13,6 +13,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\DI;
 use Friendica\Model\Tag;
+use Friendica\Model\User;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\XML;
 
@@ -162,15 +163,8 @@ function ijpost_send(&$a, &$b)
 	// Hopefully the person's Friendica account
 	// will be set to the same thing.
 
-	$tz = 'UTC';
-
-	$x = q("select timezone from user where uid = %d limit 1",
-		intval($b['uid'])
-	);
-
-	if ($x && strlen($x[0]['timezone'])) {
-		$tz = $x[0]['timezone'];
-	}
+	$user = User::getById($b['uid']);
+	$tz = $user['timezone'] ?: 'UTC';
 
 	$ij_username = DI::pConfig()->get($b['uid'], 'ijpost', 'ij_username');
 	$ij_password = DI::pConfig()->get($b['uid'], 'ijpost', 'ij_password');
@@ -216,11 +210,11 @@ function ijpost_send(&$a, &$b)
 
 EOT;
 
-		Logger::log('ijpost: data: ' . $xml, Logger::DATA);
+		Logger::debug('ijpost: data: ' . $xml);
 
 		if ($ij_blog !== 'test') {
 			$x = DI::httpClient()->post($ij_blog, $xml, ['Content-Type' => 'text/xml'])->getBody();
 		}
-		Logger::log('posted to insanejournal: ' . $x ? $x : '', Logger::DEBUG);
+		Logger::info('posted to insanejournal: ' . $x ? $x : '');
 	}
 }

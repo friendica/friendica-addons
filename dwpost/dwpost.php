@@ -16,6 +16,7 @@ use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Post;
 use Friendica\Model\Tag;
+use Friendica\Model\User;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\XML;
 
@@ -167,15 +168,9 @@ function dwpost_send(App $a, array &$b)
 	 * Hopefully the person's Friendica account
 	 * will be set to the same thing.
 	 */
-	$tz = 'UTC';
 
-	$x = q("SELECT `timezone` FROM `user` WHERE `uid` = %d LIMIT 1",
-		intval($b['uid'])
-	);
-
-	if (DBA::isResult($x) && !empty($x[0]['timezone'])) {
-		$tz = $x[0]['timezone'];
-	}
+	$user = User::getById($b['uid']);
+	$tz = $user['timezone'] ?: 'UTC';
 
 	$dw_username = DI::pConfig()->get($b['uid'],'dwpost','dw_username');
 	$dw_password = DI::pConfig()->get($b['uid'],'dwpost','dw_password');
@@ -221,12 +216,12 @@ function dwpost_send(App $a, array &$b)
 
 EOT;
 
-		Logger::log('dwpost: data: ' . $xml, Logger::DATA);
+		Logger::debug('dwpost: data: ' . $xml);
 
 		if ($dw_blog !== 'test') {
 			$x = DI::httpClient()->post($dw_blog, $xml, ['Content-Type' => 'text/xml'])->getBody();
 		}
 
-		Logger::log('posted to dreamwidth: ' . ($x) ? $x : '', Logger::DEBUG);
+		Logger::info('posted to dreamwidth: ' . ($x) ? $x : '');
 	}
 }

@@ -8,7 +8,6 @@
  */
 
 use Friendica\Core\Hook;
-use Friendica\Core\L10n;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
@@ -17,7 +16,7 @@ use Friendica\DI;
 function widgets_install() {
 	Hook::register('addon_settings', 'addon/widgets/widgets.php', 'widgets_settings');
 	Hook::register('addon_settings_post', 'addon/widgets/widgets.php', 'widgets_settings_post');
-	Logger::log("installed widgets");
+	Logger::notice("installed widgets");
 }
 
 function widgets_settings_post(){
