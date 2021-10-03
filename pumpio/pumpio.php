@@ -686,7 +686,7 @@ function pumpio_sync(App $a)
 	}
 	Logger::notice('pumpio: cron_start');
 
-	$pconfigs = DBA::selectToArray('pconfig', ['cat' => 'pumpio', 'k' => 'mirror', 'v' => '1']);
+	$pconfigs = DBA::selectToArray('pconfig', ['uid'], ['cat' => 'pumpio', 'k' => 'mirror', 'v' => '1']);
 	foreach ($pconfigs as $rr) {
 		Logger::notice('pumpio: mirroring user '.$rr['uid']);
 		pumpio_fetchtimeline($a, $rr['uid']);
@@ -699,7 +699,7 @@ function pumpio_sync(App $a)
 
 	$abandon_limit = date(DateTimeFormat::MYSQL, time() - $abandon_days * 86400);
 
-	$pconfigs = DBA::selectToArray('pconfig', ['cat' => 'pumpio', 'k' => 'import', 'v' => '1']);
+	$pconfigs = DBA::selectToArray('pconfig', ['uid'], ['cat' => 'pumpio', 'k' => 'import', 'v' => '1']);
 	foreach ($pconfigs as $rr) {
 			if ($abandon_days != 0) {
 				if (DBA::exists('user', ["uid = ? AND `login_date` >= ?", $rr['uid'], $abandon_limit])) {
