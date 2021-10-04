@@ -280,7 +280,7 @@ function advancedcontentfilter_build_fields($data)
 			'network', 'url', 'name', 'writable', 'self',
 			'cid', 'alias',
 			'event_created', 'event_edited', 'event_start', 'event_finish', 'event_summary',
-			'event_desc', 'event_location', 'event_type', 'event_nofinish', 'event_adjust', 'event_ignore',
+			'event_desc', 'event_location', 'event_type', 'event_nofinish', 'event_ignore',
 			'children', 'pagedrop', 'tags', 'hashtags', 'mentions',
 			'attachments',
 		];

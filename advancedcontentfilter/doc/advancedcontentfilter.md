@@ -459,11 +459,6 @@ You can also retrieve the variables of a specific post by pasting its URL below 
 		<td>null</td>
 	</tr>
 	<tr>
-		<th>event_adjust</th>
-		<td>boolean</td>
-		<td>null</td>
-	</tr>
-	<tr>
 		<th>event_ignore</th>
 		<td>boolean</td>
 		<td>null</td>
