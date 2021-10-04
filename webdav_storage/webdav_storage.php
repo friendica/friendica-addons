@@ -7,6 +7,7 @@
  */
 
 use Friendica\Addon\webdav_storage\src\WebDav;
+use Friendica\Addon\webdav_storage\src\WebDavConfig;
 use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
@@ -14,15 +15,22 @@ use Friendica\DI;
 function webdav_storage_install($a)
 {
 	Hook::register('storage_instance' , __FILE__, 'webdav_storage_instance');
+	Hook::register('storage_config' , __FILE__, 'webdav_storage_config');
 	DI::storageManager()->register(WebDav::class);
 }
 
 function webdav_storage_uninstall()
 {
-	DI::storageManager()->unregister(WebDav::getName());
+	DI::storageManager()->unregister(WebDav::class);
 }
 
 function webdav_storage_instance(App $a, array &$data)
 {
-	$data['storage'] = new WebDav(DI::l10n(), DI::config(), DI::httpClient(), DI::logger());
+	$config          = new WebDavConfig(DI::l10n(), DI::config(), DI::httpClient());
+	$data['storage'] = new WebDav($config->getUrl(), $config->getAuthOptions(), DI::httpClient(), DI::logger());
+}
+
+function webdav_storage_config(App $a, array &$data)
+{
+	$data['storage_config'] = new WebDavConfig(DI::l10n(), DI::config(), DI::httpClient());
 }
