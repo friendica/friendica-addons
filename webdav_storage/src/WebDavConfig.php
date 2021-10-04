@@ -9,7 +9,7 @@ use Friendica\Network\HTTPClientOptions;
 use Friendica\Network\IHTTPClient;
 
 /**
- * A WebDav Backend Storage class
+ * The WebDav Backend Storage configuration class
  */
 class WebDavConfig implements IStorageConfiguration
 {
