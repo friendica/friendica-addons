@@ -3,10 +3,14 @@
 namespace Friendica\Addon\webdav_storage\tests;
 
 use Friendica\Addon\webdav_storage\src\WebDav;
-use Friendica\Core\Config\IConfig;
 use Friendica\DI;
-use Friendica\Model\Storage\IWritableStorage;
+use Friendica\Factory\HTTPClientFactory;
 use Friendica\Test\src\Model\Storage\StorageTest;
+use Friendica\Util\Logger\VoidLogger;
+
+/// @todo remove when constant is moved to a class constant
+/// Necessary for DB_UPDATE_VERSION constant in case of direct calls, where dbstructure isn't included during the calling process
+require_once __DIR__ . '/../../../static/dbstructure.config.php';
 
 class WebDavTest extends StorageTest
 {
@@ -100,19 +104,18 @@ EOF,
 		self::assertCount($assertionCount, $xpath->query('//d:multistatus/d:response'));
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	protected function getInstance()
 	{
-		$config = \Mockery::mock(IConfig::class);
-		$config->shouldReceive('get')->with('webdav', 'username')->andReturn(getenv('WEBDAV_USERNAME'));
-		$config->shouldReceive('get')->with('webdav', 'password', '')->andReturn(getenv('WEBDAV_PASSWORD'));
-		$config->shouldReceive('get')->with('webdav', 'url')->andReturn(getenv('WEBDAV_URL'));
-		$config->shouldReceive('get')->with('webdav', 'auth_type', 'basic')->andReturn('basic');
+		/** @var HTTPClientFactory $factory */
+		$factory = DI::getDice()->create(HTTPClientFactory::class);
 
-		return new WebDav(DI::l10n(), $config, DI::httpClient(), DI::logger());
-	}
-
-	protected function assertOption(IWritableStorage $storage)
-	{
-		self::assertCount(1, ['1']);
+		return new WebDav(getenv('WEBDAV_URL'), [
+			getenv('WEBDAV_USERNAME'),
+			getenv('WEBDAV_PASSWORD'),
+			'basic',
+		], $factory->createClient(), new VoidLogger());
 	}
 }
