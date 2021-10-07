@@ -43,42 +43,29 @@ function testdrive_register_account($a,$b) {
 	if(! $days)
 		return;
 
-	$r = q("UPDATE user set account_expires_on = '%s' where uid = %d",
-		DBA::escape(DateTimeFormat::convert('now +' . $days . ' days')),
-		intval($uid)
-	);
-
+	DBA::update('user', ['account_expires_on' => DateTimeFormat::convert('now +' . $days . ' days')], ['uid' => $uid]);
 };
 
 
 function testdrive_cron($a,$b) {
-	$r = q("select * from user where account_expires_on < UTC_TIMESTAMP() + INTERVAL 5 DAY and
-		expire_notification_sent = '0000-00-00 00:00:00' ");
+	$users = DBA::selectToArray('user', [], ["`account_expires_on` < UTC_TIMESTAMP() + INTERVAL ? DAY AND `expire_notification_sent` <= ?",
+		5, DBA::NULL_DATETIME]);
+	foreach($users as $rr) {
+		notification([
+			'type' => Notification\Type::SYSTEM,
+			'uid' => $rr['uid'],
+			'system_type' => 'testdrive_expire',
+			'source_name'  => DI::l10n()->t('Administrator'),
+			'source_link'  => DI::baseUrl()->get(),
+			'source_photo' => DI::baseUrl()->get() . '/images/person-80.jpg',
+		]);
 
-	if(count($r)) {
-		foreach($r as $rr) {
-			notification([
-				'type' => Notification\Type::SYSTEM,
-				'uid' => $rr['uid'],
-				'system_type' => 'testdrive_expire',
-				'source_name'  => DI::l10n()->t('Administrator'),
-				'source_link'  => DI::baseUrl()->get(),
-				'source_photo' => DI::baseUrl()->get() . '/images/person-80.jpg',
-			]);
-
-			q("update user set expire_notification_sent = '%s' where uid = %d",
-				DBA::escape(DateTimeFormat::utcNow()),
-				intval($rr['uid'])
-			);
-
-		}
+		DBA::update('user', ['expire_notification_sent' => DateTimeFormat::utcNow()], ['uid' => $rr['uid']]);
 	}
 
-	$r = q("select * from user where account_expired = 1 and account_expires_on < UTC_TIMESTAMP() - INTERVAL 5 DAY ");
-	if(count($r)) {
-		foreach($r as $rr) {
-			User::remove($rr['uid']);
-		}
+	$users = DBA::selectToArray('user', [], ["`account_expired` AND `account_expires_on` < UTC_TIMESTAMP() - INTERVAL ? DAY", 5]);
+	foreach($users as $rr) {
+		User::remove($rr['uid']);
 	}
 }
 

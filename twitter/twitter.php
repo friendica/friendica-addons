@@ -126,15 +126,11 @@ function twitter_load_config(App $a, ConfigFileLoader $loader)
 
 function twitter_check_item_notification(App $a, array &$notification_data)
 {
-	$own_id = DI::pConfig()->get($notification_data["uid"], 'twitter', 'own_id');
+	$own_id = DI::pConfig()->get($notification_data['uid'], 'twitter', 'own_id');
 
-	$own_user = q("SELECT `url` FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
-			intval($notification_data["uid"]),
-			DBA::escape("twitter::".$own_id)
-	);
-
+	$own_user = Contact::selectFirst(['url'], ['uid' => $notification_data['uid'], 'alias' => 'twitter::'.$own_id]);
 	if ($own_user) {
-		$notification_data["profiles"][] = $own_user[0]["url"];
+		$notification_data['profiles'][] = $own_user['url'];
 	}
 }
 
@@ -525,7 +521,7 @@ function twitter_probe_detect(App $a, array &$hookData)
 function twitter_api_post(string $apiPath, string $pid, int $uid)
 {
 	if (empty($pid)) {
-		return;
+		return false;
 	}
 
 	$ckey = DI::config()->get('twitter', 'consumerkey');
@@ -829,12 +825,10 @@ function twitter_cron(App $a)
 	}
 	Logger::notice('twitter: cron_start');
 
-	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'mirror_posts' AND `v` = '1'");
-	if (DBA::isResult($r)) {
-		foreach ($r as $rr) {
-			Logger::notice('Fetching', ['user' => $rr['uid']]);
-			Worker::add(['priority' => PRIORITY_MEDIUM, 'force_priority' => true], "addon/twitter/twitter_sync.php", 1, (int) $rr['uid']);
-		}
+	$pconfigs = DBA::selectToArray('pconfig', [], ['cat' => 'twitter', 'k' => 'mirror_posts', 'v' => true]);
+	foreach ($pconfigs as $rr) {
+		Logger::notice('Fetching', ['user' => $rr['uid']]);
+		Worker::add(['priority' => PRIORITY_MEDIUM, 'force_priority' => true], "addon/twitter/twitter_sync.php", 1, (int) $rr['uid']);
 	}
 
 	$abandon_days = intval(DI::config()->get('system', 'account_abandon_days'));
@@ -844,34 +838,31 @@ function twitter_cron(App $a)
 
 	$abandon_limit = date(DateTimeFormat::MYSQL, time() - $abandon_days * 86400);
 
-	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'import' AND `v` = '1'");
-	if (DBA::isResult($r)) {
-		foreach ($r as $rr) {
-			if ($abandon_days != 0) {
-				$user = q("SELECT `login_date` FROM `user` WHERE uid=%d AND `login_date` >= '%s'", $rr['uid'], $abandon_limit);
-				if (!DBA::isResult($user)) {
-					Logger::notice('abandoned account: timeline from user will not be imported', ['user' => $rr['uid']]);
-					continue;
-				}
+	$pconfigs = DBA::selectToArray('pconfig', [], ['cat' => 'twitter', 'k' => 'import', 'v' => true]);
+	foreach ($pconfigs as $rr) {
+		if ($abandon_days != 0) {
+			if (!DBA::exists('user', ["`uid` = ? AND `login_date` >= ?", $rr['uid'], $abandon_limit])) {
+				Logger::notice('abandoned account: timeline from user will not be imported', ['user' => $rr['uid']]);
+				continue;
 			}
-
-			Logger::notice('importing timeline', ['user' => $rr['uid']]);
-			Worker::add(['priority' => PRIORITY_MEDIUM, 'force_priority' => true], "addon/twitter/twitter_sync.php", 2, (int) $rr['uid']);
-			/*
-			  // To-Do
-			  // check for new contacts once a day
-			  $last_contact_check = DI::pConfig()->get($rr['uid'],'pumpio','contact_check');
-			  if($last_contact_check)
-			  $next_contact_check = $last_contact_check + 86400;
-			  else
-			  $next_contact_check = 0;
-
-			  if($next_contact_check <= time()) {
-			  pumpio_getallusers($a, $rr["uid"]);
-			  DI::pConfig()->set($rr['uid'],'pumpio','contact_check',time());
-			  }
-			 */
 		}
+
+		Logger::notice('importing timeline', ['user' => $rr['uid']]);
+		Worker::add(['priority' => PRIORITY_MEDIUM, 'force_priority' => true], "addon/twitter/twitter_sync.php", 2, (int) $rr['uid']);
+		/*
+			// To-Do
+			// check for new contacts once a day
+			$last_contact_check = DI::pConfig()->get($rr['uid'],'pumpio','contact_check');
+			if($last_contact_check)
+			$next_contact_check = $last_contact_check + 86400;
+			else
+			$next_contact_check = 0;
+
+			if($next_contact_check <= time()) {
+			pumpio_getallusers($a, $rr["uid"]);
+			DI::pConfig()->set($rr['uid'],'pumpio','contact_check',time());
+			}
+			*/
 	}
 
 	Logger::notice('twitter: cron_end');
@@ -900,12 +891,10 @@ function twitter_expire(App $a)
 
 	Logger::notice('Start expiry');
 
-	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'twitter' AND `k` = 'import' AND `v` = '1' ORDER BY RAND()");
-	if (DBA::isResult($r)) {
-		foreach ($r as $rr) {
-			Logger::notice('twitter_expire', ['user' => $rr['uid']]);
-			Item::expire($rr['uid'], $days, Protocol::TWITTER, true);
-		}
+	$pconfigs = DBA::selectToArray('pconfig', [], ['cat' => 'twitter', 'k' => 'import', 'v' => true]);
+	foreach ($pconfigs as $rr) {
+		Logger::notice('twitter_expire', ['user' => $rr['uid']]);
+		Item::expire($rr['uid'], $days, Protocol::TWITTER, true);
 	}
 
 	Logger::notice('End expiry');
@@ -1279,7 +1268,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 	}
 
 	if (!empty($cid)) {
-		DBA::update('contact', $fields, ['id' => $cid]);
+		Contact::update($fields, ['id' => $cid]);
 		Contact::updateAvatar($cid, $avatar);
 	} else {
 		Logger::warning('No contact found', ['fields' => $fields]);
@@ -1308,7 +1297,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 		$fields['readonly'] = false;
 		$fields['pending'] = false;
 
-		if (!DBA::insert('contact', $fields)) {
+		if (!Contact::insert($fields)) {
 			return false;
 		}
 
@@ -1350,7 +1339,7 @@ function twitter_fetch_contact($uid, $data, $create_user)
 
 		if ($update) {
 			$fields['updated'] = DateTimeFormat::utcNow();
-			DBA::update('contact', $fields, ['id' => $contact['id']]);
+			Contact::update($fields, ['id' => $contact['id']]);
 			Logger::info('Updated contact', ['id' => $contact['id'], 'nick' => $data->screen_name]);
 		}
 	}
@@ -1663,15 +1652,13 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 		$own_id = DI::pConfig()->get($uid, 'twitter', 'own_id');
 
 		if ($post->user->id_str == $own_id) {
-			$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
-				intval($uid));
+			$self = Contact::selectFirst(['id', 'name', 'url', 'photo'], ['self' => true, 'uid' => $uid]);
+			if (DBA::isResult($self)) {
+				$contactid = $self['id'];
 
-			if (DBA::isResult($r)) {
-				$contactid = $r[0]["id"];
-
-				$postarray['owner-name']   = $r[0]["name"];
-				$postarray['owner-link']   = $r[0]["url"];
-				$postarray['owner-avatar'] = $r[0]["photo"];
+				$postarray['owner-name']   = $self['name'];
+				$postarray['owner-link']   = $self['url'];
+				$postarray['owner-avatar'] = $self['photo'];
 			} else {
 				Logger::error('No self contact found', ['uid' => $uid]);
 				return [];
@@ -1910,12 +1897,9 @@ function twitter_fetchhometimeline(App $a, $uid)
 		return;
 	}
 
-	$r = q("SELECT * FROM `contact` WHERE `id` = %d AND `uid` = %d LIMIT 1",
-		intval($own_contact),
-		intval($uid));
-
-	if (DBA::isResult($r)) {
-		$own_id = $r[0]["nick"];
+	$contact = Contact::selectFirst(['nick'], ['id' => $own_contact, 'uid' => $uid]);
+	if (DBA::isResult($contact)) {
+		$own_id = $contact['nick'];
 	} else {
 		Logger::warning('Own twitter contact not found', ['uid' => $uid]);
 		return;
@@ -2093,11 +2077,9 @@ function twitter_fetch_own_contact(App $a, $uid)
 
 		$contact_id = twitter_fetch_contact($uid, $user, true);
 	} else {
-		$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
-			intval($uid),
-			DBA::escape("twitter::" . $own_id));
-		if (DBA::isResult($r)) {
-			$contact_id = $r[0]["id"];
+		$contact = Contact::selectFirst(['id'], ['uid' => $uid, 'alias' => 'twitter::' . $own_id]);
+		if (DBA::isResult($contact)) {
+			$contact_id = $contact['id'];
 		} else {
 			DI::pConfig()->delete($uid, 'twitter', 'own_id');
 		}

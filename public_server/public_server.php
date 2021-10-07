@@ -14,6 +14,7 @@ use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Notification;
+use Friendica\Model\User;
 use Friendica\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Strings;
@@ -50,60 +51,49 @@ function public_server_cron($a, $b)
 {
 	Logger::log("public_server: cron start");
 
-	$r = q("SELECT * FROM `user` WHERE `account_expires_on` < UTC_TIMESTAMP() + INTERVAL 5 DAY AND
-		`account_expires_on` > '%s' AND
-		`expire_notification_sent` <= '%s'",
-		DBA::NULL_DATETIME, DBA::NULL_DATETIME);
+	$users = DBA::selectToArray('user', [], ["`account_expires_on` < UTC_TIMESTAMP() + INTERVAL ? DAY AND
+		`account_expires_on` > ? AND `expire_notification_sent` <= ?", 5, DBA::NULL_DATETIME, DBA::NULL_DATETIME]);
+	foreach ($users as $rr) {
+		notification([
+			'type' => Notification\Type::SYSTEM,
+			'uid' => $rr['uid'],
+			'system_type' => 'public_server_expire',
+			'source_name'  => DI::l10n()->t('Administrator'),
+			'source_link'  => DI::baseUrl()->get(),
+			'source_photo' => DI::baseUrl()->get() . '/images/person-80.jpg',
+		]);
 
-	if (DBA::isResult($r)) {
-		foreach ($r as $rr) {
-			notification([
-				'type' => Notification\Type::SYSTEM,
-				'uid' => $rr['uid'],
-				'system_type' => 'public_server_expire',
-				'source_name'  => DI::l10n()->t('Administrator'),
-				'source_link'  => DI::baseUrl()->get(),
-				'source_photo' => DI::baseUrl()->get() . '/images/person-80.jpg',
-			]);
-
-			$fields = ['expire_notification_sent' => DateTimeFormat::utcNow()];
-			DBA::update('user', $fields, ['uid' => $rr['uid']]);
-		}
+		$fields = ['expire_notification_sent' => DateTimeFormat::utcNow()];
+		DBA::update('user', $fields, ['uid' => $rr['uid']]);
 	}
 
 	$nologin = DI::config()->get('public_server', 'nologin', false);
 	if ($nologin) {
-		$r = q("SELECT `uid` FROM `user` WHERE NOT `account_expired` AND `login_date` <= '%s' AND `register_date` < UTC_TIMESTAMP() - INTERVAL %d DAY AND `account_expires_on` <= '%s'",
-			DBA::NULL_DATETIME, intval($nologin), DBA::NULL_DATETIME);
-		if (DBA::isResult($r)) {
-			foreach ($r as $rr) {
-				$fields = ['account_expires_on' => DateTimeFormat::utc('now +6 days')];
-				DBA::update('user', $fields, ['uid' => $rr['uid']]);
-			}
+		$users = DBA::selectToArray('user', [], ["NOT `account_expired` AND `login_date` <= ? AND `register_date` < UTC_TIMESTAMP() - INTERVAL ? DAY AND `account_expires_on` <= ?",
+			DBA::NULL_DATETIME, $nologin, DBA::NULL_DATETIME]);
+		foreach ($users as $rr) {
+			$fields = ['account_expires_on' => DateTimeFormat::utc('now +6 days')];
+			DBA::update('user', $fields, ['uid' => $rr['uid']]);
 		}
 	}
 
 	$flagusers = DI::config()->get('public_server', 'flagusers', false);
 	if ($flagusers) {
-		$r = q("SELECT `uid` FROM `user` WHERE NOT `account_expired` AND `login_date` < UTC_TIMESTAMP() - INTERVAL %d DAY AND `account_expires_on` <= '%s' AND `page-flags` = 0",
-			intval($flagusers), DBA::NULL_DATETIME);
-		if (DBA::isResult($r)) {
-			foreach ($r as $rr) {
-				$fields = ['account_expires_on' => DateTimeFormat::utc('now +6 days')];
-				DBA::update('user', $fields, ['uid' => $rr['uid']]);
-			}
+		$users = DBA::selectToArray('user', [], ["NOT `account_expired` AND `login_date` < UTC_TIMESTAMP() - INTERVAL ? DAY AND `account_expires_on` <= ? AND `page-flags` = ?",
+			$flagusers, DBA::NULL_DATETIME, User::PAGE_FLAGS_NORMAL]);
+		foreach ($users as $rr) {
+			$fields = ['account_expires_on' => DateTimeFormat::utc('now +6 days')];
+			DBA::update('user', $fields, ['uid' => $rr['uid']]);
 		}
 	}
 
 	$flagposts = DI::config()->get('public_server', 'flagposts');
 	$flagpostsexpire = DI::config()->get('public_server', 'flagpostsexpire');
 	if ($flagposts && $flagpostsexpire) {
-		$r = q("SELECT `uid` FROM `user` WHERE NOT `account_expired` AND `login_date` < UTC_TIMESTAMP() - INTERVAL %d DAY AND `account_expires_on` <= '%s' and `expire` = 0 AND `page-flags` = 0",
-			intval($flagposts), DBA::NULL_DATETIME);
-		if (DBA::isResult($r)) {
-			foreach ($r as $rr) {
-				DBA::update('user', ['expire' => $flagpostsexpire], ['uid' => $rr['uid']]);
-			}
+		$users = DBA::selectToArray('user', [], ["NOT `account_expired` AND `login_date` < UTC_TIMESTAMP() - INTERVAL ? DAY AND `account_expires_on` <= ? AND NOT `expire` AND `page-flags` = ?",
+			$flagposts, DBA::NULL_DATETIME, User::PAGE_FLAGS_NORMAL]);
+		foreach ($users as $rr) {
+			DBA::update('user', ['expire' => $flagpostsexpire], ['uid' => $rr['uid']]);
 		}
 	}
 

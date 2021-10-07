@@ -767,12 +767,10 @@ function statusnet_cron(App $a, $b)
 	}
 	Logger::notice('statusnet: cron_start');
 
-	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'statusnet' AND `k` = 'mirror_posts' AND `v` = '1' ORDER BY RAND() ");
-	if (DBA::isResult($r)) {
-		foreach ($r as $rr) {
-			Logger::notice('statusnet: fetching for user ' . $rr['uid']);
-			statusnet_fetchtimeline($a, $rr['uid']);
-		}
+	$pconfigs = DBA::selectToArray('pconfig', [], ['cat' => 'statusnet', 'k' => 'mirror_posts', 'v' => true]);
+	foreach ($pconfigs as $rr) {
+		Logger::notice('statusnet: fetching for user ' . $rr['uid']);
+		statusnet_fetchtimeline($a, $rr['uid']);
 	}
 
 	$abandon_days = intval(DI::config()->get('system', 'account_abandon_days'));
@@ -782,20 +780,17 @@ function statusnet_cron(App $a, $b)
 
 	$abandon_limit = date(DateTimeFormat::MYSQL, time() - $abandon_days * 86400);
 
-	$r = q("SELECT * FROM `pconfig` WHERE `cat` = 'statusnet' AND `k` = 'import' AND `v` ORDER BY RAND()");
-	if (DBA::isResult($r)) {
-		foreach ($r as $rr) {
-			if ($abandon_days != 0) {
-				$user = q("SELECT `login_date` FROM `user` WHERE uid=%d AND `login_date` >= '%s'", $rr['uid'], $abandon_limit);
-				if (!DBA::isResult($user)) {
-					Logger::notice('abandoned account: timeline from user ' . $rr['uid'] . ' will not be imported');
-					continue;
-				}
+	$pconfigs = DBA::selectToArray('pconfig', [], ['cat' => 'statusnet', 'k' => 'import', 'v' => true]);
+	foreach ($pconfigs as $rr) {
+		if ($abandon_days != 0) {
+			if (!DBA::exists('user', ["`uid` = ? AND `login_date` >= ?", $rr['uid'], $abandon_limit])) {
+				Logger::notice('abandoned account: timeline from user ' . $rr['uid'] . ' will not be imported');
+				continue;
 			}
-
-			Logger::notice('statusnet: importing timeline from user ' . $rr['uid']);
-			statusnet_fetchhometimeline($a, $rr["uid"], $rr["v"]);
 		}
+
+		Logger::notice('statusnet: importing timeline from user ' . $rr['uid']);
+		statusnet_fetchhometimeline($a, $rr["uid"], $rr["v"]);
 	}
 
 	Logger::notice('statusnet: cron_end');
@@ -929,112 +924,90 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 		return -1;
 	}
 
-	$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' AND `network` = '%s'LIMIT 1", intval($uid), DBA::escape(Strings::normaliseLink($contact->statusnet_profile_url)), DBA::escape(Protocol::STATUSNET));
+	$contact_record = Contact::selectFirst([],
+		['alias' => Strings::normaliseLink($contact->statusnet_profile_url), 'uid' => $uid, 'network' => Protocol::STATUSNET]);
 
-	if (!DBA::isResult($r) && !$create_user) {
+	if (!DBA::isResult($contact_record) && !$create_user) {
 		return 0;
 	}
 
-	if (DBA::isResult($r) && ($r[0]["readonly"] || $r[0]["blocked"])) {
-		Logger::info("statusnet_fetch_contact: Contact '" . $r[0]["nick"] . "' is blocked or readonly.");
+	if (DBA::isResult($contact_record) && ($contact_record["readonly"] || $contact_record["blocked"])) {
+		Logger::info("statusnet_fetch_contact: Contact '" . $contact_record["nick"] . "' is blocked or readonly.");
 		return -1;
 	}
 
-	if (!DBA::isResult($r)) {
-		// create contact record
-		q("INSERT INTO `contact` ( `uid`, `created`, `url`, `nurl`, `addr`, `alias`, `notify`, `poll`,
-					`name`, `nick`, `photo`, `network`, `rel`, `priority`,
-					`location`, `about`, `writable`, `blocked`, `readonly`, `pending` )
-					VALUES ( %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', %d, 0, 0, 0 ) ",
-			intval($uid),
-			DBA::escape(DateTimeFormat::utcNow()),
-			DBA::escape($contact->statusnet_profile_url),
-			DBA::escape(Strings::normaliseLink($contact->statusnet_profile_url)),
-			DBA::escape(statusnet_address($contact)),
-			DBA::escape(Strings::normaliseLink($contact->statusnet_profile_url)),
-			DBA::escape(''),
-			DBA::escape(''),
-			DBA::escape($contact->name),
-			DBA::escape($contact->screen_name),
-			DBA::escape($contact->profile_image_url),
-			DBA::escape(Protocol::STATUSNET),
-			intval(Contact::FRIEND),
-			intval(1),
-			DBA::escape($contact->location),
-			DBA::escape($contact->description),
-			intval(1)
-		);
+	if (!DBA::isResult($contact_record)) {
+		$fields = [
+			'uid'      => $uid,
+			'created'  => DateTimeFormat::utcNow(),
+			'url'      => $contact->statusnet_profile_url,
+			'nurl'     => Strings::normaliseLink($contact->statusnet_profile_url),
+			'addr'     => statusnet_address($contact),
+			'alias'    => Strings::normaliseLink($contact->statusnet_profile_url),
+			'notify'   => '',
+			'poll'     => '',
+			'name'     => $contact->name,
+			'nick'     => $contact->screen_name,
+			'photo'    => $contact->profile_image_url,
+			'network'  => Protocol::STATUSNET,
+			'rel'      => Contact::FRIEND,
+			'priority' => 1,
+			'location' => $contact->location,
+			'about'    => $contact->description,
+			'writable' => true,
+			'blocked'  => false,
+			'readonly' => false,
+			'pending'  => false,
+		];
 
-		$r = q("SELECT * FROM `contact` WHERE `alias` = '%s' AND `uid` = %d AND `network` = '%s' LIMIT 1",
-			DBA::escape($contact->statusnet_profile_url),
-			intval($uid),
-			DBA::escape(Protocol::STATUSNET));
-
-		if (!DBA::isResult($r)) {
+		if (!Contact::insert($fields)) {
 			return false;
 		}
 
-		$contact_id = $r[0]['id'];
+		$contact_record = Contact::selectFirst([],
+			['alias' => Strings::normaliseLink($contact->statusnet_profile_url), 'uid' => $uid, 'network' => Protocol::STATUSNET]);
+		if (!DBA::isResult($contact_record)) {
+			return false;
+		}
+
+		$contact_id = $contact_record['id'];
 
 		Group::addMember(User::getDefaultGroup($uid), $contact_id);
 
 		$photos = Photo::importProfilePhoto($contact->profile_image_url, $uid, $contact_id);
 
-		q("UPDATE `contact` SET `photo` = '%s',
-					`thumb` = '%s',
-					`micro` = '%s',
-					`avatar-date` = '%s'
-				WHERE `id` = %d",
-			DBA::escape($photos[0]),
-			DBA::escape($photos[1]),
-			DBA::escape($photos[2]),
-			DBA::escape(DateTimeFormat::utcNow()),
-			intval($contact_id)
-		);
+		Contact::update(['photo' => $photos[0], 'thumb' => $photos[1],
+			'micro' => $photos[2], 'avatar-date' => DateTimeFormat::utcNow()], ['id' => $contact_id]);
 	} else {
 		// update profile photos once every two weeks as we have no notification of when they change.
-		//$update_photo = (($r[0]['avatar-date'] < DateTimeFormat::convert('now -2 days', '', '', )) ? true : false);
-		$update_photo = ($r[0]['avatar-date'] < DateTimeFormat::utc('now -12 hours'));
+		//$update_photo = (($contact_record['avatar-date'] < DateTimeFormat::convert('now -2 days', '', '', )) ? true : false);
+		$update_photo = ($contact_record['avatar-date'] < DateTimeFormat::utc('now -12 hours'));
 
 		// check that we have all the photos, this has been known to fail on occasion
-		if ((!$r[0]['photo']) || (!$r[0]['thumb']) || (!$r[0]['micro']) || ($update_photo)) {
+		if ((!$contact_record['photo']) || (!$contact_record['thumb']) || (!$contact_record['micro']) || ($update_photo)) {
 			Logger::info("statusnet_fetch_contact: Updating contact " . $contact->screen_name);
 
-			$photos = Photo::importProfilePhoto($contact->profile_image_url, $uid, $r[0]['id']);
+			$photos = Photo::importProfilePhoto($contact->profile_image_url, $uid, $contact_record['id']);
 
-			q("UPDATE `contact` SET `photo` = '%s',
-						`thumb` = '%s',
-						`micro` = '%s',
-						`name-date` = '%s',
-						`uri-date` = '%s',
-						`avatar-date` = '%s',
-						`url` = '%s',
-						`nurl` = '%s',
-						`addr` = '%s',
-						`name` = '%s',
-						`nick` = '%s',
-						`location` = '%s',
-						`about` = '%s'
-					WHERE `id` = %d",
-				DBA::escape($photos[0]),
-				DBA::escape($photos[1]),
-				DBA::escape($photos[2]),
-				DBA::escape(DateTimeFormat::utcNow()),
-				DBA::escape(DateTimeFormat::utcNow()),
-				DBA::escape(DateTimeFormat::utcNow()),
-				DBA::escape($contact->statusnet_profile_url),
-				DBA::escape(Strings::normaliseLink($contact->statusnet_profile_url)),
-				DBA::escape(statusnet_address($contact)),
-				DBA::escape($contact->name),
-				DBA::escape($contact->screen_name),
-				DBA::escape($contact->location),
-				DBA::escape($contact->description),
-				intval($r[0]['id'])
-			);
+			Contact::update([
+				'photo' => $photos[0],
+				'thumb' => $photos[1],
+				'micro' => $photos[2],
+				'name-date' => DateTimeFormat::utcNow(),
+				'uri-date' => DateTimeFormat::utcNow(),
+				'avatar-date' => DateTimeFormat::utcNow(),
+				'url' => $contact->statusnet_profile_url,
+				'nurl' => Strings::normaliseLink($contact->statusnet_profile_url),
+				'addr' => statusnet_address($contact),
+				'name' => $contact->name,
+				'nick' => $contact->screen_name,
+				'location' => $contact->location,
+				'about' => $contact->description
+			], ['id' => $contact_record['id']]);
 		}
 	}
 
-	return $r[0]["id"];
+	return $contact_record["id"];
 }
 
 function statusnet_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
@@ -1051,12 +1024,8 @@ function statusnet_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 	$cb->setConsumerKey($ckey, $csecret);
 	$cb->setToken($otoken, $osecret);
 
-	$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
-		intval($uid));
-
-	if (DBA::isResult($r)) {
-		$self = $r[0];
-	} else {
+	$self = Contact::selectFirst([], ['self' => true, 'uid' => $uid]);
+	if (!DBA::isResult($self)) {
 		return;
 	}
 
@@ -1128,15 +1097,13 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 		$own_url = DI::pConfig()->get($uid, 'statusnet', 'own_url');
 
 		if ($content->user->id == $own_url) {
-			$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
-				intval($uid));
+			$self = DBA::selectFirst([], ['self' => true, 'uid' => $uid]);
+			if (DBA::isResult($self)) {
+				$contactid = $self["id"];
 
-			if (DBA::isResult($r)) {
-				$contactid = $r[0]["id"];
-
-				$postarray['owner-name'] = $r[0]["name"];
-				$postarray['owner-link'] = $r[0]["url"];
-				$postarray['owner-avatar'] = $r[0]["photo"];
+				$postarray['owner-name'] = $self["name"];
+				$postarray['owner-link'] = $self["url"];
+				$postarray['owner-avatar'] = $self["photo"];
 			} else {
 				return [];
 			}
@@ -1230,30 +1197,22 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 		return;
 	}
 
-	$r = q("SELECT * FROM `contact` WHERE `id` = %d AND `uid` = %d LIMIT 1",
-		intval($own_contact),
-		intval($uid));
-
-	if (DBA::isResult($r)) {
-		$nick = $r[0]["nick"];
+	$contact = Contact::selectFirst([], ['id' => $own_contact, 'uid' => $uid]);
+	if (DBA::isResult($contact)) {
+		$nick = $contact["nick"];
 	} else {
 		Logger::info("statusnet_fetchhometimeline: Own GNU Social contact not found for user " . $uid);
 		return;
 	}
 
-	$r = q("SELECT * FROM `contact` WHERE `self` = 1 AND `uid` = %d LIMIT 1",
-		intval($uid));
-
-	if (DBA::isResult($r)) {
-		$self = $r[0];
-	} else {
+	$self = Contact::selectFirst([], ['self' => true, 'uid' => $uid]);
+	if (!DBA::isResult($self)) {
 		Logger::info("statusnet_fetchhometimeline: Own contact not found for user " . $uid);
 		return;
 	}
 
-	$u = q("SELECT * FROM user WHERE uid = %d LIMIT 1",
-		intval($uid));
-	if (!DBA::isResult($u)) {
+	$user = User::getById($uid);
+	if (!DBA::isResult($user)) {
 		Logger::info("statusnet_fetchhometimeline: Own user not found for user " . $uid);
 		return;
 	}
@@ -1519,10 +1478,9 @@ function statusnet_fetch_own_contact(App $a, $uid)
 
 		$contact_id = statusnet_fetch_contact($uid, $user, true);
 	} else {
-		$r = q("SELECT * FROM `contact` WHERE `uid` = %d AND `alias` = '%s' LIMIT 1",
-			intval($uid), DBA::escape($own_url));
-		if (DBA::isResult($r)) {
-			$contact_id = $r[0]["id"];
+		$contact = Contact::selectFirst([], ['uid' => $uid, 'alias' => $own_url]);
+		if (DBA::isResult($contact)) {
+			$contact_id = $contact["id"];
 		} else {
 			DI::pConfig()->delete($uid, 'statusnet', 'own_url');
 		}
