@@ -937,27 +937,28 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 	}
 
 	if (!DBA::isResult($contact_record)) {
-		// create contact record
-		$fields['uid'] = $uid;
-		$fields['created'] = DateTimeFormat::utcNow();
-		$fields['url'] = $contact->statusnet_profile_url;
-		$fields['nurl'] = Strings::normaliseLink($contact->statusnet_profile_url);
-		$fields['addr'] = statusnet_address($contact);
-		$fields['alias'] = Strings::normaliseLink($contact->statusnet_profile_url);
-		$fields['notify'] = '';
-		$fields['poll'] = '';
-		$fields['name'] = $contact->name;
-		$fields['nick'] = $contact->screen_name;
-		$fields['photo'] = $contact->profile_image_url;
-		$fields['network'] = Protocol::STATUSNET;
-		$fields['rel'] = Contact::FRIEND;
-		$fields['priority'] = 1;
-		$fields['location'] = $contact->location;
-		$fields['about'] = $contact->description;
-		$fields['writable'] = true;
-		$fields['blocked'] = false;
-		$fields['readonly'] = false;
-		$fields['pending'] = false;
+		$fields = [
+			'uid'      => $uid,
+			'created'  => DateTimeFormat::utcNow(),
+			'url'      => $contact->statusnet_profile_url,
+			'nurl'     => Strings::normaliseLink($contact->statusnet_profile_url),
+			'addr'     => statusnet_address($contact),
+			'alias'    => Strings::normaliseLink($contact->statusnet_profile_url),
+			'notify'   => '',
+			'poll'     => '',
+			'name'     => $contact->name,
+			'nick'     => $contact->screen_name,
+			'photo'    => $contact->profile_image_url,
+			'network'  => Protocol::STATUSNET,
+			'rel'      => Contact::FRIEND,
+			'priority' => 1,
+			'location' => $contact->location,
+			'about'    => $contact->description,
+			'writable' => true,
+			'blocked'  => false,
+			'readonly' => false,
+			'pending'  => false,
+		];
 
 		if (!Contact::insert($fields)) {
 			return false;
