@@ -149,16 +149,16 @@ function windowsphonepush_cron()
 		} else {
 			// retrieve the number of unseen items and the id of the latest one (if there are more than
 			// one new entries since last poller run, only the latest one will be pushed)
-			$count = q("SELECT count(`id`) as count, max(`id`) as max FROM `post-view` WHERE `unseen` = 1 AND `type` <> 'activity' AND `uid` = %d", intval($rr['uid']));
+			$count = DBA::fetchFirst("SELECT count(`id`) AS count, max(`id`) AS max FROM `post-view` WHERE `unseen` AND `type` != ? AND `uid` = ?", 'activity', $rr['uid']);
 
 			// send number of unseen items to the device (the number will be displayed on Start screen until
 			// App will be started by user) - this update will be sent every 10 minutes to update the number to 0 if
 			// user has loaded the timeline through app or website
-			$res_tile = send_tile_update($device_url, "", $count[0]['count'], "");
+			$res_tile = send_tile_update($device_url, "", $count['count'], "");
 			switch (trim($res_tile)) {
 				case "Received":
 					// ok, count has been pushed, let's save it in personal settings
-					DI::pConfig()->set($rr['uid'], 'windowsphonepush', 'counterunseen', $count[0]['count']);
+					DI::pConfig()->set($rr['uid'], 'windowsphonepush', 'counterunseen', $count['count']);
 					break;
 				case "QueueFull":
 					// maximum of 30 messages reached, server rejects any further push notification until device reconnects
@@ -178,13 +178,13 @@ function windowsphonepush_cron()
 			}
 
 			// additionally user receives the text of the newest item (function checks against last successfully pushed item)
-			if (intval($count[0]['max']) > intval($lastpushid)) {
+			if (intval($count['max']) > intval($lastpushid)) {
 				// user can define if he wants to see the text of the item in the push notification
 				// this has been implemented as the device_url is not a https uri (not so secure)
 				$senditemtext = DI::pConfig()->get($rr['uid'], 'windowsphonepush', 'senditemtext');
 				if ($senditemtext == 1) {
 					// load item with the max id
-					$item = Post::selectFirst(['author-name', 'body', 'uri-id'], ['id' => $count[0]['max']]);
+					$item = Post::selectFirst(['author-name', 'body', 'uri-id'], ['id' => $count['max']]);
 
 					// as user allows to send the item, we want to show the sender of the item in the toast
 					// toasts are limited to one line, therefore place is limited - author shall be in
@@ -216,7 +216,7 @@ function windowsphonepush_cron()
 				// further log information done on count pushing with send_tile (see above)
 				$res_toast = send_toast($device_url, $author, $body);
 				if (trim($res_toast) === 'Received') {
-					DI::pConfig()->set($rr['uid'], 'windowsphonepush', 'lastpushid', $count[0]['max']);
+					DI::pConfig()->set($rr['uid'], 'windowsphonepush', 'lastpushid', $count['max']);
 				}
 			}
 		}

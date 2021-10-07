@@ -1258,13 +1258,10 @@ function pumpio_fetchinbox(App $a, $uid)
 
 	$self = User::getOwnerDataById($uid);
 
-	$lastitems = q("SELECT `uri` FROM `post-thread-user`
-			INNER JOIN `post-view` ON `post-view`.`id` = `post-thread-user`.`id`
-			WHERE `post-thread-user`.`network` = '%s' AND `post-thread-user`.`uid` = %d AND `post-view`.`extid` != ''
-			ORDER BY `post-thread-user`.`commented` DESC LIMIT 10",
-				DBA::escape(Protocol::PUMPIO),
-				intval($uid)
-			);
+	$lastitems = DBA::p("SELECT `uri` FROM `post-thread-user`
+		INNER JOIN `post-view` ON `post-view`.`id` = `post-thread-user`.`id`
+		WHERE `post-thread-user`.`network` = ? AND `post-thread-user`.`uid` = ? AND `post-view`.`extid` != ''
+		ORDER BY `post-thread-user`.`commented` DESC LIMIT 10", Protocol::PUMPIO, $uid);
 
 	$client = new oauth_client_class;
 	$client->oauth_version = '1.0a';
@@ -1305,9 +1302,10 @@ function pumpio_fetchinbox(App $a, $uid)
 		}
 	}
 
-	foreach ($lastitems as $item) {
+	while ($item = DBA::fetch($lastitems)) {
 		pumpio_fetchallcomments($a, $uid, $item["uri"]);
 	}
+	DBA::close($lastitems);
 
 	DI::pConfig()->set($uid, 'pumpio', 'last_id', $last_id);
 }
@@ -1395,19 +1393,19 @@ function pumpio_getreceiver(App $a, array $b)
 		foreach ($gids AS $gid) {
 			$gid = trim($gid, " <>");
 
-			$r = q("SELECT `contact`.`name`, `contact`.`nick`, `contact`.`url`, `contact`.`network` ".
-				"FROM `group_member`, `contact` WHERE `group_member`.`gid` = %d ".
-				"AND `contact`.`id` = `group_member`.`contact-id` AND `contact`.`network` = '%s'",
-					intval($gid),
-					DBA::escape(Protocol::PUMPIO)
-				);
+			$contacts = DBA::p("SELECT `contact`.`name`, `contact`.`nick`, `contact`.`url`, `contact`.`network`
+				FROM `group_member`, `contact` WHERE `group_member`.`gid` = ?
+				AND `contact`.`id` = `group_member`.`contact-id` AND `contact`.`network` = ?",
+				$gid, Protocol::PUMPIO);
 
-			foreach ($r AS $row)
+			while ($row = DBA::fetch($contacts)) {
 				$receiver["bcc"][] = [
 							"displayName" => $row["name"],
 							"objectType" => "person",
 							"preferredUsername" => $row["nick"],
 							"url" => $row["url"]];
+			}
+			DBA::close($contacts);
 		}
 	}
 
