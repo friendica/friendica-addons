@@ -170,7 +170,7 @@ function twitter_follow(App $a, array &$contact)
 
 function twitter_unfollow(App $a, array &$hook_data)
 {
-	$hook_data['result'] = twitter_api_contact('friendship/destroy', $hook_data['contact'], $hook_data['uid']);
+	$hook_data['result'] = twitter_api_contact('friendships/destroy', $hook_data['contact'], $hook_data['contact']['uid']);
 }
 
 function twitter_block(App $a, array &$hook_data)
