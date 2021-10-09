@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:16+0100\n"
+"POT-Creation-Date: 2021-10-08 22:25-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,27 +17,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: twitter.php:189
+#: twitter.php:224
 msgid "Post to Twitter"
 msgstr ""
 
-#: twitter.php:234
+#: twitter.php:269
 msgid ""
 "You submitted an empty PIN, please Sign In with Twitter again to get a new "
 "one."
 msgstr ""
 
-#: twitter.php:291 twitter.php:295
+#: twitter.php:329 twitter.php:333
 msgid "Twitter Import/Export/Mirror"
 msgstr ""
 
-#: twitter.php:302
+#: twitter.php:340
 msgid ""
 "No consumer key pair for Twitter found. Please contact your site "
 "administrator."
 msgstr ""
 
-#: twitter.php:314
+#: twitter.php:352
 msgid ""
 "At this Friendica instance the Twitter addon was enabled but you have not "
 "yet connected your account to your Twitter account. To do so click the "
@@ -46,42 +46,42 @@ msgid ""
 "be posted to Twitter."
 msgstr ""
 
-#: twitter.php:315
+#: twitter.php:353
 msgid "Log in with Twitter"
 msgstr ""
 
-#: twitter.php:317
+#: twitter.php:355
 msgid "Copy the PIN from Twitter here"
 msgstr ""
 
-#: twitter.php:322 twitter.php:377 twitter.php:768
+#: twitter.php:360 twitter.php:415 twitter.php:803
 msgid "Save Settings"
 msgstr ""
 
-#: twitter.php:324 twitter.php:379
+#: twitter.php:362 twitter.php:417
 msgid "An error occured: "
 msgstr ""
 
-#: twitter.php:341
+#: twitter.php:379
 msgid "Currently connected to: "
 msgstr ""
 
-#: twitter.php:342 twitter.php:352
+#: twitter.php:380 twitter.php:390
 msgid "Disconnect"
 msgstr ""
 
-#: twitter.php:359
+#: twitter.php:397
 msgid "Allow posting to Twitter"
 msgstr ""
 
-#: twitter.php:359
+#: twitter.php:397
 msgid ""
 "If enabled all your <strong>public</strong> postings can be posted to the "
 "associated Twitter account. You can choose to do so by default (here) or for "
 "every posting separately in the posting options when writing the entry."
 msgstr ""
 
-#: twitter.php:362
+#: twitter.php:400
 msgid ""
 "<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile "
 "details from unknown viewers?</em>) the link potentially included in public "
@@ -89,41 +89,39 @@ msgid ""
 "the visitor that the access to your profile has been restricted."
 msgstr ""
 
-#: twitter.php:365
+#: twitter.php:403
 msgid "Send public postings to Twitter by default"
 msgstr ""
 
-#: twitter.php:368
+#: twitter.php:406
 msgid "Mirror all posts from twitter that are no replies"
 msgstr ""
 
-#: twitter.php:371
+#: twitter.php:409
 msgid "Import the remote timeline"
 msgstr ""
 
-#: twitter.php:374
+#: twitter.php:412
 msgid "Automatically create contacts"
 msgstr ""
 
-#: twitter.php:374
+#: twitter.php:412
 msgid ""
 "This will automatically create a contact in Friendica as soon as you receive "
 "a message from an existing contact via the Twitter network. If you do not "
 "enable this, you need to manually add those Twitter contacts in Friendica "
-"from whom you would like to see posts here. However if enabled, you cannot "
-"merely remove a twitter contact from the Friendica contact list, as it will "
-"recreate this contact when they post again."
+"from whom you would like to see posts here."
 msgstr ""
 
-#: twitter.php:770
+#: twitter.php:805
 msgid "Consumer key"
 msgstr ""
 
-#: twitter.php:771
+#: twitter.php:806
 msgid "Consumer secret"
 msgstr ""
 
-#: twitter.php:967
+#: twitter.php:1002
 #, php-format
 msgid "%s on Twitter"
 msgstr ""

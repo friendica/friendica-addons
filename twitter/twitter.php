@@ -409,7 +409,7 @@ function twitter_settings(App $a, &$s)
 					'$field' => ['twitter-import', DI::l10n()->t('Import the remote timeline'), $importenabled, '']
 				]);
 				$s .= Renderer::replaceMacros($field_checkbox, [
-					'$field' => ['twitter-create_user', DI::l10n()->t('Automatically create contacts'), $create_userenabled, DI::l10n()->t('This will automatically create a contact in Friendica as soon as you receive a message from an existing contact via the Twitter network. If you do not enable this, you need to manually add those Twitter contacts in Friendica from whom you would like to see posts here. However if enabled, you cannot merely remove a twitter contact from the Friendica contact list, as it will recreate this contact when they post again.')]
+					'$field' => ['twitter-create_user', DI::l10n()->t('Automatically create contacts'), $create_userenabled, DI::l10n()->t('This will automatically create a contact in Friendica as soon as you receive a message from an existing contact via the Twitter network. If you do not enable this, you need to manually add those Twitter contacts in Friendica from whom you would like to see posts here.')]
 				]);
 				$s .= '<div class="clear"></div>';
 				$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div>';
@@ -630,7 +630,7 @@ function twitter_post_hook(App $a, array &$b)
 	if ($b['verb'] == Activity::LIKE) {
 		Logger::info('Like', ['uid' => $b['uid'], 'id' => twitter_get_id($b["thr-parent"])]);
 
-		twitter_api_post($b['deleted'] ? 'favorite/destroy' : 'favorite/create', twitter_get_id($b["thr-parent"]), $b["uid"]);
+		twitter_api_post($b['deleted'] ? 'favorites/destroy' : 'favorites/create', twitter_get_id($b["thr-parent"]), $b["uid"]);
 
 		return;
 	}
