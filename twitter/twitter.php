@@ -170,12 +170,17 @@ function twitter_follow(App $a, array &$contact)
 
 function twitter_unfollow(App $a, array &$hook_data)
 {
-	$hook_data['result'] = twitter_api_contact('friendship/destroy', $hook_data['contact'], $hook_data['uid']);
+	$hook_data['result'] = twitter_api_contact('friendships/destroy', $hook_data['contact'], $hook_data['contact']['uid']);
 }
 
 function twitter_block(App $a, array &$hook_data)
 {
 	$hook_data['result'] = twitter_api_contact('blocks/create', $hook_data['contact'], $hook_data['uid']);
+
+	if ($hook_data['result'] === true) {
+		Contact::removeFollower($hook_data['contact']);
+		Contact::unfollow($hook_data['contact']['id'], $hook_data['uid']);
+	}
 }
 
 function twitter_unblock(App $a, array &$hook_data)
@@ -189,25 +194,7 @@ function twitter_api_contact(string $apiPath, array $contact, int $uid): ?bool
 		return null;
 	}
 
-	$ckey    = DI::config()->get('twitter', 'consumerkey');
-	$csecret = DI::config()->get('twitter', 'consumersecret');
-	$otoken  = DI::pConfig()->get($uid, 'twitter', 'oauthtoken');
-	$osecret = DI::pConfig()->get($uid, 'twitter', 'oauthsecret');
-
-	// If the addon is not configured (general or for this user) quit here
-	if (empty($ckey) || empty($csecret) || empty($otoken) || empty($osecret)) {
-		return null;
-	}
-
-	try {
-		$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
-		$result     = $connection->post($apiPath, ['screen_name' => $contact['nick']]);
-		Logger::info('[twitter] API call successful', ['apiPath' => $apiPath, 'result' => $result]);
-		return true;
-	} catch (Exception $e) {
-		Logger::notice('[twitter] API call failed', ['apiPath' => $apiPath, 'uid' => $uid, 'url' => $contact['url'], 'exception' => $e]);
-		return false;
-	}
+	return twitter_api_call($uid, $apiPath, ['screen_name' => $contact['nick']]);
 }
 
 function twitter_jot_nets(App $a, array &$jotnets_fields)
@@ -518,36 +505,50 @@ function twitter_probe_detect(App $a, array &$hookData)
 	}
 }
 
-function twitter_api_post(string $apiPath, string $pid, int $uid)
+function twitter_api_post(string $apiPath, string $pid, int $uid): ?bool
 {
 	if (empty($pid)) {
 		return false;
 	}
 
+	return twitter_api_call($uid, $apiPath, ['id' => $pid]);
+}
+
+function twitter_api_call(int $uid, string $apiPath, array $parameters = []): ?bool
+{
 	$ckey = DI::config()->get('twitter', 'consumerkey');
 	$csecret = DI::config()->get('twitter', 'consumersecret');
 	$otoken = DI::pConfig()->get($uid, 'twitter', 'oauthtoken');
 	$osecret = DI::pConfig()->get($uid, 'twitter', 'oauthsecret');
 
-	$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
-
-	$post = ['id' => $pid];
-
-	Logger::debug('before action', ['action' => $apiPath, 'pid' => $pid, 'data' => $post]);
-
-	try {
-		$result = $connection->post($apiPath, $post);
-		if ($connection->getLastHttpCode() != 200) {
-			Logger::warning('[twitter] API call unsuccessful', ['apiPath' => $apiPath, 'post' => $post, 'result' => $result]);
-		}
-	} catch (TwitterOAuthException $twitterOAuthException) {
-		Logger::warning('Unable to communicate with twitter', ['apiPath' => $apiPath, 'data' => $post, 'code' => $twitterOAuthException->getCode(), 'exception' => $twitterOAuthException]);
-		$result = false;
+	// If the addon is not configured (general or for this user) quit here
+	if (empty($ckey) || empty($csecret) || empty($otoken) || empty($osecret)) {
+		return null;
 	}
 
-	Logger::info('after action', ['action' => $apiPath, 'result' => $result]);
+	try {
+		$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
+		$result = $connection->post($apiPath, $parameters);
 
-	return $result;
+		if ($connection->getLastHttpCode() != 200) {
+			throw new Exception($result->errors[0]->message ?? json_encode($result), $connection->getLastHttpCode());
+		}
+
+		if (!empty($result->errors)) {
+			throw new Exception($result->errors[0]->message, $result->errors[0]->code);
+		}
+
+		Logger::info('[twitter] API call successful', ['apiPath' => $apiPath, 'parameters' => $parameters]);
+		Logger::debug('[twitter] API call result', ['apiPath' => $apiPath, 'parameters' => $parameters, 'result' => $result]);
+
+		return true;
+	} catch (TwitterOAuthException $twitterOAuthException) {
+		Logger::warning('Unable to communicate with twitter', ['apiPath' => $apiPath, 'parameters' => $parameters, 'code' => $twitterOAuthException->getCode(), 'exception' => $twitterOAuthException]);
+		return false;
+	} catch (Exception $e) {
+		Logger::notice('[twitter] API call failed', ['apiPath' => $apiPath, 'parameters' => $parameters, 'code' => $e->getCode(), 'message' => $e->getMessage()]);
+		return false;
+	}
 }
 
 function twitter_get_id(string $uri)
