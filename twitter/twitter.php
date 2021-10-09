@@ -630,7 +630,7 @@ function twitter_post_hook(App $a, array &$b)
 	if ($b['verb'] == Activity::LIKE) {
 		Logger::info('Like', ['uid' => $b['uid'], 'id' => twitter_get_id($b["thr-parent"])]);
 
-		twitter_api_post($b['deleted'] ? 'favorite/destroy' : 'favorite/create', twitter_get_id($b["thr-parent"]), $b["uid"]);
+		twitter_api_post($b['deleted'] ? 'favorites/destroy' : 'favorites/create', twitter_get_id($b["thr-parent"]), $b["uid"]);
 
 		return;
 	}
