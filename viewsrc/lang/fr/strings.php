@@ -5,5 +5,4 @@ function string_plural_select_fr($n){
 	$n = intval($n);
 	return intval($n > 1);
 }}
-;
-$a->strings["View Source"] = "Voir source";
+$a->strings['View Source'] = 'Voir source';

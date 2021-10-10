@@ -5,5 +5,4 @@ function string_plural_select_hu($n){
 	$n = intval($n);
 	return intval($n != 1);
 }}
-;
-$a->strings["View Source"] = "Forrás megtekintése";
+$a->strings['View Source'] = 'Forrás megtekintése';

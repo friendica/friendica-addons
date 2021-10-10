@@ -5,6 +5,5 @@ function string_plural_select_nl($n){
 	$n = intval($n);
 	return intval($n != 1);
 }}
-;
-$a->strings["Randplace Settings"] = "Randplace instellingen";
-$a->strings["Enable Randplace Addon"] = "Randplace Addon inschakelen";
+$a->strings['Randplace Settings'] = 'Randplace instellingen';
+$a->strings['Enable Randplace Addon'] = 'Randplace Addon inschakelen';

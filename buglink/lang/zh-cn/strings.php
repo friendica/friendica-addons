@@ -5,5 +5,4 @@ function string_plural_select_zh_cn($n){
 	$n = intval($n);
 	return intval(0);
 }}
-;
-$a->strings["Report Bug"] = "报告错误";
+$a->strings['Report Bug'] = '报告错误';

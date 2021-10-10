@@ -5,5 +5,4 @@ function string_plural_select_it($n){
 	$n = intval($n);
 	return intval($n != 1);
 }}
-;
-$a->strings["Report Bug"] = "Segnala un Bug";
+$a->strings['Report Bug'] = 'Segnala un Bug';

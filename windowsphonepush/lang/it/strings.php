@@ -5,9 +5,8 @@ function string_plural_select_it($n){
 	$n = intval($n);
 	return intval($n != 1);
 }}
-;
-$a->strings["WindowsPhonePush settings updated."] = "Impostazioni WindowsPhonePush aggiornate.";
-$a->strings["WindowsPhonePush Settings"] = "Impostazioni WindowsPhonePush";
-$a->strings["Enable WindowsPhonePush Addon"] = "Abilita componente aggiuntivo WindowsPhonePush";
-$a->strings["Push text of new item"] = "Notifica il testo dei nuovi elementi";
-$a->strings["Save Settings"] = "Salva Impostazioni";
+$a->strings['WindowsPhonePush settings updated.'] = 'Impostazioni WindowsPhonePush aggiornate.';
+$a->strings['WindowsPhonePush Settings'] = 'Impostazioni WindowsPhonePush';
+$a->strings['Enable WindowsPhonePush Addon'] = 'Abilita componente aggiuntivo WindowsPhonePush';
+$a->strings['Push text of new item'] = 'Notifica il testo dei nuovi elementi';
+$a->strings['Save Settings'] = 'Salva Impostazioni';

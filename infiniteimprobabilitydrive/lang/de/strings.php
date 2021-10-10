@@ -5,5 +5,4 @@ function string_plural_select_de($n){
 	$n = intval($n);
 	return intval($n != 1);
 }}
-;
-$a->strings["Infinite Improbability Drive"] = "Infinite Improbability Drive";
+$a->strings['Infinite Improbability Drive'] = 'Infinite Improbability Drive';

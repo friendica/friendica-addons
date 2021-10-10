@@ -5,13 +5,12 @@ function string_plural_select_ro($n){
 	$n = intval($n);
 	if ($n==1) { return 0; } else if ((($n%100>19)||(($n%100==0)&&($n!=0)))) { return 2; } else  { return 1; }
 }}
-;
-$a->strings["Post to Diaspora"] = "Postați pe Diaspora";
-$a->strings["Can't login to your Diaspora account. Please check username and password and ensure you used the complete address (including http...)"] = "Nu se poate face autentificarea pe contul dvs. Diaspora. Verificați numele de utilizator şi parola şi asigurați-vă că ați folosit adresa completă  (inclusiv http ... )";
-$a->strings["Diaspora Export"] = "Exportare pe Diaspora ";
-$a->strings["Diaspora username"] = "Utilizator Diaspora";
-$a->strings["Diaspora password"] = "Parola Diaspora";
-$a->strings["Diaspora site URL"] = "URL site Diaspora";
-$a->strings["Post to Diaspora by default"] = "Postați implicit pe Diaspora";
-$a->strings["Save Settings"] = "Salvare Configurări";
-$a->strings["Diaspora post failed. Queued for retry."] = "Postarea pe Diaspora a eșuat. S-a pus în așteptare pentru reîncercare.";
+$a->strings['Post to Diaspora'] = 'Postați pe Diaspora';
+$a->strings['Can\'t login to your Diaspora account. Please check username and password and ensure you used the complete address (including http...)'] = 'Nu se poate face autentificarea pe contul dvs. Diaspora. Verificați numele de utilizator şi parola şi asigurați-vă că ați folosit adresa completă  (inclusiv http ... )';
+$a->strings['Diaspora Export'] = 'Exportare pe Diaspora ';
+$a->strings['Diaspora username'] = 'Utilizator Diaspora';
+$a->strings['Diaspora password'] = 'Parola Diaspora';
+$a->strings['Diaspora site URL'] = 'URL site Diaspora';
+$a->strings['Post to Diaspora by default'] = 'Postați implicit pe Diaspora';
+$a->strings['Save Settings'] = 'Salvare Configurări';
+$a->strings['Diaspora post failed. Queued for retry.'] = 'Postarea pe Diaspora a eșuat. S-a pus în așteptare pentru reîncercare.';
