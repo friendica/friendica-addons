@@ -1,0 +1,64 @@
+# ADDON openstreetmap
+# Copyright (C)
+# This file is distributed under the same license as the Friendica openstreetmap addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-01 19:14+0000\n"
+"Last-Translator: Transifex Bot <>\n"
+"Language-Team: Arabic (http://www.transifex.com/Friendica/friendica/language/ar/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: openstreetmap.php:167
+msgid "View Larger"
+msgstr ""
+
+#: openstreetmap.php:194
+msgid "Submit"
+msgstr ""
+
+#: openstreetmap.php:195
+msgid "Tile Server URL"
+msgstr ""
+
+#: openstreetmap.php:195
+msgid ""
+"A list of <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" "
+"target=\"_blank\" rel=\"noopener noreferrer\">public tile servers</a>"
+msgstr ""
+
+#: openstreetmap.php:196
+msgid "Nominatim (reverse geocoding) Server URL"
+msgstr ""
+
+#: openstreetmap.php:196
+msgid ""
+"A list of <a href=\"http://wiki.openstreetmap.org/wiki/Nominatim\" "
+"target=\"_blank\" rel=\"noopener noreferrer\">Nominatim servers</a>"
+msgstr ""
+
+#: openstreetmap.php:197
+msgid "Default zoom"
+msgstr ""
+
+#: openstreetmap.php:197
+msgid ""
+"The default zoom level. (1:world, 18:highest, also depends on tile server)"
+msgstr ""
+
+#: openstreetmap.php:198
+msgid "Include marker on map"
+msgstr ""
+
+#: openstreetmap.php:198
+msgid "Include a marker on the map."
+msgstr ""

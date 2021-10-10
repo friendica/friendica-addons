@@ -1,0 +1,129 @@
+# ADDON twitter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica twitter addon package.
+# 
+# 
+# Translators:
+# Farida Khalaf <faridakhalaf@hotmail.com>, 2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-08 22:25-0400\n"
+"PO-Revision-Date: 2021-10-09 06:17+0000\n"
+"Last-Translator: Transifex Bot <>\n"
+"Language-Team: Arabic (http://www.transifex.com/Friendica/friendica/language/ar/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: twitter.php:224
+msgid "Post to Twitter"
+msgstr ""
+
+#: twitter.php:269
+msgid ""
+"You submitted an empty PIN, please Sign In with Twitter again to get a new "
+"one."
+msgstr ""
+
+#: twitter.php:329 twitter.php:333
+msgid "Twitter Import/Export/Mirror"
+msgstr ""
+
+#: twitter.php:340
+msgid ""
+"No consumer key pair for Twitter found. Please contact your site "
+"administrator."
+msgstr ""
+
+#: twitter.php:352
+msgid ""
+"At this Friendica instance the Twitter addon was enabled but you have not "
+"yet connected your account to your Twitter account. To do so click the "
+"button below to get a PIN from Twitter which you have to copy into the input"
+" box below and submit the form. Only your <strong>public</strong> posts will"
+" be posted to Twitter."
+msgstr ""
+
+#: twitter.php:353
+msgid "Log in with Twitter"
+msgstr ""
+
+#: twitter.php:355
+msgid "Copy the PIN from Twitter here"
+msgstr ""
+
+#: twitter.php:360 twitter.php:415 twitter.php:803
+msgid "Save Settings"
+msgstr "حفظ الإعدادات"
+
+#: twitter.php:362 twitter.php:417
+msgid "An error occured: "
+msgstr ""
+
+#: twitter.php:379
+msgid "Currently connected to: "
+msgstr ""
+
+#: twitter.php:380 twitter.php:390
+msgid "Disconnect"
+msgstr ""
+
+#: twitter.php:397
+msgid "Allow posting to Twitter"
+msgstr ""
+
+#: twitter.php:397
+msgid ""
+"If enabled all your <strong>public</strong> postings can be posted to the "
+"associated Twitter account. You can choose to do so by default (here) or for"
+" every posting separately in the posting options when writing the entry."
+msgstr ""
+
+#: twitter.php:400
+msgid ""
+"<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile "
+"details from unknown viewers?</em>) the link potentially included in public "
+"postings relayed to Twitter will lead the visitor to a blank page informing "
+"the visitor that the access to your profile has been restricted."
+msgstr ""
+
+#: twitter.php:403
+msgid "Send public postings to Twitter by default"
+msgstr ""
+
+#: twitter.php:406
+msgid "Mirror all posts from twitter that are no replies"
+msgstr ""
+
+#: twitter.php:409
+msgid "Import the remote timeline"
+msgstr ""
+
+#: twitter.php:412
+msgid "Automatically create contacts"
+msgstr ""
+
+#: twitter.php:412
+msgid ""
+"This will automatically create a contact in Friendica as soon as you receive"
+" a message from an existing contact via the Twitter network. If you do not "
+"enable this, you need to manually add those Twitter contacts in Friendica "
+"from whom you would like to see posts here."
+msgstr ""
+
+#: twitter.php:805
+msgid "Consumer key"
+msgstr ""
+
+#: twitter.php:806
+msgid "Consumer secret"
+msgstr ""
+
+#: twitter.php:1002
+#, php-format
+msgid "%s on Twitter"
+msgstr ""

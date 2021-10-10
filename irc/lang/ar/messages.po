@@ -1,0 +1,63 @@
+# ADDON irc
+# Copyright (C)
+# This file is distributed under the same license as the Friendica irc addon package.
+# 
+# 
+# Translators:
+# Farida Khalaf <faridakhalaf@hotmail.com>, 2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-22 01:27+0000\n"
+"Last-Translator: Farida Khalaf <faridakhalaf@hotmail.com>\n"
+"Language-Team: Arabic (http://www.transifex.com/Friendica/friendica/language/ar/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: irc.php:34
+msgid "IRC Settings"
+msgstr "إعدادات IRC"
+
+#: irc.php:35
+msgid ""
+"Here you can change the system wide settings for the channels to "
+"automatically join and access via the side bar. Note the changes you do "
+"here, only effect the channel selection if you are logged in."
+msgstr "هنا يمكنك تغيير الإعدادات الواسعة لنظام القنوات للانضمام والوصول تلقائيًا عبر الشريط الجانبي.\n لاحظ التغييرات التي تجريها هنا ، تؤثر  إذا قمت بتسجيل  الدخول على اختيار القناة فقط ."
+
+#: irc.php:36 irc.php:134
+msgid "Save Settings"
+msgstr "حفظ الإعدادات"
+
+#: irc.php:37 irc.php:135
+msgid "Channel(s) to auto connect (comma separated)"
+msgstr "القناة (القنوات) للاتصال التلقائي (مفصولة بفواصل)"
+
+#: irc.php:37 irc.php:135
+msgid ""
+"List of channels that shall automatically connected to when the app is "
+"launched."
+msgstr "قائمة القنوات التي سيتم الاتصال بها تلقائيًا عند بدء تشغيل التطبيق."
+
+#: irc.php:38 irc.php:136
+msgid "Popular Channels (comma separated)"
+msgstr "أشهر القنوات (مفصولة بفواصل)"
+
+#: irc.php:38 irc.php:136
+msgid ""
+"List of popular channels, will be displayed at the side and hotlinked for "
+"easy joining."
+msgstr "قائمة القنوات المشهورة ، سيتم عرضها على الجانب ويتم ربطها بسهولة للانضمام إليها."
+
+#: irc.php:62
+msgid "IRC Chatroom"
+msgstr "غرفة محادثة IRC"
+
+#: irc.php:90
+msgid "Popular Channels"
+msgstr "أشهر القنوات"

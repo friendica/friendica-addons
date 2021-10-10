@@ -1,0 +1,60 @@
+# ADDON piwik
+# Copyright (C)
+# This file is distributed under the same license as the Friendica piwik addon package.
+# 
+# 
+# Translators:
+# Farida Khalaf <faridakhalaf@hotmail.com>, 2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-21 18:42+0000\n"
+"Last-Translator: Farida Khalaf <faridakhalaf@hotmail.com>\n"
+"Language-Team: Arabic (http://www.transifex.com/Friendica/friendica/language/ar/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: piwik.php:87
+msgid ""
+"This website is tracked using the <a href='http://www.matomo.org'>Matomo</a>"
+" analytics tool."
+msgstr ""
+
+#: piwik.php:90
+#, php-format
+msgid ""
+"If you do not want that your visits are logged in this way you <a "
+"href='%s'>can set a cookie to prevent Matomo / Piwik from tracking further "
+"visits of the site</a> (opt-out)."
+msgstr ""
+
+#: piwik.php:97
+msgid "Save Settings"
+msgstr "حفظ الإعدادات"
+
+#: piwik.php:98
+msgid "Matomo (Piwik) Base URL"
+msgstr ""
+
+#: piwik.php:98
+msgid ""
+"Absolute path to your Matomo (Piwik) installation. (without protocol "
+"(http/s), with trailing slash)"
+msgstr ""
+
+#: piwik.php:99
+msgid "Site ID"
+msgstr ""
+
+#: piwik.php:100
+msgid "Show opt-out cookie link?"
+msgstr ""
+
+#: piwik.php:101
+msgid "Asynchronous tracking"
+msgstr ""

@@ -1,0 +1,56 @@
+# ADDON blogger
+# Copyright (C)
+# This file is distributed under the same license as the Friendica blogger addon package.
+# 
+# 
+# Translators:
+# Farida Khalaf <faridakhalaf@hotmail.com>, 2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-20 00:15+0000\n"
+"Last-Translator: Farida Khalaf <faridakhalaf@hotmail.com>\n"
+"Language-Team: Arabic (http://www.transifex.com/Friendica/friendica/language/ar/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: blogger.php:37
+msgid "Post to blogger"
+msgstr "شارك على المدون"
+
+#: blogger.php:71 blogger.php:75
+msgid "Blogger Export"
+msgstr " المدون تصدير"
+
+#: blogger.php:79
+msgid "Enable Blogger Post Addon"
+msgstr "تمكين المدون مشاركة ملحق"
+
+#: blogger.php:84
+msgid "Blogger username"
+msgstr "اسم المدون"
+
+#: blogger.php:89
+msgid "Blogger password"
+msgstr "كلمة السر المدون"
+
+#: blogger.php:94
+msgid "Blogger API URL"
+msgstr "عنوان URL لواجهة برمجة تطبيقات  API للمدون"
+
+#: blogger.php:99
+msgid "Post to Blogger by default"
+msgstr "المشاركة إلي المدون"
+
+#: blogger.php:104
+msgid "Save Settings"
+msgstr "حفظ الإعدادات"
+
+#: blogger.php:188
+msgid "Post from Friendica"
+msgstr "مشاركة من فرينديكا Friendica"

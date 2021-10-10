@@ -1,0 +1,76 @@
+# ADDON langfilter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica langfilter addon package.
+# 
+# 
+# Translators:
+# Farida Khalaf <faridakhalaf@hotmail.com>, 2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-04-26 09:14+0000\n"
+"Last-Translator: Transifex Bot <>\n"
+"Language-Team: Arabic (http://www.transifex.com/Friendica/friendica/language/ar/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: langfilter.php:50
+msgid "Language Filter"
+msgstr "اللغة"
+
+#: langfilter.php:51
+msgid ""
+"This addon tries to identify the language posts are written in. If it does "
+"not match any language specified below, posts will be hidden by collapsing "
+"them."
+msgstr ""
+
+#: langfilter.php:52
+msgid "Use the language filter"
+msgstr "اختيار اللغة"
+
+#: langfilter.php:53
+msgid "Able to read"
+msgstr "  قابل  للقراءة"
+
+#: langfilter.php:53
+msgid ""
+"List of abbreviations (ISO 639-1 codes) for languages you speak, comma "
+"separated. For example \"de,it\"."
+msgstr "قائمة الرموز ( ISO 639-1) للغات ، مفصولة بفواصل. على سبيل المثال \"de، it\""
+
+#: langfilter.php:54
+msgid "Minimum confidence in language detection"
+msgstr "الحد الأدنى من نسبة اكتشاف اللغة"
+
+#: langfilter.php:54
+msgid ""
+"Minimum confidence in language detection being correct, from 0 to 100. Posts"
+" will not be filtered when the confidence of language detection is below "
+"this percent value."
+msgstr "الحد الأدنى من صحة اكتشاف اللغة  ، من 0 إلى 100. لن تتم فلترة المشاركات عندما تكون صحة اكتشاف اللغة أقل من هذه النسبة المئوية."
+
+#: langfilter.php:55
+msgid "Minimum length of message body"
+msgstr "الحد الأدنى لنص الرسالة"
+
+#: langfilter.php:55
+msgid ""
+"Minimum number of characters in message body for filter to be used. Posts "
+"shorter than this will not be filtered. Note: Language detection is "
+"unreliable for short content (<200 characters)."
+msgstr "الحد الأدنى لأحرف نص الرسالة لاستخدام الفلتر. لن يتم فلترة المشاركات الأقصر من هذا. ملاحظة: لا يمكن الاعتماد على اكتشاف اللغة للمحتوى القصير (<200 حرف)."
+
+#: langfilter.php:56
+msgid "Save Settings"
+msgstr "حفظ الإعدادات"
+
+#: langfilter.php:187
+#, php-format
+msgid "Filtered language: %s"
+msgstr "اختيار اللغة: %s"

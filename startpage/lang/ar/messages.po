@@ -1,0 +1,36 @@
+# ADDON startpage
+# Copyright (C)
+# This file is distributed under the same license as the Friendica startpage addon package.
+# 
+# 
+# Translators:
+# Farida Khalaf <faridakhalaf@hotmail.com>, 2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-20 05:31+0000\n"
+"Last-Translator: Farida Khalaf <faridakhalaf@hotmail.com>\n"
+"Language-Team: Arabic (http://www.transifex.com/Friendica/friendica/language/ar/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: startpage.php:74 startpage.php:78
+msgid "Startpage"
+msgstr "بدأ الصفحة"
+
+#: startpage.php:81
+msgid "Home page to load after login  - leave blank for profile wall"
+msgstr "الصفحة الرئيسية للتحميل بعد تسجيل الدخول - اتركها فارغة لصفحة الملف الشخصي"
+
+#: startpage.php:84
+msgid "Examples: &quot;network&quot; or &quot;notifications/system&quot;"
+msgstr "أمثلة: &quot;network&quot; or &quot;notifications/system&quot;"
+
+#: startpage.php:88
+msgid "Save Settings"
+msgstr "حفظ الإعدادات"
