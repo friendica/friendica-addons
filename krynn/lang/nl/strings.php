@@ -5,6 +5,5 @@ function string_plural_select_nl($n){
 	$n = intval($n);
 	return intval($n != 1);
 }}
-;
-$a->strings["Krynn Settings"] = "Krynn instellingen";
-$a->strings["Enable Krynn Addon"] = "Krynn Addon inschakelen";
+$a->strings['Krynn Settings'] = 'Krynn instellingen';
+$a->strings['Enable Krynn Addon'] = 'Krynn Addon inschakelen';

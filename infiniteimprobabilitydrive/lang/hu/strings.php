@@ -5,5 +5,4 @@ function string_plural_select_hu($n){
 	$n = intval($n);
 	return intval($n != 1);
 }}
-;
-$a->strings["Infinite Improbability Drive"] = "Végtelen valószínűségű meghajtó";
+$a->strings['Infinite Improbability Drive'] = 'Végtelen valószínűségű meghajtó';

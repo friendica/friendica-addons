@@ -5,9 +5,8 @@ function string_plural_select_ca($n){
 	$n = intval($n);
 	return intval($n != 1);
 }}
-;
-$a->strings["Save Settings"] = "Desa la configuració";
-$a->strings["Allow \"good\" crawlers"] = "Permeti rastrejadors \"bons\"";
-$a->strings["Block GabSocial"] = "Bloquejar GabSocial";
-$a->strings["Training mode"] = "Modalitat d'entrenament";
-$a->strings["Settings updated."] = "La configuració s'ha actualitzat.";
+$a->strings['Save Settings'] = 'Desa la configuració';
+$a->strings['Allow "good" crawlers'] = 'Permeti rastrejadors "bons"';
+$a->strings['Block GabSocial'] = 'Bloquejar GabSocial';
+$a->strings['Training mode'] = 'Modalitat d\'entrenament';
+$a->strings['Settings updated.'] = 'La configuració s\'ha actualitzat.';

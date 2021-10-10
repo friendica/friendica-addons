@@ -5,13 +5,12 @@ function string_plural_select_de($n){
 	$n = intval($n);
 	return intval($n != 1);
 }}
-;
-$a->strings["Post to blogger"] = "Auf Blogger posten";
-$a->strings["Blogger Export"] = "Blogger Export";
-$a->strings["Enable Blogger Post Addon"] = "Blogger-Post-Addon aktivieren";
-$a->strings["Blogger username"] = "Blogger-Benutzername";
-$a->strings["Blogger password"] = "Blogger-Passwort";
-$a->strings["Blogger API URL"] = "Blogger-API-URL";
-$a->strings["Post to Blogger by default"] = "Standardmäßig auf Blogger posten";
-$a->strings["Save Settings"] = "Einstellungen speichern";
-$a->strings["Post from Friendica"] = "Post via Friendica";
+$a->strings['Post to blogger'] = 'Auf Blogger posten';
+$a->strings['Blogger Export'] = 'Blogger Export';
+$a->strings['Enable Blogger Post Addon'] = 'Blogger-Post-Addon aktivieren';
+$a->strings['Blogger username'] = 'Blogger-Benutzername';
+$a->strings['Blogger password'] = 'Blogger-Passwort';
+$a->strings['Blogger API URL'] = 'Blogger-API-URL';
+$a->strings['Post to Blogger by default'] = 'Standardmäßig auf Blogger posten';
+$a->strings['Save Settings'] = 'Einstellungen speichern';
+$a->strings['Post from Friendica'] = 'Post via Friendica';
