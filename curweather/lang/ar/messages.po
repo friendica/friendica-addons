@@ -1,0 +1,124 @@
+# ADDON curweather
+# Copyright (C)
+# This file is distributed under the same license as the Friendica curweather addon package.
+# 
+# 
+# Translators:
+# Farida Khalaf <faridakhalaf@hotmail.com>, 2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-20 01:22+0000\n"
+"Last-Translator: Farida Khalaf <faridakhalaf@hotmail.com>\n"
+"Language-Team: Arabic (http://www.transifex.com/Friendica/friendica/language/ar/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: curweather.php:47
+msgid "Error fetching weather data. Error was: "
+msgstr "خطأ في جلب بيانات الطقس. كان الخطأ:"
+
+#: curweather.php:130 curweather.php:192
+msgid "Current Weather"
+msgstr "الطقس الحالي"
+
+#: curweather.php:137
+msgid "Relative Humidity"
+msgstr "نسبة الرطوبة "
+
+#: curweather.php:138
+msgid "Pressure"
+msgstr "الضغط"
+
+#: curweather.php:139
+msgid "Wind"
+msgstr "الرياح"
+
+#: curweather.php:140
+msgid "Last Updated"
+msgstr "آخر تحديث"
+
+#: curweather.php:141
+msgid "Data by"
+msgstr "البيانات بواسطة"
+
+#: curweather.php:142
+msgid "Show on map"
+msgstr "إظهار على الخريطة"
+
+#: curweather.php:147
+msgid "There was a problem accessing the weather data. But have a look"
+msgstr "حدثت مشكلة في الوصول إلى بيانات الطقس.  الق نظرة"
+
+#: curweather.php:149
+msgid "at OpenWeatherMap"
+msgstr "في OpenWeatherMap"
+
+#: curweather.php:179
+msgid "No APPID found, please contact your admin to obtain one."
+msgstr "لم يتم العثور على معرف التطبيق ، يرجى الاتصال بالمشرف للحصول على واحد."
+
+#: curweather.php:191 curweather.php:229
+msgid "Save Settings"
+msgstr "Save Settings"
+
+#: curweather.php:192
+msgid "Settings"
+msgstr "الإعدادات"
+
+#: curweather.php:194
+msgid "Enter either the name of your location or the zip code."
+msgstr "أدخل إما اسم موقعك أو الرمز البريدي."
+
+#: curweather.php:195
+msgid "Your Location"
+msgstr "موقعك"
+
+#: curweather.php:195
+msgid ""
+"Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or "
+"<em>14476,DE</em>."
+msgstr "تعرّيف موقعك (الاسم أو الرمز البريدي) ، على سبيل المثال برلين ، DE أو 14476 ، DE."
+
+#: curweather.php:196
+msgid "Units"
+msgstr "الوحدات"
+
+#: curweather.php:196
+msgid "select if the temperature should be displayed in &deg;C or &deg;F"
+msgstr "حدد ما إذا كان يجب عرض درجة الحرارة بدرجة؛ C أو & بدرجة؛ F."
+
+#: curweather.php:197
+msgid "Show weather data"
+msgstr "إظهار بيانات الطقس"
+
+#: curweather.php:232
+msgid "Caching Interval"
+msgstr "فترة التخزين المؤقت"
+
+#: curweather.php:234
+msgid ""
+"For how long should the weather data be cached? Choose according your "
+"OpenWeatherMap account type."
+msgstr "إلى متى يجب تخزين بيانات الطقس مؤقتًا؟ اختر وفقًا لنوع حساب OpenWeatherMap الخاص بك. "
+
+#: curweather.php:235
+msgid "no cache"
+msgstr " لا تخزين مؤقت"
+
+#: curweather.php:236 curweather.php:237 curweather.php:238 curweather.php:239
+msgid "minutes"
+msgstr "دقائق"
+
+#: curweather.php:242
+msgid "Your APPID"
+msgstr "معرف التطبيق الخاص بك"
+
+#: curweather.php:242
+msgid "Your API key provided by OpenWeatherMap"
+msgstr " مفتاح API الخاص بك في OpenWeatherMap "

@@ -1,0 +1,36 @@
+# ADDON smileybutton
+# Copyright (C)
+# This file is distributed under the same license as the Friendica smileybutton addon package.
+# 
+# 
+# Translators:
+# Farida Khalaf <faridakhalaf@hotmail.com>, 2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2021-02-21 18:46+0000\n"
+"Last-Translator: Farida Khalaf <faridakhalaf@hotmail.com>\n"
+"Language-Team: Arabic (http://www.transifex.com/Friendica/friendica/language/ar/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: smileybutton.php:269
+msgid "Smileybutton settings"
+msgstr "إعدادات ذر الرموز التعبيرية"
+
+#: smileybutton.php:272
+msgid "You can hide the button and show the smilies directly."
+msgstr "يمكنك إخفاء الزر وإظهار الرموز التعبيرية مباشرة."
+
+#: smileybutton.php:274
+msgid "Hide the button"
+msgstr "إخفاء الذر"
+
+#: smileybutton.php:281
+msgid "Save Settings"
+msgstr "حفظ الإعدادات"

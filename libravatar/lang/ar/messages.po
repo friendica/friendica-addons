@@ -1,0 +1,71 @@
+# ADDON libravatar
+# Copyright (C)
+# This file is distributed under the same license as the Friendica libravatar addon package.
+# 
+# 
+# Translators:
+# Farida Khalaf <faridakhalaf@hotmail.com>, 2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-22 02:35+0000\n"
+"Last-Translator: Farida Khalaf <faridakhalaf@hotmail.com>\n"
+"Language-Team: Arabic (http://www.transifex.com/Friendica/friendica/language/ar/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: libravatar.php:68
+msgid "generic profile image"
+msgstr "صورة عامة للملف الشخصي"
+
+#: libravatar.php:69
+msgid "random geometric pattern"
+msgstr "نمط هندسي عشوائي"
+
+#: libravatar.php:70
+msgid "monster face"
+msgstr "وجه الوحش"
+
+#: libravatar.php:71
+msgid "computer generated face"
+msgstr "وجه مولد من  الكمبيوتر"
+
+#: libravatar.php:72
+msgid "retro arcade style face"
+msgstr "نمط الوجه برجعية  الممرات"
+
+#: libravatar.php:73
+msgid "roboter face"
+msgstr "وجه الروبوت"
+
+#: libravatar.php:74
+msgid "retro adventure game character"
+msgstr "رجعية المغامرة لشخصية اللعب "
+
+#: libravatar.php:78
+msgid "Information"
+msgstr "معلومات"
+
+#: libravatar.php:78
+msgid ""
+"Gravatar addon is installed. Please disable the Gravatar addon.<br>The "
+"Libravatar addon will fall back to Gravatar if nothing was found at "
+"Libravatar."
+msgstr "تم تثبيت ملحق الحرافاتار . يرجى تعطيل إضافة ملحق الجرافاتار <br>. ستعود إضافة ليبرافاتار إلى جرافاتار  إذا لم يتم العثور على شيء في ليبرافاتار."
+
+#: libravatar.php:83
+msgid "Save Settings"
+msgstr "حفظ الإعدادات"
+
+#: libravatar.php:84
+msgid "Default avatar image"
+msgstr "الصورة الرمزية الافتراضية"
+
+#: libravatar.php:84
+msgid "Select default avatar image if none was found. See README"
+msgstr "حدد الصورة الرمزية الافتراضية إذا لم يتم العثور على أي منها. انظر الملف التمهيدي"

@@ -1,0 +1,40 @@
+# ADDON testdrive
+# Copyright (C)
+# This file is distributed under the same license as the Friendica testdrive addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-01 18:21+0000\n"
+"Last-Translator: Transifex Bot <>\n"
+"Language-Team: Arabic (http://www.transifex.com/Friendica/friendica/language/ar/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: testdrive.php:64
+msgid "Administrator"
+msgstr ""
+
+#: testdrive.php:89
+#, php-format
+msgid "Your account on %s will expire in a few days."
+msgstr ""
+
+#: testdrive.php:90
+msgid "Your Friendica test account is about to expire."
+msgstr ""
+
+#: testdrive.php:91
+#, php-format
+msgid ""
+"Hi %1$s,\n"
+"\n"
+"Your test account on %2$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at %s/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at https://friendi.ca."
+msgstr ""

@@ -1,0 +1,338 @@
+# ADDON morechoice
+# Copyright (C)
+# This file is distributed under the same license as the Friendica morechoice addon package.
+# 
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2018-08-07 18:18+0000\n"
+"Language-Team: Arabic (https://www.transifex.com/Friendica/teams/12172/ar/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: morechoice.php:22
+msgid "Androgyne"
+msgstr ""
+
+#: morechoice.php:23
+msgid "Bear"
+msgstr ""
+
+#: morechoice.php:24
+msgid "Bigender"
+msgstr ""
+
+#: morechoice.php:25
+msgid "Cross dresser"
+msgstr ""
+
+#: morechoice.php:26
+msgid "Drag queen"
+msgstr ""
+
+#: morechoice.php:27
+msgid "Eunuch"
+msgstr ""
+
+#: morechoice.php:28
+msgid "Faux queen"
+msgstr ""
+
+#: morechoice.php:29
+msgid "Gender fluid"
+msgstr ""
+
+#: morechoice.php:30
+msgid "Kathoey"
+msgstr ""
+
+#: morechoice.php:31
+msgid "Lady"
+msgstr ""
+
+#: morechoice.php:32
+msgid "Lipstick lesbian"
+msgstr ""
+
+#: morechoice.php:33
+msgid "Metrosexual"
+msgstr ""
+
+#: morechoice.php:34
+msgid "Monk"
+msgstr ""
+
+#: morechoice.php:35
+msgid "Nun"
+msgstr ""
+
+#: morechoice.php:36
+msgid "Soft butch"
+msgstr ""
+
+#: morechoice.php:37
+msgid "Stone femme"
+msgstr ""
+
+#: morechoice.php:38
+msgid "Tomboy"
+msgstr ""
+
+#: morechoice.php:39
+msgid "Transman"
+msgstr ""
+
+#: morechoice.php:40
+msgid "Transwoman"
+msgstr ""
+
+#: morechoice.php:41
+msgid "Transvesti"
+msgstr ""
+
+#: morechoice.php:42
+msgid "Trigender"
+msgstr ""
+
+#: morechoice.php:43
+msgid "Can't remember"
+msgstr ""
+
+#: morechoice.php:44
+msgid "Hard to tell these days"
+msgstr ""
+
+#: morechoice.php:48
+msgid "Girls with big tits"
+msgstr ""
+
+#: morechoice.php:49
+msgid "Millionaires"
+msgstr ""
+
+#: morechoice.php:50
+msgid "Guys with big schlongs"
+msgstr ""
+
+#: morechoice.php:51
+msgid "Easy women"
+msgstr ""
+
+#: morechoice.php:52
+msgid "People with impaired mobility"
+msgstr ""
+
+#: morechoice.php:53
+msgid "Amputees"
+msgstr ""
+
+#: morechoice.php:54
+msgid "Statues, mannequins and immobility"
+msgstr ""
+
+#: morechoice.php:55
+msgid "Pain"
+msgstr ""
+
+#: morechoice.php:56
+msgid "Trans men"
+msgstr ""
+
+#: morechoice.php:57
+msgid "Older women"
+msgstr ""
+
+#: morechoice.php:58
+msgid "Asphyxiation"
+msgstr ""
+
+#: morechoice.php:59
+msgid "In public"
+msgstr ""
+
+#: morechoice.php:60
+msgid "In danger"
+msgstr ""
+
+#: morechoice.php:61
+msgid "Pretending to be male"
+msgstr ""
+
+#: morechoice.php:62
+msgid "Pretending to be female"
+msgstr ""
+
+#: morechoice.php:63
+msgid "Breats"
+msgstr ""
+
+#: morechoice.php:64
+msgid "Scat"
+msgstr ""
+
+#: morechoice.php:65
+msgid "Crying"
+msgstr ""
+
+#: morechoice.php:66
+msgid "Nappies/Diapers"
+msgstr ""
+
+#: morechoice.php:67
+msgid "Trees"
+msgstr ""
+
+#: morechoice.php:68
+msgid "Vomit"
+msgstr ""
+
+#: morechoice.php:69
+msgid "Murder"
+msgstr ""
+
+#: morechoice.php:70
+msgid "Fat people"
+msgstr ""
+
+#: morechoice.php:71
+msgid "Feet"
+msgstr ""
+
+#: morechoice.php:72
+msgid "Covered in insects"
+msgstr ""
+
+#: morechoice.php:73
+msgid "Turning a human being into furniture"
+msgstr ""
+
+#: morechoice.php:74
+msgid "Elderly people"
+msgstr ""
+
+#: morechoice.php:75
+msgid "Transgender people"
+msgstr ""
+
+#: morechoice.php:76
+msgid "Criminals"
+msgstr ""
+
+#: morechoice.php:77
+msgid "Stealing"
+msgstr ""
+
+#: morechoice.php:78
+msgid "Breast milk"
+msgstr ""
+
+#: morechoice.php:79
+msgid "Immersing genitals in liquids"
+msgstr ""
+
+#: morechoice.php:80
+msgid "Giants"
+msgstr ""
+
+#: morechoice.php:81
+msgid "Masochism"
+msgstr ""
+
+#: morechoice.php:82
+msgid "Cars"
+msgstr ""
+
+#: morechoice.php:83
+msgid "Menstruation"
+msgstr ""
+
+#: morechoice.php:84
+msgid "Mucus"
+msgstr ""
+
+#: morechoice.php:85
+msgid "Obscene language"
+msgstr ""
+
+#: morechoice.php:86
+msgid "Noses"
+msgstr ""
+
+#: morechoice.php:87
+msgid "Navels"
+msgstr ""
+
+#: morechoice.php:88
+msgid "Corpses"
+msgstr ""
+
+#: morechoice.php:89
+msgid "Smells"
+msgstr ""
+
+#: morechoice.php:90
+msgid "Buttocks"
+msgstr ""
+
+#: morechoice.php:91
+msgid "Nonliving objects"
+msgstr ""
+
+#: morechoice.php:92
+msgid "Sleeping people"
+msgstr ""
+
+#: morechoice.php:93
+msgid "Urination"
+msgstr ""
+
+#: morechoice.php:94
+msgid "Eating people"
+msgstr ""
+
+#: morechoice.php:95
+msgid "Being eaten"
+msgstr ""
+
+#: morechoice.php:96
+msgid "Animals"
+msgstr ""
+
+#: morechoice.php:97
+msgid "I'd rather just have some chocolate"
+msgstr ""
+
+#: morechoice.php:101
+msgid "Married to my job"
+msgstr ""
+
+#: morechoice.php:102
+msgid "Polygamist"
+msgstr ""
+
+#: morechoice.php:103
+msgid "Half married"
+msgstr ""
+
+#: morechoice.php:104
+msgid "Living in the past"
+msgstr ""
+
+#: morechoice.php:105
+msgid "Pretending to be over my ex"
+msgstr ""
+
+#: morechoice.php:106
+msgid "Hurt in the past"
+msgstr ""
+
+#: morechoice.php:107
+msgid "Wallowing in self-pity"
+msgstr ""

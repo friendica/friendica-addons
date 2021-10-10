@@ -1,0 +1,71 @@
+# ADDON gravatar
+# Copyright (C)
+# This file is distributed under the same license as the Friendica gravatar addon package.
+# 
+# 
+# Translators:
+# Farida Khalaf <faridakhalaf@hotmail.com>, 2021
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-22 00:41+0000\n"
+"Last-Translator: Farida Khalaf <faridakhalaf@hotmail.com>\n"
+"Language-Team: Arabic (http://www.transifex.com/Friendica/friendica/language/ar/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: gravatar.php:78
+msgid "generic profile image"
+msgstr "صورة عامة للملف الشخصي"
+
+#: gravatar.php:79
+msgid "random geometric pattern"
+msgstr "نمط هندسي عشوائي"
+
+#: gravatar.php:80
+msgid "monster face"
+msgstr "وجه الوحش"
+
+#: gravatar.php:81
+msgid "computer generated face"
+msgstr "وجه مولد من  الكمبيوتر"
+
+#: gravatar.php:82
+msgid "retro arcade style face"
+msgstr "نمط الوجه برجعية  الممرات"
+
+#: gravatar.php:96
+msgid "Information"
+msgstr "معلومات"
+
+#: gravatar.php:96
+msgid ""
+"Libravatar addon is installed, too. Please disable Libravatar addon or this "
+"Gravatar addon.<br>The Libravatar addon will fall back to Gravatar if "
+"nothing was found at Libravatar."
+msgstr "تم تثبيت ملحق ليبرافاتار أيضًا. يرجى تعطيل ملحق ليبرافاتار أو إضافة جرافاتار. سيعود ملحق ليبرافاتار إلى جرافاتار إذا لم يتم العثور على شيء في ليبرافاتار."
+
+#: gravatar.php:102
+msgid "Save Settings"
+msgstr "حفظ الإعدادات"
+
+#: gravatar.php:103
+msgid "Default avatar image"
+msgstr "الصورة الرمزية الافتراضية"
+
+#: gravatar.php:103
+msgid "Select default avatar image if none was found at Gravatar. See README"
+msgstr "حدد الصورة الرمزية الافتراضية إذا لم يتم العثور على أي منها في جرافاتار. انظر الملف التمهيدي"
+
+#: gravatar.php:104
+msgid "Rating of images"
+msgstr "تصنيف الصور"
+
+#: gravatar.php:104
+msgid "Select the appropriate avatar rating for your site. See README"
+msgstr "حدد تصنيف الصورة الرمزية المناسب لموقعك. انظر الملف التمهيدي"
