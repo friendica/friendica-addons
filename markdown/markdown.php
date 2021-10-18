@@ -56,9 +56,10 @@ function markdown_post_local_start(App $a, &$request) {
 			// Escape mentions which username can contain Markdown-like characters
 			// See https://github.com/friendica/friendica/issues/9486
 			return \Friendica\Util\Strings::performWithEscapedBlocks($body, '/[@!][^@\s]+@[^\s]+\w/', function ($text) {
-				// Markdown accepts literal HTML but we do not in post body, so we need to escape all chevrons
+				// Markdown accepts literal HTML but we do not in post body, so we need to escape left chevrons
+				// (right chevrons are used for quoting in Markdown)
 				// See https://github.com/friendica/friendica/issues/10634
-				$text = \Friendica\Util\Strings::escapeHtml($text);
+				$text = strtr($text, ['<' => '&lt;']);
 
 				return Markdown::toBBCode($text);
 			});
