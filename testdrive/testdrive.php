@@ -51,7 +51,7 @@ function testdrive_cron($a,$b) {
 	$users = DBA::selectToArray('user', [], ["`account_expires_on` < UTC_TIMESTAMP() + INTERVAL ? DAY AND `expire_notification_sent` <= ?",
 		5, DBA::NULL_DATETIME]);
 	foreach($users as $rr) {
-		notification([
+		DI::notify()->createFromArray([
 			'type' => Notification\Type::SYSTEM,
 			'uid' => $rr['uid'],
 			'system_type' => 'testdrive_expire',
