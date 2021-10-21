@@ -42,7 +42,7 @@ function piwik_install() {
 	Hook::register('load_config', 'addon/piwik/piwik.php', 'piwik_load_config');
 	Hook::register('page_end', 'addon/piwik/piwik.php', 'piwik_analytics');
 
-	Logger::log("installed piwik addon");
+	Logger::notice("installed piwik addon");
 }
 
 function piwik_load_config(\Friendica\App $a, ConfigFileLoader $loader)

@@ -20,7 +20,7 @@ function impressum_install() {
 	Hook::register('load_config', 'addon/impressum/impressum.php', 'impressum_load_config');
     Hook::register('about_hook', 'addon/impressum/impressum.php', 'impressum_show');
     Hook::register('page_end', 'addon/impressum/impressum.php', 'impressum_footer');
-    Logger::log("installed impressum Addon");
+    Logger::notice("installed impressum Addon");
 }
 
 function impressum_module() {

@@ -23,7 +23,7 @@ function securemail_install()
 
 	Hook::register('emailer_send_prepare', 'addon/securemail/securemail.php', 'securemail_emailer_send_prepare', 10);
 
-	Logger::log('installed securemail');
+	Logger::notice('installed securemail');
 }
 
 /**

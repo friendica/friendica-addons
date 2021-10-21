@@ -103,7 +103,7 @@ function buffer_connect(App $a)
 	if (!$buffer->ok) {
 		$o = '<a href="' . $buffer->get_login_url() . '">Connect to Buffer!</a>';
 	} else {
-		Logger::log("buffer_connect: authenticated");
+		Logger::notice("buffer_connect: authenticated");
 		$o = DI::l10n()->t("You are now authenticated to buffer. ");
 		$o .= '<br /><a href="' . DI::baseUrl()->get() . '/settings/connectors">' . DI::l10n()->t("return to the connector page") . '</a>';
 		DI::pConfig()->set(local_user(), 'buffer','access_token', $buffer->access_token);
@@ -306,7 +306,7 @@ function buffer_send(App $a, array &$b)
 
 		$profiles = $buffer->go('/profiles');
 		if (is_array($profiles)) {
-			Logger::log("Will send these parameter ".print_r($b, true), Logger::DEBUG);
+			Logger::info("Will send these parameter ".print_r($b, true));
 
 			foreach ($profiles as $profile) {
 				if (!$profile->default)
@@ -343,7 +343,7 @@ function buffer_send(App $a, array &$b)
 				$item = $b;
 
 				$post = Plaintext::getPost($item, $limit, $includedlinks, $htmlmode);
-				Logger::log("buffer_send: converted message ".$b["id"]." result: ".print_r($post, true), Logger::DEBUG);
+				Logger::info("buffer_send: converted message ".$b["id"]." result: ".print_r($post, true));
 
 				// The image proxy is used as a sanitizer. Buffer seems to be really picky about pictures
 				if (isset($post["image"])) {
@@ -391,9 +391,9 @@ function buffer_send(App $a, array &$b)
 				}
 
 				//print_r($message);
-				Logger::log("buffer_send: data for message " . $b["id"] . ": " . print_r($message, true), Logger::DEBUG);
+				Logger::info("buffer_send: data for message " . $b["id"] . ": " . print_r($message, true));
 				$ret = $buffer->go('/updates/create', $message);
-				Logger::log("buffer_send: send message " . $b["id"] . " result: " . print_r($ret, true), Logger::DEBUG);
+				Logger::info("buffer_send: send message " . $b["id"] . " result: " . print_r($ret, true));
 			}
 		}
 	}

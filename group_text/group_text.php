@@ -14,7 +14,7 @@ function group_text_install() {
 	Hook::register('addon_settings', 'addon/group_text/group_text.php', 'group_text_settings');
 	Hook::register('addon_settings_post', 'addon/group_text/group_text.php', 'group_text_settings_post');
 
-	Logger::log("installed group_text");
+	Logger::notice("installed group_text");
 }
 
 /**

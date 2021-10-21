@@ -470,11 +470,11 @@ function tumblr_send(App $a, array &$b) {
 
 		//print_r($params);
 		if ($ret_code == 201) {
-			Logger::log('tumblr_send: success');
+			Logger::notice('tumblr_send: success');
 		} elseif ($ret_code == 403) {
-			Logger::log('tumblr_send: authentication failure');
+			Logger::notice('tumblr_send: authentication failure');
 		} else {
-			Logger::log('tumblr_send: general error: ' . print_r($x,true));
+			Logger::notice('tumblr_send: general error', ['error' => $x]);
 		}
 	}
 }

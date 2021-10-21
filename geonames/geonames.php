@@ -46,7 +46,7 @@ function geonames_post_hook(App $a, array &$item)
 	 *      - The profile owner must have allowed our addon
 	 */
 
-	Logger::log('geonames invoked');
+	Logger::notice('geonames invoked');
 
 	if (!local_user()) {   /* non-zero if this is a logged in user of this system */
 		return;

@@ -49,7 +49,7 @@ function public_server_register_account($a, $b)
 
 function public_server_cron($a, $b)
 {
-	Logger::log("public_server: cron start");
+	Logger::notice("public_server: cron start");
 
 	$users = DBA::selectToArray('user', [], ["`account_expires_on` < UTC_TIMESTAMP() + INTERVAL ? DAY AND
 		`account_expires_on` > ? AND `expire_notification_sent` <= ?", 5, DBA::NULL_DATETIME, DBA::NULL_DATETIME]);
@@ -97,7 +97,7 @@ function public_server_cron($a, $b)
 		}
 	}
 
-	Logger::log("public_server: cron end");
+	Logger::notice("public_server: cron end");
 }
 
 function public_server_enotify(&$a, &$b)

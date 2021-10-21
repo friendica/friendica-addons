@@ -171,7 +171,7 @@ function libertree_post_local(&$a,&$b) {
 
 function libertree_send(&$a,&$b) {
 
-	Logger::log('libertree_send: invoked');
+	Logger::notice('libertree_send: invoked');
 
 	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
@@ -236,6 +236,6 @@ function libertree_send(&$a,&$b) {
 		];
 
 		$result = DI::httpClient()->post($ltree_blog, $params)->getBody();
-		Logger::log('libertree: ' . $result);
+		Logger::notice('libertree: ' . $result);
 	}
 }

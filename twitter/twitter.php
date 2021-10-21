@@ -1158,7 +1158,7 @@ function twitter_fetchtimeline(App $a, $uid)
 		}
 	}
 	DI::pConfig()->set($uid, 'twitter', 'lastid', $lastid);
-	Logger::log('Last ID for user ' . $uid . ' is now ' . $lastid, Logger::DEBUG);
+	Logger::info('Last ID for user ' . $uid . ' is now ' . $lastid);
 }
 
 function twitter_fix_avatar($avatar)
@@ -1851,7 +1851,7 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 		$posts[] = $post;
 	}
 
-	Logger::log("twitter_fetchparentposts: Fetching " . count($posts) . " parents", Logger::DEBUG);
+	Logger::info("twitter_fetchparentposts: Fetching " . count($posts) . " parents");
 
 	$posts = array_reverse($posts);
 
@@ -1867,7 +1867,7 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 
 			$postarray["id"] = $item;
 
-			Logger::log('twitter_fetchparentpost: User ' . $self["nick"] . ' posted parent timeline item ' . $item);
+			Logger::notice('twitter_fetchparentpost: User ' . $self["nick"] . ' posted parent timeline item ' . $item);
 		}
 	}
 }
@@ -1969,12 +1969,12 @@ function twitter_fetchhometimeline(App $a, $uid)
 				twitter_fetchparentposts($a, $uid, $post, $connection, $self);
 			}
 
-			Logger::log('Preparing post ' . $post->id_str . ' for user ' . $uid, Logger::DEBUG);
+			Logger::info('Preparing post ' . $post->id_str . ' for user ' . $uid);
 
 			$postarray = twitter_createpost($a, $uid, $post, $self, $create_user, true, false);
 
 			if (empty($postarray['body']) || trim($postarray['body']) == "") {
-				Logger::log('Empty body for post ' . $post->id_str . ' and user ' . $uid, Logger::DEBUG);
+				Logger::info('Empty body for post ' . $post->id_str . ' and user ' . $uid);
 				continue;
 			}
 
@@ -1990,12 +1990,12 @@ function twitter_fetchhometimeline(App $a, $uid)
 			$item = Item::insert($postarray, $notify);
 			$postarray["id"] = $item;
 
-			Logger::log('User ' . $uid . ' posted home timeline item ' . $item);
+			Logger::notice('User ' . $uid . ' posted home timeline item ' . $item);
 		}
 	}
 	DI::pConfig()->set($uid, 'twitter', 'lasthometimelineid', $lastid);
 
-	Logger::log('Last timeline ID for user ' . $uid . ' is now ' . $lastid, Logger::DEBUG);
+	Logger::info('Last timeline ID for user ' . $uid . ' is now ' . $lastid);
 
 	// Fetching mentions
 	$lastid = DI::pConfig()->get($uid, 'twitter', 'lastmentionid');
@@ -2020,7 +2020,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 
 	$posts = array_reverse($items);
 
-	Logger::log("Fetching mentions for user " . $uid . " " . sizeof($posts) . " items", Logger::DEBUG);
+	Logger::info("Fetching mentions for user " . $uid . " " . sizeof($posts) . " items");
 
 	if (count($posts)) {
 		foreach ($posts as $post) {
@@ -2044,13 +2044,13 @@ function twitter_fetchhometimeline(App $a, $uid)
 
 			$item = Item::insert($postarray);
 
-			Logger::log('User ' . $uid . ' posted mention timeline item ' . $item);
+			Logger::notice('User ' . $uid . ' posted mention timeline item ' . $item);
 		}
 	}
 
 	DI::pConfig()->set($uid, 'twitter', 'lastmentionid', $lastid);
 
-	Logger::log('Last mentions ID for user ' . $uid . ' is now ' . $lastid, Logger::DEBUG);
+	Logger::info('Last mentions ID for user ' . $uid . ' is now ' . $lastid);
 }
 
 function twitter_fetch_own_contact(App $a, $uid)

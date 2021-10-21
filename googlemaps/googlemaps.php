@@ -13,7 +13,7 @@ function googlemaps_install()
 {
 	Hook::register('render_location', 'addon/googlemaps/googlemaps.php', 'googlemaps_location');
 
-	Logger::log("installed googlemaps");
+	Logger::notice("installed googlemaps");
 }
 
 function googlemaps_location($a, &$item)

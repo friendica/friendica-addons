@@ -15,7 +15,7 @@ function fromapp_install()
 	Hook::register('post_local', 'addon/fromapp/fromapp.php', 'fromapp_post_hook');
 	Hook::register('addon_settings', 'addon/fromapp/fromapp.php', 'fromapp_settings');
 	Hook::register('addon_settings_post', 'addon/fromapp/fromapp.php', 'fromapp_settings_post');
-	Logger::log("installed fromapp");
+	Logger::notice("installed fromapp");
 }
 
 function fromapp_settings_post($a, $post)
