@@ -44,7 +44,7 @@ function randplace_install() {
 	Hook::register('addon_settings', 'addon/randplace/randplace.php', 'randplace_settings');
 	Hook::register('addon_settings_post', 'addon/randplace/randplace.php', 'randplace_settings_post');
 
-	Logger::log("installed randplace");
+	Logger::notice("installed randplace");
 }
 
 
@@ -58,7 +58,7 @@ function randplace_uninstall() {
 	 *
 	 */
 
-	Logger::log("removed randplace");
+	Logger::notice("removed randplace");
 }
 
 
@@ -74,7 +74,7 @@ function randplace_post_hook($a, &$item) {
 	 *
 	 */
 
-	Logger::log('randplace invoked');
+	Logger::notice('randplace invoked');
 
 	if(! local_user())   /* non-zero if this is a logged in user of this system */
 		return;

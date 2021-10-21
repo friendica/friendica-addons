@@ -75,7 +75,7 @@ function blackout_redirect ($a, $b) {
 		   $date2 = 0;
 	}
 	if (( $date1 <= $now ) && ( $now <= $date2 )) {
-		Logger::log('redirecting user to blackout page');
+		Logger::notice('redirecting user to blackout page');
 		System::externalRedirect($myurl);
 	}
 }

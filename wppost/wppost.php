@@ -322,11 +322,11 @@ function wppost_send(&$a, &$b)
 
 EOT;
 
-		Logger::log('wppost: data: ' . $xml, Logger::DATA);
+		Logger::debug('wppost: data: ' . $xml);
 
 		if ($wp_blog !== 'test') {
 			$x = DI::httpClient()->post($wp_blog, $xml)->getBody();
 		}
-		Logger::log('posted to wordpress: ' . (($x) ? $x : ''), Logger::DEBUG);
+		Logger::info('posted to wordpress: ' . (($x) ? $x : ''));
 	}
 }

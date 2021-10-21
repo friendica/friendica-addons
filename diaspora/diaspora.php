@@ -184,7 +184,7 @@ function diaspora_send(App $a, array &$b)
 {
 	$hostname = DI::baseUrl()->getHostname();
 
-	Logger::log('diaspora_send: invoked');
+	Logger::notice('diaspora_send: invoked');
 
 	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;
@@ -208,14 +208,14 @@ function diaspora_send(App $a, array &$b)
 		return;
 	}
 
-	Logger::log('diaspora_send: prepare posting', Logger::DEBUG);
+	Logger::info('diaspora_send: prepare posting');
 
 	$handle = DI::pConfig()->get($b['uid'],'diaspora','handle');
 	$password = DI::pConfig()->get($b['uid'],'diaspora','password');
 	$aspect = DI::pConfig()->get($b['uid'],'diaspora','aspect');
 
 	if ($handle && $password) {
-		Logger::log('diaspora_send: all values seem to be okay', Logger::DEBUG);
+		Logger::info('diaspora_send: all values seem to be okay');
 
 		$title = $b['title'];
 		$body = $b['body'];
@@ -246,20 +246,20 @@ function diaspora_send(App $a, array &$b)
 		require_once "addon/diaspora/diasphp.php";
 
 		try {
-			Logger::log('diaspora_send: prepare', Logger::DEBUG);
+			Logger::info('diaspora_send: prepare');
 			$conn = new Diaspora_Connection($handle, $password);
-			Logger::log('diaspora_send: try to log in '.$handle, Logger::DEBUG);
+			Logger::info('diaspora_send: try to log in '.$handle);
 			$conn->logIn();
-			Logger::log('diaspora_send: try to send '.$body, Logger::DEBUG);
+			Logger::info('diaspora_send: try to send '.$body);
 
 			$conn->provider = $hostname;
 			$conn->postStatusMessage($body, $aspect);
 
-			Logger::log('diaspora_send: success');
+			Logger::notice('diaspora_send: success');
 		} catch (Exception $e) {
-			Logger::log("diaspora_send: Error submitting the post: " . $e->getMessage());
+			Logger::notice("diaspora_send: Error submitting the post: " . $e->getMessage());
 
-			Logger::log('diaspora_send: requeueing '.$b['uid'], Logger::DEBUG);
+			Logger::info('diaspora_send: requeueing '.$b['uid']);
 
 			Worker::defer();
 		}

@@ -22,7 +22,7 @@ function opmlexport_install()
 {
 	Hook::register('addon_settings',        __FILE__, 'opmlexport_addon_settings');
 	Hook::register('addon_settings_post',   __FILE__, 'opmlexport_addon_settings_post');
-	Logger::log('installed opmlexport Addon');
+	Logger::notice('installed opmlexport Addon');
 }
 
 

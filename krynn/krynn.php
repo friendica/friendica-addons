@@ -35,7 +35,7 @@ function krynn_install() {
 	Hook::register('addon_settings', 'addon/krynn/krynn.php', 'krynn_settings');
 	Hook::register('addon_settings_post', 'addon/krynn/krynn.php', 'krynn_settings_post');
 
-	Logger::log("installed krynn");
+	Logger::notice("installed krynn");
 }
 
 function krynn_post_hook($a, &$item) {

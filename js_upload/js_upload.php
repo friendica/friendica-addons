@@ -61,7 +61,7 @@ function js_upload_post_init(App $a, &$b)
 	$js_upload_jsonresponse = htmlspecialchars(json_encode($result), ENT_NOQUOTES);
 
 	if (isset($result['error'])) {
-		Logger::log('mod/photos.php: photos_post(): error uploading photo: ' . $result['error'], Logger::DEBUG);
+		Logger::info('mod/photos.php: photos_post(): error uploading photo: ' . $result['error']);
 		echo json_encode($result);
 		exit();
 	}
@@ -85,7 +85,7 @@ function js_upload_post_end(App $a, &$b)
 {
 	global $js_upload_jsonresponse;
 
-	Logger::log('upload_post_end');
+	Logger::notice('upload_post_end');
 	if (!empty($js_upload_jsonresponse)) {
 		echo $js_upload_jsonresponse;
 		exit();

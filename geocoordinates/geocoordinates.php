@@ -48,25 +48,25 @@ function geocoordinates_resolve_item(&$item)
 	$s = DI::httpClient()->fetch("https://api.opencagedata.com/geocode/v1/json?q=" . $coords[0] . "," . $coords[1] . "&key=" . $key . "&language=" . $language);
 
 	if (!$s) {
-		Logger::log("API could not be queried", Logger::DEBUG);
+		Logger::info("API could not be queried");
 		return;
 	}
 
 	$data = json_decode($s);
 
 	if ($data->status->code != "200") {
-		Logger::log("API returned error ".$data->status->code." ".$data->status->message, Logger::DEBUG);
+		Logger::info("API returned error ".$data->status->code." ".$data->status->message);
 		return;
 	}
 
 	if (($data->total_results == 0) || (count($data->results) == 0)) {
-		Logger::log("No results found for coordinates ".$item["coord"], Logger::DEBUG);
+		Logger::info("No results found for coordinates ".$item["coord"]);
 		return;
 	}
 
 	$item["location"] = $data->results[0]->formatted;
 
-	Logger::log("Got location for coordinates ".$coords[0]."-".$coords[1].": ".$item["location"], Logger::DEBUG);
+	Logger::info("Got location for coordinates ".$coords[0]."-".$coords[1].": ".$item["location"]);
 
 	if ($item["location"] != "")
 		DI::cache()->set("geocoordinates:".$language.":".$coords[0]."-".$coords[1], $item["location"]);

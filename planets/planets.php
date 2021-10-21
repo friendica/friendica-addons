@@ -32,7 +32,7 @@ function planets_install() {
 	Hook::register('addon_settings', 'addon/planets/planets.php', 'planets_settings');
 	Hook::register('addon_settings_post', 'addon/planets/planets.php', 'planets_settings_post');
 
-	Logger::log("installed planets");
+	Logger::notice("installed planets");
 }
 
 function planets_post_hook($a, &$item) {
@@ -46,7 +46,7 @@ function planets_post_hook($a, &$item) {
 	 *
 	 */
 
-	Logger::log('planets invoked');
+	Logger::notice('planets invoked');
 
 	if(! local_user())   /* non-zero if this is a logged in user of this system */
 		return;

@@ -29,7 +29,7 @@ function catavatar_install()
 	Hook::register('addon_settings', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings');
 	Hook::register('addon_settings_post', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings_post');
 
-	Logger::log('registered catavatar');
+	Logger::notice('registered catavatar');
 }
 
 /**

@@ -16,7 +16,7 @@ use Friendica\Util\Strings;
 function newmemberwidget_install()
 {
 	Hook::register( 'network_mod_init', 'addon/newmemberwidget/newmemberwidget.php', 'newmemberwidget_network_mod_init');
-	Logger::log('newmemberwidget installed');
+	Logger::notice('newmemberwidget installed');
 }
 
 function newmemberwidget_network_mod_init ($a, $b)
