@@ -4,7 +4,7 @@ namespace Friendica\Addon\webdav_storage\src;
 
 use Friendica\Core\Config\IConfig;
 use Friendica\Core\L10n;
-use Friendica\Model\Storage\IStorageConfiguration;
+use Friendica\Core\Storage\IStorageConfiguration;
 use Friendica\Network\HTTPClientOptions;
 use Friendica\Network\IHTTPClient;
 

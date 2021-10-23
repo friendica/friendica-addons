@@ -3,9 +3,9 @@
 namespace Friendica\Addon\webdav_storage\src;
 
 use Exception;
-use Friendica\Model\Storage\IWritableStorage;
-use Friendica\Model\Storage\ReferenceStorageException;
-use Friendica\Model\Storage\StorageException;
+use Friendica\Core\Storage\IWritableStorage;
+use Friendica\Core\Storage\Exception\ReferenceStorageException;
+use Friendica\Core\Storage\Exception\StorageException;
 use Friendica\Network\HTTPClientOptions;
 use Friendica\Network\IHTTPClient;
 use Friendica\Util\Strings;
