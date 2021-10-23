@@ -11,7 +11,7 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 use Friendica\Object\EMail\IEmail;
-use Friendica\Util\ConfigFileLoader;
+use Friendica\Core\Config\Cache\ConfigFileLoader;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 

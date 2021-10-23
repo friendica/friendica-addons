@@ -15,7 +15,7 @@ use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Notification;
 use Friendica\Model\User;
-use Friendica\Util\ConfigFileLoader;
+use Friendica\Core\Config\Cache\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Strings;
 
