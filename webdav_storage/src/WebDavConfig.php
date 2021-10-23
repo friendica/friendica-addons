@@ -4,14 +4,14 @@ namespace Friendica\Addon\webdav_storage\src;
 
 use Friendica\Core\Config\Capability\IManageConfigValues;
 use Friendica\Core\L10n;
-use Friendica\Model\Storage\IStorageConfiguration;
+use Friendica\Core\Storage\Capability\ICanConfigureStorage;
 use Friendica\Network\HTTPClientOptions;
 use Friendica\Network\IHTTPClient;
 
 /**
  * The WebDav Backend Storage configuration class
  */
-class WebDavConfig implements IStorageConfiguration
+class WebDavConfig implements ICanConfigureStorage
 {
 	const NAME = 'WebDav';
 

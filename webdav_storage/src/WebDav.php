@@ -3,9 +3,9 @@
 namespace Friendica\Addon\webdav_storage\src;
 
 use Exception;
-use Friendica\Model\Storage\IWritableStorage;
-use Friendica\Model\Storage\ReferenceStorageException;
-use Friendica\Model\Storage\StorageException;
+use Friendica\Core\Storage\Capability\ICanWriteToStorage;
+use Friendica\Core\Storage\Exception\ReferenceStorageException;
+use Friendica\Core\Storage\Exception\StorageException;
 use Friendica\Network\HTTPClientOptions;
 use Friendica\Network\IHTTPClient;
 use Friendica\Util\Strings;
@@ -14,7 +14,7 @@ use Psr\Log\LoggerInterface;
 /**
  * A WebDav Backend Storage class
  */
-class WebDav implements IWritableStorage
+class WebDav implements ICanWriteToStorage
 {
 	const NAME = 'WebDav';
 
@@ -253,7 +253,7 @@ class WebDav implements IWritableStorage
 	/**
 	 * {@inheritDoc}
 	 */
-	public function __toString()
+	public function __toString(): string
 	{
 		return self::getName();
 	}
