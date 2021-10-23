@@ -6,7 +6,7 @@ use Friendica\Addon\webdav_storage\src\WebDav;
 use Friendica\DI;
 use Friendica\Factory\HTTPClientFactory;
 use Friendica\Test\src\Core\Storage\StorageTest;
-use Friendica\Util\Logger\VoidLogger;
+use Friendica\Core\Logger\Type\VoidLogger;
 
 /// @todo remove when constant is moved to a class constant
 /// Necessary for DB_UPDATE_VERSION constant in case of direct calls, where dbstructure isn't included during the calling process
