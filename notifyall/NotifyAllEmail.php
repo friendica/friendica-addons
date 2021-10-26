@@ -23,7 +23,7 @@ namespace Friendica\Addon\notifyall;
 
 use Friendica\App\BaseURL;
 use Friendica\Content\Text\BBCode;
-use Friendica\Core\Config\IConfig;
+use Friendica\Core\Config\Capability\IManageConfigValues;
 use Friendica\Core\L10n;
 use Friendica\Object\Email;
 
@@ -32,7 +32,7 @@ use Friendica\Object\Email;
  */
 class NotifyAllEmail extends Email
 {
-	public function __construct(L10n $l10n, IConfig $config, BaseURL $baseUrl, string $text)
+	public function __construct(L10n $l10n, IManageConfigValues $config, BaseURL $baseUrl, string $text)
 	{
 		$sitename = $config->get('config', 'sitename');
 

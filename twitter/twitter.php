@@ -84,7 +84,7 @@ use Friendica\Model\Post;
 use Friendica\Model\Tag;
 use Friendica\Model\User;
 use Friendica\Protocol\Activity;
-use Friendica\Core\Config\Cache\ConfigFileLoader;
+use Friendica\Core\Config\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Images;
 use Friendica\Util\Strings;

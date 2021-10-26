@@ -2,7 +2,7 @@
 
 namespace Friendica\Addon\webdav_storage\src;
 
-use Friendica\Core\Config\IConfig;
+use Friendica\Core\Config\Capability\IManageConfigValues;
 use Friendica\Core\L10n;
 use Friendica\Model\Storage\IStorageConfiguration;
 use Friendica\Network\HTTPClientOptions;
@@ -18,7 +18,7 @@ class WebDavConfig implements IStorageConfiguration
 	/** @var L10n */
 	private $l10n;
 
-	/** @var IConfig */
+	/** @var IManageConfigValues */
 	private $config;
 
 	/** @var string */
@@ -46,7 +46,7 @@ class WebDavConfig implements IStorageConfiguration
 		return $this->authOptions;
 	}
 
-	public function __construct(L10n $l10n, IConfig $config, IHTTPClient $client)
+	public function __construct(L10n $l10n, IManageConfigValues $config, IHTTPClient $client)
 	{
 		$this->l10n   = $l10n;
 		$this->config = $config;

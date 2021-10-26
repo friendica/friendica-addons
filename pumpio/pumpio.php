@@ -24,7 +24,7 @@ use Friendica\Model\User;
 use Friendica\Network\HTTPClientOptions;
 use Friendica\Protocol\Activity;
 use Friendica\Protocol\ActivityNamespace;
-use Friendica\Core\Config\Cache\ConfigFileLoader;
+use Friendica\Core\Config\Util\ConfigFileLoader;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Strings;
 use Friendica\Util\XML;

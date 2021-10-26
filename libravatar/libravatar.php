@@ -12,7 +12,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
-use Friendica\Core\Config\Cache\ConfigFileLoader;
+use Friendica\Core\Config\Util\ConfigFileLoader;
 use Friendica\Util\Strings;
 
 /**

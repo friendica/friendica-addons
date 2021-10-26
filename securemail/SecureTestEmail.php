@@ -23,8 +23,8 @@ namespace Friendica\Addon\securemail;
 
 use Friendica\App;
 use Friendica\App\BaseURL;
-use Friendica\Core\Config\IConfig;
-use Friendica\Core\PConfig\IPConfig;
+use Friendica\Core\Config\Capability\IManageConfigValues;
+use Friendica\Core\PConfig\Capability\IManagePersonalConfigValues;
 use Friendica\Model\User;
 use Friendica\Object\Email;
 
@@ -33,7 +33,7 @@ use Friendica\Object\Email;
  */
 class SecureTestEmail extends Email
 {
-	public function __construct(App $a, IConfig $config, IPConfig $pConfig, BaseURL $baseUrl)
+	public function __construct(App $a, IManageConfigValues $config, IManagePersonalConfigValues $pConfig, BaseURL $baseUrl)
 	{
 		$sitename = $config->get('config', 'sitename');
 
