@@ -11,7 +11,7 @@
 
 use Friendica\App;
 use Friendica\Content\Smilies;
-use Friendica\Core\Cache\Duration;
+use Friendica\Core\Cache\Enum\Duration;
 use Friendica\Core\Hook;
 use Friendica\Core\Protocol;
 use Friendica\DI;
