@@ -5,7 +5,7 @@
 # 
 # Translators:
 # Farida Khalaf <faridakhalaf@hotmail.com>, 2021
-# Abdullah Alsabi <alsabi.abdullah@gmail.com>, 2021
+# abidin toumi <abidin24@tutanota.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -14,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-07-25 13:15+0000\n"
 "PO-Revision-Date: 2018-05-24 06:41+0000\n"
-"Last-Translator: Abdullah Alsabi <alsabi.abdullah@gmail.com>, 2021\n"
+"Last-Translator: abidin toumi <abidin24@tutanota.com>, 2021\n"
 "Language-Team: Arabic (https://www.transifex.com/Friendica/teams/12172/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,19 +25,19 @@ msgstr ""
 #: advancedcontentfilter.php:153
 #, php-format
 msgid "Filtered by rule: %s"
-msgstr "فلتر حسب القاعدة: %s"
+msgstr "رشّح حسب القاعدة: %s"
 
 #: advancedcontentfilter.php:167 advancedcontentfilter.php:224
 msgid "Advanced Content Filter"
-msgstr "فلتر المحتوى المتقدم"
+msgstr "ترشيح المحتوى المتقدم"
 
 #: advancedcontentfilter.php:223
 msgid "Back to Addon Settings"
-msgstr "الرجوع إلى ملحق الإعدادات"
+msgstr "الرجوع إلى إعدادات الإضافات"
 
 #: advancedcontentfilter.php:225
 msgid "Add a Rule"
-msgstr "أضف توصية"
+msgstr "أضف قاعدة"
 
 #: advancedcontentfilter.php:226
 msgid "Help"
@@ -50,20 +50,20 @@ msgid ""
 "For a complete reference of the available operations and variables, check "
 "the help page."
 msgstr ""
-"إضافة وإدارة قواعد فلتر  المحتوى الشخصية هنا.\n"
+"إضافة وإدارة قواعد ترشيح المحتوى الشخصية هنا.\n"
 " القواعد لها اسم وتعبير سيتم مطابقته مع بيانات المشاركة. للحصول على مرجع كامل للعمليات والمتغيرات المتاحة ، راجع صفحة المساعدة."
 
 #: advancedcontentfilter.php:228
 msgid "Your rules"
-msgstr "توصيات"
+msgstr "القواعد"
 
 #: advancedcontentfilter.php:229
 msgid ""
 "You have no rules yet! Start adding one by clicking on the button above next"
 " to the title."
 msgstr ""
-"لا يوجد توصيات لك بعد!\n"
-" ابدأ في إضافة واحدة من خلال النقر على الزر أعلاه بجوار العنوان"
+"لا يوجد قواعد!\n"
+"أضف واحدة من خلال النقر على الزر أعلاه بجوار العنوان."
 
 #: advancedcontentfilter.php:230
 msgid "Disabled"
@@ -75,35 +75,35 @@ msgstr "مفعل"
 
 #: advancedcontentfilter.php:232
 msgid "Disable this rule"
-msgstr " تعطيل القاعدة"
+msgstr "عطّل القاعدة"
 
 #: advancedcontentfilter.php:233
 msgid "Enable this rule"
-msgstr "تمكين القاعدة"
+msgstr "فعّل القاعدة"
 
 #: advancedcontentfilter.php:234
 msgid "Edit this rule"
-msgstr "تحرير القاعدة"
+msgstr "عدّل هذه القاعدة"
 
 #: advancedcontentfilter.php:235
 msgid "Edit the rule"
-msgstr "تحرير القاعدة"
+msgstr "عدّل القاعدة"
 
 #: advancedcontentfilter.php:236
 msgid "Save this rule"
-msgstr "حفظ القاعدة"
+msgstr "احفظ هذه القاعدة"
 
 #: advancedcontentfilter.php:237
 msgid "Delete this rule"
-msgstr "حذف القاعدة"
+msgstr "احذف هذه القاعدة"
 
 #: advancedcontentfilter.php:238
 msgid "Rule"
-msgstr " القاعدة"
+msgstr "القاعدة"
 
 #: advancedcontentfilter.php:239
 msgid "Close"
-msgstr "غلق"
+msgstr "اغلق"
 
 #: advancedcontentfilter.php:240
 msgid "Add new rule"
@@ -111,11 +111,11 @@ msgstr "أضف قاعدة جديدة"
 
 #: advancedcontentfilter.php:241
 msgid "Rule Name"
-msgstr " اسم القاعدة "
+msgstr "اسم القاعدة"
 
 #: advancedcontentfilter.php:242
 msgid "Rule Expression"
-msgstr "التعبير عن القاعدة"
+msgstr "تعبير القاعدة"
 
 #: advancedcontentfilter.php:243
 msgid "Cancel"
@@ -125,7 +125,7 @@ msgstr "الغ"
 #: advancedcontentfilter.php:332 advancedcontentfilter.php:366
 #: advancedcontentfilter.php:395 advancedcontentfilter.php:416
 msgid "You must be logged in to use this method"
-msgstr "يجب عليك تسجيل الدخول لاستخدام هذه الطريقة"
+msgstr "عليك الولوج لاستخدام هذه الطريقة"
 
 #: advancedcontentfilter.php:336 advancedcontentfilter.php:370
 #: advancedcontentfilter.php:399
@@ -134,11 +134,11 @@ msgstr "رمز أمان النموذج غير صالح ، يرجى تحديث ا
 
 #: advancedcontentfilter.php:348
 msgid "The rule name and expression are required."
-msgstr "يلزم اسم  وتعبير للقاعدة."
+msgstr "يلزم اسم وتعبير للقاعدة."
 
 #: advancedcontentfilter.php:360
 msgid "Rule successfully added"
-msgstr "تمت إضافة القاعدة بنجاح"
+msgstr "نجحت إضافة القاعدة"
 
 #: advancedcontentfilter.php:374 advancedcontentfilter.php:403
 msgid "Rule doesn't exist or doesn't belong to you."
@@ -146,21 +146,21 @@ msgstr "القاعدة غير موجودة أو لا تنتمي إليك."
 
 #: advancedcontentfilter.php:389
 msgid "Rule successfully updated"
-msgstr "تم تحديث القاعدة بنجاح"
+msgstr "نجح تحديث القاعدة"
 
 #: advancedcontentfilter.php:410
 msgid "Rule successfully deleted"
-msgstr "تم حذف القاعدة بنجاح"
+msgstr "نجح حذف القاعدة"
 
 #: advancedcontentfilter.php:420
 msgid "Missing argument: guid."
-msgstr "تفقد النواقص: دليل."
+msgstr "معامل ناقص: دليل."
 
 #: advancedcontentfilter.php:428
 #, php-format
 msgid "Unknown post with guid: %s"
-msgstr "مشاركة غير معروفة مع دليل: 1%s"
+msgstr "مشاركة غير معروفة ذات الدليل: 1%s"
 
 #: src/middlewares.php:49
 msgid "Method not found"
-msgstr "لم يُعثر على التطبيق "
+msgstr "لم يُعثر على التطبيق"
