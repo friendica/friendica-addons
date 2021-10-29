@@ -6,7 +6,7 @@ use Friendica\Core\Config\Capability\IManageConfigValues;
 use Friendica\Core\L10n;
 use Friendica\Core\Storage\Capability\ICanConfigureStorage;
 use Friendica\Network\HTTPClient\Client\HttpClientOptions;
-use Friendica\Network\HTTPClient\Capability\ICanRequestPerHttp;
+use Friendica\Network\HTTPClient\Capability\ICanSendHttpRequests;
 
 /**
  * The WebDav Backend Storage configuration class
@@ -24,7 +24,7 @@ class WebDavConfig implements ICanConfigureStorage
 	/** @var string */
 	private $url;
 
-	/** @var \Friendica\Network\HTTPClient\Capability\ICanRequestPerHttp */
+	/** @var \Friendica\Network\HTTPClient\Capability\ICanSendHttpRequests */
 	private $client;
 
 	/** @var array */
@@ -46,7 +46,7 @@ class WebDavConfig implements ICanConfigureStorage
 		return $this->authOptions;
 	}
 
-	public function __construct(L10n $l10n, IManageConfigValues $config, ICanRequestPerHttp $client)
+	public function __construct(L10n $l10n, IManageConfigValues $config, ICanSendHttpRequests $client)
 	{
 		$this->l10n   = $l10n;
 		$this->config = $config;

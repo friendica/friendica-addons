@@ -7,7 +7,7 @@ use Friendica\Core\Storage\Capability\ICanWriteToStorage;
 use Friendica\Core\Storage\Exception\ReferenceStorageException;
 use Friendica\Core\Storage\Exception\StorageException;
 use Friendica\Network\HTTPClient\Client\HttpClientOptions;
-use Friendica\Network\HTTPClient\Capability\ICanRequestPerHttp;
+use Friendica\Network\HTTPClient\Capability\ICanSendHttpRequests;
 use Friendica\Util\Strings;
 use Psr\Log\LoggerInterface;
 
@@ -21,7 +21,7 @@ class WebDav implements ICanWriteToStorage
 	/** @var string */
 	private $url;
 
-	/** @var ICanRequestPerHttp */
+	/** @var ICanSendHttpRequests */
 	private $client;
 
 	/** @var LoggerInterface */
@@ -33,12 +33,12 @@ class WebDav implements ICanWriteToStorage
 	/**
 	 * WebDav constructor
 	 *
-	 * @param string             $url         The full URL to the webdav endpoint (including the subdirectories)
-	 * @param array              $authOptions The authentication options for the http calls ( ['username', 'password', 'auth_type'] )
-	 * @param ICanRequestPerHttp $client      The http client for communicating with the WebDav endpoint
-	 * @param LoggerInterface    $logger      The standard logging class
+	 * @param string               $url         The full URL to the webdav endpoint (including the subdirectories)
+	 * @param array                $authOptions The authentication options for the http calls ( ['username', 'password', 'auth_type'] )
+	 * @param ICanSendHttpRequests $client      The http client for communicating with the WebDav endpoint
+	 * @param LoggerInterface      $logger      The standard logging class
 	 */
-	public function __construct(string $url, array $authOptions, ICanRequestPerHttp $client, LoggerInterface $logger)
+	public function __construct(string $url, array $authOptions, ICanSendHttpRequests $client, LoggerInterface $logger)
 	{
 		$this->client = $client;
 		$this->logger = $logger;
