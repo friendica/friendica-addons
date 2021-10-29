@@ -6,8 +6,8 @@ use Exception;
 use Friendica\Core\Storage\Capability\ICanWriteToStorage;
 use Friendica\Core\Storage\Exception\ReferenceStorageException;
 use Friendica\Core\Storage\Exception\StorageException;
-use Friendica\Network\HTTPClientOptions;
-use Friendica\Network\IHTTPClient;
+use Friendica\Network\HTTPClient\Client\HttpClientOptions;
+use Friendica\Network\HTTPClient\Capability\ICanSendHttpRequests;
 use Friendica\Util\Strings;
 use Psr\Log\LoggerInterface;
 
@@ -21,7 +21,7 @@ class WebDav implements ICanWriteToStorage
 	/** @var string */
 	private $url;
 
-	/** @var IHTTPClient */
+	/** @var ICanSendHttpRequests */
 	private $client;
 
 	/** @var LoggerInterface */
@@ -33,12 +33,12 @@ class WebDav implements ICanWriteToStorage
 	/**
 	 * WebDav constructor
 	 *
-	 * @param string          $url         The full URL to the webdav endpoint (including the subdirectories)
-	 * @param array           $authOptions The authentication options for the http calls ( ['username', 'password', 'auth_type'] )
-	 * @param IHTTPClient     $client      The http client for communicating with the WebDav endpoint
-	 * @param LoggerInterface $logger      The standard logging class
+	 * @param string               $url         The full URL to the webdav endpoint (including the subdirectories)
+	 * @param array                $authOptions The authentication options for the http calls ( ['username', 'password', 'auth_type'] )
+	 * @param ICanSendHttpRequests $client      The http client for communicating with the WebDav endpoint
+	 * @param LoggerInterface      $logger      The standard logging class
 	 */
-	public function __construct(string $url, array $authOptions, IHTTPClient $client, LoggerInterface $logger)
+	public function __construct(string $url, array $authOptions, ICanSendHttpRequests $client, LoggerInterface $logger)
 	{
 		$this->client = $client;
 		$this->logger = $logger;
@@ -85,7 +85,7 @@ class WebDav implements ICanWriteToStorage
 	 */
 	protected function exists(string $uri): bool
 	{
-		return $this->client->head($uri, [HTTPClientOptions::AUTH => $this->authOptions])->getReturnCode() == 200;
+		return $this->client->head($uri, [HttpClientOptions::AUTH => $this->authOptions])->getReturnCode() == 200;
 	}
 
 	/**
@@ -105,9 +105,9 @@ class WebDav implements ICanWriteToStorage
 		$dom->appendChild($root)->appendChild($prop);
 
 		$opts = [
-			HTTPClientOptions::AUTH    => $this->authOptions,
-			HTTPClientOptions::HEADERS => ['Depth' => 1, 'Prefer' => 'return-minimal', 'Content-Type' => 'application/xml'],
-			HTTPClientOptions::BODY    => $dom->saveXML(),
+			HttpClientOptions::AUTH    => $this->authOptions,
+			HttpClientOptions::HEADERS => ['Depth' => 1, 'Prefer' => 'return-minimal', 'Content-Type' => 'application/xml'],
+			HttpClientOptions::BODY    => $dom->saveXML(),
 		];
 
 		$response = $this->client->request('propfind', $uri, $opts);
@@ -133,7 +133,7 @@ class WebDav implements ICanWriteToStorage
 	 */
 	protected function mkcol(string $uri): bool
 	{
-		return $this->client->request('mkcol', $uri, [HTTPClientOptions::AUTH => $this->authOptions])
+		return $this->client->request('mkcol', $uri, [HttpClientOptions::AUTH => $this->authOptions])
 							->getReturnCode() == 200;
 	}
 
@@ -177,7 +177,7 @@ class WebDav implements ICanWriteToStorage
 		foreach ($pathParts as $pathPart) {
 			$checkUrl = $this->url . $partURL;
 			if (!empty($partURL) && !$this->hasItems($checkUrl)) {
-				$response = $this->client->request('delete', $checkUrl, [HTTPClientOptions::AUTH => $this->authOptions]);
+				$response = $this->client->request('delete', $checkUrl, [HttpClientOptions::AUTH => $this->authOptions]);
 
 				if (!$response->isSuccess()) {
 					if ($response->getReturnCode() == "404") {
@@ -199,7 +199,7 @@ class WebDav implements ICanWriteToStorage
 	{
 		$file = $this->pathForRef($reference);
 
-		$response = $this->client->request('get', $this->url . '/' . $file[0], [HTTPClientOptions::AUTH => $this->authOptions]);
+		$response = $this->client->request('get', $this->url . '/' . $file[0], [HttpClientOptions::AUTH => $this->authOptions]);
 
 		if (!$response->isSuccess()) {
 			throw new ReferenceStorageException(sprintf('Invalid reference %s', $reference));
@@ -225,8 +225,8 @@ class WebDav implements ICanWriteToStorage
 		$this->checkAndCreatePath($file[1]);
 
 		$opts = [
-			HTTPClientOptions::BODY => $data,
-			HTTPClientOptions::AUTH => $this->authOptions,
+			HttpClientOptions::BODY => $data,
+			HttpClientOptions::AUTH => $this->authOptions,
 		];
 
 		$this->client->request('put', $this->url . '/' . $file[0], $opts);
@@ -241,7 +241,7 @@ class WebDav implements ICanWriteToStorage
 	{
 		$file = $this->pathForRef($reference);
 
-		$response = $this->client->request('delete', $this->url . '/' . $file[0], [HTTPClientOptions::AUTH => $this->authOptions]);
+		$response = $this->client->request('delete', $this->url . '/' . $file[0], [HttpClientOptions::AUTH => $this->authOptions]);
 
 		if (!$response->isSuccess()) {
 			throw new ReferenceStorageException(sprintf('Invalid reference %s', $reference));

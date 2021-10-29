@@ -5,8 +5,8 @@ namespace Friendica\Addon\webdav_storage\src;
 use Friendica\Core\Config\Capability\IManageConfigValues;
 use Friendica\Core\L10n;
 use Friendica\Core\Storage\Capability\ICanConfigureStorage;
-use Friendica\Network\HTTPClientOptions;
-use Friendica\Network\IHTTPClient;
+use Friendica\Network\HTTPClient\Client\HttpClientOptions;
+use Friendica\Network\HTTPClient\Capability\ICanSendHttpRequests;
 
 /**
  * The WebDav Backend Storage configuration class
@@ -24,7 +24,7 @@ class WebDavConfig implements ICanConfigureStorage
 	/** @var string */
 	private $url;
 
-	/** @var IHTTPClient */
+	/** @var \Friendica\Network\HTTPClient\Capability\ICanSendHttpRequests */
 	private $client;
 
 	/** @var array */
@@ -46,7 +46,7 @@ class WebDavConfig implements ICanConfigureStorage
 		return $this->authOptions;
 	}
 
-	public function __construct(L10n $l10n, IManageConfigValues $config, IHTTPClient $client)
+	public function __construct(L10n $l10n, IManageConfigValues $config, ICanSendHttpRequests $client)
 	{
 		$this->l10n   = $l10n;
 		$this->config = $config;
@@ -138,7 +138,7 @@ class WebDavConfig implements ICanConfigureStorage
 			];
 		}
 
-		if (!$this->client->head($url, [HTTPClientOptions::AUTH => $options])->isSuccess()) {
+		if (!$this->client->head($url, [HttpClientOptions::AUTH => $options])->isSuccess()) {
 			return [
 				'url' => $this->l10n->t('url is either invalid or not reachable'),
 			];
