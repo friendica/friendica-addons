@@ -10,4 +10,4 @@ $a->strings['The application name you would like to show your posts originating 
 افصل بين أسماء التطبيقات المختلفة بفاصلة.
   سيتم اختيار اسم  واحد عشوائي لكل عملية نشر.';
 $a->strings['Use this application name even if another application was used.'] = 'استخدم اسم هذا التطبيق حتى إذا تم استخدام تطبيق آخر.';
-$a->strings['Save Settings'] = 'حفظ الإعدادات';
+$a->strings['Save Settings'] = 'احفظ الإعدادات';
