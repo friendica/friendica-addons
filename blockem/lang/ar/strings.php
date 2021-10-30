@@ -7,8 +7,8 @@ function string_plural_select_ar($n){
 }}
 $a->strings['Blockem'] = 'احجبه<br>';
 $a->strings['Hides user\'s content by collapsing posts. Also replaces their avatar with generic image.'] = 'إخفاء محتوى المستخدم عن طريق تصغير المشاركات. و استبدال الصورة الرمزية الخاصة بهم بصورة عامة.';
-$a->strings['Comma separated profile URLS:'] = 'عناوين  URLS لملف التعريف مقسمة بفواصل:';
+$a->strings['Comma separated profile URLS:'] = 'عناوين الملفات الشخصية مفصولة بفواصل:';
 $a->strings['Save Settings'] = 'احفظ الإعدادات';
-$a->strings['Filtered user: %s'] = ' تصفية حسب المستخدم :1%s';
+$a->strings['Filtered user: %s'] = 'ترشيح المستخدم :1%s';
 $a->strings['Unblock Author'] = 'ألغ الحجب عن المدون';
 $a->strings['Block Author'] = 'احجب المدون';
