@@ -10,5 +10,5 @@ $a->strings['Public access denied.'] = 'رُفض الوصول العمومي.';
 $a->strings['No entries (some entries may be hidden).'] = 'لا توجد مدخلات (قد تكون بعض المدخلات مخفية).';
 $a->strings['Global Directory'] = 'الدليل العالمي';
 $a->strings['Find on this site'] = 'ابحث في هذا الموقع';
-$a->strings['Results for:'] = 'النتائج عن:';
+$a->strings['Results for:'] = 'النتائج:';
 $a->strings['Find'] = 'ابحث';

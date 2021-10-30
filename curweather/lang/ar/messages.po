@@ -4,14 +4,15 @@
 # 
 # 
 # Translators:
+# abidin toumi <abidin24@tutanota.com>, 2021
 # Farida Khalaf <faridakhalaf@hotmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-01 18:15+0100\n"
-"PO-Revision-Date: 2021-02-20 01:22+0000\n"
-"Last-Translator: Farida Khalaf <faridakhalaf@hotmail.com>\n"
+"PO-Revision-Date: 2021-10-29 08:35+0000\n"
+"Last-Translator: abidin toumi <abidin24@tutanota.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/Friendica/friendica/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -61,11 +62,11 @@ msgstr "في OpenWeatherMap"
 
 #: curweather.php:179
 msgid "No APPID found, please contact your admin to obtain one."
-msgstr "لم يتم العثور على معرف التطبيق ، يرجى الاتصال بالمشرف للحصول على واحد."
+msgstr "لم يتم العثور على معرف التطبيق ، يرجى الاتصال بالمدير للحصول على واحد."
 
 #: curweather.php:191 curweather.php:229
 msgid "Save Settings"
-msgstr "Save Settings"
+msgstr "احفظ الإعدادات"
 
 #: curweather.php:192
 msgid "Settings"
@@ -73,7 +74,7 @@ msgstr "الإعدادات"
 
 #: curweather.php:194
 msgid "Enter either the name of your location or the zip code."
-msgstr "أدخل إما اسم موقعك أو الرمز البريدي."
+msgstr "أدخل اسم موقعك الجغرافي أو الرمز البريدي."
 
 #: curweather.php:195
 msgid "Your Location"
@@ -83,7 +84,7 @@ msgstr "موقعك"
 msgid ""
 "Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or "
 "<em>14476,DE</em>."
-msgstr "تعرّيف موقعك (الاسم أو الرمز البريدي) ، على سبيل المثال برلين ، DE أو 14476 ، DE."
+msgstr "تعرّيف موقعك (الاسم أو الرمز البريدي) ، على سبيل المثال <em>Berlin,DE</em> أو<em>14476,DE</em> ."
 
 #: curweather.php:196
 msgid "Units"
@@ -91,11 +92,11 @@ msgstr "الوحدات"
 
 #: curweather.php:196
 msgid "select if the temperature should be displayed in &deg;C or &deg;F"
-msgstr "حدد ما إذا كان يجب عرض درجة الحرارة بدرجة؛ C أو & بدرجة؛ F."
+msgstr "حدد ما إذا كان يجب عرض درجة الحرارة &deg;C أو &deg;F."
 
 #: curweather.php:197
 msgid "Show weather data"
-msgstr "إظهار بيانات الطقس"
+msgstr "أظهر بيانات الطقس"
 
 #: curweather.php:232
 msgid "Caching Interval"
@@ -105,7 +106,7 @@ msgstr "فترة التخزين المؤقت"
 msgid ""
 "For how long should the weather data be cached? Choose according your "
 "OpenWeatherMap account type."
-msgstr "إلى متى يجب تخزين بيانات الطقس مؤقتًا؟ اختر وفقًا لنوع حساب OpenWeatherMap الخاص بك. "
+msgstr "إلى متى يجب تخزين بيانات الطقس مؤقتًا؟ اختر وفقًا لنوع حساب OpenWeatherMap. "
 
 #: curweather.php:235
 msgid "no cache"

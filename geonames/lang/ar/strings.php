@@ -7,5 +7,5 @@ function string_plural_select_ar($n){
 }}
 $a->strings['Geonames Settings'] = 'إعدادات الأسماء الجغرافية';
 $a->strings['Replace numerical coordinates by the nearest populated location name in your posts.'] = 'استبدل الإحداثيات الرقمية بأقرب اسم موقع مأهول في مشاركاتك.';
-$a->strings['Enable Geonames Addon'] = ' تمكين ملحق الأسماء الجغرافية';
-$a->strings['Save Settings'] = 'حفظ الإعدادات';
+$a->strings['Enable Geonames Addon'] = ' تفعيل إضافة الأسماء الجغرافية';
+$a->strings['Save Settings'] = 'احفظ الإعدادات';

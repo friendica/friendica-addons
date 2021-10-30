@@ -7,8 +7,8 @@ function string_plural_select_ar($n){
 }}
 $a->strings['Post to Dreamwidth'] = 'انشر على دريمويدز';
 $a->strings['Dreamwidth Export'] = ' تصدير دريمويدز';
-$a->strings['Enable dreamwidth Post Addon'] = ' تمكين دريمويدز من نشر ملحق';
+$a->strings['Enable dreamwidth Post Addon'] = 'فعل إضافة مشاركة دريمويدز ';
 $a->strings['dreamwidth username'] = ' اسم مستخدم دريمويدز';
 $a->strings['dreamwidth password'] = 'كلمة مرور دريمويدز';
-$a->strings['Post to dreamwidth by default'] = ' نشر على دريمويدز بشكل افتراضي';
-$a->strings['Save Settings'] = 'حفظ الإعدادات';
+$a->strings['Post to dreamwidth by default'] = ' شارك على دريمويدز افتراضيا';
+$a->strings['Save Settings'] = 'احفظ الإعدادات';

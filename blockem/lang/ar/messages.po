@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-01 18:15+0100\n"
-"PO-Revision-Date: 2021-10-26 18:46+0000\n"
+"PO-Revision-Date: 2021-10-29 08:15+0000\n"
 "Last-Translator: abidin toumi <abidin24@tutanota.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/Friendica/friendica/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -32,7 +32,7 @@ msgstr "إخفاء محتوى المستخدم عن طريق تصغير المش
 
 #: blockem.php:51
 msgid "Comma separated profile URLS:"
-msgstr "عناوين  URLS لملف التعريف مقسمة بفواصل:"
+msgstr "عناوين الملفات الشخصية مفصولة بفواصل:"
 
 #: blockem.php:55
 msgid "Save Settings"
@@ -41,7 +41,7 @@ msgstr "احفظ الإعدادات"
 #: blockem.php:131
 #, php-format
 msgid "Filtered user: %s"
-msgstr " تصفية حسب المستخدم :1%s"
+msgstr "ترشيح المستخدم :1%s"
 
 #: blockem.php:190
 msgid "Unblock Author"
