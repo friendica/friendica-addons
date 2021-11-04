@@ -85,6 +85,7 @@ use Friendica\Model\Tag;
 use Friendica\Model\User;
 use Friendica\Protocol\Activity;
 use Friendica\Core\Config\Util\ConfigFileLoader;
+use Friendica\Core\System;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Images;
 use Friendica\Util\Strings;
@@ -734,7 +735,7 @@ function twitter_post_hook(App $a, array &$b)
 
 					$img_str = DI::httpClient()->fetch($image['url']);
 
-					$tempfile = tempnam(get_temppath(), 'cache');
+					$tempfile = tempnam(System::getTempPath(), 'cache');
 					file_put_contents($tempfile, $img_str);
 
 					Logger::info('Uploading', ['id' => $b['id'], 'image' => $image['url']]);

@@ -15,6 +15,7 @@ use Friendica\DI;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Network\HTTPException\ForbiddenException;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
@@ -92,7 +93,7 @@ function blockbot_init_1(App $a) {
 
 	foreach ($agents as $agent) {
 		if (stristr($_SERVER['HTTP_USER_AGENT'], $agent)) {
-			System::httpExit(403, 'Bots are not allowed');
+			throw new ForbiddenException('Bots are not allowed');
 		}
 	}
 
@@ -130,5 +131,5 @@ function blockbot_init_1(App $a) {
 	}
 
 	logger::info('Blocked bot', $logdata);
-	System::httpExit(403, 'Bots are not allowed');
+	throw new ForbiddenException('Bots are not allowed');
 }

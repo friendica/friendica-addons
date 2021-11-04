@@ -25,7 +25,7 @@ function notifyall_addon_admin(App $a, &$o)
 
 function notifyall_post(App $a)
 {
-	if(!is_site_admin()) {
+	if (!$a->isSiteAdmin()) {
 		return;
 	}
 
@@ -62,7 +62,7 @@ function notifyall_post(App $a)
 
 function notifyall_content(&$a)
 {
-	if (! is_site_admin()) {
+	if (!$a->isSiteAdmin()) {
 		return '';
 	}
 

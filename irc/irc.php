@@ -118,7 +118,7 @@ return $o;
 }
 
 function irc_addon_admin_post (&$a) {
-	if(! is_site_admin())
+	if(!$a->isSiteAdmin())
 		return;
 
 	if($_POST['irc-submit']) {

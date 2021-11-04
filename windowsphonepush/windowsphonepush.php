@@ -36,6 +36,7 @@ use Friendica\DI;
 use Friendica\Model\Item;
 use Friendica\Model\Post;
 use Friendica\Model\User;
+use Friendica\Network\HTTPException\UnauthorizedException;
 
 function windowsphonepush_install()
 {
@@ -436,8 +437,7 @@ function windowsphonepush_login(App $a)
 	if (!isset($_SERVER['PHP_AUTH_USER'])) {
 		Logger::info('API_login: ' . print_r($_SERVER, true));
 		header('WWW-Authenticate: Basic realm="Friendica"');
-		header('HTTP/1.0 401 Unauthorized');
-		die('This api requires login');
+		throw new UnauthorizedException('This api requires login');
 	}
 
 	$user_id = User::authenticate($_SERVER['PHP_AUTH_USER'], trim($_SERVER['PHP_AUTH_PW']));
@@ -447,8 +447,7 @@ function windowsphonepush_login(App $a)
 	} else {
 		Logger::info('API_login failure: ' . print_r($_SERVER, true));
 		header('WWW-Authenticate: Basic realm="Friendica"');
-		header('HTTP/1.0 401 Unauthorized');
-		die('This api requires login');
+		throw new UnauthorizedException('This api requires login');
 	}
 
 	DI::auth()->setForUser($a, $record);
