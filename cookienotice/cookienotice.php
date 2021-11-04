@@ -35,7 +35,7 @@ function cookienotice_install()
  */
 function cookienotice_addon_admin(App $a, &$s)
 {
-	if (!is_site_admin()) {
+	if (!$a->isSiteAdmin()) {
 		return;
 	}
 
@@ -63,7 +63,7 @@ function cookienotice_addon_admin(App $a, &$s)
  */
 function cookienotice_addon_admin_post(App $a)
 {
-	if (!is_site_admin()) {
+	if (!$a->isSiteAdmin()) {
 		return;
 	}
 

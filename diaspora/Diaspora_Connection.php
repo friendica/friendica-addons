@@ -1,4 +1,7 @@
 <?php
+
+use Friendica\Core\System;
+
 /**
  * Super-skeletal class to interact with Diaspora.
  *
@@ -29,7 +32,7 @@ class Diaspora_Connection {
 			$this->setPassword($password);
 		}
 
-		$this->cookiejar = tempnam(get_temppath(), 'cookies');
+		$this->cookiejar = tempnam(System::getTempPath(), 'cookies');
 		return $this;
 	}
 

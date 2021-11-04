@@ -19,7 +19,7 @@ function pageheader_install() {
 
 function pageheader_addon_admin(App &$a, &$s)
 {
-	if(! is_site_admin()) {
+	if (!$a->isSiteAdmin()) {
 		return;
 	}
 
@@ -43,7 +43,7 @@ function pageheader_addon_admin(App &$a, &$s)
 
 function pageheader_addon_admin_post(App $a)
 {
-	if(!is_site_admin()) {
+	if (!$a->isSiteAdmin()) {
 		return;
 	}
 

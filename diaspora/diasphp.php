@@ -1,4 +1,7 @@
 <?php
+
+use Friendica\Core\System;
+
 /**
  * Ein fies zusammengehackter PHP-Diaspory-Client, der direkt von diesem abgeschaut ist:
  * https://github.com/Javafant/diaspy/blob/master/client.py
@@ -11,7 +14,7 @@ class Diasphp {
 		$this->token_regex = '/content="(.*?)" name="csrf-token/';
 
 		$this->pod = $pod;
-		$this->cookiejar = tempnam(get_temppath(), 'cookies');
+		$this->cookiejar = tempnam(System::getTempPath(), 'cookies');
 	}
 
 	function __destruct() {

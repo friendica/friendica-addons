@@ -47,6 +47,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
+use Friendica\Core\System;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Contact;
@@ -599,7 +600,7 @@ function statusnet_post_hook(App $a, &$b)
 
 		if ($image != "") {
 			$img_str = DI::httpClient()->fetch($image);
-			$tempfile = tempnam(get_temppath(), "cache");
+			$tempfile = tempnam(System::getTempPath(), "cache");
 			file_put_contents($tempfile, $img_str);
 			$postdata = ["status" => $msg, "media[]" => $tempfile];
 		} else {
@@ -1417,7 +1418,7 @@ function statusnet_convertmsg(App $a, $body)
 			} else {
 				$img_str = DI::httpClient()->fetch($expanded_url, 4);
 
-				$tempfile = tempnam(get_temppath(), "cache");
+				$tempfile = tempnam(System::getTempPath(), "cache");
 				file_put_contents($tempfile, $img_str);
 				$mime = mime_content_type($tempfile);
 				unlink($tempfile);

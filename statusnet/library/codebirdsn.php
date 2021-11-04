@@ -2,6 +2,8 @@
 
 namespace CodebirdSN;
 
+use Friendica\Core\System;
+
 /**
  * A Twitter library in PHP.
  *
@@ -820,7 +822,7 @@ class CodebirdSN
                 }
 
 		// To-Do
-		$tempfile = tempnam(get_temppath(), "mimecheck");
+		$tempfile = tempnam(System::getTempPath(), "mimecheck");
 		file_put_contents($tempfile, $data);
 		$mime = image_type_to_mime_type(exif_imagetype($tempfile));
 		unlink($tempfile);

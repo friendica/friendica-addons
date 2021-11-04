@@ -204,7 +204,7 @@ function curweather_addon_settings(App $a, &$s)
 // for accessing the API of openweathermap
 function curweather_addon_admin_post(App $a)
 {
-	if (!is_site_admin()) {
+	if (!$a->isSiteAdmin()) {
 		return;
 	}
 
@@ -216,7 +216,7 @@ function curweather_addon_admin_post(App $a)
 
 function curweather_addon_admin(App $a, &$o)
 {
-	if (!is_site_admin()) {
+	if (!$a->isSiteAdmin()) {
 		return;
 	}
 

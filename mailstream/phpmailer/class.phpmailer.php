@@ -17,6 +17,8 @@
  * FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+use Friendica\Core\System;
+
 /**
  * PHPMailer - PHP email creation and transport class.
  * @package PHPMailer
@@ -2350,11 +2352,11 @@ class PHPMailer
                     throw new phpmailerException($this->lang('extension_missing') . 'openssl');
                 }
                 // @TODO would be nice to use php://temp streams here, but need to wrap for PHP < 5.1
-                $file = tempnam(get_temppath(), 'mail');
+                $file = tempnam(System::getTempPath(), 'mail');
                 if (false === file_put_contents($file, $body)) {
                     throw new phpmailerException($this->lang('signing') . ' Could not write temp file');
                 }
-                $signed = tempnam(get_temppath(), 'signed');
+                $signed = tempnam(System::getTempPath(), 'signed');
                 //Workaround for PHP bug https://bugs.php.net/bug.php?id=69197
                 if (empty($this->sign_extracerts_file)) {
                     $sign = @openssl_pkcs7_sign(

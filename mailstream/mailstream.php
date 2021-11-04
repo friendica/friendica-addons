@@ -10,6 +10,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\System;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\DI;
@@ -204,7 +205,7 @@ function mailstream_do_images(&$item, &$attachments)
 		if (!$components) {
 			continue;
 		}
-		$cookiejar = tempnam(get_temppath(), 'cookiejar-mailstream-');
+		$cookiejar = tempnam(System::getTempPath(), 'cookiejar-mailstream-');
 		$curlResult = DI::httpClient()->fetchFull($url, 0, '', $cookiejar);
 		$attachments[$url] = [
 			'data' => $curlResult->getBody(),
