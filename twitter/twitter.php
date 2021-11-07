@@ -791,7 +791,7 @@ function twitter_post_hook(App $a, array &$b)
 
 function twitter_addon_admin_post(App $a)
 {
-	$consumerkey    = trim($_POST['consumerkey'] ?? : '');
+	$consumerkey    = trim($_POST['consumerkey'] ?? '');
 	$consumersecret = trim($_POST['consumersecret'] ?? '');
 	DI::config()->set('twitter', 'consumerkey', $consumerkey);
 	DI::config()->set('twitter', 'consumersecret', $consumersecret);
