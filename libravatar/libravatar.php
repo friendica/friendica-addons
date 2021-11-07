@@ -13,7 +13,6 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Core\Config\Util\ConfigFileLoader;
-use Friendica\Util\Strings;
 
 /**
  * Installs the addon hook
@@ -90,6 +89,6 @@ function libravatar_addon_admin(&$a, &$o)
  */
 function libravatar_addon_admin_post(&$a)
 {
-	$default_avatar = (!empty($_POST['avatar']) ? Strings::escapeTags(trim($_POST['avatar'])) : 'identicon');
+	$default_avatar = trim($_POST['avatar'] ?? 'identicon');
 	DI::config()->set('libravatar', 'default_avatar', $default_avatar);
 }

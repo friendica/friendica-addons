@@ -66,9 +66,9 @@ function forumdirectory_content(App $a)
 	Nav::setSelected('directory');
 
 	if (!empty($forumdirectory_search)) {
-		$search = Strings::escapeTags(trim($forumdirectory_search));
+		$search = trim($forumdirectory_search);
 	} else {
-		$search = (!empty($_GET['search']) ? Strings::escapeTags(trim(rawurldecode($_GET['search']))) : '');
+		$search = (!empty($_GET['search']) ? trim(rawurldecode($_GET['search'])) : '');
 	}
 
 	$gdirpath = '';

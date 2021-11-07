@@ -9,7 +9,6 @@
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;
-use Friendica\Util\Strings;
 
 function webrtc_install() {
         Hook::register('app_menu', 'addon/webrtc/webrtc.php', 'webrtc_app_menu');
@@ -27,7 +26,7 @@ function webrtc_addon_admin (&$a, &$o) {
 	]);
 }
 function webrtc_addon_admin_post (&$a) {
-        $url = (!empty($_POST['webrtcurl']) ? Strings::escapeTags(trim($_POST['webrtcurl'])) : '');
+        $url = trim($_POST['webrtcurl'] ?? '');
 	    DI::config()->set('webrtc', 'webrtcurl', $url);
 }
 

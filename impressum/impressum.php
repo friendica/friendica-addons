@@ -14,7 +14,6 @@ use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Core\Config\Util\ConfigFileLoader;
 use Friendica\Util\Proxy as ProxyUtils;
-use Friendica\Util\Strings;
 
 function impressum_install() {
 	Hook::register('load_config', 'addon/impressum/impressum.php', 'impressum_load_config');
@@ -79,12 +78,12 @@ function impressum_show($a,&$b) {
 }
 
 function impressum_addon_admin_post (&$a) {
-    $owner = (!empty($_POST['owner']) ? Strings::escapeTags(trim($_POST['owner'])) : '');
-    $ownerprofile = (!empty($_POST['ownerprofile']) ? Strings::escapeTags(trim($_POST['ownerprofile'])) : '');
-    $postal = (!empty($_POST['postal']) ? (trim($_POST['postal'])) : '');
-    $notes = (!empty($_POST['notes']) ? (trim($_POST['notes'])) : '');
-    $email = (!empty($_POST['email']) ? Strings::escapeTags(trim($_POST['email'])) : '');
-    $footer_text = (!empty($_POST['footer_text']) ? (trim($_POST['footer_text'])) : '');
+    $owner = trim($_POST['owner'] ?? '');
+    $ownerprofile = trim($_POST['ownerprofile'] ?? '');
+    $postal = trim($_POST['postal'] ?? '');
+    $notes = trim($_POST['notes'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $footer_text = trim($_POST['footer_text'] ?? '');
     DI::config()->set('impressum','owner',strip_tags($owner));
     DI::config()->set('impressum','ownerprofile',strip_tags($ownerprofile));
     DI::config()->set('impressum','postal',strip_tags($postal));
