@@ -108,8 +108,8 @@ function gravatar_addon_admin (&$a, &$o) {
 function gravatar_addon_admin_post (&$a) {
 	BaseModule::checkFormSecurityToken('gravatarsave');
 
-	$default_avatar = (!empty($_POST['avatar']) ? trim($_POST['avatar']) : 'identicon');
-	$rating = (!empty($_POST['rating']) ? trim($_POST['rating']) : 'g');
+	$default_avatar = trim($_POST['avatar'] ?? 'identicon');
+	$rating = trim($_POST['rating'] ?? 'g');
 	DI::config()->set('gravatar', 'default_avatar', $default_avatar);
 	DI::config()->set('gravatar', 'rating', $rating);
 }

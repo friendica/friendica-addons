@@ -75,8 +75,8 @@ function tumblr_addon_admin(App $a, &$o)
 
 function tumblr_addon_admin_post(App $a)
 {
-	$consumer_key    = (!empty($_POST['consumer_key'])    ? trim($_POST['consumer_key'])   : '');
-	$consumer_secret = (!empty($_POST['consumer_secret']) ? trim($_POST['consumer_secret']): '');
+	$consumer_key    = trim($_POST['consumer_key'] ?? : '');
+	$consumer_secret = trim($_POST['consumer_secret'] ?? '');
 
 	DI::config()->set('tumblr', 'consumer_key',$consumer_key);
 	DI::config()->set('tumblr', 'consumer_secret',$consumer_secret);

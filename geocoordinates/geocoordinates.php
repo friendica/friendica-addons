@@ -90,9 +90,9 @@ function geocoordinates_addon_admin(&$a, &$o)
 
 function geocoordinates_addon_admin_post(&$a)
 {
-	$api_key  = (!empty($_POST['api_key']) ? trim($_POST['api_key']) : '');
+	$api_key  = trim($_POST['api_key'] ?? '');
 	DI::config()->set('geocoordinates', 'api_key', $api_key);
 
-	$language  = (!empty($_POST['language']) ? trim($_POST['language']) : '');
+	$language  = trim($_POST['language'] ?? '');
 	DI::config()->set('geocoordinates', 'language', $language);
 }

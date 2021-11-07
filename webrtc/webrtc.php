@@ -26,7 +26,7 @@ function webrtc_addon_admin (&$a, &$o) {
 	]);
 }
 function webrtc_addon_admin_post (&$a) {
-        $url = (!empty($_POST['webrtcurl']) ? trim($_POST['webrtcurl']) : '');
+        $url = trim($_POST['webrtcurl'] ?? '');
 	    DI::config()->set('webrtc', 'webrtcurl', $url);
 }
 

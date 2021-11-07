@@ -125,12 +125,12 @@ function public_server_login($a, $b)
 function public_server_addon_admin_post(&$a)
 {
 	BaseModule::checkFormSecurityTokenRedirectOnError('/admin/addons/publicserver', 'publicserver');
-	$expiredays = (!empty($_POST['expiredays']) ? trim($_POST['expiredays']) : '');
-	$expireposts = (!empty($_POST['expireposts']) ? trim($_POST['expireposts']) : '');
-	$nologin = (!empty($_POST['nologin']) ? trim($_POST['nologin']) : '');
-	$flagusers = (!empty($_POST['flagusers']) ? trim($_POST['flagusers']) : '');
-	$flagposts = (!empty($_POST['flagposts']) ? trim($_POST['flagposts']) : '');
-	$flagpostsexpire = (!empty($_POST['flagpostsexpire']) ? trim($_POST['flagpostsexpire']) : '');
+	$expiredays = trim($_POST['expiredays'] ?? '');
+	$expireposts = trim($_POST['expireposts'] ?? '');
+	$nologin = trim($_POST['nologin'] ?? '');
+	$flagusers = trim($_POST['flagusers'] ?? '');
+	$flagposts = trim($_POST['flagposts'] ?? '');
+	$flagpostsexpire = trim($_POST['flagpostsexpire'] ?? '');
 	DI::config()->set('public_server', 'expiredays', $expiredays);
 	DI::config()->set('public_server', 'expireposts', $expireposts);
 	DI::config()->set('public_server', 'nologin', $nologin);

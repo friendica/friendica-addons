@@ -101,10 +101,10 @@ function piwik_addon_admin (&$a, &$o) {
 	]);
 }
 function piwik_addon_admin_post (&$a) {
-	$url = (!empty($_POST['baseurl']) ? trim($_POST['baseurl']) : '');
-	$id = (!empty($_POST['siteid']) ? trim($_POST['siteid']) : '');
-	$optout = (!empty($_POST['optout']) ? trim($_POST['optout']) : '');
-	$async = (!empty($_POST['async']) ? trim($_POST['async']) : '');
+	$url = trim($_POST['baseurl'] ?? '');
+	$id = trim($_POST['siteid'] ?? '');
+	$optout = trim($_POST['optout'] ?? '');
+	$async = trim($_POST['async'] ?? '');
 	DI::config()->set('piwik', 'baseurl', $url);
 	DI::config()->set('piwik', 'siteid', $id);
 	DI::config()->set('piwik', 'optout', $optout);
