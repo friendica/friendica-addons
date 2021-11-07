@@ -791,8 +791,8 @@ function twitter_post_hook(App $a, array &$b)
 
 function twitter_addon_admin_post(App $a)
 {
-	$consumerkey    = !empty($_POST['consumerkey'])    ? Strings::escapeTags(trim($_POST['consumerkey']))    : '';
-	$consumersecret = !empty($_POST['consumersecret']) ? Strings::escapeTags(trim($_POST['consumersecret'])) : '';
+	$consumerkey    = !empty($_POST['consumerkey'])    ? trim($_POST['consumerkey'])    : '';
+	$consumersecret = !empty($_POST['consumersecret']) ? trim($_POST['consumersecret']) : '';
 	DI::config()->set('twitter', 'consumerkey', $consumerkey);
 	DI::config()->set('twitter', 'consumersecret', $consumersecret);
 }

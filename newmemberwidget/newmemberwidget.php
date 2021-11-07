@@ -11,7 +11,6 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
-use Friendica\Util\Strings;
 
 function newmemberwidget_install()
 {
@@ -49,7 +48,7 @@ function newmemberwidget_network_mod_init ($a, $b)
 function newmemberwidget_addon_admin_post(&$a)
 {
 	$ft = (!empty($_POST['freetext']) ? trim($_POST['freetext']) : "");
-	$lsn = (!empty($_POST['localsupportname']) ? Strings::escapeTags(trim($_POST['localsupportname'])) : "");
+	$lsn = (!empty($_POST['localsupportname']) ? trim($_POST['localsupportname']) : "");
 	$gs = intval($_POST['linkglobalsupport']);
 	$ls = intval($_POST['linklocalsupport']);
 	DI::config()->set('newmemberwidget', 'freetext',           trim($ft));
