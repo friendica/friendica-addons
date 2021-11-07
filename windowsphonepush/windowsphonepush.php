@@ -440,11 +440,16 @@ function windowsphonepush_login(App $a)
 		throw new UnauthorizedException('This api requires login');
 	}
 
-	$user_id = User::authenticate($_SERVER['PHP_AUTH_USER'], trim($_SERVER['PHP_AUTH_PW']));
+	try {
+		$user_id = User::getIdFromPasswordAuthentication($_SERVER['PHP_AUTH_USER'], trim($_SERVER['PHP_AUTH_PW']));
+		if ($user_id) {
+			$record = DBA::selectFirst('user', [], ['uid' => $user_id]);
+		}
+	} catch (Exception $ex) {
+		$record = [];
+	}
 
-	if ($user_id) {
-		$record = DBA::selectFirst('user', [], ['uid' => $user_id]);
-	} else {
+	if (empty($record)) {
 		Logger::info('API_login failure: ' . print_r($_SERVER, true));
 		header('WWW-Authenticate: Basic realm="Friendica"');
 		throw new UnauthorizedException('This api requires login');
