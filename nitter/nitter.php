@@ -24,13 +24,13 @@
  */
 
 use Friendica\App;
-use Friendica\Core\Addon;
+use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
 function nitter_install()
 {
-	Addon::registerHook ('prepare_body_final', 'addon/nitter/nitter.php', 'nitter_render');
+	Hook::register('prepare_body_final', 'addon/nitter/nitter.php', 'nitter_render');
 }
 
 /* Handle the send data from the admin settings
