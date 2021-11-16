@@ -1,5 +1,6 @@
 <?php
 
+@include_once dirname(__FILE__).'/../vendor/autoload.php';
 require_once dirname(__FILE__).'/../lib/openpgp.php';
 require_once dirname(__FILE__).'/../lib/openpgp_crypt_rsa.php';
 
@@ -14,5 +15,3 @@ $verify = new OpenPGP_Crypt_RSA($wkey);
 
 /* Dump verification information to STDOUT */
 var_dump($verify->verify($m));
-
-?>

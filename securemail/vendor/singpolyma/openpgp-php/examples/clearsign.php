@@ -1,5 +1,6 @@
 <?php
 
+@include_once dirname(__FILE__).'/../vendor/autoload.php';
 require_once dirname(__FILE__).'/../lib/openpgp.php';
 require_once dirname(__FILE__).'/../lib/openpgp_crypt_rsa.php';
 
@@ -27,5 +28,3 @@ echo "-----BEGIN PGP SIGNED MESSAGE-----\nHash: SHA256\n\n";
 // trailing whitespace to lines.
 echo preg_replace("/^-/", "- -",  $packets[0]->data)."\n";
 echo OpenPGP::enarmor($packets[1][0]->to_bytes(), "PGP SIGNATURE");
-
-?>

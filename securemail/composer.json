@@ -11,7 +11,7 @@
     ],
     "require": {
         "phpseclib/phpseclib": "^2.0",
-        "singpolyma/openpgp-php": "^0.3.0"
+        "singpolyma/openpgp-php": "^0.5.0"
     },
     "license": "AGPL-3.0+",
     "minimum-stability": "stable",

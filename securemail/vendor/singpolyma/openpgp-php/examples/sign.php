@@ -1,5 +1,6 @@
 <?php
 
+@include_once dirname(__FILE__).'/../vendor/autoload.php';
 require_once dirname(__FILE__).'/../lib/openpgp.php';
 require_once dirname(__FILE__).'/../lib/openpgp_crypt_rsa.php';
 
@@ -18,5 +19,3 @@ $m = $sign->sign($data);
 
 /* Output the raw message bytes to STDOUT */
 echo $m->to_bytes();
-
-?>
