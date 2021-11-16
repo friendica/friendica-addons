@@ -3,6 +3,7 @@
 // USAGE: php examples/deASCIIdeCrypt.php secretkey.asc password message.asc
 // This will fail if the algo on key or message is not 3DES or AES
 
+@include_once dirname(__FILE__).'/../vendor/autoload.php';
 require_once dirname(__FILE__).'/../lib/openpgp.php';
 require_once dirname(__FILE__).'/../lib/openpgp_crypt_rsa.php';
 require_once dirname(__FILE__).'/../lib/openpgp_crypt_symmetric.php';

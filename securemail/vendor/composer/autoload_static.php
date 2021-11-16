@@ -25,6 +25,7 @@ class ComposerStaticInitSecuremailAddon
     );
 
     public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'MCryptWrapper' => __DIR__ . '/..' . '/singpolyma/openpgp-php/lib/openpgp_mcrypt_wrapper.php',
         'OpenPGP' => __DIR__ . '/..' . '/singpolyma/openpgp-php/lib/openpgp.php',
         'OpenPGP_AsymmetricSessionKeyPacket' => __DIR__ . '/..' . '/singpolyma/openpgp-php/lib/openpgp.php',
@@ -74,6 +75,7 @@ class ComposerStaticInitSecuremailAddon
         'OpenPGP_TrustPacket' => __DIR__ . '/..' . '/singpolyma/openpgp-php/lib/openpgp.php',
         'OpenPGP_UserAttributePacket' => __DIR__ . '/..' . '/singpolyma/openpgp-php/lib/openpgp.php',
         'OpenPGP_UserIDPacket' => __DIR__ . '/..' . '/singpolyma/openpgp-php/lib/openpgp.php',
+        'OpenSSLWrapper' => __DIR__ . '/..' . '/singpolyma/openpgp-php/lib/openpgp_openssl_wrapper.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
