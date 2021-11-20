@@ -24,9 +24,7 @@ function showmore_addon_settings(&$a, &$s)
 		return;
 	}
 
-	/* Add our stylesheet to the page so we can make our settings look nice */
-
-	DI::page()['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.DI::baseUrl()->get().'/addon/showmore/showmore.css'.'" media="all"/>'."\r\n";
+	DI::page()->registerStylesheet(__DIR__ . '/showmore.css', 'all');
 
 	$enable_checked = (intval(DI::pConfig()->get(local_user(), 'showmore', 'disable')) ? '' : ' checked="checked"');
 	$chars = DI::pConfig()->get(local_user(), 'showmore', 'chars', 1100);

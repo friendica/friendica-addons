@@ -30,7 +30,7 @@ function qcomment_install()
 
 function qcomment_footer(\Friendica\App $a, &$b)
 {
-	DI::page()->registerFooterScript(__DIR__ . '/qcomment.js');
+	DI::page()->registerFooterScript('addon/qcomment/qcomment.js');
 }
 
 function qcomment_addon_settings(&$a, &$s)

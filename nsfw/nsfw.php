@@ -54,9 +54,8 @@ function nsfw_addon_settings(&$a, &$s)
 		return;
 	}
 
-	/* Add our stylesheet to the page so we can make our settings look nice */
+	DI::page()->registerStylesheet(__DIR__ . '/nsfw.css', 'all');
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/nsfw/nsfw.css' . '" media="all" />' . "\r\n";
 
 	$enable_checked = (intval(DI::pConfig()->get(local_user(), 'nsfw', 'disable')) ? '' : ' checked="checked" ');
 	$words = DI::pConfig()->get(local_user(), 'nsfw', 'words');

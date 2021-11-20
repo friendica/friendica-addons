@@ -25,9 +25,8 @@ function superblock_addon_settings(&$a, &$s)
 		return;
 	}
 
-	/* Add our stylesheet to the page so we can make our settings look nice */
+	DI::page()->registerStylesheet(__DIR__ . '/superblock.css', 'all');
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/superblock/superblock.css' . '" media="all" />' . "\r\n";
 
 	$words = DI::pConfig()->get(local_user(), 'system', 'blocked');
 	if (!$words) {

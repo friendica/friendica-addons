@@ -93,7 +93,7 @@ function diaspora_settings(App $a, &$s)
 		}
 	}
 
-	DI::page()->registerStylesheet('addon/diaspora/diaspora.css');
+	DI::page()->registerStylesheet(__DIR__ . '/diaspora.css');
 
 	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/diaspora/');
 	$s .= Renderer::replaceMacros($t, [

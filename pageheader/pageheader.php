@@ -23,9 +23,7 @@ function pageheader_addon_admin(App &$a, &$s)
 		return;
 	}
 
-    /* Add our stylesheet to the page so we can make our settings look nice */
-	$stylesheetPath = __DIR__ . '/pageheader.css';
-	DI::page()->registerStylesheet($stylesheetPath);
+	DI::page()->registerStylesheet(__DIR__ . '/pageheader.css');
 
 	$words = DI::config()->get('pageheader','text');
 	if(! $words)
@@ -62,8 +60,7 @@ function pageheader_fetch(App $a, &$b)
 		$s = DI::config()->get('pageheader', 'text');
 	}
 
-	$stylesheetPath = __DIR__ .'/pageheader.css';
-	DI::page()->registerStylesheet($stylesheetPath);
+	DI::page()->registerStylesheet(__DIR__ .'/pageheader.css');
     
     if ($s) {
         $b .= '<div class="pageheader">' . $s . '</div>';

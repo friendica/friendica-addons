@@ -129,9 +129,7 @@ function geonames_addon_settings(App $a, &$s)
 		return;
 	}
 
-	/* Add our stylesheet to the page so we can make our settings look nice */
-	$stylesheetPath = __DIR__ . '/geonames.css';
-	DI::page()->registerStylesheet($stylesheetPath);
+	DI::page()->registerStylesheet(__DIR__ . '/geonames.css');
 
 	/* Get the current state of our config variable */
 	$enabled = intval(DI::pConfig()->get(local_user(), 'geonames', 'enable'));

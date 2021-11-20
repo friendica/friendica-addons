@@ -85,11 +85,8 @@ function cookienotice_addon_admin_post(App $a)
  */
 function cookienotice_page_content_top(App $a, &$b)
 {
-	$stylesheetPath = __DIR__ . '/cookienotice.css';
-	$footerscriptPath = __DIR__ . '/cookienotice.js';
-
-	DI::page()->registerStylesheet($stylesheetPath);
-	DI::page()->registerFooterScript($footerscriptPath);
+	DI::page()->registerStylesheet(__DIR__ . '/cookienotice.css');
+	DI::page()->registerFooterScript(__DIR__ . '/cookienotice.js');
 }
 
 /**
