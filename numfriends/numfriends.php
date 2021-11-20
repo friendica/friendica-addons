@@ -5,8 +5,11 @@
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
+
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 use Friendica\DI;
 
 function numfriends_install() {
@@ -39,30 +42,22 @@ function numfriends_settings_post($a,$post) {
  * Add our own settings info to the page.
  *
  */
-function numfriends_settings(&$a, &$s)
+function numfriends_settings(App &$a, array &$data)
 {
 	if (! local_user()) {
 		return;
 	}
 
-	/* Add our stylesheet to the page so we can make our settings look nice */
-
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/numfriends/numfriends.css' . '" media="all" />' . "\r\n";
-
-	/* Get the current state of our config variable */
-
 	$numfriends = DI::pConfig()->get(local_user(), 'system', 'display_friend_count', 24);
 	
-	/* Add some HTML to the existing form */
+	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/numfriends/');
+	$html = Renderer::replaceMacros($t, [
+		'$numfriends' => ['numfriends', DI::l10n()->t('How many contacts to display on profile sidebar'), $numfriends],
+	]);
 
-	$s .= '<div class="settings-block">';
-	$s .= '<h3>' . DI::l10n()->t('Numfriends Settings') . '</h3>';
-	$s .= '<div id="numfriends-wrapper">';
-	$s .= '<label id="numfriends-label" for="numfriends">' . DI::l10n()->t('How many contacts to display on profile sidebar') . '</label>';
-	$s .= '<input id="numfriends-input" type="text" name="numfriends" value="' . intval($numfriends) . '" ' . '/>';
-	$s .= '</div><div class="clear"></div>';
-
-	/* provide a submit button */
-
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="numfriends-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div></div>';
+	$data = [
+		'addon' => 'numfriends',
+		'title' => DI::l10n()->t('Numfriends Settings'),
+		'html'  => $html,
+	];
 }

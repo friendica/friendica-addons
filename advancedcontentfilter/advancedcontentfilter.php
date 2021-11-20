@@ -159,19 +159,17 @@ function advancedcontentfilter_prepare_body_content_filter(App $a, &$hook_data)
 }
 
 
-function advancedcontentfilter_addon_settings(App $a, &$s)
+function advancedcontentfilter_addon_settings(App $a, array &$data)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	$advancedcontentfilter = DI::l10n()->t('Advanced Content Filter');
-
-	$s .= <<<HTML
-		<span class="settings-block fakelink" style="display: block;"><h3><a href="advancedcontentfilter">$advancedcontentfilter <i class="glyphicon glyphicon-share"></i></a></h3></span>
-HTML;
-
-	return;
+	$data = [
+		'addon' => 'advancedcontentfilter',
+		'title' => DI::l10n()->t('Advanced Content Filter'),
+		'href'  => 'advancedcontentfilter',
+	];
 }
 
 /*

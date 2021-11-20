@@ -29,7 +29,7 @@ function mathjax_settings_post($a)
 	DI::pConfig()->set(local_user(), 'mathjax', 'use', intval($_POST['mathjax_use']));
 }
 
-function mathjax_settings(App $a, &$s)
+function mathjax_settings(App $a, array &$data)
 {
 	if (!local_user()) {
 		return;
@@ -38,12 +38,16 @@ function mathjax_settings(App $a, &$s)
 	$use = DI::pConfig()->get(local_user(), 'mathjax', 'use', false);
 
 	$tpl = Renderer::getMarkupTemplate('settings.tpl', 'addon/mathjax');
-	$s .= Renderer::replaceMacros($tpl, [
-		'$title'        => 'MathJax',
+	$html = Renderer::replaceMacros($tpl, [
 		'$description'  => DI::l10n()->t('The MathJax addon renders mathematical formulae written using the LaTeX syntax surrounded by the usual $$ or an eqnarray block in the postings of your wall,network tab and private mail.'),
 		'$mathjax_use'  => ['mathjax_use', DI::l10n()->t('Use the MathJax renderer'), $use, ''],
-		'$savesettings' => DI::l10n()->t('Save Settings'),
 	]);
+
+	$data = [
+		'addon' => 'mathjax',
+		'title' => 'MathJax',
+		'html'  => $html,
+	];
 }
 
 function mathjax_footer(App $a, &$b)

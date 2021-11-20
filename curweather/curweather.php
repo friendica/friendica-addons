@@ -164,40 +164,38 @@ function curweather_addon_settings_post(App $a, $post)
 	DI::pConfig()->set(local_user(), 'curweather', 'curweather_units' , trim($_POST['curweather_units']));
 }
 
-function curweather_addon_settings(App $a, &$s)
+function curweather_addon_settings(App $a, array &$data)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	/* Get the current state of our config variable */
-	$curweather_loc = DI::pConfig()->get(local_user(), 'curweather', 'curweather_loc');
+	$curweather_loc   = DI::pConfig()->get(local_user(), 'curweather', 'curweather_loc');
 	$curweather_units = DI::pConfig()->get(local_user(), 'curweather', 'curweather_units');
-	$appid = DI::config()->get('curweather', 'appid');
+	$appid            = DI::config()->get('curweather', 'appid');
 
-	if ($appid == "") {
+	if ($appid == '') {
 		$noappidtext = DI::l10n()->t('No APPID found, please contact your admin to obtain one.');
 	} else {
 		$noappidtext = '';
 	}
 
-	$enable = intval(DI::pConfig()->get(local_user(), 'curweather', 'curweather_enable'));
-	$enable_checked = (($enable) ? ' checked="checked" ' : '');
-	
-	// load template and replace the macros
-	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/curweather/" );
+	$enabled = intval(DI::pConfig()->get(local_user(), 'curweather', 'curweather_enable'));
 
-	$s = Renderer::replaceMacros($t, [
-		'$submit' => DI::l10n()->t('Save Settings'),
-		'$header' => DI::l10n()->t('Current Weather').' '.DI::l10n()->t('Settings'),
-		'$noappidtext' => $noappidtext,
-		'$info' => DI::l10n()->t('Enter either the name of your location or the zip code.'),
-		'$curweather_loc' => [ 'curweather_loc', DI::l10n()->t('Your Location'), $curweather_loc, DI::l10n()->t('Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or <em>14476,DE</em>.') ],
-		'$curweather_units' => [ 'curweather_units', DI::l10n()->t('Units'), $curweather_units, DI::l10n()->t('select if the temperature should be displayed in &deg;C or &deg;F'), ['metric'=>'°C', 'imperial'=>'°F']],
-		'$enabled' => [ 'curweather_enable', DI::l10n()->t('Show weather data'), $enable, '']
+	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/curweather/');
+	$html = Renderer::replaceMacros($t, [
+		'$noappidtext'      => $noappidtext,
+		'$info'             => DI::l10n()->t('Enter either the name of your location or the zip code.'),
+		'$curweather_loc'   => ['curweather_loc', DI::l10n()->t('Your Location'), $curweather_loc, DI::l10n()->t('Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or <em>14476,DE</em>.')],
+		'$curweather_units' => ['curweather_units', DI::l10n()->t('Units'), $curweather_units, DI::l10n()->t('select if the temperature should be displayed in &deg;C or &deg;F'), ['metric' => '°C', 'imperial' => '°F']],
+		'$enabled'          => ['curweather_enable', DI::l10n()->t('Show weather data'), $enabled, ''],
 	]);
 
-	return;
+	$data = [
+		'addon' => 'curweather',
+		'title' => DI::l10n()->t('Current Weather Settings'),
+		'html'  => $html,
+	];
 }
 
 // Config stuff for the admin panel to let the admin of the node set a APPID

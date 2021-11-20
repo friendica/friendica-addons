@@ -17,7 +17,7 @@ function markdown_install() {
 	Hook::register('addon_settings_post',   __FILE__, 'markdown_addon_settings_post');
 }
 
-function markdown_addon_settings(App $a, &$s)
+function markdown_addon_settings(App $a, array &$data)
 {
 	if (!local_user()) {
 		return;
@@ -25,12 +25,16 @@ function markdown_addon_settings(App $a, &$s)
 
 	$enabled = intval(DI::pConfig()->get(local_user(), 'markdown', 'enabled'));
 
-	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/markdown/');
-	$s .= Renderer::replaceMacros($t, [
-		'$title'   => DI::l10n()->t('Markdown'),
-		'$enabled' => ['enabled', DI::l10n()->t('Enable Markdown parsing'), $enabled, DI::l10n()->t('If enabled, self created items will additionally be parsed via Markdown.')],
-		'$submit'  => DI::l10n()->t('Save Settings'),
+	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/markdown/');
+	$html = Renderer::replaceMacros($t, [
+		'$enabled' => ['enabled', DI::l10n()->t('Enable Markdown parsing'), $enabled, DI::l10n()->t('If enabled, adds Markdown support to the Compose Post form.')],
 	]);
+
+	$data = [
+		'addon' => 'markdown',
+		'title' => DI::l10n()->t('Markdown Settings'),
+		'html'  => $html,
+	];
 }
 
 function markdown_addon_settings_post(App $a, &$b)

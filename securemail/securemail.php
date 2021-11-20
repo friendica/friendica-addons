@@ -36,24 +36,30 @@ function securemail_install()
  *
  * @see   App
  */
-function securemail_settings(App &$a, &$s)
+function securemail_settings(App &$a, array &$data)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	$enable = intval(DI::pConfig()->get(local_user(), 'securemail', 'enable'));
+	$enabled   = intval(DI::pConfig()->get(local_user(), 'securemail', 'enable'));
 	$publickey = DI::pConfig()->get(local_user(), 'securemail', 'pkey');
 
-	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/securemail/');
-
-	$s .= Renderer::replaceMacros($t, [
-		'$title' => DI::l10n()->t('"Secure Mail" Settings'),
-		'$submit' => DI::l10n()->t('Save Settings'),
-		'$test' => DI::l10n()->t('Save and send test'), //NOTE: update also in 'post'
-		'$enable' => ['securemail-enable', DI::l10n()->t('Enable Secure Mail'), $enable, ''],
+	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/securemail/');
+	$html = Renderer::replaceMacros($t, [
+		'$enabled'   => ['securemail-enable', DI::l10n()->t('Enable Secure Mail'), $enabled],
 		'$publickey' => ['securemail-pkey', DI::l10n()->t('Public key'), $publickey, DI::l10n()->t('Your public PGP key, ascii armored format')]
 	]);
+
+	$data = [
+		'addon'  => 'securemail',
+		'title'  => DI::l10n()->t('"Secure Mail" Settings'),
+		'html'   => $html,
+		'submit' => [
+			'securemail-submit' => DI::l10n()->t('Save Settings'),
+			'securemail-test'   => DI::l10n()->t('Save and send test'),
+		],
+	];
 }
 
 /**
@@ -72,13 +78,12 @@ function securemail_settings_post(App &$a, array &$b)
 		return;
 	}
 
-	if ($_POST['securemail-submit']) {
+	if (!empty($_POST['securemail-submit']) || !empty($_POST['securemail-test'])) {
 		DI::pConfig()->set(local_user(), 'securemail', 'pkey', trim($_POST['securemail-pkey']));
 		$enable = (!empty($_POST['securemail-enable']) ? 1 : 0);
 		DI::pConfig()->set(local_user(), 'securemail', 'enable', $enable);
 
-		if ($_POST['securemail-submit'] == 'test') {
-
+		if (!empty($_POST['securemail-test'])) {
 			$res = DI::emailer()->send(new SecureTestEmail(DI::app(), DI::config(), DI::pConfig(), DI::baseUrl()));
 
 			// revert to saved value

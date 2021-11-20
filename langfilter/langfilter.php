@@ -31,7 +31,7 @@ function langfilter_install()
  * 3rd parse a SMARTY3 template, replacing some translateable strings for the form
  */
 
-function langfilter_addon_settings(App $a, &$s)
+function langfilter_addon_settings(App $a, array &$data)
 {
 	if (!local_user()) {
 		return;
@@ -40,23 +40,25 @@ function langfilter_addon_settings(App $a, &$s)
 	$enabled = DI::pConfig()->get(local_user(), 'langfilter', 'enable',
 		!DI::pConfig()->get(local_user(), 'langfilter', 'disable'));
 
-	$enable_checked = $enabled ? ' checked="checked"' : '';
-	$languages      = DI::pConfig()->get(local_user(), 'langfilter', 'languages');
-	$minconfidence  = DI::pConfig()->get(local_user(), 'langfilter', 'minconfidence', 0) * 100;
-	$minlength      = DI::pConfig()->get(local_user(), 'langfilter', 'minlength'    , 32);
+	$languages     = DI::pConfig()->get(local_user(), 'langfilter', 'languages');
+	$minconfidence = DI::pConfig()->get(local_user(), 'langfilter', 'minconfidence', 0) * 100;
+	$minlength     = DI::pConfig()->get(local_user(), 'langfilter', 'minlength', 32);
 
-	$t = Renderer::getMarkupTemplate("settings.tpl", "addon/langfilter/");
-	$s .= Renderer::replaceMacros($t, [
-		'$title'         => DI::l10n()->t("Language Filter"),
+	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/langfilter/');
+	$html = Renderer::replaceMacros($t, [
 		'$intro'         => DI::l10n()->t('This addon tries to identify the language posts are written in. If it does not match any language specified below, posts will be hidden by collapsing them.'),
-		'$enabled'       => ['langfilter_enable', DI::l10n()->t('Use the language filter'), $enable_checked, ''],
+		'$enabled'       => ['langfilter_enable', DI::l10n()->t('Use the language filter'), $enabled],
 		'$languages'     => ['langfilter_languages', DI::l10n()->t('Able to read'), $languages, DI::l10n()->t('List of abbreviations (ISO 639-1 codes) for languages you speak, comma separated. For example "de,it".')],
 		'$minconfidence' => ['langfilter_minconfidence', DI::l10n()->t('Minimum confidence in language detection'), $minconfidence, DI::l10n()->t('Minimum confidence in language detection being correct, from 0 to 100. Posts will not be filtered when the confidence of language detection is below this percent value.')],
 		'$minlength'     => ['langfilter_minlength', DI::l10n()->t('Minimum length of message body'), $minlength, DI::l10n()->t('Minimum number of characters in message body for filter to be used. Posts shorter than this will not be filtered. Note: Language detection is unreliable for short content (<200 characters).')],
-		'$submit'        => DI::l10n()->t('Save Settings'),
 	]);
 
-	return;
+	$data = [
+		'addon'  => 'langfilter',
+		'title'  => DI::l10n()->t('Language Filter'),
+		'html'   => $html,
+		'submit' => ['langfilter-settings-submit' => DI::l10n()->t('Save Settings')],
+	];
 }
 
 /* Save the settings

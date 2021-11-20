@@ -18,8 +18,11 @@
  * system will call the name_uninstall() function.
  *
  */
+
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 use Friendica\DI;
 
 function randplace_install() {
@@ -145,32 +148,22 @@ function randplace_settings_post($a,$post) {
 
 
 
-function randplace_settings(&$a,&$s) {
-
-	if(! local_user())
+function randplace_settings(App &$a, array &$data)
+{
+	if(! local_user()) {
 		return;
-
-	/* Add our stylesheet to the page so we can make our settings look nice */
-
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/randplace/randplace.css' . '" media="all" />' . "\r\n";
-
-	/* Get the current state of our config variable */
+	}
 
 	$enabled = DI::pConfig()->get(local_user(),'randplace','enable');
 
-	$checked = (($enabled) ? ' checked="checked" ' : '');
+	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/randplace/');
+	$html = Renderer::replaceMacros($t, [
+		'$enabled' => ['randplace', DI::l10n()->t('Enable Randplace Addon'), $enabled],
+	]);
 
-	/* Add some HTML to the existing form */
-
-	$s .= '<div class="settings-block">';
-	$s .= '<h3>' . DI::l10n()->t('Randplace Settings') . '</h3>';
-	$s .= '<div id="randplace-enable-wrapper">';
-	$s .= '<label id="randplace-enable-label" for="randplace-checkbox">' . DI::l10n()->t('Enable Randplace Addon') . '</label>';
-	$s .= '<input id="randplace-checkbox" type="checkbox" name="randplace" value="1" ' . $checked . '/>';
-	$s .= '</div><div class="clear"></div>';
-
-	/* provide a submit button */
-
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="randplace-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div></div>';
-
+	$data = [
+		'addon' => 'randplace',
+		'title' => DI::l10n()->t('Randplace Settings'),
+		'html'  => $html,
+	];
 }

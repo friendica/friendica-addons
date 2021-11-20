@@ -6,8 +6,11 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  * Author: Tony Baldwin <https://free-haven.org/profile/tony>
  */
+
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 use Friendica\DI;
 
 function planets_install() {
@@ -110,40 +113,22 @@ function planets_settings_post($a,$post) {
 
 
 
-function planets_settings(&$a,&$s) {
-
-	if(! local_user())
+function planets_settings(App &$a, array &$data)
+{
+	if(! local_user()) {
 		return;
-
-	/* Add our stylesheet to the page so we can make our settings look nice */
-
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/planets/planets.css' . '" media="all" />' . "\r\n";
-
-	/* Get the current state of our config variable */
+	}
 
 	$enabled = DI::pConfig()->get(local_user(),'planets','enable');
 
-	$checked = (($enabled) ? ' checked="checked" ' : '');
+	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/planets/');
+	$html = Renderer::replaceMacros($t, [
+		'$enabled' => ['planets', DI::l10n()->t('Enable Planets Addon'), $enabled],
+	]);
 
-	/* Add some HTML to the existing form */
-
-    $s .= '<span id="settings_planets_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_planets_expanded\'); openClose(\'settings_planets_inflated\');">';
-	$s .= '<h3>' . DI::l10n()->t('Planets') . '</h3>';
-	$s .= '</span>';
-	$s .= '<div id="settings_planets_expanded" class="settings-block" style="display: none;">';
-	$s .= '<span class="fakelink" onclick="openClose(\'settings_planets_expanded\'); openClose(\'settings_planets_inflated\');">';
-	$s .= '<h3>' . DI::l10n()->t('Planets') . '</h3>';
-	$s .= '</span>';
-
-    $s .= '<div class="settings-block">';
-	$s .= '<h3>' . DI::l10n()->t('Planets Settings') . '</h3>';
-	$s .= '<div id="planets-enable-wrapper">';
-	$s .= '<label id="planets-enable-label" for="planets-checkbox">' . DI::l10n()->t('Enable Planets Addon') . '</label>';
-	$s .= '<input id="planets-checkbox" type="checkbox" name="planets" value="1" ' . $checked . '/>';
-	$s .= '</div><div class="clear"></div></div>';
-
-	/* provide a submit button */
-
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="planets-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div></div>';
-
+	$data = [
+		'addon' => 'planets',
+		'title' => DI::l10n()->t('Planets Settings'),
+		'html'  => $html,
+	];
 }

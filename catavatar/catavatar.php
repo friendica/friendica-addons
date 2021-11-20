@@ -25,9 +25,9 @@ define("CATAVATAR_SIZE", 256);
  */
 function catavatar_install()
 {
-	Hook::register('avatar_lookup', 'addon/catavatar/catavatar.php', 'catavatar_lookup');
-	Hook::register('addon_settings', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings');
-	Hook::register('addon_settings_post', 'addon/catavatar/catavatar.php', 'catavatar_addon_settings_post');
+	Hook::register('avatar_lookup', __FILE__, 'catavatar_lookup');
+	Hook::register('addon_settings', __FILE__, 'catavatar_addon_settings');
+	Hook::register('addon_settings_post', __FILE__, 'catavatar_addon_settings_post');
 
 	Logger::notice('registered catavatar');
 }
@@ -35,24 +35,29 @@ function catavatar_install()
 /**
  * Cat avatar user settings page
  */
-function catavatar_addon_settings(App $a, &$s)
+function catavatar_addon_settings(App $a, array &$data)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/catavatar/');
-	$s .= Renderer::replaceMacros($t, [
-		'$postpost' => !empty($_POST['catavatar-morecat']) || !empty($_POST['catavatar-emailcat']),
-		'$uncache' => time(),
-		'$uid' => local_user(),
-		'$usecat' => DI::l10n()->t('Use Cat as Avatar'),
-		'$morecat' => DI::l10n()->t('More Random Cat!'),
-		'$emailcat' => DI::l10n()->t('Reset to email Cat'),
-		'$seed' => DI::pConfig()->get(local_user(), 'catavatar', 'seed', false),
-		'$header' => DI::l10n()->t('Cat Avatar Settings'),
+	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/catavatar/');
+	$html = Renderer::replaceMacros($t, [
+		'$uncache'      => time(),
+		'$uid'          => local_user(),
 		'$setrandomize' => DI::l10n()->t('Set default profile avatar or randomize the cat.'),
 	]);
+
+	$data = [
+		'addon'  => 'catavar',
+		'title'  => DI::l10n()->t('Cat Avatar Settings'),
+		'html'   => $html,
+		'submit' => [
+			'catavatar-usecat'   => DI::l10n()->t('Use Cat as Avatar'),
+			'catavatar-morecat'  => DI::l10n()->t('Another random Cat!'),
+			'catavatar-emailcat' => DI::pConfig()->get(local_user(), 'catavatar', 'seed', false) ? DI::l10n()->t('Reset to email Cat') : null,
+		],
+	];
 }
 
 /**

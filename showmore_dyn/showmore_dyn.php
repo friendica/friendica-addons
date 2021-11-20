@@ -45,7 +45,7 @@ function showmore_dyn_settings_post()
 	}
 }
 
-function showmore_dyn_settings(App &$a, &$o)
+function showmore_dyn_settings(App &$a, array &$data)
 {
 	if(!local_user()) {
 		return;
@@ -55,12 +55,15 @@ function showmore_dyn_settings(App &$a, &$o)
 	DI::pConfig()->set(local_user(), 'showmore_dyn', 'limitHeight', $limitHeight);
 
 	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/showmore_dyn/');
-	$o .= Renderer::replaceMacros($t, [
-		'$submit' => DI::l10n()->t('Save Settings'),
-		'$header' => DI::l10n()->t('Show More Dynamic'),
+	$html = Renderer::replaceMacros($t, [
 		'$limitHeight' => ['limitHeight', DI::l10n()->t('Limit Height'), $limitHeight, DI::l10n()->t('The maximal pixel height of posts before the Show More link is added, 0 to disable'), '', '', 'number'],
 	]);
 
+	$data = [
+		'addon' => 'showmore_dyn',
+		'title' => DI::l10n()->t('Show More Dynamic'),
+		'html'  => $html,
+	];
 }
 
 function showmore_dyn_script()
