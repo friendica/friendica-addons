@@ -269,8 +269,6 @@ function twitter_settings_post(App $a)
 			} catch(TwitterOAuthException $e) {
 				notice($e->getMessage());
 			}
-			//  reload the Addon Settings page, if we don't do it see Bug #42
-			DI::baseUrl()->redirect('settings/connectors');
 		} else {
 			//  if no PIN is supplied in the POST variables, the user has changed the setting
 			//  to post a tweet for every new __public__ posting to the wall
@@ -287,7 +285,7 @@ function twitter_settings_post(App $a)
 	}
 }
 
-function twitter_settings(App $a, &$s)
+function twitter_settings(App $a, array &$data)
 {
 	if (!local_user()) {
 		return;
@@ -295,7 +293,8 @@ function twitter_settings(App $a, &$s)
 
 	$user = User::getById(local_user());
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/twitter/twitter.css' . '" media="all" />' . "\r\n";
+	DI::page()->registerStylesheet(__DIR__ . '/twitter.css', 'all');
+
 	/*	 * *
 	 * 1) Check that we have global consumer key & secret
 	 * 2) If no OAuthtoken & stuff is present, generate button to get some
@@ -312,21 +311,14 @@ function twitter_settings(App $a, &$s)
 	$importenabled      = intval(DI::pConfig()->get(local_user(), 'twitter', 'import'));
 	$create_userenabled = intval(DI::pConfig()->get(local_user(), 'twitter', 'create_user'));
 
-	$css = (($enabled) ? '' : '-disabled');
-
-	$s .= '<span id="settings_twitter_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_twitter_expanded\'); openClose(\'settings_twitter_inflated\');">';
-	$s .= '<img class="connector' . $css . '" src="images/twitter.png" /><h3 class="connector">' . DI::l10n()->t('Twitter Import/Export/Mirror') . '</h3>';
-	$s .= '</span>';
-	$s .= '<div id="settings_twitter_expanded" class="settings-block" style="display: none;">';
-	$s .= '<span class="fakelink" onclick="openClose(\'settings_twitter_expanded\'); openClose(\'settings_twitter_inflated\');">';
-	$s .= '<img class="connector' . $css . '" src="images/twitter.png" /><h3 class="connector">' . DI::l10n()->t('Twitter Import/Export/Mirror') . '</h3>';
-	$s .= '</span>';
+	// Hide the submit button by default
+	$submit = '';
 
 	if ((!$ckey) && (!$csecret)) {
 		/* no global consumer keys
 		 * display warning and skip personal config
 		 */
-		$s .= '<p>' . DI::l10n()->t('No consumer key pair for Twitter found. Please contact your site administrator.') . '</p>';
+		$html = '<p>' . DI::l10n()->t('No consumer key pair for Twitter found. Please contact your site administrator.') . '</p>';
 	} else {
 		// ok we have a consumer key pair now look into the OAuth stuff
 		if ((!$otoken) && (!$osecret)) {
@@ -338,17 +330,19 @@ function twitter_settings(App $a, &$s)
 			$connection = new TwitterOAuth($ckey, $csecret);
 			try {
 				$result = $connection->oauth('oauth/request_token', ['oauth_callback' => 'oob']);
-				$s .= '<p>' . DI::l10n()->t('At this Friendica instance the Twitter addon was enabled but you have not yet connected your account to your Twitter account. To do so click the button below to get a PIN from Twitter which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to Twitter.') . '</p>';
-				$s .= '<a href="' . $connection->url('oauth/authorize', ['oauth_token' => $result['oauth_token']]) . '" target="_twitter"><img src="addon/twitter/lighter.png" alt="' . DI::l10n()->t('Log in with Twitter') . '"></a>';
-				$s .= '<div id="twitter-pin-wrapper">';
-				$s .= '<label id="twitter-pin-label" for="twitter-pin">' . DI::l10n()->t('Copy the PIN from Twitter here') . '</label>';
-				$s .= '<input id="twitter-pin" type="text" name="twitter-pin" />';
-				$s .= '<input id="twitter-token" type="hidden" name="twitter-token" value="' . $result['oauth_token'] . '" />';
-				$s .= '<input id="twitter-token2" type="hidden" name="twitter-token2" value="' . $result['oauth_token_secret'] . '" />';
-				$s .= '</div><div class="clear"></div>';
-				$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div>';
+
+				$html = '<p>' . DI::l10n()->t('At this Friendica instance the Twitter addon was enabled but you have not yet connected your account to your Twitter account. To do so click the button below to get a PIN from Twitter which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to Twitter.') . '</p>';
+				$html .= '<a href="' . $connection->url('oauth/authorize', ['oauth_token' => $result['oauth_token']]) . '" target="_twitter"><img src="addon/twitter/lighter.png" alt="' . DI::l10n()->t('Log in with Twitter') . '"></a>';
+				$html .= '<div id="twitter-pin-wrapper">';
+				$html .= '<label id="twitter-pin-label" for="twitter-pin">' . DI::l10n()->t('Copy the PIN from Twitter here') . '</label>';
+				$html .= '<input id="twitter-pin" type="text" name="twitter-pin" />';
+				$html .= '<input id="twitter-token" type="hidden" name="twitter-token" value="' . $result['oauth_token'] . '" />';
+				$html .= '<input id="twitter-token2" type="hidden" name="twitter-token2" value="' . $result['oauth_token_secret'] . '" />';
+				$html .= '</div>';
+
+				$submit = null;
 			} catch (TwitterOAuthException $e) {
-				$s .= '<p>' . DI::l10n()->t('An error occured: ') . $e->getMessage() . '</p>';
+				$html = '<p>' . DI::l10n()->t('An error occured: ') . $e->getMessage() . '</p>';
 			}
 		} else {
 			/*			 * *
@@ -357,57 +351,53 @@ function twitter_settings(App $a, &$s)
 			 */
 			$connection = new TwitterOAuth($ckey, $csecret, $otoken, $osecret);
 			try {
-				$details = $connection->get('account/verify_credentials');
-
-				$field_checkbox = Renderer::getMarkupTemplate('field_checkbox.tpl');
-
-				if (property_exists($details, 'screen_name') &&
-				    property_exists($details, 'description') &&
-				    property_exists($details, 'profile_image_url')) {
-					$s .= '<div id="twitter-info" >
-					<p>' . DI::l10n()->t('Currently connected to: ') . '<a href="https://twitter.com/' . $details->screen_name . '" target="_twitter">' . $details->screen_name . '</a>
-						<button type="submit" name="twitter-disconnect" value="1">' . DI::l10n()->t('Disconnect') . '</button>
-					</p>
-					<p id="twitter-info-block">
-						<a href="https://twitter.com/' . $details->screen_name . '" target="_twitter"><img id="twitter-avatar" src="' . $details->profile_image_url . '" /></a>
-						<em>' . $details->description . '</em>
-					</p>
-				</div>';
+				$account = $connection->get('account/verify_credentials');
+				if (property_exists($account, 'screen_name') &&
+					property_exists($account, 'description') &&
+					property_exists($account, 'profile_image_url')
+				) {
+					$connected = DI::l10n()->t('Currently connected to: <a href="https://twitter.com/%1$s" target="_twitter">%1$s</a>', $account->screen_name);
 				} else {
-					$s .= '<div id="twitter-info" >
-					<p>Invalid Twitter info</p>
-					<button type="submit" name="twitter-disconnect" value="1">' . DI::l10n()->t('Disconnect') . '</button>
-					</div>';
 					Logger::notice('Invalid twitter info (verify credentials).', ['auth' => TwitterOAuth::class]);
 				}
-				$s .= '<div class="clear"></div>';
 
-				$s .= Renderer::replaceMacros($field_checkbox, [
-					'$field' => ['twitter-enable', DI::l10n()->t('Allow posting to Twitter'), $enabled, DI::l10n()->t('If enabled all your <strong>public</strong> postings can be posted to the associated Twitter account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.')]
-				]);
 				if ($user['hidewall']) {
-					$s .= '<p>' . DI::l10n()->t('<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to Twitter will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted.') . '</p>';
+					$privacy_warning = DI::l10n()->t('<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to Twitter will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted.');
 				}
-				$s .= Renderer::replaceMacros($field_checkbox, [
-					'$field' => ['twitter-default', DI::l10n()->t('Send public postings to Twitter by default'), $defenabled, '']
+
+				$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/twitter/');
+				$html = Renderer::replaceMacros($t, [
+					'$l10n' => [
+						'connected'       => $connected ?? '',
+						'invalid'         => DI::l10n()->t('Invalid Twitter info'),
+						'disconnect'      => DI::l10n()->t('Disconnect'),
+						'privacy_warning' => $privacy_warning ?? '',
+					],
+
+					'$account'     => $account,
+					'$enable'      => ['twitter-enable', DI::l10n()->t('Allow posting to Twitter'), $enabled, DI::l10n()->t('If enabled all your <strong>public</strong> postings can be posted to the associated Twitter account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.')],
+					'$default'     => ['twitter-default', DI::l10n()->t('Send public postings to Twitter by default'), $defenabled],
+					'$mirror'      => ['twitter-mirror', DI::l10n()->t('Mirror all posts from twitter that are no replies'), $mirrorenabled],
+					'$import'      => ['twitter-import', DI::l10n()->t('Import the remote timeline'), $importenabled],
+					'$create_user' => ['twitter-create_user', DI::l10n()->t('Automatically create contacts'), $create_userenabled, DI::l10n()->t('This will automatically create a contact in Friendica as soon as you receive a message from an existing contact via the Twitter network. If you do not enable this, you need to manually add those Twitter contacts in Friendica from whom you would like to see posts here.')],
 				]);
-				$s .= Renderer::replaceMacros($field_checkbox, [
-					'$field' => ['twitter-mirror', DI::l10n()->t('Mirror all posts from twitter that are no replies'), $mirrorenabled, '']
-				]);
-				$s .= Renderer::replaceMacros($field_checkbox, [
-					'$field' => ['twitter-import', DI::l10n()->t('Import the remote timeline'), $importenabled, '']
-				]);
-				$s .= Renderer::replaceMacros($field_checkbox, [
-					'$field' => ['twitter-create_user', DI::l10n()->t('Automatically create contacts'), $create_userenabled, DI::l10n()->t('This will automatically create a contact in Friendica as soon as you receive a message from an existing contact via the Twitter network. If you do not enable this, you need to manually add those Twitter contacts in Friendica from whom you would like to see posts here.')]
-				]);
-				$s .= '<div class="clear"></div>';
-				$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="twitter-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div>';
+
+				// Enable the default submit button
+				$submit = null;
 			} catch (TwitterOAuthException $e) {
-				$s .= '<p>' . DI::l10n()->t('An error occured: ') . $e->getMessage() . '</p>';
+				$html = '<p>' . DI::l10n()->t('An error occured: ') . $e->getMessage() . '</p>';
 			}
 		}
 	}
-	$s .= '</div><div class="clear"></div>';
+
+	$data = [
+		'connector' => 'twitter',
+		'title'     => DI::l10n()->t('Twitter Import/Export/Mirror'),
+		'enabled'   => $enabled,
+		'image'     => 'images/twitter.png',
+		'html'      => $html,
+		'submit'    => $submit ?? null,
+	];
 }
 
 function twitter_hook_fork(App $a, array &$b)

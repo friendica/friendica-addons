@@ -198,89 +198,54 @@ function tumblr_jot_nets(App $a, array &$jotnets_fields)
 	}
 }
 
-function tumblr_settings(App $a, &$s)
+function tumblr_settings(App $a, array &$data)
 {
-	if (! local_user()) {
+	if (!local_user()) {
 		return;
 	}
 
-	/* Add our stylesheet to the page so we can make our settings look nice */
+	$enabled     = DI::pConfig()->get(local_user(), 'tumblr', 'post', false);
+	$def_enabled = DI::pConfig()->get(local_user(), 'tumblr', 'post_by_default', false);
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/tumblr/tumblr.css' . '" media="all" />' . "\r\n";
+	$oauth_token        = DI::pConfig()->get(local_user(), 'tumblr', 'oauth_token');
+	$oauth_token_secret = DI::pConfig()->get(local_user(), 'tumblr', 'oauth_token_secret');
 
-	/* Get the current state of our config variables */
-
-	$enabled = DI::pConfig()->get(local_user(), 'tumblr', 'post');
-	$checked = (($enabled) ? ' checked="checked" ' : '');
-	$css = (($enabled) ? '' : '-disabled');
-
-	$def_enabled = DI::pConfig()->get(local_user(), 'tumblr', 'post_by_default');
-
-	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
-
-	/* Add some HTML to the existing form */
-
-	$s .= '<span id="settings_tumblr_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_tumblr_expanded\'); openClose(\'settings_tumblr_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/tumblr.png" /><h3 class="connector">'. DI::l10n()->t('Tumblr Export').'</h3>';
-	$s .= '</span>';
-	$s .= '<div id="settings_tumblr_expanded" class="settings-block" style="display: none;">';
-	$s .= '<span class="fakelink" onclick="openClose(\'settings_tumblr_expanded\'); openClose(\'settings_tumblr_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/tumblr.png" /><h3 class="connector">'. DI::l10n()->t('Tumblr Export').'</h3>';
-	$s .= '</span>';
-
-	$s .= '<div id="tumblr-username-wrapper">';
-	$s .= '<a href="'.DI::baseUrl()->get().'/tumblr/connect">'.DI::l10n()->t("(Re-)Authenticate your tumblr page").'</a>';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div id="tumblr-enable-wrapper">';
-	$s .= '<label id="tumblr-enable-label" for="tumblr-checkbox">' . DI::l10n()->t('Enable Tumblr Post Addon') . '</label>';
-	$s .= '<input type="hidden" name="tumblr" value="0"/>';
-	$s .= '<input id="tumblr-checkbox" type="checkbox" name="tumblr" value="1" ' . $checked . '/>';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div id="tumblr-bydefault-wrapper">';
-	$s .= '<label id="tumblr-bydefault-label" for="tumblr-bydefault">' . DI::l10n()->t('Post to Tumblr by default') . '</label>';
-	$s .= '<input type="hidden" name="tumblr_bydefault" value="0"/>';
-	$s .= '<input id="tumblr-bydefault" type="checkbox" name="tumblr_bydefault" value="1" ' . $def_checked . '/>';
-	$s .= '</div><div class="clear"></div>';
-
-	$oauth_token = DI::pConfig()->get(local_user(), "tumblr", "oauth_token");
-	$oauth_token_secret = DI::pConfig()->get(local_user(), "tumblr", "oauth_token_secret");
-
-	$s .= '<div id="tumblr-page-wrapper">';
-
-	if (($oauth_token != "") && ($oauth_token_secret != "")) {
-		$page = DI::pConfig()->get(local_user(), 'tumblr', 'page');
-		$consumer_key = DI::config()->get('tumblr', 'consumer_key');
+	if ($oauth_token && $oauth_token_secret) {
+		$page            = DI::pConfig()->get(local_user(), 'tumblr', 'page');
+		$consumer_key    = DI::config()->get('tumblr', 'consumer_key');
 		$consumer_secret = DI::config()->get('tumblr', 'consumer_secret');
 
 		$tum_oauth = new TumblrOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
+		$userinfo  = $tum_oauth->get('user/info');
 
-		$userinfo = $tum_oauth->get('user/info');
+		$blogs = array_map(function ($blog) {
+			return substr(str_replace(["http://", "https://"], ["", ""], $blog->url), 0, -1);
+		}, $userinfo->response->user->blogs);
 
-		$blogs = [];
-
-		$s .= '<label id="tumblr-page-label" for="tumblr-page">' . DI::l10n()->t('Post to page:') . '</label>';
-		$s .= '<select name="tumblr_page" id="tumblr-page">';
-		foreach($userinfo->response->user->blogs as $blog) {
-			$blogurl = substr(str_replace(["http://", "https://"], ["", ""], $blog->url), 0, -1);
-
-			if ($page == $blogurl) {
-				$s .= "<option value='".$blogurl."' selected>".$blogurl."</option>";
-			} else {
-				$s .= "<option value='".$blogurl."'>".$blogurl."</option>";
-			}
-		}
-
-		$s .= "</select>";
-	} else {
-		$s .= DI::l10n()->t("You are not authenticated to tumblr");
+		$page_select = ['tumblr-page', DI::l10n()->t('Post to page:'), $page, '', $blogs];
 	}
 
-	$s .= '</div><div class="clear"></div>';
+	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/tumblr/');
+	$html = Renderer::replaceMacros($t, [
+		'$l10n' => [
+			'connect'   => DI::l10n()->t('(Re-)Authenticate your tumblr page'),
+			'noconnect' => DI::l10n()->t('You are not authenticated to tumblr'),
+		],
 
-	/* provide a submit button */
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="tumblr-submit" name="tumblr-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div></div>';
+		'$authenticate_url' => DI::baseUrl()->get() . '/tumblr/connect',
+
+		'$enable'      => ['tumblr', DI::l10n()->t('Enable Tumblr Post Addon'), $enabled],
+		'$bydefault'   => ['tumblr_bydefault', DI::l10n()->t('Post to Tumblr by default'), $def_enabled],
+		'$page_select' => $page_select ?? '',
+	]);
+
+	$data = [
+		'connector' => 'tumblr',
+		'title'     => DI::l10n()->t('Tumblr Export'),
+		'image'     => 'images/tumblr.png',
+		'enabled'   => $enabled,
+		'html'      => $html,
+	];
 }
 
 function tumblr_settings_post(App $a, array &$b)

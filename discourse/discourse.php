@@ -36,7 +36,7 @@ function discourse_install()
 	Hook::register('connector_settings_post', __FILE__, 'discourse_settings_post');
 }
 
-function discourse_settings(App $a, &$s)
+function discourse_settings(App $a, array &$data)
 {
 	if (!local_user()) {
 		return;
@@ -44,12 +44,18 @@ function discourse_settings(App $a, &$s)
 
 	$enabled = intval(DI::pConfig()->get(local_user(), 'discourse', 'enabled'));
 
-	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/discourse/');
-	$s .= Renderer::replaceMacros($t, [
-		'$title'   => DI::l10n()->t('Discourse'),
+	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/discourse/');
+	$html = Renderer::replaceMacros($t, [
 		'$enabled' => ['enabled', DI::l10n()->t('Enable processing of Discourse mailing list mails'), $enabled, DI::l10n()->t('If enabled, incoming mails from Discourse will be improved so they look much better. To make it work, you have to configure the e-mail settings in Friendica. You also have to enable the mailing list mode in Discourse. Then you have to add the Discourse mail account as contact.')],
-		'$submit'  => DI::l10n()->t('Save Settings'),
 	]);
+
+	$data = [
+		'connector' => 'discourse',
+		'title'     => DI::l10n()->t('Discourse'),
+		'image'     => 'images/discourse.png',
+		'enabled'   => $enabled,
+		'html'      => $html,
+	];
 }
 
 function discourse_settings_post(App $a)

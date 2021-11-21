@@ -107,13 +107,13 @@ function statusnet_settings_post(App $a, $post)
 		return;
 	}
 	// don't check GNU Social settings if GNU Social submit button is not clicked
-	if (empty($_POST['statusnet-submit'])) {
+	if (empty($_POST['statusnet-submit']) && empty($_POST['statusnet-disconnect'])) {
 		return;
 	}
 
-	if (isset($_POST['statusnet-disconnect'])) {
+	if (!empty($_POST['statusnet-disconnect'])) {
 		/*		 * *
-		 * if the GNU Social-disconnect checkbox is set, clear the GNU Social configuration
+		 * if the GNU Social-disconnect button is clicked, clear the GNU Social configuration
 		 */
 		DI::pConfig()->delete(local_user(), 'statusnet', 'consumerkey');
 		DI::pConfig()->delete(local_user(), 'statusnet', 'consumersecret');
@@ -149,7 +149,6 @@ function statusnet_settings_post(App $a, $post)
 					}
 				}
 			}
-			DI::baseUrl()->redirect('settings/connectors');
 		} else {
 			if (isset($_POST['statusnet-consumersecret'])) {
 				//  check if we can reach the API of the GNU Social server
@@ -177,7 +176,6 @@ function statusnet_settings_post(App $a, $post)
 						notice(DI::l10n()->t('We could not contact the GNU Social API with the Path you entered.') . EOL);
 					}
 				}
-				DI::baseUrl()->redirect('settings/connectors');
 			} else {
 				if (isset($_POST['statusnet-pin'])) {
 					//  if the user supplied us with a PIN from GNU Social, let the magic of OAuth happen
@@ -195,7 +193,6 @@ function statusnet_settings_post(App $a, $post)
 					DI::pConfig()->set(local_user(), 'statusnet', 'post', 1);
 					DI::pConfig()->set(local_user(), 'statusnet', 'post_taglinks', 1);
 					//  reload the Addon Settings page, if we don't do it see Bug #42
-					DI::baseUrl()->redirect('settings/connectors');
 				} else {
 					//  if no PIN is supplied in the POST variables, the user has changed the setting
 					//  to post a dent for every new __public__ posting to the wall
@@ -213,171 +210,125 @@ function statusnet_settings_post(App $a, $post)
 	}
 }
 
-function statusnet_settings(App $a, &$s)
+function statusnet_settings(App $a, array &$data)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	$user = User::getById(local_user());
+	DI::page()->registerStylesheet(__DIR__ . '/statusnet.css', 'all');
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/statusnet/statusnet.css' . '" media="all" />' . "\r\n";
 	/*	 * *
 	 * 1) Check that we have a base api url and a consumer key & secret
 	 * 2) If no OAuthtoken & stuff is present, generate button to get some
 	 *    allow the user to cancel the connection process at this step
 	 * 3) Checkbox for "Send public notices (respect size limitation)
 	 */
-	$api     = DI::pConfig()->get(local_user(), 'statusnet', 'baseapi');
-	$ckey    = DI::pConfig()->get(local_user(), 'statusnet', 'consumerkey');
-	$csecret = DI::pConfig()->get(local_user(), 'statusnet', 'consumersecret');
-	$otoken  = DI::pConfig()->get(local_user(), 'statusnet', 'oauthtoken');
-	$osecret = DI::pConfig()->get(local_user(), 'statusnet', 'oauthsecret');
-	$enabled = DI::pConfig()->get(local_user(), 'statusnet', 'post');
-	$checked = (($enabled) ? ' checked="checked" ' : '');
-	$defenabled = DI::pConfig()->get(local_user(), 'statusnet', 'post_by_default');
-	$defchecked = (($defenabled) ? ' checked="checked" ' : '');
-	$mirrorenabled = DI::pConfig()->get(local_user(), 'statusnet', 'mirror_posts');
-	$mirrorchecked = (($mirrorenabled) ? ' checked="checked" ' : '');
-	$import = DI::pConfig()->get(local_user(), 'statusnet', 'import');
-	$importselected = ["", "", ""];
-	$importselected[$import] = ' selected="selected"';
-	//$importenabled = DI::pConfig()->get(local_user(),'statusnet','import');
-	//$importchecked = (($importenabled) ? ' checked="checked" ' : '');
-	$create_userenabled = DI::pConfig()->get(local_user(), 'statusnet', 'create_user');
-	$create_userchecked = (($create_userenabled) ? ' checked="checked" ' : '');
+	$baseapi            = DI::pConfig()->get(local_user(), 'statusnet', 'baseapi');
+	$ckey               = DI::pConfig()->get(local_user(), 'statusnet', 'consumerkey');
+	$csecret            = DI::pConfig()->get(local_user(), 'statusnet', 'consumersecret');
+	$otoken             = DI::pConfig()->get(local_user(), 'statusnet', 'oauthtoken');
+	$osecret            = DI::pConfig()->get(local_user(), 'statusnet', 'oauthsecret');
+	$enabled            = DI::pConfig()->get(local_user(), 'statusnet', 'post', false);
+	$def_enabled        = DI::pConfig()->get(local_user(), 'statusnet', 'post_by_default', false);
+	$mirror_enabled     = DI::pConfig()->get(local_user(), 'statusnet', 'mirror_posts', false);
+	$createuser_enabled = DI::pConfig()->get(local_user(), 'statusnet', 'create_user', false);
+	$import             = DI::pConfig()->get(local_user(), 'statusnet', 'import');
 
-	$css = (($enabled) ? '' : '-disabled');
+	// Radio button list to select existing application credentials
+	$sites = array_map(function ($site) {
+		return ['statusnet-preconf-apiurl', $site['sitename'], $site['apiurl']];
+	}, DI::config()->get('statusnet', 'sites', []));
 
-	$s .= '<span id="settings_statusnet_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_statusnet_expanded\'); openClose(\'settings_statusnet_inflated\');">';
-	$s .= '<img class="connector' . $css . '" src="images/gnusocial.png" /><h3 class="connector">' . DI::l10n()->t('GNU Social Import/Export/Mirror') . '</h3>';
-	$s .= '</span>';
-	$s .= '<div id="settings_statusnet_expanded" class="settings-block" style="display: none;">';
-	$s .= '<span class="fakelink" onclick="openClose(\'settings_statusnet_expanded\'); openClose(\'settings_statusnet_inflated\');">';
-	$s .= '<img class="connector' . $css . '" src="images/gnusocial.png" /><h3 class="connector">' . DI::l10n()->t('GNU Social Import/Export/Mirror') . '</h3>';
-	$s .= '</span>';
+	$submit = ['statusnet-submit' => DI::l10n()->t('Save Settings')];
 
-	if ((!$ckey) && (!$csecret)) {
-		/*		 * *
-		 * no consumer keys
-		 */
-		$globalsn = DI::config()->get('statusnet', 'sites');
-		/*		 * *
-		 * lets check if we have one or more globally configured GNU Social
-		 * server OAuth credentials in the configuration. If so offer them
-		 * with a little explanation to the user as choice - otherwise
-		 * ignore this option entirely.
-		 */
-		if (!$globalsn == null) {
-			$s .= '<h4>' . DI::l10n()->t('Globally Available GNU Social OAuthKeys') . '</h4>';
-			$s .= '<p>' . DI::l10n()->t("There are preconfigured OAuth key pairs for some GNU Social servers available. If you are using one of them, please use these credentials. If not feel free to connect to any other GNU Social instance \x28see below\x29.") . '</p>';
-			$s .= '<div id="statusnet-preconf-wrapper">';
-			foreach ($globalsn as $asn) {
-				$s .= '<input type="radio" name="statusnet-preconf-apiurl" value="' . $asn['apiurl'] . '">' . $asn['sitename'] . '<br />';
+	if ($ckey && $csecret) {
+		if ($otoken && $osecret) {
+			/*			 * *
+			 *  we have an OAuth key / secret pair for the user
+			 *  so let's give a chance to disable the postings to GNU Social
+			 */
+			$connection = new StatusNetOAuth($baseapi, $ckey, $csecret, $otoken, $osecret);
+			$account    = $connection->get('account/verify_credentials');
+
+			if (!empty($account)) {
+				$connected_account = DI::l10n()->t('Currently connected to: <a href="%s" target="_statusnet">%s</a>', $account->statusnet_profile_url, $account->screen_name);
 			}
-			$s .= '<p></p><div class="clear"></div></div>';
-			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div>';
-		}
-		$s .= '<h4>' . DI::l10n()->t('Provide your own OAuth Credentials') . '</h4>';
-		$s .= '<p>' . DI::l10n()->t('No consumer key pair for GNU Social found. Register your Friendica Account as an desktop client on your GNU Social account, copy the consumer key pair here and enter the API base root.<br />Before you register your own OAuth key pair ask the administrator if there is already a key pair for this Friendica installation at your favorited GNU Social installation.') . '</p>';
-		$s .= '<div id="statusnet-consumer-wrapper">';
-		$s .= '<label id="statusnet-consumerkey-label" for="statusnet-consumerkey">' . DI::l10n()->t('OAuth Consumer Key') . '</label>';
-		$s .= '<input id="statusnet-consumerkey" type="text" name="statusnet-consumerkey" size="35" /><br />';
-		$s .= '<div class="clear"></div>';
-		$s .= '<label id="statusnet-consumersecret-label" for="statusnet-consumersecret">' . DI::l10n()->t('OAuth Consumer Secret') . '</label>';
-		$s .= '<input id="statusnet-consumersecret" type="text" name="statusnet-consumersecret" size="35" /><br />';
-		$s .= '<div class="clear"></div>';
-		$s .= '<label id="statusnet-baseapi-label" for="statusnet-baseapi">' . DI::l10n()->t("Base API Path \x28remember the trailing /\x29") . '</label>';
-		$s .= '<input id="statusnet-baseapi" type="text" name="statusnet-baseapi" size="35" /><br />';
-		$s .= '<div class="clear"></div>';
-		//$s .= '<label id="statusnet-applicationname-label" for="statusnet-applicationname">'.DI::l10n()->t('GNU Socialapplication name').'</label>';
-		//$s .= '<input id="statusnet-applicationname" type="text" name="statusnet-applicationname" size="35" /><br />';
-		$s .= '<p></p><div class="clear"></div>';
-		$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div>';
-		$s .= '</div>';
-	} else {
-		/*		 * *
-		 * ok we have a consumer key pair now look into the OAuth stuff
-		 */
-		if ((!$otoken) && (!$osecret)) {
+
+			$user = User::getById(local_user());
+			if ($user['hidewall']) {
+				$privacy_warning = DI::l10n()->t('<strong>Note</strong>: Due your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to GNU Social will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted.');
+			}
+
+			$submit['statusnet-disconnect'] = DI::l10n()->t('Clear OAuth configuration');
+		} else {
 			/*			 * *
 			 * the user has not yet connected the account to GNU Social
 			 * get a temporary OAuth key/secret pair and display a button with
 			 * which the user can request a PIN to connect the account to a
 			 * account at GNU Social
 			 */
-			$connection = new StatusNetOAuth($api, $ckey, $csecret);
+			$connection    = new StatusNetOAuth($baseapi, $ckey, $csecret);
 			$request_token = $connection->getRequestToken('oob');
-			$token = $request_token['oauth_token'];
-			/*			 * *
-			 *  make some nice form
-			 */
-			$s .= '<p>' . DI::l10n()->t('To connect to your GNU Social account click the button below to get a security code from GNU Social which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to GNU Social.') . '</p>';
-			$s .= '<a href="' . $connection->getAuthorizeURL($token, False) . '" target="_statusnet"><img src="addon/statusnet/signinwithstatusnet.png" alt="' . DI::l10n()->t('Log in with GNU Social') . '"></a>';
-			$s .= '<div id="statusnet-pin-wrapper">';
-			$s .= '<label id="statusnet-pin-label" for="statusnet-pin">' . DI::l10n()->t('Copy the security code from GNU Social here') . '</label>';
-			$s .= '<input id="statusnet-pin" type="text" name="statusnet-pin" />';
-			$s .= '<input id="statusnet-token" type="hidden" name="statusnet-token" value="' . $token . '" />';
-			$s .= '<input id="statusnet-token2" type="hidden" name="statusnet-token2" value="' . $request_token['oauth_token_secret'] . '" />';
-			$s .= '</div><div class="clear"></div>';
-			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div>';
-			$s .= '<h4>' . DI::l10n()->t('Cancel Connection Process') . '</h4>';
-			$s .= '<div id="statusnet-cancel-wrapper">';
-			$s .= '<p>' . DI::l10n()->t('Current GNU Social API is') . ': ' . $api . '</p>';
-			$s .= '<label id="statusnet-cancel-label" for="statusnet-cancel">' . DI::l10n()->t('Cancel GNU Social Connection') . '</label>';
-			$s .= '<input id="statusnet-cancel" type="checkbox" name="statusnet-disconnect" value="1" />';
-			$s .= '</div><div class="clear"></div>';
-			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div>';
-		} else {
-			/*			 * *
-			 *  we have an OAuth key / secret pair for the user
-			 *  so let's give a chance to disable the postings to GNU Social
-			 */
-			$connection = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
-			$details = $connection->get('account/verify_credentials');
-			if (!empty($details)) {
-				$s .= '<div id="statusnet-info" ><img id="statusnet-avatar" src="' . $details->profile_image_url . '" /><p id="statusnet-info-block">' . DI::l10n()->t('Currently connected to: ') . '<a href="' . $details->statusnet_profile_url . '" target="_statusnet">' . $details->screen_name . '</a><br /><em>' . $details->description . '</em></p></div>';
-			}
-			$s .= '<p>' . DI::l10n()->t('If enabled all your <strong>public</strong> postings can be posted to the associated GNU Social account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.') . '</p>';
-			if ($user['hidewall']) {
-				$s .= '<p>' . DI::l10n()->t('<strong>Note</strong>: Due your privacy settings (<em>Hide your profile details from unknown viewers?</em>) the link potentially included in public postings relayed to GNU Social will lead the visitor to a blank page informing the visitor that the access to your profile has been restricted.') . '</p>';
-			}
-			$s .= '<div id="statusnet-enable-wrapper">';
-			$s .= '<label id="statusnet-enable-label" for="statusnet-checkbox">' . DI::l10n()->t('Allow posting to GNU Social') . '</label>';
-			$s .= '<input id="statusnet-checkbox" type="checkbox" name="statusnet-enable" value="1" ' . $checked . '/>';
-			$s .= '<div class="clear"></div>';
-			$s .= '<label id="statusnet-default-label" for="statusnet-default">' . DI::l10n()->t('Send public postings to GNU Social by default') . '</label>';
-			$s .= '<input id="statusnet-default" type="checkbox" name="statusnet-default" value="1" ' . $defchecked . '/>';
-			$s .= '<div class="clear"></div>';
+			$authorize_url = $connection->getAuthorizeURL($request_token['oauth_token'], false);
 
-			$s .= '<label id="statusnet-mirror-label" for="statusnet-mirror">' . DI::l10n()->t('Mirror all posts from GNU Social that are no replies or repeated messages') . '</label>';
-			$s .= '<input id="statusnet-mirror" type="checkbox" name="statusnet-mirror" value="1" ' . $mirrorchecked . '/>';
-
-			$s .= '<div class="clear"></div>';
-			$s .= '</div>';
-
-			$s .= '<label id="statusnet-import-label" for="statusnet-import">' . DI::l10n()->t('Import the remote timeline') . '</label>';
-			//$s .= '<input id="statusnet-import" type="checkbox" name="statusnet-import" value="1" '. $importchecked . '/>';
-
-			$s .= '<select name="statusnet-import" id="statusnet-import" />';
-			$s .= '<option value="0" ' . $importselected[0] . '>' . DI::l10n()->t("Disabled") . '</option>';
-			$s .= '<option value="1" ' . $importselected[1] . '>' . DI::l10n()->t("Full Timeline") . '</option>';
-			$s .= '<option value="2" ' . $importselected[2] . '>' . DI::l10n()->t("Only Mentions") . '</option>';
-			$s .= '</select>';
-			$s .= '<div class="clear"></div>';
-			/*
-			  $s .= '<label id="statusnet-create_user-label" for="statusnet-create_user">'.DI::l10n()->t('Automatically create contacts').'</label>';
-			  $s .= '<input id="statusnet-create_user" type="checkbox" name="statusnet-create_user" value="1" '. $create_userchecked . '/>';
-			  $s .= '<div class="clear"></div>';
-			 */
-			$s .= '<div id="statusnet-disconnect-wrapper">';
-			$s .= '<label id="statusnet-disconnect-label" for="statusnet-disconnect">' . DI::l10n()->t('Clear OAuth configuration') . '</label>';
-			$s .= '<input id="statusnet-disconnect" type="checkbox" name="statusnet-disconnect" value="1" />';
-			$s .= '</div><div class="clear"></div>';
-			$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="statusnet-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div>';
+			$submit['statusnet-disconnect'] = DI::l10n()->t('Cancel GNU Social Connection');
 		}
 	}
-	$s .= '</div><div class="clear"></div>';
+
+
+	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/statusnet/');
+	$html = Renderer::replaceMacros($t, [
+		'$l10n' => [
+			'global_title'      => DI::l10n()->t('Globally Available GNU Social OAuthKeys'),
+			'global_info'       => DI::l10n()->t(DI::l10n()->t('There are preconfigured OAuth key pairs for some GNU Social servers available. If you are using one of them, please use these credentials. If not feel free to connect to any other GNU Social instance (see below).')),
+			'credentials_title' => DI::l10n()->t('Provide your own OAuth Credentials'),
+			'credentials_info'  => DI::l10n()->t('No consumer key pair for GNU Social found. Register your Friendica Account as a desktop application on your GNU Social account, copy the consumer key pair here and enter the API base root.<br />Before you register your own OAuth key pair ask the administrator if there is already a key pair for this Friendica installation at your favorite GNU Social installation.'),
+			'oauth_info'        => DI::l10n()->t('To connect to your GNU Social account click the button below to get a security code from GNU Social which you have to copy into the input box below and submit the form. Only your <strong>public</strong> posts will be posted to GNU Social.'),
+			'oauth_alt'         => DI::l10n()->t('Log in with GNU Social'),
+			'oauth_cancel'      => DI::l10n()->t('Cancel Connection Process'),
+			'oauth_api'         => DI::l10n()->t('Current GNU Social API is: %s', $baseapi),
+			'connected_account' => $connected_account ?? '',
+			'privacy_warning'   => $privacy_warning ?? '',
+		],
+
+		'$ckey'    => $ckey,
+		'$csecret' => $csecret,
+		'$otoken'  => $otoken,
+		'$osecret' => $osecret,
+		'$sites'   => $sites,
+
+		'$authorize_url' => $authorize_url ?? '',
+		'$request_token' => $request_token ?? null,
+		'$account'       => $account ?? null,
+
+		'$authenticate_url' => DI::baseUrl()->get() . '/statusnet/connect',
+
+		'$consumerkey'    => ['statusnet-consumerkey', DI::l10n()->t('OAuth Consumer Key'), '', '', false, ' size="35'],
+		'$consumersecret' => ['statusnet-consumersecret', DI::l10n()->t('OAuth Consumer Secret'), '', '', false, ' size="35'],
+
+		'$baseapi' => ['statusnet-baseapi', DI::l10n()->t('Base API Path (remember the trailing /)'), '', '', false, ' size="35'],
+		'$pin'     => ['statusnet-pin', DI::l10n()->t('Copy the security code from GNU Social here')],
+
+		'$enable'      => ['statusnet-enabled', DI::l10n()->t('Allow posting to GNU Social'), $enabled, DI::l10n()->t('If enabled all your <strong>public</strong> postings can be posted to the associated GNU Social account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.')],
+		'$default'     => ['statusnet-default', DI::l10n()->t('Post to GNU Social by default'), $def_enabled],
+		'$mirror'      => ['statusnet-mirror', DI::l10n()->t('Mirror all public posts'), $mirror_enabled],
+		'$create_user' => ['statusnet-create_user', DI::l10n()->t('Automatically create contacts'), $createuser_enabled],
+		'$import'      => ['statusnet-import', DI::l10n()->t('Import the remote timeline'), $import, '', [
+			0 => DI::l10n()->t('Disabled'),
+			1 => DI::l10n()->t('Full Timeline'),
+			2 => DI::l10n()->t('Only Mentions'),
+		]],
+	]);
+
+	$data = [
+		'connector' => 'statusnet',
+		'title'     => DI::l10n()->t('GNU Social Import/Export/Mirror'),
+		'image'     => 'images/gnusocial.png',
+		'enabled'   => $enabled,
+		'html'      => $html,
+		'submit'    => $submit,
+	];
 }
 
 function statusnet_hook_fork(App $a, array &$b)

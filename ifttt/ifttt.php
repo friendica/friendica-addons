@@ -11,6 +11,7 @@ use Friendica\Content\PageInfo;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Protocol;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Item;
@@ -33,55 +34,47 @@ function ifttt_content()
 
 }
 
-function ifttt_settings(App $a, &$s)
+function ifttt_settings(App $a, array &$data)
 {
 	if (!local_user()) {
 		return;
 	}
 
 	$key = DI::pConfig()->get(local_user(), 'ifttt', 'key');
-
 	if (!$key) {
 		$key = Strings::getRandomHex(20);
 		DI::pConfig()->set(local_user(), 'ifttt', 'key', $key);
 	}
 
-	$s .= '<span id="settings_ifttt_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_ifttt_expanded\'); openClose(\'settings_ifttt_inflated\');">';
-	$s .= '<img class="connector" src="addon/ifttt/ifttt.png" /><h3 class="connector">' . DI::l10n()->t('IFTTT Mirror') . '</h3>';
-	$s .= '</span>';
-	$s .= '<div id="settings_ifttt_expanded" class="settings-block" style="display: none;">';
-	$s .= '<span class="fakelink" onclick="openClose(\'settings_ifttt_expanded\'); openClose(\'settings_ifttt_inflated\');">';
-	$s .= '<img class="connector" src="addon/ifttt/ifttt.png" /><h3 class="connector">' . DI::l10n()->t('IFTTT Mirror') . '</h3>';
-	$s .= '</span>';
+	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/ifttt/');
+	$html = Renderer::replaceMacros($t, [
+		'$l10n'                    => [
+			'intro'                   => DI::l10n()->t('Create an account at <a href="http://www.ifttt.com">IFTTT</a>. Create three Facebook recipes that are connected with <a href="https://ifttt.com/maker">Maker</a> (In the form "if Facebook then Maker") with the following parameters:'),
+			'url'                     => DI::l10n()->t('URL'),
+			'method'                  => DI::l10n()->t('Method'),
+			'content_type'            => DI::l10n()->t('Content Type'),
+			'new_status_message_body' => DI::l10n()->t('Body for "new status message"'),
+			'new_photo_upload_body'   => DI::l10n()->t('Body for "new photo upload"'),
+			'new_link_post_body'      => DI::l10n()->t('Body for "new link post"'),
+		],
+		'$url'                     => DI::baseUrl()->get() . '/ifttt/' . $a->getLoggedInUserNickname(),
+		'$new_status_message_body' => 'key=' . $key . '&type=status&msg=<<<{{Message}}>>>&date=<<<{{UpdatedAt}}>>>&url=<<<{{PageUrl}}>>>',
+		'$new_photo_upload_body'   => 'key=' . $key . '&type=photo&link=<<<{{Link}}>>>&image=<<<{{ImageSource}}>>>&msg=<<<{{Caption}}>>>&date=<<<{{CreatedAt}}>>>&url=<<<{{PageUrl}}>>>',
+		'$new_link_post_body'      => 'key=' . $key . '&type=link&link=<<<{{Link}}>>>&title=<<<{{Title}}>>>&msg=<<<{{Message}}>>>&description=<<<{{Description}}>>>&date=<<<{{CreatedAt}}>>>&url=<<<{{PageUrl}}>>>',
+	]);
 
-	$s .= '<div id="ifttt-configuration-wrapper">';
-	$s .= '<p>' . DI::l10n()->t('Create an account at <a href="http://www.ifttt.com">IFTTT</a>. Create three Facebook recipes that are connected with <a href="https://ifttt.com/maker">Maker</a> (In the form "if Facebook then Maker") with the following parameters:') . '</p>';
-	$s .= '<h4>URL</h4>';
-	$s .= '<p>' . DI::baseUrl()->get() . '/ifttt/' . $a->getLoggedInUserNickname() . '</p>';
-	$s .= '<h4>Method</h4>';
-	$s .= '<p>POST</p>';
-	$s .= '<h4>Content Type</h4>';
-	$s .= '<p>application/x-www-form-urlencoded</p>';
-	$s .= '<h4>' . DI::l10n()->t('Body for "new status message"') . '</h4>';
-	$s .= '<p><code>' . htmlentities('key=' . $key . '&type=status&msg=<<<{{Message}}>>>&date=<<<{{UpdatedAt}}>>>&url=<<<{{PageUrl}}>>>') . '</code></p>';
-	$s .= '<h4>' . DI::l10n()->t('Body for "new photo upload"') . '</h4>';
-	$s .= '<p><code>' . htmlentities('key=' . $key . '&type=photo&link=<<<{{Link}}>>>&image=<<<{{ImageSource}}>>>&msg=<<<{{Caption}}>>>&date=<<<{{CreatedAt}}>>>&url=<<<{{PageUrl}}>>>') . '</code></p>';
-	$s .= '<h4>' . DI::l10n()->t('Body for "new link post"') . '</h4>';
-	$s .= '<p><code>' . htmlentities('key=' . $key . '&type=link&link=<<<{{Link}}>>>&title=<<<{{Title}}>>>&msg=<<<{{Message}}>>>&description=<<<{{Description}}>>>&date=<<<{{CreatedAt}}>>>&url=<<<{{PageUrl}}>>>') . '</code></p>';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div id="ifttt-rekey-wrapper">';
-	$s .= '<label id="ifttt-rekey-label" for="ifttt-checkbox">' . DI::l10n()->t('Generate new key') . '</label>';
-	$s .= '<input id="ifttt-checkbox" type="checkbox" name="ifttt-rekey" value="1" />';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="ifttt-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div>';
-	$s .= '</div>';
+	$data = [
+		'connector' => 'ifttt',
+		'title'     => DI::l10n()->t('IFTTT Mirror'),
+		'image'     => 'addon/ifttt/ifttt.png',
+		'html'      => $html,
+		'submit'    => DI::l10n()->t('Generate new key'),
+	];
 }
 
 function ifttt_settings_post()
 {
-	if (!empty($_POST['ifttt-submit']) && isset($_POST['ifttt-rekey'])) {
+	if (!empty($_POST['ifttt-submit'])) {
 		DI::pConfig()->delete(local_user(), 'ifttt', 'key');
 	}
 }

@@ -48,22 +48,20 @@ function diaspora_jot_nets(App $a, array &$jotnets_fields)
 	}
 }
 
-function diaspora_settings(App $a, &$s)
+function diaspora_settings(App $a, array &$data)
 {
-	if (! local_user()) {
+	if (!local_user()) {
 		return;
 	}
 
-	/* Get the current state of our config variables */
+	$enabled     = DI::pConfig()->get(local_user(), 'diaspora', 'post', false);
+	$def_enabled = DI::pConfig()->get(local_user(), 'diaspora', 'post_by_default');
 
-	$enabled = DI::pConfig()->get(local_user(),'diaspora','post');
-	$def_enabled = DI::pConfig()->get(local_user(),'diaspora','post_by_default');
-
-	$handle = DI::pConfig()->get(local_user(), 'diaspora', 'handle');
+	$handle   = DI::pConfig()->get(local_user(), 'diaspora', 'handle');
 	$password = DI::pConfig()->get(local_user(), 'diaspora', 'password');
-	$aspect = DI::pConfig()->get(local_user(),'diaspora','aspect');
+	$aspect   = DI::pConfig()->get(local_user(), 'diaspora', 'aspect');
 
-	$info = '';
+	$info  = '';
 	$error = '';
 	if (Session::get('my_address')) {
 		$info = DI::l10n()->t('Please remember: You can always be reached from Diaspora with your Friendica handle <strong>%s</strong>. ', Session::get('my_address'));
@@ -79,37 +77,44 @@ function diaspora_settings(App $a, &$s)
 		if ($rawAspects) {
 			$availableAspects = [
 				'all_aspects' => DI::l10n()->t('All aspects'),
-				'public' => DI::l10n()->t('Public'),
+				'public'      => DI::l10n()->t('Public'),
 			];
 			foreach ($rawAspects as $rawAspect) {
 				$availableAspects[$rawAspect->id] = $rawAspect->name;
 			}
 
 			$aspect_select = ['aspect', DI::l10n()->t('Post to aspect:'), $aspect, '', $availableAspects];
-			$info = DI::l10n()->t('Connected with your Diaspora account <strong>%s</strong>', $handle);
+			$info          = DI::l10n()->t('Connected with your Diaspora account <strong>%s</strong>', $handle);
 		} else {
-			$info = '';
+			$info  = '';
 			$error = DI::l10n()->t("Can't login to your Diaspora account. Please check handle (in the format user@domain.tld) and password.");
 		}
 	}
 
-	DI::page()->registerStylesheet(__DIR__ . '/diaspora.css');
+	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/diaspora/');
+	$html = Renderer::replaceMacros($t, [
+		'$l10n' => [
+			'info_header'  => DI::l10n()->t('Information'),
+			'error_header' => DI::l10n()->t('Error'),
+		],
 
-	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/diaspora/');
-	$s .= Renderer::replaceMacros($t, [
-		'$header'           => DI::l10n()->t('Diaspora Export'),
-		'$info_header'      => DI::l10n()->t('Information'),
-		'$error_header'     => DI::l10n()->t('Error'),
-		'$submit'           => DI::l10n()->t('Save Settings'),
-		'$info'             => $info,
-		'$error'            => $error,
-		'$enabled'          => $enabled,
-		'$enabled_checkbox' => ['enabled', DI::l10n()->t('Enable Diaspora Post Addon'), $enabled],
-		'$handle'           => ['handle', DI::l10n()->t('Diaspora handle'), $handle, null, null, 'placeholder="user@domain.tld"'],
-		'$password'         => ['password', DI::l10n()->t('Diaspora password'), '', DI::l10n()->t('Privacy notice: Your Diaspora password will be stored unencrypted to authenticate you with your Diaspora pod. This means your Friendica node administrator can have access to it.')],
-		'$aspect_select'    => $aspect_select,
-		'$post_by_default'  => ['post_by_default', DI::l10n()->t('Post to Diaspora by default'), $def_enabled],
+		'$info'  => $info,
+		'$error' => $error,
+
+		'$enabled'         => ['enabled', DI::l10n()->t('Enable Diaspora Post Addon'), $enabled],
+		'$handle'          => ['handle', DI::l10n()->t('Diaspora handle'), $handle, null, null, 'placeholder="user@domain.tld"'],
+		'$password'        => ['password', DI::l10n()->t('Diaspora password'), '', DI::l10n()->t('Privacy notice: Your Diaspora password will be stored unencrypted to authenticate you with your Diaspora pod. This means your Friendica node administrator can have access to it.')],
+		'$aspect_select'   => $aspect_select,
+		'$post_by_default' => ['post_by_default', DI::l10n()->t('Post to Diaspora by default'), $def_enabled],
 	]);
+
+	$data = [
+		'connector' => 'diaspora',
+		'title'     => DI::l10n()->t('Diaspora Export'),
+		'image'     => 'images/diaspora-logo.png',
+		'enabled'   => $enabled,
+		'html'      => $html,
+	];
 }
 
 
