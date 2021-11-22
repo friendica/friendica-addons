@@ -1,0 +1,34 @@
+# ADDON discourse
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica discourse addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-21 19:17-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: discourse.php:49
+msgid "Enable processing of Discourse mailing list mails"
+msgstr ""
+
+#: discourse.php:49
+msgid ""
+"If enabled, incoming mails from Discourse will be improved so they look much "
+"better. To make it work, you have to configure the e-mail settings in "
+"Friendica. You also have to enable the mailing list mode in Discourse. Then "
+"you have to add the Discourse mail account as contact."
+msgstr ""
+
+#: discourse.php:54
+msgid "Discourse"
+msgstr ""

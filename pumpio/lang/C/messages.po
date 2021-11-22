@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-25 13:16+0000\n"
+"POT-Creation-Date: 2021-11-21 19:17-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,76 +17,76 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: pumpio.php:54
+#: pumpio.php:57
 msgid "Permission denied."
 msgstr ""
 
-#: pumpio.php:149
+#: pumpio.php:152
 #, php-format
 msgid "Unable to register the client at the pump.io server '%s'."
 msgstr ""
 
-#: pumpio.php:189
+#: pumpio.php:192
 msgid "You are now authenticated to pumpio."
 msgstr ""
 
-#: pumpio.php:190
+#: pumpio.php:193
 msgid "return to the connector page"
 msgstr ""
 
-#: pumpio.php:210
+#: pumpio.php:213
 msgid "Post to pumpio"
 msgstr ""
 
-#: pumpio.php:251 pumpio.php:255
-msgid "Pump.io Import/Export/Mirror"
-msgstr ""
-
-#: pumpio.php:259
-msgid "pump.io username (without the servername)"
-msgstr ""
-
-#: pumpio.php:264
-msgid "pump.io servername (without \"http://\" or \"https://\" )"
-msgstr ""
-
-#: pumpio.php:275
-msgid "Authenticate your pump.io connection"
-msgstr ""
-
-#: pumpio.php:279
-msgid "Import the remote timeline"
-msgstr ""
-
-#: pumpio.php:284
-msgid "Enable pump.io Post Addon"
-msgstr ""
-
-#: pumpio.php:289
-msgid "Post to pump.io by default"
-msgstr ""
-
-#: pumpio.php:294
-msgid "Should posts be public?"
-msgstr ""
-
-#: pumpio.php:299
-msgid "Mirror all public posts"
-msgstr ""
-
-#: pumpio.php:304
-msgid "Check to delete this preset"
-msgstr ""
-
-#: pumpio.php:314
+#: pumpio.php:237
 msgid "Save Settings"
 msgstr ""
 
-#: pumpio.php:983
+#: pumpio.php:239
+msgid "Delete this preset"
+msgstr ""
+
+#: pumpio.php:245
+msgid "Authenticate your pump.io connection"
+msgstr ""
+
+#: pumpio.php:252
+msgid "Pump.io servername (without \"http://\" or \"https://\" )"
+msgstr ""
+
+#: pumpio.php:253
+msgid "Pump.io username (without the servername)"
+msgstr ""
+
+#: pumpio.php:254
+msgid "Import the remote timeline"
+msgstr ""
+
+#: pumpio.php:255
+msgid "Enable Pump.io Post Addon"
+msgstr ""
+
+#: pumpio.php:256
+msgid "Post to Pump.io by default"
+msgstr ""
+
+#: pumpio.php:257
+msgid "Should posts be public?"
+msgstr ""
+
+#: pumpio.php:258
+msgid "Mirror all public posts"
+msgstr ""
+
+#: pumpio.php:263
+msgid "Pump.io Import/Export/Mirror"
+msgstr ""
+
+#: pumpio.php:920
 msgid "status"
 msgstr ""
 
-#: pumpio.php:987
+#: pumpio.php:924
 #, php-format
 msgid "%1$s likes %2$s's %3$s"
 msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"POT-Creation-Date: 2021-11-21 19:16-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,18 +17,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: superblock.php:38 superblock.php:42
+#: superblock.php:35
+msgid "Comma separated profile URLs to block"
+msgstr ""
+
+#: superblock.php:40
 msgid "Superblock"
 msgstr ""
 
-#: superblock.php:45
-msgid "Comma separated profile URLS to block"
-msgstr ""
-
-#: superblock.php:49
-msgid "Save Settings"
-msgstr ""
-
-#: superblock.php:138
+#: superblock.php:129
 msgid "Block Completely"
 msgstr ""

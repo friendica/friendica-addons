@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"POT-Creation-Date: 2021-11-21 19:16-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,22 +17,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: showmore.php:35 showmore.php:39
-msgid "\"Show more\" Settings"
-msgstr ""
-
-#: showmore.php:44
+#: showmore.php:37
 msgid "Enable Show More"
 msgstr ""
 
-#: showmore.php:47
-msgid "Cutting posts after how much characters"
+#: showmore.php:38
+msgid "Cutting posts after how many characters"
 msgstr ""
 
-#: showmore.php:51
-msgid "Save Settings"
+#: showmore.php:43
+msgid "\"Show more\" Settings"
 msgstr ""
 
-#: showmore.php:129
+#: showmore.php:119
 msgid "show more"
 msgstr ""

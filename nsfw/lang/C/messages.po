@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"POT-Creation-Date: 2021-11-21 19:15-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: nsfw.php:68 nsfw.php:72
-msgid "Content Filter (NSFW and more)"
-msgstr ""
-
-#: nsfw.php:76
+#: nsfw.php:65
 msgid ""
 "This addon searches for specified words/text in posts and collapses them. It "
 "can be used to filter content tagged with for instance #NSFW that may be "
@@ -29,28 +25,28 @@ msgid ""
 "is also useful for hiding irrelevant or annoying content from direct view."
 msgstr ""
 
-#: nsfw.php:77
+#: nsfw.php:66
 msgid "Enable Content filter"
 msgstr ""
 
-#: nsfw.php:80
+#: nsfw.php:67
 msgid "Comma separated list of keywords to hide"
 msgstr ""
 
-#: nsfw.php:84
-msgid "Save Settings"
-msgstr ""
-
-#: nsfw.php:85
+#: nsfw.php:67
 msgid "Use /expression/ to provide regular expressions"
 msgstr ""
 
-#: nsfw.php:152
+#: nsfw.php:72
+msgid "Content Filter (NSFW and more)"
+msgstr ""
+
+#: nsfw.php:140
 #, php-format
 msgid "Filtered tag: %s"
 msgstr ""
 
-#: nsfw.php:154
+#: nsfw.php:142
 #, php-format
 msgid "Filtered word: %s"
 msgstr ""
