@@ -114,6 +114,7 @@ function twitter_install()
 	Hook::register('prepare_body'           , __FILE__, 'twitter_prepare_body');
 	Hook::register('check_item_notification', __FILE__, 'twitter_check_item_notification');
 	Hook::register('probe_detect'           , __FILE__, 'twitter_probe_detect');
+	Hook::register('item_by_link'           , __FILE__, 'twitter_item_by_link');
 	Hook::register('parse_link'             , __FILE__, 'twitter_parse_link');
 	Logger::info("installed twitter");
 }
@@ -510,6 +511,52 @@ function twitter_probe_detect(App $a, array &$hookData)
 
 	if ($user) {
 		$hookData['result'] = twitter_user_to_contact($user);
+	}
+}
+
+function twitter_item_by_link(App $a, array &$hookData)
+{
+	// Don't overwrite an existing result
+	if (isset($hookData['item_id'])) {
+		return;
+	}
+
+	// Relevancy check
+	if (!preg_match('#^https?://(?:mobile\.|www\.)?twitter.com/[^/]+/status/(\d+).*#', $hookData['uri'], $matches)) {
+		return;
+	}
+
+	// From now on, any early return should abort the whole chain since we've established it was a Twitter URL
+	$hookData['item_id'] = false;
+
+	// Node-level configuration check
+	if (empty(DI::config()->get('twitter', 'consumerkey')) || empty(DI::config()->get('twitter', 'consumersecret'))) {
+		return;
+	}
+
+	// No anonymous import
+	if (!$hookData['uid']) {
+		return;
+	}
+
+	if (
+		empty(DI::pConfig()->get($hookData['uid'], 'twitter', 'oauthtoken'))
+		|| empty(DI::pConfig()->get($hookData['uid'], 'twitter', 'oauthsecret'))
+	) {
+		notice(DI::l10n()->t('Please connect a Twitter account in your Social Network settings to import Twitter posts.'));
+		return;
+	}
+
+	$status = twitter_statuses_show($matches[1]);
+
+	if (empty($status->id_str)) {
+		notice(DI::l10n()->t('Twitter post not found.'));
+		return;
+	}
+
+	$item = twitter_createpost($a, $hookData['uid'], $status, [], true, false, false);
+	if (!empty($item)) {
+		$hookData['item_id'] = Item::insert($item);
 	}
 }
 
