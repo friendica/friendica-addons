@@ -412,25 +412,35 @@ function twitter_settings(App $a, &$s)
 
 function twitter_hook_fork(App $a, array &$b)
 {
+	DI::logger()->debug('twitter_hook_fork', $b);
+
 	if ($b['name'] != 'notifier_normal') {
 		return;
 	}
 
 	$post = $b['data'];
 
-	// Deleting and editing is not supported by the addon (deleting could, but isn't by now)
-	if ($post['deleted'] || ($post['created'] !== $post['edited'])) {
+	// Deletion checks are done in twitter_delete_item()
+	if ($post['deleted']) {
+		return;
+	}
+
+	// Editing is not supported by the addon
+	if ($post['created'] !== $post['edited']) {
+		DI::logger()->info('Editing is not supported by the addon');
 		$b['execute'] = false;
 		return;
 	}
 
 	// if post comes from twitter don't send it back
 	if (($post['extid'] == Protocol::TWITTER) || twitter_get_id($post['extid'])) {
+		DI::logger()->info('If post comes from twitter don\'t send it back');
 		$b['execute'] = false;
 		return;
 	}
 
 	if (substr($post['app'], 0, 7) == 'Twitter') {
+		DI::logger()->info('No Twitter app');
 		$b['execute'] = false;
 		return;
 	}
@@ -445,10 +455,11 @@ function twitter_hook_fork(App $a, array &$b)
 	} else {
 		// Comments are never exported when we don't import the twitter timeline
 		if (!strstr($post['postopts'], 'twitter') || ($post['parent'] != $post['id']) || $post['private']) {
+			DI::logger()->info('Comments are never exported when we don\'t import the twitter timeline');
 			$b['execute'] = false;
 			return;
 		}
-        }
+    }
 }
 
 function twitter_post_local(App $a, array &$b)
@@ -622,9 +633,16 @@ function twitter_get_id(string $uri)
 
 function twitter_post_hook(App $a, array &$b)
 {
+	DI::logger()->info('twitter_post_hook', $b);
+
+	if ($b['deleted']) {
+		twitter_delete_item($b);
+		return;
+	}
+
 	// Post to Twitter
 	if (!DI::pConfig()->get($b["uid"], 'twitter', 'import')
-		&& ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))) {
+		&& ($b['private'] || ($b['created'] !== $b['edited']))) {
 		return;
 	}
 
@@ -674,39 +692,21 @@ function twitter_post_hook(App $a, array &$b)
 		}
 	}
 
-	/**
-	 * @TODO This can't work at the moment:
-	 *  - Posts created on Friendica and mirrored to Twitter don't have a Twitter ID
-	 *  - Posts created on Twitter and mirrored on Friendica do not trigger the notifier hook this is part of.
-	 */
-	//if (($b['verb'] == Activity::POST) && $b['deleted']) {
-	//	twitter_api_post('statuses/destroy', twitter_get_id($thr_parent['uri']), $b['uid']);
-	//}
-
 	if ($b['verb'] == Activity::LIKE) {
 		Logger::info('Like', ['uid' => $b['uid'], 'id' => twitter_get_id($b["thr-parent"])]);
 
-		twitter_api_post($b['deleted'] ? 'favorites/destroy' : 'favorites/create', twitter_get_id($b["thr-parent"]), $b["uid"]);
+		twitter_api_post('favorites/create', twitter_get_id($b['thr-parent']), $b['uid']);
 
 		return;
 	}
 
 	if ($b['verb'] == Activity::ANNOUNCE) {
 		Logger::info('Retweet', ['uid' => $b['uid'], 'id' => twitter_get_id($b["thr-parent"])]);
-		if ($b['deleted']) {
-			/**
-			 * @TODO This can't work at the moment:
-			 * - Twitter post reshare removal doesn't seem to trigger the notifier hook this is part of
-			 */
-			//twitter_api_post('statuses/destroy', twitter_get_id($thr_parent['extid']), $b['uid']);
-		} else {
-			twitter_retweet($b["uid"], twitter_get_id($b["thr-parent"]));
-		}
-
+		twitter_retweet($b['uid'], twitter_get_id($b['thr-parent']));
 		return;
 	}
 
-	if ($b['deleted'] || ($b['created'] !== $b['edited'])) {
+	if ($b['created'] !== $b['edited']) {
 		return;
 	}
 
@@ -840,6 +840,71 @@ function twitter_post_hook(App $a, array &$b)
 			Logger::notice('Post send, updating extid', ['id' => $b['id'], 'extid' => $result->id_str]);
 			Item::update(['extid' => "twitter::" . $result->id_str], ['id' => $b['id']]);
 		}
+	}
+}
+
+function twitter_delete_item(array $item)
+{
+	if (!$item['deleted']) {
+		return;
+	}
+
+	if ($item['parent'] != $item['id']) {
+		Logger::debug('Deleting comment/announce', ['item' => $item]);
+
+		// Looking if it's a reply to a twitter post
+		if (!twitter_get_id($item['parent-uri']) &&
+			!twitter_get_id($item['extid']) &&
+			!twitter_get_id($item['thr-parent'])) {
+			Logger::info('No twitter post', ['parent' => $item['parent']]);
+			return;
+		}
+
+		$condition = ['uri' => $item['thr-parent'], 'uid' => $item['uid']];
+		$thr_parent = Post::selectFirst(['uri', 'extid', 'author-link', 'author-nick', 'author-network'], $condition);
+		if (!DBA::isResult($thr_parent)) {
+			Logger::warning('No parent found', ['thr-parent' => $item['thr-parent']]);
+			return;
+		}
+
+		Logger::debug('Parent found', ['parent' => $thr_parent]);
+	} else {
+		if (!strstr($item['extid'], 'twitter')) {
+			DI::logger()->info('Not a Twitter post', ['extid' => $item['extid']]);
+			return;
+		}
+
+		// Don't delete if the post doesn't belong to us.
+		// This is a check for forum postings
+		$self = DBA::selectFirst('contact', ['id'], ['uid' => $item['uid'], 'self' => true]);
+		if ($item['contact-id'] != $self['id']) {
+			DI::logger()->info('Don\'t delete if the post doesn\'t belong to the user', ['contact-id' => $item['contact-id'], 'self' => $self['id']]);
+			return;
+		}
+	}
+
+	/**
+	 * @TODO Remaining caveat: Comments posted on Twitter and imported in Friendica do not trigger any Notifier task,
+	 *       possibly because they are private to the user and don't require any remote deletion notifications sent.
+	 *       Comments posted on Friendica and mirrored on Twitter trigger the Notifier task and the Twitter counter-part
+	 *       will be deleted accordingly.
+	 */
+	if ($item['verb'] == Activity::POST) {
+		Logger::info('Delete post/comment', ['uid' => $item['uid'], 'id' => twitter_get_id($item['extid'])]);
+		twitter_api_post('statuses/destroy', twitter_get_id($item['extid']), $item['uid']);
+		return;
+	}
+
+	if ($item['verb'] == Activity::LIKE) {
+		Logger::info('Unlike', ['uid' => $item['uid'], 'id' => twitter_get_id($item['thr-parent'])]);
+		twitter_api_post('favorites/destroy', twitter_get_id($item['thr-parent']), $item['uid']);
+		return;
+	}
+
+	if ($item['verb'] == Activity::ANNOUNCE && !empty($thr_parent['uri'])) {
+		Logger::info('Unretweet', ['uid' => $item['uid'], 'extid' => $thr_parent['uri'], 'id' => twitter_get_id($thr_parent['uri'])]);
+		twitter_api_post('statuses/unretweet', twitter_get_id($thr_parent['uri']), $item['uid']);
+		return;
 	}
 }
 
