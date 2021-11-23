@@ -482,7 +482,7 @@ function twitter_post_local(App $a, array &$b)
 function twitter_probe_detect(App $a, array &$hookData)
 {
 	// Don't overwrite an existing result
-	if ($hookData['result']) {
+	if (isset($hookData['result'])) {
 		return;
 	}
 
@@ -494,6 +494,13 @@ function twitter_probe_detect(App $a, array &$hookData)
 	if (preg_match('=([^@]+)@(?:mobile\.)?twitter\.com$=i', $hookData['uri'], $matches)) {
 		$nick = $matches[1];
 	} elseif (preg_match('=^https?://(?:mobile\.)?twitter\.com/(.+)=i', $hookData['uri'], $matches)) {
+		if (strpos($matches[1], '/') !== false) {
+			// Status case: https://twitter.com/<nick>/status/<status id>
+			// Not a contact
+			$hookData['result'] = false;
+			return;
+		}
+
 		$nick = $matches[1];
 	} else {
 		return;
