@@ -10,7 +10,6 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
-use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Contact;
@@ -149,9 +148,9 @@ function birdavatar_content(App $a)
 	}
 
 	if (is_numeric(DI::args()->getArgv()[1])) {
-		$uid = intval(DI::args()->getArgv()[1]);
+		$uid       = intval(DI::args()->getArgv()[1]);
 		$condition = ['uid' => $uid,
-				'account_expired' => false, 'account_removed' => false];
+			'account_expired'  => false, 'account_removed' => false];
 		$user = DBA::selectFirst('user', ['email'], $condition);
 
 		if ($user === false) {
