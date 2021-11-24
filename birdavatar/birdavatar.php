@@ -183,7 +183,7 @@ function birdavatar_content(App $a)
 
 /**
  * ====================
- * CAT-AVATAR-GENERATOR
+ * BIRD-AVATAR-GENERATOR
  * ====================
  *
  * @authors: Andreas Gohr, David Revoy
