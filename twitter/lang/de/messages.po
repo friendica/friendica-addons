@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-08 22:25-0400\n"
-"PO-Revision-Date: 2021-10-10 12:27+0000\n"
+"POT-Creation-Date: 2021-11-23 18:33-0500\n"
+"PO-Revision-Date: 2021-11-27 17:14+0000\n"
 "Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
 "Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -22,27 +22,27 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: twitter.php:224
+#: twitter.php:213
 msgid "Post to Twitter"
 msgstr "Auf Twitter veröffentlichen"
 
-#: twitter.php:269
+#: twitter.php:258
 msgid ""
 "You submitted an empty PIN, please Sign In with Twitter again to get a new "
 "one."
 msgstr "Du hast keine PIN übertragen. Bitte melde dich erneut bei Twitter an, um eine neue PIN zu erhalten."
 
-#: twitter.php:329 twitter.php:333
+#: twitter.php:318 twitter.php:322
 msgid "Twitter Import/Export/Mirror"
 msgstr "Twitter-Import/Export/Spiegeln"
 
-#: twitter.php:340
+#: twitter.php:329
 msgid ""
 "No consumer key pair for Twitter found. Please contact your site "
 "administrator."
 msgstr "Kein Consumer-Schlüsselpaar für Twitter gefunden. Bitte wende dich an den Administrator der Seite."
 
-#: twitter.php:352
+#: twitter.php:341
 msgid ""
 "At this Friendica instance the Twitter addon was enabled but you have not "
 "yet connected your account to your Twitter account. To do so click the "
@@ -51,42 +51,42 @@ msgid ""
 " be posted to Twitter."
 msgstr "Auf diesem Friendica-Server wurde das Twitter-Addon aktiviert, aber du hast deinen Account noch nicht mit deinem Twitter-Account verbunden. Klicke dazu auf die Schaltfläche unten. Du erhältst dann eine PIN von Twitter, die du in das Eingabefeld unten einfügst. Denk daran, den Senden-Knopf zu drücken! Nur <strong>öffentliche</strong> Beiträge werden bei Twitter veröffentlicht."
 
-#: twitter.php:353
+#: twitter.php:342
 msgid "Log in with Twitter"
 msgstr "bei Twitter anmelden"
 
-#: twitter.php:355
+#: twitter.php:344
 msgid "Copy the PIN from Twitter here"
 msgstr "Kopiere die Twitter-PIN hierher"
 
-#: twitter.php:360 twitter.php:415 twitter.php:803
+#: twitter.php:349 twitter.php:404 twitter.php:924
 msgid "Save Settings"
 msgstr "Einstellungen speichern"
 
-#: twitter.php:362 twitter.php:417
+#: twitter.php:351 twitter.php:406
 msgid "An error occured: "
 msgstr "Ein Fehler ist aufgetreten:"
 
-#: twitter.php:379
+#: twitter.php:368
 msgid "Currently connected to: "
 msgstr "Momentan verbunden mit: "
 
-#: twitter.php:380 twitter.php:390
+#: twitter.php:369 twitter.php:379
 msgid "Disconnect"
 msgstr "Trennen"
 
-#: twitter.php:397
+#: twitter.php:386
 msgid "Allow posting to Twitter"
 msgstr "Veröffentlichung bei Twitter erlauben"
 
-#: twitter.php:397
+#: twitter.php:386
 msgid ""
 "If enabled all your <strong>public</strong> postings can be posted to the "
 "associated Twitter account. You can choose to do so by default (here) or for"
 " every posting separately in the posting options when writing the entry."
 msgstr "Wenn aktiviert, können all deine <strong>öffentlichen</strong> Einträge auf dem verbundenen Twitter-Konto veröffentlicht werden. Du kannst dies (hier) als Standardverhalten einstellen oder beim Schreiben eines Beitrags in den Beitragsoptionen festlegen."
 
-#: twitter.php:400
+#: twitter.php:389
 msgid ""
 "<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile "
 "details from unknown viewers?</em>) the link potentially included in public "
@@ -94,23 +94,23 @@ msgid ""
 "the visitor that the access to your profile has been restricted."
 msgstr "<strong>Hinweis</strong>: Aufgrund deiner Privatsphären-Einstellungen (<em>Profil-Details vor unbekannten Betrachtern verbergen?</em>) wird der Link, der eventuell an deinen Twitter-Beitrag angehängt wird, um auf den Originalbeitrag zu verweisen, den Betrachter auf eine leere Seite führen, die ihn darüber informiert, dass der Zugriff eingeschränkt wurde."
 
-#: twitter.php:403
+#: twitter.php:392
 msgid "Send public postings to Twitter by default"
 msgstr "Veröffentliche öffentliche Beiträge standardmäßig bei Twitter"
 
-#: twitter.php:406
+#: twitter.php:395
 msgid "Mirror all posts from twitter that are no replies"
 msgstr "Spiegle alle Beiträge von Twitter, die keine Antworten sind"
 
-#: twitter.php:409
+#: twitter.php:398
 msgid "Import the remote timeline"
 msgstr "Importiere die Remote-Zeitleiste"
 
-#: twitter.php:412
+#: twitter.php:401
 msgid "Automatically create contacts"
 msgstr "Automatisch Kontakte anlegen"
 
-#: twitter.php:412
+#: twitter.php:401
 msgid ""
 "This will automatically create a contact in Friendica as soon as you receive"
 " a message from an existing contact via the Twitter network. If you do not "
@@ -118,15 +118,25 @@ msgid ""
 "from whom you would like to see posts here."
 msgstr "Mit dieser Option wird automatisch ein Kontakt bei Friendica angelegt, wenn du eine Nachricht von einem bestehenden Kontakt auf Twitter erhältst. Ist die Option nicht aktiv, musst du manuell Kontakte für diejenigen deiner Twitter-Kontakte anlegen, deren Nachrichten du auf Friendica lesen möchtest."
 
-#: twitter.php:805
+#: twitter.php:557
+msgid ""
+"Please connect a Twitter account in your Social Network settings to import "
+"Twitter posts."
+msgstr "Bitte verbinde deinen Twitter Account in den Einstellungen zu den Soziale Netzwerken damit deine Twitter Beiträge importiert werden."
+
+#: twitter.php:564
+msgid "Twitter post not found."
+msgstr "Beiträge auf Twitter nicht gefunden."
+
+#: twitter.php:926
 msgid "Consumer key"
 msgstr "Consumer Key"
 
-#: twitter.php:806
+#: twitter.php:927
 msgid "Consumer secret"
 msgstr "Consumer Secret"
 
-#: twitter.php:1002
+#: twitter.php:1123
 #, php-format
 msgid "%s on Twitter"
 msgstr "%s auf Twitter"
