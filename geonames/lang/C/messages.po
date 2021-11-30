@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"POT-Creation-Date: 2021-11-21 19:14-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,20 +17,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: geonames.php:141
-msgid "Geonames Settings"
-msgstr ""
-
-#: geonames.php:142
+#: geonames.php:135
 msgid ""
 "Replace numerical coordinates by the nearest populated location name in your "
 "posts."
 msgstr ""
 
-#: geonames.php:143
+#: geonames.php:136
 msgid "Enable Geonames Addon"
 msgstr ""
 
-#: geonames.php:144
-msgid "Save Settings"
+#: geonames.php:141
+msgid "Geonames Settings"
 msgstr ""

@@ -113,34 +113,32 @@ function geonames_addon_settings_post(App $a, array $post)
  * Called from the Addon Setting form.
  * Add our own settings info to the page.
  *
- * @param App    $a
- * @param string $s
+ * @param App   $a
+ * @param array $data
  * @throws Exception
  */
-function geonames_addon_settings(App $a, &$s)
+function geonames_addon_settings(App $a, array &$data)
 {
 	if (!local_user()) {
 		return;
 	}
 
 	$geo_account = DI::config()->get('geonames', 'username');
-
 	if (!$geo_account) {
 		return;
 	}
 
-	/* Add our stylesheet to the page so we can make our settings look nice */
-	$stylesheetPath = __DIR__ . '/geonames.css';
-	DI::page()->registerStylesheet($stylesheetPath);
-
-	/* Get the current state of our config variable */
 	$enabled = intval(DI::pConfig()->get(local_user(), 'geonames', 'enable'));
 
-	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/geonames/');
-	$s .= Renderer::replaceMacros($t, [
-		'$title' => DI::l10n()->t('Geonames Settings'),
-		'$description' => DI::l10n()->t('Replace numerical coordinates by the nearest populated location name in your posts.'),
+	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/geonames/');
+	$html = Renderer::replaceMacros($t, [
+		'$info'   => DI::l10n()->t('Replace numerical coordinates by the nearest populated location name in your posts.'),
 		'$enable' => ['geonames-enable', DI::l10n()->t('Enable Geonames Addon'), $enabled],
-		'$submit' => DI::l10n()->t('Save Settings')
 	]);
+
+	$data = [
+		'addon' => 'geonames',
+		'title' => DI::l10n()->t('Geonames Settings'),
+		'html'  => $html,
+	];
 }

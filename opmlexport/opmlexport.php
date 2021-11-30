@@ -68,17 +68,17 @@ function opmlexport(App $a)
 }
 
 
-function opmlexport_addon_settings(App $a, &$s)
+function opmlexport_addon_settings(App $a, array &$data)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/opmlexport/');
-	$s .= Renderer::replaceMacros($t, [
-		'$title'   => DI::l10n()->t('OPML Export'),
-		'$submit'  => DI::l10n()->t('Export RSS/Atom contacts'),
-	]);
+	$data = [
+		'addon'  => 'opmlexport',
+		'title'  => DI::l10n()->t('OPML Export'),
+		'submit' => DI::l10n()->t('Export RSS/Atom contacts'),
+	];
 }
 
 

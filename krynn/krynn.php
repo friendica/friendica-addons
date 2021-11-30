@@ -9,8 +9,11 @@
  *
  *"My body was my sacrifice... for my magic. This damage is permanent." - Raistlin Majere
  */
+
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 use Friendica\DI;
 
 function krynn_install() {
@@ -111,42 +114,24 @@ function krynn_settings_post($a,$post) {
 
 
 
-function krynn_settings(&$a,&$s) {
-
-	if(! local_user())
+function krynn_settings(App &$a, array &$data)
+{
+	if(! local_user()) {
 		return;
-
-	/* Add our stylesheet to the page so we can make our settings look nice */
-
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/krynn/krynn.css' . '" media="all" />' . "\r\n";
-
-	/* Get the current state of our config variable */
+	}
 
 	$enabled = DI::pConfig()->get(local_user(),'krynn','enable');
 
-	$checked = (($enabled) ? ' checked="checked" ' : '');
+	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/krynn/');
+	$html = Renderer::replaceMacros($t, [
+		'$enabled' => ['krynn', DI::l10n()->t('Enable Krynn Addon'), $enabled],
+	]);
 
-	/* Add some HTML to the existing form */
-
-    $s .= '<span id="settings_krynn_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_krynn_expanded\'); openClose(\'settings_krynn_inflated\');">';
-	$s .= '<h3>' . DI::l10n()->t('Krynn') . '</h3>';
-	$s .= '</span>';
-	$s .= '<div id="settings_krynn_expanded" class="settings-block" style="display: none;">';
-	$s .= '<span class="fakelink" onclick="openClose(\'settings_krynn_expanded\'); openClose(\'settings_krynn_inflated\');">';
-	$s .= '<h3>' . DI::l10n()->t('Krynn') . '</h3>';
-	$s .= '</span>';
-
-
-    $s .= '<div class="settings-block">';
-	$s .= '<h3>' . DI::l10n()->t('Krynn Settings') . '</h3>';
-	$s .= '<div id="krynn-enable-wrapper">';
-	$s .= '<label id="krynn-enable-label" for="krynn-checkbox">' . DI::l10n()->t('Enable Krynn Addon') . '</label>';
-	$s .= '<input id="krynn-checkbox" type="checkbox" name="krynn" value="1" ' . $checked . '/>';
-        $s .= '</div><div class="clear"></div></div>';
-	/* provide a submit button */
-
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="krynn-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div></div>';
-
+	$data = [
+		'addon' => 'krynn',
+		'title' => DI::l10n()->t('Krynn Settings'),
+		'html'  => $html,
+	];
 }
 
 

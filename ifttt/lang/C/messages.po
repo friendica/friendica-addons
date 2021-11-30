@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-25 13:17+0000\n"
+"POT-Creation-Date: 2021-11-21 19:17-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ifttt.php:50 ifttt.php:54
-msgid "IFTTT Mirror"
-msgstr ""
-
-#: ifttt.php:58
+#: ifttt.php:52
 msgid ""
 "Create an account at <a href=\"http://www.ifttt.com\">IFTTT</a>. Create "
 "three Facebook recipes that are connected with <a href=\"https://ifttt.com/"
@@ -29,22 +25,34 @@ msgid ""
 "following parameters:"
 msgstr ""
 
-#: ifttt.php:65
+#: ifttt.php:53
+msgid "URL"
+msgstr ""
+
+#: ifttt.php:54
+msgid "Method"
+msgstr ""
+
+#: ifttt.php:55
+msgid "Content Type"
+msgstr ""
+
+#: ifttt.php:56
 msgid "Body for \"new status message\""
 msgstr ""
 
-#: ifttt.php:67
+#: ifttt.php:57
 msgid "Body for \"new photo upload\""
 msgstr ""
 
-#: ifttt.php:69
+#: ifttt.php:58
 msgid "Body for \"new link post\""
 msgstr ""
 
-#: ifttt.php:74
-msgid "Generate new key"
+#: ifttt.php:68
+msgid "IFTTT Mirror"
 msgstr ""
 
-#: ifttt.php:78
-msgid "Save Settings"
+#: ifttt.php:71
+msgid "Generate new key"
 msgstr ""

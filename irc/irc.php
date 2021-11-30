@@ -7,6 +7,7 @@
 * Author: Tobias Diekershoff <https://f.diekershoff.de/u/tobias>
 */
 
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;
@@ -17,30 +18,27 @@ function irc_install() {
 	Hook::register('addon_settings_post', 'addon/irc/irc.php', 'irc_addon_settings_post');
 }
 
-function irc_addon_settings(&$a,&$s) {
-	if(! local_user())
+function irc_addon_settings(App &$a, array &$data)
+{
+	if (!local_user()) {
 		return;
+	}
 
-    /* Add our stylesheet to the page so we can make our settings look nice */
+	$sitechats = DI::pConfig()->get(local_user(), 'irc', 'sitechats'); /* popular channels */
+	$autochans = DI::pConfig()->get(local_user(), 'irc', 'autochans');  /* auto connect chans */
 
-//	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . $a->getBaseURL() . '/addon/irc/irc.css' . '" media="all" />' . "\r\n";
-
-    /* setting popular channels, auto connect channels */
-	$sitechats = DI::pConfig()->get( local_user(), 'irc','sitechats'); /* popular channels */
-	$autochans = DI::pConfig()->get( local_user(), 'irc','autochans');  /* auto connect chans */
-
-	$t = Renderer::getMarkupTemplate( "settings.tpl", "addon/irc/" );
-	$s .= Renderer::replaceMacros($t, [
-	    	'$header' => DI::l10n()->t('IRC Settings'),
-		'$info' => DI::l10n()->t('Here you can change the system wide settings for the channels to automatically join and access via the side bar. Note the changes you do here, only effect the channel selection if you are logged in.'),
-		'$submit' => DI::l10n()->t('Save Settings'),
-		'$autochans' => [ 'autochans', DI::l10n()->t('Channel(s) to auto connect (comma separated)'), $autochans, DI::l10n()->t('List of channels that shall automatically connected to when the app is launched.')],
-		'$sitechats' => [ 'sitechats', DI::l10n()->t('Popular Channels (comma separated)'), $sitechats, DI::l10n()->t('List of popular channels, will be displayed at the side and hotlinked for easy joining.') ]
+	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/irc/');
+	$html = Renderer::replaceMacros($t, [
+		'$info'      => DI::l10n()->t('Here you can change the system wide settings for the channels to automatically join and access via the side bar. Note the changes you do here, only effect the channel selection if you are logged in.'),
+		'$autochans' => ['autochans', DI::l10n()->t('Channel(s) to auto connect (comma separated)'), $autochans, DI::l10n()->t('List of channels that shall automatically connected to when the app is launched.')],
+		'$sitechats' => ['sitechats', DI::l10n()->t('Popular Channels (comma separated)'), $sitechats, DI::l10n()->t('List of popular channels, will be displayed at the side and hotlinked for easy joining.')],
 	]);
 
-
-	return;
-
+	$data = [
+		'addon' => 'irc',
+		'title' => DI::l10n()->t('IRC Settings'),
+		'html'  => $html,
+	];
 }
 
 function irc_addon_settings_post(&$a, &$b) {

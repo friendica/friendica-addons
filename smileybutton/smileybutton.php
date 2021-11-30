@@ -97,9 +97,9 @@ function smileybutton_jot_tool(Friendica\App $a, &$b)
 	$s .= '</tr></table>';
 
 	//Add css to header
-	$css_file = 'addon/smileybutton/view/' . $a->getCurrentTheme() . '.css';
+	$css_file = __DIR__ . '/view/' . $a->getCurrentTheme() . '.css';
 	if (!file_exists($css_file)) {
-		$css_file = 'addon/smileybutton/view/default.css';
+		$css_file = __DIR__ . '/view/default.css';
 	}
 
 	DI::page()->registerStylesheet($css_file);

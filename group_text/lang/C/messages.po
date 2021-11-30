@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"POT-Creation-Date: 2021-11-21 19:14-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,14 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: group_text.php:62
-msgid "Group Text"
-msgstr ""
-
-#: group_text.php:64
+#: group_text.php:58
 msgid "Use a text only (non-image) group selector in the \"group edit\" menu"
 msgstr ""
 
-#: group_text.php:70
-msgid "Save Settings"
+#: group_text.php:63
+msgid "Group Text"
 msgstr ""

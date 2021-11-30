@@ -6,7 +6,10 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  *
  */
+
+use Friendica\App;
 use Friendica\Core\Hook;
+use Friendica\Core\Renderer;
 use Friendica\DI;
 
 function startpage_install() {
@@ -54,36 +57,22 @@ function startpage_settings_post($a, $post)
  * Add our own settings info to the page.
  *
  */
-function startpage_settings(&$a, &$s)
+function startpage_settings(App &$a, array &$data)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	/* Add our stylesheet to the page so we can make our settings look nice */
+	$startpage = DI::pConfig()->get(local_user(), 'startpage', 'startpage');
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/startpage/startpage.css' . '" media="all" />' . "\r\n";
+	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/startpage/');
+	$html = Renderer::replaceMacros($t, [
+		'$startpage' => ['startpage', DI::l10n()->t('Home page to load after login  - leave blank for profile wall'), $startpage, DI::l10n()->t('Examples: "network" or "notifications/system"')],
+	]);
 
-	/* Get the current state of our config variable */
-
-	$page = DI::pConfig()->get(local_user(), 'startpage', 'startpage');
-
-	/* Add some HTML to the existing form */
-
-	$s .= '<span id="settings_startpage_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_startpage_expanded\'); openClose(\'settings_startpage_inflated\');">';
-	$s .= '<h3>' . DI::l10n()->t('Startpage') . '</h3>';
-	$s .= '</span>';
-	$s .= '<div id="settings_startpage_expanded" class="settings-block" style="display: none;">';
-	$s .= '<span class="fakelink" onclick="openClose(\'settings_startpage_expanded\'); openClose(\'settings_startpage_inflated\');">';
-	$s .= '<h3>' . DI::l10n()->t('Startpage') . '</h3>';
-	$s .= '</span>';
-	$s .= '<div id="startpage-page-wrapper">';
-	$s .= '<label id="startpage-page-label" for="startpage-page">' . DI::l10n()->t('Home page to load after login  - leave blank for profile wall') . '</label>';
-	$s .= '<input id="startpage-page" type="text" name="startpage" value="' . $page . '" />';
-	$s .= '</div><div class="clear"></div>';
-	$s .= '<div id="startpage-desc">' . DI::l10n()->t('Examples: &quot;network&quot; or &quot;notifications/system&quot;') . '</div>';
-
-	/* provide a submit button */
-
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" name="startpage-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div></div>';
+	$data = [
+		'addon' => 'startpage',
+		'title' => DI::l10n()->t('Startpage'),
+		'html'  => $html,
+	];
 }

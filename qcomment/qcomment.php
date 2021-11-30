@@ -17,7 +17,10 @@
  * them to open the comment window fully and insert the qcomment. Then "Submit" will submit it.
  *
  */
+
+use Friendica\App;
 use Friendica\Core\Hook;
+use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Util\XML;
 
@@ -28,27 +31,30 @@ function qcomment_install()
 	Hook::register('footer'             , __FILE__, 'qcomment_footer');
 }
 
-function qcomment_footer(\Friendica\App $a, &$b)
+function qcomment_footer(App $a, &$b)
 {
-	DI::page()->registerFooterScript(__DIR__ . '/qcomment.js');
+	DI::page()->registerFooterScript('addon/qcomment/qcomment.js');
 }
 
-function qcomment_addon_settings(&$a, &$s)
+function qcomment_addon_settings(App &$a, array &$data)
 {
-	if (! local_user()) {
+	if (!local_user()) {
 		return;
 	}
 
-	$words = DI::pConfig()->get(local_user(), 'qcomment', 'words', DI::l10n()->t(':-)') . "\n" . DI::l10n()->t(':-(') . "\n" .  DI::l10n()->t('lol'));
+	$words = DI::pConfig()->get(local_user(), 'qcomment', 'words', DI::l10n()->t(':-)') . "\n" . DI::l10n()->t(':-(') . "\n" . DI::l10n()->t('lol'));
 
-	$t = \Friendica\Core\Renderer::getMarkupTemplate('settings.tpl', 'addon/qcomment/');
-	$s .= \Friendica\Core\Renderer::replaceMacros($t, [
-		'$postpost'    => isset($_POST['qcomment-words']),
-		'$header'      => DI::l10n()->t('Quick Comment Settings'),
-		'$description' => DI::l10n()->t("Quick comments are found near comment boxes, sometimes hidden. Click them to provide simple replies."),
-		'$save'        => DI::l10n()->t('Save Settings'),
+	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/qcomment/');
+	$html = Renderer::replaceMacros($t, [
+		'$description' => DI::l10n()->t('Quick comments are found near comment boxes, sometimes hidden. Click them to provide simple replies.'),
 		'$words'       => ['qcomment-words', DI::l10n()->t('Enter quick comments, one per line'), $words, null, ' rows="10"'],
 	]);
+
+	$data = [
+		'addon' => 'qcomment',
+		'title' => DI::l10n()->t('Quick Comment Settings'),
+		'html'  => $html,
+	];
 }
 
 function qcomment_addon_settings_post(&$a, &$b)

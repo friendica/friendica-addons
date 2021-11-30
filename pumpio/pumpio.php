@@ -13,6 +13,7 @@ use Friendica\Core\Addon;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Protocol;
+use Friendica\Core\Renderer;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\DI;
@@ -216,150 +217,99 @@ function pumpio_jot_nets(App $a, array &$jotnets_fields)
 	}
 }
 
-function pumpio_settings(App $a, &$s)
+function pumpio_settings(App $a, array &$data)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	/* Add our stylesheet to the page so we can make our settings look nice */
+	$pumpio_host        = DI::pConfig()->get(local_user(), 'pumpio', 'host');
+	$pumpio_user        = DI::pConfig()->get(local_user(), 'pumpio', 'user');
+	$oauth_token        = DI::pConfig()->get(local_user(), 'pumpio', 'oauth_token');
+	$oauth_token_secret = DI::pConfig()->get(local_user(), 'pumpio', 'oauth_token_secret');
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/pumpio/pumpio.css' . '" media="all" />' . "\r\n";
+	$import_enabled = DI::pConfig()->get(local_user(), 'pumpio', 'import', false);
+	$enabled        = DI::pConfig()->get(local_user(), 'pumpio', 'post', false);
+	$def_enabled    = DI::pConfig()->get(local_user(), 'pumpio', 'post_by_default', false);
+	$public_enabled = DI::pConfig()->get(local_user(), 'pumpio', 'public', false);
+	$mirror_enabled = DI::pConfig()->get(local_user(), 'pumpio', 'mirror', false);
 
-	/* Get the current state of our config variables */
-
-	$import_enabled = DI::pConfig()->get(local_user(), 'pumpio', 'import');
-	$import_checked = (($import_enabled) ? ' checked="checked" ' : '');
-
-	$enabled = DI::pConfig()->get(local_user(), 'pumpio', 'post');
-	$checked = (($enabled) ? ' checked="checked" ' : '');
-	$css = (($enabled) ? '' : '-disabled');
-
-	$def_enabled = DI::pConfig()->get(local_user(), 'pumpio', 'post_by_default');
-	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
-
-	$public_enabled = DI::pConfig()->get(local_user(), 'pumpio', 'public');
-	$public_checked = (($public_enabled) ? ' checked="checked" ' : '');
-
-	$mirror_enabled = DI::pConfig()->get(local_user(), 'pumpio', 'mirror');
-	$mirror_checked = (($mirror_enabled) ? ' checked="checked" ' : '');
-
-	$servername = DI::pConfig()->get(local_user(), "pumpio", "host");
-	$username = DI::pConfig()->get(local_user(), "pumpio", "user");
-
-	/* Add some HTML to the existing form */
-
-	$s .= '<span id="settings_pumpio_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_pumpio_expanded\'); openClose(\'settings_pumpio_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/pumpio.png" /><h3 class="connector">'. DI::l10n()->t('Pump.io Import/Export/Mirror').'</h3>';
-	$s .= '</span>';
-	$s .= '<div id="settings_pumpio_expanded" class="settings-block" style="display: none;">';
-	$s .= '<span class="fakelink" onclick="openClose(\'settings_pumpio_expanded\'); openClose(\'settings_pumpio_inflated\');">';
-	$s .= '<img class="connector'.$css.'" src="images/pumpio.png" /><h3 class="connector">'. DI::l10n()->t('Pump.io Import/Export/Mirror').'</h3>';
-	$s .= '</span>';
-
-	$s .= '<div id="pumpio-username-wrapper">';
-	$s .= '<label id="pumpio-username-label" for="pumpio-username">'.DI::l10n()->t('pump.io username (without the servername)').'</label>';
-	$s .= '<input id="pumpio-username" type="text" name="pumpio_user" value="'.$username.'" />';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div id="pumpio-servername-wrapper">';
-	$s .= '<label id="pumpio-servername-label" for="pumpio-servername">'.DI::l10n()->t('pump.io servername (without "http://" or "https://" )').'</label>';
-	$s .= '<input id="pumpio-servername" type="text" name="pumpio_host" value="'.$servername.'" />';
-	$s .= '</div><div class="clear"></div>';
-
-	if (($username != '') && ($servername != '')) {
-		$oauth_token = DI::pConfig()->get(local_user(), "pumpio", "oauth_token");
-		$oauth_token_secret = DI::pConfig()->get(local_user(), "pumpio", "oauth_token_secret");
-
-		$s .= '<div id="pumpio-password-wrapper">';
-		if (($oauth_token == "") || ($oauth_token_secret == "")) {
-			$s .= '<div id="pumpio-authenticate-wrapper">';
-			$s .= '<a href="'.DI::baseUrl()->get().'/pumpio/connect">'.DI::l10n()->t("Authenticate your pump.io connection").'</a>';
-			$s .= '</div><div class="clear"></div>';
-		} else {
-			$s .= '<div id="pumpio-import-wrapper">';
-			$s .= '<label id="pumpio-import-label" for="pumpio-import">' . DI::l10n()->t('Import the remote timeline') . '</label>';
-			$s .= '<input id="pumpio-import" type="checkbox" name="pumpio_import" value="1" ' . $import_checked . '/>';
-			$s .= '</div><div class="clear"></div>';
-
-			$s .= '<div id="pumpio-enable-wrapper">';
-			$s .= '<label id="pumpio-enable-label" for="pumpio-checkbox">' . DI::l10n()->t('Enable pump.io Post Addon') . '</label>';
-			$s .= '<input id="pumpio-checkbox" type="checkbox" name="pumpio" value="1" ' . $checked . '/>';
-			$s .= '</div><div class="clear"></div>';
-
-			$s .= '<div id="pumpio-bydefault-wrapper">';
-			$s .= '<label id="pumpio-bydefault-label" for="pumpio-bydefault">' . DI::l10n()->t('Post to pump.io by default') . '</label>';
-			$s .= '<input id="pumpio-bydefault" type="checkbox" name="pumpio_bydefault" value="1" ' . $def_checked . '/>';
-			$s .= '</div><div class="clear"></div>';
-
-			$s .= '<div id="pumpio-public-wrapper">';
-			$s .= '<label id="pumpio-public-label" for="pumpio-public">' . DI::l10n()->t('Should posts be public?') . '</label>';
-			$s .= '<input id="pumpio-public" type="checkbox" name="pumpio_public" value="1" ' . $public_checked . '/>';
-			$s .= '</div><div class="clear"></div>';
-
-			$s .= '<div id="pumpio-mirror-wrapper">';
-			$s .= '<label id="pumpio-mirror-label" for="pumpio-mirror">' . DI::l10n()->t('Mirror all public posts') . '</label>';
-			$s .= '<input id="pumpio-mirror" type="checkbox" name="pumpio_mirror" value="1" ' . $mirror_checked . '/>';
-			$s .= '</div><div class="clear"></div>';
-
-			$s .= '<div id="pumpio-delete-wrapper">';
-			$s .= '<label id="pumpio-delete-label" for="pumpio-delete">' . DI::l10n()->t('Check to delete this preset') . '</label>';
-			$s .= '<input id="pumpio-delete" type="checkbox" name="pumpio_delete" value="1" />';
-			$s .= '</div><div class="clear"></div>';
-		}
-
-		$s .= '</div><div class="clear"></div>';
+	$submit = ['pumpio-submit' => DI::l10n()->t('Save Settings')];
+	if ($oauth_token && $oauth_token_secret) {
+		$submit['pumpio-delete'] = DI::l10n()->t('Delete this preset');
 	}
 
-	/* provide a submit button */
+	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/pumpio/');
+	$html = Renderer::replaceMacros($t, [
+		'$l10n'               => [
+			'authenticate' => DI::l10n()->t('Authenticate your pump.io connection'),
+		],
+		'$pumpio_host'        => $pumpio_host,
+		'$pumpio_user'        => $pumpio_user,
+		'$oauth_token'        => $oauth_token,
+		'$oauth_token_secret' => $oauth_token_secret,
+		'$authenticate_url'   => DI::baseUrl()->get() . '/pumpio/connect',
+		'$servername'         => ['pumpio_host', DI::l10n()->t('Pump.io servername (without "http://" or "https://" )'), $pumpio_host],
+		'$username'           => ['pumpio_user', DI::l10n()->t('Pump.io username (without the servername)'), $pumpio_user],
+		'$import'             => ['pumpio_import', DI::l10n()->t('Import the remote timeline'), $import_enabled],
+		'$enabled'            => ['pumpio', DI::l10n()->t('Enable Pump.io Post Addon'), $enabled],
+		'$bydefault'          => ['pumpio_bydefault', DI::l10n()->t('Post to Pump.io by default'), $def_enabled],
+		'$public'             => ['pumpio_public', DI::l10n()->t('Should posts be public?'), $public_enabled],
+		'$mirror'             => ['pumpio_mirror', DI::l10n()->t('Mirror all public posts'), $mirror_enabled],
+	]);
 
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="pumpio-submit" name="pumpio-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div></div>';
+	$data = [
+		'connector' => 'pumpio',
+		'title'     => DI::l10n()->t('Pump.io Import/Export/Mirror'),
+		'image'     => 'images/pumpio.png',
+		'enabled'   => $enabled,
+		'html'      => $html,
+		'submit'    => $submit,
+	];
 }
 
 function pumpio_settings_post(App $a, array &$b)
 {
-	if (!empty($_POST['pumpio-submit'])) {
-		if (!empty($_POST['pumpio_delete'])) {
-			DI::pConfig()->set(local_user(), 'pumpio', 'consumer_key'      , '');
-			DI::pConfig()->set(local_user(), 'pumpio', 'consumer_secret'   , '');
-			DI::pConfig()->set(local_user(), 'pumpio', 'oauth_token'       , '');
-			DI::pConfig()->set(local_user(), 'pumpio', 'oauth_token_secret', '');
-			DI::pConfig()->set(local_user(), 'pumpio', 'post'              , false);
-			DI::pConfig()->set(local_user(), 'pumpio', 'import'            , false);
-			DI::pConfig()->set(local_user(), 'pumpio', 'host'              , '');
-			DI::pConfig()->set(local_user(), 'pumpio', 'user'              , '');
-			DI::pConfig()->set(local_user(), 'pumpio', 'public'            , false);
-			DI::pConfig()->set(local_user(), 'pumpio', 'mirror'            , false);
-			DI::pConfig()->set(local_user(), 'pumpio', 'post_by_default'   , false);
-			DI::pConfig()->set(local_user(), 'pumpio', 'lastdate'          , 0);
-			DI::pConfig()->set(local_user(), 'pumpio', 'last_id'           , '');
-		} else {
-			// filtering the username if it is filled wrong
-			$user = $_POST['pumpio_user'];
-			if (strstr($user, "@")) {
-				$pos = strpos($user, "@");
+	if (!empty($_POST['pumpio_delete'])) {
+		DI::pConfig()->set(local_user(), 'pumpio', 'consumer_key'      , '');
+		DI::pConfig()->set(local_user(), 'pumpio', 'consumer_secret'   , '');
+		DI::pConfig()->set(local_user(), 'pumpio', 'oauth_token'       , '');
+		DI::pConfig()->set(local_user(), 'pumpio', 'oauth_token_secret', '');
+		DI::pConfig()->set(local_user(), 'pumpio', 'post'              , false);
+		DI::pConfig()->set(local_user(), 'pumpio', 'import'            , false);
+		DI::pConfig()->set(local_user(), 'pumpio', 'host'              , '');
+		DI::pConfig()->set(local_user(), 'pumpio', 'user'              , '');
+		DI::pConfig()->set(local_user(), 'pumpio', 'public'            , false);
+		DI::pConfig()->set(local_user(), 'pumpio', 'mirror'            , false);
+		DI::pConfig()->set(local_user(), 'pumpio', 'post_by_default'   , false);
+		DI::pConfig()->set(local_user(), 'pumpio', 'lastdate'          , 0);
+		DI::pConfig()->set(local_user(), 'pumpio', 'last_id'           , '');
+	} elseif (!empty($_POST['pumpio-submit'])) {
+		// filtering the username if it is filled wrong
+		$user = $_POST['pumpio_user'];
+		if (strstr($user, "@")) {
+			$pos = strpos($user, "@");
 
-				if ($pos > 0) {
-					$user = substr($user, 0, $pos);
-				}
+			if ($pos > 0) {
+				$user = substr($user, 0, $pos);
 			}
+		}
 
-			// Filtering the hostname if someone is entering it with "http"
-			$host = $_POST['pumpio_host'];
-			$host = trim($host);
-			$host = str_replace(["https://", "http://"], ["", ""], $host);
+		// Filtering the hostname if someone is entering it with "http"
+		$host = $_POST['pumpio_host'];
+		$host = trim($host);
+		$host = str_replace(["https://", "http://"], ["", ""], $host);
 
-			DI::pConfig()->set(local_user(), 'pumpio', 'post'           , $_POST['pumpio'] ?? false);
-			DI::pConfig()->set(local_user(), 'pumpio', 'import'         , $_POST['pumpio_import'] ?? false);
-			DI::pConfig()->set(local_user(), 'pumpio', 'host'           , $host);
-			DI::pConfig()->set(local_user(), 'pumpio', 'user'           , $user);
-			DI::pConfig()->set(local_user(), 'pumpio', 'public'         , $_POST['pumpio_public'] ?? false);
-			DI::pConfig()->set(local_user(), 'pumpio', 'mirror'         , $_POST['pumpio_mirror'] ?? false);
-			DI::pConfig()->set(local_user(), 'pumpio', 'post_by_default', $_POST['pumpio_bydefault'] ?? false);
+		DI::pConfig()->set(local_user(), 'pumpio', 'post'           , $_POST['pumpio'] ?? false);
+		DI::pConfig()->set(local_user(), 'pumpio', 'import'         , $_POST['pumpio_import'] ?? false);
+		DI::pConfig()->set(local_user(), 'pumpio', 'host'           , $host);
+		DI::pConfig()->set(local_user(), 'pumpio', 'user'           , $user);
+		DI::pConfig()->set(local_user(), 'pumpio', 'public'         , $_POST['pumpio_public'] ?? false);
+		DI::pConfig()->set(local_user(), 'pumpio', 'mirror'         , $_POST['pumpio_mirror'] ?? false);
+		DI::pConfig()->set(local_user(), 'pumpio', 'post_by_default', $_POST['pumpio_bydefault'] ?? false);
 
-			if (!empty($_POST['pumpio_mirror'])) {
-				DI::pConfig()->delete(local_user(), 'pumpio', 'lastdate');
-			}
+		if (!empty($_POST['pumpio_mirror'])) {
+			DI::pConfig()->delete(local_user(), 'pumpio', 'lastdate');
 		}
 	}
 }

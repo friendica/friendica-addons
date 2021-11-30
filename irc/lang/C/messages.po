@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"POT-Creation-Date: 2021-11-21 19:14-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,45 +17,45 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: irc.php:34
-msgid "IRC Settings"
-msgstr ""
-
-#: irc.php:35
+#: irc.php:32
 msgid ""
 "Here you can change the system wide settings for the channels to "
 "automatically join and access via the side bar. Note the changes you do "
 "here, only effect the channel selection if you are logged in."
 msgstr ""
 
-#: irc.php:36 irc.php:134
-msgid "Save Settings"
-msgstr ""
-
-#: irc.php:37 irc.php:135
+#: irc.php:33 irc.php:133
 msgid "Channel(s) to auto connect (comma separated)"
 msgstr ""
 
-#: irc.php:37 irc.php:135
+#: irc.php:33 irc.php:133
 msgid ""
 "List of channels that shall automatically connected to when the app is "
 "launched."
 msgstr ""
 
-#: irc.php:38 irc.php:136
+#: irc.php:34 irc.php:134
 msgid "Popular Channels (comma separated)"
 msgstr ""
 
-#: irc.php:38 irc.php:136
+#: irc.php:34 irc.php:134
 msgid ""
 "List of popular channels, will be displayed at the side and hotlinked for "
 "easy joining."
 msgstr ""
 
-#: irc.php:62
+#: irc.php:39
+msgid "IRC Settings"
+msgstr ""
+
+#: irc.php:60
 msgid "IRC Chatroom"
 msgstr ""
 
-#: irc.php:90
+#: irc.php:88
 msgid "Popular Channels"
+msgstr ""
+
+#: irc.php:132
+msgid "Save Settings"
 msgstr ""

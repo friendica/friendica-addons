@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-25 13:15+0000\n"
+"POT-Creation-Date: 2021-11-21 19:17-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,54 +17,54 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: tumblr.php:40
+#: tumblr.php:39
 msgid "Permission denied."
 msgstr ""
 
-#: tumblr.php:70 tumblr.php:284
+#: tumblr.php:69
 msgid "Save Settings"
 msgstr ""
 
-#: tumblr.php:72
+#: tumblr.php:71
 msgid "Consumer Key"
 msgstr ""
 
-#: tumblr.php:73
+#: tumblr.php:72
 msgid "Consumer Secret"
 msgstr ""
 
-#: tumblr.php:178
+#: tumblr.php:177
 msgid "You are now authenticated to tumblr."
 msgstr ""
 
-#: tumblr.php:179
+#: tumblr.php:178
 msgid "return to the connector page"
 msgstr ""
 
-#: tumblr.php:195
+#: tumblr.php:194
 msgid "Post to Tumblr"
 msgstr ""
 
-#: tumblr.php:225 tumblr.php:229
-msgid "Tumblr Export"
+#: tumblr.php:225
+msgid "Post to page:"
 msgstr ""
 
-#: tumblr.php:233
+#: tumblr.php:231
 msgid "(Re-)Authenticate your tumblr page"
+msgstr ""
+
+#: tumblr.php:232
+msgid "You are not authenticated to tumblr"
 msgstr ""
 
 #: tumblr.php:237
 msgid "Enable Tumblr Post Addon"
 msgstr ""
 
-#: tumblr.php:243
+#: tumblr.php:238
 msgid "Post to Tumblr by default"
 msgstr ""
 
-#: tumblr.php:264
-msgid "Post to page:"
-msgstr ""
-
-#: tumblr.php:278
-msgid "You are not authenticated to tumblr"
+#: tumblr.php:244
+msgid "Tumblr Export"
 msgstr ""

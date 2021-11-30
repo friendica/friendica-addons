@@ -8,6 +8,7 @@
  *
  */
 
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
@@ -49,31 +50,25 @@ function gnot_settings_post($a,$post) {
 
 
 
-function gnot_settings(&$a,&$s) {
-
-	if(! local_user())
+function gnot_settings(App &$a, array &$data)
+{
+	if (!local_user()) {
 		return;
+	}
 
-	/* Add our stylesheet to the page so we can make our settings look nice */
+	$gnot = intval(DI::pConfig()->get(local_user(), 'gnot', 'enable'));
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/gnot/gnot.css' . '" media="all" />' . "\r\n";
-
-	/* Get the current state of our config variable */
-
-	$gnot = intval(DI::pConfig()->get(local_user(),'gnot','enable'));
-
-	$gnot_checked = (($gnot) ? ' checked="checked" ' : '' );
-	
-	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/gnot/');
-	/* Add some HTML to the existing form */
-
-	$s .= Renderer::replaceMacros($t, [
-		'$title' => DI::l10n()->t('Gnot Settings') ,
-		'$submit' => DI::l10n()->t('Save Settings'),
-		'$enable' => DI::l10n()->t('Enable this addon?'),
-		'$enabled' => $gnot_checked,
-		'$text' => DI::l10n()->t("Allows threading of email comment notifications on Gmail and anonymising the subject line.")
+	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/gnot/');
+	$html = Renderer::replaceMacros($t, [
+		'$text'    => DI::l10n()->t("Allows threading of email comment notifications on Gmail and anonymising the subject line."),
+		'$enabled' => ['gnot', DI::l10n()->t('Enable this addon?'), $gnot],
 	]);
+
+	$data = [
+		'addon' => 'gnot',
+		'title' => DI::l10n()->t('Gnot Settings'),
+		'html'  => $html,
+	];
 }
 
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"POT-Creation-Date: 2021-11-21 19:15-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,18 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: planets.php:131 planets.php:135
-msgid "Planets"
-msgstr ""
-
-#: planets.php:139
-msgid "Planets Settings"
-msgstr ""
-
-#: planets.php:141
+#: planets.php:126
 msgid "Enable Planets Addon"
 msgstr ""
 
-#: planets.php:147
-msgid "Save Settings"
+#: planets.php:131
+msgid "Planets Settings"
 msgstr ""

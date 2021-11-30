@@ -8,9 +8,11 @@
  * Author: Cat Gray <https://free-haven.org/profile/catness>
  */
 
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Model\Post;
 use Friendica\Model\Tag;
@@ -27,7 +29,7 @@ function ljpost_install() {
 
 }
 
-function ljpost_jot_nets(\Friendica\App &$a, array &$jotnets_fields)
+function ljpost_jot_nets(App &$a, array &$jotnets_fields)
 {
     if(! local_user()) {
         return;
@@ -46,57 +48,31 @@ function ljpost_jot_nets(\Friendica\App &$a, array &$jotnets_fields)
 }
 
 
-function ljpost_settings(&$a,&$s) {
+function ljpost_settings(App &$a, array &$data)
+{
+	if (!local_user()) {
+		return;
+	}
 
-    if(! local_user())
-        return;
+	$enabled     = DI::pConfig()->get(local_user(), 'ljpost', 'post', false);
+	$ij_username = DI::pConfig()->get(local_user(), 'ljpost', 'ij_username');
+	$def_enabled = DI::pConfig()->get(local_user(), 'ljpost', 'post_by_default');
 
-    /* Add our stylesheet to the page so we can make our settings look nice */
+	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/ljpost/');
+	$html = Renderer::replaceMacros($t, [
+		'$enabled'   => ['ljpost', DI::l10n()->t('Enable LiveJournal Post Addon'), $enabled],
+		'$username'  => ['ij_username', DI::l10n()->t('LiveJournal username'), $ij_username],
+		'$password'  => ['ij_password', DI::l10n()->t('LiveJournal password')],
+		'$bydefault' => ['ij_bydefault', DI::l10n()->t('Post to LiveJournal by default'), $def_enabled],
+	]);
 
-    DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/ljpost/ljpost.css' . '" media="all" />' . "\r\n";
-
-    /* Get the current state of our config variables */
-
-    $enabled = DI::pConfig()->get(local_user(),'ljpost','post');
-
-    $checked = (($enabled) ? ' checked="checked" ' : '');
-
-    $def_enabled = DI::pConfig()->get(local_user(),'ljpost','post_by_default');
-
-    $def_checked = (($def_enabled) ? ' checked="checked" ' : '');
-
-	$lj_username = DI::pConfig()->get(local_user(), 'ljpost', 'lj_username');
-	$lj_password = DI::pConfig()->get(local_user(), 'ljpost', 'lj_password');
-
-
-    /* Add some HTML to the existing form */
-
-    $s .= '<div class="settings-block">';
-    $s .= '<h3>' . DI::l10n()->t('LiveJournal Post Settings') . '</h3>';
-    $s .= '<div id="ljpost-enable-wrapper">';
-    $s .= '<label id="ljpost-enable-label" for="ljpost-checkbox">' . DI::l10n()->t('Enable LiveJournal Post Addon') . '</label>';
-    $s .= '<input id="ljpost-checkbox" type="checkbox" name="ljpost" value="1" ' . $checked . '/>';
-    $s .= '</div><div class="clear"></div>';
-
-    $s .= '<div id="ljpost-username-wrapper">';
-    $s .= '<label id="ljpost-username-label" for="ljpost-username">' . DI::l10n()->t('LiveJournal username') . '</label>';
-    $s .= '<input id="ljpost-username" type="text" name="lj_username" value="' . $lj_username . '" />';
-    $s .= '</div><div class="clear"></div>';
-
-    $s .= '<div id="ljpost-password-wrapper">';
-    $s .= '<label id="ljpost-password-label" for="ljpost-password">' . DI::l10n()->t('LiveJournal password') . '</label>';
-    $s .= '<input id="ljpost-password" type="password" name="lj_password" value="' . $lj_password . '" />';
-    $s .= '</div><div class="clear"></div>';
-
-    $s .= '<div id="ljpost-bydefault-wrapper">';
-    $s .= '<label id="ljpost-bydefault-label" for="ljpost-bydefault">' . DI::l10n()->t('Post to LiveJournal by default') . '</label>';
-    $s .= '<input id="ljpost-bydefault" type="checkbox" name="lj_bydefault" value="1" ' . $def_checked . '/>';
-    $s .= '</div><div class="clear"></div>';
-
-    /* provide a submit button */
-
-    $s .= '<div class="settings-submit-wrapper" ><input type="submit" id="ljpost-submit" name="ljpost-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div></div>';
-
+	$data = [
+		'connector' => 'ljpost',
+		'title'     => DI::l10n()->t('LiveJournal Export'),
+		'image'     => 'addon/ljpost/livejournal.png',
+		'enabled'   => $enabled,
+		'html'      => $html,
+	];
 }
 
 

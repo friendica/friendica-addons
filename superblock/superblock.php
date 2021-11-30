@@ -6,7 +6,10 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  *
  */
+
+use Friendica\App;
 use Friendica\Core\Hook;
+use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Util\Strings;
 
@@ -19,36 +22,24 @@ function superblock_install()
 	Hook::register('enotify_store', 'addon/superblock/superblock.php', 'superblock_enotify_store');
 }
 
-function superblock_addon_settings(&$a, &$s)
+function superblock_addon_settings(App &$a, array &$data)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	/* Add our stylesheet to the page so we can make our settings look nice */
+	$blocked = DI::pConfig()->get(local_user(), 'system', 'blocked', '');
 
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/superblock/superblock.css' . '" media="all" />' . "\r\n";
+	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/superblock/');
+	$html = Renderer::replaceMacros($t, [
+		'$urls' => ['superblock-words', DI::l10n()->t('Comma separated profile URLs to block'), $blocked],
+	]);
 
-	$words = DI::pConfig()->get(local_user(), 'system', 'blocked');
-	if (!$words) {
-		$words = '';
-	}
-
-	$s .= '<span id="settings_superblock_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_superblock_expanded\'); openClose(\'settings_superblock_inflated\');">';
-	$s .= '<h3>' . DI::l10n()->t('Superblock') . '</h3>';
-	$s .= '</span>';
-	$s .= '<div id="settings_superblock_expanded" class="settings-block" style="display: none;">';
-	$s .= '<span class="fakelink" onclick="openClose(\'settings_superblock_expanded\'); openClose(\'settings_superblock_inflated\');">';
-	$s .= '<h3>' . DI::l10n()->t('Superblock') . '</h3>';
-	$s .= '</span>';
-	$s .= '<div id="superblock-wrapper">';
-	$s .= '<label id="superblock-label" for="superblock-words">' . DI::l10n()->t('Comma separated profile URLS to block') . ' </label>';
-	$s .= '<textarea id="superblock-words" type="text" name="superblock-words" >' . htmlspecialchars($words) . '</textarea>';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="superblock-submit" name="superblock-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div></div>';
-
-	return;
+	$data = [
+		'addon' => 'superblock',
+		'title' => DI::l10n()->t('Superblock'),
+		'html'  => $html,
+	];
 }
 
 function superblock_addon_settings_post(&$a, &$b)

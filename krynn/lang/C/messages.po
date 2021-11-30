@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"POT-Creation-Date: 2021-11-21 19:14-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,18 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: krynn.php:132 krynn.php:136
-msgid "Krynn"
-msgstr ""
-
-#: krynn.php:141
-msgid "Krynn Settings"
-msgstr ""
-
-#: krynn.php:143
+#: krynn.php:127
 msgid "Enable Krynn Addon"
 msgstr ""
 
-#: krynn.php:148
-msgid "Save Settings"
+#: krynn.php:132
+msgid "Krynn Settings"
 msgstr ""

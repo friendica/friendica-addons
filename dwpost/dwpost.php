@@ -12,7 +12,7 @@ use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
-use Friendica\Database\DBA;
+use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Model\Post;
 use Friendica\Model\Tag;
@@ -48,58 +48,31 @@ function dwpost_jot_nets(App $a, array &$jotnets_fields)
 }
 
 
-function dwpost_settings(App $a, &$s)
+function dwpost_settings(App $a, array &$data)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	/* Add our stylesheet to the page so we can make our settings look nice */
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/dwpost/dwpost.css' . '" media="all" />' . "\r\n";
-
-	/* Get the current state of our config variables */
-	$enabled = DI::pConfig()->get(local_user(), 'dwpost', 'post');
-
-	$checked = (($enabled) ? ' checked="checked" ' : '');
-
+	$enabled     = DI::pConfig()->get(local_user(), 'dwpost', 'post', false);
+	$dw_username = DI::pConfig()->get(local_user(), 'dwpost', 'dw_username');
 	$def_enabled = DI::pConfig()->get(local_user(), 'dwpost', 'post_by_default');
 
-	$def_checked = (($def_enabled) ? ' checked="checked" ' : '');
+	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/dwpost/');
+	$html = Renderer::replaceMacros($t, [
+		'$enabled'   => ['dwpost', DI::l10n()->t('Enable Dreamwidth Post Addon'), $enabled],
+		'$username'  => ['dw_username', DI::l10n()->t('Dreamwidth username'), $dw_username],
+		'$password'  => ['dw_password', DI::l10n()->t('Dreamwidth password')],
+		'$bydefault' => ['dw_bydefault', DI::l10n()->t('Post to Dreamwidth by default'), $def_enabled],
+	]);
 
-	$dw_username = DI::pConfig()->get(local_user(), 'dwpost', 'dw_username');
-	$dw_password = DI::pConfig()->get(local_user(), 'dwpost', 'dw_password');
-
-	/* Add some HTML to the existing form */
-	$s .= '<span id="settings_dwpost_inflated" class="settings-block fakelink" style="display: block;" onclick="openClose(\'settings_dwpost_expanded\'); openClose(\'settings_dwpost_inflated\');">';
-	$s .= '<img class="connector" src="images/dreamwidth.png" /><h3 class="connector">'. DI::l10n()->t("Dreamwidth Export").'</h3>';
-	$s .= '</span>';
-	$s .= '<div id="settings_dwpost_expanded" class="settings-block" style="display: none;">';
-	$s .= '<span class="fakelink" onclick="openClose(\'settings_dwpost_expanded\'); openClose(\'settings_dwpost_inflated\');">';
-	$s .= '<img class="connector" src="images/dreamwidth.png" /><h3 class="connector">'. DI::l10n()->t("Dreamwidth Export").'</h3>';
-	$s .= '</span>';
-
-	$s .= '<div id="dwpost-enable-wrapper">';
-	$s .= '<label id="dwpost-enable-label" for="dwpost-checkbox">' . DI::l10n()->t('Enable dreamwidth Post Addon') . '</label>';
-	$s .= '<input id="dwpost-checkbox" type="checkbox" name="dwpost" value="1" ' . $checked . '/>';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div id="dwpost-username-wrapper">';
-	$s .= '<label id="dwpost-username-label" for="dwpost-username">' . DI::l10n()->t('dreamwidth username') . '</label>';
-	$s .= '<input id="dwpost-username" type="text" name="dw_username" value="' . $dw_username . '" />';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div id="dwpost-password-wrapper">';
-	$s .= '<label id="dwpost-password-label" for="dwpost-password">' . DI::l10n()->t('dreamwidth password') . '</label>';
-	$s .= '<input id="dwpost-password" type="password" name="dw_password" value="' . $dw_password . '" />';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div id="dwpost-bydefault-wrapper">';
-	$s .= '<label id="dwpost-bydefault-label" for="dwpost-bydefault">' . DI::l10n()->t('Post to dreamwidth by default') . '</label>';
-	$s .= '<input id="dwpost-bydefault" type="checkbox" name="dw_bydefault" value="1" ' . $def_checked . '/>';
-	$s .= '</div><div class="clear"></div>';
-
-	/* provide a submit button */
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="dwpost-submit" name="dwpost-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div></div>';
+	$data = [
+		'connector' => 'dwpost',
+		'title'     => DI::l10n()->t('Dreamwidth Export'),
+		'image'     => 'images/dreamwidth.png',
+		'enabled'   => $enabled,
+		'html'      => $html,
+	];
 }
 
 

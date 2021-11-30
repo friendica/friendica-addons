@@ -31,6 +31,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Content\Text\HTML;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
+use Friendica\Core\Renderer;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Item;
@@ -86,48 +87,28 @@ function windowsphonepush_settings_post($a, $post)
 /* Called from the Addon Setting form.
  * Add our own settings info to the page.
  */
-function windowsphonepush_settings(&$a, &$s)
+function windowsphonepush_settings(App &$a, array &$data)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	/* Add our stylesheet to the page so we can make our settings look nice */
-	DI::page()['htmlhead'] .= '<link rel="stylesheet"  type="text/css" href="' . DI::baseUrl()->get() . '/addon/windowsphonepush/windowsphonepush.css' . '" media="all" />' . "\r\n";
-
-	/* Get the current state of our config variables */
 	$enabled = DI::pConfig()->get(local_user(), 'windowsphonepush', 'enable');
-	$checked_enabled = (($enabled) ? ' checked="checked" ' : '');
-
 	$senditemtext = DI::pConfig()->get(local_user(), 'windowsphonepush', 'senditemtext');
-	$checked_senditemtext = (($senditemtext) ? ' checked="checked" ' : '');
-
 	$device_url = DI::pConfig()->get(local_user(), 'windowsphonepush', 'device_url');
 
-	/* Add some HTML to the existing form */
-	$s .= '<div class="settings-block">';
-	$s .= '<h3>' . DI::l10n()->t('WindowsPhonePush Settings') . '</h3>';
+	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/windowsphonepush/');
+	$html = Renderer::replaceMacros($t, [
+		'$enabled'   => ['windowsphonepush', DI::l10n()->t('Enable WindowsPhonePush Addon'), $enabled],
+		'$senditemtext'   => ['windowsphonepush-senditemtext', DI::l10n()->t('Push text of new item'), $senditemtext],
+		'$device_url'   => ['', DI::l10n()->t('Device URL'), $device_url, '', false, ' readonly'],
+	]);
 
-	$s .= '<div id="windowsphonepush-enable-wrapper">';
-	$s .= '<label id="windowsphonepush-enable-label" for="windowsphonepush-enable-chk">' . DI::l10n()->t('Enable WindowsPhonePush Addon') . '</label>';
-	$s .= '<input id="windowsphonepush-enable-chk" type="checkbox" name="windowsphonepush" value="1" ' . $checked_enabled . '/>';
-	$s .= '</div><div class="clear"></div>';
-
-	$s .= '<div id="windowsphonepush-senditemtext-wrapper">';
-	$s .= '<label id="windowsphonepush-senditemtext-label" for="windowsphonepush-senditemtext-chk">' . DI::l10n()->t('Push text of new item') . '</label>';
-	$s .= '<input id="windowsphonepush-senditemtext-chk" type="checkbox" name="windowsphonepush-senditemtext" value="1" ' . $checked_senditemtext . '/>';
-	$s .= '</div><div class="clear"></div>';
-
-	/* provide a submit button - enable und senditemtext can be changed by the user */
-	$s .= '<div class="settings-submit-wrapper" ><input type="submit" id="windowsphonepush-submit" name="windowsphonepush-submit" class="settings-submit" value="' . DI::l10n()->t('Save Settings') . '" /></div><div class="clear"></div>';
-
-	/* provide further read-only information concerning the addon (useful for */
-	$s .= '<div id="windowsphonepush-device_url-wrapper">';
-	$s .= '<label id="windowsphonepush-device_url-label" for="windowsphonepush-device_url-text">Device-URL</label>';
-	$s .= '<input id="windowsphonepush-device_url-text" type="text" readonly value=' . $device_url . '/>';
-	$s .= '</div><div class="clear"></div></div>';
-
-	return;
+	$data = [
+		'addon' => 'windowsphonepush',
+		'title' => DI::l10n()->t('WindowsPhonePush Settings'),
+		'html'  => $html,
+	];
 }
 
 /* Cron function used to regularly check all users on the server with active windowsphonepushaddon and send

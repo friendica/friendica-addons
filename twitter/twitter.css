@@ -10,34 +10,3 @@
 	height: 52px;
 	vertical-align: middle;
 }
-#twitter-disconnect-label {
-	float: left;
-	width: 250px;
-	margin-bottom: 25px;
-}
-
-#twitter-disconnect {
-	float: left;
-}
-#twitter-default-label,
-#twitter-sendtaglinks-label,
-#twitter-enable-label,
-#twitter-shortening-label, 
-#twitter-mirror-label,
-#twitter-import-label,
-#twitter-create_user-label,
-#twitter-pin-label {
-        float: left;
-        width: 250px;
-        margin-bottom: 10px;
-}
-
-#twitter-checkbox {
-	float: left;
-}
-
-#twitter-pin {
-	float: left;
-}
-
-

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-25 13:16+0000\n"
+"POT-Creation-Date: 2021-11-21 19:16-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,18 +17,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: windowsphonepush.php:108
-msgid "WindowsPhonePush Settings"
-msgstr ""
-
-#: windowsphonepush.php:111
+#: windowsphonepush.php:102
 msgid "Enable WindowsPhonePush Addon"
 msgstr ""
 
-#: windowsphonepush.php:116
+#: windowsphonepush.php:103
 msgid "Push text of new item"
 msgstr ""
 
-#: windowsphonepush.php:121
-msgid "Save Settings"
+#: windowsphonepush.php:104
+msgid "Device URL"
+msgstr ""
+
+#: windowsphonepush.php:109
+msgid "WindowsPhonePush Settings"
 msgstr ""

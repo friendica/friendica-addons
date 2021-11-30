@@ -24,9 +24,9 @@ define("BIRDAVATAR_SIZE", 256);
  */
 function birdavatar_install()
 {
-	Hook::register('avatar_lookup', 'addon/birdavatar/birdavatar.php', 'birdavatar_lookup');
-	Hook::register('addon_settings', 'addon/birdavatar/birdavatar.php', 'birdavatar_addon_settings');
-	Hook::register('addon_settings_post', 'addon/birdavatar/birdavatar.php', 'birdavatar_addon_settings_post');
+	Hook::register('avatar_lookup', __FILE__, 'birdavatar_lookup');
+	Hook::register('addon_settings', __FILE__, 'birdavatar_addon_settings');
+	Hook::register('addon_settings_post', __FILE__, 'birdavatar_addon_settings_post');
 
 	Logger::log('registered birdavatar');
 }
@@ -34,24 +34,29 @@ function birdavatar_install()
 /**
  * Bird avatar user settings page
  */
-function birdavatar_addon_settings(App $a, &$s)
+function birdavatar_addon_settings(App $a, array &$data)
 {
 	if (!local_user()) {
 		return;
 	}
 
-	$t = Renderer::getMarkupTemplate('settings.tpl', 'addon/birdavatar/');
-	$s .= Renderer::replaceMacros($t, [
-		'$postpost'     => !empty($_POST['birdavatar-morebird']) || !empty($_POST['birdavatar-emailbird']),
+	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/birdavatar/');
+	$html = Renderer::replaceMacros($t, [
 		'$uncache'      => time(),
 		'$uid'          => local_user(),
-		'$usebird'      => DI::l10n()->t('Use Bird as Avatar'),
-		'$morebird'     => DI::l10n()->t('More Random Bird!'),
-		'$emailbird'    => DI::l10n()->t('Reset to email Bird'),
-		'$seed'         => DI::pConfig()->get(local_user(), 'birdavatar', 'seed', false),
-		'$header'       => DI::l10n()->t('Bird Avatar Settings'),
 		'$setrandomize' => DI::l10n()->t('Set default profile avatar or randomize the bird.'),
 	]);
+
+	$data = [
+		'addon'  => 'birdavar',
+		'title'  => DI::l10n()->t('Bird Avatar Settings'),
+		'html'   => $html,
+		'submit' => [
+			'birdavatar-usebird'   => DI::l10n()->t('Use Bird as Avatar'),
+			'birdavatar-morebird'  => DI::l10n()->t('More Random Bird!'),
+			'birdavatar-emailbird' => DI::pConfig()->get(local_user(), 'birdavatar', 'seed', false) ? DI::l10n()->t('Reset to email Bird') : null,
+		],
+	];
 }
 
 /**
