@@ -50,8 +50,8 @@ function public_server_cron($a, $b)
 {
 	Logger::notice("public_server: cron start");
 
-	$users = DBA::selectToArray('user', [], ["`account_expires_on` < UTC_TIMESTAMP() + INTERVAL ? DAY AND
-		`account_expires_on` > ? AND `expire_notification_sent` <= ?", 5, DBA::NULL_DATETIME, DBA::NULL_DATETIME]);
+	$users = DBA::selectToArray('user', [], ["`account_expires_on` > ? AND `account_expires_on` < ?
+		AND `expire_notification_sent` <= ?", DBA::NULL_DATETIME, DateTimeFormat::utc('now + 5 days'), DBA::NULL_DATETIME]);
 	foreach ($users as $rr) {
 		DI::notify()->createFromArray([
 			'type' => Notification\Type::SYSTEM,
@@ -68,8 +68,8 @@ function public_server_cron($a, $b)
 
 	$nologin = DI::config()->get('public_server', 'nologin', false);
 	if ($nologin) {
-		$users = DBA::selectToArray('user', [], ["NOT `account_expired` AND `login_date` <= ? AND `register_date` < UTC_TIMESTAMP() - INTERVAL ? DAY AND `account_expires_on` <= ?",
-			DBA::NULL_DATETIME, $nologin, DBA::NULL_DATETIME]);
+		$users = DBA::selectToArray('user', [], ["NOT `account_expired` AND `login_date` <= ? AND `register_date` < ? AND `account_expires_on` <= ?",
+			DBA::NULL_DATETIME, DateTimeFormat::utc('now -  ' . (int)$nologin . ' days'), DBA::NULL_DATETIME]);
 		foreach ($users as $rr) {
 			$fields = ['account_expires_on' => DateTimeFormat::utc('now +6 days')];
 			DBA::update('user', $fields, ['uid' => $rr['uid']]);
@@ -78,8 +78,8 @@ function public_server_cron($a, $b)
 
 	$flagusers = DI::config()->get('public_server', 'flagusers', false);
 	if ($flagusers) {
-		$users = DBA::selectToArray('user', [], ["NOT `account_expired` AND `login_date` < UTC_TIMESTAMP() - INTERVAL ? DAY AND `account_expires_on` <= ? AND `page-flags` = ?",
-			$flagusers, DBA::NULL_DATETIME, User::PAGE_FLAGS_NORMAL]);
+		$users = DBA::selectToArray('user', [], ["NOT `account_expired` AND `login_date` < ? AND `account_expires_on` <= ? AND `page-flags` = ?",
+            DateTimeFormat::utc('now -  ' . (int)$flagusers . ' days'), DBA::NULL_DATETIME, User::PAGE_FLAGS_NORMAL]);
 		foreach ($users as $rr) {
 			$fields = ['account_expires_on' => DateTimeFormat::utc('now +6 days')];
 			DBA::update('user', $fields, ['uid' => $rr['uid']]);
@@ -89,8 +89,8 @@ function public_server_cron($a, $b)
 	$flagposts = DI::config()->get('public_server', 'flagposts');
 	$flagpostsexpire = DI::config()->get('public_server', 'flagpostsexpire');
 	if ($flagposts && $flagpostsexpire) {
-		$users = DBA::selectToArray('user', [], ["NOT `account_expired` AND `login_date` < UTC_TIMESTAMP() - INTERVAL ? DAY AND `account_expires_on` <= ? AND NOT `expire` AND `page-flags` = ?",
-			$flagposts, DBA::NULL_DATETIME, User::PAGE_FLAGS_NORMAL]);
+		$users = DBA::selectToArray('user', [], ["NOT `account_expired` AND `login_date` < ? AND `account_expires_on` <= ? AND NOT `expire` AND `page-flags` = ?",
+            DateTimeFormat::utc('now -  ' . (int)$flagposts . ' days'), DBA::NULL_DATETIME, User::PAGE_FLAGS_NORMAL]);
 		foreach ($users as $rr) {
 			DBA::update('user', ['expire' => $flagpostsexpire], ['uid' => $rr['uid']]);
 		}
