@@ -48,8 +48,8 @@ function testdrive_register_account($a,$b) {
 
 
 function testdrive_cron($a,$b) {
-	$users = DBA::selectToArray('user', [], ["`account_expires_on` < UTC_TIMESTAMP() + INTERVAL ? DAY AND `expire_notification_sent` <= ?",
-		5, DBA::NULL_DATETIME]);
+	$users = DBA::selectToArray('user', [], ["`account_expires_on` < ? AND `expire_notification_sent` <= ?",
+        DateTimeFormat::utc('now + 5 days'), DBA::NULL_DATETIME]);
 	foreach($users as $rr) {
 		DI::notify()->createFromArray([
 			'type' => Notification\Type::SYSTEM,
@@ -63,7 +63,7 @@ function testdrive_cron($a,$b) {
 		DBA::update('user', ['expire_notification_sent' => DateTimeFormat::utcNow()], ['uid' => $rr['uid']]);
 	}
 
-	$users = DBA::selectToArray('user', [], ["`account_expired` AND `account_expires_on` < UTC_TIMESTAMP() - INTERVAL ? DAY", 5]);
+	$users = DBA::selectToArray('user', [], ["`account_expired` AND `account_expires_on` < ?", DateTimeFormat::utc('now - 5 days')]);
 	foreach($users as $rr) {
 		User::remove($rr['uid']);
 	}
