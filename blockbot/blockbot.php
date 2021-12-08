@@ -50,7 +50,7 @@ function blockbot_init_1(App $a) {
 	// List of "good" crawlers
 	$good_agents = ['fediverse.space crawler', 'fediverse.network crawler', 'Active_Pods_CheckBot_3.0',
 		'Social-Relay/', 'Test Certificate Info', 'Uptimebot/', 'GNUSocialBot', 'UptimeRobot/',
-		'PTST/', 'Zabbix'];
+		'PTST/', 'Zabbix', 'Poduptime/'];
 
 	// List of known crawlers.
 	$agents = ['SemrushBot', 's~feedly-nikon3', 'Qwantify/Bleriot/', 'ltx71', 'Sogou web spider/',
@@ -75,7 +75,7 @@ function blockbot_init_1(App $a) {
 		'Google-Apps-Script; beanserver;', 'woorankreview/', 'Seekport Crawler;', 'AHC/',
 		'SkypeUriPreview Preview/', 'Semanticbot/', 'Embed PHP library', 'XoviOnpageCrawler;',
 		'GetHPinfo.com-Bot/', 'BoardReader Favicon Fetcher', 'Google-Adwords-Instant', 'newspaper/',
-		'YurichevBot/', 'Crawling at Home Project'];
+		'YurichevBot/', 'Crawling at Home Project', 'InfoTigerBot/'];
 
 	if (!DI::config()->get('blockbot', 'good_crawlers')) {
 		$agents = array_merge($agents, $good_agents);
@@ -117,7 +117,8 @@ function blockbot_init_1(App $a) {
 		'Dispatch/', 'Ruby', 'Java/', 'libwww-perl/', 'Mastodon/', 'FeedlyApp/',
 		'lua-resty-http/', 'Tiny Tiny RSS/', 'Wget/', 'PostmanRuntime/',
 		'W3C_Validator/', 'NetNewsWire', 'FeedValidator/', 'theoldreader.com', 'axios/',
-		'Paw/', 'PeerTube/', 'fedi.inex.dev', 'FediDB/', 'index.community crawler'];
+		'Paw/', 'PeerTube/', 'fedi.inex.dev', 'FediDB/', 'index.community crawler',
+		'Slackbot-LinkExpanding'];
 
 	if (DI::config()->get('blockbot', 'good_crawlers')) {
 		$agents = array_merge($agents, $good_agents);
