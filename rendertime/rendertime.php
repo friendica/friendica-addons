@@ -28,8 +28,8 @@ function rendertime_addon_admin(&$a, &$o) {
 
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
-		'$callstack' => ['callstack', DI::l10n()->t('Show callstack'), DI::config()->get('rendertime', 'callstack'), 'Show detailed performance measures in the callstack. When deactivated, only the summary will be displayed.'],
-		'$minimal_time' => ['minimal_time', DI::l10n()->t('Minimal time'), DI::config()->get('rendertime', 'minimal_time'), 'Minimal time that an activity needs to be listed in the callstack.'],
+		'$callstack' => ['callstack', DI::l10n()->t('Show callstack'), DI::config()->get('rendertime', 'callstack'), DI::l10n()->t('Show detailed performance measures in the callstack. When deactivated, only the summary will be displayed.')],
+		'$minimal_time' => ['minimal_time', DI::l10n()->t('Minimal time'), DI::config()->get('rendertime', 'minimal_time'), DI::l10n()->t('Minimal time that an activity needs to be listed in the callstack.')],
 	]);
 }
 
