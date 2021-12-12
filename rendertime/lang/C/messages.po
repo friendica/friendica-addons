@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"POT-Creation-Date: 2021-12-12 05:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,14 +17,26 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: rendertime.php:36
+#: rendertime.php:30
+msgid "Save Settings"
+msgstr ""
+
+#: rendertime.php:31
+msgid "Show callstack"
+msgstr ""
+
+#: rendertime.php:32
+msgid "Minimal time"
+msgstr ""
+
+#: rendertime.php:57
 #, php-format
 msgid ""
 "Database: %s/%s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: "
 "%s, Total: %s"
 msgstr ""
 
-#: rendertime.php:53
+#: rendertime.php:74
 #, php-format
 msgid "Class-Init: %s, Boot: %s, Init: %s, Content: %s, Other: %s, Total: %s"
 msgstr ""
