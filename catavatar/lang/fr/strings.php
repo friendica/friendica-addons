@@ -9,6 +9,7 @@ $a->strings['Use Cat as Avatar'] = 'Utiliser Chat comme avatar';
 $a->strings['More Random Cat!'] = 'Autres Chats au hasard';
 $a->strings['Reset to email Cat'] = 'Réinitialiser à Chat courriel';
 $a->strings['Cat Avatar Settings'] = 'Paramètres de Chat avatar';
+$a->strings['Set default profile avatar or randomize the cat.'] = 'Mettre l\'avatar par défaut ou tirer au sort le Chat.';
 $a->strings['The cat hadn\'t found itself.'] = 'Le Chat ne s\'y est pas retrouvé';
 $a->strings['There was an error, the cat ran away.'] = 'Il y a eu une erreur et le chat s\'est enfui';
 $a->strings['Profile Photos'] = 'Photos de profil';
