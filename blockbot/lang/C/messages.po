@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"POT-Creation-Date: 2021-12-13 06:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,18 +17,38 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: blockbot.php:29
+#: blockbot.php:30
 msgid "Save Settings"
 msgstr ""
 
-#: blockbot.php:30
+#: blockbot.php:31
 msgid "Allow \"good\" crawlers"
 msgstr ""
 
 #: blockbot.php:31
+msgid ""
+"Don't block fediverse crawlers, relay servers and other bots with good "
+"purposes."
+msgstr ""
+
+#: blockbot.php:32
 msgid "Block GabSocial"
 msgstr ""
 
 #: blockbot.php:32
+msgid ""
+"Block the software GabSocial. This will block every access for that "
+"software. You can block dedicated gab instances in the blocklist settings in "
+"the admin section."
+msgstr ""
+
+#: blockbot.php:33
 msgid "Training mode"
+msgstr ""
+
+#: blockbot.php:33
+msgid ""
+"Activates the training mode. This is only meant for developing purposes. "
+"Don't activate this on a production machine. This can cut communication with "
+"some systems."
 msgstr ""
