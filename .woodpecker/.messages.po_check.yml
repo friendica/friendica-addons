@@ -1,8 +1,5 @@
 skip_clone: true
 
-branches:
-  exclude: [ stable ]
-
 pipeline:
   clone_friendica_base:
     image: alpine/git
@@ -33,3 +30,6 @@ pipeline:
       - /check-addons.sh
     when:
       event: pull_request
+
+branches:
+  exclude: [ stable ]
