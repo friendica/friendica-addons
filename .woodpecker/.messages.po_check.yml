@@ -1,0 +1,35 @@
+skip_clone: true
+
+branches:
+  exclude: [ stable ]
+
+pipeline:
+  clone_friendica_base:
+    image: alpine/git
+    commands:
+      - git clone https://github.com/friendica/friendica.git .
+      - git checkout $CI_COMMIT_BRANCH
+    when:
+      event: pull_request
+  clone_friendica_addon:
+    image: alpine/git
+    commands:
+      - git clone $CI_REPO_LINK addon
+      - cd addon/
+      - git checkout $CI_COMMIT_BRANCH
+      - git fetch origin $CI_COMMIT_REF
+      - git merge $CI_COMMIT_SHA
+    when:
+      event: pull_request
+  build_xgettext:
+    image: friendicaci/transifex
+    commands:
+      - /xgettext-addon.sh
+    when:
+      event: pull_request
+  check:
+    image: friendicaci/transifex
+    commands:
+      - /check-addons.sh
+    when:
+      event: pull_request

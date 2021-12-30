@@ -1,0 +1,126 @@
+matrix:
+  include:
+    - PHP_MAJOR_VERSION: 7.4
+      PHP_VERSION: 7.4.18
+
+depends_on:
+  - code_standards_check
+  - messages.po_check
+
+platform: releaser/release # This prevents executing this pipeline at other servers than ci.friendi.ca
+
+skip_clone: true
+
+pipeline:
+  clone_friendica_base:
+    image: alpine/git
+    commands:
+      - git clone https://github.com/friendica/friendica.git .
+      - git checkout $CI_COMMIT_BRANCH
+    when:
+      repo: friendica/friendica-addons
+      branch: [ develop, '*-rc' ]
+      event: push
+  clone_friendica_addon:
+    image: alpine/git
+    commands:
+      - git clone $CI_REPO_LINK addon
+      - cd addon/
+      - git checkout $CI_COMMIT_BRANCH
+      - git fetch origin $CI_COMMIT_REF
+      - git merge $CI_COMMIT_SHA
+    when:
+      repo: friendica/friendica-addons
+      branch: [ develop, '*-rc' ]
+      event: push
+  composer_install:
+    image: friendicaci/php${PHP_MAJOR_VERSION}:php${PHP_VERSION}
+    commands:
+      - export COMPOSER_HOME=.composer
+      - composer validate
+      - composer install --no-dev --optimize-autoloader
+    volumes:
+      - /etc/hosts:/etc/hosts
+    when:
+      repo: friendica/friendica-addons
+      branch: [ develop, '*-rc' ]
+      event: push
+  create_artifacts:
+    image: debian
+    commands:
+      - apt-get update
+      - apt-get install bzip2
+      - export VERSION="$(cat VERSION)"
+      - export RELEASE="friendica-addons-$VERSION"
+      - export ARTIFACT="$RELEASE.tar.gz"
+      - mkdir ./build
+      - tar
+        --exclude='.tx'
+        --exclude='.git'
+        --exclude='.editorconfig'
+        --exclude='.gitattributes'
+        --exclude='.gitignore'
+        --exclude='.drone.yml'
+        --exclude='**/*/messages.po'
+        -cvzf ./build/$ARTIFACT addon/
+      - cd ./build
+      - sha256sum "$ARTIFACT" > "$ARTIFACT.sum256"
+      - chmod 664 ./*
+      - ls -lh
+      - cat "$ARTIFACT.sum256"
+      - sha256sum "$ARTIFACT"
+    when:
+      repo: friendica/friendica-addons
+      branch: [ develop, '*-rc' ]
+      event: push
+  sign_artifacts:
+    image: plugins/gpgsign
+    settings:
+      key:
+        from_secret: gpg_key
+      passphrase:
+        from_secret: gpg_password
+      files:
+        - build/*
+      exclude:
+        - build/*.sum256
+      detach_sign: true
+    when:
+      repo: friendica/friendica-addons
+      branch: [ develop, '*-rc' ]
+      event: push
+  upload_artifacts:
+    image: alpine
+    secrets:
+      - source: sftp_host
+        target: lftp_host
+      - source: sftp_user
+        target: lftp_user
+      - source: ssh_key
+        target: lftp_key
+    environment:
+      LFTP_PORT: "22"
+      LFTP_SOURCE: "build"
+      LFTP_TARGET: "/http"
+    volumes:
+      - /etc/hosts:/etc/hosts
+    commands:
+      - apk add lftp openssh openssl
+      - touch drone.key
+      - chmod 400 drone.key
+      - echo "$LFTP_KEY" | openssl base64 -A -d > drone.key
+      - lftp -c "
+        set net:timeout 5;
+        set net:max-retries 2;
+        set net:reconnect-interval-base 5;
+        set sftp:auto-confirm true;
+        set sftp:connect-program 'ssh -q -a -x -i drone.key';
+        connect sftp://$LFTP_USER:@$LFTP_HOST:$LFTP_PORT;
+        cd $LFTP_TARGET;
+        mput $LFTP_SOURCE/*;
+        "
+      - rm drone.key
+    when:
+      repo: friendica/friendica-addons
+      branch: [ develop, '*-rc' ]
+      event: push
