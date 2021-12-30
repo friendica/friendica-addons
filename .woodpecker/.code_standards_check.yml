@@ -18,10 +18,37 @@ pipeline:
       - git merge $CI_COMMIT_SHA
     when:
       event: pull_request
+  restore_cache:
+    image: meltwater/drone-cache:dev
+    settings:
+      backend: "filesystem"
+      restore: true
+      cache_key: '{{ .Repo.Name }}_phpcs_{{ arch }}_{{ os }}'
+      archive_format: "gzip"
+      mount:
+        - '.composer'
+    volumes:
+      - /tmp/drone-cache:/tmp/cache
+    when:
+      event: pull_request
   composer_install:
     image: composer
     commands:
+      - export COMPOSER_HOME=.composer
       - ./bin/composer.phar run cs:install
+    when:
+      event: pull_request
+  rebuild_cache:
+    image: meltwater/drone-cache:dev
+    settings:
+      backend: "filesystem"
+      rebuild: true
+      cache_key: '{{ .Repo.Name }}_phpcs_{{ arch }}_{{ os }}'
+      archive_format: "gzip"
+      mount:
+        - '.composer'
+    volumes:
+      - /tmp/drone-cache:/tmp/cache
     when:
       event: pull_request
   check:
