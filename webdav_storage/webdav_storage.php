@@ -26,11 +26,15 @@ function webdav_storage_uninstall()
 
 function webdav_storage_instance(App $a, array &$data)
 {
-	$config          = new WebDavConfig(DI::l10n(), DI::config(), DI::httpClient());
-	$data['storage'] = new WebDav($config->getUrl(), $config->getAuthOptions(), DI::httpClient(), DI::logger());
+	if ($data['name'] == WebDav::getName()) {
+		$config          = new WebDavConfig(DI::l10n(), DI::config(), DI::httpClient());
+		$data['storage'] = new WebDav($config->getUrl(), $config->getAuthOptions(), DI::httpClient(), DI::logger());
+	}
 }
 
 function webdav_storage_config(App $a, array &$data)
 {
-	$data['storage_config'] = new WebDavConfig(DI::l10n(), DI::config(), DI::httpClient());
+	if ($data['name'] == WebDav::getName()) {
+		$data['storage_config'] = new WebDavConfig(DI::l10n(), DI::config(), DI::httpClient());
+	}
 }
