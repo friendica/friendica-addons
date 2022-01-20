@@ -119,11 +119,13 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 		return;
 	}
 
-	if (!empty($hook_data['item']['rendered-html'])) {
-		$naked_body = strip_tags($hook_data['item']['rendered-html']);
-	} else {
-		$naked_body = BBCode::toPlaintext($hook_data['item']['body'], false);
-	}
+	$naked_body = strip_tags(
+		$hook_data['item']['rendered-html']
+		??''?: // Equivalent of !empty()
+		BBCode::convert($hook_data['item']['body'], false, BBCode::INTERNAL, true)
+	);
+
+	$naked_body = preg_replace('#\s+#', ' ', trim($naked_body));
 
 	// Don't filter if body lenght is below minimum
 	$minlen = DI::pConfig()->get(local_user(), 'langfilter', 'minlength', 32);
