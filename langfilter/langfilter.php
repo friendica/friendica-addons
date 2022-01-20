@@ -122,7 +122,7 @@ function langfilter_prepare_body_content_filter(App $a, &$hook_data)
 	$naked_body = strip_tags(
 		$hook_data['item']['rendered-html']
 		??''?: // Equivalent of !empty()
-		BBCode::convert($hook_data['item']['body'], false, BBCode::INTERNAL, true)
+		BBCode::convert($hook_data['item']['body'], false, BBCode::ACTIVITYPUB, true)
 	);
 
 	$naked_body = preg_replace('#\s+#', ' ', trim($naked_body));
