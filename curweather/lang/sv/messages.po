@@ -1,0 +1,125 @@
+# ADDON curweather
+# Copyright (C)
+# This file is distributed under the same license as the Friendica curweather addon package.
+# 
+# 
+# Translators:
+# Hypolite Petovan <hypolite@mrpetovan.com>, 2019
+# Kristoffer Grundström <lovaren@gmail.com>, 2022
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-21 19:14-0500\n"
+"PO-Revision-Date: 2022-01-16 01:04+0000\n"
+"Last-Translator: Kristoffer Grundström <lovaren@gmail.com>\n"
+"Language-Team: Swedish (http://www.transifex.com/Friendica/friendica/language/sv/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sv\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: curweather.php:47
+msgid "Error fetching weather data. Error was: "
+msgstr ""
+
+#: curweather.php:130
+msgid "Current Weather"
+msgstr "Nuvarande väder"
+
+#: curweather.php:137
+msgid "Relative Humidity"
+msgstr "Relativ luftfuktighet"
+
+#: curweather.php:138
+msgid "Pressure"
+msgstr "Tryck"
+
+#: curweather.php:139
+msgid "Wind"
+msgstr "Vind"
+
+#: curweather.php:140
+msgid "Last Updated"
+msgstr "Uppdaterades senast"
+
+#: curweather.php:141
+msgid "Data by"
+msgstr "Data av"
+
+#: curweather.php:142
+msgid "Show on map"
+msgstr "Visa på karta"
+
+#: curweather.php:147
+msgid "There was a problem accessing the weather data. But have a look"
+msgstr ""
+
+#: curweather.php:149
+msgid "at OpenWeatherMap"
+msgstr "vid OpenWeatherMap"
+
+#: curweather.php:178
+msgid "No APPID found, please contact your admin to obtain one."
+msgstr ""
+
+#: curweather.php:188
+msgid "Enter either the name of your location or the zip code."
+msgstr ""
+
+#: curweather.php:189
+msgid "Your Location"
+msgstr "Din plats"
+
+#: curweather.php:189
+msgid ""
+"Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or "
+"<em>14476,DE</em>."
+msgstr ""
+
+#: curweather.php:190
+msgid "Units"
+msgstr "Enheter"
+
+#: curweather.php:190
+msgid "select if the temperature should be displayed in &deg;C or &deg;F"
+msgstr ""
+
+#: curweather.php:191
+msgid "Show weather data"
+msgstr "Visa väder-data"
+
+#: curweather.php:196
+msgid "Current Weather Settings"
+msgstr ""
+
+#: curweather.php:227
+msgid "Save Settings"
+msgstr "Spara inställningar"
+
+#: curweather.php:230
+msgid "Caching Interval"
+msgstr ""
+
+#: curweather.php:232
+msgid ""
+"For how long should the weather data be cached? Choose according your "
+"OpenWeatherMap account type."
+msgstr ""
+
+#: curweather.php:233
+msgid "no cache"
+msgstr "ingen cache"
+
+#: curweather.php:234 curweather.php:235 curweather.php:236 curweather.php:237
+msgid "minutes"
+msgstr "minuter"
+
+#: curweather.php:240
+msgid "Your APPID"
+msgstr "Ditt APP-ID"
+
+#: curweather.php:240
+msgid "Your API key provided by OpenWeatherMap"
+msgstr ""

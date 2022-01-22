@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-17 04:04+0200\n"
+"POT-Creation-Date: 2021-11-21 19:13-0500\n"
 "PO-Revision-Date: 2018-05-24 06:41+0000\n"
 "Last-Translator: Bjoessi <torbjorn.andersson@syte.se>, 2019\n"
 "Language-Team: Swedish (https://www.transifex.com/Friendica/teams/12172/sv/)\n"
@@ -21,44 +21,40 @@ msgstr ""
 "Language: sv\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: advancedcontentfilter.php:134
+#: advancedcontentfilter.php:154
 #, php-format
 msgid "Filtered by rule: %s"
 msgstr "Filtrerat efter regel: %s"
 
-#: advancedcontentfilter.php:147 advancedcontentfilter.php:204
+#: advancedcontentfilter.php:170 advancedcontentfilter.php:225
 msgid "Advanced Content Filter"
 msgstr "Avancerat innehållsfiter"
 
-#: advancedcontentfilter.php:203
+#: advancedcontentfilter.php:224
 msgid "Back to Addon Settings"
 msgstr "TIllbaka till Tilläggsinställningar"
 
-#: advancedcontentfilter.php:205
+#: advancedcontentfilter.php:226
 msgid "Add a Rule"
 msgstr "Lägg till en regel"
 
-#: advancedcontentfilter.php:206
+#: advancedcontentfilter.php:227
 msgid "Help"
 msgstr "Hjälp"
 
-#: advancedcontentfilter.php:207
+#: advancedcontentfilter.php:228
 msgid ""
 "Add and manage your personal content filter rules in this screen. Rules have"
 " a name and an arbitrary expression that will be matched against post data. "
 "For a complete reference of the available operations and variables, check "
-"the <a href=\"advancedcontentfilter/help\">help page</a>."
+"the help page."
 msgstr ""
-"Lägg till och hantera dina personliga regler för innehållsfilter i det här "
-"fönstret. Regler har ett namn och ett valfritt uttryck och kommer jämföras "
-"mot inläggets innehåll. Förteckning av alla operander och variabler finns "
-"att hitta på <a href=\"advancedcontentfilter/help\">hjälpsidan</a>."
 
-#: advancedcontentfilter.php:208
+#: advancedcontentfilter.php:229
 msgid "Your rules"
 msgstr "Dina regler"
 
-#: advancedcontentfilter.php:209
+#: advancedcontentfilter.php:230
 msgid ""
 "You have no rules yet! Start adding one by clicking on the button above next"
 " to the title."
@@ -66,110 +62,102 @@ msgstr ""
 "Du har inga regler än! Lägg till regler genom att klicka på knappen ovanför,"
 " bredvid överskriften."
 
-#: advancedcontentfilter.php:210
+#: advancedcontentfilter.php:231
 msgid "Disabled"
 msgstr "Inaktiverad"
 
-#: advancedcontentfilter.php:211
+#: advancedcontentfilter.php:232
 msgid "Enabled"
 msgstr "Aktiverad"
 
-#: advancedcontentfilter.php:212
+#: advancedcontentfilter.php:233
 msgid "Disable this rule"
 msgstr "Inaktivera den här regeln"
 
-#: advancedcontentfilter.php:213
+#: advancedcontentfilter.php:234
 msgid "Enable this rule"
 msgstr "Aktivera den här regeln"
 
-#: advancedcontentfilter.php:214
+#: advancedcontentfilter.php:235
 msgid "Edit this rule"
 msgstr "Redigera den här regeln"
 
-#: advancedcontentfilter.php:215
+#: advancedcontentfilter.php:236
 msgid "Edit the rule"
 msgstr "Redigera den här regeln"
 
-#: advancedcontentfilter.php:216
+#: advancedcontentfilter.php:237
 msgid "Save this rule"
 msgstr "Spara den här regeln"
 
-#: advancedcontentfilter.php:217
+#: advancedcontentfilter.php:238
 msgid "Delete this rule"
 msgstr "Ta bort den här regeln"
 
-#: advancedcontentfilter.php:218
+#: advancedcontentfilter.php:239
 msgid "Rule"
 msgstr "Regel"
 
-#: advancedcontentfilter.php:219
+#: advancedcontentfilter.php:240
 msgid "Close"
 msgstr "Stäng"
 
-#: advancedcontentfilter.php:220
+#: advancedcontentfilter.php:241
 msgid "Add new rule"
 msgstr "Lägg till ny regel"
 
-#: advancedcontentfilter.php:221
+#: advancedcontentfilter.php:242
 msgid "Rule Name"
 msgstr "Regelnamn"
 
-#: advancedcontentfilter.php:222
+#: advancedcontentfilter.php:243
 msgid "Rule Expression"
 msgstr "Regeluttryck"
 
-#: advancedcontentfilter.php:223
-msgid ""
-"<p>Examples:</p><ul><li><pre>author_link == "
-"'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>tags</li></ul>"
-msgstr ""
-"<p>Exempel:</p><ul><li><pre>author_link == "
-"'https://friendica.mrpetovan.com/profile/hypolite'</pre></li><li>taggar</li></ul>"
-
-#: advancedcontentfilter.php:224
+#: advancedcontentfilter.php:244
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: advancedcontentfilter.php:290 advancedcontentfilter.php:301
-#: advancedcontentfilter.php:312 advancedcontentfilter.php:346
-#: advancedcontentfilter.php:375 advancedcontentfilter.php:396
+#: advancedcontentfilter.php:312 advancedcontentfilter.php:323
+#: advancedcontentfilter.php:334 advancedcontentfilter.php:370
+#: advancedcontentfilter.php:401 advancedcontentfilter.php:424
 msgid "You must be logged in to use this method"
 msgstr "Du måste vara inloggad för att använda den här funktionen"
 
-#: advancedcontentfilter.php:316 advancedcontentfilter.php:350
-#: advancedcontentfilter.php:379
+#: advancedcontentfilter.php:338 advancedcontentfilter.php:374
+#: advancedcontentfilter.php:405
 msgid "Invalid form security token, please refresh the page."
 msgstr "Felaktigt säkerhetsformulärstecken, vänligen uppdatera sidan."
 
-#: advancedcontentfilter.php:328
+#: advancedcontentfilter.php:350
 msgid "The rule name and expression are required."
 msgstr "Regelns namn och uttryck krävs."
 
-#: advancedcontentfilter.php:340
+#: advancedcontentfilter.php:364
 msgid "Rule successfully added"
 msgstr "Regeln kunde läggas till"
 
-#: advancedcontentfilter.php:354 advancedcontentfilter.php:383
+#: advancedcontentfilter.php:378 advancedcontentfilter.php:409
 msgid "Rule doesn't exist or doesn't belong to you."
 msgstr "Regeln finns inte eller tillhör inte dig."
 
-#: advancedcontentfilter.php:369
+#: advancedcontentfilter.php:395
 msgid "Rule successfully updated"
 msgstr "Uppdatering av regel lyckades"
 
-#: advancedcontentfilter.php:390
+#: advancedcontentfilter.php:418
 msgid "Rule successfully deleted"
 msgstr "Borttagning av regel lyckades"
 
-#: advancedcontentfilter.php:400
+#: advancedcontentfilter.php:428
 msgid "Missing argument: guid."
 msgstr "Argument saknas: guid."
 
-#: advancedcontentfilter.php:406
+#: advancedcontentfilter.php:436
 #, php-format
 msgid "Unknown post with guid: %s"
 msgstr "Okänt inlägg med guid: %s"
 
-#: src/middlewares.php:28
+#: src/middlewares.php:49
 msgid "Method not found"
 msgstr "Metod hittades inte"
