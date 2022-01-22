@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
-"PO-Revision-Date: 2021-02-27 01:13+0000\n"
+"POT-Creation-Date: 2021-11-21 19:17-0500\n"
+"PO-Revision-Date: 2021-12-23 18:31+0000\n"
 "Last-Translator: Balázs Úr\n"
 "Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -19,30 +19,26 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: dwpost.php:41
+#: dwpost.php:43
 msgid "Post to Dreamwidth"
 msgstr "Beküldés a Dreamwidth-re"
 
-#: dwpost.php:72 dwpost.php:76
-msgid "Dreamwidth Export"
-msgstr "Dreamwidth exportálás"
-
-#: dwpost.php:80
-msgid "Enable dreamwidth Post Addon"
+#: dwpost.php:63
+msgid "Enable Dreamwidth Post Addon"
 msgstr "A Dreamwidth-beküldő bővítmény engedélyezése"
 
-#: dwpost.php:85
-msgid "dreamwidth username"
+#: dwpost.php:64
+msgid "Dreamwidth username"
 msgstr "Dreamwidth felhasználónév"
 
-#: dwpost.php:90
-msgid "dreamwidth password"
+#: dwpost.php:65
+msgid "Dreamwidth password"
 msgstr "Dreamwidth jelszó"
 
-#: dwpost.php:95
-msgid "Post to dreamwidth by default"
+#: dwpost.php:66
+msgid "Post to Dreamwidth by default"
 msgstr "Beküldés a Dreamwidth-re alapértelmezetten"
 
-#: dwpost.php:100
-msgid "Save Settings"
-msgstr "Beállítások mentése"
+#: dwpost.php:71
+msgid "Dreamwidth Export"
+msgstr "Dreamwidth exportálás"

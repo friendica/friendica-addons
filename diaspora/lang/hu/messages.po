@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-07 00:15-0400\n"
-"PO-Revision-Date: 2020-12-23 01:35+0000\n"
+"POT-Creation-Date: 2021-11-21 19:17-0500\n"
+"PO-Revision-Date: 2021-12-23 17:19+0000\n"
 "Last-Translator: Balázs Úr\n"
 "Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -19,96 +19,84 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: diaspora.php:53
+#: diaspora.php:44
 msgid "Post to Diaspora"
 msgstr "Beküldés a Diasporára"
 
-#: diaspora.php:78
+#: diaspora.php:67
 #, php-format
 msgid ""
 "Please remember: You can always be reached from Diaspora with your Friendica"
 " handle <strong>%s</strong>. "
 msgstr "Ne feledje: Ön mindig elérhető a Diasporáról a(z) <strong>%s</strong> Friendica kezelőjével. "
 
-#: diaspora.php:79
+#: diaspora.php:68
 msgid ""
 "This connector is only meant if you still want to use your old Diaspora "
 "account for some time. "
 msgstr "Ez az összekötő csak akkor szükséges, ha továbbra is használni szeretné a régi Diaspora-fiókját egy ideig. "
 
-#: diaspora.php:80
+#: diaspora.php:69
 #, php-format
 msgid ""
 "However, it is preferred that you tell your Diaspora contacts the new handle"
 " <strong>%s</strong> instead."
 msgstr "Azonban az ajánlott eljárás az, hogy inkább mondja meg a Diaspora partnereinek az új <strong>%s</strong> kezelőt."
 
-#: diaspora.php:90
+#: diaspora.php:79
 msgid "All aspects"
 msgstr "Minden szempont"
 
-#: diaspora.php:91
+#: diaspora.php:80
 msgid "Public"
 msgstr "Nyilvános"
 
-#: diaspora.php:97
+#: diaspora.php:86
 msgid "Post to aspect:"
 msgstr "Beküldés a szempontba:"
 
-#: diaspora.php:98
+#: diaspora.php:87
 #, php-format
 msgid "Connected with your Diaspora account <strong>%s</strong>"
 msgstr "Kapcsolódva a(z) <strong>%s</strong> Diaspora-fiókjával"
 
-#: diaspora.php:101
+#: diaspora.php:90
 msgid ""
 "Can't login to your Diaspora account. Please check handle (in the format "
 "user@domain.tld) and password."
 msgstr "Nem lehet bejelentkezni a Diaspora-fiókjába. Ellenőrizze a kezelőt (felhasználó@tartomány.tld formátumban) és a jelszót."
 
-#: diaspora.php:109
-msgid "Diaspora Export"
-msgstr "Diaspora exportálás"
-
-#: diaspora.php:110
+#: diaspora.php:97
 msgid "Information"
 msgstr "Információ"
 
-#: diaspora.php:111
+#: diaspora.php:98
 msgid "Error"
 msgstr "Hiba"
 
-#: diaspora.php:112
-msgid "Save Settings"
-msgstr "Beállítások mentése"
-
-#: diaspora.php:116
+#: diaspora.php:104
 msgid "Enable Diaspora Post Addon"
 msgstr "A Diaspora-beküldő bővítmény engedélyezése"
 
-#: diaspora.php:117
+#: diaspora.php:105
 msgid "Diaspora handle"
 msgstr "Diaspora kezelő"
 
-#: diaspora.php:118
+#: diaspora.php:106
 msgid "Diaspora password"
 msgstr "Diaspora jelszó"
 
-#: diaspora.php:118
+#: diaspora.php:106
 msgid ""
 "Privacy notice: Your Diaspora password will be stored unencrypted to "
 "authenticate you with your Diaspora pod. This means your Friendica node "
 "administrator can have access to it."
 msgstr "Adatvédelmi figyelmeztetés: a Diaspora jelszava titkosítatlanul lesz eltárolva, hogy hitelesítse Önt a Diaspora csomópontján. Ez azt jelenti, hogy a Friendica csomópontjának adminisztrátora hozzáférhet."
 
-#: diaspora.php:120
+#: diaspora.php:108
 msgid "Post to Diaspora by default"
 msgstr "Beküldés a Diasporára alapértelmezetten"
 
-#: diaspora.php:138
-msgid "Diaspora settings updated."
-msgstr "A Diaspora beállításai frissítve."
-
-#: diaspora.php:141
-msgid "Diaspora connector disabled."
-msgstr "A Diaspora összekötő letiltva."
+#: diaspora.php:113
+msgid "Diaspora Export"
+msgstr "Diaspora exportálás"

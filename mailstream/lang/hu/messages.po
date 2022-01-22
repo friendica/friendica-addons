@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
-"PO-Revision-Date: 2021-03-24 00:48+0000\n"
+"POT-Creation-Date: 2021-11-21 19:15-0500\n"
+"PO-Revision-Date: 2021-12-23 17:25+0000\n"
 "Last-Translator: Balázs Úr\n"
 "Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -19,80 +19,80 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: mailstream.php:66
+#: mailstream.php:77
 msgid "From Address"
 msgstr "Feladócím"
 
-#: mailstream.php:68
+#: mailstream.php:79
 msgid "Email address that stream items will appear to be from."
 msgstr "E-mail-cím, ahonnan úgy tűnik, hogy a folyam elemei származnak."
 
-#: mailstream.php:71 mailstream.php:382
+#: mailstream.php:82
 msgid "Save Settings"
 msgstr "Beállítások mentése"
 
-#: mailstream.php:225
+#: mailstream.php:301
 msgid "Re:"
 msgstr "Vá:"
 
-#: mailstream.php:233
+#: mailstream.php:314 mailstream.php:317
 msgid "Friendica post"
 msgstr "Friendica-bejegyzés"
 
-#: mailstream.php:236
+#: mailstream.php:320
 msgid "Diaspora post"
 msgstr "Diaspora-bejegyzés"
 
-#: mailstream.php:246
+#: mailstream.php:330
 msgid "Feed item"
 msgstr "Hírforráselem"
 
-#: mailstream.php:249
+#: mailstream.php:333
 msgid "Email"
 msgstr "E-mail"
 
-#: mailstream.php:251
+#: mailstream.php:335
 msgid "Friendica Item"
 msgstr "Friendica-elem"
 
-#: mailstream.php:296
+#: mailstream.php:404
 msgid "Upstream"
 msgstr "Távoli"
 
-#: mailstream.php:297
+#: mailstream.php:405
 msgid "Local"
 msgstr "Helyi"
 
-#: mailstream.php:364
+#: mailstream.php:481
 msgid "Enabled"
 msgstr "Engedélyezve"
 
-#: mailstream.php:368
+#: mailstream.php:486
 msgid "Email Address"
 msgstr "E-mail-cím"
 
-#: mailstream.php:370
+#: mailstream.php:488
 msgid "Leave blank to use your account email address"
 msgstr "Hagyja üresen a fiókja e-mail-címének használatához"
 
-#: mailstream.php:373
+#: mailstream.php:492
 msgid "Exclude Likes"
 msgstr "Kedvelések kizárása"
 
-#: mailstream.php:375
+#: mailstream.php:494
 msgid "Check this to omit mailing \"Like\" notifications"
 msgstr "Jelölje be ezt a „Tetszik” értesítések elküldésének kihagyásához"
 
-#: mailstream.php:378
+#: mailstream.php:498
 msgid "Attach Images"
 msgstr "Képek csatolása"
 
-#: mailstream.php:380
+#: mailstream.php:500
 msgid ""
 "Download images in posts and attach them to the email.  Useful for reading "
 "email while offline."
 msgstr "Képek letöltése a bejegyzésekből és csatolás az e-mailhez. Hasznos az e-mailek kapcsolat nélküli olvasásakor."
 
-#: mailstream.php:381
+#: mailstream.php:507
 msgid "Mail Stream Settings"
 msgstr "Levelezőfolyam beállításai"

@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
-"PO-Revision-Date: 2021-03-24 00:39+0000\n"
+"POT-Creation-Date: 2021-11-21 19:17-0500\n"
+"PO-Revision-Date: 2021-12-23 18:46+0000\n"
 "Last-Translator: Balázs Úr\n"
 "Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -19,30 +19,26 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ljpost.php:39
+#: ljpost.php:43
 msgid "Post to LiveJournal"
 msgstr "Beküldés a LiveJournalra"
 
-#: ljpost.php:73
-msgid "LiveJournal Post Settings"
-msgstr "LiveJournal-beküldés beállításai"
-
-#: ljpost.php:75
+#: ljpost.php:63
 msgid "Enable LiveJournal Post Addon"
 msgstr "A LiveJournal-beküldő bővítmény engedélyezése"
 
-#: ljpost.php:80
+#: ljpost.php:64
 msgid "LiveJournal username"
 msgstr "LiveJournal felhasználónév"
 
-#: ljpost.php:85
+#: ljpost.php:65
 msgid "LiveJournal password"
 msgstr "LiveJournal jelszó"
 
-#: ljpost.php:90
+#: ljpost.php:66
 msgid "Post to LiveJournal by default"
 msgstr "Beküldés a LiveJournalra alapértelmezetten"
 
-#: ljpost.php:96
-msgid "Save Settings"
-msgstr "Beállítások mentése"
+#: ljpost.php:71
+msgid "LiveJournal Export"
+msgstr "LiveJournal exportálás"

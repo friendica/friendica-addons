@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2021-02-01 18:16+0100\n"
 "PO-Revision-Date: 2018-03-20 07:26+0000\n"
 "Last-Translator: Balázs Úr, 2020\n"
 "Language-Team: Hungarian (https://www.transifex.com/Friendica/teams/12172/hu/)\n"
@@ -21,6 +21,6 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: viewsrc.php:39
+#: viewsrc.php:49
 msgid "View Source"
 msgstr "Forrás megtekintése"

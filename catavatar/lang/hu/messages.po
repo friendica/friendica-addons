@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"POT-Creation-Date: 2021-11-21 19:14-0500\n"
 "PO-Revision-Date: 2018-04-07 05:23+0000\n"
 "Last-Translator: Balázs Úr, 2021\n"
 "Language-Team: Hungarian (https://www.transifex.com/Friendica/teams/12172/hu/)\n"
@@ -22,37 +22,37 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: catavatar.php:48
-msgid "Use Cat as Avatar"
-msgstr "Macska használata profilképként"
-
-#: catavatar.php:49
-msgid "More Random Cat!"
-msgstr "Több véletlen macskát!"
-
-#: catavatar.php:50
-msgid "Reset to email Cat"
-msgstr "Visszaállítás e-mail macskára"
-
-#: catavatar.php:52
-msgid "Cat Avatar Settings"
-msgstr "Macskaprofilkép-beállítások"
-
-#: catavatar.php:53
 msgid "Set default profile avatar or randomize the cat."
 msgstr "Alapértelmezett profilkép beállítása vagy véletlenszerű macska."
 
-#: catavatar.php:78
+#: catavatar.php:53
+msgid "Cat Avatar Settings"
+msgstr "Macskaprofilkép-beállítások"
+
+#: catavatar.php:56
+msgid "Use Cat as Avatar"
+msgstr "Macska használata profilképként"
+
+#: catavatar.php:57
+msgid "Another random Cat!"
+msgstr "Egy másik véletlenszerű macska!"
+
+#: catavatar.php:58
+msgid "Reset to email Cat"
+msgstr "Visszaállítás e-mail macskára"
+
+#: catavatar.php:77
 msgid "The cat hadn't found itself."
 msgstr "A macska nem találta meg önmagát."
 
-#: catavatar.php:87
+#: catavatar.php:86
 msgid "There was an error, the cat ran away."
 msgstr "Hiba történt, a macska elfutott."
 
-#: catavatar.php:93
+#: catavatar.php:92
 msgid "Profile Photos"
 msgstr "Profilfényképek"
 
-#: catavatar.php:108
+#: catavatar.php:102
 msgid "Meow!"
 msgstr "Miáú!"
