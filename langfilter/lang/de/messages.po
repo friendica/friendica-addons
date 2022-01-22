@@ -1,0 +1,81 @@
+# ADDON langfilter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica langfilter addon package.
+# 
+# 
+# Translators:
+# Andreas H., 2018
+# Copiis Praeesse <richard@zsemberi.de>, 2018
+# Ralf Thees <ralf@herrthees.de>, 2019
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2015
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2020-2021
+# Ulf Rompe <transifex.com@rompe.org>, 2019
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-21 19:15-0500\n"
+"PO-Revision-Date: 2021-10-19 18:08+0000\n"
+"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
+"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: langfilter.php:49
+msgid ""
+"This addon tries to identify the language posts are written in. If it does "
+"not match any language specified below, posts will be hidden by collapsing "
+"them."
+msgstr "Dieses Addon versucht zu identifizieren, in welcher Sprache Posts geschrieben werden. Wenn sie nicht mit einer der unten angegebenen Sprachen übereinstimmt, werden Posts durch Zusammenklappen verborgen."
+
+#: langfilter.php:50
+msgid "Use the language filter"
+msgstr "Den Sprachfilter verwenden"
+
+#: langfilter.php:51
+msgid "Able to read"
+msgstr "Lesbar"
+
+#: langfilter.php:51
+msgid ""
+"List of abbreviations (ISO 639-1 codes) for languages you speak, comma "
+"separated. For example \"de,it\"."
+msgstr "Mit Komma getrennte Liste von Abkürzungen (ISO 639-1) der von dir gesprochenen Sprachen. Zum Beispiel \"de,it\"."
+
+#: langfilter.php:52
+msgid "Minimum confidence in language detection"
+msgstr "Minimales Vertrauenslevel in die Spracherkennung"
+
+#: langfilter.php:52
+msgid ""
+"Minimum confidence in language detection being correct, from 0 to 100. Posts"
+" will not be filtered when the confidence of language detection is below "
+"this percent value."
+msgstr "Minimales Vertrauen in die Richtigkeit der erkannten Sprache. Wert zwischen 0 und 100. Beiträge mit einem niedrigeren Vertrauenslevel werden nicht gefiltert."
+
+#: langfilter.php:53
+msgid "Minimum length of message body"
+msgstr "Mindestlänge des Nachrichtentexts"
+
+#: langfilter.php:53
+msgid ""
+"Minimum number of characters in message body for filter to be used. Posts "
+"shorter than this will not be filtered. Note: Language detection is "
+"unreliable for short content (<200 characters)."
+msgstr "Mindestanzahl von Zeichen im Nachrichtentext, die vom Filter benutzt werden soll. Kürzere Beiträge werden nicht gefiltert. Hinweis: Die Spracherkennung ist bei kurzen Inhalten (<200 Zeichen) nicht zuverlässig."
+
+#: langfilter.php:58
+msgid "Language Filter"
+msgstr "Sprachfilter"
+
+#: langfilter.php:60
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: langfilter.php:193
+#, php-format
+msgid "Filtered language: %s"
+msgstr "Gefilterte Sprache:  %s"
