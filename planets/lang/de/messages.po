@@ -13,9 +13,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
-"PO-Revision-Date: 2021-04-03 06:50+0000\n"
-"Last-Translator: Steffen K9\n"
+"POT-Creation-Date: 2021-11-21 19:15-0500\n"
+"PO-Revision-Date: 2021-12-22 16:22+0000\n"
+"Last-Translator: Transifex Bot <>\n"
 "Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,18 +23,10 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: planets.php:131 planets.php:135
-msgid "Planets"
-msgstr "Planeten"
-
-#: planets.php:139
-msgid "Planets Settings"
-msgstr "Planeten-Einstellungen"
-
-#: planets.php:141
+#: planets.php:126
 msgid "Enable Planets Addon"
 msgstr "Planeten-Addon aktivieren"
 
-#: planets.php:147
-msgid "Save Settings"
-msgstr "Einstellungen speichern"
+#: planets.php:131
+msgid "Planets Settings"
+msgstr "Planeten-Einstellungen"

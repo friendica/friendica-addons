@@ -1,0 +1,63 @@
+# ADDON irc
+# Copyright (C)
+# This file is distributed under the same license as the Friendica irc addon package.
+# 
+# 
+# Translators:
+# Kristoffer Grundström <lovaren@gmail.com>, 2022
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-21 19:14-0500\n"
+"PO-Revision-Date: 2022-01-16 01:02+0000\n"
+"Last-Translator: Kristoffer Grundström <lovaren@gmail.com>\n"
+"Language-Team: Swedish (http://www.transifex.com/Friendica/friendica/language/sv/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sv\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: irc.php:32
+msgid ""
+"Here you can change the system wide settings for the channels to "
+"automatically join and access via the side bar. Note the changes you do "
+"here, only effect the channel selection if you are logged in."
+msgstr ""
+
+#: irc.php:33 irc.php:133
+msgid "Channel(s) to auto connect (comma separated)"
+msgstr "Kanal(er) att ansluta till automatiskt (separerade med komma)"
+
+#: irc.php:33 irc.php:133
+msgid ""
+"List of channels that shall automatically connected to when the app is "
+"launched."
+msgstr ""
+
+#: irc.php:34 irc.php:134
+msgid "Popular Channels (comma separated)"
+msgstr "Populära kanaler (separerade med komma)"
+
+#: irc.php:34 irc.php:134
+msgid ""
+"List of popular channels, will be displayed at the side and hotlinked for "
+"easy joining."
+msgstr ""
+
+#: irc.php:39
+msgid "IRC Settings"
+msgstr "IRC-inställningar"
+
+#: irc.php:60
+msgid "IRC Chatroom"
+msgstr "Chatt-rum för IRC"
+
+#: irc.php:88
+msgid "Popular Channels"
+msgstr "Populära kanaler"
+
+#: irc.php:132
+msgid "Save Settings"
+msgstr "Spara inställningar"

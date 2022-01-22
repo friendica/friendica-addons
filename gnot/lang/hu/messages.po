@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
-"PO-Revision-Date: 2021-02-27 01:20+0000\n"
+"POT-Creation-Date: 2021-11-21 19:14-0500\n"
+"PO-Revision-Date: 2021-12-23 17:21+0000\n"
 "Last-Translator: Balázs Úr\n"
 "Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -19,25 +19,21 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: gnot.php:71
-msgid "Gnot Settings"
-msgstr "Gnot beállítások"
-
-#: gnot.php:72
-msgid "Save Settings"
-msgstr "Beállítások mentése"
-
-#: gnot.php:73
-msgid "Enable this addon?"
-msgstr "Engedélyezi ezt a bővítményt?"
-
-#: gnot.php:75
+#: gnot.php:63
 msgid ""
 "Allows threading of email comment notifications on Gmail and anonymising the"
 " subject line."
 msgstr "Lehetővé teszi az e-mailes hozzászólás értesítéseinek szálkezelését a Gmailnél, és anonimizálja a tárgy sorát."
 
-#: gnot.php:84
+#: gnot.php:64
+msgid "Enable this addon?"
+msgstr "Engedélyezi ezt a bővítményt?"
+
+#: gnot.php:69
+msgid "Gnot Settings"
+msgstr "Gnot beállítások"
+
+#: gnot.php:79
 #, php-format
 msgid "[Friendica:Notify] Comment to conversation #%d"
 msgstr "[Friendica: értesítés] Hozzászólás a(z) %d. beszélgetéshez"

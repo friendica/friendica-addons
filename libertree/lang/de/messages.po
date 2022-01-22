@@ -6,14 +6,14 @@
 # Translators:
 # Andreas H., 2014
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
-# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018,2021
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018,2021-2022
 # Ulf Rompe <transifex.com@rompe.org>, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
-"PO-Revision-Date: 2021-02-06 17:01+0000\n"
+"POT-Creation-Date: 2021-11-21 19:17-0500\n"
+"PO-Revision-Date: 2022-01-22 17:34+0000\n"
 "Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
 "Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -22,30 +22,26 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: libertree.php:37
+#: libertree.php:39
 msgid "Post to libertree"
 msgstr "bei libertree veröffentlichen"
 
-#: libertree.php:71 libertree.php:75
-msgid "libertree Export"
-msgstr "libertree Export"
-
-#: libertree.php:79
+#: libertree.php:60
 msgid "Enable Libertree Post Addon"
 msgstr "Libertree-Post-Addon aktivieren"
 
-#: libertree.php:84
-msgid "Libertree API token"
-msgstr "Libertree-API-Token"
-
-#: libertree.php:89
+#: libertree.php:61
 msgid "Libertree site URL"
 msgstr "Libertree-URL"
 
-#: libertree.php:94
+#: libertree.php:62
+msgid "Libertree API token"
+msgstr "Libertree-API-Token"
+
+#: libertree.php:63
 msgid "Post to Libertree by default"
 msgstr "Standardmäßig bei libertree veröffentlichen"
 
-#: libertree.php:100
-msgid "Save Settings"
-msgstr "Einstellungen speichern"
+#: libertree.php:68
+msgid "Libertree Export"
+msgstr "Libertree Export"

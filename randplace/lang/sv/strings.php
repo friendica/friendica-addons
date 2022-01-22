@@ -1,5 +1,7 @@
 <?php
 
-$a->strings["Randplace Settings"] = "Randplace Settings";
-$a->strings["Enable Randplace Addon"] = "Enable Randplace Addon";
-$a->strings["Submit"] = "Spara";
+if(! function_exists("string_plural_select_sv")) {
+function string_plural_select_sv($n){
+	$n = intval($n);
+	return intval($n != 1);
+}}
