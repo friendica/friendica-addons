@@ -28,7 +28,7 @@ function birdavatar_install()
 	Hook::register('addon_settings', __FILE__, 'birdavatar_addon_settings');
 	Hook::register('addon_settings_post', __FILE__, 'birdavatar_addon_settings_post');
 
-	Logger::log('registered birdavatar');
+	Logger::info('registered birdavatar');
 }
 
 /**

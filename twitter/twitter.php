@@ -1273,7 +1273,7 @@ function twitter_fetchtimeline(App $a, $uid)
 
 function twitter_fix_avatar($avatar)
 {
-	$new_avatar = str_replace("_normal.", ".", $avatar);
+	$new_avatar = str_replace("_normal.", "_400x400.", $avatar);
 
 	$info = Images::getInfoFromURLCached($new_avatar);
 	if (!$info) {
