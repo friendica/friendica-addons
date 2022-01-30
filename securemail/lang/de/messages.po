@@ -3,14 +3,18 @@
 # This file is distributed under the same license as the Friendica securemail addon package.
 # 
 # 
+# Translators:
+# Richard Zsemberi <rzsemberi@gmail.com>, 2018
+# Ulf Rompe <transifex.com@rompe.org>, 2019
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-11 21:14+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Richard Zsemberi <rzsemberi@gmail.com>, 2018\n"
+"POT-Creation-Date: 2021-11-21 19:16-0500\n"
+"PO-Revision-Date: 2018-03-20 07:26+0000\n"
+"Last-Translator: Ulf Rompe <transifex.com@rompe.org>, 2019\n"
 "Language-Team: German (https://www.transifex.com/Friendica/teams/12172/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,38 +22,34 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: securemail.php:53
-msgid "\"Secure Mail\" Settings"
-msgstr "\"Secure Mail\" Einstellungen"
-
-#: securemail.php:54
-msgid "Save Settings"
-msgstr "Einstellungen speichern"
-
-#: securemail.php:55 securemail.php:76
-msgid "Save and send test"
-msgstr "Abspeichern und Test Senden"
-
-#: securemail.php:56
+#: securemail.php:50
 msgid "Enable Secure Mail"
-msgstr "Secure Mail aktivieren"
+msgstr "\"Secure Mail\" aktivieren"
 
-#: securemail.php:57
+#: securemail.php:51
 msgid "Public key"
 msgstr "Öffentlicher Schlüssel"
 
-#: securemail.php:57
+#: securemail.php:51
 msgid "Your public PGP key, ascii armored format"
-msgstr "Dein öffentlicher PGP Schlüssel, im Ascii-Format"
+msgstr "Dein öffentlicher PGP Schlüssel, im ASCII-Format"
 
-#: securemail.php:74
-msgid "Secure Mail Settings saved."
-msgstr "Secure Mail Einstellungen gespeichert."
+#: securemail.php:56
+msgid "\"Secure Mail\" Settings"
+msgstr "\"Secure Mail\"-Einstellungen"
 
-#: securemail.php:111
+#: securemail.php:59
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: securemail.php:60
+msgid "Save and send test"
+msgstr "Test speichern und senden"
+
+#: securemail.php:93
 msgid "Test email sent"
-msgstr "Test-Email gesendet"
+msgstr "Test-E-Mail gesendet"
 
-#: securemail.php:113
+#: securemail.php:95
 msgid "There was an error sending the test email"
-msgstr "Es gab ein Fehler beim Senden der Test-Email"
+msgstr "Es gab ein Fehler beim Senden der Test-E-Mail"

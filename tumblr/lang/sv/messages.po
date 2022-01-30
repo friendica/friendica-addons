@@ -1,0 +1,73 @@
+# ADDON tumblr
+# Copyright (C)
+# This file is distributed under the same license as the Friendica tumblr addon package.
+# 
+# 
+# Translators:
+# Hypolite Petovan <hypolite@mrpetovan.com>, 2019
+# Kristoffer Grundström <lovaren@gmail.com>, 2022
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-21 19:17-0500\n"
+"PO-Revision-Date: 2022-01-16 00:55+0000\n"
+"Last-Translator: Kristoffer Grundström <lovaren@gmail.com>\n"
+"Language-Team: Swedish (http://www.transifex.com/Friendica/friendica/language/sv/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sv\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: tumblr.php:39
+msgid "Permission denied."
+msgstr "Åtkomst nekad."
+
+#: tumblr.php:69
+msgid "Save Settings"
+msgstr ""
+
+#: tumblr.php:71
+msgid "Consumer Key"
+msgstr ""
+
+#: tumblr.php:72
+msgid "Consumer Secret"
+msgstr ""
+
+#: tumblr.php:177
+msgid "You are now authenticated to tumblr."
+msgstr "Du är nu autentiserad till tumblr."
+
+#: tumblr.php:178
+msgid "return to the connector page"
+msgstr ""
+
+#: tumblr.php:194
+msgid "Post to Tumblr"
+msgstr ""
+
+#: tumblr.php:225
+msgid "Post to page:"
+msgstr ""
+
+#: tumblr.php:231
+msgid "(Re-)Authenticate your tumblr page"
+msgstr ""
+
+#: tumblr.php:232
+msgid "You are not authenticated to tumblr"
+msgstr "Du är inte autentiserad till tumblr"
+
+#: tumblr.php:237
+msgid "Enable Tumblr Post Addon"
+msgstr ""
+
+#: tumblr.php:238
+msgid "Post to Tumblr by default"
+msgstr ""
+
+#: tumblr.php:244
+msgid "Tumblr Export"
+msgstr ""

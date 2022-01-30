@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:16+0100\n"
-"PO-Revision-Date: 2021-03-28 00:53+0000\n"
+"POT-Creation-Date: 2021-11-21 19:18-0500\n"
+"PO-Revision-Date: 2021-12-23 19:39+0000\n"
 "Last-Translator: Balázs Úr\n"
 "Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -19,56 +19,52 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: wppost.php:39
+#: wppost.php:41
 msgid "Post to Wordpress"
 msgstr "Beküldés a WordPressre"
 
-#: wppost.php:80 wppost.php:84
-msgid "Wordpress Export"
-msgstr "WordPress exportálás"
-
-#: wppost.php:87
-msgid "Enable WordPress Post Addon"
+#: wppost.php:65
+msgid "Enable Wordpress Post Addon"
 msgstr "A WordPress-beküldő bővítmény engedélyezése"
 
-#: wppost.php:93
-msgid "WordPress username"
+#: wppost.php:66
+msgid "Wordpress username"
 msgstr "WordPress felhasználónév"
 
-#: wppost.php:98
-msgid "WordPress password"
+#: wppost.php:67
+msgid "Wordpress password"
 msgstr "WordPress jelszó"
 
-#: wppost.php:103
+#: wppost.php:68
 msgid "WordPress API URL"
 msgstr "WordPress API URL"
 
-#: wppost.php:108
-msgid "Post to WordPress by default"
+#: wppost.php:69
+msgid "Post to Wordpress by default"
 msgstr "Beküldés a WordPressre alapértelmezetten"
 
-#: wppost.php:114
+#: wppost.php:70
 msgid "Provide a backlink to the Friendica post"
 msgstr "Visszafelé mutató hivatkozás biztosítása a Friendica bejegyzésre"
 
-#: wppost.php:119
+#: wppost.php:71
 msgid ""
 "Text for the backlink, e.g. Read the original post and comment stream on "
 "Friendica."
 msgstr "A visszafelé mutató hivatkozás szövege, például „Olvassa el az eredeti bejegyzést és a hozzászólásokat a Friendicán”."
 
-#: wppost.php:124
+#: wppost.php:72
 msgid "Don't post messages that are too short"
 msgstr "Ne küldjön be olyan üzeneteket, amelyek túl rövidek"
 
-#: wppost.php:131
-msgid "Save Settings"
-msgstr "Beállítások mentése"
+#: wppost.php:77
+msgid "Wordpress Export"
+msgstr "WordPress exportálás"
 
-#: wppost.php:231
+#: wppost.php:182
 msgid "Read the orig­i­nal post and com­ment stream on Friendica"
 msgstr "Olvassa el az eredeti bejegyzést és a hozzászólásokat a Friendicán"
 
-#: wppost.php:289
+#: wppost.php:240
 msgid "Post from Friendica"
 msgstr "Bejegyzés a Friendicáról"

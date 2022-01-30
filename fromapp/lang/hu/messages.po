@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-19 16:42+0100\n"
-"PO-Revision-Date: 2020-12-23 01:47+0000\n"
+"POT-Creation-Date: 2021-11-21 19:14-0500\n"
+"PO-Revision-Date: 2021-12-23 17:20+0000\n"
 "Last-Translator: Balázs Úr\n"
 "Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -19,25 +19,17 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: fromapp.php:40
-msgid "Fromapp settings updated."
-msgstr "A FromApp beállításai frissítve."
-
-#: fromapp.php:65 fromapp.php:69
-msgid "FromApp Settings"
-msgstr "FromApp-beállítások"
-
-#: fromapp.php:72
+#: fromapp.php:45
 msgid ""
 "The application name you would like to show your posts originating from. "
 "Separate different app names with a comma. A random one will then be "
 "selected for every posting."
 msgstr "Az alkalmazás neve, amelyet meg szeretne jeleníteni a bejegyzései származási helyeként. A különböző alkalmazásnevek vesszővel választhatók el. Ezután véletlenszerűen lesz kiválasztva az egyikük minden egyes beküldésnél."
 
-#: fromapp.php:76
+#: fromapp.php:46
 msgid "Use this application name even if another application was used."
 msgstr "Ezen alkalmazásnév használata akkor is, ha egy másik alkalmazás lett használva."
 
-#: fromapp.php:83
-msgid "Save Settings"
-msgstr "Beállítások mentése"
+#: fromapp.php:51
+msgid "FromApp Settings"
+msgstr "FromApp-beállítások"

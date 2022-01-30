@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
-"PO-Revision-Date: 2021-03-25 23:50+0000\n"
+"POT-Creation-Date: 2021-11-21 19:16-0500\n"
+"PO-Revision-Date: 2021-12-23 18:55+0000\n"
 "Last-Translator: Balázs Úr\n"
 "Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -19,32 +19,28 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: qcomment.php:42
+#: qcomment.php:45
 msgid ":-)"
 msgstr ":-)"
 
-#: qcomment.php:42
+#: qcomment.php:45
 msgid ":-("
 msgstr ":-("
 
-#: qcomment.php:42
+#: qcomment.php:45
 msgid "lol"
 msgstr "lol"
 
-#: qcomment.php:47
-msgid "Quick Comment Settings"
-msgstr "Gyors hozzászólás beállításai"
-
-#: qcomment.php:48
+#: qcomment.php:49
 msgid ""
 "Quick comments are found near comment boxes, sometimes hidden. Click them to"
 " provide simple replies."
 msgstr "A gyors hozzászólások a hozzászólásmezők közelében találhatók, néha rejtetten. Kattintson rájuk egyszerű válaszok küldéséhez."
 
-#: qcomment.php:49
-msgid "Save Settings"
-msgstr "Beállítások mentése"
-
 #: qcomment.php:50
 msgid "Enter quick comments, one per line"
 msgstr "Adja meg a gyors hozzászólásokat, soronként egyet"
+
+#: qcomment.php:55
+msgid "Quick Comment Settings"
+msgstr "Gyors hozzászólás beállításai"

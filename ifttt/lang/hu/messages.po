@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"POT-Creation-Date: 2021-11-21 19:17-0500\n"
 "PO-Revision-Date: 2017-11-27 10:37+0000\n"
 "Last-Translator: Balázs Úr, 2021\n"
 "Language-Team: Hungarian (https://www.transifex.com/Friendica/teams/12172/hu/)\n"
@@ -21,11 +21,7 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ifttt.php:50 ifttt.php:54
-msgid "IFTTT Mirror"
-msgstr "IFTTT tükör"
-
-#: ifttt.php:58
+#: ifttt.php:52
 msgid ""
 "Create an account at <a href=\"http://www.ifttt.com\">IFTTT</a>. Create "
 "three Facebook recipes that are connected with <a "
@@ -37,22 +33,34 @@ msgstr ""
 "kapcsolva a <a href=\"https://ifttt.com/maker\">Maker</a> szolgáltatással (a"
 " „ha Facebook, akkor Maker” űrlapon) a következő paraméterekkel:"
 
-#: ifttt.php:65
+#: ifttt.php:53
+msgid "URL"
+msgstr "URL"
+
+#: ifttt.php:54
+msgid "Method"
+msgstr "Módszer"
+
+#: ifttt.php:55
+msgid "Content Type"
+msgstr "Tartalomtípus"
+
+#: ifttt.php:56
 msgid "Body for \"new status message\""
 msgstr "Az „új állapotüzenet” törzse"
 
-#: ifttt.php:67
+#: ifttt.php:57
 msgid "Body for \"new photo upload\""
 msgstr "Az „új fényképfeltöltés” törzse"
 
-#: ifttt.php:69
+#: ifttt.php:58
 msgid "Body for \"new link post\""
 msgstr "Az „új hivatkozásbeküldés” törzse"
 
-#: ifttt.php:74
+#: ifttt.php:68
+msgid "IFTTT Mirror"
+msgstr "IFTTT tükör"
+
+#: ifttt.php:71
 msgid "Generate new key"
 msgstr "Új kulcs előállítása"
-
-#: ifttt.php:78
-msgid "Save Settings"
-msgstr "Beállítások mentése"

@@ -12,9 +12,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
-"PO-Revision-Date: 2021-02-06 17:00+0000\n"
-"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
+"POT-Creation-Date: 2021-11-21 19:14-0500\n"
+"PO-Revision-Date: 2021-12-22 15:27+0000\n"
+"Last-Translator: Transifex Bot <>\n"
 "Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,25 +22,21 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: gnot.php:71
-msgid "Gnot Settings"
-msgstr "Gnot-Einstellungen"
-
-#: gnot.php:72
-msgid "Save Settings"
-msgstr "Einstellungen speichern"
-
-#: gnot.php:73
-msgid "Enable this addon?"
-msgstr "Dieses Addon aktivieren?"
-
-#: gnot.php:75
+#: gnot.php:63
 msgid ""
 "Allows threading of email comment notifications on Gmail and anonymising the"
 " subject line."
 msgstr "Erlaubt das Veröffentlichen von E-Mail-Kommentar-Benachrichtigungen bei Gmail mit anonymisiertem Betreff"
 
-#: gnot.php:84
+#: gnot.php:64
+msgid "Enable this addon?"
+msgstr "Dieses Addon aktivieren?"
+
+#: gnot.php:69
+msgid "Gnot Settings"
+msgstr "Gnot-Einstellungen"
+
+#: gnot.php:79
 #, php-format
 msgid "[Friendica:Notify] Comment to conversation #%d"
 msgstr "[Friendica-Benachrichtigung] Kommentar zum Beitrag #%d"

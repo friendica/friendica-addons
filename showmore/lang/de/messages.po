@@ -5,13 +5,14 @@
 # 
 # Translators:
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014-2015
-# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2018,2022
+# Ulf Rompe <transifex.com@rompe.org>, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-01 11:11-0400\n"
-"PO-Revision-Date: 2018-04-07 05:34+0000\n"
+"POT-Creation-Date: 2021-11-21 19:16-0500\n"
+"PO-Revision-Date: 2022-01-22 17:39+0000\n"
 "Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
 "Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -20,26 +21,18 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: showmore.php:41 showmore.php:45
-msgid "\"Show more\" Settings"
-msgstr "\"Mehr zeigen\" Einstellungen"
-
-#: showmore.php:50
+#: showmore.php:37
 msgid "Enable Show More"
 msgstr "Aktiviere \"Mehr zeigen\""
 
-#: showmore.php:53
-msgid "Cutting posts after how much characters"
-msgstr "Begrenze Beiträge nach einer bestimmten Anzahl an Buchstaben"
+#: showmore.php:38
+msgid "Cutting posts after how many characters"
+msgstr "Schneide Beiträge nach dieser Menge von Zeichen ab"
 
-#: showmore.php:57
-msgid "Save Settings"
-msgstr "Einstellungen speichern"
+#: showmore.php:43
+msgid "\"Show more\" Settings"
+msgstr "\"Mehr zeigen\"-Einstellungen"
 
-#: showmore.php:74
-msgid "Show More Settings saved."
-msgstr "\"Mehr zeigen\" Einstellungen gesichert."
-
-#: showmore.php:134
+#: showmore.php:119
 msgid "show more"
 msgstr "mehr anzeigen"

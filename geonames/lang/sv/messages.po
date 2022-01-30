@@ -1,0 +1,33 @@
+# ADDON geonames
+# Copyright (C)
+# This file is distributed under the same license as the Friendica geonames addon package.
+# 
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-21 19:14-0500\n"
+"PO-Revision-Date: 2021-12-22 17:23+0000\n"
+"Last-Translator: Transifex Bot <>\n"
+"Language-Team: Swedish (http://www.transifex.com/Friendica/friendica/language/sv/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sv\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: geonames.php:135
+msgid ""
+"Replace numerical coordinates by the nearest populated location name in your"
+" posts."
+msgstr ""
+
+#: geonames.php:136
+msgid "Enable Geonames Addon"
+msgstr ""
+
+#: geonames.php:141
+msgid "Geonames Settings"
+msgstr ""

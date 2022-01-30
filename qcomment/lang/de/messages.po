@@ -4,51 +4,45 @@
 # 
 # 
 # Translators:
-# bavatar <tobias.diekershoff@gmx.net>, 2014-2015
+# Steffen K9, 2021
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014-2015
+# Ulf Rompe <transifex.com@rompe.org>, 2019
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2015-07-28 05:48+0000\n"
-"Last-Translator: bavatar <tobias.diekershoff@gmx.net>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/friendica/language/de/)\n"
+"POT-Creation-Date: 2021-11-21 19:16-0500\n"
+"PO-Revision-Date: 2021-12-22 16:24+0000\n"
+"Last-Translator: Transifex Bot <>\n"
+"Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: qcomment.php:51
+#: qcomment.php:45
 msgid ":-)"
 msgstr ":-)"
 
-#: qcomment.php:51
+#: qcomment.php:45
 msgid ":-("
 msgstr ":-("
 
-#: qcomment.php:51
+#: qcomment.php:45
 msgid "lol"
 msgstr "lol"
 
-#: qcomment.php:54
-msgid "Quick Comment Settings"
-msgstr "Schnell-Kommentar Einstellungen"
-
-#: qcomment.php:56
+#: qcomment.php:49
 msgid ""
 "Quick comments are found near comment boxes, sometimes hidden. Click them to"
 " provide simple replies."
 msgstr "Kurz-Kommentare findet man in der Nähe der Kommentar-Boxen. Ein Klick darauf erstellt einfache Antworten."
 
-#: qcomment.php:57
+#: qcomment.php:50
 msgid "Enter quick comments, one per line"
 msgstr "Gib einen Schnell-Kommentar pro Zeile ein"
 
-#: qcomment.php:61
-msgid "Submit"
-msgstr "Senden"
-
-#: qcomment.php:75
-msgid "Quick Comment settings saved."
-msgstr "Schnell-Kommentare Einstellungen gespeichert"
+#: qcomment.php:55
+msgid "Quick Comment Settings"
+msgstr "Schnell-Kommentar-Einstellungen"

@@ -157,7 +157,10 @@ function twitter_follow(App $a, array &$contact)
 
 	$uid = $a->getLoggedInUserId();
 
-	twitter_api_contact('friendships/create', ['network' => Protocol::TWITTER, 'nick' => $nickname], $uid);
+	if (!twitter_api_contact('friendships/create', ['network' => Protocol::TWITTER, 'nick' => $nickname], $uid)) {
+		$contact = null;
+		return;
+	}
 
 	$user = twitter_fetchuser($nickname);
 

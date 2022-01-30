@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
-"PO-Revision-Date: 2021-03-25 23:00+0000\n"
+"POT-Creation-Date: 2021-11-21 19:15-0500\n"
+"PO-Revision-Date: 2021-12-23 18:52+0000\n"
 "Last-Translator: Balázs Úr\n"
 "Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -19,11 +19,7 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: nsfw.php:68 nsfw.php:72
-msgid "Content Filter (NSFW and more)"
-msgstr "Tartalomszűrő (érzékeny tartalmak és egyebek)"
-
-#: nsfw.php:76
+#: nsfw.php:65
 msgid ""
 "This addon searches for specified words/text in posts and collapses them. It"
 " can be used to filter content tagged with for instance #NSFW that may be "
@@ -31,28 +27,28 @@ msgid ""
 "is also useful for hiding irrelevant or annoying content from direct view."
 msgstr "Ez a bővítmény megadott szavakra vagy szövegre keres a bejegyzésekben, és összecsukja azokat. Használható például az #NSFW megjelölésű tartalmak szűréséhez, amelyek bizonyos időkben vagy helyeken nem megfelelőnek tekinthetők, mint például munka közben. Ez hasznos a nem kapcsolódó vagy idegesítő tartalom elrejtéséhez a közvetlen megtekintés elől."
 
-#: nsfw.php:77
+#: nsfw.php:66
 msgid "Enable Content filter"
 msgstr "Tartalomszűrő engedélyezése"
 
-#: nsfw.php:80
+#: nsfw.php:67
 msgid "Comma separated list of keywords to hide"
 msgstr "Kulcsszavak vesszővel elválasztott listája az elrejtéshez"
 
-#: nsfw.php:84
-msgid "Save Settings"
-msgstr "Beállítások mentése"
-
-#: nsfw.php:85
+#: nsfw.php:67
 msgid "Use /expression/ to provide regular expressions"
 msgstr "Használjon /kifejezést/ reguláris kifejezések megadásához"
 
-#: nsfw.php:152
+#: nsfw.php:72
+msgid "Content Filter (NSFW and more)"
+msgstr "Tartalomszűrő (érzékeny tartalmak és egyebek)"
+
+#: nsfw.php:140
 #, php-format
 msgid "Filtered tag: %s"
 msgstr "Kiszűrt címke: %s"
 
-#: nsfw.php:154
+#: nsfw.php:142
 #, php-format
 msgid "Filtered word: %s"
 msgstr "Kiszűrt szó: %s"

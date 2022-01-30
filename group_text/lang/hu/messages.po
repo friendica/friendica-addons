@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
-"PO-Revision-Date: 2021-02-27 01:26+0000\n"
+"POT-Creation-Date: 2021-11-21 19:14-0500\n"
+"PO-Revision-Date: 2021-12-23 17:21+0000\n"
 "Last-Translator: Balázs Úr\n"
 "Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -19,14 +19,10 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: group_text.php:62
-msgid "Group Text"
-msgstr "Csoportszöveg"
-
-#: group_text.php:64
+#: group_text.php:58
 msgid "Use a text only (non-image) group selector in the \"group edit\" menu"
 msgstr "Csak szöveges (kép nélküli) csoportválasztó használata a „csoportszerkesztés” menüben"
 
-#: group_text.php:70
-msgid "Save Settings"
-msgstr "Beállítások mentése"
+#: group_text.php:63
+msgid "Group Text"
+msgstr "Csoportszöveg"

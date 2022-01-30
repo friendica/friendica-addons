@@ -5,13 +5,13 @@
 # 
 # Translators:
 # Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2014
-# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2021
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2021-2022
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
-"PO-Revision-Date: 2021-03-29 05:47+0000\n"
+"POT-Creation-Date: 2021-12-12 22:09+0000\n"
+"PO-Revision-Date: 2022-01-22 17:39+0000\n"
 "Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>\n"
 "Language-Team: German (http://www.transifex.com/Friendica/friendica/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -20,14 +20,36 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: rendertime.php:36
+#: rendertime.php:30
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: rendertime.php:31
+msgid "Show callstack"
+msgstr "Callstack anzeigen"
+
+#: rendertime.php:31
+msgid ""
+"Show detailed performance measures in the callstack. When deactivated, only "
+"the summary will be displayed."
+msgstr "Detailierte Performance Messungen im Callstack anzeigen. Wenn dies aktiviert ist werden anstelle der Zusammenfassung mehr Details angezeigt."
+
+#: rendertime.php:32
+msgid "Minimal time"
+msgstr "Minimale Zeit"
+
+#: rendertime.php:32
+msgid "Minimal time that an activity needs to be listed in the callstack."
+msgstr "Minimale Zeit die eine Aktivität dauern soll, ehe sie im Callstack aufgelistet wird."
+
+#: rendertime.php:57
 #, php-format
 msgid ""
 "Database: %s/%s, Network: %s, Rendering: %s, Session: %s, I/O: %s, Other: "
 "%s, Total: %s"
 msgstr "Datenbank: %s/%s, Netzwerk: %s, Darstellung: %s, Sitzung: %s, I/O: %s, Sonstiges: %s, Gesamt: %s"
 
-#: rendertime.php:53
+#: rendertime.php:74
 #, php-format
 msgid "Class-Init: %s, Boot: %s, Init: %s, Content: %s, Other: %s, Total: %s"
 msgstr "Class-Init: %s, Boot: %s, Init: %s, Inhalt: %s, Sonstiges: %s, Gesamt: %s"

@@ -1,0 +1,98 @@
+# ADDON mailstream
+# Copyright (C)
+# This file is distributed under the same license as the Friendica mailstream addon package.
+# 
+# 
+# Translators:
+# Kristoffer Grundström <lovaren@gmail.com>, 2022
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-21 19:15-0500\n"
+"PO-Revision-Date: 2022-01-16 00:44+0000\n"
+"Last-Translator: Kristoffer Grundström <lovaren@gmail.com>\n"
+"Language-Team: Swedish (http://www.transifex.com/Friendica/friendica/language/sv/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sv\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: mailstream.php:77
+msgid "From Address"
+msgstr "Från adress"
+
+#: mailstream.php:79
+msgid "Email address that stream items will appear to be from."
+msgstr ""
+
+#: mailstream.php:82
+msgid "Save Settings"
+msgstr "Spara inställningar"
+
+#: mailstream.php:301
+msgid "Re:"
+msgstr "Re:"
+
+#: mailstream.php:314 mailstream.php:317
+msgid "Friendica post"
+msgstr "Friendica-inlägg"
+
+#: mailstream.php:320
+msgid "Diaspora post"
+msgstr "Diaspora-inlägg"
+
+#: mailstream.php:330
+msgid "Feed item"
+msgstr ""
+
+#: mailstream.php:333
+msgid "Email"
+msgstr "E-post"
+
+#: mailstream.php:335
+msgid "Friendica Item"
+msgstr "Friendica-objekt"
+
+#: mailstream.php:404
+msgid "Upstream"
+msgstr "Uppströms"
+
+#: mailstream.php:405
+msgid "Local"
+msgstr "Lokal"
+
+#: mailstream.php:481
+msgid "Enabled"
+msgstr "Aktiverad"
+
+#: mailstream.php:486
+msgid "Email Address"
+msgstr "E-postadress"
+
+#: mailstream.php:488
+msgid "Leave blank to use your account email address"
+msgstr "Lämna tom för att använda ditt kontos e-postadress"
+
+#: mailstream.php:492
+msgid "Exclude Likes"
+msgstr ""
+
+#: mailstream.php:494
+msgid "Check this to omit mailing \"Like\" notifications"
+msgstr ""
+
+#: mailstream.php:498
+msgid "Attach Images"
+msgstr ""
+
+#: mailstream.php:500
+msgid ""
+"Download images in posts and attach them to the email.  Useful for reading "
+"email while offline."
+msgstr ""
+
+#: mailstream.php:507
+msgid "Mail Stream Settings"
+msgstr ""

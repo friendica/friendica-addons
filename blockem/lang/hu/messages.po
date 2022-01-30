@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-17 10:23+0200\n"
-"PO-Revision-Date: 2020-12-23 00:39+0000\n"
+"POT-Creation-Date: 2021-11-21 19:13-0500\n"
+"PO-Revision-Date: 2021-12-23 11:13+0000\n"
 "Last-Translator: Balázs Úr\n"
 "Language-Team: Hungarian (http://www.transifex.com/Friendica/friendica/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -19,41 +19,29 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: blockem.php:54 blockem.php:58
-msgid "Blockem"
-msgstr "Blockem"
-
-#: blockem.php:62
+#: blockem.php:39
 msgid ""
 "Hides user's content by collapsing posts. Also replaces their avatar with "
 "generic image."
 msgstr "Elrejti a felhasználók tartalmát a bejegyzések összecsukásával. Ezenkívül lecseréli a profilképeiket egy általános képre."
 
-#: blockem.php:63
+#: blockem.php:40
 msgid "Comma separated profile URLS:"
 msgstr "Profil URL-ek vesszővel elválasztva:"
 
-#: blockem.php:67
-msgid "Save Settings"
-msgstr "Beállítások mentése"
+#: blockem.php:45
+msgid "Blockem"
+msgstr "Blockem"
 
-#: blockem.php:81
-msgid "BLOCKEM Settings saved."
-msgstr "A Blockem beállításai elmentve."
-
-#: blockem.php:143
+#: blockem.php:120
 #, php-format
 msgid "Filtered user: %s"
 msgstr "Kiszűrt felhasználó: %s"
 
-#: blockem.php:202
+#: blockem.php:183
 msgid "Unblock Author"
 msgstr "Szerző tiltásának feloldása"
 
-#: blockem.php:204
+#: blockem.php:185
 msgid "Block Author"
 msgstr "Szerző tiltása"
-
-#: blockem.php:244
-msgid "blockem settings updated"
-msgstr "A Blockem beállításai frissítve."
