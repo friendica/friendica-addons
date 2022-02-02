@@ -1886,13 +1886,14 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 
 			$postarray['thr-parent'] = $retweet['uri'];
 		} else {
-			$retweet['source'] = $postarray['source'];
-			$retweet['direction'] = $postarray['direction'];
-			$retweet['private'] = $postarray['private'];
-			$retweet['allow_cid'] = $postarray['allow_cid'];
-			$retweet['contact-id'] = $postarray['contact-id'];
-			$retweet['owner-name'] = $postarray['owner-name'];
-			$retweet['owner-link'] = $postarray['owner-link'];
+			$retweet['source']       = $postarray['source'];
+			$retweet['direction']    = $postarray['direction'];
+			$retweet['private']      = $postarray['private'];
+			$retweet['allow_cid']    = $postarray['allow_cid'];
+			$retweet['contact-id']   = $postarray['contact-id'];
+			$retweet['owner-id']     = $postarray['owner-id'];
+			$retweet['owner-name']   = $postarray['owner-name'];
+			$retweet['owner-link']   = $postarray['owner-link'];
 			$retweet['owner-avatar'] = $postarray['owner-avatar'];
 
 			$postarray = $retweet;
