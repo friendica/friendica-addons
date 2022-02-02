@@ -1346,6 +1346,8 @@ function twitter_user_to_contact($data)
 
 	$fields = [
 		'url'      => $url,
+		'nurl'     => Strings::normaliseLink($url),
+		'uri-id'   => ItemURI::getIdByURI($url),
 		'network'  => Protocol::TWITTER,
 		'alias'    => 'twitter::' . $data->id_str,
 		'baseurl'  => $baseurl,
@@ -1359,6 +1361,16 @@ function twitter_user_to_contact($data)
 	];
 
 	return $fields;
+}
+
+function twitter_get_contact($data, int $uid = 0)
+{
+	$contact = DBA::selectFirst('contact', ['id'], ['uid' => $uid, 'alias' => "twitter::" . $data->id_str]);
+	if (DBA::isResult($contact)) {
+		return $contact['id'];
+	} else {
+		return twitter_fetch_contact($uid, $data, false);
+	}
 }
 
 function twitter_fetch_contact($uid, $data, $create_user)
@@ -1402,7 +1414,6 @@ function twitter_fetch_contact($uid, $data, $create_user)
 		// create contact record
 		$fields['uid'] = $uid;
 		$fields['created'] = DateTimeFormat::utcNow();
-		$fields['nurl'] = Strings::normaliseLink($fields['url']);
 		$fields['poll'] = 'twitter::' . $data->id_str;
 		$fields['rel'] = $relation;
 		$fields['priority'] = 1;
@@ -1418,8 +1429,6 @@ function twitter_fetch_contact($uid, $data, $create_user)
 		$contact_id = DBA::lastInsertId();
 
 		Group::addMember(User::getDefaultGroup($uid), $contact_id);
-
-		Contact::updateAvatar($contact_id, $avatar);
 	} else {
 		if ($contact["readonly"] || $contact["blocked"]) {
 			Logger::notice('Contact is blocked or readonly.', ['nickname' => $contact["nick"]]);
@@ -1434,8 +1443,6 @@ function twitter_fetch_contact($uid, $data, $create_user)
 			$fields['rel'] = twitter_get_relation($uid, $data->screen_name, $contact);
 			$update = true;
 		}
-
-		Contact::updateAvatar($contact['id'], $avatar);
 
 		if ($contact['name'] != $data->name) {
 			$fields['name-date'] = $fields['uri-date'] = DateTimeFormat::utcNow();
@@ -1457,6 +1464,8 @@ function twitter_fetch_contact($uid, $data, $create_user)
 			Logger::info('Updated contact', ['id' => $contact['id'], 'nick' => $data->screen_name]);
 		}
 	}
+
+	Contact::updateAvatar($contact_id, $avatar);
 
 	return $contact_id;
 }
@@ -1787,8 +1796,9 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 	if ($contactid == 0) {
 		$contactid = twitter_fetch_contact($uid, $post->user, $create_user);
 
-		$postarray['owner-name'] = $post->user->name;
-		$postarray['owner-link'] = "https://twitter.com/" . $post->user->screen_name;
+		$postarray['owner-id']     = twitter_get_contact($post->user);
+		$postarray['owner-name']   = $post->user->name;
+		$postarray['owner-link']   = "https://twitter.com/" . $post->user->screen_name;
 		$postarray['owner-avatar'] = twitter_fix_avatar($post->user->profile_image_url_https);
 	}
 
@@ -1799,20 +1809,20 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 		return [];
 	}
 
-	$postarray['contact-id'] = $contactid;
-
-	$postarray['verb'] = Activity::POST;
-	$postarray['author-name'] = $postarray['owner-name'];
-	$postarray['author-link'] = $postarray['owner-link'];
+	$postarray['contact-id']    = $contactid;
+	$postarray['verb']          = Activity::POST;
+	$postarray['author-id']     = $postarray['owner-id'];
+	$postarray['author-name']   = $postarray['owner-name'];
+	$postarray['author-link']   = $postarray['owner-link'];
 	$postarray['author-avatar'] = $postarray['owner-avatar'];
-	$postarray['plink'] = "https://twitter.com/" . $post->user->screen_name . "/status/" . $post->id_str;
-	$postarray['app'] = strip_tags($post->source);
+	$postarray['plink']         = "https://twitter.com/" . $post->user->screen_name . "/status/" . $post->id_str;
+	$postarray['app']           = strip_tags($post->source);
 
 	if ($post->user->protected) {
-		$postarray['private'] = Item::PRIVATE;
+		$postarray['private']   = Item::PRIVATE;
 		$postarray['allow_cid'] = '<' . $self['id'] . '>';
 	} else {
-		$postarray['private'] = Item::UNLISTED;
+		$postarray['private']   = Item::UNLISTED;
 		$postarray['allow_cid'] = '';
 	}
 
