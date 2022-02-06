@@ -63,13 +63,17 @@ pipeline:
       - apt-get install bzip2
       - mkdir ./build
       - export VERSION="$(cat VERSION)"
-      - export RELEASE="friendica-full-$VERSION"
+      - export RELEASE="friendica-addons-$VERSION"
       - export ARTIFACT="$RELEASE.tar.gz"
       - tar
-        --transform "s,^,$RELEASE/,"
-        -X mods/release-list-exclude.txt
-        -T mods/release-list-include.txt
-        -cvzf ./build/$ARTIFACT
+        --exclude='.tx'
+        --exclude='.git'
+        --exclude='.editorconfig'
+        --exclude='.gitattributes'
+        --exclude='.gitignore'
+        --exclude='.woodpecker'
+        --exclude='**/*/messages.po'
+        -cvzf ./build/$ARTIFACT addon/
       - cd ./build
       - sha256sum "$ARTIFACT" > "$ARTIFACT.sum256"
       - chmod 664 ./*
