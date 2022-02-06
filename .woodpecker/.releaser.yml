@@ -71,7 +71,7 @@ pipeline:
         --exclude='.editorconfig'
         --exclude='.gitattributes'
         --exclude='.gitignore'
-        --exclude='.drone.yml'
+        --exclude='.woodpecker'
         --exclude='**/*/messages.po'
         -cvzf ./build/$ARTIFACT addon/
       - cd ./build
