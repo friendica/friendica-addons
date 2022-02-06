@@ -66,10 +66,14 @@ pipeline:
       - export RELEASE="friendica-addons-$VERSION"
       - export ARTIFACT="$RELEASE.tar.gz"
       - tar
-        --transform "s,^,$RELEASE/,"
-        -X mods/release-list-exclude.txt
-        -T mods/release-list-include.txt
-        -cvzf ./build/$ARTIFACT
+        --exclude='.tx'
+        --exclude='.git'
+        --exclude='.editorconfig'
+        --exclude='.gitattributes'
+        --exclude='.gitignore'
+        --exclude='.drone.yml'
+        --exclude='**/*/messages.po'
+        -cvzf ./build/$ARTIFACT addon/
       - cd ./build
       - sha256sum "$ARTIFACT" > "$ARTIFACT.sum256"
       - chmod 664 ./*
