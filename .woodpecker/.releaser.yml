@@ -63,7 +63,7 @@ pipeline:
       - apt-get install bzip2
       - mkdir ./build
       - export VERSION="$(cat VERSION)"
-      - export RELEASE="friendica-full-$VERSION"
+      - export RELEASE="friendica-addons-$VERSION"
       - export ARTIFACT="$RELEASE.tar.gz"
       - tar
         --transform "s,^,$RELEASE/,"
