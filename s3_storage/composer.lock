@@ -1,0 +1,65 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "380e2e4853de027e64448857e2e9fead",
+    "packages": [
+        {
+            "name": "akeeba/s3",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/akeeba/s3.git",
+                "reference": "01520dae1f736555e08efda0ddc1044701bd340a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/akeeba/s3/zipball/01520dae1f736555e08efda0ddc1044701bd340a",
+                "reference": "01520dae1f736555e08efda0ddc1044701bd340a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-simplexml": "*",
+                "php": ">=7.1.0 <8.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Akeeba\\Engine\\Postproc\\Connector\\S3v4\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Nicholas K. Dionysopoulos",
+                    "email": "nicholas_NO_SPAM_PLEASE@akeeba.com",
+                    "homepage": "http://www.dionysopoulos.me",
+                    "role": "Lead Developer"
+                }
+            ],
+            "description": "A compact, dependency-less Amazon S3 API client implementing the most commonly used features",
+            "homepage": "https://github.com/akeeba/s3",
+            "keywords": [
+                "s3"
+            ],
+            "time": "2020-11-30T14:03:55+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=7.0"
+    },
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
+}
