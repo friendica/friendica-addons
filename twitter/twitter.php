@@ -175,7 +175,7 @@ function twitter_follow(App $a, array &$contact)
 
 function twitter_unfollow(App $a, array &$hook_data)
 {
-	$hook_data['result'] = twitter_api_contact('friendships/destroy', $hook_data['contact'], $hook_data['contact']['uid']);
+	$hook_data['result'] = twitter_api_contact('friendships/destroy', $hook_data['contact'], $hook_data['uid']);
 }
 
 function twitter_block(App $a, array &$hook_data)
@@ -183,8 +183,8 @@ function twitter_block(App $a, array &$hook_data)
 	$hook_data['result'] = twitter_api_contact('blocks/create', $hook_data['contact'], $hook_data['uid']);
 
 	if ($hook_data['result'] === true) {
-		Contact::removeFollower($hook_data['contact']);
-		Contact::unfollow($hook_data['contact']['id'], $hook_data['uid']);
+		$cdata = Contact::getPublicAndUserContactID($hook_data['contact']['id'], $hook_data['uid']);
+		Contact::remove($cdata['user']);
 	}
 }
 
