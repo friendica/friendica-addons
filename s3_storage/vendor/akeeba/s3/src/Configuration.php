@@ -214,6 +214,10 @@ class Configuration
 				$this->setUseLegacyPathStyle(false);
 			}
 
+		} else {
+			if (empty($this->getRegion())) {
+				$this->setRegion('us-east-1');
+			}
 		}
 
 		$this->signatureMethod = $signatureMethod;
