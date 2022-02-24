@@ -20,6 +20,8 @@ pipeline:
   clone_friendica_addon:
     image: alpine/git
     commands:
+      - git config --global user.email "no-reply@friendi.ca"
+      - git config --global user.name "Friendica"
       - git clone $CI_REPO_LINK addon
       - cd addon/
       - git checkout $CI_COMMIT_BRANCH
