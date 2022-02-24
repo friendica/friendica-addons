@@ -199,12 +199,12 @@ class S3Config implements ICanConfigureStorage
 		}
 
 		try {
-			$s3Config->setUseLegacyPathStyle(!empty($data['legacy']));
+			$s3Config->setUseLegacyPathStyle((bool)$data['legacy'] ?? false);
 		} catch (\Exception $exception) {
 			$feedback['legacy'] = $exception->getMessage();
 		}
 		try {
-			$s3Config->setUseDualstackUrl(!empty($data['dualstack_url']));
+			$s3Config->setUseDualstackUrl((bool)$data['dualstack_url'] ?? false);
 		} catch (\Exception $exception) {
 			$feedback['dualstack_url'] = $exception->getMessage();
 		}
@@ -233,8 +233,16 @@ class S3Config implements ICanConfigureStorage
 		$this->config->set('s3', 'secret_key', ($this->secretKey = new HiddenString($data['secret_key']))->getString());
 		$this->config->set('s3', 'bucket', ($this->bucket = $bucket));
 
-		$this->config->set('s3', 'legacy', $s3Config->getUseLegacyPathStyle());
-		$this->config->set('s3', 'dual_stack', $s3Config->getUseLegacyPathStyle());
+		if ($s3Config->getUseLegacyPathStyle()) {
+			$this->config->set('s3', 'legacy', '1');
+		} else {
+			$this->config->delete('s3', 'legacy');
+		}
+		if ($s3Config->getDualstackUrl()) {
+			$this->config->set('s3', 'dual_stack', '1');
+		} else {
+			$this->config->delete('s3', 'dual_stack');
+		}
 		$this->config->set('s3','signature_method', $s3Config->getSignatureMethod());
 
 		if (!empty($data['endpoint'])) {
