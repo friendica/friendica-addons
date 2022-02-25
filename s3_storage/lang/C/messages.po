@@ -1,0 +1,108 @@
+# ADDON s3_storage
+# Copyright (C) 
+# This file is distributed under the same license as the Friendica s3_storage addon package.
+# 
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-02-24 23:25+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/S3Config.php:113
+msgid "Access Key"
+msgstr ""
+
+#: src/S3Config.php:115
+msgid "Set the Access Key of the S3 storage"
+msgstr ""
+
+#: src/S3Config.php:120
+msgid "Secret Key"
+msgstr ""
+
+#: src/S3Config.php:122
+msgid "Set the Secret Key of the S3 storage"
+msgstr ""
+
+#: src/S3Config.php:127
+msgid "Bucket"
+msgstr ""
+
+#: src/S3Config.php:129
+msgid "The S3 Bucket (name), you want to use with Friendica"
+msgstr ""
+
+#: src/S3Config.php:134
+msgid "Signature Method"
+msgstr ""
+
+#: src/S3Config.php:136
+msgid ""
+"Set the signature method to use (BEWARE: v4 will be automatically set to v2 "
+"in case the endpoint isn't amazon)"
+msgstr ""
+
+#: src/S3Config.php:141
+#, php-format
+msgid "Amazon S3 compatible endpoint (leave empty for '%s')"
+msgstr ""
+
+#: src/S3Config.php:143
+msgid ""
+"Set the S3 endpoint. Do NOT use a protocol (You can use a custom endpoint "
+"with v2 signatures to access third party services which offer S3 "
+"compatibility, e.g. OwnCloud, Google Storage etc.)"
+msgstr ""
+
+#: src/S3Config.php:147
+#, php-format
+msgid "AWS region (leave empty for '%s')"
+msgstr ""
+
+#: src/S3Config.php:149
+msgid "The AWS region is mandatory for v4 signatures"
+msgstr ""
+
+#: src/S3Config.php:153
+msgid "Use the dualstack URL (which will ship traffic over ipv6 in most cases)"
+msgstr ""
+
+#: src/S3Config.php:155
+msgid ""
+"For more information on these endpoints please read https://docs.aws.amazon."
+"com/AmazonS3/latest/dev/dual-stack-endpoints.html"
+msgstr ""
+
+#: src/S3Config.php:159
+msgid "Use legacy, path-style access to the bucket"
+msgstr ""
+
+#: src/S3Config.php:161
+msgid ""
+"When it's turned off (default) we use virtual hosting stylepaths which are "
+"RECOMMENDED BY AMAZON per http://docs.aws.amazon.com/AmazonS3/latest/API/"
+"APIRest.html"
+msgstr ""
+
+#: src/S3Config.php:175
+msgid "Invalid input"
+msgstr ""
+
+#: src/S3Config.php:214
+#, php-format
+msgid "error '%s', message '%s'"
+msgstr ""
+
+#: src/S3Config.php:222
+#, php-format
+msgid "Bucket %s cannot be not found, possible buckets: %s"
+msgstr ""
