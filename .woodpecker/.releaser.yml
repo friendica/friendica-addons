@@ -15,7 +15,6 @@ pipeline:
       - git checkout $CI_COMMIT_BRANCH
     when:
       repo: friendica/friendica-addons
-      branch: stable
       event: tag
   clone_friendica_addon:
     image: alpine/git
@@ -29,7 +28,6 @@ pipeline:
       - git merge $CI_COMMIT_SHA
     when:
       repo: friendica/friendica-addons
-      branch: stable
       event: tag
   restore_cache:
     image: meltwater/drone-cache:dev
@@ -44,7 +42,6 @@ pipeline:
       - /tmp/drone-cache:/tmp/cache
     when:
       repo: friendica/friendica-addons
-      branch: stable
       event: tag
   composer_install:
     image: friendicaci/php${PHP_MAJOR_VERSION}:php${PHP_VERSION}
@@ -54,7 +51,6 @@ pipeline:
       - composer install --no-dev --optimize-autoloader
     when:
       repo: friendica/friendica-addons
-      branch: stable
       event: tag
     volumes:
       - /etc/hosts:/etc/hosts
@@ -84,7 +80,6 @@ pipeline:
       - sha256sum "$ARTIFACT"
     when:
       repo: friendica/friendica-addons
-      branch: stable
       event: tag
   sign_artifacts:
     image: plugins/gpgsign
@@ -100,7 +95,6 @@ pipeline:
       detach_sign: true
     when:
       repo: friendica/friendica-addons
-      branch: stable
       event: tag
   upload_artifacts:
     image: alpine
@@ -135,5 +129,4 @@ pipeline:
       - rm drone.key
     when:
       repo: friendica/friendica-addons
-      branch: stable
       event: tag
