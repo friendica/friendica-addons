@@ -5,14 +5,14 @@
 # 
 # Translators:
 # TORminator <dominik+foss@danelski.pl>, 2014
-# Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018
+# Waldemar Stoczkowski, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-27 07:21+0200\n"
-"PO-Revision-Date: 2018-08-04 12:18+0000\n"
-"Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
+"POT-Creation-Date: 2021-11-21 19:17-0500\n"
+"PO-Revision-Date: 2021-12-22 17:23+0000\n"
+"Last-Translator: Transifex Bot <>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,109 +20,30 @@ msgstr ""
 "Language: pl\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
-#: statusnet.php:151
+#: statusnet.php:97
 msgid "Post to GNU Social"
 msgstr "Opublikuj w GNU Social"
 
-#: statusnet.php:196
+#: statusnet.php:148
 msgid ""
 "Please contact your site administrator.<br />The provided API URL is not "
 "valid."
 msgstr "Skontaktuj się z administratorem witryny. <br />Podany adres URL interfejsu API jest nieprawidłowy."
 
-#: statusnet.php:225
+#: statusnet.php:176
 msgid "We could not contact the GNU Social API with the Path you entered."
 msgstr "Nie mogliśmy skontaktować się z GNU Social API z wprowadzoną ścieżką."
 
-#: statusnet.php:259
-msgid "GNU Social settings updated."
-msgstr "Zaktualizowano ustawienia społeczności GNU."
-
-#: statusnet.php:294 statusnet.php:298
-msgid "GNU Social Import/Export/Mirror"
-msgstr "GNU Social Import/Export/Mirror"
-
-#: statusnet.php:313
-msgid "Globally Available GNU Social OAuthKeys"
-msgstr "Globalnie dostępne GNU Social OAuthKeys"
-
-#: statusnet.php:314
-msgid ""
-"There are preconfigured OAuth key pairs for some GNU Social servers "
-"available. If you are using one of them, please use these credentials. If "
-"not feel free to connect to any other GNU Social instance (see below)."
-msgstr "Istnieją wstępnie skonfigurowane pary kluczy OAuth dla niektórych serwerów społecznościowych GNU. Jeśli używasz jednego z nich, użyj tych poświadczeń. Jeśli nie, możesz połączyć się z dowolną inną instancją społecznościową GNU (patrz poniżej)."
-
-#: statusnet.php:320 statusnet.php:337 statusnet.php:364 statusnet.php:371
-#: statusnet.php:416 statusnet.php:699
+#: statusnet.php:243 statusnet.php:656
 msgid "Save Settings"
 msgstr "Zapisz ustawienia"
 
-#: statusnet.php:322
-msgid "Provide your own OAuth Credentials"
-msgstr "Podaj własne dane uwierzytelniające OAuth"
+#: statusnet.php:255
+#, php-format
+msgid "Currently connected to: <a href=\"%s\" target=\"_statusnet\">%s</a>"
+msgstr ""
 
-#: statusnet.php:323
-msgid ""
-"No consumer key pair for GNU Social found. Register your Friendica Account "
-"as an desktop client on your GNU Social account, copy the consumer key pair "
-"here and enter the API base root.<br />Before you register your own OAuth "
-"key pair ask the administrator if there is already a key pair for this "
-"Friendica installation at your favorited GNU Social installation."
-msgstr "Nie znaleziono pary kluczy konsumenta dla GNU Social. Zarejestruj swoje konto Friendica jako klienta komputerowego na koncie GNU Social, skopiuj tutaj parę kluczy konsumenta i wprowadź podstawową bazę interfejsu API.<br /> Zanim zarejestrujesz swoją własną parę kluczy OAuth, zapytaj administratora, czy istnieje już para kluczy do instalacji tej aplikacji na stronie Twoja ulubiona instalacja społecznościowa GNU."
-
-#: statusnet.php:325
-msgid "OAuth Consumer Key"
-msgstr "Klucz klienta OAuth"
-
-#: statusnet.php:328
-msgid "OAuth Consumer Secret"
-msgstr "Tajny klucz klienta OAuth"
-
-#: statusnet.php:331 statusnet.php:679 statusnet.php:691
-msgid "Base API Path (remember the trailing /)"
-msgstr "Podstawowa ścieżka interfejsu API (pamiętaj na końcu /)"
-
-#: statusnet.php:356
-msgid ""
-"To connect to your GNU Social account click the button below to get a "
-"security code from GNU Social which you have to copy into the input box "
-"below and submit the form. Only your <strong>public</strong> posts will be "
-"posted to GNU Social."
-msgstr "Aby połączyć się z kontem społecznościowym GNU, kliknij przycisk poniżej, aby uzyskać kod bezpieczeństwa z GNU Social, który musisz skopiować do poniższego pola wprowadzania i przesłać formularz. Tylko twoje <strong>publiczne</strong> posty będą publikowane w GNU Social."
-
-#: statusnet.php:357
-msgid "Log in with GNU Social"
-msgstr "Zaloguj się za pomocą GNU Social"
-
-#: statusnet.php:359
-msgid "Copy the security code from GNU Social here"
-msgstr "Skopiuj tutaj kod bezpieczeństwa z GNU Social"
-
-#: statusnet.php:365
-msgid "Cancel Connection Process"
-msgstr "Anuluj proces połączenia"
-
-#: statusnet.php:367
-msgid "Current GNU Social API is"
-msgstr "Obecne API GNU Social to"
-
-#: statusnet.php:368
-msgid "Cancel GNU Social Connection"
-msgstr "Anuluj GNU Social Connection"
-
-#: statusnet.php:379
-msgid "Currently connected to: "
-msgstr "Obecnie podłączony do:"
-
-#: statusnet.php:380
-msgid ""
-"If enabled all your <strong>public</strong> postings can be posted to the "
-"associated GNU Social account. You can choose to do so by default (here) or "
-"for every posting separately in the posting options when writing the entry."
-msgstr "Jeśli ta opcja jest włączona, wszystkie twoje <strong>publiczne</strong> ogłoszenia mogą zostać wysłane na powiązane konto społecznościowe GNU. Możesz to zrobić domyślnie (tutaj) lub dla każdego komentarza osobno w opcjach komentarza podczas pisania wpisu."
-
-#: statusnet.php:382
+#: statusnet.php:260
 msgid ""
 "<strong>Note</strong>: Due your privacy settings (<em>Hide your profile "
 "details from unknown viewers?</em>) the link potentially included in public "
@@ -130,47 +51,126 @@ msgid ""
 "informing the visitor that the access to your profile has been restricted."
 msgstr "<strong>Uwaga</strong>: Ze względu na ustawienia prywatności (<em>Ukryć szczegóły Twojego profilu, przed nieznanymi użytkownikami?</em>) link potencjalnie zawarty w publicznych komentarzach do Twitter doprowadzi użytkownika do pustej strony informowania odwiedzających, że dostęp do Twojego profilu został ograniczony."
 
-#: statusnet.php:385
-msgid "Allow posting to GNU Social"
-msgstr "Zezwalaj na publikowanie w GNU Social"
-
-#: statusnet.php:388
-msgid "Send public postings to GNU Social by default"
-msgstr "Domyślnie wysyłaj publiczne ogłoszenia do GNU Social"
-
-#: statusnet.php:392
-msgid ""
-"Mirror all posts from GNU Social that are no replies or repeated messages"
-msgstr "Odblokuj wszystkie posty z GNU Social, które nie są odpowiedziami lub powtarzającymi się wiadomościami"
-
-#: statusnet.php:398
-msgid "Import the remote timeline"
-msgstr "Zaimportuj na zdalnej oś czasu"
-
-#: statusnet.php:402
-msgid "Disabled"
-msgstr "Wyłącz"
-
-#: statusnet.php:403
-msgid "Full Timeline"
-msgstr "Pełna oś czasu"
-
-#: statusnet.php:404
-msgid "Only Mentions"
-msgstr "Tylko wzmianki"
-
-#: statusnet.php:413
+#: statusnet.php:263
 msgid "Clear OAuth configuration"
 msgstr "Wyczyść konfigurację OAuth"
 
-#: statusnet.php:690
+#: statusnet.php:275
+msgid "Cancel GNU Social Connection"
+msgstr "Anuluj GNU Social Connection"
+
+#: statusnet.php:283
+msgid "Globally Available GNU Social OAuthKeys"
+msgstr "Globalnie dostępne GNU Social OAuthKeys"
+
+#: statusnet.php:284
+msgid ""
+"There are preconfigured OAuth key pairs for some GNU Social servers "
+"available. If you are using one of them, please use these credentials. If "
+"not feel free to connect to any other GNU Social instance (see below)."
+msgstr "Istnieją wstępnie skonfigurowane pary kluczy OAuth dla niektórych serwerów społecznościowych GNU. Jeśli używasz jednego z nich, użyj tych poświadczeń. Jeśli nie, możesz połączyć się z dowolną inną instancją społecznościową GNU (patrz poniżej)."
+
+#: statusnet.php:285
+msgid "Provide your own OAuth Credentials"
+msgstr "Podaj własne dane uwierzytelniające OAuth"
+
+#: statusnet.php:286
+msgid ""
+"No consumer key pair for GNU Social found. Register your Friendica Account "
+"as a desktop application on your GNU Social account, copy the consumer key "
+"pair here and enter the API base root.<br />Before you register your own "
+"OAuth key pair ask the administrator if there is already a key pair for this"
+" Friendica installation at your favorite GNU Social installation."
+msgstr ""
+
+#: statusnet.php:287
+msgid ""
+"To connect to your GNU Social account click the button below to get a "
+"security code from GNU Social which you have to copy into the input box "
+"below and submit the form. Only your <strong>public</strong> posts will be "
+"posted to GNU Social."
+msgstr "Aby połączyć się z kontem społecznościowym GNU, kliknij przycisk poniżej, aby uzyskać kod bezpieczeństwa z GNU Social, który musisz skopiować do poniższego pola wprowadzania i przesłać formularz. Tylko twoje <strong>publiczne</strong> posty będą publikowane w GNU Social."
+
+#: statusnet.php:288
+msgid "Log in with GNU Social"
+msgstr "Zaloguj się za pomocą GNU Social"
+
+#: statusnet.php:289
+msgid "Cancel Connection Process"
+msgstr "Anuluj proces połączenia"
+
+#: statusnet.php:290
+#, php-format
+msgid "Current GNU Social API is: %s"
+msgstr ""
+
+#: statusnet.php:307
+msgid "OAuth Consumer Key"
+msgstr "Klucz klienta OAuth"
+
+#: statusnet.php:308
+msgid "OAuth Consumer Secret"
+msgstr "Tajny klucz klienta OAuth"
+
+#: statusnet.php:310 statusnet.php:636 statusnet.php:648
+msgid "Base API Path (remember the trailing /)"
+msgstr "Podstawowa ścieżka interfejsu API (pamiętaj na końcu /)"
+
+#: statusnet.php:311
+msgid "Copy the security code from GNU Social here"
+msgstr "Skopiuj tutaj kod bezpieczeństwa z GNU Social"
+
+#: statusnet.php:313
+msgid "Allow posting to GNU Social"
+msgstr "Zezwalaj na publikowanie w GNU Social"
+
+#: statusnet.php:313
+msgid ""
+"If enabled all your <strong>public</strong> postings can be posted to the "
+"associated GNU Social account. You can choose to do so by default (here) or "
+"for every posting separately in the posting options when writing the entry."
+msgstr "Jeśli ta opcja jest włączona, wszystkie twoje <strong>publiczne</strong> ogłoszenia mogą zostać wysłane na powiązane konto społecznościowe GNU. Możesz to zrobić domyślnie (tutaj) lub dla każdego komentarza osobno w opcjach komentarza podczas pisania wpisu."
+
+#: statusnet.php:314
+msgid "Post to GNU Social by default"
+msgstr ""
+
+#: statusnet.php:315
+msgid "Mirror all public posts"
+msgstr ""
+
+#: statusnet.php:316
+msgid "Automatically create contacts"
+msgstr ""
+
+#: statusnet.php:317
+msgid "Import the remote timeline"
+msgstr "Zaimportuj na zdalnej oś czasu"
+
+#: statusnet.php:318
+msgid "Disabled"
+msgstr "Wyłącz"
+
+#: statusnet.php:319
+msgid "Full Timeline"
+msgstr "Pełna oś czasu"
+
+#: statusnet.php:320
+msgid "Only Mentions"
+msgstr "Tylko wzmianki"
+
+#: statusnet.php:326
+msgid "GNU Social Import/Export/Mirror"
+msgstr "GNU Social Import/Export/Mirror"
+
+#: statusnet.php:647
 msgid "Site name"
 msgstr "Nazwa strony"
 
-#: statusnet.php:692
+#: statusnet.php:649
 msgid "Consumer Secret"
 msgstr "Tajny klucz klienta"
 
-#: statusnet.php:693
+#: statusnet.php:650
 msgid "Consumer Key"
 msgstr "Klucz klienta"

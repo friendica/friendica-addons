@@ -13,4 +13,3 @@ $a->strings['Absolute path to your Matomo (Piwik) installation. (without protoco
 $a->strings['Site ID'] = 'Identyfikator ID witryny';
 $a->strings['Show opt-out cookie link?'] = 'Pokazać link do rezygnacji z plików cookie?';
 $a->strings['Asynchronous tracking'] = 'Śledzenie asynchroniczne';
-$a->strings['Settings updated.'] = 'Zaktualizowano ustawienia.';

@@ -13,3 +13,4 @@ $a->strings['Hi %1$s,
 Your account on %2$s will expire in less than five days. You may keep your account by logging in at least once every 30 days'] = 'Cześć ,%1$s
 
 Twoje konto wygaśnie za %2$s mniej niż pięć dni. Możesz zachować swoje konto logując się przynajmniej raz na 30 dni';
+$a->strings['Save Settings'] = 'Zapisz ustawienia';
