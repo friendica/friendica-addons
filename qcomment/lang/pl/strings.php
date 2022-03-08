@@ -8,7 +8,6 @@ function string_plural_select_pl($n){
 $a->strings[':-)'] = ':-)';
 $a->strings[':-('] = ':-(';
 $a->strings['lol'] = 'lol';
-$a->strings['Quick Comment Settings'] = 'Ustawienia szybkiego komentowania';
 $a->strings['Quick comments are found near comment boxes, sometimes hidden. Click them to provide simple replies.'] = 'Szybkie komentarze znajdują się w pobliżu pól komentarza, czasami są ukryte. Kliknij je, aby zapewnić proste odpowiedzi.';
-$a->strings['Submit'] = 'Wyślij';
-$a->strings['Quick Comment settings saved.'] = 'Zapisano szybkie ustawienia komentarzy.';
+$a->strings['Enter quick comments, one per line'] = 'Wprowadź szybkie komentarze, po jednym w wierszu';
+$a->strings['Quick Comment Settings'] = 'Ustawienia szybkiego komentowania';
