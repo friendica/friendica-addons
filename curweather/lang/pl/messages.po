@@ -4,14 +4,15 @@
 # 
 # 
 # Translators:
-# Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018
+# Piotr Strębski <strebski@gmail.com>, 2022
+# Waldemar Stoczkowski, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-25 17:17+0200\n"
-"PO-Revision-Date: 2018-08-04 12:10+0000\n"
-"Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
+"POT-Creation-Date: 2021-11-21 19:14-0500\n"
+"PO-Revision-Date: 2022-03-08 14:06+0000\n"
+"Last-Translator: Piotr Strębski <strebski@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,114 +20,106 @@ msgstr ""
 "Language: pl\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
-#: curweather.php:31
-msgid "Error fetching weather data.\\nError was: "
-msgstr "Błąd podczas pobierania danych pogodowych. \\nError był:"
+#: curweather.php:47
+msgid "Error fetching weather data. Error was: "
+msgstr "Błąd podczas pobierania danych pogodowych. Wystąpił błąd:"
 
-#: curweather.php:111 curweather.php:172
+#: curweather.php:130
 msgid "Current Weather"
 msgstr "Obecna pogoda"
 
-#: curweather.php:118
+#: curweather.php:137
 msgid "Relative Humidity"
 msgstr "Względna wilgotność"
 
-#: curweather.php:119
+#: curweather.php:138
 msgid "Pressure"
 msgstr "Ciśnienie"
 
-#: curweather.php:120
+#: curweather.php:139
 msgid "Wind"
 msgstr "Wiatr"
 
-#: curweather.php:121
+#: curweather.php:140
 msgid "Last Updated"
 msgstr "Ostatnio zaktualizowano"
 
-#: curweather.php:122
+#: curweather.php:141
 msgid "Data by"
 msgstr "Dane wg"
 
-#: curweather.php:123
+#: curweather.php:142
 msgid "Show on map"
 msgstr "Pokaż na mapie"
 
-#: curweather.php:128
+#: curweather.php:147
 msgid "There was a problem accessing the weather data. But have a look"
 msgstr "Wystąpił problem z dostępem do danych pogodowych. Ale spójrz"
 
-#: curweather.php:130
+#: curweather.php:149
 msgid "at OpenWeatherMap"
 msgstr "w OpenWeatherMap"
 
-#: curweather.php:146
-msgid "Current Weather settings updated."
-msgstr "Zaktualizowano bieżące ustawienia pogody."
-
-#: curweather.php:161
+#: curweather.php:178
 msgid "No APPID found, please contact your admin to obtain one."
 msgstr "Nie znaleziono APPID, skontaktuj się z administratorem, aby go uzyskać."
 
-#: curweather.php:171 curweather.php:200
-msgid "Save Settings"
-msgstr "Zapisz ustawienia"
-
-#: curweather.php:172
-msgid "Settings"
-msgstr "Ustawienia"
-
-#: curweather.php:174
+#: curweather.php:188
 msgid "Enter either the name of your location or the zip code."
 msgstr "Wprowadź nazwę swojej lokalizacji lub kod pocztowy."
 
-#: curweather.php:175
+#: curweather.php:189
 msgid "Your Location"
 msgstr "Twoja lokalizacja"
 
-#: curweather.php:175
+#: curweather.php:189
 msgid ""
 "Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or "
 "<em>14476,DE</em>."
 msgstr "Identyfikator Twojej lokalizacji (nazwa lub kod pocztowy), np. <em>Lublin, LU</em> lub <em>20001, LU</em>."
 
-#: curweather.php:176
+#: curweather.php:190
 msgid "Units"
 msgstr "Jednostka"
 
-#: curweather.php:176
+#: curweather.php:190
 msgid "select if the temperature should be displayed in &deg;C or &deg;F"
 msgstr "wybierz, czy temperatura powinna być wyświetlana w &deg;C lub &deg;F"
 
-#: curweather.php:177
+#: curweather.php:191
 msgid "Show weather data"
 msgstr "Pokaż dane pogodowe"
 
-#: curweather.php:190
-msgid "Curweather settings saved."
-msgstr "Ustawienia pogodowe zostały zapisane."
+#: curweather.php:196
+msgid "Current Weather Settings"
+msgstr "Bieżące ustawienia pogody"
 
-#: curweather.php:201
+#: curweather.php:227
+msgid "Save Settings"
+msgstr "Zapisz ustawienia"
+
+#: curweather.php:230
 msgid "Caching Interval"
 msgstr "Interwał buforowania"
 
-#: curweather.php:201
+#: curweather.php:232
 msgid ""
 "For how long should the weather data be cached? Choose according your "
 "OpenWeatherMap account type."
 msgstr "Od jak dawna powinny być buforowane dane pogodowe? Wybierz zgodnie z typem konta OpenWeatherMap."
 
-#: curweather.php:201
+#: curweather.php:233
 msgid "no cache"
 msgstr "Brak pamięci podręcznej"
 
-#: curweather.php:201
+#: curweather.php:234 curweather.php:235 curweather.php:236 curweather.php:237
 msgid "minutes"
 msgstr "minut"
 
-#: curweather.php:202
+#: curweather.php:240
 msgid "Your APPID"
 msgstr "Twój APPID"
 
-#: curweather.php:202
+#: curweather.php:240
 msgid "Your API key provided by OpenWeatherMap"
 msgstr "Twój klucz API dostarczony przez OpenWeatherMap"

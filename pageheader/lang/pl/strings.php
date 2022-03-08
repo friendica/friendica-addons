@@ -9,4 +9,3 @@ $a->strings['"pageheader" Settings'] = 'Ustawienia "nagłówek strony"';
 $a->strings['Message'] = 'Wiadomość';
 $a->strings['Message to display on every page on this server (or put a pageheader.html file in your docroot)'] = 'Komunikat wyświetlany na każdej stronie, na tym serwerze (lub umieść plik pageheader.html w swoim dokumencie roboczym)';
 $a->strings['Save Settings'] = 'Zapisz ustawienia';
-$a->strings['pageheader Settings saved.'] = 'nagłówek strony Ustawienia zapisane.';

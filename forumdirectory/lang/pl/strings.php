@@ -7,16 +7,7 @@ function string_plural_select_pl($n){
 }}
 $a->strings['Forum Directory'] = 'Katalog forum';
 $a->strings['Public access denied.'] = 'Odmowa dostępu publicznego.';
+$a->strings['No entries (some entries may be hidden).'] = 'Brak wpisów (niektóre wpisy mogą być ukryte).';
 $a->strings['Global Directory'] = 'Globalny katalog';
 $a->strings['Find on this site'] = 'Znajdź na tej stronie';
-$a->strings['Finding: '] = 'Odkrycie:';
-$a->strings['Site Directory'] = 'Katalog Strony';
 $a->strings['Find'] = 'Szukaj';
-$a->strings['Age: '] = 'Wiek:';
-$a->strings['Gender: '] = 'Płeć:';
-$a->strings['Location:'] = 'Lokalizacja';
-$a->strings['Gender:'] = 'Płeć:';
-$a->strings['Status:'] = 'Status';
-$a->strings['Homepage:'] = 'Strona główna:';
-$a->strings['About:'] = 'O sobie:';
-$a->strings['No entries (some entries may be hidden).'] = 'Brak wpisów (niektóre wpisy mogą być ukryte).';

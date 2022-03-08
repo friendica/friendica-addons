@@ -4,14 +4,14 @@
 # 
 # 
 # Translators:
-# Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018
+# Waldemar Stoczkowski, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
 "PO-Revision-Date: 2018-08-05 15:52+0000\n"
-"Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
+"Last-Translator: Waldemar Stoczkowski\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,56 +19,56 @@ msgstr ""
 "Language: pl\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
-#: tictac.php:20
+#: tictac.php:16
 msgid "Three Dimensional Tic-Tac-Toe"
 msgstr "Trójwymiarowe Kółko i Krzyżyk"
 
-#: tictac.php:53
+#: tictac.php:49
 msgid "3D Tic-Tac-Toe"
 msgstr "3D Kółko i Krzyżyk"
 
-#: tictac.php:58
+#: tictac.php:54
 msgid "New game"
 msgstr "Nowa gra"
 
-#: tictac.php:59
+#: tictac.php:55
 msgid "New game with handicap"
 msgstr "Nowa gra z handicapem"
 
-#: tictac.php:60
+#: tictac.php:56
 msgid ""
 "Three dimensional tic-tac-toe is just like the traditional game except that "
 "it is played on multiple levels simultaneously. "
 msgstr "Zasady gry w Trójwymiarowe Kółko i Krzyżyk są takie same jak w tradycyjnej grze, z tym wyjątkiem, że gra się na wielu poziomach jednocześnie."
 
-#: tictac.php:61
+#: tictac.php:57
 msgid ""
 "In this case there are three levels. You win by getting three in a row on "
 "any level, as well as up, down, and diagonally across the different levels."
 msgstr "W tym przypadku istnieją trzy poziomy. Wygrywasz, jeśli ustawisz trzy znaki w rzędzie na dowolnym poziomie, a także w górę, w dół i po przekątnej na różnych poziomach."
 
-#: tictac.php:63
+#: tictac.php:59
 msgid ""
 "The handicap game disables the center position on the middle level because "
 "the player claiming this square often has an unfair advantage."
 msgstr "Gra z handicapem wyłącza środkową pozycję na środkowym poziomie, ponieważ gracz zdobywający ten kwadrat często ma nieuczciwą przewagę."
 
-#: tictac.php:182
+#: tictac.php:178
 msgid "You go first..."
 msgstr "Rozpocznij pierwszy..."
 
-#: tictac.php:187
+#: tictac.php:183
 msgid "I'm going first this time..."
 msgstr "Tym razem rozpoczynam pierwszy..."
 
-#: tictac.php:193
+#: tictac.php:189
 msgid "You won!"
 msgstr "Wygrałeś!"
 
-#: tictac.php:199 tictac.php:224
+#: tictac.php:195 tictac.php:220
 msgid "\"Cat\" game!"
 msgstr "Gra \"Kot\"!"
 
-#: tictac.php:222
+#: tictac.php:218
 msgid "I won!"
 msgstr "Wygrałem!"

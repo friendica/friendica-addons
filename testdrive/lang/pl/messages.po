@@ -5,14 +5,14 @@
 # 
 # Translators:
 # TORminator <dominik+foss@danelski.pl>, 2014
-# Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018
+# Waldemar Stoczkowski, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-23 17:30+0200\n"
-"PO-Revision-Date: 2018-03-30 19:49+0000\n"
-"Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2021-02-01 18:21+0000\n"
+"Last-Translator: Transifex Bot <>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,23 +20,23 @@ msgstr ""
 "Language: pl\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
-#: testdrive.php:67
+#: testdrive.php:64
 msgid "Administrator"
 msgstr "Administrator"
 
-#: testdrive.php:94
+#: testdrive.php:89
 #, php-format
 msgid "Your account on %s will expire in a few days."
 msgstr "Twoje konto w  %s wygaśnie w ciągu kilku dni."
 
-#: testdrive.php:95
+#: testdrive.php:90
 msgid "Your Friendica test account is about to expire."
 msgstr "Twoje testowe konto Friendica za chwilę wygaśnie."
 
-#: testdrive.php:96
+#: testdrive.php:91
 #, php-format
 msgid ""
 "Hi %1$s,\n"
 "\n"
-"Your test account on %2$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at %s/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at http://friendica.com."
-msgstr "  Cześć %1$s,\n \n Twoje konto testowe wygaśnie %2$s za mniej niż pięć dni. Mamy nadzieję, że podoba Ci się ta jazda testowa i wykorzystaj tę okazję, by znaleźć stałą stronę Friendica do zintegrowanej komunikacji społecznej. Lista serwisów publicznych jest dostępna na stronie %s/siteinfo. Aby uzyskać więcej informacji na temat konfigurowania własnego serwera Friendica, odwiedź stronę projektu Friendica pod adresem http://friendica.com."
+"Your test account on %2$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at %s/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at https://friendi.ca."
+msgstr ""

@@ -7,7 +7,4 @@ function string_plural_select_pl($n){
 }}
 $a->strings['Submit'] = 'Zatwierdź';
 $a->strings['Tile Server URL'] = 'Adres URL serwera sąsiadująco';
-$a->strings['A list of <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank">public tile servers</a>'] = 'Lista <a href="http://wiki.openstreetmap.org/wiki/TMS" target="_blank">serwerów publicznych</a>';
 $a->strings['Default zoom'] = 'Domyślne powiększenie';
-$a->strings['The default zoom level. (1:world, 18:highest)'] = 'Domyślny poziom powiększenia. (1:świat, 18:najwyższy)';
-$a->strings['Settings updated.'] = 'Zaktualizowano ustawienia.';

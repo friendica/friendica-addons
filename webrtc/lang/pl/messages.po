@@ -4,14 +4,14 @@
 # 
 # 
 # Translators:
-# Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>, 2018
+# Waldemar Stoczkowski, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-23 14:45+0200\n"
-"PO-Revision-Date: 2018-08-05 15:55+0000\n"
-"Last-Translator: Waldemar Stoczkowski <waldemar.stoczkowski@gmail.com>\n"
+"POT-Creation-Date: 2021-02-01 18:16+0100\n"
+"PO-Revision-Date: 2021-02-01 20:17+0000\n"
+"Last-Translator: Transifex Bot <>\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,40 +19,36 @@ msgstr ""
 "Language: pl\n"
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
-#: webrtc.php:20
+#: webrtc.php:19
 msgid "WebRTC Videochat"
 msgstr "Videochat WebRTC"
 
-#: webrtc.php:26
+#: webrtc.php:25
 msgid "Save Settings"
 msgstr "Zapisz ustawienia"
 
-#: webrtc.php:27
+#: webrtc.php:26
 msgid "WebRTC Base URL"
 msgstr "Podstawowy adres URL WebRTC"
 
-#: webrtc.php:27
+#: webrtc.php:26
 msgid ""
 "Page your users will create a WebRTC chat room on. For example you could use"
 " https://live.mayfirst.org ."
 msgstr "Strona Twoich użytkowników utworzą pokój czatu WebRTC. Na przykład możesz użyć https://live.mayfirst.org."
 
-#: webrtc.php:33
-msgid "Settings updated."
-msgstr "Zaktualizowano ustawienia."
-
-#: webrtc.php:47
+#: webrtc.php:45
 msgid "Video Chat"
 msgstr "Czat wideo"
 
-#: webrtc.php:48
+#: webrtc.php:46
 msgid ""
 "WebRTC is a video and audio conferencing tool that works with Firefox "
 "(version 21 and above) and Chrome/Chromium (version 25 and above). Just "
 "create a new chat room and send the link to someone you want to chat with."
 msgstr "WebRTC to narzędzie do wideokonferencji, które działa z przeglądarką Firefox (wersja 21 i nowsze) oraz Chrome/Chromium (wersja 25 i nowsze). Utwórz nowy pokój czatu i wyślij link do kogoś, z kim chcesz porozmawiać."
 
-#: webrtc.php:50
+#: webrtc.php:48
 msgid ""
 "Please contact your friendica admin and send a reminder to configure the "
 "WebRTC addon."
