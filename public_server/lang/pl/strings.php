@@ -10,7 +10,8 @@ $a->strings['Your account on %s will expire in a few days.'] = 'Twoje konto na %
 $a->strings['Your Friendica account is about to expire.'] = 'Twoje konto Friendica jest w trakcie wygaszania';
 $a->strings['Hi %1$s,
 
-Your account on %2$s will expire in less than five days. You may keep your account by logging in at least once every 30 days'] = 'Cześć ,%1$s
+Your account on %2$s will expire in less than five days. You may keep your account by logging in at least once every 30 days'] = 'Cześć%1$s,
 
-Twoje konto wygaśnie za %2$s mniej niż pięć dni. Możesz zachować swoje konto logując się przynajmniej raz na 30 dni';
+Twoje konto na %2$s wygaśnie za mniej niż pięć dni. Możesz zachować swoje konto logując się przynajmniej raz na 30 dni.';
 $a->strings['Save Settings'] = 'Zapisz ustawienia';
+$a->strings['Set any of these options to 0 to deactivate it.'] = 'Ustaw dowolną z tych opcji na 0, aby ją wyłączyć.';

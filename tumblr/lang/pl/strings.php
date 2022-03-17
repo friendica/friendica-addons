@@ -7,6 +7,8 @@ function string_plural_select_pl($n){
 }}
 $a->strings['Permission denied.'] = 'Odmowa dostępu.';
 $a->strings['Save Settings'] = 'Zapisz ustawienia';
+$a->strings['Consumer Key'] = 'Klucz klienta';
+$a->strings['Consumer Secret'] = 'Tajny klucz klienta';
 $a->strings['You are now authenticated to tumblr.'] = 'Jesteś teraz uwierzytelniony na tumblr.';
 $a->strings['return to the connector page'] = 'powrót do strony łącza';
 $a->strings['Post to Tumblr'] = 'Opublikuj w Tumblr';
@@ -15,3 +17,4 @@ $a->strings['(Re-)Authenticate your tumblr page'] = '(Re-) Uwierzytelnij swoją 
 $a->strings['You are not authenticated to tumblr'] = 'Nie jesteś uwierzytelniony w tumblr';
 $a->strings['Enable Tumblr Post Addon'] = 'Włącz dodatek Tumblr';
 $a->strings['Post to Tumblr by default'] = 'Wyślij domyślnie do Tumblr';
+$a->strings['Tumblr Export'] = 'Eksportuj do Tumblr';
