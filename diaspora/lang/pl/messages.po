@@ -4,14 +4,15 @@
 # 
 # 
 # Translators:
+# Piotr Strębski <strebski@gmail.com>, 2022
 # Waldemar Stoczkowski, 2018,2020
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-21 19:17-0500\n"
-"PO-Revision-Date: 2021-12-22 15:27+0000\n"
-"Last-Translator: Transifex Bot <>\n"
+"PO-Revision-Date: 2014-06-22 11:39+0000\n"
+"Last-Translator: Piotr Strębski <strebski@gmail.com>, 2022\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,7 +29,7 @@ msgstr "Napisz do Diaspory"
 msgid ""
 "Please remember: You can always be reached from Diaspora with your Friendica"
 " handle <strong>%s</strong>. "
-msgstr ""
+msgstr "Pamiętaj: Zawsze można do Ciebie dotrzeć z Diaspory za pomocą uchwytu Friendica <strong>%s</strong>. "
 
 #: diaspora.php:68
 msgid ""
@@ -41,7 +42,7 @@ msgstr "Ten łącznik jest przeznaczony do tego, gdy nadal chcesz korzystać ze 
 msgid ""
 "However, it is preferred that you tell your Diaspora contacts the new handle"
 " <strong>%s</strong> instead."
-msgstr ""
+msgstr "Jednak zaleca się, aby zamiast tego poinformować swoją Diasporę o kontakt z nowym uchwytem <strong>%s</strong>."
 
 #: diaspora.php:79
 msgid "All aspects"
@@ -53,7 +54,7 @@ msgstr "Publiczny"
 
 #: diaspora.php:86
 msgid "Post to aspect:"
-msgstr ""
+msgstr "Napisz do aspektu:"
 
 #: diaspora.php:87
 #, php-format
@@ -64,7 +65,7 @@ msgstr "Połączony ze swoim kontem Diaspora <strong>%s</strong>"
 msgid ""
 "Can't login to your Diaspora account. Please check handle (in the format "
 "user@domain.tld) and password."
-msgstr ""
+msgstr "Nie można zalogować się na Twoje konto w Diasporze. Sprawdź uchwyt (w formacie użytkownik@domena.tld) i hasło."
 
 #: diaspora.php:97
 msgid "Information"
@@ -80,7 +81,7 @@ msgstr "Włącz dodatek Diaspora"
 
 #: diaspora.php:105
 msgid "Diaspora handle"
-msgstr ""
+msgstr "Uchwyt Diaspory"
 
 #: diaspora.php:106
 msgid "Diaspora password"

@@ -10,4 +10,5 @@ $a->strings['Public access denied.'] = 'Odmowa dostępu publicznego.';
 $a->strings['No entries (some entries may be hidden).'] = 'Brak wpisów (niektóre wpisy mogą być ukryte).';
 $a->strings['Global Directory'] = 'Globalny katalog';
 $a->strings['Find on this site'] = 'Znajdź na tej stronie';
+$a->strings['Results for:'] = 'Wyniki dla:';
 $a->strings['Find'] = 'Szukaj';
