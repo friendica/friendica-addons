@@ -10,3 +10,4 @@ $a->strings['Enable Libertree Post Addon'] = 'Włącz dodatek Libertree Post';
 $a->strings['Libertree site URL'] = 'Adres URL witryny Libertree';
 $a->strings['Libertree API token'] = 'Token API Libertree';
 $a->strings['Post to Libertree by default'] = 'Wyślij domyślnie do Libertree';
+$a->strings['Libertree Export'] = 'Eksport do Libertree';
