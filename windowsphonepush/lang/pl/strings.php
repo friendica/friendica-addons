@@ -7,4 +7,5 @@ function string_plural_select_pl($n){
 }}
 $a->strings['Enable WindowsPhonePush Addon'] = 'Włącz dodatek WindowsPhonePush';
 $a->strings['Push text of new item'] = 'Naciśnij tekst nowego elementu';
+$a->strings['Device URL'] = 'URL urządzenia';
 $a->strings['WindowsPhonePush Settings'] = 'Ustawienia WindowsPhonePush';
