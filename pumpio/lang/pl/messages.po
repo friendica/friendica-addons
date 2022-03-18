@@ -4,14 +4,15 @@
 # 
 # 
 # Translators:
+# Piotr Strębski <strebski@gmail.com>, 2022
 # Waldemar Stoczkowski, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-21 19:17-0500\n"
-"PO-Revision-Date: 2021-12-22 17:23+0000\n"
-"Last-Translator: Transifex Bot <>\n"
+"PO-Revision-Date: 2014-06-23 11:30+0000\n"
+"Last-Translator: Piotr Strębski <strebski@gmail.com>, 2022\n"
 "Language-Team: Polish (http://www.transifex.com/Friendica/friendica/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -46,7 +47,7 @@ msgstr "Zapisz ustawienia"
 
 #: pumpio.php:239
 msgid "Delete this preset"
-msgstr ""
+msgstr "Usuń to ustawienie wstępne"
 
 #: pumpio.php:245
 msgid "Authenticate your pump.io connection"
@@ -54,11 +55,11 @@ msgstr "Uwierzytelnij swoje połączenie pump.io"
 
 #: pumpio.php:252
 msgid "Pump.io servername (without \"http://\" or \"https://\" )"
-msgstr ""
+msgstr "Nazwa serwera Pump.io (bez \"http://\" lub \"https://\")"
 
 #: pumpio.php:253
 msgid "Pump.io username (without the servername)"
-msgstr ""
+msgstr "Nazwa użytkownika Pump.io (bez nazwy serwera)"
 
 #: pumpio.php:254
 msgid "Import the remote timeline"
@@ -66,11 +67,11 @@ msgstr "Zaimportuj zdalną oś czasu"
 
 #: pumpio.php:255
 msgid "Enable Pump.io Post Addon"
-msgstr ""
+msgstr "Włącz dodatek Pump.io"
 
 #: pumpio.php:256
 msgid "Post to Pump.io by default"
-msgstr ""
+msgstr "Publikuj domyślnie w Pump.io"
 
 #: pumpio.php:257
 msgid "Should posts be public?"
