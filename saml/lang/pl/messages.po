@@ -1,0 +1,108 @@
+# ADDON saml
+# Copyright (C)
+# This file is distributed under the same license as the Friendica saml addon package.
+# 
+# 
+# Translators:
+# Piotr Strębski <strebski@gmail.com>, 2022
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-05-18 07:23+0200\n"
+"PO-Revision-Date: 2021-05-18 11:39+0000\n"
+"Last-Translator: Piotr Strębski <strebski@gmail.com>, 2022\n"
+"Language-Team: Polish (https://www.transifex.com/Friendica/teams/12172/pl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: saml.php:231
+msgid "Settings statement"
+msgstr "Oświadczenie o ustawieniach"
+
+#: saml.php:232
+msgid ""
+"A statement on the settings page explaining where the user should go to "
+"change their e-mail and password. BBCode allowed."
+msgstr ""
+"Oświadczenie na stronie ustawień wyjaśniające, gdzie użytkownik powinien się"
+" udać, aby zmienić swój adres e-mail i hasło. Dozwolony kod BBCode."
+
+#: saml.php:237
+msgid "IdP ID"
+msgstr "ID IdP"
+
+#: saml.php:238
+msgid ""
+"Identity provider (IdP) entity URI (e.g., "
+"https://example.com/auth/realms/user)."
+msgstr ""
+"Identyfikator URI jednostki dostawcy tożsamości (IdP) (np. "
+"https://example.com/auth/realms/user)."
+
+#: saml.php:242
+msgid "Client ID"
+msgstr "ID klienta"
+
+#: saml.php:243
+msgid "Identifier assigned to client by the identity provider (IdP)."
+msgstr "Identyfikator przypisywany klientowi przez dostawcę tożsamości (IdP)."
+
+#: saml.php:247
+msgid "IdP SSO URL"
+msgstr "Adres URL logowania jednokrotnego dostawcy tożsamości"
+
+#: saml.php:248
+msgid "The URL for your identity provider's SSO endpoint."
+msgstr ""
+"Adres URL punktu końcowego logowania jednokrotnego dostawcy tożsamości."
+
+#: saml.php:252
+msgid "IdP SLO request URL"
+msgstr "Adres URL żądania SLO dostawcy tożsamości"
+
+#: saml.php:253
+msgid "The URL for your identity provider's SLO request endpoint."
+msgstr "Adres URL punktu końcowego żądania SLO dostawcy tożsamości."
+
+#: saml.php:257
+msgid "IdP SLO response URL"
+msgstr "Adres URL odpowiedzi dostawcy usług SLO"
+
+#: saml.php:258
+msgid "The URL for your identity provider's SLO response endpoint."
+msgstr ""
+"Adres URL punktu końcowego odpowiedzi SLO Twojego dostawcy tożsamości."
+
+#: saml.php:262
+msgid "SP private key"
+msgstr "Klucz prywatny SP"
+
+#: saml.php:263
+msgid "The private key the addon should use to authenticate."
+msgstr "Klucz prywatny, którego dodatek powinien używać do uwierzytelniania."
+
+#: saml.php:267
+msgid "SP certificate"
+msgstr "Certyfikat SP"
+
+#: saml.php:268
+msgid "The certficate for the addon's private key."
+msgstr "Certyfikat klucza prywatnego dodatku."
+
+#: saml.php:272
+msgid "IdP certificate"
+msgstr "Certyfikat IdP"
+
+#: saml.php:273
+msgid "The x509 certficate for your identity provider."
+msgstr "Certyfikat x509 dla dostawcy tożsamości."
+
+#: saml.php:276
+msgid "Save Settings"
+msgstr "Zapisz ustawienia"
