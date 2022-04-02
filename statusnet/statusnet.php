@@ -56,6 +56,7 @@ use Friendica\Model\Item;
 use Friendica\Model\Photo;
 use Friendica\Model\Post;
 use Friendica\Model\User;
+use Friendica\Network\HTTPClient\Client\HttpClientAccept;
 use Friendica\Protocol\Activity;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Strings;
@@ -1367,7 +1368,7 @@ function statusnet_convertmsg(App $a, $body)
 			} elseif ($oembed_data->type != "link") {
 				$body = str_replace($search, "[url=" . $expanded_url . "]" . $expanded_url . "[/url]", $body);
 			} else {
-				$img_str = DI::httpClient()->fetch($expanded_url, 4);
+				$img_str = DI::httpClient()->fetch($expanded_url, HttpClientAccept::DEFAULT, 4);
 
 				$tempfile = tempnam(System::getTempPath(), "cache");
 				file_put_contents($tempfile, $img_str);
