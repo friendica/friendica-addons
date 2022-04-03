@@ -86,7 +86,7 @@ class WebDav implements ICanWriteToStorage
 	 */
 	protected function exists(string $uri): bool
 	{
-		return $this->client->head($uri, HttpClientAccept::DEFAULT, [HttpClientOptions::AUTH => $this->authOptions])->getReturnCode() == 200;
+		return $this->client->head($uri, [HttpClientOptions::AUTH => $this->authOptions])->getReturnCode() == 200;
 	}
 
 	/**
@@ -178,7 +178,7 @@ class WebDav implements ICanWriteToStorage
 		foreach ($pathParts as $pathPart) {
 			$checkUrl = $this->url . $partURL;
 			if (!empty($partURL) && !$this->hasItems($checkUrl)) {
-				$response = $this->client->request('delete', $checkUrl, HttpClientAccept::DEFAULT, [HttpClientOptions::AUTH => $this->authOptions]);
+				$response = $this->client->request('delete', $checkUrl, [HttpClientOptions::AUTH => $this->authOptions]);
 
 				if (!$response->isSuccess()) {
 					if ($response->getReturnCode() == "404") {
