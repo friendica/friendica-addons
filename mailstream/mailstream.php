@@ -19,6 +19,7 @@ use Friendica\Model\Contact;
 use Friendica\Model\Item;
 use Friendica\Model\Post;
 use Friendica\Model\User;
+use Friendica\Network\HTTPClient\Client\HttpClientAccept;
 use Friendica\Protocol\Activity;
 use Friendica\Util\DateTimeFormat;
 
@@ -207,7 +208,7 @@ function mailstream_do_images(&$item, &$attachments)
 			continue;
 		}
 		$cookiejar = tempnam(System::getTempPath(), 'cookiejar-mailstream-');
-		$curlResult = DI::httpClient()->fetchFull($url, 0, '', $cookiejar);
+		$curlResult = DI::httpClient()->fetchFull($url, HttpClientAccept::DEFAULT, 0, $cookiejar);
 		$attachments[$url] = [
 			'data' => $curlResult->getBody(),
 			'guid' => hash("crc32", $url),
