@@ -42,7 +42,7 @@ function webrtc_content(&$a) {
 
         /* embedd the landing page in an iframe */
         $o .= '<h2>'.DI::l10n()->t('Video Chat').'</h2>';
-        $o .= '<p>'.DI::l10n()->t('WebRTC is a video and audio conferencing tool that works with Firefox (version 21 and above) and Chrome/Chromium (version 25 and above). Just create a new chat room and send the link to someone you want to chat with.').'</p>';
+        $o .= '<p>'.DI::l10n()->t('WebRTC is a video and audio conferencing tool that works in all modern browsers. Just create a new chat room and send the link to someone you want to chat with.').'</p>';
 	if ($webrtcurl == '') {
 	    $o .= '<p>'.DI::l10n()->t('Please contact your friendica admin and send a reminder to configure the WebRTC addon.').'</p>';
 	} else {
