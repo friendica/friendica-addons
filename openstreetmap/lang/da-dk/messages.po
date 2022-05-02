@@ -1,0 +1,65 @@
+# ADDON openstreetmap
+# Copyright (C)
+# This file is distributed under the same license as the Friendica openstreetmap addon package.
+# 
+# 
+# Translators:
+# Anton <dev@atjn.dk>, 2022
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2014-06-23 11:01+0000\n"
+"Last-Translator: Anton <dev@atjn.dk>, 2022\n"
+"Language-Team: Danish (Denmark) (http://www.transifex.com/Friendica/friendica/language/da_DK/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: da_DK\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: openstreetmap.php:167
+msgid "View Larger"
+msgstr "Vis større"
+
+#: openstreetmap.php:194
+msgid "Submit"
+msgstr "Indsend"
+
+#: openstreetmap.php:195
+msgid "Tile Server URL"
+msgstr "Fliseserver URL"
+
+#: openstreetmap.php:195
+msgid ""
+"A list of <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" "
+"target=\"_blank\" rel=\"noopener noreferrer\">public tile servers</a>"
+msgstr "En liste af <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" target=\"_blank\" rel=\"noopener noreferrer\">offentlige fliseservere</a>"
+
+#: openstreetmap.php:196
+msgid "Nominatim (reverse geocoding) Server URL"
+msgstr "Nominatim (omvendt geokodning) Server URL"
+
+#: openstreetmap.php:196
+msgid ""
+"A list of <a href=\"http://wiki.openstreetmap.org/wiki/Nominatim\" "
+"target=\"_blank\" rel=\"noopener noreferrer\">Nominatim servers</a>"
+msgstr "En liste af <a href=\"http://wiki.openstreetmap.org/wiki/Nominatim\" target=\"_blank\" rel=\"noopener noreferrer\">Nominatim servere</a>"
+
+#: openstreetmap.php:197
+msgid "Default zoom"
+msgstr "Standard zoom"
+
+#: openstreetmap.php:197
+msgid ""
+"The default zoom level. (1:world, 18:highest, also depends on tile server)"
+msgstr "Det normale zoom niveau. (1:verden, 18:højest, afhænger også af fliseserveren)"
+
+#: openstreetmap.php:198
+msgid "Include marker on map"
+msgstr "Inkluder markør på kort"
+
+#: openstreetmap.php:198
+msgid "Include a marker on the map."
+msgstr "Inkluder en markør på kortet."

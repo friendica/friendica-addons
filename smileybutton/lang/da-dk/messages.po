@@ -1,0 +1,36 @@
+# ADDON smileybutton
+# Copyright (C)
+# This file is distributed under the same license as the Friendica smileybutton addon package.
+# 
+# 
+# Translators:
+# Anton <dev@atjn.dk>, 2022
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-23 14:45+0200\n"
+"PO-Revision-Date: 2014-06-23 12:45+0000\n"
+"Last-Translator: Anton <dev@atjn.dk>, 2022\n"
+"Language-Team: Danish (Denmark) (http://www.transifex.com/Friendica/friendica/language/da_DK/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: da_DK\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: smileybutton.php:269
+msgid "Smileybutton settings"
+msgstr "Smileyknap Indstillinger"
+
+#: smileybutton.php:272
+msgid "You can hide the button and show the smilies directly."
+msgstr "Du kan skjule knappen og vise smileyerne direkte."
+
+#: smileybutton.php:274
+msgid "Hide the button"
+msgstr "Skjul knappen"
+
+#: smileybutton.php:281
+msgid "Save Settings"
+msgstr "Gem indstillinger"

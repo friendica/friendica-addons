@@ -1,0 +1,49 @@
+# ADDON public_server
+# Copyright (C)
+# This file is distributed under the same license as the Friendica public_server addon package.
+# 
+# 
+# Translators:
+# Anton <dev@atjn.dk>, 2022
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2014-06-23 11:24+0000\n"
+"Last-Translator: Anton <dev@atjn.dk>, 2022\n"
+"Language-Team: Danish (Denmark) (http://www.transifex.com/Friendica/friendica/language/da_DK/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: da_DK\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: public_server.php:64
+msgid "Administrator"
+msgstr "Administrator"
+
+#: public_server.php:118
+#, php-format
+msgid "Your account on %s will expire in a few days."
+msgstr "Din konto på %s udløber om nogle få dage."
+
+#: public_server.php:119
+msgid "Your Friendica account is about to expire."
+msgstr "Din Friendica konto er ved at udløbe."
+
+#: public_server.php:120
+#, php-format
+msgid ""
+"Hi %1$s,\n"
+"\n"
+"Your account on %2$s will expire in less than five days. You may keep your account by logging in at least once every 30 days"
+msgstr "Hej %1$s,\n\nDin konto på %2$s udløber om mindre end fem dage. Du kan beholde din konto ved at logge ind mindst én gang hver 30 dage"
+
+#: public_server.php:158
+msgid "Save Settings"
+msgstr "Gem indstillinger"
+
+#: public_server.php:160
+msgid "Set any of these options to 0 to deactivate it."
+msgstr "Sæt enhver af disse indstillinger til 0 for at deaktivere den."
