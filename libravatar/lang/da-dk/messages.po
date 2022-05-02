@@ -1,0 +1,71 @@
+# ADDON libravatar
+# Copyright (C)
+# This file is distributed under the same license as the Friendica libravatar addon package.
+# 
+# 
+# Translators:
+# Anton <dev@atjn.dk>, 2022
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2014-06-23 09:49+0000\n"
+"Last-Translator: Anton <dev@atjn.dk>, 2022\n"
+"Language-Team: Danish (Denmark) (http://www.transifex.com/Friendica/friendica/language/da_DK/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: da_DK\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: libravatar.php:68
+msgid "generic profile image"
+msgstr "generisk profilbillede"
+
+#: libravatar.php:69
+msgid "random geometric pattern"
+msgstr "tilfældigt geometrisk mønster"
+
+#: libravatar.php:70
+msgid "monster face"
+msgstr "monsteransigt"
+
+#: libravatar.php:71
+msgid "computer generated face"
+msgstr "computergenereret ansigt"
+
+#: libravatar.php:72
+msgid "retro arcade style face"
+msgstr "retro-arkade stilet ansigt"
+
+#: libravatar.php:73
+msgid "roboter face"
+msgstr ""
+
+#: libravatar.php:74
+msgid "retro adventure game character"
+msgstr ""
+
+#: libravatar.php:78
+msgid "Information"
+msgstr "Information"
+
+#: libravatar.php:78
+msgid ""
+"Gravatar addon is installed. Please disable the Gravatar addon.<br>The "
+"Libravatar addon will fall back to Gravatar if nothing was found at "
+"Libravatar."
+msgstr ""
+
+#: libravatar.php:83
+msgid "Save Settings"
+msgstr "Gem indstillinger"
+
+#: libravatar.php:84
+msgid "Default avatar image"
+msgstr "Standard avatar-billede"
+
+#: libravatar.php:84
+msgid "Select default avatar image if none was found. See README"
+msgstr ""

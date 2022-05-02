@@ -1,0 +1,46 @@
+# ADDON qcomment
+# Copyright (C)
+# This file is distributed under the same license as the Friendica qcomment addon package.
+# 
+# 
+# Translators:
+# Anton <dev@atjn.dk>, 2022
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-21 19:16-0500\n"
+"PO-Revision-Date: 2014-06-23 12:30+0000\n"
+"Last-Translator: Anton <dev@atjn.dk>, 2022\n"
+"Language-Team: Danish (Denmark) (http://www.transifex.com/Friendica/friendica/language/da_DK/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: da_DK\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: qcomment.php:45
+msgid ":-)"
+msgstr ":-)"
+
+#: qcomment.php:45
+msgid ":-("
+msgstr ":-("
+
+#: qcomment.php:45
+msgid "lol"
+msgstr "lol"
+
+#: qcomment.php:49
+msgid ""
+"Quick comments are found near comment boxes, sometimes hidden. Click them to"
+" provide simple replies."
+msgstr "Hurtige kommentarer kan findes ved kommentarboksene, nogle gange skjult. Klik på dem for at give simple svar."
+
+#: qcomment.php:50
+msgid "Enter quick comments, one per line"
+msgstr "Skriv hurtige kommentarer, én per linje"
+
+#: qcomment.php:55
+msgid "Quick Comment Settings"
+msgstr "Hurtige kommentarer Indstillinger"
