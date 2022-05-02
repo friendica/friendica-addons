@@ -1,0 +1,85 @@
+# ADDON impressum
+# Copyright (C)
+# This file is distributed under the same license as the Friendica impressum addon package.
+# 
+# 
+# Translators:
+# Anton <dev@atjn.dk>, 2022
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2014-06-23 08:39+0000\n"
+"Last-Translator: Anton <dev@atjn.dk>, 2022\n"
+"Language-Team: Danish (Denmark) (http://www.transifex.com/Friendica/friendica/language/da_DK/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: da_DK\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: impressum.php:53
+msgid "Impressum"
+msgstr "Indtryk"
+
+#: impressum.php:66 impressum.php:68 impressum.php:99
+msgid "Site Owner"
+msgstr "Sideejer"
+
+#: impressum.php:66 impressum.php:103
+msgid "Email Address"
+msgstr "Email-adresse"
+
+#: impressum.php:71 impressum.php:101
+msgid "Postal Address"
+msgstr "Postadresse"
+
+#: impressum.php:77
+msgid ""
+"The impressum addon needs to be configured!<br />Please add at least the "
+"<tt>owner</tt> variable to your config file. For other variables please "
+"refer to the README file of the addon."
+msgstr "Indtryk-tilføjelsen skal konfigureres!<br />Tilføj venligst som det allermindste <tt>owner</tt> (sideejer) variablen til din konfigurationsfil. For andre variabler, referer venligst til tilføjelsens README fil."
+
+#: impressum.php:98
+msgid "Save Settings"
+msgstr "Gem indstillinger"
+
+#: impressum.php:99
+msgid "The page operators name."
+msgstr "Sideoperatorens navn."
+
+#: impressum.php:100
+msgid "Site Owners Profile"
+msgstr "Sideejerens profil"
+
+#: impressum.php:100
+msgid "Profile address of the operator."
+msgstr "Operatorens profiladresse."
+
+#: impressum.php:101
+msgid "How to contact the operator via snail mail. You can use BBCode here."
+msgstr "Hvordan man kan kontakte operatoren via sneglepost. Du kan bruge BBCode her."
+
+#: impressum.php:102
+msgid "Notes"
+msgstr "Noter"
+
+#: impressum.php:102
+msgid ""
+"Additional notes that are displayed beneath the contact information. You can"
+" use BBCode here."
+msgstr "Ekstra noter som er vist under kontaktinformationen. Du kan bruge BBCode her."
+
+#: impressum.php:103
+msgid "How to contact the operator via email. (will be displayed obfuscated)"
+msgstr "Hvordan man kan kontakte operatoren via email. (vil blive vist obfuskeret)"
+
+#: impressum.php:104
+msgid "Footer note"
+msgstr "Sidefodsnote"
+
+#: impressum.php:104
+msgid "Text for the footer. You can use BBCode here."
+msgstr "Tekst til sidefoden. Du kan bruge BBCode her."

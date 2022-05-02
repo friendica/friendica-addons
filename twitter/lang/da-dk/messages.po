@@ -1,0 +1,146 @@
+# ADDON twitter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica twitter addon package.
+# 
+# 
+# Translators:
+# Anton <dev@atjn.dk>, 2022
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-27 10:25-0500\n"
+"PO-Revision-Date: 2014-06-23 12:58+0000\n"
+"Last-Translator: Anton <dev@atjn.dk>, 2022\n"
+"Language-Team: Danish (Denmark) (http://www.transifex.com/Friendica/friendica/language/da_DK/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: da_DK\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: twitter.php:213
+msgid "Post to Twitter"
+msgstr "Læg op på Twitter"
+
+#: twitter.php:258
+msgid ""
+"You submitted an empty PIN, please Sign In with Twitter again to get a new "
+"one."
+msgstr "Du indsendte en tom PIN, log venligst ind med Twitter igen og få en ny en."
+
+#: twitter.php:321
+msgid ""
+"No consumer key pair for Twitter found. Please contact your site "
+"administrator."
+msgstr "Intet \"consumer key pair\" fundet for Twitter. Kontakt venligst din sides administrator."
+
+#: twitter.php:334
+msgid ""
+"At this Friendica instance the Twitter addon was enabled but you have not "
+"yet connected your account to your Twitter account. To do so click the "
+"button below to get a PIN from Twitter which you have to copy into the input"
+" box below and submit the form. Only your <strong>public</strong> posts will"
+" be posted to Twitter."
+msgstr "På denne Friendica instans er Twitter-tilføjelsen slået til, men du har ikke forbundet din konto til din Twitter-konto endnu. For at gøre det, skal du klikke på knappen herunder for at få en PIN fra Twitter, som du så skal kopiere ind i input-boksen og indsende . Det er kun dine <strong>offentlige</strong> opslag som vil blive lagt op på Twitter."
+
+#: twitter.php:335
+msgid "Log in with Twitter"
+msgstr "Log ind med Twitter"
+
+#: twitter.php:337
+msgid "Copy the PIN from Twitter here"
+msgstr "Kopier din PIN fra Twitter ind her"
+
+#: twitter.php:345 twitter.php:388
+msgid "An error occured: "
+msgstr "Der opstod en fejl:"
+
+#: twitter.php:359
+#, php-format
+msgid ""
+"Currently connected to: <a href=\"https://twitter.com/%1$s\" "
+"target=\"_twitter\">%1$s</a>"
+msgstr "I øjeblikket forbundet til: <a href=\"https://twitter.com/%1$s\" target=\"_twitter\">%1$s</a>"
+
+#: twitter.php:365
+msgid ""
+"<strong>Note</strong>: Due to your privacy settings (<em>Hide your profile "
+"details from unknown viewers?</em>) the link potentially included in public "
+"postings relayed to Twitter will lead the visitor to a blank page informing "
+"the visitor that the access to your profile has been restricted."
+msgstr "<strong>Note</strong>: Grundet dine privatlivsindstillinger (<em>Skjul dine profildetaljer fra ukendte besøgende?</em>), vil linket, som potentielt kan være inkluderet i offentlige opslag på Twitter, lede tilbage til en blank side som informerer den besøgende om at adgang til din profil er begrænset."
+
+#: twitter.php:372
+msgid "Invalid Twitter info"
+msgstr "Ugyldig Twitter information"
+
+#: twitter.php:373
+msgid "Disconnect"
+msgstr "Afbryd forbindelsen"
+
+#: twitter.php:378
+msgid "Allow posting to Twitter"
+msgstr "Tillad at lave opslag på Twitter"
+
+#: twitter.php:378
+msgid ""
+"If enabled all your <strong>public</strong> postings can be posted to the "
+"associated Twitter account. You can choose to do so by default (here) or for"
+" every posting separately in the posting options when writing the entry."
+msgstr "Hvis aktiveret, kan alle dine <strong>offentlige</strong> opslag blive lagt op på den associerede Twitter konto. Du kan vælge at gøre dette automatisk (her), eller separat for hvert opslag in valgmulighederne når du skriver opslaget."
+
+#: twitter.php:379
+msgid "Send public postings to Twitter by default"
+msgstr "Send som standard offentlige opslag til Twitter"
+
+#: twitter.php:380
+msgid "Mirror all posts from twitter that are no replies"
+msgstr "Spejl alle opslag fra Twitter som ikke er svar"
+
+#: twitter.php:381
+msgid "Import the remote timeline"
+msgstr "Importér den eksterne tidslinje"
+
+#: twitter.php:382
+msgid "Automatically create contacts"
+msgstr "Opret automatisk kontakter"
+
+#: twitter.php:382
+msgid ""
+"This will automatically create a contact in Friendica as soon as you receive"
+" a message from an existing contact via the Twitter network. If you do not "
+"enable this, you need to manually add those Twitter contacts in Friendica "
+"from whom you would like to see posts here."
+msgstr "Dette vil automatisk skabe en kontakt i Friendica, så snart du modtager en besked fra en eksisterende kontakt via Twitter-netværket. Hvis du ikke slår dette til, skal du manuelt tilføje de Twitter kontakter i Friendica, som du gerne vil se opslag fra her."
+
+#: twitter.php:395
+msgid "Twitter Import/Export/Mirror"
+msgstr "Twitter Import/Eksport/Spejl"
+
+#: twitter.php:547
+msgid ""
+"Please connect a Twitter account in your Social Network settings to import "
+"Twitter posts."
+msgstr "Forbind venligst en Twitter konto i dine Sociale Netværk indstiliinger for at importere Twitter opslag."
+
+#: twitter.php:554
+msgid "Twitter post not found."
+msgstr "Twitter opslag kunne ikke opstøves."
+
+#: twitter.php:914
+msgid "Save Settings"
+msgstr "Gem indstillinger"
+
+#: twitter.php:916
+msgid "Consumer key"
+msgstr "\"Consumer\" nøgle"
+
+#: twitter.php:917
+msgid "Consumer secret"
+msgstr "\"Consumer\" hemmelighed"
+
+#: twitter.php:1113
+#, php-format
+msgid "%s on Twitter"
+msgstr "%s på Twitter"

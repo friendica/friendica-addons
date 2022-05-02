@@ -1,0 +1,342 @@
+# ADDON morechoice
+# Copyright (C)
+# This file is distributed under the same license as the Friendica morechoice addon package.
+# 
+# 
+# Translators:
+# Anton <dev@atjn.dk>, 2022
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2018-08-07 18:18+0000\n"
+"Last-Translator: Anton <dev@atjn.dk>, 2022\n"
+"Language-Team: Danish (Denmark) (https://www.transifex.com/Friendica/teams/12172/da_DK/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: da_DK\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: morechoice.php:22
+msgid "Androgyne"
+msgstr "Andrygon"
+
+#: morechoice.php:23
+msgid "Bear"
+msgstr "Bjørn"
+
+#: morechoice.php:24
+msgid "Bigender"
+msgstr "Bi-kønnet"
+
+#: morechoice.php:25
+msgid "Cross dresser"
+msgstr ""
+
+#: morechoice.php:26
+msgid "Drag queen"
+msgstr "Drag queen"
+
+#: morechoice.php:27
+msgid "Eunuch"
+msgstr "Eunuk"
+
+#: morechoice.php:28
+msgid "Faux queen"
+msgstr ""
+
+#: morechoice.php:29
+msgid "Gender fluid"
+msgstr ""
+
+#: morechoice.php:30
+msgid "Kathoey"
+msgstr ""
+
+#: morechoice.php:31
+msgid "Lady"
+msgstr "Dame"
+
+#: morechoice.php:32
+msgid "Lipstick lesbian"
+msgstr ""
+
+#: morechoice.php:33
+msgid "Metrosexual"
+msgstr "Metrosexuel"
+
+#: morechoice.php:34
+msgid "Monk"
+msgstr "Munk"
+
+#: morechoice.php:35
+msgid "Nun"
+msgstr "Nonne"
+
+#: morechoice.php:36
+msgid "Soft butch"
+msgstr ""
+
+#: morechoice.php:37
+msgid "Stone femme"
+msgstr ""
+
+#: morechoice.php:38
+msgid "Tomboy"
+msgstr "Tomboy"
+
+#: morechoice.php:39
+msgid "Transman"
+msgstr "Trans mand"
+
+#: morechoice.php:40
+msgid "Transwoman"
+msgstr "Trans kvinde"
+
+#: morechoice.php:41
+msgid "Transvesti"
+msgstr ""
+
+#: morechoice.php:42
+msgid "Trigender"
+msgstr ""
+
+#: morechoice.php:43
+msgid "Can't remember"
+msgstr "Kan ikke huske"
+
+#: morechoice.php:44
+msgid "Hard to tell these days"
+msgstr "Det er svært at sige efterhånden"
+
+#: morechoice.php:48
+msgid "Girls with big tits"
+msgstr "Piger med store patter"
+
+#: morechoice.php:49
+msgid "Millionaires"
+msgstr "Millionærer"
+
+#: morechoice.php:50
+msgid "Guys with big schlongs"
+msgstr "Fyre med store lemmer"
+
+#: morechoice.php:51
+msgid "Easy women"
+msgstr ""
+
+#: morechoice.php:52
+msgid "People with impaired mobility"
+msgstr "Folk med svækket mobilitet"
+
+#: morechoice.php:53
+msgid "Amputees"
+msgstr "Amputerede"
+
+#: morechoice.php:54
+msgid "Statues, mannequins and immobility"
+msgstr "Statuer, mannequins og immobilitet"
+
+#: morechoice.php:55
+msgid "Pain"
+msgstr "Smerte"
+
+#: morechoice.php:56
+msgid "Trans men"
+msgstr "Trans mænd"
+
+#: morechoice.php:57
+msgid "Older women"
+msgstr "Ældre kvinder"
+
+#: morechoice.php:58
+msgid "Asphyxiation"
+msgstr "Kvælning"
+
+#: morechoice.php:59
+msgid "In public"
+msgstr "Offentligt"
+
+#: morechoice.php:60
+msgid "In danger"
+msgstr "I fare"
+
+#: morechoice.php:61
+msgid "Pretending to be male"
+msgstr "Foregiver at være mand"
+
+#: morechoice.php:62
+msgid "Pretending to be female"
+msgstr "Foregiver at være kvinde"
+
+#: morechoice.php:63
+msgid "Breats"
+msgstr ""
+
+#: morechoice.php:64
+msgid "Scat"
+msgstr ""
+
+#: morechoice.php:65
+msgid "Crying"
+msgstr "Græder"
+
+#: morechoice.php:66
+msgid "Nappies/Diapers"
+msgstr ""
+
+#: morechoice.php:67
+msgid "Trees"
+msgstr ""
+
+#: morechoice.php:68
+msgid "Vomit"
+msgstr "Bræk"
+
+#: morechoice.php:69
+msgid "Murder"
+msgstr "Mord"
+
+#: morechoice.php:70
+msgid "Fat people"
+msgstr "Tykke mennesker"
+
+#: morechoice.php:71
+msgid "Feet"
+msgstr "Fødder"
+
+#: morechoice.php:72
+msgid "Covered in insects"
+msgstr "Dækket af insekter"
+
+#: morechoice.php:73
+msgid "Turning a human being into furniture"
+msgstr "Lave et menneske om til et møbel"
+
+#: morechoice.php:74
+msgid "Elderly people"
+msgstr "Ældre mennesker"
+
+#: morechoice.php:75
+msgid "Transgender people"
+msgstr "Transkønnede mennesker"
+
+#: morechoice.php:76
+msgid "Criminals"
+msgstr "Kriminelle"
+
+#: morechoice.php:77
+msgid "Stealing"
+msgstr "Stjæle"
+
+#: morechoice.php:78
+msgid "Breast milk"
+msgstr "Brystmælk"
+
+#: morechoice.php:79
+msgid "Immersing genitals in liquids"
+msgstr ""
+
+#: morechoice.php:80
+msgid "Giants"
+msgstr "Kæmper"
+
+#: morechoice.php:81
+msgid "Masochism"
+msgstr "Masochisme"
+
+#: morechoice.php:82
+msgid "Cars"
+msgstr "Biler"
+
+#: morechoice.php:83
+msgid "Menstruation"
+msgstr "Menstruation"
+
+#: morechoice.php:84
+msgid "Mucus"
+msgstr ""
+
+#: morechoice.php:85
+msgid "Obscene language"
+msgstr ""
+
+#: morechoice.php:86
+msgid "Noses"
+msgstr "Næser"
+
+#: morechoice.php:87
+msgid "Navels"
+msgstr ""
+
+#: morechoice.php:88
+msgid "Corpses"
+msgstr "Lig"
+
+#: morechoice.php:89
+msgid "Smells"
+msgstr "Lugte"
+
+#: morechoice.php:90
+msgid "Buttocks"
+msgstr "Balder"
+
+#: morechoice.php:91
+msgid "Nonliving objects"
+msgstr "Ikke-levende objekter"
+
+#: morechoice.php:92
+msgid "Sleeping people"
+msgstr "Sovende mennesker"
+
+#: morechoice.php:93
+msgid "Urination"
+msgstr "Urinering"
+
+#: morechoice.php:94
+msgid "Eating people"
+msgstr "Spise mennesker"
+
+#: morechoice.php:95
+msgid "Being eaten"
+msgstr "Blive spist"
+
+#: morechoice.php:96
+msgid "Animals"
+msgstr "Dyr"
+
+#: morechoice.php:97
+msgid "I'd rather just have some chocolate"
+msgstr "Jeg vil hellere bare have noget chokolade"
+
+#: morechoice.php:101
+msgid "Married to my job"
+msgstr "Gift til mit job"
+
+#: morechoice.php:102
+msgid "Polygamist"
+msgstr ""
+
+#: morechoice.php:103
+msgid "Half married"
+msgstr "Halvt gift"
+
+#: morechoice.php:104
+msgid "Living in the past"
+msgstr "Lever i fortiden"
+
+#: morechoice.php:105
+msgid "Pretending to be over my ex"
+msgstr ""
+
+#: morechoice.php:106
+msgid "Hurt in the past"
+msgstr "Såret i fortiden"
+
+#: morechoice.php:107
+msgid "Wallowing in self-pity"
+msgstr ""

@@ -1,0 +1,41 @@
+# ADDON testdrive
+# Copyright (C)
+# This file is distributed under the same license as the Friendica testdrive addon package.
+# 
+# 
+# Translators:
+# Anton <dev@atjn.dk>, 2022
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2014-06-23 12:56+0000\n"
+"Last-Translator: Anton <dev@atjn.dk>, 2022\n"
+"Language-Team: Danish (Denmark) (http://www.transifex.com/Friendica/friendica/language/da_DK/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: da_DK\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: testdrive.php:64
+msgid "Administrator"
+msgstr "Administrator"
+
+#: testdrive.php:89
+#, php-format
+msgid "Your account on %s will expire in a few days."
+msgstr "Din konto på %s udløber om nogle få dage."
+
+#: testdrive.php:90
+msgid "Your Friendica test account is about to expire."
+msgstr "Din Friendica konto er tæt på at udløbe."
+
+#: testdrive.php:91
+#, php-format
+msgid ""
+"Hi %1$s,\n"
+"\n"
+"Your test account on %2$s will expire in less than five days. We hope you enjoyed this test drive and use this opportunity to find a permanent Friendica website for your integrated social communications. A list of public sites is available at %s/siteinfo - and for more information on setting up your own Friendica server please see the Friendica project website at https://friendi.ca."
+msgstr "Hej %1$s,\n\nDin testkonto på %2$s udløber om mindre end fem dage. Vi håber at du nød denne testkørsel og bruger denne lejlighed til at finde en permanent Friendica hjemmeside til dit online sociale liv. En liste af offentlige sider er tilgængelig på %s/siteinfo - og for mere information om at opsætte din egen Friendica server, se venligst Friendica-projektets hjemmeside: https://friendi.ca."
