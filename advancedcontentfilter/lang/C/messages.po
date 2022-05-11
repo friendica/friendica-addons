@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-21 19:13-0500\n"
+"POT-Creation-Date: 2022-05-11 08:54-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -112,42 +112,46 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: advancedcontentfilter.php:312 advancedcontentfilter.php:323
-#: advancedcontentfilter.php:334 advancedcontentfilter.php:370
-#: advancedcontentfilter.php:401 advancedcontentfilter.php:424
+#: advancedcontentfilter.php:295
+msgid "This addon requires this node having at least one post"
+msgstr ""
+
+#: advancedcontentfilter.php:325 advancedcontentfilter.php:336
+#: advancedcontentfilter.php:347 advancedcontentfilter.php:383
+#: advancedcontentfilter.php:414 advancedcontentfilter.php:437
 msgid "You must be logged in to use this method"
 msgstr ""
 
-#: advancedcontentfilter.php:338 advancedcontentfilter.php:374
-#: advancedcontentfilter.php:405
+#: advancedcontentfilter.php:351 advancedcontentfilter.php:387
+#: advancedcontentfilter.php:418
 msgid "Invalid form security token, please refresh the page."
 msgstr ""
 
-#: advancedcontentfilter.php:350
+#: advancedcontentfilter.php:363
 msgid "The rule name and expression are required."
 msgstr ""
 
-#: advancedcontentfilter.php:364
+#: advancedcontentfilter.php:377
 msgid "Rule successfully added"
 msgstr ""
 
-#: advancedcontentfilter.php:378 advancedcontentfilter.php:409
+#: advancedcontentfilter.php:391 advancedcontentfilter.php:422
 msgid "Rule doesn't exist or doesn't belong to you."
 msgstr ""
 
-#: advancedcontentfilter.php:395
+#: advancedcontentfilter.php:408
 msgid "Rule successfully updated"
 msgstr ""
 
-#: advancedcontentfilter.php:418
+#: advancedcontentfilter.php:431
 msgid "Rule successfully deleted"
 msgstr ""
 
-#: advancedcontentfilter.php:428
+#: advancedcontentfilter.php:441
 msgid "Missing argument: guid."
 msgstr ""
 
-#: advancedcontentfilter.php:436
+#: advancedcontentfilter.php:449
 #, php-format
 msgid "Unknown post with guid: %s"
 msgstr ""
