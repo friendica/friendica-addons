@@ -91,6 +91,10 @@ function advancedcontentfilter_dbstructure_definition(App $a, &$database)
 	];
 }
 
+/**
+ * @param array $item Prepared by either Model\Item::prepareBody or advancedcontentfilter_prepare_item_row
+ * @return array
+ */
 function advancedcontentfilter_get_filter_fields(array $item)
 {
 	$vars = [];
@@ -262,30 +266,20 @@ function advancedcontentfilter_build_fields($data)
 	}
 
 	if (!empty($data['expression'])) {
-		$allowed_keys = [
-			'author_id', 'author_link', 'author_name', 'author_avatar',
-			'owner_id', 'owner_link', 'owner_name', 'owner_avatar',
-			'contact_id', 'uid', 'id', 'parent', 'uri',
-			'thr_parent', 'parent_uri',
-			'content_warning',
-			'commented', 'created', 'edited', 'received',
-			'verb', 'object_type', 'postopts', 'plink', 'guid', 'wall', 'private', 'starred',
-			'title', 'body',
-			'file', 'event_id', 'location', 'coord', 'app', 'attach',
-			'rendered_hash', 'rendered_html', 'object',
-			'allow_cid', 'allow_gid', 'deny_cid', 'deny_gid',
-			'item_id', 'item_network', 'author_thumb', 'owner_thumb',
-			'network', 'url', 'name', 'writable', 'self',
-			'cid', 'alias',
-			'event_created', 'event_edited', 'event_start', 'event_finish', 'event_summary',
-			'event_desc', 'event_location', 'event_type', 'event_nofinish', 'event_ignore',
-			'children', 'pagedrop', 'tags', 'hashtags', 'mentions',
-			'attachments',
-		];
+		// Using a dummy item to validate the field existence
+		$condition = ["(`uid` = ? OR `uid` = 0)", local_user()];
+		$params = ['order' => ['uid' => true]];
+		$item_row = Post::selectFirstForUser(local_user(), [], $condition, $params);
+
+		if (!DBA::isResult($item_row)) {
+			throw new HTTPException\NotFoundException(DI::l10n()->t('This addon requires this node having at least one post'));
+		}
 
 		$expressionLanguage = new ExpressionLanguage\ExpressionLanguage();
-
-		$parsedExpression = $expressionLanguage->parse($data['expression'], $allowed_keys);
+		$parsedExpression = $expressionLanguage->parse(
+			$data['expression'],
+			array_keys(advancedcontentfilter_get_filter_fields(advancedcontentfilter_prepare_item_row($item_row)))
+		);
 
 		$serialized = serialize($parsedExpression->getNodes());
 
@@ -430,23 +424,36 @@ function advancedcontentfilter_get_variables_guid(ServerRequestInterface $reques
 
 	$condition = ["`guid` = ? AND (`uid` = ? OR `uid` = 0)", $args['guid'], local_user()];
 	$params = ['order' => ['uid' => true]];
-	$item = Post::selectFirstForUser(local_user(), [], $condition, $params);
+	$item_row = Post::selectFirstForUser(local_user(), [], $condition, $params);
 
-	if (!DBA::isResult($item)) {
+	if (!DBA::isResult($item_row)) {
 		throw new HTTPException\NotFoundException(DI::l10n()->t('Unknown post with guid: %s', $args['guid']));
 	}
 
-	$tags = Tag::populateFromItem($item);
-
-	$item['tags'] = $tags['tags'];
-	$item['hashtags'] = $tags['hashtags'];
-	$item['mentions'] = $tags['mentions'];
-
-	$attachments = Post\Media::splitAttachments($item['uri-id'], $item['guid'] ?? '');
-
-	$item['attachments'] = $attachments;
-
-	$return = advancedcontentfilter_get_filter_fields($item);
+	$return = advancedcontentfilter_get_filter_fields(advancedcontentfilter_prepare_item_row($item_row));
 
 	return json_encode(['variables' => str_replace('\\\'', '\'', var_export($return, true))]);
+}
+
+/**
+ * This mimimcs the processing performed in Model\Item::prepareBody
+ *
+ * @param array $item_row
+ * @return array
+ * @throws HTTPException\InternalServerErrorException
+ * @throws ImagickException
+ */
+function advancedcontentfilter_prepare_item_row(array $item_row): array
+{
+	$tags = Tag::populateFromItem($item_row);
+
+	$item_row['tags'] = $tags['tags'];
+	$item_row['hashtags'] = $tags['hashtags'];
+	$item_row['mentions'] = $tags['mentions'];
+
+	$attachments = Post\Media::splitAttachments($item_row['uri-id'], $item_row['guid'] ?? '');
+
+	$item_row['attachments'] = $attachments;
+
+	return $item_row;
 }
