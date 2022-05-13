@@ -5,16 +5,16 @@
 # 
 # Translators:
 # Ulf Rompe <transifex.com@rompe.org>, 2019
-# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2021
+# Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2022
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"POT-Creation-Date: 2022-05-11 08:54-0400\n"
 "PO-Revision-Date: 2018-05-24 06:41+0000\n"
-"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2021\n"
+"Last-Translator: Tobias Diekershoff <tobias.diekershoff@gmx.net>, 2022\n"
 "Language-Team: German (https://www.transifex.com/Friendica/teams/12172/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,32 +22,28 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/middlewares.php:49
-msgid "Method not found"
-msgstr "Methode nicht gefunden"
-
-#: advancedcontentfilter.php:136
+#: advancedcontentfilter.php:154
 #, php-format
 msgid "Filtered by rule: %s"
 msgstr "Nach dieser Regel gefiltert: %s"
 
-#: advancedcontentfilter.php:150 advancedcontentfilter.php:207
+#: advancedcontentfilter.php:170 advancedcontentfilter.php:225
 msgid "Advanced Content Filter"
 msgstr "Erweiterter Inhaltsfilter"
 
-#: advancedcontentfilter.php:206
+#: advancedcontentfilter.php:224
 msgid "Back to Addon Settings"
 msgstr "Zurück zu den Addon Einstellungen"
 
-#: advancedcontentfilter.php:208
+#: advancedcontentfilter.php:226
 msgid "Add a Rule"
 msgstr "Eine Regel hinzufügen"
 
-#: advancedcontentfilter.php:209
+#: advancedcontentfilter.php:227
 msgid "Help"
 msgstr "Hilfe"
 
-#: advancedcontentfilter.php:210
+#: advancedcontentfilter.php:228
 msgid ""
 "Add and manage your personal content filter rules in this screen. Rules have"
 " a name and an arbitrary expression that will be matched against post data. "
@@ -60,11 +56,11 @@ msgstr ""
 "gegebenenfalls gefiltert. Für eine Übersicht der verfügbaren Operatoren für "
 "die Filter, wirf bitte einen Blick auf die Hilfsseite des Addons."
 
-#: advancedcontentfilter.php:211
+#: advancedcontentfilter.php:229
 msgid "Your rules"
 msgstr "Deine Regeln"
 
-#: advancedcontentfilter.php:212
+#: advancedcontentfilter.php:230
 msgid ""
 "You have no rules yet! Start adding one by clicking on the button above next"
 " to the title."
@@ -72,98 +68,108 @@ msgstr ""
 "Du hast bisher noch keine Regeln definiert. Um eine neue Regel zu erstellen,"
 " verwende bitte den Button neben dem Titel."
 
-#: advancedcontentfilter.php:213
+#: advancedcontentfilter.php:231
 msgid "Disabled"
 msgstr "Deaktiviert"
 
-#: advancedcontentfilter.php:214
+#: advancedcontentfilter.php:232
 msgid "Enabled"
 msgstr "Aktiv"
 
-#: advancedcontentfilter.php:215
+#: advancedcontentfilter.php:233
 msgid "Disable this rule"
 msgstr "Diese Regel deaktivieren"
 
-#: advancedcontentfilter.php:216
+#: advancedcontentfilter.php:234
 msgid "Enable this rule"
 msgstr "Diese Regel aktivieren"
 
-#: advancedcontentfilter.php:217
+#: advancedcontentfilter.php:235
 msgid "Edit this rule"
 msgstr "Diese Regel bearbeiten"
 
-#: advancedcontentfilter.php:218
+#: advancedcontentfilter.php:236
 msgid "Edit the rule"
 msgstr "Die Regel bearbeiten"
 
-#: advancedcontentfilter.php:219
+#: advancedcontentfilter.php:237
 msgid "Save this rule"
 msgstr "Regel speichern"
 
-#: advancedcontentfilter.php:220
+#: advancedcontentfilter.php:238
 msgid "Delete this rule"
 msgstr "Diese Regel löschen"
 
-#: advancedcontentfilter.php:221
+#: advancedcontentfilter.php:239
 msgid "Rule"
 msgstr "Regel"
 
-#: advancedcontentfilter.php:222
+#: advancedcontentfilter.php:240
 msgid "Close"
 msgstr "Schließen"
 
-#: advancedcontentfilter.php:223
+#: advancedcontentfilter.php:241
 msgid "Add new rule"
 msgstr "Neue Regel hinzufügen"
 
-#: advancedcontentfilter.php:224
+#: advancedcontentfilter.php:242
 msgid "Rule Name"
 msgstr "Name der Regel"
 
-#: advancedcontentfilter.php:225
+#: advancedcontentfilter.php:243
 msgid "Rule Expression"
 msgstr "Ausdruck der Regel"
 
-#: advancedcontentfilter.php:226
+#: advancedcontentfilter.php:244
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: advancedcontentfilter.php:293 advancedcontentfilter.php:304
-#: advancedcontentfilter.php:315 advancedcontentfilter.php:349
-#: advancedcontentfilter.php:378 advancedcontentfilter.php:399
+#: advancedcontentfilter.php:295
+msgid "This addon requires this node having at least one post"
+msgstr ""
+"Dieses Addon funktioniert nur, wenn auf diesem Knoten mindestens ein Beitrag"
+" existiert."
+
+#: advancedcontentfilter.php:325 advancedcontentfilter.php:336
+#: advancedcontentfilter.php:347 advancedcontentfilter.php:383
+#: advancedcontentfilter.php:414 advancedcontentfilter.php:437
 msgid "You must be logged in to use this method"
 msgstr "Du musst angemeldet sein, um diese Methode verwenden zu können "
 
-#: advancedcontentfilter.php:319 advancedcontentfilter.php:353
-#: advancedcontentfilter.php:382
+#: advancedcontentfilter.php:351 advancedcontentfilter.php:387
+#: advancedcontentfilter.php:418
 msgid "Invalid form security token, please refresh the page."
 msgstr "Ungültiges Sciherheitstoken, bitte die Seite neu laden."
 
-#: advancedcontentfilter.php:331
+#: advancedcontentfilter.php:363
 msgid "The rule name and expression are required."
 msgstr "Der Name der Regel und der Ausdruck sind erforderlich."
 
-#: advancedcontentfilter.php:343
+#: advancedcontentfilter.php:377
 msgid "Rule successfully added"
 msgstr "Regel erfolgreich hinzugefügt."
 
-#: advancedcontentfilter.php:357 advancedcontentfilter.php:386
+#: advancedcontentfilter.php:391 advancedcontentfilter.php:422
 msgid "Rule doesn't exist or doesn't belong to you."
 msgstr "Entweder existiert die Regel nicht, oder sie gehört dir nicht."
 
-#: advancedcontentfilter.php:372
+#: advancedcontentfilter.php:408
 msgid "Rule successfully updated"
 msgstr "Regel wurde erfolgreich aktualisiert."
 
-#: advancedcontentfilter.php:393
+#: advancedcontentfilter.php:431
 msgid "Rule successfully deleted"
 msgstr "Regel erfolgreich gelöscht."
 
-#: advancedcontentfilter.php:403
+#: advancedcontentfilter.php:441
 msgid "Missing argument: guid."
 msgstr "Fehlendes Argument: guid."
 
-#: advancedcontentfilter.php:411
+#: advancedcontentfilter.php:449
 #, php-format
 msgid "Unknown post with guid: %s"
 msgstr "Unbekannter Beitrag mit der guid: %s"
+
+#: src/middlewares.php:49
+msgid "Method not found"
+msgstr "Methode nicht gefunden"
