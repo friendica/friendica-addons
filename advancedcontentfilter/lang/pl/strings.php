@@ -27,6 +27,7 @@ $a->strings['Add new rule'] = 'Dodaj nową regułę';
 $a->strings['Rule Name'] = 'Nazwa reguły';
 $a->strings['Rule Expression'] = 'Wyrażanie reguły';
 $a->strings['Cancel'] = 'Anuluj';
+$a->strings['This addon requires this node having at least one post'] = 'Ten dodatek wymaga, aby ten węzeł miał co najmniej jeden wpis';
 $a->strings['You must be logged in to use this method'] = 'Musisz być zalogowany, aby skorzystać z tej metody';
 $a->strings['Invalid form security token, please refresh the page.'] = 'Nieprawidłowy token zabezpieczający formularz, odśwież stronę.';
 $a->strings['The rule name and expression are required.'] = 'Nazwa reguły i wyrażenie są wymagane.';
