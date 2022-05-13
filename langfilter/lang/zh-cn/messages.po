@@ -6,14 +6,15 @@
 # Translators:
 # Asher Pen <asherpen@gmail.com>, 2019
 # 朱陈锬 <tangenters@outlook.com>, 2018
+# gudzpoz <GuDzpoz@live.com>, 2022
 # 朱陈锬 <tangenters@outlook.com>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-01 11:11-0400\n"
-"PO-Revision-Date: 2019-03-25 02:01+0000\n"
-"Last-Translator: Asher Pen <asherpen@gmail.com>\n"
+"POT-Creation-Date: 2021-11-21 19:15-0500\n"
+"PO-Revision-Date: 2015-07-25 08:05+0000\n"
+"Last-Translator: gudzpoz <GuDzpoz@live.com>, 2022\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/Friendica/friendica/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,62 +22,58 @@ msgstr ""
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: langfilter.php:58
-msgid "Language Filter"
-msgstr "语言过滤器"
-
-#: langfilter.php:59
+#: langfilter.php:49
 msgid ""
 "This addon tries to identify the language posts are written in. If it does "
 "not match any language specified below, posts will be hidden by collapsing "
 "them."
-msgstr "这个插件将尝试识别帖子所用的语言。如果不符合以下列出的语言，帖子将被折叠以隐藏。"
+msgstr "此插件试图辨别文章的写作语言。如果语言与下面给定的均不符合，则文章会被折叠隐藏起来。"
 
-#: langfilter.php:60
+#: langfilter.php:50
 msgid "Use the language filter"
 msgstr "使用语言过滤器"
 
-#: langfilter.php:61
+#: langfilter.php:51
 msgid "Able to read"
 msgstr "想要显示的语言"
 
-#: langfilter.php:61
+#: langfilter.php:51
 msgid ""
-"List of abbreviations (iso2 codes) for languages you speak, comma separated."
-" For example \"de,it\"."
-msgstr "您使用的语言缩写 (iso2 codes) 列表，逗号分隔。例如 \"zh,en\"。"
+"List of abbreviations (ISO 639-1 codes) for languages you speak, comma "
+"separated. For example \"de,it\"."
+msgstr "语言列表（ISO 639-1 缩写代码），使用英文逗号分隔。例如：“de,it,zh”"
 
-#: langfilter.php:62
+#: langfilter.php:52
 msgid "Minimum confidence in language detection"
 msgstr "语言识别阈值"
 
-#: langfilter.php:62
+#: langfilter.php:52
 msgid ""
 "Minimum confidence in language detection being correct, from 0 to 100. Posts"
 " will not be filtered when the confidence of language detection is below "
 "this percent value."
 msgstr "语言识别阈值（0－100）。语言识别结果低于该阈值的帖子将不会被折叠。"
 
-#: langfilter.php:63
+#: langfilter.php:53
 msgid "Minimum length of message body"
 msgstr "语言过滤帖子所需最小字符个数"
 
-#: langfilter.php:63
+#: langfilter.php:53
 msgid ""
 "Minimum number of characters in message body for filter to be used. Posts "
 "shorter than this will not be filtered. Note: Language detection is "
 "unreliable for short content (<200 characters)."
 msgstr "语言过滤帖子所需最小字符个数。低于该数字的帖子将不会被过滤。注意：对于字符个数小于200的帖子，语言检测功能将不够稳定。"
 
-#: langfilter.php:64
+#: langfilter.php:58
+msgid "Language Filter"
+msgstr "语言过滤器"
+
+#: langfilter.php:60
 msgid "Save Settings"
 msgstr "保存设置"
 
-#: langfilter.php:105
-msgid "Language Filter Settings saved."
-msgstr "语言过滤器设置已保存。"
-
-#: langfilter.php:182
+#: langfilter.php:193
 #, php-format
 msgid "Filtered language: %s"
 msgstr "已过滤的语言：%s"
