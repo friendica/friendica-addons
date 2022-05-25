@@ -27,6 +27,7 @@ $a->strings['Add new rule'] = 'Új szabály hozzáadása';
 $a->strings['Rule Name'] = 'Szabály neve';
 $a->strings['Rule Expression'] = 'Szabály kifejezése';
 $a->strings['Cancel'] = 'Mégse';
+$a->strings['This addon requires this node having at least one post'] = 'Ez a bővítmény megköveteli, hogy ennek a csomópontnak legalább egy bejegyzése legyen';
 $a->strings['You must be logged in to use this method'] = 'Bejelentkezve kell lennie a módszer használatához';
 $a->strings['Invalid form security token, please refresh the page.'] = 'Érvénytelen űrlap biztonsági token. Frissítse az oldalt.';
 $a->strings['The rule name and expression are required.'] = 'A szabály neve és kifejezése kötelező.';
