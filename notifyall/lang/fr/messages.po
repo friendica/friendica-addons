@@ -30,7 +30,7 @@ msgstr "L'administrateur de %s"
 #: NotifyAllEmail.php:42
 #, php-format
 msgid "%1$s, %2$s Administrator"
-msgstr ""
+msgstr "L'administrateur de %1$s, %2$s."
 
 #: notifyall.php:22
 msgid "Send email to all members"

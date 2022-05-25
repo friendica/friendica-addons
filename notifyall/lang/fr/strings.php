@@ -6,6 +6,7 @@ function string_plural_select_fr($n){
 	if (($n == 0 || $n == 1)) { return 0; } else if ($n != 0 && $n % 1000000 == 0) { return 1; } else  { return 2; }
 }}
 $a->strings['%s Administrator'] = 'L\'administrateur de %s';
+$a->strings['%1$s, %2$s Administrator'] = 'L\'administrateur de %1$s, %2$s.';
 $a->strings['Send email to all members'] = 'Envoyer un courriel à tous les membres';
 $a->strings['No recipients found.'] = 'Aucun destinataire trouvé.';
 $a->strings['Emails sent'] = 'Courriels envoyés';
