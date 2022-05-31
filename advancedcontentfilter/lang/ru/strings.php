@@ -10,7 +10,7 @@ $a->strings['Advanced Content Filter'] = 'Расширенный фильтр с
 $a->strings['Back to Addon Settings'] = 'Вернуться к настройкам дополнений';
 $a->strings['Add a Rule'] = 'Добавить правило';
 $a->strings['Help'] = 'Помощь';
-$a->strings['Add and manage your personal content filter rules in this screen. Rules have a name and an arbitrary expression that will be matched against post data. For a complete reference of the available operations and variables, check the <a href="advancedcontentfilter/help">help page</a>.'] = 'Добавляйте и управляйте своими собственными фильтрами на этой странице. У правил есть имя и произвольное выражение, которое будет сопоставляться с данными поста. Для полной ссылки на доступные операции и переменные, посмотрите <a href="advancedcontentfilter/help">страницу справки</a>.';
+$a->strings['Add and manage your personal content filter rules in this screen. Rules have a name and an arbitrary expression that will be matched against post data. For a complete reference of the available operations and variables, check the help page.'] = 'Добавляйте и управляйте своими собственными фильтрами на этой странице. У правил есть имя и произвольное выражение, которое будет сопоставляться с данными поста. Для полной ссылки на доступные операции и переменные, посмотрите страницу справки.';
 $a->strings['Your rules'] = 'Ваши правила';
 $a->strings['You have no rules yet! Start adding one by clicking on the button above next to the title.'] = 'У Вас нет ни одного правила. Начните добавление первого с нажатия на кнопку выше, рядом с названием.';
 $a->strings['Disabled'] = 'Отключено';
@@ -26,8 +26,8 @@ $a->strings['Close'] = 'Закрыть';
 $a->strings['Add new rule'] = 'Добавить новое правило';
 $a->strings['Rule Name'] = 'Название правила';
 $a->strings['Rule Expression'] = 'Содержание правила';
-$a->strings['<p>Examples:</p><ul><li><pre>author_link == \'https://friendica.mrpetovan.com/profile/hypolite\'</pre></li><li>tags</li></ul>'] = '<p>Примеры:</p><ul><li><pre>author_link == \'https://friendica.mrpetovan.com/profile/hypolite\'</pre></li><li>tags</li></ul>';
 $a->strings['Cancel'] = 'Отмена';
+$a->strings['This addon requires this node having at least one post'] = 'Это дополнение требует наличия хотя бы одной записи на этом узле.';
 $a->strings['You must be logged in to use this method'] = 'Вы должны авторизоваться для использования этого метода';
 $a->strings['Invalid form security token, please refresh the page.'] = 'Неверный ключ, пожалуйста, перезагрузите страницу';
 $a->strings['The rule name and expression are required.'] = 'Требуется ввести название и значение правила.';
