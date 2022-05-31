@@ -1,0 +1,124 @@
+# ADDON curweather
+# Copyright (C)
+# This file is distributed under the same license as the Friendica curweather addon package.
+# 
+# 
+# Translators:
+# Alexander An <ravnina@gmail.com>, 2022
+msgid ""
+msgstr ""
+"Project-Id-Version: friendica\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-21 19:14-0500\n"
+"PO-Revision-Date: 2014-06-22 11:34+0000\n"
+"Last-Translator: Alexander An <ravnina@gmail.com>, 2022\n"
+"Language-Team: Russian (http://www.transifex.com/Friendica/friendica/language/ru/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: curweather.php:47
+msgid "Error fetching weather data. Error was: "
+msgstr "Ошибка получения данных о погоде. Ошибка:"
+
+#: curweather.php:130
+msgid "Current Weather"
+msgstr "Погода сейчас"
+
+#: curweather.php:137
+msgid "Relative Humidity"
+msgstr "Относительная влажность"
+
+#: curweather.php:138
+msgid "Pressure"
+msgstr "Давление"
+
+#: curweather.php:139
+msgid "Wind"
+msgstr "Ветер"
+
+#: curweather.php:140
+msgid "Last Updated"
+msgstr "Обновлено"
+
+#: curweather.php:141
+msgid "Data by"
+msgstr "Данные из"
+
+#: curweather.php:142
+msgid "Show on map"
+msgstr "Показать на карте"
+
+#: curweather.php:147
+msgid "There was a problem accessing the weather data. But have a look"
+msgstr "Не получилось получить данные о погоде. Но вы можете посмотреть"
+
+#: curweather.php:149
+msgid "at OpenWeatherMap"
+msgstr "OpenWeatherMap"
+
+#: curweather.php:178
+msgid "No APPID found, please contact your admin to obtain one."
+msgstr "Не найден APPID, свяжитесь с вашим администратором, чтобы получить его."
+
+#: curweather.php:188
+msgid "Enter either the name of your location or the zip code."
+msgstr "Введите ваше местоположение или индекс."
+
+#: curweather.php:189
+msgid "Your Location"
+msgstr "Ваше местонахождение"
+
+#: curweather.php:189
+msgid ""
+"Identifier of your location (name or zip code), e.g. <em>Berlin,DE</em> or "
+"<em>14476,DE</em>."
+msgstr "Ваше местоположение (имя или индекс), например <em>Berlin,DE</em> или <em>14476,DE</em>."
+
+#: curweather.php:190
+msgid "Units"
+msgstr "Единицы"
+
+#: curweather.php:190
+msgid "select if the temperature should be displayed in &deg;C or &deg;F"
+msgstr "выберите как должна отображаться температура - в &deg;C или &deg;F"
+
+#: curweather.php:191
+msgid "Show weather data"
+msgstr "Показать данные о погоде"
+
+#: curweather.php:196
+msgid "Current Weather Settings"
+msgstr "Текущие настройки"
+
+#: curweather.php:227
+msgid "Save Settings"
+msgstr "Сохранить настройки"
+
+#: curweather.php:230
+msgid "Caching Interval"
+msgstr "Интервал кэширования"
+
+#: curweather.php:232
+msgid ""
+"For how long should the weather data be cached? Choose according your "
+"OpenWeatherMap account type."
+msgstr "Как долго кэшировать данные о погоде? Выберите в соответствии с типом вашей учётной записи OpenWeatherMap."
+
+#: curweather.php:233
+msgid "no cache"
+msgstr "не кэшировать"
+
+#: curweather.php:234 curweather.php:235 curweather.php:236 curweather.php:237
+msgid "minutes"
+msgstr "мин."
+
+#: curweather.php:240
+msgid "Your APPID"
+msgstr "Ваш APPID"
+
+#: curweather.php:240
+msgid "Your API key provided by OpenWeatherMap"
+msgstr "Ваш ключ API, полученный у OpenWeatherMap"
