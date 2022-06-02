@@ -1761,7 +1761,7 @@ function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $onl
 
 		$item = Post::selectFirst(['uri'], ['uri' => $thr_parent, 'uid' => $uid]);
 		if (!DBA::isResult($item)) {
-			$item = Post::selectFirst(['uri'], ['extid' => $thr_parent, 'uid' => $uid]);
+			$item = Post::selectFirst(['uri'], ['extid' => $thr_parent, 'uid' => $uid, 'gravity' => GRAVITY_COMMENT]);
 		}
 
 		if (DBA::isResult($item)) {
