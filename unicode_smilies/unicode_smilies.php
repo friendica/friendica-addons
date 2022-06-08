@@ -231,8 +231,8 @@ function unicode_smilies_smilies(&$a,&$b) {
 
 // These two are still in core, so oldcore isn't strictly right, but we don't want too many directories
 
-//	Smilies::add($b, ':-d:', '&#x;');
-	Smilies::add($b, ':-o:', '&#x1F62E;');
+//	Smilies::add($b, ':-d', '&#x;');
+	Smilies::add($b, ':-o', '&#x1F62E;');
 
 //	Regex killers - stick these at the bottom so they appear at the end of the English and
 //	at the start of $OtherLanguage.
