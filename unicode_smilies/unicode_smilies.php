@@ -14,30 +14,30 @@ function unicode_smilies_install() {
 }
 
 function unicode_smilies_smilies(&$a,&$b) {
-	Smilies::add($b, ':-):', '&#x1F600;');
-	Smilies::add($b, ':):', '&#x1F600;');
-	Smilies::add($b, ':-(:', '&#x1F641;');
-	Smilies::add($b, ':(:', '&#x1F641;');
-	Smilies::add($b, ':-[:', '&#x1F633;');
-	Smilies::add($b, ':-D:', '&#x1F601;');
-	Smilies::add($b, ':D:', '&#x1F601;');
-	Smilies::add($b, ';-):', '&#x1F609;');
-	// Smilies::add($b, ';):', '&#x1F609;'); // Deactivated since this leads to disturbed html entities
-	Smilies::add($b, ':-P:', '&#x1F61B;');
-	Smilies::add($b, ':-p:', '&#x1F61B;');
-	Smilies::add($b, ':P:', '&#x1F61B;');
-	Smilies::add($b, ':p:', '&#x1F61B;');
-	Smilies::add($b, ':-O:', '&#x1F62E;');
-	Smilies::add($b, ':O:', '&#x1F62E;');
-	Smilies::add($b, ':-X:', '&#x1F910;');
-	Smilies::add($b, ':-x:', '&#x1F910;');
-	Smilies::add($b, ':X:', '&#x1F910;');
-	Smilies::add($b, ':x:', '&#x1F910;');
-	Smilies::add($b, '8-):', '&#x1F60E;');
-	Smilies::add($b, ':-/:', '&#x1F615;');
-	Smilies::add($b, ':-":', '&#x1F48F;');
+	Smilies::add($b, ':-)', '&#x1F600;');
+	Smilies::add($b, ':)', '&#x1F600;');
+	Smilies::add($b, ':-(', '&#x1F641;');
+	Smilies::add($b, ':(', '&#x1F641;');
+	Smilies::add($b, ':-[', '&#x1F633;');
+	Smilies::add($b, ':-D', '&#x1F601;');
+	Smilies::add($b, ':D', '&#x1F601;');
+	Smilies::add($b, ';-)', '&#x1F609;');
+	// Smilies::add($b, ';)', '&#x1F609;'); // Deactivated since this leads to disturbed html entities
+	Smilies::add($b, ':-P', '&#x1F61B;');
+	Smilies::add($b, ':-p', '&#x1F61B;');
+	Smilies::add($b, ':P', '&#x1F61B;');
+	Smilies::add($b, ':p', '&#x1F61B;');
+	Smilies::add($b, ':-O', '&#x1F62E;');
+	Smilies::add($b, ':O', '&#x1F62E;');
+	Smilies::add($b, ':-X', '&#x1F910;');
+	Smilies::add($b, ':-x', '&#x1F910;');
+	Smilies::add($b, ':X', '&#x1F910;');
+	Smilies::add($b, ':x', '&#x1F910;');
+	Smilies::add($b, '8-)', '&#x1F60E;');
+	Smilies::add($b, ':-/', '&#x1F615;');
+	Smilies::add($b, ':-"', '&#x1F48F;');
 	Smilies::add($b, ':-&quot;', '&#x1F48F;');
-	Smilies::add($b, ':-!:', '&#x1F912;');
+	Smilies::add($b, ':-!', '&#x1F912;');
 	Smilies::add($b, '&lt;3', '&#x2764;');
 	Smilies::add($b, '&lt;/3', '&#x1F494;');
 	Smilies::add($b, '&lt;\\3', '&#x1F494;');
