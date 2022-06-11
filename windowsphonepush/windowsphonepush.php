@@ -5,6 +5,7 @@
  * Description: Enable push notification to send information to Friendica Mobile app on Windows phone (count of unread timeline entries, text of last posting - if wished by user)
  * Version: 2.0
  * Author: Gerhard Seeber <http://friendica.seeber.at/profile/admin>
+ * Status: Unsupported
  *
  *
  * Pre-requisite: Windows Phone mobile device (at least WP 7.0)
