@@ -1,0 +1,45 @@
+# ADDON nitter
+# Copyright (C)
+# This file is distributed under the same license as the Friendica nitter addon package.
+# 
+# 
+# Translators:
+# ButterflyOfFire, 2022
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-01 16:10+0200\n"
+"PO-Revision-Date: 2021-05-21 12:58+0000\n"
+"Last-Translator: ButterflyOfFire, 2022\n"
+"Language-Team: Arabic (https://www.transifex.com/Friendica/teams/12172/ar/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: nitter.php:52
+#, php-format
+msgid ""
+"Which nitter server shall be used for the replacements in the post bodies? "
+"Use the URL with servername and protocol.  See %s for a list of available "
+"public Nitter servers."
+msgstr ""
+
+#: nitter.php:53
+msgid "Nitter server"
+msgstr "خادم Nitter"
+
+#: nitter.php:54
+msgid "Save Settings"
+msgstr "احفظ الإعدادات"
+
+#: nitter.php:99
+#, php-format
+msgid ""
+"In an attempt to protect your privacy, links to Twitter in this posting were"
+" replaced by links to the Nitter instance at %s"
+msgstr ""
