@@ -7,3 +7,4 @@ function string_plural_select_ar($n){
 }}
 $a->strings['Save Settings'] = 'حفظ الإعدادات';
 $a->strings['Disabled'] = 'معطل';
+$a->strings['Site name'] = 'اسم الموقع';
