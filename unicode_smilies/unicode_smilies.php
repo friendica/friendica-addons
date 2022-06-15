@@ -679,7 +679,7 @@ function unicode_smilies_smilies(&$a,&$b) {
 	Smilies::add($b, ':cookie:', '&#x1F36A');
 	Smilies::add($b, ':birthday cake:', '&#x1F382');
 	Smilies::add($b, ':shortcake:', '&#x1F370');
-    Smilies::add($b, ':cake:', '&#x1F370;');
+	Smilies::add($b, ':cake:', '&#x1F370;');
 	Smilies::add($b, ':cupcake:', '&#x1F9C1');
 	Smilies::add($b, ':pie:', '&#x1F967');
 	Smilies::add($b, ':chocolate bar:', '&#x1F36B');
