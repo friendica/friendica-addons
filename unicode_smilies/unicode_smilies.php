@@ -1015,7 +1015,7 @@ function unicode_smilies_smilies(&$a,&$b) {
 	Smilies::add($b, ':skis:', '&#x1F3BF');
 	Smilies::add($b, ':sled:', '&#x1F6F7');
 	Smilies::add($b, ':curling stone:', '&#x1F94C');
-    Smilies::add($b, ':cycling:', '&#x1F6B4;');
+	Smilies::add($b, ':cycling:', '&#x1F6B4;');
 	Smilies::add($b, ':darts:', '&#x1F3AF;');
 	Smilies::add($b, ':fencing:', '&#x1F93A;');
 	Smilies::add($b, ':juggling:', '&#x1F939;');
