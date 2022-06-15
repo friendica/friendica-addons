@@ -355,7 +355,7 @@ function unicode_smilies_smilies(&$a,&$b) {
 	Smilies::add($b, ':man bowing:', '&#x1F647&#x200D&#x2642&#xFE0F');
 	Smilies::add($b, ':woman bowing:', '&#x1F647&#x200D&#x2640&#xFE0F');
 	Smilies::add($b, ':person facepalming:', '&#x1F926');
-    Smilies::add($b, ':facepalm:', '&#x1F926;');
+	Smilies::add($b, ':facepalm:', '&#x1F926;');
 	Smilies::add($b, ':man facepalming:', '&#x1F926&#x200D&#x2642&#xFE0F');
 	Smilies::add($b, ':woman facepalming:', '&#x1F926&#x200D&#x2640&#xFE0F');
 	Smilies::add($b, ':person shrugging:', '&#x1F937');
