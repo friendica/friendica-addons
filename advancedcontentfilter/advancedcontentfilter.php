@@ -450,10 +450,7 @@ function advancedcontentfilter_prepare_item_row(array $item_row): array
 	$item_row['tags'] = $tags['tags'];
 	$item_row['hashtags'] = $tags['hashtags'];
 	$item_row['mentions'] = $tags['mentions'];
-
-	$attachments = Post\Media::splitAttachments($item_row['uri-id'], $item_row['guid'] ?? '');
-
-	$item_row['attachments'] = $attachments;
+	$item_row['attachments'] = Post\Media::splitAttachments($item_row['uri-id'], $item_row['guid'] ?? '');
 
 	return $item_row;
 }
