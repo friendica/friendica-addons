@@ -74,13 +74,13 @@ function statusnet_install()
 	Hook::register('cron', 'addon/statusnet/statusnet.php', 'statusnet_cron');
 	Hook::register('prepare_body', 'addon/statusnet/statusnet.php', 'statusnet_prepare_body');
 	Hook::register('check_item_notification', 'addon/statusnet/statusnet.php', 'statusnet_check_item_notification');
-	Logger::notice("installed GNU Social");
+	Logger::notice('installed GNU Social');
 }
 
 function statusnet_check_item_notification(App $a, &$notification_data)
 {
-	if (DI::pConfig()->get($notification_data["uid"], 'statusnet', 'post')) {
-		$notification_data["profiles"][] = DI::pConfig()->get($notification_data["uid"], 'statusnet', 'own_url');
+	if (DI::pConfig()->get($notification_data['uid'], 'statusnet', 'post')) {
+		$notification_data['profiles'][] = DI::pConfig()->get($notification_data['uid'], 'statusnet', 'own_url');
 	}
 }
 
@@ -412,20 +412,22 @@ function statusnet_action(App $a, $uid, $pid, $action)
 
 	$connection = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
 
-	Logger::debug("statusnet_action '" . $action . "' ID: " . $pid);
+	Logger::debug('statusnet_action "' . $action . '" ID: ' . $pid);
 
 	switch ($action) {
-		case "delete":
-			$result = $connection->post("statuses/destroy/" . $pid);
+		case 'delete':
+			$result = $connection->post('statuses/destroy/' . $pid);
 			break;
-		case "like":
-			$result = $connection->post("favorites/create/" . $pid);
+
+		case 'like':
+			$result = $connection->post('favorites/create/' . $pid);
 			break;
-		case "unlike":
-			$result = $connection->post("favorites/destroy/" . $pid);
+
+		case 'unlike':
+			$result = $connection->post('favorites/destroy/' . $pid);
 			break;
 	}
-	Logger::info("statusnet_action '" . $action . "' send, result: " . print_r($result, true));
+	Logger::info('statusnet_action "' . $action . '" send, result: ' . print_r($result, true));
 }
 
 function statusnet_post_hook(App $a, &$b)
@@ -433,46 +435,46 @@ function statusnet_post_hook(App $a, &$b)
 	/**
 	 * Post to GNU Social
 	 */
-	if (!DI::pConfig()->get($b["uid"], 'statusnet', 'import')) {
+	if (!DI::pConfig()->get($b['uid'], 'statusnet', 'import')) {
 		if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
 			return;
 	}
 
 	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], $b['body']);
 
-	$api = DI::pConfig()->get($b["uid"], 'statusnet', 'baseapi');
+	$api = DI::pConfig()->get($b['uid'], 'statusnet', 'baseapi');
 	$hostname = preg_replace("=https?://([\w\.]*)/.*=ism", "$1", $api);
 
 	if ($b['parent'] != $b['id']) {
-		Logger::debug("statusnet_post_hook: parameter " . print_r($b, true));
+		Logger::debug('statusnet_post_hook: parameter ', ['b' => $b]);
 
 		// Looking if its a reply to a GNU Social post
 		$hostlength = strlen($hostname) + 2;
-		if ((substr($b["parent-uri"], 0, $hostlength) != $hostname . "::") && (substr($b["extid"], 0, $hostlength) != $hostname . "::") && (substr($b["thr-parent"], 0, $hostlength) != $hostname . "::")) {
-			Logger::notice("statusnet_post_hook: no GNU Social post " . $b["parent"]);
+		if ((substr($b['parent-uri'], 0, $hostlength) != $hostname . '::') && (substr($b['extid'], 0, $hostlength) != $hostname . '::') && (substr($b['thr-parent'], 0, $hostlength) != $hostname . '::')) {
+			Logger::notice('statusnet_post_hook: no GNU Social post ' . $b['parent']);
 			return;
 		}
 
-		$condition = ['uri' => $b["thr-parent"], 'uid' => $b["uid"]];
+		$condition = ['uri' => $b['thr-parent'], 'uid' => $b['uid']];
 		$orig_post = Post::selectFirst(['author-link', 'uri'], $condition);
 		if (!DBA::isResult($orig_post)) {
-			Logger::notice("statusnet_post_hook: no parent found " . $b["thr-parent"]);
+			Logger::notice('statusnet_post_hook: no parent found ' . $b['thr-parent']);
 			return;
 		} else {
 			$iscomment = true;
 		}
 
-		$nick = preg_replace("=https?://(.*)/(.*)=ism", "$2", $orig_post["author-link"]);
+		$nick = preg_replace("=https?://(.*)/(.*)=ism", "$2", $orig_post['author-link']);
 
-		$nickname = "@[url=" . $orig_post["author-link"] . "]" . $nick . "[/url]";
-		$nicknameplain = "@" . $nick;
+		$nickname = '@[url=' . $orig_post['author-link'] . ']' . $nick . '[/url]';
+		$nicknameplain = '@' . $nick;
 
-		Logger::info("statusnet_post_hook: comparing " . $nickname . " and " . $nicknameplain . " with " . $b["body"]);
-		if ((strpos($b["body"], $nickname) === false) && (strpos($b["body"], $nicknameplain) === false)) {
-			$b["body"] = $nickname . " " . $b["body"];
+		Logger::info('statusnet_post_hook: comparing ' . $nickname . ' and ' . $nicknameplain . ' with ' . $b['body']);
+		if ((strpos($b['body'], $nickname) === false) && (strpos($b['body'], $nicknameplain) === false)) {
+			$b['body'] = $nickname . ' ' . $b['body'];
 		}
 
-		Logger::info("statusnet_post_hook: parent found " . print_r($orig_post, true));
+		Logger::info('statusnet_post_hook: parent found ', ['orig_post' => $orig_post]);
 	} else {
 		$iscomment = false;
 
@@ -489,15 +491,15 @@ function statusnet_post_hook(App $a, &$b)
 	}
 
 	if (($b['verb'] == Activity::POST) && $b['deleted']) {
-		statusnet_action($a, $b["uid"], substr($orig_post["uri"], $hostlength), "delete");
+		statusnet_action($a, $b['uid'], substr($orig_post['uri'], $hostlength), 'delete');
 	}
 
 	if ($b['verb'] == Activity::LIKE) {
-		Logger::info("statusnet_post_hook: parameter 2 " . substr($b["thr-parent"], $hostlength));
+		Logger::info('statusnet_post_hook: parameter 2 ' . substr($b['thr-parent'], $hostlength));
 		if ($b['deleted'])
-			statusnet_action($a, $b["uid"], substr($b["thr-parent"], $hostlength), "unlike");
+			statusnet_action($a, $b['uid'], substr($b['thr-parent'], $hostlength), 'unlike');
 		else
-			statusnet_action($a, $b["uid"], substr($b["thr-parent"], $hostlength), "like");
+			statusnet_action($a, $b['uid'], substr($b['thr-parent'], $hostlength), 'like');
 		return;
 	}
 
@@ -510,7 +512,7 @@ function statusnet_post_hook(App $a, &$b)
 		return;
 	}
 
-	if ($b['app'] == "StatusNet") {
+	if ($b['app'] == 'StatusNet') {
 		return;
 	}
 
@@ -535,34 +537,34 @@ function statusnet_post_hook(App $a, &$b)
 
 		DI::pConfig()->set($b['uid'], 'statusnet', 'max_char', $max_char);
 
-		$tempfile = "";
+		$tempfile = '';
 		$msgarr = Plaintext::getPost($b, $max_char, true, 7);
-		$msg = $msgarr["text"];
+		$msg = $msgarr['text'];
 
-		if (($msg == "") && isset($msgarr["title"]))
-			$msg = Plaintext::shorten($msgarr["title"], $max_char - 50, $b['uid']);
+		if (($msg == '') && isset($msgarr['title']))
+			$msg = Plaintext::shorten($msgarr['title'], $max_char - 50, $b['uid']);
 
-		$image = "";
+		$image = '';
 
-		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {
-			$msg .= " \n" . $msgarr["url"];
-		} elseif (isset($msgarr["image"]) && ($msgarr["type"] != "video")) {
-			$image = $msgarr["image"];
+		if (isset($msgarr['url']) && ($msgarr['type'] != 'photo')) {
+			$msg .= " \n" . $msgarr['url'];
+		} elseif (isset($msgarr['image']) && ($msgarr['type'] != 'video')) {
+			$image = $msgarr['image'];
 		}
 
-		if ($image != "") {
+		if ($image != '') {
 			$img_str = DI::httpClient()->fetch($image);
-			$tempfile = tempnam(System::getTempPath(), "cache");
+			$tempfile = tempnam(System::getTempPath(), 'cache');
 			file_put_contents($tempfile, $img_str);
-			$postdata = ["status" => $msg, "media[]" => $tempfile];
+			$postdata = ['status' => $msg, 'media[]' => $tempfile];
 		} else {
-			$postdata = ["status" => $msg];
+			$postdata = ['status' => $msg];
 		}
 
 		// and now send it :-)
 		if (strlen($msg)) {
 			if ($iscomment) {
-				$postdata["in_reply_to_status_id"] = substr($orig_post["uri"], $hostlength);
+				$postdata['in_reply_to_status_id'] = substr($orig_post['uri'], $hostlength);
 				Logger::info('statusnet_post send reply ' . print_r($postdata, true));
 			}
 
@@ -578,17 +580,17 @@ function statusnet_post_hook(App $a, &$b)
 				"\nmessage: " . $msg . "\nOriginal post: " . print_r($b, true) . "\nPost Data: " . print_r($postdata, true));
 
 			if (!empty($result->source)) {
-				DI::pConfig()->set($b["uid"], "statusnet", "application_name", strip_tags($result->source));
+				DI::pConfig()->set($b['uid'], 'statusnet', 'application_name', strip_tags($result->source));
 			}
 
 			if (!empty($result->error)) {
 				Logger::notice('Send to GNU Social failed: "' . $result->error . '"');
 			} elseif ($iscomment) {
-				Logger::notice('statusnet_post: Update extid ' . $result->id . " for post id " . $b['id']);
-				Item::update(['extid' => $hostname . "::" . $result->id, 'body' => $result->text], ['id' => $b['id']]);
+				Logger::notice('statusnet_post: Update extid ' . $result->id . ' for post id ' . $b['id']);
+				Item::update(['extid' => $hostname . '::' . $result->id, 'body' => $result->text], ['id' => $b['id']]);
 			}
 		}
-		if ($tempfile != "") {
+		if ($tempfile != '') {
 			unlink($tempfile);
 		}
 	}
@@ -607,10 +609,10 @@ function statusnet_addon_admin_post(App $a)
 		$secret = trim($_POST['secret'][$id]);
 		$key = trim($_POST['key'][$id]);
 		//$applicationname = (!empty($_POST['applicationname']) ? Strings::escapeTags(trim($_POST['applicationname'][$id])):'');
-		if ($sitename != "" &&
-			$apiurl != "" &&
-			$secret != "" &&
-			$key != "" &&
+		if ($sitename != '' &&
+			$apiurl != '' &&
+			$secret != '' &&
+			$key != '' &&
 			empty($_POST['delete'][$id])) {
 
 			$sites[] = [
@@ -652,7 +654,7 @@ function statusnet_addon_admin(App $a, &$o)
 		//'applicationname' => Array("applicationname[$id]", DI::l10n()->t("Application name"), "", ""),
 	];
 
-	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/statusnet/");
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/statusnet/');
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
 		'$sites' => $sitesform,
@@ -661,41 +663,41 @@ function statusnet_addon_admin(App $a, &$o)
 
 function statusnet_prepare_body(App $a, &$b)
 {
-	if ($b["item"]["network"] != Protocol::STATUSNET) {
+	if ($b['item']['network'] != Protocol::STATUSNET) {
 		return;
 	}
 
-	if ($b["preview"]) {
+	if ($b['preview']) {
 		$max_char = DI::pConfig()->get(local_user(), 'statusnet', 'max_char');
 		if (intval($max_char) == 0) {
 			$max_char = 140;
 		}
 
-		$item = $b["item"];
-		$item["plink"] = DI::baseUrl()->get() . "/display/" . $item["guid"];
+		$item = $b['item'];
+		$item['plink'] = DI::baseUrl()->get() . '/display/' . $item['guid'];
 
-		$condition = ['uri' => $item["thr-parent"], 'uid' => local_user()];
+		$condition = ['uri' => $item['thr-parent'], 'uid' => local_user()];
 		$orig_post = Post::selectFirst(['author-link', 'uri'], $condition);
 		if (DBA::isResult($orig_post)) {
-			$nick = preg_replace("=https?://(.*)/(.*)=ism", "$2", $orig_post["author-link"]);
+			$nick = preg_replace("=https?://(.*)/(.*)=ism", "$2", $orig_post['author-link']);
 
-			$nickname = "@[url=" . $orig_post["author-link"] . "]" . $nick . "[/url]";
-			$nicknameplain = "@" . $nick;
+			$nickname = '@[url=' . $orig_post['author-link'] . ']' . $nick . '[/url]';
+			$nicknameplain = '@' . $nick;
 
-			if ((strpos($item["body"], $nickname) === false) && (strpos($item["body"], $nicknameplain) === false)) {
-				$item["body"] = $nickname . " " . $item["body"];
+			if ((strpos($item['body'], $nickname) === false) && (strpos($item['body'], $nicknameplain) === false)) {
+				$item['body'] = $nickname . ' ' . $item['body'];
 			}
 		}
 
 		$msgarr = Plaintext::getPost($item, $max_char, true, 7);
-		$msg = $msgarr["text"];
+		$msg = $msgarr['text'];
 
-		if (isset($msgarr["url"]) && ($msgarr["type"] != "photo")) {
-			$msg .= " " . $msgarr["url"];
+		if (isset($msgarr['url']) && ($msgarr['type'] != 'photo')) {
+			$msg .= ' ' . $msgarr['url'];
 		}
 
-		if (isset($msgarr["image"])) {
-			$msg .= " " . $msgarr["image"];
+		if (isset($msgarr['image'])) {
+			$msg .= ' ' . $msgarr['image'];
 		}
 
 		$b['html'] = nl2br(htmlspecialchars($msg));
@@ -743,7 +745,7 @@ function statusnet_cron(App $a, $b)
 		}
 
 		Logger::notice('statusnet: importing timeline from user ' . $rr['uid']);
-		statusnet_fetchhometimeline($a, $rr["uid"], $rr["v"]);
+		statusnet_fetchhometimeline($a, $rr['uid'], $rr['v']);
 	}
 
 	Logger::notice('statusnet: cron_end');
@@ -765,21 +767,26 @@ function statusnet_fetchtimeline(App $a, $uid)
 	//  1st try personal config, then system config and fallback to the
 	//  hostname of the node if neither one is set.
 	$application_name = DI::pConfig()->get($uid, 'statusnet', 'application_name');
-	if ($application_name == "") {
+	if ($application_name == '') {
 		$application_name = DI::config()->get('statusnet', 'application_name');
 	}
-	if ($application_name == "") {
+	if ($application_name == '') {
 		$application_name = DI::baseUrl()->getHostname();
 	}
 
 	$connection = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
 
-	$parameters = ["exclude_replies" => true, "trim_user" => true, "contributor_details" => false, "include_rts" => false];
+	$parameters = [
+		'exclude_replies' => true,
+		'trim_user' => true,
+		'contributor_details' => false,
+		'include_rts' => false,
+	];
 
-	$first_time = ($lastid == "");
+	$first_time = ($lastid == '');
 
-	if ($lastid <> "") {
-		$parameters["since_id"] = $lastid;
+	if ($lastid != '') {
+		$parameters['since_id'] = $lastid;
 	}
 
 	$items = $connection->get('statuses/user_timeline', $parameters);
@@ -799,7 +806,7 @@ function statusnet_fetchtimeline(App $a, $uid)
 				continue;
 			}
 
-			if ($post->source == "activity") {
+			if ($post->source == 'activity') {
 				continue;
 			}
 
@@ -807,48 +814,48 @@ function statusnet_fetchtimeline(App $a, $uid)
 				continue;
 			}
 
-			if ($post->in_reply_to_status_id != "") {
+			if ($post->in_reply_to_status_id != '') {
 				continue;
 			}
 
 			if (!stristr($post->source, $application_name)) {
-				$_SESSION["authenticated"] = true;
-				$_SESSION["uid"] = $uid;
+				$_SESSION['authenticated'] = true;
+				$_SESSION['uid'] = $uid;
 
 				unset($_REQUEST);
-				$_REQUEST["api_source"] = true;
-				$_REQUEST["profile_uid"] = $uid;
-				//$_REQUEST["source"] = "StatusNet";
-				$_REQUEST["source"] = $post->source;
-				$_REQUEST["extid"] = Protocol::STATUSNET;
+				$_REQUEST['api_source'] = true;
+				$_REQUEST['profile_uid'] = $uid;
+				//$_REQUEST['source'] = 'StatusNet';
+				$_REQUEST['source'] = $post->source;
+				$_REQUEST['extid'] = Protocol::STATUSNET;
 
 				if (isset($post->id)) {
-					$_REQUEST['message_id'] = Item::newURI($uid, Protocol::STATUSNET . ":" . $post->id);
+					$_REQUEST['message_id'] = Item::newURI($uid, Protocol::STATUSNET . ':' . $post->id);
 				}
 
-				//$_REQUEST["date"] = $post->created_at;
+				//$_REQUEST['date'] = $post->created_at;
 
-				$_REQUEST["title"] = "";
+				$_REQUEST['title'] = '';
 
-				$_REQUEST["body"] = $post->text;
+				$_REQUEST['body'] = $post->text;
 				if (is_string($post->place->name)) {
-					$_REQUEST["location"] = $post->place->name;
+					$_REQUEST['location'] = $post->place->name;
 				}
 
 				if (is_string($post->place->full_name)) {
-					$_REQUEST["location"] = $post->place->full_name;
+					$_REQUEST['location'] = $post->place->full_name;
 				}
 
 				if (is_array($post->geo->coordinates)) {
-					$_REQUEST["coord"] = $post->geo->coordinates[0] . " " . $post->geo->coordinates[1];
+					$_REQUEST['coord'] = $post->geo->coordinates[0] . ' ' . $post->geo->coordinates[1];
 				}
 
 				if (is_array($post->coordinates->coordinates)) {
-					$_REQUEST["coord"] = $post->coordinates->coordinates[1] . " " . $post->coordinates->coordinates[0];
+					$_REQUEST['coord'] = $post->coordinates->coordinates[1] . ' ' . $post->coordinates->coordinates[0];
 				}
 
 				//print_r($_REQUEST);
-				if ($_REQUEST["body"] != "") {
+				if ($_REQUEST['body'] != '') {
 					Logger::notice('statusnet: posting for user ' . $uid);
 
 					item_post($a);
@@ -866,7 +873,7 @@ function statusnet_address($contact)
 
 	$hostname = preg_replace("=https?://([\w\.]*)/.*=ism", "$1", $contact->statusnet_profile_url);
 
-	$address = $contact->screen_name . "@" . $hostname;
+	$address = $contact->screen_name . '@' . $hostname;
 
 	return $address;
 }
@@ -884,8 +891,8 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 		return 0;
 	}
 
-	if (DBA::isResult($contact_record) && ($contact_record["readonly"] || $contact_record["blocked"])) {
-		Logger::info("statusnet_fetch_contact: Contact '" . $contact_record["nick"] . "' is blocked or readonly.");
+	if (DBA::isResult($contact_record) && ($contact_record['readonly'] || $contact_record['blocked'])) {
+		Logger::info('statusnet_fetch_contact: Contact "' . $contact_record['nick'] . '" is blocked or readonly.');
 		return -1;
 	}
 
@@ -938,7 +945,7 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 
 		// check that we have all the photos, this has been known to fail on occasion
 		if ((!$contact_record['photo']) || (!$contact_record['thumb']) || (!$contact_record['micro']) || ($update_photo)) {
-			Logger::info("statusnet_fetch_contact: Updating contact " . $contact->screen_name);
+			Logger::info('statusnet_fetch_contact: Updating contact ' . $contact->screen_name);
 
 			$photos = Photo::importProfilePhoto($contact->profile_image_url, $uid, $contact_record['id']);
 
@@ -960,10 +967,10 @@ function statusnet_fetch_contact($uid, $contact, $create_user)
 		}
 	}
 
-	return $contact_record["id"];
+	return $contact_record['id'];
 }
 
-function statusnet_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
+function statusnet_fetchuser(App $a, $uid, $screen_name = '', $user_id = '')
 {
 	$ckey    = DI::pConfig()->get($uid, 'statusnet', 'consumerkey');
 	$csecret = DI::pConfig()->get($uid, 'statusnet', 'consumersecret');
@@ -984,12 +991,12 @@ function statusnet_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 
 	$parameters = [];
 
-	if ($screen_name != "") {
-		$parameters["screen_name"] = $screen_name;
+	if ($screen_name != '') {
+		$parameters['screen_name'] = $screen_name;
 	}
 
-	if ($user_id != "") {
-		$parameters["user_id"] = $user_id;
+	if ($user_id != '') {
+		$parameters['user_id'] = $user_id;
 	}
 
 	// Fetching user data
@@ -1006,7 +1013,7 @@ function statusnet_fetchuser(App $a, $uid, $screen_name = "", $user_id = "")
 
 function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_existing_contact)
 {
-	Logger::info("statusnet_createpost: start");
+	Logger::info('statusnet_createpost: start');
 
 	$api = DI::pConfig()->get($uid, 'statusnet', 'baseapi');
 	$hostname = preg_replace("=https?://([\w\.]*)/.*=ism", "$1", $api);
@@ -1023,16 +1030,16 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 		$content = $post;
 	}
 
-	$postarray['uri'] = $hostname . "::" . $content->id;
+	$postarray['uri'] = $hostname . '::' . $content->id;
 
 	if (Post::exists(['extid' => $postarray['uri'], 'uid' => $uid])) {
 		return [];
 	}
 
-	$contactid = 0;
+	$contactId = 0;
 
 	if (!empty($content->in_reply_to_status_id)) {
-		$thr_parent = $hostname . "::" . $content->in_reply_to_status_id;
+		$thr_parent = $hostname . '::' . $content->in_reply_to_status_id;
 
 		$item = Post::selectFirst(['uri'], ['uri' => $thr_parent, 'uid' => $uid]);
 		if (!DBA::isResult($item)) {
@@ -1050,13 +1057,13 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 		$own_url = DI::pConfig()->get($uid, 'statusnet', 'own_url');
 
 		if ($content->user->id == $own_url) {
-			$self = DBA::selectFirst([], ['self' => true, 'uid' => $uid]);
+			$self = DBA::selectFirst('contact', [], ['self' => true, 'uid' => $uid]);
 			if (DBA::isResult($self)) {
-				$contactid = $self["id"];
+				$contactId = $self['id'];
 
-				$postarray['owner-name'] = $self["name"];
-				$postarray['owner-link'] = $self["url"];
-				$postarray['owner-avatar'] = $self["photo"];
+				$postarray['owner-name'] = $self['name'];
+				$postarray['owner-link'] = $self['url'];
+				$postarray['owner-avatar'] = $self['photo'];
 			} else {
 				return [];
 			}
@@ -1067,19 +1074,19 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 		$postarray['object-type'] = Activity\ObjectType::NOTE;
 	}
 
-	if ($contactid == 0) {
-		$contactid = statusnet_fetch_contact($uid, $post->user, $create_user);
+	if ($contactId == 0) {
+		$contactId = statusnet_fetch_contact($uid, $post->user, $create_user);
 		$postarray['owner-name'] = $post->user->name;
 		$postarray['owner-link'] = $post->user->statusnet_profile_url;
 		$postarray['owner-avatar'] = $post->user->profile_image_url;
 	}
-	if (($contactid == 0) && !$only_existing_contact) {
-		$contactid = $self['id'];
-	} elseif ($contactid <= 0) {
+	if (($contactId == 0) && !$only_existing_contact) {
+		$contactId = $self['id'];
+	} elseif ($contactId <= 0) {
 		return [];
 	}
 
-	$postarray['contact-id'] = $contactid;
+	$postarray['contact-id'] = $contactId;
 
 	$postarray['verb'] = Activity::POST;
 
@@ -1088,7 +1095,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 	$postarray['author-avatar'] = $content->user->profile_image_url;
 
 	// To-Do: Maybe unreliable? Can the api be entered without trailing "/"?
-	$hostname = str_replace("/api/", "/notice/", DI::pConfig()->get($uid, 'statusnet', 'baseapi'));
+	$hostname = str_replace('/api/', '/notice/', DI::pConfig()->get($uid, 'statusnet', 'baseapi'));
 
 	$postarray['plink'] = $hostname . $content->id;
 	$postarray['app'] = strip_tags($content->source);
@@ -1106,22 +1113,22 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 	$postarray['edited'] = DateTimeFormat::utc($content->created_at);
 
 	if (!empty($content->place->name)) {
-		$postarray["location"] = $content->place->name;
+		$postarray['location'] = $content->place->name;
 	}
 
 	if (!empty($content->place->full_name)) {
-		$postarray["location"] = $content->place->full_name;
+		$postarray['location'] = $content->place->full_name;
 	}
 
 	if (!empty($content->geo->coordinates)) {
-		$postarray["coord"] = $content->geo->coordinates[0] . " " . $content->geo->coordinates[1];
+		$postarray['coord'] = $content->geo->coordinates[0] . ' ' . $content->geo->coordinates[1];
 	}
 
 	if (!empty($content->coordinates->coordinates)) {
-		$postarray["coord"] = $content->coordinates->coordinates[1] . " " . $content->coordinates->coordinates[0];
+		$postarray['coord'] = $content->coordinates->coordinates[1] . ' ' . $content->coordinates->coordinates[0];
 	}
 
-	Logger::info("statusnet_createpost: end");
+	Logger::info('statusnet_createpost: end');
 
 	return $postarray;
 }
@@ -1140,7 +1147,7 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 	// "create_user" is deactivated, since currently you cannot add users manually by now
 	$create_user = true;
 
-	Logger::info("statusnet_fetchhometimeline: Fetching for user " . $uid);
+	Logger::info('statusnet_fetchhometimeline: Fetching for user ' . $uid);
 
 	$connection = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
 
@@ -1152,36 +1159,41 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 
 	$contact = Contact::selectFirst([], ['id' => $own_contact, 'uid' => $uid]);
 	if (DBA::isResult($contact)) {
-		$nick = $contact["nick"];
+		$nick = $contact['nick'];
 	} else {
-		Logger::info("statusnet_fetchhometimeline: Own GNU Social contact not found for user " . $uid);
+		Logger::info('statusnet_fetchhometimeline: Own GNU Social contact not found for user ' . $uid);
 		return;
 	}
 
 	$self = Contact::selectFirst([], ['self' => true, 'uid' => $uid]);
 	if (!DBA::isResult($self)) {
-		Logger::info("statusnet_fetchhometimeline: Own contact not found for user " . $uid);
+		Logger::info('statusnet_fetchhometimeline: Own contact not found for user ' . $uid);
 		return;
 	}
 
 	$user = User::getById($uid);
 	if (!DBA::isResult($user)) {
-		Logger::info("statusnet_fetchhometimeline: Own user not found for user " . $uid);
+		Logger::info('statusnet_fetchhometimeline: Own user not found for user ' . $uid);
 		return;
 	}
 
-	$parameters = ["exclude_replies" => false, "trim_user" => false, "contributor_details" => true, "include_rts" => true];
-	//$parameters["count"] = 200;
+	$parameters = [
+		'exclude_replies' => false,
+		'trim_user' => false,
+		'contributor_details' => true,
+		'include_rts' => true,
+		//'count' => 200,
+	];
 
 	if ($mode == 1) {
 		// Fetching timeline
 		$lastid = DI::pConfig()->get($uid, 'statusnet', 'lasthometimelineid');
 		//$lastid = 1;
 
-		$first_time = ($lastid == "");
+		$first_time = ($lastid == '');
 
-		if ($lastid != "") {
-			$parameters["since_id"] = $lastid;
+		if ($lastid != '') {
+			$parameters['since_id'] = $lastid;
 		}
 
 		$items = $connection->get('statuses/home_timeline', $parameters);
@@ -1194,16 +1206,16 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 			} elseif (is_string($items) || is_float($items) || is_int($items)) {
 				$errormsg = $items;
 			} else {
-				$errormsg = "Unknown error";
+				$errormsg = 'Unknown error';
 			}
 
-			Logger::info("statusnet_fetchhometimeline: Error fetching home timeline: " . $errormsg);
+			Logger::info('statusnet_fetchhometimeline: Error fetching home timeline: ' . $errormsg);
 			return;
 		}
 
 		$posts = array_reverse($items);
 
-		Logger::info("statusnet_fetchhometimeline: Fetching timeline for user " . $uid . " " . sizeof($posts) . " items");
+		Logger::info('statusnet_fetchhometimeline: Fetching timeline for user ' . $uid . ' ' . sizeof($posts) . ' items');
 
 		if (count($posts)) {
 			foreach ($posts as $post) {
@@ -1224,14 +1236,14 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 				} else {
 					$postarray = statusnet_createpost($a, $uid, $post, $self, $create_user, true);
 
-					if (trim($postarray['body']) == "") {
+					if (trim($postarray['body']) == '') {
 						continue;
 					}
 
 					$item = Item::insert($postarray);
-					$postarray["id"] = $item;
+					$postarray['id'] = $item;
 
-					Logger::notice('statusnet_fetchhometimeline: User ' . $self["nick"] . ' posted home timeline item ' . $item);
+					Logger::notice('statusnet_fetchhometimeline: User ' . $self['nick'] . ' posted home timeline item ' . $item);
 				}
 			}
 		}
@@ -1240,22 +1252,22 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 
 	// Fetching mentions
 	$lastid = DI::pConfig()->get($uid, 'statusnet', 'lastmentionid');
-	$first_time = ($lastid == "");
+	$first_time = ($lastid == '');
 
-	if ($lastid != "") {
-		$parameters["since_id"] = $lastid;
+	if ($lastid != '') {
+		$parameters['since_id'] = $lastid;
 	}
 
 	$items = $connection->get('statuses/mentions_timeline', $parameters);
 
 	if (!is_array($items)) {
-		Logger::info("statusnet_fetchhometimeline: Error fetching mentions: " . print_r($items, true));
+		Logger::info('statusnet_fetchhometimeline: Error fetching mentions: ' . print_r($items, true));
 		return;
 	}
 
 	$posts = array_reverse($items);
 
-	Logger::info("statusnet_fetchhometimeline: Fetching mentions for user " . $uid . " " . sizeof($posts) . " items");
+	Logger::info('statusnet_fetchhometimeline: Fetching mentions for user ' . $uid . ' ' . sizeof($posts) . ' items');
 
 	if (count($posts)) {
 		foreach ($posts as $post) {
@@ -1275,13 +1287,13 @@ function statusnet_fetchhometimeline(App $a, $uid, $mode = 1)
 					$conversations[$post->statusnet_conversation_id] = $post->statusnet_conversation_id;
 				}
 			} else {
-				if (trim($postarray['body']) == "") {
+				if (trim($postarray['body']) == '') {
 					continue;
 				}
 
 				$item = Item::insert($postarray);
 
-				Logger::notice('statusnet_fetchhometimeline: User ' . $self["nick"] . ' posted mention timeline item ' . $item);
+				Logger::notice('statusnet_fetchhometimeline: User ' . $self['nick'] . ' posted mention timeline item ' . $item);
 			}
 		}
 	}
@@ -1300,7 +1312,7 @@ function statusnet_complete_conversation(App $a, $uid, $self, $create_user, $nic
 
 	$connection = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
 
-	$parameters["count"] = 200;
+	$parameters['count'] = 200;
 
 	$items = $connection->get('statusnet/conversation/' . $conversation, $parameters);
 	if (is_array($items)) {
@@ -1314,9 +1326,9 @@ function statusnet_complete_conversation(App $a, $uid, $self, $create_user, $nic
 			}
 
 			$item = Item::insert($postarray);
-			$postarray["id"] = $item;
+			$postarray['id'] = $item;
 
-			Logger::notice('statusnet_complete_conversation: User ' . $self["nick"] . ' posted home timeline item ' . $item);
+			Logger::notice('statusnet_complete_conversation: User ' . $self['nick'] . ' posted home timeline item ' . $item);
 		}
 	}
 }
@@ -1325,19 +1337,16 @@ function statusnet_convertmsg(App $a, $body)
 {
 	$body = preg_replace("=\[url\=https?://([0-9]*).([0-9]*).([0-9]*).([0-9]*)/([0-9]*)\](.*?)\[\/url\]=ism", "$1.$2.$3.$4/$5", $body);
 
-	$URLSearchString = "^\[\]";
+	$URLSearchString = '^\[\]';
 	$links = preg_match_all("/[^!#@]\[url\=([$URLSearchString]*)\](.*?)\[\/url\]/ism", $body, $matches, PREG_SET_ORDER);
 
-	$footer = "";
-	$footerurl = "";
-	$footerlink = "";
-	$type = "";
+	$footer = $footerurl = $footerlink = $type = '';
 
 	if ($links) {
 		foreach ($matches AS $match) {
-			$search = "[url=" . $match[1] . "]" . $match[2] . "[/url]";
+			$search = '[url=' . $match[1] . ']' . $match[2] . '[/url]';
 
-			Logger::info("statusnet_convertmsg: expanding url " . $match[1]);
+			Logger::info('statusnet_convertmsg: expanding url ' . $match[1]);
 
 			try {
 				$expanded_url = DI::httpClient()->finalUrl($match[1]);
@@ -1346,56 +1355,56 @@ function statusnet_convertmsg(App $a, $body)
 				$expanded_url = $match[1];
 			}
 
-			Logger::info("statusnet_convertmsg: fetching data for " . $expanded_url);
+			Logger::info('statusnet_convertmsg: fetching data for ' . $expanded_url);
 
 			$oembed_data = OEmbed::fetchURL($expanded_url, true);
 
-			Logger::info("statusnet_convertmsg: fetching data: done");
+			Logger::info('statusnet_convertmsg: fetching data: done');
 
-			if ($type == "") {
+			if ($type == '') {
 				$type = $oembed_data->type;
 			}
 
-			if ($oembed_data->type == "video") {
-				//$body = str_replace($search, "[video]".$expanded_url."[/video]", $body);
+			if ($oembed_data->type == 'video') {
+				//$body = str_replace($search, '[video]'.$expanded_url.'[/video]', $body);
 				$type = $oembed_data->type;
 				$footerurl = $expanded_url;
-				$footerlink = "[url=" . $expanded_url . "]" . $expanded_url . "[/url]";
+				$footerlink = '[url=' . $expanded_url . ']' . $expanded_url . '[/url]';
 
 				$body = str_replace($search, $footerlink, $body);
-			} elseif (($oembed_data->type == "photo") && isset($oembed_data->url)) {
-				$body = str_replace($search, "[url=" . $expanded_url . "][img]" . $oembed_data->url . "[/img][/url]", $body);
-			} elseif ($oembed_data->type != "link") {
-				$body = str_replace($search, "[url=" . $expanded_url . "]" . $expanded_url . "[/url]", $body);
+			} elseif (($oembed_data->type == 'photo') && isset($oembed_data->url)) {
+				$body = str_replace($search, '[url=' . $expanded_url . '][img]' . $oembed_data->url . '[/img][/url]', $body);
+			} elseif ($oembed_data->type != 'link') {
+				$body = str_replace($search, '[url=' . $expanded_url . ']' . $expanded_url . '[/url]', $body);
 			} else {
 				$img_str = DI::httpClient()->fetch($expanded_url, HttpClientAccept::DEFAULT, 4);
 
-				$tempfile = tempnam(System::getTempPath(), "cache");
+				$tempfile = tempnam(System::getTempPath(), 'cache');
 				file_put_contents($tempfile, $img_str);
 				$mime = mime_content_type($tempfile);
 				unlink($tempfile);
 
-				if (substr($mime, 0, 6) == "image/") {
-					$type = "photo";
-					$body = str_replace($search, "[img]" . $expanded_url . "[/img]", $body);
+				if (substr($mime, 0, 6) == 'image/') {
+					$type = 'photo';
+					$body = str_replace($search, '[img]' . $expanded_url . '[/img]', $body);
 				} else {
 					$type = $oembed_data->type;
 					$footerurl = $expanded_url;
-					$footerlink = "[url=" . $expanded_url . "]" . $expanded_url . "[/url]";
+					$footerlink = '[url=' . $expanded_url . ']' . $expanded_url . '[/url]';
 
 					$body = str_replace($search, $footerlink, $body);
 				}
 			}
 		}
 
-		if ($footerurl != "") {
+		if ($footerurl != '') {
 			$footer = "\n" . PageInfo::getFooterFromUrl($footerurl);
 		}
 
-		if (($footerlink != "") && (trim($footer) != "")) {
-			$removedlink = trim(str_replace($footerlink, "", $body));
+		if (($footerlink != '') && (trim($footer) != '')) {
+			$removedlink = trim(str_replace($footerlink, '', $body));
 
-			if (($removedlink == "") || strstr($body, $removedlink)) {
+			if (($removedlink == '') || strstr($body, $removedlink)) {
 				$body = $removedlink;
 			}
 
@@ -1417,7 +1426,7 @@ function statusnet_fetch_own_contact(App $a, $uid)
 
 	$contact_id = 0;
 
-	if ($own_url == "") {
+	if ($own_url == '') {
 		$connection = new StatusNetOAuth($api, $ckey, $csecret, $otoken, $osecret);
 
 		// Fetching user data
@@ -1433,7 +1442,7 @@ function statusnet_fetch_own_contact(App $a, $uid)
 	} else {
 		$contact = Contact::selectFirst([], ['uid' => $uid, 'alias' => $own_url]);
 		if (DBA::isResult($contact)) {
-			$contact_id = $contact["id"];
+			$contact_id = $contact['id'];
 		} else {
 			DI::pConfig()->delete($uid, 'statusnet', 'own_url');
 		}
@@ -1447,12 +1456,12 @@ function statusnet_is_retweet(App $a, $uid, $body)
 
 	// Skip if it isn't a pure repeated messages
 	// Does it start with a share?
-	if (strpos($body, "[share") > 0) {
+	if (strpos($body, '[share') > 0) {
 		return false;
 	}
 
 	// Does it end with a share?
-	if (strlen($body) > (strrpos($body, "[/share]") + 8)) {
+	if (strlen($body) > (strrpos($body, '[/share]') + 8)) {
 		return false;
 	}
 
@@ -1462,7 +1471,7 @@ function statusnet_is_retweet(App $a, $uid, $body)
 		return false;
 	}
 
-	$link = "";
+	$link = '';
 	preg_match("/link='(.*?)'/ism", $attributes, $matches);
 	if (!empty($matches[1])) {
 		$link = $matches[1];
