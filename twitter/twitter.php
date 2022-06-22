@@ -1279,7 +1279,7 @@ function twitter_fix_avatar($avatar)
 	$new_avatar = str_replace("_normal.", "_400x400.", $avatar);
 
 	$info = Images::getInfoFromURLCached($new_avatar);
-	if (!$info) {
+	if (empty($info)) {
 		$new_avatar = $avatar;
 	}
 
