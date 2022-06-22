@@ -1050,7 +1050,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 		$own_url = DI::pConfig()->get($uid, 'statusnet', 'own_url');
 
 		if ($content->user->id == $own_url) {
-			$self = DBA::selectFirst([], ['self' => true, 'uid' => $uid]);
+			$self = DBA::selectFirst('', ['self' => true, 'uid' => $uid]);
 			if (DBA::isResult($self)) {
 				$contactid = $self["id"];
 
