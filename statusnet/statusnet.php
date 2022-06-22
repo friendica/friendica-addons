@@ -1036,7 +1036,7 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 		return [];
 	}
 
-	$contactid = 0;
+	$contactId = 0;
 
 	if (!empty($content->in_reply_to_status_id)) {
 		$thr_parent = $hostname . '::' . $content->in_reply_to_status_id;
@@ -1057,9 +1057,9 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 		$own_url = DI::pConfig()->get($uid, 'statusnet', 'own_url');
 
 		if ($content->user->id == $own_url) {
-			$self = DBA::selectFirst('*', ['self' => true, 'uid' => $uid]);
+			$self = DBA::selectFirst('contact', [], ['self' => true, 'uid' => $uid]);
 			if (DBA::isResult($self)) {
-				$contactid = $self['id'];
+				$contactId = $self['id'];
 
 				$postarray['owner-name'] = $self['name'];
 				$postarray['owner-link'] = $self['url'];
@@ -1074,19 +1074,19 @@ function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_ex
 		$postarray['object-type'] = Activity\ObjectType::NOTE;
 	}
 
-	if ($contactid == 0) {
-		$contactid = statusnet_fetch_contact($uid, $post->user, $create_user);
+	if ($contactId == 0) {
+		$contactId = statusnet_fetch_contact($uid, $post->user, $create_user);
 		$postarray['owner-name'] = $post->user->name;
 		$postarray['owner-link'] = $post->user->statusnet_profile_url;
 		$postarray['owner-avatar'] = $post->user->profile_image_url;
 	}
-	if (($contactid == 0) && !$only_existing_contact) {
-		$contactid = $self['id'];
-	} elseif ($contactid <= 0) {
+	if (($contactId == 0) && !$only_existing_contact) {
+		$contactId = $self['id'];
+	} elseif ($contactId <= 0) {
 		return [];
 	}
 
-	$postarray['contact-id'] = $contactid;
+	$postarray['contact-id'] = $contactId;
 
 	$postarray['verb'] = Activity::POST;
 
