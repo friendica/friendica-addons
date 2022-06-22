@@ -52,4 +52,3 @@ function webrtc_content(&$a) {
 
         return $o;
 }
-?>

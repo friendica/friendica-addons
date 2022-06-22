@@ -166,4 +166,3 @@ function leistungsschutzrecht_cron($a,$b) {
 	leistungsschutzrecht_fetchsites();
 	DI::config()->set('leistungsschutzrecht','last_poll', time());
 }
-?>

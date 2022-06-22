@@ -1055,5 +1055,3 @@ class CodebirdSN
         return $parsed;
     }
 }
-
-?>
