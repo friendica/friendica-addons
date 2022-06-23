@@ -40,14 +40,14 @@ function obfuscate_email (string $s): string
 	return $s;
 }
 
-function impressum_footer(App $a, array &$b)
+function impressum_footer(App $a, string &$body)
 {
 	$text = ProxyUtils::proxifyHtml(BBCode::convert(DI::config()->get('impressum','footer_text')));
 
 	if (! $text == '') {
 		DI::page()['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.DI::baseUrl()->get().'/addon/impressum/impressum.css" media="all" />';
-		$b .= '<div class="clear"></div>';
-		$b .= '<div id="impressum_footer">'.$text.'</div>';
+		$body .= '<div class="clear"></div>';
+		$body .= '<div id="impressum_footer">'.$text.'</div>';
 	}
 }
 
@@ -56,9 +56,9 @@ function impressum_load_config(App $a, ConfigFileLoader $loader)
 	$a->getConfigCache()->load($loader->loadAddonConfig('impressum'));
 }
 
-function impressum_show(App $a, array &$b)
+function impressum_show(App $a, array &$body)
 {
-	$b .= '<h3>' . DI::l10n()->t('Impressum') . '</h3>';
+	$body .= '<h3>' . DI::l10n()->t('Impressum') . '</h3>';
 	$owner = DI::config()->get('impressum', 'owner');
 	$owner_profile = DI::config()->get('impressum', 'ownerprofile');
 	$postal = ProxyUtils::proxifyHtml(BBCode::convert(DI::config()->get('impressum', 'postal')));
@@ -73,20 +73,20 @@ function impressum_show(App $a, array &$b)
 		}
 
 		if (strlen($email)) {
-			$b .= '<p><strong>' . DI::l10n()->t('Site Owner').'</strong>: ' . $tmp .'<br /><strong>' . DI::l10n()->t('Email Address') . '</strong>: ' . $email . '</p>';
+			$body .= '<p><strong>' . DI::l10n()->t('Site Owner').'</strong>: ' . $tmp .'<br /><strong>' . DI::l10n()->t('Email Address') . '</strong>: ' . $email . '</p>';
 		} else {
-			$b .= '<p><strong>' . DI::l10n()->t('Site Owner').'</strong>: ' . $tmp .'</p>';
+			$body .= '<p><strong>' . DI::l10n()->t('Site Owner').'</strong>: ' . $tmp .'</p>';
 		}
 
 		if (strlen($postal)) {
-			$b .= '<p><strong>' . DI::l10n()->t('Postal Address') . '</strong><br />' . $postal . '</p>';
+			$body .= '<p><strong>' . DI::l10n()->t('Postal Address') . '</strong><br />' . $postal . '</p>';
 		}
 
 		if (strlen($notes)) {
-			$b .= '<p>' . $notes . '</p>';
+			$body .= '<p>' . $notes . '</p>';
 		}
 	} else {
-		$b .= '<p>' . DI::l10n()->t('The impressum addon needs to be configured!<br />Please add at least the <tt>owner</tt> variable to your config file. For other variables please refer to the README file of the addon.') . '</p>';
+		$body .= '<p>' . DI::l10n()->t('The impressum addon needs to be configured!<br />Please add at least the <tt>owner</tt> variable to your config file. For other variables please refer to the README file of the addon.') . '</p>';
 	}
 }
 
