@@ -6,6 +6,7 @@
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
 
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\DI;
@@ -16,51 +17,54 @@ function leistungsschutzrecht_install() {
 	Hook::register('page_info_data', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
 }
 
-function leistungsschutzrecht_getsiteinfo($a, &$siteinfo) {
-	if (!isset($siteinfo["url"]) || empty($siteinfo['type'])) {
+function leistungsschutzrecht_getsiteinfo(App $a,array &$siteinfo) {
+	if (!isset($siteinfo['url']) || empty($siteinfo['type'])) {
 		return;
 	}
 
 	// Avoid any third party pictures, to avoid copyright issues
 	if (!in_array($siteinfo['type'], ['photo', 'video']) && DI::config()->get('leistungsschutzrecht', 'suppress_photos', false)) {
-		unset($siteinfo["image"]);
-		unset($siteinfo["images"]);
+		unset($siteinfo['image']);
+		unset($siteinfo['images']);
 	}
 
-	if (!leistungsschutzrecht_is_member_site($siteinfo["url"])) {
+	if (!leistungsschutzrecht_is_member_site($siteinfo['url'])) {
 		return;
 	}
 
-	if (!empty($siteinfo["text"])) {
-		$siteinfo["text"] = leistungsschutzrecht_cuttext($siteinfo["text"]);
+	if (!empty($siteinfo['text'])) {
+		$siteinfo['text'] = leistungsschutzrecht_cuttext($siteinfo['text']);
 	}
 
-	unset($siteinfo["keywords"]);
+	unset($siteinfo['keywords']);
 }
 
-function leistungsschutzrecht_cuttext($text) {
-	$text = str_replace(["\r", "\n"], [" ", " "], $text);
+function leistungsschutzrecht_cuttext(string $text): string
+{
+	$text = str_replace(["\r", "\n"], [' ', ' '], $text);
 
 	do {
 		$oldtext = $text;
-		$text = str_replace("  ", " ", $text);
+		$text = str_replace('  ', ' ', $text);
 	} while ($oldtext != $text);
 
-	$words = explode(" ", $text);
+	$words = explode(' ', $text);
 
-	$text = "";
+	$text = '';
 	$count = 0;
 	$limit = 7;
 
 	foreach ($words as $word) {
-		if ($text != "")
-			$text .= " ";
+		if ($text != '') {
+			$text .= ' ';
+		}
 
 		$text .= $word;
 
 		if (++$count >= $limit) {
-			if (sizeof($words) > $limit)
-				$text .= " ...";
+			if (sizeof($words) > $limit) {
+				$text .= ' ...';
+			}
 
 			break;
 		}
@@ -71,7 +75,7 @@ function leistungsschutzrecht_cuttext($text) {
 function leistungsschutzrecht_fetchsites()
 {
 	// This list works - but question is how current it is
-	$url = "http://leistungsschutzrecht-stoppen.d-64.org/blacklist.txt";
+	$url = 'https://leistungsschutzrecht-stoppen.d-64.org/blacklist.txt';
 	$sitelist = DI::httpClient()->fetch($url);
 	$siteurls = explode(',', $sitelist);
 
@@ -123,23 +127,27 @@ function leistungsschutzrecht_fetchsites()
 	}
 }
 
-function leistungsschutzrecht_is_member_site($url) {
+function leistungsschutzrecht_is_member_site(string $url)
+{
 	$sites = DI::config()->get('leistungsschutzrecht','sites');
 
-	if ($sites == "")
-		return(false);
+	if ($sites == '') {
+		return false;
+	}
 
-	if (sizeof($sites) == 0)
-		return(false);
+	if (sizeof($sites) == 0) {
+		return false;
+	}
 
 	$urldata = parse_url($url);
 
-	if (!isset($urldata["host"]))
-		return(false);
+	if (!isset($urldata['host'])) {
+		return false;
+	}
 
-	$cleanedurlpart = explode("%", $urldata["host"]);
+	$cleanedurlpart = explode('%', $urldata['host']);
 
-	$hostname = explode(".", $cleanedurlpart[0]);
+	$hostname = explode('.', $cleanedurlpart[0]);
 	if (empty($hostname)) {
 		return false;
 	}
@@ -148,21 +156,22 @@ function leistungsschutzrecht_is_member_site($url) {
 		return false;
 	}
 
-	$site = $hostname[sizeof($hostname) - 2].".".$hostname[sizeof($hostname) - 1];
+	$site = $hostname[sizeof($hostname) - 2] . '.' . $hostname[sizeof($hostname) - 1];
 
 	return (isset($sites[$site]));
 }
 
-function leistungsschutzrecht_cron($a,$b) {
-	$last = DI::config()->get('leistungsschutzrecht','last_poll');
+function leistungsschutzrecht_cron(App $a,$b)
+{
+	$last = DI::config()->get('leistungsschutzrecht', 'last_poll');
 
-	if($last) {
+	if ($last) {
 		$next = $last + 86400;
-		if($next > time()) {
+		if ($next > time()) {
 			Logger::notice('poll intervall not reached');
 			return;
 		}
 	}
 	leistungsschutzrecht_fetchsites();
-	DI::config()->set('leistungsschutzrecht','last_poll', time());
+	DI::config()->set('leistungsschutzrecht', 'last_poll', time());
 }
