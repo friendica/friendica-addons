@@ -87,7 +87,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 	return $r;
 }
 
-function curweather_network_mod_init(App $a, &$b)
+function curweather_network_mod_init(App $a, array &$b)
 {
 	if (!intval(DI::pConfig()->get(local_user(), 'curweather', 'curweather_enable'))) {
 		return;

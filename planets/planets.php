@@ -38,7 +38,7 @@ function planets_install() {
 	Logger::notice("installed planets");
 }
 
-function planets_post_hook($a, &$item) {
+function planets_post_hook(App $a, &$item) {
 
 	/**
 	 *
@@ -96,11 +96,13 @@ function planets_post_hook($a, &$item) {
  *
  */
 
-function planets_settings_post($a,$post) {
-	if(! local_user())
+function planets_settings_post(App $a,$post) {
+	if (! local_user()) {
 		return;
-	if($_POST['planets-submit'])
-		DI::pConfig()->set(local_user(),'planets','enable',intval($_POST['planets']));
+	}
+	if ($_POST['planets-submit']) {
+		DI::pConfig()->set(local_user(), 'planets', 'enable' ,intval($_POST['planets']));
+	}
 }
 
 

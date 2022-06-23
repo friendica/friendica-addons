@@ -83,7 +83,7 @@ function cookienotice_addon_admin_post(App $a)
  *
  * @return void
  */
-function cookienotice_page_content_top(App $a, &$b)
+function cookienotice_page_content_top(App $a, array &$b)
 {
 	DI::page()->registerStylesheet(__DIR__ . '/cookienotice.css');
 	DI::page()->registerFooterScript(__DIR__ . '/cookienotice.js');
@@ -99,7 +99,7 @@ function cookienotice_page_content_top(App $a, &$b)
  *
  * @return void
  */
-function cookienotice_page_end(App $a, &$b)
+function cookienotice_page_end(App $a, array &$b)
 {
 	$text = (string)DI::config()->get('cookienotice', 'text', DI::l10n()->t('This website uses cookies to recognize revisiting and logged in users. You accept the usage of these cookies by continue browsing this website.'));
 	$oktext = (string)DI::config()->get('cookienotice', 'oktext', DI::l10n()->t('OK'));

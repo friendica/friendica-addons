@@ -41,7 +41,7 @@ function krynn_install() {
 	Logger::notice("installed krynn");
 }
 
-function krynn_post_hook($a, &$item) {
+function krynn_post_hook(App $a, &$item) {
 
 	/**
 	 *
@@ -97,7 +97,7 @@ function krynn_post_hook($a, &$item) {
  *
  */
 
-function krynn_settings_post($a,$post) {
+function krynn_settings_post(App $a, $post) {
 	if(! local_user())
 		return;
 	if($_POST['krynn-submit'])

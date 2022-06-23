@@ -5,6 +5,8 @@
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
+
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 
@@ -12,19 +14,19 @@ function calc_install() {
 	Hook::register('app_menu', 'addon/calc/calc.php', 'calc_app_menu');
 }
 
-function calc_app_menu($a,&$b) {
+function calc_app_menu(App $a, array &$b)
+{
 	$b['app_menu'][] = '<div class="app-title"><a href="calc">Calculator</a></div>'; 
 }
 
 
-function calc_module() {}
+function calc_module()
+{
+}
 
-
-
-
-function calc_init($a) {
-
-$x = <<< EOT
+function calc_init(App $a)
+{
+	$x = <<< EOT
 
 <script language="JavaScript">
 /**************************************
@@ -354,6 +356,5 @@ $o .=  <<< EOT
 </td></tr></tbody></table>
 
 EOT;
-return $o;
-
+	return $o;
 }

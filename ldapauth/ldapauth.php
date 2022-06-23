@@ -54,6 +54,7 @@
  * ...etc.
  */
 
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Database\DBA;
@@ -67,12 +68,12 @@ function ldapauth_install()
 	Hook::register('authenticate', 'addon/ldapauth/ldapauth.php', 'ldapauth_hook_authenticate');
 }
 
-function ldapauth_load_config(\Friendica\App $a, ConfigFileLoader $loader)
+function ldapauth_load_config(App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('ldapauth'));
 }
 
-function ldapauth_hook_authenticate($a, &$b)
+function ldapauth_hook_authenticate(App $a, array &$b)
 {
 	$user = ldapauth_authenticate($b['username'], $b['password']);
 	if (!empty($user['uid'])) {

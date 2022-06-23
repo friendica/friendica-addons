@@ -45,7 +45,7 @@ function showmore_addon_settings(App &$a, array &$data)
 	];
 }
 
-function showmore_addon_settings_post(&$a, &$b)
+function showmore_addon_settings_post(App $a, array &$b)
 {
 	if (!local_user()) {
 		return;

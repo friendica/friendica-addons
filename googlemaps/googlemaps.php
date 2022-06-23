@@ -6,6 +6,8 @@
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  *
  */
+
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 
@@ -13,27 +15,26 @@ function googlemaps_install()
 {
 	Hook::register('render_location', 'addon/googlemaps/googlemaps.php', 'googlemaps_location');
 
-	Logger::notice("installed googlemaps");
+	Logger::notice('installed googlemaps');
 }
 
-function googlemaps_location($a, &$item)
+function googlemaps_location(App $a, &$item)
 {
-
-	if(! (strlen($item['location']) || strlen($item['coord']))) {
+	if (!(strlen($item['location']) || strlen($item['coord']))) {
 		return;
 	}
 
-	if ($item['coord'] != ""){ 
-		$target = "http://maps.google.com/?q=".urlencode($item['coord']);
+	if ($item['coord'] != '') {
+		$target = 'http://maps.google.com/?q=' . urlencode($item['coord']);
 	} else {
-		$target = "http://maps.google.com/?q=".urlencode($item['location']);
+		$target = 'http://maps.google.com/?q=' . urlencode($item['location']);
 	}
 
-	if ($item['location'] != "") {
+	if ($item['location'] != '') {
 		$title = $item['location'];
 	} else {
 		$title = $item['coord'];
 	}
 
-	$item['html'] = '<a target="map" title="'.$title.'" href= "'.$target.'">'.$title.'</a>';
+	$item['html'] = '<a target="map" title="' . $title . '" href= "' . $target . '">' . $title . '</a>';
 }

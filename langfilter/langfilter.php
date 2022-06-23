@@ -67,7 +67,7 @@ function langfilter_addon_settings(App $a, array &$data)
  * 3rd save the settings to the DB for later usage
  */
 
-function langfilter_addon_settings_post(App $a, &$b)
+function langfilter_addon_settings_post(App $a, array &$b)
 {
 	if (!local_user()) {
 		return;

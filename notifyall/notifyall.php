@@ -60,7 +60,7 @@ function notifyall_post(App $a)
 	DI::baseUrl()->redirect('admin');
 }
 
-function notifyall_content(&$a)
+function notifyall_content(App $a)
 {
 	if (!$a->isSiteAdmin()) {
 		return '';

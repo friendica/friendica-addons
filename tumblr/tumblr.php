@@ -257,7 +257,7 @@ function tumblr_settings_post(App $a, array &$b)
 	}
 }
 
-function tumblr_hook_fork(&$a, &$b)
+function tumblr_hook_fork(App $a, array &$b)
 {
 	if ($b['name'] != 'notifier_normal') {
 		return;

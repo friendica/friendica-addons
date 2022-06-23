@@ -6,6 +6,8 @@
  * Author: Michael Vogel <http://pirati.ca/profile/heluecht>
  * Author: Matthias Ebers <https://loma.ml/profile/one>
  */
+
+use Friendica\App;
 use Friendica\Content\Smilies;
 use Friendica\Core\Hook;
 
@@ -13,7 +15,8 @@ function unicode_smilies_install() {
 	Hook::register('smilie', 'addon/unicode_smilies/unicode_smilies.php', 'unicode_smilies_smilies');
 }
 
-function unicode_smilies_smilies(&$a,&$b) {
+function unicode_smilies_smilies(App $a, array &$b)
+{
 	Smilies::add($b, ':-)', '&#x1F600;');
 	Smilies::add($b, ':)', '&#x1F600;');
 	Smilies::add($b, ':-(', '&#x1F641;');

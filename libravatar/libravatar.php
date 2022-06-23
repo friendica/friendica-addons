@@ -35,7 +35,7 @@ function libravatar_load_config(App $a, ConfigFileLoader $loader)
  * @param $a array
  * @param &$b array
  */
-function libravatar_lookup($a, &$b)
+function libravatar_lookup(array $a, array &$b)
 {
 	$default_avatar = DI::config()->get('libravatar', 'default_avatar');
 	if (empty($default_avatar)) {
@@ -44,6 +44,7 @@ function libravatar_lookup($a, &$b)
 	}
 
 	require_once 'Services/Libravatar.php';
+
 	$libravatar = new Services_Libravatar();
 	$libravatar->setSize($b['size']);
 	$libravatar->setDefault($default_avatar);
@@ -56,7 +57,7 @@ function libravatar_lookup($a, &$b)
 /**
  * Display admin settings for this addon
  */
-function libravatar_addon_admin(&$a, &$o)
+function libravatar_addon_admin(App $a, &$o)
 {
 	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/libravatar");
 
@@ -87,7 +88,7 @@ function libravatar_addon_admin(&$a, &$o)
 /**
  * Save admin settings
  */
-function libravatar_addon_admin_post(&$a)
+function libravatar_addon_admin_post(App $a)
 {
 	$default_avatar = trim($_POST['avatar'] ?? 'identicon');
 	DI::config()->set('libravatar', 'default_avatar', $default_avatar);

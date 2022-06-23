@@ -1149,7 +1149,7 @@ function twitter_parse_link(App $a, array &$b)
  *
  * @return array item data to be posted
  */
-function twitter_do_mirrorpost(App $a, $uid, $post)
+function twitter_do_mirrorpost(App $a, int $uid, $post)
 {
 	$datarray['uid'] = $uid;
 	$datarray['extid'] = 'twitter::' . $post->id;
@@ -1196,7 +1196,7 @@ function twitter_do_mirrorpost(App $a, $uid, $post)
 	return $datarray;
 }
 
-function twitter_fetchtimeline(App $a, $uid)
+function twitter_fetchtimeline(App $a, int $uid)
 {
 	$ckey    = DI::config()->get('twitter', 'consumerkey');
 	$csecret = DI::config()->get('twitter', 'consumersecret');
@@ -1740,7 +1740,7 @@ function twitter_media_entities($post, array &$postarray, int $uriid = -1)
  * @param integer $uriid URI Id used to store tags. 0 = create a new one; -1 = don't store tags for this post.
  * @return array item array
  */
-function twitter_createpost(App $a, $uid, $post, array $self, $create_user, $only_existing_contact, $noquote, int $uriid = 0)
+function twitter_createpost(App $a, int $uid, $post, array $self, $create_user, bool $only_existing_contact, $noquote, int $uriid = 0)
 {
 	$postarray = [];
 	$postarray['network'] = Protocol::TWITTER;
@@ -1951,7 +1951,7 @@ function twitter_store_tags(int $uriid, array $taglist)
 	}
 }
 
-function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection, array $self)
+function twitter_fetchparentposts(App $a, int $uid, $post, TwitterOAuth $connection, array $self)
 {
 	Logger::info('Fetching parent posts', ['user' => $uid, 'post' => $post->id_str]);
 
@@ -2003,7 +2003,7 @@ function twitter_fetchparentposts(App $a, $uid, $post, TwitterOAuth $connection,
 	}
 }
 
-function twitter_fetchhometimeline(App $a, $uid)
+function twitter_fetchhometimeline(App $a, int $uid)
 {
 	$ckey    = DI::config()->get('twitter', 'consumerkey');
 	$csecret = DI::config()->get('twitter', 'consumersecret');
@@ -2192,7 +2192,7 @@ function twitter_fetchhometimeline(App $a, $uid)
 	Logger::info('Last mentions ID for user ' . $uid . ' is now ' . $lastid);
 }
 
-function twitter_fetch_own_contact(App $a, $uid)
+function twitter_fetch_own_contact(App $a, int $uid)
 {
 	$ckey    = DI::config()->get('twitter', 'consumerkey');
 	$csecret = DI::config()->get('twitter', 'consumersecret');
@@ -2228,7 +2228,7 @@ function twitter_fetch_own_contact(App $a, $uid)
 	return $contact_id;
 }
 
-function twitter_is_retweet(App $a, $uid, $body)
+function twitter_is_retweet(App $a, int $uid, string $body)
 {
 	$body = trim($body);
 
@@ -2283,7 +2283,7 @@ function twitter_retweet(int $uid, int $id, int $item_id = 0)
 	return !isset($result->errors);
 }
 
-function twitter_update_mentions($body)
+function twitter_update_mentions(string $body): string
 {
 	$URLSearchString = '^\[\]';
 	$return = preg_replace_callback(
@@ -2303,7 +2303,7 @@ function twitter_update_mentions($body)
 	return $return;
 }
 
-function twitter_convert_share(array $attributes, array $author_contact, $content, $is_quote_share)
+function twitter_convert_share(array $attributes, array $author_contact, string $content, bool $is_quote_share): string
 {
 	if (empty($author_contact)) {
 		return $content . "\n\n" . $attributes['link'];

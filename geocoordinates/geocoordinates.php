@@ -6,6 +6,7 @@
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
 
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
@@ -71,12 +72,12 @@ function geocoordinates_resolve_item(&$item)
 		DI::cache()->set("geocoordinates:".$language.":".$coords[0]."-".$coords[1], $item["location"]);
 }
 
-function geocoordinates_post_hook($a, &$item)
+function geocoordinates_post_hook(App $a, &$item)
 {
 	geocoordinates_resolve_item($item);
 }
 
-function geocoordinates_addon_admin(&$a, &$o)
+function geocoordinates_addon_admin(App $a, &$o)
 {
 
 	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/geocoordinates/");
@@ -88,7 +89,7 @@ function geocoordinates_addon_admin(&$a, &$o)
 	]);
 }
 
-function geocoordinates_addon_admin_post(&$a)
+function geocoordinates_addon_admin_post(App $a)
 {
 	$api_key  = trim($_POST['api_key'] ?? '');
 	DI::config()->set('geocoordinates', 'api_key', $api_key);

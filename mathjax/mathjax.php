@@ -20,7 +20,7 @@ function mathjax_install()
 	Hook::register('addon_settings_post', __FILE__, 'mathjax_settings_post');
 }
 
-function mathjax_settings_post($a)
+function mathjax_settings_post(App $a)
 {
 	if (!local_user() || empty($_POST['mathjax-submit'])) {
 		return;
@@ -50,7 +50,7 @@ function mathjax_settings(App $a, array &$data)
 	];
 }
 
-function mathjax_footer(App $a, &$b)
+function mathjax_footer(App $a, array &$b)
 {
 	//  if the visitor of the page is not a local_user, use MathJax
 	//  otherwise check the users settings.

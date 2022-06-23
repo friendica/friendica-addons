@@ -3,19 +3,23 @@
  * Name: Smiley Pack (Français)
  * Description: Pack of smileys that make master too AOLish.
  * Version: 1.01
- * Author: Thomas Willingham (based on Mike Macgirvin's Adult Smile template) 
+ * Author: Thomas Willingham (based on Mike Macgirvin's Adult Smile template)
  * All smileys from sites offering them as Public Domain
- * 
- * 
+ *
+ *
  */
+
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 
-function smiley_pack_fr_install() {
+function smiley_pack_fr_install()
+{
 	Hook::register('smilie', 'addon/smiley_pack_fr/smiley_pack_fr.php', 'smiley_pack_fr_smilies');
 }
 
-function smiley_pack_fr_smilies(&$a,&$b) {
+function smiley_pack_fr_smilies(App $a, array &$b)
+{
 
 #Smileys are split into various directories by the intended range of emotions.  This is in case we get too big and need to modularise things.  We can then cut and paste the right lines, move the right directory, and just change the name of the addon to happy_smilies or whatever.
 
@@ -392,7 +396,7 @@ function smiley_pack_fr_smilies(&$a,&$b) {
 	$b['texts'][] = ':cognetête';
 	$b['icons'][] = '<img src="' . DI::baseUrl()->get() . '/addon/smiley_pack/icons/oldcore/headbang.gif' . '" alt="' . ':cognetête' . '" />';
 
-		$b['texts'][] = ':barbu';
+	$b['texts'][] = ':barbu';
 	$b['icons'][] = '<img src="' . DI::baseUrl()->get() . '/addon/smiley_pack/icons/oldcore/beard.png' . '" alt="' . ':barbu' . '" />';
 
 	$b['texts'][] = ':barbeblanche';
@@ -400,5 +404,4 @@ function smiley_pack_fr_smilies(&$a,&$b) {
 
 	$b['texts'][] = ':tête';
 	$b['icons'][] = '<img src="' . DI::baseUrl()->get() . '/addon/smiley_pack/icons/oldcore/headbang.gif' . '" alt="' . ':tête' . '" />';
-
 }

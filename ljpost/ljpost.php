@@ -21,32 +21,31 @@ use Friendica\Util\DateTimeFormat;
 use Friendica\Util\XML;
 
 function ljpost_install() {
-    Hook::register('post_local',           'addon/ljpost/ljpost.php', 'ljpost_post_local');
-    Hook::register('notifier_normal',      'addon/ljpost/ljpost.php', 'ljpost_send');
-    Hook::register('jot_networks',         'addon/ljpost/ljpost.php', 'ljpost_jot_nets');
-    Hook::register('connector_settings',      'addon/ljpost/ljpost.php', 'ljpost_settings');
-    Hook::register('connector_settings_post', 'addon/ljpost/ljpost.php', 'ljpost_settings_post');
+Hook::register('post_local',   'addon/ljpost/ljpost.php', 'ljpost_post_local');
+Hook::register('notifier_normal',  'addon/ljpost/ljpost.php', 'ljpost_send');
+Hook::register('jot_networks', 'addon/ljpost/ljpost.php', 'ljpost_jot_nets');
+Hook::register('connector_settings',  'addon/ljpost/ljpost.php', 'ljpost_settings');
+Hook::register('connector_settings_post', 'addon/ljpost/ljpost.php', 'ljpost_settings_post');
 
 }
 
 function ljpost_jot_nets(App &$a, array &$jotnets_fields)
 {
-    if(! local_user()) {
-        return;
-    }
-
-    if (DI::pConfig()->get(local_user(),'ljpost','post')) {
-	    $jotnets_fields[] = [
-		    'type' => 'checkbox',
-		    'field' => [
-			    'ljpost_enable',
-			    DI::l10n()->t('Post to LiveJournal'),
-			    DI::pConfig()->get(local_user(),'ljpost','post_by_default')
-		    ]
-	    ];
-    }
+if(! local_user()) {
+return;
 }
 
+if (DI::pConfig()->get(local_user(),'ljpost','post')) {
+	$jotnets_fields[] = [
+		'type' => 'checkbox',
+		'field' => [
+			'ljpost_enable',
+			DI::l10n()->t('Post to LiveJournal'),
+			DI::pConfig()->get(local_user(),'ljpost','post_by_default')
+		]
+	];
+}
+}
 
 function ljpost_settings(App &$a, array &$data)
 {
@@ -54,11 +53,11 @@ function ljpost_settings(App &$a, array &$data)
 		return;
 	}
 
-	$enabled     = DI::pConfig()->get(local_user(), 'ljpost', 'post', false);
+	$enabled = DI::pConfig()->get(local_user(), 'ljpost', 'post', false);
 	$ij_username = DI::pConfig()->get(local_user(), 'ljpost', 'ij_username');
 	$def_enabled = DI::pConfig()->get(local_user(), 'ljpost', 'post_by_default');
 
-	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/ljpost/');
+	$t= Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/ljpost/');
 	$html = Renderer::replaceMacros($t, [
 		'$enabled'   => ['ljpost', DI::l10n()->t('Enable LiveJournal Post Addon'), $enabled],
 		'$username'  => ['ij_username', DI::l10n()->t('LiveJournal username'), $ij_username],
@@ -68,68 +67,68 @@ function ljpost_settings(App &$a, array &$data)
 
 	$data = [
 		'connector' => 'ljpost',
-		'title'     => DI::l10n()->t('LiveJournal Export'),
-		'image'     => 'addon/ljpost/livejournal.png',
+		'title' => DI::l10n()->t('LiveJournal Export'),
+		'image' => 'addon/ljpost/livejournal.png',
 		'enabled'   => $enabled,
-		'html'      => $html,
+		'html'  => $html,
 	];
 }
 
+function ljpost_settings_post(App $a, array &$b)
+{
+	if (!empty($_POST['ljpost-submit'])) {
+		DI::pConfig()->set(local_user(), 'ljpost', 'post', intval($_POST['ljpost']));
+		DI::pConfig()->set(local_user(), 'ljpost', 'post_by_default', intval($_POST['lj_bydefault']));
+		DI::pConfig()->set(local_user(), 'ljpost', 'lj_username', trim($_POST['lj_username']));
+		DI::pConfig()->set(local_user(), 'ljpost', 'lj_password', trim($_POST['lj_password']));
+	}
+}
 
-function ljpost_settings_post(&$a,&$b) {
-
-	if(!empty($_POST['ljpost-submit'])) {
-
-		DI::pConfig()->set(local_user(),'ljpost','post',intval($_POST['ljpost']));
-		DI::pConfig()->set(local_user(),'ljpost','post_by_default',intval($_POST['lj_bydefault']));
-		DI::pConfig()->set(local_user(),'ljpost','lj_username',trim($_POST['lj_username']));
-		DI::pConfig()->set(local_user(),'ljpost','lj_password',trim($_POST['lj_password']));
-
+function ljpost_post_local(App $a, array &$b)
+{
+	// This can probably be changed to allow editing by pointing to a different API endpoint
+	if ($b['edit']) {
+		return;
 	}
 
-}
-
-function ljpost_post_local(&$a,&$b) {
-
-	// This can probably be changed to allow editing by pointing to a different API endpoint
-
-	if($b['edit'])
+	if ((! local_user()) || (local_user() != $b['uid'])) {
 		return;
+	}
 
-	if((! local_user()) || (local_user() != $b['uid']))
+	if ($b['private'] || $b['parent']) {
 		return;
+	}
 
-	if($b['private'] || $b['parent'])
-		return;
-
-    $lj_post   = intval(DI::pConfig()->get(local_user(),'ljpost','post'));
-
+	$lj_post   = intval(DI::pConfig()->get(local_user(),'ljpost','post'));
 	$lj_enable = (($lj_post && !empty($_REQUEST['ljpost_enable'])) ? intval($_REQUEST['ljpost_enable']) : 0);
 
-	if($b['api_source'] && intval(DI::pConfig()->get(local_user(),'ljpost','post_by_default')))
+	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(), 'ljpost', 'post_by_default'))) {
 		$lj_enable = 1;
+	}
 
-    if(! $lj_enable)
-       return;
+	if (!$lj_enable) {
+		return;
+	}
 
-    if(strlen($b['postopts']))
-       $b['postopts'] .= ',';
-     $b['postopts'] .= 'ljpost';
+	if (strlen($b['postopts'])) {
+		$b['postopts'] .= ',';
+	}
+	$b['postopts'] .= 'ljpost';
 }
 
+function ljpost_send(App $a, array &$b)
+{
+	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
+		return;
+	}
 
+	if (!strstr($b['postopts'],'ljpost')) {
+		return;
+	}
 
-
-function ljpost_send(&$a,&$b) {
-
-    if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited']))
-        return;
-
-    if(! strstr($b['postopts'],'ljpost'))
-        return;
-
-    if($b['parent'] != $b['id'])
-        return;
+	if ($b['parent'] != $b['id']) {
+		return;
+	}
 
 	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], $b['body']);
 
@@ -147,10 +146,11 @@ function ljpost_send(&$a,&$b) {
 //		$lj_journal = $lj_username;
 
 	$lj_blog = XML::escape(DI::pConfig()->get($b['uid'],'ljpost','lj_blog'));
-	if(! strlen($lj_blog))
+	if (!strlen($lj_blog)) {
 		$lj_blog = XML::escape('http://www.livejournal.com/interface/xmlrpc');
+	}
 
-	if($lj_username && $lj_password && $lj_blog) {
+	if ($lj_username && $lj_password && $lj_blog) {
 		$title = XML::escape($b['title']);
 		$post = BBCode::convertForUriId($b['uri-id'], $b['body'], BBCode::CONNECTORS);
 		$post = XML::escape($post);
@@ -166,41 +166,42 @@ function ljpost_send(&$a,&$b) {
 		$xml = <<< EOT
 <?xml version="1.0" encoding="utf-8"?>
 <methodCall>
-  <methodName>LJ.XMLRPC.postevent</methodName>
-  <params>
-    <param><value>
-        <struct>
-        <member><name>username</name><value><string>$lj_username</string></value></member>
-        <member><name>password</name><value><string>$lj_password</string></value></member>
-        <member><name>event</name><value><string>$post</string></value></member>
-        <member><name>subject</name><value><string>$title</string></value></member>
-        <member><name>lineendings</name><value><string>unix</string></value></member>
-        <member><name>year</name><value><int>$year</int></value></member>
-        <member><name>mon</name><value><int>$mon</int></value></member>
-        <member><name>day</name><value><int>$day</int></value></member>
-        <member><name>hour</name><value><int>$hour</int></value></member>
-        <member><name>min</name><value><int>$min</int></value></member>
-		<member><name>usejournal</name><value><string>$lj_username</string></value></member>
-		<member>
-			<name>props</name>
+<methodName>LJ.XMLRPC.postevent</methodName>
+	<params>
+		<param>
 			<value>
 				<struct>
+					<member><name>username</name><value><string>$lj_username</string></value></member>
+					<member><name>password</name><value><string>$lj_password</string></value></member>
+					<member><name>event</name><value><string>$post</string></value></member>
+					<member><name>subject</name><value><string>$title</string></value></member>
+					<member><name>lineendings</name><value><string>unix</string></value></member>
+					<member><name>year</name><value><int>$year</int></value></member>
+					<member><name>mon</name><value><int>$mon</int></value></member>
+					<member><name>day</name><value><int>$day</int></value></member>
+					<member><name>hour</name><value><int>$hour</int></value></member>
+					<member><name>min</name><value><int>$min</int></value></member>
+					<member><name>usejournal</name><value><string>$lj_username</string></value></member>
 					<member>
-						<name>useragent</name>
-						<value><string>Friendica</string></value>
-					</member>
-					<member>
-						<name>taglist</name>
-						<value><string>$tags</string></value>
+						<name>props</name>
+						<value>
+							<struct>
+								<member>
+									<name>useragent</name>
+									<value><string>Friendica</string></value>
+								</member>
+								<member>
+									<name>taglist</name>
+									<value><string>$tags</string></value>
+								</member>
+							</struct>
+						</value>
 					</member>
 				</struct>
 			</value>
-		</member>
-        </struct>
-    </value></param>
-  </params>
+		</param>
+	</params>
 </methodCall>
-
 EOT;
 
 		Logger::debug('ljpost: data: ' . $xml);
@@ -208,6 +209,7 @@ EOT;
 		if ($lj_blog !== 'test') {
 			$x = DI::httpClient()->post($lj_blog, $xml, ['Content-Type' => 'text/xml'])->getBody();
 		}
+
 		Logger::info('posted to livejournal: ' . ($x) ? $x : '');
 	}
 }

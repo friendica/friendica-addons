@@ -82,10 +82,11 @@ function opmlexport_addon_settings(App $a, array &$data)
 }
 
 
-function opmlexport_addon_settings_post(App $a, &$b)
+function opmlexport_addon_settings_post(App $a, array &$b)
 {
 	if (!local_user() || empty($_POST['opmlexport-submit'])) {
 		return;
 	}
+
 	opmlexport($a);
 }

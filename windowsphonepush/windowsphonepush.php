@@ -70,7 +70,7 @@ function windowsphonepush_module()
  * We will make sure we've got a valid user account
  * and if so set our configuration setting for this person.
  */
-function windowsphonepush_settings_post($a, $post)
+function windowsphonepush_settings_post(App $a, $post)
 {
 	if (!local_user() || empty($_POST['windowsphonepush-submit'])) {
 		return;

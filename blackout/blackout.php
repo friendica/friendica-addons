@@ -44,6 +44,7 @@
  * THE SOFTWARE.
  */
 
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
@@ -54,7 +55,8 @@ function blackout_install() {
 	Hook::register('page_header', 'addon/blackout/blackout.php', 'blackout_redirect');
 }
 
-function blackout_redirect ($a, $b) {
+function blackout_redirect (App $a, $b)
+{
 	// if we have a logged in user, don't throw her out
 	if (local_user()) {
 		return true;
@@ -67,20 +69,21 @@ function blackout_redirect ($a, $b) {
 	$now = time();
 	$date1 = DateTime::createFromFormat('Y-m-d G:i', $mystart);
 	$date2 = DateTime::createFromFormat('Y-m-d G:i', $myend);
-	if ( $date1 && $date2 ) {
+	if ($date1 && $date2) {
 		$date1 = DateTime::createFromFormat('Y-m-d G:i', $mystart)->format('U');
 		$date2 = DateTime::createFromFormat('Y-m-d G:i', $myend)->format('U');
 	} else {
-		   $date1 = 0;
-		   $date2 = 0;
+		$date1 = 0;
+		$date2 = 0;
 	}
+
 	if (( $date1 <= $now ) && ( $now <= $date2 )) {
 		Logger::notice('redirecting user to blackout page');
 		System::externalRedirect($myurl);
 	}
 }
 
-function blackout_addon_admin(&$a, &$o) {
+function blackout_addon_admin(App $a, &$o) {
 	$mystart = DI::config()->get('blackout','begindate');
 	if (! is_string($mystart)) { $mystart = 'YYYY-MM-DD hh:mm'; }
 	$myend   = DI::config()->get('blackout','enddate');
@@ -107,7 +110,7 @@ function blackout_addon_admin(&$a, &$o) {
 		'$aboutredirect' => DI::l10n()->t("<strong>Note</strong>: The redirect will be active from the moment you press the submit button. Users currently logged in will <strong>not</strong> be thrown out but can't login again after logging out while the blackout is still in place."),
 	]);
 }
-function blackout_addon_admin_post (&$a) {
+function blackout_addon_admin_post (App $a) {
 	$begindate = trim($_POST['startdate']);
 	$enddate = trim($_POST['enddate']);
 	$url = trim($_POST['rurl']);

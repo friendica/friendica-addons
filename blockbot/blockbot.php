@@ -19,12 +19,14 @@ use Friendica\Network\HTTPException\ForbiddenException;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
-function blockbot_install() {
+function blockbot_install()
+{
 	Hook::register('init_1', __FILE__, 'blockbot_init_1');
 }
 
-function blockbot_addon_admin(&$a, &$o) {
-	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/blockbot/");
+function blockbot_addon_admin(App $a, &$o)
+{
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/blockbot/');
 
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
@@ -34,13 +36,15 @@ function blockbot_addon_admin(&$a, &$o) {
 	]);
 }
 
-function blockbot_addon_admin_post(&$a) {
+function blockbot_addon_admin_post(App $a)
+{
 	DI::config()->set('blockbot', 'good_crawlers', $_POST['good_crawlers'] ?? false);
 	DI::config()->set('blockbot', 'block_gab', $_POST['block_gab'] ?? false);
 	DI::config()->set('blockbot', 'training', $_POST['training'] ?? false);
 }
 
-function blockbot_init_1(App $a) {
+function blockbot_init_1(App $a)
+{
 	if (empty($_SERVER['HTTP_USER_AGENT'])) {
 		return;
 	}

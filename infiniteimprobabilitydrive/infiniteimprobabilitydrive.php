@@ -5,6 +5,8 @@
 * Version: 1.0
 * Author: Thomas Willingham <https://kakste.com/profile/beardyunixer>
 */
+
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 
@@ -13,7 +15,7 @@ function infiniteimprobabilitydrive_install()
 	Hook::register('app_menu', 'addon/infiniteimprobabilitydrive/infiniteimprobabilitydrive.php', 'infiniteimprobabilitydrive_app_menu');
 }
 
-function infiniteimprobabilitydrive_app_menu($a, &$b)
+function infiniteimprobabilitydrive_app_menu(App $a, array &$b)
 {
 	$b['app_menu'][] = '<div class="app-title"><a href="infiniteimprobabilitydrive">' . DI::l10n()->t('Infinite Improbability Drive') . '</a></div>';
 }
@@ -25,7 +27,7 @@ function infiniteimprobabilitydrive_module()
 }
 
 
-function infiniteimprobabilitydrive_content(&$a)
+function infiniteimprobabilitydrive_content(App $a)
 {
 	$baseurl = DI::baseUrl()->get() . '/addon/infiniteimprobabilitydrive';
 	$o = '';

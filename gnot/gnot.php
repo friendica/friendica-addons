@@ -15,8 +15,8 @@ use Friendica\Core\Renderer;
 use Friendica\DI;
 use Friendica\Model\Notification;
 
-function gnot_install() {
-
+function gnot_install()
+{
 	Hook::register('addon_settings', 'addon/gnot/gnot.php', 'gnot_settings');
 	Hook::register('addon_settings_post', 'addon/gnot/gnot.php', 'gnot_settings_post');
 	Hook::register('enotify_mail', 'addon/gnot/gnot.php', 'gnot_enotify_mail');
@@ -25,31 +25,22 @@ function gnot_install() {
 }
 
 /**
- *
  * Callback from the settings post function.
  * $post contains the $_POST array.
  * We will make sure we've got a valid user account
  * and if so set our configuration setting for this person.
- *
  */
-
-function gnot_settings_post($a,$post) {
+function gnot_settings_post(App $a, $post) {
 	if(! local_user() || empty($_POST['gnot-submit']))
 		return;
 
 	DI::pConfig()->set(local_user(),'gnot','enable',intval($_POST['gnot']));
 }
 
-
 /**
- *
  * Called from the Addon Setting form. 
  * Add our own settings info to the page.
- *
  */
-
-
-
 function gnot_settings(App &$a, array &$data)
 {
 	if (!local_user()) {
@@ -71,10 +62,13 @@ function gnot_settings(App &$a, array &$data)
 	];
 }
 
-
-function gnot_enotify_mail(&$a,&$b) {
-	if((! $b['uid']) || (! intval(DI::pConfig()->get($b['uid'], 'gnot','enable'))))
+function gnot_enotify_mail(App $a, array &$b)
+{
+	if ((!$b['uid']) || (! intval(DI::pConfig()->get($b['uid'], 'gnot','enable')))) {
 		return;
-	if($b['type'] == Notification\Type::COMMENT)
+	}
+
+	if ($b['type'] == Notification\Type::COMMENT) {
 		$b['subject'] = DI::l10n()->t('[Friendica:Notify] Comment to conversation #%d', $b['parent']);
+	}
 }

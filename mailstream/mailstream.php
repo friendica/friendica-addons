@@ -70,7 +70,7 @@ function mailstream_module()
  * @param Friendica\App $a App object (unused)
  * @param string        $o HTML form data
  */
-function mailstream_addon_admin(&$a, &$o)
+function mailstream_addon_admin(App $a, &$o)
 {
 	$frommail = DI::config()->get('mailstream', 'frommail');
 	$template = Renderer::getMarkupTemplate('admin.tpl', 'addon/mailstream/');
@@ -110,7 +110,7 @@ function mailstream_generate_id($uri)
 	return $message_id;
 }
 
-function mailstream_send_hook(&$a, $data)
+function mailstream_send_hook(App $a, $data)
 {
 	$criteria = array('uid' => $data['uid'], 'contact-id' => $data['contact-id'], 'uri' => $data['uri']);
 	$item = Post::selectFirst([], $criteria);
@@ -141,7 +141,7 @@ function mailstream_send_hook(&$a, $data)
  * @param Friendica\App $a    App object (unused)
  * @param array         $item content of the item (may or may not already be stored in the item table)
  */
-function mailstream_post_hook(&$a, &$item)
+function mailstream_post_hook(App $a, &$item)
 {
 	mailstream_check_version();
 
