@@ -35,7 +35,7 @@ function tumblr_module()
 
 function tumblr_content(App $a)
 {
-	if (! local_user()) {
+	if (!local_user()) {
 		notice(DI::l10n()->t('Permission denied.') . EOL);
 		return '';
 	}
@@ -182,7 +182,7 @@ function tumblr_callback(App $a)
 
 function tumblr_jot_nets(App $a, array &$jotnets_fields)
 {
-	if (! local_user()) {
+	if (!local_user()) {
 		return;
 	}
 

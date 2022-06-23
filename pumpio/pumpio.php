@@ -202,7 +202,7 @@ function pumpio_connect(App $a)
 
 function pumpio_jot_nets(App $a, array &$jotnets_fields)
 {
-	if (! local_user()) {
+	if (!local_user()) {
 		return;
 	}
 

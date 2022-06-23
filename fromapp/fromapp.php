@@ -55,7 +55,7 @@ function fromapp_settings(App &$a, array &$data)
 
 function fromapp_post_hook(App $a, &$item)
 {
-	if (! local_user()) {
+	if (!local_user()) {
 		return;
 	}
 
