@@ -16,57 +16,54 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
-function krynn_install() {
-
+function krynn_install()
+{
 	/**
-	 *
 	 * Our demo addon will attach in three places.
 	 * The first is just prior to storing a local post.
-	 *
 	 */
-
 	Hook::register('post_local', 'addon/krynn/krynn.php', 'krynn_post_hook');
 
 	/**
-	 *
 	 * Then we'll attach into the addon settings page, and also the
 	 * settings post hook so that we can create and update
 	 * user preferences.
-	 *
 	 */
-
 	Hook::register('addon_settings', 'addon/krynn/krynn.php', 'krynn_settings');
 	Hook::register('addon_settings_post', 'addon/krynn/krynn.php', 'krynn_settings_post');
 
 	Logger::notice("installed krynn");
 }
 
-function krynn_post_hook(App $a, &$item) {
-
+function krynn_post_hook(App $a, &$item)
+{
 	/**
-	 *
 	 * An item was posted on the local system.
 	 * We are going to look for specific items:
 	 *      - A status post by a profile owner
 	 *      - The profile owner must have allowed our addon
-	 *
 	 */
-
-	if(! local_user())   /* non-zero if this is a logged in user of this system */
+	if (!local_user()) {
+		/* non-zero if this is a logged in user of this system */
 		return;
+	}
 
-	if(local_user() != $item['uid'])    /* Does this person own the post? */
+	if (local_user() != $item['uid']) {
+		/* Does this person own the post? */
 		return;
+	}
 
-	if($item['parent'])   /* If the item has a parent, this is a comment or something else, not a status post. */
+	if ($item['parent']) {
+		/* If the item has a parent, this is a comment or something else, not a status post. */
 		return;
+	}
 
 	/* Retrieve our personal config setting */
-
 	$active = DI::pConfig()->get(local_user(), 'krynn', 'enable');
 
-	if(! $active)
+	if (!$active) {
 		return;
+	}
 
 	/**
 	 *
@@ -85,38 +82,30 @@ function krynn_post_hook(App $a, &$item) {
 	return;
 }
 
-
-
-
 /**
- *
  * Callback from the settings post function.
  * $post contains the $_POST array.
  * We will make sure we've got a valid user account
  * and if so set our configuration setting for this person.
- *
  */
-
-function krynn_settings_post(App $a, $post) {
-	if(! local_user())
+function krynn_settings_post(App $a, $post)
+{
+	if (!local_user()) {
 		return;
-	if($_POST['krynn-submit'])
+	}
+
+	if ($_POST['krynn-submit']) {
 		DI::pConfig()->set(local_user(),'krynn','enable',intval($_POST['krynn']));
+	}
 }
 
-
 /**
- *
  * Called from the addon Setting form.
  * Add our own settings info to the page.
- *
  */
-
-
-
 function krynn_settings(App &$a, array &$data)
 {
-	if(! local_user()) {
+	if (!local_user()) {
 		return;
 	}
 

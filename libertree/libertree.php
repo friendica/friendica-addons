@@ -107,7 +107,7 @@ function libertree_post_local(App $a, array &$b)
 		return;
 	}
 
-	if ((! local_user()) || (local_user() != $b['uid'])) {
+	if ((!local_user()) || (local_user() != $b['uid'])) {
 		return;
 	}
 

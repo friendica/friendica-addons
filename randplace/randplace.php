@@ -138,7 +138,7 @@ function randplace_settings_post(App $a, $post)
  */
 function randplace_settings(App &$a, array &$data)
 {
-	if(! local_user()) {
+	if(!local_user()) {
 		return;
 	}
 

@@ -20,31 +20,31 @@ use Friendica\Model\User;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\XML;
 
-function ljpost_install() {
-Hook::register('post_local',   'addon/ljpost/ljpost.php', 'ljpost_post_local');
-Hook::register('notifier_normal',  'addon/ljpost/ljpost.php', 'ljpost_send');
-Hook::register('jot_networks', 'addon/ljpost/ljpost.php', 'ljpost_jot_nets');
-Hook::register('connector_settings',  'addon/ljpost/ljpost.php', 'ljpost_settings');
-Hook::register('connector_settings_post', 'addon/ljpost/ljpost.php', 'ljpost_settings_post');
-
+function ljpost_install()
+{
+	Hook::register('post_local',   'addon/ljpost/ljpost.php', 'ljpost_post_local');
+	Hook::register('notifier_normal',  'addon/ljpost/ljpost.php', 'ljpost_send');
+	Hook::register('jot_networks', 'addon/ljpost/ljpost.php', 'ljpost_jot_nets');
+	Hook::register('connector_settings',  'addon/ljpost/ljpost.php', 'ljpost_settings');
+	Hook::register('connector_settings_post', 'addon/ljpost/ljpost.php', 'ljpost_settings_post');
 }
 
 function ljpost_jot_nets(App &$a, array &$jotnets_fields)
 {
-if(! local_user()) {
-return;
-}
+	if (!local_user()) {
+		return;
+	}
 
-if (DI::pConfig()->get(local_user(),'ljpost','post')) {
-	$jotnets_fields[] = [
-		'type' => 'checkbox',
-		'field' => [
-			'ljpost_enable',
-			DI::l10n()->t('Post to LiveJournal'),
-			DI::pConfig()->get(local_user(),'ljpost','post_by_default')
-		]
-	];
-}
+	if (DI::pConfig()->get(local_user(),'ljpost','post')) {
+		$jotnets_fields[] = [
+			'type' => 'checkbox',
+			'field' => [
+				'ljpost_enable',
+				DI::l10n()->t('Post to LiveJournal'),
+				DI::pConfig()->get(local_user(), 'ljpost', 'post_by_default'),
+			],
+		];
+	}
 }
 
 function ljpost_settings(App &$a, array &$data)
@@ -91,7 +91,7 @@ function ljpost_post_local(App $a, array &$b)
 		return;
 	}
 
-	if ((! local_user()) || (local_user() != $b['uid'])) {
+	if ((!local_user()) || (local_user() != $b['uid'])) {
 		return;
 	}
 
