@@ -1592,16 +1592,16 @@ function twitter_expand_entities($body, stdClass $status)
 /**
  * Store entity attachments
  *
- * @param integer $uriid
+ * @param integer $uriId
  * @param object $post Twitter object with the post
  */
-function twitter_store_attachments(int $uriid, $post)
+function twitter_store_attachments(int $uriId, $post)
 {
 	if (!empty($post->extended_entities->media)) {
 		foreach ($post->extended_entities->media AS $medium) {
 			switch ($medium->type) {
 				case 'photo':
-					$attachment = ['uri-id' => $uriid, 'type' => Post\Media::IMAGE];
+					$attachment = ['uri-id' => $uriId, 'type' => Post\Media::IMAGE];
 
 					$attachment['url'] = $medium->media_url_https . '?name=large';
 					$attachment['width'] = $medium->sizes->large->w;
@@ -1620,7 +1620,7 @@ function twitter_store_attachments(int $uriid, $post)
 					break;
 				case 'video':
 				case 'animated_gif':
-					$attachment = ['uri-id' => $uriid, 'type' => Post\Media::VIDEO];
+					$attachment = ['uri-id' => $uriId, 'type' => Post\Media::VIDEO];
 					if (is_array($medium->video_info->variants)) {
 						$bitrate = 0;
 						// We take the video with the highest bitrate
@@ -1648,7 +1648,7 @@ function twitter_store_attachments(int $uriid, $post)
 
 	if (!empty($post->entities->urls)) {
 		foreach ($post->entities->urls as $url) {
-			$attachment = ['uri-id' => $uriid, 'type' => Post\Media::UNKNOWN, 'url' => $url->expanded_url, 'name' => $url->display_url];
+			$attachment = ['uri-id' => $uriId, 'type' => Post\Media::UNKNOWN, 'url' => $url->expanded_url, 'name' => $url->display_url];
 			Logger::debug('Attached link', ['attachment' => $attachment]);
 			Post\Media::insert($attachment);
 		}
@@ -1660,9 +1660,9 @@ function twitter_store_attachments(int $uriid, $post)
  *
  * @param object  $post      Twitter object with the post
  * @param array   $postarray Array of the item that is about to be posted
- * @param integer $uriid URI Id used to store tags. -1 = don't store tags for this post.
+ * @param integer $uriId URI Id used to store tags. -1 = don't store tags for this post.
  */
-function twitter_media_entities($post, array &$postarray, int $uriid = -1)
+function twitter_media_entities($post, array &$postarray, int $uriId = -1)
 {
 	// There are no media entities? So we quit.
 	if (empty($post->extended_entities->media)) {
@@ -1714,7 +1714,7 @@ function twitter_media_entities($post, array &$postarray, int $uriid = -1)
 		}
 	}
 
-	if ($uriid != -1) {
+	if ($uriId != -1) {
 		foreach ($media AS $key => $value) {
 			$postarray['body'] = str_replace($key, '', $postarray['body']);
 		}
@@ -1737,10 +1737,10 @@ function twitter_media_entities($post, array &$postarray, int $uriid = -1)
  * @param bool $create_user Should users be created?
  * @param bool $only_existing_contact Only import existing contacts if set to "true"
  * @param bool $noquote
- * @param integer $uriid URI Id used to store tags. 0 = create a new one; -1 = don't store tags for this post.
+ * @param integer $uriId URI Id used to store tags. 0 = create a new one; -1 = don't store tags for this post.
  * @return array item array
  */
-function twitter_createpost(App $a, int $uid, $post, array $self, $create_user, bool $only_existing_contact, $noquote, int $uriid = 0)
+function twitter_createpost(App $a, int $uid, $post, array $self, $create_user, bool $only_existing_contact, $noquote, int $uriId = 0): array
 {
 	$postarray = [];
 	$postarray['network'] = Protocol::TWITTER;
@@ -1751,8 +1751,8 @@ function twitter_createpost(App $a, int $uid, $post, array $self, $create_user, 
 	$postarray['source'] = json_encode($post);
 	$postarray['direction'] = Conversation::PULL;
 
-	if (empty($uriid)) {
-		$uriid = $postarray['uri-id'] = ItemURI::insert(['uri' => $postarray['uri']]);
+	if (empty($uriId)) {
+		$uriId = $postarray['uri-id'] = ItemURI::insert(['uri' => $postarray['uri']]);
 	}
 
 	// Don't import our own comments
@@ -1845,7 +1845,7 @@ function twitter_createpost(App $a, int $uid, $post, array $self, $create_user, 
 	}
 
 	// Search for media links
-	twitter_media_entities($post, $postarray, $uriid);
+	twitter_media_entities($post, $postarray, $uriId);
 
 	$converted = twitter_expand_entities($postarray['body'], $post);
 
@@ -1858,9 +1858,9 @@ function twitter_createpost(App $a, int $uid, $post, array $self, $create_user, 
 	$postarray['created'] = DateTimeFormat::utc($post->created_at);
 	$postarray['edited'] = DateTimeFormat::utc($post->created_at);
 
-	if ($uriid > 0) {
-		twitter_store_tags($uriid, $converted['taglist']);
-		twitter_store_attachments($uriid, $post);
+	if ($uriId > 0) {
+		twitter_store_tags($uriId, $converted['taglist']);
+		twitter_store_attachments($uriId, $post);
 	}
 
 	if (!empty($post->place->name)) {
@@ -1916,7 +1916,7 @@ function twitter_createpost(App $a, int $uid, $post, array $self, $create_user, 
 			if (!empty($quoted['body'])) {
 				Item::insert($quoted);
 				$post = Post::selectFirst(['guid', 'uri-id'], ['uri' => $quoted['uri'], 'uid' => 0]);
-				Logger::info('Stored quoted post', ['uid' => $uid, 'uri-id' => $uriid, 'post' => $post]);
+				Logger::info('Stored quoted post', ['uid' => $uid, 'uri-id' => $uriId, 'post' => $post]);
 
 				$postarray['body'] .= "\n" . BBCode::getShareOpeningTag(
 						$quoted['author-name'],
@@ -1941,13 +1941,14 @@ function twitter_createpost(App $a, int $uid, $post, array $self, $create_user, 
 /**
  * Store tags and mentions
  *
- * @param integer $uriid
+ * @param integer $uriId
  * @param array $taglist
+ * @return void
  */
-function twitter_store_tags(int $uriid, array $taglist)
+function twitter_store_tags(int $uriId, array $taglist)
 {
 	foreach ($taglist as $tag) {
-		Tag::storeByHash($uriid, $tag[0], $tag[1], $tag[2]);
+		Tag::storeByHash($uriId, $tag[0], $tag[1], $tag[2]);
 	}
 }
 
@@ -2228,7 +2229,7 @@ function twitter_fetch_own_contact(App $a, int $uid)
 	return $contact_id;
 }
 
-function twitter_is_retweet(App $a, int $uid, string $body)
+function twitter_is_retweet(App $a, int $uid, string $body): bool
 {
 	$body = trim($body);
 
@@ -2267,7 +2268,7 @@ function twitter_is_retweet(App $a, int $uid, string $body)
 	return twitter_retweet($uid, $id);
 }
 
-function twitter_retweet(int $uid, int $id, int $item_id = 0)
+function twitter_retweet(int $uid, int $id, int $item_id = 0): bool
 {
 	Logger::info('Retweeting', ['user' => $uid, 'id' => $id]);
 
