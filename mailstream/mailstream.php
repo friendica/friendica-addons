@@ -67,7 +67,7 @@ function mailstream_module()
 /**
  * Adds an item in "addon features" in the admin menu of the site
  *
- * @param Friendica\App $a App object (unused)
+ * @param App $a App object (unused)
  * @param string        $o HTML form data
  */
 function mailstream_addon_admin(App $a, &$o)
@@ -138,8 +138,8 @@ function mailstream_send_hook(App $a, $data)
  * mailstream is enabled and the necessary data is available, forks a
  * workerqueue item to send the email.
  *
- * @param Friendica\App $a    App object (unused)
- * @param array         $item content of the item (may or may not already be stored in the item table)
+ * @param App $a    App object (unused)
+ * @param array     $item content of the item (may or may not already be stored in the item table)
  */
 function mailstream_post_hook(App $a, &$item)
 {

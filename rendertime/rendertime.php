@@ -44,10 +44,10 @@ function rendertime_addon_admin_post(App $a)
 }
 
 /**
- * @param Friendica\App $a
+ * @param App $a
  * @param string $o
  */
-function rendertime_page_end(Friendica\App $a, &$o)
+function rendertime_page_end(App $a, &$o)
 {
 
 	$profiler = DI::profiler();
