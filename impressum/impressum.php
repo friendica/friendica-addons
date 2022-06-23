@@ -56,7 +56,7 @@ function impressum_load_config(App $a, ConfigFileLoader $loader)
 	$a->getConfigCache()->load($loader->loadAddonConfig('impressum'));
 }
 
-function impressum_show(App $a, array &$body)
+function impressum_show(App $a, string &$body)
 {
 	$body .= '<h3>' . DI::l10n()->t('Impressum') . '</h3>';
 	$owner = DI::config()->get('impressum', 'owner');
