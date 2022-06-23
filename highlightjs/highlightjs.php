@@ -16,7 +16,7 @@ function highlightjs_install()
 	Hook::register('footer', __FILE__, 'highlightjs_footer');
 }
 
-function highlightjs_head(App $a, array &$b)
+function highlightjs_head(App $a, strring &$b)
 {
 	if ($a->getCurrentTheme() == 'frio') {
 		$style = 'bootstrap';
@@ -27,7 +27,7 @@ function highlightjs_head(App $a, array &$b)
 	DI::page()->registerStylesheet(__DIR__ . '/asset/styles/' . $style . '.css');
 }
 
-function highlightjs_footer(App $a, array &$b)
+function highlightjs_footer(App $a, string &$b)
 {
 	DI::page()->registerFooterScript(__DIR__ . '/asset/highlight.pack.js');
 	DI::page()->registerFooterScript(__DIR__ . '/highlightjs.js');
