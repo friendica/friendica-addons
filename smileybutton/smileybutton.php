@@ -7,6 +7,7 @@
  * Maintainer: Hypolite Petovan <https://friendica.mrpetovan.com/profile/hypolite>
  */
 
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 
@@ -16,7 +17,7 @@ function smileybutton_install()
 	Hook::register('jot_tool', 'addon/smileybutton/smileybutton.php', 'smileybutton_jot_tool');
 }
 
-function smileybutton_jot_tool(Friendica\App $a, array &$b)
+function smileybutton_jot_tool(App $a, string &$body)
 {
 	// Disable if theme is quattro
 	// TODO add style for quattro
@@ -113,7 +114,7 @@ function smileybutton_jot_tool(Friendica\App $a, array &$b)
 	$image_url = DI::baseUrl()->get() . '/' . $image;
 
 	//Add the hmtl and script to the page
-	$b = <<< EOT
+	$body = <<< EOT
 	<div id="profile-smiley-wrapper">
 		<button type="button" class="btn btn-link smiley_button" onclick="toggle_smileybutton()"><img src="$image_url" alt="smiley"></button>
 		<div id="smileybutton">
