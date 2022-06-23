@@ -11,13 +11,14 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\DI;
 
-function leistungsschutzrecht_install() {
+function leistungsschutzrecht_install()
+{
 	Hook::register('cron', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_cron');
 	Hook::register('getsiteinfo', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
 	Hook::register('page_info_data', 'addon/leistungsschutzrecht/leistungsschutzrecht.php', 'leistungsschutzrecht_getsiteinfo');
 }
 
-function leistungsschutzrecht_getsiteinfo(App $a,array &$siteinfo) {
+function leistungsschutzrecht_getsiteinfo(App $a, array &$siteinfo) {
 	if (!isset($siteinfo['url']) || empty($siteinfo['type'])) {
 		return;
 	}
@@ -123,13 +124,13 @@ function leistungsschutzrecht_fetchsites()
 */
 
 	if (sizeof($sites)) {
-		DI::config()->set('leistungsschutzrecht','sites',$sites);
+		DI::config()->set('leistungsschutzrecht', 'sites',$sites);
 	}
 }
 
-function leistungsschutzrecht_is_member_site(string $url)
+function leistungsschutzrecht_is_member_site(string $url): bool
 {
-	$sites = DI::config()->get('leistungsschutzrecht','sites');
+	$sites = DI::config()->get('leistungsschutzrecht', 'sites');
 
 	if ($sites == '') {
 		return false;
@@ -158,10 +159,10 @@ function leistungsschutzrecht_is_member_site(string $url)
 
 	$site = $hostname[sizeof($hostname) - 2] . '.' . $hostname[sizeof($hostname) - 1];
 
-	return (isset($sites[$site]));
+	return isset($sites[$site]);
 }
 
-function leistungsschutzrecht_cron(App $a,$b)
+function leistungsschutzrecht_cron(App $a, $b)
 {
 	$last = DI::config()->get('leistungsschutzrecht', 'last_poll');
 
