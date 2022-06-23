@@ -20,15 +20,15 @@ function convert_module() {}
 
 function convert_content($app) {
 
-include("UnitConvertor.php");
+include 'UnitConvertor.php';
 
  class TP_Converter extends UnitConvertor {
-	function TP_Converter($lang = "en")
+	function TP_Converter($lang = 'en')
 	{
 		if ($lang != 'en' ) {
 			$dec_point = '.'; $thousand_sep = "'";
 		} else {
-			$dec_point = '.'; $thousand_sep = ",";
+			$dec_point = '.'; $thousand_sep = ',';
 		}
 
 		$this->UnitConvertor($dec_point , $thousand_sep );
@@ -50,13 +50,13 @@ include("UnitConvertor.php");
 
 			// A baseunit was found now lets convert from -> $base_unit
 
-				$cell ['value'] = $this->convert($value, $from_unit, $base_unit, $precision)." ".$base_unit;
-				$cell ['class']	= ($base_unit == $from_unit || $base_unit == $to_unit) ? "framedred": "";
+				$cell ['value'] = $this->convert($value, $from_unit, $base_unit, $precision) . ' ' . $base_unit;
+				$cell ['class']	= ($base_unit == $from_unit || $base_unit == $to_unit) ? 'framedred' : '';
 				$cells[] = $cell;
 			// We now have the base unit and value now lets produce the table;
 			while (list($key,$val) = each($this->bases[$base_unit])) {
-				$cell ['value'] = $this->convert($value, $from_unit, $val, $precision)." ".$val;
-				$cell ['class']	= ($val == $from_unit || $val == $to_unit) ? "framedred": "";
+				$cell ['value'] = $this->convert($value, $from_unit, $val, $precision) . ' ' . $val;
+				$cell ['class']	= ($val == $from_unit || $val == $to_unit) ? 'framedred' : '';
 				$cells[] = $cell;
 			}
 
@@ -181,9 +181,9 @@ while (list($key,$val) = each($conversions)) {
 
 	if (isset($_POST['from_unit']) && isset($_POST['value'])) {
 		$_POST['value'] = $_POST['value'] + 0;
-		$o .= ($conv->getTable($_POST['value'], $_POST['from_unit'], $_POST['to_unit'], 5))."</p>";
+		$o .= ($conv->getTable($_POST['value'], $_POST['from_unit'], $_POST['to_unit'], 5)) . '</p>';
 	} else {
-		$o .= "<p>Select:</p>";
+		$o .= '<p>Select:</p>';
 	}
 
 	if (isset($_POST['value'])) {
