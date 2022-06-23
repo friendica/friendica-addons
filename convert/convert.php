@@ -5,13 +5,16 @@
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
+
+use Friendica\App;
 use Friendica\Core\Hook;
 
 function convert_install() {
 	Hook::register('app_menu', 'addon/convert/convert.php', 'convert_app_menu');
 }
 
-function convert_app_menu($a,&$b) {
+function convert_app_menu(App $a, array &$b)
+{
 	$b['app_menu'][] = '<div class="app-title"><a href="convert">Units Conversion</a></div>';
 }
 

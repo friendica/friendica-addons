@@ -21,7 +21,7 @@ function fromapp_install()
 	Logger::notice("installed fromapp");
 }
 
-function fromapp_settings_post($a, $post)
+function fromapp_settings_post(App $a, $post)
 {
 	if (!local_user() || empty($_POST['fromapp-submit'])) {
 		return;
@@ -53,7 +53,7 @@ function fromapp_settings(App &$a, array &$data)
 	];
 }
 
-function fromapp_post_hook(&$a, &$item)
+function fromapp_post_hook(App $a, &$item)
 {
 	if (! local_user()) {
 		return;

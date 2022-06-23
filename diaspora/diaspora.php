@@ -118,7 +118,7 @@ function diaspora_settings(App $a, array &$data)
 }
 
 
-function diaspora_settings_post(App $a, &$b)
+function diaspora_settings_post(App $a, array &$b)
 {
 	if (!empty($_POST['diaspora-submit'])) {
 		DI::pConfig()->set(local_user(),'diaspora', 'post'           , intval($_POST['enabled']));
@@ -137,7 +137,7 @@ function diaspora_settings_post(App $a, &$b)
 	}
 }
 
-function diaspora_hook_fork(&$a, &$b)
+function diaspora_hook_fork(App $a, array &$b)
 {
 	if ($b['name'] != 'notifier_normal') {
 		return;

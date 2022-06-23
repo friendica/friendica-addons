@@ -117,7 +117,7 @@ function birdavatar_addon_settings_post(App $a, &$s)
  * @param $a array
  * @param &$b array
  */
-function birdavatar_lookup(App $a, &$b)
+function birdavatar_lookup(App $a, array &$b)
 {
 	$user = DBA::selectFirst('user', ['uid'], ['email' => $b['email']]);
 	if (DBA::isResult($user)) {

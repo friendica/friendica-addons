@@ -12,7 +12,8 @@ use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
-function irc_install() {
+function irc_install()
+{
 	Hook::register('app_menu', 'addon/irc/irc.php', 'irc_app_menu');
 	Hook::register('addon_settings', 'addon/irc/irc.php', 'irc_addon_settings');
 	Hook::register('addon_settings_post', 'addon/irc/irc.php', 'irc_addon_settings_post');
@@ -41,11 +42,13 @@ function irc_addon_settings(App &$a, array &$data)
 	];
 }
 
-function irc_addon_settings_post(&$a, &$b) {
-	if(!local_user())
+function irc_addon_settings_post(App $a, array &$b)
+{
+	if (!local_user()) {
 		return;
+	}
 
-	if(!empty($_POST['irc-submit'])) {
+	if (!empty($_POST['irc-submit'])) {
 		if (isset($_POST['autochans'])) {
 			DI::pConfig()->set(local_user(), 'irc', 'autochans', trim(($_POST['autochans'])));
 		}
@@ -56,7 +59,8 @@ function irc_addon_settings_post(&$a, &$b) {
 	}
 }
 
-function irc_app_menu($a,&$b) {
+function irc_app_menu(App $a, array &$b)
+{
 	$b['app_menu'][] = '<div class="app-title"><a href="irc">' . DI::l10n()->t('IRC Chatroom') . '</a></div>';
 }
 
@@ -66,27 +70,30 @@ function irc_module() {
 }
 
 
-function irc_content(&$a) {
-
+function irc_content(App $a)
+{
 	$baseurl = DI::baseUrl()->get() . '/addon/irc';
 	$o = '';
 
 	/* set the list of popular channels */
 	if (local_user()) {
-	    $sitechats = DI::pConfig()->get( local_user(), 'irc', 'sitechats');
-	    if (!$sitechats)
-		$sitechats = DI::config()->get('irc', 'sitechats');
+		$sitechats = DI::pConfig()->get( local_user(), 'irc', 'sitechats');
+		if (!$sitechats) {
+			$sitechats = DI::config()->get('irc', 'sitechats');
+		}
 	} else {
-	    $sitechats = DI::config()->get('irc','sitechats');
+		$sitechats = DI::config()->get('irc','sitechats');
 	}
-	if($sitechats)
+
+	if ($sitechats) {
 		$chats = explode(',',$sitechats);
-	else
+	} else {
 		$chats = ['friendica','chat','chatback','hottub','ircbar','dateroom','debian'];
+	}
 
 
 	DI::page()['aside'] .= '<div class="widget"><h3>' . DI::l10n()->t('Popular Channels') . '</h3><ul>';
-	foreach($chats as $chat) {
+	foreach ($chats as $chat) {
 		DI::page()['aside'] .= '<li><a href="' . DI::baseUrl()->get() . '/irc?channels=' . $chat . '" >' . '#' . $chat . '</a></li>';
 	}
 	DI::page()['aside'] .= '</ul></div>';
@@ -99,10 +106,12 @@ function irc_content(&$a) {
 	} else {
 	    $autochans = DI::config()->get('irc','autochans');
 	}
-	if($autochans)
+
+	if ($autochans) {
 		$channels = $autochans;
-	else
+	} else {
 		$channels = ($_GET['channels'] ?? '') ?: 'friendica';
+	}
 
 /* add the chatroom frame and some html */
   $o .= <<< EOT
@@ -111,23 +120,24 @@ function irc_content(&$a) {
 <iframe src="//web.libera.chat?channels=$channels" style="width:100%; max-width:900px; height: 600px;"></iframe>
 EOT;
 
-return $o;
-
+	return $o;
 }
 
-function irc_addon_admin_post (&$a) {
-	if(!$a->isSiteAdmin())
+function irc_addon_admin_post (App $a)
+{
+	if (!$a->isSiteAdmin()) {
 		return;
+	}
 
-	if($_POST['irc-submit']) {
-		DI::config()->set('irc','autochans',trim($_POST['autochans']));
-		DI::config()->set('irc','sitechats',trim($_POST['sitechats']));
+	if ($_POST['irc-submit']) {
+		DI::config()->set('irc', 'autochans', trim($_POST['autochans']));
+		DI::config()->set('irc', 'sitechats', trim($_POST['sitechats']));
 	}
 }
-function irc_addon_admin (&$a, &$o) {
-	$sitechats = DI::config()->get('irc','sitechats'); /* popular channels */
-	$autochans = DI::config()->get('irc','autochans');  /* auto connect chans */
-	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/irc/" );
+function irc_addon_admin (App $a, &$o) {
+	$sitechats = DI::config()->get('irc', 'sitechats'); /* popular channels */
+	$autochans = DI::config()->get('irc', 'autochans');  /* auto connect chans */
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/irc/' );
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
 		'$autochans' => [ 'autochans', DI::l10n()->t('Channel(s) to auto connect (comma separated)'), $autochans, DI::l10n()->t('List of channels that shall automatically connected to when the app is launched.')],

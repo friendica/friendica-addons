@@ -9,6 +9,7 @@
  *
  */
 
+use Friendica\App;
 use Friendica\Core\Cache\Enum\Duration;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
@@ -34,12 +35,12 @@ function openstreetmap_install()
 	Logger::notice("installed openstreetmap");
 }
 
-function openstreetmap_load_config(\Friendica\App $a, ConfigFileLoader $loader)
+function openstreetmap_load_config(App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('openstreetmap'));
 }
 
-function openstreetmap_alterheader($a, &$navHtml)
+function openstreetmap_alterheader(App $a, &$navHtml)
 {
 	$addScriptTag = '<script type="text/javascript" src="' . DI::baseUrl()->get() . '/addon/openstreetmap/openstreetmap.js"></script>' . "\r\n";
 	DI::page()['htmlhead'] .= $addScriptTag;
@@ -54,7 +55,7 @@ function openstreetmap_alterheader($a, &$navHtml)
  * @param mixed $a
  * @param array& $item
  */
-function openstreetmap_location($a, &$item)
+function openstreetmap_location(App $a, &$item)
 {
 	if (!(strlen($item['location']) || strlen($item['coord']))) {
 		return;
@@ -104,7 +105,7 @@ function openstreetmap_location($a, &$item)
 	$item['html'] = '<a target="map" title="'.$title.'" href= "'.$target.'">'.$title.'</a>';
 }
 
-function openstreetmap_get_coordinates($a, &$b)
+function openstreetmap_get_coordinates(App $a, array &$b)
 {
 	$nomserver = DI::config()->get('openstreetmap', 'nomserver', OSM_NOM);
 
@@ -132,7 +133,7 @@ function openstreetmap_get_coordinates($a, &$b)
 	}
 }
 
-function openstreetmap_generate_named_map(&$a, &$b)
+function openstreetmap_generate_named_map(App $a, array &$b)
 {
 	openstreetmap_get_coordinates($a, $b);
 
@@ -141,7 +142,7 @@ function openstreetmap_generate_named_map(&$a, &$b)
 	}
 }
 
-function openstreetmap_generate_map(&$a, &$b)
+function openstreetmap_generate_map(App $a, array &$b)
 {
 	$tmsserver = DI::config()->get('openstreetmap', 'tmsserver', OSM_TMS);
 
@@ -177,7 +178,7 @@ function openstreetmap_generate_map(&$a, &$b)
 	Logger::debug('generate_map: ' . $b['html']);
 }
 
-function openstreetmap_addon_admin(&$a, &$o)
+function openstreetmap_addon_admin(App $a, &$o)
 {
 	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/openstreetmap/");
 	$tmsserver = DI::config()->get('openstreetmap', 'tmsserver', OSM_TMS);
@@ -199,7 +200,7 @@ function openstreetmap_addon_admin(&$a, &$o)
 	]);
 }
 
-function openstreetmap_addon_admin_post(&$a)
+function openstreetmap_addon_admin_post(App $a)
 {
 	$urltms = ($_POST['tmsserver'] ?? '') ?: OSM_TMS;
 	$urlnom = ($_POST['nomserver'] ?? '') ?: OSM_NOM;

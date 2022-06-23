@@ -16,7 +16,7 @@ function smileybutton_install()
 	Hook::register('jot_tool', 'addon/smileybutton/smileybutton.php', 'smileybutton_jot_tool');
 }
 
-function smileybutton_jot_tool(Friendica\App $a, &$b)
+function smileybutton_jot_tool(Friendica\App $a, array &$b)
 {
 	// Disable if theme is quattro
 	// TODO add style for quattro

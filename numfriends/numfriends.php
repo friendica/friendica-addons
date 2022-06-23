@@ -28,11 +28,12 @@ function numfriends_install() {
  * and if so set our configuration setting for this person.
  *
  */
-function numfriends_settings_post($a,$post) {
-	if(! local_user() || empty($_POST['numfriends-submit']))
+function numfriends_settings_post(App $a, $post) {
+	if (! local_user() || empty($_POST['numfriends-submit'])) {
 		return;
+	}
 
-	DI::pConfig()->set(local_user(),'system','display_friend_count',intval($_POST['numfriends']));
+	DI::pConfig()->set(local_user(), 'system', 'display_friend_count', intval($_POST['numfriends']));
 }
 
 
@@ -44,7 +45,7 @@ function numfriends_settings_post($a,$post) {
  */
 function numfriends_settings(App &$a, array &$data)
 {
-	if (! local_user()) {
+	if (!local_user()) {
 		return;
 	}
 

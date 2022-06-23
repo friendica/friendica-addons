@@ -74,7 +74,7 @@ function nsfw_addon_settings(App &$a, array &$data)
 	];
 }
 
-function nsfw_addon_settings_post(&$a, &$b)
+function nsfw_addon_settings_post(App $a, array &$b)
 {
 	if (!local_user()) {
 		return;

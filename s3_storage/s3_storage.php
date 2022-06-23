@@ -14,7 +14,7 @@ use Friendica\DI;
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
-function s3_storage_install($a)
+function s3_storage_install(App $a)
 {
 	Hook::register('storage_instance' , __FILE__, 's3_storage_instance');
 	Hook::register('storage_config' , __FILE__, 's3_storage_config');

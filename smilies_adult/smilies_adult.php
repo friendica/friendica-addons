@@ -8,6 +8,8 @@
  * This is a template for how to extend the "smily" code.
  * 
  */
+
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 
@@ -15,8 +17,8 @@ function smilies_adult_install() {
 	Hook::register('smilie', 'addon/smilies_adult/smilies_adult.php', 'smilies_adult_smilies');
 }
 
-function smilies_adult_smilies(&$a,&$b) {
-
+function smilies_adult_smilies(App $a, array &$b)
+{
 	$b['texts'][] = '(o)(o)';
 	$b['icons'][] = '<img class="smiley" src="' . DI::baseUrl()->get() . '/addon/smilies_adult/icons/tits.gif' . '" alt="' . '(o)(o)' . '" />';
 
@@ -34,5 +36,4 @@ function smilies_adult_smilies(&$a,&$b) {
 
 	$b['texts'][] = ':finger';
 	$b['icons'][] = '<img class="smiley" src="' . DI::baseUrl()->get() . '/addon/smilies_adult/icons/finger.gif' . '" alt="' . ':finger' . '" />';
-
 }

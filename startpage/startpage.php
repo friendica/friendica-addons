@@ -18,7 +18,7 @@ function startpage_install() {
 	Hook::register('addon_settings_post', 'addon/startpage/startpage.php', 'startpage_settings_post');
 }
 
-function startpage_home_init($a, $b)
+function startpage_home_init(App $a, $b)
 {
 	if (!local_user()) {
 		return;
@@ -40,7 +40,7 @@ function startpage_home_init($a, $b)
  *
  */
 
-function startpage_settings_post($a, $post)
+function startpage_settings_post(App $a, $post)
 {
 	if (!local_user()) {
 		return;

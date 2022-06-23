@@ -5,27 +5,27 @@
  * Version: 1.0
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  */
+
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 
-function tictac_install() {
+function tictac_install()
+{
 	Hook::register('app_menu', 'addon/tictac/tictac.php', 'tictac_app_menu');
 }
 
-function tictac_app_menu($a,&$b) {
+function tictac_app_menu(App $a, array &$b)
+{
 	$b['app_menu'][] = '<div class="app-title"><a href="tictac">' . DI::l10n()->t('Three Dimensional Tic-Tac-Toe') . '</a></div>';
 }
 
-
-function tictac_module() {
+function tictac_module()
+{
 	return;
 }
 
-
-
-
-
-function tictac_content(&$a) {
+function tictac_content(App $a) {
 
 	$o = '';
 

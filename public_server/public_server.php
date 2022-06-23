@@ -32,7 +32,7 @@ function public_server_load_config(App $a, ConfigFileLoader $loader)
 	$a->getConfigCache()->load($loader->loadAddonConfig('public_server'));
 }
 
-function public_server_register_account($a, $b)
+function public_server_register_account(App $a, $b)
 {
 	$uid = $b;
 
@@ -46,7 +46,7 @@ function public_server_register_account($a, $b)
 	DBA::update('user', $fields, ['uid' => $uid]);
 }
 
-function public_server_cron($a, $b)
+function public_server_cron(App $a, $b)
 {
 	Logger::notice("public_server: cron start");
 
@@ -99,7 +99,7 @@ function public_server_cron($a, $b)
 	Logger::notice("public_server: cron end");
 }
 
-function public_server_enotify(&$a, &$b)
+function public_server_enotify(App $a, array &$b)
 {
 	if (!empty($b['params']) && $b['params']['type'] == Notification\Type::SYSTEM
 		&& !empty($b['params']['system_type']) && $b['params']['system_type'] === 'public_server_expire') {
@@ -110,7 +110,7 @@ function public_server_enotify(&$a, &$b)
 	}
 }
 
-function public_server_login($a, $b)
+function public_server_login(App $a, $b)
 {
 	$days = DI::config()->get('public_server', 'expiredays');
 	if (!$days) {
@@ -122,7 +122,7 @@ function public_server_login($a, $b)
 	DBA::update('user', $fields, $condition);
 }
 
-function public_server_addon_admin_post(&$a)
+function public_server_addon_admin_post(App $a)
 {
 	BaseModule::checkFormSecurityTokenRedirectOnError('/admin/addons/publicserver', 'publicserver');
 	$expiredays = trim($_POST['expiredays'] ?? '');
@@ -139,7 +139,7 @@ function public_server_addon_admin_post(&$a)
 	DI::config()->set('public_server', 'flagpostsexpire', $flagpostsexpire);
 }
 
-function public_server_addon_admin(&$a, &$o)
+function public_server_addon_admin(App $a, &$o)
 {
 	$token = BaseModule::getFormSecurityToken("publicserver");
 	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/public_server");

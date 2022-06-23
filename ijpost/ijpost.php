@@ -73,7 +73,7 @@ function ijpost_settings(App &$a, array &$data)
 	];
 }
 
-function ijpost_settings_post(&$a, &$b)
+function ijpost_settings_post(App $a, array &$b)
 {
 	if (!empty($_POST['ijpost-submit'])) {
 		DI::pConfig()->set(local_user(), 'ijpost', 'post', intval($_POST['ijpost']));
@@ -83,7 +83,7 @@ function ijpost_settings_post(&$a, &$b)
 	}
 }
 
-function ijpost_post_local(&$a, &$b)
+function ijpost_post_local(App $a, array &$b)
 {
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
@@ -118,7 +118,7 @@ function ijpost_post_local(&$a, &$b)
 	$b['postopts'] .= 'ijpost';
 }
 
-function ijpost_send(&$a, &$b)
+function ijpost_send(App $a, array &$b)
 {
 	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;

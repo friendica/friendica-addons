@@ -373,7 +373,7 @@ function statusnet_hook_fork(App $a, array &$b)
 	}
 }
 
-function statusnet_post_local(App $a, &$b)
+function statusnet_post_local(App $a, array &$b)
 {
 	if ($b['edit']) {
 		return;
@@ -430,7 +430,7 @@ function statusnet_action(App $a, $uid, $pid, $action)
 	Logger::info('statusnet_action "' . $action . '" send, result: ' . print_r($result, true));
 }
 
-function statusnet_post_hook(App $a, &$b)
+function statusnet_post_hook(App $a, array &$b)
 {
 	/**
 	 * Post to GNU Social
@@ -661,7 +661,7 @@ function statusnet_addon_admin(App $a, &$o)
 	]);
 }
 
-function statusnet_prepare_body(App $a, &$b)
+function statusnet_prepare_body(App $a, array &$b)
 {
 	if ($b['item']['network'] != Protocol::STATUSNET) {
 		return;
@@ -753,7 +753,7 @@ function statusnet_cron(App $a, $b)
 	DI::config()->set('statusnet', 'last_poll', time());
 }
 
-function statusnet_fetchtimeline(App $a, $uid)
+function statusnet_fetchtimeline(App $a, int $uid)
 {
 	$ckey    = DI::pConfig()->get($uid, 'statusnet', 'consumerkey');
 	$csecret = DI::pConfig()->get($uid, 'statusnet', 'consumersecret');
@@ -1011,7 +1011,7 @@ function statusnet_fetchuser(App $a, $uid, $screen_name = '', $user_id = '')
 	return $contact_id;
 }
 
-function statusnet_createpost(App $a, $uid, $post, $self, $create_user, $only_existing_contact)
+function statusnet_createpost(App $a, int $uid, $post, $self, $create_user, bool $only_existing_contact)
 {
 	Logger::info('statusnet_createpost: start');
 
@@ -1415,7 +1415,7 @@ function statusnet_convertmsg(App $a, $body)
 	return $body;
 }
 
-function statusnet_fetch_own_contact(App $a, $uid)
+function statusnet_fetch_own_contact(App $a, int $uid)
 {
 	$ckey    = DI::pConfig()->get($uid, 'statusnet', 'consumerkey');
 	$csecret = DI::pConfig()->get($uid, 'statusnet', 'consumersecret');
@@ -1450,7 +1450,7 @@ function statusnet_fetch_own_contact(App $a, $uid)
 	return $contact_id;
 }
 
-function statusnet_is_retweet(App $a, $uid, $body)
+function statusnet_is_retweet(App $a, int $uid, string $body)
 {
 	$body = trim($body);
 

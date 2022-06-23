@@ -37,7 +37,8 @@ function gravatar_load_config(App $a, ConfigFileLoader $loader)
  * @param $a array
  * @param &$b array
  */
-function gravatar_lookup($a, &$b) {
+function gravatar_lookup(App $a, array &$b)
+{
 	$default_avatar = DI::config()->get('gravatar', 'default_avatar');
 	$rating = DI::config()->get('gravatar', 'rating');
 
@@ -61,17 +62,20 @@ function gravatar_lookup($a, &$b) {
 /**
  * Display admin settings for this addon
  */
-function gravatar_addon_admin (&$a, &$o) {
+function gravatar_addon_admin (App $a, &$o)
+{
 	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/gravatar/" );
 
 	$default_avatar = DI::config()->get('gravatar', 'default_avatar');
 	$rating = DI::config()->get('gravatar', 'rating');
 
 	// set default values for first configuration
-	if(! $default_avatar)
+	if (!$default_avatar) {
 		$default_avatar = 'identicon'; // pseudo-random geometric pattern based on email hash
-	if(! $rating)
+	}
+	if (!$rating) {
 		$rating = 'g'; // suitable for display on all websites with any audience type
+	}
 
 	// Available options for the select boxes
 	$default_avatars = [
@@ -105,7 +109,8 @@ function gravatar_addon_admin (&$a, &$o) {
 /**
  * Save admin settings
  */
-function gravatar_addon_admin_post (&$a) {
+function gravatar_addon_admin_post (App $a)
+{
 	BaseModule::checkFormSecurityToken('gravatarsave');
 
 	$default_avatar = trim($_POST['avatar'] ?? 'identicon');

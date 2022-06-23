@@ -58,7 +58,7 @@ function nitter_addon_admin(App $a, &$o)
 /*
  *  replace "twitter.com" with "nitter.net"
  */
-function nitter_render(&$a, &$o)
+function nitter_render(App $a, &$o)
 {
 	// this needs to be a system setting
 	$replaced = false;

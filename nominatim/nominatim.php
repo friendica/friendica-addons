@@ -6,6 +6,7 @@
  * Author: Michael Vogel <https://pirati.ca/profile/heluecht>
  */
 
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
@@ -64,12 +65,12 @@ function nominatim_resolve_item(&$item)
 	}
 }
 
-function nominatim_post_hook($a, &$item)
+function nominatim_post_hook(App $a, &$item)
 {
 	nominatim_resolve_item($item);
 }
 
-function nominatim_addon_admin(&$a, &$o)
+function nominatim_addon_admin(App $a, &$o)
 {
 
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/nominatim/');
@@ -80,7 +81,7 @@ function nominatim_addon_admin(&$a, &$o)
 	]);
 }
 
-function nominatim_addon_admin_post(&$a)
+function nominatim_addon_admin_post(App $a)
 {
 	$language  = !empty($_POST['language']) ? trim($_POST['language']) : '';
 	DI::config()->set('nominatim', 'language', $language);

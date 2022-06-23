@@ -5,6 +5,8 @@
  * Version: 1.0
  * Author: Ryan <https://friendica.verya.pe/profile/ryan>
  */
+
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
@@ -14,6 +16,7 @@ use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\User;
 use Friendica\Util\Strings;
+use OneLogin\Saml2\Utils;
 
 require_once(__DIR__ . '/vendor/autoload.php');
 
@@ -77,12 +80,12 @@ function saml_install()
 	Hook::register('footer', __FILE__, 'saml_footer');
 }
 
-function saml_head(&$a, &$b)
+function saml_head(App $a, array &$b)
 {
 	DI::page()->registerStylesheet(__DIR__ . '/saml.css');
 }
 
-function saml_footer(&$a, &$b)
+function saml_footer(App $a, array &$b)
 {
 	$fragment = addslashes(BBCode::convert(DI::config()->get('saml', 'settings_statement')));
 	$b .= <<<EOL
@@ -106,7 +109,7 @@ function saml_is_configured()
 		DI::config()->get('saml', 'idp_cert');
 }
 
-function saml_sso_initiate(&$a, &$b)
+function saml_sso_initiate(App $a, array &$b)
 {
 	if (!saml_is_configured()) {
 		Logger::warning('SAML SSO tried to trigger, but the SAML addon is not configured yet!');
@@ -166,13 +169,12 @@ function saml_sso_reply($a)
 		DI::auth()->setForUser($a, $user);
 	}
 
-	if (isset($_POST['RelayState'])
-		&& \OneLogin\Saml2\Utils::getSelfURL() != $_POST['RelayState']) {
+	if (isset($_POST['RelayState']) && Utils::getSelfURL() != $_POST['RelayState']) {
 		$auth->redirectTo($_POST['RelayState']);
 	}
 }
 
-function saml_slo_initiate(&$a, &$b)
+function saml_slo_initiate(App $a, array &$b)
 {
 	if (!saml_is_configured()) {
 		Logger::warning('SAML SLO tried to trigger, but the SAML addon is not configured yet!');
@@ -223,7 +225,7 @@ function saml_input($key, $label, $description)
 	];
 }
 
-function saml_addon_admin(&$a, &$o)
+function saml_addon_admin(App $a, &$o)
 {
 	$form =
 		saml_input(
@@ -279,7 +281,7 @@ function saml_addon_admin(&$a, &$o)
 	$o = Renderer::replaceMacros($t, $form);
 }
 
-function saml_addon_admin_post(&$a)
+function saml_addon_admin_post(App $a)
 {
 	$set = function ($key) {
 		$val = (!empty($_POST[$key]) ? trim($_POST[$key]) : '');

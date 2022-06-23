@@ -59,7 +59,7 @@ function pumpio_content(App $a)
 		return '';
 	}
 
-	require_once("mod/settings.php");
+	require_once 'mod/settings.php';
 	settings_init($a);
 
 	if (isset(DI::args()->getArgv()[1])) {
@@ -77,7 +77,7 @@ function pumpio_content(App $a)
 	return $o;
 }
 
-function pumpio_check_item_notification($a, &$notification_data)
+function pumpio_check_item_notification(App $a, &$notification_data)
 {
 	$hostname = DI::pConfig()->get($notification_data["uid"], 'pumpio', 'host');
 	$username = DI::pConfig()->get($notification_data["uid"], "pumpio", "user");
@@ -686,7 +686,7 @@ function pumpio_cron(App $a, $b)
 	Worker::add(PRIORITY_MEDIUM,"addon/pumpio/pumpio_sync.php");
 }
 
-function pumpio_fetchtimeline(App $a, $uid)
+function pumpio_fetchtimeline(App $a, int $uid)
 {
 	$ckey    = DI::pConfig()->get($uid, 'pumpio', 'consumer_key');
 	$csecret = DI::pConfig()->get($uid, 'pumpio', 'consumer_secret');
@@ -1195,7 +1195,7 @@ function pumpio_dopost(App $a, $client, $uid, $self, $post, $own_id, $threadcomp
 	return $top_item;
 }
 
-function pumpio_fetchinbox(App $a, $uid)
+function pumpio_fetchinbox(App $a, int $uid)
 {
 	$ckey     = DI::pConfig()->get($uid, 'pumpio', 'consumer_key');
 	$csecret  = DI::pConfig()->get($uid, 'pumpio', 'consumer_secret');
@@ -1254,14 +1254,14 @@ function pumpio_fetchinbox(App $a, $uid)
 	}
 
 	while ($item = DBA::fetch($lastitems)) {
-		pumpio_fetchallcomments($a, $uid, $item["uri"]);
+		pumpio_fetchallcomments($a, $uid, $item['uri']);
 	}
 	DBA::close($lastitems);
 
 	DI::pConfig()->set($uid, 'pumpio', 'last_id', $last_id);
 }
 
-function pumpio_getallusers(App &$a, $uid)
+function pumpio_getallusers(App &$a, int $uid)
 {
 	$ckey     = DI::pConfig()->get($uid, 'pumpio', 'consumer_key');
 	$csecret  = DI::pConfig()->get($uid, 'pumpio', 'consumer_secret');
