@@ -24,12 +24,12 @@ function showmore_dyn_install()
 	Hook::register('addon_settings_post',  __FILE__, 'showmore_dyn_settings_post');
 }
 
-function showmore_dyn_head(App $a, &$b)
+function showmore_dyn_head(App $a, array &$b)
 {
 	DI::page()->registerStylesheet(__DIR__ . '/showmore_dyn.css');
 }
 
-function showmore_dyn_footer(App $a, &$b)
+function showmore_dyn_footer(App $a, array &$b)
 {
 	DI::page()->registerFooterScript(__DIR__ . '/showmore_dyn.js');
 }

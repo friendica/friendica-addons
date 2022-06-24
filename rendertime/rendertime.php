@@ -7,6 +7,7 @@
  *
  */
 
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
 use Friendica\DI;
@@ -16,14 +17,17 @@ function rendertime_install() {
 	DI::config()->set('system', 'profiler', true);
 }
 
-function rendertime_uninstall() {
+function rendertime_uninstall()
+{
 	DI::config()->delete('system', 'profiler');
 }
 
-function rendertime_init_1(&$a) {
+function rendertime_init_1(App $a)
+{
 }
 
-function rendertime_addon_admin(&$a, &$o) {
+function rendertime_addon_admin(App $a, &$o)
+{
 	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/rendertime/");
 
 	$o = Renderer::replaceMacros($t, [
@@ -33,16 +37,17 @@ function rendertime_addon_admin(&$a, &$o) {
 	]);
 }
 
-function rendertime_addon_admin_post(&$a) {
+function rendertime_addon_admin_post(App $a)
+{
 	DI::config()->set('rendertime', 'callstack', $_POST['callstack'] ?? false);
 	DI::config()->set('rendertime', 'minimal_time', $_POST['minimal_time'] ?? 0);
 }
 
 /**
- * @param Friendica\App $a
+ * @param App $a
  * @param string $o
  */
-function rendertime_page_end(Friendica\App $a, &$o)
+function rendertime_page_end(App $a, &$o)
 {
 
 	$profiler = DI::profiler();

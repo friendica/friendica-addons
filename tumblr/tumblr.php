@@ -29,13 +29,16 @@ function tumblr_install()
 	Hook::register('connector_settings_post', 'addon/tumblr/tumblr.php', 'tumblr_settings_post');
 }
 
-function tumblr_module()
-{
-}
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
+function tumblr_module() {}
 
 function tumblr_content(App $a)
 {
-	if (! local_user()) {
+	if (!local_user()) {
 		notice(DI::l10n()->t('Permission denied.') . EOL);
 		return '';
 	}
@@ -182,7 +185,7 @@ function tumblr_callback(App $a)
 
 function tumblr_jot_nets(App $a, array &$jotnets_fields)
 {
-	if (! local_user()) {
+	if (!local_user()) {
 		return;
 	}
 
@@ -257,7 +260,7 @@ function tumblr_settings_post(App $a, array &$b)
 	}
 }
 
-function tumblr_hook_fork(&$a, &$b)
+function tumblr_hook_fork(App $a, array &$b)
 {
 	if ($b['name'] != 'notifier_normal') {
 		return;

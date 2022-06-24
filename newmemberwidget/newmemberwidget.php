@@ -6,6 +6,7 @@
  * Author: Tobias Diekershoff <https://f.diekershoff.de/profile/tobias>
  ***/
 
+use Friendica\App;
 use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
@@ -18,7 +19,7 @@ function newmemberwidget_install()
 	Logger::notice('newmemberwidget installed');
 }
 
-function newmemberwidget_network_mod_init ($a, $b)
+function newmemberwidget_network_mod_init (App $a, $b)
 {
 	if (empty($_SESSION['new_member'])) {
 		return;
@@ -45,7 +46,7 @@ function newmemberwidget_network_mod_init ($a, $b)
 	DI::page()['aside'] = $t . DI::page()['aside'];
 }
 
-function newmemberwidget_addon_admin_post(&$a)
+function newmemberwidget_addon_admin_post(App $a)
 {
 	$ft = (!empty($_POST['freetext']) ? trim($_POST['freetext']) : "");
 	$lsn = trim($_POST['localsupportname'] ?? '');
@@ -57,7 +58,7 @@ function newmemberwidget_addon_admin_post(&$a)
 	DI::config()->set('newmemberwidget', 'localsupport',       trim($lsn));
 }
 
-function newmemberwidget_addon_admin(&$a, &$o)
+function newmemberwidget_addon_admin(App $a, &$o)
 {
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/newmemberwidget');
 	$o = Renderer::replaceMacros($t, [

@@ -82,7 +82,7 @@ function wppost_settings(App &$a, array &$data)
 }
 
 
-function wppost_settings_post(&$a, &$b)
+function wppost_settings_post(App $a, array &$b)
 {
 	if(!empty($_POST['wppost-submit'])) {
 		DI::pConfig()->set(local_user(), 'wppost', 'post'           , intval($_POST['wppost']));
@@ -98,7 +98,7 @@ function wppost_settings_post(&$a, &$b)
 	}
 }
 
-function wppost_hook_fork(&$a, &$b)
+function wppost_hook_fork(App $a, array &$b)
 {
 	if ($b['name'] != 'notifier_normal') {
 		return;
@@ -113,7 +113,7 @@ function wppost_hook_fork(&$a, &$b)
 	}
 }
 
-function wppost_post_local(&$a, &$b) {
+function wppost_post_local(App $a, array &$b) {
 
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
@@ -151,7 +151,7 @@ function wppost_post_local(&$a, &$b) {
 
 
 
-function wppost_send(&$a, &$b)
+function wppost_send(App $a, array &$b)
 {
 	if($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
 		return;

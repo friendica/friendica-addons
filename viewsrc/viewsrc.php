@@ -6,6 +6,8 @@
  * Author: Mike Macgirvin <http://macgirvin.com/profile/mike>
  *
  */
+
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 
@@ -14,7 +16,7 @@ function viewsrc_install() {
 	Hook::register('page_end', 'addon/viewsrc/viewsrc.php', 'viewsrc_page_end');
 }
 
-function viewsrc_page_end(&$a, &$o){
+function viewsrc_page_end(App $a, &$o){
 	DI::page()['htmlhead'] .= <<< EOS
 	<script>
 		$(function(){
@@ -26,7 +28,7 @@ function viewsrc_page_end(&$a, &$o){
 EOS;
 }
 
-function viewsrc_item_photo_menu(&$a, &$b)
+function viewsrc_item_photo_menu(App $a, array &$b)
 {
 	if (!local_user()) {
 		return;

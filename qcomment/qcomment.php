@@ -31,7 +31,7 @@ function qcomment_install()
 	Hook::register('footer'             , __FILE__, 'qcomment_footer');
 }
 
-function qcomment_footer(App $a, &$b)
+function qcomment_footer(App $a, array &$b)
 {
 	DI::page()->registerFooterScript('addon/qcomment/qcomment.js');
 }
@@ -57,9 +57,9 @@ function qcomment_addon_settings(App &$a, array &$data)
 	];
 }
 
-function qcomment_addon_settings_post(&$a, &$b)
+function qcomment_addon_settings_post(App $a, array &$b)
 {
-	if (! local_user()) {
+	if (!local_user()) {
 		return;
 	}
 

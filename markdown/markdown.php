@@ -37,7 +37,7 @@ function markdown_addon_settings(App $a, array &$data)
 	];
 }
 
-function markdown_addon_settings_post(App $a, &$b)
+function markdown_addon_settings_post(App $a, array &$b)
 {
 	if (!local_user() || empty($_POST['markdown-submit'])) {
 		return;

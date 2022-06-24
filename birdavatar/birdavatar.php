@@ -117,7 +117,7 @@ function birdavatar_addon_settings_post(App $a, &$s)
  * @param $a array
  * @param &$b array
  */
-function birdavatar_lookup(App $a, &$b)
+function birdavatar_lookup(App $a, array &$b)
 {
 	$user = DBA::selectFirst('user', ['uid'], ['email' => $b['email']]);
 	if (DBA::isResult($user)) {
@@ -136,9 +136,12 @@ function birdavatar_lookup(App $a, &$b)
 	$b['success'] = true;
 }
 
-function birdavatar_module()
-{
-}
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
+function birdavatar_module() {}
 
 /**
  * Returns image for user id

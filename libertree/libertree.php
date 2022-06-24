@@ -27,9 +27,9 @@ function libertree_install()
 
 function libertree_jot_nets(App &$a, array &$jotnets_fields)
 {
-    if(! local_user()) {
-        return;
-    }
+	if (!local_user()) {
+		return;
+	}
 
 	if (DI::pConfig()->get(local_user(), 'libertree', 'post')) {
 		$jotnets_fields[] = [
@@ -37,12 +37,11 @@ function libertree_jot_nets(App &$a, array &$jotnets_fields)
 			'field' => [
 				'libertree_enable',
 				DI::l10n()->t('Post to libertree'),
-				DI::pConfig()->get(local_user(), 'libertree', 'post_by_default')
-			]
+				DI::pConfig()->get(local_user(), 'libertree', 'post_by_default'),
+			],
 		];
 	}
 }
-
 
 function libertree_settings(App $a, array &$data)
 {
@@ -72,11 +71,9 @@ function libertree_settings(App $a, array &$data)
 	];
 }
 
-
-function libertree_settings_post(&$a,&$b) {
-
-	if(!empty($_POST['libertree-submit'])) {
-
+function libertree_settings_post(App $a, array &$b)
+{
+	if (!empty($_POST['libertree-submit'])) {
 		DI::pConfig()->set(local_user(),'libertree','post',intval($_POST['libertree']));
 		DI::pConfig()->set(local_user(),'libertree','post_by_default',intval($_POST['libertree_bydefault']));
 		DI::pConfig()->set(local_user(),'libertree','libertree_api_token',trim($_POST['libertree_api_token']));
@@ -101,7 +98,8 @@ function libertree_hook_fork(App &$a, array &$b)
 	}
 }
 
-function libertree_post_local(&$a,&$b) {
+function libertree_post_local(App $a, array &$b)
+{
 
 	// This can probably be changed to allow editing by pointing to a different API endpoint
 
@@ -109,7 +107,7 @@ function libertree_post_local(&$a,&$b) {
 		return;
 	}
 
-	if ((! local_user()) || (local_user() != $b['uid'])) {
+	if ((!local_user()) || (local_user() != $b['uid'])) {
 		return;
 	}
 
@@ -136,11 +134,8 @@ function libertree_post_local(&$a,&$b) {
 	$b['postopts'] .= 'libertree';
 }
 
-
-
-
-function libertree_send(&$a,&$b) {
-
+function libertree_send(App $a, array &$b)
+{
 	Logger::notice('libertree_send: invoked');
 
 	if ($b['deleted'] || $b['private'] || ($b['created'] !== $b['edited'])) {
@@ -188,15 +183,16 @@ function libertree_send(&$a,&$b) {
 		// remove multiple newlines
 		do {
 			$oldbody = $body;
-                        $body = str_replace("\n\n\n", "\n\n", $body);
-                } while ($oldbody != $body);
+			$body = str_replace("\n\n\n", "\n\n", $body);
+		} while ($oldbody != $body);
 
 		// convert to markdown
 		$body = BBCode::toMarkdown($body, false);
 
 		// Adding the title
-		if(strlen($title))
-			$body = "## ".html_entity_decode($title)."\n\n".$body;
+		if (strlen($title)) {
+			$body = '## ' . html_entity_decode($title) . "\n\n" . $body;
+		}
 
 
 		$params = [

@@ -29,7 +29,7 @@ function group_text_install() {
  *
  */
 
-function group_text_settings_post($a,$post) {
+function group_text_settings_post(App $a, $post) {
 	if(! local_user() || empty($_POST['group_text-submit']))
 		return;
 	DI::pConfig()->set(local_user(),'system','groupedit_image_limit',intval($_POST['group_text']));

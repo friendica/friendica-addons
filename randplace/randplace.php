@@ -25,75 +25,67 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
-function randplace_install() {
-
-	/**
-	 *
+function randplace_install()
+{
+	/*
 	 * Our demo addon will attach in three places.
 	 * The first is just prior to storing a local post.
-	 *
 	 */
-
 	Hook::register('post_local', 'addon/randplace/randplace.php', 'randplace_post_hook');
 
-	/**
-	 *
+	/*
 	 * Then we'll attach into the addon settings page, and also the
 	 * settings post hook so that we can create and update
 	 * user preferences.
-	 *
 	 */
-
 	Hook::register('addon_settings', 'addon/randplace/randplace.php', 'randplace_settings');
 	Hook::register('addon_settings_post', 'addon/randplace/randplace.php', 'randplace_settings_post');
 
 	Logger::notice("installed randplace");
 }
 
-
-function randplace_uninstall() {
-
-	/**
-	 *
+function randplace_uninstall()
+{
+	/*
 	 * This function should undo anything that was done in name_install()
 	 *
 	 * Except hooks, they are all unregistered automatically and don't need to be unregistered manually.
-	 *
 	 */
-
 	Logger::notice("removed randplace");
 }
 
-
-
-function randplace_post_hook($a, &$item) {
-
-	/**
-	 *
+function randplace_post_hook(App $a, &$item)
+{
+	/*
 	 * An item was posted on the local system.
 	 * We are going to look for specific items:
 	 *      - A status post by a profile owner
 	 *      - The profile owner must have allowed our addon
-	 *
 	 */
-
 	Logger::notice('randplace invoked');
 
-	if(! local_user())   /* non-zero if this is a logged in user of this system */
+	if (!local_user()) {
+		/* non-zero if this is a logged in user of this system */
 		return;
+	}
 
-	if(local_user() != $item['uid'])    /* Does this person own the post? */
+	if (local_user() != $item['uid']) {
+		/* Does this person own the post? */
 		return;
+	}
 
-	if($item['parent'])   /* If the item has a parent, this is a comment or something else, not a status post. */
+	if ($item['parent']) {
+		/* If the item has a parent, this is a comment or something else, not a status post. */
 		return;
+	}
 
 	/* Retrieve our personal config setting */
 
 	$active = DI::pConfig()->get(local_user(), 'randplace', 'enable');
 
-	if(! $active)
+	if (!$active) {
 		return;
+	}
 
 	/**
 	 *
@@ -107,50 +99,46 @@ function randplace_post_hook($a, &$item) {
 	$cities = [];
 	$zones = timezone_identifiers_list();
 	foreach($zones as $zone) {
-		if((strpos($zone,'/')) && (! stristr($zone,'US/')) && (! stristr($zone,'Etc/')))
-			$cities[] = str_replace('_', ' ',substr($zone,strpos($zone,'/') + 1));
+		if ((strpos($zone, '/')) && (! stristr($zone, 'US/')) && (! stristr($zone, 'Etc/'))) {
+			$cities[] = str_replace('_', ' ',substr($zone, strpos($zone, '/') + 1));
+		}
 	}
 
-	if(! count($cities))
+	if (!count($cities)) {
 		return;
+	}
+
 	$city = array_rand($cities,1);
 	$item['location'] = $cities[$city];
 
 	return;
 }
 
-
-
-
 /**
- *
  * Callback from the settings post function.
  * $post contains the $_POST array.
  * We will make sure we've got a valid user account
  * and if so set our configuration setting for this person.
- *
  */
-
-function randplace_settings_post($a,$post) {
-	if(! local_user())
+function randplace_settings_post(App $a, $post)
+{
+	if (!local_user()) {
 		return;
-	if($_POST['randplace-submit'])
-		DI::pConfig()->set(local_user(),'randplace','enable',intval($_POST['randplace']));
+	}
+
+	if ($_POST['randplace-submit']) {
+		DI::pConfig()->set(local_user(), 'randplace', 'enable', intval($_POST['randplace']));
+	}
 }
 
 
 /**
- *
  * Called from the Addon Setting form.
  * Add our own settings info to the page.
- *
  */
-
-
-
 function randplace_settings(App &$a, array &$data)
 {
-	if(! local_user()) {
+	if(!local_user()) {
 		return;
 	}
 

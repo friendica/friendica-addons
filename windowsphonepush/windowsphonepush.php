@@ -60,17 +60,19 @@ function windowsphonepush_install()
 }
 
 /* declare the windowsphonepush function so that /windowsphonepush url requests will land here */
-function windowsphonepush_module()
-{
-
-}
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
+function windowsphonepush_module() {}
 
 /* Callback from the settings post function.
  * $post contains the $_POST array.
  * We will make sure we've got a valid user account
  * and if so set our configuration setting for this person.
  */
-function windowsphonepush_settings_post($a, $post)
+function windowsphonepush_settings_post(App $a, $post)
 {
 	if (!local_user() || empty($_POST['windowsphonepush-submit'])) {
 		return;

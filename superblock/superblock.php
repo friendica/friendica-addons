@@ -42,7 +42,7 @@ function superblock_addon_settings(App &$a, array &$data)
 	];
 }
 
-function superblock_addon_settings_post(&$a, &$b)
+function superblock_addon_settings_post(App $a, array &$b)
 {
 	if (!local_user()) {
 		return;
@@ -53,7 +53,8 @@ function superblock_addon_settings_post(&$a, &$b)
 	}
 }
 
-function superblock_enotify_store(&$a,&$b) {
+function superblock_enotify_store(App $a, array &$b)
+{
 	if (empty($b['uid'])) {
 		return;
 	}
@@ -78,6 +79,7 @@ function superblock_enotify_store(&$a,&$b) {
 			}
 		}
 	}
+
 	if ($found) {
 		// Empty out the fields
 		$b = [];
@@ -85,7 +87,7 @@ function superblock_enotify_store(&$a,&$b) {
 }
 
 
-function superblock_conversation_start(&$a, &$b)
+function superblock_conversation_start(App $a, array &$b)
 {
 	if (!local_user()) {
 		return;
@@ -95,8 +97,8 @@ function superblock_conversation_start(&$a, &$b)
 	if ($words) {
 		$a->data['superblock'] = explode(',', $words);
 	}
-	DI::page()['htmlhead'] .= <<< EOT
 
+	DI::page()['htmlhead'] .= <<< EOT
 <script>
 function superblockBlock(author) {
 	$.get('superblock?block=' +author, function(data) {
@@ -104,12 +106,11 @@ function superblockBlock(author) {
 	});
 }
 </script>
-
 EOT;
 
 }
 
-function superblock_item_photo_menu(&$a, &$b)
+function superblock_item_photo_menu(App $a, array &$b)
 {
 	if (!local_user() || $b['item']['self']) {
 		return;
@@ -129,10 +130,14 @@ function superblock_item_photo_menu(&$a, &$b)
 	$b['menu'][DI::l10n()->t('Block Completely')] = 'javascript:superblockBlock(\'' . $author . '\'); return false;';
 }
 
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
 function superblock_module() {}
 
-
-function superblock_init(&$a)
+function superblock_init(App $a)
 {
 	if (!local_user()) {
 		return;

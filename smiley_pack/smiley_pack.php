@@ -8,6 +8,7 @@
  * All smileys from sites offering them as Public Domain
  */
 
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 
@@ -15,8 +16,8 @@ function smiley_pack_install() {
 	Hook::register('smilie', 'addon/smiley_pack/smiley_pack.php', 'smiley_pack_smilies');
 }
 
-function smiley_pack_smilies(&$a,&$b) {
-
+function smiley_pack_smilies(App $a, array &$b)
+{
 #Smileys are split into various directories by the intended range of emotions.  This is in case we get too big and need to modularise things.  We can then cut and paste the right lines, move the right directory, and just change the name of the addon to happy_smilies or whatever.
 
 #Be careful with invocation strings.  If you have a smiley called foo, and another called foobar, typing :foobar will call foo.  Avoid this with clever naming, using ~ instead of : 
@@ -538,5 +539,4 @@ function smiley_pack_smilies(&$a,&$b) {
 			
 	$b['texts'][] = ':twitch:';
 	$b['icons'][] = '<img class="smiley" src="' . DI::baseUrl()->get() . '/addon/smiley_pack/icons/commercial/twitch.gif' . '" alt="' . ':twitch:' . '" />';
-
 }

@@ -13,59 +13,56 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
-function planets_install() {
-
+function planets_install()
+{
 	/**
-	 *
 	 * Our demo addon will attach in three places.
 	 * The first is just prior to storing a local post.
-	 *
 	 */
-
 	Hook::register('post_local', 'addon/planets/planets.php', 'planets_post_hook');
 
 	/**
-	 *
 	 * Then we'll attach into the addon settings page, and also the
 	 * settings post hook so that we can create and update
 	 * user preferences.
-	 *
 	 */
-
 	Hook::register('addon_settings', 'addon/planets/planets.php', 'planets_settings');
 	Hook::register('addon_settings_post', 'addon/planets/planets.php', 'planets_settings_post');
 
 	Logger::notice("installed planets");
 }
 
-function planets_post_hook($a, &$item) {
-
-	/**
-	 *
-	 * An item was posted on the local system.
-	 * We are going to look for specific items:
-	 *      - A status post by a profile owner
-	 *      - The profile owner must have allowed our addon
-	 *
-	 */
-
+/**
+ * An item was posted on the local system.
+ * We are going to look for specific items:
+ *      - A status post by a profile owner
+ *      - The profile owner must have allowed our addon
+ */
+function planets_post_hook(App $a, &$item)
+{
 	Logger::notice('planets invoked');
 
-	if(! local_user())   /* non-zero if this is a logged in user of this system */
+	if (!local_user()) {
+		/* non-zero if this is a logged in user of this system */
 		return;
+	}
 
-	if(local_user() != $item['uid'])    /* Does this person own the post? */
+	if (local_user() != $item['uid']) {
+		/* Does this person own the post? */
 		return;
+	}
 
-	if($item['parent'])   /* If the item has a parent, this is a comment or something else, not a status post. */
+	if ($item['parent']) {
+		/* If the item has a parent, this is a comment or something else, not a status post. */
 		return;
+	}
 
 	/* Retrieve our personal config setting */
-
 	$active = DI::pConfig()->get(local_user(), 'planets', 'enable');
 
-	if(! $active)
+	if (!$active) {
 		return;
+	}
 
 	/**
 	 *
@@ -96,11 +93,14 @@ function planets_post_hook($a, &$item) {
  *
  */
 
-function planets_settings_post($a,$post) {
-	if(! local_user())
+function planets_settings_post(App $a, $post)
+{
+	if (!local_user()) {
 		return;
-	if($_POST['planets-submit'])
-		DI::pConfig()->set(local_user(),'planets','enable',intval($_POST['planets']));
+	}
+	if ($_POST['planets-submit']) {
+		DI::pConfig()->set(local_user(), 'planets', 'enable' ,intval($_POST['planets']));
+	}
 }
 
 
@@ -115,7 +115,7 @@ function planets_settings_post($a,$post) {
 
 function planets_settings(App &$a, array &$data)
 {
-	if(! local_user()) {
+	if(!local_user()) {
 		return;
 	}
 

@@ -64,7 +64,7 @@ function advancedcontentfilter_install(App $a)
 	Hook::add('dbstructure_definition'          , __FILE__, 'advancedcontentfilter_dbstructure_definition');
 	DBStructure::performUpdate();
 
-	Logger::notice("installed advancedcontentfilter");
+	Logger::notice('installed advancedcontentfilter');
 }
 
 /*
@@ -73,20 +73,20 @@ function advancedcontentfilter_install(App $a)
 
 function advancedcontentfilter_dbstructure_definition(App $a, &$database)
 {
-	$database["advancedcontentfilter_rules"] = [
-		"comment" => "Advancedcontentfilter addon rules",
-		"fields" => [
-			"id"         => ["type" => "int unsigned", "not null" => "1", "extra" => "auto_increment", "primary" => "1", "comment" => "Auto incremented rule id"],
-			"uid"        => ["type" => "int unsigned", "not null" => "1", "comment" => "Owner user id"],
-			"name"       => ["type" => "varchar(255)", "not null" => "1", "comment" => "Rule name"],
-			"expression" => ["type" => "mediumtext"  , "not null" => "1", "comment" => "Expression text"],
-			"serialized" => ["type" => "mediumtext"  , "not null" => "1", "comment" => "Serialized parsed expression"],
-			"active"     => ["type" => "boolean"     , "not null" => "1", "default" => "1", "comment" => "Whether the rule is active or not"],
-			"created"    => ["type" => "datetime"    , "not null" => "1", "default" => DBA::NULL_DATETIME, "comment" => "Creation date"],
+	$database['advancedcontentfilter_rules'] = [
+		'comment' => 'Advancedcontentfilter addon rules',
+		'fields' => [
+			'id'         => ['type' => 'int unsigned', 'not null' => '1', 'extra' => 'auto_increment', 'primary' => '1', 'comment' => 'Auto incremented rule id'],
+			'uid'        => ['type' => 'int unsigned', 'not null' => '1', 'comment' => 'Owner user id'],
+			'name'       => ['type' => 'varchar(255)', 'not null' => '1', 'comment' => 'Rule name'],
+			'expression' => ['type' => 'mediumtext'  , 'not null' => '1', 'comment' => 'Expression text'],
+			'serialized' => ['type' => 'mediumtext'  , 'not null' => '1', 'comment' => 'Serialized parsed expression'],
+			'active'     => ['type' => 'boolean'     , 'not null' => '1', 'default' => '1', 'comment' => 'Whether the rule is active or not'],
+			'created'    => ['type' => 'datetime'    , 'not null' => '1', 'default' => DBA::NULL_DATETIME, 'comment' => 'Creation date'],
 		],
-		"indexes" => [
-			"PRIMARY" => ["id"],
-			"uid_active" => ["uid", "active"],
+		'indexes' => [
+			'PRIMARY' => ['id'],
+			'uid_active' => ['uid', 'active'],
 		]
 	];
 }
@@ -180,6 +180,11 @@ function advancedcontentfilter_addon_settings(App $a, array &$data)
  * Module
  */
 
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
 function advancedcontentfilter_module() {}
 
 function advancedcontentfilter_init(App $a)

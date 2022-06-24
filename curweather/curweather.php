@@ -87,7 +87,7 @@ function getWeather($loc, $units = 'metric', $lang = 'en', $appid = '', $cacheti
 	return $r;
 }
 
-function curweather_network_mod_init(App $a, &$b)
+function curweather_network_mod_init(App $a, string &$body)
 {
 	if (!intval(DI::pConfig()->get(local_user(), 'curweather', 'curweather_enable'))) {
 		return;
@@ -112,7 +112,7 @@ function curweather_network_mod_init(App $a, &$b)
 	$appid = DI::config()->get('curweather', 'appid');
 	$cachetime = intval(DI::config()->get('curweather', 'cachetime'));
 
-	if ($units === "") {
+	if ($units === '') {
 		$units = 'metric';
 	}
 
@@ -221,7 +221,7 @@ function curweather_addon_admin(App $a, &$o)
 	$appid = DI::config()->get('curweather', 'appid');
 	$cachetime = DI::config()->get('curweather', 'cachetime');
 
-	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/curweather/" );
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/curweather/' );
 
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),

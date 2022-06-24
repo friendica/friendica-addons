@@ -31,6 +31,7 @@
  *     setting.
  */
 
+use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
@@ -44,13 +45,13 @@ function piwik_install() {
 	Logger::notice("installed piwik addon");
 }
 
-function piwik_load_config(\Friendica\App $a, ConfigFileLoader $loader)
+function piwik_load_config(App $a, ConfigFileLoader $loader)
 {
 	$a->getConfigCache()->load($loader->loadAddonConfig('piwik'));
 }
 
-function piwik_analytics($a,&$b) {
-
+function piwik_analytics(App $a, array &$b)
+{
 	/*
 	 *   styling of every HTML block added by this addon is done in the
 	 *   associated CSS file. We just have to tell Friendica to get it
@@ -90,7 +91,7 @@ function piwik_analytics($a,&$b) {
 		$b .= "</div>";
 	}
 }
-function piwik_addon_admin (&$a, &$o) {
+function piwik_addon_admin (App $a, &$o) {
 	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/piwik/" );
 	$o = Renderer::replaceMacros( $t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
@@ -100,7 +101,7 @@ function piwik_addon_admin (&$a, &$o) {
 		'$async' => ['async', DI::l10n()->t('Asynchronous tracking'), DI::config()->get('piwik','async' ), ''],
 	]);
 }
-function piwik_addon_admin_post (&$a) {
+function piwik_addon_admin_post (App $a) {
 	$url = trim($_POST['baseurl'] ?? '');
 	$id = trim($_POST['siteid'] ?? '');
 	$optout = trim($_POST['optout'] ?? '');
