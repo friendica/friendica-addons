@@ -186,9 +186,12 @@ function blockem_item_photo_menu(App $a, array &$b)
 	}
 }
 
-function blockem_module()
-{
-}
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
+function blockem_module() {}
 
 function blockem_init(App $a)
 {

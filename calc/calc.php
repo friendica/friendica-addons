@@ -19,10 +19,12 @@ function calc_app_menu(App $a, array &$b)
 	$b['app_menu'][] = '<div class="app-title"><a href="calc">Calculator</a></div>'; 
 }
 
-
-function calc_module()
-{
-}
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
+function calc_module() {}
 
 function calc_init(App $a)
 {

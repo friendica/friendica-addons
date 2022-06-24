@@ -23,9 +23,12 @@ function namethingy_app_menu(App $a, array &$b)
 }
 
 
-function namethingy_module()
-{
-}
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
+function namethingy_module() {}
 
 function namethingy_content(App $a)
 {

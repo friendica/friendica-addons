@@ -137,6 +137,11 @@ function catavatar_lookup(App $a, array &$b)
 	$b['success'] = true;
 }
 
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
 function catavatar_module() {}
 
 /**

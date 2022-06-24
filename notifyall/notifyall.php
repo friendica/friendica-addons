@@ -15,6 +15,11 @@ use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\DI;
 
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
 function notifyall_module() {}
 
 function notifyall_addon_admin(App $a, &$o)
