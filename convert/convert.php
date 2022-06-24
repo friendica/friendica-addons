@@ -44,15 +44,15 @@ function convert_content(App $a) {
 		private function findBaseUnit($from, $to)
 		{
 			while (list($skey, $sval) = each($this->bases)) {
-					if ($skey == $from || $to == $skey || in_array($to, $sval) || in_array($from, $sval)) {
-						return $skey;
-					}
+				if ($skey == $from || $to == $skey || in_array($to, $sval) || in_array($from, $sval)) {
+					return $skey;
+				}
 			}
 
 			return false;
 		}
 
-		public function getTable($value, $from_unit, $to_unit, $precision): string
+		public function getTable(int $value, $from_unit, $to_unit, $precision): string
 		{
 			$string = '';
 
@@ -176,10 +176,10 @@ function convert_content(App $a) {
 		]
 	];
 
-	while (list($key,$val) = each($conversions)) {
+	while (list($key, $val) = each($conversions)) {
 		$conv->addConversion($val['base'], $val['conv']);
 		$list[$key][] = $val['base'];
-		while (list($ukey,$uval) = each($val['conv'])) {
+		while (list($ukey, $uval) = each($val['conv'])) {
 			$list[$key][] = $ukey;
 		}
 	}
@@ -187,8 +187,7 @@ function convert_content(App $a) {
 	$o .= '<h3>Unit Conversions</h3>';
 
 	if (isset($_POST['from_unit']) && isset($_POST['value'])) {
-		$_POST['value'] = $_POST['value'] + 0;
-		$o .= ($conv->getTable($_POST['value'], $_POST['from_unit'], $_POST['to_unit'], 5)) . '</p>';
+		$o .= ($conv->getTable(intval($_POST['value']), $_POST['from_unit'], $_POST['to_unit'], 5)) . '</p>';
 	} else {
 		$o .= '<p>Select:</p>';
 	}
@@ -204,9 +203,9 @@ function convert_content(App $a) {
 	$o .= '<select name="from_unit" size="12">';
 
 	reset($list);
-	while(list($key,$val) = each($list)) {
+	while(list($key, $val) = each($list)) {
 		$o .=  "\n\t<optgroup label=\"$key\">";
-		while(list($ukey,$uval) = each($val)) {
+		while(list($ukey, $uval) = each($val)) {
 			$selected = (($uval == $_POST['from_unit']) ? ' selected="selected" ' : '');
 			$o .=  "\n\t\t<option value=\"$uval\" $selected >$uval</option>";
 		}
