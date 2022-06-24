@@ -47,10 +47,10 @@ function impressum_footer(App $a, string &$body)
 {
 	$text = ProxyUtils::proxifyHtml(BBCode::convert(DI::config()->get('impressum','footer_text')));
 
-	if (! $text == '') {
-		DI::page()['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="'.DI::baseUrl()->get().'/addon/impressum/impressum.css" media="all" />';
+	if ($text != '') {
+		DI::page()['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="' . DI::baseUrl()->get() . '/addon/impressum/impressum.css" media="all" />';
 		$body .= '<div class="clear"></div>';
-		$body .= '<div id="impressum_footer">'.$text.'</div>';
+		$body .= '<div id="impressum_footer">' . $text . '</div>';
 	}
 }
 
