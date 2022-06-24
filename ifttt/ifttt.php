@@ -24,15 +24,14 @@ function ifttt_install()
 	Hook::register('connector_settings_post', 'addon/ifttt/ifttt.php', 'ifttt_settings_post');
 }
 
-function ifttt_module()
-{
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
+function ifttt_module() {}
 
-}
-
-function ifttt_content()
-{
-
-}
+function ifttt_content() {}
 
 function ifttt_settings(App $a, array &$data)
 {

@@ -136,9 +136,12 @@ function birdavatar_lookup(App $a, array &$b)
 	$b['success'] = true;
 }
 
-function birdavatar_module()
-{
-}
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
+function birdavatar_module() {}
 
 /**
  * Returns image for user id

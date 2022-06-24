@@ -180,6 +180,11 @@ function advancedcontentfilter_addon_settings(App $a, array &$data)
  * Module
  */
 
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
 function advancedcontentfilter_module() {}
 
 function advancedcontentfilter_init(App $a)

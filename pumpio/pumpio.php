@@ -50,6 +50,11 @@ function pumpio_install()
 	Hook::register('check_item_notification', 'addon/pumpio/pumpio.php', 'pumpio_check_item_notification');
 }
 
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
 function pumpio_module() {}
 
 function pumpio_content(App $a)

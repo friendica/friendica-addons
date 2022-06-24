@@ -58,11 +58,11 @@ function mailstream_check_version()
 }
 
 /**
- * This function indicates a module that can be wrapped in the LegacyModule class
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
  */
-function mailstream_module()
-{
-}
+function mailstream_module() {}
 
 /**
  * Adds an item in "addon features" in the admin menu of the site
@@ -70,7 +70,7 @@ function mailstream_module()
  * @param App $a App object (unused)
  * @param string        $o HTML form data
  */
-function mailstream_addon_admin(App $a, &$o)
+function mailstream_addon_admin(App $a, string &$o)
 {
 	$frommail = DI::config()->get('mailstream', 'frommail');
 	$template = Renderer::getMarkupTemplate('admin.tpl', 'addon/mailstream/');

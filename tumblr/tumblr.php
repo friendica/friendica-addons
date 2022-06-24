@@ -29,9 +29,12 @@ function tumblr_install()
 	Hook::register('connector_settings_post', 'addon/tumblr/tumblr.php', 'tumblr_settings_post');
 }
 
-function tumblr_module()
-{
-}
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
+function tumblr_module() {}
 
 function tumblr_content(App $a)
 {

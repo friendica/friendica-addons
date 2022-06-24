@@ -29,15 +29,19 @@ function webrtc_addon_admin (App $a, &$o)
 	    '$webrtcurl' => ['webrtcurl', DI::l10n()->t('WebRTC Base URL'), DI::config()->get('webrtc','webrtcurl' ), DI::l10n()->t('Page your users will create a WebRTC chat room on. For example you could use https://live.mayfirst.org .')],
 	]);
 }
+
 function webrtc_addon_admin_post (App $a)
 {
 	$url = trim($_POST['webrtcurl'] ?? '');
 	DI::config()->set('webrtc', 'webrtcurl', $url);
 }
 
-function webrtc_module() {
-	return;
-}
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
+function webrtc_module() {}
 
 function webrtc_content(App $a)
 {

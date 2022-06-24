@@ -130,8 +130,12 @@ function superblock_item_photo_menu(App $a, array &$b)
 	$b['menu'][DI::l10n()->t('Block Completely')] = 'javascript:superblockBlock(\'' . $author . '\'); return false;';
 }
 
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
 function superblock_module() {}
-
 
 function superblock_init(App $a)
 {

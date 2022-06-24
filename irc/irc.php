@@ -64,11 +64,12 @@ function irc_app_menu(App $a, array &$b)
 	$b['app_menu'][] = '<div class="app-title"><a href="irc">' . DI::l10n()->t('IRC Chatroom') . '</a></div>';
 }
 
-
-function irc_module() {
-	return;
-}
-
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
+function irc_module() {}
 
 function irc_content(App $a)
 {

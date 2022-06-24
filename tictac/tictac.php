@@ -20,10 +20,12 @@ function tictac_app_menu(App $a, array &$b)
 	$b['app_menu'][] = '<div class="app-title"><a href="tictac">' . DI::l10n()->t('Three Dimensional Tic-Tac-Toe') . '</a></div>';
 }
 
-function tictac_module()
-{
-	return;
-}
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
+function tictac_module() {}
 
 function tictac_content(App $a) {
 

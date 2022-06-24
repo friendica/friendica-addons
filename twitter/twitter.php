@@ -1740,7 +1740,7 @@ function twitter_media_entities($post, array &$postarray, int $uriId = -1)
  * @param integer $uriId URI Id used to store tags. 0 = create a new one; -1 = don't store tags for this post.
  * @return array item array
  */
-function twitter_createpost(App $a, int $uid, $post, array $self, $create_user, bool $only_existing_contact, $noquote, int $uriId = 0): array
+function twitter_createpost(App $a, int $uid, $post, array $self, $create_user, bool $only_existing_contact, bool $noquote, int $uriId = 0): array
 {
 	$postarray = [];
 	$postarray['network'] = Protocol::TWITTER;

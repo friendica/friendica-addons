@@ -25,10 +25,17 @@ function forumdirectory_install()
 	Hook::register('app_menu', 'addon/forumdirectory/forumdirectory.php', 'forumdirectory_app_menu');
 }
 
-function forumdirectory_module()
-{
-	return;
-}
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
+/**
+ * This is a statement rather than an actual function definition. The simple
+ * existence of this method is checked to figure out if the addon offers a
+ * module.
+ */
+function forumdirectory_module() {}
 
 function forumdirectory_app_menu(App $a, array &$b)
 {
