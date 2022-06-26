@@ -3,7 +3,10 @@ matrix:
     - PHP_MAJOR_VERSION: 7.4
       PHP_VERSION: 7.4.18
 
-platform: releaser/release # This prevents executing this pipeline at other servers than ci.friendi.ca
+# This prevents executing this pipeline at other servers than ci.friendi.ca
+labels:
+  location: friendica
+  type: releaser
 
 skip_clone: true
 
