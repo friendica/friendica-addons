@@ -80,12 +80,12 @@ function saml_install()
 	Hook::register('footer', __FILE__, 'saml_footer');
 }
 
-function saml_head(App $a, array &$b)
+function saml_head(App $a, string &$b)
 {
 	DI::page()->registerStylesheet(__DIR__ . '/saml.css');
 }
 
-function saml_footer(App $a, array &$b)
+function saml_footer(App $a, string &$b)
 {
 	$fragment = addslashes(BBCode::convert(DI::config()->get('saml', 'settings_statement')));
 	$b .= <<<EOL

@@ -17,7 +17,7 @@ function pageheader_install() {
     Hook::register('page_content_top', __FILE__, 'pageheader_fetch');
 }
 
-function pageheader_addon_admin(App &$a, &$s)
+function pageheader_addon_admin(App &$a, string &$s)
 {
 	if (!$a->isSiteAdmin()) {
 		return;
@@ -52,7 +52,7 @@ function pageheader_addon_admin_post(App $a)
 	}
 }
 
-function pageheader_fetch(App $a, array &$b)
+function pageheader_fetch(App $a, string &$b)
 {
 	if(file_exists('pageheader.html')){
 		$s = file_get_contents('pageheader.html');
