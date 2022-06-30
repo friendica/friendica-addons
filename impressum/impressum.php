@@ -45,7 +45,7 @@ function obfuscate_email (string $s): string
 
 function impressum_footer(App $a, string &$body)
 {
-	$text = ProxyUtils::proxifyHtml(BBCode::convert(DI::config()->get('impressum','footer_text')));
+	$text = ProxyUtils::proxifyHtml(BBCode::convert(DI::config()->get('impressum', 'footer_text')));
 
 	if ($text != '') {
 		DI::page()['htmlhead'] .= '<link rel="stylesheet" type="text/css" href="' . DI::baseUrl()->get() . '/addon/impressum/impressum.css" media="all" />';
@@ -95,22 +95,15 @@ function impressum_show(App $a, string &$body)
 
 function impressum_addon_admin_post (App $a)
 {
-	$owner = trim($_POST['owner'] ?? '');
-	$ownerprofile = trim($_POST['ownerprofile'] ?? '');
-	$postal = trim($_POST['postal'] ?? '');
-	$notes = trim($_POST['notes'] ?? '');
-	$email = trim($_POST['email'] ?? '');
-	$footer_text = trim($_POST['footer_text'] ?? '');
-
-	DI::config()->set('impressum', 'owner', strip_tags($owner));
-	DI::config()->set('impressum', 'ownerprofile', strip_tags($ownerprofile));
-	DI::config()->set('impressum', 'postal', strip_tags($postal));
-	DI::config()->set('impressum', 'email', strip_tags($email));
-	DI::config()->set('impressum', 'notes', strip_tags($notes));
-	DI::config()->set('impressum', 'footer_text', strip_tags($footer_text));
+	DI::config()->set('impressum', 'owner', strip_tags(trim($_POST['owner'] ?? '')));
+	DI::config()->set('impressum', 'ownerprofile', strip_tags(trim($_POST['ownerprofile'] ?? '')));
+	DI::config()->set('impressum', 'postal', strip_tags(trim($_POST['postal'] ?? '')));
+	DI::config()->set('impressum', 'email', strip_tags(trim($_POST['notes'] ?? '')));
+	DI::config()->set('impressum', 'notes', strip_tags(trim($_POST['email'] ?? '')));
+	DI::config()->set('impressum', 'footer_text', strip_tags(trim($_POST['footer_text'] ?? '')));
 }
 
-function impressum_addon_admin (App $a, &$o)
+function impressum_addon_admin (App $a, string &$o)
 {
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/impressum/' );
 	$o = Renderer::replaceMacros($t, [

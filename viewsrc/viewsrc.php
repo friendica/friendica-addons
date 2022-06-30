@@ -11,12 +11,14 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\DI;
 
-function viewsrc_install() {
+function viewsrc_install()
+{
 	Hook::register('item_photo_menu', 'addon/viewsrc/viewsrc.php', 'viewsrc_item_photo_menu');
 	Hook::register('page_end', 'addon/viewsrc/viewsrc.php', 'viewsrc_page_end');
 }
 
-function viewsrc_page_end(App $a, &$o){
+function viewsrc_page_end(App $a, string &$o)
+{
 	DI::page()['htmlhead'] .= <<< EOS
 	<script>
 		$(function(){

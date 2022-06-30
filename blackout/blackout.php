@@ -83,7 +83,8 @@ function blackout_redirect (App $a, $b)
 	}
 }
 
-function blackout_addon_admin(App $a, &$o) {
+function blackout_addon_admin(App $a, string &$o)
+{
 	$mystart = DI::config()->get('blackout','begindate');
 	if (! is_string($mystart)) { $mystart = 'YYYY-MM-DD hh:mm'; }
 	$myend   = DI::config()->get('blackout','enddate');
@@ -110,11 +111,10 @@ function blackout_addon_admin(App $a, &$o) {
 		'$aboutredirect' => DI::l10n()->t("<strong>Note</strong>: The redirect will be active from the moment you press the submit button. Users currently logged in will <strong>not</strong> be thrown out but can't login again after logging out while the blackout is still in place."),
 	]);
 }
-function blackout_addon_admin_post (App $a) {
-	$begindate = trim($_POST['startdate']);
-	$enddate = trim($_POST['enddate']);
-	$url = trim($_POST['rurl']);
-	DI::config()->set('blackout','begindate',$begindate);
-	DI::config()->set('blackout','enddate',$enddate);
-	DI::config()->set('blackout','url',$url);
+
+function blackout_addon_admin_post (App $a)
+{
+	DI::config()->set('blackout', 'begindate', trim($_POST['startdate']));
+	DI::config()->set('blackout', 'enddate', trim($_POST['enddate']));
+	DI::config()->set('blackout', 'url', trim($_POST['rurl']));
 }

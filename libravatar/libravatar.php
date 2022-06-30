@@ -57,9 +57,9 @@ function libravatar_lookup(array $a, array &$b)
 /**
  * Display admin settings for this addon
  */
-function libravatar_addon_admin(App $a, &$o)
+function libravatar_addon_admin(App $a, string &$o)
 {
-	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/libravatar");
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/libravatar');
 
 	$default_avatar = DI::config()->get('libravatar', 'default_avatar', 'identicon');
 
@@ -90,6 +90,5 @@ function libravatar_addon_admin(App $a, &$o)
  */
 function libravatar_addon_admin_post(App $a)
 {
-	$default_avatar = trim($_POST['avatar'] ?? 'identicon');
-	DI::config()->set('libravatar', 'default_avatar', $default_avatar);
+	DI::config()->set('libravatar', 'default_avatar', trim($_POST['avatar'] ?? 'identicon'));
 }

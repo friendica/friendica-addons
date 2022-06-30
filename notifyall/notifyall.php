@@ -22,7 +22,7 @@ use Friendica\DI;
  */
 function notifyall_module() {}
 
-function notifyall_addon_admin(App $a, &$o)
+function notifyall_addon_admin(App $a, string &$o)
 {
 	$o = '<div></div>&nbsp;&nbsp;&nbsp;&nbsp;<a href="' . DI::baseUrl()->get() . '/notifyall">' . DI::l10n()->t('Send email to all members') . '</a></br/>';
 }

@@ -79,7 +79,7 @@ function openstreetmap_location(App $a, &$item)
 		$nomserver = OSM_NOM;
 	}
 
-	if ($item['coord'] != "") {
+	if ($item['coord'] != '') {
 		$coords = explode(' ', $item['coord']);
 		if (count($coords) > 1) {
 			$lat = urlencode(round($coords[0], 5));
@@ -96,13 +96,13 @@ function openstreetmap_location(App $a, &$item)
 		$target = $nomserver.'?q='.urlencode($item['location']);
 	}
 
-	if ($item['location'] != "") {
+	if ($item['location'] != '') {
 		$title = $item['location'];
 	} else {
 		$title = $item['coord'];
 	}
 
-	$item['html'] = '<a target="map" title="'.$title.'" href= "'.$target.'">'.$title.'</a>';
+	$item['html'] = '<a target="map" title="' . $title . '" href= "' . $target . '">' . $title . '</a>';
 }
 
 function openstreetmap_get_coordinates(App $a, array &$b)
@@ -116,7 +116,7 @@ function openstreetmap_get_coordinates(App $a, array &$b)
 
 	$args = '?q=' . urlencode($b['location']) . '&format=json';
 
-	$cachekey = "openstreetmap:" . $b['location'];
+	$cachekey = 'openstreetmap:' . $b['location'];
 	$j = DI::cache()->get($cachekey);
 
 	if (is_null($j)) {
@@ -178,9 +178,9 @@ function openstreetmap_generate_map(App $a, array &$b)
 	Logger::debug('generate_map: ' . $b['html']);
 }
 
-function openstreetmap_addon_admin(App $a, &$o)
+function openstreetmap_addon_admin(App $a, string &$o)
 {
-	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/openstreetmap/");
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/openstreetmap/');
 	$tmsserver = DI::config()->get('openstreetmap', 'tmsserver', OSM_TMS);
 	$nomserver = DI::config()->get('openstreetmap', 'nomserver', OSM_NOM);
 	$zoom = DI::config()->get('openstreetmap', 'zoom', OSM_ZOOM);
@@ -202,13 +202,8 @@ function openstreetmap_addon_admin(App $a, &$o)
 
 function openstreetmap_addon_admin_post(App $a)
 {
-	$urltms = ($_POST['tmsserver'] ?? '') ?: OSM_TMS;
-	$urlnom = ($_POST['nomserver'] ?? '') ?: OSM_NOM;
-	$zoom = ($_POST['zoom'] ?? '') ?: OSM_ZOOM;
-	$marker = ($_POST['marker'] ?? '') ?: OSM_MARKER;
-
-	DI::config()->set('openstreetmap', 'tmsserver', $urltms);
-	DI::config()->set('openstreetmap', 'nomserver', $urlnom);
-	DI::config()->set('openstreetmap', 'zoom', $zoom);
-	DI::config()->set('openstreetmap', 'marker', $marker);
+	DI::config()->set('openstreetmap', 'tmsserver', ($_POST['tmsserver'] ?? '') ?: OSM_TMS);
+	DI::config()->set('openstreetmap', 'nomserver', ($_POST['nomserver'] ?? '') ?: OSM_NOM);
+	DI::config()->set('openstreetmap', 'zoom', ($_POST['zoom'] ?? '') ?: OSM_ZOOM);
+	DI::config()->set('openstreetmap', 'marker', ($_POST['marker'] ?? '') ?: OSM_MARKER);
 }

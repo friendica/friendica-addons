@@ -91,8 +91,10 @@ function piwik_analytics(App $a, array &$b)
 		$b .= "</div>";
 	}
 }
-function piwik_addon_admin (App $a, &$o) {
+function piwik_addon_admin (App $a, string &$o)
+{
 	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/piwik/" );
+
 	$o = Renderer::replaceMacros( $t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
 		'$piwikbaseurl' => ['baseurl', DI::l10n()->t('Matomo (Piwik) Base URL'), DI::config()->get('piwik','baseurl' ), DI::l10n()->t('Absolute path to your Matomo (Piwik) installation. (without protocol (http/s), with trailing slash)')],
@@ -101,13 +103,11 @@ function piwik_addon_admin (App $a, &$o) {
 		'$async' => ['async', DI::l10n()->t('Asynchronous tracking'), DI::config()->get('piwik','async' ), ''],
 	]);
 }
-function piwik_addon_admin_post (App $a) {
-	$url = trim($_POST['baseurl'] ?? '');
-	$id = trim($_POST['siteid'] ?? '');
-	$optout = trim($_POST['optout'] ?? '');
-	$async = trim($_POST['async'] ?? '');
-	DI::config()->set('piwik', 'baseurl', $url);
-	DI::config()->set('piwik', 'siteid', $id);
-	DI::config()->set('piwik', 'optout', $optout);
-	DI::config()->set('piwik', 'async', $async);
+
+function piwik_addon_admin_post(App $a)
+{
+	DI::config()->set('piwik', 'baseurl', trim($_POST['baseurl'] ?? ''));
+	DI::config()->set('piwik', 'siteid', trim($_POST['siteid'] ?? ''));
+	DI::config()->set('piwik', 'optout', trim($_POST['optout'] ?? ''));
+	DI::config()->set('piwik', 'async', trim($_POST['async'] ?? ''));
 }
