@@ -62,7 +62,7 @@ function gravatar_lookup(App $a, array &$b)
 /**
  * Display admin settings for this addon
  */
-function gravatar_addon_admin (App $a, &$o)
+function gravatar_addon_admin (App $a, string &$o)
 {
 	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/gravatar/" );
 
@@ -113,8 +113,6 @@ function gravatar_addon_admin_post (App $a)
 {
 	BaseModule::checkFormSecurityToken('gravatarsave');
 
-	$default_avatar = trim($_POST['avatar'] ?? 'identicon');
-	$rating = trim($_POST['rating'] ?? 'g');
-	DI::config()->set('gravatar', 'default_avatar', $default_avatar);
-	DI::config()->set('gravatar', 'rating', $rating);
+	DI::config()->set('gravatar', 'default_avatar', trim($_POST['avatar'] ?? 'identicon'));
+	DI::config()->set('gravatar', 'rating', $rating = trim($_POST['rating'] ?? 'g'));
 }

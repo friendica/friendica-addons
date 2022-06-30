@@ -212,7 +212,7 @@ function curweather_addon_admin_post(App $a)
 	}
 }
 
-function curweather_addon_admin(App $a, &$o)
+function curweather_addon_admin(App $a, string &$o)
 {
 	if (!$a->isSiteAdmin()) {
 		return;

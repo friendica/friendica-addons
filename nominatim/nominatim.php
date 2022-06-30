@@ -18,7 +18,7 @@ function nominatim_install()
 	Hook::register('post_remote', 'addon/nominatim/nominatim.php', 'nominatim_post_hook');
 }
 
-function nominatim_resolve_item(&$item)
+function nominatim_resolve_item(array &$item)
 {
 	if(empty($item['coord']) || !empty($item['location'])) {
 		return;
@@ -65,12 +65,12 @@ function nominatim_resolve_item(&$item)
 	}
 }
 
-function nominatim_post_hook(App $a, &$item)
+function nominatim_post_hook(App $a, array &$item)
 {
 	nominatim_resolve_item($item);
 }
 
-function nominatim_addon_admin(App $a, &$o)
+function nominatim_addon_admin(App $a, string &$o)
 {
 
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/nominatim/');
@@ -83,6 +83,5 @@ function nominatim_addon_admin(App $a, &$o)
 
 function nominatim_addon_admin_post(App $a)
 {
-	$language  = !empty($_POST['language']) ? trim($_POST['language']) : '';
-	DI::config()->set('nominatim', 'language', $language);
+	DI::config()->set('nominatim', 'language', (!empty($_POST['language']) ? trim($_POST['language']) : ''));
 }

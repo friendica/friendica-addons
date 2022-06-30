@@ -50,7 +50,7 @@ function mathjax_settings(App $a, array &$data)
 	];
 }
 
-function mathjax_footer(App $a, string &$b)
+function mathjax_footer(App $a, string &$body)
 {
 	//  if the visitor of the page is not a local_user, use MathJax
 	//  otherwise check the users settings.

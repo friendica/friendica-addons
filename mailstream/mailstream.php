@@ -75,12 +75,13 @@ function mailstream_addon_admin(App $a, string &$o)
 	$frommail = DI::config()->get('mailstream', 'frommail');
 	$template = Renderer::getMarkupTemplate('admin.tpl', 'addon/mailstream/');
 	$config = ['frommail',
-			DI::l10n()->t('From Address'),
-			$frommail,
-			DI::l10n()->t('Email address that stream items will appear to be from.')];
+		DI::l10n()->t('From Address'),
+		$frommail,
+		DI::l10n()->t('Email address that stream items will appear to be from.')];
 	$o .= Renderer::replaceMacros($template, [
-				 '$frommail' => $config,
-				 '$submit' => DI::l10n()->t('Save Settings')]);
+		'$frommail' => $config,
+		'$submit' => DI::l10n()->t('Save Settings')
+	]);
 }
 
 /**
@@ -101,7 +102,7 @@ function mailstream_addon_admin_post()
  *
  * @return string the created message ID
  */
-function mailstream_generate_id($uri)
+function mailstream_generate_id(string $uri): string
 {
 	$host = DI::baseUrl()->getHostname();
 	$resource = hash('md5', $uri);
@@ -110,7 +111,7 @@ function mailstream_generate_id($uri)
 	return $message_id;
 }
 
-function mailstream_send_hook(App $a, $data)
+function mailstream_send_hook(App $a, array $data)
 {
 	$criteria = array('uid' => $data['uid'], 'contact-id' => $data['contact-id'], 'uri' => $data['uri']);
 	$item = Post::selectFirst([], $criteria);
@@ -140,8 +141,9 @@ function mailstream_send_hook(App $a, $data)
  *
  * @param App $a    App object (unused)
  * @param array     $item content of the item (may or may not already be stored in the item table)
+ * @return void
  */
-function mailstream_post_hook(App $a, &$item)
+function mailstream_post_hook(App $a, array &$item)
 {
 	mailstream_check_version();
 
@@ -174,11 +176,13 @@ function mailstream_post_hook(App $a, &$item)
 
 	$message_id = mailstream_generate_id($item['uri']);
 
-	$send_hook_data = array('uid' => $item['uid'],
-								'contact-id' => $item['contact-id'],
-								'uri' => $item['uri'],
-								'message_id' => $message_id,
-								'tries' => 0);
+	$send_hook_data = [
+		'uid' => $item['uid'],
+		'contact-id' => $item['contact-id'],
+		'uri' => $item['uri'],
+		'message_id' => $message_id,
+		'tries' => 0,
+	];
 	Hook::fork(PRIORITY_LOW, 'mailstream_send_hook', $send_hook_data);
 }
 
@@ -193,25 +197,30 @@ function mailstream_post_hook(App $a, &$item)
  *
  * @return array new value of the attachments table (results are also stored in the reference parameter)
  */
-function mailstream_do_images(&$item, &$attachments)
+function mailstream_do_images(arrat &$item, array &$attachments)
 {
 	if (!DI::pConfig()->get($item['uid'], 'mailstream', 'attachimg')) {
 		return;
 	}
+
 	$attachments = [];
+
 	preg_match_all("/\[img\=([0-9]*)x([0-9]*)\](.*?)\[\/img\]/ism", $item["body"], $matches1);
 	preg_match_all("/\[img\](.*?)\[\/img\]/ism", $item["body"], $matches2);
 	preg_match_all("/\[img\=([^\]]*)\]([^[]*)\[\/img\]/ism", $item["body"], $matches3);
+
 	foreach (array_merge($matches1[3], $matches2[1], $matches3[1]) as $url) {
 		$components = parse_url($url);
+
 		if (!$components) {
 			continue;
 		}
+
 		$cookiejar = tempnam(System::getTempPath(), 'cookiejar-mailstream-');
 		$curlResult = DI::httpClient()->fetchFull($url, HttpClientAccept::DEFAULT, 0, $cookiejar);
 		$attachments[$url] = [
 			'data' => $curlResult->getBody(),
-			'guid' => hash("crc32", $url),
+			'guid' => hash('crc32', $url),
 			'filename' => basename($components['path']),
 			'type' => $curlResult->getContentType()
 		];
@@ -221,6 +230,7 @@ function mailstream_do_images(&$item, &$attachments)
 			continue;
 		}
 	}
+
 	return $attachments;
 }
 
@@ -231,7 +241,7 @@ function mailstream_do_images(&$item, &$attachments)
  *
  * @return string sender suitable for use in the email
  */
-function mailstream_sender($item)
+function mailstream_sender(array $item): string
 {
 	$contact = Contact::getById($item['contact-id']);
 	if (DBA::isResult($contact)) {
@@ -249,7 +259,7 @@ function mailstream_sender($item)
  *
  * @return string plaintext subject line
  */
-function mailstream_decode_subject($subject)
+function mailstream_decode_subject(string $subject): string
 {
 	$html = BBCode::convert($subject);
 	if (!$html) {
@@ -264,7 +274,7 @@ function mailstream_decode_subject($subject)
 		return $notags;
 	}
 	$nocodes = preg_replace_callback("/(&#[0-9]+;)/", function ($m) {
-		return mb_convert_encoding($m[1], "UTF-8", "HTML-ENTITIES");
+		return mb_convert_encoding($m[1], 'UTF-8', 'HTML-ENTITIES');
 	}, $noentity);
 	if (!$nocodes) {
 		return $noentity;
@@ -283,7 +293,7 @@ function mailstream_decode_subject($subject)
  *
  * @return string subject line suitable for use in the email
  */
-function mailstream_subject($item)
+function mailstream_subject(array $item): string
 {
 	if ($item['title']) {
 		return mailstream_decode_subject($item['title']);
@@ -345,11 +355,11 @@ function mailstream_subject($item)
  *
  * @return bool True if this message has been completed.  False if it should be retried.
  */
-function mailstream_send($message_id, $item, $user)
+function mailstream_send(string $message_id, array $item, array $user): bool
 {
 	if (!is_array($item)) {
 		Logger::error('mailstream_send item is empty', ['message_id' => $message_id]);
-		return;
+		return false;
 	}
 
 	if (!$item['visible']) {
@@ -361,19 +371,20 @@ function mailstream_send($message_id, $item, $user)
 				'user email' => $user['email']]);
 		return true;
 	}
-	require_once(dirname(__file__).'/phpmailer/class.phpmailer.php');
+
+	require_once (dirname(__file__) . '/phpmailer/class.phpmailer.php');
 
 	$attachments = [];
 	mailstream_do_images($item, $attachments);
 	$frommail = DI::config()->get('mailstream', 'frommail');
-	if ($frommail == "") {
+	if ($frommail == '') {
 		$frommail = 'friendica@localhost.local';
 	}
 	$address = DI::pConfig()->get($item['uid'], 'mailstream', 'address');
 	if (!$address) {
 		$address = $user['email'];
 	}
-	$mail = new PHPmailer;
+	$mail = new PHPmailer();
 	try {
 		$mail->XMailer = 'Friendica Mailstream Addon';
 		$mail->SetFrom($frommail, mailstream_sender($item));
@@ -428,7 +439,7 @@ function mailstream_send($message_id, $item, $user)
  *
  * @param string $text text to word wrap - modified in-place
  */
-function mailstream_html_wrap(&$text)
+function mailstream_html_wrap(string &$text): string
 {
 	$lines = str_split($text, 200);
 	for ($i = 0; $i < count($lines); $i++) {
@@ -514,6 +525,7 @@ function mailstream_addon_settings(App &$a, array &$data)
  * Process data submitted to user's mailstream features form
  * @param App $a
  * @param array          $post POST data
+ * @return void
  */
 function mailstream_addon_settings_post(App $a, array $post)
 {

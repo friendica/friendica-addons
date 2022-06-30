@@ -54,15 +54,15 @@ function pageheader_addon_admin_post(App $a)
 
 function pageheader_fetch(App $a, string &$b)
 {
-	if(file_exists('pageheader.html')){
+	if (file_exists('pageheader.html')) {
 		$s = file_get_contents('pageheader.html');
 	} else {
 		$s = DI::config()->get('pageheader', 'text');
 	}
 
 	DI::page()->registerStylesheet(__DIR__ .'/pageheader.css');
-    
-    if ($s) {
-        $b .= '<div class="pageheader">' . $s . '</div>';
-    }
+
+	if ($s) {
+		$b .= '<div class="pageheader">' . $s . '</div>';
+	}
 }

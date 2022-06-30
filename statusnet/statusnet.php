@@ -628,7 +628,7 @@ function statusnet_addon_admin_post(App $a)
 	$sites = DI::config()->set('statusnet', 'sites', $sites);
 }
 
-function statusnet_addon_admin(App $a, &$o)
+function statusnet_addon_admin(App $a, string &$o)
 {
 	$sites = DI::config()->get('statusnet', 'sites');
 	$sitesform = [];

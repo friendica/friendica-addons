@@ -58,7 +58,6 @@ function cookienotice_addon_admin(App $a, &$s)
  * handles the post request from the admin panel
  *
  * @param App    $a
- *
  * @return void
  */
 function cookienotice_addon_admin_post(App $a)

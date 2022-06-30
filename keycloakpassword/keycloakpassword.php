@@ -110,7 +110,7 @@ function keycloakpassword_admin_input($key, $label, $description)
 	];
 }
 
-function keycloakpassword_addon_admin(App $a, &$o)
+function keycloakpassword_addon_admin(App $a, string &$o)
 {
 	$form =
 		keycloakpassword_admin_input(

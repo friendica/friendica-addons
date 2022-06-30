@@ -125,29 +125,24 @@ function public_server_login(App $a, $b)
 function public_server_addon_admin_post(App $a)
 {
 	BaseModule::checkFormSecurityTokenRedirectOnError('/admin/addons/publicserver', 'publicserver');
-	$expiredays = trim($_POST['expiredays'] ?? '');
-	$expireposts = trim($_POST['expireposts'] ?? '');
-	$nologin = trim($_POST['nologin'] ?? '');
-	$flagusers = trim($_POST['flagusers'] ?? '');
-	$flagposts = trim($_POST['flagposts'] ?? '');
-	$flagpostsexpire = trim($_POST['flagpostsexpire'] ?? '');
-	DI::config()->set('public_server', 'expiredays', $expiredays);
-	DI::config()->set('public_server', 'expireposts', $expireposts);
-	DI::config()->set('public_server', 'nologin', $nologin);
-	DI::config()->set('public_server', 'flagusers', $flagusers);
-	DI::config()->set('public_server', 'flagposts', $flagposts);
-	DI::config()->set('public_server', 'flagpostsexpire', $flagpostsexpire);
+
+	DI::config()->set('public_server', 'expiredays', trim($_POST['expiredays'] ?? ''));
+	DI::config()->set('public_server', 'expireposts', trim($_POST['expireposts'] ?? ''));
+	DI::config()->set('public_server', 'nologin', trim($_POST['nologin'] ?? ''));
+	DI::config()->set('public_server', 'flagusers', trim($_POST['flagusers'] ?? ''));
+	DI::config()->set('public_server', 'flagposts', trim($_POST['flagposts'] ?? ''));
+	DI::config()->set('public_server', 'flagpostsexpire', trim($_POST['flagpostsexpire'] ?? ''));
 }
 
-function public_server_addon_admin(App $a, &$o)
+function public_server_addon_admin(App $a, string &$o)
 {
-	$token = BaseModule::getFormSecurityToken("publicserver");
-	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/public_server");
+	$token = BaseModule::getFormSecurityToken('publicserver');
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/public_server');
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
 		'$form_security_token' => $token,
 		'$infotext' => DI::l10n()->t('Set any of these options to 0 to deactivate it.'),
-		'$expiredays' => ["expiredays","Expire Days", intval(DI::config()->get('public_server', 'expiredays')), "When an account is created on the site, it is given a hard "],
+		'$expiredays' => ["expiredays", "Expire Days", intval(DI::config()->get('public_server', 'expiredays')), "When an account is created on the site, it is given a hard "],
 		'$expireposts' => ["expireposts", "Expire Posts", intval(DI::config()->get('public_server', 'expireposts')), "Set the default days for posts to expire here"],
 		'$nologin' => ["nologin", "No Login", intval(DI::config()->get('public_server', 'nologin')), "Remove users who have never logged in after nologin days "],
 		'$flagusers' => ["flagusers", "Flag users", intval(DI::config()->get('public_server', 'flagusers')), "Remove users who last logged in over flagusers days ago"],

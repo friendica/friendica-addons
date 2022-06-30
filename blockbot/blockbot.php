@@ -24,7 +24,7 @@ function blockbot_install()
 	Hook::register('init_1', __FILE__, 'blockbot_init_1');
 }
 
-function blockbot_addon_admin(App $a, &$o)
+function blockbot_addon_admin(App $a, string &$o)
 {
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/blockbot/');
 

@@ -135,7 +135,7 @@ function irc_addon_admin_post (App $a)
 		DI::config()->set('irc', 'sitechats', trim($_POST['sitechats']));
 	}
 }
-function irc_addon_admin (App $a, &$o) {
+function irc_addon_admin (App $a, string &$o) {
 	$sitechats = DI::config()->get('irc', 'sitechats'); /* popular channels */
 	$autochans = DI::config()->get('irc', 'autochans');  /* auto connect chans */
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/irc/' );

@@ -26,7 +26,7 @@ function rendertime_init_1(App $a)
 {
 }
 
-function rendertime_addon_admin(App $a, &$o)
+function rendertime_addon_admin(App $a, string &$o)
 {
 	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/rendertime/");
 
@@ -47,9 +47,8 @@ function rendertime_addon_admin_post(App $a)
  * @param App $a
  * @param string $o
  */
-function rendertime_page_end(App $a, &$o)
+function rendertime_page_end(App $a, string &$o)
 {
-
 	$profiler = DI::profiler();
 
 	$duration = microtime(true) - $profiler->get('start');
