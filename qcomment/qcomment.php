@@ -57,7 +57,7 @@ function qcomment_addon_settings(App &$a, array &$data)
 	];
 }
 
-function qcomment_addon_settings_post(App $a, array &$body)
+function qcomment_addon_settings_post(App $a, array &$b)
 {
 	if (!local_user()) {
 		return;
