@@ -903,13 +903,11 @@ function twitter_delete_item(array $item)
 
 function twitter_addon_admin_post(App $a)
 {
-	$consumerkey    = trim($_POST['consumerkey'] ?? '');
-	$consumersecret = trim($_POST['consumersecret'] ?? '');
-	DI::config()->set('twitter', 'consumerkey', $consumerkey);
-	DI::config()->set('twitter', 'consumersecret', $consumersecret);
+	DI::config()->set('twitter', 'consumerkey', trim($_POST['consumerkey'] ?? ''));
+	DI::config()->set('twitter', 'consumersecret', trim($_POST['consumersecret'] ?? ''));
 }
 
-function twitter_addon_admin(App $a, &$o)
+function twitter_addon_admin(App $a, string &$o)
 {
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/twitter/');
 

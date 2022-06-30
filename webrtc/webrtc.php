@@ -21,19 +21,23 @@ function webrtc_app_menu(App $a, array &$b)
 	$b['app_menu'][] = '<div class="app-title"><a href="webrtc">' . DI::l10n()->t('WebRTC Videochat') . '</a></div>';
 }
 
-function webrtc_addon_admin (App $a, &$o)
+function webrtc_addon_admin (App $a, string &$o)
 {
-	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/webrtc/" );
-	$o = Renderer::replaceMacros( $t, [
-	    '$submit' => DI::l10n()->t('Save Settings'),
-	    '$webrtcurl' => ['webrtcurl', DI::l10n()->t('WebRTC Base URL'), DI::config()->get('webrtc','webrtcurl' ), DI::l10n()->t('Page your users will create a WebRTC chat room on. For example you could use https://live.mayfirst.org .')],
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/webrtc/' );
+	$o = Renderer::replaceMacros($t, [
+		'$submit' => DI::l10n()->t('Save Settings'),
+		'$webrtcurl' => [
+			'webrtcurl',
+			DI::l10n()->t('WebRTC Base URL'),
+			DI::config()->get('webrtc','webrtcurl' ),
+			DI::l10n()->t('Page your users will create a WebRTC chat room on. For example you could use https://live.mayfirst.org .'),
+		],
 	]);
 }
 
 function webrtc_addon_admin_post (App $a)
 {
-	$url = trim($_POST['webrtcurl'] ?? '');
-	DI::config()->set('webrtc', 'webrtcurl', $url);
+	DI::config()->set('webrtc', 'webrtcurl', trim($_POST['webrtcurl'] ?? ''));
 }
 
 /**
@@ -43,7 +47,7 @@ function webrtc_addon_admin_post (App $a)
  */
 function webrtc_module() {}
 
-function webrtc_content(App $a)
+function webrtc_content(App $a): string
 {
 	$o = '';
 

@@ -37,14 +37,13 @@ function nitter_install()
  */
 function nitter_addon_admin_post(App $a)
 {
-	$nitterserver = rtrim(trim($_POST['nitterserver']),'/');
-	DI::config()->set('nitter', 'server', $nitterserver);
+	DI::config()->set('nitter', 'server', rtrim(trim($_POST['nitterserver']), '/'));
 }
 
 /* Hook into the admin settings to let the admin choose a
  * nitter server to use for the replacement.
  */
-function nitter_addon_admin(App $a, &$o)
+function nitter_addon_admin(App $a, string &$o)
 {
 	$nitterserver = DI::config()->get('nitter', 'server');
 	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/nitter/');
@@ -58,20 +57,20 @@ function nitter_addon_admin(App $a, &$o)
 /*
  *  replace "twitter.com" with "nitter.net"
  */
-function nitter_render(App $a, &$o)
+function nitter_render(App $a, array &$b)
 {
 	// this needs to be a system setting
 	$replaced = false;
 	$nitter = DI::config()->get('nitter', 'server', 'https://nitter.net');
-	if (strstr($o['html'], 'https://mobile.twitter.com')) {
-		$o['html'] = str_replace('https://mobile.twitter.com', $nitter, $o['html']);
+	if (strstr($b['html'], 'https://mobile.twitter.com')) {
+		$b['html'] = str_replace('https://mobile.twitter.com', $nitter, $b['html']);
 		$replaced = true;
 	}
-	if (strstr($o['html'], 'https://twitter.com')) {
-		$o['html'] = str_replace('https://twitter.com', $nitter, $o['html']);
+	if (strstr($b['html'], 'https://twitter.com')) {
+		$b['html'] = str_replace('https://twitter.com', $nitter, $b['html']);
 		$replaced = true;
 	}
 	if ($replaced) {
-		$o['html'] .= '<hr><p>' . DI::l10n()->t('In an attempt to protect your privacy, links to Twitter in this posting were replaced by links to the Nitter instance at %s', $nitter) . '</p>';
+		$b['html'] .= '<hr><p>' . DI::l10n()->t('In an attempt to protect your privacy, links to Twitter in this posting were replaced by links to the Nitter instance at %s', $nitter) . '</p>';
 	}
 }

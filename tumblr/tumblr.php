@@ -64,7 +64,7 @@ function tumblr_content(App $a)
 	return $o;
 }
 
-function tumblr_addon_admin(App $a, &$o)
+function tumblr_addon_admin(App $a, string &$o)
 {
 	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/tumblr/" );
 
@@ -78,11 +78,8 @@ function tumblr_addon_admin(App $a, &$o)
 
 function tumblr_addon_admin_post(App $a)
 {
-	$consumer_key    = trim($_POST['consumer_key'] ?? '');
-	$consumer_secret = trim($_POST['consumer_secret'] ?? '');
-
-	DI::config()->set('tumblr', 'consumer_key',$consumer_key);
-	DI::config()->set('tumblr', 'consumer_secret',$consumer_secret);
+	DI::config()->set('tumblr', 'consumer_key', trim($_POST['consumer_key'] ?? ''));
+	DI::config()->set('tumblr', 'consumer_secret', trim($_POST['consumer_secret'] ?? ''));
 }
 
 function tumblr_connect(App $a)
@@ -99,7 +96,7 @@ function tumblr_connect(App $a)
 
 	// The callback URL is the script that gets called after the user authenticates with tumblr
 	// In this example, it would be the included callback.php
-	$callback_url = DI::baseUrl()->get()."/tumblr/callback";
+	$callback_url = DI::baseUrl()->get() . '/tumblr/callback';
 
 	// Let's begin.  First we need a Request Token.  The request token is required to send the user
 	// to Tumblr's login page.
@@ -174,8 +171,8 @@ function tumblr_callback(App $a)
 	}
 
 	// What's next?  Now that we have an Access Token and Secret, we can make an API call.
-	DI::pConfig()->set(local_user(), "tumblr", "oauth_token", $access_token['oauth_token']);
-	DI::pConfig()->set(local_user(), "tumblr", "oauth_token_secret", $access_token['oauth_token_secret']);
+	DI::pConfig()->set(local_user(), 'tumblr', 'oauth_token', $access_token['oauth_token']);
+	DI::pConfig()->set(local_user(), 'tumblr', 'oauth_token_secret', $access_token['oauth_token_secret']);
 
 	$o = DI::l10n()->t("You are now authenticated to tumblr.");
 	$o .= '<br /><a href="' . DI::baseUrl()->get() . '/settings/connectors">' . DI::l10n()->t("return to the connector page") . '</a>';

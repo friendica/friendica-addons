@@ -26,7 +26,7 @@ function saml_module($a)
 {
 }
 
-function saml_init($a)
+function saml_init(App $a)
 {
 	if (DI::args()->getArgc() < 2) {
 		return;
@@ -80,15 +80,15 @@ function saml_install()
 	Hook::register('footer', __FILE__, 'saml_footer');
 }
 
-function saml_head(App $a, string &$b)
+function saml_head(App $a, string &$body)
 {
 	DI::page()->registerStylesheet(__DIR__ . '/saml.css');
 }
 
-function saml_footer(App $a, string &$b)
+function saml_footer(App $a, string &$body)
 {
 	$fragment = addslashes(BBCode::convert(DI::config()->get('saml', 'settings_statement')));
-	$b .= <<<EOL
+	$body .= <<<EOL
 <script>
 var target=$("#settings-nickname-desc");
 if (target.length) { target.append("<p>$fragment</p>"); }
@@ -125,7 +125,7 @@ function saml_sso_initiate(App $a, array &$b)
 	exit();
 }
 
-function saml_sso_reply($a)
+function saml_sso_reply(App $a)
 {
 	$auth = new \OneLogin\Saml2\Auth(saml_settings());
 	$requestID = null;
@@ -225,7 +225,7 @@ function saml_input($key, $label, $description)
 	];
 }
 
-function saml_addon_admin(App $a, &$o)
+function saml_addon_admin(App $a, string &$o)
 {
 	$form =
 		saml_input(
