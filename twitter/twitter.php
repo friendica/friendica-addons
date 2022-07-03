@@ -1257,22 +1257,26 @@ function twitter_fetchtimeline(App $a, int $uid)
 			}
 
 			if ($first_time) {
+				Logger::warning('First time, continue');
 				continue;
 			}
 
-			if (!stristr($post->source, $application_name)) {
-				Logger::info('Preparing mirror post', ['twitter-id' => $post->id_str, 'uid' => $uid]);
-
-				$mirrorpost = twitter_do_mirrorpost($a, $uid, $post);
-
-				if (empty($mirrorpost['body'])) {
-					continue;
-				}
-
-				Logger::info('Posting mirror post', ['twitter-id' => $post->id_str, 'uid' => $uid]);
-
-				Post\Delayed::add($mirrorpost['extid'], $mirrorpost, PRIORITY_MEDIUM, Post\Delayed::UNPREPARED);
+			if (stristr($post->source, $application_name)) {
+				Logger::warning('Source is application name', ['source' => $post->source, 'application_name' => $application_name]);
+				continue;
 			}
+			Logger::info('Preparing mirror post', ['twitter-id' => $post->id_str, 'uid' => $uid]);
+
+			$mirrorpost = twitter_do_mirrorpost($a, $uid, $post);
+
+			if (empty($mirrorpost['body'])) {
+				Logger::warning('Body is empty', ['post' => $post, 'mirrorpost' => $mirrorpost]);
+				continue;
+			}
+
+			Logger::info('Posting mirror post', ['twitter-id' => $post->id_str, 'uid' => $uid]);
+
+			Post\Delayed::add($mirrorpost['extid'], $mirrorpost, PRIORITY_MEDIUM, Post\Delayed::UNPREPARED);
 		}
 	}
 	DI::pConfig()->set($uid, 'twitter', 'lastid', $lastid);
