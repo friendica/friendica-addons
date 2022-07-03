@@ -82,7 +82,7 @@ function cookienotice_addon_admin_post(App $a)
  *
  * @return void
  */
-function cookienotice_page_content_top(App $a, array &$b)
+function cookienotice_page_content_top(App $a, string &$b)
 {
 	DI::page()->registerStylesheet(__DIR__ . '/cookienotice.css');
 	DI::page()->registerFooterScript(__DIR__ . '/cookienotice.js');
