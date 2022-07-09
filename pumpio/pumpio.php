@@ -923,7 +923,7 @@ function pumpio_dolike(App $a, int $uid, array $self, $post, string $own_id, $th
 	$likedata['uid'] = $uid;
 	$likedata['wall'] = 0;
 	$likedata['network'] = Protocol::PUMPIO;
-	$likedata['uri'] = Item::newURI($uid);
+	$likedata['uri'] = Item::newURI();
 	$likedata['thr-parent'] = $orig_post['uri'];
 	$likedata['contact-id'] = $contactid;
 	$likedata['app'] = $post->generator->displayName;
