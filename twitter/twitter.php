@@ -1094,6 +1094,9 @@ function twitter_parse_link(App $a, array &$b)
 	}
 
 	$item = twitter_createpost($a, 0, $status, [], true, false, true);
+	if (empty($item)) {
+		return;
+	}
 
 	if ($b['format'] == 'json') {
 		$images = [];
@@ -1157,7 +1160,7 @@ function twitter_do_mirrorpost(App $a, int $uid, $post)
 		// We don't support nested shares, so we mustn't show quotes as shares on retweets
 		$item = twitter_createpost($a, $uid, $post->retweeted_status, ['id' => 0], false, false, true, -1);
 
-		if (empty($item['body'])) {
+		if (empty($item)) {
 			return [];
 		}
 
@@ -1173,7 +1176,7 @@ function twitter_do_mirrorpost(App $a, int $uid, $post)
 	} else {
 		$item = twitter_createpost($a, $uid, $post, ['id' => 0], false, false, false, -1);
 
-		if (empty($item['body'])) {
+		if (empty($item)) {
 			return [];
 		}
 
@@ -1194,7 +1197,15 @@ function twitter_do_mirrorpost(App $a, int $uid, $post)
 	return $datarray;
 }
 
-function twitter_fetchtimeline(App $a, int $uid)
+/**
+ * Fetches the Twitter user's own posts
+ *
+ * @param App $a
+ * @param int $uid
+ * @return void
+ * @throws Exception
+ */
+function twitter_fetchtimeline(App $a, int $uid): void
 {
 	$ckey    = DI::config()->get('twitter', 'consumerkey');
 	$csecret = DI::config()->get('twitter', 'consumersecret');
@@ -1880,7 +1891,7 @@ function twitter_createpost(App $a, int $uid, $post, array $self, $create_user, 
 	if (!empty($post->retweeted_status)) {
 		$retweet = twitter_createpost($a, $uid, $post->retweeted_status, $self, false, false, $noquote);
 
-		if (empty($retweet['body'])) {
+		if (empty($retweet)) {
 			return [];
 		}
 
@@ -1915,7 +1926,7 @@ function twitter_createpost(App $a, int $uid, $post, array $self, $create_user, 
 			$postarray['body'] .= "\n\nhttps://twitter.com/" . $post->quoted_status->user->screen_name . "/status/" . $post->quoted_status->id_str;
 		} else {
 			$quoted = twitter_createpost($a, 0, $post->quoted_status, $self, false, false, true);
-			if (!empty($quoted['body'])) {
+			if (!empty($quoted)) {
 				Item::insert($quoted);
 				$post = Post::selectFirst(['guid', 'uri-id'], ['uri' => $quoted['uri'], 'uid' => 0]);
 				Logger::info('Stored quoted post', ['uid' => $uid, 'uri-id' => $uriId, 'post' => $post]);
@@ -1993,7 +2004,7 @@ function twitter_fetchparentposts(App $a, int $uid, $post, TwitterOAuth $connect
 		foreach ($posts as $post) {
 			$postarray = twitter_createpost($a, $uid, $post, $self, false, !DI::pConfig()->get($uid, 'twitter', 'create_user'), false);
 
-			if (empty($postarray['body'])) {
+			if (empty($postarray)) {
 				continue;
 			}
 
@@ -2006,7 +2017,15 @@ function twitter_fetchparentposts(App $a, int $uid, $post, TwitterOAuth $connect
 	}
 }
 
-function twitter_fetchhometimeline(App $a, int $uid)
+/**
+ * Fetches the posts received by the Twitter user
+ *
+ * @param App $a
+ * @param int $uid
+ * @return void
+ * @throws Exception
+ */
+function twitter_fetchhometimeline(App $a, int $uid): void
 {
 	$ckey    = DI::config()->get('twitter', 'consumerkey');
 	$csecret = DI::config()->get('twitter', 'consumersecret');
@@ -2115,8 +2134,8 @@ function twitter_fetchhometimeline(App $a, int $uid)
 
 			$postarray = twitter_createpost($a, $uid, $post, $self, $create_user, true, false);
 
-			if (empty($postarray['body']) || trim($postarray['body']) == '') {
-				Logger::info('Empty body for post ' . $post->id_str . ' and user ' . $uid);
+			if (empty($postarray)) {
+				Logger::info('Empty post ' . $post->id_str . ' and user ' . $uid);
 				continue;
 			}
 
@@ -2180,7 +2199,7 @@ function twitter_fetchhometimeline(App $a, int $uid)
 
 			$postarray = twitter_createpost($a, $uid, $post, $self, false, !$create_user, false);
 
-			if (empty($postarray['body'])) {
+			if (empty($postarray)) {
 				continue;
 			}
 
