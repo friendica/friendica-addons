@@ -830,7 +830,7 @@ function statusnet_fetchtimeline(App $a, int $uid)
 				$_REQUEST['extid'] = Protocol::STATUSNET;
 
 				if (isset($post->id)) {
-					$_REQUEST['message_id'] = Item::newURI($uid, Protocol::STATUSNET . ':' . $post->id);
+					$_REQUEST['message_id'] = Item::newURI(Protocol::STATUSNET . ':' . $post->id);
 				}
 
 				//$_REQUEST['date'] = $post->created_at;
