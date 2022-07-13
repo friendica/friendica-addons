@@ -81,7 +81,7 @@ function js_upload_post_file(App $a, array &$b)
 
 }
 
-function js_upload_post_end(App $a, array &$b)
+function js_upload_post_end(App $a, int &$b)
 {
 	global $js_upload_jsonresponse;
 
