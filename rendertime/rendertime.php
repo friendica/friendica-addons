@@ -28,7 +28,7 @@ function rendertime_init_1(App $a)
 
 function rendertime_addon_admin(App $a, string &$o)
 {
-	$t = Renderer::getMarkupTemplate("admin.tpl", "addon/rendertime/");
+	$t = Renderer::getMarkupTemplate('admin.tpl', 'addon/rendertime/');
 
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
@@ -53,7 +53,7 @@ function rendertime_page_end(App $a, string &$o)
 
 	$duration = microtime(true) - $profiler->get('start');
 
-	$ignored_modules = ["fbrowser"];
+	$ignored_modules = ['fbrowser'];
 	$ignored = in_array(DI::args()->getModuleName(), $ignored_modules);
 
 	if ($a->isSiteAdmin() && (($_GET['mode'] ?? '') != 'minimal') && !DI::mode()->isMobile() && !DI::mode()->isMobile() && !$ignored) {
