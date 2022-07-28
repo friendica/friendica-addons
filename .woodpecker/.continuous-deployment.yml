@@ -100,37 +100,12 @@ pipeline:
       repo: friendica/friendica-addons
       branch: [ develop, '*-rc' ]
       event: push
-  upload_artifacts:
+  publish_artifacts:
     image: alpine
-    secrets:
-      - source: sftp_host
-        target: lftp_host
-      - source: sftp_user
-        target: lftp_user
-      - source: ssh_key
-        target: lftp_key
-    environment:
-      LFTP_PORT: "22"
-      LFTP_SOURCE: "build"
-      LFTP_TARGET: "/http"
-    volumes:
-      - /etc/hosts:/etc/hosts
     commands:
-      - apk add lftp openssh openssl
-      - touch drone.key
-      - chmod 400 drone.key
-      - echo "$LFTP_KEY" | openssl base64 -A -d > drone.key
-      - lftp -c "
-        set net:timeout 5;
-        set net:max-retries 2;
-        set net:reconnect-interval-base 5;
-        set sftp:auto-confirm true;
-        set sftp:connect-program 'ssh -q -a -x -i drone.key';
-        connect sftp://$LFTP_USER:@$LFTP_HOST:$LFTP_PORT;
-        cd $LFTP_TARGET;
-        mput $LFTP_SOURCE/*;
-        "
-      - rm drone.key
+      - cp -fr build/* /tmp/friendica_files/
+    volumes:
+      - files:/tmp/friendica_files
     when:
       repo: friendica/friendica-addons
       branch: [ develop, '*-rc' ]
