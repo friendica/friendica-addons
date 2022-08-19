@@ -5,44 +5,64 @@
 # 
 # Translators:
 # Damien Goutte-Gattat <damien+transifex@incenp.org>, 2016
-# Nicola Spanti <translations@nicola-spanti.info>, 2015
+# Hypolite Petovan <hypolite@mrpetovan.com>, 2022
+# ea1cd8241cb389ffb6f92bc6891eff5d_dc12308 <70dced5587d47e18d88f9298024d96f8_93383>, 2015
 # StefOfficiel <pichard.stephane@free.fr>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 05:01-0500\n"
-"PO-Revision-Date: 2016-09-12 15:41+0000\n"
-"Last-Translator: Damien Goutte-Gattat <damien+transifex@incenp.org>\n"
+"POT-Creation-Date: 2021-02-01 18:15+0100\n"
+"PO-Revision-Date: 2014-06-23 11:01+0000\n"
+"Last-Translator: Hypolite Petovan <hypolite@mrpetovan.com>, 2022\n"
 "Language-Team: French (http://www.transifex.com/Friendica/friendica/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
-#: openstreetmap.php:94
+#: openstreetmap.php:167
+msgid "View Larger"
+msgstr "Voir en plus grand"
+
+#: openstreetmap.php:194
 msgid "Submit"
 msgstr "Envoyer"
 
-#: openstreetmap.php:95
+#: openstreetmap.php:195
 msgid "Tile Server URL"
 msgstr "URL du serveur de tuiles"
 
-#: openstreetmap.php:95
+#: openstreetmap.php:195
 msgid ""
 "A list of <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" "
-"target=\"_blank\">public tile servers</a>"
-msgstr "Une liste de <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" target=\"_blank\">serveurs de tuiles publics</a>"
+"target=\"_blank\" rel=\"noopener noreferrer\">public tile servers</a>"
+msgstr "Liste de <a href=\"http://wiki.openstreetmap.org/wiki/TMS\" target=\"_blank\" rel=\"noopener noreferrer\">serveurs de tuile publics</a>"
 
-#: openstreetmap.php:96
+#: openstreetmap.php:196
+msgid "Nominatim (reverse geocoding) Server URL"
+msgstr "URL de server Nominatim (geocoding inversé)"
+
+#: openstreetmap.php:196
+msgid ""
+"A list of <a href=\"http://wiki.openstreetmap.org/wiki/Nominatim\" "
+"target=\"_blank\" rel=\"noopener noreferrer\">Nominatim servers</a>"
+msgstr "Liste de <a href=\"http://wiki.openstreetmap.org/wiki/Nominatim\" target=\"_blank\" rel=\"noopener noreferrer\">serveurs Nominatim</a>"
+
+#: openstreetmap.php:197
 msgid "Default zoom"
 msgstr "Zoom par défaut"
 
-#: openstreetmap.php:96
-msgid "The default zoom level. (1:world, 18:highest)"
-msgstr "Le niveau de zoom affiché par défaut. (1: monde entier, 18: détail maximum)"
+#: openstreetmap.php:197
+msgid ""
+"The default zoom level. (1:world, 18:highest, also depends on tile server)"
+msgstr "Niveau de zoom par défaut (1:monde, 18:le plus proche, dépend également du serveur de tuile)."
 
-#: openstreetmap.php:104
-msgid "Settings updated."
-msgstr "Paramètres mis à jour."
+#: openstreetmap.php:198
+msgid "Include marker on map"
+msgstr "Inclut un marqueur sur la carte"
+
+#: openstreetmap.php:198
+msgid "Include a marker on the map."
+msgstr "Inclut un marqueur sur la carte."

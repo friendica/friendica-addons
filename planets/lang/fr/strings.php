@@ -1,5 +1,9 @@
 <?php
 
-$a->strings["Planets Settings"] = "Réglages des Planets";
-$a->strings["Enable Planets Addon"] = "Activer Planets";
-$a->strings["Submit"] = "Envoyer";
+if(! function_exists("string_plural_select_fr")) {
+function string_plural_select_fr($n){
+	$n = intval($n);
+	if (($n == 0 || $n == 1)) { return 0; } else if ($n != 0 && $n % 1000000 == 0) { return 1; } else  { return 2; }
+}}
+$a->strings['Enable Planets Addon'] = 'Activer l\'extension Planètes';
+$a->strings['Planets Settings'] = 'Paramètres des planètes';

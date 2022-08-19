@@ -11,30 +11,26 @@ msgid ""
 msgstr ""
 "Project-Id-Version: friendica\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 18:15+0100\n"
-"PO-Revision-Date: 2021-03-22 08:32+0000\n"
-"Last-Translator: bob lebonche <lebonche@tutanota.com>\n"
+"POT-Creation-Date: 2021-11-21 19:14-0500\n"
+"PO-Revision-Date: 2014-06-23 08:27+0000\n"
+"Last-Translator: bob lebonche <lebonche@tutanota.com>, 2021\n"
 "Language-Team: French (http://www.transifex.com/Friendica/friendica/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
-#: geonames.php:141
-msgid "Geonames Settings"
-msgstr "Paramètres Geonames"
-
-#: geonames.php:142
+#: geonames.php:135
 msgid ""
 "Replace numerical coordinates by the nearest populated location name in your"
 " posts."
 msgstr "Remplacer les coordonnées par le nom de la localité la plus proche dans votre publication."
 
-#: geonames.php:143
+#: geonames.php:136
 msgid "Enable Geonames Addon"
 msgstr "Activer l'application complémentaire Geonames"
 
-#: geonames.php:144
-msgid "Save Settings"
-msgstr "Sauvegarder les paramètres."
+#: geonames.php:141
+msgid "Geonames Settings"
+msgstr "Paramètres Geonames"

@@ -3,9 +3,8 @@
 if(! function_exists("string_plural_select_fr")) {
 function string_plural_select_fr($n){
 	$n = intval($n);
-	return intval($n > 1);
+	if (($n == 0 || $n == 1)) { return 0; } else if ($n != 0 && $n % 1000000 == 0) { return 1; } else  { return 2; }
 }}
-$a->strings['Method not found'] = 'Méthode non trouvée';
 $a->strings['Filtered by rule: %s'] = 'Filtré par règle:%s';
 $a->strings['Advanced Content Filter'] = 'Filtre avancé de contenu';
 $a->strings['Back to Addon Settings'] = 'Retour aux paramètres de l\'extension';
@@ -28,6 +27,7 @@ $a->strings['Add new rule'] = 'Ajouter nouvelle règle';
 $a->strings['Rule Name'] = 'Nommer règle';
 $a->strings['Rule Expression'] = 'Expression de règle';
 $a->strings['Cancel'] = 'Annuler';
+$a->strings['This addon requires this node having at least one post'] = 'Cette extension requiert au moins une publication sur ce serveur pour fonctionner';
 $a->strings['You must be logged in to use this method'] = 'Vous devez être connecté pour utiliser cette méthode';
 $a->strings['Invalid form security token, please refresh the page.'] = 'Formulaire token de sécurité invalide, rafraîchissez la page';
 $a->strings['The rule name and expression are required.'] = 'Le nom et l\'expression de cette règle sont requis';
@@ -37,3 +37,4 @@ $a->strings['Rule successfully updated'] = 'Règle bien mise à jour';
 $a->strings['Rule successfully deleted'] = 'Règle bien supprimée';
 $a->strings['Missing argument: guid.'] = 'Argument manquant: ';
 $a->strings['Unknown post with guid: %s'] = 'Post inconnu avec guid : %s';
+$a->strings['Method not found'] = 'Méthode non trouvée';
