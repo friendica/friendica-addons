@@ -1,10 +1,13 @@
 <?php
 
-$a->strings[":-)"] = ":-)";
-$a->strings[":-("] = ":-(";
-$a->strings["lol"] = "mdr";
-$a->strings["Quick Comment Settings"] = "Réglages de Quick Comment";
-$a->strings["Quick comments are found near comment boxes, sometimes hidden. Click them to provide simple replies."] = "Les commentaires rapides peuvent être trouvés à proximité des boîtes de commentaire, parfois cachés. Cliquez dessus pour fournir des réponses simples et lapidaires.";
-$a->strings["Enter quick comments, one per line"] = "Entrez les réponses rapides, une par ligne";
-$a->strings["Submit"] = "Envoyer";
-$a->strings["Quick Comment settings saved."] = "Réglages de Quick Comment sauvés.";
+if(! function_exists("string_plural_select_fr")) {
+function string_plural_select_fr($n){
+	$n = intval($n);
+	if (($n == 0 || $n == 1)) { return 0; } else if ($n != 0 && $n % 1000000 == 0) { return 1; } else  { return 2; }
+}}
+$a->strings[':-)'] = ':-)';
+$a->strings[':-('] = ':-(';
+$a->strings['lol'] = 'lol';
+$a->strings['Quick comments are found near comment boxes, sometimes hidden. Click them to provide simple replies.'] = 'Les Commentaires Rapides sont des suggestions de réponses simples disponibles autour des formulaires de commentaire.';
+$a->strings['Enter quick comments, one per line'] = 'Saisissez les Commentaires Rapides, un par ligne';
+$a->strings['Quick Comment Settings'] = 'Paramètres de Commentaire Rapide';

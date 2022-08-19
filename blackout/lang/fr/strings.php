@@ -3,7 +3,7 @@
 if(! function_exists("string_plural_select_fr")) {
 function string_plural_select_fr($n){
 	$n = intval($n);
-	return intval($n > 1);
+	if (($n == 0 || $n == 1)) { return 0; } else if ($n != 0 && $n % 1000000 == 0) { return 1; } else  { return 2; }
 }}
 $a->strings['The end-date is prior to the start-date of the blackout, you should fix this.'] = 'La date de fin est antérieure à la date de début du blackout, vous devriez changer ça.';
 $a->strings['Please double check the current settings for the blackout. It will begin on <strong>%s</strong> and end on <strong>%s</strong>.'] = 'S\'il vous plaît, vérifiez à nouveau les réglages actuels du blackout. Il commencera à  <strong>%s</strong> finira à <strong>%s</strong>.';
