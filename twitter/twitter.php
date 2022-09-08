@@ -199,7 +199,7 @@ function twitter_api_contact(string $apiPath, array $contact, int $uid): ?bool
 		return null;
 	}
 
-	return twitter_api_call($uid, $apiPath, ['screen_name' => $contact['nick']]);
+	return (bool)twitter_api_call($uid, $apiPath, ['screen_name' => $contact['nick']]);
 }
 
 function twitter_jot_nets(App $a, array &$jotnets_fields)
@@ -564,16 +564,16 @@ function twitter_item_by_link(App $a, array &$hookData)
 	}
 }
 
-function twitter_api_post(string $apiPath, string $pid, int $uid): ?bool
+function twitter_api_post(string $apiPath, string $pid, int $uid): ?object
 {
 	if (empty($pid)) {
-		return false;
+		return null;
 	}
 
 	return twitter_api_call($uid, $apiPath, ['id' => $pid]);
 }
 
-function twitter_api_call(int $uid, string $apiPath, array $parameters = []): ?bool
+function twitter_api_call(int $uid, string $apiPath, array $parameters = []): ?object
 {
 	$ckey = DI::config()->get('twitter', 'consumerkey');
 	$csecret = DI::config()->get('twitter', 'consumersecret');
@@ -600,13 +600,13 @@ function twitter_api_call(int $uid, string $apiPath, array $parameters = []): ?b
 		Logger::info('[twitter] API call successful', ['apiPath' => $apiPath, 'parameters' => $parameters]);
 		Logger::debug('[twitter] API call result', ['apiPath' => $apiPath, 'parameters' => $parameters, 'result' => $result]);
 
-		return true;
+		return $result;
 	} catch (TwitterOAuthException $twitterOAuthException) {
-		Logger::warning('Unable to communicate with twitter', ['apiPath' => $apiPath, 'parameters' => $parameters, 'code' => $twitterOAuthException->getCode(), 'exception' => $twitterOAuthException]);
-		return false;
+		Logger::notice('Unable to communicate with twitter', ['apiPath' => $apiPath, 'parameters' => $parameters, 'code' => $twitterOAuthException->getCode(), 'exception' => $twitterOAuthException]);
+		return null;
 	} catch (Exception $e) {
 		Logger::notice('[twitter] API call failed', ['apiPath' => $apiPath, 'parameters' => $parameters, 'code' => $e->getCode(), 'message' => $e->getMessage()]);
-		return false;
+		return null;
 	}
 }
 
@@ -657,7 +657,7 @@ function twitter_post_hook(App $a, array &$b)
 		$condition = ['uri' => $b['thr-parent'], 'uid' => $b['uid']];
 		$thr_parent = Post::selectFirst(['uri', 'extid', 'author-link', 'author-nick', 'author-network'], $condition);
 		if (!DBA::isResult($thr_parent)) {
-			Logger::warning('No parent found', ['thr-parent' => $b['thr-parent']]);
+			Logger::notice('No parent found', ['thr-parent' => $b['thr-parent']]);
 			return;
 		}
 
@@ -809,7 +809,7 @@ function twitter_post_hook(App $a, array &$b)
 					unset($post['media_ids']);
 				}
 			} catch (Exception $e) {
-				Logger::warning('Exception when trying to send to Twitter', ['id' => $b['id'], 'message' => $e->getMessage()]);
+				Logger::notice('Exception when trying to send to Twitter', ['id' => $b['id'], 'message' => $e->getMessage()]);
 			}
 		}
 
@@ -856,7 +856,7 @@ function twitter_delete_item(array $item)
 		$condition = ['uri' => $item['thr-parent'], 'uid' => $item['uid']];
 		$thr_parent = Post::selectFirst(['uri', 'extid', 'author-link', 'author-nick', 'author-network'], $condition);
 		if (!DBA::isResult($thr_parent)) {
-			Logger::warning('No parent found', ['thr-parent' => $item['thr-parent']]);
+			Logger::notice('No parent found', ['thr-parent' => $item['thr-parent']]);
 			return;
 		}
 
@@ -1225,7 +1225,7 @@ function twitter_fetchtimeline(App $a, int $uid): void
 	try {
 		twitter_fetch_own_contact($a, $uid);
 	} catch (TwitterOAuthException $e) {
-		Logger::warning('Error fetching own contact', ['uid' => $uid, 'message' => $e->getMessage()]);
+		Logger::notice('Error fetching own contact', ['uid' => $uid, 'message' => $e->getMessage()]);
 		return;
 	}
 
@@ -1247,7 +1247,7 @@ function twitter_fetchtimeline(App $a, int $uid): void
 	try {
 		$items = $connection->get('statuses/user_timeline', $parameters);
 	} catch (TwitterOAuthException $e) {
-		Logger::warning('Error fetching timeline', ['uid' => $uid, 'message' => $e->getMessage()]);
+		Logger::notice('Error fetching timeline', ['uid' => $uid, 'message' => $e->getMessage()]);
 		return;
 	}
 
@@ -1268,12 +1268,12 @@ function twitter_fetchtimeline(App $a, int $uid): void
 			}
 
 			if ($first_time) {
-				Logger::warning('First time, continue');
+				Logger::notice('First time, continue');
 				continue;
 			}
 
 			if (stristr($post->source, $application_name)) {
-				Logger::warning('Source is application name', ['source' => $post->source, 'application_name' => $application_name]);
+				Logger::notice('Source is application name', ['source' => $post->source, 'application_name' => $application_name]);
 				continue;
 			}
 			Logger::info('Preparing mirror post', ['twitter-id' => $post->id_str, 'uid' => $uid]);
@@ -1281,7 +1281,7 @@ function twitter_fetchtimeline(App $a, int $uid): void
 			$mirrorpost = twitter_do_mirrorpost($a, $uid, $post);
 
 			if (empty($mirrorpost['body'])) {
-				Logger::warning('Body is empty', ['post' => $post, 'mirrorpost' => $mirrorpost]);
+				Logger::notice('Body is empty', ['post' => $post, 'mirrorpost' => $mirrorpost]);
 				continue;
 			}
 
@@ -1344,7 +1344,7 @@ function twitter_get_relation($uid, $target, $contact = [])
 
 		Logger::info('Fetched friendship relation', ['user' => $uid, 'target' => $target, 'relation' => $relation]);
 	} catch (Throwable $e) {
-		Logger::warning('Error fetching friendship status', ['uid' => $uid, 'target' => $target, 'message' => $e->getMessage()]);
+		Logger::notice('Error fetching friendship status', ['uid' => $uid, 'target' => $target, 'message' => $e->getMessage()]);
 	}
 
 	return $relation;
@@ -1417,12 +1417,12 @@ function twitter_fetch_contact($uid, $data, $create_user)
 		Contact::update($fields, ['id' => $cid]);
 		Contact::updateAvatar($cid, $avatar);
 	} else {
-		Logger::warning('No contact found', ['fields' => $fields]);
+		Logger::notice('No contact found', ['fields' => $fields]);
 	}
 
 	$contact = DBA::selectFirst('contact', [], ['uid' => $uid, 'alias' => 'twitter::' . $data->id_str]);
 	if (!DBA::isResult($contact) && empty($cid)) {
-		Logger::warning('User contact not found', ['uid' => $uid, 'twitter-id' => $data->id_str]);
+		Logger::notice('User contact not found', ['uid' => $uid, 'twitter-id' => $data->id_str]);
 		return 0;
 	} elseif (!$create_user) {
 		return $cid;
@@ -1506,7 +1506,7 @@ function twitter_fetchuser($screen_name)
 		$parameters = ['screen_name' => $screen_name];
 		$user = $connection->get('users/show', $parameters);
 	} catch (TwitterOAuthException $e) {
-		Logger::warning('Error fetching user', ['user' => $screen_name, 'message' => $e->getMessage()]);
+		Logger::notice('Error fetching user', ['user' => $screen_name, 'message' => $e->getMessage()]);
 		return null;
 	}
 
@@ -1799,6 +1799,7 @@ function twitter_createpost(App $a, int $uid, $post, array $self, $create_user, 
 			if (DBA::isResult($self)) {
 				$contactid = $self['id'];
 
+				$postarray['owner-id']     = Contact::getIdForURL($self['url']);
 				$postarray['owner-name']   = $self['name'];
 				$postarray['owner-link']   = $self['url'];
 				$postarray['owner-avatar'] = $self['photo'];
@@ -1975,7 +1976,7 @@ function twitter_fetchparentposts(App $a, int $uid, $post, TwitterOAuth $connect
 		try {
 			$post = twitter_statuses_show($post->in_reply_to_status_id_str, $connection);
 		} catch (TwitterOAuthException $e) {
-			Logger::warning('Error fetching parent post', ['uid' => $uid, 'post' => $post->id_str, 'message' => $e->getMessage()]);
+			Logger::notice('Error fetching parent post', ['uid' => $uid, 'post' => $post->id_str, 'message' => $e->getMessage()]);
 			break;
 		}
 
@@ -2047,7 +2048,7 @@ function twitter_fetchhometimeline(App $a, int $uid): void
 	try {
 		$own_contact = twitter_fetch_own_contact($a, $uid);
 	} catch (TwitterOAuthException $e) {
-		Logger::warning('Error fetching own contact', ['uid' => $uid, 'message' => $e->getMessage()]);
+		Logger::notice('Error fetching own contact', ['uid' => $uid, 'message' => $e->getMessage()]);
 		return;
 	}
 
@@ -2055,7 +2056,7 @@ function twitter_fetchhometimeline(App $a, int $uid): void
 	if (DBA::isResult($contact)) {
 		$own_id = $contact['nick'];
 	} else {
-		Logger::warning('Own twitter contact not found', ['uid' => $uid]);
+		Logger::notice('Own twitter contact not found', ['uid' => $uid]);
 		return;
 	}
 
@@ -2087,17 +2088,17 @@ function twitter_fetchhometimeline(App $a, int $uid): void
 	try {
 		$items = $connection->get('statuses/home_timeline', $parameters);
 	} catch (TwitterOAuthException $e) {
-		Logger::warning('Error fetching home timeline', ['uid' => $uid, 'message' => $e->getMessage()]);
+		Logger::notice('Error fetching home timeline', ['uid' => $uid, 'message' => $e->getMessage()]);
 		return;
 	}
 
 	if (!is_array($items)) {
-		Logger::warning('home timeline is no array', ['items' => $items]);
+		Logger::notice('home timeline is no array', ['items' => $items]);
 		return;
 	}
 
 	if (empty($items)) {
-		Logger::notice('No new timeline content', ['uid' => $uid]);
+		Logger::info('No new timeline content', ['uid' => $uid]);
 		return;
 	}
 
@@ -2170,12 +2171,12 @@ function twitter_fetchhometimeline(App $a, int $uid): void
 	try {
 		$items = $connection->get('statuses/mentions_timeline', $parameters);
 	} catch (TwitterOAuthException $e) {
-		Logger::warning('Error fetching mentions', ['uid' => $uid, 'message' => $e->getMessage()]);
+		Logger::notice('Error fetching mentions', ['uid' => $uid, 'message' => $e->getMessage()]);
 		return;
 	}
 
 	if (!is_array($items)) {
-		Logger::warning('mentions are no arrays', ['items' => $items]);
+		Logger::notice('mentions are no arrays', ['items' => $items]);
 		return;
 	}
 
