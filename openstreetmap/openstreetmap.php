@@ -81,7 +81,7 @@ function openstreetmap_location(App $a, &$item)
 
 	if ($item['coord'] != '') {
 		$coords = explode(' ', $item['coord']);
-		if (count($coords) > 1) {
+		if ((count($coords) > 1) && is_numeric($coords[0]) && is_numeric($coords[1])) {
 			$lat = urlencode(round($coords[0], 5));
 			$lon = urlencode(round($coords[1], 5));
 			$target = $tmsserver;
