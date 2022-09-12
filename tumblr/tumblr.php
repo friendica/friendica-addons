@@ -14,6 +14,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\System;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Post;
@@ -45,11 +46,11 @@ function tumblr_content(App $a)
 
 	if (isset(DI::args()->getArgv()[1])) {
 		switch (DI::args()->getArgv()[1]) {
-			case "connect":
+			case 'connect':
 				$o = tumblr_connect($a);
 				break;
 
-			case "callback":
+			case 'callback':
 				$o = tumblr_callback($a);
 				break;
 
@@ -66,7 +67,7 @@ function tumblr_content(App $a)
 
 function tumblr_addon_admin(App $a, string &$o)
 {
-	$t = Renderer::getMarkupTemplate( "admin.tpl", "addon/tumblr/" );
+	$t = Renderer::getMarkupTemplate( 'admin.tpl', 'addon/tumblr/' );
 
 	$o = Renderer::replaceMacros($t, [
 		'$submit' => DI::l10n()->t('Save Settings'),
@@ -119,7 +120,7 @@ function tumblr_connect(App $a)
 			$url = $tum_oauth->getAuthorizeURL($token);
 
 			// Redirect the user to the login URL given to us by Tumblr
-			header('Location: ' . $url);
+			System::externalRedirect($url);
 
 			/*
 			 * That's it for our side.  The user is sent to a Tumblr Login page and
@@ -174,8 +175,8 @@ function tumblr_callback(App $a)
 	DI::pConfig()->set(local_user(), 'tumblr', 'oauth_token', $access_token['oauth_token']);
 	DI::pConfig()->set(local_user(), 'tumblr', 'oauth_token_secret', $access_token['oauth_token_secret']);
 
-	$o = DI::l10n()->t("You are now authenticated to tumblr.");
-	$o .= '<br /><a href="' . DI::baseUrl()->get() . '/settings/connectors">' . DI::l10n()->t("return to the connector page") . '</a>';
+	$o = DI::l10n()->t('You are now authenticated to tumblr.');
+	$o .= '<br /><a href="' . DI::baseUrl()->get() . '/settings/connectors">' . DI::l10n()->t('return to the connector page') . '</a>';
 
 	return $o;
 }
@@ -219,7 +220,7 @@ function tumblr_settings(App $a, array &$data)
 		$userinfo  = $tum_oauth->get('user/info');
 
 		$blogs = array_map(function ($blog) {
-			return substr(str_replace(["http://", "https://"], ["", ""], $blog->url), 0, -1);
+			return substr(str_replace(['http://', 'https://'], ['', ''], $blog->url), 0, -1);
 		}, $userinfo->response->user->blogs);
 
 		$page_select = ['tumblr-page', DI::l10n()->t('Post to page:'), $page, '', $blogs];
@@ -333,9 +334,9 @@ function tumblr_send(App $a, array &$b) {
 
 	$b['body'] = Post\Media::addAttachmentsToBody($b['uri-id'], $b['body']);
 
-	$oauth_token = DI::pConfig()->get($b['uid'], "tumblr", "oauth_token");
-	$oauth_token_secret = DI::pConfig()->get($b['uid'], "tumblr", "oauth_token_secret");
-	$page = DI::pConfig()->get($b['uid'], "tumblr", "page");
+	$oauth_token = DI::pConfig()->get($b['uid'], 'tumblr', 'oauth_token');
+	$oauth_token_secret = DI::pConfig()->get($b['uid'], 'tumblr', 'oauth_token_secret');
+	$page = DI::pConfig()->get($b['uid'], 'tumblr', 'page');
 	$tmbl_blog = 'blog/' . $page . '/post';
 
 	if ($oauth_token && $oauth_token_secret && $tmbl_blog) {
@@ -353,7 +354,7 @@ function tumblr_send(App $a, array &$b) {
 
 		$title = trim($b['title']);
 
-		$siteinfo = BBCode::getAttachedData($b["body"]);
+		$siteinfo = BBCode::getAttachedData($b['body']);
 
 		$params = [
 			'state'  => 'published',
@@ -362,65 +363,65 @@ function tumblr_send(App $a, array &$b) {
 			'format' => 'html',
 		];
 
-		if (!isset($siteinfo["type"])) {
-			$siteinfo["type"] = "";
+		if (!isset($siteinfo['type'])) {
+			$siteinfo['type'] = '';
 		}
 
-		if (($title == "") && isset($siteinfo["title"])) {
-			$title = $siteinfo["title"];
+		if (($title == '') && isset($siteinfo['title'])) {
+			$title = $siteinfo['title'];
 		}
 
-		if (isset($siteinfo["text"])) {
-			$body = $siteinfo["text"];
+		if (isset($siteinfo['text'])) {
+			$body = $siteinfo['text'];
 		} else {
-			$body = BBCode::removeShareInformation($b["body"]);
+			$body = BBCode::removeShareInformation($b['body']);
 		}
 
-		switch ($siteinfo["type"]) {
-			case "photo":
-				$params['type']    = "photo";
+		switch ($siteinfo['type']) {
+			case 'photo':
+				$params['type']    = 'photo';
 				$params['caption'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);;
 
-				if (isset($siteinfo["url"])) {
-					$params['link'] = $siteinfo["url"];
+				if (isset($siteinfo['url'])) {
+					$params['link'] = $siteinfo['url'];
 				}
 
-				$params['source'] = $siteinfo["image"];
+				$params['source'] = $siteinfo['image'];
 				break;
 
-			case "link":
-				$params['type']        = "link";
+			case 'link':
+				$params['type']        = 'link';
 				$params['title']       = $title;
-				$params['url']         = $siteinfo["url"];
+				$params['url']         = $siteinfo['url'];
 				$params['description'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
 				break;
 
-			case "audio":
-				$params['type']         = "audio";
-				$params['external_url'] = $siteinfo["url"];
+			case 'audio':
+				$params['type']         = 'audio';
+				$params['external_url'] = $siteinfo['url'];
 				$params['caption']      = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
 				break;
 
-			case "video":
-				$params['type']    = "video";
-				$params['embed']   = $siteinfo["url"];
+			case 'video':
+				$params['type']    = 'video';
+				$params['embed']   = $siteinfo['url'];
 				$params['caption'] = BBCode::convertForUriId($b['uri-id'], $body, BBCode::CONNECTORS);
 				break;
 
 			default:
-				$params['type']  = "text";
+				$params['type']  = 'text';
 				$params['title'] = $title;
 				$params['body']  = BBCode::convertForUriId($b['uri-id'], $b['body'], BBCode::CONNECTORS);
 				break;
 		}
 
-		if (isset($params['caption']) && (trim($title) != "")) {
-			$params['caption'] = '<h1>'.$title."</h1>".
-						"<p>".$params['caption']."</p>";
+		if (isset($params['caption']) && (trim($title) != '')) {
+			$params['caption'] = '<h1>' . $title . '</h1>' .
+						'<p>' . $params['caption'] . '</p>';
 		}
 
-		if (empty($params['caption']) && !empty($siteinfo["description"])) {
-			$params['caption'] = BBCode::convertForUriId($b['uri-id'], "[quote]" . $siteinfo["description"] . "[/quote]", BBCode::CONNECTORS);
+		if (empty($params['caption']) && !empty($siteinfo['description'])) {
+			$params['caption'] = BBCode::convertForUriId($b['uri-id'], '[quote]' . $siteinfo['description'] . '[/quote]', BBCode::CONNECTORS);
 		}
 
 		$consumer_key = DI::config()->get('tumblr','consumer_key');

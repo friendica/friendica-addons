@@ -12,6 +12,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
 use Friendica\Core\Session;
+use Friendica\Core\System;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\User;
@@ -96,7 +97,7 @@ if (target.length) { target.append("<p>$fragment</p>"); }
 EOL;
 }
 
-function saml_is_configured()
+function saml_is_configured(): bool
 {
 	return
 		DI::config()->get('saml', 'idp_id') &&
@@ -119,10 +120,7 @@ function saml_sso_initiate(App $a, array &$b)
 	$auth = new \OneLogin\Saml2\Auth(saml_settings());
 	$ssoBuiltUrl = $auth->login(null, [], false, false, true);
 	$_SESSION['AuthNRequestID'] = $auth->getLastRequestID();
-	header('Pragma: no-cache');
-	header('Cache-Control: no-cache, must-revalidate');
-	header('Location: ' . $ssoBuiltUrl);
-	exit();
+	System::externalRedirect($ssoBuiltUrl);
 }
 
 function saml_sso_reply(App $a)
@@ -182,13 +180,9 @@ function saml_slo_initiate(App $a, array &$b)
 	}
 
 	$auth = new \OneLogin\Saml2\Auth(saml_settings());
-
 	$sloBuiltUrl = $auth->logout();
 	$_SESSION['LogoutRequestID'] = $auth->getLastRequestID();
-	header('Pragma: no-cache');
-	header('Cache-Control: no-cache, must-revalidate');
-	header('Location: ' . $sloBuiltUrl);
-	exit();
+	System::externalRedirect($sloBuiltUrl);
 }
 
 function saml_slo_reply()
@@ -212,7 +206,7 @@ function saml_slo_reply()
 	}
 }
 
-function saml_input($key, $label, $description)
+function saml_input($key, $label, $description): array
 {
 	return [
 		'$' . $key => [
@@ -338,7 +332,7 @@ function saml_create_user($username, $email, $name)
 	}
 }
 
-function saml_settings()
+function saml_settings(): array
 {
 	return [
 
