@@ -919,7 +919,7 @@ function pumpio_dolike(App $a, int $uid, array $self, $post, string $own_id, $th
 	$likedata = [];
 	$likedata['parent'] = $orig_post['id'];
 	$likedata['verb'] = Activity::LIKE;
-	$likedata['gravity'] = GRAVITY_ACTIVITY;
+	$likedata['gravity'] = Item::GRAVITY_ACTIVITY;
 	$likedata['uid'] = $uid;
 	$likedata['wall'] = 0;
 	$likedata['network'] = Protocol::PUMPIO;
