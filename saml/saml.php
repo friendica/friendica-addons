@@ -120,7 +120,7 @@ function saml_sso_initiate(App $a, array &$b)
 	$auth = new \OneLogin\Saml2\Auth(saml_settings());
 	$ssoBuiltUrl = $auth->login(null, [], false, false, true);
 	$_SESSION['AuthNRequestID'] = $auth->getLastRequestID();
-	System::externalRedirect($ssoBuiltUrl);
+	System::externalRedirect($ssoBuiltUrl, 302, true);
 }
 
 function saml_sso_reply(App $a)
@@ -182,7 +182,7 @@ function saml_slo_initiate(App $a, array &$b)
 	$auth = new \OneLogin\Saml2\Auth(saml_settings());
 	$sloBuiltUrl = $auth->logout();
 	$_SESSION['LogoutRequestID'] = $auth->getLastRequestID();
-	System::externalRedirect($sloBuiltUrl);
+	System::externalRedirect($sloBuiltUrl, 302, true);
 }
 
 function saml_slo_reply()
