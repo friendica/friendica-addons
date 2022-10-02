@@ -243,6 +243,7 @@ function twitter_settings_post(App $a)
 		DI::pConfig()->delete(local_user(), 'twitter', 'post');
 		DI::pConfig()->delete(local_user(), 'twitter', 'post_by_default');
 		DI::pConfig()->delete(local_user(), 'twitter', 'lastid');
+		DI::pConfig()->delete(local_user(), 'twitter', 'thread');
 		DI::pConfig()->delete(local_user(), 'twitter', 'mirror_posts');
 		DI::pConfig()->delete(local_user(), 'twitter', 'import');
 		DI::pConfig()->delete(local_user(), 'twitter', 'create_user');
@@ -277,6 +278,7 @@ function twitter_settings_post(App $a)
 			//  to post a tweet for every new __public__ posting to the wall
 			DI::pConfig()->set(local_user(), 'twitter', 'post', intval($_POST['twitter-enable']));
 			DI::pConfig()->set(local_user(), 'twitter', 'post_by_default', intval($_POST['twitter-default']));
+			DI::pConfig()->set(local_user(), 'twitter', 'thread', intval($_POST['twitter-thread']));
 			DI::pConfig()->set(local_user(), 'twitter', 'mirror_posts', intval($_POST['twitter-mirror']));
 			DI::pConfig()->set(local_user(), 'twitter', 'import', intval($_POST['twitter-import']));
 			DI::pConfig()->set(local_user(), 'twitter', 'create_user', intval($_POST['twitter-create_user']));
@@ -310,6 +312,7 @@ function twitter_settings(App $a, array &$data)
 
 	$enabled            = intval(DI::pConfig()->get(local_user(), 'twitter', 'post'));
 	$defenabled         = intval(DI::pConfig()->get(local_user(), 'twitter', 'post_by_default'));
+	$threadenabled      = intval(DI::pConfig()->get(local_user(), 'twitter', 'thread'));
 	$mirrorenabled      = intval(DI::pConfig()->get(local_user(), 'twitter', 'mirror_posts'));
 	$importenabled      = intval(DI::pConfig()->get(local_user(), 'twitter', 'import'));
 	$create_userenabled = intval(DI::pConfig()->get(local_user(), 'twitter', 'create_user'));
@@ -380,6 +383,7 @@ function twitter_settings(App $a, array &$data)
 					'$account'     => $account,
 					'$enable'      => ['twitter-enable', DI::l10n()->t('Allow posting to Twitter'), $enabled, DI::l10n()->t('If enabled all your <strong>public</strong> postings can be posted to the associated Twitter account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.')],
 					'$default'     => ['twitter-default', DI::l10n()->t('Send public postings to Twitter by default'), $defenabled],
+					'$thread'      => ['twitter-thread', DI::l10n()->t('Use threads instead of truncating the content'), $threadenabled],
 					'$mirror'      => ['twitter-mirror', DI::l10n()->t('Mirror all posts from twitter that are no replies'), $mirrorenabled],
 					'$import'      => ['twitter-import', DI::l10n()->t('Import the remote timeline'), $importenabled],
 					'$create_user' => ['twitter-create_user', DI::l10n()->t('Automatically create contacts'), $create_userenabled, DI::l10n()->t('This will automatically create a contact in Friendica as soon as you receive a message from an existing contact via the Twitter network. If you do not enable this, you need to manually add those Twitter contacts in Friendica from whom you would like to see posts here.')],
@@ -626,7 +630,7 @@ function twitter_get_id(string $uri)
 
 function twitter_post_hook(App $a, array &$b)
 {
-	DI::logger()->info('twitter_post_hook', $b);
+	DI::logger()->debug('Invoke post hook', $b);
 
 	if ($b['deleted']) {
 		twitter_delete_item($b);
@@ -809,29 +813,71 @@ function twitter_post_hook(App $a, array &$b)
 					unset($post['media_ids']);
 				}
 			} catch (Exception $e) {
-				Logger::notice('Exception when trying to send to Twitter', ['id' => $b['id'], 'message' => $e->getMessage()]);
+				Logger::warning('Exception when trying to send to Twitter', ['id' => $b['id'], 'message' => $e->getMessage()]);
 			}
 		}
 
-		$post['status'] = $msg;
+		if (!DI::pConfig()->get($b['uid'], 'twitter', 'thread') || empty($msgarr['parts']) || (count($msgarr['parts']) == 1)) {
+			Logger::debug('Post single message', ['id' => $b['id']]);
 
-		if ($thr_parent) {
-			$post['in_reply_to_status_id'] = twitter_get_id($thr_parent['uri']);
-		}
+			$post['status'] = $msg;
 
-		$result = $connection->post('statuses/update', $post);
-		Logger::info('twitter_post send', ['id' => $b['id'], 'result' => $result]);
+			if ($thr_parent) {
+				$post['in_reply_to_status_id'] = twitter_get_id($thr_parent['uri']);
+			}
 
-		if (!empty($result->source)) {
-			DI::config()->set('twitter', 'application_name', strip_tags($result->source));
-		}
+			$result = $connection->post('statuses/update', $post);
+			Logger::info('twitter_post send', ['id' => $b['id'], 'result' => $result]);
 
-		if (!empty($result->errors)) {
-			Logger::error('Send to Twitter failed', ['id' => $b['id'], 'error' => $result->errors]);
-			Worker::defer();
-		} elseif ($thr_parent) {
-			Logger::notice('Post send, updating extid', ['id' => $b['id'], 'extid' => $result->id_str]);
-			Item::update(['extid' => 'twitter::' . $result->id_str], ['id' => $b['id']]);
+			if (!empty($result->source)) {
+				DI::config()->set('twitter', 'application_name', strip_tags($result->source));
+			}
+
+			if (!empty($result->errors)) {
+				Logger::error('Send to Twitter failed', ['id' => $b['id'], 'error' => $result->errors]);
+				Worker::defer();
+			} elseif ($thr_parent) {
+				Logger::notice('Post send, updating extid', ['id' => $b['id'], 'extid' => $result->id_str]);
+				Item::update(['extid' => 'twitter::' . $result->id_str], ['id' => $b['id']]);
+			}
+		} else {
+			if ($thr_parent) {
+				$in_reply_to_status_id = twitter_get_id($thr_parent['uri']);
+			} else {
+				$in_reply_to_status_id = 0;
+			}
+
+			Logger::debug('Post message thread', ['id' => $b['id'], 'parts' => count($msgarr['parts'])]);
+			foreach ($msgarr['parts'] as $key => $part) {
+				$post['status'] = $part;
+
+				if ($in_reply_to_status_id) {
+					$post['in_reply_to_status_id'] = $in_reply_to_status_id;
+				}
+
+				$result = $connection->post('statuses/update', $post);
+				Logger::debug('twitter_post send', ['part' => $key, 'id' => $b['id'], 'result' => $result]);
+
+				if (!empty($result->errors)) {
+					Logger::warning('Send to Twitter failed', ['part' => $key, 'id' => $b['id'], 'error' => $result->errors]);
+					Worker::defer();
+					break;
+				} elseif ($key == 0) {
+					Logger::debug('Updating extid', ['part' => $key, 'id' => $b['id'], 'extid' => $result->id_str]);
+					Item::update(['extid' => 'twitter::' . $result->id_str], ['id' => $b['id']]);
+				}
+
+				if (!empty($result->source)) {
+					$application_name = strip_tags($result->source);
+				}
+
+				$in_reply_to_status_id = $result->id_str;
+				unset($post['media_ids']);
+			}
+
+			if (!empty($application_name)) {
+				DI::config()->set('twitter', 'application_name', strip_tags($result->source));
+			}
 		}
 	}
 }

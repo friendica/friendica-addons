@@ -18,6 +18,7 @@
 	<p>{{$l10n.privacy_warning nofilter}}</p>
 {{/if}}
 {{include file="field_checkbox.tpl" field=$default}}
+{{include file="field_checkbox.tpl" field=$thread}}
 {{include file="field_checkbox.tpl" field=$mirror}}
 {{include file="field_checkbox.tpl" field=$import}}
 {{include file="field_checkbox.tpl" field=$create_user}}
