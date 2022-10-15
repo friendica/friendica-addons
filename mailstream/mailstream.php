@@ -197,7 +197,7 @@ function mailstream_post_hook(App $a, array &$item)
  *
  * @return array new value of the attachments table (results are also stored in the reference parameter)
  */
-function mailstream_do_images(arrat &$item, array &$attachments)
+function mailstream_do_images(array &$item, array &$attachments)
 {
 	if (!DI::pConfig()->get($item['uid'], 'mailstream', 'attachimg')) {
 		return;
