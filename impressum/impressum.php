@@ -98,8 +98,8 @@ function impressum_addon_admin_post (App $a)
 	DI::config()->set('impressum', 'owner', strip_tags(trim($_POST['owner'] ?? '')));
 	DI::config()->set('impressum', 'ownerprofile', strip_tags(trim($_POST['ownerprofile'] ?? '')));
 	DI::config()->set('impressum', 'postal', strip_tags(trim($_POST['postal'] ?? '')));
-	DI::config()->set('impressum', 'email', strip_tags(trim($_POST['notes'] ?? '')));
-	DI::config()->set('impressum', 'notes', strip_tags(trim($_POST['email'] ?? '')));
+	DI::config()->set('impressum', 'email', strip_tags(trim($_POST['email'] ?? '')));
+	DI::config()->set('impressum', 'notes', strip_tags(trim($_POST['notes'] ?? '')));
 	DI::config()->set('impressum', 'footer_text', strip_tags(trim($_POST['footer_text'] ?? '')));
 }
 
