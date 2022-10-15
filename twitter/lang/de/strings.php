@@ -19,6 +19,7 @@ $a->strings['Disconnect'] = 'Trennen';
 $a->strings['Allow posting to Twitter'] = 'Veröffentlichung bei Twitter erlauben';
 $a->strings['If enabled all your <strong>public</strong> postings can be posted to the associated Twitter account. You can choose to do so by default (here) or for every posting separately in the posting options when writing the entry.'] = 'Wenn aktiviert, können all deine <strong>öffentlichen</strong> Einträge auf dem verbundenen Twitter-Konto veröffentlicht werden. Du kannst dies (hier) als Standardverhalten einstellen oder beim Schreiben eines Beitrags in den Beitragsoptionen festlegen.';
 $a->strings['Send public postings to Twitter by default'] = 'Veröffentliche öffentliche Beiträge standardmäßig bei Twitter';
+$a->strings['Use threads instead of truncating the content'] = 'Verwende Threads anstelle den Inhalt zu kürzen';
 $a->strings['Mirror all posts from twitter that are no replies'] = 'Spiegle alle Beiträge von Twitter, die keine Antworten sind';
 $a->strings['Import the remote timeline'] = 'Importiere die Remote-Zeitleiste';
 $a->strings['Automatically create contacts'] = 'Automatisch Kontakte anlegen';
