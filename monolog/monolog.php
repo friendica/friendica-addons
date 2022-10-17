@@ -12,7 +12,7 @@ use Friendica\Addon\Monolog\IntrospectionProcessor;
 use Friendica\DI;
 use Psr\Log\LogLevel;
 
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 function monolog_install(App $a)
 {
