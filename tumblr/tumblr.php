@@ -39,7 +39,7 @@ function tumblr_module() {}
 function tumblr_content(App $a)
 {
 	if (!local_user()) {
-		DI::sysmsg()->addNotice(DI::l10n()->t('Permission denied.') . EOL);
+		DI::sysmsg()->addNotice(DI::l10n()->t('Permission denied.'));
 		return '';
 	}
 

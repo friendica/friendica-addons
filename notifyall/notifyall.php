@@ -51,7 +51,7 @@ function notifyall_post(App $a)
 	$recipients = DBA::p("SELECT DISTINCT `email` FROM `user` WHERE `verified` AND NOT `account_removed` AND NOT `account_expired` $sql_extra");
 
 	if (! $recipients) {
-		DI::sysmsg()->addNotice(DI::l10n()->t('No recipients found.') . EOL);
+		DI::sysmsg()->addNotice(DI::l10n()->t('No recipients found.'));
 		return;
 	}
 
