@@ -10,8 +10,13 @@
 	  "role": "Developer"
 	}
   ],
+  "autoload": {
+    "psr-4": {
+	  "Friendica\\Addon\\Monolog\\": "src/"
+    }
+  },
   "require": {
-	"php": ">=7.0",
+    "php": ">=7.0",
     "monolog/monolog": "^3.2"
   },
   "license": "3-clause BSD license",

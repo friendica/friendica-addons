@@ -15,6 +15,10 @@ class ComposerStaticInitMonologAddon
         array (
             'Monolog\\' => 8,
         ),
+        'F' => 
+        array (
+            'Friendica\\Addon\\Monolog\\' => 24,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -26,9 +30,15 @@ class ComposerStaticInitMonologAddon
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
+        'Friendica\\Addon\\Monolog\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
+        ),
     );
 
     public static $classMap = array (
+        'Friendica\\Addon\\Monolog\\DevelopHandler' => __DIR__ . '/../..' . '/src/DevelopHandler.php',
+        'Friendica\\Addon\\Monolog\\IntrospectionProcessor' => __DIR__ . '/../..' . '/src/IntrospectionProcessor.php',
         'Monolog\\Attribute\\AsMonologProcessor' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Attribute/AsMonologProcessor.php',
         'Monolog\\DateTimeImmutable' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/DateTimeImmutable.php',
         'Monolog\\ErrorHandler' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/ErrorHandler.php',
