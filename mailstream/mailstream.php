@@ -53,7 +53,7 @@ function mailstream_check_version()
 			'addon/mailstream/mailstream.php',
 			'mailstream_convert_table_entries'
 		);
-		Hook::fork(PRIORITY_LOW, 'mailstream_convert_table_entries');
+		Hook::fork(Worker::PRIORITY_LOW, 'mailstream_convert_table_entries');
 	}
 }
 
@@ -183,7 +183,7 @@ function mailstream_post_hook(App $a, array &$item)
 		'message_id' => $message_id,
 		'tries' => 0,
 	];
-	Hook::fork(PRIORITY_LOW, 'mailstream_send_hook', $send_hook_data);
+	Hook::fork(Worker::PRIORITY_LOW, 'mailstream_send_hook', $send_hook_data);
 }
 
 /**
@@ -197,7 +197,7 @@ function mailstream_post_hook(App $a, array &$item)
  *
  * @return array new value of the attachments table (results are also stored in the reference parameter)
  */
-function mailstream_do_images(arrat &$item, array &$attachments)
+function mailstream_do_images(array &$item, array &$attachments)
 {
 	if (!DI::pConfig()->get($item['uid'], 'mailstream', 'attachimg')) {
 		return;
@@ -439,7 +439,7 @@ function mailstream_send(string $message_id, array $item, array $user): bool
  *
  * @param string $text text to word wrap - modified in-place
  */
-function mailstream_html_wrap(string &$text): string
+function mailstream_html_wrap(string &$text)
 {
 	$lines = str_split($text, 200);
 	for ($i = 0; $i < count($lines); $i++) {
@@ -467,7 +467,7 @@ function mailstream_convert_table_entries()
 							continue;
 		}
 		Logger::info('mailstream_convert_table_entries: convert item to workerqueue', $send_hook_data);
-		Hook::fork(PRIORITY_LOW, 'mailstream_send_hook', $send_hook_data);
+		Hook::fork(Worker::PRIORITY_LOW, 'mailstream_send_hook', $send_hook_data);
 	}
 	DBA::e('DROP TABLE `mailstream_item`');
 }

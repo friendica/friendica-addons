@@ -12,6 +12,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
+use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Item;
@@ -183,5 +184,5 @@ function ifttt_message($uid, $item)
 		$link = hash('ripemd128', $item['msg']);
 	}
 
-	Post\Delayed::add($link, $post, PRIORITY_MEDIUM, Post\Delayed::UNPREPARED);
+	Post\Delayed::add($link, $post, Worker::PRIORITY_MEDIUM, Post\Delayed::UNPREPARED);
 }

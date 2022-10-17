@@ -986,7 +986,7 @@ function twitter_cron(App $a)
 	$pconfigs = DBA::selectToArray('pconfig', [], ['cat' => 'twitter', 'k' => 'mirror_posts', 'v' => true]);
 	foreach ($pconfigs as $rr) {
 		Logger::notice('Fetching', ['user' => $rr['uid']]);
-		Worker::add(['priority' => PRIORITY_MEDIUM, 'force_priority' => true], 'addon/twitter/twitter_sync.php', 1, (int) $rr['uid']);
+		Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/twitter/twitter_sync.php', 1, (int) $rr['uid']);
 	}
 
 	$abandon_days = intval(DI::config()->get('system', 'account_abandon_days'));
@@ -1006,7 +1006,7 @@ function twitter_cron(App $a)
 		}
 
 		Logger::notice('importing timeline', ['user' => $rr['uid']]);
-		Worker::add(['priority' => PRIORITY_MEDIUM, 'force_priority' => true], 'addon/twitter/twitter_sync.php', 2, (int) $rr['uid']);
+		Worker::add(['priority' => Worker::PRIORITY_MEDIUM, 'force_priority' => true], 'addon/twitter/twitter_sync.php', 2, (int) $rr['uid']);
 		/*
 			// To-Do
 			// check for new contacts once a day
@@ -1333,7 +1333,7 @@ function twitter_fetchtimeline(App $a, int $uid): void
 
 			Logger::info('Posting mirror post', ['twitter-id' => $post->id_str, 'uid' => $uid]);
 
-			Post\Delayed::add($mirrorpost['extid'], $mirrorpost, PRIORITY_MEDIUM, Post\Delayed::UNPREPARED);
+			Post\Delayed::add($mirrorpost['extid'], $mirrorpost, Worker::PRIORITY_MEDIUM, Post\Delayed::UNPREPARED);
 		}
 	}
 	DI::pConfig()->set($uid, 'twitter', 'lastid', $lastid);
@@ -2191,7 +2191,7 @@ function twitter_fetchhometimeline(App $a, int $uid): void
 			if (empty($postarray['thr-parent'])) {
 				$contact = DBA::selectFirst('contact', [], ['id' => $postarray['contact-id'], 'self' => false]);
 				if (DBA::isResult($contact) && Item::isRemoteSelf($contact, $postarray)) {
-					$notify = PRIORITY_MEDIUM;
+					$notify = Worker::PRIORITY_MEDIUM;
 				}
 			}
 
