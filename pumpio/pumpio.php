@@ -60,7 +60,7 @@ function pumpio_module() {}
 function pumpio_content(App $a)
 {
 	if (!local_user()) {
-		notice(DI::l10n()->t('Permission denied.') . EOL);
+		DI::sysmsg()->addNotice(DI::l10n()->t('Permission denied.') . EOL);
 		return '';
 	}
 

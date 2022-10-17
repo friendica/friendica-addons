@@ -63,7 +63,7 @@ function forumdirectory_content(App $a)
 	global $forumdirectory_search;
 
 	if ((DI::config()->get('system', 'block_public')) && (!local_user()) && (!remote_user())) {
-		notice(DI::l10n()->t('Public access denied.') . EOL);
+		DI::sysmsg()->addNotice(DI::l10n()->t('Public access denied.') . EOL);
 		return;
 	}
 
@@ -135,7 +135,7 @@ function forumdirectory_content(App $a)
 		}
 		DBA::close($r);
 	} else {
-		notice(DI::l10n()->t("No entries \x28some entries may be hidden\x29."));
+		DI::sysmsg()->addNotice(DI::l10n()->t("No entries \x28some entries may be hidden\x29."));
 	}
 
 	$tpl = Renderer::getMarkupTemplate('directory_header.tpl');
