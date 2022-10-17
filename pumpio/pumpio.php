@@ -694,7 +694,7 @@ function pumpio_sync(App $a)
 
 function pumpio_cron(App $a, $b)
 {
-	Worker::add(PRIORITY_MEDIUM, 'addon/pumpio/pumpio_sync.php');
+	Worker::add(Worker::PRIORITY_MEDIUM, 'addon/pumpio/pumpio_sync.php');
 }
 
 function pumpio_fetchtimeline(App $a, int $uid)
@@ -1506,7 +1506,7 @@ function pumpio_fetchallcomments(App $a, $uid, $id)
 
 		$post->object = $item;
 
-		Logger::notice('pumpio_fetchallcomments: posting comment ' . $post->object->id . ' ', $post);
+		Logger::notice('pumpio_fetchallcomments: posting comment ' . $post->object->id . ' ', json_decode(json_encode($post), true));
 		pumpio_dopost($a, $client, $uid, $self, $post, $own_id, false);
 	}
 }
