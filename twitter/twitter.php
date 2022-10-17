@@ -269,9 +269,9 @@ function twitter_settings_post(App $a)
 				DI::pConfig()->set(local_user(), 'twitter', 'oauthsecret', $token['oauth_token_secret']);
 				DI::pConfig()->set(local_user(), 'twitter', 'post', 1);
 			} catch(Exception $e) {
-				notice($e->getMessage());
+				DI::sysmsg()->addNotice($e->getMessage());
 			} catch(TwitterOAuthException $e) {
-				notice($e->getMessage());
+				DI::sysmsg()->addNotice($e->getMessage());
 			}
 		} else {
 			//  if no PIN is supplied in the POST variables, the user has changed the setting
@@ -551,14 +551,14 @@ function twitter_item_by_link(App $a, array &$hookData)
 		empty(DI::pConfig()->get($hookData['uid'], 'twitter', 'oauthtoken'))
 		|| empty(DI::pConfig()->get($hookData['uid'], 'twitter', 'oauthsecret'))
 	) {
-		notice(DI::l10n()->t('Please connect a Twitter account in your Social Network settings to import Twitter posts.'));
+		DI::sysmsg()->addNotice(DI::l10n()->t('Please connect a Twitter account in your Social Network settings to import Twitter posts.'));
 		return;
 	}
 
 	$status = twitter_statuses_show($matches[1]);
 
 	if (empty($status->id_str)) {
-		notice(DI::l10n()->t('Twitter post not found.'));
+		DI::sysmsg()->addNotice(DI::l10n()->t('Twitter post not found.'));
 		return;
 	}
 

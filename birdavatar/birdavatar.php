@@ -73,7 +73,7 @@ function birdavatar_addon_settings_post(App $a, &$s)
 
 		$self = DBA::selectFirst('contact', ['id'], ['uid' => local_user(), 'self' => true]);
 		if (!DBA::isResult($self)) {
-			notice(DI::l10n()->t("The bird has not found itself."));
+			DI::sysmsg()->addNotice(DI::l10n()->t("The bird has not found itself."));
 			return;
 		}
 
@@ -82,7 +82,7 @@ function birdavatar_addon_settings_post(App $a, &$s)
 		$condition = ['uid' => local_user(), 'contact-id' => $self['id']];
 		$photo     = DBA::selectFirst('photo', ['resource-id'], $condition);
 		if (!DBA::isResult($photo)) {
-			notice(DI::l10n()->t('There was an error, the bird flew away.'));
+			DI::sysmsg()->addNotice(DI::l10n()->t('There was an error, the bird flew away.'));
 			return;
 		}
 
@@ -98,7 +98,7 @@ function birdavatar_addon_settings_post(App $a, &$s)
 		// Update global directory in background
 		Profile::publishUpdate(local_user());
 
-		info(DI::l10n()->t('Meow!'));
+		DI::sysmsg()->addInfo(DI::l10n()->t('Meow!'));
 		return;
 	}
 

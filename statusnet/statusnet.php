@@ -146,7 +146,7 @@ function statusnet_settings_post(App $a, $post)
 						DI::pConfig()->set(local_user(), 'statusnet', 'baseapi', $asn['apiurl']);
 						//DI::pConfig()->set(local_user(), 'statusnet', 'application_name', $asn['applicationname'] );
 					} else {
-						notice(DI::l10n()->t('Please contact your site administrator.<br />The provided API URL is not valid.') . EOL . $asn['apiurl'] . EOL);
+						DI::sysmsg()->addNotice(DI::l10n()->t('Please contact your site administrator.<br />The provided API URL is not valid.') . EOL . $asn['apiurl'] . EOL);
 					}
 				}
 			}
@@ -174,7 +174,7 @@ function statusnet_settings_post(App $a, $post)
 						DI::pConfig()->set(local_user(), 'statusnet', 'baseapi', $apibase);
 					} else {
 						//  still not the correct API base, let's do noting
-						notice(DI::l10n()->t('We could not contact the GNU Social API with the Path you entered.') . EOL);
+						DI::sysmsg()->addNotice(DI::l10n()->t('We could not contact the GNU Social API with the Path you entered.') . EOL);
 					}
 				}
 			} else {
