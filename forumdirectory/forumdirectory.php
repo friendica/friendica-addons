@@ -63,7 +63,7 @@ function forumdirectory_content(App $a)
 	global $forumdirectory_search;
 
 	if ((DI::config()->get('system', 'block_public')) && (!local_user()) && (!remote_user())) {
-		DI::sysmsg()->addNotice(DI::l10n()->t('Public access denied.') . EOL);
+		DI::sysmsg()->addNotice(DI::l10n()->t('Public access denied.'));
 		return;
 	}
 

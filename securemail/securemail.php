@@ -90,9 +90,9 @@ function securemail_settings_post(App &$a, array &$b)
 			DI::pConfig()->set(local_user(), 'securemail', 'enable', $enable);
 
 			if ($res) {
-				DI::sysmsg()->addInfo(DI::l10n()->t('Test email sent') . EOL);
+				DI::sysmsg()->addInfo(DI::l10n()->t('Test email sent'));
 			} else {
-				DI::sysmsg()->addNotice(DI::l10n()->t('There was an error sending the test email') . EOL);
+				DI::sysmsg()->addNotice(DI::l10n()->t('There was an error sending the test email'));
 			}
 		}
 	}
