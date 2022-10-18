@@ -12,7 +12,7 @@
   ],
   "autoload": {
     "psr-4": {
-	  "Friendica\\Addon\\Monolog\\": "src/"
+      "Friendica\\Addon\\Monolog\\": "src/"
     }
   },
   "require": {
