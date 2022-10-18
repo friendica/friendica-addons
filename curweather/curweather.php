@@ -107,7 +107,7 @@ function curweather_network_mod_init(App $a, string &$body)
 	$rpt = DI::pConfig()->get(local_user(), 'curweather', 'curweather_loc');
 
 	// Set the language to the browsers language or default and use metric units
-	$lang = Session::get('language', DI::config()->get('system', 'language'));
+	$lang  = DI::session()->get('language', DI::config()->get('system', 'language'));
 	$units = DI::pConfig()->get( local_user(), 'curweather', 'curweather_units');
 	$appid = DI::config()->get('curweather', 'appid');
 	$cachetime = intval(DI::config()->get('curweather', 'cachetime'));

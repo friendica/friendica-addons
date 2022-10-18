@@ -63,10 +63,10 @@ function diaspora_settings(App $a, array &$data)
 
 	$info  = '';
 	$error = '';
-	if (Session::get('my_address')) {
-		$info = DI::l10n()->t('Please remember: You can always be reached from Diaspora with your Friendica handle <strong>%s</strong>. ', Session::get('my_address'));
+	if (DI::session()->get('my_address')) {
+		$info = DI::l10n()->t('Please remember: You can always be reached from Diaspora with your Friendica handle <strong>%s</strong>. ', DI::session()->get('my_address'));
 		$info .= DI::l10n()->t('This connector is only meant if you still want to use your old Diaspora account for some time. ');
-		$info .= DI::l10n()->t('However, it is preferred that you tell your Diaspora contacts the new handle <strong>%s</strong> instead.', Session::get('my_address'));
+		$info .= DI::l10n()->t('However, it is preferred that you tell your Diaspora contacts the new handle <strong>%s</strong> instead.', DI::session()->get('my_address'));
 	}
 
 	$aspect_select = '';
