@@ -248,7 +248,7 @@ function wppost_send(App $a, array &$b)
 
 		$wp_backlink = intval(DI::pConfig()->get($b['uid'],'wppost','backlink'));
 		if($wp_backlink && $b['plink']) {
-			$post .= '<p><a href="' . $b['plink'] . '">' . $wp_backlink_text . '</a><p/>';
+			$post .= '<p><a href="' . $b['plink'] . '">' . $wp_backlink_text . '</a></p>';
 		}
 
 		$post = XML::escape($post);
