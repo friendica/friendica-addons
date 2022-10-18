@@ -27,6 +27,7 @@ use Friendica\Network\HTTPClient\Client\HttpClientOptions;
 use Friendica\Protocol\Activity;
 use Friendica\Protocol\ActivityNamespace;
 use Friendica\Core\Config\Util\ConfigFileLoader;
+use Friendica\Core\Session;
 use Friendica\Util\DateTimeFormat;
 use Friendica\Util\Strings;
 use Friendica\Util\XML;
@@ -59,7 +60,7 @@ function pumpio_module() {}
 
 function pumpio_content(App $a)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		DI::sysmsg()->addNotice(DI::l10n()->t('Permission denied.'));
 		return '';
 	}
@@ -138,18 +139,18 @@ function pumpio_registerclient(App $a, $host)
 function pumpio_connect(App $a)
 {
 	// Define the needed keys
-	$consumer_key = DI::pConfig()->get(local_user(), 'pumpio', 'consumer_key');
-	$consumer_secret = DI::pConfig()->get(local_user(), 'pumpio', 'consumer_secret');
-	$hostname = DI::pConfig()->get(local_user(), 'pumpio', 'host');
+	$consumer_key = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'consumer_key');
+	$consumer_secret = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'consumer_secret');
+	$hostname = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'host');
 
 	if ((($consumer_key == '') || ($consumer_secret == '')) && ($hostname != '')) {
 		Logger::notice('pumpio_connect: register client');
 		$clientdata = pumpio_registerclient($a, $hostname);
-		DI::pConfig()->set(local_user(), 'pumpio', 'consumer_key', $clientdata->client_id);
-		DI::pConfig()->set(local_user(), 'pumpio', 'consumer_secret', $clientdata->client_secret);
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'consumer_key', $clientdata->client_id);
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'consumer_secret', $clientdata->client_secret);
 
-		$consumer_key = DI::pConfig()->get(local_user(), 'pumpio', 'consumer_key');
-		$consumer_secret = DI::pConfig()->get(local_user(), 'pumpio', 'consumer_secret');
+		$consumer_key = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'consumer_key');
+		$consumer_secret = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'consumer_secret');
 
 		Logger::info('pumpio_connect: ckey: ' . $consumer_key . ' csecrect: ' . $consumer_secret);
 	}
@@ -185,8 +186,8 @@ function pumpio_connect(App $a)
 		if (($success = $client->Process())) {
 			if (strlen($client->access_token)) {
 				Logger::info('pumpio_connect: otoken: ' . $client->access_token . ', osecrect: ' . $client->access_token_secret);
-				DI::pConfig()->set(local_user(), 'pumpio', 'oauth_token', $client->access_token);
-				DI::pConfig()->set(local_user(), 'pumpio', 'oauth_token_secret', $client->access_token_secret);
+				DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'oauth_token', $client->access_token);
+				DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'oauth_token_secret', $client->access_token_secret);
 			}
 		}
 		$success = $client->Finalize($success);
@@ -209,17 +210,17 @@ function pumpio_connect(App $a)
 
 function pumpio_jot_nets(App $a, array &$jotnets_fields)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	if (DI::pConfig()->get(local_user(), 'pumpio', 'post')) {
+	if (DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'pumpio_enable',
 				DI::l10n()->t('Post to pumpio'),
-				DI::pConfig()->get(local_user(), 'pumpio', 'post_by_default')
+				DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'post_by_default')
 			]
 		];
 	}
@@ -227,20 +228,20 @@ function pumpio_jot_nets(App $a, array &$jotnets_fields)
 
 function pumpio_settings(App $a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$pumpio_host        = DI::pConfig()->get(local_user(), 'pumpio', 'host');
-	$pumpio_user        = DI::pConfig()->get(local_user(), 'pumpio', 'user');
-	$oauth_token        = DI::pConfig()->get(local_user(), 'pumpio', 'oauth_token');
-	$oauth_token_secret = DI::pConfig()->get(local_user(), 'pumpio', 'oauth_token_secret');
+	$pumpio_host        = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'host');
+	$pumpio_user        = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'user');
+	$oauth_token        = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'oauth_token');
+	$oauth_token_secret = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'oauth_token_secret');
 
-	$import_enabled = DI::pConfig()->get(local_user(), 'pumpio', 'import', false);
-	$enabled        = DI::pConfig()->get(local_user(), 'pumpio', 'post', false);
-	$def_enabled    = DI::pConfig()->get(local_user(), 'pumpio', 'post_by_default', false);
-	$public_enabled = DI::pConfig()->get(local_user(), 'pumpio', 'public', false);
-	$mirror_enabled = DI::pConfig()->get(local_user(), 'pumpio', 'mirror', false);
+	$import_enabled = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'import', false);
+	$enabled        = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'post', false);
+	$def_enabled    = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'post_by_default', false);
+	$public_enabled = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'public', false);
+	$mirror_enabled = DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'mirror', false);
 
 	$submit = ['pumpio-submit' => DI::l10n()->t('Save Settings')];
 	if ($oauth_token && $oauth_token_secret) {
@@ -279,19 +280,19 @@ function pumpio_settings(App $a, array &$data)
 function pumpio_settings_post(App $a, array &$b)
 {
 	if (!empty($_POST['pumpio_delete'])) {
-		DI::pConfig()->set(local_user(), 'pumpio', 'consumer_key'      , '');
-		DI::pConfig()->set(local_user(), 'pumpio', 'consumer_secret'   , '');
-		DI::pConfig()->set(local_user(), 'pumpio', 'oauth_token'       , '');
-		DI::pConfig()->set(local_user(), 'pumpio', 'oauth_token_secret', '');
-		DI::pConfig()->set(local_user(), 'pumpio', 'post'              , false);
-		DI::pConfig()->set(local_user(), 'pumpio', 'import'            , false);
-		DI::pConfig()->set(local_user(), 'pumpio', 'host'              , '');
-		DI::pConfig()->set(local_user(), 'pumpio', 'user'              , '');
-		DI::pConfig()->set(local_user(), 'pumpio', 'public'            , false);
-		DI::pConfig()->set(local_user(), 'pumpio', 'mirror'            , false);
-		DI::pConfig()->set(local_user(), 'pumpio', 'post_by_default'   , false);
-		DI::pConfig()->set(local_user(), 'pumpio', 'lastdate'          , 0);
-		DI::pConfig()->set(local_user(), 'pumpio', 'last_id'           , '');
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'consumer_key'      , '');
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'consumer_secret'   , '');
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'oauth_token'       , '');
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'oauth_token_secret', '');
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'post'              , false);
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'import'            , false);
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'host'              , '');
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'user'              , '');
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'public'            , false);
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'mirror'            , false);
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'post_by_default'   , false);
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'lastdate'          , 0);
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'last_id'           , '');
 	} elseif (!empty($_POST['pumpio-submit'])) {
 		// filtering the username if it is filled wrong
 		$user = $_POST['pumpio_user'];
@@ -308,16 +309,16 @@ function pumpio_settings_post(App $a, array &$b)
 		$host = trim($host);
 		$host = str_replace(['https://', 'http://'], ['', ''], $host);
 
-		DI::pConfig()->set(local_user(), 'pumpio', 'post'           , $_POST['pumpio'] ?? false);
-		DI::pConfig()->set(local_user(), 'pumpio', 'import'         , $_POST['pumpio_import'] ?? false);
-		DI::pConfig()->set(local_user(), 'pumpio', 'host'           , $host);
-		DI::pConfig()->set(local_user(), 'pumpio', 'user'           , $user);
-		DI::pConfig()->set(local_user(), 'pumpio', 'public'         , $_POST['pumpio_public'] ?? false);
-		DI::pConfig()->set(local_user(), 'pumpio', 'mirror'         , $_POST['pumpio_mirror'] ?? false);
-		DI::pConfig()->set(local_user(), 'pumpio', 'post_by_default', $_POST['pumpio_bydefault'] ?? false);
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'post'           , $_POST['pumpio'] ?? false);
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'import'         , $_POST['pumpio_import'] ?? false);
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'host'           , $host);
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'user'           , $user);
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'public'         , $_POST['pumpio_public'] ?? false);
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'mirror'         , $_POST['pumpio_mirror'] ?? false);
+		DI::pConfig()->set(Session::getLocalUser(), 'pumpio', 'post_by_default', $_POST['pumpio_bydefault'] ?? false);
 
 		if (!empty($_POST['pumpio_mirror'])) {
-			DI::pConfig()->delete(local_user(), 'pumpio', 'lastdate');
+			DI::pConfig()->delete(Session::getLocalUser(), 'pumpio', 'lastdate');
 		}
 	}
 }
@@ -365,15 +366,15 @@ function pumpio_hook_fork(App $a, array &$b)
 
 function pumpio_post_local(App $a, array &$b)
 {
-	if (!local_user() || (local_user() != $b['uid'])) {
+	if (!Session::getLocalUser() || (Session::getLocalUser() != $b['uid'])) {
 		return;
 	}
 
-	$pumpio_post   = intval(DI::pConfig()->get(local_user(), 'pumpio', 'post'));
+	$pumpio_post   = intval(DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'post'));
 
 	$pumpio_enable = (($pumpio_post && !empty($_REQUEST['pumpio_enable'])) ? intval($_REQUEST['pumpio_enable']) : 0);
 
-	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(), 'pumpio', 'post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(Session::getLocalUser(), 'pumpio', 'post_by_default'))) {
 		$pumpio_enable = 1;
 	}
 

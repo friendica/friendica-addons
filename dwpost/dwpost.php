@@ -13,6 +13,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\DI;
 use Friendica\Model\Post;
 use Friendica\Model\Tag;
@@ -31,17 +32,17 @@ function dwpost_install()
 
 function dwpost_jot_nets(App $a, array &$jotnets_fields)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	if (DI::pConfig()->get(local_user(), 'dwpost', 'post')) {
+	if (DI::pConfig()->get(Session::getLocalUser(), 'dwpost', 'post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'dwpost_enable',
 				DI::l10n()->t('Post to Dreamwidth'),
-				DI::pConfig()->get(local_user(), 'dwpost', 'post_by_default')
+				DI::pConfig()->get(Session::getLocalUser(), 'dwpost', 'post_by_default')
 			]
 		];
 	}
@@ -50,13 +51,13 @@ function dwpost_jot_nets(App $a, array &$jotnets_fields)
 
 function dwpost_settings(App $a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$enabled     = DI::pConfig()->get(local_user(), 'dwpost', 'post', false);
-	$dw_username = DI::pConfig()->get(local_user(), 'dwpost', 'dw_username');
-	$def_enabled = DI::pConfig()->get(local_user(), 'dwpost', 'post_by_default');
+	$enabled     = DI::pConfig()->get(Session::getLocalUser(), 'dwpost', 'post', false);
+	$dw_username = DI::pConfig()->get(Session::getLocalUser(), 'dwpost', 'dw_username');
+	$def_enabled = DI::pConfig()->get(Session::getLocalUser(), 'dwpost', 'post_by_default');
 
 	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/dwpost/');
 	$html = Renderer::replaceMacros($t, [
@@ -79,10 +80,10 @@ function dwpost_settings(App $a, array &$data)
 function dwpost_settings_post(App $a, array &$b)
 {
 	if (!empty($_POST['dwpost-submit'])) {
-		DI::pConfig()->set(local_user(), 'dwpost', 'post',            intval($_POST['dwpost']));
-		DI::pConfig()->set(local_user(), 'dwpost', 'post_by_default', intval($_POST['dw_bydefault']));
-		DI::pConfig()->set(local_user(), 'dwpost', 'dw_username',     trim($_POST['dw_username']));
-		DI::pConfig()->set(local_user(), 'dwpost', 'dw_password',     trim($_POST['dw_password']));
+		DI::pConfig()->set(Session::getLocalUser(), 'dwpost', 'post',            intval($_POST['dwpost']));
+		DI::pConfig()->set(Session::getLocalUser(), 'dwpost', 'post_by_default', intval($_POST['dw_bydefault']));
+		DI::pConfig()->set(Session::getLocalUser(), 'dwpost', 'dw_username',     trim($_POST['dw_username']));
+		DI::pConfig()->set(Session::getLocalUser(), 'dwpost', 'dw_password',     trim($_POST['dw_password']));
 	}
 }
 
@@ -93,7 +94,7 @@ function dwpost_post_local(App $a, array &$b)
 		return;
 	}
 
-	if ((!local_user()) || (local_user() != $b['uid'])) {
+	if ((!Session::getLocalUser()) || (Session::getLocalUser() != $b['uid'])) {
 		return;
 	}
 
@@ -101,11 +102,11 @@ function dwpost_post_local(App $a, array &$b)
 		return;
 	}
 
-	$dw_post = intval(DI::pConfig()->get(local_user(),'dwpost','post'));
+	$dw_post = intval(DI::pConfig()->get(Session::getLocalUser(),'dwpost','post'));
 
 	$dw_enable = (($dw_post && !empty($_REQUEST['dwpost_enable'])) ? intval($_REQUEST['dwpost_enable']) : 0);
 
-	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(),'dwpost','post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(Session::getLocalUser(),'dwpost','post_by_default'))) {
 		$dw_enable = 1;
 	}
 

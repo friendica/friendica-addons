@@ -12,11 +12,11 @@ use Friendica\Content\Pager;
 use Friendica\Content\Widget;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Profile;
 use Friendica\Model\User;
-use Friendica\Util\Strings;
 
 global $forumdirectory_search;
 
@@ -44,7 +44,7 @@ function forumdirectory_app_menu(App $a, array &$b)
 
 function forumdirectory_init(App $a)
 {
-	if (local_user()) {
+	if (Session::getLocalUser()) {
 		DI::page()['aside'] .= Widget::findPeople();
 	}
 }
@@ -62,7 +62,7 @@ function forumdirectory_content(App $a)
 {
 	global $forumdirectory_search;
 
-	if ((DI::config()->get('system', 'block_public')) && (!local_user()) && (!remote_user())) {
+	if (DI::config()->get('system', 'block_public') && !Session::getLocalUser() && !Session::getRemoteUser()) {
 		DI::sysmsg()->addNotice(DI::l10n()->t('Public access denied.'));
 		return;
 	}

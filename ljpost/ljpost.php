@@ -13,6 +13,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\DI;
 use Friendica\Model\Post;
 use Friendica\Model\Tag;
@@ -31,17 +32,17 @@ function ljpost_install()
 
 function ljpost_jot_nets(App &$a, array &$jotnets_fields)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	if (DI::pConfig()->get(local_user(),'ljpost','post')) {
+	if (DI::pConfig()->get(Session::getLocalUser(),'ljpost','post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'ljpost_enable',
 				DI::l10n()->t('Post to LiveJournal'),
-				DI::pConfig()->get(local_user(), 'ljpost', 'post_by_default'),
+				DI::pConfig()->get(Session::getLocalUser(), 'ljpost', 'post_by_default'),
 			],
 		];
 	}
@@ -49,13 +50,13 @@ function ljpost_jot_nets(App &$a, array &$jotnets_fields)
 
 function ljpost_settings(App &$a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$enabled = DI::pConfig()->get(local_user(), 'ljpost', 'post', false);
-	$ij_username = DI::pConfig()->get(local_user(), 'ljpost', 'ij_username');
-	$def_enabled = DI::pConfig()->get(local_user(), 'ljpost', 'post_by_default');
+	$enabled = DI::pConfig()->get(Session::getLocalUser(), 'ljpost', 'post', false);
+	$ij_username = DI::pConfig()->get(Session::getLocalUser(), 'ljpost', 'ij_username');
+	$def_enabled = DI::pConfig()->get(Session::getLocalUser(), 'ljpost', 'post_by_default');
 
 	$t= Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/ljpost/');
 	$html = Renderer::replaceMacros($t, [
@@ -77,10 +78,10 @@ function ljpost_settings(App &$a, array &$data)
 function ljpost_settings_post(App $a, array &$b)
 {
 	if (!empty($_POST['ljpost-submit'])) {
-		DI::pConfig()->set(local_user(), 'ljpost', 'post', intval($_POST['ljpost']));
-		DI::pConfig()->set(local_user(), 'ljpost', 'post_by_default', intval($_POST['lj_bydefault']));
-		DI::pConfig()->set(local_user(), 'ljpost', 'lj_username', trim($_POST['lj_username']));
-		DI::pConfig()->set(local_user(), 'ljpost', 'lj_password', trim($_POST['lj_password']));
+		DI::pConfig()->set(Session::getLocalUser(), 'ljpost', 'post', intval($_POST['ljpost']));
+		DI::pConfig()->set(Session::getLocalUser(), 'ljpost', 'post_by_default', intval($_POST['lj_bydefault']));
+		DI::pConfig()->set(Session::getLocalUser(), 'ljpost', 'lj_username', trim($_POST['lj_username']));
+		DI::pConfig()->set(Session::getLocalUser(), 'ljpost', 'lj_password', trim($_POST['lj_password']));
 	}
 }
 
@@ -91,7 +92,7 @@ function ljpost_post_local(App $a, array &$b)
 		return;
 	}
 
-	if ((!local_user()) || (local_user() != $b['uid'])) {
+	if ((!Session::getLocalUser()) || (Session::getLocalUser() != $b['uid'])) {
 		return;
 	}
 
@@ -99,10 +100,10 @@ function ljpost_post_local(App $a, array &$b)
 		return;
 	}
 
-	$lj_post   = intval(DI::pConfig()->get(local_user(),'ljpost','post'));
+	$lj_post   = intval(DI::pConfig()->get(Session::getLocalUser(),'ljpost','post'));
 	$lj_enable = (($lj_post && !empty($_REQUEST['ljpost_enable'])) ? intval($_REQUEST['ljpost_enable']) : 0);
 
-	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(), 'ljpost', 'post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(Session::getLocalUser(), 'ljpost', 'post_by_default'))) {
 		$lj_enable = 1;
 	}
 

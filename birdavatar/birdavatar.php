@@ -10,6 +10,7 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Contact;
@@ -36,14 +37,14 @@ function birdavatar_install()
  */
 function birdavatar_addon_settings(App $a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/birdavatar/');
 	$html = Renderer::replaceMacros($t, [
 		'$uncache'      => time(),
-		'$uid'          => local_user(),
+		'$uid'          => Session::getLocalUser(),
 		'$setrandomize' => DI::l10n()->t('Set default profile avatar or randomize the bird.'),
 	]);
 
@@ -54,7 +55,7 @@ function birdavatar_addon_settings(App $a, array &$data)
 		'submit' => [
 			'birdavatar-usebird'   => DI::l10n()->t('Use Bird as Avatar'),
 			'birdavatar-morebird'  => DI::l10n()->t('More Random Bird!'),
-			'birdavatar-emailbird' => DI::pConfig()->get(local_user(), 'birdavatar', 'seed', false) ? DI::l10n()->t('Reset to email Bird') : null,
+			'birdavatar-emailbird' => DI::pConfig()->get(Session::getLocalUser(), 'birdavatar', 'seed', false) ? DI::l10n()->t('Reset to email Bird') : null,
 		],
 	];
 }
@@ -64,50 +65,50 @@ function birdavatar_addon_settings(App $a, array &$data)
  */
 function birdavatar_addon_settings_post(App $a, &$s)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
 	if (!empty($_POST['birdavatar-usebird'])) {
-		$url = DI::baseUrl()->get() . '/birdavatar/' . local_user() . '?ts=' . time();
+		$url = DI::baseUrl()->get() . '/birdavatar/' . Session::getLocalUser() . '?ts=' . time();
 
-		$self = DBA::selectFirst('contact', ['id'], ['uid' => local_user(), 'self' => true]);
+		$self = DBA::selectFirst('contact', ['id'], ['uid' => Session::getLocalUser(), 'self' => true]);
 		if (!DBA::isResult($self)) {
 			DI::sysmsg()->addNotice(DI::l10n()->t("The bird has not found itself."));
 			return;
 		}
 
-		Photo::importProfilePhoto($url, local_user(), $self['id']);
+		Photo::importProfilePhoto($url, Session::getLocalUser(), $self['id']);
 
-		$condition = ['uid' => local_user(), 'contact-id' => $self['id']];
+		$condition = ['uid' => Session::getLocalUser(), 'contact-id' => $self['id']];
 		$photo     = DBA::selectFirst('photo', ['resource-id'], $condition);
 		if (!DBA::isResult($photo)) {
 			DI::sysmsg()->addNotice(DI::l10n()->t('There was an error, the bird flew away.'));
 			return;
 		}
 
-		DBA::update('photo', ['profile' => false], ['profile' => true, 'uid' => local_user()]);
+		DBA::update('photo', ['profile' => false], ['profile' => true, 'uid' => Session::getLocalUser()]);
 
 		$fields = ['profile' => true, 'album' => DI::l10n()->t('Profile Photos'), 'contact-id' => 0];
-		DBA::update('photo', $fields, ['uid' => local_user(), 'resource-id' => $photo['resource-id']]);
+		DBA::update('photo', $fields, ['uid' => Session::getLocalUser(), 'resource-id' => $photo['resource-id']]);
 
-		Photo::importProfilePhoto($url, local_user(), $self['id']);
+		Photo::importProfilePhoto($url, Session::getLocalUser(), $self['id']);
 
-		Contact::updateSelfFromUserID(local_user(), true);
+		Contact::updateSelfFromUserID(Session::getLocalUser(), true);
 
 		// Update global directory in background
-		Profile::publishUpdate(local_user());
+		Profile::publishUpdate(Session::getLocalUser());
 
 		DI::sysmsg()->addInfo(DI::l10n()->t('Meow!'));
 		return;
 	}
 
 	if (!empty($_POST['birdavatar-morebird'])) {
-		DI::pConfig()->set(local_user(), 'birdavatar', 'seed', time());
+		DI::pConfig()->set(Session::getLocalUser(), 'birdavatar', 'seed', time());
 	}
 
 	if (!empty($_POST['birdavatar-emailbird'])) {
-		DI::pConfig()->delete(local_user(), 'birdavatar', 'seed');
+		DI::pConfig()->delete(Session::getLocalUser(), 'birdavatar', 'seed');
 	}
 }
 

@@ -12,6 +12,7 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\DI;
 use Friendica\Model\Notification;
 
@@ -31,10 +32,10 @@ function gnot_install()
  * and if so set our configuration setting for this person.
  */
 function gnot_settings_post(App $a, $post) {
-	if(! local_user() || empty($_POST['gnot-submit']))
+	if(! Session::getLocalUser() || empty($_POST['gnot-submit']))
 		return;
 
-	DI::pConfig()->set(local_user(),'gnot','enable',intval($_POST['gnot']));
+	DI::pConfig()->set(Session::getLocalUser(),'gnot','enable',intval($_POST['gnot']));
 }
 
 /**
@@ -43,11 +44,11 @@ function gnot_settings_post(App $a, $post) {
  */
 function gnot_settings(App &$a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$gnot = intval(DI::pConfig()->get(local_user(), 'gnot', 'enable'));
+	$gnot = intval(DI::pConfig()->get(Session::getLocalUser(), 'gnot', 'enable'));
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/gnot/');
 	$html = Renderer::replaceMacros($t, [

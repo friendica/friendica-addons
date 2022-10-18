@@ -12,6 +12,7 @@ use Friendica\Content\Text\HTML;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Post;
@@ -29,17 +30,17 @@ function wppost_install()
 
 function wppost_jot_nets(App &$a, array &$jotnets_fields)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	if (DI::pConfig()->get(local_user(),'wppost','post')) {
+	if (DI::pConfig()->get(Session::getLocalUser(),'wppost','post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'wppost_enable',
 				DI::l10n()->t('Post to Wordpress'),
-				DI::pConfig()->get(local_user(),'wppost','post_by_default')
+				DI::pConfig()->get(Session::getLocalUser(),'wppost','post_by_default')
 			]
 		];
 	}
@@ -48,17 +49,17 @@ function wppost_jot_nets(App &$a, array &$jotnets_fields)
 
 function wppost_settings(App &$a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$enabled            = DI::pConfig()->get(local_user(), 'wppost', 'post', false);
-	$wp_username        = DI::pConfig()->get(local_user(), 'wppost', 'wp_username');
-	$wp_blog            = DI::pConfig()->get(local_user(), 'wppost', 'wp_blog');
-	$def_enabled        = DI::pConfig()->get(local_user(), 'wppost', 'post_by_default', false);
-	$back_enabled       = DI::pConfig()->get(local_user(), 'wppost', 'backlink', false);
-	$wp_backlink_text   = DI::pConfig()->get(local_user(), 'wppost', 'wp_backlink_text');
-	$shortcheck_enabled = DI::pConfig()->get(local_user(), 'wppost', 'shortcheck', false);
+	$enabled            = DI::pConfig()->get(Session::getLocalUser(), 'wppost', 'post', false);
+	$wp_username        = DI::pConfig()->get(Session::getLocalUser(), 'wppost', 'wp_username');
+	$wp_blog            = DI::pConfig()->get(Session::getLocalUser(), 'wppost', 'wp_blog');
+	$def_enabled        = DI::pConfig()->get(Session::getLocalUser(), 'wppost', 'post_by_default', false);
+	$back_enabled       = DI::pConfig()->get(Session::getLocalUser(), 'wppost', 'backlink', false);
+	$wp_backlink_text   = DI::pConfig()->get(Session::getLocalUser(), 'wppost', 'wp_backlink_text');
+	$shortcheck_enabled = DI::pConfig()->get(Session::getLocalUser(), 'wppost', 'shortcheck', false);
 
 	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/wppost/');
 	$html = Renderer::replaceMacros($t, [
@@ -85,16 +86,16 @@ function wppost_settings(App &$a, array &$data)
 function wppost_settings_post(App $a, array &$b)
 {
 	if(!empty($_POST['wppost-submit'])) {
-		DI::pConfig()->set(local_user(), 'wppost', 'post'           , intval($_POST['wppost']));
-		DI::pConfig()->set(local_user(), 'wppost', 'post_by_default', intval($_POST['wp_bydefault']));
-		DI::pConfig()->set(local_user(), 'wppost', 'wp_username'    ,   trim($_POST['wp_username']));
-		DI::pConfig()->set(local_user(), 'wppost', 'wp_password'    ,   trim($_POST['wp_password']));
-		DI::pConfig()->set(local_user(), 'wppost', 'wp_blog'        ,   trim($_POST['wp_blog']));
-		DI::pConfig()->set(local_user(), 'wppost', 'backlink'       , intval($_POST['wp_backlink']));
-		DI::pConfig()->set(local_user(), 'wppost', 'shortcheck'     , intval($_POST['wp_shortcheck']));
+		DI::pConfig()->set(Session::getLocalUser(), 'wppost', 'post'           , intval($_POST['wppost']));
+		DI::pConfig()->set(Session::getLocalUser(), 'wppost', 'post_by_default', intval($_POST['wp_bydefault']));
+		DI::pConfig()->set(Session::getLocalUser(), 'wppost', 'wp_username'    ,   trim($_POST['wp_username']));
+		DI::pConfig()->set(Session::getLocalUser(), 'wppost', 'wp_password'    ,   trim($_POST['wp_password']));
+		DI::pConfig()->set(Session::getLocalUser(), 'wppost', 'wp_blog'        ,   trim($_POST['wp_blog']));
+		DI::pConfig()->set(Session::getLocalUser(), 'wppost', 'backlink'       , intval($_POST['wp_backlink']));
+		DI::pConfig()->set(Session::getLocalUser(), 'wppost', 'shortcheck'     , intval($_POST['wp_shortcheck']));
 		$wp_backlink_text = BBCode::convert(trim($_POST['wp_backlink_text']), false, BBCode::BACKLINK);
 		$wp_backlink_text = HTML::toPlaintext($wp_backlink_text, 0, true);
-		DI::pConfig()->set(local_user(), 'wppost', 'wp_backlink_text', $wp_backlink_text);
+		DI::pConfig()->set(Session::getLocalUser(), 'wppost', 'wp_backlink_text', $wp_backlink_text);
 	}
 }
 
@@ -121,7 +122,7 @@ function wppost_post_local(App $a, array &$b) {
 		return;
 	}
 
-	if (!local_user() || (local_user() != $b['uid'])) {
+	if (!Session::getLocalUser() || (Session::getLocalUser() != $b['uid'])) {
 		return;
 	}
 
@@ -129,11 +130,11 @@ function wppost_post_local(App $a, array &$b) {
 		return;
 	}
 
-	$wp_post   = intval(DI::pConfig()->get(local_user(), 'wppost', 'post'));
+	$wp_post   = intval(DI::pConfig()->get(Session::getLocalUser(), 'wppost', 'post'));
 
 	$wp_enable = (($wp_post && !empty($_REQUEST['wppost_enable'])) ? intval($_REQUEST['wppost_enable']) : 0);
 
-	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(), 'wppost', 'post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(Session::getLocalUser(), 'wppost', 'post_by_default'))) {
 		$wp_enable = 1;
 	}
 

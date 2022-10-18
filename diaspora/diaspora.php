@@ -32,17 +32,17 @@ function diaspora_install()
 
 function diaspora_jot_nets(App $a, array &$jotnets_fields)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	if (DI::pConfig()->get(local_user(), 'diaspora', 'post')) {
+	if (DI::pConfig()->get(Session::getLocalUser(), 'diaspora', 'post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'diaspora_enable',
 				DI::l10n()->t('Post to Diaspora'),
-				DI::pConfig()->get(local_user(), 'diaspora', 'post_by_default')
+				DI::pConfig()->get(Session::getLocalUser(), 'diaspora', 'post_by_default')
 			]
 		];
 	}
@@ -50,16 +50,16 @@ function diaspora_jot_nets(App $a, array &$jotnets_fields)
 
 function diaspora_settings(App $a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$enabled     = DI::pConfig()->get(local_user(), 'diaspora', 'post', false);
-	$def_enabled = DI::pConfig()->get(local_user(), 'diaspora', 'post_by_default');
+	$enabled     = DI::pConfig()->get(Session::getLocalUser(), 'diaspora', 'post', false);
+	$def_enabled = DI::pConfig()->get(Session::getLocalUser(), 'diaspora', 'post_by_default');
 
-	$handle   = DI::pConfig()->get(local_user(), 'diaspora', 'handle');
-	$password = DI::pConfig()->get(local_user(), 'diaspora', 'password');
-	$aspect   = DI::pConfig()->get(local_user(), 'diaspora', 'aspect');
+	$handle   = DI::pConfig()->get(Session::getLocalUser(), 'diaspora', 'handle');
+	$password = DI::pConfig()->get(Session::getLocalUser(), 'diaspora', 'password');
+	$aspect   = DI::pConfig()->get(Session::getLocalUser(), 'diaspora', 'aspect');
 
 	$info  = '';
 	$error = '';
@@ -121,18 +121,18 @@ function diaspora_settings(App $a, array &$data)
 function diaspora_settings_post(App $a, array &$b)
 {
 	if (!empty($_POST['diaspora-submit'])) {
-		DI::pConfig()->set(local_user(),'diaspora', 'post'           , intval($_POST['enabled']));
+		DI::pConfig()->set(Session::getLocalUser(),'diaspora', 'post'           , intval($_POST['enabled']));
 		if (intval($_POST['enabled'])) {
 			if (isset($_POST['handle'])) {
-				DI::pConfig()->set(local_user(),'diaspora', 'handle'         , trim($_POST['handle']));
-				DI::pConfig()->set(local_user(),'diaspora', 'password'       , trim($_POST['password']));
+				DI::pConfig()->set(Session::getLocalUser(),'diaspora', 'handle'         , trim($_POST['handle']));
+				DI::pConfig()->set(Session::getLocalUser(),'diaspora', 'password'       , trim($_POST['password']));
 			}
 			if (!empty($_POST['aspect'])) {
-				DI::pConfig()->set(local_user(),'diaspora', 'aspect'         , trim($_POST['aspect']));
-				DI::pConfig()->set(local_user(),'diaspora', 'post_by_default', intval($_POST['post_by_default']));
+				DI::pConfig()->set(Session::getLocalUser(),'diaspora', 'aspect'         , trim($_POST['aspect']));
+				DI::pConfig()->set(Session::getLocalUser(),'diaspora', 'post_by_default', intval($_POST['post_by_default']));
 			}
 		} else {
-			DI::pConfig()->delete(local_user(), 'diaspora', 'password');
+			DI::pConfig()->delete(Session::getLocalUser(), 'diaspora', 'password');
 		}
 	}
 }
@@ -158,7 +158,7 @@ function diaspora_post_local(App $a, array &$b)
 		return;
 	}
 
-	if (!local_user() || (local_user() != $b['uid'])) {
+	if (!Session::getLocalUser() || (Session::getLocalUser() != $b['uid'])) {
 		return;
 	}
 
@@ -166,11 +166,11 @@ function diaspora_post_local(App $a, array &$b)
 		return;
 	}
 
-	$diaspora_post   = intval(DI::pConfig()->get(local_user(),'diaspora','post'));
+	$diaspora_post   = intval(DI::pConfig()->get(Session::getLocalUser(),'diaspora','post'));
 
 	$diaspora_enable = (($diaspora_post && !empty($_REQUEST['diaspora_enable'])) ? intval($_REQUEST['diaspora_enable']) : 0);
 
-	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(),'diaspora','post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(Session::getLocalUser(),'diaspora','post_by_default'))) {
 		$diaspora_enable = 1;
 	}
 

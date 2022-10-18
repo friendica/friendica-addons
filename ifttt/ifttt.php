@@ -12,6 +12,7 @@ use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Protocol;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\Core\Worker;
 use Friendica\Database\DBA;
 use Friendica\DI;
@@ -36,14 +37,14 @@ function ifttt_content() {}
 
 function ifttt_settings(App $a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$key = DI::pConfig()->get(local_user(), 'ifttt', 'key');
+	$key = DI::pConfig()->get(Session::getLocalUser(), 'ifttt', 'key');
 	if (!$key) {
 		$key = Strings::getRandomHex(20);
-		DI::pConfig()->set(local_user(), 'ifttt', 'key', $key);
+		DI::pConfig()->set(Session::getLocalUser(), 'ifttt', 'key', $key);
 	}
 
 	$t    = Renderer::getMarkupTemplate('connector_settings.tpl', 'addon/ifttt/');
@@ -75,7 +76,7 @@ function ifttt_settings(App $a, array &$data)
 function ifttt_settings_post()
 {
 	if (!empty($_POST['ifttt-submit'])) {
-		DI::pConfig()->delete(local_user(), 'ifttt', 'key');
+		DI::pConfig()->delete(Session::getLocalUser(), 'ifttt', 'key');
 	}
 }
 

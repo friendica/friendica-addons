@@ -14,6 +14,7 @@ use Friendica\Content\Text\BBCode;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\Database\DBA;
 use Friendica\DI;
 use Friendica\Model\Post;
@@ -38,7 +39,7 @@ function tumblr_module() {}
 
 function tumblr_content(App $a)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		DI::sysmsg()->addNotice(DI::l10n()->t('Permission denied.'));
 		return '';
 	}
@@ -171,8 +172,8 @@ function tumblr_callback(App $a)
 	}
 
 	// What's next?  Now that we have an Access Token and Secret, we can make an API call.
-	DI::pConfig()->set(local_user(), 'tumblr', 'oauth_token', $access_token['oauth_token']);
-	DI::pConfig()->set(local_user(), 'tumblr', 'oauth_token_secret', $access_token['oauth_token_secret']);
+	DI::pConfig()->set(Session::getLocalUser(), 'tumblr', 'oauth_token', $access_token['oauth_token']);
+	DI::pConfig()->set(Session::getLocalUser(), 'tumblr', 'oauth_token_secret', $access_token['oauth_token_secret']);
 
 	$o = DI::l10n()->t("You are now authenticated to tumblr.");
 	$o .= '<br /><a href="' . DI::baseUrl()->get() . '/settings/connectors">' . DI::l10n()->t("return to the connector page") . '</a>';
@@ -182,17 +183,17 @@ function tumblr_callback(App $a)
 
 function tumblr_jot_nets(App $a, array &$jotnets_fields)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	if (DI::pConfig()->get(local_user(),'tumblr','post')) {
+	if (DI::pConfig()->get(Session::getLocalUser(),'tumblr','post')) {
 		$jotnets_fields[] = [
 			'type' => 'checkbox',
 			'field' => [
 				'tumblr_enable',
 				DI::l10n()->t('Post to Tumblr'),
-				DI::pConfig()->get(local_user(),'tumblr','post_by_default')
+				DI::pConfig()->get(Session::getLocalUser(),'tumblr','post_by_default')
 			]
 		];
 	}
@@ -200,18 +201,18 @@ function tumblr_jot_nets(App $a, array &$jotnets_fields)
 
 function tumblr_settings(App $a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$enabled     = DI::pConfig()->get(local_user(), 'tumblr', 'post', false);
-	$def_enabled = DI::pConfig()->get(local_user(), 'tumblr', 'post_by_default', false);
+	$enabled     = DI::pConfig()->get(Session::getLocalUser(), 'tumblr', 'post', false);
+	$def_enabled = DI::pConfig()->get(Session::getLocalUser(), 'tumblr', 'post_by_default', false);
 
-	$oauth_token        = DI::pConfig()->get(local_user(), 'tumblr', 'oauth_token');
-	$oauth_token_secret = DI::pConfig()->get(local_user(), 'tumblr', 'oauth_token_secret');
+	$oauth_token        = DI::pConfig()->get(Session::getLocalUser(), 'tumblr', 'oauth_token');
+	$oauth_token_secret = DI::pConfig()->get(Session::getLocalUser(), 'tumblr', 'oauth_token_secret');
 
 	if ($oauth_token && $oauth_token_secret) {
-		$page            = DI::pConfig()->get(local_user(), 'tumblr', 'page');
+		$page            = DI::pConfig()->get(Session::getLocalUser(), 'tumblr', 'page');
 		$consumer_key    = DI::config()->get('tumblr', 'consumer_key');
 		$consumer_secret = DI::config()->get('tumblr', 'consumer_secret');
 
@@ -251,9 +252,9 @@ function tumblr_settings(App $a, array &$data)
 function tumblr_settings_post(App $a, array &$b)
 {
 	if (!empty($_POST['tumblr-submit'])) {
-		DI::pConfig()->set(local_user(), 'tumblr', 'post',            intval($_POST['tumblr']));
-		DI::pConfig()->set(local_user(), 'tumblr', 'page',            $_POST['tumblr_page']);
-		DI::pConfig()->set(local_user(), 'tumblr', 'post_by_default', intval($_POST['tumblr_bydefault']));
+		DI::pConfig()->set(Session::getLocalUser(), 'tumblr', 'post',            intval($_POST['tumblr']));
+		DI::pConfig()->set(Session::getLocalUser(), 'tumblr', 'page',            $_POST['tumblr_page']);
+		DI::pConfig()->set(Session::getLocalUser(), 'tumblr', 'post_by_default', intval($_POST['tumblr_bydefault']));
 	}
 }
 
@@ -280,7 +281,7 @@ function tumblr_post_local(App $a, array &$b)
 		return;
 	}
 
-	if (!local_user() || (local_user() != $b['uid'])) {
+	if (!Session::getLocalUser() || (Session::getLocalUser() != $b['uid'])) {
 		return;
 	}
 
@@ -288,11 +289,11 @@ function tumblr_post_local(App $a, array &$b)
 		return;
 	}
 
-	$tmbl_post   = intval(DI::pConfig()->get(local_user(), 'tumblr', 'post'));
+	$tmbl_post   = intval(DI::pConfig()->get(Session::getLocalUser(), 'tumblr', 'post'));
 
 	$tmbl_enable = (($tmbl_post && !empty($_REQUEST['tumblr_enable'])) ? intval($_REQUEST['tumblr_enable']) : 0);
 
-	if ($b['api_source'] && intval(DI::pConfig()->get(local_user(), 'tumblr', 'post_by_default'))) {
+	if ($b['api_source'] && intval(DI::pConfig()->get(Session::getLocalUser(), 'tumblr', 'post_by_default'))) {
 		$tmbl_enable = 1;
 	}
 

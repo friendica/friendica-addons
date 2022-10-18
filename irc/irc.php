@@ -10,6 +10,7 @@
 use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\DI;
 
 function irc_install()
@@ -21,12 +22,12 @@ function irc_install()
 
 function irc_addon_settings(App &$a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$sitechats = DI::pConfig()->get(local_user(), 'irc', 'sitechats'); /* popular channels */
-	$autochans = DI::pConfig()->get(local_user(), 'irc', 'autochans');  /* auto connect chans */
+	$sitechats = DI::pConfig()->get(Session::getLocalUser(), 'irc', 'sitechats'); /* popular channels */
+	$autochans = DI::pConfig()->get(Session::getLocalUser(), 'irc', 'autochans');  /* auto connect chans */
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/irc/');
 	$html = Renderer::replaceMacros($t, [
@@ -44,16 +45,16 @@ function irc_addon_settings(App &$a, array &$data)
 
 function irc_addon_settings_post(App $a, array &$b)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
 	if (!empty($_POST['irc-submit'])) {
 		if (isset($_POST['autochans'])) {
-			DI::pConfig()->set(local_user(), 'irc', 'autochans', trim(($_POST['autochans'])));
+			DI::pConfig()->set(Session::getLocalUser(), 'irc', 'autochans', trim(($_POST['autochans'])));
 		}
 		if (isset($_POST['sitechats'])) {
-			DI::pConfig()->set(local_user(), 'irc', 'sitechats', trim($_POST['sitechats']));
+			DI::pConfig()->set(Session::getLocalUser(), 'irc', 'sitechats', trim($_POST['sitechats']));
 		}
 		/* upid pop-up thing */
 	}
@@ -77,8 +78,8 @@ function irc_content(App $a)
 	$o = '';
 
 	/* set the list of popular channels */
-	if (local_user()) {
-		$sitechats = DI::pConfig()->get( local_user(), 'irc', 'sitechats');
+	if (Session::getLocalUser()) {
+		$sitechats = DI::pConfig()->get( Session::getLocalUser(), 'irc', 'sitechats');
 		if (!$sitechats) {
 			$sitechats = DI::config()->get('irc', 'sitechats');
 		}
@@ -100,8 +101,8 @@ function irc_content(App $a)
 	DI::page()['aside'] .= '</ul></div>';
 
         /* setting the channel(s) to auto connect */
-	if (local_user()) {
-	    $autochans = DI::pConfig()->get(local_user(), 'irc', 'autochans');
+	if (Session::getLocalUser()) {
+	    $autochans = DI::pConfig()->get(Session::getLocalUser(), 'irc', 'autochans');
 	    if (!$autochans)
 		$autochans = DI::config()->get('irc','autochans');
 	} else {

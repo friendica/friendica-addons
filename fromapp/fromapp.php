@@ -11,6 +11,7 @@ use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Logger;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\DI;
 
 function fromapp_install()
@@ -23,22 +24,22 @@ function fromapp_install()
 
 function fromapp_settings_post(App $a, $post)
 {
-	if (!local_user() || empty($_POST['fromapp-submit'])) {
+	if (!Session::getLocalUser() || empty($_POST['fromapp-submit'])) {
 		return;
 	}
 
-	DI::pConfig()->set(local_user(), 'fromapp', 'app', $_POST['fromapp-input']);
-	DI::pConfig()->set(local_user(), 'fromapp', 'force', intval($_POST['fromapp-force']));
+	DI::pConfig()->set(Session::getLocalUser(), 'fromapp', 'app', $_POST['fromapp-input']);
+	DI::pConfig()->set(Session::getLocalUser(), 'fromapp', 'force', intval($_POST['fromapp-force']));
 }
 
 function fromapp_settings(App &$a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$fromapp = DI::pConfig()->get(local_user(), 'fromapp', 'app', '');
-	$force   = intval(DI::pConfig()->get(local_user(), 'fromapp', 'force'));
+	$fromapp = DI::pConfig()->get(Session::getLocalUser(), 'fromapp', 'app', '');
+	$force   = intval(DI::pConfig()->get(Session::getLocalUser(), 'fromapp', 'force'));
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/fromapp/');
 	$html = Renderer::replaceMacros($t, [
@@ -55,16 +56,16 @@ function fromapp_settings(App &$a, array &$data)
 
 function fromapp_post_hook(App $a, &$item)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	if (local_user() != $item['uid']) {
+	if (Session::getLocalUser() != $item['uid']) {
 		return;
 	}
 
-	$app = DI::pConfig()->get(local_user(), 'fromapp', 'app');
-	$force = intval(DI::pConfig()->get(local_user(), 'fromapp', 'force'));
+	$app = DI::pConfig()->get(Session::getLocalUser(), 'fromapp', 'app');
+	$force = intval(DI::pConfig()->get(Session::getLocalUser(), 'fromapp', 'force'));
 
 	if (is_null($app) || (! strlen($app))) {
 		return;

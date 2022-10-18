@@ -21,6 +21,7 @@
 use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\DI;
 use Friendica\Util\XML;
 
@@ -38,11 +39,11 @@ function qcomment_footer(App $a, string &$body)
 
 function qcomment_addon_settings(App &$a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$words = DI::pConfig()->get(local_user(), 'qcomment', 'words', DI::l10n()->t(':-)') . "\n" . DI::l10n()->t(':-(') . "\n" . DI::l10n()->t('lol'));
+	$words = DI::pConfig()->get(Session::getLocalUser(), 'qcomment', 'words', DI::l10n()->t(':-)') . "\n" . DI::l10n()->t(':-(') . "\n" . DI::l10n()->t('lol'));
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/qcomment/');
 	$html = Renderer::replaceMacros($t, [
@@ -59,11 +60,11 @@ function qcomment_addon_settings(App &$a, array &$data)
 
 function qcomment_addon_settings_post(App $a, array &$b)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
 	if (isset($_POST['qcomment-words'])) {
-		DI::pConfig()->set(local_user(), 'qcomment', 'words', XML::escape($_POST['qcomment-words']));
+		DI::pConfig()->set(Session::getLocalUser(), 'qcomment', 'words', XML::escape($_POST['qcomment-words']));
 	}
 }

@@ -11,6 +11,7 @@
 use Friendica\App;
 use Friendica\Core\Hook;
 use Friendica\Core\Renderer;
+use Friendica\Core\Session;
 use Friendica\DI;
 
 function nsfw_install()
@@ -53,12 +54,12 @@ function nsfw_extract_photos($body)
 
 function nsfw_addon_settings(App &$a, array &$data)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
-	$enabled = !DI::pConfig()->get(local_user(), 'nsfw', 'disable');
-	$words   = DI::pConfig()->get(local_user(), 'nsfw', 'words', 'nsfw,');
+	$enabled = !DI::pConfig()->get(Session::getLocalUser(), 'nsfw', 'disable');
+	$words   = DI::pConfig()->get(Session::getLocalUser(), 'nsfw', 'words', 'nsfw,');
 
 	$t    = Renderer::getMarkupTemplate('settings.tpl', 'addon/nsfw/');
 	$html = Renderer::replaceMacros($t, [
@@ -76,27 +77,27 @@ function nsfw_addon_settings(App &$a, array &$data)
 
 function nsfw_addon_settings_post(App $a, array &$b)
 {
-	if (!local_user()) {
+	if (!Session::getLocalUser()) {
 		return;
 	}
 
 	if (!empty($_POST['nsfw-submit'])) {
-		DI::pConfig()->set(local_user(), 'nsfw', 'words', trim($_POST['nsfw-words']));
+		DI::pConfig()->set(Session::getLocalUser(), 'nsfw', 'words', trim($_POST['nsfw-words']));
 		$enable = (!empty($_POST['nsfw-enable']) ? intval($_POST['nsfw-enable']) : 0);
 		$disable = 1 - $enable;
-		DI::pConfig()->set(local_user(), 'nsfw', 'disable', $disable);
+		DI::pConfig()->set(Session::getLocalUser(), 'nsfw', 'disable', $disable);
 	}
 }
 
 function nsfw_prepare_body_content_filter(App $a, &$hook_data)
 {
 	$words = null;
-	if (DI::pConfig()->get(local_user(), 'nsfw', 'disable')) {
+	if (DI::pConfig()->get(Session::getLocalUser(), 'nsfw', 'disable')) {
 		return;
 	}
 
-	if (local_user()) {
-		$words = DI::pConfig()->get(local_user(), 'nsfw', 'words');
+	if (Session::getLocalUser()) {
+		$words = DI::pConfig()->get(Session::getLocalUser(), 'nsfw', 'words');
 	}
 
 	if ($words) {
