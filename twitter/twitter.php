@@ -1827,7 +1827,7 @@ function twitter_createpost(App $a, int $uid, $post, array $self, $create_user, 
 
 		$item = Post::selectFirst(['uri'], ['uri' => $thr_parent, 'uid' => $uid]);
 		if (!DBA::isResult($item)) {
-			$item = Post::selectFirst(['uri'], ['extid' => $thr_parent, 'uid' => $uid, 'gravity' => GRAVITY_COMMENT]);
+			$item = Post::selectFirst(['uri'], ['extid' => $thr_parent, 'uid' => $uid, 'gravity' => Item::GRAVITY_COMMENT]);
 		}
 
 		if (DBA::isResult($item)) {
@@ -1948,7 +1948,7 @@ function twitter_createpost(App $a, int $uid, $post, array $self, $create_user, 
 
 			// CHange the other post into a reshare activity
 			$postarray['verb'] = Activity::ANNOUNCE;
-			$postarray['gravity'] = GRAVITY_ACTIVITY;
+			$postarray['gravity'] = Item::GRAVITY_ACTIVITY;
 			$postarray['object-type'] = Activity\ObjectType::NOTE;
 
 			$postarray['thr-parent'] = $retweet['uri'];
