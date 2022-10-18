@@ -146,7 +146,7 @@ function statusnet_settings_post(App $a, $post)
 						DI::pConfig()->set(local_user(), 'statusnet', 'baseapi', $asn['apiurl']);
 						//DI::pConfig()->set(local_user(), 'statusnet', 'application_name', $asn['applicationname'] );
 					} else {
-						DI::sysmsg()->addNotice(DI::l10n()->t('Please contact your site administrator.<br />The provided API URL is not valid.') . EOL . $asn['apiurl']);
+						DI::sysmsg()->addNotice(DI::l10n()->t('Please contact your site administrator.<br />The provided API URL is not valid.') . '<br />' . $asn['apiurl']);
 					}
 				}
 			}

@@ -25,16 +25,16 @@ function newmemberwidget_network_mod_init (App $a, $b)
 		return;
 	}
 
-	$t = '<div id="newmember_widget" class="widget">'.EOL;
-	$t .= '<h3>'.DI::l10n()->t('New Member').'</h3>'.EOL;
-	$t .= '<a href="newmember" id="newmemberwidget-tips">' . DI::l10n()->t('Tips for New Members') . '</a><br />'.EOL;
+	$t = '<div id="newmember_widget" class="widget">';
+	$t .= '<h3>'.DI::l10n()->t('New Member').'</h3>';
+	$t .= '<a href="newmember" id="newmemberwidget-tips">' . DI::l10n()->t('Tips for New Members') . '</a><br />';
 
 	if (DI::config()->get('newmemberwidget','linkglobalsupport', false)) {
-		$t .= '<a href="https://forum.friendi.ca/profile/helpers" target="_new">'.DI::l10n()->t('Global Support Forum').'</a><br />'.EOL;
+		$t .= '<a href="https://forum.friendi.ca/profile/helpers" target="_new">'.DI::l10n()->t('Global Support Forum').'</a><br />';
 	}
 
 	if (DI::config()->get('newmemberwidget','linklocalsupport', false)) {
-		$t .= '<a href="'.DI::baseUrl()->get().'/profile/'.DI::config()->get('newmemberwidget','localsupport').'" target="_new">'.DI::l10n()->t('Local Support Forum').'</a><br />'.EOL;
+		$t .= '<a href="'.DI::baseUrl()->get().'/profile/'.DI::config()->get('newmemberwidget','localsupport').'" target="_new">'.DI::l10n()->t('Local Support Forum').'</a><br />';
 	}
 
 	$ft = DI::config()->get('newmemberwidget','freetext', '');
